@@ -1,0 +1,4176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="FlashLingo - Learn English vocabulary with matching games">
+    <title>FlashLingo - English Flashcards</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='15' width='80' height='70' rx='8' fill='%234caf50'/><rect x='15' y='20' width='70' height='60' rx='5' fill='%23fff'/><text x='50' y='58' font-size='32' text-anchor='middle' font-family='Arial' font-weight='bold' fill='%234caf50'>Aa</text><circle cx='75' cy='25' r='12' fill='%23ff9800'/><text x='75' y='30' font-size='14' text-anchor='middle' fill='%23fff'>✓</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234caf50'/><rect x='15' y='20' width='70' height='60' rx='5' fill='%23fff'/><text x='50' y='58' font-size='32' text-anchor='middle' font-family='Arial' font-weight='bold' fill='%234caf50'>Aa</text><circle cx='75' cy='25' r='12' fill='%23ff9800'/><text x='75' y='30' font-size='14' text-anchor='middle' fill='%23fff'>✓</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #fff9f0;
+            --bg-secondary: #fff3e0;
+            --bg-card: #ffffff;
+            --text-primary: #4a3728;
+            --text-secondary: #8b7355;
+            --border-color: #ffe0b2;
+            --accent-green: #4caf50;
+            --accent-green-dark: #388e3c;
+            --accent-blue: #42a5f5;
+            --accent-orange: #ff9800;
+            --accent-red: #ef5350;
+            --accent-purple: #ab47bc;
+            --accent-pink: #ec407a;
+            --accent-yellow: #ffeb3b;
+            --success: #66bb6a;
+            --error: #ef5350;
+            --selected: #e3f2fd;
+            --selected-border: #42a5f5;
+            --matched: #c8e6c9;
+            --matched-border: #66bb6a;
+            --wrong: #ffcdd2;
+            --wrong-border: #ef5350;
+            --border-radius: 20px;
+            --border-radius-lg: 28px;
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-top: env(safe-area-inset-top, 0px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #fff9f0 0%, #ffe8d6 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overscroll-behavior: none;
+        }
+
+        .app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-area-top);
+        }
+
+        .screens-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        /* ==================== ONBOARDING SCREEN ==================== */
+        .onboarding-screen {
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+            padding-top: calc(60px + var(--safe-area-top));
+        }
+
+        .onboarding-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .onboarding-logo .logo-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+        }
+
+        .onboarding-logo h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .onboarding-logo p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .onboarding-section {
+            margin-bottom: 32px;
+        }
+
+        .onboarding-section h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-card:active {
+            transform: scale(0.98);
+        }
+
+        .user-card:hover {
+            border-color: var(--accent-green);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 800;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .user-stats {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .user-arrow {
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .create-user-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .input-field {
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 600;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .avatar-picker {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--accent-green);
+            background: var(--matched);
+            transform: scale(1.1);
+        }
+
+        .avatar-option:active {
+            transform: scale(0.95);
+        }
+
+        /* Passcode Inputs */
+        .passcode-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .passcode-digit {
+            width: 55px;
+            height: 65px;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .passcode-digit:focus {
+            border-color: var(--accent-green);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+        }
+
+        .passcode-digit.filled {
+            background: var(--matched);
+            border-color: var(--accent-green);
+        }
+
+        .passcode-digit.error {
+            border-color: var(--error);
+            background: var(--wrong);
+            animation: shake 0.4s ease;
+        }
+
+        .passcode-error {
+            color: var(--error);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+
+        /* Passcode Modal */
+        .passcode-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .passcode-modal.active {
+            display: flex;
+        }
+
+        .passcode-modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .passcode-modal-avatar {
+            font-size: 64px;
+            margin-bottom: 12px;
+        }
+
+        .passcode-modal-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .passcode-modal-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .passcode-modal-inputs {
+            margin-bottom: 16px;
+        }
+
+        .passcode-modal-error {
+            color: var(--error);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            min-height: 20px;
+        }
+
+        .passcode-modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .passcode-modal-buttons button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .passcode-cancel-btn {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .passcode-submit-btn {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            border: none;
+            color: white;
+        }
+
+        .primary-btn {
+            padding: 18px 36px;
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #2e7d32, 0 8px 20px rgba(76, 175, 80, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .primary-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .primary-btn:disabled {
+            background: var(--border-color);
+            box-shadow: 0 4px 0 #ccc;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            padding: 16px 32px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-btn:active {
+            transform: scale(0.98);
+        }
+
+        .delete-user-btn {
+            padding: 8px;
+            background: none;
+            border: none;
+            color: var(--error);
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .delete-user-btn:hover {
+            opacity: 1;
+        }
+
+        /* ==================== BOTTOM NAV ==================== */
+        .bottom-nav {
+            display: flex;
+            background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
+            border-top: 3px solid #ffe082;
+            padding-bottom: var(--safe-area-bottom);
+            box-shadow: 0 -4px 16px rgba(255, 193, 7, 0.15);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            transition: color 0.2s ease;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .nav-item.active {
+            color: #ff9800;
+        }
+
+        .nav-item .icon {
+            font-size: 28px;
+            margin-bottom: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active .icon {
+            transform: scale(1.15);
+        }
+
+        /* ==================== HOME SCREEN ==================== */
+        .home-screen {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .home-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .home-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .home-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .home-user-greeting {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .home-user-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-secondary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8e1 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 18px;
+            text-align: center;
+            border: 3px solid #ffe082;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ff9800;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Difficulty Filter Tabs */
+        .difficulty-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .difficulty-tab {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            border-radius: 25px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .difficulty-tab:active {
+            transform: scale(0.95);
+        }
+
+        .difficulty-tab.active {
+            border-color: transparent;
+            color: white;
+        }
+
+        .difficulty-tab[data-level="all"].active {
+            background: linear-gradient(135deg, #666, #444);
+        }
+
+        .difficulty-tab[data-level="basic"].active {
+            background: linear-gradient(135deg, #58cc02, #4CAF50);
+        }
+
+        .difficulty-tab[data-level="intermediate"].active {
+            background: linear-gradient(135deg, #1cb0f6, #0984e3);
+        }
+
+        .difficulty-tab[data-level="upper"].active {
+            background: linear-gradient(135deg, #ff9600, #f39c12);
+        }
+
+        .difficulty-tab[data-level="advanced"].active {
+            background: linear-gradient(135deg, #ce82ff, #9b59b6);
+        }
+
+        .tab-count {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .difficulty-tab.active .tab-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .category-card:active {
+            transform: scale(0.98);
+        }
+
+        .category-card.completed {
+            border-color: var(--accent-green);
+            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .category-progress-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .category-lessons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .lesson-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .lesson-dot.completed {
+            background: var(--accent-green);
+        }
+
+        .lesson-dot.current {
+            background: var(--accent-blue);
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Lesson Start Card */
+        .lesson-start-card {
+            background: linear-gradient(135deg, var(--accent-green), #4CAF50);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .lesson-info {
+            margin-bottom: 16px;
+        }
+
+        .lesson-number {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .lesson-words-preview {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lesson-difficulty {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .difficulty-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .difficulty-band {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .start-lesson-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            color: #43a047;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.15), 0 6px 16px rgba(0,0,0,0.1);
+            border: 3px solid #e8f5e9;
+        }
+
+        .lesson-start-card .start-lesson-btn {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .start-lesson-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .start-lesson-btn::before {
+            content: '🚀 ';
+        }
+
+        /* History Tabs */
+        .history-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .history-tab {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .history-tab.active {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .history-tab-count {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .history-tab.active .history-tab-count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Lesson History Table */
+        .lesson-history {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+        }
+
+        .history-table {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+
+        .history-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .history-row:last-child {
+            border-bottom: none;
+        }
+
+        .history-row:active {
+            background: var(--bg-secondary);
+        }
+
+        .history-lesson-num {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--accent-green);
+            flex-shrink: 0;
+        }
+
+        .history-info {
+            flex: 1;
+            margin-left: 12px;
+            min-width: 0;
+        }
+
+        .history-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .history-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .history-stats {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-right: 8px;
+        }
+
+        .history-points {
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-size: 14px;
+        }
+
+        .history-accuracy {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+
+        .history-accuracy.perfect {
+            background: #c8e6c9;
+            color: var(--accent-green-dark);
+        }
+
+        .history-expand-icon {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .history-row.expanded .history-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .history-detail {
+            display: none;
+            padding: 0 14px 14px 14px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-detail.show {
+            display: block;
+        }
+
+        .history-words-label {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .history-words-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .history-word-tag {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #1976d2;
+            border: 2px solid #90caf9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-word-tag:active {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+        }
+
+        .relearn-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .relearn-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Mistakes Tab Content */
+        .mistakes-container {
+            display: none;
+        }
+
+        .mistakes-container.show {
+            display: block;
+        }
+
+        .mistake-word-card {
+            background: var(--bg-card);
+            border: 2px solid #ffcdd2;
+            border-radius: var(--border-radius);
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mistake-word-card:active {
+            transform: scale(0.98);
+            background: #fff5f5;
+        }
+
+        .mistake-word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .mistake-word-en {
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .speak-icon {
+            font-size: 14px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .mistake-word-card:active .speak-icon {
+            opacity: 1;
+        }
+
+        .mistake-count {
+            background: #ffcdd2;
+            color: var(--accent-red);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .mistake-word-vi {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .mistake-word-ipa {
+            font-size: 12px;
+            color: var(--accent-purple);
+            font-style: italic;
+        }
+
+        .practice-mistakes-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-pink));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 4px 15px rgba(239, 83, 80, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .practice-mistakes-btn:active {
+            transform: scale(0.95);
+        }
+
+        .clear-mistakes-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .all-complete-card {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .all-complete-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .all-complete-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .all-complete-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* ==================== LESSON SCREEN ==================== */
+        .lesson-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: var(--bg-primary);
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            padding-top: calc(16px + var(--safe-area-top));
+        }
+
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 300;
+            cursor: pointer;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            height: 16px;
+            background: var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .lesson-points {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .lesson-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lesson-instruction {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .matching-grid {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .matching-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-card {
+            flex: 1;
+            min-height: 80px;
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+            border: 3px solid #e0e0e0;
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 10px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            word-break: break-word;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .match-card:active {
+            transform: scale(0.97);
+        }
+
+        .match-card .card-en {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .match-card .card-ipa {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .match-card .card-emoji {
+            font-size: 36px;
+            line-height: 1;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .match-card .card-vi {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .match-card .card-example {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-style: italic;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .match-card .card-speaker {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 14px;
+            opacity: 0.6;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .match-card .card-speaker:active {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        .match-card {
+            position: relative;
+        }
+
+        .match-card.selected {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #42a5f5;
+            box-shadow: 0 0 0 3px #90caf9, 0 6px 16px rgba(66, 165, 245, 0.3);
+            transform: scale(1.02);
+        }
+
+        .match-card.matched {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #66bb6a;
+            opacity: 0.7;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.3);
+        }
+
+        .match-card.wrong {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border-color: #ef5350;
+            animation: shake 0.4s ease;
+            box-shadow: 0 0 0 3px #ffcdd2;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        /* ==================== LESSON COMPLETE ==================== */
+        .lesson-complete {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, #fff9c4 0%, #fff59d 50%, #ffee58 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lesson-complete.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .complete-icon {
+            font-size: 120px;
+            margin-bottom: 24px;
+            animation: celebrateBounce 0.8s ease infinite;
+            filter: drop-shadow(0 4px 8px rgba(255, 193, 7, 0.4));
+        }
+
+        @keyframes celebrateBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.15) rotate(-8deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(1.15) rotate(-3deg); }
+        }
+
+        .complete-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--accent-green);
+        }
+
+        .complete-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .complete-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .complete-stat {
+            text-align: center;
+        }
+
+        .complete-stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #e65100;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+        }
+
+        .complete-stat-label {
+            font-size: 14px;
+            color: #5d4037;
+            font-weight: 700;
+        }
+
+        .complete-btn {
+            width: 100%;
+            max-width: 300px;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+            box-shadow: 0 6px 0 #e65100, 0 8px 20px rgba(255, 152, 0, 0.4) !important;
+        }
+
+        /* ==================== SPEED CHALLENGE ==================== */
+        .speed-challenge-screen {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .speed-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .speed-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ff6f00;
+            text-shadow: 2px 2px 0 rgba(255, 152, 0, 0.3);
+        }
+
+        .speed-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .speed-leaderboard {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 3px solid #ffc107;
+        }
+
+        .leaderboard-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ff8f00;
+        }
+
+        .leaderboard-stats {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .leaderboard-stat {
+            text-align: center;
+        }
+
+        .leaderboard-value {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            color: #e65100;
+        }
+
+        .leaderboard-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .speed-levels {
+            margin-bottom: 24px;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .level-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            border-radius: var(--border-radius-lg);
+            border: 3px solid;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .level-btn:active {
+            transform: scale(0.95);
+        }
+
+        .level-btn.level-1 {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: #81c784;
+        }
+
+        .level-btn.level-2 {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #64b5f6;
+        }
+
+        .level-btn.level-3 {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-color: #ffb74d;
+        }
+
+        .level-btn.level-4 {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+            border-color: #f06292;
+        }
+
+        .level-btn.level-all {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
+            border-color: #ffd54f;
+        }
+
+        .level-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .level-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .level-verbs {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .speed-rules {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 3px solid #ce93d8;
+        }
+
+        .rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .rule-icon {
+            font-size: 24px;
+        }
+
+        /* Speed Game Overlay */
+        .speed-game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #1a237e 0%, #311b92 100%);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            padding-top: calc(20px + var(--safe-area-top));
+            padding-bottom: calc(20px + var(--safe-area-bottom));
+            overflow-y: auto;
+        }
+
+        .speed-game-overlay.active {
+            display: flex !important;
+        }
+
+        .speed-game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .speed-exit-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .speed-game-stats {
+            display: flex;
+            gap: 10px;
+        }
+
+        .speed-score, .speed-streak-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .speed-progress {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .speed-timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .speed-timer-clock {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffeb3b;
+            min-width: 45px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .speed-timer-clock.warning {
+            color: #ff9800;
+            animation: pulse 0.5s ease infinite;
+        }
+
+        .speed-timer-clock.danger {
+            color: #f44336;
+            animation: pulse 0.3s ease infinite;
+        }
+
+        .speed-timer-bar {
+            flex: 1;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .speed-timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50 0%, #8bc34a 50%, #ffeb3b 75%, #ff9800 90%, #f44336 100%);
+            border-radius: 4px;
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .speed-game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .speed-verb-display {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .verb-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .verb-word {
+            font-size: 40px;
+            font-weight: 800;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 4px;
+        }
+
+        .verb-meaning {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .speed-inputs {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .speed-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .speed-input-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .speed-input-group input {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .speed-input-group input:focus {
+            border-color: #ffeb3b;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .speed-input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .speed-input-group input.correct {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .speed-input-group input.wrong {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .speed-submit-btn {
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #4caf50 0%, #43a047 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2e7d32, 0 6px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .speed-submit-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .speed-submit-btn:disabled {
+            background: #666;
+            box-shadow: 0 4px 0 #444;
+            cursor: not-allowed;
+        }
+
+        .speed-feedback {
+            margin-top: 12px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .speed-feedback.correct {
+            background: rgba(76, 175, 80, 0.3);
+            color: #a5d6a7;
+        }
+
+        .speed-feedback.wrong {
+            background: rgba(244, 67, 54, 0.3);
+            color: #ef9a9a;
+        }
+
+        .speed-feedback .correct-answer {
+            font-size: 14px;
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Speed Complete Overlay */
+        .speed-complete-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #ff6f00 0%, #ff8f00 100%);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .speed-complete-overlay.active {
+            display: flex !important;
+        }
+
+        .speed-complete-content {
+            text-align: center;
+        }
+
+        .speed-complete-icon {
+            font-size: 100px;
+            animation: bounce 0.6s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .speed-complete-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin: 16px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .speed-complete-stats {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .speed-complete-stat {
+            text-align: center;
+        }
+
+        .speed-complete-stat .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .speed-complete-stat .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .speed-new-record {
+            background: white;
+            color: #ff6f00;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            animation: pulse 0.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ==================== PROFILE SCREEN ==================== */
+        .profile-screen {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 16px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .profile-rank {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .profile-stat {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-stat-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .profile-stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .achievement {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .achievement.locked {
+            opacity: 0.4;
+        }
+
+        .achievement-icon {
+            font-size: 28px;
+        }
+
+        .achievement-name {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .switch-user-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        /* ==================== TOAST ==================== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 20px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            font-size: 18px;
+            z-index: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ==================== CONFETTI ==================== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 250;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 400;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .modal-btn.danger {
+            background: var(--error);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="screens-container">
+            <!-- Onboarding Screen -->
+            <div class="screen onboarding-screen active" id="onboardingScreen">
+                <div class="onboarding-logo">
+                    <div class="logo-icon">📚</div>
+                    <h1>FlashLingo</h1>
+                    <p>Learn English with fun!</p>
+                </div>
+
+                <div class="onboarding-section" id="existingUsersSection" style="display: none;">
+                    <h2>Choose your profile</h2>
+                    <div class="user-list" id="userList"></div>
+
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <span class="divider-text">or</span>
+                        <div class="divider-line"></div>
+                    </div>
+                </div>
+
+                <div class="onboarding-section">
+                    <h2 id="createUserTitle">Create your profile</h2>
+                    <form class="create-user-form" id="createUserForm" onsubmit="createUser(event)">
+                        <div class="input-group">
+                            <label class="input-label">Your name</label>
+                            <input type="text" class="input-field" id="usernameInput" placeholder="Enter your name" maxlength="20" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Choose avatar</label>
+                            <div class="avatar-picker" id="avatarPicker">
+                                <div class="avatar-option selected" data-avatar="😊">😊</div>
+                                <div class="avatar-option" data-avatar="🦊">🦊</div>
+                                <div class="avatar-option" data-avatar="🐱">🐱</div>
+                                <div class="avatar-option" data-avatar="🐶">🐶</div>
+                                <div class="avatar-option" data-avatar="🦁">🦁</div>
+                                <div class="avatar-option" data-avatar="🐼">🐼</div>
+                                <div class="avatar-option" data-avatar="🦄">🦄</div>
+                                <div class="avatar-option" data-avatar="🐸">🐸</div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">🔒 Set passcode (4 digits)</label>
+                            <div class="passcode-inputs" id="createPasscode">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="0" oninput="handlePasscodeInput(this, 'create')" onkeydown="handlePasscodeKeydown(event, this, 'create')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="1" oninput="handlePasscodeInput(this, 'create')" onkeydown="handlePasscodeKeydown(event, this, 'create')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="2" oninput="handlePasscodeInput(this, 'create')" onkeydown="handlePasscodeKeydown(event, this, 'create')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="3" oninput="handlePasscodeInput(this, 'create')" onkeydown="handlePasscodeKeydown(event, this, 'create')">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">🔒 Confirm passcode</label>
+                            <div class="passcode-inputs" id="confirmPasscode">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="0" oninput="handlePasscodeInput(this, 'confirm')" onkeydown="handlePasscodeKeydown(event, this, 'confirm')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="1" oninput="handlePasscodeInput(this, 'confirm')" onkeydown="handlePasscodeKeydown(event, this, 'confirm')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="2" oninput="handlePasscodeInput(this, 'confirm')" onkeydown="handlePasscodeKeydown(event, this, 'confirm')">
+                                <input type="tel" maxlength="1" class="passcode-digit" data-index="3" oninput="handlePasscodeInput(this, 'confirm')" onkeydown="handlePasscodeKeydown(event, this, 'confirm')">
+                            </div>
+                            <div class="passcode-error" id="passcodeError"></div>
+                        </div>
+
+                        <button type="submit" class="primary-btn">Start Learning</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Home Screen -->
+            <div class="screen home-screen" id="homeScreen">
+                <div class="home-header">
+                    <div class="home-user">
+                        <div class="home-user-avatar" id="homeAvatar">😊</div>
+                        <div class="home-user-info">
+                            <span class="home-user-greeting">Welcome back,</span>
+                            <span class="home-user-name" id="homeUsername">User</span>
+                        </div>
+                    </div>
+                    <div class="streak-badge">
+                        <span>🔥</span>
+                        <span id="homeStreak">0</span>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" id="homePoints">0</div>
+                        <div class="stat-label">Total Points</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="homeLessons">0/369</div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="homeToday">0</div>
+                        <div class="stat-label">Today</div>
+                    </div>
+                </div>
+
+                <div class="difficulty-tabs" id="difficultyTabs">
+                    <button class="difficulty-tab active" data-level="basic" onclick="filterByDifficulty('basic')">
+                        🌱 Basic <span class="tab-count" id="countBasic">0</span>
+                    </button>
+                    <button class="difficulty-tab" data-level="intermediate" onclick="filterByDifficulty('intermediate')">
+                        🌿 Intermediate <span class="tab-count" id="countIntermediate">0</span>
+                    </button>
+                    <button class="difficulty-tab" data-level="upper" onclick="filterByDifficulty('upper')">
+                        🌳 Upper <span class="tab-count" id="countUpper">0</span>
+                    </button>
+                    <button class="difficulty-tab" data-level="advanced" onclick="filterByDifficulty('advanced')">
+                        ⭐ Advanced <span class="tab-count" id="countAdvanced">0</span>
+                    </button>
+                </div>
+
+                <h2 class="section-title">Today's Lesson</h2>
+                <div class="lesson-start-card" id="lessonStartCard">
+                    <div class="lesson-info">
+                        <div class="lesson-number">Lesson <span id="currentLessonNum">1</span></div>
+                        <div class="lesson-words-preview" id="lessonWordsPreview">5 new words to learn</div>
+                    </div>
+                    <button class="primary-btn start-lesson-btn" onclick="startNextLesson()">
+                        Start Lesson
+                    </button>
+                </div>
+
+                <h2 class="section-title">History</h2>
+                <div class="history-tabs">
+                    <button class="history-tab active" onclick="switchHistoryTab('history')">
+                        📚 History <span class="history-tab-count" id="historyCount">0</span>
+                    </button>
+                    <button class="history-tab" onclick="switchHistoryTab('mistakes')">
+                        🔄 Review <span class="history-tab-count" id="mistakesCount">0</span>
+                    </button>
+                </div>
+                <div class="lesson-history" id="lessonHistory">
+                    <div class="empty-history">No lessons completed yet</div>
+                </div>
+                <div class="mistakes-container" id="mistakesContainer">
+                    <div class="empty-history">No mistakes to review</div>
+                </div>
+            </div>
+
+            <!-- Lesson Screen -->
+            <div class="screen lesson-screen" id="lessonScreen">
+                <div class="lesson-header">
+                    <button class="close-btn" onclick="exitLesson()">×</button>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="lessonProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="lesson-points">
+                        <span id="lessonPointsDisplay">0</span>
+                    </div>
+                </div>
+
+                <div class="lesson-content">
+                    <h2 class="lesson-instruction">Tap the matching pairs</h2>
+                    <div class="matching-grid">
+                        <div class="matching-column" id="leftColumn"></div>
+                        <div class="matching-column" id="rightColumn"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speed Challenge Screen -->
+            <div class="screen speed-challenge-screen" id="speedChallengeScreen">
+                <div class="speed-header">
+                    <h1 class="speed-title">📝 Irregular Verbs</h1>
+                    <p class="speed-subtitle">Practice V1, V2, V3</p>
+                </div>
+
+                <!-- Leaderboard Section -->
+                <div class="speed-leaderboard">
+                    <h3 class="leaderboard-title">🏆 Your Best</h3>
+                    <div class="leaderboard-stats">
+                        <div class="leaderboard-stat">
+                            <span class="leaderboard-value" id="bestScore">0</span>
+                            <span class="leaderboard-label">Best Score</span>
+                        </div>
+                        <div class="leaderboard-stat">
+                            <span class="leaderboard-value" id="bestStreak">0</span>
+                            <span class="leaderboard-label">Best Streak</span>
+                        </div>
+                        <div class="leaderboard-stat">
+                            <span class="leaderboard-value" id="totalPlayed">0</span>
+                            <span class="leaderboard-label">Games</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level Selection -->
+                <div class="speed-levels">
+                    <h3 class="section-title">Choose Level</h3>
+                    <div class="level-grid">
+                        <button class="level-btn level-1" onclick="startSpeedChallenge(1)">
+                            <span class="level-icon">🌱</span>
+                            <span class="level-name">Basic</span>
+                            <span class="level-verbs">25 verbs</span>
+                        </button>
+                        <button class="level-btn level-2" onclick="startSpeedChallenge(2)">
+                            <span class="level-icon">🌿</span>
+                            <span class="level-name">Medium</span>
+                            <span class="level-verbs">25 verbs</span>
+                        </button>
+                        <button class="level-btn level-3" onclick="startSpeedChallenge(3)">
+                            <span class="level-icon">🌳</span>
+                            <span class="level-name">Hard</span>
+                            <span class="level-verbs">25 verbs</span>
+                        </button>
+                        <button class="level-btn level-4" onclick="startSpeedChallenge(4)">
+                            <span class="level-icon">🔥</span>
+                            <span class="level-name">Expert</span>
+                            <span class="level-verbs">25 verbs</span>
+                        </button>
+                        <button class="level-btn level-all" onclick="startSpeedChallenge(0)">
+                            <span class="level-icon">⚡</span>
+                            <span class="level-name">All Verbs</span>
+                            <span class="level-verbs">100 verbs</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- How to Play -->
+                <div class="speed-rules">
+                    <h3 class="section-title">How to Play</h3>
+                    <div class="rules-list">
+                        <div class="rule-item">
+                            <span class="rule-icon">👀</span>
+                            <span>See V1 (base form)</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">⌨️</span>
+                            <span>Type V2 & V3 in 45 seconds</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">🎯</span>
+                            <span>Correct = Points + Speed Bonus</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-icon">❌</span>
+                            <span>Wrong = 3 second penalty</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Screen -->
+            <div class="screen profile-screen" id="profileScreen">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">😊</div>
+                    <h2 class="profile-name" id="profileName">User</h2>
+                    <p class="profile-rank" id="profileRank">Beginner</p>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="profile-stat">
+                        <div class="profile-stat-icon">⭐</div>
+                        <div class="profile-stat-value" id="profilePoints">0</div>
+                        <div class="profile-stat-label">Total Points</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-icon">🔥</div>
+                        <div class="profile-stat-value" id="profileStreak">0</div>
+                        <div class="profile-stat-label">Day Streak</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-icon">📚</div>
+                        <div class="profile-stat-value" id="profileLessons">0</div>
+                        <div class="profile-stat-label">Lessons</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-icon">✅</div>
+                        <div class="profile-stat-value" id="profileAccuracy">0%</div>
+                        <div class="profile-stat-label">Accuracy</div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Achievements</h2>
+                <div class="achievements-grid" id="achievementsGrid"></div>
+
+                <button class="secondary-btn switch-user-btn" onclick="switchUser()">
+                    👥 Switch User
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation (hidden during onboarding) -->
+        <nav class="bottom-nav" id="bottomNav" style="display: none;">
+            <button class="nav-item active" onclick="switchScreen('homeScreen')">
+                <span class="icon">🏠</span>
+                <span>Learn</span>
+            </button>
+            <button class="nav-item" onclick="switchScreen('speedChallengeScreen')">
+                <span class="icon">📝</span>
+                <span>Verbs</span>
+            </button>
+            <button class="nav-item" onclick="switchScreen('profileScreen')">
+                <span class="icon">👤</span>
+                <span>Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Lesson Complete -->
+    <div class="lesson-complete" id="lessonComplete">
+        <div class="complete-icon">🎉</div>
+        <h2 class="complete-title">Lesson Complete!</h2>
+        <p class="complete-subtitle" id="completeSubtitle">Great job!</p>
+        <div class="complete-stats">
+            <div class="complete-stat">
+                <div class="complete-stat-value" id="completePoints">+0</div>
+                <div class="complete-stat-label">Points</div>
+            </div>
+            <div class="complete-stat">
+                <div class="complete-stat-value" id="completeAccuracy">0%</div>
+                <div class="complete-stat-label">Accuracy</div>
+            </div>
+        </div>
+        <button class="primary-btn complete-btn" onclick="closeLessonComplete()">Continue</button>
+    </div>
+
+    <!-- Speed Game Overlay -->
+    <div class="speed-game-overlay" id="speedGameOverlay">
+        <div class="speed-game-header">
+            <button class="speed-exit-btn" onclick="exitSpeedGame()">✕</button>
+            <div class="speed-game-stats">
+                <div class="speed-score">
+                    <span class="score-icon">⭐</span>
+                    <span id="speedScore">0</span>
+                </div>
+                <div class="speed-streak-display">
+                    <span class="streak-icon">🔥</span>
+                    <span id="speedStreak">0</span>
+                </div>
+            </div>
+            <div class="speed-progress">
+                <span id="speedProgress">1/10</span>
+            </div>
+        </div>
+
+        <div class="speed-timer-container">
+            <div class="speed-timer-clock" id="speedTimerClock">45</div>
+            <div class="speed-timer-bar">
+                <div class="speed-timer-fill" id="speedTimerFill"></div>
+            </div>
+        </div>
+
+        <div class="speed-game-content">
+            <div class="speed-verb-display">
+                <div class="verb-label">V1 (Base Form)</div>
+                <div class="verb-word" id="verbV1">go</div>
+                <div class="verb-meaning" id="verbMeaning">đi</div>
+            </div>
+
+            <div class="speed-inputs">
+                <div class="speed-input-group">
+                    <label>V2 (Past)</label>
+                    <input type="text" id="inputV2" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other">
+                </div>
+                <div class="speed-input-group">
+                    <label>V3 (Past Participle)</label>
+                    <input type="text" id="inputV3" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other">
+                </div>
+            </div>
+
+            <button class="speed-submit-btn" id="speedSubmitBtn" onclick="submitSpeedAnswer()">
+                ✓ Check
+            </button>
+
+            <div class="speed-feedback" id="speedFeedback"></div>
+        </div>
+    </div>
+
+    <!-- Speed Game Complete -->
+    <div class="speed-complete-overlay" id="speedCompleteOverlay">
+        <div class="speed-complete-content">
+            <div class="speed-complete-icon">🏆</div>
+            <h2 class="speed-complete-title">Challenge Complete!</h2>
+            <div class="speed-complete-stats">
+                <div class="speed-complete-stat">
+                    <div class="stat-value" id="finalScore">0</div>
+                    <div class="stat-label">Score</div>
+                </div>
+                <div class="speed-complete-stat">
+                    <div class="stat-value" id="finalCorrect">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="speed-complete-stat">
+                    <div class="stat-value" id="finalBestStreak">0</div>
+                    <div class="stat-label">Best Streak</div>
+                </div>
+            </div>
+            <div class="speed-new-record" id="newRecordBadge" style="display: none;">
+                🎉 NEW RECORD!
+            </div>
+            <button class="primary-btn" onclick="closeSpeedComplete()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Delete User Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3>Delete User?</h3>
+            <p id="deleteModalText">This will permanently delete this user and all their progress.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="modal-btn danger" onclick="confirmDeleteUser()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passcode Verification Modal -->
+    <div class="passcode-modal" id="passcodeModal">
+        <div class="passcode-modal-content">
+            <div class="passcode-modal-avatar" id="passcodeModalAvatar">😊</div>
+            <div class="passcode-modal-name" id="passcodeModalName">User</div>
+            <div class="passcode-modal-label">Enter your 4-digit passcode</div>
+            <div class="passcode-modal-inputs">
+                <div class="passcode-inputs" id="loginPasscode">
+                    <input type="tel" maxlength="1" class="passcode-digit" data-index="0" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
+                    <input type="tel" maxlength="1" class="passcode-digit" data-index="1" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
+                    <input type="tel" maxlength="1" class="passcode-digit" data-index="2" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
+                    <input type="tel" maxlength="1" class="passcode-digit" data-index="3" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
+                </div>
+            </div>
+            <div class="passcode-modal-error" id="loginPasscodeError"></div>
+            <div class="passcode-modal-buttons">
+                <button class="passcode-cancel-btn" onclick="closePasscodeModal()">Cancel</button>
+                <button class="passcode-submit-btn" onclick="verifyPasscode()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Confetti -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Load vocabulary data -->
+    <script src="js/vocabulary.js"></script>
+    <script>
+        // ==================== CONSTANTS ====================
+        const WORDS_PER_LESSON = 5;
+        const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
+
+        // ==================== ACHIEVEMENTS ====================
+        const achievements = [
+            { id: 'first-lesson', name: 'First Step', icon: '🏅' },
+            { id: 'streak-7', name: 'On Fire', icon: '🔥' },
+            { id: 'perfect', name: 'Perfect', icon: '💯' },
+            { id: 'points-100', name: 'Century', icon: '⭐' },
+            { id: 'points-1000', name: 'Thousand', icon: '💎' },
+            { id: 'lessons-10', name: 'Dedicated', icon: '💪' },
+            { id: 'lessons-50', name: 'Scholar', icon: '🎓' },
+            { id: 'lessons-100', name: 'Expert', icon: '🧠' },
+            { id: 'all-lessons', name: 'Master', icon: '👑' }
+        ];
+
+        // ==================== USER MANAGEMENT ====================
+        let currentUser = null;
+        let userToDelete = null;
+        let selectedAvatar = '😊';
+
+        function getUsers() {
+            const users = localStorage.getItem('flashlingo-users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('flashlingo-users', JSON.stringify(users));
+        }
+
+        function getUserData(username) {
+            const data = localStorage.getItem(`flashlingo-user-${username}`);
+            return data ? JSON.parse(data) : null;
+        }
+
+        function saveUserData(username, data) {
+            localStorage.setItem(`flashlingo-user-${username}`, JSON.stringify(data));
+        }
+
+        function deleteUserData(username) {
+            localStorage.removeItem(`flashlingo-user-${username}`);
+        }
+
+        function createDefaultUserData(username, avatar, passcode) {
+            return {
+                username: username,
+                avatar: avatar,
+                passcode: passcode,
+                points: 0,
+                streak: 0,
+                lastStudyDate: null,
+                lessonsCompleted: 0,
+                currentLesson: 0, // 0-199 for 200 total lessons
+                totalCorrect: 0,
+                totalAnswers: 0,
+                achievements: [],
+                lessonHistory: [], // Array of { lessonNum, date, points, accuracy }
+                createdAt: Date.now()
+            };
+        }
+
+        // ==================== APP STATE ====================
+        let appState = null;
+        let selectedDifficultyFilter = 'basic';
+
+        // Lesson state
+        let lessonState = {
+            categoryId: null,
+            lessonNumber: 0,
+            words: [],
+            currentRound: 0,
+            totalRounds: 0,
+            roundWords: [],
+            selectedLeft: null,
+            selectedRight: null,
+            matchedPairs: 0,
+            correctInLesson: 0,
+            wrongInLesson: 0,
+            lessonPoints: 0
+        };
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            setupAvatarPicker();
+            checkExistingUsers();
+            registerServiceWorker();
+        }
+
+        function setupAvatarPicker() {
+            const picker = document.getElementById('avatarPicker');
+            picker.addEventListener('click', (e) => {
+                const option = e.target.closest('.avatar-option');
+                if (option) {
+                    document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedAvatar = option.dataset.avatar;
+                }
+            });
+        }
+
+        function checkExistingUsers() {
+            const users = getUsers();
+
+            if (users.length > 0) {
+                // Show existing users
+                document.getElementById('existingUsersSection').style.display = 'block';
+                document.getElementById('createUserTitle').textContent = 'Or create new profile';
+                renderUserList(users);
+            } else {
+                // No users, show create form only
+                document.getElementById('existingUsersSection').style.display = 'none';
+                document.getElementById('createUserTitle').textContent = 'Create your profile';
+            }
+        }
+
+        function renderUserList(users) {
+            const list = document.getElementById('userList');
+            list.innerHTML = '';
+
+            users.forEach(username => {
+                const userData = getUserData(username);
+                if (!userData) return;
+
+                const card = document.createElement('div');
+                card.className = 'user-card';
+                card.innerHTML = `
+                    <div class="user-avatar">${userData.avatar || '😊'}</div>
+                    <div class="user-info">
+                        <div class="user-name">${userData.username}</div>
+                        <div class="user-stats">⭐ ${userData.points} points · 🔥 ${userData.streak} streak</div>
+                    </div>
+                    <button class="delete-user-btn" onclick="event.stopPropagation(); showDeleteModal('${username}')">🗑️</button>
+                    <span class="user-arrow">›</span>
+                `;
+                card.onclick = () => showPasscodeModal(username);
+                list.appendChild(card);
+            });
+        }
+
+        function createUser(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                showToast('Please enter your name');
+                return;
+            }
+
+            // Get passcodes
+            const passcode = getPasscodeValue('create');
+            const confirmPasscode = getPasscodeValue('confirm');
+
+            // Validate passcode
+            if (passcode.length !== 4) {
+                document.getElementById('passcodeError').textContent = 'Please enter 4 digits';
+                shakePasscodeInputs('create');
+                return;
+            }
+
+            if (passcode !== confirmPasscode) {
+                document.getElementById('passcodeError').textContent = 'Passcodes do not match';
+                shakePasscodeInputs('confirm');
+                return;
+            }
+
+            document.getElementById('passcodeError').textContent = '';
+
+            const users = getUsers();
+
+            // Check if username exists
+            if (users.includes(username)) {
+                showToast('This name already exists');
+                return;
+            }
+
+            // Create new user with passcode
+            const userData = createDefaultUserData(username, selectedAvatar, passcode);
+            users.push(username);
+
+            saveUsers(users);
+            saveUserData(username, userData);
+
+            loginUser(username);
+        }
+
+        // ==================== PASSCODE FUNCTIONS ====================
+        let pendingLoginUser = null;
+
+        function getPasscodeValue(type) {
+            const container = document.getElementById(
+                type === 'create' ? 'createPasscode' :
+                type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+            );
+            const inputs = container.querySelectorAll('.passcode-digit');
+            return Array.from(inputs).map(i => i.value).join('');
+        }
+
+        function clearPasscodeInputs(type) {
+            const container = document.getElementById(
+                type === 'create' ? 'createPasscode' :
+                type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+            );
+            const inputs = container.querySelectorAll('.passcode-digit');
+            inputs.forEach(i => {
+                i.value = '';
+                i.classList.remove('filled', 'error');
+            });
+            inputs[0]?.focus();
+        }
+
+        function shakePasscodeInputs(type) {
+            const container = document.getElementById(
+                type === 'create' ? 'createPasscode' :
+                type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+            );
+            const inputs = container.querySelectorAll('.passcode-digit');
+            inputs.forEach(i => {
+                i.classList.add('error');
+            });
+            setTimeout(() => {
+                inputs.forEach(i => i.classList.remove('error'));
+                clearPasscodeInputs(type);
+            }, 400);
+        }
+
+        function handlePasscodeInput(input, type) {
+            const value = input.value.replace(/\D/g, '');
+            input.value = value;
+
+            if (value) {
+                input.classList.add('filled');
+                // Move to next input
+                const index = parseInt(input.dataset.index);
+                const container = input.closest('.passcode-inputs');
+                const nextInput = container.querySelector(`[data-index="${index + 1}"]`);
+                if (nextInput) {
+                    nextInput.focus();
+                } else if (index === 3 && type === 'login') {
+                    // Auto-submit when all 4 digits entered for login
+                    setTimeout(() => verifyPasscode(), 100);
+                }
+            } else {
+                input.classList.remove('filled');
+            }
+        }
+
+        function handlePasscodeKeydown(event, input, type) {
+            if (event.key === 'Backspace' && !input.value) {
+                const index = parseInt(input.dataset.index);
+                const container = input.closest('.passcode-inputs');
+                const prevInput = container.querySelector(`[data-index="${index - 1}"]`);
+                if (prevInput) {
+                    prevInput.focus();
+                    prevInput.value = '';
+                    prevInput.classList.remove('filled');
+                }
+            }
+        }
+
+        function showPasscodeModal(username) {
+            const userData = getUserData(username);
+            if (!userData) return;
+
+            pendingLoginUser = username;
+
+            document.getElementById('passcodeModalAvatar').textContent = userData.avatar || '😊';
+            document.getElementById('passcodeModalName').textContent = userData.username;
+            document.getElementById('loginPasscodeError').textContent = '';
+            clearPasscodeInputs('login');
+
+            document.getElementById('passcodeModal').classList.add('active');
+
+            // Focus first input
+            setTimeout(() => {
+                document.querySelector('#loginPasscode .passcode-digit')?.focus();
+            }, 100);
+        }
+
+        function closePasscodeModal() {
+            document.getElementById('passcodeModal').classList.remove('active');
+            pendingLoginUser = null;
+            clearPasscodeInputs('login');
+        }
+
+        function verifyPasscode() {
+            if (!pendingLoginUser) return;
+
+            const userData = getUserData(pendingLoginUser);
+            if (!userData) {
+                showToast('User not found');
+                closePasscodeModal();
+                return;
+            }
+
+            const enteredPasscode = getPasscodeValue('login');
+
+            if (enteredPasscode === userData.passcode) {
+                const usernameToLogin = pendingLoginUser;
+                closePasscodeModal();
+                loginUser(usernameToLogin);
+            } else {
+                document.getElementById('loginPasscodeError').textContent = 'Wrong passcode';
+                shakePasscodeInputs('login');
+            }
+        }
+
+        function loginUser(username) {
+            const userData = getUserData(username);
+            if (!userData) {
+                showToast('User not found');
+                return;
+            }
+
+            currentUser = username;
+            appState = userData;
+
+            // Update streak
+            updateStreak();
+
+            // Show main app
+            document.getElementById('onboardingScreen').classList.remove('active');
+            document.getElementById('homeScreen').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'flex';
+
+            renderHome();
+            renderProfile();
+        }
+
+        function switchUser() {
+            // Save current user data
+            if (currentUser && appState) {
+                saveUserData(currentUser, appState);
+            }
+
+            // Reset and show onboarding
+            currentUser = null;
+            appState = null;
+
+            document.getElementById('bottomNav').style.display = 'none';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('onboardingScreen').classList.add('active');
+
+            // Reset form
+            document.getElementById('usernameInput').value = '';
+            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            document.querySelector('.avatar-option').classList.add('selected');
+            selectedAvatar = '😊';
+
+            // Clear passcode inputs
+            clearPasscodeInputs('create');
+            clearPasscodeInputs('confirm');
+            document.getElementById('passcodeError').textContent = '';
+
+            checkExistingUsers();
+        }
+
+        function showDeleteModal(username) {
+            userToDelete = username;
+            document.getElementById('deleteModalText').textContent =
+                `This will permanently delete "${username}" and all their progress.`;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            userToDelete = null;
+        }
+
+        function confirmDeleteUser() {
+            if (!userToDelete) return;
+
+            // Remove from users list
+            let users = getUsers();
+            users = users.filter(u => u !== userToDelete);
+            saveUsers(users);
+
+            // Delete user data
+            deleteUserData(userToDelete);
+
+            closeDeleteModal();
+            showToast('User deleted');
+
+            // Refresh user list
+            checkExistingUsers();
+        }
+
+        // ==================== STREAK ====================
+        function updateStreak() {
+            if (!appState) return;
+
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+            if (appState.lastStudyDate === today) {
+                // Already studied today
+            } else if (appState.lastStudyDate === yesterday) {
+                // Continue streak on next study
+            } else if (appState.lastStudyDate && appState.lastStudyDate !== today) {
+                appState.streak = 0;
+            }
+            saveUserData(currentUser, appState);
+        }
+
+        function recordStudy() {
+            if (!appState) return;
+
+            const today = new Date().toDateString();
+            if (appState.lastStudyDate !== today) {
+                if (appState.lastStudyDate === new Date(Date.now() - 86400000).toDateString()) {
+                    appState.streak++;
+                } else {
+                    appState.streak = 1;
+                }
+                appState.lastStudyDate = today;
+
+                if (appState.streak >= 7) {
+                    unlockAchievement('streak-7');
+                }
+            }
+            saveUserData(currentUser, appState);
+        }
+
+        // ==================== NAVIGATION ====================
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.closest('.nav-item')?.classList.add('active');
+
+            if (screenId === 'homeScreen') renderHome();
+            if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
+            if (screenId === 'profileScreen') renderProfile();
+        }
+
+        // ==================== HOME SCREEN ====================
+        function renderHome() {
+            if (!appState) return;
+
+            document.getElementById('homeAvatar').textContent = appState.avatar || '😊';
+            document.getElementById('homeUsername').textContent = appState.username;
+            document.getElementById('homePoints').textContent = appState.points;
+            document.getElementById('homeStreak').textContent = appState.streak;
+            document.getElementById('homeLessons').textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
+
+            // Calculate lessons completed today
+            const today = new Date().toDateString();
+            const todayLessons = (appState.lessonHistory || []).filter(h => {
+                return new Date(h.date).toDateString() === today;
+            }).length;
+            document.getElementById('homeToday').textContent = todayLessons;
+
+            // Update difficulty tab counts
+            updateDifficultyCounts();
+
+            // Get lesson based on filter
+            const displayLesson = getNextLessonForDifficulty(selectedDifficultyFilter);
+            const lessonStartCard = document.getElementById('lessonStartCard');
+
+            // Check if all lessons in selected difficulty are complete
+            const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
+            const completedInRange = (appState.lessonHistory || []).filter(h =>
+                h.lessonNum >= range.start && h.lessonNum < range.end
+            ).length;
+            const totalInRange = range.end - range.start;
+            const allCompleteInRange = completedInRange >= totalInRange;
+
+            if (allCompleteInRange) {
+                // All lessons in this difficulty completed
+                const diff = getDifficultyLevel(range.start);
+                lessonStartCard.innerHTML = `
+                    <div class="all-complete-icon">✅</div>
+                    <div class="all-complete-title">${diff.name} Complete!</div>
+                    <div class="all-complete-subtitle">All ${totalInRange} lessons done. Practice again?</div>
+                    <button class="primary-btn start-lesson-btn" onclick="startLesson(${range.start})" style="margin-top: 16px; background: white; color: ${diff.color};">
+                        🔄 Practice Again
+                    </button>
+                `;
+                lessonStartCard.style.background = `linear-gradient(135deg, ${diff.color}, ${diff.color}dd)`;
+            } else {
+                // Get difficulty level
+                const difficulty = getDifficultyLevel(displayLesson);
+                const difficultyColors = {
+                    'Basic': 'linear-gradient(135deg, #58cc02, #4CAF50)',
+                    'Intermediate': 'linear-gradient(135deg, #1cb0f6, #0984e3)',
+                    'Upper-Intermediate': 'linear-gradient(135deg, #ff9600, #f39c12)',
+                    'Advanced': 'linear-gradient(135deg, #ce82ff, #9b59b6)'
+                };
+
+                lessonStartCard.style.background = difficultyColors[difficulty.name];
+
+                // Show preview of words in this lesson
+                const startIdx = displayLesson * WORDS_PER_LESSON;
+                const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
+                const previewWords = lessonWords.map(w => w.en).slice(0, 3).join(', ');
+
+                // Show progress within this difficulty level
+                const rangeTotal = range.end - range.start;
+                const lessonInRange = displayLesson - range.start + 1;
+
+                lessonStartCard.innerHTML = `
+                    <div class="lesson-difficulty">
+                        <span class="difficulty-badge">${difficulty.icon} ${difficulty.name}</span>
+                        <span class="difficulty-band">IELTS Band ${difficulty.band}</span>
+                    </div>
+                    <div class="lesson-info">
+                        <div class="lesson-number">Lesson ${lessonInRange} of ${rangeTotal}</div>
+                        <div class="lesson-words-preview">${previewWords}...</div>
+                    </div>
+                    <button class="primary-btn start-lesson-btn" onclick="startLesson(${displayLesson})">
+                        🚀 START LESSON
+                    </button>
+                `;
+            }
+
+            // Render lesson history
+            renderLessonHistory();
+        }
+
+        let currentHistoryTab = 'history';
+
+        function switchHistoryTab(tab) {
+            currentHistoryTab = tab;
+            document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.history-tab').classList.add('active');
+
+            const historyContainer = document.getElementById('lessonHistory');
+            const mistakesContainer = document.getElementById('mistakesContainer');
+
+            if (tab === 'history') {
+                historyContainer.style.display = 'flex';
+                mistakesContainer.classList.remove('show');
+            } else {
+                historyContainer.style.display = 'none';
+                mistakesContainer.classList.add('show');
+                renderMistakes();
+            }
+        }
+
+        function renderLessonHistory() {
+            const historyContainer = document.getElementById('lessonHistory');
+            let history = appState.lessonHistory || [];
+
+            // Filter by selected difficulty
+            const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
+            history = history.filter(h => h.lessonNum >= range.start && h.lessonNum < range.end);
+
+            // Update tab counts
+            document.getElementById('historyCount').textContent = history.length;
+            const mistakes = appState.mistakes || [];
+            document.getElementById('mistakesCount').textContent = mistakes.length;
+
+            if (history.length === 0) {
+                const filterName = selectedDifficultyFilter.charAt(0).toUpperCase() + selectedDifficultyFilter.slice(1);
+                historyContainer.innerHTML = `<div class="empty-history">No ${filterName} lessons completed yet</div>`;
+                return;
+            }
+
+            // Show last 15 lessons, most recent first
+            const recentHistory = history.slice(-15).reverse();
+
+            let html = '<div class="history-table">';
+            recentHistory.forEach((item, index) => {
+                const startIdx = item.lessonNum * WORDS_PER_LESSON;
+                const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
+                const wordTags = lessonWords.map(w => `<span class="history-word-tag" onclick="event.stopPropagation(); speakWord('${w.en.replace(/'/g, "\\'")}')">${w.en} 🔊</span>`).join('');
+                const isPerfect = item.accuracy === 100;
+
+                html += `
+                <div class="history-row" onclick="toggleHistoryDetail(${index})">
+                    <div class="history-lesson-num">${item.lessonNum + 1}</div>
+                    <div class="history-info">
+                        <div class="history-title">Lesson ${item.lessonNum + 1}</div>
+                        <div class="history-date">${formatDate(item.date)}</div>
+                    </div>
+                    <div class="history-stats">
+                        <div class="history-points">+${item.points}</div>
+                        <div class="history-accuracy${isPerfect ? ' perfect' : ''}">${item.accuracy}%</div>
+                    </div>
+                    <div class="history-expand-icon">▼</div>
+                </div>
+                <div class="history-detail" id="historyDetail${index}">
+                    <div class="history-words-label">Words in this lesson:</div>
+                    <div class="history-words-list">${wordTags}</div>
+                    <button class="relearn-btn" onclick="event.stopPropagation(); relearnLesson(${item.lessonNum})">
+                        📖 Learn Again
+                    </button>
+                </div>
+                `;
+            });
+            html += '</div>';
+
+            historyContainer.innerHTML = html;
+        }
+
+        function toggleHistoryDetail(index) {
+            const detail = document.getElementById(`historyDetail${index}`);
+            const row = detail.previousElementSibling;
+
+            if (detail.classList.contains('show')) {
+                detail.classList.remove('show');
+                row.classList.remove('expanded');
+            } else {
+                // Close all other details
+                document.querySelectorAll('.history-detail.show').forEach(d => {
+                    d.classList.remove('show');
+                    d.previousElementSibling.classList.remove('expanded');
+                });
+                detail.classList.add('show');
+                row.classList.add('expanded');
+            }
+        }
+
+        function renderMistakes() {
+            const container = document.getElementById('mistakesContainer');
+            const mistakes = appState.mistakes || [];
+
+            if (mistakes.length === 0) {
+                container.innerHTML = '<div class="empty-history">Great job! No mistakes to review 🎉</div>';
+                return;
+            }
+
+            // Sort by count (most mistakes first)
+            const sortedMistakes = [...mistakes].sort((a, b) => b.count - a.count);
+
+            let html = sortedMistakes.map(m => {
+                const word = ieltsVocabulary.find(w => w.en === m.word);
+                if (!word) return '';
+                return `
+                <div class="mistake-word-card" onclick="speakWord('${word.en.replace(/'/g, "\\'")}')">
+                    <div class="mistake-word-header">
+                        <span class="mistake-word-en">${word.emoji || ''} ${word.en} <span class="speak-icon">🔊</span></span>
+                        <span class="mistake-count">${m.count}x wrong</span>
+                    </div>
+                    <div class="mistake-word-vi">${word.vi}</div>
+                    <div class="mistake-word-ipa">${word.ipa}</div>
+                </div>
+                `;
+            }).join('');
+
+            if (sortedMistakes.length >= 5) {
+                html += `<button class="practice-mistakes-btn" onclick="practiceMistakes()">🔄 Practice These Words</button>`;
+            }
+            html += `<button class="clear-mistakes-btn" onclick="clearMistakes()">Clear All Mistakes</button>`;
+
+            container.innerHTML = html;
+        }
+
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+
+                // Try to use a good English voice
+                const voices = window.speechSynthesis.getVoices();
+                const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
+                                     voices.find(v => v.lang.startsWith('en-US')) ||
+                                     voices.find(v => v.lang.startsWith('en'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast('Speech not supported');
+            }
+        }
+
+        // Load voices when available
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function practiceMistakes() {
+            const mistakes = appState.mistakes || [];
+            if (mistakes.length < 5) {
+                showToast('Need at least 5 mistakes to practice');
+                return;
+            }
+
+            // Get words for practice (max 5)
+            const practiceWords = mistakes.slice(0, 5).map(m => {
+                return ieltsVocabulary.find(w => w.en === m.word);
+            }).filter(w => w);
+
+            if (practiceWords.length < 5) {
+                showToast('Not enough valid words to practice');
+                return;
+            }
+
+            // Start a special practice session
+            lessonState = {
+                lessonNumber: -1, // Special marker for practice session
+                words: practiceWords,
+                currentRound: 0,
+                totalRounds: 1,
+                roundWords: practiceWords,
+                selectedLeft: null,
+                selectedRight: null,
+                matchedPairs: 0,
+                correctInLesson: 0,
+                wrongInLesson: 0,
+                lessonPoints: 0,
+                isPracticeSession: true
+            };
+
+            document.getElementById('bottomNav').style.display = 'none';
+            document.getElementById('lessonScreen').classList.add('active');
+            document.getElementById('homeScreen').classList.remove('active');
+
+            renderMatchingRound();
+        }
+
+        function clearMistakes() {
+            if (confirm('Clear all mistakes from review list?')) {
+                appState.mistakes = [];
+                saveUserData(currentUser, appState);
+                renderMistakes();
+                document.getElementById('mistakesCount').textContent = '0';
+                showToast('Mistakes cleared!');
+            }
+        }
+
+        function relearnLesson(lessonNum) {
+            startLesson(lessonNum);
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                appState.currentLesson = 0;
+                appState.lessonHistory = [];
+                appState.points = 0;
+                appState.lessonsCompleted = 0;
+                appState.achievements = [];
+                appState.mistakes = [];
+                saveUserData(currentUser, appState);
+                renderHome();
+                renderProfile();
+                showToast('Progress reset!');
+            }
+        }
+
+        function getDifficultyLevel(lessonNum) {
+            // Dynamic calculation based on total lessons
+            // Split into 4 equal parts
+            const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
+
+            if (lessonNum < lessonsPerLevel) {
+                return { name: 'Basic', key: 'basic', icon: '🌱', band: '5-6', color: '#58cc02' };
+            } else if (lessonNum < lessonsPerLevel * 2) {
+                return { name: 'Intermediate', key: 'intermediate', icon: '🌿', band: '6-7', color: '#1cb0f6' };
+            } else if (lessonNum < lessonsPerLevel * 3) {
+                return { name: 'Upper-Intermediate', key: 'upper', icon: '🌳', band: '7-8', color: '#ff9600' };
+            } else {
+                return { name: 'Advanced', key: 'advanced', icon: '⭐', band: '8-9', color: '#ce82ff' };
+            }
+        }
+
+        function getLessonRangeForDifficulty(difficultyKey) {
+            const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
+            switch (difficultyKey) {
+                case 'basic': return { start: 0, end: lessonsPerLevel };
+                case 'intermediate': return { start: lessonsPerLevel, end: lessonsPerLevel * 2 };
+                case 'upper': return { start: lessonsPerLevel * 2, end: lessonsPerLevel * 3 };
+                case 'advanced': return { start: lessonsPerLevel * 3, end: TOTAL_LESSONS };
+                default: return { start: 0, end: TOTAL_LESSONS };
+            }
+        }
+
+        function getNextLessonForDifficulty(difficultyKey) {
+            const range = getLessonRangeForDifficulty(difficultyKey);
+
+            // Find the first incomplete lesson in this range
+            for (let i = range.start; i < range.end; i++) {
+                const completed = appState.lessonHistory?.some(h => h.lessonNum === i);
+                if (!completed) {
+                    return i;
+                }
+            }
+
+            // All lessons in this range completed, return first lesson of range
+            return range.start;
+        }
+
+        function filterByDifficulty(level) {
+            selectedDifficultyFilter = level;
+
+            // Update tab active states
+            document.querySelectorAll('.difficulty-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.difficulty-tab[data-level="${level}"]`).classList.add('active');
+
+            // Re-render home with filtered content
+            renderHome();
+        }
+
+        function updateDifficultyCounts() {
+            const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
+
+            document.getElementById('countBasic').textContent = lessonsPerLevel;
+            document.getElementById('countIntermediate').textContent = lessonsPerLevel;
+            document.getElementById('countUpper').textContent = lessonsPerLevel;
+            document.getElementById('countAdvanced').textContent = TOTAL_LESSONS - (lessonsPerLevel * 3);
+        }
+
+        // ==================== LESSON LOGIC ====================
+        function startNextLesson() {
+            const lessonToStart = getNextLessonForDifficulty(selectedDifficultyFilter);
+            startLesson(lessonToStart);
+        }
+
+        function startLesson(lessonNum) {
+            const startIdx = lessonNum * WORDS_PER_LESSON;
+            const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
+
+            // If not enough words, wrap around (shouldn't happen with 1000 words)
+            if (lessonWords.length < WORDS_PER_LESSON) {
+                const remaining = WORDS_PER_LESSON - lessonWords.length;
+                lessonWords.push(...ieltsVocabulary.slice(0, remaining));
+            }
+
+            lessonState = {
+                lessonNumber: lessonNum,
+                words: lessonWords,
+                currentRound: 0,
+                totalRounds: 1,
+                roundWords: lessonWords,
+                selectedLeft: null,
+                selectedRight: null,
+                matchedPairs: 0,
+                correctInLesson: 0,
+                wrongInLesson: 0,
+                lessonPoints: 0
+            };
+
+            document.getElementById('bottomNav').style.display = 'none';
+            document.getElementById('lessonScreen').classList.add('active');
+            document.getElementById('homeScreen').classList.remove('active');
+
+            renderMatchingRound();
+        }
+
+        function renderMatchingRound() {
+            const words = lessonState.roundWords;
+
+            const progress = (lessonState.matchedPairs / words.length) * 100;
+            document.getElementById('lessonProgress').style.width = `${progress}%`;
+            document.getElementById('lessonPointsDisplay').textContent = lessonState.lessonPoints;
+
+            const leftItems = shuffleArray([...words]);
+            const rightItems = shuffleArray([...words]);
+
+            const leftCol = document.getElementById('leftColumn');
+            const rightCol = document.getElementById('rightColumn');
+
+            leftCol.innerHTML = '';
+            rightCol.innerHTML = '';
+
+            leftItems.forEach((word) => {
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.dataset.word = word.en;
+                card.dataset.side = 'left';
+                card.innerHTML = `
+                    <span class="card-emoji">${word.emoji || '📝'}</span>
+                    <span class="card-vi">${word.vi}</span>
+                `;
+                card.onclick = () => selectCard(card, 'left', word.en);
+                leftCol.appendChild(card);
+            });
+
+            rightItems.forEach((word) => {
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.dataset.word = word.en;
+                card.dataset.side = 'right';
+                card.innerHTML = `
+                    <span class="card-speaker" onclick="event.stopPropagation(); speakWord('${word.en}')">🔊</span>
+                    <span class="card-en">${word.en}</span>
+                    <span class="card-ipa">${word.ipa}</span>
+                `;
+                card.onclick = () => {
+                    speakWord(word.en); // Speak word when selecting
+                    selectCard(card, 'right', word.en);
+                };
+                rightCol.appendChild(card);
+            });
+
+            lessonState.selectedLeft = null;
+            lessonState.selectedRight = null;
+        }
+
+        function selectCard(card, side, word) {
+            if (card.classList.contains('matched')) return;
+
+            const sameColumn = document.querySelectorAll(`.match-card[data-side="${side}"]`);
+            sameColumn.forEach(c => c.classList.remove('selected'));
+
+            card.classList.add('selected');
+
+            if (side === 'left') {
+                lessonState.selectedLeft = { card, word };
+            } else {
+                lessonState.selectedRight = { card, word };
+            }
+
+            if (lessonState.selectedLeft && lessonState.selectedRight) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const left = lessonState.selectedLeft;
+            const right = lessonState.selectedRight;
+
+            appState.totalAnswers++;
+
+            if (left.word === right.word) {
+                left.card.classList.remove('selected');
+                right.card.classList.remove('selected');
+                left.card.classList.add('matched');
+                right.card.classList.add('matched');
+
+                lessonState.matchedPairs++;
+                lessonState.correctInLesson++;
+                appState.totalCorrect++;
+
+                // Reduce mistake count when correctly matched
+                reduceMistake(left.word);
+
+                // Points based on difficulty level
+                const difficulty = getDifficultyLevel(lessonState.lessonNumber);
+                const pointMultipliers = {
+                    'Basic': 1,
+                    'Intermediate': 1.5,
+                    'Upper-Intermediate': 2,
+                    'Advanced': 2.5
+                };
+                const basePoints = 10;
+                const points = Math.round(basePoints * (pointMultipliers[difficulty.name] || 1));
+                lessonState.lessonPoints += points;
+                document.getElementById('lessonPointsDisplay').textContent = lessonState.lessonPoints;
+
+                const progress = (lessonState.matchedPairs / lessonState.roundWords.length) * 100;
+                document.getElementById('lessonProgress').style.width = `${progress}%`;
+
+                if (lessonState.matchedPairs >= lessonState.roundWords.length) {
+                    setTimeout(() => {
+                        completeLesson();
+                    }, 500);
+                }
+            } else {
+                left.card.classList.add('wrong');
+                right.card.classList.add('wrong');
+                lessonState.wrongInLesson++;
+
+                // Track both words as mistakes
+                trackMistake(left.word);
+                trackMistake(right.word);
+
+                setTimeout(() => {
+                    left.card.classList.remove('wrong', 'selected');
+                    right.card.classList.remove('wrong', 'selected');
+                }, 600);
+            }
+
+            lessonState.selectedLeft = null;
+            lessonState.selectedRight = null;
+            saveUserData(currentUser, appState);
+        }
+
+        function trackMistake(word) {
+            if (!appState.mistakes) appState.mistakes = [];
+
+            const existing = appState.mistakes.find(m => m.word === word);
+            if (existing) {
+                existing.count++;
+                existing.lastMistake = Date.now();
+            } else {
+                appState.mistakes.push({
+                    word: word,
+                    count: 1,
+                    firstMistake: Date.now(),
+                    lastMistake: Date.now()
+                });
+            }
+        }
+
+        function reduceMistake(word) {
+            if (!appState.mistakes) return;
+
+            const index = appState.mistakes.findIndex(m => m.word === word);
+            if (index !== -1) {
+                appState.mistakes[index].count--;
+                if (appState.mistakes[index].count <= 0) {
+                    appState.mistakes.splice(index, 1);
+                }
+            }
+        }
+
+        function completeLesson() {
+            recordStudy();
+
+            const accuracy = Math.round((lessonState.correctInLesson / (lessonState.correctInLesson + lessonState.wrongInLesson)) * 100);
+
+            // Handle practice session differently
+            if (lessonState.isPracticeSession) {
+                appState.points += lessonState.lessonPoints;
+                saveUserData(currentUser, appState);
+
+                document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
+                document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
+
+                if (accuracy === 100) {
+                    document.getElementById('completeSubtitle').textContent = 'Perfect review!';
+                    createConfetti();
+                } else {
+                    document.getElementById('completeSubtitle').textContent = 'Mistakes reviewed!';
+                }
+
+                document.getElementById('lessonComplete').classList.add('active');
+                return;
+            }
+
+            // Check if this lesson was already completed before
+            if (!appState.lessonHistory) appState.lessonHistory = [];
+            const alreadyCompleted = appState.lessonHistory.some(h => h.lessonNum === lessonState.lessonNumber);
+
+            // Add to lesson history
+            appState.lessonHistory.push({
+                lessonNum: lessonState.lessonNumber,
+                date: Date.now(),
+                points: lessonState.lessonPoints,
+                accuracy: accuracy
+            });
+
+            // Advance currentLesson only if this is the next sequential lesson
+            if (lessonState.lessonNumber === (appState.currentLesson || 0)) {
+                appState.currentLesson = lessonState.lessonNumber + 1;
+            }
+
+            appState.points += lessonState.lessonPoints;
+
+            // Only increment lessonsCompleted if this was a new lesson (not a re-learn)
+            if (!alreadyCompleted) {
+                appState.lessonsCompleted++;
+            }
+
+            // Check achievements
+            if (appState.lessonsCompleted === 1) {
+                unlockAchievement('first-lesson');
+            }
+            if (appState.lessonsCompleted >= 10) {
+                unlockAchievement('lessons-10');
+            }
+            if (appState.lessonsCompleted >= 50) {
+                unlockAchievement('lessons-50');
+            }
+            if (appState.lessonsCompleted >= 100) {
+                unlockAchievement('lessons-100');
+            }
+            if (appState.points >= 100) {
+                unlockAchievement('points-100');
+            }
+            if (appState.points >= 1000) {
+                unlockAchievement('points-1000');
+            }
+            if (lessonState.wrongInLesson === 0) {
+                unlockAchievement('perfect');
+            }
+            if (appState.currentLesson >= TOTAL_LESSONS) {
+                unlockAchievement('all-lessons');
+            }
+
+            saveUserData(currentUser, appState);
+
+            // Show difficulty bonus info
+            const difficulty = getDifficultyLevel(lessonState.lessonNumber);
+            const multipliers = { 'Basic': '1x', 'Intermediate': '1.5x', 'Upper-Intermediate': '2x', 'Advanced': '2.5x' };
+            const bonusText = difficulty.name !== 'Basic' ? ` (${multipliers[difficulty.name]} ${difficulty.name})` : '';
+
+            document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
+            document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
+
+            if (accuracy === 100) {
+                document.getElementById('completeSubtitle').textContent = `Perfect score!${bonusText}`;
+                createConfetti();
+            } else if (accuracy >= 80) {
+                document.getElementById('completeSubtitle').textContent = `Great job!${bonusText}`;
+            } else {
+                document.getElementById('completeSubtitle').textContent = `Keep practicing!${bonusText}`;
+            }
+
+            document.getElementById('lessonComplete').classList.add('active');
+        }
+
+        function exitLesson() {
+            document.getElementById('bottomNav').style.display = 'flex';
+            document.getElementById('lessonScreen').classList.remove('active');
+            document.getElementById('homeScreen').classList.add('active');
+            renderHome();
+        }
+
+        function closeLessonComplete() {
+            document.getElementById('lessonComplete').classList.remove('active');
+            exitLesson();
+        }
+
+        // ==================== SPEED CHALLENGE ====================
+        const SPEED_TIME_LIMIT = 45000; // 45 seconds
+        const SPEED_PENALTY_TIME = 3000; // 3 second penalty
+        const SPEED_QUESTIONS_PER_GAME = 10;
+
+        let speedState = {
+            currentVerbs: [],
+            currentIndex: 0,
+            score: 0,
+            streak: 0,
+            bestStreakInGame: 0,
+            correctCount: 0,
+            timer: null,
+            timeLeft: SPEED_TIME_LIMIT,
+            isAnswering: false,
+            level: 0
+        };
+
+        function renderSpeedChallenge() {
+            // Update leaderboard from appState
+            if (appState.speedChallenge) {
+                document.getElementById('bestScore').textContent = appState.speedChallenge.bestScore || 0;
+                document.getElementById('bestStreak').textContent = appState.speedChallenge.bestStreak || 0;
+                document.getElementById('totalPlayed').textContent = appState.speedChallenge.totalGames || 0;
+            }
+        }
+
+        function startSpeedChallenge(level) {
+            speedState.level = level;
+            speedState.currentIndex = 0;
+            speedState.score = 0;
+            speedState.streak = 0;
+            speedState.bestStreakInGame = 0;
+            speedState.correctCount = 0;
+
+            // Filter verbs by level (0 = all)
+            let verbs = level === 0
+                ? [...irregularVerbs]
+                : irregularVerbs.filter(v => v.level === level);
+
+            // Shuffle and pick questions
+            speedState.currentVerbs = shuffleArray(verbs).slice(0, SPEED_QUESTIONS_PER_GAME);
+
+            // Show game overlay
+            document.getElementById('speedGameOverlay').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'none';
+
+            // Start first question
+            showSpeedQuestion();
+        }
+
+        function showSpeedQuestion() {
+            const verb = speedState.currentVerbs[speedState.currentIndex];
+
+            // Update UI
+            document.getElementById('verbV1').textContent = verb.v1;
+            document.getElementById('verbMeaning').textContent = verb.vi;
+            document.getElementById('speedProgress').textContent =
+                `${speedState.currentIndex + 1}/${speedState.currentVerbs.length}`;
+            document.getElementById('speedScore').textContent = speedState.score;
+            document.getElementById('speedStreak').textContent = speedState.streak;
+
+            // Clear inputs
+            const inputV2 = document.getElementById('inputV2');
+            const inputV3 = document.getElementById('inputV3');
+            inputV2.value = '';
+            inputV3.value = '';
+            inputV2.className = '';
+            inputV3.className = '';
+            inputV2.disabled = false;
+            inputV3.disabled = false;
+            inputV2.focus();
+
+            // Clear feedback
+            document.getElementById('speedFeedback').innerHTML = '';
+            document.getElementById('speedFeedback').className = 'speed-feedback';
+
+            // Enable submit button
+            document.getElementById('speedSubmitBtn').disabled = false;
+
+            // Start timer
+            speedState.timeLeft = SPEED_TIME_LIMIT;
+            speedState.isAnswering = true;
+            updateTimerBar();
+
+            if (speedState.timer) clearInterval(speedState.timer);
+            speedState.timer = setInterval(() => {
+                speedState.timeLeft -= 100;
+                updateTimerBar();
+
+                if (speedState.timeLeft <= 0) {
+                    handleTimeUp();
+                }
+            }, 100);
+        }
+
+        function updateTimerBar() {
+            const percent = (speedState.timeLeft / SPEED_TIME_LIMIT) * 100;
+            const seconds = Math.ceil(speedState.timeLeft / 1000);
+
+            document.getElementById('speedTimerFill').style.width = `${percent}%`;
+
+            const clockEl = document.getElementById('speedTimerClock');
+            clockEl.textContent = seconds;
+
+            // Change color based on time remaining
+            clockEl.classList.remove('warning', 'danger');
+            if (seconds <= 10) {
+                clockEl.classList.add('danger');
+            } else if (seconds <= 20) {
+                clockEl.classList.add('warning');
+            }
+        }
+
+        function handleTimeUp() {
+            if (!speedState.isAnswering) return;
+            speedState.isAnswering = false;
+            clearInterval(speedState.timer);
+
+            const verb = speedState.currentVerbs[speedState.currentIndex];
+
+            // Show correct answer
+            document.getElementById('inputV2').classList.add('wrong');
+            document.getElementById('inputV3').classList.add('wrong');
+            document.getElementById('inputV2').disabled = true;
+            document.getElementById('inputV3').disabled = true;
+            document.getElementById('speedSubmitBtn').disabled = true;
+
+            const feedback = document.getElementById('speedFeedback');
+            feedback.className = 'speed-feedback wrong';
+            feedback.innerHTML = `
+                ⏰ Time's up!
+                <div class="correct-answer">
+                    ${verb.v1} → ${verb.v2} → ${verb.v3}
+                </div>
+            `;
+
+            speedState.streak = 0;
+            document.getElementById('speedStreak').textContent = speedState.streak;
+
+            // Add penalty delay then next question
+            setTimeout(() => {
+                nextSpeedQuestion();
+            }, SPEED_PENALTY_TIME);
+        }
+
+        function submitSpeedAnswer() {
+            if (!speedState.isAnswering) return;
+            speedState.isAnswering = false;
+            clearInterval(speedState.timer);
+
+            const verb = speedState.currentVerbs[speedState.currentIndex];
+            const inputV2 = document.getElementById('inputV2');
+            const inputV3 = document.getElementById('inputV3');
+            const userV2 = inputV2.value.trim().toLowerCase();
+            const userV3 = inputV3.value.trim().toLowerCase();
+
+            // Check answers (handle multiple correct forms like "was/were")
+            const correctV2 = verb.v2.toLowerCase().split('/');
+            const correctV3 = verb.v3.toLowerCase().split('/');
+
+            const isV2Correct = correctV2.some(v => v.trim() === userV2);
+            const isV3Correct = correctV3.some(v => v.trim() === userV3);
+
+            inputV2.disabled = true;
+            inputV3.disabled = true;
+            document.getElementById('speedSubmitBtn').disabled = true;
+
+            const feedback = document.getElementById('speedFeedback');
+
+            if (isV2Correct && isV3Correct) {
+                // Calculate points with speed bonus
+                const timeUsed = SPEED_TIME_LIMIT - speedState.timeLeft;
+                const speedBonus = Math.floor((speedState.timeLeft / SPEED_TIME_LIMIT) * 50);
+                const basePoints = 100;
+                const totalPoints = basePoints + speedBonus;
+
+                speedState.score += totalPoints;
+                speedState.streak++;
+                speedState.correctCount++;
+                if (speedState.streak > speedState.bestStreakInGame) {
+                    speedState.bestStreakInGame = speedState.streak;
+                }
+
+                inputV2.classList.add('correct');
+                inputV3.classList.add('correct');
+
+                feedback.className = 'speed-feedback correct';
+                feedback.innerHTML = `
+                    ✅ Correct! +${totalPoints}
+                    <div class="correct-answer">Speed bonus: +${speedBonus}</div>
+                `;
+
+                document.getElementById('speedScore').textContent = speedState.score;
+                document.getElementById('speedStreak').textContent = speedState.streak;
+
+                setTimeout(() => {
+                    nextSpeedQuestion();
+                }, 1000);
+            } else {
+                inputV2.classList.add(isV2Correct ? 'correct' : 'wrong');
+                inputV3.classList.add(isV3Correct ? 'correct' : 'wrong');
+
+                feedback.className = 'speed-feedback wrong';
+                feedback.innerHTML = `
+                    ❌ Wrong!
+                    <div class="correct-answer">
+                        ${verb.v1} → ${verb.v2} → ${verb.v3}
+                    </div>
+                `;
+
+                speedState.streak = 0;
+                document.getElementById('speedStreak').textContent = speedState.streak;
+
+                setTimeout(() => {
+                    nextSpeedQuestion();
+                }, SPEED_PENALTY_TIME);
+            }
+        }
+
+        function nextSpeedQuestion() {
+            speedState.currentIndex++;
+
+            if (speedState.currentIndex >= speedState.currentVerbs.length) {
+                completeSpeedChallenge();
+            } else {
+                showSpeedQuestion();
+            }
+        }
+
+        function completeSpeedChallenge() {
+            clearInterval(speedState.timer);
+
+            // Update stats
+            document.getElementById('finalScore').textContent = speedState.score;
+            document.getElementById('finalCorrect').textContent =
+                `${speedState.correctCount}/${speedState.currentVerbs.length}`;
+            document.getElementById('finalBestStreak').textContent = speedState.bestStreakInGame;
+
+            // Check for new record
+            if (!appState.speedChallenge) {
+                appState.speedChallenge = {
+                    bestScore: 0,
+                    bestStreak: 0,
+                    totalGames: 0
+                };
+            }
+
+            const isNewRecord = speedState.score > appState.speedChallenge.bestScore;
+
+            if (isNewRecord) {
+                appState.speedChallenge.bestScore = speedState.score;
+                document.getElementById('newRecordBadge').style.display = 'block';
+            } else {
+                document.getElementById('newRecordBadge').style.display = 'none';
+            }
+
+            if (speedState.bestStreakInGame > appState.speedChallenge.bestStreak) {
+                appState.speedChallenge.bestStreak = speedState.bestStreakInGame;
+            }
+
+            appState.speedChallenge.totalGames++;
+            appState.points += speedState.score;
+            saveUserData(currentUser, appState);
+
+            // Show complete overlay
+            document.getElementById('speedGameOverlay').classList.remove('active');
+            document.getElementById('speedCompleteOverlay').classList.add('active');
+        }
+
+        function closeSpeedComplete() {
+            document.getElementById('speedCompleteOverlay').classList.remove('active');
+            document.getElementById('bottomNav').style.display = 'flex';
+            renderSpeedChallenge();
+        }
+
+        function exitSpeedGame() {
+            clearInterval(speedState.timer);
+            document.getElementById('speedGameOverlay').classList.remove('active');
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+
+        // Handle Enter key in inputs
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && speedState.isAnswering) {
+                submitSpeedAnswer();
+            }
+        });
+
+        // ==================== PROFILE ====================
+        function renderProfile() {
+            if (!appState) return;
+
+            document.getElementById('profileAvatar').textContent = appState.avatar || '😊';
+            document.getElementById('profileName').textContent = appState.username;
+            document.getElementById('profilePoints').textContent = appState.points;
+            document.getElementById('profileStreak').textContent = appState.streak;
+            document.getElementById('profileLessons').textContent = appState.lessonsCompleted;
+
+            const accuracy = appState.totalAnswers > 0
+                ? Math.round((appState.totalCorrect / appState.totalAnswers) * 100)
+                : 0;
+            document.getElementById('profileAccuracy').textContent = `${accuracy}%`;
+
+            let rank = 'Beginner';
+            if (appState.points >= 5000) rank = 'Master';
+            else if (appState.points >= 2000) rank = 'Advanced';
+            else if (appState.points >= 1000) rank = 'Intermediate';
+            else if (appState.points >= 500) rank = 'Elementary';
+            document.getElementById('profileRank').textContent = rank;
+
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+            achievements.forEach(a => {
+                const unlocked = appState.achievements.includes(a.id);
+                const div = document.createElement('div');
+                div.className = `achievement ${unlocked ? '' : 'locked'}`;
+                div.innerHTML = `
+                    <div class="achievement-icon">${unlocked ? a.icon : '🔒'}</div>
+                    <div class="achievement-name">${a.name}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function unlockAchievement(id) {
+            if (!appState || appState.achievements.includes(id)) return;
+            appState.achievements.push(id);
+            saveUserData(currentUser, appState);
+
+            const achievement = achievements.find(a => a.id === id);
+            if (achievement) {
+                showToast(`${achievement.icon} ${achievement.name} unlocked!`);
+            }
+        }
+
+        // ==================== TEXT-TO-SPEECH ====================
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9; // Slightly slower for learning
+                utterance.pitch = 1;
+                utterance.volume = 1;
+
+                // Try to use a good English voice
+                const voices = window.speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice =>
+                    voice.lang.startsWith('en') && voice.name.includes('Female')
+                ) || voices.find(voice => voice.lang.startsWith('en-US'))
+                  || voices.find(voice => voice.lang.startsWith('en'));
+
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Load voices when available
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        // ==================== UTILITIES ====================
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 2500);
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                confetti.style.animationDuration = `${2 + Math.random() * 2}s`;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => container.innerHTML = '', 4000);
+        }
+
+        // ==================== PWA ====================
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'flashlingo-v3';
+                    self.addEventListener('install', (e) => {
+                        self.skipWaiting();
+                    });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+            }
+
+            const manifest = {
+                name: 'FlashLingo',
+                short_name: 'FlashLingo',
+                display: 'standalone',
+                background_color: '#ffffff',
+                theme_color: '#58cc02',
+                orientation: 'portrait',
+                icons: [{
+                    src: 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#58cc02"/><text x="96" y="120" font-family="Arial" font-size="80" font-weight="bold" fill="white" text-anchor="middle">F</text></svg>`),
+                    sizes: '192x192',
+                    type: 'image/svg+xml'
+                }]
+            };
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));
+            document.head.appendChild(link);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
