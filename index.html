@@ -19,26 +19,26 @@
 
     <style>
         :root {
-            --bg-primary: #fff9f0;
-            --bg-secondary: #fff3e0;
+            --bg-primary: #E8F8F9;
+            --bg-secondary: #D4F1F4;
             --bg-card: #ffffff;
-            --text-primary: #4a3728;
-            --text-secondary: #8b7355;
-            --border-color: #ffe0b2;
-            --accent-green: #4caf50;
-            --accent-green-dark: #388e3c;
-            --accent-blue: #42a5f5;
-            --accent-orange: #ff9800;
+            --text-primary: #1A3C40;
+            --text-secondary: #5A7D80;
+            --border-color: #80DEEA;
+            --accent-green: #26A69A;
+            --accent-green-dark: #00897B;
+            --accent-blue: #26C6DA;
+            --accent-orange: #FF7043;
             --accent-red: #ef5350;
-            --accent-purple: #ab47bc;
+            --accent-purple: #7E57C2;
             --accent-pink: #ec407a;
-            --accent-yellow: #ffeb3b;
-            --success: #66bb6a;
+            --accent-yellow: #FFD54F;
+            --success: #26A69A;
             --error: #ef5350;
-            --selected: #e3f2fd;
-            --selected-border: #42a5f5;
-            --matched: #c8e6c9;
-            --matched-border: #66bb6a;
+            --selected: #E0F7FA;
+            --selected-border: #26C6DA;
+            --matched: #B2DFDB;
+            --matched-border: #26A69A;
             --wrong: #ffcdd2;
             --wrong-border: #ef5350;
             --border-radius: 20px;
@@ -61,7 +61,7 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(180deg, #fff9f0 0%, #ffe8d6 100%);
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 50%, #FFFDE7 100%);
             color: var(--text-primary);
             line-height: 1.5;
             overscroll-behavior: none;
@@ -121,7 +121,7 @@
         .onboarding-logo h1 {
             font-size: 36px;
             font-weight: 800;
-            color: var(--accent-green);
+            color: #00ACC1;
         }
 
         .onboarding-logo p {
@@ -424,7 +424,7 @@
 
         .primary-btn {
             padding: 18px 36px;
-            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            background: linear-gradient(135deg, #26C6DA 0%, #00ACC1 100%);
             color: white;
             border: none;
             border-radius: 50px;
@@ -434,7 +434,7 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 6px 0 #2e7d32, 0 8px 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 6px 0 #00838F, 0 8px 20px rgba(0, 172, 193, 0.3);
             transition: all 0.2s ease;
         }
 
@@ -484,10 +484,10 @@
         /* ==================== BOTTOM NAV ==================== */
         .bottom-nav {
             display: flex;
-            background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
-            border-top: 3px solid #ffe082;
+            background: linear-gradient(180deg, #ffffff 0%, #E0F7FA 100%);
+            border-top: 3px solid #80DEEA;
             padding-bottom: var(--safe-area-bottom);
-            box-shadow: 0 -4px 16px rgba(255, 193, 7, 0.15);
+            box-shadow: 0 -4px 16px rgba(0, 188, 212, 0.12);
         }
 
         .nav-item {
@@ -496,11 +496,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px 0;
+            padding: 10px 0;
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             transition: color 0.2s ease;
             cursor: pointer;
@@ -508,17 +508,17 @@
         }
 
         .nav-item.active {
-            color: #ff9800;
+            color: #00ACC1;
         }
 
         .nav-item .icon {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 4px;
             transition: transform 0.2s ease;
         }
 
         .nav-item.active .icon {
-            transform: scale(1.15);
+            transform: scale(1.1);
         }
 
         /* ==================== HOME SCREEN ==================== */
@@ -544,7 +544,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            background: linear-gradient(135deg, #26C6DA, #00BCD4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -571,11 +571,12 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3);
             padding: 8px 14px;
             border-radius: 20px;
             font-weight: 700;
-            color: var(--accent-orange);
+            color: #FF7043;
+            border: 2px solid #FFE0B2;
         }
 
         .stats-row {
@@ -586,18 +587,38 @@
 
         .stat-card {
             flex: 1;
-            background: linear-gradient(135deg, #ffffff 0%, #fff8e1 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #E0F7FA 100%);
             border-radius: var(--border-radius-lg);
             padding: 18px;
             text-align: center;
-            border: 3px solid #ffe082;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+            border: 3px solid #80DEEA;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.15);
+        }
+
+        .stat-card:nth-child(1) {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-color: #FFD54F;
+            box-shadow: 0 4px 12px rgba(255, 213, 79, 0.25);
+        }
+
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, #FBE9E7 0%, #FFCCBC 100%);
+            border-color: #FF8A65;
+            box-shadow: 0 4px 12px rgba(255, 112, 67, 0.15);
         }
 
         .stat-value {
             font-size: 26px;
             font-weight: 800;
-            color: #ff9800;
+            color: #00838F;
+        }
+
+        .stat-card:nth-child(1) .stat-value {
+            color: #FF8F00;
+        }
+
+        .stat-card:nth-child(3) .stat-value {
+            color: #FF7043;
         }
 
         .stat-label {
@@ -645,19 +666,19 @@
         }
 
         .difficulty-tab[data-level="basic"].active {
-            background: linear-gradient(135deg, #58cc02, #4CAF50);
+            background: linear-gradient(135deg, #26A69A, #009688);
         }
 
         .difficulty-tab[data-level="intermediate"].active {
-            background: linear-gradient(135deg, #1cb0f6, #0984e3);
+            background: linear-gradient(135deg, #26C6DA, #00ACC1);
         }
 
         .difficulty-tab[data-level="upper"].active {
-            background: linear-gradient(135deg, #ff9600, #f39c12);
+            background: linear-gradient(135deg, #FF7043, #F4511E);
         }
 
         .difficulty-tab[data-level="advanced"].active {
-            background: linear-gradient(135deg, #ce82ff, #9b59b6);
+            background: linear-gradient(135deg, #7E57C2, #5E35B1);
         }
 
         .tab-count {
@@ -701,8 +722,8 @@
         }
 
         .category-card.completed {
-            border-color: var(--accent-green);
-            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+            border-color: #26A69A;
+            background: linear-gradient(135deg, #E0F2F1 0%, #ffffff 100%);
         }
 
         .category-icon {
@@ -760,7 +781,7 @@
 
         /* Lesson Start Card */
         .lesson-start-card {
-            background: linear-gradient(135deg, var(--accent-green), #4CAF50);
+            background: linear-gradient(135deg, #00ACC1, #26C6DA, #4DD0E1);
             border-radius: var(--border-radius);
             padding: 24px;
             margin-bottom: 24px;
@@ -804,14 +825,14 @@
 
         .start-lesson-btn {
             width: 100%;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-            color: #43a047;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.15), 0 6px 16px rgba(0,0,0,0.1);
-            border: 3px solid #e8f5e9;
+            background: linear-gradient(135deg, #ffffff 0%, #E0F7FA 100%);
+            color: #00838F;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.12), 0 6px 16px rgba(0, 188, 212, 0.2);
+            border: 3px solid #B2EBF2;
         }
 
         .lesson-start-card .start-lesson-btn {
-            color: #333;
+            color: #00695C;
             font-size: 16px;
         }
 
@@ -821,7 +842,7 @@
         }
 
         .start-lesson-btn::before {
-            content: '🚀 ';
+            content: '🏄 ';
         }
 
         /* History Tabs */
@@ -849,8 +870,8 @@
         }
 
         .history-tab.active {
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-            border-color: var(--accent-green);
+            background: linear-gradient(135deg, #00ACC1, #26C6DA);
+            border-color: #00ACC1;
             color: white;
         }
 
@@ -944,7 +965,7 @@
 
         .history-points {
             font-weight: 700;
-            color: var(--accent-orange);
+            color: #FF7043;
             font-size: 14px;
         }
 
@@ -957,8 +978,8 @@
         }
 
         .history-accuracy.perfect {
-            background: #c8e6c9;
-            color: var(--accent-green-dark);
+            background: #B2DFDB;
+            color: #00695C;
         }
 
         .history-expand-icon {
@@ -1361,7 +1382,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(180deg, #fff9c4 0%, #fff59d 50%, #ffee58 100%);
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 40%, #FFFDE7 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1396,7 +1417,7 @@
             font-size: 28px;
             font-weight: 800;
             margin-bottom: 8px;
-            color: var(--accent-green);
+            color: #00838F;
         }
 
         .complete-subtitle {
@@ -1418,7 +1439,7 @@
         .complete-stat-value {
             font-size: 36px;
             font-weight: 800;
-            color: #e65100;
+            color: #FF7043;
             text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
         }
 
@@ -1925,6 +1946,549 @@
             50% { transform: scale(1.05); }
         }
 
+        /* ==================== ESSAYS SCREEN ==================== */
+        .essays-screen {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .essays-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .essays-title {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .essays-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .essays-category {
+            margin-bottom: 20px;
+        }
+
+        .essays-category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .essays-category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .essays-category-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .essays-category-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .essay-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .essay-card:active {
+            transform: scale(0.98);
+            background: var(--bg-secondary);
+        }
+
+        .essay-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .essay-card-title {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .essay-card-school {
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 2px 8px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .essay-card-author {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .essay-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .essay-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .essay-level-progress {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .essay-level-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        .essay-level-progress-text {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .essay-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .essay-word-count {
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .essay-card-read {
+            opacity: 0.7;
+            border-left: 3px solid #26A69A;
+        }
+
+        .essay-read-check {
+            color: #26A69A;
+            font-weight: 700;
+            margin-right: 2px;
+        }
+
+        /* Essay Reader */
+        .essay-reader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+        }
+
+        .essay-reader-overlay.active {
+            display: flex !important;
+        }
+
+        .essay-reader-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            padding-top: calc(12px + var(--safe-area-top));
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            gap: 12px;
+        }
+
+        .essay-back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .essay-reader-title-bar {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .essay-reader-title {
+            font-weight: 700;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .essay-reader-author {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .essay-reader-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            padding-bottom: calc(40px + var(--safe-area-bottom));
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .essay-reader-body .essay-paragraph {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .essay-reader-body .essay-word {
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.15s ease;
+            padding: 0 1px;
+        }
+
+        .essay-reader-body .essay-word:active {
+            background: #ffe082;
+        }
+
+        .essay-reader-body .essay-word.highlighted {
+            background: #fff59d;
+            border-bottom: 2px solid #ffc107;
+        }
+
+        .essay-reader-body .essay-word.known-word {
+            background: #c8e6c9;
+            border-bottom: 2px solid #4caf50;
+        }
+
+        /* Word Popup */
+        .word-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .word-popup-overlay.active {
+            display: flex !important;
+        }
+
+        .word-popup {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popupSlideUp 0.25s ease;
+        }
+
+        @keyframes popupSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .word-popup-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .word-popup-speak {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .word-popup-speak:active {
+            background: #e0e0e0;
+        }
+
+        .word-popup-word {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .word-popup-phonetic {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-style: italic;
+        }
+
+        .word-popup-vi {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            min-height: 24px;
+        }
+
+        .word-popup-en {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .word-popup-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .word-popup-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .word-popup-btn.known {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .word-popup-btn.known:active {
+            background: #a5d6a7;
+        }
+
+        .word-popup-btn.learn {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .word-popup-btn.learn:active {
+            background: #fff176;
+        }
+
+        /* Speed Challenge History */
+        .speed-history-section {
+            margin-top: 20px;
+        }
+
+        .speed-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .speed-history-table {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+
+        .speed-history-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .speed-history-row:last-child {
+            border-bottom: none;
+        }
+
+        .speed-history-row:active {
+            background: var(--bg-secondary);
+        }
+
+        .speed-history-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .speed-history-icon.level-1 { background: #e8f5e9; }
+        .speed-history-icon.level-2 { background: #e3f2fd; }
+        .speed-history-icon.level-3 { background: #fff3e0; }
+        .speed-history-icon.level-4 { background: #fce4ec; }
+        .speed-history-icon.level-0 { background: #fff9c4; }
+
+        .speed-history-info {
+            flex: 1;
+            margin-left: 12px;
+            min-width: 0;
+        }
+
+        .speed-history-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .speed-history-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .speed-history-stats {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 8px;
+        }
+
+        .speed-history-score {
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-size: 14px;
+        }
+
+        .speed-history-accuracy {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+
+        .speed-history-accuracy.perfect {
+            background: #c8e6c9;
+            color: var(--accent-green-dark);
+        }
+
+        .speed-history-expand {
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .speed-history-row.expanded .speed-history-expand {
+            transform: rotate(180deg);
+        }
+
+        .speed-history-detail {
+            display: none;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .speed-history-detail.show {
+            display: block;
+        }
+
+        .verb-result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .verb-result-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            font-size: 13px;
+        }
+
+        .verb-result-item.correct {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .verb-result-item.wrong {
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .verb-result-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .verb-result-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .verb-result-forms {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .verb-result-user {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .verb-result-user .wrong-text {
+            color: var(--accent-red);
+            text-decoration: line-through;
+        }
+
+        .speed-history-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
         /* ==================== PROFILE SCREEN ==================== */
         .profile-screen {
             padding: 20px;
@@ -1939,7 +2503,7 @@
         .profile-avatar {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            background: linear-gradient(135deg, #26C6DA, #00ACC1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2229,7 +2793,7 @@
                     <div class="home-user">
                         <div class="home-user-avatar" id="homeAvatar">😊</div>
                         <div class="home-user-info">
-                            <span class="home-user-greeting">Welcome back,</span>
+                            <span class="home-user-greeting">Hello sunshine,</span>
                             <span class="home-user-name" id="homeUsername">User</span>
                         </div>
                     </div>
@@ -2398,6 +2962,52 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Game History -->
+                <div class="speed-history-section">
+                    <h3 class="section-title">Game History</h3>
+                    <div class="speed-history-list" id="speedHistoryList">
+                        <div class="empty-history">No games played yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Essays Screen -->
+            <div class="screen essays-screen" id="essaysScreen">
+                <div class="essays-header">
+                    <h1 class="essays-title">📖 Reading</h1>
+                    <p class="essays-subtitle">Tap any word to learn it</p>
+                </div>
+                <div class="essays-categories" id="essaysCategoriesList"></div>
+            </div>
+
+            <!-- Essay Reader Overlay -->
+            <div class="essay-reader-overlay" id="essayReaderOverlay">
+                <div class="essay-reader-header">
+                    <button class="essay-back-btn" onclick="closeEssayReader()">&#x2190;</button>
+                    <div class="essay-reader-title-bar">
+                        <div class="essay-reader-title" id="essayReaderTitle"></div>
+                        <div class="essay-reader-author" id="essayReaderAuthor"></div>
+                    </div>
+                </div>
+                <div class="essay-reader-body" id="essayReaderBody"></div>
+            </div>
+
+            <!-- Word Popup -->
+            <div class="word-popup-overlay" id="wordPopupOverlay" onclick="closeWordPopup()">
+                <div class="word-popup" onclick="event.stopPropagation()">
+                    <div class="word-popup-header">
+                        <button class="word-popup-speak" onclick="speakWord(document.getElementById('wordPopupWord').textContent)">🔊</button>
+                        <span class="word-popup-word" id="wordPopupWord"></span>
+                    </div>
+                    <div class="word-popup-phonetic" id="wordPopupPhonetic"></div>
+                    <div class="word-popup-vi" id="wordPopupVi"></div>
+                    <div class="word-popup-en" id="wordPopupEn"></div>
+                    <div class="word-popup-actions">
+                        <button class="word-popup-btn known" onclick="markWordKnown()">Đã biết</button>
+                        <button class="word-popup-btn learn" onclick="markWordLearn()">Học</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Profile Screen -->
@@ -2449,6 +3059,10 @@
             <button class="nav-item" onclick="switchScreen('speedChallengeScreen')">
                 <span class="icon">📝</span>
                 <span>Verbs</span>
+            </button>
+            <button class="nav-item" onclick="switchScreen('essaysScreen')">
+                <span class="icon">📖</span>
+                <span>Essays</span>
             </button>
             <button class="nav-item" onclick="switchScreen('profileScreen')">
                 <span class="icon">👤</span>
@@ -2595,6 +3209,7 @@
 
     <!-- Load vocabulary data -->
     <script src="js/vocabulary.js"></script>
+    <script src="js/essays.js"></script>
     <script>
         // ==================== CONSTANTS ====================
         const WORDS_PER_LESSON = 5;
@@ -3029,6 +3644,7 @@
 
             if (screenId === 'homeScreen') renderHome();
             if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
+            if (screenId === 'essaysScreen') renderEssays();
             if (screenId === 'profileScreen') renderProfile();
         }
 
@@ -3743,7 +4359,8 @@
             timer: null,
             timeLeft: SPEED_TIME_LIMIT,
             isAnswering: false,
-            level: 0
+            level: 0,
+            verbResults: [] // { v1, v2, v3, userV2, userV3, correct, timeUsed }
         };
 
         function renderSpeedChallenge() {
@@ -3753,6 +4370,91 @@
                 document.getElementById('bestStreak').textContent = appState.speedChallenge.bestStreak || 0;
                 document.getElementById('totalPlayed').textContent = appState.speedChallenge.totalGames || 0;
             }
+            renderSpeedHistory();
+        }
+
+        function renderSpeedHistory() {
+            const container = document.getElementById('speedHistoryList');
+            const history = appState.speedChallenge?.history || [];
+
+            if (history.length === 0) {
+                container.innerHTML = '<div class="empty-history">No games played yet</div>';
+                return;
+            }
+
+            const levelNames = { 0: 'All Verbs', 1: 'Basic', 2: 'Medium', 3: 'Hard', 4: 'Expert' };
+            const levelIcons = { 0: '⚡', 1: '🌱', 2: '🌿', 3: '🌳', 4: '🔥' };
+
+            const recent = history.slice(-15).reverse();
+            let html = '<div class="speed-history-table">';
+
+            recent.forEach((game, index) => {
+                const accuracy = Math.round((game.correct / game.total) * 100);
+                const isPerfect = accuracy === 100;
+                const levelClass = `level-${game.level}`;
+
+                html += `
+                <div class="speed-history-row" onclick="toggleSpeedHistoryDetail(${index})">
+                    <div class="speed-history-icon ${levelClass}">${levelIcons[game.level] || '📝'}</div>
+                    <div class="speed-history-info">
+                        <div class="speed-history-title">${levelNames[game.level] || 'Level ' + game.level}</div>
+                        <div class="speed-history-date">${formatDate(game.date)} · ${formatTime(game.date)}</div>
+                    </div>
+                    <div class="speed-history-stats">
+                        <div class="speed-history-score">+${game.score}</div>
+                        <div class="speed-history-accuracy${isPerfect ? ' perfect' : ''}">${game.correct}/${game.total}</div>
+                    </div>
+                    <div class="speed-history-expand">▼</div>
+                </div>
+                <div class="speed-history-detail" id="speedHistoryDetail${index}">
+                    <div class="verb-result-list">
+                        ${(game.verbs || []).map(v => {
+                            if (v.correct) {
+                                return `<div class="verb-result-item correct">
+                                    <span class="verb-result-icon">✅</span>
+                                    <div class="verb-result-text">
+                                        <div class="verb-result-forms">${v.v1} → ${v.v2} → ${v.v3}</div>
+                                    </div>
+                                </div>`;
+                            } else {
+                                const userAnswer = [v.userV2, v.userV3].filter(a => a).join(' / ') || 'no answer';
+                                return `<div class="verb-result-item wrong">
+                                    <span class="verb-result-icon">❌</span>
+                                    <div class="verb-result-text">
+                                        <div class="verb-result-forms">${v.v1} → ${v.v2} → ${v.v3}</div>
+                                        <div class="verb-result-user">Your answer: <span class="wrong-text">${userAnswer}</span></div>
+                                    </div>
+                                </div>`;
+                            }
+                        }).join('')}
+                    </div>
+                </div>`;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function toggleSpeedHistoryDetail(index) {
+            const detail = document.getElementById(`speedHistoryDetail${index}`);
+            const row = detail.previousElementSibling;
+
+            if (detail.classList.contains('show')) {
+                detail.classList.remove('show');
+                row.classList.remove('expanded');
+            } else {
+                document.querySelectorAll('.speed-history-detail.show').forEach(d => {
+                    d.classList.remove('show');
+                    d.previousElementSibling.classList.remove('expanded');
+                });
+                detail.classList.add('show');
+                row.classList.add('expanded');
+            }
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         }
 
         function startSpeedChallenge(level) {
@@ -3762,6 +4464,7 @@
             speedState.streak = 0;
             speedState.bestStreakInGame = 0;
             speedState.correctCount = 0;
+            speedState.verbResults = [];
 
             // Filter verbs by level (0 = all)
             let verbs = level === 0
@@ -3865,6 +4568,13 @@
                 </div>
             `;
 
+            const inputV2Val = document.getElementById('inputV2').value.trim().toLowerCase();
+            const inputV3Val = document.getElementById('inputV3').value.trim().toLowerCase();
+            speedState.verbResults.push({
+                v1: verb.v1, v2: verb.v2, v3: verb.v3,
+                userV2: inputV2Val, userV3: inputV3Val, correct: false, timeUsed: null
+            });
+
             speedState.streak = 0;
             document.getElementById('speedStreak').textContent = speedState.streak;
 
@@ -3912,6 +4622,11 @@
                     speedState.bestStreakInGame = speedState.streak;
                 }
 
+                speedState.verbResults.push({
+                    v1: verb.v1, v2: verb.v2, v3: verb.v3,
+                    userV2, userV3, correct: true, timeUsed
+                });
+
                 inputV2.classList.add('correct');
                 inputV3.classList.add('correct');
 
@@ -3938,6 +4653,11 @@
                         ${verb.v1} → ${verb.v2} → ${verb.v3}
                     </div>
                 `;
+
+                speedState.verbResults.push({
+                    v1: verb.v1, v2: verb.v2, v3: verb.v3,
+                    userV2, userV3, correct: false, timeUsed: null
+                });
 
                 speedState.streak = 0;
                 document.getElementById('speedStreak').textContent = speedState.streak;
@@ -3991,6 +4711,23 @@
 
             appState.speedChallenge.totalGames++;
             appState.points += speedState.score;
+
+            // Save game to verb history
+            if (!appState.speedChallenge.history) appState.speedChallenge.history = [];
+            appState.speedChallenge.history.push({
+                date: Date.now(),
+                level: speedState.level,
+                score: speedState.score,
+                correct: speedState.correctCount,
+                total: speedState.currentVerbs.length,
+                bestStreak: speedState.bestStreakInGame,
+                verbs: speedState.verbResults
+            });
+            // Keep last 50 games
+            if (appState.speedChallenge.history.length > 50) {
+                appState.speedChallenge.history = appState.speedChallenge.history.slice(-50);
+            }
+
             saveUserData(currentUser, appState);
 
             // Show complete overlay
@@ -4016,6 +4753,234 @@
                 submitSpeedAnswer();
             }
         });
+
+        // ==================== ESSAYS ====================
+        let currentEssayWordEl = null;
+
+        function renderEssays() {
+            const container = document.getElementById('essaysCategoriesList');
+            const readEssays = appState.readEssays || [];
+            let html = '';
+
+            essayLevels.forEach(lvl => {
+                const levelEssays = essays.filter(e => e.level === lvl.id);
+                const readCount = levelEssays.filter(e => readEssays.includes(e.id)).length;
+                const progressPct = levelEssays.length > 0 ? Math.round(readCount / levelEssays.length * 100) : 0;
+
+                html += `
+                <div class="essays-category">
+                    <div class="essays-category-header">
+                        <div class="essays-category-icon" style="background: ${lvl.color}20;">${lvl.icon}</div>
+                        <div style="flex:1;">
+                            <div class="essays-category-title">${lvl.title}</div>
+                            <div class="essays-category-count">${lvl.subtitle}</div>
+                            <div class="essay-level-progress">
+                                <div class="essay-level-progress-bar" style="width: ${progressPct}%; background: ${lvl.color};"></div>
+                            </div>
+                            <div class="essay-level-progress-text" style="color: ${lvl.color};">${readCount}/${levelEssays.length} read</div>
+                        </div>
+                    </div>
+                    ${levelEssays.map(essay => {
+                        const wordCount = essay.content.split(/\s+/).length;
+                        const isRead = readEssays.includes(essay.id);
+                        return `
+                        <div class="essay-card ${isRead ? 'essay-card-read' : ''}" onclick="openEssayReader(${essay.id})">
+                            <div class="essay-card-top">
+                                <div class="essay-card-title">${isRead ? '<span class="essay-read-check">&#10003;</span> ' : ''}${essay.title}</div>
+                                <div class="essay-card-meta">
+                                    <span class="essay-card-school">${essay.school}</span>
+                                    <span class="essay-word-count">${wordCount} words</span>
+                                </div>
+                            </div>
+                            <div class="essay-card-author">by ${essay.author}</div>
+                            <div class="essay-card-tags">
+                                ${essay.tags.map(t => `<span class="essay-tag" style="background: ${lvl.color}15; color: ${lvl.color};">${t}</span>`).join('')}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function openEssayReader(essayId) {
+            const essay = essays.find(e => e.id === essayId);
+            if (!essay) return;
+
+            // Mark as read
+            if (!appState.readEssays) appState.readEssays = [];
+            if (!appState.readEssays.includes(essayId)) {
+                appState.readEssays.push(essayId);
+                saveData();
+            }
+
+            document.getElementById('essayReaderTitle').textContent = essay.title;
+            document.getElementById('essayReaderAuthor').textContent = `${essay.author} — ${essay.school}`;
+
+            // Split content into paragraphs and words
+            const paragraphs = essay.content.split('\n\n').filter(p => p.trim());
+            const savedWords = appState.essayWords || {};
+
+            let bodyHtml = '';
+            paragraphs.forEach(para => {
+                bodyHtml += '<div class="essay-paragraph">';
+                // Split by whitespace but keep punctuation attached to words
+                const tokens = para.split(/(\s+)/);
+                tokens.forEach(token => {
+                    if (/^\s+$/.test(token)) {
+                        bodyHtml += ' ';
+                    } else {
+                        // Extract the core word (strip punctuation for lookup)
+                        const coreWord = token.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+                        let cls = 'essay-word';
+                        if (coreWord && savedWords[coreWord] === 'learn') cls += ' highlighted';
+                        else if (coreWord && savedWords[coreWord] === 'known') cls += ' known-word';
+                        bodyHtml += `<span class="${cls}" onclick="onEssayWordTap(this, '${coreWord.replace(/'/g, "\\'")}')">${token}</span>`;
+                    }
+                });
+                bodyHtml += '</div>';
+            });
+
+            document.getElementById('essayReaderBody').innerHTML = bodyHtml;
+            document.getElementById('essayReaderOverlay').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'none';
+        }
+
+        function closeEssayReader() {
+            document.getElementById('essayReaderOverlay').classList.remove('active');
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+
+        function onEssayWordTap(el, word) {
+            if (!word || word.length < 2) return;
+            currentEssayWordEl = el;
+
+            document.getElementById('wordPopupWord').textContent = word;
+            document.getElementById('wordPopupPhonetic').textContent = '';
+            document.getElementById('wordPopupVi').textContent = '';
+            document.getElementById('wordPopupEn').textContent = '';
+
+            document.getElementById('wordPopupOverlay').classList.add('active');
+
+            // Try to find in our vocabulary first
+            const found = ieltsVocabulary.find(v => v.en.toLowerCase() === word);
+            if (found) {
+                document.getElementById('wordPopupVi').textContent = found.vi;
+                document.getElementById('wordPopupPhonetic').textContent = found.ipa || '';
+                // Also fetch English definition
+                lookupEnglishDef(word);
+            } else {
+                document.getElementById('wordPopupVi').textContent = '...';
+                // Fetch both English def and Vietnamese translation
+                lookupWord(word);
+            }
+
+            speakWord(word);
+        }
+
+        async function lookupEnglishDef(word) {
+            try {
+                const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const entry = data[0];
+                    const meanings = entry.meanings || [];
+                    if (meanings.length > 0) {
+                        const firstDef = meanings[0].definitions?.[0]?.definition || '';
+                        const pos = meanings[0].partOfSpeech || '';
+                        document.getElementById('wordPopupEn').textContent = pos ? `(${pos}) ${firstDef}` : firstDef;
+                    }
+                }
+            } catch (e) { /* silent */ }
+        }
+
+        async function lookupWord(word) {
+            // Fetch English definition and Vietnamese translation in parallel
+            const enPromise = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+            const viPromise = fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`);
+
+            try {
+                const [enResp, viResp] = await Promise.allSettled([enPromise, viPromise]);
+
+                // English definition
+                if (enResp.status === 'fulfilled' && enResp.value.ok) {
+                    const data = await enResp.value.json();
+                    const entry = data[0];
+                    const phonetic = entry.phonetics?.find(p => p.text)?.text || '';
+                    const meanings = entry.meanings || [];
+                    if (phonetic) document.getElementById('wordPopupPhonetic').textContent = phonetic;
+                    if (meanings.length > 0) {
+                        const firstDef = meanings[0].definitions?.[0]?.definition || '';
+                        const pos = meanings[0].partOfSpeech || '';
+                        document.getElementById('wordPopupEn').textContent = pos ? `(${pos}) ${firstDef}` : firstDef;
+                    }
+                }
+
+                // Vietnamese translation
+                if (viResp.status === 'fulfilled' && viResp.value.ok) {
+                    const viData = await viResp.value.json();
+                    const viText = viData.responseData?.translatedText || '';
+                    if (viText && viText.toLowerCase() !== word.toLowerCase()) {
+                        document.getElementById('wordPopupVi').textContent = viText.toLowerCase();
+                    } else {
+                        document.getElementById('wordPopupVi').textContent = '';
+                    }
+                } else {
+                    document.getElementById('wordPopupVi').textContent = '';
+                }
+            } catch (e) {
+                document.getElementById('wordPopupVi').textContent = '';
+                document.getElementById('wordPopupEn').textContent = 'No definition found';
+            }
+        }
+
+        function closeWordPopup() {
+            document.getElementById('wordPopupOverlay').classList.remove('active');
+            currentEssayWordEl = null;
+        }
+
+        function markWordKnown() {
+            const word = document.getElementById('wordPopupWord').textContent.toLowerCase();
+            if (!appState.essayWords) appState.essayWords = {};
+            appState.essayWords[word] = 'known';
+            saveUserData(currentUser, appState);
+
+            if (currentEssayWordEl) {
+                currentEssayWordEl.classList.remove('highlighted');
+                currentEssayWordEl.classList.add('known-word');
+            }
+            // Update all instances of this word in the reader
+            document.querySelectorAll('.essay-word').forEach(el => {
+                const w = el.textContent.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+                if (w === word) {
+                    el.classList.remove('highlighted');
+                    el.classList.add('known-word');
+                }
+            });
+            closeWordPopup();
+        }
+
+        function markWordLearn() {
+            const word = document.getElementById('wordPopupWord').textContent.toLowerCase();
+            if (!appState.essayWords) appState.essayWords = {};
+            appState.essayWords[word] = 'learn';
+            saveUserData(currentUser, appState);
+
+            if (currentEssayWordEl) {
+                currentEssayWordEl.classList.remove('known-word');
+                currentEssayWordEl.classList.add('highlighted');
+            }
+            // Update all instances of this word in the reader
+            document.querySelectorAll('.essay-word').forEach(el => {
+                const w = el.textContent.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+                if (w === word) {
+                    el.classList.remove('known-word');
+                    el.classList.add('highlighted');
+                }
+            });
+            closeWordPopup();
+        }
 
         // ==================== PROFILE ====================
         function renderProfile() {
