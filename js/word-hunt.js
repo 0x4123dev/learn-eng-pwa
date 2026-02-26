@@ -1,6 +1,6 @@
 // word-hunt.js - Word Hunt Grid Game
 
-const GRID_SIZE = 8;
+const GRID_SIZE = 10;
 const HUNT_WORDS = 3;
 const HUNT_TIME = 60000;
 
@@ -38,10 +38,10 @@ function renderWordHuntCard() {
 }
 
 function openWordHunt() {
-    // Pick 3 words (3-6 letters) from completed lessons
+    // Pick 3 words (3-8 letters) from completed lessons
     const srsWords = appState.srs ? Object.keys(appState.srs) : [];
     const validWords = srsWords
-        .filter(w => w.length >= 3 && w.length <= 6 && /^[a-z]+$/i.test(w))
+        .filter(w => w.length >= 3 && w.length <= 8 && /^[a-z]+$/i.test(w))
         .map(en => ieltsVocabulary.find(w => w.en === en))
         .filter(Boolean);
 

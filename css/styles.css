@@ -3692,9 +3692,9 @@
 
         .wh-grid {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 3px;
-            max-width: 360px;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            max-width: 380px;
             margin: 12px auto;
             padding: 0 8px;
             touch-action: none;
@@ -3710,7 +3710,7 @@
             background: rgba(255,255,255,0.15);
             border-radius: 6px;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.15s;
