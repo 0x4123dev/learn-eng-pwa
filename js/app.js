@@ -51,7 +51,17 @@ const achievements = [
     // Word collection milestones
     { id: 'word-collector-50', name: 'Collector', icon: '🎒' },
     { id: 'word-collector-200', name: 'Treasure Chest', icon: '🧳' },
-    { id: 'word-collector-500', name: 'Word Dragon', icon: '🐉' }
+    { id: 'word-collector-500', name: 'Word Dragon', icon: '🐉' },
+
+    // Fun features
+    { id: 'shield-saver', name: 'Shield Saver', icon: '🛡️' },
+    { id: 'combo-5', name: 'Combo King', icon: '🔥' },
+    { id: 'daily-5', name: 'Daily Devotee', icon: '📅' },
+    { id: 'daily-15', name: 'Daily Legend', icon: '🗓️' },
+    { id: 'first-battle', name: 'Challenger', icon: '⚔️' },
+    { id: 'battle-5', name: 'Warrior', icon: '🗡️' },
+    { id: 'hunter-first', name: 'Word Hunter', icon: '🔍' },
+    { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' }
 ];
 
 // ==================== GLOBAL STATE VARIABLES ====================
@@ -138,8 +148,48 @@ function createDefaultUserData(username, avatar, passcode) {
         lessonHistory: [], // Array of { lessonNum, date, points, accuracy }
         srs: {}, // { [englishWord]: { interval, ease, repetitions, nextReview, lastReview } }
         reviewsCompleted: 0, // Total words reviewed via SRS
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        streakShields: 0,
+        theme: 'default',
+        stickers: [],
+        dailyChallenge: { lastDate: null, streak: 0, bestStreak: 0 },
+        wordOfDayViewed: null,
+        sentences: [],
+        battleHistory: { wins: 0, losses: 0, draws: 0 }
     };
+}
+
+// ==================== THEMES ====================
+const themeData = [
+    { id: 'default', name: 'Classic', icon: '🌤️', cost: 0, vars: {} },
+    { id: 'ocean', name: 'Ocean', icon: '🌊', cost: 500, vars: {
+        '--bg-primary': '#E0F2F1', '--bg-secondary': '#B2DFDB', '--accent-green': '#00897B',
+        '--accent-green-dark': '#00695C', '--accent-blue': '#0097A7', '--border-color': '#4DD0E1'
+    }},
+    { id: 'forest', name: 'Forest', icon: '🌲', cost: 1000, vars: {
+        '--bg-primary': '#E8F5E9', '--bg-secondary': '#C8E6C9', '--accent-green': '#43A047',
+        '--accent-green-dark': '#2E7D32', '--accent-blue': '#66BB6A', '--border-color': '#81C784'
+    }},
+    { id: 'sunset', name: 'Sunset', icon: '🌅', cost: 2000, vars: {
+        '--bg-primary': '#FFF3E0', '--bg-secondary': '#FFE0B2', '--accent-green': '#FB8C00',
+        '--accent-green-dark': '#EF6C00', '--accent-blue': '#FFA726', '--border-color': '#FFCC80'
+    }},
+    { id: 'galaxy', name: 'Galaxy', icon: '🌌', cost: 5000, vars: {
+        '--bg-primary': '#EDE7F6', '--bg-secondary': '#D1C4E9', '--accent-green': '#7E57C2',
+        '--accent-green-dark': '#5E35B1', '--accent-blue': '#B39DDB', '--border-color': '#B39DDB'
+    }}
+];
+
+function applyTheme(themeId) {
+    const theme = themeData.find(t => t.id === themeId);
+    if (!theme) return;
+    // Remove all inline overrides first
+    const allVars = ['--bg-primary', '--bg-secondary', '--accent-green', '--accent-green-dark', '--accent-blue', '--border-color'];
+    allVars.forEach(v => document.documentElement.style.removeProperty(v));
+    // Apply theme variables
+    Object.entries(theme.vars).forEach(([key, value]) => {
+        document.documentElement.style.setProperty(key, value);
+    });
 }
 
 // ==================== INITIALIZATION ====================
@@ -403,6 +453,19 @@ function loginUser(username) {
         saveUserData(currentUser, appState);
     }
 
+    // Migrate: add fun features state for existing users
+    if (appState.streakShields === undefined) appState.streakShields = 0;
+    if (appState.theme === undefined) appState.theme = 'default';
+    if (appState.stickers === undefined) appState.stickers = [];
+    if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };
+    if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
+    if (appState.sentences === undefined) appState.sentences = [];
+    if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
+    saveUserData(currentUser, appState);
+
+    // Apply saved theme
+    applyTheme(appState.theme);
+
     // Update streak
     updateStreak();
 
@@ -485,7 +548,14 @@ function updateStreak() {
     } else if (appState.lastStudyDate === yesterday) {
         // Continue streak on next study
     } else if (appState.lastStudyDate && appState.lastStudyDate !== today) {
-        appState.streak = 0;
+        // Check streak shield before resetting
+        if (appState.streakShields && appState.streakShields > 0) {
+            appState.streakShields--;
+            showToast('🛡️ Streak Shield used! Streak saved!');
+            unlockAchievement('shield-saver');
+        } else {
+            appState.streak = 0;
+        }
     }
     saveUserData(currentUser, appState);
 }
@@ -506,6 +576,15 @@ function recordStudy() {
         if (appState.streak >= 7) unlockAchievement('streak-7');
         if (appState.streak >= 14) unlockAchievement('streak-14');
         if (appState.streak >= 30) unlockAchievement('streak-30');
+
+        // Award streak shield if 3+ lessons today and shields < 3
+        const todayCount = (appState.lessonHistory || []).filter(h =>
+            new Date(h.date).toDateString() === today
+        ).length;
+        if (todayCount >= 3 && (appState.streakShields || 0) < 3) {
+            appState.streakShields = (appState.streakShields || 0) + 1;
+            showToast(`🛡️ Streak Shield earned! (${appState.streakShields}/3)`);
+        }
 
         // Time-based achievements
         const hour = new Date().getHours();

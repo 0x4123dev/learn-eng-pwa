@@ -87,7 +87,9 @@ function startReviewSession() {
         wrongInLesson: 0,
         lessonPoints: 0,
         isReviewSession: true,
-        reviewWrongWords: new Set()
+        reviewWrongWords: new Set(),
+        comboChain: 0,
+        maxCombo: 0
     };
 
     document.getElementById('bottomNav').style.display = 'none';

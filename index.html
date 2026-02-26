@@ -103,6 +103,7 @@
                     <div class="streak-badge">
                         <span>🔥</span>
                         <span id="homeStreak">0</span>
+                        <div class="shield-display" id="homeShields"></div>
                     </div>
                 </div>
 
@@ -120,6 +121,8 @@
                         <div class="stat-label">Today</div>
                     </div>
                 </div>
+
+                <div class="pet-container" id="petContainer"></div>
 
                 <div class="review-card" id="reviewCard" style="display: none;">
                     <div class="review-card-top">
@@ -161,6 +164,11 @@
                         Start Lesson
                     </button>
                 </div>
+
+                <div class="daily-challenge-card" id="dailyChallengeCard"></div>
+                <div class="wotd-card" id="wotdCard"></div>
+                <div class="battle-card" id="battleCard"></div>
+                <div class="word-hunt-card" id="wordHuntCard" style="display:none;"></div>
 
                 <h2 class="section-title">History</h2>
                 <div class="history-tabs">
@@ -326,6 +334,16 @@
                     </div>
                 </div>
 
+                <h2 class="section-title">Themes</h2>
+                <div class="theme-picker" id="themePicker"></div>
+
+                <h2 class="section-title">Sticker Book</h2>
+                <div class="sticker-counter" id="stickerCounter"></div>
+                <div class="sticker-grid" id="stickerGrid"></div>
+
+                <h2 class="section-title">My Sentences</h2>
+                <div class="sentences-list" id="sentencesList"></div>
+
                 <h2 class="section-title">Achievements</h2>
                 <div class="achievements-grid" id="achievementsGrid"></div>
 
@@ -355,6 +373,24 @@
             </button>
         </nav>
     </div>
+
+    <!-- Word of the Day Overlay -->
+    <div class="wotd-overlay" id="wotdOverlay"></div>
+
+    <!-- Treasure Chest Overlay -->
+    <div class="treasure-overlay" id="treasureOverlay"></div>
+
+    <!-- Sentence Builder Overlay -->
+    <div class="sentence-builder-overlay" id="sentenceBuilderOverlay"></div>
+
+    <!-- Battle Setup Overlay -->
+    <div class="battle-setup-overlay" id="battleSetupOverlay"></div>
+
+    <!-- Battle Game Overlay -->
+    <div class="battle-game-overlay" id="battleGameOverlay"></div>
+
+    <!-- Word Hunt Overlay -->
+    <div class="word-hunt-overlay" id="wordHuntOverlay"></div>
 
     <!-- Lesson Complete -->
     <div class="lesson-complete" id="lessonComplete">
@@ -533,5 +569,10 @@
     <script src="js/verbs.js"></script>
     <script src="js/essays-reader.js"></script>
     <script src="js/profile.js"></script>
+    <!-- New Features -->
+    <script src="js/daily-challenge.js"></script>
+    <script src="js/sentence-builder.js"></script>
+    <script src="js/battle.js"></script>
+    <script src="js/word-hunt.js"></script>
 </body>
 </html>

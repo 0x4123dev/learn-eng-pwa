@@ -37,7 +37,9 @@ function startLesson(lessonNum) {
         correctInLesson: 0,
         wrongInLesson: 0,
         lessonPoints: 0,
-        _startTime: Date.now()
+        _startTime: Date.now(),
+        comboChain: 0,
+        maxCombo: 0
     };
 
     document.getElementById('bottomNav').style.display = 'none';
@@ -135,6 +137,18 @@ function checkMatch() {
         // Reduce mistake count when correctly matched
         reduceMistake(left.word);
 
+        // Combo chain
+        lessonState.comboChain = Math.min((lessonState.comboChain || 0) + 1, 5);
+        if (lessonState.comboChain > (lessonState.maxCombo || 0)) {
+            lessonState.maxCombo = lessonState.comboChain;
+        }
+        if (lessonState.comboChain >= 2) {
+            showComboIndicator(lessonState.comboChain);
+        }
+        if (lessonState.comboChain >= 5) {
+            unlockAchievement('combo-5');
+        }
+
         // Points based on difficulty level
         const difficulty = getDifficultyLevel(lessonState.lessonNumber);
         const pointMultipliers = {
@@ -144,7 +158,8 @@ function checkMatch() {
             'Advanced': 2.5
         };
         const basePoints = 10;
-        const points = Math.round(basePoints * (pointMultipliers[difficulty.name] || 1));
+        const comboMultiplier = lessonState.comboChain >= 2 ? lessonState.comboChain : 1;
+        const points = Math.round(basePoints * (pointMultipliers[difficulty.name] || 1) * comboMultiplier);
         lessonState.lessonPoints += points;
         document.getElementById('lessonPointsDisplay').textContent = lessonState.lessonPoints;
 
@@ -160,6 +175,12 @@ function checkMatch() {
         left.card.classList.add('wrong');
         right.card.classList.add('wrong');
         lessonState.wrongInLesson++;
+
+        // Combo break
+        if (lessonState.comboChain >= 2) {
+            showComboBreak();
+        }
+        lessonState.comboChain = 0;
 
         // Track both words as mistakes
         trackMistake(left.word);
@@ -347,12 +368,54 @@ function completeLesson() {
 
     saveUserData(currentUser, appState);
 
+    // Check sticker unlocks
+    if (typeof checkStickerUnlocks === 'function') checkStickerUnlocks();
+
+    // Daily challenge completion
+    if (lessonState.isDailyChallenge && typeof completeDailyChallenge === 'function') {
+        completeDailyChallenge();
+        return;
+    }
+
     // Show difficulty bonus info
     const difficulty = getDifficultyLevel(lessonState.lessonNumber);
     const multipliers = { 'Basic': '1x', 'Intermediate': '1.5x', 'Upper-Intermediate': '2x', 'Advanced': '2.5x' };
     const bonusText = difficulty.name !== 'Basic' ? ` (${multipliers[difficulty.name]} ${difficulty.name})` : '';
 
-    document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
+    // Offer sentence builder for good performance on regular lessons
+    if (!lessonState.isPracticeSession && !lessonState.isReviewSession &&
+        (accuracy >= 80 || accuracy === 100) &&
+        typeof offerSentenceBuilder === 'function') {
+        offerSentenceBuilder(lessonState.words, lessonState.lessonPoints, accuracy, bonusText);
+        return;
+    }
+
+    showLessonCompleteUI(lessonState.lessonPoints, accuracy, bonusText);
+}
+
+function showComboIndicator(combo) {
+    const existing = document.querySelector('.combo-indicator');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'combo-indicator';
+    el.textContent = `${combo}x COMBO!`;
+    el.style.setProperty('--combo-scale', 1 + combo * 0.15);
+    document.querySelector('.lesson-content').appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+}
+
+function showComboBreak() {
+    const existing = document.querySelector('.combo-break');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'combo-break';
+    el.textContent = 'SNAP!';
+    document.querySelector('.lesson-content').appendChild(el);
+    setTimeout(() => el.remove(), 800);
+}
+
+function showLessonCompleteUI(points, accuracy, bonusText) {
+    document.getElementById('completePoints').textContent = `+${points}`;
     document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
 
     if (accuracy === 100) {

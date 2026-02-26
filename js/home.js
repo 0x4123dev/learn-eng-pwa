@@ -9,6 +9,9 @@ function renderHome() {
     document.getElementById('homeStreak').textContent = appState.streak;
     document.getElementById('homeLessons').textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
 
+    // Render streak shields
+    renderShields();
+
     // Calculate lessons completed today
     const today = new Date().toDateString();
     const todayLessons = (appState.lessonHistory || []).filter(h => {
@@ -78,6 +81,13 @@ function renderHome() {
             </button>
         `;
     }
+
+    // Render fun features
+    renderWordPet();
+    renderWordOfDay();
+    if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
+    if (typeof renderBattleCard === 'function') renderBattleCard();
+    if (typeof renderWordHuntCard === 'function') renderWordHuntCard();
 
     // Render lesson history
     renderLessonHistory();
@@ -274,7 +284,9 @@ function practiceMistakes() {
         correctInLesson: 0,
         wrongInLesson: 0,
         lessonPoints: 0,
-        isPracticeSession: true
+        isPracticeSession: true,
+        comboChain: 0,
+        maxCombo: 0
     };
 
     document.getElementById('bottomNav').style.display = 'none';
@@ -365,4 +377,150 @@ function updateDifficultyCounts() {
 function startNextLesson() {
     const lessonToStart = getNextLessonForDifficulty(selectedDifficultyFilter);
     startLesson(lessonToStart);
+}
+
+// ==================== STREAK SHIELDS ====================
+function renderShields() {
+    const container = document.getElementById('homeShields');
+    if (!container) return;
+    const count = appState.streakShields || 0;
+    if (count > 0) {
+        container.innerHTML = '🛡️'.repeat(count);
+        container.classList.add('has-shields');
+    } else {
+        container.innerHTML = '';
+        container.classList.remove('has-shields');
+    }
+}
+
+// ==================== WORD PET ====================
+function getPetStage(points) {
+    if (points >= 5000) return { emoji: '🐉', name: 'Dragon' };
+    if (points >= 2000) return { emoji: '🦅', name: 'Phoenix' };
+    if (points >= 500) return { emoji: '🐦', name: 'Bird' };
+    if (points >= 100) return { emoji: '🐣', name: 'Chick' };
+    return { emoji: '🥚', name: 'Egg' };
+}
+
+function getPetMood() {
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (appState.lastStudyDate === today) return 'happy';
+    if (appState.lastStudyDate === yesterday) return 'neutral';
+    return 'sleepy';
+}
+
+function renderWordPet() {
+    const container = document.getElementById('petContainer');
+    if (!container) return;
+    const pet = getPetStage(appState.points);
+    const mood = getPetMood();
+    container.innerHTML = `
+        <div class="pet-creature ${mood}" onclick="onPetTap()">${pet.emoji}</div>
+        <div class="pet-name">${pet.name}</div>
+    `;
+}
+
+function onPetTap() {
+    const creature = document.querySelector('.pet-creature');
+    if (!creature) return;
+    creature.classList.add('wiggle');
+    setTimeout(() => creature.classList.remove('wiggle'), 600);
+
+    // Show a random learned word
+    const srsWords = appState.srs ? Object.keys(appState.srs) : [];
+    if (srsWords.length > 0) {
+        const randomWord = srsWords[Math.floor(Math.random() * srsWords.length)];
+        const wordData = ieltsVocabulary.find(w => w.en === randomWord);
+        if (wordData) {
+            showPetSpeechBubble(`${wordData.emoji} ${wordData.en}`);
+            speakWord(wordData.en);
+        }
+    }
+}
+
+function showPetSpeechBubble(text) {
+    const existing = document.querySelector('.pet-bubble');
+    if (existing) existing.remove();
+    const bubble = document.createElement('div');
+    bubble.className = 'pet-bubble';
+    bubble.textContent = text;
+    document.getElementById('petContainer').appendChild(bubble);
+    setTimeout(() => bubble.remove(), 2000);
+}
+
+// ==================== WORD OF THE DAY ====================
+function seededRandom(seed) {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) {
+        h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+    }
+    return function() {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return ((h ^= h >>> 16) >>> 0) / 4294967296;
+    };
+}
+
+function getDailyWord() {
+    const dateStr = new Date().toDateString();
+    const rng = seededRandom(dateStr);
+    const index = Math.floor(rng() * ieltsVocabulary.length);
+    return ieltsVocabulary[index];
+}
+
+function renderWordOfDay() {
+    const card = document.getElementById('wotdCard');
+    if (!card) return;
+    const word = getDailyWord();
+    const today = new Date().toDateString();
+    const viewed = appState.wordOfDayViewed === today;
+    card.innerHTML = `
+        <div class="wotd-label">Word of the Day ${viewed ? '✅' : ''}</div>
+        <div class="wotd-emoji">${word.emoji}</div>
+        <div class="wotd-word">${word.en}</div>
+    `;
+    card.onclick = () => openWordOfDayStory(word);
+}
+
+function openWordOfDayStory(word) {
+    const overlay = document.getElementById('wotdOverlay');
+    if (!overlay) return;
+    let panelIndex = 0;
+    const panels = [
+        `<div class="wotd-panel-emoji">${word.emoji}</div>
+         <div class="wotd-panel-word">${word.en}</div>
+         <div class="wotd-panel-ipa">${word.ipa}</div>
+         <button class="wotd-speak-btn" onclick="event.stopPropagation(); speakWord('${word.en.replace(/'/g, "\\'")}')">🔊 Listen</button>`,
+        `<div class="wotd-panel-vi">${word.vi}</div>
+         <div class="wotd-panel-example">"${word.ex || ''}"</div>`,
+        `<div class="wotd-panel-prompt">Use it today!</div>
+         <div class="wotd-panel-challenge">Try saying:<br><strong>"${word.ex || word.en}"</strong></div>`
+    ];
+
+    function renderPanel() {
+        overlay.innerHTML = `
+            <div class="wotd-panel">${panels[panelIndex]}</div>
+            <div class="wotd-dots">${panels.map((_, i) =>
+                `<span class="wotd-dot${i === panelIndex ? ' active' : ''}"></span>`
+            ).join('')}</div>
+            <div class="wotd-tap-hint">Tap to continue</div>
+        `;
+    }
+
+    overlay.onclick = () => {
+        panelIndex++;
+        if (panelIndex >= panels.length) {
+            overlay.classList.remove('active');
+            appState.wordOfDayViewed = new Date().toDateString();
+            saveUserData(currentUser, appState);
+            renderWordOfDay();
+        } else {
+            renderPanel();
+        }
+    };
+
+    renderPanel();
+    overlay.classList.add('active');
+    speakWord(word.en);
 }
