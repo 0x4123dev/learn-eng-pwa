@@ -525,7 +525,6 @@
         .home-screen {
             padding: 20px;
             padding-bottom: 100px;
-            position: relative;
         }
 
         .summer-sun {
@@ -2805,6 +2804,90 @@
             background: var(--error);
             color: white;
         }
+
+        /* ==================== SRS REVIEW CARD ==================== */
+        .review-card {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin: 0 16px 12px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .review-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .review-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .review-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-title {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .review-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .review-start-btn {
+            background: white;
+            color: #F57C00;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 18px;
+            font-weight: 800;
+            font-size: 13px;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .review-start-btn:active {
+            transform: scale(0.95);
+        }
+
+        .review-progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            height: 6px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .review-progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        .review-progress-label {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .review-card.all-caught-up {
+            background: linear-gradient(135deg, #66BB6A, #43A047);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .review-card.all-caught-up .review-start-btn {
+            color: #43A047;
+        }
     </style>
 </head>
 <body>
@@ -2907,6 +2990,21 @@
                         <div class="stat-value" id="homeToday">0</div>
                         <div class="stat-label">Today</div>
                     </div>
+                </div>
+
+                <div class="review-card" id="reviewCard" style="display: none;">
+                    <div class="review-card-top">
+                        <div class="review-icon">🧠</div>
+                        <div class="review-info">
+                            <div class="review-title" id="reviewTitle">0 words due today</div>
+                            <div class="review-subtitle" id="reviewSubtitle">Keep your memory strong!</div>
+                        </div>
+                        <button class="review-start-btn" id="reviewStartBtn" onclick="startReviewSession()">REVIEW</button>
+                    </div>
+                    <div class="review-progress-bar">
+                        <div class="review-progress-fill" id="reviewProgressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="review-progress-label" id="reviewProgressLabel">0% mastered</div>
                 </div>
 
                 <div class="difficulty-tabs" id="difficultyTabs">
@@ -3276,6 +3374,104 @@
         // ==================== CONSTANTS ====================
         const WORDS_PER_LESSON = 5;
         const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
+        const SRS_WORDS_PER_REVIEW = 5;
+
+        // ==================== SPACED REPETITION (SRS) ====================
+        function initWordSRS(wordEn) {
+            if (!appState.srs) appState.srs = {};
+            if (appState.srs[wordEn]) return; // Already tracked
+            appState.srs[wordEn] = {
+                interval: 1,       // Days until next review
+                ease: 2.5,         // Ease factor (SM-2)
+                repetitions: 0,    // Successful reviews in a row
+                nextReview: Date.now() + 86400000, // Tomorrow
+                lastReview: Date.now()
+            };
+        }
+
+        function updateWordSRS(wordEn, quality) {
+            // quality: 0 = wrong, 2 = correct (simplified SM-2)
+            if (!appState.srs || !appState.srs[wordEn]) return;
+            const card = appState.srs[wordEn];
+            card.lastReview = Date.now();
+
+            if (quality === 0) {
+                // Wrong: reset interval, decrease ease
+                card.repetitions = 0;
+                card.interval = 1;
+                card.ease = Math.max(1.3, card.ease - 0.2);
+            } else {
+                // Correct: advance interval
+                card.repetitions++;
+                if (card.repetitions === 1) {
+                    card.interval = 1;
+                } else if (card.repetitions === 2) {
+                    card.interval = 3;
+                } else {
+                    card.interval = Math.round(card.interval * card.ease);
+                }
+                card.ease = Math.max(1.3, card.ease + 0.05);
+            }
+            card.nextReview = Date.now() + card.interval * 86400000;
+        }
+
+        function getWordsDueForReview() {
+            if (!appState || !appState.srs) return [];
+            const now = Date.now();
+            return Object.keys(appState.srs).filter(word => appState.srs[word].nextReview <= now);
+        }
+
+        function getReviewCount() {
+            return getWordsDueForReview().length;
+        }
+
+        function getSRSMasteryPercent() {
+            if (!appState || !appState.srs) return 0;
+            const words = Object.values(appState.srs);
+            if (words.length === 0) return 0;
+            // A word is "mastered" if interval >= 14 days
+            const mastered = words.filter(w => w.interval >= 14).length;
+            return Math.round((mastered / words.length) * 100);
+        }
+
+        function startReviewSession() {
+            const dueWords = getWordsDueForReview();
+            if (dueWords.length === 0) {
+                showToast('No words due for review!');
+                return;
+            }
+
+            // Pick up to SRS_WORDS_PER_REVIEW words
+            const reviewWordNames = shuffleArray([...dueWords]).slice(0, SRS_WORDS_PER_REVIEW);
+            const reviewWords = reviewWordNames.map(en => ieltsVocabulary.find(w => w.en === en)).filter(Boolean);
+
+            if (reviewWords.length < 2) {
+                showToast('Not enough words for review');
+                return;
+            }
+
+            lessonState = {
+                lessonNumber: -2, // Special marker for review session
+                words: reviewWords,
+                currentRound: 0,
+                totalRounds: 1,
+                roundWords: reviewWords,
+                selectedLeft: null,
+                selectedRight: null,
+                matchedPairs: 0,
+                correctInLesson: 0,
+                wrongInLesson: 0,
+                lessonPoints: 0,
+                isReviewSession: true,
+                reviewWrongWords: new Set()
+            };
+
+            document.getElementById('bottomNav').style.display = 'none';
+            document.getElementById('lessonScreen').classList.add('active');
+            document.getElementById('homeScreen').classList.remove('active');
+
+            renderMatchingRound();
+        }
 
         // ==================== ACHIEVEMENTS ====================
         const achievements = [
@@ -3287,7 +3483,9 @@
             { id: 'lessons-10', name: 'Dedicated', icon: '💪' },
             { id: 'lessons-50', name: 'Scholar', icon: '🎓' },
             { id: 'lessons-100', name: 'Expert', icon: '🧠' },
-            { id: 'all-lessons', name: 'Master', icon: '👑' }
+            { id: 'all-lessons', name: 'Master', icon: '👑' },
+            { id: 'srs-reviewer', name: 'Reviewer', icon: '🔄' },
+            { id: 'srs-master', name: 'Memory Master', icon: '🧠' }
         ];
 
         // ==================== USER MANAGEMENT ====================
@@ -3331,6 +3529,8 @@
                 totalAnswers: 0,
                 achievements: [],
                 lessonHistory: [], // Array of { lessonNum, date, points, accuracy }
+                srs: {}, // { [englishWord]: { interval, ease, repetitions, nextReview, lastReview } }
+                reviewsCompleted: 0, // Total words reviewed via SRS
                 createdAt: Date.now()
             };
         }
@@ -3590,6 +3790,32 @@
             currentUser = username;
             appState = userData;
 
+            // Migrate: add SRS data for existing users
+            if (!appState.srs) {
+                appState.srs = {};
+                if (appState.reviewsCompleted === undefined) appState.reviewsCompleted = 0;
+                // Retroactively init SRS for all previously-learned words
+                if (appState.lessonHistory && appState.lessonHistory.length > 0) {
+                    const seenLessons = new Set(appState.lessonHistory.map(h => h.lessonNum));
+                    seenLessons.forEach(lessonNum => {
+                        const startIdx = lessonNum * WORDS_PER_LESSON;
+                        const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
+                        lessonWords.forEach(w => {
+                            if (!appState.srs[w.en]) {
+                                appState.srs[w.en] = {
+                                    interval: 1,
+                                    ease: 2.5,
+                                    repetitions: 1,
+                                    nextReview: Date.now(),
+                                    lastReview: Date.now()
+                                };
+                            }
+                        });
+                    });
+                }
+                saveUserData(currentUser, appState);
+            }
+
             // Update streak
             updateStreak();
 
@@ -3792,6 +4018,38 @@
 
             // Render lesson history
             renderLessonHistory();
+
+            // Update SRS review card
+            updateReviewCard();
+        }
+
+        function updateReviewCard() {
+            const reviewCard = document.getElementById('reviewCard');
+            if (!appState || !appState.srs || Object.keys(appState.srs).length === 0) {
+                reviewCard.style.display = 'none';
+                return;
+            }
+            reviewCard.style.display = 'block';
+
+            const dueCount = getReviewCount();
+            const mastery = getSRSMasteryPercent();
+
+            document.getElementById('reviewProgressFill').style.width = `${mastery}%`;
+            document.getElementById('reviewProgressLabel').textContent = `${mastery}% mastered`;
+
+            if (dueCount === 0) {
+                reviewCard.classList.add('all-caught-up');
+                document.getElementById('reviewTitle').textContent = 'All caught up!';
+                document.getElementById('reviewSubtitle').textContent = 'No words due for review right now';
+                document.getElementById('reviewStartBtn').style.display = 'none';
+            } else {
+                reviewCard.classList.remove('all-caught-up');
+                document.getElementById('reviewTitle').textContent = `${dueCount} word${dueCount !== 1 ? 's' : ''} due today`;
+                document.getElementById('reviewSubtitle').textContent = 'Keep your memory strong!';
+                const btn = document.getElementById('reviewStartBtn');
+                btn.style.display = 'block';
+                btn.textContent = 'REVIEW';
+            }
         }
 
         let currentHistoryTab = 'history';
@@ -4258,6 +4516,12 @@
                 trackMistake(left.word);
                 trackMistake(right.word);
 
+                // Track wrong words during SRS review
+                if (lessonState.isReviewSession && lessonState.reviewWrongWords) {
+                    lessonState.reviewWrongWords.add(left.word);
+                    lessonState.reviewWrongWords.add(right.word);
+                }
+
                 setTimeout(() => {
                     left.card.classList.remove('wrong', 'selected');
                     right.card.classList.remove('wrong', 'selected');
@@ -4302,6 +4566,43 @@
             recordStudy();
 
             const accuracy = Math.round((lessonState.correctInLesson / (lessonState.correctInLesson + lessonState.wrongInLesson)) * 100);
+
+            // Handle SRS review session
+            if (lessonState.isReviewSession) {
+                // Update SRS data for each reviewed word
+                lessonState.words.forEach(w => {
+                    const quality = lessonState.reviewWrongWords && lessonState.reviewWrongWords.has(w.en) ? 0 : 2;
+                    updateWordSRS(w.en, quality);
+                });
+
+                // Track review count
+                if (!appState.reviewsCompleted) appState.reviewsCompleted = 0;
+                appState.reviewsCompleted += lessonState.words.length;
+                appState.points += lessonState.lessonPoints;
+                saveUserData(currentUser, appState);
+
+                // Check SRS achievements
+                if (appState.reviewsCompleted >= 50) unlockAchievement('srs-reviewer');
+                if (appState.reviewsCompleted >= 200) unlockAchievement('srs-master');
+
+                document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
+                document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
+
+                const remaining = getReviewCount();
+                if (accuracy === 100) {
+                    document.getElementById('completeSubtitle').textContent = remaining > 0
+                        ? `Perfect! ${remaining} more word${remaining !== 1 ? 's' : ''} to review`
+                        : 'Perfect! All caught up!';
+                    createConfetti();
+                } else {
+                    document.getElementById('completeSubtitle').textContent = remaining > 0
+                        ? `${remaining} more word${remaining !== 1 ? 's' : ''} to review`
+                        : 'All caught up!';
+                }
+
+                document.getElementById('lessonComplete').classList.add('active');
+                return;
+            }
 
             // Handle practice session differently
             if (lessonState.isPracticeSession) {
@@ -4371,6 +4672,9 @@
             if (appState.currentLesson >= TOTAL_LESSONS) {
                 unlockAchievement('all-lessons');
             }
+
+            // Initialize SRS tracking for all words in this lesson
+            lessonState.words.forEach(w => initWordSRS(w.en));
 
             saveUserData(currentUser, appState);
 
