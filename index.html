@@ -525,6 +525,29 @@
         .home-screen {
             padding: 20px;
             padding-bottom: 100px;
+            position: relative;
+        }
+
+        .summer-sun {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 100px;
+            height: 100px;
+            z-index: 2;
+            pointer-events: none;
+            animation: sunFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 213, 79, 0.4));
+        }
+
+        .summer-sun img {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes sunFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(3deg); }
         }
 
         .home-header {
@@ -2106,12 +2129,13 @@
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: var(--bg-primary);
-            z-index: 9999;
+            z-index: 99999;
             display: none;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .essay-reader-overlay.active {
@@ -2126,6 +2150,9 @@
             background: var(--bg-card);
             border-bottom: 2px solid var(--border-color);
             gap: 12px;
+            max-width: 740px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .essay-back-btn {
@@ -2162,7 +2189,9 @@
 
         .essay-reader-body {
             flex: 1;
+            min-height: 0;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px 16px;
             padding-bottom: calc(40px + var(--safe-area-bottom));
             font-size: 17px;
@@ -2172,14 +2201,15 @@
         }
 
         .essay-reader-body .essay-paragraph {
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
             margin-bottom: 16px;
-            text-align: justify;
         }
 
         .essay-reader-body .essay-word {
             cursor: pointer;
             border-radius: 3px;
-            transition: background 0.15s ease;
             padding: 0 1px;
         }
 
@@ -2197,15 +2227,75 @@
             border-bottom: 2px solid #4caf50;
         }
 
+        /* Sentence translation */
+        .essay-sentence {
+            cursor: pointer;
+        }
+
+        .essay-sentence.sentence-active {
+            background: rgba(38, 166, 154, 0.1);
+            text-decoration: underline;
+            text-decoration-color: #26A69A;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 2px;
+        }
+
+        .sentence-translate-bubble {
+            display: none;
+        }
+
+        .sentence-bubble-floating {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #43A047;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            white-space: normal;
+            max-width: 85vw;
+            min-width: 60px;
+            text-align: center;
+            z-index: 9999999;
+            box-shadow: 0 3px 12px rgba(67, 160, 71, 0.35);
+            animation: bubblePop 0.2s ease;
+            pointer-events: none;
+        }
+
+        .sentence-bubble-floating::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #43A047;
+        }
+
+        .sentence-bubble-floating.bubble-below::after {
+            top: auto;
+            bottom: 100%;
+            border-top-color: transparent;
+            border-bottom-color: #43A047;
+        }
+
+        @keyframes bubblePop {
+            from { opacity: 0; transform: translateY(4px) translateX(-50%) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) translateX(-50%) scale(1); }
+        }
+
         /* Word Popup */
         .word-popup-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.4);
-            z-index: 10001;
+            z-index: 999999;
             display: none;
             align-items: center;
             justify-content: center;
@@ -2789,7 +2879,8 @@
 
             <!-- Home Screen -->
             <div class="screen home-screen" id="homeScreen">
-                <div class="home-header">
+                <div class="summer-sun"><img src="img/sun.svg" alt="sun"></div>
+                <div class="home-header" style="position:relative; z-index:1;">
                     <div class="home-user">
                         <div class="home-user-avatar" id="homeAvatar">😊</div>
                         <div class="home-user-info">
@@ -2979,35 +3070,6 @@
                     <p class="essays-subtitle">Tap any word to learn it</p>
                 </div>
                 <div class="essays-categories" id="essaysCategoriesList"></div>
-            </div>
-
-            <!-- Essay Reader Overlay -->
-            <div class="essay-reader-overlay" id="essayReaderOverlay">
-                <div class="essay-reader-header">
-                    <button class="essay-back-btn" onclick="closeEssayReader()">&#x2190;</button>
-                    <div class="essay-reader-title-bar">
-                        <div class="essay-reader-title" id="essayReaderTitle"></div>
-                        <div class="essay-reader-author" id="essayReaderAuthor"></div>
-                    </div>
-                </div>
-                <div class="essay-reader-body" id="essayReaderBody"></div>
-            </div>
-
-            <!-- Word Popup -->
-            <div class="word-popup-overlay" id="wordPopupOverlay" onclick="closeWordPopup()">
-                <div class="word-popup" onclick="event.stopPropagation()">
-                    <div class="word-popup-header">
-                        <button class="word-popup-speak" onclick="speakWord(document.getElementById('wordPopupWord').textContent)">🔊</button>
-                        <span class="word-popup-word" id="wordPopupWord"></span>
-                    </div>
-                    <div class="word-popup-phonetic" id="wordPopupPhonetic"></div>
-                    <div class="word-popup-vi" id="wordPopupVi"></div>
-                    <div class="word-popup-en" id="wordPopupEn"></div>
-                    <div class="word-popup-actions">
-                        <button class="word-popup-btn known" onclick="markWordKnown()">Đã biết</button>
-                        <button class="word-popup-btn learn" onclick="markWordLearn()">Học</button>
-                    </div>
-                </div>
             </div>
 
             <!-- Profile Screen -->
@@ -4823,21 +4885,28 @@
             const savedWords = appState.essayWords || {};
 
             let bodyHtml = '';
+            let sentenceIdx = 0;
             paragraphs.forEach(para => {
                 bodyHtml += '<div class="essay-paragraph">';
-                // Split by whitespace but keep punctuation attached to words
-                const tokens = para.split(/(\s+)/);
-                tokens.forEach(token => {
-                    if (/^\s+$/.test(token)) {
-                        bodyHtml += ' ';
-                    } else {
-                        // Extract the core word (strip punctuation for lookup)
-                        const coreWord = token.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
-                        let cls = 'essay-word';
-                        if (coreWord && savedWords[coreWord] === 'learn') cls += ' highlighted';
-                        else if (coreWord && savedWords[coreWord] === 'known') cls += ' known-word';
-                        bodyHtml += `<span class="${cls}" onclick="onEssayWordTap(this, '${coreWord.replace(/'/g, "\\'")}')">${token}</span>`;
-                    }
+                // Split paragraph into sentences (keep delimiters)
+                const sentences = para.split(/(?<=[.!?])\s+/);
+                sentences.forEach(sentence => {
+                    const sid = sentenceIdx++;
+                    const dataText = sentence.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    bodyHtml += `<span class="essay-sentence" data-sid="${sid}" data-text="${dataText}">`;
+                    const tokens = sentence.split(/(\s+)/);
+                    tokens.forEach(token => {
+                        if (/^\s+$/.test(token)) {
+                            bodyHtml += ' ';
+                        } else {
+                            const coreWord = token.replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+                            let cls = 'essay-word';
+                            if (coreWord && savedWords[coreWord] === 'learn') cls += ' highlighted';
+                            else if (coreWord && savedWords[coreWord] === 'known') cls += ' known-word';
+                            bodyHtml += `<span class="${cls}" data-word="${coreWord}">${token}</span>`;
+                        }
+                    });
+                    bodyHtml += `</span> `;
                 });
                 bodyHtml += '</div>';
             });
@@ -4845,11 +4914,44 @@
             document.getElementById('essayReaderBody').innerHTML = bodyHtml;
             document.getElementById('essayReaderOverlay').classList.add('active');
             document.getElementById('bottomNav').style.display = 'none';
+
+            const readerBody = document.getElementById('essayReaderBody');
+
+            // Event delegation for word and sentence taps
+            readerBody.onclick = function(e) {
+                const wordEl = e.target.closest('.essay-word');
+                const sentEl = e.target.closest('.essay-sentence');
+
+                // If sentence is already active and user taps a word → word popup
+                if (sentEl && sentEl === activeSentenceEl && wordEl) {
+                    const word = wordEl.dataset.word;
+                    if (word && word.length >= 2) {
+                        onEssayWordTap(wordEl, word);
+                        return;
+                    }
+                }
+
+                // Otherwise, tap anywhere in a sentence → translate it
+                if (sentEl) {
+                    onSentenceTap(sentEl);
+                }
+            };
+
+            // Dismiss bubble on scroll
+            readerBody.addEventListener('scroll', function() {
+                if (activeSentenceEl) {
+                    activeSentenceEl.classList.remove('sentence-active');
+                    activeSentenceEl = null;
+                }
+                removeFloatingBubble();
+            });
         }
 
         function closeEssayReader() {
             document.getElementById('essayReaderOverlay').classList.remove('active');
             document.getElementById('bottomNav').style.display = 'flex';
+            removeFloatingBubble();
+            activeSentenceEl = null;
         }
 
         function onEssayWordTap(el, word) {
@@ -4877,6 +4979,82 @@
             }
 
             speakWord(word);
+        }
+
+        let activeSentenceEl = null;
+        let floatingBubble = null;
+
+        function removeFloatingBubble() {
+            if (floatingBubble) {
+                floatingBubble.remove();
+                floatingBubble = null;
+            }
+        }
+
+        function onSentenceTap(el) {
+            const sentence = el.dataset.text;
+            if (!sentence) return;
+
+            // Close previous
+            if (activeSentenceEl && activeSentenceEl !== el) {
+                activeSentenceEl.classList.remove('sentence-active');
+            }
+
+            // Toggle same sentence
+            if (activeSentenceEl === el && el.classList.contains('sentence-active')) {
+                el.classList.remove('sentence-active');
+                removeFloatingBubble();
+                activeSentenceEl = null;
+                return;
+            }
+
+            removeFloatingBubble();
+            activeSentenceEl = el;
+            el.classList.add('sentence-active');
+
+            // Create floating bubble
+            floatingBubble = document.createElement('div');
+            floatingBubble.className = 'sentence-bubble-floating';
+            floatingBubble.textContent = '...';
+            document.body.appendChild(floatingBubble);
+            positionBubble(el);
+
+            translateSentence(sentence);
+        }
+
+        function positionBubble(el) {
+            if (!floatingBubble || !el) return;
+            const rect = el.getBoundingClientRect();
+            const bubbleH = floatingBubble.offsetHeight;
+            const gap = 8;
+
+            // Try above first
+            if (rect.top - bubbleH - gap > 8) {
+                floatingBubble.style.top = (rect.top - bubbleH - gap) + 'px';
+                floatingBubble.classList.remove('bubble-below');
+            } else {
+                // Place below
+                floatingBubble.style.top = (rect.bottom + gap) + 'px';
+                floatingBubble.classList.add('bubble-below');
+            }
+        }
+
+        async function translateSentence(sentence) {
+            try {
+                const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sentence)}&langpair=en|vi`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const translated = data.responseData?.translatedText || '';
+                    if (translated && floatingBubble) {
+                        floatingBubble.textContent = translated;
+                        positionBubble(activeSentenceEl);
+                    }
+                } else if (floatingBubble) {
+                    floatingBubble.textContent = 'Translation failed';
+                }
+            } catch (e) {
+                if (floatingBubble) floatingBubble.textContent = 'Translation failed';
+            }
         }
 
         async function lookupEnglishDef(word) {
@@ -5137,5 +5315,33 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', init);
     </script>
+
+    <!-- Overlays: direct children of body, no parent transforms -->
+    <div class="word-popup-overlay" id="wordPopupOverlay" onclick="closeWordPopup()">
+        <div class="word-popup" onclick="event.stopPropagation()">
+            <div class="word-popup-header">
+                <button class="word-popup-speak" onclick="speakWord(document.getElementById('wordPopupWord').textContent)">🔊</button>
+                <span class="word-popup-word" id="wordPopupWord"></span>
+            </div>
+            <div class="word-popup-phonetic" id="wordPopupPhonetic"></div>
+            <div class="word-popup-vi" id="wordPopupVi"></div>
+            <div class="word-popup-en" id="wordPopupEn"></div>
+            <div class="word-popup-actions">
+                <button class="word-popup-btn known" onclick="markWordKnown()">Đã biết</button>
+                <button class="word-popup-btn learn" onclick="markWordLearn()">Học</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="essay-reader-overlay" id="essayReaderOverlay">
+        <div class="essay-reader-header">
+            <button class="essay-back-btn" onclick="closeEssayReader()">&#x2190;</button>
+            <div class="essay-reader-title-bar">
+                <div class="essay-reader-title" id="essayReaderTitle"></div>
+                <div class="essay-reader-author" id="essayReaderAuthor"></div>
+            </div>
+        </div>
+        <div class="essay-reader-body" id="essayReaderBody"></div>
+    </div>
 </body>
 </html>

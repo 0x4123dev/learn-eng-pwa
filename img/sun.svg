@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF176"/>
+      <stop offset="40%" stop-color="#FFE033"/>
+      <stop offset="70%" stop-color="#FFD000"/>
+      <stop offset="100%" stop-color="#F5A623"/>
+    </radialGradient>
+    <radialGradient id="innerGlow" cx="45%" cy="42%" r="35%">
+      <stop offset="0%" stop-color="#FFEB3B" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#F5A623" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="handDrawn">
+      <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer glow -->
+  <circle cx="100" cy="100" r="90" fill="#FFD54F" opacity="0.15"/>
+
+  <!-- Main rays - large pointed triangles -->
+  <g filter="url(#handDrawn)" opacity="0.95">
+    <!-- 12 main rays -->
+    <polygon points="100,8 90,55 110,55" fill="#E8A317" stroke="#C17B1A" stroke-width="1"/>
+    <polygon points="100,192 90,145 110,145" fill="#E8A317" stroke="#C17B1A" stroke-width="1"/>
+    <polygon points="8,100 55,90 55,110" fill="#E8A317" stroke="#C17B1A" stroke-width="1"/>
+    <polygon points="192,100 145,90 145,110" fill="#E8A317" stroke="#C17B1A" stroke-width="1"/>
+
+    <polygon points="35,35 60,65 72,53" fill="#D4941A" stroke="#B8791A" stroke-width="1"/>
+    <polygon points="165,35 140,65 128,53" fill="#D4941A" stroke="#B8791A" stroke-width="1"/>
+    <polygon points="35,165 60,135 72,147" fill="#D4941A" stroke="#B8791A" stroke-width="1"/>
+    <polygon points="165,165 140,135 128,147" fill="#D4941A" stroke="#B8791A" stroke-width="1"/>
+
+    <!-- Secondary shorter rays between main ones -->
+    <polygon points="65,18 73,52 83,45" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="135,18 127,52 117,45" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="18,65 52,73 45,83" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="182,65 148,73 155,83" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="65,182 73,148 83,155" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="135,182 127,148 117,155" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="18,135 52,127 45,117" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+    <polygon points="182,135 148,127 155,117" fill="#DAA520" stroke="#B8861A" stroke-width="0.8"/>
+  </g>
+
+  <!-- Scattered small droplet shapes around outer edge -->
+  <g fill="#C17B1A" opacity="0.6">
+    <ellipse cx="50" cy="15" rx="3" ry="5" transform="rotate(-30 50 15)"/>
+    <ellipse cx="150" cy="15" rx="3" ry="5" transform="rotate(30 150 15)"/>
+    <ellipse cx="185" cy="50" rx="3" ry="5" transform="rotate(60 185 50)"/>
+    <ellipse cx="185" cy="150" rx="3" ry="5" transform="rotate(-60 185 150)"/>
+    <ellipse cx="150" cy="185" rx="3" ry="5" transform="rotate(-30 150 185)"/>
+    <ellipse cx="50" cy="185" rx="3" ry="5" transform="rotate(30 50 185)"/>
+    <ellipse cx="15" cy="150" rx="3" ry="5" transform="rotate(60 15 150)"/>
+    <ellipse cx="15" cy="50" rx="3" ry="5" transform="rotate(-60 15 50)"/>
+  </g>
+
+  <!-- Sun body - outer ring -->
+  <circle cx="100" cy="100" r="48" fill="#E8A317" stroke="#A0651A" stroke-width="2.5" filter="url(#handDrawn)"/>
+
+  <!-- Sun body - inner bright core -->
+  <circle cx="100" cy="100" r="42" fill="url(#coreGlow)" stroke="#C8871A" stroke-width="1.5" filter="url(#handDrawn)"/>
+
+  <!-- Inner glow highlight -->
+  <circle cx="100" cy="100" r="42" fill="url(#innerGlow)"/>
+
+  <!-- Face-like texture marks on center -->
+  <g stroke="#C8871A" stroke-width="1.2" fill="none" opacity="0.5" filter="url(#handDrawn)">
+    <!-- Subtle crescent shape -->
+    <path d="M82,88 Q88,82 95,86" stroke-linecap="round"/>
+    <!-- Small curve marks -->
+    <path d="M108,84 Q112,80 115,85" stroke-linecap="round"/>
+    <!-- Mouth-like curve -->
+    <path d="M88,112 Q100,120 112,112" stroke-linecap="round"/>
+    <!-- Cheek marks -->
+    <path d="M75,100 Q78,105 82,102" stroke-linecap="round" opacity="0.35"/>
+    <path d="M118,100 Q122,105 125,102" stroke-linecap="round" opacity="0.35"/>
+  </g>
+
+  <!-- Watercolor-like texture overlay -->
+  <circle cx="92" cy="92" r="18" fill="#FFF9C4" opacity="0.25"/>
+  <circle cx="105" cy="108" r="12" fill="#F5A623" opacity="0.15"/>
+</svg>
