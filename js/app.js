@@ -1,0 +1,656 @@
+// app.js - Core application logic, state management, and utilities
+
+// ==================== CONSTANTS ====================
+const WORDS_PER_LESSON = 5;
+const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
+const SRS_WORDS_PER_REVIEW = 5;
+
+// ==================== ACHIEVEMENTS ====================
+const achievements = [
+    // Getting started
+    { id: 'first-lesson', name: 'Baby Steps', icon: '🐣' },
+    { id: 'lessons-5', name: 'High Five', icon: '🖐️' },
+    { id: 'lessons-10', name: 'Super Student', icon: '💪' },
+    { id: 'lessons-25', name: 'Bookworm', icon: '📚' },
+    { id: 'lessons-50', name: 'Word Wizard', icon: '🧙' },
+    { id: 'lessons-100', name: 'Genius Kid', icon: '🦸' },
+    { id: 'all-lessons', name: 'Legend', icon: '👑' },
+
+    // Streaks
+    { id: 'streak-3', name: 'Hatching', icon: '🥚' },
+    { id: 'streak-7', name: 'On Fire', icon: '🔥' },
+    { id: 'streak-14', name: 'Unstoppable', icon: '🚀' },
+    { id: 'streak-30', name: 'Super Streak', icon: '⚡' },
+
+    // Points
+    { id: 'points-100', name: 'Coin Collector', icon: '🪙' },
+    { id: 'points-500', name: 'Treasure Hunter', icon: '💰' },
+    { id: 'points-1000', name: 'Rich Kid', icon: '💎' },
+    { id: 'points-5000', name: 'Billionaire', icon: '🏦' },
+
+    // Accuracy & perfection
+    { id: 'perfect', name: 'Bullseye', icon: '🎯' },
+    { id: 'perfect-3', name: 'Triple Star', icon: '🌟' },
+    { id: 'perfect-10', name: 'Perfectionist', icon: '💯' },
+    { id: 'correct-100', name: 'Sharp Mind', icon: '🔪' },
+    { id: 'correct-500', name: 'Brain Power', icon: '🧠' },
+
+    // SRS & review
+    { id: 'srs-first', name: 'First Review', icon: '🔁' },
+    { id: 'srs-reviewer', name: 'Reviewer', icon: '🔄' },
+    { id: 'srs-master', name: 'Memory Master', icon: '🐘' },
+    { id: 'srs-mastery-50', name: 'Half Mastered', icon: '🏔️' },
+    { id: 'srs-mastery-100', name: 'All Mastered', icon: '🏆' },
+
+    // Fun & time-based
+    { id: 'night-owl', name: 'Night Owl', icon: '🦉' },
+    { id: 'early-bird', name: 'Early Bird', icon: '🐦' },
+    { id: 'weekend-warrior', name: 'Weekend Hero', icon: '🦸‍♂️' },
+    { id: 'speed-demon', name: 'Speed Demon', icon: '👹' },
+
+    // Word collection milestones
+    { id: 'word-collector-50', name: 'Collector', icon: '🎒' },
+    { id: 'word-collector-200', name: 'Treasure Chest', icon: '🧳' },
+    { id: 'word-collector-500', name: 'Word Dragon', icon: '🐉' }
+];
+
+// ==================== GLOBAL STATE VARIABLES ====================
+let currentUser = null;
+let userToDelete = null;
+let selectedAvatar = '😊';
+
+let appState = null;
+let selectedDifficultyFilter = 'basic';
+
+let lessonState = {
+    categoryId: null,
+    lessonNumber: 0,
+    words: [],
+    currentRound: 0,
+    totalRounds: 0,
+    roundWords: [],
+    selectedLeft: null,
+    selectedRight: null,
+    matchedPairs: 0,
+    correctInLesson: 0,
+    wrongInLesson: 0,
+    lessonPoints: 0
+};
+
+let currentHistoryTab = 'history';
+
+let pendingLoginUser = null;
+
+const SPEED_TIME_LIMIT = 45000; // 45 seconds
+const SPEED_PENALTY_TIME = 3000; // 3 second penalty
+const SPEED_QUESTIONS_PER_GAME = 10;
+
+let speedState = {
+    currentVerbs: [],
+    currentIndex: 0,
+    score: 0,
+    streak: 0,
+    bestStreakInGame: 0,
+    correctCount: 0,
+    timer: null,
+    timeLeft: SPEED_TIME_LIMIT,
+    isAnswering: false,
+    level: 0,
+    verbResults: [] // { v1, v2, v3, userV2, userV3, correct, timeUsed }
+};
+
+// ==================== USER DATA PERSISTENCE ====================
+function getUsers() {
+    const users = localStorage.getItem('flashlingo-users');
+    return users ? JSON.parse(users) : [];
+}
+
+function saveUsers(users) {
+    localStorage.setItem('flashlingo-users', JSON.stringify(users));
+}
+
+function getUserData(username) {
+    const data = localStorage.getItem(`flashlingo-user-${username}`);
+    return data ? JSON.parse(data) : null;
+}
+
+function saveUserData(username, data) {
+    localStorage.setItem(`flashlingo-user-${username}`, JSON.stringify(data));
+}
+
+function deleteUserData(username) {
+    localStorage.removeItem(`flashlingo-user-${username}`);
+}
+
+function createDefaultUserData(username, avatar, passcode) {
+    return {
+        username: username,
+        avatar: avatar,
+        passcode: passcode,
+        points: 0,
+        streak: 0,
+        lastStudyDate: null,
+        lessonsCompleted: 0,
+        currentLesson: 0, // 0-199 for 200 total lessons
+        totalCorrect: 0,
+        totalAnswers: 0,
+        achievements: [],
+        lessonHistory: [], // Array of { lessonNum, date, points, accuracy }
+        srs: {}, // { [englishWord]: { interval, ease, repetitions, nextReview, lastReview } }
+        reviewsCompleted: 0, // Total words reviewed via SRS
+        createdAt: Date.now()
+    };
+}
+
+// ==================== INITIALIZATION ====================
+function init() {
+    setupAvatarPicker();
+    checkExistingUsers();
+    registerServiceWorker();
+}
+
+function setupAvatarPicker() {
+    const picker = document.getElementById('avatarPicker');
+    picker.addEventListener('click', (e) => {
+        const option = e.target.closest('.avatar-option');
+        if (option) {
+            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+            selectedAvatar = option.dataset.avatar;
+        }
+    });
+}
+
+function checkExistingUsers() {
+    const users = getUsers();
+
+    if (users.length > 0) {
+        // Show existing users
+        document.getElementById('existingUsersSection').style.display = 'block';
+        document.getElementById('createUserTitle').textContent = 'Or create new profile';
+        renderUserList(users);
+    } else {
+        // No users, show create form only
+        document.getElementById('existingUsersSection').style.display = 'none';
+        document.getElementById('createUserTitle').textContent = 'Create your profile';
+    }
+}
+
+function renderUserList(users) {
+    const list = document.getElementById('userList');
+    list.innerHTML = '';
+
+    users.forEach(username => {
+        const userData = getUserData(username);
+        if (!userData) return;
+
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        card.innerHTML = `
+            <div class="user-avatar">${userData.avatar || '😊'}</div>
+            <div class="user-info">
+                <div class="user-name">${userData.username}</div>
+                <div class="user-stats">⭐ ${userData.points} points · 🔥 ${userData.streak} streak</div>
+            </div>
+            <button class="delete-user-btn" onclick="event.stopPropagation(); showDeleteModal('${username}')">🗑️</button>
+            <span class="user-arrow">›</span>
+        `;
+        card.onclick = () => showPasscodeModal(username);
+        list.appendChild(card);
+    });
+}
+
+function createUser(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('usernameInput').value.trim();
+    if (!username) {
+        showToast('Please enter your name');
+        return;
+    }
+
+    // Get passcodes
+    const passcode = getPasscodeValue('create');
+    const confirmPasscode = getPasscodeValue('confirm');
+
+    // Validate passcode
+    if (passcode.length !== 4) {
+        document.getElementById('passcodeError').textContent = 'Please enter 4 digits';
+        shakePasscodeInputs('create');
+        return;
+    }
+
+    if (passcode !== confirmPasscode) {
+        document.getElementById('passcodeError').textContent = 'Passcodes do not match';
+        shakePasscodeInputs('confirm');
+        return;
+    }
+
+    document.getElementById('passcodeError').textContent = '';
+
+    const users = getUsers();
+
+    // Check if username exists
+    if (users.includes(username)) {
+        showToast('This name already exists');
+        return;
+    }
+
+    // Create new user with passcode
+    const userData = createDefaultUserData(username, selectedAvatar, passcode);
+    users.push(username);
+
+    saveUsers(users);
+    saveUserData(username, userData);
+
+    loginUser(username);
+}
+
+// ==================== PASSCODE FUNCTIONS ====================
+function getPasscodeValue(type) {
+    const container = document.getElementById(
+        type === 'create' ? 'createPasscode' :
+        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+    );
+    const inputs = container.querySelectorAll('.passcode-digit');
+    return Array.from(inputs).map(i => i.value).join('');
+}
+
+function clearPasscodeInputs(type) {
+    const container = document.getElementById(
+        type === 'create' ? 'createPasscode' :
+        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+    );
+    const inputs = container.querySelectorAll('.passcode-digit');
+    inputs.forEach(i => {
+        i.value = '';
+        i.classList.remove('filled', 'error');
+    });
+    inputs[0]?.focus();
+}
+
+function shakePasscodeInputs(type) {
+    const container = document.getElementById(
+        type === 'create' ? 'createPasscode' :
+        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+    );
+    const inputs = container.querySelectorAll('.passcode-digit');
+    inputs.forEach(i => {
+        i.classList.add('error');
+    });
+    setTimeout(() => {
+        inputs.forEach(i => i.classList.remove('error'));
+        clearPasscodeInputs(type);
+    }, 400);
+}
+
+function handlePasscodeInput(input, type) {
+    const value = input.value.replace(/\D/g, '');
+    input.value = value;
+
+    if (value) {
+        input.classList.add('filled');
+        // Move to next input
+        const index = parseInt(input.dataset.index);
+        const container = input.closest('.passcode-inputs');
+        const nextInput = container.querySelector(`[data-index="${index + 1}"]`);
+        if (nextInput) {
+            nextInput.focus();
+        } else if (index === 3 && type === 'login') {
+            // Auto-submit when all 4 digits entered for login
+            setTimeout(() => verifyPasscode(), 100);
+        }
+    } else {
+        input.classList.remove('filled');
+    }
+}
+
+function handlePasscodeKeydown(event, input, type) {
+    if (event.key === 'Backspace' && !input.value) {
+        const index = parseInt(input.dataset.index);
+        const container = input.closest('.passcode-inputs');
+        const prevInput = container.querySelector(`[data-index="${index - 1}"]`);
+        if (prevInput) {
+            prevInput.focus();
+            prevInput.value = '';
+            prevInput.classList.remove('filled');
+        }
+    }
+}
+
+function showPasscodeModal(username) {
+    const userData = getUserData(username);
+    if (!userData) return;
+
+    pendingLoginUser = username;
+
+    document.getElementById('passcodeModalAvatar').textContent = userData.avatar || '😊';
+    document.getElementById('passcodeModalName').textContent = userData.username;
+    document.getElementById('loginPasscodeError').textContent = '';
+    clearPasscodeInputs('login');
+
+    document.getElementById('passcodeModal').classList.add('active');
+
+    // Focus first input to auto-show keyboard on mobile
+    // Must stay within ~300ms of user tap to count as user gesture
+    requestAnimationFrame(() => {
+        const firstInput = document.querySelector('#loginPasscode .passcode-digit');
+        if (firstInput) firstInput.focus();
+    });
+}
+
+function closePasscodeModal() {
+    document.getElementById('passcodeModal').classList.remove('active');
+    pendingLoginUser = null;
+    clearPasscodeInputs('login');
+}
+
+function verifyPasscode() {
+    if (!pendingLoginUser) return;
+
+    const userData = getUserData(pendingLoginUser);
+    if (!userData) {
+        showToast('User not found');
+        closePasscodeModal();
+        return;
+    }
+
+    const enteredPasscode = getPasscodeValue('login');
+
+    if (enteredPasscode === userData.passcode) {
+        const usernameToLogin = pendingLoginUser;
+        closePasscodeModal();
+        loginUser(usernameToLogin);
+    } else {
+        document.getElementById('loginPasscodeError').textContent = 'Wrong passcode';
+        shakePasscodeInputs('login');
+    }
+}
+
+function loginUser(username) {
+    const userData = getUserData(username);
+    if (!userData) {
+        showToast('User not found');
+        return;
+    }
+
+    currentUser = username;
+    appState = userData;
+
+    // Migrate: add SRS data for existing users
+    if (!appState.srs) {
+        appState.srs = {};
+        if (appState.reviewsCompleted === undefined) appState.reviewsCompleted = 0;
+        // Retroactively init SRS for all previously-learned words
+        if (appState.lessonHistory && appState.lessonHistory.length > 0) {
+            const seenLessons = new Set(appState.lessonHistory.map(h => h.lessonNum));
+            seenLessons.forEach(lessonNum => {
+                const startIdx = lessonNum * WORDS_PER_LESSON;
+                const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
+                lessonWords.forEach(w => {
+                    if (!appState.srs[w.en]) {
+                        appState.srs[w.en] = {
+                            interval: 1,
+                            ease: 2.5,
+                            repetitions: 1,
+                            nextReview: Date.now(),
+                            lastReview: Date.now()
+                        };
+                    }
+                });
+            });
+        }
+        saveUserData(currentUser, appState);
+    }
+
+    // Update streak
+    updateStreak();
+
+    // Show main app
+    document.getElementById('onboardingScreen').classList.remove('active');
+    document.getElementById('homeScreen').classList.add('active');
+    document.getElementById('bottomNav').style.display = 'flex';
+
+    renderHome();
+    renderProfile();
+}
+
+function switchUser() {
+    // Save current user data
+    if (currentUser && appState) {
+        saveUserData(currentUser, appState);
+    }
+
+    // Reset and show onboarding
+    currentUser = null;
+    appState = null;
+
+    document.getElementById('bottomNav').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('onboardingScreen').classList.add('active');
+
+    // Reset form
+    document.getElementById('usernameInput').value = '';
+    document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+    document.querySelector('.avatar-option').classList.add('selected');
+    selectedAvatar = '😊';
+
+    // Clear passcode inputs
+    clearPasscodeInputs('create');
+    clearPasscodeInputs('confirm');
+    document.getElementById('passcodeError').textContent = '';
+
+    checkExistingUsers();
+}
+
+function showDeleteModal(username) {
+    userToDelete = username;
+    document.getElementById('deleteModalText').textContent =
+        `This will permanently delete "${username}" and all their progress.`;
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('active');
+    userToDelete = null;
+}
+
+function confirmDeleteUser() {
+    if (!userToDelete) return;
+
+    // Remove from users list
+    let users = getUsers();
+    users = users.filter(u => u !== userToDelete);
+    saveUsers(users);
+
+    // Delete user data
+    deleteUserData(userToDelete);
+
+    closeDeleteModal();
+    showToast('User deleted');
+
+    // Refresh user list
+    checkExistingUsers();
+}
+
+// ==================== STREAK ====================
+function updateStreak() {
+    if (!appState) return;
+
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+    if (appState.lastStudyDate === today) {
+        // Already studied today
+    } else if (appState.lastStudyDate === yesterday) {
+        // Continue streak on next study
+    } else if (appState.lastStudyDate && appState.lastStudyDate !== today) {
+        appState.streak = 0;
+    }
+    saveUserData(currentUser, appState);
+}
+
+function recordStudy() {
+    if (!appState) return;
+
+    const today = new Date().toDateString();
+    if (appState.lastStudyDate !== today) {
+        if (appState.lastStudyDate === new Date(Date.now() - 86400000).toDateString()) {
+            appState.streak++;
+        } else {
+            appState.streak = 1;
+        }
+        appState.lastStudyDate = today;
+
+        if (appState.streak >= 3) unlockAchievement('streak-3');
+        if (appState.streak >= 7) unlockAchievement('streak-7');
+        if (appState.streak >= 14) unlockAchievement('streak-14');
+        if (appState.streak >= 30) unlockAchievement('streak-30');
+
+        // Time-based achievements
+        const hour = new Date().getHours();
+        if (hour >= 22 || hour < 5) unlockAchievement('night-owl');
+        if (hour >= 5 && hour < 7) unlockAchievement('early-bird');
+        const day = new Date().getDay();
+        if (day === 0 || day === 6) unlockAchievement('weekend-warrior');
+    }
+    saveUserData(currentUser, appState);
+}
+
+// ==================== NAVIGATION ====================
+function switchScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.target.closest('.nav-item')?.classList.add('active');
+
+    if (screenId === 'homeScreen') renderHome();
+    if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
+    if (screenId === 'essaysScreen') renderEssays();
+    if (screenId === 'profileScreen') renderProfile();
+}
+
+// ==================== UTILITIES ====================
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('active');
+    setTimeout(() => toast.classList.remove('active'), 2500);
+}
+
+function createConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    const colors = ['#58cc02', '#1cb0f6', '#ff9600', '#ff4b4b', '#ce82ff'];
+
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+        confetti.style.animationDuration = `${2 + Math.random() * 2}s`;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(confetti);
+    }
+
+    setTimeout(() => container.innerHTML = '', 4000);
+}
+
+// ==================== PWA ====================
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        const swCode = `
+            const CACHE_NAME = 'flashlingo-v3';
+            self.addEventListener('install', (e) => {
+                self.skipWaiting();
+            });
+            self.addEventListener('fetch', (e) => {
+                e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+            });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    }
+
+    const manifest = {
+        name: 'FlashLingo',
+        short_name: 'FlashLingo',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#58cc02',
+        orientation: 'portrait',
+        icons: [{
+            src: 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#58cc02"/><text x="96" y="120" font-family="Arial" font-size="80" font-weight="bold" fill="white" text-anchor="middle">F</text></svg>`),
+            sizes: '192x192',
+            type: 'image/svg+xml'
+        }]
+    };
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));
+    document.head.appendChild(link);
+}
+
+// ==================== FORMAT DATE ====================
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return 'Yesterday';
+    } else {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+}
+
+// ==================== TEXT-TO-SPEECH ====================
+function speakWord(word) {
+    if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9; // Slightly slower for learning
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        // Try to use a good English voice
+        const voices = window.speechSynthesis.getVoices();
+        const englishVoice = voices.find(voice =>
+            voice.lang.startsWith('en') && voice.name.includes('Female')
+        ) || voices.find(voice => voice.lang.startsWith('en-US'))
+          || voices.find(voice => voice.lang.startsWith('en'));
+
+        if (englishVoice) {
+            utterance.voice = englishVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+// Load voices when available
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
+}
+
+// ==================== INITIALIZE ====================
+document.addEventListener('DOMContentLoaded', init);
