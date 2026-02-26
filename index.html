@@ -3293,7 +3293,7 @@
                 </div>
             </div>
 
-            <button class="speed-submit-btn" id="speedSubmitBtn" onclick="submitSpeedAnswer()" onmousedown="event.preventDefault()">
+            <button class="speed-submit-btn" id="speedSubmitBtn">
                 ✓ Check
             </button>
 
@@ -3475,17 +3475,51 @@
 
         // ==================== ACHIEVEMENTS ====================
         const achievements = [
-            { id: 'first-lesson', name: 'First Step', icon: '🏅' },
+            // Getting started
+            { id: 'first-lesson', name: 'Baby Steps', icon: '🐣' },
+            { id: 'lessons-5', name: 'High Five', icon: '🖐️' },
+            { id: 'lessons-10', name: 'Super Student', icon: '💪' },
+            { id: 'lessons-25', name: 'Bookworm', icon: '📚' },
+            { id: 'lessons-50', name: 'Word Wizard', icon: '🧙' },
+            { id: 'lessons-100', name: 'Genius Kid', icon: '🦸' },
+            { id: 'all-lessons', name: 'Legend', icon: '👑' },
+
+            // Streaks
+            { id: 'streak-3', name: 'Hatching', icon: '🥚' },
             { id: 'streak-7', name: 'On Fire', icon: '🔥' },
-            { id: 'perfect', name: 'Perfect', icon: '💯' },
-            { id: 'points-100', name: 'Century', icon: '⭐' },
-            { id: 'points-1000', name: 'Thousand', icon: '💎' },
-            { id: 'lessons-10', name: 'Dedicated', icon: '💪' },
-            { id: 'lessons-50', name: 'Scholar', icon: '🎓' },
-            { id: 'lessons-100', name: 'Expert', icon: '🧠' },
-            { id: 'all-lessons', name: 'Master', icon: '👑' },
+            { id: 'streak-14', name: 'Unstoppable', icon: '🚀' },
+            { id: 'streak-30', name: 'Super Streak', icon: '⚡' },
+
+            // Points
+            { id: 'points-100', name: 'Coin Collector', icon: '🪙' },
+            { id: 'points-500', name: 'Treasure Hunter', icon: '💰' },
+            { id: 'points-1000', name: 'Rich Kid', icon: '💎' },
+            { id: 'points-5000', name: 'Billionaire', icon: '🏦' },
+
+            // Accuracy & perfection
+            { id: 'perfect', name: 'Bullseye', icon: '🎯' },
+            { id: 'perfect-3', name: 'Triple Star', icon: '🌟' },
+            { id: 'perfect-10', name: 'Perfectionist', icon: '💯' },
+            { id: 'correct-100', name: 'Sharp Mind', icon: '🔪' },
+            { id: 'correct-500', name: 'Brain Power', icon: '🧠' },
+
+            // SRS & review
+            { id: 'srs-first', name: 'First Review', icon: '🔁' },
             { id: 'srs-reviewer', name: 'Reviewer', icon: '🔄' },
-            { id: 'srs-master', name: 'Memory Master', icon: '🧠' }
+            { id: 'srs-master', name: 'Memory Master', icon: '🐘' },
+            { id: 'srs-mastery-50', name: 'Half Mastered', icon: '🏔️' },
+            { id: 'srs-mastery-100', name: 'All Mastered', icon: '🏆' },
+
+            // Fun & time-based
+            { id: 'night-owl', name: 'Night Owl', icon: '🦉' },
+            { id: 'early-bird', name: 'Early Bird', icon: '🐦' },
+            { id: 'weekend-warrior', name: 'Weekend Hero', icon: '🦸‍♂️' },
+            { id: 'speed-demon', name: 'Speed Demon', icon: '👹' },
+
+            // Word collection milestones
+            { id: 'word-collector-50', name: 'Collector', icon: '🎒' },
+            { id: 'word-collector-200', name: 'Treasure Chest', icon: '🧳' },
+            { id: 'word-collector-500', name: 'Word Dragon', icon: '🐉' }
         ];
 
         // ==================== USER MANAGEMENT ====================
@@ -3915,9 +3949,17 @@
                 }
                 appState.lastStudyDate = today;
 
-                if (appState.streak >= 7) {
-                    unlockAchievement('streak-7');
-                }
+                if (appState.streak >= 3) unlockAchievement('streak-3');
+                if (appState.streak >= 7) unlockAchievement('streak-7');
+                if (appState.streak >= 14) unlockAchievement('streak-14');
+                if (appState.streak >= 30) unlockAchievement('streak-30');
+
+                // Time-based achievements
+                const hour = new Date().getHours();
+                if (hour >= 22 || hour < 5) unlockAchievement('night-owl');
+                if (hour >= 5 && hour < 7) unlockAchievement('early-bird');
+                const day = new Date().getDay();
+                if (day === 0 || day === 6) unlockAchievement('weekend-warrior');
             }
             saveUserData(currentUser, appState);
         }
@@ -4388,7 +4430,8 @@
                 matchedPairs: 0,
                 correctInLesson: 0,
                 wrongInLesson: 0,
-                lessonPoints: 0
+                lessonPoints: 0,
+                _startTime: Date.now()
             };
 
             document.getElementById('bottomNav').style.display = 'none';
@@ -4582,8 +4625,14 @@
                 saveUserData(currentUser, appState);
 
                 // Check SRS achievements
+                unlockAchievement('srs-first');
                 if (appState.reviewsCompleted >= 50) unlockAchievement('srs-reviewer');
                 if (appState.reviewsCompleted >= 200) unlockAchievement('srs-master');
+
+                // Mastery achievements
+                const mastery = getSRSMasteryPercent();
+                if (mastery >= 50) unlockAchievement('srs-mastery-50');
+                if (mastery >= 100) unlockAchievement('srs-mastery-100');
 
                 document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
                 document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
@@ -4647,30 +4696,44 @@
                 appState.lessonsCompleted++;
             }
 
-            // Check achievements
-            if (appState.lessonsCompleted === 1) {
-                unlockAchievement('first-lesson');
-            }
-            if (appState.lessonsCompleted >= 10) {
-                unlockAchievement('lessons-10');
-            }
-            if (appState.lessonsCompleted >= 50) {
-                unlockAchievement('lessons-50');
-            }
-            if (appState.lessonsCompleted >= 100) {
-                unlockAchievement('lessons-100');
-            }
-            if (appState.points >= 100) {
-                unlockAchievement('points-100');
-            }
-            if (appState.points >= 1000) {
-                unlockAchievement('points-1000');
-            }
+            // Check achievements - Lessons
+            if (appState.lessonsCompleted >= 1) unlockAchievement('first-lesson');
+            if (appState.lessonsCompleted >= 5) unlockAchievement('lessons-5');
+            if (appState.lessonsCompleted >= 10) unlockAchievement('lessons-10');
+            if (appState.lessonsCompleted >= 25) unlockAchievement('lessons-25');
+            if (appState.lessonsCompleted >= 50) unlockAchievement('lessons-50');
+            if (appState.lessonsCompleted >= 100) unlockAchievement('lessons-100');
+            if (appState.currentLesson >= TOTAL_LESSONS) unlockAchievement('all-lessons');
+
+            // Points
+            if (appState.points >= 100) unlockAchievement('points-100');
+            if (appState.points >= 500) unlockAchievement('points-500');
+            if (appState.points >= 1000) unlockAchievement('points-1000');
+            if (appState.points >= 5000) unlockAchievement('points-5000');
+
+            // Accuracy
             if (lessonState.wrongInLesson === 0) {
                 unlockAchievement('perfect');
+                // Track consecutive perfect lessons
+                if (!appState.perfectCount) appState.perfectCount = 0;
+                appState.perfectCount++;
+                if (appState.perfectCount >= 3) unlockAchievement('perfect-3');
+                if (appState.perfectCount >= 10) unlockAchievement('perfect-10');
             }
-            if (appState.currentLesson >= TOTAL_LESSONS) {
-                unlockAchievement('all-lessons');
+
+            // Total correct answers
+            if (appState.totalCorrect >= 100) unlockAchievement('correct-100');
+            if (appState.totalCorrect >= 500) unlockAchievement('correct-500');
+
+            // Word collection (unique words learned via SRS)
+            const srsWordCount = appState.srs ? Object.keys(appState.srs).length : 0;
+            if (srsWordCount >= 50) unlockAchievement('word-collector-50');
+            if (srsWordCount >= 200) unlockAchievement('word-collector-200');
+            if (srsWordCount >= 500) unlockAchievement('word-collector-500');
+
+            // Speed demon - completed lesson in under 30 seconds
+            if (lessonState._startTime && (Date.now() - lessonState._startTime) < 30000) {
+                unlockAchievement('speed-demon');
             }
 
             // Initialize SRS tracking for all words in this lesson
@@ -4822,6 +4885,24 @@
             const date = new Date(timestamp);
             return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         }
+
+        // Set up Check button to not steal focus from input on mobile
+        (function() {
+            const btn = document.getElementById('speedSubmitBtn');
+            // touchstart: submit immediately and prevent keyboard from closing
+            btn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                submitSpeedAnswer();
+            }, { passive: false });
+            // mousedown: prevent focus steal on desktop
+            btn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+            // click: desktop fallback (won't fire on mobile due to touchstart preventDefault)
+            btn.addEventListener('click', function() {
+                submitSpeedAnswer();
+            });
+        })();
 
         function startSpeedChallenge(level) {
             speedState.level = level;
