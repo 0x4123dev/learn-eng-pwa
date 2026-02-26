@@ -4866,10 +4866,6 @@
             inputV3.value = '';
             inputV2.className = '';
             inputV3.className = '';
-            inputV2.readOnly = false;
-            inputV3.readOnly = false;
-            inputV2.disabled = false;
-            inputV3.disabled = false;
             inputV2.focus();
 
             // Clear feedback
@@ -4923,8 +4919,6 @@
             // Show correct answer
             document.getElementById('inputV2').classList.add('wrong');
             document.getElementById('inputV3').classList.add('wrong');
-            document.getElementById('inputV2').readOnly = true;
-            document.getElementById('inputV3').readOnly = true;
             document.getElementById('speedSubmitBtn').disabled = true;
 
             const feedback = document.getElementById('speedFeedback');
@@ -4970,11 +4964,10 @@
             const isV2Correct = correctV2.some(v => v.trim() === userV2);
             const isV3Correct = correctV3.some(v => v.trim() === userV3);
 
-            inputV2.readOnly = true;
-            inputV3.readOnly = true;
             document.getElementById('speedSubmitBtn').disabled = true;
 
-            // Keep focus on inputV2 during feedback to keep mobile keyboard open
+            // Keep inputV2 focused and editable to keep mobile keyboard open
+            // isAnswering=false already prevents double submission
             inputV2.focus();
 
             const feedback = document.getElementById('speedFeedback');
