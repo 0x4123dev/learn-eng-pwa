@@ -3285,15 +3285,15 @@
             <div class="speed-inputs">
                 <div class="speed-input-group">
                     <label>V2 (Past)</label>
-                    <input type="text" id="inputV2" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other">
+                    <input type="text" id="inputV2" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other" onkeydown="if(event.key==='Enter'){document.getElementById('inputV3').focus();event.preventDefault()}">
                 </div>
                 <div class="speed-input-group">
                     <label>V3 (Past Participle)</label>
-                    <input type="text" id="inputV3" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other">
+                    <input type="text" id="inputV3" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-form-type="other" onkeydown="if(event.key==='Enter'){submitSpeedAnswer();event.preventDefault()}">
                 </div>
             </div>
 
-            <button class="speed-submit-btn" id="speedSubmitBtn" onclick="submitSpeedAnswer()">
+            <button class="speed-submit-btn" id="speedSubmitBtn" onclick="submitSpeedAnswer()" onmousedown="event.preventDefault()">
                 ✓ Check
             </button>
 
