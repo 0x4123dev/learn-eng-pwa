@@ -670,18 +670,76 @@ function formatDate(timestamp) {
 }
 
 // ==================== TEXT-TO-SPEECH ====================
-function speakWord(word) {
-    if ('speechSynthesis' in window) {
-        // Cancel any ongoing speech
-        window.speechSynthesis.cancel();
+const audioCache = {};
+let currentAudio = null;
 
+function speakWord(word) {
+    const key = word.toLowerCase().trim();
+
+    // Stop any currently playing audio
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+    }
+
+    // If we already have the audio URL cached, play it directly
+    if (audioCache[key]) {
+        playAudio(audioCache[key]);
+        return;
+    }
+
+    // Try Free Dictionary API for real human pronunciation
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`)
+        .then(res => {
+            if (!res.ok) throw new Error('not found');
+            return res.json();
+        })
+        .then(data => {
+            // Find the first available audio URL
+            let audioUrl = null;
+            for (const entry of data) {
+                for (const phonetic of (entry.phonetics || [])) {
+                    if (phonetic.audio) {
+                        audioUrl = phonetic.audio;
+                        break;
+                    }
+                }
+                if (audioUrl) break;
+            }
+            if (audioUrl) {
+                audioCache[key] = audioUrl;
+                playAudio(audioUrl);
+            } else {
+                speakWordFallback(word);
+            }
+        })
+        .catch(() => {
+            speakWordFallback(word);
+        });
+}
+
+function playAudio(url) {
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.play().catch(() => {
+        // If audio play fails, use fallback
+        speakWordFallback(url);
+    });
+}
+
+function speakWordFallback(word) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.lang = 'en-US';
-        utterance.rate = 0.9; // Slightly slower for learning
+        utterance.rate = 0.9;
         utterance.pitch = 1;
         utterance.volume = 1;
 
-        // Try to use a good English voice
         const voices = window.speechSynthesis.getVoices();
         const englishVoice = voices.find(voice =>
             voice.lang.startsWith('en') && voice.name.includes('Female')
@@ -691,7 +749,6 @@ function speakWord(word) {
         if (englishVoice) {
             utterance.voice = englishVoice;
         }
-
         window.speechSynthesis.speak(utterance);
     }
 }
