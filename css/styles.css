@@ -306,6 +306,39 @@
             animation: shake 0.4s ease;
         }
 
+        .passcode-digit-display {
+            width: 55px;
+            height: 65px;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 59px;
+            font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .passcode-digit-display.active {
+            border-color: var(--accent-green);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+        }
+
+        .passcode-digit-display.filled {
+            background: var(--matched);
+            border-color: var(--accent-green);
+        }
+
+        .passcode-digit-display.error {
+            border-color: var(--error);
+            background: var(--wrong);
+            animation: shake 0.4s ease;
+        }
+
         .passcode-error {
             color: var(--error);
             font-size: 13px;

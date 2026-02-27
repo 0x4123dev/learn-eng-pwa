@@ -298,18 +298,30 @@ function createUser(e) {
 
 // ==================== PASSCODE FUNCTIONS ====================
 function getPasscodeValue(type) {
+    if (type === 'login') {
+        return document.getElementById('passcodeHiddenInput').value;
+    }
     const container = document.getElementById(
-        type === 'create' ? 'createPasscode' :
-        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+        type === 'create' ? 'createPasscode' : 'confirmPasscode'
     );
     const inputs = container.querySelectorAll('.passcode-digit');
     return Array.from(inputs).map(i => i.value).join('');
 }
 
 function clearPasscodeInputs(type) {
+    if (type === 'login') {
+        const hidden = document.getElementById('passcodeHiddenInput');
+        hidden.value = '';
+        const displays = document.querySelectorAll('#loginPasscode .passcode-digit-display');
+        displays.forEach(d => {
+            d.textContent = '';
+            d.classList.remove('filled', 'error', 'active');
+        });
+        if (displays[0]) displays[0].classList.add('active');
+        return;
+    }
     const container = document.getElementById(
-        type === 'create' ? 'createPasscode' :
-        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+        type === 'create' ? 'createPasscode' : 'confirmPasscode'
     );
     const inputs = container.querySelectorAll('.passcode-digit');
     inputs.forEach(i => {
@@ -320,18 +332,43 @@ function clearPasscodeInputs(type) {
 }
 
 function shakePasscodeInputs(type) {
+    if (type === 'login') {
+        const displays = document.querySelectorAll('#loginPasscode .passcode-digit-display');
+        displays.forEach(d => d.classList.add('error'));
+        setTimeout(() => {
+            displays.forEach(d => d.classList.remove('error'));
+            clearPasscodeInputs('login');
+            document.getElementById('passcodeHiddenInput').focus();
+        }, 400);
+        return;
+    }
     const container = document.getElementById(
-        type === 'create' ? 'createPasscode' :
-        type === 'confirm' ? 'confirmPasscode' : 'loginPasscode'
+        type === 'create' ? 'createPasscode' : 'confirmPasscode'
     );
     const inputs = container.querySelectorAll('.passcode-digit');
-    inputs.forEach(i => {
-        i.classList.add('error');
-    });
+    inputs.forEach(i => i.classList.add('error'));
     setTimeout(() => {
         inputs.forEach(i => i.classList.remove('error'));
         clearPasscodeInputs(type);
     }, 400);
+}
+
+function handleHiddenPasscodeInput(input) {
+    // Only keep digits
+    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    const val = input.value;
+    const displays = document.querySelectorAll('#loginPasscode .passcode-digit-display');
+
+    displays.forEach((d, i) => {
+        d.textContent = val[i] ? '●' : '';
+        d.classList.toggle('filled', !!val[i]);
+        d.classList.toggle('active', i === val.length && val.length < 4);
+    });
+
+    // Auto-submit when 4 digits entered
+    if (val.length === 4) {
+        setTimeout(() => verifyPasscode(), 100);
+    }
 }
 
 function handlePasscodeInput(input, type) {
@@ -379,15 +416,17 @@ function showPasscodeModal(username) {
     document.getElementById('loginPasscodeError').textContent = '';
     clearPasscodeInputs('login');
 
-    document.getElementById('passcodeModal').classList.add('active');
+    // Focus hidden input BEFORE showing modal - stays in user gesture chain for iOS
+    const hiddenInput = document.getElementById('passcodeHiddenInput');
+    hiddenInput.value = '';
+    hiddenInput.focus();
 
-    // Focus synchronously to keep iOS user-gesture chain alive for keyboard
-    const firstInput = document.querySelector('#loginPasscode .passcode-digit');
-    if (firstInput) firstInput.focus();
+    document.getElementById('passcodeModal').classList.add('active');
 }
 
 function closePasscodeModal() {
     document.getElementById('passcodeModal').classList.remove('active');
+    document.getElementById('passcodeHiddenInput').blur();
     pendingLoginUser = null;
     clearPasscodeInputs('login');
 }

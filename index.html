@@ -504,17 +504,22 @@
     </div>
 
     <!-- Passcode Verification Modal -->
+    <!-- Hidden input always in DOM for iOS keyboard focus -->
+    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="passcodeHiddenInput" autocomplete="off"
+        style="position:fixed;top:-100px;left:0;opacity:0;width:1px;height:1px;border:none;padding:0;"
+        oninput="handleHiddenPasscodeInput(this)">
+
     <div class="passcode-modal" id="passcodeModal">
         <div class="passcode-modal-content">
             <div class="passcode-modal-avatar" id="passcodeModalAvatar">😊</div>
             <div class="passcode-modal-name" id="passcodeModalName">User</div>
             <div class="passcode-modal-label">Enter your 4-digit passcode</div>
             <div class="passcode-modal-inputs">
-                <div class="passcode-inputs" id="loginPasscode">
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="passcode-digit" data-index="0" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="passcode-digit" data-index="1" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="passcode-digit" data-index="2" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="passcode-digit" data-index="3" oninput="handlePasscodeInput(this, 'login')" onkeydown="handlePasscodeKeydown(event, this, 'login')">
+                <div class="passcode-inputs" id="loginPasscode" onclick="document.getElementById('passcodeHiddenInput').focus()">
+                    <div class="passcode-digit-display" data-index="0"></div>
+                    <div class="passcode-digit-display" data-index="1"></div>
+                    <div class="passcode-digit-display" data-index="2"></div>
+                    <div class="passcode-digit-display" data-index="3"></div>
                 </div>
             </div>
             <div class="passcode-modal-error" id="loginPasscodeError"></div>
