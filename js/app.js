@@ -683,9 +683,6 @@ function speakWord(word) {
         currentAudio.currentTime = 0;
         currentAudio = null;
     }
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-    }
 
     // If preloaded audio is ready, play it instantly
     if (audioCache[key]) {
@@ -741,25 +738,28 @@ function preloadLessonAudio(words) {
 }
 
 function speakWordFallback(word) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+    if (!('speechSynthesis' in window)) return;
+
+    const synth = window.speechSynthesis;
+    synth.cancel();
+
+    // iOS Safari needs a brief pause after cancel() before speak() will work
+    setTimeout(() => {
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.lang = 'en-US';
         utterance.rate = 0.9;
         utterance.pitch = 1;
         utterance.volume = 1;
 
-        const voices = window.speechSynthesis.getVoices();
-        const englishVoice = voices.find(voice =>
-            voice.lang.startsWith('en') && voice.name.includes('Female')
-        ) || voices.find(voice => voice.lang.startsWith('en-US'))
-          || voices.find(voice => voice.lang.startsWith('en'));
+        const voices = synth.getVoices();
+        const englishVoice = voices.find(v =>
+            v.lang.startsWith('en') && v.name.includes('Female')
+        ) || voices.find(v => v.lang.startsWith('en-US'))
+          || voices.find(v => v.lang.startsWith('en'));
 
-        if (englishVoice) {
-            utterance.voice = englishVoice;
-        }
-        window.speechSynthesis.speak(utterance);
-    }
+        if (englishVoice) utterance.voice = englishVoice;
+        synth.speak(utterance);
+    }, 50);
 }
 
 // Load voices when available

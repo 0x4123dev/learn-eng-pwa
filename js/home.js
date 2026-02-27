@@ -509,7 +509,9 @@ function openWordOfDayStory(word) {
         `;
     }
 
-    overlay.onclick = () => {
+    overlay.onclick = (e) => {
+        // Don't advance panel when tapping the Listen button
+        if (e.target.closest('.wotd-speak-btn')) return;
         panelIndex++;
         if (panelIndex >= panels.length) {
             overlay.classList.remove('active');
