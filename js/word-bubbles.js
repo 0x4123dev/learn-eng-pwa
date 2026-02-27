@@ -62,11 +62,12 @@ function renderBubblesUI() {
                 <div class="bubbles-lives" id="bubblesLives">
                     ${'❤️'.repeat(bubblesState.lives)}${'🖤'.repeat(3 - bubblesState.lives)}
                 </div>
-                <div class="bubbles-round">Round <span id="bubblesRound">${bubblesState.round}</span>/${bubblesState.totalRounds}</div>
+                <div class="bubbles-round"><span id="bubblesRound">${bubblesState.round}</span>/${bubblesState.totalRounds}</div>
             </div>
 
             <div class="bubbles-clue" id="bubblesClue">
-                <div class="bubbles-clue-label">Tap the correct English word:</div>
+                <div class="bubbles-clue-label">Tap the correct English word</div>
+                <div class="bubbles-clue-emoji" id="bubblesClueEmoji"></div>
                 <div class="bubbles-clue-word" id="bubblesClueWord">...</div>
             </div>
 
@@ -101,12 +102,20 @@ function startBubblesRound() {
     const scoreEl = document.getElementById('bubblesScore');
     const roundEl = document.getElementById('bubblesRound');
     const livesEl = document.getElementById('bubblesLives');
+    const emojiEl = document.getElementById('bubblesClueEmoji');
     const clueEl = document.getElementById('bubblesClueWord');
 
     if (scoreEl) scoreEl.textContent = bubblesState.score;
     if (roundEl) roundEl.textContent = bubblesState.round;
     if (livesEl) livesEl.innerHTML = '❤️'.repeat(bubblesState.lives) + '🖤'.repeat(3 - bubblesState.lives);
-    if (clueEl) clueEl.textContent = `${correct.emoji} ${correct.vi}`;
+    if (emojiEl) emojiEl.textContent = correct.emoji;
+    if (clueEl) {
+        clueEl.textContent = correct.vi;
+        // Re-trigger clue animation
+        clueEl.style.animation = 'none';
+        clueEl.offsetHeight;
+        clueEl.style.animation = '';
+    }
 
     spawnBubbles(options, correct);
 }
@@ -129,8 +138,9 @@ function spawnBubbles(options, correct) {
         const isCorrect = word.en === correct.en;
         bubble.dataset.correct = isCorrect ? '1' : '0';
         bubble.style.left = `${positions[i]}%`;
-        bubble.style.animationDuration = `${bubblesState.animationDuration + (Math.random() * 1.5)}s`;
-        bubble.style.animationDelay = `${i * 0.3}s`;
+        const riseDur = bubblesState.animationDuration + (Math.random() * 1.5);
+        bubble.style.animationDuration = `${riseDur}s, 2.5s`;
+        bubble.style.animationDelay = `${i * 0.3}s, ${Math.random() * 0.5}s`;
 
         bubble.innerHTML = `<span class="bubble-text">${word.en}</span>`;
         bubble.onclick = function() { tapBubble(this, isCorrect); };
@@ -165,10 +175,26 @@ function tapBubble(el, isCorrect) {
 
     if (isCorrect) {
         el.classList.add('pop-correct');
-        bubblesState.score += 10 + Math.floor(bubblesState.round * 1.5);
+        const earned = 10 + Math.floor(bubblesState.round * 1.5);
+        bubblesState.score += earned;
+
+        // Show floating score
+        const arena = document.getElementById('bubblesArena');
+        const floater = document.createElement('div');
+        floater.className = 'bubble-score-float';
+        floater.textContent = `+${earned}`;
+        const rect = el.getBoundingClientRect();
+        const arenaRect = arena.getBoundingClientRect();
+        floater.style.left = `${rect.left - arenaRect.left + rect.width / 2 - 20}px`;
+        floater.style.top = `${rect.top - arenaRect.top}px`;
+        arena.appendChild(floater);
+        setTimeout(() => floater.remove(), 800);
+
+        // Update score display
+        const scoreEl = document.getElementById('bubblesScore');
+        if (scoreEl) scoreEl.textContent = bubblesState.score;
 
         // Pop all remaining bubbles
-        const arena = document.getElementById('bubblesArena');
         arena.querySelectorAll('.bubble:not(.popped)').forEach(b => {
             b.classList.add('popped', 'pop-fade');
         });
@@ -197,6 +223,10 @@ function updateBubblesLives() {
     const livesEl = document.getElementById('bubblesLives');
     if (livesEl) {
         livesEl.innerHTML = '❤️'.repeat(Math.max(0, bubblesState.lives)) + '🖤'.repeat(3 - Math.max(0, bubblesState.lives));
+        // Trigger shake animation
+        livesEl.classList.remove('shake');
+        livesEl.offsetHeight;
+        livesEl.classList.add('shake');
     }
 }
 
@@ -234,15 +264,32 @@ function onBubblesEnd() {
 
     // Show results
     const overlay = document.getElementById('bubblesOverlay');
-    const isNewHigh = bubblesState.score === appState.bubblesStats.highScore;
+    const isNewHigh = bubblesState.score === appState.bubblesStats.highScore && bubblesState.score > 0;
+    const won = bubblesState.lives > 0;
+
+    if (won || isNewHigh) {
+        try { createConfetti(); } catch(e) {}
+    }
 
     overlay.innerHTML = `
         <div class="bubbles-container">
             <div class="bubbles-complete">
-                <div class="bubbles-complete-icon">${bubblesState.lives > 0 ? '🎉' : '😔'}</div>
-                <h2>${bubblesState.lives > 0 ? 'Great job!' : 'Game Over'}</h2>
-                <div class="bubbles-complete-score">Score: ${bubblesState.score}</div>
-                <div class="bubbles-complete-rounds">Rounds: ${completedRounds}/${bubblesState.totalRounds}</div>
+                <div class="bubbles-complete-icon">${won ? '🎉' : '😔'}</div>
+                <h2>${won ? 'Great job!' : 'Game Over'}</h2>
+                <div class="bubbles-complete-stats">
+                    <div class="bubbles-stat-card">
+                        <div class="bubbles-stat-value">${bubblesState.score}</div>
+                        <div class="bubbles-stat-label">Score</div>
+                    </div>
+                    <div class="bubbles-stat-card">
+                        <div class="bubbles-stat-value">${completedRounds}/${bubblesState.totalRounds}</div>
+                        <div class="bubbles-stat-label">Rounds</div>
+                    </div>
+                    <div class="bubbles-stat-card">
+                        <div class="bubbles-stat-value">${bubblesState.lives}</div>
+                        <div class="bubbles-stat-label">Lives</div>
+                    </div>
+                </div>
                 ${isNewHigh ? '<div class="bubbles-new-record">🏆 New High Score!</div>' : ''}
                 <div class="bubbles-complete-points">+${bubblesState.score} points</div>
                 <button class="bubbles-action-btn" onclick="startWordBubbles()">Play Again</button>
