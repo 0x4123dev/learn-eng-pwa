@@ -381,12 +381,9 @@ function showPasscodeModal(username) {
 
     document.getElementById('passcodeModal').classList.add('active');
 
-    // Focus first input to auto-show keyboard on mobile
-    // Must stay within ~300ms of user tap to count as user gesture
-    requestAnimationFrame(() => {
-        const firstInput = document.querySelector('#loginPasscode .passcode-digit');
-        if (firstInput) firstInput.focus();
-    });
+    // Focus synchronously to keep iOS user-gesture chain alive for keyboard
+    const firstInput = document.querySelector('#loginPasscode .passcode-digit');
+    if (firstInput) firstInput.focus();
 }
 
 function closePasscodeModal() {
