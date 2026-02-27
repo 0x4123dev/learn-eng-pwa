@@ -306,15 +306,6 @@
                 <div class="essays-categories" id="essaysCategoriesList"></div>
             </div>
 
-            <!-- Games Screen -->
-            <div class="screen games-screen" id="gamesScreen">
-                <div class="games-header">
-                    <h1 class="games-title">🎮 Games</h1>
-                    <p class="games-subtitle">Have fun while learning!</p>
-                </div>
-                <div id="gamesLobby"></div>
-            </div>
-
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
                 <button class="profile-back-btn" onclick="navigateFromProfile()">← Back</button>
@@ -380,9 +371,9 @@
                 <span class="icon">📖</span>
                 <span>Essays</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('gamesScreen')">
-                <span class="icon">🎮</span>
-                <span>Games</span>
+            <button class="nav-item" onclick="startWordBubbles()">
+                <span class="icon">🫧</span>
+                <span>Bubbles</span>
             </button>
         </nav>
     </div>
@@ -404,9 +395,6 @@
 
     <!-- Word Hunt Overlay -->
     <div class="word-hunt-overlay" id="wordHuntOverlay"></div>
-
-    <!-- Hangman Overlay -->
-    <div class="hangman-overlay" id="hangmanOverlay"></div>
 
     <!-- Word Bubbles Overlay -->
     <div class="bubbles-overlay" id="bubblesOverlay"></div>
@@ -598,8 +586,6 @@
     <script src="js/sentence-builder.js"></script>
     <script src="js/battle.js"></script>
     <script src="js/word-hunt.js"></script>
-    <script src="js/games.js"></script>
-    <script src="js/hangman.js"></script>
     <script src="js/word-bubbles.js"></script>
 </body>
 </html>

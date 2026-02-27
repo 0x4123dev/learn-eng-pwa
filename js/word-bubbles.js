@@ -1,5 +1,18 @@
 // word-bubbles.js - Word Bubbles vocabulary game
 
+function getGameWordPool(min) {
+    min = min || 20;
+    var learned = [];
+    if (appState && appState.srs) {
+        Object.keys(appState.srs).forEach(function(word) {
+            var entry = ieltsVocabulary.find(function(v) { return v.en === word; });
+            if (entry) learned.push(entry);
+        });
+    }
+    if (learned.length >= min) return shuffleArray(learned);
+    return shuffleArray(ieltsVocabulary.slice(0, Math.max(min, 50)));
+}
+
 let bubblesState = {
     pool: [],
     currentWord: null,
@@ -233,7 +246,7 @@ function onBubblesEnd() {
                 ${isNewHigh ? '<div class="bubbles-new-record">🏆 New High Score!</div>' : ''}
                 <div class="bubbles-complete-points">+${bubblesState.score} points</div>
                 <button class="bubbles-action-btn" onclick="startWordBubbles()">Play Again</button>
-                <button class="bubbles-close-btn" onclick="closeBubbles()">Back to Games</button>
+                <button class="bubbles-close-btn" onclick="closeBubbles()">Close</button>
             </div>
         </div>
     `;
@@ -248,5 +261,4 @@ function closeBubbles() {
     overlay.classList.remove('active');
     overlay.innerHTML = '';
     document.getElementById('bottomNav').style.display = 'flex';
-    renderGamesLobby();
 }

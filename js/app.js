@@ -64,9 +64,6 @@ const achievements = [
     { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' },
 
     // Games
-    { id: 'hangman-first', name: 'First Hang', icon: '🎯' },
-    { id: 'hangman-10', name: 'Hangman Pro', icon: '🏅' },
-    { id: 'hangman-streak', name: 'Streak Master', icon: '🔥' },
     { id: 'bubbles-first', name: 'Bubble Pop', icon: '🫧' },
     { id: 'bubbles-10', name: 'Bubble Mania', icon: '🎪' },
     { id: 'bubbles-perfect', name: 'Perfect Bubbles', icon: '💯' }
@@ -505,7 +502,6 @@ function loginUser(username) {
     if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
-    if (appState.hangmanStats === undefined) appState.hangmanStats = { gamesPlayed: 0, wins: 0, bestStreak: 0, _currentStreak: 0 };
     if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0 };
     saveUserData(currentUser, appState);
 
@@ -658,7 +654,6 @@ function switchScreen(screenId) {
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'essaysScreen') renderEssays();
     if (screenId === 'profileScreen') renderProfile();
-    if (screenId === 'gamesScreen') renderGamesLobby();
 }
 
 function navigateToProfile() {
@@ -683,8 +678,7 @@ function navigateFromProfile() {
     const screenToNav = {
         homeScreen: 0,
         speedChallengeScreen: 1,
-        essaysScreen: 2,
-        gamesScreen: 3
+        essaysScreen: 2
     };
     const navIdx = screenToNav[_profileOriginScreen];
     const navItems = document.querySelectorAll('.nav-item');
@@ -694,7 +688,6 @@ function navigateFromProfile() {
     }
 
     if (_profileOriginScreen === 'homeScreen') renderHome();
-    if (_profileOriginScreen === 'gamesScreen') renderGamesLobby();
 }
 
 // ==================== UTILITIES ====================
