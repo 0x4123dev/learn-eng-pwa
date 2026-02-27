@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: content in safe zone (center 80%) -->
+  <rect width="512" height="512" fill="#4caf50"/>
+  <rect x="108" y="133" width="296" height="246" rx="20" fill="#fff"/>
+  <text x="256" y="290" font-size="130" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" fill="#4caf50">Aa</text>
+  <circle cx="360" cy="155" r="45" fill="#ff9800"/>
+  <text x="360" y="173" font-size="53" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif">&#x2713;</text>
+</svg>

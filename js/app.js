@@ -649,36 +649,8 @@ function createConfetti() {
 // ==================== PWA ====================
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        const swCode = `
-            const CACHE_NAME = 'flashlingo-v3';
-            self.addEventListener('install', (e) => {
-                self.skipWaiting();
-            });
-            self.addEventListener('fetch', (e) => {
-                e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-            });
-        `;
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
-
-    const manifest = {
-        name: 'FlashLingo',
-        short_name: 'FlashLingo',
-        display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#58cc02',
-        orientation: 'portrait',
-        icons: [{
-            src: 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#58cc02"/><text x="96" y="120" font-family="Arial" font-size="80" font-weight="bold" fill="white" text-anchor="middle">F</text></svg>`),
-            sizes: '192x192',
-            type: 'image/svg+xml'
-        }]
-    };
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));
-    document.head.appendChild(link);
 }
 
 // ==================== FORMAT DATE ====================
