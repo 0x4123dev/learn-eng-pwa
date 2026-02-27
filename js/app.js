@@ -61,7 +61,15 @@ const achievements = [
     { id: 'first-battle', name: 'Challenger', icon: '⚔️' },
     { id: 'battle-5', name: 'Warrior', icon: '🗡️' },
     { id: 'hunter-first', name: 'Word Hunter', icon: '🔍' },
-    { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' }
+    { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' },
+
+    // Games
+    { id: 'hangman-first', name: 'First Hang', icon: '🎯' },
+    { id: 'hangman-10', name: 'Hangman Pro', icon: '🏅' },
+    { id: 'hangman-streak', name: 'Streak Master', icon: '🔥' },
+    { id: 'bubbles-first', name: 'Bubble Pop', icon: '🫧' },
+    { id: 'bubbles-10', name: 'Bubble Mania', icon: '🎪' },
+    { id: 'bubbles-perfect', name: 'Perfect Bubbles', icon: '💯' }
 ];
 
 // ==================== GLOBAL STATE VARIABLES ====================
@@ -497,6 +505,8 @@ function loginUser(username) {
     if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
+    if (appState.hangmanStats === undefined) appState.hangmanStats = { gamesPlayed: 0, wins: 0, bestStreak: 0, _currentStreak: 0 };
+    if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0 };
     saveUserData(currentUser, appState);
 
     // Apply saved theme
@@ -633,17 +643,58 @@ function recordStudy() {
 }
 
 // ==================== NAVIGATION ====================
+let _profileOriginScreen = 'homeScreen';
+
 function switchScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    event.target.closest('.nav-item')?.classList.add('active');
+    if (typeof event !== 'undefined' && event && event.target) {
+        event.target.closest('.nav-item')?.classList.add('active');
+    }
 
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'essaysScreen') renderEssays();
     if (screenId === 'profileScreen') renderProfile();
+    if (screenId === 'gamesScreen') renderGamesLobby();
+}
+
+function navigateToProfile() {
+    // Remember which screen we came from
+    const activeScreen = document.querySelector('.screen.active');
+    _profileOriginScreen = activeScreen ? activeScreen.id : 'homeScreen';
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('profileScreen').classList.add('active');
+
+    // Clear nav highlight (profile is no longer a nav tab)
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    renderProfile();
+}
+
+function navigateFromProfile() {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(_profileOriginScreen).classList.add('active');
+
+    // Restore nav highlight
+    const screenToNav = {
+        homeScreen: 0,
+        speedChallengeScreen: 1,
+        essaysScreen: 2,
+        gamesScreen: 3
+    };
+    const navIdx = screenToNav[_profileOriginScreen];
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(n => n.classList.remove('active'));
+    if (navIdx !== undefined && navItems[navIdx]) {
+        navItems[navIdx].classList.add('active');
+    }
+
+    if (_profileOriginScreen === 'homeScreen') renderHome();
+    if (_profileOriginScreen === 'gamesScreen') renderGamesLobby();
 }
 
 // ==================== UTILITIES ====================

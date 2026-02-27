@@ -97,7 +97,7 @@
                 <div class="summer-sun"><img src="img/sun.svg" alt="sun"></div>
                 <div class="home-header" style="position:relative; z-index:1;">
                     <div class="home-user">
-                        <div class="home-user-avatar" id="homeAvatar">😊</div>
+                        <div class="home-user-avatar" id="homeAvatar" onclick="navigateToProfile()">😊</div>
                         <div class="home-user-info">
                             <span class="home-user-greeting">Hello sunshine,</span>
                             <span class="home-user-name" id="homeUsername">User</span>
@@ -306,8 +306,18 @@
                 <div class="essays-categories" id="essaysCategoriesList"></div>
             </div>
 
+            <!-- Games Screen -->
+            <div class="screen games-screen" id="gamesScreen">
+                <div class="games-header">
+                    <h1 class="games-title">🎮 Games</h1>
+                    <p class="games-subtitle">Have fun while learning!</p>
+                </div>
+                <div id="gamesLobby"></div>
+            </div>
+
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
+                <button class="profile-back-btn" onclick="navigateFromProfile()">← Back</button>
                 <div class="profile-header">
                     <div class="profile-avatar" id="profileAvatar">😊</div>
                     <h2 class="profile-name" id="profileName">User</h2>
@@ -370,9 +380,9 @@
                 <span class="icon">📖</span>
                 <span>Essays</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('profileScreen')">
-                <span class="icon">👤</span>
-                <span>Profile</span>
+            <button class="nav-item" onclick="switchScreen('gamesScreen')">
+                <span class="icon">🎮</span>
+                <span>Games</span>
             </button>
         </nav>
     </div>
@@ -394,6 +404,12 @@
 
     <!-- Word Hunt Overlay -->
     <div class="word-hunt-overlay" id="wordHuntOverlay"></div>
+
+    <!-- Hangman Overlay -->
+    <div class="hangman-overlay" id="hangmanOverlay"></div>
+
+    <!-- Word Bubbles Overlay -->
+    <div class="bubbles-overlay" id="bubblesOverlay"></div>
 
     <!-- Lesson Complete -->
     <div class="lesson-complete" id="lessonComplete">
@@ -582,5 +598,8 @@
     <script src="js/sentence-builder.js"></script>
     <script src="js/battle.js"></script>
     <script src="js/word-hunt.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/hangman.js"></script>
+    <script src="js/word-bubbles.js"></script>
 </body>
 </html>
