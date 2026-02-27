@@ -670,7 +670,8 @@ function formatDate(timestamp) {
 }
 
 // ==================== TEXT-TO-SPEECH ====================
-const audioCache = {};
+const audioCache = {};      // key -> Audio object (preloaded)
+const audioPending = {};    // key -> fetch promise (dedup in-flight requests)
 let currentAudio = null;
 
 function speakWord(word) {
@@ -686,20 +687,29 @@ function speakWord(word) {
         window.speechSynthesis.cancel();
     }
 
-    // If we already have the audio URL cached, play it directly
+    // If preloaded audio is ready, play it instantly
     if (audioCache[key]) {
-        playAudio(audioCache[key]);
+        const audio = audioCache[key].cloneNode();
+        currentAudio = audio;
+        audio.play().catch(() => speakWordFallback(word));
         return;
     }
 
-    // Try Free Dictionary API for real human pronunciation
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`)
+    // Not cached yet: play TTS instantly, fetch real audio in background for next time
+    speakWordFallback(word);
+    prefetchAudio(key);
+}
+
+function prefetchAudio(key) {
+    // Skip if already cached or already fetching
+    if (audioCache[key] || audioPending[key]) return;
+
+    audioPending[key] = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`)
         .then(res => {
             if (!res.ok) throw new Error('not found');
             return res.json();
         })
         .then(data => {
-            // Find the first available audio URL
             let audioUrl = null;
             for (const entry of data) {
                 for (const phonetic of (entry.phonetics || [])) {
@@ -711,23 +721,22 @@ function speakWord(word) {
                 if (audioUrl) break;
             }
             if (audioUrl) {
-                audioCache[key] = audioUrl;
-                playAudio(audioUrl);
-            } else {
-                speakWordFallback(word);
+                // Preload the audio file into browser cache
+                const audio = new Audio();
+                audio.preload = 'auto';
+                audio.src = audioUrl;
+                audioCache[key] = audio;
             }
         })
-        .catch(() => {
-            speakWordFallback(word);
-        });
+        .catch(() => {})
+        .finally(() => { delete audioPending[key]; });
 }
 
-function playAudio(url) {
-    const audio = new Audio(url);
-    currentAudio = audio;
-    audio.play().catch(() => {
-        // If audio play fails, use fallback
-        speakWordFallback(url);
+// Preload audio for an array of words (call when lesson starts)
+function preloadLessonAudio(words) {
+    words.forEach(w => {
+        const key = (w.en || w).toLowerCase().trim();
+        prefetchAudio(key);
     });
 }
 

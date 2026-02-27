@@ -46,6 +46,9 @@ function startLesson(lessonNum) {
     document.getElementById('lessonScreen').classList.add('active');
     document.getElementById('homeScreen').classList.remove('active');
 
+    // Preload pronunciation audio for all lesson words
+    preloadLessonAudio(lessonWords);
+
     renderMatchingRound();
 }
 

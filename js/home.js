@@ -293,6 +293,7 @@ function practiceMistakes() {
     document.getElementById('lessonScreen').classList.add('active');
     document.getElementById('homeScreen').classList.remove('active');
 
+    preloadLessonAudio(practiceWords);
     renderMatchingRound();
 }
 

@@ -96,5 +96,6 @@ function startReviewSession() {
     document.getElementById('lessonScreen').classList.add('active');
     document.getElementById('homeScreen').classList.remove('active');
 
+    preloadLessonAudio(reviewWords);
     renderMatchingRound();
 }
