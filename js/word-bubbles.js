@@ -34,8 +34,13 @@ function startWordBubbles() {
         return;
     }
 
+    // Pre-select unique correct words for each round
+    const correctWords = pool.slice(0, 10);
+    const distractorPool = pool.slice();
+
     bubblesState = {
-        pool: pool,
+        pool: distractorPool,
+        correctWords: correctWords,
         currentWord: null,
         round: 0,
         totalRounds: 10,
@@ -95,13 +100,14 @@ function startBubblesRound() {
     // Speed ramp: decrease duration every 3 rounds
     bubblesState.animationDuration = Math.max(3, 6 - Math.floor((bubblesState.round - 1) / 3) * 0.8);
 
-    // Pick correct word + 3 distractors
-    const shuffledPool = shuffleArray(bubblesState.pool);
-    const correct = shuffledPool[0];
+    // Use pre-selected correct word for this round (no repeats)
+    const correct = bubblesState.correctWords[bubblesState.round - 1];
     bubblesState.currentWord = correct;
 
-    // Pick 3 distractors different from correct
-    const distractors = shuffledPool.filter(w => w.en !== correct.en).slice(0, 3);
+    // Pick 3 distractors that aren't the correct word or other round answers nearby
+    const distractors = shuffleArray(
+        bubblesState.pool.filter(w => w.en !== correct.en)
+    ).slice(0, 3);
     const options = shuffleArray([correct, ...distractors]);
 
     // Update UI
