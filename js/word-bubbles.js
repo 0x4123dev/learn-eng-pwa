@@ -20,6 +20,8 @@ let bubblesState = {
     totalRounds: 10,
     score: 0,
     lives: 3,
+    combo: 0,
+    bestCombo: 0,
     animationDuration: 6, // seconds, decreases over rounds
     bubbleTimers: [],
     isActive: false
@@ -39,6 +41,8 @@ function startWordBubbles() {
         totalRounds: 10,
         score: 0,
         lives: 3,
+        combo: 0,
+        bestCombo: 0,
         animationDuration: 6,
         bubbleTimers: [],
         isActive: true
@@ -64,6 +68,8 @@ function renderBubblesUI() {
                 </div>
                 <div class="bubbles-round"><span id="bubblesRound">${bubblesState.round}</span>/${bubblesState.totalRounds}</div>
             </div>
+
+            <div class="bubbles-combo-banner" id="bubblesCombo"></div>
 
             <div class="bubbles-clue" id="bubblesClue">
                 <div class="bubbles-clue-label">Tap the correct English word</div>
@@ -154,6 +160,8 @@ function spawnBubbles(options, correct) {
         // Check if round was already handled
         const remaining = arena.querySelectorAll('.bubble:not(.popped)');
         if (remaining.length > 0) {
+            bubblesState.combo = 0;
+            hideComboBanner();
             bubblesState.lives--;
             updateBubblesLives();
             if (bubblesState.lives <= 0) {
@@ -175,20 +183,34 @@ function tapBubble(el, isCorrect) {
 
     if (isCorrect) {
         el.classList.add('pop-correct');
-        const earned = 10 + Math.floor(bubblesState.round * 1.5);
+
+        // Combo system
+        bubblesState.combo++;
+        if (bubblesState.combo > bubblesState.bestCombo) {
+            bubblesState.bestCombo = bubblesState.combo;
+        }
+
+        // Score with combo multiplier
+        const baseScore = 10 + Math.floor(bubblesState.round * 1.5);
+        const multiplier = getComboMultiplier(bubblesState.combo);
+        const earned = Math.floor(baseScore * multiplier);
         bubblesState.score += earned;
+
+        // Show combo banner
+        showComboBanner(bubblesState.combo, multiplier);
 
         // Show floating score
         const arena = document.getElementById('bubblesArena');
         const floater = document.createElement('div');
         floater.className = 'bubble-score-float';
-        floater.textContent = `+${earned}`;
+        floater.textContent = multiplier > 1 ? `+${earned} (x${multiplier})` : `+${earned}`;
+        if (bubblesState.combo >= 3) floater.classList.add('combo-bonus');
         const rect = el.getBoundingClientRect();
         const arenaRect = arena.getBoundingClientRect();
         floater.style.left = `${rect.left - arenaRect.left + rect.width / 2 - 20}px`;
         floater.style.top = `${rect.top - arenaRect.top}px`;
         arena.appendChild(floater);
-        setTimeout(() => floater.remove(), 800);
+        setTimeout(() => floater.remove(), 900);
 
         // Update score display
         const scoreEl = document.getElementById('bubblesScore');
@@ -208,6 +230,8 @@ function tapBubble(el, isCorrect) {
         }, 600);
     } else {
         el.classList.add('pop-wrong');
+        bubblesState.combo = 0;
+        hideComboBanner();
         bubblesState.lives--;
         updateBubblesLives();
 
@@ -286,8 +310,8 @@ function onBubblesEnd() {
                         <div class="bubbles-stat-label">Rounds</div>
                     </div>
                     <div class="bubbles-stat-card">
-                        <div class="bubbles-stat-value">${bubblesState.lives}</div>
-                        <div class="bubbles-stat-label">Lives</div>
+                        <div class="bubbles-stat-value">${bubblesState.bestCombo > 1 ? '🔥 ' + bubblesState.bestCombo : bubblesState.lives}</div>
+                        <div class="bubbles-stat-label">${bubblesState.bestCombo > 1 ? 'Best Combo' : 'Lives'}</div>
                     </div>
                 </div>
                 ${isNewHigh ? '<div class="bubbles-new-record">🏆 New High Score!</div>' : ''}
@@ -297,6 +321,53 @@ function onBubblesEnd() {
             </div>
         </div>
     `;
+}
+
+function getComboMultiplier(combo) {
+    if (combo >= 8) return 3;
+    if (combo >= 5) return 2;
+    if (combo >= 3) return 1.5;
+    return 1;
+}
+
+function getComboLabel(combo) {
+    if (combo >= 10) return { text: 'UNSTOPPABLE!', tier: 'legendary' };
+    if (combo >= 8) return { text: 'ON FIRE!', tier: 'fire' };
+    if (combo >= 5) return { text: 'Amazing!', tier: 'amazing' };
+    if (combo >= 3) return { text: 'TRIPLE!', tier: 'triple' };
+    if (combo >= 2) return { text: 'Nice!', tier: 'nice' };
+    return null;
+}
+
+function showComboBanner(combo, multiplier) {
+    const banner = document.getElementById('bubblesCombo');
+    if (!banner) return;
+
+    const label = getComboLabel(combo);
+    if (!label) {
+        banner.className = 'bubbles-combo-banner';
+        banner.innerHTML = '';
+        return;
+    }
+
+    banner.className = `bubbles-combo-banner active combo-${label.tier}`;
+    banner.innerHTML = `
+        <span class="combo-label">${label.text}</span>
+        <span class="combo-count">🔥 ${combo}x combo</span>
+        ${multiplier > 1 ? `<span class="combo-mult">x${multiplier} score</span>` : ''}
+    `;
+    // Re-trigger animation
+    banner.style.animation = 'none';
+    banner.offsetHeight;
+    banner.style.animation = '';
+}
+
+function hideComboBanner() {
+    const banner = document.getElementById('bubblesCombo');
+    if (banner) {
+        banner.className = 'bubbles-combo-banner';
+        banner.innerHTML = '';
+    }
 }
 
 function closeBubbles() {
