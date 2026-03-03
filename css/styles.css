@@ -1102,6 +1102,46 @@
             transform: scale(0.95);
         }
 
+        /* History Pagination */
+        .history-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 14px 0 4px;
+        }
+
+        .history-page-btn {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-green-dark);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .history-page-btn:active:not(:disabled) {
+            transform: scale(0.95);
+            background: var(--bg-secondary);
+        }
+
+        .history-page-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .history-page-info {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            min-width: 50px;
+            text-align: center;
+        }
+
         /* Mistakes Tab Content */
         .mistakes-container {
             display: none;

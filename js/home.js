@@ -145,6 +145,8 @@ function switchHistoryTab(tab) {
     }
 }
 
+const HISTORY_PAGE_SIZE = 10;
+
 function renderLessonHistory() {
     const historyContainer = document.getElementById('lessonHistory');
     let history = appState.lessonHistory || [];
@@ -159,16 +161,25 @@ function renderLessonHistory() {
     document.getElementById('mistakesCount').textContent = mistakes.length;
 
     if (history.length === 0) {
+        historyPage = 0;
         const filterName = selectedDifficultyFilter.charAt(0).toUpperCase() + selectedDifficultyFilter.slice(1);
         historyContainer.innerHTML = `<div class="empty-history">No ${filterName} lessons completed yet</div>`;
         return;
     }
 
-    // Show last 15 lessons, most recent first
-    const recentHistory = history.slice(-15).reverse();
+    // Most recent first
+    const sorted = history.slice().reverse();
+    const totalPages = Math.ceil(sorted.length / HISTORY_PAGE_SIZE);
+
+    // Clamp page
+    if (historyPage >= totalPages) historyPage = totalPages - 1;
+    if (historyPage < 0) historyPage = 0;
+
+    const start = historyPage * HISTORY_PAGE_SIZE;
+    const pageItems = sorted.slice(start, start + HISTORY_PAGE_SIZE);
 
     let html = '<div class="history-table">';
-    recentHistory.forEach((item, index) => {
+    pageItems.forEach((item, index) => {
         const startIdx = item.lessonNum * WORDS_PER_LESSON;
         const lessonWords = ieltsVocabulary.slice(startIdx, startIdx + WORDS_PER_LESSON);
         const wordTags = lessonWords.map(w => `<span class="history-word-tag" onclick="event.stopPropagation(); speakWord('${w.en.replace(/'/g, "\\'")}')">${w.en} 🔊</span>`).join('');
@@ -198,7 +209,22 @@ function renderLessonHistory() {
     });
     html += '</div>';
 
+    // Pagination controls
+    if (totalPages > 1) {
+        html += `
+        <div class="history-pagination">
+            <button class="history-page-btn" onclick="changeHistoryPage(-1)" ${historyPage === 0 ? 'disabled' : ''}>← Prev</button>
+            <span class="history-page-info">${historyPage + 1} / ${totalPages}</span>
+            <button class="history-page-btn" onclick="changeHistoryPage(1)" ${historyPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
+        </div>`;
+    }
+
     historyContainer.innerHTML = html;
+}
+
+function changeHistoryPage(delta) {
+    historyPage += delta;
+    renderLessonHistory();
 }
 
 function toggleHistoryDetail(index) {
@@ -355,6 +381,7 @@ function getNextLessonForDifficulty(difficultyKey) {
 
 function filterByDifficulty(level) {
     selectedDifficultyFilter = level;
+    historyPage = 0;
 
     // Update tab active states
     document.querySelectorAll('.difficulty-tab').forEach(tab => {

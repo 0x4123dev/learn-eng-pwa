@@ -93,6 +93,7 @@ let lessonState = {
 };
 
 let currentHistoryTab = 'history';
+let historyPage = 0;
 
 let pendingLoginUser = null;
 
