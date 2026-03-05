@@ -161,7 +161,13 @@ function createDefaultUserData(username, avatar, passcode) {
         dailyChallenge: { lastDate: null, streak: 0, bestStreak: 0 },
         wordOfDayViewed: null,
         sentences: [],
-        battleHistory: { wins: 0, losses: 0, draws: 0 }
+        battleHistory: { wins: 0, losses: 0, draws: 0 },
+        petName: null,
+        petHunger: 100,
+        petLastFed: Date.now(),
+        petAccessories: [],
+        activeAccessories: [],
+        petQuest: { lastDate: null, questId: null, completed: false }
     };
 }
 
@@ -504,7 +510,21 @@ function loginUser(username) {
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
     if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0 };
+
+    // Pet system migration
+    if (appState.petName === undefined) appState.petName = null;
+    if (appState.petHunger === undefined) appState.petHunger = appState.lastStudyDate === new Date().toDateString() ? 100 : 50;
+    if (appState.petLastFed === undefined) appState.petLastFed = appState.lastStudyDate ? new Date(appState.lastStudyDate).getTime() : Date.now();
+    if (appState.petAccessories === undefined) appState.petAccessories = [];
+    if (appState.activeAccessories === undefined) appState.activeAccessories = [];
+    if (appState.petQuest === undefined) appState.petQuest = { lastDate: null, questId: null, completed: false };
+
     saveUserData(currentUser, appState);
+
+    // Retroactive accessory check for existing users
+    if (appState.petName && typeof checkAccessoryUnlocks === 'function') {
+        checkAccessoryUnlocks(appState);
+    }
 
     // Apply saved theme
     applyTheme(appState.theme);

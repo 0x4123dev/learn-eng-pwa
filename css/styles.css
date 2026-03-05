@@ -1650,6 +1650,11 @@
             border-color: #f06292;
         }
 
+        .level-btn.level-5 {
+            background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
+            border-color: #9575cd;
+        }
+
         .level-btn.level-all {
             grid-column: span 2;
             background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
@@ -2521,6 +2526,7 @@
         .speed-history-icon.level-2 { background: #e3f2fd; }
         .speed-history-icon.level-3 { background: #fff3e0; }
         .speed-history-icon.level-4 { background: #fce4ec; }
+        .speed-history-icon.level-5 { background: #ede7f6; }
         .speed-history-icon.level-0 { background: #fff9c4; }
 
         .speed-history-info {
@@ -3144,6 +3150,195 @@
             40% { transform: rotate(15deg); }
             60% { transform: rotate(-10deg); }
             80% { transform: rotate(10deg); }
+        }
+
+        /* ==================== PET SCENE & HABITAT ==================== */
+        .pet-scene {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 8px;
+        }
+
+        .pet-bg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            pointer-events: none;
+            font-size: 22px;
+            padding: 4px 8px;
+            gap: 4px;
+        }
+
+        .pet-scene[data-stage="egg"]     { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
+        .pet-scene[data-stage="chick"]   { background: linear-gradient(180deg, #fffde7 0%, #c8e6c9 100%); }
+        .pet-scene[data-stage="bird"]    { background: linear-gradient(180deg, #bbdefb 0%, #c8e6c9 100%); }
+        .pet-scene[data-stage="phoenix"] { background: linear-gradient(180deg, #ff8a65 0%, #ffcc80 60%, #8d6e63 100%); }
+        .pet-scene[data-stage="dragon"]  { background: linear-gradient(180deg, #546e7a 0%, #90a4ae 60%, #d7ccc8 100%); }
+
+        .pet-scene.time-morning   { filter: brightness(1.05) sepia(0.05); }
+        .pet-scene.time-afternoon { filter: brightness(1.0); }
+        .pet-scene.time-evening   { filter: brightness(0.95) sepia(0.15); }
+        .pet-scene.time-night     { filter: brightness(0.75) saturate(0.8); }
+
+        /* Pet moods - hunger-aware */
+        .pet-creature.starving {
+            filter: grayscale(0.5) brightness(0.8);
+            animation: petSway 2s ease infinite;
+        }
+        .pet-creature.hungry {
+            animation: petSway 3s ease infinite;
+        }
+
+        /* Accessory positions */
+        .pet-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .pet-accessory {
+            position: absolute;
+            font-size: 20px;
+            pointer-events: none;
+        }
+        .pet-accessory.hat    { top: -4px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.glasses { top: 16px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.bow    { top: -4px; right: calc(50% - 28px); }
+        .pet-accessory.crown  { top: -8px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.scarf  { bottom: -4px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.rainbow { top: -8px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.flame  { top: -8px; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.diamond { bottom: -4px; right: calc(50% - 28px); }
+
+        /* Hunger hearts */
+        .pet-hunger {
+            display: flex;
+            gap: 2px;
+            font-size: 16px;
+            margin-top: 2px;
+            justify-content: center;
+        }
+
+        /* Accessories tray */
+        .pet-acc-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 4px;
+            color: var(--text-secondary);
+        }
+        .pet-acc-tray {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            padding: 6px 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            margin-top: 4px;
+            max-width: 200px;
+        }
+        .acc-slot {
+            font-size: 22px;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 2px 4px;
+            border: 2px solid transparent;
+        }
+        .acc-slot.equipped {
+            border-color: var(--accent-green);
+            background: rgba(76,175,80,0.1);
+        }
+
+        /* Daily pet quest */
+        .pet-quest {
+            width: 100%;
+            background: rgba(255,255,255,0.75);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 4px;
+            color: #333;
+        }
+        .pet-quest.completed { background: rgba(76,175,80,0.25); color: #2e7d32; }
+
+        /* Pet naming form */
+        .pet-name-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+        }
+        .pet-name-input {
+            border: 2px solid var(--accent-green);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+            width: 160px;
+        }
+        .pet-name-btn {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Evolution overlay */
+        .evolution-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+        .evolution-pet-emoji {
+            font-size: 96px;
+            animation: evolutionPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .evolution-title {
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            margin-top: 16px;
+            text-align: center;
+        }
+        .evolution-confetti {
+            position: absolute;
+            font-size: 24px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes evolutionPop {
+            0%   { transform: scale(0); opacity: 0; }
+            70%  { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(-40px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
         }
 
         /* ==================== WORD OF THE DAY ==================== */

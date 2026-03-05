@@ -251,8 +251,19 @@ function completeLesson() {
         // Track review count
         if (!appState.reviewsCompleted) appState.reviewsCompleted = 0;
         appState.reviewsCompleted += lessonState.words.length;
+        const _prevPointsR = appState.points;
         appState.points += lessonState.lessonPoints;
         saveUserData(currentUser, appState);
+
+        // Pet hooks
+        if (typeof feedPet === 'function') feedPet(20);
+        if (typeof checkQuestCompletion === 'function') checkQuestCompletion('srs');
+        if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
+        const _newStageR = getPetStage(appState.points);
+        const _oldStageR = getPetStage(_prevPointsR);
+        if (_newStageR.key !== _oldStageR.key) {
+            setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageR); }, 300);
+        }
 
         // Check SRS achievements
         unlockAchievement('srs-first');
@@ -285,8 +296,18 @@ function completeLesson() {
 
     // Handle practice session differently
     if (lessonState.isPracticeSession) {
+        const _prevPointsP = appState.points;
         appState.points += lessonState.lessonPoints;
         saveUserData(currentUser, appState);
+
+        // Pet hooks
+        if (typeof feedPet === 'function') feedPet(40);
+        if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
+        const _newStageP = getPetStage(appState.points);
+        const _oldStageP = getPetStage(_prevPointsP);
+        if (_newStageP.key !== _oldStageP.key) {
+            setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageP); }, 300);
+        }
 
         document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
         document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
@@ -319,6 +340,7 @@ function completeLesson() {
         appState.currentLesson = lessonState.lessonNumber + 1;
     }
 
+    const _prevPointsL = appState.points;
     appState.points += lessonState.lessonPoints;
 
     // Only increment lessonsCompleted if this was a new lesson (not a re-learn)
@@ -370,6 +392,16 @@ function completeLesson() {
     lessonState.words.forEach(w => initWordSRS(w.en));
 
     saveUserData(currentUser, appState);
+
+    // Pet hooks
+    if (typeof feedPet === 'function') feedPet(40);
+    if (typeof checkQuestCompletion === 'function') checkQuestCompletion('lesson', { accuracy });
+    if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
+    const _newStageL = getPetStage(appState.points);
+    const _oldStageL = getPetStage(_prevPointsL);
+    if (_newStageL.key !== _oldStageL.key) {
+        setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageL); }, 300);
+    }
 
     // Check sticker unlocks
     if (typeof checkStickerUnlocks === 'function') checkStickerUnlocks();

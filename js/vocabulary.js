@@ -2041,7 +2041,57 @@ const irregularVerbs = [
   { v1: 'withdraw', v2: 'withdrew', v3: 'withdrawn', vi: 'rút lui', level: 4 },
   { v1: 'bite', v2: 'bit', v3: 'bitten', vi: 'cắn', level: 4 },
   { v1: 'blow', v2: 'blew', v3: 'blown', vi: 'thổi', level: 4 },
-  { v1: 'freeze', v2: 'froze', v3: 'frozen', vi: 'đóng băng', level: 4 }
+  { v1: 'freeze', v2: 'froze', v3: 'frozen', vi: 'đóng băng', level: 4 },
+
+  // Level 3: Additional Upper-Intermediate
+  { v1: 'beat', v2: 'beat', v3: 'beaten', vi: 'đánh bại', level: 3 },
+  { v1: 'bet', v2: 'bet', v3: 'bet', vi: 'cá cược', level: 3 },
+  { v1: 'bend', v2: 'bent', v3: 'bent', vi: 'uốn cong', level: 3 },
+  { v1: 'bleed', v2: 'bled', v3: 'bled', vi: 'chảy máu', level: 3 },
+  { v1: 'deal', v2: 'dealt', v3: 'dealt', vi: 'giao dịch/xử lý', level: 3 },
+  { v1: 'dig', v2: 'dug', v3: 'dug', vi: 'đào', level: 3 },
+  { v1: 'feed', v2: 'fed', v3: 'fed', vi: 'cho ăn', level: 3 },
+  { v1: 'fight', v2: 'fought', v3: 'fought', vi: 'chiến đấu', level: 3 },
+  { v1: 'forgive', v2: 'forgave', v3: 'forgiven', vi: 'tha thứ', level: 3 },
+  { v1: 'hang', v2: 'hung', v3: 'hung', vi: 'treo', level: 3 },
+  { v1: 'lend', v2: 'lent', v3: 'lent', vi: 'cho mượn', level: 3 },
+  { v1: 'prove', v2: 'proved', v3: 'proven', vi: 'chứng minh', level: 3 },
+  { v1: 'quit', v2: 'quit', v3: 'quit', vi: 'bỏ', level: 3 },
+  { v1: 'seek', v2: 'sought', v3: 'sought', vi: 'tìm kiếm', level: 3 },
+  { v1: 'speed', v2: 'sped', v3: 'sped', vi: 'tăng tốc', level: 3 },
+
+  // Level 4: Additional Advanced
+  { v1: 'arise', v2: 'arose', v3: 'arisen', vi: 'phát sinh', level: 4 },
+  { v1: 'bear', v2: 'bore', v3: 'borne/born', vi: 'chịu/sinh', level: 4 },
+  { v1: 'bind', v2: 'bound', v3: 'bound', vi: 'trói/buộc', level: 4 },
+  { v1: 'breed', v2: 'bred', v3: 'bred', vi: 'nuôi giống', level: 4 },
+  { v1: 'cling', v2: 'clung', v3: 'clung', vi: 'bám chặt', level: 4 },
+  { v1: 'creep', v2: 'crept', v3: 'crept', vi: 'bò/lén đi', level: 4 },
+  { v1: 'flee', v2: 'fled', v3: 'fled', vi: 'chạy trốn', level: 4 },
+  { v1: 'forbid', v2: 'forbade', v3: 'forbidden', vi: 'cấm', level: 4 },
+  { v1: 'grind', v2: 'ground', v3: 'ground', vi: 'nghiền', level: 4 },
+  { v1: 'kneel', v2: 'knelt', v3: 'knelt', vi: 'quỳ', level: 4 },
+  { v1: 'leap', v2: 'leapt', v3: 'leapt', vi: 'nhảy', level: 4 },
+  { v1: 'shed', v2: 'shed', v3: 'shed', vi: 'rơi/rụng', level: 4 },
+  { v1: 'shrink', v2: 'shrank', v3: 'shrunk', vi: 'co lại', level: 4 },
+  { v1: 'spin', v2: 'spun', v3: 'spun', vi: 'quay', level: 4 },
+  { v1: 'spring', v2: 'sprang', v3: 'sprung', vi: 'bật lên', level: 4 },
+
+  // Level 5: Master (rare/literary)
+  { v1: 'awake', v2: 'awoke', v3: 'awoken', vi: 'thức dậy', level: 5 },
+  { v1: 'behold', v2: 'beheld', v3: 'beheld', vi: 'nhìn thấy', level: 5 },
+  { v1: 'dwell', v2: 'dwelt', v3: 'dwelt', vi: 'cư trú', level: 5 },
+  { v1: 'forsake', v2: 'forsook', v3: 'forsaken', vi: 'từ bỏ', level: 5 },
+  { v1: 'slay', v2: 'slew', v3: 'slain', vi: 'giết', level: 5 },
+  { v1: 'sow', v2: 'sowed', v3: 'sown', vi: 'gieo', level: 5 },
+  { v1: 'spit', v2: 'spat', v3: 'spat', vi: 'khạc nhổ', level: 5 },
+  { v1: 'sting', v2: 'stung', v3: 'stung', vi: 'đốt/chích', level: 5 },
+  { v1: 'stink', v2: 'stank', v3: 'stunk', vi: 'bốc mùi', level: 5 },
+  { v1: 'strive', v2: 'strove', v3: 'striven', vi: 'phấn đấu', level: 5 },
+  { v1: 'tread', v2: 'trod', v3: 'trodden', vi: 'giẫm', level: 5 },
+  { v1: 'undergo', v2: 'underwent', v3: 'undergone', vi: 'trải qua', level: 5 },
+  { v1: 'uphold', v2: 'upheld', v3: 'upheld', vi: 'ủng hộ/duy trì', level: 5 },
+  { v1: 'wind', v2: 'wound', v3: 'wound', vi: 'quấn', level: 5 }
 ];
 
 // Export for use in main app

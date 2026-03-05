@@ -92,6 +92,11 @@ function completeDailyChallenge() {
 
     saveUserData(currentUser, appState);
 
+    // Pet hooks
+    if (typeof feedPet === 'function') feedPet(25);
+    if (typeof checkQuestCompletion === 'function') checkQuestCompletion('challenge');
+    if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
+
     // Show treasure chest
     showTreasureChest(lessonState.lessonPoints + bonusPoints);
 }

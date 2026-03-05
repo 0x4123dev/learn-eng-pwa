@@ -422,32 +422,366 @@ function renderShields() {
 }
 
 // ==================== WORD PET ====================
+
+const PET_HABITATS = {
+    egg:     { decorations: ['🌿','🌿','🌱'] },
+    chick:   { decorations: ['🌸','🌿','🌼','🌸'] },
+    bird:    { decorations: ['🌳','🍃','🌿'] },
+    phoenix: { decorations: ['🌋','🔥','✨'] },
+    dragon:  { decorations: ['🏔️','☁️','⛰️'] }
+};
+
+const HUNGER_DECAY_SCHEDULE = [
+    { hoursWithout: 96, level: 0  },
+    { hoursWithout: 72, level: 25 },
+    { hoursWithout: 48, level: 50 },
+    { hoursWithout: 24, level: 75 },
+    { hoursWithout:  0, level: 100 }
+];
+
+const PET_PHRASES = {
+    happy: [
+        "I feel so smart today! 🌟",
+        "You're amazing! Teach me more!",
+        "Let's learn another word! 🎉",
+        "I love studying with you! ❤️",
+        "We're unstoppable! 💪"
+    ],
+    neutral: [
+        "I missed you… will you study today? 🥺",
+        "My tummy is rumbling…",
+        "One lesson? Please? 🥺",
+        "Come on, just one round! 🌱",
+        "I'm waiting for you! ⏳"
+    ],
+    sleepy: [
+        "Zzz… I'm so hungry… 💤",
+        "Where have you been? I've been waiting…",
+        "Please come back! I need you! 💤",
+        "I'm fading away… study with me? 😢",
+        "I miss learning new words… 😴"
+    ],
+    starving: [
+        "I'm so weak… please feed me! 😢",
+        "I can barely keep my eyes open… 💀",
+        "A lesson would save me right now…",
+        "Don't let me fade away! 😭",
+        "I need words to survive! 🆘"
+    ],
+    hungry: [
+        "My stomach is growling… 🥺",
+        "Just one little lesson? Please?",
+        "I could really use some brain food…",
+        "Feed me knowledge! 📚",
+        "A quick review would be delicious! 🍽️"
+    ]
+};
+
+const PET_ACCESSORIES = [
+    { id: 'hat',      emoji: '🎩', label: 'Top Hat',      cssClass: 'hat',
+      condition: s => (s.streak || 0) >= 5 },
+    { id: 'glasses',  emoji: '🕶️', label: 'Sunglasses',   cssClass: 'glasses',
+      condition: s => (s.lessonsCompleted || 0) >= 10 },
+    { id: 'bow',      emoji: '🎀', label: 'Bow',           cssClass: 'bow',
+      condition: s => (s.lessonsCompleted || 0) >= 25 },
+    { id: 'crown',    emoji: '⭐', label: 'Star Crown',    cssClass: 'crown',
+      condition: s => (s.streak || 0) >= 7 },
+    { id: 'scarf',    emoji: '🧣', label: 'Scarf',         cssClass: 'scarf',
+      condition: s => (s.lessonsCompleted || 0) >= 50 },
+    { id: 'rainbow',  emoji: '🌈', label: 'Rainbow Aura',  cssClass: 'rainbow',
+      condition: s => (s.lessonsCompleted || 0) >= 100 },
+    { id: 'flame',    emoji: '🔥', label: 'Flame Halo',    cssClass: 'flame',
+      condition: s => (s.streak || 0) >= 30 },
+    { id: 'diamond',  emoji: '💎', label: 'Diamond',       cssClass: 'diamond',
+      condition: s => (s.points || 0) >= 5000 }
+];
+
+const PET_QUESTS = [
+    { id: 'lesson',    text: 'Complete 1 lesson today',          pts: 20, hunger: 30,
+      eligible: () => true },
+    { id: 'perfect',   text: 'Get 100% accuracy in a lesson',   pts: 30, hunger: 40,
+      eligible: () => true },
+    { id: 'srs',       text: 'Complete an SRS review session',   pts: 20, hunger: 30,
+      eligible: s => s.srs && Object.keys(s.srs).length >= 3 },
+    { id: 'wotd',      text: 'Open the Word of the Day',        pts: 10, hunger: 20,
+      eligible: () => true },
+    { id: 'bubbles',   text: 'Play Word Bubbles',               pts: 20, hunger: 30,
+      eligible: () => true },
+    { id: 'challenge', text: 'Complete the Daily Challenge',     pts: 25, hunger: 35,
+      eligible: () => true },
+    { id: 'streak3',   text: 'Study 3 days in a row',           pts: 40, hunger: 50,
+      eligible: () => true }
+];
+
+let _accTrayOpen = false;
+
 function getPetStage(points) {
-    if (points >= 5000) return { emoji: '🐉', name: 'Dragon' };
-    if (points >= 2000) return { emoji: '🦅', name: 'Phoenix' };
-    if (points >= 500) return { emoji: '🐦', name: 'Bird' };
-    if (points >= 100) return { emoji: '🐣', name: 'Chick' };
-    return { emoji: '🥚', name: 'Egg' };
+    if (points >= 5000) return { emoji: '🐉', name: 'Dragon',  key: 'dragon'  };
+    if (points >= 2000) return { emoji: '🦅', name: 'Phoenix', key: 'phoenix' };
+    if (points >= 500)  return { emoji: '🐦', name: 'Bird',    key: 'bird'    };
+    if (points >= 100)  return { emoji: '🐣', name: 'Chick',   key: 'chick'   };
+    return                     { emoji: '🥚', name: 'Egg',     key: 'egg'     };
+}
+
+function computeCurrentHunger(state) {
+    if (!state.petLastFed) return 50;
+    const hoursSince = (Date.now() - state.petLastFed) / 3600000;
+    for (const step of HUNGER_DECAY_SCHEDULE) {
+        if (hoursSince >= step.hoursWithout) return step.level;
+    }
+    return 100;
+}
+
+function feedPet(amount) {
+    if (!appState) return;
+    appState.petHunger = Math.min(100, (appState.petHunger || 0) + amount);
+    appState.petLastFed = Date.now();
+    saveUserData(currentUser, appState);
 }
 
 function getPetMood() {
-    const today = new Date().toDateString();
+    const hunger = computeCurrentHunger(appState);
+    if (hunger === 0)  return 'starving';
+    if (hunger <= 25)  return 'hungry';
+    const today     = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (appState.lastStudyDate === today) return 'happy';
-    if (appState.lastStudyDate === yesterday) return 'neutral';
+    if (appState.lastStudyDate === today)      return 'happy';
+    if (appState.lastStudyDate === yesterday)  return 'neutral';
     return 'sleepy';
+}
+
+function getTimeOfDayClass() {
+    const h = new Date().getHours();
+    if (h >= 5  && h < 12) return 'time-morning';
+    if (h >= 12 && h < 18) return 'time-afternoon';
+    if (h >= 18 && h < 22) return 'time-evening';
+    return 'time-night';
 }
 
 function renderWordPet() {
     const container = document.getElementById('petContainer');
-    if (!container) return;
-    const pet = getPetStage(appState.points);
+    const scene     = document.getElementById('petScene');
+    const bg        = document.getElementById('petBg');
+    if (!container || !scene) return;
+
+    const pet  = getPetStage(appState.points);
     const mood = getPetMood();
+
+    // Habitat
+    scene.dataset.stage = pet.key;
+    scene.className = 'pet-scene ' + getTimeOfDayClass();
+    if (bg) {
+        const habitat = PET_HABITATS[pet.key];
+        bg.innerHTML = habitat.decorations.map(e => `<span>${e}</span>`).join('');
+    }
+
+    // Naming prompt (first time)
+    if (!appState.petName) {
+        container.innerHTML = `
+            <div class="pet-creature ${mood}">${pet.emoji}</div>
+            <div class="pet-name-form">
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary)">Name your pet!</div>
+                <input class="pet-name-input" id="petNameInput" type="text"
+                       maxlength="12" placeholder="Enter a name…"
+                       onkeydown="if(event.key==='Enter')savePetName()">
+                <button class="pet-name-btn" onclick="savePetName()">Name it! 🐾</button>
+            </div>
+        `;
+        return;
+    }
+
+    // Hunger hearts
+    const hunger = computeCurrentHunger(appState);
+    const filledHearts = Math.round(hunger / 20);
+    const heartsHTML = '❤️'.repeat(filledHearts) + '🖤'.repeat(5 - filledHearts);
+
+    // Active accessories
+    const active = appState.activeAccessories || [];
+    const accSpans = active.map(id => {
+        const acc = PET_ACCESSORIES.find(a => a.id === id);
+        if (!acc) return '';
+        return `<span class="pet-accessory ${acc.cssClass}">${acc.emoji}</span>`;
+    }).join('');
+
+    // Accessories tray toggle
+    const owned = appState.petAccessories || [];
+    const trayToggleHTML = owned.length > 0
+        ? `<button class="pet-acc-toggle" onclick="toggleAccTray()">👗 ${owned.length} <span style="font-size:10px">${_accTrayOpen ? '▲' : '▼'}</span></button>`
+        : '';
+    const trayHTML = _accTrayOpen ? renderAccTray() : '';
+
+    // Daily quest
+    const today = new Date().toDateString();
+    if (!appState.petQuest || appState.petQuest.lastDate !== today) {
+        const quest = getDailyQuest(appState);
+        if (!appState.petQuest) appState.petQuest = { lastDate: null, questId: null, completed: false };
+        appState.petQuest.lastDate = today;
+        appState.petQuest.questId  = quest.id;
+        appState.petQuest.completed = false;
+    }
+    const questData = PET_QUESTS.find(q => q.id === appState.petQuest.questId) || PET_QUESTS[0];
+    const questDone = appState.petQuest.completed;
+    const questHTML = `<div class="pet-quest ${questDone ? 'completed' : ''}">${questDone ? '✅' : '🐾'} ${questData.text}</div>`;
+
     container.innerHTML = `
-        <div class="pet-creature ${mood}" onclick="onPetTap()">${pet.emoji}</div>
-        <div class="pet-name">${pet.name}</div>
+        <div class="pet-wrapper">
+            <div class="pet-creature ${mood}" onclick="onPetTap()">${pet.emoji}</div>
+            ${accSpans}
+        </div>
+        <div class="pet-name">${appState.petName} <span style="font-weight:400;opacity:0.7">· ${pet.name}</span></div>
+        <div class="pet-hunger">${heartsHTML}</div>
+        ${trayToggleHTML}
+        ${trayHTML}
+        ${questHTML}
     `;
+
+    // Auto-show starving bubble
+    if (hunger === 0) {
+        setTimeout(() => showPetSpeechBubble("Please feed me! 😢"), 500);
+    }
 }
+
+function savePetName() {
+    const input = document.getElementById('petNameInput');
+    if (!input) return;
+    const name = input.value.trim();
+    if (!name) return;
+    appState.petName = name;
+    saveUserData(currentUser, appState);
+    // Check for retroactive accessories now that pet is named
+    checkAccessoryUnlocks(appState);
+    renderWordPet();
+}
+
+function renderAccTray() {
+    const owned  = appState.petAccessories  || [];
+    const active = appState.activeAccessories || [];
+    const slots  = owned.map(id => {
+        const acc   = PET_ACCESSORIES.find(a => a.id === id);
+        if (!acc) return '';
+        const equipped = active.includes(id);
+        return `<span class="acc-slot ${equipped ? 'equipped' : ''}"
+                      onclick="toggleAccessory('${id}')"
+                      title="${acc.label}">${acc.emoji}</span>`;
+    }).join('');
+    return `<div class="pet-acc-tray">${slots}</div>`;
+}
+
+function toggleAccTray() {
+    _accTrayOpen = !_accTrayOpen;
+    renderWordPet();
+}
+
+function toggleAccessory(id) {
+    const active = appState.activeAccessories || [];
+    if (active.includes(id)) {
+        appState.activeAccessories = active.filter(a => a !== id);
+    } else if (active.length < 3) {
+        appState.activeAccessories.push(id);
+    } else {
+        showToast('Only 3 accessories at once!');
+        return;
+    }
+    saveUserData(currentUser, appState);
+    renderWordPet();
+}
+
+function checkAccessoryUnlocks(state) {
+    if (!state || !state.petName) return;
+    if (!state.petAccessories) state.petAccessories = [];
+    if (!state.activeAccessories) state.activeAccessories = [];
+    const owned = state.petAccessories;
+    PET_ACCESSORIES.forEach(acc => {
+        if (!owned.includes(acc.id) && acc.condition(state)) {
+            state.petAccessories.push(acc.id);
+            if (state.activeAccessories.length < 3) {
+                state.activeAccessories.push(acc.id);
+            }
+            saveUserData(currentUser, state);
+            showToast(`${acc.emoji} New accessory: ${acc.label}!`);
+        }
+    });
+}
+
+function getDailyQuest(state) {
+    const dateStr = new Date().toDateString();
+    const eligible = PET_QUESTS.filter(q => q.eligible(state));
+    if (eligible.length === 0) return PET_QUESTS[0];
+    const rng   = seededRandom('pet-quest-' + dateStr);
+    const index = Math.floor(rng() * eligible.length);
+    return eligible[index] || PET_QUESTS[0];
+}
+
+function checkQuestCompletion(triggerQuestId, extraContext) {
+    if (!appState || !appState.petName) return;
+    const today = new Date().toDateString();
+    if (!appState.petQuest) appState.petQuest = { lastDate: null, questId: null, completed: false };
+    const q = appState.petQuest;
+
+    if (q.lastDate !== today) {
+        const quest = getDailyQuest(appState);
+        q.lastDate  = today;
+        q.questId   = quest.id;
+        q.completed = false;
+    }
+    if (q.completed) return;
+
+    const quest = PET_QUESTS.find(p => p.id === q.questId);
+    if (!quest) return;
+
+    if (quest.id === 'streak3' && triggerQuestId === 'lesson' && (appState.streak || 0) >= 3) {
+        _completeQuest(quest);
+        return;
+    }
+    if (quest.id === 'perfect' && triggerQuestId === 'lesson' && extraContext && extraContext.accuracy === 100) {
+        _completeQuest(quest);
+        return;
+    }
+    if (quest.id === triggerQuestId) {
+        _completeQuest(quest);
+    }
+}
+
+function _completeQuest(quest) {
+    appState.petQuest.completed = true;
+    appState.points += quest.pts;
+    feedPet(quest.hunger);
+    saveUserData(currentUser, appState);
+    showToast(`🐾 Quest complete! +${quest.pts} pts, pet fed!`);
+    const creature = document.querySelector('.pet-creature');
+    if (creature) {
+        creature.classList.add('wiggle');
+        setTimeout(() => creature.classList.remove('wiggle'), 600);
+    }
+    renderWordPet();
+}
+
+function showEvolutionCelebration(stage) {
+    const overlay = document.getElementById('evolutionOverlay');
+    if (!overlay) return;
+
+    const confettiEmojis = ['🎉','🌟','⭐','✨','🎊','💫'];
+    const confettiHTML = Array.from({length: 20}, () => {
+        const emoji = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+        const left  = Math.random() * 100;
+        const delay = Math.random() * 1.5;
+        const dur   = 2 + Math.random() * 1.5;
+        return `<span class="evolution-confetti" style="left:${left}%;top:0;animation-duration:${dur}s;animation-delay:${delay}s">${emoji}</span>`;
+    }).join('');
+
+    overlay.innerHTML = `
+        ${confettiHTML}
+        <div class="evolution-pet-emoji">${stage.emoji}</div>
+        <div class="evolution-title">Your pet evolved into a ${stage.name}! ${stage.emoji}</div>
+        <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:12px">Tap to continue</div>
+    `;
+    overlay.style.display = 'flex';
+    overlay.onclick = () => { overlay.style.display = 'none'; };
+
+    if (typeof speakWord === 'function') speakWord(stage.name);
+}
+
+const PET_PHRASES_EXTENDED = PET_PHRASES;
 
 function onPetTap() {
     const creature = document.querySelector('.pet-creature');
@@ -455,16 +789,37 @@ function onPetTap() {
     creature.classList.add('wiggle');
     setTimeout(() => creature.classList.remove('wiggle'), 600);
 
-    // Show a random learned word
+    const mood = getPetMood();
     const srsWords = appState.srs ? Object.keys(appState.srs) : [];
-    if (srsWords.length > 0) {
-        const randomWord = srsWords[Math.floor(Math.random() * srsWords.length)];
-        const wordData = ieltsVocabulary.find(w => w.en === randomWord);
+
+    // Milestone proximity phrase (within 50 pts of next stage)
+    const thresholds = [100, 500, 2000, 5000];
+    const nextThreshold = thresholds.find(t => t > appState.points);
+    if (nextThreshold && (nextThreshold - appState.points) <= 50) {
+        showPetSpeechBubble("I feel something changing inside me! 🌟");
+        return;
+    }
+
+    // Streak celebration (7+ days)
+    if (appState.streak >= 7 && mood === 'happy' && Math.random() < 0.3) {
+        showPetSpeechBubble(`${appState.streak} days together! I love you! 🎉`);
+        return;
+    }
+
+    // Word recall — 20% of taps
+    if (srsWords.length > 0 && Math.random() < 0.2) {
+        const word = srsWords[Math.floor(Math.random() * srsWords.length)];
+        const wordData = ieltsVocabulary.find(w => w.en === word);
         if (wordData) {
-            showPetSpeechBubble(`${wordData.emoji} ${wordData.en}`);
+            showPetSpeechBubble(`${wordData.emoji} Remember "${wordData.en}"?`);
             speakWord(wordData.en);
+            return;
         }
     }
+
+    // Mood-based phrase
+    const phrases = PET_PHRASES[mood] || PET_PHRASES.neutral;
+    showPetSpeechBubble(phrases[Math.floor(Math.random() * phrases.length)]);
 }
 
 function showPetSpeechBubble(text) {
@@ -474,7 +829,7 @@ function showPetSpeechBubble(text) {
     bubble.className = 'pet-bubble';
     bubble.textContent = text;
     document.getElementById('petContainer').appendChild(bubble);
-    setTimeout(() => bubble.remove(), 2000);
+    setTimeout(() => bubble.remove(), 2500);
 }
 
 // ==================== WORD OF THE DAY ====================
@@ -544,6 +899,7 @@ function openWordOfDayStory(word) {
             overlay.classList.remove('active');
             appState.wordOfDayViewed = new Date().toDateString();
             saveUserData(currentUser, appState);
+            if (typeof checkQuestCompletion === 'function') checkQuestCompletion('wotd');
             renderWordOfDay();
         } else {
             renderPanel();

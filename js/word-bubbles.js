@@ -155,7 +155,7 @@ function spawnBubbles(options, correct) {
         bubble.style.animationDelay = `${i * 0.3}s, ${Math.random() * 0.5}s`;
 
         bubble.innerHTML = `<span class="bubble-text">${word.en}</span>`;
-        bubble.onclick = function() { tapBubble(this, isCorrect); };
+        bubble.onclick = function() { tapBubble(this, isCorrect, word.en); };
 
         arena.appendChild(bubble);
     });
@@ -181,11 +181,14 @@ function spawnBubbles(options, correct) {
     bubblesState.bubbleTimers.push(timeout);
 }
 
-function tapBubble(el, isCorrect) {
+function tapBubble(el, isCorrect, word) {
     if (!bubblesState.isActive) return;
     if (el.classList.contains('popped')) return;
 
     el.classList.add('popped');
+
+    // Pronounce the tapped word
+    if (typeof speakWord === 'function') speakWord(word);
 
     if (isCorrect) {
         el.classList.add('pop-correct');
@@ -291,6 +294,11 @@ function onBubblesEnd() {
     }
 
     saveUserData(currentUser, appState);
+
+    // Pet hooks
+    if (typeof feedPet === 'function') feedPet(20);
+    if (typeof checkQuestCompletion === 'function') checkQuestCompletion('bubbles');
+    if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
 
     // Show results
     const overlay = document.getElementById('bubblesOverlay');

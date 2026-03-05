@@ -154,4 +154,6 @@ function unlockAchievement(id) {
     if (achievement) {
         showToast(`${achievement.icon} ${achievement.name} unlocked!`);
     }
+
+    if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
 }

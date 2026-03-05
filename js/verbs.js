@@ -20,8 +20,8 @@ function renderSpeedHistory() {
         return;
     }
 
-    const levelNames = { 0: 'All Verbs', 1: 'Basic', 2: 'Medium', 3: 'Hard', 4: 'Expert' };
-    const levelIcons = { 0: '⚡', 1: '🌱', 2: '🌿', 3: '🌳', 4: '🔥' };
+    const levelNames = { 0: 'All Verbs', 1: 'Basic', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Master' };
+    const levelIcons = { 0: '⚡', 1: '🌱', 2: '🌿', 3: '🌳', 4: '🔥', 5: '💎' };
 
     const recent = history.slice(-15).reverse();
     let html = '<div class="speed-history-table">';
