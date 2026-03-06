@@ -463,6 +463,12 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
     }
 
     document.getElementById('lessonComplete').classList.add('active');
+
+    // Offer Word Chant for qualifying lessons
+    if (!lessonState.isPracticeSession && !lessonState.isReviewSession &&
+        accuracy >= 60 && typeof addChantButtonToLessonComplete === 'function') {
+        addChantButtonToLessonComplete(lessonState.words);
+    }
 }
 
 function exitLesson() {

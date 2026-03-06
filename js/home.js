@@ -88,6 +88,7 @@ function renderHome() {
     if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
     if (typeof renderBattleCard === 'function') renderBattleCard();
     if (typeof renderWordHuntCard === 'function') renderWordHuntCard();
+    if (typeof renderMusicGamesCard === 'function') renderMusicGamesCard();
 
     // Render lesson history
     renderLessonHistory();
@@ -510,6 +511,8 @@ const PET_QUESTS = [
     { id: 'challenge', text: 'Complete the Daily Challenge',     pts: 25, hunger: 35,
       eligible: () => true },
     { id: 'streak3',   text: 'Study 3 days in a row',           pts: 40, hunger: 50,
+      eligible: () => true },
+    { id: 'rhythm',   text: 'Play a music game',              pts: 20, hunger: 30,
       eligible: () => true }
 ];
 

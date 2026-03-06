@@ -66,7 +66,14 @@ const achievements = [
     // Games
     { id: 'bubbles-first', name: 'Bubble Pop', icon: '🫧' },
     { id: 'bubbles-10', name: 'Bubble Mania', icon: '🎪' },
-    { id: 'bubbles-perfect', name: 'Perfect Bubbles', icon: '💯' }
+    { id: 'bubbles-perfect', name: 'Perfect Bubbles', icon: '💯' },
+
+    // Music
+    { id: 'rhythm-first', name: 'Beat Maker', icon: '🥁' },
+    { id: 'rhythm-10', name: 'Rhythm Star', icon: '⭐' },
+    { id: 'rhythm-perfect', name: 'Perfect Rhythm', icon: '🎵' },
+    { id: 'chant-first', name: 'Chant Champion', icon: '🎤' },
+    { id: 'syllable-sage', name: 'Syllable Sage', icon: '🔤' }
 ];
 
 // ==================== GLOBAL STATE VARIABLES ====================
@@ -167,7 +174,11 @@ function createDefaultUserData(username, avatar, passcode) {
         petLastFed: Date.now(),
         petAccessories: [],
         activeAccessories: [],
-        petQuest: { lastDate: null, questId: null, completed: false }
+        petQuest: { lastDate: null, questId: null, completed: false },
+        musicStats: {
+            rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
+            wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
+        }
     };
 }
 
@@ -518,6 +529,10 @@ function loginUser(username) {
     if (appState.petAccessories === undefined) appState.petAccessories = [];
     if (appState.activeAccessories === undefined) appState.activeAccessories = [];
     if (appState.petQuest === undefined) appState.petQuest = { lastDate: null, questId: null, completed: false };
+    if (appState.musicStats === undefined) appState.musicStats = {
+        rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
+        wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
+    };
 
     saveUserData(currentUser, appState);
 

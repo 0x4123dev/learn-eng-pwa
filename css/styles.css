@@ -4540,3 +4540,449 @@
         .bubbles-close-btn:active {
             background: rgba(255,255,255,0.1);
         }
+
+        /* ==================== RHYTHM TAP ==================== */
+        .rhythm-tap-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            z-index: 200;
+            display: none;
+            overflow: hidden;
+        }
+        .rhythm-tap-overlay.active { display: flex; }
+
+        .rt-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .rt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            color: white;
+        }
+        .rt-exit-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .rt-score { font-size: 16px; font-weight: 700; }
+        .rt-lives { font-size: 16px; }
+        .rt-round { font-size: 14px; opacity: 0.8; }
+
+        .rt-combo-banner {
+            text-align: center;
+            font-weight: 800;
+            color: #ffd700;
+            font-size: 18px;
+            min-height: 28px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .rt-combo-banner.active { opacity: 1; animation: comboPulse 0.4s ease; }
+
+        .rt-word-display {
+            text-align: center;
+            padding: 20px 16px;
+            color: white;
+            transition: background 0.3s;
+            border-radius: 16px;
+            margin: 0 16px;
+        }
+        .rt-word-display.rt-correct { background: rgba(88, 204, 2, 0.2); }
+        .rt-word-display.rt-wrong { background: rgba(255, 68, 68, 0.2); }
+
+        .rt-word-emoji { font-size: 40px; margin-bottom: 4px; }
+        .rt-word-text { font-size: 2.2rem; font-weight: 800; }
+        .rt-word-ipa { font-size: 14px; opacity: 0.6; font-family: monospace; margin-top: 4px; }
+
+        .rt-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .rt-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.15s, box-shadow 0.15s;
+        }
+        .rt-dot.active {
+            background: #58cc02;
+            box-shadow: 0 0 10px rgba(88,204,2,0.5);
+        }
+
+        .rt-count-in {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            font-weight: 900;
+            color: white;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes countPulse {
+            0% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .rt-tap-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin: 16px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.04);
+            border: 2px dashed rgba(255,255,255,0.15);
+            transition: background 0.05s;
+            min-height: 180px;
+        }
+        .rt-tap-zone.pulse { background: rgba(255,255,255,0.1); }
+
+        .rt-ripple {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(88, 204, 2, 0.4);
+            transform: translate(-50%, -50%);
+            animation: rippleExpand 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleExpand {
+            to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+        }
+
+        .rt-instruction {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .rt-bpm {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+
+        @keyframes comboPulse {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Rhythm Tap End Screen */
+        .rt-end-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        .rt-end-icon { font-size: 56px; margin-bottom: 8px; }
+        .rt-end-screen h2 { font-size: 24px; margin-bottom: 12px; }
+        .rt-end-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+        .rt-end-stat { text-align: center; }
+        .rt-end-stat-value { font-size: 22px; font-weight: 800; }
+        .rt-end-stat-label { font-size: 11px; opacity: 0.7; }
+        .rt-word-result-list {
+            max-height: 180px;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 12px;
+        }
+        .rt-word-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .rt-end-points {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+        .rt-action-btn {
+            background: #58cc02;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 280px;
+        }
+        .rt-close-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: none;
+            padding: 10px 40px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        /* ==================== WORD CHANT ==================== */
+        .word-chant-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(160deg, #2d1b69 0%, #11998e 100%);
+            z-index: 200;
+            display: none;
+            overflow: hidden;
+        }
+        .word-chant-overlay.active { display: flex; }
+
+        .chant-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .chant-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            color: white;
+        }
+        .chant-exit-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .chant-title { font-size: 18px; font-weight: 700; }
+        .chant-words-row {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+        .chant-word-pill {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            color: white;
+            white-space: nowrap;
+        }
+        .chant-lyrics {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .chant-phase-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 12px;
+        }
+        .chant-line {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.6;
+        }
+        .chant-line mark {
+            background: #ffd700;
+            color: #1a1a2e;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+        @keyframes chantLineIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chant-progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 16px 16px;
+            border-radius: 2px;
+        }
+        .chant-progress {
+            height: 100%;
+            background: #ffd700;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .chant-quiz-start-btn {
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .chant-quiz-question {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .chant-quiz-emoji { font-size: 36px; display: block; margin-bottom: 8px; }
+        .chant-quiz-word { font-weight: 800; }
+        .chant-quiz-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .chant-answer-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 52px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .chant-answer-btn.correct {
+            background: rgba(88,204,2,0.3);
+            border-color: #58cc02;
+        }
+        .chant-answer-btn.wrong {
+            background: rgba(255,68,68,0.3);
+            border-color: #ff4444;
+        }
+
+        /* Word Chant End Screen */
+        .chant-end-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        .chant-end-icon { font-size: 56px; margin-bottom: 8px; }
+        .chant-end-screen h2 { font-size: 24px; margin-bottom: 8px; }
+        .chant-end-quiz { font-size: 16px; margin-bottom: 16px; opacity: 0.9; }
+        .chant-end-words { margin-bottom: 20px; }
+        .chant-end-word {
+            padding: 6px 0;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .chant-action-btn {
+            background: #58cc02;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 280px;
+        }
+        .chant-close-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: none;
+            padding: 10px 40px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+        }
+        .chant-offer-btn {
+            margin-top: 8px;
+            background: rgba(126,87,194,0.15);
+            color: var(--accent-green-dark);
+            border: 2px solid var(--accent-green);
+            border-radius: 16px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* ==================== MUSIC GAMES CARD ==================== */
+        .music-games-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin: 8px 0;
+        }
+        .music-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+        .music-card-games {
+            display: flex;
+            gap: 12px;
+        }
+        .music-game-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: white;
+        }
+        .music-game-btn:active { background: rgba(255,255,255,0.2); }
+        .music-game-icon { font-size: 28px; margin-bottom: 4px; }
+        .music-game-name { font-size: 13px; font-weight: 700; }
+        .music-game-stat { font-size: 11px; opacity: 0.6; margin-top: 2px; }
