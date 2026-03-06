@@ -5114,3 +5114,166 @@
         .music-game-icon { font-size: 28px; margin-bottom: 4px; }
         .music-game-name { font-size: 13px; font-weight: 700; }
         .music-game-stat { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+
+        /* ==================== MUSIC MENU ==================== */
+        .music-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            z-index: 200;
+            display: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .music-menu-overlay.active { display: flex; }
+
+        .mm-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 32px;
+        }
+
+        .mm-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            padding-top: calc(16px + var(--safe-area-top));
+            color: white;
+        }
+
+        .mm-exit-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mm-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .mm-games {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mm-game-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+        }
+
+        .mm-game-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .mm-game-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .mm-game-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 16px;
+        }
+
+        .mm-how-to-play {
+            background: rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .mm-how-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .mm-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .mm-step:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .mm-step-num {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .mm-tip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: rgba(255,213,79,0.9);
+            background: rgba(255,213,79,0.1);
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+
+        .mm-game-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .mm-play-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #4a3580, 0 4px 16px rgba(102,126,234,0.3);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .mm-play-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4a3580;
+        }
