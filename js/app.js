@@ -520,7 +520,14 @@ function loginUser(username) {
     if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
-    if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0 };
+    if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0, totalScore: 0, totalStars: 0, wordsCollected: [], bestCombo: 0, wins: 0, difficultyStats: {} };
+    // Migrate old bubblesStats to new fields
+    if (appState.bubblesStats.totalScore === undefined) appState.bubblesStats.totalScore = 0;
+    if (appState.bubblesStats.totalStars === undefined) appState.bubblesStats.totalStars = 0;
+    if (appState.bubblesStats.wordsCollected === undefined) appState.bubblesStats.wordsCollected = [];
+    if (appState.bubblesStats.bestCombo === undefined) appState.bubblesStats.bestCombo = 0;
+    if (appState.bubblesStats.wins === undefined) appState.bubblesStats.wins = 0;
+    if (appState.bubblesStats.difficultyStats === undefined) appState.bubblesStats.difficultyStats = {};
 
     // Pet system migration
     if (appState.petName === undefined) appState.petName = null;
