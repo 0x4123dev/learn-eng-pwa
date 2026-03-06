@@ -84,11 +84,7 @@ function renderHome() {
 
     // Render fun features
     renderWordPet();
-    renderWordOfDay();
     if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
-    if (typeof renderBattleCard === 'function') renderBattleCard();
-    if (typeof renderWordHuntCard === 'function') renderWordHuntCard();
-    if (typeof renderMusicGamesCard === 'function') renderMusicGamesCard();
 
     // Render lesson history
     renderLessonHistory();
