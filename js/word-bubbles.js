@@ -63,21 +63,36 @@ function startWordBubbles() {
 function renderBubblesUI() {
     const overlay = document.getElementById('bubblesOverlay');
 
+    // Background floating decorations
+    const decoEmojis = ['⭐', '🌟', '✨', '💫', '🫧', '🌈', '🎈', '🦋', '🌸', '☁️'];
+    let decoHTML = '';
+    for (let i = 0; i < 8; i++) {
+        const emoji = decoEmojis[i % decoEmojis.length];
+        const left = 5 + Math.random() * 85;
+        const top = 5 + Math.random() * 85;
+        const delay = Math.random() * 4;
+        const size = 20 + Math.random() * 18;
+        decoHTML += `<div class="bubbles-bg-deco" style="left:${left}%;top:${top}%;font-size:${size}px;animation-delay:${delay}s">${emoji}</div>`;
+    }
+
     overlay.innerHTML = `
         <div class="bubbles-container">
+            ${decoHTML}
             <div class="bubbles-header">
                 <button class="bubbles-exit-btn" onclick="closeBubbles()">✕</button>
-                <div class="bubbles-score">⭐ <span id="bubblesScore">${bubblesState.score}</span></div>
+                <div class="bubbles-score" id="bubblesScoreWrap">⭐ <span id="bubblesScore">${bubblesState.score}</span></div>
                 <div class="bubbles-lives" id="bubblesLives">
                     ${'❤️'.repeat(bubblesState.lives)}${'🖤'.repeat(3 - bubblesState.lives)}
                 </div>
                 <div class="bubbles-round"><span id="bubblesRound">${bubblesState.round}</span>/${bubblesState.totalRounds}</div>
             </div>
 
+            <div class="bubbles-progress"><div class="bubbles-progress-fill" id="bubblesProgress" style="width:0%"></div></div>
+
             <div class="bubbles-combo-banner" id="bubblesCombo"></div>
 
             <div class="bubbles-clue" id="bubblesClue">
-                <div class="bubbles-clue-label">Tap the correct English word</div>
+                <div class="bubbles-clue-label">Tap the correct English word!</div>
                 <div class="bubbles-clue-emoji" id="bubblesClueEmoji"></div>
                 <div class="bubbles-clue-word" id="bubblesClueWord">...</div>
             </div>
@@ -127,6 +142,12 @@ function startBubblesRound() {
         clueEl.style.animation = 'none';
         clueEl.offsetHeight;
         clueEl.style.animation = '';
+    }
+
+    // Update progress bar
+    const progressEl = document.getElementById('bubblesProgress');
+    if (progressEl) {
+        progressEl.style.width = ((bubblesState.round - 1) / bubblesState.totalRounds * 100) + '%';
     }
 
     spawnBubbles(options, correct);
@@ -208,8 +229,16 @@ function tapBubble(el, isCorrect, word) {
         // Show combo banner
         showComboBanner(bubblesState.combo, multiplier);
 
-        // Show floating score
+        // Arena flash
         const arena = document.getElementById('bubblesArena');
+        arena.classList.remove('flash-correct');
+        arena.offsetHeight;
+        arena.classList.add('flash-correct');
+
+        // Sparkle burst at bubble position
+        spawnSparkleBurst(el, arena);
+
+        // Show floating score
         const floater = document.createElement('div');
         floater.className = 'bubble-score-float';
         floater.textContent = multiplier > 1 ? `+${earned} (x${multiplier})` : `+${earned}`;
@@ -219,11 +248,23 @@ function tapBubble(el, isCorrect, word) {
         floater.style.left = `${rect.left - arenaRect.left + rect.width / 2 - 20}px`;
         floater.style.top = `${rect.top - arenaRect.top}px`;
         arena.appendChild(floater);
-        setTimeout(() => floater.remove(), 900);
+        setTimeout(() => floater.remove(), 1000);
 
-        // Update score display
+        // Update score display with bump animation
         const scoreEl = document.getElementById('bubblesScore');
         if (scoreEl) scoreEl.textContent = bubblesState.score;
+        const scoreWrap = document.getElementById('bubblesScoreWrap');
+        if (scoreWrap) {
+            scoreWrap.classList.remove('bump');
+            scoreWrap.offsetHeight;
+            scoreWrap.classList.add('bump');
+        }
+
+        // Update progress bar
+        const progressEl = document.getElementById('bubblesProgress');
+        if (progressEl) {
+            progressEl.style.width = (bubblesState.round / bubblesState.totalRounds * 100) + '%';
+        }
 
         // Pop all remaining bubbles
         arena.querySelectorAll('.bubble:not(.popped)').forEach(b => {
@@ -309,14 +350,19 @@ function onBubblesEnd() {
         try { createConfetti(); } catch(e) {}
     }
 
+    const winMessages = ['Amazing!', 'Fantastic!', 'Super Star!', 'You Rock!', 'Brilliant!'];
+    const loseMessages = ['Nice Try!', 'Almost!', 'Keep Going!'];
+    const winMsg = winMessages[Math.floor(Math.random() * winMessages.length)];
+    const loseMsg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
+
     overlay.innerHTML = `
         <div class="bubbles-container">
             <div class="bubbles-complete">
-                <div class="bubbles-complete-icon">${won ? '🎉' : '😔'}</div>
-                <h2>${won ? 'Great job!' : 'Game Over'}</h2>
+                <div class="bubbles-complete-icon">${won ? '🎉' : '💪'}</div>
+                <h2>${won ? winMsg : loseMsg}</h2>
                 <div class="bubbles-complete-stats">
                     <div class="bubbles-stat-card">
-                        <div class="bubbles-stat-value">${bubblesState.score}</div>
+                        <div class="bubbles-stat-value">⭐ ${bubblesState.score}</div>
                         <div class="bubbles-stat-label">Score</div>
                     </div>
                     <div class="bubbles-stat-card">
@@ -330,7 +376,7 @@ function onBubblesEnd() {
                 </div>
                 ${isNewHigh ? '<div class="bubbles-new-record">🏆 New High Score!</div>' : ''}
                 <div class="bubbles-complete-points">+${bubblesState.score} points</div>
-                <button class="bubbles-action-btn" onclick="startWordBubbles()">Play Again</button>
+                <button class="bubbles-action-btn" onclick="startWordBubbles()">🎮 Play Again</button>
                 <button class="bubbles-close-btn" onclick="closeBubbles()">Close</button>
             </div>
         </div>
@@ -382,6 +428,50 @@ function hideComboBanner() {
         banner.className = 'bubbles-combo-banner';
         banner.innerHTML = '';
     }
+}
+
+function spawnSparkleBurst(bubbleEl, arena) {
+    const rect = bubbleEl.getBoundingClientRect();
+    const arenaRect = arena.getBoundingClientRect();
+    const cx = rect.left - arenaRect.left + rect.width / 2;
+    const cy = rect.top - arenaRect.top + rect.height / 2;
+
+    const container = document.createElement('div');
+    container.className = 'bubble-sparkle';
+    container.style.left = cx + 'px';
+    container.style.top = cy + 'px';
+
+    const colors = ['#FF6B9D', '#45B7D1', '#F7DC6F', '#82E0AA', '#BB8FCE', '#FF8A65', '#fff'];
+    const stars = ['⭐', '✨', '💫', '🌟'];
+
+    // Colored particles
+    for (let i = 0; i < 10; i++) {
+        const p = document.createElement('div');
+        p.className = 'bubble-sparkle-particle';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        const angle = (Math.PI * 2 * i) / 10 + (Math.random() - 0.5) * 0.5;
+        const dist = 40 + Math.random() * 50;
+        p.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+        p.style.width = (5 + Math.random() * 6) + 'px';
+        p.style.height = p.style.width;
+        container.appendChild(p);
+    }
+
+    // Star emojis
+    for (let i = 0; i < 4; i++) {
+        const s = document.createElement('div');
+        s.className = 'bubble-sparkle-star';
+        s.textContent = stars[i];
+        const angle = (Math.PI * 2 * i) / 4 + Math.random() * 0.8;
+        const dist = 30 + Math.random() * 40;
+        s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+        container.appendChild(s);
+    }
+
+    arena.appendChild(container);
+    setTimeout(() => container.remove(), 800);
 }
 
 function closeBubbles() {

@@ -4067,10 +4067,18 @@
         .bubbles-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, #00897b 0%, #00695c 40%, #004d40 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #fda085 100%);
+            background-size: 300% 300%;
+            animation: bubblesGradientShift 8s ease infinite;
             z-index: 200;
             display: none;
             overflow: hidden;
+        }
+
+        @keyframes bubblesGradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .bubbles-overlay.active { display: flex; }
@@ -4082,6 +4090,23 @@
             width: 100%;
             max-width: 420px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        /* Floating background decorations */
+        .bubbles-bg-deco {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 28px;
+            opacity: 0.25;
+            animation: bgDecoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes bgDecoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-20px) rotate(15deg) scale(1.1); }
+            66% { transform: translateY(10px) rotate(-10deg) scale(0.95); }
         }
 
         /* Header with pill badges */
@@ -4092,11 +4117,12 @@
             padding: 12px 16px;
             padding-top: calc(12px + var(--safe-area-top));
             gap: 8px;
+            z-index: 2;
         }
 
         .bubbles-exit-btn {
-            background: rgba(255,255,255,0.12);
-            border: none;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
             color: white;
             font-size: 18px;
             width: 36px;
@@ -4107,25 +4133,39 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: background 0.15s ease;
+            transition: background 0.15s ease, transform 0.15s ease;
         }
 
-        .bubbles-exit-btn:active { background: rgba(255,255,255,0.25); }
+        .bubbles-exit-btn:active { background: rgba(255,255,255,0.35); transform: scale(0.9); }
 
         .bubbles-score {
-            background: rgba(255,255,255,0.12);
+            background: linear-gradient(135deg, rgba(255,215,0,0.35), rgba(255,152,0,0.35));
+            border: 2px solid rgba(255,215,0,0.5);
             border-radius: 20px;
             padding: 6px 14px;
-            color: white;
+            color: #fff;
             font-size: 16px;
             font-weight: 800;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .bubbles-score.bump {
+            animation: scoreBump 0.3s ease;
+        }
+
+        @keyframes scoreBump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
         }
 
         .bubbles-lives {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
             border-radius: 20px;
             padding: 6px 12px;
-            font-size: 14px;
+            font-size: 16px;
             letter-spacing: 2px;
             transition: transform 0.15s ease;
         }
@@ -4143,12 +4183,36 @@
         }
 
         .bubbles-round {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
             border-radius: 20px;
             padding: 6px 12px;
             color: white;
             font-size: 13px;
             font-weight: 700;
+        }
+
+        /* Round progress bar */
+        .bubbles-progress {
+            height: 4px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 2px;
+            margin: 0 16px;
+            overflow: hidden;
+        }
+
+        .bubbles-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD54F, #FF8A65, #FF5252, #E040FB);
+            background-size: 200% 100%;
+            animation: progressShimmer 2s ease infinite;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        @keyframes progressShimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         /* Combo banner */
@@ -4212,145 +4276,147 @@
             to { transform: scale(1.06); }
         }
 
-        /* Clue area — frosted glass card */
+        /* Clue area — vibrant card */
         .bubbles-clue {
             text-align: center;
             padding: 16px 24px;
             margin: 4px 16px 8px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+            z-index: 2;
         }
 
         .bubbles-clue-label {
-            color: rgba(255,255,255,0.65);
+            color: rgba(255,255,255,0.8);
             font-size: 13px;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
         }
 
         .bubbles-clue-emoji {
-            font-size: 32px;
+            font-size: 40px;
             display: block;
             margin-bottom: 4px;
+            animation: clueEmojiPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes clueEmojiPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15) rotate(5deg); }
         }
 
         .bubbles-clue-word {
             color: white;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
-            animation: clueAppear 0.35s ease;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: clueAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes clueAppear {
-            from { opacity: 0; transform: scale(0.9); }
+            from { opacity: 0; transform: scale(0.7) translateY(10px); }
             to { opacity: 1; transform: none; }
         }
 
-        /* Arena with underwater particles */
+        /* Arena */
         .bubbles-arena {
             flex: 1;
             position: relative;
             overflow: hidden;
             min-height: 300px;
+            z-index: 1;
         }
 
-        .bubbles-arena::before,
-        .bubbles-arena::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            pointer-events: none;
-            animation: floatParticle 8s ease-in-out infinite;
-        }
-
-        .bubbles-arena::before {
-            width: 120px;
-            height: 120px;
-            bottom: -20px;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .bubbles-arena::after {
-            width: 80px;
-            height: 80px;
-            bottom: -10px;
-            right: 15%;
-            animation-delay: -4s;
-        }
-
-        @keyframes floatParticle {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-60px) scale(1.1); opacity: 0.7; }
-        }
-
-        /* Bubbles — larger with wobble + color tints */
+        /* Bubbles — colorful candy style */
         .bubble {
             position: absolute;
-            bottom: -96px;
-            width: 96px;
-            height: 96px;
+            bottom: -100px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            animation: bubbleRise linear forwards, bubbleWobble 2.5s ease-in-out infinite;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(255,255,255,0.06));
-            border: 2px solid rgba(255,255,255,0.35);
-            box-shadow: 0 0 24px rgba(255,255,255,0.2), inset 0 -6px 12px rgba(0,0,0,0.1);
+            animation: bubbleRise linear forwards, bubbleWobble 2s ease-in-out infinite;
+            border: 3px solid rgba(255,255,255,0.6);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3), inset 0 -8px 16px rgba(0,0,0,0.1), inset 0 4px 8px rgba(255,255,255,0.4);
             transition: transform 0.1s ease;
         }
 
         .bubble:nth-child(1) {
-            background: radial-gradient(circle at 30% 30%, rgba(128,222,234,0.5), rgba(0,150,136,0.15));
+            background: radial-gradient(circle at 35% 25%, #FF6B9D, #C44569);
+            border-color: rgba(255,107,157,0.7);
+            box-shadow: 0 0 30px rgba(255,107,157,0.4), inset 0 -8px 16px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.3);
         }
         .bubble:nth-child(2) {
-            background: radial-gradient(circle at 30% 30%, rgba(144,202,249,0.5), rgba(33,150,243,0.15));
+            background: radial-gradient(circle at 35% 25%, #45B7D1, #2980B9);
+            border-color: rgba(69,183,209,0.7);
+            box-shadow: 0 0 30px rgba(69,183,209,0.4), inset 0 -8px 16px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.3);
         }
         .bubble:nth-child(3) {
-            background: radial-gradient(circle at 30% 30%, rgba(206,147,216,0.5), rgba(156,39,176,0.15));
+            background: radial-gradient(circle at 35% 25%, #F7DC6F, #F39C12);
+            border-color: rgba(247,220,111,0.7);
+            box-shadow: 0 0 30px rgba(247,220,111,0.4), inset 0 -8px 16px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.3);
         }
         .bubble:nth-child(4) {
-            background: radial-gradient(circle at 30% 30%, rgba(248,187,208,0.5), rgba(233,30,99,0.15));
+            background: radial-gradient(circle at 35% 25%, #82E0AA, #27AE60);
+            border-color: rgba(130,224,170,0.7);
+            box-shadow: 0 0 30px rgba(130,224,170,0.4), inset 0 -8px 16px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.3);
         }
 
-        .bubble:active:not(.popped) { transform: scale(0.88); }
+        /* Shiny highlight on each bubble */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 12%;
+            left: 20%;
+            width: 30%;
+            height: 20%;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.6), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .bubble:active:not(.popped) { transform: scale(0.85); }
 
         @keyframes bubbleWobble {
-            0%, 100% { margin-left: 0; }
-            25% { margin-left: -6px; }
-            75% { margin-left: 6px; }
+            0%, 100% { margin-left: 0; transform: rotate(0deg); }
+            25% { margin-left: -8px; transform: rotate(-3deg); }
+            75% { margin-left: 8px; transform: rotate(3deg); }
         }
 
         .bubble-text {
             color: white;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 800;
             text-align: center;
-            padding: 6px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            padding: 8px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
             word-break: break-word;
             line-height: 1.2;
+            z-index: 1;
         }
 
         @keyframes bubbleRise {
             0% {
-                bottom: -96px;
+                bottom: -100px;
                 opacity: 0;
+                transform: scale(0.5);
             }
-            5% {
+            8% {
                 opacity: 1;
+                transform: scale(1);
             }
             88% {
                 opacity: 1;
             }
             100% {
-                bottom: calc(100% + 48px);
+                bottom: calc(100% + 50px);
                 opacity: 0;
             }
         }
@@ -4360,64 +4426,109 @@
         }
 
         .bubble.pop-correct {
-            animation: popCorrect 0.45s ease forwards;
+            animation: popCorrect 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .bubble.pop-wrong {
-            animation: popWrong 0.45s ease forwards;
+            animation: popWrong 0.5s ease forwards;
         }
 
         .bubble.pop-fade {
-            animation: popFade 0.3s ease forwards;
+            animation: popFade 0.35s ease forwards;
         }
 
         @keyframes popCorrect {
-            0% { transform: scale(1); box-shadow: 0 0 24px rgba(255,255,255,0.2); }
-            40% { transform: scale(1.5); background: rgba(76, 175, 80, 0.7); border-color: #66BB6A; box-shadow: 0 0 40px rgba(76,175,80,0.6); }
+            0% { transform: scale(1); }
+            30% { transform: scale(1.6); background: rgba(76, 175, 80, 0.9); border-color: #66BB6A; box-shadow: 0 0 60px rgba(76,175,80,0.8); }
+            60% { transform: scale(1.8); opacity: 0.6; }
             100% { transform: scale(0); opacity: 0; }
         }
 
         @keyframes popWrong {
             0% { transform: scale(1) translateX(0); }
-            15% { transform: scale(1.05) translateX(-6px); background: rgba(244, 67, 54, 0.5); }
-            30% { transform: scale(1.05) translateX(6px); border-color: #f44336; }
-            45% { transform: scale(1.05) translateX(-4px); }
-            60% { transform: scale(0.8) translateX(0); background: rgba(244, 67, 54, 0.6); }
+            15% { transform: scale(1.08) translateX(-8px); background: rgba(244, 67, 54, 0.7); }
+            30% { transform: scale(1.08) translateX(8px); border-color: #f44336; }
+            45% { transform: scale(1.08) translateX(-5px); }
+            60% { transform: scale(0.7) translateX(0); background: rgba(244, 67, 54, 0.8); }
             100% { transform: scale(0); opacity: 0; }
         }
 
         @keyframes popFade {
-            to { transform: scale(0.4); opacity: 0; }
+            to { transform: scale(0.3); opacity: 0; }
+        }
+
+        /* Sparkle burst on correct answer */
+        .bubble-sparkle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .bubble-sparkle-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: sparkleOut 0.6s ease forwards;
+        }
+
+        .bubble-sparkle-star {
+            position: absolute;
+            font-size: 16px;
+            animation: sparkleStarOut 0.7s ease forwards;
+        }
+
+        @keyframes sparkleOut {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+        }
+
+        @keyframes sparkleStarOut {
+            0% { transform: translate(0,0) scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: translate(var(--sx), var(--sy)) scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: translate(calc(var(--sx) * 1.5), calc(var(--sy) * 1.5)) scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        /* Screen flash on correct */
+        .bubbles-arena.flash-correct {
+            animation: arenaFlashGreen 0.3s ease;
+        }
+
+        @keyframes arenaFlashGreen {
+            0% { background: transparent; }
+            30% { background: rgba(76,175,80,0.15); }
+            100% { background: transparent; }
         }
 
         /* Floating score text */
         .bubble-score-float {
             position: absolute;
-            color: #A5D6A7;
-            font-size: 20px;
+            color: #fff;
+            font-size: 22px;
             font-weight: 800;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 12px rgba(255,215,0,0.4);
             pointer-events: none;
-            animation: scoreFloat 0.8s ease forwards;
+            animation: scoreFloat 0.9s ease forwards;
             z-index: 10;
         }
 
         .bubble-score-float.combo-bonus {
             color: #FFD54F;
-            font-size: 24px;
-            text-shadow: 0 2px 12px rgba(255,213,79,0.5);
-            animation: scoreFloatCombo 0.9s ease forwards;
+            font-size: 28px;
+            text-shadow: 0 2px 12px rgba(255,213,79,0.6), 0 0 20px rgba(255,213,79,0.3);
+            animation: scoreFloatCombo 1s ease forwards;
         }
 
         @keyframes scoreFloat {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            20% { transform: translateY(-10px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1); }
         }
 
         @keyframes scoreFloatCombo {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            30% { transform: translateY(-15px) scale(1.4); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.1); }
+            25% { transform: translateY(-15px) scale(1.5); }
+            100% { opacity: 0; transform: translateY(-90px) scale(1); }
         }
 
         /* Bubbles end screen */
@@ -4433,112 +4544,129 @@
         }
 
         .bubbles-complete-icon {
-            font-size: 80px;
+            font-size: 90px;
             margin-bottom: 16px;
-            animation: bubbleBounce 0.6s ease;
+            animation: bubbleBounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes bubbleBounce {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); }
+            0% { transform: scale(0) rotate(-20deg); }
+            50% { transform: scale(1.3) rotate(5deg); }
+            70% { transform: scale(0.9) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0); }
         }
 
-        .bubbles-complete h2 { font-size: 26px; font-weight: 800; margin-bottom: 16px; }
+        .bubbles-complete h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
 
         .bubbles-complete-stats {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
         }
 
         .bubbles-stat-card {
             flex: 1;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 16px;
-            padding: 12px 8px;
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 14px 10px;
+            border: 2px solid rgba(255,255,255,0.25);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
         .bubbles-stat-value {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
             color: white;
             margin-bottom: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .bubbles-stat-label {
             font-size: 11px;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.7);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 700;
         }
 
         .bubbles-new-record {
             color: #FFD54F;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             margin-bottom: 8px;
             animation: recordPulse 1s ease infinite;
+            text-shadow: 0 2px 12px rgba(255,213,79,0.5);
         }
 
         @keyframes recordPulse {
-            0%, 100% { text-shadow: 0 0 8px rgba(255,213,79,0.3); }
-            50% { text-shadow: 0 0 20px rgba(255,213,79,0.7); }
+            0%, 100% { transform: scale(1); text-shadow: 0 0 8px rgba(255,213,79,0.3); }
+            50% { transform: scale(1.08); text-shadow: 0 0 24px rgba(255,213,79,0.8); }
         }
 
         .bubbles-complete-points {
             color: #FFD54F;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 24px;
-            text-shadow: 0 2px 12px rgba(255,213,79,0.3);
+            text-shadow: 0 2px 16px rgba(255,213,79,0.4);
+            animation: pointsAppear 0.5s 0.3s ease both;
+        }
+
+        @keyframes pointsAppear {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .bubbles-action-btn {
-            background: linear-gradient(135deg, #26A69A, #00897B);
+            background: linear-gradient(135deg, #FF6B9D, #C44569);
             border: none;
             color: white;
             font-family: 'Nunito', sans-serif;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
-            padding: 14px 32px;
-            border-radius: 16px;
+            padding: 16px 32px;
+            border-radius: 20px;
             cursor: pointer;
             width: 100%;
             max-width: 280px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 0 #00695c;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 0 #9b2c50, 0 6px 20px rgba(196,69,105,0.4);
             transition: transform 0.1s ease, box-shadow 0.1s ease;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .bubbles-action-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #00695c;
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #9b2c50;
         }
 
         .bubbles-close-btn {
-            background: transparent;
-            border: 2px solid rgba(255,255,255,0.3);
-            color: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.35);
+            color: white;
             font-family: 'Nunito', sans-serif;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
-            padding: 10px 24px;
-            border-radius: 16px;
+            padding: 12px 24px;
+            border-radius: 20px;
             cursor: pointer;
             width: 100%;
             max-width: 280px;
-            transition: background 0.15s ease;
+            transition: background 0.15s ease, transform 0.1s ease;
         }
 
         .bubbles-close-btn:active {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.25);
+            transform: scale(0.97);
         }
 
         /* ==================== RHYTHM TAP ==================== */
