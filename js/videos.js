@@ -564,7 +564,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'dQw4w9WgXcQ', title: 'Understanding Song Lyrics',
+        id: 'onfvACq-ZSc', title: 'Understanding Song Lyrics',
         channel: 'Music English', duration: '3:30', level: 'intermediate',
         category: 'music', icon: '🎵',
         description: 'Learn English expressions through popular song lyrics.',
@@ -582,7 +582,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'sQJMjfBIKOE', title: 'Job Interview English',
+        id: 'idT98H8TK-U', title: 'Job Interview English',
         channel: 'English Addict', duration: '6:00', level: 'intermediate',
         category: 'daily-life', icon: '💼',
         description: 'Practice common job interview questions and answers.',
@@ -600,7 +600,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'b8mIZMZXdng', title: 'Movie Scene: Making Friends',
+        id: 'PZTeilj-kN4', title: 'Movie Scene: Making Friends',
         channel: 'Learn English with TV', duration: '4:30', level: 'intermediate',
         category: 'movies', icon: '🤝',
         description: 'Watch how characters in movies make new friends.',
@@ -618,7 +618,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'VhokQhjl5t0', title: 'English Idioms Explained',
+        id: 'O4LLfwTbuq8', title: 'English Idioms Explained',
         channel: 'BBC Learning English', duration: '5:00', level: 'intermediate',
         category: 'grammar', icon: '💡',
         description: 'Learn common English idioms with fun examples.',
@@ -636,7 +636,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'wBlPCMxKjYE', title: 'Comparing Things in English',
+        id: 'VNPjd0jNVGI', title: 'Comparing Things in English',
         channel: 'English with Lucy', duration: '5:30', level: 'intermediate',
         category: 'grammar', icon: '⚖️',
         description: 'Master comparatives and superlatives.',
@@ -654,7 +654,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'gfr3ggQ7MP4', title: 'Talking About the Future',
+        id: 'GjLkGT9YM2Y', title: 'Talking About the Future',
         channel: 'English Addict', duration: '5:15', level: 'intermediate',
         category: 'grammar', icon: '🔮',
         description: 'Will, going to, and other future tense expressions.',
@@ -672,7 +672,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'RtGkDBaScLo', title: 'Movie Scene: Funny Moments',
+        id: 'k_d2Vxc6No8', title: 'Movie Scene: Funny Moments',
         channel: 'Learn English with TV', duration: '4:45', level: 'intermediate',
         category: 'movies', icon: '😂',
         description: 'Learn humor and comedy expressions from movie scenes.',
@@ -690,7 +690,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'xGbBYZtwVbo', title: 'Debate: Is Social Media Good?',
+        id: 'ffqp6f0_rzw', title: 'Debate: Is Social Media Good?',
         channel: 'BBC Learning English', duration: '6:00', level: 'intermediate',
         category: 'culture', icon: '📲',
         description: 'Listen to arguments for and against social media.',
@@ -708,7 +708,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'YQHsXMglC9A', title: 'English Slang Explained',
+        id: 'TKGeXyYiLBo', title: 'English Slang Explained',
         channel: 'Papa Teach Me', duration: '4:50', level: 'intermediate',
         category: 'culture', icon: '🗯️',
         description: 'Understand modern English slang words and phrases.',
@@ -728,7 +728,7 @@ const VIDEO_LIBRARY = [
 
     // ==================== UPPER-INTERMEDIATE (6 videos) ====================
     {
-        id: 'arj7oStGLkU', title: 'TED: The Science of Happiness',
+        id: 'x3Yx2fj-AEs', title: 'TED: The Science of Happiness',
         channel: 'TED Talks', duration: '6:00', level: 'upper',
         category: 'culture', icon: '🧪',
         description: 'What does science say about being happy?',
@@ -746,7 +746,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'RcGyVTAoXEU', title: 'Business Negotiation Scene',
+        id: 'BSYAPKgcgj0', title: 'Business Negotiation Scene',
         channel: 'Learn English with TV', duration: '5:30', level: 'upper',
         category: 'movies', icon: '🤝',
         description: 'Watch a tense business negotiation from a famous show.',
@@ -764,7 +764,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'CxGUmtRLm5g', title: 'Advanced Pronunciation Tips',
+        id: '5hsUOnDWY6k', title: 'Advanced Pronunciation Tips',
         channel: 'Rachel\'s English', duration: '6:00', level: 'upper',
         category: 'pronunciation', icon: '🎯',
         description: 'Master connected speech and natural pronunciation.',
@@ -782,7 +782,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'wnHW6o8WMas', title: 'Movie Scene: Courtroom Drama',
+        id: 'lXgfX1y60Gw', title: 'Movie Scene: Courtroom Drama',
         channel: 'Learn English with TV', duration: '5:45', level: 'upper',
         category: 'movies', icon: '⚖️',
         description: 'Legal English from an intense courtroom movie scene.',
@@ -800,7 +800,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'D9Ihs241zeg', title: 'Academic Writing Tips',
+        id: 'kIpaDW3RwtY', title: 'Academic Writing Tips',
         channel: 'Oxford English', duration: '6:00', level: 'upper',
         category: 'grammar', icon: '✍️',
         description: 'Improve your formal and academic writing skills.',
@@ -818,7 +818,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'xNjyG8S4_kI', title: 'Understanding British Humor',
+        id: 'c9eZ5HktBiI', title: 'Understanding British Humor',
         channel: 'BBC Learning English', duration: '5:30', level: 'upper',
         category: 'culture', icon: '🇬🇧',
         description: 'Why British humor is dry, witty and hard to understand.',
@@ -838,7 +838,7 @@ const VIDEO_LIBRARY = [
 
     // ==================== ADVANCED (4 videos) ====================
     {
-        id: 'Unzc731iCUY', title: 'TED: How Language Shapes Thinking',
+        id: 'NdDU_BBJW9Y', title: 'TED: How Language Shapes Thinking',
         channel: 'TED Talks', duration: '6:00', level: 'advanced',
         category: 'science', icon: '🧠',
         description: 'Explore how different languages shape how we think.',
@@ -856,7 +856,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'pN34FNbOKXc', title: 'Shakespeare Made Simple',
+        id: 'WxZfg-r11vU', title: 'Shakespeare Made Simple',
         channel: 'Crash Course Literature', duration: '6:00', level: 'advanced',
         category: 'culture', icon: '🎭',
         description: 'Understand Shakespeare\'s language and lasting impact.',
@@ -874,7 +874,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'nWQo0q8qm1U', title: 'Philosophical Debates in English',
+        id: 'LOMbySJTKpg', title: 'Philosophical Debates in English',
         channel: 'Philosophy Tube', duration: '6:00', level: 'advanced',
         category: 'culture', icon: '🤔',
         description: 'Engage with deep philosophical ideas in English.',
@@ -892,7 +892,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'I6e2vsNkGhA', title: 'Advanced English: Nuance & Tone',
+        id: 'JwzdGxDXS8s', title: 'Advanced English: Nuance & Tone',
         channel: 'English with Lucy', duration: '5:45', level: 'advanced',
         category: 'grammar', icon: '🎓',
         description: 'Master the subtle differences in English expression.',
@@ -1137,9 +1137,15 @@ function createYTPlayer(videoId) {
                 playsinline: 1
             },
             events: {
-                onError: () => {
+                onError: (e) => {
                     const msg = document.getElementById('vpOfflineMsg');
-                    if (msg) msg.style.display = 'flex';
+                    if (msg) {
+                        const code = e && e.data;
+                        msg.textContent = code === 150 || code === 101
+                            ? '🚫 This video is not available for embedding'
+                            : '📡 Video unavailable - check your connection';
+                        msg.style.display = 'flex';
+                    }
                 }
             }
         });
