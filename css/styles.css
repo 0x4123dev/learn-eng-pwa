@@ -548,7 +548,7 @@
         /* ==================== HOME SCREEN ==================== */
         .home-screen {
             padding: 20px;
-            padding-bottom: 100px;
+            padding-bottom: 70px;
         }
 
         /* Floating background decorations on home */
@@ -4848,7 +4848,7 @@
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
-            padding-bottom: 32px;
+            padding-bottom: calc(80px + var(--safe-area-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }

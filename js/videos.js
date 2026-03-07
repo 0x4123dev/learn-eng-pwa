@@ -454,7 +454,7 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'k_2FA6vyOgM', title: 'Famous Speeches - Simple',
+        id: 'S9zWp1frfUY', title: 'Famous Speeches - Simple',
         channel: 'English Speeches', duration: '5:30', level: 'elementary',
         category: 'culture', icon: '🎤',
         description: 'Listen to easy parts of famous English speeches.',
@@ -660,8 +660,8 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'GjLkGT9YM2Y', title: 'Talking About the Future',
-        channel: 'English Addict', duration: '5:15', level: 'intermediate',
+        id: 'CI0Kr4e4vzI', title: 'Talking About the Future',
+        channel: 'EasyTeaching', duration: '5:15', level: 'intermediate',
         category: 'grammar', icon: '🔮',
         description: 'Will, going to, and other future tense expressions.',
         vocabulary: [
@@ -716,8 +716,8 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'TKGeXyYiLBo', title: 'English Slang Explained',
-        channel: 'Papa Teach Me', duration: '4:50', level: 'intermediate',
+        id: 'xvf23ZCPgFQ', title: 'English Slang Explained',
+        channel: 'English Fluency Journey', duration: '4:50', level: 'intermediate',
         category: 'culture', icon: '🗯️',
         description: 'Understand modern English slang words and phrases.',
         vocabulary: [
@@ -756,8 +756,8 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: 'BSYAPKgcgj0', title: 'Business Negotiation Scene',
-        channel: 'Learn English with TV', duration: '5:30', level: 'upper',
+        id: 'lQJKmRD1gYg', title: 'Business Negotiation Scene',
+        channel: 'Business English Learning', duration: '5:30', level: 'upper',
         category: 'movies', icon: '🤝',
         description: 'Watch a tense business negotiation from a famous show.',
         vocabulary: [
@@ -776,8 +776,8 @@ const VIDEO_LIBRARY = [
         ]
     },
     {
-        id: '5hsUOnDWY6k', title: 'Advanced Pronunciation Tips',
-        channel: 'Rachel\'s English', duration: '6:00', level: 'upper',
+        id: 'gAHUTKm_1n0', title: 'Advanced Pronunciation Tips',
+        channel: 'English Pronunciation', duration: '6:00', level: 'upper',
         category: 'pronunciation', icon: '🎯',
         description: 'Master connected speech and natural pronunciation.',
         vocabulary: [
