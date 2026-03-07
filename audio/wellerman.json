@@ -35,11 +35,6 @@
     { "time": 73.0, "en": "One day, when the tonguin' is done", "vi": "Một ngày, khi công việc xong xuôi" },
     { "time": 76.5, "en": "We'll take our leave and go", "vi": "Ta sẽ rời đi thôi" },
 
-    { "time": 80.0, "en": "Soon may the Wellerman come", "vi": "Sớm thôi Wellerman sẽ đến" },
-    { "time": 83.0, "en": "To bring us sugar and tea and rum", "vi": "Mang cho ta đường, trà và rượu rum" },
-    { "time": 86.5, "en": "One day, when the tonguin' is done", "vi": "Một ngày, khi công việc xong xuôi" },
-    { "time": 89.5, "en": "We'll take our leave and go", "vi": "Ta sẽ rời đi thôi" },
-
     { "time": 93.5, "en": "No line was cut, no whale was freed", "vi": "Không dây nào đứt, không cá voi nào thoát" },
     { "time": 96.5, "en": "The Captain's mind was not on greed", "vi": "Thuyền trưởng không vì lòng tham" },
     { "time": 100.0, "en": "But he belonged to the whaleman's creed", "vi": "Nhưng ông thuộc về tín điều người săn cá voi" },
@@ -59,7 +54,7 @@
     { "time": 110.0, "en": "To bring us sugar and tea and rum", "vi": "Mang cho ta đường, trà và rượu rum" },
     { "time": 113.0, "en": "One day, when the tonguin' is done", "vi": "Một ngày, khi công việc xong xuôi" },
     { "time": 116.5, "en": "We'll take our leave and go", "vi": "Ta sẽ rời đi thôi" },
-    
+
     { "time": 131.5, "en": "As far as I've heard, the fight's still on", "vi": "Theo tôi nghe, trận chiến vẫn tiếp diễn" },
     { "time": 134.0, "en": "The line's not cut and the whale's not gone", "vi": "Dây chưa đứt, và cá voi chưa đi" },
     { "time": 137.0, "en": "The Wellerman makes his regular call", "vi": "Wellerman vẫn ghé thăm đều đặn" },
