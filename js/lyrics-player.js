@@ -13,7 +13,8 @@ const LyricsPlayer = (function() {
         { id: 'wellerman', file: 'audio/wellerman.json' },
         { id: 'lust', file: 'audio/lust.json' },
         { id: 'bad-with-us', file: 'audio/bad-with-us.json' },
-        { id: 'hazbin-guarantee', file: 'audio/hazbin-guarantee.json' }
+        { id: 'hazbin-guarantee', file: 'audio/hazbin-guarantee.json' },
+        { id: 'poison', file: 'audio/poison.json' }
     ];
 
     async function loadSong(songId) {
