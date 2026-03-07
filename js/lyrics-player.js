@@ -305,20 +305,64 @@ const LyricsPlayer = (function() {
             </div>
         `;
 
-        loadSong(songId).then(data => {
-            if (!data) return;
+        // Always fetch from file (not localStorage calibrated) for calibration
+        var entry = SONGS.find(function(s) { return s.id === songId; });
+        if (!entry) return;
+        fetch(entry.file).then(function(r) { return r.json(); }).then(function(data) {
+            data.id = songId;
+            _songData = data;
+
+            // Check for saved progress
+            try {
+                var progress = localStorage.getItem('calProgress_' + songId);
+                if (progress) {
+                    var saved = JSON.parse(progress);
+                    if (saved.timestamps && saved.timestamps.length > 0 && saved.timestamps.length < data.lines.length) {
+                        // Show resume prompt
+                        var area = document.getElementById('lpLyricsArea');
+                        area.innerHTML = '<div style="padding:32px 16px;text-align:center;">' +
+                            '<div style="font-size:48px;margin-bottom:12px;">🔄</div>' +
+                            '<div style="font-size:18px;font-weight:bold;color:#fff;margin-bottom:8px;">Resume Calibration?</div>' +
+                            '<div style="font-size:14px;color:#aaa;margin-bottom:24px;">You have progress: ' + saved.timestamps.length + ' / ' + data.lines.length + ' lines done</div>' +
+                            '<button onclick="LyricsPlayer._resumeCal()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:10px;">▶ Resume from line ' + (saved.timestamps.length + 1) + '</button>' +
+                            '<button onclick="LyricsPlayer._startFreshCal()" style="width:100%;padding:12px;border-radius:12px;border:1px solid #555;background:none;color:#aaa;font-size:14px;cursor:pointer;">🔄 Start Over</button>' +
+                        '</div>';
+                        return;
+                    }
+                }
+            } catch(e) {}
+
             renderCalibrate(data);
         });
     }
 
-    function renderCalibrate(data) {
+    function _resumeCal() {
+        try {
+            var saved = JSON.parse(localStorage.getItem('calProgress_' + _calSongId));
+            _calTimestamps = saved.timestamps || [];
+            _calLineIdx = _calTimestamps.length;
+        } catch(e) {
+            _calTimestamps = [];
+            _calLineIdx = 0;
+        }
+        renderCalibrate(_songData, true);
+    }
+
+    function _startFreshCal() {
+        try { localStorage.removeItem('calProgress_' + _calSongId); } catch(e) {}
+        renderCalibrate(_songData);
+    }
+
+    function renderCalibrate(data, isResume) {
         const overlay = document.getElementById('lyricsPlayerOverlay');
         overlay.querySelector('.lp-song-artist').textContent = data.title;
 
         _audio = new Audio(data.audio);
         _audio.preload = 'auto';
-        _calLineIdx = 0;
-        _calTimestamps = [];
+        if (!isResume) {
+            _calLineIdx = 0;
+            _calTimestamps = [];
+        }
         _calActive = true;
         _isPlaying = false;
 
@@ -330,35 +374,39 @@ const LyricsPlayer = (function() {
             </div>
         `).join('');
 
-        // Highlight first line
+        // Highlight current line
         updateCalHighlight(data);
 
-        // Controls: timer + play + tap + undo
+        // Controls: timer + play + tap + save + undo
         const controls = document.getElementById('lpControls');
         controls.innerHTML = `
             <div style="text-align:center;padding:4px 0;">
                 <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;">
-                    <span id="calProgress" style="font-size:12px;color:#aaa;">Line 1 / ${data.lines.length}</span>
+                    <span id="calProgress" style="font-size:12px;color:#aaa;">Line ${_calLineIdx + 1} / ${data.lines.length}</span>
                     <span id="calTimeDisplay" style="font-size:16px;font-weight:bold;color:#7c4dff;font-family:monospace;">0:00.0</span>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <button class="lp-btn lp-btn-play" id="lpPlayBtn" onclick="LyricsPlayer.togglePlay()" style="width:48px;height:48px;flex-shrink:0;">
-                        <svg id="lpPlayIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                        <svg id="lpPauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <button class="lp-btn lp-btn-play" id="lpPlayBtn" onclick="LyricsPlayer.togglePlay()" style="width:44px;height:44px;flex-shrink:0;">
+                        <svg id="lpPlayIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                        <svg id="lpPauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
                     </button>
                     <button id="calTapBtn" onclick="LyricsPlayer.calTap()" style="
-                        flex:1;height:56px;border-radius:14px;border:none;
+                        flex:1;height:52px;border-radius:14px;border:none;
                         background:linear-gradient(135deg,#667eea,#764ba2);
-                        color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
+                        color:#fff;font-size:15px;font-weight:bold;cursor:pointer;
                         box-shadow:0 4px 15px rgba(118,75,162,0.4);
                         transition:transform 0.1s;
                     ">
-                        👆 TAP when line starts
+                        👆 TAP
                     </button>
                     <button onclick="LyricsPlayer.calUndo()" style="
                         background:none;border:1px solid #555;color:#aaa;
-                        padding:8px 10px;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0;
+                        padding:6px 8px;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0;
                     ">↩</button>
+                    <button id="calSaveBtn" onclick="LyricsPlayer.calSave()" style="
+                        background:none;border:1px solid #4caf50;color:#4caf50;
+                        padding:6px 8px;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0;
+                    ">💾</button>
                 </div>
             </div>
         `;
@@ -426,6 +474,9 @@ const LyricsPlayer = (function() {
             setTimeout(function() { btn.style.transform = ''; }, 100);
         }
 
+        // Auto-save progress after every tap
+        _saveCalProgress();
+
         updateCalHighlight(_songData);
     }
 
@@ -442,7 +493,64 @@ const LyricsPlayer = (function() {
             var seekTo = Math.max(0, removedTime - 2);
             _audio.currentTime = seekTo;
         }
+        _saveCalProgress();
         updateCalHighlight(_songData);
+    }
+
+    // Save progress to localStorage (called every tap)
+    function _saveCalProgress() {
+        if (!_calSongId || !_songData) return;
+        try {
+            localStorage.setItem('calProgress_' + _calSongId, JSON.stringify({
+                timestamps: _calTimestamps,
+                total: _songData.lines.length
+            }));
+        } catch(e) {}
+    }
+
+    // Manual save button — saves both progress AND the calibrated JSON
+    function calSave() {
+        if (!_calSongId || !_songData) return;
+
+        // Save progress
+        _saveCalProgress();
+
+        // Also save as a usable JSON (partial — untapped lines keep original timestamps)
+        var newLines = _songData.lines.map(function(line, i) {
+            return {
+                time: _calTimestamps[i] !== undefined ? _calTimestamps[i] : line.time,
+                en: line.en,
+                vi: line.vi
+            };
+        });
+        var calData = {
+            id: _calSongId,
+            title: _songData.title || _calSongId,
+            artist: _songData.artist || '',
+            audio: _songData.audio,
+            duration: Math.ceil(_audio ? _audio.duration : _songData.duration) || _songData.duration,
+            lines: newLines
+        };
+        try {
+            localStorage.setItem('cal_' + _calSongId, JSON.stringify(calData));
+        } catch(e) {
+            alert('Save failed: ' + e.message);
+            return;
+        }
+
+        // Flash save button green
+        var btn = document.getElementById('calSaveBtn');
+        if (btn) {
+            btn.innerHTML = '✅';
+            btn.style.borderColor = '#4caf50';
+            btn.style.color = '#fff';
+            btn.style.background = '#4caf50';
+            setTimeout(function() {
+                btn.innerHTML = '💾';
+                btn.style.background = 'none';
+                btn.style.color = '#4caf50';
+            }, 1500);
+        }
     }
 
     function finishCalibrate(data) {
@@ -462,6 +570,8 @@ const LyricsPlayer = (function() {
         try {
             var jsonStr = JSON.stringify(calData);
             localStorage.setItem('cal_' + saveId, jsonStr);
+            // Clear progress since calibration is complete
+            localStorage.removeItem('calProgress_' + saveId);
             // Verify save worked
             var verify = localStorage.getItem('cal_' + saveId);
             saveOk = !!verify;
@@ -670,8 +780,11 @@ const LyricsPlayer = (function() {
         closeCalibrate,
         calTap,
         calUndo,
+        calSave,
         applyCal,
         closeAndPlay,
+        _resumeCal,
+        _startFreshCal,
         openExport,
         closeExport,
         _copyExport,
