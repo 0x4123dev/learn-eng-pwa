@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v33';
+const CACHE_NAME = 'flashlingo-v34';
 const ASSETS = [
   '/',
   '/index.html',
@@ -67,6 +67,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Audio JSON files: network-first (timestamps may be updated)
+  if (event.request.url.includes('/audio/') && event.request.url.endsWith('.json')) {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // All other same-origin: cache-first
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;

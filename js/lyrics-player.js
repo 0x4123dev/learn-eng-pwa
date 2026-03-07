@@ -21,20 +21,27 @@ const LyricsPlayer = (function() {
         const entry = SONGS.find(s => s.id === songId);
         if (!entry) return null;
 
-        // Check localStorage for calibrated timestamps first
+        // Always try server JSON first (may have updated calibrated timestamps)
         try {
-            var calStr = localStorage.getItem('cal_' + songId);
-            if (calStr) {
-                _songData = JSON.parse(calStr);
-                _songData.id = songId; // always ensure id is set
+            const resp = await fetch(entry.file + '?v=' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : ''));
+            if (resp.ok) {
+                _songData = await resp.json();
+                _songData.id = songId;
                 return _songData;
             }
         } catch(e) {}
 
-        const resp = await fetch(entry.file);
-        _songData = await resp.json();
-        _songData.id = songId; // always ensure id matches SONGS catalog
-        return _songData;
+        // Offline fallback: check localStorage for calibrated data
+        try {
+            var calStr = localStorage.getItem('cal_' + songId);
+            if (calStr) {
+                _songData = JSON.parse(calStr);
+                _songData.id = songId;
+                return _songData;
+            }
+        } catch(e) {}
+
+        return null;
     }
 
     function openPlayer(songId) {
@@ -89,9 +96,9 @@ const LyricsPlayer = (function() {
         // Render controls
         renderControls(0, data.duration);
 
-        // Sync loop
-        _audio.addEventListener('timeupdate', onTimeUpdate);
+        // Sync loop using requestAnimationFrame for smooth 60fps updates
         _audio.addEventListener('ended', onEnded);
+        startSyncLoop();
     }
 
     function renderControls(currentTime, duration) {
@@ -118,6 +125,22 @@ const LyricsPlayer = (function() {
                 </button>
             </div>
         `;
+    }
+
+    function startSyncLoop() {
+        stopSyncLoop();
+        function tick() {
+            onTimeUpdate();
+            _animFrame = requestAnimationFrame(tick);
+        }
+        _animFrame = requestAnimationFrame(tick);
+    }
+
+    function stopSyncLoop() {
+        if (_animFrame) {
+            cancelAnimationFrame(_animFrame);
+            _animFrame = null;
+        }
     }
 
     function onTimeUpdate() {
@@ -233,9 +256,9 @@ const LyricsPlayer = (function() {
     }
 
     function close(returnToMusic) {
+        stopSyncLoop();
         if (_audio) {
             _audio.pause();
-            _audio.removeEventListener('timeupdate', onTimeUpdate);
             _audio.removeEventListener('ended', onEnded);
             _audio = null;
         }
@@ -310,7 +333,7 @@ const LyricsPlayer = (function() {
         // Always fetch from file (not localStorage calibrated) for calibration
         var entry = SONGS.find(function(s) { return s.id === songId; });
         if (!entry) return;
-        fetch(entry.file).then(function(r) { return r.json(); }).then(function(data) {
+        fetch(entry.file + '?v=' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : '')).then(function(r) { return r.json(); }).then(function(data) {
             data.id = songId;
             _songData = data;
 

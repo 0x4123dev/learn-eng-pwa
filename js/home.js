@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v1.9.3';
+const APP_VERSION = 'v2.1.0';
 
 function renderHome() {
     if (!appState) return;
