@@ -292,43 +292,44 @@ const LyricsPlayer = (function() {
         _calActive = true;
         _isPlaying = false;
 
+        // Show ALL lyrics in scrollable area (like normal player)
         const area = document.getElementById('lpLyricsArea');
-        area.innerHTML = `
-            <div style="padding:16px;text-align:center;">
-                <div style="font-size:14px;color:#aaa;margin-bottom:12px;">
-                    1️⃣ Press ▶ to play<br>
-                    2️⃣ Tap the big button when each line starts singing<br>
-                    3️⃣ Timestamps auto-saved when done
-                </div>
-                <div id="calCurrentLine" style="font-size:20px;font-weight:bold;color:#fff;min-height:60px;margin:16px 0;line-height:1.4;"></div>
-                <div id="calNextLine" style="font-size:14px;color:#888;min-height:40px;margin-bottom:8px;"></div>
-                <div id="calProgress" style="font-size:13px;color:#aaa;margin-bottom:16px;"></div>
-                <div id="calTimeDisplay" style="font-size:24px;font-weight:bold;color:#7c4dff;margin-bottom:16px;font-family:monospace;">0:00.0</div>
+        area.innerHTML = data.lines.map((line, i) => `
+            <div class="lp-line cal-line" id="calLine${i}" style="opacity:0.35;transition:opacity 0.3s,transform 0.3s;">
+                <div class="lp-line-en">${escapeHtml(line.en)}</div>
             </div>
-        `;
+        `).join('');
 
-        updateCalDisplay(data);
+        // Highlight first line
+        updateCalHighlight(data);
 
+        // Controls: timer + play + tap + undo
         const controls = document.getElementById('lpControls');
         controls.innerHTML = `
-            <div class="lp-buttons" style="flex-direction:column;gap:12px;">
-                <button class="lp-btn lp-btn-play" id="lpPlayBtn" onclick="LyricsPlayer.togglePlay()" style="width:56px;height:56px;">
-                    <svg id="lpPlayIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                    <svg id="lpPauseIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                </button>
-                <button id="calTapBtn" onclick="LyricsPlayer.calTap()" style="
-                    width:100%;height:80px;border-radius:16px;border:none;
-                    background:linear-gradient(135deg,#667eea,#764ba2);
-                    color:#fff;font-size:18px;font-weight:bold;cursor:pointer;
-                    box-shadow:0 4px 15px rgba(118,75,162,0.4);
-                    transition:transform 0.1s;
-                ">
-                    👆 TAP when line starts
-                </button>
-                <button onclick="LyricsPlayer.calUndo()" style="
-                    background:none;border:1px solid #555;color:#aaa;
-                    padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;
-                ">↩ Undo last tap</button>
+            <div style="text-align:center;padding:4px 0;">
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;">
+                    <span id="calProgress" style="font-size:12px;color:#aaa;">Line 1 / ${data.lines.length}</span>
+                    <span id="calTimeDisplay" style="font-size:16px;font-weight:bold;color:#7c4dff;font-family:monospace;">0:00.0</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <button class="lp-btn lp-btn-play" id="lpPlayBtn" onclick="LyricsPlayer.togglePlay()" style="width:48px;height:48px;flex-shrink:0;">
+                        <svg id="lpPlayIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                        <svg id="lpPauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    </button>
+                    <button id="calTapBtn" onclick="LyricsPlayer.calTap()" style="
+                        flex:1;height:56px;border-radius:14px;border:none;
+                        background:linear-gradient(135deg,#667eea,#764ba2);
+                        color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
+                        box-shadow:0 4px 15px rgba(118,75,162,0.4);
+                        transition:transform 0.1s;
+                    ">
+                        👆 TAP when line starts
+                    </button>
+                    <button onclick="LyricsPlayer.calUndo()" style="
+                        background:none;border:1px solid #555;color:#aaa;
+                        padding:8px 10px;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0;
+                    ">↩</button>
+                </div>
             </div>
         `;
 
@@ -345,25 +346,39 @@ const LyricsPlayer = (function() {
         _audio.addEventListener('ended', onEnded);
     }
 
-    function updateCalDisplay(data) {
+    function updateCalHighlight(data) {
         if (!data) data = _songData;
-        var curr = document.getElementById('calCurrentLine');
-        var next = document.getElementById('calNextLine');
         var prog = document.getElementById('calProgress');
-        if (!curr) return;
 
-        if (_calLineIdx < data.lines.length) {
-            curr.textContent = data.lines[_calLineIdx].en;
-            next.textContent = (_calLineIdx + 1 < data.lines.length)
-                ? '▸ Next: ' + data.lines[_calLineIdx + 1].en
-                : '(last line)';
-            prog.textContent = 'Line ' + (_calLineIdx + 1) + ' of ' + data.lines.length;
-        } else {
-            curr.textContent = '✅ Done!';
-            next.textContent = '';
-            prog.textContent = 'All ' + data.lines.length + ' lines timed';
+        if (_calLineIdx >= data.lines.length) {
+            if (prog) prog.textContent = 'All ' + data.lines.length + ' lines done!';
             finishCalibrate(data);
+            return;
         }
+
+        if (prog) prog.textContent = 'Line ' + (_calLineIdx + 1) + ' / ' + data.lines.length;
+
+        // Update all line styles
+        data.lines.forEach(function(_, i) {
+            var el = document.getElementById('calLine' + i);
+            if (!el) return;
+            if (i < _calLineIdx) {
+                // Already tapped — dim with checkmark color
+                el.style.opacity = '0.3';
+                el.style.transform = '';
+            } else if (i === _calLineIdx) {
+                // Current line — bright + scaled
+                el.style.opacity = '1';
+                el.style.transform = 'scale(1.02)';
+                el.classList.add('lp-line-active');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                // Upcoming — slightly visible
+                el.style.opacity = '0.4';
+                el.style.transform = '';
+                el.classList.remove('lp-line-active');
+            }
+        });
     }
 
     function calTap() {
@@ -381,14 +396,14 @@ const LyricsPlayer = (function() {
             setTimeout(function() { btn.style.transform = ''; }, 100);
         }
 
-        updateCalDisplay(_songData);
+        updateCalHighlight(_songData);
     }
 
     function calUndo() {
         if (_calTimestamps.length === 0) return;
         _calTimestamps.pop();
         _calLineIdx = _calTimestamps.length;
-        updateCalDisplay(_songData);
+        updateCalHighlight(_songData);
     }
 
     function finishCalibrate(data) {
