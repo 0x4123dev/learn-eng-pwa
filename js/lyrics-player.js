@@ -12,7 +12,8 @@ const LyricsPlayer = (function() {
         { id: 'heavenly-jumpstyle', file: 'audio/heavenly-jumpstyle.json' },
         { id: 'wellerman', file: 'audio/wellerman.json' },
         { id: 'lust', file: 'audio/lust.json' },
-        { id: 'bad-with-us', file: 'audio/bad-with-us.json' }
+        { id: 'bad-with-us', file: 'audio/bad-with-us.json' },
+        { id: 'hazbin-guarantee', file: 'audio/hazbin-guarantee.json' }
     ];
 
     async function loadSong(songId) {
