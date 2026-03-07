@@ -3,60 +3,247 @@
   "title": "HEAVENLY JUMPSTYLE",
   "artist": "TWXNY, Sxilwix, INNXCENCE",
   "audio": "audio/heavenly-jumpstyle.mp3",
-  "duration": 115,
+  "duration": 116,
   "lines": [
-    { "time": 0.0,  "en": "Ah, ah, ah, ah", "vi": "" },
-    { "time": 2.0,  "en": "Ah, ah, ah, ah", "vi": "" },
-    { "time": 4.0,  "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 6.0,  "en": "Please don't leave (please don't leave)", "vi": "Xin đừng rời đi (xin đừng rời đi)" },
-    { "time": 8.5,  "en": "Say you need me, need me", "vi": "Hãy nói em cần anh, cần anh" },
-    { "time": 10.5, "en": "'Cause I can't breathe, can't breathe", "vi": "Vì anh không thể thở, không thể thở" },
-    { "time": 13.0, "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 15.0, "en": "Don't let go (don't let go)", "vi": "Đừng buông tay (đừng buông tay)" },
-    { "time": 17.5, "en": "If you leave me, leave me, leave", "vi": "Nếu em rời xa anh, rời xa, rời xa" },
-    { "time": 19.5, "en": "I'll be alone, alone", "vi": "Anh sẽ cô đơn, cô đơn" },
-
-    { "time": 22.5, "en": "Left with the light on, hoping you'd call (ah, ah)", "vi": "Để đèn sáng, mong em sẽ gọi" },
-    { "time": 25.5, "en": "Talking to shadows on my wall (ah, ah)", "vi": "Nói chuyện với bóng tối trên tường" },
-    { "time": 28.5, "en": "Told all my friends I'm doing fine (ah, ah)", "vi": "Bảo bạn bè rằng anh ổn" },
-    { "time": 31.5, "en": "Truth is I'm broken all the time (ah)", "vi": "Sự thật là anh tan vỡ mọi lúc" },
-    { "time": 34.5, "en": "Coffee goes cold, your name on my tongue (ah, ah)", "vi": "Cà phê nguội lạnh, tên em trên môi" },
-    { "time": 37.5, "en": "Every old love song sounds like us (ah, ah)", "vi": "Mỗi bài tình ca cũ nghe giống chúng ta" },
-    { "time": 40.5, "en": "Checked my phone, nothing from you (ah, ah)", "vi": "Kiểm tra điện thoại, không có tin từ em" },
-    { "time": 43.5, "en": "How did forever fade so soon? (Ah)", "vi": "Sao mãi mãi lại phai nhanh thế?" },
-
-    { "time": 47.0, "en": "If you don't love me, say it, say it", "vi": "Nếu em không yêu anh, hãy nói đi, nói đi" },
-    { "time": 50.0, "en": "Stay with me (stay with me, me, me, me, me)", "vi": "Ở lại với anh (ở lại với anh)" },
-
-    { "time": 53.0, "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 55.0, "en": "Please don't leave (please don't leave)", "vi": "Xin đừng rời đi (xin đừng rời đi)" },
-    { "time": 57.5, "en": "Say you need me, need me", "vi": "Hãy nói em cần anh, cần anh" },
-    { "time": 59.5, "en": "'Cause I can't breathe, can't breathe", "vi": "Vì anh không thể thở, không thể thở" },
-    { "time": 62.0, "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 64.0, "en": "Don't let go (don't let go)", "vi": "Đừng buông tay (đừng buông tay)" },
-    { "time": 66.5, "en": "If you leave me, leave me, leave", "vi": "Nếu em rời xa anh, rời xa, rời xa" },
-    { "time": 68.5, "en": "I'll be alone, alone", "vi": "Anh sẽ cô đơn, cô đơn" },
-
-    { "time": 71.5, "en": "Hangs by the door (ah)", "vi": "Treo bên cánh cửa" },
-    { "time": 74.0, "en": "Count the cracks all across the floor (ah)", "vi": "Đếm những vết nứt khắp sàn nhà" },
-    { "time": 76.0, "en": "Every \"We'll talk\" turned into air (ah)", "vi": "Mỗi lời \"mình sẽ nói\" tan vào không khí" },
-    { "time": 78.5, "en": "You were beside me, now you're not there (ah)", "vi": "Em từng bên anh, giờ em không còn đây" },
-    { "time": 81.0, "en": "All of our plans in cardboard dreams (ah)", "vi": "Mọi kế hoạch trong giấc mơ bìa cứng" },
-    { "time": 83.0, "en": "Packed in a box that no one sees (ah)", "vi": "Gói trong hộp không ai nhìn thấy" },
-    { "time": 85.0, "en": "I play our nights back frame by frame (ah)", "vi": "Anh chiếu lại những đêm từng khung hình" },
-    { "time": 87.5, "en": "Searching for when you slipped away (ah)", "vi": "Tìm kiếm lúc em lặng lẽ rời đi" },
-
-    { "time": 90.5, "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 93.0, "en": "Please don't leave (please don't leave)", "vi": "Xin đừng rời đi (xin đừng rời đi)" },
-    { "time": 95.0, "en": "Say you need me, need me", "vi": "Hãy nói em cần anh, cần anh" },
-    { "time": 97.0, "en": "'Cause I can't breathe, can't breathe", "vi": "Vì anh không thể thở, không thể thở" },
-    { "time": 99.5, "en": "Stay with me (stay with me)", "vi": "Ở lại với anh (ở lại với anh)" },
-    { "time": 101.0, "en": "Don't let go (don't let go)", "vi": "Đừng buông tay (đừng buông tay)" },
-    { "time": 102.5, "en": "If you leave me, leave me, leave", "vi": "Nếu em rời xa anh, rời xa, rời xa" },
-    { "time": 104.0, "en": "I'll be alone, alone (be alone, alone)", "vi": "Anh sẽ cô đơn, cô đơn" },
-    { "time": 105.5, "en": "Alone, alone", "vi": "Cô đơn, cô đơn" },
-    { "time": 106.5, "en": "Alone, alone", "vi": "Cô đơn, cô đơn" },
-    { "time": 108.0, "en": "Alone, alone", "vi": "Cô đơn, cô đơn" },
-    { "time": 109.0, "en": "Alone,", "vi": "Cô đơn," }
+    {
+      "time": 7.3,
+      "en": "Ah, ah, ah, ah",
+      "vi": ""
+    },
+    {
+      "time": 15.1,
+      "en": "Ah, ah, ah, ah",
+      "vi": ""
+    },
+    {
+      "time": 17,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 18.9,
+      "en": "Please don't leave (please don't leave)",
+      "vi": "Xin đừng rời đi (xin đừng rời đi)"
+    },
+    {
+      "time": 21,
+      "en": "Say you need me, need me",
+      "vi": "Hãy nói em cần anh, cần anh"
+    },
+    {
+      "time": 22.9,
+      "en": "'Cause I can't breathe, can't breathe",
+      "vi": "Vì anh không thể thở, không thể thở"
+    },
+    {
+      "time": 24.4,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 26.3,
+      "en": "Don't let go (don't let go)",
+      "vi": "Đừng buông tay (đừng buông tay)"
+    },
+    {
+      "time": 28.3,
+      "en": "If you leave me, leave me, leave",
+      "vi": "Nếu em rời xa anh, rời xa, rời xa"
+    },
+    {
+      "time": 30.5,
+      "en": "I'll be alone, alone",
+      "vi": "Anh sẽ cô đơn, cô đơn"
+    },
+    {
+      "time": 33.1,
+      "en": "Left with the light on, hoping you'd call (ah, ah)",
+      "vi": "Để đèn sáng, mong em sẽ gọi"
+    },
+    {
+      "time": 34.5,
+      "en": "Talking to shadows on my wall (ah, ah)",
+      "vi": "Nói chuyện với bóng tối trên tường"
+    },
+    {
+      "time": 35.7,
+      "en": "Told all my friends I'm doing fine (ah, ah)",
+      "vi": "Bảo bạn bè rằng anh ổn"
+    },
+    {
+      "time": 37.3,
+      "en": "Truth is I'm broken all the time (ah)",
+      "vi": "Sự thật là anh tan vỡ mọi lúc"
+    },
+    {
+      "time": 39,
+      "en": "Coffee goes cold, your name on my tongue (ah, ah)",
+      "vi": "Cà phê nguội lạnh, tên em trên môi"
+    },
+    {
+      "time": 40.9,
+      "en": "Every old love song sounds like us (ah, ah)",
+      "vi": "Mỗi bài tình ca cũ nghe giống chúng ta"
+    },
+    {
+      "time": 43,
+      "en": "Checked my phone, nothing from you (ah, ah)",
+      "vi": "Kiểm tra điện thoại, không có tin từ em"
+    },
+    {
+      "time": 46.1,
+      "en": "How did forever fade so soon? (Ah)",
+      "vi": "Sao mãi mãi lại phai nhanh thế?"
+    },
+    {
+      "time": 48.6,
+      "en": "If you don't love me, say it, say it",
+      "vi": "Nếu em không yêu anh, hãy nói đi, nói đi"
+    },
+    {
+      "time": 52.1,
+      "en": "Stay with me (stay with me, me, me, me, me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 53.8,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 55.6,
+      "en": "Please don't leave (please don't leave)",
+      "vi": "Xin đừng rời đi (xin đừng rời đi)"
+    },
+    {
+      "time": 57.6,
+      "en": "Say you need me, need me",
+      "vi": "Hãy nói em cần anh, cần anh"
+    },
+    {
+      "time": 59.6,
+      "en": "'Cause I can't breathe, can't breathe",
+      "vi": "Vì anh không thể thở, không thể thở"
+    },
+    {
+      "time": 61.1,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 62.6,
+      "en": "Don't let go (don't let go)",
+      "vi": "Đừng buông tay (đừng buông tay)"
+    },
+    {
+      "time": 64.9,
+      "en": "If you leave me, leave me, leave",
+      "vi": "Nếu em rời xa anh, rời xa, rời xa"
+    },
+    {
+      "time": 67,
+      "en": "I'll be alone, alone",
+      "vi": "Anh sẽ cô đơn, cô đơn"
+    },
+    {
+      "time": 68.1,
+      "en": "Hangs by the door (ah)",
+      "vi": "Treo bên cánh cửa"
+    },
+    {
+      "time": 70.1,
+      "en": "Count the cracks all across the floor (ah)",
+      "vi": "Đếm những vết nứt khắp sàn nhà"
+    },
+    {
+      "time": 71.9,
+      "en": "Every \"We'll talk\" turned into air (ah)",
+      "vi": "Mỗi lời \"mình sẽ nói\" tan vào không khí"
+    },
+    {
+      "time": 73.5,
+      "en": "You were beside me, now you're not there (ah)",
+      "vi": "Em từng bên anh, giờ em không còn đây"
+    },
+    {
+      "time": 75.3,
+      "en": "All of our plans in cardboard dreams (ah)",
+      "vi": "Mọi kế hoạch trong giấc mơ bìa cứng"
+    },
+    {
+      "time": 77.3,
+      "en": "Packed in a box that no one sees (ah)",
+      "vi": "Gói trong hộp không ai nhìn thấy"
+    },
+    {
+      "time": 79.2,
+      "en": "I play our nights back frame by frame (ah)",
+      "vi": "Anh chiếu lại những đêm từng khung hình"
+    },
+    {
+      "time": 81.8,
+      "en": "Searching for when you slipped away (ah)",
+      "vi": "Tìm kiếm lúc em lặng lẽ rời đi"
+    },
+    {
+      "time": 83.2,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 85,
+      "en": "Please don't leave (please don't leave)",
+      "vi": "Xin đừng rời đi (xin đừng rời đi)"
+    },
+    {
+      "time": 87.2,
+      "en": "Say you need me, need me",
+      "vi": "Hãy nói em cần anh, cần anh"
+    },
+    {
+      "time": 89,
+      "en": "'Cause I can't breathe, can't breathe",
+      "vi": "Vì anh không thể thở, không thể thở"
+    },
+    {
+      "time": 90.4,
+      "en": "Stay with me (stay with me)",
+      "vi": "Ở lại với anh (ở lại với anh)"
+    },
+    {
+      "time": 92.2,
+      "en": "Don't let go (don't let go)",
+      "vi": "Đừng buông tay (đừng buông tay)"
+    },
+    {
+      "time": 94.4,
+      "en": "If you leave me, leave me, leave",
+      "vi": "Nếu em rời xa anh, rời xa, rời xa"
+    },
+    {
+      "time": 96.1,
+      "en": "I'll be alone, alone (be alone, alone)",
+      "vi": "Anh sẽ cô đơn, cô đơn"
+    },
+    {
+      "time": 99,
+      "en": "Alone, alone",
+      "vi": "Cô đơn, cô đơn"
+    },
+    {
+      "time": 101.4,
+      "en": "Alone, alone",
+      "vi": "Cô đơn, cô đơn"
+    },
+    {
+      "time": 103.5,
+      "en": "Alone, alone",
+      "vi": "Cô đơn, cô đơn"
+    },
+    {
+      "time": 106,
+      "en": "Alone,",
+      "vi": "Cô đơn,"
+    }
   ]
 }
