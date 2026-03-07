@@ -5918,6 +5918,8 @@
             display: none;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-top: var(--safe-area-top);
+            padding-bottom: 80px;
         }
 
         .video-player-overlay.active {
@@ -5937,13 +5939,13 @@
         }
 
         .vp-back {
-            background: rgba(255,255,255,0.1);
-            border: none;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
             font-family: inherit;
         }

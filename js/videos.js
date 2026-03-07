@@ -1065,7 +1065,6 @@ function openVideoPlayer(videoId) {
 
     const overlay = document.getElementById('videoPlayerOverlay');
     overlay.classList.add('active');
-    document.getElementById('bottomNav').style.display = 'none';
 
     renderVideoPlayer();
 }
@@ -1160,7 +1159,6 @@ function closeVideoPlayer() {
     const overlay = document.getElementById('videoPlayerOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
-    document.getElementById('bottomNav').style.display = 'flex';
 
     if (videoState.player && typeof videoState.player.destroy === 'function') {
         videoState.player.destroy();
