@@ -278,8 +278,10 @@ const LyricsPlayer = (function() {
     let _calLineIdx = 0;
     let _calTimestamps = [];
     let _calActive = false;
+    let _calSongId = null;
 
     function openCalibrate(songId) {
+        _calSongId = songId;
         const overlay = document.getElementById('lyricsPlayerOverlay');
         overlay.classList.add('active');
         document.getElementById('bottomNav').style.display = 'none';
@@ -442,20 +444,25 @@ const LyricsPlayer = (function() {
     }
 
     function finishCalibrate(data) {
-        // Apply timestamps to song data
+        // Apply timestamps to song data (use !== undefined to allow time 0)
         var newLines = data.lines.map(function(line, i) {
             return {
-                time: _calTimestamps[i] || line.time,
+                time: _calTimestamps[i] !== undefined ? _calTimestamps[i] : line.time,
                 en: line.en,
                 vi: line.vi
             };
         });
 
-        // Auto-save to localStorage immediately
-        var calData = { id: data.id, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio.duration || data.duration), lines: newLines };
+        // Use _calSongId as the key (reliable), fallback to data.id
+        var saveId = _calSongId || data.id;
+        var calData = { id: saveId, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio ? _audio.duration : data.duration) || data.duration, lines: newLines };
         try {
-            localStorage.setItem('cal_' + data.id, JSON.stringify(calData));
-        } catch(e) {}
+            localStorage.setItem('cal_' + saveId, JSON.stringify(calData));
+            console.log('[Calibrate] Saved cal_' + saveId, calData.lines.length + ' lines');
+        } catch(e) {
+            console.error('[Calibrate] Failed to save:', e);
+            alert('Failed to save calibration: ' + e.message);
+        }
 
         // Show result
         var area = document.getElementById('lpLyricsArea');
@@ -467,7 +474,7 @@ const LyricsPlayer = (function() {
                     Timestamps saved to your device.<br>
                     Songs will use your calibrated timing now.
                 </div>
-                <button onclick="LyricsPlayer.closeAndPlay('${data.id}');" style="
+                <button onclick="LyricsPlayer.closeAndPlay('${saveId}');" style="
                     width:100%;padding:14px;border-radius:12px;border:none;
                     background:linear-gradient(135deg,#667eea,#764ba2);
                     color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
@@ -492,6 +499,7 @@ const LyricsPlayer = (function() {
         _calActive = false;
         _calTimestamps = [];
         _calLineIdx = 0;
+        _calSongId = null;
         close(false);
         openPlayer(songId);
     }
@@ -500,6 +508,7 @@ const LyricsPlayer = (function() {
         _calActive = false;
         _calTimestamps = [];
         _calLineIdx = 0;
+        _calSongId = null;
         close();
     }
 
