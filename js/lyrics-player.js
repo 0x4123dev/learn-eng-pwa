@@ -69,10 +69,10 @@ const LyricsPlayer = (function() {
         overlay.querySelector('.lp-song-title').textContent = data.title;
         overlay.querySelector('.lp-song-artist').textContent = data.artist;
 
-        // Render lyrics lines
+        // Render lyrics lines (tap to seek like Spotify)
         const area = document.getElementById('lpLyricsArea');
         area.innerHTML = data.lines.map((line, i) => `
-            <div class="lp-line" id="lpLine${i}">
+            <div class="lp-line" id="lpLine${i}" onclick="LyricsPlayer.tapLine(${i})" style="cursor:pointer;">
                 <div class="lp-line-en">${escapeHtml(line.en)}</div>
                 ${line.vi ? `<div class="lp-line-vi">${escapeHtml(line.vi)}</div>` : ''}
             </div>
@@ -201,6 +201,17 @@ const LyricsPlayer = (function() {
     function restart() {
         if (!_audio) return;
         _audio.currentTime = 0;
+        if (!_isPlaying) {
+            _audio.play();
+            _isPlaying = true;
+            updatePlayButton();
+        }
+    }
+
+    function tapLine(idx) {
+        if (!_audio || !_songData) return;
+        if (idx < 0 || idx >= _songData.lines.length) return;
+        _audio.currentTime = _songData.lines[idx].time;
         if (!_isPlaying) {
             _audio.play();
             _isPlaying = true;
@@ -635,6 +646,7 @@ const LyricsPlayer = (function() {
         seek,
         seekTo,
         restart,
+        tapLine,
         toggleLang,
         getDebugInfo,
         openCalibrate,
