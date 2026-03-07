@@ -489,6 +489,21 @@ function renderMusicMenu() {
                     </div>
                     <button class="mm-play-btn" onclick="closeMusicMenu(); startWordChant();">▶ Play Word Chant</button>
                 </div>
+
+                <div class="mm-game-card mm-lyrics-card">
+                    <div class="mm-game-icon">🎧</div>
+                    <div class="mm-game-name">Lyrics Player</div>
+                    <div class="mm-game-desc">Listen to songs & learn with synced lyrics!</div>
+                    <div class="mm-songs-list">
+                        ${LyricsPlayer.SONGS.map(s => `
+                            <button class="mm-song-item" onclick="closeMusicMenu(); LyricsPlayer.openPlayer('${s.id}');">
+                                <span class="mm-song-icon">🎵</span>
+                                <span class="mm-song-name">${s.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
+                                <span class="mm-song-play">▶</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
             </div>
         </div>
     `;
