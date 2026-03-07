@@ -9,7 +9,8 @@ const LyricsPlayer = (function() {
 
     // --- Song catalog ---
     const SONGS = [
-        { id: 'heavenly-jumpstyle', file: 'audio/heavenly-jumpstyle.json' }
+        { id: 'heavenly-jumpstyle', file: 'audio/heavenly-jumpstyle.json' },
+        { id: 'wellerman', file: 'audio/wellerman.json' }
     ];
 
     async function loadSong(songId) {
