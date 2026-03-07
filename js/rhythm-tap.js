@@ -431,9 +431,12 @@ function closeRhythmTap() {
 
 // Music menu overlay
 function showMusicMenu() {
+    // Close bubbles if open
+    const bo = document.getElementById('bubblesOverlay');
+    if (bo) { bo.classList.remove('active'); bo.innerHTML = ''; }
+
     const overlay = document.getElementById('musicMenuOverlay');
     overlay.classList.add('active');
-    document.getElementById('bottomNav').style.display = 'none';
     renderMusicMenu();
 }
 
@@ -498,7 +501,6 @@ function closeMusicMenu() {
     const overlay = document.getElementById('musicMenuOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
-    document.getElementById('bottomNav').style.display = 'flex';
 }
 
 // Home screen card

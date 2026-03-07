@@ -688,6 +688,12 @@ function recordStudy() {
 let _profileOriginScreen = 'homeScreen';
 
 function switchScreen(screenId) {
+    // Close any open overlays
+    document.querySelectorAll('.bubbles-overlay, .music-menu-overlay').forEach(el => {
+        el.classList.remove('active');
+        el.innerHTML = '';
+    });
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 

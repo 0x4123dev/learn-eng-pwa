@@ -507,6 +507,11 @@
             padding-bottom: var(--safe-area-bottom);
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             border-radius: 20px 20px 0 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
         }
 
         .nav-item {

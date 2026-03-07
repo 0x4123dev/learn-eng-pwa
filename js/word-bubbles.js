@@ -75,9 +75,12 @@ let bubblesState = {
 
 // ==================== BUBBLES HOME SCREEN ====================
 function showBubblesHome() {
+    // Close music menu if open
+    const mm = document.getElementById('musicMenuOverlay');
+    if (mm) { mm.classList.remove('active'); mm.innerHTML = ''; }
+
     const overlay = document.getElementById('bubblesOverlay');
     overlay.classList.add('active');
-    document.getElementById('bottomNav').style.display = 'none';
     renderBubblesHome();
 }
 
@@ -660,5 +663,4 @@ function closeBubbles() {
     const overlay = document.getElementById('bubblesOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
-    document.getElementById('bottomNav').style.display = 'flex';
 }

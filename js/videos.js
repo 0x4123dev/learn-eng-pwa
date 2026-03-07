@@ -962,7 +962,6 @@ function onYouTubeIframeAPIReady() {
 function switchToVideoScreen() {
     // Close any overlays
     document.querySelectorAll('.bubbles-overlay, .music-menu-overlay').forEach(el => el.classList.remove('active'));
-    document.getElementById('bottomNav').style.display = 'flex';
 
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('videoScreen').classList.add('active');
