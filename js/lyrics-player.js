@@ -236,13 +236,23 @@ const LyricsPlayer = (function() {
         return div.innerHTML;
     }
 
+    function seekTo(seconds) {
+        if (_audio) _audio.currentTime = seconds;
+    }
+
+    function getDebugInfo() {
+        return { time: _audio ? _audio.currentTime : 0, line: _currentLineIdx };
+    }
+
     return {
         openPlayer,
         close,
         togglePlay,
         seek,
+        seekTo,
         restart,
         toggleLang,
+        getDebugInfo,
         SONGS
     };
 })();
