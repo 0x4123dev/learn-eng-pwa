@@ -20,6 +20,16 @@ const LyricsPlayer = (function() {
     async function loadSong(songId) {
         const entry = SONGS.find(s => s.id === songId);
         if (!entry) return null;
+
+        // Check localStorage for calibrated timestamps first
+        try {
+            var calStr = localStorage.getItem('cal_' + songId);
+            if (calStr) {
+                _songData = JSON.parse(calStr);
+                return _songData;
+            }
+        } catch(e) {}
+
         const resp = await fetch(entry.file);
         _songData = await resp.json();
         return _songData;
@@ -421,51 +431,182 @@ const LyricsPlayer = (function() {
             };
         });
 
-        // Show result + auto-save button
-        var area = document.getElementById('lpLyricsArea');
-        var jsonStr = JSON.stringify({ id: data.id, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio.duration || data.duration), lines: newLines }, null, 2);
+        // Auto-save to localStorage immediately
+        var calData = { id: data.id, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio.duration || data.duration), lines: newLines };
+        try {
+            localStorage.setItem('cal_' + data.id, JSON.stringify(calData));
+        } catch(e) {}
 
+        // Show result
+        var area = document.getElementById('lpLyricsArea');
         area.innerHTML = `
-            <div style="padding:16px;">
-                <div style="font-size:16px;font-weight:bold;color:#4caf50;margin-bottom:12px;">✅ Calibration Complete!</div>
-                <div style="font-size:13px;color:#aaa;margin-bottom:12px;">Timestamps recorded for all ${data.lines.length} lines.</div>
-                <button onclick="LyricsPlayer.applyCal()" style="
+            <div style="padding:16px;text-align:center;">
+                <div style="font-size:48px;margin-bottom:12px;">✅</div>
+                <div style="font-size:18px;font-weight:bold;color:#4caf50;margin-bottom:8px;">Calibration Saved!</div>
+                <div style="font-size:13px;color:#aaa;margin-bottom:20px;">
+                    Timestamps saved to your device.<br>
+                    Songs will use your calibrated timing now.
+                </div>
+                <button onclick="LyricsPlayer.closeCalibrate(); LyricsPlayer.openPlayer('${data.id}');" style="
                     width:100%;padding:14px;border-radius:12px;border:none;
-                    background:linear-gradient(135deg,#4caf50,#2e7d32);
+                    background:linear-gradient(135deg,#667eea,#764ba2);
                     color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
-                    margin-bottom:12px;
-                ">💾 Apply & Save</button>
-                <div style="font-size:11px;color:#666;margin-bottom:8px;">JSON output (for manual copy):</div>
-                <textarea id="calJsonOutput" readonly style="
-                    width:100%;height:200px;background:#1a1a2e;color:#aaa;
-                    border:1px solid #333;border-radius:8px;padding:8px;
-                    font-size:11px;font-family:monospace;resize:vertical;
-                ">${escapeHtml(jsonStr)}</textarea>
+                    margin-bottom:10px;
+                ">🎧 Play with new timing</button>
+                <button onclick="LyricsPlayer.closeCalibrate();" style="
+                    width:100%;padding:12px;border-radius:12px;border:1px solid #555;
+                    background:none;color:#aaa;font-size:14px;cursor:pointer;
+                ">Close</button>
             </div>
         `;
-
-        // Store for apply
-        window._calNewData = { id: data.id, lines: newLines, duration: Math.ceil(_audio.duration || data.duration) };
 
         if (_audio) { _audio.pause(); _isPlaying = false; }
     }
 
     function applyCal() {
-        if (!window._calNewData) return;
-        var d = window._calNewData;
-        // Save via fetch to local file (won't work for static hosting, so copy JSON instead)
-        var ta = document.getElementById('calJsonOutput');
-        if (ta) {
-            ta.select();
-            try { document.execCommand('copy'); } catch(e) {}
-        }
-        alert('JSON copied to clipboard!\\nPaste it into audio/' + d.id + '.json to save.\\n\\nOr share the JSON output with Claude to update the file.');
+        // No longer needed — auto-saved in finishCalibrate
     }
 
     function closeCalibrate() {
         _calActive = false;
         _calTimestamps = [];
         _calLineIdx = 0;
+        close();
+    }
+
+    function openExport() {
+        const overlay = document.getElementById('lyricsPlayerOverlay');
+        overlay.classList.add('active');
+        document.getElementById('bottomNav').style.display = 'none';
+
+        // Find all calibrated songs
+        var calibrated = [];
+        SONGS.forEach(function(s) {
+            try {
+                var data = localStorage.getItem('cal_' + s.id);
+                if (data) {
+                    calibrated.push({ id: s.id, json: data });
+                }
+            } catch(e) {}
+        });
+
+        var songListHTML = '';
+        if (calibrated.length === 0) {
+            songListHTML = '<div style="text-align:center;color:#888;padding:32px 0;">No calibrated songs yet.<br>Use Calibrate Timing first!</div>';
+        } else {
+            songListHTML = calibrated.map(function(c) {
+                var parsed = JSON.parse(c.json);
+                var name = (parsed.title || c.id).replace(/-/g, ' ');
+                var lineCount = parsed.lines ? parsed.lines.length : 0;
+                return '<div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:14px;margin-bottom:10px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+                        '<div>' +
+                            '<div style="font-weight:bold;color:#fff;font-size:15px;">✅ ' + escapeHtml(name) + '</div>' +
+                            '<div style="font-size:12px;color:#888;">' + lineCount + ' lines • ' + (parsed.artist || '') + '</div>' +
+                        '</div>' +
+                        '<button onclick="LyricsPlayer._copyExport(\'' + c.id + '\', this)" style="' +
+                            'padding:8px 16px;border-radius:8px;border:none;' +
+                            'background:linear-gradient(135deg,#667eea,#764ba2);' +
+                            'color:#fff;font-size:13px;font-weight:bold;cursor:pointer;">' +
+                            '📋 Copy JSON' +
+                        '</button>' +
+                    '</div>' +
+                    '<div id="exportPreview_' + c.id + '" style="display:none;margin-top:8px;">' +
+                        '<textarea readonly style="' +
+                            'width:100%;height:200px;background:#111;color:#ccc;border:1px solid #333;' +
+                            'border-radius:8px;padding:10px;font-family:monospace;font-size:11px;resize:vertical;' +
+                        '">' + escapeHtml(JSON.stringify(JSON.parse(c.json), null, 2)) + '</textarea>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        overlay.innerHTML = '<div class="lp-container">' +
+            '<div class="lp-header">' +
+                '<button class="lp-back-btn" onclick="LyricsPlayer.closeExport()">✕</button>' +
+                '<div class="lp-song-info">' +
+                    '<div class="lp-song-title">📋 Export Calibrated</div>' +
+                    '<div class="lp-song-artist">' + calibrated.length + ' song' + (calibrated.length !== 1 ? 's' : '') + ' calibrated</div>' +
+                '</div>' +
+                '<div style="width:36px"></div>' +
+            '</div>' +
+            '<div class="lp-lyrics-area" style="padding:16px;">' +
+                '<div style="font-size:13px;color:#aaa;margin-bottom:16px;text-align:center;">' +
+                    'Copy the JSON and paste it into the song\'s .json file in the audio/ folder, then push to git.' +
+                '</div>' +
+                songListHTML +
+                (calibrated.length > 0 ? '<button onclick="LyricsPlayer._copyAllExport(this)" style="' +
+                    'width:100%;padding:14px;border-radius:12px;border:none;margin-top:8px;' +
+                    'background:linear-gradient(135deg,#4caf50,#2e7d32);' +
+                    'color:#fff;font-size:15px;font-weight:bold;cursor:pointer;' +
+                    'box-shadow:0 4px 12px rgba(76,175,80,0.3);">' +
+                    '📦 Copy All Calibrated JSONs</button>' : '') +
+            '</div>' +
+        '</div>';
+    }
+
+    function _copyExport(songId, btn) {
+        try {
+            var data = localStorage.getItem('cal_' + songId);
+            if (!data) return;
+            // Pretty print the JSON
+            var pretty = JSON.stringify(JSON.parse(data), null, 2);
+
+            // Toggle preview
+            var preview = document.getElementById('exportPreview_' + songId);
+            if (preview) {
+                preview.style.display = preview.style.display === 'none' ? 'block' : 'none';
+            }
+
+            // Copy to clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(pretty).then(function() {
+                    var orig = btn.innerHTML;
+                    btn.innerHTML = '✅ Copied!';
+                    btn.style.background = '#4caf50';
+                    setTimeout(function() {
+                        btn.innerHTML = orig;
+                        btn.style.background = 'linear-gradient(135deg,#667eea,#764ba2)';
+                    }, 2000);
+                });
+            } else {
+                // Fallback: select the textarea
+                if (preview) {
+                    preview.style.display = 'block';
+                    var ta = preview.querySelector('textarea');
+                    if (ta) { ta.select(); document.execCommand('copy'); }
+                    btn.innerHTML = '✅ Copied!';
+                    setTimeout(function() { btn.innerHTML = '📋 Copy JSON'; }, 2000);
+                }
+            }
+        } catch(e) {}
+    }
+
+    function _copyAllExport(btn) {
+        try {
+            var allData = {};
+            SONGS.forEach(function(s) {
+                var data = localStorage.getItem('cal_' + s.id);
+                if (data) {
+                    allData[s.id] = JSON.parse(data);
+                }
+            });
+            var pretty = JSON.stringify(allData, null, 2);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(pretty).then(function() {
+                    var orig = btn.innerHTML;
+                    btn.innerHTML = '✅ All Copied!';
+                    btn.style.background = '#388e3c';
+                    setTimeout(function() {
+                        btn.innerHTML = orig;
+                        btn.style.background = 'linear-gradient(135deg,#4caf50,#2e7d32)';
+                    }, 2000);
+                });
+            }
+        } catch(e) {}
+    }
+
+    function closeExport() {
         close();
     }
 
@@ -483,6 +624,10 @@ const LyricsPlayer = (function() {
         calTap,
         calUndo,
         applyCal,
+        openExport,
+        closeExport,
+        _copyExport,
+        _copyAllExport,
         SONGS
     };
 })();
