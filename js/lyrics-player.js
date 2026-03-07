@@ -401,8 +401,13 @@ const LyricsPlayer = (function() {
 
     function calUndo() {
         if (_calTimestamps.length === 0) return;
-        _calTimestamps.pop();
+        var removedTime = _calTimestamps.pop();
         _calLineIdx = _calTimestamps.length;
+        // Seek audio back to 2s before the removed timestamp so you can re-hear it
+        if (_audio) {
+            var seekTo = Math.max(0, removedTime - 2);
+            _audio.currentTime = seekTo;
+        }
         updateCalHighlight(_songData);
     }
 
