@@ -26,12 +26,14 @@ const LyricsPlayer = (function() {
             var calStr = localStorage.getItem('cal_' + songId);
             if (calStr) {
                 _songData = JSON.parse(calStr);
+                _songData.id = songId; // always ensure id is set
                 return _songData;
             }
         } catch(e) {}
 
         const resp = await fetch(entry.file);
         _songData = await resp.json();
+        _songData.id = songId; // always ensure id matches SONGS catalog
         return _songData;
     }
 
@@ -454,25 +456,31 @@ const LyricsPlayer = (function() {
         });
 
         // Use _calSongId as the key (reliable), fallback to data.id
-        var saveId = _calSongId || data.id;
-        var calData = { id: saveId, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio ? _audio.duration : data.duration) || data.duration, lines: newLines };
+        var saveId = _calSongId || data.id || 'unknown';
+        var calData = { id: saveId, title: data.title || saveId, artist: data.artist || '', audio: data.audio, duration: Math.ceil(_audio ? _audio.duration : data.duration) || data.duration, lines: newLines };
+        var saveOk = false;
         try {
-            localStorage.setItem('cal_' + saveId, JSON.stringify(calData));
-            console.log('[Calibrate] Saved cal_' + saveId, calData.lines.length + ' lines');
+            var jsonStr = JSON.stringify(calData);
+            localStorage.setItem('cal_' + saveId, jsonStr);
+            // Verify save worked
+            var verify = localStorage.getItem('cal_' + saveId);
+            saveOk = !!verify;
+            console.log('[Calibrate] Saved cal_' + saveId + ' (' + newLines.length + ' lines, ' + jsonStr.length + ' bytes, verified=' + saveOk + ')');
         } catch(e) {
             console.error('[Calibrate] Failed to save:', e);
-            alert('Failed to save calibration: ' + e.message);
+            alert('Save FAILED: ' + e.message + '\nKey: cal_' + saveId);
         }
 
         // Show result
+        var saveMsg = saveOk ? 'Saved to device!' : 'WARNING: Save may have failed — check storage';
         var area = document.getElementById('lpLyricsArea');
         area.innerHTML = `
             <div style="padding:16px;text-align:center;">
-                <div style="font-size:48px;margin-bottom:12px;">✅</div>
-                <div style="font-size:18px;font-weight:bold;color:#4caf50;margin-bottom:8px;">Calibration Saved!</div>
+                <div style="font-size:48px;margin-bottom:12px;">${saveOk ? '✅' : '⚠️'}</div>
+                <div style="font-size:18px;font-weight:bold;color:${saveOk ? '#4caf50' : '#ff9800'};margin-bottom:8px;">${saveOk ? 'Calibration Saved!' : 'Save Issue'}</div>
                 <div style="font-size:13px;color:#aaa;margin-bottom:20px;">
-                    Timestamps saved to your device.<br>
-                    Songs will use your calibrated timing now.
+                    ${saveMsg}<br>
+                    <span style="font-size:10px;color:#666;">Key: cal_${saveId} • ${newLines.length} lines</span>
                 </div>
                 <button onclick="LyricsPlayer.closeAndPlay('${saveId}');" style="
                     width:100%;padding:14px;border-radius:12px;border:none;
