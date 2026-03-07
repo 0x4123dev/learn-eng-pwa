@@ -249,7 +249,9 @@ const LyricsPlayer = (function() {
         overlay.innerHTML = '';
 
         if (returnToMusic !== false && typeof showMusicMenu === 'function') {
-            showMusicMenu();
+            try { showMusicMenu(); } catch(e) {
+                document.getElementById('bottomNav').style.display = 'flex';
+            }
         } else {
             document.getElementById('bottomNav').style.display = 'flex';
         }
