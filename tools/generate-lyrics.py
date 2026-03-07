@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-generate-lyrics.py — Auto-generate synced lyrics JSON using Whisper.
+generate-lyrics.py — Auto-generate synced lyrics JSON using Demucs + WhisperX.
+
+Pipeline:
+  1. Demucs separates vocals from music/SFX
+  2. WhisperX transcribes the isolated vocals
+  3. WhisperX forced-aligns known lyrics to get word-level timestamps
+  4. Lines are assembled with timestamps from the alignment
 
 Usage:
   # Extract .en.txt and .vi.txt from existing JSON:
@@ -12,13 +18,19 @@ Usage:
   # Generate new JSON from MP3 + lyrics files:
     python3 tools/generate-lyrics.py audio/wellerman.mp3
 
+  # Process all MP3 files:
+    python3 tools/generate-lyrics.py --all
+
   The script expects:
     audio/<song-id>.mp3       — the audio file
     audio/<song-id>.en.txt    — English lyrics, one line per line
     audio/<song-id>.vi.txt    — Vietnamese translations, one line per line
 
   It will output:
-    audio/<song-id>.json      — synced lyrics in the app's format
+    audio/<song-id>.json.new  — synced lyrics in the app's format
+
+Dependencies:
+    pip3 install demucs whisperx openai-whisper
 """
 
 import json
@@ -28,6 +40,7 @@ import re
 import glob
 import subprocess
 import argparse
+import tempfile
 
 
 def extract_txt_from_json(json_path):
@@ -67,19 +80,73 @@ def extract_all(audio_dir='audio'):
         print()
 
 
-def run_whisper(mp3_path, output_dir='/tmp/whisper-lyrics'):
-    """Run Whisper on an MP3 file and return the JSON result."""
+def separate_vocals(mp3_path, output_dir='/tmp/demucs-output'):
+    """Use Demucs to separate vocals from the mix. Returns path to vocals WAV."""
+    song_name = os.path.basename(mp3_path).rsplit('.', 1)[0]
+    vocals_path = os.path.join(output_dir, 'htdemucs', song_name, 'vocals.wav')
+
+    # Skip if already separated
+    if os.path.exists(vocals_path):
+        print(f"  ♻️  Using cached vocal separation: {vocals_path}")
+        return vocals_path
+
+    demucs_bin = os.path.expanduser('~/Library/Python/3.9/bin/demucs')
+    if not os.path.exists(demucs_bin):
+        demucs_bin = 'demucs'
+
+    # Ensure ffmpeg is in PATH
+    env = os.environ.copy()
+    env['PATH'] = '/opt/homebrew/bin:' + env.get('PATH', '')
+
+    cmd = [
+        demucs_bin, mp3_path,
+        '--two-stems', 'vocals',
+        '-o', output_dir,
+        '--mp3',  # save as mp3 to reduce disk
+    ]
+
+    print(f"  🎤 Separating vocals with Demucs...")
+    print(f"  ⏳ This may take a few minutes on CPU...")
+
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+    if result.returncode != 0:
+        print(f"  ❌ Demucs error: {result.stderr[-500:]}")
+        return None
+
+    # Demucs outputs vocals.mp3 when --mp3 flag is used
+    vocals_mp3 = os.path.join(output_dir, 'htdemucs', song_name, 'vocals.mp3')
+    if os.path.exists(vocals_mp3):
+        print(f"  ✅ Vocals separated: {vocals_mp3}")
+        return vocals_mp3
+
+    # Fallback: check for .wav
+    if os.path.exists(vocals_path):
+        print(f"  ✅ Vocals separated: {vocals_path}")
+        return vocals_path
+
+    print(f"  ❌ Vocals file not found after Demucs")
+    # List what was actually created
+    stem_dir = os.path.join(output_dir, 'htdemucs', song_name)
+    if os.path.exists(stem_dir):
+        print(f"  📂 Files in {stem_dir}: {os.listdir(stem_dir)}")
+    return None
+
+
+def run_whisper_transcribe(audio_path, en_lines):
+    """
+    Run plain Whisper on audio to get word-level timestamps.
+    Uses initial_prompt from known lyrics for better accuracy.
+    Returns Whisper JSON result with word timestamps.
+    """
+    # Ensure ffmpeg is in PATH
+    env = os.environ.copy()
+    env['PATH'] = '/opt/homebrew/bin:' + env.get('PATH', '')
+
+    output_dir = '/tmp/whisper-lyrics'
     os.makedirs(output_dir, exist_ok=True)
 
-    # Read the .en.txt to use as initial prompt (improves accuracy)
-    base = mp3_path.rsplit('.', 1)[0]
-    en_path = base + '.en.txt'
-    initial_prompt = ''
-    if os.path.exists(en_path):
-        with open(en_path, 'r', encoding='utf-8') as f:
-            lines = [l.strip() for l in f.readlines() if l.strip()]
-            # Use first ~500 chars as prompt (Whisper limit)
-            initial_prompt = ' '.join(lines)[:500]
+    # Use known lyrics as initial prompt (improves accuracy)
+    initial_prompt = ' '.join(en_lines)[:500]
 
     # Find whisper binary
     whisper_bin = 'whisper'
@@ -88,7 +155,7 @@ def run_whisper(mp3_path, output_dir='/tmp/whisper-lyrics'):
         whisper_bin = home_bin
 
     cmd = [
-        whisper_bin, mp3_path,
+        whisper_bin, audio_path,
         '--model', 'base',
         '--language', 'en',
         '--output_format', 'json',
@@ -99,70 +166,171 @@ def run_whisper(mp3_path, output_dir='/tmp/whisper-lyrics'):
     if initial_prompt:
         cmd.extend(['--initial_prompt', initial_prompt])
 
-    # Ensure ffmpeg is in PATH
-    env = os.environ.copy()
-    env['PATH'] = '/opt/homebrew/bin:' + env.get('PATH', '')
-
-    print(f"  🎙️  Running Whisper on {mp3_path}...")
+    print(f"  🎙️  Transcribing with Whisper...")
     print(f"  ⏳ This may take a few minutes on CPU...")
 
     result = subprocess.run(cmd, capture_output=True, text=True, env=env)
     if result.returncode != 0:
-        print(f"  ❌ Whisper error: {result.stderr}")
+        print(f"  ❌ Whisper error: {result.stderr[-500:]}")
         return None
 
     # Read the output JSON
-    song_name = os.path.basename(mp3_path).rsplit('.', 1)[0]
+    song_name = os.path.basename(audio_path).rsplit('.', 1)[0]
     json_out = os.path.join(output_dir, song_name + '.json')
     if not os.path.exists(json_out):
         print(f"  ❌ Whisper output not found: {json_out}")
         return None
 
     with open(json_out, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        whisper_data = json.load(f)
 
-
-def clean_text(text):
-    """Clean whisper text for matching — lowercase, remove punctuation."""
-    text = text.lower().strip()
-    text = re.sub(r'[^\w\s]', '', text)
-    text = re.sub(r'\s+', ' ', text)
-    return text
-
-
-def align_lyrics(whisper_data, en_lines, vi_lines, metadata):
-    """
-    Align English lyrics with Whisper word-level timestamps.
-
-    Strategy:
-    1. Build a flat list of ALL words with their start times from Whisper
-    2. For each lyric line, calculate an expected time (proportional to position)
-    3. Search the word stream NEAR the expected time with bounded sequential cursor
-    4. Use the start time of the first matching word as the line timestamp
-    5. Interpolate any lines that couldn't be matched
-    """
     segments = whisper_data.get('segments', [])
-    duration = metadata.get('duration', 120)
+    word_count = sum(len(s.get('words', [])) for s in segments)
+    print(f"  ✅ Whisper found {len(segments)} segments, {word_count} words")
 
-    # Build flat word list with timestamps
+    return whisper_data
+
+
+def run_forced_alignment(audio_path, en_lines, duration, device='cpu'):
+    """
+    True forced alignment: feed KNOWN lyrics to wav2vec2 aligner.
+    Skips Whisper ASR entirely — no speech recognition needed.
+    Returns alignment result with word-level timestamps.
+    """
+    os.environ['PATH'] = '/opt/homebrew/bin:' + os.environ.get('PATH', '')
+
+    import torch
+    # Fix PyTorch 2.6+ weights_only=True breaking pyannote model loading
+    _original_torch_load = torch.load
+    def _patched_torch_load(*args, **kwargs):
+        kwargs['weights_only'] = False
+        return _original_torch_load(*args, **kwargs)
+    torch.load = _patched_torch_load
+
+    import whisperx
+
+    print(f"  🔗 Force-aligning known lyrics with wav2vec2...")
+
+    # Load audio
+    audio = whisperx.load_audio(audio_path)
+
+    # Build one segment per line — gives best results for multi-voice songs
+    total_lines = len(en_lines)
+    segments = []
+    for i, line in enumerate(en_lines):
+        # Remove [TAGS] for alignment text
+        clean = re.sub(r'\[.*?\]', '', line).strip()
+        if not clean:
+            continue
+        start = i * duration / total_lines
+        end = min((i + 1) * duration / total_lines, duration)
+        segments.append({
+            'start': round(start, 1),
+            'end': round(end, 1),
+            'text': clean,
+        })
+
+    print(f"  📝 Created {len(segments)} segments from {total_lines} lyric lines")
+
+    # Load alignment model
+    align_model, align_metadata = whisperx.load_align_model(
+        language_code='en', device=device
+    )
+
+    # Force-align our known text with wav2vec2
+    aligned_result = whisperx.align(
+        segments,
+        align_model, align_metadata,
+        audio, device,
+        return_char_alignments=False,
+    )
+
+    # Clean up models
+    del align_model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+    result_segments = aligned_result.get('segments', [])
+    word_count = sum(len(s.get('words', [])) for s in result_segments)
+    print(f"  ✅ Aligned {len(result_segments)} segments, {word_count} words")
+
+    return aligned_result
+
+
+def run_whisperx_align(audio_path, whisper_segments, device='cpu'):
+    """
+    Use WhisperX's wav2vec2 model for force-alignment on Whisper's segments.
+    Returns word-level alignment results with more precise timestamps.
+    """
+    os.environ['PATH'] = '/opt/homebrew/bin:' + os.environ.get('PATH', '')
+
+    import torch
+    _original_torch_load = torch.load
+    def _patched_torch_load(*args, **kwargs):
+        kwargs['weights_only'] = False
+        return _original_torch_load(*args, **kwargs)
+    torch.load = _patched_torch_load
+
+    import whisperx
+
+    print(f"  🔗 Refining timestamps with wav2vec2...")
+
+    # Load audio
+    audio = whisperx.load_audio(audio_path)
+
+    # Load alignment model
+    align_model, align_metadata = whisperx.load_align_model(
+        language_code='en', device=device
+    )
+
+    # Force-align whisper segments with wav2vec2
+    aligned_result = whisperx.align(
+        whisper_segments,
+        align_model, align_metadata,
+        audio, device,
+        return_char_alignments=False,
+    )
+
+    # Clean up models
+    del align_model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+    segments = aligned_result.get('segments', [])
+    word_count = sum(len(s.get('words', [])) for s in segments)
+    print(f"  ✅ WhisperX aligned {len(segments)} segments, {word_count} words")
+
+    return aligned_result
+
+
+def match_lines_to_alignment(aligned_result, en_lines, vi_lines, duration):
+    """
+    Match our known lyric lines to WhisperX word-level alignments.
+
+    Strategy: Build a flat word stream from alignment, then for each lyric line,
+    find the best matching position using bounded search with expected time.
+    """
+    # Extract all words with timestamps from alignment
     all_words = []
-    for seg in segments:
-        for word_info in seg.get('words', []):
-            w = word_info['word'].strip()
-            if w:
+    for seg in aligned_result.get('segments', []):
+        for w in seg.get('words', []):
+            word = w.get('word', '').strip()
+            start = w.get('start')
+            end = w.get('end')
+            if word and start is not None:
                 all_words.append({
-                    'word': w,
-                    'clean': re.sub(r'[^\w]', '', w.lower()),
-                    'start': word_info['start'],
-                    'end': word_info['end'],
+                    'word': word,
+                    'clean': re.sub(r'[^\w]', '', word.lower()),
+                    'start': start,
+                    'end': end if end is not None else start + 0.3,
                 })
 
     if not all_words:
-        print(f"  ❌ No word-level timestamps from Whisper!")
+        print(f"  ❌ No word-level timestamps from alignment!")
         return [{'time': round(i * duration / len(en_lines), 1), 'en': en_lines[i],
                  'vi': vi_lines[i] if i < len(vi_lines) else ''} for i in range(len(en_lines))]
 
-    print(f"  📝 Whisper produced {len(all_words)} words with timestamps")
+    print(f"  📝 Alignment produced {len(all_words)} words with timestamps")
     audio_end = all_words[-1]['end']
 
     # Helper: find word index nearest to a given time
@@ -178,9 +346,7 @@ def align_lyrics(whisper_data, en_lines, vi_lines, metadata):
 
     # Calculate expected time for each line (proportional to position)
     total_lines = len(en_lines)
-    expected_times = []
-    for i in range(total_lines):
-        expected_times.append(i * audio_end / total_lines)
+    expected_times = [i * audio_end / total_lines for i in range(total_lines)]
 
     # Search cursor — only moves forward, with bounded jumps
     cursor = 0
@@ -305,8 +471,8 @@ def align_lyrics(whisper_data, en_lines, vi_lines, metadata):
     return result_lines
 
 
-def generate_song_json(mp3_path):
-    """Full pipeline: MP3 + lyrics → synced JSON."""
+def generate_song_json(mp3_path, skip_demucs=False):
+    """Full pipeline: MP3 + lyrics → synced JSON via Demucs + WhisperX."""
     base = mp3_path.rsplit('.', 1)[0]
     song_id = os.path.basename(base)
     en_path = base + '.en.txt'
@@ -336,6 +502,12 @@ def generate_song_json(mp3_path):
         with open(vi_path, 'r', encoding='utf-8') as f:
             vi_lines = [l.rstrip('\n') for l in f.readlines()]
 
+    # Remove empty trailing lines
+    while en_lines and not en_lines[-1].strip():
+        en_lines.pop()
+    while vi_lines and not vi_lines[-1].strip():
+        vi_lines.pop()
+
     # Pad vi_lines if shorter
     while len(vi_lines) < len(en_lines):
         vi_lines.append('')
@@ -359,17 +531,55 @@ def generate_song_json(mp3_path):
     print(f"   Title: {metadata['title']}")
     print(f"   Lines: {len(en_lines)} EN, {len(vi_lines)} VI")
 
-    # Run Whisper
-    whisper_data = run_whisper(mp3_path)
-    if not whisper_data:
+    # Step 1: Try Whisper on ORIGINAL audio (best for single-voice songs)
+    whisper_data = run_whisper_transcribe(mp3_path, en_lines)
+    aligned_result = None
+
+    if whisper_data:
+        whisper_segments = whisper_data.get('segments', [])
+        whisper_word_count = sum(
+            len(s.get('words', [])) for s in whisper_segments
+        )
+
+        # Calculate expected word count from lyrics
+        expected_words = sum(len(re.sub(r'\[.*?\]', '', l).split())
+                             for l in en_lines)
+        min_words = max(len(en_lines), expected_words // 2)
+
+        if whisper_word_count >= min_words:
+            aligned_result = whisper_data
+            print(f"  ✅ Using Whisper word-level timestamps")
+        else:
+            print(f"  ⚠️  Whisper only found {whisper_word_count} words "
+                  f"(need {min_words}+, expected ~{expected_words})")
+
+    # Step 2: If Whisper failed, use Demucs vocal separation + forced alignment
+    # (better for multi-voice/complex songs like bad-with-us)
+    if aligned_result is None:
+        if skip_demucs:
+            print(f"  ⏩ Skipping Demucs (--no-demucs), using original audio")
+            vocals_audio = mp3_path
+        else:
+            vocals_path = separate_vocals(mp3_path)
+            vocals_audio = vocals_path if vocals_path else mp3_path
+
+        print(f"  🔄 Falling back to Demucs + forced alignment...")
+        try:
+            aligned_result = run_forced_alignment(
+                vocals_audio, en_lines, metadata['duration']
+            )
+        except Exception as e:
+            print(f"  ❌ Forced alignment also failed ({e})")
+
+    if not aligned_result:
+        print(f"  ❌ All alignment methods failed")
         return False
 
-    segments = whisper_data.get('segments', [])
-    print(f"  ✅ Whisper found {len(segments)} segments")
-
-    # Align lyrics with timestamps
-    print(f"  🔗 Aligning lyrics with timestamps...")
-    aligned_lines = align_lyrics(whisper_data, en_lines, vi_lines, metadata)
+    # Step 4: Match our known lyrics to alignment timestamps
+    print(f"  🔗 Matching lyrics to alignment...")
+    aligned_lines = match_lines_to_alignment(
+        aligned_result, en_lines, vi_lines, metadata['duration']
+    )
 
     # Build output JSON
     output = {
@@ -395,7 +605,7 @@ def generate_song_json(mp3_path):
             original = json.load(f)
 
         print(f"\n  📊 Timestamp comparison (first 10 lines):")
-        print(f"  {'Line':<4} {'Original':>10} {'Whisper':>10} {'Diff':>8}  Text")
+        print(f"  {'Line':<4} {'Original':>10} {'New':>10} {'Diff':>8}  Text")
         print(f"  {'─'*4} {'─'*10} {'─'*10} {'─'*8}  {'─'*30}")
         for k in range(min(10, len(aligned_lines))):
             orig_time = original['lines'][k]['time'] if k < len(original['lines']) else '—'
@@ -410,11 +620,18 @@ def generate_song_json(mp3_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate synced lyrics using Whisper')
+    parser = argparse.ArgumentParser(
+        description='Generate synced lyrics using Demucs + WhisperX forced alignment'
+    )
     parser.add_argument('input', nargs='?', help='MP3 file or JSON file path')
-    parser.add_argument('--extract', action='store_true', help='Extract .en.txt and .vi.txt from a JSON')
-    parser.add_argument('--extract-all', action='store_true', help='Extract from all JSONs in audio/')
-    parser.add_argument('--all', action='store_true', help='Process all MP3 files in audio/')
+    parser.add_argument('--extract', action='store_true',
+                        help='Extract .en.txt and .vi.txt from a JSON')
+    parser.add_argument('--extract-all', action='store_true',
+                        help='Extract from all JSONs in audio/')
+    parser.add_argument('--all', action='store_true',
+                        help='Process all MP3 files in audio/')
+    parser.add_argument('--no-demucs', action='store_true',
+                        help='Skip Demucs vocal separation (use raw audio)')
 
     args = parser.parse_args()
 
@@ -433,7 +650,7 @@ def main():
         mp3_files = sorted(glob.glob('audio/*.mp3'))
         print(f"Processing {len(mp3_files)} songs...\n")
         for mp3 in mp3_files:
-            generate_song_json(mp3)
+            generate_song_json(mp3, skip_demucs=args.no_demucs)
             print()
         return
 
@@ -441,7 +658,7 @@ def main():
         if args.input.endswith('.json'):
             extract_txt_from_json(args.input)
         elif args.input.endswith('.mp3'):
-            generate_song_json(args.input)
+            generate_song_json(args.input, skip_demucs=args.no_demucs)
         else:
             print(f"Unknown file type: {args.input}")
         return
