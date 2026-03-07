@@ -1,5 +1,7 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
+const APP_VERSION = 'v1.9.0';
+
 function renderHome() {
     if (!appState) return;
 
@@ -8,6 +10,9 @@ function renderHome() {
     document.getElementById('homePoints').textContent = appState.points;
     document.getElementById('homeStreak').textContent = appState.streak;
     document.getElementById('homeLessons').textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
+
+    var verEl = document.getElementById('appVersion');
+    if (verEl) verEl.textContent = APP_VERSION;
 
     // Render streak shields
     renderShields();
