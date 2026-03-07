@@ -220,6 +220,10 @@ function init() {
     setupAvatarPicker();
     checkExistingUsers();
     registerServiceWorker();
+
+    // Show version on login screen
+    var lv = document.getElementById('loginVersion');
+    if (lv && typeof APP_VERSION !== 'undefined') lv.textContent = APP_VERSION;
 }
 
 function setupAvatarPicker() {
