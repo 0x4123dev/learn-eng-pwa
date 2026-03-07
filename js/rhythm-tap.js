@@ -442,57 +442,16 @@ function showMusicMenu() {
 
 function renderMusicMenu() {
     const overlay = document.getElementById('musicMenuOverlay');
-    const rtStats = (appState && appState.musicStats && appState.musicStats.rhythmTap) || {};
-    const wcStats = (appState && appState.musicStats && appState.musicStats.wordChant) || {};
 
     overlay.innerHTML = `
         <div class="mm-container">
             <div class="mm-header">
                 <button class="mm-exit-btn" onclick="closeMusicMenu()">✕</button>
-                <div class="mm-title">🎵 Music Games</div>
+                <div class="mm-title">🎵 Music</div>
                 <div style="width:36px"></div>
             </div>
 
             <div class="mm-games">
-                <div class="mm-game-card">
-                    <div class="mm-game-icon">🥁</div>
-                    <div class="mm-game-name">Rhythm Tap</div>
-                    <div class="mm-game-desc">Clap the syllables to the beat!</div>
-                    <div class="mm-how-to-play">
-                        <div class="mm-how-title">How to Play</div>
-                        <div class="mm-step"><span class="mm-step-num">1</span> A word appears on screen</div>
-                        <div class="mm-step"><span class="mm-step-num">2</span> Listen to the beat count-in (4 beats)</div>
-                        <div class="mm-step"><span class="mm-step-num">3</span> Tap the screen once per syllable</div>
-                        <div class="mm-step"><span class="mm-step-num">4</span> Match the syllable count to score points</div>
-                        <div class="mm-tip">💡 Build combos by getting consecutive words correct!</div>
-                    </div>
-                    <div class="mm-game-stats">
-                        <span>🎮 ${rtStats.gamesPlayed || 0} played</span>
-                        <span>⭐ ${rtStats.highScore || 0} best</span>
-                        <span>🔥 ${rtStats.bestCombo || 0} combo</span>
-                    </div>
-                    <button class="mm-play-btn" onclick="closeMusicMenu(); startRhythmTap();">▶ Play Rhythm Tap</button>
-                </div>
-
-                <div class="mm-game-card">
-                    <div class="mm-game-icon">🎤</div>
-                    <div class="mm-game-name">Word Chant</div>
-                    <div class="mm-game-desc">Learn words through rap & rhyme!</div>
-                    <div class="mm-how-to-play">
-                        <div class="mm-how-title">How to Play</div>
-                        <div class="mm-step"><span class="mm-step-num">1</span> Listen to the beat and chant lines</div>
-                        <div class="mm-step"><span class="mm-step-num">2</span> Words are spoken in fun rap patterns</div>
-                        <div class="mm-step"><span class="mm-step-num">3</span> Pay attention to the meanings!</div>
-                        <div class="mm-step"><span class="mm-step-num">4</span> Answer the quiz at the end</div>
-                        <div class="mm-tip">💡 Also available after finishing a lesson!</div>
-                    </div>
-                    <div class="mm-game-stats">
-                        <span>🎮 ${wcStats.gamesPlayed || 0} played</span>
-                        <span>✅ ${wcStats.correctQuizAnswers || 0} correct</span>
-                    </div>
-                    <button class="mm-play-btn" onclick="closeMusicMenu(); startWordChant();">▶ Play Word Chant</button>
-                </div>
-
                 <div class="mm-game-card mm-lyrics-card">
                     <div class="mm-game-icon">🎧</div>
                     <div class="mm-game-name">Lyrics Player</div>
@@ -522,21 +481,14 @@ function closeMusicMenu() {
 function renderMusicGamesCard() {
     const container = document.getElementById('musicGamesCard');
     if (!container) return;
-    const rtGames = (appState.musicStats && appState.musicStats.rhythmTap && appState.musicStats.rhythmTap.gamesPlayed) || 0;
-    const wcGames = (appState.musicStats && appState.musicStats.wordChant && appState.musicStats.wordChant.gamesPlayed) || 0;
     container.style.display = 'block';
     container.innerHTML = `
-        <div class="music-card-title">🎵 Music Games</div>
+        <div class="music-card-title">🎵 Music</div>
         <div class="music-card-games">
-            <div class="music-game-btn" onclick="startRhythmTap()">
-                <div class="music-game-icon">🥁</div>
-                <div class="music-game-name">Rhythm Tap</div>
-                <div class="music-game-stat">${rtGames} played</div>
-            </div>
-            <div class="music-game-btn" onclick="startWordChant()">
-                <div class="music-game-icon">🎤</div>
-                <div class="music-game-name">Word Chant</div>
-                <div class="music-game-stat">${wcGames} played</div>
+            <div class="music-game-btn" onclick="showMusicMenu()">
+                <div class="music-game-icon">🎧</div>
+                <div class="music-game-name">Lyrics Player</div>
+                <div class="music-game-stat">${LyricsPlayer.SONGS.length} songs</div>
             </div>
         </div>
     `;
