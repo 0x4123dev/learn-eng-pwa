@@ -1,0 +1,1281 @@
+// videos.js - Learn English with Short Videos
+
+const VIDEO_LIBRARY = [
+    // ==================== BEGINNER (15 videos) ====================
+    {
+        id: 'GbzMC6qAzVU', title: 'Meet My Family',
+        channel: 'British Council Kids', duration: '3:20', level: 'beginner',
+        category: 'daily-life', icon: '👨‍👩‍👧‍👦',
+        description: 'Learn family vocabulary with a fun animated story.',
+        vocabulary: [
+            { word: 'family', phonetic: '/ˈfæm.əl.i/', meaning: 'gia dinh' },
+            { word: 'mother', phonetic: '/ˈmʌð.ər/', meaning: 'me' },
+            { word: 'father', phonetic: '/ˈfɑː.ðər/', meaning: 'bo' },
+            { word: 'brother', phonetic: '/ˈbrʌð.ər/', meaning: 'anh/em trai' },
+            { word: 'sister', phonetic: '/ˈsɪs.tər/', meaning: 'chi/em gai' }
+        ],
+        quiz: [
+            { q: 'What is the word for "me" in English?', opts: ['Mother', 'Father', 'Sister'], answer: 0 },
+            { q: 'Who is your parent\'s son?', opts: ['Sister', 'Brother', 'Mother'], answer: 1 },
+            { q: '"Family" means...', opts: ['Ban be', 'Gia dinh', 'Truong hoc'], answer: 1 }
+        ]
+    },
+    {
+        id: 'DL0MZSQQOn8', title: 'The ABC Song',
+        channel: 'KidsTV123', duration: '2:10', level: 'beginner',
+        category: 'fun', icon: '🔤',
+        description: 'Sing along and learn the English alphabet!',
+        vocabulary: [
+            { word: 'alphabet', phonetic: '/ˈæl.fə.bet/', meaning: 'bang chu cai' },
+            { word: 'letter', phonetic: '/ˈlet.ər/', meaning: 'chu cai' },
+            { word: 'sing', phonetic: '/sɪŋ/', meaning: 'hat' },
+            { word: 'learn', phonetic: '/lɜːrn/', meaning: 'hoc' }
+        ],
+        quiz: [
+            { q: 'How many letters are in the English alphabet?', opts: ['24', '26', '28'], answer: 1 },
+            { q: '"Sing" means...', opts: ['Doc', 'Hat', 'Viet'], answer: 1 },
+            { q: 'What comes after A, B, C?', opts: ['E, F, G', 'D, E, F', 'C, D, E'], answer: 1 }
+        ]
+    },
+    {
+        id: 'Yx8FWt-bqp0', title: 'Greetings & Introductions',
+        channel: 'Shaw English', duration: '4:15', level: 'beginner',
+        category: 'daily-life', icon: '👋',
+        description: 'How to say hello and introduce yourself in English.',
+        vocabulary: [
+            { word: 'hello', phonetic: '/həˈloʊ/', meaning: 'xin chao' },
+            { word: 'name', phonetic: '/neɪm/', meaning: 'ten' },
+            { word: 'nice', phonetic: '/naɪs/', meaning: 'vui/dep' },
+            { word: 'meet', phonetic: '/miːt/', meaning: 'gap' },
+            { word: 'goodbye', phonetic: '/ɡʊdˈbaɪ/', meaning: 'tam biet' }
+        ],
+        quiz: [
+            { q: '"Nice to meet you" is used when...', opts: ['You leave', 'You meet someone new', 'You eat'], answer: 1 },
+            { q: 'How do you ask someone\'s name?', opts: ['How old are you?', 'What is your name?', 'Where are you?'], answer: 1 },
+            { q: '"Goodbye" means...', opts: ['Xin chao', 'Cam on', 'Tam biet'], answer: 2 }
+        ]
+    },
+    {
+        id: 'kPsRUWSb3ik', title: 'At the Supermarket',
+        channel: 'VOA Learning English', duration: '3:45', level: 'beginner',
+        category: 'daily-life', icon: '🛒',
+        description: 'Learn useful words for shopping at the supermarket.',
+        vocabulary: [
+            { word: 'buy', phonetic: '/baɪ/', meaning: 'mua' },
+            { word: 'price', phonetic: '/praɪs/', meaning: 'gia' },
+            { word: 'cheap', phonetic: '/tʃiːp/', meaning: 're' },
+            { word: 'expensive', phonetic: '/ɪkˈspen.sɪv/', meaning: 'dat' },
+            { word: 'money', phonetic: '/ˈmʌn.i/', meaning: 'tien' }
+        ],
+        quiz: [
+            { q: 'The opposite of "cheap" is...', opts: ['Big', 'Expensive', 'Small'], answer: 1 },
+            { q: '"Buy" means...', opts: ['Ban', 'Mua', 'An'], answer: 1 },
+            { q: 'You use _____ to buy things.', opts: ['Time', 'Money', 'Food'], answer: 1 }
+        ]
+    },
+    {
+        id: '3z9-ixNl9yw', title: 'Colors & Shapes',
+        channel: 'English with Jennifer', duration: '3:00', level: 'beginner',
+        category: 'fun', icon: '🎨',
+        description: 'Learn colors and basic shapes in English.',
+        vocabulary: [
+            { word: 'red', phonetic: '/red/', meaning: 'do' },
+            { word: 'blue', phonetic: '/bluː/', meaning: 'xanh duong' },
+            { word: 'circle', phonetic: '/ˈsɜːr.kəl/', meaning: 'hinh tron' },
+            { word: 'square', phonetic: '/skwer/', meaning: 'hinh vuong' },
+            { word: 'yellow', phonetic: '/ˈjel.oʊ/', meaning: 'vang' }
+        ],
+        quiz: [
+            { q: 'The color of the sky is...', opts: ['Red', 'Blue', 'Green'], answer: 1 },
+            { q: 'A "circle" is...', opts: ['Hinh vuong', 'Hinh tron', 'Hinh tam giac'], answer: 1 },
+            { q: 'Bananas are _____ color.', opts: ['Blue', 'Red', 'Yellow'], answer: 2 }
+        ]
+    },
+    {
+        id: 'hrliAdaVMEI', title: 'Numbers 1 to 100',
+        channel: 'EnglishClass101', duration: '4:30', level: 'beginner',
+        category: 'fun', icon: '🔢',
+        description: 'Master counting from 1 to 100 in English.',
+        vocabulary: [
+            { word: 'number', phonetic: '/ˈnʌm.bər/', meaning: 'so' },
+            { word: 'count', phonetic: '/kaʊnt/', meaning: 'dem' },
+            { word: 'hundred', phonetic: '/ˈhʌn.drəd/', meaning: 'mot tram' },
+            { word: 'first', phonetic: '/fɜːrst/', meaning: 'dau tien' },
+            { word: 'last', phonetic: '/læst/', meaning: 'cuoi cung' }
+        ],
+        quiz: [
+            { q: 'What number comes after nineteen?', opts: ['Eighteen', 'Twenty', 'Thirty'], answer: 1 },
+            { q: '"Hundred" means...', opts: ['Muoi', 'Mot tram', 'Mot nghin'], answer: 1 },
+            { q: '"First" is the opposite of...', opts: ['Last', 'Second', 'Next'], answer: 0 }
+        ]
+    },
+    {
+        id: '0LLPBJkSf2Q', title: 'My Daily Routine',
+        channel: 'English Addict', duration: '5:00', level: 'beginner',
+        category: 'daily-life', icon: '⏰',
+        description: 'Learn to talk about your daily routine in English.',
+        vocabulary: [
+            { word: 'wake up', phonetic: '/weɪk ʌp/', meaning: 'thuc day' },
+            { word: 'breakfast', phonetic: '/ˈbrek.fəst/', meaning: 'bua sang' },
+            { word: 'school', phonetic: '/skuːl/', meaning: 'truong hoc' },
+            { word: 'homework', phonetic: '/ˈhoʊm.wɜːrk/', meaning: 'bai tap ve nha' },
+            { word: 'sleep', phonetic: '/sliːp/', meaning: 'ngu' }
+        ],
+        quiz: [
+            { q: 'You eat _____ in the morning.', opts: ['Dinner', 'Lunch', 'Breakfast'], answer: 2 },
+            { q: '"Wake up" means...', opts: ['Ngu', 'Thuc day', 'An'], answer: 1 },
+            { q: 'Children go to _____ to learn.', opts: ['Hospital', 'School', 'Market'], answer: 1 }
+        ]
+    },
+    {
+        id: 'yVKPf-P34X0', title: 'Animals in English',
+        channel: 'Papa Teach Me', duration: '3:30', level: 'beginner',
+        category: 'fun', icon: '🐾',
+        description: 'Learn animal names and sounds in English.',
+        vocabulary: [
+            { word: 'dog', phonetic: '/dɔːɡ/', meaning: 'cho' },
+            { word: 'cat', phonetic: '/kæt/', meaning: 'meo' },
+            { word: 'bird', phonetic: '/bɜːrd/', meaning: 'chim' },
+            { word: 'fish', phonetic: '/fɪʃ/', meaning: 'ca' },
+            { word: 'elephant', phonetic: '/ˈel.ə.fənt/', meaning: 'voi' }
+        ],
+        quiz: [
+            { q: 'A "dog" says...', opts: ['Meow', 'Woof', 'Moo'], answer: 1 },
+            { q: 'Which animal lives in water?', opts: ['Dog', 'Bird', 'Fish'], answer: 2 },
+            { q: 'The biggest animal here is...', opts: ['Cat', 'Elephant', 'Dog'], answer: 1 }
+        ]
+    },
+    {
+        id: 'p_B0MulkqpA', title: 'Food & Drinks',
+        channel: 'Go Natural English', duration: '4:00', level: 'beginner',
+        category: 'daily-life', icon: '🍕',
+        description: 'Learn common food and drink words in English.',
+        vocabulary: [
+            { word: 'water', phonetic: '/ˈwɔː.tər/', meaning: 'nuoc' },
+            { word: 'bread', phonetic: '/bred/', meaning: 'banh mi' },
+            { word: 'rice', phonetic: '/raɪs/', meaning: 'com/gao' },
+            { word: 'fruit', phonetic: '/fruːt/', meaning: 'trai cay' },
+            { word: 'delicious', phonetic: '/dɪˈlɪʃ.əs/', meaning: 'ngon' }
+        ],
+        quiz: [
+            { q: '"Water" means...', opts: ['Nuoc', 'Sua', 'Tra'], answer: 0 },
+            { q: 'Apples and bananas are...', opts: ['Vegetables', 'Fruit', 'Meat'], answer: 1 },
+            { q: '"Delicious" describes food that is...', opts: ['Bad', 'Very good', 'Hot'], answer: 1 }
+        ]
+    },
+    {
+        id: '1PGgf8fHXkY', title: 'What\'s the Weather?',
+        channel: 'Daily English', duration: '3:15', level: 'beginner',
+        category: 'daily-life', icon: '🌤️',
+        description: 'Talk about weather in English - sunny, rainy, cloudy and more.',
+        vocabulary: [
+            { word: 'sunny', phonetic: '/ˈsʌn.i/', meaning: 'nang' },
+            { word: 'rainy', phonetic: '/ˈreɪ.ni/', meaning: 'mua' },
+            { word: 'cold', phonetic: '/koʊld/', meaning: 'lanh' },
+            { word: 'hot', phonetic: '/hɑːt/', meaning: 'nong' },
+            { word: 'weather', phonetic: '/ˈweð.ər/', meaning: 'thoi tiet' }
+        ],
+        quiz: [
+            { q: 'When the sun shines, it is...', opts: ['Rainy', 'Sunny', 'Cloudy'], answer: 1 },
+            { q: 'The opposite of "hot" is...', opts: ['Cold', 'Warm', 'Sunny'], answer: 0 },
+            { q: '"Weather" means...', opts: ['Mua', 'Thoi tiet', 'Gio'], answer: 1 }
+        ]
+    },
+    {
+        id: 'MhAaiamabQo', title: 'In the Classroom',
+        channel: 'English Conversation', duration: '3:40', level: 'beginner',
+        category: 'school', icon: '🏫',
+        description: 'Learn classroom vocabulary and phrases.',
+        vocabulary: [
+            { word: 'teacher', phonetic: '/ˈtiː.tʃər/', meaning: 'giao vien' },
+            { word: 'student', phonetic: '/ˈstuː.dənt/', meaning: 'hoc sinh' },
+            { word: 'book', phonetic: '/bʊk/', meaning: 'sach' },
+            { word: 'pencil', phonetic: '/ˈpen.səl/', meaning: 'but chi' },
+            { word: 'question', phonetic: '/ˈkwes.tʃən/', meaning: 'cau hoi' }
+        ],
+        quiz: [
+            { q: 'A _____ teaches students.', opts: ['Doctor', 'Teacher', 'Driver'], answer: 1 },
+            { q: 'You write with a...', opts: ['Book', 'Pencil', 'Desk'], answer: 1 },
+            { q: '"Question" means...', opts: ['Cau tra loi', 'Cau hoi', 'Bai hoc'], answer: 1 }
+        ]
+    },
+    {
+        id: 'K75XMQClMIY', title: 'Body Parts Song',
+        channel: 'Zen English', duration: '2:45', level: 'beginner',
+        category: 'fun', icon: '🦴',
+        description: 'Learn body parts with a catchy song.',
+        vocabulary: [
+            { word: 'head', phonetic: '/hed/', meaning: 'dau' },
+            { word: 'hand', phonetic: '/hænd/', meaning: 'ban tay' },
+            { word: 'eyes', phonetic: '/aɪz/', meaning: 'mat' },
+            { word: 'mouth', phonetic: '/maʊθ/', meaning: 'mieng' },
+            { word: 'feet', phonetic: '/fiːt/', meaning: 'ban chan' }
+        ],
+        quiz: [
+            { q: 'You see with your...', opts: ['Ears', 'Eyes', 'Mouth'], answer: 1 },
+            { q: '"Hand" means...', opts: ['Chan', 'Ban tay', 'Dau'], answer: 1 },
+            { q: 'Your _____ is at the top of your body.', opts: ['Feet', 'Hand', 'Head'], answer: 2 }
+        ]
+    },
+    {
+        id: 'TnYX8MKWjsk', title: 'Telling the Time',
+        channel: 'VOA Learning English', duration: '4:10', level: 'beginner',
+        category: 'daily-life', icon: '🕐',
+        description: 'Learn how to tell time and ask "What time is it?"',
+        vocabulary: [
+            { word: 'clock', phonetic: '/klɑːk/', meaning: 'dong ho' },
+            { word: 'hour', phonetic: '/aʊr/', meaning: 'gio' },
+            { word: 'minute', phonetic: '/ˈmɪn.ɪt/', meaning: 'phut' },
+            { word: 'morning', phonetic: '/ˈmɔːr.nɪŋ/', meaning: 'buoi sang' },
+            { word: 'afternoon', phonetic: '/ˌæf.tərˈnuːn/', meaning: 'buoi chieu' }
+        ],
+        quiz: [
+            { q: 'One hour has _____ minutes.', opts: ['30', '60', '100'], answer: 1 },
+            { q: '8 AM is in the...', opts: ['Morning', 'Afternoon', 'Night'], answer: 0 },
+            { q: '"Clock" means...', opts: ['Dong ho', 'Thoi gian', 'Ngay'], answer: 0 }
+        ]
+    },
+    {
+        id: 'uR4E-WnaAMM', title: 'How to Say English Sounds',
+        channel: 'Pronunciation Pro', duration: '5:20', level: 'beginner',
+        category: 'pronunciation', icon: '🗣️',
+        description: 'Practice basic English pronunciation and sounds.',
+        vocabulary: [
+            { word: 'sound', phonetic: '/saʊnd/', meaning: 'am thanh' },
+            { word: 'speak', phonetic: '/spiːk/', meaning: 'noi' },
+            { word: 'listen', phonetic: '/ˈlɪs.ən/', meaning: 'nghe' },
+            { word: 'practice', phonetic: '/ˈpræk.tɪs/', meaning: 'luyen tap' },
+            { word: 'pronounce', phonetic: '/prəˈnaʊns/', meaning: 'phat am' }
+        ],
+        quiz: [
+            { q: '"Listen" means...', opts: ['Noi', 'Nghe', 'Doc'], answer: 1 },
+            { q: 'To get better, you need to...', opts: ['Sleep', 'Practice', 'Eat'], answer: 1 },
+            { q: '"Speak" is similar to...', opts: ['Walk', 'Talk', 'Run'], answer: 1 }
+        ]
+    },
+    {
+        id: 'r2Ryt7fj7V8', title: 'Feelings & Emotions',
+        channel: 'Rachel\'s English', duration: '4:45', level: 'beginner',
+        category: 'daily-life', icon: '😊',
+        description: 'Express your feelings - happy, sad, angry, excited.',
+        vocabulary: [
+            { word: 'happy', phonetic: '/ˈhæp.i/', meaning: 'vui' },
+            { word: 'sad', phonetic: '/sæd/', meaning: 'buon' },
+            { word: 'angry', phonetic: '/ˈæŋ.ɡri/', meaning: 'tuc gian' },
+            { word: 'scared', phonetic: '/skerd/', meaning: 'so hai' },
+            { word: 'excited', phonetic: '/ɪkˈsaɪ.tɪd/', meaning: 'hao hung' }
+        ],
+        quiz: [
+            { q: 'The opposite of "happy" is...', opts: ['Excited', 'Sad', 'Angry'], answer: 1 },
+            { q: 'When you are afraid, you feel...', opts: ['Happy', 'Angry', 'Scared'], answer: 2 },
+            { q: '"Excited" means...', opts: ['Buon', 'Hao hung', 'Met'], answer: 1 }
+        ]
+    },
+
+    // ==================== ELEMENTARY (12 videos) ====================
+    {
+        id: 'OCLXF2D0jM4', title: 'Ordering at a Restaurant',
+        channel: 'BBC 6 Minute English', duration: '6:00', level: 'elementary',
+        category: 'daily-life', icon: '🍽️',
+        description: 'Practice ordering food and drinks at a restaurant.',
+        vocabulary: [
+            { word: 'menu', phonetic: '/ˈmen.juː/', meaning: 'thuc don' },
+            { word: 'order', phonetic: '/ˈɔːr.dər/', meaning: 'goi mon' },
+            { word: 'waiter', phonetic: '/ˈweɪ.tər/', meaning: 'nguoi phuc vu' },
+            { word: 'bill', phonetic: '/bɪl/', meaning: 'hoa don' },
+            { word: 'tip', phonetic: '/tɪp/', meaning: 'tien boa' }
+        ],
+        quiz: [
+            { q: 'A "waiter" works at a...', opts: ['Hospital', 'Restaurant', 'School'], answer: 1 },
+            { q: 'You ask for the _____ to pay.', opts: ['Menu', 'Bill', 'Tip'], answer: 1 },
+            { q: '"Order" in a restaurant means...', opts: ['Ra lenh', 'Goi mon', 'Nau an'], answer: 1 }
+        ]
+    },
+    {
+        id: 'ngo8RF1Tjb8', title: 'Asking for Directions',
+        channel: 'Accent\'s Way', duration: '5:30', level: 'elementary',
+        category: 'travel', icon: '🗺️',
+        description: 'How to ask and give directions in English.',
+        vocabulary: [
+            { word: 'turn left', phonetic: '/tɜːrn left/', meaning: 're trai' },
+            { word: 'turn right', phonetic: '/tɜːrn raɪt/', meaning: 're phai' },
+            { word: 'straight', phonetic: '/streɪt/', meaning: 'thang' },
+            { word: 'near', phonetic: '/nɪr/', meaning: 'gan' },
+            { word: 'far', phonetic: '/fɑːr/', meaning: 'xa' }
+        ],
+        quiz: [
+            { q: 'The opposite of "left" is...', opts: ['Up', 'Right', 'Down'], answer: 1 },
+            { q: '"Go straight" means...', opts: ['Re phai', 'Di thang', 'Quay lai'], answer: 1 },
+            { q: '"Near" is the opposite of...', opts: ['Close', 'Far', 'Here'], answer: 1 }
+        ]
+    },
+    {
+        id: 'JtrNmhzAGds', title: 'At the Airport',
+        channel: 'Oxford English Now', duration: '5:15', level: 'elementary',
+        category: 'travel', icon: '✈️',
+        description: 'Essential English for traveling by plane.',
+        vocabulary: [
+            { word: 'passport', phonetic: '/ˈpæs.pɔːrt/', meaning: 'ho chieu' },
+            { word: 'flight', phonetic: '/flaɪt/', meaning: 'chuyen bay' },
+            { word: 'gate', phonetic: '/ɡeɪt/', meaning: 'cong/cua' },
+            { word: 'luggage', phonetic: '/ˈlʌɡ.ɪdʒ/', meaning: 'hanh ly' },
+            { word: 'boarding pass', phonetic: '/ˈbɔːr.dɪŋ pæs/', meaning: 'the len may bay' }
+        ],
+        quiz: [
+            { q: 'You need a _____ to travel abroad.', opts: ['Ticket', 'Passport', 'Map'], answer: 1 },
+            { q: '"Luggage" is your...', opts: ['Food', 'Bags', 'Ticket'], answer: 1 },
+            { q: 'A "flight" is a trip by...', opts: ['Car', 'Plane', 'Bus'], answer: 1 }
+        ]
+    },
+    {
+        id: 'ZiMhsXhtBOs', title: 'Shopping for Clothes',
+        channel: 'mmmEnglish', duration: '5:45', level: 'elementary',
+        category: 'daily-life', icon: '👕',
+        description: 'Learn to shop for clothes - sizes, colors, and prices.',
+        vocabulary: [
+            { word: 'size', phonetic: '/saɪz/', meaning: 'kich co' },
+            { word: 'try on', phonetic: '/traɪ ɑːn/', meaning: 'thu do' },
+            { word: 'fitting room', phonetic: '/ˈfɪt.ɪŋ ruːm/', meaning: 'phong thu do' },
+            { word: 'discount', phonetic: '/ˈdɪs.kaʊnt/', meaning: 'giam gia' },
+            { word: 'receipt', phonetic: '/rɪˈsiːt/', meaning: 'hoa don' }
+        ],
+        quiz: [
+            { q: 'Before buying, you should _____ clothes.', opts: ['Wash', 'Try on', 'Return'], answer: 1 },
+            { q: 'A "discount" means the price is...', opts: ['Higher', 'Lower', 'Same'], answer: 1 },
+            { q: '"Size" means...', opts: ['Mau sac', 'Kich co', 'Chat lieu'], answer: 1 }
+        ]
+    },
+    {
+        id: 'mvGw2jASaA8', title: 'Making a Phone Call',
+        channel: 'Business English', duration: '4:50', level: 'elementary',
+        category: 'daily-life', icon: '📱',
+        description: 'Practice phone conversation skills in English.',
+        vocabulary: [
+            { word: 'call', phonetic: '/kɔːl/', meaning: 'goi dien' },
+            { word: 'message', phonetic: '/ˈmes.ɪdʒ/', meaning: 'tin nhan' },
+            { word: 'hold on', phonetic: '/hoʊld ɑːn/', meaning: 'cho mot chut' },
+            { word: 'hang up', phonetic: '/hæŋ ʌp/', meaning: 'cup may' },
+            { word: 'busy', phonetic: '/ˈbɪz.i/', meaning: 'ban' }
+        ],
+        quiz: [
+            { q: '"Hold on" means...', opts: ['Giu chat', 'Cho mot chut', 'Cup may'], answer: 1 },
+            { q: 'When you finish a call, you...', opts: ['Hold on', 'Hang up', 'Call back'], answer: 1 },
+            { q: 'If someone can\'t talk, they are...', opts: ['Free', 'Busy', 'Happy'], answer: 1 }
+        ]
+    },
+    {
+        id: 'IaiwHAFDXRk', title: 'Past Tense Made Easy',
+        channel: 'Rachel\'s English', duration: '6:00', level: 'elementary',
+        category: 'grammar', icon: '📖',
+        description: 'Learn how to talk about things that happened in the past.',
+        vocabulary: [
+            { word: 'went', phonetic: '/went/', meaning: 'da di' },
+            { word: 'ate', phonetic: '/eɪt/', meaning: 'da an' },
+            { word: 'saw', phonetic: '/sɔː/', meaning: 'da thay' },
+            { word: 'yesterday', phonetic: '/ˈjes.tər.deɪ/', meaning: 'hom qua' },
+            { word: 'ago', phonetic: '/əˈɡoʊ/', meaning: 'truoc day' }
+        ],
+        quiz: [
+            { q: 'The past tense of "go" is...', opts: ['Goed', 'Went', 'Gone'], answer: 1 },
+            { q: '"Yesterday" means...', opts: ['Hom nay', 'Hom qua', 'Ngay mai'], answer: 1 },
+            { q: '"I _____ a movie last night."', opts: ['See', 'Seed', 'Saw'], answer: 2 }
+        ]
+    },
+    {
+        id: '6Qw8EAVE4ik', title: 'Hobbies & Free Time',
+        channel: 'FluentU English', duration: '4:20', level: 'elementary',
+        category: 'daily-life', icon: '🎮',
+        description: 'Talk about your hobbies and what you like to do.',
+        vocabulary: [
+            { word: 'hobby', phonetic: '/ˈhɑː.bi/', meaning: 'so thich' },
+            { word: 'enjoy', phonetic: '/ɪnˈdʒɔɪ/', meaning: 'thuong thuc' },
+            { word: 'reading', phonetic: '/ˈriː.dɪŋ/', meaning: 'doc sach' },
+            { word: 'swimming', phonetic: '/ˈswɪm.ɪŋ/', meaning: 'boi loi' },
+            { word: 'painting', phonetic: '/ˈpeɪn.tɪŋ/', meaning: 've tranh' }
+        ],
+        quiz: [
+            { q: 'A "hobby" is something you do for...', opts: ['Work', 'Fun', 'School'], answer: 1 },
+            { q: '"Enjoy" means...', opts: ['Ghet', 'Thuong thuc', 'Ngung'], answer: 1 },
+            { q: 'Which is a water activity?', opts: ['Reading', 'Painting', 'Swimming'], answer: 2 }
+        ]
+    },
+    {
+        id: 'A8uB7EPJQYI', title: 'Describing People',
+        channel: 'FluentU English', duration: '4:40', level: 'elementary',
+        category: 'daily-life', icon: '🧑',
+        description: 'Learn adjectives to describe how people look and act.',
+        vocabulary: [
+            { word: 'tall', phonetic: '/tɔːl/', meaning: 'cao' },
+            { word: 'short', phonetic: '/ʃɔːrt/', meaning: 'thap/ngan' },
+            { word: 'beautiful', phonetic: '/ˈbjuː.tɪ.fəl/', meaning: 'dep' },
+            { word: 'kind', phonetic: '/kaɪnd/', meaning: 'tot bung' },
+            { word: 'funny', phonetic: '/ˈfʌn.i/', meaning: 'hai huoc' }
+        ],
+        quiz: [
+            { q: 'The opposite of "tall" is...', opts: ['Big', 'Short', 'Fat'], answer: 1 },
+            { q: 'A "funny" person makes you...', opts: ['Cry', 'Laugh', 'Sleep'], answer: 1 },
+            { q: '"Kind" means...', opts: ['Xau', 'Tot bung', 'Buon'], answer: 1 }
+        ]
+    },
+    {
+        id: 'dMLHx7JE76s', title: 'At the Doctor',
+        channel: 'FluentU English', duration: '5:10', level: 'elementary',
+        category: 'daily-life', icon: '🏥',
+        description: 'Health vocabulary and talking to a doctor.',
+        vocabulary: [
+            { word: 'sick', phonetic: '/sɪk/', meaning: 'om/benh' },
+            { word: 'headache', phonetic: '/ˈhed.eɪk/', meaning: 'dau dau' },
+            { word: 'medicine', phonetic: '/ˈmed.ɪ.sən/', meaning: 'thuoc' },
+            { word: 'fever', phonetic: '/ˈfiː.vər/', meaning: 'sot' },
+            { word: 'healthy', phonetic: '/ˈhel.θi/', meaning: 'khoe manh' }
+        ],
+        quiz: [
+            { q: 'When you have a high temperature, you have a...', opts: ['Headache', 'Fever', 'Cough'], answer: 1 },
+            { q: '"Medicine" helps you get...', opts: ['Sicker', 'Better', 'Taller'], answer: 1 },
+            { q: 'The opposite of "sick" is...', opts: ['Healthy', 'Tired', 'Sad'], answer: 0 }
+        ]
+    },
+    {
+        id: 'chH61UDwYpY', title: 'Nature & Environment',
+        channel: 'PBS Nature', duration: '5:00', level: 'elementary',
+        category: 'science', icon: '🌿',
+        description: 'Learn about nature, plants and the environment.',
+        vocabulary: [
+            { word: 'tree', phonetic: '/triː/', meaning: 'cay' },
+            { word: 'river', phonetic: '/ˈrɪv.ər/', meaning: 'song' },
+            { word: 'mountain', phonetic: '/ˈmaʊn.tən/', meaning: 'nui' },
+            { word: 'forest', phonetic: '/ˈfɔːr.ɪst/', meaning: 'rung' },
+            { word: 'ocean', phonetic: '/ˈoʊ.ʃən/', meaning: 'dai duong' }
+        ],
+        quiz: [
+            { q: 'A very large body of water is an...', opts: ['River', 'Lake', 'Ocean'], answer: 2 },
+            { q: 'Many trees together form a...', opts: ['Garden', 'Forest', 'Park'], answer: 1 },
+            { q: '"Mountain" means...', opts: ['Nui', 'Song', 'Bien'], answer: 0 }
+        ]
+    },
+    {
+        id: 'k_2FA6vyOgM', title: 'Famous Speeches - Simple',
+        channel: 'English Speeches', duration: '5:30', level: 'elementary',
+        category: 'culture', icon: '🎤',
+        description: 'Listen to easy parts of famous English speeches.',
+        vocabulary: [
+            { word: 'speech', phonetic: '/spiːtʃ/', meaning: 'bai phat bieu' },
+            { word: 'dream', phonetic: '/driːm/', meaning: 'giac mo' },
+            { word: 'believe', phonetic: '/bɪˈliːv/', meaning: 'tin tuong' },
+            { word: 'change', phonetic: '/tʃeɪndʒ/', meaning: 'thay doi' },
+            { word: 'together', phonetic: '/təˈɡeð.ər/', meaning: 'cung nhau' }
+        ],
+        quiz: [
+            { q: '"I have a _____" is a famous speech.', opts: ['Plan', 'Dream', 'Question'], answer: 1 },
+            { q: '"Believe" means...', opts: ['Nghi ngo', 'Tin tuong', 'Quen'], answer: 1 },
+            { q: '"Together" means doing things...', opts: ['Alone', 'With others', 'Later'], answer: 1 }
+        ]
+    },
+    {
+        id: 'zgjfrQEr9sA', title: 'Fun Facts in English',
+        channel: 'Mental Floss', duration: '4:30', level: 'elementary',
+        category: 'fun', icon: '🧠',
+        description: 'Learn surprising facts while practicing English.',
+        vocabulary: [
+            { word: 'fact', phonetic: '/fækt/', meaning: 'su that' },
+            { word: 'amazing', phonetic: '/əˈmeɪ.zɪŋ/', meaning: 'tuyet voi' },
+            { word: 'discover', phonetic: '/dɪˈskʌv.ər/', meaning: 'kham pha' },
+            { word: 'world', phonetic: '/wɜːrld/', meaning: 'the gioi' },
+            { word: 'interesting', phonetic: '/ˈɪn.trə.stɪŋ/', meaning: 'thu vi' }
+        ],
+        quiz: [
+            { q: '"Amazing" means something is very...', opts: ['Boring', 'Wonderful', 'Scary'], answer: 1 },
+            { q: '"Discover" means to...', opts: ['Lose', 'Find', 'Forget'], answer: 1 },
+            { q: 'A "fact" is something that is...', opts: ['False', 'True', 'Funny'], answer: 1 }
+        ]
+    },
+
+    // ==================== INTERMEDIATE (13 videos) ====================
+    {
+        id: '3AV2Mvjv1JY', title: 'Movie Scene: Hotel Check-in',
+        channel: 'Learn English with TV', duration: '5:00', level: 'intermediate',
+        category: 'movies', icon: '🏨',
+        description: 'Practice hotel vocabulary from a real movie scene.',
+        vocabulary: [
+            { word: 'reservation', phonetic: '/ˌrez.ərˈveɪ.ʃən/', meaning: 'dat truoc' },
+            { word: 'check in', phonetic: '/tʃek ɪn/', meaning: 'lam thu tuc' },
+            { word: 'available', phonetic: '/əˈveɪ.lə.bəl/', meaning: 'con trong' },
+            { word: 'suite', phonetic: '/swiːt/', meaning: 'phong suite' },
+            { word: 'receptionist', phonetic: '/rɪˈsep.ʃən.ɪst/', meaning: 'le tan' }
+        ],
+        quiz: [
+            { q: 'You make a _____ before arriving at a hotel.', opts: ['Payment', 'Reservation', 'Complaint'], answer: 1 },
+            { q: 'The _____ welcomes guests at the front desk.', opts: ['Chef', 'Receptionist', 'Cleaner'], answer: 1 },
+            { q: '"Available" means...', opts: ['Busy', 'Full', 'Free to use'], answer: 2 }
+        ]
+    },
+    {
+        id: 'P6FORpg0KVo', title: 'TED Talk: The Power of Reading',
+        channel: 'TED Talks', duration: '6:00', level: 'intermediate',
+        category: 'culture', icon: '📚',
+        description: 'An inspiring talk about why reading matters.',
+        vocabulary: [
+            { word: 'imagination', phonetic: '/ɪˌmædʒ.ɪˈneɪ.ʃən/', meaning: 'tri tuong tuong' },
+            { word: 'knowledge', phonetic: '/ˈnɑː.lɪdʒ/', meaning: 'kien thuc' },
+            { word: 'inspire', phonetic: '/ɪnˈspaɪr/', meaning: 'truyen cam hung' },
+            { word: 'opportunity', phonetic: '/ˌɑː.pərˈtuː.nə.ti/', meaning: 'co hoi' },
+            { word: 'perspective', phonetic: '/pərˈspek.tɪv/', meaning: 'goc nhin' }
+        ],
+        quiz: [
+            { q: '"Imagination" helps you...', opts: ['Sleep better', 'Create new ideas', 'Run faster'], answer: 1 },
+            { q: '"Knowledge" comes from...', opts: ['Sleeping', 'Learning', 'Eating'], answer: 1 },
+            { q: '"Inspire" means to...', opts: ['Discourage', 'Motivate', 'Confuse'], answer: 1 }
+        ]
+    },
+    {
+        id: '-ZRsLhaukn8', title: 'How Things Are Made',
+        channel: 'Crash Course', duration: '5:30', level: 'intermediate',
+        category: 'science', icon: '🏭',
+        description: 'Learn about manufacturing and how everyday items are made.',
+        vocabulary: [
+            { word: 'manufacture', phonetic: '/ˌmæn.jəˈfæk.tʃər/', meaning: 'san xuat' },
+            { word: 'process', phonetic: '/ˈprɑː.ses/', meaning: 'quy trinh' },
+            { word: 'material', phonetic: '/məˈtɪr.i.əl/', meaning: 'nguyen lieu' },
+            { word: 'design', phonetic: '/dɪˈzaɪn/', meaning: 'thiet ke' },
+            { word: 'quality', phonetic: '/ˈkwɑː.lə.ti/', meaning: 'chat luong' }
+        ],
+        quiz: [
+            { q: '"Material" is what something is _____ of.', opts: ['Made', 'Sold', 'Bought'], answer: 0 },
+            { q: '"Quality" describes how _____ something is.', opts: ['Big', 'Good', 'Fast'], answer: 1 },
+            { q: '"Process" means...', opts: ['Ket qua', 'Quy trinh', 'San pham'], answer: 1 }
+        ]
+    },
+    {
+        id: 'up8BUFWtRhM', title: 'Amazing Planet Earth',
+        channel: 'National Geographic', duration: '5:45', level: 'intermediate',
+        category: 'science', icon: '🌍',
+        description: 'Explore our planet with stunning visuals and narration.',
+        vocabulary: [
+            { word: 'species', phonetic: '/ˈspiː.ʃiːz/', meaning: 'loai' },
+            { word: 'habitat', phonetic: '/ˈhæb.ɪ.tæt/', meaning: 'moi truong song' },
+            { word: 'ecosystem', phonetic: '/ˈiː.koʊˌsɪs.təm/', meaning: 'he sinh thai' },
+            { word: 'survive', phonetic: '/sərˈvaɪv/', meaning: 'song sot' },
+            { word: 'extinct', phonetic: '/ɪkˈstɪŋkt/', meaning: 'tuyet chung' }
+        ],
+        quiz: [
+            { q: 'A "habitat" is where an animal...', opts: ['Eats', 'Lives', 'Sleeps'], answer: 1 },
+            { q: 'Dinosaurs are now...', opts: ['Alive', 'Extinct', 'Small'], answer: 1 },
+            { q: '"Survive" means to...', opts: ['Die', 'Stay alive', 'Run away'], answer: 1 }
+        ]
+    },
+    {
+        id: 'dQw4w9WgXcQ', title: 'Understanding Song Lyrics',
+        channel: 'Music English', duration: '3:30', level: 'intermediate',
+        category: 'music', icon: '🎵',
+        description: 'Learn English expressions through popular song lyrics.',
+        vocabulary: [
+            { word: 'lyrics', phonetic: '/ˈlɪr.ɪks/', meaning: 'loi bai hat' },
+            { word: 'chorus', phonetic: '/ˈkɔːr.əs/', meaning: 'dieu hop' },
+            { word: 'rhythm', phonetic: '/ˈrɪð.əm/', meaning: 'nhip dieu' },
+            { word: 'melody', phonetic: '/ˈmel.ə.di/', meaning: 'giai dieu' },
+            { word: 'verse', phonetic: '/vɜːrs/', meaning: 'cau/doan tho' }
+        ],
+        quiz: [
+            { q: 'The words of a song are called...', opts: ['Notes', 'Lyrics', 'Melody'], answer: 1 },
+            { q: 'The part that repeats is the...', opts: ['Verse', 'Bridge', 'Chorus'], answer: 2 },
+            { q: '"Rhythm" means...', opts: ['Am luong', 'Nhip dieu', 'Loi hat'], answer: 1 }
+        ]
+    },
+    {
+        id: 'sQJMjfBIKOE', title: 'Job Interview English',
+        channel: 'English Addict', duration: '6:00', level: 'intermediate',
+        category: 'daily-life', icon: '💼',
+        description: 'Practice common job interview questions and answers.',
+        vocabulary: [
+            { word: 'experience', phonetic: '/ɪkˈspɪr.i.əns/', meaning: 'kinh nghiem' },
+            { word: 'strength', phonetic: '/streŋθ/', meaning: 'diem manh' },
+            { word: 'weakness', phonetic: '/ˈwiːk.nəs/', meaning: 'diem yeu' },
+            { word: 'salary', phonetic: '/ˈsæl.ər.i/', meaning: 'luong' },
+            { word: 'qualified', phonetic: '/ˈkwɑː.lɪ.faɪd/', meaning: 'du dieu kien' }
+        ],
+        quiz: [
+            { q: '"Experience" means your past...', opts: ['Education', 'Work history', 'Age'], answer: 1 },
+            { q: 'The opposite of "strength" is...', opts: ['Power', 'Weakness', 'Skill'], answer: 1 },
+            { q: '"Salary" is the _____ you earn.', opts: ['Time', 'Money', 'Points'], answer: 1 }
+        ]
+    },
+    {
+        id: 'b8mIZMZXdng', title: 'Movie Scene: Making Friends',
+        channel: 'Learn English with TV', duration: '4:30', level: 'intermediate',
+        category: 'movies', icon: '🤝',
+        description: 'Watch how characters in movies make new friends.',
+        vocabulary: [
+            { word: 'introduce', phonetic: '/ˌɪn.trəˈduːs/', meaning: 'gioi thieu' },
+            { word: 'common', phonetic: '/ˈkɑː.mən/', meaning: 'chung' },
+            { word: 'personality', phonetic: '/ˌpɜːr.sənˈæl.ə.ti/', meaning: 'tinh cach' },
+            { word: 'trust', phonetic: '/trʌst/', meaning: 'tin tuong' },
+            { word: 'support', phonetic: '/səˈpɔːrt/', meaning: 'ung ho' }
+        ],
+        quiz: [
+            { q: 'When you _____ someone, you tell others their name.', opts: ['Support', 'Introduce', 'Trust'], answer: 1 },
+            { q: 'Good friends _____ each other.', opts: ['Ignore', 'Support', 'Judge'], answer: 1 },
+            { q: '"Common" interests means you both...', opts: ['Dislike it', 'Like the same thing', 'Compete'], answer: 1 }
+        ]
+    },
+    {
+        id: 'VhokQhjl5t0', title: 'English Idioms Explained',
+        channel: 'BBC Learning English', duration: '5:00', level: 'intermediate',
+        category: 'grammar', icon: '💡',
+        description: 'Learn common English idioms with fun examples.',
+        vocabulary: [
+            { word: 'break a leg', phonetic: '', meaning: 'chuc may man' },
+            { word: 'piece of cake', phonetic: '', meaning: 'de nhu an banh' },
+            { word: 'hit the books', phonetic: '', meaning: 'hoc bai' },
+            { word: 'under the weather', phonetic: '', meaning: 'khong khoe' },
+            { word: 'cost an arm and a leg', phonetic: '', meaning: 'rat dat' }
+        ],
+        quiz: [
+            { q: '"Piece of cake" means something is...', opts: ['Delicious', 'Easy', 'Expensive'], answer: 1 },
+            { q: '"Under the weather" means feeling...', opts: ['Happy', 'Sick', 'Cold'], answer: 1 },
+            { q: '"Break a leg" is said to wish someone...', opts: ['Bad luck', 'Good luck', 'Pain'], answer: 1 }
+        ]
+    },
+    {
+        id: 'wBlPCMxKjYE', title: 'Comparing Things in English',
+        channel: 'English with Lucy', duration: '5:30', level: 'intermediate',
+        category: 'grammar', icon: '⚖️',
+        description: 'Master comparatives and superlatives.',
+        vocabulary: [
+            { word: 'bigger', phonetic: '/ˈbɪɡ.ər/', meaning: 'lon hon' },
+            { word: 'the best', phonetic: '/ðə best/', meaning: 'tot nhat' },
+            { word: 'more expensive', phonetic: '', meaning: 'dat hon' },
+            { word: 'less', phonetic: '/les/', meaning: 'it hon' },
+            { word: 'similar', phonetic: '/ˈsɪm.ə.lər/', meaning: 'tuong tu' }
+        ],
+        quiz: [
+            { q: 'An elephant is _____ than a cat.', opts: ['Small', 'Bigger', 'Faster'], answer: 1 },
+            { q: '"The best" means the _____ of all.', opts: ['Worst', 'Good', 'Most good'], answer: 2 },
+            { q: '"Less" is the opposite of...', opts: ['More', 'Fewer', 'Little'], answer: 0 }
+        ]
+    },
+    {
+        id: 'gfr3ggQ7MP4', title: 'Talking About the Future',
+        channel: 'English Addict', duration: '5:15', level: 'intermediate',
+        category: 'grammar', icon: '🔮',
+        description: 'Will, going to, and other future tense expressions.',
+        vocabulary: [
+            { word: 'will', phonetic: '/wɪl/', meaning: 'se' },
+            { word: 'plan', phonetic: '/plæn/', meaning: 'ke hoach' },
+            { word: 'predict', phonetic: '/prɪˈdɪkt/', meaning: 'du doan' },
+            { word: 'probably', phonetic: '/ˈprɑː.bə.bli/', meaning: 'co le' },
+            { word: 'definitely', phonetic: '/ˈdef.ɪ.nət.li/', meaning: 'chac chan' }
+        ],
+        quiz: [
+            { q: '"I will go" talks about the...', opts: ['Past', 'Present', 'Future'], answer: 2 },
+            { q: '"Probably" means it is...', opts: ['Certain', 'Likely', 'Impossible'], answer: 1 },
+            { q: '"Definitely" means you are very...', opts: ['Unsure', 'Sure', 'Scared'], answer: 1 }
+        ]
+    },
+    {
+        id: 'RtGkDBaScLo', title: 'Movie Scene: Funny Moments',
+        channel: 'Learn English with TV', duration: '4:45', level: 'intermediate',
+        category: 'movies', icon: '😂',
+        description: 'Learn humor and comedy expressions from movie scenes.',
+        vocabulary: [
+            { word: 'hilarious', phonetic: '/hɪˈler.i.əs/', meaning: 'cuc ky hai' },
+            { word: 'joke', phonetic: '/dʒoʊk/', meaning: 'cau dua' },
+            { word: 'punchline', phonetic: '/ˈpʌntʃ.laɪn/', meaning: 'cau hai' },
+            { word: 'sarcasm', phonetic: '/ˈsɑːr.kæz.əm/', meaning: 'mia mai' },
+            { word: 'witty', phonetic: '/ˈwɪt.i/', meaning: 'hai huoc' }
+        ],
+        quiz: [
+            { q: '"Hilarious" means very...', opts: ['Sad', 'Funny', 'Scary'], answer: 1 },
+            { q: 'The funny ending of a joke is the...', opts: ['Start', 'Middle', 'Punchline'], answer: 2 },
+            { q: '"Sarcasm" means saying the _____ of what you mean.', opts: ['Same', 'Opposite', 'Nothing'], answer: 1 }
+        ]
+    },
+    {
+        id: 'xGbBYZtwVbo', title: 'Debate: Is Social Media Good?',
+        channel: 'BBC Learning English', duration: '6:00', level: 'intermediate',
+        category: 'culture', icon: '📲',
+        description: 'Listen to arguments for and against social media.',
+        vocabulary: [
+            { word: 'advantage', phonetic: '/ədˈvæn.tɪdʒ/', meaning: 'uu diem' },
+            { word: 'disadvantage', phonetic: '/ˌdɪs.ədˈvæn.tɪdʒ/', meaning: 'nhuoc diem' },
+            { word: 'addiction', phonetic: '/əˈdɪk.ʃən/', meaning: 'nghien' },
+            { word: 'connection', phonetic: '/kəˈnek.ʃən/', meaning: 'ket noi' },
+            { word: 'privacy', phonetic: '/ˈpraɪ.və.si/', meaning: 'su rieng tu' }
+        ],
+        quiz: [
+            { q: 'An "advantage" is something...', opts: ['Bad', 'Good', 'Boring'], answer: 1 },
+            { q: '"Privacy" means keeping things...', opts: ['Public', 'Private', 'Shared'], answer: 1 },
+            { q: '"Addiction" means you _____ stop.', opts: ['Can easily', 'Can\'t', 'Want to'], answer: 1 }
+        ]
+    },
+    {
+        id: 'YQHsXMglC9A', title: 'English Slang Explained',
+        channel: 'Papa Teach Me', duration: '4:50', level: 'intermediate',
+        category: 'culture', icon: '🗯️',
+        description: 'Understand modern English slang words and phrases.',
+        vocabulary: [
+            { word: 'chill', phonetic: '/tʃɪl/', meaning: 'thu gian' },
+            { word: 'ghost', phonetic: '/ɡoʊst/', meaning: 'bo roi (lang)' },
+            { word: 'vibe', phonetic: '/vaɪb/', meaning: 'cam giac/khong khi' },
+            { word: 'slay', phonetic: '/sleɪ/', meaning: 'lam tot lam' },
+            { word: 'no cap', phonetic: '', meaning: 'khong noi doi' }
+        ],
+        quiz: [
+            { q: '"Chill" in slang means to...', opts: ['Be cold', 'Relax', 'Run'], answer: 1 },
+            { q: '"Ghost someone" means to...', opts: ['Scare them', 'Stop replying', 'Help them'], answer: 1 },
+            { q: '"Good vibes" means a _____ feeling.', opts: ['Bad', 'Positive', 'Scary'], answer: 1 }
+        ]
+    },
+
+    // ==================== UPPER-INTERMEDIATE (6 videos) ====================
+    {
+        id: 'arj7oStGLkU', title: 'TED: The Science of Happiness',
+        channel: 'TED Talks', duration: '6:00', level: 'upper',
+        category: 'culture', icon: '🧪',
+        description: 'What does science say about being happy?',
+        vocabulary: [
+            { word: 'contentment', phonetic: '/kənˈtent.mənt/', meaning: 'su hai long' },
+            { word: 'gratitude', phonetic: '/ˈɡræt.ɪ.tuːd/', meaning: 'long biet on' },
+            { word: 'resilience', phonetic: '/rɪˈzɪl.jəns/', meaning: 'kha nang phuc hoi' },
+            { word: 'mindfulness', phonetic: '/ˈmaɪnd.fəl.nəs/', meaning: 'su chanh niem' },
+            { word: 'well-being', phonetic: '/ˌwelˈbiː.ɪŋ/', meaning: 'suc khoe tinh than' }
+        ],
+        quiz: [
+            { q: '"Gratitude" means being...', opts: ['Greedy', 'Thankful', 'Angry'], answer: 1 },
+            { q: '"Resilience" helps you _____ from difficulties.', opts: ['Run', 'Recover', 'Hide'], answer: 1 },
+            { q: '"Well-being" refers to your overall...', opts: ['Wealth', 'Health and happiness', 'Intelligence'], answer: 1 }
+        ]
+    },
+    {
+        id: 'RcGyVTAoXEU', title: 'Business Negotiation Scene',
+        channel: 'Learn English with TV', duration: '5:30', level: 'upper',
+        category: 'movies', icon: '🤝',
+        description: 'Watch a tense business negotiation from a famous show.',
+        vocabulary: [
+            { word: 'negotiate', phonetic: '/nɪˈɡoʊ.ʃi.eɪt/', meaning: 'dam phan' },
+            { word: 'compromise', phonetic: '/ˈkɑːm.prə.maɪz/', meaning: 'thoa hiep' },
+            { word: 'deadline', phonetic: '/ˈded.laɪn/', meaning: 'han chot' },
+            { word: 'proposal', phonetic: '/prəˈpoʊ.zəl/', meaning: 'de xuat' },
+            { word: 'leverage', phonetic: '/ˈlev.ər.ɪdʒ/', meaning: 'don bay' }
+        ],
+        quiz: [
+            { q: '"Compromise" means both sides...', opts: ['Win everything', 'Give up something', 'Fight more'], answer: 1 },
+            { q: 'A "deadline" is the last...', opts: ['Day', 'Chance', 'Time to finish'], answer: 2 },
+            { q: '"Negotiate" means to...', opts: ['Demand', 'Discuss terms', 'Give up'], answer: 1 }
+        ]
+    },
+    {
+        id: 'CxGUmtRLm5g', title: 'Advanced Pronunciation Tips',
+        channel: 'Rachel\'s English', duration: '6:00', level: 'upper',
+        category: 'pronunciation', icon: '🎯',
+        description: 'Master connected speech and natural pronunciation.',
+        vocabulary: [
+            { word: 'intonation', phonetic: '/ˌɪn.təˈneɪ.ʃən/', meaning: 'ngu dieu' },
+            { word: 'stress', phonetic: '/stres/', meaning: 'trong am' },
+            { word: 'syllable', phonetic: '/ˈsɪl.ə.bəl/', meaning: 'am tiet' },
+            { word: 'linking', phonetic: '/ˈlɪŋ.kɪŋ/', meaning: 'noi am' },
+            { word: 'reduction', phonetic: '/rɪˈdʌk.ʃən/', meaning: 'rut gon am' }
+        ],
+        quiz: [
+            { q: '"Intonation" is how your voice goes _____.', opts: ['Quiet', 'Up and down', 'Fast'], answer: 1 },
+            { q: 'Word "stress" means saying a part...', opts: ['Louder', 'Softer', 'Slower'], answer: 0 },
+            { q: '"Linking" in speech means...', opts: ['Pausing', 'Connecting sounds', 'Speaking slowly'], answer: 1 }
+        ]
+    },
+    {
+        id: 'wnHW6o8WMas', title: 'Movie Scene: Courtroom Drama',
+        channel: 'Learn English with TV', duration: '5:45', level: 'upper',
+        category: 'movies', icon: '⚖️',
+        description: 'Legal English from an intense courtroom movie scene.',
+        vocabulary: [
+            { word: 'evidence', phonetic: '/ˈev.ɪ.dəns/', meaning: 'bang chung' },
+            { word: 'testimony', phonetic: '/ˈtes.tɪ.moʊ.ni/', meaning: 'loi khai' },
+            { word: 'verdict', phonetic: '/ˈvɜːr.dɪkt/', meaning: 'phan quyet' },
+            { word: 'objection', phonetic: '/əbˈdʒek.ʃən/', meaning: 'phan doi' },
+            { word: 'justice', phonetic: '/ˈdʒʌs.tɪs/', meaning: 'cong ly' }
+        ],
+        quiz: [
+            { q: '"Evidence" is used to _____ something.', opts: ['Hide', 'Prove', 'Forget'], answer: 1 },
+            { q: 'The final decision in court is the...', opts: ['Objection', 'Testimony', 'Verdict'], answer: 2 },
+            { q: '"Justice" means things are...', opts: ['Unfair', 'Fair', 'Fast'], answer: 1 }
+        ]
+    },
+    {
+        id: 'D9Ihs241zeg', title: 'Academic Writing Tips',
+        channel: 'Oxford English', duration: '6:00', level: 'upper',
+        category: 'grammar', icon: '✍️',
+        description: 'Improve your formal and academic writing skills.',
+        vocabulary: [
+            { word: 'thesis', phonetic: '/ˈθiː.sɪs/', meaning: 'luan diem' },
+            { word: 'argument', phonetic: '/ˈɑːr.ɡjə.mənt/', meaning: 'lap luan' },
+            { word: 'furthermore', phonetic: '/ˌfɜːr.ðərˈmɔːr/', meaning: 'hon nua' },
+            { word: 'consequently', phonetic: '/ˈkɑːn.sə.kwent.li/', meaning: 'do do' },
+            { word: 'conclude', phonetic: '/kənˈkluːd/', meaning: 'ket luan' }
+        ],
+        quiz: [
+            { q: 'A "thesis" is the main...', opts: ['Question', 'Idea', 'Problem'], answer: 1 },
+            { q: '"Furthermore" is used to...', opts: ['Disagree', 'Add more', 'Conclude'], answer: 1 },
+            { q: '"Conclude" means to...', opts: ['Start', 'Continue', 'End/Finish'], answer: 2 }
+        ]
+    },
+    {
+        id: 'xNjyG8S4_kI', title: 'Understanding British Humor',
+        channel: 'BBC Learning English', duration: '5:30', level: 'upper',
+        category: 'culture', icon: '🇬🇧',
+        description: 'Why British humor is dry, witty and hard to understand.',
+        vocabulary: [
+            { word: 'irony', phonetic: '/ˈaɪ.rə.ni/', meaning: 'su mai mia' },
+            { word: 'understatement', phonetic: '/ˈʌn.dər.steɪt.mənt/', meaning: 'noi giam' },
+            { word: 'deadpan', phonetic: '/ˈded.pæn/', meaning: 'mat lanh' },
+            { word: 'self-deprecating', phonetic: '', meaning: 'tu che gieu' },
+            { word: 'subtle', phonetic: '/ˈsʌt.əl/', meaning: 'tinh te' }
+        ],
+        quiz: [
+            { q: '"Irony" means saying something _____ what you mean.', opts: ['Exactly', 'Similar to', 'Opposite to'], answer: 2 },
+            { q: '"Subtle" humor is...', opts: ['Obvious and loud', 'Quiet and clever', 'Rude'], answer: 1 },
+            { q: '"Self-deprecating" means making fun of...', opts: ['Others', 'Yourself', 'Animals'], answer: 1 }
+        ]
+    },
+
+    // ==================== ADVANCED (4 videos) ====================
+    {
+        id: 'Unzc731iCUY', title: 'TED: How Language Shapes Thinking',
+        channel: 'TED Talks', duration: '6:00', level: 'advanced',
+        category: 'science', icon: '🧠',
+        description: 'Explore how different languages shape how we think.',
+        vocabulary: [
+            { word: 'cognitive', phonetic: '/ˈkɑːɡ.nə.tɪv/', meaning: 'nhan thuc' },
+            { word: 'perception', phonetic: '/pərˈsep.ʃən/', meaning: 'nhan thuc/cam nhan' },
+            { word: 'bilingual', phonetic: '/baɪˈlɪŋ.ɡwəl/', meaning: 'song ngu' },
+            { word: 'linguistic', phonetic: '/lɪŋˈɡwɪs.tɪk/', meaning: 'ngon ngu hoc' },
+            { word: 'phenomenon', phonetic: '/fɪˈnɑː.mə.nɑːn/', meaning: 'hien tuong' }
+        ],
+        quiz: [
+            { q: '"Bilingual" means speaking _____ languages.', opts: ['One', 'Two', 'Many'], answer: 1 },
+            { q: '"Cognitive" relates to...', opts: ['Physical strength', 'Thinking', 'Emotions'], answer: 1 },
+            { q: '"Phenomenon" means an observable...', opts: ['Problem', 'Event', 'Animal'], answer: 1 }
+        ]
+    },
+    {
+        id: 'pN34FNbOKXc', title: 'Shakespeare Made Simple',
+        channel: 'Crash Course Literature', duration: '6:00', level: 'advanced',
+        category: 'culture', icon: '🎭',
+        description: 'Understand Shakespeare\'s language and lasting impact.',
+        vocabulary: [
+            { word: 'thou', phonetic: '/ðaʊ/', meaning: 'ngươi (co)' },
+            { word: 'tragedy', phonetic: '/ˈtrædʒ.ə.di/', meaning: 'bi kich' },
+            { word: 'metaphor', phonetic: '/ˈmet.ə.fɔːr/', meaning: 'an du' },
+            { word: 'soliloquy', phonetic: '/səˈlɪl.ə.kwi/', meaning: 'doc thoai' },
+            { word: 'eloquent', phonetic: '/ˈel.ə.kwənt/', meaning: 'hung bien' }
+        ],
+        quiz: [
+            { q: '"Thou" is an old English word for...', opts: ['I', 'You', 'They'], answer: 1 },
+            { q: 'A "tragedy" ends...', opts: ['Happily', 'Sadly', 'Mysteriously'], answer: 1 },
+            { q: 'A "metaphor" compares things...', opts: ['Using "like"', 'Without "like"', 'Using numbers'], answer: 1 }
+        ]
+    },
+    {
+        id: 'nWQo0q8qm1U', title: 'Philosophical Debates in English',
+        channel: 'Philosophy Tube', duration: '6:00', level: 'advanced',
+        category: 'culture', icon: '🤔',
+        description: 'Engage with deep philosophical ideas in English.',
+        vocabulary: [
+            { word: 'ethics', phonetic: '/ˈeθ.ɪks/', meaning: 'dao duc' },
+            { word: 'consciousness', phonetic: '/ˈkɑːn.ʃəs.nəs/', meaning: 'y thuc' },
+            { word: 'existential', phonetic: '/ˌeɡ.zɪˈsten.ʃəl/', meaning: 'hien sinh' },
+            { word: 'paradox', phonetic: '/ˈpær.ə.dɑːks/', meaning: 'nghich ly' },
+            { word: 'hypothesis', phonetic: '/haɪˈpɑː.θə.sɪs/', meaning: 'gia thuyet' }
+        ],
+        quiz: [
+            { q: '"Ethics" is the study of...', opts: ['Science', 'Right and wrong', 'Language'], answer: 1 },
+            { q: 'A "paradox" seems to _____ itself.', opts: ['Support', 'Contradict', 'Explain'], answer: 1 },
+            { q: '"Hypothesis" is an educated...', opts: ['Answer', 'Guess', 'Fact'], answer: 1 }
+        ]
+    },
+    {
+        id: 'I6e2vsNkGhA', title: 'Advanced English: Nuance & Tone',
+        channel: 'English with Lucy', duration: '5:45', level: 'advanced',
+        category: 'grammar', icon: '🎓',
+        description: 'Master the subtle differences in English expression.',
+        vocabulary: [
+            { word: 'nuance', phonetic: '/ˈnuː.ɑːns/', meaning: 'sac thai' },
+            { word: 'connotation', phonetic: '/ˌkɑː.nəˈteɪ.ʃən/', meaning: 'ham y' },
+            { word: 'ambiguity', phonetic: '/ˌæm.bɪˈɡjuː.ə.ti/', meaning: 'su mo ho' },
+            { word: 'rhetoric', phonetic: '/ˈret.ər.ɪk/', meaning: 'tu tu hoc' },
+            { word: 'eloquence', phonetic: '/ˈel.ə.kwəns/', meaning: 'su hung bien' }
+        ],
+        quiz: [
+            { q: '"Nuance" means a _____ difference.', opts: ['Huge', 'Subtle', 'Obvious'], answer: 1 },
+            { q: '"Ambiguity" means something can be understood in...', opts: ['One way', 'Multiple ways', 'No way'], answer: 1 },
+            { q: '"Connotation" is the _____ meaning of a word.', opts: ['Literal', 'Hidden/implied', 'Dictionary'], answer: 1 }
+        ]
+    }
+];
+
+// ==================== VIDEO LEVELS CONFIG ====================
+const VIDEO_LEVELS = {
+    beginner:     { name: 'Beginner',           icon: '🌱', color: '#4CAF50', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)' },
+    elementary:   { name: 'Elementary',          icon: '🌿', color: '#2196F3', gradient: 'linear-gradient(135deg, #667eea, #764ba2)' },
+    intermediate: { name: 'Intermediate',        icon: '🌳', color: '#FF9800', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)' },
+    upper:        { name: 'Upper-Intermediate',  icon: '⭐', color: '#E91E63', gradient: 'linear-gradient(135deg, #ff6a00, #ee0979)' },
+    advanced:     { name: 'Advanced',            icon: '🏆', color: '#9C27B0', gradient: 'linear-gradient(135deg, #6a11cb, #2575fc)' }
+};
+
+const VIDEO_CATEGORIES = {
+    all:            { name: 'All',           icon: '🎬' },
+    'daily-life':   { name: 'Daily Life',    icon: '🏠' },
+    travel:         { name: 'Travel',        icon: '✈️' },
+    movies:         { name: 'Movies',        icon: '🎥' },
+    grammar:        { name: 'Grammar',       icon: '📖' },
+    fun:            { name: 'Fun',           icon: '🎉' },
+    school:         { name: 'School',        icon: '🏫' },
+    science:        { name: 'Science',       icon: '🔬' },
+    culture:        { name: 'Culture',       icon: '🌍' },
+    music:          { name: 'Music',         icon: '🎵' },
+    pronunciation:  { name: 'Pronunciation', icon: '🗣️' }
+};
+
+// ==================== STATE ====================
+let videoState = {
+    currentVideo: null,
+    player: null,
+    selectedLevel: 'all',
+    selectedCategory: 'all',
+    quizAnswers: [],
+    quizStep: 0,
+    apiReady: false
+};
+
+// ==================== YOUTUBE API ====================
+function loadYouTubeAPI() {
+    if (videoState.apiReady || document.getElementById('ytApiScript')) return;
+    const tag = document.createElement('script');
+    tag.id = 'ytApiScript';
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+}
+
+function onYouTubeIframeAPIReady() {
+    videoState.apiReady = true;
+}
+
+// ==================== VIDEO SCREEN (BROWSE) ====================
+function switchToVideoScreen() {
+    // Close any overlays
+    document.querySelectorAll('.bubbles-overlay, .music-menu-overlay').forEach(el => el.classList.remove('active'));
+    document.getElementById('bottomNav').style.display = 'flex';
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('videoScreen').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (event && event.target) event.target.closest('.nav-item')?.classList.add('active');
+
+    renderVideoScreen();
+}
+
+function renderVideoScreen() {
+    const container = document.getElementById('videoScreen');
+    const stats = getVideoStats();
+    const filtered = getFilteredVideos();
+
+    const levelKeys = ['all', ...Object.keys(VIDEO_LEVELS)];
+    const levelTabs = levelKeys.map(k => {
+        const isAll = k === 'all';
+        const lbl = isAll ? '🎬 All' : `${VIDEO_LEVELS[k].icon} ${VIDEO_LEVELS[k].name}`;
+        const count = isAll ? VIDEO_LIBRARY.length : VIDEO_LIBRARY.filter(v => v.level === k).length;
+        const active = videoState.selectedLevel === k ? 'active' : '';
+        return `<button class="vl-tab ${active}" onclick="filterVideoLevel('${k}')">${lbl} <span class="vl-tab-count">${count}</span></button>`;
+    }).join('');
+
+    const catKeys = Object.keys(VIDEO_CATEGORIES);
+    const catChips = catKeys.map(k => {
+        const active = videoState.selectedCategory === k ? 'active' : '';
+        return `<button class="vc-chip ${active}" onclick="filterVideoCategory('${k}')">${VIDEO_CATEGORIES[k].icon} ${VIDEO_CATEGORIES[k].name}</button>`;
+    }).join('');
+
+    const cards = filtered.map(v => {
+        const level = VIDEO_LEVELS[v.level] || VIDEO_LEVELS.beginner;
+        const watched = stats.watched.includes(v.id);
+        const stars = stats.stars[v.id] || 0;
+        const starStr = stars > 0 ? '⭐'.repeat(stars) + '☆'.repeat(3 - stars) : '';
+        const thumb = `https://img.youtube.com/vi/${v.id}/mqdefault.jpg`;
+        return `
+        <div class="vc-card ${watched ? 'watched' : ''}" onclick="openVideoPlayer('${v.id}')">
+            <div class="vc-thumb" style="background-image: url('${thumb}')">
+                <div class="vc-play-icon">▶</div>
+                <div class="vc-duration">${v.duration}</div>
+                ${watched ? '<div class="vc-watched-badge">✅</div>' : ''}
+            </div>
+            <div class="vc-info">
+                <div class="vc-title">${v.icon} ${v.title}</div>
+                <div class="vc-meta">
+                    <span class="vc-level-badge" style="background:${level.color}">${level.icon} ${level.name}</span>
+                    ${starStr ? `<span class="vc-stars">${starStr}</span>` : ''}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const watchedCount = stats.watched.length;
+    const totalStars = Object.values(stats.stars).reduce((a, b) => a + b, 0);
+    const maxStars = VIDEO_LIBRARY.length * 3;
+    const wordsLearned = stats.wordsLearned.length;
+
+    container.innerHTML = `
+        <div class="vs-header">
+            <div class="vs-title">🎬 Video Lessons</div>
+            <div class="vs-stats-row">
+                <div class="vs-stat"><span class="vs-stat-val">${watchedCount}</span><span class="vs-stat-lbl">Watched</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${totalStars}/${maxStars}</span><span class="vs-stat-lbl">Stars</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${wordsLearned}</span><span class="vs-stat-lbl">Words</span></div>
+            </div>
+        </div>
+        <div class="vl-tabs-scroll">${levelTabs}</div>
+        <div class="vc-chips-scroll">${catChips}</div>
+        <div class="vc-grid">${cards || '<div class="vc-empty">No videos found for this filter.</div>'}</div>
+    `;
+}
+
+function filterVideoLevel(level) {
+    videoState.selectedLevel = level;
+    renderVideoScreen();
+}
+
+function filterVideoCategory(cat) {
+    videoState.selectedCategory = cat;
+    renderVideoScreen();
+}
+
+function getFilteredVideos() {
+    return VIDEO_LIBRARY.filter(v => {
+        if (videoState.selectedLevel !== 'all' && v.level !== videoState.selectedLevel) return false;
+        if (videoState.selectedCategory !== 'all' && v.category !== videoState.selectedCategory) return false;
+        return true;
+    });
+}
+
+// ==================== VIDEO PLAYER ====================
+function openVideoPlayer(videoId) {
+    const video = VIDEO_LIBRARY.find(v => v.id === videoId);
+    if (!video) return;
+
+    videoState.currentVideo = video;
+    videoState.quizAnswers = [];
+    videoState.quizStep = 0;
+
+    loadYouTubeAPI();
+
+    const overlay = document.getElementById('videoPlayerOverlay');
+    overlay.classList.add('active');
+    document.getElementById('bottomNav').style.display = 'none';
+
+    renderVideoPlayer();
+}
+
+function renderVideoPlayer() {
+    const v = videoState.currentVideo;
+    if (!v) return;
+    const overlay = document.getElementById('videoPlayerOverlay');
+    const level = VIDEO_LEVELS[v.level] || VIDEO_LEVELS.beginner;
+    const stats = getVideoStats();
+    const prevStars = stats.stars[v.id] || 0;
+
+    const vocabHtml = v.vocabulary.map(w =>
+        `<div class="vp-word" onclick="speakWord('${w.word.replace(/'/g, "\\'")}')">
+            <div class="vp-word-en">${w.word} 🔊</div>
+            <div class="vp-word-pho">${w.phonetic}</div>
+            <div class="vp-word-vi">${w.meaning}</div>
+        </div>`
+    ).join('');
+
+    overlay.innerHTML = `
+        <div class="vp-container">
+            <div class="vp-top-bar">
+                <button class="vp-back" onclick="closeVideoPlayer()">← Back</button>
+                <div class="vp-level-badge" style="background:${level.gradient}">${level.icon} ${level.name}</div>
+                ${prevStars > 0 ? `<div class="vp-prev-stars">${'⭐'.repeat(prevStars)}</div>` : ''}
+            </div>
+            <div class="vp-title">${v.icon} ${v.title}</div>
+            <div class="vp-channel">${v.channel} · ${v.duration}</div>
+
+            <div class="vp-player-wrap">
+                <div id="ytPlayerContainer"></div>
+                <div class="vp-offline-msg" id="vpOfflineMsg" style="display:none;">
+                    📡 Internet needed to play video
+                </div>
+            </div>
+
+            <div class="vp-desc">${v.description}</div>
+
+            <div class="vp-section-title">📚 Key Vocabulary</div>
+            <div class="vp-words-grid">${vocabHtml}</div>
+
+            <button class="vp-quiz-btn" onclick="startVideoQuiz()">🧠 Take Quiz (${v.quiz.length} questions)</button>
+        </div>
+    `;
+
+    // Create YouTube player
+    setTimeout(() => createYTPlayer(v.id), 100);
+}
+
+function createYTPlayer(videoId) {
+    const container = document.getElementById('ytPlayerContainer');
+    if (!container) return;
+
+    if (videoState.player && typeof videoState.player.destroy === 'function') {
+        videoState.player.destroy();
+        videoState.player = null;
+    }
+
+    if (videoState.apiReady && typeof YT !== 'undefined' && YT.Player) {
+        videoState.player = new YT.Player('ytPlayerContainer', {
+            videoId: videoId,
+            width: '100%',
+            height: '100%',
+            playerVars: {
+                cc_load_policy: 1,
+                cc_lang_pref: 'en',
+                rel: 0,
+                modestbranding: 1,
+                playsinline: 1
+            },
+            events: {
+                onError: () => {
+                    const msg = document.getElementById('vpOfflineMsg');
+                    if (msg) msg.style.display = 'flex';
+                }
+            }
+        });
+    } else {
+        // API not ready yet, use iframe fallback
+        container.innerHTML = `<iframe
+            src="https://www.youtube.com/embed/${videoId}?cc_load_policy=1&cc_lang_pref=en&rel=0&modestbranding=1&playsinline=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="width:100%;height:100%;border-radius:12px;"
+        ></iframe>`;
+    }
+}
+
+function closeVideoPlayer() {
+    const overlay = document.getElementById('videoPlayerOverlay');
+    overlay.classList.remove('active');
+    overlay.innerHTML = '';
+    document.getElementById('bottomNav').style.display = 'flex';
+
+    if (videoState.player && typeof videoState.player.destroy === 'function') {
+        videoState.player.destroy();
+        videoState.player = null;
+    }
+
+    renderVideoScreen();
+}
+
+// ==================== QUIZ ====================
+function startVideoQuiz() {
+    videoState.quizStep = 0;
+    videoState.quizAnswers = [];
+    renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+    const v = videoState.currentVideo;
+    const q = v.quiz[videoState.quizStep];
+    const overlay = document.getElementById('videoPlayerOverlay');
+    const progress = ((videoState.quizStep) / v.quiz.length * 100);
+
+    const optsHtml = q.opts.map((opt, i) =>
+        `<button class="vq-opt" onclick="answerVideoQuiz(${i})">${opt}</button>`
+    ).join('');
+
+    overlay.innerHTML = `
+        <div class="vq-container">
+            <div class="vq-header">
+                <button class="vp-back" onclick="renderVideoPlayer()">← Back to Video</button>
+                <div class="vq-progress-text">${videoState.quizStep + 1} / ${v.quiz.length}</div>
+            </div>
+            <div class="vq-progress-bar"><div class="vq-progress-fill" style="width:${progress}%"></div></div>
+            <div class="vq-question">${q.q}</div>
+            <div class="vq-options">${optsHtml}</div>
+        </div>
+    `;
+}
+
+function answerVideoQuiz(idx) {
+    const v = videoState.currentVideo;
+    const q = v.quiz[videoState.quizStep];
+    const correct = idx === q.answer;
+    videoState.quizAnswers.push(correct);
+
+    // Show feedback
+    const opts = document.querySelectorAll('.vq-opt');
+    opts.forEach((o, i) => {
+        o.disabled = true;
+        if (i === q.answer) o.classList.add('correct');
+        if (i === idx && !correct) o.classList.add('wrong');
+    });
+
+    setTimeout(() => {
+        videoState.quizStep++;
+        if (videoState.quizStep < v.quiz.length) {
+            renderQuizQuestion();
+        } else {
+            showVideoQuizResults();
+        }
+    }, 800);
+}
+
+function showVideoQuizResults() {
+    const v = videoState.currentVideo;
+    const correctCount = videoState.quizAnswers.filter(a => a).length;
+    const total = v.quiz.length;
+    const stars = correctCount === total ? 3 : correctCount >= total * 0.66 ? 2 : correctCount >= 1 ? 1 : 0;
+
+    // Save stats
+    const stats = getVideoStats();
+    if (!stats.watched.includes(v.id)) stats.watched.push(v.id);
+    stats.stars[v.id] = Math.max(stats.stars[v.id] || 0, stars);
+    v.vocabulary.forEach(w => {
+        if (!stats.wordsLearned.includes(w.word)) stats.wordsLearned.push(w.word);
+    });
+    stats.totalQuizzes++;
+    saveVideoStats(stats);
+
+    // Update global points
+    const points = stars * 5;
+    if (typeof appState !== 'undefined' && points > 0) {
+        appState.points += points;
+        saveUserData();
+    }
+
+    const overlay = document.getElementById('videoPlayerOverlay');
+    const starsHtml = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+    const emoji = stars === 3 ? '🎉' : stars === 2 ? '👏' : stars === 1 ? '👍' : '💪';
+
+    overlay.innerHTML = `
+        <div class="vq-results">
+            <div class="vq-emoji">${emoji}</div>
+            <div class="vq-stars-big">${starsHtml}</div>
+            <div class="vq-score">${correctCount} / ${total} correct</div>
+            <div class="vq-points">+${points} points</div>
+            <div class="vq-words-earned">📚 ${v.vocabulary.length} words learned!</div>
+            <div class="vq-actions">
+                <button class="vq-btn-retry" onclick="startVideoQuiz()">🔄 Retry</button>
+                <button class="vq-btn-back" onclick="closeVideoPlayer()">📋 Back to Videos</button>
+            </div>
+        </div>
+    `;
+}
+
+// ==================== STATS (localStorage) ====================
+function getVideoStats() {
+    if (typeof appState !== 'undefined' && appState.videoStats) return appState.videoStats;
+    return { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
+}
+
+function saveVideoStats(stats) {
+    if (typeof appState !== 'undefined') {
+        appState.videoStats = stats;
+        saveUserData();
+    }
+}

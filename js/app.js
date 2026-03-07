@@ -529,6 +529,9 @@ function loginUser(username) {
     if (appState.bubblesStats.wins === undefined) appState.bubblesStats.wins = 0;
     if (appState.bubblesStats.difficultyStats === undefined) appState.bubblesStats.difficultyStats = {};
 
+    // Video stats migration
+    if (!appState.videoStats) appState.videoStats = { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
+
     // Pet system migration
     if (appState.petName === undefined) appState.petName = null;
     if (appState.petHunger === undefined) appState.petHunger = appState.lastStudyDate === new Date().toDateString() ? 100 : 50;
@@ -697,6 +700,7 @@ function switchScreen(screenId) {
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'essaysScreen') renderEssays();
     if (screenId === 'profileScreen') renderProfile();
+    if (screenId === 'videoScreen' && typeof renderVideoScreen === 'function') renderVideoScreen();
 }
 
 function navigateToProfile() {

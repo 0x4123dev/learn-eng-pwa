@@ -361,6 +361,9 @@
                     👥 Switch User
                 </button>
             </div>
+
+            <!-- Video Screen -->
+            <div class="screen video-screen" id="videoScreen"></div>
         </div>
 
         <!-- Bottom Navigation -->
@@ -384,6 +387,10 @@
             <button class="nav-item" onclick="showMusicMenu()">
                 <span class="icon">🎵</span>
                 <span>Music</span>
+            </button>
+            <button class="nav-item" onclick="switchToVideoScreen()">
+                <span class="icon">🎬</span>
+                <span>Videos</span>
             </button>
         </nav>
     </div>
@@ -417,6 +424,9 @@
 
     <!-- Word Chant Overlay -->
     <div class="word-chant-overlay" id="wordChantOverlay"></div>
+
+    <!-- Video Player Overlay -->
+    <div class="video-player-overlay" id="videoPlayerOverlay"></div>
 
     <!-- Lesson Complete -->
     <div class="lesson-complete" id="lessonComplete">
@@ -609,5 +619,6 @@
     <script src="js/music.js"></script>
     <script src="js/rhythm-tap.js"></script>
     <script src="js/word-chant.js"></script>
+    <script src="js/videos.js"></script>
 </body>
 </html>
