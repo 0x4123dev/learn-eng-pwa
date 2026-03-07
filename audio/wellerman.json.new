@@ -1,0 +1,269 @@
+{
+  "id": "wellerman",
+  "title": "Wellerman (Sea Shanty)",
+  "artist": "Nathan Evans",
+  "audio": "audio/wellerman.mp3",
+  "duration": 156,
+  "lines": [
+    {
+      "time": 2.6,
+      "en": "There once was a ship that put to sea",
+      "vi": "Ngày xưa có một con tàu ra khơi"
+    },
+    {
+      "time": 3.8,
+      "en": "And the name of that ship was the Billy o' Tea",
+      "vi": "Và tên con tàu ấy là Billy o' Tea"
+    },
+    {
+      "time": 6.9,
+      "en": "The winds blew hard, her bow dipped down",
+      "vi": "Gió thổi mạnh, mũi tàu chúi xuống"
+    },
+    {
+      "time": 8.6,
+      "en": "Blow, me bully boys, blow (Hah!)",
+      "vi": "Thổi đi, các chàng trai, thổi đi (Hah!)"
+    },
+    {
+      "time": 10.5,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 12.5,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 16.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 19.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 20.8,
+      "en": "She had not been two weeks from shore",
+      "vi": "Chưa đầy hai tuần rời bờ"
+    },
+    {
+      "time": 23.9,
+      "en": "When down on her, a right whale bore",
+      "vi": "Một con cá voi lao tới"
+    },
+    {
+      "time": 26.3,
+      "en": "The captain called all hands and swore",
+      "vi": "Thuyền trưởng gọi mọi người và thề"
+    },
+    {
+      "time": 28.7,
+      "en": "He'd take that whale in tow (Hah!)",
+      "vi": "Sẽ kéo con cá voi ấy theo (Hah!)"
+    },
+    {
+      "time": 30.8,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 33.2,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 36.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 39.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 40.7,
+      "en": "Before the boat had hit the water",
+      "vi": "Trước khi thuyền chạm mặt nước"
+    },
+    {
+      "time": 53.9,
+      "en": "The whale's tail came up and caught her",
+      "vi": "Đuôi cá voi vung lên và quật trúng"
+    },
+    {
+      "time": 56.6,
+      "en": "All hands to the side, harpooned and fought her",
+      "vi": "Mọi người xông ra, phóng lao và chiến đấu"
+    },
+    {
+      "time": 58.9,
+      "en": "When she dived down below (Huh!)",
+      "vi": "Khi nó lặn sâu xuống dưới (Huh!)"
+    },
+    {
+      "time": 60.6,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 62.3,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 66.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 69.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 70.7,
+      "en": "No line was cut, no whale was freed",
+      "vi": "Không dây nào đứt, không cá voi nào thoát"
+    },
+    {
+      "time": 73.9,
+      "en": "The Captain's mind was not on greed",
+      "vi": "Thuyền trưởng không vì lòng tham"
+    },
+    {
+      "time": 76.6,
+      "en": "But he belonged to the whaleman's creed",
+      "vi": "Nhưng ông thuộc về tín điều người săn cá voi"
+    },
+    {
+      "time": 79.0,
+      "en": "She took that ship in tow (Huh!)",
+      "vi": "Nó kéo con tàu ấy theo (Huh!)"
+    },
+    {
+      "time": 80.7,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 82.4,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 86.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 89.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 101.2,
+      "en": "For forty days, or even more",
+      "vi": "Suốt bốn mươi ngày hay hơn thế nữa"
+    },
+    {
+      "time": 113.0,
+      "en": "The line went slack, then tight once more",
+      "vi": "Dây chùng rồi lại căng thêm lần nữa"
+    },
+    {
+      "time": 113.5,
+      "en": "All boats were lost, there were only four",
+      "vi": "Mọi thuyền đều mất, chỉ còn bốn chiếc"
+    },
+    {
+      "time": 114.0,
+      "en": "But still that whale did go",
+      "vi": "Nhưng con cá voi vẫn tiến"
+    },
+    {
+      "time": 114.5,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 115.0,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 116.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 119.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 120.2,
+      "en": "As far as I've heard, the fight's still on",
+      "vi": "Theo tôi nghe, trận chiến vẫn tiếp diễn"
+    },
+    {
+      "time": 124.1,
+      "en": "The line's not cut and the whale's not gone",
+      "vi": "Dây chưa đứt, và cá voi chưa đi"
+    },
+    {
+      "time": 126.9,
+      "en": "The Wellerman makes his regular call",
+      "vi": "Wellerman vẫn ghé thăm đều đặn"
+    },
+    {
+      "time": 128.3,
+      "en": "To encourage the Captain, crew, and all",
+      "vi": "Để động viên thuyền trưởng và thủy thủ"
+    },
+    {
+      "time": 131.0,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 132.9,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 136.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 139.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    },
+    {
+      "time": 140.7,
+      "en": "Soon may the Wellerman come",
+      "vi": "Sớm thôi Wellerman sẽ đến"
+    },
+    {
+      "time": 142.3,
+      "en": "To bring us sugar and tea and rum",
+      "vi": "Mang cho ta đường, trà và rượu rum"
+    },
+    {
+      "time": 146.4,
+      "en": "One day, when the tonguin' is done",
+      "vi": "Một ngày, khi công việc xong xuôi"
+    },
+    {
+      "time": 149.3,
+      "en": "We'll take our leave and go",
+      "vi": "Ta sẽ rời đi thôi"
+    }
+  ]
+}

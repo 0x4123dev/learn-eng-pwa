@@ -1,0 +1,174 @@
+{
+  "id": "poison",
+  "title": "Poison",
+  "artist": "Blake Roman (Hazbin Hotel)",
+  "audio": "audio/poison.mp3",
+  "duration": 140,
+  "lines": [
+    {
+      "time": 7.0,
+      "en": "[ANGEL DUST] I'm not above a love to cash in",
+      "vi": "Tôi không ngại một tình yêu để kiếm lợi"
+    },
+    {
+      "time": 8.3,
+      "en": "Another lover underneath those flashin' lights",
+      "vi": "Một người tình khác dưới ánh đèn nhấp nháy"
+    },
+    {
+      "time": 9.8,
+      "en": "Another one of those ruthless nights",
+      "vi": "Thêm một đêm tàn nhẫn nữa"
+    },
+    {
+      "time": 14.5,
+      "en": "Yeah, yeah, yeah",
+      "vi": "Ừ, ừ, ừ"
+    },
+    {
+      "time": 16.8,
+      "en": "I shoulda guessed that this would happen",
+      "vi": "Lẽ ra tôi phải đoán được điều này sẽ xảy ra"
+    },
+    {
+      "time": 21.1,
+      "en": "I shoulda known it when I looked in your red-hot eyes",
+      "vi": "Lẽ ra tôi phải biết khi nhìn vào đôi mắt đỏ rực của anh"
+    },
+    {
+      "time": 25.6,
+      "en": "Spewin' all your red-hot lies",
+      "vi": "Tuôn ra toàn lời dối trá nóng bỏng"
+    },
+    {
+      "time": 27.4,
+      "en": "Yeah, yeah, yeah",
+      "vi": "Ừ, ừ, ừ"
+    },
+    {
+      "time": 29.3,
+      "en": "What's the worst part of this hell?",
+      "vi": "Phần tồi tệ nhất của địa ngục này là gì?"
+    },
+    {
+      "time": 33.3,
+      "en": "I can only blame myself",
+      "vi": "Tôi chỉ có thể tự trách mình"
+    },
+    {
+      "time": 35.1,
+      "en": "'Cause I know you're poison, you're feedin' me poison",
+      "vi": "Vì tôi biết anh là thuốc độc, anh đang đầu độc tôi"
+    },
+    {
+      "time": 39.4,
+      "en": "Addicted to this feelin', I can't help but swallow up your poison",
+      "vi": "Nghiện cảm giác này, tôi không thể không nuốt thuốc độc của anh"
+    },
+    {
+      "time": 44.0,
+      "en": "I made my choice, and every night, I'm livin' like there's no tomorrow",
+      "vi": "Tôi đã chọn, và mỗi đêm, tôi sống như không có ngày mai"
+    },
+    {
+      "time": 47.1,
+      "en": "Oh-oh, oh-oh",
+      "vi": "Oh-oh, oh-oh"
+    },
+    {
+      "time": 50.2,
+      "en": "Any way you want me, baby, that's the way you got me",
+      "vi": "Anh muốn tôi thế nào, cưng, tôi sẽ như thế"
+    },
+    {
+      "time": 53.5,
+      "en": "I'll be yours",
+      "vi": "Tôi sẽ là của anh"
+    },
+    {
+      "time": 56.9,
+      "en": "My story's gonna end with me dead from your poison",
+      "vi": "Câu chuyện của tôi sẽ kết thúc với cái chết từ thuốc độc của anh"
+    },
+    {
+      "time": 62.3,
+      "en": "I got so good at bein' untrue",
+      "vi": "Tôi đã giỏi lắm trong việc giả dối"
+    },
+    {
+      "time": 62.5,
+      "en": "I got so good at tellin' you what you wanna hear",
+      "vi": "Tôi đã giỏi lắm trong việc nói những gì anh muốn nghe"
+    },
+    {
+      "time": 69.9,
+      "en": "I disassociate, disappear",
+      "vi": "Tôi tách rời, biến mất"
+    },
+    {
+      "time": 71.2,
+      "en": "Yeah, yeah, yeah",
+      "vi": "Ừ, ừ, ừ"
+    },
+    {
+      "time": 76.6,
+      "en": "So far beyond difficult to resist another gulp",
+      "vi": "Quá khó để cưỡng lại thêm một ngụm nữa"
+    },
+    {
+      "time": 79.8,
+      "en": "Yeah, I know it's poison, you're feedin' me poison",
+      "vi": "Ừ, tôi biết đó là thuốc độc, anh đang đầu độc tôi"
+    },
+    {
+      "time": 84.6,
+      "en": "I'm chokin' from the taste and I can't help but swallow up your poison",
+      "vi": "Tôi nghẹn vì vị đó và không thể không nuốt thuốc độc của anh"
+    },
+    {
+      "time": 88.9,
+      "en": "I made my choice, and every night, I'm wasted like there's no tomorrow",
+      "vi": "Tôi đã chọn, và mỗi đêm, tôi phí hoài như không có ngày mai"
+    },
+    {
+      "time": 92.0,
+      "en": "Oh-oh, oh-oh",
+      "vi": "Oh-oh, oh-oh"
+    },
+    {
+      "time": 95.0,
+      "en": "Any way you want me, baby, that's the way you got me",
+      "vi": "Anh muốn tôi thế nào, cưng, tôi sẽ như thế"
+    },
+    {
+      "time": 98.3,
+      "en": "I'll be yours",
+      "vi": "Tôi sẽ là của anh"
+    },
+    {
+      "time": 101.7,
+      "en": "My story's gonna end with me dead from your poison",
+      "vi": "Câu chuyện của tôi sẽ kết thúc với cái chết từ thuốc độc của anh"
+    },
+    {
+      "time": 106.9,
+      "en": "Poison, I'm drownin' in poison",
+      "vi": "Thuốc độc, tôi đang chìm trong thuốc độc"
+    },
+    {
+      "time": 110.1,
+      "en": "I'm fillin' up my glass, but it's always hollow",
+      "vi": "Tôi rót đầy ly, nhưng nó luôn trống rỗng"
+    },
+    {
+      "time": 113.5,
+      "en": "Full of poison, I'm sick of the poison",
+      "vi": "Đầy thuốc độc, tôi chán ngấy thuốc độc"
+    },
+    {
+      "time": 117.3,
+      "en": "Wish I had somethin' to live for tomorrow",
+      "vi": "Ước gì tôi có điều gì đó để sống cho ngày mai"
+    }
+  ]
+}
