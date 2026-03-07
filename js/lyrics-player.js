@@ -219,7 +219,7 @@ const LyricsPlayer = (function() {
         });
     }
 
-    function close() {
+    function close(returnToMusic) {
         if (_audio) {
             _audio.pause();
             _audio.removeEventListener('timeupdate', onTimeUpdate);
@@ -234,7 +234,12 @@ const LyricsPlayer = (function() {
         const overlay = document.getElementById('lyricsPlayerOverlay');
         overlay.classList.remove('active');
         overlay.innerHTML = '';
-        document.getElementById('bottomNav').style.display = 'flex';
+
+        if (returnToMusic !== false && typeof showMusicMenu === 'function') {
+            showMusicMenu();
+        } else {
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
     }
 
     function formatTime(s) {
@@ -451,7 +456,7 @@ const LyricsPlayer = (function() {
                     Timestamps saved to your device.<br>
                     Songs will use your calibrated timing now.
                 </div>
-                <button onclick="LyricsPlayer.closeCalibrate(); LyricsPlayer.openPlayer('${data.id}');" style="
+                <button onclick="LyricsPlayer.closeAndPlay('${data.id}');" style="
                     width:100%;padding:14px;border-radius:12px;border:none;
                     background:linear-gradient(135deg,#667eea,#764ba2);
                     color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
@@ -469,6 +474,15 @@ const LyricsPlayer = (function() {
 
     function applyCal() {
         // No longer needed — auto-saved in finishCalibrate
+    }
+
+    function closeAndPlay(songId) {
+        // Close calibrate without returning to music menu, then open player
+        _calActive = false;
+        _calTimestamps = [];
+        _calLineIdx = 0;
+        close(false);
+        openPlayer(songId);
     }
 
     function closeCalibrate() {
@@ -628,6 +642,7 @@ const LyricsPlayer = (function() {
         calTap,
         calUndo,
         applyCal,
+        closeAndPlay,
         openExport,
         closeExport,
         _copyExport,
