@@ -410,7 +410,11 @@ const LyricsPlayer = (function() {
     }
 
     function calUndo() {
-        if (_calTimestamps.length === 0) return;
+        if (_calTimestamps.length === 0) {
+            // Already at beginning — seek to start of song
+            if (_audio) _audio.currentTime = 0;
+            return;
+        }
         var removedTime = _calTimestamps.pop();
         _calLineIdx = _calTimestamps.length;
         // Seek audio back to 2s before the removed timestamp so you can re-hear it
