@@ -504,7 +504,7 @@
             display: flex;
             background: white;
             border-top: none;
-            padding-bottom: calc(var(--safe-area-bottom) * 0.6);
+            padding-bottom: 0;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             border-radius: 20px 20px 0 0;
             position: fixed;
