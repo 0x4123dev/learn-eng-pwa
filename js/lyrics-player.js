@@ -247,6 +247,208 @@ const LyricsPlayer = (function() {
         return { time: _audio ? _audio.currentTime : 0, line: _currentLineIdx };
     }
 
+    // --- Calibration Mode ---
+    // Play song + tap to mark when each line starts singing
+    let _calLineIdx = 0;
+    let _calTimestamps = [];
+    let _calActive = false;
+
+    function openCalibrate(songId) {
+        const overlay = document.getElementById('lyricsPlayerOverlay');
+        overlay.classList.add('active');
+        document.getElementById('bottomNav').style.display = 'none';
+
+        overlay.innerHTML = `
+            <div class="lp-container">
+                <div class="lp-header">
+                    <button class="lp-back-btn" onclick="LyricsPlayer.closeCalibrate()">✕</button>
+                    <div class="lp-song-info">
+                        <div class="lp-song-title">⏱ Calibrate Mode</div>
+                        <div class="lp-song-artist">Loading...</div>
+                    </div>
+                    <div style="width:36px"></div>
+                </div>
+                <div class="lp-lyrics-area" id="lpLyricsArea">
+                    <div class="lp-loading">Loading song...</div>
+                </div>
+                <div class="lp-controls" id="lpControls"></div>
+            </div>
+        `;
+
+        loadSong(songId).then(data => {
+            if (!data) return;
+            renderCalibrate(data);
+        });
+    }
+
+    function renderCalibrate(data) {
+        const overlay = document.getElementById('lyricsPlayerOverlay');
+        overlay.querySelector('.lp-song-artist').textContent = data.title;
+
+        _audio = new Audio(data.audio);
+        _audio.preload = 'auto';
+        _calLineIdx = 0;
+        _calTimestamps = [];
+        _calActive = true;
+        _isPlaying = false;
+
+        const area = document.getElementById('lpLyricsArea');
+        area.innerHTML = `
+            <div style="padding:16px;text-align:center;">
+                <div style="font-size:14px;color:#aaa;margin-bottom:12px;">
+                    1️⃣ Press ▶ to play<br>
+                    2️⃣ Tap the big button when each line starts singing<br>
+                    3️⃣ Timestamps auto-saved when done
+                </div>
+                <div id="calCurrentLine" style="font-size:20px;font-weight:bold;color:#fff;min-height:60px;margin:16px 0;line-height:1.4;"></div>
+                <div id="calNextLine" style="font-size:14px;color:#888;min-height:40px;margin-bottom:8px;"></div>
+                <div id="calProgress" style="font-size:13px;color:#aaa;margin-bottom:16px;"></div>
+                <div id="calTimeDisplay" style="font-size:24px;font-weight:bold;color:#7c4dff;margin-bottom:16px;font-family:monospace;">0:00.0</div>
+            </div>
+        `;
+
+        updateCalDisplay(data);
+
+        const controls = document.getElementById('lpControls');
+        controls.innerHTML = `
+            <div class="lp-buttons" style="flex-direction:column;gap:12px;">
+                <button class="lp-btn lp-btn-play" id="lpPlayBtn" onclick="LyricsPlayer.togglePlay()" style="width:56px;height:56px;">
+                    <svg id="lpPlayIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                    <svg id="lpPauseIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </button>
+                <button id="calTapBtn" onclick="LyricsPlayer.calTap()" style="
+                    width:100%;height:80px;border-radius:16px;border:none;
+                    background:linear-gradient(135deg,#667eea,#764ba2);
+                    color:#fff;font-size:18px;font-weight:bold;cursor:pointer;
+                    box-shadow:0 4px 15px rgba(118,75,162,0.4);
+                    transition:transform 0.1s;
+                ">
+                    👆 TAP when line starts
+                </button>
+                <button onclick="LyricsPlayer.calUndo()" style="
+                    background:none;border:1px solid #555;color:#aaa;
+                    padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;
+                ">↩ Undo last tap</button>
+            </div>
+        `;
+
+        // Update time display continuously
+        _audio.addEventListener('timeupdate', function() {
+            var td = document.getElementById('calTimeDisplay');
+            if (td && _audio) {
+                var t = _audio.currentTime;
+                var m = Math.floor(t / 60);
+                var s = (t % 60).toFixed(1);
+                td.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+            }
+        });
+        _audio.addEventListener('ended', onEnded);
+    }
+
+    function updateCalDisplay(data) {
+        if (!data) data = _songData;
+        var curr = document.getElementById('calCurrentLine');
+        var next = document.getElementById('calNextLine');
+        var prog = document.getElementById('calProgress');
+        if (!curr) return;
+
+        if (_calLineIdx < data.lines.length) {
+            curr.textContent = data.lines[_calLineIdx].en;
+            next.textContent = (_calLineIdx + 1 < data.lines.length)
+                ? '▸ Next: ' + data.lines[_calLineIdx + 1].en
+                : '(last line)';
+            prog.textContent = 'Line ' + (_calLineIdx + 1) + ' of ' + data.lines.length;
+        } else {
+            curr.textContent = '✅ Done!';
+            next.textContent = '';
+            prog.textContent = 'All ' + data.lines.length + ' lines timed';
+            finishCalibrate(data);
+        }
+    }
+
+    function calTap() {
+        if (!_audio || !_calActive || !_songData) return;
+        if (_calLineIdx >= _songData.lines.length) return;
+
+        var t = parseFloat(_audio.currentTime.toFixed(1));
+        _calTimestamps.push(t);
+        _calLineIdx++;
+
+        // Flash feedback
+        var btn = document.getElementById('calTapBtn');
+        if (btn) {
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(function() { btn.style.transform = ''; }, 100);
+        }
+
+        updateCalDisplay(_songData);
+    }
+
+    function calUndo() {
+        if (_calTimestamps.length === 0) return;
+        _calTimestamps.pop();
+        _calLineIdx = _calTimestamps.length;
+        updateCalDisplay(_songData);
+    }
+
+    function finishCalibrate(data) {
+        // Apply timestamps to song data
+        var newLines = data.lines.map(function(line, i) {
+            return {
+                time: _calTimestamps[i] || line.time,
+                en: line.en,
+                vi: line.vi
+            };
+        });
+
+        // Show result + auto-save button
+        var area = document.getElementById('lpLyricsArea');
+        var jsonStr = JSON.stringify({ id: data.id, title: data.title, artist: data.artist, audio: data.audio, duration: Math.ceil(_audio.duration || data.duration), lines: newLines }, null, 2);
+
+        area.innerHTML = `
+            <div style="padding:16px;">
+                <div style="font-size:16px;font-weight:bold;color:#4caf50;margin-bottom:12px;">✅ Calibration Complete!</div>
+                <div style="font-size:13px;color:#aaa;margin-bottom:12px;">Timestamps recorded for all ${data.lines.length} lines.</div>
+                <button onclick="LyricsPlayer.applyCal()" style="
+                    width:100%;padding:14px;border-radius:12px;border:none;
+                    background:linear-gradient(135deg,#4caf50,#2e7d32);
+                    color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
+                    margin-bottom:12px;
+                ">💾 Apply & Save</button>
+                <div style="font-size:11px;color:#666;margin-bottom:8px;">JSON output (for manual copy):</div>
+                <textarea id="calJsonOutput" readonly style="
+                    width:100%;height:200px;background:#1a1a2e;color:#aaa;
+                    border:1px solid #333;border-radius:8px;padding:8px;
+                    font-size:11px;font-family:monospace;resize:vertical;
+                ">${escapeHtml(jsonStr)}</textarea>
+            </div>
+        `;
+
+        // Store for apply
+        window._calNewData = { id: data.id, lines: newLines, duration: Math.ceil(_audio.duration || data.duration) };
+
+        if (_audio) { _audio.pause(); _isPlaying = false; }
+    }
+
+    function applyCal() {
+        if (!window._calNewData) return;
+        var d = window._calNewData;
+        // Save via fetch to local file (won't work for static hosting, so copy JSON instead)
+        var ta = document.getElementById('calJsonOutput');
+        if (ta) {
+            ta.select();
+            try { document.execCommand('copy'); } catch(e) {}
+        }
+        alert('JSON copied to clipboard!\\nPaste it into audio/' + d.id + '.json to save.\\n\\nOr share the JSON output with Claude to update the file.');
+    }
+
+    function closeCalibrate() {
+        _calActive = false;
+        _calTimestamps = [];
+        _calLineIdx = 0;
+        close();
+    }
+
     return {
         openPlayer,
         close,
@@ -256,6 +458,11 @@ const LyricsPlayer = (function() {
         restart,
         toggleLang,
         getDebugInfo,
+        openCalibrate,
+        closeCalibrate,
+        calTap,
+        calUndo,
+        applyCal,
         SONGS
     };
 })();
