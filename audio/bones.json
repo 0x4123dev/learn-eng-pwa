@@ -1,0 +1,269 @@
+{
+  "id": "bones",
+  "title": "Bones",
+  "artist": "Unknown",
+  "audio": "audio/bones.mp3",
+  "duration": 120,
+  "lines": [
+    {
+      "time": 4.1,
+      "en": "Gimme, gimme, gimme some time to think",
+      "vi": "Cho tôi, cho tôi, cho tôi chút thời gian để suy nghĩ"
+    },
+    {
+      "time": 5.1,
+      "en": "I'm in the bathroom looking at me",
+      "vi": "Tôi đang đứng trong phòng tắm nhìn lại chính mình"
+    },
+    {
+      "time": 6.9,
+      "en": "Face in the mirror is all I need",
+      "vi": "Khuôn mặt trong gương là tất cả những gì tôi cần"
+    },
+    {
+      "time": 9.7,
+      "en": "(Ooh)",
+      "vi": "(Ồh)"
+    },
+    {
+      "time": 12.5,
+      "en": "Wait until the reaper takes my life",
+      "vi": "Chờ đợi đến khi thần chết đến lấy đi cuộc đời tôi"
+    },
+    {
+      "time": 13.2,
+      "en": "Never gonna get me out alive",
+      "vi": "Sẽ chẳng bao giờ thoát ra được còn sống"
+    },
+    {
+      "time": 15.6,
+      "en": "I will live a thousand million lives",
+      "vi": "Tôi sẽ sống qua ngàn triệu kiếp người"
+    },
+    {
+      "time": 16.4,
+      "en": "(Ooh)",
+      "vi": "(Ồh)"
+    },
+    {
+      "time": 17.2,
+      "en": "My patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 17.3,
+      "en": "Our patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của chúng ta đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 26.5,
+      "en": "I got this feeling, yeah, you know",
+      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+    },
+    {
+      "time": 31.1,
+      "en": "Where I'm losing all control",
+      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+    },
+    {
+      "time": 33.6,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    },
+    {
+      "time": 35.1,
+      "en": "I got this feeling in my soul",
+      "vi": "Tôi có cảm giác này trong tâm hồn mình"
+    },
+    {
+      "time": 39.9,
+      "en": "Go ahead and throw your stones",
+      "vi": "Cứ tự nhiên mà ném đá đi"
+    },
+    {
+      "time": 42.4,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    },
+    {
+      "time": 44.4,
+      "en": "Playing with a stick of dynamite",
+      "vi": "Chơi đùa với một thanh thuốc nổ"
+    },
+    {
+      "time": 46.9,
+      "en": "There was never gray in black and whitе",
+      "vi": "Không bao giờ có màu xám giữa trắng và đen"
+    },
+    {
+      "time": 49.0,
+      "en": "There was never wrong till there was right",
+      "vi": "Không bao giờ có sai trái cho đến khi có điều đúng đắn"
+    },
+    {
+      "time": 51.8,
+      "en": "(Ooh)",
+      "vi": "(Ồh)"
+    },
+    {
+      "time": 54.5,
+      "en": "Feeling like a boulder hurtling",
+      "vi": "Cảm giác như một tảng đá đang lao nhanh"
+    },
+    {
+      "time": 55.3,
+      "en": "Seeing all the vultures circling",
+      "vi": "Nhìn thấy những con kền kền đang vòng vòng"
+    },
+    {
+      "time": 57.2,
+      "en": "Burning in the flames, I'm working in",
+      "vi": "Cháy trong ngọn lửa, tôi vẫn đang làm việc trong đó"
+    },
+    {
+      "time": 59.1,
+      "en": "Turning in a bed, that's darkening",
+      "vi": "Trằn trọc trên chiếc giường đang tối dần"
+    },
+    {
+      "time": 61.0,
+      "en": "My patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 61.5,
+      "en": "Our patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của chúng ta đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 68.6,
+      "en": "I got this feeling, yeah, you know",
+      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+    },
+    {
+      "time": 73.6,
+      "en": "Where I'm losing all control",
+      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+    },
+    {
+      "time": 75.7,
+      "en": "'Cause there's magic in my bones (in my bones)",
+      "vi": "Vì có phép màu trong xương của tôi (trong xương tôi)"
+    },
+    {
+      "time": 77.3,
+      "en": "I got this feeling in my soul",
+      "vi": "Tôi có cảm giác này trong tâm hồn mình"
+    },
+    {
+      "time": 81.5,
+      "en": "Go ahead and throw your stones",
+      "vi": "Cứ tự nhiên mà ném đá đi"
+    },
+    {
+      "time": 84.6,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    },
+    {
+      "time": 84.9,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    },
+    {
+      "time": 88.0,
+      "en": "Look in the mirror of my mind",
+      "vi": "Nhìn vào tấm gương trong tâm trí tôi"
+    },
+    {
+      "time": 96.5,
+      "en": "Turning the pages of my life",
+      "vi": "Lật từng trang trong cuốn sách cuộc đời tôi"
+    },
+    {
+      "time": 99.0,
+      "en": "Walking the path so many paced a million times",
+      "vi": "Bước đi trên con đường mà hàng triệu người đã đi qua"
+    },
+    {
+      "time": 101.9,
+      "en": "Drown out the voices in the air",
+      "vi": "Nhấn chìm những giọng nói vang lên trong không khí"
+    },
+    {
+      "time": 105.2,
+      "en": "Leaving the ones that never cared",
+      "vi": "Rời bỏ những người chưa bao giờ quan tâm"
+    },
+    {
+      "time": 108.9,
+      "en": "Picking the pieces up and building to the sky",
+      "vi": "Nhặt nhạnh từng mảnh vỡ và xây dựng lên tận bầu trời"
+    },
+    {
+      "time": 109.9,
+      "en": "My patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 110.4,
+      "en": "My patience is waning, is this entertaining?",
+      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+    },
+    {
+      "time": 119.1,
+      "en": "I got this feeling, yeah, you know",
+      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+    },
+    {
+      "time": 123.7,
+      "en": "Where I'm losing all control",
+      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+    },
+    {
+      "time": 126.3,
+      "en": "'Cause there's magic in my bones (magic in my bones)",
+      "vi": "Vì có phép màu trong xương của tôi (phép màu trong xương tôi)"
+    },
+    {
+      "time": 127.7,
+      "en": "I got this feeling in my soul (soul)",
+      "vi": "Tôi có cảm giác này trong tâm hồn mình (tâm hồn)"
+    },
+    {
+      "time": 131.4,
+      "en": "Go ahead and throw your stones",
+      "vi": "Cứ tự nhiên mà ném đá đi"
+    },
+    {
+      "time": 134.9,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    },
+    {
+      "time": 135.0,
+      "en": "There goes my mind, (I) don't mind",
+      "vi": "Tâm trí tôi đi rồi, (tôi) không sao"
+    },
+    {
+      "time": 135.1,
+      "en": "There goes my mind (there it goes, there it goes)",
+      "vi": "Tâm trí tôi đi rồi (nó đi rồi, nó đi rồi)"
+    },
+    {
+      "time": 135.2,
+      "en": "There goes my mind, (I) don't mind",
+      "vi": "Tâm trí tôi đi rồi, (tôi) không sao"
+    },
+    {
+      "time": 135.7,
+      "en": "There goes my mind (there it goes)",
+      "vi": "Tâm trí tôi đi rồi (nó đi rồi)"
+    },
+    {
+      "time": 136.2,
+      "en": "'Cause there's magic in my bones",
+      "vi": "Vì có phép màu trong xương của tôi"
+    }
+  ]
+}

@@ -14,7 +14,15 @@ const LyricsPlayer = (function() {
         { id: 'lust', file: 'audio/lust.json' },
         { id: 'bad-with-us', file: 'audio/bad-with-us.json' },
         { id: 'hazbin-guarantee', file: 'audio/hazbin-guarantee.json' },
-        { id: 'poison', file: 'audio/poison.json' }
+        { id: 'poison', file: 'audio/poison.json' },
+        { id: 'demons', file: 'audio/demons.json' },
+        { id: 'sold-out', file: 'audio/sold-out.json' },
+        { id: 'bones', file: 'audio/bones.json' },
+        { id: 'thunder', file: 'audio/thunder.json' },
+        { id: 'believer', file: 'audio/believer.json' },
+        { id: 'warriors', file: 'audio/warriors.json' },
+        { id: 'thankful', file: 'audio/thankful.json' },
+        { id: 'i-dont-care', file: 'audio/i-dont-care.json' }
     ];
 
     async function loadSong(songId) {

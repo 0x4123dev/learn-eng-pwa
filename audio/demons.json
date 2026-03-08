@@ -1,0 +1,329 @@
+{
+  "id": "demons",
+  "title": "Demons",
+  "artist": "Unknown",
+  "audio": "audio/demons.mp3",
+  "duration": 120,
+  "lines": [
+    {
+      "time": 11.4,
+      "en": "When the days are cold",
+      "vi": "Khi những ngày trở nên lạnh giá"
+    },
+    {
+      "time": 12.5,
+      "en": "And the cards all fold",
+      "vi": "Và những lá bài lần lượt sụp đổ"
+    },
+    {
+      "time": 14.9,
+      "en": "And the saints we see",
+      "vi": "Và những vị thánh ta trông thấy"
+    },
+    {
+      "time": 17.7,
+      "en": "Are all made of gold",
+      "vi": "Đều chỉ là vàng giả bọc ngoài"
+    },
+    {
+      "time": 19.6,
+      "en": "When your dreams all fail",
+      "vi": "Khi những giấc mơ tan vỡ hết"
+    },
+    {
+      "time": 22.6,
+      "en": "And the ones we hail",
+      "vi": "Và những kẻ ta tôn thờ"
+    },
+    {
+      "time": 25.7,
+      "en": "Are the worst of all",
+      "vi": "Lại là những kẻ tệ nhất"
+    },
+    {
+      "time": 28.3,
+      "en": "And the blood's run stale",
+      "vi": "Và dòng máu đã cạn khô"
+    },
+    {
+      "time": 30.0,
+      "en": "I wanna hide the truth",
+      "vi": "Tôi muốn che giấu sự thật"
+    },
+    {
+      "time": 35.2,
+      "en": "I wanna shelter you",
+      "vi": "Tôi muốn che chở cho em"
+    },
+    {
+      "time": 36.9,
+      "en": "But with the beast inside",
+      "vi": "Nhưng với quỷ dữ ẩn trong lòng"
+    },
+    {
+      "time": 40.1,
+      "en": "There's nowhere we can hide",
+      "vi": "Không nơi nào ta có thể trốn thoát"
+    },
+    {
+      "time": 41.9,
+      "en": "No matter what we breed",
+      "vi": "Dù ta sinh ra từ đâu"
+    },
+    {
+      "time": 45.5,
+      "en": "We still are made of greed",
+      "vi": "Ta vẫn mang trong mình lòng tham"
+    },
+    {
+      "time": 48.6,
+      "en": "This is my kingdom come",
+      "vi": "Đây là vương quốc của tôi"
+    },
+    {
+      "time": 49.0,
+      "en": "This is my kingdom come",
+      "vi": "Đây là vương quốc của tôi"
+    },
+    {
+      "time": 52.6,
+      "en": "When you feel my heat",
+      "vi": "Khi em cảm nhận được sức nóng từ tôi"
+    },
+    {
+      "time": 55.3,
+      "en": "Look into my eyes",
+      "vi": "Hãy nhìn vào đôi mắt này"
+    },
+    {
+      "time": 58.2,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 59.0,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 64.0,
+      "en": "Don't get too close",
+      "vi": "Đừng đến quá gần"
+    },
+    {
+      "time": 66.9,
+      "en": "It's dark inside",
+      "vi": "Bên trong là bóng tối"
+    },
+    {
+      "time": 68.2,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 68.7,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 87.6,
+      "en": "At the curtain's call",
+      "vi": "Khi màn nhung khép lại"
+    },
+    {
+      "time": 88.1,
+      "en": "It's the last of all",
+      "vi": "Đây là lần cuối cùng"
+    },
+    {
+      "time": 88.6,
+      "en": "When the lights fade out",
+      "vi": "Khi ánh đèn tắt dần"
+    },
+    {
+      "time": 89.1,
+      "en": "All the sinners crawl",
+      "vi": "Những kẻ tội lỗi bò ra"
+    },
+    {
+      "time": 89.6,
+      "en": "So they dug your grave",
+      "vi": "Họ đã đào sẵn huyệt mộ cho ngươi"
+    },
+    {
+      "time": 94.3,
+      "en": "And the masquerade",
+      "vi": "Và màn kịch giả tạo"
+    },
+    {
+      "time": 113.3,
+      "en": "Will come calling out",
+      "vi": "Sẽ đến gõ cửa"
+    },
+    {
+      "time": 113.8,
+      "en": "At the mess you made",
+      "vi": "Trước mớ hỗn độn ngươi đã gây ra"
+    },
+    {
+      "time": 114.3,
+      "en": "Don't wanna let you down",
+      "vi": "Tôi không muốn làm em thất vọng"
+    },
+    {
+      "time": 114.8,
+      "en": "But I am hell bound",
+      "vi": "Nhưng tôi đang bị địa ngục trói buộc"
+    },
+    {
+      "time": 117.3,
+      "en": "Though this is all for you",
+      "vi": "Dù tất cả điều này là vì em"
+    },
+    {
+      "time": 128.1,
+      "en": "Don't wanna hide the truth",
+      "vi": "Tôi không muốn che giấu sự thật"
+    },
+    {
+      "time": 132.0,
+      "en": "No matter what we breed",
+      "vi": "Dù ta sinh ra từ đâu"
+    },
+    {
+      "time": 135.8,
+      "en": "We still are made of greed",
+      "vi": "Ta vẫn mang trong mình lòng tham"
+    },
+    {
+      "time": 139.7,
+      "en": "This is my kingdom come",
+      "vi": "Đây là vương quốc của tôi"
+    },
+    {
+      "time": 143.6,
+      "en": "This is my kingdom come",
+      "vi": "Đây là vương quốc của tôi"
+    },
+    {
+      "time": 147.4,
+      "en": "When you feel my heat",
+      "vi": "Khi em cảm nhận được sức nóng từ tôi"
+    },
+    {
+      "time": 150.0,
+      "en": "Look into my eyes",
+      "vi": "Hãy nhìn vào đôi mắt này"
+    },
+    {
+      "time": 150.5,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 164.0,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 170.7,
+      "en": "Don't get too close",
+      "vi": "Đừng đến quá gần"
+    },
+    {
+      "time": 173.6,
+      "en": "It's dark inside",
+      "vi": "Bên trong là bóng tối"
+    },
+    {
+      "time": 174.1,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 174.6,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 175.1,
+      "en": "They say it's what you make",
+      "vi": "Người ta bảo mọi thứ do ta tạo ra"
+    },
+    {
+      "time": 177.1,
+      "en": "I say it's up to fate",
+      "vi": "Tôi thì tin vào số phận"
+    },
+    {
+      "time": 181.4,
+      "en": "It's woven in my soul",
+      "vi": "Nó đã được dệt vào linh hồn tôi"
+    },
+    {
+      "time": 184.5,
+      "en": "I need to let you go",
+      "vi": "Tôi cần phải buông em ra"
+    },
+    {
+      "time": 187.6,
+      "en": "Your eyes, they shine so bright",
+      "vi": "Đôi mắt em sáng ngời rạng rỡ"
+    },
+    {
+      "time": 190.7,
+      "en": "I wanna save that light",
+      "vi": "Tôi muốn gìn giữ ánh sáng ấy"
+    },
+    {
+      "time": 193.8,
+      "en": "I can't escape this now",
+      "vi": "Tôi không thể thoát khỏi điều này"
+    },
+    {
+      "time": 197.2,
+      "en": "Unless you show me how",
+      "vi": "Trừ khi em chỉ cho tôi cách"
+    },
+    {
+      "time": 200.7,
+      "en": "When you feel my heat",
+      "vi": "Khi em cảm nhận được sức nóng từ tôi"
+    },
+    {
+      "time": 205.9,
+      "en": "Look into my eyes",
+      "vi": "Hãy nhìn vào đôi mắt này"
+    },
+    {
+      "time": 206.4,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 206.9,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 207.4,
+      "en": "Don't get too close",
+      "vi": "Đừng đến quá gần"
+    },
+    {
+      "time": 207.9,
+      "en": "It's dark inside",
+      "vi": "Bên trong là bóng tối"
+    },
+    {
+      "time": 208.4,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    },
+    {
+      "time": 208.9,
+      "en": "It's where my demons hide",
+      "vi": "Đó là nơi những ác quỷ ẩn náu"
+    }
+  ]
+}
