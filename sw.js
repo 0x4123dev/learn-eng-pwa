@@ -1,4 +1,3 @@
-
 const CACHE_NAME = 'flashlingo-v35';
 const ASSETS = [
   '/',
