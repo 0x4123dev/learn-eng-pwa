@@ -6,29 +6,24 @@
   "duration": 120,
   "lines": [
     {
-      "time": 4.1,
+      "time": 4.0,
       "en": "Gimme, gimme, gimme some time to think",
-      "vi": "Cho tôi, cho tôi, cho tôi chút thời gian để suy nghĩ"
+      "vi": "Cho tôi, cho tôi, cho tôi chút thời gian suy nghĩ"
     },
     {
       "time": 5.1,
-      "en": "I'm in the bathroom looking at me",
-      "vi": "Tôi đang đứng trong phòng tắm nhìn lại chính mình"
+      "en": "I'm in the bathroom, looking at me",
+      "vi": "Tôi đứng trong phòng tắm, nhìn lại chính mình"
     },
     {
       "time": 6.9,
-      "en": "Face in the mirror is all I need",
-      "vi": "Khuôn mặt trong gương là tất cả những gì tôi cần"
+      "en": "Face in the mirror is all I need (ooh)",
+      "vi": "Khuôn mặt trong gương là tất cả những gì tôi cần (ooh)"
     },
     {
-      "time": 9.7,
-      "en": "(Ooh)",
-      "vi": "(Ồh)"
-    },
-    {
-      "time": 12.5,
+      "time": 10.1,
       "en": "Wait until the reaper takes my life",
-      "vi": "Chờ đợi đến khi thần chết đến lấy đi cuộc đời tôi"
+      "vi": "Chờ đến khi tử thần đến lấy đi mạng sống tôi"
     },
     {
       "time": 13.2,
@@ -37,38 +32,33 @@
     },
     {
       "time": 15.6,
-      "en": "I will live a thousand million lives",
-      "vi": "Tôi sẽ sống qua ngàn triệu kiếp người"
-    },
-    {
-      "time": 16.4,
-      "en": "(Ooh)",
-      "vi": "(Ồh)"
+      "en": "I will live a thousand million lives (ooh)",
+      "vi": "Tôi sẽ sống qua ngàn triệu cuộc đời (ooh)"
     },
     {
       "time": 17.2,
       "en": "My patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của tôi đang cạn, liệu đây có thú vị không?"
     },
     {
       "time": 17.3,
       "en": "Our patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của chúng ta đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của chúng ta đang cạn, liệu đây có thú vị không?"
     },
     {
       "time": 26.5,
       "en": "I got this feeling, yeah, you know",
-      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+      "vi": "Tôi có cảm giác này, ừ, bạn biết đó"
     },
     {
       "time": 31.1,
       "en": "Where I'm losing all control",
-      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+      "vi": "Nơi tôi đang mất đi mọi kiểm soát"
     },
     {
       "time": 33.6,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     },
     {
       "time": 35.1,
@@ -78,12 +68,12 @@
     {
       "time": 39.9,
       "en": "Go ahead and throw your stones",
-      "vi": "Cứ tự nhiên mà ném đá đi"
+      "vi": "Cứ việc ném đá vào tôi đi"
     },
     {
       "time": 42.4,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     },
     {
       "time": 44.4,
@@ -92,63 +82,58 @@
     },
     {
       "time": 46.9,
-      "en": "There was never gray in black and whitе",
-      "vi": "Không bao giờ có màu xám giữa trắng và đen"
+      "en": "There was never gray in black and white",
+      "vi": "Chẳng bao giờ có màu xám giữa đen và trắng"
     },
     {
       "time": 49.0,
-      "en": "There was never wrong till there was right",
-      "vi": "Không bao giờ có sai trái cho đến khi có điều đúng đắn"
+      "en": "There was never wrong 'til there was right (ooh, ah-ooh)",
+      "vi": "Chẳng bao giờ có sai lầm cho đến khi có điều đúng (ooh, ah-ooh)"
     },
     {
-      "time": 51.8,
-      "en": "(Ooh)",
-      "vi": "(Ồh)"
-    },
-    {
-      "time": 54.5,
+      "time": 55.2,
       "en": "Feeling like a boulder hurtling",
-      "vi": "Cảm giác như một tảng đá đang lao nhanh"
+      "vi": "Cảm giác như tảng đá đang lao xuống"
     },
     {
-      "time": 55.3,
+      "time": 55.7,
       "en": "Seeing all the vultures circling",
-      "vi": "Nhìn thấy những con kền kền đang vòng vòng"
+      "vi": "Nhìn thấy những con kền kền đang bay lượn quanh đây"
     },
     {
-      "time": 57.2,
-      "en": "Burning in the flames, I'm working in",
-      "vi": "Cháy trong ngọn lửa, tôi vẫn đang làm việc trong đó"
+      "time": 60.0,
+      "en": "Burning in the flames I'm working in",
+      "vi": "Cháy trong ngọn lửa mà tôi đang vùi đầu làm việc"
     },
     {
-      "time": 59.1,
-      "en": "Turning in a bed, that's darkening",
-      "vi": "Trằn trọc trên chiếc giường đang tối dần"
+      "time": 61.6,
+      "en": "Turning in a bed that's darkening",
+      "vi": "Trằn trọc trên chiếc giường ngày càng tối tăm"
     },
     {
-      "time": 61.0,
+      "time": 61.7,
       "en": "My patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của tôi đang cạn, liệu đây có thú vị không?"
     },
     {
-      "time": 61.5,
+      "time": 61.8,
       "en": "Our patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của chúng ta đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của chúng ta đang cạn, liệu đây có thú vị không?"
     },
     {
       "time": 68.6,
       "en": "I got this feeling, yeah, you know",
-      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+      "vi": "Tôi có cảm giác này, ừ, bạn biết đó"
     },
     {
       "time": 73.6,
       "en": "Where I'm losing all control",
-      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+      "vi": "Nơi tôi đang mất đi mọi kiểm soát"
     },
     {
       "time": 75.7,
       "en": "'Cause there's magic in my bones (in my bones)",
-      "vi": "Vì có phép màu trong xương của tôi (trong xương tôi)"
+      "vi": "Vì có phép màu trong xương tôi (trong xương tôi)"
     },
     {
       "time": 77.3,
@@ -156,74 +141,74 @@
       "vi": "Tôi có cảm giác này trong tâm hồn mình"
     },
     {
-      "time": 81.5,
+      "time": 82.0,
       "en": "Go ahead and throw your stones",
-      "vi": "Cứ tự nhiên mà ném đá đi"
+      "vi": "Cứ việc ném đá vào tôi đi"
     },
     {
       "time": 84.6,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     },
     {
       "time": 84.9,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     },
     {
-      "time": 88.0,
+      "time": 86.9,
       "en": "Look in the mirror of my mind",
       "vi": "Nhìn vào tấm gương trong tâm trí tôi"
     },
     {
-      "time": 96.5,
+      "time": 87.2,
       "en": "Turning the pages of my life",
       "vi": "Lật từng trang trong cuốn sách cuộc đời tôi"
     },
     {
-      "time": 99.0,
+      "time": 101.3,
       "en": "Walking the path so many paced a million times",
-      "vi": "Bước đi trên con đường mà hàng triệu người đã đi qua"
+      "vi": "Bước đi trên con đường mà triệu người đã từng đi qua"
     },
     {
-      "time": 101.9,
+      "time": 101.6,
       "en": "Drown out the voices in the air",
-      "vi": "Nhấn chìm những giọng nói vang lên trong không khí"
+      "vi": "Nhấn chìm những giọng nói vang lên trong không trung"
     },
     {
       "time": 105.2,
       "en": "Leaving the ones that never cared",
-      "vi": "Rời bỏ những người chưa bao giờ quan tâm"
+      "vi": "Rời bỏ những kẻ chưa bao giờ quan tâm"
     },
     {
-      "time": 108.9,
+      "time": 108.8,
       "en": "Picking the pieces up and building to the sky",
-      "vi": "Nhặt nhạnh từng mảnh vỡ và xây dựng lên tận bầu trời"
+      "vi": "Nhặt nhạnh từng mảnh vỡ và xây dựng lên tận trời cao"
     },
     {
       "time": 109.9,
       "en": "My patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của tôi đang cạn, liệu đây có thú vị không?"
     },
     {
       "time": 110.4,
       "en": "My patience is waning, is this entertaining?",
-      "vi": "Sự kiên nhẫn của tôi đang cạn dần, liệu đây có thú vị không?"
+      "vi": "Sự kiên nhẫn của tôi đang cạn, liệu đây có thú vị không?"
     },
     {
       "time": 119.1,
       "en": "I got this feeling, yeah, you know",
-      "vi": "Tôi có cảm giác này, vâng, bạn biết đấy"
+      "vi": "Tôi có cảm giác này, ừ, bạn biết đó"
     },
     {
       "time": 123.7,
       "en": "Where I'm losing all control",
-      "vi": "Nơi tôi đang đánh mất tất cả sự kiểm soát"
+      "vi": "Nơi tôi đang mất đi mọi kiểm soát"
     },
     {
       "time": 126.3,
       "en": "'Cause there's magic in my bones (magic in my bones)",
-      "vi": "Vì có phép màu trong xương của tôi (phép màu trong xương tôi)"
+      "vi": "Vì có phép màu trong xương tôi (phép màu trong xương tôi)"
     },
     {
       "time": 127.7,
@@ -231,39 +216,39 @@
       "vi": "Tôi có cảm giác này trong tâm hồn mình (tâm hồn)"
     },
     {
-      "time": 131.4,
+      "time": 131.5,
       "en": "Go ahead and throw your stones",
-      "vi": "Cứ tự nhiên mà ném đá đi"
+      "vi": "Cứ việc ném đá vào tôi đi"
     },
     {
       "time": 134.9,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     },
     {
-      "time": 135.0,
-      "en": "There goes my mind, (I) don't mind",
-      "vi": "Tâm trí tôi đi rồi, (tôi) không sao"
+      "time": 139.9,
+      "en": "There goes my mind (I), don't mind",
+      "vi": "Kìa tâm trí tôi trôi đi (Tôi), mặc kệ thôi"
     },
     {
-      "time": 135.1,
+      "time": 144.9,
       "en": "There goes my mind (there it goes, there it goes)",
-      "vi": "Tâm trí tôi đi rồi (nó đi rồi, nó đi rồi)"
+      "vi": "Kìa tâm trí tôi trôi đi (kìa nó trôi, kìa nó trôi)"
     },
     {
-      "time": 135.2,
-      "en": "There goes my mind, (I) don't mind",
-      "vi": "Tâm trí tôi đi rồi, (tôi) không sao"
+      "time": 149.9,
+      "en": "There goes my mind (I), don't mind (there it goes)",
+      "vi": "Kìa tâm trí tôi trôi đi (Tôi), mặc kệ thôi (kìa nó trôi)"
     },
     {
-      "time": 135.7,
-      "en": "There goes my mind (there it goes)",
-      "vi": "Tâm trí tôi đi rồi (nó đi rồi)"
+      "time": 154.8,
+      "en": "There goes my mind",
+      "vi": "Kìa tâm trí tôi trôi đi"
     },
     {
-      "time": 136.2,
+      "time": 155.3,
       "en": "'Cause there's magic in my bones",
-      "vi": "Vì có phép màu trong xương của tôi"
+      "vi": "Vì có phép màu trong xương tôi"
     }
   ]
 }

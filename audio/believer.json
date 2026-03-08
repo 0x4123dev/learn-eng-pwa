@@ -6,334 +6,274 @@
   "duration": 120,
   "lines": [
     {
-      "time": 7.6,
-      "en": "First things first",
-      "vi": "Điều đầu tiên trước hết"
-    },
-    {
-      "time": 8.3,
-      "en": "I'ma say all the words inside my head",
-      "vi": "Ta sẽ nói ra tất cả những gì trong đầu ta"
+      "time": 7.7,
+      "en": "First things first, I'ma say all the words inside my head",
+      "vi": "Điều đầu tiên trước hết, tôi sẽ nói tất cả những gì trong đầu tôi"
     },
     {
       "time": 10.6,
-      "en": "I'm fired up and tired of the way",
-      "vi": "Ta đang bừng cháy và chán nản với cái cách"
+      "en": "I'm fired up, and tired of the way that things have been, oh, ooh",
+      "vi": "Tôi đang bừng cháy, và chán nản với cái cách mà mọi thứ đã từng là, ôi, ôi"
     },
     {
-      "time": 13.5,
-      "en": "That things have been, oh-ooh",
-      "vi": "Mà mọi thứ đã từng là, oh-ooh"
+      "time": 12.7,
+      "en": "The way that things have been, oh, ooh",
+      "vi": "Cái cách mà mọi thứ đã từng là, ôi, ôi"
     },
     {
-      "time": 13.7,
-      "en": "The way that things have been, oh-ooh",
-      "vi": "Cái cách mà mọi thứ đã từng là, oh-ooh"
-    },
-    {
-      "time": 18.8,
-      "en": "Second things second",
-      "vi": "Điều thứ hai tiếp theo"
-    },
-    {
-      "time": 19.9,
-      "en": "Don't you tell me what you think that I could be",
-      "vi": "Đừng nói cho ta biết ngươi nghĩ ta có thể là gì"
+      "time": 19.0,
+      "en": "Second thing second, don't you tell me what you think that I can be",
+      "vi": "Điều thứ hai tiếp theo, đừng nói cho tôi ngươi nghĩ tôi có thể là gì"
     },
     {
       "time": 25.9,
-      "en": "I'm the one at the sail, I'm the master of my sea, oh-ooh",
-      "vi": "Ta là người cầm lái, ta là chủ nhân của biển cả, oh-ooh"
+      "en": "I'm the one at the sail, I'm the master of my sea, oh, ooh",
+      "vi": "Tôi là người cầm lái, tôi là chủ nhân của biển cả tôi, ôi, ôi"
     },
     {
       "time": 28.1,
-      "en": "The master of my sea, oh-ooh",
-      "vi": "Chủ nhân của biển cả của ta, oh-ooh"
+      "en": "The master of my sea, oh, ooh",
+      "vi": "Chủ nhân của biển cả tôi, ôi, ôi"
     },
     {
-      "time": 30.0,
+      "time": 34.6,
       "en": "I was broken from a young age",
-      "vi": "Ta đã vỡ vụn từ thuở còn trẻ"
+      "vi": "Tôi đã vỡ vụn từ khi còn trẻ"
     },
     {
       "time": 39.1,
       "en": "Taking my sulking to the masses",
-      "vi": "Mang nỗi sầu muộn của ta đến với đám đông"
+      "vi": "Mang nỗi sầu muộn đến với đám đông"
     },
     {
-      "time": 40.6,
+      "time": 40.4,
       "en": "Writing my poems for the few",
-      "vi": "Viết những bài thơ của ta cho số ít"
+      "vi": "Viết những vần thơ cho số ít người"
     },
     {
-      "time": 42.4,
-      "en": "That look at me, took to me, shook to me, feeling me",
-      "vi": "Những người nhìn ta, đến với ta, rung động cùng ta, cảm nhận ta"
+      "time": 40.9,
+      "en": "That look at me, took to me, shook to me, feelin' me",
+      "vi": "Nhìn tôi, đến với tôi, rung động cùng tôi, cảm nhận tôi"
     },
     {
-      "time": 44.6,
+      "time": 41.4,
       "en": "Singing from heartache from the pain",
-      "vi": "Cất tiếng hát từ vết thương lòng, từ nỗi đau"
+      "vi": "Cất tiếng hát từ vết thương lòng và nỗi đau"
     },
     {
       "time": 45.7,
       "en": "Taking my message from the veins",
-      "vi": "Truyền tải thông điệp của ta từ trong huyết mạch"
+      "vi": "Truyền tải thông điệp từ huyết mạch"
     },
     {
       "time": 47.2,
       "en": "Speaking my lesson from the brain",
-      "vi": "Nói lên bài học của ta từ trong tâm trí"
+      "vi": "Nói lên bài học từ trong tâm trí"
     },
     {
       "time": 49.8,
       "en": "Seeing the beauty through the",
-      "vi": "Nhìn thấy vẻ đẹp qua"
+      "vi": "Nhìn thấy vẻ đẹp xuyên qua"
     },
     {
-      "time": 50.3,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 51.9,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
-      "time": 50.8,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
+      "time": 55.7,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 51.3,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 59.5,
+      "en": "Pain, you break me down, and build me up",
+      "vi": "Đau thương, mi đánh gục tôi rồi dựng tôi đứng dậy"
     },
     {
-      "time": 51.8,
-      "en": "You break me down and build me up, believer, believer",
-      "vi": "Người đánh gục ta rồi dựng ta dậy, người tin tưởng, người tin tưởng"
+      "time": 63.0,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 52.3,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 66.6,
+      "en": "Pain, oh, let the bullets fly, oh, let them rain",
+      "vi": "Đau thương, ôi, hãy để đạn bay, ôi, hãy để chúng rơi"
     },
     {
-      "time": 62.0,
-      "en": "Oh, let the bullets fly, oh, let them rain",
-      "vi": "Ồ, hãy để đạn bay, ồ, hãy để chúng rơi xuống"
-    },
-    {
-      "time": 76.7,
+      "time": 72.3,
       "en": "My life, my love, my drive, it came from",
-      "vi": "Cuộc đời ta, tình yêu ta, ý chí ta, tất cả đến từ"
+      "vi": "Cuộc đời tôi, tình yêu tôi, ý chí tôi, tất cả đến từ"
     },
     {
-      "time": 77.2,
-      "en": "Pain!",
-      "vi": "Đau!"
-    },
-    {
-      "time": 77.7,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
-    },
-    {
-      "time": 78.2,
-      "en": "Third things third",
-      "vi": "Điều thứ ba nối tiếp"
+      "time": 76.1,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
       "time": 78.7,
-      "en": "Send a prayer to the ones up above",
-      "vi": "Gửi một lời cầu nguyện đến những người ở trên cao"
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 79.2,
-      "en": "All the hate that you've heard",
-      "vi": "Tất cả sự thù hận mà ngươi đã nghe"
+      "time": 81.3,
+      "en": "Third things third, send a prayer to the ones up above",
+      "vi": "Điều thứ ba nối tiếp, hãy gửi lời cầu nguyện lên những người trên cao"
     },
     {
-      "time": 79.7,
-      "en": "Has turned your spirit to a dove, oh-ooh",
-      "vi": "Đã biến tâm hồn ngươi thành chim bồ câu, oh-ooh"
+      "time": 87.0,
+      "en": "All the hate that you've heard has turned your spirit to a dove, oh, ooh",
+      "vi": "Tất cả thù hận mi đã nghe đã biến tâm hồn mi thành chim bồ câu, ôi, ôi"
     },
     {
-      "time": 80.2,
-      "en": "Your spirit up above, oh-ooh",
-      "vi": "Tâm hồn ngươi ở trên cao, oh-ooh"
+      "time": 91.3,
+      "en": "Your spirit up above, oh, ooh",
+      "vi": "Tâm hồn mi ở trên cao, ôi, ôi"
     },
     {
-      "time": 80.7,
+      "time": 95.3,
       "en": "I was choking in the crowd",
-      "vi": "Ta đã ngột ngạt trong đám đông"
+      "vi": "Tôi đã ngột ngạt giữa đám đông"
     },
     {
-      "time": 99.7,
+      "time": 100.0,
       "en": "Building my rain up in the cloud",
-      "vi": "Xây dựng cơn mưa của ta lên trong đám mây"
+      "vi": "Tích tụ cơn mưa lên trong đám mây"
     },
     {
-      "time": 101.8,
+      "time": 101.9,
       "en": "Falling like ashes to the ground",
       "vi": "Rơi xuống như tro tàn xuống mặt đất"
     },
     {
       "time": 103.8,
       "en": "Hoping my feelings, they would drown",
-      "vi": "Hy vọng cảm xúc của ta sẽ chìm đắm"
+      "vi": "Mong cảm xúc của tôi sẽ chìm lắng"
     },
     {
       "time": 105.7,
-      "en": "But they never did, ever lived, ebbing and flowing",
+      "en": "But they never did, ever lived, ebbin' and flowin'",
       "vi": "Nhưng chúng không bao giờ chịu, vẫn sống mãi, dâng lên rồi lại rút xuống"
     },
     {
-      "time": 108.5,
-      "en": "Inhibited, limited",
-      "vi": "Bị kìm hãm, bị giới hạn"
+      "time": 110.4,
+      "en": "Inhibited, limited, 'til it broke open, and it rained down",
+      "vi": "Bị kìm hãm, bị giới hạn, cho đến khi vỡ tung, và mưa đổ xuống"
     },
     {
-      "time": 111.2,
-      "en": "Till it broke open and rained down",
-      "vi": "Cho đến khi nó vỡ tung ra và đổ xuống"
+      "time": 113.4,
+      "en": "It rained down like",
+      "vi": "Mưa đổ xuống như là"
     },
     {
-      "time": 114.0,
-      "en": "And rained down, like",
-      "vi": "Và đổ xuống, như là"
+      "time": 117.9,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
-      "time": 116.8,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 118.4,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 119.5,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
+      "time": 118.9,
+      "en": "Pain, you break me down, and build me up",
+      "vi": "Đau thương, mi đánh gục tôi rồi dựng tôi đứng dậy"
     },
     {
-      "time": 122.2,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 123.0,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 125.0,
-      "en": "You break me down and build me up, believer, believer",
-      "vi": "Người đánh gục ta rồi dựng ta dậy, người tin tưởng, người tin tưởng"
+      "time": 132.6,
+      "en": "Pain, oh, let the bullets fly, oh, let them rain",
+      "vi": "Đau thương, ôi, hãy để đạn bay, ôi, hãy để chúng rơi"
     },
     {
-      "time": 127.8,
-      "en": "Pain!",
-      "vi": "Đau!"
-    },
-    {
-      "time": 130.5,
-      "en": "Oh, let the bullets fly, oh, let them rain",
-      "vi": "Ồ, hãy để đạn bay, ồ, hãy để chúng rơi xuống"
-    },
-    {
-      "time": 133.2,
+      "time": 133.7,
       "en": "My life, my love, my drive, it came from",
-      "vi": "Cuộc đời ta, tình yêu ta, ý chí ta, tất cả đến từ"
+      "vi": "Cuộc đời tôi, tình yêu tôi, ý chí tôi, tất cả đến từ"
     },
     {
-      "time": 136.0,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 140.6,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
-      "time": 138.8,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
+      "time": 141.4,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 141.5,
-      "en": "Last things last",
-      "vi": "Điều cuối cùng sau hết"
-    },
-    {
-      "time": 142.2,
-      "en": "By the grace of the fire and the flames",
-      "vi": "Nhờ ân huệ của lửa và ngọn lửa"
+      "time": 142.3,
+      "en": "Last things last, by the grace of the fire and the flames",
+      "vi": "Điều cuối cùng sau hết, nhờ ân huệ của lửa và ngọn lửa thiêng"
     },
     {
       "time": 147.9,
-      "en": "You're the face of the future",
-      "vi": "Ngươi là khuôn mặt của tương lai"
+      "en": "You're the face of the future, the blood in my veins, oh, ooh",
+      "vi": "Mi là khuôn mặt của tương lai, dòng máu trong huyết mạch tôi, ôi, ôi"
     },
     {
       "time": 150.8,
-      "en": "The blood in my veins, oh-ooh",
-      "vi": "Dòng máu trong huyết mạch ta, oh-ooh"
+      "en": "The blood in my veins, oh, ooh",
+      "vi": "Dòng máu trong huyết mạch tôi, ôi, ôi"
     },
     {
-      "time": 151.0,
-      "en": "The blood in my veins, oh-ooh",
-      "vi": "Dòng máu trong huyết mạch ta, oh-ooh"
-    },
-    {
-      "time": 156.7,
-      "en": "But they never did, ever lived, ebbing and flowing",
+      "time": 156.8,
+      "en": "But they never did, ever lived, ebbin' and flowin'",
       "vi": "Nhưng chúng không bao giờ chịu, vẫn sống mãi, dâng lên rồi lại rút xuống"
     },
     {
-      "time": 160.6,
-      "en": "Inhibited, limited",
-      "vi": "Bị kìm hãm, bị giới hạn"
+      "time": 162.8,
+      "en": "Inhibited, limited, 'til it broke open, and it rained down",
+      "vi": "Bị kìm hãm, bị giới hạn, cho đến khi vỡ tung, và mưa đổ xuống"
     },
     {
-      "time": 164.6,
-      "en": "Till it broke open and rained down",
-      "vi": "Cho đến khi nó vỡ tung ra và đổ xuống"
+      "time": 165.7,
+      "en": "It rained down like",
+      "vi": "Mưa đổ xuống như là"
     },
     {
-      "time": 165.1,
-      "en": "And rained down, like",
-      "vi": "Và đổ xuống, như là"
+      "time": 170.4,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
-      "time": 170.1,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 170.9,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 175.1,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
+      "time": 171.4,
+      "en": "Pain, you break me down, and build me up",
+      "vi": "Đau thương, mi đánh gục tôi rồi dựng tôi đứng dậy"
     },
     {
-      "time": 177.3,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 175.9,
+      "en": "Believer, believer",
+      "vi": "Người tin tưởng, người tin tưởng"
     },
     {
-      "time": 179.6,
-      "en": "You break me down and build me up, believer, believer",
-      "vi": "Người đánh gục ta rồi dựng ta dậy, người tin tưởng, người tin tưởng"
-    },
-    {
-      "time": 182.9,
-      "en": "Pain!",
-      "vi": "Đau!"
-    },
-    {
-      "time": 186.3,
-      "en": "Oh, let the bullets fly, oh, let them rain",
-      "vi": "Ồ, hãy để đạn bay, ồ, hãy để chúng rơi xuống"
+      "time": 184.8,
+      "en": "Pain, oh, let the bullets fly, oh, let them rain",
+      "vi": "Đau thương, ôi, hãy để đạn bay, ôi, hãy để chúng rơi"
     },
     {
       "time": 187.4,
       "en": "My life, my love, my drive, it came from",
-      "vi": "Cuộc đời ta, tình yêu ta, ý chí ta, tất cả đến từ"
+      "vi": "Cuộc đời tôi, tình yêu tôi, ý chí tôi, tất cả đến từ"
     },
     {
-      "time": 191.2,
-      "en": "Pain!",
-      "vi": "Đau!"
+      "time": 191.4,
+      "en": "Pain, you made me a, you made me a",
+      "vi": "Đau thương, mi đã tạo nên tôi, đã tạo nên tôi thành"
     },
     {
-      "time": 195.1,
-      "en": "You made me a, you made me a believer, believer",
-      "vi": "Người đã tạo nên ta, người đã tạo nên ta thành người tin tưởng, người tin tưởng"
+      "time": 191.9,
+      "en": "Believer, believer (oh)",
+      "vi": "Người tin tưởng, người tin tưởng (ôi)"
     }
   ]
 }
