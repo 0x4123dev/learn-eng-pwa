@@ -1,0 +1,219 @@
+{
+  "id": "i-dont-care",
+  "title": "I Dont Care",
+  "artist": "Unknown",
+  "audio": "audio/i-dont-care.mp3",
+  "duration": 120,
+  "lines": [
+    {
+      "time": 11.0,
+      "en": "I don't care if they talk shit, I don't talk to hypocrites.",
+      "vi": "Tôi không quan tâm nếu họ nói xấu, tôi không nói chuyện với kẻ giả dối."
+    },
+    {
+      "time": 14.8,
+      "en": "If you hate me, that's just fine.",
+      "vi": "Nếu bạn ghét tôi, thì cũng được thôi."
+    },
+    {
+      "time": 18.4,
+      "en": "Go on down and get in line.",
+      "vi": "Cứ việc xếp hàng mà chờ đi."
+    },
+    {
+      "time": 21.6,
+      "en": "They try to tell me what I need.",
+      "vi": "Họ cố nói tôi cần gì đó."
+    },
+    {
+      "time": 24.6,
+      "en": "And it sure ain't nothing good for me.",
+      "vi": "Mà chẳng có gì tốt cho tôi cả."
+    },
+    {
+      "time": 28.9,
+      "en": "Don't care what they say.",
+      "vi": "Chẳng quan tâm họ nói gì."
+    },
+    {
+      "time": 31.4,
+      "en": "It's all just talk on ahead my way and walk my walk.",
+      "vi": "Tất cả chỉ là lời nói, tôi cứ đi theo con đường của mình."
+    },
+    {
+      "time": 34.0,
+      "en": "They try to bend me, but I won't break.",
+      "vi": "Họ cố bẻ cong tôi, nhưng tôi sẽ không gãy."
+    },
+    {
+      "time": 37.8,
+      "en": "I pay no mind to the noise they make.",
+      "vi": "Tôi chẳng để ý đến tiếng ồn họ tạo ra."
+    },
+    {
+      "time": 40.5,
+      "en": "I keep my head, I hold my ground.",
+      "vi": "Tôi giữ vững đầu óc, tôi giữ vững lập trường."
+    },
+    {
+      "time": 43.1,
+      "en": "Ain't no man gonna knock me down.",
+      "vi": "Không có người đàn ông nào có thể đánh gục tôi."
+    },
+    {
+      "time": 46.2,
+      "en": "They can swing, but I won't flinch.",
+      "vi": "Họ có thể vung tay, nhưng tôi sẽ không chớp mắt."
+    },
+    {
+      "time": 49.7,
+      "en": "I was built for times like this.",
+      "vi": "Tôi được tạo ra cho những thời khắc như thế này."
+    },
+    {
+      "time": 52.4,
+      "en": "I'll talk your shit, but be aware.",
+      "vi": "Tôi sẽ chịu đựng sự thô lỗ của bạn, nhưng hãy biết điều này."
+    },
+    {
+      "time": 56.0,
+      "en": "I don't care.",
+      "vi": "Tôi không quan tâm."
+    },
+    {
+      "time": 56.8,
+      "en": "I see lies dressed up like truth, heard old men preaching to the youth.",
+      "vi": "Tôi thấy những lời dối trá khoác áo sự thật, nghe người già thuyết giáo cho tuổi trẻ."
+    },
+    {
+      "time": 80.1,
+      "en": "The talk is cheap and words don't last.",
+      "vi": "Lời nói thì rẻ và ngôn từ chẳng tồn tại lâu."
+    },
+    {
+      "time": 83.8,
+      "en": "I let my works speak for my past.",
+      "vi": "Tôi để những việc làm nói lên quá khứ của mình."
+    },
+    {
+      "time": 86.4,
+      "en": "Can't keep me down, I still stand tall.",
+      "vi": "Không thể kéo tôi xuống, tôi vẫn đứng thẳng."
+    },
+    {
+      "time": 89.5,
+      "en": "Even when my backs against the wall.",
+      "vi": "Dù lưng tôi đã áp sát tường."
+    },
+    {
+      "time": 92.1,
+      "en": "Lost some friends, when times got tough.",
+      "vi": "Mất đi một số bạn bè khi gian khó ập đến."
+    },
+    {
+      "time": 95.8,
+      "en": "But the ones that stayed are more than enough.",
+      "vi": "Nhưng những người ở lại còn hơn cả đủ."
+    },
+    {
+      "time": 98.8,
+      "en": "They try to bend me, but I won't break.",
+      "vi": "Họ cố bẻ cong tôi, nhưng tôi sẽ không gãy."
+    },
+    {
+      "time": 102.7,
+      "en": "I pay no mind to the noise they make.",
+      "vi": "Tôi chẳng để ý đến tiếng ồn họ tạo ra."
+    },
+    {
+      "time": 105.5,
+      "en": "I keep my head, I hold my ground.",
+      "vi": "Tôi giữ vững đầu óc, tôi giữ vững lập trường."
+    },
+    {
+      "time": 109.8,
+      "en": "They know man gonna knock me down.",
+      "vi": "Họ biết rằng chẳng ai có thể đánh gục tôi."
+    },
+    {
+      "time": 111.2,
+      "en": "They can swing, but I won't flinch.",
+      "vi": "Họ có thể vung tay, nhưng tôi sẽ không chớp mắt."
+    },
+    {
+      "time": 114.7,
+      "en": "I was built for times like this.",
+      "vi": "Tôi được tạo ra cho những thời khắc như thế này."
+    },
+    {
+      "time": 117.4,
+      "en": "I'll talk your shit, but be aware.",
+      "vi": "Tôi sẽ chịu đựng sự thô lỗ của bạn, nhưng hãy biết điều này."
+    },
+    {
+      "time": 121.0,
+      "en": "I don't care.",
+      "vi": "Tôi không quan tâm."
+    },
+    {
+      "time": 121.2,
+      "en": "They can drag my name through the dirt.",
+      "vi": "Họ có thể kéo tên tôi qua bùn đất."
+    },
+    {
+      "time": 145.2,
+      "en": "It won't stop me, I've been through worse.",
+      "vi": "Điều đó sẽ không dừng tôi lại, tôi đã trải qua điều tệ hơn."
+    },
+    {
+      "time": 149.2,
+      "en": "Every scar is a lesson learned, and every bridge was made to burn.",
+      "vi": "Mỗi vết thương là một bài học, và mỗi cây cầu được tạo ra để cháy."
+    },
+    {
+      "time": 154.4,
+      "en": "They try to bend me, but I won't break.",
+      "vi": "Họ cố bẻ cong tôi, nhưng tôi sẽ không gãy."
+    },
+    {
+      "time": 159.9,
+      "en": "I pay no mind to the noise they make.",
+      "vi": "Tôi chẳng để ý đến tiếng ồn họ tạo ra."
+    },
+    {
+      "time": 162.7,
+      "en": "I keep my head, I hold my ground.",
+      "vi": "Tôi giữ vững đầu óc, tôi giữ vững lập trường."
+    },
+    {
+      "time": 167.0,
+      "en": "They know man gonna knock me down.",
+      "vi": "Họ biết rằng chẳng ai có thể đánh gục tôi."
+    },
+    {
+      "time": 168.4,
+      "en": "They can swing, but I won't flinch.",
+      "vi": "Họ có thể vung tay, nhưng tôi sẽ không chớp mắt."
+    },
+    {
+      "time": 171.8,
+      "en": "I was built for times like this.",
+      "vi": "Tôi được tạo ra cho những thời khắc như thế này."
+    },
+    {
+      "time": 174.6,
+      "en": "I'll talk your shit, but be aware.",
+      "vi": "Tôi sẽ chịu đựng sự thô lỗ của bạn, nhưng hãy biết điều này."
+    },
+    {
+      "time": 178.3,
+      "en": "I don't care.",
+      "vi": "Tôi không quan tâm."
+    },
+    {
+      "time": 178.8,
+      "en": "I pay no mind to the noise they make.",
+      "vi": "Tôi chẳng để ý đến tiếng ồn họ tạo ra."
+    }
+  ]
+}
