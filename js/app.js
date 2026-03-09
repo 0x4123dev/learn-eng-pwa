@@ -533,6 +533,32 @@ function loginUser(username) {
     if (appState.bubblesStats.wins === undefined) appState.bubblesStats.wins = 0;
     if (appState.bubblesStats.difficultyStats === undefined) appState.bubblesStats.difficultyStats = {};
 
+    // Migrate: shift lesson numbers after adding 112 house words at the start of vocabulary
+    // Old lesson 0 = "important..." (IELTS), now lesson 0 = "apartment..." (house)
+    // IELTS words shifted by BEGINNING_LESSONS (23) positions
+    if (!appState.houseMigrated && typeof BEGINNING_LESSONS !== 'undefined') {
+        // Shift currentLesson
+        if (appState.currentLesson > 0) {
+            appState.currentLesson += BEGINNING_LESSONS;
+        }
+        // Shift all lesson history entries
+        if (appState.lessonHistory && appState.lessonHistory.length > 0) {
+            appState.lessonHistory = appState.lessonHistory.map(h => ({
+                ...h,
+                lessonNum: h.lessonNum + BEGINNING_LESSONS
+            }));
+        }
+        // Shift mistake lessonNum references
+        if (appState.mistakes && appState.mistakes.length > 0) {
+            appState.mistakes = appState.mistakes.map(m => ({
+                ...m,
+                lessonNum: m.lessonNum !== undefined ? m.lessonNum + BEGINNING_LESSONS : m.lessonNum
+            }));
+        }
+        appState.houseMigrated = true;
+        saveUserData(currentUser, appState);
+    }
+
     // Pet system migration
     if (appState.petName === undefined) appState.petName = null;
     if (appState.petHunger === undefined) appState.petHunger = appState.lastStudyDate === new Date().toDateString() ? 100 : 50;
