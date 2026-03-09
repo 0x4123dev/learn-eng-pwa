@@ -1,11 +1,9 @@
 // app.js - Core application logic, state management, and utilities
 
-// ==================== CONSTANTS ====================
 const WORDS_PER_LESSON = 5;
 const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
 const SRS_WORDS_PER_REVIEW = 5;
 
-// ==================== ACHIEVEMENTS ====================
 const achievements = [
     // Getting started
     { id: 'first-lesson', name: 'Baby Steps', icon: '🐣' },
@@ -76,7 +74,6 @@ const achievements = [
     { id: 'syllable-sage', name: 'Syllable Sage', icon: '🔤' }
 ];
 
-// ==================== GLOBAL STATE VARIABLES ====================
 let currentUser = null;
 let userToDelete = null;
 let selectedAvatar = '😊';
@@ -122,7 +119,6 @@ let speedState = {
     verbResults: [] // { v1, v2, v3, userV2, userV3, correct, timeUsed }
 };
 
-// ==================== USER DATA PERSISTENCE ====================
 function getUsers() {
     const users = localStorage.getItem('flashlingo-users');
     return users ? JSON.parse(users) : [];
@@ -182,7 +178,6 @@ function createDefaultUserData(username, avatar, passcode) {
     };
 }
 
-// ==================== THEMES ====================
 const themeData = [
     { id: 'default', name: 'Classic', icon: '🌤️', cost: 0, vars: {} },
     { id: 'ocean', name: 'Ocean', icon: '🌊', cost: 500, vars: {
@@ -215,7 +210,6 @@ function applyTheme(themeId) {
     });
 }
 
-// ==================== INITIALIZATION ====================
 function init() {
     setupAvatarPicker();
     checkExistingUsers();
@@ -323,7 +317,6 @@ function createUser(e) {
     loginUser(username);
 }
 
-// ==================== PASSCODE FUNCTIONS ====================
 function getPasscodeValue(type) {
     if (type === 'login') {
         return document.getElementById('passcodeHiddenInput').value;
@@ -535,6 +528,31 @@ function loginUser(username) {
 
     // Video stats migration
     if (!appState.videoStats) appState.videoStats = { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
+    // Migrate: shift lesson numbers after adding 112 house words at the start of vocabulary
+    // Old lesson 0 = "important..." (IELTS), now lesson 0 = "apartment..." (house)
+    // IELTS words shifted by BEGINNING_LESSONS (23) positions
+    if (!appState.houseMigrated && typeof BEGINNING_LESSONS !== 'undefined') {
+        // Shift currentLesson
+        if (appState.currentLesson > 0) {
+            appState.currentLesson += BEGINNING_LESSONS;
+        }
+        // Shift all lesson history entries
+        if (appState.lessonHistory && appState.lessonHistory.length > 0) {
+            appState.lessonHistory = appState.lessonHistory.map(h => ({
+                ...h,
+                lessonNum: h.lessonNum + BEGINNING_LESSONS
+            }));
+        }
+        // Shift mistake lessonNum references
+        if (appState.mistakes && appState.mistakes.length > 0) {
+            appState.mistakes = appState.mistakes.map(m => ({
+                ...m,
+                lessonNum: m.lessonNum !== undefined ? m.lessonNum + BEGINNING_LESSONS : m.lessonNum
+            }));
+        }
+        appState.houseMigrated = true;
+        saveUserData(currentUser, appState);
+    }
 
     // Pet system migration
     if (appState.petName === undefined) appState.petName = null;
@@ -628,7 +646,6 @@ function confirmDeleteUser() {
     checkExistingUsers();
 }
 
-// ==================== STREAK ====================
 function updateStreak() {
     if (!appState) return;
 
@@ -688,7 +705,6 @@ function recordStudy() {
     saveUserData(currentUser, appState);
 }
 
-// ==================== NAVIGATION ====================
 let _profileOriginScreen = 'homeScreen';
 
 function switchScreen(screenId) {
@@ -747,7 +763,6 @@ function navigateFromProfile() {
     if (_profileOriginScreen === 'homeScreen') renderHome();
 }
 
-// ==================== UTILITIES ====================
 function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -783,14 +798,12 @@ function createConfetti() {
     setTimeout(() => container.innerHTML = '', 4000);
 }
 
-// ==================== PWA ====================
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
 }
 
-// ==================== FORMAT DATE ====================
 function formatDate(timestamp) {
     const date = new Date(timestamp);
     const today = new Date();
@@ -806,7 +819,6 @@ function formatDate(timestamp) {
     }
 }
 
-// ==================== TEXT-TO-SPEECH ====================
 const audioCache = {};      // key -> Audio object (preloaded)
 const audioPending = {};    // key -> fetch promise (dedup in-flight requests)
 let currentAudio = null;
@@ -906,5 +918,4 @@ if ('speechSynthesis' in window) {
     };
 }
 
-// ==================== INITIALIZE ====================
 document.addEventListener('DOMContentLoaded', init);
