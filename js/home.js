@@ -741,8 +741,6 @@ function renderWordPet() {
             <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px" data-stage="${stage.stageCss}">${stage.emoji}</div>
             ${accSpans}
         </div>
-        <div class="pet-name">${appState.petName} <span style="font-weight:400;opacity:0.7">· ${stage.name}</span></div>
-        <div class="pet-title">${title}</div>
         <div class="pet-xp-bar">
             <div class="pet-xp-fill" style="width:${xpPercent}%"></div>
             <span class="pet-xp-text">${level >= 100 ? 'MAX' : `${xpInLevel}/${xpNeeded}`}</span>
