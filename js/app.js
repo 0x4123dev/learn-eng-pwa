@@ -175,6 +175,10 @@ function createDefaultUserData(username, avatar, passcode) {
         petAccessories: [],
         activeAccessories: [],
         petQuest: { lastDate: null, questId: null, completed: false },
+        coins: 0,
+        dogGrowthXP: 0,
+        dogLevel: 1,
+        lastDecayDate: null,
         musicStats: {
             rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
             wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
@@ -566,6 +570,11 @@ function loginUser(username) {
     if (appState.petAccessories === undefined) appState.petAccessories = [];
     if (appState.activeAccessories === undefined) appState.activeAccessories = [];
     if (appState.petQuest === undefined) appState.petQuest = { lastDate: null, questId: null, completed: false };
+    // Dog coin economy migration
+    if (appState.coins === undefined) appState.coins = Math.floor(appState.points * 0.5) || 0; // Welcome bonus
+    if (appState.dogGrowthXP === undefined) appState.dogGrowthXP = Math.floor(appState.points * 0.3) || 0; // Seed from points
+    if (appState.dogLevel === undefined) appState.dogLevel = typeof getDogLevel === 'function' ? getDogLevel(appState.dogGrowthXP) : 1;
+    if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
     if (appState.musicStats === undefined) appState.musicStats = {
         rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
         wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }

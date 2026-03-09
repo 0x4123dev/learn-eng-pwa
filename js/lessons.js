@@ -259,12 +259,6 @@ function completeLesson() {
         // Pet hooks
         if (typeof feedPet === 'function') feedPet(20);
         if (typeof checkQuestCompletion === 'function') checkQuestCompletion('srs');
-        if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
-        const _newStageR = getPetStage(appState.points);
-        const _oldStageR = getPetStage(_prevPointsR);
-        if (_newStageR.key !== _oldStageR.key) {
-            setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageR); }, 300);
-        }
 
         // Check SRS achievements
         unlockAchievement('srs-first');
@@ -303,12 +297,6 @@ function completeLesson() {
 
         // Pet hooks
         if (typeof feedPet === 'function') feedPet(40);
-        if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
-        const _newStageP = getPetStage(appState.points);
-        const _oldStageP = getPetStage(_prevPointsP);
-        if (_newStageP.key !== _oldStageP.key) {
-            setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageP); }, 300);
-        }
 
         document.getElementById('completePoints').textContent = `+${lessonState.lessonPoints}`;
         document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
@@ -343,6 +331,18 @@ function completeLesson() {
 
     const _prevPointsL = appState.points;
     appState.points += lessonState.lessonPoints;
+
+    // Coin earning for dog pet
+    const _coinDifficulty = getDifficultyLevel(lessonState.lessonNumber);
+    const _coinMultipliers = { 'Beginning': 1, 'Basic': 1, 'Intermediate': 1.5, 'Upper-Intermediate': 2, 'Advanced': 2.5 };
+    let _coinsEarned = 10; // Base coins
+    if (accuracy >= 80) _coinsEarned += 5; // Accuracy bonus
+    if (accuracy === 100) _coinsEarned += 10; // Perfect bonus (total +15 for 100%)
+    if ((appState.streak || 0) >= 7) _coinsEarned += 10; // Big streak bonus
+    else if ((appState.streak || 0) >= 3) _coinsEarned += 5; // Small streak bonus
+    _coinsEarned = Math.round(_coinsEarned * (_coinMultipliers[_coinDifficulty.name] || 1));
+    appState.coins = (appState.coins || 0) + _coinsEarned;
+    lessonState._coinsEarned = _coinsEarned; // Store for display
 
     // Only increment lessonsCompleted if this was a new lesson (not a re-learn)
     if (!alreadyCompleted) {
@@ -397,12 +397,6 @@ function completeLesson() {
     // Pet hooks
     if (typeof feedPet === 'function') feedPet(40);
     if (typeof checkQuestCompletion === 'function') checkQuestCompletion('lesson', { accuracy });
-    if (typeof checkAccessoryUnlocks === 'function') checkAccessoryUnlocks(appState);
-    const _newStageL = getPetStage(appState.points);
-    const _oldStageL = getPetStage(_prevPointsL);
-    if (_newStageL.key !== _oldStageL.key) {
-        setTimeout(() => { if (typeof showEvolutionCelebration === 'function') showEvolutionCelebration(_newStageL); }, 300);
-    }
 
     // Check sticker unlocks
     if (typeof checkStickerUnlocks === 'function') checkStickerUnlocks();
@@ -463,6 +457,16 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
         document.getElementById('completeSubtitle').textContent = `Keep practicing!${bonusText}`;
     }
 
+    // Show coins earned
+    const coinsEarned = lessonState._coinsEarned || 0;
+    if (coinsEarned > 0) {
+        const coinEl = document.getElementById('completeCoins');
+        if (coinEl) {
+            coinEl.textContent = `+${coinsEarned} 🪙`;
+            coinEl.style.display = 'block';
+        }
+    }
+
     document.getElementById('lessonComplete').classList.add('active');
 
     // Offer Word Chant for qualifying lessons
@@ -481,5 +485,8 @@ function exitLesson() {
 
 function closeLessonComplete() {
     document.getElementById('lessonComplete').classList.remove('active');
+    // Reset coins display
+    const coinEl = document.getElementById('completeCoins');
+    if (coinEl) { coinEl.style.display = 'none'; coinEl.textContent = '+0 🪙'; }
     exitLesson();
 }

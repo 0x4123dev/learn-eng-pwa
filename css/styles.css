@@ -3268,10 +3268,9 @@
         }
 
         .pet-creature {
-            font-size: 64px;
             cursor: pointer;
             display: inline-block;
-            transition: transform 0.2s;
+            transition: transform 0.2s, font-size 0.3s;
         }
 
         .pet-creature.happy {
@@ -3381,11 +3380,11 @@
             gap: 4px;
         }
 
-        .pet-scene[data-stage="egg"]     { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
-        .pet-scene[data-stage="chick"]   { background: linear-gradient(180deg, #fffde7 0%, #c8e6c9 100%); }
-        .pet-scene[data-stage="bird"]    { background: linear-gradient(180deg, #bbdefb 0%, #c8e6c9 100%); }
-        .pet-scene[data-stage="phoenix"] { background: linear-gradient(180deg, #ff8a65 0%, #ffcc80 60%, #8d6e63 100%); }
-        .pet-scene[data-stage="dragon"]  { background: linear-gradient(180deg, #546e7a 0%, #90a4ae 60%, #d7ccc8 100%); }
+        .pet-scene[data-stage="puppy"]    { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
+        .pet-scene[data-stage="young"]   { background: linear-gradient(180deg, #c8e6c9 0%, #81c784 100%); }
+        .pet-scene[data-stage="adult"]   { background: linear-gradient(180deg, #ffe0b2 0%, #ffcc80 100%); }
+        .pet-scene[data-stage="strong"]  { background: linear-gradient(180deg, #b0bec5 0%, #78909c 60%, #a5d6a7 100%); }
+        .pet-scene[data-stage="champion"] { background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 60%, #ffb300 100%); }
 
         .pet-scene.time-morning   { filter: brightness(1.05) sepia(0.05); }
         .pet-scene.time-afternoon { filter: brightness(1.0); }
@@ -3543,6 +3542,291 @@
         @keyframes confettiFall {
             0%   { transform: translateY(-40px) rotate(0deg); opacity: 1; }
             100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ==================== DOG PET — LEVEL, XP, COINS, SHOP ==================== */
+
+        .pet-level-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: #5D4037;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 10px;
+            z-index: 5;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .pet-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0.8;
+            margin-top: 1px;
+        }
+
+        .pet-xp-bar {
+            position: relative;
+            width: 80%;
+            max-width: 160px;
+            height: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .pet-xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+        .pet-xp-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            font-weight: 700;
+            color: #333;
+            text-shadow: 0 0 2px rgba(255,255,255,0.8);
+        }
+
+        .pet-coin-display {
+            font-size: 13px;
+            font-weight: 700;
+            color: #F57F17;
+            cursor: pointer;
+            position: absolute;
+            top: 8px;
+            right: 40px;
+            background: rgba(255,255,255,0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            z-index: 5;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .pet-shop-label {
+            font-size: 8px;
+            opacity: 0.6;
+            font-weight: 600;
+        }
+
+        .pet-shop-btn {
+            background: linear-gradient(135deg, #7E57C2, #9575CD);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+            box-shadow: 0 2px 6px rgba(126, 87, 194, 0.3);
+        }
+        .pet-shop-btn:active { transform: scale(0.96); }
+
+        /* Shop modal */
+        .pet-shop-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .pet-shop-modal {
+            background: var(--card-bg, #fff);
+            border-radius: 16px;
+            padding: 20px 16px;
+            max-width: 340px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .shop-coins {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #F57F17;
+            margin-bottom: 10px;
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .shop-tab {
+            flex: 1;
+            padding: 6px 0;
+            border: 2px solid var(--border-color, #ddd);
+            background: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .shop-tab.active {
+            background: var(--accent-green, #4CAF50);
+            color: white;
+            border-color: var(--accent-green, #4CAF50);
+        }
+
+        .shop-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .shop-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: var(--bg-secondary, #f5f5f5);
+            transition: opacity 0.2s;
+        }
+        .shop-item.disabled { opacity: 0.5; }
+        .shop-item.owned { background: rgba(76,175,80,0.08); }
+
+        .shop-item-emoji {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .shop-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .shop-item-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .shop-item-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .shop-buy-btn {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: #5D4037;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .shop-buy-btn.disabled {
+            background: #ccc;
+            color: #888;
+            cursor: default;
+        }
+        .shop-buy-btn.owned {
+            background: var(--accent-green, #4CAF50);
+            color: white;
+        }
+        .shop-buy-btn.equipped {
+            background: #ef5350;
+            color: white;
+        }
+        .shop-buy-btn:active:not(.disabled) { transform: scale(0.95); }
+
+        /* Level-up overlay */
+        .level-up-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            animation: fadeIn 0.3s ease;
+        }
+        .level-up-text {
+            color: #FFD700;
+            font-size: 28px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            animation: evolutionPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .level-up-level {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .level-up-title {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .level-up-evolution {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .level-up-stage-name {
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .level-up-confetti {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            letter-spacing: 8px;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Coins earned on lesson complete */
+        .complete-coins {
+            font-size: 18px;
+            font-weight: 800;
+            color: #F57F17;
+            margin: 4px 0 8px;
+            animation: coinPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes coinPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* Pet info current stage highlight */
+        .pet-info-stage.current {
+            background: rgba(76,175,80,0.15);
+            border: 1px solid rgba(76,175,80,0.3);
+        }
+        .pet-info-stage.locked {
+            opacity: 0.5;
         }
 
         /* ==================== WORD OF THE DAY ==================== */
