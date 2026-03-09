@@ -155,6 +155,7 @@ function checkMatch() {
         // Points based on difficulty level
         const difficulty = getDifficultyLevel(lessonState.lessonNumber);
         const pointMultipliers = {
+            'Beginning': 1,
             'Basic': 1,
             'Intermediate': 1.5,
             'Upper-Intermediate': 2,
@@ -414,8 +415,8 @@ function completeLesson() {
 
     // Show difficulty bonus info
     const difficulty = getDifficultyLevel(lessonState.lessonNumber);
-    const multipliers = { 'Basic': '1x', 'Intermediate': '1.5x', 'Upper-Intermediate': '2x', 'Advanced': '2.5x' };
-    const bonusText = difficulty.name !== 'Basic' ? ` (${multipliers[difficulty.name]} ${difficulty.name})` : '';
+    const multipliers = { 'Beginning': '1x', 'Basic': '1x', 'Intermediate': '1.5x', 'Upper-Intermediate': '2x', 'Advanced': '2.5x' };
+    const bonusText = (difficulty.name !== 'Basic' && difficulty.name !== 'Beginning') ? ` (${multipliers[difficulty.name]} ${difficulty.name})` : '';
 
     // Offer sentence builder for good performance on regular lessons
     if (!lessonState.isPracticeSession && !lessonState.isReviewSession &&

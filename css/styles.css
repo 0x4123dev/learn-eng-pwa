@@ -791,7 +791,7 @@
             box-shadow: 0 4px 12px rgba(187,143,206,0.4);
         }
 
-        .difficulty-tab[data-level="house"].active {
+        .difficulty-tab[data-level="beginning"].active {
             background: linear-gradient(135deg, #FF8A65, #F4511E);
             box-shadow: 0 4px 12px rgba(255,138,101,0.4);
         }
