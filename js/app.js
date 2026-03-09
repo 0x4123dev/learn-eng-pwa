@@ -82,7 +82,7 @@ let userToDelete = null;
 let selectedAvatar = '😊';
 
 let appState = null;
-let selectedDifficultyFilter = 'basic';
+let selectedDifficultyFilter = 'beginning';
 
 let lessonState = {
     categoryId: null,

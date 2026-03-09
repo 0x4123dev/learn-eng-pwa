@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.6.0';
+const APP_VERSION = 'v2.7.0';
 
 function renderHome() {
     if (!appState) return;
@@ -26,18 +26,6 @@ function renderHome() {
 
     // Update difficulty tab counts
     updateDifficultyCounts();
-
-    // Handle topic-based tabs (house, etc.)
-    if (selectedDifficultyFilter === 'house') {
-        if (typeof renderTopicView === 'function') renderTopicView();
-        // Render pet but skip lesson/history sections
-        renderWordPet();
-        if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
-        return;
-    }
-
-    // Restore normal view if switching from topic tab
-    if (typeof restoreNormalView === 'function') restoreNormalView();
 
     // Get lesson based on filter
     const displayLesson = getNextLessonForDifficulty(selectedDifficultyFilter);
@@ -67,6 +55,7 @@ function renderHome() {
         // Get difficulty level
         const difficulty = getDifficultyLevel(displayLesson);
         const difficultyColors = {
+            'Beginning': 'linear-gradient(135deg, #FF8A65, #F4511E)',
             'Basic': 'linear-gradient(135deg, #58cc02, #4CAF50)',
             'Intermediate': 'linear-gradient(135deg, #1cb0f6, #0984e3)',
             'Upper-Intermediate': 'linear-gradient(135deg, #ff9600, #f39c12)',
@@ -87,7 +76,7 @@ function renderHome() {
         lessonStartCard.innerHTML = `
             <div class="lesson-difficulty">
                 <span class="difficulty-badge">${difficulty.icon} ${difficulty.name}</span>
-                <span class="difficulty-band">IELTS Band ${difficulty.band}</span>
+                <span class="difficulty-band">${difficulty.band === 'House' ? 'Household' : 'IELTS Band ' + difficulty.band}</span>
             </div>
             <div class="lesson-info">
                 <div class="lesson-number">Lesson ${lessonInRange} of ${rangeTotal}</div>
@@ -351,16 +340,19 @@ function relearnLesson(lessonNum) {
     startLesson(lessonNum);
 }
 
-function getDifficultyLevel(lessonNum) {
-    // Dynamic calculation based on total lessons
-    // Split into 4 equal parts
-    const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
+// Beginning level has a fixed number of lessons (112 house words)
+const BEGINNING_LESSONS = Math.ceil(112 / WORDS_PER_LESSON); // 23 lessons
+const IELTS_LESSONS = TOTAL_LESSONS - BEGINNING_LESSONS; // remaining IELTS lessons
+const IELTS_PER_LEVEL = Math.ceil(IELTS_LESSONS / 4); // split IELTS into 4 levels
 
-    if (lessonNum < lessonsPerLevel) {
+function getDifficultyLevel(lessonNum) {
+    if (lessonNum < BEGINNING_LESSONS) {
+        return { name: 'Beginning', key: 'beginning', icon: '🏠', band: 'House', color: '#FF7043' };
+    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL) {
         return { name: 'Basic', key: 'basic', icon: '🌱', band: '5-6', color: '#58cc02' };
-    } else if (lessonNum < lessonsPerLevel * 2) {
+    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL * 2) {
         return { name: 'Intermediate', key: 'intermediate', icon: '🌿', band: '6-7', color: '#1cb0f6' };
-    } else if (lessonNum < lessonsPerLevel * 3) {
+    } else if (lessonNum < BEGINNING_LESSONS + IELTS_PER_LEVEL * 3) {
         return { name: 'Upper-Intermediate', key: 'upper', icon: '🌳', band: '7-8', color: '#ff9600' };
     } else {
         return { name: 'Advanced', key: 'advanced', icon: '⭐', band: '8-9', color: '#ce82ff' };
@@ -368,12 +360,12 @@ function getDifficultyLevel(lessonNum) {
 }
 
 function getLessonRangeForDifficulty(difficultyKey) {
-    const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
     switch (difficultyKey) {
-        case 'basic': return { start: 0, end: lessonsPerLevel };
-        case 'intermediate': return { start: lessonsPerLevel, end: lessonsPerLevel * 2 };
-        case 'upper': return { start: lessonsPerLevel * 2, end: lessonsPerLevel * 3 };
-        case 'advanced': return { start: lessonsPerLevel * 3, end: TOTAL_LESSONS };
+        case 'beginning': return { start: 0, end: BEGINNING_LESSONS };
+        case 'basic': return { start: BEGINNING_LESSONS, end: BEGINNING_LESSONS + IELTS_PER_LEVEL };
+        case 'intermediate': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL, end: BEGINNING_LESSONS + IELTS_PER_LEVEL * 2 };
+        case 'upper': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL * 2, end: BEGINNING_LESSONS + IELTS_PER_LEVEL * 3 };
+        case 'advanced': return { start: BEGINNING_LESSONS + IELTS_PER_LEVEL * 3, end: TOTAL_LESSONS };
         default: return { start: 0, end: TOTAL_LESSONS };
     }
 }
@@ -408,12 +400,12 @@ function filterByDifficulty(level) {
 }
 
 function updateDifficultyCounts() {
-    const lessonsPerLevel = Math.ceil(TOTAL_LESSONS / 4);
-
-    document.getElementById('countBasic').textContent = lessonsPerLevel;
-    document.getElementById('countIntermediate').textContent = lessonsPerLevel;
-    document.getElementById('countUpper').textContent = lessonsPerLevel;
-    document.getElementById('countAdvanced').textContent = TOTAL_LESSONS - (lessonsPerLevel * 3);
+    const beginEl = document.getElementById('countBeginning');
+    if (beginEl) beginEl.textContent = BEGINNING_LESSONS;
+    document.getElementById('countBasic').textContent = IELTS_PER_LEVEL;
+    document.getElementById('countIntermediate').textContent = IELTS_PER_LEVEL;
+    document.getElementById('countUpper').textContent = IELTS_PER_LEVEL;
+    document.getElementById('countAdvanced').textContent = TOTAL_LESSONS - BEGINNING_LESSONS - (IELTS_PER_LEVEL * 3);
 }
 
 function startNextLesson() {
