@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.7.2';
+const APP_VERSION = 'v2.7.3';
 
 function renderHome() {
     if (!appState) return;
@@ -90,13 +90,9 @@ function renderHome() {
 
     // Render fun features
     renderWordPet();
-    if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
 
     // Render lesson history
     renderLessonHistory();
-
-    // Update SRS review card
-    updateReviewCard();
 }
 
 function updateReviewCard() {
@@ -632,6 +628,7 @@ function renderWordPet() {
     const questHTML = `<div class="pet-quest ${questDone ? 'completed' : ''}">${questDone ? '✅' : '🐾'} ${questData.text}</div>`;
 
     container.innerHTML = `
+        <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()">${pet.emoji}</div>
             ${accSpans}
@@ -647,6 +644,37 @@ function renderWordPet() {
     if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("Please feed me! 😢"), 500);
     }
+}
+
+function showPetInfo() {
+    // Remove existing modal if any
+    const existing = document.getElementById('petInfoModal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'petInfoModal';
+    overlay.className = 'pet-info-modal-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `
+        <div class="pet-info-modal">
+            <button class="pet-info-close" onclick="document.getElementById('petInfoModal').remove()">✕</button>
+            <h3 style="margin:0 0 12px;font-size:18px">🐾 Pet Evolution</h3>
+            <p style="margin:0 0 14px;font-size:13px;color:var(--text-secondary)">Your pet evolves as you earn points from lessons!</p>
+            <div class="pet-info-stages">
+                <div class="pet-info-stage"><span class="pet-info-emoji">🥚</span><span class="pet-info-label">Egg</span><span class="pet-info-pts">0 pts</span></div>
+                <div class="pet-info-stage"><span class="pet-info-emoji">🐣</span><span class="pet-info-label">Chick</span><span class="pet-info-pts">100 pts</span></div>
+                <div class="pet-info-stage"><span class="pet-info-emoji">🐦</span><span class="pet-info-label">Bird</span><span class="pet-info-pts">500 pts</span></div>
+                <div class="pet-info-stage"><span class="pet-info-emoji">🦅</span><span class="pet-info-label">Phoenix</span><span class="pet-info-pts">2,000 pts</span></div>
+                <div class="pet-info-stage"><span class="pet-info-emoji">🐉</span><span class="pet-info-label">Dragon</span><span class="pet-info-pts">5,000 pts</span></div>
+            </div>
+            <div class="pet-info-tips">
+                <div class="pet-info-tip">❤️ <strong>Hearts</strong> = hunger — feed by completing lessons</div>
+                <div class="pet-info-tip">🐾 <strong>Quests</strong> = daily tasks for bonus points</div>
+                <div class="pet-info-tip">👆 <strong>Tap</strong> your pet for encouragement!</div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
 }
 
 function savePetName() {
