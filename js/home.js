@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.8.0';
+const APP_VERSION = 'v2.9.0';
 
 function renderHome() {
     if (!appState) return;
@@ -426,11 +426,16 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,  emoji: '🐶', name: 'Puppy',        size: 48, habitat: ['🌿','🌱','🌼'] },
-    { minLevel: 21, emoji: '🐕', name: 'Young Dog',     size: 64, habitat: ['🌳','🍃','🌸'] },
-    { minLevel: 41, emoji: '🐕', name: 'Adult Dog',     size: 80, habitat: ['🏠','🌲','🌻'] },
-    { minLevel: 61, emoji: '🐕', name: 'Strong Dog',    size: 96, habitat: ['🏔️','⛰️','🌲'] },
-    { minLevel: 81, emoji: '🐕‍🦺', name: 'Champion Dog', size: 112, habitat: ['👑','✨','🏆'] }
+    { minLevel: 1,  emoji: '🐶',    name: 'Chihuahua',     size: 40, habitat: ['🌿','🌱','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 11, emoji: '🐕',    name: 'Beagle',        size: 48, habitat: ['🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 21, emoji: '🐩',    name: 'Poodle',        size: 56, habitat: ['🌳','🍃','🌸'],  stageCss: 'poodle' },
+    { minLevel: 31, emoji: '🦮',    name: 'Retriever',     size: 64, habitat: ['🌲','🍂','🐿️'], stageCss: 'retriever' },
+    { minLevel: 41, emoji: '🐾',    name: 'Dalmatian',     size: 72, habitat: ['🏠','🌻','🌳'],  stageCss: 'dalmatian' },
+    { minLevel: 51, emoji: '🐺',    name: 'Husky',         size: 80, habitat: ['🏔️','❄️','🌲'], stageCss: 'husky' },
+    { minLevel: 61, emoji: '🐕‍🦺',  name: 'Shepherd',      size: 88, habitat: ['🌊','🏖️','🐚'], stageCss: 'shepherd' },
+    { minLevel: 71, emoji: '🦊',    name: 'Akita',         size: 96, habitat: ['🏰','🌹','⚔️'], stageCss: 'akita' },
+    { minLevel: 81, emoji: '🦁',    name: 'Royal Hound',   size: 104, habitat: ['⭐','🌙','🔮'], stageCss: 'royal' },
+    { minLevel: 91, emoji: '🐉',    name: 'Diamond Dog',   size: 112, habitat: ['👑','✨','🏆'], stageCss: 'diamond' }
 ];
 
 const DOG_FOOD = [
@@ -442,14 +447,62 @@ const DOG_FOOD = [
 ];
 
 const DOG_ACCESSORIES = [
-    { id: 'bow',      emoji: '🎀', name: 'Bow',           price: 30,  cssClass: 'bow' },
-    { id: 'glasses',  emoji: '🕶️', name: 'Sunglasses',    price: 50,  cssClass: 'glasses' },
-    { id: 'scarf',    emoji: '🧣', name: 'Scarf',         price: 60,  cssClass: 'scarf' },
-    { id: 'hat',      emoji: '🎩', name: 'Top Hat',       price: 80,  cssClass: 'hat' },
-    { id: 'crown',    emoji: '👑', name: 'Crown',         price: 150, cssClass: 'crown' },
-    { id: 'rainbow',  emoji: '🌈', name: 'Rainbow Aura',  price: 200, cssClass: 'rainbow' },
-    { id: 'flame',    emoji: '🔥', name: 'Flame Collar',  price: 300, cssClass: 'flame' },
-    { id: 'diamond',  emoji: '💎', name: 'Diamond Collar', price: 500, cssClass: 'diamond' }
+    // Hats (10)
+    { id: 'bow',        emoji: '🎀', name: 'Bow',            price: 300,   slot: 'head' },
+    { id: 'cap',        emoji: '🧢', name: 'Cap',            price: 400,   slot: 'head' },
+    { id: 'partyhat',   emoji: '🥳', name: 'Party Hat',      price: 500,   slot: 'head' },
+    { id: 'beret',      emoji: '🫐', name: 'Beret',          price: 700,   slot: 'head' },
+    { id: 'hat',        emoji: '🎩', name: 'Top Hat',        price: 800,   slot: 'head' },
+    { id: 'cowboy',     emoji: '🤠', name: 'Cowboy Hat',     price: 1200,  slot: 'head' },
+    { id: 'crown',      emoji: '👑', name: 'Crown',          price: 1500,  slot: 'head' },
+    { id: 'santa',      emoji: '🎅', name: 'Santa Hat',      price: 1800,  slot: 'head' },
+    { id: 'wizard',     emoji: '🧙', name: 'Wizard Hat',     price: 2000,  slot: 'head' },
+    { id: 'viking',     emoji: '⚔️', name: 'Viking Helmet',  price: 3000,  slot: 'head' },
+    // Eyewear (7)
+    { id: 'nerd',       emoji: '🤓', name: 'Nerd Glasses',   price: 400,   slot: 'eyes' },
+    { id: 'glasses',    emoji: '🕶️', name: 'Sunglasses',     price: 500,   slot: 'eyes' },
+    { id: 'monocle',    emoji: '🧐', name: 'Monocle',        price: 600,   slot: 'eyes' },
+    { id: 'heartglass', emoji: '😍', name: 'Heart Glasses',  price: 800,   slot: 'eyes' },
+    { id: 'goggles',    emoji: '🥽', name: 'Goggles',        price: 900,   slot: 'eyes' },
+    { id: 'starglass',  emoji: '🤩', name: 'Star Glasses',   price: 1000,  slot: 'eyes' },
+    { id: 'pixel',      emoji: '😎', name: 'Pixel Shades',   price: 1500,  slot: 'eyes' },
+    // Neckwear (8)
+    { id: 'collar',     emoji: '⭕', name: 'Collar',         price: 300,   slot: 'neck' },
+    { id: 'bandana',    emoji: '🔴', name: 'Bandana',        price: 400,   slot: 'neck' },
+    { id: 'bowtie',     emoji: '🎀', name: 'Bow Tie',        price: 500,   slot: 'neck' },
+    { id: 'scarf',      emoji: '🧣', name: 'Scarf',          price: 600,   slot: 'neck' },
+    { id: 'bellcollar', emoji: '🔔', name: 'Bell Collar',    price: 700,   slot: 'neck' },
+    { id: 'tie',        emoji: '👔', name: 'Tie',            price: 800,   slot: 'neck' },
+    { id: 'necklace',   emoji: '📿', name: 'Necklace',       price: 1000,  slot: 'neck' },
+    { id: 'goldchain',  emoji: '⛓️', name: 'Gold Chain',     price: 2000,  slot: 'neck' },
+    // Back/Body (8)
+    { id: 'lifejacket', emoji: '🦺', name: 'Life Jacket',    price: 600,   slot: 'body' },
+    { id: 'backpack',   emoji: '🎒', name: 'Backpack',       price: 800,   slot: 'body' },
+    { id: 'sweater',    emoji: '🧥', name: 'Sweater',        price: 1000,  slot: 'body' },
+    { id: 'saddle',     emoji: '🐴', name: 'Saddle',         price: 1200,  slot: 'body' },
+    { id: 'cape',       emoji: '🦸', name: 'Cape',           price: 1500,  slot: 'body' },
+    { id: 'tuxedo',     emoji: '🤵', name: 'Tuxedo',         price: 2500,  slot: 'body' },
+    { id: 'wings',      emoji: '🪽', name: 'Wings',          price: 3000,  slot: 'body' },
+    { id: 'armor',      emoji: '🛡️', name: 'Armor',          price: 5000,  slot: 'body' },
+    // Effects (9)
+    { id: 'flowercrown',emoji: '🌺', name: 'Flower Crown',   price: 800,   slot: 'effect' },
+    { id: 'bubblering', emoji: '🫧', name: 'Bubble Ring',     price: 1000,  slot: 'effect' },
+    { id: 'musicnotes', emoji: '🎵', name: 'Music Notes',     price: 1200,  slot: 'effect' },
+    { id: 'sparkles',   emoji: '✨', name: 'Sparkles',        price: 1500,  slot: 'effect' },
+    { id: 'rainbow',    emoji: '🌈', name: 'Rainbow Aura',    price: 2000,  slot: 'effect' },
+    { id: 'snowflurry', emoji: '❄️', name: 'Snow Flurry',     price: 2000,  slot: 'effect' },
+    { id: 'lightning',  emoji: '⚡', name: 'Lightning',       price: 2500,  slot: 'effect' },
+    { id: 'flame',      emoji: '🔥', name: 'Flame Collar',    price: 3000,  slot: 'effect' },
+    { id: 'diamond',    emoji: '💎', name: 'Diamond Collar',  price: 5000,  slot: 'effect' },
+    // Toys (8)
+    { id: 'stick',      emoji: '🪵', name: 'Stick',           price: 100,   slot: 'toy' },
+    { id: 'ball',       emoji: '🎾', name: 'Ball',            price: 200,   slot: 'toy' },
+    { id: 'bonetoy',    emoji: '🦴', name: 'Bone Toy',        price: 300,   slot: 'toy' },
+    { id: 'kong',       emoji: '🟠', name: 'Kong',            price: 350,   slot: 'toy' },
+    { id: 'ropetoy',    emoji: '🪢', name: 'Rope Toy',        price: 400,   slot: 'toy' },
+    { id: 'frisbee',    emoji: '🥏', name: 'Frisbee',         price: 500,   slot: 'toy' },
+    { id: 'squeakduck', emoji: '🦆', name: 'Squeaky Duck',    price: 600,   slot: 'toy' },
+    { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 700,   slot: 'toy' }
 ];
 
 const HUNGER_DECAY_SCHEDULE = [
@@ -537,13 +590,16 @@ function getDogStage(level) {
 
 function getDogTitle(level) {
     if (level >= 100) return 'Ultimate Champion';
-    if (level >= 86)  return 'Champion';
-    if (level >= 71)  return 'Legend';
-    if (level >= 56)  return 'Hero Dog';
-    if (level >= 41)  return 'Super Dog';
-    if (level >= 26)  return 'Best Friend';
-    if (level >= 11)  return 'Good Boy';
-    return 'Puppy Pal';
+    if (level >= 91)  return 'Diamond Legend';
+    if (level >= 81)  return 'Royal Hound';
+    if (level >= 71)  return 'Noble Akita';
+    if (level >= 61)  return 'Brave Shepherd';
+    if (level >= 51)  return 'Arctic Husky';
+    if (level >= 41)  return 'Cool Dalmatian';
+    if (level >= 31)  return 'Golden Retriever';
+    if (level >= 21)  return 'Fancy Poodle';
+    if (level >= 11)  return 'Happy Beagle';
+    return 'Little Chihuahua';
 }
 
 function computeCurrentHunger(state) {
@@ -628,7 +684,7 @@ function renderWordPet() {
 
     // Habitat/scene
     scene.className = 'pet-scene ' + getTimeOfDayClass();
-    scene.dataset.stage = level <= 20 ? 'puppy' : level <= 40 ? 'young' : level <= 60 ? 'adult' : level <= 80 ? 'strong' : 'champion';
+    scene.dataset.stage = stage.stageCss;
     if (bg) {
         bg.innerHTML = stage.habitat.map(e => `<span>${e}</span>`).join('');
     }
@@ -648,11 +704,6 @@ function renderWordPet() {
         return;
     }
 
-    // Hunger hearts
-    const hunger = computeCurrentHunger(appState);
-    const filledHearts = Math.round(hunger / 20);
-    const heartsHTML = '❤️'.repeat(filledHearts) + '🖤'.repeat(5 - filledHearts);
-
     // XP progress bar
     const currentXP = appState.dogGrowthXP || 0;
     const currentLevelXP = getPointsForLevel(level);
@@ -661,15 +712,16 @@ function renderWordPet() {
     const xpNeeded = nextLevelXP - currentLevelXP;
     const xpPercent = level >= 100 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
 
-    // Active accessories
+    // Active accessories — scale emoji size relative to dog size
     const active = appState.activeAccessories || [];
     const accSpans = active.map(id => {
         const acc = DOG_ACCESSORIES.find(a => a.id === id);
         if (!acc) return '';
-        return `<span class="pet-accessory ${acc.cssClass}">${acc.emoji}</span>`;
+        const accSize = Math.max(16, Math.round(stage.size * 0.35));
+        return `<span class="pet-accessory acc-${acc.slot}" style="font-size:${accSize}px">${acc.emoji}</span>`;
     }).join('');
 
-    // Daily quest
+    // Still track daily quest behind the scenes (for _completeQuest)
     const today = new Date().toDateString();
     if (!appState.petQuest || appState.petQuest.lastDate !== today) {
         const quest = getDailyQuest(appState);
@@ -678,16 +730,13 @@ function renderWordPet() {
         appState.petQuest.questId  = quest.id;
         appState.petQuest.completed = false;
     }
-    const questData = PET_QUESTS.find(q => q.id === appState.petQuest.questId) || PET_QUESTS[0];
-    const questDone = appState.petQuest.completed;
-    const questHTML = `<div class="pet-quest ${questDone ? 'completed' : ''}">${questDone ? '✅' : '🐾'} ${questData.text}</div>`;
 
     container.innerHTML = `
         <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
         <div class="pet-level-badge">Lv.${level}</div>
         <div class="pet-coin-display" onclick="showPetShop()">🪙 ${appState.coins || 0}</div>
         <div class="pet-wrapper">
-            <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px">${stage.emoji}</div>
+            <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px" data-stage="${stage.stageCss}">${stage.emoji}</div>
             ${accSpans}
         </div>
         <div class="pet-name">${appState.petName} <span style="font-weight:400;opacity:0.7">· ${stage.name}</span></div>
@@ -696,12 +745,11 @@ function renderWordPet() {
             <div class="pet-xp-fill" style="width:${xpPercent}%"></div>
             <span class="pet-xp-text">${level >= 100 ? 'MAX' : `${xpInLevel}/${xpNeeded}`}</span>
         </div>
-        <div class="pet-hunger">${heartsHTML}</div>
         <button class="pet-shop-btn" onclick="showPetShop()">🛒 Shop</button>
-        ${questHTML}
     `;
 
-    // Auto-show starving bubble
+    // Auto-show starving bubble if no food in a long time
+    const hunger = computeCurrentHunger(appState);
     if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     }
@@ -714,13 +762,14 @@ function showPetInfo() {
     const level = appState.dogLevel || 1;
     const currentXP = appState.dogGrowthXP || 0;
 
-    // Build stages list
+    // Build stages list (10 stages, 2 columns)
     const stagesHTML = DOG_STAGES.map(s => {
         const unlocked = level >= s.minLevel;
-        return `<div class="pet-info-stage ${unlocked ? '' : 'locked'}">
-            <span class="pet-info-emoji" style="font-size:${Math.min(s.size/3, 28)}px">${s.emoji}</span>
+        const isCurrent = getDogStage(level) === s;
+        return `<div class="pet-info-stage ${unlocked ? '' : 'locked'} ${isCurrent ? 'current' : ''}">
+            <span class="pet-info-emoji" style="font-size:${Math.min(s.size/3, 24)}px">${s.emoji}</span>
             <span class="pet-info-label">${s.name}</span>
-            <span class="pet-info-pts">Lv.${s.minLevel}${unlocked ? ' ✅' : ' 🔒'}</span>
+            <span class="pet-info-pts">Lv.${s.minLevel}${isCurrent ? ' 🐾' : unlocked ? ' ✅' : ' 🔒'}</span>
         </div>`;
     }).join('');
 
@@ -757,6 +806,17 @@ function showPetInfo() {
 }
 
 let _shopTab = 'food';
+let _accCategory = 'all';
+
+const ACC_CATEGORIES = [
+    { id: 'all',    label: 'All',     emoji: '🛍️' },
+    { id: 'head',   label: 'Hats',    emoji: '🎩' },
+    { id: 'eyes',   label: 'Eyes',    emoji: '🕶️' },
+    { id: 'neck',   label: 'Neck',    emoji: '🧣' },
+    { id: 'body',   label: 'Body',    emoji: '🧥' },
+    { id: 'effect', label: 'Effects', emoji: '✨' },
+    { id: 'toy',    label: 'Toys',    emoji: '🎾' }
+];
 
 function showPetShop() {
     const existing = document.getElementById('petShopModal');
@@ -785,7 +845,10 @@ function renderShopContent() {
         </div>`;
     }).join('');
 
-    const accItems = DOG_ACCESSORIES.map(a => {
+    // Filter accessories by category
+    const filteredAcc = _accCategory === 'all' ? DOG_ACCESSORIES : DOG_ACCESSORIES.filter(a => a.slot === _accCategory);
+
+    const accItems = filteredAcc.map(a => {
         const owned = (appState.petAccessories || []).includes(a.id);
         const equipped = (appState.activeAccessories || []).includes(a.id);
         const canAfford = coins >= a.price;
@@ -799,11 +862,16 @@ function renderShopContent() {
             <span class="shop-item-emoji">${a.emoji}</span>
             <div class="shop-item-info">
                 <div class="shop-item-name">${a.name}</div>
-                <div class="shop-item-desc">${owned ? (equipped ? 'Equipped' : 'Owned') : 'Cosmetic'}</div>
+                <div class="shop-item-desc">${owned ? (equipped ? 'Equipped' : 'Owned') : a.slot}</div>
             </div>
             ${btnHTML}
         </div>`;
     }).join('');
+
+    // Category filter pills for accessories tab
+    const catPills = ACC_CATEGORIES.map(c =>
+        `<button class="shop-cat-pill ${_accCategory === c.id ? 'active' : ''}" onclick="_accCategory='${c.id}';refreshShop()">${c.emoji} ${c.label}</button>`
+    ).join('');
 
     return `
         <div class="pet-shop-modal">
@@ -814,6 +882,7 @@ function renderShopContent() {
                 <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
                 <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
             </div>
+            ${_shopTab === 'acc' ? `<div class="shop-categories">${catPills}</div>` : ''}
             <div class="shop-items">
                 ${_shopTab === 'food' ? foodItems : accItems}
             </div>
