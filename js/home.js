@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.4.1';
+const APP_VERSION = 'v2.5.0';
 
 function renderHome() {
     if (!appState) return;
@@ -26,6 +26,18 @@ function renderHome() {
 
     // Update difficulty tab counts
     updateDifficultyCounts();
+
+    // Handle topic-based tabs (house, etc.)
+    if (selectedDifficultyFilter === 'house') {
+        if (typeof renderTopicView === 'function') renderTopicView();
+        // Render pet but skip lesson/history sections
+        renderWordPet();
+        if (typeof renderDailyChallenge === 'function') renderDailyChallenge();
+        return;
+    }
+
+    // Restore normal view if switching from topic tab
+    if (typeof restoreNormalView === 'function') restoreNormalView();
 
     // Get lesson based on filter
     const displayLesson = getNextLessonForDifficulty(selectedDifficultyFilter);
