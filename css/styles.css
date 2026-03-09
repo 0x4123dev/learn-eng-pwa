@@ -3183,9 +3183,6 @@
         }
 
         .pet-info-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
             width: 28px;
             height: 28px;
             border-radius: 50%;
@@ -3193,12 +3190,12 @@
             background: rgba(255,255,255,0.7);
             font-size: 14px;
             cursor: pointer;
-            z-index: 5;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
             transition: background 0.2s;
+            flex-shrink: 0;
         }
         .pet-info-btn:hover { background: rgba(255,255,255,0.95); }
 
@@ -3572,17 +3569,23 @@
 
         /* ==================== DOG PET — LEVEL, XP, COINS, SHOP ==================== */
 
+        .pet-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0 8px;
+            margin-bottom: 4px;
+        }
+
         .pet-level-badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
             background: linear-gradient(135deg, #FFD700, #FFA000);
             color: #5D4037;
             font-size: 11px;
             font-weight: 800;
             padding: 3px 8px;
             border-radius: 10px;
-            z-index: 5;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
@@ -3627,13 +3630,9 @@
             font-weight: 700;
             color: #F57F17;
             cursor: pointer;
-            position: absolute;
-            top: 8px;
-            right: 40px;
             background: rgba(255,255,255,0.7);
             padding: 2px 8px;
             border-radius: 10px;
-            z-index: 5;
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
 
