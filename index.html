@@ -133,21 +133,6 @@
                 </div>
                 <div class="evolution-overlay" id="evolutionOverlay" style="display:none"></div>
 
-                <div class="review-card" id="reviewCard" style="display: none;">
-                    <div class="review-card-top">
-                        <div class="review-icon">🧠</div>
-                        <div class="review-info">
-                            <div class="review-title" id="reviewTitle">0 words due today</div>
-                            <div class="review-subtitle" id="reviewSubtitle">Keep your memory strong!</div>
-                        </div>
-                        <button class="review-start-btn" id="reviewStartBtn" onclick="startReviewSession()">REVIEW</button>
-                    </div>
-                    <div class="review-progress-bar">
-                        <div class="review-progress-fill" id="reviewProgressFill" style="width: 0%"></div>
-                    </div>
-                    <div class="review-progress-label" id="reviewProgressLabel">0% mastered</div>
-                </div>
-
                 <div class="difficulty-tabs" id="difficultyTabs">
                     <button class="difficulty-tab active" data-level="beginning" onclick="filterByDifficulty('beginning')">
                         🏠 Beginning <span class="tab-count" id="countBeginning">0</span>
@@ -176,8 +161,6 @@
                         Start Lesson
                     </button>
                 </div>
-
-                <div class="daily-challenge-card" id="dailyChallengeCard"></div>
 
                 <h2 class="section-title">📖 History</h2>
                 <div class="history-tabs">
@@ -242,62 +225,10 @@
                     </div>
                 </div>
 
-                <div class="speed-levels">
-                    <h3 class="section-title">Choose Level</h3>
-                    <div class="level-grid">
-                        <button class="level-btn level-1" onclick="startSpeedChallenge(1)">
-                            <span class="level-icon">🌱</span>
-                            <span class="level-name">Basic</span>
-                            <span class="level-verbs">25 verbs</span>
-                        </button>
-                        <button class="level-btn level-2" onclick="startSpeedChallenge(2)">
-                            <span class="level-icon">🌿</span>
-                            <span class="level-name">Medium</span>
-                            <span class="level-verbs">25 verbs</span>
-                        </button>
-                        <button class="level-btn level-3" onclick="startSpeedChallenge(3)">
-                            <span class="level-icon">🌳</span>
-                            <span class="level-name">Hard</span>
-                            <span class="level-verbs">40 verbs</span>
-                        </button>
-                        <button class="level-btn level-4" onclick="startSpeedChallenge(4)">
-                            <span class="level-icon">🔥</span>
-                            <span class="level-name">Expert</span>
-                            <span class="level-verbs">40 verbs</span>
-                        </button>
-                        <button class="level-btn level-5" onclick="startSpeedChallenge(5)">
-                            <span class="level-icon">💎</span>
-                            <span class="level-name">Master</span>
-                            <span class="level-verbs">14 verbs</span>
-                        </button>
-                        <button class="level-btn level-all" onclick="startSpeedChallenge(0)">
-                            <span class="level-icon">⚡</span>
-                            <span class="level-name">All Verbs</span>
-                            <span class="level-verbs">144 verbs</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="speed-rules">
-                    <h3 class="section-title">How to Play</h3>
-                    <div class="rules-list">
-                        <div class="rule-item">
-                            <span class="rule-icon">👀</span>
-                            <span>See V1 (base form)</span>
-                        </div>
-                        <div class="rule-item">
-                            <span class="rule-icon">⌨️</span>
-                            <span>Type V2 & V3 in 45 seconds</span>
-                        </div>
-                        <div class="rule-item">
-                            <span class="rule-icon">🎯</span>
-                            <span>Correct = Points + Speed Bonus</span>
-                        </div>
-                        <div class="rule-item">
-                            <span class="rule-icon">❌</span>
-                            <span>Wrong = 3 second penalty</span>
-                        </div>
-                    </div>
+                <div style="text-align:center;margin:16px 0">
+                    <button class="primary-btn" onclick="startSpeedChallenge(0)" style="font-size:16px;padding:14px 48px">
+                        ⚡ Start Challenge<br><span style="font-size:11px;opacity:0.8">All 144 verbs</span>
+                    </button>
                 </div>
 
                 <div class="speed-history-section">
