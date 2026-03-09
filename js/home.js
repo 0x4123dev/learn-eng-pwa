@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.7.3';
+const APP_VERSION = 'v2.8.0';
 
 function renderHome() {
     if (!appState) return;
@@ -425,13 +425,32 @@ function renderShields() {
 
 // ==================== WORD PET ====================
 
-const PET_HABITATS = {
-    egg:     { decorations: ['🌿','🌿','🌱'] },
-    chick:   { decorations: ['🌸','🌿','🌼','🌸'] },
-    bird:    { decorations: ['🌳','🍃','🌿'] },
-    phoenix: { decorations: ['🌋','🔥','✨'] },
-    dragon:  { decorations: ['🏔️','☁️','⛰️'] }
-};
+const DOG_STAGES = [
+    { minLevel: 1,  emoji: '🐶', name: 'Puppy',        size: 48, habitat: ['🌿','🌱','🌼'] },
+    { minLevel: 21, emoji: '🐕', name: 'Young Dog',     size: 64, habitat: ['🌳','🍃','🌸'] },
+    { minLevel: 41, emoji: '🐕', name: 'Adult Dog',     size: 80, habitat: ['🏠','🌲','🌻'] },
+    { minLevel: 61, emoji: '🐕', name: 'Strong Dog',    size: 96, habitat: ['🏔️','⛰️','🌲'] },
+    { minLevel: 81, emoji: '🐕‍🦺', name: 'Champion Dog', size: 112, habitat: ['👑','✨','🏆'] }
+];
+
+const DOG_FOOD = [
+    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 5,  growth: 5 },
+    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 15, growth: 15 },
+    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 25, growth: 30 },
+    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 40, growth: 50 },
+    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 80, growth: 120 }
+];
+
+const DOG_ACCESSORIES = [
+    { id: 'bow',      emoji: '🎀', name: 'Bow',           price: 30,  cssClass: 'bow' },
+    { id: 'glasses',  emoji: '🕶️', name: 'Sunglasses',    price: 50,  cssClass: 'glasses' },
+    { id: 'scarf',    emoji: '🧣', name: 'Scarf',         price: 60,  cssClass: 'scarf' },
+    { id: 'hat',      emoji: '🎩', name: 'Top Hat',       price: 80,  cssClass: 'hat' },
+    { id: 'crown',    emoji: '👑', name: 'Crown',         price: 150, cssClass: 'crown' },
+    { id: 'rainbow',  emoji: '🌈', name: 'Rainbow Aura',  price: 200, cssClass: 'rainbow' },
+    { id: 'flame',    emoji: '🔥', name: 'Flame Collar',  price: 300, cssClass: 'flame' },
+    { id: 'diamond',  emoji: '💎', name: 'Diamond Collar', price: 500, cssClass: 'diamond' }
+];
 
 const HUNGER_DECAY_SCHEDULE = [
     { hoursWithout: 96, level: 0  },
@@ -479,52 +498,52 @@ const PET_PHRASES = {
     ]
 };
 
-const PET_ACCESSORIES = [
-    { id: 'hat',      emoji: '🎩', label: 'Top Hat',      cssClass: 'hat',
-      condition: s => (s.streak || 0) >= 5 },
-    { id: 'glasses',  emoji: '🕶️', label: 'Sunglasses',   cssClass: 'glasses',
-      condition: s => (s.lessonsCompleted || 0) >= 10 },
-    { id: 'bow',      emoji: '🎀', label: 'Bow',           cssClass: 'bow',
-      condition: s => (s.lessonsCompleted || 0) >= 25 },
-    { id: 'crown',    emoji: '⭐', label: 'Star Crown',    cssClass: 'crown',
-      condition: s => (s.streak || 0) >= 7 },
-    { id: 'scarf',    emoji: '🧣', label: 'Scarf',         cssClass: 'scarf',
-      condition: s => (s.lessonsCompleted || 0) >= 50 },
-    { id: 'rainbow',  emoji: '🌈', label: 'Rainbow Aura',  cssClass: 'rainbow',
-      condition: s => (s.lessonsCompleted || 0) >= 100 },
-    { id: 'flame',    emoji: '🔥', label: 'Flame Halo',    cssClass: 'flame',
-      condition: s => (s.streak || 0) >= 30 },
-    { id: 'diamond',  emoji: '💎', label: 'Diamond',       cssClass: 'diamond',
-      condition: s => (s.points || 0) >= 5000 }
-];
-
 const PET_QUESTS = [
-    { id: 'lesson',    text: 'Complete 1 lesson today',          pts: 20, hunger: 30,
+    { id: 'lesson',    text: 'Complete 1 lesson today',          coins: 5, hunger: 30,
       eligible: () => true },
-    { id: 'perfect',   text: 'Get 100% accuracy in a lesson',   pts: 30, hunger: 40,
+    { id: 'perfect',   text: 'Get 100% accuracy in a lesson',   coins: 10, hunger: 40,
       eligible: () => true },
-    { id: 'srs',       text: 'Complete an SRS review session',   pts: 20, hunger: 30,
+    { id: 'srs',       text: 'Complete an SRS review session',   coins: 5, hunger: 30,
       eligible: s => s.srs && Object.keys(s.srs).length >= 3 },
-    { id: 'wotd',      text: 'Open the Word of the Day',        pts: 10, hunger: 20,
+    { id: 'wotd',      text: 'Open the Word of the Day',        coins: 3, hunger: 20,
       eligible: () => true },
-    { id: 'bubbles',   text: 'Play Word Bubbles',               pts: 20, hunger: 30,
+    { id: 'bubbles',   text: 'Play Word Bubbles',               coins: 5, hunger: 30,
       eligible: () => true },
-    { id: 'challenge', text: 'Complete the Daily Challenge',     pts: 25, hunger: 35,
+    { id: 'streak3',   text: 'Study 3 days in a row',           coins: 15, hunger: 50,
       eligible: () => true },
-    { id: 'streak3',   text: 'Study 3 days in a row',           pts: 40, hunger: 50,
-      eligible: () => true },
-    { id: 'rhythm',   text: 'Play a music game',              pts: 20, hunger: 30,
+    { id: 'rhythm',    text: 'Play a music game',               coins: 5, hunger: 30,
       eligible: () => true }
 ];
 
-let _accTrayOpen = false;
+function getPointsForLevel(level) {
+    if (level <= 1) return 0;
+    return Math.floor(2.5 * Math.pow(level - 1, 2) + 10 * (level - 1));
+}
 
-function getPetStage(points) {
-    if (points >= 5000) return { emoji: '🐉', name: 'Dragon',  key: 'dragon'  };
-    if (points >= 2000) return { emoji: '🦅', name: 'Phoenix', key: 'phoenix' };
-    if (points >= 500)  return { emoji: '🐦', name: 'Bird',    key: 'bird'    };
-    if (points >= 100)  return { emoji: '🐣', name: 'Chick',   key: 'chick'   };
-    return                     { emoji: '🥚', name: 'Egg',     key: 'egg'     };
+function getDogLevel(growthXP) {
+    let level = 1;
+    for (let l = 100; l >= 1; l--) {
+        if (growthXP >= getPointsForLevel(l)) { level = l; break; }
+    }
+    return level;
+}
+
+function getDogStage(level) {
+    for (let i = DOG_STAGES.length - 1; i >= 0; i--) {
+        if (level >= DOG_STAGES[i].minLevel) return DOG_STAGES[i];
+    }
+    return DOG_STAGES[0];
+}
+
+function getDogTitle(level) {
+    if (level >= 100) return 'Ultimate Champion';
+    if (level >= 86)  return 'Champion';
+    if (level >= 71)  return 'Legend';
+    if (level >= 56)  return 'Hero Dog';
+    if (level >= 41)  return 'Super Dog';
+    if (level >= 26)  return 'Best Friend';
+    if (level >= 11)  return 'Good Boy';
+    return 'Puppy Pal';
 }
 
 function computeCurrentHunger(state) {
@@ -562,29 +581,64 @@ function getTimeOfDayClass() {
     return 'time-night';
 }
 
+function applyGrowthDecay() {
+    if (!appState || !appState.lastStudyDate) return;
+    const today = new Date().toDateString();
+    if (appState.lastDecayDate === today) return; // Already applied today
+    if (appState.lastStudyDate === today) { appState.lastDecayDate = today; return; } // Studied today, no decay
+
+    const lastStudy = new Date(appState.lastStudyDate);
+    const now = new Date();
+    const daysMissed = Math.floor((now - lastStudy) / 86400000) - 1; // -1 because day after study is OK
+    if (daysMissed <= 0) { appState.lastDecayDate = today; return; }
+
+    const daysToApply = Math.min(daysMissed, 7); // Max 7 days of decay
+    const decayPercent = daysToApply * 0.02; // 2% per day
+    const oldLevel = appState.dogLevel || 1;
+    const decayAmount = Math.floor((appState.dogGrowthXP || 0) * decayPercent);
+
+    if (decayAmount > 0) {
+        appState.dogGrowthXP = Math.max(0, (appState.dogGrowthXP || 0) - decayAmount);
+        appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+
+        if (appState.dogLevel < oldLevel) {
+            const stage = getDogStage(appState.dogLevel);
+            setTimeout(() => showPetSpeechBubble(`Oh no! I shrunk to ${stage.name}… Buy me food! 😢`), 800);
+        } else {
+            setTimeout(() => showPetSpeechBubble("I'm getting hungry… please feed me! 🥺"), 800);
+        }
+        saveUserData(currentUser, appState);
+    }
+    appState.lastDecayDate = today;
+}
+
 function renderWordPet() {
     const container = document.getElementById('petContainer');
     const scene     = document.getElementById('petScene');
     const bg        = document.getElementById('petBg');
     if (!container || !scene) return;
 
-    const pet  = getPetStage(appState.points);
-    const mood = getPetMood();
+    // Apply growth decay on render
+    applyGrowthDecay();
 
-    // Habitat
-    scene.dataset.stage = pet.key;
+    const level = appState.dogLevel || 1;
+    const stage = getDogStage(level);
+    const mood  = getPetMood();
+    const title = getDogTitle(level);
+
+    // Habitat/scene
     scene.className = 'pet-scene ' + getTimeOfDayClass();
+    scene.dataset.stage = level <= 20 ? 'puppy' : level <= 40 ? 'young' : level <= 60 ? 'adult' : level <= 80 ? 'strong' : 'champion';
     if (bg) {
-        const habitat = PET_HABITATS[pet.key];
-        bg.innerHTML = habitat.decorations.map(e => `<span>${e}</span>`).join('');
+        bg.innerHTML = stage.habitat.map(e => `<span>${e}</span>`).join('');
     }
 
     // Naming prompt (first time)
     if (!appState.petName) {
         container.innerHTML = `
-            <div class="pet-creature ${mood}">${pet.emoji}</div>
+            <div class="pet-creature ${mood}" style="font-size:${stage.size}px">${stage.emoji}</div>
             <div class="pet-name-form">
-                <div style="font-size:12px;font-weight:700;color:var(--text-secondary)">Name your pet!</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary)">Name your dog!</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
                        maxlength="12" placeholder="Enter a name…"
                        onkeydown="if(event.key==='Enter')savePetName()">
@@ -599,20 +653,21 @@ function renderWordPet() {
     const filledHearts = Math.round(hunger / 20);
     const heartsHTML = '❤️'.repeat(filledHearts) + '🖤'.repeat(5 - filledHearts);
 
+    // XP progress bar
+    const currentXP = appState.dogGrowthXP || 0;
+    const currentLevelXP = getPointsForLevel(level);
+    const nextLevelXP = level < 100 ? getPointsForLevel(level + 1) : currentLevelXP;
+    const xpInLevel = currentXP - currentLevelXP;
+    const xpNeeded = nextLevelXP - currentLevelXP;
+    const xpPercent = level >= 100 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
+
     // Active accessories
     const active = appState.activeAccessories || [];
     const accSpans = active.map(id => {
-        const acc = PET_ACCESSORIES.find(a => a.id === id);
+        const acc = DOG_ACCESSORIES.find(a => a.id === id);
         if (!acc) return '';
         return `<span class="pet-accessory ${acc.cssClass}">${acc.emoji}</span>`;
     }).join('');
-
-    // Accessories tray toggle
-    const owned = appState.petAccessories || [];
-    const trayToggleHTML = owned.length > 0
-        ? `<button class="pet-acc-toggle" onclick="toggleAccTray()">👗 ${owned.length} <span style="font-size:10px">${_accTrayOpen ? '▲' : '▼'}</span></button>`
-        : '';
-    const trayHTML = _accTrayOpen ? renderAccTray() : '';
 
     // Daily quest
     const today = new Date().toDateString();
@@ -629,51 +684,228 @@ function renderWordPet() {
 
     container.innerHTML = `
         <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
+        <div class="pet-level-badge">Lv.${level}</div>
+        <div class="pet-coin-display" onclick="showPetShop()">🪙 ${appState.coins || 0}</div>
         <div class="pet-wrapper">
-            <div class="pet-creature ${mood}" onclick="onPetTap()">${pet.emoji}</div>
+            <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px">${stage.emoji}</div>
             ${accSpans}
         </div>
-        <div class="pet-name">${appState.petName} <span style="font-weight:400;opacity:0.7">· ${pet.name}</span></div>
+        <div class="pet-name">${appState.petName} <span style="font-weight:400;opacity:0.7">· ${stage.name}</span></div>
+        <div class="pet-title">${title}</div>
+        <div class="pet-xp-bar">
+            <div class="pet-xp-fill" style="width:${xpPercent}%"></div>
+            <span class="pet-xp-text">${level >= 100 ? 'MAX' : `${xpInLevel}/${xpNeeded}`}</span>
+        </div>
         <div class="pet-hunger">${heartsHTML}</div>
-        ${trayToggleHTML}
-        ${trayHTML}
+        <button class="pet-shop-btn" onclick="showPetShop()">🛒 Shop</button>
         ${questHTML}
     `;
 
     // Auto-show starving bubble
     if (hunger === 0) {
-        setTimeout(() => showPetSpeechBubble("Please feed me! 😢"), 500);
+        setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     }
 }
 
 function showPetInfo() {
-    // Remove existing modal if any
     const existing = document.getElementById('petInfoModal');
     if (existing) existing.remove();
+
+    const level = appState.dogLevel || 1;
+    const currentXP = appState.dogGrowthXP || 0;
+
+    // Build stages list
+    const stagesHTML = DOG_STAGES.map(s => {
+        const unlocked = level >= s.minLevel;
+        return `<div class="pet-info-stage ${unlocked ? '' : 'locked'}">
+            <span class="pet-info-emoji" style="font-size:${Math.min(s.size/3, 28)}px">${s.emoji}</span>
+            <span class="pet-info-label">${s.name}</span>
+            <span class="pet-info-pts">Lv.${s.minLevel}${unlocked ? ' ✅' : ' 🔒'}</span>
+        </div>`;
+    }).join('');
+
+    // Food catalog
+    const foodHTML = DOG_FOOD.map(f =>
+        `<div class="pet-info-stage"><span class="pet-info-emoji">${f.emoji}</span><span class="pet-info-label">${f.name}</span><span class="pet-info-pts">${f.price} 🪙 → +${f.growth} XP</span></div>`
+    ).join('');
 
     const overlay = document.createElement('div');
     overlay.id = 'petInfoModal';
     overlay.className = 'pet-info-modal-overlay';
     overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
     overlay.innerHTML = `
-        <div class="pet-info-modal">
+        <div class="pet-info-modal" style="max-height:80vh;overflow-y:auto">
             <button class="pet-info-close" onclick="document.getElementById('petInfoModal').remove()">✕</button>
-            <h3 style="margin:0 0 12px;font-size:18px">🐾 Pet Evolution</h3>
-            <p style="margin:0 0 14px;font-size:13px;color:var(--text-secondary)">Your pet evolves as you earn points from lessons!</p>
-            <div class="pet-info-stages">
-                <div class="pet-info-stage"><span class="pet-info-emoji">🥚</span><span class="pet-info-label">Egg</span><span class="pet-info-pts">0 pts</span></div>
-                <div class="pet-info-stage"><span class="pet-info-emoji">🐣</span><span class="pet-info-label">Chick</span><span class="pet-info-pts">100 pts</span></div>
-                <div class="pet-info-stage"><span class="pet-info-emoji">🐦</span><span class="pet-info-label">Bird</span><span class="pet-info-pts">500 pts</span></div>
-                <div class="pet-info-stage"><span class="pet-info-emoji">🦅</span><span class="pet-info-label">Phoenix</span><span class="pet-info-pts">2,000 pts</span></div>
-                <div class="pet-info-stage"><span class="pet-info-emoji">🐉</span><span class="pet-info-label">Dragon</span><span class="pet-info-pts">5,000 pts</span></div>
-            </div>
-            <div class="pet-info-tips">
-                <div class="pet-info-tip">❤️ <strong>Hearts</strong> = hunger — feed by completing lessons</div>
-                <div class="pet-info-tip">🐾 <strong>Quests</strong> = daily tasks for bonus points</div>
-                <div class="pet-info-tip">👆 <strong>Tap</strong> your pet for encouragement!</div>
+            <h3 style="margin:0 0 8px;font-size:18px">🐶 My Dog · Lv.${level}</h3>
+            <p style="margin:0 0 12px;font-size:13px;color:var(--text-secondary)">Earn coins from lessons → buy food → grow your dog!</p>
+
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px">🐾 Growth Stages</div>
+            <div class="pet-info-stages">${stagesHTML}</div>
+
+            <div style="font-weight:700;font-size:13px;margin:12px 0 6px">🍖 Food Shop</div>
+            <div class="pet-info-stages">${foodHTML}</div>
+
+            <div class="pet-info-tips" style="margin-top:12px">
+                <div class="pet-info-tip">🪙 <strong>Coins</strong> = earned from completing lessons</div>
+                <div class="pet-info-tip">🛒 <strong>Shop</strong> = buy food to grow, accessories to dress up</div>
+                <div class="pet-info-tip">📉 <strong>Warning</strong> = dog loses 2% growth per missed day!</div>
+                <div class="pet-info-tip">👆 <strong>Tap</strong> your dog for encouragement!</div>
             </div>
         </div>
     `;
+    document.body.appendChild(overlay);
+}
+
+let _shopTab = 'food';
+
+function showPetShop() {
+    const existing = document.getElementById('petShopModal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'petShopModal';
+    overlay.className = 'pet-info-modal-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = renderShopContent();
+    document.body.appendChild(overlay);
+}
+
+function renderShopContent() {
+    const coins = appState.coins || 0;
+
+    const foodItems = DOG_FOOD.map(f => {
+        const canAfford = coins >= f.price;
+        return `<div class="shop-item ${canAfford ? '' : 'disabled'}">
+            <span class="shop-item-emoji">${f.emoji}</span>
+            <div class="shop-item-info">
+                <div class="shop-item-name">${f.name}</div>
+                <div class="shop-item-desc">+${f.growth} growth XP</div>
+            </div>
+            <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyFood('${f.id}')` : ''}">${f.price} 🪙</button>
+        </div>`;
+    }).join('');
+
+    const accItems = DOG_ACCESSORIES.map(a => {
+        const owned = (appState.petAccessories || []).includes(a.id);
+        const equipped = (appState.activeAccessories || []).includes(a.id);
+        const canAfford = coins >= a.price;
+        let btnHTML;
+        if (owned) {
+            btnHTML = `<button class="shop-buy-btn ${equipped ? 'equipped' : 'owned'}" onclick="toggleAccessory('${a.id}')">${equipped ? '✅ On' : 'Wear'}</button>`;
+        } else {
+            btnHTML = `<button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyAccessory('${a.id}')` : ''}">${a.price} 🪙</button>`;
+        }
+        return `<div class="shop-item ${!owned && !canAfford ? 'disabled' : ''}">
+            <span class="shop-item-emoji">${a.emoji}</span>
+            <div class="shop-item-info">
+                <div class="shop-item-name">${a.name}</div>
+                <div class="shop-item-desc">${owned ? (equipped ? 'Equipped' : 'Owned') : 'Cosmetic'}</div>
+            </div>
+            ${btnHTML}
+        </div>`;
+    }).join('');
+
+    return `
+        <div class="pet-shop-modal">
+            <button class="pet-info-close" onclick="document.getElementById('petShopModal').remove()">✕</button>
+            <h3 style="margin:0 0 4px;font-size:18px">🛒 Pet Shop</h3>
+            <div class="shop-coins">🪙 ${coins} coins</div>
+            <div class="shop-tabs">
+                <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
+                <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
+            </div>
+            <div class="shop-items">
+                ${_shopTab === 'food' ? foodItems : accItems}
+            </div>
+        </div>
+    `;
+}
+
+function refreshShop() {
+    const modal = document.getElementById('petShopModal');
+    if (modal) modal.innerHTML = renderShopContent();
+}
+
+function buyFood(foodId) {
+    const food = DOG_FOOD.find(f => f.id === foodId);
+    if (!food || (appState.coins || 0) < food.price) return;
+
+    const oldLevel = appState.dogLevel || 1;
+
+    appState.coins -= food.price;
+    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + food.growth;
+    appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+    appState.petLastFed = Date.now(); // Feeding resets hunger
+
+    saveUserData(currentUser, appState);
+
+    // Check level up
+    if (appState.dogLevel > oldLevel) {
+        showLevelUpCelebration(appState.dogLevel, oldLevel);
+    } else {
+        showToast(`${food.emoji} +${food.growth} growth XP!`);
+    }
+
+    refreshShop();
+    renderWordPet();
+}
+
+function buyAccessory(accId) {
+    const acc = DOG_ACCESSORIES.find(a => a.id === accId);
+    if (!acc || (appState.coins || 0) < acc.price) return;
+    if ((appState.petAccessories || []).includes(accId)) return; // Already owned
+
+    appState.coins -= acc.price;
+    if (!appState.petAccessories) appState.petAccessories = [];
+    appState.petAccessories.push(accId);
+
+    // Auto-equip if less than 3 active
+    if (!appState.activeAccessories) appState.activeAccessories = [];
+    if (appState.activeAccessories.length < 3) {
+        appState.activeAccessories.push(accId);
+    }
+
+    saveUserData(currentUser, appState);
+    showToast(`${acc.emoji} ${acc.name} acquired!`);
+    refreshShop();
+    renderWordPet();
+}
+
+function showLevelUpCelebration(newLevel, oldLevel) {
+    const existing = document.getElementById('levelUpOverlay');
+    if (existing) existing.remove();
+
+    const stage = getDogStage(newLevel);
+    const oldStage = getDogStage(oldLevel);
+    const stageChanged = stage.minLevel !== oldStage.minLevel;
+    const isMilestone = newLevel % 10 === 0;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'levelUpOverlay';
+    overlay.className = 'level-up-overlay';
+    overlay.onclick = function() { overlay.remove(); renderWordPet(); };
+
+    let content = `
+        <div class="level-up-confetti">${'🎉'.repeat(6)}${'✨'.repeat(4)}${'⭐'.repeat(3)}</div>
+        <div class="level-up-text">${isMilestone ? '🏆 MILESTONE!' : '🎉 LEVEL UP!'}</div>
+        <div class="level-up-level">Level ${newLevel}</div>
+    `;
+
+    if (stageChanged) {
+        content += `
+            <div class="level-up-evolution">
+                <span style="font-size:${oldStage.size}px">${oldStage.emoji}</span>
+                <span style="font-size:24px">→</span>
+                <span style="font-size:${stage.size}px">${stage.emoji}</span>
+            </div>
+            <div class="level-up-stage-name">Your dog evolved to ${stage.name}!</div>
+        `;
+    }
+
+    content += `<div class="level-up-title">${getDogTitle(newLevel)}</div>`;
+    content += `<div style="margin-top:20px;font-size:13px;opacity:0.7">Tap to continue</div>`;
+
+    overlay.innerHTML = content;
     document.body.appendChild(overlay);
 }
 
@@ -684,27 +916,6 @@ function savePetName() {
     if (!name) return;
     appState.petName = name;
     saveUserData(currentUser, appState);
-    // Check for retroactive accessories now that pet is named
-    checkAccessoryUnlocks(appState);
-    renderWordPet();
-}
-
-function renderAccTray() {
-    const owned  = appState.petAccessories  || [];
-    const active = appState.activeAccessories || [];
-    const slots  = owned.map(id => {
-        const acc   = PET_ACCESSORIES.find(a => a.id === id);
-        if (!acc) return '';
-        const equipped = active.includes(id);
-        return `<span class="acc-slot ${equipped ? 'equipped' : ''}"
-                      onclick="toggleAccessory('${id}')"
-                      title="${acc.label}">${acc.emoji}</span>`;
-    }).join('');
-    return `<div class="pet-acc-tray">${slots}</div>`;
-}
-
-function toggleAccTray() {
-    _accTrayOpen = !_accTrayOpen;
     renderWordPet();
 }
 
@@ -713,31 +924,18 @@ function toggleAccessory(id) {
     if (active.includes(id)) {
         appState.activeAccessories = active.filter(a => a !== id);
     } else if (active.length < 3) {
+        if (!appState.activeAccessories) appState.activeAccessories = [];
         appState.activeAccessories.push(id);
     } else {
         showToast('Only 3 accessories at once!');
         return;
     }
     saveUserData(currentUser, appState);
+    refreshShop();
     renderWordPet();
 }
 
-function checkAccessoryUnlocks(state) {
-    if (!state || !state.petName) return;
-    if (!state.petAccessories) state.petAccessories = [];
-    if (!state.activeAccessories) state.activeAccessories = [];
-    const owned = state.petAccessories;
-    PET_ACCESSORIES.forEach(acc => {
-        if (!owned.includes(acc.id) && acc.condition(state)) {
-            state.petAccessories.push(acc.id);
-            if (state.activeAccessories.length < 3) {
-                state.activeAccessories.push(acc.id);
-            }
-            saveUserData(currentUser, state);
-            showToast(`${acc.emoji} New accessory: ${acc.label}!`);
-        }
-    });
-}
+function checkAccessoryUnlocks() { /* Now handled via shop */ }
 
 function getDailyQuest(state) {
     const dateStr = new Date().toDateString();
@@ -780,10 +978,10 @@ function checkQuestCompletion(triggerQuestId, extraContext) {
 
 function _completeQuest(quest) {
     appState.petQuest.completed = true;
-    appState.points += quest.pts;
+    appState.coins = (appState.coins || 0) + (quest.coins || 0);
     feedPet(quest.hunger);
     saveUserData(currentUser, appState);
-    showToast(`🐾 Quest complete! +${quest.pts} pts, pet fed!`);
+    showToast(`🐾 Quest complete! +${quest.coins} 🪙`);
     const creature = document.querySelector('.pet-creature');
     if (creature) {
         creature.classList.add('wiggle');
@@ -792,29 +990,10 @@ function _completeQuest(quest) {
     renderWordPet();
 }
 
+// Backward compatibility shim — now uses showLevelUpCelebration
 function showEvolutionCelebration(stage) {
-    const overlay = document.getElementById('evolutionOverlay');
-    if (!overlay) return;
-
-    const confettiEmojis = ['🎉','🌟','⭐','✨','🎊','💫'];
-    const confettiHTML = Array.from({length: 20}, () => {
-        const emoji = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
-        const left  = Math.random() * 100;
-        const delay = Math.random() * 1.5;
-        const dur   = 2 + Math.random() * 1.5;
-        return `<span class="evolution-confetti" style="left:${left}%;top:0;animation-duration:${dur}s;animation-delay:${delay}s">${emoji}</span>`;
-    }).join('');
-
-    overlay.innerHTML = `
-        ${confettiHTML}
-        <div class="evolution-pet-emoji">${stage.emoji}</div>
-        <div class="evolution-title">Your pet evolved into a ${stage.name}! ${stage.emoji}</div>
-        <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:12px">Tap to continue</div>
-    `;
-    overlay.style.display = 'flex';
-    overlay.onclick = () => { overlay.style.display = 'none'; };
-
-    if (typeof speakWord === 'function') speakWord(stage.name);
+    const level = appState.dogLevel || 1;
+    showLevelUpCelebration(level, Math.max(1, level - 1));
 }
 
 const PET_PHRASES_EXTENDED = PET_PHRASES;
@@ -828,12 +1007,17 @@ function onPetTap() {
     const mood = getPetMood();
     const srsWords = appState.srs ? Object.keys(appState.srs) : [];
 
-    // Milestone proximity phrase (within 50 pts of next stage)
-    const thresholds = [100, 500, 2000, 5000];
-    const nextThreshold = thresholds.find(t => t > appState.points);
-    if (nextThreshold && (nextThreshold - appState.points) <= 50) {
-        showPetSpeechBubble("I feel something changing inside me! 🌟");
-        return;
+    // Near level-up check
+    const level = appState.dogLevel || 1;
+    if (level < 100) {
+        const currentXP = appState.dogGrowthXP || 0;
+        const nextLevelXP = getPointsForLevel(level + 1);
+        const currentLevelXP = getPointsForLevel(level);
+        const progress = (currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP);
+        if (progress >= 0.8) {
+            showPetSpeechBubble("I can feel myself growing! Almost there! 🌟");
+            return;
+        }
     }
 
     // Streak celebration (7+ days)
