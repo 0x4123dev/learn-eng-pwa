@@ -732,9 +732,11 @@ function renderWordPet() {
     }
 
     container.innerHTML = `
-        <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
-        <div class="pet-level-badge">Lv.${level}</div>
-        <div class="pet-coin-display" onclick="showPetShop()">🪙 ${appState.coins || 0}</div>
+        <div class="pet-top-bar">
+            <div class="pet-level-badge">Lv.${level}</div>
+            <div class="pet-coin-display" onclick="showPetShop()">🪙 ${appState.coins || 0}</div>
+            <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
+        </div>
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px" data-stage="${stage.stageCss}">${stage.emoji}</div>
             ${accSpans}
