@@ -3385,11 +3385,41 @@
             gap: 4px;
         }
 
-        .pet-scene[data-stage="puppy"]    { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
-        .pet-scene[data-stage="young"]   { background: linear-gradient(180deg, #c8e6c9 0%, #81c784 100%); }
-        .pet-scene[data-stage="adult"]   { background: linear-gradient(180deg, #ffe0b2 0%, #ffcc80 100%); }
-        .pet-scene[data-stage="strong"]  { background: linear-gradient(180deg, #b0bec5 0%, #78909c 60%, #a5d6a7 100%); }
-        .pet-scene[data-stage="champion"] { background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 60%, #ffb300 100%); }
+        /* 10 Dog Breed Backgrounds */
+        .pet-scene[data-stage="chihuahua"] { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
+        .pet-scene[data-stage="beagle"]    { background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 60%, #a5d6a7 100%); }
+        .pet-scene[data-stage="poodle"]    { background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 60%, #f48fb1 100%); }
+        .pet-scene[data-stage="retriever"] { background: linear-gradient(180deg, #fff8e1 0%, #ffe082 60%, #ffca28 100%); }
+        .pet-scene[data-stage="dalmatian"] { background: linear-gradient(180deg, #ffe0b2 0%, #ffcc80 60%, #ffa726 100%); }
+        .pet-scene[data-stage="husky"]     { background: linear-gradient(180deg, #e1f5fe 0%, #b3e5fc 60%, #81d4fa 100%); }
+        .pet-scene[data-stage="shepherd"]  { background: linear-gradient(180deg, #e0f2f1 0%, #80cbc4 60%, #4db6ac 100%); }
+        .pet-scene[data-stage="akita"]     { background: linear-gradient(180deg, #ede7f6 0%, #b39ddb 60%, #9575cd 100%); }
+        .pet-scene[data-stage="royal"]     { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%); }
+        .pet-scene[data-stage="diamond"]   { background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 40%, #ffb300 70%, #ff8f00 100%); }
+
+        /* Breed glow effects */
+        .pet-creature[data-stage="poodle"]    { filter: drop-shadow(0 0 6px rgba(255,182,193,0.5)); }
+        .pet-creature[data-stage="retriever"] { filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
+        .pet-creature[data-stage="dalmatian"] { filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)); }
+        .pet-creature[data-stage="husky"]     { filter: drop-shadow(0 0 10px rgba(135,206,250,0.6)); }
+        .pet-creature[data-stage="shepherd"]  { filter: drop-shadow(0 0 10px rgba(50,205,50,0.5)); }
+        .pet-creature[data-stage="akita"]     { filter: drop-shadow(0 0 12px rgba(147,112,219,0.6)); }
+        .pet-creature[data-stage="royal"]     { animation: rainbowGlow 3s ease infinite; }
+        .pet-creature[data-stage="diamond"]   { animation: diamondSparkle 2s ease infinite; }
+
+        @keyframes rainbowGlow {
+            0%   { filter: drop-shadow(0 0 14px rgba(255,0,0,0.5)); }
+            16%  { filter: drop-shadow(0 0 14px rgba(255,165,0,0.5)); }
+            33%  { filter: drop-shadow(0 0 14px rgba(255,255,0,0.5)); }
+            50%  { filter: drop-shadow(0 0 14px rgba(0,255,0,0.5)); }
+            66%  { filter: drop-shadow(0 0 14px rgba(0,0,255,0.5)); }
+            83%  { filter: drop-shadow(0 0 14px rgba(148,0,211,0.5)); }
+            100% { filter: drop-shadow(0 0 14px rgba(255,0,0,0.5)); }
+        }
+        @keyframes diamondSparkle {
+            0%, 100% { filter: drop-shadow(0 0 16px rgba(255,215,0,0.6)) brightness(1); }
+            50%      { filter: drop-shadow(0 0 24px rgba(255,215,0,0.9)) brightness(1.1); }
+        }
 
         .pet-scene.time-morning   { filter: brightness(1.05) sepia(0.05); }
         .pet-scene.time-afternoon { filter: brightness(1.0); }
@@ -3405,32 +3435,28 @@
             animation: petSway 3s ease infinite;
         }
 
-        /* Accessory positions */
+        /* Accessory positions — slot-based, scale with dog size */
         .pet-wrapper {
             position: relative;
             display: inline-block;
         }
         .pet-accessory {
             position: absolute;
-            font-size: 20px;
             pointer-events: none;
+            z-index: 2;
+            line-height: 1;
+            /* font-size set dynamically via inline style */
         }
-        .pet-accessory.hat    { top: -4px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.glasses { top: 16px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.bow    { top: -4px; right: calc(50% - 28px); }
-        .pet-accessory.crown  { top: -8px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.scarf  { bottom: -4px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.rainbow { top: -8px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.flame  { top: -8px; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.diamond { bottom: -4px; right: calc(50% - 28px); }
+        .pet-accessory.acc-head   { top: -10%; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.acc-eyes   { top: 25%; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.acc-neck   { bottom: 5%; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.acc-body   { top: 0; left: 50%; transform: translateX(-50%); z-index: 0; opacity: 0.8; }
+        .pet-accessory.acc-effect { top: -15%; left: 50%; transform: translateX(-50%); animation: effectFloat 2s ease infinite; }
+        .pet-accessory.acc-toy    { bottom: -10%; right: -5%; }
 
-        /* Hunger hearts */
-        .pet-hunger {
-            display: flex;
-            gap: 2px;
-            font-size: 16px;
-            margin-top: 2px;
-            justify-content: center;
+        @keyframes effectFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(-4px); }
         }
 
         /* Accessories tray */
@@ -3684,6 +3710,30 @@
             color: var(--text-secondary);
         }
         .shop-tab.active {
+            background: var(--accent-green, #4CAF50);
+            color: white;
+            border-color: var(--accent-green, #4CAF50);
+        }
+
+        /* Accessory category filter pills */
+        .shop-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+        .shop-cat-pill {
+            padding: 3px 8px;
+            border: 1px solid var(--border-color, #ddd);
+            background: none;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .shop-cat-pill.active {
             background: var(--accent-green, #4CAF50);
             color: white;
             border-color: var(--accent-green, #4CAF50);
