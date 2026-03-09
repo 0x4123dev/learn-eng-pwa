@@ -146,36 +146,147 @@ const TOPIC_SVGS = {
 
 // ==================== HOUSE VOCABULARY DATA ====================
 const TOPIC_HOUSE_VOCAB = [
-    { en: 'apartment', ipa: '/əˈpɑːrtmənt/', vi: 'căn hộ', emoji: '🏢', color: '#E3F2FD',
-      ex: 'She lives in a small apartment downtown.' },
-    { en: 'dormitory', ipa: '/ˈdɔːrmɪtɔːri/', vi: 'ký túc xá', emoji: '🏫', color: '#FBE9E7',
-      ex: 'The students share a dormitory room.' },
-    { en: 'villa', ipa: '/ˈvɪlə/', vi: 'biệt thự', emoji: '🏡', color: '#E8F5E9',
-      ex: 'They rented a villa by the beach.' },
-    { en: 'mansion', ipa: '/ˈmænʃən/', vi: 'dinh thự', emoji: '🏛️', color: '#FFF8E1',
-      ex: 'The mansion has twenty rooms.' },
-    { en: 'bungalow', ipa: '/ˈbʌŋɡəloʊ/', vi: 'nhà một tầng', emoji: '🏠', color: '#FFF3E0',
-      ex: 'They bought a cozy bungalow near the lake.' },
-    { en: 'cottage', ipa: '/ˈkɑːtɪdʒ/', vi: 'nhà tranh nhỏ', emoji: '🏘️', color: '#EFEBE9',
-      ex: 'The cottage is in the countryside.' },
-    { en: 'hut', ipa: '/hʌt/', vi: 'túp lều', emoji: '🛖', color: '#F3E5F5',
-      ex: 'The fisherman lived in a small hut.' },
-    { en: 'basement', ipa: '/ˈbeɪsmənt/', vi: 'tầng hầm', emoji: '⬇️', color: '#ECEFF1',
-      ex: 'The basement is used for storage.' },
-    { en: 'castle', ipa: '/ˈkæsəl/', vi: 'lâu đài', emoji: '🏰', color: '#E8EAF6',
-      ex: 'The old castle sits on a hill.' },
-    { en: 'temple', ipa: '/ˈtempəl/', vi: 'đền', emoji: '⛩️', color: '#FCE4EC',
-      ex: 'They visited an ancient temple.' },
-    { en: 'church', ipa: '/tʃɜːrtʃ/', vi: 'nhà thờ', emoji: '⛪', color: '#E1F5FE',
-      ex: 'The church bells ring every Sunday.' },
-    { en: 'manor', ipa: '/ˈmænər/', vi: 'trang viên', emoji: '🏡', color: '#F1F8E9',
-      ex: 'The lord lived in the manor house.' }
+    // --- Buildings (12) ---
+    { en: 'apartment', ipa: '/əˈpɑːrtmənt/', vi: 'căn hộ', emoji: '🏢', color: '#E3F2FD', category: 'Buildings', ex: 'She lives in a small apartment downtown.' },
+    { en: 'dormitory', ipa: '/ˈdɔːrmɪtɔːri/', vi: 'ký túc xá', emoji: '🏫', color: '#FBE9E7', category: 'Buildings', ex: 'The students share a dormitory room.' },
+    { en: 'villa', ipa: '/ˈvɪlə/', vi: 'biệt thự', emoji: '🏡', color: '#E8F5E9', category: 'Buildings', ex: 'They rented a villa by the beach.' },
+    { en: 'mansion', ipa: '/ˈmænʃən/', vi: 'dinh thự', emoji: '🏛️', color: '#FFF8E1', category: 'Buildings', ex: 'The mansion has twenty rooms.' },
+    { en: 'bungalow', ipa: '/ˈbʌŋɡəloʊ/', vi: 'nhà một tầng', emoji: '🏠', color: '#FFF3E0', category: 'Buildings', ex: 'They bought a cozy bungalow near the lake.' },
+    { en: 'cottage', ipa: '/ˈkɑːtɪdʒ/', vi: 'nhà tranh nhỏ', emoji: '🏘️', color: '#EFEBE9', category: 'Buildings', ex: 'The cottage is in the countryside.' },
+    { en: 'hut', ipa: '/hʌt/', vi: 'túp lều', emoji: '🛖', color: '#F3E5F5', category: 'Buildings', ex: 'The fisherman lived in a small hut.' },
+    { en: 'basement', ipa: '/ˈbeɪsmənt/', vi: 'tầng hầm', emoji: '⬇️', color: '#ECEFF1', category: 'Buildings', ex: 'The basement is used for storage.' },
+    { en: 'castle', ipa: '/ˈkæsəl/', vi: 'lâu đài', emoji: '🏰', color: '#E8EAF6', category: 'Buildings', ex: 'The old castle sits on a hill.' },
+    { en: 'temple', ipa: '/ˈtempəl/', vi: 'đền', emoji: '⛩️', color: '#FCE4EC', category: 'Buildings', ex: 'They visited an ancient temple.' },
+    { en: 'church', ipa: '/tʃɜːrtʃ/', vi: 'nhà thờ', emoji: '⛪', color: '#E1F5FE', category: 'Buildings', ex: 'The church bells ring every Sunday.' },
+    { en: 'manor', ipa: '/ˈmænər/', vi: 'trang viên', emoji: '🏡', color: '#F1F8E9', category: 'Buildings', ex: 'The lord lived in the manor house.' },
+
+    // --- Kitchen & Dining (25) ---
+    { en: 'spoon', ipa: '/spuːn/', vi: 'thìa', emoji: '🥄', color: '#FFF3E0', category: 'Kitchen', ex: 'She stirred the soup with a spoon.' },
+    { en: 'fork', ipa: '/fɔːrk/', vi: 'nĩa', emoji: '🍴', color: '#FFF3E0', category: 'Kitchen', ex: 'He picked up the fork to eat.' },
+    { en: 'knife', ipa: '/naɪf/', vi: 'dao', emoji: '🔪', color: '#FFF3E0', category: 'Kitchen', ex: 'Be careful with the sharp knife.' },
+    { en: 'plate', ipa: '/pleɪt/', vi: 'đĩa', emoji: '🍽️', color: '#FFF3E0', category: 'Kitchen', ex: 'Put the food on the plate.' },
+    { en: 'bowl', ipa: '/boʊl/', vi: 'tô', emoji: '🥣', color: '#FFF3E0', category: 'Kitchen', ex: 'I ate a bowl of rice.' },
+    { en: 'cup', ipa: '/kʌp/', vi: 'tách', emoji: '☕', color: '#FFF3E0', category: 'Kitchen', ex: 'Would you like a cup of tea?' },
+    { en: 'glass', ipa: '/ɡlæs/', vi: 'ly', emoji: '🥛', color: '#FFF3E0', category: 'Kitchen', ex: 'Pour the water into the glass.' },
+    { en: 'pot', ipa: '/pɑːt/', vi: 'nồi', emoji: '🍲', color: '#FFF3E0', category: 'Kitchen', ex: 'The soup is boiling in the pot.' },
+    { en: 'pan', ipa: '/pæn/', vi: 'chảo', emoji: '🍳', color: '#FFF3E0', category: 'Kitchen', ex: 'Fry the eggs in the pan.' },
+    { en: 'kettle', ipa: '/ˈketl/', vi: 'ấm đun nước', emoji: '🫖', color: '#FFF3E0', category: 'Kitchen', ex: 'The kettle is boiling.' },
+    { en: 'oven', ipa: '/ˈʌvən/', vi: 'lò nướng', emoji: '🔲', color: '#FFF3E0', category: 'Kitchen', ex: 'Bake the cake in the oven.' },
+    { en: 'stove', ipa: '/stoʊv/', vi: 'bếp', emoji: '♨️', color: '#FFF3E0', category: 'Kitchen', ex: 'She cooked dinner on the stove.' },
+    { en: 'microwave', ipa: '/ˈmaɪkroʊweɪv/', vi: 'lò vi sóng', emoji: '📡', color: '#FFF3E0', category: 'Kitchen', ex: 'Heat the food in the microwave.' },
+    { en: 'refrigerator', ipa: '/rɪˈfrɪdʒəreɪtər/', vi: 'tủ lạnh', emoji: '🧊', color: '#FFF3E0', category: 'Kitchen', ex: 'Keep the milk in the refrigerator.' },
+    { en: 'toaster', ipa: '/ˈtoʊstər/', vi: 'máy nướng bánh mì', emoji: '🍞', color: '#FFF3E0', category: 'Kitchen', ex: 'I made toast with the toaster.' },
+    { en: 'sink', ipa: '/sɪŋk/', vi: 'bồn rửa', emoji: '🚰', color: '#FFF3E0', category: 'Kitchen', ex: 'Wash the dishes in the sink.' },
+    { en: 'chopsticks', ipa: '/ˈtʃɑːpstɪks/', vi: 'đũa', emoji: '🥢', color: '#FFF3E0', category: 'Kitchen', ex: 'She eats with chopsticks.' },
+    { en: 'bottle', ipa: '/ˈbɑːtl/', vi: 'chai', emoji: '🍶', color: '#FFF3E0', category: 'Kitchen', ex: 'Open the bottle of water.' },
+    { en: 'jar', ipa: '/dʒɑːr/', vi: 'lọ', emoji: '🏺', color: '#FFF3E0', category: 'Kitchen', ex: 'The jam is in the jar.' },
+    { en: 'tray', ipa: '/treɪ/', vi: 'khay', emoji: '🍽️', color: '#FFF3E0', category: 'Kitchen', ex: 'Carry the drinks on a tray.' },
+    { en: 'cabinet', ipa: '/ˈkæbɪnət/', vi: 'tủ bếp', emoji: '🗄️', color: '#FFF3E0', category: 'Kitchen', ex: 'The cups are in the cabinet.' },
+    { en: 'blender', ipa: '/ˈblendər/', vi: 'máy xay sinh tố', emoji: '🫙', color: '#FFF3E0', category: 'Kitchen', ex: 'Make a smoothie with the blender.' },
+    { en: 'napkin', ipa: '/ˈnæpkɪn/', vi: 'khăn ăn', emoji: '🧻', color: '#FFF3E0', category: 'Kitchen', ex: 'Wipe your hands with a napkin.' },
+    { en: 'apron', ipa: '/ˈeɪprən/', vi: 'tạp dề', emoji: '👨‍🍳', color: '#FFF3E0', category: 'Kitchen', ex: 'Wear an apron when cooking.' },
+    { en: 'dishwasher', ipa: '/ˈdɪʃwɑːʃər/', vi: 'máy rửa bát', emoji: '🫧', color: '#FFF3E0', category: 'Kitchen', ex: 'Put the plates in the dishwasher.' },
+
+    // --- Bedroom (15) ---
+    { en: 'bed', ipa: '/bed/', vi: 'giường', emoji: '🛏️', color: '#EDE7F6', category: 'Bedroom', ex: 'The bed is very comfortable.' },
+    { en: 'pillow', ipa: '/ˈpɪloʊ/', vi: 'gối', emoji: '💤', color: '#EDE7F6', category: 'Bedroom', ex: 'I need a soft pillow to sleep.' },
+    { en: 'blanket', ipa: '/ˈblæŋkɪt/', vi: 'chăn', emoji: '🧣', color: '#EDE7F6', category: 'Bedroom', ex: 'Cover yourself with the blanket.' },
+    { en: 'mattress', ipa: '/ˈmætrɪs/', vi: 'nệm', emoji: '🛌', color: '#EDE7F6', category: 'Bedroom', ex: 'This mattress is very firm.' },
+    { en: 'curtain', ipa: '/ˈkɜːrtn/', vi: 'rèm cửa', emoji: '🪟', color: '#EDE7F6', category: 'Bedroom', ex: 'Close the curtains at night.' },
+    { en: 'wardrobe', ipa: '/ˈwɔːrdroʊb/', vi: 'tủ quần áo', emoji: '👗', color: '#EDE7F6', category: 'Bedroom', ex: 'Hang your clothes in the wardrobe.' },
+    { en: 'lamp', ipa: '/læmp/', vi: 'đèn', emoji: '💡', color: '#EDE7F6', category: 'Bedroom', ex: 'Turn on the lamp to read.' },
+    { en: 'mirror', ipa: '/ˈmɪrər/', vi: 'gương', emoji: '🪞', color: '#EDE7F6', category: 'Bedroom', ex: 'Look at yourself in the mirror.' },
+    { en: 'hanger', ipa: '/ˈhæŋər/', vi: 'móc áo', emoji: '🪝', color: '#EDE7F6', category: 'Bedroom', ex: 'Put the shirt on a hanger.' },
+    { en: 'drawer', ipa: '/drɔːr/', vi: 'ngăn kéo', emoji: '🗃️', color: '#EDE7F6', category: 'Bedroom', ex: 'The socks are in the drawer.' },
+    { en: 'sheet', ipa: '/ʃiːt/', vi: 'ga trải giường', emoji: '🛏️', color: '#EDE7F6', category: 'Bedroom', ex: 'Change the bed sheets weekly.' },
+    { en: 'rug', ipa: '/rʌɡ/', vi: 'thảm nhỏ', emoji: '🟫', color: '#EDE7F6', category: 'Bedroom', ex: 'There is a rug beside the bed.' },
+    { en: 'carpet', ipa: '/ˈkɑːrpɪt/', vi: 'thảm trải sàn', emoji: '🟤', color: '#EDE7F6', category: 'Bedroom', ex: 'The carpet covers the whole floor.' },
+    { en: 'closet', ipa: '/ˈklɑːzɪt/', vi: 'tủ đồ', emoji: '🚪', color: '#EDE7F6', category: 'Bedroom', ex: 'Keep your shoes in the closet.' },
+    { en: 'dresser', ipa: '/ˈdresər/', vi: 'bàn trang điểm', emoji: '💄', color: '#EDE7F6', category: 'Bedroom', ex: 'The dresser has a large mirror.' },
+
+    // --- Bathroom (15) ---
+    { en: 'towel', ipa: '/taʊəl/', vi: 'khăn tắm', emoji: '🧖', color: '#E0F7FA', category: 'Bathroom', ex: 'Dry yourself with a towel.' },
+    { en: 'soap', ipa: '/soʊp/', vi: 'xà phòng', emoji: '🧼', color: '#E0F7FA', category: 'Bathroom', ex: 'Wash your hands with soap.' },
+    { en: 'shampoo', ipa: '/ʃæmˈpuː/', vi: 'dầu gội', emoji: '🧴', color: '#E0F7FA', category: 'Bathroom', ex: 'Use shampoo to wash your hair.' },
+    { en: 'toothbrush', ipa: '/ˈtuːθbrʌʃ/', vi: 'bàn chải đánh răng', emoji: '🪥', color: '#E0F7FA', category: 'Bathroom', ex: 'Brush your teeth with a toothbrush.' },
+    { en: 'toothpaste', ipa: '/ˈtuːθpeɪst/', vi: 'kem đánh răng', emoji: '🦷', color: '#E0F7FA', category: 'Bathroom', ex: 'Put toothpaste on the brush.' },
+    { en: 'shower', ipa: '/ˈʃaʊər/', vi: 'vòi sen', emoji: '🚿', color: '#E0F7FA', category: 'Bathroom', ex: 'I take a shower every morning.' },
+    { en: 'bathtub', ipa: '/ˈbæθtʌb/', vi: 'bồn tắm', emoji: '🛁', color: '#E0F7FA', category: 'Bathroom', ex: 'The baby is playing in the bathtub.' },
+    { en: 'toilet', ipa: '/ˈtɔɪlɪt/', vi: 'bồn cầu', emoji: '🚽', color: '#E0F7FA', category: 'Bathroom', ex: 'Flush the toilet after use.' },
+    { en: 'faucet', ipa: '/ˈfɔːsɪt/', vi: 'vòi nước', emoji: '🚰', color: '#E0F7FA', category: 'Bathroom', ex: 'Turn off the faucet to save water.' },
+    { en: 'razor', ipa: '/ˈreɪzər/', vi: 'dao cạo', emoji: '🪒', color: '#E0F7FA', category: 'Bathroom', ex: 'He shaves with a razor.' },
+    { en: 'comb', ipa: '/koʊm/', vi: 'lược', emoji: '🪮', color: '#E0F7FA', category: 'Bathroom', ex: 'Comb your hair before going out.' },
+    { en: 'sponge', ipa: '/spʌndʒ/', vi: 'miếng bọt biển', emoji: '🧽', color: '#E0F7FA', category: 'Bathroom', ex: 'Clean the sink with a sponge.' },
+    { en: 'tissue', ipa: '/ˈtɪʃuː/', vi: 'khăn giấy', emoji: '🧻', color: '#E0F7FA', category: 'Bathroom', ex: 'Take a tissue from the box.' },
+    { en: 'scale', ipa: '/skeɪl/', vi: 'cân', emoji: '⚖️', color: '#E0F7FA', category: 'Bathroom', ex: 'Step on the scale to check your weight.' },
+    { en: 'hairdryer', ipa: '/ˈherdraɪər/', vi: 'máy sấy tóc', emoji: '💇', color: '#E0F7FA', category: 'Bathroom', ex: 'Use the hairdryer after washing your hair.' },
+
+    // --- Living Room (15) ---
+    { en: 'sofa', ipa: '/ˈsoʊfə/', vi: 'ghế sofa', emoji: '🛋️', color: '#FCE4EC', category: 'Living Room', ex: 'Sit down on the sofa.' },
+    { en: 'television', ipa: '/ˈtelɪvɪʒn/', vi: 'ti vi', emoji: '📺', color: '#FCE4EC', category: 'Living Room', ex: 'We watch television after dinner.' },
+    { en: 'remote', ipa: '/rɪˈmoʊt/', vi: 'điều khiển', emoji: '📱', color: '#FCE4EC', category: 'Living Room', ex: 'Pass me the remote control.' },
+    { en: 'bookshelf', ipa: '/ˈbʊkʃelf/', vi: 'kệ sách', emoji: '📚', color: '#FCE4EC', category: 'Living Room', ex: 'The bookshelf is full of novels.' },
+    { en: 'cushion', ipa: '/ˈkʊʃn/', vi: 'đệm tựa', emoji: '🟫', color: '#FCE4EC', category: 'Living Room', ex: 'Put a cushion behind your back.' },
+    { en: 'vase', ipa: '/veɪs/', vi: 'lọ hoa', emoji: '🏺', color: '#FCE4EC', category: 'Living Room', ex: 'Put the flowers in the vase.' },
+    { en: 'painting', ipa: '/ˈpeɪntɪŋ/', vi: 'bức tranh', emoji: '🖼️', color: '#FCE4EC', category: 'Living Room', ex: 'There is a beautiful painting on the wall.' },
+    { en: 'clock', ipa: '/klɑːk/', vi: 'đồng hồ', emoji: '🕐', color: '#FCE4EC', category: 'Living Room', ex: 'The clock on the wall shows ten.' },
+    { en: 'table', ipa: '/ˈteɪbl/', vi: 'bàn', emoji: '🪑', color: '#FCE4EC', category: 'Living Room', ex: 'Put the books on the table.' },
+    { en: 'chair', ipa: '/tʃer/', vi: 'ghế', emoji: '💺', color: '#FCE4EC', category: 'Living Room', ex: 'Please sit on the chair.' },
+    { en: 'armchair', ipa: '/ˈɑːrmtʃer/', vi: 'ghế bành', emoji: '🛋️', color: '#FCE4EC', category: 'Living Room', ex: 'Grandpa reads in his armchair.' },
+    { en: 'fireplace', ipa: '/ˈfaɪərpleɪs/', vi: 'lò sưởi', emoji: '🔥', color: '#FCE4EC', category: 'Living Room', ex: 'The fireplace keeps the room warm.' },
+    { en: 'candle', ipa: '/ˈkændl/', vi: 'nến', emoji: '🕯️', color: '#FCE4EC', category: 'Living Room', ex: 'Light the candle for dinner.' },
+    { en: 'fan', ipa: '/fæn/', vi: 'quạt', emoji: '🌀', color: '#FCE4EC', category: 'Living Room', ex: 'Turn on the fan, it is hot.' },
+    { en: 'shelf', ipa: '/ʃelf/', vi: 'kệ', emoji: '📦', color: '#FCE4EC', category: 'Living Room', ex: 'Put the photo on the shelf.' },
+
+    // --- Household & Cleaning (15) ---
+    { en: 'broom', ipa: '/bruːm/', vi: 'chổi', emoji: '🧹', color: '#E8F5E9', category: 'Household', ex: 'Sweep the floor with a broom.' },
+    { en: 'mop', ipa: '/mɑːp/', vi: 'cây lau nhà', emoji: '🧹', color: '#E8F5E9', category: 'Household', ex: 'Mop the kitchen floor.' },
+    { en: 'bucket', ipa: '/ˈbʌkɪt/', vi: 'xô', emoji: '🪣', color: '#E8F5E9', category: 'Household', ex: 'Fill the bucket with water.' },
+    { en: 'vacuum', ipa: '/ˈvækjuːm/', vi: 'máy hút bụi', emoji: '🧹', color: '#E8F5E9', category: 'Household', ex: 'Vacuum the carpet every week.' },
+    { en: 'iron', ipa: '/ˈaɪərn/', vi: 'bàn ủi', emoji: '👔', color: '#E8F5E9', category: 'Household', ex: 'Iron your shirt before work.' },
+    { en: 'key', ipa: '/kiː/', vi: 'chìa khóa', emoji: '🔑', color: '#E8F5E9', category: 'Household', ex: 'Do not forget your house key.' },
+    { en: 'lock', ipa: '/lɑːk/', vi: 'ổ khóa', emoji: '🔒', color: '#E8F5E9', category: 'Household', ex: 'Lock the door when you leave.' },
+    { en: 'plug', ipa: '/plʌɡ/', vi: 'phích cắm', emoji: '🔌', color: '#E8F5E9', category: 'Household', ex: 'Plug in the charger.' },
+    { en: 'basket', ipa: '/ˈbæskɪt/', vi: 'giỏ', emoji: '🧺', color: '#E8F5E9', category: 'Household', ex: 'Put the dirty clothes in the basket.' },
+    { en: 'detergent', ipa: '/dɪˈtɜːrdʒənt/', vi: 'nước giặt', emoji: '🧴', color: '#E8F5E9', category: 'Household', ex: 'Add detergent to the washing machine.' },
+    { en: 'dustpan', ipa: '/ˈdʌstpæn/', vi: 'hót rác', emoji: '🧹', color: '#E8F5E9', category: 'Household', ex: 'Use the dustpan to collect the dirt.' },
+    { en: 'clothespin', ipa: '/ˈkloʊðzpɪn/', vi: 'kẹp phơi đồ', emoji: '📌', color: '#E8F5E9', category: 'Household', ex: 'Hang the shirt with a clothespin.' },
+    { en: 'trash can', ipa: '/træʃ kæn/', vi: 'thùng rác', emoji: '🗑️', color: '#E8F5E9', category: 'Household', ex: 'Throw it in the trash can.' },
+    { en: 'switch', ipa: '/swɪtʃ/', vi: 'công tắc', emoji: '🔘', color: '#E8F5E9', category: 'Household', ex: 'Turn off the light switch.' },
+    { en: 'socket', ipa: '/ˈsɑːkɪt/', vi: 'ổ cắm điện', emoji: '🔌', color: '#E8F5E9', category: 'Household', ex: 'Plug the lamp into the socket.' },
+
+    // --- House Parts (15) ---
+    { en: 'door', ipa: '/dɔːr/', vi: 'cửa', emoji: '🚪', color: '#E3F2FD', category: 'House Parts', ex: 'Please close the door.' },
+    { en: 'window', ipa: '/ˈwɪndoʊ/', vi: 'cửa sổ', emoji: '🪟', color: '#E3F2FD', category: 'House Parts', ex: 'Open the window for fresh air.' },
+    { en: 'wall', ipa: '/wɔːl/', vi: 'tường', emoji: '🧱', color: '#E3F2FD', category: 'House Parts', ex: 'Hang the picture on the wall.' },
+    { en: 'ceiling', ipa: '/ˈsiːlɪŋ/', vi: 'trần nhà', emoji: '⬆️', color: '#E3F2FD', category: 'House Parts', ex: 'The ceiling is painted white.' },
+    { en: 'floor', ipa: '/flɔːr/', vi: 'sàn nhà', emoji: '⬇️', color: '#E3F2FD', category: 'House Parts', ex: 'The floor is made of wood.' },
+    { en: 'stairs', ipa: '/sterz/', vi: 'cầu thang', emoji: '🪜', color: '#E3F2FD', category: 'House Parts', ex: 'Walk up the stairs to the bedroom.' },
+    { en: 'roof', ipa: '/ruːf/', vi: 'mái nhà', emoji: '🏠', color: '#E3F2FD', category: 'House Parts', ex: 'The roof needs to be repaired.' },
+    { en: 'chimney', ipa: '/ˈtʃɪmni/', vi: 'ống khói', emoji: '🏭', color: '#E3F2FD', category: 'House Parts', ex: 'Smoke comes out of the chimney.' },
+    { en: 'fence', ipa: '/fens/', vi: 'hàng rào', emoji: '🏗️', color: '#E3F2FD', category: 'House Parts', ex: 'The garden has a wooden fence.' },
+    { en: 'gate', ipa: '/ɡeɪt/', vi: 'cổng', emoji: '🚧', color: '#E3F2FD', category: 'House Parts', ex: 'Open the gate for the car.' },
+    { en: 'garage', ipa: '/ɡəˈrɑːʒ/', vi: 'nhà để xe', emoji: '🚗', color: '#E3F2FD', category: 'House Parts', ex: 'Park the car in the garage.' },
+    { en: 'balcony', ipa: '/ˈbælkəni/', vi: 'ban công', emoji: '🏢', color: '#E3F2FD', category: 'House Parts', ex: 'She drinks coffee on the balcony.' },
+    { en: 'garden', ipa: '/ˈɡɑːrdn/', vi: 'vườn', emoji: '🌳', color: '#E3F2FD', category: 'House Parts', ex: 'The children play in the garden.' },
+    { en: 'porch', ipa: '/pɔːrtʃ/', vi: 'hiên nhà', emoji: '🏡', color: '#E3F2FD', category: 'House Parts', ex: 'We sit on the porch in the evening.' },
+    { en: 'attic', ipa: '/ˈætɪk/', vi: 'gác mái', emoji: '🔺', color: '#E3F2FD', category: 'House Parts', ex: 'Old boxes are stored in the attic.' }
+];
+
+// Category display order and icons
+const TOPIC_CATEGORIES = [
+    { key: 'Buildings', icon: '🏗️', label: 'Building Types' },
+    { key: 'Kitchen', icon: '🍴', label: 'Kitchen & Dining' },
+    { key: 'Bedroom', icon: '🛏️', label: 'Bedroom' },
+    { key: 'Bathroom', icon: '🚿', label: 'Bathroom' },
+    { key: 'Living Room', icon: '🛋️', label: 'Living Room' },
+    { key: 'Household', icon: '🧹', label: 'Household & Cleaning' },
+    { key: 'House Parts', icon: '🚪', label: 'House Parts' }
 ];
 
 // ==================== TOPIC VIEW RENDERING ====================
 function renderTopicView() {
     const lessonStartCard = document.getElementById('lessonStartCard');
-    const historySection = document.querySelector('.section-title + .lesson-history')?.previousElementSibling;
 
     // Hide regular lesson sections
     document.querySelectorAll('.section-title').forEach(el => el.style.display = 'none');
@@ -187,31 +298,44 @@ function renderTopicView() {
     const reviewCard = document.getElementById('reviewCard');
     if (reviewCard) reviewCard.style.display = 'none';
 
-    // Build the topic cards grid
-    let cardsHTML = '<div class="topic-cards-grid">';
-    TOPIC_HOUSE_VOCAB.forEach((word, i) => {
-        const svg = TOPIC_SVGS[word.en] || '';
-        cardsHTML += `
-            <div class="topic-card" style="background:${word.color}" onclick="speakWord('${word.en}')">
-                <div class="topic-card-img">${svg}</div>
-                <div class="topic-card-word">${word.en}</div>
-                <div class="topic-card-ipa">${word.ipa}</div>
-                <div class="topic-card-vi">${word.vi}</div>
-            </div>
-        `;
-    });
-    cardsHTML += '</div>';
+    // Build cards grouped by category
+    let html = '';
 
-    // Practice buttons (split into groups of 6)
-    cardsHTML += `
+    TOPIC_CATEGORIES.forEach(cat => {
+        const words = TOPIC_HOUSE_VOCAB.filter(w => w.category === cat.key);
+        if (words.length === 0) return;
+
+        html += `<div class="topic-category-header">${cat.icon} ${cat.label} <span class="topic-cat-count">${words.length}</span></div>`;
+        html += '<div class="topic-cards-grid">';
+
+        words.forEach(word => {
+            const svg = TOPIC_SVGS[word.en];
+            const imgContent = svg
+                ? `<div class="topic-card-img">${svg}</div>`
+                : `<div class="topic-card-emoji">${word.emoji}</div>`;
+
+            html += `
+                <div class="topic-card" style="background:${word.color}" onclick="speakWord('${word.en.replace(/'/g, "\\'")}')">
+                    ${imgContent}
+                    <div class="topic-card-word">${word.en}</div>
+                    <div class="topic-card-ipa">${word.ipa}</div>
+                    <div class="topic-card-vi">${word.vi}</div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+
+        // Practice button for each category
+        html += `<button class="topic-practice-btn" onclick="startTopicPractice('${cat.key}')">
+            🎯 Practice ${cat.label}
+        </button>`;
+    });
+
+    // Random practice all button
+    html += `
         <div class="topic-practice-section">
-            <button class="topic-practice-btn" onclick="startTopicPractice(0)">
-                🎯 Practice 1-6
-            </button>
-            <button class="topic-practice-btn" onclick="startTopicPractice(1)">
-                🎯 Practice 7-12
-            </button>
-            <button class="topic-practice-btn topic-practice-all" onclick="startTopicPractice(-1)">
+            <button class="topic-practice-btn topic-practice-all" onclick="startTopicPractice('all')">
                 ⚡ Practice All (Random 5)
             </button>
         </div>
@@ -220,27 +344,24 @@ function renderTopicView() {
     lessonStartCard.style.background = 'transparent';
     lessonStartCard.style.boxShadow = 'none';
     lessonStartCard.style.padding = '0';
-    lessonStartCard.innerHTML = cardsHTML;
+    lessonStartCard.innerHTML = html;
 }
 
 // ==================== TOPIC PRACTICE (MATCHING GAME) ====================
-function startTopicPractice(groupIndex) {
+function startTopicPractice(category) {
     let practiceWords;
 
-    if (groupIndex === -1) {
-        // Random 5 from all
+    if (category === 'all') {
         practiceWords = shuffleArray([...TOPIC_HOUSE_VOCAB]).slice(0, 5);
-    } else if (groupIndex === 0) {
-        practiceWords = TOPIC_HOUSE_VOCAB.slice(0, 6);
     } else {
-        practiceWords = TOPIC_HOUSE_VOCAB.slice(6, 12);
+        const catWords = TOPIC_HOUSE_VOCAB.filter(w => w.category === category);
+        practiceWords = shuffleArray([...catWords]).slice(0, Math.min(6, catWords.length));
     }
 
-    // Ensure at least 2 words
     if (practiceWords.length < 2) return;
 
     lessonState = {
-        lessonNumber: -2, // Special marker for topic practice
+        lessonNumber: -2,
         words: practiceWords,
         currentRound: 0,
         totalRounds: 1,
@@ -268,7 +389,6 @@ function startTopicPractice(groupIndex) {
 
 // ==================== RESTORE TOPIC VIEW STATE ====================
 function restoreNormalView() {
-    // Re-show sections hidden by topic view
     document.querySelectorAll('.section-title').forEach(el => el.style.display = '');
     document.getElementById('lessonHistory').style.display = '';
     const mistakesContainer = document.getElementById('mistakesContainer');
@@ -276,7 +396,6 @@ function restoreNormalView() {
     const historyTabs = document.querySelector('.history-tabs');
     if (historyTabs) historyTabs.style.display = '';
 
-    // Reset lesson start card styling
     const lessonStartCard = document.getElementById('lessonStartCard');
     lessonStartCard.style.boxShadow = '';
     lessonStartCard.style.padding = '';
