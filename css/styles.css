@@ -3520,7 +3520,7 @@
         /* Pet hero stage — the creature area */
         .pet-hero-stage {
             position: absolute;
-            bottom: 40px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -3531,17 +3531,27 @@
         }
 
         /* Shop button in hero */
+        .pet-bottom-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .pet-bottom-left {
+            flex: 1;
+        }
         .pet-shop-btn-hero {
             background: rgba(255,255,255,0.25);
             color: white;
             border: 2px solid rgba(255,255,255,0.4);
             border-radius: 18px;
-            padding: 5px 16px;
-            font-size: 12px;
+            padding: 6px 18px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             backdrop-filter: blur(4px);
             transition: transform 0.15s;
+            flex-shrink: 0;
         }
         .pet-shop-btn-hero:active { transform: scale(0.94); }
 
@@ -4109,9 +4119,8 @@
         .hunger-hearts-row {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 2px;
-            margin-top: 4px;
             font-size: 13px;
         }
         .hunger-heart {

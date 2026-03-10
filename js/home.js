@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.3.9';
+const APP_VERSION = 'v3.4.0';
 
 function renderHome() {
     if (!appState) return;
@@ -859,7 +859,6 @@ function renderWordPet() {
             </div>
             ${accSpans}
         </div>
-        <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
     `;
 
     // XP bar + hunger hearts at bottom of habitat
@@ -872,14 +871,19 @@ function renderWordPet() {
 
     if (xpbar_el) {
         xpbar_el.innerHTML = `
+            <div class="pet-bottom-strip">
+                <div class="pet-bottom-left">
+                    <div class="hunger-hearts-row">
+                        ${heartsHTML}
+                        <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
+                    </div>
+                </div>
+                <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
+            </div>
             <div class="pet-hero-xp-track">
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
             <span class="pet-hero-xp-label">${level >= 100 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
-            <div class="hunger-hearts-row">
-                ${heartsHTML}
-                <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
-            </div>
         `;
     }
 
