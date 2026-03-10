@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v56';
+const CACHE_NAME = 'flashlingo-v57';
 const ASSETS = [
   '/',
   '/index.html',
@@ -56,54 +56,21 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch: serve from cache first, fall back to network
+// Fetch: network-first, fall back to cache (always get latest)
 self.addEventListener('fetch', event => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
-  // Skip cross-origin requests (fonts, analytics, etc.)
-  if (!event.request.url.startsWith(self.location.origin)) {
-    // For Google Fonts, try network first then cache
-    if (event.request.url.includes('fonts.googleapis.com') ||
-        event.request.url.includes('fonts.gstatic.com')) {
-      event.respondWith(
-        caches.open(CACHE_NAME).then(cache =>
-          fetch(event.request).then(response => {
-            cache.put(event.request, response.clone());
-            return response;
-          }).catch(() => cache.match(event.request))
-        )
-      );
-    }
-    return;
-  }
-
-  // Audio JSON files: network-first (timestamps may be updated)
-  if (event.request.url.includes('/audio/') && event.request.url.endsWith('.json')) {
-    event.respondWith(
-      fetch(event.request).then(response => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // All other same-origin: cache-first
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        // Cache successful responses for future offline use
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      });
+    fetch(event.request).then(response => {
+      // Update cache with fresh response for offline use
+      if (response.ok) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+      }
+      return response;
+    }).catch(() => {
+      // Offline — serve from cache
+      return caches.match(event.request);
     })
   );
 });
