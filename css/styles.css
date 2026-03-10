@@ -3276,7 +3276,13 @@
         .pet-creature {
             cursor: pointer;
             display: inline-block;
-            transition: transform 0.2s, font-size 0.3s;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .pet-creature img {
+            display: block;
+            object-fit: contain;
+            pointer-events: none;
         }
 
         .pet-creature.happy {
@@ -3608,7 +3614,7 @@
             animation: petSway 2.5s ease-in-out infinite !important;
         }
 
-        /* Breed glow effects */
+        /* Breed glow effects (applied to container, affects img child) */
         .pet-creature[data-stage="poodle"]    { filter: drop-shadow(0 0 8px rgba(255,182,193,0.6)); }
         .pet-creature[data-stage="retriever"] { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
         .pet-creature[data-stage="dalmatian"] { filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
@@ -3617,6 +3623,56 @@
         .pet-creature[data-stage="akita"]     { filter: drop-shadow(0 0 14px rgba(147,112,219,0.7)); }
         .pet-creature[data-stage="royal"]     { animation: rainbowGlow 3s ease infinite; }
         .pet-creature[data-stage="diamond"]   { animation: diamondSparkle 2s ease infinite; }
+
+        /* CSS image filters for variant breeds (differentiate reused base images) */
+        .pet-creature[data-stage="dalmatian"] img { filter: grayscale(0.2) contrast(1.1); }
+        .pet-creature[data-stage="husky"] img     { filter: hue-rotate(190deg) saturate(0.7) brightness(1.1); }
+        .pet-creature[data-stage="akita"] img     { filter: sepia(0.3) saturate(1.2); }
+        .pet-creature[data-stage="royal"] img     { filter: sepia(0.2) brightness(1.1); }
+        .pet-creature[data-stage="diamond"] img   { filter: brightness(1.15) contrast(1.1); }
+
+        /* CSS decorations for premium stages */
+        .pet-creature[data-stage="husky"]::before {
+            content: "❄️";
+            position: absolute;
+            font-size: 20px;
+            top: -8px;
+            right: -12px;
+            animation: iceFloat 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .pet-creature[data-stage="royal"]::before {
+            content: "👑";
+            position: absolute;
+            font-size: 24px;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: crownFloat 2.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .pet-creature[data-stage="diamond"]::before {
+            content: "👑";
+            position: absolute;
+            font-size: 28px;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: crownFloat 2.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        @keyframes iceFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translateY(-8px) rotate(15deg); opacity: 1; }
+        }
+        @keyframes crownFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-6px); }
+        }
 
         @keyframes rainbowGlow {
             0%   { filter: drop-shadow(0 0 18px rgba(255,0,0,0.6)); }
