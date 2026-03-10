@@ -96,7 +96,7 @@
             <!-- Home Screen -->
             <div class="screen home-screen" id="homeScreen">
                 <div class="summer-sun"><img src="img/sun.svg" alt="sun"></div>
-                <div class="home-header" style="position:relative; z-index:1;">
+                <div class="home-header">
                     <div class="home-user">
                         <div class="home-user-avatar" id="homeAvatar" onclick="navigateToProfile()">😊</div>
                         <div class="home-user-info">
@@ -112,70 +112,61 @@
                     </div>
                 </div>
 
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-value" id="homePoints">0</div>
-                        <div class="stat-label">Total Points</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="homeLessons">0/369</div>
-                        <div class="stat-label">Progress</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="homeToday">0</div>
-                        <div class="stat-label">Today</div>
-                    </div>
-                </div>
-
-                <div class="pet-scene" id="petScene">
-                    <div class="pet-bg" id="petBg"></div>
-                    <div class="pet-container" id="petContainer"></div>
+                <!-- Pet Hero Zone — the dog's world IS the top half -->
+                <div class="pet-hero-zone" id="petHeroZone">
+                    <div class="habitat-emojis" id="habitatEmojis"></div>
+                    <div class="pet-hero-topbar" id="petHeroTopbar"></div>
+                    <div class="pet-hero-stage" id="petHeroStage"></div>
+                    <div class="pet-hero-xpbar" id="petHeroXpbar"></div>
                 </div>
                 <div class="evolution-overlay" id="evolutionOverlay" style="display:none"></div>
 
-                <div class="difficulty-tabs" id="difficultyTabs">
-                    <button class="difficulty-tab active" data-level="beginning" onclick="filterByDifficulty('beginning')">
-                        🏠 Beginning <span class="tab-count" id="countBeginning">0</span>
-                    </button>
-                    <button class="difficulty-tab" data-level="basic" onclick="filterByDifficulty('basic')">
-                        🌱 Basic <span class="tab-count" id="countBasic">0</span>
-                    </button>
-                    <button class="difficulty-tab" data-level="intermediate" onclick="filterByDifficulty('intermediate')">
-                        🌿 Intermediate <span class="tab-count" id="countIntermediate">0</span>
-                    </button>
-                    <button class="difficulty-tab" data-level="upper" onclick="filterByDifficulty('upper')">
-                        🌳 Upper <span class="tab-count" id="countUpper">0</span>
-                    </button>
-                    <button class="difficulty-tab" data-level="advanced" onclick="filterByDifficulty('advanced')">
-                        ⭐ Advanced <span class="tab-count" id="countAdvanced">0</span>
-                    </button>
-                </div>
+                <!-- Learn Panel — slides up from pet's world -->
+                <div class="learn-panel" id="learnPanel">
+                    <div class="learn-panel-handle"></div>
 
-                <h2 class="section-title">🚀 Today's Lesson</h2>
-                <div class="lesson-start-card" id="lessonStartCard">
-                    <div class="lesson-info">
-                        <div class="lesson-number">Lesson <span id="currentLessonNum">1</span></div>
-                        <div class="lesson-words-preview" id="lessonWordsPreview">5 new words to learn</div>
+                    <div class="difficulty-chips" id="difficultyChips">
+                        <button class="difficulty-chip active" data-level="beginning" onclick="filterByDifficulty('beginning')">
+                            🏠 Beginning <span class="chip-count" id="countBeginning">0</span>
+                        </button>
+                        <button class="difficulty-chip" data-level="basic" onclick="filterByDifficulty('basic')">
+                            🌱 Basic <span class="chip-count" id="countBasic">0</span>
+                        </button>
+                        <button class="difficulty-chip" data-level="intermediate" onclick="filterByDifficulty('intermediate')">
+                            🌿 Intermediate <span class="chip-count" id="countIntermediate">0</span>
+                        </button>
+                        <button class="difficulty-chip" data-level="upper" onclick="filterByDifficulty('upper')">
+                            🌳 Upper <span class="chip-count" id="countUpper">0</span>
+                        </button>
+                        <button class="difficulty-chip" data-level="advanced" onclick="filterByDifficulty('advanced')">
+                            ⭐ Advanced <span class="chip-count" id="countAdvanced">0</span>
+                        </button>
                     </div>
-                    <button class="primary-btn start-lesson-btn" onclick="startNextLesson()">
-                        Start Lesson
-                    </button>
-                </div>
 
-                <h2 class="section-title">📖 History</h2>
-                <div class="history-tabs">
-                    <button class="history-tab active" onclick="switchHistoryTab('history')">
-                        📚 History <span class="history-tab-count" id="historyCount">0</span>
-                    </button>
-                    <button class="history-tab" onclick="switchHistoryTab('mistakes')">
-                        🔄 Review <span class="history-tab-count" id="mistakesCount">0</span>
-                    </button>
-                </div>
-                <div class="lesson-history" id="lessonHistory">
-                    <div class="empty-history">No lessons completed yet</div>
-                </div>
-                <div class="mistakes-container" id="mistakesContainer">
-                    <div class="empty-history">No mistakes to review</div>
+                    <div class="lesson-start-card" id="lessonStartCard">
+                        <div class="lesson-info">
+                            <div class="lesson-number">Lesson <span id="currentLessonNum">1</span></div>
+                            <div class="lesson-words-preview" id="lessonWordsPreview">5 new words to learn</div>
+                        </div>
+                        <button class="primary-btn start-lesson-btn" onclick="startNextLesson()">
+                            Start Lesson
+                        </button>
+                    </div>
+
+                    <div class="history-tabs">
+                        <button class="history-tab active" onclick="switchHistoryTab('history')">
+                            📚 History <span class="history-tab-count" id="historyCount">0</span>
+                        </button>
+                        <button class="history-tab" onclick="switchHistoryTab('mistakes')">
+                            🔄 Review <span class="history-tab-count" id="mistakesCount">0</span>
+                        </button>
+                    </div>
+                    <div class="lesson-history" id="lessonHistory">
+                        <div class="empty-history">No lessons completed yet</div>
+                    </div>
+                    <div class="mistakes-container" id="mistakesContainer">
+                        <div class="empty-history">No mistakes to review</div>
+                    </div>
                 </div>
             </div>
 

@@ -507,11 +507,6 @@
             padding-bottom: 0;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             border-radius: 20px 20px 0 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 300;
         }
 
         .nav-item {
@@ -524,7 +519,7 @@
             background: none;
             border: none;
             color: #B0B0B0;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             transition: color 0.2s ease;
             cursor: pointer;
@@ -536,8 +531,8 @@
         }
 
         .nav-item .icon {
-            font-size: 22px;
-            margin-bottom: 2px;
+            font-size: 24px;
+            margin-bottom: 4px;
             transition: transform 0.2s ease;
         }
 
@@ -547,8 +542,17 @@
 
         /* ==================== HOME SCREEN ==================== */
         .home-screen {
-            padding: 20px;
-            padding-bottom: 70px;
+            padding: 0;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: hidden;
+        }
+        .home-screen .home-header {
+            display: none;  /* replaced by pet-hero-topbar */
+        }
+        .home-screen .summer-sun {
+            display: none;  /* replaced by habitat emojis */
         }
 
         /* Floating background decorations on home */
@@ -605,7 +609,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
 
         .home-user {
@@ -3356,80 +3360,400 @@
             80% { transform: rotate(10deg); }
         }
 
-        /* ==================== PET SCENE & HABITAT ==================== */
-        .pet-scene {
+        /* ==================== PET HERO ZONE ==================== */
+        .pet-hero-zone {
             position: relative;
-            border-radius: var(--border-radius);
+            width: 100%;
+            height: 48dvh;
+            min-height: 240px;
+            max-height: 380px;
             overflow: hidden;
-            min-height: 160px;
+            border-radius: 0 0 28px 28px;
+            flex-shrink: 0;
+            transition: filter 1.5s ease;
+        }
+
+        /* 10 Dog Breed Backgrounds — rich 3-stop gradients */
+        .pet-hero-zone[data-stage="chihuahua"] { background: linear-gradient(180deg, #c8f0b5 0%, #a8e6a0 50%, #8acc8a 100%); }
+        .pet-hero-zone[data-stage="beagle"]    { background: linear-gradient(180deg, #dff0e0 0%, #b5d9b7 50%, #8bbf8e 100%); }
+        .pet-hero-zone[data-stage="poodle"]    { background: linear-gradient(180deg, #fce4ec 0%, #f48fb1 55%, #e91e8c 100%); }
+        .pet-hero-zone[data-stage="retriever"] { background: linear-gradient(180deg, #fffde7 0%, #ffe082 50%, #f9a825 100%); }
+        .pet-hero-zone[data-stage="dalmatian"] { background: linear-gradient(180deg, #fff3e0 0%, #ffb74d 55%, #e65100 100%); }
+        .pet-hero-zone[data-stage="husky"]     { background: linear-gradient(180deg, #f0faff 0%, #81d4fa 55%, #0288d1 100%); }
+        .pet-hero-zone[data-stage="shepherd"]  { background: linear-gradient(180deg, #e0f7fa 0%, #4db6ac 55%, #00695c 100%); }
+        .pet-hero-zone[data-stage="akita"]     { background: linear-gradient(180deg, #ede7f6 0%, #9575cd 55%, #4527a0 100%); }
+        .pet-hero-zone[data-stage="royal"]     { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 45%, #0f3460 100%); }
+        .pet-hero-zone[data-stage="diamond"]   { background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 40%, #ff8f00 75%, #e65100 100%); }
+
+        /* Time of day */
+        .pet-hero-zone.time-morning   { filter: brightness(1.05) hue-rotate(5deg); }
+        .pet-hero-zone.time-afternoon { filter: brightness(1.0); }
+        .pet-hero-zone.time-evening   { filter: brightness(0.9) sepia(0.15); }
+        .pet-hero-zone.time-night     { filter: brightness(0.6) saturate(0.7); }
+
+        /* Floating habitat emojis */
+        .habitat-emojis {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .habitat-emojis span {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.55;
+            animation: habitatDrift var(--drift-duration, 8s) ease-in-out infinite;
+            animation-delay: var(--drift-delay, 0s);
+            will-change: transform;
+        }
+        @keyframes habitatDrift {
+            0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.4; }
+            25%  { transform: translateY(-14px) translateX(6px) rotate(8deg); opacity: 0.65; }
+            50%  { transform: translateY(-22px) translateX(-5px) rotate(-4deg); opacity: 0.55; }
+            75%  { transform: translateY(-10px) translateX(8px) rotate(6deg); opacity: 0.65; }
+            100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.4; }
+        }
+
+        /* Night mode stars */
+        .pet-hero-zone.time-night .habitat-emojis span {
+            animation: starTwinkle 3s ease-in-out infinite;
+            animation-delay: var(--drift-delay, 0s);
+        }
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.9); }
+            50%       { opacity: 0.9; transform: scale(1.1); }
+        }
+
+        /* Hero top bar — glassmorphism HUD */
+        .pet-hero-topbar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 100%);
+            z-index: 10;
+        }
+        .pet-hero-left, .pet-hero-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pet-hero-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            border: 2px solid rgba(255,255,255,0.4);
+            transition: transform 0.15s ease;
+        }
+        .pet-hero-avatar:active { transform: scale(0.9); }
+        .pet-hero-level {
+            background: rgba(0,0,0,0.35);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .pet-hero-streak {
+            background: rgba(0,0,0,0.35);
+            color: #FF8A65;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .pet-hero-coins {
+            background: rgba(0,0,0,0.35);
+            color: #FFD54F;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(4px);
+            transition: transform 0.15s ease;
+            animation: coinPulse 4s ease infinite;
+        }
+        .pet-hero-coins:active { transform: scale(0.92); }
+        @keyframes coinPulse {
+            0%, 90%, 100% { box-shadow: none; }
+            95% { box-shadow: 0 0 0 3px rgba(255,213,79,0.4); }
+        }
+        .pet-hero-info {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Pet hero stage — the creature area */
+        .pet-hero-stage {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            gap: 6px;
+            z-index: 5;
         }
 
-        .pet-bg {
+        /* Shop button in hero */
+        .pet-shop-btn-hero {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 18px;
+            padding: 5px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: transform 0.15s;
+        }
+        .pet-shop-btn-hero:active { transform: scale(0.94); }
+
+        /* XP bar at bottom of hero zone */
+        .pet-hero-xpbar {
             position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            pointer-events: none;
-            font-size: 22px;
-            padding: 4px 8px;
-            gap: 4px;
+            bottom: 10px;
+            left: 16px; right: 16px;
+            z-index: 8;
+        }
+        .pet-hero-xp-track {
+            height: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .pet-hero-xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.9));
+            border-radius: 6px;
+            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .pet-hero-xp-label {
+            display: block;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
         }
 
-        /* 10 Dog Breed Backgrounds */
-        .pet-scene[data-stage="chihuahua"] { background: linear-gradient(180deg, #d4f1c4 0%, #a8e6a0 100%); }
-        .pet-scene[data-stage="beagle"]    { background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 60%, #a5d6a7 100%); }
-        .pet-scene[data-stage="poodle"]    { background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 60%, #f48fb1 100%); }
-        .pet-scene[data-stage="retriever"] { background: linear-gradient(180deg, #fff8e1 0%, #ffe082 60%, #ffca28 100%); }
-        .pet-scene[data-stage="dalmatian"] { background: linear-gradient(180deg, #ffe0b2 0%, #ffcc80 60%, #ffa726 100%); }
-        .pet-scene[data-stage="husky"]     { background: linear-gradient(180deg, #e1f5fe 0%, #b3e5fc 60%, #81d4fa 100%); }
-        .pet-scene[data-stage="shepherd"]  { background: linear-gradient(180deg, #e0f2f1 0%, #80cbc4 60%, #4db6ac 100%); }
-        .pet-scene[data-stage="akita"]     { background: linear-gradient(180deg, #ede7f6 0%, #b39ddb 60%, #9575cd 100%); }
-        .pet-scene[data-stage="royal"]     { background: linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%); }
-        .pet-scene[data-stage="diamond"]   { background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 40%, #ffb300 70%, #ff8f00 100%); }
+        /* ==================== PET ANIMATIONS ==================== */
+
+        /* Idle breathing — always on */
+        .pet-creature:not(.pet-tapped):not(.wiggle) {
+            animation: petBreath 3.5s ease-in-out infinite;
+            transform-origin: bottom center;
+            will-change: transform;
+        }
+
+        /* Tap squish */
+        .pet-creature.pet-tapped {
+            animation: petSquish 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+        }
+        @keyframes petSquish {
+            0%   { transform: scale(1.0, 1.0); }
+            25%  { transform: scale(1.15, 0.85); }
+            60%  { transform: scale(0.92, 1.08); }
+            100% { transform: scale(1.0, 1.0); }
+        }
+        @keyframes petBreath {
+            0%, 100% { transform: scaleY(1) scaleX(1); }
+            40%      { transform: scaleY(1.04) scaleX(0.98); }
+            60%      { transform: scaleY(1.04) scaleX(0.98); }
+        }
+
+        /* Happy bounce overrides breathing */
+        .pet-creature.happy:not(.pet-tapped) {
+            animation: petHeroBounce 1.8s ease infinite !important;
+        }
+        @keyframes petHeroBounce {
+            0%, 100% { transform: translateY(0) scale(1.0); }
+            40%      { transform: translateY(-10px) scale(0.97); }
+            60%      { transform: translateY(-8px) scale(0.98); }
+            80%      { transform: translateY(-2px) scale(1.01); }
+        }
+
+        /* Sleepy/hungry sway */
+        .pet-creature.sleepy:not(.pet-tapped),
+        .pet-creature.hungry:not(.pet-tapped) {
+            animation: petSway 3.5s ease-in-out infinite !important;
+        }
+        .pet-creature.starving:not(.pet-tapped) {
+            filter: grayscale(0.5) brightness(0.75);
+            animation: petSway 2.5s ease-in-out infinite !important;
+        }
 
         /* Breed glow effects */
-        .pet-creature[data-stage="poodle"]    { filter: drop-shadow(0 0 6px rgba(255,182,193,0.5)); }
-        .pet-creature[data-stage="retriever"] { filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
-        .pet-creature[data-stage="dalmatian"] { filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)); }
-        .pet-creature[data-stage="husky"]     { filter: drop-shadow(0 0 10px rgba(135,206,250,0.6)); }
-        .pet-creature[data-stage="shepherd"]  { filter: drop-shadow(0 0 10px rgba(50,205,50,0.5)); }
-        .pet-creature[data-stage="akita"]     { filter: drop-shadow(0 0 12px rgba(147,112,219,0.6)); }
+        .pet-creature[data-stage="poodle"]    { filter: drop-shadow(0 0 8px rgba(255,182,193,0.6)); }
+        .pet-creature[data-stage="retriever"] { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
+        .pet-creature[data-stage="dalmatian"] { filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+        .pet-creature[data-stage="husky"]     { filter: drop-shadow(0 0 12px rgba(135,206,250,0.7)); }
+        .pet-creature[data-stage="shepherd"]  { filter: drop-shadow(0 0 12px rgba(50,205,50,0.6)); }
+        .pet-creature[data-stage="akita"]     { filter: drop-shadow(0 0 14px rgba(147,112,219,0.7)); }
         .pet-creature[data-stage="royal"]     { animation: rainbowGlow 3s ease infinite; }
         .pet-creature[data-stage="diamond"]   { animation: diamondSparkle 2s ease infinite; }
 
         @keyframes rainbowGlow {
-            0%   { filter: drop-shadow(0 0 14px rgba(255,0,0,0.5)); }
-            16%  { filter: drop-shadow(0 0 14px rgba(255,165,0,0.5)); }
-            33%  { filter: drop-shadow(0 0 14px rgba(255,255,0,0.5)); }
-            50%  { filter: drop-shadow(0 0 14px rgba(0,255,0,0.5)); }
-            66%  { filter: drop-shadow(0 0 14px rgba(0,0,255,0.5)); }
-            83%  { filter: drop-shadow(0 0 14px rgba(148,0,211,0.5)); }
-            100% { filter: drop-shadow(0 0 14px rgba(255,0,0,0.5)); }
+            0%   { filter: drop-shadow(0 0 18px rgba(255,0,0,0.6)); }
+            16%  { filter: drop-shadow(0 0 18px rgba(255,165,0,0.6)); }
+            33%  { filter: drop-shadow(0 0 18px rgba(255,255,0,0.6)); }
+            50%  { filter: drop-shadow(0 0 18px rgba(0,255,0,0.6)); }
+            66%  { filter: drop-shadow(0 0 18px rgba(0,0,255,0.6)); }
+            83%  { filter: drop-shadow(0 0 18px rgba(148,0,211,0.6)); }
+            100% { filter: drop-shadow(0 0 18px rgba(255,0,0,0.6)); }
         }
         @keyframes diamondSparkle {
-            0%, 100% { filter: drop-shadow(0 0 16px rgba(255,215,0,0.6)) brightness(1); }
-            50%      { filter: drop-shadow(0 0 24px rgba(255,215,0,0.9)) brightness(1.1); }
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.7)) brightness(1); }
+            50%      { filter: drop-shadow(0 0 30px rgba(255,215,0,1)) brightness(1.15); }
         }
 
-        .pet-scene.time-morning   { filter: brightness(1.05) sepia(0.05); }
-        .pet-scene.time-afternoon { filter: brightness(1.0); }
-        .pet-scene.time-evening   { filter: brightness(0.95) sepia(0.15); }
-        .pet-scene.time-night     { filter: brightness(0.75) saturate(0.8); }
-
-        /* Pet moods - hunger-aware */
-        .pet-creature.starving {
-            filter: grayscale(0.5) brightness(0.8);
-            animation: petSway 2s ease infinite;
+        /* Heart burst particles */
+        .heart-burst {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            font-size: 20px;
+            z-index: 20;
         }
-        .pet-creature.hungry {
-            animation: petSway 3s ease infinite;
+        .heart-burst span {
+            position: absolute;
+            opacity: 0;
+            animation: heartFly var(--fly-dur, 0.8s) ease forwards;
+            animation-delay: var(--fly-delay, 0s);
+        }
+        @keyframes heartFly {
+            0%   { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            80%  { opacity: 0.8; }
+            100% { transform: translate(var(--fly-x, 0), var(--fly-y, -40px)) scale(1.2); opacity: 0; }
+        }
+
+        /* Speech bubble (repositioned for hero) */
+        .pet-bubble {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 18px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            animation: bubblePop 0.3s ease;
+            z-index: 15;
+            color: #333;
+        }
+        .pet-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 7px solid rgba(255,255,255,0.95);
+        }
+
+        /* ==================== LEARN PANEL ==================== */
+        .learn-panel {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: -20px;
+            padding: 8px 16px 24px;
+            background: var(--bg-primary, #f5f5f5);
+            border-radius: 24px 24px 0 0;
+            position: relative;
+            z-index: 15;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+        }
+        .learn-panel-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(0,0,0,0.12);
+            border-radius: 2px;
+            margin: 8px auto 16px;
+        }
+
+        /* Difficulty chips */
+        .difficulty-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0 0 8px;
+            margin-bottom: 12px;
+        }
+        .difficulty-chips::-webkit-scrollbar { display: none; }
+        .difficulty-chip {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background: var(--card-bg, #fff);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary, #888);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .difficulty-chip.active {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 3px 12px rgba(118, 75, 162, 0.35);
+        }
+        .chip-count {
+            background: rgba(0,0,0,0.08);
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+        }
+        .difficulty-chip.active .chip-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .pet-creature, .habitat-emojis span, .heart-burst span {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         /* Accessory positions — slot-based, scale with dog size */
@@ -3572,94 +3896,10 @@
             100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
         }
 
-        /* ==================== DOG PET — LEVEL, XP, COINS, SHOP ==================== */
-
-        .pet-top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 0 8px;
-            margin-bottom: 4px;
-        }
-
-        .pet-level-badge {
-            background: linear-gradient(135deg, #FFD700, #FFA000);
-            color: #5D4037;
-            font-size: 11px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .pet-title {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            opacity: 0.8;
-            margin-top: 1px;
-        }
-
-        .pet-xp-bar {
-            position: relative;
-            width: 80%;
-            max-width: 160px;
-            height: 10px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 5px;
-            margin-top: 4px;
-            overflow: hidden;
-        }
-        .pet-xp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            border-radius: 5px;
-            transition: width 0.4s ease;
-        }
-        .pet-xp-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7px;
-            font-weight: 700;
-            color: #333;
-            text-shadow: 0 0 2px rgba(255,255,255,0.8);
-        }
-
-        .pet-coin-display {
-            font-size: 13px;
-            font-weight: 700;
-            color: #F57F17;
-            cursor: pointer;
-            background: rgba(255,255,255,0.7);
-            padding: 2px 8px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-        }
-
-        .pet-shop-label {
-            font-size: 8px;
-            opacity: 0.6;
-            font-weight: 600;
-        }
-
-        .pet-shop-btn {
-            background: linear-gradient(135deg, #7E57C2, #9575CD);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 4px 14px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 4px;
-            box-shadow: 0 2px 6px rgba(126, 87, 194, 0.3);
-        }
-        .pet-shop-btn:active { transform: scale(0.96); }
+        /* ==================== DOG PET — LEGACY COMPAT ==================== */
+        .pet-top-bar { display: none; }
+        .pet-level-badge, .pet-title, .pet-xp-bar, .pet-coin-display, .pet-shop-label { display: none; }
+        .pet-shop-btn { display: none; }
 
         /* Shop modal */
         .pet-shop-overlay {
@@ -5271,7 +5511,7 @@
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
-            padding-bottom: calc(80px + var(--safe-area-bottom));
+            padding-bottom: 32px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -6093,572 +6333,6 @@
         .mm-play-btn:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #4a3580;
-        }
-
-        /* ==================== VIDEO SCREEN ==================== */
-        .video-screen {
-            padding: 0;
-            padding-bottom: 80px;
-            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        }
-
-        /* Header */
-        .vs-header {
-            padding: 20px 20px 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .vs-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .vs-stats-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .vs-stat {
-            flex: 1;
-            background: rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 8px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .vs-stat-val {
-            display: block;
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-        }
-
-        .vs-stat-lbl {
-            font-size: 10px;
-            color: rgba(255,255,255,0.7);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Level tabs */
-        .vl-tabs-scroll {
-            display: flex;
-            gap: 6px;
-            padding: 12px 16px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .vl-tabs-scroll::-webkit-scrollbar { display: none; }
-
-        .vl-tab {
-            flex-shrink: 0;
-            padding: 8px 14px;
-            border: none;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .vl-tab.active {
-            background: white;
-            color: #302b63;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .vl-tab-count {
-            background: rgba(255,255,255,0.15);
-            padding: 1px 6px;
-            border-radius: 8px;
-            font-size: 10px;
-            margin-left: 4px;
-        }
-
-        .vl-tab.active .vl-tab-count {
-            background: rgba(0,0,0,0.1);
-        }
-
-        /* Category chips */
-        .vc-chips-scroll {
-            display: flex;
-            gap: 6px;
-            padding: 0 16px 12px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .vc-chips-scroll::-webkit-scrollbar { display: none; }
-
-        .vc-chip {
-            flex-shrink: 0;
-            padding: 6px 12px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
-            background: transparent;
-            color: rgba(255,255,255,0.5);
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .vc-chip.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        /* Video cards grid */
-        .vc-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 0 16px 20px;
-        }
-
-        .vc-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .vc-card:active {
-            transform: scale(0.97);
-        }
-
-        .vc-card.watched {
-            border-color: rgba(76,175,80,0.3);
-        }
-
-        .vc-thumb {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%;
-            background-size: cover;
-            background-position: center;
-            background-color: rgba(255,255,255,0.05);
-        }
-
-        .vc-play-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 36px;
-            height: 36px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            backdrop-filter: blur(5px);
-        }
-
-        .vc-duration {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background: rgba(0,0,0,0.75);
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .vc-watched-badge {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            font-size: 16px;
-        }
-
-        .vc-info {
-            padding: 10px;
-        }
-
-        .vc-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 6px;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .vc-meta {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .vc-level-badge {
-            font-size: 9px;
-            font-weight: 700;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 8px;
-        }
-
-        .vc-stars {
-            font-size: 10px;
-        }
-
-        .vc-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px 20px;
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-        }
-
-        /* ==================== VIDEO PLAYER OVERLAY ==================== */
-        .video-player-overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            z-index: 200;
-            display: none;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-top: var(--safe-area-top);
-            padding-bottom: 80px;
-        }
-
-        .video-player-overlay.active {
-            display: block;
-        }
-
-        .vp-container {
-            padding: 16px;
-            padding-bottom: 40px;
-        }
-
-        .vp-top-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .vp-back {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .vp-level-badge {
-            padding: 4px 12px;
-            border-radius: 10px;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .vp-prev-stars {
-            margin-left: auto;
-            font-size: 14px;
-        }
-
-        .vp-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 4px;
-        }
-
-        .vp-channel {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 16px;
-        }
-
-        .vp-player-wrap {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 16px;
-            background: #000;
-        }
-
-        .vp-player-wrap iframe,
-        .vp-player-wrap > div:first-child {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .vp-offline-msg {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.8);
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .vp-desc {
-            font-size: 13px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .vp-section-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        /* Vocabulary grid */
-        .vp-words-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .vp-word {
-            background: rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .vp-word:active {
-            background: rgba(255,255,255,0.15);
-        }
-
-        .vp-word-en {
-            font-size: 14px;
-            font-weight: 700;
-            color: #43e97b;
-            margin-bottom: 2px;
-        }
-
-        .vp-word-pho {
-            font-size: 10px;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 4px;
-        }
-
-        .vp-word-vi {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        /* Quiz button */
-        .vp-quiz-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            font-family: inherit;
-            box-shadow: 0 4px 15px rgba(240,147,251,0.3);
-            transition: transform 0.1s ease;
-        }
-
-        .vp-quiz-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* ==================== VIDEO QUIZ ==================== */
-        .vq-container {
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .vq-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .vq-progress-text {
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .vq-progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            margin-bottom: 40px;
-            overflow: hidden;
-        }
-
-        .vq-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #43e97b, #38f9d7);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        .vq-question {
-            font-size: 20px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 32px;
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        .vq-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .vq-opt {
-            padding: 18px 20px;
-            border: 2px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
-            background: rgba(255,255,255,0.05);
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-            text-align: left;
-            transition: all 0.2s ease;
-        }
-
-        .vq-opt:active {
-            transform: scale(0.98);
-        }
-
-        .vq-opt.correct {
-            border-color: #43e97b;
-            background: rgba(67,233,123,0.15);
-            color: #43e97b;
-        }
-
-        .vq-opt.wrong {
-            border-color: #f5576c;
-            background: rgba(245,87,108,0.15);
-            color: #f5576c;
-        }
-
-        /* Quiz results */
-        .vq-results {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .vq-emoji {
-            font-size: 64px;
-            margin-bottom: 16px;
-            animation: vqBounce 0.5s ease;
-        }
-
-        @keyframes vqBounce {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-
-        .vq-stars-big {
-            font-size: 36px;
-            margin-bottom: 16px;
-        }
-
-        .vq-score {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .vq-points {
-            font-size: 18px;
-            font-weight: 700;
-            color: #43e97b;
-            margin-bottom: 8px;
-        }
-
-        .vq-words-earned {
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 32px;
-        }
-
-        .vq-actions {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .vq-btn-retry,
-        .vq-btn-back {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .vq-btn-retry {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .vq-btn-back {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
 
         /* --- Music Menu: Song List Items --- */

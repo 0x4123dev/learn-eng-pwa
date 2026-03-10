@@ -1,15 +1,20 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v2.9.1';
+const APP_VERSION = 'v3.0.0';
 
 function renderHome() {
     if (!appState) return;
 
-    document.getElementById('homeAvatar').textContent = appState.avatar || '😊';
-    document.getElementById('homeUsername').textContent = appState.username;
-    document.getElementById('homePoints').textContent = appState.points;
-    document.getElementById('homeStreak').textContent = appState.streak;
-    document.getElementById('homeLessons').textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
+    const avatarEl = document.getElementById('homeAvatar');
+    if (avatarEl) avatarEl.textContent = appState.avatar || '😊';
+    const usernameEl = document.getElementById('homeUsername');
+    if (usernameEl) usernameEl.textContent = appState.username;
+    const pointsEl = document.getElementById('homePoints');
+    if (pointsEl) pointsEl.textContent = appState.points;
+    const streakEl = document.getElementById('homeStreak');
+    if (streakEl) streakEl.textContent = appState.streak;
+    const lessonsEl = document.getElementById('homeLessons');
+    if (lessonsEl) lessonsEl.textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
 
     var verEl = document.getElementById('appVersion');
     if (verEl) verEl.textContent = APP_VERSION;
@@ -22,7 +27,8 @@ function renderHome() {
     const todayLessons = (appState.lessonHistory || []).filter(h => {
         return new Date(h.date).toDateString() === today;
     }).length;
-    document.getElementById('homeToday').textContent = todayLessons;
+    const todayEl = document.getElementById('homeToday');
+    if (todayEl) todayEl.textContent = todayLessons;
 
     // Update difficulty tab counts
     updateDifficultyCounts();
@@ -385,11 +391,12 @@ function filterByDifficulty(level) {
     selectedDifficultyFilter = level;
     historyPage = 0;
 
-    // Update tab active states
-    document.querySelectorAll('.difficulty-tab').forEach(tab => {
+    // Update chip/tab active states
+    document.querySelectorAll('.difficulty-chip, .difficulty-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    document.querySelector(`.difficulty-tab[data-level="${level}"]`).classList.add('active');
+    const activeEl = document.querySelector(`.difficulty-chip[data-level="${level}"]`) || document.querySelector(`.difficulty-tab[data-level="${level}"]`);
+    if (activeEl) activeEl.classList.add('active');
 
     // Re-render home with filtered content
     renderHome();
@@ -426,16 +433,16 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,  emoji: '🐶',    name: 'Chihuahua',     size: 40, habitat: ['🌿','🌱','🌼'],  stageCss: 'chihuahua' },
-    { minLevel: 11, emoji: '🐕',    name: 'Beagle',        size: 48, habitat: ['🌻','🌿','🦋'],  stageCss: 'beagle' },
-    { minLevel: 21, emoji: '🐩',    name: 'Poodle',        size: 56, habitat: ['🌳','🍃','🌸'],  stageCss: 'poodle' },
-    { minLevel: 31, emoji: '🦮',    name: 'Retriever',     size: 64, habitat: ['🌲','🍂','🐿️'], stageCss: 'retriever' },
-    { minLevel: 41, emoji: '🐾',    name: 'Dalmatian',     size: 72, habitat: ['🏠','🌻','🌳'],  stageCss: 'dalmatian' },
-    { minLevel: 51, emoji: '🐺',    name: 'Husky',         size: 80, habitat: ['🏔️','❄️','🌲'], stageCss: 'husky' },
-    { minLevel: 61, emoji: '🐕‍🦺',  name: 'Shepherd',      size: 88, habitat: ['🌊','🏖️','🐚'], stageCss: 'shepherd' },
-    { minLevel: 71, emoji: '🦊',    name: 'Akita',         size: 96, habitat: ['🏰','🌹','⚔️'], stageCss: 'akita' },
-    { minLevel: 81, emoji: '🦁',    name: 'Royal Hound',   size: 104, habitat: ['⭐','🌙','🔮'], stageCss: 'royal' },
-    { minLevel: 91, emoji: '🐉',    name: 'Diamond Dog',   size: 112, habitat: ['👑','✨','🏆'], stageCss: 'diamond' }
+    { minLevel: 1,  emoji: '🐶',    name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 11, emoji: '🐕',    name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 21, emoji: '🐩',    name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
+    { minLevel: 31, emoji: '🦮',    name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
+    { minLevel: 41, emoji: '🐾',    name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
+    { minLevel: 51, emoji: '🐺',    name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
+    { minLevel: 61, emoji: '🐕‍🦺',  name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
+    { minLevel: 71, emoji: '🦊',    name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
+    { minLevel: 81, emoji: '🦁',    name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
+    { minLevel: 91, emoji: '🐉',    name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
 ];
 
 const DOG_FOOD = [
@@ -669,10 +676,12 @@ function applyGrowthDecay() {
 }
 
 function renderWordPet() {
-    const container = document.getElementById('petContainer');
-    const scene     = document.getElementById('petScene');
-    const bg        = document.getElementById('petBg');
-    if (!container || !scene) return;
+    const heroZone  = document.getElementById('petHeroZone');
+    const habEmojis = document.getElementById('habitatEmojis');
+    const topbar    = document.getElementById('petHeroTopbar');
+    const stage_el  = document.getElementById('petHeroStage');
+    const xpbar_el  = document.getElementById('petHeroXpbar');
+    if (!heroZone || !stage_el) return;
 
     // Apply growth decay on render
     applyGrowthDecay();
@@ -680,21 +689,38 @@ function renderWordPet() {
     const level = appState.dogLevel || 1;
     const stage = getDogStage(level);
     const mood  = getPetMood();
-    const title = getDogTitle(level);
+    const coins = appState.coins || 0;
 
-    // Habitat/scene
-    scene.className = 'pet-scene ' + getTimeOfDayClass();
-    scene.dataset.stage = stage.stageCss;
-    if (bg) {
-        bg.innerHTML = stage.habitat.map(e => `<span>${e}</span>`).join('');
+    // Hero zone stage gradient + time of day
+    heroZone.className = 'pet-hero-zone ' + getTimeOfDayClass();
+    heroZone.dataset.stage = stage.stageCss;
+
+    // Floating habitat emojis — each at a unique position with staggered drift
+    if (habEmojis) {
+        const positions = [
+            { left: '8%',  bottom: '15%' },
+            { left: '22%', bottom: '45%' },
+            { left: '42%', bottom: '8%' },
+            { left: '62%', bottom: '55%' },
+            { left: '80%', bottom: '25%' },
+            { left: '92%', bottom: '60%' }
+        ];
+        habEmojis.innerHTML = stage.habitat.map((e, i) => {
+            const p = positions[i] || positions[0];
+            const dur = 7 + (i * 1.7) % 5;
+            const delay = (i * 1.3) % 4;
+            return `<span style="left:${p.left};bottom:${p.bottom};--drift-duration:${dur}s;--drift-delay:-${delay}s">${e}</span>`;
+        }).join('');
     }
 
     // Naming prompt (first time)
     if (!appState.petName) {
-        container.innerHTML = `
+        if (topbar) topbar.innerHTML = '';
+        if (xpbar_el) xpbar_el.innerHTML = '';
+        stage_el.innerHTML = `
             <div class="pet-creature ${mood}" style="font-size:${stage.size}px">${stage.emoji}</div>
-            <div class="pet-name-form">
-                <div style="font-size:12px;font-weight:700;color:var(--text-secondary)">Name your dog!</div>
+            <div class="pet-name-form" style="margin-top:12px">
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
                        maxlength="12" placeholder="Enter a name…"
                        onkeydown="if(event.key==='Enter')savePetName()">
@@ -717,7 +743,7 @@ function renderWordPet() {
     const accSpans = active.map(id => {
         const acc = DOG_ACCESSORIES.find(a => a.id === id);
         if (!acc) return '';
-        const accSize = Math.max(16, Math.round(stage.size * 0.35));
+        const accSize = Math.max(18, Math.round(stage.size * 0.35));
         return `<span class="pet-accessory acc-${acc.slot}" style="font-size:${accSize}px">${acc.emoji}</span>`;
     }).join('');
 
@@ -731,22 +757,42 @@ function renderWordPet() {
         appState.petQuest.completed = false;
     }
 
-    container.innerHTML = `
-        <div class="pet-top-bar">
-            <div class="pet-level-badge">Lv.${level}</div>
-            <div class="pet-coin-display" onclick="showPetShop()">🪙 ${appState.coins || 0}</div>
-            <button class="pet-info-btn" onclick="showPetInfo()" title="How it works">ℹ️</button>
-        </div>
+    // Hero topbar — avatar, level, coins, streak, info float inside habitat
+    if (topbar) {
+        const ud = getUserData();
+        const avatar = ud.avatar || '😊';
+        const streak = ud.streak || 0;
+        topbar.innerHTML = `
+            <div class="pet-hero-left">
+                <div class="pet-hero-avatar" onclick="navigateToProfile()">${avatar}</div>
+                <div class="pet-hero-level">Lv.${level}</div>
+            </div>
+            <div class="pet-hero-right">
+                <div class="pet-hero-coins" onclick="showPetShop()">🪙 ${coins}</div>
+                <div class="pet-hero-streak">🔥 ${streak}</div>
+                <button class="pet-hero-info" onclick="showPetInfo()" title="Pet info">ℹ️</button>
+            </div>
+        `;
+    }
+
+    // Pet creature + accessories in the stage area
+    stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px" data-stage="${stage.stageCss}">${stage.emoji}</div>
             ${accSpans}
         </div>
-        <div class="pet-xp-bar">
-            <div class="pet-xp-fill" style="width:${xpPercent}%"></div>
-            <span class="pet-xp-text">${level >= 100 ? 'MAX' : `${xpInLevel}/${xpNeeded}`}</span>
-        </div>
-        <button class="pet-shop-btn" onclick="showPetShop()">🛒 Shop</button>
+        <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
     `;
+
+    // XP bar at bottom of habitat
+    if (xpbar_el) {
+        xpbar_el.innerHTML = `
+            <div class="pet-hero-xp-track">
+                <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
+            </div>
+            <span class="pet-hero-xp-label">${level >= 100 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
+        `;
+    }
 
     // Auto-show starving bubble if no food in a long time
     const hunger = computeCurrentHunger(appState);
@@ -1067,11 +1113,44 @@ function showEvolutionCelebration(stage) {
 
 const PET_PHRASES_EXTENDED = PET_PHRASES;
 
+function fireHeartBurst() {
+    const stage = document.querySelector('.pet-hero-stage');
+    if (!stage) return;
+    const old = stage.querySelector('.heart-burst');
+    if (old) old.remove();
+    const burst = document.createElement('div');
+    burst.className = 'heart-burst';
+    const particles = ['❤️','💛','💚','💙','💜','🩷'];
+    const offsets = [
+        { x: '-30px', y: '-50px', delay: '0s',    dur: '0.7s' },
+        { x: '30px',  y: '-55px', delay: '0.05s', dur: '0.75s' },
+        { x: '-50px', y: '-30px', delay: '0.1s',  dur: '0.8s' },
+        { x: '50px',  y: '-25px', delay: '0.05s', dur: '0.7s' },
+        { x: '0px',   y: '-65px', delay: '0.15s', dur: '0.9s' }
+    ];
+    offsets.forEach((o, i) => {
+        const s = document.createElement('span');
+        s.textContent = particles[i % particles.length];
+        s.style.setProperty('--fly-x', o.x);
+        s.style.setProperty('--fly-y', o.y);
+        s.style.setProperty('--fly-delay', o.delay);
+        s.style.setProperty('--fly-dur', o.dur);
+        burst.appendChild(s);
+    });
+    stage.appendChild(burst);
+    setTimeout(() => burst.remove(), 1200);
+}
+
 function onPetTap() {
     const creature = document.querySelector('.pet-creature');
     if (!creature) return;
-    creature.classList.add('wiggle');
-    setTimeout(() => creature.classList.remove('wiggle'), 600);
+    // Squish animation
+    creature.classList.remove('pet-tapped');
+    void creature.offsetWidth;
+    creature.classList.add('pet-tapped');
+    setTimeout(() => creature.classList.remove('pet-tapped'), 500);
+    // Heart burst particles
+    fireHeartBurst();
 
     const mood = getPetMood();
     const srsWords = appState.srs ? Object.keys(appState.srs) : [];
@@ -1117,7 +1196,8 @@ function showPetSpeechBubble(text) {
     const bubble = document.createElement('div');
     bubble.className = 'pet-bubble';
     bubble.textContent = text;
-    document.getElementById('petContainer').appendChild(bubble);
+    const target = document.getElementById('petHeroStage') || document.getElementById('petContainer');
+    if (target) target.appendChild(bubble);
     setTimeout(() => bubble.remove(), 2500);
 }
 
