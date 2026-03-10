@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.3.8';
+const APP_VERSION = 'v3.3.9';
 
 function renderHome() {
     if (!appState) return;
@@ -780,8 +780,7 @@ function renderWordPet() {
         if (xpbar_el) xpbar_el.innerHTML = '';
         stage_el.innerHTML = `
             <div class="pet-creature ${mood}" data-stage="${stage.stageCss}">
-                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false"
-                     onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=&quot;font-size:${stage.size}px;line-height:1&quot;>${stage.fallback}</span>')">
+                <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
             </div>
             <div class="pet-name-form" style="margin-top:12px">
                 <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
@@ -852,12 +851,11 @@ function renderWordPet() {
         `;
     }
 
-    // Pet creature + accessories in the stage area
+    // Pet creature + accessories in the stage area (use emoji directly — PNG images unreliable on mobile)
     stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
-                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false"
-                     onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=&quot;font-size:${stage.size}px;line-height:1&quot;>${stage.fallback}</span>')">
+                <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
             </div>
             ${accSpans}
         </div>

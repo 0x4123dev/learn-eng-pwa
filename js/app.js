@@ -575,6 +575,19 @@ function loginUser(username) {
         wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
     };
 
+    // History recovery: if currentLesson > 0 but lessonHistory is empty, reconstruct it
+    if (appState.currentLesson > 0 && (!appState.lessonHistory || appState.lessonHistory.length === 0)) {
+        appState.lessonHistory = [];
+        for (let i = 0; i < appState.currentLesson; i++) {
+            appState.lessonHistory.push({
+                lessonNum: i,
+                date: appState.createdAt || Date.now(),
+                points: 100,
+                accuracy: 80
+            });
+        }
+    }
+
     saveUserData(currentUser, appState);
 
     // Retroactive accessory check for existing users
