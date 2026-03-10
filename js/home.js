@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.0.0';
+const APP_VERSION = 'v3.1.0';
 
 function renderHome() {
     if (!appState) return;
@@ -512,6 +512,72 @@ const DOG_ACCESSORIES = [
     { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 700,   slot: 'toy' }
 ];
 
+// Per-breed anchor points for anatomical accessory slots (head, eyes, neck).
+// Values are CSS percentages relative to the pet-wrapper bounding box.
+// sizeMul: multiplier applied to stage.size to get the accessory font-size.
+const BREED_ANCHORS = {
+    // Frontal face breeds (head is centered and large)
+    chihuahua: {
+        head: { top: '-20%', left: '50%', sizeMul: 0.44 },
+        eyes: { top:  '22%', left: '50%', sizeMul: 0.28 },
+        neck: { top:  '65%', left: '50%', sizeMul: 0.26 }
+    },
+    husky: {
+        head: { top: '-18%', left: '50%', sizeMul: 0.44 },
+        eyes: { top:  '24%', left: '50%', sizeMul: 0.28 },
+        neck: { top:  '66%', left: '50%', sizeMul: 0.26 }
+    },
+    akita: {
+        head: { top: '-22%', left: '52%', sizeMul: 0.44 },
+        eyes: { top:  '22%', left: '52%', sizeMul: 0.28 },
+        neck: { top:  '66%', left: '52%', sizeMul: 0.26 }
+    },
+    royal: {
+        head: { top: '-24%', left: '50%', sizeMul: 0.48 },
+        eyes: { top:  '18%', left: '50%', sizeMul: 0.30 },
+        neck: { top:  '64%', left: '50%', sizeMul: 0.28 }
+    },
+    // Side-profile full-body breeds (head is top-left quadrant)
+    beagle: {
+        head: { top:   '4%', left: '22%', sizeMul: 0.38 },
+        eyes: { top:  '20%', left: '24%', sizeMul: 0.24 },
+        neck: { top:  '36%', left: '30%', sizeMul: 0.22 }
+    },
+    poodle: {
+        head: { top:  '-2%', left: '18%', sizeMul: 0.40 },
+        eyes: { top:  '20%', left: '20%', sizeMul: 0.24 },
+        neck: { top:  '40%', left: '26%', sizeMul: 0.20 }
+    },
+    retriever: {
+        head: { top:   '4%', left: '24%', sizeMul: 0.38 },
+        eyes: { top:  '20%', left: '26%', sizeMul: 0.24 },
+        neck: { top:  '36%', left: '32%', sizeMul: 0.22 }
+    },
+    shepherd: {
+        head: { top:   '2%', left: '20%', sizeMul: 0.38 },
+        eyes: { top:  '18%', left: '22%', sizeMul: 0.24 },
+        neck: { top:  '38%', left: '28%', sizeMul: 0.20 }
+    },
+    // Abstract/non-dog breeds (creative aesthetic placement)
+    dalmatian: {
+        head: { top: '-22%', left: '50%', sizeMul: 0.42 },
+        eyes: { top:  '10%', left: '35%', sizeMul: 0.26 },
+        neck: { top:  '62%', left: '50%', sizeMul: 0.26 }
+    },
+    diamond: {
+        head: { top:  '-8%', left: '68%', sizeMul: 0.40 },
+        eyes: { top:  '10%', left: '65%', sizeMul: 0.24 },
+        neck: { top:  '30%', left: '58%', sizeMul: 0.22 }
+    }
+};
+
+// Slot size multipliers for ambient (non-anatomical) slots — same for all breeds
+const AMBIENT_SLOT_SIZES = {
+    body:   0.52,
+    effect: 0.38,
+    toy:    0.32
+};
+
 const HUNGER_DECAY_SCHEDULE = [
     { hoursWithout: 96, level: 0  },
     { hoursWithout: 72, level: 25 },
@@ -738,13 +804,26 @@ function renderWordPet() {
     const xpNeeded = nextLevelXP - currentLevelXP;
     const xpPercent = level >= 100 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
 
-    // Active accessories — scale emoji size relative to dog size
+    // Active accessories — per-breed anchor points for anatomical slots
     const active = appState.activeAccessories || [];
+    const anchors = BREED_ANCHORS[stage.stageCss] || BREED_ANCHORS.chihuahua;
+
     const accSpans = active.map(id => {
         const acc = DOG_ACCESSORIES.find(a => a.id === id);
         if (!acc) return '';
-        const accSize = Math.max(18, Math.round(stage.size * 0.35));
-        return `<span class="pet-accessory acc-${acc.slot}" style="font-size:${accSize}px">${acc.emoji}</span>`;
+
+        let styleStr;
+        if (anchors[acc.slot]) {
+            // Anatomical slot (head/eyes/neck): use per-breed anchor
+            const a = anchors[acc.slot];
+            const sz = Math.max(18, Math.round(stage.size * a.sizeMul));
+            styleStr = `font-size:${sz}px;top:${a.top};left:${a.left};transform:translateX(-50%)`;
+        } else {
+            // Ambient slot (body/effect/toy): use generic zone + bigger size
+            const sz = Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
+            styleStr = `font-size:${sz}px`;
+        }
+        return `<span class="pet-accessory acc-${acc.slot}" style="${styleStr}">${acc.emoji}</span>`;
     }).join('');
 
     // Still track daily quest behind the scenes (for _completeQuest)
@@ -759,7 +838,7 @@ function renderWordPet() {
 
     // Hero topbar — avatar, level, coins, streak, info float inside habitat
     if (topbar) {
-        const ud = getUserData();
+        const ud = getUserData(appState.currentUser) || appState || {};
         const avatar = ud.avatar || '😊';
         const streak = ud.streak || 0;
         topbar.innerHTML = `

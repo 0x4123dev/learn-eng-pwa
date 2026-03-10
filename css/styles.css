@@ -3768,12 +3768,15 @@
             line-height: 1;
             /* font-size set dynamically via inline style */
         }
-        .pet-accessory.acc-head   { top: -10%; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.acc-eyes   { top: 25%; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.acc-neck   { bottom: 5%; left: 50%; transform: translateX(-50%); }
-        .pet-accessory.acc-body   { top: 0; left: 50%; transform: translateX(-50%); z-index: 0; opacity: 0.8; }
-        .pet-accessory.acc-effect { top: -15%; left: 50%; transform: translateX(-50%); animation: effectFloat 2s ease infinite; }
-        .pet-accessory.acc-toy    { bottom: -10%; right: -5%; }
+        /* Anatomical slots — JS inline styles override with per-breed anchors.
+           These are CSS fallbacks only. */
+        .pet-accessory.acc-head   { top: -18%; left: 50%; transform: translateX(-50%); }
+        .pet-accessory.acc-eyes   { top: 24%;  left: 50%; transform: translateX(-50%); }
+        .pet-accessory.acc-neck   { top: 64%;  left: 50%; transform: translateX(-50%); }
+        /* Ambient slots — zone-based, same for all breeds */
+        .pet-accessory.acc-body   { top: 20%; left: 50%; transform: translateX(-50%); z-index: 0; opacity: 0.85; }
+        .pet-accessory.acc-effect { top: -20%; left: 50%; transform: translateX(-50%); animation: effectFloat 2.5s ease-in-out infinite; }
+        .pet-accessory.acc-toy    { bottom: -8%; right: -8%; transform: rotate(15deg); }
 
         @keyframes effectFloat {
             0%, 100% { transform: translateX(-50%) translateY(0); }
