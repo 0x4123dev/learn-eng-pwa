@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.2.0';
+const APP_VERSION = 'v3.3.0';
 
 function renderHome() {
     if (!appState) return;
@@ -867,18 +867,28 @@ function renderWordPet() {
         <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
     `;
 
-    // XP bar at bottom of habitat
+    // XP bar + hunger hearts at bottom of habitat
+    const hunger = computeCurrentHunger(appState);
+    const fullHearts = Math.round(hunger / 20); // 0-5 hearts
+    const heartsHTML = Array.from({length: 5}, (_, i) =>
+        `<span class="hunger-heart ${i < fullHearts ? 'full' : 'empty'}">${i < fullHearts ? '❤️' : '🖤'}</span>`
+    ).join('');
+    const hungerLabel = hunger === 0 ? 'Starving!' : hunger <= 25 ? 'Hungry' : hunger >= 75 ? 'Full' : 'Ok';
+
     if (xpbar_el) {
         xpbar_el.innerHTML = `
             <div class="pet-hero-xp-track">
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
             <span class="pet-hero-xp-label">${level >= 100 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
+            <div class="hunger-hearts-row">
+                ${heartsHTML}
+                <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
+            </div>
         `;
     }
 
     // Auto-show starving bubble if no food in a long time
-    const hunger = computeCurrentHunger(appState);
     if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     }
@@ -953,24 +963,45 @@ function showPetShop() {
 
     const overlay = document.createElement('div');
     overlay.id = 'petShopModal';
-    overlay.className = 'pet-info-modal-overlay';
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-    overlay.innerHTML = renderShopContent();
-    document.body.appendChild(overlay);
+
+    if (_shopTab === 'food') {
+        // Bottom drawer — dog stays visible at top for drag-to-feed
+        overlay.className = 'pet-shop-drawer-overlay';
+        overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+        overlay.innerHTML = renderShopContent();
+        document.body.appendChild(overlay);
+        // Slide-up animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => overlay.classList.add('open'));
+        });
+        // Initialize drag-to-feed after rendering
+        setTimeout(() => initDragToFeed(), 50);
+    } else {
+        // Full modal for accessories (no dragging needed)
+        overlay.className = 'pet-info-modal-overlay';
+        overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+        overlay.innerHTML = renderShopContent();
+        document.body.appendChild(overlay);
+    }
 }
 
 function renderShopContent() {
     const coins = appState.coins || 0;
 
+    const studiedToday = appState.lastStudyDate === new Date().toDateString();
     const foodItems = DOG_FOOD.map(f => {
         const canAfford = coins >= f.price;
-        return `<div class="shop-item ${canAfford ? '' : 'disabled'}">
+        const feastBonus = f.id === 'feast' && studiedToday;
+        const dragHint = canAfford ? '<span class="drag-hint">⬆ drag to feed</span>' : '';
+        return `<div class="shop-item ${canAfford ? 'draggable-food' : 'disabled'}"
+                     data-food-id="${f.id}" data-food-emoji="${f.emoji}">
             <span class="shop-item-emoji">${f.emoji}</span>
             <div class="shop-item-info">
                 <div class="shop-item-name">${f.name}</div>
-                <div class="shop-item-desc">+${f.growth} growth XP</div>
+                <div class="shop-item-desc">+${f.growth} growth XP${feastBonus ? ' <span class="feast-bonus-hint">(+30 study bonus!)</span>' : ''}</div>
+                ${dragHint}
             </div>
-            <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyFood('${f.id}')` : ''}">${f.price} 🪙</button>
+            <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyFood('${f.id}', this)` : ''}">${f.price} 🪙</button>
         </div>`;
     }).join('');
 
@@ -1002,15 +1033,24 @@ function renderShopContent() {
         `<button class="shop-cat-pill ${_accCategory === c.id ? 'active' : ''}" onclick="_accCategory='${c.id}';refreshShop()">${c.emoji} ${c.label}</button>`
     ).join('');
 
+    const isDrawer = _shopTab === 'food';
     return `
         <div class="pet-shop-modal">
             <button class="pet-info-close" onclick="document.getElementById('petShopModal').remove()">✕</button>
-            <h3 style="margin:0 0 4px;font-size:18px">🛒 Pet Shop</h3>
-            <div class="shop-coins">🪙 ${coins} coins</div>
-            <div class="shop-tabs">
-                <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
-                <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
-            </div>
+            ${isDrawer ? `
+                <div class="shop-drawer-header">
+                    <span class="shop-drawer-title">🍖 Food Shop</span>
+                    <span class="shop-coins-inline">🪙 ${coins}</span>
+                    <button class="shop-tab-switch" onclick="_shopTab='acc';refreshShop()">👗 Accessories →</button>
+                </div>
+            ` : `
+                <h3 style="margin:0 0 4px;font-size:18px">🛒 Pet Shop</h3>
+                <div class="shop-coins">🪙 ${coins} coins</div>
+                <div class="shop-tabs">
+                    <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
+                    <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
+                </div>
+            `}
             ${_shopTab === 'acc' ? `<div class="shop-categories">${catPills}</div>` : ''}
             <div class="shop-items">
                 ${_shopTab === 'food' ? foodItems : accItems}
@@ -1021,31 +1061,60 @@ function renderShopContent() {
 
 function refreshShop() {
     const modal = document.getElementById('petShopModal');
-    if (modal) modal.innerHTML = renderShopContent();
+    if (!modal) return;
+
+    // If switching tabs, we need to recreate with proper overlay type
+    const isDrawer = modal.classList.contains('pet-shop-drawer-overlay');
+    const needsDrawer = _shopTab === 'food';
+
+    if (isDrawer !== needsDrawer) {
+        // Tab changed — rebuild entire shop with correct overlay
+        modal.remove();
+        showPetShop();
+        return;
+    }
+
+    modal.innerHTML = renderShopContent();
+    if (_shopTab === 'food') {
+        setTimeout(() => initDragToFeed(), 50);
+    }
 }
 
-function buyFood(foodId) {
+function buyFood(foodId, sourceEl) {
     const food = DOG_FOOD.find(f => f.id === foodId);
     if (!food || (appState.coins || 0) < food.price) return;
 
     const oldLevel = appState.dogLevel || 1;
-
     appState.coins -= food.price;
-    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + food.growth;
+
+    let totalGrowth = food.growth;
+    let bonusMsg = '';
+
+    // Option B: Royal Feast study bonus (+30 XP if studied today)
+    if (foodId === 'feast' && appState.lastStudyDate === new Date().toDateString()) {
+        totalGrowth += 30;
+        bonusMsg = ' (+30 study bonus!)';
+    }
+
+    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + totalGrowth;
     appState.dogLevel = getDogLevel(appState.dogGrowthXP);
     appState.petLastFed = Date.now(); // Feeding resets hunger
 
     saveUserData(currentUser, appState);
 
-    // Check level up
-    if (appState.dogLevel > oldLevel) {
-        showLevelUpCelebration(appState.dogLevel, oldLevel);
-    } else {
-        showToast(`${food.emoji} +${food.growth} growth XP!`);
-    }
+    // Animate feeding arc + chomp
+    animateFeeding(food.emoji, sourceEl);
 
-    refreshShop();
-    renderWordPet();
+    // Show result after animation completes
+    setTimeout(() => {
+        if (appState.dogLevel > oldLevel) {
+            showLevelUpCelebration(appState.dogLevel, oldLevel);
+        } else {
+            showToast(`${food.emoji} +${totalGrowth} growth XP!${bonusMsg}`);
+        }
+        refreshShop();
+        renderWordPet();
+    }, 700);
 }
 
 function buyAccessory(accId) {
@@ -1222,6 +1291,197 @@ function fireHeartBurst() {
     });
     stage.appendChild(burst);
     setTimeout(() => burst.remove(), 1200);
+}
+
+// ==================== ANIMATED FEEDING ====================
+
+function animateFeeding(foodEmoji, sourceEl) {
+    const creature = document.querySelector('.pet-creature');
+    if (!creature) return;
+
+    const creatureRect = creature.getBoundingClientRect();
+    const sourceRect = sourceEl ? sourceEl.getBoundingClientRect()
+        : { left: window.innerWidth / 2, top: window.innerHeight - 100, width: 0, height: 0 };
+
+    // Create flying food element
+    const flyFood = document.createElement('div');
+    flyFood.className = 'flying-food';
+    flyFood.textContent = foodEmoji;
+    flyFood.style.position = 'fixed';
+    flyFood.style.left = (sourceRect.left + sourceRect.width / 2) + 'px';
+    flyFood.style.top = (sourceRect.top + sourceRect.height / 2) + 'px';
+    document.body.appendChild(flyFood);
+
+    // Target: dog mouth area (60% down from top of creature)
+    const targetX = creatureRect.left + creatureRect.width / 2;
+    const targetY = creatureRect.top + creatureRect.height * 0.6;
+    const startX = sourceRect.left + sourceRect.width / 2;
+    const startY = sourceRect.top + sourceRect.height / 2;
+    const midX = (startX + targetX) / 2;
+    const midY = Math.min(startY, targetY) - 80; // Arc peak
+
+    flyFood.animate([
+        { left: startX + 'px', top: startY + 'px', transform: 'scale(1) rotate(0deg)', opacity: 1 },
+        { left: midX + 'px',   top: midY + 'px',   transform: 'scale(1.4) rotate(-15deg)', opacity: 1, offset: 0.45 },
+        { left: targetX + 'px', top: targetY + 'px', transform: 'scale(0.3) rotate(25deg)', opacity: 0 }
+    ], { duration: 600, easing: 'ease-in', fill: 'forwards' });
+
+    // Dog chomp on arrival
+    setTimeout(() => {
+        flyFood.remove();
+        creature.classList.remove('pet-chomp');
+        void creature.offsetWidth;
+        creature.classList.add('pet-chomp');
+        fireFeedBurst();
+        setTimeout(() => creature.classList.remove('pet-chomp'), 500);
+    }, 560);
+}
+
+function fireFeedBurst() {
+    const stage = document.querySelector('.pet-hero-stage');
+    if (!stage) return;
+    const old = stage.querySelector('.feed-burst');
+    if (old) old.remove();
+    const burst = document.createElement('div');
+    burst.className = 'feed-burst';
+    const particles = ['🍖','✨','⭐','🌟','💫','😋'];
+    const offsets = [
+        { x: '-35px', y: '-45px', delay: '0s',    dur: '0.7s' },
+        { x: '35px',  y: '-50px', delay: '0.05s', dur: '0.75s' },
+        { x: '-55px', y: '-25px', delay: '0.1s',  dur: '0.8s' },
+        { x: '55px',  y: '-20px', delay: '0.05s', dur: '0.7s' },
+        { x: '0px',   y: '-60px', delay: '0.12s', dur: '0.85s' },
+        { x: '-20px', y: '-55px', delay: '0.08s', dur: '0.9s' }
+    ];
+    offsets.forEach((o, i) => {
+        const s = document.createElement('span');
+        s.textContent = particles[i % particles.length];
+        s.style.setProperty('--fly-x', o.x);
+        s.style.setProperty('--fly-y', o.y);
+        s.style.setProperty('--fly-delay', o.delay);
+        s.style.setProperty('--fly-dur', o.dur);
+        burst.appendChild(s);
+    });
+    stage.appendChild(burst);
+    setTimeout(() => burst.remove(), 1200);
+}
+
+// ==================== DRAG-TO-FEED SYSTEM ====================
+
+let _dragState = null;
+
+function initDragToFeed() {
+    const foodItems = document.querySelectorAll('.draggable-food');
+    foodItems.forEach(item => {
+        item.addEventListener('touchstart', onFoodTouchStart, { passive: false });
+        item.addEventListener('touchmove', onFoodTouchMove, { passive: false });
+        item.addEventListener('touchend', onFoodTouchEnd);
+        // Mouse fallback for desktop testing
+        item.addEventListener('mousedown', onFoodMouseDown);
+    });
+}
+
+function onFoodTouchStart(e) {
+    const touch = e.touches[0];
+    const item = e.currentTarget;
+    startFoodDrag(item, touch.clientX, touch.clientY);
+    e.preventDefault();
+}
+
+function onFoodTouchMove(e) {
+    if (!_dragState) return;
+    const touch = e.touches[0];
+    moveFoodDrag(touch.clientX, touch.clientY);
+    e.preventDefault();
+}
+
+function onFoodTouchEnd(e) {
+    if (!_dragState) return;
+    endFoodDrag();
+}
+
+function onFoodMouseDown(e) {
+    const item = e.currentTarget;
+    startFoodDrag(item, e.clientX, e.clientY);
+    e.preventDefault();
+
+    const onMove = (ev) => { if (_dragState) moveFoodDrag(ev.clientX, ev.clientY); };
+    const onUp = () => { endFoodDrag(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+function startFoodDrag(item, x, y) {
+    const emoji = item.dataset.foodEmoji;
+    const foodId = item.dataset.foodId;
+
+    // Create floating drag ghost
+    const ghost = document.createElement('div');
+    ghost.className = 'drag-food-ghost';
+    ghost.textContent = emoji;
+    ghost.style.left = x + 'px';
+    ghost.style.top = y + 'px';
+    document.body.appendChild(ghost);
+
+    _dragState = { ghost, foodId, emoji, startX: x, startY: y, item };
+
+    // Show drop target hint on pet
+    const creature = document.querySelector('.pet-creature');
+    if (creature) creature.classList.add('drop-target-hint');
+
+    // Haptic feedback (if available)
+    if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function moveFoodDrag(x, y) {
+    if (!_dragState) return;
+    _dragState.ghost.style.left = x + 'px';
+    _dragState.ghost.style.top = y + 'px';
+
+    // Check proximity to dog — highlight if close
+    const creature = document.querySelector('.pet-creature');
+    if (creature) {
+        const rect = creature.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(x - cx, y - cy);
+        const isNear = dist < Math.max(80, rect.width * 0.8);
+        creature.classList.toggle('drop-target-near', isNear);
+    }
+}
+
+function endFoodDrag() {
+    if (!_dragState) return;
+    const { ghost, foodId, item } = _dragState;
+
+    // Check if dropped on dog
+    const creature = document.querySelector('.pet-creature');
+    if (creature) {
+        const rect = creature.getBoundingClientRect();
+        const ghostRect = ghost.getBoundingClientRect();
+        const gx = ghostRect.left + ghostRect.width / 2;
+        const gy = ghostRect.top + ghostRect.height / 2;
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(gx - cx, gy - cy);
+
+        creature.classList.remove('drop-target-hint', 'drop-target-near');
+
+        if (dist < Math.max(80, rect.width * 0.8)) {
+            // SUCCESS — feed the dog!
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            ghost.remove();
+            buyFood(foodId, item);
+        } else {
+            // MISS — snap back
+            ghost.classList.add('snap-back');
+            setTimeout(() => ghost.remove(), 300);
+        }
+    } else {
+        ghost.remove();
+    }
+
+    _dragState = null;
 }
 
 function onPetTap() {

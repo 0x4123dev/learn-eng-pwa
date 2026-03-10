@@ -4100,6 +4100,242 @@
         }
         .shop-buy-btn:active:not(.disabled) { transform: scale(0.95); }
 
+        /* ===== HUNGER HEARTS (Option A) ===== */
+        .hunger-hearts-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            margin-top: 4px;
+            font-size: 13px;
+        }
+        .hunger-heart {
+            transition: transform 0.3s, opacity 0.3s;
+            display: inline-block;
+        }
+        .hunger-heart.empty {
+            opacity: 0.25;
+            filter: grayscale(1);
+            font-size: 11px;
+        }
+        .hunger-heart.full {
+            animation: heartPulse 2s ease-in-out infinite;
+        }
+        .hunger-heart.full:nth-child(2) { animation-delay: 0.15s; }
+        .hunger-heart.full:nth-child(3) { animation-delay: 0.3s; }
+        .hunger-heart.full:nth-child(4) { animation-delay: 0.45s; }
+        .hunger-heart.full:nth-child(5) { animation-delay: 0.6s; }
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .hunger-label {
+            font-size: 10px;
+            margin-left: 6px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .hunger-label.hunger-warning {
+            color: #ef5350;
+            animation: hungerBlink 1s ease-in-out infinite;
+        }
+        @keyframes hungerBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ===== FLYING FOOD ANIMATION (Option A) ===== */
+        .flying-food {
+            position: fixed;
+            font-size: 36px;
+            z-index: 9999;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+        }
+
+        /* ===== DOG CHOMP ANIMATION (Option A) ===== */
+        .pet-chomp img {
+            animation: petChomp 0.5s ease-in-out !important;
+        }
+        @keyframes petChomp {
+            0%   { transform: scale(1) rotate(0deg); }
+            15%  { transform: scale(1.12, 0.88) rotate(-2deg); }
+            30%  { transform: scale(0.92, 1.08) rotate(2deg); }
+            50%  { transform: scale(1.08, 0.92) rotate(-1deg); }
+            70%  { transform: scale(0.96, 1.04) rotate(1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Feed burst particles (reuses heart-burst pattern) */
+        .feed-burst {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .feed-burst span {
+            position: absolute;
+            font-size: 18px;
+            opacity: 0;
+            animation: feedParticleFly var(--fly-dur, 0.8s) ease-out var(--fly-delay, 0s) forwards;
+        }
+        @keyframes feedParticleFly {
+            0%   { opacity: 1; transform: translate(0, 0) scale(0.5); }
+            60%  { opacity: 1; }
+            100% { opacity: 0; transform: translate(var(--fly-x, 30px), var(--fly-y, -40px)) scale(1.2); }
+        }
+
+        /* ===== FEAST BONUS HINT (Option B) ===== */
+        .feast-bonus-hint {
+            color: #f59e0b;
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        /* ===== BOTTOM DRAWER for Food Shop (Option E) ===== */
+        .pet-shop-drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            z-index: 310; /* Above bottom nav (300) */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .pet-shop-drawer-overlay .pet-shop-modal {
+            max-width: 100%;
+            max-height: 55vh;
+            border-radius: 20px 20px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+            padding: 12px 16px 16px;
+        }
+        .pet-shop-drawer-overlay.open .pet-shop-modal {
+            transform: translateY(0);
+        }
+        /* Drawer handle */
+        .pet-shop-drawer-overlay .pet-shop-modal::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 4px;
+            background: var(--text-secondary, #999);
+            border-radius: 2px;
+            margin: 0 auto 8px;
+            opacity: 0.4;
+        }
+
+        /* Compact drawer header for food tab */
+        .shop-drawer-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .shop-drawer-title {
+            font-size: 16px;
+            font-weight: 800;
+            flex: 1;
+        }
+        .shop-coins-inline {
+            font-size: 14px;
+            font-weight: 700;
+            color: #F57F17;
+        }
+        .shop-tab-switch {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border: 1.5px solid var(--border-color, #ddd);
+            border-radius: 10px;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .shop-tab-switch:active { background: var(--bg-secondary, #f0f0f0); }
+
+        /* ===== DRAG-TO-FEED (Option E) ===== */
+        .draggable-food {
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            position: relative;
+        }
+        .draggable-food:active {
+            cursor: grabbing;
+            transform: scale(0.96);
+        }
+
+        .drag-hint {
+            display: block;
+            font-size: 9px;
+            color: var(--accent-green, #4CAF50);
+            font-weight: 600;
+            opacity: 0.7;
+            margin-top: 1px;
+        }
+
+        .drag-food-ghost {
+            position: fixed;
+            font-size: 48px;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(1.2);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+            transition: transform 0.08s ease-out;
+        }
+        .drag-food-ghost.snap-back {
+            transition: all 0.3s ease-in;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3) rotate(180deg);
+        }
+
+        /* Drop target hint on dog */
+        .drop-target-hint {
+            animation: dropHintPulse 1.2s ease-in-out infinite !important;
+        }
+        .drop-target-hint::after {
+            content: '🍽️';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            animation: dropHintBounce 0.8s ease-in-out infinite;
+            z-index: 5;
+        }
+        @keyframes dropHintPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+        @keyframes dropHintBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+            50% { transform: translateX(-50%) translateY(-6px); opacity: 1; }
+        }
+
+        /* Dog excited wiggle when food is near */
+        .drop-target-near {
+            animation: dropNearWiggle 0.25s ease-in-out infinite !important;
+        }
+        .drop-target-near img {
+            filter: brightness(1.15) !important;
+        }
+        .drop-target-near::after {
+            content: '😋' !important;
+            font-size: 20px !important;
+            animation: none !important;
+            opacity: 1 !important;
+        }
+        @keyframes dropNearWiggle {
+            0%, 100% { transform: rotate(-4deg) scale(1.05); }
+            50% { transform: rotate(4deg) scale(1.05); }
+        }
+
         /* Level-up overlay */
         .level-up-overlay {
             position: fixed;
