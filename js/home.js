@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.3.7';
+const APP_VERSION = 'v3.3.8';
 
 function renderHome() {
     if (!appState) return;
@@ -156,19 +156,14 @@ function renderLessonHistory() {
     const historyContainer = document.getElementById('lessonHistory');
     let history = appState.lessonHistory || [];
 
-    // Filter by selected difficulty
-    const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
-    history = history.filter(h => h.lessonNum >= range.start && h.lessonNum < range.end);
-
-    // Update tab counts
+    // Show ALL history regardless of selected difficulty tab
     document.getElementById('historyCount').textContent = history.length;
     const mistakes = appState.mistakes || [];
     document.getElementById('mistakesCount').textContent = mistakes.length;
 
     if (history.length === 0) {
         historyPage = 0;
-        const filterName = selectedDifficultyFilter.charAt(0).toUpperCase() + selectedDifficultyFilter.slice(1);
-        historyContainer.innerHTML = `<div class="empty-history">No ${filterName} lessons completed yet</div>`;
+        historyContainer.innerHTML = `<div class="empty-history">No lessons completed yet</div>`;
         return;
     }
 
