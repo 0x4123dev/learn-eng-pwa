@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.1.0';
+const APP_VERSION = 'v3.2.0';
 
 function renderHome() {
     if (!appState) return;
@@ -433,16 +433,16 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,  emoji: '🐶',    name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
-    { minLevel: 11, emoji: '🐕',    name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
-    { minLevel: 21, emoji: '🐩',    name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
-    { minLevel: 31, emoji: '🦮',    name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
-    { minLevel: 41, emoji: '🐾',    name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
-    { minLevel: 51, emoji: '🐺',    name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
-    { minLevel: 61, emoji: '🐕‍🦺',  name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
-    { minLevel: 71, emoji: '🦊',    name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
-    { minLevel: 81, emoji: '🦁',    name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
-    { minLevel: 91, emoji: '🐉',    name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
+    { minLevel: 1,  img: 'img/pets/chihuahua.png', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 11, img: 'img/pets/beagle.png',    name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 21, img: 'img/pets/poodle.png',    name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
+    { minLevel: 31, img: 'img/pets/retriever.png',  name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
+    { minLevel: 41, img: 'img/pets/dalmatian.png',  name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
+    { minLevel: 51, img: 'img/pets/husky.png',      name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
+    { minLevel: 61, img: 'img/pets/shepherd.png',    name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
+    { minLevel: 71, img: 'img/pets/akita.png',      name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
+    { minLevel: 81, img: 'img/pets/royal.png',      name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
+    { minLevel: 91, img: 'img/pets/diamond.png',    name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
 ];
 
 const DOG_FOOD = [
@@ -784,7 +784,9 @@ function renderWordPet() {
         if (topbar) topbar.innerHTML = '';
         if (xpbar_el) xpbar_el.innerHTML = '';
         stage_el.innerHTML = `
-            <div class="pet-creature ${mood}" style="font-size:${stage.size}px">${stage.emoji}</div>
+            <div class="pet-creature ${mood}" data-stage="${stage.stageCss}">
+                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false">
+            </div>
             <div class="pet-name-form" style="margin-top:12px">
                 <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
@@ -857,7 +859,9 @@ function renderWordPet() {
     // Pet creature + accessories in the stage area
     stage_el.innerHTML = `
         <div class="pet-wrapper">
-            <div class="pet-creature ${mood}" onclick="onPetTap()" style="font-size:${stage.size}px" data-stage="${stage.stageCss}">${stage.emoji}</div>
+            <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
+                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false">
+            </div>
             ${accSpans}
         </div>
         <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
@@ -892,7 +896,7 @@ function showPetInfo() {
         const unlocked = level >= s.minLevel;
         const isCurrent = getDogStage(level) === s;
         return `<div class="pet-info-stage ${unlocked ? '' : 'locked'} ${isCurrent ? 'current' : ''}">
-            <span class="pet-info-emoji" style="font-size:${Math.min(s.size/3, 24)}px">${s.emoji}</span>
+            <img class="pet-info-emoji" src="${s.img}" alt="${s.name}" style="width:${Math.min(s.size/3, 24)}px;height:${Math.min(s.size/3, 24)}px">
             <span class="pet-info-label">${s.name}</span>
             <span class="pet-info-pts">Lv.${s.minLevel}${isCurrent ? ' 🐾' : unlocked ? ' ✅' : ' 🔒'}</span>
         </div>`;
@@ -1088,9 +1092,9 @@ function showLevelUpCelebration(newLevel, oldLevel) {
     if (stageChanged) {
         content += `
             <div class="level-up-evolution">
-                <span style="font-size:${oldStage.size}px">${oldStage.emoji}</span>
+                <img src="${oldStage.img}" alt="${oldStage.name}" style="width:${Math.min(oldStage.size, 64)}px;height:${Math.min(oldStage.size, 64)}px">
                 <span style="font-size:24px">→</span>
-                <span style="font-size:${stage.size}px">${stage.emoji}</span>
+                <img src="${stage.img}" alt="${stage.name}" style="width:${Math.min(stage.size, 80)}px;height:${Math.min(stage.size, 80)}px">
             </div>
             <div class="level-up-stage-name">Your dog evolved to ${stage.name}!</div>
         `;
