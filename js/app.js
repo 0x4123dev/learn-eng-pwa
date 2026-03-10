@@ -588,10 +588,21 @@ function loginUser(username) {
     // Update streak
     updateStreak();
 
+    // Auto-select difficulty tab based on user's current lesson
+    if (typeof getDifficultyLevel === 'function' && appState.currentLesson > 0) {
+        const diff = getDifficultyLevel(appState.currentLesson);
+        selectedDifficultyFilter = diff.key;
+    }
+
     // Show main app
     document.getElementById('onboardingScreen').classList.remove('active');
     document.getElementById('homeScreen').classList.add('active');
     document.getElementById('bottomNav').style.display = 'flex';
+
+    // Highlight the correct difficulty chip
+    document.querySelectorAll('.difficulty-chip').forEach(c => c.classList.remove('active'));
+    const activeChip = document.querySelector(`.difficulty-chip[data-level="${selectedDifficultyFilter}"]`);
+    if (activeChip) activeChip.classList.add('active');
 
     renderHome();
     renderProfile();
@@ -809,7 +820,12 @@ function createConfetti() {
 
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+            .then(reg => {
+                // Check for updates immediately on every page load
+                reg.update();
+            })
+            .catch(() => {});
     }
 }
 
