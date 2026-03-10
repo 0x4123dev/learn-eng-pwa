@@ -3854,6 +3854,26 @@
             50%      { transform: translateX(-50%) translateY(-4px); }
         }
 
+        /* Draggable accessories on pet — override pointer-events: none */
+        .draggable-pet-acc {
+            pointer-events: auto;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            z-index: 3;
+            transition: filter 0.15s, z-index 0s;
+        }
+        .draggable-pet-acc:active,
+        .acc-dragging {
+            cursor: grabbing;
+            z-index: 10 !important;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+            animation: none !important; /* stop effectFloat etc. during drag */
+        }
+        .acc-dragging {
+            transform: translate(-50%, -50%) scale(1.15) !important;
+        }
+
         /* Accessories tray */
         .pet-acc-toggle {
             background: none;

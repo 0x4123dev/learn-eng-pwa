@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.4.0';
+const APP_VERSION = 'v3.5.0';
 
 function renderHome() {
     if (!appState) return;
@@ -805,12 +805,22 @@ function renderWordPet() {
     const active = appState.activeAccessories || [];
     const anchors = BREED_ANCHORS[stage.stageCss] || BREED_ANCHORS.chihuahua;
 
+    const accPositions = appState.accPositions || {};
+
     const accSpans = active.map(id => {
         const acc = DOG_ACCESSORIES.find(a => a.id === id);
         if (!acc) return '';
 
         let styleStr;
-        if (anchors[acc.slot]) {
+        const customPos = accPositions[id];
+
+        if (customPos) {
+            // User-defined position from drag
+            const sz = anchors[acc.slot]
+                ? Math.max(18, Math.round(stage.size * anchors[acc.slot].sizeMul))
+                : Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
+            styleStr = `font-size:${sz}px;top:${customPos.top};left:${customPos.left};transform:translate(-50%,-50%)`;
+        } else if (anchors[acc.slot]) {
             // Anatomical slot (head/eyes/neck): use per-breed anchor
             const a = anchors[acc.slot];
             const sz = Math.max(18, Math.round(stage.size * a.sizeMul));
@@ -820,7 +830,7 @@ function renderWordPet() {
             const sz = Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
             styleStr = `font-size:${sz}px`;
         }
-        return `<span class="pet-accessory acc-${acc.slot}" style="${styleStr}">${acc.emoji}</span>`;
+        return `<span class="pet-accessory acc-${acc.slot} draggable-pet-acc" data-acc-id="${id}" style="${styleStr}">${acc.emoji}</span>`;
     }).join('');
 
     // Still track daily quest behind the scenes (for _completeQuest)
@@ -860,6 +870,9 @@ function renderWordPet() {
             ${accSpans}
         </div>
     `;
+
+    // Make equipped accessories draggable on the pet
+    setTimeout(() => initAccDrag(), 50);
 
     // XP bar + hunger hearts at bottom of habitat
     const hunger = computeCurrentHunger(appState);
@@ -1189,6 +1202,8 @@ function toggleAccessory(id) {
     const active = appState.activeAccessories || [];
     if (active.includes(id)) {
         appState.activeAccessories = active.filter(a => a !== id);
+        // Clear custom drag position
+        if (appState.accPositions) delete appState.accPositions[id];
     } else if (active.length < 3) {
         if (!appState.activeAccessories) appState.activeAccessories = [];
         appState.activeAccessories.push(id);
@@ -1481,6 +1496,99 @@ function endFoodDrag() {
     }
 
     _dragState = null;
+}
+
+// ─── Drag-to-Reposition Accessories on Pet ───
+let _accDragState = null;
+
+function initAccDrag() {
+    const accEls = document.querySelectorAll('.draggable-pet-acc');
+    accEls.forEach(el => {
+        el.addEventListener('touchstart', onAccPetTouchStart, { passive: false });
+        el.addEventListener('mousedown', onAccPetMouseDown);
+    });
+}
+
+function onAccPetTouchStart(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const touch = e.touches[0];
+    startAccPetDrag(e.currentTarget, touch.clientX, touch.clientY);
+
+    const onMove = (ev) => {
+        ev.preventDefault();
+        moveAccPetDrag(ev.touches[0].clientX, ev.touches[0].clientY);
+    };
+    const onEnd = () => {
+        endAccPetDrag();
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+    };
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+}
+
+function onAccPetMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    startAccPetDrag(e.currentTarget, e.clientX, e.clientY);
+
+    const onMove = (ev) => moveAccPetDrag(ev.clientX, ev.clientY);
+    const onUp = () => {
+        endAccPetDrag();
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+function startAccPetDrag(el, x, y) {
+    const wrapper = el.closest('.pet-wrapper');
+    if (!wrapper) return;
+    const wrapperRect = wrapper.getBoundingClientRect();
+
+    _accDragState = {
+        el,
+        accId: el.dataset.accId,
+        wrapperRect
+    };
+
+    el.classList.add('acc-dragging');
+    if (navigator.vibrate) navigator.vibrate(20);
+}
+
+function moveAccPetDrag(x, y) {
+    if (!_accDragState) return;
+    const { el, wrapperRect } = _accDragState;
+
+    // Convert screen coords to percentage within wrapper
+    const pctLeft = ((x - wrapperRect.left) / wrapperRect.width * 100);
+    const pctTop = ((y - wrapperRect.top) / wrapperRect.height * 100);
+
+    el.style.left = pctLeft + '%';
+    el.style.top = pctTop + '%';
+    el.style.transform = 'translate(-50%, -50%)';
+}
+
+function endAccPetDrag() {
+    if (!_accDragState) return;
+    const { el, accId } = _accDragState;
+
+    el.classList.remove('acc-dragging');
+
+    // Save position as percentages
+    const finalLeft = parseFloat(el.style.left);
+    const finalTop = parseFloat(el.style.top);
+
+    if (!appState.accPositions) appState.accPositions = {};
+    appState.accPositions[accId] = {
+        top: finalTop + '%',
+        left: finalLeft + '%'
+    };
+    saveUserData(currentUser, appState);
+
+    _accDragState = null;
 }
 
 function onPetTap() {
