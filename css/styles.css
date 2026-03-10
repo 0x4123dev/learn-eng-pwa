@@ -549,7 +549,6 @@
         /* ==================== HOME SCREEN ==================== */
         .home-screen {
             padding: 0;
-            padding-bottom: 80px;
             display: flex;
             flex-direction: column;
             overflow-y: hidden;
@@ -6682,7 +6681,6 @@
         /* ==================== VIDEO SCREEN ==================== */
         .video-screen {
             padding: 0;
-            padding-bottom: 80px;
             background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
         }
 
