@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.3.2';
+const APP_VERSION = 'v3.3.3';
 
 function renderHome() {
     if (!appState) return;
@@ -433,16 +433,16 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,  img: 'img/pets/chihuahua.png', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
-    { minLevel: 11, img: 'img/pets/beagle.png',    name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
-    { minLevel: 21, img: 'img/pets/poodle.png',    name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
-    { minLevel: 31, img: 'img/pets/retriever.png',  name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
-    { minLevel: 41, img: 'img/pets/dalmatian.png',  name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
-    { minLevel: 51, img: 'img/pets/husky.png',      name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
-    { minLevel: 61, img: 'img/pets/shepherd.png',    name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
-    { minLevel: 71, img: 'img/pets/akita.png',      name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
-    { minLevel: 81, img: 'img/pets/royal.png',      name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
-    { minLevel: 91, img: 'img/pets/diamond.png',    name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
+    { minLevel: 1,  img: 'img/pets/chihuahua.png', fallback: '🐶', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 11, img: 'img/pets/beagle.png',    fallback: '🐕', name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 21, img: 'img/pets/poodle.png',    fallback: '🐩', name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
+    { minLevel: 31, img: 'img/pets/retriever.png',  fallback: '🦮', name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
+    { minLevel: 41, img: 'img/pets/dalmatian.png',  fallback: '🐕‍🦺', name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
+    { minLevel: 51, img: 'img/pets/husky.png',      fallback: '🐺', name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
+    { minLevel: 61, img: 'img/pets/shepherd.png',    fallback: '🐕', name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
+    { minLevel: 71, img: 'img/pets/akita.png',      fallback: '🐕‍🦺', name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
+    { minLevel: 81, img: 'img/pets/royal.png',      fallback: '👑🐶', name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
+    { minLevel: 91, img: 'img/pets/diamond.png',    fallback: '💎🐶', name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
 ];
 
 const DOG_FOOD = [
@@ -785,7 +785,8 @@ function renderWordPet() {
         if (xpbar_el) xpbar_el.innerHTML = '';
         stage_el.innerHTML = `
             <div class="pet-creature ${mood}" data-stage="${stage.stageCss}">
-                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false">
+                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false"
+                     onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=&quot;font-size:${stage.size}px;line-height:1&quot;>${stage.fallback}</span>')">
             </div>
             <div class="pet-name-form" style="margin-top:12px">
                 <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
@@ -860,7 +861,8 @@ function renderWordPet() {
     stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
-                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false">
+                <img src="${stage.img}" alt="${stage.name}" style="width:${stage.size}px;height:${stage.size}px" draggable="false"
+                     onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=&quot;font-size:${stage.size}px;line-height:1&quot;>${stage.fallback}</span>')">
             </div>
             ${accSpans}
         </div>
