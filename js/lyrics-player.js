@@ -165,7 +165,7 @@ const LyricsPlayer = (function() {
         if (knob) knob.style.left = pct + '%';
         if (timeEl) timeEl.textContent = formatTime(t);
 
-        // Find current line
+        // Track current line index (for tap-to-seek) but no highlight/scroll
         const lines = _songData.lines;
         let newIdx = -1;
         for (let i = lines.length - 1; i >= 0; i--) {
@@ -174,23 +174,7 @@ const LyricsPlayer = (function() {
                 break;
             }
         }
-
-        if (newIdx !== _currentLineIdx) {
-            // Remove old highlight
-            if (_currentLineIdx >= 0) {
-                const oldEl = document.getElementById('lpLine' + _currentLineIdx);
-                if (oldEl) oldEl.classList.remove('lp-line-active');
-            }
-            _currentLineIdx = newIdx;
-            // Add new highlight and scroll
-            if (_currentLineIdx >= 0) {
-                const newEl = document.getElementById('lpLine' + _currentLineIdx);
-                if (newEl) {
-                    newEl.classList.add('lp-line-active');
-                    newEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-        }
+        _currentLineIdx = newIdx;
     }
 
     function onEnded() {
