@@ -575,16 +575,26 @@ function loginUser(username) {
         wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
     };
 
-    // History recovery: if currentLesson > 0 but lessonHistory is empty, reconstruct it
-    if (appState.currentLesson > 0 && (!appState.lessonHistory || appState.lessonHistory.length === 0)) {
-        appState.lessonHistory = [];
-        for (let i = 0; i < appState.currentLesson; i++) {
-            appState.lessonHistory.push({
-                lessonNum: i,
-                date: appState.createdAt || Date.now(),
-                points: 100,
-                accuracy: 80
-            });
+    // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
+    if (appState.currentLesson > 0) {
+        if (!appState.lessonHistory || !Array.isArray(appState.lessonHistory)) {
+            appState.lessonHistory = [];
+        }
+        // If history is shorter than currentLesson, fill in the gaps
+        if (appState.lessonHistory.length < appState.currentLesson) {
+            const existingLessons = new Set(appState.lessonHistory.map(h => h.lessonNum));
+            for (let i = 0; i < appState.currentLesson; i++) {
+                if (!existingLessons.has(i)) {
+                    appState.lessonHistory.push({
+                        lessonNum: i,
+                        date: appState.createdAt || Date.now(),
+                        points: 100,
+                        accuracy: 80
+                    });
+                }
+            }
+            // Sort by lesson number
+            appState.lessonHistory.sort((a, b) => a.lessonNum - b.lessonNum);
         }
     }
 

@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.5.0';
+const APP_VERSION = 'v3.5.1';
 
 function renderHome() {
     if (!appState) return;
@@ -744,44 +744,55 @@ function renderWordPet() {
     const xpbar_el  = document.getElementById('petHeroXpbar');
     if (!heroZone || !stage_el) return;
 
-    // Apply growth decay on render
-    applyGrowthDecay();
-
-    const level = appState.dogLevel || 1;
-    const stage = getDogStage(level);
-    const mood  = getPetMood();
-    const coins = appState.coins || 0;
+    var level, stage, mood, coins;
+    try {
+        try { applyGrowthDecay(); } catch(e) {}
+        level = appState.dogLevel || 1;
+        stage = getDogStage(level) || DOG_STAGES[0];
+        mood  = getPetMood() || 'happy';
+        coins = appState.coins || 0;
+    } catch(e) {
+        level = 1; stage = DOG_STAGES[0]; mood = 'happy'; coins = 0;
+    }
 
     // Hero zone stage gradient + time of day
-    heroZone.className = 'pet-hero-zone ' + getTimeOfDayClass();
-    heroZone.dataset.stage = stage.stageCss;
+    try {
+        heroZone.className = 'pet-hero-zone ' + (typeof getTimeOfDayClass === 'function' ? getTimeOfDayClass() : '');
+        heroZone.dataset.stage = stage.stageCss;
+    } catch(e) {}
 
-    // Floating habitat emojis — each at a unique position with staggered drift
-    if (habEmojis) {
-        const positions = [
-            { left: '8%',  bottom: '15%' },
-            { left: '22%', bottom: '45%' },
-            { left: '42%', bottom: '8%' },
-            { left: '62%', bottom: '55%' },
-            { left: '80%', bottom: '25%' },
-            { left: '92%', bottom: '60%' }
-        ];
-        habEmojis.innerHTML = stage.habitat.map((e, i) => {
-            const p = positions[i] || positions[0];
-            const dur = 7 + (i * 1.7) % 5;
-            const delay = (i * 1.3) % 4;
-            return `<span style="left:${p.left};bottom:${p.bottom};--drift-duration:${dur}s;--drift-delay:-${delay}s">${e}</span>`;
-        }).join('');
-    }
+    // Floating habitat emojis
+    try {
+        if (habEmojis && stage.habitat) {
+            const positions = [
+                { left: '8%',  bottom: '15%' },
+                { left: '22%', bottom: '45%' },
+                { left: '42%', bottom: '8%' },
+                { left: '62%', bottom: '55%' },
+                { left: '80%', bottom: '25%' },
+                { left: '92%', bottom: '60%' }
+            ];
+            habEmojis.innerHTML = stage.habitat.map((e, i) => {
+                const p = positions[i] || positions[0];
+                const dur = 7 + (i * 1.7) % 5;
+                const delay = (i * 1.3) % 4;
+                return `<span style="left:${p.left};bottom:${p.bottom};--drift-duration:${dur}s;--drift-delay:-${delay}s">${e}</span>`;
+            }).join('');
+        }
+    } catch(e) {}
+
+    // ALWAYS render pet creature first — even if later code crashes, the dog is visible
+    stage_el.innerHTML = `
+        <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
+            <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
+        </div>
+    `;
 
     // Naming prompt (first time)
     if (!appState.petName) {
         if (topbar) topbar.innerHTML = '';
         if (xpbar_el) xpbar_el.innerHTML = '';
-        stage_el.innerHTML = `
-            <div class="pet-creature ${mood}" data-stage="${stage.stageCss}">
-                <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
-            </div>
+        stage_el.innerHTML += `
             <div class="pet-name-form" style="margin-top:12px">
                 <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
@@ -792,6 +803,9 @@ function renderWordPet() {
         `;
         return;
     }
+
+    // Everything below is wrapped in try-catch — pet is already visible above
+    try {
 
     // XP progress bar
     const currentXP = appState.dogGrowthXP || 0;
@@ -815,43 +829,43 @@ function renderWordPet() {
         const customPos = accPositions[id];
 
         if (customPos) {
-            // User-defined position from drag
             const sz = anchors[acc.slot]
                 ? Math.max(18, Math.round(stage.size * anchors[acc.slot].sizeMul))
                 : Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
             styleStr = `font-size:${sz}px;top:${customPos.top};left:${customPos.left};transform:translate(-50%,-50%)`;
         } else if (anchors[acc.slot]) {
-            // Anatomical slot (head/eyes/neck): use per-breed anchor
             const a = anchors[acc.slot];
             const sz = Math.max(18, Math.round(stage.size * a.sizeMul));
             styleStr = `font-size:${sz}px;top:${a.top};left:${a.left};transform:translateX(-50%)`;
         } else {
-            // Ambient slot (body/effect/toy): use generic zone + bigger size
             const sz = Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
             styleStr = `font-size:${sz}px`;
         }
         return `<span class="pet-accessory acc-${acc.slot} draggable-pet-acc" data-acc-id="${id}" style="${styleStr}">${acc.emoji}</span>`;
     }).join('');
 
-    // Still track daily quest behind the scenes (for _completeQuest)
+    // Daily quest tracking
     const today = new Date().toDateString();
     if (!appState.petQuest || appState.petQuest.lastDate !== today) {
-        const quest = getDailyQuest(appState);
-        if (!appState.petQuest) appState.petQuest = { lastDate: null, questId: null, completed: false };
-        appState.petQuest.lastDate = today;
-        appState.petQuest.questId  = quest.id;
-        appState.petQuest.completed = false;
+        try {
+            const quest = getDailyQuest(appState);
+            if (!appState.petQuest) appState.petQuest = { lastDate: null, questId: null, completed: false };
+            appState.petQuest.lastDate = today;
+            appState.petQuest.questId  = quest.id;
+            appState.petQuest.completed = false;
+        } catch(e) {}
     }
 
-    // Hero topbar — avatar, level, coins, streak, info float inside habitat
+    // Hero topbar — avatar, level, coins, streak, info
     if (topbar) {
-        const ud = getUserData(appState.currentUser) || appState || {};
-        const avatar = ud.avatar || '😊';
-        const streak = ud.streak || 0;
+        const ud = getUserData(currentUser) || appState || {};
+        const avatar = ud.avatar || appState.avatar || '😊';
+        const streak = ud.streak || appState.streak || 0;
         topbar.innerHTML = `
             <div class="pet-hero-left">
                 <div class="pet-hero-avatar" onclick="navigateToProfile()">${avatar}</div>
                 <div class="pet-hero-level">Lv.${level}</div>
+                <div class="pet-hero-version">${APP_VERSION}</div>
             </div>
             <div class="pet-hero-right">
                 <div class="pet-hero-coins" onclick="showPetShop()">🪙 ${coins}</div>
@@ -861,7 +875,7 @@ function renderWordPet() {
         `;
     }
 
-    // Pet creature + accessories in the stage area (use emoji directly — PNG images unreliable on mobile)
+    // Pet creature + accessories (re-render with wrapper for accessories)
     stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
@@ -872,11 +886,11 @@ function renderWordPet() {
     `;
 
     // Make equipped accessories draggable on the pet
-    setTimeout(() => initAccDrag(), 50);
+    setTimeout(() => { try { initAccDrag(); } catch(e) {} }, 50);
 
     // XP bar + hunger hearts at bottom of habitat
     const hunger = computeCurrentHunger(appState);
-    const fullHearts = Math.round(hunger / 20); // 0-5 hearts
+    const fullHearts = Math.round(hunger / 20);
     const heartsHTML = Array.from({length: 5}, (_, i) =>
         `<span class="hunger-heart ${i < fullHearts ? 'full' : 'empty'}">${i < fullHearts ? '❤️' : '🖤'}</span>`
     ).join('');
@@ -900,9 +914,15 @@ function renderWordPet() {
         `;
     }
 
-    // Auto-show starving bubble if no food in a long time
+    // Auto-show starving bubble
     if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
+    }
+
+    } catch(petErr) {
+        console.error('renderWordPet error:', petErr);
+        // Pet creature is already rendered above — just show basic topbar
+        if (topbar) topbar.innerHTML = `<div class="pet-hero-right"><div class="pet-hero-coins" onclick="showPetShop()">🪙 ${coins}</div></div>`;
     }
 }
 
