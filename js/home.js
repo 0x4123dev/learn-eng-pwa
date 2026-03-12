@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.5.1';
+const APP_VERSION = 'v3.5.2';
 
 function renderHome() {
     if (!appState) return;
@@ -1582,9 +1582,9 @@ function moveAccPetDrag(x, y) {
     if (!_accDragState) return;
     const { el, wrapperRect } = _accDragState;
 
-    // Convert screen coords to percentage within wrapper
-    const pctLeft = ((x - wrapperRect.left) / wrapperRect.width * 100);
-    const pctTop = ((y - wrapperRect.top) / wrapperRect.height * 100);
+    // Convert screen coords to percentage within wrapper, clamped to bounds
+    const pctLeft = Math.max(0, Math.min(100, (x - wrapperRect.left) / wrapperRect.width * 100));
+    const pctTop = Math.max(-10, Math.min(110, (y - wrapperRect.top) / wrapperRect.height * 100));
 
     el.style.left = pctLeft + '%';
     el.style.top = pctTop + '%';

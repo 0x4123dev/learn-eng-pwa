@@ -73,12 +73,14 @@
             transform: translateX(20px);
             pointer-events: none;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 0;
         }
 
         .screen.active {
             opacity: 1;
             transform: none;
             pointer-events: auto;
+            z-index: 1;
         }
 
         /* ==================== ONBOARDING SCREEN ==================== */
@@ -3382,6 +3384,7 @@
             border-radius: 0 0 28px 28px;
             flex-shrink: 0;
             transition: filter 1.5s ease;
+            isolation: isolate;
         }
 
         /* 10 Dog Breed Backgrounds — rich 3-stop gradients */
@@ -3534,6 +3537,7 @@
             align-items: center;
             gap: 6px;
             z-index: 5;
+            overflow: visible;
         }
 
         /* Shop button in hero */
