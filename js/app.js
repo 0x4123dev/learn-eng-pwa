@@ -174,6 +174,7 @@ function createDefaultUserData(username, avatar, passcode) {
         coins: 0,
         dogGrowthXP: 0,
         dogLevel: 1,
+        petPoops: [],
         lastDecayDate: null,
         musicStats: {
             rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
@@ -570,6 +571,7 @@ function loginUser(username) {
     if (appState.dogGrowthXP === undefined) appState.dogGrowthXP = Math.floor(appState.points * 0.3) || 0; // Seed from points
     if (appState.dogLevel === undefined) appState.dogLevel = typeof getDogLevel === 'function' ? getDogLevel(appState.dogGrowthXP) : 1;
     if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
+    if (appState.petPoops === undefined) appState.petPoops = [];
     if (appState.musicStats === undefined) appState.musicStats = {
         rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
         wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }

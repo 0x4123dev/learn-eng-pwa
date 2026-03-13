@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.5.2';
+const APP_VERSION = 'v3.6.0';
 
 function renderHome() {
     if (!appState) return;
@@ -690,8 +690,18 @@ function getPetMood() {
     const hunger = computeCurrentHunger(appState);
     if (hunger === 0)  return 'starving';
     if (hunger <= 25)  return 'hungry';
+
+    const poopCount = (appState.petPoops || []).length;
     const today     = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+    // 3+ poops drops mood one tier
+    if (poopCount >= POOP_MOOD_THRESHOLD) {
+        if (appState.lastStudyDate === today)      return 'neutral';
+        if (appState.lastStudyDate === yesterday)  return 'sleepy';
+        return 'hungry';
+    }
+
     if (appState.lastStudyDate === today)      return 'happy';
     if (appState.lastStudyDate === yesterday)  return 'neutral';
     return 'sleepy';
@@ -856,6 +866,16 @@ function renderWordPet() {
         } catch(e) {}
     }
 
+    // Poop lifecycle — evaluate spawn
+    try { evaluatePoopSpawn(); } catch(e) {}
+
+    // Build poop HTML for stage
+    const poopsHTML = (appState.petPoops || []).map(p => {
+        const age = (Date.now() - p.born) / 3600000;
+        const isStinky = age >= POOP_STINK_HOURS;
+        return `<div class="pet-poop ${isStinky ? 'stinky' : ''}" data-poop-id="${p.id}" style="left:${p.x}%;top:${p.y}%">💩${isStinky ? '<span class="poop-stink">💨</span>' : ''}</div>`;
+    }).join('');
+
     // Hero topbar — avatar, level, coins, streak, info
     if (topbar) {
         const ud = getUserData(currentUser) || appState || {};
@@ -875,7 +895,7 @@ function renderWordPet() {
         `;
     }
 
-    // Pet creature + accessories (re-render with wrapper for accessories)
+    // Pet creature + accessories + poops
     stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
@@ -883,10 +903,14 @@ function renderWordPet() {
             </div>
             ${accSpans}
         </div>
+        ${poopsHTML}
     `;
 
     // Make equipped accessories draggable on the pet
     setTimeout(() => { try { initAccDrag(); } catch(e) {} }, 50);
+
+    // Make poops draggable to trash
+    setTimeout(() => { try { initPoopDrag(); } catch(e) {} }, 60);
 
     // XP bar + hunger hearts at bottom of habitat
     const hunger = computeCurrentHunger(appState);
@@ -895,6 +919,9 @@ function renderWordPet() {
         `<span class="hunger-heart ${i < fullHearts ? 'full' : 'empty'}">${i < fullHearts ? '❤️' : '🖤'}</span>`
     ).join('');
     const hungerLabel = hunger === 0 ? 'Starving!' : hunger <= 25 ? 'Hungry' : hunger >= 75 ? 'Full' : 'Ok';
+
+    const hasPoops = (appState.petPoops || []).length > 0;
+    const trashBtnHTML = hasPoops ? '<button class="pet-trash-btn" id="petTrashBtn">🗑️</button>' : '';
 
     if (xpbar_el) {
         xpbar_el.innerHTML = `
@@ -905,6 +932,7 @@ function renderWordPet() {
                         <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
                     </div>
                 </div>
+                ${trashBtnHTML}
                 <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
             </div>
             <div class="pet-hero-xp-track">
@@ -917,6 +945,8 @@ function renderWordPet() {
     // Auto-show starving bubble
     if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
+    } else if ((appState.petPoops || []).some(p => (Date.now() - p.born) / 3600000 >= POOP_STINK_HOURS)) {
+        setTimeout(() => showPetSpeechBubble("It's so stinky! Please clean up! 🤢"), 600);
     }
 
     } catch(petErr) {
@@ -1400,6 +1430,58 @@ function fireFeedBurst() {
     setTimeout(() => burst.remove(), 1200);
 }
 
+// ==================== PET POOP SYSTEM ====================
+
+const POOP_DELAY_HOURS = 2;
+const POOP_MAX = 3;
+const POOP_STINK_HOURS = 12;
+const POOP_CLEAN_COINS = 3;
+const POOP_CLEAN_XP = 10;
+const POOP_MOOD_THRESHOLD = 3;
+
+const POOP_CLEAN_PHRASES = [
+    "Thanks for cleaning up! You're the best! 🧹",
+    "Ahhh, much better! Sparkling clean! ✨",
+    "My hero! No more stinky! 🦸",
+    "Woohoo! That feels so good! 🎉"
+];
+
+function evaluatePoopSpawn() {
+    if (!appState || !appState.petName || !appState.petLastFed) return;
+    if (!appState.petPoops) appState.petPoops = [];
+
+    const now = Date.now();
+    const hoursSinceFed = (now - appState.petLastFed) / 3600000;
+    if (hoursSinceFed < POOP_DELAY_HOURS) return;
+    if (appState.petPoops.length >= POOP_MAX) return;
+
+    const windowSize = 2; // hours
+    const firstWindow = Math.floor(POOP_DELAY_HOURS / windowSize);
+    const currentWindow = Math.floor(hoursSinceFed / windowSize);
+
+    let changed = false;
+    for (let w = firstWindow; w <= currentWindow && appState.petPoops.length < POOP_MAX; w++) {
+        const windowId = 'poop-' + appState.petLastFed + '-' + w;
+        if (appState.petPoops.some(p => p.id === windowId)) continue;
+
+        const rng = seededRandom(windowId);
+        if (rng() < 0.6) {
+            appState.petPoops.push({
+                id: windowId,
+                x: 15 + rng() * 70,
+                y: 70 + rng() * 25,
+                born: appState.petLastFed + (w * windowSize * 3600000)
+            });
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        saveUserData(currentUser, appState);
+        setTimeout(() => showPetSpeechBubble("Oops… I had an accident! 💩"), 400);
+    }
+}
+
 // ==================== DRAG-TO-FEED SYSTEM ====================
 
 let _dragState = null;
@@ -1611,6 +1693,164 @@ function endAccPetDrag() {
     _accDragState = null;
 }
 
+// ==================== DRAG-TO-TRASH POOP SYSTEM ====================
+
+let _poopDragState = null;
+
+function initPoopDrag() {
+    const poopEls = document.querySelectorAll('.pet-poop');
+    poopEls.forEach(el => {
+        el.addEventListener('touchstart', onPoopTouchStart, { passive: false });
+        el.addEventListener('mousedown', onPoopMouseDown);
+    });
+}
+
+function onPoopTouchStart(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const touch = e.touches[0];
+    startPoopDrag(e.currentTarget, touch.clientX, touch.clientY);
+
+    const onMove = (ev) => { ev.preventDefault(); movePoopDrag(ev.touches[0].clientX, ev.touches[0].clientY); };
+    const onEnd = () => { endPoopDrag(); document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd); };
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+}
+
+function onPoopMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    startPoopDrag(e.currentTarget, e.clientX, e.clientY);
+
+    const onMove = (ev) => movePoopDrag(ev.clientX, ev.clientY);
+    const onUp = () => { endPoopDrag(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+function startPoopDrag(el, x, y) {
+    const poopId = el.dataset.poopId;
+    const ghost = document.createElement('div');
+    ghost.className = 'drag-poop-ghost';
+    ghost.textContent = '💩';
+    ghost.style.left = x + 'px';
+    ghost.style.top = y + 'px';
+    document.body.appendChild(ghost);
+
+    _poopDragState = { ghost, poopId, el, startX: x, startY: y };
+    el.style.opacity = '0.3';
+
+    const trash = document.getElementById('petTrashBtn');
+    if (trash) trash.classList.add('trash-drop-hint');
+
+    if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function movePoopDrag(x, y) {
+    if (!_poopDragState) return;
+    _poopDragState.ghost.style.left = x + 'px';
+    _poopDragState.ghost.style.top = y + 'px';
+
+    const trash = document.getElementById('petTrashBtn');
+    if (trash) {
+        const rect = trash.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(x - cx, y - cy);
+        trash.classList.toggle('trash-drop-near', dist < 60);
+    }
+}
+
+function endPoopDrag() {
+    if (!_poopDragState) return;
+    const { ghost, poopId, el } = _poopDragState;
+
+    const trash = document.getElementById('petTrashBtn');
+    if (trash) {
+        const rect = trash.getBoundingClientRect();
+        const ghostRect = ghost.getBoundingClientRect();
+        const gx = ghostRect.left + ghostRect.width / 2;
+        const gy = ghostRect.top + ghostRect.height / 2;
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(gx - cx, gy - cy);
+
+        trash.classList.remove('trash-drop-hint', 'trash-drop-near');
+
+        if (dist < 60) {
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            ghost.remove();
+            cleanPoop(poopId, el);
+        } else {
+            el.style.opacity = '1';
+            ghost.classList.add('snap-back');
+            setTimeout(() => ghost.remove(), 300);
+        }
+    } else {
+        el.style.opacity = '1';
+        ghost.remove();
+    }
+
+    _poopDragState = null;
+}
+
+function cleanPoop(poopId, poopEl) {
+    appState.petPoops = (appState.petPoops || []).filter(p => p.id !== poopId);
+
+    appState.coins = (appState.coins || 0) + POOP_CLEAN_COINS;
+    const oldLevel = appState.dogLevel || 1;
+    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + POOP_CLEAN_XP;
+    appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+    saveUserData(currentUser, appState);
+
+    if (navigator.vibrate) navigator.vibrate(30);
+
+    if (poopEl) {
+        poopEl.classList.add('poop-cleaning');
+        setTimeout(() => poopEl.remove(), 400);
+    }
+    fireCleanBurst();
+
+    const phrase = POOP_CLEAN_PHRASES[Math.floor(Math.random() * POOP_CLEAN_PHRASES.length)];
+    setTimeout(() => showPetSpeechBubble(phrase), 300);
+    showToast('✨ +' + POOP_CLEAN_COINS + ' 🪙 +' + POOP_CLEAN_XP + ' XP!');
+
+    if (appState.dogLevel > oldLevel) {
+        setTimeout(() => { try { showLevelUpCelebration(appState.dogLevel, oldLevel); } catch(e) {} }, 800);
+    }
+
+    setTimeout(() => renderWordPet(), 500);
+}
+
+function fireCleanBurst() {
+    const stage = document.querySelector('.pet-hero-stage');
+    if (!stage) return;
+    const old = stage.querySelector('.clean-burst');
+    if (old) old.remove();
+    const burst = document.createElement('div');
+    burst.className = 'clean-burst';
+    const particles = ['✨','🌟','⭐','💫','🧹','🫧'];
+    const offsets = [
+        { x: '-35px', y: '-45px', delay: '0s',    dur: '0.7s' },
+        { x: '35px',  y: '-50px', delay: '0.05s', dur: '0.75s' },
+        { x: '-55px', y: '-25px', delay: '0.1s',  dur: '0.8s' },
+        { x: '55px',  y: '-20px', delay: '0.05s', dur: '0.7s' },
+        { x: '0px',   y: '-60px', delay: '0.12s', dur: '0.85s' },
+        { x: '-20px', y: '-55px', delay: '0.08s', dur: '0.9s' }
+    ];
+    offsets.forEach((o, i) => {
+        const s = document.createElement('span');
+        s.textContent = particles[i % particles.length];
+        s.style.setProperty('--fly-x', o.x);
+        s.style.setProperty('--fly-y', o.y);
+        s.style.setProperty('--fly-delay', o.delay);
+        s.style.setProperty('--fly-dur', o.dur);
+        burst.appendChild(s);
+    });
+    stage.appendChild(burst);
+    setTimeout(() => burst.remove(), 1200);
+}
+
 function onPetTap() {
     const creature = document.querySelector('.pet-creature');
     if (!creature) return;
@@ -1624,6 +1864,19 @@ function onPetTap() {
 
     const mood = getPetMood();
     const srsWords = appState.srs ? Object.keys(appState.srs) : [];
+
+    // Poop cleanup nudge (40% chance when poops exist)
+    const poopCount = (appState.petPoops || []).length;
+    if (poopCount > 0 && Math.random() < 0.4) {
+        const nudges = [
+            "It's a bit messy… drag the 💩 to the 🗑️!",
+            "Eww, stinky! Help me clean! 😅",
+            "My home needs cleaning! 🧹",
+            poopCount >= 3 ? "So much poop! I can barely breathe! 😫" : "Drag the 💩 to the 🗑️!"
+        ];
+        showPetSpeechBubble(nudges[Math.floor(Math.random() * nudges.length)]);
+        return;
+    }
 
     // Near level-up check
     const level = appState.dogLevel || 1;
