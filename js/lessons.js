@@ -467,6 +467,18 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
         }
     }
 
+    // Show streak bonus label
+    const _streakBonus = (appState.streak || 0) >= 7 ? 10 : (appState.streak || 0) >= 3 ? 5 : 0;
+    const streakEl = document.getElementById('completeStreakBonus');
+    if (streakEl) {
+        if (_streakBonus > 0) {
+            streakEl.textContent = `🔥 Streak bonus: +${_streakBonus} 🪙`;
+            streakEl.style.display = 'block';
+        } else {
+            streakEl.style.display = 'none';
+        }
+    }
+
     document.getElementById('lessonComplete').classList.add('active');
 
     // Offer Word Chant for qualifying lessons
@@ -488,5 +500,7 @@ function closeLessonComplete() {
     // Reset coins display
     const coinEl = document.getElementById('completeCoins');
     if (coinEl) { coinEl.style.display = 'none'; coinEl.textContent = '+0 🪙'; }
+    const streakBonusEl = document.getElementById('completeStreakBonus');
+    if (streakBonusEl) { streakBonusEl.style.display = 'none'; }
     exitLesson();
 }

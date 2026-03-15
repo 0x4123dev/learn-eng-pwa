@@ -3,6 +3,7 @@
 const WORDS_PER_LESSON = 5;
 const TOTAL_LESSONS = Math.ceil(ieltsVocabulary.length / WORDS_PER_LESSON);
 const SRS_WORDS_PER_REVIEW = 5;
+const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100];
 
 const achievements = [
     // Getting started
@@ -159,6 +160,8 @@ function createDefaultUserData(username, avatar, passcode) {
         reviewsCompleted: 0, // Total words reviewed via SRS
         createdAt: Date.now(),
         streakShields: 0,
+        bestStreak: 0,
+        lastStreakMilestone: 0,
         theme: 'default',
         stickers: [],
         dailyChallenge: { lastDate: null, streak: 0, bestStreak: 0 },
@@ -516,6 +519,8 @@ function loginUser(username) {
 
     // Migrate: add fun features state for existing users
     if (appState.streakShields === undefined) appState.streakShields = 0;
+    if (appState.bestStreak === undefined) appState.bestStreak = appState.streak || 0;
+    if (appState.lastStreakMilestone === undefined) appState.lastStreakMilestone = 0;
     if (appState.theme === undefined) appState.theme = 'default';
     if (appState.stickers === undefined) appState.stickers = [];
     if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };
@@ -730,6 +735,18 @@ function recordStudy() {
         if (appState.streak >= 7) unlockAchievement('streak-7');
         if (appState.streak >= 14) unlockAchievement('streak-14');
         if (appState.streak >= 30) unlockAchievement('streak-30');
+
+        // Update best streak
+        if (appState.streak > (appState.bestStreak || 0)) {
+            appState.bestStreak = appState.streak;
+        }
+
+        // Check for streak milestone celebration
+        const prevMilestone = appState.lastStreakMilestone || 0;
+        const milestone = STREAK_MILESTONES.find(m => m <= appState.streak && m > prevMilestone);
+        if (milestone && typeof showStreakMilestone === 'function') {
+            setTimeout(() => showStreakMilestone(milestone), 1500);
+        }
 
         // Award streak shield if 3+ lessons today and shields < 3
         const todayCount = (appState.lessonHistory || []).filter(h =>

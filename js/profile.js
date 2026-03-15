@@ -7,6 +7,8 @@ function renderProfile() {
     document.getElementById('profileName').textContent = appState.username;
     document.getElementById('profilePoints').textContent = appState.points;
     document.getElementById('profileStreak').textContent = appState.streak;
+    const bestStreakEl = document.getElementById('profileBestStreak');
+    if (bestStreakEl) bestStreakEl.textContent = `Best: ${appState.bestStreak || appState.streak || 0}`;
     document.getElementById('profileLessons').textContent = appState.lessonsCompleted;
 
     const accuracy = appState.totalAnswers > 0

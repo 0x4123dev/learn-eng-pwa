@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.6.1';
+const APP_VERSION = 'v3.7.0';
 
 function renderHome() {
     if (!appState) return;
@@ -554,7 +554,9 @@ const DOG_ACCESSORIES = [
     { id: 'ropetoy',    emoji: '🪢', name: 'Rope Toy',        price: 400,   slot: 'toy' },
     { id: 'frisbee',    emoji: '🥏', name: 'Frisbee',         price: 500,   slot: 'toy' },
     { id: 'squeakduck', emoji: '🦆', name: 'Squeaky Duck',    price: 600,   slot: 'toy' },
-    { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 700,   slot: 'toy' }
+    { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 700,   slot: 'toy' },
+    // Streak-exclusive (earned at 30-day streak, not purchasable)
+    { id: 'streak-flame', emoji: '🔥', name: 'Streak Flame', price: 0, slot: 'effect', streakOnly: true }
 ];
 
 // Per-breed anchor points for anatomical accessory slots (head, eyes, neck).
@@ -939,7 +941,7 @@ function renderWordPet() {
             </div>
             <div class="pet-hero-right">
                 <div class="pet-hero-coins" onclick="showPetShop()">🪙 ${coins}</div>
-                <div class="pet-hero-streak">🔥 ${streak}</div>
+                <div class="pet-hero-streak ${getStreakTier(streak) > 0 ? 'streak-tier-' + getStreakTier(streak) : ''}">🔥 ${streak}</div>
                 <button class="pet-hero-info" onclick="showPetInfo()" title="Pet info">ℹ️</button>
             </div>
         `;
@@ -1117,8 +1119,11 @@ function renderShopContent() {
         </div>`;
     }).join('');
 
-    // Filter accessories by category
-    const filteredAcc = _accCategory === 'all' ? DOG_ACCESSORIES : DOG_ACCESSORIES.filter(a => a.slot === _accCategory);
+    // Filter accessories by category (hide streakOnly items unless earned)
+    const filteredAcc = DOG_ACCESSORIES.filter(a => {
+        if (a.streakOnly && !(appState.petAccessories || []).includes(a.id)) return false;
+        return _accCategory === 'all' || a.slot === _accCategory;
+    });
 
     const accItems = filteredAcc.map(a => {
         const owned = (appState.petAccessories || []).includes(a.id);
@@ -1495,6 +1500,95 @@ const POOP_CLEAN_PHRASES = [
     "My hero! No more stinky! 🦸",
     "Woohoo! That feels so good! 🎉"
 ];
+
+// ==================== STREAK MILESTONE SYSTEM ====================
+
+const STREAK_MILESTONE_DATA = {
+    3:   { name: 'Hatching!',     icon: '🥚', coins: 20,   petXP: 30,  msg: "3 days in a row! You're on your way!" },
+    7:   { name: 'On Fire!',      icon: '🔥', coins: 50,   petXP: 60,  msg: "7 days! You're ON FIRE! Keep going!" },
+    14:  { name: 'Unstoppable!',  icon: '🚀', coins: 100,  petXP: 100, msg: 'Nothing can stop you now!' },
+    30:  { name: 'Super Streak!', icon: '⚡', coins: 200,  petXP: 200, msg: 'You unlocked a special accessory!', acc: 'streak-flame' },
+    60:  { name: 'Legend!',       icon: '👑', coins: 400,  petXP: 300, msg: 'You are a true LEGEND!' },
+    100: { name: 'Champion!',     icon: '🏆', coins: 1000, petXP: 500, msg: 'ULTIMATE CHAMPION!' }
+};
+
+function getStreakTier(streak) {
+    if (streak >= 30) return 4;
+    if (streak >= 14) return 3;
+    if (streak >= 7)  return 2;
+    if (streak >= 3)  return 1;
+    return 0;
+}
+
+function getNextMilestone(streak) {
+    return STREAK_MILESTONES.find(m => m > streak) || null;
+}
+
+function showStreakMilestone(streak) {
+    const data = STREAK_MILESTONE_DATA[streak];
+    if (!data) return;
+
+    // Award coins and pet XP
+    appState.coins = (appState.coins || 0) + data.coins;
+    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + data.petXP;
+    const oldLevel = appState.dogLevel || 1;
+    appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+
+    // Grant exclusive accessory if applicable
+    if (data.acc) {
+        if (!appState.petAccessories) appState.petAccessories = [];
+        if (!appState.petAccessories.includes(data.acc)) {
+            appState.petAccessories.push(data.acc);
+            if (!appState.activeAccessories) appState.activeAccessories = [];
+            if (appState.activeAccessories.length < 3) appState.activeAccessories.push(data.acc);
+        }
+    }
+
+    // Mark milestone as celebrated
+    appState.lastStreakMilestone = streak;
+    saveUserData(currentUser, appState);
+
+    // Build overlay
+    const existing = document.getElementById('streakMilestoneOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'streakMilestoneOverlay';
+    overlay.className = 'level-up-overlay streak-milestone-overlay';
+    overlay.onclick = function() {
+        overlay.remove();
+        renderWordPet();
+        if (appState.dogLevel > oldLevel) {
+            setTimeout(() => { try { showLevelUpCelebration(appState.dogLevel, oldLevel); } catch(e) {} }, 400);
+        }
+    };
+
+    const nextM = getNextMilestone(streak);
+    const nextHint = nextM
+        ? `<div class="streak-next-hint">Next milestone: ${nextM} days 🎯</div>`
+        : `<div class="streak-next-hint">You've reached the ultimate streak! 👑</div>`;
+
+    overlay.innerHTML = `
+        <div class="level-up-confetti">${data.icon.repeat(4)} ${'✨'.repeat(3)}</div>
+        <div class="level-up-text">${data.name}</div>
+        <div class="level-up-level">🔥 ${streak} Day Streak!</div>
+        <div class="streak-milestone-msg">${data.msg}</div>
+        <div class="streak-milestone-rewards">
+            <span class="streak-reward-item">+${data.coins} 🪙</span>
+            <span class="streak-reward-item">+${data.petXP} pet XP</span>
+            ${data.acc ? '<span class="streak-reward-item streak-acc-unlock">🔥 Streak Flame unlocked!</span>' : ''}
+        </div>
+        ${nextHint}
+        <div style="margin-top:16px;font-size:13px;opacity:0.7">Tap to continue</div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Pet speech bubble
+    setTimeout(() => showPetSpeechBubble(`${streak} days! ${data.icon} I'm so proud of you!`), 600);
+}
+
+// ==================== POOP SYSTEM ====================
 
 function evaluatePoopSpawn() {
     if (!appState || !appState.petName || !appState.petLastFed) return;
@@ -1941,9 +2035,16 @@ function onPetTap() {
         }
     }
 
-    // Streak celebration (7+ days)
-    if (appState.streak >= 7 && mood === 'happy' && Math.random() < 0.3) {
-        showPetSpeechBubble(`${appState.streak} days together! I love you! 🎉`);
+    // Streak celebration (3+ days)
+    const _streakTierTap = getStreakTier(appState.streak || 0);
+    if (_streakTierTap >= 1 && mood === 'happy' && Math.random() < 0.3) {
+        const streakPhrases = [
+            `${appState.streak} days together! Keep it up! 🎉`,
+            `${appState.streak} days ON FIRE! You're amazing! 🔥`,
+            `${appState.streak} days of gold! My hero! 🏆`,
+            `${appState.streak} days RAINBOW POWER! Luckiest dog! 🌈`
+        ];
+        showPetSpeechBubble(streakPhrases[Math.min(_streakTierTap - 1, 3)]);
         return;
     }
 

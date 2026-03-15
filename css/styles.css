@@ -3491,6 +3491,48 @@
             padding: 5px 10px;
             border-radius: 20px;
             backdrop-filter: blur(4px);
+            transition: background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+        }
+        /* Streak Tier 1: 3-6 days — warm orange glow */
+        .pet-hero-streak.streak-tier-1 {
+            background: rgba(255, 109, 0, 0.5);
+            color: #FFE082;
+            box-shadow: 0 0 8px rgba(255,109,0,0.5);
+        }
+        /* Streak Tier 2: 7-13 days — red pulse */
+        .pet-hero-streak.streak-tier-2 {
+            background: rgba(198, 40, 40, 0.55);
+            color: #FFCC80;
+            animation: streakTier2Pulse 2s ease-in-out infinite;
+        }
+        @keyframes streakTier2Pulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(198,40,40,0.4); }
+            50%      { box-shadow: 0 0 16px rgba(198,40,40,0.8); }
+        }
+        /* Streak Tier 3: 14-29 days — gold shimmer */
+        .pet-hero-streak.streak-tier-3 {
+            background: linear-gradient(135deg, rgba(183,118,0,0.6), rgba(255,193,7,0.6));
+            background-size: 200% 200%;
+            color: #FFF9C4;
+            animation: streakTier3Shimmer 3s ease infinite;
+        }
+        @keyframes streakTier3Shimmer {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Streak Tier 4: 30+ days — rainbow */
+        .pet-hero-streak.streak-tier-4 {
+            background: linear-gradient(135deg, #e53935, #fb8c00, #fdd835, #43a047, #1e88e5, #8e24aa);
+            background-size: 300% 300%;
+            color: #fff;
+            font-weight: 900;
+            animation: streakRainbow 3s linear infinite;
+        }
+        @keyframes streakRainbow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .pet-hero-coins {
             background: rgba(0,0,0,0.35);
@@ -4578,6 +4620,62 @@
             0% { transform: scale(0); opacity: 0; }
             70% { transform: scale(1.3); opacity: 1; }
             100% { transform: scale(1); }
+        }
+
+        /* Streak bonus label in lesson complete */
+        .complete-streak-bonus {
+            font-size: 14px;
+            font-weight: 700;
+            color: #FF8A65;
+            margin: 2px 0 6px;
+            animation: coinPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Streak milestone overlay */
+        .streak-milestone-msg {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-top: 12px;
+            max-width: 280px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .streak-milestone-rewards {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .streak-reward-item {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: #FFD54F;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .streak-acc-unlock {
+            color: #FF8A65;
+            background: rgba(255,138,101,0.2);
+            animation: streakAccPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes streakAccPop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .streak-next-hint {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            margin-top: 14px;
+        }
+
+        /* Best streak in profile */
+        .profile-stat-best {
+            font-size: 10px;
+            color: #999;
+            margin-top: 2px;
         }
 
         /* Pet info current stage highlight */
