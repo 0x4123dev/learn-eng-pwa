@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.6.0';
+const APP_VERSION = 'v3.6.1';
 
 function renderHome() {
     if (!appState) return;
@@ -39,24 +39,48 @@ function renderHome() {
 
     // Check if all lessons in selected difficulty are complete
     const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
-    const completedInRange = (appState.lessonHistory || []).filter(h =>
-        h.lessonNum >= range.start && h.lessonNum < range.end
-    ).length;
+    const uniqueCompletedInRange = new Set(
+        (appState.lessonHistory || [])
+            .filter(h => h.lessonNum >= range.start && h.lessonNum < range.end)
+            .map(h => h.lessonNum)
+    ).size;
     const totalInRange = range.end - range.start;
-    const allCompleteInRange = completedInRange >= totalInRange;
+    const allCompleteInRange = uniqueCompletedInRange >= totalInRange;
 
     if (allCompleteInRange) {
-        // All lessons in this difficulty completed
+        // All lessons in this difficulty completed — show sequential practice
         const diff = getDifficultyLevel(range.start);
+        const difficultyColors = {
+            'Beginning': 'linear-gradient(135deg, #FF8A65, #F4511E)',
+            'Basic': 'linear-gradient(135deg, #58cc02, #4CAF50)',
+            'Intermediate': 'linear-gradient(135deg, #1cb0f6, #0984e3)',
+            'Upper-Intermediate': 'linear-gradient(135deg, #ff9600, #f39c12)',
+            'Advanced': 'linear-gradient(135deg, #ce82ff, #9b59b6)'
+        };
+        lessonStartCard.style.background = difficultyColors[diff.name];
+
+        // Find the next lesson to practice: the one practiced longest ago
+        const nextPractice = getNextPracticeLesson(range);
+        const practiceInRange = nextPractice - range.start + 1;
+
+        // Preview words for this lesson
+        const practiceStartIdx = nextPractice * WORDS_PER_LESSON;
+        const practiceWords = ieltsVocabulary.slice(practiceStartIdx, practiceStartIdx + WORDS_PER_LESSON);
+        const practicePreview = practiceWords.map(w => w.en).slice(0, 3).join(', ');
+
         lessonStartCard.innerHTML = `
-            <div class="all-complete-icon">✅</div>
-            <div class="all-complete-title">${diff.name} Complete!</div>
-            <div class="all-complete-subtitle">All ${totalInRange} lessons done. Practice again?</div>
-            <button class="primary-btn start-lesson-btn" onclick="startLesson(${range.start})" style="margin-top: 16px; background: white; color: ${diff.color};">
-                🔄 Practice Again
+            <div class="lesson-difficulty">
+                <span class="difficulty-badge">✅ ${diff.name} Complete!</span>
+                <span class="difficulty-band">Review mode</span>
+            </div>
+            <div class="lesson-info">
+                <div class="lesson-number">Lesson ${practiceInRange} of ${totalInRange}</div>
+                <div class="lesson-words-preview">${practicePreview}...</div>
+            </div>
+            <button class="primary-btn start-lesson-btn" onclick="startLesson(${nextPractice})">
+                🔄 PRACTICE AGAIN
             </button>
         `;
-        lessonStartCard.style.background = `linear-gradient(135deg, ${diff.color}, ${diff.color}dd)`;
     } else {
         // Get difficulty level
         const difficulty = getDifficultyLevel(displayLesson);
@@ -380,6 +404,32 @@ function getNextLessonForDifficulty(difficultyKey) {
 
     // All lessons in this range completed, return first lesson of range
     return range.start;
+}
+
+function getNextPracticeLesson(range) {
+    // Find the lesson practiced longest ago (least recently) in this range
+    // This cycles through lessons sequentially: after completing lesson 1,
+    // lesson 1 becomes the most recent → next time lesson 2 is offered, etc.
+    const history = appState.lessonHistory || [];
+    let oldestTime = Infinity;
+    let oldestLesson = range.start;
+
+    for (let i = range.start; i < range.end; i++) {
+        // Find the most recent time this lesson was practiced
+        let lastPracticed = 0;
+        for (let j = history.length - 1; j >= 0; j--) {
+            if (history[j].lessonNum === i) {
+                lastPracticed = history[j].date || 0;
+                break;
+            }
+        }
+        if (lastPracticed < oldestTime) {
+            oldestTime = lastPracticed;
+            oldestLesson = i;
+        }
+    }
+
+    return oldestLesson;
 }
 
 function filterByDifficulty(level) {
