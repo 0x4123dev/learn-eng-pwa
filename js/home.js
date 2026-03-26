@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.8.1';
+const APP_VERSION = 'v3.8.2';
 
 function renderHome() {
     if (!appState) return;
@@ -294,7 +294,8 @@ function renderMistakes() {
 
     let html = `<div class="review-summary">📝 ${mistakes.length} word${mistakes.length > 1 ? 's' : ''} to review (${totalLessons} lesson${totalLessons > 1 ? 's' : ''})</div>`;
 
-    groups.forEach((group, idx) => {
+    for (let i = groups.length - 1; i >= 0; i--) {
+        const group = groups[i];
         const words = group.map(m => ieltsVocabulary.find(w => w.en === m.word)).filter(Boolean);
         const totalWrong = group.reduce((sum, m) => sum + m.count, 0);
         const wordPreview = words.map(w => w.en).join(', ');
@@ -302,14 +303,14 @@ function renderMistakes() {
         html += `
         <div class="review-lesson-card">
             <div class="review-lesson-header">
-                <span class="review-lesson-title">📖 Review Lesson ${idx + 1}</span>
+                <span class="review-lesson-title">📖 Review Lesson ${i + 1}</span>
                 <span class="review-lesson-count">${group.length} word${group.length > 1 ? 's' : ''}</span>
             </div>
             <div class="review-lesson-words">${wordPreview}</div>
             <div class="review-lesson-stats">${totalWrong}x wrong total</div>
-            <button class="review-lesson-btn" onclick="startReviewLesson(${idx})">🔄 START REVIEW</button>
+            <button class="review-lesson-btn" onclick="startReviewLesson(${i})">🔄 START REVIEW</button>
         </div>`;
-    });
+    }
 
     html += `<button class="clear-mistakes-btn" onclick="clearMistakes()">Clear All Mistakes</button>`;
     container.innerHTML = html;
