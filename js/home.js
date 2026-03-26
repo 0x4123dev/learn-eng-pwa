@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.7.1';
+const APP_VERSION = 'v3.8.0';
 
 function renderHome() {
     if (!appState) return;
@@ -269,6 +269,17 @@ function toggleHistoryDetail(index) {
     }
 }
 
+function getReviewLessonGroups() {
+    const mistakes = appState.mistakes || [];
+    if (mistakes.length === 0) return [];
+    const sorted = [...mistakes].sort((a, b) => b.count - a.count);
+    const groups = [];
+    for (let i = 0; i < sorted.length; i += WORDS_PER_LESSON) {
+        groups.push(sorted.slice(i, i + WORDS_PER_LESSON));
+    }
+    return groups;
+}
+
 function renderMistakes() {
     const container = document.getElementById('mistakesContainer');
     const mistakes = appState.mistakes || [];
@@ -278,56 +289,55 @@ function renderMistakes() {
         return;
     }
 
-    // Sort by count (most mistakes first)
-    const sortedMistakes = [...mistakes].sort((a, b) => b.count - a.count);
+    const groups = getReviewLessonGroups();
+    const totalLessons = groups.length;
 
-    let html = sortedMistakes.map(m => {
-        const word = ieltsVocabulary.find(w => w.en === m.word);
-        if (!word) return '';
-        return `
-        <div class="mistake-word-card" onclick="speakWord('${word.en.replace(/'/g, "\\'")}')">
-            <div class="mistake-word-header">
-                <span class="mistake-word-en">${word.emoji || ''} ${word.en} <span class="speak-icon">🔊</span></span>
-                <span class="mistake-count">${m.count}x wrong</span>
+    let html = `<div class="review-summary">📝 ${mistakes.length} word${mistakes.length > 1 ? 's' : ''} to review (${totalLessons} lesson${totalLessons > 1 ? 's' : ''})</div>`;
+
+    groups.forEach((group, idx) => {
+        const words = group.map(m => ieltsVocabulary.find(w => w.en === m.word)).filter(Boolean);
+        const totalWrong = group.reduce((sum, m) => sum + m.count, 0);
+        const wordPreview = words.map(w => w.en).join(', ');
+
+        html += `
+        <div class="review-lesson-card">
+            <div class="review-lesson-header">
+                <span class="review-lesson-title">📖 Review Lesson ${idx + 1}</span>
+                <span class="review-lesson-count">${group.length} word${group.length > 1 ? 's' : ''}</span>
             </div>
-            <div class="mistake-word-vi">${word.vi}</div>
-            <div class="mistake-word-ipa">${word.ipa}</div>
-        </div>
-        `;
-    }).join('');
+            <div class="review-lesson-words">${wordPreview}</div>
+            <div class="review-lesson-stats">${totalWrong}x wrong total</div>
+            <button class="review-lesson-btn" onclick="startReviewLesson(${idx})">🔄 START REVIEW</button>
+        </div>`;
+    });
 
-    if (sortedMistakes.length >= 5) {
-        html += `<button class="practice-mistakes-btn" onclick="practiceMistakes()">🔄 Practice These Words</button>`;
-    }
     html += `<button class="clear-mistakes-btn" onclick="clearMistakes()">Clear All Mistakes</button>`;
-
     container.innerHTML = html;
 }
 
-function practiceMistakes() {
-    const mistakes = appState.mistakes || [];
-    if (mistakes.length < 5) {
-        showToast('Need at least 5 mistakes to practice');
-        return;
+function startReviewLesson(groupIndex) {
+    const groups = getReviewLessonGroups();
+    if (groupIndex >= groups.length) { showToast('No review lesson found'); return; }
+
+    const group = groups[groupIndex];
+    let reviewWords = group.map(m => ieltsVocabulary.find(w => w.en === m.word)).filter(Boolean);
+
+    // Pad to WORDS_PER_LESSON if group is smaller (matching game needs 5 pairs)
+    if (reviewWords.length < WORDS_PER_LESSON) {
+        const existingEn = new Set(reviewWords.map(w => w.en));
+        const pool = ieltsVocabulary.filter(w => !existingEn.has(w.en));
+        while (reviewWords.length < WORDS_PER_LESSON && pool.length > 0) {
+            const rand = Math.floor(Math.random() * pool.length);
+            reviewWords.push(pool.splice(rand, 1)[0]);
+        }
     }
 
-    // Get words for practice (max 5)
-    const practiceWords = mistakes.slice(0, 5).map(m => {
-        return ieltsVocabulary.find(w => w.en === m.word);
-    }).filter(w => w);
-
-    if (practiceWords.length < 5) {
-        showToast('Not enough valid words to practice');
-        return;
-    }
-
-    // Start a special practice session
     lessonState = {
-        lessonNumber: -1, // Special marker for practice session
-        words: practiceWords,
+        lessonNumber: -1,
+        words: reviewWords,
         currentRound: 0,
         totalRounds: 1,
-        roundWords: practiceWords,
+        roundWords: reviewWords,
         selectedLeft: null,
         selectedRight: null,
         matchedPairs: 0,
@@ -343,7 +353,7 @@ function practiceMistakes() {
     document.getElementById('lessonScreen').classList.add('active');
     document.getElementById('homeScreen').classList.remove('active');
 
-    preloadLessonAudio(practiceWords);
+    preloadLessonAudio(reviewWords);
     renderMatchingRound();
 }
 
