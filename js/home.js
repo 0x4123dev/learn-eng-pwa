@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.7.0';
+const APP_VERSION = 'v3.7.1';
 
 function renderHome() {
     if (!appState) return;
@@ -1847,6 +1847,18 @@ function initPoopDrag() {
         el.addEventListener('touchstart', onPoopTouchStart, { passive: false });
         el.addEventListener('mousedown', onPoopMouseDown);
     });
+
+    // Double-click / double-tap trash to clean all poops
+    const trashBtn = document.getElementById('petTrashBtn');
+    if (trashBtn) {
+        trashBtn.addEventListener('dblclick', (e) => { e.preventDefault(); cleanAllPoops(); });
+        let _lastTap = 0;
+        trashBtn.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - _lastTap < 400) { e.preventDefault(); cleanAllPoops(); _lastTap = 0; }
+            else { _lastTap = now; }
+        });
+    }
 }
 
 function onPoopTouchStart(e) {
@@ -1936,6 +1948,40 @@ function endPoopDrag() {
     }
 
     _poopDragState = null;
+}
+
+function cleanAllPoops() {
+    const poops = appState.petPoops || [];
+    if (poops.length === 0) return;
+
+    const count = poops.length;
+    const totalCoins = POOP_CLEAN_COINS * count;
+    const totalXP = POOP_CLEAN_XP * count;
+
+    appState.petPoops = [];
+    appState.coins = (appState.coins || 0) + totalCoins;
+    const oldLevel = appState.dogLevel || 1;
+    appState.dogGrowthXP = (appState.dogGrowthXP || 0) + totalXP;
+    appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+    saveUserData(currentUser, appState);
+
+    if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+
+    // Animate all poops out
+    document.querySelectorAll('.pet-poop').forEach(el => {
+        el.classList.add('poop-cleaning');
+        setTimeout(() => el.remove(), 400);
+    });
+    fireCleanBurst();
+
+    setTimeout(() => showPetSpeechBubble(`All clean! ${count} poops gone! ✨🧹`), 300);
+    showToast(`✨ ${count}x clean! +${totalCoins} 🪙 +${totalXP} XP!`);
+
+    if (appState.dogLevel > oldLevel) {
+        setTimeout(() => { try { showLevelUpCelebration(appState.dogLevel, oldLevel); } catch(e) {} }, 800);
+    }
+
+    setTimeout(() => renderWordPet(), 500);
 }
 
 function cleanPoop(poopId, poopEl) {
