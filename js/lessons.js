@@ -137,8 +137,10 @@ function checkMatch() {
         lessonState.correctInLesson++;
         appState.totalCorrect++;
 
-        // Reduce mistake count when correctly matched
-        reduceMistake(left.word);
+        // Reduce mistake count only during review sessions
+        if (lessonState.isPracticeSession) {
+            reduceMistake(left.word);
+        }
 
         // Combo chain
         lessonState.comboChain = Math.min((lessonState.comboChain || 0) + 1, 5);
