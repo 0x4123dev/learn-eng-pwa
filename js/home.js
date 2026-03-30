@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.8.3';
+const APP_VERSION = 'v3.9.0';
 
 function renderHome() {
     if (!appState) return;
@@ -489,16 +489,16 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,  img: 'img/pets/chihuahua.png', fallback: '🐶', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
-    { minLevel: 11, img: 'img/pets/beagle.png',    fallback: '🐕', name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
-    { minLevel: 21, img: 'img/pets/poodle.png',    fallback: '🐩', name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
-    { minLevel: 31, img: 'img/pets/retriever.png',  fallback: '🦮', name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
-    { minLevel: 41, img: 'img/pets/dalmatian.png',  fallback: '🐕‍🦺', name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
-    { minLevel: 51, img: 'img/pets/husky.png',      fallback: '🐺', name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
-    { minLevel: 61, img: 'img/pets/shepherd.png',    fallback: '🐕', name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
-    { minLevel: 71, img: 'img/pets/akita.png',      fallback: '🐕‍🦺', name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
-    { minLevel: 81, img: 'img/pets/royal.png',      fallback: '👑🐶', name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
-    { minLevel: 91, img: 'img/pets/diamond.png',    fallback: '💎🐶', name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
+    { minLevel: 1,   img: 'img/pets/chihuahua.png', fallback: '🐶', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 21,  img: 'img/pets/beagle.png',    fallback: '🐕', name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 41,  img: 'img/pets/poodle.png',    fallback: '🐩', name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
+    { minLevel: 61,  img: 'img/pets/retriever.png',  fallback: '🦮', name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
+    { minLevel: 81,  img: 'img/pets/dalmatian.png',  fallback: '🐕‍🦺', name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
+    { minLevel: 101, img: 'img/pets/husky.png',      fallback: '🐺', name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
+    { minLevel: 121, img: 'img/pets/shepherd.png',    fallback: '🐕', name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
+    { minLevel: 141, img: 'img/pets/akita.png',      fallback: '🐕‍🦺', name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
+    { minLevel: 161, img: 'img/pets/royal.png',      fallback: '👑🐶', name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
+    { minLevel: 181, img: 'img/pets/diamond.png',    fallback: '💎🐶', name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
 ];
 
 const DOG_FOOD = [
@@ -701,12 +701,12 @@ const PET_QUESTS = [
 
 function getPointsForLevel(level) {
     if (level <= 1) return 0;
-    return Math.floor(2.5 * Math.pow(level - 1, 2) + 10 * (level - 1));
+    return Math.floor(3 * Math.pow(level - 1, 2) + 15 * (level - 1));
 }
 
 function getDogLevel(growthXP) {
     let level = 1;
-    for (let l = 100; l >= 1; l--) {
+    for (let l = 200; l >= 1; l--) {
         if (growthXP >= getPointsForLevel(l)) { level = l; break; }
     }
     return level;
@@ -720,16 +720,16 @@ function getDogStage(level) {
 }
 
 function getDogTitle(level) {
-    if (level >= 100) return 'Ultimate Champion';
-    if (level >= 91)  return 'Diamond Legend';
-    if (level >= 81)  return 'Royal Hound';
-    if (level >= 71)  return 'Noble Akita';
-    if (level >= 61)  return 'Brave Shepherd';
-    if (level >= 51)  return 'Arctic Husky';
-    if (level >= 41)  return 'Cool Dalmatian';
-    if (level >= 31)  return 'Golden Retriever';
-    if (level >= 21)  return 'Fancy Poodle';
-    if (level >= 11)  return 'Happy Beagle';
+    if (level >= 200) return 'Ultimate Champion';
+    if (level >= 181) return 'Diamond Legend';
+    if (level >= 161) return 'Royal Hound';
+    if (level >= 141) return 'Noble Akita';
+    if (level >= 121) return 'Brave Shepherd';
+    if (level >= 101) return 'Arctic Husky';
+    if (level >= 81)  return 'Cool Dalmatian';
+    if (level >= 61)  return 'Golden Retriever';
+    if (level >= 41)  return 'Fancy Poodle';
+    if (level >= 21)  return 'Happy Beagle';
     return 'Little Chihuahua';
 }
 
@@ -883,10 +883,10 @@ function renderWordPet() {
     // XP progress bar
     const currentXP = appState.dogGrowthXP || 0;
     const currentLevelXP = getPointsForLevel(level);
-    const nextLevelXP = level < 100 ? getPointsForLevel(level + 1) : currentLevelXP;
+    const nextLevelXP = level < 200 ? getPointsForLevel(level + 1) : currentLevelXP;
     const xpInLevel = currentXP - currentLevelXP;
     const xpNeeded = nextLevelXP - currentLevelXP;
-    const xpPercent = level >= 100 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
+    const xpPercent = level >= 200 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
 
     // Active accessories — per-breed anchor points for anatomical slots
     const active = appState.activeAccessories || [];
@@ -1001,7 +1001,7 @@ function renderWordPet() {
             <div class="pet-hero-xp-track">
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
-            <span class="pet-hero-xp-label">${level >= 100 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
+            <span class="pet-hero-xp-label">${level >= 200 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
         `;
     }
 
@@ -2081,7 +2081,7 @@ function onPetTap() {
 
     // Near level-up check
     const level = appState.dogLevel || 1;
-    if (level < 100) {
+    if (level < 200) {
         const currentXP = appState.dogGrowthXP || 0;
         const nextLevelXP = getPointsForLevel(level + 1);
         const currentLevelXP = getPointsForLevel(level);
