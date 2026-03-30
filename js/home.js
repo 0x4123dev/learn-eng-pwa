@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.8.2';
+const APP_VERSION = 'v3.8.3';
 
 function renderHome() {
     if (!appState) return;
@@ -502,70 +502,70 @@ const DOG_STAGES = [
 ];
 
 const DOG_FOOD = [
-    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 5,  growth: 5 },
-    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 15, growth: 15 },
-    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 25, growth: 30 },
-    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 40, growth: 50 },
-    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 80, growth: 120 }
+    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 50,  growth: 5 },
+    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 150, growth: 15 },
+    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 250, growth: 30 },
+    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 400, growth: 50 },
+    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 800, growth: 120 }
 ];
 
 const DOG_ACCESSORIES = [
     // Hats (10)
-    { id: 'bow',        emoji: '🎀', name: 'Bow',            price: 300,   slot: 'head' },
-    { id: 'cap',        emoji: '🧢', name: 'Cap',            price: 400,   slot: 'head' },
-    { id: 'partyhat',   emoji: '🥳', name: 'Party Hat',      price: 500,   slot: 'head' },
-    { id: 'beret',      emoji: '🫐', name: 'Beret',          price: 700,   slot: 'head' },
-    { id: 'hat',        emoji: '🎩', name: 'Top Hat',        price: 800,   slot: 'head' },
-    { id: 'cowboy',     emoji: '🤠', name: 'Cowboy Hat',     price: 1200,  slot: 'head' },
-    { id: 'crown',      emoji: '👑', name: 'Crown',          price: 1500,  slot: 'head' },
-    { id: 'santa',      emoji: '🎅', name: 'Santa Hat',      price: 1800,  slot: 'head' },
-    { id: 'wizard',     emoji: '🧙', name: 'Wizard Hat',     price: 2000,  slot: 'head' },
-    { id: 'viking',     emoji: '⚔️', name: 'Viking Helmet',  price: 3000,  slot: 'head' },
+    { id: 'bow',        emoji: '🎀', name: 'Bow',            price: 3000,   slot: 'head' },
+    { id: 'cap',        emoji: '🧢', name: 'Cap',            price: 4000,   slot: 'head' },
+    { id: 'partyhat',   emoji: '🥳', name: 'Party Hat',      price: 5000,   slot: 'head' },
+    { id: 'beret',      emoji: '🫐', name: 'Beret',          price: 7000,   slot: 'head' },
+    { id: 'hat',        emoji: '🎩', name: 'Top Hat',        price: 8000,   slot: 'head' },
+    { id: 'cowboy',     emoji: '🤠', name: 'Cowboy Hat',     price: 12000,  slot: 'head' },
+    { id: 'crown',      emoji: '👑', name: 'Crown',          price: 15000,  slot: 'head' },
+    { id: 'santa',      emoji: '🎅', name: 'Santa Hat',      price: 18000,  slot: 'head' },
+    { id: 'wizard',     emoji: '🧙', name: 'Wizard Hat',     price: 20000,  slot: 'head' },
+    { id: 'viking',     emoji: '⚔️', name: 'Viking Helmet',  price: 30000,  slot: 'head' },
     // Eyewear (7)
-    { id: 'nerd',       emoji: '🤓', name: 'Nerd Glasses',   price: 400,   slot: 'eyes' },
-    { id: 'glasses',    emoji: '🕶️', name: 'Sunglasses',     price: 500,   slot: 'eyes' },
-    { id: 'monocle',    emoji: '🧐', name: 'Monocle',        price: 600,   slot: 'eyes' },
-    { id: 'heartglass', emoji: '😍', name: 'Heart Glasses',  price: 800,   slot: 'eyes' },
-    { id: 'goggles',    emoji: '🥽', name: 'Goggles',        price: 900,   slot: 'eyes' },
-    { id: 'starglass',  emoji: '🤩', name: 'Star Glasses',   price: 1000,  slot: 'eyes' },
-    { id: 'pixel',      emoji: '😎', name: 'Pixel Shades',   price: 1500,  slot: 'eyes' },
+    { id: 'nerd',       emoji: '🤓', name: 'Nerd Glasses',   price: 4000,   slot: 'eyes' },
+    { id: 'glasses',    emoji: '🕶️', name: 'Sunglasses',     price: 5000,   slot: 'eyes' },
+    { id: 'monocle',    emoji: '🧐', name: 'Monocle',        price: 6000,   slot: 'eyes' },
+    { id: 'heartglass', emoji: '😍', name: 'Heart Glasses',  price: 8000,   slot: 'eyes' },
+    { id: 'goggles',    emoji: '🥽', name: 'Goggles',        price: 9000,   slot: 'eyes' },
+    { id: 'starglass',  emoji: '🤩', name: 'Star Glasses',   price: 10000,  slot: 'eyes' },
+    { id: 'pixel',      emoji: '😎', name: 'Pixel Shades',   price: 15000,  slot: 'eyes' },
     // Neckwear (8)
-    { id: 'collar',     emoji: '⭕', name: 'Collar',         price: 300,   slot: 'neck' },
-    { id: 'bandana',    emoji: '🔴', name: 'Bandana',        price: 400,   slot: 'neck' },
-    { id: 'bowtie',     emoji: '🎀', name: 'Bow Tie',        price: 500,   slot: 'neck' },
-    { id: 'scarf',      emoji: '🧣', name: 'Scarf',          price: 600,   slot: 'neck' },
-    { id: 'bellcollar', emoji: '🔔', name: 'Bell Collar',    price: 700,   slot: 'neck' },
-    { id: 'tie',        emoji: '👔', name: 'Tie',            price: 800,   slot: 'neck' },
-    { id: 'necklace',   emoji: '📿', name: 'Necklace',       price: 1000,  slot: 'neck' },
-    { id: 'goldchain',  emoji: '⛓️', name: 'Gold Chain',     price: 2000,  slot: 'neck' },
+    { id: 'collar',     emoji: '⭕', name: 'Collar',         price: 3000,   slot: 'neck' },
+    { id: 'bandana',    emoji: '🔴', name: 'Bandana',        price: 4000,   slot: 'neck' },
+    { id: 'bowtie',     emoji: '🎀', name: 'Bow Tie',        price: 5000,   slot: 'neck' },
+    { id: 'scarf',      emoji: '🧣', name: 'Scarf',          price: 6000,   slot: 'neck' },
+    { id: 'bellcollar', emoji: '🔔', name: 'Bell Collar',    price: 7000,   slot: 'neck' },
+    { id: 'tie',        emoji: '👔', name: 'Tie',            price: 8000,   slot: 'neck' },
+    { id: 'necklace',   emoji: '📿', name: 'Necklace',       price: 10000,  slot: 'neck' },
+    { id: 'goldchain',  emoji: '⛓️', name: 'Gold Chain',     price: 20000,  slot: 'neck' },
     // Back/Body (8)
-    { id: 'lifejacket', emoji: '🦺', name: 'Life Jacket',    price: 600,   slot: 'body' },
-    { id: 'backpack',   emoji: '🎒', name: 'Backpack',       price: 800,   slot: 'body' },
-    { id: 'sweater',    emoji: '🧥', name: 'Sweater',        price: 1000,  slot: 'body' },
-    { id: 'saddle',     emoji: '🐴', name: 'Saddle',         price: 1200,  slot: 'body' },
-    { id: 'cape',       emoji: '🦸', name: 'Cape',           price: 1500,  slot: 'body' },
-    { id: 'tuxedo',     emoji: '🤵', name: 'Tuxedo',         price: 2500,  slot: 'body' },
-    { id: 'wings',      emoji: '🪽', name: 'Wings',          price: 3000,  slot: 'body' },
-    { id: 'armor',      emoji: '🛡️', name: 'Armor',          price: 5000,  slot: 'body' },
+    { id: 'lifejacket', emoji: '🦺', name: 'Life Jacket',    price: 6000,   slot: 'body' },
+    { id: 'backpack',   emoji: '🎒', name: 'Backpack',       price: 8000,   slot: 'body' },
+    { id: 'sweater',    emoji: '🧥', name: 'Sweater',        price: 10000,  slot: 'body' },
+    { id: 'saddle',     emoji: '🐴', name: 'Saddle',         price: 12000,  slot: 'body' },
+    { id: 'cape',       emoji: '🦸', name: 'Cape',           price: 15000,  slot: 'body' },
+    { id: 'tuxedo',     emoji: '🤵', name: 'Tuxedo',         price: 25000,  slot: 'body' },
+    { id: 'wings',      emoji: '🪽', name: 'Wings',          price: 30000,  slot: 'body' },
+    { id: 'armor',      emoji: '🛡️', name: 'Armor',          price: 50000,  slot: 'body' },
     // Effects (9)
-    { id: 'flowercrown',emoji: '🌺', name: 'Flower Crown',   price: 800,   slot: 'effect' },
-    { id: 'bubblering', emoji: '🫧', name: 'Bubble Ring',     price: 1000,  slot: 'effect' },
-    { id: 'musicnotes', emoji: '🎵', name: 'Music Notes',     price: 1200,  slot: 'effect' },
-    { id: 'sparkles',   emoji: '✨', name: 'Sparkles',        price: 1500,  slot: 'effect' },
-    { id: 'rainbow',    emoji: '🌈', name: 'Rainbow Aura',    price: 2000,  slot: 'effect' },
-    { id: 'snowflurry', emoji: '❄️', name: 'Snow Flurry',     price: 2000,  slot: 'effect' },
-    { id: 'lightning',  emoji: '⚡', name: 'Lightning',       price: 2500,  slot: 'effect' },
-    { id: 'flame',      emoji: '🔥', name: 'Flame Collar',    price: 3000,  slot: 'effect' },
-    { id: 'diamond',    emoji: '💎', name: 'Diamond Collar',  price: 5000,  slot: 'effect' },
+    { id: 'flowercrown',emoji: '🌺', name: 'Flower Crown',   price: 8000,   slot: 'effect' },
+    { id: 'bubblering', emoji: '🫧', name: 'Bubble Ring',     price: 10000,  slot: 'effect' },
+    { id: 'musicnotes', emoji: '🎵', name: 'Music Notes',     price: 12000,  slot: 'effect' },
+    { id: 'sparkles',   emoji: '✨', name: 'Sparkles',        price: 15000,  slot: 'effect' },
+    { id: 'rainbow',    emoji: '🌈', name: 'Rainbow Aura',    price: 20000,  slot: 'effect' },
+    { id: 'snowflurry', emoji: '❄️', name: 'Snow Flurry',     price: 20000,  slot: 'effect' },
+    { id: 'lightning',  emoji: '⚡', name: 'Lightning',       price: 25000,  slot: 'effect' },
+    { id: 'flame',      emoji: '🔥', name: 'Flame Collar',    price: 30000,  slot: 'effect' },
+    { id: 'diamond',    emoji: '💎', name: 'Diamond Collar',  price: 50000,  slot: 'effect' },
     // Toys (8)
-    { id: 'stick',      emoji: '🪵', name: 'Stick',           price: 100,   slot: 'toy' },
-    { id: 'ball',       emoji: '🎾', name: 'Ball',            price: 200,   slot: 'toy' },
-    { id: 'bonetoy',    emoji: '🦴', name: 'Bone Toy',        price: 300,   slot: 'toy' },
-    { id: 'kong',       emoji: '🟠', name: 'Kong',            price: 350,   slot: 'toy' },
-    { id: 'ropetoy',    emoji: '🪢', name: 'Rope Toy',        price: 400,   slot: 'toy' },
-    { id: 'frisbee',    emoji: '🥏', name: 'Frisbee',         price: 500,   slot: 'toy' },
-    { id: 'squeakduck', emoji: '🦆', name: 'Squeaky Duck',    price: 600,   slot: 'toy' },
-    { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 700,   slot: 'toy' },
+    { id: 'stick',      emoji: '🪵', name: 'Stick',           price: 1000,   slot: 'toy' },
+    { id: 'ball',       emoji: '🎾', name: 'Ball',            price: 2000,   slot: 'toy' },
+    { id: 'bonetoy',    emoji: '🦴', name: 'Bone Toy',        price: 3000,   slot: 'toy' },
+    { id: 'kong',       emoji: '🟠', name: 'Kong',            price: 3500,   slot: 'toy' },
+    { id: 'ropetoy',    emoji: '🪢', name: 'Rope Toy',        price: 4000,   slot: 'toy' },
+    { id: 'frisbee',    emoji: '🥏', name: 'Frisbee',         price: 5000,   slot: 'toy' },
+    { id: 'squeakduck', emoji: '🦆', name: 'Squeaky Duck',    price: 6000,   slot: 'toy' },
+    { id: 'teddybear',  emoji: '🧸', name: 'Teddy Bear',      price: 7000,   slot: 'toy' },
     // Streak-exclusive (earned at 30-day streak, not purchasable)
     { id: 'streak-flame', emoji: '🔥', name: 'Streak Flame', price: 0, slot: 'effect', streakOnly: true }
 ];
