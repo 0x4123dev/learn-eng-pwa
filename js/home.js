@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.9.1';
+const APP_VERSION = 'v3.10.0';
 
 function renderHome() {
     if (!appState) return;
@@ -51,11 +51,11 @@ function renderHome() {
         // All lessons in this difficulty completed — show sequential practice
         const diff = getDifficultyLevel(range.start);
         const difficultyColors = {
-            'Beginning': 'linear-gradient(135deg, #FF8A65, #F4511E)',
-            'Basic': 'linear-gradient(135deg, #58cc02, #4CAF50)',
-            'Intermediate': 'linear-gradient(135deg, #1cb0f6, #0984e3)',
-            'Upper-Intermediate': 'linear-gradient(135deg, #ff9600, #f39c12)',
-            'Advanced': 'linear-gradient(135deg, #ce82ff, #9b59b6)'
+            'Beginning': 'linear-gradient(135deg, #27ae60, #1e8449)',
+            'Basic': 'linear-gradient(135deg, #2ecc71, #27ae60)',
+            'Intermediate': 'linear-gradient(135deg, #1abc9c, #16a085)',
+            'Upper-Intermediate': 'linear-gradient(135deg, #9b59b6, #8e44ad)',
+            'Advanced': 'linear-gradient(135deg, #8e44ad, #6c3483)'
         };
         lessonStartCard.style.background = difficultyColors[diff.name];
 
@@ -85,11 +85,11 @@ function renderHome() {
         // Get difficulty level
         const difficulty = getDifficultyLevel(displayLesson);
         const difficultyColors = {
-            'Beginning': 'linear-gradient(135deg, #FF8A65, #F4511E)',
-            'Basic': 'linear-gradient(135deg, #58cc02, #4CAF50)',
-            'Intermediate': 'linear-gradient(135deg, #1cb0f6, #0984e3)',
-            'Upper-Intermediate': 'linear-gradient(135deg, #ff9600, #f39c12)',
-            'Advanced': 'linear-gradient(135deg, #ce82ff, #9b59b6)'
+            'Beginning': 'linear-gradient(135deg, #27ae60, #1e8449)',
+            'Basic': 'linear-gradient(135deg, #2ecc71, #27ae60)',
+            'Intermediate': 'linear-gradient(135deg, #1abc9c, #16a085)',
+            'Upper-Intermediate': 'linear-gradient(135deg, #9b59b6, #8e44ad)',
+            'Advanced': 'linear-gradient(135deg, #8e44ad, #6c3483)'
         };
 
         lessonStartCard.style.background = difficultyColors[difficulty.name];
