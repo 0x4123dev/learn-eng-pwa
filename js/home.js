@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.9.0';
+const APP_VERSION = 'v3.9.1';
 
 function renderHome() {
     if (!appState) return;
@@ -746,6 +746,7 @@ function feedPet(amount) {
     if (!appState) return;
     appState.petHunger = Math.min(100, (appState.petHunger || 0) + amount);
     appState.petLastFed = Date.now();
+    appState.cleanedPoopIds = []; // Reset — new feed cycle, new poop windows
     saveUserData(currentUser, appState);
 }
 
@@ -1618,6 +1619,7 @@ function evaluatePoopSpawn() {
     for (let w = firstWindow; w <= currentWindow && appState.petPoops.length < POOP_MAX; w++) {
         const windowId = 'poop-' + appState.petLastFed + '-' + w;
         if (appState.petPoops.some(p => p.id === windowId)) continue;
+        if ((appState.cleanedPoopIds || []).includes(windowId)) continue;
 
         const rng = seededRandom(windowId);
         if (rng() < 0.6) {
@@ -1969,6 +1971,9 @@ function cleanAllPoops() {
     const totalCoins = POOP_CLEAN_COINS * count;
     const totalXP = POOP_CLEAN_XP * count;
 
+    // Remember cleaned IDs so evaluatePoopSpawn won't re-create them
+    if (!appState.cleanedPoopIds) appState.cleanedPoopIds = [];
+    poops.forEach(p => { if (!appState.cleanedPoopIds.includes(p.id)) appState.cleanedPoopIds.push(p.id); });
     appState.petPoops = [];
     appState.coins = (appState.coins || 0) + totalCoins;
     const oldLevel = appState.dogLevel || 1;
@@ -1996,6 +2001,9 @@ function cleanAllPoops() {
 }
 
 function cleanPoop(poopId, poopEl) {
+    // Remember cleaned ID so evaluatePoopSpawn won't re-create it
+    if (!appState.cleanedPoopIds) appState.cleanedPoopIds = [];
+    if (!appState.cleanedPoopIds.includes(poopId)) appState.cleanedPoopIds.push(poopId);
     appState.petPoops = (appState.petPoops || []).filter(p => p.id !== poopId);
 
     appState.coins = (appState.coins || 0) + POOP_CLEAN_COINS;
