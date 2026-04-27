@@ -510,6 +510,12 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
 function exitLesson() {
     document.getElementById('bottomNav').style.display = 'flex';
     document.getElementById('lessonScreen').classList.remove('active');
+    // Topic lessons return to topics screen
+    if (lessonState && lessonState.isTopicLesson) {
+        document.getElementById('topicsScreen').classList.add('active');
+        if (typeof renderTopicsHome === 'function') renderTopicsHome();
+        return;
+    }
     document.getElementById('homeScreen').classList.add('active');
     renderHome();
 }
