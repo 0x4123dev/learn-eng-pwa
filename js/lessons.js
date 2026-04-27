@@ -295,6 +295,18 @@ function completeLesson() {
     if (lessonState.isPracticeSession) {
         const _prevPointsP = appState.points;
         appState.points += lessonState.lessonPoints;
+
+        // ── Save topic-lesson progress ──
+        if (lessonState.isTopicLesson && lessonState.topicId && lessonState.topicChunkIdx !== undefined) {
+            if (!appState.topicProgress) appState.topicProgress = {};
+            if (!appState.topicProgress[lessonState.topicId]) appState.topicProgress[lessonState.topicId] = {};
+            const prevBest = appState.topicProgress[lessonState.topicId][lessonState.topicChunkIdx];
+            const newRecord = { mistakes: lessonState.wrongInLesson, accuracy, date: Date.now() };
+            // Only overwrite if this attempt was better (fewer mistakes) or first time
+            if (!prevBest || newRecord.mistakes <= prevBest.mistakes) {
+                appState.topicProgress[lessonState.topicId][lessonState.topicChunkIdx] = newRecord;
+            }
+        }
         saveUserData(currentUser, appState);
 
         // Pet hooks
@@ -304,10 +316,12 @@ function completeLesson() {
         document.getElementById('completeAccuracy').textContent = `${accuracy}%`;
 
         if (accuracy === 100) {
-            document.getElementById('completeSubtitle').textContent = 'Perfect review!';
+            document.getElementById('completeSubtitle').textContent = lessonState.isTopicLesson ? 'Topic lesson complete! 🎉' : 'Perfect review!';
             createConfetti();
         } else {
-            document.getElementById('completeSubtitle').textContent = 'Mistakes reviewed!';
+            document.getElementById('completeSubtitle').textContent = lessonState.isTopicLesson
+                ? `${lessonState.wrongInLesson} mistake${lessonState.wrongInLesson !== 1 ? 's' : ''} this round`
+                : 'Mistakes reviewed!';
         }
 
         document.getElementById('lessonComplete').classList.add('active');
@@ -510,10 +524,18 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
 function exitLesson() {
     document.getElementById('bottomNav').style.display = 'flex';
     document.getElementById('lessonScreen').classList.remove('active');
-    // Topic lessons return to topics screen
+    // Topic lessons return to that topic's detail (so user can quickly start next lesson)
     if (lessonState && lessonState.isTopicLesson) {
         document.getElementById('topicsScreen').classList.add('active');
-        if (typeof renderTopicsHome === 'function') renderTopicsHome();
+        const topicId = lessonState.topicId;
+        // Re-open the topic detail OR fall back to topics home
+        if (topicId && topicId !== '__review__' && typeof openTopicDetail === 'function') {
+            openTopicDetail(topicId);
+        } else if (topicId === '__review__' && typeof openReviewDetail === 'function') {
+            openReviewDetail();
+        } else if (typeof renderTopicsHome === 'function') {
+            renderTopicsHome();
+        }
         return;
     }
     document.getElementById('homeScreen').classList.add('active');

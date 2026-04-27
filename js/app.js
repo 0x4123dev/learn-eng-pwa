@@ -194,7 +194,8 @@ function createDefaultUserData(username, avatar, passcode) {
         },
         weeklyRecaps: [],                 // Array of { weekStart, weekEnd, xpEarned, daysActive[7], lessonsCompleted, perfectLessons, wordsLearned, streakAtEnd }
         lastWeeklyRecapShown: null,       // ISO date of last week recap modal shown
-        pendingShieldCelebration: null    // Streak count to celebrate after shield-saved
+        pendingShieldCelebration: null,   // Streak count to celebrate after shield-saved
+        topicProgress: {}                 // { [topicId]: { [chunkIdx]: { mistakes, accuracy, date } } }
     };
 }
 
@@ -545,6 +546,7 @@ function loginUser(username) {
     if (appState.weeklyRecaps === undefined) appState.weeklyRecaps = [];
     if (appState.lastWeeklyRecapShown === undefined) appState.lastWeeklyRecapShown = null;
     if (appState.pendingShieldCelebration === undefined) appState.pendingShieldCelebration = null;
+    if (appState.topicProgress === undefined) appState.topicProgress = {};
     if (appState.theme === undefined) appState.theme = 'default';
     if (appState.stickers === undefined) appState.stickers = [];
     if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };

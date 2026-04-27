@@ -8280,6 +8280,44 @@
             color: var(--text-secondary);
             font-weight: 600;
         }
+        .topic-card-progress {
+            font-size: 10px;
+            font-weight: 800;
+            color: #2ecc71;
+            margin-top: 4px;
+            background: rgba(46,204,113,0.12);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .topic-detail-progress {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2ecc71;
+            margin-top: 6px;
+        }
+        .topic-lesson-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        .topic-lesson-status.status-perfect {
+            background: linear-gradient(135deg, rgba(255,214,10,0.2), rgba(255,159,28,0.2));
+            color: #b8860b;
+        }
+        .topic-lesson-status.status-done {
+            background: rgba(46,204,113,0.15);
+            color: #1e8449;
+        }
+        .topic-lesson-perfect {
+            border-left-color: #FFD60A !important;
+        }
+        .topic-lesson-done {
+            border-left-color: #2ecc71 !important;
+        }
 
         /* Topic detail view */
         .topics-detail:empty { display: none; }
