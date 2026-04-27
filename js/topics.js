@@ -261,15 +261,15 @@ function buildWordTopicsIndex() {
 // Returns topic IDs for the word at this vocab index
 function getTopicsForWordIndex(idx) {
     const cache = buildWordTopicsIndex();
-    return cache && cache[idx] ? cache[idx] : ['abstract'];
+    return cache && cache[idx] ? cache[idx] : ['thinking'];
 }
 
 // Returns topic IDs for a specific word object (lookup by en)
 function getTopicsForWord(wordEn) {
     if (WORD_TOPIC_OVERRIDES[wordEn]) return WORD_TOPIC_OVERRIDES[wordEn];
-    if (typeof ieltsVocabulary === 'undefined') return ['abstract'];
+    if (typeof ieltsVocabulary === 'undefined') return ['thinking'];
     const idx = ieltsVocabulary.findIndex(w => w.en === wordEn);
-    if (idx === -1) return ['abstract'];
+    if (idx === -1) return ['thinking'];
     return getTopicsForWordIndex(idx);
 }
 

@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.13.0';
+const APP_VERSION = 'v3.13.1';
 
 function renderHome() {
     if (!appState) return;
@@ -2354,16 +2354,30 @@ function openWordOfDayStory(word) {
 
 // ==================== WEEKLY RECAP ====================
 // Returns the Sunday (week start) for a given date, formatted as YYYY-MM-DD
+// Format a Date as local YYYY-MM-DD (timezone-safe, unlike toISOString)
+function _localISODate(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+// Parse a YYYY-MM-DD string as local midnight (not UTC midnight)
+function _parseLocalISODate(s) {
+    const parts = s.split('-').map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]); // local midnight
+}
+
 function getWeekStart(date) {
     const d = new Date(date);
-    const day = d.getDay(); // 0 = Sunday
+    const day = d.getDay(); // 0 = Sunday (local)
     d.setDate(d.getDate() - day);
     d.setHours(0, 0, 0, 0);
-    return d.toISOString().slice(0, 10);
+    return _localISODate(d);
 }
 
 function formatWeekRange(weekStartIso) {
-    const start = new Date(weekStartIso);
+    const start = _parseLocalISODate(weekStartIso);
     const end = new Date(start.getTime() + 6 * 86400000);
     const opts = { month: 'short', day: 'numeric' };
     return `${start.toLocaleDateString('en-US', opts)} – ${end.toLocaleDateString('en-US', opts)}`;
@@ -2371,12 +2385,12 @@ function formatWeekRange(weekStartIso) {
 
 // Generates a snapshot for the previous (just-finished) week
 function generateWeeklyRecap(weekStartIso) {
-    const start = new Date(weekStartIso).getTime();
+    const start = _parseLocalISODate(weekStartIso).getTime();
     const end = start + 7 * 86400000;
     const history = (appState.lessonHistory || []).filter(h => h.date >= start && h.date < end);
 
     // Days active (1 per unique day)
-    const dayMap = [false, false, false, false, false, false, false]; // Sun..Sat
+    const dayMap = [false, false, false, false, false, false, false]; // Sun..Sat (local)
     history.forEach(h => {
         const dow = new Date(h.date).getDay();
         dayMap[dow] = true;
@@ -2394,7 +2408,7 @@ function generateWeeklyRecap(weekStartIso) {
 
     return {
         weekStart: weekStartIso,
-        weekEnd: new Date(end - 1).toISOString().slice(0, 10),
+        weekEnd: _localISODate(new Date(end - 86400000)), // last day of week (local)
         xpEarned, lessonsCompleted, perfectLessons,
         wordsLearned, daysActive, dayMap,
         streakAtEnd: appState.streak || 0

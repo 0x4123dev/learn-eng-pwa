@@ -1,0 +1,9 @@
+{
+  "name": "flashlingo",
+  "version": "3.13.0",
+  "description": "FlashLingo — vocabulary learning PWA",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run-all.js"
+  }
+}
