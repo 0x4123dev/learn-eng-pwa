@@ -383,55 +383,33 @@ function getTopicCounts(difficultyKey) {
 }
 
 // ==================== TOPICS UI ====================
-// undefined = never visited (auto-pick user's level); null = explicit "All"; string = specific level
-let _topicsDiffKey;
-
-const TOPIC_DIFF_TABS = [
-    { key: null,           label: 'All',          icon: '🌐' },
-    { key: 'beginning',    label: 'Beginning',    icon: '🏠' },
-    { key: 'basic',        label: 'Basic',        icon: '🌱' },
-    { key: 'intermediate', label: 'Intermediate', icon: '🌿' },
-    { key: 'upper',        label: 'Upper',        icon: '🌳' },
-    { key: 'advanced',     label: 'Advanced',     icon: '⭐' }
-];
+// Map word vocab index → rough difficulty label for display
+function getDifficultyLabelForWordIdx(idx) {
+    if (idx < 112) return { label: 'Beginning', icon: '🏠' };
+    if (idx < 362) return { label: 'Basic', icon: '🌱' };
+    if (idx < 612) return { label: 'Intermediate', icon: '🌿' };
+    if (idx < 812) return { label: 'Upper-Int', icon: '🌳' };
+    return { label: 'Advanced', icon: '⭐' };
+}
 
 function renderTopicsHome() {
     // Hide detail view if open
     const detail = document.getElementById('topicsDetail');
     if (detail) detail.innerHTML = '';
-    document.getElementById('topicsGrid').style.display = 'grid';
-    document.getElementById('topicsDifficultyTabs').style.display = 'flex';
+    const grid = document.getElementById('topicsGrid');
+    if (grid) grid.style.display = 'grid';
+    // Hide the difficulty tab container (kept for backwards compat with HTML)
+    const diffTabs = document.getElementById('topicsDifficultyTabs');
+    if (diffTabs) diffTabs.style.display = 'none';
 
-    // Default to user's current difficulty on first visit only
-    if (_topicsDiffKey === undefined) {
-        _topicsDiffKey = (typeof selectedDifficultyFilter !== 'undefined') ? selectedDifficultyFilter : null;
-    }
-
-    renderTopicsDifficultyTabs();
-    renderTopicsGrid();
-}
-
-function renderTopicsDifficultyTabs() {
-    const container = document.getElementById('topicsDifficultyTabs');
-    if (!container) return;
-    container.innerHTML = TOPIC_DIFF_TABS.map(t =>
-        `<button class="topics-diff-tab ${t.key === _topicsDiffKey ? 'active' : ''}"
-                 onclick="setTopicsDifficulty(${t.key === null ? 'null' : `'${t.key}'`})">
-            ${t.icon} ${t.label}
-        </button>`
-    ).join('');
-}
-
-function setTopicsDifficulty(key) {
-    _topicsDiffKey = key;
-    renderTopicsDifficultyTabs();
     renderTopicsGrid();
 }
 
 function renderTopicsGrid() {
     const grid = document.getElementById('topicsGrid');
     if (!grid) return;
-    const counts = getTopicCounts(_topicsDiffKey);
+    // No filter — count all words across all levels
+    const counts = getTopicCounts(null);
 
     grid.innerHTML = TOPICS.map(t => {
         const count = counts[t.id] || 0;
@@ -451,54 +429,108 @@ function renderTopicsGrid() {
 function openTopicDetail(topicId) {
     const topic = getTopicById(topicId);
     if (!topic) return;
-    const words = getWordsForTopic(topicId, _topicsDiffKey);
+    // Always fetch ALL words across all levels — sorted easy→hard by vocab index
+    const words = getWordsForTopic(topicId, null);
     if (words.length === 0) return;
 
-    document.getElementById('topicsGrid').style.display = 'none';
-    document.getElementById('topicsDifficultyTabs').style.display = 'none';
+    const grid = document.getElementById('topicsGrid');
+    if (grid) grid.style.display = 'none';
+    const diffTabs = document.getElementById('topicsDifficultyTabs');
+    if (diffTabs) diffTabs.style.display = 'none';
 
     const detail = document.getElementById('topicsDetail');
-    const diffTab = TOPIC_DIFF_TABS.find(t => t.key === _topicsDiffKey);
-    const diffLabel = diffTab ? diffTab.label : 'All';
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
 
-    // Stable seed for "lesson 1" — first 5 words. User can shuffle for variety.
+    // Chunk words into 5-word lessons, easy → hard
+    const lessonChunks = [];
+    for (let i = 0; i < words.length; i += wpl) {
+        lessonChunks.push(words.slice(i, i + wpl));
+    }
+
+    // Build lesson cards
+    const lessonsHTML = lessonChunks.map((chunk, idx) => {
+        const previewWords = chunk.map(c => c.word.en).join(', ');
+        const firstDiff = getDifficultyLabelForWordIdx(chunk[0].idx);
+        const lastDiff = getDifficultyLabelForWordIdx(chunk[chunk.length - 1].idx);
+        const diffBadge = firstDiff.label === lastDiff.label
+            ? `${firstDiff.icon} ${firstDiff.label}`
+            : `${firstDiff.icon} ${firstDiff.label} → ${lastDiff.icon} ${lastDiff.label}`;
+        return `
+            <div class="topic-lesson-card">
+                <div class="topic-lesson-card-header">
+                    <span class="topic-lesson-card-num">Lesson ${idx + 1}</span>
+                    <span class="topic-lesson-card-diff">${diffBadge}</span>
+                </div>
+                <div class="topic-lesson-card-preview">${previewWords}</div>
+                <button class="topic-lesson-start-btn" onclick="startTopicLessonChunk('${topicId}', ${idx})">
+                    🚀 Start
+                </button>
+            </div>
+        `;
+    }).join('');
+
     detail.innerHTML = `
         <button class="topic-detail-back" onclick="renderTopicsHome()">‹ Back</button>
         <div class="topic-detail-header" style="--topic-color:${topic.color}">
             <div class="topic-detail-icon">${topic.icon}</div>
             <h2 class="topic-detail-name">${topic.name}</h2>
-            <p class="topic-detail-meta">${words.length} words • ${diffLabel}</p>
+            <p class="topic-detail-meta">${words.length} words • ${lessonChunks.length} lesson${lessonChunks.length !== 1 ? 's' : ''} • Easy → Hard</p>
         </div>
-        <div class="topic-detail-actions">
-            <button class="topic-lesson-btn topic-lesson-btn-primary"
-                    onclick="startTopicLesson('${topicId}', false)">
-                🚀 Start 5-Word Lesson
-            </button>
-            <button class="topic-lesson-btn topic-lesson-btn-secondary"
-                    onclick="startTopicLesson('${topicId}', true)">
-                🔀 Shuffle Lesson
-            </button>
+        <h3 class="topic-detail-list-title">📖 Lessons (sorted easy → harder)</h3>
+        <div class="topic-lessons-list">
+            ${lessonsHTML}
         </div>
-        <h3 class="topic-detail-list-title">All ${words.length} words</h3>
+        <h3 class="topic-detail-list-title">📚 All ${words.length} words</h3>
         <div class="topic-words-list">
-            ${words.map(({ word }) => `
+            ${words.map(({ word, idx }) => {
+                const d = getDifficultyLabelForWordIdx(idx);
+                return `
                 <div class="topic-word-item">
                     <span class="topic-word-emoji">${word.emoji || '📝'}</span>
                     <div class="topic-word-text">
-                        <div class="topic-word-en">${word.en}</div>
+                        <div class="topic-word-en">${word.en} <span class="topic-word-level">${d.icon}</span></div>
                         <div class="topic-word-vi">${word.vi}</div>
                     </div>
                     <button class="topic-word-speak" onclick="event.stopPropagation(); speakWord('${word.en.replace(/'/g, "\\'")}')">🔊</button>
                 </div>
-            `).join('')}
+                `;
+            }).join('')}
         </div>
     `;
 }
 
+// Start a specific 5-word lesson chunk from a topic (chunkIdx is 0-based)
+function startTopicLessonChunk(topicId, chunkIdx) {
+    const topic = getTopicById(topicId);
+    if (!topic) return;
+    const allWords = getWordsForTopic(topicId, null);
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const start = chunkIdx * wpl;
+    let lessonWords = allWords.slice(start, start + wpl).map(x => x.word);
+
+    if (lessonWords.length < 2) {
+        showToast('Not enough words');
+        return;
+    }
+
+    // Pad to wpl with random fillers if last lesson is short (matching needs exact pair count)
+    if (lessonWords.length < wpl) {
+        const existing = new Set(lessonWords.map(w => w.en));
+        const fillers = ieltsVocabulary.filter(w => !existing.has(w.en));
+        while (lessonWords.length < wpl && fillers.length) {
+            const i = Math.floor(Math.random() * fillers.length);
+            lessonWords.push(fillers.splice(i, 1)[0]);
+        }
+    }
+
+    _startTopicLessonWithWords(lessonWords, topicId);
+}
+
+// Old API kept for backwards compat — delegates to chunk-based starter
 function startTopicLesson(topicId, shuffle) {
     const topic = getTopicById(topicId);
     if (!topic) return;
-    const allWords = getWordsForTopic(topicId, _topicsDiffKey);
+    const allWords = getWordsForTopic(topicId, null);
     if (allWords.length < 2) {
         showToast('Need at least 2 words for a lesson');
         return;
@@ -511,7 +543,6 @@ function startTopicLesson(topicId, shuffle) {
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
     let lessonWords = pool.slice(0, wpl);
 
-    // Pad up to wpl if needed (matching game requires exact pair count)
     if (lessonWords.length < wpl) {
         const existing = new Set(lessonWords.map(w => w.en));
         const fillers = ieltsVocabulary.filter(w => !existing.has(w.en));
@@ -520,6 +551,11 @@ function startTopicLesson(topicId, shuffle) {
             lessonWords.push(fillers.splice(i, 1)[0]);
         }
     }
+
+    _startTopicLessonWithWords(lessonWords, topicId);
+}
+
+function _startTopicLessonWithWords(lessonWords, topicId) {
 
     lessonState = {
         lessonNumber: -10,             // Special marker for topic lesson
