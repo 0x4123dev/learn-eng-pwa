@@ -8474,3 +8474,99 @@
             font-family: inherit;
         }
         .topic-lesson-start-btn:active { transform: scale(0.96); }
+
+        /* ==================== TOPICS REVIEW CARD ==================== */
+        .topics-review-card {
+            margin-bottom: 14px;
+        }
+        .topics-review-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(155,89,182,0.15), rgba(46,204,113,0.15));
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--accent-purple);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(155,89,182,0.12);
+            transition: transform 0.15s ease;
+            font-family: inherit;
+            text-align: left;
+        }
+        .topics-review-btn:active { transform: scale(0.98); }
+        .review-btn-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        .review-btn-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .review-btn-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .review-btn-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+        .review-btn-arrow {
+            font-size: 24px;
+            color: var(--accent-purple);
+            font-weight: 800;
+        }
+        .topics-review-empty {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+        }
+        .review-empty-icon {
+            font-size: 26px;
+        }
+        .review-empty-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .review-empty-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .review-mistakes-badge {
+            background: rgba(239,71,111,0.15) !important;
+            color: #c0392b !important;
+        }
+        .review-wrong-count {
+            color: #c0392b;
+            font-weight: 700;
+        }
+        .review-lesson-chunk {
+            border-left-color: var(--accent-purple) !important;
+        }
+        .review-clear-all-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }

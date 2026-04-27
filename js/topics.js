@@ -398,11 +398,43 @@ function renderTopicsHome() {
     if (detail) detail.innerHTML = '';
     const grid = document.getElementById('topicsGrid');
     if (grid) grid.style.display = 'grid';
-    // Hide the difficulty tab container (kept for backwards compat with HTML)
-    const diffTabs = document.getElementById('topicsDifficultyTabs');
-    if (diffTabs) diffTabs.style.display = 'none';
+    const reviewCard = document.getElementById('topicsReviewCard');
+    if (reviewCard) reviewCard.style.display = 'block';
 
+    renderReviewCard();
     renderTopicsGrid();
+}
+
+// Render the "Review Mistakes" card above the topics grid
+function renderReviewCard() {
+    const card = document.getElementById('topicsReviewCard');
+    if (!card) return;
+    const mistakes = (typeof appState !== 'undefined' && appState && appState.mistakes) ? appState.mistakes : [];
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+
+    if (mistakes.length === 0) {
+        card.innerHTML = `
+            <div class="topics-review-empty">
+                <span class="review-empty-icon">✨</span>
+                <div class="review-empty-text">
+                    <div class="review-empty-title">No mistakes yet!</div>
+                    <div class="review-empty-sub">Keep learning — your mistakes will appear here</div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    const lessonCount = Math.ceil(mistakes.length / wpl);
+    card.innerHTML = `
+        <button class="topics-review-btn" onclick="openReviewDetail()">
+            <span class="review-btn-icon">🔄</span>
+            <div class="review-btn-text">
+                <div class="review-btn-title">Review Mistakes</div>
+                <div class="review-btn-sub">${mistakes.length} word${mistakes.length !== 1 ? 's' : ''} • ${lessonCount} lesson${lessonCount !== 1 ? 's' : ''}</div>
+            </div>
+            <span class="review-btn-arrow">›</span>
+        </button>
+    `;
 }
 
 function renderTopicsGrid() {
@@ -435,8 +467,8 @@ function openTopicDetail(topicId) {
 
     const grid = document.getElementById('topicsGrid');
     if (grid) grid.style.display = 'none';
-    const diffTabs = document.getElementById('topicsDifficultyTabs');
-    if (diffTabs) diffTabs.style.display = 'none';
+    const reviewCard = document.getElementById('topicsReviewCard');
+    if (reviewCard) reviewCard.style.display = 'none';
 
     const detail = document.getElementById('topicsDetail');
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
@@ -497,6 +529,113 @@ function openTopicDetail(topicId) {
             }).join('')}
         </div>
     `;
+}
+
+// ==================== REVIEW MISTAKES VIEW ====================
+// Returns mistake words sorted by count desc (most-wrong first)
+function getMistakeWordObjects() {
+    const mistakes = (appState && appState.mistakes) ? appState.mistakes : [];
+    const sorted = [...mistakes].sort((a, b) => b.count - a.count);
+    return sorted.map(m => {
+        const word = ieltsVocabulary.find(w => w.en === m.word);
+        return word ? { word, count: m.count, idx: ieltsVocabulary.indexOf(word) } : null;
+    }).filter(Boolean);
+}
+
+function openReviewDetail() {
+    const mistakes = getMistakeWordObjects();
+    if (mistakes.length === 0) {
+        showToast('No mistakes to review!');
+        return;
+    }
+
+    const grid = document.getElementById('topicsGrid');
+    if (grid) grid.style.display = 'none';
+    const reviewCard = document.getElementById('topicsReviewCard');
+    if (reviewCard) reviewCard.style.display = 'none';
+
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const chunks = [];
+    for (let i = 0; i < mistakes.length; i += wpl) {
+        chunks.push(mistakes.slice(i, i + wpl));
+    }
+
+    const lessonsHTML = chunks.map((chunk, idx) => {
+        const previewWords = chunk.map(c => c.word.en).join(', ');
+        const totalWrong = chunk.reduce((sum, c) => sum + c.count, 0);
+        return `
+            <div class="topic-lesson-card review-lesson-chunk">
+                <div class="topic-lesson-card-header">
+                    <span class="topic-lesson-card-num">Review ${idx + 1}</span>
+                    <span class="topic-lesson-card-diff review-mistakes-badge">${totalWrong}× wrong</span>
+                </div>
+                <div class="topic-lesson-card-preview">${previewWords}</div>
+                <button class="topic-lesson-start-btn" onclick="startReviewLessonChunk(${idx})">
+                    🔄 Start Review
+                </button>
+            </div>
+        `;
+    }).join('');
+
+    const detail = document.getElementById('topicsDetail');
+    detail.innerHTML = `
+        <button class="topic-detail-back" onclick="renderTopicsHome()">‹ Back</button>
+        <div class="topic-detail-header" style="--topic-color:#9b59b6">
+            <div class="topic-detail-icon">🔄</div>
+            <h2 class="topic-detail-name">Review Mistakes</h2>
+            <p class="topic-detail-meta">${mistakes.length} words • ${chunks.length} review lesson${chunks.length !== 1 ? 's' : ''}</p>
+        </div>
+        <h3 class="topic-detail-list-title">📖 Review Lessons (most missed first)</h3>
+        <div class="topic-lessons-list">
+            ${lessonsHTML}
+        </div>
+        <h3 class="topic-detail-list-title">📚 All ${mistakes.length} mistake words</h3>
+        <div class="topic-words-list">
+            ${mistakes.map(({ word, count, idx }) => {
+                const d = getDifficultyLabelForWordIdx(idx);
+                return `
+                <div class="topic-word-item">
+                    <span class="topic-word-emoji">${word.emoji || '📝'}</span>
+                    <div class="topic-word-text">
+                        <div class="topic-word-en">${word.en} <span class="topic-word-level">${d.icon}</span></div>
+                        <div class="topic-word-vi">${word.vi} • <span class="review-wrong-count">${count}× wrong</span></div>
+                    </div>
+                    <button class="topic-word-speak" onclick="event.stopPropagation(); speakWord('${word.en.replace(/'/g, "\\'")}')">🔊</button>
+                </div>
+                `;
+            }).join('')}
+        </div>
+        <button class="review-clear-all-btn" onclick="clearAllMistakesFromTopics()">Clear All Mistakes</button>
+    `;
+}
+
+function startReviewLessonChunk(chunkIdx) {
+    const mistakes = getMistakeWordObjects();
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const start = chunkIdx * wpl;
+    let lessonWords = mistakes.slice(start, start + wpl).map(m => m.word);
+    if (lessonWords.length < 2) {
+        showToast('Not enough words');
+        return;
+    }
+    // Pad to wpl if needed
+    if (lessonWords.length < wpl) {
+        const existing = new Set(lessonWords.map(w => w.en));
+        const fillers = ieltsVocabulary.filter(w => !existing.has(w.en));
+        while (lessonWords.length < wpl && fillers.length) {
+            const i = Math.floor(Math.random() * fillers.length);
+            lessonWords.push(fillers.splice(i, 1)[0]);
+        }
+    }
+    _startTopicLessonWithWords(lessonWords, '__review__');
+}
+
+function clearAllMistakesFromTopics() {
+    if (!confirm('Clear all mistakes from review list?')) return;
+    appState.mistakes = [];
+    saveUserData(currentUser, appState);
+    showToast('Mistakes cleared!');
+    renderTopicsHome();
 }
 
 // Start a specific 5-word lesson chunk from a topic (chunkIdx is 0-based)
