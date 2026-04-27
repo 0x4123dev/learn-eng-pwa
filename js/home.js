@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.10.0';
+const APP_VERSION = 'v3.11.0';
 
 function renderHome() {
     if (!appState) return;
@@ -21,6 +21,19 @@ function renderHome() {
 
     // Render streak shields
     renderShields();
+
+    // Fire shield-saved celebration if a shield was auto-used
+    if (appState.pendingShieldCelebration && typeof showShieldSavedCelebration === 'function') {
+        const savedStreak = appState.pendingShieldCelebration;
+        appState.pendingShieldCelebration = null;
+        saveUserData(currentUser, appState);
+        setTimeout(() => showShieldSavedCelebration(savedStreak), 600);
+    }
+
+    // Fire weekly recap if a new one is due
+    if (typeof maybeShowWeeklyRecap === 'function') {
+        setTimeout(() => maybeShowWeeklyRecap(), 1200);
+    }
 
     // Calculate lessons completed today
     const today = new Date().toDateString();
@@ -1006,8 +1019,50 @@ function renderWordPet() {
         `;
     }
 
-    // Auto-show starving bubble
-    if (hunger === 0) {
+    // ==================== PET EMOTIONAL MEMORY GREETING ====================
+    // Higher priority than hunger/poop messages — fire once per day max
+    const _today = new Date().toDateString();
+    const _mem = appState.petMemory || {};
+    const _alreadyGreetedToday = _mem.lastSeenGreeted === _today;
+    let _emoMessage = null;
+
+    if (!_alreadyGreetedToday) {
+        const gap = _mem.pendingAbsenceGreet || 0;
+        const lessonsTogether = _mem.lessonsTogether || 0;
+        const streakBroken = _mem.lastStreakBroken || 0;
+        const broke = streakBroken >= 3 && _mem.lastStreakBrokenDate &&
+                      (Date.now() - _mem.lastStreakBrokenDate) < 86400000 * 2;
+
+        if (gap >= 7) {
+            _emoMessage = `A whole week!? I missed you SO much! 🥺💖`;
+        } else if (gap >= 3) {
+            _emoMessage = `${gap} days?! I thought you forgot me… 😢 Welcome back!`;
+        } else if (broke) {
+            _emoMessage = `Our ${streakBroken}-day streak ended… but we'll build it back! 💪`;
+        } else if (gap === 2) {
+            _emoMessage = `Two whole days! Are you okay? Let's learn! 🐾`;
+        } else if (lessonsTogether >= 100 && Math.random() < 0.25) {
+            _emoMessage = `${lessonsTogether} lessons together! You're my hero! 🏆`;
+        } else if (lessonsTogether >= 50 && Math.random() < 0.2) {
+            _emoMessage = `Best buddies for ${lessonsTogether} lessons! 🌟`;
+        } else if ((appState.bestStreak || 0) >= 14 && (appState.streak || 0) >= (appState.bestStreak || 0) - 1 && Math.random() < 0.3) {
+            _emoMessage = `Almost a new record! ${appState.bestStreak}+ days incoming! 🔥`;
+        }
+
+        if (_emoMessage) {
+            _mem.lastSeenGreeted = _today;
+            // Clear the pending absence after greeting
+            _mem.pendingAbsenceGreet = 0;
+            // Fade out the streak-broken memory after greeting
+            if (broke) { _mem.lastStreakBroken = 0; }
+            saveUserData(currentUser, appState);
+        }
+    }
+
+    // Auto-show speech bubble (priority: emo > hunger > stink)
+    if (_emoMessage) {
+        setTimeout(() => showPetSpeechBubble(_emoMessage), 700);
+    } else if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     } else if ((appState.petPoops || []).some(p => (Date.now() - p.born) / 3600000 >= POOP_STINK_HOURS)) {
         setTimeout(() => showPetSpeechBubble("It's so stinky! Please clean up! 🤢"), 600);
@@ -1178,11 +1233,12 @@ function renderShopContent() {
                 <div class="shop-tabs">
                     <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
                     <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
+                    <button class="shop-tab ${_shopTab === 'shield' ? 'active' : ''}" onclick="_shopTab='shield';refreshShop()">🛡️ Shields</button>
                 </div>
             `}
             ${_shopTab === 'acc' ? `<div class="shop-categories">${catPills}</div>` : ''}
             <div class="shop-items">
-                ${_shopTab === 'food' ? foodItems : accItems}
+                ${_shopTab === 'food' ? foodItems : (_shopTab === 'shield' ? renderShieldShop() : accItems)}
             </div>
         </div>
     `;
@@ -1265,6 +1321,83 @@ function buyAccessory(accId) {
     showToast(`${acc.emoji} ${acc.name} acquired!`);
     refreshShop();
     renderWordPet();
+}
+
+// ==================== STREAK SHIELDS ====================
+const SHIELD_PRICE = 200;
+const SHIELD_MAX = 3;
+
+function renderShieldShop() {
+    const coins = appState.coins || 0;
+    const owned = appState.streakShields || 0;
+    const canAfford = coins >= SHIELD_PRICE;
+    const atMax = owned >= SHIELD_MAX;
+
+    let btnHTML;
+    if (atMax) {
+        btnHTML = `<button class="shop-buy-btn disabled">MAX</button>`;
+    } else if (canAfford) {
+        btnHTML = `<button class="shop-buy-btn" onclick="buyShield()">${SHIELD_PRICE} 🪙</button>`;
+    } else {
+        btnHTML = `<button class="shop-buy-btn disabled">${SHIELD_PRICE} 🪙</button>`;
+    }
+
+    return `
+        <div class="shield-shop-intro">
+            Shields auto-save your streak if you miss a day.<br>
+            <strong>You have: ${'🛡️'.repeat(owned) || '–'} (${owned}/${SHIELD_MAX})</strong>
+        </div>
+        <div class="shop-item ${!canAfford && !atMax ? 'disabled' : ''}">
+            <span class="shop-item-emoji">🛡️</span>
+            <div class="shop-item-info">
+                <div class="shop-item-name">Streak Shield</div>
+                <div class="shop-item-desc">${atMax ? 'Inventory full' : 'Saves your streak on a missed day'}</div>
+            </div>
+            ${btnHTML}
+        </div>
+        <div class="shield-tip">💡 Earn 1 free shield per day after 3+ lessons (max 3)</div>
+    `;
+}
+
+function buyShield() {
+    if ((appState.streakShields || 0) >= SHIELD_MAX) {
+        showToast('Shield inventory full!');
+        return;
+    }
+    if ((appState.coins || 0) < SHIELD_PRICE) {
+        showToast('Not enough coins!');
+        return;
+    }
+    appState.coins -= SHIELD_PRICE;
+    appState.streakShields = (appState.streakShields || 0) + 1;
+    saveUserData(currentUser, appState);
+    showToast(`🛡️ Shield purchased! (${appState.streakShields}/${SHIELD_MAX})`);
+    refreshShop();
+    if (typeof renderWordPet === 'function') renderWordPet();
+    if (typeof renderShields === 'function') renderShields();
+}
+
+// ==================== SHIELD-SAVED CELEBRATION ====================
+// Shows a special overlay when user opens app and a shield was auto-used
+function showShieldSavedCelebration(savedStreak) {
+    const existing = document.getElementById('shieldSavedOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'shieldSavedOverlay';
+    overlay.className = 'shield-saved-overlay';
+    overlay.innerHTML = `
+        <div class="shield-saved-card">
+            <div class="shield-saved-icon">🛡️</div>
+            <h2 class="shield-saved-title">Streak Saved!</h2>
+            <p class="shield-saved-msg">A Streak Shield protected your <strong>${savedStreak}-day streak</strong> while you were away. Phew! 🎉</p>
+            <p class="shield-saved-remaining">Shields remaining: ${'🛡️'.repeat(appState.streakShields || 0) || 'none'}</p>
+            <button class="shield-saved-btn" onclick="document.getElementById('shieldSavedOverlay').remove()">Keep going! 💪</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('active'));
+    if (navigator.vibrate) navigator.vibrate([60, 40, 80]);
 }
 
 function showLevelUpCelebration(newLevel, oldLevel) {
@@ -2217,4 +2350,191 @@ function openWordOfDayStory(word) {
     renderPanel();
     overlay.classList.add('active');
     speakWord(word.en);
+}
+
+// ==================== WEEKLY RECAP ====================
+// Returns the Sunday (week start) for a given date, formatted as YYYY-MM-DD
+function getWeekStart(date) {
+    const d = new Date(date);
+    const day = d.getDay(); // 0 = Sunday
+    d.setDate(d.getDate() - day);
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString().slice(0, 10);
+}
+
+function formatWeekRange(weekStartIso) {
+    const start = new Date(weekStartIso);
+    const end = new Date(start.getTime() + 6 * 86400000);
+    const opts = { month: 'short', day: 'numeric' };
+    return `${start.toLocaleDateString('en-US', opts)} – ${end.toLocaleDateString('en-US', opts)}`;
+}
+
+// Generates a snapshot for the previous (just-finished) week
+function generateWeeklyRecap(weekStartIso) {
+    const start = new Date(weekStartIso).getTime();
+    const end = start + 7 * 86400000;
+    const history = (appState.lessonHistory || []).filter(h => h.date >= start && h.date < end);
+
+    // Days active (1 per unique day)
+    const dayMap = [false, false, false, false, false, false, false]; // Sun..Sat
+    history.forEach(h => {
+        const dow = new Date(h.date).getDay();
+        dayMap[dow] = true;
+    });
+
+    const xpEarned = history.reduce((sum, h) => sum + (h.points || 0), 0);
+    const lessonsCompleted = history.length;
+    const perfectLessons = history.filter(h => h.accuracy === 100).length;
+
+    // Words learned: unique lesson numbers × WORDS_PER_LESSON (approximation — capped to lesson count)
+    const uniqueLessons = new Set(history.map(h => h.lessonNum)).size;
+    const wordsLearned = uniqueLessons * WORDS_PER_LESSON;
+
+    const daysActive = dayMap.filter(Boolean).length;
+
+    return {
+        weekStart: weekStartIso,
+        weekEnd: new Date(end - 1).toISOString().slice(0, 10),
+        xpEarned, lessonsCompleted, perfectLessons,
+        wordsLearned, daysActive, dayMap,
+        streakAtEnd: appState.streak || 0
+    };
+}
+
+// Generates and stores the previous week if not already stored
+function ensurePreviousWeekStored() {
+    const today = new Date();
+    const lastWeekDate = new Date(today.getTime() - 7 * 86400000);
+    const lastWeekStart = getWeekStart(lastWeekDate);
+
+    if (!appState.weeklyRecaps) appState.weeklyRecaps = [];
+    const exists = appState.weeklyRecaps.some(r => r.weekStart === lastWeekStart);
+    if (exists) return null;
+
+    const recap = generateWeeklyRecap(lastWeekStart);
+    if (recap.lessonsCompleted === 0) return null; // Skip empty weeks
+
+    appState.weeklyRecaps.unshift(recap); // Newest first
+    // Keep last 12 weeks max
+    if (appState.weeklyRecaps.length > 12) appState.weeklyRecaps = appState.weeklyRecaps.slice(0, 12);
+    saveUserData(currentUser, appState);
+    return recap;
+}
+
+// Called on home render — fires modal at most once per week
+function maybeShowWeeklyRecap() {
+    if (!appState) return;
+    const recap = ensurePreviousWeekStored();
+    if (!recap) return;
+    if (appState.lastWeeklyRecapShown === recap.weekStart) return;
+
+    appState.lastWeeklyRecapShown = recap.weekStart;
+    saveUserData(currentUser, appState);
+    showWeeklyRecapModal(recap);
+}
+
+function getRecapMessage(recap) {
+    if (recap.daysActive === 7) {
+        return `🏆 PERFECT WEEK! You showed up every single day. Legendary!`;
+    } else if (recap.daysActive >= 5) {
+        return `🔥 Strong week! ${recap.daysActive}/7 days — you're building a real habit.`;
+    } else if (recap.daysActive >= 3) {
+        return `💪 Solid effort! ${recap.daysActive}/7 days — let's aim for 5+ next week.`;
+    } else {
+        return `🌱 Every step counts. Let's make next week even better!`;
+    }
+}
+
+function showWeeklyRecapModal(recap, isHistory) {
+    const existing = document.getElementById('weeklyRecapOverlay');
+    if (existing) existing.remove();
+
+    const dayLabels = ['S','M','T','W','T','F','S'];
+    const daysHTML = recap.dayMap.map((active, i) =>
+        `<div class="recap-day-pill ${active ? 'active' : ''}">
+            <span class="recap-day-dot">${active ? '✅' : '·'}</span>
+            ${dayLabels[i]}
+        </div>`
+    ).join('');
+
+    const overlay = document.createElement('div');
+    overlay.id = 'weeklyRecapOverlay';
+    overlay.className = 'weekly-recap-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+    overlay.innerHTML = `
+        <div class="weekly-recap-card">
+            <button class="recap-close" onclick="document.getElementById('weeklyRecapOverlay').remove()">✕</button>
+            <div class="recap-header">
+                <div class="recap-emoji">📊</div>
+                <h2 class="recap-title">${isHistory ? 'Week Recap' : 'Your Week'}</h2>
+                <div class="recap-week-range">${formatWeekRange(recap.weekStart)}</div>
+            </div>
+            <div class="recap-days-row">${daysHTML}</div>
+            <div class="recap-stats-grid">
+                <div class="recap-stat">
+                    <div class="recap-stat-value">${recap.xpEarned}</div>
+                    <div class="recap-stat-label">XP EARNED</div>
+                </div>
+                <div class="recap-stat">
+                    <div class="recap-stat-value">${recap.lessonsCompleted}</div>
+                    <div class="recap-stat-label">LESSONS</div>
+                </div>
+                <div class="recap-stat">
+                    <div class="recap-stat-value">${recap.wordsLearned}</div>
+                    <div class="recap-stat-label">WORDS</div>
+                </div>
+                <div class="recap-stat">
+                    <div class="recap-stat-value">${recap.perfectLessons}</div>
+                    <div class="recap-stat-label">PERFECT</div>
+                </div>
+            </div>
+            <div class="recap-message">${getRecapMessage(recap)}</div>
+            <div class="recap-actions">
+                ${isHistory
+                    ? `<button class="recap-btn recap-btn-primary" onclick="document.getElementById('weeklyRecapOverlay').remove()">Close</button>`
+                    : `<button class="recap-btn recap-btn-secondary" onclick="showWeeklyRecapHistory()">📚 Past Weeks</button>
+                       <button class="recap-btn recap-btn-primary" onclick="document.getElementById('weeklyRecapOverlay').remove()">Let's Go! 💪</button>`}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('active'));
+}
+
+function showWeeklyRecapHistory() {
+    const existing = document.getElementById('weeklyRecapOverlay');
+    if (existing) existing.remove();
+
+    const recaps = appState.weeklyRecaps || [];
+    const overlay = document.createElement('div');
+    overlay.id = 'weeklyRecapOverlay';
+    overlay.className = 'weekly-recap-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+    const listHTML = recaps.length === 0
+        ? '<div class="empty-history">No past weeks yet. Keep learning! 📚</div>'
+        : recaps.map((r, i) => `
+            <div class="recap-history-item" onclick="showWeeklyRecapModal(appState.weeklyRecaps[${i}], true)">
+                <div>
+                    <div class="recap-history-week">${formatWeekRange(r.weekStart)}</div>
+                    <div class="recap-history-stats">${r.lessonsCompleted} lessons • ${r.xpEarned} XP • ${r.daysActive}/7 days</div>
+                </div>
+                <span class="recap-history-arrow">›</span>
+            </div>
+        `).join('');
+
+    overlay.innerHTML = `
+        <div class="weekly-recap-card">
+            <button class="recap-close" onclick="document.getElementById('weeklyRecapOverlay').remove()">✕</button>
+            <div class="recap-header">
+                <div class="recap-emoji">📚</div>
+                <h2 class="recap-title">Past Weeks</h2>
+                <div class="recap-week-range">${recaps.length} ${recaps.length === 1 ? 'week' : 'weeks'} stored</div>
+            </div>
+            <div class="recap-history-list">${listHTML}</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('active'));
 }

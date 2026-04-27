@@ -394,6 +394,23 @@ function completeLesson() {
     // Initialize SRS tracking for all words in this lesson
     lessonState.words.forEach(w => initWordSRS(w.en));
 
+    // Pet memory: track lessons together with pet
+    if (!appState.petMemory) appState.petMemory = { lessonsTogether: 0, milestonesSeen: [] };
+    appState.petMemory.lessonsTogether = (appState.petMemory.lessonsTogether || 0) + 1;
+    // Trigger pet milestone speech for round numbers (10, 25, 50, 100, ...)
+    const _petMilestones = [10, 25, 50, 100, 200, 500, 1000];
+    const _hitMilestone = _petMilestones.find(m =>
+        appState.petMemory.lessonsTogether === m &&
+        !(appState.petMemory.milestonesSeen || []).includes(m)
+    );
+    if (_hitMilestone) {
+        if (!appState.petMemory.milestonesSeen) appState.petMemory.milestonesSeen = [];
+        appState.petMemory.milestonesSeen.push(_hitMilestone);
+        if (typeof showPetSpeechBubble === 'function') {
+            setTimeout(() => showPetSpeechBubble(`${_hitMilestone} lessons together! I'm so proud of you! 🎉`), 1800);
+        }
+    }
+
     saveUserData(currentUser, appState);
 
     // Pet hooks

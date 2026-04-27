@@ -182,7 +182,19 @@ function createDefaultUserData(username, avatar, passcode) {
         musicStats: {
             rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
             wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
-        }
+        },
+        petMemory: {
+            lessonsTogether: 0,         // Lifetime lessons with this pet
+            lastSeen: Date.now(),        // Last time user opened app
+            lastSeenGreeted: null,       // Last toDateString we already greeted
+            longestAbsenceDays: 0,       // Worst gap (for "you came back!")
+            lastStreakBroken: 0,         // Last streak length when broken
+            lastStreakBrokenDate: null,
+            milestonesSeen: []           // Lifetime-lessons milestones already shown (e.g. 50, 100)
+        },
+        weeklyRecaps: [],                 // Array of { weekStart, weekEnd, xpEarned, daysActive[7], lessonsCompleted, perfectLessons, wordsLearned, streakAtEnd }
+        lastWeeklyRecapShown: null,       // ISO date of last week recap modal shown
+        pendingShieldCelebration: null    // Streak count to celebrate after shield-saved
     };
 }
 
@@ -521,6 +533,18 @@ function loginUser(username) {
     if (appState.streakShields === undefined) appState.streakShields = 0;
     if (appState.bestStreak === undefined) appState.bestStreak = appState.streak || 0;
     if (appState.lastStreakMilestone === undefined) appState.lastStreakMilestone = 0;
+    if (appState.petMemory === undefined) appState.petMemory = {
+        lessonsTogether: appState.lessonsCompleted || 0,
+        lastSeen: Date.now(),
+        lastSeenGreeted: null,
+        longestAbsenceDays: 0,
+        lastStreakBroken: 0,
+        lastStreakBrokenDate: null,
+        milestonesSeen: []
+    };
+    if (appState.weeklyRecaps === undefined) appState.weeklyRecaps = [];
+    if (appState.lastWeeklyRecapShown === undefined) appState.lastWeeklyRecapShown = null;
+    if (appState.pendingShieldCelebration === undefined) appState.pendingShieldCelebration = null;
     if (appState.theme === undefined) appState.theme = 'default';
     if (appState.stickers === undefined) appState.stickers = [];
     if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };
@@ -618,6 +642,19 @@ function loginUser(username) {
     // Update streak
     updateStreak();
 
+    // Track absence for pet memory (between app opens)
+    if (appState.petMemory && appState.petMemory.lastSeen) {
+        const gapMs = Date.now() - appState.petMemory.lastSeen;
+        const gapDays = Math.floor(gapMs / 86400000);
+        if (gapDays > (appState.petMemory.longestAbsenceDays || 0)) {
+            appState.petMemory.longestAbsenceDays = gapDays;
+        }
+        appState.petMemory.pendingAbsenceGreet = gapDays; // Used by pet to pick a phrase
+    }
+    if (!appState.petMemory) appState.petMemory = { lessonsTogether: 0, milestonesSeen: [] };
+    appState.petMemory.lastSeen = Date.now();
+    saveUserData(currentUser, appState);
+
     // Auto-select difficulty tab based on user's current lesson
     if (typeof getDifficultyLevel === 'function' && appState.currentLesson > 0) {
         const diff = getDifficultyLevel(appState.currentLesson);
@@ -710,9 +747,19 @@ function updateStreak() {
         // Check streak shield before resetting
         if (appState.streakShields && appState.streakShields > 0) {
             appState.streakShields--;
-            showToast('🛡️ Streak Shield used! Streak saved!');
+            // Mark for celebration on next render (instead of toast)
+            appState.pendingShieldCelebration = appState.streak || 0;
+            // Roll lastStudyDate forward so streak doesn't break again tomorrow
+            appState.lastStudyDate = new Date(Date.now() - 86400000).toDateString();
             unlockAchievement('shield-saver');
         } else {
+            // Streak is being lost — record sad pet memory
+            if (appState.streak >= 3 && !appState.petMemory) appState.petMemory = {};
+            if (appState.streak >= 3) {
+                appState.petMemory = appState.petMemory || {};
+                appState.petMemory.lastStreakBroken = appState.streak;
+                appState.petMemory.lastStreakBrokenDate = Date.now();
+            }
             appState.streak = 0;
         }
     }
