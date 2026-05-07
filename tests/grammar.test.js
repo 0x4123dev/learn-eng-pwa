@@ -29,11 +29,11 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 140 questions per unit (all 4 units)', () => {
+suite('grammar: 160 questions per unit (all 4 units)', () => {
     for (const unitId of ['unit8', 'unit9', 'unit10', 'unit11']) {
-        test(`${unitId} has exactly 140 questions`, () => {
+        test(`${unitId} has exactly 160 questions`, () => {
             const u = env.getGrammarUnit(unitId);
-            assert.equal(u.questions.length, 140);
+            assert.equal(u.questions.length, 160);
         });
         test(`${unitId} has exactly 20 arrangement questions`, () => {
             const u = env.getGrammarUnit(unitId);
@@ -266,7 +266,7 @@ suite('grammar: helpers', () => {
 
     test('generateGrammarQuiz caps at unit total', () => {
         const q = env.generateGrammarQuiz('unit8', 1000);
-        assert.equal(q.length, 140);
+        assert.equal(q.length, 160);
     });
 
     test('saveGrammarSession stores session in appState.grammarHistory', () => {
