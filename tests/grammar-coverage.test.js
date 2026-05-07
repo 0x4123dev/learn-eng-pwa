@@ -61,22 +61,48 @@ function questionHaystack(q) {
     if (Array.isArray(q.options)) parts.push(q.options.join(' '));
     if (Array.isArray(q.parts)) parts.push(q.parts.join(' '));
     if (q.topic) parts.push(q.topic);
-    return parts.join(' ').toLowerCase();
+    return parts.join(' ');
+}
+
+function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Word-boundary check (rigorous): "tie" matches "tie" but NOT "tied" or "ties"
+// For multi-word phrases ("get up", "right-hand"), we still match anywhere.
+function matchesWord(haystack, word) {
+    if (word.includes(' ') || word.includes('-')) {
+        return haystack.toLowerCase().includes(word.toLowerCase());
+    }
+    const re = new RegExp('\\b' + escapeRegex(word) + 's?\\b', 'i'); // allow plural
+    return re.test(haystack);
 }
 
 // Check coverage of a vocabulary list against a unit's questions.
 // Returns array of missing words (empty = all covered).
 function findMissing(unitId, requiredWords) {
     const unit = env.getGrammarUnit(unitId);
-    const haystack = unit.questions.map(questionHaystack).join(' \n ');
+    const haystacks = unit.questions.map(questionHaystack);
     const missing = [];
     for (const word of requiredWords) {
-        // Use word boundaries via regex for short words to avoid false positives,
-        // but plain substring for multi-word phrases.
-        const needle = word.toLowerCase();
-        if (!haystack.includes(needle)) missing.push(word);
+        const found = haystacks.some(h => matchesWord(h, word));
+        if (!found) missing.push(word);
     }
     return missing;
+}
+
+// Returns words that appear in fewer than `minCount` questions
+function findUnderCovered(unitId, requiredWords, minCount) {
+    const unit = env.getGrammarUnit(unitId);
+    const under = [];
+    for (const word of requiredWords) {
+        let count = 0;
+        for (const q of unit.questions) {
+            if (matchesWord(questionHaystack(q), word)) count++;
+        }
+        if (count < minCount) under.push(`${word} (${count})`);
+    }
+    return under;
 }
 
 // ──────────────────────────── TESTS ────────────────────────────
@@ -135,6 +161,37 @@ suite('coverage: Unit 10 — Learning', () => {
     test('all email/website terms appear in at least one question', () => {
         const missing = findMissing('unit10', REQUIRED_VOCAB.unit10.websites);
         assert.equal(missing.length, 0, `Missing: ${missing.join(', ')}`);
+    });
+});
+
+suite('coverage: minimum repetition (≥2 questions per word)', () => {
+    test('Unit 8 clothes — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit8', REQUIRED_VOCAB.unit8.clothes, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 8 body parts — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit8', REQUIRED_VOCAB.unit8.body, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 9 films — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit9', REQUIRED_VOCAB.unit9.films, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 9 nature — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit9', REQUIRED_VOCAB.unit9.nature, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 10 subjects — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit10', REQUIRED_VOCAB.unit10.subjects, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 10 learning verbs — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit10', REQUIRED_VOCAB.unit10.learning_verbs, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
+    });
+    test('Unit 11 in-another-country — every word in ≥2 questions', () => {
+        const under = findUnderCovered('unit11', REQUIRED_VOCAB.unit11.in_another_country, 2);
+        assert.equal(under.length, 0, `Under-covered: ${under.join(', ')}`);
     });
 });
 
