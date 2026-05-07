@@ -103,8 +103,24 @@ function openGrammarSession(historyIdx) {
 
     const items = session.questions.map((q, i) => {
         const userAns = q.userAnswer;
-        const isCorrect = userAns === q.correct;
-        const userAnsText = userAns !== null && userAns !== undefined ? q.options[userAns] : '— skipped —';
+        let isCorrect, userAnsText, correctAnsText, qText;
+
+        if (q.type === 'arrangement') {
+            isCorrect = Array.isArray(userAns) && userAns.length === q.parts.length &&
+                        userAns.every((idx, pos) => idx === pos);
+            userAnsText = Array.isArray(userAns) && userAns.length > 0
+                ? userAns.map(idx => q.parts[idx]).join(' ')
+                : '— skipped —';
+            correctAnsText = q.parts.join(' ');
+            qText = '📝 Arrange: ' + q.parts.map((p, idx) => `[${idx + 1}]`).join(' '); // not really useful, use the chunks
+            qText = '📝 Arrange these into a sentence: <em>' + q.parts.join(' / ') + '</em>';
+        } else {
+            isCorrect = userAns === q.correct;
+            userAnsText = userAns !== null && userAns !== undefined ? q.options[userAns] : '— skipped —';
+            correctAnsText = q.options[q.correct];
+            qText = q.q;
+        }
+
         return `
             <div class="grammar-review-item ${isCorrect ? 'correct' : 'wrong'}">
                 <div class="grammar-review-header">
@@ -112,14 +128,14 @@ function openGrammarSession(historyIdx) {
                     <span class="grammar-review-status">${isCorrect ? '✓ Correct' : '✗ Wrong'}</span>
                     <span class="grammar-review-tag">${q.type} · ${q.topic}</span>
                 </div>
-                <div class="grammar-review-q">${q.q}</div>
+                <div class="grammar-review-q">${qText}</div>
                 <div class="grammar-review-answers">
                     <div class="grammar-review-line ${isCorrect ? 'line-correct' : 'line-wrong'}">
                         <strong>Your answer:</strong> ${userAnsText}
                     </div>
                     ${!isCorrect ? `
                         <div class="grammar-review-line line-correct">
-                            <strong>Correct answer:</strong> ${q.options[q.correct]}
+                            <strong>Correct answer:</strong> ${correctAnsText}
                         </div>
                     ` : ''}
                 </div>
@@ -154,7 +170,18 @@ function startGrammarQuiz(unitId, n) {
         questions,
         answers: new Array(questions.length).fill(null),
         currentIdx: 0,
-        showingResult: false
+        showingResult: false,
+        // For arrangement questions: stable shuffle per index
+        arrangements: questions.map(q => {
+            if (q.type !== 'arrangement') return null;
+            const indices = q.parts.map((_, i) => i);
+            // Fisher-Yates shuffle
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            return { shuffled: indices, ordered: [] }; // ordered = user's chosen order
+        })
     };
     renderGrammarQuestion();
 }
@@ -163,6 +190,13 @@ function startGrammarQuiz(unitId, n) {
 function renderGrammarQuestion() {
     const state = _grammarQuizState;
     if (!state) return;
+    const q = state.questions[state.currentIdx];
+    if (q.type === 'arrangement') return renderArrangementQuestion();
+    return renderMCQuestion();
+}
+
+function renderMCQuestion() {
+    const state = _grammarQuizState;
     const unit = getGrammarUnit(state.unitId);
     const q = state.questions[state.currentIdx];
     const total = state.questions.length;
@@ -178,15 +212,14 @@ function renderGrammarQuestion() {
             else if (i === userAns) cls += ' wrong';
         }
         const onclick = showingResult ? '' : `onclick="answerGrammarQuestion(${i})"`;
-        const letter = String.fromCharCode(65 + i); // A, B, C, D
+        const letter = String.fromCharCode(65 + i);
         return `<button class="${cls}" ${onclick} ${showingResult ? 'disabled' : ''}>
                     <span class="grammar-option-letter">${letter}</span>
                     <span class="grammar-option-text">${opt}</span>
                 </button>`;
     }).join('');
 
-    const scoreSoFar = state.answers.slice(0, state.currentIdx).reduce((sum, a, i) =>
-        sum + (a === state.questions[i].correct ? 1 : 0), 0);
+    const scoreSoFar = scoreSoFar_();
 
     const explanationBox = showingResult ? `
         <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
@@ -201,18 +234,150 @@ function renderGrammarQuestion() {
     ` : '';
 
     document.getElementById('grammarScreen').innerHTML = `
-        <button class="grammar-back-btn" onclick="confirmExitGrammarQuiz()">✕ Exit Quiz</button>
-        <div class="grammar-quiz-header">
-            <div class="grammar-quiz-unit">${unit.icon} ${unit.name}</div>
-            <div class="grammar-quiz-progress">Question ${state.currentIdx + 1} of ${total} · Score: ${scoreSoFar}</div>
-            <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round((state.currentIdx / total) * 100)}%"></div></div>
-        </div>
+        ${quizHeaderHTML()}
         <div class="grammar-question-card">
             <div class="grammar-question-tag">${q.type} · ${q.topic}</div>
             <div class="grammar-question-text">${q.q}</div>
             <div class="grammar-options">${optionsHtml}</div>
         </div>
         ${explanationBox}
+    `;
+}
+
+function renderArrangementQuestion() {
+    const state = _grammarQuizState;
+    const unit = getGrammarUnit(state.unitId);
+    const q = state.questions[state.currentIdx];
+    const total = state.questions.length;
+    const arr = state.arrangements[state.currentIdx];
+    const userAns = state.answers[state.currentIdx];           // null OR array of indices
+    const showingResult = userAns !== null;
+    const isCorrect = showingResult && _arrangementIsCorrect(userAns, q.parts.length);
+
+    // Pool: shuffled indices not yet placed in answer (when not submitted)
+    // Answer: user's chosen order
+    const placed = new Set(arr.ordered);
+    const poolHTML = arr.shuffled.filter(i => !placed.has(i)).map(i =>
+        `<button class="arr-tile arr-tile-pool" onclick="placeArrangementTile(${i})" ${showingResult ? 'disabled' : ''}>${q.parts[i]}</button>`
+    ).join('');
+
+    const answerHTML = arr.ordered.map((i, pos) => {
+        let cls = 'arr-tile arr-tile-answer';
+        if (showingResult) {
+            // The correct order is just [0,1,2,...]; check if user's tile at this position matches
+            cls += (i === pos) ? ' correct' : ' wrong';
+        }
+        const onclick = showingResult ? '' : `onclick="unplaceArrangementTile(${pos})"`;
+        return `<button class="${cls}" ${onclick} ${showingResult ? 'disabled' : ''}>${q.parts[i]}</button>`;
+    }).join('') || '<span class="arr-placeholder">Tap tiles below to build the sentence…</span>';
+
+    const allPlaced = arr.ordered.length === q.parts.length;
+
+    let actionsHTML = '';
+    if (showingResult) {
+        const correctSentence = q.parts.join(' ').replace(/ \./g, '.').replace(/ \?/g, '?');
+        actionsHTML = `
+            <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
+                <div class="grammar-explanation-header">
+                    ${isCorrect ? '✓ Correct!' : '✗ Not quite. The correct order is:'}
+                </div>
+                ${!isCorrect ? `<div class="arr-correct-sentence">"${correctSentence}"</div>` : ''}
+                <div class="grammar-explanation-body">💡 ${q.explanation}</div>
+            </div>
+            <button class="grammar-next-btn" onclick="nextGrammarQuestion()">
+                ${state.currentIdx + 1 >= total ? '🏁 See Results' : 'Next Question →'}
+            </button>
+        `;
+    } else {
+        actionsHTML = `
+            <div class="arr-controls">
+                <button class="arr-clear-btn" onclick="clearArrangement()" ${arr.ordered.length === 0 ? 'disabled' : ''}>Clear</button>
+                <button class="arr-submit-btn" onclick="submitArrangement()" ${!allPlaced ? 'disabled' : ''}>${allPlaced ? '✓ Submit' : 'Place all tiles to submit'}</button>
+            </div>
+        `;
+    }
+
+    document.getElementById('grammarScreen').innerHTML = `
+        ${quizHeaderHTML()}
+        <div class="grammar-question-card">
+            <div class="grammar-question-tag">arrangement · ${q.topic}</div>
+            <div class="grammar-question-text">📝 Arrange the words to make a correct sentence:</div>
+            <div class="arr-answer-zone">${answerHTML}</div>
+            <div class="arr-pool-label">Tap tiles below to add them in order:</div>
+            <div class="arr-pool-zone">${poolHTML || '<span class="arr-placeholder">All tiles placed!</span>'}</div>
+        </div>
+        ${actionsHTML}
+    `;
+}
+
+function placeArrangementTile(idx) {
+    const state = _grammarQuizState;
+    if (!state) return;
+    if (state.answers[state.currentIdx] !== null) return; // already submitted
+    const arr = state.arrangements[state.currentIdx];
+    if (arr.ordered.includes(idx)) return;
+    arr.ordered.push(idx);
+    renderArrangementQuestion();
+}
+
+function unplaceArrangementTile(pos) {
+    const state = _grammarQuizState;
+    if (!state) return;
+    if (state.answers[state.currentIdx] !== null) return;
+    const arr = state.arrangements[state.currentIdx];
+    arr.ordered.splice(pos, 1);
+    renderArrangementQuestion();
+}
+
+function clearArrangement() {
+    const state = _grammarQuizState;
+    if (!state) return;
+    if (state.answers[state.currentIdx] !== null) return;
+    state.arrangements[state.currentIdx].ordered = [];
+    renderArrangementQuestion();
+}
+
+function submitArrangement() {
+    const state = _grammarQuizState;
+    if (!state) return;
+    const arr = state.arrangements[state.currentIdx];
+    const q = state.questions[state.currentIdx];
+    if (arr.ordered.length !== q.parts.length) return;
+    state.answers[state.currentIdx] = [...arr.ordered]; // store as array of indices
+    renderArrangementQuestion();
+}
+
+function _arrangementIsCorrect(userOrder, expectedLength) {
+    if (!Array.isArray(userOrder)) return false;
+    if (userOrder.length !== expectedLength) return false;
+    return userOrder.every((idx, pos) => idx === pos);
+}
+
+// Helpers for header/score (used by both renderers)
+function scoreSoFar_() {
+    const state = _grammarQuizState;
+    return state.answers.slice(0, state.currentIdx).reduce((sum, ans, i) => {
+        const q = state.questions[i];
+        if (ans === null) return sum;
+        if (q.type === 'arrangement') {
+            return sum + (_arrangementIsCorrect(ans, q.parts.length) ? 1 : 0);
+        }
+        return sum + (ans === q.correct ? 1 : 0);
+    }, 0);
+}
+
+function quizHeaderHTML() {
+    const state = _grammarQuizState;
+    const unit = getGrammarUnit(state.unitId);
+    const total = state.questions.length;
+    const score = scoreSoFar_();
+    return `
+        <button class="grammar-back-btn" onclick="confirmExitGrammarQuiz()">✕ Exit Quiz</button>
+        <div class="grammar-quiz-header">
+            <div class="grammar-quiz-unit">${unit.icon} ${unit.name}</div>
+            <div class="grammar-quiz-progress">Question ${state.currentIdx + 1} of ${total} · Score: ${score}</div>
+            <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round((state.currentIdx / total) * 100)}%"></div></div>
+        </div>
     `;
 }
 

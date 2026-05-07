@@ -508,7 +508,71 @@ const GRAMMAR_UNITS = [
             { id: 'u8-120', type: 'pronunciation', topic: 'underlined letter (a: /eɪ/ vs /æ/)',
               q: 'Choose the word that has the underlined letter pronounced differently from the others.',
               options: ['m<u>a</u>ke', 'f<u>a</u>ce', 'm<u>a</u>sk', 't<u>a</u>ke'], correct: 2,
-              explanation: '"mask" /mɑːsk/ (BrE) or /mæsk/ (AmE) is short. "Make, face, take" all have the long /eɪ/ sound (ay-sound) because of the silent "e" at the end.' }
+              explanation: '"mask" /mɑːsk/ (BrE) or /mæsk/ (AmE) is short. "Make, face, take" all have the long /eɪ/ sound (ay-sound) because of the silent "e" at the end.' },
+
+            // ════════ SENTENCE ARRANGEMENT (20) ════════
+            // Format: user is given shuffled chunks, must order them to form a correct sentence.
+            // `parts` array is in the CORRECT order; the UI shuffles for display.
+            { id: 'u8-121', type: 'arrangement', topic: 'present continuous',
+              parts: ['She', 'is wearing', 'a red dress', 'today', '.'],
+              explanation: 'Present continuous structure: subject + am/is/are + verb-ing. With "today" we use the continuous because the action is happening now.' },
+            { id: 'u8-122', type: 'arrangement', topic: 'present continuous',
+              parts: ['We', 'are training', 'more workers', 'this year', '.'],
+              explanation: 'Present continuous for actions happening around now. "This year" is a temporary period — use continuous.' },
+            { id: 'u8-123', type: 'arrangement', topic: 'present continuous',
+              parts: ['He', 'is holding', 'a brown rucksack', 'at the airport', '.'],
+              explanation: 'Subject (He) + auxiliary (is) + main verb-ing (holding) + object (a brown rucksack) + place (at the airport).' },
+            { id: 'u8-124', type: 'arrangement', topic: 'present continuous',
+              parts: ['The two women', 'are making', 'bags', 'in the photo', '.'],
+              explanation: 'Plural subject ("two women") takes "are". Verb-ing form for actions visible in a photo.' },
+            { id: 'u8-125', type: 'arrangement', topic: 'present continuous negative',
+              parts: ['I', 'am not working', 'this week', 'because I am on holiday', '.'],
+              explanation: 'Negative present continuous: subject + am/is/are + NOT + verb-ing. "This week" indicates the temporary period.' },
+            { id: 'u8-126', type: 'arrangement', topic: 'present continuous negative',
+              parts: ['He', "isn't wearing", 'a coat', 'and he looks cold', '.'],
+              explanation: '"Isn\'t" = "is not". Subject (He) + isn\'t + wearing (verb-ing) + a coat. Then a connecting clause.' },
+            { id: 'u8-127', type: 'arrangement', topic: 'present continuous question',
+              parts: ['Are', 'you', 'buying', 'that bag', 'for your sister', '?'],
+              explanation: 'Yes/No question structure: Are/Is + subject + verb-ing + object/details + ?' },
+            { id: 'u8-128', type: 'arrangement', topic: 'wh-question (continuous)',
+              parts: ['What', 'are', 'you', 'wearing', 'to the festival tonight', '?'],
+              explanation: 'Wh-question: Wh-word + are/is + subject + verb-ing + details + ?' },
+            { id: 'u8-129', type: 'arrangement', topic: 'have got',
+              parts: ['She', 'has got', 'long hair', 'and blue eyes', '.'],
+              explanation: '"Have got" describes appearance. Singular subject "She" → "has got". Then describe features.' },
+            { id: 'u8-130', type: 'arrangement', topic: 'have got',
+              parts: ['My brothers', 'have got', 'the same', 'blue jacket', '.'],
+              explanation: 'Plural subject "my brothers" → "have got" (not "has got"). Possessions follow.' },
+            { id: 'u8-131', type: 'arrangement', topic: 'have got negative',
+              parts: ['He', "hasn't got", 'a beard', 'or a moustache', '.'],
+              explanation: 'Negative: Subject + hasn\'t/haven\'t got + thing. "Or" links the two negative items.' },
+            { id: 'u8-132', type: 'arrangement', topic: 'have got question',
+              parts: ['Have', 'they', 'got', 'tickets', 'for the parade today', '?'],
+              explanation: 'Have got question: Have/Has + subject + got + thing + ? (NOT "do they have got" — never use "do" with "have got".)' },
+            { id: 'u8-133', type: 'arrangement', topic: 'have got + appearance',
+              parts: ['My sister', 'has got', 'long dark hair', 'and brown eyes', '.'],
+              explanation: 'Order of adjectives: size/length first (long), then colour (dark). "Has got" because "my sister" = singular.' },
+            { id: 'u8-134', type: 'arrangement', topic: 'present simple vs continuous',
+              parts: ['Today', 'she is visiting', 'an important customer', 'at the office', '.'],
+              explanation: '"Today" + temporary action → present continuous ("is visiting"), even though it could be a one-day plan.' },
+            { id: 'u8-135', type: 'arrangement', topic: 'present simple (frequency)',
+              parts: ['Usually', "he doesn't go", 'to the gym', 'during the week', '.'],
+              explanation: '"Usually" = habit → present simple. With "he" → "doesn\'t go".' },
+            { id: 'u8-136', type: 'arrangement', topic: 'present continuous',
+              parts: ['At the moment,', 'I am travelling', 'around Asia', 'with my family', '.'],
+              explanation: '"At the moment" → temporary action right now → present continuous ("I am travelling").' },
+            { id: 'u8-137', type: 'arrangement', topic: 'present simple vs continuous',
+              parts: ['Rajo Laurel', 'normally designs', 'clothes', 'for famous people', '.'],
+              explanation: '"Normally" = routine → present simple ("designs"). Singular subject takes -s form.' },
+            { id: 'u8-138', type: 'arrangement', topic: 'present simple',
+              parts: ['Rags2Riches', 'makes', 'new bags', 'from old materials', '.'],
+              explanation: 'A general fact about a company → present simple. Singular subject → "makes" (with -s).' },
+            { id: 'u8-139', type: 'arrangement', topic: 'present simple (festivals)',
+              parts: ['The festival', 'is', 'in different cities', 'every year', '.'],
+              explanation: '"Every year" = repeated event → present simple. "Is" connects subject to location/time.' },
+            { id: 'u8-140', type: 'arrangement', topic: 'present simple (festivals)',
+              parts: ['People', 'wear', 'colourful clothes', 'at the carnival', 'in Brazil', '.'],
+              explanation: 'General/habitual fact → present simple. "People wear" (no -s with "people"). Then place modifiers.' }
         ]
     },
     {
@@ -1019,7 +1083,69 @@ const GRAMMAR_UNITS = [
             { id: 'u9-120', type: 'pronunciation', topic: 'underlined letter (final s: /s/ vs /z/ vs /ɪz/)',
               q: 'Choose the word that has the underlined ending pronounced differently from the others.',
               options: ['rock<u>s</u>', 'mountain<u>s</u>', 'leaf -> leave<u>s</u>', 'bird<u>s</u>'], correct: 0,
-              explanation: '"rocks" /rɒks/ ends with /s/ (after voiceless /k/). "Mountains, leaves, birds" all end with /z/ (after voiced sounds).' }
+              explanation: '"rocks" /rɒks/ ends with /s/ (after voiceless /k/). "Mountains, leaves, birds" all end with /z/ (after voiced sounds).' },
+
+            // ════════ SENTENCE ARRANGEMENT (20) ════════
+            { id: 'u9-121', type: 'arrangement', topic: 'be going to',
+              parts: ['I', 'am going to', 'buy', 'a ticket', 'for the next film', '.'],
+              explanation: 'Future plan: subject + am/is/are + going to + base verb. With "I" → "am going to".' },
+            { id: 'u9-122', type: 'arrangement', topic: 'be going to',
+              parts: ['We', 'are going to', 'see', 'a comedy', 'at the cinema', 'tonight', '.'],
+              explanation: 'Plural "we" → "are going to". For events, we use "see a film", not "watch a film".' },
+            { id: 'u9-123', type: 'arrangement', topic: 'be going to question',
+              parts: ['What', 'are', 'you', 'going to do', 'this weekend', '?'],
+              explanation: 'Wh-question: Wh-word + are/is + subject + going to + base verb + details + ?' },
+            { id: 'u9-124', type: 'arrangement', topic: 'be going to negative',
+              parts: ["I'm not going to", 'stay out late', 'tonight', "because I'm tired", '.'],
+              explanation: 'Negative future plan: subject + am/is/are + NOT + going to + verb. Then optional reason clause.' },
+            { id: 'u9-125', type: 'arrangement', topic: 'be going to + infinitive of purpose',
+              parts: ['She', 'is going to', 'study painting', 'at art school', '.'],
+              explanation: 'Singular subject "she" → "is going to". The action is "study painting", with "at art school" as the place.' },
+            { id: 'u9-126', type: 'arrangement', topic: 'wh-question (going to)',
+              parts: ['Where', 'are', 'you', 'going to sit', 'during the film', '?'],
+              explanation: '"Where" + are/is + subject + going to + base verb + when/while clause + ?' },
+            { id: 'u9-127', type: 'arrangement', topic: 'infinitive of purpose',
+              parts: ["I'm going to", 'record', 'this film', 'to watch it later', '.'],
+              explanation: '"To watch it later" gives the REASON / PURPOSE. Use "to + base verb" for the infinitive of purpose.' },
+            { id: 'u9-128', type: 'arrangement', topic: 'infinitive of purpose',
+              parts: ['Adrian', 'is going to', 'Honduras', 'to film animals', 'in the rainforest', '.'],
+              explanation: 'Future plan + infinitive of purpose: "is going to Honduras" (where) + "to film animals" (why).' },
+            { id: 'u9-129', type: 'arrangement', topic: 'infinitive of purpose',
+              parts: ['Turn on', 'the TV', 'to watch the news', "at six o'clock", '.'],
+              explanation: 'Imperative ("Turn on the TV") + infinitive of purpose ("to watch the news") + time.' },
+            { id: 'u9-130', type: 'arrangement', topic: 'inviting',
+              parts: ['Would', 'you', 'like to', 'come', 'to the theatre', 'with me', 'tonight', '?'],
+              explanation: 'Polite invitation: "Would you like to + base verb?" The full structure: Would + you + like to + verb + place + person + time + ?' },
+            { id: 'u9-131', type: 'arrangement', topic: 'declining invitation',
+              parts: ["I'm sorry,", 'but', "I'm working late", 'tonight', '.'],
+              explanation: 'Polite refusal: apology ("I\'m sorry,") + reason ("I\'m working late tonight"). The "but" connects the two.' },
+            { id: 'u9-132', type: 'arrangement', topic: 'making arrangements',
+              parts: ["Let's", 'meet', 'outside the cinema', 'at quarter to nine', '.'],
+              explanation: '"Let\'s" (= let us) + base verb is the standard "let\'s do X" structure. Then place + time.' },
+            { id: 'u9-133', type: 'arrangement', topic: 'arrangements question',
+              parts: ['What time', 'does', 'the show', 'start', 'at the theatre', '?'],
+              explanation: 'Wh-question with "do/does": What time + does + subject + base verb + place + ?' },
+            { id: 'u9-134', type: 'arrangement', topic: 'accepting invitation',
+              parts: ["I'd love to", 'come', 'to the concert', 'with you', 'on Friday', '.'],
+              explanation: '"I\'d love to" (= I would love to) is enthusiastic acceptance. Then verb + place + person + time.' },
+            { id: 'u9-135', type: 'arrangement', topic: 'sense verbs',
+              parts: ["Picasso's paintings", 'look', 'amazing', 'in the gallery', '.'],
+              explanation: 'Sense verb "look + adjective" describes how something appears. Subject + look + adjective + place.' },
+            { id: 'u9-136', type: 'arrangement', topic: 'sense verbs',
+              parts: ['This new', "restaurant's food", 'tastes', 'absolutely delicious', '.'],
+              explanation: 'For food, use "taste + adjective". "Absolutely" intensifies "delicious".' },
+            { id: 'u9-137', type: 'arrangement', topic: 'sense verbs',
+              parts: ['The music', 'sounds', 'too loud', 'in the concert hall', '.'],
+              explanation: 'Sense verb "sound + adjective" for what we hear. "Too" before adjective means "more than enough".' },
+            { id: 'u9-138', type: 'arrangement', topic: 'see vs watch',
+              parts: ['I love', 'watching films', 'with my friends', 'on weekends', '.'],
+              explanation: 'For the ACTIVITY of viewing films, use "watch + -ing". "I love" is followed by either "-ing" or "to + verb".' },
+            { id: 'u9-139', type: 'arrangement', topic: 'like vs prefer',
+              parts: ['She', 'prefers', "Witkiewicz's paintings", 'of landscapes', '.'],
+              explanation: '"Prefer" means "like one thing more than another". Singular "she" → "prefers" (with -s).' },
+            { id: 'u9-140', type: 'arrangement', topic: 'infinitive of purpose',
+              parts: ['Adrian', 'uses', 'camera traps', 'to photograph wild animals', 'at night', '.'],
+              explanation: '"To photograph wild animals" is the infinitive of purpose — explains WHY he uses camera traps.' }
         ]
     }
 ];
@@ -1054,11 +1180,26 @@ function getGrammarStats(unitId) {
     return { attempts: sessions.length, best, last: sorted[0] };
 }
 
+// Check if an arrangement answer is correct
+function isArrangementCorrect(userAnswer, expectedLength) {
+    if (!Array.isArray(userAnswer)) return false;
+    if (userAnswer.length !== expectedLength) return false;
+    return userAnswer.every((idx, pos) => idx === pos);
+}
+
+// Score one question
+function scoreGrammarQuestion(q, userAnswer) {
+    if (q.type === 'arrangement') {
+        return isArrangementCorrect(userAnswer, q.parts.length) ? 1 : 0;
+    }
+    return userAnswer === q.correct ? 1 : 0;
+}
+
 // Save a completed quiz session to history
 function saveGrammarSession(unitId, questions, answers) {
     if (!appState) return;
     if (!appState.grammarHistory) appState.grammarHistory = [];
-    const correctCount = questions.reduce((sum, q, i) => sum + (answers[i] === q.correct ? 1 : 0), 0);
+    const correctCount = questions.reduce((sum, q, i) => sum + scoreGrammarQuestion(q, answers[i]), 0);
     const session = {
         id: 'g-' + Date.now(),
         unitId,
@@ -1070,8 +1211,9 @@ function saveGrammarSession(unitId, questions, answers) {
             type: q.type,
             topic: q.topic,
             q: q.q,
-            options: q.options,
-            correct: q.correct,
+            options: q.options,           // undefined for arrangement
+            correct: q.correct,           // undefined for arrangement
+            parts: q.parts,                // undefined for non-arrangement
             explanation: q.explanation,
             userAnswer: answers[i]
         }))

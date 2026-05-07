@@ -121,6 +121,7 @@ const EXPORT_NAMES = [
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',
     // grammar
     'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
+    'isArrangementCorrect', 'scoreGrammarQuestion',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',

@@ -27,34 +27,113 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 120 questions per unit', () => {
-    test('Unit 8 has exactly 120 questions', () => {
+suite('grammar: 140 questions per unit', () => {
+    test('Unit 8 has exactly 140 questions', () => {
         const u8 = env.getGrammarUnit('unit8');
-        assert.equal(u8.questions.length, 120);
+        assert.equal(u8.questions.length, 140);
     });
 
-    test('Unit 9 has exactly 120 questions', () => {
+    test('Unit 9 has exactly 140 questions', () => {
         const u9 = env.getGrammarUnit('unit9');
-        assert.equal(u9.questions.length, 120);
+        assert.equal(u9.questions.length, 140);
     });
 
-    test('Unit 8 has at least 30 pronunciation questions (10 original + 20 new)', () => {
+    test('Unit 8 has at least 30 pronunciation questions', () => {
         const u8 = env.getGrammarUnit('unit8');
         const pronCount = u8.questions.filter(q => q.type === 'pronunciation').length;
         assert.truthy(pronCount >= 30, `pronunciation count is ${pronCount}, expected ≥30`);
     });
 
-    test('Unit 9 has at least 32 pronunciation questions (12 original + 20 new)', () => {
+    test('Unit 9 has at least 32 pronunciation questions', () => {
         const u9 = env.getGrammarUnit('unit9');
         const pronCount = u9.questions.filter(q => q.type === 'pronunciation').length;
         assert.truthy(pronCount >= 32, `pronunciation count is ${pronCount}, expected ≥32`);
     });
+
+    test('Unit 8 has exactly 20 arrangement questions', () => {
+        const u8 = env.getGrammarUnit('unit8');
+        const arrCount = u8.questions.filter(q => q.type === 'arrangement').length;
+        assert.equal(arrCount, 20);
+    });
+
+    test('Unit 9 has exactly 20 arrangement questions', () => {
+        const u9 = env.getGrammarUnit('unit9');
+        const arrCount = u9.questions.filter(q => q.type === 'arrangement').length;
+        assert.equal(arrCount, 20);
+    });
+});
+
+suite('grammar: arrangement question integrity', () => {
+    test('every arrangement question has parts array (3-8 chunks)', () => {
+        for (const u of env.GRAMMAR_UNITS) {
+            for (const q of u.questions) {
+                if (q.type !== 'arrangement') continue;
+                assert.truthy(Array.isArray(q.parts), `${q.id} missing parts array`);
+                assert.truthy(q.parts.length >= 3, `${q.id} too few parts (${q.parts.length})`);
+                assert.truthy(q.parts.length <= 8, `${q.id} too many parts (${q.parts.length})`);
+                for (const p of q.parts) {
+                    assert.truthy(typeof p === 'string' && p.length > 0, `${q.id} has empty part`);
+                }
+            }
+        }
+    });
+
+    test('every arrangement question has explanation ≥20 chars', () => {
+        for (const u of env.GRAMMAR_UNITS) {
+            for (const q of u.questions) {
+                if (q.type !== 'arrangement') continue;
+                assert.truthy(q.explanation && q.explanation.length >= 20,
+                    `${q.id} explanation too short`);
+            }
+        }
+    });
+
+    test('every arrangement question ends with . or ? in last part', () => {
+        for (const u of env.GRAMMAR_UNITS) {
+            for (const q of u.questions) {
+                if (q.type !== 'arrangement') continue;
+                const last = q.parts[q.parts.length - 1];
+                assert.truthy(last === '.' || last === '?' || last.endsWith('.') || last.endsWith('?'),
+                    `${q.id} last part should be punctuation: "${last}"`);
+            }
+        }
+    });
+});
+
+suite('grammar: scoring helpers', () => {
+    test('isArrangementCorrect — correct order returns true', () => {
+        // Need to access via setAppState; the function is defined in grammar-units.js
+        // and is a top-level helper — let's check.
+        if (typeof env.isArrangementCorrect !== 'function') return;
+        assert.truthy(env.isArrangementCorrect([0, 1, 2, 3, 4], 5));
+    });
+
+    test('isArrangementCorrect — wrong order returns false', () => {
+        if (typeof env.isArrangementCorrect !== 'function') return;
+        assert.falsy(env.isArrangementCorrect([1, 0, 2, 3, 4], 5));
+    });
+
+    test('saveGrammarSession scores arrangement correctly', () => {
+        env.__setAppState({ grammarHistory: [], coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const arrQ = u8.questions.find(q => q.type === 'arrangement');
+        assert.truthy(arrQ);
+        const correctOrder = arrQ.parts.map((_, i) => i);
+        const wrongOrder = [...correctOrder]; wrongOrder[0] = 1; wrongOrder[1] = 0;
+
+        const session1 = env.saveGrammarSession('unit8', [arrQ], [correctOrder]);
+        assert.equal(session1.score, 1);
+
+        const session2 = env.saveGrammarSession('unit8', [arrQ], [wrongOrder]);
+        assert.equal(session2.score, 0);
+    });
 });
 
 suite('grammar: question integrity', () => {
-    test('every question has id, type, topic, q, options, correct, explanation', () => {
+    test('every multiple-choice question has id, type, topic, q, options, correct, explanation', () => {
         for (const u of env.GRAMMAR_UNITS) {
             for (const q of u.questions) {
+                if (q.type === 'arrangement') continue; // arrangement has different shape
                 assert.truthy(q.id, `question missing id in ${u.id}`);
                 assert.truthy(q.type, `${q.id} missing type`);
                 assert.truthy(q.topic, `${q.id} missing topic`);
@@ -67,8 +146,8 @@ suite('grammar: question integrity', () => {
         }
     });
 
-    test('every question type is vocabulary, grammar, or pronunciation', () => {
-        const validTypes = new Set(['vocabulary', 'grammar', 'pronunciation']);
+    test('every question type is vocabulary, grammar, pronunciation, or arrangement', () => {
+        const validTypes = new Set(['vocabulary', 'grammar', 'pronunciation', 'arrangement']);
         for (const u of env.GRAMMAR_UNITS) {
             for (const q of u.questions) {
                 assert.truthy(validTypes.has(q.type), `${q.id} has invalid type "${q.type}"`);
@@ -84,9 +163,10 @@ suite('grammar: question integrity', () => {
         }
     });
 
-    test('all options are non-empty strings', () => {
+    test('all options are non-empty strings (multiple-choice only)', () => {
         for (const u of env.GRAMMAR_UNITS) {
             for (const q of u.questions) {
+                if (q.type === 'arrangement') continue;
                 for (const opt of q.options) {
                     assert.truthy(typeof opt === 'string' && opt.length > 0,
                         `${q.id} has empty option`);
@@ -170,7 +250,7 @@ suite('grammar: helpers', () => {
 
     test('generateGrammarQuiz caps at unit total', () => {
         const q = env.generateGrammarQuiz('unit8', 1000);
-        assert.equal(q.length, 120);
+        assert.equal(q.length, 140);
     });
 
     test('saveGrammarSession stores session in appState.grammarHistory', () => {

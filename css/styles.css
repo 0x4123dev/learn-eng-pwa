@@ -8929,6 +8929,126 @@
             padding: 10px 12px;
             border-radius: 10px;
         }
+
+        /* ==================== ARRANGEMENT TILES (NEW v3.14.2) ==================== */
+        .arr-answer-zone {
+            min-height: 64px;
+            background: linear-gradient(135deg, rgba(46,204,113,0.06), rgba(155,89,182,0.06));
+            border: 2px dashed rgba(155,89,182,0.35);
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .arr-pool-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .arr-pool-zone {
+            min-height: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+        .arr-tile {
+            display: inline-block;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.15s ease;
+            border: 2px solid transparent;
+            white-space: nowrap;
+        }
+        .arr-tile:active:not(:disabled) {
+            transform: scale(0.94);
+        }
+        .arr-tile-pool {
+            background: linear-gradient(135deg, #ffffff, #f5eaff);
+            color: var(--text-primary);
+            border-color: rgba(155,89,182,0.3);
+            box-shadow: 0 2px 6px rgba(155,89,182,0.15);
+        }
+        .arr-tile-pool:hover:not(:disabled) {
+            border-color: var(--accent-purple);
+            box-shadow: 0 3px 12px rgba(155,89,182,0.25);
+        }
+        .arr-tile-answer {
+            background: linear-gradient(135deg, rgba(46,204,113,0.18), rgba(46,204,113,0.08));
+            color: var(--text-primary);
+            border-color: rgba(46,204,113,0.35);
+            box-shadow: 0 2px 6px rgba(46,204,113,0.12);
+        }
+        .arr-tile-answer.correct {
+            background: linear-gradient(135deg, rgba(46,204,113,0.3), rgba(46,204,113,0.15));
+            border-color: #2ecc71;
+        }
+        .arr-tile-answer.wrong {
+            background: linear-gradient(135deg, rgba(239,83,80,0.25), rgba(239,83,80,0.1));
+            border-color: #ef5350;
+        }
+        .arr-placeholder {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-style: italic;
+            opacity: 0.7;
+            padding: 6px 10px;
+        }
+        .arr-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .arr-clear-btn {
+            padding: 12px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .arr-clear-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .arr-submit-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #2ecc71, #9b59b6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(46,204,113,0.35);
+            font-family: inherit;
+        }
+        .arr-submit-btn:disabled {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .arr-correct-sentence {
+            font-style: italic;
+            font-size: 14px;
+            color: #1e8449;
+            background: rgba(46,204,113,0.12);
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin: 8px 0;
+        }
         .topic-word-level {
             font-size: 11px;
             opacity: 0.7;
