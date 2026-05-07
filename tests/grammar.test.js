@@ -27,15 +27,27 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 100 questions per unit', () => {
-    test('Unit 8 has exactly 100 questions', () => {
+suite('grammar: 120 questions per unit', () => {
+    test('Unit 8 has exactly 120 questions', () => {
         const u8 = env.getGrammarUnit('unit8');
-        assert.equal(u8.questions.length, 100);
+        assert.equal(u8.questions.length, 120);
     });
 
-    test('Unit 9 has exactly 100 questions', () => {
+    test('Unit 9 has exactly 120 questions', () => {
         const u9 = env.getGrammarUnit('unit9');
-        assert.equal(u9.questions.length, 100);
+        assert.equal(u9.questions.length, 120);
+    });
+
+    test('Unit 8 has at least 30 pronunciation questions (10 original + 20 new)', () => {
+        const u8 = env.getGrammarUnit('unit8');
+        const pronCount = u8.questions.filter(q => q.type === 'pronunciation').length;
+        assert.truthy(pronCount >= 30, `pronunciation count is ${pronCount}, expected ≥30`);
+    });
+
+    test('Unit 9 has at least 32 pronunciation questions (12 original + 20 new)', () => {
+        const u9 = env.getGrammarUnit('unit9');
+        const pronCount = u9.questions.filter(q => q.type === 'pronunciation').length;
+        assert.truthy(pronCount >= 32, `pronunciation count is ${pronCount}, expected ≥32`);
     });
 });
 
@@ -158,7 +170,7 @@ suite('grammar: helpers', () => {
 
     test('generateGrammarQuiz caps at unit total', () => {
         const q = env.generateGrammarQuiz('unit8', 1000);
-        assert.equal(q.length, 100);
+        assert.equal(q.length, 120);
     });
 
     test('saveGrammarSession stores session in appState.grammarHistory', () => {
