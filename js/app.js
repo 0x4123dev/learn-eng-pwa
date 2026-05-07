@@ -195,7 +195,8 @@ function createDefaultUserData(username, avatar, passcode) {
         weeklyRecaps: [],                 // Array of { weekStart, weekEnd, xpEarned, daysActive[7], lessonsCompleted, perfectLessons, wordsLearned, streakAtEnd }
         lastWeeklyRecapShown: null,       // ISO date of last week recap modal shown
         pendingShieldCelebration: null,   // Streak count to celebrate after shield-saved
-        topicProgress: {}                 // { [topicId]: { [chunkIdx]: { mistakes, accuracy, date } } }
+        topicProgress: {},                // { [topicId]: { [chunkIdx]: { mistakes, accuracy, date } } }
+        grammarHistory: []                // Array of completed quiz sessions (Grammar tab)
     };
 }
 
@@ -547,6 +548,7 @@ function loginUser(username) {
     if (appState.lastWeeklyRecapShown === undefined) appState.lastWeeklyRecapShown = null;
     if (appState.pendingShieldCelebration === undefined) appState.pendingShieldCelebration = null;
     if (appState.topicProgress === undefined) appState.topicProgress = {};
+    if (appState.grammarHistory === undefined) appState.grammarHistory = [];
     if (appState.theme === undefined) appState.theme = 'default';
     if (appState.stickers === undefined) appState.stickers = [];
     if (appState.dailyChallenge === undefined) appState.dailyChallenge = { lastDate: null, streak: 0, bestStreak: 0 };

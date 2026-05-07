@@ -119,6 +119,8 @@ const EXPORT_NAMES = [
     // app.js
     'WORDS_PER_LESSON', 'TOTAL_LESSONS', 'STREAK_MILESTONES', 'achievements',
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',
+    // grammar
+    'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
@@ -140,6 +142,7 @@ function loadAppCode(opts) {
         'js/vocabulary.js',
         'js/topics.js',
         'js/srs.js',
+        'js/grammar-units.js',
         'js/app.js'
     ];
     if (opts.includeHome !== false) {

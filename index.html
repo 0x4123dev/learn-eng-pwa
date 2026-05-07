@@ -296,6 +296,9 @@
             <!-- Video Screen -->
             <div class="screen video-screen" id="videoScreen"></div>
 
+            <!-- Grammar Screen -->
+            <div class="screen grammar-screen" id="grammarScreen"></div>
+
             <!-- Topics Screen -->
             <div class="screen topics-screen" id="topicsScreen">
                 <div class="topics-header">
@@ -317,6 +320,10 @@
             <button class="nav-item" onclick="switchScreen('topicsScreen'); renderTopicsHome()">
                 <span class="icon">📚</span>
                 <span>Topics</span>
+            </button>
+            <button class="nav-item" onclick="switchScreen('grammarScreen'); renderGrammarHome()">
+                <span class="icon">🎓</span>
+                <span>Grammar</span>
             </button>
             <button class="nav-item" onclick="switchScreen('speedChallengeScreen')">
                 <span class="icon">📝</span>
@@ -546,6 +553,8 @@
     <!-- Data -->
     <script src="js/vocabulary.js"></script>
     <script src="js/topics.js"></script>
+    <script src="js/grammar-units.js"></script>
+    <script src="js/grammar-ui.js"></script>
     <script src="js/essays.js"></script>
     <!-- Core -->
     <script src="js/app.js"></script>
