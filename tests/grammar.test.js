@@ -5,14 +5,16 @@ const { loadAppCode } = require('./setup');
 const env = loadAppCode();
 
 suite('grammar: GRAMMAR_UNITS shape', () => {
-    test('exactly 2 units (Unit 8 + Unit 9)', () => {
-        assert.equal(env.GRAMMAR_UNITS.length, 2);
+    test('exactly 4 units (Unit 8, 9, 10, 11)', () => {
+        assert.equal(env.GRAMMAR_UNITS.length, 4);
     });
 
-    test('unit IDs are unit8 and unit9', () => {
+    test('unit IDs are unit8, unit9, unit10, unit11', () => {
         const ids = env.GRAMMAR_UNITS.map(u => u.id);
         assert.contains(ids, 'unit8');
         assert.contains(ids, 'unit9');
+        assert.contains(ids, 'unit10');
+        assert.contains(ids, 'unit11');
     });
 
     test('every unit has required metadata', () => {
@@ -27,40 +29,33 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 140 questions per unit', () => {
-    test('Unit 8 has exactly 140 questions', () => {
-        const u8 = env.getGrammarUnit('unit8');
-        assert.equal(u8.questions.length, 140);
-    });
-
-    test('Unit 9 has exactly 140 questions', () => {
-        const u9 = env.getGrammarUnit('unit9');
-        assert.equal(u9.questions.length, 140);
-    });
-
-    test('Unit 8 has at least 30 pronunciation questions', () => {
-        const u8 = env.getGrammarUnit('unit8');
-        const pronCount = u8.questions.filter(q => q.type === 'pronunciation').length;
-        assert.truthy(pronCount >= 30, `pronunciation count is ${pronCount}, expected ≥30`);
-    });
-
-    test('Unit 9 has at least 32 pronunciation questions', () => {
-        const u9 = env.getGrammarUnit('unit9');
-        const pronCount = u9.questions.filter(q => q.type === 'pronunciation').length;
-        assert.truthy(pronCount >= 32, `pronunciation count is ${pronCount}, expected ≥32`);
-    });
-
-    test('Unit 8 has exactly 20 arrangement questions', () => {
-        const u8 = env.getGrammarUnit('unit8');
-        const arrCount = u8.questions.filter(q => q.type === 'arrangement').length;
-        assert.equal(arrCount, 20);
-    });
-
-    test('Unit 9 has exactly 20 arrangement questions', () => {
-        const u9 = env.getGrammarUnit('unit9');
-        const arrCount = u9.questions.filter(q => q.type === 'arrangement').length;
-        assert.equal(arrCount, 20);
-    });
+suite('grammar: 140 questions per unit (all 4 units)', () => {
+    for (const unitId of ['unit8', 'unit9', 'unit10', 'unit11']) {
+        test(`${unitId} has exactly 140 questions`, () => {
+            const u = env.getGrammarUnit(unitId);
+            assert.equal(u.questions.length, 140);
+        });
+        test(`${unitId} has exactly 20 arrangement questions`, () => {
+            const u = env.getGrammarUnit(unitId);
+            const arrCount = u.questions.filter(q => q.type === 'arrangement').length;
+            assert.equal(arrCount, 20);
+        });
+        test(`${unitId} has at least 20 pronunciation questions`, () => {
+            const u = env.getGrammarUnit(unitId);
+            const pronCount = u.questions.filter(q => q.type === 'pronunciation').length;
+            assert.truthy(pronCount >= 20, `${unitId} pronunciation count is ${pronCount}, expected ≥20`);
+        });
+        test(`${unitId} has at least 25 vocabulary questions`, () => {
+            const u = env.getGrammarUnit(unitId);
+            const vocabCount = u.questions.filter(q => q.type === 'vocabulary').length;
+            assert.truthy(vocabCount >= 25, `${unitId} vocabulary count is ${vocabCount}, expected ≥25`);
+        });
+        test(`${unitId} has at least 20 grammar questions`, () => {
+            const u = env.getGrammarUnit(unitId);
+            const grammarCount = u.questions.filter(q => q.type === 'grammar').length;
+            assert.truthy(grammarCount >= 20, `${unitId} grammar count is ${grammarCount}, expected ≥20`);
+        });
+    }
 });
 
 suite('grammar: arrangement question integrity', () => {
@@ -221,6 +216,27 @@ suite('grammar: type coverage per unit', () => {
         assert.contains([...topics], 'nature');
         assert.contains([...topics], 'be going to');
         assert.contains([...topics], 'infinitive of purpose');
+    });
+
+    test('Unit 10 covers expected topics', () => {
+        const u10 = env.getGrammarUnit('unit10');
+        const topics = new Set(u10.questions.map(q => q.topic));
+        assert.contains([...topics], 'subjects');
+        assert.contains([...topics], 'learning verbs');
+        assert.contains([...topics], 'present perfect');
+        assert.contains([...topics], 'perfect vs past simple');
+        assert.contains([...topics], 'imperatives');
+    });
+
+    test('Unit 11 covers expected topics', () => {
+        const u11 = env.getGrammarUnit('unit11');
+        const topics = new Set(u11.questions.map(q => q.topic));
+        assert.contains([...topics], 'tourism');
+        assert.contains([...topics], 'in another country');
+        assert.contains([...topics], 'have to / can');
+        assert.contains([...topics], "should/shouldn't");
+        assert.contains([...topics], 'some/any/no');
+        assert.contains([...topics], 'making suggestions');
     });
 });
 
