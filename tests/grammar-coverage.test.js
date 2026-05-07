@@ -222,6 +222,52 @@ suite('coverage: Unit 11 — Tourism', () => {
     });
 });
 
+// ──────────────────────────── PRONUNCIATION TOPIC COVERAGE ────────────────────────────
+// Each unit's PDF teaches specific pronunciation features. Each must be covered
+// by at least 3 questions in the unit's question bank.
+
+const PRON_LESSONS = {
+    unit8: [
+        ['/s/ vs /ʃ/ contrast (suit/shoes)', /\/ʃ\/|\/s\/(?!\/)|sh\b.*\bs\b|\bs\/.*\bʃ\//i],
+        ['silent letters',                   /silent[^.]{0,30}letter|silent[^.]{0,5}[tkhwe]\b/i],
+        ['vowel sound matching',             /vowel|same[^.]{0,8}sound|sound[^.]{0,8}same|head\W+leg|sound and spelling/i]
+    ],
+    unit9: [
+        ['/tə/ weak form (going to)',        /\/tə\/|going to.*pronounc|weak[^.]{0,5}vowel|weak[^.]{0,5}form/i],
+        ['enthusiasm stress (LOVE/GREAT)',   /enthusiasm|fantastic.{0,15}stress|\bLOVE\b|stress[^.]{0,15}adjective|\bGREAT!/]
+    ],
+    unit10: [
+        ['contrastive stress',               /contrastive|correct[^.]{0,8}emphasis|stress[^.]{0,30}correct|stress[^.]{0,20}contrast|three.{0,15}morning|afternoon.*stress/i],
+        ['past tense -ed endings (/t/ /d/ /ɪd/)', /\/t\/[^.]{0,15}\/d\/|past tense[^.]{0,15}-ed|-ed.{0,10}pronoun|\/ɪd\/|past participle.*pronounc|after[^.]{0,15}voiceless/i]
+    ],
+    unit11: [
+        ['/hæftə/ have to reduction',        /\/hæftə\/|have to.{0,15}pronounc|hæftə/i],
+        ['/ʌ/ vs /ʊ/ vs /uː/',                /\/ʌ\/|\/ʊ\/|\/uː\/|cruise|could.{0,15}food/i]
+    ]
+};
+
+function countPronQs(unitId, regex) {
+    const u = env.getGrammarUnit(unitId);
+    let count = 0;
+    for (const q of u.questions) {
+        if (q.type !== 'pronunciation') continue;
+        const haystack = [q.q, q.explanation, ...(q.options||[])].join(' ');
+        if (regex.test(haystack)) count++;
+    }
+    return count;
+}
+
+suite('coverage: pronunciation lessons (≥3 questions per topic)', () => {
+    for (const [unitId, lessons] of Object.entries(PRON_LESSONS)) {
+        for (const [label, regex] of lessons) {
+            test(`${unitId} — "${label}" has ≥3 questions`, () => {
+                const count = countPronQs(unitId, regex);
+                assert.truthy(count >= 3, `Only ${count} questions cover "${label}" in ${unitId} (need ≥3)`);
+            });
+        }
+    }
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
