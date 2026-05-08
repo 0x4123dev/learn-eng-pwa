@@ -936,6 +936,310 @@ const VIDEO_LIBRARY = [
     }
 ];
 
+const IELTS_SPEAKING_VIDEO_SOURCES = {
+    shadowDaily: {
+        youtubeId: 'HEdN8TOd_wI',
+        channel: 'ez english practice',
+        duration: '18:37',
+        title: 'Repeat After Me: Master IELTS Daily Routine Questions'
+    },
+    part1Hometown: {
+        youtubeId: 'rdCl6Fm2a5w',
+        channel: 'IELTS Speaking Assistant',
+        duration: 'Short',
+        title: 'IELTS Speaking Part 1: Hometown Model Answer'
+    },
+    part2Place: {
+        youtubeId: 'mKhyIxWL3gQ',
+        channel: 'KevinTeachesMe',
+        duration: 'IELTS lesson',
+        title: 'IELTS Speaking Part 2: Describe a Place'
+    },
+    part2PlaceGuide: {
+        youtubeId: 'Q6CRhJkSk9w',
+        channel: 'IELTS BANGLADESH',
+        duration: 'IELTS lesson',
+        title: 'IELTS Speaking Part 2: Describe a Place Guide'
+    },
+    part3Topics: {
+        youtubeId: 'FlDdmUr-BxA',
+        channel: 'Smart IELTS Academy',
+        duration: 'Part 3',
+        title: 'IELTS Speaking Part 3 Band 9 Sample Answers'
+    },
+    technologyTest: {
+        youtubeId: 'OS9ac9i55NE',
+        channel: 'IELTS Speaking Class',
+        duration: 'Sample test',
+        title: 'IELTS Speaking Sample Test: Technology'
+    },
+    fullGiftTest: {
+        youtubeId: 'KGZQvLYj2hM',
+        channel: 'IELTS SHARING',
+        duration: 'Full test',
+        title: 'Full IELTS Speaking Test Sample'
+    },
+    fullTopicBook: {
+        youtubeId: 'cnFUwu-jLNI',
+        channel: 'IELTS SHARING',
+        duration: 'Full test',
+        title: 'IELTS Speaking Full Part 1, Part 2, Part 3'
+    },
+    fullPractice: {
+        youtubeId: 'OORG_6VPc1g',
+        channel: 'IELTS ve TOEFL',
+        duration: 'Full test',
+        title: 'IELTS Speaking Part 1, Part 2, Part 3'
+    }
+};
+
+const IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON = {
+    1: 'part1Hometown',
+    3: 'part1Hometown',
+    5: 'shadowDaily',
+    16: 'part1Hometown',
+    19: 'shadowDaily',
+    23: 'part2Place',
+    25: 'part2PlaceGuide',
+    27: 'part2Place',
+    28: 'part2Place',
+    29: 'technologyTest',
+    30: 'technologyTest',
+    35: 'part3Topics',
+    36: 'part3Topics',
+    37: 'technologyTest',
+    38: 'part3Topics',
+    39: 'part3Topics',
+    40: 'part3Topics',
+    41: 'fullGiftTest',
+    43: 'part2PlaceGuide',
+    44: 'part3Topics',
+    45: 'part3Topics',
+    46: 'fullGiftTest',
+    47: 'technologyTest',
+    48: 'part2PlaceGuide',
+    49: 'part3Topics',
+    50: 'fullPractice'
+};
+
+const IELTS_SPEAKING_CURRICULUM = [
+    { level: 'beginner', part: 'Part 1', topic: 'Name, hometown, basic introduction', focus: 'Answer in 2 short sentences with clear pronunciation.', source: 'part1Hometown' },
+    { level: 'beginner', part: 'Part 1', topic: 'Work or study', focus: 'Use present simple and explain one reason.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Home and accommodation', focus: 'Describe where you live with simple adjectives.', source: 'part1Hometown' },
+    { level: 'beginner', part: 'Part 1', topic: 'Family', focus: 'Use family vocabulary and one personal detail.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Daily routine', focus: 'Use time phrases and repeat natural rhythm.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Food', focus: 'Say what you like, then give a simple reason.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Hobbies', focus: 'Use frequency words: usually, often, sometimes.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Weather', focus: 'Compare two types of weather.', source: 'part1Hometown' },
+    { level: 'beginner', part: 'Part 1', topic: 'Sports', focus: 'Say whether you like sport and why.', source: 'shadowDaily' },
+    { level: 'beginner', part: 'Part 1', topic: 'Music', focus: 'Describe your taste with one example.', source: 'fullTopicBook' },
+    { level: 'beginner', part: 'Part 1', topic: 'Reading', focus: 'Talk about books, stories, or online reading.', source: 'fullGiftTest' },
+    { level: 'beginner', part: 'Part 1', topic: 'Friends', focus: 'Use personality adjectives naturally.', source: 'fullPractice' },
+    { level: 'beginner', part: 'Part 1', topic: 'Clothes', focus: 'Describe style, color, and comfort.', source: 'fullPractice' },
+    { level: 'beginner', part: 'Part 1', topic: 'Shopping', focus: 'Give short answers about habits and preferences.', source: 'fullPractice' },
+    { level: 'beginner', part: 'Part 1', topic: 'Transport', focus: 'Explain how you travel and why.', source: 'part1Hometown' },
+    { level: 'elementary', part: 'Part 1 to Part 2', topic: 'Describe your hometown', focus: 'Expand from a short answer into a 45-second answer.', source: 'part1Hometown' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a family member', focus: 'Structure: who, what they are like, why you like them.', source: 'fullPractice' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a friend', focus: 'Add one story to make the answer personal.', source: 'fullPractice' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe your daily routine', focus: 'Use sequence language: first, after that, later.', source: 'shadowDaily' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe your favorite food', focus: 'Explain taste, memory, and occasion.', source: 'shadowDaily' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a hobby', focus: 'Say when you started and why you continue.', source: 'fullTopicBook' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a book', focus: 'Summarize the topic without retelling everything.', source: 'fullGiftTest' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a place you like', focus: 'Use sensory details and location phrases.', source: 'part2Place' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a gift', focus: 'Explain who gave it and why it mattered.', source: 'fullGiftTest' },
+    { level: 'elementary', part: 'Part 2', topic: 'Describe a photo', focus: 'Describe people, place, and feeling.', source: 'part2PlaceGuide' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a journey', focus: 'Build a story with beginning, middle, and end.', source: 'part2PlaceGuide' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a city', focus: 'Compare the city with your hometown.', source: 'part2Place' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a quiet place', focus: 'Use the Triple E pattern: explain, example, emotion.', source: 'part2Place' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a useful object', focus: 'Explain function, frequency, and benefit.', source: 'technologyTest' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a piece of technology', focus: 'Use cause and effect language.', source: 'technologyTest' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a skill you learned', focus: 'Mention difficulty, progress, and result.', source: 'shadowDaily' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a time you helped someone', focus: 'Show clear past tense storytelling.', source: 'fullPractice' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a memorable event', focus: 'Explain why the event stayed in your memory.', source: 'fullTopicBook' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe a person who inspires you', focus: 'Use examples of actions, not only adjectives.', source: 'fullPractice' },
+    { level: 'intermediate', part: 'Part 2', topic: 'Describe an interesting job', focus: 'Talk about skills, responsibilities, and future interest.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Education opinions', focus: 'Give opinion, reason, example, and contrast.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Technology and society', focus: 'Discuss benefits and drawbacks.', source: 'technologyTest' },
+    { level: 'upper', part: 'Part 3', topic: 'Environment', focus: 'Use abstract nouns and solution language.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Health', focus: 'Compare personal habits and public policy.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Work and career', focus: 'Discuss trends and future predictions.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Books and reading', focus: 'Compare past and present habits.', source: 'fullGiftTest' },
+    { level: 'upper', part: 'Part 3', topic: 'Shopping and consumer habits', focus: 'Talk about society, advertising, and choices.', source: 'fullPractice' },
+    { level: 'upper', part: 'Part 3', topic: 'Cities and transport', focus: 'Use comparison and problem-solution structure.', source: 'part2PlaceGuide' },
+    { level: 'upper', part: 'Part 3', topic: 'Culture and art', focus: 'Move from personal examples to social ideas.', source: 'part3Topics' },
+    { level: 'upper', part: 'Part 3', topic: 'Family and generations', focus: 'Compare age groups and changing values.', source: 'part3Topics' },
+    { level: 'advanced', part: 'Full Test', topic: 'Hometown, books, and reading', focus: 'Complete all three parts without stopping.', source: 'fullGiftTest' },
+    { level: 'advanced', part: 'Full Test', topic: 'Work, technology, and modern life', focus: 'Record yourself and check fluency.', source: 'technologyTest' },
+    { level: 'advanced', part: 'Full Test', topic: 'Travel, places, and cities', focus: 'Speak for the full Part 2 time.', source: 'part2PlaceGuide' },
+    { level: 'advanced', part: 'Full Test', topic: 'Education, society, and opinions', focus: 'Support every opinion with one example.', source: 'part3Topics' },
+    { level: 'advanced', part: 'Full Test', topic: 'Mock exam: mixed IELTS speaking', focus: 'Simulate the exam: listen, pause, answer, review.', source: 'fullPractice' }
+];
+
+function buildIELTSSpeakingLessons() {
+    return IELTS_SPEAKING_CURRICULUM.map((item, idx) => {
+        const lessonNo = idx + 1;
+        const sourceKey = IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON[lessonNo];
+        const source = sourceKey ? IELTS_SPEAKING_VIDEO_SOURCES[sourceKey] : null;
+        const lessonId = `ielts-speaking-${String(lessonNo).padStart(2, '0')}`;
+        return {
+            id: lessonId,
+            youtubeId: source ? source.youtubeId : null,
+            title: `Lesson ${lessonNo}: ${item.topic}`,
+            channel: source ? source.channel : 'FlashLingo IELTS Coach',
+            duration: source ? source.duration : 'Practice',
+            level: item.level,
+            category: 'ielts-speaking',
+            icon: lessonNo <= 15 ? '🗣️' : lessonNo <= 35 ? '🎙️' : lessonNo <= 45 ? '💬' : '🏆',
+            description: `${item.part} practice. ${item.focus}`,
+            speakingPart: item.part,
+            lessonNo: lessonNo,
+            mode: lessonNo <= 15 ? 'Listen → Repeat' : lessonNo <= 35 ? 'Listen → Repeat → 1-minute answer' : 'Listen → Answer → Record yourself',
+            sourceTitle: source ? source.title : 'Practice prompt',
+            sourceUrl: source ? `https://www.youtube.com/watch?v=${source.youtubeId}` : '',
+            searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent('IELTS Speaking ' + item.topic + ' sample answers repeat after me')}`,
+            speakingPrompts: getIELTSSpeakingPrompts(item, lessonNo),
+            checkpoints: getIELTSSpeakingCheckpoints(lessonNo),
+            modelLines: getIELTSSpeakingModelLines(item, lessonNo),
+            answerFrames: getIELTSSpeakingFrames(item, lessonNo),
+            vocabulary: getIELTSSpeakingVocabulary(item.topic, lessonNo),
+            quiz: getIELTSSpeakingQuiz(item, lessonNo)
+        };
+    });
+}
+
+function getIELTSSpeakingPrompts(item, lessonNo) {
+    if (lessonNo <= 15) {
+        return [
+            `Answer this Part 1 question: ${item.topic}.`,
+            'Repeat one model sentence from the video.',
+            'Answer again using your own real information.'
+        ];
+    }
+    if (lessonNo <= 35) {
+        return [
+            `Prepare a cue card about: ${item.topic}.`,
+            'Speak for 60 seconds. Use who/what/where/when/why details.',
+            'Repeat the best sentence from the video with the same stress and intonation.'
+        ];
+    }
+    if (lessonNo <= 45) {
+        return [
+            `Give an opinion about: ${item.topic}.`,
+            'Add one reason and one example.',
+            'Try a contrast sentence: "However, some people believe..."'
+        ];
+    }
+    return [
+        `Run a full IELTS Speaking practice on: ${item.topic}.`,
+        'Pause the video after each examiner question and answer out loud.',
+        'Record yourself, then replay and check fluency, vocabulary, grammar, and pronunciation.'
+    ];
+}
+
+function getIELTSSpeakingCheckpoints(lessonNo) {
+    if (lessonNo <= 15) return ['Listen once', 'Repeat sentence by sentence', 'Answer personally'];
+    if (lessonNo <= 35) return ['Watch the model', 'Plan for 1 minute', 'Speak for 1-2 minutes'];
+    if (lessonNo <= 45) return ['Listen to the opinion', 'Repeat linking phrases', 'Give your own opinion'];
+    return ['Start full test', 'Pause and answer', 'Replay your recording'];
+}
+
+function getIELTSSpeakingModelLines(item, lessonNo) {
+    const topic = item.topic.replace(/^Describe\s+/i, '').toLowerCase();
+    if (lessonNo <= 15) {
+        return [
+            `I would say ${topic} is quite important in my daily life.`,
+            `The main reason is that it helps me express myself more naturally.`,
+            `For example, I can give a short answer and then add one personal detail.`
+        ];
+    }
+    if (lessonNo <= 35) {
+        return [
+            `I would like to talk about ${topic}.`,
+            `It was memorable because there was a clear story behind it.`,
+            `What made it special for me was the feeling I had at that time.`
+        ];
+    }
+    if (lessonNo <= 45) {
+        return [
+            `In my opinion, ${topic} can affect people in several different ways.`,
+            `One clear advantage is that it can make life more convenient.`,
+            `However, there are also some drawbacks, especially when people depend on it too much.`
+        ];
+    }
+    return [
+        `For Part 1, answer naturally and add one reason.`,
+        `For Part 2, organize your answer with past, details, and feelings.`,
+        `For Part 3, give an opinion, support it, and compare another viewpoint.`
+    ];
+}
+
+function getIELTSSpeakingFrames(item, lessonNo) {
+    if (lessonNo <= 15) {
+        return [
+            'I usually...',
+            'I prefer... because...',
+            'For example...',
+            'Compared with the past, I...'
+        ];
+    }
+    if (lessonNo <= 35) {
+        return [
+            'I would like to talk about...',
+            'This happened when...',
+            'The reason I remember it is...',
+            'Overall, it was...'
+        ];
+    }
+    if (lessonNo <= 45) {
+        return [
+            'In my opinion...',
+            'The main reason is...',
+            'For instance...',
+            'On the other hand...'
+        ];
+    }
+    return [
+        'Part 1: answer + reason',
+        'Part 2: story + details + feeling',
+        'Part 3: opinion + example + contrast',
+        'Review: fluency, vocabulary, grammar, pronunciation'
+    ];
+}
+
+function getIELTSSpeakingVocabulary(topic, lessonNo) {
+    const common = [
+        { word: 'fluency', phonetic: '/ˈfluːənsi/', meaning: 'sự lưu loát' },
+        { word: 'coherence', phonetic: '/koʊˈhɪrəns/', meaning: 'sự mạch lạc' },
+        { word: 'pronunciation', phonetic: '/prəˌnʌnsiˈeɪʃn/', meaning: 'phát âm' }
+    ];
+    const part1 = [
+        { word: 'usually', phonetic: '/ˈjuːʒuəli/', meaning: 'thường xuyên' },
+        { word: 'because', phonetic: '/bɪˈkɔːz/', meaning: 'bởi vì' }
+    ];
+    const part2 = [
+        { word: 'memorable', phonetic: '/ˈmemərəbl/', meaning: 'đáng nhớ' },
+        { word: 'experience', phonetic: '/ɪkˈspɪriəns/', meaning: 'trải nghiệm' }
+    ];
+    const part3 = [
+        { word: 'advantage', phonetic: '/ədˈvæntɪdʒ/', meaning: 'lợi thế' },
+        { word: 'drawback', phonetic: '/ˈdrɔːbæk/', meaning: 'bất lợi' }
+    ];
+    const topicWord = topic.split(/[,\s]+/).find(w => w.length > 5) || 'speaking';
+    const dynamic = { word: topicWord.toLowerCase(), phonetic: '', meaning: 'từ khóa chủ đề' };
+    return [dynamic, ...common, ...(lessonNo <= 15 ? part1 : lessonNo <= 35 ? part2 : part3)];
+}
+
+function getIELTSSpeakingQuiz(item, lessonNo) {
+    const answerLength = lessonNo <= 15 ? '2-3 sentences' : lessonNo <= 35 ? '1-2 minutes' : '30-60 seconds with reasons';
+    return [
+        { q: `What should you practice in this lesson?`, opts: [item.topic, 'Random vocabulary only', 'Silent reading'], answer: 0 },
+        { q: `Best answer length for ${item.part}?`, opts: ['One word only', answerLength, 'Ten minutes'], answer: 1 },
+        { q: 'What should you do after listening to the model?', opts: ['Close the app', 'Repeat and answer with your own idea', 'Memorize every word exactly'], answer: 1 }
+    ];
+}
+
+VIDEO_LIBRARY.push(...buildIELTSSpeakingLessons());
+
 // ==================== VIDEO LEVELS CONFIG ====================
 const VIDEO_LEVELS = {
     beginner:     { name: 'Beginner',           icon: '🌱', color: '#4CAF50', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)' },
@@ -947,6 +1251,7 @@ const VIDEO_LEVELS = {
 
 const VIDEO_CATEGORIES = {
     all:            { name: 'All',           icon: '🎬' },
+    'ielts-speaking': { name: 'IELTS Speaking', icon: '🎙️' },
     'daily-life':   { name: 'Daily Life',    icon: '🏠' },
     travel:         { name: 'Travel',        icon: '✈️' },
     movies:         { name: 'Movies',        icon: '🎥' },
@@ -963,12 +1268,50 @@ const VIDEO_CATEGORIES = {
 let videoState = {
     currentVideo: null,
     player: null,
+    selectedCourse: 'ielts',
     selectedLevel: 'all',
     selectedCategory: 'all',
     quizAnswers: [],
     quizStep: 0,
-    apiReady: false
+    apiReady: false,
+    mediaRecorder: null,
+    recordingStream: null,
+    recordingChunks: [],
+    recordingUrl: null,
+    isRecording: false
 };
+
+function getVideoEmbedId(video) {
+    if (Object.prototype.hasOwnProperty.call(video, 'youtubeId')) return video.youtubeId;
+    return video.id;
+}
+
+function getVideoProgressId(video) {
+    return video.id;
+}
+
+function escapeVideoJsString(text) {
+    return String(text || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
+}
+
+function getCourseVideos() {
+    return VIDEO_LIBRARY.filter(v => {
+        const isIELTS = v.category === 'ielts-speaking';
+        return videoState.selectedCourse === 'ielts' ? isIELTS : !isIELTS;
+    });
+}
+
+function speakSpeakingText(text) {
+    if (typeof speechSynthesis === 'undefined' || typeof SpeechSynthesisUtterance === 'undefined') {
+        if (typeof speakWord === 'function') speakWord(text);
+        return;
+    }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    speechSynthesis.speak(utterance);
+}
 
 // ==================== YOUTUBE API ====================
 function loadYouTubeAPI() {
@@ -999,18 +1342,21 @@ function switchToVideoScreen() {
 function renderVideoScreen() {
     const container = document.getElementById('videoScreen');
     const stats = getVideoStats();
+    const courseVideos = getCourseVideos();
     const filtered = getFilteredVideos();
 
     const levelKeys = ['all', ...Object.keys(VIDEO_LEVELS)];
     const levelTabs = levelKeys.map(k => {
         const isAll = k === 'all';
         const lbl = isAll ? '🎬 All' : `${VIDEO_LEVELS[k].icon} ${VIDEO_LEVELS[k].name}`;
-        const count = isAll ? VIDEO_LIBRARY.length : VIDEO_LIBRARY.filter(v => v.level === k).length;
+        const count = isAll ? courseVideos.length : courseVideos.filter(v => v.level === k).length;
         const active = videoState.selectedLevel === k ? 'active' : '';
         return `<button class="vl-tab ${active}" onclick="filterVideoLevel('${k}')">${lbl} <span class="vl-tab-count">${count}</span></button>`;
     }).join('');
 
-    const catKeys = Object.keys(VIDEO_CATEGORIES);
+    const catKeys = Object.keys(VIDEO_CATEGORIES).filter(k =>
+        videoState.selectedCourse === 'ielts' ? k === 'all' : k !== 'ielts-speaking'
+    );
     const catChips = catKeys.map(k => {
         const active = videoState.selectedCategory === k ? 'active' : '';
         return `<button class="vc-chip ${active}" onclick="filterVideoCategory('${k}')">${VIDEO_CATEGORIES[k].icon} ${VIDEO_CATEGORIES[k].name}</button>`;
@@ -1018,45 +1364,70 @@ function renderVideoScreen() {
 
     const cards = filtered.map(v => {
         const level = VIDEO_LEVELS[v.level] || VIDEO_LEVELS.beginner;
-        const watched = stats.watched.includes(v.id);
-        const stars = stats.stars[v.id] || 0;
+        const progressId = getVideoProgressId(v);
+        const watched = stats.watched.includes(progressId);
+        const stars = stats.stars[progressId] || 0;
         const starStr = stars > 0 ? '⭐'.repeat(stars) + '☆'.repeat(3 - stars) : '';
-        const thumb = `https://img.youtube.com/vi/${v.id}/mqdefault.jpg`;
+        const embedId = getVideoEmbedId(v);
+        const thumbStyle = embedId ? `style="background-image: url('https://img.youtube.com/vi/${embedId}/mqdefault.jpg')"` : '';
+        const thumbClass = embedId ? 'vc-thumb' : 'vc-thumb vc-thumb-practice';
+        const lessonBadge = v.lessonNo ? `<div class="vc-lesson-badge">Lesson ${v.lessonNo}</div>` : '';
+        const speakingMeta = v.speakingPart ? `<span class="vc-speaking-part">${v.speakingPart}</span>` : '';
+        const videoBadge = v.category === 'ielts-speaking'
+            ? `<span class="vc-source-badge ${embedId ? 'has-video' : 'practice-only'}">${embedId ? 'Video' : 'Practice'}</span>`
+            : '';
         return `
         <div class="vc-card ${watched ? 'watched' : ''}" onclick="openVideoPlayer('${v.id}')">
-            <div class="vc-thumb" style="background-image: url('${thumb}')">
+            <div class="${thumbClass}" ${thumbStyle}>
                 <div class="vc-play-icon">▶</div>
                 <div class="vc-duration">${v.duration}</div>
+                ${lessonBadge}
                 ${watched ? '<div class="vc-watched-badge">✅</div>' : ''}
             </div>
             <div class="vc-info">
                 <div class="vc-title">${v.icon} ${v.title}</div>
                 <div class="vc-meta">
                     <span class="vc-level-badge" style="background:${level.color}">${level.icon} ${level.name}</span>
+                    ${speakingMeta}
+                    ${videoBadge}
                     ${starStr ? `<span class="vc-stars">${starStr}</span>` : ''}
                 </div>
             </div>
         </div>`;
     }).join('');
 
-    const watchedCount = stats.watched.length;
-    const totalStars = Object.values(stats.stars).reduce((a, b) => a + b, 0);
-    const maxStars = VIDEO_LIBRARY.length * 3;
+    const courseIds = courseVideos.map(getVideoProgressId);
+    const watchedCount = courseIds.filter(id => stats.watched.includes(id)).length;
+    const totalStars = courseIds.reduce((sum, id) => sum + (stats.stars[id] || 0), 0);
+    const maxStars = courseVideos.length * 3;
     const wordsLearned = stats.wordsLearned.length;
+    const courseTitle = videoState.selectedCourse === 'ielts' ? '🎙️ IELTS Speaking Path' : '🎬 Video Lessons';
+    const gridClass = videoState.selectedCourse === 'ielts' ? 'vc-grid vc-grid-ielts' : 'vc-grid';
 
     container.innerHTML = `
         <div class="vs-header">
-            <div class="vs-title">🎬 Video Lessons</div>
+            <div class="vs-title">${courseTitle}</div>
             <div class="vs-stats-row">
                 <div class="vs-stat"><span class="vs-stat-val">${watchedCount}</span><span class="vs-stat-lbl">Watched</span></div>
                 <div class="vs-stat"><span class="vs-stat-val">${totalStars}/${maxStars}</span><span class="vs-stat-lbl">Stars</span></div>
                 <div class="vs-stat"><span class="vs-stat-val">${wordsLearned}</span><span class="vs-stat-lbl">Words</span></div>
             </div>
         </div>
+        <div class="vs-course-tabs">
+            <button class="vs-course-tab ${videoState.selectedCourse === 'ielts' ? 'active' : ''}" onclick="switchVideoCourse('ielts')">🎙️ IELTS Path</button>
+            <button class="vs-course-tab ${videoState.selectedCourse === 'library' ? 'active' : ''}" onclick="switchVideoCourse('library')">🎬 Library</button>
+        </div>
         <div class="vl-tabs-scroll">${levelTabs}</div>
-        <div class="vc-chips-scroll">${catChips}</div>
-        <div class="vc-grid">${cards || '<div class="vc-empty">No videos found for this filter.</div>'}</div>
+        ${videoState.selectedCourse === 'library' ? `<div class="vc-chips-scroll">${catChips}</div>` : ''}
+        <div class="${gridClass}">${cards || '<div class="vc-empty">No videos found for this filter.</div>'}</div>
     `;
+}
+
+function switchVideoCourse(course) {
+    videoState.selectedCourse = course;
+    videoState.selectedLevel = 'all';
+    videoState.selectedCategory = 'all';
+    renderVideoScreen();
 }
 
 function filterVideoLevel(level) {
@@ -1070,7 +1441,7 @@ function filterVideoCategory(cat) {
 }
 
 function getFilteredVideos() {
-    return VIDEO_LIBRARY.filter(v => {
+    return getCourseVideos().filter(v => {
         if (videoState.selectedLevel !== 'all' && v.level !== videoState.selectedLevel) return false;
         if (videoState.selectedCategory !== 'all' && v.category !== videoState.selectedCategory) return false;
         return true;
@@ -1085,8 +1456,9 @@ function openVideoPlayer(videoId) {
     videoState.currentVideo = video;
     videoState.quizAnswers = [];
     videoState.quizStep = 0;
+    resetSpeakingRecording();
 
-    loadYouTubeAPI();
+    if (getVideoEmbedId(video)) loadYouTubeAPI();
 
     const overlay = document.getElementById('videoPlayerOverlay');
     overlay.classList.add('active');
@@ -1100,7 +1472,8 @@ function renderVideoPlayer() {
     const overlay = document.getElementById('videoPlayerOverlay');
     const level = VIDEO_LEVELS[v.level] || VIDEO_LEVELS.beginner;
     const stats = getVideoStats();
-    const prevStars = stats.stars[v.id] || 0;
+    const prevStars = stats.stars[getVideoProgressId(v)] || 0;
+    const embedId = getVideoEmbedId(v);
 
     const vocabHtml = v.vocabulary.map(w =>
         `<div class="vp-word" onclick="speakWord('${w.word.replace(/'/g, "\\'")}')">
@@ -1109,6 +1482,63 @@ function renderVideoPlayer() {
             <div class="vp-word-vi">${w.meaning}</div>
         </div>`
     ).join('');
+    const playerHtml = embedId ? `
+            <div class="vp-player-wrap">
+                <div id="ytPlayerContainer"></div>
+                <div class="vp-offline-msg" id="vpOfflineMsg" style="display:none;">
+                    📡 Internet needed to play video
+                </div>
+            </div>
+    ` : `
+            <div class="vp-player-wrap vp-practice-wrap">
+                <div class="vp-practice-player">
+                    <div class="vp-practice-icon">🎙️</div>
+                    <div class="vp-practice-title">Practice lesson</div>
+                    <div class="vp-practice-subtitle">No exact verified video yet. Use the model lines, record your answer, then replace the video from the search link.</div>
+                </div>
+            </div>
+    `;
+    const speakingHtml = v.speakingPrompts ? `
+        <div class="vp-speaking-panel">
+            <div class="vp-speaking-head">
+                <div>
+                    <div class="vp-speaking-label">IELTS Speaking ${v.lessonNo ? 'Lesson ' + v.lessonNo : ''}</div>
+                    <div class="vp-speaking-mode">${v.mode || v.speakingPart || 'Listen and repeat'}</div>
+                </div>
+                <div class="vp-speaking-part">${v.speakingPart || ''}</div>
+            </div>
+            <div class="vp-checkpoints">
+                ${(v.checkpoints || []).map(c => `<span>${c}</span>`).join('')}
+            </div>
+            <div class="vp-model-lines">
+                <div class="vp-mini-title">Model lines</div>
+                ${(v.modelLines || []).map(line => `
+                    <button class="vp-model-line" onclick="speakSpeakingText('${escapeVideoJsString(line)}')">
+                        <span>🔊</span>
+                        <span>${line}</span>
+                    </button>
+                `).join('')}
+            </div>
+            <div class="vp-answer-frames">
+                <div class="vp-mini-title">Answer frames</div>
+                <div class="vp-frame-list">
+                    ${(v.answerFrames || []).map(frame => `<span>${frame}</span>`).join('')}
+                </div>
+            </div>
+            <div class="vp-prompts">
+                <div class="vp-mini-title">Practice prompts</div>
+                ${v.speakingPrompts.map((p, i) => `
+                    <div class="vp-prompt">
+                        <div class="vp-prompt-num">${i + 1}</div>
+                        <div class="vp-prompt-text">${p}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="vp-recorder" id="vpRecorder">${getSpeakingRecorderHTML(v)}</div>
+            ${v.sourceUrl ? `<a class="vp-source-link" href="${v.sourceUrl}" target="_blank" rel="noopener">Open source video</a>` : ''}
+            ${v.searchUrl ? `<a class="vp-source-link" href="${v.searchUrl}" target="_blank" rel="noopener">${v.sourceUrl ? 'Find better match' : 'Find matching video'}</a>` : ''}
+        </div>
+    ` : '';
 
     overlay.innerHTML = `
         <div class="vp-container">
@@ -1120,24 +1550,126 @@ function renderVideoPlayer() {
             <div class="vp-title">${v.icon} ${v.title}</div>
             <div class="vp-channel">${v.channel} · ${v.duration}</div>
 
-            <div class="vp-player-wrap">
-                <div id="ytPlayerContainer"></div>
-                <div class="vp-offline-msg" id="vpOfflineMsg" style="display:none;">
-                    📡 Internet needed to play video
-                </div>
-            </div>
+            ${playerHtml}
 
             <div class="vp-desc">${v.description}</div>
+            ${speakingHtml}
 
             <div class="vp-section-title">📚 Key Vocabulary</div>
             <div class="vp-words-grid">${vocabHtml}</div>
 
-            <button class="vp-quiz-btn" onclick="startVideoQuiz()">🧠 Take Quiz (${v.quiz.length} questions)</button>
+            <button class="vp-quiz-btn" onclick="startVideoQuiz()">${v.speakingPrompts ? '🎙️ Finish Speaking Practice' : '🧠 Take Quiz'} (${v.quiz.length} questions)</button>
         </div>
     `;
 
     // Create YouTube player
-    setTimeout(() => createYTPlayer(v.id), 100);
+    if (embedId) setTimeout(() => createYTPlayer(embedId), 100);
+}
+
+function getSpeakingRecorderHTML(video) {
+    if (!video || !video.speakingPrompts) return '';
+    const stats = getVideoStats();
+    const rating = stats.speakingRatings && stats.speakingRatings[getVideoProgressId(video)];
+    const ratingHtml = [1, 2, 3, 4, 5].map(score => {
+        const active = rating && rating.score === score ? 'active' : '';
+        return `<button class="vp-rate-btn ${active}" onclick="rateSpeakingPractice(${score})">${score}</button>`;
+    }).join('');
+    return `
+        <div class="vp-recorder-title">Record your answer</div>
+        <div class="vp-recorder-actions">
+            ${videoState.isRecording
+                ? '<button class="vp-record-btn stop" onclick="stopSpeakingRecording()">■ Stop</button>'
+                : '<button class="vp-record-btn" onclick="startSpeakingRecording()">● Record</button>'}
+            <button class="vp-record-btn secondary" onclick="playSpeakingRecording()" ${videoState.recordingUrl ? '' : 'disabled'}>▶ Play</button>
+        </div>
+        <div class="vp-rating">
+            <span>Self-rate</span>
+            <div class="vp-rating-buttons">${ratingHtml}</div>
+        </div>
+        ${rating ? `<div class="vp-rating-saved">Saved: ${rating.score}/5</div>` : ''}
+    `;
+}
+
+function renderSpeakingRecorder() {
+    const el = document.getElementById('vpRecorder');
+    if (el) el.innerHTML = getSpeakingRecorderHTML(videoState.currentVideo);
+}
+
+function resetSpeakingRecording() {
+    if (videoState.mediaRecorder && videoState.mediaRecorder.state !== 'inactive') {
+        try { videoState.mediaRecorder.stop(); } catch(e) {}
+    }
+    if (videoState.recordingStream) {
+        videoState.recordingStream.getTracks().forEach(track => track.stop());
+    }
+    if (videoState.recordingUrl && typeof URL !== 'undefined' && URL.revokeObjectURL) {
+        URL.revokeObjectURL(videoState.recordingUrl);
+    }
+    videoState.mediaRecorder = null;
+    videoState.recordingStream = null;
+    videoState.recordingChunks = [];
+    videoState.recordingUrl = null;
+    videoState.isRecording = false;
+}
+
+async function startSpeakingRecording() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+        showToast('Recording is not supported on this browser');
+        return;
+    }
+    try {
+        resetSpeakingRecording();
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        videoState.recordingStream = stream;
+        videoState.recordingChunks = [];
+        const recorder = new MediaRecorder(stream);
+        videoState.mediaRecorder = recorder;
+        recorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) videoState.recordingChunks.push(e.data);
+        };
+        recorder.onstop = () => {
+            const blob = new Blob(videoState.recordingChunks, { type: 'audio/webm' });
+            videoState.recordingUrl = URL.createObjectURL(blob);
+            videoState.isRecording = false;
+            if (videoState.recordingStream) {
+                videoState.recordingStream.getTracks().forEach(track => track.stop());
+                videoState.recordingStream = null;
+            }
+            renderSpeakingRecorder();
+        };
+        recorder.start();
+        videoState.isRecording = true;
+        renderSpeakingRecorder();
+    } catch (e) {
+        showToast('Microphone permission is needed to record');
+    }
+}
+
+function stopSpeakingRecording() {
+    if (!videoState.mediaRecorder || videoState.mediaRecorder.state === 'inactive') return;
+    videoState.mediaRecorder.stop();
+}
+
+function playSpeakingRecording() {
+    if (!videoState.recordingUrl) {
+        showToast('Record your answer first');
+        return;
+    }
+    const audio = new Audio(videoState.recordingUrl);
+    audio.play();
+}
+
+function rateSpeakingPractice(score) {
+    const video = videoState.currentVideo;
+    if (!video) return;
+    const stats = getVideoStats();
+    if (!stats.speakingRatings) stats.speakingRatings = {};
+    const progressId = getVideoProgressId(video);
+    stats.speakingRatings[progressId] = { score, date: Date.now() };
+    if (!stats.watched.includes(progressId)) stats.watched.push(progressId);
+    saveVideoStats(stats);
+    showToast(`Speaking rating saved: ${score}/5`);
+    renderSpeakingRecorder();
 }
 
 function createYTPlayer(videoId) {
@@ -1190,6 +1722,7 @@ function closeVideoPlayer() {
     const overlay = document.getElementById('videoPlayerOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
+    resetSpeakingRecording();
 
     if (videoState.player && typeof videoState.player.destroy === 'function') {
         videoState.player.destroy();
@@ -1258,23 +1791,23 @@ function showVideoQuizResults() {
     const correctCount = videoState.quizAnswers.filter(a => a).length;
     const total = v.quiz.length;
     const stars = correctCount === total ? 3 : correctCount >= total * 0.66 ? 2 : correctCount >= 1 ? 1 : 0;
+    const points = stars * 5;
 
     // Save stats
     const stats = getVideoStats();
-    if (!stats.watched.includes(v.id)) stats.watched.push(v.id);
-    stats.stars[v.id] = Math.max(stats.stars[v.id] || 0, stars);
+    const progressId = getVideoProgressId(v);
+    if (!stats.watched.includes(progressId)) stats.watched.push(progressId);
+    stats.stars[progressId] = Math.max(stats.stars[progressId] || 0, stars);
     v.vocabulary.forEach(w => {
         if (!stats.wordsLearned.includes(w.word)) stats.wordsLearned.push(w.word);
     });
     stats.totalQuizzes++;
-    saveVideoStats(stats);
 
     // Update global points
-    const points = stars * 5;
-    if (typeof appState !== 'undefined' && points > 0) {
-        appState.points += points;
-        saveUserData();
+    if (typeof appState !== 'undefined' && appState && points > 0) {
+        appState.points = (appState.points || 0) + points;
     }
+    saveVideoStats(stats);
 
     const overlay = document.getElementById('videoPlayerOverlay');
     const starsHtml = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
@@ -1296,14 +1829,30 @@ function showVideoQuizResults() {
 }
 
 // ==================== STATS (localStorage) ====================
+function normalizeVideoStats(stats) {
+    stats = stats || {};
+    if (!Array.isArray(stats.watched)) stats.watched = [];
+    if (!stats.stars || typeof stats.stars !== 'object') stats.stars = {};
+    if (!Array.isArray(stats.wordsLearned)) stats.wordsLearned = [];
+    if (!stats.speakingRatings || typeof stats.speakingRatings !== 'object') stats.speakingRatings = {};
+    if (typeof stats.totalQuizzes !== 'number') stats.totalQuizzes = 0;
+    return stats;
+}
+
 function getVideoStats() {
-    if (typeof appState !== 'undefined' && appState.videoStats) return appState.videoStats;
-    return { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
+    if (typeof appState !== 'undefined' && appState && appState.videoStats) {
+        return normalizeVideoStats(appState.videoStats);
+    }
+    return normalizeVideoStats();
 }
 
 function saveVideoStats(stats) {
-    if (typeof appState !== 'undefined') {
-        appState.videoStats = stats;
-        saveUserData();
+    if (typeof appState !== 'undefined' && appState) {
+        appState.videoStats = normalizeVideoStats(stats);
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            saveUserData(currentUser, appState);
+        } else {
+            saveUserData();
+        }
     }
 }

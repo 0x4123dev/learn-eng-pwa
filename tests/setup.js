@@ -72,6 +72,7 @@ function buildSandbox(opts) {
         Set: Set,
         Map: Map,
         Promise: Promise,
+        encodeURIComponent: encodeURIComponent,
         // App-level globals that are referenced but not core to the test
         showToast: () => {},
         unlockAchievement: () => {},
@@ -131,7 +132,16 @@ const EXPORT_NAMES = [
     'getWeekStart', 'formatWeekRange', 'generateWeeklyRecap', 'getRecapMessage',
     'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
     // daily-challenge
-    'getDailyWords', 'seededRandom'
+    'getDailyWords', 'seededRandom',
+    // videos
+    'VIDEO_LIBRARY', 'VIDEO_LEVELS', 'VIDEO_CATEGORIES',
+    'IELTS_SPEAKING_VIDEO_SOURCES', 'IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON',
+    'IELTS_SPEAKING_CURRICULUM', 'buildIELTSSpeakingLessons',
+    'getVideoEmbedId', 'getVideoProgressId', 'getCourseVideos',
+    'getIELTSSpeakingPrompts', 'getIELTSSpeakingCheckpoints',
+    'getIELTSSpeakingModelLines', 'getIELTSSpeakingFrames',
+    'getIELTSSpeakingVocabulary', 'getIELTSSpeakingQuiz',
+    'normalizeVideoStats', 'getVideoStats', 'saveVideoStats'
 ];
 
 function loadAppCode(opts) {
@@ -151,6 +161,9 @@ function loadAppCode(opts) {
     }
     if (opts.includeDailyChallenge) {
         fileList.push('js/daily-challenge.js');
+    }
+    if (opts.includeVideos) {
+        fileList.push('js/videos.js');
     }
 
     let combined = '';
