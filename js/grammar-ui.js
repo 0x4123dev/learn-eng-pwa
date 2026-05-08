@@ -140,6 +140,8 @@ function openGrammarSession(historyIdx) {
                     ` : ''}
                 </div>
                 <div class="grammar-review-explain">💡 ${q.explanation}</div>
+                ${(typeof formatPdfPageRef === 'function' && formatPdfPageRef(session.unitId, q))
+                    ? `<div class="grammar-page-ref">${formatPdfPageRef(session.unitId, q)}</div>` : ''}
             </div>
         `;
     }).join('');
@@ -221,12 +223,14 @@ function renderMCQuestion() {
 
     const scoreSoFar = scoreSoFar_();
 
+    const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId, q) : '';
     const explanationBox = showingResult ? `
         <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
             <div class="grammar-explanation-header">
                 ${isCorrect ? '✓ Correct!' : '✗ Not quite. The correct answer is <strong>' + q.options[correct] + '</strong>.'}
             </div>
             <div class="grammar-explanation-body">💡 ${q.explanation}</div>
+            ${pageRefStr ? `<div class="grammar-page-ref">${pageRefStr}</div>` : ''}
         </div>
         <button class="grammar-next-btn" onclick="nextGrammarQuestion()">
             ${state.currentIdx + 1 >= total ? '🏁 See Results' : 'Next Question →'}
@@ -275,7 +279,8 @@ function renderArrangementQuestion() {
 
     let actionsHTML = '';
     if (showingResult) {
-        const correctSentence = q.parts.join(' ').replace(/ \./g, '.').replace(/ \?/g, '?');
+        const correctSentence = q.parts.join(' ').replace(/ \./g, '.').replace(/ \?/g, '?').replace(/ !/g, '!');
+        const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId, q) : '';
         actionsHTML = `
             <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
                 <div class="grammar-explanation-header">
@@ -283,6 +288,7 @@ function renderArrangementQuestion() {
                 </div>
                 ${!isCorrect ? `<div class="arr-correct-sentence">"${correctSentence}"</div>` : ''}
                 <div class="grammar-explanation-body">💡 ${q.explanation}</div>
+                ${pageRefStr ? `<div class="grammar-page-ref">${pageRefStr}</div>` : ''}
             </div>
             <button class="grammar-next-btn" onclick="nextGrammarQuestion()">
                 ${state.currentIdx + 1 >= total ? '🏁 See Results' : 'Next Question →'}

@@ -3658,3 +3658,103 @@ function saveGrammarSession(unitId, questions, answers) {
     saveUserData(currentUser, appState);
     return session;
 }
+
+// ==================== PDF PAGE REFERENCES ====================
+// Maps each question's topic to the textbook (Life A2-B1) PDF page where the
+// theory is taught. Users can use this to find the original lesson and review.
+
+// Topic-pattern → PDF page reference. Pattern is matched case-insensitively;
+// the FIRST matching pattern (in order) wins. The "section" is the textbook
+// section heading (e.g., "8a", "9b") for easier navigation.
+const PDF_PAGE_REFS = {
+    unit8: [
+        // 8a: page 88-89 — clothes, present continuous, /s/ /ʃ/, Rags2Riches, word stress
+        { match: /clothes|rags2riches|laurel|philippines.*designer|\/s\/.*\/ʃ\/|\/s\/ vs \/ʃ\/|sh vs s|\/ʃ\/|present continuous|continuous question|continuous negative|wh.question.*continuous|continuous vs simple|word stress/i, page: '88-89', section: '8a' },
+        // 8b: page 90-91 — face & body, present simple vs continuous, sound spelling, plural
+        { match: /face|body|beard|\bear\b|\beye\b|\bhair\b|\bhand\b|\bhead\b|\bleg\b|\bmouth\b|\bshoulder\b|\bfoot\b|\barm\b|present simple|sound and spelling|sound spelling|vowel sound|\/e\/ vs|plural -s|final s:/i, page: '90-91', section: '8b' },
+        // 8c: page 92-93 — Pink and Blue, word focus "like", have got, toys
+        { match: /pink|jeongmee|yoon|seowoo|toy|doll|word focus.*like|have got|word focus: like/i, page: '92-93', section: '8c' },
+        // 8d: page 94-95 — describing photos, silent letters, sound spelling
+        { match: /photo|describing.*pictures|in the middle|on the left|foreground|background|silent.*letter|underlined letter \(silent/i, page: '94-95', section: '8d' },
+        // 8e: page 95 — KISS short messages
+        { match: /KISS|short message|writing.*messages?/i, page: '95', section: '8e' },
+        // 8f: page 96-97 — Festivals video + festival adjectives
+        { match: /festival|dinagyang|girona|polga|carnival|colourful|crowded|\bnoisy\b|relaxing|popular|exciting|\bquiet\b|\bfun\b|\bboring\b/i, page: '96-97', section: '8f' },
+        // CATCH-ALL for Unit 8: pronunciation drills (underlined letter etc.) → 8a-8d general
+        { match: /underlined letter|silent letters|pronunciation/i, page: '88-95', section: '8a-d' }
+    ],
+    unit9: [
+        // 9a: page 106-107 — films, see/watch, Tallgrass, /tə/, be going to
+        { match: /\bfilms?\b|animation|comedy|documentary|fantasy|horror|romantic|science fiction|thriller|tallgrass|see vs watch|see\/watch|see vs watch|be going to|going to.*plan|\/tə\/|tə.*weak|going to.*pronounc|wh.question.*going to/i, page: '106-107', section: '9a' },
+        // 9b: page 108-109 — TV, infinitive of purpose, Adrian Seymour, wildlife
+        { match: /\bTV\b|TV programme|sports programme|quiz show|drama series|wildlife documentary|\bnews\b|adrian seymour|infinitive of purpose|wildlife/i, page: '108-109', section: '9b' },
+        // 9c: page 110-111 — nature in art, like vs prefer, art appreciation
+        { match: /nature|nature in art|witkiewicz|hiroshige|milhazes|van gogh|sunflower|landscape|like vs prefer|prefer.*like|critical thinking|art appreciation/i, page: '110-111', section: '9c' },
+        // 9d: page 112 — inviting & arrangements, enthusiasm stress, theatre
+        { match: /inviting|invitation|making arrangement|let.s meet|arrangement|enthusiasm stress|showing enthusiasm|theatre|responding to invitation|making suggestion(?!.*south america)/i, page: '112', section: '9d' },
+        // 9e: page 113 — writing reviews, sense verbs
+        { match: /\breviews?\b|sense verb|writing skill.*verb|carnival.*musical/i, page: '113', section: '9e' },
+        // 9f: page 114-115 — Filming wildlife video
+        { match: /filming wildlife video|kinkajou|camera trap|honduras|rainforest/i, page: '114-115', section: '9f' },
+        // CATCH-ALL for Unit 9: pronunciation drills + word stress
+        { match: /underlined letter|silent k|silent w|word stress|\/ed\/|past tense.*-?ed|final ed/i, page: '106-115', section: '9a-f' }
+    ],
+    unit10: [
+        // 10 cover (117): subjects + topics matching
+        { match: /^subjects?$|subject.*career|subject topic|subjects?\W/i, page: '117', section: '10 Cover' },
+        // 10a: page 118-119 — What have we learned?, vocabulary learning, present perfect
+        { match: /what have we learned|scientists.*achievement|things still to learn|invisible|self.driving|teleport|hans lippershey|telescope|phone has changed|public phone|mobile phone|^learning verb|synonym|antonym|present perfect|have you ever|past participle/i, page: '118-119', section: '10a' },
+        // 10b: page 120-121 — How good is your memory?, Nelson Dellis, present perfect vs past simple
+        { match: /\bmemory\b|nelson dellis|things to remember|memorize|recall|past simple|perfect vs past|past tense.*-?ed|past tense -ed|past tense endings|-ed ending/i, page: '120-121', section: '10b' },
+        // 10c: page 122-123 — Good learning habits, Phelps, word focus up
+        { match: /daily habit|good habit|bad habit|\bhabit\b|michael phelps|olympic.*swim|66 days|254 days|word focus.*up|critical thinking.*main idea|main idea|word focus: up/i, page: '122-123', section: '10c' },
+        // 10d: page 124 — Communication problems, checking & clarifying, contrastive stress
+        { match: /communication problem|checking|clarif|A for apple|encasa|ancasa|contrastive stress/i, page: '124', section: '10d' },
+        // 10e: page 125 — voicemail, email addresses, imperatives
+        { match: /email address|website|telephone message|voicemail|imperative|@|j_jones|charityhelp|ancasa\.com/i, page: '125', section: '10e' },
+        // 10f: page 126-127 — Memory and language learning video
+        { match: /jericho|palestine|memory.*language|language learning.*video/i, page: '126-127', section: '10f' },
+        // CATCH-ALL for Unit 10: pronunciation drills + word stress
+        { match: /underlined letter|word stress|silent t|silent letters|h: \/h\/|er: \/ɜː\//i, page: '118-127', section: '10a-f' }
+    ],
+    unit11: [
+        // 11a: page 130-131 — Planning a trip, Australia, Brazil, have to/can/can't, /hæftə/
+        { match: /australia.*tourist|australian embassy|brazil(?!ian artist)|portuguese|right.hand|multicultural|in another country|\bclimate\b|currency|licence|\bvisa\b|temperature|have to|don.t have to|\bcan\b|can.t\b|hæftə|signs?.*notices?/i, page: '130-131', section: '11a' },
+        // 11b: page 132-133 — On holiday, tourism, word families, should/shouldn't, take
+        { match: /tourism|return ticket|single ticket|carry.on|souvenir|tour guide|sightseeing|public transport|word famil|tour\W|travel\W|visit\W|drive\W|\bshould\b|shouldn.t|word focus.*take|word focus: take|jan lanting|gunung mulu|thurlestone|types of holiday/i, page: '132-133', section: '11b' },
+        // 11c: page 134-135 — Should I go there? (Antarctica), critical thinking, something/anywhere
+        { match: /antarctica|carlos gomm|\bcruise\b|environmental organization|critical thinking.*reason|critical thinking.*balance|advantage|disadvantage|something|anybody|anywhere|nobody|nothing|somewhere|nowhere|some.*any.*no|critical thinking: reason|critical thinking: balance/i, page: '134-135', section: '11c' },
+        // 11d: page 136 — A holiday in South America, making suggestions, /ʌ/ /ʊ/ /uː/
+        { match: /making suggestion|why don.t you|how about\b|south america|cruise.*could|himalayas|\/ʌ\/|\/ʊ\/|\/uː\/|responding to suggestion/i, page: '136', section: '11d' },
+        // 11e: page 137 — A questionnaire
+        { match: /questionnaire|closed question|open question|hotel.*feedback|fitness gym|comfortable rooms|hotel rating/i, page: '137', section: '11e' },
+        // 11f: page 138-139 — A tour of London
+        { match: /\blondon\b|shard|gherkin|cheesegrater|walkie.talkie|tower bridge|river thames|\bromans\b|football pitch|keith.*tour|london buildings/i, page: '138-139', section: '11f' },
+        // 11 review (140) — Space Tourism, Anousheh Ansari
+        { match: /space tourism|anousheh ansari/i, page: '140', section: '11 Review' },
+        // CATCH-ALL for Unit 11: pronunciation drills + word stress
+        { match: /underlined letter|word stress|pronunciation/i, page: '130-139', section: '11a-f' }
+    ]
+};
+
+// Resolve a question's PDF page reference based on its topic + content.
+// Returns { page: '88-89', section: '8a' } or null if no match.
+function getPdfPageRef(unitId, q) {
+    const refs = PDF_PAGE_REFS[unitId];
+    if (!refs) return null;
+    // Combine topic + question text + explanation for matching
+    const haystack = (q.topic || '') + ' | ' + (q.q || '') + ' | ' + (q.explanation || '');
+    for (const r of refs) {
+        if (r.match.test(haystack)) {
+            return { page: r.page, section: r.section };
+        }
+    }
+    return null;
+}
+
+// Public helper for UI — formatted reference string
+function formatPdfPageRef(unitId, q) {
+    const ref = getPdfPageRef(unitId, q);
+    if (!ref) return '';
+    return '📖 Life A2-B1 textbook, p. ' + ref.page + ' (Section ' + ref.section + ')';
+}

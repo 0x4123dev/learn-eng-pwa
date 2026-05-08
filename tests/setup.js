@@ -123,6 +123,7 @@ const EXPORT_NAMES = [
     // grammar
     'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
     'isArrangementCorrect', 'scoreGrammarQuestion',
+    'PDF_PAGE_REFS', 'getPdfPageRef', 'formatPdfPageRef',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
