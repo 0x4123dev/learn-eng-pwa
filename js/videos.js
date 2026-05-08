@@ -949,6 +949,78 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
         duration: 'Short',
         title: 'IELTS Speaking Part 1: Hometown Model Answer'
     },
+    workStudy: {
+        youtubeId: 'Y3X8pnD6sVk',
+        channel: 'Emuallim',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Do You Work or Are You a Student?'
+    },
+    familyPart1: {
+        youtubeId: 'MSUMQk4gxbI',
+        channel: 'Tiny Talks',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Family Sample Answers'
+    },
+    foodPart1: {
+        youtubeId: 'UUs1Fp7-D-M',
+        channel: 'IELTS with Charles',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Food and Cooking Sample Answers'
+    },
+    hobbiesPart1: {
+        youtubeId: '4Hl-iRtHbWc',
+        channel: 'Learnivo',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Hobbies Practice'
+    },
+    weatherPart1: {
+        youtubeId: 'jQq6Yb_yESM',
+        channel: 'English Speaking Success',
+        duration: 'Short',
+        title: 'IELTS Speaking Part 1: Weather Answer'
+    },
+    sportsPart1: {
+        youtubeId: 'MlwYFG9l_Ho',
+        channel: 'IELTS PERFECTION',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Sport Sample Answers'
+    },
+    musicPart1: {
+        youtubeId: 'Fg_G-5gxR3U',
+        channel: 'ielts.studio',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Music Sample Answers'
+    },
+    readingPart1: {
+        youtubeId: 'PWJlS9vUXuo',
+        channel: 'The English A2Z Guide',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Books Sample Answers'
+    },
+    friendsPart1: {
+        youtubeId: 'ePlvjvig_Zk',
+        channel: 'IELTSlab',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Friends Sample Answers'
+    },
+    clothesPart1: {
+        youtubeId: '135rDy86j7Q',
+        channel: 'IELTS Anika',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Clothes Sample Answers'
+    },
+    shoppingPart1: {
+        youtubeId: 'W14sc3P1RN4',
+        channel: 'IELTSlab',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Shopping Sample Answers'
+    },
+    transportPart1: {
+        youtubeId: 'njp1AaqhX8Y',
+        channel: 'beat english',
+        duration: 'Part 1',
+        title: 'IELTS Speaking Part 1: Transportation Sample Answers'
+    },
     part2Place: {
         youtubeId: 'mKhyIxWL3gQ',
         channel: 'KevinTeachesMe',
@@ -995,8 +1067,20 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
 
 const IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON = {
     1: 'part1Hometown',
+    2: 'workStudy',
     3: 'part1Hometown',
+    4: 'familyPart1',
     5: 'shadowDaily',
+    6: 'foodPart1',
+    7: 'hobbiesPart1',
+    8: 'weatherPart1',
+    9: 'sportsPart1',
+    10: 'musicPart1',
+    11: 'readingPart1',
+    12: 'friendsPart1',
+    13: 'clothesPart1',
+    14: 'shoppingPart1',
+    15: 'transportPart1',
     16: 'part1Hometown',
     19: 'shadowDaily',
     23: 'part2Place',

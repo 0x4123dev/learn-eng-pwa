@@ -115,6 +115,24 @@ suite('videos: IELTS Speaking curriculum', () => {
         });
     });
 
+    test('lesson 2 has a verified Work or Study video source', () => {
+        const env = load();
+        const lesson = env.VIDEO_LIBRARY.find(v => v.id === 'ielts-speaking-02');
+        assert.equal(lesson.youtubeId, 'Y3X8pnD6sVk');
+        assert.equal(env.getVideoEmbedId(lesson), 'Y3X8pnD6sVk');
+        assert.truthy(lesson.sourceUrl.includes('Y3X8pnD6sVk'));
+    });
+
+    test('every beginner Part 1 lesson has a direct playable video source', () => {
+        const env = load();
+        for (let lessonNo = 1; lessonNo <= 15; lessonNo++) {
+            const lesson = env.VIDEO_LIBRARY.find(v => v.id === `ielts-speaking-${String(lessonNo).padStart(2, '0')}`);
+            assert.truthy(env.IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON[lessonNo], `lesson ${lessonNo} source map`);
+            assert.truthy(lesson.youtubeId, `lesson ${lessonNo} youtubeId`);
+            assert.equal(env.getVideoEmbedId(lesson), lesson.youtubeId, `lesson ${lessonNo} embed`);
+        }
+    });
+
     test('does not include known unavailable YouTube video IDs', () => {
         const env = load();
         const directIds = env.VIDEO_LIBRARY.map(v => env.getVideoEmbedId(v)).filter(Boolean);
