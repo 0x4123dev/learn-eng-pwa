@@ -1021,6 +1021,54 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
         duration: 'Part 1',
         title: 'IELTS Speaking Part 1: Transportation Sample Answers'
     },
+    homeAccommodationPart1: {
+        youtubeId: 'MG0QL4Wg-qw',
+        channel: 'Ngoc Trinh Diary',
+        duration: '4:39',
+        title: 'IELTS Speaking Part 1: Home and Accommodation Sample Answer'
+    },
+    hometownPart2: {
+        youtubeId: 'McCP4NFU2v0',
+        channel: 'Learnivo',
+        duration: '8:42',
+        title: 'IELTS Speaking Part 2: Describe Your Hometown'
+    },
+    dailyRoutinePart2: {
+        youtubeId: 'Jew9TDuEHQo',
+        channel: 'IELTSassistance',
+        duration: '2:22',
+        title: 'IELTS Speaking Part 2: Describe One Typical Day'
+    },
+    familyMemberPart2: {
+        youtubeId: 'u8N0QQ0eKyQ',
+        channel: 'ielts.studio',
+        duration: '1:49',
+        title: 'IELTS Speaking Part 2: Describe Someone in Your Family'
+    },
+    friendPart2: {
+        youtubeId: 'u9nl_7K9hGk',
+        channel: 'English Panda',
+        duration: '3:08',
+        title: 'IELTS Speaking Part 2: Describe My Best Friend'
+    },
+    favoriteFoodPart2: {
+        youtubeId: '4gCXEFJyJ1U',
+        channel: 'Speak Better English',
+        duration: '3:07',
+        title: 'IELTS Speaking Part 2: Describe Your Favorite Food'
+    },
+    hobbyPart2: {
+        youtubeId: 'hLPD5hauxU4',
+        channel: 'AcademicEnglishHelp',
+        duration: '6:12',
+        title: 'IELTS Speaking Topic: Hobbies Sample Answer'
+    },
+    bookPart2: {
+        youtubeId: 'GzOoHukpVlY',
+        channel: 'English Speaking Success',
+        duration: '2:20',
+        title: 'IELTS Speaking Part 2: A Book You Recently Read'
+    },
     part2Place: {
         youtubeId: 'mKhyIxWL3gQ',
         channel: 'KevinTeachesMe',
@@ -1032,6 +1080,162 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
         channel: 'IELTS BANGLADESH',
         duration: 'IELTS lesson',
         title: 'IELTS Speaking Part 2: Describe a Place Guide'
+    },
+    giftPart2: {
+        youtubeId: 'HLFcO9KAPiY',
+        channel: 'Planet English',
+        duration: '2:42',
+        title: 'IELTS Speaking Part 2: Describe a Gift'
+    },
+    photoPart2: {
+        youtubeId: '5Gq63LaPNEg',
+        channel: 'IELTS Online Lessons',
+        duration: '1:32',
+        title: 'IELTS Speaking Part 2: Describe a Photograph'
+    },
+    journeyPart2: {
+        youtubeId: '8-hR5r_DNNs',
+        channel: 'KevinTeachesMe',
+        duration: '7:54',
+        title: 'IELTS Speaking Part 2: Describe a Long Journey'
+    },
+    cityPart2: {
+        youtubeId: 'q_yiQ7Olp48',
+        channel: 'IELTS Hannah',
+        duration: '4:45',
+        title: 'IELTS Speaking Part 2: Describe a Beautiful City'
+    },
+    quietPlacePart2: {
+        youtubeId: 'eAxeCZlyhEk',
+        channel: 'IELTS Speaking Lab',
+        duration: '5:08',
+        title: 'IELTS Speaking Part 2: Describe a Quiet Place'
+    },
+    usefulObjectPart2: {
+        youtubeId: 'E-qBBoP5F-c',
+        channel: 'ielts.studio',
+        duration: '1:57',
+        title: 'IELTS Speaking Part 2: Describe a Useful Electronic Device'
+    },
+    technologyPart2: {
+        youtubeId: 'ytmcH_7bWcI',
+        channel: 'IELTS SPEAKING',
+        duration: '4:33',
+        title: 'IELTS Speaking Part 2: Describe a Piece of Technology'
+    },
+    skillPart2: {
+        youtubeId: 'OrXD_XJL5RU',
+        channel: 'Learnivo',
+        duration: '8:56',
+        title: 'IELTS Speaking Part 2: A Useful Skill You Learned'
+    },
+    helpSomeonePart2: {
+        youtubeId: 'XNPcid6cdWc',
+        channel: 'English Speaking Success',
+        duration: '1:59',
+        title: 'IELTS Speaking Part 2: Describe a Time You Helped Someone'
+    },
+    memorableEventPart2: {
+        youtubeId: 'HUmN95-meuI',
+        channel: 'IELTS Fighter',
+        duration: '2:18',
+        title: 'IELTS Speaking Part 2: Describe a Memorable Event'
+    },
+    inspiringPersonPart2: {
+        youtubeId: 'oLsv8NxBiXk',
+        channel: 'IELTS PERFECTION',
+        duration: '5:49',
+        title: 'IELTS Speaking Part 2: Describe a Person Who Inspires You'
+    },
+    interestingJobPart2: {
+        youtubeId: 'mUMfpqaAupU',
+        channel: 'Easy IELTS',
+        duration: '2:23',
+        title: 'IELTS Speaking Part 2: Describe an Interesting Job'
+    },
+    part3Education: {
+        youtubeId: '1ogtWwx3UQg',
+        channel: 'LK Learning English',
+        duration: '3:41',
+        title: 'IELTS Speaking Part 3: Education Sample Answers'
+    },
+    part3Technology: {
+        youtubeId: 'kNxU7vQWZl0',
+        channel: 'ielts.studio',
+        duration: '4:09',
+        title: 'IELTS Speaking Part 3: Technology in Society'
+    },
+    part3Environment: {
+        youtubeId: 'iYAoCPguFy4',
+        channel: 'IELTS Fighter',
+        duration: '5:15',
+        title: 'IELTS Speaking Part 3: Environment Sample Answers'
+    },
+    part3Health: {
+        youtubeId: 'BXu7Sb5JNo4',
+        channel: 'IELTS Energy TV',
+        duration: '6:35',
+        title: 'IELTS Speaking Part 3: Health Sample Answers'
+    },
+    part3Work: {
+        youtubeId: 'fOhbCFIDeK8',
+        channel: 'ielts.studio',
+        duration: '3:48',
+        title: 'IELTS Speaking Part 3: Work and Career'
+    },
+    part3Books: {
+        youtubeId: 'EtfsaLxBXAo',
+        channel: 'Ngoc Trinh Diary',
+        duration: '6:00',
+        title: 'IELTS Speaking Part 3: Books Sample Answers'
+    },
+    part3Shopping: {
+        youtubeId: 'sORQDTsjKKU',
+        channel: 'IELTS Speaking Hub',
+        duration: '12:28',
+        title: 'IELTS Speaking Part 3: Shopping and Consumer Behavior'
+    },
+    part3Transport: {
+        youtubeId: 'qMl_6ypM7TE',
+        channel: 'Hongiang',
+        duration: '6:01',
+        title: 'IELTS Speaking Part 3: Transport Sample Answers'
+    },
+    part3Culture: {
+        youtubeId: '6if9FTFsEgg',
+        channel: 'The IELTS Workshop',
+        duration: '9:35',
+        title: 'IELTS Speaking Part 3: Culture Sample Answers'
+    },
+    part3Family: {
+        youtubeId: 'kdB1YEECuF4',
+        channel: 'ielts.studio',
+        duration: '4:51',
+        title: 'IELTS Speaking Part 3: Family and Everyday Life'
+    },
+    fullBooksReading: {
+        youtubeId: 'zaGEC7FTpIw',
+        channel: 'AcademicEnglishHelp',
+        duration: '14:02',
+        title: 'IELTS Speaking Full Test: Books and Shopping'
+    },
+    fullWorkTechnology: {
+        youtubeId: 'ISkjDHQB-rU',
+        channel: 'LearnTick',
+        duration: '9:00',
+        title: 'IELTS Speaking Practice: Technology and Modern Life'
+    },
+    fullTravelPlaces: {
+        youtubeId: 'fmUyWHqf81Q',
+        channel: 'Sigma Media',
+        duration: '2:25',
+        title: 'Full IELTS Speaking Test: A Place You Would Like to Visit'
+    },
+    fullEducationSociety: {
+        youtubeId: 'mrJz82Tqa2c',
+        channel: 'English Uplifting',
+        duration: '22:38',
+        title: 'IELTS Speaking Full Mock Test with Examiner Feedback'
     },
     part3Topics: {
         youtubeId: 'FlDdmUr-BxA',
@@ -1068,7 +1272,7 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
 const IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON = {
     1: 'part1Hometown',
     2: 'workStudy',
-    3: 'part1Hometown',
+    3: 'homeAccommodationPart1',
     4: 'familyPart1',
     5: 'shadowDaily',
     6: 'foodPart1',
@@ -1081,28 +1285,40 @@ const IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON = {
     13: 'clothesPart1',
     14: 'shoppingPart1',
     15: 'transportPart1',
-    16: 'part1Hometown',
-    19: 'shadowDaily',
+    16: 'hometownPart2',
+    17: 'familyMemberPart2',
+    18: 'friendPart2',
+    19: 'dailyRoutinePart2',
+    20: 'favoriteFoodPart2',
+    21: 'hobbyPart2',
+    22: 'bookPart2',
     23: 'part2Place',
-    25: 'part2PlaceGuide',
-    27: 'part2Place',
-    28: 'part2Place',
-    29: 'technologyTest',
-    30: 'technologyTest',
-    35: 'part3Topics',
-    36: 'part3Topics',
-    37: 'technologyTest',
-    38: 'part3Topics',
-    39: 'part3Topics',
-    40: 'part3Topics',
-    41: 'fullGiftTest',
-    43: 'part2PlaceGuide',
-    44: 'part3Topics',
-    45: 'part3Topics',
-    46: 'fullGiftTest',
-    47: 'technologyTest',
-    48: 'part2PlaceGuide',
-    49: 'part3Topics',
+    24: 'giftPart2',
+    25: 'photoPart2',
+    26: 'journeyPart2',
+    27: 'cityPart2',
+    28: 'quietPlacePart2',
+    29: 'usefulObjectPart2',
+    30: 'technologyPart2',
+    31: 'skillPart2',
+    32: 'helpSomeonePart2',
+    33: 'memorableEventPart2',
+    34: 'inspiringPersonPart2',
+    35: 'interestingJobPart2',
+    36: 'part3Education',
+    37: 'part3Technology',
+    38: 'part3Environment',
+    39: 'part3Health',
+    40: 'part3Work',
+    41: 'part3Books',
+    42: 'part3Shopping',
+    43: 'part3Transport',
+    44: 'part3Culture',
+    45: 'part3Family',
+    46: 'fullBooksReading',
+    47: 'fullWorkTechnology',
+    48: 'fullTravelPlaces',
+    49: 'fullEducationSociety',
     50: 'fullPractice'
 };
 

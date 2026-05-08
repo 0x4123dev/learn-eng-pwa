@@ -85,24 +85,17 @@ suite('videos: IELTS Speaking curriculum', () => {
         assert.truthy(part2Lessons.every(v => env.getIELTSPartKey(v) === 'part2'));
     });
 
-    test('only curated matched lessons get a YouTube embed', () => {
+    test('every IELTS Speaking lesson gets a curated YouTube embed', () => {
         const env = load();
         const lessons = getIELTS(env);
         const withVideo = lessons.filter(v => v.youtubeId);
-        const practiceOnly = lessons.filter(v => !v.youtubeId);
 
-        assert.truthy(withVideo.length > 0);
-        assert.truthy(practiceOnly.length > 0);
+        assert.equal(withVideo.length, 50);
 
         withVideo.forEach(v => {
             assert.truthy(v.sourceUrl.includes(v.youtubeId), `${v.id} sourceUrl`);
             assert.equal(env.getVideoEmbedId(v), v.youtubeId);
-        });
-        practiceOnly.forEach(v => {
-            assert.equal(v.duration, 'Practice', `${v.id} duration`);
-            assert.equal(v.sourceUrl, '', `${v.id} sourceUrl`);
-            assert.equal(env.getVideoEmbedId(v), null);
-            assert.truthy(v.searchUrl.includes('youtube.com/results'), `${v.id} searchUrl`);
+            assert.truthy(v.duration !== 'Practice', `${v.id} duration`);
         });
     });
 
@@ -131,6 +124,24 @@ suite('videos: IELTS Speaking curriculum', () => {
             assert.truthy(lesson.youtubeId, `lesson ${lessonNo} youtubeId`);
             assert.equal(env.getVideoEmbedId(lesson), lesson.youtubeId, `lesson ${lessonNo} embed`);
         }
+    });
+
+    test('every IELTS Speaking lesson uses a distinct direct video', () => {
+        const env = load();
+        const ids = getIELTS(env).map(v => v.youtubeId);
+        assert.equal(ids.length, 50);
+        assert.equal(new Set(ids).size, 50);
+    });
+
+    test('Part 2 gaps and adjacent duplicate mappings are fixed', () => {
+        const env = load();
+        const lessons = Object.fromEntries(getIELTS(env).map(v => [v.lessonNo, v]));
+
+        assert.equal(lessons[24].youtubeId, 'HLFcO9KAPiY');
+        assert.equal(lessons[26].youtubeId, '8-hR5r_DNNs');
+        assert.equal(lessons[27].youtubeId, 'q_yiQ7Olp48');
+        assert.equal(lessons[28].youtubeId, 'eAxeCZlyhEk');
+        assert.truthy(lessons[27].youtubeId !== lessons[28].youtubeId);
     });
 
     test('does not include known unavailable YouTube video IDs', () => {
