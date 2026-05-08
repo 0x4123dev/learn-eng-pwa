@@ -268,6 +268,59 @@ suite('coverage: pronunciation lessons (≥3 questions per topic)', () => {
     }
 });
 
+// ──────────────────────────── PDF LESSON TOPIC COVERAGE ────────────────────────────
+// Every distinct lesson topic in the textbook PDFs should be covered by ≥5 questions.
+
+const PDF_LESSON_TOPICS = {
+    unit8: [
+        ['KISS short messages',               /KISS|short message|imperative.*short|keep it short/i],
+        ['festivals video (Dinagyang/Girona/Polga)', /dinagyang|girona|polga|carnival|festival.*philippines|festival.*spain|festival.*korea/i],
+        ['word focus: like (similar/example/love)', /word focus.*like|like.*similar|like.*such as|like.*love|like means/i],
+        ['real life: describing photos',      /photo|picture|in the middle|on the left|on the right|at the back|at the front/i],
+        ['reading: Pink & Blue (Yoon)',       /pink|jeongmee|yoon|seowoo|toy|doll|jewellery|colour preferences/i]
+    ],
+    unit9: [
+        ['Nature in art (artists)',           /witkiewicz|hiroshige|milhazes|van gogh|sunflowers|landscape|polish.*art|japanese.*art|brazilian.*artist/i],
+        ['Tallgrass Film Festival',           /tallgrass|kadri|brother.*venezuela|april and the extraordinary|kansas/i],
+        ['Filming wildlife (Adrian Seymour)', /camera trap|kinkajou|adrian seymour|honduras|rainforest|wildlife/i],
+        ['Real life: inviting & arrangements', /inviting|invitation|would you like|let'?s meet|see you at|arrangement/i]
+    ],
+    unit10: [
+        ['Memory Champion (Nelson Dellis)',   /nelson dellis|memory champion|championship|memorize|memory technique|visualize/i],
+        ['Phone has changed lives',           /mobile phone|public phone|phone box|forever|haven'?t.*phone/i],
+        ['Real life: checking & clarifying',  /\bclarif|check.*spelling|A for apple|in the morning|in the afternoon|let me check/i],
+        ['Imperatives & short messages',      /imperative|don'?t forget|call.*back|download|short message/i]
+    ],
+    unit11: [
+        ['Word families: tour/travel/visit',  /tour\W+tourism|travel\W+travelling|visit\W+visitor|drive\W+driver|word famil/i],
+        ['Antarctica reading (Carlos Gomm)',  /antarctica|carlos gomm|cruise|environmental organization|tour group|safari|scientists/i],
+        ['Tour of London',                    /london|shard|gherkin|cheesegrater|walkie.talkie|tower bridge|river thames|romans/i],
+        ['Writing: questionnaire',            /questionnaire|closed question|open question|hotel feedback/i],
+        ['Real life: making suggestions',     /suggest|why don'?t|how about|you could|advantage|disadvantage/i]
+    ]
+};
+
+function countLessonQs(unitId, regex) {
+    const u = env.getGrammarUnit(unitId);
+    let count = 0;
+    for (const q of u.questions) {
+        const haystack = [q.q, q.explanation, ...(q.options||[]), ...(q.parts||[])].join(' ');
+        if (regex.test(haystack)) count++;
+    }
+    return count;
+}
+
+suite('coverage: PDF lesson topics (≥5 questions per topic)', () => {
+    for (const [unitId, lessons] of Object.entries(PDF_LESSON_TOPICS)) {
+        for (const [label, regex] of lessons) {
+            test(`${unitId} — "${label}" has ≥5 questions`, () => {
+                const count = countLessonQs(unitId, regex);
+                assert.truthy(count >= 5, `Only ${count} questions cover "${label}" in ${unitId} (need ≥5)`);
+            });
+        }
+    }
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
