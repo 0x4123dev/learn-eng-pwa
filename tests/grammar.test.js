@@ -29,16 +29,16 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 180 questions per unit (all 4 units)', () => {
+suite('grammar: 200 questions per unit (all 4 units)', () => {
     for (const unitId of ['unit8', 'unit9', 'unit10', 'unit11']) {
-        test(`${unitId} has exactly 180 questions`, () => {
+        test(`${unitId} has exactly 200 questions`, () => {
             const u = env.getGrammarUnit(unitId);
-            assert.equal(u.questions.length, 180);
+            assert.equal(u.questions.length, 200);
         });
-        test(`${unitId} has exactly 20 arrangement questions`, () => {
+        test(`${unitId} has at least 25 arrangement questions`, () => {
             const u = env.getGrammarUnit(unitId);
             const arrCount = u.questions.filter(q => q.type === 'arrangement').length;
-            assert.equal(arrCount, 20);
+            assert.truthy(arrCount >= 25, `${unitId} arrangement count is ${arrCount}, expected ≥25`);
         });
         test(`${unitId} has at least 20 pronunciation questions`, () => {
             const u = env.getGrammarUnit(unitId);
@@ -83,13 +83,14 @@ suite('grammar: arrangement question integrity', () => {
         }
     });
 
-    test('every arrangement question ends with . or ? in last part', () => {
+    test('every arrangement question ends with sentence-final punctuation (./?/!) in last part', () => {
         for (const u of env.GRAMMAR_UNITS) {
             for (const q of u.questions) {
                 if (q.type !== 'arrangement') continue;
                 const last = q.parts[q.parts.length - 1];
-                assert.truthy(last === '.' || last === '?' || last.endsWith('.') || last.endsWith('?'),
-                    `${q.id} last part should be punctuation: "${last}"`);
+                const ok = last === '.' || last === '?' || last === '!' ||
+                           last.endsWith('.') || last.endsWith('?') || last.endsWith('!');
+                assert.truthy(ok, `${q.id} last part should be punctuation: "${last}"`);
             }
         }
     });
@@ -266,7 +267,7 @@ suite('grammar: helpers', () => {
 
     test('generateGrammarQuiz caps at unit total', () => {
         const q = env.generateGrammarQuiz('unit8', 1000);
-        assert.equal(q.length, 180);
+        assert.equal(q.length, 200);
     });
 
     test('saveGrammarSession stores session in appState.grammarHistory', () => {
