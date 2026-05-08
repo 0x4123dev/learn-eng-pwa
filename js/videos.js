@@ -968,10 +968,10 @@ const IELTS_SPEAKING_VIDEO_SOURCES = {
         title: 'IELTS Speaking Part 3 Band 9 Sample Answers'
     },
     technologyTest: {
-        youtubeId: 'OS9ac9i55NE',
-        channel: 'IELTS Speaking Class',
-        duration: 'Sample test',
-        title: 'IELTS Speaking Sample Test: Technology'
+        youtubeId: 'FlDdmUr-BxA',
+        channel: 'Smart IELTS Academy',
+        duration: 'Part 3',
+        title: 'IELTS Speaking Part 3 Band 9 Sample Answers: Environment, Education, Technology, Work & Society'
     },
     fullGiftTest: {
         youtubeId: 'KGZQvLYj2hM',
@@ -1075,6 +1075,59 @@ const IELTS_SPEAKING_CURRICULUM = [
     { level: 'advanced', part: 'Full Test', topic: 'Mock exam: mixed IELTS speaking', focus: 'Simulate the exam: listen, pause, answer, review.', source: 'fullPractice' }
 ];
 
+const IELTS_SPEAKING_LESSON_CONTENT = {
+    1: { modelLines: ['My name is Linh, and I am a student from Da Nang.', 'I would describe my hometown as friendly, lively, and easy to live in.', 'One thing I like about it is that the beach is close to the city center.'], frames: ['My name is...', 'I come from...', 'It is a... city', 'One thing I like is...'] },
+    2: { modelLines: ['At the moment, I am studying English because it is useful for my future.', 'I usually study in the evening when my house is quiet.', 'The subject I enjoy most is speaking because I can express my ideas.'], frames: ['At the moment, I...', 'I usually...', 'The subject I enjoy is...', 'It helps me...'] },
+    3: { modelLines: ['I live in an apartment with my family.', 'It is not very large, but it is comfortable and convenient.', 'My favorite room is my bedroom because I can study and relax there.'], frames: ['I live in...', 'It is not..., but...', 'My favorite room is...', 'because...'] },
+    4: { modelLines: ['I live with my parents and my younger brother.', 'We are quite close because we usually eat dinner together.', 'The person I talk to most is my mother because she understands me well.'], frames: ['I live with...', 'We are quite...', 'The person I talk to most is...', 'because...'] },
+    5: { modelLines: ['On a normal day, I wake up at around six thirty.', 'After breakfast, I go to school and spend most of the day studying.', 'In the evening, I do homework and watch a short English video.'], frames: ['On a normal day...', 'After that...', 'Most of the day...', 'In the evening...'] },
+    6: { modelLines: ['My favorite food is noodle soup because it is warm and filling.', 'I usually eat it with my family on the weekend.', 'I think food is important because it connects people.'], frames: ['My favorite food is...', 'I usually eat it...', 'It tastes...', 'Food is important because...'] },
+    7: { modelLines: ['One hobby I really enjoy is listening to music.', 'I usually do it after school because it helps me relax.', 'I would like to try photography in the future.'], frames: ['One hobby I enjoy is...', 'I usually do it...', 'It helps me...', 'In the future, I want to...'] },
+    8: { modelLines: ['I prefer sunny weather because it makes me feel energetic.', 'In my country, the weather can be very hot in summer.', 'When it rains, I usually stay at home and read or watch videos.'], frames: ['I prefer... weather', 'In my country...', 'When it rains...', 'It makes me feel...'] },
+    9: { modelLines: ['I am not a professional athlete, but I enjoy playing badminton.', 'Sport is good for young people because it keeps them healthy.', 'I prefer team sports because they are more exciting.'], frames: ['I enjoy playing...', 'Sport is good because...', 'I prefer... sports', 'They are more...'] },
+    10: { modelLines: ['I listen to music almost every day.', 'My favorite kind of music is pop because the rhythm is easy to follow.', 'Music helps me improve my pronunciation when I sing along.'], frames: ['I listen to...', 'My favorite kind is...', 'It helps me...', 'When I feel..., I...'] },
+    11: { modelLines: ['I do not read long books often, but I read short articles online.', 'Reading in English helps me learn new words naturally.', 'I prefer stories with simple language and interesting characters.'], frames: ['I read...', 'I prefer...', 'Reading helps me...', 'The last thing I read was...'] },
+    12: { modelLines: ['My best friend is cheerful and easy to talk to.', 'We met at school, and we usually study together.', 'A good friend should be honest and supportive.'], frames: ['My best friend is...', 'We met...', 'We usually...', 'A good friend should...'] },
+    13: { modelLines: ['I usually wear casual clothes because they are comfortable.', 'For special occasions, I prefer a shirt and dark trousers.', 'I think clothes can show a little bit of someone’s personality.'], frames: ['I usually wear...', 'For special occasions...', 'I prefer...', 'Clothes can show...'] },
+    14: { modelLines: ['I go shopping when I need something, not just for fun.', 'I prefer shopping online because it saves time.', 'However, for clothes, I like trying things on before buying them.'], frames: ['I go shopping when...', 'I prefer shopping...', 'It saves...', 'However, for..., I...'] },
+    15: { modelLines: ['I usually travel around my city by motorbike or bus.', 'Public transport is cheaper, but it is not always convenient.', 'In the future, I hope my city has better trains and buses.'], frames: ['I usually travel by...', 'It is cheaper but...', 'In the future...', 'My city needs...'] },
+    16: { modelLines: ['I would like to describe my hometown, which is a coastal city.', 'It has beautiful beaches, friendly people, and many small cafes.', 'I feel proud of it because it is peaceful but still modern.'], frames: ['I would like to describe...', 'It is located...', 'It is famous for...', 'I feel proud because...'] },
+    17: { modelLines: ['I would like to talk about my older sister.', 'She is patient, hard-working, and always willing to help me.', 'I admire her because she stays calm even when she has problems.'], frames: ['I would like to talk about...', 'He/She is...', 'One thing I admire is...', 'I feel... because...'] },
+    18: { modelLines: ['I would like to describe a close friend from my class.', 'We became friends because we both enjoyed learning English.', 'What I like most about him is that he is reliable and funny.'], frames: ['I met this friend...', 'We became friends because...', 'He/She is...', 'What I like most is...'] },
+    19: { modelLines: ['I would like to describe my usual school day.', 'It starts quite early, so I have to prepare my bag the night before.', 'Although it can be tiring, I like having a clear routine.'], frames: ['My routine starts...', 'After that...', 'The busiest part is...', 'Although it is..., I...'] },
+    20: { modelLines: ['I would like to talk about a dish called pho.', 'It is a noodle soup with beef or chicken and fresh herbs.', 'I like it because it reminds me of meals with my family.'], frames: ['The food is called...', 'It is made with...', 'I usually eat it...', 'It reminds me of...'] },
+    21: { modelLines: ['I would like to describe my hobby, which is drawing.', 'I started doing it when I was a child because I liked cartoons.', 'Now it helps me relax and express my imagination.'], frames: ['My hobby is...', 'I started...', 'I usually do it...', 'It helps me...'] },
+    22: { modelLines: ['I would like to talk about a book I enjoyed.', 'The story was simple, but the message was meaningful.', 'It taught me that small actions can change someone’s life.'], frames: ['The book is about...', 'The main character...', 'The message is...', 'I would recommend it because...'] },
+    23: { modelLines: ['I would like to describe a quiet cafe near my home.', 'It has soft music, warm lights, and a comfortable atmosphere.', 'I go there when I need to study or think clearly.'], frames: ['The place is...', 'It is located...', 'The atmosphere is...', 'I go there when...'] },
+    24: { modelLines: ['I would like to describe a watch my father gave me.', 'It was not expensive, but it was meaningful because it marked my birthday.', 'I still keep it because it reminds me to use time wisely.'], frames: ['The gift was...', 'It was given by...', 'I received it when...', 'It was special because...'] },
+    25: { modelLines: ['I would like to describe a photo from a family trip.', 'In the picture, we are standing near the sea and smiling.', 'I like this photo because it captures a happy moment in my life.'], frames: ['The photo shows...', 'It was taken...', 'In the picture...', 'I like it because...'] },
+    26: { modelLines: ['I would like to describe a journey to another city.', 'The journey took several hours, but the scenery was beautiful.', 'It was memorable because I traveled with people I care about.'], frames: ['The journey was to...', 'It took...', 'During the trip...', 'It was memorable because...'] },
+    27: { modelLines: ['I would like to talk about Ho Chi Minh City.', 'It is busy, modern, and full of opportunities.', 'Although it can be crowded, I enjoy its energy and food culture.'], frames: ['The city is...', 'It is known for...', 'Although it is...', 'I like it because...'] },
+    28: { modelLines: ['I would like to describe a quiet library in my school.', 'It is a place where students can read, study, and concentrate.', 'I like it because the silence helps me think more deeply.'], frames: ['The quiet place is...', 'People go there to...', 'I usually...', 'It helps me...'] },
+    29: { modelLines: ['I would like to describe my smartphone.', 'I use it to study English, take photos, and communicate with friends.', 'It is useful because it gives me information quickly.'], frames: ['The object is...', 'I use it for...', 'It is useful because...', 'Without it, I would...'] },
+    30: { modelLines: ['I would like to talk about video-call technology.', 'It allows people to study or work together even when they are far apart.', 'I think it is valuable because it saves time and connects families.'], frames: ['The technology is...', 'It allows people to...', 'One benefit is...', 'One problem is...'] },
+    31: { modelLines: ['I would like to describe a skill I learned: speaking English more confidently.', 'At first, I was nervous and often paused too much.', 'After practicing every day, I became more comfortable expressing my ideas.'], frames: ['The skill I learned was...', 'At first...', 'I improved by...', 'Now I can...'] },
+    32: { modelLines: ['I would like to describe a time I helped a classmate with homework.', 'He was confused, so I explained the task step by step.', 'I felt happy because helping him also helped me understand the lesson better.'], frames: ['I helped...', 'The problem was...', 'I did this by...', 'I felt... because...'] },
+    33: { modelLines: ['I would like to describe my first school performance.', 'I was nervous before going on stage, but my friends encouraged me.', 'It became memorable because I realized I could be brave.'], frames: ['The event happened...', 'Before it started...', 'During the event...', 'I remember it because...'] },
+    34: { modelLines: ['I would like to describe a teacher who inspires me.', 'She explains difficult ideas in a simple and encouraging way.', 'I respect her because she makes students believe they can improve.'], frames: ['The person is...', 'He/She inspires me because...', 'One example is...', 'Because of this person, I...'] },
+    35: { modelLines: ['I would like to talk about being a software developer.', 'This job seems interesting because it combines creativity and problem solving.', 'I think it would be challenging, but also rewarding.'], frames: ['The job is...', 'It involves...', 'It seems interesting because...', 'I would need to...'] },
+    36: { modelLines: ['In my opinion, education should teach both knowledge and life skills.', 'For example, students need communication skills as well as exam preparation.', 'However, schools also have to keep academic standards high.'], frames: ['In my opinion...', 'For example...', 'This is important because...', 'However, schools should...'] },
+    37: { modelLines: ['Technology has changed the way people communicate and learn.', 'One advantage is that information is easier to access than before.', 'On the other hand, people may spend too much time on screens.'], frames: ['Technology has changed...', 'One advantage is...', 'A possible drawback is...', 'In the future...'] },
+    38: { modelLines: ['I believe environmental protection should be a shared responsibility.', 'Governments can make rules, but individuals also need better habits.', 'For instance, people can reduce plastic use and save electricity.'], frames: ['I believe...', 'Governments can...', 'Individuals should...', 'For instance...'] },
+    39: { modelLines: ['Health is strongly connected to daily habits.', 'People should exercise regularly and avoid too much processed food.', 'However, governments also need to make healthcare affordable.'], frames: ['Health is connected to...', 'People should...', 'Governments need to...', 'A good example is...'] },
+    40: { modelLines: ['The world of work is changing quickly because of technology.', 'Some jobs may disappear, but new types of work will also appear.', 'That is why people need to keep learning throughout their careers.'], frames: ['Work is changing because...', 'Some jobs...', 'People need to...', 'In the future...'] },
+    41: { modelLines: ['Reading is still important even though many people watch videos now.', 'Books can improve concentration and imagination.', 'However, digital reading is more convenient for busy people.'], frames: ['Reading is important because...', 'Books can...', 'Digital reading...', 'Compared with the past...'] },
+    42: { modelLines: ['Consumer habits are influenced by advertising and social media.', 'Some people buy things they do not really need.', 'I think schools should teach young people how to spend money wisely.'], frames: ['Consumer habits are influenced by...', 'Some people...', 'I think...', 'A solution could be...'] },
+    43: { modelLines: ['Large cities need efficient public transport.', 'If buses and trains are reliable, fewer people will use private cars.', 'This can reduce traffic and improve air quality.'], frames: ['Large cities need...', 'If..., then...', 'This can reduce...', 'Another solution is...'] },
+    44: { modelLines: ['Art and culture help people understand their identity.', 'Museums, music, and festivals can connect generations.', 'However, culture also needs to change so young people stay interested.'], frames: ['Art and culture help...', 'They can connect...', 'However...', 'Young people can...'] },
+    45: { modelLines: ['Family relationships have changed in many modern societies.', 'Young people are more independent than in the past.', 'Even so, older family members still play an important role in giving advice.'], frames: ['Family relationships have...', 'Young people are...', 'Older people...', 'Even so...'] },
+    46: { modelLines: ['For Part 1, I will answer naturally and add a short reason.', 'For Part 2, I will organize my answer with clear stages and examples.', 'For Part 3, I will explain my opinion and compare different views.'], frames: ['Part 1: answer + reason', 'Part 2: story + details', 'Part 3: opinion + example', 'Review one weak point'] },
+    47: { modelLines: ['When talking about technology, I should mention both convenience and risk.', 'For work topics, I can discuss skills, motivation, and future changes.', 'I will try to use examples from my own life, not memorized answers.'], frames: ['Convenience...', 'Risk...', 'At work...', 'In the future...'] },
+    48: { modelLines: ['For travel topics, I can describe places using sights, sounds, and feelings.', 'For city questions, I should compare advantages and disadvantages.', 'I will speak clearly and avoid rushing in Part 2.'], frames: ['The place...', 'The atmosphere...', 'One advantage...', 'One disadvantage...'] },
+    49: { modelLines: ['Education and society questions need clear opinions.', 'I should support my ideas with examples from school or daily life.', 'If I disagree with an idea, I can still explain it politely.'], frames: ['I believe...', 'This matters because...', 'For example...', 'Some people argue...'] },
+    50: { modelLines: ['In this mock test, I will focus on speaking continuously.', 'If I make a mistake, I will correct myself and continue.', 'After the test, I will review fluency, vocabulary, grammar, and pronunciation.'], frames: ['Keep speaking', 'Correct and continue', 'Use examples', 'Review all four criteria'] }
+};
+
 function buildIELTSSpeakingLessons() {
     return IELTS_SPEAKING_CURRICULUM.map((item, idx) => {
         const lessonNo = idx + 1;
@@ -1101,6 +1154,7 @@ function buildIELTSSpeakingLessons() {
             checkpoints: getIELTSSpeakingCheckpoints(lessonNo),
             modelLines: getIELTSSpeakingModelLines(item, lessonNo),
             answerFrames: getIELTSSpeakingFrames(item, lessonNo),
+            timerConfig: getIELTSSpeakingTimerConfig(lessonNo),
             vocabulary: getIELTSSpeakingVocabulary(item.topic, lessonNo),
             quiz: getIELTSSpeakingQuiz(item, lessonNo)
         };
@@ -1144,6 +1198,8 @@ function getIELTSSpeakingCheckpoints(lessonNo) {
 }
 
 function getIELTSSpeakingModelLines(item, lessonNo) {
+    const content = IELTS_SPEAKING_LESSON_CONTENT[lessonNo];
+    if (content && content.modelLines) return content.modelLines;
     const topic = item.topic.replace(/^Describe\s+/i, '').toLowerCase();
     if (lessonNo <= 15) {
         return [
@@ -1174,6 +1230,8 @@ function getIELTSSpeakingModelLines(item, lessonNo) {
 }
 
 function getIELTSSpeakingFrames(item, lessonNo) {
+    const content = IELTS_SPEAKING_LESSON_CONTENT[lessonNo];
+    if (content && content.frames) return content.frames;
     if (lessonNo <= 15) {
         return [
             'I usually...',
@@ -1204,6 +1262,13 @@ function getIELTSSpeakingFrames(item, lessonNo) {
         'Part 3: opinion + example + contrast',
         'Review: fluency, vocabulary, grammar, pronunciation'
     ];
+}
+
+function getIELTSSpeakingTimerConfig(lessonNo) {
+    if (lessonNo <= 15) return { prep: 0, speak: 20, label: 'Part 1 answer' };
+    if (lessonNo <= 35) return { prep: 60, speak: 120, label: 'Part 2 long turn' };
+    if (lessonNo <= 45) return { prep: 10, speak: 45, label: 'Part 3 opinion' };
+    return { prep: 60, speak: 300, label: 'Full test round' };
 }
 
 function getIELTSSpeakingVocabulary(topic, lessonNo) {
@@ -1264,11 +1329,28 @@ const VIDEO_CATEGORIES = {
     pronunciation:  { name: 'Pronunciation', icon: '🗣️' }
 };
 
+const IELTS_PART_FILTERS = {
+    all: { name: 'All', icon: '🎙️' },
+    part1: { name: 'Part 1', icon: '1️⃣' },
+    part2: { name: 'Part 2', icon: '2️⃣' },
+    part3: { name: 'Part 3', icon: '3️⃣' },
+    mock: { name: 'Mock Test', icon: '🏆' },
+    weak: { name: 'Weak', icon: '🎯' }
+};
+
+const IELTS_SPEAKING_CRITERIA = [
+    { id: 'fluency', name: 'Fluency', short: 'Flow' },
+    { id: 'vocabulary', name: 'Vocabulary', short: 'Words' },
+    { id: 'grammar', name: 'Grammar', short: 'Grammar' },
+    { id: 'pronunciation', name: 'Pronunciation', short: 'Sound' }
+];
+
 // ==================== STATE ====================
 let videoState = {
     currentVideo: null,
     player: null,
     selectedCourse: 'ielts',
+    selectedIELTSPart: 'all',
     selectedLevel: 'all',
     selectedCategory: 'all',
     quizAnswers: [],
@@ -1278,7 +1360,13 @@ let videoState = {
     recordingStream: null,
     recordingChunks: [],
     recordingUrl: null,
-    isRecording: false
+    isRecording: false,
+    recordingMade: false,
+    timerInterval: null,
+    timerLabel: '',
+    timerLeft: 0,
+    shadowIndex: 0,
+    shadowActive: false
 };
 
 function getVideoEmbedId(video) {
@@ -1290,6 +1378,15 @@ function getVideoProgressId(video) {
     return video.id;
 }
 
+function getIELTSPartKey(video) {
+    if (!video || video.category !== 'ielts-speaking') return 'library';
+    if (video.speakingPart === 'Part 1') return 'part1';
+    if (video.speakingPart && video.speakingPart.includes('Part 2')) return 'part2';
+    if (video.speakingPart === 'Part 3') return 'part3';
+    if (video.speakingPart === 'Full Test') return 'mock';
+    return 'all';
+}
+
 function escapeVideoJsString(text) {
     return String(text || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
 }
@@ -1299,6 +1396,52 @@ function getCourseVideos() {
         const isIELTS = v.category === 'ielts-speaking';
         return videoState.selectedCourse === 'ielts' ? isIELTS : !isIELTS;
     });
+}
+
+function getSpeakingRatingOverall(rating) {
+    if (!rating) return 0;
+    if (typeof rating.bestOverall === 'number') return rating.bestOverall;
+    if (typeof rating.overall === 'number') return rating.overall;
+    if (typeof rating.score === 'number') return rating.score;
+    const criteria = rating.criteria || {};
+    const scores = IELTS_SPEAKING_CRITERIA.map(c => criteria[c.id]).filter(n => typeof n === 'number');
+    if (scores.length === 0) return 0;
+    return scores.reduce((sum, n) => sum + n, 0) / scores.length;
+}
+
+function getSpeakingCriteriaAverage(criteria) {
+    const scores = IELTS_SPEAKING_CRITERIA.map(c => criteria && criteria[c.id]).filter(n => typeof n === 'number');
+    if (scores.length === 0) return 0;
+    return scores.reduce((sum, n) => sum + n, 0) / scores.length;
+}
+
+function getIELTSSpeakingProgressStats(stats) {
+    stats = normalizeVideoStats(stats);
+    const lessons = VIDEO_LIBRARY.filter(v => v.category === 'ielts-speaking');
+    const ratings = stats.speakingRatings || {};
+    const completed = lessons.filter(v => stats.watched.includes(v.id) || (ratings[v.id] && ratings[v.id].completedAt));
+    const rated = lessons.map(v => getSpeakingRatingOverall(ratings[v.id])).filter(n => n > 0);
+    const avg = rated.length ? rated.reduce((sum, n) => sum + n, 0) / rated.length : 0;
+    const recordings = lessons.filter(v => ratings[v.id] && ratings[v.id].recordingMade).length;
+    let streak = 0;
+    for (const lesson of lessons) {
+        if (stats.watched.includes(lesson.id) || (ratings[lesson.id] && ratings[lesson.id].completedAt)) streak++;
+        else break;
+    }
+    const weakLessonIds = lessons
+        .map(v => ({ id: v.id, lessonNo: v.lessonNo, score: getSpeakingRatingOverall(ratings[v.id]) }))
+        .filter(v => v.score > 0 && v.score < 3.5)
+        .sort((a, b) => a.score - b.score || a.lessonNo - b.lessonNo)
+        .map(v => v.id);
+    return {
+        total: lessons.length,
+        completed: completed.length,
+        recordings,
+        ratings: rated.length,
+        averageRating: avg,
+        streak,
+        weakLessonIds
+    };
 }
 
 function speakSpeakingText(text) {
@@ -1343,16 +1486,27 @@ function renderVideoScreen() {
     const container = document.getElementById('videoScreen');
     const stats = getVideoStats();
     const courseVideos = getCourseVideos();
+    const speakingStats = getIELTSSpeakingProgressStats(stats);
     const filtered = getFilteredVideos();
 
-    const levelKeys = ['all', ...Object.keys(VIDEO_LEVELS)];
-    const levelTabs = levelKeys.map(k => {
-        const isAll = k === 'all';
-        const lbl = isAll ? '🎬 All' : `${VIDEO_LEVELS[k].icon} ${VIDEO_LEVELS[k].name}`;
-        const count = isAll ? courseVideos.length : courseVideos.filter(v => v.level === k).length;
-        const active = videoState.selectedLevel === k ? 'active' : '';
-        return `<button class="vl-tab ${active}" onclick="filterVideoLevel('${k}')">${lbl} <span class="vl-tab-count">${count}</span></button>`;
-    }).join('');
+    const levelTabs = videoState.selectedCourse === 'ielts'
+        ? Object.keys(IELTS_PART_FILTERS).map(k => {
+            const meta = IELTS_PART_FILTERS[k];
+            const count = k === 'all'
+                ? courseVideos.length
+                : k === 'weak'
+                    ? speakingStats.weakLessonIds.length
+                    : courseVideos.filter(v => getIELTSPartKey(v) === k).length;
+            const active = videoState.selectedIELTSPart === k ? 'active' : '';
+            return `<button class="vl-tab ${active}" onclick="filterIELTSPart('${k}')">${meta.icon} ${meta.name} <span class="vl-tab-count">${count}</span></button>`;
+        }).join('')
+        : ['all', ...Object.keys(VIDEO_LEVELS)].map(k => {
+            const isAll = k === 'all';
+            const lbl = isAll ? '🎬 All' : `${VIDEO_LEVELS[k].icon} ${VIDEO_LEVELS[k].name}`;
+            const count = isAll ? courseVideos.length : courseVideos.filter(v => v.level === k).length;
+            const active = videoState.selectedLevel === k ? 'active' : '';
+            return `<button class="vl-tab ${active}" onclick="filterVideoLevel('${k}')">${lbl} <span class="vl-tab-count">${count}</span></button>`;
+        }).join('');
 
     const catKeys = Object.keys(VIDEO_CATEGORIES).filter(k =>
         videoState.selectedCourse === 'ielts' ? k === 'all' : k !== 'ielts-speaking'
@@ -1403,14 +1557,22 @@ function renderVideoScreen() {
     const wordsLearned = stats.wordsLearned.length;
     const courseTitle = videoState.selectedCourse === 'ielts' ? '🎙️ IELTS Speaking Path' : '🎬 Video Lessons';
     const gridClass = videoState.selectedCourse === 'ielts' ? 'vc-grid vc-grid-ielts' : 'vc-grid';
+    const statsHtml = videoState.selectedCourse === 'ielts' ? `
+                <div class="vs-stat"><span class="vs-stat-val">${speakingStats.completed}/${speakingStats.total}</span><span class="vs-stat-lbl">Done</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${speakingStats.recordings}/${speakingStats.ratings}</span><span class="vs-stat-lbl">Rec/Rate</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${speakingStats.averageRating ? speakingStats.averageRating.toFixed(1) : '-'}</span><span class="vs-stat-lbl">Avg</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${speakingStats.streak}</span><span class="vs-stat-lbl">Streak</span></div>
+    ` : `
+                <div class="vs-stat"><span class="vs-stat-val">${watchedCount}</span><span class="vs-stat-lbl">Watched</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${totalStars}/${maxStars}</span><span class="vs-stat-lbl">Stars</span></div>
+                <div class="vs-stat"><span class="vs-stat-val">${wordsLearned}</span><span class="vs-stat-lbl">Words</span></div>
+    `;
 
     container.innerHTML = `
         <div class="vs-header">
             <div class="vs-title">${courseTitle}</div>
             <div class="vs-stats-row">
-                <div class="vs-stat"><span class="vs-stat-val">${watchedCount}</span><span class="vs-stat-lbl">Watched</span></div>
-                <div class="vs-stat"><span class="vs-stat-val">${totalStars}/${maxStars}</span><span class="vs-stat-lbl">Stars</span></div>
-                <div class="vs-stat"><span class="vs-stat-val">${wordsLearned}</span><span class="vs-stat-lbl">Words</span></div>
+                ${statsHtml}
             </div>
         </div>
         <div class="vs-course-tabs">
@@ -1425,8 +1587,14 @@ function renderVideoScreen() {
 
 function switchVideoCourse(course) {
     videoState.selectedCourse = course;
+    videoState.selectedIELTSPart = 'all';
     videoState.selectedLevel = 'all';
     videoState.selectedCategory = 'all';
+    renderVideoScreen();
+}
+
+function filterIELTSPart(part) {
+    videoState.selectedIELTSPart = part;
     renderVideoScreen();
 }
 
@@ -1441,11 +1609,23 @@ function filterVideoCategory(cat) {
 }
 
 function getFilteredVideos() {
-    return getCourseVideos().filter(v => {
+    const stats = getVideoStats();
+    const speakingStats = getIELTSSpeakingProgressStats(stats);
+    const videos = getCourseVideos().filter(v => {
+        if (videoState.selectedCourse === 'ielts') {
+            if (videoState.selectedIELTSPart === 'weak') return speakingStats.weakLessonIds.includes(v.id);
+            if (videoState.selectedIELTSPart !== 'all' && getIELTSPartKey(v) !== videoState.selectedIELTSPart) return false;
+            return true;
+        }
         if (videoState.selectedLevel !== 'all' && v.level !== videoState.selectedLevel) return false;
         if (videoState.selectedCategory !== 'all' && v.category !== videoState.selectedCategory) return false;
         return true;
     });
+    if (videoState.selectedCourse === 'ielts' && videoState.selectedIELTSPart === 'weak') {
+        const weakOrder = new Map(speakingStats.weakLessonIds.map((id, idx) => [id, idx]));
+        return videos.sort((a, b) => (weakOrder.get(a.id) || 0) - (weakOrder.get(b.id) || 0));
+    }
+    return videos;
 }
 
 // ==================== VIDEO PLAYER ====================
@@ -1456,6 +1636,9 @@ function openVideoPlayer(videoId) {
     videoState.currentVideo = video;
     videoState.quizAnswers = [];
     videoState.quizStep = 0;
+    videoState.shadowIndex = 0;
+    videoState.shadowActive = false;
+    stopSpeakingTimer(false);
     resetSpeakingRecording();
 
     if (getVideoEmbedId(video)) loadYouTubeAPI();
@@ -1510,6 +1693,8 @@ function renderVideoPlayer() {
             <div class="vp-checkpoints">
                 ${(v.checkpoints || []).map(c => `<span>${c}</span>`).join('')}
             </div>
+            <div class="vp-timer-panel" id="vpTimerPanel">${getSpeakingTimerHTML(v)}</div>
+            <div class="vp-shadow-panel" id="vpShadowPanel">${getShadowPracticeHTML(v)}</div>
             <div class="vp-model-lines">
                 <div class="vp-mini-title">Model lines</div>
                 ${(v.modelLines || []).map(line => `
@@ -1558,7 +1743,7 @@ function renderVideoPlayer() {
             <div class="vp-section-title">📚 Key Vocabulary</div>
             <div class="vp-words-grid">${vocabHtml}</div>
 
-            <button class="vp-quiz-btn" onclick="startVideoQuiz()">${v.speakingPrompts ? '🎙️ Finish Speaking Practice' : '🧠 Take Quiz'} (${v.quiz.length} questions)</button>
+            <button class="vp-quiz-btn" onclick="${v.speakingPrompts ? 'completeSpeakingPractice()' : 'startVideoQuiz()'}">${v.speakingPrompts ? '✅ Complete Speaking Practice' : '🧠 Take Quiz'}${v.speakingPrompts ? '' : ` (${v.quiz.length} questions)`}</button>
         </div>
     `;
 
@@ -1566,27 +1751,138 @@ function renderVideoPlayer() {
     if (embedId) setTimeout(() => createYTPlayer(embedId), 100);
 }
 
+function getSpeakingTimerHTML(video) {
+    const cfg = video && video.timerConfig ? video.timerConfig : { prep: 0, speak: 30, label: 'Speaking' };
+    const active = videoState.timerLeft > 0;
+    return `
+        <div class="vp-mini-title">Timed practice</div>
+        <div class="vp-timer-display">
+            <div class="vp-timer-time">${active ? formatSpeakingTimer(videoState.timerLeft) : cfg.label}</div>
+            <div class="vp-timer-label">${active ? videoState.timerLabel : `${cfg.prep ? cfg.prep + 's prep · ' : ''}${cfg.speak}s speak`}</div>
+        </div>
+        <div class="vp-timer-actions">
+            ${cfg.prep ? `<button onclick="startSpeakingTimer(${cfg.prep}, 'Prepare')">Prep</button>` : ''}
+            <button onclick="startSpeakingTimer(${cfg.speak}, 'Speak')">Speak</button>
+            <button onclick="stopSpeakingTimer()">Reset</button>
+        </div>
+    `;
+}
+
+function formatSpeakingTimer(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+}
+
+function renderSpeakingTimer() {
+    const el = document.getElementById('vpTimerPanel');
+    if (el) el.innerHTML = getSpeakingTimerHTML(videoState.currentVideo);
+}
+
+function startSpeakingTimer(seconds, label) {
+    stopSpeakingTimer(false);
+    videoState.timerLeft = seconds;
+    videoState.timerLabel = label;
+    renderSpeakingTimer();
+    videoState.timerInterval = setInterval(() => {
+        videoState.timerLeft--;
+        if (videoState.timerLeft <= 0) {
+            stopSpeakingTimer(false);
+            showToast(`${label} time finished`);
+            return;
+        }
+        renderSpeakingTimer();
+    }, 1000);
+}
+
+function stopSpeakingTimer(render) {
+    if (videoState.timerInterval) {
+        clearInterval(videoState.timerInterval);
+        videoState.timerInterval = null;
+    }
+    videoState.timerLeft = 0;
+    videoState.timerLabel = '';
+    if (render !== false) renderSpeakingTimer();
+}
+
+function getShadowPracticeHTML(video) {
+    const lines = (video && video.modelLines) || [];
+    if (lines.length === 0) return '';
+    const idx = Math.min(videoState.shadowIndex || 0, lines.length - 1);
+    return `
+        <div class="vp-mini-title">Shadow mode</div>
+        <div class="vp-shadow-line">${videoState.shadowActive ? lines[idx] : 'Play one model line, pause, then repeat it aloud.'}</div>
+        <div class="vp-shadow-actions">
+            <button onclick="startShadowPractice()">Start</button>
+            <button onclick="playCurrentShadowLine()" ${videoState.shadowActive ? '' : 'disabled'}>Play line</button>
+            <button onclick="nextShadowLine()" ${videoState.shadowActive ? '' : 'disabled'}>Next</button>
+        </div>
+        ${videoState.shadowActive ? `<div class="vp-shadow-count">Line ${idx + 1}/${lines.length}</div>` : ''}
+    `;
+}
+
+function renderShadowPractice() {
+    const el = document.getElementById('vpShadowPanel');
+    if (el) el.innerHTML = getShadowPracticeHTML(videoState.currentVideo);
+}
+
+function startShadowPractice() {
+    videoState.shadowActive = true;
+    videoState.shadowIndex = 0;
+    renderShadowPractice();
+    playCurrentShadowLine();
+}
+
+function playCurrentShadowLine() {
+    const lines = (videoState.currentVideo && videoState.currentVideo.modelLines) || [];
+    if (lines.length === 0) return;
+    const idx = Math.min(videoState.shadowIndex || 0, lines.length - 1);
+    speakSpeakingText(lines[idx]);
+}
+
+function nextShadowLine() {
+    const lines = (videoState.currentVideo && videoState.currentVideo.modelLines) || [];
+    if (lines.length === 0) return;
+    videoState.shadowIndex = Math.min((videoState.shadowIndex || 0) + 1, lines.length - 1);
+    renderShadowPractice();
+    playCurrentShadowLine();
+}
+
 function getSpeakingRecorderHTML(video) {
     if (!video || !video.speakingPrompts) return '';
     const stats = getVideoStats();
     const rating = stats.speakingRatings && stats.speakingRatings[getVideoProgressId(video)];
-    const ratingHtml = [1, 2, 3, 4, 5].map(score => {
-        const active = rating && rating.score === score ? 'active' : '';
-        return `<button class="vp-rate-btn ${active}" onclick="rateSpeakingPractice(${score})">${score}</button>`;
+    const criteria = rating && rating.criteria ? rating.criteria : {};
+    const ratingHtml = IELTS_SPEAKING_CRITERIA.map(c => {
+        const buttons = [1, 2, 3, 4, 5].map(score => {
+            const active = criteria[c.id] === score ? 'active' : '';
+            return `<button class="vp-rate-btn ${active}" onclick="rateSpeakingCriterion('${c.id}', ${score})">${score}</button>`;
+        }).join('');
+        return `
+            <div class="vp-criterion-row">
+                <div class="vp-criterion-name">${c.short}</div>
+                <div class="vp-rating-buttons">${buttons}</div>
+            </div>
+        `;
     }).join('');
+    const attemptOverall = getSpeakingCriteriaAverage(criteria);
+    const bestOverall = getSpeakingRatingOverall(rating);
     return `
         <div class="vp-recorder-title">Record your answer</div>
+        <div class="vp-record-note">Recording stays in this session. Your best self-rating is saved.</div>
         <div class="vp-recorder-actions">
             ${videoState.isRecording
                 ? '<button class="vp-record-btn stop" onclick="stopSpeakingRecording()">■ Stop</button>'
                 : '<button class="vp-record-btn" onclick="startSpeakingRecording()">● Record</button>'}
             <button class="vp-record-btn secondary" onclick="playSpeakingRecording()" ${videoState.recordingUrl ? '' : 'disabled'}>▶ Play</button>
+            ${videoState.recordingUrl ? `<a class="vp-record-download" href="${videoState.recordingUrl}" download="${video.id}.webm">Save</a>` : ''}
         </div>
         <div class="vp-rating">
-            <span>Self-rate</span>
-            <div class="vp-rating-buttons">${ratingHtml}</div>
+            <span>IELTS self-score</span>
+            <span>${attemptOverall ? attemptOverall.toFixed(1) + '/5' : 'Rate all 4 areas'}</span>
         </div>
-        ${rating ? `<div class="vp-rating-saved">Saved: ${rating.score}/5</div>` : ''}
+        <div class="vp-criteria-list">${ratingHtml}</div>
+        ${bestOverall ? `<div class="vp-rating-saved">Best saved: ${bestOverall.toFixed(1)}/5</div>` : ''}
     `;
 }
 
@@ -1610,6 +1906,7 @@ function resetSpeakingRecording() {
     videoState.recordingChunks = [];
     videoState.recordingUrl = null;
     videoState.isRecording = false;
+    videoState.recordingMade = false;
 }
 
 async function startSpeakingRecording() {
@@ -1628,9 +1925,11 @@ async function startSpeakingRecording() {
             if (e.data && e.data.size > 0) videoState.recordingChunks.push(e.data);
         };
         recorder.onstop = () => {
-            const blob = new Blob(videoState.recordingChunks, { type: 'audio/webm' });
+            const mimeType = videoState.mediaRecorder && videoState.mediaRecorder.mimeType ? videoState.mediaRecorder.mimeType : 'audio/webm';
+            const blob = new Blob(videoState.recordingChunks, { type: mimeType });
             videoState.recordingUrl = URL.createObjectURL(blob);
             videoState.isRecording = false;
+            videoState.recordingMade = true;
             if (videoState.recordingStream) {
                 videoState.recordingStream.getTracks().forEach(track => track.stop());
                 videoState.recordingStream = null;
@@ -1659,17 +1958,101 @@ function playSpeakingRecording() {
     audio.play();
 }
 
-function rateSpeakingPractice(score) {
+function rateSpeakingCriterion(criteriaId, score) {
     const video = videoState.currentVideo;
     if (!video) return;
     const stats = getVideoStats();
     if (!stats.speakingRatings) stats.speakingRatings = {};
     const progressId = getVideoProgressId(video);
-    stats.speakingRatings[progressId] = { score, date: Date.now() };
-    if (!stats.watched.includes(progressId)) stats.watched.push(progressId);
+    const existing = stats.speakingRatings[progressId] || {};
+    const criteria = Object.assign({}, existing.criteria || {});
+    criteria[criteriaId] = score;
+    const attemptOverall = getSpeakingCriteriaAverage(criteria);
+    const hasAllCriteria = IELTS_SPEAKING_CRITERIA.every(c => typeof criteria[c.id] === 'number');
+    const legacyCriteriaComplete = existing.criteria && IELTS_SPEAKING_CRITERIA.every(c => typeof existing.criteria[c.id] === 'number');
+    let bestOverall = typeof existing.bestOverall === 'number'
+        ? existing.bestOverall
+        : legacyCriteriaComplete
+            ? getSpeakingCriteriaAverage(existing.criteria)
+            : typeof existing.overall === 'number'
+                ? existing.overall
+                : typeof existing.score === 'number'
+                    ? existing.score
+                    : 0;
+    let bestCriteria = existing.bestCriteria || (legacyCriteriaComplete ? existing.criteria : null);
+    if (hasAllCriteria && attemptOverall >= bestOverall) {
+        bestOverall = attemptOverall;
+        bestCriteria = Object.assign({}, criteria);
+    }
+    stats.speakingRatings[progressId] = {
+        criteria,
+        attemptOverall,
+        overall: bestOverall,
+        bestOverall,
+        bestCriteria,
+        date: Date.now(),
+        completedAt: existing.completedAt || null,
+        recordingMade: existing.recordingMade || videoState.recordingMade || false
+    };
     saveVideoStats(stats);
-    showToast(`Speaking rating saved: ${score}/5`);
     renderSpeakingRecorder();
+}
+
+function completeSpeakingPractice() {
+    const video = videoState.currentVideo;
+    if (!video) return;
+    const stats = getVideoStats();
+    const progressId = getVideoProgressId(video);
+    const rating = stats.speakingRatings[progressId];
+    const hasAllCriteria = rating && rating.criteria &&
+        IELTS_SPEAKING_CRITERIA.every(c => typeof rating.criteria[c.id] === 'number');
+    if (!hasAllCriteria) {
+        showToast('Rate fluency, vocabulary, grammar, and pronunciation first');
+        return;
+    }
+    const wasCompleted = stats.watched.includes(progressId);
+    if (!wasCompleted) stats.watched.push(progressId);
+    const attemptOverall = getSpeakingCriteriaAverage(rating.criteria);
+    if (typeof rating.bestOverall !== 'number' || attemptOverall >= rating.bestOverall) {
+        rating.bestOverall = attemptOverall;
+        rating.bestCriteria = Object.assign({}, rating.criteria);
+    }
+    rating.overall = rating.bestOverall;
+    rating.attemptOverall = attemptOverall;
+    rating.completedAt = Date.now();
+    rating.recordingMade = rating.recordingMade || videoState.recordingMade || false;
+    stats.speakingRatings[progressId] = rating;
+    const points = wasCompleted ? 0 : Math.max(5, Math.round(getSpeakingRatingOverall(rating) * 3));
+    if (typeof appState !== 'undefined' && appState) {
+        appState.points = (appState.points || 0) + points;
+    }
+    saveVideoStats(stats);
+    showSpeakingPracticeResults(video, rating, points);
+}
+
+function showSpeakingPracticeResults(video, rating, points) {
+    const overlay = document.getElementById('videoPlayerOverlay');
+    const overall = getSpeakingRatingOverall(rating);
+    const pointsText = points > 0 ? `+${points} points` : 'Practice saved';
+    const displayCriteria = rating.bestCriteria || rating.criteria;
+    const criteriaHtml = IELTS_SPEAKING_CRITERIA.map(c => `
+        <div class="vq-result-line">
+            <span>${c.name}</span>
+            <strong>${displayCriteria[c.id]}/5</strong>
+        </div>
+    `).join('');
+    overlay.innerHTML = `
+        <div class="vq-results">
+            <div class="vq-emoji">🎙️</div>
+            <div class="vq-score">Speaking practice complete</div>
+            <div class="vq-points">Best ${overall.toFixed(1)}/5 · ${pointsText}</div>
+            <div class="vq-speaking-breakdown">${criteriaHtml}</div>
+            <div class="vq-actions">
+                <button class="vq-btn-retry" onclick="renderVideoPlayer()">Practice Again</button>
+                <button class="vq-btn-back" onclick="closeVideoPlayer()">Back to IELTS Path</button>
+            </div>
+        </div>
+    `;
 }
 
 function createYTPlayer(videoId) {
@@ -1722,6 +2105,7 @@ function closeVideoPlayer() {
     const overlay = document.getElementById('videoPlayerOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
+    stopSpeakingTimer(false);
     resetSpeakingRecording();
 
     if (videoState.player && typeof videoState.player.destroy === 'function') {

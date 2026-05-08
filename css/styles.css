@@ -7782,6 +7782,83 @@
             margin-bottom: 12px;
         }
 
+        .vp-timer-panel,
+        .vp-shadow-panel {
+            background: rgba(0,0,0,0.16);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .vp-timer-display {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 9px;
+        }
+
+        .vp-timer-time {
+            color: white;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .vp-timer-label {
+            color: rgba(255,255,255,0.58);
+            font-size: 12px;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .vp-timer-actions,
+        .vp-shadow-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .vp-timer-actions button,
+        .vp-shadow-actions button {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 9px 8px;
+            cursor: pointer;
+        }
+
+        .vp-timer-actions button:first-child,
+        .vp-shadow-actions button:first-child {
+            background: #43e97b;
+            color: #10221a;
+        }
+
+        .vp-timer-actions button:disabled,
+        .vp-shadow-actions button:disabled {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        .vp-shadow-line {
+            color: rgba(255,255,255,0.86);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 9px;
+        }
+
+        .vp-shadow-count {
+            color: #43e97b;
+            font-size: 11px;
+            font-weight: 900;
+            margin-top: 8px;
+        }
+
         .vp-model-line {
             width: 100%;
             display: flex;
@@ -7897,6 +7974,13 @@
             margin-bottom: 8px;
         }
 
+        .vp-record-note {
+            color: rgba(255,255,255,0.54);
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 9px;
+        }
+
         .vp-recorder-actions {
             display: flex;
             gap: 8px;
@@ -7930,6 +8014,20 @@
             cursor: default;
         }
 
+        .vp-record-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 58px;
+            border-radius: 12px;
+            background: rgba(67,233,123,0.16);
+            color: #43e97b;
+            font-size: 12px;
+            font-weight: 900;
+            text-decoration: none;
+            padding: 0 10px;
+        }
+
         .vp-rating {
             display: flex;
             align-items: center;
@@ -7938,6 +8036,27 @@
             color: rgba(255,255,255,0.72);
             font-size: 12px;
             font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .vp-criteria-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .vp-criterion-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .vp-criterion-name {
+            color: rgba(255,255,255,0.76);
+            font-size: 12px;
+            font-weight: 900;
+            min-width: 72px;
         }
 
         .vp-rating-buttons {
@@ -8164,6 +8283,32 @@
             font-size: 14px;
             color: rgba(255,255,255,0.6);
             margin-bottom: 32px;
+        }
+
+        .vq-speaking-breakdown {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 12px;
+            margin: 12px 0 24px;
+        }
+
+        .vq-result-line {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.75);
+            font-size: 13px;
+            font-weight: 800;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .vq-result-line:last-child {
+            border-bottom: none;
+        }
+
+        .vq-result-line strong {
+            color: #43e97b;
         }
 
         .vq-actions {

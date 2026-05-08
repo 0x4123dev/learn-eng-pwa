@@ -136,11 +136,16 @@ const EXPORT_NAMES = [
     // videos
     'VIDEO_LIBRARY', 'VIDEO_LEVELS', 'VIDEO_CATEGORIES',
     'IELTS_SPEAKING_VIDEO_SOURCES', 'IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON',
-    'IELTS_SPEAKING_CURRICULUM', 'buildIELTSSpeakingLessons',
-    'getVideoEmbedId', 'getVideoProgressId', 'getCourseVideos',
+    'IELTS_SPEAKING_CURRICULUM', 'IELTS_SPEAKING_LESSON_CONTENT',
+    'IELTS_PART_FILTERS', 'IELTS_SPEAKING_CRITERIA', 'buildIELTSSpeakingLessons',
+    'videoState', 'getVideoEmbedId', 'getVideoProgressId', 'getCourseVideos',
+    'getIELTSPartKey', 'getFilteredVideos', 'filterIELTSPart',
     'getIELTSSpeakingPrompts', 'getIELTSSpeakingCheckpoints',
     'getIELTSSpeakingModelLines', 'getIELTSSpeakingFrames',
-    'getIELTSSpeakingVocabulary', 'getIELTSSpeakingQuiz',
+    'getIELTSSpeakingTimerConfig', 'getIELTSSpeakingVocabulary', 'getIELTSSpeakingQuiz',
+    'getSpeakingCriteriaAverage', 'getSpeakingRatingOverall', 'getIELTSSpeakingProgressStats',
+    'formatSpeakingTimer', 'getSpeakingRecorderHTML',
+    'rateSpeakingCriterion', 'completeSpeakingPractice',
     'normalizeVideoStats', 'getVideoStats', 'saveVideoStats'
 ];
 

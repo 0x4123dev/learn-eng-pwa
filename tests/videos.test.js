@@ -39,7 +39,7 @@ suite('videos: IELTS Speaking curriculum', () => {
         assert.truthy(lessons.slice(45, 50).every(v => v.level === 'advanced' && v.speakingPart === 'Full Test'));
     });
 
-    test('every lesson has speaking prompts, model lines, answer frames, vocabulary, and reflection quiz', () => {
+    test('every lesson has speaking prompts, model lines, answer frames, vocabulary, timers, and fallback quiz data', () => {
         const env = load();
         getIELTS(env).forEach(v => {
             assert.equal(v.speakingPrompts.length, 3, `${v.id} prompts`);
@@ -47,8 +47,42 @@ suite('videos: IELTS Speaking curriculum', () => {
             assert.truthy(v.modelLines.length >= 3, `${v.id} model lines`);
             assert.truthy(v.answerFrames.length >= 4, `${v.id} answer frames`);
             assert.truthy(v.vocabulary.length >= 5, `${v.id} vocabulary`);
+            assert.truthy(v.timerConfig && typeof v.timerConfig.speak === 'number', `${v.id} timer`);
             assert.equal(v.quiz.length, 3, `${v.id} quiz`);
         });
+    });
+
+    test('uses handcrafted model content for all 50 IELTS Speaking lessons', () => {
+        const env = load();
+        const lessons = getIELTS(env);
+        assert.equal(Object.keys(env.IELTS_SPEAKING_LESSON_CONTENT).length, 50);
+        lessons.forEach(v => {
+            const content = env.IELTS_SPEAKING_LESSON_CONTENT[v.lessonNo];
+            assert.truthy(content, `${v.id} lesson content`);
+            assert.deepEqual(v.modelLines, content.modelLines, `${v.id} model lines`);
+            assert.deepEqual(v.answerFrames, content.frames, `${v.id} frames`);
+        });
+        assert.truthy(lessons[0].modelLines[0].includes('My name is'));
+        assert.truthy(lessons[49].modelLines[0].includes('mock test'));
+    });
+
+    test('speaking timers progress from short Part 1 answers to full tests', () => {
+        const env = load();
+        assert.deepEqual(env.getIELTSSpeakingTimerConfig(1), { prep: 0, speak: 20, label: 'Part 1 answer' });
+        assert.deepEqual(env.getIELTSSpeakingTimerConfig(16), { prep: 60, speak: 120, label: 'Part 2 long turn' });
+        assert.deepEqual(env.getIELTSSpeakingTimerConfig(36), { prep: 10, speak: 45, label: 'Part 3 opinion' });
+        assert.deepEqual(env.getIELTSSpeakingTimerConfig(46), { prep: 60, speak: 300, label: 'Full test round' });
+        assert.equal(env.formatSpeakingTimer(125), '2:05');
+    });
+
+    test('IELTS filters map lessons by exam part', () => {
+        const env = load();
+        assert.deepEqual(Object.keys(env.IELTS_PART_FILTERS), ['all', 'part1', 'part2', 'part3', 'mock', 'weak']);
+        env.videoState.selectedCourse = 'ielts';
+        env.videoState.selectedIELTSPart = 'part2';
+        const part2Lessons = env.getFilteredVideos();
+        assert.equal(part2Lessons.length, 20);
+        assert.truthy(part2Lessons.every(v => env.getIELTSPartKey(v) === 'part2'));
     });
 
     test('only curated matched lessons get a YouTube embed', () => {
@@ -80,6 +114,12 @@ suite('videos: IELTS Speaking curriculum', () => {
             assert.truthy(env.IELTS_SPEAKING_VIDEO_SOURCES[sourceKey], `missing source ${sourceKey}`);
         });
     });
+
+    test('does not include known unavailable YouTube video IDs', () => {
+        const env = load();
+        const directIds = env.VIDEO_LIBRARY.map(v => env.getVideoEmbedId(v)).filter(Boolean);
+        assert.notContains(directIds, 'OS9ac9i55NE');
+    });
 });
 
 suite('videos: stats helpers', () => {
@@ -100,7 +140,86 @@ suite('videos: stats helpers', () => {
         assert.equal(env.getVideoProgressId(lesson), lesson.id);
         assert.equal(env.getVideoEmbedId(lesson), lesson.youtubeId);
     });
+
+    test('IELTS Speaking stats track completed lessons, recordings, ratings, average, streak, and weak lessons', () => {
+        const env = load({
+            points: 0,
+            videoStats: {
+                watched: ['ielts-speaking-01'],
+                stars: {},
+                wordsLearned: [],
+                totalQuizzes: 0,
+                speakingRatings: {
+                    'ielts-speaking-01': {
+                        criteria: { fluency: 3, vocabulary: 3, grammar: 3, pronunciation: 3 },
+                        bestOverall: 3,
+                        completedAt: 100,
+                        recordingMade: true
+                    },
+                    'ielts-speaking-02': {
+                        criteria: { fluency: 2, vocabulary: 2, grammar: 2, pronunciation: 2 },
+                        bestOverall: 2,
+                        completedAt: 200,
+                        recordingMade: false
+                    },
+                    'ielts-speaking-05': {
+                        criteria: { fluency: 5, vocabulary: 5, grammar: 5, pronunciation: 5 },
+                        bestOverall: 5,
+                        recordingMade: true
+                    }
+                }
+            }
+        });
+        const stats = env.getIELTSSpeakingProgressStats(env.getVideoStats());
+        assert.equal(stats.completed, 2);
+        assert.equal(stats.recordings, 2);
+        assert.equal(stats.ratings, 3);
+        assert.inRange(stats.averageRating, 3.33, 3.34);
+        assert.equal(stats.streak, 2);
+        assert.deepEqual(stats.weakLessonIds, ['ielts-speaking-02', 'ielts-speaking-01']);
+
+        env.videoState.selectedCourse = 'ielts';
+        env.videoState.selectedIELTSPart = 'weak';
+        assert.deepEqual(env.getFilteredVideos().map(v => v.id), ['ielts-speaking-02', 'ielts-speaking-01']);
+    });
+
+    test('IELTS self-rating saves the best score and completes practice without quiz stars', () => {
+        const env = load({ points: 0, videoStats: envlessVideoStats() });
+        const lesson = getIELTS(env)[0];
+        env.videoState.currentVideo = lesson;
+        env.videoState.recordingMade = true;
+
+        env.IELTS_SPEAKING_CRITERIA.forEach(c => env.rateSpeakingCriterion(c.id, c.id === 'pronunciation' ? 5 : 4));
+        env.completeSpeakingPractice();
+
+        let appState = env.__getAppState();
+        let rating = appState.videoStats.speakingRatings[lesson.id];
+        assert.equal(rating.bestOverall, 4.25);
+        assert.equal(rating.recordingMade, true);
+        assert.contains(appState.videoStats.watched, lesson.id);
+        assert.equal(appState.videoStats.stars[lesson.id], undefined);
+        assert.equal(appState.points, 13);
+
+        env.IELTS_SPEAKING_CRITERIA.forEach(c => env.rateSpeakingCriterion(c.id, 2));
+        env.completeSpeakingPractice();
+
+        appState = env.__getAppState();
+        rating = appState.videoStats.speakingRatings[lesson.id];
+        assert.equal(rating.attemptOverall, 2);
+        assert.equal(rating.bestOverall, 4.25);
+        assert.equal(appState.points, 13);
+    });
 });
+
+function envlessVideoStats() {
+    return {
+        watched: [],
+        stars: {},
+        wordsLearned: [],
+        totalQuizzes: 0,
+        speakingRatings: {}
+    };
+}
 
 if (require.main === module) {
     const harness = require('./harness');
