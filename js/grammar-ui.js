@@ -4,6 +4,38 @@
 let _grammarSubTab = 'units';      // 'units' | 'history'
 let _grammarQuizState = null;       // active quiz session
 
+// ==================== ARRANGEMENT CHIP DISPLAY ====================
+// We lowercase the first letter of the FIRST part when shown as a draggable
+// chip — that way the user can't spot the start of the sentence just by
+// looking for a capital letter. Proper nouns and "I" are preserved.
+const _PROPER_NOUN_FIRSTS = new Set([
+    // Names that appear at the start of arrangement parts in the dataset.
+    // Add to this set when introducing new arrangement questions whose first
+    // word is a proper noun.
+    'Adrian','Hans','Hiroshige','London','Nelson','Phelps','Rajo','Tim','Van',
+    // Common future-proofing: months, days, common country/place/people names
+    'January','February','March','April','May','June','July','August','September','October','November','December',
+    'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
+    'Paris','Tokyo','Italy','Asia','Brazil','America','Europe','China','Japan',
+    'Korea','India','Mexico','Canada','Spain','France','Germany','Russia',
+    'Australia','Egypt','Greece','Vietnam','Thailand','Singapore','Indonesia',
+    'Malaysia','Philippines','English','Spanish','Mandarin','Arabic',
+    'Sarah','Tom','Mary','John','Jane','David','Anna','Maria','Carlos','Ana','Pedro'
+]);
+
+function _displayChipText(part, isFirstPart) {
+    if (!isFirstPart || !part) return part;
+    // Always-capitalized word "I" (or "I'm", "I've", "I am ...") — keep
+    if (part === 'I' || /^I([\s'’]|$)/.test(part)) return part;
+    const firstWord = part.split(/\s+/)[0];
+    if (!firstWord || !/^[A-Z]/.test(firstWord)) return part;
+    // Proper-noun heuristics: internal capital (Rags2Riches, McDonald's),
+    // contains digit, or appears in our explicit list
+    if (/[A-Z]/.test(firstWord.slice(1)) || /\d/.test(firstWord)) return part;
+    if (_PROPER_NOUN_FIRSTS.has(firstWord)) return part;
+    return part.charAt(0).toLowerCase() + part.slice(1);
+}
+
 // ==================== GRAMMAR HOME (entry point) ====================
 function renderGrammarHome() {
     // Reset transient state if user navigated away
@@ -304,7 +336,7 @@ function openGrammarSession(historyIdx) {
                 ? userAns.map(idx => q.parts[idx]).join(' ')
                 : '— skipped —';
             correctAnsText = q.parts.join(' ');
-            qText = '📝 Arrange these into a sentence: <em>' + q.parts.join(' / ') + '</em>';
+            qText = '📝 Arrange these into a sentence: <em>' + q.parts.map((p, i) => _displayChipText(p, i === 0)).join(' / ') + '</em>';
         } else {
             isCorrect = userAns === q.correct;
             userAnsText = userAns !== null && userAns !== undefined ? q.options[userAns] : '— skipped —';
@@ -528,7 +560,7 @@ function renderArrangementQuestion() {
     // Answer: user's chosen order
     const placed = new Set(arr.ordered);
     const poolHTML = arr.shuffled.filter(i => !placed.has(i)).map(i =>
-        `<button class="arr-tile arr-tile-pool" onclick="placeArrangementTile(${i})" ${showingResult ? 'disabled' : ''}>${q.parts[i]}</button>`
+        `<button class="arr-tile arr-tile-pool" onclick="placeArrangementTile(${i})" ${showingResult ? 'disabled' : ''}>${_displayChipText(q.parts[i], i === 0)}</button>`
     ).join('');
 
     const answerHTML = arr.ordered.map((i, pos) => {
@@ -538,7 +570,7 @@ function renderArrangementQuestion() {
             cls += (i === pos) ? ' correct' : ' wrong';
         }
         const onclick = showingResult ? '' : `onclick="unplaceArrangementTile(${pos})"`;
-        return `<button class="${cls}" ${onclick} ${showingResult ? 'disabled' : ''}>${q.parts[i]}</button>`;
+        return `<button class="${cls}" ${onclick} ${showingResult ? 'disabled' : ''}>${_displayChipText(q.parts[i], i === 0)}</button>`;
     }).join('') || '<span class="arr-placeholder">Tap tiles below to build the sentence…</span>';
 
     const allPlaced = arr.ordered.length === q.parts.length;
