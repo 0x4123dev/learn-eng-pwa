@@ -13,6 +13,13 @@ const GRAMMAR_LESSONS = [
         icon: '👗',
         color: '#F472B6',
         intro: 'Talk about clothes, festivals, and people\'s appearance using present continuous and have got.',
+        iCanGoals: [
+            'Talk about clothes',
+            'Talk about faces and parts of the body',
+            'Use the present continuous with the present simple',
+            'Use have got to talk about appearance',
+            'Describe a picture or photo'
+        ],
         lessons: [
             {
                 id: '8a', title: 'Global fashions', page: '94-95',
@@ -166,9 +173,24 @@ const GRAMMAR_LESSONS = [
             {
                 id: '8f', title: 'Festivals and special events', page: '102-103',
                 topicTags: ['festival adjectives', 'video lesson'],
-                vocabulary: {
-                    title: 'Festival adjectives',
-                    words: ['boring', 'colourful', 'crowded', 'exciting', 'fun', 'loud', 'noisy', 'popular', 'quiet', 'relaxing']
+                vocabulary: [
+                    {
+                        title: 'Festival adjectives',
+                        words: ['boring', 'colourful', 'crowded', 'exciting', 'fun', 'loud', 'noisy', 'popular', 'quiet', 'relaxing']
+                    },
+                    {
+                        title: 'Festival/parade objects',
+                        words: ['clarinet', 'clown', 'costume', 'glove', 'jewellery', 'mask', 'trumpet', 'fireworks', 'drums']
+                    }
+                ],
+                pronunciation: {
+                    title: 'Stress on positive adjectives',
+                    rule: 'When you describe something positively, put STRONG stress on the adjective — that signals enthusiasm.',
+                    examples: [
+                        'She\'s wearing an AMAZING costume!',
+                        'Those gloves are WONDERFUL!',
+                        'The colours are INCREDIBLE!'
+                    ]
                 }
             }
         ]
@@ -183,6 +205,14 @@ const GRAMMAR_LESSONS = [
         icon: '🎬',
         color: '#A78BFA',
         intro: 'Talk about films, TV, art, and arrange to go out using "be going to" and the infinitive of purpose.',
+        iCanGoals: [
+            'Talk about future plans with be going to',
+            'Use the infinitive of purpose correctly',
+            'Talk about different types of films and TV programmes',
+            'Talk about nature',
+            'Invite someone',
+            'Make arrangements'
+        ],
         lessons: [
             {
                 id: '9a', title: 'The Tallgrass Film Festival', page: '106-107',
@@ -309,7 +339,8 @@ const GRAMMAR_LESSONS = [
                 topicTags: ['wildlife', 'video lesson'],
                 vocabulary: {
                     title: 'Wildlife filming',
-                    words: ['camera trap', 'rainforest', 'kinkajou', 'ocelot', 'Honduras', 'wildlife', 'documentary']
+                    words: ['rainforest', 'camera trap', 'species', 'team', 'kinkajou', 'ocelot', 'Honduras', 'wildlife', 'documentary'],
+                    note: 'A camera trap takes photos automatically when an animal moves in front of it. "Species" = type or group of animals (e.g., leopards are a species of big cat).'
                 }
             }
         ]
@@ -324,15 +355,29 @@ const GRAMMAR_LESSONS = [
         icon: '📚',
         color: '#60A5FA',
         intro: 'Talk about subjects, experiences, memory, and habits using the present perfect and past simple.',
+        iCanGoals: [
+            'Use the present perfect correctly',
+            'Ask about past experiences',
+            'Talk about subjects',
+            'Talk about learning',
+            'Check and clarify information'
+        ],
         lessons: [
             {
-                id: '10a', title: 'What have we learned?', page: '118-119',
-                topicTags: ['learning verbs', 'synonyms & antonyms', 'present perfect'],
-                vocabulary: {
-                    title: 'Learning verbs',
-                    words: ['learn', 'study', 'pass', 'fail', 'forget', 'remember', 'know', 'understand', 'teach', 'discover', 'invent', 'design', 'practise'],
-                    note: 'Synonyms — words with similar meanings: learn = study. Antonyms — words with opposite meanings: pass ≠ fail.'
-                },
+                id: '10a', title: 'What have we learned?', page: '117-119',
+                topicTags: ['subjects', 'learning verbs', 'synonyms & antonyms', 'present perfect'],
+                vocabulary: [
+                    {
+                        title: 'School subjects',
+                        words: ['history', 'physics', 'literature', 'geography', 'biology', 'mathematics', 'chemistry', 'IT (information technology)'],
+                        note: 'Each subject studies a different topic: history → the past · physics → heat, light, energy · literature → books · geography → places · biology → living things · mathematics → numbers · chemistry → chemicals · IT → computers.'
+                    },
+                    {
+                        title: 'Learning verbs',
+                        words: ['learn', 'study', 'pass', 'fail', 'forget', 'remember', 'know', 'understand', 'teach', 'discover', 'invent', 'design', 'practise'],
+                        note: 'Synonyms — words with similar meanings: learn = study. Antonyms — words with opposite meanings: pass ≠ fail.'
+                    }
+                ],
                 grammar: [
                     {
                         title: 'Present perfect',
@@ -364,10 +409,19 @@ const GRAMMAR_LESSONS = [
             },
             {
                 id: '10b', title: 'How good is your memory?', page: '120-121',
-                topicTags: ['memory', 'present perfect vs past simple'],
+                topicTags: ['memory', 'present perfect vs past simple', '-ed endings'],
                 vocabulary: {
                     title: 'Things to remember',
                     words: ['names and faces', 'directions', 'addresses', 'telephone numbers', 'dates', 'facts', 'shopping lists', 'songs']
+                },
+                pronunciation: {
+                    title: 'Past tense -ed endings',
+                    rule: 'The "-ed" ending of regular past tense verbs has THREE different sounds depending on the last sound of the base verb.',
+                    examples: [
+                        '/t/ — after voiceless sounds (k, p, s, ʃ, tʃ, f): washed, watched, stopped, helped',
+                        '/d/ — after voiced sounds (b, g, l, m, n, v, vowels): loved, played, called, opened',
+                        '/ɪd/ — after t or d sounds (extra syllable): wanted, started, decided, needed'
+                    ]
                 },
                 grammar: [
                     {
@@ -475,6 +529,14 @@ const GRAMMAR_LESSONS = [
         icon: '✈️',
         color: '#34D399',
         intro: 'Plan trips, give advice and suggestions, and use have to / can / should for rules and recommendations.',
+        iCanGoals: [
+            'Talk about visiting another country',
+            'Give advice with should or shouldn\'t',
+            'Talk about necessity and possibility',
+            'Talk about places, people and things',
+            'Talk about tourism',
+            'Make suggestions and talk about holidays'
+        ],
         lessons: [
             {
                 id: '11a', title: 'Planning a trip', page: '130-131',
@@ -516,11 +578,17 @@ const GRAMMAR_LESSONS = [
             {
                 id: '11b', title: 'On holiday', page: '132-133',
                 topicTags: ['tourism', 'word families', "should/shouldn't", 'word focus: take'],
-                vocabulary: {
-                    title: 'Tourism',
-                    words: ['return ticket', 'single ticket', 'carry-on bag', 'book the hotel', 'rent a car', 'buy souvenirs', 'tour guide', 'sightseeing', 'public transport', 'local food', 'check in'],
-                    note: 'Word families — when you learn a new word, learn the family: tour (verb) → tourism (noun) → tourist (person) → tour guide.'
-                },
+                vocabulary: [
+                    {
+                        title: 'Tourism vocabulary',
+                        words: ['return ticket', 'single ticket', 'carry-on bag', 'book the hotel', 'rent a car', 'buy souvenirs', 'tour guide', 'sightseeing', 'public transport', 'local food', 'check in'],
+                        note: 'Word families — when you learn a new word, learn the family: tour (verb) → tourism (noun) → tourist (person) → tour guide (collocation).'
+                    },
+                    {
+                        title: 'Tourism categories',
+                        words: ['Type of holiday: camping, hiking, sightseeing', 'Type of ticket: return, single', 'Things you buy: souvenirs', 'Other people: tour guide, tourist']
+                    }
+                ],
                 grammar: [
                     {
                         title: 'should / shouldn\'t',
@@ -617,8 +685,22 @@ const GRAMMAR_LESSONS = [
                 topicTags: ['London buildings', 'video lesson'],
                 vocabulary: {
                     title: 'London landmarks',
-                    words: ['the Shard', 'the Gherkin', 'the Cheesegrater', 'the Walkie-Talkie', 'Tower Bridge', 'River Thames', 'football pitch']
-                }
+                    words: ['the Shard', 'the Gherkin', 'the Cheesegrater', 'the Walkie-Talkie', 'Tower Bridge', 'River Thames', 'the Tower of London', 'football pitch'],
+                    note: 'London buildings often get nicknames from their shape: the Gherkin (cucumber-shaped), the Cheesegrater, the Walkie-Talkie. The Shard is the tallest building in western Europe.'
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Giving a tour',
+                        rule: 'Useful phrases for guiding visitors around a place.',
+                        examples: [
+                            'Opening: Good morning and welcome to the tour! Today, I\'m going to show you around the city of London.',
+                            'Pointing things out: This is … (the River Thames / Tower Bridge / The Shard, etc.) It\'s famous because …',
+                            'Moving on: Now let\'s look at another famous London sight.',
+                            'Directions: Straight ahead / To the right / Further to the right, you can see …',
+                            'Closing: That\'s the end of the tour. Do you have any questions?'
+                        ]
+                    }
+                ]
             }
         ]
     }

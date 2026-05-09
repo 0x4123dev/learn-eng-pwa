@@ -165,6 +165,20 @@ function renderGrammarLessons() {
             `;
         }).join('');
 
+        // "I CAN" learning goals checklist (from textbook Review & Memory Booster)
+        let iCanHTML = '';
+        if (Array.isArray(unit.iCanGoals) && unit.iCanGoals.length > 0) {
+            const goalsHTML = unit.iCanGoals.map(g =>
+                `<li class="lesson-ican-item">${g}</li>`
+            ).join('');
+            iCanHTML = `
+                <details class="lesson-ican-block">
+                    <summary class="lesson-ican-summary">🎯 By the end of Unit ${unit.unitId.replace('unit', '')}, I can…</summary>
+                    <ul class="lesson-ican-list">${goalsHTML}</ul>
+                </details>
+            `;
+        }
+
         return `
             <div class="lesson-unit-group" style="border-left-color:${unit.color}">
                 <div class="lesson-unit-header">
@@ -172,6 +186,7 @@ function renderGrammarLessons() {
                     <span class="lesson-unit-title">Unit ${unit.unitId.replace('unit', '')} — ${unit.title}</span>
                 </div>
                 <div class="lesson-unit-intro">${unit.intro}</div>
+                ${iCanHTML}
                 <div class="lesson-unit-list">${lessonItemsHTML}</div>
             </div>
         `;
@@ -201,21 +216,23 @@ function renderGrammarLessonDetail(unitId, lessonId) {
     const unit = GRAMMAR_LESSONS.find(u => u.unitId === unitId);
     const unitName = unit ? unit.title : '';
 
-    // ── Vocabulary ──
+    // ── Vocabulary ── (can be a single object or an array of objects)
     let vocabHTML = '';
     if (lesson.vocabulary) {
-        const v = lesson.vocabulary;
-        const wordChips = (v.words || []).map(w => `<span class="lesson-word-chip">${w}</span>`).join('');
-        vocabHTML = `
-            <div class="lesson-section lesson-section-vocab">
-                <div class="lesson-section-head">
-                    <span class="lesson-section-icon">📖</span>
-                    <span class="lesson-section-title">Vocabulary — ${v.title}</span>
+        const blocks = Array.isArray(lesson.vocabulary) ? lesson.vocabulary : [lesson.vocabulary];
+        vocabHTML = blocks.map(v => {
+            const wordChips = (v.words || []).map(w => `<span class="lesson-word-chip">${w}</span>`).join('');
+            return `
+                <div class="lesson-section lesson-section-vocab">
+                    <div class="lesson-section-head">
+                        <span class="lesson-section-icon">📖</span>
+                        <span class="lesson-section-title">Vocabulary — ${v.title}</span>
+                    </div>
+                    <div class="lesson-word-grid">${wordChips}</div>
+                    ${v.note ? `<div class="lesson-section-note">💡 ${v.note}</div>` : ''}
                 </div>
-                <div class="lesson-word-grid">${wordChips}</div>
-                ${v.note ? `<div class="lesson-section-note">💡 ${v.note}</div>` : ''}
-            </div>
-        `;
+            `;
+        }).join('');
     }
 
     // ── Pronunciation ──

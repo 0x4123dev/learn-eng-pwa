@@ -550,10 +550,42 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
         for (const u of env.GRAMMAR_LESSONS) {
             for (const l of u.lessons) {
                 if (!l.vocabulary) continue;
-                assert.truthy(l.vocabulary.title, `${l.id} vocab missing title`);
-                assert.truthy(Array.isArray(l.vocabulary.words) && l.vocabulary.words.length > 0,
-                    `${l.id} vocab needs words`);
+                const blocks = Array.isArray(l.vocabulary) ? l.vocabulary : [l.vocabulary];
+                for (const v of blocks) {
+                    assert.truthy(v.title, `${l.id} vocab missing title`);
+                    assert.truthy(Array.isArray(v.words) && v.words.length > 0,
+                        `${l.id} vocab "${v.title}" needs words`);
+                }
             }
+        }
+    });
+
+    test('every unit has iCanGoals (textbook learning checklist)', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            assert.truthy(Array.isArray(u.iCanGoals) && u.iCanGoals.length >= 4,
+                `${u.unitId} needs at least 4 iCanGoals`);
+            for (const g of u.iCanGoals) {
+                assert.truthy(typeof g === 'string' && g.length > 5, `${u.unitId} has empty goal`);
+            }
+        }
+    });
+
+    test('Unit 10 covers school subjects vocabulary', () => {
+        const lesson = env.getGrammarLesson('unit10', '10a');
+        assert.truthy(lesson);
+        const blocks = Array.isArray(lesson.vocabulary) ? lesson.vocabulary : [lesson.vocabulary];
+        const allWords = blocks.flatMap(v => v.words || []).join(' ').toLowerCase();
+        for (const subject of ['history', 'physics', 'literature', 'geography', 'biology', 'mathematics', 'chemistry']) {
+            assert.truthy(allWords.includes(subject), `10a vocab missing "${subject}"`);
+        }
+    });
+
+    test('Unit 10b includes -ed pronunciation rules', () => {
+        const lesson = env.getGrammarLesson('unit10', '10b');
+        assert.truthy(lesson && lesson.pronunciation);
+        const allText = lesson.pronunciation.rule + ' ' + (lesson.pronunciation.examples || []).join(' ');
+        for (const sound of ['/t/', '/d/', '/ɪd/']) {
+            assert.truthy(allText.includes(sound), `10b pron missing "${sound}"`);
         }
     });
 

@@ -9505,6 +9505,44 @@
             flex-direction: column;
             gap: 8px;
         }
+        .lesson-ican-block {
+            background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(217,119,6,0.10));
+            border: 1px solid rgba(245,158,11,0.30);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+        .lesson-ican-summary {
+            font-size: 13px;
+            font-weight: 700;
+            color: #92400e;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+        .lesson-ican-summary::-webkit-details-marker {
+            display: none;
+        }
+        .lesson-ican-summary::before {
+            content: '▸ ';
+            display: inline-block;
+            transition: transform 0.15s;
+        }
+        .lesson-ican-block[open] .lesson-ican-summary::before {
+            content: '▾ ';
+        }
+        .lesson-ican-list {
+            margin: 8px 0 0 0;
+            padding-left: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .lesson-ican-item {
+            font-size: 13px;
+            color: #78350f;
+            line-height: 1.5;
+        }
         .lesson-item {
             display: flex;
             flex-direction: column;
