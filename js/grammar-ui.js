@@ -37,7 +37,32 @@ function switchGrammarSubTab(tab) {
 
 // ==================== UNITS LIST ====================
 function renderGrammarUnitsList() {
-    return GRAMMAR_UNITS.map(unit => {
+    // Mistake bank card (only shown if user has mistakes or bookmarks)
+    const mistakes = (typeof getActiveMistakes === 'function') ? getActiveMistakes() : [];
+    const bookmarks = (typeof getBookmarkedMistakes === 'function') ? getBookmarkedMistakes() : [];
+    let mistakesCard = '';
+    if (mistakes.length > 0 || bookmarks.length > 0) {
+        const total = mistakes.length + bookmarks.filter(b => !mistakes.find(m => m.qId === b.qId)).length;
+        const bookmarkLine = bookmarks.length > 0
+            ? `<span class="grammar-mistakes-bookmark">★ ${bookmarks.length} bookmarked</span>`
+            : '';
+        mistakesCard = `
+            <div class="grammar-mistakes-card">
+                <div class="grammar-mistakes-icon">🎯</div>
+                <div class="grammar-mistakes-text">
+                    <div class="grammar-mistakes-title">Practice My Mistakes</div>
+                    <div class="grammar-mistakes-sub">${mistakes.length} question${mistakes.length !== 1 ? 's' : ''} to review · ${bookmarkLine || 'graduated when answered correctly'}</div>
+                </div>
+                <div class="grammar-mistakes-actions">
+                    ${mistakes.length >= 2 ? `<button class="grammar-quiz-btn grammar-btn-primary" onclick="startMistakesQuiz(10)">🎯 Quick (10)</button>` : ''}
+                    ${mistakes.length >= 2 ? `<button class="grammar-quiz-btn grammar-btn-secondary" onclick="startMistakesQuiz(${Math.min(mistakes.length, 25)})">📚 All</button>` : ''}
+                    ${mistakes.length < 2 ? '<div class="grammar-mistakes-empty-cta">Take quizzes to build your review bank.</div>' : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    const unitCards = GRAMMAR_UNITS.map(unit => {
         const stats = getGrammarStats(unit.id);
         const bestLine = stats.best
             ? `★ Best: <strong>${stats.best.score}/${stats.best.total}</strong> · ${stats.attempts} quiz${stats.attempts !== 1 ? 'zes' : ''}`
@@ -60,9 +85,19 @@ function renderGrammarUnitsList() {
             </div>
         `;
     }).join('');
+
+    return mistakesCard + unitCards;
 }
 
 // ==================== HISTORY LIST ====================
+// History filter state (in-memory)
+let _grammarHistoryFilters = { unit: 'all', tier: 'all' };
+
+function setGrammarHistoryFilter(kind, value) {
+    _grammarHistoryFilters[kind] = value;
+    renderGrammarHome();
+}
+
 function renderGrammarHistory() {
     if (!appState || !appState.grammarHistory || appState.grammarHistory.length === 0) {
         return `
@@ -73,25 +108,182 @@ function renderGrammarHistory() {
             </div>
         `;
     }
-    const sessions = appState.grammarHistory;
-    return `<div class="grammar-history-list">` + sessions.map((s, idx) => {
-        const unit = getGrammarUnit(s.unitId);
-        const date = new Date(s.date);
-        const dateStr = date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const pct = Math.round((s.score / s.total) * 100);
-        const tier = pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak';
-        const emoji = pct === 100 ? '⭐' : pct >= 80 ? '✅' : pct >= 60 ? '👍' : '📝';
-        return `
-            <div class="grammar-history-item history-tier-${tier}" onclick="openGrammarSession(${idx})">
-                <div class="grammar-history-emoji">${emoji}</div>
-                <div class="grammar-history-text">
-                    <div class="grammar-history-unit">${unit ? unit.icon + ' ' + unit.name : s.unitId}</div>
-                    <div class="grammar-history-meta">${dateStr} · ${s.score}/${s.total} (${pct}%)</div>
-                </div>
-                <div class="grammar-history-arrow">›</div>
-            </div>
-        `;
-    }).join('') + `</div>`;
+
+    // ── Aggregate stats banner (T2.6) ──
+    const stats = (typeof getGrammarAggregateStats === 'function') ? getGrammarAggregateStats() : null;
+    const banner = stats ? `
+        <div class="grammar-stats-banner">
+            <div class="stats-cell"><div class="stats-num">${stats.totalSessions}</div><div class="stats-lbl">Quizzes</div></div>
+            <div class="stats-cell"><div class="stats-num">${stats.avgPct}%</div><div class="stats-lbl">Avg Score</div></div>
+            <div class="stats-cell"><div class="stats-num">${stats.bestPct}%</div><div class="stats-lbl">Best</div></div>
+            <div class="stats-cell"><div class="stats-num">${stats.totalQuestions}</div><div class="stats-lbl">Questions</div></div>
+            <div class="stats-cell weak-cell"><div class="stats-num">${stats.mistakesCount}</div><div class="stats-lbl">To Review</div></div>
+        </div>
+    ` : '';
+
+    // ── Weak topics (T1.3) ──
+    const weakTopics = (typeof getWeakTopics === 'function') ? getWeakTopics().slice(0, 5) : [];
+    const weakTopicsHTML = weakTopics.length > 0 ? `
+        <div class="grammar-weak-topics">
+            <div class="grammar-weak-topics-title">📉 Topics to review</div>
+            ${weakTopics.map(wt => {
+                const unit = getGrammarUnit(wt.unitId);
+                const unitIcon = unit ? unit.icon : '';
+                return `<div class="grammar-weak-topic" onclick="practiceWeakTopic('${escapeAttr(wt.topic)}', '${wt.unitId}')">
+                    <span class="weak-topic-icon">${unitIcon}</span>
+                    <span class="weak-topic-name">${wt.topic}</span>
+                    <span class="weak-topic-misses">${wt.misses}× wrong</span>
+                    <span class="weak-topic-arrow">▶</span>
+                </div>`;
+            }).join('')}
+        </div>
+    ` : '';
+
+    // ── Filter chips (T2.7-8) ──
+    const unitChips = ['all', 'unit8', 'unit9', 'unit10', 'unit11'].map(u => {
+        const label = u === 'all' ? 'All units' : (getGrammarUnit(u) ? getGrammarUnit(u).icon + ' Unit ' + u.replace('unit', '') : u);
+        const active = _grammarHistoryFilters.unit === u ? 'active' : '';
+        return `<button class="filter-chip ${active}" onclick="setGrammarHistoryFilter('unit', '${u}')">${label}</button>`;
+    }).join('');
+    const tierChips = ['all', 'perfect', 'great', 'ok', 'weak'].map(t => {
+        const labels = { all: 'All scores', perfect: '⭐ Perfect', great: '✅ Great', ok: '👍 OK', weak: '📝 Weak' };
+        const active = _grammarHistoryFilters.tier === t ? 'active' : '';
+        return `<button class="filter-chip ${active}" onclick="setGrammarHistoryFilter('tier', '${t}')">${labels[t]}</button>`;
+    }).join('');
+    const filtersHTML = `
+        <div class="grammar-filters">
+            <div class="grammar-filter-row">${unitChips}</div>
+            <div class="grammar-filter-row">${tierChips}</div>
+        </div>
+    `;
+
+    // ── Filter sessions ──
+    let sessions = appState.grammarHistory;
+    if (_grammarHistoryFilters.unit !== 'all') {
+        sessions = sessions.filter(s => s.unitId === _grammarHistoryFilters.unit);
+    }
+    if (_grammarHistoryFilters.tier !== 'all') {
+        const tierFilter = _grammarHistoryFilters.tier;
+        sessions = sessions.filter(s => {
+            const pct = (s.score / s.total) * 100;
+            const t = pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak';
+            return t === tierFilter;
+        });
+    }
+
+    // ── Time-bucket grouping (T2.9) ──
+    const now = Date.now();
+    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+    const yesterdayStart = todayStart.getTime() - 86400000;
+    const thisWeekStart = todayStart.getTime() - 7 * 86400000;
+    const lastWeekStart = thisWeekStart - 7 * 86400000;
+    const buckets = { Today: [], Yesterday: [], 'This week': [], 'Last week': [], 'Older': [] };
+    for (const s of sessions) {
+        if (s.date >= todayStart.getTime()) buckets['Today'].push(s);
+        else if (s.date >= yesterdayStart) buckets['Yesterday'].push(s);
+        else if (s.date >= thisWeekStart) buckets['This week'].push(s);
+        else if (s.date >= lastWeekStart) buckets['Last week'].push(s);
+        else buckets['Older'].push(s);
+    }
+
+    const idxMap = new Map();
+    appState.grammarHistory.forEach((s, idx) => idxMap.set(s.id, idx));
+
+    let listHTML = '';
+    if (sessions.length === 0) {
+        listHTML = `<div class="grammar-empty"><div class="grammar-empty-icon">🔍</div><div class="grammar-empty-title">No matches</div><div class="grammar-empty-sub">Try a different filter.</div></div>`;
+    } else {
+        for (const [bucketName, bucketSessions] of Object.entries(buckets)) {
+            if (bucketSessions.length === 0) continue;
+            listHTML += `<div class="grammar-bucket-label">${bucketName} <span class="bucket-count">${bucketSessions.length}</span></div>`;
+            listHTML += `<div class="grammar-history-list">` + bucketSessions.map(s => {
+                const idx = idxMap.get(s.id);
+                const unit = getGrammarUnit(s.unitId);
+                const date = new Date(s.date);
+                const dateStr = date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const pct = Math.round((s.score / s.total) * 100);
+                const tier = pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak';
+                const emoji = pct === 100 ? '⭐' : pct >= 80 ? '✅' : pct >= 60 ? '👍' : '📝';
+                return `
+                    <div class="grammar-history-item history-tier-${tier}" onclick="openGrammarSession(${idx})">
+                        <div class="grammar-history-emoji">${emoji}</div>
+                        <div class="grammar-history-text">
+                            <div class="grammar-history-unit">${unit ? unit.icon + ' ' + unit.name : s.unitId}</div>
+                            <div class="grammar-history-meta">${dateStr} · ${s.score}/${s.total} (${pct}%)</div>
+                        </div>
+                        <div class="grammar-history-arrow">›</div>
+                    </div>
+                `;
+            }).join('') + `</div>`;
+        }
+    }
+
+    return banner + weakTopicsHTML + filtersHTML + listHTML;
+}
+
+function escapeAttr(s) {
+    return String(s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// Practice a specific weak topic — quiz from mistake bank in that topic
+function practiceWeakTopic(topic, unitId) {
+    if (typeof getActiveMistakes !== 'function') return;
+    const mistakes = getActiveMistakes().filter(m => m.topic === topic && m.unitId === unitId);
+    const questions = [];
+    for (const m of mistakes) {
+        const q = resolveMistakeQuestion(m);
+        if (q) questions.push(q);
+    }
+    if (questions.length < 2) {
+        showToast('Need at least 2 questions for a quiz');
+        return;
+    }
+    startCustomQuiz(questions, unitId, 'mistakes');
+}
+
+// Toggle bookmark on a session-question and re-render
+function toggleSessionBookmark(qId, sessionIdx) {
+    const session = appState.grammarHistory[sessionIdx];
+    if (!session) return;
+    const q = session.questions.find(x => x.id === qId);
+    if (!q) return;
+    const unitId = session.unitId === 'mixed' ? _unitIdFromQuestionId(qId) || session.unitId : session.unitId;
+    if (typeof toggleMistakeBookmark === 'function') {
+        toggleMistakeBookmark(qId, unitId, q.topic, q.type);
+    }
+    openGrammarSession(sessionIdx);
+}
+
+// Build a list of question objects (looked up from current GRAMMAR_UNITS) from
+// a session's wrong answers, then start a quiz.
+function rePracticeWrongFromSession(sessionIdx) {
+    const session = appState.grammarHistory[sessionIdx];
+    if (!session) return;
+    const wrong = session.questions.filter(q => {
+        if (q.type === 'arrangement') {
+            return !(Array.isArray(q.userAnswer) && q.userAnswer.length === q.parts.length &&
+                     q.userAnswer.every((idx, pos) => idx === pos));
+        }
+        return q.userAnswer !== q.correct;
+    });
+    if (wrong.length === 0) {
+        showToast('Nothing wrong in this session — well done!');
+        return;
+    }
+    // Re-resolve fresh question objects from the unit
+    const fresh = [];
+    for (const w of wrong) {
+        const unitId = _unitIdFromQuestionId(w.id) || session.unitId;
+        const u = getGrammarUnit(unitId);
+        if (!u) continue;
+        const f = u.questions.find(x => x.id === w.id);
+        if (f) fresh.push(f);
+    }
+    if (fresh.length < 2) {
+        showToast('Not enough wrong questions to re-quiz');
+        return;
+    }
+    startCustomQuiz(fresh, session.unitId, 'wrong-only');
 }
 
 // ==================== OPEN A PAST SESSION (REVIEW) ====================
@@ -112,7 +304,6 @@ function openGrammarSession(historyIdx) {
                 ? userAns.map(idx => q.parts[idx]).join(' ')
                 : '— skipped —';
             correctAnsText = q.parts.join(' ');
-            qText = '📝 Arrange: ' + q.parts.map((p, idx) => `[${idx + 1}]`).join(' '); // not really useful, use the chunks
             qText = '📝 Arrange these into a sentence: <em>' + q.parts.join(' / ') + '</em>';
         } else {
             isCorrect = userAns === q.correct;
@@ -121,12 +312,21 @@ function openGrammarSession(historyIdx) {
             qText = q.q;
         }
 
+        const isBookmarked = (typeof isQuestionBookmarked === 'function') && isQuestionBookmarked(q.id);
+        const refUnitId = session.unitId === 'mixed' ? (_unitIdFromQuestionId(q.id) || session.unitId) : session.unitId;
+        const pageRef = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(refUnitId, q) : '';
+
         return `
             <div class="grammar-review-item ${isCorrect ? 'correct' : 'wrong'}">
                 <div class="grammar-review-header">
                     <span class="grammar-review-num">${i + 1}.</span>
                     <span class="grammar-review-status">${isCorrect ? '✓ Correct' : '✗ Wrong'}</span>
                     <span class="grammar-review-tag">${q.type} · ${q.topic}</span>
+                    <button class="grammar-bookmark-btn ${isBookmarked ? 'bookmarked' : ''}"
+                            onclick="event.stopPropagation(); toggleSessionBookmark('${q.id}', ${historyIdx})"
+                            title="${isBookmarked ? 'Remove bookmark' : 'Bookmark this question'}">
+                        ${isBookmarked ? '★' : '☆'}
+                    </button>
                 </div>
                 <div class="grammar-review-q">${qText}</div>
                 <div class="grammar-review-answers">
@@ -140,11 +340,23 @@ function openGrammarSession(historyIdx) {
                     ` : ''}
                 </div>
                 <div class="grammar-review-explain">💡 ${q.explanation}</div>
-                ${(typeof formatPdfPageRef === 'function' && formatPdfPageRef(session.unitId, q))
-                    ? `<div class="grammar-page-ref">${formatPdfPageRef(session.unitId, q)}</div>` : ''}
+                ${pageRef ? `<div class="grammar-page-ref">${pageRef}</div>` : ''}
             </div>
         `;
     }).join('');
+
+    // Count wrong for the re-quiz button
+    const wrongCount = session.questions.filter(q => {
+        if (q.type === 'arrangement') {
+            return !(Array.isArray(q.userAnswer) && q.userAnswer.length === q.parts.length &&
+                     q.userAnswer.every((idx, pos) => idx === pos));
+        }
+        return q.userAnswer !== q.correct;
+    }).length;
+
+    const rePracticeBtn = wrongCount >= 2
+        ? `<button class="grammar-quiz-btn grammar-btn-primary" onclick="rePracticeWrongFromSession(${historyIdx})">🎯 Practice the ${wrongCount} you got wrong</button>`
+        : '';
 
     screen.innerHTML = `
         <button class="grammar-back-btn" onclick="renderGrammarHome()">‹ Back</button>
@@ -154,6 +366,7 @@ function openGrammarSession(historyIdx) {
             <div class="grammar-result-pct">${Math.round((session.score / session.total) * 100)}%</div>
             <div class="grammar-result-date">${new Date(session.date).toLocaleString()}</div>
         </div>
+        ${rePracticeBtn ? `<div class="grammar-result-actions">${rePracticeBtn}</div>` : ''}
         <div class="grammar-review-list">${items}</div>
         <button class="grammar-back-btn-bottom" onclick="renderGrammarHome()">‹ Back to Grammar</button>
     `;
@@ -161,31 +374,84 @@ function openGrammarSession(historyIdx) {
 }
 
 // ==================== START QUIZ ====================
+// Resolve the source unit for a question by parsing its ID prefix (u8/u9/u10/u11).
+function _unitIdFromQuestionId(qId) {
+    if (!qId) return null;
+    const m = String(qId).match(/^(u\d+)-/);
+    return m ? 'unit' + m[1].slice(1) : null;
+}
+
+// Helper that builds quiz state from a list of question objects (used by all quiz starters)
+function _buildQuizStateFromQuestions(questions, unitId, mode) {
+    return {
+        unitId: unitId || 'mixed',
+        mode: mode || 'standard',     // 'standard' | 'mistakes' | 'wrong-only'
+        questions,
+        answers: new Array(questions.length).fill(null),
+        currentIdx: 0,
+        showingResult: false,
+        arrangements: questions.map(q => {
+            if (q.type !== 'arrangement') return null;
+            const indices = q.parts.map((_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            return { shuffled: indices, ordered: [] };
+        })
+    };
+}
+
 function startGrammarQuiz(unitId, n) {
     const questions = generateGrammarQuiz(unitId, n);
     if (questions.length === 0) {
         showToast('No questions available');
         return;
     }
-    _grammarQuizState = {
-        unitId,
-        questions,
-        answers: new Array(questions.length).fill(null),
-        currentIdx: 0,
-        showingResult: false,
-        // For arrangement questions: stable shuffle per index
-        arrangements: questions.map(q => {
-            if (q.type !== 'arrangement') return null;
-            const indices = q.parts.map((_, i) => i);
-            // Fisher-Yates shuffle
-            for (let i = indices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [indices[i], indices[j]] = [indices[j], indices[i]];
-            }
-            return { shuffled: indices, ordered: [] }; // ordered = user's chosen order
-        })
-    };
+    _grammarQuizState = _buildQuizStateFromQuestions(questions, unitId, 'standard');
     renderGrammarQuestion();
+}
+
+// Start a quiz from a specific list of question objects (used by mistake bank,
+// "re-quiz the wrong ones" in session detail, and weak-topic mini-quiz).
+function startCustomQuiz(questionObjects, label, mode) {
+    if (!questionObjects || questionObjects.length === 0) {
+        showToast('No questions available');
+        return;
+    }
+    // Shuffle for variety
+    const pool = [...questionObjects];
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    _grammarQuizState = _buildQuizStateFromQuestions(pool, label || 'mixed', mode || 'custom');
+    renderGrammarQuestion();
+}
+
+// Start a "Practice My Mistakes" quiz drawing from the active mistake bank.
+function startMistakesQuiz(n) {
+    if (typeof getActiveMistakes !== 'function') {
+        showToast('Mistake bank unavailable');
+        return;
+    }
+    const mistakes = getActiveMistakes();
+    if (mistakes.length < 2) {
+        showToast('Take more quizzes to build your review bank!');
+        return;
+    }
+    // Resolve each mistake to its question object
+    const questions = [];
+    for (const m of mistakes) {
+        const q = resolveMistakeQuestion(m);
+        if (q) questions.push(q);
+        if (questions.length >= n) break;
+    }
+    if (questions.length < 2) {
+        showToast('Not enough mistakes to quiz yet');
+        return;
+    }
+    startCustomQuiz(questions, 'mixed', 'mistakes');
 }
 
 // ==================== QUIZ QUESTION SCREEN ====================
@@ -223,7 +489,7 @@ function renderMCQuestion() {
 
     const scoreSoFar = scoreSoFar_();
 
-    const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId, q) : '';
+    const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId === 'mixed' ? (_unitIdFromQuestionId(q.id) || state.unitId) : state.unitId, q) : '';
     const explanationBox = showingResult ? `
         <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
             <div class="grammar-explanation-header">
@@ -280,7 +546,7 @@ function renderArrangementQuestion() {
     let actionsHTML = '';
     if (showingResult) {
         const correctSentence = q.parts.join(' ').replace(/ \./g, '.').replace(/ \?/g, '?').replace(/ !/g, '!');
-        const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId, q) : '';
+        const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId === 'mixed' ? (_unitIdFromQuestionId(q.id) || state.unitId) : state.unitId, q) : '';
         actionsHTML = `
             <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
                 <div class="grammar-explanation-header">

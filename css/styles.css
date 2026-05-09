@@ -9433,6 +9433,213 @@
             font-style: italic;
         }
 
+        /* ========== MISTAKE BANK CARD (T1.2) ========== */
+        .grammar-mistakes-card {
+            background: linear-gradient(135deg, rgba(239,71,111,0.10), rgba(255,159,28,0.10));
+            border: 1px solid rgba(239,71,111,0.25);
+            border-left: 4px solid #ef476f;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            gap: 4px 12px;
+            align-items: center;
+        }
+        .grammar-mistakes-icon {
+            font-size: 36px;
+            grid-row: span 2;
+        }
+        .grammar-mistakes-text { min-width: 0; }
+        .grammar-mistakes-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .grammar-mistakes-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .grammar-mistakes-bookmark {
+            color: #ff9f1c;
+            font-weight: 700;
+        }
+        .grammar-mistakes-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .grammar-mistakes-empty-cta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 8px 0;
+        }
+
+        /* ========== AGGREGATE STATS BANNER (T2.6) ========== */
+        .grammar-stats-banner {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 10px 8px;
+            margin-bottom: 12px;
+        }
+        .stats-cell {
+            text-align: center;
+            padding: 4px;
+        }
+        .stats-num {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .stats-lbl {
+            font-size: 9px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .stats-cell.weak-cell .stats-num {
+            color: #c0392b;
+        }
+
+        /* ========== WEAK TOPICS (T1.3) ========== */
+        .grammar-weak-topics {
+            background: rgba(239,71,111,0.06);
+            border: 1px solid rgba(239,71,111,0.18);
+            border-radius: 14px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+        .grammar-weak-topics-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .grammar-weak-topic {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .grammar-weak-topic:active { transform: scale(0.98); }
+        .grammar-weak-topic:last-child { margin-bottom: 0; }
+        .weak-topic-icon { font-size: 18px; }
+        .weak-topic-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .weak-topic-misses {
+            font-size: 11px;
+            font-weight: 700;
+            color: #c0392b;
+            background: rgba(239,83,80,0.12);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .weak-topic-arrow {
+            font-size: 12px;
+            color: var(--accent-purple);
+        }
+
+        /* ========== FILTER CHIPS (T2.7-8) ========== */
+        .grammar-filters {
+            margin-bottom: 12px;
+        }
+        .grammar-filter-row {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 6px;
+        }
+        .filter-chip {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+        .filter-chip.active {
+            background: linear-gradient(135deg, #2ecc71, #9b59b6);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(46,204,113,0.3);
+        }
+
+        /* ========== TIME-BUCKET LABELS (T2.9) ========== */
+        .grammar-bucket-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin: 14px 4px 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .grammar-bucket-label .bucket-count {
+            background: rgba(155,89,182,0.15);
+            color: var(--accent-purple);
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        /* ========== BOOKMARK BUTTON (T1.5) ========== */
+        .grammar-bookmark-btn {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: inherit;
+            transition: transform 0.15s ease;
+        }
+        .grammar-bookmark-btn:active { transform: scale(0.85); }
+        .grammar-bookmark-btn.bookmarked {
+            color: #ff9f1c;
+            text-shadow: 0 1px 4px rgba(255,159,28,0.4);
+        }
+
+        /* ========== RE-PRACTICE BUTTON (T1.4) ========== */
+        .grammar-result-actions {
+            margin-bottom: 12px;
+        }
+
         /* ==================== ARRANGEMENT TILES (NEW v3.14.2) ==================== */
         .arr-answer-zone {
             min-height: 64px;

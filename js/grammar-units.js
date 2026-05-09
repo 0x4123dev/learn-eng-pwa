@@ -3629,11 +3629,46 @@ function scoreGrammarQuestion(q, userAnswer) {
     return userAnswer === q.correct ? 1 : 0;
 }
 
-// Save a completed quiz session to history
+// Save a completed quiz session to history (also updates the mistake bank)
 function saveGrammarSession(unitId, questions, answers) {
     if (!appState) return;
     if (!appState.grammarHistory) appState.grammarHistory = [];
+    if (!appState.grammarMistakes) appState.grammarMistakes = {};
+
     const correctCount = questions.reduce((sum, q, i) => sum + scoreGrammarQuestion(q, answers[i]), 0);
+
+    // ── Update the mistake bank ──
+    questions.forEach((q, i) => {
+        const isCorrect = scoreGrammarQuestion(q, answers[i]) === 1;
+        const existing = appState.grammarMistakes[q.id];
+        if (isCorrect) {
+            // Correctly answered → remove from bank (graduation), but keep bookmark
+            if (existing && !existing.bookmarked) {
+                delete appState.grammarMistakes[q.id];
+            } else if (existing && existing.bookmarked) {
+                existing.corrected = true;
+            }
+        } else if (answers[i] !== null && answers[i] !== undefined) {
+            // Wrongly answered → add or increment
+            if (existing) {
+                existing.misses = (existing.misses || 0) + 1;
+                existing.lastWrong = Date.now();
+                existing.corrected = false;
+            } else {
+                appState.grammarMistakes[q.id] = {
+                    qId: q.id,
+                    unitId,
+                    topic: q.topic,
+                    type: q.type,
+                    misses: 1,
+                    lastWrong: Date.now(),
+                    bookmarked: false,
+                    corrected: false
+                };
+            }
+        }
+    });
+
     const session = {
         id: 'g-' + Date.now(),
         unitId,
@@ -3645,18 +3680,102 @@ function saveGrammarSession(unitId, questions, answers) {
             type: q.type,
             topic: q.topic,
             q: q.q,
-            options: q.options,           // undefined for arrangement
-            correct: q.correct,           // undefined for arrangement
-            parts: q.parts,                // undefined for non-arrangement
+            options: q.options,
+            correct: q.correct,
+            parts: q.parts,
             explanation: q.explanation,
             userAnswer: answers[i]
         }))
     };
-    appState.grammarHistory.unshift(session); // Newest first
-    // Cap history at 50 sessions
+    appState.grammarHistory.unshift(session);
     if (appState.grammarHistory.length > 50) appState.grammarHistory = appState.grammarHistory.slice(0, 50);
     saveUserData(currentUser, appState);
     return session;
+}
+
+// ==================== MISTAKE BANK + ANALYTICS HELPERS ====================
+
+// Resolve a mistake entry's question object by looking it up in the unit data.
+function resolveMistakeQuestion(mistake) {
+    if (!mistake) return null;
+    const u = getGrammarUnit(mistake.unitId);
+    if (!u) return null;
+    return u.questions.find(q => q.id === mistake.qId) || null;
+}
+
+// All active (uncorrected) mistakes — array, sorted most-missed first
+function getActiveMistakes() {
+    if (!appState || !appState.grammarMistakes) return [];
+    const all = Object.values(appState.grammarMistakes).filter(m => !m.corrected);
+    return all.sort((a, b) => (b.misses || 0) - (a.misses || 0));
+}
+
+// Bookmarked questions (whether corrected or not)
+function getBookmarkedMistakes() {
+    if (!appState || !appState.grammarMistakes) return [];
+    return Object.values(appState.grammarMistakes).filter(m => m.bookmarked);
+}
+
+// Group active mistakes by topic and return a list sorted by miss count desc
+function getWeakTopics() {
+    const map = {};
+    for (const m of getActiveMistakes()) {
+        const key = m.topic + '|' + m.unitId;
+        if (!map[key]) map[key] = { topic: m.topic, unitId: m.unitId, count: 0, misses: 0 };
+        map[key].count++;
+        map[key].misses += (m.misses || 1);
+    }
+    return Object.values(map).sort((a, b) => b.misses - a.misses);
+}
+
+// Aggregate stats across all sessions
+function getGrammarAggregateStats() {
+    if (!appState || !appState.grammarHistory) {
+        return { totalSessions: 0, avgPct: 0, bestPct: 0, totalQuestions: 0, mistakesCount: 0 };
+    }
+    const sessions = appState.grammarHistory;
+    const totalSessions = sessions.length;
+    if (totalSessions === 0) {
+        return { totalSessions: 0, avgPct: 0, bestPct: 0, totalQuestions: 0, mistakesCount: getActiveMistakes().length };
+    }
+    let totalCorrect = 0, totalQ = 0, bestPct = 0;
+    for (const s of sessions) {
+        totalCorrect += s.score;
+        totalQ += s.total;
+        const pct = (s.score / s.total) * 100;
+        if (pct > bestPct) bestPct = pct;
+    }
+    const avgPct = Math.round((totalCorrect / totalQ) * 100);
+    return {
+        totalSessions,
+        avgPct,
+        bestPct: Math.round(bestPct),
+        totalQuestions: totalQ,
+        mistakesCount: getActiveMistakes().length
+    };
+}
+
+// Toggle bookmark on a question (creates entry if none exists)
+function toggleMistakeBookmark(qId, unitId, topic, type) {
+    if (!appState.grammarMistakes) appState.grammarMistakes = {};
+    const m = appState.grammarMistakes[qId];
+    if (m) {
+        m.bookmarked = !m.bookmarked;
+    } else {
+        // User bookmarked a question they got right — create flagged-only entry
+        appState.grammarMistakes[qId] = {
+            qId, unitId, topic, type,
+            misses: 0, lastWrong: 0,
+            bookmarked: true, corrected: true
+        };
+    }
+    saveUserData(currentUser, appState);
+}
+
+function isQuestionBookmarked(qId) {
+    if (!appState || !appState.grammarMistakes) return false;
+    const m = appState.grammarMistakes[qId];
+    return !!(m && m.bookmarked);
 }
 
 // ==================== PDF PAGE REFERENCES ====================

@@ -309,6 +309,184 @@ suite('grammar: helpers', () => {
     });
 });
 
+suite('grammar: mistake bank (v3.24 Tier 1)', () => {
+    test('wrong answer adds question to mistake bank', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions.find(q => q.type !== 'arrangement');
+        const wrong = mc.correct === 0 ? 1 : 0;
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        const mistakes = env.getActiveMistakes();
+        assert.equal(mistakes.length, 1);
+        assert.equal(mistakes[0].qId, mc.id);
+        assert.equal(mistakes[0].misses, 1);
+        assert.equal(mistakes[0].topic, mc.topic);
+        assert.equal(mistakes[0].unitId, 'unit8');
+    });
+
+    test('repeated wrong answers increment misses count', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions.find(q => q.type !== 'arrangement');
+        const wrong = mc.correct === 0 ? 1 : 0;
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        const mistakes = env.getActiveMistakes();
+        assert.equal(mistakes.length, 1);
+        assert.equal(mistakes[0].misses, 3);
+    });
+
+    test('correct answer removes question from mistake bank (graduation)', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions.find(q => q.type !== 'arrangement');
+        const wrong = mc.correct === 0 ? 1 : 0;
+        // First wrong → enters bank
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        assert.equal(env.getActiveMistakes().length, 1);
+        // Then correct → graduates out
+        env.saveGrammarSession('unit8', [mc], [mc.correct]);
+        assert.equal(env.getActiveMistakes().length, 0);
+    });
+
+    test('null/undefined answer (skipped question) does not add to bank', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions.find(q => q.type !== 'arrangement');
+        env.saveGrammarSession('unit8', [mc], [null]);
+        assert.equal(env.getActiveMistakes().length, 0);
+    });
+
+    test('getActiveMistakes sorts by misses desc', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mcs = u8.questions.filter(q => q.type !== 'arrangement').slice(0, 3);
+        // Q0: 1 miss, Q1: 3 misses, Q2: 2 misses
+        const wrongFor = (q) => q.correct === 0 ? 1 : 0;
+        env.saveGrammarSession('unit8', [mcs[0]], [wrongFor(mcs[0])]);
+        env.saveGrammarSession('unit8', [mcs[1]], [wrongFor(mcs[1])]);
+        env.saveGrammarSession('unit8', [mcs[1]], [wrongFor(mcs[1])]);
+        env.saveGrammarSession('unit8', [mcs[1]], [wrongFor(mcs[1])]);
+        env.saveGrammarSession('unit8', [mcs[2]], [wrongFor(mcs[2])]);
+        env.saveGrammarSession('unit8', [mcs[2]], [wrongFor(mcs[2])]);
+        const mistakes = env.getActiveMistakes();
+        assert.equal(mistakes.length, 3);
+        assert.equal(mistakes[0].qId, mcs[1].id); // most missed first
+        assert.equal(mistakes[0].misses, 3);
+        assert.equal(mistakes[1].qId, mcs[2].id);
+        assert.equal(mistakes[1].misses, 2);
+        assert.equal(mistakes[2].qId, mcs[0].id);
+        assert.equal(mistakes[2].misses, 1);
+    });
+
+    test('toggleMistakeBookmark on correct question creates flagged-only entry', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        env.toggleMistakeBookmark('u8-12', 'unit8', 'clothes', 'vocabulary');
+        assert.truthy(env.isQuestionBookmarked('u8-12'));
+        // Bookmarked but corrected → not in active mistakes
+        assert.equal(env.getActiveMistakes().length, 0);
+        // But shows up in bookmarks
+        assert.equal(env.getBookmarkedMistakes().length, 1);
+    });
+
+    test('bookmarked mistake stays after correct answer', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions.find(q => q.type !== 'arrangement');
+        const wrong = mc.correct === 0 ? 1 : 0;
+        // Wrong → in bank
+        env.saveGrammarSession('unit8', [mc], [wrong]);
+        // User bookmarks it
+        env.toggleMistakeBookmark(mc.id, 'unit8', mc.topic, mc.type);
+        assert.truthy(env.isQuestionBookmarked(mc.id));
+        // Correct → still in bank because bookmarked, but corrected: true
+        env.saveGrammarSession('unit8', [mc], [mc.correct]);
+        const all = env.__getAppState().grammarMistakes;
+        assert.truthy(all[mc.id]);
+        assert.truthy(all[mc.id].corrected);
+        // Active list excludes corrected
+        assert.equal(env.getActiveMistakes().length, 0);
+        // Bookmarks include it
+        assert.equal(env.getBookmarkedMistakes().length, 1);
+    });
+
+    test('getWeakTopics groups by topic and sorts by misses', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        // Pick two questions with the same topic
+        const byTopic = {};
+        for (const q of u8.questions) {
+            if (q.type === 'arrangement') continue;
+            if (!byTopic[q.topic]) byTopic[q.topic] = [];
+            byTopic[q.topic].push(q);
+        }
+        const topics = Object.keys(byTopic).filter(t => byTopic[t].length >= 2);
+        assert.truthy(topics.length >= 2, 'need at least 2 topics with ≥2 questions for the test');
+        const tA = topics[0], tB = topics[1];
+        const wrongFor = (q) => q.correct === 0 ? 1 : 0;
+        // Topic A: 2 different qs, each missed once → count=2 misses=2
+        env.saveGrammarSession('unit8', [byTopic[tA][0]], [wrongFor(byTopic[tA][0])]);
+        env.saveGrammarSession('unit8', [byTopic[tA][1]], [wrongFor(byTopic[tA][1])]);
+        // Topic B: 1 question, missed 3 times → count=1 misses=3
+        env.saveGrammarSession('unit8', [byTopic[tB][0]], [wrongFor(byTopic[tB][0])]);
+        env.saveGrammarSession('unit8', [byTopic[tB][0]], [wrongFor(byTopic[tB][0])]);
+        env.saveGrammarSession('unit8', [byTopic[tB][0]], [wrongFor(byTopic[tB][0])]);
+        const weak = env.getWeakTopics();
+        assert.equal(weak.length, 2);
+        assert.equal(weak[0].topic, tB); // 3 misses > 2 misses
+        assert.equal(weak[0].misses, 3);
+        assert.equal(weak[0].count, 1);
+        assert.equal(weak[1].topic, tA);
+        assert.equal(weak[1].misses, 2);
+        assert.equal(weak[1].count, 2);
+    });
+
+    test('getGrammarAggregateStats computes totals across sessions', () => {
+        env.__setAppState({
+            grammarHistory: [
+                { id: 'g1', unitId: 'unit8', date: 1000, score: 5, total: 10, questions: [] },
+                { id: 'g2', unitId: 'unit8', date: 2000, score: 8, total: 10, questions: [] },
+                { id: 'g3', unitId: 'unit9', date: 3000, score: 9, total: 10, questions: [] }
+            ],
+            grammarMistakes: {}
+        });
+        const stats = env.getGrammarAggregateStats();
+        assert.equal(stats.totalSessions, 3);
+        assert.equal(stats.totalQuestions, 30);
+        assert.equal(stats.bestPct, 90);
+        // avg = (5+8+9)/30 = 22/30 = 73.33 → rounded 73
+        assert.equal(stats.avgPct, 73);
+        assert.equal(stats.mistakesCount, 0);
+    });
+
+    test('getGrammarAggregateStats returns zeros for empty history', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {} });
+        const stats = env.getGrammarAggregateStats();
+        assert.equal(stats.totalSessions, 0);
+        assert.equal(stats.avgPct, 0);
+        assert.equal(stats.bestPct, 0);
+        assert.equal(stats.totalQuestions, 0);
+        assert.equal(stats.mistakesCount, 0);
+    });
+
+    test('resolveMistakeQuestion looks up the original question', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u8 = env.getGrammarUnit('unit8');
+        const mc = u8.questions[5];
+        const m = { qId: mc.id, unitId: 'unit8', topic: mc.topic, type: mc.type };
+        const resolved = env.resolveMistakeQuestion(m);
+        assert.truthy(resolved);
+        assert.equal(resolved.id, mc.id);
+        assert.equal(resolved.q, mc.q);
+    });
+
+    test('resolveMistakeQuestion returns null for unknown qId', () => {
+        const m = { qId: 'u8-9999', unitId: 'unit8', topic: 'x', type: 'vocabulary' };
+        assert.equal(env.resolveMistakeQuestion(m), null);
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

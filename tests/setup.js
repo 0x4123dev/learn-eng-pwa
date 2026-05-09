@@ -124,6 +124,10 @@ const EXPORT_NAMES = [
     'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
     'isArrangementCorrect', 'scoreGrammarQuestion',
     'PDF_PAGE_REFS', 'getPdfPageRef', 'formatPdfPageRef',
+    // grammar mistake bank (v3.24)
+    'resolveMistakeQuestion', 'getActiveMistakes', 'getBookmarkedMistakes',
+    'getWeakTopics', 'getGrammarAggregateStats',
+    'toggleMistakeBookmark', 'isQuestionBookmarked',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
