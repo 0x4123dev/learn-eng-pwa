@@ -6019,10 +6019,11 @@
 
         /* Bubbles — colorful candy style */
         .bubble {
+            --bubble-w: 100px;
             position: absolute;
             bottom: -100px;
-            width: 100px;
-            height: 100px;
+            width: var(--bubble-w);
+            height: var(--bubble-w);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -6121,6 +6122,20 @@
 
         .bubble.pop-fade {
             animation: popFade 0.35s ease forwards;
+        }
+
+        /* On narrow phone screens, shrink bubbles so they fit better and so
+           text fits cleanly. JS positions bubbles via
+           `calc(f * (100% - var(--bubble-w)))`, so changing the variable here
+           automatically updates the layout. */
+        @media (max-width: 400px) {
+            .bubble {
+                --bubble-w: 84px;
+            }
+            .bubble-text {
+                font-size: 13px;
+                padding: 6px;
+            }
         }
 
         @keyframes popCorrect {

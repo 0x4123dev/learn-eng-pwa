@@ -85,6 +85,10 @@ function showBubblesHome() {
 }
 
 function renderBubblesHome() {
+    // Restore bottom nav in case we got here from a finished game
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = '';
+
     const overlay = document.getElementById('bubblesOverlay');
     const stats = (appState && appState.bubblesStats) || { gamesPlayed: 0, highScore: 0, bestRound: 0, totalScore: 0, totalStars: 0, wordsCollected: [], bestCombo: 0, wins: 0 };
 
@@ -314,16 +318,23 @@ function spawnBubbles(options, correct) {
     bubblesState.bubbleTimers.forEach(t => clearTimeout(t));
     bubblesState.bubbleTimers = [];
 
-    // Generate horizontal positions spread evenly
+    // Generate horizontal positions spread evenly across the arena, accounting
+    // for the bubble's own width (set in CSS via --bubble-w). For each bubble we
+    // pick a fraction f in [0, 1] and place its `left` edge at
+    //   left = f * (arena_width - bubble_width)
+    // so f=0 puts the bubble's left edge at 0 and f=1 puts its right edge at the
+    // arena's right edge. Both extremes stay fully visible regardless of arena
+    // width or bubble size — fixes the right-most bubble being clipped by the
+    // arena's overflow:hidden.
     const count = options.length;
-    const positions = shuffleArray(Array.from({length: count}, (_, i) => 8 + (84 / (count - 1 || 1)) * i));
+    const fractions = shuffleArray(Array.from({length: count}, (_, i) => count === 1 ? 0.5 : i / (count - 1)));
 
     options.forEach((word, i) => {
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
         const isCorrect = word.en === correct.en;
         bubble.dataset.correct = isCorrect ? '1' : '0';
-        bubble.style.left = `${positions[i]}%`;
+        bubble.style.left = `calc(${fractions[i]} * (100% - var(--bubble-w, 100px)))`;
         const riseDur = bubblesState.animationDuration + (Math.random() * 1.5);
         bubble.style.animationDuration = `${riseDur}s, 2.5s`;
         bubble.style.animationDelay = `${i * 0.25}s, ${Math.random() * 0.5}s`;
@@ -663,4 +674,8 @@ function closeBubbles() {
     const overlay = document.getElementById('bubblesOverlay');
     overlay.classList.remove('active');
     overlay.innerHTML = '';
+
+    // Restore the bottom nav (hidden in startWordBubbles)
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = '';
 }
