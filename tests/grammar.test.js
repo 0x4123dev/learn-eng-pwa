@@ -487,6 +487,125 @@ suite('grammar: mistake bank (v3.24 Tier 1)', () => {
     });
 });
 
+suite('grammar: lessons sub-tab data (v3.25)', () => {
+    test('GRAMMAR_LESSONS contains exactly 4 units', () => {
+        assert.equal(env.GRAMMAR_LESSONS.length, 4);
+    });
+
+    test('lessons cover unit8, unit9, unit10, unit11', () => {
+        const ids = env.GRAMMAR_LESSONS.map(u => u.unitId);
+        for (const u of ['unit8', 'unit9', 'unit10', 'unit11']) {
+            assert.contains(ids, u);
+        }
+    });
+
+    test('every unit has icon, color, intro, and 6 lessons', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            assert.truthy(u.icon, `${u.unitId} missing icon`);
+            assert.truthy(u.color, `${u.unitId} missing color`);
+            assert.truthy(u.title, `${u.unitId} missing title`);
+            assert.truthy(u.intro, `${u.unitId} missing intro`);
+            assert.equal(u.lessons.length, 6);
+        }
+    });
+
+    test('every lesson has id, title, page, and at least one section', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            for (const l of u.lessons) {
+                assert.truthy(l.id, `lesson missing id in ${u.unitId}`);
+                assert.truthy(l.title, `${l.id} missing title`);
+                assert.truthy(l.page, `${l.id} missing page reference`);
+                const hasContent = !!(l.vocabulary || l.pronunciation || (Array.isArray(l.grammar) && l.grammar.length > 0));
+                assert.truthy(hasContent, `${l.id} has no content (vocab/pron/grammar)`);
+            }
+        }
+    });
+
+    test('lesson IDs follow the [unit][a-f] pattern', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            const unitNum = u.unitId.replace('unit', '');
+            const expected = ['a', 'b', 'c', 'd', 'e', 'f'].map(s => unitNum + s);
+            const actual = u.lessons.map(l => l.id);
+            for (const id of expected) {
+                assert.contains(actual, id, `${u.unitId} missing lesson ${id}`);
+            }
+        }
+    });
+
+    test('every grammar block has rule + at least one example', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            for (const l of u.lessons) {
+                if (!Array.isArray(l.grammar)) continue;
+                for (const g of l.grammar) {
+                    assert.truthy(g.title, `${l.id} grammar block missing title`);
+                    assert.truthy(g.rule, `${l.id} "${g.title}" missing rule`);
+                    assert.truthy(Array.isArray(g.examples) && g.examples.length > 0,
+                        `${l.id} "${g.title}" needs at least one example`);
+                }
+            }
+        }
+    });
+
+    test('every vocabulary section has a title and a non-empty word list', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            for (const l of u.lessons) {
+                if (!l.vocabulary) continue;
+                assert.truthy(l.vocabulary.title, `${l.id} vocab missing title`);
+                assert.truthy(Array.isArray(l.vocabulary.words) && l.vocabulary.words.length > 0,
+                    `${l.id} vocab needs words`);
+            }
+        }
+    });
+
+    test('every pronunciation section has rule + at least one example', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            for (const l of u.lessons) {
+                if (!l.pronunciation) continue;
+                assert.truthy(l.pronunciation.title, `${l.id} pron missing title`);
+                assert.truthy(l.pronunciation.rule, `${l.id} pron missing rule`);
+                assert.truthy(Array.isArray(l.pronunciation.examples) && l.pronunciation.examples.length > 0,
+                    `${l.id} pron needs examples`);
+            }
+        }
+    });
+
+    test('getGrammarLessonsForUnit returns lessons by unitId', () => {
+        const u8 = env.getGrammarLessonsForUnit('unit8');
+        assert.equal(u8.length, 6);
+        assert.equal(u8[0].id, '8a');
+    });
+
+    test('getGrammarLessonsForUnit returns [] for unknown unit', () => {
+        assert.equal(env.getGrammarLessonsForUnit('unit99').length, 0);
+    });
+
+    test('getGrammarLesson returns specific lesson', () => {
+        const l = env.getGrammarLesson('unit8', '8a');
+        assert.truthy(l);
+        assert.equal(l.id, '8a');
+        assert.equal(l.title, 'Global fashions');
+    });
+
+    test('getGrammarLesson returns null for unknown lesson', () => {
+        assert.equal(env.getGrammarLesson('unit8', '8z'), null);
+    });
+
+    test('getLessonPracticeQuestions returns matching questions for 8a (clothes/present continuous)', () => {
+        env.__setAppState({ grammarHistory: [], coins: 0 });
+        const qs = env.getLessonPracticeQuestions('unit8', '8a', 10);
+        assert.truthy(qs.length > 0, '8a should have matching practice questions');
+        // At least some should be clothes or present continuous
+        const topics = qs.map(q => (q.topic || '').toLowerCase());
+        const matches = topics.filter(t => t.includes('clothes') || t.includes('present continuous') || t.includes('/s/'));
+        assert.truthy(matches.length > 0, 'expected matches for clothes/present continuous');
+    });
+
+    test('getLessonPracticeQuestions caps at requested max', () => {
+        const qs = env.getLessonPracticeQuestions('unit8', '8a', 5);
+        assert.truthy(qs.length <= 5);
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

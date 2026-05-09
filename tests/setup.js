@@ -128,6 +128,9 @@ const EXPORT_NAMES = [
     'resolveMistakeQuestion', 'getActiveMistakes', 'getBookmarkedMistakes',
     'getWeakTopics', 'getGrammarAggregateStats',
     'toggleMistakeBookmark', 'isQuestionBookmarked',
+    // grammar lessons (v3.25)
+    'GRAMMAR_LESSONS', 'getGrammarLessonsForUnit', 'getGrammarLesson',
+    'getLessonPracticeQuestions',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
@@ -164,6 +167,7 @@ function loadAppCode(opts) {
         'js/topics.js',
         'js/srs.js',
         'js/grammar-units.js',
+        'js/grammar-lessons.js',
         'js/app.js'
     ];
     if (opts.includeHome !== false) {

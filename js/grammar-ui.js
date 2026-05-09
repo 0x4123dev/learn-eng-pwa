@@ -1,8 +1,9 @@
 // grammar-ui.js — Grammar tab UI: home, sub-tabs (units / history), quiz, review
 // Depends on grammar-units.js for question data and helpers.
 
-let _grammarSubTab = 'units';      // 'units' | 'history'
+let _grammarSubTab = 'units';      // 'units' | 'lessons' | 'history'
 let _grammarQuizState = null;       // active quiz session
+let _grammarOpenLesson = null;      // { unitId, lessonId } when viewing lesson detail
 
 // ==================== ARRANGEMENT CHIP DISPLAY ====================
 // We lowercase the first letter of the FIRST part when shown as a draggable
@@ -46,11 +47,15 @@ function renderGrammarHome() {
     const tabs = `
         <div class="grammar-subtabs">
             <button class="grammar-subtab ${_grammarSubTab === 'units' ? 'active' : ''}" onclick="switchGrammarSubTab('units')">📖 Units</button>
+            <button class="grammar-subtab ${_grammarSubTab === 'lessons' ? 'active' : ''}" onclick="switchGrammarSubTab('lessons')">📚 Lessons</button>
             <button class="grammar-subtab ${_grammarSubTab === 'history' ? 'active' : ''}" onclick="switchGrammarSubTab('history')">📜 History</button>
         </div>
     `;
 
-    const body = _grammarSubTab === 'history' ? renderGrammarHistory() : renderGrammarUnitsList();
+    let body;
+    if (_grammarSubTab === 'history') body = renderGrammarHistory();
+    else if (_grammarSubTab === 'lessons') body = renderGrammarLessons();
+    else body = renderGrammarUnitsList();
 
     screen.innerHTML = `
         <div class="grammar-header">
@@ -64,6 +69,7 @@ function renderGrammarHome() {
 
 function switchGrammarSubTab(tab) {
     _grammarSubTab = tab;
+    _grammarOpenLesson = null; // reset any open lesson detail when switching tabs
     renderGrammarHome();
 }
 
@@ -119,6 +125,184 @@ function renderGrammarUnitsList() {
     }).join('');
 
     return mistakesCard + unitCards;
+}
+
+// ==================== LESSONS LIST (theory notes) ====================
+function renderGrammarLessons() {
+    if (typeof GRAMMAR_LESSONS === 'undefined' || !GRAMMAR_LESSONS) {
+        return '<div class="grammar-empty"><div class="grammar-empty-icon">📚</div><div class="grammar-empty-title">Lessons unavailable</div></div>';
+    }
+
+    // If a lesson is open, show its detail page
+    if (_grammarOpenLesson) {
+        return renderGrammarLessonDetail(_grammarOpenLesson.unitId, _grammarOpenLesson.lessonId);
+    }
+
+    const intro = `
+        <div class="grammar-lessons-intro">
+            <div class="grammar-lessons-intro-icon">📚</div>
+            <div class="grammar-lessons-intro-text">
+                <strong>Theory notes from the textbook.</strong>
+                Tap a lesson to review vocabulary, pronunciation, and grammar — then practise.
+            </div>
+        </div>
+    `;
+
+    const unitsHTML = GRAMMAR_LESSONS.map(unit => {
+        const lessonItemsHTML = unit.lessons.map(l => {
+            const tagsHTML = (l.topicTags || []).slice(0, 4).map(t =>
+                `<span class="lesson-item-tag">${t}</span>`
+            ).join('');
+            return `
+                <button class="lesson-item" onclick="openGrammarLesson('${unit.unitId}', '${l.id}')">
+                    <div class="lesson-item-head">
+                        <span class="lesson-item-id">${l.id}</span>
+                        <span class="lesson-item-title">${l.title}</span>
+                        <span class="lesson-item-page">p${l.page}</span>
+                    </div>
+                    <div class="lesson-item-tags">${tagsHTML}</div>
+                </button>
+            `;
+        }).join('');
+
+        return `
+            <div class="lesson-unit-group" style="border-left-color:${unit.color}">
+                <div class="lesson-unit-header">
+                    <span class="lesson-unit-icon">${unit.icon}</span>
+                    <span class="lesson-unit-title">Unit ${unit.unitId.replace('unit', '')} — ${unit.title}</span>
+                </div>
+                <div class="lesson-unit-intro">${unit.intro}</div>
+                <div class="lesson-unit-list">${lessonItemsHTML}</div>
+            </div>
+        `;
+    }).join('');
+
+    return intro + unitsHTML;
+}
+
+function openGrammarLesson(unitId, lessonId) {
+    _grammarOpenLesson = { unitId, lessonId };
+    renderGrammarHome();
+    // Scroll to top of grammar screen
+    const screen = document.getElementById('grammarScreen');
+    if (screen && screen.scrollTo) screen.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeGrammarLesson() {
+    _grammarOpenLesson = null;
+    renderGrammarHome();
+}
+
+function renderGrammarLessonDetail(unitId, lessonId) {
+    const lesson = (typeof getGrammarLesson === 'function') ? getGrammarLesson(unitId, lessonId) : null;
+    if (!lesson) {
+        return '<div class="grammar-empty"><div class="grammar-empty-title">Lesson not found</div><button class="grammar-action-btn" onclick="closeGrammarLesson()">← Back</button></div>';
+    }
+    const unit = GRAMMAR_LESSONS.find(u => u.unitId === unitId);
+    const unitName = unit ? unit.title : '';
+
+    // ── Vocabulary ──
+    let vocabHTML = '';
+    if (lesson.vocabulary) {
+        const v = lesson.vocabulary;
+        const wordChips = (v.words || []).map(w => `<span class="lesson-word-chip">${w}</span>`).join('');
+        vocabHTML = `
+            <div class="lesson-section lesson-section-vocab">
+                <div class="lesson-section-head">
+                    <span class="lesson-section-icon">📖</span>
+                    <span class="lesson-section-title">Vocabulary — ${v.title}</span>
+                </div>
+                <div class="lesson-word-grid">${wordChips}</div>
+                ${v.note ? `<div class="lesson-section-note">💡 ${v.note}</div>` : ''}
+            </div>
+        `;
+    }
+
+    // ── Pronunciation ──
+    let pronHTML = '';
+    if (lesson.pronunciation) {
+        const p = lesson.pronunciation;
+        const examplesHTML = (p.examples || []).map(e => `<li>${e}</li>`).join('');
+        pronHTML = `
+            <div class="lesson-section lesson-section-pron">
+                <div class="lesson-section-head">
+                    <span class="lesson-section-icon">🔊</span>
+                    <span class="lesson-section-title">Pronunciation — ${p.title}</span>
+                </div>
+                <div class="lesson-section-rule">${p.rule}</div>
+                <ul class="lesson-example-list">${examplesHTML}</ul>
+            </div>
+        `;
+    }
+
+    // ── Grammar (can have multiple blocks) ──
+    let grammarHTML = '';
+    if (Array.isArray(lesson.grammar)) {
+        grammarHTML = lesson.grammar.map(g => {
+            const formHTML = Array.isArray(g.form) ? `
+                <div class="lesson-form-table">
+                    ${g.form.map(f => `
+                        <div class="lesson-form-row">
+                            <span class="lesson-form-label">${f.label}</span>
+                            <span class="lesson-form-text">${f.text}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '';
+            const examplesHTML = (g.examples || []).map(e => `<li>${e}</li>`).join('');
+            return `
+                <div class="lesson-section lesson-section-grammar">
+                    <div class="lesson-section-head">
+                        <span class="lesson-section-icon">✍️</span>
+                        <span class="lesson-section-title">Grammar — ${g.title}</span>
+                    </div>
+                    <div class="lesson-section-rule">${g.rule}</div>
+                    ${formHTML}
+                    ${examplesHTML ? `<ul class="lesson-example-list">${examplesHTML}</ul>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ── Practice button (if matching questions exist) ──
+    const practiceQs = (typeof getLessonPracticeQuestions === 'function')
+        ? getLessonPracticeQuestions(unitId, lessonId, 10) : [];
+    const practiceHTML = practiceQs.length > 0 ? `
+        <button class="lesson-practice-btn" onclick="practiceGrammarLesson('${unitId}', '${lessonId}')">
+            📝 Practise this lesson (${practiceQs.length} Q)
+        </button>
+    ` : `
+        <div class="lesson-practice-none">No practice questions for this lesson yet.</div>
+    `;
+
+    return `
+        <div class="lesson-detail">
+            <button class="lesson-back-btn" onclick="closeGrammarLesson()">← All lessons</button>
+            <div class="lesson-detail-header">
+                <div class="lesson-detail-id">${lesson.id}</div>
+                <div class="lesson-detail-title">${lesson.title}</div>
+                <div class="lesson-detail-meta">Unit ${unitId.replace('unit', '')} ${unitName} · 📕 p${lesson.page}</div>
+            </div>
+            ${vocabHTML}
+            ${pronHTML}
+            ${grammarHTML}
+            ${practiceHTML}
+        </div>
+    `;
+}
+
+function practiceGrammarLesson(unitId, lessonId) {
+    const qs = (typeof getLessonPracticeQuestions === 'function')
+        ? getLessonPracticeQuestions(unitId, lessonId, 10) : [];
+    if (!qs || qs.length === 0) {
+        if (typeof showToast === 'function') showToast('No practice questions for this lesson yet.');
+        return;
+    }
+    if (typeof startCustomQuiz === 'function') {
+        // Pass the unitId as the quiz "label" so PDF page refs and history
+        // resolve correctly. The quiz mode 'lesson' flags it as a lesson drill.
+        startCustomQuiz(qs, unitId, 'lesson:' + lessonId);
+    }
 }
 
 // ==================== HISTORY LIST ====================
