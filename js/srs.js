@@ -225,9 +225,9 @@ function startTopicReviewSession(topicId, mode) {
         topicReviewMeta: { topicId, mode: mode || 'due' }
     };
     document.getElementById('bottomNav').style.display = 'none';
+    // Deactivate every other screen — defensive against caller context.
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('topicsScreen').classList.remove('active');
-    document.getElementById('homeScreen').classList.remove('active');
     if (typeof preloadLessonAudio === 'function') preloadLessonAudio(reviewWords);
     if (typeof renderMatchingRound === 'function') renderMatchingRound();
 }
@@ -273,8 +273,12 @@ function startReviewSession() {
     };
 
     document.getElementById('bottomNav').style.display = 'none';
+    // Deactivate every other screen first — startReviewSession can be called
+    // from Home, Topics (via the daily SR banner), or anywhere. Selectively
+    // removing only homeScreen leaves topicsScreen active and the lesson
+    // renders on top, causing visible overlap (#bug screenshot v3.26).
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('homeScreen').classList.remove('active');
 
     preloadLessonAudio(reviewWords);
     renderMatchingRound();

@@ -43,8 +43,8 @@ function startLesson(lessonNum) {
     };
 
     document.getElementById('bottomNav').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('homeScreen').classList.remove('active');
 
     // Preload pronunciation audio for all lesson words
     preloadLessonAudio(lessonWords);

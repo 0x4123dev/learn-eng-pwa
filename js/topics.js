@@ -631,8 +631,8 @@ function startTopicLessonReplayDue(topicId, lessonIdx) {
         topicReviewMeta: { topicId, mode: 'lesson-due', lessonIdx }
     };
     document.getElementById('bottomNav').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('topicsScreen').classList.remove('active');
     if (typeof preloadLessonAudio === 'function') preloadLessonAudio(dueWords);
     if (typeof renderMatchingRound === 'function') renderMatchingRound();
 }
@@ -960,9 +960,8 @@ function _startTopicLessonWithWords(lessonWords, topicId, chunkIdx) {
     };
 
     document.getElementById('bottomNav').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('topicsScreen').classList.remove('active');
-    document.getElementById('homeScreen').classList.remove('active');
 
     if (typeof preloadLessonAudio === 'function') preloadLessonAudio(lessonWords);
     if (typeof renderMatchingRound === 'function') renderMatchingRound();

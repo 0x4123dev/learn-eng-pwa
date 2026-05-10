@@ -380,8 +380,8 @@ function startTopicPractice(category) {
     };
 
     document.getElementById('bottomNav').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('lessonScreen').classList.add('active');
-    document.getElementById('homeScreen').classList.remove('active');
 
     preloadLessonAudio(practiceWords);
     renderMatchingRound();
