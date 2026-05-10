@@ -117,6 +117,11 @@ const EXPORT_NAMES = [
     // srs.js
     'initWordSRS', 'updateWordSRS', 'getWordsDueForReview', 'getReviewCount',
     'getSRSMasteryPercent', 'startReviewSession',
+    // srs.js — topic-aware SR (v3.26)
+    'getDueWordsForTopic', 'getDueCountForTopic', 'getTrackedWordsForTopic',
+    'getTopicSRSStats', 'getStrugglingWordsForTopic', 'getTopicOfTheDay',
+    'isWordStruggling', 'startTopicReviewSession',
+    'SRS_LEARNING_MAX', 'SRS_REVIEWING_MAX', 'SRS_MASTERED_INTERVAL', 'SRS_GRADUATED_INTERVAL',
     // app.js
     'WORDS_PER_LESSON', 'TOTAL_LESSONS', 'STREAK_MILESTONES', 'achievements',
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',

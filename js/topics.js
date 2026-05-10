@@ -322,6 +322,83 @@ function getDifficultyLabelForWordIdx(idx) {
     return { label: 'Advanced', icon: '⭐' };
 }
 
+// ==================== MASTERY GRADUATION CELEBRATION ====================
+// Triggered from updateWordSRS in srs.js when a word first crosses interval ≥30d.
+function showWordGraduationCelebration(wordEn) {
+    if (typeof showToast === 'function') {
+        showToast(`🎓 Mastered: "${wordEn}" — interval 30+ days!`, 4000);
+    }
+    if (typeof createConfetti === 'function') {
+        try { createConfetti(); } catch (e) { /* non-fatal */ }
+    }
+}
+
+// ==================== DAILY REVIEW BANNER & TOPIC OF THE DAY ====================
+function renderDailyReviewBanner() {
+    const totalDue = (typeof getReviewCount === 'function') ? getReviewCount() : 0;
+    const totalTracked = (appState && appState.srs) ? Object.keys(appState.srs).length : 0;
+    const totd = (typeof getTopicOfTheDay === 'function') ? getTopicOfTheDay() : null;
+
+    // Count topics that have due words
+    let topicsWithDue = 0;
+    if (typeof TOPICS !== 'undefined' && typeof getDueCountForTopic === 'function') {
+        for (const t of TOPICS) {
+            if (getDueCountForTopic(t.id) > 0) topicsWithDue++;
+        }
+    }
+
+    if (totalTracked === 0) {
+        return `
+            <div class="topics-sr-banner topics-sr-banner-empty">
+                <span class="topics-sr-banner-icon">🌱</span>
+                <div class="topics-sr-banner-text">
+                    <div class="topics-sr-banner-title">Start learning to unlock spaced review</div>
+                    <div class="topics-sr-banner-sub">Words you've answered will appear here for time-based review.</div>
+                </div>
+            </div>
+        `;
+    }
+
+    let totdHTML = '';
+    if (totd && totd.topic) {
+        const reasonLabel = totd.reason === 'due' ? `${totd.count} due` :
+                            totd.reason === 'struggling' ? `${totd.count} struggling` :
+                            'Daily focus';
+        totdHTML = `
+            <button class="topics-totd" onclick="openTopicDetail('${totd.topic.id}')" style="--topic-color:${totd.topic.color}">
+                <span class="topics-totd-label">⭐ Topic of the day</span>
+                <span class="topics-totd-name">${totd.topic.icon} ${totd.topic.name}</span>
+                <span class="topics-totd-meta">${reasonLabel}</span>
+            </button>
+        `;
+    }
+
+    if (totalDue === 0) {
+        return `
+            <div class="topics-sr-banner topics-sr-banner-clear">
+                <span class="topics-sr-banner-icon">✨</span>
+                <div class="topics-sr-banner-text">
+                    <div class="topics-sr-banner-title">All caught up!</div>
+                    <div class="topics-sr-banner-sub">${totalTracked} words tracked · come back later for more reviews.</div>
+                </div>
+            </div>
+            ${totdHTML}
+        `;
+    }
+
+    return `
+        <button class="topics-sr-banner topics-sr-banner-due" onclick="startReviewSession()">
+            <span class="topics-sr-banner-icon">📅</span>
+            <div class="topics-sr-banner-text">
+                <div class="topics-sr-banner-title">Today: ${totalDue} word${totalDue !== 1 ? 's' : ''} to review</div>
+                <div class="topics-sr-banner-sub">across ${topicsWithDue} topic${topicsWithDue !== 1 ? 's' : ''} · tap to start a mixed review</div>
+            </div>
+            <span class="topics-sr-banner-arrow">›</span>
+        </button>
+        ${totdHTML}
+    `;
+}
+
 function renderTopicsHome() {
     // Hide detail view if open
     const detail = document.getElementById('topicsDetail');
@@ -330,9 +407,18 @@ function renderTopicsHome() {
     if (grid) grid.style.display = 'grid';
     const reviewCard = document.getElementById('topicsReviewCard');
     if (reviewCard) reviewCard.style.display = 'block';
+    const srBanner = document.getElementById('topicsSrBanner');
+    if (srBanner) srBanner.style.display = 'block';
 
+    renderSrBannerSlot();
     renderReviewCard();
     renderTopicsGrid();
+}
+
+function renderSrBannerSlot() {
+    const slot = document.getElementById('topicsSrBanner');
+    if (!slot) return;
+    slot.innerHTML = renderDailyReviewBanner();
 }
 
 // Render the "Review Mistakes" card above the topics grid
@@ -385,17 +471,170 @@ function renderTopicsGrid() {
         const progressBadge = doneLessons > 0
             ? `<div class="topic-card-progress">${allPerfect ? '⭐' : '✓'} ${doneLessons}/${totalLessons}</div>`
             : '';
+
+        // SR-aware badges (v3.26)
+        const stats = (typeof getTopicSRSStats === 'function') ? getTopicSRSStats(t.id)
+            : { due: 0, struggling: 0, masteryPct: 0, tracked: 0 };
+        const dueBadge = stats.due > 0
+            ? `<div class="topic-card-due">🔄 ${stats.due} due</div>`
+            : '';
+        const struggleBadge = stats.struggling > 0
+            ? `<div class="topic-card-struggle">🔥 ${stats.struggling}</div>`
+            : '';
+        // Heat: shade the card by due-ratio (subtle pulse if heavy load)
+        const dueRatio = stats.tracked > 0 ? stats.due / stats.tracked : 0;
+        const heatClass = dueRatio >= 0.5 ? 'topic-card-hot'
+            : dueRatio >= 0.2 ? 'topic-card-warm' : '';
+        const masteryBar = stats.tracked > 0
+            ? `<div class="topic-card-mastery"><div class="topic-card-mastery-fill" style="width:${stats.masteryPct}%"></div></div>
+               <div class="topic-card-mastery-label">${stats.masteryPct}% mastered</div>`
+            : '';
+
         return `
-            <button class="topic-card ${dimmed}" style="--topic-color:${t.color}"
+            <button class="topic-card ${dimmed} ${heatClass}" style="--topic-color:${t.color}"
                     onclick="${count > 0 ? `openTopicDetail('${t.id}')` : ''}"
                     ${count === 0 ? 'disabled' : ''}>
                 <div class="topic-card-icon">${t.icon}</div>
                 <div class="topic-card-name">${t.name}</div>
                 <div class="topic-card-count">${count} word${count !== 1 ? 's' : ''}</div>
                 ${progressBadge}
+                <div class="topic-card-sr-row">
+                    ${dueBadge}
+                    ${struggleBadge}
+                </div>
+                ${masteryBar}
             </button>
         `;
     }).join('');
+}
+
+// ==================== TOPIC DETAIL — SR REVIEW HUB ====================
+function renderTopicSRHub(topicId) {
+    if (typeof getTopicSRSStats !== 'function') return '';
+    const s = getTopicSRSStats(topicId);
+    if (s.tracked === 0) {
+        return `
+            <div class="topic-sr-hub topic-sr-hub-empty">
+                <div class="topic-sr-hub-empty-text">🌱 Complete a lesson below to start tracking your spaced repetition for this topic.</div>
+            </div>
+        `;
+    }
+
+    // Big "Review N due" button
+    const reviewBtn = s.due > 0
+        ? `<button class="topic-sr-review-btn" onclick="startTopicReviewSession('${topicId}', 'due')">
+                🔄 Review ${s.due} due word${s.due !== 1 ? 's' : ''}
+                <span class="topic-sr-review-btn-sub">tap to start a focused session</span>
+            </button>`
+        : `<div class="topic-sr-review-clear">
+                ✨ Nothing due in this topic right now — come back later!
+            </div>`;
+
+    // Three stacks (Learning / Reviewing / Mature)
+    const stacksHTML = `
+        <div class="topic-sr-stacks">
+            <button class="topic-sr-stack stack-learning ${s.learning < 2 ? 'disabled' : ''}"
+                    onclick="${s.learning >= 2 ? `startTopicReviewSession('${topicId}', 'learning')` : ''}"
+                    ${s.learning < 2 ? 'disabled' : ''}>
+                <div class="topic-sr-stack-icon">🌱</div>
+                <div class="topic-sr-stack-count">${s.learning}</div>
+                <div class="topic-sr-stack-label">Learning<br><span class="topic-sr-stack-meta">&lt;7 d</span></div>
+            </button>
+            <button class="topic-sr-stack stack-reviewing ${s.reviewing < 2 ? 'disabled' : ''}"
+                    onclick="${s.reviewing >= 2 ? `startTopicReviewSession('${topicId}', 'reviewing')` : ''}"
+                    ${s.reviewing < 2 ? 'disabled' : ''}>
+                <div class="topic-sr-stack-icon">🌿</div>
+                <div class="topic-sr-stack-count">${s.reviewing}</div>
+                <div class="topic-sr-stack-label">Reviewing<br><span class="topic-sr-stack-meta">7–21 d</span></div>
+            </button>
+            <button class="topic-sr-stack stack-mature ${s.mature < 2 ? 'disabled' : ''}"
+                    onclick="${s.mature >= 2 ? `startTopicReviewSession('${topicId}', 'mature')` : ''}"
+                    ${s.mature < 2 ? 'disabled' : ''}>
+                <div class="topic-sr-stack-icon">🌳</div>
+                <div class="topic-sr-stack-count">${s.mature}</div>
+                <div class="topic-sr-stack-label">Mature<br><span class="topic-sr-stack-meta">21 d+</span></div>
+            </button>
+        </div>
+    `;
+
+    // Struggling words section (if any)
+    const strugglingHTML = s.struggling > 0
+        ? `<button class="topic-sr-struggle-btn" onclick="startTopicReviewSession('${topicId}', 'struggling')">
+                🔥 Tackle ${s.struggling} struggling word${s.struggling !== 1 ? 's' : ''}
+                <span class="topic-sr-struggle-btn-sub">words you keep getting wrong — give them extra love</span>
+            </button>`
+        : '';
+
+    // Mastery progress bar
+    const masteryHTML = `
+        <div class="topic-sr-mastery">
+            <div class="topic-sr-mastery-head">
+                <span>🎯 Mastery</span>
+                <span class="topic-sr-mastery-pct">${s.masteryPct}%</span>
+            </div>
+            <div class="topic-sr-mastery-bar">
+                <div class="topic-sr-mastery-fill" style="width:${s.masteryPct}%"></div>
+            </div>
+            <div class="topic-sr-mastery-meta">${s.mature}/${s.total} words mature · ${s.tracked} tracked</div>
+        </div>
+    `;
+
+    return `
+        <div class="topic-sr-hub">
+            <div class="topic-sr-hub-title">⏱ Spaced repetition</div>
+            ${reviewBtn}
+            ${stacksHTML}
+            ${strugglingHTML}
+            ${masteryHTML}
+        </div>
+    `;
+}
+
+// Smart "Replay due" — replays a 5-word lesson with ONLY the words currently due.
+// Falls back to full replay if fewer than 2 are due.
+function startTopicLessonReplayDue(topicId, lessonIdx) {
+    const topic = getTopicById(topicId);
+    if (!topic) return;
+    const words = getWordsForTopic(topicId, null);
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const chunk = words.slice(lessonIdx * wpl, (lessonIdx + 1) * wpl);
+    if (chunk.length === 0) return;
+
+    const now = Date.now();
+    const dueWords = chunk
+        .map(c => c.word)
+        .filter(w => appState.srs && appState.srs[w.en] && appState.srs[w.en].nextReview <= now);
+
+    if (dueWords.length < 2) {
+        showToast('Not enough due words — replaying full lesson');
+        startTopicLessonChunk(topicId, lessonIdx);
+        return;
+    }
+
+    // Build a review-style lesson state with just the due words
+    lessonState = {
+        lessonNumber: -2,
+        words: dueWords,
+        currentRound: 0,
+        totalRounds: 1,
+        roundWords: dueWords,
+        selectedLeft: null,
+        selectedRight: null,
+        matchedPairs: 0,
+        correctInLesson: 0,
+        wrongInLesson: 0,
+        lessonPoints: 0,
+        isReviewSession: true,
+        reviewWrongWords: new Set(),
+        comboChain: 0,
+        maxCombo: 0,
+        topicReviewMeta: { topicId, mode: 'lesson-due', lessonIdx }
+    };
+    document.getElementById('bottomNav').style.display = 'none';
+    document.getElementById('lessonScreen').classList.add('active');
+    document.getElementById('topicsScreen').classList.remove('active');
+    if (typeof preloadLessonAudio === 'function') preloadLessonAudio(dueWords);
+    if (typeof renderMatchingRound === 'function') renderMatchingRound();
 }
 
 function openTopicDetail(topicId) {
@@ -422,7 +661,8 @@ function openTopicDetail(topicId) {
     // Per-topic progress for lesson card status
     const topicProgress = (appState && appState.topicProgress && appState.topicProgress[topicId]) || {};
 
-    // Build lesson cards
+    // Build lesson cards (SR-aware in v3.26)
+    const now = Date.now();
     const lessonsHTML = lessonChunks.map((chunk, idx) => {
         const previewWords = chunk.map(c => c.word.en).join(', ');
         const firstDiff = getDifficultyLabelForWordIdx(chunk[0].idx);
@@ -431,31 +671,63 @@ function openTopicDetail(topicId) {
             ? `${firstDiff.icon} ${firstDiff.label}`
             : `${firstDiff.icon} ${firstDiff.label} → ${lastDiff.icon} ${lastDiff.label}`;
         const status = topicProgress[idx];
-        let statusBadge = '';
-        let cardClass = '';
-        let btnLabel = '🚀 Start';
-        if (status) {
-            if (status.mistakes === 0) {
-                statusBadge = '<span class="topic-lesson-status status-perfect">⭐ Perfect</span>';
-                cardClass = 'topic-lesson-perfect';
-                btnLabel = '🔄 Replay';
-            } else {
-                statusBadge = `<span class="topic-lesson-status status-done">✓ Done · ${status.mistakes} mistake${status.mistakes !== 1 ? 's' : ''}</span>`;
-                cardClass = 'topic-lesson-done';
-                btnLabel = '🔄 Try Again';
+
+        // Compute SR state of this 5-word lesson
+        let lessonDue = 0, lessonMature = 0, lessonTracked = 0;
+        if (appState && appState.srs) {
+            for (const c of chunk) {
+                const card = appState.srs[c.word.en];
+                if (!card) continue;
+                lessonTracked++;
+                if (card.nextReview <= now) lessonDue++;
+                if (card.interval >= SRS_MASTERED_INTERVAL) lessonMature++;
             }
         }
+        const allMature = chunk.length > 0 && lessonMature === chunk.length;
+        const heatClass = lessonDue >= 3 ? 'topic-lesson-hot'
+            : lessonDue >= 1 ? 'topic-lesson-warm' : '';
+
+        let statusBadge = '';
+        let cardClass = heatClass;
+        let btnLabel = '🚀 Start';
+        let secondaryBtn = '';
+
+        if (allMature) {
+            statusBadge = '<span class="topic-lesson-status status-mastered">🎓 Mastered</span>';
+            cardClass += ' topic-lesson-mastered';
+            btnLabel = '🔄 Quick refresh';
+        } else if (status) {
+            if (status.mistakes === 0) {
+                statusBadge = '<span class="topic-lesson-status status-perfect">⭐ Perfect</span>';
+                cardClass += ' topic-lesson-perfect';
+                btnLabel = '🔄 Replay all';
+            } else {
+                statusBadge = `<span class="topic-lesson-status status-done">✓ Done · ${status.mistakes} mistake${status.mistakes !== 1 ? 's' : ''}</span>`;
+                cardClass += ' topic-lesson-done';
+                btnLabel = '🔄 Try again';
+            }
+            // Smart "Replay due" — only if there are due words AND lesson is done
+            if (lessonDue >= 2) {
+                secondaryBtn = `<button class="topic-lesson-replay-due-btn" onclick="startTopicLessonReplayDue('${topicId}', ${idx})">⚡ Replay ${lessonDue} due</button>`;
+            }
+        }
+
+        const dueChip = lessonDue > 0
+            ? `<span class="topic-lesson-due-chip">🔄 ${lessonDue} due</span>`
+            : '';
+
         return `
             <div class="topic-lesson-card ${cardClass}">
                 <div class="topic-lesson-card-header">
                     <span class="topic-lesson-card-num">Lesson ${idx + 1}</span>
                     <span class="topic-lesson-card-diff">${diffBadge}</span>
                 </div>
-                ${statusBadge}
+                ${statusBadge}${dueChip}
                 <div class="topic-lesson-card-preview">${previewWords}</div>
                 <button class="topic-lesson-start-btn" onclick="startTopicLessonChunk('${topicId}', ${idx})">
                     ${btnLabel}
                 </button>
+                ${secondaryBtn}
             </div>
         `;
     }).join('');
@@ -467,6 +739,9 @@ function openTopicDetail(topicId) {
         ? `<p class="topic-detail-progress">✓ ${doneCount}/${lessonChunks.length} done${perfectCount > 0 ? ` • ⭐ ${perfectCount} perfect` : ''}</p>`
         : '';
 
+    // ── SR review hub ──
+    const srHubHTML = renderTopicSRHub(topicId);
+
     detail.innerHTML = `
         <button class="topic-detail-back" onclick="renderTopicsHome()">‹ Back</button>
         <div class="topic-detail-header" style="--topic-color:${topic.color}">
@@ -475,6 +750,7 @@ function openTopicDetail(topicId) {
             <p class="topic-detail-meta">${words.length} words • ${lessonChunks.length} lesson${lessonChunks.length !== 1 ? 's' : ''} • Easy → Hard</p>
             ${progressLine}
         </div>
+        ${srHubHTML}
         <h3 class="topic-detail-list-title">📖 Lessons (sorted easy → harder)</h3>
         <div class="topic-lessons-list">
             ${lessonsHTML}
