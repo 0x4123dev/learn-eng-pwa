@@ -2011,7 +2011,7 @@ const GRAMMAR_LESSONS = [
             },
             {
                 id: '11e', title: 'A questionnaire', page: '137',
-                topicTags: ['hotel feedback', 'open & closed questions'],
+                topicTags: ['questionnaire', 'hotel & questionnaire', 'writing: questionnaire', 'open & closed questions'],
                 grammar: [
                     {
                         title: 'Writing skill — Closed and open questions',
