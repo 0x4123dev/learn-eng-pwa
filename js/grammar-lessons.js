@@ -2082,5 +2082,7 @@ function getLessonPracticeQuestions(unitId, lessonId, max) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return shuffled.slice(0, max || 10);
+    // Use explicit undefined check so max=0 returns an empty array correctly.
+    const limit = (typeof max === 'number') ? max : 10;
+    return shuffled.slice(0, limit);
 }
