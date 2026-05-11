@@ -5,6 +5,225 @@
 
 const GRAMMAR_LESSONS = [
     // ============================================================
+    //  UNIT 1 — PEOPLE (Life Elementary, A1)
+    // ============================================================
+    {
+        unitId: 'unit1',
+        title: 'People',
+        icon: '👋',
+        color: '#3a86ff',
+        intro: 'Introduce yourself, talk about families, and use the verb "be" (am/is/are).',
+        iCanGoals: [
+            'Use the verb be in sentences',
+            'Talk about personal information',
+            'Talk about families',
+            'Use possessive \'s and possessive adjectives',
+            'Use everyday verbs',
+            'Introduce myself and other people'
+        ],
+        lessons: [
+            {
+                id: '1a', title: 'Explorers', page: '10-11',
+                topicTags: ['personal information', 'be (am/is/are)', 'be negative', 'be questions', 'contracted forms'],
+                vocabulary: {
+                    title: 'Personal information',
+                    words: ['first name', 'surname', 'job', 'occupation', 'place of birth', 'married', 'single', 'relationship', 'photographer', 'journalist', 'explorer', 'filmmaker', 'teacher', 'student', 'businessman'],
+                    note: 'Beverley & Dereck Joubert are National Geographic explorers and filmmakers in Botswana.'
+                },
+                pronunciation: {
+                    title: 'Contracted forms of "be"',
+                    rule: 'In spoken English we usually contract the verb "be". Learn the contractions and listen for them.',
+                    examples: [
+                        "'m  = am  (I'm a photographer)",
+                        "'re = are (You/We/They're married)",
+                        "'s  = is  (He/She/It's from South Africa)",
+                        "'m not = am not  (I'm not a journalist)",
+                        "aren't = are not (We aren't here today)",
+                        "isn't  = is not  (He isn't from South America)"
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'be (am/is/are)',
+                        rule: 'Use "be" to talk about names, jobs, nationality, age, marital status, etc. Form changes with the subject.',
+                        form: [
+                            { label: 'I', text: 'I am / I\'m' },
+                            { label: 'you/we/they', text: 'you/we/they are / \'re' },
+                            { label: 'he/she/it', text: 'he/she/it is / \'s' }
+                        ],
+                        examples: [
+                            'I\'m a photographer.',
+                            'You\'re married.',
+                            'He\'s from South Africa.',
+                            'We\'re here for a holiday.',
+                            'She is single. (She\'s single.)',
+                            'They are explorers. (They\'re explorers.)'
+                        ]
+                    },
+                    {
+                        title: 'be — negative and questions',
+                        rule: 'Negative: subject + be + NOT. Question: be + subject? Short answers use the full pronoun + be (no contraction at end of YES answer).',
+                        examples: [
+                            'I\'m not a journalist.',
+                            'He isn\'t from South America.',
+                            'They aren\'t married.',
+                            'What\'s your name? — My name\'s Mike.',
+                            'Where are they from? — They\'re from Brazil.',
+                            'How old is he? — He\'s thirty-six.',
+                            'Are you from Botswana? — Yes, I am. / No, I\'m not.',
+                            'Is she single? — Yes, she is. / No, she isn\'t.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '1b', title: 'A family in Kenya', page: '12-13',
+                topicTags: ['family', "possessive 's", 'possessive adjectives', 'same or different sounds', 'word roots'],
+                vocabulary: [
+                    {
+                        title: 'Family',
+                        words: ['aunt', 'cousin', 'father', 'grandparent', 'half-brother', 'mother', 'mother-in-law', 'nephew', 'niece', 'parent', 'stepbrother', 'uncle'],
+                        note: 'Men only: father, grandfather, half-brother, nephew, stepbrother, uncle. Women only: aunt, mother, mother-in-law, niece. Both: cousin, grandparent, parent.'
+                    },
+                    {
+                        title: 'Word roots',
+                        words: ['mother → grandmother → stepmother → mother-in-law', 'father → grandfather → stepfather → father-in-law', 'sister → stepsister → half-sister → sister-in-law', 'brother → stepbrother → half-brother → brother-in-law'],
+                        note: 'Learn one root word, then build the family by adding "grand-", "step-", "half-", or "-in-law".'
+                    }
+                ],
+                pronunciation: {
+                    title: 'Same or different sounds',
+                    rule: 'Some pronouns and their possessive forms sound IDENTICAL (homophones). Others have slightly different vowel sounds.',
+                    examples: [
+                        'they\'re / their — SAME /ðeə(r)/',
+                        'he\'s /hiːz/ vs his /hɪz/ — DIFFERENT',
+                        'its / it\'s — SAME /ɪts/',
+                        'are /ɑː(r)/ vs our /aʊə(r)/ — DIFFERENT',
+                        'you\'re / your — SAME /jʊə(r)/'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: "Possessive 's",
+                        rule: 'Add \'s to a name or noun to show possession (ownership / family relation).',
+                        examples: [
+                            'Mike\'s wife is a teacher.',
+                            'Louise\'s mother is Meave.',
+                            'Mike and Sally\'s home is in Canada. (two owners → \'s only on the second name)',
+                            'Note: \'s can also = "is" — "She\'s a teacher" (\'s = is). Use context to tell.'
+                        ]
+                    },
+                    {
+                        title: 'Possessive adjectives',
+                        rule: 'Every subject pronoun has a matching possessive adjective. Use them BEFORE a noun.',
+                        form: [
+                            { label: 'I', text: 'my' },
+                            { label: 'you', text: 'your' },
+                            { label: 'he', text: 'his' },
+                            { label: 'she', text: 'her' },
+                            { label: 'it', text: 'its (no apostrophe!)' },
+                            { label: 'we', text: 'our' },
+                            { label: 'they', text: 'their' }
+                        ],
+                        examples: [
+                            'She\'s MY sister.',
+                            'What\'s YOUR name?',
+                            'HIS name is Charlie.',
+                            'OUR family is from Asia.',
+                            'THEIR cousins are both girls.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '1c', title: 'The face of seven billion people', page: '14-15',
+                topicTags: ['numbers', 'percentages', 'everyday verbs', 'word focus: in'],
+                vocabulary: [
+                    {
+                        title: 'Numbers & percentages',
+                        words: ['1 billion', '1.3 billion (one point three billion)', '3.5 billion', '5.5 billion', '7 billion', '23% (twenty-three per cent)', '38%', '51%'],
+                        note: 'The decimal point is read as "point". 1.3 = "one point three". "Per cent" (BrE) / "percent" (AmE).'
+                    },
+                    {
+                        title: 'Everyday verbs',
+                        words: ['have', 'live', 'speak', 'use', 'work'],
+                        note: 'Common pairings: live + IN a place, speak + a language, work + IN an industry, have + a possession, use + a tool.'
+                    }
+                ],
+                grammar: [
+                    {
+                        title: 'Word focus: in',
+                        rule: 'Three common uses of "in" for place/work.',
+                        form: [
+                            { label: 'a', text: 'in + a country (in the United Kingdom)' },
+                            { label: 'b', text: 'in + a city or region (in Mexico City)' },
+                            { label: 'c', text: 'in + a type of work / industry (in the service industry)' }
+                        ],
+                        examples: [
+                            '21 million people live IN Mexico City.',
+                            'There are 65 million people IN the United Kingdom.',
+                            '40% of the population work IN the service industry.',
+                            '49% live IN the countryside.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '1d', title: 'The first day', page: '16',
+                topicTags: ['alphabet', 'spelling', 'meeting people'],
+                pronunciation: {
+                    title: 'Spelling — the English alphabet',
+                    rule: 'Each letter has its own name. Practise spelling personal info: name, surname, country, job.',
+                    examples: [
+                        'A /eɪ/  B /biː/  C /siː/  D /diː/  E /iː/',
+                        'F /ef/  G /dʒiː/  H /eɪtʃ/  I /aɪ/  J /dʒeɪ/',
+                        'W /ˈdʌb(ə)l juː/  X /eks/  Y /waɪ/  Z /zed/ (BrE) /ziː/ (AmE)',
+                        '"Can you spell your first name?" — "It\'s Pablo. P-A-B-L-O."',
+                        '"Can you repeat that?" — "Sure. P-A-B-L-O."'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Meeting people for the first time',
+                        rule: 'Standard phrases for introducing yourself, introducing another person, and saying goodbye.',
+                        examples: [
+                            'Introducing yourself: Hello … / Hi … — My name\'s … / I\'m … — I\'m from … — Nice to meet you. — Nice to meet you, too.',
+                            'Introducing another person: This is … — He\'s / She\'s from …',
+                            'Saying goodbye: See you later. — It was nice meeting you. — Goodbye. / Bye.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '1e', title: 'Introduce yourself', page: '17',
+                topicTags: ['writing personal description', 'and / but'],
+                grammar: [
+                    {
+                        title: 'Writing skill — "and" and "but"',
+                        rule: 'Use "and" to add EXTRA / similar information. Use "but" to show a DIFFERENCE or contrast. Note: use a comma before "but" when joining two clauses.',
+                        examples: [
+                            '"I\'m 21 AND my sister is 21." (same/parallel info → and)',
+                            '"I live in Spain, BUT I\'m from Argentina." (Spain ≠ Argentina → but)',
+                            '"I\'m from England, BUT I study in the USA."',
+                            '"He\'s from Germany, BUT he works in Russia."',
+                            'Tip: when starting from two short sentences, choose AND if they match, BUT if they contrast.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '1f', title: 'World party', page: '18-19',
+                topicTags: ['world party', 'video lesson'],
+                vocabulary: {
+                    title: 'Video — World party',
+                    words: ['seven billion', 'square feet', 'square mile', 'foot (feet)', 'mile', 'centimetre', 'kilometre', 'compare', 'average', 'a bit'],
+                    note: 'USA uses feet/miles; the metric world uses centimetres/kilometres. 1 foot ≈ 30 cm; 1 mile ≈ 1.6 km. The video shows Chinese New Year in Singapore.'
+                }
+            }
+        ]
+    },
+
+    // ============================================================
     //  UNIT 8 — APPEARANCE
     // ============================================================
     {
