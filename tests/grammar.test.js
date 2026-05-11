@@ -5,13 +5,13 @@ const { loadAppCode } = require('./setup');
 const env = loadAppCode();
 
 suite('grammar: GRAMMAR_UNITS shape', () => {
-    test('exactly 10 units (Units 1–6, 8–11)', () => {
-        assert.equal(env.GRAMMAR_UNITS.length, 10);
+    test('exactly 11 units (Units 1–11)', () => {
+        assert.equal(env.GRAMMAR_UNITS.length, 11);
     });
 
-    test('unit IDs cover all 10 units', () => {
+    test('unit IDs cover all 11 units', () => {
         const ids = env.GRAMMAR_UNITS.map(u => u.id);
-        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit8', 'unit9', 'unit10', 'unit11']) {
+        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11']) {
             assert.contains(ids, u);
         }
     });
@@ -28,8 +28,8 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 220 questions per unit (all 10 units)', () => {
-    for (const unitId of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit8', 'unit9', 'unit10', 'unit11']) {
+suite('grammar: 220 questions per unit (all 11 units)', () => {
+    for (const unitId of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11']) {
         test(`${unitId} has exactly 220 questions`, () => {
             const u = env.getGrammarUnit(unitId);
             assert.equal(u.questions.length, 220);
@@ -487,13 +487,13 @@ suite('grammar: mistake bank (v3.24 Tier 1)', () => {
 });
 
 suite('grammar: lessons sub-tab data (v3.25)', () => {
-    test('GRAMMAR_LESSONS contains exactly 10 units', () => {
-        assert.equal(env.GRAMMAR_LESSONS.length, 10);
+    test('GRAMMAR_LESSONS contains exactly 11 units', () => {
+        assert.equal(env.GRAMMAR_LESSONS.length, 11);
     });
 
-    test('lessons cover all 10 units', () => {
+    test('lessons cover all 11 units', () => {
         const ids = env.GRAMMAR_LESSONS.map(u => u.unitId);
-        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit8', 'unit9', 'unit10', 'unit11']) {
+        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11']) {
             assert.contains(ids, u);
         }
     });

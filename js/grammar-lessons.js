@@ -1177,6 +1177,180 @@ const GRAMMAR_LESSONS = [
     },
 
     // ============================================================
+    //  UNIT 7 — JOURNEYS (Life Elementary, A1/A2)
+    // ============================================================
+    {
+        unitId: 'unit7',
+        title: 'Journeys',
+        icon: '🐞',
+        color: '#10B981',
+        intro: 'Compare animals, places and ways of travelling using comparatives and superlatives.',
+        iCanGoals: [
+            'Use comparative adjectives to compare two things',
+            'Use superlative adjectives to compare one thing with all others',
+            'Use everyday adjectives and their opposites',
+            'Talk about ways of travelling',
+            'Talk about money (borrow, lend, change, cash, credit card)',
+            'Make polite requests (Can I…? Could I…?)'
+        ],
+        lessons: [
+            {
+                id: '7a', title: 'Animal journeys', page: '82-83',
+                topicTags: ['adjectives', 'animal journeys', 'comparative adjectives', 'stressed and weak syllables'],
+                vocabulary: [
+                    {
+                        title: 'Adjectives & opposites',
+                        words: ['clean ↔ dirty', 'difficult ↔ easy', 'fast ↔ slow', 'safe ↔ dangerous', 'cold ↔ hot', 'huge ↔ tiny', 'long ↔ short'],
+                        note: 'Use these adjectives to describe commutes, transportation, cities, and the weather.'
+                    },
+                    {
+                        title: 'Animal journeys',
+                        words: ['saiga antelope (35 km/day, Central Asia)', 'tree frog (~30 m/year)', 'loggerhead turtle (~14,000 km / 15 years)', 'migration', 'calf (baby saiga)'],
+                        note: 'Every year, animals around the world go on long, difficult journeys called migrations.'
+                    }
+                ],
+                pronunciation: {
+                    title: 'Stressed and weak syllables',
+                    rule: 'In long words, ONE syllable is STRESSED (louder, longer, clearer). Other syllables are WEAK — often with the schwa /ə/.',
+                    examples: [
+                        'AFrica  /ˈæfrɪkə/  — stress on AF; final "a" is /ə/ schwa',
+                        'EUrope  /ˈjʊərəp/  — stress on EU; "rope" is weak /rəp/',
+                        'ausTRAlia  — stress on TRA',
+                        'anTARCtica — stress on TARC',
+                        '"than" between comparatives is weak: /ðən/ (NOT /ðæn/)'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Comparative adjectives',
+                        rule: 'Use the comparative to compare TWO things or groups. Add "than" after the comparative.',
+                        form: [
+                            { label: 'short', text: '+ -er (big → bigger, cheap → cheaper, fast → faster)' },
+                            { label: '-e', text: '+ -r (safe → safer)' },
+                            { label: 'cons.+y', text: '-y → -ier (easy → easier)' },
+                            { label: 'long', text: 'more + adjective (expensive → more expensive)' },
+                            { label: 'irreg.', text: 'good → better, bad → worse' }
+                        ],
+                        examples: [
+                            'Turtles have longer journeys than tree frogs.',
+                            'Tree frogs have shorter journeys than saiga antelopes.',
+                            'The female saiga\'s journey is more dangerous than the male\'s.',
+                            'Australia is hotter than Antarctica.',
+                            'Rock climbing is more fun than surfing. (opinion)'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '7b', title: 'The deepest place on Earth', page: '84-85',
+                topicTags: ['ways of traveling', 'superlative adjectives', 'Mariana Trench'],
+                vocabulary: {
+                    title: 'Ways of traveling — collocations',
+                    words: ['go BY + bicycle/train/car', 'travel BY + train/bus/plane/boat', 'take + a taxi/a bus/the train', 'walk · ride · drive · fly'],
+                    note: 'James Cameron travelled to the Mariana Trench — the deepest place in the ocean — in his submarine, the Deepsea Challenger. He\'s also the filmmaker behind Titanic and Avatar.'
+                },
+                grammar: [
+                    {
+                        title: 'Superlative adjectives',
+                        rule: 'Use the superlative to compare ONE thing with ALL the other things in a group. Use "the" before the superlative.',
+                        form: [
+                            { label: 'short', text: 'the + -est (big → the biggest, fast → the fastest)' },
+                            { label: '-e', text: 'the + -st (safe → the safest)' },
+                            { label: 'cons.+y', text: '-y → -iest (easy → the easiest)' },
+                            { label: 'long', text: 'the most + adjective (the most expensive)' },
+                            { label: 'irreg.', text: 'good → the best, bad → the worst' }
+                        ],
+                        examples: [
+                            'The Mariana Trench is the deepest place in the ocean.',
+                            'This fish has the biggest teeth of any fish for its size.',
+                            'Titanic is the most popular movie by James Cameron.',
+                            'Avatar was the most expensive movie.',
+                            'Dublin is the most famous city in Ireland.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '7c', title: 'Visit Colombia!', page: '86-87',
+                topicTags: ['Colombia', 'word focus: time'],
+                vocabulary: {
+                    title: 'Colombian cities',
+                    words: ['Bogotá (capital)', 'Cartagena (Caribbean port, friendly)', 'Medellín (Botero, sculptures, cable car)', 'Cali (salsa, music, dance festivals)', 'Ciudad Perdida ("Lost City", 4-day trek, 1,241 steps)'],
+                    note: 'Colombia has more than just Bogotá. Each city has its own character — beaches, sculptures, salsa, or ancient ruins.'
+                },
+                grammar: [
+                    {
+                        title: 'Word focus: time',
+                        rule: 'Time pairs with different verbs and prepositions to make common phrases.',
+                        examples: [
+                            'have a good time = enjoy yourself / have fun',
+                            'have time FOR + noun (have time for sports)',
+                            'spend time + -ing / with (spend time with family)',
+                            'save time = finish in less time (save time by taking a taxi)'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '7d', title: 'Travel money', page: '88',
+                topicTags: ['money', 'making requests'],
+                vocabulary: {
+                    title: 'Money',
+                    words: ['borrow (you take from someone)', 'lend (you give to someone)', 'cash (notes + coins)', 'credit card', 'change dollars INTO euros', 'spend money ON', 'pay BY credit card / pay FOR something', 'buy a ticket', 'ATM (cash machine)'],
+                    note: 'Common confusion: BORROW = take temporarily / LEND = give temporarily. "Can you LEND me $10?" / "Can I BORROW $10?"'
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Making requests',
+                        rule: 'Polite request: Can I…? / Can you…? / Could I…? — followed by the base verb.',
+                        form: [
+                            { label: 'Ask', text: 'Can I change …? / Can you give me …? / Could I have …?' },
+                            { label: 'Yes', text: 'Yes, of course. / Sure. / Certainly.' },
+                            { label: 'No', text: 'I\'m sorry, but … / I\'m afraid I don\'t …' }
+                        ],
+                        examples: [
+                            'Can I change one hundred dollars into euros? — Yes, of course.',
+                            'Can you give me the euros in tens?',
+                            'Could I borrow your phone, please?',
+                            'I\'m sorry, but I don\'t have any change.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '7e', title: 'The end of the road', page: '89',
+                topicTags: ['travel blog', 'so and because'],
+                grammar: [
+                    {
+                        title: 'Writing skill — so and because',
+                        rule: 'BECAUSE gives the REASON. SO gives the ACTION/RESULT. Choose based on what comes next.',
+                        form: [
+                            { label: 'because', text: 'action, BECAUSE + reason' },
+                            { label: 'so', text: 'reason, SO + action' }
+                        ],
+                        examples: [
+                            'We called a taxi BECAUSE we were late for the meeting. (action + reason)',
+                            'The train was late, SO we waited on the platform. (reason + action)',
+                            'I felt sorry for the bus driver BECAUSE he looked sad.',
+                            'I wanted a hot meal, SO I left the bus.',
+                            'It started raining, SO they ran home.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '7f', title: 'The final journey', page: '90-91',
+                topicTags: ['video lesson', 'final journey', 'sockeye salmon'],
+                vocabulary: {
+                    title: 'Video — sockeye salmon',
+                    words: ['skin', 'shallow ↔ deep', 'smooth ↔ rough', 'decay (body breaks down)', 'lay eggs', 'turn (change colour)', 'brown bears', 'one in a thousand'],
+                    note: 'In Alaska, sockeye salmon swim up shallow rivers to lay their eggs. Only one in every thousand finishes the journey — many are caught by brown bears.'
+                }
+            }
+        ]
+    },
+
+    // ============================================================
     //  UNIT 8 — APPEARANCE
     // ============================================================
     {
