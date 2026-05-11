@@ -224,6 +224,757 @@ const GRAMMAR_LESSONS = [
     },
 
     // ============================================================
+    //  UNIT 2 — POSSESSIONS (Life Elementary, A1)
+    // ============================================================
+    {
+        unitId: 'unit2',
+        title: 'Possessions',
+        icon: '🏠',
+        color: '#06D6A0',
+        intro: 'Describe rooms, talk about objects you own, and shop in English.',
+        iCanGoals: [
+            'Talk about furniture and objects in the house',
+            'Use there is / there are',
+            'Use prepositions of place',
+            'Make singular and plural nouns',
+            'Use this, that, these, those',
+            'Say currencies, countries and nationalities',
+            'Ask about and buy objects in a shop'
+        ],
+        lessons: [
+            {
+                id: '2a', title: 'A place called home', page: '22-23',
+                topicTags: ['furniture', 'there is/are', 'prepositions of place'],
+                vocabulary: {
+                    title: 'Furniture',
+                    words: ['sofa', 'armchair', 'chair', 'television (TV)', 'desk', 'lamp', 'computer', 'pictures', 'blinds', 'curtains', 'cupboards and drawers', 'rug', 'plant', 'carpet', 'shelves'],
+                    note: 'The four families live in the Evergreen Tower in Seoul, South Korea. Every apartment has a living room, kitchen, bathroom and 2 bedrooms.'
+                },
+                grammar: [
+                    {
+                        title: 'there is / there are',
+                        rule: 'Use "there is/are" to say what exists in a place. Singular → there is. Plural → there are. Use "any" with negatives and questions.',
+                        form: [
+                            { label: '+', text: 'There\'s a living room. / There are two bedrooms.' },
+                            { label: '−', text: 'There isn\'t a table. / There aren\'t any beds.' },
+                            { label: '?', text: 'Is there a sofa? — Yes, there is. / Are there any pictures? — No, there aren\'t.' }
+                        ],
+                        examples: [
+                            'There\'s a sofa on the right.',
+                            'There are pictures on the wall.',
+                            'There isn\'t a rug in this apartment.',
+                            'Are there any books? — No, there aren\'t.',
+                            'How many pictures are there? — There are three.'
+                        ]
+                    },
+                    {
+                        title: 'Prepositions of place',
+                        rule: 'Tell where things are in relation to other things.',
+                        examples: [
+                            'in (the box) — inside',
+                            'on (the desk) — touching the top',
+                            'next to (the bed) — beside',
+                            'under (the table) — below',
+                            'above (the door) — higher, not touching',
+                            'between (X and Y) — in the middle of two things',
+                            'behind (the sofa) — at the back of',
+                            'in front of (the window) — directly before',
+                            'opposite (the TV) — facing',
+                            'on the left / on the right / in the middle'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '2b', title: 'My possessions', page: '24-25',
+                topicTags: ['useful objects', 'plural nouns', 'this/that/these/those', '/ɪ/ or /iː/'],
+                vocabulary: {
+                    title: 'Useful objects',
+                    words: ['boots', 'bottle', 'camera', 'first-aid kit', 'gloves', 'hat', 'knife', 'map', 'mobile phone', 'pens', 'torch'],
+                    note: 'Andy Torbet is a Scottish adventurer who climbs, dives and kayaks. These are the things in his rucksack.'
+                },
+                pronunciation: {
+                    title: '/ɪ/ vs /iː/',
+                    rule: 'Two similar vowel sounds. /ɪ/ is SHORT (this, big, pink, it). /iː/ is LONG (these, keys, green, read).',
+                    examples: [
+                        '/ɪ/ — this, big, pink, it',
+                        '/iː/ — these, keys, green, read',
+                        'Listen for length: /iː/ is held longer than /ɪ/.'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Plural nouns — spelling rules',
+                        rule: 'Most nouns add -s. Special rules for words ending in -ch/-sh/-s, -y, -f/-fe. Some are irregular.',
+                        form: [
+                            { label: '+s', text: 'normal: boot → boots, glove → gloves' },
+                            { label: '+es', text: '-ch/-sh/-s/-ss: torch → torches, bus → buses, class → classes' },
+                            { label: '-ies', text: 'consonant + -y: country → countries, family → families' },
+                            { label: '-ves', text: '-f/-fe: knife → knives, shelf → shelves, life → lives' },
+                            { label: 'irreg.', text: 'man → men, woman → women, person → people, child → children' }
+                        ],
+                        examples: [
+                            'one map → two maps',
+                            'one mobile phone → two mobile phones',
+                            'one camera → two cameras',
+                            'one life → two lives',
+                            'one wife → two wives',
+                            'one city → two cities'
+                        ]
+                    },
+                    {
+                        title: 'this, that, these, those',
+                        rule: 'Demonstratives change with NUMBER (singular/plural) and DISTANCE (near/far).',
+                        form: [
+                            { label: 'near sing.', text: 'this (one thing near you)' },
+                            { label: 'far sing.', text: 'that (one thing away from you)' },
+                            { label: 'near plur.', text: 'these (many things near you)' },
+                            { label: 'far plur.', text: 'those (many things away from you)' }
+                        ],
+                        examples: [
+                            'What\'s this? — It\'s a first-aid kit.',
+                            'What\'s that? — It\'s my camera.',
+                            'What are these? — They\'re my pens.',
+                            'What are those? — They\'re Andy\'s gloves.',
+                            'Is this torch Andy\'s? / Are those your boots?'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '2c', title: 'Global objects', page: '26-27',
+                topicTags: ['countries and nationalities', 'word stress', 'suffixes'],
+                vocabulary: {
+                    title: 'Countries and nationalities',
+                    words: ['Britain → British', 'Germany → German', 'Austria → Austrian', 'Netherlands → Dutch', 'Canada → Canadian', 'Italy → Italian', 'Belgium → Belgian', 'England → English', 'Spain → Spanish', 'France → French', 'Brazil → Brazilian', 'Poland → Polish', 'Vietnam → Vietnamese'],
+                    note: 'Common nationality endings: -ish (Polish, Spanish), -n (Italian, German), -ian (Canadian, Brazilian), -ese (Vietnamese, Japanese, Chinese). Some are irregular: French, Dutch.'
+                },
+                pronunciation: {
+                    title: 'Word stress in nationalities',
+                    rule: 'Most country/nationality words are stressed on the FIRST syllable. Words ending in -ese are stressed on the LAST syllable.',
+                    examples: [
+                        'BRItain / BRItish (first syllable)',
+                        'iTAlian / aMErican (second syllable)',
+                        'japaNESE / vietnaMESE / portuGUESE (last syllable, -ese ending)'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'The Mini — a global product',
+                        rule: 'A car can be "from" different places: company, parts, factory. This shows globalisation.',
+                        examples: [
+                            'The Mini was a British car until 2000.',
+                            'BMW (German) is the producer now.',
+                            'The factory is still in Oxford, England.',
+                            'There are 2,500 parts from many different countries (Europe + North America).'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '2d', title: 'At the shop', page: '28',
+                topicTags: ['prices and currencies', 'shopping', 'word focus: one/ones', 'contrastive stress'],
+                vocabulary: {
+                    title: 'Prices and currencies',
+                    words: ['£ pounds (UK)', '$ dollars (USA)', '€ euros (EU)', '¥ yen (Japan)', '£2.50 = two pounds fifty', '£111.11 = a hundred and eleven pounds eleven'],
+                    note: 'Common shopping phrases: "Can I help you?" / "I\'d like..." / "How much is it?" / "Are there other colours?" / "These ones are red." / "How much are they?"'
+                },
+                pronunciation: {
+                    title: 'Contrastive stress (1)',
+                    rule: 'When you contrast two things with this/that/these/those, STRONG stress on the demonstrative highlights the difference.',
+                    examples: [
+                        'This ball is nice, but THAT one is horrible!',
+                        'These gloves are small, but THOSE ones are large.'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Word focus: one / ones',
+                        rule: 'Use "one" / "ones" to AVOID repeating a noun. Singular → one. Plural → ones.',
+                        examples: [
+                            'I\'d like a glass of water. A small ONE, please. (= a small glass)',
+                            'I\'d like two T-shirts. Small ONES, please. (= small T-shirts)',
+                            'This ball is nice, but that ONE is horrible.',
+                            'These gloves are small, but those ONES are large.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '2e', title: 'For sale', page: '29',
+                topicTags: ['adjectives', 'adjective order', 'writing adverts'],
+                vocabulary: {
+                    title: 'Adjectives and their opposites',
+                    words: ['old ↔ modern/new', 'bad ↔ good', 'useless ↔ useful', 'slow ↔ fast', 'small ↔ big/large', 'expensive ↔ cheap']
+                },
+                grammar: [
+                    {
+                        title: 'Writing skill — Adjective order',
+                        rule: 'When using multiple adjectives, follow this order: OPINION → SIZE → AGE → COLOUR → NATIONALITY → NOUN.',
+                        form: [
+                            { label: 'Opinion', text: 'useful, nice, lovely, beautiful' },
+                            { label: 'Size', text: 'large, small' },
+                            { label: 'Age', text: 'modern, new, old' },
+                            { label: 'Colour', text: 'white, grey, red' },
+                            { label: 'Nation.', text: 'Japanese, Italian, French' }
+                        ],
+                        examples: [
+                            'It\'s a fast, new, Japanese motorbike. (opinion + age + nationality)',
+                            'A useful, modern, white desk and chair. (opinion + age + colour)',
+                            'They\'re lovely red gloves. (opinion + colour)',
+                            'There are two beautiful, old, Italian chairs for sale.',
+                            'For sale: a large, modern, white house.'
+                        ]
+                    },
+                    {
+                        title: 'Two patterns to describe',
+                        rule: 'You can describe an object in two ways with the same meaning.',
+                        examples: [
+                            'The desk is modern. = It\'s a modern desk.',
+                            'The car is old. = It\'s an old car.',
+                            'These laptops are slow. = They\'re slow laptops.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '2f', title: 'A thousand words', page: '30-31',
+                topicTags: ['video lesson', 'a thousand words'],
+                vocabulary: {
+                    title: 'Video — Key phrases',
+                    words: ['I miss you', 'Please forward', 'Good luck!', 'apartment', 'bicycle', 'box', 'cake', 'camera', 'lamp', 'letterbox', 'package', 'pen', 'plant'],
+                    note: '"A picture says a thousand words." A photographer in Los Angeles sends his camera to Nasim in Boston.'
+                }
+            }
+        ]
+    },
+
+    // ============================================================
+    //  UNIT 3 — PLACES (Life Elementary, A1)
+    // ============================================================
+    {
+        unitId: 'unit3',
+        title: 'Places',
+        icon: '🏙️',
+        color: '#FFD60A',
+        intro: 'Describe cities, talk about your job and routines using the present simple, and ask for directions.',
+        iCanGoals: [
+            'Tell the time',
+            'Describe a town or city',
+            'Talk about places of work',
+            'Use the present simple',
+            'Ask questions with the present simple',
+            'Ask for and give directions'
+        ],
+        lessons: [
+            {
+                id: '3a', title: 'No-car zones', page: '34-35',
+                topicTags: ['describing cities', 'present simple (I/you/we/they)'],
+                vocabulary: {
+                    title: 'Describing cities',
+                    words: ['free', 'expensive ↔ cheap', 'popular', 'polluted', 'noisy ↔ quiet', 'crowded', 'modern ↔ old', 'beautiful ↔ ugly', 'clean ↔ dirty', 'big ↔ small', 'relaxing'],
+                    note: 'No-car zones — areas for people, bicycles and public transport only. Examples: London parks, Tokyo (Ginza), Bogotá, Melbourne (Bourke Street).'
+                },
+                grammar: [
+                    {
+                        title: 'Present simple — I/you/we/they',
+                        rule: 'Use the present simple for facts, routines and habits. With I/you/we/they, use the BASE form. Negative and question forms use the auxiliary "do".',
+                        form: [
+                            { label: '+', text: 'I/you/we/they + base verb (have, live, like…)' },
+                            { label: '−', text: 'I/you/we/they + don\'t + base verb' },
+                            { label: '?', text: 'Do + I/you/we/they + base verb? — Yes, I do. / No, I don\'t.' }
+                        ],
+                        examples: [
+                            'I live in the city centre.',
+                            'We don\'t have a car. We go everywhere by bicycle.',
+                            'Do you like shopping? — Yes, I do. / No, I don\'t.',
+                            'Where do you live? — In the city centre.',
+                            'What time do you finish work? — At about three o\'clock.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '3b', title: 'Places of work', page: '36-37',
+                topicTags: ['places of work', 'present simple (he/she/it)', '-s endings'],
+                vocabulary: {
+                    title: 'Places of work',
+                    words: ['accountant — office', 'doctor — hospital', 'pilot — plane', 'sailor — ship/boat', 'teacher — classroom', 'sales assistant — shop', 'waiter — restaurant']
+                },
+                pronunciation: {
+                    title: '-s endings: /s/, /z/, /ɪz/',
+                    rule: 'The 3rd-person -s has THREE possible sounds depending on the final sound of the verb.',
+                    examples: [
+                        '/s/ — after voiceless sounds (k, p, t, f, θ): works, meets, starts',
+                        '/z/ — after voiced sounds (b, g, d, v, l, vowels): lives, goes, studies, travels',
+                        '/ɪz/ — after s, z, sh, ch, j sounds (extra syllable): finishes, teaches, watches'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Present simple — he/she/it',
+                        rule: 'For he/she/it, ADD -s (or -es/-ies). In negatives and questions, use "does/doesn\'t" + BASE verb.',
+                        form: [
+                            { label: '+', text: 'He/She/It + verb-s (works, has, does, studies)' },
+                            { label: '−', text: 'He/She/It + doesn\'t + base verb' },
+                            { label: '?', text: 'Does + he/she/it + base verb? — Yes, she does. / No, she doesn\'t.' }
+                        ],
+                        examples: [
+                            'He works in a shop.',
+                            'She studies places under the sea.',
+                            'He has exams soon. (have → has)',
+                            'She doesn\'t live in London.',
+                            'Does he have children? — Yes, he does. / No, he doesn\'t.',
+                            'What does Beverly do? — She\'s a marine archaeologist.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '3c', title: 'Places and languages', page: '38-39',
+                topicTags: ['ordinal numbers', 'cardinal numbers', 'collocations'],
+                vocabulary: {
+                    title: 'Numbers — cardinal vs ordinal',
+                    words: ['Cardinal: one, two, three, four…', 'Ordinal: 1st first, 2nd second, 3rd third, 4th fourth, 5th fifth, 9th ninth, 12th twelfth, 21st twenty-first, 100th one hundredth'],
+                    note: 'Cardinal numbers tell quantity (how many). Ordinal numbers tell position (1st, 2nd, 3rd…). For 21+, only the LAST word becomes ordinal: 21st = twenty-first.'
+                },
+                pronunciation: {
+                    title: 'Ordinal numbers',
+                    rule: 'Most ordinals end in /θ/ ("th"). Exceptions: 1st, 2nd, 3rd.',
+                    examples: [
+                        'third /θɜːd/  fourth /fɔːθ/  fifth /fɪfθ/  twelfth /twelfθ/',
+                        'first /fɜːst/  second /ˈsekənd/'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Wordbuilding — adjective + noun collocations',
+                        rule: 'Some words are commonly used together. Learn them as one chunk.',
+                        examples: [
+                            'first language (your native language)',
+                            'second language (one you learn later)',
+                            'official language (used by the government)',
+                            'native speaker (learned the language as a child)',
+                            'Over 1 billion speakers of Chinese — Mandarin is in 1st place.',
+                            'English is in 4th place as a first language.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '3d', title: 'The city of Atlanta', page: '40',
+                topicTags: ['places in a city', 'giving directions'],
+                vocabulary: {
+                    title: 'Places in a city',
+                    words: ['car park', 'museum', 'hotel', 'library', 'theatre', 'park', 'post office', 'aquarium', 'cinema', 'gym / sports centre', 'art gallery', 'visitor centre']
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Giving directions',
+                        rule: 'Useful phrases for asking where things are and giving directions.',
+                        examples: [
+                            'Asking: Where is …? / I\'d like to go to … / Is it near here?',
+                            'Distance: It\'s near here. / It\'s about ten minutes away.',
+                            'Go past the … (past = alongside and beyond)',
+                            'Go across … (cross to the other side)',
+                            'Go straight up … (continue forward)',
+                            'Take the first street on the left/right. / Turn left. / Turn right.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '3e', title: 'My favourite city', page: '41',
+                topicTags: ['writing description', 'capital letters'],
+                grammar: [
+                    {
+                        title: 'Writing skill — Capital letters',
+                        rule: 'In English, USE a capital letter for: start of sentence, the pronoun I, names of people/cities/places, countries/nationalities/languages, days/months, streets/parks/squares.',
+                        examples: [
+                            'I\'m from Australia. (start, pronoun I, country)',
+                            'I love Sydney. (city)',
+                            'I love the winter in Moscow.',
+                            'December is my favourite month. (month)',
+                            'On Saturdays I meet friends. (day)',
+                            'I go to Narrabeen Beach. (place)',
+                            'NO capital for: seasons (winter), parts of the day (evening).'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '3f', title: 'Cowley Road', page: '42-43',
+                topicTags: ['video lesson', 'Oxford'],
+                vocabulary: {
+                    title: 'Video — Cowley Road, Oxford',
+                    words: ['post office', 'community', 'pre-schooler', 'medical centre', 'ingredients', 'traffic lights', 'mosque', 'sports centre', 'supermarket']
+                }
+            }
+        ]
+    },
+
+    // ============================================================
+    //  UNIT 4 — FREE TIME (Life Elementary, A1)
+    // ============================================================
+    {
+        unitId: 'unit4',
+        title: 'Free time',
+        icon: '🎮',
+        color: '#06D6A0',
+        intro: 'Talk about free-time activities, frequency, and what you can/can\'t do.',
+        iCanGoals: [
+            'Talk about likes and dislikes',
+            'Use like / love + -ing',
+            'Talk about my daily life',
+            'Use adverbs and expressions of frequency',
+            'Talk about my abilities with can/can\'t',
+            'Write short emails'
+        ],
+        lessons: [
+            {
+                id: '4a', title: '100% identical?', page: '46-47',
+                topicTags: ['collocations', 'like/love + -ing', '/ŋ/'],
+                vocabulary: {
+                    title: 'Verb + noun collocations',
+                    words: ['go: swimming, running, cycling, camping, shopping', 'play: football, computer games, golf, the guitar', 'do: yoga, Taekwondo, the housework', 'watch: TV, films', 'read: a magazine, a book', 'meet: friends', 'have: a coffee, a meal', 'make: phone calls, a cake', 'use: social media, the internet']
+                },
+                pronunciation: {
+                    title: '/ŋ/ — the -ing sound',
+                    rule: 'The "-ing" ending of verbs is pronounced /ɪŋ/. The final letter "g" is NOT pronounced separately — /ŋ/ is one nasal sound.',
+                    examples: [
+                        'playing /ˈpleɪɪŋ/',
+                        'listening /ˈlɪs(ə)nɪŋ/',
+                        'singing /ˈsɪŋɪŋ/ — has /ŋ/ twice!',
+                        'doing /ˈduːɪŋ/'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'like / love (+ noun / -ing)',
+                        rule: 'After like / love / don\'t like / hate, use a NOUN or the -ING form of a verb.',
+                        examples: [
+                            'They love books. (love + noun)',
+                            'They love playing golf. (love + -ing)',
+                            'They don\'t like the same football teams. (like + noun)',
+                            'She likes swimming. (likes + -ing)',
+                            'I don\'t like dancing.',
+                            'Do they like doing the same things?'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '4b', title: 'Free time in the Arctic', page: '48-49',
+                topicTags: ['everyday activities', 'adverbs of frequency', 'expressions of frequency'],
+                vocabulary: {
+                    title: 'Everyday activities',
+                    words: ['do online shopping', 'go for a walk', 'have a coffee', 'make phone calls', 'play online games', 'read a book', 'browse the internet', 'text friends', 'use social media', 'watch videos'],
+                    note: 'Norbert Rosing is a National Geographic photographer who works in the Arctic.'
+                },
+                grammar: [
+                    {
+                        title: 'Adverbs of frequency',
+                        rule: 'These tell HOW OFTEN something happens. Position: AFTER "be", BEFORE other verbs.',
+                        form: [
+                            { label: '100%', text: 'always' },
+                            { label: '~80%', text: 'usually' },
+                            { label: '~60%', text: 'often' },
+                            { label: '~40%', text: 'sometimes' },
+                            { label: '~20%', text: 'not often' },
+                            { label: '0%', text: 'never' }
+                        ],
+                        examples: [
+                            'I\'m often away at the weekend. (after "be")',
+                            'I don\'t often watch TV.',
+                            'I never play computer games.',
+                            'He\'s never bored.'
+                        ]
+                    },
+                    {
+                        title: 'Expressions of frequency',
+                        rule: 'Specific frequencies use phrases like "once a year", "every day". They usually go at the END of a sentence.',
+                        examples: [
+                            'He goes once a year.',
+                            'I drink coffee twice a day.',
+                            'We visit my cousins in the summer.',
+                            'You can see polar bears every day (between August and November).',
+                            'How often do you go to the gym?'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '4c', title: 'Extreme sports', page: '50-51',
+                topicTags: ['sports', "can/can't"],
+                vocabulary: {
+                    title: 'Sports',
+                    words: ['baseball', 'basketball', 'boxing', 'cricket', 'cycling', 'football (UK) / soccer (US)', 'ice hockey', 'running', 'sailing', 'skiing', 'surfing', 'swimming', 'tennis'],
+                    note: 'Use "play" with ball sports (play football). Use "go" with -ing activities (go swimming). Use "do" with martial arts (do Taekwondo).'
+                },
+                pronunciation: {
+                    title: 'can vs can\'t',
+                    rule: 'Positive "can" is usually unstressed (weak form /kən/). Negative "can\'t" is stressed and clearer (/kɑːnt/ in BrE).',
+                    examples: [
+                        'I /kən/ swim. (weak — positive)',
+                        'I /kɑːnt/ play tennis. (strong — negative)',
+                        'CAN you play the guitar? (strong in question)'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'can / can\'t (+ adverb)',
+                        rule: '"can" is a modal verb showing ability. Same form for all subjects (NO -s). Followed by the BASE form of the verb.',
+                        form: [
+                            { label: '+', text: 'Subject + can + base verb' },
+                            { label: '−', text: 'Subject + can\'t (cannot) + base verb' },
+                            { label: '?', text: 'Can + subject + base verb? — Yes, I can. / No, I can\'t.' },
+                            { label: 'adv', text: 'Adverbs of degree go after: very well / a bit. "How well…?"' }
+                        ],
+                        examples: [
+                            'He can jump between 20 and 30 metres.',
+                            'He can\'t see very well.',
+                            'Can you speak French? — Yes, I can. / No, I can\'t.',
+                            'I can speak French a bit.',
+                            'How well can you swim?'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '4d', title: 'A gap year', page: '52',
+                topicTags: ['gap year', 'abilities and interests', 'sentence stress'],
+                vocabulary: {
+                    title: 'Gap year',
+                    words: ['gap year', 'volunteer', 'volunteer work', 'orphan', 'cub', 'enthusiastic', 'good at + -ing']
+                },
+                pronunciation: {
+                    title: 'Sentence stress',
+                    rule: 'Stress CONTENT words (nouns, main verbs, adjectives, adverbs). Don\'t stress function words (a, the, of, am).',
+                    examples: [
+                        'Are you GOOD at WRITING?',
+                        'I\'m GOOD at WRITING.',
+                        'CAN you TEACH?',
+                        'I CAN\'T speak ENGLISH very WELL.',
+                        'I LOVE ANimals!'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Talking about abilities and interests',
+                        rule: 'Common phrases for asking and saying what you can do and what you like.',
+                        examples: [
+                            'Are you good at teaching?',
+                            'How well can you speak English?',
+                            'Can you teach?',
+                            'Do you like animals?',
+                            'I can speak English well.',
+                            'I can\'t go for eighteen months.',
+                            'I\'m (not very) good at writing.',
+                            'I (don\'t) like animals. / I love them!'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '4e', title: 'Short emails', page: '53',
+                topicTags: ['writing short emails'],
+                grammar: [
+                    {
+                        title: 'Writing skill — Short emails',
+                        rule: 'In short, friendly emails: use informal greetings (Hi …), contractions (I\'m, I\'d), and casual sign-offs.',
+                        examples: [
+                            'Hi Sarah, / Hello Tom,',
+                            'I\'m great, thanks! / I\'d love to come.',
+                            'Looking forward to seeing you. / See you soon.',
+                            'Bye / Cheers / Best wishes,'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '4f', title: 'In my free time', page: '54-55',
+                topicTags: ['video lesson', 'free time'],
+                vocabulary: {
+                    title: 'Video — Free-time passions',
+                    words: ['passion', 'hobby', 'free-time activity', 'I love …', 'I really enjoy …']
+                }
+            }
+        ]
+    },
+
+    // ============================================================
+    //  UNIT 5 — FOOD (Life Elementary, A1)
+    // ============================================================
+    {
+        unitId: 'unit5',
+        title: 'Food',
+        icon: '🍽️',
+        color: '#EF476F',
+        intro: 'Talk about food, quantities, food labels, and ordering meals.',
+        iCanGoals: [
+            'Talk about food I like and eat',
+            'Use a/an, some and any with countable and uncountable nouns',
+            'Use a lot of, much and many',
+            'Ask How many / How much for quantities',
+            'Talk about food labels and healthy eating',
+            'Order a meal in a restaurant'
+        ],
+        lessons: [
+            {
+                id: '5a', title: 'Famous for food', page: '58-59',
+                topicTags: ['food', 'countable/uncountable', '/tʃ/ or /dʒ/'],
+                vocabulary: {
+                    title: 'Food',
+                    words: ['cheese', 'chicken', 'chips', 'eggs', 'fish', 'juice', 'lamb', 'lemons', 'lentils', 'nuts', 'onions', 'oranges', 'pasta', 'peppers', 'potatoes', 'prawns', 'raisins', 'rice', 'salt', 'pepper'],
+                    note: 'Popular dishes: pizza (Italy), ceviche (Peru), satay (Indonesia), kabsa (Saudi Arabia), pierogi (Poland), curry (India).'
+                },
+                pronunciation: {
+                    title: '/tʃ/ vs /dʒ/',
+                    rule: '/tʃ/ is voiceless (as in "chicken", "cheese"). /dʒ/ is voiced (as in "juice", "orange").',
+                    examples: [
+                        '/tʃ/ — chicken, cheese, church, watch',
+                        '/dʒ/ — juice, orange, general, large'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Countable vs uncountable nouns + a/an, some, any',
+                        rule: 'Countable nouns can be counted (one egg, two eggs). Uncountable nouns can\'t be counted (some water — NOT "two waters").',
+                        form: [
+                            { label: 'a / an', text: 'singular COUNTABLE: an onion, a banana' },
+                            { label: 'some', text: 'PLURAL countable AND UNCOUNTABLE — in POSITIVE sentences: some onions, some water' },
+                            { label: 'any', text: 'PLURAL countable AND UNCOUNTABLE — in NEGATIVE sentences and QUESTIONS: any carrots, any bread' }
+                        ],
+                        examples: [
+                            'Cook the chicken with an onion. (singular countable)',
+                            'You need some meat and some onions and tomatoes. (some + positive)',
+                            'I don\'t use any carrots. (any + negative)',
+                            'Do you have any bread? (any + question)'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '5b', title: 'Top five food markets', page: '60-61',
+                topicTags: ['food markets', 'a lot of / much / many', 'quantities and containers', 'how much/how many'],
+                vocabulary: {
+                    title: 'Quantities and containers',
+                    words: ['a bag of rice', 'a bottle of water/sauce', 'a glass of water', 'a kilo of flour', 'a packet of pasta', 'a piece of pizza', 'a slice of cake', 'a tin of tuna'],
+                    note: 'Famous markets in Unit 5b: St Lawrence (Toronto), Castries (Saint Lucia), Kreta Ayer (Singapore), La Vucciria (Palermo, Italy), Borough Market (London — 1,000 years old).'
+                },
+                grammar: [
+                    {
+                        title: 'a lot of / much / many',
+                        rule: 'a lot of — works with countable AND uncountable, mainly in POSITIVES. much/many — mainly in NEGATIVES and QUESTIONS.',
+                        form: [
+                            { label: 'a lot of', text: 'countable plural + uncountable (positive sentences)' },
+                            { label: 'many', text: 'countable plural (negatives & questions)' },
+                            { label: 'much', text: 'uncountable (negatives & questions)' }
+                        ],
+                        examples: [
+                            'There are a lot of shops here. / There\'s a lot of food.',
+                            'There aren\'t many markets. / There isn\'t much food.',
+                            'Do you eat a lot of / many apples? — No, not many.',
+                            'Do you eat a lot of / much cheese? — No, not much.'
+                        ]
+                    },
+                    {
+                        title: 'How many / How much',
+                        rule: 'Ask "How many" with countable plural nouns. Ask "How much" with uncountable nouns.',
+                        examples: [
+                            'How many bananas do you want? — Six, please.',
+                            'How much rice do you want? — A kilo.',
+                            'How many tins of tuna do you need? — Four tins.',
+                            'How much cheese would you like? — Half a kilo, please.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '5c', title: 'An eater\'s guide to food labels', page: '62-63',
+                topicTags: ['food labels', 'word focus: mean'],
+                vocabulary: {
+                    title: 'Food labels',
+                    words: ['superfood', 'natural', 'best before', 'low fat', 'calorie', 'portion', 'ingredients', 'vitamins', 'traffic lights (red/orange/green)'],
+                    note: 'Don\'t trust the word "superfood" — anyone can use it. "Best before" = the food is best before this date, but you CAN still eat it afterwards. Low-fat food often has lots of sugar!'
+                },
+                grammar: [
+                    {
+                        title: 'Word focus: mean',
+                        rule: '"Mean" has different uses depending on context.',
+                        examples: [
+                            'Red MEANS the food is unhealthy. (= shows / signals)',
+                            'The word "healthy" MEANS the food is good for you. (= explains a word)',
+                            'Do you know what I MEAN? (= asking for understanding)',
+                            'I see what you MEAN. (= I understand)',
+                            'Your pizza is delicious. I MEAN it! (= I\'m serious)',
+                            'We went out last Friday — I MEAN last Saturday. (= correcting yourself)'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '5d', title: 'At the restaurant', page: '64',
+                topicTags: ['menus', 'ordering a meal', 'contracted forms'],
+                vocabulary: {
+                    title: 'Menus',
+                    words: ['Starters (1st course)', 'Main courses (2nd, biggest)', 'Desserts (sweet finish)', 'Drinks', 'garlic bread', 'soup', 'salad', 'pizza', 'burger', 'fries', 'smoothie', 'bottle of water', 'iced tea']
+                },
+                pronunciation: {
+                    title: 'Contracted forms',
+                    rule: 'In restaurant orders, contractions sound natural: I\'d = I would, I\'ll = I will.',
+                    examples: [
+                        'I\'d /aɪd/ like a coffee.',
+                        'I\'ll /aɪl/ have a pizza.'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Ordering a meal',
+                        rule: 'Common phrases when ordering food in a restaurant.',
+                        examples: [
+                            'Here is the menu. (waiter)',
+                            'Can I get you anything to drink first? (waiter)',
+                            'I\'d like a bottle of water, please.',
+                            'I don\'t want a starter.',
+                            'I\'ll have a seafood pizza.',
+                            'I\'d also like a dessert.',
+                            'Are you ready to order? (waiter)',
+                            'That was delicious.',
+                            'Can I get you anything else? (waiter)',
+                            'Could we have the bill, please?'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '5e', title: 'Instructions', page: '65',
+                topicTags: ['writing instructions'],
+                grammar: [
+                    {
+                        title: 'Writing skill — Instructions',
+                        rule: 'Recipes and instructions use the IMPERATIVE form (base verb, no subject). Use simple, clear language.',
+                        examples: [
+                            'Cook the chicken with an onion.',
+                            'Add some salt and pepper.',
+                            'Serve with rice.',
+                            'Don\'t use too much oil.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '5f', title: 'The world food quiz', page: '66-67',
+                topicTags: ['video lesson', 'world food'],
+                vocabulary: {
+                    title: 'Video — World food quiz',
+                    words: ['street food', 'spicy', 'sweet', 'sour', 'salty', 'fresh', 'vegetarian']
+                }
+            }
+        ]
+    },
+
+    // ============================================================
     //  UNIT 8 — APPEARANCE
     // ============================================================
     {
