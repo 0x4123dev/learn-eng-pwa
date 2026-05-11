@@ -975,6 +975,208 @@ const GRAMMAR_LESSONS = [
     },
 
     // ============================================================
+    //  UNIT 6 — PAST LIVES (Life Elementary, A1/A2)
+    // ============================================================
+    {
+        unitId: 'unit6',
+        title: 'Past lives',
+        icon: '🕰️',
+        color: '#9B59B6',
+        intro: 'Talk about people, places, and events in the past using was/were and the past simple.',
+        iCanGoals: [
+            'Use the verb be in the past (was/were)',
+            'Use the past simple to talk about finished events',
+            'Ask and answer questions about the past',
+            'Use time expressions (yesterday, in 1799, last March…)',
+            'Use opinion adjectives',
+            'Ask what people did last night / at the weekend',
+            'Write formal and informal thank-you messages'
+        ],
+        lessons: [
+            {
+                id: '6a', title: 'Famous faces', page: '70-71',
+                topicTags: ['famous faces', 'was/were', 'past simple regular', 'time expressions', '-ed endings'],
+                vocabulary: [
+                    {
+                        title: 'Famous faces & money',
+                        words: ['president', 'queen', 'scientist', 'musician', 'writer', 'artist', 'currency', 'note', 'coin', 'dollar', 'euro', 'pound', 'peso'],
+                        note: 'Famous on money: George Washington (US 1-dollar), Frida Kahlo & Diego Rivera (Mexican 500-peso), Queen Elizabeth (UK notes). Euro notes show buildings/maps — NO famous people.'
+                    },
+                    {
+                        title: 'Time expressions (past → present)',
+                        words: ['when I was a child', 'before the 18th century', 'in 1799', 'during the 19th century', 'the sixties', 'in 2000', 'last March', 'a week ago', 'last Monday evening', 'on January 1st, 2000', 'yesterday', 'this morning'],
+                        note: 'Use IN with months/years/centuries (in 1799). Use ON with specific dates (on January 1st). Use ago AFTER the number (a week ago).'
+                    }
+                ],
+                pronunciation: {
+                    title: '-ed endings: /t/, /d/, /ɪd/',
+                    rule: 'The "-ed" ending of regular past verbs has THREE sounds.',
+                    examples: [
+                        '/t/ — after voiceless sounds (k, p, s, ʃ, tʃ, f): liked, worked, watched, finished',
+                        '/d/ — after voiced sounds (b, g, l, m, n, v, vowels): lived, played, travelled, called',
+                        '/ɪd/ — after t or d sounds (EXTRA syllable): wanted, started, visited, painted, decided'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'was / were — past simple of "be"',
+                        rule: 'I/he/she/it → was. You/we/they → were. Same negative and question patterns as present.',
+                        form: [
+                            { label: '+', text: 'George Washington WAS the first US president.' },
+                            { label: '−', text: 'His face WASN\'T on the dollar. There WEREN\'T any famous people on euros.' },
+                            { label: '?', text: 'When WAS he born? WERE they famous? Yes, they were. / No, they weren\'t.' }
+                        ],
+                        examples: [
+                            'I was a child in the nineties.',
+                            'They were Mexican artists.',
+                            'Where were you yesterday? — I was at home.',
+                            'Was she at home? — Yes, she was. / No, she wasn\'t.'
+                        ]
+                    },
+                    {
+                        title: 'Past simple — regular verbs',
+                        rule: 'Use the past simple for FINISHED actions and events in the past. Regular verbs add -ed.',
+                        form: [
+                            { label: '+', text: 'verb + -ed (worked, lived, studied, travelled)' },
+                            { label: 'spell.', text: '-e → +d (live → lived). Consonant + y → -ied (study → studied). BrE doubles -l (travel → travelled).' }
+                        ],
+                        examples: [
+                            'They worked in Mexico City.',
+                            'He lived in the 18th century.',
+                            'She studied art.',
+                            'They travelled in Europe.',
+                            'Frida painted self-portraits.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '6b', title: 'Visiting the past', page: '72-73',
+                topicTags: ['visiting the past', 'past simple irregular', 'past simple negative', 'past simple questions'],
+                vocabulary: {
+                    title: 'Visiting the past — Mustang caves',
+                    words: ['cave', 'mountain', 'century', 'river', 'family', 'humans', 'Mustang region', 'Nepal'],
+                    note: 'Yandu Bista grew up in a cave in northern Nepal. Humans made these caves about 3,000 years ago. People lived in them until the 15th century. Yandu\'s family moved to a town, but she says: "I like living in a cave."'
+                },
+                grammar: [
+                    {
+                        title: 'Past simple — irregular verbs',
+                        rule: 'Many common verbs do NOT add -ed. They have their own past form. Learn them by heart!',
+                        examples: [
+                            'go → went       have → had      do → did',
+                            'make → made    bring → brought  build → built',
+                            'grow → grew    leave → left    see → saw',
+                            'meet → met     take → took     write → wrote',
+                            'come → came    get → got       buy → bought',
+                            'See page 182 of the textbook for a full list of irregular verbs.'
+                        ]
+                    },
+                    {
+                        title: 'Past simple — negatives and questions',
+                        rule: 'For ALL subjects (I/you/he/she/it/we/they): didn\'t + base verb. Did + subject + base verb? Use the BASE form after did/didn\'t — NOT the past form.',
+                        form: [
+                            { label: '+', text: 'I/he/she/it/we/they grew up in a cave.' },
+                            { label: '−', text: 'I/he/she/it/we/they DIDN\'T live in a house. (NOT "didn\'t lived")' },
+                            { label: '?', text: 'What DID you DO at the weekend? — I met some friends.' },
+                            { label: 'Y/N', text: 'DID you go to the cinema? — Yes, I did. / No, I didn\'t.' }
+                        ],
+                        examples: [
+                            'They didn\'t have water in the cave.',
+                            'She didn\'t live in a house.',
+                            'Where did you go yesterday? — I went to the museum.',
+                            'Did you have fun? — Yes, I did.',
+                            'NOTE: For "be" use was/were directly: Were they at home? — Yes, they were.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '6c', title: 'Lifelogging', page: '74-75',
+                topicTags: ['lifelogging', 'word focus: write'],
+                vocabulary: {
+                    title: 'Lifelogging',
+                    words: ['diary', 'lifelogger', 'blog', 'photographs', 'fitness tracker', 'video', 'comments', 'social media'],
+                    note: 'Samuel Pepys (17th century) wrote the most famous diary in English. Gordon Bell became the first "lifelogger" in 2000 — he wore a camera that automatically took a picture every 30 seconds. Today we lifelog with photos, social media posts, and fitness trackers.'
+                },
+                grammar: [
+                    {
+                        title: 'Word focus: write',
+                        rule: 'The verb "write" combines with different prepositions and objects to make different meanings.',
+                        examples: [
+                            'write ABOUT history — the topic of your writing',
+                            'write A diary — what you write (an article/journal)',
+                            'write TO your grandparents — the person you send to',
+                            'write DOWN a word — note it on paper (phrasal verb)'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '6d', title: 'How was your evening?', page: '76',
+                topicTags: ['asking what people did', 'opinion adjectives', 'intonation'],
+                vocabulary: {
+                    title: 'Opinion adjectives (positive → negative)',
+                    words: ['fantastic / great / very good 😀', 'OK / fine / nice / not bad 🙂', 'fun / funny 😄', 'boring 😐', 'terrible / not very good 😞'],
+                    note: 'fun = enjoyable (an activity). funny = makes you laugh (a joke, a film). They are NOT the same!'
+                },
+                pronunciation: {
+                    title: 'Intonation — matching your tone to your opinion',
+                    rule: 'Strong opinions need lively/animated intonation. Neutral opinions sound flat. Make your voice match how you feel.',
+                    examples: [
+                        '"Fantastic!" — enthusiastic, voice goes up',
+                        '"Terrible!" — strong falling tone, drawn out',
+                        '"OK" / "Fine" — flat, neutral',
+                        '"Not bad" with flat tone = slightly positive (British understatement)'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Real life — Asking what people did',
+                        rule: 'Useful phrases for asking and answering about past events.',
+                        examples: [
+                            'How was your evening / weekend / holiday?',
+                            'Did you have a good evening / weekend? Did you have a good time?',
+                            'Did you have fun last night? — It was great / fun / OK / not much.',
+                            'Activity: What did you do? — I went for a walk. / I watched TV.',
+                            'Place: Where did you go? — To a café / a party / the cinema.',
+                            'People: Who were you with? — A friend / friends / my family.',
+                            'How many: Were there many people there? — Yes, lots! / No, not many.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '6e', title: 'Thanks!', page: '77',
+                topicTags: ['thank you messages', 'formal and informal'],
+                grammar: [
+                    {
+                        title: 'Writing skill — Formal vs informal thank-you messages',
+                        rule: 'Match the style to your relationship. Informal for friends/family; formal for clients/teachers/strangers.',
+                        form: [
+                            { label: 'Greet', text: 'Informal: Hi! / Hello! · Formal: Dear Mr/Mrs Smith,' },
+                            { label: 'Thank', text: 'Informal: Thanks for… · Formal: Thank you very much for…' },
+                            { label: 'Future', text: 'Informal: See you again soon! · Formal: I look forward to hearing from you.' },
+                            { label: 'End', text: 'Informal: Love / Cheers / Bye · Formal: Yours sincerely / Best regards' }
+                        ],
+                        examples: [
+                            'Informal: "Hi! Thanks for coming to my party. I really liked the present! See you again soon. Love, Ginny"',
+                            'Formal: "Dear Nadia, Thank you very much for your work in Rio. The conference was very successful. Best regards, Sanjit"'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '6f', title: 'Objects from the past', page: '78-79',
+                topicTags: ['video lesson', 'museum objects'],
+                vocabulary: {
+                    title: 'Video — Objects from the past',
+                    words: ['museum', 'object', 'history', 'precious', 'ancient', 'discover', 'century', 'civilization']
+                }
+            }
+        ]
+    },
+
+    // ============================================================
     //  UNIT 8 — APPEARANCE
     // ============================================================
     {
