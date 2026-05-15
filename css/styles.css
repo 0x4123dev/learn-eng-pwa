@@ -9517,6 +9517,22 @@
         }
 
         /* Quiz screen */
+        /* Top bar: Exit on the left, Next on the right (visible only after
+           the user submits an answer). Sticky to the top of the scroll
+           container so the Next button stays in reach during long
+           explanations. */
+        .grammar-quiz-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 6px 0;
+            background: linear-gradient(180deg, var(--surface, #f8fafc) 70%, rgba(248,250,252,0));
+        }
         .grammar-back-btn {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -9528,8 +9544,32 @@
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            margin-bottom: 12px;
             font-family: inherit;
+        }
+        .grammar-next-btn-top {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 14px rgba(16,185,129,0.35);
+            transition: transform 0.05s, box-shadow 0.15s;
+            animation: nextBtnPulseIn 0.35s ease-out;
+        }
+        .grammar-next-btn-top:hover {
+            box-shadow: 0 6px 20px rgba(16,185,129,0.45);
+        }
+        .grammar-next-btn-top:active {
+            transform: scale(0.96);
+        }
+        @keyframes nextBtnPulseIn {
+            0%   { transform: scale(0.6); opacity: 0; }
+            60%  { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1);    opacity: 1; }
         }
         .grammar-back-btn-bottom {
             background: var(--glass-bg);

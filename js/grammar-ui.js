@@ -876,8 +876,21 @@ function quizHeaderHTML() {
     const unit = getGrammarUnit(state.unitId);
     const total = state.questions.length;
     const score = scoreSoFar_();
+    // Has the user submitted an answer for the current question?
+    const q = state.questions[state.currentIdx];
+    const userAns = state.answers[state.currentIdx];
+    let showNext = false;
+    if (q && q.type === 'arrangement') {
+        showNext = Array.isArray(userAns);
+    } else {
+        showNext = userAns !== null && userAns !== undefined;
+    }
+    const nextLabel = state.currentIdx + 1 >= total ? '🏁 Results' : 'Next →';
     return `
-        <button class="grammar-back-btn" onclick="confirmExitGrammarQuiz()">✕ Exit Quiz</button>
+        <div class="grammar-quiz-topbar">
+            <button class="grammar-back-btn" onclick="confirmExitGrammarQuiz()">✕ Exit</button>
+            ${showNext ? `<button class="grammar-next-btn-top" onclick="nextGrammarQuestion()">${nextLabel}</button>` : ''}
+        </div>
         <div class="grammar-quiz-header">
             <div class="grammar-quiz-unit">${unit.icon} ${unit.name}</div>
             <div class="grammar-quiz-progress">Question ${state.currentIdx + 1} of ${total} · Score: ${score}</div>
