@@ -873,7 +873,28 @@ function scoreSoFar_() {
 
 function quizHeaderHTML() {
     const state = _grammarQuizState;
+    // For mixed-source quizzes (mistakes / wrong-only / lesson drills), the
+    // unitId can be 'mixed' (or even a unit ID that resolves but the mode is
+    // not standard). Derive a friendly header label from the mode in that case.
     const unit = getGrammarUnit(state.unitId);
+    let headerIcon = unit ? unit.icon : '🎯';
+    let headerName = unit ? unit.name : 'Practice quiz';
+    if (!unit || state.mode !== 'standard') {
+        if (state.mode === 'mistakes') {
+            headerIcon = '🎯';
+            headerName = 'Practice My Mistakes';
+        } else if (state.mode === 'wrong-only') {
+            headerIcon = '🔁';
+            headerName = 'Replay wrong answers';
+        } else if (typeof state.mode === 'string' && state.mode.startsWith('lesson:')) {
+            headerIcon = '📚';
+            const lid = state.mode.slice('lesson:'.length);
+            headerName = `Lesson ${lid} practice`;
+        } else if (!unit) {
+            headerIcon = '🧩';
+            headerName = 'Mixed practice';
+        }
+    }
     const total = state.questions.length;
     const score = scoreSoFar_();
     // Has the user submitted an answer for the current question?
@@ -892,7 +913,7 @@ function quizHeaderHTML() {
             ${showNext ? `<button class="grammar-next-btn-top" onclick="nextGrammarQuestion()">${nextLabel}</button>` : ''}
         </div>
         <div class="grammar-quiz-header">
-            <div class="grammar-quiz-unit">${unit.icon} ${unit.name}</div>
+            <div class="grammar-quiz-unit">${headerIcon} ${headerName}</div>
             <div class="grammar-quiz-progress">Question ${state.currentIdx + 1} of ${total} · Score: ${score}</div>
             <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round((state.currentIdx / total) * 100)}%"></div></div>
         </div>
@@ -944,17 +965,42 @@ function finishGrammarQuiz() {
     }
     if (isPerfect && typeof createConfetti === 'function') createConfetti();
 
+    // Pick a friendly header for mixed-source quizzes (mistakes / wrong-only / lesson)
+    let resultIcon, resultName;
+    if (unit) {
+        resultIcon = unit.icon;
+        resultName = unit.name;
+    } else if (state.mode === 'mistakes') {
+        resultIcon = '🎯'; resultName = 'Practice My Mistakes';
+    } else if (state.mode === 'wrong-only') {
+        resultIcon = '🔁'; resultName = 'Replay wrong answers';
+    } else if (typeof state.mode === 'string' && state.mode.startsWith('lesson:')) {
+        resultIcon = '📚'; resultName = `Lesson ${state.mode.slice('lesson:'.length)} practice`;
+    } else {
+        resultIcon = '🧩'; resultName = 'Mixed practice';
+    }
+    // "Try Again" only makes sense for a real unit. For mixed quizzes, offer to
+    // re-run the same source (mistakes bank, etc.).
+    let tryAgainBtn;
+    if (unit) {
+        tryAgainBtn = `<button class="grammar-quiz-btn grammar-btn-primary" onclick="startGrammarQuiz('${state.unitId}', ${state.questions.length})">🔄 Try Again</button>`;
+    } else if (state.mode === 'mistakes') {
+        tryAgainBtn = `<button class="grammar-quiz-btn grammar-btn-primary" onclick="startMistakesQuiz(${state.questions.length})">🔄 Practice again</button>`;
+    } else {
+        tryAgainBtn = '';
+    }
+
     document.getElementById('grammarScreen').innerHTML = `
         <div class="grammar-result-card">
             <div class="grammar-result-emoji">${tierEmoji}</div>
             <h2 class="grammar-result-title">${tierMsg}</h2>
             <div class="grammar-result-score">${session.score} / ${session.total}</div>
             <div class="grammar-result-pct">${pct}%</div>
-            <div class="grammar-result-unit">${unit.icon} ${unit.name}</div>
+            <div class="grammar-result-unit">${resultIcon} ${resultName}</div>
             <div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>
             <div class="grammar-result-actions">
                 <button class="grammar-quiz-btn grammar-btn-secondary" onclick="reviewLastGrammarSession()">📖 Review Answers</button>
-                <button class="grammar-quiz-btn grammar-btn-primary" onclick="startGrammarQuiz('${state.unitId}', ${state.questions.length})">🔄 Try Again</button>
+                ${tryAgainBtn}
                 <button class="grammar-quiz-btn grammar-btn-secondary" onclick="renderGrammarHome()">🏠 Done</button>
             </div>
         </div>

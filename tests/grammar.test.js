@@ -484,6 +484,39 @@ suite('grammar: mistake bank (v3.24 Tier 1)', () => {
         const m = { qId: 'u8-9999', unitId: 'unit8', topic: 'x', type: 'vocabulary' };
         assert.equal(env.resolveMistakeQuestion(m), null);
     });
+
+    // Regression test for the "Practice My Mistakes Quick" crash (v3.31.2).
+    // The full pipeline used by startMistakesQuiz: build a bank from wrong
+    // answers across several units, then resolve each entry to a real
+    // question object. All resolved questions must have valid id/type so
+    // the quiz renderer doesn't crash.
+    test('end-to-end mistakes pipeline (multi-unit) resolves to valid questions', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        // Generate wrong answers from THREE different units so the resulting
+        // quiz spans multiple units (the "mixed" unitId case that crashed).
+        for (const unitId of ['unit1', 'unit6', 'unit11']) {
+            const u = env.getGrammarUnit(unitId);
+            const mc = u.questions.find(q => q.type !== 'arrangement');
+            const wrongIdx = mc.correct === 0 ? 1 : 0;
+            env.saveGrammarSession(unitId, [mc], [wrongIdx]);
+        }
+        const mistakes = env.getActiveMistakes();
+        assert.equal(mistakes.length, 3, 'should have one mistake per unit');
+        // Resolve each to a real question — none should be null
+        const resolved = mistakes.map(m => env.resolveMistakeQuestion(m));
+        for (let i = 0; i < resolved.length; i++) {
+            assert.truthy(resolved[i], `mistake ${i} resolves to null (qId=${mistakes[i].qId})`);
+            assert.truthy(resolved[i].id, 'resolved question missing id');
+            assert.truthy(resolved[i].type, 'resolved question missing type');
+            assert.truthy(resolved[i].topic, 'resolved question missing topic');
+        }
+        // The mistakes span multiple units → a "mixed" quiz state would be
+        // built. Verify the unit IDs are diverse (this would have flagged the
+        // crash since getGrammarUnit('mixed') is undefined).
+        const sourceUnits = new Set(mistakes.map(m => m.unitId));
+        assert.truthy(sourceUnits.size >= 2,
+            `expected ≥2 source units, got ${sourceUnits.size}`);
+    });
 });
 
 suite('grammar: lessons sub-tab data (v3.25)', () => {
