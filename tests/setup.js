@@ -7,10 +7,25 @@ const vm = require('vm');
 
 function buildSandbox(opts) {
     opts = opts || {};
-    function makeStubElement() {
+
+    // ── Enhanced DOM stub ──
+    // Each call to getElementById('foo') returns a stable element so that
+    // innerHTML writes can be observed across calls. This lets render
+    // functions like `document.getElementById('grammarScreen').innerHTML = …`
+    // be captured and asserted against, without needing a full JSDOM.
+    const elementsById = {};
+    const innerHTMLLog = {}; // id → last innerHTML string written
+
+    function makeStubElement(idForTracking) {
+        let _innerHTML = '';
         const el = {
+            id: idForTracking || '',
+            get innerHTML() { return _innerHTML; },
+            set innerHTML(v) {
+                _innerHTML = String(v);
+                if (idForTracking) innerHTMLLog[idForTracking] = _innerHTML;
+            },
             textContent: '',
-            innerHTML: '',
             value: '',
             className: '',
             style: new Proxy({}, { get: () => '', set: () => true }),
@@ -30,19 +45,30 @@ function buildSandbox(opts) {
             getAttribute: () => null,
             cloneNode: () => makeStubElement(),
             querySelector: () => null,
-            querySelectorAll: () => []
+            querySelectorAll: () => [],
+            scrollTo: () => {},
+            scrollIntoView: () => {}
         };
         el.parentNode = null;
         return el;
     }
     const documentMock = {
-        getElementById: () => makeStubElement(),
+        getElementById: (id) => {
+            if (!elementsById[id]) elementsById[id] = makeStubElement(id);
+            return elementsById[id];
+        },
         querySelector: () => makeStubElement(),
         querySelectorAll: () => [],
         createElement: () => makeStubElement(),
-        body: makeStubElement(),
+        body: makeStubElement('body'),
         addEventListener: () => {},
         removeEventListener: () => {}
+    };
+    // Expose introspection helpers so tests can read what was rendered.
+    documentMock.__getInnerHTMLLog = () => innerHTMLLog;
+    documentMock.__getLastInnerHTML = (id) => innerHTMLLog[id] || null;
+    documentMock.__clearInnerHTMLLog = () => {
+        for (const k of Object.keys(innerHTMLLog)) delete innerHTMLLog[k];
     };
     const localStorageMock = (() => {
         const store = {};
@@ -136,6 +162,16 @@ const EXPORT_NAMES = [
     // grammar lessons (v3.25)
     'GRAMMAR_LESSONS', 'getGrammarLessonsForUnit', 'getGrammarLesson',
     'getLessonPracticeQuestions',
+    // grammar UI render layer (loaded only when includeGrammarUI is true)
+    'quizHeaderHTML', 'renderMCQuestion', 'renderArrangementQuestion',
+    'renderGrammarQuestion', 'finishGrammarQuiz',
+    'startMistakesQuiz', 'startCustomQuiz', 'startGrammarQuiz',
+    'startTopicReviewSession',
+    'nextGrammarQuestion', 'answerGrammarQuestion',
+    'renderGrammarHome', 'renderGrammarLessons', 'openGrammarLesson',
+    'practiceGrammarLesson', 'closeGrammarLesson',
+    'switchGrammarSubTab', 'reviewLastGrammarSession',
+    '_buildQuizStateFromQuestions', 'scoreSoFar_',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
@@ -184,6 +220,11 @@ function loadAppCode(opts) {
     if (opts.includeVideos) {
         fileList.push('js/videos.js');
     }
+    // Load the grammar UI render layer too. Required for any test that
+    // exercises quizHeaderHTML / renderMCQuestion / finishGrammarQuiz / etc.
+    if (opts.includeGrammarUI) {
+        fileList.push('js/grammar-ui.js');
+    }
 
     let combined = '';
     for (const f of fileList) {
@@ -206,6 +247,8 @@ globalThis.__getAppState = function() { try { return appState; } catch(e) { retu
 globalThis.__setCurrentUser = function(u) { try { currentUser = u; } catch(e) {} };
 globalThis.__setLessonState = function(s) { try { lessonState = s; } catch(e) {} };
 globalThis.__getLessonState = function() { try { return lessonState; } catch(e) { return undefined; } };
+globalThis.__setGrammarQuizState = function(s) { try { _grammarQuizState = s; } catch(e) {} };
+globalThis.__getGrammarQuizState = function() { try { return _grammarQuizState; } catch(e) { return undefined; } };
 `;
 
     try {
