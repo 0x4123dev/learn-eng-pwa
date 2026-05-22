@@ -1,6 +1,211 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.36.0';
+const APP_VERSION = 'v3.37.0';
+
+// ============================================================================
+//  DAILY STREAK MODAL (v3.37)
+// ============================================================================
+// Shown once per day right after the user enters the app. Reinforces the
+// "learn every day" loop by:
+//   • celebrating the current streak number (big, bold)
+//   • showing the next milestone target with a progress bar
+//   • showing a "Today" tile that turns ✓ once the user studies
+//   • CTA → jump straight to the next lesson
+
+// Local-day key (UTC offset by user's local TZ). Resets at midnight LOCAL.
+function _todayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+}
+
+// Was the modal already shown today for this user?
+function hasShownStreakToday(user) {
+    if (!user) return true;
+    try {
+        return localStorage.getItem('flashlingo-streak-shown-' + user) === _todayKey();
+    } catch (e) { return false; }
+}
+
+function markStreakShownToday(user) {
+    if (!user) return;
+    try {
+        localStorage.setItem('flashlingo-streak-shown-' + user, _todayKey());
+    } catch (e) {}
+}
+
+// Has the user studied TODAY? Used to decide whether the "Today" tile is ✓.
+function _hasStudiedToday() {
+    if (!appState) return false;
+    const today = _todayKey();
+    // Most reliable: check lessonHistory entries' dates
+    if (Array.isArray(appState.lessonHistory)) {
+        for (const h of appState.lessonHistory) {
+            if (!h || !h.date) continue;
+            const hd = new Date(h.date);
+            const k = hd.getFullYear() + '-' + String(hd.getMonth() + 1).padStart(2, '0') + '-' + String(hd.getDate()).padStart(2, '0');
+            if (k === today) return true;
+        }
+    }
+    // Fallback: appState.lastStudyDate
+    if (appState.lastStudyDate) {
+        const ld = new Date(appState.lastStudyDate);
+        const k = ld.getFullYear() + '-' + String(ld.getMonth() + 1).padStart(2, '0') + '-' + String(ld.getDate()).padStart(2, '0');
+        if (k === today) return true;
+    }
+    return false;
+}
+
+// Last 7 days (today + 6 prior). Returns an array of { dateLabel, studied, isToday }.
+function _last7DaysCalendar() {
+    const out = [];
+    if (!appState) return out;
+    const studiedKeys = new Set();
+    if (Array.isArray(appState.lessonHistory)) {
+        for (const h of appState.lessonHistory) {
+            if (!h || !h.date) continue;
+            const d = new Date(h.date);
+            studiedKeys.add(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+        }
+    }
+    const today = _todayKey();
+    const todayD = new Date();
+    const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(todayD);
+        d.setDate(d.getDate() - i);
+        const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        out.push({
+            dateLabel: DAY_NAMES[d.getDay()],
+            studied: studiedKeys.has(key),
+            isToday: key === today
+        });
+    }
+    return out;
+}
+
+// Build + show the modal. `opts.force = true` bypasses the once-per-day gate
+// (used when the user manually re-opens it from the home screen).
+function showDailyStreakModal(opts) {
+    opts = opts || {};
+    if (!appState) return;
+    if (!opts.force && hasShownStreakToday(currentUser)) return;
+    markStreakShownToday(currentUser);
+
+    const streak = appState.streak || 0;
+    const best = appState.bestStreak || streak;
+    const tier = (typeof getStreakTier === 'function') ? getStreakTier(streak) : 0;
+    const nextMs = (typeof getNextMilestone === 'function') ? getNextMilestone(streak) : null;
+    const studiedToday = _hasStudiedToday();
+    const days = _last7DaysCalendar();
+
+    // Progress to the next milestone
+    let progressHTML = '';
+    if (nextMs) {
+        const prev = streak === 0 ? 0 : (streak >= 30 ? 30 : streak >= 14 ? 14 : streak >= 7 ? 7 : streak >= 3 ? 3 : 0);
+        const pct = Math.min(100, Math.round(((streak - prev) / (nextMs - prev)) * 100));
+        progressHTML = `
+            <div class="streak-modal-progress">
+                <div class="streak-modal-progress-bar">
+                    <div class="streak-modal-progress-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="streak-modal-progress-label">
+                    <strong>${nextMs - streak}</strong> day${nextMs - streak !== 1 ? 's' : ''} to <strong>${nextMs}-day</strong> milestone
+                </div>
+            </div>
+        `;
+    } else {
+        progressHTML = `<div class="streak-modal-progress-label">🏆 You've passed every streak milestone!</div>`;
+    }
+
+    // Last-7-days calendar
+    const calendarHTML = days.map(d => `
+        <div class="streak-modal-day ${d.studied ? 'studied' : ''} ${d.isToday ? 'today' : ''}">
+            <div class="streak-modal-day-label">${d.dateLabel}${d.isToday ? ' •' : ''}</div>
+            <div class="streak-modal-day-dot">${d.studied ? '🔥' : (d.isToday ? '⭕' : '·')}</div>
+        </div>
+    `).join('');
+
+    // Today\'s "study CTA"
+    const ctaHTML = studiedToday
+        ? `<div class="streak-modal-done">✓ Already studied today — keep it up!</div>`
+        : `<button class="streak-modal-cta" onclick="dismissStreakModalAndStart()">📚 Learn today's words</button>`;
+
+    // Greeting based on streak length
+    let greeting;
+    if (streak === 0) {
+        greeting = 'Start your streak today!';
+    } else if (streak === 1) {
+        greeting = 'Day 1 — let\'s make it two!';
+    } else if (streak < 7) {
+        greeting = `Streak: ${streak} days strong 💪`;
+    } else if (streak < 14) {
+        greeting = `${streak}-day streak — you're on fire 🔥`;
+    } else if (streak < 30) {
+        greeting = `${streak} days — unstoppable!`;
+    } else {
+        greeting = `${streak} days — you're a legend 🏆`;
+    }
+
+    // Create overlay
+    let overlay = document.getElementById('streakModalOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'streakModalOverlay';
+        overlay.className = 'streak-modal-overlay';
+        document.body.appendChild(overlay);
+    }
+    overlay.classList.add('active');
+    overlay.innerHTML = `
+        <div class="streak-modal" role="dialog" aria-modal="true" aria-labelledby="streakModalTitle">
+            <button class="streak-modal-close" onclick="dismissStreakModal()" aria-label="Close">×</button>
+            <div class="streak-modal-flame">🔥</div>
+            <div class="streak-modal-streak ${tier > 0 ? 'streak-tier-' + tier : ''}">${streak}</div>
+            <div class="streak-modal-unit">DAY${streak !== 1 ? 'S' : ''}</div>
+            <h2 class="streak-modal-greeting" id="streakModalTitle">${greeting}</h2>
+            <div class="streak-modal-calendar">${calendarHTML}</div>
+            ${progressHTML}
+            <div class="streak-modal-best">Best ever: <strong>${best}</strong> day${best !== 1 ? 's' : ''}</div>
+            ${ctaHTML}
+        </div>
+    `;
+
+    // Click outside the modal to dismiss
+    overlay.onclick = function (e) {
+        if (e.target === overlay) dismissStreakModal();
+    };
+}
+
+function dismissStreakModal() {
+    const overlay = document.getElementById('streakModalOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            if (overlay && !overlay.classList.contains('active')) {
+                overlay.innerHTML = '';
+            }
+        }, 250);
+    }
+}
+
+function dismissStreakModalAndStart() {
+    dismissStreakModal();
+    // Jump to the next-lesson workflow if available
+    if (typeof getNextPracticeLesson === 'function' && typeof startLesson === 'function') {
+        try {
+            const next = getNextPracticeLesson();
+            if (next && typeof next.lessonNum === 'number') {
+                startLesson(next.lessonNum);
+                return;
+            }
+        } catch (e) { /* fall through */ }
+    }
+    // Fallback: scroll the user to the home screen's next-lesson card
+    const homeScreen = document.getElementById('homeScreen');
+    if (homeScreen && homeScreen.scrollTo) homeScreen.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function renderHome() {
     if (!appState) return;

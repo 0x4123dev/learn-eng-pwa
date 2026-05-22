@@ -3167,6 +3167,190 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
         }
 
+        /* ==================== DAILY STREAK MODAL (v3.37) ==================== */
+        .streak-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            padding: 20px;
+            animation: streakOverlayIn 0.25s ease-out;
+        }
+        .streak-modal-overlay.active { display: flex; }
+        @keyframes streakOverlayIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .streak-modal {
+            position: relative;
+            background: linear-gradient(160deg, #1e293b 0%, #4c1d95 60%, #be185d 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 28px 22px 22px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: streakModalIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes streakModalIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.85); }
+            to   { opacity: 1; transform: none; }
+        }
+        .streak-modal-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: rgba(255,255,255,0.10);
+            border: none;
+            color: white;
+            font-size: 24px;
+            line-height: 1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .streak-modal-close:hover { background: rgba(255,255,255,0.25); }
+        .streak-modal-flame {
+            font-size: 56px;
+            line-height: 1;
+            margin-bottom: 4px;
+            animation: streakFlamePulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 4px 12px rgba(255,107,53,0.6));
+        }
+        @keyframes streakFlamePulse {
+            0%, 100% { transform: scale(1); }
+            50%      { transform: scale(1.10) rotate(-3deg); }
+        }
+        .streak-modal-streak {
+            font-size: 78px;
+            font-weight: 900;
+            line-height: 1;
+            color: #fff;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .streak-modal-streak.streak-tier-1 { color: #fde68a; }
+        .streak-modal-streak.streak-tier-2 { color: #fbbf24; }
+        .streak-modal-streak.streak-tier-3 { color: #f97316; text-shadow: 0 4px 24px rgba(249,115,22,0.6); }
+        .streak-modal-streak.streak-tier-4 { color: #ef4444; text-shadow: 0 4px 28px rgba(239,68,68,0.7); }
+        .streak-modal-unit {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.75);
+            margin-top: -4px;
+            margin-bottom: 14px;
+        }
+        .streak-modal-greeting {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 16px;
+            line-height: 1.35;
+        }
+        .streak-modal-calendar {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .streak-modal-day {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            transition: background 0.15s;
+        }
+        .streak-modal-day.studied {
+            background: rgba(249,115,22,0.30);
+            border: 1px solid rgba(249,115,22,0.50);
+        }
+        .streak-modal-day.today {
+            outline: 2px solid #fbbf24;
+            outline-offset: 1px;
+        }
+        .streak-modal-day-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.75);
+            text-transform: uppercase;
+        }
+        .streak-modal-day-dot {
+            font-size: 14px;
+            line-height: 1;
+        }
+        .streak-modal-progress {
+            margin-bottom: 14px;
+        }
+        .streak-modal-progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .streak-modal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fbbf24, #f97316, #ef4444);
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+        .streak-modal-progress-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+        }
+        .streak-modal-progress-label strong {
+            color: #fbbf24;
+            font-weight: 800;
+        }
+        .streak-modal-best {
+            font-size: 12px;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 14px;
+        }
+        .streak-modal-best strong {
+            color: white;
+            font-weight: 800;
+        }
+        .streak-modal-cta {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            color: white;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(249,115,22,0.40);
+            font-family: inherit;
+            transition: transform 0.05s, box-shadow 0.15s;
+        }
+        .streak-modal-cta:hover { box-shadow: 0 8px 26px rgba(249,115,22,0.55); }
+        .streak-modal-cta:active { transform: scale(0.97); }
+        .streak-modal-done {
+            background: rgba(34,197,94,0.20);
+            border: 1px solid rgba(34,197,94,0.45);
+            color: #bbf7d0;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
         /* ==================== STREAK SHIELDS ==================== */
         .shield-display {
             display: inline-block;

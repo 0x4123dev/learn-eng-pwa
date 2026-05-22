@@ -679,6 +679,15 @@ function loginUser(username) {
 
     renderHome();
     renderProfile();
+
+    // v3.37 — show the daily-streak modal once per local day, right after the
+    // home screen is mounted. Delayed by a frame so the modal animates over a
+    // already-rendered background instead of a blank screen.
+    setTimeout(() => {
+        if (typeof showDailyStreakModal === 'function') {
+            try { showDailyStreakModal(); } catch (e) { /* non-fatal */ }
+        }
+    }, 250);
 }
 
 function switchUser() {

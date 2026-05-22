@@ -179,6 +179,9 @@ const EXPORT_NAMES = [
     // word-bubbles game (v3.33)
     'getGameWordPool', 'BUBBLE_DIFFICULTIES', 'bubblesState',
     'getBubbleRank', 'getStarRating',
+    // daily streak modal (v3.37)
+    'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
+    'hasShownStreakToday', 'markStreakShownToday',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
