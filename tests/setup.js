@@ -172,6 +172,8 @@ const EXPORT_NAMES = [
     'practiceGrammarLesson', 'closeGrammarLesson',
     'switchGrammarSubTab', 'reviewLastGrammarSession',
     '_buildQuizStateFromQuestions', 'scoreSoFar_',
+    // grammar UI — units collapse/expand (v3.32.2)
+    'toggleGrammarUnitExpanded', 'expandAllGrammarUnits', 'collapseAllGrammarUnits',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',

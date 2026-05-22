@@ -9386,6 +9386,37 @@
         }
         .grammar-body { }
 
+        /* Bulk expand/collapse bar above the unit list */
+        .grammar-units-bulk-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 4px 10px;
+            margin-bottom: 4px;
+        }
+        .grammar-units-bulk-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary, #64748b);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .grammar-units-bulk-btn {
+            background: transparent;
+            border: 1px solid rgba(108,92,231,0.4);
+            color: var(--accent-purple, #6c5ce7);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s;
+        }
+        .grammar-units-bulk-btn:hover {
+            background: rgba(108,92,231,0.08);
+        }
+
         /* Unit cards */
         .grammar-unit-card {
             background: var(--glass-bg);
@@ -9394,38 +9425,108 @@
             border: 1px solid var(--glass-border);
             border-left: 5px solid var(--unit-color, var(--accent-purple));
             border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 14px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
             box-shadow: 0 4px 16px rgba(31,80,50,0.06);
+            transition: padding 0.2s ease, box-shadow 0.2s ease;
         }
+        .grammar-unit-card.expanded {
+            padding: 16px;
+            box-shadow: 0 6px 22px rgba(31,80,50,0.10);
+        }
+        /* Header is now a button (clickable) — keep button defaults from
+           leaking and align contents. */
         .grammar-unit-header {
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0 0 6px 0;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+        }
+        .grammar-unit-card.expanded .grammar-unit-header {
             margin-bottom: 8px;
         }
+        .grammar-unit-header:hover .grammar-unit-name {
+            color: var(--accent-purple, #6c5ce7);
+        }
         .grammar-unit-icon {
-            font-size: 36px;
+            font-size: 32px;
             flex-shrink: 0;
+        }
+        .grammar-unit-card.expanded .grammar-unit-icon {
+            font-size: 36px;
         }
         .grammar-unit-text { flex: 1; min-width: 0; }
         .grammar-unit-name {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: var(--text-primary);
             margin-bottom: 2px;
+            transition: color 0.15s;
+        }
+        .grammar-unit-card.expanded .grammar-unit-name {
+            font-size: 16px;
         }
         .grammar-unit-desc {
             font-size: 12px;
             color: var(--text-secondary);
             line-height: 1.4;
+            /* When collapsed, truncate the description to one line so cards
+               stay short — the user can expand to see the full text. */
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .grammar-unit-card.expanded .grammar-unit-desc {
+            -webkit-line-clamp: unset;
+            display: block;
+            overflow: visible;
+        }
+        .grammar-unit-toggle {
+            flex-shrink: 0;
+            font-size: 13px;
+            color: var(--text-secondary, #64748b);
+            background: rgba(108,92,231,0.08);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background 0.15s;
+        }
+        .grammar-unit-card.expanded .grammar-unit-toggle {
+            background: rgba(108,92,231,0.18);
+            color: var(--accent-purple, #6c5ce7);
+        }
+        .grammar-unit-header:hover .grammar-unit-toggle {
+            background: rgba(108,92,231,0.20);
+            color: var(--accent-purple, #6c5ce7);
+        }
+        /* Animate the expanded body so the open feels smooth */
+        .grammar-unit-body {
+            animation: grammarUnitOpen 0.25s ease-out;
+        }
+        @keyframes grammarUnitOpen {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         .grammar-unit-stats {
             font-size: 13px;
             color: var(--text-primary);
             background: rgba(46,204,113,0.08);
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 10px;
+            margin-bottom: 0;
+        }
+        .grammar-unit-card.expanded .grammar-unit-stats {
             margin-bottom: 10px;
         }
         .grammar-unit-actions {

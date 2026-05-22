@@ -4,6 +4,32 @@
 let _grammarSubTab = 'units';      // 'units' | 'lessons' | 'history'
 let _grammarQuizState = null;       // active quiz session
 let _grammarOpenLesson = null;      // { unitId, lessonId } when viewing lesson detail
+// Which unit cards are currently expanded on the Units sub-tab.
+// Default = all collapsed (Set is empty) so the user can scroll quickly.
+let _grammarExpandedUnits = new Set();
+
+function toggleGrammarUnitExpanded(unitId) {
+    if (_grammarExpandedUnits.has(unitId)) {
+        _grammarExpandedUnits.delete(unitId);
+    } else {
+        _grammarExpandedUnits.add(unitId);
+    }
+    // Re-render only the units list, not the whole grammar home (preserves
+    // any scroll position on the page).
+    renderGrammarHome();
+}
+
+function expandAllGrammarUnits() {
+    if (typeof GRAMMAR_UNITS !== 'undefined') {
+        for (const u of GRAMMAR_UNITS) _grammarExpandedUnits.add(u.id);
+    }
+    renderGrammarHome();
+}
+
+function collapseAllGrammarUnits() {
+    _grammarExpandedUnits.clear();
+    renderGrammarHome();
+}
 
 // ==================== ARRANGEMENT CHIP DISPLAY ====================
 // We lowercase the first letter of the FIRST part when shown as a draggable
@@ -100,31 +126,54 @@ function renderGrammarUnitsList() {
         `;
     }
 
+    // Bulk expand / collapse controls at the top of the units list
+    const anyExpanded = _grammarExpandedUnits.size > 0;
+    const bulkToggleHTML = `
+        <div class="grammar-units-bulk-bar">
+            <span class="grammar-units-bulk-label">${GRAMMAR_UNITS.length} units</span>
+            <div class="grammar-units-bulk-actions">
+                ${anyExpanded
+                    ? `<button class="grammar-units-bulk-btn" onclick="collapseAllGrammarUnits()">⤴ Collapse all</button>`
+                    : `<button class="grammar-units-bulk-btn" onclick="expandAllGrammarUnits()">⤵ Expand all</button>`}
+            </div>
+        </div>
+    `;
+
     const unitCards = GRAMMAR_UNITS.map(unit => {
         const stats = getGrammarStats(unit.id);
         const bestLine = stats.best
             ? `★ Best: <strong>${stats.best.score}/${stats.best.total}</strong> · ${stats.attempts} quiz${stats.attempts !== 1 ? 'zes' : ''}`
             : 'Not attempted yet';
+        const isExpanded = _grammarExpandedUnits.has(unit.id);
+        const toggleIcon = isExpanded ? '▼' : '▶';
+        const toggleLabel = isExpanded ? 'Collapse' : 'Expand';
+        // The whole header is clickable to toggle. The right-side toggle
+        // button is purely a visual affordance + accessible label.
         return `
-            <div class="grammar-unit-card" style="--unit-color:${unit.color}">
-                <div class="grammar-unit-header">
+            <div class="grammar-unit-card ${isExpanded ? 'expanded' : 'collapsed'}" style="--unit-color:${unit.color}">
+                <button class="grammar-unit-header" onclick="toggleGrammarUnitExpanded('${unit.id}')" aria-expanded="${isExpanded}">
                     <span class="grammar-unit-icon">${unit.icon}</span>
                     <div class="grammar-unit-text">
                         <div class="grammar-unit-name">${unit.name}</div>
                         <div class="grammar-unit-desc">${unit.description}</div>
                     </div>
-                </div>
+                    <span class="grammar-unit-toggle" title="${toggleLabel}">${toggleIcon}</span>
+                </button>
                 <div class="grammar-unit-stats">${bestLine}</div>
-                <div class="grammar-unit-actions">
-                    <button class="grammar-quiz-btn grammar-btn-primary" onclick="startGrammarQuiz('${unit.id}', 10)">🚀 Quick Quiz (10)</button>
-                    <button class="grammar-quiz-btn grammar-btn-secondary" onclick="startGrammarQuiz('${unit.id}', 25)">📚 Long (25)</button>
-                </div>
-                <div class="grammar-unit-meta">${unit.questions.length} questions total · Vocabulary, Grammar, Pronunciation</div>
+                ${isExpanded ? `
+                    <div class="grammar-unit-body">
+                        <div class="grammar-unit-actions">
+                            <button class="grammar-quiz-btn grammar-btn-primary" onclick="startGrammarQuiz('${unit.id}', 10)">🚀 Quick Quiz (10)</button>
+                            <button class="grammar-quiz-btn grammar-btn-secondary" onclick="startGrammarQuiz('${unit.id}', 25)">📚 Long (25)</button>
+                        </div>
+                        <div class="grammar-unit-meta">${unit.questions.length} questions total · Vocabulary, Grammar, Pronunciation</div>
+                    </div>
+                ` : ''}
             </div>
         `;
     }).join('');
 
-    return mistakesCard + unitCards;
+    return mistakesCard + bulkToggleHTML + unitCards;
 }
 
 // ==================== LESSONS LIST (theory notes) ====================

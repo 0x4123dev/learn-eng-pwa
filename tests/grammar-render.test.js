@@ -313,6 +313,119 @@ suite('render: lesson detail shows sibling navigation chips', () => {
     });
 });
 
+// ============================================================================
+// UNITS SUB-TAB — COLLAPSED-BY-DEFAULT BEHAVIOR (v3.32.2)
+// ============================================================================
+// All 11 unit cards on the Units sub-tab should be collapsed by default,
+// showing only the header + best stat. Tapping the header expands the card
+// to show quick-quiz buttons + meta. A bulk Expand-all / Collapse-all button
+// sits above the list.
+suite('render: Units sub-tab collapse / expand behavior', () => {
+    function renderUnits() {
+        env.collapseAllGrammarUnits();        // reset to default state
+        env.switchGrammarSubTab('units');
+        return env.document.__getLastInnerHTML('grammarScreen');
+    }
+
+    test('Units list renders the bulk toggle bar with "Expand all" by default', () => {
+        const html = renderUnits();
+        assert.truthy(/grammar-units-bulk-bar/.test(html),
+            'bulk toggle bar missing');
+        assert.truthy(/Expand all/.test(html),
+            'when all collapsed, button should say "Expand all"');
+        assert.falsy(/Collapse all/.test(html),
+            'should NOT show "Collapse all" when nothing is expanded');
+    });
+
+    test('Every unit card is collapsed by default', () => {
+        const html = renderUnits();
+        // Every grammar-unit-card should have the "collapsed" class, and none
+        // should be "expanded".
+        const collapsedCount = (html.match(/grammar-unit-card collapsed/g) || []).length;
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(collapsedCount, env.GRAMMAR_UNITS.length, 'every unit should be collapsed');
+        assert.equal(expandedCount, 0, 'no unit should be expanded by default');
+    });
+
+    test('Collapsed cards do NOT show the Quick Quiz / Long buttons', () => {
+        const html = renderUnits();
+        // The body (with the quiz buttons) is only rendered when expanded.
+        // Should be ZERO `Quick Quiz (10)` strings on a fully-collapsed list.
+        assert.falsy(/Quick Quiz \(10\)/.test(html),
+            'collapsed cards should not show Quick Quiz buttons');
+    });
+
+    test('Collapsed cards still show the best-score line (one-line summary)', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {} });
+        const html = renderUnits();
+        // Without any history, every card shows "Not attempted yet"
+        const notAttemptedCount = (html.match(/Not attempted yet/g) || []).length;
+        assert.equal(notAttemptedCount, env.GRAMMAR_UNITS.length,
+            'every collapsed card should show "Not attempted yet"');
+    });
+
+    test('Tapping the header toggle expands ONE unit (others stay collapsed)', () => {
+        renderUnits();
+        env.toggleGrammarUnitExpanded('unit1');
+        const html = env.document.__getLastInnerHTML('grammarScreen');
+        // Exactly one card should be expanded
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(expandedCount, 1, 'exactly one card should be expanded');
+        // The expanded one is unit1
+        assert.truthy(/grammar-unit-card expanded[^"]*"[^>]*People/.test(html) || /unit1.*\bexpanded\b/.test(html),
+            'unit1 should be the expanded card');
+        // It should show the Quick Quiz button now
+        assert.truthy(/startGrammarQuiz\('unit1', 10\)/.test(html),
+            'expanded unit1 should show Quick Quiz button');
+        // Other 10 stay collapsed
+        const collapsedCount = (html.match(/grammar-unit-card collapsed/g) || []).length;
+        assert.equal(collapsedCount, env.GRAMMAR_UNITS.length - 1, 'other 10 stay collapsed');
+    });
+
+    test('Tapping the same header toggle again collapses the unit', () => {
+        renderUnits();
+        env.toggleGrammarUnitExpanded('unit1');
+        env.toggleGrammarUnitExpanded('unit1');
+        const html = env.document.__getLastInnerHTML('grammarScreen');
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(expandedCount, 0, 'unit1 should be re-collapsed');
+    });
+
+    test('expandAllGrammarUnits() expands every card', () => {
+        renderUnits();
+        env.expandAllGrammarUnits();
+        const html = env.document.__getLastInnerHTML('grammarScreen');
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(expandedCount, env.GRAMMAR_UNITS.length, 'every card should be expanded');
+        // Button now says "Collapse all"
+        assert.truthy(/Collapse all/.test(html), 'bulk button should now say "Collapse all"');
+        // All Quick Quiz buttons should be present
+        for (const u of env.GRAMMAR_UNITS) {
+            const re = new RegExp(`startGrammarQuiz\\('${u.id}', 10\\)`);
+            assert.truthy(re.test(html), `${u.id} should show its Quick Quiz button when expanded`);
+        }
+    });
+
+    test('collapseAllGrammarUnits() collapses every card', () => {
+        env.expandAllGrammarUnits();
+        env.collapseAllGrammarUnits();
+        const html = env.document.__getLastInnerHTML('grammarScreen');
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(expandedCount, 0, 'every card should be re-collapsed');
+    });
+
+    test('toggleGrammarUnitExpanded carries state across re-renders', () => {
+        renderUnits();
+        env.toggleGrammarUnitExpanded('unit3');
+        env.toggleGrammarUnitExpanded('unit7');
+        // Re-render via the home function (don't reset state)
+        env.switchGrammarSubTab('units');
+        const html = env.document.__getLastInnerHTML('grammarScreen');
+        const expandedCount = (html.match(/grammar-unit-card expanded/g) || []).length;
+        assert.equal(expandedCount, 2, 'unit3 and unit7 should remain expanded after re-render');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
