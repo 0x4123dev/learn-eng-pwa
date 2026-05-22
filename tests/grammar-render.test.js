@@ -249,6 +249,70 @@ suite('render: answer + next flow', () => {
     });
 });
 
+// ============================================================================
+// LESSON DETAIL — SIBLING NAVIGATION CHIPS (v3.32.1)
+// ============================================================================
+// When viewing lesson 1a, the detail page should show jump-chips for 1b/1c/
+// 1d/1e/1f next to the back button so the user can quickly navigate between
+// sub-lessons of the same unit without going back to the lesson list.
+suite('render: lesson detail shows sibling navigation chips', () => {
+    // Helper: open lesson detail (requires sub-tab switched to 'lessons')
+    function openLessonDetail(unitId, lessonId) {
+        env.switchGrammarSubTab('lessons');
+        env.openGrammarLesson(unitId, lessonId);
+        return env.document.__getLastInnerHTML('grammarScreen');
+    }
+
+    test('lesson detail shows all 6 sibling chips for unit1/1a', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {} });
+        const html = openLessonDetail('unit1', '1a');
+        assert.truthy(html && html.length > 0, 'no HTML written');
+        for (const sib of ['1a', '1b', '1c', '1d', '1e', '1f']) {
+            assert.truthy(html.includes(`>${sib}<`),
+                `sibling chip for "${sib}" missing in lesson 1a detail`);
+        }
+    });
+
+    test('current lesson chip has the "active" class (1a → 1a is active)', () => {
+        const html = openLessonDetail('unit1', '1a');
+        // 1a should appear with "active" class
+        const activeRe = /lesson-sibling-chip\s+active[^>]*>1a</;
+        assert.truthy(activeRe.test(html), `expected 1a chip with .active class`);
+    });
+
+    test('non-current chips have an onclick that navigates to the sibling', () => {
+        const html = openLessonDetail('unit1', '1a');
+        for (const sib of ['1b', '1c', '1d', '1e', '1f']) {
+            const re = new RegExp(`openGrammarLesson\\('unit1', '${sib}'\\)`);
+            assert.truthy(re.test(html), `chip "${sib}" missing openGrammarLesson('unit1','${sib}') handler`);
+        }
+    });
+
+    test('opening a sibling lesson updates the active chip and the title', () => {
+        openLessonDetail('unit1', '1a');
+        const html = openLessonDetail('unit1', '1d');
+        // 1d should now be the active chip
+        const activeRe = /lesson-sibling-chip\s+active[^>]*>1d</;
+        assert.truthy(activeRe.test(html), 'after navigating to 1d, the 1d chip should be active');
+        // And the detail title should be lesson 1d's title
+        const lesson1d = env.getGrammarLesson('unit1', '1d');
+        assert.truthy(html.includes(lesson1d.title),
+            `expected lesson 1d title "${lesson1d.title}" in HTML`);
+    });
+
+    test('every unit shows its 6 sibling chips on every sub-lesson', () => {
+        for (const u of env.GRAMMAR_LESSONS) {
+            for (const lesson of u.lessons) {
+                const html = openLessonDetail(u.unitId, lesson.id);
+                for (const sib of u.lessons) {
+                    assert.truthy(html.includes(`>${sib.id}<`),
+                        `${u.unitId}/${lesson.id} detail is missing sibling chip ${sib.id}`);
+                }
+            }
+        }
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

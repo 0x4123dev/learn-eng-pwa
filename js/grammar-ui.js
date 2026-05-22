@@ -292,9 +292,25 @@ function renderGrammarLessonDetail(unitId, lessonId) {
         <div class="lesson-practice-none">No practice questions for this lesson yet.</div>
     `;
 
+    // ── Sibling-lesson navigation chips (1a 1b 1c 1d 1e 1f) ──
+    // Lets the user jump between sub-lessons of the same unit without going
+    // back to the units list. The current lesson chip is highlighted.
+    const siblingLessons = (typeof getGrammarLessonsForUnit === 'function')
+        ? getGrammarLessonsForUnit(unitId) : [];
+    const siblingChipsHTML = siblingLessons.length > 1 ? siblingLessons.map(sib => {
+        const isActive = sib.id === lessonId;
+        return `<button class="lesson-sibling-chip ${isActive ? 'active' : ''}"
+                        onclick="${isActive ? '' : `openGrammarLesson('${unitId}', '${sib.id}')`}"
+                        ${isActive ? 'disabled' : ''}
+                        title="${sib.title}">${sib.id}</button>`;
+    }).join('') : '';
+
     return `
         <div class="lesson-detail">
-            <button class="lesson-back-btn" onclick="closeGrammarLesson()">← All lessons</button>
+            <div class="lesson-detail-topbar">
+                <button class="lesson-back-btn" onclick="closeGrammarLesson()">← All</button>
+                ${siblingChipsHTML ? `<div class="lesson-sibling-chips">${siblingChipsHTML}</div>` : ''}
+            </div>
             <div class="lesson-detail-header">
                 <div class="lesson-detail-id">${lesson.id}</div>
                 <div class="lesson-detail-title">${lesson.title}</div>

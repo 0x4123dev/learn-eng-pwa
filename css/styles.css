@@ -10032,8 +10032,18 @@
             gap: 14px;
             padding-bottom: 24px;
         }
+        /* Top bar: [← All] + sibling-lesson chips */
+        .lesson-detail-topbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .lesson-detail-topbar::-webkit-scrollbar { display: none; }
         .lesson-back-btn {
-            align-self: flex-start;
+            flex-shrink: 0;
             background: transparent;
             border: 1px solid #cbd5e1;
             color: #475569;
@@ -10046,6 +10056,39 @@
         }
         .lesson-back-btn:hover {
             background: #f1f5f9;
+        }
+        .lesson-sibling-chips {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .lesson-sibling-chip {
+            min-width: 38px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.05s, box-shadow 0.15s;
+            font-family: inherit;
+        }
+        .lesson-sibling-chip:hover:not(.active) {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+            color: #3730a3;
+        }
+        .lesson-sibling-chip:active:not(.active) {
+            transform: scale(0.94);
+        }
+        .lesson-sibling-chip.active {
+            background: linear-gradient(135deg, #3a86ff, #6c5ce7);
+            color: white;
+            border-color: transparent;
+            cursor: default;
+            box-shadow: 0 2px 8px rgba(58,134,255,0.35);
         }
         .lesson-detail-header {
             background: linear-gradient(135deg, #3a86ff, #6c5ce7);
