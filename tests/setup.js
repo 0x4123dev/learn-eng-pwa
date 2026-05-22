@@ -174,6 +174,8 @@ const EXPORT_NAMES = [
     '_buildQuizStateFromQuestions', 'scoreSoFar_',
     // grammar UI — units collapse/expand (v3.32.2)
     'toggleGrammarUnitExpanded', 'expandAllGrammarUnits', 'collapseAllGrammarUnits',
+    // grammar UI — lessons collapse/expand (v3.34)
+    'toggleGrammarLessonUnitExpanded', 'expandAllGrammarLessonUnits', 'collapseAllGrammarLessonUnits',
     // word-bubbles game (v3.33)
     'getGameWordPool', 'BUBBLE_DIFFICULTIES', 'bubblesState',
     'getBubbleRank', 'getStarRating',

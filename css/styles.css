@@ -10013,23 +10013,87 @@
             border: 1px solid #e5e7eb;
             border-left: 5px solid #3a86ff;
             border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 14px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: padding 0.2s ease, box-shadow 0.2s ease;
         }
+        .lesson-unit-group.expanded {
+            padding: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+        }
+        /* Header is now a button (clickable to toggle). Reset button styles. */
         .lesson-unit-header {
             display: flex;
             gap: 8px;
             align-items: center;
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+        }
+        .lesson-unit-group.expanded .lesson-unit-header {
             margin-bottom: 4px;
+        }
+        .lesson-unit-header:hover .lesson-unit-title {
+            color: #6c5ce7;
         }
         .lesson-unit-icon {
             font-size: 22px;
+            flex-shrink: 0;
         }
         .lesson-unit-title {
-            font-size: 17px;
+            flex: 1;
+            font-size: 15px;
             font-weight: 700;
             color: #1e293b;
+            transition: color 0.15s;
+        }
+        .lesson-unit-group.expanded .lesson-unit-title {
+            font-size: 17px;
+        }
+        .lesson-unit-count {
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            background: rgba(108,92,231,0.08);
+            padding: 2px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+        .lesson-unit-toggle {
+            flex-shrink: 0;
+            font-size: 13px;
+            color: #64748b;
+            background: rgba(108,92,231,0.08);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .lesson-unit-group.expanded .lesson-unit-toggle {
+            background: rgba(108,92,231,0.18);
+            color: #6c5ce7;
+        }
+        .lesson-unit-header:hover .lesson-unit-toggle {
+            background: rgba(108,92,231,0.20);
+            color: #6c5ce7;
+        }
+        .lesson-unit-body {
+            animation: lessonUnitOpen 0.25s ease-out;
+            margin-top: 8px;
+        }
+        @keyframes lessonUnitOpen {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         .lesson-unit-intro {
             font-size: 13px;

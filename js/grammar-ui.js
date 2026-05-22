@@ -7,6 +7,8 @@ let _grammarOpenLesson = null;      // { unitId, lessonId } when viewing lesson 
 // Which unit cards are currently expanded on the Units sub-tab.
 // Default = all collapsed (Set is empty) so the user can scroll quickly.
 let _grammarExpandedUnits = new Set();
+// Same idea, but for the Lessons sub-tab (independent state).
+let _grammarExpandedLessonUnits = new Set();
 
 function toggleGrammarUnitExpanded(unitId) {
     if (_grammarExpandedUnits.has(unitId)) {
@@ -28,6 +30,28 @@ function expandAllGrammarUnits() {
 
 function collapseAllGrammarUnits() {
     _grammarExpandedUnits.clear();
+    renderGrammarHome();
+}
+
+// ── Lessons-sub-tab collapse/expand (v3.34) ──
+function toggleGrammarLessonUnitExpanded(unitId) {
+    if (_grammarExpandedLessonUnits.has(unitId)) {
+        _grammarExpandedLessonUnits.delete(unitId);
+    } else {
+        _grammarExpandedLessonUnits.add(unitId);
+    }
+    renderGrammarHome();
+}
+
+function expandAllGrammarLessonUnits() {
+    if (typeof GRAMMAR_LESSONS !== 'undefined') {
+        for (const u of GRAMMAR_LESSONS) _grammarExpandedLessonUnits.add(u.unitId);
+    }
+    renderGrammarHome();
+}
+
+function collapseAllGrammarLessonUnits() {
+    _grammarExpandedLessonUnits.clear();
     renderGrammarHome();
 }
 
@@ -192,12 +216,29 @@ function renderGrammarLessons() {
             <div class="grammar-lessons-intro-icon">📚</div>
             <div class="grammar-lessons-intro-text">
                 <strong>Theory notes from the textbook.</strong>
-                Tap a lesson to review vocabulary, pronunciation, and grammar — then practise.
+                Tap a unit to see its 6 sub-lessons, then pick one to review vocabulary, pronunciation, and grammar.
+            </div>
+        </div>
+    `;
+
+    // Bulk expand/collapse controls — match the Units sub-tab UI.
+    const anyExpanded = _grammarExpandedLessonUnits.size > 0;
+    const bulkToggleHTML = `
+        <div class="grammar-units-bulk-bar">
+            <span class="grammar-units-bulk-label">${GRAMMAR_LESSONS.length} units · 66 lessons</span>
+            <div class="grammar-units-bulk-actions">
+                ${anyExpanded
+                    ? `<button class="grammar-units-bulk-btn" onclick="collapseAllGrammarLessonUnits()">⤴ Collapse all</button>`
+                    : `<button class="grammar-units-bulk-btn" onclick="expandAllGrammarLessonUnits()">⤵ Expand all</button>`}
             </div>
         </div>
     `;
 
     const unitsHTML = GRAMMAR_LESSONS.map(unit => {
+        const isExpanded = _grammarExpandedLessonUnits.has(unit.unitId);
+        const toggleIcon = isExpanded ? '▼' : '▶';
+        const toggleLabel = isExpanded ? 'Collapse' : 'Expand';
+
         const lessonItemsHTML = unit.lessons.map(l => {
             const tagsHTML = (l.topicTags || []).slice(0, 4).map(t =>
                 `<span class="lesson-item-tag">${t}</span>`
@@ -228,20 +269,28 @@ function renderGrammarLessons() {
             `;
         }
 
+        // Collapsed: header + lesson count chip. Expanded: + intro + iCan + 6 lesson cards.
+        const lessonCount = unit.lessons.length;
         return `
-            <div class="lesson-unit-group" style="border-left-color:${unit.color}">
-                <div class="lesson-unit-header">
+            <div class="lesson-unit-group ${isExpanded ? 'expanded' : 'collapsed'}" style="border-left-color:${unit.color}">
+                <button class="lesson-unit-header" onclick="toggleGrammarLessonUnitExpanded('${unit.unitId}')" aria-expanded="${isExpanded}">
                     <span class="lesson-unit-icon">${unit.icon}</span>
                     <span class="lesson-unit-title">Unit ${unit.unitId.replace('unit', '')} — ${unit.title}</span>
-                </div>
-                <div class="lesson-unit-intro">${unit.intro}</div>
-                ${iCanHTML}
-                <div class="lesson-unit-list">${lessonItemsHTML}</div>
+                    <span class="lesson-unit-count">${lessonCount} lessons</span>
+                    <span class="lesson-unit-toggle" title="${toggleLabel}">${toggleIcon}</span>
+                </button>
+                ${isExpanded ? `
+                    <div class="lesson-unit-body">
+                        <div class="lesson-unit-intro">${unit.intro}</div>
+                        ${iCanHTML}
+                        <div class="lesson-unit-list">${lessonItemsHTML}</div>
+                    </div>
+                ` : ''}
             </div>
         `;
     }).join('');
 
-    return intro + unitsHTML;
+    return intro + bulkToggleHTML + unitsHTML;
 }
 
 function openGrammarLesson(unitId, lessonId) {
