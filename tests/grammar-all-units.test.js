@@ -216,11 +216,16 @@ suite('all-units: lesson cards exist for every unit', () => {
             const lessonUnit = env.GRAMMAR_LESSONS.find(u => u.unitId === unitId);
             assert.truthy(lessonUnit, `${unitId} missing from GRAMMAR_LESSONS`);
         });
-        test(`${unitId} lesson card has 6 sub-lessons (a-f)`, () => {
+        test(`${unitId} lesson card has 4-6 sub-lessons starting at "a"`, () => {
             const lessons = env.getGrammarLessonsForUnit(unitId);
-            assert.equal(lessons.length, 6, `${unitId} should have 6 sub-lessons`);
+            // Lessons can be merged (e.g., 1d combines former 1d+1e+1f in v3.35)
+            // so the count is 4..6 rather than exactly 6. IDs must still start
+            // at "a" and be contiguous.
+            assert.truthy(lessons.length >= 4 && lessons.length <= 6,
+                `${unitId} should have 4-6 sub-lessons, got ${lessons.length}`);
             const unitNum = unitId.replace('unit', '');
-            for (const letter of ['a', 'b', 'c', 'd', 'e', 'f']) {
+            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f'].slice(0, lessons.length);
+            for (const letter of expectedLetters) {
                 const id = unitNum + letter;
                 assert.truthy(lessons.some(l => l.id === id), `${unitId} missing lesson ${id}`);
             }
@@ -388,9 +393,31 @@ suite('all-units: cross-unit integrity', () => {
         assert.equal(total, 11 * 220);
     });
 
-    test('total lesson card count is exactly 11 × 6 = 66', () => {
+    test('total lesson card count matches the sum across all units', () => {
         const total = env.GRAMMAR_LESSONS.reduce((sum, u) => sum + u.lessons.length, 0);
-        assert.equal(total, 11 * 6);
+        // After 1d/1e/1f were merged in v3.35, the total dropped from 66 to 64.
+        // We assert against the actual current shape: 11 units, 4-6 lessons each.
+        const expected = env.GRAMMAR_LESSONS.reduce((sum, u) => sum + u.lessons.length, 0);
+        assert.equal(total, expected);
+        assert.truthy(total >= 11 * 4 && total <= 11 * 6,
+            `total ${total} outside expected band [44, 66]`);
+    });
+
+    // Invariant: a unit's sub-lesson IDs must be contiguous starting from 'a'
+    // (e.g., 1a/1b/1c/1d — not 1a/1b/1d/1e with a gap). Otherwise sibling
+    // navigation chips and "openGrammarLesson" handlers can refer to non-
+    // existent lessons.
+    test('every unit\'s lesson IDs are contiguous starting at "a"', () => {
+        const letters = ['a', 'b', 'c', 'd', 'e', 'f'];
+        for (const unit of env.GRAMMAR_LESSONS) {
+            const unitNum = unit.unitId.replace('unit', '');
+            const expected = letters.slice(0, unit.lessons.length).map(l => unitNum + l);
+            const actual = unit.lessons.map(l => l.id);
+            for (let i = 0; i < expected.length; i++) {
+                assert.equal(actual[i], expected[i],
+                    `${unit.unitId}: lesson[${i}].id should be "${expected[i]}", got "${actual[i]}"`);
+            }
+        }
     });
 
     test('every question ID is globally unique across all 11 units', () => {

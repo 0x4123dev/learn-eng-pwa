@@ -531,13 +531,15 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
         }
     });
 
-    test('every unit has icon, color, intro, and 6 lessons', () => {
+    test('every unit has icon, color, intro, and 4-6 lessons', () => {
         for (const u of env.GRAMMAR_LESSONS) {
             assert.truthy(u.icon, `${u.unitId} missing icon`);
             assert.truthy(u.color, `${u.unitId} missing color`);
             assert.truthy(u.title, `${u.unitId} missing title`);
             assert.truthy(u.intro, `${u.unitId} missing intro`);
-            assert.equal(u.lessons.length, 6);
+            // v3.35 merged 1d/1e/1f → Unit 1 now has 4 lessons; others still 6
+            assert.truthy(u.lessons.length >= 4 && u.lessons.length <= 6,
+                `${u.unitId} should have 4-6 lessons, got ${u.lessons.length}`);
         }
     });
 
@@ -553,13 +555,21 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
         }
     });
 
-    test('lesson IDs follow the [unit][a-f] pattern', () => {
+    test('lesson IDs follow the [unit][a-f] pattern, contiguous from "a"', () => {
         for (const u of env.GRAMMAR_LESSONS) {
             const unitNum = u.unitId.replace('unit', '');
-            const expected = ['a', 'b', 'c', 'd', 'e', 'f'].map(s => unitNum + s);
+            // Expected letters depend on this unit\'s lesson count
+            // (v3.35 may have merged lessons so a unit can have 4-6).
+            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f'].slice(0, u.lessons.length);
+            const expected = expectedLetters.map(s => unitNum + s);
             const actual = u.lessons.map(l => l.id);
             for (const id of expected) {
                 assert.contains(actual, id, `${u.unitId} missing lesson ${id}`);
+            }
+            // No "ghost" IDs beyond the actual count
+            for (const id of actual) {
+                assert.contains(expected, id,
+                    `${u.unitId} has unexpected lesson id "${id}"`);
             }
         }
     });

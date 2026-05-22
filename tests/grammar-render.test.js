@@ -263,11 +263,12 @@ suite('render: lesson detail shows sibling navigation chips', () => {
         return env.document.__getLastInnerHTML('grammarScreen');
     }
 
-    test('lesson detail shows all 6 sibling chips for unit1/1a', () => {
+    test('lesson detail shows all sibling chips for unit1/1a', () => {
         env.__setAppState({ grammarHistory: [], grammarMistakes: {} });
         const html = openLessonDetail('unit1', '1a');
         assert.truthy(html && html.length > 0, 'no HTML written');
-        for (const sib of ['1a', '1b', '1c', '1d', '1e', '1f']) {
+        const siblings = env.getGrammarLessonsForUnit('unit1').map(l => l.id);
+        for (const sib of siblings) {
             assert.truthy(html.includes(`>${sib}<`),
                 `sibling chip for "${sib}" missing in lesson 1a detail`);
         }
@@ -282,7 +283,9 @@ suite('render: lesson detail shows sibling navigation chips', () => {
 
     test('non-current chips have an onclick that navigates to the sibling', () => {
         const html = openLessonDetail('unit1', '1a');
-        for (const sib of ['1b', '1c', '1d', '1e', '1f']) {
+        const siblings = env.getGrammarLessonsForUnit('unit1')
+            .map(l => l.id).filter(id => id !== '1a');
+        for (const sib of siblings) {
             const re = new RegExp(`openGrammarLesson\\('unit1', '${sib}'\\)`);
             assert.truthy(re.test(html), `chip "${sib}" missing openGrammarLesson('unit1','${sib}') handler`);
         }
@@ -484,11 +487,11 @@ suite('render: Lessons sub-tab collapse / expand behavior', () => {
         const html = env.document.__getLastInnerHTML('grammarScreen');
         const expandedCount = (html.match(/lesson-unit-group expanded/g) || []).length;
         assert.equal(expandedCount, 1, 'exactly one unit should be expanded');
-        // The 6 sub-lessons for unit1 should now be rendered as openGrammarLesson buttons
-        for (const sib of ['1a', '1b', '1c', '1d', '1e', '1f']) {
-            const re = new RegExp(`openGrammarLesson\\('unit1', '${sib}'\\)`);
+        // Every sub-lesson for unit1 should now be rendered as openGrammarLesson buttons
+        for (const l of env.getGrammarLessonsForUnit('unit1')) {
+            const re = new RegExp(`openGrammarLesson\\('unit1', '${l.id}'\\)`);
             assert.truthy(re.test(html),
-                `expanded unit1 should render its sub-lesson ${sib}`);
+                `expanded unit1 should render its sub-lesson ${l.id}`);
         }
     });
 
@@ -511,7 +514,9 @@ suite('render: Lessons sub-tab collapse / expand behavior', () => {
         // Bulk button should now say "Collapse all"
         assert.truthy(/Collapse all/.test(html),
             'bulk button should now say "Collapse all"');
-        // All 66 sub-lesson buttons should be present
+        // Every sub-lesson button across every unit should be present.
+        // After v3.35 merges, total is dynamic (e.g., 64 instead of 66).
+        const expectedTotal = env.GRAMMAR_LESSONS.reduce((sum, u) => sum + u.lessons.length, 0);
         let count = 0;
         for (const u of env.GRAMMAR_LESSONS) {
             for (const l of u.lessons) {
@@ -519,7 +524,7 @@ suite('render: Lessons sub-tab collapse / expand behavior', () => {
                 if (re.test(html)) count++;
             }
         }
-        assert.equal(count, 11 * 6, `expected all 66 sub-lesson buttons, got ${count}`);
+        assert.equal(count, expectedTotal, `expected all ${expectedTotal} sub-lesson buttons, got ${count}`);
     });
 
     test('collapseAllGrammarLessonUnits() collapses every unit', () => {

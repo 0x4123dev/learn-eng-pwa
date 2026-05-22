@@ -169,10 +169,23 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '1d', title: 'The first day', page: '16',
-                topicTags: ['alphabet', 'spelling', 'meeting people'],
+                // Merged in v3.35: combines former 1d (The first day),
+                // 1e (Introduce yourself), and 1f (World party — video).
+                // Renamed to "First-day skills + world party" so the user
+                // sees all three sub-topics in one card.
+                id: '1d', title: 'First-day skills + world party', page: '16-19',
+                topicTags: [
+                    'alphabet', 'spelling', 'meeting people',
+                    'writing personal description', 'and / but',
+                    'world party', 'video lesson'
+                ],
+                vocabulary: {
+                    title: 'Video — World party (1f)',
+                    words: ['seven billion', 'square feet', 'square mile', 'foot (feet)', 'mile', 'centimetre', 'kilometre', 'compare', 'average', 'a bit'],
+                    note: 'USA uses feet/miles; the metric world uses centimetres/kilometres. 1 foot ≈ 30 cm; 1 mile ≈ 1.6 km. The video shows Chinese New Year in Singapore.'
+                },
                 pronunciation: {
-                    title: 'Spelling — the English alphabet',
+                    title: 'Spelling — the English alphabet (1d)',
                     rule: 'Each letter has its own name. Practise spelling personal info: name, surname, country, job.',
                     examples: [
                         'A /eɪ/  B /biː/  C /siː/  D /diː/  E /iː/',
@@ -184,22 +197,16 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: 'Real life — Meeting people for the first time',
+                        title: 'Real life — Meeting people for the first time (1d)',
                         rule: 'Standard phrases for introducing yourself, introducing another person, and saying goodbye.',
                         examples: [
                             'Introducing yourself: Hello … / Hi … — My name\'s … / I\'m … — I\'m from … — Nice to meet you. — Nice to meet you, too.',
                             'Introducing another person: This is … — He\'s / She\'s from …',
                             'Saying goodbye: See you later. — It was nice meeting you. — Goodbye. / Bye.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '1e', title: 'Introduce yourself', page: '17',
-                topicTags: ['writing personal description', 'and / but'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — "and" and "but"',
+                        title: 'Writing skill — "and" and "but" (1e)',
                         rule: 'Use "and" to add EXTRA / similar information. Use "but" to show a DIFFERENCE or contrast. Note: use a comma before "but" when joining two clauses.',
                         examples: [
                             '"I\'m 21 AND my sister is 21." (same/parallel info → and)',
@@ -210,15 +217,6 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '1f', title: 'World party', page: '18-19',
-                topicTags: ['world party', 'video lesson'],
-                vocabulary: {
-                    title: 'Video — World party',
-                    words: ['seven billion', 'square feet', 'square mile', 'foot (feet)', 'mile', 'centimetre', 'kilometre', 'compare', 'average', 'a bit'],
-                    note: 'USA uses feet/miles; the metric world uses centimetres/kilometres. 1 foot ≈ 30 cm; 1 mile ≈ 1.6 km. The video shows Chinese New Year in Singapore.'
-                }
             }
         ]
     },
