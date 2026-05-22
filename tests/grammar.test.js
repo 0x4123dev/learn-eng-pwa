@@ -645,8 +645,10 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
 
     test('getGrammarLessonsForUnit returns lessons by unitId', () => {
         const u8 = env.getGrammarLessonsForUnit('unit8');
-        assert.equal(u8.length, 6);
+        // v3.36: every unit now has 4 merged lessons (a/b/c/d).
+        assert.equal(u8.length, 4);
         assert.equal(u8[0].id, '8a');
+        assert.equal(u8[3].id, '8d');
     });
 
     test('getGrammarLessonsForUnit returns [] for unknown unit', () => {

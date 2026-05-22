@@ -1,12 +1,13 @@
 // grammar-lessons.js — Theory notes for the Grammar tab.
 // Summaries of vocabulary, pronunciation, and grammar for each unit
-// (Units 8–11), drawn from the Life A2-B1 / TAGT 2 textbook so users can
-// review the lesson before doing a quiz.
+// (Units 1-11), drawn from the Life Elementary / A2-B1 textbooks so users
+// can review the lesson before doing a quiz.
+//
+// v3.36: every unit consolidated to 4 sub-lessons (a/b/c/d) — the last
+// three originals (d/e/f) merged into a single "d" card to keep the UI
+// compact.
 
 const GRAMMAR_LESSONS = [
-    // ============================================================
-    //  UNIT 1 — PEOPLE (Life Elementary, A1)
-    // ============================================================
     {
         unitId: 'unit1',
         title: 'People',
@@ -23,23 +24,41 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '1a', title: 'Explorers', page: '10-11',
+                id: '1a',
+                title: 'Explorers',
+                page: '10-11',
                 topicTags: ['personal information', 'be (am/is/are)', 'be negative', 'be questions', 'contracted forms'],
                 vocabulary: {
                     title: 'Personal information',
-                    words: ['first name', 'surname', 'job', 'occupation', 'place of birth', 'married', 'single', 'relationship', 'photographer', 'journalist', 'explorer', 'filmmaker', 'teacher', 'student', 'businessman'],
+                    words: [
+                        'first name',
+                        'surname',
+                        'job',
+                        'occupation',
+                        'place of birth',
+                        'married',
+                        'single',
+                        'relationship',
+                        'photographer',
+                        'journalist',
+                        'explorer',
+                        'filmmaker',
+                        'teacher',
+                        'student',
+                        'businessman'
+                    ],
                     note: 'Beverley & Dereck Joubert are National Geographic explorers and filmmakers in Botswana.'
                 },
                 pronunciation: {
                     title: 'Contracted forms of "be"',
                     rule: 'In spoken English we usually contract the verb "be". Learn the contractions and listen for them.',
                     examples: [
-                        "'m  = am  (I'm a photographer)",
-                        "'re = are (You/We/They're married)",
-                        "'s  = is  (He/She/It's from South Africa)",
-                        "'m not = am not  (I'm not a journalist)",
-                        "aren't = are not (We aren't here today)",
-                        "isn't  = is not  (He isn't from South America)"
+                        '\'m  = am  (I\'m a photographer)',
+                        '\'re = are (You/We/They\'re married)',
+                        '\'s  = is  (He/She/It\'s from South Africa)',
+                        '\'m not = am not  (I\'m not a journalist)',
+                        'aren\'t = are not (We aren\'t here today)',
+                        'isn\'t  = is not  (He isn\'t from South America)'
                     ]
                 },
                 grammar: [
@@ -47,9 +66,18 @@ const GRAMMAR_LESSONS = [
                         title: 'be (am/is/are)',
                         rule: 'Use "be" to talk about names, jobs, nationality, age, marital status, etc. Form changes with the subject.',
                         form: [
-                            { label: 'I', text: 'I am / I\'m' },
-                            { label: 'you/we/they', text: 'you/we/they are / \'re' },
-                            { label: 'he/she/it', text: 'he/she/it is / \'s' }
+                            {
+                                label: 'I',
+                                text: 'I am / I\'m'
+                            },
+                            {
+                                label: 'you/we/they',
+                                text: 'you/we/they are / \'re'
+                            },
+                            {
+                                label: 'he/she/it',
+                                text: 'he/she/it is / \'s'
+                            }
                         ],
                         examples: [
                             'I\'m a photographer.',
@@ -77,8 +105,10 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '1b', title: 'A family in Kenya', page: '12-13',
-                topicTags: ['family', "possessive 's", 'possessive adjectives', 'same or different sounds', 'word roots'],
+                id: '1b',
+                title: 'A family in Kenya',
+                page: '12-13',
+                topicTags: ['family', 'possessive \'s', 'possessive adjectives', 'same or different sounds', 'word roots'],
                 vocabulary: [
                     {
                         title: 'Family',
@@ -87,7 +117,12 @@ const GRAMMAR_LESSONS = [
                     },
                     {
                         title: 'Word roots',
-                        words: ['mother → grandmother → stepmother → mother-in-law', 'father → grandfather → stepfather → father-in-law', 'sister → stepsister → half-sister → sister-in-law', 'brother → stepbrother → half-brother → brother-in-law'],
+                        words: [
+                            'mother → grandmother → stepmother → mother-in-law',
+                            'father → grandfather → stepfather → father-in-law',
+                            'sister → stepsister → half-sister → sister-in-law',
+                            'brother → stepbrother → half-brother → brother-in-law'
+                        ],
                         note: 'Learn one root word, then build the family by adding "grand-", "step-", "half-", or "-in-law".'
                     }
                 ],
@@ -104,7 +139,7 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: "Possessive 's",
+                        title: 'Possessive \'s',
                         rule: 'Add \'s to a name or noun to show possession (ownership / family relation).',
                         examples: [
                             'Mike\'s wife is a teacher.',
@@ -117,13 +152,34 @@ const GRAMMAR_LESSONS = [
                         title: 'Possessive adjectives',
                         rule: 'Every subject pronoun has a matching possessive adjective. Use them BEFORE a noun.',
                         form: [
-                            { label: 'I', text: 'my' },
-                            { label: 'you', text: 'your' },
-                            { label: 'he', text: 'his' },
-                            { label: 'she', text: 'her' },
-                            { label: 'it', text: 'its (no apostrophe!)' },
-                            { label: 'we', text: 'our' },
-                            { label: 'they', text: 'their' }
+                            {
+                                label: 'I',
+                                text: 'my'
+                            },
+                            {
+                                label: 'you',
+                                text: 'your'
+                            },
+                            {
+                                label: 'he',
+                                text: 'his'
+                            },
+                            {
+                                label: 'she',
+                                text: 'her'
+                            },
+                            {
+                                label: 'it',
+                                text: 'its (no apostrophe!)'
+                            },
+                            {
+                                label: 'we',
+                                text: 'our'
+                            },
+                            {
+                                label: 'they',
+                                text: 'their'
+                            }
                         ],
                         examples: [
                             'She\'s MY sister.',
@@ -136,12 +192,23 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '1c', title: 'The face of seven billion people', page: '14-15',
+                id: '1c',
+                title: 'The face of seven billion people',
+                page: '14-15',
                 topicTags: ['numbers', 'percentages', 'everyday verbs', 'word focus: in'],
                 vocabulary: [
                     {
                         title: 'Numbers & percentages',
-                        words: ['1 billion', '1.3 billion (one point three billion)', '3.5 billion', '5.5 billion', '7 billion', '23% (twenty-three per cent)', '38%', '51%'],
+                        words: [
+                            '1 billion',
+                            '1.3 billion (one point three billion)',
+                            '3.5 billion',
+                            '5.5 billion',
+                            '7 billion',
+                            '23% (twenty-three per cent)',
+                            '38%',
+                            '51%'
+                        ],
                         note: 'The decimal point is read as "point". 1.3 = "one point three". "Per cent" (BrE) / "percent" (AmE).'
                     },
                     {
@@ -155,9 +222,18 @@ const GRAMMAR_LESSONS = [
                         title: 'Word focus: in',
                         rule: 'Three common uses of "in" for place/work.',
                         form: [
-                            { label: 'a', text: 'in + a country (in the United Kingdom)' },
-                            { label: 'b', text: 'in + a city or region (in Mexico City)' },
-                            { label: 'c', text: 'in + a type of work / industry (in the service industry)' }
+                            {
+                                label: 'a',
+                                text: 'in + a country (in the United Kingdom)'
+                            },
+                            {
+                                label: 'b',
+                                text: 'in + a city or region (in Mexico City)'
+                            },
+                            {
+                                label: 'c',
+                                text: 'in + a type of work / industry (in the service industry)'
+                            }
                         ],
                         examples: [
                             '21 million people live IN Mexico City.',
@@ -169,16 +245,10 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                // Merged in v3.35: combines former 1d (The first day),
-                // 1e (Introduce yourself), and 1f (World party — video).
-                // Renamed to "First-day skills + world party" so the user
-                // sees all three sub-topics in one card.
-                id: '1d', title: 'First-day skills + world party', page: '16-19',
-                topicTags: [
-                    'alphabet', 'spelling', 'meeting people',
-                    'writing personal description', 'and / but',
-                    'world party', 'video lesson'
-                ],
+                id: '1d',
+                title: 'First-day skills + world party',
+                page: '16-19',
+                topicTags: ['alphabet', 'spelling', 'meeting people', 'writing personal description', 'and / but', 'world party', 'video lesson'],
                 vocabulary: {
                     title: 'Video — World party (1f)',
                     words: ['seven billion', 'square feet', 'square mile', 'foot (feet)', 'mile', 'centimetre', 'kilometre', 'compare', 'average', 'a bit'],
@@ -220,10 +290,6 @@ const GRAMMAR_LESSONS = [
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 2 — POSSESSIONS (Life Elementary, A1)
-    // ============================================================
     {
         unitId: 'unit2',
         title: 'Possessions',
@@ -241,11 +307,29 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '2a', title: 'A place called home', page: '22-23',
+                id: '2a',
+                title: 'A place called home',
+                page: '22-23',
                 topicTags: ['furniture', 'there is/are', 'prepositions of place'],
                 vocabulary: {
                     title: 'Furniture',
-                    words: ['sofa', 'armchair', 'chair', 'television (TV)', 'desk', 'lamp', 'computer', 'pictures', 'blinds', 'curtains', 'cupboards and drawers', 'rug', 'plant', 'carpet', 'shelves'],
+                    words: [
+                        'sofa',
+                        'armchair',
+                        'chair',
+                        'television (TV)',
+                        'desk',
+                        'lamp',
+                        'computer',
+                        'pictures',
+                        'blinds',
+                        'curtains',
+                        'cupboards and drawers',
+                        'rug',
+                        'plant',
+                        'carpet',
+                        'shelves'
+                    ],
                     note: 'The four families live in the Evergreen Tower in Seoul, South Korea. Every apartment has a living room, kitchen, bathroom and 2 bedrooms.'
                 },
                 grammar: [
@@ -253,9 +337,18 @@ const GRAMMAR_LESSONS = [
                         title: 'there is / there are',
                         rule: 'Use "there is/are" to say what exists in a place. Singular → there is. Plural → there are. Use "any" with negatives and questions.',
                         form: [
-                            { label: '+', text: 'There\'s a living room. / There are two bedrooms.' },
-                            { label: '−', text: 'There isn\'t a table. / There aren\'t any beds.' },
-                            { label: '?', text: 'Is there a sofa? — Yes, there is. / Are there any pictures? — No, there aren\'t.' }
+                            {
+                                label: '+',
+                                text: 'There\'s a living room. / There are two bedrooms.'
+                            },
+                            {
+                                label: '−',
+                                text: 'There isn\'t a table. / There aren\'t any beds.'
+                            },
+                            {
+                                label: '?',
+                                text: 'Is there a sofa? — Yes, there is. / Are there any pictures? — No, there aren\'t.'
+                            }
                         ],
                         examples: [
                             'There\'s a sofa on the right.',
@@ -284,7 +377,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '2b', title: 'My possessions', page: '24-25',
+                id: '2b',
+                title: 'My possessions',
+                page: '24-25',
                 topicTags: ['useful objects', 'plural nouns', 'this/that/these/those', '/ɪ/ or /iː/'],
                 vocabulary: {
                     title: 'Useful objects',
@@ -305,11 +400,26 @@ const GRAMMAR_LESSONS = [
                         title: 'Plural nouns — spelling rules',
                         rule: 'Most nouns add -s. Special rules for words ending in -ch/-sh/-s, -y, -f/-fe. Some are irregular.',
                         form: [
-                            { label: '+s', text: 'normal: boot → boots, glove → gloves' },
-                            { label: '+es', text: '-ch/-sh/-s/-ss: torch → torches, bus → buses, class → classes' },
-                            { label: '-ies', text: 'consonant + -y: country → countries, family → families' },
-                            { label: '-ves', text: '-f/-fe: knife → knives, shelf → shelves, life → lives' },
-                            { label: 'irreg.', text: 'man → men, woman → women, person → people, child → children' }
+                            {
+                                label: '+s',
+                                text: 'normal: boot → boots, glove → gloves'
+                            },
+                            {
+                                label: '+es',
+                                text: '-ch/-sh/-s/-ss: torch → torches, bus → buses, class → classes'
+                            },
+                            {
+                                label: '-ies',
+                                text: 'consonant + -y: country → countries, family → families'
+                            },
+                            {
+                                label: '-ves',
+                                text: '-f/-fe: knife → knives, shelf → shelves, life → lives'
+                            },
+                            {
+                                label: 'irreg.',
+                                text: 'man → men, woman → women, person → people, child → children'
+                            }
                         ],
                         examples: [
                             'one map → two maps',
@@ -324,10 +434,22 @@ const GRAMMAR_LESSONS = [
                         title: 'this, that, these, those',
                         rule: 'Demonstratives change with NUMBER (singular/plural) and DISTANCE (near/far).',
                         form: [
-                            { label: 'near sing.', text: 'this (one thing near you)' },
-                            { label: 'far sing.', text: 'that (one thing away from you)' },
-                            { label: 'near plur.', text: 'these (many things near you)' },
-                            { label: 'far plur.', text: 'those (many things away from you)' }
+                            {
+                                label: 'near sing.',
+                                text: 'this (one thing near you)'
+                            },
+                            {
+                                label: 'far sing.',
+                                text: 'that (one thing away from you)'
+                            },
+                            {
+                                label: 'near plur.',
+                                text: 'these (many things near you)'
+                            },
+                            {
+                                label: 'far plur.',
+                                text: 'those (many things away from you)'
+                            }
                         ],
                         examples: [
                             'What\'s this? — It\'s a first-aid kit.',
@@ -340,11 +462,27 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '2c', title: 'Global objects', page: '26-27',
+                id: '2c',
+                title: 'Global objects',
+                page: '26-27',
                 topicTags: ['countries and nationalities', 'word stress', 'suffixes'],
                 vocabulary: {
                     title: 'Countries and nationalities',
-                    words: ['Britain → British', 'Germany → German', 'Austria → Austrian', 'Netherlands → Dutch', 'Canada → Canadian', 'Italy → Italian', 'Belgium → Belgian', 'England → English', 'Spain → Spanish', 'France → French', 'Brazil → Brazilian', 'Poland → Polish', 'Vietnam → Vietnamese'],
+                    words: [
+                        'Britain → British',
+                        'Germany → German',
+                        'Austria → Austrian',
+                        'Netherlands → Dutch',
+                        'Canada → Canadian',
+                        'Italy → Italian',
+                        'Belgium → Belgian',
+                        'England → English',
+                        'Spain → Spanish',
+                        'France → French',
+                        'Brazil → Brazilian',
+                        'Poland → Polish',
+                        'Vietnam → Vietnamese'
+                    ],
                     note: 'Common nationality endings: -ish (Polish, Spanish), -n (Italian, German), -ian (Canadian, Brazilian), -ese (Vietnamese, Japanese, Chinese). Some are irregular: French, Dutch.'
                 },
                 pronunciation: {
@@ -370,24 +508,65 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '2d', title: 'At the shop', page: '28',
-                topicTags: ['prices and currencies', 'shopping', 'word focus: one/ones', 'contrastive stress'],
-                vocabulary: {
-                    title: 'Prices and currencies',
-                    words: ['£ pounds (UK)', '$ dollars (USA)', '€ euros (EU)', '¥ yen (Japan)', '£2.50 = two pounds fifty', '£111.11 = a hundred and eleven pounds eleven'],
-                    note: 'Common shopping phrases: "Can I help you?" / "I\'d like..." / "How much is it?" / "Are there other colours?" / "These ones are red." / "How much are they?"'
-                },
+                id: '2d',
+                title: 'Shopping + adverts + photos',
+                page: '28-31',
+                topicTags: [
+                    'prices and currencies',
+                    'shopping',
+                    'word focus: one/ones',
+                    'contrastive stress',
+                    'adjectives',
+                    'adjective order',
+                    'writing adverts',
+                    'video lesson',
+                    'a thousand words'
+                ],
+                vocabulary: [
+                    {
+                        title: 'Prices and currencies (2d)',
+                        words: [
+                            '£ pounds (UK)',
+                            '$ dollars (USA)',
+                            '€ euros (EU)',
+                            '¥ yen (Japan)',
+                            '£2.50 = two pounds fifty',
+                            '£111.11 = a hundred and eleven pounds eleven'
+                        ],
+                        note: 'Common shopping phrases: "Can I help you?" / "I\'d like..." / "How much is it?" / "Are there other colours?" / "These ones are red." / "How much are they?"'
+                    },
+                    {
+                        title: 'Adjectives and their opposites (2e)',
+                        words: ['old ↔ modern/new', 'bad ↔ good', 'useless ↔ useful', 'slow ↔ fast', 'small ↔ big/large', 'expensive ↔ cheap']
+                    },
+                    {
+                        title: 'Video — Key phrases (2f)',
+                        words: [
+                            'I miss you',
+                            'Please forward',
+                            'Good luck!',
+                            'apartment',
+                            'bicycle',
+                            'box',
+                            'cake',
+                            'camera',
+                            'lamp',
+                            'letterbox',
+                            'package',
+                            'pen',
+                            'plant'
+                        ],
+                        note: '"A picture says a thousand words." A photographer in Los Angeles sends his camera to Nasim in Boston.'
+                    }
+                ],
                 pronunciation: {
-                    title: 'Contrastive stress (1)',
+                    title: 'Contrastive stress (1) (2d)',
                     rule: 'When you contrast two things with this/that/these/those, STRONG stress on the demonstrative highlights the difference.',
-                    examples: [
-                        'This ball is nice, but THAT one is horrible!',
-                        'These gloves are small, but THOSE ones are large.'
-                    ]
+                    examples: ['This ball is nice, but THAT one is horrible!', 'These gloves are small, but THOSE ones are large.']
                 },
                 grammar: [
                     {
-                        title: 'Word focus: one / ones',
+                        title: 'Word focus: one / ones (2d)',
                         rule: 'Use "one" / "ones" to AVOID repeating a noun. Singular → one. Plural → ones.',
                         examples: [
                             'I\'d like a glass of water. A small ONE, please. (= a small glass)',
@@ -395,26 +574,31 @@ const GRAMMAR_LESSONS = [
                             'This ball is nice, but that ONE is horrible.',
                             'These gloves are small, but those ONES are large.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '2e', title: 'For sale', page: '29',
-                topicTags: ['adjectives', 'adjective order', 'writing adverts'],
-                vocabulary: {
-                    title: 'Adjectives and their opposites',
-                    words: ['old ↔ modern/new', 'bad ↔ good', 'useless ↔ useful', 'slow ↔ fast', 'small ↔ big/large', 'expensive ↔ cheap']
-                },
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Adjective order',
+                        title: 'Writing skill — Adjective order (2e)',
                         rule: 'When using multiple adjectives, follow this order: OPINION → SIZE → AGE → COLOUR → NATIONALITY → NOUN.',
                         form: [
-                            { label: 'Opinion', text: 'useful, nice, lovely, beautiful' },
-                            { label: 'Size', text: 'large, small' },
-                            { label: 'Age', text: 'modern, new, old' },
-                            { label: 'Colour', text: 'white, grey, red' },
-                            { label: 'Nation.', text: 'Japanese, Italian, French' }
+                            {
+                                label: 'Opinion',
+                                text: 'useful, nice, lovely, beautiful'
+                            },
+                            {
+                                label: 'Size',
+                                text: 'large, small'
+                            },
+                            {
+                                label: 'Age',
+                                text: 'modern, new, old'
+                            },
+                            {
+                                label: 'Colour',
+                                text: 'white, grey, red'
+                            },
+                            {
+                                label: 'Nation.',
+                                text: 'Japanese, Italian, French'
+                            }
                         ],
                         examples: [
                             'It\'s a fast, new, Japanese motorbike. (opinion + age + nationality)',
@@ -425,7 +609,7 @@ const GRAMMAR_LESSONS = [
                         ]
                     },
                     {
-                        title: 'Two patterns to describe',
+                        title: 'Two patterns to describe (2e)',
                         rule: 'You can describe an object in two ways with the same meaning.',
                         examples: [
                             'The desk is modern. = It\'s a modern desk.',
@@ -434,22 +618,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '2f', title: 'A thousand words', page: '30-31',
-                topicTags: ['video lesson', 'a thousand words'],
-                vocabulary: {
-                    title: 'Video — Key phrases',
-                    words: ['I miss you', 'Please forward', 'Good luck!', 'apartment', 'bicycle', 'box', 'cake', 'camera', 'lamp', 'letterbox', 'package', 'pen', 'plant'],
-                    note: '"A picture says a thousand words." A photographer in Los Angeles sends his camera to Nasim in Boston.'
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 3 — PLACES (Life Elementary, A1)
-    // ============================================================
     {
         unitId: 'unit3',
         title: 'Places',
@@ -466,11 +637,25 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '3a', title: 'No-car zones', page: '34-35',
+                id: '3a',
+                title: 'No-car zones',
+                page: '34-35',
                 topicTags: ['describing cities', 'present simple (I/you/we/they)'],
                 vocabulary: {
                     title: 'Describing cities',
-                    words: ['free', 'expensive ↔ cheap', 'popular', 'polluted', 'noisy ↔ quiet', 'crowded', 'modern ↔ old', 'beautiful ↔ ugly', 'clean ↔ dirty', 'big ↔ small', 'relaxing'],
+                    words: [
+                        'free',
+                        'expensive ↔ cheap',
+                        'popular',
+                        'polluted',
+                        'noisy ↔ quiet',
+                        'crowded',
+                        'modern ↔ old',
+                        'beautiful ↔ ugly',
+                        'clean ↔ dirty',
+                        'big ↔ small',
+                        'relaxing'
+                    ],
                     note: 'No-car zones — areas for people, bicycles and public transport only. Examples: London parks, Tokyo (Ginza), Bogotá, Melbourne (Bourke Street).'
                 },
                 grammar: [
@@ -478,9 +663,18 @@ const GRAMMAR_LESSONS = [
                         title: 'Present simple — I/you/we/they',
                         rule: 'Use the present simple for facts, routines and habits. With I/you/we/they, use the BASE form. Negative and question forms use the auxiliary "do".',
                         form: [
-                            { label: '+', text: 'I/you/we/they + base verb (have, live, like…)' },
-                            { label: '−', text: 'I/you/we/they + don\'t + base verb' },
-                            { label: '?', text: 'Do + I/you/we/they + base verb? — Yes, I do. / No, I don\'t.' }
+                            {
+                                label: '+',
+                                text: 'I/you/we/they + base verb (have, live, like…)'
+                            },
+                            {
+                                label: '−',
+                                text: 'I/you/we/they + don\'t + base verb'
+                            },
+                            {
+                                label: '?',
+                                text: 'Do + I/you/we/they + base verb? — Yes, I do. / No, I don\'t.'
+                            }
                         ],
                         examples: [
                             'I live in the city centre.',
@@ -493,11 +687,21 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '3b', title: 'Places of work', page: '36-37',
+                id: '3b',
+                title: 'Places of work',
+                page: '36-37',
                 topicTags: ['places of work', 'present simple (he/she/it)', '-s endings'],
                 vocabulary: {
                     title: 'Places of work',
-                    words: ['accountant — office', 'doctor — hospital', 'pilot — plane', 'sailor — ship/boat', 'teacher — classroom', 'sales assistant — shop', 'waiter — restaurant']
+                    words: [
+                        'accountant — office',
+                        'doctor — hospital',
+                        'pilot — plane',
+                        'sailor — ship/boat',
+                        'teacher — classroom',
+                        'sales assistant — shop',
+                        'waiter — restaurant'
+                    ]
                 },
                 pronunciation: {
                     title: '-s endings: /s/, /z/, /ɪz/',
@@ -513,9 +717,18 @@ const GRAMMAR_LESSONS = [
                         title: 'Present simple — he/she/it',
                         rule: 'For he/she/it, ADD -s (or -es/-ies). In negatives and questions, use "does/doesn\'t" + BASE verb.',
                         form: [
-                            { label: '+', text: 'He/She/It + verb-s (works, has, does, studies)' },
-                            { label: '−', text: 'He/She/It + doesn\'t + base verb' },
-                            { label: '?', text: 'Does + he/she/it + base verb? — Yes, she does. / No, she doesn\'t.' }
+                            {
+                                label: '+',
+                                text: 'He/She/It + verb-s (works, has, does, studies)'
+                            },
+                            {
+                                label: '−',
+                                text: 'He/She/It + doesn\'t + base verb'
+                            },
+                            {
+                                label: '?',
+                                text: 'Does + he/she/it + base verb? — Yes, she does. / No, she doesn\'t.'
+                            }
                         ],
                         examples: [
                             'He works in a shop.',
@@ -529,20 +742,22 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '3c', title: 'Places and languages', page: '38-39',
+                id: '3c',
+                title: 'Places and languages',
+                page: '38-39',
                 topicTags: ['ordinal numbers', 'cardinal numbers', 'collocations'],
                 vocabulary: {
                     title: 'Numbers — cardinal vs ordinal',
-                    words: ['Cardinal: one, two, three, four…', 'Ordinal: 1st first, 2nd second, 3rd third, 4th fourth, 5th fifth, 9th ninth, 12th twelfth, 21st twenty-first, 100th one hundredth'],
+                    words: [
+                        'Cardinal: one, two, three, four…',
+                        'Ordinal: 1st first, 2nd second, 3rd third, 4th fourth, 5th fifth, 9th ninth, 12th twelfth, 21st twenty-first, 100th one hundredth'
+                    ],
                     note: 'Cardinal numbers tell quantity (how many). Ordinal numbers tell position (1st, 2nd, 3rd…). For 21+, only the LAST word becomes ordinal: 21st = twenty-first.'
                 },
                 pronunciation: {
                     title: 'Ordinal numbers',
                     rule: 'Most ordinals end in /θ/ ("th"). Exceptions: 1st, 2nd, 3rd.',
-                    examples: [
-                        'third /θɜːd/  fourth /fɔːθ/  fifth /fɪfθ/  twelfth /twelfθ/',
-                        'first /fɜːst/  second /ˈsekənd/'
-                    ]
+                    examples: ['third /θɜːd/  fourth /fɔːθ/  fifth /fɪfθ/  twelfth /twelfθ/', 'first /fɜːst/  second /ˈsekənd/']
                 },
                 grammar: [
                     {
@@ -560,15 +775,46 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '3d', title: 'The city of Atlanta', page: '40',
-                topicTags: ['places in a city', 'giving directions'],
-                vocabulary: {
-                    title: 'Places in a city',
-                    words: ['car park', 'museum', 'hotel', 'library', 'theatre', 'park', 'post office', 'aquarium', 'cinema', 'gym / sports centre', 'art gallery', 'visitor centre']
-                },
+                id: '3d',
+                title: 'Atlanta + city description + Cowley Road',
+                page: '40-43',
+                topicTags: ['places in a city', 'giving directions', 'writing description', 'capital letters', 'video lesson', 'Oxford'],
+                vocabulary: [
+                    {
+                        title: 'Places in a city (3d)',
+                        words: [
+                            'car park',
+                            'museum',
+                            'hotel',
+                            'library',
+                            'theatre',
+                            'park',
+                            'post office',
+                            'aquarium',
+                            'cinema',
+                            'gym / sports centre',
+                            'art gallery',
+                            'visitor centre'
+                        ]
+                    },
+                    {
+                        title: 'Video — Cowley Road, Oxford (3f)',
+                        words: [
+                            'post office',
+                            'community',
+                            'pre-schooler',
+                            'medical centre',
+                            'ingredients',
+                            'traffic lights',
+                            'mosque',
+                            'sports centre',
+                            'supermarket'
+                        ]
+                    }
+                ],
                 grammar: [
                     {
-                        title: 'Real life — Giving directions',
+                        title: 'Real life — Giving directions (3d)',
                         rule: 'Useful phrases for asking where things are and giving directions.',
                         examples: [
                             'Asking: Where is …? / I\'d like to go to … / Is it near here?',
@@ -578,15 +824,9 @@ const GRAMMAR_LESSONS = [
                             'Go straight up … (continue forward)',
                             'Take the first street on the left/right. / Turn left. / Turn right.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '3e', title: 'My favourite city', page: '41',
-                topicTags: ['writing description', 'capital letters'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Capital letters',
+                        title: 'Writing skill — Capital letters (3e)',
                         rule: 'In English, USE a capital letter for: start of sentence, the pronoun I, names of people/cities/places, countries/nationalities/languages, days/months, streets/parks/squares.',
                         examples: [
                             'I\'m from Australia. (start, pronoun I, country)',
@@ -599,21 +839,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '3f', title: 'Cowley Road', page: '42-43',
-                topicTags: ['video lesson', 'Oxford'],
-                vocabulary: {
-                    title: 'Video — Cowley Road, Oxford',
-                    words: ['post office', 'community', 'pre-schooler', 'medical centre', 'ingredients', 'traffic lights', 'mosque', 'sports centre', 'supermarket']
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 4 — FREE TIME (Life Elementary, A1)
-    // ============================================================
     {
         unitId: 'unit4',
         title: 'Free time',
@@ -630,21 +858,28 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '4a', title: '100% identical?', page: '46-47',
+                id: '4a',
+                title: '100% identical?',
+                page: '46-47',
                 topicTags: ['collocations', 'like/love + -ing', '/ŋ/'],
                 vocabulary: {
                     title: 'Verb + noun collocations',
-                    words: ['go: swimming, running, cycling, camping, shopping', 'play: football, computer games, golf, the guitar', 'do: yoga, Taekwondo, the housework', 'watch: TV, films', 'read: a magazine, a book', 'meet: friends', 'have: a coffee, a meal', 'make: phone calls, a cake', 'use: social media, the internet']
+                    words: [
+                        'go: swimming, running, cycling, camping, shopping',
+                        'play: football, computer games, golf, the guitar',
+                        'do: yoga, Taekwondo, the housework',
+                        'watch: TV, films',
+                        'read: a magazine, a book',
+                        'meet: friends',
+                        'have: a coffee, a meal',
+                        'make: phone calls, a cake',
+                        'use: social media, the internet'
+                    ]
                 },
                 pronunciation: {
                     title: '/ŋ/ — the -ing sound',
                     rule: 'The "-ing" ending of verbs is pronounced /ɪŋ/. The final letter "g" is NOT pronounced separately — /ŋ/ is one nasal sound.',
-                    examples: [
-                        'playing /ˈpleɪɪŋ/',
-                        'listening /ˈlɪs(ə)nɪŋ/',
-                        'singing /ˈsɪŋɪŋ/ — has /ŋ/ twice!',
-                        'doing /ˈduːɪŋ/'
-                    ]
+                    examples: ['playing /ˈpleɪɪŋ/', 'listening /ˈlɪs(ə)nɪŋ/', 'singing /ˈsɪŋɪŋ/ — has /ŋ/ twice!', 'doing /ˈduːɪŋ/']
                 },
                 grammar: [
                     {
@@ -662,11 +897,24 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '4b', title: 'Free time in the Arctic', page: '48-49',
+                id: '4b',
+                title: 'Free time in the Arctic',
+                page: '48-49',
                 topicTags: ['everyday activities', 'adverbs of frequency', 'expressions of frequency'],
                 vocabulary: {
                     title: 'Everyday activities',
-                    words: ['do online shopping', 'go for a walk', 'have a coffee', 'make phone calls', 'play online games', 'read a book', 'browse the internet', 'text friends', 'use social media', 'watch videos'],
+                    words: [
+                        'do online shopping',
+                        'go for a walk',
+                        'have a coffee',
+                        'make phone calls',
+                        'play online games',
+                        'read a book',
+                        'browse the internet',
+                        'text friends',
+                        'use social media',
+                        'watch videos'
+                    ],
                     note: 'Norbert Rosing is a National Geographic photographer who works in the Arctic.'
                 },
                 grammar: [
@@ -674,12 +922,30 @@ const GRAMMAR_LESSONS = [
                         title: 'Adverbs of frequency',
                         rule: 'These tell HOW OFTEN something happens. Position: AFTER "be", BEFORE other verbs.',
                         form: [
-                            { label: '100%', text: 'always' },
-                            { label: '~80%', text: 'usually' },
-                            { label: '~60%', text: 'often' },
-                            { label: '~40%', text: 'sometimes' },
-                            { label: '~20%', text: 'not often' },
-                            { label: '0%', text: 'never' }
+                            {
+                                label: '100%',
+                                text: 'always'
+                            },
+                            {
+                                label: '~80%',
+                                text: 'usually'
+                            },
+                            {
+                                label: '~60%',
+                                text: 'often'
+                            },
+                            {
+                                label: '~40%',
+                                text: 'sometimes'
+                            },
+                            {
+                                label: '~20%',
+                                text: 'not often'
+                            },
+                            {
+                                label: '0%',
+                                text: 'never'
+                            }
                         ],
                         examples: [
                             'I\'m often away at the weekend. (after "be")',
@@ -702,11 +968,27 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '4c', title: 'Extreme sports', page: '50-51',
-                topicTags: ['sports', "can/can't"],
+                id: '4c',
+                title: 'Extreme sports',
+                page: '50-51',
+                topicTags: ['sports', 'can/can\'t'],
                 vocabulary: {
                     title: 'Sports',
-                    words: ['baseball', 'basketball', 'boxing', 'cricket', 'cycling', 'football (UK) / soccer (US)', 'ice hockey', 'running', 'sailing', 'skiing', 'surfing', 'swimming', 'tennis'],
+                    words: [
+                        'baseball',
+                        'basketball',
+                        'boxing',
+                        'cricket',
+                        'cycling',
+                        'football (UK) / soccer (US)',
+                        'ice hockey',
+                        'running',
+                        'sailing',
+                        'skiing',
+                        'surfing',
+                        'swimming',
+                        'tennis'
+                    ],
                     note: 'Use "play" with ball sports (play football). Use "go" with -ing activities (go swimming). Use "do" with martial arts (do Taekwondo).'
                 },
                 pronunciation: {
@@ -723,10 +1005,22 @@ const GRAMMAR_LESSONS = [
                         title: 'can / can\'t (+ adverb)',
                         rule: '"can" is a modal verb showing ability. Same form for all subjects (NO -s). Followed by the BASE form of the verb.',
                         form: [
-                            { label: '+', text: 'Subject + can + base verb' },
-                            { label: '−', text: 'Subject + can\'t (cannot) + base verb' },
-                            { label: '?', text: 'Can + subject + base verb? — Yes, I can. / No, I can\'t.' },
-                            { label: 'adv', text: 'Adverbs of degree go after: very well / a bit. "How well…?"' }
+                            {
+                                label: '+',
+                                text: 'Subject + can + base verb'
+                            },
+                            {
+                                label: '−',
+                                text: 'Subject + can\'t (cannot) + base verb'
+                            },
+                            {
+                                label: '?',
+                                text: 'Can + subject + base verb? — Yes, I can. / No, I can\'t.'
+                            },
+                            {
+                                label: 'adv',
+                                text: 'Adverbs of degree go after: very well / a bit. "How well…?"'
+                            }
                         ],
                         examples: [
                             'He can jump between 20 and 30 metres.',
@@ -739,14 +1033,22 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '4d', title: 'A gap year', page: '52',
-                topicTags: ['gap year', 'abilities and interests', 'sentence stress'],
-                vocabulary: {
-                    title: 'Gap year',
-                    words: ['gap year', 'volunteer', 'volunteer work', 'orphan', 'cub', 'enthusiastic', 'good at + -ing']
-                },
+                id: '4d',
+                title: 'A gap year + short emails + free time',
+                page: '52-55',
+                topicTags: ['gap year', 'abilities and interests', 'sentence stress', 'writing short emails', 'video lesson', 'free time'],
+                vocabulary: [
+                    {
+                        title: 'Gap year (4d)',
+                        words: ['gap year', 'volunteer', 'volunteer work', 'orphan', 'cub', 'enthusiastic', 'good at + -ing']
+                    },
+                    {
+                        title: 'Video — Free-time passions (4f)',
+                        words: ['passion', 'hobby', 'free-time activity', 'I love …', 'I really enjoy …']
+                    }
+                ],
                 pronunciation: {
-                    title: 'Sentence stress',
+                    title: 'Sentence stress (4d)',
                     rule: 'Stress CONTENT words (nouns, main verbs, adjectives, adverbs). Don\'t stress function words (a, the, of, am).',
                     examples: [
                         'Are you GOOD at WRITING?',
@@ -758,7 +1060,7 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: 'Real life — Talking about abilities and interests',
+                        title: 'Real life — Talking about abilities and interests (4d)',
                         rule: 'Common phrases for asking and saying what you can do and what you like.',
                         examples: [
                             'Are you good at teaching?',
@@ -770,15 +1072,9 @@ const GRAMMAR_LESSONS = [
                             'I\'m (not very) good at writing.',
                             'I (don\'t) like animals. / I love them!'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '4e', title: 'Short emails', page: '53',
-                topicTags: ['writing short emails'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Short emails',
+                        title: 'Writing skill — Short emails (4e)',
                         rule: 'In short, friendly emails: use informal greetings (Hi …), contractions (I\'m, I\'d), and casual sign-offs.',
                         examples: [
                             'Hi Sarah, / Hello Tom,',
@@ -788,21 +1084,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '4f', title: 'In my free time', page: '54-55',
-                topicTags: ['video lesson', 'free time'],
-                vocabulary: {
-                    title: 'Video — Free-time passions',
-                    words: ['passion', 'hobby', 'free-time activity', 'I love …', 'I really enjoy …']
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 5 — FOOD (Life Elementary, A1)
-    // ============================================================
     {
         unitId: 'unit5',
         title: 'Food',
@@ -819,29 +1103,58 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '5a', title: 'Famous for food', page: '58-59',
+                id: '5a',
+                title: 'Famous for food',
+                page: '58-59',
                 topicTags: ['food', 'countable/uncountable', '/tʃ/ or /dʒ/'],
                 vocabulary: {
                     title: 'Food',
-                    words: ['cheese', 'chicken', 'chips', 'eggs', 'fish', 'juice', 'lamb', 'lemons', 'lentils', 'nuts', 'onions', 'oranges', 'pasta', 'peppers', 'potatoes', 'prawns', 'raisins', 'rice', 'salt', 'pepper'],
+                    words: [
+                        'cheese',
+                        'chicken',
+                        'chips',
+                        'eggs',
+                        'fish',
+                        'juice',
+                        'lamb',
+                        'lemons',
+                        'lentils',
+                        'nuts',
+                        'onions',
+                        'oranges',
+                        'pasta',
+                        'peppers',
+                        'potatoes',
+                        'prawns',
+                        'raisins',
+                        'rice',
+                        'salt',
+                        'pepper'
+                    ],
                     note: 'Popular dishes: pizza (Italy), ceviche (Peru), satay (Indonesia), kabsa (Saudi Arabia), pierogi (Poland), curry (India).'
                 },
                 pronunciation: {
                     title: '/tʃ/ vs /dʒ/',
                     rule: '/tʃ/ is voiceless (as in "chicken", "cheese"). /dʒ/ is voiced (as in "juice", "orange").',
-                    examples: [
-                        '/tʃ/ — chicken, cheese, church, watch',
-                        '/dʒ/ — juice, orange, general, large'
-                    ]
+                    examples: ['/tʃ/ — chicken, cheese, church, watch', '/dʒ/ — juice, orange, general, large']
                 },
                 grammar: [
                     {
                         title: 'Countable vs uncountable nouns + a/an, some, any',
                         rule: 'Countable nouns can be counted (one egg, two eggs). Uncountable nouns can\'t be counted (some water — NOT "two waters").',
                         form: [
-                            { label: 'a / an', text: 'singular COUNTABLE: an onion, a banana' },
-                            { label: 'some', text: 'PLURAL countable AND UNCOUNTABLE — in POSITIVE sentences: some onions, some water' },
-                            { label: 'any', text: 'PLURAL countable AND UNCOUNTABLE — in NEGATIVE sentences and QUESTIONS: any carrots, any bread' }
+                            {
+                                label: 'a / an',
+                                text: 'singular COUNTABLE: an onion, a banana'
+                            },
+                            {
+                                label: 'some',
+                                text: 'PLURAL countable AND UNCOUNTABLE — in POSITIVE sentences: some onions, some water'
+                            },
+                            {
+                                label: 'any',
+                                text: 'PLURAL countable AND UNCOUNTABLE — in NEGATIVE sentences and QUESTIONS: any carrots, any bread'
+                            }
                         ],
                         examples: [
                             'Cook the chicken with an onion. (singular countable)',
@@ -853,11 +1166,22 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '5b', title: 'Top five food markets', page: '60-61',
+                id: '5b',
+                title: 'Top five food markets',
+                page: '60-61',
                 topicTags: ['food markets', 'a lot of / much / many', 'quantities and containers', 'how much/how many'],
                 vocabulary: {
                     title: 'Quantities and containers',
-                    words: ['a bag of rice', 'a bottle of water/sauce', 'a glass of water', 'a kilo of flour', 'a packet of pasta', 'a piece of pizza', 'a slice of cake', 'a tin of tuna'],
+                    words: [
+                        'a bag of rice',
+                        'a bottle of water/sauce',
+                        'a glass of water',
+                        'a kilo of flour',
+                        'a packet of pasta',
+                        'a piece of pizza',
+                        'a slice of cake',
+                        'a tin of tuna'
+                    ],
                     note: 'Famous markets in Unit 5b: St Lawrence (Toronto), Castries (Saint Lucia), Kreta Ayer (Singapore), La Vucciria (Palermo, Italy), Borough Market (London — 1,000 years old).'
                 },
                 grammar: [
@@ -865,9 +1189,18 @@ const GRAMMAR_LESSONS = [
                         title: 'a lot of / much / many',
                         rule: 'a lot of — works with countable AND uncountable, mainly in POSITIVES. much/many — mainly in NEGATIVES and QUESTIONS.',
                         form: [
-                            { label: 'a lot of', text: 'countable plural + uncountable (positive sentences)' },
-                            { label: 'many', text: 'countable plural (negatives & questions)' },
-                            { label: 'much', text: 'uncountable (negatives & questions)' }
+                            {
+                                label: 'a lot of',
+                                text: 'countable plural + uncountable (positive sentences)'
+                            },
+                            {
+                                label: 'many',
+                                text: 'countable plural (negatives & questions)'
+                            },
+                            {
+                                label: 'much',
+                                text: 'uncountable (negatives & questions)'
+                            }
                         ],
                         examples: [
                             'There are a lot of shops here. / There\'s a lot of food.',
@@ -889,11 +1222,23 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '5c', title: 'An eater\'s guide to food labels', page: '62-63',
+                id: '5c',
+                title: 'An eater\'s guide to food labels',
+                page: '62-63',
                 topicTags: ['food labels', 'word focus: mean'],
                 vocabulary: {
                     title: 'Food labels',
-                    words: ['superfood', 'natural', 'best before', 'low fat', 'calorie', 'portion', 'ingredients', 'vitamins', 'traffic lights (red/orange/green)'],
+                    words: [
+                        'superfood',
+                        'natural',
+                        'best before',
+                        'low fat',
+                        'calorie',
+                        'portion',
+                        'ingredients',
+                        'vitamins',
+                        'traffic lights (red/orange/green)'
+                    ],
                     note: 'Don\'t trust the word "superfood" — anyone can use it. "Best before" = the food is best before this date, but you CAN still eat it afterwards. Low-fat food often has lots of sugar!'
                 },
                 grammar: [
@@ -912,23 +1257,42 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '5d', title: 'At the restaurant', page: '64',
-                topicTags: ['menus', 'ordering a meal', 'contracted forms'],
-                vocabulary: {
-                    title: 'Menus',
-                    words: ['Starters (1st course)', 'Main courses (2nd, biggest)', 'Desserts (sweet finish)', 'Drinks', 'garlic bread', 'soup', 'salad', 'pizza', 'burger', 'fries', 'smoothie', 'bottle of water', 'iced tea']
-                },
+                id: '5d',
+                title: 'At the restaurant + instructions + world food quiz',
+                page: '64-67',
+                topicTags: ['menus', 'ordering a meal', 'contracted forms', 'writing instructions', 'video lesson', 'world food'],
+                vocabulary: [
+                    {
+                        title: 'Menus (5d)',
+                        words: [
+                            'Starters (1st course)',
+                            'Main courses (2nd, biggest)',
+                            'Desserts (sweet finish)',
+                            'Drinks',
+                            'garlic bread',
+                            'soup',
+                            'salad',
+                            'pizza',
+                            'burger',
+                            'fries',
+                            'smoothie',
+                            'bottle of water',
+                            'iced tea'
+                        ]
+                    },
+                    {
+                        title: 'Video — World food quiz (5f)',
+                        words: ['street food', 'spicy', 'sweet', 'sour', 'salty', 'fresh', 'vegetarian']
+                    }
+                ],
                 pronunciation: {
-                    title: 'Contracted forms',
+                    title: 'Contracted forms (5d)',
                     rule: 'In restaurant orders, contractions sound natural: I\'d = I would, I\'ll = I will.',
-                    examples: [
-                        'I\'d /aɪd/ like a coffee.',
-                        'I\'ll /aɪl/ have a pizza.'
-                    ]
+                    examples: ['I\'d /aɪd/ like a coffee.', 'I\'ll /aɪl/ have a pizza.']
                 },
                 grammar: [
                     {
-                        title: 'Real life — Ordering a meal',
+                        title: 'Real life — Ordering a meal (5d)',
                         rule: 'Common phrases when ordering food in a restaurant.',
                         examples: [
                             'Here is the menu. (waiter)',
@@ -942,39 +1306,16 @@ const GRAMMAR_LESSONS = [
                             'Can I get you anything else? (waiter)',
                             'Could we have the bill, please?'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '5e', title: 'Instructions', page: '65',
-                topicTags: ['writing instructions'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Instructions',
+                        title: 'Writing skill — Instructions (5e)',
                         rule: 'Recipes and instructions use the IMPERATIVE form (base verb, no subject). Use simple, clear language.',
-                        examples: [
-                            'Cook the chicken with an onion.',
-                            'Add some salt and pepper.',
-                            'Serve with rice.',
-                            'Don\'t use too much oil.'
-                        ]
+                        examples: ['Cook the chicken with an onion.', 'Add some salt and pepper.', 'Serve with rice.', 'Don\'t use too much oil.']
                     }
                 ]
-            },
-            {
-                id: '5f', title: 'The world food quiz', page: '66-67',
-                topicTags: ['video lesson', 'world food'],
-                vocabulary: {
-                    title: 'Video — World food quiz',
-                    words: ['street food', 'spicy', 'sweet', 'sour', 'salty', 'fresh', 'vegetarian']
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 6 — PAST LIVES (Life Elementary, A1/A2)
-    // ============================================================
     {
         unitId: 'unit6',
         title: 'Past lives',
@@ -992,17 +1333,46 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '6a', title: 'Famous faces', page: '70-71',
+                id: '6a',
+                title: 'Famous faces',
+                page: '70-71',
                 topicTags: ['famous faces', 'was/were', 'past simple regular', 'time expressions', '-ed endings'],
                 vocabulary: [
                     {
                         title: 'Famous faces & money',
-                        words: ['president', 'queen', 'scientist', 'musician', 'writer', 'artist', 'currency', 'note', 'coin', 'dollar', 'euro', 'pound', 'peso'],
+                        words: [
+                            'president',
+                            'queen',
+                            'scientist',
+                            'musician',
+                            'writer',
+                            'artist',
+                            'currency',
+                            'note',
+                            'coin',
+                            'dollar',
+                            'euro',
+                            'pound',
+                            'peso'
+                        ],
                         note: 'Famous on money: George Washington (US 1-dollar), Frida Kahlo & Diego Rivera (Mexican 500-peso), Queen Elizabeth (UK notes). Euro notes show buildings/maps — NO famous people.'
                     },
                     {
                         title: 'Time expressions (past → present)',
-                        words: ['when I was a child', 'before the 18th century', 'in 1799', 'during the 19th century', 'the sixties', 'in 2000', 'last March', 'a week ago', 'last Monday evening', 'on January 1st, 2000', 'yesterday', 'this morning'],
+                        words: [
+                            'when I was a child',
+                            'before the 18th century',
+                            'in 1799',
+                            'during the 19th century',
+                            'the sixties',
+                            'in 2000',
+                            'last March',
+                            'a week ago',
+                            'last Monday evening',
+                            'on January 1st, 2000',
+                            'yesterday',
+                            'this morning'
+                        ],
                         note: 'Use IN with months/years/centuries (in 1799). Use ON with specific dates (on January 1st). Use ago AFTER the number (a week ago).'
                     }
                 ],
@@ -1020,9 +1390,18 @@ const GRAMMAR_LESSONS = [
                         title: 'was / were — past simple of "be"',
                         rule: 'I/he/she/it → was. You/we/they → were. Same negative and question patterns as present.',
                         form: [
-                            { label: '+', text: 'George Washington WAS the first US president.' },
-                            { label: '−', text: 'His face WASN\'T on the dollar. There WEREN\'T any famous people on euros.' },
-                            { label: '?', text: 'When WAS he born? WERE they famous? Yes, they were. / No, they weren\'t.' }
+                            {
+                                label: '+',
+                                text: 'George Washington WAS the first US president.'
+                            },
+                            {
+                                label: '−',
+                                text: 'His face WASN\'T on the dollar. There WEREN\'T any famous people on euros.'
+                            },
+                            {
+                                label: '?',
+                                text: 'When WAS he born? WERE they famous? Yes, they were. / No, they weren\'t.'
+                            }
                         ],
                         examples: [
                             'I was a child in the nineties.',
@@ -1035,8 +1414,14 @@ const GRAMMAR_LESSONS = [
                         title: 'Past simple — regular verbs',
                         rule: 'Use the past simple for FINISHED actions and events in the past. Regular verbs add -ed.',
                         form: [
-                            { label: '+', text: 'verb + -ed (worked, lived, studied, travelled)' },
-                            { label: 'spell.', text: '-e → +d (live → lived). Consonant + y → -ied (study → studied). BrE doubles -l (travel → travelled).' }
+                            {
+                                label: '+',
+                                text: 'verb + -ed (worked, lived, studied, travelled)'
+                            },
+                            {
+                                label: 'spell.',
+                                text: '-e → +d (live → lived). Consonant + y → -ied (study → studied). BrE doubles -l (travel → travelled).'
+                            }
                         ],
                         examples: [
                             'They worked in Mexico City.',
@@ -1049,7 +1434,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '6b', title: 'Visiting the past', page: '72-73',
+                id: '6b',
+                title: 'Visiting the past',
+                page: '72-73',
                 topicTags: ['visiting the past', 'past simple irregular', 'past simple negative', 'past simple questions'],
                 vocabulary: {
                     title: 'Visiting the past — Mustang caves',
@@ -1073,10 +1460,22 @@ const GRAMMAR_LESSONS = [
                         title: 'Past simple — negatives and questions',
                         rule: 'For ALL subjects (I/you/he/she/it/we/they): didn\'t + base verb. Did + subject + base verb? Use the BASE form after did/didn\'t — NOT the past form.',
                         form: [
-                            { label: '+', text: 'I/he/she/it/we/they grew up in a cave.' },
-                            { label: '−', text: 'I/he/she/it/we/they DIDN\'T live in a house. (NOT "didn\'t lived")' },
-                            { label: '?', text: 'What DID you DO at the weekend? — I met some friends.' },
-                            { label: 'Y/N', text: 'DID you go to the cinema? — Yes, I did. / No, I didn\'t.' }
+                            {
+                                label: '+',
+                                text: 'I/he/she/it/we/they grew up in a cave.'
+                            },
+                            {
+                                label: '−',
+                                text: 'I/he/she/it/we/they DIDN\'T live in a house. (NOT "didn\'t lived")'
+                            },
+                            {
+                                label: '?',
+                                text: 'What DID you DO at the weekend? — I met some friends.'
+                            },
+                            {
+                                label: 'Y/N',
+                                text: 'DID you go to the cinema? — Yes, I did. / No, I didn\'t.'
+                            }
                         ],
                         examples: [
                             'They didn\'t have water in the cave.',
@@ -1089,7 +1488,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '6c', title: 'Lifelogging', page: '74-75',
+                id: '6c',
+                title: 'Lifelogging',
+                page: '74-75',
                 topicTags: ['lifelogging', 'word focus: write'],
                 vocabulary: {
                     title: 'Lifelogging',
@@ -1110,15 +1511,37 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '6d', title: 'How was your evening?', page: '76',
-                topicTags: ['asking what people did', 'opinion adjectives', 'intonation'],
-                vocabulary: {
-                    title: 'Opinion adjectives (positive → negative)',
-                    words: ['fantastic / great / very good 😀', 'OK / fine / nice / not bad 🙂', 'fun / funny 😄', 'boring 😐', 'terrible / not very good 😞'],
-                    note: 'fun = enjoyable (an activity). funny = makes you laugh (a joke, a film). They are NOT the same!'
-                },
+                id: '6d',
+                title: 'How was your evening? + Thanks! + objects video',
+                page: '76-79',
+                topicTags: [
+                    'asking what people did',
+                    'opinion adjectives',
+                    'intonation',
+                    'thank you messages',
+                    'formal and informal',
+                    'video lesson',
+                    'museum objects'
+                ],
+                vocabulary: [
+                    {
+                        title: 'Opinion adjectives (positive → negative) (6d)',
+                        words: [
+                            'fantastic / great / very good 😀',
+                            'OK / fine / nice / not bad 🙂',
+                            'fun / funny 😄',
+                            'boring 😐',
+                            'terrible / not very good 😞'
+                        ],
+                        note: 'fun = enjoyable (an activity). funny = makes you laugh (a joke, a film). They are NOT the same!'
+                    },
+                    {
+                        title: 'Video — Objects from the past (6f)',
+                        words: ['museum', 'object', 'history', 'precious', 'ancient', 'discover', 'century', 'civilization']
+                    }
+                ],
                 pronunciation: {
-                    title: 'Intonation — matching your tone to your opinion',
+                    title: 'Intonation — matching your tone to your opinion (6d)',
                     rule: 'Strong opinions need lively/animated intonation. Neutral opinions sound flat. Make your voice match how you feel.',
                     examples: [
                         '"Fantastic!" — enthusiastic, voice goes up',
@@ -1129,7 +1552,7 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: 'Real life — Asking what people did',
+                        title: 'Real life — Asking what people did (6d)',
                         rule: 'Useful phrases for asking and answering about past events.',
                         examples: [
                             'How was your evening / weekend / holiday?',
@@ -1140,21 +1563,27 @@ const GRAMMAR_LESSONS = [
                             'People: Who were you with? — A friend / friends / my family.',
                             'How many: Were there many people there? — Yes, lots! / No, not many.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '6e', title: 'Thanks!', page: '77',
-                topicTags: ['thank you messages', 'formal and informal'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Formal vs informal thank-you messages',
+                        title: 'Writing skill — Formal vs informal thank-you messages (6e)',
                         rule: 'Match the style to your relationship. Informal for friends/family; formal for clients/teachers/strangers.',
                         form: [
-                            { label: 'Greet', text: 'Informal: Hi! / Hello! · Formal: Dear Mr/Mrs Smith,' },
-                            { label: 'Thank', text: 'Informal: Thanks for… · Formal: Thank you very much for…' },
-                            { label: 'Future', text: 'Informal: See you again soon! · Formal: I look forward to hearing from you.' },
-                            { label: 'End', text: 'Informal: Love / Cheers / Bye · Formal: Yours sincerely / Best regards' }
+                            {
+                                label: 'Greet',
+                                text: 'Informal: Hi! / Hello! · Formal: Dear Mr/Mrs Smith,'
+                            },
+                            {
+                                label: 'Thank',
+                                text: 'Informal: Thanks for… · Formal: Thank you very much for…'
+                            },
+                            {
+                                label: 'Future',
+                                text: 'Informal: See you again soon! · Formal: I look forward to hearing from you.'
+                            },
+                            {
+                                label: 'End',
+                                text: 'Informal: Love / Cheers / Bye · Formal: Yours sincerely / Best regards'
+                            }
                         ],
                         examples: [
                             'Informal: "Hi! Thanks for coming to my party. I really liked the present! See you again soon. Love, Ginny"',
@@ -1162,21 +1591,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '6f', title: 'Objects from the past', page: '78-79',
-                topicTags: ['video lesson', 'museum objects'],
-                vocabulary: {
-                    title: 'Video — Objects from the past',
-                    words: ['museum', 'object', 'history', 'precious', 'ancient', 'discover', 'century', 'civilization']
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 7 — JOURNEYS (Life Elementary, A1/A2)
-    // ============================================================
     {
         unitId: 'unit7',
         title: 'Journeys',
@@ -1193,7 +1610,9 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '7a', title: 'Animal journeys', page: '82-83',
+                id: '7a',
+                title: 'Animal journeys',
+                page: '82-83',
                 topicTags: ['adjectives', 'animal journeys', 'comparative adjectives', 'stressed and weak syllables'],
                 vocabulary: [
                     {
@@ -1203,7 +1622,13 @@ const GRAMMAR_LESSONS = [
                     },
                     {
                         title: 'Animal journeys',
-                        words: ['saiga antelope (35 km/day, Central Asia)', 'tree frog (~30 m/year)', 'loggerhead turtle (~14,000 km / 15 years)', 'migration', 'calf (baby saiga)'],
+                        words: [
+                            'saiga antelope (35 km/day, Central Asia)',
+                            'tree frog (~30 m/year)',
+                            'loggerhead turtle (~14,000 km / 15 years)',
+                            'migration',
+                            'calf (baby saiga)'
+                        ],
                         note: 'Every year, animals around the world go on long, difficult journeys called migrations.'
                     }
                 ],
@@ -1223,11 +1648,26 @@ const GRAMMAR_LESSONS = [
                         title: 'Comparative adjectives',
                         rule: 'Use the comparative to compare TWO things or groups. Add "than" after the comparative.',
                         form: [
-                            { label: 'short', text: '+ -er (big → bigger, cheap → cheaper, fast → faster)' },
-                            { label: '-e', text: '+ -r (safe → safer)' },
-                            { label: 'cons.+y', text: '-y → -ier (easy → easier)' },
-                            { label: 'long', text: 'more + adjective (expensive → more expensive)' },
-                            { label: 'irreg.', text: 'good → better, bad → worse' }
+                            {
+                                label: 'short',
+                                text: '+ -er (big → bigger, cheap → cheaper, fast → faster)'
+                            },
+                            {
+                                label: '-e',
+                                text: '+ -r (safe → safer)'
+                            },
+                            {
+                                label: 'cons.+y',
+                                text: '-y → -ier (easy → easier)'
+                            },
+                            {
+                                label: 'long',
+                                text: 'more + adjective (expensive → more expensive)'
+                            },
+                            {
+                                label: 'irreg.',
+                                text: 'good → better, bad → worse'
+                            }
                         ],
                         examples: [
                             'Turtles have longer journeys than tree frogs.',
@@ -1240,11 +1680,18 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '7b', title: 'The deepest place on Earth', page: '84-85',
+                id: '7b',
+                title: 'The deepest place on Earth',
+                page: '84-85',
                 topicTags: ['ways of traveling', 'superlative adjectives', 'Mariana Trench'],
                 vocabulary: {
                     title: 'Ways of traveling — collocations',
-                    words: ['go BY + bicycle/train/car', 'travel BY + train/bus/plane/boat', 'take + a taxi/a bus/the train', 'walk · ride · drive · fly'],
+                    words: [
+                        'go BY + bicycle/train/car',
+                        'travel BY + train/bus/plane/boat',
+                        'take + a taxi/a bus/the train',
+                        'walk · ride · drive · fly'
+                    ],
                     note: 'James Cameron travelled to the Mariana Trench — the deepest place in the ocean — in his submarine, the Deepsea Challenger. He\'s also the filmmaker behind Titanic and Avatar.'
                 },
                 grammar: [
@@ -1252,11 +1699,26 @@ const GRAMMAR_LESSONS = [
                         title: 'Superlative adjectives',
                         rule: 'Use the superlative to compare ONE thing with ALL the other things in a group. Use "the" before the superlative.',
                         form: [
-                            { label: 'short', text: 'the + -est (big → the biggest, fast → the fastest)' },
-                            { label: '-e', text: 'the + -st (safe → the safest)' },
-                            { label: 'cons.+y', text: '-y → -iest (easy → the easiest)' },
-                            { label: 'long', text: 'the most + adjective (the most expensive)' },
-                            { label: 'irreg.', text: 'good → the best, bad → the worst' }
+                            {
+                                label: 'short',
+                                text: 'the + -est (big → the biggest, fast → the fastest)'
+                            },
+                            {
+                                label: '-e',
+                                text: 'the + -st (safe → the safest)'
+                            },
+                            {
+                                label: 'cons.+y',
+                                text: '-y → -iest (easy → the easiest)'
+                            },
+                            {
+                                label: 'long',
+                                text: 'the most + adjective (the most expensive)'
+                            },
+                            {
+                                label: 'irreg.',
+                                text: 'good → the best, bad → the worst'
+                            }
                         ],
                         examples: [
                             'The Mariana Trench is the deepest place in the ocean.',
@@ -1269,11 +1731,19 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '7c', title: 'Visit Colombia!', page: '86-87',
+                id: '7c',
+                title: 'Visit Colombia!',
+                page: '86-87',
                 topicTags: ['Colombia', 'word focus: time'],
                 vocabulary: {
                     title: 'Colombian cities',
-                    words: ['Bogotá (capital)', 'Cartagena (Caribbean port, friendly)', 'Medellín (Botero, sculptures, cable car)', 'Cali (salsa, music, dance festivals)', 'Ciudad Perdida ("Lost City", 4-day trek, 1,241 steps)'],
+                    words: [
+                        'Bogotá (capital)',
+                        'Cartagena (Caribbean port, friendly)',
+                        'Medellín (Botero, sculptures, cable car)',
+                        'Cali (salsa, music, dance festivals)',
+                        'Ciudad Perdida ("Lost City", 4-day trek, 1,241 steps)'
+                    ],
                     note: 'Colombia has more than just Bogotá. Each city has its own character — beaches, sculptures, salsa, or ancient ruins.'
                 },
                 grammar: [
@@ -1290,21 +1760,58 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '7d', title: 'Travel money', page: '88',
-                topicTags: ['money', 'making requests'],
-                vocabulary: {
-                    title: 'Money',
-                    words: ['borrow (you take from someone)', 'lend (you give to someone)', 'cash (notes + coins)', 'credit card', 'change dollars INTO euros', 'spend money ON', 'pay BY credit card / pay FOR something', 'buy a ticket', 'ATM (cash machine)'],
-                    note: 'Common confusion: BORROW = take temporarily / LEND = give temporarily. "Can you LEND me $10?" / "Can I BORROW $10?"'
-                },
+                id: '7d',
+                title: 'Travel money + travel blog + final journey',
+                page: '88-91',
+                topicTags: ['money', 'making requests', 'travel blog', 'so and because', 'video lesson', 'final journey', 'sockeye salmon'],
+                vocabulary: [
+                    {
+                        title: 'Money (7d)',
+                        words: [
+                            'borrow (you take from someone)',
+                            'lend (you give to someone)',
+                            'cash (notes + coins)',
+                            'credit card',
+                            'change dollars INTO euros',
+                            'spend money ON',
+                            'pay BY credit card / pay FOR something',
+                            'buy a ticket',
+                            'ATM (cash machine)'
+                        ],
+                        note: 'Common confusion: BORROW = take temporarily / LEND = give temporarily. "Can you LEND me $10?" / "Can I BORROW $10?"'
+                    },
+                    {
+                        title: 'Video — sockeye salmon (7f)',
+                        words: [
+                            'skin',
+                            'shallow ↔ deep',
+                            'smooth ↔ rough',
+                            'decay (body breaks down)',
+                            'lay eggs',
+                            'turn (change colour)',
+                            'brown bears',
+                            'one in a thousand'
+                        ],
+                        note: 'In Alaska, sockeye salmon swim up shallow rivers to lay their eggs. Only one in every thousand finishes the journey — many are caught by brown bears.'
+                    }
+                ],
                 grammar: [
                     {
-                        title: 'Real life — Making requests',
+                        title: 'Real life — Making requests (7d)',
                         rule: 'Polite request: Can I…? / Can you…? / Could I…? — followed by the base verb.',
                         form: [
-                            { label: 'Ask', text: 'Can I change …? / Can you give me …? / Could I have …?' },
-                            { label: 'Yes', text: 'Yes, of course. / Sure. / Certainly.' },
-                            { label: 'No', text: 'I\'m sorry, but … / I\'m afraid I don\'t …' }
+                            {
+                                label: 'Ask',
+                                text: 'Can I change …? / Can you give me …? / Could I have …?'
+                            },
+                            {
+                                label: 'Yes',
+                                text: 'Yes, of course. / Sure. / Certainly.'
+                            },
+                            {
+                                label: 'No',
+                                text: 'I\'m sorry, but … / I\'m afraid I don\'t …'
+                            }
                         ],
                         examples: [
                             'Can I change one hundred dollars into euros? — Yes, of course.',
@@ -1312,19 +1819,19 @@ const GRAMMAR_LESSONS = [
                             'Could I borrow your phone, please?',
                             'I\'m sorry, but I don\'t have any change.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '7e', title: 'The end of the road', page: '89',
-                topicTags: ['travel blog', 'so and because'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — so and because',
+                        title: 'Writing skill — so and because (7e)',
                         rule: 'BECAUSE gives the REASON. SO gives the ACTION/RESULT. Choose based on what comes next.',
                         form: [
-                            { label: 'because', text: 'action, BECAUSE + reason' },
-                            { label: 'so', text: 'reason, SO + action' }
+                            {
+                                label: 'because',
+                                text: 'action, BECAUSE + reason'
+                            },
+                            {
+                                label: 'so',
+                                text: 'reason, SO + action'
+                            }
                         ],
                         examples: [
                             'We called a taxi BECAUSE we were late for the meeting. (action + reason)',
@@ -1335,22 +1842,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '7f', title: 'The final journey', page: '90-91',
-                topicTags: ['video lesson', 'final journey', 'sockeye salmon'],
-                vocabulary: {
-                    title: 'Video — sockeye salmon',
-                    words: ['skin', 'shallow ↔ deep', 'smooth ↔ rough', 'decay (body breaks down)', 'lay eggs', 'turn (change colour)', 'brown bears', 'one in a thousand'],
-                    note: 'In Alaska, sockeye salmon swim up shallow rivers to lay their eggs. Only one in every thousand finishes the journey — many are caught by brown bears.'
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 8 — APPEARANCE
-    // ============================================================
     {
         unitId: 'unit8',
         title: 'Appearance',
@@ -1366,28 +1860,58 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '8a', title: 'Global fashions', page: '94-95',
+                id: '8a',
+                title: 'Global fashions',
+                page: '94-95',
                 topicTags: ['clothes', 'present continuous', 'present simple vs continuous', '/s/ vs /ʃ/'],
                 vocabulary: {
                     title: 'Clothes',
-                    words: ['bag', 'belt', 'coat', 'dress', 'jacket', 'jeans', 'leggings', 'scarf', 'shirt', 'shoes', 'shorts', 'skirt', 'socks', 'suit', 'sunglasses', 'tie', 'top', 'trousers', 'trainers', 'T-shirt', 'uniform']
+                    words: [
+                        'bag',
+                        'belt',
+                        'coat',
+                        'dress',
+                        'jacket',
+                        'jeans',
+                        'leggings',
+                        'scarf',
+                        'shirt',
+                        'shoes',
+                        'shorts',
+                        'skirt',
+                        'socks',
+                        'suit',
+                        'sunglasses',
+                        'tie',
+                        'top',
+                        'trousers',
+                        'trainers',
+                        'T-shirt',
+                        'uniform'
+                    ]
                 },
                 pronunciation: {
                     title: '/s/ and /ʃ/',
                     rule: 'The letter "s" can sound /s/ (suit, socks, sunglasses) or /ʃ/ (shoes, shirt, shorts). "Sh" is always /ʃ/.',
-                    examples: [
-                        '/s/ — suit, socks, skirt, sunglasses',
-                        '/ʃ/ — shoes, shirt, shorts'
-                    ]
+                    examples: ['/s/ — suit, socks, skirt, sunglasses', '/ʃ/ — shoes, shirt, shorts']
                 },
                 grammar: [
                     {
                         title: 'Present continuous',
                         rule: 'Use the present continuous for: an action you can see, an action happening now or around the time of speaking, or a changing action.',
                         form: [
-                            { label: '+', text: 'Subject + am/is/are + verb-ing' },
-                            { label: '−', text: 'Subject + am/is/are + NOT + verb-ing' },
-                            { label: '?', text: 'Am/Is/Are + subject + verb-ing?' }
+                            {
+                                label: '+',
+                                text: 'Subject + am/is/are + verb-ing'
+                            },
+                            {
+                                label: '−',
+                                text: 'Subject + am/is/are + NOT + verb-ing'
+                            },
+                            {
+                                label: '?',
+                                text: 'Am/Is/Are + subject + verb-ing?'
+                            }
                         ],
                         examples: [
                             'The two women in the photo are making bags.',
@@ -1412,11 +1936,27 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '8b', title: 'People at festivals', page: '96-97',
+                id: '8b',
+                title: 'People at festivals',
+                page: '96-97',
                 topicTags: ['face & body', 'have got', 'sound and spelling'],
                 vocabulary: {
                     title: 'Face and body',
-                    words: ['arm', 'beard', 'ear', 'eye', 'foot', 'hair', 'hand', 'head', 'leg', 'mouth', 'neck', 'nose', 'shoulder']
+                    words: [
+                        'arm',
+                        'beard',
+                        'ear',
+                        'eye',
+                        'foot',
+                        'hair',
+                        'hand',
+                        'head',
+                        'leg',
+                        'mouth',
+                        'neck',
+                        'nose',
+                        'shoulder'
+                    ]
                 },
                 pronunciation: {
                     title: 'Sound and spelling — vowel sounds',
@@ -1435,9 +1975,18 @@ const GRAMMAR_LESSONS = [
                         title: 'have got',
                         rule: 'Use have got for: appearance, possessions, family. Same meaning as "have", but used a lot in spoken British English.',
                         form: [
-                            { label: '+', text: 'I\'ve got / He\'s got / They\'ve got + ...' },
-                            { label: '−', text: 'I haven\'t got / He hasn\'t got + ...' },
-                            { label: '?', text: 'Have I got? / Has he got? — Yes, he has. / No, he hasn\'t.' }
+                            {
+                                label: '+',
+                                text: 'I\'ve got / He\'s got / They\'ve got + ...'
+                            },
+                            {
+                                label: '−',
+                                text: 'I haven\'t got / He hasn\'t got + ...'
+                            },
+                            {
+                                label: '?',
+                                text: 'Have I got? / Has he got? — Yes, he has. / No, he hasn\'t.'
+                            }
                         ],
                         examples: [
                             'I\'ve got one sister. (I have one sister.)',
@@ -1450,7 +1999,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '8c', title: 'Pink and blue', page: '98-99',
+                id: '8c',
+                title: 'Pink and blue',
+                page: '98-99',
                 topicTags: ['toys', 'word focus: like'],
                 vocabulary: {
                     title: 'Possessions and toys',
@@ -1469,10 +2020,22 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '8d', title: 'Talking about photos', page: '100',
-                topicTags: ['describing photos', 'silent letters'],
+                id: '8d',
+                title: 'Talking about photos + short messages + festivals',
+                page: '100-103',
+                topicTags: ['describing photos', 'silent letters', 'writing short messages', 'KISS rules', 'festival adjectives', 'video lesson'],
+                vocabulary: [
+                    {
+                        title: 'Festival adjectives (8f)',
+                        words: ['boring', 'colourful', 'crowded', 'exciting', 'fun', 'loud', 'noisy', 'popular', 'quiet', 'relaxing']
+                    },
+                    {
+                        title: 'Festival/parade objects (8f)',
+                        words: ['clarinet', 'clown', 'costume', 'glove', 'jewellery', 'mask', 'trumpet', 'fireworks', 'drums']
+                    }
+                ],
                 pronunciation: {
-                    title: 'Silent letters',
+                    title: 'Silent letters (8d)',
                     rule: 'Some letters are written but not pronounced. Listen carefully to which letter is silent.',
                     examples: [
                         'interesting (silent e — middle e)',
@@ -1485,7 +2048,7 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: 'Real life — Talking about pictures and photos',
+                        title: 'Real life — Talking about pictures and photos (8d)',
                         rule: 'Useful phrases for describing what you see in a photograph.',
                         examples: [
                             'Introduce: This photo shows … / I can see …',
@@ -1493,15 +2056,9 @@ const GRAMMAR_LESSONS = [
                             'People: She looks happy / sad / bored / nervous. He is reading / sleeping / thinking.',
                             'Opinion: I think …, I like it because it\'s a beautiful picture.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '8e', title: 'Short and simple', page: '101',
-                topicTags: ['writing short messages', 'KISS rules'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — The KISS rules (Keep It Short and Simple)',
+                        title: 'Writing skill — The KISS rules (Keep It Short and Simple) (8e)',
                         rule: 'When you send short messages, follow these six rules to keep them clear and quick.',
                         examples: [
                             '1. Don\'t add unnecessary information.',
@@ -1513,36 +2070,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '8f', title: 'Festivals and special events', page: '102-103',
-                topicTags: ['festival adjectives', 'video lesson'],
-                vocabulary: [
-                    {
-                        title: 'Festival adjectives',
-                        words: ['boring', 'colourful', 'crowded', 'exciting', 'fun', 'loud', 'noisy', 'popular', 'quiet', 'relaxing']
-                    },
-                    {
-                        title: 'Festival/parade objects',
-                        words: ['clarinet', 'clown', 'costume', 'glove', 'jewellery', 'mask', 'trumpet', 'fireworks', 'drums']
-                    }
-                ],
-                pronunciation: {
-                    title: 'Stress on positive adjectives',
-                    rule: 'When you describe something positively, put STRONG stress on the adjective — that signals enthusiasm.',
-                    examples: [
-                        'She\'s wearing an AMAZING costume!',
-                        'Those gloves are WONDERFUL!',
-                        'The colours are INCREDIBLE!'
-                    ]
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 9 — ENTERTAINMENT
-    // ============================================================
     {
         unitId: 'unit9',
         title: 'Entertainment',
@@ -1559,7 +2089,9 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '9a', title: 'The Tallgrass Film Festival', page: '106-107',
+                id: '9a',
+                title: 'The Tallgrass Film Festival',
+                page: '106-107',
                 topicTags: ['films', 'be going to', '/tə/'],
                 vocabulary: {
                     title: 'Films',
@@ -1569,20 +2101,25 @@ const GRAMMAR_LESSONS = [
                 pronunciation: {
                     title: '/tə/ — weak "to"',
                     rule: 'In connected speech, "to" before a verb is reduced to a weak /tə/ sound.',
-                    examples: [
-                        'I\'m going /tə/ buy a ticket.',
-                        'Are you going /tə/ see the film?',
-                        'I\'m going /tə/ watch it later.'
-                    ]
+                    examples: ['I\'m going /tə/ buy a ticket.', 'Are you going /tə/ see the film?', 'I\'m going /tə/ watch it later.']
                 },
                 grammar: [
                     {
                         title: 'be going to (for plans)',
                         rule: 'Use "be going to" + base verb to talk about future plans (something already decided).',
                         form: [
-                            { label: '+', text: 'Subject + am/is/are + going to + base verb' },
-                            { label: '−', text: 'Subject + am/is/are NOT + going to + base verb' },
-                            { label: '?', text: 'Am/Is/Are + subject + going to + base verb?' }
+                            {
+                                label: '+',
+                                text: 'Subject + am/is/are + going to + base verb'
+                            },
+                            {
+                                label: '−',
+                                text: 'Subject + am/is/are NOT + going to + base verb'
+                            },
+                            {
+                                label: '?',
+                                text: 'Am/Is/Are + subject + going to + base verb?'
+                            }
                         ],
                         examples: [
                             'I\'m going to buy a ticket for the next film.',
@@ -1595,7 +2132,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '9b', title: "What's the future for TV?", page: '108-109',
+                id: '9b',
+                title: 'What\'s the future for TV?',
+                page: '108-109',
                 topicTags: ['TV programmes', 'infinitive of purpose'],
                 vocabulary: {
                     title: 'TV programmes & opinions',
@@ -1617,7 +2156,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '9c', title: 'Nature in art', page: '110-111',
+                id: '9c',
+                title: 'Nature in art',
+                page: '110-111',
                 topicTags: ['nature', 'like vs prefer'],
                 vocabulary: {
                     title: 'Nature',
@@ -1636,21 +2177,23 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '9d', title: 'Making arrangements', page: '112',
-                topicTags: ['inviting', 'arrangements', 'enthusiasm stress'],
+                id: '9d',
+                title: 'Making arrangements + reviews + wildlife video',
+                page: '112-115',
+                topicTags: ['inviting', 'arrangements', 'enthusiasm stress', 'reviews', 'sense verbs', 'wildlife', 'video lesson'],
+                vocabulary: {
+                    title: 'Wildlife filming (9f)',
+                    words: ['rainforest', 'camera trap', 'species', 'team', 'kinkajou', 'ocelot', 'Honduras', 'wildlife', 'documentary'],
+                    note: 'A camera trap takes photos automatically when an animal moves in front of it. "Species" = type or group of animals (e.g., leopards are a species of big cat).'
+                },
                 pronunciation: {
-                    title: 'Showing enthusiasm — stress on the key word',
+                    title: 'Showing enthusiasm — stress on the key word (9d)',
                     rule: 'When you accept an invitation enthusiastically, put strong stress on one key word to sound excited.',
-                    examples: [
-                        'I\'d LOVE to!',
-                        'I\'d really LIKE to!',
-                        'That\'s GREAT!',
-                        'That sounds FANTASTIC!'
-                    ]
+                    examples: ['I\'d LOVE to!', 'I\'d really LIKE to!', 'That\'s GREAT!', 'That sounds FANTASTIC!']
                 },
                 grammar: [
                     {
-                        title: 'Real life — Inviting and making arrangements',
+                        title: 'Real life — Inviting and making arrangements (9d)',
                         rule: 'Common phrases for inviting someone, responding to an invitation, and arranging a time/place.',
                         examples: [
                             'Inviting: Would you like to come? — Are you free? — Do you want to go?',
@@ -1658,15 +2201,9 @@ const GRAMMAR_LESSONS = [
                             'Refusing: I\'m sorry, but I\'m working late tonight.',
                             'Arranging: What time does it start? — Let\'s meet at seven. — See you at seven.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '9e', title: 'It looks amazing!', page: '113',
-                topicTags: ['reviews', 'sense verbs'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Sense verbs in reviews',
+                        title: 'Writing skill — Sense verbs in reviews (9e)',
                         rule: 'Use sense verbs + adjective to give your opinion in reviews. The five sense verbs are: look, feel, sound, taste, smell.',
                         examples: [
                             'They look amazing! (sight)',
@@ -1677,22 +2214,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '9f', title: 'Filming wildlife', page: '114-115',
-                topicTags: ['wildlife', 'video lesson'],
-                vocabulary: {
-                    title: 'Wildlife filming',
-                    words: ['rainforest', 'camera trap', 'species', 'team', 'kinkajou', 'ocelot', 'Honduras', 'wildlife', 'documentary'],
-                    note: 'A camera trap takes photos automatically when an animal moves in front of it. "Species" = type or group of animals (e.g., leopards are a species of big cat).'
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 10 — LEARNING
-    // ============================================================
     {
         unitId: 'unit10',
         title: 'Learning',
@@ -1708,7 +2232,9 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '10a', title: 'What have we learned?', page: '117-119',
+                id: '10a',
+                title: 'What have we learned?',
+                page: '117-119',
                 topicTags: ['subjects', 'learning verbs', 'synonyms & antonyms', 'present perfect'],
                 vocabulary: [
                     {
@@ -1718,7 +2244,21 @@ const GRAMMAR_LESSONS = [
                     },
                     {
                         title: 'Learning verbs',
-                        words: ['learn', 'study', 'pass', 'fail', 'forget', 'remember', 'know', 'understand', 'teach', 'discover', 'invent', 'design', 'practise'],
+                        words: [
+                            'learn',
+                            'study',
+                            'pass',
+                            'fail',
+                            'forget',
+                            'remember',
+                            'know',
+                            'understand',
+                            'teach',
+                            'discover',
+                            'invent',
+                            'design',
+                            'practise'
+                        ],
                         note: 'Synonyms — words with similar meanings: learn = study. Antonyms — words with opposite meanings: pass ≠ fail.'
                     }
                 ],
@@ -1727,9 +2267,18 @@ const GRAMMAR_LESSONS = [
                         title: 'Present perfect',
                         rule: 'Use the present perfect to talk about something that happened in the past but is connected to NOW (we don\'t say exactly when).',
                         form: [
-                            { label: '+', text: 'Subject + have/has + past participle' },
-                            { label: '−', text: 'Subject + haven\'t/hasn\'t + past participle' },
-                            { label: '?', text: 'Have/Has + subject + past participle?' }
+                            {
+                                label: '+',
+                                text: 'Subject + have/has + past participle'
+                            },
+                            {
+                                label: '−',
+                                text: 'Subject + haven\'t/hasn\'t + past participle'
+                            },
+                            {
+                                label: '?',
+                                text: 'Have/Has + subject + past participle?'
+                            }
                         ],
                         examples: [
                             'I\'ve learned the vocabulary for the test.',
@@ -1752,7 +2301,9 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '10b', title: 'How good is your memory?', page: '120-121',
+                id: '10b',
+                title: 'How good is your memory?',
+                page: '120-121',
                 topicTags: ['memory', 'present perfect vs past simple', '-ed endings'],
                 vocabulary: {
                     title: 'Things to remember',
@@ -1772,8 +2323,14 @@ const GRAMMAR_LESSONS = [
                         title: 'Present perfect vs Past simple',
                         rule: 'Both tenses talk about the past. The choice depends on whether we say WHEN it happened.',
                         form: [
-                            { label: 'Past simple', text: 'when we KNOW or SAY the exact time' },
-                            { label: 'Present perfect', text: 'when we DON\'T say or know the exact time' }
+                            {
+                                label: 'Past simple',
+                                text: 'when we KNOW or SAY the exact time'
+                            },
+                            {
+                                label: 'Present perfect',
+                                text: 'when we DON\'T say or know the exact time'
+                            }
                         ],
                         examples: [
                             'Nelson HAS WON the USA Memory Championship four times. (general — no exact time)',
@@ -1786,11 +2343,25 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '10c', title: 'Good learning habits', page: '122-123',
+                id: '10c',
+                title: 'Good learning habits',
+                page: '122-123',
                 topicTags: ['daily habits', 'word focus: up'],
                 vocabulary: {
                     title: 'Daily habits',
-                    words: ['drinking coffee', 'brushing teeth', 'swimming', 'biting fingernails', 'eating chocolate', 'checking phone', 'smoking', 'practising guitar', 'putting sugar in tea', 'eating breakfast', 'learning new words']
+                    words: [
+                        'drinking coffee',
+                        'brushing teeth',
+                        'swimming',
+                        'biting fingernails',
+                        'eating chocolate',
+                        'checking phone',
+                        'smoking',
+                        'practising guitar',
+                        'putting sugar in tea',
+                        'eating breakfast',
+                        'learning new words'
+                    ]
                 },
                 grammar: [
                     {
@@ -1807,10 +2378,23 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '10d', title: 'Communication problems', page: '124',
-                topicTags: ['checking & clarifying', 'contrastive stress'],
+                id: '10d',
+                title: 'Communication problems + voicemail + memory video',
+                page: '124-127',
+                topicTags: ['checking & clarifying', 'contrastive stress', 'email & websites', 'imperatives', 'memory', 'video lesson'],
+                vocabulary: [
+                    {
+                        title: 'Email addresses & websites (10e)',
+                        words: ['@ = at', '. = dot', '_ = underscore', '/ = slash', '- = hyphen'],
+                        note: 'Example: j_jones@hotmail.co.uk → "j underscore jones at hotmail dot co dot uk"'
+                    },
+                    {
+                        title: 'Language learning (10f)',
+                        words: ['alphabet', 'classroom', 'pronunciation', 'memorize', 'repeat', 'translate', 'vocabulary', 'practice', 'fluent']
+                    }
+                ],
                 pronunciation: {
-                    title: 'Contrastive stress',
+                    title: 'Contrastive stress (10d)',
                     rule: 'When you correct information, put strong stress on the corrected word — that signals the change to the listener.',
                     examples: [
                         'A: Is that three in the MORNING? — B: No, in the AFTERNOON.',
@@ -1820,7 +2404,7 @@ const GRAMMAR_LESSONS = [
                 },
                 grammar: [
                     {
-                        title: 'Real life — Checking and clarifying',
+                        title: 'Real life — Checking and clarifying (10d)',
                         rule: 'When you can\'t hear or understand on the phone, use these phrases to check the information.',
                         examples: [
                             'Is that three in the morning? — No, in the afternoon.',
@@ -1829,20 +2413,9 @@ const GRAMMAR_LESSONS = [
                             'Have you called our colleagues? — Yes, I have.',
                             'Have you emailed me all the designs? — No, I haven\'t.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '10e', title: 'Please leave a message', page: '125',
-                topicTags: ['email & websites', 'imperatives'],
-                vocabulary: {
-                    title: 'Email addresses & websites',
-                    words: ['@ = at', '. = dot', '_ = underscore', '/ = slash', '- = hyphen'],
-                    note: 'Example: j_jones@hotmail.co.uk → "j underscore jones at hotmail dot co dot uk"'
-                },
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Imperatives in messages',
+                        title: 'Writing skill — Imperatives in messages (10e)',
                         rule: 'When you write a phone message, simplify what the speaker said by using the IMPERATIVE form (= just the base verb, no subject).',
                         examples: [
                             'Speaker: "He can download them from this address: omarox.com/a-1"',
@@ -1852,21 +2425,9 @@ const GRAMMAR_LESSONS = [
                         ]
                     }
                 ]
-            },
-            {
-                id: '10f', title: 'Memory and language learning', page: '126-127',
-                topicTags: ['memory', 'video lesson'],
-                vocabulary: {
-                    title: 'Language learning',
-                    words: ['alphabet', 'classroom', 'pronunciation', 'memorize', 'repeat', 'translate', 'vocabulary', 'practice', 'fluent']
-                }
             }
         ]
     },
-
-    // ============================================================
-    //  UNIT 11 — TOURISM
-    // ============================================================
     {
         unitId: 'unit11',
         title: 'Tourism',
@@ -1883,30 +2444,53 @@ const GRAMMAR_LESSONS = [
         ],
         lessons: [
             {
-                id: '11a', title: 'Planning a trip', page: '130-131',
+                id: '11a',
+                title: 'Planning a trip',
+                page: '130-131',
                 topicTags: ['in another country', 'have to / can', '/hæftə/'],
                 vocabulary: {
                     title: 'In another country',
-                    words: ['climate', 'currency', 'licence', 'multicultural', 'right-hand side', 'temperature', 'visa', 'language', 'road travel', 'weather', 'money', 'visas']
+                    words: [
+                        'climate',
+                        'currency',
+                        'licence',
+                        'multicultural',
+                        'right-hand side',
+                        'temperature',
+                        'visa',
+                        'language',
+                        'road travel',
+                        'weather',
+                        'money',
+                        'visas'
+                    ]
                 },
                 pronunciation: {
                     title: '/hæftə/',
                     rule: '"have to" is pronounced /hæftə/ in connected speech (one quick word, not two).',
-                    examples: [
-                        'I /hæftə/ get a visa.',
-                        'You /hæftə/ start work at nine.',
-                        'Tourists don\'t /hæftə/ get a new licence.'
-                    ]
+                    examples: ['I /hæftə/ get a visa.', 'You /hæftə/ start work at nine.', 'Tourists don\'t /hæftə/ get a new licence.']
                 },
                 grammar: [
                     {
                         title: 'have to / don\'t have to / can / can\'t',
                         rule: 'Use these modals to talk about rules. They are followed by the BASE FORM of the main verb.',
                         form: [
-                            { label: 'have to', text: 'necessary (a rule you must follow)' },
-                            { label: "don't have to", text: 'not necessary (it\'s your choice)' },
-                            { label: 'can', text: 'possible / allowed' },
-                            { label: "can't", text: 'not possible / not allowed' }
+                            {
+                                label: 'have to',
+                                text: 'necessary (a rule you must follow)'
+                            },
+                            {
+                                label: 'don\'t have to',
+                                text: 'not necessary (it\'s your choice)'
+                            },
+                            {
+                                label: 'can',
+                                text: 'possible / allowed'
+                            },
+                            {
+                                label: 'can\'t',
+                                text: 'not possible / not allowed'
+                            }
                         ],
                         examples: [
                             'You HAVE TO get a holiday visa from the Australian Embassy.',
@@ -1920,17 +2504,36 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '11b', title: 'On holiday', page: '132-133',
-                topicTags: ['tourism', 'word families', "should/shouldn't", 'word focus: take'],
+                id: '11b',
+                title: 'On holiday',
+                page: '132-133',
+                topicTags: ['tourism', 'word families', 'should/shouldn\'t', 'word focus: take'],
                 vocabulary: [
                     {
                         title: 'Tourism vocabulary',
-                        words: ['return ticket', 'single ticket', 'carry-on bag', 'book the hotel', 'rent a car', 'buy souvenirs', 'tour guide', 'sightseeing', 'public transport', 'local food', 'check in'],
+                        words: [
+                            'return ticket',
+                            'single ticket',
+                            'carry-on bag',
+                            'book the hotel',
+                            'rent a car',
+                            'buy souvenirs',
+                            'tour guide',
+                            'sightseeing',
+                            'public transport',
+                            'local food',
+                            'check in'
+                        ],
                         note: 'Word families — when you learn a new word, learn the family: tour (verb) → tourism (noun) → tourist (person) → tour guide (collocation).'
                     },
                     {
                         title: 'Tourism categories',
-                        words: ['Type of holiday: camping, hiking, sightseeing', 'Type of ticket: return, single', 'Things you buy: souvenirs', 'Other people: tour guide, tourist']
+                        words: [
+                            'Type of holiday: camping, hiking, sightseeing',
+                            'Type of ticket: return, single',
+                            'Things you buy: souvenirs',
+                            'Other people: tour guide, tourist'
+                        ]
                     }
                 ],
                 grammar: [
@@ -1938,9 +2541,18 @@ const GRAMMAR_LESSONS = [
                         title: 'should / shouldn\'t',
                         rule: 'Use should/shouldn\'t to give ADVICE. Followed by the base form. No auxiliary do/does in negatives or questions.',
                         form: [
-                            { label: '+', text: 'Subject + should + base verb' },
-                            { label: '−', text: 'Subject + shouldn\'t + base verb' },
-                            { label: '?', text: 'Should + subject + base verb?' }
+                            {
+                                label: '+',
+                                text: 'Subject + should + base verb'
+                            },
+                            {
+                                label: '−',
+                                text: 'Subject + shouldn\'t + base verb'
+                            },
+                            {
+                                label: '?',
+                                text: 'Should + subject + base verb?'
+                            }
                         ],
                         examples: [
                             'You SHOULD rent a car.',
@@ -1961,16 +2573,27 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '11c', title: 'Should I go there?', page: '134-135',
+                id: '11c',
+                title: 'Should I go there?',
+                page: '134-135',
                 topicTags: ['Antarctica', 'reasons for/against', 'something / nobody / anywhere'],
                 grammar: [
                     {
                         title: 'something, nobody, anywhere — compound pronouns',
                         rule: 'Combine some-/any-/no- with -thing/-body/-where to talk about people, places, and objects/activities.',
                         form: [
-                            { label: '-thing', text: 'an object or activity' },
-                            { label: '-body', text: 'a person' },
-                            { label: '-where', text: 'a place' }
+                            {
+                                label: '-thing',
+                                text: 'an object or activity'
+                            },
+                            {
+                                label: '-body',
+                                text: 'a person'
+                            },
+                            {
+                                label: '-where',
+                                text: 'a place'
+                            }
                         ],
                         examples: [
                             'I\'d like to do SOMETHING exciting. (positive sentence → some-)',
@@ -1983,20 +2606,41 @@ const GRAMMAR_LESSONS = [
                 ]
             },
             {
-                id: '11d', title: 'A holiday in South America', page: '136',
-                topicTags: ['making suggestions', '/ʌ/ /ʊ/ /uː/'],
+                id: '11d',
+                title: 'A holiday in S. America + questionnaires + London tour',
+                page: '136-139',
+                topicTags: [
+                    'making suggestions',
+                    '/ʌ/ /ʊ/ /uː/',
+                    'questionnaire',
+                    'hotel & questionnaire',
+                    'writing: questionnaire',
+                    'open & closed questions',
+                    'London buildings',
+                    'video lesson'
+                ],
+                vocabulary: {
+                    title: 'London landmarks (11f)',
+                    words: [
+                        'the Shard',
+                        'the Gherkin',
+                        'the Cheesegrater',
+                        'the Walkie-Talkie',
+                        'Tower Bridge',
+                        'River Thames',
+                        'the Tower of London',
+                        'football pitch'
+                    ],
+                    note: 'London buildings often get nicknames from their shape: the Gherkin (cucumber-shaped), the Cheesegrater, the Walkie-Talkie. The Shard is the tallest building in western Europe.'
+                },
                 pronunciation: {
-                    title: '/ʌ/, /ʊ/ or /uː/',
+                    title: '/ʌ/, /ʊ/ or /uː/ (11d)',
                     rule: 'Three vowel sounds that look similar in spelling but sound different. Listen carefully and learn each word\'s sound.',
-                    examples: [
-                        '/ʌ/ — bus, but, love',
-                        '/ʊ/ — could, should, book',
-                        '/uː/ — cruise, food, you'
-                    ]
+                    examples: ['/ʌ/ — bus, but, love', '/ʊ/ — could, should, book', '/uː/ — cruise, food, you']
                 },
                 grammar: [
                     {
-                        title: 'Real life — Making suggestions',
+                        title: 'Real life — Making suggestions (11d)',
                         rule: 'Several common phrases to suggest an idea and to respond.',
                         examples: [
                             'Suggesting: You SHOULD go there. — How about visiting the Himalayas? — Can I make a suggestion?',
@@ -2004,15 +2648,9 @@ const GRAMMAR_LESSONS = [
                             'Responding +: Maybe you\'re right. / That\'s a really good idea.',
                             'Responding −: But the disadvantage is that it\'s expensive. / But the advantage is that it\'s with a tour guide.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '11e', title: 'A questionnaire', page: '137',
-                topicTags: ['questionnaire', 'hotel & questionnaire', 'writing: questionnaire', 'open & closed questions'],
-                grammar: [
+                    },
                     {
-                        title: 'Writing skill — Closed and open questions',
+                        title: 'Writing skill — Closed and open questions (11e)',
                         rule: 'Good questionnaires use BOTH types. Closed = yes/no answer. Open = longer answer.',
                         examples: [
                             'CLOSED — Did the tour guide answer all your questions? (yes/no)',
@@ -2021,20 +2659,9 @@ const GRAMMAR_LESSONS = [
                             'OPEN — What other suggestions can you make? (longer answer)',
                             'Tip: Ask a closed question first, then a follow-up open question for more detail.'
                         ]
-                    }
-                ]
-            },
-            {
-                id: '11f', title: 'A tour of London', page: '138-139',
-                topicTags: ['London buildings', 'video lesson'],
-                vocabulary: {
-                    title: 'London landmarks',
-                    words: ['the Shard', 'the Gherkin', 'the Cheesegrater', 'the Walkie-Talkie', 'Tower Bridge', 'River Thames', 'the Tower of London', 'football pitch'],
-                    note: 'London buildings often get nicknames from their shape: the Gherkin (cucumber-shaped), the Cheesegrater, the Walkie-Talkie. The Shard is the tallest building in western Europe.'
-                },
-                grammar: [
+                    },
                     {
-                        title: 'Real life — Giving a tour',
+                        title: 'Real life — Giving a tour (11f)',
                         rule: 'Useful phrases for guiding visitors around a place.',
                         examples: [
                             'Opening: Good morning and welcome to the tour! Today, I\'m going to show you around the city of London.',
