@@ -5997,10 +5997,23 @@
 
         .bubbles-clue-word {
             color: white;
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.35;
+            padding: 0 6px;
             text-shadow: 0 2px 8px rgba(0,0,0,0.3);
             animation: clueAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        /* Highlight the blank "___" inside the question so the eye can find
+           it instantly in long sentences. */
+        .bubbles-clue-word .blank-mark {
+            display: inline-block;
+            padding: 0 6px;
+            margin: 0 2px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 6px;
+            font-weight: 900;
+            color: #fff8;
         }
 
         @keyframes clueAppear {

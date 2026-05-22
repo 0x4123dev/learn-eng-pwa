@@ -40,18 +40,48 @@ function getStarRating(won, lives, maxLives) {
     return 1;
 }
 
-// ==================== WORD POOL ====================
+// ==================== WORD POOL — GRAMMAR VOCAB QUESTIONS (v3.33) ====================
+// Source: every vocabulary question across the 11 Grammar units (~700+ items).
+// Each pool entry wraps a single grammar question:
+//   en         = the correct option (shown on the bubble)
+//   vi         = the question text  (shown as the clue — usually "X ___ Y.")
+//   emoji      = the unit icon       (small visual hint)
+//   _sourceQ   = ref to the original question — gives us the 3 sibling
+//                distractors so each round's bubbles match what the user
+//                would see in the Grammar tab quiz.
+//   _unitId    = which unit the question came from (for stats / scoring)
+// Bubbles should be readable at a glance. Cap option text at this length
+// so all 4 chips fit comfortably on a phone screen.
+const BUBBLE_MAX_OPTION_LEN = 22;
+
 function getGameWordPool(min) {
     min = min || 20;
-    var learned = [];
-    if (appState && appState.srs) {
-        Object.keys(appState.srs).forEach(function(word) {
-            var entry = ieltsVocabulary.find(function(v) { return v.en === word; });
-            if (entry) learned.push(entry);
-        });
+    if (typeof GRAMMAR_UNITS === 'undefined') return [];
+    const pool = [];
+    for (const unit of GRAMMAR_UNITS) {
+        for (const q of unit.questions) {
+            if (q.type !== 'vocabulary') continue;
+            if (!Array.isArray(q.options) || q.options.length < 4) continue;
+            if (typeof q.correct !== 'number') continue;
+            // Skip the question if ANY option is too long — all four become
+            // bubbles, so they all need to fit.
+            const allShort = q.options.every(opt =>
+                typeof opt === 'string' && opt.trim().length > 0 &&
+                opt.trim().length <= BUBBLE_MAX_OPTION_LEN
+            );
+            if (!allShort) continue;
+            const correctOpt = String(q.options[q.correct]).trim();
+            pool.push({
+                en: correctOpt,
+                vi: String(q.q || '').trim(),
+                emoji: unit.icon || '📝',
+                _sourceQ: q,
+                _unitId: unit.id,
+                _topic: q.topic || ''
+            });
+        }
     }
-    if (learned.length >= min) return shuffleArray(learned);
-    return shuffleArray(ieltsVocabulary.slice(0, Math.max(min, 50)));
+    return shuffleArray(pool);
 }
 
 // ==================== GAME STATE ====================
@@ -250,7 +280,7 @@ function renderBubblesUI() {
             <div class="bubbles-combo-banner" id="bubblesCombo"></div>
 
             <div class="bubbles-clue" id="bubblesClue">
-                <div class="bubbles-clue-label">Tap the correct English word!</div>
+                <div class="bubbles-clue-label">Pop the bubble that fills the blank!</div>
                 <div class="bubbles-clue-emoji" id="bubblesClueEmoji"></div>
                 <div class="bubbles-clue-word" id="bubblesClueWord">...</div>
             </div>
@@ -277,11 +307,36 @@ function startBubblesRound() {
     const correct = bubblesState.correctWords[bubblesState.round - 1];
     bubblesState.currentWord = correct;
 
-    // Pick distractors
+    // Pick distractors. When the correct answer comes from a grammar
+    // question, we use that question's OWN 3 sibling options as the
+    // primary distractors — same as the user would see in Grammar tab.
+    // For medium (5 bubbles) / hard (6 bubbles) modes we top up with
+    // distractors from elsewhere in the pool.
     const numDistractors = bubblesState.numBubbles - 1;
-    const distractors = shuffleArray(
-        bubblesState.pool.filter(w => w.en !== correct.en)
-    ).slice(0, numDistractors);
+    let distractors = [];
+    if (correct._sourceQ && Array.isArray(correct._sourceQ.options)) {
+        const q = correct._sourceQ;
+        const siblingOpts = q.options
+            .filter((_, i) => i !== q.correct)
+            .map(opt => ({
+                en: String(opt).trim(),
+                vi: '',     // distractors don't need a clue
+                emoji: '',
+                _isDistractor: true
+            }));
+        // Skip any that accidentally match correct text (shouldn't happen,
+        // but be safe)
+        distractors = siblingOpts.filter(d => d.en !== correct.en);
+    }
+    if (distractors.length < numDistractors) {
+        // Top up with random pool entries (different .en)
+        const exclude = new Set([correct.en, ...distractors.map(d => d.en)]);
+        const more = shuffleArray(bubblesState.pool.filter(w => !exclude.has(w.en)))
+            .slice(0, numDistractors - distractors.length);
+        distractors = distractors.concat(more);
+    } else if (distractors.length > numDistractors) {
+        distractors = shuffleArray(distractors).slice(0, numDistractors);
+    }
     const options = shuffleArray([correct, ...distractors]);
 
     // Update UI
@@ -296,7 +351,16 @@ function startBubblesRound() {
     if (livesEl) livesEl.innerHTML = '\u2764\uFE0F'.repeat(bubblesState.lives) + '\uD83D\uDDA4'.repeat(bubblesState.maxLives - bubblesState.lives);
     if (emojiEl) emojiEl.textContent = correct.emoji;
     if (clueEl) {
-        clueEl.textContent = correct.vi;
+        // The clue text is now the GRAMMAR question, e.g.,
+        //   "George Washington was the first ___ of the USA."
+        // Wrap the underscore blank in a styled span so the eye finds it
+        // quickly. We HTML-escape the rest to avoid injection from data.
+        const safe = String(correct.vi || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        const withBlank = safe.replace(/_{2,}/g, '<span class="blank-mark">_____</span>');
+        clueEl.innerHTML = withBlank || '<em>(no clue)</em>';
         clueEl.style.animation = 'none';
         clueEl.offsetHeight;
         clueEl.style.animation = '';

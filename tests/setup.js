@@ -174,6 +174,9 @@ const EXPORT_NAMES = [
     '_buildQuizStateFromQuestions', 'scoreSoFar_',
     // grammar UI — units collapse/expand (v3.32.2)
     'toggleGrammarUnitExpanded', 'expandAllGrammarUnits', 'collapseAllGrammarUnits',
+    // word-bubbles game (v3.33)
+    'getGameWordPool', 'BUBBLE_DIFFICULTIES', 'bubblesState',
+    'getBubbleRank', 'getStarRating',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
@@ -226,6 +229,10 @@ function loadAppCode(opts) {
     // exercises quizHeaderHTML / renderMCQuestion / finishGrammarQuiz / etc.
     if (opts.includeGrammarUI) {
         fileList.push('js/grammar-ui.js');
+    }
+    // Word Bubbles game (v3.33+ pools from Grammar vocab questions).
+    if (opts.includeBubbles) {
+        fileList.push('js/word-bubbles.js');
     }
 
     let combined = '';
