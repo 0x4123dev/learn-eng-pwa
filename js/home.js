@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.38.1';
+const APP_VERSION = 'v3.38.2';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -340,8 +340,11 @@ function renderHome() {
     }
 
     // v3.38: Homepage now focuses on TWO goals — grow the pet (above) and
-    // keep the streak (below). Render the streak panel; everything else
-    // (lesson list, difficulty chips, history) was removed.
+    // keep the streak (below). Render BOTH; everything else (lesson list,
+    // difficulty chips, history) was removed.
+    if (typeof renderWordPet === 'function') {
+        try { renderWordPet(); } catch (e) { /* non-fatal */ }
+    }
     renderHomeStreakPanel();
 
     // The lesson-start card / difficulty chips / history are GONE from the

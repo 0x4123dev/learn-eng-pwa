@@ -144,6 +144,67 @@ suite('home: streak coverage — recordStudy is exported and idempotent', () => 
     });
 });
 
+// ============================================================================
+// HOMEPAGE STILL RENDERS THE PET (v3.38.2 regression — pet went missing)
+// ============================================================================
+// In v3.38.0 the homepage redesign accidentally placed renderWordPet() AFTER
+// an early-return guard added during the redesign, so the dog disappeared.
+// These tests lock in that calling renderHome() actually paints the pet.
+suite('home: renderHome() draws the pet hero zone', () => {
+    function setupHome(state) {
+        const env = loadAppCode();
+        env.localStorage.clear();
+        // The DOM stub auto-creates stable refs on first getElementById call.
+        // Pre-touch the elements that renderWordPet expects so we can
+        // observe their innerHTML.
+        env.document.getElementById('petHeroZone');
+        env.document.getElementById('petHeroStage');
+        env.document.getElementById('petHeroTopbar');
+        env.document.getElementById('petHeroXpbar');
+        env.document.getElementById('habitatEmojis');
+        env.document.getElementById('streakPanel');
+        env.__setAppState(Object.assign({
+            avatar: '🐶', username: 'Tester',
+            streak: 0, bestStreak: 0, points: 0, coins: 0,
+            dogLevel: 1, dogGrowthXP: 0,
+            lessonHistory: [], srs: {}, mistakes: [],
+            currentLesson: 0
+        }, state || {}));
+        env.__setCurrentUser('Tester');
+        return env;
+    }
+
+    test('renderHome() writes HTML into #petHeroStage', () => {
+        const env = setupHome();
+        // Just verify it doesn't throw + something got rendered.
+        let threw = false;
+        try { env.renderHome(); } catch (e) { threw = true; console.error(e); }
+        assert.falsy(threw, 'renderHome() should not throw on the new homepage');
+        const petHTML = env.document.__getLastInnerHTML('petHeroStage');
+        assert.truthy(petHTML && petHTML.length > 0,
+            `#petHeroStage should have HTML painted into it. Got: "${petHTML}"`);
+    });
+
+    test('renderHome() also paints the streak panel (both goals visible)', () => {
+        const env = setupHome({ streak: 5 });
+        env.renderHome();
+        const petHTML = env.document.__getLastInnerHTML('petHeroStage');
+        const streakHTML = env.document.__getLastInnerHTML('streakPanel');
+        assert.truthy(petHTML && petHTML.length > 0, 'pet not rendered');
+        assert.truthy(streakHTML && streakHTML.length > 0, 'streak panel not rendered');
+    });
+
+    test('renderHome() renders pet AT EVERY pet level (1, 5, 10)', () => {
+        for (const dogLevel of [1, 5, 10]) {
+            const env = setupHome({ dogLevel });
+            env.renderHome();
+            const petHTML = env.document.__getLastInnerHTML('petHeroStage');
+            assert.truthy(petHTML && petHTML.length > 0,
+                `pet missing at dogLevel=${dogLevel}`);
+        }
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
