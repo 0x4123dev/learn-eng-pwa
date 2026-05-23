@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v117';
+const CACHE_NAME = 'flashlingo-v118';
 const ASSETS = [
   '/',
   '/index.html',
@@ -57,6 +57,15 @@ self.addEventListener('activate', event => {
       )
     ).then(() => self.clients.claim())
   );
+});
+
+// Listen for the client telling a waiting SW to take over immediately.
+// Used by the page's "new version available" detector in app.js so the
+// new sw.js doesn't sit idle behind an old active SW.
+self.addEventListener('message', event => {
+  if (event && event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch: network-first, fall back to cache (always get latest)

@@ -911,14 +911,48 @@ function createConfetti() {
 }
 
 function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
-            .then(reg => {
-                // Check for updates immediately on every page load
-                reg.update();
-            })
-            .catch(() => {});
-    }
+    if (!('serviceWorker' in navigator)) return;
+
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+        .then(reg => {
+            // Force a check on every load — gets us the freshest sw.js even
+            // if the browser would otherwise cache it.
+            reg.update();
+
+            // Watch for an updated sw.js becoming available.
+            reg.addEventListener('updatefound', () => {
+                const installing = reg.installing;
+                if (!installing) return;
+                installing.addEventListener('statechange', () => {
+                    // "installed" + an existing controller means a NEW SW has
+                    // finished installing and is waiting to take over from
+                    // the OLD active SW. Tell it to take over now.
+                    if (installing.state === 'installed' &&
+                        navigator.serviceWorker.controller) {
+                        // Tell the waiting SW to skipWaiting (in case the
+                        // OLD active SW doesn't call it on install). Older
+                        // SWs ignore unknown messages, so this is safe.
+                        try { installing.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
+                    }
+                });
+            });
+
+            // When the active SW changes (a new one took over), reload once
+            // so the user gets the new JS/CSS without a manual refresh.
+            // Guarded by a flag to avoid an infinite reload loop.
+            let _reloadOnControllerChange = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (_reloadOnControllerChange) return;
+                _reloadOnControllerChange = true;
+                console.log('[FlashLingo] New version installed — reloading…');
+                window.location.reload();
+            });
+            // Only enable reload-on-change AFTER initial registration so we
+            // don't reload on the very first load (when controller becomes
+            // the freshly-registered SW for the first time).
+            setTimeout(() => { _reloadOnControllerChange = true; }, 1500);
+        })
+        .catch(() => {});
 }
 
 function formatDate(timestamp) {
