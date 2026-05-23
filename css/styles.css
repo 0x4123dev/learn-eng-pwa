@@ -38,7 +38,12 @@
         }
 
         html, body {
-            height: 100%;
+            /* 100dvh accounts for the dynamic viewport (mobile URL bar
+               collapse/expand) so the bottom nav truly sits at the
+               bottom — 100% / 100vh leave a gap on iOS Safari. */
+            height: 100dvh;
+            /* Fallback for browsers without dvh support */
+            min-height: 100vh;
             overflow: hidden;
         }
 
@@ -58,10 +63,14 @@
         }
 
         .screens-container {
+            /* Take up all remaining space ABOVE the bottom-nav. The nav
+               is a normal flex child below us now (no more fragile
+               margin-bottom hack that hardcoded a 64px reservation
+               which didn't always match the real nav height). */
             flex: 1;
+            min-height: 0; /* allow inner scrolling within flex parent */
             overflow: hidden;
             position: relative;
-            margin-bottom: 64px;
         }
 
         .screen {
@@ -511,8 +520,13 @@
         }
 
         /* ==================== BOTTOM NAV ==================== */
+        /* Natural flex child — sits directly under .screens-container.
+           No `position: fixed` + no `bottom: 0` so the nav can't get
+           a gap below itself on viewports where the old `height: 100%`
+           fell short of the actual viewport height. */
         .bottom-nav {
             display: flex;
+            flex-shrink: 0;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -520,10 +534,6 @@
             padding-bottom: var(--safe-area-bottom);
             box-shadow: 0 -4px 24px rgba(31, 80, 50, 0.1);
             border-radius: 24px 24px 0 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
             z-index: 300;
         }
 
