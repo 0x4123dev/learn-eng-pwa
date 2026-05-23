@@ -1416,7 +1416,7 @@ const GRAMMAR_UNITS = [
         id: 'unit4',
         name: 'Unit 4: Free time',
         icon: '🎮',
-        color: '#06D6A0',
+        color: '#FB8500',
         description: 'Free-time activities • like/love + -ing • Frequency • can/can\'t • Sports',
         questions: [
             // ════════ VOCAB: VERB+NOUN COLLOCATIONS (15) ════════
@@ -2434,7 +2434,7 @@ const GRAMMAR_UNITS = [
         id: 'unit8',
         name: 'Unit 8: Appearance',
         icon: '👔',
-        color: '#FF9F1C',
+        color: '#F472B6',
         description: 'Clothes • Face & body • Present continuous • have got',
         questions: [
             // ════════ VOCABULARY: CLOTHES (15) ════════
@@ -3326,7 +3326,7 @@ const GRAMMAR_UNITS = [
         id: 'unit9',
         name: 'Unit 9: Entertainment',
         icon: '🎬',
-        color: '#9b59b6',
+        color: '#A78BFA',
         description: 'Films • TV • Nature in art • be going to • Sense verbs',
         questions: [
             // ════════ VOCABULARY: FILMS (12) ════════
@@ -4219,7 +4219,7 @@ const GRAMMAR_UNITS = [
         id: 'unit10',
         name: 'Unit 10: Learning',
         icon: '📚',
-        color: '#3A86FF',
+        color: '#60A5FA',
         description: 'Subjects • Learning verbs • Habits • Present perfect • Past simple',
         questions: [
             // ════════ VOCABULARY: SUBJECTS (10) ════════
@@ -5123,7 +5123,7 @@ const GRAMMAR_UNITS = [
         id: 'unit11',
         name: 'Unit 11: Tourism',
         icon: '✈️',
-        color: '#06D6A0',
+        color: '#34D399',
         description: 'Tourism • Visiting countries • have to / can / should • some/any/no',
         questions: [
             // ════════ VOCABULARY: TOURISM (15) ════════

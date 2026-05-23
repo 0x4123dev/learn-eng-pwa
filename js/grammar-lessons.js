@@ -846,7 +846,7 @@ const GRAMMAR_LESSONS = [
         unitId: 'unit4',
         title: 'Free time',
         icon: '🎮',
-        color: '#06D6A0',
+        color: '#FB8500',
         intro: 'Talk about free-time activities, frequency, and what you can/can\'t do.',
         iCanGoals: [
             'Talk about likes and dislikes',
@@ -1848,7 +1848,7 @@ const GRAMMAR_LESSONS = [
     {
         unitId: 'unit8',
         title: 'Appearance',
-        icon: '👗',
+        icon: '👔',
         color: '#F472B6',
         intro: 'Talk about clothes, festivals, and people\'s appearance using present continuous and have got.',
         iCanGoals: [
