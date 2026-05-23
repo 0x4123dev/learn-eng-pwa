@@ -2327,6 +2327,10 @@ function completeSpeakingPractice() {
         appState.points = (appState.points || 0) + points;
     }
     saveVideoStats(stats);
+    // Streak: any speaking-practice completion counts as today's study event.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
+    }
     showSpeakingPracticeResults(video, rating, points);
 }
 
@@ -2490,6 +2494,10 @@ function showVideoQuizResults() {
     // Update global points
     if (typeof appState !== 'undefined' && appState && points > 0) {
         appState.points = (appState.points || 0) + points;
+    }
+    // Streak: video-quiz completion counts as today's study event.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
     }
     saveVideoStats(stats);
 

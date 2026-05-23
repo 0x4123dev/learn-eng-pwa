@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.37.0';
+const APP_VERSION = 'v3.38.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -207,6 +207,107 @@ function dismissStreakModalAndStart() {
     if (homeScreen && homeScreen.scrollTo) homeScreen.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ============================================================================
+//  HOMEPAGE STREAK PANEL (v3.38)
+// ============================================================================
+// The homepage now has just two focused goals:
+//   1. Grow the pet (rendered above in #petHeroZone — unchanged)
+//   2. Keep the daily streak (this panel)
+// No lesson list, difficulty chips, or history — those moved to other tabs.
+function renderHomeStreakPanel() {
+    const panel = document.getElementById('streakPanel');
+    if (!panel || !appState) return;
+
+    const streak = appState.streak || 0;
+    const best = appState.bestStreak || streak;
+    const tier = (typeof getStreakTier === 'function') ? getStreakTier(streak) : 0;
+    const nextMs = (typeof getNextMilestone === 'function') ? getNextMilestone(streak) : null;
+    const studiedToday = (typeof _hasStudiedToday === 'function') ? _hasStudiedToday() : false;
+    const days = (typeof _last7DaysCalendar === 'function') ? _last7DaysCalendar() : [];
+
+    // ── Streak tier label ──
+    let tierName, tierColour;
+    if (streak >= 30)      { tierName = 'Super Streak'; tierColour = '#ef4444'; }
+    else if (streak >= 14) { tierName = 'Unstoppable'; tierColour = '#f97316'; }
+    else if (streak >= 7)  { tierName = 'On Fire';     tierColour = '#fbbf24'; }
+    else if (streak >= 3)  { tierName = 'Heating Up';  tierColour = '#fde68a'; }
+    else                   { tierName = 'Getting Started'; tierColour = '#cbd5e1'; }
+
+    // ── Progress to next milestone ──
+    let progressHTML = '';
+    if (nextMs) {
+        const prev = streak >= 30 ? 30 : streak >= 14 ? 14 : streak >= 7 ? 7 : streak >= 3 ? 3 : 0;
+        const pct = Math.min(100, Math.round(((streak - prev) / (nextMs - prev)) * 100));
+        progressHTML = `
+            <div class="home-streak-progress">
+                <div class="home-streak-progress-bar">
+                    <div class="home-streak-progress-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="home-streak-progress-label">
+                    <strong>${nextMs - streak}</strong> day${nextMs - streak !== 1 ? 's' : ''} to <strong>${nextMs}</strong>
+                </div>
+            </div>
+        `;
+    } else {
+        progressHTML = `<div class="home-streak-progress-label">🏆 All milestones reached!</div>`;
+    }
+
+    // ── Last-7-days calendar ──
+    const calendarHTML = days.map(d => `
+        <div class="home-streak-day ${d.studied ? 'studied' : ''} ${d.isToday ? 'today' : ''}">
+            <div class="home-streak-day-label">${d.dateLabel}</div>
+            <div class="home-streak-day-dot">${d.studied ? '🔥' : (d.isToday ? '○' : '·')}</div>
+        </div>
+    `).join('');
+
+    // ── Today CTA ──
+    const ctaHTML = studiedToday
+        ? `<div class="home-streak-done">✓ Studied today — streak safe</div>`
+        : `<button class="home-streak-cta" onclick="goLearnToday()">📚 Learn today's words</button>`;
+
+    panel.innerHTML = `
+        <div class="home-streak-card">
+            <div class="home-streak-head">
+                <div class="home-streak-tier" style="color:${tierColour}">${tierName.toUpperCase()}</div>
+                <div class="home-streak-number ${tier > 0 ? 'streak-tier-' + tier : ''}">
+                    🔥 <span>${streak}</span>
+                </div>
+                <div class="home-streak-unit">day${streak !== 1 ? 's' : ''} in a row</div>
+            </div>
+
+            <div class="home-streak-week">${calendarHTML}</div>
+
+            ${progressHTML}
+
+            <div class="home-streak-best">Best ever: <strong>${best}</strong> day${best !== 1 ? 's' : ''}</div>
+
+            ${ctaHTML}
+        </div>
+    `;
+}
+
+// CTA → jump to a learning activity. We pick the highest-value action:
+// next vocabulary lesson if one exists, else the Topics tab.
+function goLearnToday() {
+    if (typeof getNextPracticeLesson === 'function' && typeof startLesson === 'function') {
+        try {
+            const next = getNextPracticeLesson();
+            if (next && typeof next.lessonNum === 'number') {
+                startLesson(next.lessonNum);
+                return;
+            }
+        } catch (e) { /* fall through */ }
+    }
+    if (typeof startNextLesson === 'function') {
+        try { startNextLesson(); return; } catch (e) { /* fall through */ }
+    }
+    // Last resort: open the Topics tab
+    if (typeof switchScreen === 'function') {
+        switchScreen('topicsScreen');
+        if (typeof renderTopicsHome === 'function') renderTopicsHome();
+    }
+}
+
 function renderHome() {
     if (!appState) return;
 
@@ -218,8 +319,6 @@ function renderHome() {
     if (pointsEl) pointsEl.textContent = appState.points;
     const streakEl = document.getElementById('homeStreak');
     if (streakEl) streakEl.textContent = appState.streak;
-    const lessonsEl = document.getElementById('homeLessons');
-    if (lessonsEl) lessonsEl.textContent = `${appState.currentLesson || 0}/${TOTAL_LESSONS}`;
 
     var verEl = document.getElementById('appVersion');
     if (verEl) verEl.textContent = APP_VERSION;
@@ -240,6 +339,17 @@ function renderHome() {
         setTimeout(() => maybeShowWeeklyRecap(), 1200);
     }
 
+    // v3.38: Homepage now focuses on TWO goals — grow the pet (above) and
+    // keep the streak (below). Render the streak panel; everything else
+    // (lesson list, difficulty chips, history) was removed.
+    renderHomeStreakPanel();
+
+    // The lesson-start card / difficulty chips / history are GONE from the
+    // home page in v3.38 — exit before the legacy code touches them.
+    const lessonStartCard = document.getElementById('lessonStartCard');
+    if (!lessonStartCard) return;
+
+    // ----- LEGACY (no longer rendered — kept for safety only) -----
     // Calculate lessons completed today
     const today = new Date().toDateString();
     const todayLessons = (appState.lessonHistory || []).filter(h => {
@@ -249,11 +359,10 @@ function renderHome() {
     if (todayEl) todayEl.textContent = todayLessons;
 
     // Update difficulty tab counts
-    updateDifficultyCounts();
+    if (typeof updateDifficultyCounts === 'function') updateDifficultyCounts();
 
     // Get lesson based on filter
     const displayLesson = getNextLessonForDifficulty(selectedDifficultyFilter);
-    const lessonStartCard = document.getElementById('lessonStartCard');
 
     // Check if all lessons in selected difficulty are complete
     const range = getLessonRangeForDifficulty(selectedDifficultyFilter);
@@ -908,8 +1017,6 @@ const PET_QUESTS = [
     { id: 'srs',       text: 'Complete an SRS review session',   coins: 5, hunger: 30,
       eligible: s => s.srs && Object.keys(s.srs).length >= 3 },
     { id: 'wotd',      text: 'Open the Word of the Day',        coins: 3, hunger: 20,
-      eligible: () => true },
-    { id: 'bubbles',   text: 'Play Word Bubbles',               coins: 5, hunger: 30,
       eligible: () => true },
     { id: 'streak3',   text: 'Study 3 days in a row',           coins: 15, hunger: 50,
       eligible: () => true },

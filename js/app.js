@@ -62,11 +62,6 @@ const achievements = [
     { id: 'hunter-first', name: 'Word Hunter', icon: '🔍' },
     { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' },
 
-    // Games
-    { id: 'bubbles-first', name: 'Bubble Pop', icon: '🫧' },
-    { id: 'bubbles-10', name: 'Bubble Mania', icon: '🎪' },
-    { id: 'bubbles-perfect', name: 'Perfect Bubbles', icon: '💯' },
-
     // Music
     { id: 'rhythm-first', name: 'Beat Maker', icon: '🥁' },
     { id: 'rhythm-10', name: 'Rhythm Star', icon: '⭐' },
@@ -557,14 +552,7 @@ function loginUser(username) {
     if (appState.wordOfDayViewed === undefined) appState.wordOfDayViewed = null;
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
-    if (appState.bubblesStats === undefined) appState.bubblesStats = { gamesPlayed: 0, highScore: 0, bestRound: 0, totalScore: 0, totalStars: 0, wordsCollected: [], bestCombo: 0, wins: 0, difficultyStats: {} };
-    // Migrate old bubblesStats to new fields
-    if (appState.bubblesStats.totalScore === undefined) appState.bubblesStats.totalScore = 0;
-    if (appState.bubblesStats.totalStars === undefined) appState.bubblesStats.totalStars = 0;
-    if (appState.bubblesStats.wordsCollected === undefined) appState.bubblesStats.wordsCollected = [];
-    if (appState.bubblesStats.bestCombo === undefined) appState.bubblesStats.bestCombo = 0;
-    if (appState.bubblesStats.wins === undefined) appState.bubblesStats.wins = 0;
-    if (appState.bubblesStats.difficultyStats === undefined) appState.bubblesStats.difficultyStats = {};
+    // (v3.38: Word Bubbles game removed — bubblesStats no longer migrated.)
 
     // Video stats migration
     if (!appState.videoStats) appState.videoStats = { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
@@ -833,7 +821,7 @@ let _profileOriginScreen = 'homeScreen';
 
 function switchScreen(screenId) {
     // Close any open overlays
-    document.querySelectorAll('.bubbles-overlay, .music-menu-overlay').forEach(el => {
+    document.querySelectorAll('.music-menu-overlay').forEach(el => {
         el.classList.remove('active');
         el.innerHTML = '';
     });

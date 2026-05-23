@@ -2,10 +2,6 @@
 
 // Music menu overlay
 function showMusicMenu() {
-    // Close bubbles if open
-    const bo = document.getElementById('bubblesOverlay');
-    if (bo) { bo.classList.remove('active'); bo.innerHTML = ''; }
-
     const overlay = document.getElementById('musicMenuOverlay');
     overlay.classList.add('active');
     renderMusicMenu();

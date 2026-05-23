@@ -256,6 +256,10 @@ function onWordChantEnd(quizPassed) {
         appState.musicStats = { rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 }, wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 } };
     }
     appState.musicStats.wordChant.gamesPlayed++;
+    // Streak: any chant game completion counts as today's study event.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
+    }
     saveUserData(currentUser, appState);
 
     // Achievements

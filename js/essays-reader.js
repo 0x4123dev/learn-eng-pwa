@@ -304,6 +304,10 @@ function markWordKnown() {
     const word = document.getElementById('wordPopupWord').textContent.toLowerCase();
     if (!appState.essayWords) appState.essayWords = {};
     appState.essayWords[word] = 'known';
+    // Streak: marking an essay word (known or learn) counts as study activity.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
+    }
     saveUserData(currentUser, appState);
 
     if (currentEssayWordEl) {
@@ -325,6 +329,10 @@ function markWordLearn() {
     const word = document.getElementById('wordPopupWord').textContent.toLowerCase();
     if (!appState.essayWords) appState.essayWords = {};
     appState.essayWords[word] = 'learn';
+    // Streak: marking an essay word counts as study activity.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
+    }
     saveUserData(currentUser, appState);
 
     if (currentEssayWordEl) {

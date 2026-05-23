@@ -121,53 +121,9 @@
                 </div>
                 <div class="evolution-overlay" id="evolutionOverlay" style="display:none"></div>
 
-                <!-- Learn Panel — slides up from pet's world -->
-                <div class="learn-panel" id="learnPanel">
-                    <div class="learn-panel-handle"></div>
-
-                    <div class="difficulty-chips" id="difficultyChips">
-                        <button class="difficulty-chip active" data-level="beginning" onclick="filterByDifficulty('beginning')">
-                            🏠 Beginning <span class="chip-count" id="countBeginning">0</span>
-                        </button>
-                        <button class="difficulty-chip" data-level="basic" onclick="filterByDifficulty('basic')">
-                            🌱 Basic <span class="chip-count" id="countBasic">0</span>
-                        </button>
-                        <button class="difficulty-chip" data-level="intermediate" onclick="filterByDifficulty('intermediate')">
-                            🌿 Intermediate <span class="chip-count" id="countIntermediate">0</span>
-                        </button>
-                        <button class="difficulty-chip" data-level="upper" onclick="filterByDifficulty('upper')">
-                            🌳 Upper <span class="chip-count" id="countUpper">0</span>
-                        </button>
-                        <button class="difficulty-chip" data-level="advanced" onclick="filterByDifficulty('advanced')">
-                            ⭐ Advanced <span class="chip-count" id="countAdvanced">0</span>
-                        </button>
-                    </div>
-
-                    <div class="lesson-start-card" id="lessonStartCard">
-                        <div class="lesson-info">
-                            <div class="lesson-number">Lesson <span id="currentLessonNum">1</span></div>
-                            <div class="lesson-words-preview" id="lessonWordsPreview">5 new words to learn</div>
-                        </div>
-                        <button class="primary-btn start-lesson-btn" onclick="startNextLesson()">
-                            Start Lesson
-                        </button>
-                    </div>
-
-                    <div class="history-tabs">
-                        <button class="history-tab active" onclick="switchHistoryTab('history')">
-                            📚 History <span class="history-tab-count" id="historyCount">0</span>
-                        </button>
-                        <button class="history-tab" onclick="switchHistoryTab('mistakes')">
-                            🔄 Review <span class="history-tab-count" id="mistakesCount">0</span>
-                        </button>
-                    </div>
-                    <div class="lesson-history" id="lessonHistory">
-                        <div class="empty-history">No lessons completed yet</div>
-                    </div>
-                    <div class="mistakes-container" id="mistakesContainer">
-                        <div class="empty-history">No mistakes to review</div>
-                    </div>
-                </div>
+                <!-- Streak Panel — v3.38: replaces the lesson list. -->
+                <!-- Two goals only: grow the pet (above) + keep the streak (here). -->
+                <div class="streak-panel" id="streakPanel"></div>
             </div>
 
             <!-- Lesson Screen -->
@@ -316,7 +272,7 @@
         <nav class="bottom-nav" id="bottomNav" style="display: none;">
             <button class="nav-item active" onclick="switchScreen('homeScreen')">
                 <span class="icon">🏠</span>
-                <span>Learn</span>
+                <span>Home</span>
             </button>
             <button class="nav-item" onclick="switchScreen('topicsScreen'); renderTopicsHome()">
                 <span class="icon">📚</span>
@@ -333,10 +289,6 @@
             <button class="nav-item" onclick="switchScreen('essaysScreen')">
                 <span class="icon">📖</span>
                 <span>Essays</span>
-            </button>
-            <button class="nav-item" onclick="showBubblesHome()">
-                <span class="icon">🫧</span>
-                <span>Bubbles</span>
             </button>
             <button class="nav-item" onclick="showMusicMenu()">
                 <span class="icon">🎵</span>
@@ -366,9 +318,6 @@
 
     <!-- Word Hunt Overlay -->
     <div class="word-hunt-overlay" id="wordHuntOverlay"></div>
-
-    <!-- Word Bubbles Overlay -->
-    <div class="bubbles-overlay" id="bubblesOverlay"></div>
 
     <!-- Music Menu Overlay -->
     <div class="music-menu-overlay" id="musicMenuOverlay"></div>
@@ -572,7 +521,6 @@
     <script src="js/sentence-builder.js"></script>
     <script src="js/battle.js"></script>
     <script src="js/word-hunt.js"></script>
-    <script src="js/word-bubbles.js"></script>
     <script src="js/rhythm-tap.js"></script>
     <script src="js/videos.js"></script>
     <script src="js/lyrics-player.js"></script>

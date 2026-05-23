@@ -176,12 +176,12 @@ const EXPORT_NAMES = [
     'toggleGrammarUnitExpanded', 'expandAllGrammarUnits', 'collapseAllGrammarUnits',
     // grammar UI — lessons collapse/expand (v3.34)
     'toggleGrammarLessonUnitExpanded', 'expandAllGrammarLessonUnits', 'collapseAllGrammarLessonUnits',
-    // word-bubbles game (v3.33)
-    'getGameWordPool', 'BUBBLE_DIFFICULTIES', 'bubblesState',
-    'getBubbleRank', 'getStarRating',
+    // (v3.38: word-bubbles game removed.)
     // daily streak modal (v3.37)
     'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
     'hasShownStreakToday', 'markStreakShownToday',
+    // homepage streak panel (v3.38)
+    'renderHomeStreakPanel', 'goLearnToday',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',
@@ -235,10 +235,7 @@ function loadAppCode(opts) {
     if (opts.includeGrammarUI) {
         fileList.push('js/grammar-ui.js');
     }
-    // Word Bubbles game (v3.33+ pools from Grammar vocab questions).
-    if (opts.includeBubbles) {
-        fileList.push('js/word-bubbles.js');
-    }
+    // (v3.38: Word Bubbles game removed — no includeBubbles option.)
 
     let combined = '';
     for (const f of fileList) {

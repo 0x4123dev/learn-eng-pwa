@@ -1065,6 +1065,10 @@ function finishGrammarQuiz() {
     const state = _grammarQuizState;
     if (!state) return;
     const session = saveGrammarSession(state.unitId, state.questions, state.answers);
+    // Streak: any completed quiz counts as a study event for the day.
+    if (typeof recordStudy === 'function') {
+        try { recordStudy(); } catch (e) { /* non-fatal */ }
+    }
     const unit = getGrammarUnit(state.unitId);
     const pct = Math.round((session.score / session.total) * 100);
     const isPerfect = pct === 100;
