@@ -705,11 +705,11 @@ const GRAMMAR_LESSONS = [
                 },
                 pronunciation: {
                     title: '-s endings: /s/, /z/, /ɪz/',
-                    rule: 'The 3rd-person -s has THREE possible sounds depending on the final sound of the verb.',
+                    rule: 'The 3rd-person -s has THREE possible sounds depending on the final sound of the verb. Mẹo tiếng Việt: "Ông Sáu Sang Sông Chạy Xe SH" → /ɪz/; "Thời Fong Kiến Phương Tây" → /s/; còn lại → /z/.',
                     examples: [
-                        '/s/ — after voiceless sounds (k, p, t, f, θ): works, meets, starts',
-                        '/z/ — after voiced sounds (b, g, d, v, l, vowels): lives, goes, studies, travels',
-                        '/ɪz/ — after s, z, sh, ch, j sounds (extra syllable): finishes, teaches, watches'
+                        '/ɪz/ — sau âm xuýt (s/z/sh/ch/x/ge): finishes, teaches, watches, judges, boxes — nhớ qua câu "Ông Sáu Sang Sông Chạy Xe SH"',
+                        '/s/ — sau phụ âm vô thanh (t, f, k, p, th-vô-thanh): works, meets, starts, laughs — nhớ qua "Thời Fong Kiến Phương Tây"',
+                        '/z/ — mặc định (sau âm hữu thanh hoặc nguyên âm): lives, goes, studies, travels, plays'
                     ]
                 },
                 grammar: [
@@ -2687,6 +2687,100 @@ function getGrammarLessonsForUnit(unitId) {
 function getGrammarLesson(unitId, lessonId) {
     const lessons = getGrammarLessonsForUnit(unitId);
     return lessons.find(l => l.id === lessonId) || null;
+}
+
+// ==================== GRAMMAR TIPS (v3.40 — Vietnamese mnemonics) ====================
+// A small lookup of memorable Vietnamese mnemonics attached to specific grammar
+// topics. When the user finishes a question whose `topic` matches one of these
+// patterns, the tip is rendered below the explanation (visible whether they got
+// the question right OR wrong, so the rule sticks).
+const GRAMMAR_TIPS = [
+    {
+        // -s endings on present-simple 3rd person verbs AND on regular plurals.
+        // Matches Unit 3's "-s endings" topic, Unit 8's "final s: /s/ vs /z/"
+        // / "sound and spelling", Unit 9 + 10's "underlined letter (final s …)"
+        // and Unit 2's "plural nouns" pronunciation.
+        match: /-s endings|final s.*\/s\/|final s.*\/z\/|final s.*\/iz\/|plural -s|plural nouns?\s*$|sound spelling.*final s|sound and spelling.*final s|underlined letter \(final s|underlined letter \(s: \/s\//i,
+        id: 's-endings',
+        title: '💡 Mẹo phát âm -s / -es',
+        bodyHTML: `
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-iz">/ɪz/</span>
+                <div>
+                    Sau âm <strong>xuýt</strong> (âm gió rít):
+                    <em>Ông Sáu Sang Sông Chạy Xe SH</em>
+                    → các từ kết thúc bằng <strong>s, z, sh, ch, x, ge/dge</strong>.
+                    <span class="tip-eg">VD: buses, watches, finishes, judges, boxes</span>
+                </div>
+            </div>
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-s">/s/</span>
+                <div>
+                    Sau <strong>phụ âm vô thanh</strong> (không làm rung cổ họng):
+                    <em>Thời Fong Kiến Phương Tây</em>
+                    → các từ kết thúc bằng <strong>t, f/ph, k/c, p, th (voiceless)</strong>.
+                    <span class="tip-eg">VD: stops, writes, kicks, laughs, months</span>
+                </div>
+            </div>
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-z">/z/</span>
+                <div>
+                    <strong>Mặc định</strong> cho mọi trường hợp còn lại — sau âm hữu thanh hoặc nguyên âm.
+                    <span class="tip-eg">VD: needs, plays, loves, dogs, studies</span>
+                </div>
+            </div>
+        `
+    },
+    {
+        // -ed past-tense endings (separate rule but same family of mnemonics)
+        match: /-ed endings?|past tense.*-?ed|past simple regular|underlined letter.*\/ed\/|sound spelling.*-ed/i,
+        id: 'ed-endings',
+        title: '💡 Mẹo phát âm -ed',
+        bodyHTML: `
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-iz">/ɪd/</span>
+                <div>
+                    Sau <strong>t</strong> hoặc <strong>d</strong> — thêm 1 âm tiết.
+                    <span class="tip-eg">VD: wanted, started, visited, painted, decided</span>
+                </div>
+            </div>
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-s">/t/</span>
+                <div>
+                    Sau <strong>phụ âm vô thanh</strong>: <em>Thời Fong Kiến Phương Tây</em>
+                    → các từ kết thúc bằng <strong>k, p, f/ph, s, sh, ch, th (vô thanh)</strong>.
+                    <span class="tip-eg">VD: liked, worked, watched, finished, asked</span>
+                </div>
+            </div>
+            <div class="tip-row">
+                <span class="tip-tag tip-tag-z">/d/</span>
+                <div>
+                    <strong>Mặc định</strong> sau âm hữu thanh hoặc nguyên âm.
+                    <span class="tip-eg">VD: lived, played, travelled, called, opened</span>
+                </div>
+            </div>
+        `
+    }
+];
+
+// Returns the matching tip object for a given question (by topic), or null.
+function getGrammarTipForQuestion(q) {
+    if (!q || !q.topic) return null;
+    for (const tip of GRAMMAR_TIPS) {
+        if (tip.match.test(q.topic)) return tip;
+    }
+    return null;
+}
+
+// Render a tip object to HTML (for the result screen of a grammar question).
+function renderGrammarTipHTML(tip) {
+    if (!tip) return '';
+    return `
+        <div class="grammar-tip" data-tip-id="${tip.id}">
+            <div class="grammar-tip-title">${tip.title}</div>
+            <div class="grammar-tip-body">${tip.bodyHTML}</div>
+        </div>
+    `;
 }
 
 // Build a quiz from the question bank that matches a lesson's topicTags.

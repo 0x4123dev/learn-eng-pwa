@@ -338,6 +338,14 @@ function renderGrammarLessonDetail(unitId, lessonId) {
     if (lesson.pronunciation) {
         const p = lesson.pronunciation;
         const examplesHTML = (p.examples || []).map(e => `<li>${e}</li>`).join('');
+        // v3.40 — if the pronunciation topic matches a Vietnamese tip
+        // (-s endings or -ed endings), render the styled mnemonic card
+        // INLINE inside the pronunciation section so users see it in context.
+        let tipHTML = '';
+        if (typeof getGrammarTipForQuestion === 'function') {
+            const tip = getGrammarTipForQuestion({ topic: p.title || '' });
+            if (tip) tipHTML = renderGrammarTipHTML(tip);
+        }
         pronHTML = `
             <div class="lesson-section lesson-section-pron">
                 <div class="lesson-section-head">
@@ -346,6 +354,7 @@ function renderGrammarLessonDetail(unitId, lessonId) {
                 </div>
                 <div class="lesson-section-rule">${p.rule}</div>
                 <ul class="lesson-example-list">${examplesHTML}</ul>
+                ${tipHTML}
             </div>
         `;
     }
@@ -837,6 +846,10 @@ function renderMCQuestion() {
     const scoreSoFar = scoreSoFar_();
 
     const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId === 'mixed' ? (_unitIdFromQuestionId(q.id) || state.unitId) : state.unitId, q) : '';
+    // v3.40 — render a Vietnamese mnemonic tip (e.g., for -s/-ed endings)
+    // below the explanation when the question's topic matches a known rule.
+    const tipHTML = showingResult && typeof getGrammarTipForQuestion === 'function'
+        ? renderGrammarTipHTML(getGrammarTipForQuestion(q)) : '';
     const explanationBox = showingResult ? `
         <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
             <div class="grammar-explanation-header">
@@ -844,6 +857,7 @@ function renderMCQuestion() {
             </div>
             <div class="grammar-explanation-body">💡 ${q.explanation}</div>
             ${pageRefStr ? `<div class="grammar-page-ref">${pageRefStr}</div>` : ''}
+            ${tipHTML}
         </div>
         <button class="grammar-next-btn" onclick="nextGrammarQuestion()">
             ${state.currentIdx + 1 >= total ? '🏁 See Results' : 'Next Question →'}
@@ -894,6 +908,8 @@ function renderArrangementQuestion() {
     if (showingResult) {
         const correctSentence = q.parts.join(' ').replace(/ \./g, '.').replace(/ \?/g, '?').replace(/ !/g, '!');
         const pageRefStr = (typeof formatPdfPageRef === 'function') ? formatPdfPageRef(state.unitId === 'mixed' ? (_unitIdFromQuestionId(q.id) || state.unitId) : state.unitId, q) : '';
+        const tipHTML = typeof getGrammarTipForQuestion === 'function'
+            ? renderGrammarTipHTML(getGrammarTipForQuestion(q)) : '';
         actionsHTML = `
             <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
                 <div class="grammar-explanation-header">
@@ -902,6 +918,7 @@ function renderArrangementQuestion() {
                 ${!isCorrect ? `<div class="arr-correct-sentence">"${correctSentence}"</div>` : ''}
                 <div class="grammar-explanation-body">💡 ${q.explanation}</div>
                 ${pageRefStr ? `<div class="grammar-page-ref">${pageRefStr}</div>` : ''}
+                ${tipHTML}
             </div>
             <button class="grammar-next-btn" onclick="nextGrammarQuestion()">
                 ${state.currentIdx + 1 >= total ? '🏁 See Results' : 'Next Question →'}

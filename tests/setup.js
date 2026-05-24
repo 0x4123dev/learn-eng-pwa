@@ -162,6 +162,8 @@ const EXPORT_NAMES = [
     // grammar lessons (v3.25)
     'GRAMMAR_LESSONS', 'getGrammarLessonsForUnit', 'getGrammarLesson',
     'getLessonPracticeQuestions',
+    // grammar tips (v3.40 — Vietnamese mnemonics)
+    'GRAMMAR_TIPS', 'getGrammarTipForQuestion', 'renderGrammarTipHTML',
     // grammar UI render layer (loaded only when includeGrammarUI is true)
     'quizHeaderHTML', 'renderMCQuestion', 'renderArrangementQuestion',
     'renderGrammarQuestion', 'finishGrammarQuiz',
