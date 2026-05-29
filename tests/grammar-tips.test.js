@@ -2,8 +2,8 @@
 // Locks in that:
 //   • -s ending questions get the /s/ /z/ /ɪz/ mnemonic tip
 //   • -ed ending questions get their own mnemonic tip
-//   • The tip renders both Vietnamese mnemonics ("Ông Sáu Sang Sông Chạy Xe SH"
-//     and "Thời Fong Kiến Phương Tây")
+//   • The tip renders both Vietnamese mnemonics ("sháng say, chiều xỉn,
+//     sung sướng, zô" and "Thời Fong Kiến Phương Tây")
 //   • Unrelated topics get NO tip (no noise on irrelevant questions)
 //   • The matcher hits all topic variants used across units 2/3/8/9/10
 
@@ -77,18 +77,25 @@ suite('grammar tips: unrelated topics get NO tip', () => {
 });
 
 suite('grammar tips: rendered HTML contains the Vietnamese mnemonics', () => {
-    test('-s endings tip HTML contains "Ông Sáu Sang Sông Chạy Xe SH" mnemonic', () => {
+    test('-s endings tip HTML contains the /ɪz/ mnemonic "sháng say, chiều xỉn, sung sướng, zô" (v3.40.4)', () => {
         const tip = env.getGrammarTipForQuestion({ topic: '-s endings' });
         const html = env.renderGrammarTipHTML(tip);
-        assert.truthy(html.includes('Ông Sáu Sang Sông Chạy Xe SH'),
-            'missing /iz/ mnemonic');
+        // Strip HTML to check the visible text content
+        const plain = html.replace(/<[^>]+>/g, '');
+        for (const piece of ['sháng say', 'chiều xỉn', 'sung sướng', 'zô']) {
+            assert.truthy(plain.includes(piece),
+                `missing /ɪz/ mnemonic piece "${piece}". Got: "${plain.slice(0, 400)}"`);
+        }
     });
 
-    test('-s endings tip HTML contains "Thời Fong Kiến Phương Tây" mnemonic', () => {
+    test('-s endings tip HTML contains "Thời Fong Kiến Phương Tây" mnemonic (after HTML strip)', () => {
         const tip = env.getGrammarTipForQuestion({ topic: '-s endings' });
         const html = env.renderGrammarTipHTML(tip);
-        assert.truthy(html.includes('Thời Fong Kiến Phương Tây'),
-            'missing /s/ mnemonic');
+        // v3.40.4: first letters are wrapped in <strong> for visual emphasis,
+        // so strip HTML before checking the visible text.
+        const plain = html.replace(/<[^>]+>/g, '');
+        assert.truthy(plain.includes('Thời Fong Kiến Phương Tây'),
+            `missing /s/ mnemonic. Got plain text: "${plain.slice(0, 400)}"`);
     });
 
     test('-s endings tip HTML shows all three sound tags: /ɪz/, /s/, /z/', () => {
@@ -113,10 +120,11 @@ suite('grammar tips: rendered HTML contains the Vietnamese mnemonics', () => {
             'missing /z/ example words');
     });
 
-    test('-ed endings tip HTML contains "Thời Fong Kiến Phương Tây"', () => {
+    test('-ed endings tip HTML contains "Thời Fong Kiến Phương Tây" (after HTML strip)', () => {
         const tip = env.getGrammarTipForQuestion({ topic: 'past simple regular' });
         const html = env.renderGrammarTipHTML(tip);
-        assert.truthy(html.includes('Thời Fong Kiến Phương Tây'),
+        const plain = html.replace(/<[^>]+>/g, '');
+        assert.truthy(plain.includes('Thời Fong Kiến Phương Tây'),
             '-ed tip should reuse the voiceless-consonant mnemonic');
     });
 
@@ -170,15 +178,22 @@ suite('grammar tips: tip wraps every relevant question across all units', () => 
 });
 
 suite('grammar tips: lesson detail also renders the tip inline', () => {
-    test('Unit 3 lesson 3b pronunciation block now references the mnemonics', () => {
+    test('Unit 3 lesson 3b pronunciation block references the new mnemonic (v3.40.4)', () => {
         const l3b = env.getGrammarLesson('unit3', '3b');
         assert.truthy(l3b && l3b.pronunciation, 'lesson 3b missing pronunciation block');
         const ruleAndExamples = l3b.pronunciation.rule + ' ' +
             (l3b.pronunciation.examples || []).join(' ');
-        assert.truthy(ruleAndExamples.includes('Ông Sáu Sang Sông Chạy Xe SH'),
-            'lesson 3b should reference "Ông Sáu Sang Sông Chạy Xe SH"');
+        // /ɪz/ mnemonic — same one used in lesson 2b for consistency
+        for (const piece of ['sháng say', 'chiều xỉn', 'sung sướng', 'zô']) {
+            assert.truthy(ruleAndExamples.includes(piece),
+                `lesson 3b should reference "${piece}"`);
+        }
+        // /s/ mnemonic stays the same
         assert.truthy(ruleAndExamples.includes('Thời Fong Kiến Phương Tây'),
             'lesson 3b should reference "Thời Fong Kiến Phương Tây"');
+        // Old /ɪz/ mnemonic must NOT appear (replaced)
+        assert.falsy(ruleAndExamples.includes('Ông Sáu Sang Sông Chạy Xe SH'),
+            'old "Ông Sáu Sang Sông Chạy Xe SH" mnemonic must be gone');
     });
 
     test('Unit 2 lesson 2b plural rule references the +es mnemonic (v3.40.1)', () => {

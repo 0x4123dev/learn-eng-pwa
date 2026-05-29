@@ -705,9 +705,9 @@ const GRAMMAR_LESSONS = [
                 },
                 pronunciation: {
                     title: '-s endings: /s/, /z/, /ɪz/',
-                    rule: 'The 3rd-person -s has THREE possible sounds depending on the final sound of the verb. Mẹo tiếng Việt: "Ông Sáu Sang Sông Chạy Xe SH" → /ɪz/; "Thời Fong Kiến Phương Tây" → /s/; còn lại → /z/.',
+                    rule: 'The 3rd-person -s has THREE possible sounds depending on the final sound of the verb. Mẹo tiếng Việt: "sháng say, chiều xỉn, sung sướng, zô" → /ɪz/; "Thời Fong Kiến Phương Tây" → /s/; còn lại → /z/.',
                     examples: [
-                        '/ɪz/ — sau âm xuýt (s/z/sh/ch/x/ge): finishes, teaches, watches, judges, boxes — nhớ qua câu "Ông Sáu Sang Sông Chạy Xe SH"',
+                        '/ɪz/ — sh, s, ch, x, ss, z — torch → torches, bus → buses, class → classes, box → boxes, buzz → buzzes. Mẹo: "sháng say, chiều xỉn, sung sướng, zô"',
                         '/s/ — sau phụ âm vô thanh (t, f, k, p, th-vô-thanh): works, meets, starts, laughs — nhớ qua "Thời Fong Kiến Phương Tây"',
                         '/z/ — mặc định (sau âm hữu thanh hoặc nguyên âm): lives, goes, studies, travels, plays'
                     ]
@@ -2707,17 +2707,16 @@ const GRAMMAR_TIPS = [
             <div class="tip-row">
                 <span class="tip-tag tip-tag-iz">/ɪz/</span>
                 <div>
-                    Sau âm <strong>xuýt</strong> (âm gió rít):
-                    <em>Ông Sáu Sang Sông Chạy Xe SH</em>
-                    → các từ kết thúc bằng <strong>s, z, sh, ch, x, ge/dge</strong>.
-                    <span class="tip-eg">VD: buses, watches, finishes, judges, boxes</span>
+                    Các từ kết thúc bằng <strong>sh, s, ch, x, ss, z</strong>:
+                    <em>"<strong>sh</strong>áng <strong>s</strong>ay, <strong>ch</strong>iều <strong>x</strong>ỉn, <strong>s</strong>ung <strong>s</strong>ướng, <strong>z</strong>ô"</em>
+                    <span class="tip-eg">VD: torch → torches, bus → buses, class → classes, box → boxes, buzz → buzzes</span>
                 </div>
             </div>
             <div class="tip-row">
                 <span class="tip-tag tip-tag-s">/s/</span>
                 <div>
                     Sau <strong>phụ âm vô thanh</strong> (không làm rung cổ họng):
-                    <em>Thời Fong Kiến Phương Tây</em>
+                    <em>"<strong>Th</strong>ời <strong>F</strong>ong <strong>K</strong>iến <strong>Ph</strong>ương <strong>T</strong>ây"</em>
                     → các từ kết thúc bằng <strong>t, f/ph, k/c, p, th (voiceless)</strong>.
                     <span class="tip-eg">VD: stops, writes, kicks, laughs, months</span>
                 </div>
