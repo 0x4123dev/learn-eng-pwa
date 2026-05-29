@@ -2700,15 +2700,6 @@ const GRAMMAR_LESSONS = [
             {
                 id: '12a', title: 'Present Simple', page: '200-201',
                 topicTags: ['present simple'],
-                pronunciation: {
-                    title: '-s endings: /s/, /z/, /ɪz/',
-                    rule: 'For he/she/it, the verb takes -s with three possible sounds. Same rule as plural nouns. Mẹo: "sháng say, chiều xỉn, sung sướng, zô" → /ɪz/; "Thời Fong Kiến Phương Tây" → /s/; còn lại → /z/.',
-                    examples: [
-                        '/ɪz/ — sh, s, ch, x, ss, z: finishes, teaches, watches, judges, boxes',
-                        '/s/ — sau phụ âm vô thanh (t, f, k, p): works, meets, starts, laughs',
-                        '/z/ — mặc định: lives, goes, studies, plays'
-                    ]
-                },
                 grammar: [
                     {
                         title: 'Form — Present Simple',
@@ -2808,15 +2799,6 @@ const GRAMMAR_LESSONS = [
             {
                 id: '12d', title: 'Past Simple', page: '206-207',
                 topicTags: ['past simple'],
-                pronunciation: {
-                    title: '-ed endings: /t/, /d/, /ɪd/',
-                    rule: 'For regular past simple verbs ending in -ed. Three sounds depending on the previous consonant.',
-                    examples: [
-                        '/t/ — after voiceless sounds: liked, worked, watched, finished, asked',
-                        '/d/ — after voiced sounds or vowels: lived, played, travelled, called, opened',
-                        '/ɪd/ — after t or d (adds extra syllable): wanted, started, visited, painted, decided'
-                    ]
-                },
                 grammar: [
                     {
                         title: 'Form — Past Simple',
