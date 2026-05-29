@@ -180,6 +180,30 @@ suite('grammar tips: lesson detail also renders the tip inline', () => {
         assert.truthy(ruleAndExamples.includes('Thời Fong Kiến Phương Tây'),
             'lesson 3b should reference "Thời Fong Kiến Phương Tây"');
     });
+
+    test('Unit 2 lesson 2b plural rule references the +es mnemonic (v3.40.1)', () => {
+        const l2b = env.getGrammarLesson('unit2', '2b');
+        assert.truthy(l2b, 'lesson 2b missing');
+        const pluralBlock = (l2b.grammar || []).find(g => /Plural nouns/i.test(g.title));
+        assert.truthy(pluralBlock, 'lesson 2b plural grammar block missing');
+        // Find the "+es" row in the form table
+        const esRow = (pluralBlock.form || []).find(f => f.label === '+es');
+        assert.truthy(esRow, '+es form row missing in plural rule');
+        // Should now list every sibilant: sh, s, ch, x, ss, z
+        for (const consonant of ['sh', 's', 'ch', 'x', 'ss', 'z']) {
+            assert.truthy(esRow.text.includes(consonant),
+                `+es row should mention "${consonant}". Got: "${esRow.text}"`);
+        }
+        // And include the Vietnamese mnemonic
+        assert.truthy(esRow.text.includes('sháng say'),
+            '+es row should include "sháng say" mnemonic');
+        assert.truthy(esRow.text.includes('chiều xỉn'),
+            '+es row should include "chiều xỉn" mnemonic');
+        assert.truthy(esRow.text.includes('sung sướng'),
+            '+es row should include "sung sướng" mnemonic');
+        assert.truthy(esRow.text.includes('zô'),
+            '+es row should include "zô" mnemonic');
+    });
 });
 
 if (require.main === module) {
