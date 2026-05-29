@@ -418,7 +418,7 @@ const GRAMMAR_LESSONS = [
                             },
                             {
                                 label: 'irreg.',
-                                text: 'man → men, woman → women, person → people, child → children'
+                                text: 'man → men, woman → women, person → people, child → children, foot → feet, tooth → teeth, mouse → mice'
                             }
                         ],
                         examples: [

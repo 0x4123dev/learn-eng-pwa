@@ -204,6 +204,23 @@ suite('grammar tips: lesson detail also renders the tip inline', () => {
         assert.truthy(esRow.text.includes('zô'),
             '+es row should include "zô" mnemonic');
     });
+
+    test('Unit 2 lesson 2b irregular plurals include foot/tooth/mouse (v3.40.2)', () => {
+        const l2b = env.getGrammarLesson('unit2', '2b');
+        const pluralBlock = (l2b.grammar || []).find(g => /Plural nouns/i.test(g.title));
+        const irregRow = (pluralBlock.form || []).find(f => f.label === 'irreg.');
+        assert.truthy(irregRow, 'irreg. plural row missing');
+        // Original 4 must remain
+        for (const pair of ['man → men', 'woman → women', 'person → people', 'child → children']) {
+            assert.truthy(irregRow.text.includes(pair),
+                `irreg row missing original pair "${pair}"`);
+        }
+        // Three new pairs added in v3.40.2
+        for (const pair of ['foot → feet', 'tooth → teeth', 'mouse → mice']) {
+            assert.truthy(irregRow.text.includes(pair),
+                `irreg row missing new pair "${pair}"`);
+        }
+    });
 });
 
 if (require.main === module) {
