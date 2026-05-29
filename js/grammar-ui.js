@@ -867,7 +867,6 @@ function renderMCQuestion() {
     document.getElementById('grammarScreen').innerHTML = `
         ${quizHeaderHTML()}
         <div class="grammar-question-card">
-            <div class="grammar-question-tag">${q.type} · ${q.topic}</div>
             <div class="grammar-question-text">${q.q}</div>
             <div class="grammar-options">${optionsHtml}</div>
         </div>
@@ -936,7 +935,6 @@ function renderArrangementQuestion() {
     document.getElementById('grammarScreen').innerHTML = `
         ${quizHeaderHTML()}
         <div class="grammar-question-card">
-            <div class="grammar-question-tag">arrangement · ${q.topic}</div>
             <div class="grammar-question-text">📝 Arrange the words to make a correct sentence:</div>
             <div class="arr-answer-zone">${answerHTML}</div>
             <div class="arr-pool-label">Tap tiles below to add them in order:</div>
