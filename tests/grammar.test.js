@@ -5,13 +5,13 @@ const { loadAppCode } = require('./setup');
 const env = loadAppCode();
 
 suite('grammar: GRAMMAR_UNITS shape', () => {
-    test('exactly 11 units (Units 1–11)', () => {
-        assert.equal(env.GRAMMAR_UNITS.length, 11);
+    test('exactly 12 units (Units 1–11 + Tenses reference)', () => {
+        assert.equal(env.GRAMMAR_UNITS.length, 12);
     });
 
-    test('unit IDs cover all 11 units', () => {
+    test('unit IDs cover all 12 units', () => {
         const ids = env.GRAMMAR_UNITS.map(u => u.id);
-        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11']) {
+        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12']) {
             assert.contains(ids, u);
         }
     });
@@ -520,8 +520,8 @@ suite('grammar: mistake bank (v3.24 Tier 1)', () => {
 });
 
 suite('grammar: lessons sub-tab data (v3.25)', () => {
-    test('GRAMMAR_LESSONS contains exactly 11 units', () => {
-        assert.equal(env.GRAMMAR_LESSONS.length, 11);
+    test('GRAMMAR_LESSONS contains exactly 12 units', () => {
+        assert.equal(env.GRAMMAR_LESSONS.length, 12);
     });
 
     test('lessons cover all 11 units', () => {
@@ -531,15 +531,16 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
         }
     });
 
-    test('every unit has icon, color, intro, and 4-6 lessons', () => {
+    test('every unit has icon, color, intro, and 4-7 lessons', () => {
         for (const u of env.GRAMMAR_LESSONS) {
             assert.truthy(u.icon, `${u.unitId} missing icon`);
             assert.truthy(u.color, `${u.unitId} missing color`);
             assert.truthy(u.title, `${u.unitId} missing title`);
             assert.truthy(u.intro, `${u.unitId} missing intro`);
-            // v3.35 merged 1d/1e/1f → Unit 1 now has 4 lessons; others still 6
-            assert.truthy(u.lessons.length >= 4 && u.lessons.length <= 6,
-                `${u.unitId} should have 4-6 lessons, got ${u.lessons.length}`);
+            // v3.35 merged 1d/1e/1f → Unit 1 now has 4 lessons.
+            // v3.41 added Unit 12 with 7 lessons (one per tense).
+            assert.truthy(u.lessons.length >= 4 && u.lessons.length <= 7,
+                `${u.unitId} should have 4-7 lessons, got ${u.lessons.length}`);
         }
     });
 
@@ -555,12 +556,11 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
         }
     });
 
-    test('lesson IDs follow the [unit][a-f] pattern, contiguous from "a"', () => {
+    test('lesson IDs follow the [unit][a-g] pattern, contiguous from "a"', () => {
         for (const u of env.GRAMMAR_LESSONS) {
             const unitNum = u.unitId.replace('unit', '');
-            // Expected letters depend on this unit\'s lesson count
-            // (v3.35 may have merged lessons so a unit can have 4-6).
-            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f'].slice(0, u.lessons.length);
+            // Lesson IDs go a-g (v3.41 — Unit 12 has 7 lessons).
+            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'].slice(0, u.lessons.length);
             const expected = expectedLetters.map(s => unitNum + s);
             const actual = u.lessons.map(l => l.id);
             for (const id of expected) {

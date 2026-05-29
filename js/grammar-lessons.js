@@ -2674,6 +2674,281 @@ const GRAMMAR_LESSONS = [
                 ]
             }
         ]
+    },
+
+    // ============================================================
+    //  UNIT 12 — TENSES (v3.41 — 7 tenses, IELTS-focused)
+    // ============================================================
+    {
+        unitId: 'unit12',
+        title: 'Tenses',
+        icon: '⏰',
+        color: '#4F46E5',
+        intro: 'Master the 7 most common English tenses, one tense per lesson. Each lesson explains the rules, signal words, and when to use it — all referenced to IELTS exam-style questions.',
+        iCanGoals: [
+            'Use Present Simple for habits and facts',
+            'Use Present Continuous for actions happening now and current trends',
+            'Use Present Perfect for experiences and unfinished time',
+            'Use Past Simple for completed past actions',
+            'Use Past Continuous for ongoing past actions and background',
+            'Use Future Simple (will) for predictions and spontaneous decisions',
+            'Use Be going to for plans and predictions based on evidence',
+            'Recognise tense signal words / time markers',
+            'Identify the correct tense in IELTS-style exam questions'
+        ],
+        lessons: [
+            {
+                id: '12a', title: 'Present Simple', page: '200-201',
+                topicTags: ['present simple'],
+                pronunciation: {
+                    title: '-s endings: /s/, /z/, /ɪz/',
+                    rule: 'For he/she/it, the verb takes -s with three possible sounds. Same rule as plural nouns. Mẹo: "sháng say, chiều xỉn, sung sướng, zô" → /ɪz/; "Thời Fong Kiến Phương Tây" → /s/; còn lại → /z/.',
+                    examples: [
+                        '/ɪz/ — sh, s, ch, x, ss, z: finishes, teaches, watches, judges, boxes',
+                        '/s/ — sau phụ âm vô thanh (t, f, k, p): works, meets, starts, laughs',
+                        '/z/ — mặc định: lives, goes, studies, plays'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Form — Present Simple',
+                        rule: 'Use for habits, routines, general truths, and permanent situations. Subject decides whether the verb takes -s (he/she/it) or not.',
+                        form: [
+                            { label: '+', text: 'I/you/we/they + base verb; he/she/it + verb-s' },
+                            { label: '−', text: 'I/you/we/they + don\'t + base; he/she/it + doesn\'t + base' },
+                            { label: '?', text: 'Do I/you/we/they + base? Does he/she/it + base?' }
+                        ],
+                        examples: [
+                            'She works in an office every day.',
+                            'I don\'t drink coffee.',
+                            'Does he speak English?',
+                            'Water boils at 100°C. (general truth)',
+                            'My flight leaves at 6 a.m. tomorrow. (schedule)'
+                        ]
+                    },
+                    {
+                        title: 'When to use Present Simple',
+                        rule: 'Pick this tense when the situation is habitual, permanent, or always-true.',
+                        examples: [
+                            'HABITS — I go to the gym on Mondays.',
+                            'FACTS — The Earth revolves around the Sun.',
+                            'PERMANENT STATES — She lives in Paris.',
+                            'SCHEDULES — The train arrives at 10:15.',
+                            'Signal words: every day, usually, often, sometimes, always, never, on Mondays.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12b', title: 'Present Continuous', page: '202-203',
+                topicTags: ['present continuous'],
+                grammar: [
+                    {
+                        title: 'Form — Present Continuous',
+                        rule: 'be (am/is/are) + verb-ing. Spelling: drop final -e (write → writing), double consonant after 1 vowel (run → running), -ie → -y + -ing (lie → lying).',
+                        form: [
+                            { label: '+', text: 'I am, he/she/it is, you/we/they are + verb-ing' },
+                            { label: '−', text: 'subject + am/is/are NOT + verb-ing' },
+                            { label: '?', text: 'Am/Is/Are + subject + verb-ing?' }
+                        ],
+                        examples: [
+                            'I am studying for my IELTS exam.',
+                            'It is raining right now.',
+                            'They aren\'t working today.',
+                            'Are you listening to me?',
+                            'My sister is learning Japanese this year. (temporary)'
+                        ]
+                    },
+                    {
+                        title: 'When to use Present Continuous',
+                        rule: 'Action happening NOW, temporary situations, fixed future plans, and changing trends. Don\'t use with stative verbs (know, love, believe, want).',
+                        examples: [
+                            'NOW — Look! It is raining outside.',
+                            'TEMPORARY — I am living with my parents this month.',
+                            'FUTURE ARRANGEMENT — We are meeting at 7 p.m. tomorrow.',
+                            'TREND — More people are working from home these days.',
+                            'Signal words: now, right now, at the moment, today, this week, these days, Look!, Listen!'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12c', title: 'Present Perfect', page: '204-205',
+                topicTags: ['present perfect'],
+                grammar: [
+                    {
+                        title: 'Form — Present Perfect',
+                        rule: 'have/has + past participle. Regular verbs: + -ed (work → worked). Irregular verbs: see page 182 list (go → gone, see → seen, write → written).',
+                        form: [
+                            { label: '+', text: 'I/you/we/they have + past participle; he/she/it has + past participle' },
+                            { label: '−', text: 'subject + haven\'t/hasn\'t + past participle' },
+                            { label: '?', text: 'Have/Has + subject + past participle?' }
+                        ],
+                        examples: [
+                            'I have visited Japan three times.',
+                            'She has lived here since 2015.',
+                            'They haven\'t finished the project yet.',
+                            'Have you ever tried Korean food?',
+                            'He has just submitted his application.'
+                        ]
+                    },
+                    {
+                        title: 'When to use Present Perfect',
+                        rule: 'Past action with present connection: experiences, unfinished time periods, recent actions with results that matter now.',
+                        examples: [
+                            'EXPERIENCE — I have been to Italy. (any time in life)',
+                            'UNFINISHED TIME — She has lived here for five years. (still lives here)',
+                            'RECENT — They have just arrived. (= a moment ago + still relevant)',
+                            'CHANGE OVER TIME — Technology has changed dramatically since 2000.',
+                            'Signal words: ever, never, just, already, yet, since + point in time, for + duration, recently, this year, so far.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12d', title: 'Past Simple', page: '206-207',
+                topicTags: ['past simple'],
+                pronunciation: {
+                    title: '-ed endings: /t/, /d/, /ɪd/',
+                    rule: 'For regular past simple verbs ending in -ed. Three sounds depending on the previous consonant.',
+                    examples: [
+                        '/t/ — after voiceless sounds: liked, worked, watched, finished, asked',
+                        '/d/ — after voiced sounds or vowels: lived, played, travelled, called, opened',
+                        '/ɪd/ — after t or d (adds extra syllable): wanted, started, visited, painted, decided'
+                    ]
+                },
+                grammar: [
+                    {
+                        title: 'Form — Past Simple',
+                        rule: 'Regular verbs: + -ed. Irregular verbs: each has its own form (see page 182). Negatives and questions use "did" + base form — for ALL subjects.',
+                        form: [
+                            { label: '+', text: 'subject + verb-ed (worked) / irregular past form (went)' },
+                            { label: '−', text: 'subject + didn\'t + BASE verb (not the past form)' },
+                            { label: '?', text: 'Did + subject + BASE verb?' }
+                        ],
+                        examples: [
+                            'I worked in Paris in 2019.',
+                            'She didn\'t finish her homework. (NOT didn\'t finished)',
+                            'Did you watch the news?',
+                            'Shakespeare wrote over 30 plays. (irregular)',
+                            'They went to the cinema yesterday.'
+                        ]
+                    },
+                    {
+                        title: 'When to use Past Simple',
+                        rule: 'Completed action at a definite past time. The most-used past tense.',
+                        examples: [
+                            'DEFINITE PAST — I lived in London in 2018.',
+                            'SEQUENCE — She got up, made coffee, and left for work.',
+                            'PAST HABIT — When I was a child, I read a lot.',
+                            'PAST STATE — He was a teacher for 30 years.',
+                            'Signal words: yesterday, last week/month/year, in 2010, two days ago, when I was a child, this morning.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12e', title: 'Past Continuous', page: '208-209',
+                topicTags: ['past continuous'],
+                grammar: [
+                    {
+                        title: 'Form — Past Continuous',
+                        rule: 'was/were + verb-ing. I/he/she/it → was. You/we/they → were.',
+                        form: [
+                            { label: '+', text: 'I/he/she/it was + verb-ing; you/we/they were + verb-ing' },
+                            { label: '−', text: 'subject + wasn\'t/weren\'t + verb-ing' },
+                            { label: '?', text: 'Was/Were + subject + verb-ing?' }
+                        ],
+                        examples: [
+                            'I was watching TV at 8 p.m. yesterday.',
+                            'They were having a meeting when the fire alarm went off.',
+                            'She wasn\'t paying attention during the lecture.',
+                            'Were you sleeping when I called?',
+                            'It was raining heavily when we left.'
+                        ]
+                    },
+                    {
+                        title: 'When to use Past Continuous',
+                        rule: 'Action in progress at a specific past moment. Often paired with past simple (the interrupted-action pattern).',
+                        examples: [
+                            'AT A PAST MOMENT — At 7 p.m., I was having dinner.',
+                            'BACKGROUND — When I arrived, it was raining. (rain = background)',
+                            'INTERRUPTION — I was reading WHEN the phone rang.',
+                            'PARALLEL — While she was cooking, he was watching TV.',
+                            'Signal words: while, when (with interruption), at + time + yesterday/last week, all morning, during the meeting, this time last year.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12f', title: 'Future Simple (will)', page: '210-211',
+                topicTags: ['future simple (will)'],
+                grammar: [
+                    {
+                        title: 'Form — Future Simple with "will"',
+                        rule: 'will + BASE verb. Same for ALL subjects. Negative = will not = won\'t.',
+                        form: [
+                            { label: '+', text: 'subject + will + base verb' },
+                            { label: '−', text: 'subject + won\'t + base verb (= will not)' },
+                            { label: '?', text: 'Will + subject + base verb?' }
+                        ],
+                        examples: [
+                            'I will help you with your homework.',
+                            'It won\'t rain tomorrow.',
+                            'Will you marry me?',
+                            'A: The phone is ringing. B: I\'ll answer it. (spontaneous)',
+                            'I think she\'ll pass the exam. (prediction)'
+                        ]
+                    },
+                    {
+                        title: 'When to use "will"',
+                        rule: 'Predictions, spontaneous decisions at the moment of speaking, promises, offers, and future facts.',
+                        examples: [
+                            'PREDICTION — I think it will rain tomorrow.',
+                            'SPONTANEOUS DECISION — I\'m thirsty — I\'ll get a drink.',
+                            'PROMISE — I\'ll always love you.',
+                            'OFFER — I\'ll help you with the bags.',
+                            'CONDITIONAL — If you study hard, you WILL pass.',
+                            'Signal words: tomorrow, next week, soon, probably, I think, I expect, in the future.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '12g', title: 'Be going to', page: '212-213',
+                topicTags: ['be going to'],
+                grammar: [
+                    {
+                        title: 'Form — Be going to',
+                        rule: 'am/is/are + going to + BASE verb. Use the present form of be.',
+                        form: [
+                            { label: '+', text: 'I am, he/she/it is, you/we/they are + going to + base verb' },
+                            { label: '−', text: 'subject + am not/isn\'t/aren\'t + going to + base verb' },
+                            { label: '?', text: 'Am/Is/Are + subject + going to + base verb?' }
+                        ],
+                        examples: [
+                            'I am going to start a new diet next week.',
+                            'She isn\'t going to apply for that job.',
+                            'Are you going to study tonight?',
+                            'Look at those clouds — it\'s going to rain. (evidence-based)',
+                            'We\'re going to get married in June. (planned)'
+                        ]
+                    },
+                    {
+                        title: 'When to use Be going to',
+                        rule: 'Planned future (decision made BEFORE speaking) or prediction based on present evidence.',
+                        examples: [
+                            'PLANNED ACTION — I\'m going to study French next year. (already decided)',
+                            'EVIDENCE-BASED PREDICTION — Watch out! That glass is going to fall.',
+                            'INTENTION — She\'s going to be a doctor.',
+                            'IMMINENT — Hurry up — the train is going to leave!',
+                            'will vs be going to: "will" = decided NOW; "be going to" = decided BEFORE / based on evidence.',
+                            'Signal words: tomorrow, next week, on Friday, this weekend, tonight, Look! (with visible evidence)'
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ];
 

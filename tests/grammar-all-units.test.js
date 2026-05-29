@@ -12,7 +12,12 @@ const { loadAppCode } = require('./setup');
 
 const env = loadAppCode();
 
-const ALL_UNIT_IDS = ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11'];
+const ALL_UNIT_IDS = ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12'];
+
+// Per-unit question counts: textbook units have 220, unit12 (tenses
+// reference) has 700.
+const QUESTIONS_PER_UNIT = { unit12: 700 };
+function expectedQuestionsFor(unitId) { return QUESTIONS_PER_UNIT[unitId] || 220; }
 
 // Expected key topics each unit MUST cover (from textbook syllabus).
 // Each value is a list of topic-substrings; AT LEAST one question topic must
@@ -28,7 +33,8 @@ const EXPECTED_TOPICS = {
     unit8: ['clothes', 'face & body', 'present continuous', 'have got', 'word stress'],
     unit9: ['films', 'be going to', 'infinitive of purpose', 'nature', 'TV'],
     unit10: ['subjects', 'learning verbs', 'present perfect', 'memory', 'daily habits'],
-    unit11: ['tourism', 'in another country', 'have to / can', "should/shouldn't", 'some/any/no compounds', 'making suggestions']
+    unit11: ['tourism', 'in another country', 'have to / can', "should/shouldn't", 'some/any/no compounds', 'making suggestions'],
+    unit12: ['present simple', 'present continuous', 'present perfect', 'past simple', 'past continuous', 'future simple (will)', 'be going to']
 };
 
 // Expected unit metadata
@@ -43,7 +49,8 @@ const EXPECTED_METADATA = {
     unit8: { name: /Appearance/i },
     unit9: { name: /Entertainment/i },
     unit10: { name: /Learning/i },
-    unit11: { name: /Tourism/i }
+    unit11: { name: /Tourism/i },
+    unit12: { name: /Tenses/i }
 };
 
 // ============================================================================
@@ -63,8 +70,9 @@ suite('all-units: metadata and basic structure', () => {
                 `${unitId} invalid color "${u.color}"`);
             assert.truthy(u.description && u.description.length >= 10,
                 `${unitId} description too short`);
-            assert.truthy(Array.isArray(u.questions) && u.questions.length === 220,
-                `${unitId} needs 220 questions`);
+            const expected = expectedQuestionsFor(unitId);
+            assert.truthy(Array.isArray(u.questions) && u.questions.length === expected,
+                `${unitId} needs ${expected} questions, got ${u.questions ? u.questions.length : 'none'}`);
         });
     }
 });
@@ -102,11 +110,12 @@ suite('all-units: question IDs match their unit', () => {
             assert.equal(bad.length, 0,
                 `${unitId} has ${bad.length} questions with wrong ID prefix: ${bad.slice(0, 3).map(q => q.id).join(', ')}`);
         });
-        test(`${unitId} — question IDs are sequential u<num>-1 to u<num>-220`, () => {
+        test(`${unitId} — question IDs are sequential u<num>-1 to u<num>-N`, () => {
             const u = env.getGrammarUnit(unitId);
             const unitNum = unitId.replace('unit', '');
+            const expectedCount = expectedQuestionsFor(unitId);
             const expectedIds = new Set();
-            for (let i = 1; i <= 220; i++) expectedIds.add(`u${unitNum}-${i}`);
+            for (let i = 1; i <= expectedCount; i++) expectedIds.add(`u${unitNum}-${i}`);
             const actualIds = new Set(u.questions.map(q => q.id));
             const missing = [...expectedIds].filter(id => !actualIds.has(id));
             assert.equal(missing.length, 0,
@@ -195,14 +204,22 @@ suite('all-units: question quality', () => {
 // ============================================================================
 suite('all-units: question type distribution per unit', () => {
     for (const unitId of ALL_UNIT_IDS) {
-        test(`${unitId} has ≥25 vocabulary, ≥20 grammar, ≥20 pronunciation, ≥25 arrangement`, () => {
+        test(`${unitId} has expected question type counts`, () => {
             const u = env.getGrammarUnit(unitId);
             const counts = { vocabulary: 0, grammar: 0, pronunciation: 0, arrangement: 0 };
             for (const q of u.questions) counts[q.type]++;
-            assert.truthy(counts.vocabulary >= 25, `${unitId} vocab=${counts.vocabulary}`);
-            assert.truthy(counts.grammar >= 20, `${unitId} grammar=${counts.grammar}`);
-            assert.truthy(counts.pronunciation >= 20, `${unitId} pron=${counts.pronunciation}`);
-            assert.truthy(counts.arrangement >= 25, `${unitId} arr=${counts.arrangement}`);
+            if (unitId === 'unit12') {
+                // Unit 12 is a TENSES reference unit — no vocabulary/pronunciation
+                // questions, but heavy on grammar + arrangement (700 total).
+                assert.truthy(counts.grammar >= 500, `${unitId} grammar=${counts.grammar} (need ≥500)`);
+                assert.truthy(counts.arrangement >= 60, `${unitId} arr=${counts.arrangement} (need ≥60)`);
+            } else {
+                // Textbook units have all 4 types
+                assert.truthy(counts.vocabulary >= 25, `${unitId} vocab=${counts.vocabulary}`);
+                assert.truthy(counts.grammar >= 20, `${unitId} grammar=${counts.grammar}`);
+                assert.truthy(counts.pronunciation >= 20, `${unitId} pron=${counts.pronunciation}`);
+                assert.truthy(counts.arrangement >= 25, `${unitId} arr=${counts.arrangement}`);
+            }
         });
     }
 });
@@ -216,15 +233,14 @@ suite('all-units: lesson cards exist for every unit', () => {
             const lessonUnit = env.GRAMMAR_LESSONS.find(u => u.unitId === unitId);
             assert.truthy(lessonUnit, `${unitId} missing from GRAMMAR_LESSONS`);
         });
-        test(`${unitId} lesson card has 4-6 sub-lessons starting at "a"`, () => {
+        test(`${unitId} lesson card has 4-7 sub-lessons starting at "a"`, () => {
             const lessons = env.getGrammarLessonsForUnit(unitId);
-            // Lessons can be merged (e.g., 1d combines former 1d+1e+1f in v3.35)
-            // so the count is 4..6 rather than exactly 6. IDs must still start
-            // at "a" and be contiguous.
-            assert.truthy(lessons.length >= 4 && lessons.length <= 6,
-                `${unitId} should have 4-6 sub-lessons, got ${lessons.length}`);
+            // Lessons can be merged (1d combines former 1d+1e+1f in v3.35)
+            // or expanded (unit12 has 7 lessons, one per tense, v3.41).
+            assert.truthy(lessons.length >= 4 && lessons.length <= 7,
+                `${unitId} should have 4-7 sub-lessons, got ${lessons.length}`);
             const unitNum = unitId.replace('unit', '');
-            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f'].slice(0, lessons.length);
+            const expectedLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'].slice(0, lessons.length);
             for (const letter of expectedLetters) {
                 const id = unitNum + letter;
                 assert.truthy(lessons.some(l => l.id === id), `${unitId} missing lesson ${id}`);
@@ -388,9 +404,9 @@ suite('all-units: cross-unit integrity', () => {
             `Lessons without units: ${inLessonsNotUnits.join(', ')}`);
     });
 
-    test('total question count is exactly 11 × 220 = 2,420', () => {
+    test('total question count = 11 × 220 + Unit 12 (700) = 3,120', () => {
         const total = env.GRAMMAR_UNITS.reduce((sum, u) => sum + u.questions.length, 0);
-        assert.equal(total, 11 * 220);
+        assert.equal(total, 11 * 220 + 700);
     });
 
     test('total lesson card count matches the sum across all units', () => {
@@ -462,7 +478,7 @@ suite('all-units: lesson card metadata quality', () => {
         });
         test(`${unitId} every sub-lesson has id, title, page reference`, () => {
             for (const l of lessonUnit.lessons) {
-                assert.truthy(l.id && /^\d+[a-f]$/.test(l.id),
+                assert.truthy(l.id && /^\d+[a-g]$/.test(l.id),
                     `${unitId}: lesson id "${l.id}" doesn't match pattern`);
                 assert.truthy(l.title && l.title.length > 0,
                     `${unitId}/${l.id} missing title`);
@@ -573,8 +589,8 @@ suite('all-units: per-unit grammar feature checks', () => {
 // EDGE CASES & REGRESSIONS
 // ============================================================================
 suite('all-units: edge cases and regressions', () => {
-    test('getGrammarUnit returns undefined for "unit12"', () => {
-        assert.falsy(env.getGrammarUnit('unit12'));
+    test('getGrammarUnit returns undefined for "unit99" (unknown)', () => {
+        assert.falsy(env.getGrammarUnit('unit99'));
     });
 
     test('getGrammarLessonsForUnit returns [] for unknown unit', () => {
@@ -605,10 +621,11 @@ suite('all-units: edge cases and regressions', () => {
         assert.equal(qs.length, 0);
     });
 
-    test('generateGrammarQuiz caps at 220 per unit', () => {
+    test('generateGrammarQuiz caps at each unit\'s question count', () => {
         for (const unitId of ALL_UNIT_IDS) {
-            const qs = env.generateGrammarQuiz(unitId, 10000);
-            assert.equal(qs.length, 220, `${unitId} should cap at 220`);
+            const qs = env.generateGrammarQuiz(unitId, 100000);
+            assert.equal(qs.length, expectedQuestionsFor(unitId),
+                `${unitId} should cap at ${expectedQuestionsFor(unitId)}`);
         }
     });
 

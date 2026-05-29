@@ -51,10 +51,10 @@ suite('pageref: page references look valid', () => {
         }
     });
 
-    test('section labels follow X[a-f] or range or "X Cover" / "X Review" pattern', () => {
+    test('section labels follow X[a-g] or range or "X Cover" / "X Review" pattern', () => {
         for (const [unitId, rules] of Object.entries(env.PDF_PAGE_REFS)) {
             for (const r of rules) {
-                assert.truthy(/^(\d+[a-f]?(-[a-f])?|\d+ (Cover|Review))$/.test(r.section),
+                assert.truthy(/^(\d+[a-g]?(-[a-g])?|\d+ (Cover|Review))$/.test(r.section),
                     `${unitId}: invalid section format "${r.section}"`);
             }
         }

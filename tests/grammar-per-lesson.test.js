@@ -26,9 +26,9 @@ for (const unit of env.GRAMMAR_LESSONS) {
         for (const lesson of unit.lessons) {
             test(`${lesson.id} has valid id, title, page reference`, () => {
                 // ID format
-                const expectedIdRe = new RegExp(`^${unitNum}[a-f]$`);
+                const expectedIdRe = new RegExp(`^${unitNum}[a-g]$`);
                 assert.truthy(expectedIdRe.test(lesson.id),
-                    `${lesson.id} doesn't match ${unitNum}[a-f]`);
+                    `${lesson.id} doesn't match ${unitNum}[a-g]`);
                 // Title
                 assert.truthy(typeof lesson.title === 'string' && lesson.title.length > 0,
                     `${lesson.id} missing title`);

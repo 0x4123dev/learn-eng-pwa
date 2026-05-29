@@ -391,7 +391,7 @@ suite('grammar: generateGrammarQuiz works for every unit × every common size', 
 // COVERAGE INTEGRATION: data structure invariants we rely on for UI rendering
 // ============================================================================
 suite('grammar: every unit has a unique color (no palette collisions)', () => {
-    test('11 distinct unit colors across GRAMMAR_UNITS', () => {
+    test('every unit color is distinct across GRAMMAR_UNITS', () => {
         const env = loadAppCode();
         const colors = env.GRAMMAR_UNITS.map(u => u.color);
         const unique = new Set(colors);
