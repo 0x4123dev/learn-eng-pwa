@@ -406,7 +406,7 @@ const GRAMMAR_LESSONS = [
                             },
                             {
                                 label: '+es',
-                                text: 'sh, s, ch, x, ss, z — torch → torches, bus → buses, class → classes, box → boxes, buzz → buzzes. Mẹo: "sháng say, chiều xỉn, sung sướng, zô"'
+                                text: '<strong>sh, s, ch, x, ss, z</strong> — torch → torches, bus → buses, class → classes, box → boxes, buzz → buzzes. Mẹo: "<strong>sh</strong>áng <strong>s</strong>ay, <strong>ch</strong>iều <strong>x</strong>ỉn, <strong>s</strong>ung <strong>s</strong>ướng, <strong>z</strong>ô"'
                             },
                             {
                                 label: '-ies',

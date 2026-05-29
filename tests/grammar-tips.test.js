@@ -189,20 +189,35 @@ suite('grammar tips: lesson detail also renders the tip inline', () => {
         // Find the "+es" row in the form table
         const esRow = (pluralBlock.form || []).find(f => f.label === '+es');
         assert.truthy(esRow, '+es form row missing in plural rule');
-        // Should now list every sibilant: sh, s, ch, x, ss, z
+        // Strip HTML tags (e.g., <strong>) before comparing so the test
+        // checks the VISIBLE text content rather than the markup.
+        const plain = esRow.text.replace(/<[^>]+>/g, '');
+        // Should list every sibilant: sh, s, ch, x, ss, z
         for (const consonant of ['sh', 's', 'ch', 'x', 'ss', 'z']) {
-            assert.truthy(esRow.text.includes(consonant),
-                `+es row should mention "${consonant}". Got: "${esRow.text}"`);
+            assert.truthy(plain.includes(consonant),
+                `+es row should mention "${consonant}". Got: "${plain}"`);
         }
-        // And include the Vietnamese mnemonic
-        assert.truthy(esRow.text.includes('sháng say'),
+        // And include the Vietnamese mnemonic (after HTML strip)
+        assert.truthy(plain.includes('sháng say'),
             '+es row should include "sháng say" mnemonic');
-        assert.truthy(esRow.text.includes('chiều xỉn'),
+        assert.truthy(plain.includes('chiều xỉn'),
             '+es row should include "chiều xỉn" mnemonic');
-        assert.truthy(esRow.text.includes('sung sướng'),
+        assert.truthy(plain.includes('sung sướng'),
             '+es row should include "sung sướng" mnemonic');
-        assert.truthy(esRow.text.includes('zô'),
+        assert.truthy(plain.includes('zô'),
             '+es row should include "zô" mnemonic');
+    });
+
+    test('Unit 2 lesson 2b +es mnemonic uses <strong> around the first letters (v3.40.3)', () => {
+        const l2b = env.getGrammarLesson('unit2', '2b');
+        const pluralBlock = (l2b.grammar || []).find(g => /Plural nouns/i.test(g.title));
+        const esRow = (pluralBlock.form || []).find(f => f.label === '+es');
+        // Each consonant chunk should be wrapped in <strong>…</strong>
+        for (const chunk of ['sh', 's', 'ch', 'x', 'z']) {
+            const re = new RegExp(`<strong>${chunk}</strong>`);
+            assert.truthy(re.test(esRow.text),
+                `expected <strong>${chunk}</strong> wrapper in +es row. Got: "${esRow.text}"`);
+        }
     });
 
     test('Unit 2 lesson 2b irregular plurals include foot/tooth/mouse (v3.40.2)', () => {
