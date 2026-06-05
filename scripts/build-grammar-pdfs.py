@@ -433,16 +433,6 @@ def build_unit_pdf(unit, out_path):
         ]))
         story.append(goal_tbl)
 
-    story.append(Spacer(1, 2 * cm))
-    story.append(Paragraph(
-        f"<i>{len(lessons)} lesson{'s' if len(lessons) != 1 else ''} in this unit</i>",
-        styles['meta']
-    ))
-    story.append(Paragraph(
-        '<i>Generated from the FlashLingo PWA · flashlingo.app</i>',
-        styles['meta']
-    ))
-
     story.append(PageBreak())
 
     # ---- Lesson pages ----
