@@ -21,7 +21,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle,
+    SimpleDocTemplate, Paragraph, Spacer, PageBreak, CondPageBreak, Table, TableStyle,
     KeepTogether, ListFlowable, ListItem, HRFlowable, Frame, PageTemplate,
     BaseDocTemplate
 )
@@ -163,20 +163,12 @@ def make_page_decorator(unit_title, unit_color, total_pages_holder):
 
     def decorator(canvas_obj, doc):
         canvas_obj.saveState()
-        # Header strip
         page_w, page_h = A4
-        canvas_obj.setFillColor(accent)
-        canvas_obj.rect(0, page_h - 1.2 * cm, page_w, 1.2 * cm, fill=1, stroke=0)
-        # Header text — left: brand, right: unit title
-        canvas_obj.setFont('Helvetica-Bold', 10)
-        canvas_obj.setFillColor(colors.white)
-        canvas_obj.drawString(1.5 * cm, page_h - 0.75 * cm, 'FlashLingo · Grammar Study Sheet')
-        canvas_obj.drawRightString(page_w - 1.5 * cm, page_h - 0.75 * cm, clean_title)
         # Footer rule
         canvas_obj.setStrokeColor(colors.HexColor('#E5E7EB'))
         canvas_obj.setLineWidth(0.5)
         canvas_obj.line(1.5 * cm, 1.4 * cm, page_w - 1.5 * cm, 1.4 * cm)
-        # Footer text — page number
+        # Footer text — page number, brand, unit title
         canvas_obj.setFont('Helvetica', 9)
         canvas_obj.setFillColor(MID_GRAY)
         page_num = canvas_obj.getPageNumber()
@@ -308,10 +300,11 @@ def build_lesson_flowables(lesson, styles, accent_color):
                 flow.append(Paragraph(f"• {esc(ex)}", styles['example']))
             flow.append(Spacer(1, 6))
 
-    flow.append(Spacer(1, 10))
-    # Horizontal rule between lessons
-    flow.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#E5E7EB'), spaceBefore=4, spaceAfter=8))
-
+    # No trailing HR / Spacer here — they go between lessons in build_unit_pdf.
+    # Trim any pure-Spacer flowables off the END so the page doesn't get a
+    # single trailing pixel that pushes content to a blank next page.
+    while flow and isinstance(flow[-1], Spacer):
+        flow.pop()
     return flow
 
 
@@ -330,14 +323,14 @@ def build_unit_pdf(unit, out_path):
 
     styles = make_styles(unit_color)
 
-    # Build the document
+    # Build the document — no top header bar anymore, so smaller top margin
     doc = SimpleDocTemplate(
         out_path,
         pagesize=A4,
         leftMargin=1.5 * cm,
         rightMargin=1.5 * cm,
-        topMargin=1.8 * cm,
-        bottomMargin=1.8 * cm,
+        topMargin=1.5 * cm,
+        bottomMargin=2.0 * cm,
         title=clean_title,
         author='FlashLingo',
         subject='Grammar Study Sheet',
@@ -388,11 +381,20 @@ def build_unit_pdf(unit, out_path):
     story.append(PageBreak())
 
     # ---- Lesson pages ----
+    # Between lessons: add a thin separator + a CondPageBreak. The separator
+    # only renders if both lessons share the same page; the CondPageBreak
+    # forces a fresh page when less than 9 cm remains. Trailing flowables
+    # never go after the last lesson, which prevents the blank-page bug.
     for idx, lesson in enumerate(lessons):
+        if idx > 0:
+            story.append(Spacer(1, 8))
+            story.append(HRFlowable(
+                width="100%", thickness=0.5,
+                color=colors.HexColor('#E5E7EB'),
+                spaceBefore=4, spaceAfter=8
+            ))
+            story.append(CondPageBreak(9 * cm))
         story.extend(build_lesson_flowables(lesson, styles, unit_color))
-        # Page break between lessons except the last
-        if idx < len(lessons) - 1:
-            story.append(PageBreak())
 
     # Build with header/footer
     decorator = make_page_decorator(clean_title, unit_color, None)
@@ -412,8 +414,8 @@ def build_index_pdf(units, out_path):
         pagesize=A4,
         leftMargin=1.5 * cm,
         rightMargin=1.5 * cm,
-        topMargin=1.8 * cm,
-        bottomMargin=1.8 * cm,
+        topMargin=1.5 * cm,
+        bottomMargin=2.0 * cm,
         title='FlashLingo — Grammar Index',
         author='FlashLingo',
         subject='Grammar Master Index',
