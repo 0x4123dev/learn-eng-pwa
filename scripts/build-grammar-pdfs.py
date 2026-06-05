@@ -523,7 +523,45 @@ def main():
     size_kb = os.path.getsize(index_path) // 1024
     print(f"  ✓ 00-master-index.pdf  ({size_kb} KB)")
 
-    print(f"\nDone. {len(units) + 1} PDFs in {OUT_DIR}/")
+    # Build single combined PDF with bookmarks per unit
+    combined_path = os.path.join(OUT_DIR, "flashlingo-grammar-all-units.pdf")
+    build_combined_pdf(units, index_path, combined_path)
+    size_kb = os.path.getsize(combined_path) // 1024
+    print(f"  ✓ flashlingo-grammar-all-units.pdf  ({size_kb} KB)")
+
+    print(f"\nDone. {len(units) + 2} PDFs in {OUT_DIR}/")
+
+
+def build_combined_pdf(units, index_path, out_path):
+    """Merge the master index + all 12 unit PDFs into one bookmarked file."""
+    from pypdf import PdfReader, PdfWriter
+
+    writer = PdfWriter()
+    total_pages = 0
+
+    # 1. Master index first
+    r = PdfReader(index_path)
+    for page in r.pages:
+        writer.add_page(page)
+    writer.add_outline_item('Master Index', 0)
+    total_pages += len(r.pages)
+
+    # 2. Then each unit in numeric order
+    for unit in units:
+        unit_id = unit['unitId']
+        clean = re.sub(r'[^a-z0-9-]+', '-',
+                       strip_emoji(unit.get('title', unit_id)).lower()).strip('-')
+        unit_path = os.path.join(OUT_DIR, f"{unit_id}-{clean}.pdf")
+        r = PdfReader(unit_path)
+        start = total_pages
+        for page in r.pages:
+            writer.add_page(page)
+        title = strip_emoji(unit.get('title', unit_id))
+        writer.add_outline_item(title, start)
+        total_pages += len(r.pages)
+
+    with open(out_path, 'wb') as fh:
+        writer.write(fh)
 
 
 if __name__ == '__main__':
