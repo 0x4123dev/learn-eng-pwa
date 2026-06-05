@@ -26,13 +26,51 @@ from reportlab.platypus import (
     BaseDocTemplate
 )
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 # Resolve paths relative to this script so it works from any cwd
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(_SCRIPT_DIR)
 DATA_PATH = "/tmp/grammar-lessons.json"
 OUT_DIR = os.path.join(_PROJECT_ROOT, "print", "grammar")
+FONT_DIR = os.path.join(_PROJECT_ROOT, "print", "fonts")
 os.makedirs(OUT_DIR, exist_ok=True)
+
+
+# -----------------------------------------------------------------------------
+# Register a Unicode-capable font family so IPA (/ɪ/, /iː/, /ʃ/, …),
+# Vietnamese (ơ, ư, ế, ề, ộ …), and other non-ASCII characters render
+# correctly instead of as black squares. Falls back to Helvetica if the
+# DejaVu TTFs aren't bundled — emit a clear warning so the user knows.
+# -----------------------------------------------------------------------------
+def register_unicode_fonts():
+    """Register the DejaVu Sans family. Returns the font name to use."""
+    family = {
+        'regular':     ('DejaVuSans',            os.path.join(FONT_DIR, 'DejaVuSans.ttf')),
+        'bold':        ('DejaVuSans-Bold',       os.path.join(FONT_DIR, 'DejaVuSans-Bold.ttf')),
+        'italic':      ('DejaVuSans-Oblique',    os.path.join(FONT_DIR, 'DejaVuSans-Oblique.ttf')),
+        'bold_italic': ('DejaVuSans-BoldOblique', os.path.join(FONT_DIR, 'DejaVuSans-BoldOblique.ttf')),
+    }
+    # All four files must exist for the family registration to work
+    if not all(os.path.exists(p) for _, p in family.values()):
+        print(f"  ⚠  DejaVu Sans not found in {FONT_DIR}/ — falling back to Helvetica")
+        print(f"     (IPA glyphs like /ɪ/ /iː/ will render as black squares)")
+        return 'Helvetica', 'Helvetica-Bold', 'Helvetica-Oblique', 'Helvetica-BoldOblique'
+
+    for _, (name, path) in family.items():
+        pdfmetrics.registerFont(TTFont(name, path))
+    pdfmetrics.registerFontFamily(
+        'DejaVuSans',
+        normal='DejaVuSans',
+        bold='DejaVuSans-Bold',
+        italic='DejaVuSans-Oblique',
+        boldItalic='DejaVuSans-BoldOblique',
+    )
+    return 'DejaVuSans', 'DejaVuSans-Bold', 'DejaVuSans-Oblique', 'DejaVuSans-BoldOblique'
+
+
+FONT_REG, FONT_BOLD, FONT_ITAL, FONT_BOLDITAL = register_unicode_fonts()
 
 
 # -----------------------------------------------------------------------------
@@ -91,63 +129,63 @@ def make_styles(unit_color):
     accent = colors.HexColor(unit_color)
     return {
         'h1': ParagraphStyle(
-            'h1', fontName='Helvetica-Bold', fontSize=22, leading=26,
+            'h1', fontName=FONT_BOLD, fontSize=22, leading=26,
             textColor=accent, spaceAfter=6, spaceBefore=0
         ),
         'h2': ParagraphStyle(
-            'h2', fontName='Helvetica-Bold', fontSize=15, leading=19,
+            'h2', fontName=FONT_BOLD, fontSize=15, leading=19,
             textColor=accent, spaceAfter=4, spaceBefore=12
         ),
         'h3': ParagraphStyle(
-            'h3', fontName='Helvetica-Bold', fontSize=12, leading=16,
+            'h3', fontName=FONT_BOLD, fontSize=12, leading=16,
             textColor=DARK_GRAY, spaceAfter=3, spaceBefore=8
         ),
         'h4': ParagraphStyle(
-            'h4', fontName='Helvetica-Bold', fontSize=10.5, leading=14,
+            'h4', fontName=FONT_BOLD, fontSize=10.5, leading=14,
             textColor=accent, spaceAfter=2, spaceBefore=6
         ),
         'body': ParagraphStyle(
-            'body', fontName='Helvetica', fontSize=10, leading=14,
+            'body', fontName=FONT_REG, fontSize=10, leading=14,
             textColor=DARK_GRAY, spaceAfter=3, alignment=TA_LEFT
         ),
         'body_just': ParagraphStyle(
-            'body_just', fontName='Helvetica', fontSize=10, leading=14,
+            'body_just', fontName=FONT_REG, fontSize=10, leading=14,
             textColor=DARK_GRAY, spaceAfter=3, alignment=TA_JUSTIFY
         ),
         'rule': ParagraphStyle(
-            'rule', fontName='Helvetica-Oblique', fontSize=10, leading=14,
+            'rule', fontName=FONT_ITAL, fontSize=10, leading=14,
             textColor=DARK_GRAY, spaceAfter=4, leftIndent=8
         ),
         'example': ParagraphStyle(
-            'example', fontName='Helvetica', fontSize=10, leading=14,
+            'example', fontName=FONT_REG, fontSize=10, leading=14,
             textColor=DARK_GRAY, spaceAfter=2, leftIndent=14, bulletIndent=4
         ),
         'goal': ParagraphStyle(
-            'goal', fontName='Helvetica', fontSize=10.5, leading=15,
+            'goal', fontName=FONT_REG, fontSize=10.5, leading=15,
             textColor=DARK_GRAY, spaceAfter=2, leftIndent=14, bulletIndent=2
         ),
         'cover_title': ParagraphStyle(
-            'cover_title', fontName='Helvetica-Bold', fontSize=32, leading=38,
+            'cover_title', fontName=FONT_BOLD, fontSize=32, leading=38,
             textColor=accent, alignment=TA_CENTER, spaceAfter=4
         ),
         'cover_sub': ParagraphStyle(
-            'cover_sub', fontName='Helvetica', fontSize=14, leading=18,
+            'cover_sub', fontName=FONT_REG, fontSize=14, leading=18,
             textColor=MID_GRAY, alignment=TA_CENTER, spaceAfter=8
         ),
         'cover_intro': ParagraphStyle(
-            'cover_intro', fontName='Helvetica-Oblique', fontSize=12, leading=18,
+            'cover_intro', fontName=FONT_ITAL, fontSize=12, leading=18,
             textColor=DARK_GRAY, alignment=TA_CENTER, spaceAfter=24, leftIndent=24, rightIndent=24
         ),
         'meta': ParagraphStyle(
-            'meta', fontName='Helvetica', fontSize=9, leading=12,
+            'meta', fontName=FONT_REG, fontSize=9, leading=12,
             textColor=MID_GRAY, alignment=TA_CENTER, spaceAfter=2
         ),
         'tag': ParagraphStyle(
-            'tag', fontName='Helvetica', fontSize=8.5, leading=11,
+            'tag', fontName=FONT_REG, fontSize=8.5, leading=11,
             textColor=accent, spaceAfter=4
         ),
         'pagenum': ParagraphStyle(
-            'pagenum', fontName='Helvetica', fontSize=9, leading=11,
+            'pagenum', fontName=FONT_REG, fontSize=9, leading=11,
             textColor=MID_GRAY, alignment=TA_CENTER
         ),
     }
@@ -169,7 +207,7 @@ def make_page_decorator(unit_title, unit_color, total_pages_holder):
         canvas_obj.setLineWidth(0.5)
         canvas_obj.line(1.5 * cm, 1.4 * cm, page_w - 1.5 * cm, 1.4 * cm)
         # Footer text — page number, brand, unit title
-        canvas_obj.setFont('Helvetica', 9)
+        canvas_obj.setFont(FONT_REG, 9)
         canvas_obj.setFillColor(MID_GRAY)
         page_num = canvas_obj.getPageNumber()
         canvas_obj.drawCentredString(page_w / 2, 0.8 * cm, f'Page {page_num}')
@@ -233,7 +271,7 @@ def build_lesson_flowables(lesson, styles, accent_color):
                     rows[-1] += [''] * (cols - len(rows[-1]))
                 word_tbl = Table(rows, colWidths=[3.7 * cm] * cols)
                 word_tbl.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                    ('FONTNAME', (0, 0), (-1, -1), FONT_REG),
                     ('FONTSIZE', (0, 0), (-1, -1), 9.5),
                     ('TEXTCOLOR', (0, 0), (-1, -1), DARK_GRAY),
                     ('BACKGROUND', (0, 0), (-1, -1), ACCENT_BG),
