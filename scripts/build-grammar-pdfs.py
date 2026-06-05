@@ -584,36 +584,31 @@ def main():
             print(f"  ✗ {filename}  FAILED: {e}")
             raise
 
-    # Build master index
-    index_path = os.path.join(OUT_DIR, "00-master-index.pdf")
-    build_index_pdf(units, index_path)
-    size_kb = os.path.getsize(index_path) // 1024
-    print(f"  ✓ 00-master-index.pdf  ({size_kb} KB)")
-
-    # Build single combined PDF with bookmarks per unit
+    # Build single combined PDF with bookmarks per unit (no master-index prefix)
     combined_path = os.path.join(OUT_DIR, "flashlingo-grammar-all-units.pdf")
-    build_combined_pdf(units, index_path, combined_path)
+    build_combined_pdf(units, combined_path)
     size_kb = os.path.getsize(combined_path) // 1024
     print(f"  ✓ flashlingo-grammar-all-units.pdf  ({size_kb} KB)")
 
-    print(f"\nDone. {len(units) + 2} PDFs in {OUT_DIR}/")
+    # Remove the stale master-index file if it still exists from a previous run
+    stale_index = os.path.join(OUT_DIR, "00-master-index.pdf")
+    if os.path.exists(stale_index):
+        os.remove(stale_index)
+        print(f"  - removed stale 00-master-index.pdf")
+
+    print(f"\nDone. {len(units) + 1} PDFs in {OUT_DIR}/")
 
 
-def build_combined_pdf(units, index_path, out_path):
-    """Merge the master index + all 12 unit PDFs into one bookmarked file."""
+def build_combined_pdf(units, out_path):
+    """Merge all 12 unit PDFs (in numeric order, no master-index prefix) into
+    a single bookmarked file."""
     from pypdf import PdfReader, PdfWriter
 
     writer = PdfWriter()
     total_pages = 0
 
-    # 1. Master index first
-    r = PdfReader(index_path)
-    for page in r.pages:
-        writer.add_page(page)
-    writer.add_outline_item('Master Index', 0)
-    total_pages += len(r.pages)
-
-    # 2. Then each unit in numeric order
+    # Each unit in numeric order — Unit 1, 2, …, 12. The combined PDF starts
+    # directly at Unit 1's cover; there is no Master Index up front.
     for unit in units:
         unit_id = unit['unitId']
         clean = re.sub(r'[^a-z0-9-]+', '-',
