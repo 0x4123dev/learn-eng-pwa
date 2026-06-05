@@ -101,13 +101,40 @@ ACCENT_BG = colors.HexColor('#F3F4F6')
 # Text helpers — escape Paragraph content (ReportLab uses XML)
 # -----------------------------------------------------------------------------
 def esc(text):
-    """Escape text for ReportLab Paragraph (XML-like)."""
+    """Escape text for ReportLab Paragraph (XML-like).
+
+    Normalises semantic HTML tags to ReportLab's accepted tags BEFORE
+    escaping, so source data containing `<strong>…</strong>` (used for
+    bold mnemonics in the Vietnamese pronunciation tips) renders as
+    bold instead of as literal `<strong>` text — which was also causing
+    nearby Vietnamese diacritics to render as black squares because
+    ReportLab's parser got confused by the unrecognised tags.
+    """
     if text is None:
         return ''
-    return (str(text)
-            .replace('&', '&amp;')
-            .replace('<', '&lt;')
-            .replace('>', '&gt;'))
+    s = str(text)
+    # Step 1 — replace safe semantic tags with sentinel placeholders so the
+    # next step (XML-entity escape) doesn't mangle them.
+    sentinels = [
+        ('<strong>',  '\x01BOLD_OPEN\x01'),
+        ('</strong>', '\x01BOLD_CLOSE\x01'),
+        ('<em>',      '\x01ITAL_OPEN\x01'),
+        ('</em>',     '\x01ITAL_CLOSE\x01'),
+        ('<b>',       '\x01BOLD_OPEN\x01'),
+        ('</b>',      '\x01BOLD_CLOSE\x01'),
+        ('<i>',       '\x01ITAL_OPEN\x01'),
+        ('</i>',      '\x01ITAL_CLOSE\x01'),
+    ]
+    for original, placeholder in sentinels:
+        s = s.replace(original, placeholder)
+    # Step 2 — escape XML entities so any leftover '<' or '>' becomes &lt; / &gt;
+    s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    # Step 3 — restore the placeholders as ReportLab's tags
+    s = (s.replace('\x01BOLD_OPEN\x01', '<b>')
+           .replace('\x01BOLD_CLOSE\x01', '</b>')
+           .replace('\x01ITAL_OPEN\x01', '<i>')
+           .replace('\x01ITAL_CLOSE\x01', '</i>'))
+    return s
 
 
 def strip_emoji(text):
