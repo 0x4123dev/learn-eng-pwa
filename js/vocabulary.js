@@ -2080,6 +2080,8 @@ const irregularVerbs = [
   { v1: 'keep', v2: 'kept', v3: 'kept', vi: 'giữ', level: 1 },
   { v1: 'let', v2: 'let', v3: 'let', vi: 'để/cho phép', level: 1 },
   { v1: 'begin', v2: 'began', v3: 'begun', vi: 'bắt đầu', level: 1 },
+  { v1: 'seem', v2: 'seemed', v3: 'seemed', vi: 'có vẻ', level: 1 },
+  { v1: 'help', v2: 'helped', v3: 'helped', vi: 'giúp đỡ', level: 1 },
   { v1: 'cost', v2: 'cost', v3: 'cost', vi: 'trị giá/tốn', level: 1 },
   { v1: 'burn', v2: 'burnt/burned', v3: 'burnt/burned', vi: 'đốt/cháy', level: 1 },
 
@@ -2087,6 +2089,9 @@ const irregularVerbs = [
   { v1: 'show', v2: 'showed', v3: 'shown', vi: 'cho thấy', level: 2 },
   { v1: 'hear', v2: 'heard', v3: 'heard', vi: 'nghe', level: 2 },
   { v1: 'run', v2: 'ran', v3: 'run', vi: 'chạy', level: 2 },
+  { v1: 'move', v2: 'moved', v3: 'moved', vi: 'di chuyển', level: 2 },
+  { v1: 'live', v2: 'lived', v3: 'lived', vi: 'sống', level: 2 },
+  { v1: 'believe', v2: 'believed', v3: 'believed', vi: 'tin', level: 2 },
   { v1: 'dream', v2: 'dreamt/dreamed', v3: 'dreamt/dreamed', vi: 'mơ', level: 2 },
   { v1: 'spell', v2: 'spelt/spelled', v3: 'spelt/spelled', vi: 'đánh vần', level: 2 },
   { v1: 'upset', v2: 'upset', v3: 'upset', vi: 'làm buồn/đảo lộn', level: 2 },
