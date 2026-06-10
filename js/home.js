@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.46.0';
+const APP_VERSION = 'v3.47.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1022,8 +1022,6 @@ const PET_QUESTS = [
     { id: 'wotd',      text: 'Open the Word of the Day',        coins: 3, hunger: 20,
       eligible: () => true },
     { id: 'streak3',   text: 'Study 3 days in a row',           coins: 15, hunger: 50,
-      eligible: () => true },
-    { id: 'rhythm',    text: 'Play a music game',               coins: 5, hunger: 30,
       eligible: () => true }
 ];
 

@@ -60,14 +60,7 @@ const achievements = [
     { id: 'first-battle', name: 'Challenger', icon: '⚔️' },
     { id: 'battle-5', name: 'Warrior', icon: '🗡️' },
     { id: 'hunter-first', name: 'Word Hunter', icon: '🔍' },
-    { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' },
-
-    // Music
-    { id: 'rhythm-first', name: 'Beat Maker', icon: '🥁' },
-    { id: 'rhythm-10', name: 'Rhythm Star', icon: '⭐' },
-    { id: 'rhythm-perfect', name: 'Perfect Rhythm', icon: '🎵' },
-    { id: 'chant-first', name: 'Chant Champion', icon: '🎤' },
-    { id: 'syllable-sage', name: 'Syllable Sage', icon: '🔤' }
+    { id: 'hunter-10', name: 'Expert Hunter', icon: '🎯' }
 ];
 
 let currentUser = null;
@@ -174,10 +167,6 @@ function createDefaultUserData(username, avatar, passcode) {
         dogLevel: 1,
         petPoops: [],
         lastDecayDate: null,
-        musicStats: {
-            rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
-            wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
-        },
         petMemory: {
             lessonsTogether: 0,         // Lifetime lessons with this pet
             lastSeen: Date.now(),        // Last time user opened app
@@ -553,9 +542,8 @@ function loginUser(username) {
     if (appState.sentences === undefined) appState.sentences = [];
     if (appState.battleHistory === undefined) appState.battleHistory = { wins: 0, losses: 0, draws: 0 };
     // (v3.38: Word Bubbles game removed — bubblesStats no longer migrated.)
+    // (v3.47: Music & Videos tabs removed — videoStats/musicStats no longer migrated.)
 
-    // Video stats migration
-    if (!appState.videoStats) appState.videoStats = { watched: [], stars: {}, wordsLearned: [], totalQuizzes: 0 };
     // Migrate: shift lesson numbers after adding 112 house words at the start of vocabulary
     // Old lesson 0 = "important..." (IELTS), now lesson 0 = "apartment..." (house)
     // IELTS words shifted by BEGINNING_LESSONS (23) positions
@@ -595,10 +583,6 @@ function loginUser(username) {
     if (appState.dogLevel === undefined) appState.dogLevel = typeof getDogLevel === 'function' ? getDogLevel(appState.dogGrowthXP) : 1;
     if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
     if (appState.petPoops === undefined) appState.petPoops = [];
-    if (appState.musicStats === undefined) appState.musicStats = {
-        rhythmTap: { gamesPlayed: 0, highScore: 0, bestCombo: 0, correctRounds: 0 },
-        wordChant: { gamesPlayed: 0, correctQuizAnswers: 0 }
-    };
 
     // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
     if (appState.currentLesson > 0) {
@@ -820,12 +804,6 @@ function recordStudy() {
 let _profileOriginScreen = 'homeScreen';
 
 function switchScreen(screenId) {
-    // Close any open overlays
-    document.querySelectorAll('.music-menu-overlay').forEach(el => {
-        el.classList.remove('active');
-        el.innerHTML = '';
-    });
-
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
@@ -838,7 +816,6 @@ function switchScreen(screenId) {
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'essaysScreen') renderEssays();
     if (screenId === 'profileScreen') renderProfile();
-    if (screenId === 'videoScreen' && typeof renderVideoScreen === 'function') renderVideoScreen();
 }
 
 function navigateToProfile() {

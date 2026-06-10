@@ -193,21 +193,8 @@ const EXPORT_NAMES = [
     'getWeekStart', 'formatWeekRange', 'generateWeeklyRecap', 'getRecapMessage',
     'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
     // daily-challenge
-    'getDailyWords', 'seededRandom',
-    // videos
-    'VIDEO_LIBRARY', 'VIDEO_LEVELS', 'VIDEO_CATEGORIES',
-    'IELTS_SPEAKING_VIDEO_SOURCES', 'IELTS_SPEAKING_VERIFIED_SOURCE_BY_LESSON',
-    'IELTS_SPEAKING_CURRICULUM', 'IELTS_SPEAKING_LESSON_CONTENT',
-    'IELTS_PART_FILTERS', 'IELTS_SPEAKING_CRITERIA', 'buildIELTSSpeakingLessons',
-    'videoState', 'getVideoEmbedId', 'getVideoProgressId', 'getCourseVideos',
-    'getIELTSPartKey', 'getFilteredVideos', 'filterIELTSPart',
-    'getIELTSSpeakingPrompts', 'getIELTSSpeakingCheckpoints',
-    'getIELTSSpeakingModelLines', 'getIELTSSpeakingFrames',
-    'getIELTSSpeakingTimerConfig', 'getIELTSSpeakingVocabulary', 'getIELTSSpeakingQuiz',
-    'getSpeakingCriteriaAverage', 'getSpeakingRatingOverall', 'getIELTSSpeakingProgressStats',
-    'formatSpeakingTimer', 'getSpeakingRecorderHTML',
-    'rateSpeakingCriterion', 'completeSpeakingPractice',
-    'normalizeVideoStats', 'getVideoStats', 'saveVideoStats'
+    'getDailyWords', 'seededRandom'
+    // (v3.47: Music & Videos tabs removed — no video globals.)
 ];
 
 function loadAppCode(opts) {
@@ -229,9 +216,7 @@ function loadAppCode(opts) {
     if (opts.includeDailyChallenge) {
         fileList.push('js/daily-challenge.js');
     }
-    if (opts.includeVideos) {
-        fileList.push('js/videos.js');
-    }
+    // (v3.47: Music & Videos tabs removed — no includeVideos option.)
     // Load the grammar UI render layer too. Required for any test that
     // exercises quizHeaderHTML / renderMCQuestion / finishGrammarQuiz / etc.
     if (opts.includeGrammarUI) {
