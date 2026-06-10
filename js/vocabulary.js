@@ -2080,16 +2080,16 @@ const irregularVerbs = [
   { v1: 'keep', v2: 'kept', v3: 'kept', vi: 'giữ', level: 1 },
   { v1: 'let', v2: 'let', v3: 'let', vi: 'để/cho phép', level: 1 },
   { v1: 'begin', v2: 'began', v3: 'begun', vi: 'bắt đầu', level: 1 },
-  { v1: 'seem', v2: 'seemed', v3: 'seemed', vi: 'có vẻ', level: 1 },
-  { v1: 'help', v2: 'helped', v3: 'helped', vi: 'giúp đỡ', level: 1 },
+  { v1: 'cost', v2: 'cost', v3: 'cost', vi: 'trị giá/tốn', level: 1 },
+  { v1: 'burn', v2: 'burnt/burned', v3: 'burnt/burned', vi: 'đốt/cháy', level: 1 },
 
   // Level 2: Intermediate (26-50)
   { v1: 'show', v2: 'showed', v3: 'shown', vi: 'cho thấy', level: 2 },
   { v1: 'hear', v2: 'heard', v3: 'heard', vi: 'nghe', level: 2 },
   { v1: 'run', v2: 'ran', v3: 'run', vi: 'chạy', level: 2 },
-  { v1: 'move', v2: 'moved', v3: 'moved', vi: 'di chuyển', level: 2 },
-  { v1: 'live', v2: 'lived', v3: 'lived', vi: 'sống', level: 2 },
-  { v1: 'believe', v2: 'believed', v3: 'believed', vi: 'tin', level: 2 },
+  { v1: 'dream', v2: 'dreamt/dreamed', v3: 'dreamt/dreamed', vi: 'mơ', level: 2 },
+  { v1: 'spell', v2: 'spelt/spelled', v3: 'spelt/spelled', vi: 'đánh vần', level: 2 },
+  { v1: 'upset', v2: 'upset', v3: 'upset', vi: 'làm buồn/đảo lộn', level: 2 },
   { v1: 'hold', v2: 'held', v3: 'held', vi: 'giữ/cầm', level: 2 },
   { v1: 'bring', v2: 'brought', v3: 'brought', vi: 'mang đến', level: 2 },
   { v1: 'write', v2: 'wrote', v3: 'written', vi: 'viết', level: 2 },
@@ -2180,6 +2180,17 @@ const irregularVerbs = [
   { v1: 'quit', v2: 'quit', v3: 'quit', vi: 'bỏ', level: 3 },
   { v1: 'seek', v2: 'sought', v3: 'sought', vi: 'tìm kiếm', level: 3 },
   { v1: 'speed', v2: 'sped', v3: 'sped', vi: 'tăng tốc', level: 3 },
+  { v1: 'burst', v2: 'burst', v3: 'burst', vi: 'nổ/vỡ', level: 3 },
+  { v1: 'cast', v2: 'cast', v3: 'cast', vi: 'ném/đúc', level: 3 },
+  { v1: 'bid', v2: 'bid', v3: 'bid', vi: 'trả giá/đấu giá', level: 3 },
+  { v1: 'mistake', v2: 'mistook', v3: 'mistaken', vi: 'nhầm lẫn', level: 3 },
+  { v1: 'overcome', v2: 'overcame', v3: 'overcome', vi: 'vượt qua', level: 3 },
+  { v1: 'spill', v2: 'spilt/spilled', v3: 'spilt/spilled', vi: 'làm đổ', level: 3 },
+  { v1: 'spoil', v2: 'spoilt/spoiled', v3: 'spoilt/spoiled', vi: 'làm hỏng/nuông chiều', level: 3 },
+  { v1: 'lean', v2: 'leant/leaned', v3: 'leant/leaned', vi: 'dựa/nghiêng', level: 3 },
+  { v1: 'broadcast', v2: 'broadcast', v3: 'broadcast', vi: 'phát sóng', level: 3 },
+  { v1: 'oversleep', v2: 'overslept', v3: 'overslept', vi: 'ngủ quên', level: 3 },
+  { v1: 'undo', v2: 'undid', v3: 'undone', vi: 'hoàn tác/tháo', level: 3 },
 
   // Level 4: Additional Advanced
   { v1: 'arise', v2: 'arose', v3: 'arisen', vi: 'phát sinh', level: 4 },
@@ -2197,6 +2208,17 @@ const irregularVerbs = [
   { v1: 'shrink', v2: 'shrank', v3: 'shrunk', vi: 'co lại', level: 4 },
   { v1: 'spin', v2: 'spun', v3: 'spun', vi: 'quay', level: 4 },
   { v1: 'spring', v2: 'sprang', v3: 'sprung', vi: 'bật lên', level: 4 },
+  { v1: 'overtake', v2: 'overtook', v3: 'overtaken', vi: 'vượt (xe)/vượt mặt', level: 4 },
+  { v1: 'mislead', v2: 'misled', v3: 'misled', vi: 'đánh lừa', level: 4 },
+  { v1: 'misunderstand', v2: 'misunderstood', v3: 'misunderstood', vi: 'hiểu lầm', level: 4 },
+  { v1: 'overhear', v2: 'overheard', v3: 'overheard', vi: 'nghe lỏm', level: 4 },
+  { v1: 'string', v2: 'strung', v3: 'strung', vi: 'xâu/căng dây', level: 4 },
+  { v1: 'swell', v2: 'swelled', v3: 'swollen/swelled', vi: 'sưng lên', level: 4 },
+  { v1: 'sew', v2: 'sewed', v3: 'sewn/sewed', vi: 'may vá', level: 4 },
+  { v1: 'weave', v2: 'wove', v3: 'woven', vi: 'dệt', level: 4 },
+  { v1: 'wet', v2: 'wet/wetted', v3: 'wet/wetted', vi: 'làm ướt', level: 4 },
+  { v1: 'rid', v2: 'rid', v3: 'rid', vi: 'loại bỏ', level: 4 },
+  { v1: 'withstand', v2: 'withstood', v3: 'withstood', vi: 'chịu đựng', level: 4 },
 
   // Level 5: Master (rare/literary)
   { v1: 'awake', v2: 'awoke', v3: 'awoken', vi: 'thức dậy', level: 5 },
@@ -2212,7 +2234,13 @@ const irregularVerbs = [
   { v1: 'tread', v2: 'trod', v3: 'trodden', vi: 'giẫm', level: 5 },
   { v1: 'undergo', v2: 'underwent', v3: 'undergone', vi: 'trải qua', level: 5 },
   { v1: 'uphold', v2: 'upheld', v3: 'upheld', vi: 'ủng hộ/duy trì', level: 5 },
-  { v1: 'wind', v2: 'wound', v3: 'wound', vi: 'quấn', level: 5 }
+  { v1: 'wind', v2: 'wound', v3: 'wound', vi: 'quấn', level: 5 },
+  { v1: 'stride', v2: 'strode', v3: 'stridden', vi: 'sải bước', level: 5 },
+  { v1: 'thrust', v2: 'thrust', v3: 'thrust', vi: 'đẩy mạnh', level: 5 },
+  { v1: 'slit', v2: 'slit', v3: 'slit', vi: 'rạch/cắt khe', level: 5 },
+  { v1: 'mow', v2: 'mowed', v3: 'mown/mowed', vi: 'cắt cỏ', level: 5 },
+  { v1: 'forecast', v2: 'forecast', v3: 'forecast', vi: 'dự báo', level: 5 },
+  { v1: 'saw', v2: 'sawed', v3: 'sawn/sawed', vi: 'cưa', level: 5 }
 ];
 
 // Export for use in main app
