@@ -144,6 +144,8 @@ function showSpeedQuestion() {
     // Update UI
     document.getElementById('verbV1').textContent = verb.v1;
     document.getElementById('verbMeaning').textContent = verb.vi;
+    const exampleEl = document.getElementById('verbExample');
+    if (exampleEl) exampleEl.textContent = verb.ex ? '“' + verb.ex + '”' : '';
     document.getElementById('speedProgress').textContent =
         `${speedState.currentIndex + 1}/${speedState.currentVerbs.length}`;
     document.getElementById('speedScore').textContent = speedState.score;
