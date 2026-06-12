@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.50.0';
+const APP_VERSION = 'v3.50.1';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -2252,11 +2252,16 @@ function startAccPetDrag(el, x, y) {
     const wrapper = el.closest('.pet-wrapper');
     if (!wrapper) return;
     const wrapperRect = wrapper.getBoundingClientRect();
+    // The accessory may be moved anywhere inside the dog's screen box
+    // (.pet-hero-zone), not just within the small pet wrapper.
+    const zone = el.closest('.pet-hero-zone');
+    const zoneRect = zone ? zone.getBoundingClientRect() : wrapperRect;
 
     _accDragState = {
         el,
         accId: el.dataset.accId,
-        wrapperRect
+        wrapperRect,
+        zoneRect
     };
 
     el.classList.add('acc-dragging');
@@ -2265,11 +2270,18 @@ function startAccPetDrag(el, x, y) {
 
 function moveAccPetDrag(x, y) {
     if (!_accDragState) return;
-    const { el, wrapperRect } = _accDragState;
+    const { el, wrapperRect, zoneRect } = _accDragState;
 
-    // Convert screen coords to percentage within wrapper, clamped to bounds
-    const pctLeft = Math.max(0, Math.min(100, (x - wrapperRect.left) / wrapperRect.width * 100));
-    const pctTop = Math.max(-10, Math.min(110, (y - wrapperRect.top) / wrapperRect.height * 100));
+    // Clamp the cursor to the pet-hero-zone box (small inset keeps the emoji
+    // visible), then convert to wrapper-relative percentages. Positions stay
+    // wrapper-relative so saved accPositions and per-breed anchors keep
+    // working unchanged.
+    const PAD = 12;
+    const cx = Math.max(zoneRect.left + PAD, Math.min(zoneRect.right - PAD, x));
+    const cy = Math.max(zoneRect.top + PAD, Math.min(zoneRect.bottom - PAD, y));
+
+    const pctLeft = (cx - wrapperRect.left) / wrapperRect.width * 100;
+    const pctTop = (cy - wrapperRect.top) / wrapperRect.height * 100;
 
     el.style.left = pctLeft + '%';
     el.style.top = pctTop + '%';

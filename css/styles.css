@@ -4305,6 +4305,20 @@
             line-height: 1;
             /* font-size set dynamically via inline style */
         }
+        /* Equipped accessories are draggable around the dog inside the
+           pet-hero-zone box. pointer-events:auto re-enables touch/mouse
+           (the base class disables them), touch-action:none stops the
+           page from scrolling while dragging on mobile. */
+        .pet-accessory.draggable-pet-acc {
+            pointer-events: auto;
+            cursor: grab;
+            touch-action: none;
+        }
+        .pet-accessory.acc-dragging {
+            cursor: grabbing;
+            z-index: 50;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+        }
         /* Anatomical slots — JS inline styles override with per-breed anchors.
            These are CSS fallbacks only. */
         .pet-accessory.acc-head   { top: -18%; left: 50%; transform: translateX(-50%); }
