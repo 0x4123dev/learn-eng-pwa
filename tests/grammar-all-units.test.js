@@ -15,8 +15,8 @@ const env = loadAppCode();
 const ALL_UNIT_IDS = ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12'];
 
 // Per-unit question counts: textbook units have 220, unit12 (tenses
-// reference) has 700.
-const QUESTIONS_PER_UNIT = { unit12: 700 };
+// reference) has 1000.
+const QUESTIONS_PER_UNIT = { unit12: 1000 };
 function expectedQuestionsFor(unitId) { return QUESTIONS_PER_UNIT[unitId] || 220; }
 
 // Expected key topics each unit MUST cover (from textbook syllabus).
@@ -404,9 +404,9 @@ suite('all-units: cross-unit integrity', () => {
             `Lessons without units: ${inLessonsNotUnits.join(', ')}`);
     });
 
-    test('total question count = 11 × 220 + Unit 12 (700) = 3,120', () => {
+    test('total question count = 11 × 220 + Unit 12 (1000) = 3,420', () => {
         const total = env.GRAMMAR_UNITS.reduce((sum, u) => sum + u.questions.length, 0);
-        assert.equal(total, 11 * 220 + 700);
+        assert.equal(total, 11 * 220 + 1000);
     });
 
     test('total lesson card count matches the sum across all units', () => {
