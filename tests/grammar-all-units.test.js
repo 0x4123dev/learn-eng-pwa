@@ -404,9 +404,9 @@ suite('all-units: cross-unit integrity', () => {
             `Lessons without units: ${inLessonsNotUnits.join(', ')}`);
     });
 
-    test('total question count = 11 × 220 + Unit 12 (1000) = 3,420', () => {
+    test('total question count = 11 × 220 + Unit 12 (1000) + Unit 13 (90) = 3,510', () => {
         const total = env.GRAMMAR_UNITS.reduce((sum, u) => sum + u.questions.length, 0);
-        assert.equal(total, 11 * 220 + 1000);
+        assert.equal(total, 11 * 220 + 1000 + 90);
     });
 
     test('total lesson card count matches the sum across all units', () => {

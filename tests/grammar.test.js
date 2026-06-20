@@ -5,13 +5,13 @@ const { loadAppCode } = require('./setup');
 const env = loadAppCode();
 
 suite('grammar: GRAMMAR_UNITS shape', () => {
-    test('exactly 12 units (Units 1–11 + Tenses reference)', () => {
-        assert.equal(env.GRAMMAR_UNITS.length, 12);
+    test('exactly 13 units (Units 1–11 + Tenses reference + Exam)', () => {
+        assert.equal(env.GRAMMAR_UNITS.length, 13);
     });
 
-    test('unit IDs cover all 12 units', () => {
+    test('unit IDs cover all 13 units', () => {
         const ids = env.GRAMMAR_UNITS.map(u => u.id);
-        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12']) {
+        for (const u of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12', 'unit13']) {
             assert.contains(ids, u);
         }
     });
@@ -520,8 +520,8 @@ suite('grammar: mistake bank (v3.24 Tier 1)', () => {
 });
 
 suite('grammar: lessons sub-tab data (v3.25)', () => {
-    test('GRAMMAR_LESSONS contains exactly 12 units', () => {
-        assert.equal(env.GRAMMAR_LESSONS.length, 12);
+    test('GRAMMAR_LESSONS contains exactly 13 units', () => {
+        assert.equal(env.GRAMMAR_LESSONS.length, 13);
     });
 
     test('lessons cover all 11 units', () => {

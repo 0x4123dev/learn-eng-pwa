@@ -2931,6 +2931,204 @@ const GRAMMAR_LESSONS = [
                 ]
             }
         ]
+    },
+{
+        unitId: 'unit13',
+        title: 'Exam',
+        icon: '📝',
+        color: '#EF4444',
+        intro: 'Review everything for the exam: tenses, comparatives & superlatives, modals, future plans, quantifiers, describing places, pronunciation, communication and reading.',
+        iCanGoals: ['Choose the right tense from the signal words', 'Make comparative and superlative sentences', 'Use modals (have to, can, should) and "be going to"', 'Use quantifiers (any, a few, a little)', 'Describe places with the right prepositions', 'Handle pronunciation, communication and reading tasks'],
+        lessons: [
+            {
+                id: '13a',
+                title: 'Tenses review',
+                page: '124-125',
+                topicTags: ['present simple', 'present continuous', 'present perfect', 'past simple', 'future'],
+                vocabulary: {
+                    title: 'Time signals — which tense?',
+                    words: ['every day / usually / often / always → present simple', 'now / at the moment / Listen! / Look! → present continuous', 'since / for / yet / already / ever → present perfect', 'yesterday / last week / ago / in 2010 → past simple', 'tomorrow / next month / soon → will / be going to'],
+                    note: 'Find the time signal first, then choose the tense.'
+                },
+                pronunciation: {
+                    title: '-ed endings (regular past)',
+                    rule: 'The regular past ending "-ed" has three pronunciations.',
+                    examples: ['/t/ after voiceless sounds: worked, watched, finished', '/d/ after voiced sounds: lived, played, opened', '/ɪd/ after /t/ or /d/: visited, wanted, needed']
+                },
+                grammar: [
+                    {
+                        title: 'Present simple',
+                        rule: 'Habits, routines and general truths. He/She/It + verb-s.',
+                        form: [
+                            {
+                                label: 'I/you/we/they',
+                                text: 'work'
+                            },
+                            {
+                                label: 'he/she/it',
+                                text: 'works'
+                            }
+                        ],
+                        examples: ['They usually play football on Sundays.', 'He has lunch at 1 o\'clock every day.']
+                    },
+                    {
+                        title: 'Present continuous',
+                        rule: 'Actions happening now or around now / fixed future arrangements. am/is/are + verb-ing.',
+                        examples: ['They are cleaning the room now.', 'We are having breakfast in the garden tomorrow morning.']
+                    },
+                    {
+                        title: 'Present perfect',
+                        rule: 'Past action linked to now. have/has + past participle. Signals: since, for, yet, already, ever.',
+                        examples: ['She has lived in London since 2010.', 'I haven\'t finished my homework yet.']
+                    },
+                    {
+                        title: 'Past simple',
+                        rule: 'Finished actions at a finished past time. Regular: verb-ed; many irregulars (go→went). Negative: didn\'t + base verb.',
+                        examples: ['He went to the cinema yesterday.', 'She didn\'t buy a new car last month.']
+                    },
+                    {
+                        title: 'Future: will / be going to',
+                        rule: '"will" for predictions, decisions and promises; "be going to" for plans/intentions decided before.',
+                        examples: ['We will visit Paris next month.', 'I am going to visit my grandparents to celebrate their anniversary.']
+                    }
+                ]
+            },
+            {
+                id: '13b',
+                title: 'Comparatives & superlatives',
+                page: '126-127',
+                topicTags: ['comparative', 'superlative', 'as ... as', 'not as ... as'],
+                vocabulary: {
+                    title: 'Adjective forms',
+                    words: ['big → bigger → the biggest', 'hot → hotter → the hottest', 'old → older → the oldest', 'beautiful → more beautiful → the most beautiful', 'expensive → more expensive → the most expensive', 'good → better → the best', 'bad → worse → the worst'],
+                    note: 'Short adjectives add -er/-est; long adjectives use more/most.'
+                },
+                pronunciation: {
+                    title: '"than" is weak',
+                    rule: 'In comparisons "than" is unstressed and reduced to /ðən/.',
+                    examples: ['hotter than /ðən/ winter', 'more interesting than /ðən/ that one']
+                },
+                grammar: [
+                    {
+                        title: 'Comparative (+ than)',
+                        rule: 'Short adj: adj-er + than. Long adj: more + adj + than. Never use "more" with -er.',
+                        examples: ['Summer is hotter than winter.', 'This book is more interesting than that one.', '✗ more taller → ✓ taller']
+                    },
+                    {
+                        title: 'Superlative (the ... in/of)',
+                        rule: 'Short adj: the adj-est. Long adj: the most + adj. Use "in" for places, "of" for groups.',
+                        examples: ['That mountain is the highest in the country.', 'The hotel is the most expensive in this area.', 'The Nile is the longest river in the world.']
+                    },
+                    {
+                        title: '(not) as ... as',
+                        rule: '"as + adjective + as" = equal; "not as + adjective + as" = less than.',
+                        examples: ['No one is as active as he is.', 'My room is not as big as my sister\'s.']
+                    }
+                ]
+            },
+            {
+                id: '13c',
+                title: 'Modals & future plans',
+                page: '128-129',
+                topicTags: ['have to', 'can / cannot', 'should / shouldn\'t', 'be going to', 'purpose: to + verb'],
+                vocabulary: {
+                    title: 'Modal meanings',
+                    words: ['have to / has to = obligation (you must)', 'don\'t/doesn\'t have to = no obligation', 'can / cannot (can\'t) = ability / permission', 'should / shouldn\'t = advice', 'be going to = plan / intention'],
+                    note: 'After a modal use the BASE verb: no -s, no -ed, no "to".'
+                },
+                grammar: [
+                    {
+                        title: 'have to / has to',
+                        rule: 'Obligation. he/she/it → has to; others → have to. + base verb.',
+                        examples: ['She has to finish her homework tonight.', 'Nam has to arrive at the airport by 8 AM.']
+                    },
+                    {
+                        title: 'can / cannot & should / shouldn\'t',
+                        rule: 'can = ability/permission; should = advice. Base verb after them.',
+                        examples: ['The students cannot use electronic devices in the classroom.', 'She shouldn\'t speak loudly in the library.', 'You should always be polite to others.']
+                    },
+                    {
+                        title: 'be going to + purpose',
+                        rule: 'be going to + base verb for plans. Add "to + verb" to give the purpose (why).',
+                        examples: ['We are going to buy a new car to use for our road trips.', 'She is going to learn the guitar to join a band.']
+                    }
+                ]
+            },
+            {
+                id: '13d',
+                title: 'Vocabulary & everyday English',
+                page: '130-131',
+                topicTags: ['phrasal verbs', 'collocations', 'quantifiers', 'communication'],
+                vocabulary: {
+                    title: 'Useful chunks',
+                    words: ['give up = stop a habit', 'business trip', 'documentary / thriller / science-fiction (film genres)', 'scholarship = money for study', 'orbit = path around a planet', 'degrees Celsius (temperature)', 'spend money on something'],
+                    note: 'Learn collocations as whole chunks, not single words.'
+                },
+                grammar: [
+                    {
+                        title: 'Quantifiers: any / a few / a little',
+                        rule: '"any" in negatives & questions (uncountable or plural). "a few" + countable plural. "a little" + uncountable.',
+                        examples: ['There isn\'t any bread left.', 'There were a few problems at the beginning.', 'We have a little time before the movie.']
+                    },
+                    {
+                        title: 'Communication — functions',
+                        rule: 'Match the reply to the situation: requests, offers, suggestions and compliments.',
+                        examples: ['Could I borrow some money? — I\'m afraid I don\'t have any coins. (refuse a request)', 'Let me take you home. — I\'d love to. Thanks. (accept an offer)', 'What a beautiful dress! — Thank you. (accept a compliment)']
+                    }
+                ]
+            },
+            {
+                id: '13e',
+                title: 'Pronunciation & word stress',
+                page: '132-133',
+                topicTags: ['sound /s/ vs /k/', 'vowel sounds', 'word stress'],
+                vocabulary: {
+                    title: 'Word stress patterns',
+                    words: ['Oo: ORbit, FORest, ISland', 'oO: proTECT, aDVANCE', 'oOo: muSIcian, asTROnomer, apPREciate', 'Ooo / ooO: CIGarette'],
+                    note: 'Mark the stressed syllable with a capital O.'
+                },
+                pronunciation: {
+                    title: 'Sounds to compare',
+                    rule: 'The letter "c" can be soft /s/ or hard /k/. Watch the vowel letters too.',
+                    examples: ['Soft c /s/ (before e, i, y): cancel, exercise, city', 'Hard c /k/ (elsewhere): soccer, car, cat', 'Vowel /eɪ/: equator, parade; weak /ə/: distance', 'Verb vs noun stress: PROtect? → no — proTECT (verb, 2nd syllable)']
+                },
+                grammar: [
+                    {
+                        title: 'Finding the odd one out',
+                        rule: 'In a "different sound" question, say each word aloud and compare only the underlined part; three will match and one will differ.',
+                        examples: ['soccer /k/ vs sea, exercise, cancel /s/ → soccer is different.', 'cigarette has different stress from appreciate, astronomer, musician.']
+                    }
+                ]
+            },
+            {
+                id: '13f',
+                title: 'Describing places & reading',
+                page: '134-135',
+                topicTags: ['prepositions of place', 'describing geography', 'reading skills'],
+                vocabulary: {
+                    title: 'Place language',
+                    words: ['is located / is situated between A and B', 'runs along the coast of', 'is famous for / is known for', 'the highest peak in', 'the deepest / oldest lake in the world', 'in (country/region) / on (coast) / at (point)'],
+                    note: 'Describe geography with the right preposition and superlatives.'
+                },
+                grammar: [
+                    {
+                        title: 'Prepositions & set phrases',
+                        rule: 'Use "between" for two places, "along" for a line/coast, "of" after coast/edge, "in" for countries.',
+                        examples: ['The Pacific Ocean is located between Asia and Australia.', 'The Andes Mountains run along the western coast of South America.', 'The Great Barrier Reef is in Australia.']
+                    },
+                    {
+                        title: 'be famous/known for',
+                        rule: 'Describe what a place is special for with "be famous for" / "be known for" + noun.',
+                        examples: ['The Caribbean Sea is famous for its crystal-clear waters.', 'Australia is known for its unique wildlife.']
+                    },
+                    {
+                        title: 'Reading skills',
+                        rule: 'Find the MAIN IDEA (what the whole text is about), SCAN for specific details, and INFER what is suggested but not stated.',
+                        examples: ['Main idea: scientists have achieved a lot but some things are still impossible.', 'Detail: the wheels of the invisible car are not invisible.', 'Inference: scientists still do not fully understand teleporting.']
+                    }
+                ]
+            }
+        ]
     }
 ];
 

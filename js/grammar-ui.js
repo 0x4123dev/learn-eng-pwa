@@ -225,7 +225,7 @@ function renderGrammarLessons() {
     const anyExpanded = _grammarExpandedLessonUnits.size > 0;
     const bulkToggleHTML = `
         <div class="grammar-units-bulk-bar">
-            <span class="grammar-units-bulk-label">${GRAMMAR_LESSONS.length} units · 66 lessons</span>
+            <span class="grammar-units-bulk-label">${GRAMMAR_LESSONS.length} units · ${GRAMMAR_LESSONS.reduce((s, u) => s + u.lessons.length, 0)} lessons</span>
             <div class="grammar-units-bulk-actions">
                 ${anyExpanded
                     ? `<button class="grammar-units-bulk-btn" onclick="collapseAllGrammarLessonUnits()">⤴ Collapse all</button>`
