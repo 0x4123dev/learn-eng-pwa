@@ -170,6 +170,7 @@ const EXPORT_NAMES = [
     'startMistakesQuiz', 'startCustomQuiz', 'startGrammarQuiz',
     'startTopicReviewSession',
     'nextGrammarQuestion', 'answerGrammarQuestion',
+    'confirmExitGrammarQuiz', 'isGrammarQuizActive', 'abandonGrammarQuiz',
     'renderGrammarHome', 'renderGrammarLessons', 'openGrammarLesson',
     'practiceGrammarLesson', 'closeGrammarLesson',
     'switchGrammarSubTab', 'reviewLastGrammarSession',

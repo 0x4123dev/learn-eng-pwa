@@ -89,6 +89,9 @@ function _displayChipText(part, isFirstPart) {
 
 // ==================== GRAMMAR HOME (entry point) ====================
 function renderGrammarHome() {
+    // If a quiz is in progress (e.g. the user tapped the Grammar tab again while
+    // taking an exam), keep them in the quiz instead of silently discarding it.
+    if (_grammarQuizState) { renderGrammarQuestion(); return; }
     // Reset transient state if user navigated away
     _grammarQuizState = null;
     const screen = document.getElementById('grammarScreen');
@@ -1073,6 +1076,17 @@ function confirmExitGrammarQuiz() {
         _grammarQuizState = null;
         renderGrammarHome();
     }
+}
+
+// Is the user currently taking a grammar quiz/exam? Used by switchScreen() to
+// warn before navigating away (which would lose in-progress answers).
+function isGrammarQuizActive() {
+    return !!_grammarQuizState;
+}
+
+// Discard the in-progress quiz (called after the user confirms leaving).
+function abandonGrammarQuiz() {
+    _grammarQuizState = null;
 }
 
 // ==================== FINISH QUIZ — RESULT ====================

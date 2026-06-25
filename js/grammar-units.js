@@ -7223,8 +7223,26 @@ function saveGrammarSession(unitId, questions, answers) {
         }))
     };
     appState.grammarHistory.unshift(session);
-    if (appState.grammarHistory.length > 50) appState.grammarHistory = appState.grammarHistory.slice(0, 50);
-    saveUserData(currentUser, appState);
+    // Keep a generous history. (Was capped at 50, which hid older exams once a
+    // user had done more than 50.)
+    const GRAMMAR_HISTORY_CAP = 300;
+    if (appState.grammarHistory.length > GRAMMAR_HISTORY_CAP) {
+        appState.grammarHistory = appState.grammarHistory.slice(0, GRAMMAR_HISTORY_CAP);
+    }
+    // Persist. Exam sessions can be large, so if localStorage is full, drop the
+    // oldest sessions one at a time and retry rather than letting the save fail.
+    while (true) {
+        try {
+            saveUserData(currentUser, appState);
+            break;
+        } catch (e) {
+            if (appState.grammarHistory.length > 1) {
+                appState.grammarHistory.pop();
+            } else {
+                throw e;
+            }
+        }
+    }
     return session;
 }
 

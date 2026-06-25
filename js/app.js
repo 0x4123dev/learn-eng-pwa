@@ -804,6 +804,16 @@ function recordStudy() {
 let _profileOriginScreen = 'homeScreen';
 
 function switchScreen(screenId) {
+    // Guard: warn before leaving an in-progress grammar exam (tapping a different
+    // bottom-nav tab would otherwise silently discard the user's answers).
+    if (screenId !== 'grammarScreen' &&
+        typeof isGrammarQuizActive === 'function' && isGrammarQuizActive()) {
+        if (!confirm('You are in the middle of an exam.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
+            return; // stay on the quiz
+        }
+        if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
+    }
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 

@@ -640,6 +640,19 @@ suite('all-units: edge cases and regressions', () => {
             assert.equal(session.total, 1);
         }
     });
+
+    test('grammar history keeps more than 50 sessions (old cap was 50) and caps at 300', () => {
+        env.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0 });
+        const u = env.getGrammarUnit('unit13');
+        const q = u.questions.find(x => x.type !== 'arrangement');
+        for (let i = 0; i < 60; i++) env.saveGrammarSession('unit13', [q], [q.correct]);
+        assert.equal(env.__getAppState().grammarHistory.length, 60, '60 sessions should all be kept');
+        for (let i = 0; i < 250; i++) env.saveGrammarSession('unit13', [q], [q.correct]);
+        assert.equal(env.__getAppState().grammarHistory.length, 300, 'history should cap at 300');
+        // Newest-first ordering preserved.
+        const hist = env.__getAppState().grammarHistory;
+        assert.truthy(hist[0].date >= hist[hist.length - 1].date);
+    });
 });
 
 if (require.main === module) {
