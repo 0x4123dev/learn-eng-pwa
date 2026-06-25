@@ -17,12 +17,12 @@ const TENSES = [
 ];
 
 suite('unit12: structure', () => {
-    test('Unit 12 exists with id, name, icon, color, and 1000 questions', () => {
+    test('Unit 12 exists with id, name, icon, color, and 1500 questions', () => {
         const u = env.getGrammarUnit('unit12');
         assert.truthy(u);
         assert.equal(u.id, 'unit12');
         assert.truthy(/Tenses/i.test(u.name));
-        assert.equal(u.questions.length, 1000);
+        assert.equal(u.questions.length, 1500);
         assert.truthy(u.icon && u.icon.length > 0);
         assert.truthy(/^#[0-9A-Fa-f]{6}$/.test(u.color));
     });
@@ -58,14 +58,14 @@ suite('unit12: question distribution per tense', () => {
         });
     }
 
-    test('total questions across all 7 tenses sums to 1000', () => {
+    test('total questions across all 7 tenses sums to 1500', () => {
         const u = env.getGrammarUnit('unit12');
         let total = 0;
         for (const t of TENSES) {
             total += u.questions.filter(q =>
                 (q.topic || '').toLowerCase().startsWith(t.topic.toLowerCase())).length;
         }
-        assert.equal(total, 1000);
+        assert.equal(total, 1500);
     });
 });
 
