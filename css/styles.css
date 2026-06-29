@@ -7453,17 +7453,50 @@
 
         /* ===== Phrases tab (prepositions) ===== */
         .phrases-wrap { padding: 4px 0 12px; }
-        .phrases-hero { text-align: center; margin-bottom: 16px; }
-        .phrases-hero-icon { font-size: 56px; line-height: 1; }
+        .phrases-hero { text-align: center; margin-bottom: 14px; }
+        .phrases-hero-icon { font-size: 46px; line-height: 1; }
         .phrases-hero h1 {
-            font-size: 26px; font-weight: 900; margin: 6px 0 4px;
+            font-size: 24px; font-weight: 900; margin: 4px 0 4px;
             background: linear-gradient(135deg, #2ecc71, #9b59b6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .phrases-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.5; max-width: 340px; margin: 0 auto; }
+        .phrases-sub { font-size: 12.5px; color: var(--text-secondary); line-height: 1.45; max-width: 330px; margin: 0 auto; }
+
+        /* Primary CTA */
+        .phrases-cta {
+            display: flex; align-items: center; gap: 12px; width: 100%;
+            border: none; cursor: pointer; text-align: left;
+            background: linear-gradient(135deg, #2ecc71, #9b59b6);
+            color: #fff; border-radius: 18px; padding: 16px 18px; margin-bottom: 10px;
+            box-shadow: 0 8px 22px rgba(155,89,182,0.28);
+        }
+        .phrases-cta:active { transform: scale(0.98); }
+        .phrases-cta-icon { font-size: 26px; }
+        .phrases-cta-text { display: flex; flex-direction: column; flex: 1; }
+        .phrases-cta-text strong { font-size: 17px; font-weight: 800; }
+        .phrases-cta-text small { font-size: 12px; opacity: 0.9; }
+        .phrases-cta-arrow { font-size: 26px; font-weight: 700; opacity: 0.85; }
+        .phrases-cta-row { display: flex; gap: 10px; margin-bottom: 16px; }
+        .phrases-cta-secondary {
+            flex: 1; border: 1px solid var(--glass-border); background: var(--glass-bg);
+            color: var(--text-primary); font-size: 13px; font-weight: 700;
+            border-radius: 12px; padding: 11px 10px; cursor: pointer;
+        }
+        .phrases-cta-secondary:active { transform: scale(0.98); }
+        .phrases-review-btn { width: 100%; margin-top: 10px; }
+
+        /* Categories (collapsible) */
+        .phrases-cats-wrap { margin-bottom: 16px; }
+        .phrases-cats-wrap > summary {
+            list-style: none; cursor: pointer; font-size: 13px; font-weight: 700;
+            color: var(--text-secondary); padding: 4px 2px;
+        }
+        .phrases-cats-wrap > summary::-webkit-details-marker { display: none; }
+        .phrases-cats-wrap > summary::after { content: ' ▾'; }
+        .phrases-cats-wrap[open] > summary::after { content: ' ▴'; }
         .phrases-cats {
             background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 16px; padding: 6px 14px; margin-bottom: 16px;
+            border-radius: 16px; padding: 4px 14px; margin-top: 8px;
         }
         .phrases-cat-row {
             display: flex; justify-content: space-between; align-items: center;
@@ -7472,28 +7505,46 @@
         }
         .phrases-cat-row:last-child { border-bottom: none; }
         .phrases-cat-row strong { color: var(--accent-purple); font-weight: 800; }
-        .phrases-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-        .phrases-blank {
-            color: var(--accent-purple); font-weight: 900; letter-spacing: 1px;
-        }
-        .phrases-vi {
-            font-size: 13px; font-weight: 700; color: var(--text-primary);
-            margin-bottom: 6px; line-height: 1.4;
-        }
+
+        .phrases-blank { color: var(--accent-purple); font-weight: 900; letter-spacing: 1px; }
+        .phrases-vi { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4; }
+        .phrases-pct { color: var(--text-secondary); font-weight: 600; }
         .phrases-quiz-header { display: flex; align-items: center; gap: 10px; }
         .phrases-quiz-header .grammar-progress-bar { flex: 1; }
-        .phrases-history, .phrases-review { margin-top: 14px; }
-        .phrases-history h3, .phrases-review h3 {
-            font-size: 14px; font-weight: 800; color: var(--text-primary); margin: 0 0 8px;
+
+        /* Section titles + counts */
+        .phrases-section-title {
+            font-size: 15px; font-weight: 800; color: var(--text-primary);
+            margin: 18px 0 10px; display: flex; align-items: center; gap: 8px;
         }
-        .phrases-hist-row {
-            display: flex; justify-content: space-between; gap: 10px;
-            font-size: 13px; padding: 8px 12px; border-radius: 10px; margin-bottom: 6px;
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary);
+        .phrases-count {
+            font-size: 12px; font-weight: 800; color: var(--accent-purple);
+            background: rgba(155,89,182,0.12); border-radius: 10px; padding: 1px 8px;
         }
-        .phrases-hist-row.good { border-left: 3px solid #2ecc71; }
-        .phrases-hist-row.ok { border-left: 3px solid #f1c40f; }
-        .phrases-hist-row.bad { border-left: 3px solid #e74c3c; }
+        .phrases-empty {
+            font-size: 13px; color: var(--text-secondary); text-align: center;
+            padding: 18px 12px; background: var(--glass-bg);
+            border: 1px dashed var(--glass-border); border-radius: 14px;
+        }
+
+        /* Words to review */
+        .phrases-review-words {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 12px 14px; margin-top: 18px;
+        }
+        .phrases-review-words .phrases-section-title { margin-top: 0; }
+        .phrases-word-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+        .phrases-word-chip {
+            font-size: 12.5px; font-weight: 700; color: var(--text-primary);
+            background: rgba(231,76,60,0.10); border: 1px solid rgba(231,76,60,0.25);
+            border-radius: 999px; padding: 4px 10px;
+        }
+        .phrases-word-chip i { font-style: normal; color: #e74c3c; font-weight: 800; margin-left: 5px; font-size: 11px; }
+
+        /* Session review */
+        .phrases-review-line { font-size: 12.5px; color: var(--text-secondary); margin: 4px 0 6px; }
+        .phrases-review-line s { color: #e74c3c; }
+        .phrases-review-line b { color: #2ecc71; }
         .grammar-result-unit {
             font-size: 13px;
             color: var(--text-primary);
