@@ -180,6 +180,10 @@ const EXPORT_NAMES = [
     // grammar UI — lessons collapse/expand (v3.34)
     'toggleGrammarLessonUnitExpanded', 'expandAllGrammarLessonUnits', 'collapseAllGrammarLessonUnits',
     // (v3.38: word-bubbles game removed.)
+    // phrases tab — prepositions (v3.60, loaded only when includePhrases is true)
+    'PREPOSITION_QUESTIONS', 'renderPhrasesHome', 'startPhrasesQuiz',
+    'answerPhrQuestion', 'nextPhrQuestion', 'finishPhrasesQuiz',
+    'isPhrasesQuizActive', 'abandonPhrasesQuiz',
     // daily streak modal (v3.37)
     'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
     'hasShownStreakToday', 'markStreakShownToday',
@@ -222,6 +226,10 @@ function loadAppCode(opts) {
     // exercises quizHeaderHTML / renderMCQuestion / finishGrammarQuiz / etc.
     if (opts.includeGrammarUI) {
         fileList.push('js/grammar-ui.js');
+    }
+    if (opts.includePhrases) {
+        fileList.push('js/phrases-data.js');
+        fileList.push('js/phrases.js');
     }
     // (v3.38: Word Bubbles game removed — no includeBubbles option.)
 

@@ -7450,6 +7450,50 @@
             font-weight: 700;
             margin-bottom: 10px;
         }
+
+        /* ===== Phrases tab (prepositions) ===== */
+        .phrases-wrap { padding: 4px 0 12px; }
+        .phrases-hero { text-align: center; margin-bottom: 16px; }
+        .phrases-hero-icon { font-size: 56px; line-height: 1; }
+        .phrases-hero h1 {
+            font-size: 26px; font-weight: 900; margin: 6px 0 4px;
+            background: linear-gradient(135deg, #2ecc71, #9b59b6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .phrases-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.5; max-width: 340px; margin: 0 auto; }
+        .phrases-cats {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 6px 14px; margin-bottom: 16px;
+        }
+        .phrases-cat-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 9px 0; font-size: 14px; color: var(--text-primary);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .phrases-cat-row:last-child { border-bottom: none; }
+        .phrases-cat-row strong { color: var(--accent-purple); font-weight: 800; }
+        .phrases-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .phrases-blank {
+            color: var(--accent-purple); font-weight: 900; letter-spacing: 1px;
+        }
+        .phrases-vi {
+            font-size: 13px; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 6px; line-height: 1.4;
+        }
+        .phrases-quiz-header { display: flex; align-items: center; gap: 10px; }
+        .phrases-quiz-header .grammar-progress-bar { flex: 1; }
+        .phrases-history, .phrases-review { margin-top: 14px; }
+        .phrases-history h3, .phrases-review h3 {
+            font-size: 14px; font-weight: 800; color: var(--text-primary); margin: 0 0 8px;
+        }
+        .phrases-hist-row {
+            display: flex; justify-content: space-between; gap: 10px;
+            font-size: 13px; padding: 8px 12px; border-radius: 10px; margin-bottom: 6px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary);
+        }
+        .phrases-hist-row.good { border-left: 3px solid #2ecc71; }
+        .phrases-hist-row.ok { border-left: 3px solid #f1c40f; }
+        .phrases-hist-row.bad { border-left: 3px solid #e74c3c; }
         .grammar-result-unit {
             font-size: 13px;
             color: var(--text-primary);

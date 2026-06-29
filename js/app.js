@@ -824,6 +824,7 @@ function switchScreen(screenId) {
 
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
+    if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
     if (screenId === 'essaysScreen') renderEssays();
     if (screenId === 'profileScreen') renderProfile();
 }
@@ -846,11 +847,14 @@ function navigateFromProfile() {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(_profileOriginScreen).classList.add('active');
 
-    // Restore nav highlight
+    // Restore nav highlight (indices match the bottom-nav button order in index.html)
     const screenToNav = {
         homeScreen: 0,
-        speedChallengeScreen: 1,
-        essaysScreen: 2
+        topicsScreen: 1,
+        grammarScreen: 2,
+        speedChallengeScreen: 3,
+        phrasesScreen: 4,
+        essaysScreen: 5
     };
     const navIdx = screenToNav[_profileOriginScreen];
     const navItems = document.querySelectorAll('.nav-item');
