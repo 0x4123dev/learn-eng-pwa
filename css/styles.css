@@ -7545,6 +7545,24 @@
         .phrases-review-line { font-size: 12.5px; color: var(--text-secondary); margin: 4px 0 6px; }
         .phrases-review-line s { color: #e74c3c; }
         .phrases-review-line b { color: #2ecc71; }
+
+        /* Lessons tab — searchable study list */
+        .phrases-search-wrap { position: sticky; top: 0; z-index: 5; padding: 2px 0 8px; background: var(--bg-gradient, transparent); }
+        .phrases-search {
+            width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px;
+            color: var(--text-primary); background: var(--glass-bg);
+            border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px 14px;
+        }
+        .phrases-search:focus { outline: none; border-color: var(--accent-purple); }
+        .phrases-search-count { font-size: 11.5px; color: var(--text-secondary); font-weight: 700; margin: 6px 2px 0; }
+        .phrases-lesson-group { margin-bottom: 4px; }
+        .phrases-lesson {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 11px 14px; margin-bottom: 8px;
+        }
+        .phrases-lesson-term { font-size: 15px; font-weight: 800; color: var(--accent-purple); }
+        .phrases-lesson-vi { font-size: 13px; font-weight: 700; color: var(--text-primary); margin: 3px 0 5px; line-height: 1.4; }
+        .phrases-lesson-ex { font-size: 13px; color: var(--text-secondary); font-style: italic; line-height: 1.45; }
         .grammar-result-unit {
             font-size: 13px;
             color: var(--text-primary);

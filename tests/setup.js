@@ -185,6 +185,7 @@ const EXPORT_NAMES = [
     'answerPhrQuestion', 'nextPhrQuestion', 'finishPhrasesQuiz',
     'isPhrasesQuizActive', 'abandonPhrasesQuiz',
     'startPhrasesReviewQuiz', 'setPhrHistoryFilter', 'openPhrSession',
+    'switchPhrSubTab', 'renderPhrasesLessons', 'phrasesLessonEntries', 'filterPhrLessons',
     // daily streak modal (v3.37)
     'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
     'hasShownStreakToday', 'markStreakShownToday',

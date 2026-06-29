@@ -16,6 +16,7 @@ const PHRASES_TIER_LABELS = { all: 'All scores', perfect: '⭐ Perfect', great: 
 
 let _phrQuiz = null;              // active quiz: { questions:[], idx, answers:[] }
 let _phrHistoryFilter = 'all';    // tier filter for the history list
+let _phrSubTab = 'practice';      // 'practice' | 'lessons'
 
 function phrEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -87,16 +88,29 @@ function renderPhrasesHome() {
   if (!screen) return;
   if (_phrQuiz) { renderPhrQuestion(); return; }
 
+  const bar = `
+    <div class="grammar-subtabs">
+      <button class="grammar-subtab ${_phrSubTab === 'practice' ? 'active' : ''}" onclick="switchPhrSubTab('practice')">⚡ Practice</button>
+      <button class="grammar-subtab ${_phrSubTab === 'lessons' ? 'active' : ''}" onclick="switchPhrSubTab('lessons')">📖 Lessons</button>
+    </div>`;
+  const body = _phrSubTab === 'lessons' ? renderPhrasesLessons() : renderPhrasesPractice();
+  screen.innerHTML = `<div class="phrases-wrap">${bar}${body}</div>`;
+}
+
+function switchPhrSubTab(tab) {
+  _phrSubTab = tab;
+  renderPhrasesHome();
+}
+
+function renderPhrasesPractice() {
   const bank = phrasesBank();
   const counts = { verb: 0, adj: 0, noun: 0, phrase: 0 };
   bank.forEach(q => { counts[q.cat] = (counts[q.cat] || 0) + 1; });
-
   const catRows = Object.keys(PHRASES_CAT_LABELS).map(c =>
     `<div class="phrases-cat-row"><span>${PHRASES_CAT_ICON[c]} ${PHRASES_CAT_LABELS[c]}</span><strong>${counts[c] || 0}</strong></div>`
   ).join('');
 
-  screen.innerHTML = `
-    <div class="phrases-wrap">
+  return `
       <div class="phrases-hero">
         <div class="phrases-hero-icon">🔗</div>
         <h1>Phrases</h1>
@@ -115,8 +129,72 @@ function renderPhrasesHome() {
       </details>
 
       ${renderPhrasesReviewPanel()}
-      ${renderPhrasesHistory()}
-    </div>`;
+      ${renderPhrasesHistory()}`;
+}
+
+// Derive the study list from the verified question bank: every distinct
+// collocation with its Vietnamese meaning and a complete example sentence
+// (the quiz sentence with the blank filled by the correct preposition).
+function phrasesLessonEntries() {
+  const seen = new Set();
+  const out = [];
+  phrasesBank().forEach(q => {
+    if (!q.phrase) return;
+    const key = q.cat + '|' + q.phrase.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ cat: q.cat, phrase: q.phrase, vi: q.vi, example: q.q.replace('___', q.options[q.correct]) });
+  });
+  return out;
+}
+
+function renderPhrasesLessons() {
+  const entries = phrasesLessonEntries();
+  const groups = { verb: [], adj: [], noun: [], phrase: [] };
+  entries.forEach(e => { (groups[e.cat] || (groups[e.cat] = [])).push(e); });
+  Object.values(groups).forEach(a => a.sort((x, y) => x.phrase.localeCompare(y.phrase)));
+
+  const sections = Object.keys(PHRASES_CAT_LABELS).map(cat => {
+    const items = groups[cat].map(e => {
+      const hay = (e.phrase + ' ' + e.vi).toLowerCase().replace(/["<>&]/g, ' ');
+      return `
+      <div class="phrases-lesson" data-search="${hay}">
+        <div class="phrases-lesson-term">${phrEsc(e.phrase)}</div>
+        <div class="phrases-lesson-vi">${phrEsc(e.vi)}</div>
+        <div class="phrases-lesson-ex">“${phrEsc(e.example)}”</div>
+      </div>`;
+    }).join('');
+    return `<div class="phrases-lesson-group" data-cat="${cat}">
+        <div class="phrases-section-title">${PHRASES_CAT_ICON[cat]} ${PHRASES_CAT_LABELS[cat]} <span class="phrases-count">${groups[cat].length}</span></div>
+        ${items}
+      </div>`;
+  }).join('');
+
+  return `
+      <div class="phrases-search-wrap">
+        <input type="text" class="phrases-search" placeholder="🔍 Search a phrase or meaning…" oninput="filterPhrLessons(this.value)" autocomplete="off">
+        <div class="phrases-search-count" id="phrLessonCount">${entries.length} phrases</div>
+      </div>
+      <div id="phrLessonList">${sections}</div>`;
+}
+
+// Live filter the lesson list in-place (keeps the search box focused).
+function filterPhrLessons(query) {
+  const q = (query || '').trim().toLowerCase();
+  const list = document.getElementById('phrLessonList');
+  if (!list) return;
+  let shown = 0;
+  list.querySelectorAll('.phrases-lesson-group').forEach(group => {
+    let groupShown = 0;
+    group.querySelectorAll('.phrases-lesson').forEach(el => {
+      const match = !q || (el.getAttribute('data-search') || '').indexOf(q) !== -1;
+      el.style.display = match ? '' : 'none';
+      if (match) { groupShown++; shown++; }
+    });
+    group.style.display = groupShown ? '' : 'none';
+  });
+  const cnt = document.getElementById('phrLessonCount');
+  if (cnt) cnt.textContent = shown + (shown === 1 ? ' phrase' : ' phrases');
 }
 
 // "Words to review" — collocations the user has gotten wrong, with a CTA to drill them.
@@ -356,5 +434,6 @@ if (typeof module !== 'undefined' && module.exports) {
     renderPhrasesHome, startPhrasesQuiz, startPhrasesReviewQuiz, answerPhrQuestion,
     nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz,
     setPhrHistoryFilter, openPhrSession,
+    switchPhrSubTab, renderPhrasesLessons, phrasesLessonEntries, filterPhrLessons,
   };
 }

@@ -92,8 +92,37 @@ suite('phrases: per-question integrity', () => {
 suite('phrases: UI wiring', () => {
     test('quiz functions are exposed', () => {
         ['renderPhrasesHome', 'startPhrasesQuiz', 'answerPhrQuestion', 'nextPhrQuestion',
-         'finishPhrasesQuiz', 'isPhrasesQuizActive', 'abandonPhrasesQuiz'].forEach(fn => {
+         'finishPhrasesQuiz', 'isPhrasesQuizActive', 'abandonPhrasesQuiz',
+         'switchPhrSubTab', 'phrasesLessonEntries', 'filterPhrLessons'].forEach(fn => {
             assert.truthy(typeof env[fn] === 'function', `${fn} should be a function`);
+        });
+    });
+});
+
+suite('phrases: lessons list', () => {
+    const entries = env.phrasesLessonEntries();
+
+    test('one lesson entry per distinct collocation (500)', () => {
+        assert.equal(entries.length, 500);
+    });
+
+    test('every lesson has a phrase, Vietnamese meaning, and a complete example', () => {
+        entries.forEach(e => {
+            assert.truthy(typeof e.phrase === 'string' && e.phrase.length > 0, 'phrase');
+            assert.truthy(typeof e.vi === 'string' && e.vi.length >= 5, `vi for ${e.phrase}`);
+            assert.truthy(typeof e.example === 'string' && e.example.length > 0, `example for ${e.phrase}`);
+            // the example is a finished sentence — the blank has been filled in
+            assert.truthy(e.example.indexOf('___') === -1, `example for ${e.phrase} still has a blank`);
+            assert.contains(['verb', 'adj', 'noun', 'phrase'], e.cat, `cat for ${e.phrase}`);
+        });
+    });
+
+    test('no duplicate collocation within a category', () => {
+        const seen = new Set();
+        entries.forEach(e => {
+            const k = e.cat + '|' + e.phrase.toLowerCase();
+            assert.falsy(seen.has(k), `duplicate ${k}`);
+            seen.add(k);
         });
     });
 });
