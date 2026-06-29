@@ -108,10 +108,6 @@ function renderPhrasesHome() {
         <span class="phrases-cta-text"><strong>Quick practice</strong><small>20 random questions</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
-      <div class="phrases-cta-row">
-        <button class="phrases-cta-secondary" onclick="startPhrasesQuiz(50)">📝 Medium · 50</button>
-        <button class="phrases-cta-secondary" onclick="startPhrasesQuiz('all')">🏆 Full run · ${bank.length}</button>
-      </div>
 
       <details class="phrases-cats-wrap">
         <summary>Categories</summary>
