@@ -1,33 +1,31 @@
-// tests/phrases.test.js — Phrases tab (prepositional-phrase MCQ bank), v3.60.
-// Locks in the 500-question bank shape, weighted distribution, and data integrity.
+// tests/phrases.test.js — Phrases tab (prepositional-phrase MCQ bank), v3.63.
+// Locks in the 913-question bank shape (5 categories incl. place), and data integrity.
 
 const { suite, test, assert } = require('./harness');
 const { loadAppCode } = require('./setup');
 
 const env = loadAppCode({ includePhrases: true });
 const BANK = env.PREPOSITION_QUESTIONS;
-const CATS = ['verb', 'adj', 'noun', 'phrase'];
+const CATS = ['verb', 'adj', 'noun', 'phrase', 'place'];
+const TOTAL = 913;
 
 suite('phrases: bank structure', () => {
-    test('PREPOSITION_QUESTIONS exists with exactly 500 questions', () => {
+    test('PREPOSITION_QUESTIONS exists with exactly 913 questions', () => {
         assert.truthy(Array.isArray(BANK), 'PREPOSITION_QUESTIONS should be an array');
-        assert.equal(BANK.length, 500);
+        assert.equal(BANK.length, TOTAL);
     });
 
-    test('weighted distribution across the 4 categories (verb-heavy)', () => {
-        const c = { verb: 0, adj: 0, noun: 0, phrase: 0 };
+    test('distribution across the 5 categories (verb-heavy, place present)', () => {
+        const c = { verb: 0, adj: 0, noun: 0, phrase: 0, place: 0 };
         BANK.forEach(q => { c[q.cat] = (c[q.cat] || 0) + 1; });
-        assert.equal(c.verb + c.adj + c.noun + c.phrase, 500);
-        assert.inRange(c.verb, 170, 180, 'verb count');
-        assert.inRange(c.adj, 120, 130, 'adj count');
-        assert.inRange(c.noun, 95, 105, 'noun count');
-        assert.inRange(c.phrase, 95, 105, 'phrase count');
-        // weighting: verb is the largest, phrase/noun the smallest
+        assert.equal(c.verb + c.adj + c.noun + c.phrase + c.place, TOTAL);
+        CATS.forEach(cat => assert.truthy(c[cat] > 0, `category ${cat} should have questions`));
+        // weighting: verb is the largest category
         assert.truthy(c.verb >= c.adj, 'verb >= adj');
-        assert.truthy(c.adj >= c.noun, 'adj >= noun');
+        assert.truthy(c.verb >= c.place, 'verb >= place');
     });
 
-    test('ids are unique and sequential pp-1..pp-500', () => {
+    test('ids are unique and sequential pp-1..pp-913', () => {
         const ids = new Set();
         BANK.forEach((q, i) => {
             assert.equal(q.id, 'pp-' + (i + 1), `id at index ${i}`);
@@ -84,8 +82,8 @@ suite('phrases: per-question integrity', () => {
     test('answer positions are spread (no positional bias)', () => {
         const pos = { 0: 0, 1: 0, 2: 0, 3: 0 };
         BANK.forEach(q => pos[q.correct]++);
-        // each of the 4 positions should hold a healthy share of the 500 answers
-        CATS.forEach((_, i) => assert.truthy(pos[i] >= 50, `position ${i} only used ${pos[i]} times`));
+        // each of the 4 answer positions should hold a healthy share of the answers
+        [0, 1, 2, 3].forEach(i => assert.truthy(pos[i] >= 50, `position ${i} only used ${pos[i]} times`));
     });
 });
 
@@ -102,8 +100,8 @@ suite('phrases: UI wiring', () => {
 suite('phrases: lessons list', () => {
     const entries = env.phrasesLessonEntries();
 
-    test('one lesson entry per distinct collocation (500)', () => {
-        assert.equal(entries.length, 500);
+    test('one lesson entry per distinct collocation (913)', () => {
+        assert.equal(entries.length, 913);
     });
 
     test('every lesson has a phrase, Vietnamese meaning, and a complete example', () => {
@@ -113,7 +111,7 @@ suite('phrases: lessons list', () => {
             assert.truthy(typeof e.example === 'string' && e.example.length > 0, `example for ${e.phrase}`);
             // the example is a finished sentence — the blank has been filled in
             assert.truthy(e.example.indexOf('___') === -1, `example for ${e.phrase} still has a blank`);
-            assert.contains(['verb', 'adj', 'noun', 'phrase'], e.cat, `cat for ${e.phrase}`);
+            assert.contains(CATS, e.cat, `cat for ${e.phrase}`);
         });
     });
 

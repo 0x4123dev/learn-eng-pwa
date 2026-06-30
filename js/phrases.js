@@ -9,8 +9,9 @@ const PHRASES_CAT_LABELS = {
   adj: 'Adjective + Preposition',
   noun: 'Noun + Preposition',
   phrase: 'Prepositional Phrase',
+  place: 'Preposition of Place',
 };
-const PHRASES_CAT_ICON = { verb: '🏃', adj: '🎨', noun: '📦', phrase: '🧩' };
+const PHRASES_CAT_ICON = { verb: '🏃', adj: '🎨', noun: '📦', phrase: '🧩', place: '📍' };
 const PHRASES_HISTORY_CAP = 300;
 const PHRASES_TIER_LABELS = { all: 'All scores', perfect: '⭐ Perfect', great: '✅ Great', ok: '👍 OK', weak: '📝 Weak' };
 
