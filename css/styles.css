@@ -2201,323 +2201,6 @@
             50% { transform: scale(1.05); }
         }
 
-        /* ==================== ESSAYS SCREEN ==================== */
-        .essays-screen {
-            padding: 20px;
-            padding-bottom: 100px;
-        }
-
-        .essays-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .essays-title {
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        .essays-subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        .essays-category {
-            margin-bottom: 20px;
-        }
-
-        .essays-category-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .essays-category-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .essays-category-title {
-            font-size: 16px;
-            font-weight: 800;
-        }
-
-        .essays-category-count {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .essay-card {
-            background: var(--bg-card);
-            border-radius: var(--border-radius);
-            padding: 14px 16px;
-            margin-bottom: 8px;
-            border: 2px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .essay-card:active {
-            transform: scale(0.98);
-            background: var(--bg-secondary);
-        }
-
-        .essay-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 6px;
-        }
-
-        .essay-card-title {
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .essay-card-school {
-            font-size: 11px;
-            color: var(--text-secondary);
-            background: var(--bg-secondary);
-            padding: 2px 8px;
-            border-radius: 8px;
-            flex-shrink: 0;
-            margin-left: 8px;
-        }
-
-        .essay-card-author {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .essay-card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .essay-tag {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .essay-level-progress {
-            height: 4px;
-            background: var(--border-color);
-            border-radius: 2px;
-            margin-top: 6px;
-            overflow: hidden;
-        }
-
-        .essay-level-progress-bar {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.4s ease;
-        }
-
-        .essay-level-progress-text {
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: 3px;
-        }
-
-        .essay-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .essay-word-count {
-            font-size: 11px;
-            color: var(--text-secondary);
-            background: var(--bg-secondary);
-            padding: 1px 6px;
-            border-radius: 4px;
-        }
-
-        .essay-card-read {
-            opacity: 0.7;
-            border-left: 3px solid #26A69A;
-        }
-
-        .essay-read-check {
-            color: #26A69A;
-            font-weight: 700;
-            margin-right: 2px;
-        }
-
-        /* Essay Reader */
-        .essay-reader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            z-index: 99999;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .essay-reader-overlay.active {
-            display: flex !important;
-        }
-
-        .essay-reader-header {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            padding-top: calc(12px + var(--safe-area-top));
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border-color);
-            gap: 12px;
-            max-width: 740px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .essay-back-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .essay-reader-title-bar {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .essay-reader-title {
-            font-weight: 700;
-            font-size: 16px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .essay-reader-author {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .essay-reader-body {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 20px 16px;
-            padding-bottom: calc(40px + var(--safe-area-bottom));
-            font-size: 17px;
-            line-height: 1.8;
-            color: var(--text-primary);
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .essay-reader-body .essay-paragraph {
-            max-width: 680px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 16px;
-        }
-
-        .essay-reader-body .essay-word {
-            cursor: pointer;
-            border-radius: 3px;
-            padding: 0 1px;
-        }
-
-        .essay-reader-body .essay-word:active {
-            background: #ffe082;
-        }
-
-        .essay-reader-body .essay-word.highlighted {
-            background: #fff59d;
-            border-bottom: 2px solid #ffc107;
-        }
-
-        .essay-reader-body .essay-word.known-word {
-            background: #c8e6c9;
-            border-bottom: 2px solid #4caf50;
-        }
-
-        /* Sentence translation */
-        .essay-sentence {
-            cursor: pointer;
-        }
-
-        .essay-sentence.sentence-active {
-            background: rgba(38, 166, 154, 0.1);
-            text-decoration: underline;
-            text-decoration-color: #26A69A;
-            text-underline-offset: 3px;
-            text-decoration-thickness: 2px;
-        }
-
-        .sentence-translate-bubble {
-            display: none;
-        }
-
-        .sentence-bubble-floating {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #43A047;
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1.4;
-            white-space: normal;
-            max-width: 85vw;
-            min-width: 60px;
-            text-align: center;
-            z-index: 9999999;
-            box-shadow: 0 3px 12px rgba(67, 160, 71, 0.35);
-            animation: bubblePop 0.2s ease;
-            pointer-events: none;
-        }
-
-        .sentence-bubble-floating::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-top-color: #43A047;
-        }
-
-        .sentence-bubble-floating.bubble-below::after {
-            top: auto;
-            bottom: 100%;
-            border-top-color: transparent;
-            border-bottom-color: #43A047;
-        }
-
-        @keyframes bubblePop {
-            from { opacity: 0; transform: translateY(4px) translateX(-50%) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) translateX(-50%) scale(1); }
-        }
 
         /* Word Popup */
         .word-popup-overlay {
@@ -8657,4 +8340,157 @@
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
+        }
+
+        /* ==================== EXAM SCREEN ==================== */
+        .exam-screen { padding: 20px; padding-bottom: 100px; }
+        .exam-home { padding: 4px; }
+        .exam-header { margin-bottom: 20px; }
+        .exam-header-row { display: flex; align-items: center; gap: 12px; }
+        .exam-title { font-size: 26px; font-weight: 800; color: var(--text-primary); margin: 0; }
+        .exam-subtitle { font-size: 14px; color: var(--text-secondary); margin: 4px 0 0; }
+        .exam-back-btn, .exam-quit-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--glass-border); background: var(--glass-bg, rgba(255,255,255,0.6));
+            color: var(--text-primary); font-size: 18px; cursor: pointer; flex: 0 0 auto;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .exam-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .exam-card {
+            display: flex; align-items: center; gap: 14px; width: 100%;
+            padding: 16px; border-radius: 18px; cursor: pointer; text-align: left;
+            background: var(--glass-bg, rgba(255,255,255,0.7));
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            font-family: inherit;
+        }
+        .exam-card:active { transform: scale(0.99); }
+        .exam-card-locked { opacity: 0.55; cursor: default; }
+        .exam-card-icon { font-size: 30px; flex: 0 0 auto; }
+        .exam-card-info { flex: 1 1 auto; min-width: 0; }
+        .exam-card-title { font-size: 17px; font-weight: 800; color: var(--text-primary); }
+        .exam-card-sub { font-size: 12.5px; color: var(--text-secondary); margin-top: 2px; }
+        .exam-card-meta { font-size: 12.5px; color: var(--text-secondary); margin-top: 6px; font-weight: 600; }
+        .exam-card-best { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 700; color: #58cc02; }
+        .exam-card-go { font-size: 26px; color: var(--text-secondary); flex: 0 0 auto; }
+
+        .exam-history-btn {
+            width: 100%; padding: 14px; border-radius: 16px; cursor: pointer;
+            background: transparent; border: 1.5px solid var(--glass-border);
+            color: var(--text-primary); font-size: 15px; font-weight: 700; font-family: inherit;
+        }
+
+        /* Quiz header (during exam) */
+        .exam-quiz-header { position: sticky; top: 0; z-index: 20; padding: 10px 2px 8px;
+            background: var(--bg-primary, transparent); backdrop-filter: blur(6px); }
+        .exam-quiz-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+        .exam-quiz-count { font-size: 14px; font-weight: 700; color: var(--text-secondary); }
+        .exam-timer {
+            font-size: 16px; font-weight: 800; color: var(--text-primary);
+            padding: 6px 12px; border-radius: 50px; background: rgba(88,204,2,0.15);
+        }
+        .exam-timer-warning { color: #fff; background: #ff4b4b; animation: examPulse 1s infinite; }
+        @keyframes examPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .exam-progress { height: 6px; border-radius: 3px; background: rgba(0,0,0,0.1); overflow: hidden; }
+        .exam-progress-bar { height: 100%; background: #58cc02; transition: width 0.3s ease; }
+
+        .exam-question-card { margin-top: 12px; }
+        .exam-section-tag {
+            display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+            text-transform: uppercase; color: #1cb0f6; background: rgba(28,176,246,0.12);
+            padding: 3px 10px; border-radius: 50px; margin-bottom: 10px;
+        }
+        .exam-question-text { white-space: normal; }
+        .exam-passage {
+            font-size: 14px; line-height: 1.6; color: var(--text-primary);
+            background: rgba(0,0,0,0.04); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+            max-height: 240px; overflow-y: auto;
+        }
+        .exam-wordbank { font-size: 13px; margin-bottom: 12px; }
+        .exam-wordbank-label { font-weight: 700; color: var(--text-secondary); margin-right: 4px; }
+        .exam-wordbank-item {
+            display: inline-block; margin: 3px 4px 0 0; padding: 3px 10px;
+            background: rgba(206,130,255,0.15); color: #a855f7; border-radius: 50px;
+            font-size: 12.5px; font-weight: 600;
+        }
+
+        /* Text-answer input */
+        .exam-text-wrap { display: flex; gap: 8px; margin-top: 12px; }
+        .exam-text-input {
+            flex: 1 1 auto; padding: 13px 14px; font-size: 16px; font-family: inherit;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary); outline: none;
+        }
+        .exam-text-input:focus { border-color: #1cb0f6; }
+        .exam-text-submit {
+            flex: 0 0 auto; padding: 0 18px; font-size: 15px; font-weight: 700; font-family: inherit;
+            border: none; border-radius: 12px; background: #1cb0f6; color: #fff; cursor: pointer;
+        }
+        .exam-text-answer {
+            margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 15px;
+            border: 2px solid; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+        }
+        .exam-text-answer.correct { border-color: #58cc02; background: rgba(88,204,2,0.1); }
+        .exam-text-answer.wrong { border-color: #ff4b4b; background: rgba(255,75,75,0.08); }
+        .exam-text-answer-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+        .exam-text-answer-value { font-weight: 700; color: var(--text-primary); }
+
+        /* Results */
+        .exam-result { padding: 8px 2px; text-align: center; }
+        .exam-result-emoji { font-size: 56px; }
+        .exam-result-grade { font-size: 22px; font-weight: 800; color: var(--text-primary); margin-top: 4px; }
+        .exam-result-score { font-size: 46px; font-weight: 800; color: #58cc02; margin-top: 8px; line-height: 1; }
+        .exam-result-score span { font-size: 24px; color: var(--text-secondary); }
+        .exam-result-pct { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+        .exam-result-time { font-size: 14px; color: var(--text-secondary); margin-top: 4px; font-weight: 600; }
+        .exam-result-auto { font-size: 13px; color: #ff4b4b; font-weight: 700; margin-top: 8px; }
+        .exam-result-actions { display: flex; gap: 10px; margin: 18px 0 6px; }
+        .exam-btn-primary, .exam-btn-secondary {
+            flex: 1 1 0; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700;
+            cursor: pointer; font-family: inherit; border: none;
+        }
+        .exam-btn-primary { background: #58cc02; color: #fff; }
+        .exam-btn-secondary { background: transparent; color: var(--text-primary); border: 1.5px solid var(--glass-border); }
+
+        .exam-review-title { font-size: 17px; font-weight: 800; color: var(--text-primary); margin: 22px 0 12px; text-align: left; }
+        .exam-review-list { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+        .exam-review-item {
+            padding: 12px 14px; border-radius: 14px; border-left: 4px solid;
+            background: var(--glass-bg, rgba(255,255,255,0.6)); border: 1px solid var(--glass-border);
+        }
+        .exam-review-item.correct { border-left: 4px solid #58cc02; }
+        .exam-review-item.wrong { border-left: 4px solid #ff4b4b; }
+        .exam-review-q { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.5; }
+        .exam-review-num {
+            display: inline-block; min-width: 22px; height: 22px; line-height: 22px; text-align: center;
+            background: rgba(0,0,0,0.08); border-radius: 50%; font-size: 12px; font-weight: 800; margin-right: 6px;
+        }
+        .exam-review-line { font-size: 13.5px; color: var(--text-primary); margin-top: 6px; display: flex; gap: 6px; align-items: center; }
+        .exam-review-badge { font-weight: 800; }
+        .exam-review-badge.ok { color: #58cc02; }
+        .exam-review-badge.no { color: #ff4b4b; }
+        .exam-review-explain { font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.55; }
+
+        /* History list */
+        .exam-history-list { display: flex; flex-direction: column; gap: 10px; }
+        .exam-history-empty { text-align: center; color: var(--text-secondary); font-size: 14px; padding: 40px 10px; line-height: 1.6; }
+        .exam-history-item {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+            padding: 14px 16px; border-radius: 14px; cursor: pointer; text-align: left; font-family: inherit;
+            background: var(--glass-bg, rgba(255,255,255,0.7)); border: 1px solid var(--glass-border);
+        }
+        .exam-history-left { min-width: 0; }
+        .exam-history-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+        .exam-history-date { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .exam-history-right { text-align: right; flex: 0 0 auto; }
+        .exam-history-score { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+        .exam-history-pct { font-size: 12px; font-weight: 700; }
+        .exam-history-pct.pass { color: #58cc02; }
+        .exam-history-pct.fail { color: #ff9600; }
+        .exam-history-clear {
+            width: 100%; margin-top: 16px; padding: 12px; border-radius: 14px; cursor: pointer;
+            background: transparent; border: 1.5px solid var(--glass-border);
+            color: var(--text-secondary); font-size: 13px; font-weight: 700; font-family: inherit;
         }

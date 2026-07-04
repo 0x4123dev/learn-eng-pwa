@@ -814,6 +814,15 @@ function switchScreen(screenId) {
         if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
     }
 
+    // Guard: warn before leaving an in-progress timed exam (Exam tab).
+    if (screenId !== 'examScreen' &&
+        typeof isExamActive === 'function' && isExamActive()) {
+        if (!confirm('You are in the middle of a timed exam.\nIf you leave now, your progress will be lost and it will NOT be saved.\n\nLeave anyway?')) {
+            return; // stay on the exam
+        }
+        if (typeof abandonExam === 'function') abandonExam();
+    }
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
@@ -825,7 +834,7 @@ function switchScreen(screenId) {
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
-    if (screenId === 'essaysScreen') renderEssays();
+    if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
     if (screenId === 'profileScreen') renderProfile();
 }
 
@@ -854,7 +863,7 @@ function navigateFromProfile() {
         grammarScreen: 2,
         speedChallengeScreen: 3,
         phrasesScreen: 4,
-        essaysScreen: 5
+        examScreen: 5
     };
     const navIdx = screenToNav[_profileOriginScreen];
     const navItems = document.querySelectorAll('.nav-item');
