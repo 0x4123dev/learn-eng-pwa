@@ -237,7 +237,7 @@ const PRON_LESSONS = {
         ['enthusiasm stress (LOVE/GREAT)',   /enthusiasm|fantastic.{0,15}stress|\bLOVE\b|stress[^.]{0,15}adjective|\bGREAT!/]
     ],
     unit10: [
-        ['contrastive stress',               /contrastive|correct[^.]{0,8}emphasis|stress[^.]{0,30}correct|stress[^.]{0,20}contrast|three.{0,15}morning|afternoon.*stress/i],
+        ['contrastive stress',               /contrastive|correct[^.]{0,8}emphasis|stress[^.]{0,30}correct|stress[^.]{0,20}contrast|three.{0,15}morning|afternoon.*stress|stress goes|stressed words?|correct[^.]{0,15}information|stress shows|why is [a-z]+ stressed/i],
         ['past tense -ed endings (/t/ /d/ /ɪd/)', /\/t\/[^.]{0,15}\/d\/|past tense[^.]{0,15}-ed|-ed.{0,10}pronoun|\/ɪd\/|past participle.*pronounc|after[^.]{0,15}voiceless/i]
     ],
     unit11: [

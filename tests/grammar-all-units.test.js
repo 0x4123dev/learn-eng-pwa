@@ -14,9 +14,14 @@ const env = loadAppCode();
 
 const ALL_UNIT_IDS = ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12'];
 
-// Per-unit question counts: textbook units have 220, unit12 (tenses
-// reference) has 1000.
-const QUESTIONS_PER_UNIT = { unit12: 2000 };
+// Per-unit question counts. Units 1–7 were re-imported from the
+// Eng-Life-Elementary source with expanded banks; units 8–11 default to 220;
+// unit12 (tenses reference) has 2000; unit13 (exam) has 90.
+const QUESTIONS_PER_UNIT = {
+    unit1: 236, unit2: 236, unit3: 235, unit4: 230,
+    unit5: 236, unit6: 236, unit7: 228,
+    unit12: 2000, unit13: 90,
+};
 function expectedQuestionsFor(unitId) { return QUESTIONS_PER_UNIT[unitId] || 220; }
 
 // Expected key topics each unit MUST cover (from textbook syllabus).
@@ -404,9 +409,11 @@ suite('all-units: cross-unit integrity', () => {
             `Lessons without units: ${inLessonsNotUnits.join(', ')}`);
     });
 
-    test('total question count = 11 × 220 + Unit 12 (2000) + Unit 13 (90) = 4,510', () => {
+    test('total question count = 2,517 (Units 1–11) + Unit 12 (2000) + Unit 13 (90) = 4,607', () => {
         const total = env.GRAMMAR_UNITS.reduce((sum, u) => sum + u.questions.length, 0);
-        assert.equal(total, 11 * 220 + 2000 + 90);
+        const expected = env.GRAMMAR_UNITS.reduce((sum, u) => sum + expectedQuestionsFor(u.id), 0);
+        assert.equal(total, expected);
+        assert.equal(total, 4607);
     });
 
     test('total lesson card count matches the sum across all units', () => {

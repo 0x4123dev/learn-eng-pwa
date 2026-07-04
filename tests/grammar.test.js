@@ -28,11 +28,18 @@ suite('grammar: GRAMMAR_UNITS shape', () => {
     });
 });
 
-suite('grammar: 220 questions per unit (all 11 units)', () => {
+suite('grammar: question count per unit (all 11 units)', () => {
+    // Units 1–7 re-imported from Eng-Life-Elementary with expanded banks;
+    // units 8–11 remain 220.
+    const COUNT_PER_UNIT = {
+        unit1: 236, unit2: 236, unit3: 235, unit4: 230,
+        unit5: 236, unit6: 236, unit7: 228,
+        unit8: 220, unit9: 220, unit10: 220, unit11: 220,
+    };
     for (const unitId of ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6', 'unit7', 'unit8', 'unit9', 'unit10', 'unit11']) {
-        test(`${unitId} has exactly 220 questions`, () => {
+        test(`${unitId} has exactly ${COUNT_PER_UNIT[unitId]} questions`, () => {
             const u = env.getGrammarUnit(unitId);
-            assert.equal(u.questions.length, 220);
+            assert.equal(u.questions.length, COUNT_PER_UNIT[unitId]);
         });
         test(`${unitId} has at least 25 arrangement questions`, () => {
             const u = env.getGrammarUnit(unitId);
