@@ -90,8 +90,9 @@ function renderExamHome() {
         </button>`;
     }).join('');
 
-    // Placeholders for exams still to come.
-    const comingSoon = [2, 3, 4].map(n => `
+    // Placeholders for exams still to come — only for numbers not yet released.
+    const releasedNums = new Set(EXAMS.map(e => parseInt(String(e.id).replace('exam', ''), 10)));
+    const comingSoon = [1, 2, 3, 4].filter(n => !releasedNums.has(n)).map(n => `
         <div class="exam-card exam-card-locked">
             <div class="exam-card-icon">🔒</div>
             <div class="exam-card-info">
