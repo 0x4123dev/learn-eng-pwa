@@ -16,16 +16,18 @@ const norm = s => String(s).toLowerCase().replace(/^→\s*/, '')
     .replace(/[.,!?;:"'’`]/g, '').replace(/\s+/g, ' ').trim();
 
 suite('exam: bank structure', () => {
-    test('exactly two exams: exam1 and exam2', () => {
-        assert.equal(EXAMS.length, 2);
-        assert.equal(EXAMS[0].id, 'exam1');
-        assert.equal(EXAMS[1].id, 'exam2');
+    test('at least the practice sets and both past papers exist', () => {
+        assert.truthy(EXAMS.length >= 4, `expected ≥4 exams, got ${EXAMS.length}`);
+        const ids = EXAMS.map(e => e.id);
+        ['exam1', 'exam2', 'exam2024', 'exam2025'].forEach(id =>
+            assert.truthy(ids.includes(id), `missing ${id}`));
     });
 
     for (const ex of EXAMS) {
-        test(`${ex.id} has 40 questions and a 40-minute timer`, () => {
+        test(`${ex.id} has 40 questions and a sensible timer`, () => {
             assert.equal(ex.questions.length, 40);
-            assert.equal(ex.durationMin, 40);
+            assert.truthy(ex.durationMin >= 20 && ex.durationMin <= 120,
+                `${ex.id} durationMin ${ex.durationMin} out of range`);
             assert.truthy(ex.title && ex.title.length > 0, `${ex.id} needs a title`);
         });
 

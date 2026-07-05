@@ -1,8 +1,7 @@
-// exam-data.js — Full mock-exam bank (HCMC Grade-10 entrance style).
-// Each exam has 40 questions. Explanations follow the Grammar Unit-12 style:
-// a 🔑 signal line + rule, then per-wrong-option ✗ notes (for MCQ/TF) or a
-// model answer (for text questions). More exams can be appended to EXAMS.
-// Exam 1 explanations expanded + Exam 2 authored via multi-agent workflow.
+// exam-data.js — Full mock-exam bank (HCMC Grade-10 entrance).
+// Exam 1 & 2 = practice sets; Exam 2024 & 2025 = official past papers.
+// Explanations: 🔑 signal + rule + per-wrong-option ✗ notes (mcq/tf) or model
+// answer (text). Append more exams to EXAMS.
 
 const EXAMS = [
   {
@@ -1141,6 +1140,1089 @@ const EXAMS = [
         ],
         "answer": "feeling very tired, he kept working until midnight",
         "explanation": "🔑 Signal: “<b>Although</b> + clause” must be converted into “<b>Despite</b> + noun / noun phrase / V-ing”.<br><b>Rule:</b> Although/Though are conjunctions taking a <b>full clause</b> (subject + verb: “Daniel felt very tired”), while Despite/In spite of are prepositions taking a <b>noun, noun phrase, or gerund (V-ing)</b>. So the clause “Daniel felt very tired” becomes the gerund phrase <b>feeling very tired</b> (or the noun phrase <b>his tiredness</b>). The main clause “he kept working until midnight” must be carried over unchanged, joined by a comma.<br>Model answer: Despite <strong>feeling very tired, he kept working until midnight</strong>.<br>Derivation: “Daniel felt very tired” (clause) → “feeling very tired” (V-ing) / “his tiredness” (noun phrase). Never write “Despite he felt tired” — a preposition cannot be followed by a subject + finite verb."
+      }
+    ]
+  },
+  {
+    "id": "exam2024",
+    "title": "Exam 2024",
+    "subtitle": "HCMC Grade-10 Entrance · Official Paper 2024",
+    "durationMin": 90,
+    "questions": [
+      {
+        "n": 1,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has the underlined part pronounced differently from the others?",
+        "options": [
+          "destroy<u>s</u>",
+          "control<u>s</u>",
+          "predict<u>s</u>",
+          "wander<u>s</u>"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Focus: the sound of the final <b>-s</b>.<br>Rule: final -s is /s/ after a voiceless consonant (/p,t,k,f,θ/), and /z/ after a voiced sound (vowel or voiced consonant).<br>✓ <b>predicts</b> /prɪˈdɪkts/ — after the voiceless /t/, the -s is <b>/s/</b>, the odd one out.<br>✗ destroys /dɪˈstrɔɪz/ — after a vowel, -s = /z/.<br>✗ controls /kənˈtrəʊlz/ — after voiced /l/, -s = /z/.<br>✗ wanders /ˈwɒndəz/ — after voiced /ə/, -s = /z/."
+      },
+      {
+        "n": 2,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has the underlined part pronounced differently from the others?",
+        "options": [
+          "l<u>a</u>bel",
+          "c<u>a</u>mpus",
+          "n<u>a</u>tion",
+          "p<u>a</u>rade"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Focus: the underlined letter <b>“a”</b>.<br>✗ label /ˈleɪbl/ — “a” = /eɪ/.<br>✗ nation /ˈneɪʃn/ — “a” = /eɪ/.<br>✗ parade /pəˈreɪd/ — the stressed “a” = /eɪ/.<br>✓ <b>campus</b> /ˈkæmpəs/ — “a” is the short vowel <b>/æ/</b>, so it differs from the other three /eɪ/ sounds."
+      },
+      {
+        "n": 3,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has a different stress pattern from the others?",
+        "options": [
+          "deny",
+          "visit",
+          "behave",
+          "impress"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Focus: word stress in two-syllable words.<br>de<b>NY</b> /dɪˈnaɪ/, be<b>HAVE</b> /bɪˈheɪv/ and im<b>PRESS</b> /ɪmˈpres/ are all verbs stressed on the SECOND syllable.<br>✓ <b>VIS</b>-it /ˈvɪzɪt/ is stressed on the FIRST syllable — the odd one out.<br>Tip: many two-syllable verbs take second-syllable stress, but “visit” keeps first-syllable stress."
+      },
+      {
+        "n": 4,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has a different stress pattern from the others?",
+        "options": [
+          "official",
+          "regular",
+          "violent",
+          "wonderful"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Focus: word stress.<br>✗ REG-u-lar, VI-o-lent, WON-der-ful are all stressed on the FIRST syllable.<br>✓ <b>official</b> /əˈfɪʃl/ is stressed on the SECOND syllable (of-FI-cial) — the odd one out."
+      },
+      {
+        "n": 5,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Helen: I can't go with you tonight. — Tom: What a pity! I wish you ___ with me.",
+        "options": [
+          "goes",
+          "go",
+          "can go",
+          "could go"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Signal: <b>wish</b> about an unreal present situation.<br>Rule: after “wish” for something contrary to present reality, we use the past form; for ability we use <b>could</b> → “I wish you could go”.<br>✗ goes / go — present forms can't follow “wish” for an unreal wish.<br>✗ can go — “can” is present; after “wish” it must shift to the past “could”."
+      },
+      {
+        "n": 6,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Annie: There's a crack in my pipe. — You should ___ a plumber check it tomorrow.",
+        "options": [
+          "have",
+          "having",
+          "allow",
+          "allowing"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Structure: causative <b>have somebody do something</b>.<br>Rule: “have + person + bare infinitive” = arrange for someone to do a job → “have a plumber check it”.<br>✗ having — after “should” we need the base verb, not -ing.<br>✗ allow / allowing — “allow” takes “allow somebody TO do”, not a bare infinitive, so it can't fit “___ a plumber check”."
+      },
+      {
+        "n": 7,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "David: I'm interested ___ geography and science.",
+        "options": [
+          "with",
+          "to",
+          "in",
+          "of"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Collocation: <b>interested IN</b> something.<br>Rule: the fixed preposition after the adjective “interested” is <b>in</b>.<br>✗ with / to / of are not used with “interested”."
+      },
+      {
+        "n": 8,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Ann: We're going to pay a visit to the National Zoo, ___?",
+        "options": [
+          "do we",
+          "don't we",
+          "are we",
+          "aren't we"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Structure: question tag.<br>Rule: a positive statement takes a negative tag, and the tag repeats the auxiliary. The statement uses “are going to” (auxiliary “are”), so the tag is <b>aren't we</b>.<br>✗ do we / don't we — wrong auxiliary (“do” is not in the statement).<br>✗ are we — a positive statement needs a NEGATIVE tag."
+      },
+      {
+        "n": 9,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Peter: Sam didn't come. ___ he was sick.",
+        "options": [
+          "so",
+          "but",
+          "because",
+          "though"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: the second clause gives the REASON Sam didn't come.<br>Rule: <b>because</b> introduces a cause/reason.<br>✗ so — introduces a result, not a reason.<br>✗ but — shows contrast.<br>✗ though — shows contrast/concession, not a reason."
+      },
+      {
+        "n": 10,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Mom: Don't forget ___ all the lights and fans before you leave home.",
+        "options": [
+          "turning off",
+          "to turn off",
+          "turning on",
+          "to turn on"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Structure: <b>forget TO do</b> (a future duty) + meaning “switch off”.<br>Rule: “forget + to-infinitive” = fail to do a needed action; before leaving you should <b>turn off</b> the lights to save energy.<br>✗ turning off / turning on — “forget + -ing” means recall a past action, wrong here.<br>✗ to turn on — the opposite meaning; you switch things OFF when leaving."
+      },
+      {
+        "n": 11,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Sam: What I know is he ___ two days off.",
+        "options": [
+          "has",
+          "going to have",
+          "was having",
+          "had"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: a present fact about a fixed arrangement (“he has two days off”).<br>Rule: the present simple <b>has</b> states a current fact/schedule.<br>✗ going to have — missing the auxiliary “is”; “going to have” alone is ungrammatical here.<br>✗ was having / had — past forms clash with the present “What I know is…”."
+      },
+      {
+        "n": 12,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Daisy: What a ___ painting! — Mike: Thanks. Maybe it's the best I've drawn.",
+        "options": [
+          "terrific",
+          "terrible",
+          "silly",
+          "useless"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: Mike is pleased (“the best I've drawn”), so Daisy is praising it.<br>Rule: <b>terrific</b> = excellent, wonderful (a compliment).<br>✗ terrible / silly / useless are all negative and would not earn a grateful “Thanks”."
+      },
+      {
+        "n": 13,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Emma: Why don't we hold a farewell party for Jane? — Daisy: ___",
+        "options": [
+          "You're welcome.",
+          "That sounds great!",
+          "Don't worry about it.",
+          "Go ahead."
+        ],
+        "correct": 1,
+        "explanation": "🔑 Signal: responding to a suggestion (“Why don't we…?”).<br>Rule: to accept a suggestion enthusiastically we say <b>That sounds great!</b><br>✗ You're welcome — a reply to “thank you”.<br>✗ Don't worry about it — reassurance after an apology.<br>✗ Go ahead — giving permission, not accepting a shared plan."
+      },
+      {
+        "n": 14,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Phil: May I ask you something? — Mark: ___",
+        "options": [
+          "No, thanks.",
+          "Don't mention it.",
+          "Of course. You can.",
+          "I completely agree."
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: replying to a request for permission (“May I…?”).<br>Rule: to grant permission we say <b>Of course. You can.</b><br>✗ No, thanks — declines an offer, not a permission request.<br>✗ Don't mention it — a response to thanks.<br>✗ I completely agree — responds to an opinion, not a request."
+      },
+      {
+        "n": 15,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "What does the sign say? (A red “no” circle over a person dropping rubbish into a toilet.)",
+        "options": [
+          "Throw all waste paper into the toilet",
+          "Take out paper from the toilet",
+          "Don't throw any kind of trash into the toilet",
+          "Don't leave the toilet dirty after use"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: a crossed-out (prohibition) sign about putting rubbish in a toilet.<br>Rule: a red circle with a line = “do not”. The sign warns you <b>not to throw any kind of trash into the toilet</b>.<br>✗ “Throw all waste paper…” — the opposite of a prohibition.<br>✗ “Take out paper…” / “Don't leave the toilet dirty…” — not what a no-littering symbol shows."
+      },
+      {
+        "n": 16,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "What does the notice tell us? “Paradise Restaurant — Booking is requested — Call: 2024 2025”",
+        "options": [
+          "You have to book in advance to eat at PR",
+          "You mustn't book beforehand to eat at PR",
+          "You can eat at PR without calling",
+          "You are requested to eat at PR"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: “Booking is requested — Call…”.<br>Rule: “Booking is requested” means you are asked to reserve first, i.e. <b>you have to book in advance</b> (and call the number).<br>✗ “mustn't book beforehand” / “without calling” — contradict the request to book.<br>✗ “requested to eat” — the request is to BOOK, not simply to eat there."
+      },
+      {
+        "n": 17,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (17):",
+        "options": [
+          "strange",
+          "friendly",
+          "angry",
+          "disastrous"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Signal: a positive quality of local people that attracts tourists.<br>Rule: <b>friendly</b> = kind and welcoming — a “contributing factor” to the city's good reputation.<br>✗ strange / angry / disastrous are negative and would drive tourists away."
+      },
+      {
+        "n": 18,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (18):",
+        "options": [
+          "pools",
+          "buildings",
+          "beaches",
+          "spaces"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: “With the blue sea, sandy ___, and spectacular mountains”.<br>Rule: “sandy” + by the sea → <b>beaches</b> (sandy beaches).<br>✗ pools / buildings / spaces are not naturally described as “sandy” beside the sea."
+      },
+      {
+        "n": 19,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (19):",
+        "options": [
+          "whose",
+          "whom",
+          "which",
+          "who"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Signal: a relative pronoun for people (“foreign tourists ___ want to enjoy…”).<br>Rule: use <b>who</b> as the subject relative pronoun for people (tourists who want…).<br>✗ whom — object form, but here the pronoun is the subject of “want”.<br>✗ which — for things, not people.<br>✗ whose — shows possession."
+      },
+      {
+        "n": 20,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (20):",
+        "options": [
+          "festival",
+          "experiment",
+          "flight",
+          "adventure"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: “Da Nang's International Fireworks ___ … annual splendid performances”.<br>Rule: a regular public celebration with performances is a <b>festival</b> (the Fireworks Festival).<br>✗ experiment / flight / adventure don't collocate with “International Fireworks”."
+      },
+      {
+        "n": 21,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (21):",
+        "options": [
+          "the other",
+          "other",
+          "another",
+          "each other"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: “hospitality is ___ factor” — one more factor (singular, countable).<br>Rule: <b>another</b> = one more / an additional (+ singular noun).<br>✗ the other — implies the last of two specific things.<br>✗ other — used with plural/uncountable nouns (“other factors”).<br>✗ each other — a reciprocal pronoun, not a determiner."
+      },
+      {
+        "n": 22,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Da Nang, a famous holiday destination in the center of Vietnam, ranks as one of the best cities that are worth a visit. Beautiful natural landscapes and <b>(17)&nbsp;___</b> local people are contributing factors to this city's recognition. With the blue sea, sandy <b>(18)&nbsp;___</b>, and spectacular mountains, Da Nang captivates not only domestic but also foreign tourists <b>(19)&nbsp;___</b> want to enjoy magnificent scenery. Visiting My Khe Beach and Ba Na Hills, which features the Golden Bridge, is considered a must when you are in Da Nang. In addition, attending Da Nang's International Fireworks <b>(20)&nbsp;___</b> is a memorable experience. With its annual splendid performances, this event is an unforgettable celebration. The locals' hospitality is <b>(21)&nbsp;___</b> factor that makes a deep impression <b>(22)&nbsp;___</b> visitors.",
+        "q": "Blank (22):",
+        "options": [
+          "in",
+          "into",
+          "for",
+          "on"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Collocation: make an <b>impression ON</b> somebody.<br>Rule: the noun “impression” takes the preposition <b>on</b> (a deep impression on visitors).<br>✗ in / into / for are not used with “impression” here."
+      },
+      {
+        "n": 23,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "True or False: Saving energy is unnecessary for the environment.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Text: “Conserving energy is <b>really important</b> for the environment…”.<br>The passage says it is important, so “unnecessary” is the opposite → <b>False</b>."
+      },
+      {
+        "n": 24,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "True or False: Unplugging electronics when they are not in use helps save money.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Text: unplugging electronics is listed among simple energy-saving actions, and “you are also saving money on your electricity bill.”<br>So the statement is <b>True</b>."
+      },
+      {
+        "n": 25,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "True or False: Solar energy is difficult to get and it is a limited source of power.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Text: the sun offers “a clean and <b>abundant</b> source of power that can be harnessed almost <b>anywhere</b> on Earth.”<br>Abundant + available anywhere is the opposite of “difficult to get / limited” → <b>False</b>."
+      },
+      {
+        "n": 26,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "True or False: Making small changes in our daily habits leads to a great number of benefits.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Text: “Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account.”<br>This matches the statement → <b>True</b>."
+      },
+      {
+        "n": 27,
+        "type": "mcq",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "What does the word “them” (in “unplugging electronics when you are not using them”) refer to?",
+        "options": [
+          "lights",
+          "electronics",
+          "devices",
+          "wallets"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Reference: “unplugging <b>electronics</b> when you are not using <b>them</b>”.<br>Rule: the pronoun “them” refers back to the nearest matching plural noun, <b>electronics</b>.<br>✗ lights — you “turn off” lights, you don't unplug them here.<br>✗ devices / wallets — not what “them” points to in that clause."
+      },
+      {
+        "n": 28,
+        "type": "mcq",
+        "section": "Reading",
+        "passage": "Conserving energy is really important for the environment as well as for your wallets. Doing simple things like turning off lights when you leave a room, unplugging electronics when you are not using them, and using energy-saving devices can help a great deal. You can also use renewable energy sources like solar or wind power to save more energy. Now scientists can convert sunlight directly into electricity, and this energy from the sun offers a clean and abundant source of power that can be harnessed almost anywhere on Earth. Wind farms, both onshore and offshore, have become a familiar sight in many regions, providing a reliable source of renewable power that can help reduce human dependence on fossil fuels and lessen the negative impacts of climate change. When you save energy, you are not just helping the planet; you are also saving money on your electricity bill. Even small changes in your daily habits can make a big difference over time, which is good for both the Earth and your bank account. Remember, every little bit helps, so let us all do our part to conserve energy and make the world a better place for our future generations.",
+        "q": "What is the main idea of the paragraph?",
+        "options": [
+          "You have to change your daily habits",
+          "Scientists are finding more types of energy",
+          "Let's save energy for a better world",
+          "We live in an energetic and beautiful world"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Whole-text idea: the passage urges everyone to conserve energy to help the planet and save money.<br>✓ <b>“Let's save energy for a better world”</b> captures that call to action.<br>✗ changing habits / scientists finding energy are only details.<br>✗ “energetic and beautiful world” is not the point."
+      },
+      {
+        "n": 29,
+        "type": "text",
+        "section": "Word form",
+        "q": "Food ___ is necessary for a camping trip. (PREPARE)",
+        "accept": [
+          "preparation"
+        ],
+        "answer": "preparation",
+        "explanation": "🔑 Signal: after the noun “Food” and before “is”, the blank is a NOUN (subject).<br>Rule: verb “prepare” → noun <b>preparation</b>."
+      },
+      {
+        "n": 30,
+        "type": "text",
+        "section": "Word form",
+        "q": "Mr. Tam is a well-qualified and ___ teacher. (EXPERIENCE)",
+        "accept": [
+          "experienced"
+        ],
+        "answer": "experienced",
+        "explanation": "🔑 Signal: “and ___ teacher” parallels the adjective “well-qualified”, so an ADJECTIVE describing the teacher is needed.<br>Rule: “experience” → adjective <b>experienced</b> (= having a lot of skill/knowledge)."
+      },
+      {
+        "n": 31,
+        "type": "text",
+        "section": "Word form",
+        "q": "We need to ___ our house to welcome the new year. (BEAUTY)",
+        "accept": [
+          "beautify"
+        ],
+        "answer": "beautify",
+        "explanation": "🔑 Signal: after “need to”, a base VERB is required.<br>Rule: noun “beauty” → verb <b>beautify</b> (= make more beautiful)."
+      },
+      {
+        "n": 32,
+        "type": "text",
+        "section": "Word form",
+        "q": "___ communication is essential to better mutual understanding. (EFFECT)",
+        "accept": [
+          "effective"
+        ],
+        "answer": "effective",
+        "explanation": "🔑 Signal: “___ communication” — an ADJECTIVE before the noun “communication”.<br>Rule: “effect” → adjective <b>effective</b> (= producing the intended result)."
+      },
+      {
+        "n": 33,
+        "type": "text",
+        "section": "Word form",
+        "q": "Thanks to my dad's ___, I now feel confident for the coming contest. (ASSIST)",
+        "accept": [
+          "assistance"
+        ],
+        "answer": "assistance",
+        "explanation": "🔑 Signal: after the possessive “my dad's”, a NOUN is needed.<br>Rule: verb “assist” → noun <b>assistance</b> (= help)."
+      },
+      {
+        "n": 34,
+        "type": "text",
+        "section": "Word form",
+        "q": "She ___ passed the test without having any difficulties. (SUCCEED)",
+        "accept": [
+          "successfully"
+        ],
+        "answer": "successfully",
+        "explanation": "🔑 Signal: the blank modifies the verb “passed” (HOW she passed) → an ADVERB.<br>Rule: verb “succeed” → adverb <b>successfully</b>."
+      },
+      {
+        "n": 35,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "Rearrange to make a correct sentence:\nEvery one of us / our beloved leader / set by Uncle Hồ / should follow the example",
+        "accept": [
+          "every one of us should follow the example set by uncle hồ our beloved leader",
+          "every one of us should follow the example set by uncle ho our beloved leader"
+        ],
+        "answer": "Every one of us should follow the example set by Uncle Hồ, our beloved leader.",
+        "explanation": "🔑 Structure: Subject + verb + object + reduced relative clause + apposition.<br>Order: “Every one of us” (subject) + “should follow the example” (verb + object) + “set by Uncle Hồ” (which was set by…) + “, our beloved leader” (apposition describing Uncle Hồ).<br>Model answer: <strong>Every one of us should follow the example set by Uncle Hồ, our beloved leader.</strong>"
+      },
+      {
+        "n": 36,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "Rearrange to make a correct sentence:\nStudying abroad / opportunities to learn / give students / about different cultures",
+        "accept": [
+          "studying abroad gives students opportunities to learn about different cultures"
+        ],
+        "answer": "Studying abroad gives students opportunities to learn about different cultures.",
+        "explanation": "🔑 Structure: Gerund subject + verb + indirect object + direct object + to-infinitive.<br>Order: “Studying abroad” (subject) + “gives” + “students” (indirect object) + “opportunities to learn” + “about different cultures”.<br>Model answer: <strong>Studying abroad gives students opportunities to learn about different cultures.</strong>"
+      },
+      {
+        "n": 37,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "The children like making models of animals in their free time.\n→ The children are keen ___",
+        "accept": [
+          "on making models of animals in their free time",
+          "on making models of animals"
+        ],
+        "answer": "on making models of animals in their free time",
+        "explanation": "🔑 Structure: <b>be keen ON + V-ing</b> = like doing something.<br>Rule: “like doing X” → “be keen on doing X”. After the preposition “on”, use the gerund.<br>Model answer: <strong>on making models of animals in their free time</strong>."
+      },
+      {
+        "n": 38,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "I advise you to go to the dentist twice a year.\n→ If I were ___",
+        "accept": [
+          "you, i would go to the dentist twice a year",
+          "you i would go to the dentist twice a year"
+        ],
+        "answer": "you, I would go to the dentist twice a year",
+        "explanation": "🔑 Structure: advice → second conditional “If I were you, I would…”.<br>Rule: to give advice we use the unreal conditional <b>If I were you, I would + base verb</b>.<br>Model answer: <strong>you, I would go to the dentist twice a year</strong>."
+      },
+      {
+        "n": 39,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "She hasn't participated in a competition for two years.\n→ It has been ___",
+        "accept": [
+          "two years since she last participated in a competition",
+          "two years since she participated in a competition"
+        ],
+        "answer": "two years since she last participated in a competition",
+        "explanation": "🔑 Structure: “haven't done for + period” → “It has been + period + since + past simple”.<br>Rule: <b>It has been two years since she last participated…</b> — the clause after “since” takes the past simple.<br>Model answer: <strong>two years since she last participated in a competition</strong>."
+      },
+      {
+        "n": 40,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "Because of his good performance, he was nominated as Singer of the Year.\n→ Because he ___",
+        "accept": [
+          "performed well, he was nominated as singer of the year",
+          "performed well he was nominated as singer of the year"
+        ],
+        "answer": "performed well, he was nominated as Singer of the Year",
+        "explanation": "🔑 Structure: “Because of + noun phrase” → “Because + clause (subject + verb)”.<br>Rule: “Because of his good performance” (noun) becomes the clause <b>Because he performed well</b> (subject + verb + adverb).<br>Model answer: <strong>performed well, he was nominated as Singer of the Year</strong>."
+      }
+    ]
+  },
+  {
+    "id": "exam2025",
+    "title": "Exam 2025",
+    "subtitle": "HCMC Grade-10 Entrance · Official Paper 2025",
+    "durationMin": 90,
+    "questions": [
+      {
+        "n": 1,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has the underlined part pronounced differently from the others?",
+        "options": [
+          "delay<u>ed</u>",
+          "frighten<u>ed</u>",
+          "remember<u>ed</u>",
+          "attack<u>ed</u>"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Focus: the sound of the <b>-ed</b> ending.<br>Rule: -ed is /t/ after a voiceless sound, /d/ after a voiced sound, and /ɪd/ only after /t/ or /d/.<br>✗ delayed /dɪˈleɪd/ — after a vowel → /d/.<br>✗ frightened /ˈfraɪtnd/ — after /n/ → /d/.<br>✗ remembered /rɪˈmembəd/ — after voiced /ə/ → /d/.<br>✓ <b>attacked</b> /əˈtækt/ — after the voiceless /k/ → <b>/t/</b>, the odd one out."
+      },
+      {
+        "n": 2,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has the underlined part pronounced differently from the others?",
+        "options": [
+          "pl<u>a</u>ne",
+          "tr<u>a</u>ining",
+          "l<u>a</u>ck",
+          "t<u>a</u>ble"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Focus: the underlined letter <b>“a”</b>.<br>✗ plane /pleɪn/, training /ˈtreɪnɪŋ/, table /ˈteɪbl/ — “a” = the long /eɪ/.<br>✓ <b>lack</b> /læk/ — “a” is the short vowel <b>/æ/</b>, so it differs from the others."
+      },
+      {
+        "n": 3,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has a different stress pattern from the others?",
+        "options": [
+          "answer",
+          "repeat",
+          "surprise",
+          "decide"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Focus: word stress in two-syllable words.<br>re<b>PEAT</b> /rɪˈpiːt/, sur<b>PRISE</b> /səˈpraɪz/ and de<b>CIDE</b> /dɪˈsaɪd/ are verbs stressed on the SECOND syllable.<br>✓ <b>AN</b>-swer /ˈɑːnsə/ is stressed on the FIRST syllable — the odd one out."
+      },
+      {
+        "n": 4,
+        "type": "mcq",
+        "section": "Phonetics",
+        "q": "Which word has a different stress pattern from the others?",
+        "options": [
+          "brilliant",
+          "tradition",
+          "dangerous",
+          "serious"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Focus: word stress.<br>✗ BRIL-liant, DAN-ger-ous, SE-ri-ous are stressed on the FIRST syllable.<br>✓ <b>tradition</b> /trəˈdɪʃn/ is stressed on the SECOND syllable (tra-DI-tion) — the odd one out."
+      },
+      {
+        "n": 5,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Sophie: You should ___ in the dictionary for the meanings of difficult words.",
+        "options": [
+          "look them for",
+          "look them up",
+          "look them at",
+          "look them on"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Phrasal verb: <b>look up</b> = find information in a reference book.<br>Rule: with a pronoun object, the particle comes after it → “look <b>them up</b>”.<br>✗ look them for / at / on are not correct phrasal verbs for finding word meanings."
+      },
+      {
+        "n": 6,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Jane: Father's Day is annually celebrated ___ the third Sunday of June.",
+        "options": [
+          "on",
+          "in",
+          "at",
+          "from"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: a specific day/date (“the third Sunday of June”).<br>Rule: use <b>on</b> with days and dates.<br>✗ in — for months/years/longer periods.<br>✗ at — for clock times/points.<br>✗ from — shows a starting point, not a single day."
+      },
+      {
+        "n": 7,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Hoang: Yes, I ___ there last year with my family.",
+        "options": [
+          "go",
+          "am going",
+          "went",
+          "have gone"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: “last year” → a finished past time → Past Simple.<br>Rule: a definite past time takes the past form <b>went</b>.<br>✗ go / am going — present forms, wrong for last year.<br>✗ have gone — present perfect can't sit with the finished-time marker “last year”."
+      },
+      {
+        "n": 8,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Khang: I ___ the mountain. The views there are often amazing!",
+        "options": [
+          "like more",
+          "prefer",
+          "love more",
+          "dislike"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Signal: choosing the mountain over the sea, with a positive reason.<br>Rule: <b>prefer</b> = like one thing better than another; “I prefer the mountain” is complete and correct.<br>✗ like more / love more — ungrammatical (English doesn't say “like more the mountain”).<br>✗ dislike — negative, contradicting “amazing”."
+      },
+      {
+        "n": 9,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Lucy: I had prepared everything carefully, ___ the projector didn't work, unfortunately.",
+        "options": [
+          "so",
+          "because",
+          "but",
+          "although"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: an unexpected contrast between careful preparation and a failure.<br>Rule: <b>but</b> joins two clauses that contrast.<br>✗ so — result; ✗ because — reason; ✗ although — also contrast, but it needs a dependent clause structure (“Although… , …”), whereas here two independent clauses are joined by a coordinating conjunction, so “but” fits."
+      },
+      {
+        "n": 10,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Ms Mai: I love a town or city ___ has quiet streets and a lot of museums.",
+        "options": [
+          "who",
+          "whom",
+          "that",
+          "whose"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: a relative pronoun for a THING (“a town or city”) acting as subject of “has”.<br>Rule: use <b>that</b> (or which) for things.<br>✗ who / whom — for people.<br>✗ whose — shows possession."
+      },
+      {
+        "n": 11,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Alice: I'm so ___ about our school trip this Saturday.",
+        "options": [
+          "amazed",
+          "confused",
+          "worried",
+          "excited"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Signal: “You look really happy today” + looking forward to a trip.<br>Rule: <b>excited</b> = happily eager about something in the future.<br>✗ amazed — surprised, not simply happy about a plan.<br>✗ confused / worried — negative, clashing with “happy”."
+      },
+      {
+        "n": 12,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Sam: It's sunny and warm – a perfect day ___ a walk!",
+        "options": [
+          "for",
+          "on",
+          "in",
+          "through"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Collocation: “a perfect day <b>for</b> + activity”.<br>Rule: use <b>for</b> to show purpose/suitability (a good day for a walk).<br>✗ on / in / through don't express purpose here."
+      },
+      {
+        "n": 13,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Danny: Shall we do some shopping together? — Emma: ___",
+        "options": [
+          "Oh, I need to buy something. Let's do it!",
+          "I'm not sure. Don't worry about the time.",
+          "Perfect! I can't make it for this evening.",
+          "OK, have a good time there."
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: replying to an invitation (“Shall we…?”).<br>Rule: to accept, Emma gives a reason and agrees → <b>“Oh, I need to buy something. Let's do it!”</b><br>✗ B is vague and contradictory; ✗ C accepts then refuses (“can't make it”); ✗ D wishes the other a good time, implying she won't join."
+      },
+      {
+        "n": 14,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "Anna: ___ — Ben: It starts at 7:15 pm. Don't be late!",
+        "options": [
+          "How long does the film last?",
+          "We're arriving there at 7:15, aren't we?",
+          "What time does the movie start?",
+          "When did you reach the theatre yesterday?"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: Ben answers with a starting time (“It starts at 7:15 pm”).<br>Rule: the matching question asks for the start time → <b>“What time does the movie start?”</b><br>✗ A asks about duration; ✗ B is a tag question about arrival; ✗ D asks about yesterday (past), not the start time."
+      },
+      {
+        "n": 15,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "What does the sign say? (A red “no” circle over a person jumping into water.)",
+        "options": [
+          "You are not allowed to jump into the water.",
+          "You must be careful when jumping up and down.",
+          "Jumping into the water alone is great fun.",
+          "Before you jump into the water, ask for help."
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: a crossed-out (prohibition) sign showing someone jumping into water.<br>Rule: the red circle with a line = “not allowed”. The sign means <b>you are not allowed to jump into the water</b>.<br>✗ B/C/D suggest it is permitted (with care/help/for fun), contradicting a prohibition sign."
+      },
+      {
+        "n": 16,
+        "type": "mcq",
+        "section": "Language use",
+        "q": "What does the notice tell us? “School Canteen — Milk tea from 20,000 VND – get A FREE cookie every Tuesday. LUNCH DEAL: 35,000 VND”",
+        "options": [
+          "You buy milk tea and get a free cookie every day.",
+          "Milk tea and cookies are always free on Tuesday.",
+          "You will get a free cookie when you buy milk tea on Tuesday.",
+          "You get milk tea and a cookie for 35,000 VND every day."
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: “get A FREE cookie every Tuesday” with milk tea.<br>Rule: the free cookie is a condition of buying milk tea, and only on Tuesdays → <b>you get a free cookie when you buy milk tea on Tuesday</b>.<br>✗ “every day” — the offer is Tuesdays only.<br>✗ “always free” — only the cookie is free, not the milk tea.<br>✗ “35,000 VND every day” confuses the separate lunch deal with the milk-tea offer."
+      },
+      {
+        "n": 17,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (17):",
+        "options": [
+          "on",
+          "as",
+          "with",
+          "like"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Signal: “do something ___ a hobby but still beneficial” = something similar to a hobby.<br>Rule: <b>like</b> = similar to; “something like a hobby” = an activity resembling a hobby yet also useful.<br>✗ on / with don't fit; ✗ as would mean “in the role of”, which doesn't match “do something ___ a hobby but still beneficial”."
+      },
+      {
+        "n": 18,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (18):",
+        "options": [
+          "got",
+          "listed",
+          "joined",
+          "taken"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Signal: “I have ___ the school cooking club”.<br>Rule: you <b>join</b> a club (become a member) → present perfect “have joined”.<br>✗ got / listed / taken don't collocate with “club” to mean “become a member”."
+      },
+      {
+        "n": 19,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (19):",
+        "options": [
+          "Some of",
+          "Some",
+          "A lot",
+          "Few"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Signal: “___ the elderly … feel very happy” — a quantifier before “the + noun”.<br>Rule: before a determiner like “the”, use <b>some of</b> (some of the elderly).<br>✗ Some / Few — used directly before a noun without “the” (some elderly / few people).<br>✗ A lot — needs “of” (a lot of), and the sense here fits “some of”."
+      },
+      {
+        "n": 20,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (20):",
+        "options": [
+          "cookers",
+          "travels",
+          "pastimes",
+          "recipes"
+        ],
+        "correct": 3,
+        "explanation": "🔑 Signal: “share their favorite ___, which helps us enrich our offered menu”.<br>Rule: what enriches a cooking menu is <b>recipes</b> (instructions for dishes).<br>✗ cookers = machines that cook; ✗ travels / pastimes have nothing to do with a menu."
+      },
+      {
+        "n": 21,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (21):",
+        "options": [
+          "learning",
+          "hearing",
+          "listening",
+          "finding"
+        ],
+        "correct": 2,
+        "explanation": "🔑 Collocation: <b>listen TO</b> something (“___ to their stories”).<br>Rule: the verb that takes “to” and means paying attention is <b>listening</b>.<br>✗ hearing — you don't say “hearing to”; hearing is passive/unintentional.<br>✗ learning / finding don't fit “___ to their stories”."
+      },
+      {
+        "n": 22,
+        "type": "mcq",
+        "section": "Cloze",
+        "passage": "Dear Mai,<br>I hope this letter finds you well. Thanks to your lovely letter, which advised me to do something <b>(17)&nbsp;___</b> a hobby but still beneficial for the community, I'm delighted to let you know that I have <b>(18)&nbsp;___</b> the school cooking club. Now I cook meals for old people in our neighborhood every Friday. We usually make simple dishes such as rice, soup, fish, and vegetables. We also come to the homes of those who find it difficult to go out and about and give them the fresh food. <b>(19)&nbsp;___</b> the elderly who live alone feel very happy to see us.<br>I love their smiles when they receive the meals. They often share their favorite <b>(20)&nbsp;___</b>, which helps us enrich our offered menu. Sometimes, we even sing songs together to create a joyful atmosphere.<br>I enjoy talking with them and <b>(21)&nbsp;___</b> to their stories. Interestingly, they are willing to tell us about their families and how optimistic they are about their grandchildren's future. It's always great to help others and learn kindness. Let's both try to make our community <b>(22)&nbsp;___</b>!<br>Love,<br>Lan",
+        "q": "Blank (22):",
+        "options": [
+          "harder",
+          "better",
+          "worse",
+          "weaker"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Signal: a positive, hopeful ending — “make our community ___!”.<br>Rule: helping others makes a community <b>better</b> (the comparative fits the encouraging tone).<br>✗ worse / weaker are negative; ✗ harder doesn't suit “community”."
+      },
+      {
+        "n": 23,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "True or False: A lot of young boys and girls are now fond of online activities.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Text: “many teenagers are attracted to screen-based activities such as online games, social media or web surfing.”<br>“Attracted to online activities” = fond of them → <b>True</b>."
+      },
+      {
+        "n": 24,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "True or False: Sports have some bad effects on teens' concentration in class.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Text: “Sports help the brain work better, so teens can <b>focus more easily</b> in class.”<br>Sports IMPROVE concentration, so “bad effects” is the opposite → <b>False</b>."
+      },
+      {
+        "n": 25,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "True or False: Playing sports is stressful because of its competition.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Text: “playing sports is a great way to <b>reduce stress</b>.”<br>Sports lower stress, not cause it → <b>False</b>."
+      },
+      {
+        "n": 26,
+        "type": "tf",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "True or False: Building relationships is one of the benefits of playing sports.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct": 0,
+        "explanation": "🔑 Text: “playing sports helps teenagers … <b>build better relationships</b>.”<br>This is listed as a benefit → <b>True</b>."
+      },
+      {
+        "n": 27,
+        "type": "mcq",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "What is the main idea of the passage?",
+        "options": [
+          "The negative side of screen-based activities",
+          "The benefits of playing sports for teens",
+          "The effectiveness of time management in sports",
+          "Teenagers' responsibilities in society"
+        ],
+        "correct": 1,
+        "explanation": "🔑 Whole-text idea: the passage lists physical, mental and social advantages of sport and urges teens to take one up.<br>✓ <b>“The benefits of playing sports for teens.”</b><br>✗ screen-based activities and time management are only minor points; ✗ “responsibilities in society” is not the focus."
+      },
+      {
+        "n": 28,
+        "type": "mcq",
+        "section": "Reading",
+        "passage": "Today, many teenagers are attracted to screen-based activities such as online games, social media or web surfing. But if they haven't tried playing a sport yet, now is the perfect time to give it a try!<br><br>Playing sports offers numerous benefits for teenagers, both physically and mentally. It helps them stay healthy by keeping their bodies active. Physical activities make teens' hearts stronger and give them more energy. Sports help the brain work better, so teens can focus more easily in class. Through sports, teens develop teamwork and sportsmanship. Team sports teach them that the team's success depends on how well the players work together. They learn to prioritise the team's interests over individual performance. Moreover, sports help teens manage time effectively so that they can become more organized and responsible. On top of that, playing sports is a great way to reduce stress. Spending time with friends through games also makes teens more relaxed and socially connected.<br><br>To conclude, playing sports helps teenagers be physically fitter, think more positively, and build better relationships. Therefore, teenagers should take up a sport they enjoy.",
+        "q": "Which of the following is NOT mentioned in the text?",
+        "options": [
+          "Having a balanced diet makes teenagers much healthier.",
+          "Playing sports improves teens' focus on their schoolwork.",
+          "Sports help teens develop both physically and mentally.",
+          "Playing with friends through games is quite relaxing."
+        ],
+        "correct": 0,
+        "explanation": "🔑 Task: find the idea the passage does NOT state.<br>✗ B is stated (“focus more easily in class”); ✗ C is stated (“both physically and mentally”); ✗ D is stated (“makes teens more relaxed”).<br>✓ <b>A</b> — a “balanced diet” is never mentioned; the text is only about playing sports."
+      },
+      {
+        "n": 29,
+        "type": "text",
+        "section": "Word form",
+        "q": "The amusement park is a popular ___ for children in summer. (ATTRACT)",
+        "accept": [
+          "attraction"
+        ],
+        "answer": "attraction",
+        "explanation": "🔑 Signal: “a popular ___” — a NOUN after the article “a”.<br>Rule: verb “attract” → noun <b>attraction</b> (a place people enjoy visiting)."
+      },
+      {
+        "n": 30,
+        "type": "text",
+        "section": "Word form",
+        "q": "They are glad to move into a new house with ___ surroundings. (PLEASE)",
+        "accept": [
+          "pleasant",
+          "pleasing"
+        ],
+        "answer": "pleasant",
+        "explanation": "🔑 Signal: “___ surroundings” — an ADJECTIVE before the noun.<br>Rule: “please” → adjective <b>pleasant</b> (= nice, enjoyable). (“pleasing” is also acceptable.)"
+      },
+      {
+        "n": 31,
+        "type": "text",
+        "section": "Word form",
+        "q": "To have a successful gala, we spent weeks ___ for the music performances. (PREPARE)",
+        "accept": [
+          "preparing"
+        ],
+        "answer": "preparing",
+        "explanation": "🔑 Structure: “spend + time + <b>V-ing</b>”.<br>Rule: after “spent weeks”, use the gerund → <b>preparing</b>."
+      },
+      {
+        "n": 32,
+        "type": "text",
+        "section": "Word form",
+        "q": "___, the new employee finished the project ahead of schedule. (AMAZE)",
+        "accept": [
+          "amazingly"
+        ],
+        "answer": "Amazingly",
+        "explanation": "🔑 Signal: a comment word at the start of the sentence, set off by a comma → a sentence ADVERB.<br>Rule: “amaze” → adverb <b>amazingly</b> (= surprisingly)."
+      },
+      {
+        "n": 33,
+        "type": "text",
+        "section": "Word form",
+        "q": "The students had a beneficial meeting with leading ___ on conservation. (SCIENCE)",
+        "accept": [
+          "scientists"
+        ],
+        "answer": "scientists",
+        "explanation": "🔑 Signal: “leading ___ on conservation” — a plural PERSON noun (experts).<br>Rule: “science” → person noun <b>scientist</b>, plural <b>scientists</b>."
+      },
+      {
+        "n": 34,
+        "type": "text",
+        "section": "Word form",
+        "q": "Climate change has caused ___ storms around the world. (DAMAGE)",
+        "accept": [
+          "damaging"
+        ],
+        "answer": "damaging",
+        "explanation": "🔑 Signal: “___ storms” — an ADJECTIVE describing the storms.<br>Rule: “damage” → adjective <b>damaging</b> (= causing harm)."
+      },
+      {
+        "n": 35,
+        "type": "text",
+        "section": "Dictionary",
+        "passage": "<b>provide</b> /prəˈvaɪd/ &nbsp;<i>verb</i><br>to give something to somebody or make it available for them to use &nbsp;(SYNONYM: supply)<br>• Please <b>provide</b> the following <b>information</b>.<br>• The exhibition <b>provides an opportunity</b> for local artists to show their work.<br>• She did not <b>provide any evidence</b> to substantiate the claims.<br>• We are here to <b>provide a service</b> for the public.<br>• We <b>provide financial support</b> to low-income families.",
+        "q": "Volunteers are ready to ___ about how to get to the museum. (use “provide”, 2–3 words)",
+        "accept": [
+          "provide information",
+          "provide the information"
+        ],
+        "answer": "provide information",
+        "explanation": "🔑 From the entry: “Please <b>provide the following information</b>.”<br>Rule: <b>provide information</b> = give information. “Volunteers are ready to provide information about how to get to the museum.”<br>Model answer: <strong>provide information</strong>."
+      },
+      {
+        "n": 36,
+        "type": "text",
+        "section": "Dictionary",
+        "passage": "<b>provide</b> /prəˈvaɪd/ &nbsp;<i>verb</i><br>to give something to somebody or make it available for them to use &nbsp;(SYNONYM: supply)<br>• Please <b>provide</b> the following <b>information</b>.<br>• The exhibition <b>provides an opportunity</b> for local artists to show their work.<br>• She did not <b>provide any evidence</b> to substantiate the claims.<br>• We are here to <b>provide a service</b> for the public.<br>• We <b>provide financial support</b> to low-income families.",
+        "q": "The summer program ___ for learners to better their English skills. (use “provide”, 2–3 words)",
+        "accept": [
+          "provides an opportunity"
+        ],
+        "answer": "provides an opportunity",
+        "explanation": "🔑 From the entry: “The exhibition <b>provides an opportunity</b> for local artists…”.<br>Rule: “provide an opportunity for somebody to do something” = give a chance. The subject “program” is singular → <b>provides an opportunity</b>.<br>Model answer: <strong>provides an opportunity</strong>."
+      },
+      {
+        "n": 37,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "Something went wrong with our car on the way to the beach.\n→ Our car broke ___",
+        "accept": [
+          "down on the way to the beach"
+        ],
+        "answer": "down on the way to the beach",
+        "explanation": "🔑 Phrasal verb: <b>break down</b> = (of a vehicle/machine) stop working.<br>Rule: “something went wrong with the car” → “the car broke down”.<br>Model answer: <strong>down on the way to the beach</strong>."
+      },
+      {
+        "n": 38,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "If he doesn't catch the first metro, he will be late for the conference.\n→ Unless he ___",
+        "accept": [
+          "catches the first metro, he will be late for the conference",
+          "catches the first metro he will be late for the conference"
+        ],
+        "answer": "catches the first metro, he will be late for the conference",
+        "explanation": "🔑 Structure: <b>Unless</b> = “if … not”.<br>Rule: “If he doesn't catch…” → “Unless he catches…”. “Unless” already carries the negative, so the verb becomes affirmative present simple <b>catches</b>.<br>Model answer: <strong>catches the first metro, he will be late for the conference</strong>."
+      },
+      {
+        "n": 39,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "The last time she wrote to her grandparents was last April.\n→ She hasn't ___",
+        "accept": [
+          "written to her grandparents since last april"
+        ],
+        "answer": "written to her grandparents since last April",
+        "explanation": "🔑 Structure: “The last time … was + past time” → “haven't + past participle + since + that time”.<br>Rule: present perfect negative with <b>since</b> → “She hasn't written to her grandparents since last April.”<br>Model answer: <strong>written to her grandparents since last April</strong>."
+      },
+      {
+        "n": 40,
+        "type": "text",
+        "section": "Rewrite",
+        "q": "The weather was so awful that we couldn't go picnicking as planned.\n→ It was such ___",
+        "accept": [
+          "awful weather that we couldn't go picnicking as planned",
+          "awful weather that we could not go picnicking as planned"
+        ],
+        "answer": "awful weather that we couldn't go picnicking as planned",
+        "explanation": "🔑 Structure: <b>so + adjective</b> → <b>such + (a/an) + adjective + noun</b>.<br>Rule: “so awful” (adjective) becomes “such awful weather” (adjective + uncountable noun, no article). The rest stays the same.<br>Model answer: <strong>awful weather that we couldn't go picnicking as planned</strong>."
       }
     ]
   }
