@@ -124,6 +124,12 @@ function renderPhrasesPractice() {
         <span class="phrases-cta-arrow">›</span>
       </button>
 
+      <button class="phrases-cta" onclick="startPhrasesQuiz(10)">
+        <span class="phrases-cta-icon">⏱️</span>
+        <span class="phrases-cta-text"><strong>Short practice</strong><small>10 random questions</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+
       <details class="phrases-cats-wrap">
         <summary>Categories</summary>
         <div class="phrases-cats">${catRows}</div>
