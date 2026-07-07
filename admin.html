@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FlashLingo — Admin</title>
+<style>
+  :root { --bg:#f4f6fb; --card:#fff; --line:#e3e8f0; --ink:#1c2333; --muted:#68748c; --brand:#1cb0f6; --green:#2ea44f; --amber:#ff9600; --red:#e5484d; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--ink); }
+  a { color: var(--brand); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  /* Login */
+  .login { max-width: 360px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; box-shadow:0 8px 30px rgba(20,30,60,.08); }
+  .login h1 { font-size:20px; margin:0 0 4px; }
+  .login p { color:var(--muted); font-size:13px; margin:0 0 18px; }
+  .login label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin:12px 0 6px; }
+  .login input { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font-size:15px; }
+  .login input:focus { outline:none; border-color:var(--brand); }
+  .btn { display:inline-block; border:none; border-radius:10px; padding:11px 16px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .btn-primary { background:var(--brand); color:#fff; width:100%; margin-top:18px; }
+  .btn-ghost { background:transparent; border:1px solid var(--line); color:var(--ink); }
+  .err { color:var(--red); font-size:13px; font-weight:600; margin-top:10px; min-height:18px; }
+
+  /* Dashboard */
+  header.bar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+  header.bar h1 { font-size:20px; margin:0; }
+  .stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; min-width:120px; }
+  .stat b { display:block; font-size:22px; }
+  .stat span { color:var(--muted); font-size:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:4px 4px; margin-bottom:16px; overflow:hidden; }
+  .card h2 { font-size:14px; margin:14px 14px 6px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
+  .scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:10px 14px; border-top:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.3px; }
+  tbody tr.clickable { cursor:pointer; }
+  tbody tr.clickable:hover { background:#f7f9fd; }
+  tr.selected { background:#eaf6ff; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+  .pill.admin { background:#efeaff; color:#7c3aed; }
+  .pill.user { background:#eef2f7; color:#68748c; }
+  .pct-good { color:var(--green); font-weight:700; }
+  .pct-mid { color:var(--amber); font-weight:700; }
+  .pct-low { color:var(--red); font-weight:700; }
+  .muted { color:var(--muted); }
+  .empty { padding:26px 14px; text-align:center; color:var(--muted); }
+  .toolbar { display:flex; align-items:center; gap:8px; margin:8px 14px; flex-wrap:wrap; }
+  .toolbar .who { font-weight:700; }
+  #dash { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Login -->
+  <div id="login" class="login">
+    <h1>🎯 FlashLingo Admin</h1>
+    <p>Sign in with the admin account.</p>
+    <label>Username</label>
+    <input id="u" autocomplete="username" autocapitalize="off" spellcheck="false">
+    <label>Password</label>
+    <input id="p" type="password" autocomplete="current-password">
+    <button class="btn btn-primary" id="loginBtn">Sign in</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash">
+    <header class="bar">
+      <h1>🎯 Exam Activity</h1>
+      <div>
+        <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
+        <button class="btn btn-ghost" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <h2>Users</h2>
+      <div class="scroll"><table id="usersTable">
+        <thead><tr><th>User</th><th>Role</th><th>Attempts</th><th>Best</th><th>Last activity</th><th>Joined</th></tr></thead>
+        <tbody id="usersBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <h2 style="margin:0 6px 0 10px;">Attempts</h2>
+        <span class="who" id="whoLabel">All users · last 30 days</span>
+        <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
+      </div>
+      <div class="scroll"><table id="attemptsTable">
+        <thead><tr><th>When</th><th>User</th><th>Exam</th><th>Score</th><th>%</th><th>Time</th><th>Auto</th></tr></thead>
+        <tbody id="attemptsBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOKEN_KEY = 'eng_admin_token';
+let token = sessionStorage.getItem(TOKEN_KEY) || null;
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function pctClass(p){ return p>=75?'pct-good':p>=50?'pct-mid':'pct-low'; }
+function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString(); }
+function fmtTime(sec){ if(sec==null) return '—'; const m=Math.floor(sec/60), r=sec%60; return m+':'+String(r).padStart(2,'0'); }
+
+async function api(path){
+  const res = await fetch('/api/'+path, { headers: { 'Authorization': 'Bearer '+token } });
+  if (res.status===401 || res.status===403){ logout(); throw new Error('unauth'); }
+  return res.json();
+}
+
+async function doLogin(){
+  const u = document.getElementById('u').value.trim();
+  const p = document.getElementById('p').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.textContent = '';
+  try {
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, passcode:p}) });
+    const data = await res.json();
+    if (!res.ok){ errEl.textContent = data.error || 'Login failed'; return; }
+    if (data.user.role !== 'admin'){ errEl.textContent = 'This account is not an admin.'; return; }
+    token = data.token; sessionStorage.setItem(TOKEN_KEY, token);
+    showDash();
+  } catch(e){ errEl.textContent = 'Network error'; }
+}
+
+function logout(){ token=null; sessionStorage.removeItem(TOKEN_KEY); document.getElementById('dash').style.display='none'; document.getElementById('login').style.display='block'; }
+
+let _selectedUser = null;
+
+async function loadUsers(){
+  const { users } = await api('admin/users');
+  const totalUsers = users.length;
+  const totalAttempts = users.reduce((s,u)=>s+(u.attempt_count||0),0);
+  document.getElementById('stats').innerHTML =
+    `<div class="stat"><b>${totalUsers}</b><span>Users</span></div>`+
+    `<div class="stat"><b>${totalAttempts}</b><span>Exam attempts (30d)</span></div>`;
+  const body = document.getElementById('usersBody');
+  if (!users.length){ body.innerHTML = `<tr><td colspan="6" class="empty">No users yet.</td></tr>`; return; }
+  body.innerHTML = users.map(u=>{
+    const best = (u.best_pct_x10!=null) ? Math.round(u.best_pct_x10/10)+'%' : '—';
+    return `<tr class="clickable" data-uid="${u.id}" data-name="${esc(u.username)}">
+      <td><b>${esc(u.username)}</b></td>
+      <td><span class="pill ${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
+      <td>${u.attempt_count||0}</td>
+      <td>${best}</td>
+      <td class="muted">${fmtDate(u.last_attempt)}</td>
+      <td class="muted">${fmtDate(u.created_at)}</td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('tr.clickable').forEach(tr=>{
+    tr.onclick = ()=>{
+      body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));
+      tr.classList.add('selected');
+      loadAttempts(tr.getAttribute('data-uid'), tr.getAttribute('data-name'));
+    };
+  });
+}
+
+async function loadAttempts(userId, name){
+  _selectedUser = userId || null;
+  document.getElementById('whoLabel').textContent = userId ? ('User: '+name) : 'All users · last 30 days';
+  const q = userId ? ('admin/attempts?user_id='+encodeURIComponent(userId)) : 'admin/attempts';
+  const { attempts } = await api(q);
+  const body = document.getElementById('attemptsBody');
+  if (!attempts.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No attempts.</td></tr>`; return; }
+  body.innerHTML = attempts.map(a=>{
+    const pct = a.total ? Math.round(a.score/a.total*100) : 0;
+    return `<tr>
+      <td class="muted">${fmtDate(a.created_at)}</td>
+      <td><b>${esc(a.username)}</b></td>
+      <td>${esc(a.exam_title||a.exam_id)}</td>
+      <td>${a.score}/${a.total}</td>
+      <td class="${pctClass(pct)}">${pct}%</td>
+      <td class="muted">${fmtTime(a.time_spent_sec)}</td>
+      <td>${a.auto_submitted? '⏰':'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function showDash(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('dash').style.display='block';
+  loadUsers().catch(()=>{});
+  loadAttempts(null, null).catch(()=>{});
+}
+
+document.getElementById('loginBtn').onclick = doLogin;
+document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('logoutBtn').onclick = logout;
+document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadAttempts(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
+document.getElementById('allBtn').onclick = ()=>{ document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected')); loadAttempts(null,null); };
+
+// Auto-enter dashboard if we already have a token (verify by loading).
+if (token){ showDash(); }
+</script>
+</body>
+</html>

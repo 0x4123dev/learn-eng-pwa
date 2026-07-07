@@ -426,6 +426,22 @@ function finishExam(auto) {
     history.unshift(attempt);
     saveExamHistory(history);
 
+    // Best-effort: sync this attempt to the server so the admin can see it.
+    // Offline-safe — the attempt is already saved locally above.
+    if (typeof EngAuth !== 'undefined') {
+        EngAuth.postAttempt({
+            examId: attempt.examId,
+            examTitle: attempt.title,
+            score: attempt.score,
+            total: attempt.total,
+            timeSpentSec: attempt.timeSpentSec,
+            autoSubmitted: attempt.autoSubmitted,
+            answers: attempt.answers.map(a => ({
+                n: a.n, section: a.section, isCorrect: a.isCorrect,
+            })),
+        });
+    }
+
     _renderExamResults(attempt, auto);
     _examState = null;
 }

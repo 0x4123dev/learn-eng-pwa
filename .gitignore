@@ -3,3 +3,6 @@
 .claude/
 .claire/
 docs/
+
+.cf-dist/
+node_modules/

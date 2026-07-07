@@ -490,6 +490,12 @@ function loginUser(username) {
     currentUser = username;
     appState = userData;
 
+    // Best-effort: link this profile to a server account (for exam-history sync).
+    // Fire-and-forget; never blocks login and is a no-op offline.
+    if (typeof EngAuth !== 'undefined' && userData.passcode) {
+        EngAuth.syncAccount(username, userData.passcode);
+    }
+
     // Migrate: add SRS data for existing users
     if (!appState.srs) {
         appState.srs = {};
