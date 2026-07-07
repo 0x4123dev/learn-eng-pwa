@@ -10,6 +10,9 @@ const EXAM_HISTORY_KEY = 'flashlingo_examHistory';
 //   timerId, finished }
 let _examState = null;
 
+// Which sub-tab of the Exam home is showing: 'exams' or 'lessons'.
+let _examSubTab = 'exams';
+
 // ---- storage -----------------------------------------------------------------
 
 function loadExamHistory() {
@@ -70,6 +73,22 @@ function escExam(s) {
 function renderExamHome() {
     const screen = document.getElementById('examScreen');
     if (!screen) return;
+    const bar = `
+        <div class="grammar-subtabs">
+          <button class="grammar-subtab ${_examSubTab === 'exams' ? 'active' : ''}" onclick="switchExamSubTab('exams')">📝 Exams</button>
+          <button class="grammar-subtab ${_examSubTab === 'lessons' ? 'active' : ''}" onclick="switchExamSubTab('lessons')">📖 Lessons</button>
+        </div>`;
+    const body = _examSubTab === 'lessons' ? renderExamLessonsBody() : renderExamsBody();
+    screen.innerHTML = `<div class="exam-home">${bar}${body}</div>`;
+    screen.scrollTop = 0;
+}
+
+function switchExamSubTab(tab) {
+    _examSubTab = tab;
+    renderExamHome();
+}
+
+function renderExamsBody() {
     const history = loadExamHistory();
 
     const examCards = EXAMS.map(ex => {
@@ -101,21 +120,69 @@ function renderExamHome() {
             </div>
         </div>`).join('');
 
-    screen.innerHTML = `
-        <div class="exam-home">
-            <div class="exam-header">
-                <h1 class="exam-title">🎯 Exam</h1>
-                <p class="exam-subtitle">Timed practice tests with instant explanations</p>
-            </div>
-            <div class="exam-list">
-                ${examCards}
-                ${comingSoon}
-            </div>
-            <button class="exam-history-btn" onclick="renderExamHistory()">
-                📜 History ${history.length ? `(${history.length})` : ''}
-            </button>
+    return `
+        <div class="exam-header">
+            <h1 class="exam-title">🎯 Exam</h1>
+            <p class="exam-subtitle">Timed practice tests with instant explanations</p>
         </div>
+        <div class="exam-list">
+            ${examCards}
+            ${comingSoon}
+        </div>
+        <button class="exam-history-btn" onclick="renderExamHistory()">
+            📜 History ${history.length ? `(${history.length})` : ''}
+        </button>
     `;
+}
+
+// ---- lessons (Vietnamese grammar notes derived from Exam 1) -------------------
+
+function renderExamLessonsBody() {
+    if (typeof EXAM1_LESSONS === 'undefined' || !EXAM1_LESSONS.length) {
+        return `
+        <div class="exam-header">
+            <h1 class="exam-title">📖 Bài học</h1>
+            <p class="exam-subtitle">Đang cập nhật…</p>
+        </div>`;
+    }
+    const cards = EXAM1_LESSONS.map(l => `
+        <button class="exam-lesson-card" onclick="openExamLesson('${l.id}')">
+            <div class="exam-lesson-icon">${l.icon}</div>
+            <div class="exam-lesson-info">
+                <div class="exam-lesson-title">${escExam(l.title)}</div>
+                <div class="exam-lesson-meta">Đề 1 · câu ${l.qRefs.join(', ')}</div>
+            </div>
+            <div class="exam-card-go">›</div>
+        </button>`).join('');
+    return `
+        <div class="exam-header">
+            <h1 class="exam-title">📖 Bài học ngữ pháp</h1>
+            <p class="exam-subtitle">Tổng hợp &amp; giải thích mọi điểm ngữ pháp trong Đề 1 (bằng tiếng Việt)</p>
+        </div>
+        <div class="exam-lesson-list">${cards}</div>`;
+}
+
+function openExamLesson(id) {
+    const l = (typeof EXAM1_LESSONS !== 'undefined') ? EXAM1_LESSONS.find(x => x.id === id) : null;
+    if (!l) return;
+    const screen = document.getElementById('examScreen');
+    if (!screen) return;
+    screen.innerHTML = `
+        <div class="exam-lesson-detail">
+            <button class="exam-back-btn" onclick="closeExamLesson()">←</button>
+            <h1 class="exam-lesson-detail-title">${l.icon} ${escExam(l.title)}</h1>
+            <div class="exam-lesson-detail-meta">📝 Liên hệ Đề 1: câu ${l.qRefs.join(', ')}</div>
+            <div class="exam-lesson-content">${l.content}</div>
+            <button class="exam-btn-secondary exam-lesson-back-bottom" onclick="closeExamLesson()">← Danh sách bài học</button>
+        </div>`;
+    screen.scrollTop = 0;
+    window.scrollTo(0, 0);
+}
+
+function closeExamLesson() {
+    _examSubTab = 'lessons';
+    renderExamHome();
+    window.scrollTo(0, 0);
 }
 
 // ---- start / timer -----------------------------------------------------------
