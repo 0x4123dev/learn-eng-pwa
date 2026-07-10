@@ -68,10 +68,22 @@ const EngAuth = (function () {
     } catch (e) { /* offline — ignore, it's saved locally anyway */ }
   }
 
+  // Log one non-exam learning activity (lesson, grammar, phrases, verbs, review…)
+  // for the currently active local user. Best-effort / offline-safe.
+  async function logActivity(activity) {
+    const u = (typeof currentUser !== 'undefined') ? currentUser : null;
+    const token = u ? tokenFor(u) : null;
+    if (!token || !activity || !activity.type) return;
+    try {
+      const r = await api('activity', { method: 'POST', token, body: activity });
+      if (r.status === 401) clearAccount(u);
+    } catch (e) { /* offline — ignore */ }
+  }
+
   // Used by the admin dashboard.
   async function login(username, passcode) {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, postAttempt, tokenFor, getAccount, clearAccount, api, login };
+  return { syncAccount, postAttempt, logActivity, tokenFor, getAccount, clearAccount, api, login };
 })();

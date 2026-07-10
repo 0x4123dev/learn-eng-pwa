@@ -324,6 +324,18 @@ function completeLesson() {
                 : 'Mistakes reviewed!';
         }
 
+        // Sync SRS review activity to the server (best-effort).
+        if (typeof EngAuth !== 'undefined') {
+            const _rev = lessonState.words.length;
+            const _wrong = (lessonState.reviewWrongWords && lessonState.reviewWrongWords.size) || 0;
+            EngAuth.logActivity({
+                type: 'review',
+                title: 'SRS review (' + _rev + ' words)',
+                score: Math.max(0, _rev - _wrong),
+                total: _rev,
+            });
+        }
+
         document.getElementById('lessonComplete').classList.add('active');
         return;
     }
@@ -339,6 +351,17 @@ function completeLesson() {
         points: lessonState.lessonPoints,
         accuracy: accuracy
     });
+
+    // Sync activity to the server (best-effort) so the admin sees it.
+    if (typeof EngAuth !== 'undefined') {
+        EngAuth.logActivity({
+            type: 'lesson',
+            title: 'Vocabulary lesson #' + (lessonState.lessonNumber + 1),
+            score: lessonState.correctInLesson,
+            total: lessonState.correctInLesson + lessonState.wrongInLesson,
+            detail: { lessonNum: lessonState.lessonNumber, accuracy: accuracy },
+        });
+    }
 
     // Advance currentLesson only if this is the next sequential lesson
     if (lessonState.lessonNumber === (appState.currentLesson || 0)) {

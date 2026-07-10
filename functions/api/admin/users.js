@@ -1,6 +1,7 @@
 import { requireAuth, json, err } from '../_lib.js';
 
-// GET /api/admin/users — every user with attempt count + last activity (admin only).
+// GET /api/admin/users — every user with total activity (exams + lessons/practice)
+// count and last-activity timestamp across both tables (admin only).
 export async function onRequestGet({ request, env }) {
   const auth = await requireAuth(request, env);
   if (!auth) return err('Unauthorized', 401);
@@ -8,14 +9,22 @@ export async function onRequestGet({ request, env }) {
 
   const { results } = await env.DB.prepare(
     `SELECT u.id, u.username, u.role, u.created_at,
-            COUNT(a.id)          AS attempt_count,
-            MAX(a.created_at)    AS last_attempt,
-            MAX(a.score * 1000 / NULLIF(a.total,0)) AS best_pct_x10
+            (SELECT COUNT(*) FROM exam_attempts e WHERE e.user_id = u.id) AS exam_count,
+            (SELECT COUNT(*) FROM activities  c WHERE c.user_id = u.id) AS activity_count,
+            MAX(
+              COALESCE((SELECT MAX(e.created_at) FROM exam_attempts e WHERE e.user_id = u.id), ''),
+              COALESCE((SELECT MAX(c.created_at) FROM activities  c WHERE c.user_id = u.id), '')
+            ) AS last_activity
        FROM users u
-       LEFT JOIN exam_attempts a ON a.user_id = u.id
-      GROUP BY u.id
-      ORDER BY (last_attempt IS NULL), last_attempt DESC, u.created_at DESC`
+      ORDER BY (last_activity = '' OR last_activity IS NULL), last_activity DESC, u.created_at DESC`
   ).all();
 
-  return json({ users: results || [] });
+  const users = (results || []).map(u => ({
+    id: u.id, username: u.username, role: u.role, created_at: u.created_at,
+    exam_count: u.exam_count || 0,
+    activity_count: u.activity_count || 0,
+    total_count: (u.exam_count || 0) + (u.activity_count || 0),
+    last_activity: u.last_activity || null,
+  }));
+  return json({ users });
 }

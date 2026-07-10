@@ -29,3 +29,18 @@ CREATE TABLE IF NOT EXISTS exam_attempts (
 
 CREATE INDEX IF NOT EXISTS idx_attempts_user   ON exam_attempts(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_attempts_created ON exam_attempts(created_at);
+
+-- Non-exam learning activity (lessons, grammar/phrases/verbs practice, SRS review).
+CREATE TABLE IF NOT EXISTS activities (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id     INTEGER NOT NULL,
+  type        TEXT NOT NULL,            -- lesson | review | grammar | phrases | verbs | battle
+  title       TEXT,
+  score       INTEGER,
+  total       INTEGER,
+  detail_json TEXT,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE INDEX IF NOT EXISTS idx_activities_user    ON activities(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_activities_created ON activities(created_at);

@@ -1,0 +1,35 @@
+import { requireAuth, json, err } from '../_lib.js';
+
+// GET /api/admin/activity[?user_id=N] — unified timeline of ALL activity
+// (exam attempts + lessons/practice), newest first, with username joined in.
+export async function onRequestGet({ request, env }) {
+  const auth = await requireAuth(request, env);
+  if (!auth) return err('Unauthorized', 401);
+  if (auth.role !== 'admin') return err('Forbidden', 403);
+
+  const url = new URL(request.url);
+  const userId = url.searchParams.get('user_id');
+  const filter = (userId && /^\d+$/.test(userId)) ? userId : null;
+
+  // exam_attempts and activities share a shape via UNION ALL.
+  const sql =
+    `SELECT * FROM (
+        SELECT a.created_at AS created_at, a.user_id AS user_id, u.username AS username,
+               'exam' AS kind, a.exam_title AS title, a.exam_id AS ref,
+               a.score AS score, a.total AS total, a.time_spent_sec AS time_spent_sec,
+               a.auto_submitted AS auto_submitted
+          FROM exam_attempts a JOIN users u ON u.id = a.user_id
+          ${filter ? 'WHERE a.user_id = ?1' : ''}
+        UNION ALL
+        SELECT c.created_at AS created_at, c.user_id AS user_id, u.username AS username,
+               c.type AS kind, c.title AS title, NULL AS ref,
+               c.score AS score, c.total AS total, NULL AS time_spent_sec,
+               0 AS auto_submitted
+          FROM activities c JOIN users u ON u.id = c.user_id
+          ${filter ? 'WHERE c.user_id = ?1' : ''}
+     ) ORDER BY created_at DESC LIMIT 1000`;
+
+  const stmt = filter ? env.DB.prepare(sql).bind(filter) : env.DB.prepare(sql);
+  const { results } = await stmt.all();
+  return json({ activity: results || [] });
+}

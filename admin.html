@@ -43,6 +43,13 @@
   .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
   .pill.admin { background:#efeaff; color:#7c3aed; }
   .pill.user { background:#eef2f7; color:#68748c; }
+  .pill.kind-exam { background:#e6f0ff; color:#1c5fd6; }
+  .pill.kind-lesson { background:#e7f7ec; color:#1f9d55; }
+  .pill.kind-review { background:#fff3e0; color:#c47700; }
+  .pill.kind-grammar { background:#efeaff; color:#7c3aed; }
+  .pill.kind-phrases { background:#e9f6fe; color:#1591c9; }
+  .pill.kind-verbs { background:#fdeef2; color:#d6407a; }
+  .pill.kind-battle { background:#eef2f7; color:#586074; }
   .pct-good { color:var(--green); font-weight:700; }
   .pct-mid { color:var(--amber); font-weight:700; }
   .pct-low { color:var(--red); font-weight:700; }
@@ -81,19 +88,19 @@
     <div class="card">
       <h2>Users</h2>
       <div class="scroll"><table id="usersTable">
-        <thead><tr><th>User</th><th>Role</th><th>Attempts</th><th>Best</th><th>Last activity</th><th>Joined</th></tr></thead>
+        <thead><tr><th>User</th><th>Role</th><th>Activity</th><th>Exams</th><th>Last activity</th><th>Joined</th></tr></thead>
         <tbody id="usersBody"></tbody>
       </table></div>
     </div>
 
     <div class="card">
       <div class="toolbar">
-        <h2 style="margin:0 6px 0 10px;">Attempts</h2>
+        <h2 style="margin:0 6px 0 10px;">Activity history</h2>
         <span class="who" id="whoLabel">All users · last 30 days</span>
         <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
       </div>
       <div class="scroll"><table id="attemptsTable">
-        <thead><tr><th>When</th><th>User</th><th>Exam</th><th>Score</th><th>%</th><th>Time</th><th>Auto</th></tr></thead>
+        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Time</th></tr></thead>
         <tbody id="attemptsBody"></tbody>
       </table></div>
     </div>
@@ -134,23 +141,27 @@ function logout(){ token=null; sessionStorage.removeItem(TOKEN_KEY); document.ge
 
 let _selectedUser = null;
 
+const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', verbs:'⚡ Verbs', battle:'⚔️ Battle' };
+function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
+
 async function loadUsers(){
   const { users } = await api('admin/users');
   const totalUsers = users.length;
-  const totalAttempts = users.reduce((s,u)=>s+(u.attempt_count||0),0);
+  const totalActs = users.reduce((s,u)=>s+(u.total_count||0),0);
+  const totalExams = users.reduce((s,u)=>s+(u.exam_count||0),0);
   document.getElementById('stats').innerHTML =
     `<div class="stat"><b>${totalUsers}</b><span>Users</span></div>`+
-    `<div class="stat"><b>${totalAttempts}</b><span>Exam attempts (30d)</span></div>`;
+    `<div class="stat"><b>${totalActs}</b><span>Activities (30d)</span></div>`+
+    `<div class="stat"><b>${totalExams}</b><span>Exam attempts</span></div>`;
   const body = document.getElementById('usersBody');
   if (!users.length){ body.innerHTML = `<tr><td colspan="6" class="empty">No users yet.</td></tr>`; return; }
   body.innerHTML = users.map(u=>{
-    const best = (u.best_pct_x10!=null) ? Math.round(u.best_pct_x10/10)+'%' : '—';
     return `<tr class="clickable" data-uid="${u.id}" data-name="${esc(u.username)}">
       <td><b>${esc(u.username)}</b></td>
       <td><span class="pill ${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
-      <td>${u.attempt_count||0}</td>
-      <td>${best}</td>
-      <td class="muted">${fmtDate(u.last_attempt)}</td>
+      <td><b>${u.total_count||0}</b></td>
+      <td>${u.exam_count||0}</td>
+      <td class="muted">${fmtDate(u.last_activity)}</td>
       <td class="muted">${fmtDate(u.created_at)}</td>
     </tr>`;
   }).join('');
@@ -158,28 +169,29 @@ async function loadUsers(){
     tr.onclick = ()=>{
       body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));
       tr.classList.add('selected');
-      loadAttempts(tr.getAttribute('data-uid'), tr.getAttribute('data-name'));
+      loadActivity(tr.getAttribute('data-uid'), tr.getAttribute('data-name'));
     };
   });
 }
 
-async function loadAttempts(userId, name){
+async function loadActivity(userId, name){
   _selectedUser = userId || null;
   document.getElementById('whoLabel').textContent = userId ? ('User: '+name) : 'All users · last 30 days';
-  const q = userId ? ('admin/attempts?user_id='+encodeURIComponent(userId)) : 'admin/attempts';
-  const { attempts } = await api(q);
+  const q = userId ? ('admin/activity?user_id='+encodeURIComponent(userId)) : 'admin/activity';
+  const { activity } = await api(q);
   const body = document.getElementById('attemptsBody');
-  if (!attempts.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No attempts.</td></tr>`; return; }
-  body.innerHTML = attempts.map(a=>{
-    const pct = a.total ? Math.round(a.score/a.total*100) : 0;
+  if (!activity.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No activity yet.</td></tr>`; return; }
+  body.innerHTML = activity.map(a=>{
+    const hasScore = (a.total!=null && a.total>0);
+    const pct = hasScore ? Math.round(a.score/a.total*100) : null;
     return `<tr>
       <td class="muted">${fmtDate(a.created_at)}</td>
       <td><b>${esc(a.username)}</b></td>
-      <td>${esc(a.exam_title||a.exam_id)}</td>
-      <td>${a.score}/${a.total}</td>
-      <td class="${pctClass(pct)}">${pct}%</td>
-      <td class="muted">${fmtTime(a.time_spent_sec)}</td>
-      <td>${a.auto_submitted? '⏰':'—'}</td>
+      <td>${kindPill(a.kind)}</td>
+      <td>${esc(a.title||a.ref||'—')}</td>
+      <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
+      <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
+      <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -188,14 +200,14 @@ function showDash(){
   document.getElementById('login').style.display='none';
   document.getElementById('dash').style.display='block';
   loadUsers().catch(()=>{});
-  loadAttempts(null, null).catch(()=>{});
+  loadActivity(null, null).catch(()=>{});
 }
 
 document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
-document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadAttempts(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
-document.getElementById('allBtn').onclick = ()=>{ document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected')); loadAttempts(null,null); };
+document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadActivity(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
+document.getElementById('allBtn').onclick = ()=>{ document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected')); loadActivity(null,null); };
 
 // Auto-enter dashboard if we already have a token (verify by loading).
 if (token){ showDash(); }
