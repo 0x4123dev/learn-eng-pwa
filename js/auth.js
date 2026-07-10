@@ -41,20 +41,63 @@ const EngAuth = (function () {
     return { ok: res.ok, status: res.status, data };
   }
 
-  // Establish/refresh a server account for a local profile using its passcode.
-  // Called on every login (fire-and-forget). No-op if we already hold a token.
+  // Establish/refresh a server account for a local profile using its passcode,
+  // then one-time backfill any existing local history. Called on every login
+  // (fire-and-forget); offline-safe.
   async function syncAccount(username, passcode) {
     if (!username || !passcode) return;
-    if (tokenFor(username)) return; // already linked on this device
+    if (!tokenFor(username)) {
+      try {
+        let r = await api('register', { method: 'POST', body: { username, passcode } });
+        if (r.status === 409) {
+          r = await api('login', { method: 'POST', body: { username, passcode } });
+        }
+        if (r.ok && r.data && r.data.token) {
+          setAccount(username, { token: r.data.token, role: r.data.user.role, id: r.data.user.id });
+        }
+      } catch (e) { return; /* offline — nothing to do */ }
+    }
+    // Whether newly linked or already linked, try the one-time history backfill.
+    backfillHistory(username);
+  }
+
+  // One-time upload of the active user's existing local history (lessons,
+  // grammar, phrases, verbs) so the admin can see activity from before this
+  // feature existed. Runs once per account (guarded by a stored flag); only the
+  // last 30 days are kept server-side. Best-effort / offline-safe.
+  async function backfillHistory(username) {
+    const acct = getAccount(username);
+    if (!acct || !acct.token || acct.backfilled) return;
+    if (typeof appState === 'undefined' || !appState) return;
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const items = [];
+    const add = (o) => { if (o && Number.isFinite(+o.at) && +o.at >= cutoff) items.push(o); };
+
+    (appState.lessonHistory || []).forEach(h => add({
+      type: 'lesson', title: 'Vocabulary lesson #' + ((h.lessonNum || 0) + 1),
+      score: Math.round((h.accuracy || 0) / 100 * 5), total: 5,
+      at: h.date, detail: { accuracy: h.accuracy, backfill: true },
+    }));
+    (appState.grammarHistory || []).forEach(h => {
+      let name = h.unitId;
+      try { const u = getGrammarUnit(h.unitId); if (u && u.name) name = u.name; } catch (e) {}
+      add({ type: 'grammar', title: 'Grammar: ' + name, score: h.score, total: h.total, at: h.date, detail: { unitId: h.unitId, backfill: true } });
+    });
+    (appState.phrasesHistory || []).forEach(h => add({
+      type: 'phrases', title: 'Phrases practice (' + (h.total || 0) + ' Qs)',
+      score: h.score, total: h.total, at: h.date, detail: { backfill: true },
+    }));
+    ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
+      type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
+      score: h.correct, total: h.total, at: h.date, detail: { score: h.score, backfill: true },
+    }));
+
+    if (!items.length) { setAccount(username, { backfilled: Date.now() }); return; }
+    items.sort((a, b) => b.at - a.at);
     try {
-      let r = await api('register', { method: 'POST', body: { username, passcode } });
-      if (r.status === 409) {
-        r = await api('login', { method: 'POST', body: { username, passcode } });
-      }
-      if (r.ok && r.data && r.data.token) {
-        setAccount(username, { token: r.data.token, role: r.data.user.role, id: r.data.user.id });
-      }
-    } catch (e) { /* offline / no API — ignore */ }
+      const r = await api('activity', { method: 'POST', token: acct.token, body: { items: items.slice(0, 400) } });
+      if (r.ok) setAccount(username, { backfilled: Date.now() });
+    } catch (e) { /* offline — retry next login */ }
   }
 
   // Send one finished exam attempt for the currently active local user.
