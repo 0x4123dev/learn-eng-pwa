@@ -44,3 +44,5 @@ CREATE TABLE IF NOT EXISTS activities (
 );
 CREATE INDEX IF NOT EXISTS idx_activities_user    ON activities(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_activities_created ON activities(created_at);
+-- Idempotency: one activity per (user, type, second) so re-syncs never duplicate.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_activities_dedup ON activities(user_id, type, created_at);

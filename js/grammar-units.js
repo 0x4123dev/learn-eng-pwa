@@ -37054,17 +37054,7 @@ function saveGrammarSession(unitId, questions, answers) {
     appState.grammarHistory.unshift(session);
 
     // Sync grammar-quiz activity to the server (best-effort) for the admin view.
-    if (typeof EngAuth !== 'undefined') {
-        let _uName = unitId;
-        try { const _u = getGrammarUnit(unitId); if (_u && _u.name) _uName = _u.name; } catch (e) {}
-        EngAuth.logActivity({
-            type: 'grammar',
-            title: 'Grammar: ' + _uName,
-            score: correctCount,
-            total: questions.length,
-            detail: { unitId },
-        });
-    }
+    if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
     // Keep a generous history. (Was capped at 50, which hid older exams once a
     // user had done more than 50.)

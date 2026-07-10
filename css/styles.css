@@ -639,6 +639,22 @@
             margin-bottom: 0;
         }
 
+        /* Floating "Sync now" icon button (home screen) */
+        .home-screen { position: relative; }
+        .sync-fab {
+            position: absolute; top: 12px; right: 12px; z-index: 60;
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: rgba(255,255,255,0.88); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            font-size: 17px; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+        }
+        .sync-fab:active { transform: scale(0.92); }
+        .sync-fab:disabled { cursor: default; }
+        .sync-fab.syncing { animation: syncspin 0.9s linear infinite; }
+        .sync-fab.ok { background: #d7f5c2; }
+        @keyframes syncspin { to { transform: rotate(360deg); } }
+
         .home-user {
             display: flex;
             align-items: center;

@@ -408,9 +408,7 @@ function finishPhrasesQuiz() {
   savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong });
 
   // Sync phrases-practice activity to the server (best-effort) for the admin view.
-  if (typeof EngAuth !== 'undefined') {
-    EngAuth.logActivity({ type: 'phrases', title: 'Phrases practice (' + total + ' Qs)', score, total });
-  }
+  if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
   const reviewHtml = wrong.map(w => {
     const q = phrasesById(w.qid);

@@ -387,15 +387,7 @@ function completeSpeedChallenge() {
     saveUserData(currentUser, appState);
 
     // Sync verbs-challenge activity to the server (best-effort) for the admin view.
-    if (typeof EngAuth !== 'undefined') {
-        EngAuth.logActivity({
-            type: 'verbs',
-            title: 'Verbs challenge (' + speedState.level + ')',
-            score: speedState.correctCount,
-            total: speedState.currentVerbs.length,
-            detail: { score: speedState.score, level: speedState.level },
-        });
-    }
+    if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
     // Show complete overlay
     document.getElementById('speedGameOverlay').classList.remove('active');

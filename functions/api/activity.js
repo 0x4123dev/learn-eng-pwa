@@ -36,16 +36,12 @@ export async function onRequestPost({ request, env }) {
       .filter(r => !(Number.isFinite(+r.at) && +r.at < cutoff)); // drop >30d-old
     if (rows.length) {
       const stmts = rows.map(r => {
-        if (Number.isFinite(+r.at)) {
-          return env.DB.prepare(
-            `INSERT INTO activities (user_id, type, title, score, total, detail_json, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`
-          ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson, sqlTime(+r.at));
-        }
+        const at = Number.isFinite(+r.at) ? sqlTime(+r.at) : sqlTime(Date.now());
+        // OR IGNORE + the unique (user_id, type, created_at) index makes re-syncs idempotent.
         return env.DB.prepare(
-          `INSERT INTO activities (user_id, type, title, score, total, detail_json)
-           VALUES (?, ?, ?, ?, ?, ?)`
-        ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson);
+          `INSERT OR IGNORE INTO activities (user_id, type, title, score, total, detail_json, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`
+        ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson, at);
       });
       await env.DB.batch(stmts);
     }
