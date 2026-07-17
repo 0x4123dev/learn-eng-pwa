@@ -564,6 +564,19 @@
             transition: transform 0.2s ease;
         }
 
+        /* 7 tabs — keep labels compact and on one line */
+        .nav-item { min-width: 0; padding-left: 2px; padding-right: 2px; font-size: 10px; }
+        .nav-item span:not(.icon) { white-space: nowrap; }
+        .nav-item .icon { font-size: 22px; }
+
+        /* Word form tab — highlight the (BASE) root shown in a question */
+        .wf-base {
+            font-weight: 800; color: #c2560a;
+            background: #fff0e6; padding: 0 6px; border-radius: 6px;
+            white-space: nowrap;
+        }
+        .wordform-screen { padding: 16px; padding-bottom: 90px; }
+
         .nav-item.active .icon {
             transform: scale(1.15);
         }

@@ -829,6 +829,15 @@ function switchScreen(screenId) {
         if (typeof abandonExam === 'function') abandonExam();
     }
 
+    // Guard: warn before leaving an in-progress Word form practice.
+    if (screenId !== 'wordformScreen' &&
+        typeof isWordformQuizActive === 'function' && isWordformQuizActive()) {
+        if (!confirm('You are in the middle of a Word form practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
+            return;
+        }
+        if (typeof abandonWordformQuiz === 'function') abandonWordformQuiz();
+    }
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
@@ -840,6 +849,7 @@ function switchScreen(screenId) {
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
+    if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
     if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
     if (screenId === 'profileScreen') renderProfile();
 }
@@ -869,7 +879,8 @@ function navigateFromProfile() {
         grammarScreen: 2,
         speedChallengeScreen: 3,
         phrasesScreen: 4,
-        examScreen: 5
+        wordformScreen: 5,
+        examScreen: 6
     };
     const navIdx = screenToNav[_profileOriginScreen];
     const navItems = document.querySelectorAll('.nav-item');

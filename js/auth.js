@@ -80,6 +80,10 @@ const EngAuth = (function () {
       type: 'phrases', title: 'Phrases practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
     }));
+    (appState.wordformHistory || []).forEach(h => add({
+      type: 'wordform', title: 'Word form practice (' + (h.total || 0) + ' Qs)',
+      score: h.score, total: h.total, at: h.date,
+    }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
       score: h.correct, total: h.total, at: h.date, detail: { score: h.score },
