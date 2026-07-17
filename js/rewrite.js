@@ -10,6 +10,7 @@ const RW_TIER_LABELS = { all: 'All scores', perfect: '⭐ Perfect', great: '✅ 
 
 let _rwQuiz = null;            // active quiz: { questions:[], idx, answers:[] }
 let _rwHistoryFilter = 'all';
+let _rwSubTab = 'practice';    // 'practice' | 'lessons'
 
 function rwEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -79,6 +80,65 @@ function renderRewriteHome() {
   if (!screen) return;
   if (_rwQuiz) { renderRwQuestion(); return; }
 
+  const bar = `
+    <div class="grammar-subtabs">
+      <button class="grammar-subtab ${_rwSubTab === 'practice' ? 'active' : ''}" onclick="switchRwSubTab('practice')">⚡ Practice</button>
+      <button class="grammar-subtab ${_rwSubTab === 'lessons' ? 'active' : ''}" onclick="switchRwSubTab('lessons')">📖 Lessons</button>
+    </div>`;
+  const body = _rwSubTab === 'lessons' ? renderRewriteLessons() : renderRewritePractice();
+  screen.innerHTML = `<div class="phrases-wrap">${bar}${body}</div>`;
+}
+
+function switchRwSubTab(tab) {
+  _rwSubTab = tab;
+  renderRewriteHome();
+}
+
+// Lessons sub-tab: one lesson per structure type, with question counts.
+function renderRewriteLessons() {
+  const lessons = (typeof REWRITE_LESSONS !== 'undefined') ? REWRITE_LESSONS : [];
+  if (!lessons.length) {
+    return `<div class="phrases-empty">Lessons are being prepared — check back soon.</div>`;
+  }
+  const bank = rewriteBank();
+  const cards = lessons.map(l => {
+    const n = bank.filter(q => q.cat === l.key).length;
+    return `
+    <button class="exam-lesson-card" onclick="openRewriteLesson('${l.key}')">
+      <div class="exam-lesson-icon">${l.icon}</div>
+      <div class="exam-lesson-info">
+        <div class="exam-lesson-title">${rwEsc(l.title)}</div>
+        ${n ? `<div class="exam-lesson-meta">${n} câu luyện tập</div>` : ''}
+      </div>
+      <div class="exam-card-go">›</div>
+    </button>`;
+  }).join('');
+  return `
+    <div class="phrases-hero">
+      <div class="phrases-hero-icon">📖</div>
+      <h1>Rewrite — Lessons</h1>
+      <p class="phrases-sub">Học công thức viết lại câu trước khi luyện tập — ${lessons.length} dạng cấu trúc.</p>
+    </div>
+    <div class="exam-lesson-list">${cards}</div>`;
+}
+
+function openRewriteLesson(key) {
+  const lessons = (typeof REWRITE_LESSONS !== 'undefined') ? REWRITE_LESSONS : [];
+  const l = lessons.find(x => x.key === key);
+  if (!l) return;
+  const screen = document.getElementById('rewriteScreen');
+  screen.innerHTML = `
+    <div class="exam-lesson-detail">
+      <button class="exam-back-btn" onclick="renderRewriteHome()">←</button>
+      <h1 class="exam-lesson-detail-title">${l.icon} ${rwEsc(l.title)}</h1>
+      <div class="exam-lesson-content">${l.content}</div>
+      <button class="exam-btn-secondary exam-lesson-back-bottom" onclick="renderRewriteHome()">← Danh sách bài học</button>
+    </div>`;
+  screen.scrollTop = 0;
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
+}
+
+function renderRewritePractice() {
   const bank = rewriteBank();
   const body = `
       <div class="phrases-hero">
@@ -102,7 +162,7 @@ function renderRewriteHome() {
       ${renderRewriteReviewPanel()}
       ${renderRewriteHistory()}`;
 
-  screen.innerHTML = `<div class="phrases-wrap">${body}</div>`;
+  return body;
 }
 
 // ---- wrong-answer aggregation + review panel ----
@@ -352,5 +412,6 @@ if (typeof module !== 'undefined' && module.exports) {
     renderRewriteHome, startRewriteQuiz, startRewriteReviewQuiz, submitRwText,
     nextRwQuestion, finishRewriteQuiz, isRewriteQuizActive, abandonRewriteQuiz,
     setRwHistoryFilter, openRwSession, rewriteById, rewriteBank, _rwTextCorrect, _rwNormalize,
+    switchRwSubTab, renderRewriteLessons, openRewriteLesson,
   };
 }

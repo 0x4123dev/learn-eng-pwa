@@ -16,6 +16,7 @@ const WF_TIER_LABELS = { all: 'All scores', perfect: '⭐ Perfect', great: '✅ 
 
 let _wfQuiz = null;            // active quiz: { questions:[], idx, answers:[] }
 let _wfHistoryFilter = 'all';
+let _wfSubTab = 'practice';    // 'practice' | 'lessons'
 
 function wfEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -67,6 +68,60 @@ function renderWordformHome() {
   if (!screen) return;
   if (_wfQuiz) { renderWfQuestion(); return; }
 
+  const bar = `
+    <div class="grammar-subtabs">
+      <button class="grammar-subtab ${_wfSubTab === 'practice' ? 'active' : ''}" onclick="switchWfSubTab('practice')">⚡ Practice</button>
+      <button class="grammar-subtab ${_wfSubTab === 'lessons' ? 'active' : ''}" onclick="switchWfSubTab('lessons')">📖 Lessons</button>
+    </div>`;
+  const body = _wfSubTab === 'lessons' ? renderWordformLessons() : renderWordformPractice();
+  screen.innerHTML = `<div class="phrases-wrap">${bar}${body}</div>`;
+}
+
+function switchWfSubTab(tab) {
+  _wfSubTab = tab;
+  renderWordformHome();
+}
+
+// Lessons sub-tab: study cards → tap to open the full lesson.
+function renderWordformLessons() {
+  const lessons = (typeof WORDFORM_LESSONS !== 'undefined') ? WORDFORM_LESSONS : [];
+  if (!lessons.length) {
+    return `<div class="phrases-empty">Lessons are being prepared — check back soon.</div>`;
+  }
+  const cards = lessons.map(l => `
+    <button class="exam-lesson-card" onclick="openWordformLesson('${l.key}')">
+      <div class="exam-lesson-icon">${l.icon}</div>
+      <div class="exam-lesson-info">
+        <div class="exam-lesson-title">${wfEsc(l.title)}</div>
+      </div>
+      <div class="exam-card-go">›</div>
+    </button>`).join('');
+  return `
+    <div class="phrases-hero">
+      <div class="phrases-hero-icon">📖</div>
+      <h1>Word form — Lessons</h1>
+      <p class="phrases-sub">Học quy tắc chia dạng từ trước khi luyện tập — ${lessons.length} bài học.</p>
+    </div>
+    <div class="exam-lesson-list">${cards}</div>`;
+}
+
+function openWordformLesson(key) {
+  const lessons = (typeof WORDFORM_LESSONS !== 'undefined') ? WORDFORM_LESSONS : [];
+  const l = lessons.find(x => x.key === key);
+  if (!l) return;
+  const screen = document.getElementById('wordformScreen');
+  screen.innerHTML = `
+    <div class="exam-lesson-detail">
+      <button class="exam-back-btn" onclick="renderWordformHome()">←</button>
+      <h1 class="exam-lesson-detail-title">${l.icon} ${wfEsc(l.title)}</h1>
+      <div class="exam-lesson-content">${l.content}</div>
+      <button class="exam-btn-secondary exam-lesson-back-bottom" onclick="renderWordformHome()">← Danh sách bài học</button>
+    </div>`;
+  screen.scrollTop = 0;
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
+}
+
+function renderWordformPractice() {
   const bank = wordformBank();
   const counts = { noun: 0, adj: 0, adv: 0, verb: 0 };
   bank.forEach(q => { counts[q.cat] = (counts[q.cat] || 0) + 1; });
@@ -101,7 +156,7 @@ function renderWordformHome() {
       ${renderWordformReviewPanel()}
       ${renderWordformHistory()}`;
 
-  screen.innerHTML = `<div class="phrases-wrap">${body}</div>`;
+  return body;
 }
 
 // ---- wrong-answer aggregation + review panel ----
@@ -388,5 +443,6 @@ if (typeof module !== 'undefined' && module.exports) {
     renderWordformHome, startWordformQuiz, startWordformReviewQuiz, answerWfQuestion,
     submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
+    switchWfSubTab, renderWordformLessons, openWordformLesson,
   };
 }
