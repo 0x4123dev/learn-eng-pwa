@@ -45,7 +45,42 @@ function phrasesBank() {
   return (typeof PREPOSITION_QUESTIONS !== 'undefined') ? PREPOSITION_QUESTIONS : [];
 }
 function phrasesById(id) {
+  // Meaning questions carry the id 'pm-<baseId>' — resolve via their base question.
+  if (typeof id === 'string' && id.indexOf('pm-') === 0) {
+    const base = phrasesBank().find(q => q.id === id.slice(3)) || null;
+    return base ? phrMeaningQuestion(base) : null;
+  }
   return phrasesBank().find(q => q.id === id) || null;
+}
+
+// Build the follow-up "What is the meaning of …?" question for a base question.
+// Returns null when no meaning entry exists (data missing) so callers can skip.
+function phrMeaningQuestion(base) {
+  if (!base || typeof PHRASE_MEANINGS === 'undefined') return null;
+  const m = PHRASE_MEANINGS[base.id];
+  if (!m || !Array.isArray(m.options) || m.options.length !== 4) return null;
+  return {
+    id: 'pm-' + base.id,
+    cat: base.cat,
+    meaning: true,
+    q: 'What is the meaning of "' + base.phrase + '"?',
+    options: m.options,
+    correct: m.correct,
+    phrase: base.phrase,
+    vi: base.vi,
+    explanation: '"' + base.phrase + '" có nghĩa là "' + m.options[m.correct] + '".',
+  };
+}
+
+// Expand picked base questions into [base, meaning, base, meaning, …] pairs.
+function phrExpandPairs(qs) {
+  const out = [];
+  qs.forEach(q => {
+    out.push(q);
+    const mq = phrMeaningQuestion(q);
+    if (mq) out.push(mq);
+  });
+  return out;
 }
 
 function phrasesHistory() {
@@ -309,6 +344,8 @@ function startPhrasesQuiz(n) {
     const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
     qs = phrShuffle(bank, seed).slice(0, Math.min(n, bank.length));
   }
+  // Every base question is followed by its Vietnamese meaning question.
+  qs = phrExpandPairs(qs);
   _phrQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
   renderPhrQuestion();
 }
@@ -368,7 +405,7 @@ function renderPhrQuestion() {
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card">
-        <div class="grammar-question-tag">${PHRASES_CAT_ICON[q.cat]} ${PHRASES_CAT_LABELS[q.cat]}</div>
+        <div class="grammar-question-tag">${q.meaning ? '💡 Meaning · Nghĩa của cụm từ' : `${PHRASES_CAT_ICON[q.cat]} ${PHRASES_CAT_LABELS[q.cat]}`}</div>
         <div class="grammar-question-text">${qHtml}</div>
         <div class="grammar-options">${opts}</div>
         ${explain}
@@ -445,5 +482,6 @@ if (typeof module !== 'undefined' && module.exports) {
     nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz,
     setPhrHistoryFilter, openPhrSession,
     switchPhrSubTab, renderPhrasesLessons, phrasesLessonEntries, filterPhrLessons,
+    phrMeaningQuestion, phrExpandPairs, phrasesById,
   };
 }
