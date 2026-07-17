@@ -348,15 +348,8 @@ function renderDailyReviewBanner() {
     }
 
     if (totalTracked === 0) {
-        return `
-            <div class="topics-sr-banner topics-sr-banner-empty">
-                <span class="topics-sr-banner-icon">🌱</span>
-                <div class="topics-sr-banner-text">
-                    <div class="topics-sr-banner-title">Start learning to unlock spaced review</div>
-                    <div class="topics-sr-banner-sub">Words you've answered will appear here for time-based review.</div>
-                </div>
-            </div>
-        `;
+        // No "Start learning to unlock…" box — keep the Topics screen clean.
+        return '';
     }
 
     let totdHTML = '';
@@ -637,6 +630,34 @@ function startTopicLessonReplayDue(topicId, lessonIdx) {
     if (typeof renderMatchingRound === 'function') renderMatchingRound();
 }
 
+// A lesson chunk counts as "finished" if it has been completed at least once
+// (topicProgress) or every word in it is SR-mastered.
+function _isChunkDone(topicProgress, chunk, idx) {
+    if (topicProgress && topicProgress[idx]) return true;
+    if (appState && appState.srs && chunk && chunk.length) {
+        let mature = 0;
+        for (const c of chunk) {
+            const card = appState.srs[c.word.en];
+            if (card && typeof SRS_MASTERED_INTERVAL !== 'undefined' && card.interval >= SRS_MASTERED_INTERVAL) mature++;
+        }
+        if (mature === chunk.length) return true;
+    }
+    return false;
+}
+
+// The next lesson chunk in a topic that isn't finished yet (forward-preferring),
+// starting after currentIdx; returns -1 when the whole topic is done.
+function _nextUnfinishedChunk(topicId, currentIdx) {
+    const words = getWordsForTopic(topicId, null);
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const total = Math.ceil(words.length / wpl);
+    const prog = (appState && appState.topicProgress && appState.topicProgress[topicId]) || {};
+    const done = (i) => _isChunkDone(prog, words.slice(i * wpl, (i + 1) * wpl).map(x => x), i);
+    for (let i = currentIdx + 1; i < total; i++) if (!done(i)) return i;
+    for (let i = 0; i <= currentIdx && i < total; i++) if (!done(i)) return i;
+    return -1;
+}
+
 function openTopicDetail(topicId) {
     const topic = getTopicById(topicId);
     if (!topic) return;
@@ -661,9 +682,14 @@ function openTopicDetail(topicId) {
     // Per-topic progress for lesson card status
     const topicProgress = (appState && appState.topicProgress && appState.topicProgress[topicId]) || {};
 
-    // Build lesson cards (SR-aware in v3.26)
+    // Build lesson cards (SR-aware in v3.26). Unfinished lessons first — but each
+    // card keeps its original lesson number via idx.
     const now = Date.now();
-    const lessonsHTML = lessonChunks.map((chunk, idx) => {
+    const _entries = lessonChunks.map((chunk, idx) => ({ chunk, idx }));
+    _entries.sort((a, b) =>
+        (_isChunkDone(topicProgress, a.chunk, a.idx) ? 1 : 0) -
+        (_isChunkDone(topicProgress, b.chunk, b.idx) ? 1 : 0));
+    const lessonsHTML = _entries.map(({ chunk, idx }) => {
         const previewWords = chunk.map(c => c.word.en).join(', ');
         const firstDiff = getDifficultyLabelForWordIdx(chunk[0].idx);
         const lastDiff = getDifficultyLabelForWordIdx(chunk[chunk.length - 1].idx);

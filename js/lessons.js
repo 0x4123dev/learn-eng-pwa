@@ -552,5 +552,16 @@ function closeLessonComplete() {
     if (coinEl) { coinEl.style.display = 'none'; coinEl.textContent = '+0 🪙'; }
     const streakBonusEl = document.getElementById('completeStreakBonus');
     if (streakBonusEl) { streakBonusEl.style.display = 'none'; }
+
+    // Continue → go straight to the NEXT unfinished lesson in the same topic
+    // (never repeat the lesson just finished). Falls through when the topic is
+    // fully done, or for review / shuffle lessons.
+    if (lessonState && lessonState.isTopicLesson && lessonState.topicId &&
+        lessonState.topicId !== '__review__' && lessonState.topicChunkIdx !== undefined &&
+        typeof _nextUnfinishedChunk === 'function' && typeof startTopicLessonChunk === 'function') {
+        const topicId = lessonState.topicId;
+        const nextIdx = _nextUnfinishedChunk(topicId, lessonState.topicChunkIdx);
+        if (nextIdx >= 0) { startTopicLessonChunk(topicId, nextIdx); return; }
+    }
     exitLesson();
 }
