@@ -263,10 +263,6 @@ function renderWfQuestion() {
     <button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
   }
 
-  const tag = q.type === 'text'
-    ? '✍️ ' + (WF_CAT_LABELS[q.cat] || 'Word form') + ' · Tự điền'
-    : '🔤 ' + (WF_CAT_LABELS[q.cat] || 'Word form');
-
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
@@ -275,7 +271,6 @@ function renderWfQuestion() {
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card">
-        <div class="grammar-question-tag">${tag}</div>
         <div class="grammar-question-text">${qHtml}</div>
         ${bodyHtml}
         ${explain}
