@@ -577,6 +577,27 @@
         }
         .wordform-screen { padding: 16px; padding-bottom: 90px; }
 
+        /* Word form — typed-answer questions */
+        .wf-text-wrap { display: flex; gap: 8px; margin-top: 4px; }
+        .wf-text-input {
+            flex: 1 1 auto; padding: 13px 14px; font-size: 16px; font-family: inherit;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary); outline: none;
+        }
+        .wf-text-input:focus { border-color: #c2560a; }
+        .wf-text-submit {
+            flex: 0 0 auto; padding: 0 18px; font-size: 15px; font-weight: 700; font-family: inherit;
+            border: none; border-radius: 12px; background: #c2560a; color: #fff; cursor: pointer;
+        }
+        .wf-text-answer {
+            margin-top: 4px; padding: 12px 14px; border-radius: 12px; font-size: 16px;
+            border: 2px solid; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+        }
+        .wf-text-answer.correct { border-color: #58cc02; background: rgba(88,204,2,0.10); }
+        .wf-text-answer.wrong { border-color: #ff4b4b; background: rgba(255,75,75,0.08); }
+        .wf-text-answer-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+        .wf-text-answer-value { font-weight: 800; color: var(--text-primary); }
+
         .nav-item.active .icon {
             transform: scale(1.15);
         }

@@ -11,18 +11,31 @@ const norm = s => String(s).toLowerCase().normalize('NFC').replace(/\s+/g, ' ').
 const CATS = new Set(['noun', 'adj', 'adv', 'verb']);
 
 suite('word form bank', () => {
-  test('has 500 questions with unique ids', () => {
-    assert.equal(WORDFORM_QUESTIONS.length, 500);
-    assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, 500);
+  test('has 600 questions (500 mcq + 100 typed) with unique ids', () => {
+    assert.equal(WORDFORM_QUESTIONS.length, 600);
+    assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, 600);
+    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'mcq').length, 500);
+    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'text').length, 100);
   });
 
-  test('every question is well-formed (4 distinct options, correct = answer)', () => {
-    for (const q of WORDFORM_QUESTIONS) {
+  test('mcq questions: 4 distinct options with correct = answer', () => {
+    for (const q of WORDFORM_QUESTIONS.filter(q => q.type === 'mcq')) {
       assert.truthy(CATS.has(q.cat), `${q.id}: bad cat ${q.cat}`);
       assert.truthy(Array.isArray(q.options) && q.options.length === 4, `${q.id}: needs 4 options`);
       assert.equal(new Set(q.options.map(norm)).size, 4, `${q.id}: duplicate options`);
       assert.truthy(q.correct >= 0 && q.correct < 4, `${q.id}: bad correct index`);
       assert.equal(norm(q.options[q.correct]), norm(q.answer), `${q.id}: options[correct] must equal answer`);
+    }
+  });
+
+  test('text questions: accept[] includes the model answer, grading works', () => {
+    for (const q of WORDFORM_QUESTIONS.filter(q => q.type === 'text')) {
+      assert.truthy(CATS.has(q.cat), `${q.id}: bad cat`);
+      assert.truthy(Array.isArray(q.accept) && q.accept.length >= 1, `${q.id}: missing accept`);
+      assert.truthy(q.accept.map(norm).includes(norm(q.answer)), `${q.id}: answer not in accept`);
+      assert.truthy(wf._wfTextCorrect(q.answer, q), `${q.id}: exact answer should grade correct`);
+      assert.truthy(wf._wfTextCorrect(' ' + q.answer.toUpperCase() + ' ', q), `${q.id}: case/space-insensitive grading`);
+      assert.truthy(!wf._wfTextCorrect('zznotaword', q), `${q.id}: wrong text should grade incorrect`);
     }
   });
 
@@ -36,7 +49,7 @@ suite('word form bank', () => {
   });
 
   test('quiz helpers resolve and start correctly', () => {
-    assert.equal(wf.wordformBank().length, 500);
+    assert.equal(wf.wordformBank().length, 600);
     assert.truthy(wf.wordformById('wf-1') && wf.wordformById('wf-1').id === 'wf-1');
     assert.equal(wf.wordformById('nope'), null);
   });

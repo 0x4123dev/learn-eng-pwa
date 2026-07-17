@@ -78,7 +78,7 @@ function renderWordformHome() {
       <div class="phrases-hero">
         <div class="phrases-hero-icon">🔤</div>
         <h1>Word form</h1>
-        <p class="phrases-sub">Chọn dạng đúng của từ (danh/động/tính/trạng từ) — ${bank.length} câu, có giải thích rõ ràng khi bạn chọn đáp án.</p>
+        <p class="phrases-sub">Chia dạng từ (danh/động/tính/trạng từ) — ${bank.length} câu, gồm cả chọn đáp án và tự gõ, có giải thích rõ ràng.</p>
       </div>
 
       <button class="phrases-cta" onclick="startWordformQuiz(20)">
@@ -196,41 +196,76 @@ function startWordformReviewQuiz(qids) {
 function isWordformQuizActive() { return !!_wfQuiz; }
 function abandonWordformQuiz() { _wfQuiz = null; }
 
+// Answers are stored as { value, isCorrect } for BOTH mcq (value=index) and
+// text (value=typed string), so scoring is uniform.
+function _wfNormalize(s) {
+  return String(s || '').toLowerCase().normalize('NFC')
+    .replace(/[.,!?;:"'’`]/g, '').replace(/\s+/g, ' ').trim();
+}
+function _wfTextCorrect(text, q) {
+  const u = _wfNormalize(text);
+  if (!u) return false;
+  const list = (q.accept && q.accept.length) ? q.accept : [q.answer];
+  return list.some(a => _wfNormalize(a) === u);
+}
+
 function renderWfQuestion() {
   const screen = document.getElementById('wordformScreen');
   if (!screen || !_wfQuiz) return;
   const st = _wfQuiz;
   const q = st.questions[st.idx];
-  const userAns = st.answers[st.idx];
+  const userAns = st.answers[st.idx];         // null | { value, isCorrect }
   const answered = userAns !== null;
+  const isCorrect = answered && userAns.isCorrect;
   const total = st.questions.length;
 
   const qHtml = wfEsc(q.q)
     .replace('___', '<span class="phrases-blank">_____</span>')
     .replace(/\(([A-Z][A-Z\- ]*)\)/, '<span class="wf-base">($1)</span>');
 
-  const opts = q.options.map((opt, i) => {
-    let cls = 'grammar-option';
+  let bodyHtml;
+  if (q.type === 'text') {
     if (answered) {
-      if (i === q.correct) cls += ' correct';
-      else if (i === userAns) cls += ' wrong';
+      bodyHtml = `<div class="wf-text-answer ${isCorrect ? 'correct' : 'wrong'}">
+        <span class="wf-text-answer-label">Your answer:</span>
+        <span class="wf-text-answer-value">${userAns.value ? wfEsc(userAns.value) : '<em>(blank)</em>'}</span>
+      </div>`;
+    } else {
+      bodyHtml = `<div class="wf-text-wrap">
+        <input type="text" id="wfTextInput" class="wf-text-input" placeholder="Gõ dạng đúng của từ…"
+               autocomplete="off" autocapitalize="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();submitWfText();}">
+        <button class="wf-text-submit" onclick="submitWfText()">Check</button>
+      </div>`;
     }
-    const letter = String.fromCharCode(65 + i);
-    return `<button class="${cls}" ${answered ? 'disabled' : ''} onclick="answerWfQuestion(${i})">
-      <span class="grammar-option-letter">${letter}</span>
-      <span class="grammar-option-text">${wfEsc(opt)}</span>
-    </button>`;
-  }).join('');
+  } else {
+    bodyHtml = '<div class="grammar-options">' + q.options.map((opt, i) => {
+      let cls = 'grammar-option';
+      if (answered) {
+        if (i === q.correct) cls += ' correct';
+        else if (userAns && i === userAns.value) cls += ' wrong';
+      }
+      const letter = String.fromCharCode(65 + i);
+      return `<button class="${cls}" ${answered ? 'disabled' : ''} onclick="answerWfQuestion(${i})">
+        <span class="grammar-option-letter">${letter}</span>
+        <span class="grammar-option-text">${wfEsc(opt)}</span>
+      </button>`;
+    }).join('') + '</div>';
+  }
 
   let explain = '';
   if (answered) {
-    const ok = userAns === q.correct;
-    explain = `<div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
+    const header = isCorrect ? '✅ ' : `❌ Đáp án đúng: <b>${wfEsc(q.answer)}</b>. `;
+    explain = `<div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
       <div class="phrases-vi">📘 ${wfEsc(q.vi)}</div>
-      <div>${ok ? '✅ ' : '❌ '}${wfEsc(q.explanation)}</div>
+      <div>${header}${wfEsc(q.explanation)}</div>
     </div>
     <button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
   }
+
+  const tag = q.type === 'text'
+    ? '✍️ ' + (WF_CAT_LABELS[q.cat] || 'Word form') + ' · Tự điền'
+    : '🔤 ' + (WF_CAT_LABELS[q.cat] || 'Word form');
 
   screen.innerHTML = `
     <div class="phrases-wrap">
@@ -240,18 +275,33 @@ function renderWfQuestion() {
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card">
-        <div class="grammar-question-tag">🔤 ${WF_CAT_LABELS[q.cat] || 'Word form'}</div>
+        <div class="grammar-question-tag">${tag}</div>
         <div class="grammar-question-text">${qHtml}</div>
-        <div class="grammar-options">${opts}</div>
+        ${bodyHtml}
         ${explain}
       </div>
     </div>`;
+
+  if (q.type === 'text' && !answered) {
+    const inp = document.getElementById('wfTextInput');
+    if (inp) setTimeout(() => inp.focus(), 50);
+  }
 }
 
 function answerWfQuestion(i) {
   const st = _wfQuiz;
   if (!st || st.answers[st.idx] !== null) return;
-  st.answers[st.idx] = i;
+  const q = st.questions[st.idx];
+  st.answers[st.idx] = { value: i, isCorrect: i === q.correct };
+  renderWfQuestion();
+}
+function submitWfText() {
+  const st = _wfQuiz;
+  if (!st || st.answers[st.idx] !== null) return;
+  const q = st.questions[st.idx];
+  const inp = document.getElementById('wfTextInput');
+  const raw = inp ? inp.value : '';
+  st.answers[st.idx] = { value: raw.trim(), isCorrect: _wfTextCorrect(raw, q) };
   renderWfQuestion();
 }
 function nextWfQuestion() {
@@ -268,8 +318,9 @@ function finishWordformQuiz() {
   let score = 0;
   const wrong = [];
   st.questions.forEach((q, i) => {
-    if (st.answers[i] === q.correct) score++;
-    else wrong.push({ qid: q.id, ua: st.answers[i] });
+    const a = st.answers[i];
+    if (a && a.isCorrect) score++;
+    else wrong.push({ qid: q.id, ua: a ? a.value : null });
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
 
@@ -340,7 +391,7 @@ function openWfSession(idx) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderWordformHome, startWordformQuiz, startWordformReviewQuiz, answerWfQuestion,
-    nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
-    setWfHistoryFilter, openWfSession, wordformById, wordformBank,
+    submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
+    setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
   };
 }
