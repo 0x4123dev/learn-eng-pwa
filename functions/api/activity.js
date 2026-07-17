@@ -1,6 +1,6 @@
 import { requireAuth, json, err } from './_lib.js';
 
-const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'wordform', 'verbs', 'battle'];
+const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs', 'battle'];
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 // Convert a JS ms timestamp to D1's 'YYYY-MM-DD HH:MM:SS' (UTC).

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v178';
+const CACHE_NAME = 'flashlingo-v179';
 const ASSETS = [
   '/',
   '/index.html',
@@ -13,6 +13,8 @@ const ASSETS = [
   '/js/phrases.js',
   '/js/wordform-data.js',
   '/js/wordform.js',
+  '/js/rewrite-data.js',
+  '/js/rewrite.js',
   '/js/exam-data.js',
   '/js/exam-lessons.js',
   '/js/auth.js',

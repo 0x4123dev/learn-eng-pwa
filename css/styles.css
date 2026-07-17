@@ -598,6 +598,31 @@
         .wf-text-answer-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
         .wf-text-answer-value { font-weight: 800; color: var(--text-primary); }
 
+        /* Rewrite tab — typed sentence transformation */
+        .rewrite-screen { padding: 16px; padding-bottom: 90px; }
+        .rw-orig {
+            font-size: 16px; font-weight: 700; color: var(--text-primary);
+            line-height: 1.5; margin-bottom: 10px;
+        }
+        .rw-stem {
+            font-size: 15.5px; color: var(--text-primary); line-height: 1.5;
+            background: rgba(124,58,237,0.07); border-left: 3px solid #7c3aed;
+            padding: 8px 12px; border-radius: 8px; margin-bottom: 12px;
+        }
+        .rw-text-wrap { display: flex; gap: 8px; align-items: stretch; margin-top: 4px; }
+        .rw-text-input {
+            flex: 1 1 auto; padding: 12px 14px; font-size: 16px; font-family: inherit;
+            border: 2px solid var(--glass-border); border-radius: 12px; resize: none;
+            background: var(--glass-bg, #fff); color: var(--text-primary); outline: none;
+            line-height: 1.4;
+        }
+        .rw-text-input:focus { border-color: #7c3aed; }
+        .rw-text-submit { background: #7c3aed; }
+
+        /* 8 nav tabs — keep them fitting on small screens */
+        .nav-item { font-size: 9px; }
+        .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
+
         .nav-item.active .icon {
             transform: scale(1.15);
         }
