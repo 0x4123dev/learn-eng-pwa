@@ -272,6 +272,11 @@ function finishWordformQuiz() {
     else wrong.push({ qid: q.id, ua: st.answers[i] });
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
+
+  // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
+  const coinsEarned = score * 5;
+  if (typeof appState !== 'undefined' && appState) appState.coins = (appState.coins || 0) + coinsEarned;
+
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
   saveWordformSession({ id: 'wf-' + date, date, score, total, wrong });
@@ -296,6 +301,7 @@ function finishWordformQuiz() {
         <button class="grammar-back-btn" onclick="renderWordformHome()">‹</button>
         <span class="grammar-quiz-progress">${wfTierEmoji(pct)} ${score}/${total} (${pct}%)</span>
       </div>
+      ${coinsEarned ? `<div class="grammar-result-coins" style="text-align:center;margin:6px 0 2px;">+${coinsEarned} 🪙 earned</div>` : ''}
       <div class="phrases-section-title">Review${wrong.length ? ` · ${wrong.length} wrong` : ' · perfect! 🎉'}</div>
       ${reviewHtml}
       ${wrong.length ? `<button class="phrases-cta-secondary phrases-review-btn" onclick='startWordformReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}

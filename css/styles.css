@@ -7287,6 +7287,15 @@
             font-weight: 700;
             margin-bottom: 18px;
         }
+        /* Coin-earned banner on Exam results + Verbs complete overlay */
+        .exam-result-coins {
+            font-size: 15px; font-weight: 800; color: #b8860b;
+            margin-top: 6px;
+        }
+        .speed-complete-coins {
+            font-size: 16px; font-weight: 800; color: #b8860b;
+            margin: 10px 0 4px;
+        }
         .grammar-result-actions {
             display: flex;
             flex-direction: column;

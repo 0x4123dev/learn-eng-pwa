@@ -440,6 +440,10 @@ function finishPhrasesQuiz() {
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
 
+  // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
+  const coinsEarned = score * 5;
+  if (typeof appState !== 'undefined' && appState) appState.coins = (appState.coins || 0) + coinsEarned;
+
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
   savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong });
@@ -467,6 +471,7 @@ function finishPhrasesQuiz() {
         <div class="grammar-result-emoji">${emoji}</div>
         <h2>${score} / ${total}</h2>
         <div class="grammar-result-pct">${pct}%</div>
+        ${coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : ''}
         <p>${pct >= 80 ? 'Excellent preposition skills!' : (pct >= 50 ? 'Good work — keep practising.' : 'Keep going — prepositions take practice.')}</p>
         <button class="phrases-cta-secondary" onclick="_phrQuiz=null; renderPhrasesHome()">Done</button>
       </div>

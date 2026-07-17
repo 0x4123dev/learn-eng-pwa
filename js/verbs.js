@@ -368,6 +368,15 @@ function completeSpeedChallenge() {
     appState.speedChallenge.totalGames++;
     appState.points += speedState.score;
 
+    // Reward coins for the pet shop: 5 per correct verb (matches Grammar).
+    const _wfCoins = (speedState.correctCount || 0) * 5;
+    appState.coins = (appState.coins || 0) + _wfCoins;
+    const _coinEl = document.getElementById('finalCoins');
+    if (_coinEl) {
+        _coinEl.textContent = '+' + _wfCoins + ' 🪙 earned';
+        _coinEl.style.display = _wfCoins ? 'block' : 'none';
+    }
+
     // Save game to verb history
     if (!appState.speedChallenge.history) appState.speedChallenge.history = [];
     appState.speedChallenge.history.push({

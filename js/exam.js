@@ -390,6 +390,15 @@ function finishExam(auto) {
         Math.round((Date.now() - s.startTs) / 1000)
     );
 
+    // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
+    const coinsEarned = score * 5;
+    if (typeof appState !== 'undefined' && appState) {
+        appState.coins = (appState.coins || 0) + coinsEarned;
+        if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+            try { saveUserData(currentUser, appState); } catch (e) {}
+        }
+    }
+
     const attempt = {
         examId: s.examId,
         title: s.title,
@@ -397,6 +406,7 @@ function finishExam(auto) {
         score,
         total,
         timeSpentSec,
+        coinsEarned,
         autoSubmitted: !!auto,
         answers: s.questions.map((q, i) => ({
             n: q.n,
@@ -469,6 +479,7 @@ function _renderExamResults(attempt, auto) {
             <div class="exam-result-score">${attempt.score}<span>/${attempt.total}</span></div>
             <div class="exam-result-pct">${pct}% · ${escExam(attempt.title)}</div>
             <div class="exam-result-time">⏱️ Time used: ${_fmtClock(attempt.timeSpentSec)}</div>
+            ${attempt.coinsEarned ? `<div class="exam-result-coins">+${attempt.coinsEarned} 🪙 earned</div>` : ''}
             ${autoNote}
             <div class="exam-result-actions">
                 <button class="exam-btn-primary" onclick="confirmStartExam('${attempt.examId}')">🔁 Retake</button>
