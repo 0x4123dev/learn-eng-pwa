@@ -16,11 +16,22 @@ const norm = s => String(s).toLowerCase().replace(/^→\s*/, '')
     .replace(/[.,!?;:"'’`]/g, '').replace(/\s+/g, ' ').trim();
 
 suite('exam: bank structure', () => {
-    test('at least the practice sets and both past papers exist', () => {
-        assert.truthy(EXAMS.length >= 4, `expected ≥4 exams, got ${EXAMS.length}`);
+    test('the full bank exists: 3 reference papers + Exam 1..30 practice sets', () => {
+        assert.equal(EXAMS.length, 33, `expected 33 exams, got ${EXAMS.length}`);
         const ids = EXAMS.map(e => e.id);
         ['exam1', 'exam2', 'exam2024', 'exam2025'].forEach(id =>
             assert.truthy(ids.includes(id), `missing ${id}`));
+        for (let n = 2; n <= 30; n++) {
+            assert.truthy(ids.includes('examp' + n), `missing examp${n}`);
+        }
+    });
+
+    test('renames applied: exam1 → "Exam 2026", exam2 → "Exam 1"', () => {
+        assert.equal(EXAMS.find(e => e.id === 'exam1').title, 'Exam 2026');
+        assert.equal(EXAMS.find(e => e.id === 'exam2').title, 'Exam 1');
+        for (let n = 2; n <= 30; n++) {
+            assert.equal(EXAMS.find(e => e.id === 'examp' + n).title, 'Exam ' + n);
+        }
     });
 
     for (const ex of EXAMS) {

@@ -109,17 +109,6 @@ function renderExamsBody() {
         </button>`;
     }).join('');
 
-    // Placeholders for exams still to come — only for numbers not yet released.
-    const releasedNums = new Set(EXAMS.map(e => parseInt(String(e.id).replace('exam', ''), 10)));
-    const comingSoon = [1, 2, 3, 4].filter(n => !releasedNums.has(n)).map(n => `
-        <div class="exam-card exam-card-locked">
-            <div class="exam-card-icon">🔒</div>
-            <div class="exam-card-info">
-                <div class="exam-card-title">Exam ${n}</div>
-                <div class="exam-card-sub">Coming soon</div>
-            </div>
-        </div>`).join('');
-
     return `
         <div class="exam-header">
             <h1 class="exam-title">🎯 Exam</h1>
@@ -127,7 +116,6 @@ function renderExamsBody() {
         </div>
         <div class="exam-list">
             ${examCards}
-            ${comingSoon}
         </div>
         <button class="exam-history-btn" onclick="renderExamHistory()">
             📜 History ${history.length ? `(${history.length})` : ''}
