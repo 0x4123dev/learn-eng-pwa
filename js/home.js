@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.82.0';
+const APP_VERSION = 'v3.83.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -308,6 +308,206 @@ function goLearnToday() {
     }
 }
 
+// ==================== SKILLS CHART (home bottom) ====================
+// Aggregates correct/total across every practice type's history so the
+// student can see which skills are strong and which need work.
+function getHomeSkillStats() {
+    if (!appState) return [];
+    const sum = (hist) => {
+        let c = 0, t = 0;
+        (hist || []).forEach(s => { c += s.score || 0; t += s.total || 0; });
+        return { c, t };
+    };
+    const skills = [];
+
+    // Vocabulary — lessonHistory stores accuracy per 5-word lesson
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    let vc = 0, vt = 0;
+    (appState.lessonHistory || []).forEach(h => {
+        if (typeof h.accuracy === 'number') { vt += wpl; vc += Math.round(h.accuracy / 100 * wpl); }
+    });
+    skills.push({ key: 'vocab', label: 'Vocabulary', icon: '📚', color: '#22c55e', correct: vc, total: vt });
+
+    const g = sum(appState.grammarHistory);
+    skills.push({ key: 'grammar', label: 'Grammar', icon: '🎓', color: '#7c3aed', correct: g.c, total: g.t });
+    const p = sum(appState.phrasesHistory);
+    skills.push({ key: 'phrases', label: 'Phrases', icon: '🔗', color: '#1cb0f6', correct: p.c, total: p.t });
+    const w = sum(appState.wordformHistory);
+    skills.push({ key: 'wordform', label: 'Word form', icon: '🔤', color: '#c2560a', correct: w.c, total: w.t });
+    const r = sum(appState.rewriteHistory);
+    skills.push({ key: 'rewrite', label: 'Rewrite', icon: '✍️', color: '#d6407a', correct: r.c, total: r.t });
+
+    // Verbs speed challenge
+    let vbc = 0, vbt = 0;
+    ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => {
+        vbc += h.correct || 0; vbt += h.total || 0;
+    });
+    skills.push({ key: 'verbs', label: 'Verbs', icon: '📝', color: '#f59e0b', correct: vbc, total: vbt });
+
+    // Exam attempts (stored app-wide by the Exam tab)
+    let ec = 0, et = 0;
+    try {
+        const eh = (typeof loadExamHistory === 'function') ? loadExamHistory() : [];
+        (eh || []).forEach(a => { ec += a.score || 0; et += a.total || 0; });
+    } catch (e) { /* exam module absent — skip */ }
+    skills.push({ key: 'exam', label: 'Exam', icon: '🎯', color: '#ef4444', correct: ec, total: et });
+
+    return skills.map(s => Object.assign({}, s, { pct: s.total ? Math.round(s.correct / s.total * 100) : 0 }));
+}
+
+// Per-skill session lists (normalized {score,total,date}), newest first —
+// used for recent-trend arrows and the 7-day activity chart.
+function _homeSkillSessions() {
+    if (!appState) return {};
+    const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
+    const norm = (arr, map) => (arr || []).map(map).filter(s => s.total > 0)
+        .sort((a, b) => (b.date || 0) - (a.date || 0));
+    let exam = [];
+    try {
+        exam = (typeof loadExamHistory === 'function') ? (loadExamHistory() || []) : [];
+    } catch (e) { exam = []; }
+    return {
+        vocab: norm(appState.lessonHistory, h => ({
+            score: Math.round((h.accuracy || 0) / 100 * wpl), total: (typeof h.accuracy === 'number') ? wpl : 0, date: h.date || 0 })),
+        grammar: norm(appState.grammarHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        phrases: norm(appState.phrasesHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        wordform: norm(appState.wordformHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        rewrite: norm(appState.rewriteHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        verbs: norm((appState.speedChallenge && appState.speedChallenge.history), h => ({ score: h.correct || 0, total: h.total || 0, date: h.date || 0 })),
+        exam: norm(exam, a => ({ score: a.score || 0, total: a.total || 0, date: a.ts || 0 })),
+    };
+}
+
+function _homeSkillLevel(pct) {
+    if (pct >= 85) return { label: 'Excellent', cls: 'lv-excellent' };
+    if (pct >= 70) return { label: 'Good', cls: 'lv-good' };
+    if (pct >= 50) return { label: 'OK', cls: 'lv-ok' };
+    return { label: 'Practice!', cls: 'lv-weak' };
+}
+
+// Questions answered per day over the last 7 days, across all skills.
+function getHomeDailyActivity() {
+    const sessions = _homeSkillSessions();
+    const days = [];
+    const now = new Date();
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+        days.push({ key: d.toDateString(), label: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][d.getDay()], count: 0, isToday: i === 0 });
+    }
+    const byKey = new Map(days.map(d => [d.key, d]));
+    Object.values(sessions).forEach(list => list.forEach(s => {
+        if (!s.date) return;
+        const k = new Date(s.date).toDateString();
+        const day = byKey.get(k);
+        if (day) day.count += s.total;
+    }));
+    return days;
+}
+
+function renderHomeSkillsPanel() {
+    const panel = document.getElementById('homeSkillsPanel');
+    if (!panel || !appState) return;
+    const skills = getHomeSkillStats();
+    const sessions = _homeSkillSessions();
+    const practiced = skills.filter(s => s.total > 0);
+
+    // ── Overall summary ──
+    const answered = skills.reduce((n, s) => n + s.total, 0);
+    const correct = skills.reduce((n, s) => n + s.correct, 0);
+    const overallPct = answered ? Math.round(correct / answered * 100) : 0;
+    const best = practiced.slice().sort((a, b) => b.pct - a.pct)[0];
+    const weakest = practiced.length > 1 ? practiced.slice().sort((a, b) => a.pct - b.pct)[0] : null;
+
+    const summaryHTML = practiced.length ? `
+        <div class="home-skills-summary">
+            <div class="home-skills-ring" style="background: conic-gradient(#22c55e ${overallPct * 3.6}deg, rgba(0,0,0,0.08) 0deg);">
+                <div class="home-skills-ring-inner"><strong>${overallPct}%</strong><span>overall</span></div>
+            </div>
+            <div class="home-skills-chips">
+                <div class="home-skills-chip"><strong>${answered.toLocaleString()}</strong><span>answered</span></div>
+                <div class="home-skills-chip"><strong>${correct.toLocaleString()}</strong><span>correct</span></div>
+                ${best ? `<div class="home-skills-chip chip-best"><strong>${best.icon} ${best.pct}%</strong><span>best: ${best.label}</span></div>` : ''}
+                ${weakest && weakest.key !== (best && best.key) ? `<div class="home-skills-chip chip-focus"><strong>${weakest.icon} ${weakest.pct}%</strong><span>focus: ${weakest.label}</span></div>` : ''}
+            </div>
+        </div>` : '';
+
+    // ── Per-skill rows with recent trend (last 3 sessions vs all-time) ──
+    const rows = skills.map(s => {
+        const empty = s.total === 0;
+        let trend = '';
+        const recent = (sessions[s.key] || []).slice(0, 3);
+        const rTot = recent.reduce((n, x) => n + x.total, 0);
+        if (!empty && rTot >= 5 && (sessions[s.key] || []).length >= 2) {
+            const rPct = Math.round(recent.reduce((n, x) => n + x.score, 0) / rTot * 100);
+            if (rPct >= s.pct + 5) trend = `<span class="home-skill-trend up" title="Recent: ${rPct}%">▲</span>`;
+            else if (rPct <= s.pct - 5) trend = `<span class="home-skill-trend down" title="Recent: ${rPct}%">▼</span>`;
+        }
+        const lv = _homeSkillLevel(s.pct);
+        return `
+        <div class="home-skill-row ${empty ? 'home-skill-empty' : ''}" onclick="goToSkillTab('${s.key}')">
+            <div class="home-skill-label">${s.icon} ${s.label}</div>
+            <div class="home-skill-bar">
+                <div class="home-skill-fill" style="width:${s.pct}%; background:${s.color};"></div>
+            </div>
+            <div class="home-skill-value">${empty ? '—'
+                : `<strong>${s.pct}%</strong>${trend} <span>${s.correct}/${s.total}</span><em class="home-skill-level ${lv.cls}">${lv.label}</em>`}</div>
+        </div>`;
+    }).join('');
+
+    // ── 7-day activity mini chart ──
+    const daily = getHomeDailyActivity();
+    const maxDay = Math.max(1, ...daily.map(d => d.count));
+    const weekTotal = daily.reduce((n, d) => n + d.count, 0);
+    const dailyHTML = `
+        <div class="home-skills-daily">
+            <div class="home-skills-daily-title">Last 7 days · <strong>${weekTotal}</strong> questions</div>
+            <div class="home-skills-daily-bars">
+                ${daily.map(d => `
+                <div class="home-skills-day ${d.isToday ? 'today' : ''}">
+                    <div class="home-skills-day-bar"><div class="home-skills-day-fill" style="height:${Math.round(d.count / maxDay * 100)}%"></div></div>
+                    <div class="home-skills-day-count">${d.count || ''}</div>
+                    <div class="home-skills-day-label">${d.label}</div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+
+    const subtitle = practiced.length
+        ? `Accuracy by skill — tap a weak one to practice it!`
+        : 'Answer questions in any tab to grow your chart!';
+
+    panel.innerHTML = `
+        <div class="home-skills-title">📊 My Skills</div>
+        <div class="home-skills-sub">${subtitle}</div>
+        ${summaryHTML}
+        ${rows}
+        ${practiced.length ? dailyHTML : ''}`;
+}
+
+// Tap a skill row → jump straight to that practice tab.
+function goToSkillTab(key) {
+    const map = {
+        vocab: ['topicsScreen', 'renderTopicsHome'],
+        grammar: ['grammarScreen', 'renderGrammarHome'],
+        phrases: ['phrasesScreen', 'renderPhrasesHome'],
+        wordform: ['wordformScreen', 'renderWordformHome'],
+        rewrite: ['rewriteScreen', 'renderRewriteHome'],
+        verbs: ['speedChallengeScreen', null],
+        exam: ['examScreen', 'renderExamHome'],
+    };
+    const target = map[key];
+    if (!target || typeof switchScreen !== 'function') return;
+    switchScreen(target[0]);
+    const fn = target[1];
+    if (fn && typeof globalThis[fn] === 'function') { try { globalThis[fn](); } catch (e) {} }
+    // Highlight the matching bottom-nav item (switchScreen relies on the click event otherwise)
+    try {
+        const idx = { topicsScreen: 1, grammarScreen: 2, speedChallengeScreen: 3, phrasesScreen: 4, wordformScreen: 5, rewriteScreen: 6, examScreen: 7 }[target[0]];
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach(n => n.classList.remove('active'));
+        if (items[idx]) items[idx].classList.add('active');
+    } catch (e) {}
+}
+
 function renderHome() {
     if (!appState) return;
 
@@ -346,6 +546,7 @@ function renderHome() {
         try { renderWordPet(); } catch (e) { /* non-fatal */ }
     }
     renderHomeStreakPanel();
+    renderHomeSkillsPanel();
 
     // The lesson-start card / difficulty chips / history are GONE from the
     // home page in v3.38 — exit before the legacy code touches them.
