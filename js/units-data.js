@@ -14,7 +14,7 @@ const UNIT_WORDS = [
   { unit: 2, en: 'fire station', vi: 'trạm cứu hỏa', emoji: '🚒' },
   { unit: 2, en: 'store', vi: 'cửa hàng', emoji: '🏪' },
   { unit: 2, en: 'office', vi: 'văn phòng', emoji: '🏢' },
-  { unit: 2, en: 'farm', vi: 'nông trại', emoji: '🐄' },
+  { unit: 2, en: 'farm', vi: 'nông trại', emoji: '🚜🌾' },
   { unit: 2, en: 'bank', vi: 'ngân hàng', emoji: '🏦' },
 
   // ── Unit 2: Places & animals ──
@@ -50,7 +50,7 @@ const UNIT_WORDS = [
   { unit: 3, en: 'eighty', vi: 'tám mươi', emoji: '80' },
   { unit: 3, en: 'ninety', vi: 'chín mươi', emoji: '90' },
   { unit: 3, en: 'one hundred', vi: 'một trăm', emoji: '100' },
-  { unit: 3, en: 'queen', vi: 'nữ hoàng', emoji: '👑' },
+  { unit: 3, en: 'queen', vi: 'nữ hoàng', emoji: '👸' },
   { unit: 3, en: 'rabbit', vi: 'con thỏ', emoji: '🐰' },
   { unit: 3, en: 'sofa', vi: 'ghế sofa', emoji: '🛋️' },
 
@@ -98,7 +98,7 @@ const UNIT_WORDS = [
   { unit: 6, en: 'crocodile', vi: 'cá sấu', emoji: '🐊' },
   { unit: 6, en: 'yellow', vi: 'màu vàng', emoji: '🟡' },
   { unit: 6, en: 'zebra', vi: 'ngựa vằn', emoji: '🦓' },
-  { unit: 6, en: 'zoo', vi: 'sở thú', emoji: '🦁' },
+  { unit: 6, en: 'zoo', vi: 'sở thú', emoji: '🦁🐘🦓' },
   { unit: 6, en: 'zero', vi: 'số không', emoji: '0' },
 
   // ── Unit 7: Weather & outdoor fun ──
@@ -113,7 +113,7 @@ const UNIT_WORDS = [
   { unit: 7, en: 'go outside', vi: 'ra ngoài', emoji: '🚪' },
   { unit: 7, en: 'ring', vi: 'cái nhẫn', emoji: '💍' },
   { unit: 7, en: 'bang', vi: 'tiếng nổ lớn', emoji: '🎆' },
-  { unit: 7, en: 'long', vi: 'dài', emoji: '🦒' },
+  { unit: 7, en: 'long', vi: 'dài', emoji: '🐍' },
   { unit: 7, en: 'treasure', vi: 'kho báu', emoji: '💰' },
   { unit: 7, en: 'measure', vi: 'đo', emoji: '📏' },
   { unit: 7, en: 'explosion', vi: 'vụ nổ', emoji: '💥' },
@@ -135,17 +135,17 @@ const UNIT_WORDS = [
   { unit: 8, en: 'throw', vi: 'ném', emoji: '🤾' },
 
   // ── Unit 9: Daily routines & time ──
-  { unit: 9, en: 'get up', vi: 'thức dậy', emoji: '🛏️' },
+  { unit: 9, en: 'get up', vi: 'thức dậy', emoji: '⏰' },
   { unit: 9, en: 'have breakfast', vi: 'ăn sáng', emoji: '🥣' },
   { unit: 9, en: 'go to school', vi: 'đi học', emoji: '🎒' },
   { unit: 9, en: 'go home', vi: 'về nhà', emoji: '🏠' },
   { unit: 9, en: 'have dinner', vi: 'ăn tối', emoji: '🍽️' },
-  { unit: 9, en: 'go to bed', vi: 'đi ngủ', emoji: '😴' },
-  { unit: 9, en: 'two fifteen', vi: '2 giờ 15 phút (2:15)', emoji: '🕝' },
-  { unit: 9, en: 'two thirty', vi: '2 giờ 30 phút (2:30)', emoji: '🕜' },
-  { unit: 9, en: 'two forty-five', vi: '2 giờ 45 phút (2:45)', emoji: '🕑' },
+  { unit: 9, en: 'go to bed', vi: 'đi ngủ', emoji: '🛏️😴' },
+  { unit: 9, en: 'two fifteen', vi: '2 giờ 15 phút', emoji: '2:15' },
+  { unit: 9, en: 'two thirty', vi: '2 giờ 30 phút', emoji: '2:30' },
+  { unit: 9, en: 'two forty-five', vi: '2 giờ 45 phút', emoji: '2:45' },
   { unit: 9, en: 'flute', vi: 'cây sáo', emoji: '🪈' },
-  { unit: 9, en: 'new', vi: 'mới', emoji: '👟' },
+  { unit: 9, en: 'new', vi: 'mới', emoji: '✨👟' },
   { unit: 9, en: 'you', vi: 'bạn', emoji: '🫵' },
   { unit: 9, en: 'foot', vi: 'bàn chân', emoji: '🦶' },
 
@@ -160,7 +160,7 @@ const UNIT_WORDS = [
   { unit: 10, en: 'corn', vi: 'bắp ngô', emoji: '🌽' },
   { unit: 10, en: 'storm', vi: 'cơn bão', emoji: '⛈️' },
   { unit: 10, en: 'car', vi: 'ô tô', emoji: '🚗' },
-  { unit: 10, en: 'farm', vi: 'nông trại', emoji: '🐄' },
+  { unit: 10, en: 'farm', vi: 'nông trại', emoji: '🚜🌾' },
   { unit: 10, en: 'star', vi: 'ngôi sao', emoji: '⭐' },
 
   // ── Unit 11: Directions & places ──
@@ -171,7 +171,7 @@ const UNIT_WORDS = [
   { unit: 11, en: 'turn right', vi: 'rẽ phải', emoji: '➡️' },
   { unit: 11, en: 'go straight', vi: 'đi thẳng', emoji: '⬆️' },
   { unit: 11, en: 'train station', vi: 'ga tàu', emoji: '🚉' },
-  { unit: 11, en: 'bus station', vi: 'bến xe buýt', emoji: '🚌' },
+  { unit: 11, en: 'bus station', vi: 'bến xe buýt', emoji: '🚏🚌' },
   { unit: 11, en: 'supermarket', vi: 'siêu thị', emoji: '🛒' },
 
   // ── Unit 12: People & describing words ──

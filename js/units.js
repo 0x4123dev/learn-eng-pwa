@@ -2,7 +2,7 @@
 // A chip row at the top of Topics opens a typed gap-fill practice: the app
 // shows the picture (emoji) + Vietnamese meaning and a gapped word
 // (st__ent / ch_cken / _ _ _ _ _), and the student types the FULL word.
-// The number of missing letters is random per question: 1, 2, 3 or the
+// The number of missing letters is random per question: 2, 3 or the
 // whole word. Data lives in js/units-data.js (UNIT_WORDS).
 
 let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[] }
@@ -50,7 +50,7 @@ function buildUnitGap(en, mode, rand) {
 
 function pickUnitGapMode(rand) {
   const rnd = rand || Math.random;
-  const modes = [1, 1, 2, 2, 3, 'full'];      // 1–2 letters most common, like the book
+  const modes = [2, 2, 3, 3, 'full'];      // at least 2 missing letters (1 was too easy)
   return modes[Math.floor(rnd() * modes.length)];
 }
 
@@ -87,17 +87,37 @@ function _unitAnswerCorrect(input, en) {
   return !!u && u === _unitNormalize(en);
 }
 
-// ---- chips bar on the Topics home ----
+// ---- Grade 4 view: one card per unit, with word count + best score ----
 function renderUnitsBar() {
   const bar = document.getElementById('unitsBar');
   if (!bar) return;
   bar.style.display = '';
-  const chips = unitsList().map(u =>
-    `<button class="unit-chip" onclick="startUnitPractice(${u})">Unit ${u}</button>`
-  ).join('');
-  bar.innerHTML = `
-    <div class="units-bar-title">📕 Picture dictionary — luyện từ vựng theo Unit</div>
-    <div class="units-bar-chips">${chips}</div>`;
+
+  // Best score per unit from practice history
+  const best = {};
+  ((typeof appState !== 'undefined' && appState && appState.unitsHistory) || []).forEach(h => {
+    if (!h.total) return;
+    const p = Math.round((h.score / h.total) * 100);
+    if (!(h.unit in best) || p > best[h.unit]) best[h.unit] = p;
+  });
+
+  const cards = unitsList().map(u => {
+    const words = unitsBank().filter(w => w.unit === u);
+    // Prefer real emoji for the preview (skip digit "pictures")
+    const pics = words.map(w => w.emoji).filter(e => !/^[0-9:]+$/.test(e)).slice(0, 3).join(' ');
+    const b = best[u];
+    return `
+    <button class="g4-card" onclick="startUnitPractice(${u})">
+      <div class="g4-card-top">
+        <span class="g4-card-unit">Unit ${u}</span>
+        ${b !== undefined ? `<span class="g4-card-best ${b >= 80 ? 'good' : ''}">${b >= 100 ? '⭐' : ''}${b}%</span>` : ''}
+      </div>
+      <div class="g4-card-emojis">${pics}</div>
+      <div class="g4-card-meta">${words.length} từ vựng</div>
+    </button>`;
+  }).join('');
+
+  bar.innerHTML = `<div class="g4-grid">${cards}</div>`;
 }
 
 // ---- practice flow (renders inside #topicsDetail) ----
@@ -111,7 +131,7 @@ function startUnitPractice(unit) {
   }
   const words = shuffled.slice(0, Math.min(10, shuffled.length));
   const questions = words.map(w => {
-    // Random gap count per question (1, 2, 3 letters or the whole word),
+    // Random gap count per question (2, 3 letters or the whole word),
     // like the textbook's st__ent / ch_cken style. Per-word levels are still
     // tracked (see _unitBumpWordLevel) for possible future use.
     const mode = pickUnitGapMode();
@@ -120,7 +140,7 @@ function startUnitPractice(unit) {
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
   // Hide the normal Topics home pieces while practicing
-  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar'].forEach(id => {
+  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -250,7 +270,11 @@ function finishUnitPractice() {
         <button class="grammar-back-btn" onclick="renderTopicsHome()">‹</button>
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} Unit ${st.unit} · ${score}/${total} (${pct}%)</span>
       </div>
-      ${coinsEarned ? `<div class="grammar-result-coins" style="text-align:center;margin:6px 0 2px;">+${coinsEarned} 🪙 earned</div>` : ''}
+      <div class="unit-reward-card">
+        <div class="unit-reward-coins">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
+        <div class="unit-reward-total">Bạn có ${(typeof appState !== 'undefined' && appState && appState.coins) || 0} 🪙</div>
+        ${typeof showPetShop === 'function' ? `<button class="unit-reward-shop" onclick="showPetShop()">🛒 Mua đồ ăn cho cún 🐶</button>` : ''}
+      </div>
       <div class="phrases-section-title">${wrong.length ? 'Từ cần học lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
       <button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${st.unit})">🔁 Practice Unit ${st.unit} again</button>

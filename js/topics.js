@@ -392,18 +392,42 @@ function renderDailyReviewBanner() {
     `;
 }
 
+// Topics screen is split into two clean sub-tabs: the Grade-4 picture
+// dictionary (Unit 1..12 cards) and the classic vocabulary Topics.
+let _topicsSubTab = 'grade4';
+
+function switchTopicsSubTab(tab) {
+    _topicsSubTab = tab;
+    renderTopicsHome();
+}
+
 function renderTopicsHome() {
     // Hide detail view if open
     const detail = document.getElementById('topicsDetail');
     if (detail) detail.innerHTML = '';
-    const grid = document.getElementById('topicsGrid');
-    if (grid) grid.style.display = 'grid';
-    const reviewCard = document.getElementById('topicsReviewCard');
-    if (reviewCard) reviewCard.style.display = 'block';
-    const srBanner = document.getElementById('topicsSrBanner');
-    if (srBanner) srBanner.style.display = 'block';
 
-    if (typeof renderUnitsBar === 'function') renderUnitsBar();
+    const bar = document.getElementById('topicsSubTabs');
+    if (bar) {
+        bar.style.display = '';
+        bar.innerHTML = `
+            <button class="grammar-subtab ${_topicsSubTab === 'grade4' ? 'active' : ''}" onclick="switchTopicsSubTab('grade4')">📗 Grade 4</button>
+            <button class="grammar-subtab ${_topicsSubTab === 'topics' ? 'active' : ''}" onclick="switchTopicsSubTab('topics')">📚 Topics</button>`;
+    }
+
+    const showG4 = _topicsSubTab === 'grade4';
+    const grid = document.getElementById('topicsGrid');
+    if (grid) grid.style.display = showG4 ? 'none' : 'grid';
+    const reviewCard = document.getElementById('topicsReviewCard');
+    if (reviewCard) reviewCard.style.display = showG4 ? 'none' : 'block';
+    const srBanner = document.getElementById('topicsSrBanner');
+    if (srBanner) srBanner.style.display = showG4 ? 'none' : 'block';
+    const unitsBar = document.getElementById('unitsBar');
+    if (unitsBar) unitsBar.style.display = showG4 ? '' : 'none';
+
+    if (showG4) {
+        if (typeof renderUnitsBar === 'function') renderUnitsBar();
+        return;
+    }
     renderSrBannerSlot();
     renderReviewCard();
     renderTopicsGrid();
@@ -672,6 +696,10 @@ function openTopicDetail(topicId) {
     if (reviewCard) reviewCard.style.display = 'none';
     const unitsBarEl = document.getElementById('unitsBar');
     if (unitsBarEl) unitsBarEl.style.display = 'none';
+    const subTabsEl = document.getElementById('topicsSubTabs');
+    if (subTabsEl) subTabsEl.style.display = 'none';
+    const srBannerEl = document.getElementById('topicsSrBanner');
+    if (srBannerEl) srBannerEl.style.display = 'none';
 
     const detail = document.getElementById('topicsDetail');
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
