@@ -10,10 +10,10 @@ function envWith(state) {
 }
 
 suite('home skills chart', () => {
-    test('exposes all 7 skills in fixed order', () => {
+    test('exposes all 8 skills in fixed order', () => {
         const env = envWith({});
         const keys = env.getHomeSkillStats().map(s => s.key);
-        assert.deepEqual(keys, ['vocab', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs', 'exam']);
+        assert.deepEqual(keys, ['vocab', 'units', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs', 'exam']);
     });
 
     test('empty state: every skill has total 0 and pct 0', () => {
@@ -50,6 +50,39 @@ suite('home skills chart', () => {
         const env = envWith({ speedChallenge: { history: [{ correct: 8, total: 10 }, { correct: 10, total: 10 }] } });
         const v = env.getHomeSkillStats().find(s => s.key === 'verbs');
         assert.equal(v.correct, 18); assert.equal(v.total, 20); assert.equal(v.pct, 90);
+    });
+
+    test('Grade 4 units practice counts toward home stats', () => {
+        const env = envWith({ unitsHistory: [{ unit: 3, score: 8, total: 10 }, { unit: 'mix', score: 7, total: 10 }] });
+        const u = env.getHomeSkillStats().find(s => s.key === 'units');
+        assert.equal(u.correct, 15); assert.equal(u.total, 20); assert.equal(u.pct, 75);
+    });
+
+    // Wiring invariant: every practice type that stores history MUST show up
+    // in the home statistics — a new tab whose history is forgotten here
+    // renders "today: 0 questions" even after the student practiced (the
+    // Grade 4 bug this test was written for).
+    test('every history array is wired into skills, sessions and total count', () => {
+        const one = (extra) => [Object.assign({ score: 4, total: 5, date: Date.now() }, extra)];
+        const env = envWith({
+            lessonHistory: [{ lessonNum: 0, accuracy: 80, date: Date.now() }],
+            unitsHistory: one({ unit: 1 }),
+            grammarHistory: one({}),
+            phrasesHistory: one({}),
+            wordformHistory: one({}),
+            rewriteHistory: one({}),
+            speedChallenge: { history: [{ correct: 4, total: 5, date: Date.now() }] },
+        });
+        // exam lives in localStorage (absent in the sandbox) — every appState-backed skill must be non-zero
+        for (const s of env.getHomeSkillStats()) {
+            if (s.key === 'exam') continue;
+            assert.truthy(s.total > 0, `skill "${s.key}" ignores its history`);
+        }
+        const sessions = env._homeSkillSessions();
+        for (const k of ['vocab', 'units', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs']) {
+            assert.equal((sessions[k] || []).length, 1, `sessions "${k}" not wired`);
+        }
+        assert.equal(env._homeAllSessionsCount(), 7);
     });
 
     test('malformed history entries are tolerated (missing fields count as 0)', () => {

@@ -199,7 +199,7 @@ const EXPORT_NAMES = [
     'STREAK_MILESTONE_DATA', 'DOG_STAGES', 'DOG_ACCESSORIES', 'DOG_FOOD',
     'getWeekStart', 'formatWeekRange', 'generateWeeklyRecap', 'getRecapMessage',
     'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
-    'getHomeSkillStats',
+    'getHomeSkillStats', '_homeSkillSessions', '_homeAllSessionsCount',
     // daily-challenge
     'getDailyWords', 'seededRandom'
     // (v3.47: Music & Videos tabs removed — no video globals.)

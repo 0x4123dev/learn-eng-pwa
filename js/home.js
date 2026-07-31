@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.86.1';
+const APP_VERSION = 'v3.87.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -328,6 +328,10 @@ function getHomeSkillStats() {
     });
     skills.push({ key: 'vocab', label: 'Vocabulary', icon: '📚', color: '#22c55e', correct: vc, total: vt });
 
+    // Grade 4 picture-dictionary practice (Topics tab → Grade 4 sub-tab)
+    const u = sum(appState.unitsHistory);
+    skills.push({ key: 'units', label: 'Grade 4', icon: '📗', color: '#16a34a', correct: u.c, total: u.t });
+
     const g = sum(appState.grammarHistory);
     skills.push({ key: 'grammar', label: 'Grammar', icon: '🎓', color: '#7c3aed', correct: g.c, total: g.t });
     const p = sum(appState.phrasesHistory);
@@ -369,6 +373,7 @@ function _homeSkillSessions() {
     return {
         vocab: norm(appState.lessonHistory, h => ({
             score: Math.round((h.accuracy || 0) / 100 * wpl), total: (typeof h.accuracy === 'number') ? wpl : 0, date: h.date || 0 })),
+        units: norm(appState.unitsHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         grammar: norm(appState.grammarHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         phrases: norm(appState.phrasesHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         wordform: norm(appState.wordformHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
@@ -376,6 +381,18 @@ function _homeSkillSessions() {
         verbs: norm((appState.speedChallenge && appState.speedChallenge.history), h => ({ score: h.correct || 0, total: h.total || 0, date: h.date || 0 })),
         exam: norm(exam, a => ({ score: a.score || 0, total: a.total || 0, date: a.ts || 0 })),
     };
+}
+
+// Total completed sessions across EVERY practice type. The Profile tab's
+// "Lessons" stat uses this so it counts everything the student has done
+// (topic lessons, Grade 4 units, grammar, phrases, word form, rewrite,
+// verbs and exams), not just topic lessons.
+function _homeAllSessionsCount() {
+    if (!appState) return 0;
+    const sessions = _homeSkillSessions();
+    let n = 0;
+    Object.values(sessions).forEach(list => { n += list.length; });
+    return n;
 }
 
 function _homeSkillLevel(pct) {
@@ -487,6 +504,7 @@ function renderHomeSkillsPanel() {
 function goToSkillTab(key) {
     const map = {
         vocab: ['topicsScreen', 'renderTopicsHome'],
+        units: ['topicsScreen', 'renderTopicsHome'],
         grammar: ['grammarScreen', 'renderGrammarHome'],
         phrases: ['phrasesScreen', 'renderPhrasesHome'],
         wordform: ['wordformScreen', 'renderWordformHome'],
@@ -497,6 +515,10 @@ function goToSkillTab(key) {
     const target = map[key];
     if (!target || typeof switchScreen !== 'function') return;
     switchScreen(target[0]);
+    // Both Topics-screen skills land on their own sub-tab.
+    if ((key === 'units' || key === 'vocab') && typeof switchTopicsSubTab === 'function') {
+        try { switchTopicsSubTab(key === 'units' ? 'grade4' : 'topics'); } catch (e) {}
+    }
     const fn = target[1];
     if (fn && typeof globalThis[fn] === 'function') { try { globalThis[fn](); } catch (e) {} }
     // Highlight the matching bottom-nav item (switchScreen relies on the click event otherwise)

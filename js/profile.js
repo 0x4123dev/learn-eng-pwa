@@ -9,7 +9,9 @@ function renderProfile() {
     document.getElementById('profileStreak').textContent = appState.streak;
     const bestStreakEl = document.getElementById('profileBestStreak');
     if (bestStreakEl) bestStreakEl.textContent = `Best: ${appState.bestStreak || appState.streak || 0}`;
-    document.getElementById('profileLessons').textContent = appState.lessonsCompleted;
+    // Count every completed session in the app, not just topic lessons.
+    document.getElementById('profileLessons').textContent =
+        (typeof _homeAllSessionsCount === 'function') ? _homeAllSessionsCount() : (appState.lessonsCompleted || 0);
 
     const accuracy = appState.totalAnswers > 0
         ? Math.round((appState.totalCorrect / appState.totalAnswers) * 100)
