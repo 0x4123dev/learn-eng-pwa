@@ -654,6 +654,37 @@
         .home-skill-value span { color: var(--text-secondary); font-size: 10.5px; }
         .home-skill-empty { opacity: 0.45; }
 
+        /* Units picture-dictionary practice (Topics tab) */
+        .units-bar { margin: 0 0 14px; }
+        .units-bar-title { font-size: 12.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
+        .units-bar-chips {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none;
+        }
+        .units-bar-chips::-webkit-scrollbar { display: none; }
+        .unit-chip {
+            flex: 0 0 auto; padding: 8px 14px; border-radius: 50px; cursor: pointer;
+            background: var(--glass-bg, rgba(255,255,255,0.8)); border: 1.5px solid var(--glass-border);
+            font-size: 13px; font-weight: 800; color: var(--text-primary); font-family: inherit;
+        }
+        .unit-chip:active { transform: scale(0.95); background: rgba(124,58,237,0.12); }
+
+        .unit-q-card { text-align: center; }
+        .unit-q-emoji { font-size: 64px; line-height: 1.2; margin: 6px 0 2px; }
+        .unit-q-emoji.unit-q-number { font-size: 54px; font-weight: 800; color: #1cb0f6; }
+        .unit-q-vi { font-size: 15px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px; }
+        .unit-gap { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin: 6px 0 14px; }
+        .unit-gap-ch {
+            min-width: 24px; height: 34px; line-height: 34px; padding: 0 2px;
+            border-radius: 8px; background: rgba(0,0,0,0.05);
+            font-size: 20px; font-weight: 800; color: var(--text-primary);
+            font-family: 'Courier New', monospace; text-align: center;
+        }
+        .unit-gap-ch.blank { background: rgba(124,58,237,0.14); color: #7c3aed; }
+        .unit-gap-ch.was-blank { background: rgba(88,204,2,0.18); color: #2e7d0f; }
+        .unit-gap-ch.fixed { background: transparent; }
+        .unit-gap-space { min-width: 14px; }
+
         /* Rich stats: overall ring + summary chips */
         .home-skills-summary { display: flex; align-items: center; gap: 14px; margin: 4px 0 14px; }
         .home-skills-ring {

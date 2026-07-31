@@ -403,6 +403,7 @@ function renderTopicsHome() {
     const srBanner = document.getElementById('topicsSrBanner');
     if (srBanner) srBanner.style.display = 'block';
 
+    if (typeof renderUnitsBar === 'function') renderUnitsBar();
     renderSrBannerSlot();
     renderReviewCard();
     renderTopicsGrid();
@@ -669,6 +670,8 @@ function openTopicDetail(topicId) {
     if (grid) grid.style.display = 'none';
     const reviewCard = document.getElementById('topicsReviewCard');
     if (reviewCard) reviewCard.style.display = 'none';
+    const unitsBarEl = document.getElementById('unitsBar');
+    if (unitsBarEl) unitsBarEl.style.display = 'none';
 
     const detail = document.getElementById('topicsDetail');
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;

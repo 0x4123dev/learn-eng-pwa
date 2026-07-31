@@ -88,6 +88,10 @@ const EngAuth = (function () {
       type: 'rewrite', title: 'Rewrite practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
     }));
+    (appState.unitsHistory || []).forEach(h => add({
+      type: 'lesson', title: 'Unit ' + h.unit + ' words practice',
+      score: h.score, total: h.total, at: h.date,
+    }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
       score: h.correct, total: h.total, at: h.date, detail: { score: h.score },
