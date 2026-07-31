@@ -31,6 +31,25 @@ suite('units: word bank', () => {
             assert.truthy(n >= 6, `unit ${u} has only ${n}`);
         }
     });
+
+    test('per-unit word counts match the textbook picture dictionary', () => {
+        // Derived from the book pages (column-major flow, verified vs photos).
+        const expected = { 1: 7, 2: 11, 3: 27, 4: 11, 5: 15, 6: 15, 7: 15, 8: 14, 9: 13, 10: 12, 11: 15, 12: 14 };
+        const counts = {};
+        UNIT_WORDS.forEach(w => counts[w.unit] = (counts[w.unit] || 0) + 1);
+        assert.deepEqual(counts, expected);
+        assert.equal(UNIT_WORDS.length, 169);
+    });
+
+    test('book spot-checks: Unit 2 has its 11 places/animals, Unit 10 repeats farm', () => {
+        const u2 = UNIT_WORDS.filter(w => w.unit === 2).map(w => w.en).sort();
+        assert.deepEqual(u2, ['airport', 'bank', 'farm', 'fire station', 'hospital', 'nest',
+            'octopus', 'office', 'parrot', 'police station', 'store'].sort());
+        assert.truthy(UNIT_WORDS.some(w => w.unit === 10 && w.en === 'farm'), 'unit 10 -ar phonics farm');
+        assert.truthy(UNIT_WORDS.some(w => w.unit === 11 && w.en === 'nurse'), 'nurse belongs to unit 11');
+        assert.truthy(UNIT_WORDS.some(w => w.unit === 6 && w.en === 'yogurt'), 'yogurt belongs to unit 6');
+        assert.equal(UNIT_WORDS.filter(w => w.unit === 1).length, 7, 'unit 1 = 7 jobs only');
+    });
 });
 
 suite('units: gap engine', () => {
