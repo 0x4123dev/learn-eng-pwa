@@ -89,7 +89,8 @@ const EngAuth = (function () {
       score: h.score, total: h.total, at: h.date,
     }));
     (appState.unitsHistory || []).forEach(h => add({
-      type: 'lesson', title: 'Unit ' + h.unit + ' words practice',
+      type: 'lesson',
+      title: (h.unit === 'mix' ? 'Mix 12 units' : 'Unit ' + h.unit) + ' words practice',
       score: h.score, total: h.total, at: h.date,
     }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({

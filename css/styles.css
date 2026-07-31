@@ -675,6 +675,37 @@
         .g4-card-best.good { color: #16a34a; background: rgba(34,197,94,0.14); }
         .g4-card-emojis { font-size: 22px; margin: 8px 0 6px; line-height: 1.2; }
         .g4-card-meta { font-size: 11.5px; color: var(--text-secondary); }
+        .g4-mix-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(124,58,237,0.14), rgba(59,130,246,0.10));
+            border-color: rgba(124,58,237,0.4);
+        }
+        .g4-mix-card .g4-card-meta { margin-top: 6px; }
+        .unit-say-btn {
+            border: none; background: rgba(124,58,237,0.12); cursor: pointer;
+            border-radius: 50px; padding: 2px 9px; font-size: 14px; line-height: 1.4;
+            vertical-align: middle; margin: 0 2px;
+        }
+        .unit-say-btn:active { transform: scale(0.9); }
+        .units-history { margin: 0 0 14px; }
+        .uh-streak {
+            text-align: center; font-size: 14px; padding: 10px; margin-bottom: 10px;
+            border-radius: 14px; background: rgba(249,115,22,0.10);
+            border: 1.5px solid rgba(249,115,22,0.35); color: var(--text-primary);
+        }
+        .uh-empty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 18px 8px; }
+        .uh-list { display: flex; flex-direction: column; gap: 6px; }
+        .uh-item {
+            display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+            border-radius: 12px; background: var(--glass-bg, rgba(255,255,255,0.8));
+            border: 1.5px solid var(--glass-border); font-size: 12.5px;
+        }
+        .uh-icon { flex: 0 0 auto; }
+        .uh-name { font-weight: 800; color: var(--text-primary); flex: 0 0 auto; }
+        .uh-score { color: var(--text-secondary); flex: 1 1 auto; }
+        .uh-score.good { color: #16a34a; font-weight: 700; }
+        .uh-date { color: var(--text-secondary); font-size: 11px; flex: 0 0 auto; }
+        .uh-sync-note { text-align: center; color: var(--text-secondary); font-size: 11px; margin-top: 10px; }
         .unit-reward-card {
             text-align: center; padding: 14px; margin: 10px 0 14px; border-radius: 16px;
             background: linear-gradient(135deg, rgba(251,191,36,0.16), rgba(249,115,22,0.10));

@@ -124,6 +124,29 @@ suite('units: grading', () => {
     });
 });
 
+suite('units: mix mode, labels and voice', () => {
+    test('_unitPool("mix") draws from the whole bank; numbers stay per-unit', () => {
+        assert.equal(units._unitPool('mix').length, UNIT_WORDS.length);
+        assert.equal(units._unitPool(2).length, 11);
+        assert.truthy(units._unitPool(2).every(w => w.unit === 2));
+    });
+
+    test('_unitLabel names mix and numeric units', () => {
+        assert.equal(units._unitLabel('mix'), '🎲 Mix');
+        assert.equal(units._unitLabel(3), 'Unit 3');
+    });
+
+    test('_unitSpeak is a safe no-op without the Web Speech API', () => {
+        units._unitSpeak('student');   // sandbox has no speechSynthesis — must not throw
+        assert.truthy(true);
+    });
+
+    test('_unitSpeakAttr escapes quotes for inline onclick handlers', () => {
+        assert.equal(units._unitSpeakAttr("it's"), "it\\'s");
+        assert.equal(units._unitSpeakAttr('a"b'), 'a&quot;b');
+    });
+});
+
 suite('units: adaptive difficulty ladder', () => {
     test('level maps to mode: 0→1 blank, 1→2, 2→3, 3→full', () => {
         assert.equal(units.modeForUnitLevel(0), 1);

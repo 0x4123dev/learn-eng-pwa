@@ -411,21 +411,30 @@ function renderTopicsHome() {
         bar.style.display = '';
         bar.innerHTML = `
             <button class="grammar-subtab ${_topicsSubTab === 'grade4' ? 'active' : ''}" onclick="switchTopicsSubTab('grade4')">📗 Grade 4</button>
-            <button class="grammar-subtab ${_topicsSubTab === 'topics' ? 'active' : ''}" onclick="switchTopicsSubTab('topics')">📚 Topics</button>`;
+            <button class="grammar-subtab ${_topicsSubTab === 'topics' ? 'active' : ''}" onclick="switchTopicsSubTab('topics')">📚 Topics</button>
+            <button class="grammar-subtab ${_topicsSubTab === 'history' ? 'active' : ''}" onclick="switchTopicsSubTab('history')">🕐 History</button>`;
     }
 
     const showG4 = _topicsSubTab === 'grade4';
+    const showHistory = _topicsSubTab === 'history';
+    const showTopics = !showG4 && !showHistory;
     const grid = document.getElementById('topicsGrid');
-    if (grid) grid.style.display = showG4 ? 'none' : 'grid';
+    if (grid) grid.style.display = showTopics ? 'grid' : 'none';
     const reviewCard = document.getElementById('topicsReviewCard');
-    if (reviewCard) reviewCard.style.display = showG4 ? 'none' : 'block';
+    if (reviewCard) reviewCard.style.display = showTopics ? 'block' : 'none';
     const srBanner = document.getElementById('topicsSrBanner');
-    if (srBanner) srBanner.style.display = showG4 ? 'none' : 'block';
+    if (srBanner) srBanner.style.display = showTopics ? 'block' : 'none';
     const unitsBar = document.getElementById('unitsBar');
     if (unitsBar) unitsBar.style.display = showG4 ? '' : 'none';
+    const historyEl = document.getElementById('topicsHistory');
+    if (historyEl) historyEl.style.display = showHistory ? '' : 'none';
 
     if (showG4) {
         if (typeof renderUnitsBar === 'function') renderUnitsBar();
+        return;
+    }
+    if (showHistory) {
+        if (typeof renderUnitsHistory === 'function') renderUnitsHistory();
         return;
     }
     renderSrBannerSlot();
@@ -700,6 +709,8 @@ function openTopicDetail(topicId) {
     if (subTabsEl) subTabsEl.style.display = 'none';
     const srBannerEl = document.getElementById('topicsSrBanner');
     if (srBannerEl) srBannerEl.style.display = 'none';
+    const historyElD = document.getElementById('topicsHistory');
+    if (historyElD) historyElD.style.display = 'none';
 
     const detail = document.getElementById('topicsDetail');
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;

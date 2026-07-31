@@ -14,6 +14,35 @@ function unitsList() {
   return [...new Set(unitsBank().map(w => w.unit))].sort((a, b) => a - b);
 }
 
+// 'mix' draws from every unit at once; numbers filter to one unit.
+function _unitPool(unit) {
+  const bank = unitsBank();
+  return unit === 'mix' ? bank.slice() : bank.filter(w => w.unit === unit);
+}
+function _unitLabel(unit) {
+  return unit === 'mix' ? '🎲 Mix' : 'Unit ' + unit;
+}
+
+// English pronunciation via the Web Speech API. Called from the Check
+// button (a user gesture, so iOS allows it). Safe no-op where unsupported.
+function _unitSpeak(text) {
+  try {
+    if (typeof speechSynthesis === 'undefined' || typeof SpeechSynthesisUtterance === 'undefined') return;
+    speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(String(text));
+    utt.lang = 'en-US';
+    utt.rate = 0.85;                                   // a little slow for learners
+    const voices = speechSynthesis.getVoices() || [];
+    const v = voices.find(x => /^en[-_]/i.test(x.lang) && /Google|Samantha|Daniel|Karen/i.test(x.name))
+      || voices.find(x => /^en[-_]/i.test(x.lang));
+    if (v) utt.voice = v;
+    speechSynthesis.speak(utt);
+  } catch (e) {}
+}
+function _unitSpeakAttr(text) {
+  return String(text).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
 function unitEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -101,8 +130,18 @@ function renderUnitsBar() {
     if (!(h.unit in best) || p > best[h.unit]) best[h.unit] = p;
   });
 
+  const mixBest = best['mix'];
+  const mixCard = `
+    <button class="g4-card g4-mix-card" onclick="startUnitPractice('mix')">
+      <div class="g4-card-top">
+        <span class="g4-card-unit">🎲 Mix · 12 Units</span>
+        ${mixBest !== undefined ? `<span class="g4-card-best ${mixBest >= 80 ? 'good' : ''}">${mixBest >= 100 ? '⭐' : ''}${mixBest}%</span>` : ''}
+      </div>
+      <div class="g4-card-meta">10 từ ngẫu nhiên từ tất cả các Unit</div>
+    </button>`;
+
   const cards = unitsList().map(u => {
-    const words = unitsBank().filter(w => w.unit === u);
+    const words = _unitPool(u);
     // Prefer real emoji for the preview (skip digit "pictures")
     const pics = words.map(w => w.emoji).filter(e => !/^[0-9:]+$/.test(e)).slice(0, 3).join(' ');
     const b = best[u];
@@ -117,12 +156,52 @@ function renderUnitsBar() {
     </button>`;
   }).join('');
 
-  bar.innerHTML = `<div class="g4-grid">${cards}</div>`;
+  bar.innerHTML = `<div class="g4-grid">${mixCard}${cards}</div>`;
+}
+
+// ---- History view: recent unit-practice sessions + streak ----
+// Everything here is already uploaded to the admin dashboard by
+// EngAuth.syncNow() (type 'lesson'), which runs on every finish.
+function renderUnitsHistory() {
+  const el = document.getElementById('topicsHistory');
+  if (!el) return;
+  el.style.display = '';
+  const state = (typeof appState !== 'undefined' && appState) ? appState : {};
+  const hist = state.unitsHistory || [];
+  const streak = state.streak || 0;
+
+  if (!hist.length) {
+    el.innerHTML = `
+      <div class="uh-streak">🔥 Chuỗi học: <b>${streak}</b> ngày</div>
+      <div class="uh-empty">Chưa có lịch sử. Hãy luyện tập một Unit nhé! 📗</div>`;
+    return;
+  }
+
+  const rows = hist.slice(0, 50).map(h => {
+    const pct = h.total ? Math.round((h.score / h.total) * 100) : 0;
+    const icon = pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝';
+    let when = '';
+    try {
+      when = new Date(h.date).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    } catch (e) {}
+    return `
+    <div class="uh-item">
+      <span class="uh-icon">${icon}</span>
+      <span class="uh-name">${_unitLabel(h.unit)}</span>
+      <span class="uh-score ${pct >= 80 ? 'good' : ''}">${h.score}/${h.total} · ${pct}%</span>
+      <span class="uh-date">${when}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="uh-streak">🔥 Chuỗi học: <b>${streak}</b> ngày</div>
+    <div class="uh-list">${rows}</div>
+    <div class="uh-sync-note">☁️ Lịch sử tự động đồng bộ với admin</div>`;
 }
 
 // ---- practice flow (renders inside #topicsDetail) ----
 function startUnitPractice(unit) {
-  const pool = unitsBank().filter(w => w.unit === unit);
+  const pool = _unitPool(unit);
   if (!pool.length) return;
   const shuffled = pool.slice();
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -140,7 +219,7 @@ function startUnitPractice(unit) {
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
   // Hide the normal Topics home pieces while practicing
-  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs'].forEach(id => {
+  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs', 'topicsHistory'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -176,7 +255,9 @@ function renderUnitQuestion() {
         <span class="wf-text-answer-value">${ans.value ? unitEsc(ans.value) : '<em>(blank)</em>'}</span>
       </div>
       <div class="grammar-explanation ${ans.isCorrect ? 'correct' : 'wrong'}">
-        <div class="phrases-vi">📘 <b>${unitEsc(q.w.en)}</b> — ${unitEsc(q.w.vi)}</div>
+        <div class="phrases-vi">📘 <b>${unitEsc(q.w.en)}</b>
+          <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(q.w.en)}')" title="Nghe phát âm">🔊</button>
+          — ${unitEsc(q.w.vi)}</div>
         <div>${ans.isCorrect ? '✅ Chính xác!' : '❌ Đáp án đúng: <b>' + unitEsc(q.w.en) + '</b>'}</div>
       </div>
       <button class="grammar-next-btn" onclick="nextUnitQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
@@ -194,7 +275,7 @@ function renderUnitQuestion() {
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
         <button class="grammar-back-btn" onclick="abandonUnitPractice(); renderTopicsHome()">✕</button>
-        <span class="grammar-quiz-progress">Unit ${st.unit} · ${st.idx + 1}/${total}</span>
+        <span class="grammar-quiz-progress">${_unitLabel(st.unit)} · ${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round((st.idx / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card unit-q-card">
@@ -220,6 +301,7 @@ function submitUnitAnswer() {
   const ok = _unitAnswerCorrect(raw, q.w.en);
   st.answers[st.idx] = { value: raw.trim(), isCorrect: ok };
   _unitBumpWordLevel(q.w.en, ok);
+  _unitSpeak(q.w.en);          // pronounce the word so the student hears it
   renderUnitQuestion();
 }
 
@@ -252,6 +334,8 @@ function finishUnitPractice() {
     try { date = Date.now(); } catch (e) {}
     appState.unitsHistory.unshift({ unit: st.unit, score, total, date });
     if (appState.unitsHistory.length > 300) appState.unitsHistory.length = 300;
+    // Count today toward the daily streak, like lessons and grammar do.
+    if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}
     }
@@ -261,14 +345,16 @@ function finishUnitPractice() {
   const detail = document.getElementById('topicsDetail');
   const reviewHtml = wrong.map(w => `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${w.emoji} <b>${unitEsc(w.en)}</b> — ${unitEsc(w.vi)}</div>
+        <div class="grammar-review-q">${w.emoji} <b>${unitEsc(w.en)}</b>
+          <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>
+          — ${unitEsc(w.vi)}</div>
       </div>`).join('');
 
   detail.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
         <button class="grammar-back-btn" onclick="renderTopicsHome()">‹</button>
-        <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} Unit ${st.unit} · ${score}/${total} (${pct}%)</span>
+        <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} ${_unitLabel(st.unit)} · ${score}/${total} (${pct}%)</span>
       </div>
       <div class="unit-reward-card">
         <div class="unit-reward-coins">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
@@ -277,7 +363,7 @@ function finishUnitPractice() {
       </div>
       <div class="phrases-section-title">${wrong.length ? 'Từ cần học lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
-      <button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${st.unit})">🔁 Practice Unit ${st.unit} again</button>
+      <button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${typeof st.unit === 'number' ? st.unit : "'" + st.unit + "'"})">🔁 Practice ${_unitLabel(st.unit)} again</button>
     </div>`;
   _unitQuiz = null;
 }
@@ -286,7 +372,8 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     unitsBank, unitsList, buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
-    isUnitPracticeActive, abandonUnitPractice, renderUnitsBar,
+    isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
+    _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
   };
 }
