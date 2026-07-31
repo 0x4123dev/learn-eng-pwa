@@ -25,18 +25,34 @@ function _unitLabel(unit) {
 
 // English pronunciation via the Web Speech API. Called from the Check
 // button (a user gesture, so iOS allows it). Safe no-op where unsupported.
+// Chrome/Android quirks handled here, or the voice goes mute after the
+// first word: (1) an utterance with no live reference can be GC'd
+// mid-speech, leaving the engine stuck "speaking" so later calls queue
+// forever; (2) cancel() followed by speak() in the same tick swallows
+// the new utterance; (3) the engine can wedge in a paused state.
+let _unitUtt = null;                                   // GC guard (quirk 1)
 function _unitSpeak(text) {
   try {
     if (typeof speechSynthesis === 'undefined' || typeof SpeechSynthesisUtterance === 'undefined') return;
-    speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(String(text));
-    utt.lang = 'en-US';
-    utt.rate = 0.85;                                   // a little slow for learners
-    const voices = speechSynthesis.getVoices() || [];
-    const v = voices.find(x => /^en[-_]/i.test(x.lang) && /Google|Samantha|Daniel|Karen/i.test(x.name))
-      || voices.find(x => /^en[-_]/i.test(x.lang));
-    if (v) utt.voice = v;
-    speechSynthesis.speak(utt);
+    const say = () => {
+      const utt = new SpeechSynthesisUtterance(String(text));
+      utt.lang = 'en-US';
+      utt.rate = 0.85;                                 // a little slow for learners
+      const voices = speechSynthesis.getVoices() || [];
+      const v = voices.find(x => /^en[-_]/i.test(x.lang) && /Google|Samantha|Daniel|Karen/i.test(x.name))
+        || voices.find(x => /^en[-_]/i.test(x.lang));
+      if (v) utt.voice = v;
+      utt.onend = utt.onerror = () => { if (_unitUtt === utt) _unitUtt = null; };
+      _unitUtt = utt;
+      try { speechSynthesis.resume(); } catch (e) {}   // un-wedge paused engine (quirk 3)
+      speechSynthesis.speak(utt);
+    };
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+      speechSynthesis.cancel();
+      setTimeout(say, 80);                             // let cancel() flush first (quirk 2)
+    } else {
+      say();                                           // synchronous: keeps the iOS gesture unlock
+    }
   } catch (e) {}
 }
 function _unitSpeakAttr(text) {
