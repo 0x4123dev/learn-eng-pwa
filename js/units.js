@@ -111,8 +111,10 @@ function startUnitPractice(unit) {
   }
   const words = shuffled.slice(0, Math.min(10, shuffled.length));
   const questions = words.map(w => {
-    // Difficulty follows the student's per-word level (learn → full recall).
-    const mode = modeForUnitLevel(_unitWordLevel(w.en));
+    // Random gap count per question (1, 2, 3 letters or the whole word),
+    // like the textbook's st__ent / ch_cken style. Per-word levels are still
+    // tracked (see _unitBumpWordLevel) for possible future use.
+    const mode = pickUnitGapMode();
     return { w, mode, gap: buildUnitGap(w.en, mode) };
   });
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
