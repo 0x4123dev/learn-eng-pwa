@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.88.0';
+const APP_VERSION = 'v3.88.1';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -545,8 +545,9 @@ function renderHome() {
     var verEl = document.getElementById('appVersion');
     if (verEl) verEl.textContent = APP_VERSION;
 
-    // Render streak shields
-    renderShields();
+    // Render streak shields (guarded: a failure here must not blank the
+    // panels rendered after it)
+    try { renderShields(); } catch (e) { /* non-fatal */ }
 
     // Fire shield-saved celebration if a shield was auto-used
     if (appState.pendingShieldCelebration && typeof showShieldSavedCelebration === 'function') {
@@ -567,8 +568,8 @@ function renderHome() {
     if (typeof renderWordPet === 'function') {
         try { renderWordPet(); } catch (e) { /* non-fatal */ }
     }
-    renderHomeStreakPanel();
-    renderHomeSkillsPanel();
+    try { renderHomeStreakPanel(); } catch (e) { /* non-fatal */ }
+    try { renderHomeSkillsPanel(); } catch (e) { /* non-fatal */ }
 
     // The lesson-start card / difficulty chips / history are GONE from the
     // home page in v3.38 — exit before the legacy code touches them.
