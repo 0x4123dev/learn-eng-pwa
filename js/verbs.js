@@ -371,6 +371,8 @@ function completeSpeedChallenge() {
     // Reward coins for the pet shop: 5 per correct verb (matches Grammar).
     const _wfCoins = (speedState.correctCount || 0) * 5;
     appState.coins = (appState.coins || 0) + _wfCoins;
+    // Streak: any completed practice counts as a study event for the day.
+    if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
     const _coinEl = document.getElementById('finalCoins');
     if (_coinEl) {
         _coinEl.textContent = '+' + _wfCoins + ' 🪙 earned';

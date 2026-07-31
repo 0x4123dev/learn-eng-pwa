@@ -394,6 +394,8 @@ function finishExam(auto) {
     const coinsEarned = score * 5;
     if (typeof appState !== 'undefined' && appState) {
         appState.coins = (appState.coins || 0) + coinsEarned;
+        // Streak: a finished exam counts as a study event for the day.
+        if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
         if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
             try { saveUserData(currentUser, appState); } catch (e) {}
         }

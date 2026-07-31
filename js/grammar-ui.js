@@ -1098,6 +1098,8 @@ function finishGrammarQuiz() {
     if (typeof recordStudy === 'function') {
         try { recordStudy(); } catch (e) { /* non-fatal */ }
     }
+    // Sync grammar activity to the server (best-effort) for the admin view.
+    if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
     const unit = getGrammarUnit(state.unitId);
     const pct = Math.round((session.score / session.total) * 100);
     const isPerfect = pct === 100;

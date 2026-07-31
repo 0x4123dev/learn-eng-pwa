@@ -13,9 +13,17 @@ function renderProfile() {
     document.getElementById('profileLessons').textContent =
         (typeof _homeAllSessionsCount === 'function') ? _homeAllSessionsCount() : (appState.lessonsCompleted || 0);
 
-    const accuracy = appState.totalAnswers > 0
-        ? Math.round((appState.totalCorrect / appState.totalAnswers) * 100)
-        : 0;
+    // Accuracy across EVERY practice type (the old totalCorrect/totalAnswers
+    // counters were only updated by lessons and verbs).
+    let accuracy = 0;
+    if (typeof getHomeSkillStats === 'function') {
+        const skills = getHomeSkillStats();
+        const t = skills.reduce((n, s) => n + s.total, 0);
+        const c = skills.reduce((n, s) => n + s.correct, 0);
+        accuracy = t > 0 ? Math.round((c / t) * 100) : 0;
+    } else if (appState.totalAnswers > 0) {
+        accuracy = Math.round((appState.totalCorrect / appState.totalAnswers) * 100);
+    }
     document.getElementById('profileAccuracy').textContent = `${accuracy}%`;
 
     let rank = 'Beginner';
@@ -28,7 +36,7 @@ function renderProfile() {
     const grid = document.getElementById('achievementsGrid');
     grid.innerHTML = '';
     achievements.forEach(a => {
-        const unlocked = appState.achievements.includes(a.id);
+        const unlocked = (appState.achievements || []).includes(a.id);
         const div = document.createElement('div');
         div.className = `achievement ${unlocked ? '' : 'locked'}`;
         div.innerHTML = `

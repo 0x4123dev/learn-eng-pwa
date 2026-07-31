@@ -443,6 +443,8 @@ function finishPhrasesQuiz() {
   // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
   const coinsEarned = score * 5;
   if (typeof appState !== 'undefined' && appState) appState.coins = (appState.coins || 0) + coinsEarned;
+  // Streak: any completed practice counts as a study event for the day.
+  if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }

@@ -523,6 +523,7 @@ function loginUser(username) {
     }
 
     // Migrate: add fun features state for existing users
+    if (!Array.isArray(appState.achievements)) appState.achievements = [];
     if (appState.streakShields === undefined) appState.streakShields = 0;
     if (appState.bestStreak === undefined) appState.bestStreak = appState.streak || 0;
     if (appState.lastStreakMilestone === undefined) appState.lastStreakMilestone = 0;

@@ -90,6 +90,9 @@ function completeDailyChallenge() {
     // Init SRS for daily challenge words
     lessonState.words.forEach(w => initWordSRS(w.en));
 
+    // Streak: the daily challenge counts as a study event for the day too.
+    if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
+
     saveUserData(currentUser, appState);
 
     // Pet hooks
