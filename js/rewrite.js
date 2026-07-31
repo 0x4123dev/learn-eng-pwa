@@ -275,7 +275,7 @@ function renderRwQuestion() {
     </div>`;
   } else {
     bodyHtml = `<div class="rw-text-wrap">
-      <textarea id="rwTextInput" class="rw-text-input" rows="2" placeholder="Gõ phần còn lại của câu…"
+      <textarea id="rwTextInput" class="rw-text-input" autofocus enterkeyhint="go" rows="2" placeholder="Gõ phần còn lại của câu…"
                 autocomplete="off" autocapitalize="off" spellcheck="false"
                 onkeydown="if(event.key==='Enter'){event.preventDefault();submitRwText();}"></textarea>
       <button class="wf-text-submit rw-text-submit" onclick="submitRwText()">Check</button>
@@ -310,7 +310,7 @@ function renderRwQuestion() {
 
   if (!answered) {
     const inp = document.getElementById('rwTextInput');
-    if (inp) setTimeout(() => inp.focus(), 50);
+    if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
 }
 

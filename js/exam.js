@@ -293,7 +293,7 @@ function renderExamQuestion() {
     // Autofocus the text input when unanswered.
     if (q.type === 'text' && !showing) {
         const inp = document.getElementById('examTextInput');
-        if (inp) setTimeout(() => inp.focus(), 50);
+        if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
     }
 }
 
@@ -325,7 +325,7 @@ function _renderExamTextBody(q, ans, showing) {
     }
     return `
         <div class="exam-text-wrap">
-            <input type="text" id="examTextInput" class="exam-text-input"
+            <input type="text" id="examTextInput" class="exam-text-input" autofocus enterkeyhint="go"
                    placeholder="Type your answer…" autocomplete="off"
                    autocapitalize="off" spellcheck="false"
                    onkeydown="if(event.key==='Enter'){event.preventDefault();submitExamText();}">

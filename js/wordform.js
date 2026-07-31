@@ -287,7 +287,7 @@ function renderWfQuestion() {
       </div>`;
     } else {
       bodyHtml = `<div class="wf-text-wrap">
-        <input type="text" id="wfTextInput" class="wf-text-input" placeholder="Gõ dạng đúng của từ…"
+        <input type="text" id="wfTextInput" class="wf-text-input" autofocus enterkeyhint="go" placeholder="Gõ dạng đúng của từ…"
                autocomplete="off" autocapitalize="off" spellcheck="false"
                onkeydown="if(event.key==='Enter'){event.preventDefault();submitWfText();}">
         <button class="wf-text-submit" onclick="submitWfText()">Check</button>
@@ -334,7 +334,7 @@ function renderWfQuestion() {
 
   if (q.type === 'text' && !answered) {
     const inp = document.getElementById('wfTextInput');
-    if (inp) setTimeout(() => inp.focus(), 50);
+    if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
 }
 

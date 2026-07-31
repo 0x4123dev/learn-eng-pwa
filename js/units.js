@@ -160,7 +160,7 @@ function renderUnitQuestion() {
       <button class="grammar-next-btn" onclick="nextUnitQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
   } else {
     body = `<div class="wf-text-wrap">
-        <input type="text" id="unitTextInput" class="wf-text-input" placeholder="Gõ cả từ hoàn chỉnh…"
+        <input type="text" id="unitTextInput" class="wf-text-input" autofocus enterkeyhint="go" placeholder="Gõ cả từ hoàn chỉnh…"
                autocomplete="off" autocapitalize="off" spellcheck="false"
                onkeydown="if(event.key==='Enter'){event.preventDefault();submitUnitAnswer();}">
         <button class="wf-text-submit" onclick="submitUnitAnswer()">Check</button>
@@ -185,7 +185,7 @@ function renderUnitQuestion() {
 
   if (!answered) {
     const inp = document.getElementById('unitTextInput');
-    if (inp) setTimeout(() => inp.focus(), 50);
+    if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
 }
 
