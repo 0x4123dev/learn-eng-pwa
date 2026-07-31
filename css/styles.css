@@ -625,6 +625,7 @@
 
         /* Skills chart (home bottom) */
         .home-skills-panel {
+            flex-shrink: 0;   /* keep natural height inside the flex home screen */
             margin: 14px 16px 100px;
             padding: 18px 16px 14px;
             border-radius: 20px;
@@ -3976,9 +3977,10 @@
 
         /* ==================== HOMEPAGE STREAK PANEL (v3.38) ==================== */
         .streak-panel {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            /* Natural height — the whole home screen scrolls now (v3.88.2).
+               The old flex:1 + inner overflow let flexbox crush this panel
+               to a sliver once the skills panel was added below it. */
+            flex: none;
             margin-top: -20px;
             padding: 20px 16px 24px;
             background: var(--bg-primary, #f5f5f5);
