@@ -464,12 +464,12 @@ function _renderExamResults(attempt, auto) {
             : (a.userValue === null ? '<em>(blank)</em>' : escExam(_optionLetterFor(a)));
         return `
         <div class="exam-review-item ${a.isCorrect ? 'correct' : 'wrong'}">
-            <div class="exam-review-q"><span class="exam-review-num">${a.n}</span> ${escExam(a.q).replace(/\n/g, '<br>')}</div>
+            <div class="exam-review-q"><span class="exam-review-num">${a.n}</span> ${(typeof tapwordsWrap === 'function' ? tapwordsWrap(a.q) : escExam(a.q)).replace(/\n/g, '<br>')}</div>
             <div class="exam-review-line">
                 <span class="exam-review-badge ${a.isCorrect ? 'ok' : 'no'}">${a.isCorrect ? '✓' : '✗'}</span>
                 <span>Your answer: <strong>${userStr}</strong></span>
             </div>
-            ${a.isCorrect ? '' : `<div class="exam-review-line">✅ Correct: <strong>${escExam(a.correctAnswer)}</strong></div>`}
+            ${a.isCorrect ? '' : `<div class="exam-review-line">✅ Correct: <strong>${typeof tapwordsWrap === 'function' ? tapwordsWrap(a.correctAnswer) : escExam(a.correctAnswer)}</strong></div>`}
             <div class="exam-review-explain">💡 ${a.explanation}</div>
         </div>`;
     }).join('');

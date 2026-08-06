@@ -832,6 +832,11 @@ function renderMCQuestion() {
     const correct = q.correct;
     const isCorrect = userAns === correct;
 
+    // After answering, every English word becomes tappable (voice + nghĩa).
+    // No disabled attr on answered buttons — it would swallow the taps;
+    // the onclick handler is already removed when showing the result.
+    const twrapG = (s) => (showingResult && typeof tapwordsWrap === 'function' && !/[<>]/.test(String(s)))
+        ? tapwordsWrap(s) : s;
     const optionsHtml = q.options.map((opt, i) => {
         let cls = 'grammar-option';
         if (showingResult) {
@@ -840,9 +845,9 @@ function renderMCQuestion() {
         }
         const onclick = showingResult ? '' : `onclick="answerGrammarQuestion(${i})"`;
         const letter = String.fromCharCode(65 + i);
-        return `<button class="${cls}" ${onclick} ${showingResult ? 'disabled' : ''}>
+        return `<button class="${cls}" ${onclick}>
                     <span class="grammar-option-letter">${letter}</span>
-                    <span class="grammar-option-text">${opt}</span>
+                    <span class="grammar-option-text">${twrapG(opt)}</span>
                 </button>`;
     }).join('');
 
@@ -870,7 +875,7 @@ function renderMCQuestion() {
     document.getElementById('grammarScreen').innerHTML = `
         ${quizHeaderHTML()}
         <div class="grammar-question-card">
-            <div class="grammar-question-text">${q.q}</div>
+            <div class="grammar-question-text">${twrapG(q.q)}</div>
             <div class="grammar-options">${optionsHtml}</div>
         </div>
         ${explanationBox}

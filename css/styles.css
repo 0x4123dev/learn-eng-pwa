@@ -739,6 +739,34 @@
         .colloc-correct-answer { margin: 6px 0; }
         .grammar-review-a { font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; }
 
+        /* Tap-a-word: hear + Vietnamese meaning (tapwords.js) */
+        .tw {
+            cursor: pointer;
+            border-bottom: 1.5px dotted rgba(124,58,237,0.45);
+            border-radius: 2px;
+        }
+        .tw:active { background: rgba(124,58,237,0.15); }
+        .tw-chip {
+            position: fixed; left: 12px; right: 12px;
+            bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+            z-index: 250;                      /* above overlays (200), below nav (300) */
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 16px;
+            background: rgba(30, 27, 46, 0.94); color: #fff;
+            font-size: 13.5px; line-height: 1.45;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+            opacity: 0; pointer-events: none; transform: translateY(8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .tw-chip.show { opacity: 1; pointer-events: auto; transform: none; }
+        .tw-chip-speak {
+            flex: 0 0 auto; border: none; cursor: pointer; font-size: 16px;
+            background: rgba(255,255,255,0.14); border-radius: 50%;
+            width: 34px; height: 34px;
+        }
+        .tw-chip-text { flex: 1 1 auto; }
+        .tw-chip-pos { color: #c4b5fd; font-size: 12px; }
+
         .unit-q-card { text-align: center; }
         .unit-q-emoji { font-size: 64px; line-height: 1.2; margin: 6px 0 2px; }
         .unit-q-emoji.unit-q-number { font-size: 54px; font-weight: 800; color: #1cb0f6; }

@@ -376,7 +376,9 @@ function renderPhrQuestion() {
   const answered = userAns !== null;
   const total = st.questions.length;
 
-  const qHtml = phrEsc(q.q).replace('___', '<span class="phrases-blank">_____</span>');
+  // After answering, every English word becomes tappable (voice + nghĩa).
+  const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : phrEsc(s);
+  const qHtml = wrap(q.q).replace('___', '<span class="phrases-blank">_____</span>');
 
   const opts = q.options.map((opt, i) => {
     let cls = 'grammar-option';
@@ -385,9 +387,11 @@ function renderPhrQuestion() {
       else if (i === userAns) cls += ' wrong';
     }
     const letter = String.fromCharCode(65 + i);
-    return `<button class="${cls}" ${answered ? 'disabled' : ''} onclick="answerPhrQuestion(${i})">
+    // No disabled attr — it would swallow taps on the words inside;
+    // answerPhrQuestion ignores repeat answers itself.
+    return `<button class="${cls}" onclick="answerPhrQuestion(${i})">
       <span class="grammar-option-letter">${letter}</span>
-      <span class="grammar-option-text">${phrEsc(opt)}</span>
+      <span class="grammar-option-text">${wrap(opt)}</span>
     </button>`;
   }).join('');
 

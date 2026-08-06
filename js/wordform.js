@@ -274,9 +274,13 @@ function renderWfQuestion() {
   const isCorrect = answered && userAns.isCorrect;
   const total = st.questions.length;
 
-  const qHtml = wfEsc(q.q)
-    .replace('___', '<span class="phrases-blank">_____</span>')
-    .replace(/\(([A-Z][A-Z\- ]*)\)/, '<span class="wf-base">($1)</span>');
+  // After answering, every English word becomes tappable (voice + nghĩa);
+  // the (BASE) hint styling is traded for tappability of the base word.
+  const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : wfEsc(s);
+  const qHtml = (answered
+    ? wrap(q.q)
+    : wfEsc(q.q).replace(/\(([A-Z][A-Z\- ]*)\)/, '<span class="wf-base">($1)</span>'))
+    .replace('___', '<span class="phrases-blank">_____</span>');
 
   let bodyHtml;
   if (q.type === 'text') {
@@ -301,9 +305,11 @@ function renderWfQuestion() {
         else if (userAns && i === userAns.value) cls += ' wrong';
       }
       const letter = String.fromCharCode(65 + i);
-      return `<button class="${cls}" ${answered ? 'disabled' : ''} onclick="answerWfQuestion(${i})">
+      // No disabled attr — it would swallow taps on the words inside;
+      // answerWfQuestion ignores repeat answers itself.
+      return `<button class="${cls}" onclick="answerWfQuestion(${i})">
         <span class="grammar-option-letter">${letter}</span>
-        <span class="grammar-option-text">${wfEsc(opt)}</span>
+        <span class="grammar-option-text">${wrap(opt)}</span>
       </button>`;
     }).join('') + '</div>';
   }
@@ -393,7 +399,7 @@ function finishWordformQuiz() {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${wfEsc(q.q).replace('___', '<b>' + wfEsc(q.answer) + '</b>')}</div>
+        <div class="grammar-review-q">${(typeof tapwordsWrap === 'function' ? tapwordsWrap(q.q) : wfEsc(q.q)).replace('___', '<b>' + (typeof tapwordsWrap === 'function' ? tapwordsWrap(q.answer) : wfEsc(q.answer)) + '</b>')}</div>
         <div class="grammar-review-explain">📘 ${wfEsc(q.vi)}<br>💡 ${wfEsc(q.explanation)}</div>
       </div>`;
   }).join('');
@@ -424,7 +430,7 @@ function openWfSession(idx) {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${wfEsc(q.q).replace('___', '<b>' + wfEsc(q.answer) + '</b>')}</div>
+        <div class="grammar-review-q">${(typeof tapwordsWrap === 'function' ? tapwordsWrap(q.q) : wfEsc(q.q)).replace('___', '<b>' + (typeof tapwordsWrap === 'function' ? tapwordsWrap(q.answer) : wfEsc(q.answer)) + '</b>')}</div>
         <div class="grammar-review-explain">📘 ${wfEsc(q.vi)}<br>💡 ${wfEsc(q.explanation)}</div>
       </div>`;
   }).join('') || `<div class="phrases-empty">Perfect session — nothing to review. 🎉</div>`;

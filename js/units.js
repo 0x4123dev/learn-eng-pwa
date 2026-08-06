@@ -271,7 +271,7 @@ function renderUnitQuestion() {
         <span class="wf-text-answer-value">${ans.value ? unitEsc(ans.value) : '<em>(blank)</em>'}</span>
       </div>
       <div class="grammar-explanation ${ans.isCorrect ? 'correct' : 'wrong'}">
-        <div class="phrases-vi">📘 <b>${unitEsc(q.w.en)}</b>
+        <div class="phrases-vi">📘 <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.w.en) : unitEsc(q.w.en)}</b>
           <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(q.w.en)}')" title="Nghe phát âm">🔊</button>
           — ${unitEsc(q.w.vi)}</div>
         <div>${ans.isCorrect ? '✅ Chính xác!' : '❌ Đáp án đúng: <b>' + unitEsc(q.w.en) + '</b>'}</div>
@@ -361,7 +361,7 @@ function finishUnitPractice() {
   const detail = document.getElementById('topicsDetail');
   const reviewHtml = wrong.map(w => `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${w.emoji} <b>${unitEsc(w.en)}</b>
+        <div class="grammar-review-q">${w.emoji} <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(w.en) : unitEsc(w.en)}</b>
           <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>
           — ${unitEsc(w.vi)}</div>
       </div>`).join('');

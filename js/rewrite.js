@@ -301,8 +301,8 @@ function renderRwQuestion() {
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card">
-        <div class="rw-orig">${rwEsc(q.orig)}</div>
-        <div class="rw-stem">→ <b>${rwEsc(q.stem)}</b> <span class="phrases-blank">_____</span></div>
+        <div class="rw-orig">${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}</div>
+        <div class="rw-stem">→ <b>${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem) : rwEsc(q.stem)}</b> <span class="phrases-blank">_____</span></div>
         ${bodyHtml}
         ${explain}
       </div>
@@ -362,7 +362,7 @@ function finishRewriteQuiz() {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${rwEsc(q.orig)}<br>→ <b>${rwEsc(q.stem)} ${rwEsc(q.answer)}</b></div>
+        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem + ' ' + q.answer) : rwEsc(q.stem + ' ' + q.answer)}</b></div>
         <div class="grammar-review-explain">📘 ${rwEsc(q.vi)}<br>💡 ${rwEsc(q.explanation)}</div>
       </div>`;
   }).join('');
@@ -393,7 +393,7 @@ function openRwSession(idx) {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${rwEsc(q.orig)}<br>→ <b>${rwEsc(q.stem)} ${rwEsc(q.answer)}</b></div>
+        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem + ' ' + q.answer) : rwEsc(q.stem + ' ' + q.answer)}</b></div>
         <div class="grammar-review-explain">📘 ${rwEsc(q.vi)}<br>💡 ${rwEsc(q.explanation)}</div>
       </div>`;
   }).join('') || `<div class="phrases-empty">Perfect session — nothing to review. 🎉</div>`;

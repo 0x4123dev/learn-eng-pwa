@@ -144,7 +144,10 @@ function renderCollocQuestion() {
   const meta = COLLOC_TYPE_META[q.type] || COLLOC_TYPE_META.mcq;
   const isMcq = q.type === 'pair' || q.type === 'mcq';
 
-  let qHtml = colEsc(q.q).replace(/___/g, '<span class="phrases-blank">_____</span>');
+  // After answering, every English word becomes tappable (voice + nghĩa).
+  const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : colEsc(s);
+
+  let qHtml = wrap(q.q).replace(/___/g, '<span class="phrases-blank">_____</span>');
   let body = '';
 
   if (isMcq) {
@@ -154,9 +157,11 @@ function renderCollocQuestion() {
         if (i === q.correct) cls += ' correct';
         else if (i === ans.choice) cls += ' wrong';
       }
-      return `<button class="${cls}" ${answered ? 'disabled' : ''} onclick="answerCollocChoice(${i})">
+      // No disabled attr: it would swallow taps on the words inside;
+      // answerCollocChoice ignores repeat answers itself.
+      return `<button class="${cls}" onclick="answerCollocChoice(${i})">
         <span class="grammar-option-letter">${String.fromCharCode(65 + i)}</span>
-        <span class="grammar-option-text">${colEsc(opt)}</span>
+        <span class="grammar-option-text">${wrap(opt)}</span>
       </button>`;
     }).join('');
     body = `<div class="grammar-options">${opts}</div>`;
@@ -165,9 +170,9 @@ function renderCollocQuestion() {
       qHtml += `<div class="colloc-hint">Gợi ý: <b>${colEsc(_colLetterHint(q.answer))}</b></div>`;
     }
     if (q.type === 'transform') {
-      qHtml = `<div class="colloc-transform-src">${colEsc(q.q)}</div>
+      qHtml = `<div class="colloc-transform-src">${wrap(q.q)}</div>
         <div class="colloc-keyword">Key word: <b>${colEsc(q.keyword || '')}</b> (giữ nguyên, 3–8 từ)</div>
-        <div class="colloc-frame">${colEsc(q.frame || '').replace(/___/g, '<span class="phrases-blank">_____</span>')}</div>`;
+        <div class="colloc-frame">${wrap(q.frame || '').replace(/___/g, '<span class="phrases-blank">_____</span>')}</div>`;
     }
     if (!answered) {
       body = `<div class="wf-text-wrap">
@@ -189,7 +194,7 @@ function renderCollocQuestion() {
   if (answered) {
     explain = `<div class="grammar-explanation ${ans.isCorrect ? 'correct' : 'wrong'}">
       <div class="phrases-vi">📘 ${colEsc(q.vi)}</div>
-      ${ans.isCorrect ? '' : `<div class="colloc-correct-answer">❌ Đáp án đúng: <b>${colEsc(q.answer)}</b></div>`}
+      ${ans.isCorrect ? '' : `<div class="colloc-correct-answer">❌ Đáp án đúng: <b>${wrap(q.answer)}</b></div>`}
       <div>${q.explanation}</div>
     </div>
     <button class="grammar-next-btn" onclick="nextCollocQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
@@ -270,10 +275,11 @@ function finishCollocPractice() {
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
+  const twrap = (s) => (typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : colEsc(s);
   const reviewHtml = wrong.map(q => `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${colEsc(q.q)}</div>
-        <div class="grammar-review-a">✅ <b>${colEsc(q.answer)}</b> — ${colEsc(q.vi)}</div>
+        <div class="grammar-review-q">${twrap(q.q)}</div>
+        <div class="grammar-review-a">✅ <b>${twrap(q.answer)}</b> — ${colEsc(q.vi)}</div>
       </div>`).join('');
 
   const screen = document.getElementById('phrasesScreen');
