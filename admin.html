@@ -50,6 +50,7 @@
   .pill.kind-phrases { background:#e9f6fe; color:#1591c9; }
   .pill.kind-wordform { background:#fff0e6; color:#c2560a; }
   .pill.kind-rewrite { background:#f3e8ff; color:#7c3aed; }
+  .pill.kind-collocation { background:#e0f2fe; color:#0369a1; }
   .pill.kind-verbs { background:#fdeef2; color:#d6407a; }
   .pill.kind-battle { background:#eef2f7; color:#586074; }
   .pct-good { color:var(--green); font-weight:700; }
@@ -143,7 +144,7 @@ function logout(){ token=null; sessionStorage.removeItem(TOKEN_KEY); document.ge
 
 let _selectedUser = null;
 
-const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', battle:'⚔️ Battle' };
+const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', battle:'⚔️ Battle' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
 async function loadUsers(){

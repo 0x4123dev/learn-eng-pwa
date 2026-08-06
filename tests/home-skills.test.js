@@ -10,10 +10,10 @@ function envWith(state) {
 }
 
 suite('home skills chart', () => {
-    test('exposes all 8 skills in fixed order', () => {
+    test('exposes all 9 skills in fixed order', () => {
         const env = envWith({});
         const keys = env.getHomeSkillStats().map(s => s.key);
-        assert.deepEqual(keys, ['vocab', 'units', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs', 'exam']);
+        assert.deepEqual(keys, ['vocab', 'units', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs', 'exam']);
     });
 
     test('empty state: every skill has total 0 and pct 0', () => {
@@ -69,6 +69,7 @@ suite('home skills chart', () => {
             unitsHistory: one({ unit: 1 }),
             grammarHistory: one({}),
             phrasesHistory: one({}),
+            collocHistory: one({}),
             wordformHistory: one({}),
             rewriteHistory: one({}),
             speedChallenge: { history: [{ correct: 4, total: 5, date: Date.now() }] },
@@ -79,10 +80,10 @@ suite('home skills chart', () => {
             assert.truthy(s.total > 0, `skill "${s.key}" ignores its history`);
         }
         const sessions = env._homeSkillSessions();
-        for (const k of ['vocab', 'units', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs']) {
+        for (const k of ['vocab', 'units', 'grammar', 'phrases', 'colloc', 'wordform', 'rewrite', 'verbs']) {
             assert.equal((sessions[k] || []).length, 1, `sessions "${k}" not wired`);
         }
-        assert.equal(env._homeAllSessionsCount(), 7);
+        assert.equal(env._homeAllSessionsCount(), 8);
     });
 
     test('malformed history entries are tolerated (missing fields count as 0)', () => {

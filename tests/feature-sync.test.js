@@ -11,7 +11,7 @@ const read = f => fs.readFileSync(path.join(__dirname, '..', 'js', f), 'utf8');
 
 // Every module with a practice-completion handler.
 const PRACTICE_MODULES = [
-    'lessons.js', 'units.js', 'grammar-ui.js', 'phrases.js',
+    'lessons.js', 'units.js', 'grammar-ui.js', 'phrases.js', 'collocation.js',
     'wordform.js', 'rewrite.js', 'verbs.js', 'exam.js',
 ];
 
@@ -46,7 +46,7 @@ suite('feature sync: shared systems coverage', () => {
 
     test('admin sync payload covers every history the app records', () => {
         const src = read('auth.js');
-        for (const h of ['lessonHistory', 'grammarHistory', 'phrasesHistory',
+        for (const h of ['lessonHistory', 'grammarHistory', 'phrasesHistory', 'collocHistory',
             'wordformHistory', 'rewriteHistory', 'unitsHistory', 'speedChallenge']) {
             assert.truthy(src.includes(h), `auth.js sync payload misses ${h}`);
         }

@@ -123,13 +123,17 @@ function renderPhrasesHome() {
   const screen = document.getElementById('phrasesScreen');
   if (!screen) return;
   if (_phrQuiz) { renderPhrQuestion(); return; }
+  if (typeof isCollocActive === 'function' && isCollocActive()) { renderCollocQuestion(); return; }
 
   const bar = `
     <div class="grammar-subtabs">
       <button class="grammar-subtab ${_phrSubTab === 'practice' ? 'active' : ''}" onclick="switchPhrSubTab('practice')">⚡ Practice</button>
+      <button class="grammar-subtab ${_phrSubTab === 'colloc' ? 'active' : ''}" onclick="switchPhrSubTab('colloc')">🧩 Collocation</button>
       <button class="grammar-subtab ${_phrSubTab === 'lessons' ? 'active' : ''}" onclick="switchPhrSubTab('lessons')">📖 Lessons</button>
     </div>`;
-  const body = _phrSubTab === 'lessons' ? renderPhrasesLessons() : renderPhrasesPractice();
+  const body = _phrSubTab === 'lessons' ? renderPhrasesLessons()
+    : (_phrSubTab === 'colloc' && typeof renderCollocHome === 'function') ? renderCollocHome()
+    : renderPhrasesPractice();
   screen.innerHTML = `<div class="phrases-wrap">${bar}${body}</div>`;
 }
 

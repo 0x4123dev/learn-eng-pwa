@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.88.3';
+const APP_VERSION = 'v3.89.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -336,6 +336,8 @@ function getHomeSkillStats() {
     skills.push({ key: 'grammar', label: 'Grammar', icon: '🎓', color: '#7c3aed', correct: g.c, total: g.t });
     const p = sum(appState.phrasesHistory);
     skills.push({ key: 'phrases', label: 'Phrases', icon: '🔗', color: '#1cb0f6', correct: p.c, total: p.t });
+    const co = sum(appState.collocHistory);
+    skills.push({ key: 'colloc', label: 'Collocation', icon: '🧩', color: '#0ea5e9', correct: co.c, total: co.t });
     const w = sum(appState.wordformHistory);
     skills.push({ key: 'wordform', label: 'Word form', icon: '🔤', color: '#c2560a', correct: w.c, total: w.t });
     const r = sum(appState.rewriteHistory);
@@ -376,6 +378,7 @@ function _homeSkillSessions() {
         units: norm(appState.unitsHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         grammar: norm(appState.grammarHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         phrases: norm(appState.phrasesHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
+        colloc: norm(appState.collocHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         wordform: norm(appState.wordformHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         rewrite: norm(appState.rewriteHistory, h => ({ score: h.score || 0, total: h.total || 0, date: h.date || 0 })),
         verbs: norm((appState.speedChallenge && appState.speedChallenge.history), h => ({ score: h.correct || 0, total: h.total || 0, date: h.date || 0 })),
@@ -507,6 +510,7 @@ function goToSkillTab(key) {
         units: ['topicsScreen', 'renderTopicsHome'],
         grammar: ['grammarScreen', 'renderGrammarHome'],
         phrases: ['phrasesScreen', 'renderPhrasesHome'],
+        colloc: ['phrasesScreen', 'renderPhrasesHome'],
         wordform: ['wordformScreen', 'renderWordformHome'],
         rewrite: ['rewriteScreen', 'renderRewriteHome'],
         verbs: ['speedChallengeScreen', null],
@@ -518,6 +522,10 @@ function goToSkillTab(key) {
     // Both Topics-screen skills land on their own sub-tab.
     if ((key === 'units' || key === 'vocab') && typeof switchTopicsSubTab === 'function') {
         try { switchTopicsSubTab(key === 'units' ? 'grade4' : 'topics'); } catch (e) {}
+    }
+    // Phrases-screen skills land on their own sub-tab too.
+    if ((key === 'phrases' || key === 'colloc') && typeof switchPhrSubTab === 'function') {
+        try { switchPhrSubTab(key === 'colloc' ? 'colloc' : 'practice'); } catch (e) {}
     }
     const fn = target[1];
     if (fn && typeof globalThis[fn] === 'function') { try { globalThis[fn](); } catch (e) {} }
