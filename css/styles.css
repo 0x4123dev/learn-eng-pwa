@@ -721,6 +721,35 @@
             box-shadow: 0 4px 14px rgba(249,115,22,0.35);
         }
         .unit-reward-shop:active { transform: scale(0.96); }
+        /* Finish-screen celebration: card pops in, coins bounce, emojis rise */
+        .reward-pop {
+            position: relative; overflow: visible;
+            animation: rewardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes rewardPop {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .reward-congrats {
+            font-size: 16px; font-weight: 900; color: #d97706; margin-bottom: 4px;
+            animation: rewardPop 0.55s 0.15s backwards cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .reward-coins-pop { animation: coinPop 0.7s 0.3s backwards cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes coinPop {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.35) rotate(-6deg); }
+            100% { transform: scale(1); }
+        }
+        .reward-burst { position: absolute; inset: 0; pointer-events: none; }
+        .reward-burst-item {
+            position: absolute; bottom: 25%; font-size: 22px; opacity: 0;
+            animation: burstUp 1.7s ease-out forwards;
+        }
+        @keyframes burstUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0; }
+            15% { opacity: 1; }
+            100% { transform: translateY(-110px) scale(1.2) rotate(30deg); opacity: 0; }
+        }
 
         /* Collocation practice (Phrases tab → 🧩 sub-tab) */
         .colloc-lesson { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }

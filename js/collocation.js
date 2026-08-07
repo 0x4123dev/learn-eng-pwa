@@ -290,16 +290,15 @@ function finishCollocPractice() {
         <button class="grammar-back-btn" onclick="renderPhrasesHome()">‹</button>
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} Collocation · ${score}/${total} (${pct}%)</span>
       </div>
-      <div class="unit-reward-card">
-        <div class="unit-reward-coins">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
-        <div class="unit-reward-total">Bạn có ${(typeof appState !== 'undefined' && appState && appState.coins) || 0} 🪙</div>
-        ${typeof showPetShop === 'function' ? `<button class="unit-reward-shop" onclick="showPetShop()">🛒 Mua đồ ăn cho cún 🐶</button>` : ''}
-      </div>
+      ${typeof rewardCelebrationHTML === 'function'
+        ? rewardCelebrationHTML(score, total, coinsEarned)
+        : `<div class="unit-reward-card"><div class="unit-reward-coins">+${coinsEarned} 🪙</div></div>`}
       <div class="phrases-section-title">${wrong.length ? 'Câu cần xem lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
       <button class="phrases-cta-secondary phrases-review-btn" onclick="startCollocPractice(${total})">🔁 Practice again</button>
     </div>`;
   }
+  if (typeof fireRewardCelebration === 'function') fireRewardCelebration(coinsEarned, pct);
   _colQuiz = null;
 }
 

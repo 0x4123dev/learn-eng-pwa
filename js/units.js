@@ -175,6 +175,34 @@ function renderUnitsBar() {
   bar.innerHTML = `<div class="g4-grid">${mixCard}${cards}</div>`;
 }
 
+// ---- celebration reward card (shared with collocation.js) ----
+// Confetti + popping coins + a cheerful message, to make finishing feel
+// like a small party and keep the student motivated.
+function rewardCelebrationHTML(score, total, coinsEarned) {
+  const pct = total ? Math.round((score / total) * 100) : 0;
+  const msg = pct === 100 ? 'PERFECT! Xuất sắc! 🏆'
+    : pct >= 80 ? 'Tuyệt vời! 🌟'
+    : pct >= 60 ? 'Làm tốt lắm! 👍'
+    : 'Cố lên, luyện thêm nhé! 💪';
+  const burst = ['🪙', '🎉', '⭐', '🪙', '🎊', '🪙'].map((e, i) =>
+    `<span class="reward-burst-item" style="left:${8 + i * 15}%; animation-delay:${(i * 0.12).toFixed(2)}s">${e}</span>`).join('');
+  return `
+      <div class="unit-reward-card reward-pop">
+        <div class="reward-burst">${burst}</div>
+        <div class="reward-congrats">🎉 ${msg}</div>
+        <div class="unit-reward-coins reward-coins-pop">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
+        <div class="unit-reward-total">Bạn có ${(typeof appState !== 'undefined' && appState && appState.coins) || 0} 🪙</div>
+        ${typeof showPetShop === 'function' ? `<button class="unit-reward-shop" onclick="showPetShop()">🛒 Mua đồ ăn cho cún 🐶</button>` : ''}
+      </div>`;
+}
+function fireRewardCelebration(coinsEarned, pct) {
+  if (!coinsEarned || typeof createConfetti !== 'function') return;
+  try {
+    createConfetti();
+    if (pct === 100 && typeof setTimeout === 'function') setTimeout(() => { try { createConfetti(); } catch (e) {} }, 900);
+  } catch (e) {}
+}
+
 // ---- History view: recent unit-practice sessions + streak ----
 // Everything here is already uploaded to the admin dashboard by
 // EngAuth.syncNow() (type 'lesson'), which runs on every finish.
@@ -372,15 +400,12 @@ function finishUnitPractice() {
         <button class="grammar-back-btn" onclick="renderTopicsHome()">‹</button>
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} ${_unitLabel(st.unit)} · ${score}/${total} (${pct}%)</span>
       </div>
-      <div class="unit-reward-card">
-        <div class="unit-reward-coins">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
-        <div class="unit-reward-total">Bạn có ${(typeof appState !== 'undefined' && appState && appState.coins) || 0} 🪙</div>
-        ${typeof showPetShop === 'function' ? `<button class="unit-reward-shop" onclick="showPetShop()">🛒 Mua đồ ăn cho cún 🐶</button>` : ''}
-      </div>
+      ${rewardCelebrationHTML(score, total, coinsEarned)}
       <div class="phrases-section-title">${wrong.length ? 'Từ cần học lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
       <button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${typeof st.unit === 'number' ? st.unit : "'" + st.unit + "'"})">🔁 Practice ${_unitLabel(st.unit)} again</button>
     </div>`;
+  fireRewardCelebration(coinsEarned, pct);
   _unitQuiz = null;
 }
 
