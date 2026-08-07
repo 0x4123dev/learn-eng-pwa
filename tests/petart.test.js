@@ -1,0 +1,112 @@
+// petart.test.js — the rigged SVG dog: every breed renders a complete,
+// animatable, self-contained figure (no external assets, no broken markup).
+const { suite, test, assert } = require('./harness');
+const path = require('path');
+const fs = require('fs');
+
+const art = require(path.join(__dirname, '..', 'js', 'petart.js'));
+const cssSrc = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
+
+const BREEDS = Object.keys(art.PET_BREED_LOOKS);
+// Parts the CSS animates — a missing one means a dead rig.
+const RIG_PARTS = ['pd-shadow', 'pd-body-grp', 'pd-head-grp', 'pd-tail', 'pd-head',
+    'pd-body', 'pd-eye', 'pd-lid', 'pd-nose', 'pd-mouth', 'pd-ear'];
+
+suite('pet art: the rig', () => {
+    test('covers all ten breed stages', () => {
+        assert.equal(BREEDS.length, 10);
+        for (const b of ['chihuahua', 'beagle', 'poodle', 'retriever', 'dalmatian',
+            'husky', 'shepherd', 'akita', 'royal', 'diamond']) {
+            assert.truthy(art.PET_BREED_LOOKS[b], `missing breed ${b}`);
+        }
+    });
+
+    test('every breed renders a complete rig with all animatable parts', () => {
+        for (const b of BREEDS) {
+            const svg = art.petDogSVG({ stageCss: b, size: 96 });
+            assert.truthy(svg.trim().startsWith('<svg'), b);
+            assert.truthy(svg.trim().endsWith('</svg>'), b);
+            for (const part of RIG_PARTS) {
+                assert.truthy(svg.includes(part), `${b} is missing "${part}"`);
+            }
+        }
+    });
+
+    test('breeds actually look different (colour or markings)', () => {
+        const shapes = new Set(BREEDS.map(b => art.petDogSVG({ stageCss: b, size: 40 })));
+        assert.equal(shapes.size, BREEDS.length, 'two breeds render identically');
+    });
+
+    test('no external references — fully offline and CSP-safe', () => {
+        for (const b of BREEDS) {
+            const svg = art.petDogSVG({ stageCss: b });
+            // The xmlns declaration is an identifier, never fetched — ignore it.
+            const body = svg.replace(/xmlns="[^"]*"/g, '');
+            assert.falsy(/https?:|<image|xlink:href|url\(/.test(body), `${b} pulls an external asset`);
+            assert.falsy(/<script/i.test(svg), `${b} contains a script`);
+        }
+    });
+
+    test('tags are balanced (no truncated markup)', () => {
+        for (const b of BREEDS) {
+            const svg = art.petDogSVG({ stageCss: b });
+            const opens = (svg.match(/<g[ >]/g) || []).length;
+            const closes = (svg.match(/<\/g>/g) || []).length;
+            assert.equal(opens, closes, `${b} has unbalanced <g> tags`);
+        }
+    });
+
+    test('size scales width and height together', () => {
+        const svg = art.petDogSVG({ stageCss: 'husky', size: 120 });
+        assert.truthy(svg.includes('width="120"'));
+        assert.truthy(svg.includes('height="130"'));      // 120 * 1.08 rounded
+        assert.truthy(art.petDogMiniSVG('husky').includes('width="34"'));
+    });
+
+    test('unknown breed falls back to the starter dog instead of breaking', () => {
+        const svg = art.petDogSVG({ stageCss: 'not-a-dog' });
+        assert.truthy(svg.includes('<svg'));
+        assert.equal(art.petBreedLook('not-a-dog'), art.PET_BREED_LOOKS.chihuahua);
+    });
+});
+
+suite('pet art: moods and reactions', () => {
+    test('hungry/starving/sad moods add the droopy-ear class', () => {
+        for (const mood of ['hungry', 'starving', 'sad']) {
+            assert.truthy(art.petDogSVG({ stageCss: 'beagle', mood }).includes('pd-sad'), mood);
+        }
+    });
+
+    test('happy mood has no sad class', () => {
+        assert.falsy(art.petDogSVG({ stageCss: 'beagle', mood: 'happy' }).includes('pd-sad'));
+    });
+
+    test('petDogPlay is a safe no-op without a DOM', () => {
+        art.petDogPlay('hop');
+        assert.truthy(true);
+    });
+
+    test('every animation the rig relies on exists in the stylesheet', () => {
+        for (const kf of ['pdBreathe', 'pdSway', 'pdWag', 'pdBlink', 'pdHop', 'pdChew', 'pdLevelUp']) {
+            assert.truthy(cssSrc.includes('@keyframes ' + kf), `missing @keyframes ${kf}`);
+        }
+        assert.truthy(cssSrc.includes('prefers-reduced-motion'), 'must respect reduced motion');
+    });
+});
+
+suite('pet art: colour helper', () => {
+    test('shade darkens and lightens without leaving hex range', () => {
+        assert.equal(art._petShade('#808080', 0), '#808080');
+        const dark = art._petShade('#808080', -20);
+        const light = art._petShade('#808080', 20);
+        assert.truthy(/^#[0-9a-f]{6}$/.test(dark) && /^#[0-9a-f]{6}$/.test(light));
+        assert.truthy(parseInt(dark.slice(1), 16) < parseInt(light.slice(1), 16));
+        assert.equal(art._petShade('#000000', -50), '#000000', 'clamps at black');
+        assert.equal(art._petShade('#ffffff', 50), '#ffffff', 'clamps at white');
+    });
+});
+
+if (require.main === module) {
+    const harness = require('./harness');
+    process.exit(harness.runAll());
+}

@@ -30,6 +30,17 @@ function petFaceEmoji() {
     return (stage && stage.fallback) || '🐶';
   } catch (e) { return '🐶'; }
 }
+// The drawn version (petart.js) with the emoji as a safety net.
+function petFaceArt(size) {
+  const st = _pcState();
+  try {
+    if (typeof petDogSVG === 'function' && st) {
+      const stage = getDogStage(st.dogLevel || 1);
+      return petDogSVG({ stageCss: stage && stage.stageCss, size: size || 34, mood: 'happy' });
+    }
+  } catch (e) {}
+  return `<span style="font-size:${size || 34}px">${petFaceEmoji()}</span>`;
+}
 function petDisplayName() {
   const st = _pcState();
   return (st && st.petName) ? st.petName : 'Cún';
@@ -152,7 +163,9 @@ function petCheerPop(icon, label) {
     el.className = 'pet-cheer';
     document.body.appendChild(el);
   }
-  el.innerHTML = `<span class="pet-cheer-dog">${petFaceEmoji()}</span><span class="pet-cheer-icon">${icon}</span>${label ? `<span class="pet-cheer-label">${_pcEsc(label)}</span>` : ''}`;
+  el.innerHTML = `<span class="pet-cheer-dog">${petFaceArt(30)}</span><span class="pet-cheer-icon">${icon}</span>${label ? `<span class="pet-cheer-label">${_pcEsc(label)}</span>` : ''}`;
+  // the hero dog (if on screen) and the popup dog react together
+  if (typeof petDogPlay === 'function' && icon !== '😮') { try { petDogPlay(icon === '😋' ? 'eat' : 'hop'); } catch (e) {} }
   el.classList.remove('show');
   void el.offsetWidth;                       // restart the animation
   el.classList.add('show');
@@ -220,7 +233,7 @@ function petRewardCardHTML(score, total, coinsEarned) {
 
         <div class="pet-feed-zone">
           <div class="pet-feed-head">
-            <span class="pet-feed-dog">${petFaceEmoji()}</span>
+            <span class="pet-feed-dog">${petFaceArt(52)}</span>
             <div class="pet-feed-info">
               <div class="pet-feed-name">${_pcEsc(petDisplayName())} ${hunger <= 25 ? 'đang rất đói 🥺' : hunger <= 50 ? 'hơi đói 🙂' : 'no bụng 😊'}</div>
               <div class="pet-hunger-bar"><div class="pet-hunger-fill ${hungerCls}" style="width:${hunger}%"></div></div>
@@ -257,8 +270,9 @@ function petQuickFeed(foodId) {
     parent.replaceChild(fresh, card);
   }
   petCheerPop('😋', `${petDisplayName()} ăn ${food.emoji} ngon quá!`);
-  if ((st.dogLevel || 1) > beforeLevel && typeof createConfetti === 'function') {
-    try { createConfetti(); } catch (e) {}
+  if ((st.dogLevel || 1) > beforeLevel) {
+    if (typeof petDogPlay === 'function') { try { petDogPlay('levelup'); } catch (e) {} }
+    if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
   }
   if (questJustDone && typeof showPetSpeechBubble === 'function') {
     try { showPetSpeechBubble('Cảm ơn bé! Hôm nay mình no rồi! 🎉'); } catch (e) {}

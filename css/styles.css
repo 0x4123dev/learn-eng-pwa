@@ -740,6 +740,60 @@
             60% { transform: scale(1.35) rotate(-6deg); }
             100% { transform: scale(1); }
         }
+        /* ===== Milo, the rigged SVG dog (petart.js) ===== */
+        .pd-dog { overflow: visible; transform-origin: 50% 95%; }
+        /* idle: gentle breathing + a head that sways a little */
+        .pd-body-grp { animation: pdBreathe 3.2s ease-in-out infinite; transform-origin: 50px 88px; }
+        .pd-head-grp { animation: pdSway 4.6s ease-in-out infinite; transform-origin: 50px 62px; }
+        @keyframes pdBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035, 0.975); } }
+        @keyframes pdSway { 0%,100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
+        /* tail wag — the clearest "I'm happy" signal for a child */
+        .pd-tail { transform-origin: 74px 78px; animation: pdWag 0.5s ease-in-out infinite alternate; }
+        @keyframes pdWag { from { transform: rotate(-16deg); } to { transform: rotate(22deg); } }
+        /* blink: eyelids drop for a moment every few seconds */
+        .pd-lid { transform-origin: center top; transform: scaleY(0); animation: pdBlink 5.4s infinite; }
+        @keyframes pdBlink { 0%,95.5%,100% { transform: scaleY(0); } 97%,98.5% { transform: scaleY(1); } }
+        .pd-tongue { transform-origin: 50px 52px; animation: pdPant 1.6s ease-in-out infinite; }
+        @keyframes pdPant { 0%,100% { transform: scaleY(0.75); } 50% { transform: scaleY(1.1); } }
+        .pd-shadow { animation: pdShadow 3.2s ease-in-out infinite; transform-origin: 50px 101px; }
+        @keyframes pdShadow { 0%,100% { transform: scale(1); opacity: .18; } 50% { transform: scale(0.94); opacity: .14; } }
+        .pd-sparkles { animation: pdTwinkle 2s ease-in-out infinite; }
+        @keyframes pdTwinkle { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
+
+        /* hungry / sad: ears droop, tail slows, eyes half-close, blush fades */
+        .pd-sad .pd-tail { animation-duration: 2.4s; }
+        .pd-sad .pd-ear-l { transform: rotate(26deg); transform-origin: 32px 30px; }
+        .pd-sad .pd-ear-r { transform: rotate(-26deg); transform-origin: 68px 30px; }
+        .pd-sad .pd-head-grp { transform: translateY(4px); animation: none; }
+        .pd-sad .pd-lid { transform: scaleY(0.55); animation: none; }
+        .pd-sad .pd-tongue { display: none; }
+        .pd-sad .pd-blush { opacity: .18; }
+        .pd-sad .pd-mouth { d: path('M42 52 q8 -6 16 0'); }
+
+        /* one-shot reactions */
+        .pd-hop { animation: pdHop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes pdHop {
+            0%   { transform: translateY(0) scale(1, 1); }
+            25%  { transform: translateY(2px) scale(1.1, 0.88); }   /* squash */
+            55%  { transform: translateY(-22px) scale(0.93, 1.12); } /* stretch */
+            80%  { transform: translateY(1px) scale(1.06, 0.94); }
+            100% { transform: translateY(0) scale(1, 1); }
+        }
+        .pd-hop .pd-tail { animation-duration: 0.16s; }
+        .pd-eat .pd-head-grp { animation: pdChew 0.28s ease-in-out 4; }
+        @keyframes pdChew { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(2px) scale(1.05, 0.95); } }
+        .pd-levelup { animation: pdLevelUp 1.3s ease-in-out; }
+        @keyframes pdLevelUp {
+            0%   { transform: rotate(0) scale(1); }
+            30%  { transform: rotate(-8deg) scale(1.12); }
+            60%  { transform: rotate(370deg) scale(1.12); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        /* Respect users who prefer less motion (idle loops only stop) */
+        @media (prefers-reduced-motion: reduce) {
+            .pd-body-grp, .pd-head-grp, .pd-tail, .pd-lid, .pd-tongue, .pd-shadow, .pd-sparkles { animation: none; }
+        }
+
         /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */
         .pet-cheer {
             position: fixed; left: 50%; top: 72px; z-index: 260;
@@ -766,7 +820,16 @@
         .pet-cheer-dog { font-size: 20px; display: inline-block; }
         .pet-cheer-label { color: #d97706; }
 
-        .pet-quest-line { margin-top: 8px; font-size: 12px; color: var(--text-primary); }
+        .pet-quest-card {
+            /* bottom margin clears the streak panel's -20px pull */
+            margin: -10px 16px 26px; padding: 12px 14px; border-radius: 16px;
+            background: var(--glass-bg, rgba(255,255,255,0.85));
+            border: 1.5px solid var(--glass-border, rgba(0,0,0,0.06));
+            box-shadow: 0 3px 14px rgba(0,0,0,0.06);
+            position: relative; z-index: 6;
+        }
+        .pet-quest-card:empty { display: none; }
+        .pet-quest-line { margin-top: 0; font-size: 12px; color: var(--text-primary); }
         .pet-quest-line.done { color: #16a34a; font-weight: 700; text-align: center; }
         .pet-quest-ask { font-weight: 700; margin-bottom: 4px; }
         .pet-quest-bar, .pet-evo-bar {
@@ -3878,7 +3941,9 @@
         /* Pet hero stage — the creature area */
         .pet-hero-stage {
             position: absolute;
-            bottom: 50px;
+            /* Clear of the hearts/XP strip below — the drawn dog is taller
+               than the emoji it replaced. */
+            bottom: 78px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;

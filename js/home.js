@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.92.0';
+const APP_VERSION = 'v3.93.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1419,9 +1419,14 @@ function renderWordPet() {
     } catch(e) {}
 
     // ALWAYS render pet creature first — even if later code crashes, the dog is visible
+    // Milo is a rigged SVG (petart.js) so he can breathe, wag and react;
+    // the emoji stays as the fallback if that module ever fails to load.
+    const petBodyHTML = (typeof petDogSVG === 'function')
+        ? petDogSVG({ stageCss: stage.stageCss, size: stage.size, mood })
+        : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
         <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
-            <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
+            ${petBodyHTML}
         </div>
     `;
 
@@ -1522,11 +1527,16 @@ function renderWordPet() {
         `;
     }
 
-    // Pet creature + accessories + poops
+    // Pet creature + accessories + poops. The dog itself is the rigged SVG
+    // from petart.js (breathing, wagging, blinking, reacting) — the emoji
+    // remains the fallback if that module is ever unavailable.
+    const petArtHTML = (typeof petDogSVG === 'function')
+        ? petDogSVG({ stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood })
+        : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
         <div class="pet-wrapper">
             <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
-                <span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>
+                ${petArtHTML}
             </div>
             ${accSpans}
         </div>
@@ -1566,9 +1576,15 @@ function renderWordPet() {
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
             <span class="pet-hero-xp-label">${level >= 200 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
-            ${typeof petQuestLineHTML === 'function' ? petQuestLineHTML() : ''}
-            ${typeof petEvolutionLineHTML === 'function' ? petEvolutionLineHTML() : ''}
         `;
+    }
+
+    // Food wish + evolution countdown live below the habitat.
+    const questCard = document.getElementById('petQuestCard');
+    if (questCard) {
+        questCard.innerHTML =
+            (typeof petQuestLineHTML === 'function' ? petQuestLineHTML() : '') +
+            (typeof petEvolutionLineHTML === 'function' ? petEvolutionLineHTML() : '');
     }
 
     // ==================== PET EMOTIONAL MEMORY GREETING ====================
