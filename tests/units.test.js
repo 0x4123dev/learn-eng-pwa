@@ -90,10 +90,10 @@ suite('units: gap engine', () => {
         assert.inRange(g.nBlanks, 1, 2);   // "you" has 3 letters, first stays visible
     });
 
-    test('pickUnitGapMode only returns 2, 3 or full — never a single blank', () => {
+    test('pickUnitGapMode only returns 4, 5 or full — at least 4 blanks', () => {
         for (let i = 0; i < 20; i++) {
             const m = units.pickUnitGapMode(() => i / 20);
-            assert.truthy([2, 3, 'full'].includes(m), String(m));
+            assert.truthy([4, 5, 'full'].includes(m), String(m));
         }
     });
 });

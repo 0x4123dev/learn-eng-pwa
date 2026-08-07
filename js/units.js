@@ -2,7 +2,7 @@
 // A chip row at the top of Topics opens a typed gap-fill practice: the app
 // shows the picture (emoji) + Vietnamese meaning and a gapped word
 // (st__ent / ch_cken / _ _ _ _ _), and the student types the FULL word.
-// The number of missing letters is random per question: 2, 3 or the
+// The number of missing letters is random per question: 4, 5 or the
 // whole word. Data lives in js/units-data.js (UNIT_WORDS).
 
 let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[] }
@@ -95,7 +95,9 @@ function buildUnitGap(en, mode, rand) {
 
 function pickUnitGapMode(rand) {
   const rnd = rand || Math.random;
-  const modes = [2, 2, 3, 3, 'full'];      // at least 2 missing letters (1 was too easy)
+  // At least 4 missing letters (2-3 became too easy once the student knew
+  // the words). Short words cap at all-but-first-letter automatically.
+  const modes = [4, 4, 5, 5, 'full'];
   return modes[Math.floor(rnd() * modes.length)];
 }
 
@@ -254,7 +256,7 @@ function startUnitPractice(unit) {
   }
   const words = shuffled.slice(0, Math.min(10, shuffled.length));
   const questions = words.map(w => {
-    // Random gap count per question (2, 3 letters or the whole word),
+    // Random gap count per question (4, 5 letters or the whole word),
     // like the textbook's st__ent / ch_cken style. Per-word levels are still
     // tracked (see _unitBumpWordLevel) for possible future use.
     const mode = pickUnitGapMode();
