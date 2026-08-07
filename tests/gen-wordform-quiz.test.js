@@ -452,7 +452,7 @@ suite('gen: wordform finish — coins & history', () => {
         wf.answerWfQuestion(3);
         wf.finishWordformQuiz();
         assert.truthy(screen.innerHTML.includes('1/1 (100%)'), 'score line rendered');
-        assert.truthy(screen.innerHTML.includes('+5 🪙 earned'), 'coin reward rendered');
+        assert.truthy(screen.innerHTML.includes('+5 🪙'), 'coin reward rendered');
     });
 
     test('result screen offers a re-practice button carrying the missed qids', () => {

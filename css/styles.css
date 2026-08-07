@@ -740,6 +740,70 @@
             60% { transform: scale(1.35) rotate(-6deg); }
             100% { transform: scale(1); }
         }
+        /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */
+        .pet-cheer {
+            position: fixed; left: 50%; top: 72px; z-index: 260;
+            display: flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 50px;
+            background: rgba(255,255,255,0.95); box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+            font-size: 14px; font-weight: 800; color: var(--text-primary);
+            opacity: 0; pointer-events: none;
+            transform: translate(-50%, -10px) scale(0.7);
+        }
+        .pet-cheer.show { animation: petCheerHop 1.1s ease-out; }
+        .pet-cheer.show .pet-cheer-dog { animation: petHop 0.5s ease-in-out 2; }
+        @keyframes petCheerHop {
+            0% { opacity: 0; transform: translate(-50%, -10px) scale(0.7); }
+            18% { opacity: 1; transform: translate(-50%, 0) scale(1.08); }
+            30% { transform: translate(-50%, 0) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -8px) scale(0.95); }
+        }
+        @keyframes petHop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px) rotate(-8deg); }
+        }
+        .pet-cheer-dog { font-size: 20px; display: inline-block; }
+        .pet-cheer-label { color: #d97706; }
+
+        .pet-quest-line { margin-top: 8px; font-size: 12px; color: var(--text-primary); }
+        .pet-quest-line.done { color: #16a34a; font-weight: 700; text-align: center; }
+        .pet-quest-ask { font-weight: 700; margin-bottom: 4px; }
+        .pet-quest-bar, .pet-evo-bar {
+            height: 7px; border-radius: 50px; overflow: hidden;
+            background: rgba(0,0,0,0.10);
+        }
+        .pet-quest-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #fbbf24, #f97316); transition: width 0.4s ease; }
+        .pet-evo-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #34d399, #7c3aed); transition: width 0.4s ease; }
+        .pet-quest-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+        .pet-evo-line { margin-top: 10px; font-size: 11.5px; color: var(--text-secondary); }
+        .pet-evo-text { margin-bottom: 4px; }
+        .pet-evo-next { filter: grayscale(1); opacity: 0.7; }
+
+        .pet-feed-zone {
+            margin-top: 12px; padding-top: 12px;
+            border-top: 1.5px dashed rgba(217,119,6,0.35);
+        }
+        .pet-feed-head { display: flex; align-items: center; gap: 10px; text-align: left; }
+        .pet-feed-dog { font-size: 34px; }
+        .pet-feed-info { flex: 1 1 auto; }
+        .pet-feed-name { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+        .pet-hunger-bar { height: 8px; border-radius: 50px; background: rgba(0,0,0,0.10); overflow: hidden; }
+        .pet-hunger-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #34d399, #16a34a); transition: width 0.4s ease; }
+        .pet-hunger-fill.mid { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .pet-hunger-fill.low { background: linear-gradient(90deg, #f87171, #ef4444); }
+        .pet-feed-row { display: flex; gap: 6px; margin-top: 10px; }
+        .pet-feed-btn {
+            flex: 1 1 0; padding: 8px 2px; border-radius: 12px; cursor: pointer;
+            border: 1.5px solid rgba(217,119,6,0.35); background: rgba(255,255,255,0.85);
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            font-family: inherit;
+        }
+        .pet-feed-btn:active { transform: scale(0.94); }
+        .pet-feed-btn.locked { opacity: 0.38; cursor: default; }
+        .pet-feed-emoji { font-size: 20px; }
+        .pet-feed-price { font-size: 10px; font-weight: 800; color: var(--text-secondary); }
+
         .reward-burst { position: absolute; inset: 0; pointer-events: none; }
         .reward-burst-item {
             position: absolute; bottom: 25%; font-size: 22px; opacity: 0;

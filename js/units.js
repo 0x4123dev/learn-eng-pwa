@@ -180,22 +180,11 @@ function renderUnitsBar() {
 // ---- celebration reward card (shared with collocation.js) ----
 // Confetti + popping coins + a cheerful message, to make finishing feel
 // like a small party and keep the student motivated.
+// The card itself lives in petcheer.js (shared by every tab): congrats +
+// coins + the dog's hunger, today's food wish and one-tap feeding.
 function rewardCelebrationHTML(score, total, coinsEarned) {
-  const pct = total ? Math.round((score / total) * 100) : 0;
-  const msg = pct === 100 ? 'PERFECT! Xuất sắc! 🏆'
-    : pct >= 80 ? 'Tuyệt vời! 🌟'
-    : pct >= 60 ? 'Làm tốt lắm! 👍'
-    : 'Cố lên, luyện thêm nhé! 💪';
-  const burst = ['🪙', '🎉', '⭐', '🪙', '🎊', '🪙'].map((e, i) =>
-    `<span class="reward-burst-item" style="left:${8 + i * 15}%; animation-delay:${(i * 0.12).toFixed(2)}s">${e}</span>`).join('');
-  return `
-      <div class="unit-reward-card reward-pop">
-        <div class="reward-burst">${burst}</div>
-        <div class="reward-congrats">🎉 ${msg}</div>
-        <div class="unit-reward-coins reward-coins-pop">${coinsEarned ? `+${coinsEarned} 🪙` : '0 🪙'}</div>
-        <div class="unit-reward-total">Bạn có ${(typeof appState !== 'undefined' && appState && appState.coins) || 0} 🪙</div>
-        ${typeof showPetShop === 'function' ? `<button class="unit-reward-shop" onclick="showPetShop()">🛒 Mua đồ ăn cho cún 🐶</button>` : ''}
-      </div>`;
+  if (typeof petRewardCardHTML === 'function') return petRewardCardHTML(score, total, coinsEarned);
+  return `<div class="unit-reward-card"><div class="unit-reward-coins">+${coinsEarned} 🪙</div></div>`;
 }
 function fireRewardCelebration(coinsEarned, pct) {
   if (!coinsEarned || typeof createConfetti !== 'function') return;
@@ -348,6 +337,7 @@ function submitUnitAnswer() {
   st.answers[st.idx] = { value: raw.trim(), isCorrect: ok };
   _unitBumpWordLevel(q.w.en, ok);
   _unitSpeak(q.w.en);          // pronounce the word so the student hears it
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
   renderUnitQuestion();
 }
 
@@ -371,8 +361,8 @@ function finishUnitPractice() {
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
 
-  // Coins: +5 per correct answer (matches every other practice type).
-  const coinsEarned = score * 5;
+  // Coins: +5 per correct answer, plus any 5-in-a-row combo treats.
+  const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coinsEarned;
     if (!Array.isArray(appState.unitsHistory)) appState.unitsHistory = [];

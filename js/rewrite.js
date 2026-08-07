@@ -321,6 +321,7 @@ function submitRwText() {
   const inp = document.getElementById('rwTextInput');
   const raw = inp ? inp.value : '';
   st.answers[st.idx] = { value: raw.trim(), isCorrect: _rwTextCorrect(raw, q) };
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(st.answers[st.idx].isCorrect);
   renderRwQuestion();
 }
 function nextRwQuestion() {
@@ -344,7 +345,7 @@ function finishRewriteQuiz() {
   const pct = total ? Math.round((score / total) * 100) : 0;
 
   // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
-  const coinsEarned = score * 5;
+  const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
   if (typeof appState !== 'undefined' && appState) appState.coins = (appState.coins || 0) + coinsEarned;
   // Streak: any completed practice counts as a study event for the day.
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -373,7 +374,7 @@ function finishRewriteQuiz() {
         <button class="grammar-back-btn" onclick="renderRewriteHome()">‹</button>
         <span class="grammar-quiz-progress">${rwTierEmoji(pct)} ${score}/${total} (${pct}%)</span>
       </div>
-      ${coinsEarned ? `<div class="grammar-result-coins" style="text-align:center;margin:6px 0 2px;">+${coinsEarned} 🪙 earned</div>` : ''}
+      ${typeof petRewardCardHTML === 'function' ? petRewardCardHTML(score, total, coinsEarned) : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : '')}
       <div class="phrases-section-title">Review${wrong.length ? ` · ${wrong.length} wrong` : ' · perfect! 🎉'}</div>
       ${reviewHtml}
       ${wrong.length ? `<button class="phrases-cta-secondary phrases-review-btn" onclick='startRewriteReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}

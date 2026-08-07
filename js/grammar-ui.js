@@ -1062,6 +1062,7 @@ function answerGrammarQuestion(optionIdx) {
     if (!state) return;
     if (state.answers[state.currentIdx] !== null) return; // Already answered
     state.answers[state.currentIdx] = optionIdx;
+    if (typeof petCheerAnswer === 'function') petCheerAnswer(optionIdx === state.questions[state.currentIdx].correct);
     renderGrammarQuestion();
 }
 

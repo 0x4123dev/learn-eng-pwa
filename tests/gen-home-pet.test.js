@@ -58,24 +58,24 @@ suite('gen: computeCurrentHunger decay', () => {
         assert.equal(env.computeCurrentHunger({ petLastFed: Date.now() }), 100);
     });
 
-    test('just under 24h since fed → still 100', () => {
-        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(24) + 60000 }), 100);
+    test('just under 10h since fed → still 100', () => {
+        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(10) + 60000 }), 100);
     });
 
-    test('24h boundary drops to 75', () => {
-        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(24) }), 75);
+    test('10h boundary drops to 75', () => {
+        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(10) }), 75);
     });
 
-    test('48h boundary drops to 50', () => {
-        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(48) }), 50);
+    test('20h boundary drops to 50 — hungry by the next morning', () => {
+        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(20) }), 50);
     });
 
-    test('72h boundary drops to 25', () => {
-        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(72) }), 25);
+    test('36h boundary drops to 25', () => {
+        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(36) }), 25);
     });
 
-    test('96h boundary hits 0 (starving)', () => {
-        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(96) }), 0);
+    test('48h boundary hits 0 (very hungry — sad eyes only, never punished)', () => {
+        assert.equal(env.computeCurrentHunger({ petLastFed: hoursAgo(48) }), 0);
     });
 
     test('extreme elapsed time (decades) clamps to 0, not negative', () => {
@@ -89,7 +89,7 @@ suite('gen: computeCurrentHunger decay', () => {
     test('sweep 0–240h: exact schedule level at every 6h step', () => {
         for (let h = 0; h <= 240; h += 6) {
             const v = env.computeCurrentHunger({ petLastFed: hoursAgo(h) });
-            const expected = h >= 96 ? 0 : h >= 72 ? 25 : h >= 48 ? 50 : h >= 24 ? 75 : 100;
+            const expected = h >= 48 ? 0 : h >= 36 ? 25 : h >= 20 ? 50 : h >= 10 ? 75 : 100;
             assert.equal(v, expected, `hunger at ${h}h since fed`);
         }
     });
@@ -122,13 +122,13 @@ suite('gen: getPetMood tiers', () => {
         assert.equal(env.getPetMood(), 'starving');
     });
 
-    test('hungry at exactly the 72h boundary (hunger 25)', () => {
-        env.__setAppState(makeState({ petLastFed: hoursAgo(72), lastStudyDate: TODAY }));
+    test('hungry at exactly the 36h boundary (hunger 25)', () => {
+        env.__setAppState(makeState({ petLastFed: hoursAgo(36), lastStudyDate: TODAY }));
         assert.equal(env.getPetMood(), 'hungry');
     });
 
-    test('hunger ≤25 beats studying today (80h → hungry, not happy)', () => {
-        env.__setAppState(makeState({ petLastFed: hoursAgo(80), lastStudyDate: TODAY }));
+    test('hunger ≤25 beats studying today (40h → hungry, not happy)', () => {
+        env.__setAppState(makeState({ petLastFed: hoursAgo(40), lastStudyDate: TODAY }));
         assert.equal(env.getPetMood(), 'hungry');
     });
 
@@ -172,8 +172,8 @@ suite('gen: getPetMood tiers', () => {
         assert.equal(env.getPetMood(), 'happy');
     });
 
-    test('mid hunger (48h → 50) does not change mood — still happy', () => {
-        env.__setAppState(makeState({ petLastFed: hoursAgo(48) }));
+    test('mid hunger (20h → 50) does not change mood — still happy', () => {
+        env.__setAppState(makeState({ petLastFed: hoursAgo(20) }));
         assert.equal(env.getPetMood(), 'happy');
     });
 });
@@ -375,10 +375,10 @@ suite('gen: feedPet + DOG_FOOD constants', () => {
         }
     });
 
-    test('cheapest food is the 50-coin bone worth +5 growth', () => {
+    test('cheapest food is the 30-coin bone worth +5 growth', () => {
         const bone = env.DOG_FOOD[0];
         assert.equal(bone.id, 'bone');
-        assert.equal(bone.price, 50);
+        assert.equal(bone.price, 30);
         assert.equal(bone.growth, 5);
     });
 

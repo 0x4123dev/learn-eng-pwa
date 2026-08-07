@@ -226,6 +226,7 @@ function answerCollocChoice(i) {
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
   st.answers[st.idx] = { choice: i, value: q.options[i], isCorrect: i === q.correct };
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q.correct);
   renderCollocQuestion();
 }
 
@@ -236,6 +237,7 @@ function submitCollocText() {
   const inp = document.getElementById('colTextInput');
   const raw = inp ? inp.value : '';
   st.answers[st.idx] = { value: raw.trim(), isCorrect: _colAnswerCorrect(raw, q) };
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(st.answers[st.idx].isCorrect);
   renderCollocQuestion();
 }
 
@@ -260,7 +262,7 @@ function finishCollocPractice() {
   const pct = total ? Math.round(score / total * 100) : 0;
 
   // Shared systems: coins, streak, history, server sync (see feature-sync tests).
-  const coinsEarned = score * 5;
+  const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coinsEarned;
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }

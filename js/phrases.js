@@ -426,6 +426,7 @@ function answerPhrQuestion(i) {
   if (!st) return;
   if (st.answers[st.idx] !== null) return;
   st.answers[st.idx] = i;
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(i === st.questions[st.idx].correct);
   renderPhrQuestion();
 }
 
@@ -449,7 +450,7 @@ function finishPhrasesQuiz() {
   const pct = total ? Math.round((score / total) * 100) : 0;
 
   // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
-  const coinsEarned = score * 5;
+  const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
   if (typeof appState !== 'undefined' && appState) appState.coins = (appState.coins || 0) + coinsEarned;
   // Streak: any completed practice counts as a study event for the day.
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -481,10 +482,10 @@ function finishPhrasesQuiz() {
         <div class="grammar-result-emoji">${emoji}</div>
         <h2>${score} / ${total}</h2>
         <div class="grammar-result-pct">${pct}%</div>
-        ${coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : ''}
         <p>${pct >= 80 ? 'Excellent preposition skills!' : (pct >= 50 ? 'Good work — keep practising.' : 'Keep going — prepositions take practice.')}</p>
         <button class="phrases-cta-secondary" onclick="_phrQuiz=null; renderPhrasesHome()">Done</button>
       </div>
+      ${typeof petRewardCardHTML === 'function' ? petRewardCardHTML(score, total, coinsEarned) : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : '')}
       ${wrong.length ? `<div class="phrases-section-title">Review · ${wrong.length} wrong</div>${reviewHtml}
         <button class="phrases-cta-secondary phrases-review-btn" onclick='startPhrasesReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}
     </div>`;

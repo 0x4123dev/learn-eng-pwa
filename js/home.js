@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.91.1';
+const APP_VERSION = 'v3.92.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1063,12 +1063,14 @@ const DOG_STAGES = [
     { minLevel: 181, img: 'img/pets/diamond.png',    fallback: '💎🐶', name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
 ];
 
+// Priced for a child's honest daily rhythm: one 10-question session earns
+// ~40-50 🪙, so a snack is one session and a big meal is a good day.
 const DOG_FOOD = [
-    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 50,  growth: 5 },
-    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 150, growth: 15 },
-    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 250, growth: 30 },
-    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 400, growth: 50 },
-    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 800, growth: 120 }
+    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 30,  growth: 5 },
+    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 80,  growth: 15 },
+    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 150, growth: 30 },
+    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 240, growth: 50 },
+    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 550, growth: 120 }
 ];
 
 const DOG_ACCESSORIES = [
@@ -1198,11 +1200,14 @@ const AMBIENT_SLOT_SIZES = {
     toy:    0.32
 };
 
-const HUNGER_DECAY_SCHEDULE = [
-    { hoursWithout: 96, level: 0  },
-    { hoursWithout: 72, level: 25 },
-    { hoursWithout: 48, level: 50 },
-    { hoursWithout: 24, level: 75 },
+const // Tuned so the dog asks for food about once a day (gentle urgency): he is
+// visibly hungry by the next morning and very hungry after two days — but
+// never loses XP or levels, and one session always fills him up again.
+HUNGER_DECAY_SCHEDULE = [
+    { hoursWithout: 48, level: 0  },
+    { hoursWithout: 36, level: 25 },
+    { hoursWithout: 20, level: 50 },
+    { hoursWithout: 10, level: 75 },
     { hoursWithout:  0, level: 100 }
 ];
 
@@ -1561,6 +1566,8 @@ function renderWordPet() {
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
             <span class="pet-hero-xp-label">${level >= 200 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
+            ${typeof petQuestLineHTML === 'function' ? petQuestLineHTML() : ''}
+            ${typeof petEvolutionLineHTML === 'function' ? petEvolutionLineHTML() : ''}
         `;
     }
 
@@ -1829,6 +1836,8 @@ function buyFood(foodId, sourceEl) {
     appState.dogGrowthXP = (appState.dogGrowthXP || 0) + totalGrowth;
     appState.dogLevel = getDogLevel(appState.dogGrowthXP);
     appState.petLastFed = Date.now(); // Feeding resets hunger
+    // Today's "the dog wants X" quest is satisfied by buying that food.
+    if (typeof petFoodQuestOnFeed === 'function') { try { petFoodQuestOnFeed(foodId); } catch (e) {} }
 
     saveUserData(currentUser, appState);
 
