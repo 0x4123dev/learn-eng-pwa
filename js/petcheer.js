@@ -36,7 +36,10 @@ function petFaceArt(size) {
   try {
     if (typeof petDogSVG === 'function' && st) {
       const stage = getDogStage(st.dogLevel || 1);
-      return petDogSVG({ stageCss: stage && stage.stageCss, size: size || 34, mood: 'happy' });
+      return petDogSVG({
+        stageCss: stage && stage.stageCss, size: size || 34, mood: 'happy',
+        level: st.dogLevel || 1, stageMinLevel: stage && stage.minLevel,
+      });
     }
   } catch (e) {}
   return `<span style="font-size:${size || 34}px">${petFaceEmoji()}</span>`;
@@ -195,10 +198,22 @@ function petEvolutionLineHTML() {
   const span = next.minLevel - stage.minLevel;
   const done = level - stage.minLevel;
   const pct = span > 0 ? Math.min(100, Math.round(done / span * 100)) : 0;
+  // The nearer goal: the next 5-level unlock (collar → hat → jewellery).
+  let unlock = '';
+  try {
+    if (typeof petNextTierLevel === 'function') {
+      const at = petNextTierLevel(level, stage.minLevel);
+      if (at) {
+        const label = petTierLabel(petTierForLevel(at, stage.minLevel));
+        unlock = `<div class="pet-evo-unlock">🎁 Level <b>${at}</b> (còn <b>${at - level}</b>): Milo được <b>${_pcEsc(label)}</b></div>`;
+      }
+    }
+  } catch (e) {}
   return `
     <div class="pet-evo-line">
       <div class="pet-evo-text">${stage.fallback} <b>${_pcEsc(stage.name)}</b> · Level ${level} — còn <b>${next.minLevel - level}</b> level nữa thành <span class="pet-evo-next">❓</span> <b>${_pcEsc(next.name)}</b>!</div>
       <div class="pet-evo-bar"><div class="pet-evo-fill" style="width:${pct}%"></div></div>
+      ${unlock}
     </div>`;
 }
 

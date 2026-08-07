@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v3.93.0';
+const APP_VERSION = 'v3.94.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1422,7 +1422,7 @@ function renderWordPet() {
     // Milo is a rigged SVG (petart.js) so he can breathe, wag and react;
     // the emoji stays as the fallback if that module ever fails to load.
     const petBodyHTML = (typeof petDogSVG === 'function')
-        ? petDogSVG({ stageCss: stage.stageCss, size: stage.size, mood })
+        ? petDogSVG({ stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood, level: 1 })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
         <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
@@ -1530,8 +1530,18 @@ function renderWordPet() {
     // Pet creature + accessories + poops. The dog itself is the rigged SVG
     // from petart.js (breathing, wagging, blinking, reacting) — the emoji
     // remains the fallback if that module is ever unavailable.
+    const _slotsUsed = (appState.activeAccessories || []).map(id => {
+        const a = DOG_ACCESSORIES.find(x => x.id === id);
+        return a ? a.slot : null;
+    });
     const petArtHTML = (typeof petDogSVG === 'function')
-        ? petDogSVG({ stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood })
+        ? petDogSVG({
+            stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood,
+            level, stageMinLevel: stage.minLevel,
+            // a bought hat/necklace always wins — he never wears two
+            hasHeadAccessory: _slotsUsed.indexOf('head') !== -1,
+            hasNeckAccessory: _slotsUsed.indexOf('neck') !== -1,
+          })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
         <div class="pet-wrapper">
@@ -1990,14 +2000,29 @@ function showLevelUpCelebration(newLevel, oldLevel) {
         <div class="level-up-level">Level ${newLevel}</div>
     `;
 
+    // Every 5 levels inside a stage unlocks a visible upgrade (collar → hat
+    // → jewellery); every 20 a whole new breed. Show whichever just happened,
+    // drawn with the live rig so the child sees exactly what changed.
+    const drawDog = (lv, st, px) => (typeof petDogSVG === 'function')
+        ? petDogSVG({ stageCss: st.stageCss, size: px, level: lv, stageMinLevel: st.minLevel })
+        : `<span style="font-size:${px}px">${st.fallback}</span>`;
+    const newTier = (typeof petTierForLevel === 'function') ? petTierForLevel(newLevel, stage.minLevel) : 0;
+    const oldTier = (typeof petTierForLevel === 'function') ? petTierForLevel(oldLevel, oldStage.minLevel) : 0;
+
     if (stageChanged) {
         content += `
             <div class="level-up-evolution">
-                <img src="${oldStage.img}" alt="${oldStage.name}" style="width:${Math.min(oldStage.size, 64)}px;height:${Math.min(oldStage.size, 64)}px">
+                ${drawDog(oldLevel, oldStage, 64)}
                 <span style="font-size:24px">→</span>
-                <img src="${stage.img}" alt="${stage.name}" style="width:${Math.min(stage.size, 80)}px;height:${Math.min(stage.size, 80)}px">
+                ${drawDog(newLevel, stage, 84)}
             </div>
-            <div class="level-up-stage-name">Your dog evolved to ${stage.name}!</div>
+            <div class="level-up-stage-name">Milo tiến hóa thành ${stage.name}! 🐕</div>
+        `;
+    } else if (newTier > oldTier) {
+        const what = (typeof petTierLabel === 'function') ? petTierLabel(newTier) : 'món đồ mới';
+        content += `
+            <div class="level-up-evolution">${drawDog(newLevel, stage, 88)}</div>
+            <div class="level-up-stage-name">Milo có ${what} mới! ✨</div>
         `;
     }
 
