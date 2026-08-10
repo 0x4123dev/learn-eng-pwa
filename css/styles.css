@@ -804,6 +804,156 @@
             .pd-body-grp, .pd-head-grp, .pd-tail, .pd-lid, .pd-tongue, .pd-shadow, .pd-sparkles { animation: none; }
         }
 
+        /* ===== Friends (Profile) ===== */
+        .friends-section { margin-bottom: 8px; }
+        .friends-empty { font-size: 13px; color: var(--text-secondary); padding: 14px 4px; text-align: center; }
+        .friend-invite-box { display: flex; gap: 8px; margin-bottom: 10px; }
+        .friend-invite-input {
+            flex: 1 1 auto; padding: 10px 12px; border-radius: 12px; font-family: inherit; font-size: 14px;
+            border: 1.5px solid var(--glass-border); background: var(--glass-bg, rgba(255,255,255,0.85));
+        }
+        .friend-invite-btn {
+            flex: 0 0 auto; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; font-weight: 800; font-family: inherit;
+        }
+        .friend-msg { font-size: 12.5px; margin-bottom: 8px; color: var(--text-primary); }
+        .friend-group-title { font-size: 12px; font-weight: 800; color: var(--text-secondary); margin: 12px 0 6px; }
+        .friend-row {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px;
+            border-radius: 14px; background: var(--glass-bg, rgba(255,255,255,0.85));
+            border: 1.5px solid var(--glass-border); cursor: pointer;
+        }
+        .friend-row.invite { border-color: rgba(124,58,237,0.45); }
+        .friend-face { flex: 0 0 auto; width: 40px; display: flex; justify-content: center; }
+        .friend-info { flex: 1 1 auto; min-width: 0; }
+        .friend-name { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+        .friend-meta { font-size: 11px; color: var(--text-secondary); }
+        .friend-actions { display: flex; gap: 6px; }
+        .friend-btn {
+            border: none; cursor: pointer; width: 34px; height: 34px; border-radius: 50%;
+            font-size: 15px; font-weight: 800; font-family: inherit;
+        }
+        .friend-btn.accept { background: #22c55e; color: #fff; }
+        .friend-btn.decline { background: rgba(0,0,0,0.10); color: var(--text-primary); }
+        .friend-go { color: var(--text-secondary); font-size: 18px; }
+        .friend-pending { font-size: 11.5px; color: var(--text-secondary); margin-top: 6px; }
+        .friend-pending-chip { display: inline-block; margin-right: 6px; }
+        .friend-back { background: none; border: none; cursor: pointer; font-family: inherit;
+            font-size: 13px; color: var(--text-secondary); padding: 4px 0 10px; }
+        .friend-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .friend-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 6px; }
+        .friend-card-stats > div {
+            background: var(--glass-bg, rgba(255,255,255,0.85)); border: 1.5px solid var(--glass-border);
+            border-radius: 12px; padding: 10px 4px; text-align: center;
+        }
+        .friend-card-stats b { display: block; font-size: 17px; color: var(--text-primary); }
+        .friend-card-stats span { font-size: 10.5px; color: var(--text-secondary); }
+        .friend-days { display: flex; gap: 6px; flex-wrap: wrap; }
+        .friend-day { flex: 1 1 0; min-width: 44px; text-align: center; padding: 8px 2px; border-radius: 10px;
+            background: rgba(124,58,237,0.10); font-size: 10.5px; color: var(--text-secondary); }
+        .friend-day b { display: block; font-size: 14px; color: var(--text-primary); }
+        .friend-skill-row { display: flex; justify-content: space-between; font-size: 12.5px;
+            padding: 7px 10px; border-radius: 10px; background: var(--glass-bg, rgba(255,255,255,0.7)); margin-bottom: 5px; }
+
+        /* ===== Pet battle ===== */
+        .pet-battle-btn-hero {
+            border: none; cursor: pointer; border-radius: 50px; padding: 7px 12px;
+            background: linear-gradient(135deg, #f97316, #ef4444); color: #fff;
+            font-size: 15px; font-family: inherit; margin-right: 6px;
+            box-shadow: 0 3px 10px rgba(239,68,68,0.35);
+        }
+        .pet-battle-btn-hero:active { transform: scale(0.94); }
+        .pet-battle-screen { padding: 16px 0 90px; }
+        .pb-wrap { padding: 0 14px; }
+        .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
+        .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        .pb-ammo-card {
+            text-align: center; padding: 16px; border-radius: 18px; margin-bottom: 12px;
+            background: linear-gradient(135deg, rgba(249,115,22,0.14), rgba(239,68,68,0.10));
+            border: 1.5px solid rgba(249,115,22,0.40);
+        }
+        .pb-ammo-total { font-size: 34px; font-weight: 900; color: #ea580c; }
+        .pb-ammo-cap { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 10px; }
+        .pb-ammo-rows { display: flex; flex-direction: column; gap: 5px; }
+        .pb-ammo-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-primary); }
+        .pb-ammo-row small { color: var(--text-secondary); font-weight: 600; }
+        .pb-ready { text-align: center; font-size: 13.5px; font-weight: 800; color: #16a34a; margin-bottom: 10px; }
+        .pb-warn { text-align: center; font-size: 12.5px; color: #d97706; padding: 10px;
+            background: rgba(251,191,36,0.14); border-radius: 12px; margin-bottom: 10px; }
+        .pb-cooldown { text-align: center; padding: 14px; border-radius: 14px; margin-bottom: 10px;
+            background: rgba(124,58,237,0.10); border: 1.5px solid rgba(124,58,237,0.30); }
+        .pb-cooldown-title { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+        .pb-cooldown-sub { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+        .pb-friend-list { display: flex; flex-direction: column; gap: 8px; }
+        .pb-friend {
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            padding: 12px 14px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 800;
+            background: var(--glass-bg, rgba(255,255,255,0.85)); border: 1.5px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+        .pb-friend:disabled { opacity: 0.45; cursor: default; }
+        .pb-msg { font-size: 12.5px; color: #dc2626; margin-top: 10px; text-align: center; }
+        .pb-invite-card, .pb-result-card {
+            text-align: center; padding: 22px 16px; border-radius: 18px;
+            background: var(--glass-bg, rgba(255,255,255,0.9)); border: 1.5px solid var(--glass-border);
+        }
+        .pb-invite-title { font-size: 18px; font-weight: 900; color: var(--text-primary); }
+        .pb-invite-sub { font-size: 13px; color: var(--text-secondary); margin: 6px 0 10px; }
+        .pb-ammo-line { font-size: 13px; margin-bottom: 12px; }
+        .pb-invite-actions { display: flex; gap: 10px; justify-content: center; }
+        .pb-btn {
+            padding: 11px 20px; border-radius: 50px; border: none; cursor: pointer;
+            font-family: inherit; font-size: 14px; font-weight: 800;
+            background: rgba(0,0,0,0.08); color: var(--text-primary);
+        }
+        .pb-btn.primary { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; }
+        .pb-btn:disabled { opacity: 0.45; }
+        .pb-result-card.win { border-color: rgba(34,197,94,0.5); }
+        .pb-result-emoji { font-size: 48px; }
+        .pb-result-title { font-size: 20px; font-weight: 900; margin: 6px 0; color: var(--text-primary); }
+        .pb-result-hp { font-size: 13px; color: var(--text-secondary); }
+        .pb-result-coins { font-size: 24px; font-weight: 900; color: #d97706; margin: 10px 0; }
+        .pb-result-hint { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
+
+        /* the game itself */
+        .pb-game { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 0; }
+        .pb-hud { display: flex; align-items: center; gap: 8px; }
+        .pb-hud-side { flex: 1 1 0; min-width: 0; }
+        .pb-hud-side.right { text-align: right; }
+        .pb-hud-name { font-size: 11.5px; font-weight: 800; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pb-hp { height: 9px; border-radius: 50px; background: rgba(0,0,0,0.12); overflow: hidden; margin: 3px 0; }
+        .pb-hp-fill { height: 100%; border-radius: 50px; transition: width .35s ease; }
+        .pb-hp-fill.me { background: linear-gradient(90deg, #34d399, #16a34a); }
+        .pb-hp-fill.foe { background: linear-gradient(90deg, #fb7185, #e11d48); }
+        .pb-hud-ammo { font-size: 11px; color: var(--text-secondary); }
+        .pb-hud-mid { flex: 0 0 auto; text-align: center; }
+        .pb-round { font-size: 11px; font-weight: 800; color: var(--text-primary); }
+        .pb-wind { font-size: 12px; color: var(--text-secondary); }
+        .pb-canvas { width: 100%; height: auto; border-radius: 14px; display: block;
+            border: 1.5px solid var(--glass-border); background: #bfe6ff; }
+        .pb-banner { text-align: center; font-size: 13px; font-weight: 800; min-height: 18px; color: var(--text-primary); }
+        .pb-controls { display: flex; flex-direction: column; gap: 8px; }
+        .pb-slider-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary); }
+        .pb-slider-row label { flex: 0 0 74px; }
+        .pb-slider-row input { flex: 1 1 auto; }
+        .pb-barrels { display: flex; gap: 6px; }
+        .pb-barrel {
+            flex: 1 1 0; padding: 9px 2px; border-radius: 10px; cursor: pointer; font-family: inherit;
+            font-size: 12px; font-weight: 800; border: 1.5px solid var(--glass-border);
+            background: var(--glass-bg, rgba(255,255,255,0.8)); color: var(--text-primary);
+        }
+        .pb-barrel.on { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; border-color: transparent; }
+        .pb-barrel:disabled { opacity: 0.35; cursor: default; }
+        .pb-fire {
+            padding: 14px; border-radius: 14px; border: none; cursor: pointer; font-family: inherit;
+            font-size: 16px; font-weight: 900; color: #fff;
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+        }
+        .pb-fire:disabled { background: rgba(0,0,0,0.15); color: var(--text-secondary); box-shadow: none; }
+
         /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */
         .pet-cheer {
             position: fixed; left: 50%; top: 72px; z-index: 260;

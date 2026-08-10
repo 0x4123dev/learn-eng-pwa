@@ -47,6 +47,7 @@ function renderProfile() {
     });
 
     // Render new profile sections
+    if (typeof initFriendsSection === 'function') { try { initFriendsSection(); } catch (e) {} }
     renderThemePicker();
     renderStickerBook();
     checkStickerUnlocks();
