@@ -91,7 +91,7 @@
     <div class="card">
       <h2>Users</h2>
       <div class="scroll"><table id="usersTable">
-        <thead><tr><th>User</th><th>Role</th><th>Activity</th><th>Exams</th><th>Last activity</th><th>Joined</th></tr></thead>
+        <thead><tr><th>User</th><th>Role</th><th>Activity</th><th>Exams</th><th>Bot practice</th><th>Last activity</th><th>Joined</th></tr></thead>
         <tbody id="usersBody"></tbody>
       </table></div>
     </div>
@@ -119,10 +119,19 @@ function pctClass(p){ return p>=75?'pct-good':p>=50?'pct-mid':'pct-low'; }
 function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString(); }
 function fmtTime(sec){ if(sec==null) return '—'; const m=Math.floor(sec/60), r=sec%60; return m+':'+String(r).padStart(2,'0'); }
 
-async function api(path){
-  const res = await fetch('/api/'+path, { headers: { 'Authorization': 'Bearer '+token } });
+async function api(path, opts){
+  opts = opts || {};
+  const headers = { 'Authorization': 'Bearer '+token };
+  if (opts.body) headers['Content-Type'] = 'application/json';
+  const res = await fetch('/api/'+path, {
+    method: opts.method || 'GET',
+    headers,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
   if (res.status===401 || res.status===403){ logout(); throw new Error('unauth'); }
-  return res.json();
+  const data = await res.json().catch(()=>null);
+  if (!res.ok) throw new Error((data && data.error) || ('HTTP '+res.status));
+  return data;
 }
 
 async function doLogin(){
@@ -157,17 +166,36 @@ async function loadUsers(){
     `<div class="stat"><b>${totalActs}</b><span>Activities (30d)</span></div>`+
     `<div class="stat"><b>${totalExams}</b><span>Exam attempts</span></div>`;
   const body = document.getElementById('usersBody');
-  if (!users.length){ body.innerHTML = `<tr><td colspan="6" class="empty">No users yet.</td></tr>`; return; }
+  if (!users.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No users yet.</td></tr>`; return; }
   body.innerHTML = users.map(u=>{
     return `<tr class="clickable" data-uid="${u.id}" data-name="${esc(u.username)}">
       <td><b>${esc(u.username)}</b></td>
       <td><span class="pill ${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
       <td><b>${u.total_count||0}</b></td>
       <td>${u.exam_count||0}</td>
+      <td><button class="btn btn-ghost bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
+                  title="Let this user practise against a bot (unlimited, 20 shots)">${u.allow_bot?'✅ On':'— Off'}</button></td>
       <td class="muted">${fmtDate(u.last_activity)}</td>
       <td class="muted">${fmtDate(u.created_at)}</td>
     </tr>`;
   }).join('');
+  // The toggle lives inside a clickable row, so it must not also select it.
+  body.querySelectorAll('.bot-toggle').forEach(btn=>{
+    btn.onclick = async (e)=>{
+      e.stopPropagation();
+      const uid = btn.getAttribute('data-uid');
+      const turningOn = !btn.classList.contains('on');
+      btn.disabled = true;
+      try {
+        await api('admin/user-flags', { method:'POST', body:{ userId: Number(uid), allowBot: turningOn } });
+        btn.classList.toggle('on', turningOn);
+        btn.textContent = turningOn ? '✅ On' : '— Off';
+      } catch (err) {
+        alert('Could not change that: ' + (err && err.message ? err.message : err));
+      }
+      btn.disabled = false;
+    };
+  });
   body.querySelectorAll('tr.clickable').forEach(tr=>{
     tr.onclick = ()=>{
       body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));

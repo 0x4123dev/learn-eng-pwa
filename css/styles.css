@@ -890,6 +890,55 @@
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        /* 🏆 Cup cabinet (Profile) */
+        .cup-cabinet { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+        .cup-empty {
+            text-align: center; padding: 22px 16px; border-radius: 16px;
+            background: rgba(0,0,0,0.03); color: var(--text-secondary); font-size: 13px; line-height: 1.5;
+        }
+        .cup-empty-icon { font-size: 40px; opacity: 0.35; margin-bottom: 8px; }
+        .cup-total { display: flex; gap: 8px; }
+        .cup-total > div {
+            flex: 1; text-align: center; padding: 10px; border-radius: 14px;
+            background: linear-gradient(140deg, #fef3c7, #fde68a);
+        }
+        .cup-total b { display: block; font-size: 21px; font-weight: 900; color: #b45309; }
+        .cup-total span { font-size: 10px; color: #92400e; }
+        .cup-shelf { padding: 12px; border-radius: 16px; background: rgba(0,0,0,0.03); }
+        .cup-basic-shelf { background: linear-gradient(150deg, #fffbeb, #fef3c7); }
+        .cup-ruby-shelf { background: linear-gradient(150deg, #fff1f2, #ffe4e6); }
+        .cup-diamond-shelf { background: linear-gradient(150deg, #eff6ff, #dbeafe); }
+        .cup-shelf-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .cup-shelf-name { font-size: 12.5px; font-weight: 800; color: var(--text-primary); }
+        .cup-shelf-count { font-size: 17px; font-weight: 900; color: var(--text-primary); }
+        .cup-row { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-height: 42px; }
+        .cup-slot.empty { color: var(--text-secondary); opacity: 0.4; font-size: 20px; padding-left: 4px; }
+        .cup-more { font-size: 13px; font-weight: 800; color: var(--text-secondary); margin-left: 4px; }
+        .cup { line-height: 1; animation: cup-pop 0.35s ease both; }
+        /* Each tier gets its own metal, so a shelf reads at a glance. */
+        .cup-basic { filter: drop-shadow(0 2px 3px rgba(180,83,9,0.35)); }
+        .cup-ruby { filter: drop-shadow(0 2px 4px rgba(190,18,60,0.45)) hue-rotate(-50deg) saturate(2.2); }
+        .cup-diamond { filter: drop-shadow(0 3px 6px rgba(37,99,235,0.5)) hue-rotate(160deg) saturate(1.8) brightness(1.15); }
+        @keyframes cup-pop { from { opacity: 0; transform: scale(0.4) translateY(6px); } to { opacity: 1; transform: none; } }
+        .cup-shelf-foot { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+        .cup-merge-btn {
+            width: 100%; padding: 9px; border: none; border-radius: 12px; cursor: pointer;
+            background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+            font-family: inherit; font-size: 12px; font-weight: 800;
+            box-shadow: 0 2px 8px rgba(217,119,6,0.35);
+        }
+        .cup-merge-btn:active { transform: scale(0.97); }
+
+        /* 🤖 practice mode (admin-unlocked) */
+        .pb-practice-card { margin-top: 12px; text-align: center; }
+        .pb-practice-btn { width: 100%; }
+        .pb-practice-sub { font-size: 10.5px; color: var(--text-secondary); margin-top: 5px; }
+        .pb-practice-note {
+            font-size: 11.5px; color: var(--text-secondary); margin: 10px 0;
+            padding: 8px 10px; border-radius: 10px; background: rgba(0,0,0,0.04); line-height: 1.4;
+        }
+        .pb-result-cup { font-size: 13px; font-weight: 800; color: #b45309; margin-top: 4px; }
+
         /* EN/VI flags — English is the default on every visit */
         .pb-lang { display: flex; gap: 5px; margin-left: auto; }
         .pb-flag {

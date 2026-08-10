@@ -48,6 +48,7 @@ function renderProfile() {
 
     // Render new profile sections
     if (typeof initFriendsSection === 'function') { try { initFriendsSection(); } catch (e) {} }
+    if (typeof renderCupCabinet === 'function') { try { renderCupCabinet(); } catch (e) {} }
     renderThemePicker();
     renderStickerBook();
     checkStickerUnlocks();

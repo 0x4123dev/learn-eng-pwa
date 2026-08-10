@@ -86,6 +86,12 @@ const PB_STR = {
     turnMiss: 'miss',
 
     errChallenge: "Couldn't send the challenge", errAccept: "Couldn't join the battle",
+    cupWon: '+1 cup for the cabinet!',
+    practiceBtn: '🤖 Practice vs bot', practiceSub: 'Full 20 shots · no waiting · no reward',
+    practiceTitle: '🤖 Practice', practiceOver: 'Practice over',
+    practiceWin: 'You beat the bot! 🎉', practiceLose: 'The bot won this one 💪',
+    practiceNote: 'Practice earns no coins or cups — beat a friend for those! 🏆',
+    practiceAgain: '🤖 Play again',
     resultWin: 'Victory!', resultLose: 'Lost — get them next time!',
     resultHint: 'Keep studying for 3 days to load up for the next battle! 🚀',
     done: 'Done',
@@ -146,6 +152,12 @@ const PB_STR = {
     turnMiss: 'trượt',
 
     errChallenge: 'Không gửi được lời thách đấu', errAccept: 'Không tham gia được',
+    cupWon: '+1 cúp vào tủ cúp!',
+    practiceBtn: '🤖 Luyện tập với máy', practiceSub: 'Đủ 20 đạn · không phải chờ · không có thưởng',
+    practiceTitle: '🤖 Luyện tập', practiceOver: 'Hết trận luyện tập',
+    practiceWin: 'Bé thắng máy rồi! 🎉', practiceLose: 'Máy thắng trận này 💪',
+    practiceNote: 'Luyện tập không có xu và cúp — thắng bạn bè mới có nhé! 🏆',
+    practiceAgain: '🤖 Chơi lại',
     resultWin: 'Chiến thắng!', resultLose: 'Thua rồi — lần sau cố lên!',
     resultHint: 'Học tiếp 3 ngày để nạp đạn cho trận sau nhé! 🚀',
     done: 'Xong',
@@ -195,6 +207,7 @@ function openPetBattle() {
 }
 function closePetBattle() {
   _pbShowingResult = false;
+  if (typeof botClearGame === 'function') botClearGame();
   _pbStopPolling();
   _pbCloseLink();
   if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
@@ -398,6 +411,11 @@ function renderPetBattle() {
          </div>`}
     <div class="pb-friend-list">${list}</div>
     ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}
+    ${st.allowBot ? `
+      <div class="pb-practice-card">
+        <button class="pb-btn primary pb-practice-btn" onclick="startBotBattle()">${pbT('practiceBtn')}</button>
+        <div class="pb-practice-sub">${pbT('practiceSub')}</div>
+      </div>` : ''}
     ${_pbHistoryPanel()}`);
 }
 
@@ -619,10 +637,72 @@ function startPetBattleGame(view) {
   _pbGame.start();
 }
 
+// ---- 🤖 practice vs bot (admin-unlocked, entirely local) ----
+function startBotBattle() {
+  if (_pbGame && !_pbGame.finished) return;
+  const screen = document.getElementById('petBattleScreen');
+  if (!screen || typeof PetBattleGame !== 'function' || typeof botSetGame !== 'function') return;
+  if (_pbGame) { try { _pbGame.destroy(); } catch (e) {} _pbGame = null; }
+  _pbShowingResult = false;
+
+  const pet = _pbMyPet();
+  let seed = 1;
+  try { seed = (Math.floor(Math.random() * 0x7fffffff) >>> 0) || 1; } catch (e) {}
+
+  // The bot mirrors the child's own pet level, so practice measures aim
+  // rather than who has been studying longer.
+  const view = {
+    id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
+    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP },
+    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP },
+  };
+
+  _pbStopPolling();                 // practice talks to nobody
+  _pbGame = new PetBattleGame({
+    view,
+    mount: screen,
+    link: null,
+    // A remote opponent replies through the network; the bot replies here.
+    // Same entry point, so the game code cannot tell them apart.
+    sendTurn: (turn) => { botOnPlayerTurnDone(); return Promise.resolve(null); },
+    onFinish: (result) => finishPetBattle(result),
+  });
+  botSetGame(_pbGame);
+  _pbGame.start();
+}
+
+// Practice pays NOTHING: no coins, no cup, no history row. Only the aim
+// practice is real, and that is the point of it.
+function finishBotBattle(result) {
+  const won = !!result.won;
+  if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
+  _pbGame = null;
+  if (typeof botClearGame === 'function') botClearGame();
+  _pbShowingResult = true;
+  const screen = document.getElementById('petBattleScreen');
+  if (screen) {
+    screen.innerHTML = _pbShell(`
+      <div class="pb-result-card ${won ? 'win' : 'lose'}">
+        <div class="pb-result-emoji">${won ? '🎯' : '🤖'}</div>
+        <div class="pb-result-title">${won ? pbT('practiceWin') : pbT('practiceLose')}</div>
+        <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ 🤖</div>
+        <div class="pb-practice-note">${pbT('practiceNote')}</div>
+        <div class="pb-invite-actions">
+          <button class="pb-btn primary" onclick="_pbShowingResult=false;startBotBattle()">${pbT('practiceAgain')}</button>
+          <button class="pb-btn" onclick="_pbShowingResult=false;closePetBattle()">${pbT('done')}</button>
+        </div>
+      </div>`);
+  }
+}
+
 // Battle over: BOTH players are paid (losing costs nothing).
 function finishPetBattle(result) {
+  if (result && result.practice) return finishBotBattle(result);   // practice pays nothing
   const won = !!result.won;
   const coins = 20 + (won ? 30 : 0);
+  // A trophy has to mean a real friend was beaten, so it is awarded here and
+  // nowhere else — never on the practice path above.
+  if (won && typeof awardCup === 'function') { try { awardCup(1); } catch (e) {} }
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coins;
     // NOTE: petBattleHistory — appState.battleHistory belongs to the older
@@ -665,6 +745,7 @@ function finishPetBattle(result) {
         <div class="pb-result-title">${won ? pbT('resultWin') : pbT('resultLose')}</div>
         <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ ${pbEsc(result.foeName || '')}</div>
         <div class="pb-result-coins">+${coins} 🪙</div>
+        ${won ? `<div class="pb-result-cup">🏆 ${pbT('cupWon')}</div>` : ''}
         <div class="pb-result-hint">${pbT('resultHint')}</div>
         <button class="pb-btn primary" onclick="closePetBattle()">${pbT('done')}</button>
       </div>`);
@@ -678,6 +759,7 @@ if (typeof module !== 'undefined' && module.exports) {
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
+    startBotBattle, finishBotBattle,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },
     _pbGetState: () => _pbState,

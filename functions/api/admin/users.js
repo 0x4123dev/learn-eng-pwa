@@ -8,7 +8,7 @@ export async function onRequestGet({ request, env }) {
   if (auth.role !== 'admin') return err('Forbidden', 403);
 
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.username, u.role, u.created_at,
+    `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot,
             (SELECT COUNT(*) FROM exam_attempts e WHERE e.user_id = u.id) AS exam_count,
             (SELECT COUNT(*) FROM activities  c WHERE c.user_id = u.id) AS activity_count,
             MAX(
@@ -21,6 +21,7 @@ export async function onRequestGet({ request, env }) {
 
   const users = (results || []).map(u => ({
     id: u.id, username: u.username, role: u.role, created_at: u.created_at,
+    allow_bot: !!u.allow_bot,
     exam_count: u.exam_count || 0,
     activity_count: u.activity_count || 0,
     total_count: (u.exam_count || 0) + (u.activity_count || 0),

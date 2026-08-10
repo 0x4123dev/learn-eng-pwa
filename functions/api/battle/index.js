@@ -13,7 +13,12 @@ export async function onRequestGet({ request, env }) {
   const readyAt = await nextBattleAt(env, auth.uid);
   const current = await currentBattle(env, auth.uid);
 
+  // Practice-vs-bot is an admin-granted switch: the arena only shows the
+  // button when the server says so, so a child cannot unlock it themselves.
+  const me = await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(auth.uid).first();
+
   return json({
+    allowBot: !!(me && me.allow_bot),
     ammo,
     stats,
     readyAt,                       // ms epoch, or null when ready now
