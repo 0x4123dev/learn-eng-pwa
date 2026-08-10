@@ -230,6 +230,41 @@ function damageAt(hit, target, level) {
   return Math.max(1, Math.round(base * falloff * direct));
 }
 
+// Level 200 is where blast radius and shell size hit their caps — the natural
+// "fully grown" reference to measure a pet against.
+const POWER_REF_LEVEL = 200;
+
+// What the child's level is actually worth in a fight, for the arena card.
+// Derived from the same functions the physics uses (never re-typed constants),
+// so the numbers shown can never drift from the numbers fired.
+function powerProfile(level) {
+  const lv = Math.max(1, Math.trunc(level || 1));
+  const per10 = (fn) => fn(lv + 10) - fn(lv);
+  // Blast radius and shell size stop at level 200, but damage keeps climbing
+  // forever — so past 200 a raw "value/max" reads 60.0/36.0 and the bar runs
+  // off its track. `ratio` is what the bar uses; `beyond` says to drop the
+  // "/max" and celebrate instead of showing a nonsense fraction.
+  const stat = (key, icon, label, fn) => {
+    const value = fn(lv);
+    const max = fn(POWER_REF_LEVEL);
+    return {
+      key, icon, label, value, max,
+      per10: per10(fn),
+      ratio: max > 0 ? Math.min(1, value / max) : 0,
+      beyond: value > max,
+    };
+  };
+  return {
+    level: lv,
+    refLevel: POWER_REF_LEVEL,
+    stats: [
+      stat('blast', '💥', 'Bán kính nổ', blastRadius),
+      stat('damage', '🎯', 'Sát thương mỗi phát', shotDamage),
+      stat('shell', '⚫', 'Cỡ đạn', shellSize),
+    ],
+  };
+}
+
 // The most a turn could possibly do — the server clamps reported damage to
 // this so a tampered client can't claim a bigger hit than physics allows.
 function maxTurnDamage(shots, level) {
@@ -244,7 +279,7 @@ const BattleCalc = {
   AMMO_STREAK_BONUS, AMMO_CAP, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
   computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
   spawnPoints, windForRound, volleyAngles, simulateShot,
-  blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage,
+  blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
 };
 if (typeof window !== 'undefined') window.BattleCalc = BattleCalc;
 
@@ -254,6 +289,7 @@ if (typeof module !== 'undefined' && module.exports) {
     AMMO_STREAK_BONUS, AMMO_CAP, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
     computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
     spawnPoints, windForRound, volleyAngles, simulateShot,
-    blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, BattleCalc,
+    blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
+    POWER_REF_LEVEL, BattleCalc,
   };
 }

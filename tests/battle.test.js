@@ -92,6 +92,74 @@ suite('battle: ammo is earned only by learning', () => {
         assert.truthy(row.label.includes('160/160'), `got "${row.label}"`);
     });
 
+    // The arena showed ammo only, so a child could not tell that their pet's
+    // level also decides how hard each shot lands.
+    test('the power card reports what the level is actually worth', () => {
+        const p = C.powerProfile(42);
+        assert.equal(p.level, 42);
+        assert.equal(p.stats.length, 3);
+        for (const s of p.stats) {
+            assert.truthy(s.icon && s.label, `${s.key} needs an icon and a label`);
+            assert.truthy(s.value > 0 && s.max > 0, `${s.key} needs real numbers`);
+        }
+    });
+
+    // Damage is uncapped while blast and shell stop at level 200, so a level
+    // 400 pet showed "60.0/36.0" and a bar running off its own track.
+    test('the bar never overflows, at any level', () => {
+        for (const lv of [1, 42, 199, 200, 201, 400, 5000]) {
+            for (const s of C.powerProfile(lv).stats) {
+                assert.truthy(s.ratio >= 0 && s.ratio <= 1,
+                    `level ${lv}, ${s.key}: ratio ${s.ratio} must stay within 0..1`);
+            }
+        }
+    });
+
+    test('a stat past the level-200 reference is flagged, not shown as a fraction', () => {
+        const dmg = (lv) => C.powerProfile(lv).stats.find(s => s.key === 'damage');
+        assert.falsy(dmg(150).beyond, 'below the reference is a normal fraction');
+        assert.truthy(dmg(400).beyond, 'above the reference must be flagged');
+        assert.truthy(dmg(400).value > dmg(400).max, 'this is exactly the case that read 60.0/36.0');
+        assert.equal(dmg(400).ratio, 1, 'and its bar sits full');
+    });
+
+    // Re-typed constants are how a display starts lying about the physics.
+    test('power numbers come from the physics functions themselves', () => {
+        for (const lv of [1, 25, 100, 200, 500]) {
+            const p = C.powerProfile(lv);
+            const by = (k) => p.stats.find(s => s.key === k).value;
+            assert.equal(by('blast'), C.blastRadius(lv));
+            assert.equal(by('damage'), C.shotDamage(lv));
+            assert.equal(by('shell'), C.shellSize(lv));
+        }
+    });
+
+    test('a higher level really does mean a stronger card', () => {
+        const low = C.powerProfile(5), high = C.powerProfile(150);
+        for (const k of ['blast', 'damage', 'shell']) {
+            const v = (p) => p.stats.find(s => s.key === k).value;
+            assert.truthy(v(high) > v(low), `${k} must grow with level`);
+        }
+    });
+
+    test('a capped stat promises no further growth', () => {
+        // Blast radius and shell size cap at level 200; the card must not keep
+        // dangling "+x mỗi 10 cấp" once more levels buy nothing.
+        const p = C.powerProfile(400);
+        for (const k of ['blast', 'shell']) {
+            assert.equal(p.stats.find(s => s.key === k).per10, 0, `${k} is capped, per10 must be 0`);
+        }
+        assert.truthy(p.stats.find(s => s.key === 'damage').per10 > 0, 'damage keeps growing');
+    });
+
+    test('junk levels never break the card', () => {
+        for (const bad of [0, -50, null, undefined, NaN, 1.7]) {
+            const p = C.powerProfile(bad);
+            assert.truthy(p.level >= 1, `level ${bad} → ${p.level}`);
+            for (const s of p.stats) assert.truthy(Number.isFinite(s.value), `${s.key} must be finite`);
+        }
+    });
+
     // The server is authoritative; a drifted copy would let a client claim
     // ammo the server would never grant.
     test('server and client ammo constants are identical', () => {

@@ -87,6 +87,65 @@ function _pbShell(inner) {
     </div>`;
 }
 
+// The arena showed ammo only, so a child had no idea their pet's LEVEL also
+// decides how hard each shot lands. Show the pet, its level, and exactly what
+// the level buys — numbers taken from the same functions the physics uses.
+function _pbPowerPanel() {
+  const pet = _pbMyPet();
+  const p = (typeof powerProfile === 'function') ? powerProfile(pet.level) : null;
+  if (!p) return '';
+
+  let face = '<span style="font-size:40px">🐶</span>';
+  try {
+    if (typeof petDogSVG === 'function' && typeof getDogStage === 'function') {
+      const stage = getDogStage(pet.level);
+      face = petDogSVG({ stageCss: stage.stageCss, size: 62, level: pet.level, stageMinLevel: stage.minLevel });
+    }
+  } catch (e) {}
+
+  const n1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+  const rows = p.stats.map(s => {
+    const pct = Math.max(3, Math.round(s.ratio * 100));
+    const maxed = s.per10 <= 0.001;
+    const growth = maxed ? 'Đã đạt tối đa 🎉' : `+${n1(s.per10)} mỗi 10 cấp`;
+    return `
+      <div class="pb-pow-row">
+        <div class="pb-pow-head">
+          <span>${s.icon} ${pbEsc(s.label)}</span>
+          <b>${n1(s.value)}${s.beyond ? '' : `<small>/${n1(s.max)}</small>`}</b>
+        </div>
+        <div class="pb-pow-bar"><i style="width:${pct}%"></i></div>
+        <div class="pb-pow-hint">${s.beyond ? `Vượt mốc cấp ${p.refLevel} 🎉 · ` : ''}${growth}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="pb-pow-card">
+      <div class="pb-pow-top">
+        <div class="pb-pow-face">${face}</div>
+        <div class="pb-pow-id">
+          <div class="pb-pow-name">${pbEsc(pet.petName)}</div>
+          <div class="pb-pow-level">Cấp <b>${p.level}</b></div>
+          <div class="pb-pow-note">Cấp càng cao, đạn càng to và nổ càng mạnh</div>
+        </div>
+      </div>
+      <div class="pb-pow-rows">${rows}</div>
+      <div class="pb-pow-foot">Tối đa ở cấp ${p.refLevel} · lên cấp bằng cách học bài 📚</div>
+    </div>`;
+}
+
+// "Bé cấp 42 vs cấp 30" — a child sizing up an opponent should see whose pet
+// is stronger before accepting.
+function _pbVersusLine(b) {
+  const mine = _pbMyPet().level;
+  const theirs = (b && b.foe && b.foe.level) || 1;
+  const verdict = mine > theirs ? 'Pet của bé mạnh hơn! 💪'
+    : mine < theirs ? 'Pet bạn ấy mạnh hơn — ngắm thật chuẩn nhé! 🎯'
+    : 'Ngang sức ngang tài! ⚖️';
+  return `<div class="pb-versus">Pet của bé <b>cấp ${mine}</b> &nbsp;vs&nbsp; <b>cấp ${theirs}</b>
+    <div class="pb-versus-note">${verdict}</div></div>`;
+}
+
 function _pbAmmoPanel(st) {
   const rows = (typeof ammoBreakdown === 'function' ? ammoBreakdown(st.stats || {}) : [])
     .map(r => {
@@ -132,6 +191,7 @@ function renderPetBattle() {
       <div class="pb-invite-card">
         <div class="pb-invite-title">⚔️ ${pbEsc(b.foe.name || 'Bạn')} thách đấu!</div>
         <div class="pb-invite-sub">Nhận lời trong <b>${Math.ceil(left / 1000)}</b> giây</div>
+        ${_pbVersusLine(b)}
         <div class="pb-ammo-line">Đạn của bé: <b>${st.ammo}</b> 🚀</div>
         <div class="pb-invite-actions">
           <button class="pb-btn primary" onclick="acceptPetBattle(${b.id})" ${st.ammo <= 0 ? 'disabled' : ''}>Chiến! ⚔️</button>
@@ -165,6 +225,7 @@ function renderPetBattle() {
     : `<div class="pb-empty">Chưa có bạn nào. Vào Hồ sơ → 👥 Bạn bè để kết bạn nhé!</div>`;
 
   screen.innerHTML = _pbShell(`
+    ${_pbPowerPanel()}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
