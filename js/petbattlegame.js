@@ -45,7 +45,13 @@ function PetBattleGame(opts) {
   this.emotes = [];                       // floating emoji reactions
   this.foeHere = false;
   this._raf = null;
+  this._aimTimer = null;
+  this._effectTimers = [];
   this._destroyed = false;
+  this._shellReady = false;
+  this.reducedMotion = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
 }
 
 // ---- realtime events (all no-ops when the link is unavailable) ----
@@ -63,9 +69,18 @@ PetBattleGame.prototype.onLiveTurn = function (turn) {
 PetBattleGame.prototype.onOpponentAim = function (m) {
   if (this.finished || this.myTurn) return;
   this.foeAiming = { angle: +m.angle || 0, power: +m.power || 0, shots: m.shots || 1, at: Date.now() };
+  if (this._aimTimer) clearTimeout(this._aimTimer);
+  const aimAt = this.foeAiming.at;
+  this._aimTimer = setTimeout(() => {
+    if (this.foeAiming && this.foeAiming.at === aimAt) {
+      this.foeAiming = null;
+      this.draw();
+    }
+  }, this.reducedMotion ? 0 : 4000);
+  this.draw();
 };
 PetBattleGame.prototype.onEmote = function (e) {
-  this.emotes.push({ e, t: 0, life: 90, x: this.foePos.x, y: this.foePos.y - 90 });
+  this._addEmote(e, this.foePos.x, this.foePos.y - 90);
 };
 PetBattleGame.prototype.onPresence = function (m) {
   this.foeHere = (m.peers || 0) > 1;
@@ -76,15 +91,32 @@ PetBattleGame.prototype.onLinkMode = function (mode) {
   this._updateLinkPill();
 };
 PetBattleGame.prototype._updateLinkPill = function () {
-  const el = document.getElementById('pbLink');
+  const el = this._el('pbLink');
   if (!el) return;
   const live = this.linkMode === 'live';
-  el.className = 'pb-link ' + (live ? 'live' : 'slow');
-  el.textContent = live ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Đang chờ bạn…') : '🐢 Chậm';
+  const connecting = this.linkMode === 'connecting';
+  const className = 'pb-link ' + (live ? 'live' : connecting ? 'connecting' : 'slow');
+  const label = live
+    ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Đang chờ bạn…')
+    : connecting ? '… Đang kết nối' : '🐢 Kết nối chậm';
+  if (el.className !== className) el.className = className;
+  if (el.textContent !== label) el.textContent = label;
 };
 PetBattleGame.prototype.sendEmote = function (e) {
   if (this.link) this.link.sendEmote(e);
-  this.emotes.push({ e, t: 0, life: 90, x: this.mePos.x, y: this.mePos.y - 90 });
+  this._addEmote(e, this.mePos.x, this.mePos.y - 90);
+};
+PetBattleGame.prototype._addEmote = function (e, x, y) {
+  const emote = { e, t: 0, life: 90, x, y, static: this.reducedMotion };
+  this.emotes.push(emote);
+  if (!this.reducedMotion) { this._requestFrame(); return; }
+  this.draw();
+  const timer = setTimeout(() => {
+    if (this._destroyed) return;
+    this.emotes = this.emotes.filter(item => item !== emote);
+    this.draw();
+  }, 1000);
+  this._effectTimers.push(timer);
 };
 
 PetBattleGame.prototype.roundNo = function () {
@@ -99,13 +131,16 @@ PetBattleGame.prototype.waitingForOpponent = function () {
 
 PetBattleGame.prototype.start = function () {
   this.render();
-  this.loop();
 };
 
 PetBattleGame.prototype.destroy = function () {
   this._destroyed = true;
   if (this._raf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(this._raf);
+  if (this._aimTimer) clearTimeout(this._aimTimer);
+  this._effectTimers.forEach(timer => clearTimeout(timer));
   this._raf = null;
+  this._aimTimer = null;
+  this._effectTimers = [];
 };
 
 // ---- layout ----
@@ -115,56 +150,126 @@ PetBattleGame.prototype.render = function () {
   const maxShots = C.maxShotsThisTurn(this.myAmmo);
   this.shots = Math.max(1, Math.min(this.shots, Math.max(1, maxShots)));
 
-  const barrels = [1, 2, 3, 4].map(n => `
-    <button class="pb-barrel ${this.shots === n ? 'on' : ''}" ${n > maxShots ? 'disabled' : ''}
-            onclick="_pbGameSetShots(${n})">${n} tia</button>`).join('');
+  if (!this._shellReady) {
+    const barrels = [1, 2, 3, 4].map(n => `
+      <button class="pb-barrel" type="button" data-pb-shots="${n}"
+              aria-label="Nạp ${n} tia" onclick="_pbGameSetShots(${n})">${n} tia</button>`).join('');
 
-  this.mount.innerHTML = `
-    <div class="pb-game">
+    this.mount.innerHTML = `
+      <div class="pb-game">
       <div class="pb-hud">
         <div class="pb-hud-side">
-          <div class="pb-hud-name">${esc(v.me.name || 'Bé')}</div>
-          <div class="pb-hp"><div class="pb-hp-fill me" id="pbHpMe" style="width:${this.myHp}%"></div></div>
+          <div class="pb-hud-name" id="pbMeName">${esc(v.me.name || 'Bé')}</div>
+          <div class="pb-hp" id="pbHpTrackMe" role="progressbar" aria-labelledby="pbMeName pbHpMeText"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="pb-hp-fill me" id="pbHpMe"></div>
+          </div>
+          <div class="pb-hp-value" id="pbHpMeText"></div>
           <div class="pb-hud-ammo" id="pbAmmoMe">${this.myAmmo} 🚀</div>
         </div>
         <div class="pb-hud-mid">
-          <div class="pb-round">Vòng ${this.roundNo()}/${C.BATTLE_ROUNDS}</div>
-          <div class="pb-wind">💨 ${this.wind() > 0 ? '→' : this.wind() < 0 ? '←' : '·'} ${Math.abs(this.wind())}</div>
-          <div class="pb-link ${this.linkMode === 'live' ? 'live' : 'slow'}" id="pbLink">${
-            this.linkMode === 'live' ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Đang chờ bạn…') : '🐢 Chậm'}</div>
+          <div class="pb-round" id="pbRound"></div>
+          <div class="pb-wind" id="pbWind"></div>
+          <div class="pb-link" id="pbLink" role="status" aria-live="polite"></div>
         </div>
         <div class="pb-hud-side right">
-          <div class="pb-hud-name">${esc(v.foe.name || 'Bạn')}</div>
-          <div class="pb-hp"><div class="pb-hp-fill foe" id="pbHpFoe" style="width:${this.foeHp}%"></div></div>
+          <div class="pb-hud-name" id="pbFoeName">${esc(v.foe.name || 'Bạn')}</div>
+          <div class="pb-hp" id="pbHpTrackFoe" role="progressbar" aria-labelledby="pbFoeName pbHpFoeText"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="pb-hp-fill foe" id="pbHpFoe"></div>
+          </div>
+          <div class="pb-hp-value" id="pbHpFoeText"></div>
           <div class="pb-hud-ammo" id="pbAmmoFoe">${this.foeAmmo} 🚀</div>
         </div>
       </div>
-      <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}"></canvas>
-      <div class="pb-banner" id="pbBanner">${esc(this.banner)}</div>
-      <div class="pb-controls" id="pbControls">
+      <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}"
+              role="img" aria-label="Chiến trường pháo binh giữa hai thú cưng" aria-describedby="pbCanvasHelp">
+        Chiến trường pháo binh giữa hai thú cưng. Dùng các thanh trượt bên dưới để chỉnh góc và lực bắn.
+      </canvas>
+      <p class="pb-sr-only" id="pbCanvasHelp">Chiến trường được vẽ trên canvas. Trạng thái HP, đạn, gió và lượt chơi được hiển thị trong phần điều khiển.</p>
+      <div class="pb-banner" id="pbBanner" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div class="pb-controls" id="pbControls" aria-label="Điều khiển bắn">
         <div class="pb-slider-row">
-          <label>Góc <b id="pbAngleVal">${Math.round(this.angle)}°</b></label>
+          <label for="pbAngle">Góc <output id="pbAngleVal" for="pbAngle"></output></label>
           <input type="range" id="pbAngle" min="10" max="80" value="${Math.round(this.angle)}"
                  oninput="_pbGameSetAngle(this.value)">
         </div>
         <div class="pb-slider-row">
-          <label>Lực <b id="pbPowerVal">${Math.round(this.power)}</b></label>
+          <label for="pbPower">Lực <output id="pbPowerVal" for="pbPower"></output></label>
           <input type="range" id="pbPower" min="10" max="100" value="${Math.round(this.power)}"
                  oninput="_pbGameSetPower(this.value)">
         </div>
-        <div class="pb-barrels">${barrels}</div>
-        <button class="pb-fire" id="pbFire" onclick="_pbGameFire()" ${this.myTurn && !this.busy ? '' : 'disabled'}>
-          ${this.myTurn ? '🔥 BẮN!' : '⏳ Chờ bạn ấy…'}
-        </button>
-        <div class="pb-emotes">
+        <div class="pb-barrels" role="group" aria-label="Số tia bắn">${barrels}</div>
+        <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()"></button>
+        <div class="pb-emotes" role="group" aria-label="Cảm xúc nhanh">
           ${['👍', '😮', '🎉', '😅', '🔥'].map(e =>
-            `<button class="pb-emote" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
+            `<button class="pb-emote" type="button" aria-label="Gửi cảm xúc ${e}" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
         </div>
       </div>
-    </div>`;
-  this.canvas = document.getElementById('pbCanvas');
-  this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
-  this._cachePets();
+      </div>`;
+    this.canvas = this._el('pbCanvas');
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    this._cachePets();
+    this._shellReady = true;
+  }
+
+  this._updateUi(maxShots);
+  this.draw();
+};
+
+PetBattleGame.prototype._el = function (id) {
+  if (this.mount && typeof this.mount.querySelector === 'function') {
+    const local = this.mount.querySelector('#' + id);
+    if (local) return local;
+  }
+  return typeof document !== 'undefined' ? document.getElementById(id) : null;
+};
+
+PetBattleGame.prototype._updateUi = function (maxShots) {
+  const C = this.calc;
+  const text = (id, value) => {
+    const el = this._el(id);
+    const next = String(value);
+    if (el && el.textContent !== next) el.textContent = next;
+  };
+  const hp = (side, value) => {
+    const safe = Math.max(0, Math.min(100, value));
+    const fill = this._el(side === 'Me' ? 'pbHpMe' : 'pbHpFoe');
+    const track = this._el(side === 'Me' ? 'pbHpTrackMe' : 'pbHpTrackFoe');
+    if (fill) fill.style.width = safe + '%';
+    if (track) track.setAttribute('aria-valuenow', String(safe));
+    text(side === 'Me' ? 'pbHpMeText' : 'pbHpFoeText', safe + ' HP');
+  };
+
+  hp('Me', this.myHp);
+  hp('Foe', this.foeHp);
+  text('pbAmmoMe', this.myAmmo + ' 🚀');
+  text('pbAmmoFoe', this.foeAmmo + ' 🚀');
+  text('pbRound', 'Vòng ' + this.roundNo() + '/' + C.BATTLE_ROUNDS);
+  const wind = this.wind();
+  text('pbWind', '💨 ' + (wind > 0 ? '→' : wind < 0 ? '←' : '·') + ' ' + Math.abs(wind));
+  text('pbBanner', this.banner);
+  text('pbAngleVal', Math.round(this.angle) + '°');
+  text('pbPowerVal', Math.round(this.power));
+
+  const angle = this._el('pbAngle'); if (angle) angle.value = Math.round(this.angle);
+  const power = this._el('pbPower'); if (power) power.value = Math.round(this.power);
+  const fire = this._el('pbFire');
+  if (fire) {
+    fire.disabled = !this.myTurn || this.busy;
+    fire.textContent = this.myTurn ? '🔥 BẮN!' : '⏳ Chờ bạn ấy…';
+  }
+  const controls = this._el('pbControls');
+  if (controls) controls.setAttribute('aria-busy', this.busy ? 'true' : 'false');
+  if (this.mount && typeof this.mount.querySelectorAll === 'function') {
+    this.mount.querySelectorAll('[data-pb-shots]').forEach(btn => {
+      const n = +(btn.getAttribute('data-pb-shots') || 0);
+      btn.disabled = n > maxShots;
+      btn.classList.toggle('on', this.shots === n);
+      btn.setAttribute('aria-pressed', this.shots === n ? 'true' : 'false');
+    });
+  }
+  this._updateLinkPill();
 };
 
 // The real pets (with their earned outfits) drawn into images once.
@@ -173,6 +278,7 @@ PetBattleGame.prototype._cachePets = function () {
     if (typeof petDogSVG !== 'function' || typeof Image === 'undefined') return null;
     const svg = petDogSVG({ stageCss: stage, size: 76, level: level, mood: 'happy' });
     const img = new Image();
+    img.onload = () => this.draw();
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     return img;
   };
@@ -292,21 +398,31 @@ PetBattleGame.prototype._drawPet = function (pos, img, facing) {
   ctx.restore();
 };
 
-PetBattleGame.prototype.loop = function () {
-  if (this._destroyed) return;
-  this.step();
-  this.draw();
-  if (typeof requestAnimationFrame === 'function') {
-    this._raf = requestAnimationFrame(() => this.loop());
+PetBattleGame.prototype._hasActiveAnimation = function () {
+  return this.flying.length > 0 || (this.blasts || []).length > 0 || this.emotes.some(e => !e.static);
+};
+
+PetBattleGame.prototype._requestFrame = function () {
+  if (this._destroyed || this._raf !== null) return;
+  if (typeof requestAnimationFrame !== 'function') {
+    this.step();
+    this.draw();
+    return;
   }
+  this._raf = requestAnimationFrame(() => {
+    this._raf = null;
+    if (this._destroyed) return;
+    this.step();
+    this.draw();
+    if (this._hasActiveAnimation()) this._requestFrame();
+  });
 };
 
 // Advance every animation by one frame.
 PetBattleGame.prototype.step = function () {
   const C = this.calc;
   this.blasts = (this.blasts || []).filter(b => (b.t += 1) < b.life);
-  this.emotes = this.emotes.filter(e => (e.t += 1) < e.life);
-  if (this.foeAiming && Date.now() - this.foeAiming.at > 4000) this.foeAiming = null;
+  this.emotes = this.emotes.filter(e => e.static || (e.t += 1) < e.life);
   if (!this.flying.length) return;
   let allDone = true;
   for (const f of this.flying) {
@@ -314,7 +430,7 @@ PetBattleGame.prototype.step = function () {
     else if (!f.done) {
       f.done = true;
       if (f.hit) {
-        this.blasts.push({ x: f.hit.x, y: f.hit.y, r: C.blastRadius(f.level), t: 0, life: 22 });
+        this.blasts.push({ x: f.hit.x, y: f.hit.y, r: C.blastRadius(f.level), t: 0, life: this.reducedMotion ? 1 : 22 });
         this.craters.push({ x: f.hit.x, y: f.hit.y, r: C.blastRadius(f.level) * 0.8 });
       }
     }
@@ -337,7 +453,11 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
       terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(),
     });
     damage += C.damageAt(sim.hit, target, level);
-    return { points: sim.points, hit: sim.hit, i: 0, done: false, size: C.shellSize(level), level };
+    return {
+      points: sim.points, hit: sim.hit,
+      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0,
+      done: false, size: C.shellSize(level), level,
+    };
   });
   return Math.min(100, damage);
 };
@@ -362,6 +482,7 @@ PetBattleGame.prototype.fire = function () {
       .catch(() => {});
     this.render();
   };
+  this._requestFrame();
 };
 
 // ---- the opponent's turn, replayed from (angle, power, shots) ----
@@ -383,6 +504,7 @@ PetBattleGame.prototype._replay = function (turn) {
     this.busy = false;
     this.render();
   };
+  this._requestFrame();
 };
 
 // ---- server state (polling transport) ----
@@ -428,14 +550,16 @@ function _pbGameSetAngle(v) {
   const g = _pbCurrentGame();
   if (!g) return;
   g.angle = +v;
-  const el = document.getElementById('pbAngleVal'); if (el) el.textContent = Math.round(g.angle) + '°';
+  const el = g._el('pbAngleVal'); if (el) el.textContent = Math.round(g.angle) + '°';
+  g.draw();
   _pbBroadcastAim(g);
 }
 function _pbGameSetPower(v) {
   const g = _pbCurrentGame();
   if (!g) return;
   g.power = +v;
-  const el = document.getElementById('pbPowerVal'); if (el) el.textContent = Math.round(g.power);
+  const el = g._el('pbPowerVal'); if (el) el.textContent = Math.round(g.power);
+  g.draw();
   _pbBroadcastAim(g);
 }
 function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }

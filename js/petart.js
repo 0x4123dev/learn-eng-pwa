@@ -75,6 +75,17 @@ function petTierForLevel(level, stageMinLevel) {
   return Math.max(0, Math.min(PET_TIERS - 1, Math.floor(within / PET_TIER_STEP)));
 }
 
+// Every level between the larger five-level outfit rewards adds one polish
+// mark. 0 is the outfit/evolution reveal itself; 1..4 progressively add coat,
+// paw, face and aura details. This makes all 20 levels in an era distinct
+// without burying the dog under twenty permanent accessories.
+function petPolishForLevel(level, stageMinLevel) {
+  const lv = Math.max(1, Math.floor(level || 1));
+  let base = stageMinLevel;
+  if (!base || base > lv) base = 1 + Math.floor((lv - 1) / 20) * 20;
+  return Math.max(0, (lv - base) % PET_TIER_STEP);
+}
+
 // The level at which the next unlock happens (null at the top of a stage).
 function petNextTierLevel(level, stageMinLevel) {
   const lv = Math.max(1, Math.floor(level || 1));
@@ -236,6 +247,33 @@ function _petJewelry(tier, acc, hidden) {
     </g>`;
 }
 
+// Small, cumulative details for the four levels between outfit unlocks.
+// Their fixed SVG geometry keeps the renderer cheap and crisp offline.
+function _petLevelAura(polish, acc) {
+  if (polish < 4) return '';
+  return `<ellipse class="pd-level-aura" cx="50" cy="58" rx="38" ry="45"
+      fill="${acc.gem}" opacity=".13" stroke="${acc.gem}" stroke-width="1.4" stroke-dasharray="3 5"/>`;
+}
+
+function _petLevelPolish(polish, acc) {
+  if (polish < 1) return '';
+  return `
+    <g class="pd-level-polish pd-polish-${polish}" aria-hidden="true">
+      <path class="pd-coat-shine" d="M39 73 q11 -8 22 0 q-11 -3 -22 0 Z" fill="#fff" opacity=".42"/>
+      ${polish >= 2 ? `<g class="pd-paw-detail" fill="none" stroke="${acc.accent}" stroke-width="1.2" stroke-linecap="round" opacity=".75">
+        <path d="M34 95 l2 -2 M39 96 l2 -2 M59 94 l2 2 M64 93 l2 2"/>
+      </g>` : ''}
+      ${polish >= 3 ? `<g class="pd-face-shine" fill="${acc.gem}">
+        <path d="M26 39 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2 Z"/>
+        <path d="M74 34 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1 Z"/>
+      </g>` : ''}
+      ${polish >= 4 ? `<g class="pd-aura-sparks" fill="#fff">
+        <circle cx="16" cy="64" r="1.8"/><circle cx="84" cy="54" r="1.8"/>
+        <circle cx="70" cy="82" r="1.4"/><circle cx="30" cy="20" r="1.4"/>
+      </g>` : ''}
+    </g>`;
+}
+
 // ---- the dog ----
 // opts: {
 //   stageCss, size, mood, level, stageMinLevel, tier,
@@ -250,17 +288,20 @@ function petDogSVG(opts) {
   const tier = (typeof opts.tier === 'number')
     ? Math.max(0, Math.min(PET_TIERS - 1, opts.tier))
     : petTierForLevel(opts.level || 1, opts.stageMinLevel);
-  // He also grows a little at every unlock, so each step is felt as well as seen.
-  const size = Math.round((opts.size || 96) * (1 + tier * 0.04));
-  // Tier 1 richens the coat a touch alongside the collar.
-  const fur = tier >= 1 ? _petShade(look.fur, 4) : look.fur;
+  const polish = (typeof opts.polish === 'number')
+    ? Math.max(0, Math.min(PET_TIER_STEP - 1, Math.floor(opts.polish)))
+    : petPolishForLevel(opts.level || 1, opts.stageMinLevel);
+  // Growth and coat lustre now move at every level, not only at outfit rungs.
+  const size = Math.round((opts.size || 96) * (1 + tier * 0.04 + polish * 0.01));
+  const fur = _petShade(look.fur, tier * 1.5 + polish * 0.8);
   const dark = _petShade(fur, -20);
   const line = _petShade(fur, -30);          // outline: keeps pale breeds readable
   const hatShape = PET_STAGE_HAT[opts.stageCss] || 'cap';
 
   return `
-<svg class="pd-dog ${moodCls}" data-tier="${tier}" viewBox="0 0 100 108" width="${size}" height="${Math.round(size * 1.08)}"
+<svg class="pd-dog ${moodCls}" data-tier="${tier}" data-polish="${polish}" viewBox="0 0 100 108" width="${size}" height="${Math.round(size * 1.08)}"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="pet dog">
+  ${_petLevelAura(polish, acc)}
   <ellipse class="pd-shadow" cx="50" cy="101" rx="26" ry="5" fill="#000" opacity=".18"/>
   <g class="pd-body-grp">
     <path class="pd-tail" d="M74 78 q14 -4 12 -18 q-2 12 -12 12 Z" fill="${dark}"/>
@@ -293,6 +334,7 @@ function petDogSVG(opts) {
     ${_petHat(look, tier, acc, hatShape, opts.hasHeadAccessory)}
   </g>
   ${_petJewelry(tier, acc, opts.hasNeckAccessory)}
+  ${_petLevelPolish(polish, acc)}
 </svg>`;
 }
 
@@ -323,6 +365,6 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     PET_BREED_LOOKS, petBreedLook, petDogSVG, petDogMiniSVG, petDogPlay, _petShade,
     PET_TIER_STEP, PET_TIERS, PET_STAGE_ORDER, PET_STAGE_ACCENT, PET_STAGE_HAT,
-    petStageAccent, petTierForLevel, petNextTierLevel, petTierLabel,
+    petStageAccent, petTierForLevel, petPolishForLevel, petNextTierLevel, petTierLabel,
   };
 }

@@ -130,6 +130,54 @@ suite('pet tiers: what each rung actually draws', () => {
     });
 });
 
+suite('pet polish: every level has a visible upgrade', () => {
+    test('polish advances from 0 to 4 between each outfit reward', () => {
+        for (const base of STAGE_MINS) {
+            for (let i = 0; i < 20; i++) {
+                assert.equal(art.petPolishForLevel(base + i, base), i % 5,
+                    `level ${base + i} polish`);
+            }
+        }
+    });
+
+    test('the four polish levels add details cumulatively', () => {
+        const at = polish => art.petDogSVG({ stageCss: 'retriever', tier: 1, polish });
+        assert.falsy(at(0).includes('pd-level-polish'));
+        assert.truthy(at(1).includes('pd-coat-shine'));
+        assert.truthy(at(2).includes('pd-paw-detail'));
+        assert.truthy(at(3).includes('pd-face-shine'));
+        assert.truthy(at(4).includes('pd-level-aura') && at(4).includes('pd-aura-sparks'));
+    });
+
+    test('the dog gently grows at every level within an outfit tier', () => {
+        const width = polish => +art.petDogSVG({ stageCss: 'poodle', size: 100, tier: 1, polish })
+            .match(/width="(\d+)"/)[1];
+        for (let polish = 1; polish < 5; polish++) {
+            assert.truthy(width(polish) > width(polish - 1), `polish ${polish} must grow`);
+        }
+    });
+
+    test('all 200 level looks are unique', () => {
+        const seen = new Set();
+        art.PET_STAGE_ORDER.forEach((stageCss, stageIndex) => {
+            const base = STAGE_MINS[stageIndex];
+            for (let level = base; level < base + 20; level++) {
+                seen.add(art.petDogSVG({ stageCss, level, stageMinLevel: base, size: 100 }));
+            }
+        });
+        assert.equal(seen.size, 200, 'each level should render a distinct pet');
+    });
+
+    test('home explains shine progress and keeps pet controls accessible', () => {
+        for (const marker of ['pet-polish-meter', 'Shine ${petPolish}/4', 'role="progressbar"',
+            'aria-label="Play with ${safePetName}']) {
+            assert.truthy(homeSrc.includes(marker), `home missing ${marker}`);
+        }
+        assert.truthy(cssSrc.includes('.pet-creature:focus-visible'));
+        assert.truthy(cssSrc.includes('prefers-reduced-motion: reduce'));
+    });
+});
+
 suite('pet tiers: shop items win over drawn ones', () => {
     test('an equipped head accessory hides the drawn hat (never two hats)', () => {
         const withHat = art.petDogSVG({ stageCss: 'husky', tier: 3 });

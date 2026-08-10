@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.1.0';
+const APP_VERSION = 'v4.2.0';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1422,12 +1422,13 @@ function renderWordPet() {
     // Milo is a rigged SVG (petart.js) so he can breathe, wag and react;
     // the emoji stays as the fallback if that module ever fails to load.
     const petBodyHTML = (typeof petDogSVG === 'function')
-        ? petDogSVG({ stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood, level: 1 })
+        ? petDogSVG({ stageCss: stage.stageCss, size: Math.round(stage.size * 1.55), mood, level, stageMinLevel: stage.minLevel })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
-        <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
+        <button type="button" class="pet-creature ${mood}" onclick="onPetTap()"
+                data-stage="${stage.stageCss}" aria-label="Play with your level ${level} ${stage.name}">
             ${petBodyHTML}
-        </div>
+        </button>
     `;
 
     // Naming prompt (first time)
@@ -1456,6 +1457,16 @@ function renderWordPet() {
     const xpInLevel = currentXP - currentLevelXP;
     const xpNeeded = nextLevelXP - currentLevelXP;
     const xpPercent = level >= 200 ? 100 : (xpNeeded > 0 ? Math.min(100, Math.floor(xpInLevel / xpNeeded * 100)) : 0);
+    const petTier = (typeof petTierForLevel === 'function') ? petTierForLevel(level, stage.minLevel) : 0;
+    const petPolish = (typeof petPolishForLevel === 'function') ? petPolishForLevel(level, stage.minLevel) : 0;
+    const petStyleNames = ['Natural', 'Gem', 'Styled', 'Brilliant'];
+    const petStyleName = petStyleNames[petTier] || petStyleNames[0];
+    const safePetName = String(appState.petName || 'Milo').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+    const polishPips = Array.from({ length: 4 }, (_, i) =>
+        `<span class="pet-polish-pip ${i < petPolish ? 'active' : ''}"></span>`
+    ).join('');
 
     // Active accessories — per-breed anchor points for anatomical slots
     const active = appState.activeAccessories || [];
@@ -1515,14 +1526,19 @@ function renderWordPet() {
         const streak = ud.streak || appState.streak || 0;
         topbar.innerHTML = `
             <div class="pet-hero-left">
-                <div class="pet-hero-avatar" onclick="navigateToProfile()">${avatar}</div>
-                <div class="pet-hero-level">Lv.${level}</div>
-                <div class="pet-hero-version">${APP_VERSION}</div>
+                <button type="button" class="pet-hero-avatar" onclick="navigateToProfile()" aria-label="Open profile">${avatar}</button>
+                <div class="pet-hero-identity">
+                    <div class="pet-identity-name"><strong>${safePetName}</strong><span>Lv.${level}</span></div>
+                    <div class="pet-identity-style">
+                        <span>${stage.name} · ${petStyleName}</span>
+                        <span class="pet-polish-meter" title="Level shine ${petPolish} of 4" aria-label="Level shine ${petPolish} of 4">${polishPips}</span>
+                    </div>
+                </div>
             </div>
             <div class="pet-hero-right">
-                <div class="pet-hero-coins" onclick="showPetShop()">🪙 ${coins}</div>
-                <div class="pet-hero-streak ${getStreakTier(streak) > 0 ? 'streak-tier-' + getStreakTier(streak) : ''}">🔥 ${streak}</div>
-                <button class="pet-hero-info" onclick="showPetInfo()" title="Pet info">ℹ️</button>
+                <button type="button" class="pet-hero-coins" onclick="showPetShop()" aria-label="${coins} coins; open shop">🪙 ${coins}</button>
+                <div class="pet-hero-streak ${getStreakTier(streak) > 0 ? 'streak-tier-' + getStreakTier(streak) : ''}" aria-label="${streak} day streak">🔥 ${streak}</div>
+                <button type="button" class="pet-hero-info" onclick="showPetInfo()" aria-label="Pet info">ℹ️</button>
             </div>
         `;
     }
@@ -1545,9 +1561,10 @@ function renderWordPet() {
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
     stage_el.innerHTML = `
         <div class="pet-wrapper">
-            <div class="pet-creature ${mood}" onclick="onPetTap()" data-stage="${stage.stageCss}">
+            <button type="button" class="pet-creature ${mood}" onclick="onPetTap()"
+                    data-stage="${stage.stageCss}" aria-label="Play with ${safePetName}, level ${level} ${stage.name}, ${petStyleName} style, shine ${petPolish} of 4">
                 ${petArtHTML}
-            </div>
+            </button>
             ${accSpans}
         </div>
         ${poopsHTML}
@@ -1568,25 +1585,26 @@ function renderWordPet() {
     const hungerLabel = hunger === 0 ? 'Starving!' : hunger <= 25 ? 'Hungry' : hunger >= 75 ? 'Full' : 'Ok';
 
     const hasPoops = (appState.petPoops || []).length > 0;
-    const trashBtnHTML = hasPoops ? '<button class="pet-trash-btn" id="petTrashBtn">🗑️</button>' : '';
+    const trashBtnHTML = hasPoops ? '<button type="button" class="pet-trash-btn" id="petTrashBtn" aria-label="Clean up pet habitat">🗑️</button>' : '';
 
     if (xpbar_el) {
         xpbar_el.innerHTML = `
             <div class="pet-bottom-strip">
                 <div class="pet-bottom-left">
-                    <div class="hunger-hearts-row">
+                    <div class="hunger-hearts-row" role="img" aria-label="Hunger ${hunger} percent, ${hungerLabel}">
                         ${heartsHTML}
                         <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
                     </div>
                 </div>
                 ${trashBtnHTML}
-                <button class="pet-battle-btn-hero" onclick="openPetBattle()" title="Đấu với bạn bè">⚔️</button>
-                <button class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
+                <button type="button" class="pet-battle-btn-hero" onclick="openPetBattle()" aria-label="Battle friends">⚔️</button>
+                <button type="button" class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
             </div>
-            <div class="pet-hero-xp-track">
+            <div class="pet-hero-xp-track" role="progressbar" aria-label="Level ${level} experience"
+                 aria-valuemin="0" aria-valuemax="${level >= 200 ? 100 : xpNeeded}" aria-valuenow="${level >= 200 ? 100 : Math.max(0, xpInLevel)}">
                 <div class="pet-hero-xp-fill" style="width:${xpPercent}%"></div>
             </div>
-            <span class="pet-hero-xp-label">${level >= 200 ? 'MAX LEVEL' : `${xpInLevel}/${xpNeeded} XP`}</span>
+            <span class="pet-hero-xp-label">${level >= 200 ? 'MAX LEVEL · Full brilliance' : `${xpInLevel}/${xpNeeded} XP · Shine ${petPolish}/4`}</span>
         `;
     }
 

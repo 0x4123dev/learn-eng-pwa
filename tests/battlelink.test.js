@@ -9,6 +9,7 @@ const link = require(path.join(__dirname, '..', 'js', 'battlelink.js'));
 const workerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'src', 'index.js'), 'utf8');
 const wranglerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'wrangler.toml'), 'utf8');
 const gameSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattlegame.js'), 'utf8');
+const stylesSrc = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
 
 // Minimal fake socket so we can drive the state machine without a network.
 function FakeWS(url) {
@@ -205,6 +206,35 @@ suite('battle game: live features are wired', () => {
     test('the child can see whether the battle is live or slow', () => {
         assert.truthy(gameSrc.includes('pb-link'), 'connection pill rendered');
         assert.truthy(gameSrc.includes('Trực tiếp'), 'live label');
+    });
+});
+
+suite('battle game: efficient and accessible UI', () => {
+    test('the battle shell is mounted once and later renders update it in place', () => {
+        assert.truthy(gameSrc.includes('if (!this._shellReady)'), 'render must guard the one-time shell mount');
+        assert.truthy(gameSrc.includes('this._updateUi(maxShots)'), 'later renders must update existing controls');
+    });
+
+    test('animation frames run only while visual effects are active', () => {
+        assert.falsy(gameSrc.includes('this.loop();'), 'start must not launch a permanent 60 FPS loop');
+        assert.truthy(gameSrc.includes('_hasActiveAnimation'));
+        assert.truthy(gameSrc.includes('if (this._hasActiveAnimation()) this._requestFrame()'));
+    });
+
+    test('HP, controls, live status, and canvas expose accessible semantics', () => {
+        assert.truthy(gameSrc.includes('role="progressbar"'));
+        assert.truthy(gameSrc.includes('aria-valuenow'));
+        assert.truthy(gameSrc.includes('label for="pbAngle"'));
+        assert.truthy(gameSrc.includes('label for="pbPower"'));
+        assert.truthy(gameSrc.includes('aria-live="polite"'));
+        assert.truthy(gameSrc.includes('role="img" aria-label='));
+    });
+
+    test('battle controls have touch targets, keyboard focus, and reduced-motion support', () => {
+        assert.truthy(/\.pb-emote\s*\{[\s\S]*?width:\s*44px;[\s\S]*?height:\s*44px;/.test(stylesSrc));
+        assert.truthy(stylesSrc.includes(':focus-visible'));
+        assert.truthy(stylesSrc.includes('@media (prefers-reduced-motion: reduce)'));
+        assert.truthy(gameSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')"));
     });
 });
 
