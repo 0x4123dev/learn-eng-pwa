@@ -12,6 +12,10 @@ const AMMO_VOLUME_MAX = 8;
 const AMMO_PERFECT_MAX = 10;       // 1 per perfect (10/10) session
 const AMMO_STREAK_BONUS = 2;       // studied all 3 days
 const AMMO_CAP = 20;               // = ROUNDS * BARRELS, nothing wasted
+// Rounds are not fixed: one poop per turn stretches 20 shots into 20 rounds.
+// BATTLE_ROUNDS is now only the MINIMUM a full clip can be spent in (20/4).
+// MAX_TURNS is a runaway guard, never a real ending.
+const MAX_TURNS = AMMO_CAP * 2 + 4;
 
 // stats: { correct, perfects, days }  → shots (0..20)
 function computeAmmo(stats) {
@@ -270,7 +274,7 @@ function maxTurnDamage(shots, level) {
 // property — the game engine must read the constants through this namespace.
 const BattleCalc = {
   BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
-  AMMO_STREAK_BONUS, AMMO_CAP, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
+  AMMO_STREAK_BONUS, AMMO_CAP, MAX_TURNS, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
   computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
   spawnPoints, windForRound, volleyAngles, simulateShot,
   blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
@@ -280,7 +284,7 @@ if (typeof window !== 'undefined') window.BattleCalc = BattleCalc;
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
-    AMMO_STREAK_BONUS, AMMO_CAP, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
+    AMMO_STREAK_BONUS, AMMO_CAP, MAX_TURNS, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
     computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
     spawnPoints, windForRound, volleyAngles, simulateShot,
     blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,

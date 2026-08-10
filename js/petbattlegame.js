@@ -12,13 +12,20 @@ const gT = (k, vars) => (typeof pbT === 'function' ? pbT(k, vars) : k);
 const gLang = () => (typeof _pbLang !== 'undefined' ? _pbLang : 'en');
 
 // Pure presentation helpers: HP remains server-authoritative, while these
-// convert it into readable Gunbound-style house damage and heart segments.
+// convert it into readable house damage and heart segments.
+//
+// SIX stages, because a four-stage ladder meant a 100→99 hit changed nothing on
+// screen: the child landed a shot and the house looked untouched until a
+// quarter of the HP was gone. Exactly 100 is the only pristine state now, so
+// the very first damaging poop always breaks something visible.
+//   100 → 0 · 76-99 → 1 · 51-75 → 2 · 26-50 → 3 · 1-25 → 4 · 0 → 5
 function pbHouseDamageStage(hp) {
   const safe = Math.max(0, Math.min(100, Number(hp) || 0));
-  if (safe <= 0) return 4;
-  if (safe <= 25) return 3;
-  if (safe <= 50) return 2;
-  if (safe <= 75) return 1;
+  if (safe <= 0) return 5;
+  if (safe <= 25) return 4;
+  if (safe <= 50) return 3;
+  if (safe <= 75) return 2;
+  if (safe < 100) return 1;
   return 0;
 }
 
@@ -90,10 +97,26 @@ PetBattleGame.prototype.onLiveTurn = function (turn) {
   if (turn.turn_no <= (this._seenTurn || 0)) return;      // already played
   this._seenTurn = turn.turn_no;
   this.onSeenTurn(turn.turn_no);
-  if (turn.user_id !== this.view.me.id && !this.busy) {
-    this.foeAiming = null;
-    this._replay(turn);
-  }
+  if (turn.user_id !== this.view.me.id) this._queueTurn(turn);
+};
+
+// A turn used to be marked seen and then dropped if it arrived while an
+// animation was running — the poll cursor had already moved past it, so it was
+// gone for good and the opponent's shot simply never played. Queue instead.
+PetBattleGame.prototype._queueTurn = function (turn) {
+  if (!Array.isArray(this._turnQueue)) this._turnQueue = [];
+  if (this._turnQueue.some(t => t.turn_no === turn.turn_no)) return;   // exactly once
+  this._turnQueue.push(turn);
+  this._turnQueue.sort((a, b) => a.turn_no - b.turn_no);
+  this._drainTurns();
+};
+
+PetBattleGame.prototype._drainTurns = function () {
+  if (this.finished || this.busy) return;                 // wait for a safe boundary
+  const next = (this._turnQueue || []).shift();
+  if (!next) return;
+  this.foeAiming = null;
+  this._replay(next);
 };
 PetBattleGame.prototype.onOpponentAim = function (m) {
   if (this.finished || this.myTurn) return;
@@ -148,8 +171,9 @@ PetBattleGame.prototype._addEmote = function (e, x, y) {
   this._effectTimers.push(timer);
 };
 
+// Uncapped: a duel where both sides fire one poop at a time runs 20 rounds.
 PetBattleGame.prototype.roundNo = function () {
-  return Math.min(this.calc.BATTLE_ROUNDS, Math.ceil(this.turnNo / 2));
+  return Math.max(1, Math.ceil(this.turnNo / 2));
 };
 PetBattleGame.prototype.wind = function () {
   return this.calc.windForRound(this.seed, this.roundNo());
@@ -164,6 +188,7 @@ PetBattleGame.prototype.start = function () {
 
 PetBattleGame.prototype.destroy = function () {
   this._destroyed = true;
+  this._turnQueue = [];
   if (this._raf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(this._raf);
   if (this._aimTimer) clearTimeout(this._aimTimer);
   this._effectTimers.forEach(timer => clearTimeout(timer));
@@ -305,7 +330,7 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   hp('Foe', this.foeHp);
   text('pbAmmoMe', this.myAmmo + ' 💩');
   text('pbAmmoFoe', this.foeAmmo + ' 💩');
-  text('pbRound', gT('gRound', { n: this.roundNo(), total: C.BATTLE_ROUNDS }));
+  text('pbRound', gT('gRound', { n: this.roundNo() }));
   const wind = this.wind();
   text('pbWind', '💨 ' + (wind > 0 ? '→' : wind < 0 ? '←' : '·') + ' ' + Math.abs(wind));
   text('pbBanner', this.banner);
@@ -558,7 +583,7 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   ctx.beginPath(); ctx.ellipse(0, 4, 51, 9, 0, 0, Math.PI * 2); ctx.fill();
 
   // At zero HP the shelter is gone: only rubble and the pet remain outdoors.
-  if (damage >= 4) {
+  if (damage >= 5) {
     ctx.fillStyle = '#6f3f35';
     for (const piece of [[-42,-9,25,12],[0,-7,30,14],[34,-10,22,11],[-20,-20,18,12]]) {
       ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[0] * .012);
@@ -573,8 +598,8 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     return;
   }
   const wall = ctx.createLinearGradient(-42, -56, 42, 0);
-  wall.addColorStop(0, damage >= 3 ? '#9a6254' : '#f0a65b');
-  wall.addColorStop(1, damage >= 2 ? '#b56a4a' : '#d97945');
+  wall.addColorStop(0, damage >= 4 ? '#9a6254' : '#f0a65b');
+  wall.addColorStop(1, damage >= 3 ? '#b56a4a' : '#d97945');
   ctx.fillStyle = wall;
   ctx.fillRect(-43, -58, 86, 58);
   // Continuous soot means every damaging hit changes the house, even before
@@ -582,12 +607,12 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   ctx.fillStyle = `rgba(43,25,30,${(wear * .28).toFixed(3)})`;
   ctx.fillRect(-43, -58, 86, 58);
   ctx.strokeStyle = '#6f3f35'; ctx.lineWidth = 3; ctx.strokeRect(-43, -58, 86, 58);
-  ctx.fillStyle = damage >= 3 ? '#743d45' : '#b84c57';
+  ctx.fillStyle = damage >= 4 ? '#743d45' : '#b84c57';
   ctx.beginPath(); ctx.moveTo(-52, -57); ctx.lineTo(0, -91); ctx.lineTo(52, -57); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = '#6b3340'; ctx.lineWidth = 4; ctx.stroke();
 
   // window and the pet safely framed inside it
-  ctx.fillStyle = damage >= 4 ? '#251f27' : '#dff6ff';
+  ctx.fillStyle = damage >= 5 ? '#251f27' : '#dff6ff';
   ctx.fillRect(-27, -55, 54, 45);
   ctx.save(); ctx.beginPath(); ctx.rect(-25, -53, 50, 41); ctx.clip();
   if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -25, -61, 50, 54);
@@ -610,22 +635,34 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   ctx.stroke();
 
   // deterministic damage marks; no random flicker between clients.
+  // STAGE 1 is the important one: the very first damaging poop must take a
+  // real bite out of the silhouette, not add a hairline crack nobody sees.
   if (damage >= 1) {
+    // a corner of the parapet is simply gone, with the dark interior behind it
+    ctx.fillStyle = '#3f2930';
+    ctx.beginPath(); ctx.moveTo(43, -58); ctx.lineTo(43, -30); ctx.lineTo(12, -58); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#f0a65b';
+    ctx.beginPath(); ctx.moveTo(43, -30); ctx.lineTo(43, -24); ctx.lineTo(30, -37); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#5b352f'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(12, -58); ctx.lineTo(24, -44); ctx.lineTo(18, -33); ctx.stroke();
+  }
+  if (damage >= 2) {
     ctx.strokeStyle = '#5b352f'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(-35, -48); ctx.lineTo(-26, -39); ctx.lineTo(-34, -29);
     ctx.moveTo(34, -20); ctx.lineTo(24, -27); ctx.lineTo(30, -38); ctx.stroke();
   }
-  if (damage >= 2) {
+  if (damage >= 3) {
     ctx.fillStyle = 'rgba(45,35,35,.55)';
     ctx.beginPath(); ctx.arc(-30, -9, 8, 0, Math.PI * 2); ctx.arc(31, -49, 6, 0, Math.PI * 2); ctx.fill();
+    // the opposite parapet corner follows
+    ctx.fillStyle = '#3f2930';
+    ctx.beginPath(); ctx.moveTo(-43, -58); ctx.lineTo(-43, -36); ctx.lineTo(-16, -58); ctx.closePath(); ctx.fill();
   }
-  if (damage >= 3) {
+  if (damage >= 4) {
     ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(-11, -51); ctx.lineTo(7, -28); ctx.moveTo(12, -52); ctx.lineTo(-6, -31); ctx.stroke();
     ctx.fillStyle = 'rgba(31,41,55,.46)';
     ctx.beginPath(); ctx.arc(28, -82, 11, 0, Math.PI * 2); ctx.arc(36, -96, 8, 0, Math.PI * 2); ctx.fill();
-  }
-  if (damage >= 4) {
     ctx.fillStyle = '#3f2930';
     ctx.beginPath(); ctx.moveTo(-52, -57); ctx.lineTo(-20, -77); ctx.lineTo(-6, -58); ctx.closePath(); ctx.fill();
   }
@@ -696,31 +733,43 @@ PetBattleGame.prototype._requestFrame = function () {
     this.draw();
     return;
   }
-  this._raf = requestAnimationFrame(() => {
+  this._raf = requestAnimationFrame((now) => {
     this._raf = null;
     if (this._destroyed) return;
-    this.step();
+    const t = (typeof now === 'number') ? now
+      : (typeof performance !== 'undefined' ? performance.now() : 0);
+    const last = this._lastFrameAt;
+    this._lastFrameAt = t;
+    this.step(last ? (t - last) / 16.667 : 1);
     this.draw();
     if (this._hasActiveAnimation()) this._requestFrame();
+    else this._lastFrameAt = 0;                    // next burst starts fresh
   });
 };
 
 // Advance every animation by one frame.
-PetBattleGame.prototype.step = function () {
+// `k` is elapsed time expressed in 60Hz ticks, so every duration below stays
+// tuned in the units it was written in while the PACE no longer depends on the
+// display: a 120Hz iPhone was running the whole battle at double speed, which
+// is the opposite of the slow readable flight this is meant to have. Clamped
+// so returning from a backgrounded tab does not teleport a shell.
+PetBattleGame.prototype.step = function (k) {
   const C = this.calc;
-  this.blasts = (this.blasts || []).filter(b => (b.t += 1) < b.life);
+  k = (typeof k === 'number' && isFinite(k) && k > 0) ? Math.min(3, k) : 1;
+  this.blasts = (this.blasts || []).filter(b => (b.t += k) < b.life);
   this.impactParticles = this.impactParticles.filter(p => {
-    p.t += 1; p.x += p.vx; p.y += p.vy; p.vy += .16;
+    p.t += k; p.x += p.vx * k; p.y += p.vy * k; p.vy += .16 * k;
     return p.t < p.life;
   });
-  this.houseImpacts = this.houseImpacts.filter(hit => (hit.t += 1) < hit.life);
-  this.emotes = this.emotes.filter(e => e.static || (e.t += 1) < e.life);
+  this.houseImpacts = this.houseImpacts.filter(hit => (hit.t += k) < hit.life);
+  this.emotes = this.emotes.filter(e => e.static || (e.t += k) < e.life);
   if (!this.flying.length) return;
   let allDone = true;
   for (const f of this.flying) {
     if (f.i < f.points.length - 1) {
-      f.tick = (f.tick || 0) + 1;
-      if (f.tick % 2 === 0) f.i += 1;                                   // half-speed, readable flight
+      f.tick = (f.tick || 0) + k;
+      // one path point per two 60Hz ticks — the original readable pace
+      while (f.tick >= 2 && f.i < f.points.length - 1) { f.tick -= 2; f.i += 1; }
       allDone = false;
     }
     else if (!f.done) {
@@ -795,12 +844,26 @@ PetBattleGame.prototype._logTurn = function (mine, aim, damage) {
   });
 };
 
+// Out of poop: hand the turn over without animating anything. The server
+// treats shots=0 as a skip and charges no ammo.
+PetBattleGame.prototype._passTurn = function () {
+  if (!this.myTurn || this.busy || this.finished) return;
+  this.myTurn = false;
+  this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots: 0, damage: 0 })
+    .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
+    .catch(() => {});
+  this.render();
+};
+
 // ---- my turn ----
 PetBattleGame.prototype.fire = function () {
   if (!this.myTurn || this.busy || this.finished) return;
   const C = this.calc;
-  const shots = Math.max(1, Math.min(C.maxShotsThisTurn(this.myAmmo), this.shots));
-  if (shots <= 0) return;
+  // Math.max(1, …) used to fire a phantom poop on an empty clip. Now that a
+  // battle runs until the ammo does, an empty turn must pass, not shoot.
+  const maxShots = C.maxShotsThisTurn(this.myAmmo);
+  if (maxShots <= 0) { this._passTurn(); return; }
+  const shots = Math.max(1, Math.min(maxShots, this.shots));
   this.busy = true;
   if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && !this.reducedMotion) navigator.vibrate(18);
   this.myAmmo -= shots;
@@ -819,6 +882,7 @@ PetBattleGame.prototype.fire = function () {
     this.myTurn = false;
     this.busy = false;
     this._logTurn(true, aim, damage);
+    this._drainTurns();
     this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
@@ -850,6 +914,7 @@ PetBattleGame.prototype._replay = function (turn) {
       ? gT('gHitMe', { n: hitCount, d: dealt }) + (houseWorsened ? gT('gHouseWorse') : '')
       : gT('gMissFoe');
     this.busy = false;
+    this._drainTurns();
     this._logTurn(false, { angle: Math.round(turn.angle || 0), power: Math.round(turn.power || 0), shots }, dealt);
     this.render();
   };
@@ -864,7 +929,9 @@ PetBattleGame.prototype.onServerState = function (data) {
     if (t.turn_no <= (this._seenTurn || 0)) continue;
     this._seenTurn = t.turn_no;
     this.onSeenTurn(t.turn_no);
-    if (t.user_id !== myId && !this.busy) this._replay(t);
+    // A poll after a reconnect can return several unseen turns at once. The
+    // old code replayed the first and silently discarded the rest.
+    if (t.user_id !== myId) this._queueTurn(t);
   }
   this._applyServer(data.battle);
 };

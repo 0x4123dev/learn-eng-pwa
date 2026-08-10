@@ -96,7 +96,7 @@ const PB_STR = {
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'You', gFoe: 'Friend',
     gLive: '⚡ Live', gWaitPeer: '⚡ Waiting', gConnecting: '… Connecting', gSlow: '🐢 Slow',
-    gRound: 'Round {n}/{total}',
+    gRound: 'Round {n}',
     gYourTurn: 'YOUR TURN · AIM AND FIRE!', gFoeTurn: 'OPPONENT IS AIMING…',
     gAngle: 'ANGLE', gPower: 'POWER',
     gDragHint: 'DRAG TO AIM',
@@ -183,7 +183,7 @@ const PB_STR = {
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'Bé', gFoe: 'Bạn',
     gLive: '⚡ Trực tiếp', gWaitPeer: '⚡ Chờ bạn', gConnecting: '… Đang nối', gSlow: '🐢 Chậm',
-    gRound: 'Vòng {n}/{total}',
+    gRound: 'Vòng {n}',
     gYourTurn: 'LƯỢT CỦA BẠN · NGẮM VÀ BẮN!', gFoeTurn: 'ĐỐI THỦ ĐANG NGẮM…',
     gAngle: 'GÓC', gPower: 'LỰC',
     gDragHint: 'KÉO ĐƯỜNG NGẮM',

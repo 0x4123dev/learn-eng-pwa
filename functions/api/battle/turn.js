@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { reapStale, battleView, BATTLE_ROUNDS, BARRELS, TURN_MS } from '../_battle.js';
+import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS } from '../_battle.js';
 
 // The most damage a volley could physically do (mirrors battlecalc.shotDamage
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
@@ -40,8 +40,15 @@ export async function onRequestPost({ request, env }) {
   const now = Date.now();
   const foeHp = Math.max(0, (meIsChallenger ? b.opponent_hp : b.challenger_hp) - damage);
   const nextTurnNo = b.turn_no + 1;
-  const totalTurns = BATTLE_ROUNDS * 2;
-  const over = foeHp <= 0 || nextTurnNo > totalTurns;
+  const myAmmoAfter = myAmmo - shots;
+  const foeAmmo = meIsChallenger ? b.opponent_ammo : b.challenger_ammo;
+  // No fixed round count: play continues while anyone still has a poop left.
+  const over = foeHp <= 0 || (myAmmoAfter <= 0 && foeAmmo <= 0) || nextTurnNo > MAX_TURNS;
+  // Whoever still has ammo keeps shooting rather than forcing empty skip turns.
+  const foeCanFire = foeAmmo > 0;
+  const nextUserId = foeCanFire
+    ? (meIsChallenger ? b.opponent_id : b.challenger_id)
+    : auth.uid;
 
   // Record the turn (UNIQUE(battle_id, turn_no) makes a double-submit harmless).
   await env.DB.prepare(
@@ -49,7 +56,7 @@ export async function onRequestPost({ request, env }) {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(id, b.turn_no, auth.uid, angle, power, shots, damage, now).run();
 
-  const myAmmoLeft = myAmmo - shots;
+  const myAmmoLeft = myAmmoAfter;
   const fields = meIsChallenger
     ? { myAmmoCol: 'challenger_ammo', foeHpCol: 'opponent_hp' }
     : { myAmmoCol: 'opponent_ammo', foeHpCol: 'challenger_hp' };
@@ -70,10 +77,7 @@ export async function onRequestPost({ request, env }) {
       `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.foeHpCol} = ?,
               turn_no = ?, turn_user_id = ?, turn_started_at = ?
         WHERE id = ?`
-    ).bind(
-      myAmmoLeft, foeHp, nextTurnNo,
-      meIsChallenger ? b.opponent_id : b.challenger_id, now, id
-    ).run();
+    ).bind(myAmmoLeft, foeHp, nextTurnNo, nextUserId, now, id).run();
   }
 
   const fresh = await env.DB.prepare('SELECT * FROM battles WHERE id = ?').bind(id).first();

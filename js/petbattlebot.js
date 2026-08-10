@@ -69,14 +69,14 @@ function botTakeTurn(game) {
   setTimeout(waitForIdle, 200);
 }
 
-// Practice has the same 5 rounds × 2 turns as a real battle.
+// Practice follows the same rule as a real battle: play while anyone still
+// has a poop left, not a fixed five rounds.
 function _botEndOfTurn() {
   const g = _botGame;
   if (!g || g.finished) return;
   const C = g.calc;
-  const totalTurns = C.BATTLE_ROUNDS * 2;
 
-  if (g.myHp <= 0 || g.foeHp <= 0 || g.turnNo >= totalTurns) {
+  if (g.myHp <= 0 || g.foeHp <= 0 || (g.myAmmo <= 0 && g.foeAmmo <= 0) || g.turnNo >= C.MAX_TURNS) {
     g.finished = true;
     const won = g.foeHp <= 0 ? true : g.myHp <= 0 ? false : g.myHp > g.foeHp;
     setTimeout(() => g.onFinish({
@@ -97,7 +97,7 @@ function botOnPlayerTurnDone() {
   const g = _botGame;
   if (!g || g.finished) return;
   const C = g.calc;
-  if (g.foeHp <= 0 || g.myHp <= 0 || g.turnNo >= C.BATTLE_ROUNDS * 2) { _botEndOfTurn(); return; }
+  if (g.foeHp <= 0 || g.myHp <= 0 || (g.myAmmo <= 0 && g.foeAmmo <= 0) || g.turnNo >= C.MAX_TURNS) { _botEndOfTurn(); return; }
   setTimeout(() => botTakeTurn(g), 700);
 }
 

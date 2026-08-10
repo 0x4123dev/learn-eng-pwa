@@ -248,12 +248,89 @@ suite('battle game: efficient and accessible UI', () => {
     });
 });
 
+suite('battle turns are never silently dropped', () => {
+    // _seenTurn (and the poll cursor with it) advanced BEFORE the !busy guard,
+    // so an opponent turn arriving mid-animation was marked seen and thrown
+    // away — the poll would never fetch it again and the shot simply never
+    // played. A poll after a reconnect returning two turns lost the second.
+    test('a turn arriving during an animation is queued, not discarded', () => {
+        assert.truthy(gameSrc.includes('_queueTurn'), 'no queue exists');
+        const live = gameSrc.slice(gameSrc.indexOf('prototype.onLiveTurn'), gameSrc.indexOf('prototype._queueTurn'));
+        assert.falsy(/!this\.busy/.test(live), 'onLiveTurn must not drop on busy');
+        const server = gameSrc.slice(gameSrc.indexOf('prototype.onServerState'));
+        assert.falsy(/!this\.busy\) this\._replay/.test(server.slice(0, 600)), 'onServerState must not drop on busy');
+    });
+
+    test('the queue replays each turn exactly once, in order', () => {
+        const q = gameSrc.slice(gameSrc.indexOf('prototype._queueTurn'), gameSrc.indexOf('prototype.onOpponentAim'));
+        assert.truthy(q.includes('some(t => t.turn_no === turn.turn_no)'), 'a repeat must not double-replay');
+        assert.truthy(q.includes('sort((a, b) => a.turn_no - b.turn_no)'), 'turns must play in order');
+        assert.truthy(q.includes('if (this.finished || this.busy) return'), 'draining must wait for a safe boundary');
+    });
+
+    test('the queue drains when each animation finishes', () => {
+        const fire = gameSrc.slice(gameSrc.indexOf('prototype.fire'), gameSrc.indexOf('prototype._replay'));
+        assert.truthy(fire.includes('this._drainTurns()'), 'after my own volley');
+        const replay = gameSrc.slice(gameSrc.indexOf('prototype._replay'));
+        assert.truthy(replay.slice(0, 1200).includes('this._drainTurns()'), 'after a replayed volley');
+    });
+
+    test('a destroyed game replays nothing', () => {
+        const d = gameSrc.slice(gameSrc.indexOf('prototype.destroy'));
+        assert.truthy(d.slice(0, 300).includes('_turnQueue = []'), 'the queue must be emptied on destroy');
+    });
+});
+
+suite('battles run until the poop runs out', () => {
+    const calc = require(path.join(__dirname, '..', 'js', 'battlecalc.js'));
+    const turnSrc2 = fs.readFileSync(path.join(__dirname, '..', 'functions', 'api', 'battle', 'turn.js'), 'utf8');
+
+    test('the round counter is no longer capped at five', () => {
+        assert.falsy(gameSrc.includes('Math.min(this.calc.BATTLE_ROUNDS, Math.ceil(this.turnNo / 2))'),
+            'rounds must not be clamped to BATTLE_ROUNDS');
+        assert.truthy(gameSrc.includes('Math.max(1, Math.ceil(this.turnNo / 2))'));
+    });
+
+    test('one poop per turn stretches a full clip into twenty rounds', () => {
+        // 20 shots fired one at a time = 20 of my turns = 40 turns total.
+        assert.equal(calc.AMMO_CAP, 20);
+        assert.truthy(calc.MAX_TURNS >= calc.AMMO_CAP * 2, `MAX_TURNS ${calc.MAX_TURNS} cuts a legal duel short`);
+    });
+
+    test('the server ends the battle on ammo, not on a round number', () => {
+        assert.falsy(turnSrc2.includes('BATTLE_ROUNDS * 2'), 'the fixed round cap should be gone');
+        assert.truthy(turnSrc2.includes('myAmmoAfter <= 0 && foeAmmo <= 0'), 'both sides empty ends it');
+        assert.truthy(turnSrc2.includes('nextTurnNo > MAX_TURNS'), 'a runaway guard must still exist');
+    });
+
+    test('a player with no poop left does not block the one who has some', () => {
+        assert.truthy(turnSrc2.includes('const foeCanFire = foeAmmo > 0'), 'turn handover must consider ammo');
+        assert.truthy(turnSrc2.includes('nextUserId'), 'the next shooter must be chosen, not assumed');
+    });
+
+    test('an empty clip passes the turn instead of firing a phantom poop', () => {
+        assert.truthy(gameSrc.includes('if (maxShots <= 0) { this._passTurn(); return; }'));
+        const pass = gameSrc.slice(gameSrc.indexOf('prototype._passTurn'));
+        assert.truthy(pass.slice(0, 500).includes('shots: 0'), 'a pass must cost no ammo');
+    });
+});
+
 suite('battle game: Gunbound-style house arena', () => {
-    test('house damage advances through intact, cracked, scorched, critical and destroyed states', () => {
-        assert.deepEqual([100, 75, 50, 25, 0].map(game.pbHouseDamageStage), [0, 1, 2, 3, 4]);
+    test('house damage advances through six states, and only 100 HP is pristine', () => {
+        assert.deepEqual([100, 99, 75, 50, 25, 0].map(game.pbHouseDamageStage), [0, 1, 2, 3, 4, 5]);
         for (let hp = 100; hp >= 0; hp--) {
-            assert.inRange(game.pbHouseDamageStage(hp), 0, 4);
+            assert.inRange(game.pbHouseDamageStage(hp), 0, 5);
         }
+    });
+
+    // A four-stage ladder meant a 100→99 hit changed nothing on screen: the
+    // child landed a shot and the house looked untouched.
+    test('a single point of damage visibly breaks the house', () => {
+        assert.equal(game.pbHouseDamageStage(100), 0, '100 HP is the only pristine state');
+        assert.equal(game.pbHouseDamageStage(99), 1, 'one point of damage must show');
+        assert.truthy(gameSrc.includes('if (damage >= 1) {'), 'stage 1 needs its own art');
+        const stage1 = gameSrc.slice(gameSrc.indexOf('if (damage >= 1) {'), gameSrc.indexOf('if (damage >= 2) {'));
+        assert.truthy(stage1.includes('#3f2930'), 'stage 1 must reveal a dark breach, not just a hairline');
     });
 
     test('five hearts drain proportionally with every HP change', () => {
@@ -307,7 +384,13 @@ suite('battle game: Gunbound-style house arena', () => {
     test('poop ammunition replaces tia controls and flies slowly enough to follow', () => {
         assert.truthy(gameSrc.includes("ctx.fillText('💩'"));
         assert.truthy(gameSrc.includes('pb-poop-stack'));
-        assert.truthy(gameSrc.includes('if (f.tick % 2 === 0) f.i += 1'));
+        assert.truthy(gameSrc.includes('while (f.tick >= 2 && f.i < f.points.length - 1)'),
+            'one path point per two 60Hz ticks — the readable pace');
+        // rAF fires at the display rate, so frame-counting ran a 120Hz iPhone
+        // at double speed. Pacing must come from elapsed time.
+        assert.truthy(gameSrc.includes('PetBattleGame.prototype.step = function (k)'), 'step must take elapsed time');
+        assert.truthy(gameSrc.includes('(t - last) / 16.667'), 'frames must be measured, not counted');
+        assert.truthy(gameSrc.includes('Math.min(3, k)'), 'a backgrounded tab must not teleport a shell');
         assert.falsy(gameSrc.includes('type="range"'));
         assert.falsy(gameSrc.includes('>1 TIA<'));
     });

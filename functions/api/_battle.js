@@ -10,6 +10,11 @@ export const AMMO_VOLUME_MAX = 8;
 export const AMMO_PERFECT_MAX = 10;
 export const AMMO_STREAK_BONUS = 2;
 export const AMMO_CAP = 20;
+// Rounds are NOT fixed at BATTLE_ROUNDS any more: a player who fires one poop
+// at a time gets one turn per poop, so 20 shots can stretch to 20 rounds. The
+// battle ends when a castle falls or both sides are out of ammo. MAX_TURNS is
+// only a runaway guard — no legal game can reach it.
+export const MAX_TURNS = AMMO_CAP * 2 + 4;
 
 export const COOLDOWN_MS = 72 * 60 * 60 * 1000;   // 3 days between battles
 export const INVITE_TTL_MS = 60 * 1000;           // 60s to accept

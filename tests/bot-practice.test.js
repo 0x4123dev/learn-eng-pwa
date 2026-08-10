@@ -132,9 +132,13 @@ suite('bot practice: it stays worthless, on purpose', () => {
         }
     });
 
-    test('practice runs the same 5 rounds as a real battle', () => {
+    // Rounds are not fixed any more: one poop per turn stretches a full clip
+    // into twenty rounds, and play stops when the ammo does.
+    test('practice ends when the poop runs out, not after a fixed five rounds', () => {
         const botSrc = read('js/petbattlebot.js');
-        assert.truthy(botSrc.includes('C.BATTLE_ROUNDS * 2'), 'round count must come from the shared rules');
+        assert.falsy(botSrc.includes('C.BATTLE_ROUNDS * 2'), 'the fixed round cap should be gone');
+        assert.truthy(botSrc.includes('g.myAmmo <= 0 && g.foeAmmo <= 0'), 'both sides empty ends it');
+        assert.truthy(botSrc.includes('C.MAX_TURNS'), 'a runaway guard must still exist');
     });
 });
 
