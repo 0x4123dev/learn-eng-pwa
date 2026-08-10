@@ -462,6 +462,26 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
   return Math.min(100, damage);
 };
 
+// One line per volley, kept so the child can replay the story of a battle
+// afterwards ("vòng 3, bé bắn 4 tia ngược gió, trượt"). Recorded as the shot
+// RESOLVES, so the HP figures are the ones that were really on screen.
+PetBattleGame.prototype._logTurn = function (mine, aim, damage) {
+  if (!Array.isArray(this.log)) this.log = [];
+  if (this.log.length >= 40) return;                 // a battle is 10 turns; this is a guard
+  this.log.push({
+    mine: !!mine,
+    round: this.roundNo(),
+    turnNo: this.turnNo,
+    shots: aim.shots,
+    angle: aim.angle,
+    power: aim.power,
+    wind: this.wind(),
+    damage: Math.max(0, Math.round(damage || 0)),
+    myHp: this.myHp,
+    foeHp: this.foeHp,
+  });
+};
+
 // ---- my turn ----
 PetBattleGame.prototype.fire = function () {
   if (!this.myTurn || this.busy || this.finished) return;
@@ -472,11 +492,14 @@ PetBattleGame.prototype.fire = function () {
   this.myAmmo -= shots;
   const damage = this._launch(this.mePos, this.meFacing, this.angle, this.power, shots, this.view.me.level, this.foePos);
 
+  const aim = { angle: Math.round(this.angle), power: Math.round(this.power), shots };
+
   this._pendingResolve = () => {
     this.foeHp = Math.max(0, this.foeHp - damage);
     this.banner = damage > 0 ? `💥 Trúng! -${damage} HP` : '💨 Trượt rồi!';
     this.myTurn = false;
     this.busy = false;
+    this._logTurn(true, aim, damage);
     this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
@@ -499,9 +522,11 @@ PetBattleGame.prototype._replay = function (turn) {
   this.foeAmmo = Math.max(0, this.foeAmmo - shots);
   const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos);
   this._pendingResolve = () => {
-    this.myHp = Math.max(0, this.myHp - Math.max(damage, turn.damage || 0));
-    this.banner = (turn.damage || damage) > 0 ? `💥 Bé trúng đạn! -${turn.damage || damage} HP` : '💨 Bạn ấy bắn trượt!';
+    const dealt = Math.max(damage, turn.damage || 0);
+    this.myHp = Math.max(0, this.myHp - dealt);
+    this.banner = dealt > 0 ? `💥 Bé trúng đạn! -${dealt} HP` : '💨 Bạn ấy bắn trượt!';
     this.busy = false;
+    this._logTurn(false, { angle: Math.round(turn.angle || 0), power: Math.round(turn.power || 0), shots }, dealt);
     this.render();
   };
   this._requestFrame();
@@ -537,6 +562,9 @@ PetBattleGame.prototype._applyServer = function (b) {
     const won = b.winnerId === this.view.me.id;
     setTimeout(() => this.onFinish({
       won, myHp: this.myHp, foeHp: this.foeHp, foeName: this.view.foe.name,
+      foeLevel: this.view.foe.level || 1,
+      myLevel: this.view.me.level || 1,
+      rounds: (this.log || []).slice(),
     }), 900);
   }
 };

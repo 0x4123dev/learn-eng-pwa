@@ -890,6 +890,55 @@
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        /* Battle history — summary + expandable per-battle detail */
+        .pb-hist-card {
+            background: var(--card-bg, #fff); border-radius: 18px; padding: 14px;
+            margin-top: 14px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+        .pb-hist-title { font-size: 15px; font-weight: 800; margin-bottom: 10px; color: var(--text-primary); }
+        .pb-hist-summary { display: flex; gap: 6px; margin-bottom: 8px; }
+        .pb-hist-summary > div {
+            flex: 1; min-width: 0; text-align: center; padding: 8px 4px;
+            background: rgba(0,0,0,0.035); border-radius: 12px;
+        }
+        .pb-hist-summary b { display: block; font-size: 17px; font-weight: 900; color: var(--text-primary); }
+        .pb-hist-summary span { font-size: 9.5px; color: var(--text-secondary); line-height: 1.2; display: block; }
+        .pb-hist-summary .win b { color: #16a34a; }
+        .pb-hist-summary .lose b { color: #dc2626; }
+        .pb-hist-summary.sub b { font-size: 14px; }
+        .pb-hist-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+        .pb-hist-item { border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.03); }
+        .pb-hist-item.win { background: rgba(22, 163, 74, 0.07); }
+        .pb-hist-item.lose { background: rgba(220, 38, 38, 0.06); }
+        .pb-hist-row {
+            width: 100%; display: flex; align-items: center; gap: 8px; padding: 9px 10px;
+            background: none; border: none; font-family: inherit; cursor: pointer; text-align: left;
+        }
+        .pb-hist-badge { font-size: 17px; flex-shrink: 0; }
+        .pb-hist-main { flex: 1; min-width: 0; }
+        .pb-hist-foe { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-primary); }
+        .pb-hist-foe small { font-weight: 600; color: var(--text-secondary); }
+        .pb-hist-date { display: block; font-size: 10px; color: var(--text-secondary); }
+        .pb-hist-score { font-size: 11.5px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+        .pb-hist-caret { font-size: 13px; color: var(--text-secondary); flex-shrink: 0; }
+        .pb-hist-empty { font-size: 12px; color: var(--text-secondary); padding: 10px 2px; }
+        .pb-hist-detail { padding: 0 10px 10px; }
+        .pb-hist-stats { display: flex; gap: 5px; margin-bottom: 8px; }
+        .pb-hist-stats > div { flex: 1; text-align: center; padding: 6px 2px; background: rgba(255,255,255,0.6); border-radius: 10px; }
+        .pb-hist-stats b { display: block; font-size: 13px; font-weight: 800; color: var(--text-primary); }
+        .pb-hist-stats span { font-size: 9px; color: var(--text-secondary); }
+        .pb-hist-turns { display: flex; flex-direction: column; gap: 3px; }
+        .pb-hist-turn {
+            display: flex; align-items: center; gap: 6px; font-size: 10.5px;
+            padding: 5px 7px; border-radius: 8px; background: rgba(255,255,255,0.55);
+        }
+        .pb-hist-turn.theirs { background: rgba(0,0,0,0.045); }
+        .pb-hist-round { font-weight: 800; color: #ea580c; flex-shrink: 0; }
+        .pb-hist-who { font-weight: 700; color: var(--text-primary); flex-shrink: 0; }
+        .pb-hist-aim { flex: 1; min-width: 0; color: var(--text-secondary); }
+        .pb-hist-turn .hit { color: #dc2626; font-weight: 800; white-space: nowrap; }
+        .pb-hist-turn .miss { color: var(--text-secondary); white-space: nowrap; }
+
         /* Quick connect link — beats typing an accented name exactly */
         .friend-share-btn {
             width: 100%; padding: 12px; border: none; border-radius: 14px;
@@ -1342,24 +1391,25 @@
             margin-bottom: 0;
         }
 
-        /* Floating "Sync now" icon button (home screen).
+        /* Floating ⚔️ arena button (home screen). Replaced the manual "Sync
+           now" icon — syncing already happens on login and after every
+           practice session, so the button was spending prime screen real
+           estate on something the app does by itself.
            NOTE: no position override here — .screen is already
            position:absolute (a valid anchor for the fab); a `relative`
            override detaches the screen from its top/bottom pinning, so
            it grows past the viewport and can never scroll. */
-        .sync-fab {
+        .battle-fab {
             position: absolute; top: 12px; right: 12px; z-index: 60;
-            width: 36px; height: 36px; border-radius: 50%; border: none;
-            background: rgba(255,255,255,0.88); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            font-size: 17px; line-height: 1; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            background: linear-gradient(140deg, #fb923c, #ea580c);
+            box-shadow: 0 3px 12px rgba(234, 88, 12, 0.4);
+            font-size: 19px; line-height: 1; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+            animation: battlefab-in 0.4s ease both;
         }
-        .sync-fab:active { transform: scale(0.92); }
-        .sync-fab:disabled { cursor: default; }
-        .sync-fab.syncing { animation: syncspin 0.9s linear infinite; }
-        .sync-fab.ok { background: #d7f5c2; }
-        @keyframes syncspin { to { transform: rotate(360deg); } }
+        .battle-fab:active { transform: scale(0.92); }
+        @keyframes battlefab-in { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 
         .home-user {
             display: flex;

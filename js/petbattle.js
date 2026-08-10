@@ -239,7 +239,121 @@ function renderPetBattle() {
            <div class="pb-cooldown-sub">Học 3 ngày để nạp đạn! 🚀</div>
          </div>`}
     <div class="pb-friend-list">${list}</div>
-    ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}`);
+    ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}
+    ${_pbHistoryPanel()}`);
+}
+
+// ---- battle history ----
+// Every battle was already being recorded and then never shown. Summary +
+// per-battle detail, read straight from appState (works offline).
+let _pbHistoryOpen = -1;      // index of the battle whose detail is expanded
+
+function _pbHistory() {
+  try { return (typeof appState !== 'undefined' && Array.isArray(appState.petBattleHistory)) ? appState.petBattleHistory : []; }
+  catch (e) { return []; }
+}
+
+function pbHistorySummary(list) {
+  const h = Array.isArray(list) ? list : _pbHistory();
+  const wins = h.filter(b => b.won).length;
+  const sum = (k) => h.reduce((n, b) => n + (b[k] || 0), 0);
+  const volleys = sum('volleys');
+  return {
+    total: h.length,
+    wins,
+    losses: h.length - wins,
+    winRate: h.length ? Math.round(wins / h.length * 100) : 0,
+    damageDealt: sum('damageDealt'),
+    damageTaken: sum('damageTaken'),
+    accuracy: volleys ? Math.round(sum('hits') / volleys * 100) : 0,
+    bestWin: h.filter(b => b.won).reduce((best, b) => (b.myHp > (best ? best.myHp : -1) ? b : best), null),
+  };
+}
+
+function pbFmtDate(ts) {
+  if (!ts) return '';
+  try {
+    const d = new Date(ts);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  } catch (e) { return ''; }
+}
+
+function togglePbHistory(i) {
+  _pbHistoryOpen = (_pbHistoryOpen === i) ? -1 : i;
+  renderPetBattle();
+}
+
+function _pbHistoryDetail(b) {
+  // Battles fought before this screen existed have no round log. Say so
+  // plainly rather than rendering an empty box.
+  if (!Array.isArray(b.rounds) || !b.rounds.length) {
+    return `<div class="pb-hist-empty">Trận này chưa lưu chi tiết từng vòng.</div>`;
+  }
+  const rows = b.rounds.map(r => {
+    const who = r.mine ? 'Bé' : pbEsc(b.foe || 'Bạn');
+    const windTxt = r.wind > 0 ? `gió →${r.wind}` : r.wind < 0 ? `gió ←${Math.abs(r.wind)}` : 'lặng gió';
+    const res = r.damage > 0 ? `<b class="hit">-${r.damage} HP</b>` : `<span class="miss">trượt</span>`;
+    return `
+      <div class="pb-hist-turn ${r.mine ? 'mine' : 'theirs'}">
+        <span class="pb-hist-round">V${r.round}</span>
+        <span class="pb-hist-who">${who}</span>
+        <span class="pb-hist-aim">${r.shots} tia · ${r.angle}° · lực ${r.power} · ${windTxt}</span>
+        ${res}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="pb-hist-detail">
+      <div class="pb-hist-stats">
+        <div><b>${b.shotsFired || 0}</b><span>tia đã bắn</span></div>
+        <div><b>${b.volleys ? Math.round((b.hits || 0) / b.volleys * 100) : 0}%</b><span>lượt trúng</span></div>
+        <div><b>${b.damageDealt || 0}</b><span>sát thương</span></div>
+        <div><b>${b.damageTaken || 0}</b><span>bị trúng</span></div>
+      </div>
+      <div class="pb-hist-turns">${rows}</div>
+    </div>`;
+}
+
+function _pbHistoryPanel() {
+  const h = _pbHistory();
+  if (!h.length) {
+    return `<div class="pb-hist-card"><div class="pb-hist-title">📜 Lịch sử đấu</div>
+      <div class="pb-hist-empty">Chưa có trận nào. Thách đấu một người bạn nhé! ⚔️</div></div>`;
+  }
+  const s = pbHistorySummary(h);
+  const rows = h.slice(0, 20).map((b, i) => {
+    const open = _pbHistoryOpen === i;
+    return `
+      <div class="pb-hist-item ${b.won ? 'win' : 'lose'}">
+        <button class="pb-hist-row" onclick="togglePbHistory(${i})">
+          <span class="pb-hist-badge">${b.won ? '🏆' : '💪'}</span>
+          <span class="pb-hist-main">
+            <span class="pb-hist-foe">${pbEsc(b.foe || 'Bạn')}${b.foeLevel ? ` <small>cấp ${b.foeLevel}</small>` : ''}</span>
+            <span class="pb-hist-date">${pbFmtDate(b.date)}</span>
+          </span>
+          <span class="pb-hist-score">${b.myHp} ❤️ – ${b.foeHp} ❤️</span>
+          <span class="pb-hist-caret">${open ? '▾' : '›'}</span>
+        </button>
+        ${open ? _pbHistoryDetail(b) : ''}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="pb-hist-card">
+      <div class="pb-hist-title">📜 Lịch sử đấu</div>
+      <div class="pb-hist-summary">
+        <div><b>${s.total}</b><span>trận</span></div>
+        <div class="win"><b>${s.wins}</b><span>thắng</span></div>
+        <div class="lose"><b>${s.losses}</b><span>thua</span></div>
+        <div><b>${s.winRate}%</b><span>tỉ lệ thắng</span></div>
+      </div>
+      <div class="pb-hist-summary sub">
+        <div><b>${s.damageDealt}</b><span>sát thương gây ra</span></div>
+        <div><b>${s.damageTaken}</b><span>sát thương nhận</span></div>
+        <div><b>${s.accuracy}%</b><span>lượt bắn trúng</span></div>
+      </div>
+      <div class="pb-hist-list">${rows}</div>
+    </div>`;
 }
 
 // "Vào Hồ sơ → 👥 Bạn bè" was an instruction, not a route. Make it one tap,
@@ -356,7 +470,22 @@ function finishPetBattle(result) {
     // local word-matching battle mode and has a different shape.
     if (!Array.isArray(appState.petBattleHistory)) appState.petBattleHistory = [];
     let date = 0; try { date = Date.now(); } catch (e) {}
-    appState.petBattleHistory.unshift({ won, myHp: result.myHp, foeHp: result.foeHp, foe: result.foeName, date });
+    // Enough detail to replay the story of the battle later — the old entry
+    // kept only the final score, so a "history" was four numbers and a name.
+    const rounds = Array.isArray(result.rounds) ? result.rounds : [];
+    const mine = rounds.filter(r => r.mine);
+    const theirs = rounds.filter(r => !r.mine);
+    const sum = (list, k) => list.reduce((n, r) => n + (r[k] || 0), 0);
+    appState.petBattleHistory.unshift({
+      won, myHp: result.myHp, foeHp: result.foeHp, foe: result.foeName, date, coins,
+      myLevel: result.myLevel || 1, foeLevel: result.foeLevel || 1,
+      shotsFired: sum(mine, 'shots'),
+      hits: mine.filter(r => r.damage > 0).length,
+      volleys: mine.length,
+      damageDealt: sum(mine, 'damage'),
+      damageTaken: sum(theirs, 'damage'),
+      rounds,
+    });
     if (appState.petBattleHistory.length > 100) appState.petBattleHistory.length = 100;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}
@@ -388,7 +517,8 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     openPetBattle, closePetBattle, refreshPetBattle, renderPetBattle,
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
-    pbEsc, pbFmtCountdown,
+    pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
+    _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },
     _pbGetState: () => _pbState,
   };
