@@ -135,6 +135,30 @@ function _unitAnswerCorrect(input, en) {
 }
 
 // ---- Grade 4 view: one card per unit, with word count + best score ----
+// ---- mastery ----
+// Ten perfect 10/10 runs retires a unit. The point is to stop a child grinding
+// the one unit they already know for easy coins: once it is mastered the card
+// locks and the remaining units are the only way forward. Mix stays open
+// forever, so there is always something to practise.
+const UNIT_MASTERY_TARGET = 10;
+
+function unitPerfectCount(unit, history) {
+  const hist = history || ((typeof appState !== 'undefined' && appState && appState.unitsHistory) || []);
+  let n = 0;
+  for (const h of hist) {
+    if (!h || String(h.unit) !== String(unit)) continue;
+    if (h.total > 0 && h.score === h.total) n++;
+  }
+  return n;
+}
+
+// Mix is deliberately never mastered: it draws from every unit, so retiring it
+// would leave a fully-mastered child with nothing to do.
+function isUnitMastered(unit, history) {
+  if (String(unit) === 'mix') return false;
+  return unitPerfectCount(unit, history) >= UNIT_MASTERY_TARGET;
+}
+
 function renderUnitsBar() {
   const bar = document.getElementById('unitsBar');
   if (!bar) return;
@@ -163,14 +187,25 @@ function renderUnitsBar() {
     // Prefer real emoji for the preview (skip digit "pictures")
     const pics = words.map(w => w.emoji).filter(e => !/^[0-9:]+$/.test(e)).slice(0, 3).join(' ');
     const b = best[u];
+    const perfect = unitPerfectCount(u);
+    const mastered = isUnitMastered(u);
     return `
-    <button class="g4-card" onclick="startUnitPractice(${u})">
+    <button class="g4-card ${mastered ? 'mastered' : ''}" ${mastered ? 'disabled aria-disabled="true"' : ''}
+            onclick="startUnitPractice(${u})">
       <div class="g4-card-top">
-        <span class="g4-card-unit">Unit ${u}</span>
-        ${b !== undefined ? `<span class="g4-card-best ${b >= 80 ? 'good' : ''}">${b >= 100 ? '⭐' : ''}${b}%</span>` : ''}
+        <span class="g4-card-unit">${mastered ? '👑 ' : ''}Unit ${u}</span>
+        ${mastered
+          ? '<span class="g4-card-best mastered">Thành thạo</span>'
+          : (b !== undefined ? `<span class="g4-card-best ${b >= 80 ? 'good' : ''}">${b >= 100 ? '⭐' : ''}${b}%</span>` : '')}
       </div>
       <div class="g4-card-emojis">${pics}</div>
-      <div class="g4-card-meta">${words.length} từ vựng</div>
+      ${mastered
+        ? `<div class="g4-card-meta">Đã đạt ${UNIT_MASTERY_TARGET} lần 10/10 — giỏi lắm! 🎉</div>`
+        : `<div class="g4-card-meta">${words.length} từ vựng</div>
+           <div class="g4-mastery">
+             <i style="width:${Math.round(perfect / UNIT_MASTERY_TARGET * 100)}%"></i>
+           </div>
+           <div class="g4-mastery-label">⭐ ${perfect}/${UNIT_MASTERY_TARGET} lần 10/10</div>`}
     </button>`;
   }).join('');
 
@@ -236,6 +271,12 @@ function renderUnitsHistory() {
 
 // ---- practice flow (renders inside #topicsDetail) ----
 function startUnitPractice(unit) {
+  // The card is disabled, but a stale DOM node or a queued tap must not slip
+  // through — the rule lives here, not only in the markup.
+  if (isUnitMastered(unit)) {
+    if (typeof showToast === 'function') showToast('👑 Unit này bé đã thành thạo rồi!');
+    return;
+  }
   const pool = _unitPool(unit);
   if (!pool.length) return;
   const shuffled = pool.slice();
@@ -404,6 +445,7 @@ function finishUnitPractice() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     unitsBank, unitsList, buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
+    UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
