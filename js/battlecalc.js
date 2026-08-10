@@ -88,8 +88,34 @@ function makeRng(seed) {
 }
 
 // ---- battlefield ----
-const FIELD_W = 800;
-const FIELD_H = 450;
+// Two immutable rule sets. v1 is the original single-screen field and must
+// NEVER change: active battles and every replay hash depend on it byte for
+// byte. v2 is the long world — 2000px wide, viewed through the same 800px
+// window — and its constants were chosen by measurement, not by feel:
+// 300 seeds × wind -20/0/+20 × both directions = 1800 scenarios, all of them
+// reachable, worst case still offering 20 legal angle/power solutions, and
+// the practice bot's existing coarse search solving 100% of them (worst miss
+// 34px, inside a blast radius). Flight lands at 2.6-3.3s rendered.
+const FIELD_RULES = {
+  1: {
+    version: 1, worldW: 800, viewW: 800, worldH: 450,
+    spawnX: [90, 710], gravity: 0.18, windAccel: 0.004,
+    v0Base: 4, v0Gain: 0.09, plateau: 46, lane: 150, waveScale: 1,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 900,
+  },
+  2: {
+    version: 2, worldW: 2000, viewW: 800, worldH: 450,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.002,
+    v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+  },
+};
+// Anything unknown, missing or legacy is v1 — an unrecognised version must
+// never silently reinterpret a battle that is already in progress.
+function fieldRules(v) { return FIELD_RULES[Number(v) === 2 ? 2 : 1]; }
+
+const FIELD_W = FIELD_RULES[1].worldW;
+const FIELD_H = FIELD_RULES[1].worldH;
 const GROUND_MIN = 250;            // highest hills reach this y
 const GROUND_MAX = 400;
 const SPAWN_LEFT_X = 90;
@@ -100,36 +126,40 @@ const PLATEAU_R = 46;              // levelled ground each side of a pet
 const LANE_LEN = 150;              // clear firing lane in front of a pet
 
 // Rolling hills as a height per x-column, from the shared seed.
-function buildTerrain(seed) {
+function buildTerrain(seed, rules) {
+  const R = rules || FIELD_RULES[1];
   const rng = makeRng(seed);
+  // Wavelengths scale with the world, or a 2000px field would be a picket
+  // fence of identical hills instead of readable rolling terrain.
+  const k = R.waveScale;
   const waves = [
-    { amp: 38 + rng() * 26, len: 260 + rng() * 160, ph: rng() * Math.PI * 2 },
-    { amp: 16 + rng() * 14, len: 120 + rng() * 70, ph: rng() * Math.PI * 2 },
-    { amp: 7 + rng() * 6, len: 55 + rng() * 30, ph: rng() * Math.PI * 2 },
+    { amp: 38 + rng() * 26, len: (260 + rng() * 160) * k, ph: rng() * Math.PI * 2 },
+    { amp: 16 + rng() * 14, len: (120 + rng() * 70) * k, ph: rng() * Math.PI * 2 },
+    { amp: 7 + rng() * 6, len: (55 + rng() * 30) * k, ph: rng() * Math.PI * 2 },
   ];
   const base = 320 + rng() * 30;
-  const h = new Array(FIELD_W);
-  for (let x = 0; x < FIELD_W; x++) {
+  const h = new Array(R.worldW);
+  for (let x = 0; x < R.worldW; x++) {
     let y = base;
     for (const w of waves) y -= Math.sin((x / w.len) * Math.PI * 2 + w.ph) * w.amp;
-    h[x] = Math.max(GROUND_MIN, Math.min(GROUND_MAX, y));
+    h[x] = Math.max(R.groundMin, Math.min(R.groundMax, y));
   }
   // Each pet stands on a levelled peak with a clear firing lane. Without
   // this, ~13% of seeds put a pet in a valley where its own hillside
   // swallowed the first shot — unfair and confusing for a child.
-  for (const cx of [SPAWN_LEFT_X, SPAWN_RIGHT_X]) {
+  for (const cx of R.spawnX) {
     let peak = h[cx];
-    for (let x = cx - PLATEAU_R; x <= cx + PLATEAU_R; x++) {
-      if (x >= 0 && x < FIELD_W) peak = Math.min(peak, h[x]);   // min y = highest ground
+    for (let x = cx - R.plateau; x <= cx + R.plateau; x++) {
+      if (x >= 0 && x < R.worldW) peak = Math.min(peak, h[x]);   // min y = highest ground
     }
-    for (let x = cx - PLATEAU_R; x <= cx + PLATEAU_R; x++) {
-      if (x >= 0 && x < FIELD_W) h[x] = peak;
+    for (let x = cx - R.plateau; x <= cx + R.plateau; x++) {
+      if (x >= 0 && x < R.worldW) h[x] = peak;
     }
     // Nothing in the muzzle's path may tower over the pet.
-    const dir = cx < FIELD_W / 2 ? 1 : -1;
-    for (let i = PLATEAU_R; i <= LANE_LEN; i++) {
+    const dir = cx < R.worldW / 2 ? 1 : -1;
+    for (let i = R.plateau; i <= R.lane; i++) {
       const x = cx + dir * i;
-      if (x < 0 || x >= FIELD_W) break;
+      if (x < 0 || x >= R.worldW) break;
       if (h[x] < peak) h[x] = peak;                              // shave the blocker
     }
   }
@@ -137,11 +167,9 @@ function buildTerrain(seed) {
 }
 
 // Both pets stand on the terrain, near opposite edges.
-function spawnPoints(terrain) {
-  return [
-    { x: SPAWN_LEFT_X, y: terrain[SPAWN_LEFT_X] },
-    { x: SPAWN_RIGHT_X, y: terrain[SPAWN_RIGHT_X] },
-  ];
+function spawnPoints(terrain, rules) {
+  const R = rules || FIELD_RULES[1];
+  return R.spawnX.map(x => ({ x, y: terrain[x] }));
 }
 
 // Wind changes every round: -20..+20 (positive blows right).
@@ -174,31 +202,32 @@ function volleyAngles(angle, shots, seed, turnNo) {
 // Simulate one projectile. shooter: {x,y}, facing: 1 (rightwards) | -1.
 // Returns { points:[{x,y}], hit:{x,y}|null, frames }.
 function simulateShot(opts) {
+  const R = opts.rules || FIELD_RULES[1];
   const terrain = opts.terrain;
   const from = opts.from;
   const facing = opts.facing >= 0 ? 1 : -1;
   const rad = (opts.angle * Math.PI) / 180;
-  const v0 = 4 + 0.09 * Math.max(0, Math.min(100, opts.power));
+  const v0 = R.v0Base + R.v0Gain * Math.max(0, Math.min(100, opts.power));
   let vx = Math.cos(rad) * v0 * facing;
   let vy = -Math.sin(rad) * v0;
   let x = from.x + facing * 16;
-  let y = from.y - MUZZLE_Y;
+  let y = from.y - R.muzzleY;
   const wind = opts.wind || 0;
   const points = [];
   let hit = null;
   let f = 0;
-  for (; f < MAX_FRAMES; f++) {
-    vy += GRAVITY;
-    vx += WIND_ACCEL * wind;
+  for (; f < R.maxFrames; f++) {
+    vy += R.gravity;
+    vx += R.windAccel * wind;
     x += vx; y += vy;
     points.push({ x, y });
-    if (x < -60 || x > FIELD_W + 60) break;          // flew off the field
+    if (x < -60 || x > R.worldW + 60) break;          // flew off the field
     const col = Math.round(x);
-    if (f >= MUZZLE_CLEARANCE && col >= 0 && col < FIELD_W && y >= terrain[col]) {
+    if (f >= R.muzzleClearance && col >= 0 && col < R.worldW && y >= terrain[col]) {
       hit = { x, y: terrain[col] };
       break;
     }
-    if (y > FIELD_H + 80) break;
+    if (y > R.worldH + 80) break;
   }
   return { points, hit, frames: f };
 }
@@ -278,6 +307,7 @@ const BattleCalc = {
   computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
   spawnPoints, windForRound, volleyAngles, simulateShot,
   blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
+  FIELD_RULES, fieldRules,
 };
 if (typeof window !== 'undefined') window.BattleCalc = BattleCalc;
 
@@ -285,6 +315,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
     AMMO_STREAK_BONUS, AMMO_CAP, MAX_TURNS, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
+    FIELD_RULES, fieldRules,
     computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
     spawnPoints, windForRound, volleyAngles, simulateShot,
     blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
