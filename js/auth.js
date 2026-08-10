@@ -65,7 +65,11 @@ const EngAuth = (function () {
         if (r.ok && r.data && r.data.token) {
           setAccount(username, { token: r.data.token, role: r.data.user.role, id: r.data.user.id });
         } else {
-          return (_lastLinkStatus = { ok: false, reason: 'server', status: r.status });
+          // Keep the server's own words (e.g. an invalid-name rejection) —
+          // a generic "server busy" sent us hunting in the wrong place.
+          const detail = (r.data && r.data.error) ? String(r.data.error) : '';
+          const reason = (r.status >= 400 && r.status < 500) ? 'rejected' : 'server';
+          return (_lastLinkStatus = { ok: false, reason, status: r.status, detail });
         }
       } catch (e) {
         return (_lastLinkStatus = { ok: false, reason: 'offline' });

@@ -89,10 +89,11 @@ function _frLinkHelpHTML() {
     'no-passcode': '🔑 Hồ sơ này chưa có mật mã. Tạo lại hồ sơ có mật mã để dùng tính năng bạn bè.',
     offline: '📶 Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại nhé.',
     server: '⚠️ Máy chủ đang bận. Thử lại sau một chút nhé.',
+    rejected: '⚠️ Máy chủ không nhận hồ sơ này' + (st.detail ? ': <b>' + frEsc(st.detail) + '</b>' : '') + '.',
     unknown: '🔗 Chưa nối hồ sơ này với máy chủ. Bấm “Kết nối” để bắt đầu.',
   }[reason] || 'Chưa nối được tài khoản. Thử lại nhé.';
 
-  const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode';
+  const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode' || reason === 'rejected';
   return `
     <div class="friend-link-card">
       <div class="friend-link-msg">${msg}</div>

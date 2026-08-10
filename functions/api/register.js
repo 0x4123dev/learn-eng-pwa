@@ -7,7 +7,10 @@ export async function onRequestPost({ request, env }) {
   const passcode = String(body.passcode || '');
 
   if (username.length < 2 || username.length > 30) return err('Username must be 2–30 characters');
-  if (!/^[\w .\-]+$/.test(username)) return err('Username has invalid characters');
+  // Letters of ANY language (this is a Vietnamese app: Nhật, Bé Na, Đạt…),
+  // digits, space, dot, underscore, hyphen. \w alone is ASCII-only and was
+  // rejecting every accented name with a 400.
+  if (!/^[\p{L}\p{M}\p{N} ._\-]+$/u.test(username)) return err('Username has invalid characters');
   if (passcode.length < 4 || passcode.length > 32) return err('Passcode must be 4–32 characters');
 
   const secret = await getAuthSecret(env);
