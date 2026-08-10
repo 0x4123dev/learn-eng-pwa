@@ -51,8 +51,12 @@ function PetBattleGame(opts) {
   this.calc = C;
 
   this.seed = this.view.seed >>> 0;
-  this.terrain = C.buildTerrain(this.seed);
-  const spawns = C.spawnPoints(this.terrain);
+  // Geometry comes from the version SNAPSHOTTED on the battle, not from
+  // whatever this build prefers — otherwise two phones on different app
+  // versions would draw different terrain from the same seed mid-match.
+  this.rules = C.fieldRules ? C.fieldRules(this.view.fieldVersion) : null;
+  this.terrain = C.buildTerrain(this.seed, this.rules);
+  const spawns = C.spawnPoints(this.terrain, this.rules);
   // The challenger always stands on the left, for both viewers.
   this.mePos = this.view.iAmChallenger ? spawns[0] : spawns[1];
   this.foePos = this.view.iAmChallenger ? spawns[1] : spawns[0];
@@ -82,6 +86,12 @@ function PetBattleGame(opts) {
   this._destroyed = false;
   this._shellReady = false;
   this._draggingAim = false;
+  // The window onto the world. On v1 it cannot move, so nothing changes there.
+  this.camera = (typeof BattleCamera === 'function')
+    ? new BattleCamera({ rules: this.rules, reducedMotion: this.reducedMotion })
+    : null;
+  if (this.camera) this.camera.focusOn(this.mePos.x, { instant: true });
+  this._panPointer = null;
   this.impactParticles = [];
   this.houseImpacts = [];
   this._lastHitCount = 0;
@@ -265,6 +275,26 @@ PetBattleGame.prototype.render = function () {
           <span><small>${esc(gT('gPower'))}</small><b id="pbFieldPower">60</b></span>
         </div>
         <div class="pb-drag-hint" id="pbDragHint" aria-hidden="true">${esc(gT('gDragHint'))}</div>
+        <button class="pb-beacon left" id="pbBeaconL" type="button" hidden
+                aria-label="${esc(gT('gGoFoe'))}" onclick="_pbGameAnchor('foe')">◀</button>
+        <button class="pb-beacon right" id="pbBeaconR" type="button" hidden
+                aria-label="${esc(gT('gGoFoe'))}" onclick="_pbGameAnchor('foe')">▶</button>
+        <button class="pb-follow-btn" id="pbFollowBtn" type="button" hidden
+                onclick="_pbGameFollow()">${esc(gT('gFollowShot'))}</button>
+      </div>
+      <!-- The world moves; this ribbon stays put and says where you are. -->
+      <div class="pb-camera-bar" id="pbCameraBar">
+        <div class="pb-minimap" id="pbMinimap" role="img" aria-label="${esc(gT('gMinimapAria'))}">
+          <i class="pb-mini-window" id="pbMiniWindow"></i>
+          <i class="pb-mini-mark me" id="pbMiniMe"></i>
+          <i class="pb-mini-mark foe" id="pbMiniFoe"></i>
+          <i class="pb-mini-mark shot" id="pbMiniShot" hidden></i>
+        </div>
+        <div class="pb-anchors" role="group" aria-label="${esc(gT('gAnchorsAria'))}">
+          <button type="button" class="pb-anchor" onclick="_pbGameAnchor('me')">${esc(gT('gGoMe'))}</button>
+          <button type="button" class="pb-anchor" onclick="_pbGameAnchor('centre')">${esc(gT('gGoCentre'))}</button>
+          <button type="button" class="pb-anchor" onclick="_pbGameAnchor('foe')">${esc(gT('gGoFoe'))}</button>
+        </div>
       </div>
       <p class="pb-sr-only" id="pbCanvasHelp">${esc(gT('gCanvasHelp'))}</p>
       <div class="pb-banner" id="pbBanner" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -368,8 +398,12 @@ PetBattleGame.prototype._bindAimControls = function () {
   if (!this.canvas || typeof this.canvas.addEventListener !== 'function') return;
   const aimAt = (event) => {
     if (!this.myTurn || this.busy || this.finished) return;
+    if (!event) return;
     const rect = this.canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) * this.canvas.width / rect.width;
+    // The canvas shows a window onto the world, so a tap is a VIEWPORT
+    // coordinate and has to be shifted by the camera before it means anything.
+    const viewX = (event.clientX - rect.left) * this.canvas.width / rect.width;
+    const x = this.camera ? this.camera.toWorldX(viewX) : viewX;
     const y = (event.clientY - rect.top) * this.canvas.height / rect.height;
     const startX = this.mePos.x + this.meFacing * 16;
     const startY = this.mePos.y - 34;
@@ -382,21 +416,76 @@ PetBattleGame.prototype._bindAimControls = function () {
     this.draw();
     _pbBroadcastAim(this);
   };
+  // A gesture starts undecided. Only once it is clearly a horizontal drag does
+  // it become a camera pan, and only once it is clearly a tap does it aim —
+  // so scouting the field can never nudge the angle, and aiming can never
+  // scroll the world out from under the finger.
   this.canvas.addEventListener('pointerdown', event => {
-    if (!this.myTurn || this.busy) return;
-    this._draggingAim = true;
+    if (this._panPointer !== null) return;                 // ignore extra touches
+    this._panPointer = event.pointerId;
+    this._gesture = {
+      startX: event.clientX, startY: event.clientY,
+      at: (typeof performance !== 'undefined' ? performance.now() : 0),
+      kind: 'pending',
+    };
     if (this.canvas.setPointerCapture) this.canvas.setPointerCapture(event.pointerId);
-    aimAt(event);
   });
-  this.canvas.addEventListener('pointermove', event => { if (this._draggingAim) aimAt(event); });
-  const stop = () => { this._draggingAim = false; };
-  this.canvas.addEventListener('pointerup', stop);
-  this.canvas.addEventListener('pointercancel', stop);
+
+  this.canvas.addEventListener('pointermove', event => {
+    const g = this._gesture;
+    if (!g || event.pointerId !== this._panPointer) return;
+    const dx = event.clientX - g.startX;
+    const dy = event.clientY - g.startY;
+
+    if (g.kind === 'pending' && typeof classifyGesture === 'function') {
+      const verdict = classifyGesture({ dx, dy, dt: 0, onHandle: false });
+      if (verdict === 'pan' && this.camera && this.camera.isPannable()) g.kind = 'pan';
+    }
+
+    if (g.kind === 'pan') {
+      // Drag the world with the finger, in world units.
+      const rect = this.canvas.getBoundingClientRect();
+      const scale = this.canvas.width / Math.max(1, rect.width);
+      const moved = (event.clientX - (g.lastX === undefined ? g.startX : g.lastX)) * scale;
+      this.camera.panBy(-moved);
+      g.lastX = event.clientX;
+      this._followCancelled = true;
+      this.draw();
+      return;
+    }
+    if (g.kind === 'aim' || this._draggingAim) aimAt(event);
+  });
+
+  const endGesture = (event) => {
+    const g = this._gesture;
+    if (!g || (event && event.pointerId !== this._panPointer)) return;
+    const dx = event ? event.clientX - g.startX : 0;
+    const dy = event ? event.clientY - g.startY : 0;
+    const dt = (typeof performance !== 'undefined' ? performance.now() : 0) - g.at;
+    if (g.kind === 'pending' && typeof classifyGesture === 'function') {
+      if (classifyGesture({ dx, dy, dt, released: true }) === 'aim') aimAt(event);
+    }
+    this._gesture = null;
+    this._panPointer = null;
+    this._draggingAim = false;
+  };
+  this.canvas.addEventListener('pointerup', endGesture);
+  this.canvas.addEventListener('pointercancel', endGesture);
   this.canvas.addEventListener('keydown', event => {
     if (!this.myTurn || this.busy) return;
     const key = event.key;
     if (key === ' ' || key.startsWith('Arrow')) event.preventDefault();
     if (key === ' ') { this.fire(); return; }
+    // Camera anchors, so swipe is never the only way to navigate.
+    if (this.camera && this.camera.isPannable()) {
+      const view = (this.rules || {}).viewW || 800;
+      if (key === 'a' || key === 'A') { this.camera.panBy(-view * 0.2); this._followCancelled = true; this.draw(); return; }
+      if (key === 'd' || key === 'D') { this.camera.panBy(view * 0.2); this._followCancelled = true; this.draw(); return; }
+      if (key === 'Home') { this.cameraAnchor('me'); return; }
+      if (key === 'c' || key === 'C') { this.cameraAnchor('centre'); return; }
+      if (key === 'End') { this.cameraAnchor('foe'); return; }
+      if (key === 'Escape') { this._followCancelled = true; return; }
+    }
     if (key === 'ArrowLeft') this.angle = Math.max(10, this.angle - 1);
     else if (key === 'ArrowRight') this.angle = Math.min(80, this.angle + 1);
     else if (key === 'ArrowDown') this.power = Math.max(10, this.power - 2);
@@ -406,6 +495,75 @@ PetBattleGame.prototype._bindAimControls = function () {
     this.draw();
     _pbBroadcastAim(this);
   });
+};
+
+// Labelled jumps: My dog / Centre / Opponent. Available as buttons AND keys,
+// so a child who cannot swipe accurately is never stuck.
+PetBattleGame.prototype.cameraAnchor = function (which) {
+  if (!this.camera) return;
+  const R = this.rules || {};
+  const centre = (R.worldW || 800) / 2;
+  const x = which === 'foe' ? this.foePos.x : which === 'centre' ? centre : this.mePos.x;
+  this._followCancelled = true;                 // an explicit jump beats follow
+  this.camera.focusOn(x, { mode: 'manual' });
+  this._requestFrame();
+  this.draw();
+};
+
+// Called every frame: keep the volley in view unless the child took over.
+PetBattleGame.prototype._updateCamera = function (k) {
+  const cam = this.camera;
+  if (!cam || !cam.isPannable()) return;
+  const now = (typeof performance !== 'undefined') ? performance.now() : 0;
+
+  if (this.flying.length && !this._followCancelled) {
+    // Follow the CENTROID of the volley, not one shell, so four poops do not
+    // yank the camera between them.
+    let sx = 0, sv = 0, n = 0;
+    for (const f of this.flying) {
+      const i = Math.min(f.i, f.points.length - 1);
+      const p = f.points[i];
+      const prev = f.points[Math.max(0, i - 1)];
+      if (!p) continue;
+      sx += p.x; sv += (p.x - (prev ? prev.x : p.x)); n++;
+    }
+    if (n) cam.follow(sx / n, sv / n);
+  } else if (!cam.isHolding(now) && cam.mode === 'fire-follow' && !this.flying.length) {
+    // Shots have landed: settle back on whoever shoots next.
+    cam.focusOn(this.myTurn ? this.mePos.x : this.foePos.x, { mode: 'turn-settle' });
+  }
+  cam.update(k);
+};
+
+// Minimap, beacons and the Follow-shot control live in the DOM above the
+// canvas, so they stay put while the world moves underneath.
+PetBattleGame.prototype._updateCameraUi = function () {
+  const cam = this.camera;
+  const wrap = this._el('pbMinimap');
+  if (!cam || !wrap) return;
+  if (!cam.isPannable()) { wrap.hidden = true; return; }
+  wrap.hidden = false;
+
+  const width = wrap.clientWidth || 200;
+  const m = cam.minimap(width);
+  const win = this._el('pbMiniWindow');
+  if (win) { win.style.left = m.left + 'px'; win.style.width = Math.max(8, m.width) + 'px'; }
+  const me = this._el('pbMiniMe'); if (me) me.style.left = m.markerAt(this.mePos.x) + 'px';
+  const foe = this._el('pbMiniFoe'); if (foe) foe.style.left = m.markerAt(this.foePos.x) + 'px';
+  const shot = this._el('pbMiniShot');
+  if (shot) {
+    const f = this.flying[0];
+    const p = f && f.points[Math.min(f.i, f.points.length - 1)];
+    shot.hidden = !p;
+    if (p) shot.style.left = m.markerAt(p.x) + 'px';
+  }
+  // Which way is the opponent, when they are off screen?
+  const side = cam.offscreenSide(this.foePos.x);
+  const beaconL = this._el('pbBeaconL'), beaconR = this._el('pbBeaconR');
+  if (beaconL) beaconL.hidden = side !== -1;
+  if (beaconR) beaconR.hidden = side !== 1;
+  const follow = this._el('pbFollowBtn');
+  if (follow) follow.hidden = !(this._followCancelled && this.flying.length > 0);
 };
 
 // The real pets (with their earned outfits) drawn into images once.
@@ -424,9 +582,22 @@ PetBattleGame.prototype._cachePets = function () {
 
 // ---- drawing ----
 PetBattleGame.prototype.draw = function () {
+  const camX = this.camera ? this.camera.x : 0;
+  if (camX) { this.ctx && this.ctx.save(); this.ctx && this.ctx.translate(-camX, 0); }
+  this._drawWorld();
+  if (camX) this.ctx && this.ctx.restore();
+  this._updateCameraUi();
+};
+
+PetBattleGame.prototype._drawWorld = function () {
   const ctx = this.ctx, C = this.calc;
   if (!ctx) return;
-  const W = C.FIELD_W, H = C.FIELD_H;
+  const R = this.rules || C.FIELD_RULES[1];
+  const W = R.worldW, H = R.worldH;
+  const VIEW = R.viewW;
+  // Only the slice under the camera is worth painting; on a 2000px world that
+  // is 60% of the pixels skipped every frame.
+  const vis = this.camera ? this.camera.visibleRange(120) : { from: 0, to: W - 1 };
 
   // Layered arcade sky: readable silhouettes and a stronger Gunbound mood.
   const sky = ctx.createLinearGradient(0, 0, 0, H);
@@ -434,29 +605,51 @@ PetBattleGame.prototype.draw = function () {
   sky.addColorStop(0.52, '#8dc7ff');
   sky.addColorStop(1, '#e8f7df');
   ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(vis.from, 0, vis.to - vis.from + 1, H);
 
+  // Scenery is drawn in WORLD space inside the camera translate, so anything
+  // pinned to the old 800px width would bunch into one corner of a 2000px
+  // field. The sky layers move at their own parallax rates, which is what
+  // gives the long world a sense of depth while panning.
+  const cam = this.camera ? this.camera.x : 0;
+
+  // Sun: pinned to the viewport (it is very far away).
   ctx.fillStyle = 'rgba(255,244,180,.88)';
-  ctx.beginPath(); ctx.arc(W * .78, 68, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cam + VIEW * .78, 68, 34, 0, Math.PI * 2); ctx.fill();
+
+  // Clouds: slow drift, tiled across the whole world, culled to the slice.
   ctx.fillStyle = 'rgba(255,255,255,.72)';
-  for (const cloud of [[110,72,1],[360,112,.72],[650,82,.9]]) {
-    ctx.save(); ctx.translate(cloud[0], cloud[1]); ctx.scale(cloud[2], cloud[2]);
+  const cloudSpan = 420;
+  const cloudFrom = Math.floor((vis.from - cam * .55) / cloudSpan) - 1;
+  const cloudTo = Math.ceil((vis.to - cam * .55) / cloudSpan) + 1;
+  for (let n = cloudFrom; n <= cloudTo; n++) {
+    const base = n * cloudSpan;
+    const x = base + cam * .55;                    // parallax: nearer than the sun
+    if (x < vis.from - 120 || x > vis.to + 120) continue;
+    const y = 72 + ((n % 3) + 3) % 3 * 26;
+    const sc = 0.72 + (((n % 4) + 4) % 4) * 0.11;
+    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
     ctx.beginPath(); ctx.arc(-28, 0, 18, 0, Math.PI * 2); ctx.arc(0, -8, 25, 0, Math.PI * 2);
     ctx.arc(31, 2, 17, 0, Math.PI * 2); ctx.fill(); ctx.restore();
   }
-  ctx.fillStyle = 'rgba(61,89,148,.22)';
-  ctx.beginPath(); ctx.moveTo(0, 280);
-  for (let x = 0; x <= W; x += 80) ctx.lineTo(x, 190 + ((x / 80) % 2 ? 48 : 0));
-  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
 
-  // Wind ribbons make the round modifier readable without staring at the HUD.
+  // Distant hills: mid parallax, spanning the visible slice only.
+  ctx.fillStyle = 'rgba(61,89,148,.22)';
+  ctx.beginPath();
+  const hillFrom = Math.floor(vis.from / 80) * 80, hillTo = Math.ceil(vis.to / 80) * 80;
+  ctx.moveTo(hillFrom, 280);
+  for (let x = hillFrom; x <= hillTo; x += 80) ctx.lineTo(x, 190 + ((x / 80) % 2 ? 48 : 0));
+  ctx.lineTo(hillTo, H); ctx.lineTo(hillFrom, H); ctx.fill();
+
+  // Wind ribbons stay pinned to the viewport: they report this round's wind,
+  // so they must be readable wherever the camera happens to be looking.
   const wind = this.wind();
   if (wind !== 0) {
     ctx.save();
     ctx.strokeStyle = 'rgba(255,255,255,.46)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
     for (let i = 0; i < 5; i++) {
       const y = 48 + i * 33;
-      const x = wind > 0 ? 28 + i * 86 : W - 28 - i * 86;
+      const x = cam + (wind > 0 ? 28 + i * 86 : VIEW - 28 - i * 86);
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.sign(wind) * (20 + Math.abs(wind) * 1.4), y); ctx.stroke();
     }
     ctx.restore();
@@ -464,9 +657,9 @@ PetBattleGame.prototype.draw = function () {
 
   // terrain
   ctx.beginPath();
-  ctx.moveTo(0, H);
-  for (let x = 0; x < W; x++) ctx.lineTo(x, this.terrain[x]);
-  ctx.lineTo(W, H);
+  ctx.moveTo(vis.from, H);
+  for (let x = vis.from; x <= vis.to; x++) ctx.lineTo(x, this.terrain[x]);
+  ctx.lineTo(vis.to, H);
   ctx.closePath();
   const ground = ctx.createLinearGradient(0, 250, 0, H);
   ground.addColorStop(0, '#75c95e');
@@ -522,7 +715,7 @@ PetBattleGame.prototype.draw = function () {
   if (this.foeAiming && !this.myTurn && !this.flying.length) {
     const ghost = C.simulateShot({
       terrain: this.terrain, from: this.foePos, facing: -this.meFacing,
-      angle: this.foeAiming.angle, power: this.foeAiming.power, wind: this.wind(),
+      angle: this.foeAiming.angle, power: this.foeAiming.power, wind: this.wind(), rules: this.rules,
     });
     ctx.setLineDash([5, 7]);
     ctx.strokeStyle = 'rgba(220,60,60,0.45)';
@@ -706,7 +899,7 @@ PetBattleGame.prototype._drawAimGuide = function (pos, facing, angle, power, col
 
 PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, power) {
   const shot = this.calc.simulateShot({
-    terrain: this.terrain, from, facing, angle, power, wind: this.wind(),
+    terrain: this.terrain, from, facing, angle, power, wind: this.wind(), rules: this.rules,
   });
   const ctx = this.ctx;
   ctx.save();
@@ -723,7 +916,10 @@ PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, 
 };
 
 PetBattleGame.prototype._hasActiveAnimation = function () {
-  return this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
+  // A travelling camera counts: the frame loop must keep running until the
+  // world has finished sliding, or a pan would freeze halfway.
+  const camMoving = !!(this.camera && this.camera.isPannable() && !this.camera.settled());
+  return camMoving || this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
 };
 
 PetBattleGame.prototype._requestFrame = function () {
@@ -740,7 +936,9 @@ PetBattleGame.prototype._requestFrame = function () {
       : (typeof performance !== 'undefined' ? performance.now() : 0);
     const last = this._lastFrameAt;
     this._lastFrameAt = t;
-    this.step(last ? (t - last) / 16.667 : 1);
+    const k = last ? (t - last) / 16.667 : 1;
+    this.step(k);
+    this._updateCamera(k);
     this.draw();
     if (this._hasActiveAnimation()) this._requestFrame();
     else this._lastFrameAt = 0;                    // next burst starts fresh
@@ -810,7 +1008,7 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
   this._lastHitCount = 0;
   this.flying = angles.map(a => {
     const sim = C.simulateShot({
-      terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(),
+      terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(), rules: this.rules,
     });
     const bulletDamage = C.damageAt(sim.hit, target, level);
     damage += bulletDamage;
@@ -858,6 +1056,7 @@ PetBattleGame.prototype._passTurn = function () {
 // ---- my turn ----
 PetBattleGame.prototype.fire = function () {
   if (!this.myTurn || this.busy || this.finished) return;
+  this._followCancelled = false;                 // a new shot is worth watching
   const C = this.calc;
   // Math.max(1, …) used to fire a phantom poop on an empty clip. Now that a
   // battle runs until the ammo does, an empty turn must pass, not shoot.
@@ -969,6 +1168,14 @@ function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n;
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
+function _pbGameAnchor(which) { const g = _pbCurrentGame(); if (g) g.cameraAnchor(which); }
+function _pbGameFollow() {
+  const g = _pbCurrentGame();
+  if (!g) return;
+  g._followCancelled = false;                    // hand the camera back to the shot
+  g._requestFrame();
+  g.draw();
+}
 
 // 🇬🇧/🇻🇳 mid-battle. Most of the text is baked into the shell markup, which is
 // built once, so the language switch has to rebuild it — cheap, and it keeps

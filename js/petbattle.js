@@ -113,6 +113,10 @@ const PB_STR = {
     gHouseWorse: ' · 💔 The house is falling apart!',
     gMiss: '💨 Missed!', gMissFoe: '💨 They missed!',
     gSkip: '⏭️ {name} skipped their turn',
+    gGoMe: 'My dog', gGoCentre: 'Centre', gGoFoe: 'Opponent',
+    gFollowShot: '🎯 Follow shot',
+    gMinimapAria: 'Battlefield map: your castle, the opponent, and where you are looking',
+    gAnchorsAria: 'Jump the view',
     resultWin: 'Victory!', resultLose: 'Lost — get them next time!',
     resultHint: 'Keep studying for 3 days to load up for the next battle! 🚀',
     done: 'Done',
@@ -200,6 +204,10 @@ const PB_STR = {
     gHouseWorse: ' · 💔 Nhà sắp sập!',
     gMiss: '💨 Trượt rồi!', gMissFoe: '💨 Bạn ấy bắn trượt!',
     gSkip: '⏭️ {name} bỏ lượt',
+    gGoMe: 'Chó của bé', gGoCentre: 'Giữa sân', gGoFoe: 'Đối thủ',
+    gFollowShot: '🎯 Bám theo đạn',
+    gMinimapAria: 'Bản đồ chiến trường: nhà bé, đối thủ, và chỗ bé đang nhìn',
+    gAnchorsAria: 'Nhảy tới vị trí',
     resultWin: 'Chiến thắng!', resultLose: 'Thua rồi — lần sau cố lên!',
     resultHint: 'Học tiếp 3 ngày để nạp đạn cho trận sau nhé! 🚀',
     done: 'Xong',
@@ -695,6 +703,7 @@ function startBotBattle() {
   // rather than who has been studying longer.
   const view = {
     id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
+    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 2 : 1,
     me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP },
     foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP },
   };

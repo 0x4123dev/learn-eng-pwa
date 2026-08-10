@@ -16,6 +16,17 @@ export const AMMO_CAP = 20;
 // only a runaway guard — no legal game can reach it.
 export const MAX_TURNS = AMMO_CAP * 2 + 4;
 
+// The battlefield geometry is SNAPSHOTTED per battle, never read from whatever
+// the client happens to be running: both phones must derive identical terrain
+// from one seed for the whole match. New challenges are the long world; rows
+// written before this column existed stay v1 forever.
+export const FIELD_VERSION_NEW = 2;
+export const FIELD_VERSION_MAX = 2;
+export function normalizeFieldVersion(v) {
+  const n = Math.trunc(Number(v));
+  return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;
+}
+
 export const COOLDOWN_MS = 72 * 60 * 60 * 1000;   // 3 days between battles
 export const INVITE_TTL_MS = 60 * 1000;           // 60s to accept
 export const TURN_MS = 20 * 1000;                 // 20s per turn
@@ -130,6 +141,7 @@ export function battleView(b, viewerId) {
     id: b.id,
     status: b.status,
     seed: b.seed,
+    fieldVersion: normalizeFieldVersion(b.field_version),
     // The challenger always stands on the left, whoever is looking.
     iAmChallenger: meIsChallenger,
     me, foe,

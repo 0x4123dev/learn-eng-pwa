@@ -884,6 +884,51 @@
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        /* Long-world camera: the ribbon and anchors stay put while the world
+           slides underneath, so a child always knows where they are looking. */
+        .pb-camera-bar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; }
+        .pb-minimap {
+            position: relative; flex: 1; height: 22px; border-radius: 8px;
+            background: linear-gradient(180deg, #1e3a8a, #0f172a);
+            border: 2px solid #182b66; overflow: hidden;
+        }
+        .pb-mini-window {
+            position: absolute; top: 0; bottom: 0; border-radius: 5px;
+            background: rgba(253, 224, 71, 0.22); border: 2px solid #fde047;
+        }
+        .pb-mini-mark { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; }
+        .pb-mini-mark.me { background: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,.35); }
+        .pb-mini-mark.foe { background: #fb7185; box-shadow: 0 0 0 2px rgba(251,113,133,.35); }
+        .pb-mini-mark.shot { background: #fff; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; }
+        .pb-anchors { display: flex; gap: 4px; }
+        .pb-anchor {
+            min-height: 44px; padding: 4px 8px; border-radius: 10px; cursor: pointer;
+            border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1);
+            color: #e2e8f0; font-family: inherit; font-size: 10px; font-weight: 800;
+        }
+        .pb-anchor:active { transform: scale(0.95); }
+        /* Offscreen opponent: a tappable arrow, not a mystery. */
+        .pb-beacon {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+            width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: none;
+            background: rgba(251, 113, 133, 0.85); color: #fff; font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.35);
+        }
+        .pb-beacon.left { left: 6px; }
+        .pb-beacon.right { right: 6px; }
+        .pb-follow-btn {
+            position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 3;
+            min-height: 44px; padding: 8px 14px; border-radius: 999px; border: none; cursor: pointer;
+            background: rgba(15, 23, 42, 0.86); color: #fde047;
+            font-family: inherit; font-size: 12px; font-weight: 800;
+        }
+        /* Horizontal swipes belong to the battlefield; vertical page scrolling
+           and browser edge gestures stay native. */
+        .pb-field-shell { touch-action: pan-y pinch-zoom; overscroll-behavior-x: contain; }
+        @media (prefers-reduced-motion: reduce) {
+            .pb-mini-window, .pb-mini-mark { transition: none !important; }
+        }
+
         /* 🏆 Cup cabinet (Profile) */
         .cup-cabinet { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
         .cup-empty {

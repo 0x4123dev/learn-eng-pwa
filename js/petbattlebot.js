@@ -22,11 +22,13 @@ let _botGame = null;
 // Search the (angle, power) space for the shot that lands nearest the target,
 // then deliberately miss by a bit. Uses the real physics, so the bot is
 // playing the same game the child is — not cheating with a scripted arc.
-function botAim(calc, terrain, from, facing, target, wind, rng) {
+function botAim(calc, terrain, from, facing, target, wind, rng, rules) {
   let best = null;
   for (let angle = 25; angle <= 70; angle += 5) {
     for (let power = 40; power <= 95; power += 5) {
-      const sim = calc.simulateShot({ terrain, from, facing, angle, power, wind });
+      // Same rule set the real shot will fly under — a bot aiming with v1
+      // physics in a v2 world would never come close.
+      const sim = calc.simulateShot({ terrain, from, facing, angle, power, wind, rules });
       if (!sim.hit) continue;
       const d = Math.abs(sim.hit.x - target.x);
       if (!best || d < best.d) best = { angle, power, d };
@@ -49,7 +51,7 @@ function botTakeTurn(game) {
   const C = game.calc;
   const wind = game.wind();
   const shots = Math.max(1, Math.min(C.maxShotsThisTurn(game.foeAmmo), 1 + Math.floor(Math.random() * 3)));
-  const aim = botAim(C, game.terrain, game.foePos, -game.meFacing, game.mePos, wind);
+  const aim = botAim(C, game.terrain, game.foePos, -game.meFacing, game.mePos, wind, null, game.rules);
 
   game.turnNo = game.turnNo + 1;
   game._replay({
