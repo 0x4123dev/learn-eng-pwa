@@ -10,6 +10,7 @@ const game = require(path.join(__dirname, '..', 'js', 'petbattlegame.js'));
 const workerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'src', 'index.js'), 'utf8');
 const wranglerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'wrangler.toml'), 'utf8');
 const gameSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattlegame.js'), 'utf8');
+const petbattleSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattle.js'), 'utf8');
 const stylesSrc = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
 
 // Minimal fake socket so we can drive the state machine without a network.
@@ -206,7 +207,12 @@ suite('battle game: live features are wired', () => {
 
     test('the child can see whether the battle is live or slow', () => {
         assert.truthy(gameSrc.includes('pb-link'), 'connection pill rendered');
-        assert.truthy(gameSrc.includes('Trực tiếp'), 'live label');
+        // The words moved into PB_STR when the battle became bilingual; the
+        // wording itself is pinned there, in both languages.
+        for (const key of ['gLive', 'gWaitPeer', 'gConnecting', 'gSlow']) {
+            assert.truthy(gameSrc.includes(`gT('${key}')`), `${key} label`);
+        }
+        assert.truthy(petbattleSrc.includes('gLive:'), 'the live label must exist in the string table');
     });
 });
 
@@ -225,8 +231,11 @@ suite('battle game: efficient and accessible UI', () => {
     test('HP, controls, live status, and canvas expose accessible semantics', () => {
         assert.truthy(gameSrc.includes('role="progressbar"'));
         assert.truthy(gameSrc.includes('aria-valuenow'));
-        assert.truthy(gameSrc.includes('label for="pbAngle"'));
-        assert.truthy(gameSrc.includes('label for="pbPower"'));
+        assert.truthy(gameSrc.includes('tabindex="0"'));
+        assert.truthy(gameSrc.includes("gT('gCanvasHelp')"), 'the canvas needs a described-by help string');
+        // …and that help must still teach the keyboard controls, in both languages.
+        assert.truthy(/gCanvasHelp: 'Each pet[^']*Arrow keys/.test(petbattleSrc), 'English help must mention arrow keys');
+        assert.truthy(/gCanvasHelp: '[^']*phím mũi tên/.test(petbattleSrc), 'Vietnamese help must mention arrow keys');
         assert.truthy(gameSrc.includes('aria-live="polite"'));
         assert.truthy(gameSrc.includes('role="img" aria-label='));
     });
@@ -260,15 +269,15 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes('this._drawHouse(this.mePos'));
         assert.truthy(gameSrc.includes('this._drawHouse(this.foePos'));
         assert.truthy(gameSrc.includes('pbHouseDamageStage(hp)'));
-        assert.truthy(gameSrc.includes('Nhà trúng đạn'));
-        assert.truthy(gameSrc.includes('Nhà của bé trúng đạn'));
+        assert.truthy(gameSrc.includes("gT('gHit'"), 'hit banner must be translatable');
+        assert.truthy(gameSrc.includes("gT('gHitMe'"), 'incoming-hit banner must be translatable');
     });
 
     test('the active cannon has a visible guide tied to angle and power', () => {
         assert.truthy(gameSrc.includes('this._drawAimGuide(this.mePos'));
         assert.truthy(gameSrc.includes('const length = 46 + Math.max(10, Math.min(100, power)) * .58'));
         assert.truthy(gameSrc.includes("ctx.fillText(Math.round(angle) + '°'"));
-        assert.truthy(gameSrc.includes('g.angle = +v') && gameSrc.includes('g.draw()'));
+        assert.truthy(gameSrc.includes('Math.atan2(startY - y, forward)'));
     });
 
     test('the HUD includes partial hearts and a high-contrast arcade arena', () => {
@@ -284,7 +293,7 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes("key === 'ArrowLeft'"));
         assert.truthy(gameSrc.includes("key === 'ArrowUp'"));
         assert.truthy(gameSrc.includes("if (key === ' ') { this.fire(); return; }"));
-        assert.truthy(gameSrc.includes('KÉO ĐƯỜNG NGẮM'));
+        assert.truthy(gameSrc.includes("gT('gDragHint')"));
     });
 
     test('rich feedback includes trajectory dots, wind ribbons, and bounded impact particles', () => {
@@ -293,6 +302,22 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes('this.impactParticles.push'));
         assert.truthy(gameSrc.includes('this.impactParticles = this.impactParticles.filter'));
         assert.truthy(gameSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')"));
+    });
+
+    test('poop ammunition replaces tia controls and flies slowly enough to follow', () => {
+        assert.truthy(gameSrc.includes("ctx.fillText('💩'"));
+        assert.truthy(gameSrc.includes('pb-poop-stack'));
+        assert.truthy(gameSrc.includes('if (f.tick % 2 === 0) f.i += 1'));
+        assert.falsy(gameSrc.includes('type="range"'));
+        assert.falsy(gameSrc.includes('>1 TIA<'));
+    });
+
+    test('pet levels stay visible and a destroyed house leaves pet and rubble outdoors', () => {
+        assert.truthy(gameSrc.includes('pb-hud-level'));
+        assert.truthy(gameSrc.includes("ctx.fillText('LV.'"));
+        assert.truthy(gameSrc.includes('// At zero HP the shelter is gone'));
+        assert.truthy(gameSrc.includes('if (damage >= 4)'));
+        assert.truthy(gameSrc.includes('this.houseImpacts.push'));
     });
 });
 

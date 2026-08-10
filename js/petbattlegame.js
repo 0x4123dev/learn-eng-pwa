@@ -5,6 +5,12 @@
 
 const PB_HEARTS = 5;
 
+// The battle borrows the arena's string table and its 🇬🇧/🇻🇳 choice, so one
+// flag governs the whole flow and the parity test covers these strings too.
+// In Node (tests) neither exists; the key comes back and nothing renders.
+const gT = (k, vars) => (typeof pbT === 'function' ? pbT(k, vars) : k);
+const gLang = () => (typeof _pbLang !== 'undefined' ? _pbLang : 'en');
+
 // Pure presentation helpers: HP remains server-authoritative, while these
 // convert it into readable Gunbound-style house damage and heart segments.
 function pbHouseDamageStage(hp) {
@@ -70,6 +76,8 @@ function PetBattleGame(opts) {
   this._shellReady = false;
   this._draggingAim = false;
   this.impactParticles = [];
+  this.houseImpacts = [];
+  this._lastHitCount = 0;
   this.reducedMotion = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
     ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
     : false;
@@ -118,8 +126,8 @@ PetBattleGame.prototype._updateLinkPill = function () {
   const connecting = this.linkMode === 'connecting';
   const className = 'pb-link ' + (live ? 'live' : connecting ? 'connecting' : 'slow');
   const label = live
-    ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Chờ bạn')
-    : connecting ? '… Đang nối' : '🐢 Chậm';
+    ? (this.foeHere ? gT('gLive') : gT('gWaitPeer'))
+    : connecting ? gT('gConnecting') : gT('gSlow');
   if (el.className !== className) el.className = className;
   if (el.textContent !== label) el.textContent = label;
 };
@@ -177,26 +185,33 @@ PetBattleGame.prototype.render = function () {
     </div>`;
     const barrels = [1, 2, 3, 4].map(n => `
       <button class="pb-barrel" type="button" data-pb-shots="${n}"
-              aria-label="Nạp ${n} tia" onclick="_pbGameSetShots(${n})">
-        <span class="pb-shell-stack" aria-hidden="true">${Array.from({ length: n }, () => '<i></i>').join('')}</span>
-        <span>${n} TIA</span>
+              aria-label="${esc(gT('gLoadAria', { n }))}" onclick="_pbGameSetShots(${n})">
+        <span class="pb-poop-stack" aria-hidden="true">${Array.from({ length: n }, () => '<i>💩</i>').join('')}</span>
+        <span>${esc(gT('gShots', { n }))}</span>
       </button>`).join('');
 
     this.mount.innerHTML = `
       <div class="pb-game">
       <div class="pb-turn-callout" id="pbTurnCallout" role="status" aria-live="polite">
         <span class="pb-turn-dot" aria-hidden="true"></span><span id="pbTurnText"></span>
+        <div class="pb-lang pb-game-lang" role="group" aria-label="Language">
+          <button class="pb-flag ${gLang() === 'en' ? 'on' : ''}" type="button"
+                  onclick="_pbGameSetLang('en')" aria-pressed="${gLang() === 'en'}">🇬🇧<span>EN</span></button>
+          <button class="pb-flag ${gLang() === 'vi' ? 'on' : ''}" type="button"
+                  onclick="_pbGameSetLang('vi')" aria-pressed="${gLang() === 'vi'}">🇻🇳<span>VI</span></button>
+        </div>
       </div>
       <div class="pb-hud">
         <div class="pb-hud-side">
-          <div class="pb-hud-name" id="pbMeName">${esc(v.me.name || 'Bé')}</div>
+          <div class="pb-hud-name" id="pbMeName">${esc(v.me.name || gT('gMe'))}</div>
           <div class="pb-hp" id="pbHpTrackMe" role="progressbar" aria-labelledby="pbMeName pbHpMeText"
                aria-valuemin="0" aria-valuemax="100">
             <div class="pb-hp-fill me" id="pbHpMe"></div>
           </div>
           <div class="pb-hp-value" id="pbHpMeText"></div>
           ${hearts('Me')}
-          <div class="pb-hud-ammo" id="pbAmmoMe">${this.myAmmo} 🚀</div>
+          <div class="pb-hud-ammo" id="pbAmmoMe">${this.myAmmo} 💩</div>
+          <div class="pb-hud-level">LV.${Math.max(1, Number(v.me.level) || 1)}</div>
         </div>
         <div class="pb-hud-mid">
           <div class="pb-round" id="pbRound"></div>
@@ -204,48 +219,43 @@ PetBattleGame.prototype.render = function () {
           <div class="pb-link" id="pbLink" role="status" aria-live="polite"></div>
         </div>
         <div class="pb-hud-side right">
-          <div class="pb-hud-name" id="pbFoeName">${esc(v.foe.name || 'Bạn')}</div>
+          <div class="pb-hud-name" id="pbFoeName">${esc(v.foe.name || gT('gFoe'))}</div>
           <div class="pb-hp" id="pbHpTrackFoe" role="progressbar" aria-labelledby="pbFoeName pbHpFoeText"
                aria-valuemin="0" aria-valuemax="100">
             <div class="pb-hp-fill foe" id="pbHpFoe"></div>
           </div>
           <div class="pb-hp-value" id="pbHpFoeText"></div>
           ${hearts('Foe')}
-          <div class="pb-hud-ammo" id="pbAmmoFoe">${this.foeAmmo} 🚀</div>
+          <div class="pb-hud-ammo" id="pbAmmoFoe">${this.foeAmmo} 💩</div>
+          <div class="pb-hud-level">LV.${Math.max(1, Number(v.foe.level) || 1)}</div>
         </div>
       </div>
       <div class="pb-field-shell">
         <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}" tabindex="0"
-                role="img" aria-label="Chiến trường pháo binh giữa hai thú cưng" aria-describedby="pbCanvasHelp">
-          Chiến trường pháo binh giữa hai thú cưng. Kéo đường ngắm hoặc dùng điều khiển bên dưới.
+                role="img" aria-label="${esc(gT('gCanvasAria'))}" aria-describedby="pbCanvasHelp">
+          ${esc(gT('gCanvasFallback'))}
         </canvas>
         <div class="pb-field-readout" aria-hidden="true">
-          <span><small>GÓC</small><b id="pbFieldAngle">45°</b></span>
-          <span><small>LỰC</small><b id="pbFieldPower">60</b></span>
+          <span><small>${esc(gT('gAngle'))}</small><b id="pbFieldAngle">45°</b></span>
+          <span><small>${esc(gT('gPower'))}</small><b id="pbFieldPower">60</b></span>
         </div>
-        <div class="pb-drag-hint" id="pbDragHint" aria-hidden="true">KÉO ĐƯỜNG NGẮM</div>
+        <div class="pb-drag-hint" id="pbDragHint" aria-hidden="true">${esc(gT('gDragHint'))}</div>
       </div>
-      <p class="pb-sr-only" id="pbCanvasHelp">Mỗi thú cưng ở trong một ngôi nhà. Đạn trúng sẽ làm hỏng nhà và giảm tim. Kéo từ khẩu pháo trên chiến trường để chỉnh góc và lực. Có thể dùng phím mũi tên khi chiến trường được chọn, và nhấn phím cách để bắn.</p>
+      <p class="pb-sr-only" id="pbCanvasHelp">${esc(gT('gCanvasHelp'))}</p>
       <div class="pb-banner" id="pbBanner" role="status" aria-live="polite" aria-atomic="true"></div>
-      <div class="pb-controls" id="pbControls" aria-label="Điều khiển bắn">
-        <div class="pb-slider-row">
-          <label for="pbAngle"><span class="pb-control-icon" aria-hidden="true">↗</span> Góc <output id="pbAngleVal" for="pbAngle"></output></label>
-          <input type="range" id="pbAngle" min="10" max="80" value="${Math.round(this.angle)}"
-                 oninput="_pbGameSetAngle(this.value)">
+      <div class="pb-controls" id="pbControls" aria-label="${esc(gT('gControlsAria'))}">
+        <div class="pb-aim-instruction">
+          <span class="pb-aim-hand" aria-hidden="true">☝</span>
+          <span><strong>${esc(gT('gAimTitle'))}</strong><small>${esc(gT('gAimSub'))}</small></span>
         </div>
-        <div class="pb-slider-row">
-          <label for="pbPower"><span class="pb-control-icon" aria-hidden="true">⚡</span> Lực <output id="pbPowerVal" for="pbPower"></output></label>
-          <input type="range" id="pbPower" min="10" max="100" value="${Math.round(this.power)}"
-                 oninput="_pbGameSetPower(this.value)">
-        </div>
-        <div class="pb-barrels" role="group" aria-label="Số tia bắn">${barrels}</div>
+        <div class="pb-barrels" role="group" aria-label="${esc(gT('gShotsAria'))}">${barrels}</div>
         <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()">
           <span class="pb-fire-icon" aria-hidden="true"></span>
           <span class="pb-fire-copy"><strong id="pbFireTitle"></strong><small id="pbFireHint"></small></span>
         </button>
-        <div class="pb-emotes" role="group" aria-label="Cảm xúc nhanh">
+        <div class="pb-emotes" role="group" aria-label="${esc(gT('gEmotesAria'))}">
           ${['👍', '😮', '🎉', '😅', '🔥'].map(e =>
-            `<button class="pb-emote" type="button" aria-label="Gửi cảm xúc ${e}" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
+            `<button class="pb-emote" type="button" aria-label="${esc(gT('gEmoteAria', { e }))}" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
         </div>
       </div>
       </div>`;
@@ -293,27 +303,23 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
 
   hp('Me', this.myHp);
   hp('Foe', this.foeHp);
-  text('pbAmmoMe', this.myAmmo + ' 🚀');
-  text('pbAmmoFoe', this.foeAmmo + ' 🚀');
-  text('pbRound', 'Vòng ' + this.roundNo() + '/' + C.BATTLE_ROUNDS);
+  text('pbAmmoMe', this.myAmmo + ' 💩');
+  text('pbAmmoFoe', this.foeAmmo + ' 💩');
+  text('pbRound', gT('gRound', { n: this.roundNo(), total: C.BATTLE_ROUNDS }));
   const wind = this.wind();
   text('pbWind', '💨 ' + (wind > 0 ? '→' : wind < 0 ? '←' : '·') + ' ' + Math.abs(wind));
   text('pbBanner', this.banner);
-  text('pbAngleVal', Math.round(this.angle) + '°');
-  text('pbPowerVal', Math.round(this.power));
   text('pbFieldAngle', Math.round(this.angle) + '°');
   text('pbFieldPower', Math.round(this.power));
-  text('pbTurnText', this.myTurn ? 'LƯỢT CỦA BẠN · NGẮM VÀ BẮN!' : 'ĐỐI THỦ ĐANG NGẮM…');
+  text('pbTurnText', this.myTurn ? gT('gYourTurn') : gT('gFoeTurn'));
 
-  const angle = this._el('pbAngle'); if (angle) angle.value = Math.round(this.angle);
-  const power = this._el('pbPower'); if (power) power.value = Math.round(this.power);
   const fire = this._el('pbFire');
   if (fire) {
     fire.disabled = !this.myTurn || this.busy;
-    fire.setAttribute('aria-label', this.myTurn ? 'Bắn đạn' : 'Đang chờ đối thủ');
+    fire.setAttribute('aria-label', this.myTurn ? gT('gFireAria') : gT('gWaitAria'));
   }
-  text('pbFireTitle', this.myTurn ? 'KHAI HỎA!' : 'ĐANG CHỜ');
-  text('pbFireHint', this.myTurn ? 'NHẤN SPACE ĐỂ BẮN' : 'ĐỐI THỦ ĐANG CHƠI');
+  text('pbFireTitle', this.myTurn ? gT('gFire') : gT('gWaiting'));
+  text('pbFireHint', this.myTurn ? gT('gFireHint') : gT('gWaitHint'));
   const callout = this._el('pbTurnCallout');
   if (callout) callout.classList.toggle('waiting', !this.myTurn);
   const dragHint = this._el('pbDragHint');
@@ -457,8 +463,8 @@ PetBattleGame.prototype.draw = function () {
   // The pet lives inside a defensive house. House wear follows real HP.
   const meAim = this.angle;
   const foeAim = this.foeAiming ? this.foeAiming.angle : 45;
-  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8');
-  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185');
+  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level);
+  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185', this.view.foe.level);
 
   // A bright, anchored guide makes angle and power visible on the battlefield.
   if (this.myTurn && !this.busy && !this.flying.length) {
@@ -470,18 +476,20 @@ PetBattleGame.prototype.draw = function () {
   for (const f of this.flying) {
     const p = f.points[f.i];
     if (!p) continue;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, f.size, 0, Math.PI * 2);
-    ctx.fillStyle = '#ff6b3d';
-    ctx.fill();
-    ctx.strokeStyle = '#c73e12';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // little smoke trail
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    // The ammunition is intentionally silly and large enough to follow.
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate((f.i * .08) * (f.spin || 1));
+    ctx.font = `900 ${Math.max(20, f.size * 4)}px serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(46,24,16,.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 3;
+    ctx.fillText('💩', 0, 0);
+    ctx.restore();
+    // Warm dust puffs make the slow flight path easy to track.
+    ctx.fillStyle = 'rgba(120,78,46,0.34)';
     for (let k = 1; k <= 4; k++) {
-      const q = f.points[Math.max(0, f.i - k * 3)];
-      if (q) { ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(1, f.size - k), 0, Math.PI * 2); ctx.fill(); }
+      const q = f.points[Math.max(0, f.i - k * 4)];
+      if (q) { ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(2, 6 - k), 0, Math.PI * 2); ctx.fill(); }
     }
   }
 
@@ -526,10 +534,18 @@ PetBattleGame.prototype.draw = function () {
     ctx.fillStyle = p.color;
     ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(1, p.size * fade), 0, Math.PI * 2); ctx.fill();
   }
+  for (const hit of this.houseImpacts) {
+    const k = hit.t / hit.life;
+    ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k);
+    ctx.strokeStyle = '#fff7ae'; ctx.lineWidth = 7 - k * 4;
+    ctx.beginPath(); ctx.arc(hit.x, hit.y, 12 + k * 34, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#7c2d12'; ctx.font = '900 19px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('💩 HIT!', hit.x, hit.y - 38 - k * 12); ctx.restore();
+  }
   ctx.globalAlpha = 1;
 };
 
-PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent) {
+PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level) {
   const ctx = this.ctx;
   const damage = pbHouseDamageStage(hp);
   const wear = 1 - Math.max(0, Math.min(100, Number(hp) || 0)) / 100;
@@ -540,6 +556,22 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   // shadow, walls and roof
   ctx.fillStyle = 'rgba(22,31,50,.28)';
   ctx.beginPath(); ctx.ellipse(0, 4, 51, 9, 0, 0, Math.PI * 2); ctx.fill();
+
+  // At zero HP the shelter is gone: only rubble and the pet remain outdoors.
+  if (damage >= 4) {
+    ctx.fillStyle = '#6f3f35';
+    for (const piece of [[-42,-9,25,12],[0,-7,30,14],[34,-10,22,11],[-20,-20,18,12]]) {
+      ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[0] * .012);
+      ctx.fillRect(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3]); ctx.restore();
+    }
+    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -31, -72, 62, 68);
+    ctx.fillStyle = 'rgba(15,23,42,.86)'; ctx.beginPath(); ctx.roundRect(-25, -89, 50, 20, 8); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.save(); if (facing < 0) ctx.scale(-1, 1);
+    ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -75); ctx.restore();
+    ctx.restore();
+    return;
+  }
   const wall = ctx.createLinearGradient(-42, -56, 42, 0);
   wall.addColorStop(0, damage >= 3 ? '#9a6254' : '#f0a65b');
   wall.addColorStop(1, damage >= 2 ? '#b56a4a' : '#d97945');
@@ -562,6 +594,11 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   ctx.restore();
   ctx.strokeStyle = accent; ctx.lineWidth = 4; ctx.strokeRect(-27, -55, 54, 45);
   ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -55); ctx.lineTo(0, -10); ctx.stroke();
+
+  ctx.fillStyle = accent; ctx.beginPath(); ctx.roundRect(-25, -107, 50, 19, 8); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = '900 11px sans-serif'; ctx.textAlign = 'center';
+  ctx.save(); if (facing < 0) ctx.scale(-1, 1);
+  ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -93); ctx.restore();
 
   // side cannon uses the same angle as the visible aiming guide
   const rad = angle * Math.PI / 180;
@@ -649,7 +686,7 @@ PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, 
 };
 
 PetBattleGame.prototype._hasActiveAnimation = function () {
-  return this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.emotes.some(e => !e.static);
+  return this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
 };
 
 PetBattleGame.prototype._requestFrame = function () {
@@ -676,11 +713,16 @@ PetBattleGame.prototype.step = function () {
     p.t += 1; p.x += p.vx; p.y += p.vy; p.vy += .16;
     return p.t < p.life;
   });
+  this.houseImpacts = this.houseImpacts.filter(hit => (hit.t += 1) < hit.life);
   this.emotes = this.emotes.filter(e => e.static || (e.t += 1) < e.life);
   if (!this.flying.length) return;
   let allDone = true;
   for (const f of this.flying) {
-    if (f.i < f.points.length - 1) { f.i += 2; allDone = false; }        // 2 sim steps/frame
+    if (f.i < f.points.length - 1) {
+      f.tick = (f.tick || 0) + 1;
+      if (f.tick % 2 === 0) f.i += 1;                                   // half-speed, readable flight
+      allDone = false;
+    }
     else if (!f.done) {
       f.done = true;
       if (f.hit) {
@@ -696,6 +738,9 @@ PetBattleGame.prototype.step = function () {
               t: 0, life: 22 + (i % 4) * 4, size: 5 - (i % 3), color: colors[i % colors.length],
             });
           }
+        }
+        if (f.damage > 0) {
+          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 43, t: 0, life: this.reducedMotion ? 1 : 34 });
         }
       }
     }
@@ -713,15 +758,18 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
   const C = this.calc;
   const angles = C.volleyAngles(angle, shots, this.seed, this.turnNo);
   let damage = 0;
+  this._lastHitCount = 0;
   this.flying = angles.map(a => {
     const sim = C.simulateShot({
       terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(),
     });
-    damage += C.damageAt(sim.hit, target, level);
+    const bulletDamage = C.damageAt(sim.hit, target, level);
+    damage += bulletDamage;
+    if (bulletDamage > 0) this._lastHitCount += 1;
     return {
       points: sim.points, hit: sim.hit,
-      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0,
-      done: false, size: C.shellSize(level), level,
+      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0, damage: bulletDamage, target,
+      done: false, size: C.shellSize(level), level, spin: a % 2 ? 1 : -1,
     };
   });
   return Math.min(100, damage);
@@ -764,9 +812,10 @@ PetBattleGame.prototype.fire = function () {
     const oldHouseStage = pbHouseDamageStage(this.foeHp);
     this.foeHp = Math.max(0, this.foeHp - damage);
     const houseWorsened = pbHouseDamageStage(this.foeHp) > oldHouseStage;
+    const hitCount = Math.max(1, this._lastHitCount);
     this.banner = damage > 0
-      ? `💥 Nhà trúng đạn! -${damage} HP${houseWorsened ? ' · 💔 Nhà hư hại!' : ''}`
-      : '💨 Trượt rồi!';
+      ? gT('gHit', { n: hitCount, d: damage }) + (houseWorsened ? gT('gHouseWorse') : '')
+      : gT('gMiss');
     this.myTurn = false;
     this.busy = false;
     this._logTurn(true, aim, damage);
@@ -784,7 +833,7 @@ PetBattleGame.prototype._replay = function (turn) {
   this.turnNo = turn.turn_no;
   const shots = Math.max(0, Math.min(C.BARRELS, turn.shots || 0));
   if (shots === 0) {
-    this.banner = `⏭️ ${this.view.foe.name || 'Bạn'} bỏ lượt`;
+    this.banner = gT('gSkip', { name: this.view.foe.name || gT('gFoe') });
     this.render();
     return;
   }
@@ -796,9 +845,10 @@ PetBattleGame.prototype._replay = function (turn) {
     const oldHouseStage = pbHouseDamageStage(this.myHp);
     this.myHp = Math.max(0, this.myHp - dealt);
     const houseWorsened = pbHouseDamageStage(this.myHp) > oldHouseStage;
+    const hitCount = Math.max(1, this._lastHitCount);
     this.banner = dealt > 0
-      ? `💥 Nhà của bé trúng đạn! -${dealt} HP${houseWorsened ? ' · 💔 Cần bảo vệ thú cưng!' : ''}`
-      : '💨 Bạn ấy bắn trượt!';
+      ? gT('gHitMe', { n: hitCount, d: dealt }) + (houseWorsened ? gT('gHouseWorse') : '')
+      : gT('gMissFoe');
     this.busy = false;
     this._logTurn(false, { angle: Math.round(turn.angle || 0), power: Math.round(turn.power || 0), shots }, dealt);
     this.render();
@@ -848,26 +898,22 @@ function _pbBroadcastAim(g) {
   // Let the opponent watch us line up the shot (throttled inside BattleLink).
   if (g && g.link && g.myTurn) g.link.sendAim(g.angle, g.power, g.shots);
 }
-function _pbGameSetAngle(v) {
-  const g = _pbCurrentGame();
-  if (!g) return;
-  g.angle = +v;
-  const el = g._el('pbAngleVal'); if (el) el.textContent = Math.round(g.angle) + '°';
-  g.draw();
-  _pbBroadcastAim(g);
-}
-function _pbGameSetPower(v) {
-  const g = _pbCurrentGame();
-  if (!g) return;
-  g.power = +v;
-  const el = g._el('pbPowerVal'); if (el) el.textContent = Math.round(g.power);
-  g.draw();
-  _pbBroadcastAim(g);
-}
 function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
+
+// 🇬🇧/🇻🇳 mid-battle. Most of the text is baked into the shell markup, which is
+// built once, so the language switch has to rebuild it — cheap, and it keeps
+// the arena and the battle on one setting instead of two that can disagree.
+function _pbGameSetLang(lang) {
+  if (typeof pbSetLang === 'function') pbSetLang(lang);   // no-ops the arena render while a game is up
+  const g = _pbCurrentGame();
+  if (!g || g.finished) return;
+  g._shellReady = false;
+  g.render();
+  g.draw();
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills };

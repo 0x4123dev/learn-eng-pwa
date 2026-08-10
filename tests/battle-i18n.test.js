@@ -12,6 +12,7 @@ const vm = require('vm');
 const root = path.join(__dirname, '..');
 const src = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
 const cssSrc = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+const gameSrc = fs.readFileSync(path.join(root, 'js', 'petbattlegame.js'), 'utf8');
 const calc = require(path.join(root, 'js', 'battlecalc.js'));
 
 // Pull the live table + translator out of the file.
@@ -120,6 +121,26 @@ suite('arena language: every visible string goes through pbT', () => {
             .map((line, i) => ({ line: line.trim(), no: i }))
             .filter(x => !x.line.startsWith('//') && VIET.test(x.line) && !x.line.includes('pbT('));
         assert.equal(offenders.map(o => o.line).join(' | '), '', 'hardcoded Vietnamese left in the UI');
+    });
+
+    test('the battle screen has flags too, and one shared setting', () => {
+        assert.truthy(gameSrc.includes("_pbGameSetLang('en')") && gameSrc.includes("_pbGameSetLang('vi')"),
+            'the battle needs its own pair of flags');
+        assert.truthy(gameSrc.includes('🇬🇧') && gameSrc.includes('🇻🇳'));
+        assert.truthy(gameSrc.includes('const gT ='), 'the battle must go through the shared table');
+        const setter = gameSrc.slice(gameSrc.indexOf('function _pbGameSetLang'));
+        assert.truthy(setter.includes('pbSetLang'), 'one setting, not two that can disagree');
+        assert.truthy(setter.includes('_shellReady = false'), 'the shell bakes in text — it must rebuild');
+    });
+
+    // The battle screen stayed Vietnamese-only through a release because this
+    // guard only ever scanned petbattle.js.
+    test('no Vietnamese text is hardcoded in the battle screen either', () => {
+        const VI = /[ăâđêôơư]|Vòng|LƯỢT|KHAI HỎA|VIÊN|GÓC|LỰC|Trượt|Chiến trường/;
+        const offenders = gameSrc.split('\n')
+            .map(l => l.replace(/\s+\/\/.*$/, '').trim())   // code only; comments may say what they like
+            .filter(l => l && !l.startsWith('//') && !l.startsWith('*') && VI.test(l) && !l.includes('gT('));
+        assert.equal(offenders.join(' | '), '', 'hardcoded Vietnamese left in the battle');
     });
 
     test('the flags are rendered in the header', () => {
