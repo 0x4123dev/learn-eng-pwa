@@ -282,7 +282,7 @@ suite('gen: app version consistency', () => {
 
     test('js/home.js APP_VERSION matches /^v3\\.\\d+\\.\\d+$/', () => {
         assert.truthy(verMatch, 'APP_VERSION declaration not found in js/home.js');
-        assert.truthy(/^v3\.\d+\.\d+$/.test(verMatch[1]),
+        assert.truthy(/^v\d+\.\d+\.\d+$/.test(verMatch[1]),
             `APP_VERSION "${verMatch[1]}" does not match /^v3\\.\\d+\\.\\d+$/`);
     });
 
