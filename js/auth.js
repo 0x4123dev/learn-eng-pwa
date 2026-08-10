@@ -41,22 +41,45 @@ const EngAuth = (function () {
     return { ok: res.ok, status: res.status, data };
   }
 
+  // Why a profile has no server token. Kept so the UI can say something
+  // useful instead of a blank "please sign in".
+  //   ok | no-passcode | bad-passcode | offline | server
+  let _lastLinkStatus = { reason: 'unknown' };
+  function linkStatus() { return _lastLinkStatus; }
+
   // Establish/refresh a server account for a local profile using its passcode,
-  // then sync any unsynced local history. Called on every login (fire-and-forget).
+  // then sync any unsynced local history. Called on every login.
+  // Returns { ok, reason } — failures used to be swallowed, which left the
+  // Friends tab telling a signed-in child to sign in.
   async function syncAccount(username, passcode) {
-    if (!username || !passcode) return;
+    if (!username) return (_lastLinkStatus = { ok: false, reason: 'no-user' });
+    if (!passcode) return (_lastLinkStatus = { ok: false, reason: 'no-passcode' });
     if (!tokenFor(username)) {
       try {
         let r = await api('register', { method: 'POST', body: { username, passcode } });
         if (r.status === 409) {
+          // The name is taken on the server — only the right passcode links it.
           r = await api('login', { method: 'POST', body: { username, passcode } });
+          if (r.status === 401) return (_lastLinkStatus = { ok: false, reason: 'bad-passcode' });
         }
         if (r.ok && r.data && r.data.token) {
           setAccount(username, { token: r.data.token, role: r.data.user.role, id: r.data.user.id });
+        } else {
+          return (_lastLinkStatus = { ok: false, reason: 'server', status: r.status });
         }
-      } catch (e) { return; /* offline — nothing to do */ }
+      } catch (e) {
+        return (_lastLinkStatus = { ok: false, reason: 'offline' });
+      }
     }
     syncNow();
+    return (_lastLinkStatus = { ok: true, reason: 'ok' });
+  }
+
+  // Explicit re-link with a passcode the user typed (used by the Friends tab
+  // when the local passcode no longer matches the server account).
+  async function relinkAccount(username, passcode) {
+    clearAccount(username);
+    return syncAccount(username, passcode);
   }
 
   // Build the active user's local learning history (last 30 days) as activity items.
@@ -149,7 +172,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { syncAccount, relinkAccount, linkStatus, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.

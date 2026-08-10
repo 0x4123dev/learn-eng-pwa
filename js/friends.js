@@ -6,6 +6,7 @@
 let _friendsData = null;      // { friends, incoming, outgoing }
 let _friendsBusy = false;
 let _friendsMsg = '';
+let _friendsLinking = false;
 
 function frEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -77,12 +78,77 @@ function _frPetFace(level) {
   return '<span style="font-size:28px">🐶</span>';
 }
 
+// A signed-in child with no server token used to be told to sign in, with no
+// hint why. Explain the actual reason and offer the one action that fixes it.
+function _frLinkHelpHTML() {
+  const st = (typeof EngAuth !== 'undefined' && EngAuth.linkStatus) ? EngAuth.linkStatus() : { reason: 'unknown' };
+  const reason = _friendsLinking ? 'linking' : st.reason;
+  const msg = {
+    linking: '⏳ Đang kết nối tài khoản…',
+    'bad-passcode': '🔑 Tên này đã có tài khoản trên máy chủ với <b>mật mã khác</b>. Nhập đúng mật mã của tài khoản đó để nối máy nhé.',
+    'no-passcode': '🔑 Hồ sơ này chưa có mật mã. Tạo lại hồ sơ có mật mã để dùng tính năng bạn bè.',
+    offline: '📶 Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại nhé.',
+    server: '⚠️ Máy chủ đang bận. Thử lại sau một chút nhé.',
+    unknown: '🔗 Chưa nối hồ sơ này với máy chủ. Bấm “Kết nối” để bắt đầu.',
+  }[reason] || 'Chưa nối được tài khoản. Thử lại nhé.';
+
+  const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode';
+  return `
+    <div class="friend-link-card">
+      <div class="friend-link-msg">${msg}</div>
+      ${needsCode ? `
+        <div class="friend-invite-box">
+          <input id="friendLinkCode" class="friend-invite-input" type="tel" inputmode="numeric"
+                 maxlength="4" placeholder="Mật mã 4 số" autocomplete="off"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();relinkFriendsAccount();}">
+          <button class="friend-invite-btn" onclick="relinkFriendsAccount()">Kết nối</button>
+        </div>` : `
+        <button class="friend-invite-btn" onclick="retryFriendsLink()">Thử lại</button>`}
+      ${_friendsMsg ? `<div class="friend-msg">${frEsc(_friendsMsg)}</div>` : ''}
+    </div>`;
+}
+
+// Retry with the passcode already stored on this device.
+async function retryFriendsLink() {
+  if (_friendsLinking) return;
+  _friendsLinking = true; _friendsMsg = '';
+  renderFriendsSection();
+  const pass = (typeof appState !== 'undefined' && appState) ? appState.passcode : null;
+  let res = { reason: 'no-passcode' };
+  try { res = await EngAuth.syncAccount(currentUser, pass); } catch (e) {}
+  _friendsLinking = false;
+  if (res && res.ok) { _friendsMsg = ''; await loadFriends(); }
+  renderFriendsSection();
+}
+
+// Link using a passcode the user types (server account has a different one).
+async function relinkFriendsAccount() {
+  if (_friendsLinking) return;
+  const input = document.getElementById('friendLinkCode');
+  const code = input ? input.value.trim() : '';
+  if (!/^\d{4}$/.test(code)) { _friendsMsg = 'Mật mã phải gồm 4 chữ số'; renderFriendsSection(); return; }
+  _friendsLinking = true; _friendsMsg = '';
+  renderFriendsSection();
+  let res = { reason: 'server' };
+  try { res = await EngAuth.relinkAccount(currentUser, code); } catch (e) {}
+  _friendsLinking = false;
+  if (res && res.ok) {
+    _friendsMsg = '✅ Đã nối tài khoản!';
+    await loadFriends();
+  } else if (res && res.reason === 'bad-passcode') {
+    _friendsMsg = '❌ Mật mã chưa đúng';
+  } else {
+    _friendsMsg = '❌ Chưa nối được, thử lại nhé';
+  }
+  renderFriendsSection();
+}
+
 function renderFriendsSection() {
   const el = document.getElementById('friendsSection');
   if (!el) return;
 
   if (!_frToken()) {
-    el.innerHTML = `<div class="friends-empty">Đăng nhập (có mạng) để kết bạn và thi đấu cùng bạn bè nhé!</div>`;
+    el.innerHTML = _frLinkHelpHTML();
     return;
   }
   if (!_friendsData) {
@@ -176,13 +242,17 @@ async function openFriendActivity(friendId, name) {
 // Called by renderProfile(): kicks off a refresh, renders what we have now.
 function initFriendsSection() {
   renderFriendsSection();
+  // No token yet? The login-time link may still be in flight, or it may have
+  // failed silently — either way, try once here and report the outcome.
+  if (!_frToken()) { retryFriendsLink(); return; }
   loadFriends().then(() => renderFriendsSection()).catch(() => {});
 }
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderFriendsSection, initFriendsSection, loadFriends, inviteFriend,
-    respondFriend, openFriendActivity, frEsc,
+    respondFriend, openFriendActivity, frEsc, retryFriendsLink, relinkFriendsAccount,
+    _frLinkHelpHTML,
     _setFriendsData: (d) => { _friendsData = d; },
     _getFriendsData: () => _friendsData,
   };

@@ -482,11 +482,21 @@ suite('gen: syncNow errors', () => {
 
 // ── syncAccount (register/login flow) ───────────────────────────────────────
 suite('gen: syncAccount', () => {
-    test('missing username or passcode returns early with no fetch', () => {
+    test('missing username or passcode returns a reason with no fetch', () => {
         reset();
-        assert.equal(vmAwait("EngAuth.syncAccount('', '')"), undefined);
-        vmAwait("EngAuth.syncAccount('X', null)");
+        // The reason is what lets the Friends tab explain itself instead of
+        // telling a signed-in child to sign in.
+        assert.equal(vmAwait("EngAuth.syncAccount('', '').then(r => r.reason)"), 'no-user');
+        assert.equal(vmAwait("EngAuth.syncAccount('X', null).then(r => r.reason)"), 'no-passcode');
         assert.equal(calls().length, 0);
+    });
+
+    test('a wrong passcode for an existing server account reports bad-passcode', () => {
+        reset({ user: 'Alice', appState: null, plan: (url) =>
+            url === '/api/register' ? { ok: false, status: 409, data: { error: 'taken' } }
+          : url === '/api/login' ? { ok: false, status: 401, data: { error: 'wrong' } } : null });
+        assert.equal(vmAwait("EngAuth.syncAccount('Alice', '0000').then(r => r.reason)"), 'bad-passcode');
+        assert.falsy(vmAwait("EngAuth.tokenFor('Alice')"), 'no token may be stored');
     });
 
     test('register success stores token/role/id for the user', () => {
