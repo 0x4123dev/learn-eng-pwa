@@ -1101,39 +1101,133 @@
         .pb-result-coins { font-size: 24px; font-weight: 900; color: #d97706; margin: 10px 0; }
         .pb-result-hint { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
 
-        /* the game itself */
-        .pb-game { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 0; }
-        .pb-hud { display: flex; align-items: center; gap: 8px; }
-        .pb-hud-side { flex: 1 1 0; min-width: 0; }
+        /* The game itself — compact, layered artillery HUD inspired by the
+           readable silhouettes and chunky controls of classic Gunbound. */
+        .pb-game {
+            --pb-ink: #13253a;
+            position: relative; isolation: isolate;
+            display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 8px;
+            border: 1px solid rgba(255,255,255,.9); border-radius: 26px;
+            background:
+                radial-gradient(circle at 14% 4%, rgba(34,211,238,.24), transparent 28%),
+                radial-gradient(circle at 88% 12%, rgba(244,114,182,.22), transparent 27%),
+                linear-gradient(145deg, #eefaff, #f4efff 58%, #fff5e9);
+            box-shadow: 0 18px 45px rgba(30,41,94,.18), inset 0 0 0 1px rgba(99,102,241,.1);
+            overflow: hidden;
+        }
+        .pb-game::before {
+            content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none;
+            background-image: radial-gradient(rgba(37,99,235,.1) 1px, transparent 1px);
+            background-size: 18px 18px; mask-image: linear-gradient(to bottom, #000, transparent 42%);
+        }
+        .pb-turn-callout {
+            align-self: center; display: flex; align-items: center; gap: 8px;
+            min-height: 30px; padding: 5px 14px; margin-bottom: -3px;
+            border: 1px solid rgba(14,116,144,.24); border-radius: 999px;
+            background: rgba(236,254,255,.9); color: #155e75;
+            box-shadow: 0 5px 14px rgba(8,145,178,.13);
+            font-size: 11px; font-weight: 950; letter-spacing: .08em;
+        }
+        .pb-turn-callout.waiting { color: #6d28d9; border-color: rgba(109,40,217,.2); background: rgba(245,243,255,.92); }
+        .pb-turn-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,.16); animation: pbTurnPulse 1.8s ease-out infinite; }
+        .pb-turn-callout.waiting .pb-turn-dot { background: #8b5cf6; box-shadow: 0 0 0 4px rgba(139,92,246,.15); }
+        .pb-hud { display: flex; align-items: stretch; gap: 8px; }
+        .pb-hud-side {
+            flex: 1 1 0; min-width: 0; padding: 8px 9px;
+            border: 1px solid rgba(255,255,255,.9); border-radius: 15px;
+            background: rgba(255,255,255,.78); backdrop-filter: blur(12px);
+            box-shadow: 0 5px 16px rgba(30,64,175,.1), inset 0 -2px 0 rgba(99,102,241,.08);
+        }
         .pb-hud-side.right { text-align: right; }
-        .pb-hud-name { font-size: 13px; font-weight: 800; color: var(--text-primary);
+        .pb-hud-name { font-size: 14px; font-weight: 900; color: var(--pb-ink);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .pb-hp { height: 10px; border-radius: 50px; background: rgba(0,0,0,0.12); overflow: hidden; margin: 3px 0 1px; }
+        .pb-hp { height: 9px; border-radius: 50px; background: rgba(15,23,42,.14); overflow: hidden; margin: 5px 0 2px; }
         .pb-hp-fill { height: 100%; border-radius: 50px; transition: width .35s ease; }
-        .pb-hp-fill.me { background: linear-gradient(90deg, #34d399, #16a34a); }
-        .pb-hp-fill.foe { background: linear-gradient(90deg, #fb7185, #e11d48); }
-        .pb-hp-value, .pb-hud-ammo { font-size: 12px; color: var(--text-secondary); font-weight: 700; }
-        .pb-hud-mid { flex: 0 0 auto; text-align: center; }
-        .pb-round { font-size: 12px; font-weight: 800; color: var(--text-primary); }
-        .pb-wind { font-size: 13px; color: var(--text-secondary); }
-        .pb-canvas { width: 100%; height: auto; border-radius: 14px; display: block;
-            border: 1.5px solid var(--glass-border); background: #bfe6ff; }
-        .pb-banner { text-align: center; font-size: 14px; font-weight: 800; min-height: 21px; color: var(--text-primary); }
-        .pb-controls { display: flex; flex-direction: column; gap: 8px; }
-        .pb-slider-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); }
-        .pb-slider-row label { flex: 0 0 82px; font-weight: 700; }
-        .pb-slider-row output { color: var(--text-primary); font-weight: 900; }
-        .pb-slider-row input { flex: 1 1 auto; min-height: 44px; cursor: pointer; touch-action: manipulation; }
+        .pb-hp-fill.me { background: linear-gradient(90deg, #2dd4bf, #16a34a); box-shadow: 0 0 8px rgba(22,163,74,.45); }
+        .pb-hp-fill.foe { background: linear-gradient(90deg, #fb7185, #e11d48); box-shadow: 0 0 8px rgba(225,29,72,.4); }
+        .pb-hp-value, .pb-hud-ammo { font-size: 11px; color: #475569; font-weight: 800; }
+        .pb-hearts { display: flex; gap: 2px; margin: 1px 0; direction: ltr; }
+        .pb-hud-side.right .pb-hearts { justify-content: flex-end; }
+        .pb-heart {
+            --heart-fill: 100%; position: relative; display: inline-block;
+            color: rgba(100,116,139,.24); font-size: 14px; line-height: 1;
+        }
+        .pb-heart::before {
+            content: '♥'; position: absolute; inset: 0; width: var(--heart-fill);
+            overflow: hidden; color: #ef4444; filter: drop-shadow(0 1px 1px rgba(127,29,29,.3));
+        }
+        .pb-hud-mid {
+            flex: 0 0 auto; min-width: 78px; text-align: center; padding: 7px 5px;
+            border-radius: 14px; background: #172554; color: white;
+            box-shadow: 0 5px 14px rgba(23,37,84,.2);
+        }
+        .pb-round { font-size: 12px; font-weight: 900; color: #fff; }
+        .pb-wind { font-size: 13px; color: #bae6fd; font-weight: 800; }
+        .pb-field-shell { position: relative; border-radius: 20px; }
+        .pb-field-shell::after {
+            content: ''; position: absolute; inset: 4px; pointer-events: none; border-radius: 15px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.44), inset 0 18px 30px rgba(255,255,255,.08);
+        }
+        .pb-canvas {
+            width: 100%; height: auto; border-radius: 20px; display: block;
+            border: 4px solid #182b66; background: #8dc7ff; touch-action: none; cursor: crosshair;
+            box-shadow: 0 10px 24px rgba(30,58,138,.28), 0 3px 0 #0f1f50;
+        }
+        .pb-canvas:focus-visible { outline: 4px solid #facc15; outline-offset: 3px; }
+        .pb-field-readout {
+            position: absolute; z-index: 2; left: 12px; bottom: 12px; display: flex; gap: 6px;
+            pointer-events: none;
+        }
+        .pb-field-readout span {
+            display: grid; grid-template-columns: auto auto; align-items: baseline; gap: 5px;
+            min-width: 62px; padding: 5px 8px; border: 1px solid rgba(255,255,255,.4); border-radius: 9px;
+            color: white; background: rgba(15,23,42,.76); backdrop-filter: blur(7px);
+            box-shadow: 0 3px 10px rgba(15,23,42,.2);
+        }
+        .pb-field-readout small { font-size: 8px; letter-spacing: .1em; color: #bae6fd; font-weight: 900; }
+        .pb-field-readout b { font-size: 13px; font-variant-numeric: tabular-nums; }
+        .pb-drag-hint {
+            position: absolute; z-index: 2; right: 12px; bottom: 13px; pointer-events: none;
+            padding: 5px 8px; border-radius: 8px; color: #172554; background: rgba(254,240,138,.9);
+            font-size: 9px; font-weight: 950; letter-spacing: .06em; box-shadow: 0 2px 8px rgba(113,63,18,.18);
+        }
+        .pb-banner {
+            text-align: center; font-size: 14px; font-weight: 900; min-height: 23px; color: #7c2d12;
+            padding: 4px 10px; border-radius: 10px; background: rgba(255,237,213,.74);
+        }
+        .pb-controls {
+            display: flex; flex-direction: column; gap: 9px; padding: 11px;
+            border: 1px solid rgba(255,255,255,.92); border-radius: 19px;
+            background: rgba(255,255,255,.78); backdrop-filter: blur(14px);
+            box-shadow: 0 7px 20px rgba(76,29,149,.11), inset 0 -2px 0 rgba(99,102,241,.07);
+        }
+        .pb-slider-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #334155; }
+        .pb-slider-row label { flex: 0 0 90px; font-weight: 850; }
+        .pb-control-icon { color: #2563eb; font-size: 17px; }
+        .pb-slider-row output {
+            display: inline-flex; align-items: center; justify-content: center; min-width: 38px;
+            padding: 3px 6px; border-radius: 8px; color: #fff; background: #233876; font-weight: 900;
+        }
+        .pb-slider-row input {
+            flex: 1 1 auto; min-width: 0; min-height: 44px; cursor: pointer; touch-action: manipulation;
+            accent-color: #2563eb;
+        }
         .pb-barrels { display: flex; gap: 8px; }
         .pb-barrel {
-            flex: 1 1 0; min-height: 44px; padding: 9px 2px; border-radius: 10px; cursor: pointer; font-family: inherit;
-            font-size: 13px; font-weight: 800; border: 1.5px solid var(--glass-border); touch-action: manipulation;
-            background: var(--glass-bg, rgba(255,255,255,0.8)); color: var(--text-primary);
+            flex: 1 1 0; min-height: 58px; padding: 7px 2px 6px; border-radius: 13px; cursor: pointer; font-family: inherit;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+            font-size: 11px; font-weight: 950; letter-spacing: .04em; border: 2px solid #cbd5e1; touch-action: manipulation;
+            background: linear-gradient(#fff, #eef2ff); color: #1e293b; transition: border-color .18s, background-color .18s, box-shadow .18s;
         }
-        .pb-barrel.on { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; border-color: transparent; }
+        .pb-barrel.on { background: linear-gradient(145deg, #fff1a8, #ff9f1c); color: #431407; border-color: #ea580c; box-shadow: 0 4px 0 #c2410c, 0 8px 14px rgba(249,115,22,.18); }
+        .pb-shell-stack { display: flex; align-items: flex-end; justify-content: center; height: 16px; }
+        .pb-shell-stack i {
+            display: block; width: 7px; height: 15px; margin-left: -1px; border: 1px solid #7c2d12; border-radius: 5px 5px 2px 2px;
+            background: linear-gradient(90deg, #fef08a, #f97316 70%); transform: rotate(8deg); box-shadow: 0 1px 2px rgba(67,20,7,.2);
+        }
         .pb-barrel:disabled { opacity: 0.35; cursor: default; }
         .pb-link {
-            font-size: 11px; font-weight: 800; margin-top: 2px; padding: 3px 8px;
+            font-size: 10px; font-weight: 900; margin-top: 3px; padding: 3px 7px;
             border-radius: 50px; display: inline-block;
         }
         .pb-link.live { background: rgba(34,197,94,0.18); color: #15803d; }
@@ -1144,15 +1238,24 @@
             flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; cursor: pointer;
             font-size: 18px; font-family: inherit; border: 1.5px solid var(--glass-border);
             background: var(--glass-bg, rgba(255,255,255,0.8)); touch-action: manipulation;
+            transition: background-color .18s, border-color .18s, box-shadow .18s;
         }
         .pb-emote:active { transform: scale(0.9); background: rgba(124,58,237,0.14); }
         .pb-fire {
-            padding: 14px; border-radius: 14px; border: none; cursor: pointer; font-family: inherit;
-            font-size: 16px; font-weight: 900; color: #fff;
-            background: linear-gradient(135deg, #f97316, #ef4444);
-            box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+            position: relative; min-height: 66px; padding: 10px 16px; border-radius: 17px; border: 2px solid #9f1239; cursor: pointer; font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 12px; overflow: hidden;
+            color: #fff; background: linear-gradient(105deg, #ff8a16, #f43f5e 65%, #db2777);
+            box-shadow: 0 6px 0 #9f1239, 0 12px 24px rgba(225,29,72,.3);
+            transition: filter .18s, box-shadow .18s;
         }
+        .pb-fire::after { content: ''; position: absolute; width: 80px; height: 140%; left: -110px; top: -20%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-18deg); animation: pbFireShine 2.8s ease-in-out infinite; }
+        .pb-fire-icon { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 38% 38%, #fff 0 8%, #fde047 10% 28%, #fb923c 30% 50%, #dc2626 52% 64%, transparent 66%); filter: drop-shadow(0 2px 3px rgba(127,29,29,.45)); }
+        .pb-fire-copy { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+        .pb-fire-copy strong { font-size: 18px; font-weight: 950; letter-spacing: .08em; }
+        .pb-fire-copy small { margin-top: 5px; font-size: 8px; font-weight: 850; letter-spacing: .1em; color: #fff7ed; }
+        .pb-fire:not(:disabled):hover { filter: saturate(1.12) brightness(1.04); box-shadow: 0 6px 0 #9f1239, 0 15px 28px rgba(225,29,72,.38); }
         .pb-fire:disabled { background: rgba(0,0,0,0.15); color: var(--text-secondary); box-shadow: none; }
+        .pb-fire:disabled::after { display: none; }
         .pb-sr-only {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
@@ -1167,6 +1270,22 @@
             .pb-hp-fill, .pb-barrel, .pb-emote, .pb-fire, .pb-btn, .pb-friend,
             .battle-fab { animation: none !important; transition: none !important; }
             .pb-emote:active, .battle-fab:active { transform: none; }
+            .pb-turn-dot, .pb-fire::after { animation: none !important; }
+        }
+        @keyframes pbTurnPulse { 0%, 55% { box-shadow: 0 0 0 3px rgba(34,197,94,.18); } 100% { box-shadow: 0 0 0 9px transparent; } }
+        @keyframes pbFireShine { 0%, 62% { left: -110px; } 86%, 100% { left: calc(100% + 30px); } }
+        @media (max-width: 380px) {
+            .pb-game { padding-inline: 8px; }
+            .pb-hud { gap: 5px; }
+            .pb-hud-side { padding: 7px 6px; }
+            .pb-hud-mid { min-width: 68px; }
+            .pb-heart { font-size: 12px; }
+            .pb-slider-row { flex-wrap: wrap; gap: 2px 8px; }
+            .pb-slider-row label { flex-basis: 100%; display: flex; justify-content: space-between; }
+            .pb-slider-row input { flex-basis: 100%; }
+            .pb-emotes { gap: 6px; }
+            .pb-field-readout { left: 9px; bottom: 9px; }
+            .pb-drag-hint { right: 9px; bottom: 10px; font-size: 8px; }
         }
 
         /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */

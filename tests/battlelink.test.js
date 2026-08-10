@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const link = require(path.join(__dirname, '..', 'js', 'battlelink.js'));
+const game = require(path.join(__dirname, '..', 'js', 'petbattlegame.js'));
 const workerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'src', 'index.js'), 'utf8');
 const wranglerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'wrangler.toml'), 'utf8');
 const gameSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattlegame.js'), 'utf8');
@@ -234,6 +235,63 @@ suite('battle game: efficient and accessible UI', () => {
         assert.truthy(/\.pb-emote\s*\{[\s\S]*?width:\s*44px;[\s\S]*?height:\s*44px;/.test(stylesSrc));
         assert.truthy(stylesSrc.includes(':focus-visible'));
         assert.truthy(stylesSrc.includes('@media (prefers-reduced-motion: reduce)'));
+        assert.truthy(gameSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')"));
+    });
+});
+
+suite('battle game: Gunbound-style house arena', () => {
+    test('house damage advances through intact, cracked, scorched, critical and destroyed states', () => {
+        assert.deepEqual([100, 75, 50, 25, 0].map(game.pbHouseDamageStage), [0, 1, 2, 3, 4]);
+        for (let hp = 100; hp >= 0; hp--) {
+            assert.inRange(game.pbHouseDamageStage(hp), 0, 4);
+        }
+    });
+
+    test('five hearts drain proportionally with every HP change', () => {
+        for (const hp of [100, 99, 73, 50, 1, 0]) {
+            const fills = game.pbHeartFills(hp);
+            assert.equal(fills.length, 5);
+            assert.equal(fills.reduce((sum, n) => sum + n, 0), hp * 5, `heart fill at ${hp} HP`);
+            fills.forEach(n => assert.inRange(n, 0, 100));
+        }
+    });
+
+    test('both pets render inside HP-driven houses and hit messages mention house damage', () => {
+        assert.truthy(gameSrc.includes('this._drawHouse(this.mePos'));
+        assert.truthy(gameSrc.includes('this._drawHouse(this.foePos'));
+        assert.truthy(gameSrc.includes('pbHouseDamageStage(hp)'));
+        assert.truthy(gameSrc.includes('Nhà trúng đạn'));
+        assert.truthy(gameSrc.includes('Nhà của bé trúng đạn'));
+    });
+
+    test('the active cannon has a visible guide tied to angle and power', () => {
+        assert.truthy(gameSrc.includes('this._drawAimGuide(this.mePos'));
+        assert.truthy(gameSrc.includes('const length = 46 + Math.max(10, Math.min(100, power)) * .58'));
+        assert.truthy(gameSrc.includes("ctx.fillText(Math.round(angle) + '°'"));
+        assert.truthy(gameSrc.includes('g.angle = +v') && gameSrc.includes('g.draw()'));
+    });
+
+    test('the HUD includes partial hearts and a high-contrast arcade arena', () => {
+        assert.truthy(stylesSrc.includes('.pb-heart::before'));
+        assert.truthy(stylesSrc.includes('width: var(--heart-fill)'));
+        assert.truthy(stylesSrc.includes('border: 4px solid #182b66'));
+        assert.truthy(stylesSrc.includes('@media (max-width: 380px)'));
+    });
+
+    test('the battlefield supports direct aiming and precise keyboard controls', () => {
+        assert.truthy(gameSrc.includes("this.canvas.addEventListener('pointerdown'"));
+        assert.truthy(gameSrc.includes("this.canvas.addEventListener('pointermove'"));
+        assert.truthy(gameSrc.includes("key === 'ArrowLeft'"));
+        assert.truthy(gameSrc.includes("key === 'ArrowUp'"));
+        assert.truthy(gameSrc.includes("if (key === ' ') { this.fire(); return; }"));
+        assert.truthy(gameSrc.includes('KÉO ĐƯỜNG NGẮM'));
+    });
+
+    test('rich feedback includes trajectory dots, wind ribbons, and bounded impact particles', () => {
+        assert.truthy(gameSrc.includes('this._drawTrajectoryPreview(this.mePos'));
+        assert.truthy(gameSrc.includes('// Wind ribbons'));
+        assert.truthy(gameSrc.includes('this.impactParticles.push'));
+        assert.truthy(gameSrc.includes('this.impactParticles = this.impactParticles.filter'));
         assert.truthy(gameSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')"));
     });
 });
