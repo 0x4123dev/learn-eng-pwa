@@ -16,6 +16,7 @@ const OK = [
     'Nhật', 'Bé Na', 'Đạt', 'Nguyễn Văn A', 'Trần Thị Hồng',
     'Shidou', 'Vk shidou', 'Nhuxinhdep', 'admin',
     'be_na', 'Anh-Thu', 'Le Van 2', 'Bảo Ngọc.', 'ひかり', '안나', 'Мария',
+    'Z', 'A', '9',   // the app lets you create a one-letter profile — so must the server
 ];
 const REJECT = [
     '<script>', 'a\nb', 'bad/slash', 'semi;colon', 'quote"name', "tick'name",
@@ -64,8 +65,44 @@ suite('usernames: a Vietnamese app must accept Vietnamese names', () => {
         assert.equal(REJECT.filter(n => USERNAME_RE.test(n)).length, 0);
     });
 
-    test('length limits are unchanged (2–30)', () => {
-        assert.truthy(registerSrc.includes('username.length < 2 || username.length > 30'));
+    // A profile named "Z" was created in the app, then refused by the server
+    // forever ("Username must be 2–30 characters") — and the Friends tab
+    // answered by asking for a passcode, which could never fix a name.
+    test('a one-character name is accepted (the app allows creating one)', () => {
+        assert.truthy(registerSrc.includes('username.length < 1 || username.length > 30'),
+            'the server must not be stricter than the profile-creation form');
+        assert.truthy(USERNAME_RE.test('Z'), '"Z" must be a valid username');
+    });
+
+    test('the upper limit still holds at 30', () => {
+        assert.truthy(registerSrc.includes('username.length > 30'));
+    });
+});
+
+// The whole bug class here is two validators disagreeing. Pin them together.
+suite('the client and the server share ONE username rule', () => {
+    const authSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'auth.js'), 'utf8');
+    const appSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'app.js'), 'utf8');
+    const cm = authSrc.match(/const USERNAME_RE = (\/\^\[[^\n]*?\/u);/);
+    const CLIENT_RE = cm ? eval(cm[1]) : null;
+
+    test('js/auth.js carries the same pattern as the endpoint', () => {
+        assert.truthy(CLIENT_RE, 'EngAuth must define USERNAME_RE');
+        assert.equal(String(CLIENT_RE), String(USERNAME_RE));
+    });
+
+    test('the client agrees with the server on every sample', () => {
+        for (const n of OK) assert.truthy(CLIENT_RE.test(n), `client must accept "${n}"`);
+        for (const n of REJECT) assert.falsy(CLIENT_RE.test(n), `client must reject "${n}"`);
+    });
+
+    test('the client length rule matches the server (1–30)', () => {
+        assert.truthy(authSrc.includes('n.length < 1 || n.length > 30'));
+    });
+
+    test('profile creation checks the name before making a profile', () => {
+        assert.truthy(appSrc.includes('EngAuth.validUsername'),
+            'createUser() must reject an unsyncable name while it is still free to change');
     });
 });
 
@@ -82,6 +119,14 @@ suite('link failures are reported honestly', () => {
     test('the Friends tab shows that detail rather than a generic excuse', () => {
         assert.truthy(friendsSrc.includes('rejected:'), 'rejected needs its own message');
         assert.truthy(friendsSrc.includes('st.detail'), 'the detail must reach the UI');
+    });
+
+    // Typing a passcode cannot fix a name the server refused.
+    test('a rejected name does not get offered a passcode box', () => {
+        const m = friendsSrc.match(/const needsCode = ([^;]+);/);
+        assert.truthy(m, 'needsCode not found');
+        assert.falsy(/'rejected'/.test(m[1]),
+            "a name rejection must not ask for a passcode — that is what made 1111 'still error'");
     });
 });
 

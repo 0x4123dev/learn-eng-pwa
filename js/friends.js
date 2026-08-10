@@ -89,11 +89,15 @@ function _frLinkHelpHTML() {
     'no-passcode': '🔑 Hồ sơ này chưa có mật mã. Tạo lại hồ sơ có mật mã để dùng tính năng bạn bè.',
     offline: '📶 Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại nhé.',
     server: '⚠️ Máy chủ đang bận. Thử lại sau một chút nhé.',
-    rejected: '⚠️ Máy chủ không nhận hồ sơ này' + (st.detail ? ': <b>' + frEsc(st.detail) + '</b>' : '') + '.',
+    rejected: '⚠️ Máy chủ chưa nhận tên hồ sơ này'
+      + (st.detail ? ': <b>' + frEsc(st.detail) + '</b>' : '')
+      + '. <i>Mật mã không phải vấn đề ở đây</i> — thử lại sau khi cập nhật app nhé.',
     unknown: '🔗 Chưa nối hồ sơ này với máy chủ. Bấm “Kết nối” để bắt đầu.',
   }[reason] || 'Chưa nối được tài khoản. Thử lại nhé.';
 
-  const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode' || reason === 'rejected';
+  // A passcode box only helps when the passcode is the problem. Offering one
+  // for a name the server refused made the child type 1111 over and over.
+  const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode';
   return `
     <div class="friend-link-card">
       <div class="friend-link-msg">${msg}</div>

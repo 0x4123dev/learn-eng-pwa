@@ -6,7 +6,11 @@ export async function onRequestPost({ request, env }) {
   const username = String(body.username || '').trim();
   const passcode = String(body.passcode || '');
 
-  if (username.length < 2 || username.length > 30) return err('Username must be 2–30 characters');
+  // The app itself lets a child create a profile with ANY non-empty name, so
+  // the server must not be stricter: a profile named "Z" was created locally,
+  // then refused here forever — and the Friends tab asked for a passcode,
+  // which could never fix a name. One rule, mirrored in EngAuth.validUsername.
+  if (username.length < 1 || username.length > 30) return err('Username must be 1–30 characters');
   // Letters of ANY language (this is a Vietnamese app: Nhật, Bé Na, Đạt…),
   // digits, space, dot, underscore, hyphen. \w alone is ASCII-only and was
   // rejecting every accented name with a 400.

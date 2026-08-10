@@ -287,6 +287,14 @@ function createUser(e) {
         return;
     }
 
+    // Reject a name the server would reject, here and now — while it still
+    // costs nothing to change. A profile carrying an unusable name can never
+    // reach Friends or Battle, and there is no way back short of deleting it.
+    if (typeof EngAuth !== 'undefined' && EngAuth.validUsername) {
+        const v = EngAuth.validUsername(username);
+        if (!v.ok) { showToast(v.error); return; }
+    }
+
     // Get passcodes
     const passcode = getPasscodeValue('create');
     const confirmPasscode = getPasscodeValue('confirm');

@@ -27,6 +27,18 @@ const EngAuth = (function () {
   function getAccount(username) { return loadStore()[username] || null; }
   function tokenFor(username) { const a = getAccount(username); return a && a.token; }
 
+  // THE username rule, mirrored from functions/api/register.js. Checked when
+  // the profile is CREATED, so the app can never make a name the server will
+  // refuse. That failure used to surface much later, in the Friends tab, long
+  // after the name was baked into a profile full of progress.
+  const USERNAME_RE = /^[\p{L}\p{M}\p{N} ._\-]+$/u;
+  function validUsername(name) {
+    const n = String(name || '').trim();
+    if (n.length < 1 || n.length > 30) return { ok: false, error: 'Tên phải từ 1 đến 30 ký tự' };
+    if (!USERNAME_RE.test(n)) return { ok: false, error: 'Tên chỉ dùng chữ, số, dấu cách, dấu chấm hoặc gạch ngang' };
+    return { ok: true };
+  }
+
   async function api(path, opts) {
     opts = opts || {};
     const headers = { 'Content-Type': 'application/json' };
@@ -176,7 +188,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, relinkAccount, linkStatus, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { syncAccount, relinkAccount, linkStatus, validUsername, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.
