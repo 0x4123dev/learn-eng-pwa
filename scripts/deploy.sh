@@ -17,6 +17,10 @@ cd "$(dirname "$0")/.."
 PROJECT="eng-pwa"
 LIVE="https://eng-pwa.pages.dev"
 TOKEN_FILE="$HOME/.config/eng-pwa/cloudflare.env"
+# The token can see more than one account, and wrangler will not guess in a
+# non-interactive shell — it prints the menu and exits. Name the account.
+: "${CLOUDFLARE_ACCOUNT_ID:=f8b5c3e4cb22d163733b7ce29ecab97c}"  # minhdoanh@gmail.com
+export CLOUDFLARE_ACCOUNT_ID
 
 BUMP=1; TEST=1; MSG=""; NEWVER=""
 while [ $# -gt 0 ]; do
@@ -62,6 +66,7 @@ if [ "$BUMP" = "1" ]; then
     sub("js/home.js", /const APP_VERSION = .*/, `const APP_VERSION = '"'"'v${ver}'"'"';`);
     sub("sw.js", /flashlingo-v\d+/, `flashlingo-v${cache}`);
     sub("package.json", /"version": "[^"]+"/, `"version": "${ver}"`);
+    sub("functions/api/version.js", /const VERSION = '"'"'[^'"'"']+'"'"';/, `const VERSION = '"'"'${ver}'"'"';`);
   ' "$NEWVER" "$cache"
   echo "▸ version $cur → $NEWVER   (cache flashlingo-v$cache)"
 else
@@ -98,12 +103,20 @@ npx --yes wrangler@3 pages deploy .cf-dist --project-name "$PROJECT" \
   --branch main --commit-dirty=true 2>&1 | tail -4
 
 # ---- confirm it is actually live ------------------------------------------
-# Pages serves the new build within a few seconds; poll rather than assume.
-echo "▸ confirming $LIVE serves v$NEWVER…"
-for i in $(seq 1 20); do
-  live=$(curl -s "$LIVE/js/home.js?cb=$RANDOM" | sed -n "s/.*APP_VERSION = 'v\([0-9.]*\)'.*/\1/p" | head -1)
-  if [ "$live" = "$NEWVER" ]; then echo "✓ live: v$live"; exit 0; fi
+# Assets and the Functions bundle propagate INDEPENDENTLY: a deploy once
+# reported success with the new index.html live while /api/register still ran
+# the previous build. Both must report the new version before we say "live".
+echo "▸ confirming $LIVE serves v$NEWVER (assets + API)…"
+assets=""; apiv=""
+for i in $(seq 1 30); do
+  [ "$assets" = "$NEWVER" ] || assets=$(curl -s "$LIVE/js/home.js?cb=$RANDOM" \
+    | sed -n "s/.*APP_VERSION = 'v\([0-9.]*\)'.*/\1/p" | head -1)
+  [ "$apiv" = "$NEWVER" ] || apiv=$(curl -s "$LIVE/api/version?cb=$RANDOM" \
+    | sed -n 's/.*"version":"\([0-9.]*\)".*/\1/p')
+  if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]; then
+    echo "✓ live: v$NEWVER — assets ✓  api ✓"; exit 0
+  fi
   sleep 3
 done
-echo "⚠ live still reports v${live:-?} after 60s — check the Pages dashboard"
+echo "⚠ after 90s — assets v${assets:-?}, api v${apiv:-?} (wanted v$NEWVER). Check the Pages dashboard."
 exit 1
