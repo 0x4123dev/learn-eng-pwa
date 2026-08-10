@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.2.12';
+const APP_VERSION = 'v4.2.13';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1597,7 +1597,6 @@ function renderWordPet() {
                     </div>
                 </div>
                 ${trashBtnHTML}
-                <button type="button" class="pet-battle-btn-hero" onclick="openPetBattle()" aria-label="Battle friends">⚔️</button>
                 <button type="button" class="pet-shop-btn-hero" onclick="showPetShop()">🛒 Shop</button>
             </div>
             <div class="pet-hero-xp-track" role="progressbar" aria-label="Level ${level} experience"

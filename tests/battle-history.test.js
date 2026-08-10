@@ -143,6 +143,23 @@ suite('home screen: the arena button replaced the sync button', () => {
         assert.truthy(cssSrc.includes('.battle-fab'), 'the fab has no styles');
     });
 
+    // The habitat carried a second ⚔️ button, so the home screen offered the
+    // same destination twice.
+    test('there is exactly ONE way into the arena from the home screen', () => {
+        const homeSrc = fs.readFileSync(path.join(root, 'js', 'home.js'), 'utf8');
+        const calls = (indexSrc + homeSrc).match(/openPetBattle\(\)/g) || [];
+        assert.equal(calls.length, 1, `found ${calls.length} arena buttons — there should be one`);
+        assert.falsy(homeSrc.includes('pet-battle-btn-hero'), 'the habitat button should be gone');
+        assert.falsy(cssSrc.includes('pet-battle-btn-hero'), 'and its styles with it');
+    });
+
+    // Its focus ring and reduced-motion handling had to move with it.
+    test('the surviving fab keeps the accessibility rules', () => {
+        assert.truthy(cssSrc.includes('.battle-fab:focus-visible'), 'keyboard users need the focus ring');
+        assert.truthy(/prefers-reduced-motion[\s\S]{0,400}\.battle-fab/.test(cssSrc),
+            'the fab animates on entry — it must respect reduced motion');
+    });
+
     // Removing the button is only safe because syncing is automatic.
     test('syncing still happens without a button to press', () => {
         const modules = ['lessons.js', 'phrases.js', 'rewrite.js', 'collocation.js', 'grammar-ui.js'];

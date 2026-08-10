@@ -877,14 +877,8 @@
             padding: 7px 10px; border-radius: 10px; background: var(--glass-bg, rgba(255,255,255,0.7)); margin-bottom: 5px; }
 
         /* ===== Pet battle ===== */
-        .pet-battle-btn-hero {
-            border: none; cursor: pointer; border-radius: 50px; padding: 7px 12px;
-            background: linear-gradient(135deg, #f97316, #ef4444); color: #fff;
-            font-size: 15px; font-family: inherit; margin-right: 6px;
-            box-shadow: 0 3px 10px rgba(239,68,68,0.35);
-            min-width: 44px; min-height: 44px;
-        }
-        .pet-battle-btn-hero:active { transform: scale(0.94); }
+        /* The habitat used to carry a second ⚔️ button; the arena is reached
+           from the top-right .battle-fab now, so there is only one way in. */
         .pet-battle-screen { padding: 16px 0 90px; }
         .pb-wrap { padding: 0 14px; }
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -1164,15 +1158,15 @@
             overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
         }
         .pb-barrel:focus-visible, .pb-emote:focus-visible, .pb-fire:focus-visible,
-        .pb-btn:focus-visible, .pb-friend:focus-visible, .pet-battle-btn-hero:focus-visible,
+        .pb-btn:focus-visible, .pb-friend:focus-visible, .battle-fab:focus-visible,
         .pb-slider-row input:focus-visible {
             outline: 3px solid #2563eb;
             outline-offset: 3px;
         }
         @media (prefers-reduced-motion: reduce) {
             .pb-hp-fill, .pb-barrel, .pb-emote, .pb-fire, .pb-btn, .pb-friend,
-            .pet-battle-btn-hero { animation: none !important; transition: none !important; }
-            .pb-emote:active, .pet-battle-btn-hero:active { transform: none; }
+            .battle-fab { animation: none !important; transition: none !important; }
+            .pb-emote:active, .battle-fab:active { transform: none; }
         }
 
         /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */
