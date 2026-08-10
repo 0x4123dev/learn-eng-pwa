@@ -14,12 +14,36 @@ let _pbMsg = '';
 let _pbLastTurn = 0;
 let _pbLink = null;        // realtime transport for the running battle
 let _pbShowingResult = false;   // keep the result card up until the child taps Xong
+let _pbSceneId = null;           // committed locally; snapshotted on a friend challenge
 
 const PB_POLL_IDLE_MS = 5000;
 const PB_POLL_LIVE_MS = 1000;    // during the opponent's turn: near-live
 
 function pbEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function pbSelectedSceneId() {
+  if (_pbSceneId) return _pbSceneId;
+  let saved = '';
+  try { saved = localStorage.getItem('petBattleScene') || ''; } catch (e) {}
+  if (!saved && typeof appState !== 'undefined' && appState) saved = appState.petBattleScene || '';
+  _pbSceneId = (typeof BattleScenes !== 'undefined')
+    ? BattleScenes.normalizeBattleSceneId(saved) : (saved || 'cloudstep-meadow');
+  return _pbSceneId;
+}
+
+function choosePetBattleScene(id) {
+  _pbSceneId = (typeof BattleScenes !== 'undefined')
+    ? BattleScenes.normalizeBattleSceneId(id) : String(id || 'cloudstep-meadow');
+  try { localStorage.setItem('petBattleScene', _pbSceneId); } catch (e) {}
+  if (typeof appState !== 'undefined' && appState) {
+    appState.petBattleScene = _pbSceneId;
+    if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+      try { saveUserData(currentUser, appState); } catch (e) {}
+    }
+  }
+  renderPetBattle();
 }
 
 // ---- language ----
@@ -92,6 +116,8 @@ const PB_STR = {
     practiceWin: 'You beat the bot! 🎉', practiceLose: 'The bot won this one 💪',
     practiceNote: 'Practice earns no coins or cups — beat a friend for those! 🏆',
     practiceAgain: '🤖 Play again',
+    sceneTitle: 'Choose your arena', sceneHint: 'Swipe to explore 10 worlds', sceneAria: 'Battle arena',
+    sceneInvite: 'Arena selected by the challenger',
 
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'You', gFoe: 'Friend',
@@ -183,6 +209,8 @@ const PB_STR = {
     practiceWin: 'Bé thắng máy rồi! 🎉', practiceLose: 'Máy thắng trận này 💪',
     practiceNote: 'Luyện tập không có xu và cúp — thắng bạn bè mới có nhé! 🏆',
     practiceAgain: '🤖 Chơi lại',
+    sceneTitle: 'Chọn đấu trường', sceneHint: 'Vuốt để khám phá 10 thế giới', sceneAria: 'Đấu trường',
+    sceneInvite: 'Đấu trường do người thách đấu chọn',
 
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'Bé', gFoe: 'Bạn',
@@ -392,6 +420,38 @@ function _pbAmmoPanel(st) {
     </div>`;
 }
 
+function _pbScenePicker() {
+  if (typeof BattleScenes === 'undefined') return '';
+  const selected = pbSelectedSceneId();
+  const lang = _pbLang === 'vi' ? 'vi' : 'en';
+  return `<section class="pb-scene-picker" aria-labelledby="pbScenePickerTitle">
+    <div class="pb-scene-picker-head">
+      <strong id="pbScenePickerTitle">${pbT('sceneTitle')}</strong><span>${pbT('sceneHint')}</span>
+    </div>
+    <div class="pb-scene-list" role="radiogroup" aria-label="${pbEsc(pbT('sceneAria'))}">
+      ${BattleScenes.scenes.map(scene => {
+        const on = scene.id === selected;
+        return `<button type="button" class="pb-scene-option" role="radio" aria-checked="${on}"
+                  onclick="choosePetBattleScene('${scene.id}')">
+          <img src="${scene.poster}" width="320" height="180" loading="lazy" alt="">
+          <span class="pb-scene-check" aria-hidden="true">✓</span>
+          <span class="pb-scene-copy"><b>${pbEsc(scene.name[lang])}</b><small>${pbEsc(scene.description[lang])}</small></span>
+        </button>`;
+      }).join('')}
+    </div>
+  </section>`;
+}
+
+function _pbSceneInvite(id) {
+  if (typeof BattleScenes === 'undefined') return '';
+  const scene = BattleScenes.getBattleScene(id);
+  const lang = _pbLang === 'vi' ? 'vi' : 'en';
+  return `<div class="pb-scene-invite">
+    <img src="${scene.poster}" width="320" height="180" alt="">
+    <span>${pbT('sceneInvite')}<b>${pbEsc(scene.name[lang])}</b></span>
+  </div>`;
+}
+
 function renderPetBattle() {
   const screen = document.getElementById('petBattleScreen');
   if (!screen) return;
@@ -412,6 +472,7 @@ function renderPetBattle() {
       <div class="pb-invite-card">
         <div class="pb-invite-title">${pbT('inviteTitle', { name: pbEsc(b.foe.name || '?') })}</div>
         <div class="pb-invite-sub">${pbT('inviteSub', { n: Math.ceil(left / 1000) })}</div>
+        ${_pbSceneInvite(b.backgroundId)}
         ${_pbVersusLine(b)}
         <div class="pb-ammo-line">${pbT('myAmmo', { n: st.ammo })}</div>
         <div class="pb-invite-actions">
@@ -428,6 +489,7 @@ function renderPetBattle() {
       <div class="pb-invite-card">
         <div class="pb-invite-title">${pbT('waitingTitle', { name: pbEsc(b.foe.name || '?') })}</div>
         <div class="pb-invite-sub">${pbT('waitingSub', { n: Math.ceil(left / 1000) })}</div>
+        ${_pbSceneInvite(b.backgroundId)}
         <div class="pb-hint">${pbT('waitingHint')}</div>
       </div>`);
     return;
@@ -450,6 +512,7 @@ function renderPetBattle() {
 
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
+    ${_pbScenePicker()}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
@@ -596,7 +659,9 @@ function pbGoToFriends() {
 
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
-  const r = await _pbApi('battle/challenge', { method: 'POST', body: Object.assign({ friendId }, _pbMyPet()) });
+  const r = await _pbApi('battle/challenge', {
+    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId() }, _pbMyPet()),
+  });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
@@ -704,6 +769,7 @@ function startBotBattle() {
   const view = {
     id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
     fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 2 : 1,
+    backgroundId: pbSelectedSceneId(),
     me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP },
     foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP },
   };
@@ -810,6 +876,7 @@ if (typeof module !== 'undefined' && module.exports) {
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
+    pbSelectedSceneId, choosePetBattleScene, _pbScenePicker, _pbSceneInvite,
     startBotBattle, finishBotBattle,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },

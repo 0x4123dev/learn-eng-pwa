@@ -978,6 +978,51 @@
         }
         .pb-result-cup { font-size: 13px; font-weight: 800; color: #b45309; margin-top: 4px; }
 
+        /* Arena carousel: rich previews, one-thumb horizontal browsing, and a
+           real radio-like selection state for keyboard/screen-reader users. */
+        .pb-scene-picker {
+            margin: 12px 0; padding: 12px; border: 1px solid rgba(99,102,241,.16); border-radius: 18px;
+            background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(238,242,255,.82));
+            box-shadow: 0 7px 20px rgba(49,46,129,.08);
+        }
+        .pb-scene-picker-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+        .pb-scene-picker-head strong { color: #1e293b; font-size: 14px; font-weight: 950; }
+        .pb-scene-picker-head span { color: #475569; font-size: 11px; font-weight: 700; }
+        .pb-scene-list {
+            display: grid; grid-auto-flow: column; grid-auto-columns: minmax(148px, 44%); gap: 9px;
+            overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
+            padding: 2px 2px 7px; scrollbar-width: thin;
+        }
+        .pb-scene-option {
+            position: relative; min-height: 122px; padding: 0; overflow: hidden; scroll-snap-align: start;
+            border: 3px solid transparent; border-radius: 14px; cursor: pointer; text-align: left;
+            color: white; background: #172554; box-shadow: 0 4px 12px rgba(15,23,42,.17);
+            font-family: inherit; transition: border-color .18s ease, box-shadow .18s ease, opacity .18s ease;
+        }
+        .pb-scene-option:hover { border-color: #93c5fd; }
+        .pb-scene-option[aria-checked="true"] { border-color: #f97316; box-shadow: 0 0 0 2px #ffedd5, 0 7px 16px rgba(234,88,12,.25); }
+        .pb-scene-option:focus-visible { outline: 4px solid #2563eb; outline-offset: 3px; }
+        .pb-scene-option img { width: 100%; aspect-ratio: 16/9; display: block; object-fit: cover; }
+        .pb-scene-copy {
+            position: absolute; inset: auto 0 0; min-height: 48px; padding: 16px 8px 7px;
+            background: linear-gradient(transparent, rgba(8,15,39,.94));
+        }
+        .pb-scene-copy b, .pb-scene-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .pb-scene-copy b { font-size: 11px; font-weight: 950; }
+        .pb-scene-copy small { margin-top: 1px; color: #dbeafe; font-size: 9.5px; font-weight: 700; }
+        .pb-scene-check {
+            position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 24px; height: 24px;
+            border: 2px solid rgba(255,255,255,.8); border-radius: 50%; color: transparent; background: rgba(15,23,42,.58);
+            font-size: 14px; font-weight: 950;
+        }
+        .pb-scene-option[aria-checked="true"] .pb-scene-check { color: #fff; border-color: #fff; background: #f97316; }
+        .pb-scene-invite { display: flex; align-items: center; gap: 9px; margin: 10px 0; padding: 7px; border-radius: 13px; background: rgba(238,242,255,.84); }
+        .pb-scene-invite img { width: 72px; aspect-ratio: 16/9; border-radius: 9px; object-fit: cover; }
+        .pb-scene-invite span { min-width: 0; color: #475569; font-size: 10px; }
+        .pb-scene-invite b { display: block; color: #1e293b; font-size: 12px; }
+        @media (min-width: 700px) { .pb-scene-list { grid-auto-columns: minmax(170px, 25%); } }
+        @media (prefers-reduced-motion: reduce) { .pb-scene-option { transition: none; } }
+
         /* EN/VI flags — English is the default on every visit */
         .pb-lang { display: flex; gap: 5px; margin-left: auto; }
         .pb-flag {
@@ -1226,9 +1271,13 @@
             box-shadow: inset 0 0 0 1px rgba(255,255,255,.44), inset 0 18px 30px rgba(255,255,255,.08);
         }
         .pb-canvas {
-            width: 100%; height: auto; border-radius: 20px; display: block;
-            border: 4px solid #182b66; background: #8dc7ff; touch-action: none; cursor: crosshair;
+            position: relative; z-index: 1; width: 100%; height: auto; border-radius: 20px; display: block;
+            border: 4px solid #182b66; background: transparent; touch-action: none; cursor: crosshair;
             box-shadow: 0 10px 24px rgba(30,58,138,.28), 0 3px 0 #0f1f50;
+        }
+        .pb-scene-canvas {
+            position: absolute; z-index: 0; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px);
+            display: block; border-radius: 16px; pointer-events: none; background: #8dc7ff;
         }
         .pb-canvas:focus-visible { outline: 4px solid #facc15; outline-offset: 3px; }
         .pb-field-readout {

@@ -86,6 +86,9 @@ function PetBattleGame(opts) {
   this._destroyed = false;
   this._shellReady = false;
   this._draggingAim = false;
+  this.reducedMotion = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
   // The window onto the world. On v1 it cannot move, so nothing changes there.
   this.camera = (typeof BattleCamera === 'function')
     ? new BattleCamera({ rules: this.rules, reducedMotion: this.reducedMotion })
@@ -95,9 +98,7 @@ function PetBattleGame(opts) {
   this.impactParticles = [];
   this.houseImpacts = [];
   this._lastHitCount = 0;
-  this.reducedMotion = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    : false;
+  this.sceneRenderer = null;
 }
 
 // ---- realtime events (all no-ops when the link is unavailable) ----
@@ -205,6 +206,8 @@ PetBattleGame.prototype.destroy = function () {
   this._raf = null;
   this._aimTimer = null;
   this._effectTimers = [];
+  if (this.sceneRenderer) this.sceneRenderer.destroy();
+  this.sceneRenderer = null;
 };
 
 // ---- layout ----
@@ -266,6 +269,8 @@ PetBattleGame.prototype.render = function () {
         </div>
       </div>
       <div class="pb-field-shell">
+        <canvas id="pbSceneCanvas" class="pb-scene-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}"
+                aria-hidden="true"></canvas>
         <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}" tabindex="0"
                 role="img" aria-label="${esc(gT('gCanvasAria'))}" aria-describedby="pbCanvasHelp">
           ${esc(gT('gCanvasFallback'))}
@@ -316,6 +321,19 @@ PetBattleGame.prototype.render = function () {
       </div>`;
     this.canvas = this._el('pbCanvas');
     this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    const sceneCanvas = this._el('pbSceneCanvas');
+    if (sceneCanvas && typeof BattleSceneRenderer === 'function') {
+      const R = this.rules || C.FIELD_RULES[1];
+      this.sceneRenderer = new BattleSceneRenderer({
+        canvas: sceneCanvas,
+        sceneId: this.view.backgroundId,
+        worldW: R.worldW,
+        viewW: R.viewW,
+        viewH: R.viewH,
+        reducedMotion: this.reducedMotion,
+      });
+      this.sceneRenderer.start();
+    }
     this._bindAimControls();
     this._cachePets();
     this._shellReady = true;
@@ -583,6 +601,8 @@ PetBattleGame.prototype._cachePets = function () {
 // ---- drawing ----
 PetBattleGame.prototype.draw = function () {
   const camX = this.camera ? this.camera.x : 0;
+  if (this.sceneRenderer) this.sceneRenderer.setCamera(camX);
+  if (this.ctx && this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   if (camX) { this.ctx && this.ctx.save(); this.ctx && this.ctx.translate(-camX, 0); }
   this._drawWorld();
   if (camX) this.ctx && this.ctx.restore();
@@ -599,47 +619,9 @@ PetBattleGame.prototype._drawWorld = function () {
   // is 60% of the pixels skipped every frame.
   const vis = this.camera ? this.camera.visibleRange(120) : { from: 0, to: W - 1 };
 
-  // Layered arcade sky: readable silhouettes and a stronger Gunbound mood.
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, '#4568dc');
-  sky.addColorStop(0.52, '#8dc7ff');
-  sky.addColorStop(1, '#e8f7df');
-  ctx.fillStyle = sky;
-  ctx.fillRect(vis.from, 0, vis.to - vis.from + 1, H);
-
-  // Scenery is drawn in WORLD space inside the camera translate, so anything
-  // pinned to the old 800px width would bunch into one corner of a 2000px
-  // field. The sky layers move at their own parallax rates, which is what
-  // gives the long world a sense of depth while panning.
+  // The image scene lives on its own canvas below this one. Wind remains on
+  // the gameplay layer because it communicates deterministic match state.
   const cam = this.camera ? this.camera.x : 0;
-
-  // Sun: pinned to the viewport (it is very far away).
-  ctx.fillStyle = 'rgba(255,244,180,.88)';
-  ctx.beginPath(); ctx.arc(cam + VIEW * .78, 68, 34, 0, Math.PI * 2); ctx.fill();
-
-  // Clouds: slow drift, tiled across the whole world, culled to the slice.
-  ctx.fillStyle = 'rgba(255,255,255,.72)';
-  const cloudSpan = 420;
-  const cloudFrom = Math.floor((vis.from - cam * .55) / cloudSpan) - 1;
-  const cloudTo = Math.ceil((vis.to - cam * .55) / cloudSpan) + 1;
-  for (let n = cloudFrom; n <= cloudTo; n++) {
-    const base = n * cloudSpan;
-    const x = base + cam * .55;                    // parallax: nearer than the sun
-    if (x < vis.from - 120 || x > vis.to + 120) continue;
-    const y = 72 + ((n % 3) + 3) % 3 * 26;
-    const sc = 0.72 + (((n % 4) + 4) % 4) * 0.11;
-    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
-    ctx.beginPath(); ctx.arc(-28, 0, 18, 0, Math.PI * 2); ctx.arc(0, -8, 25, 0, Math.PI * 2);
-    ctx.arc(31, 2, 17, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-  }
-
-  // Distant hills: mid parallax, spanning the visible slice only.
-  ctx.fillStyle = 'rgba(61,89,148,.22)';
-  ctx.beginPath();
-  const hillFrom = Math.floor(vis.from / 80) * 80, hillTo = Math.ceil(vis.to / 80) * 80;
-  ctx.moveTo(hillFrom, 280);
-  for (let x = hillFrom; x <= hillTo; x += 80) ctx.lineTo(x, 190 + ((x / 80) % 2 ? 48 : 0));
-  ctx.lineTo(hillTo, H); ctx.lineTo(hillFrom, H); ctx.fill();
 
   // Wind ribbons stay pinned to the viewport: they report this round's wind,
   // so they must be readable wherever the camera happens to be looking.
@@ -661,9 +643,10 @@ PetBattleGame.prototype._drawWorld = function () {
   for (let x = vis.from; x <= vis.to; x++) ctx.lineTo(x, this.terrain[x]);
   ctx.lineTo(vis.to, H);
   ctx.closePath();
+  const scene = typeof BattleScenes !== 'undefined' ? BattleScenes.getBattleScene(this.view.backgroundId) : null;
   const ground = ctx.createLinearGradient(0, 250, 0, H);
-  ground.addColorStop(0, '#75c95e');
-  ground.addColorStop(1, '#3d8d3f');
+  ground.addColorStop(0, scene ? scene.palette.ground : '#75c95e');
+  ground.addColorStop(1, '#304f3a');
   ctx.fillStyle = ground;
   ctx.fill();
   ctx.strokeStyle = '#b7ef78';

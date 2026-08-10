@@ -27,6 +27,19 @@ export function normalizeFieldVersion(v) {
   return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;
 }
 
+// A challenge snapshots one immutable arena so both clients load the same
+// layers. Never trust an arbitrary asset path from the request body.
+export const BATTLE_BACKGROUND_DEFAULT = 'cloudstep-meadow';
+export const BATTLE_BACKGROUND_IDS = Object.freeze([
+  'cloudstep-meadow', 'clockwork-canyon', 'sakura-shrine', 'aurora-glacier',
+  'ember-caldera', 'pirate-lagoon', 'firefly-forest', 'moonlit-rooftops',
+  'candy-cloudworks', 'cosmic-observatory',
+]);
+export function normalizeBattleBackground(id) {
+  const value = String(id || '');
+  return BATTLE_BACKGROUND_IDS.includes(value) ? value : BATTLE_BACKGROUND_DEFAULT;
+}
+
 export const COOLDOWN_MS = 72 * 60 * 60 * 1000;   // 3 days between battles
 export const INVITE_TTL_MS = 60 * 1000;           // 60s to accept
 export const TURN_MS = 20 * 1000;                 // 20s per turn
@@ -142,6 +155,7 @@ export function battleView(b, viewerId) {
     status: b.status,
     seed: b.seed,
     fieldVersion: normalizeFieldVersion(b.field_version),
+    backgroundId: normalizeBattleBackground(b.background_id),
     // The challenger always stands on the left, whoever is looking.
     iAmChallenger: meIsChallenger,
     me, foe,

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v222';
+const CACHE_NAME = 'flashlingo-v224';
 const ASSETS = [
   '/',
   '/index.html',
@@ -21,6 +21,7 @@ const ASSETS = [
   '/js/petcheer.js',
   '/js/battlecalc.js',
   '/js/battle-camera.js',
+  '/js/battle-scenes.js',
   '/js/friends.js',
   '/js/battlelink.js',
   '/js/petbattle.js',
@@ -61,6 +62,20 @@ const ASSETS = [
   '/img/pets/akita.png',
   '/img/pets/royal.png',
   '/img/pets/diamond.png',
+  '/img/battle-scenes/cloudstep-meadow/poster.webp',
+  '/img/battle-scenes/clockwork-canyon/poster.webp',
+  '/img/battle-scenes/sakura-shrine/poster.webp',
+  '/img/battle-scenes/aurora-glacier/poster.webp',
+  '/img/battle-scenes/ember-caldera/poster.webp',
+  '/img/battle-scenes/pirate-lagoon/poster.webp',
+  '/img/battle-scenes/firefly-forest/poster.webp',
+  '/img/battle-scenes/moonlit-rooftops/poster.webp',
+  '/img/battle-scenes/candy-cloudworks/poster.webp',
+  '/img/battle-scenes/cosmic-observatory/poster.webp',
+  '/img/battle-scenes/cloudstep-meadow/far-strip.webp',
+  '/img/battle-scenes/cloudstep-meadow/zone-left.webp',
+  '/img/battle-scenes/cloudstep-meadow/zone-center.webp',
+  '/img/battle-scenes/cloudstep-meadow/zone-right.webp',
   '/manifest.json'
 ];
 
