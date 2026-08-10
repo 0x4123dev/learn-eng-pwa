@@ -222,7 +222,10 @@ function renderPetBattle() {
           <span class="pb-friend-name">${pbEsc(f.username)}</span>
           <span class="pb-friend-go">⚔️</span>
         </button>`).join('')
-    : `<div class="pb-empty">Chưa có bạn nào. Vào Hồ sơ → 👥 Bạn bè để kết bạn nhé!</div>`;
+    : `<div class="pb-empty">
+         Chưa có bạn nào để thách đấu.
+         <button class="pb-btn primary pb-go-friends" onclick="pbGoToFriends()">👥 Kết bạn ngay</button>
+       </div>`;
 
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
@@ -237,6 +240,17 @@ function renderPetBattle() {
          </div>`}
     <div class="pb-friend-list">${list}</div>
     ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}`);
+}
+
+// "Vào Hồ sơ → 👥 Bạn bè" was an instruction, not a route. Make it one tap,
+// landing on the friends section itself rather than the top of the profile.
+function pbGoToFriends() {
+  closePetBattle();
+  if (typeof navigateToProfile === 'function') navigateToProfile();
+  setTimeout(() => {
+    const el = document.getElementById('friendsSection');
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
 }
 
 // ---- challenge flow ----

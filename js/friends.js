@@ -29,6 +29,95 @@ async function _frApi(path, opts) {
   }
 }
 
+// ---- quick connect link ----
+// Adding a friend meant typing their name EXACTLY — accents and all — which
+// is a lot to ask of a child. A shared link carries the name for them.
+const FR_INVITE_PARAM = 'ketban';
+const FR_INVITE_KEY = 'flashlingo_pending_friend';
+
+function friendInviteLink(username) {
+  const name = username || (typeof currentUser !== 'undefined' ? currentUser : '');
+  const origin = (typeof location !== 'undefined' && location.origin && location.origin !== 'null')
+    ? location.origin : 'https://eng-pwa.pages.dev';
+  return origin + '/?' + FR_INVITE_PARAM + '=' + encodeURIComponent(name);
+}
+
+// Read a ?ketban= name into session storage and strip it from the URL, so a
+// reload (or a screenshot of the address bar) doesn't replay the invite.
+function _frCaptureInvite() {
+  try {
+    if (typeof location === 'undefined' || !location.search) return null;
+    const name = new URLSearchParams(location.search).get(FR_INVITE_PARAM);
+    if (!name) return null;
+    const clean = String(name).trim().slice(0, 30);
+    // A link is untrusted input: it names someone, it does not authorise
+    // anything. Store it only if it looks like a username; the child still
+    // has to tap "Kết bạn".
+    const okShape = (typeof EngAuth !== 'undefined' && EngAuth.validUsername)
+      ? EngAuth.validUsername(clean).ok : clean.length > 0;
+    if (okShape) sessionStorage.setItem(FR_INVITE_KEY, clean);
+    if (typeof history !== 'undefined' && history.replaceState) {
+      history.replaceState(null, '', location.pathname);
+    }
+    return okShape ? clean : null;
+  } catch (e) { return null; }
+}
+
+function _frPendingInvite() {
+  try {
+    const name = sessionStorage.getItem(FR_INVITE_KEY);
+    if (!name) return null;
+    if (typeof currentUser !== 'undefined' && name === currentUser) return null;  // own link
+    return name;
+  } catch (e) { return null; }
+}
+function _frClearPendingInvite() {
+  try { sessionStorage.removeItem(FR_INVITE_KEY); } catch (e) {}
+}
+
+async function shareFriendLink() {
+  const name = (typeof currentUser !== 'undefined') ? currentUser : '';
+  if (!name) return;
+  const url = friendInviteLink(name);
+  const text = `Kết bạn với ${name} trên FlashLingo để cùng học và thi đấu nhé! ⚔️`;
+  try {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      await navigator.share({ title: 'FlashLingo', text, url });
+      return;
+    }
+  } catch (e) { return; }        // the child cancelled the share sheet
+  try {
+    await navigator.clipboard.writeText(url);
+    _friendsMsg = '🔗 Đã copy link! Gửi cho bạn nhé.';
+  } catch (e) {
+    _friendsMsg = '🔗 Link: ' + url;
+  }
+  renderFriendsSection();
+}
+
+// Send the request the link came for — only ever after a tap.
+async function acceptQuickInvite() {
+  const name = _frPendingInvite();
+  if (!name || _friendsBusy) return;
+  _friendsBusy = true;
+  const r = await _frApi('friends', { method: 'POST', body: { username: name } });
+  _friendsBusy = false;
+  if (r.offline) _friendsMsg = '⚠️ Cần mạng để kết bạn';
+  else if (r.ok) {
+    _friendsMsg = r.data && r.data.status === 'accepted'
+      ? '🎉 Đã thành bạn bè với ' + name + '!'
+      : '✅ Đã gửi lời mời tới ' + name;
+    _frClearPendingInvite();
+  } else _friendsMsg = '❌ ' + ((r.data && r.data.error) || 'Không gửi được lời mời');
+  await loadFriends();
+  renderFriendsSection();
+}
+
+function dismissQuickInvite() {
+  _frClearPendingInvite();
+  renderFriendsSection();
+}
+
 // ---- data ----
 async function loadFriends() {
   const r = await _frApi('friends');
@@ -192,10 +281,26 @@ function renderFriendsSection() {
   const pending = (outgoing || []).map(o =>
     `<span class="friend-pending-chip">⏳ ${frEsc(o.username)}</span>`).join('');
 
+  // Someone opened this app from a friend's link — offer the request, never
+  // send it automatically: the link is untrusted input, the tap is consent.
+  // (Named apart from `pending` above, which is the outgoing-invite chips.)
+  const linkInvite = _frPendingInvite();
+  const quick = linkInvite ? `
+    <div class="friend-quick-card">
+      <div class="friend-quick-title">🔗 <b>${frEsc(linkInvite)}</b> muốn kết bạn với bé!</div>
+      <div class="friend-quick-actions">
+        <button class="friend-invite-btn" onclick="acceptQuickInvite()">Kết bạn ⚔️</button>
+        <button class="friend-quick-skip" onclick="dismissQuickInvite()">Để sau</button>
+      </div>
+    </div>` : '';
+
   el.innerHTML = `
+    ${quick}
+    <button class="friend-share-btn" onclick="shareFriendLink()">🔗 Gửi link kết bạn cho bạn bè</button>
+    <div class="friend-share-hint">Bạn bấm vào link là kết bạn ngay, khỏi gõ tên 🎉</div>
     <div class="friend-invite-box">
-      <input id="friendInviteInput" class="friend-invite-input" type="text" maxlength="20"
-             placeholder="Tên bạn (chính xác)…" autocomplete="off"
+      <input id="friendInviteInput" class="friend-invite-input" type="text" maxlength="30"
+             placeholder="Hoặc gõ tên bạn (chính xác)…" autocomplete="off"
              onkeydown="if(event.key==='Enter'){event.preventDefault();inviteFriend();}">
       <button class="friend-invite-btn" onclick="inviteFriend()">Kết bạn</button>
     </div>
@@ -253,11 +358,17 @@ function initFriendsSection() {
   loadFriends().then(() => renderFriendsSection()).catch(() => {});
 }
 
+// Read the invite BEFORE anything can navigate — this runs at parse time,
+// while location.search is still the URL the friend actually opened.
+if (typeof window !== 'undefined') { try { _frCaptureInvite(); } catch (e) {} }
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderFriendsSection, initFriendsSection, loadFriends, inviteFriend,
     respondFriend, openFriendActivity, frEsc, retryFriendsLink, relinkFriendsAccount,
-    _frLinkHelpHTML,
+    _frLinkHelpHTML, friendInviteLink, shareFriendLink, acceptQuickInvite,
+    dismissQuickInvite, _frCaptureInvite, _frPendingInvite, _frClearPendingInvite,
+    FR_INVITE_PARAM, FR_INVITE_KEY,
     _setFriendsData: (d) => { _friendsData = d; },
     _getFriendsData: () => _friendsData,
   };

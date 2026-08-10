@@ -890,6 +890,29 @@
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        /* Quick connect link — beats typing an accented name exactly */
+        .friend-share-btn {
+            width: 100%; padding: 12px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff;
+            font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+            box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
+        }
+        .friend-share-btn:active { transform: scale(0.97); }
+        .friend-share-hint { font-size: 11px; color: var(--text-secondary); text-align: center; margin: 6px 0 12px; }
+        .friend-quick-card {
+            background: linear-gradient(160deg, #eef2ff, #e0e7ff);
+            border: 1.5px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px; padding: 14px; margin-bottom: 12px;
+        }
+        .friend-quick-title { font-size: 14px; color: var(--text-primary); margin-bottom: 10px; }
+        .friend-quick-actions { display: flex; gap: 8px; }
+        .friend-quick-actions .friend-invite-btn { flex: 1; }
+        .friend-quick-skip {
+            padding: 10px 14px; border: none; border-radius: 12px; background: rgba(0, 0, 0, 0.06);
+            color: var(--text-secondary); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+        .pb-go-friends { margin-top: 10px; }
+
         /* Pet power card — the level's effect on the fight, made visible */
         .pb-pow-card {
             background: linear-gradient(160deg, #fff7ed, #ffedd5);
