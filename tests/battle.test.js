@@ -58,6 +58,40 @@ suite('battle: ammo is earned only by learning', () => {
         assert.equal(rows.length, 3);
     });
 
+    // "8 câu đúng → +0/8 🚀" showed two unrelated 8s and never said that 20
+    // correct answers make one shot, so there was no way to know what to do.
+    test('every row states its rule and the next step', () => {
+        for (const stats of [{ correct: 8 }, { correct: 0 }, { correct: 999, perfects: 99, days: 9 }]) {
+            for (const r of C.ammoBreakdown(stats)) {
+                assert.truthy(r.rule && r.rule.length > 3, `${r.key} must state its rule`);
+                assert.truthy(r.hint && r.hint.length > 3, `${r.key} must state the next step`);
+            }
+        }
+    });
+
+    test('the volume row shows progress toward all 8 shots, not a bare count', () => {
+        const goal = C.AMMO_VOLUME_MAX * C.AMMO_PER_CORRECT;   // 160
+        assert.equal(goal, 160);
+        const row = C.ammoBreakdown({ correct: 8 }).find(r => r.key === 'volume');
+        assert.equal(row.shots, 0, '8 correct answers is not yet one shot');
+        assert.truthy(row.label.includes('8/160'), `label should read 8/160, got "${row.label}"`);
+        assert.truthy(row.rule.includes(String(C.AMMO_PER_CORRECT)), 'the rule must name the 20');
+        assert.truthy(row.hint.includes('12'), `12 more answers to the next shot, got "${row.hint}"`);
+    });
+
+    test('a maxed row says so instead of asking for more', () => {
+        const rows = C.ammoBreakdown({ correct: 500, perfects: 50, days: 3 });
+        for (const r of rows) {
+            assert.equal(r.shots, r.max, `${r.key} should be maxed`);
+            assert.truthy(/tối đa|đủ/.test(r.hint), `${r.key} hint should celebrate, got "${r.hint}"`);
+        }
+    });
+
+    test('the label never overstates progress past the goal', () => {
+        const row = C.ammoBreakdown({ correct: 5000 }).find(r => r.key === 'volume');
+        assert.truthy(row.label.includes('160/160'), `got "${row.label}"`);
+    });
+
     // The server is authoritative; a drifted copy would let a client claim
     // ammo the server would never grant.
     test('server and client ammo constants are identical', () => {

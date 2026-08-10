@@ -89,7 +89,20 @@ function _pbShell(inner) {
 
 function _pbAmmoPanel(st) {
   const rows = (typeof ammoBreakdown === 'function' ? ammoBreakdown(st.stats || {}) : [])
-    .map(r => `<div class="pb-ammo-row"><span>${pbEsc(r.label)}</span><b>+${r.shots}<small>/${r.max}</small> 🚀</b></div>`)
+    .map(r => {
+      // Progress bar toward the NEXT shot, not the whole row — a child two
+      // answers away should see a nearly-full bar, not a barely-moved one.
+      const pct = r.max ? Math.round(r.shots / r.max * 100) : 0;
+      return `
+      <div class="pb-ammo-row">
+        <div class="pb-ammo-head">
+          <span class="pb-ammo-label">${pbEsc(r.label)}</span>
+          <b>+${r.shots}<small>/${r.max}</small> 🚀</b>
+        </div>
+        <div class="pb-ammo-bar"><i style="width:${pct}%"></i></div>
+        <div class="pb-ammo-hint"><span class="pb-ammo-rule">${pbEsc(r.rule || '')}</span>${r.hint ? ' · ' + pbEsc(r.hint) : ''}</div>
+      </div>`;
+    })
     .join('');
   return `
     <div class="pb-ammo-card">

@@ -25,14 +25,51 @@ function computeAmmo(stats) {
 }
 
 // A readable breakdown for the "how did I earn this?" panel.
+//
+// Every row must answer two questions a child actually asks: what is the rule,
+// and how much more do I need? The old label read "8 câu đúng → +0/8 🚀" —
+// two unrelated 8s, no mention that 20 correct answers make one shot, and no
+// hint that the next one was 12 answers away.
 function ammoBreakdown(stats) {
   const correct = Math.max(0, Math.trunc((stats && stats.correct) || 0));
   const perfects = Math.max(0, Math.trunc((stats && stats.perfects) || 0));
   const days = Math.max(0, Math.trunc((stats && stats.days) || 0));
+
+  const volume = Math.min(AMMO_VOLUME_MAX, Math.floor(correct / AMMO_PER_CORRECT));
+  const quality = Math.min(AMMO_PERFECT_MAX, perfects);
+  const consistency = days >= 3 ? AMMO_STREAK_BONUS : 0;
+
+  const correctGoal = AMMO_VOLUME_MAX * AMMO_PER_CORRECT;   // 160 for all 8
+  const toNextCorrect = AMMO_PER_CORRECT - (correct % AMMO_PER_CORRECT);
+
   return [
-    { key: 'volume', label: `${correct} câu đúng`, shots: Math.min(AMMO_VOLUME_MAX, Math.floor(correct / AMMO_PER_CORRECT)), max: AMMO_VOLUME_MAX },
-    { key: 'perfect', label: `${perfects} bài 10/10`, shots: Math.min(AMMO_PERFECT_MAX, perfects), max: AMMO_PERFECT_MAX },
-    { key: 'streak', label: `Học đủ ${days}/3 ngày`, shots: days >= 3 ? AMMO_STREAK_BONUS : 0, max: AMMO_STREAK_BONUS },
+    {
+      key: 'volume',
+      label: `Câu đúng: ${Math.min(correct, correctGoal)}/${correctGoal}`,
+      rule: `${AMMO_PER_CORRECT} câu đúng = 1 🚀`,
+      hint: volume >= AMMO_VOLUME_MAX
+        ? `Đã đạt tối đa ${AMMO_VOLUME_MAX} 🚀 🎉`
+        : `Còn ${toNextCorrect} câu nữa là được thêm 1 🚀`,
+      shots: volume, max: AMMO_VOLUME_MAX,
+    },
+    {
+      key: 'perfect',
+      label: `Bài 10/10: ${Math.min(perfects, AMMO_PERFECT_MAX)}/${AMMO_PERFECT_MAX}`,
+      rule: 'Mỗi bài đúng 10/10 = 1 🚀',
+      hint: quality >= AMMO_PERFECT_MAX
+        ? `Đã đạt tối đa ${AMMO_PERFECT_MAX} 🚀 🎉`
+        : `Thêm 1 bài 10/10 là được thêm 1 🚀`,
+      shots: quality, max: AMMO_PERFECT_MAX,
+    },
+    {
+      key: 'streak',
+      label: `Ngày học: ${Math.min(days, 3)}/3`,
+      rule: `Học đủ 3 ngày = +${AMMO_STREAK_BONUS} 🚀`,
+      hint: consistency
+        ? `Đã đủ 3 ngày 🎉`
+        : `Còn ${3 - Math.min(days, 3)} ngày nữa là được +${AMMO_STREAK_BONUS} 🚀`,
+      shots: consistency, max: AMMO_STREAK_BONUS,
+    },
   ];
 }
 
