@@ -12,6 +12,7 @@ let _pbPoll = null;
 let _pbGame = null;
 let _pbMsg = '';
 let _pbLastTurn = 0;
+let _pbLink = null;        // realtime transport for the running battle
 let _pbShowingResult = false;   // keep the result card up until the child taps Xong
 
 const PB_POLL_IDLE_MS = 5000;
@@ -50,6 +51,7 @@ function openPetBattle() {
 function closePetBattle() {
   _pbShowingResult = false;
   _pbStopPolling();
+  _pbCloseLink();
   if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
   _pbGame = null;
   if (typeof switchScreen === 'function') switchScreen('homeScreen');
@@ -179,26 +181,50 @@ async function declinePetBattle(battleId) {
   await refreshPetBattle();
 }
 
-// ---- transport: adaptive polling ----
+// ---- lobby polling (only while NOT in a battle; the battle uses BattleLink) ----
 function _pbStartPolling() {
   _pbStopPolling();
   const tick = async () => {
-    try {
-      const b = _pbState && _pbState.battle;
-      if (_pbGame && b) {
-        const r = await _pbApi(`battle/state?battleId=${b.id}&since=${_pbLastTurn}`);
-        if (r.ok && r.data && _pbGame.onServerState) _pbGame.onServerState(r.data);
-      } else {
-        await refreshPetBattle();
-      }
-    } catch (e) {}
-    const live = _pbGame && _pbGame.waitingForOpponent && _pbGame.waitingForOpponent();
-    _pbPoll = setTimeout(tick, live ? PB_POLL_LIVE_MS : PB_POLL_IDLE_MS);
+    try { if (!_pbGame) await refreshPetBattle(); } catch (e) {}
+    _pbPoll = setTimeout(tick, _pbGame ? PB_POLL_IDLE_MS : PB_POLL_LIVE_MS);
   };
   _pbPoll = setTimeout(tick, PB_POLL_LIVE_MS);
 }
 function _pbStopPolling() {
   if (_pbPoll) { clearTimeout(_pbPoll); _pbPoll = null; }
+}
+
+// The realtime link for the running battle (WebSocket, polling fallback).
+function _pbOpenLink(battleId) {
+  _pbCloseLink();
+  if (typeof BattleLink !== 'function') return null;
+  _pbLink = new BattleLink({
+    battleId,
+    token: _pbToken(),
+    // A turn relayed by the room: replay it the moment it is fired.
+    onRemoteTurn: (m) => {
+      if (!_pbGame) return;
+      _pbGame.onLiveTurn({
+        turn_no: m.turnNo, user_id: m.from,
+        angle: m.angle, power: m.power, shots: m.shots, damage: m.damage,
+      });
+    },
+    onAim: (m) => { if (_pbGame) _pbGame.onOpponentAim(m); },
+    onEmote: (m) => { if (_pbGame) _pbGame.onEmote(m.e); },
+    onPresence: (m) => { if (_pbGame) _pbGame.onPresence(m); },
+    onModeChange: (mode) => { if (_pbGame) _pbGame.onLinkMode(mode); },
+    // Safety net: reconcile with the authoritative state.
+    pollFn: async () => {
+      if (!_pbGame) return;
+      const r = await _pbApi(`battle/state?battleId=${battleId}&since=${_pbLastTurn}`);
+      if (r.ok && r.data && _pbGame.onServerState) _pbGame.onServerState(r.data);
+    },
+  });
+  _pbLink.start();
+  return _pbLink;
+}
+function _pbCloseLink() {
+  if (_pbLink) { try { _pbLink.close(); } catch (e) {} _pbLink = null; }
 }
 
 async function _pbSendTurn(battleId, turn) {
@@ -216,10 +242,16 @@ function startPetBattleGame(view) {
   const screen = document.getElementById('petBattleScreen');
   if (!screen || typeof PetBattleGame !== 'function') return;
   _pbLastTurn = 0;
+  const link = _pbOpenLink(view.id);
   _pbGame = new PetBattleGame({
     view,
     mount: screen,
-    sendTurn: (turn) => _pbSendTurn(view.id, turn),
+    link,
+    // Relay first (instant for the opponent), then persist to D1.
+    sendTurn: (turn) => {
+      if (link) link.sendTurn(turn);
+      return _pbSendTurn(view.id, turn);
+    },
     onSeenTurn: (n) => { _pbLastTurn = Math.max(_pbLastTurn, n); },
     onFinish: (result) => finishPetBattle(result),
   });
@@ -246,6 +278,7 @@ function finishPetBattle(result) {
   if (won && typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
   if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }  // stop the RAF loop
   _pbGame = null;
+  _pbCloseLink();
   _pbState = null;
   _pbShowingResult = true;
   const screen = document.getElementById('petBattleScreen');

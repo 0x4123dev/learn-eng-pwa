@@ -47,7 +47,7 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
     test('ASSETS array literal parses with exactly 48 entries', () => {
-        assert.equal(ASSETS.length, 58,
+        assert.equal(ASSETS.length, 59,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -92,7 +92,7 @@ suite('gen: sw.js cache manifest', () => {
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
     test('ASSETS contains 31 /js/*.js, 1 /css/*.css, 13 /img/* entries', () => {
-        assert.equal(JS_ASSETS.length, 41, 'js asset count changed');
+        assert.equal(JS_ASSETS.length, 42, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
         assert.equal(IMG_ASSETS.length, 13, 'img asset count changed');
     });
@@ -129,7 +129,7 @@ suite('gen: sw.js img assets exist on disk', () => {
 // ============================================================================
 suite('gen: index.html script tags', () => {
     test('index.html has exactly 30 <script src> tags, all under js/', () => {
-        assert.equal(SCRIPT_SRCS.length, 40,
+        assert.equal(SCRIPT_SRCS.length, 41,
             'script tag count changed — update this characterization');
         const nonJs = SCRIPT_SRCS.filter(s => !/^js\/.+\.js$/.test(s));
         assert.deepEqual(nonJs, [], `unexpected non-js/ script srcs: ${nonJs.join(', ')}`);

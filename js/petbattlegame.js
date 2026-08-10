@@ -9,6 +9,7 @@ function PetBattleGame(opts) {
   this.sendTurn = opts.sendTurn || (() => Promise.resolve(null));
   this.onSeenTurn = opts.onSeenTurn || (() => {});
   this.onFinish = opts.onFinish || (() => {});
+  this.link = opts.link || null;          // realtime relay (may be null)
 
   // In Node the rules come from the module; in the browser from the
   // BattleCalc namespace (top-level const is not on window).
@@ -39,9 +40,52 @@ function PetBattleGame(opts) {
   this.craters = [];
   this.flying = [];                      // shells being animated
   this.banner = '';
+  this.linkMode = this.link ? this.link.mode : 'polling';
+  this.foeAiming = null;                  // live "đang ngắm…" from the opponent
+  this.emotes = [];                       // floating emoji reactions
+  this.foeHere = false;
   this._raf = null;
   this._destroyed = false;
 }
+
+// ---- realtime events (all no-ops when the link is unavailable) ----
+// A turn relayed by the room — replay it now instead of waiting for a poll.
+PetBattleGame.prototype.onLiveTurn = function (turn) {
+  if (this.finished || !turn) return;
+  if (turn.turn_no <= (this._seenTurn || 0)) return;      // already played
+  this._seenTurn = turn.turn_no;
+  this.onSeenTurn(turn.turn_no);
+  if (turn.user_id !== this.view.me.id && !this.busy) {
+    this.foeAiming = null;
+    this._replay(turn);
+  }
+};
+PetBattleGame.prototype.onOpponentAim = function (m) {
+  if (this.finished || this.myTurn) return;
+  this.foeAiming = { angle: +m.angle || 0, power: +m.power || 0, shots: m.shots || 1, at: Date.now() };
+};
+PetBattleGame.prototype.onEmote = function (e) {
+  this.emotes.push({ e, t: 0, life: 90, x: this.foePos.x, y: this.foePos.y - 90 });
+};
+PetBattleGame.prototype.onPresence = function (m) {
+  this.foeHere = (m.peers || 0) > 1;
+  this._updateLinkPill();
+};
+PetBattleGame.prototype.onLinkMode = function (mode) {
+  this.linkMode = mode;
+  this._updateLinkPill();
+};
+PetBattleGame.prototype._updateLinkPill = function () {
+  const el = document.getElementById('pbLink');
+  if (!el) return;
+  const live = this.linkMode === 'live';
+  el.className = 'pb-link ' + (live ? 'live' : 'slow');
+  el.textContent = live ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Đang chờ bạn…') : '🐢 Chậm';
+};
+PetBattleGame.prototype.sendEmote = function (e) {
+  if (this.link) this.link.sendEmote(e);
+  this.emotes.push({ e, t: 0, life: 90, x: this.mePos.x, y: this.mePos.y - 90 });
+};
 
 PetBattleGame.prototype.roundNo = function () {
   return Math.min(this.calc.BATTLE_ROUNDS, Math.ceil(this.turnNo / 2));
@@ -86,6 +130,8 @@ PetBattleGame.prototype.render = function () {
         <div class="pb-hud-mid">
           <div class="pb-round">Vòng ${this.roundNo()}/${C.BATTLE_ROUNDS}</div>
           <div class="pb-wind">💨 ${this.wind() > 0 ? '→' : this.wind() < 0 ? '←' : '·'} ${Math.abs(this.wind())}</div>
+          <div class="pb-link ${this.linkMode === 'live' ? 'live' : 'slow'}" id="pbLink">${
+            this.linkMode === 'live' ? (this.foeHere ? '⚡ Trực tiếp' : '⚡ Đang chờ bạn…') : '🐢 Chậm'}</div>
         </div>
         <div class="pb-hud-side right">
           <div class="pb-hud-name">${esc(v.foe.name || 'Bạn')}</div>
@@ -110,6 +156,10 @@ PetBattleGame.prototype.render = function () {
         <button class="pb-fire" id="pbFire" onclick="_pbGameFire()" ${this.myTurn && !this.busy ? '' : 'disabled'}>
           ${this.myTurn ? '🔥 BẮN!' : '⏳ Chờ bạn ấy…'}
         </button>
+        <div class="pb-emotes">
+          ${['👍', '😮', '🎉', '😅', '🔥'].map(e =>
+            `<button class="pb-emote" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
+        </div>
       </div>
     </div>`;
   this.canvas = document.getElementById('pbCanvas');
@@ -185,6 +235,31 @@ PetBattleGame.prototype.draw = function () {
     }
   }
 
+  // the opponent's live aim — a faint ghost arc while they line up a shot
+  if (this.foeAiming && !this.myTurn && !this.flying.length) {
+    const ghost = C.simulateShot({
+      terrain: this.terrain, from: this.foePos, facing: -this.meFacing,
+      angle: this.foeAiming.angle, power: this.foeAiming.power, wind: this.wind(),
+    });
+    ctx.setLineDash([5, 7]);
+    ctx.strokeStyle = 'rgba(220,60,60,0.45)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ghost.points.forEach((p, i) => { if (i % 3 === 0) ctx.lineTo(p.x, p.y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // floating emoji reactions
+  for (const em of this.emotes) {
+    const k = em.t / em.life;
+    ctx.globalAlpha = Math.max(0, 1 - k);
+    ctx.font = `${28 + k * 10}px serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(em.e, em.x, em.y - k * 40);
+    ctx.globalAlpha = 1;
+  }
+
   // explosions
   for (const e of (this.blasts || [])) {
     ctx.beginPath();
@@ -230,6 +305,8 @@ PetBattleGame.prototype.loop = function () {
 PetBattleGame.prototype.step = function () {
   const C = this.calc;
   this.blasts = (this.blasts || []).filter(b => (b.t += 1) < b.life);
+  this.emotes = this.emotes.filter(e => (e.t += 1) < e.life);
+  if (this.foeAiming && Date.now() - this.foeAiming.at > 4000) this.foeAiming = null;
   if (!this.flying.length) return;
   let allDone = true;
   for (const f of this.flying) {
@@ -280,7 +357,7 @@ PetBattleGame.prototype.fire = function () {
     this.banner = damage > 0 ? `💥 Trúng! -${damage} HP` : '💨 Trượt rồi!';
     this.myTurn = false;
     this.busy = false;
-    this.sendTurn({ angle: this.angle, power: this.power, shots, damage })
+    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
     this.render();
@@ -343,10 +420,27 @@ PetBattleGame.prototype._applyServer = function (b) {
 };
 
 // ---- control hooks (inline onclick handlers talk to the live game) ----
-function _pbGameSetAngle(v) { const g = _pbCurrentGame(); if (g) { g.angle = +v; const el = document.getElementById('pbAngleVal'); if (el) el.textContent = Math.round(g.angle) + '°'; } }
-function _pbGameSetPower(v) { const g = _pbCurrentGame(); if (g) { g.power = +v; const el = document.getElementById('pbPowerVal'); if (el) el.textContent = Math.round(g.power); } }
-function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); } }
+function _pbBroadcastAim(g) {
+  // Let the opponent watch us line up the shot (throttled inside BattleLink).
+  if (g && g.link && g.myTurn) g.link.sendAim(g.angle, g.power, g.shots);
+}
+function _pbGameSetAngle(v) {
+  const g = _pbCurrentGame();
+  if (!g) return;
+  g.angle = +v;
+  const el = document.getElementById('pbAngleVal'); if (el) el.textContent = Math.round(g.angle) + '°';
+  _pbBroadcastAim(g);
+}
+function _pbGameSetPower(v) {
+  const g = _pbCurrentGame();
+  if (!g) return;
+  g.power = +v;
+  const el = document.getElementById('pbPowerVal'); if (el) el.textContent = Math.round(g.power);
+  _pbBroadcastAim(g);
+}
+function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
+function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
 
 if (typeof module !== 'undefined' && module.exports) {

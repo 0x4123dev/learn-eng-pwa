@@ -1,0 +1,25 @@
+# eng-pwa-battle — the realtime half of the pet battle.
+#
+# Pages Functions can BIND to a Durable Object but cannot define one, so the
+# BattleRoom class lives in this small companion Worker. Same Cloudflare
+# account, same D1 database, no servers.
+#
+# Deploy:  cd battle-worker && npx wrangler@3 deploy
+name = "eng-pwa-battle"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+[[durable_objects.bindings]]
+name = "BATTLE_ROOM"
+class_name = "BattleRoom"
+
+# SQLite-backed Durable Objects (available on the free plan).
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BattleRoom"]
+
+# Same database as the Pages app: the room verifies tokens and participants.
+[[d1_databases]]
+binding = "DB"
+database_name = "eng_pwa_db"
+database_id = "58c86de1-6992-4bb5-9978-1df06a3036ce"
