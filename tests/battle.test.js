@@ -58,38 +58,49 @@ suite('battle: ammo is earned only by learning', () => {
         assert.equal(rows.length, 3);
     });
 
-    // "8 câu đúng → +0/8 🚀" showed two unrelated 8s and never said that 20
-    // correct answers make one shot, so there was no way to know what to do.
-    test('every row states its rule and the next step', () => {
+    // The breakdown carries NUMBERS ONLY — the arena is bilingual, so the
+    // wording lives in PB_STR (see tests/battle-i18n.test.js).
+    test('every row carries the numbers a sentence would need', () => {
         for (const stats of [{ correct: 8 }, { correct: 0 }, { correct: 999, perfects: 99, days: 9 }]) {
             for (const r of C.ammoBreakdown(stats)) {
-                assert.truthy(r.rule && r.rule.length > 3, `${r.key} must state its rule`);
-                assert.truthy(r.hint && r.hint.length > 3, `${r.key} must state the next step`);
+                for (const k of ['have', 'goal', 'toNext', 'per', 'shots', 'max']) {
+                    assert.truthy(Number.isFinite(r[k]), `${r.key}.${k} must be a number, got ${r[k]}`);
+                }
+                assert.truthy(typeof r.maxed === 'boolean', `${r.key}.maxed must be a flag`);
             }
         }
     });
 
-    test('the volume row shows progress toward all 8 shots, not a bare count', () => {
+    test('no language leaks into the rules layer', () => {
+        for (const r of C.ammoBreakdown({ correct: 8, perfects: 1, days: 1 })) {
+            for (const [k, v] of Object.entries(r)) {
+                assert.falsy(typeof v === 'string' && /[À-ỹ]|câu|cấp/.test(v),
+                    `${r.key}.${k} contains display text: ${v}`);
+            }
+        }
+    });
+
+    test('the volume row counts toward all 8 shots, not a bare tally', () => {
         const goal = C.AMMO_VOLUME_MAX * C.AMMO_PER_CORRECT;   // 160
         assert.equal(goal, 160);
         const row = C.ammoBreakdown({ correct: 8 }).find(r => r.key === 'volume');
         assert.equal(row.shots, 0, '8 correct answers is not yet one shot');
-        assert.truthy(row.label.includes('8/160'), `label should read 8/160, got "${row.label}"`);
-        assert.truthy(row.rule.includes(String(C.AMMO_PER_CORRECT)), 'the rule must name the 20');
-        assert.truthy(row.hint.includes('12'), `12 more answers to the next shot, got "${row.hint}"`);
+        assert.equal(row.have, 8);
+        assert.equal(row.goal, 160);
+        assert.equal(row.toNext, 12, '12 more answers to the next shot');
+        assert.equal(row.per, C.AMMO_PER_CORRECT);
     });
 
-    test('a maxed row says so instead of asking for more', () => {
-        const rows = C.ammoBreakdown({ correct: 500, perfects: 50, days: 3 });
-        for (const r of rows) {
+    test('a maxed row is flagged so the UI can celebrate instead of nagging', () => {
+        for (const r of C.ammoBreakdown({ correct: 500, perfects: 50, days: 3 })) {
             assert.equal(r.shots, r.max, `${r.key} should be maxed`);
-            assert.truthy(/tối đa|đủ/.test(r.hint), `${r.key} hint should celebrate, got "${r.hint}"`);
+            assert.truthy(r.maxed, `${r.key}.maxed should be true`);
         }
     });
 
-    test('the label never overstates progress past the goal', () => {
+    test('progress never overstates past the goal', () => {
         const row = C.ammoBreakdown({ correct: 5000 }).find(r => r.key === 'volume');
-        assert.truthy(row.label.includes('160/160'), `got "${row.label}"`);
+        assert.equal(row.have, 160, 'have must cap at the goal');
     });
 
     // The arena showed ammo only, so a child could not tell that their pet's
@@ -99,7 +110,8 @@ suite('battle: ammo is earned only by learning', () => {
         assert.equal(p.level, 42);
         assert.equal(p.stats.length, 3);
         for (const s of p.stats) {
-            assert.truthy(s.icon && s.label, `${s.key} needs an icon and a label`);
+            assert.truthy(s.icon, `${s.key} needs an icon`);
+            assert.falsy(s.label, `${s.key} must not carry display text — the arena is bilingual`);
             assert.truthy(s.value > 0 && s.max > 0, `${s.key} needs real numbers`);
         }
     });

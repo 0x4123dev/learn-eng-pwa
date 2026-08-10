@@ -890,6 +890,20 @@
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .pb-title { font-size: 20px; font-weight: 900; color: var(--text-primary); }
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
+        /* EN/VI flags — English is the default on every visit */
+        .pb-lang { display: flex; gap: 5px; margin-left: auto; }
+        .pb-flag {
+            display: flex; align-items: center; gap: 3px;
+            padding: 5px 8px; border-radius: 999px; cursor: pointer;
+            border: 1.5px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.03);
+            font-family: inherit; font-size: 13px; line-height: 1;
+            opacity: 0.5; transition: opacity 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .pb-flag span { font-size: 9.5px; font-weight: 800; color: var(--text-secondary); }
+        .pb-flag.on { opacity: 1; border-color: #ea580c; background: rgba(234, 88, 12, 0.1); }
+        .pb-flag.on span { color: #ea580c; }
+        .pb-flag:active { transform: scale(0.94); }
+
         /* Battle history — summary + expandable per-battle detail */
         .pb-hist-card {
             background: var(--card-bg, #fff); border-radius: 18px; padding: 14px;

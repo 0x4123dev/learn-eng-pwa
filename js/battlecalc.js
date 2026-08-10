@@ -40,35 +40,29 @@ function ammoBreakdown(stats) {
   const consistency = days >= 3 ? AMMO_STREAK_BONUS : 0;
 
   const correctGoal = AMMO_VOLUME_MAX * AMMO_PER_CORRECT;   // 160 for all 8
-  const toNextCorrect = AMMO_PER_CORRECT - (correct % AMMO_PER_CORRECT);
 
+  // Numbers only — no words. The arena speaks two languages, so the wording
+  // lives in the UI layer (PB_STR in js/petbattle.js) and this stays the one
+  // place the RULES are defined.
   return [
     {
       key: 'volume',
-      label: `Câu đúng: ${Math.min(correct, correctGoal)}/${correctGoal}`,
-      rule: `${AMMO_PER_CORRECT} câu đúng = 1 🚀`,
-      hint: volume >= AMMO_VOLUME_MAX
-        ? `Đã đạt tối đa ${AMMO_VOLUME_MAX} 🚀 🎉`
-        : `Còn ${toNextCorrect} câu nữa là được thêm 1 🚀`,
-      shots: volume, max: AMMO_VOLUME_MAX,
+      have: Math.min(correct, correctGoal), goal: correctGoal,
+      toNext: AMMO_PER_CORRECT - (correct % AMMO_PER_CORRECT),
+      per: AMMO_PER_CORRECT,
+      shots: volume, max: AMMO_VOLUME_MAX, maxed: volume >= AMMO_VOLUME_MAX,
     },
     {
       key: 'perfect',
-      label: `Bài 10/10: ${Math.min(perfects, AMMO_PERFECT_MAX)}/${AMMO_PERFECT_MAX}`,
-      rule: 'Mỗi bài đúng 10/10 = 1 🚀',
-      hint: quality >= AMMO_PERFECT_MAX
-        ? `Đã đạt tối đa ${AMMO_PERFECT_MAX} 🚀 🎉`
-        : `Thêm 1 bài 10/10 là được thêm 1 🚀`,
-      shots: quality, max: AMMO_PERFECT_MAX,
+      have: Math.min(perfects, AMMO_PERFECT_MAX), goal: AMMO_PERFECT_MAX,
+      toNext: 1, per: 1,
+      shots: quality, max: AMMO_PERFECT_MAX, maxed: quality >= AMMO_PERFECT_MAX,
     },
     {
       key: 'streak',
-      label: `Ngày học: ${Math.min(days, 3)}/3`,
-      rule: `Học đủ 3 ngày = +${AMMO_STREAK_BONUS} 🚀`,
-      hint: consistency
-        ? `Đã đủ 3 ngày 🎉`
-        : `Còn ${3 - Math.min(days, 3)} ngày nữa là được +${AMMO_STREAK_BONUS} 🚀`,
-      shots: consistency, max: AMMO_STREAK_BONUS,
+      have: Math.min(days, 3), goal: 3,
+      toNext: 3 - Math.min(days, 3), per: AMMO_STREAK_BONUS,
+      shots: consistency, max: AMMO_STREAK_BONUS, maxed: !!consistency,
     },
   ];
 }
@@ -244,11 +238,11 @@ function powerProfile(level) {
   // forever — so past 200 a raw "value/max" reads 60.0/36.0 and the bar runs
   // off its track. `ratio` is what the bar uses; `beyond` says to drop the
   // "/max" and celebrate instead of showing a nonsense fraction.
-  const stat = (key, icon, label, fn) => {
+  const stat = (key, icon, fn) => {
     const value = fn(lv);
     const max = fn(POWER_REF_LEVEL);
     return {
-      key, icon, label, value, max,
+      key, icon, value, max,
       per10: per10(fn),
       ratio: max > 0 ? Math.min(1, value / max) : 0,
       beyond: value > max,
@@ -258,9 +252,9 @@ function powerProfile(level) {
     level: lv,
     refLevel: POWER_REF_LEVEL,
     stats: [
-      stat('blast', '💥', 'Bán kính nổ', blastRadius),
-      stat('damage', '🎯', 'Sát thương mỗi phát', shotDamage),
-      stat('shell', '⚫', 'Cỡ đạn', shellSize),
+      stat('blast', '💥', blastRadius),
+      stat('damage', '🎯', shotDamage),
+      stat('shell', '⚫', shellSize),
     ],
   };
 }

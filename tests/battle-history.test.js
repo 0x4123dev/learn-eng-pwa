@@ -110,7 +110,12 @@ suite('battle history: the panel', () => {
 
     test('a battle with no round log says so instead of showing an empty box', () => {
         const detail = pbSrc.slice(pbSrc.indexOf('function _pbHistoryDetail'), pbSrc.indexOf('function _pbHistoryPanel'));
-        assert.truthy(detail.includes('chưa lưu chi tiết'), 'legacy battles need an explanation');
+        assert.truthy(detail.includes("pbT('histNoDetail')"), 'legacy battles need an explanation');
+        // …and it must exist in both languages (parity itself is pinned in
+        // tests/battle-i18n.test.js; this keeps the check next to its use).
+        for (const lang of ['en', 'vi']) {
+            assert.truthy(new RegExp(`histNoDetail: '[^']+'`).test(pbSrc), `${lang} needs the string`);
+        }
     });
 
     test('opponent names are escaped wherever they are shown', () => {
