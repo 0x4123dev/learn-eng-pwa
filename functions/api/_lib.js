@@ -93,10 +93,25 @@ export function bearer(request) {
   const url = new URL(request.url);
   return url.searchParams.get('token');
 }
+// A valid signature is not enough: the account behind it must still exist and
+// still be enabled.
+//
+// This costs one indexed primary-key lookup per authenticated request, and it
+// is worth it. Tokens live 90 days, so checking only at login would mean an
+// account disabled today keeps full access for up to three months — the switch
+// would appear to work and do nothing. The same lookup also closes a quieter
+// hole: a token for a DELETED user used to keep working until it expired.
 export async function requireAuth(request, env) {
   const secret = await getAuthSecret(env);
   if (!secret) return null;
-  return verifyToken(bearer(request), secret);
+  const payload = await verifyToken(bearer(request), secret);
+  if (!payload || !payload.uid) return null;
+  const row = await env.DB.prepare('SELECT id, role, disabled FROM users WHERE id = ?')
+    .bind(payload.uid).first();
+  if (!row || row.disabled) return null;
+  // The ROLE comes from the row, never from the token. Otherwise an admin
+  // demoted to 'user' would keep admin powers for the life of their token.
+  return Object.assign({}, payload, { role: row.role });
 }
 
 // ---- device identity ----

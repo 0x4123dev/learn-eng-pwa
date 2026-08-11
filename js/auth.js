@@ -36,6 +36,14 @@ const EngAuth = (function () {
   // belongs in a children's app, and an IP cap would lock out siblings and
   // classmates on one home or school network. Clearing site data resets it —
   // a known limit, covered by the 3-day wait before a new friend can battle.
+  // How many profiles this device may hold. MUST equal
+  // MAX_ACCOUNTS_PER_DEVICE in functions/api/_lib.js — the server is the
+  // enforcement, this only stops the app from offering a form that would be
+  // refused. The two live in different runtimes and cannot share a module, so
+  // tests/device-account-limit.test.js reads both files and fails if they
+  // ever disagree.
+  const MAX_DEVICE_PROFILES = 2;
+
   const DEVICE_KEY = 'flashlingo_device_id';
   function deviceId() {
     try {
@@ -237,7 +245,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, relinkAccount, linkStatus, validUsername, deviceId, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.

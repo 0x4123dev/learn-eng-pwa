@@ -8,7 +8,8 @@ export async function onRequestGet({ request, env }) {
   if (auth.role !== 'admin') return err('Forbidden', 403);
 
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot,
+    `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot, u.disabled,
+            (u.device_id IS NOT NULL) AS has_device,
             (SELECT COUNT(*) FROM exam_attempts e WHERE e.user_id = u.id) AS exam_count,
             (SELECT COUNT(*) FROM activities  c WHERE c.user_id = u.id) AS activity_count,
             MAX(
@@ -22,6 +23,10 @@ export async function onRequestGet({ request, env }) {
   const users = (results || []).map(u => ({
     id: u.id, username: u.username, role: u.role, created_at: u.created_at,
     allow_bot: !!u.allow_bot,
+    disabled: !!u.disabled,
+    // Whether this account is holding a slot on some device's 2-account quota
+    // — the admin needs to see that before deciding whether clearing helps.
+    has_device: !!u.has_device,
     exam_count: u.exam_count || 0,
     activity_count: u.activity_count || 0,
     total_count: (u.exam_count || 0) + (u.activity_count || 0),

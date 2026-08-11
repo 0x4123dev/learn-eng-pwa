@@ -60,6 +60,57 @@
   .empty { padding:26px 14px; text-align:center; color:var(--muted); }
   .toolbar { display:flex; align-items:center; gap:8px; margin:8px 14px; flex-wrap:wrap; }
   .toolbar .who { font-weight:700; }
+  .keep { display:flex; align-items:center; gap:8px; margin-top:16px; font-size:13px; color:var(--ink); cursor:pointer; }
+  .keep input { width:16px; height:16px; accent-color:var(--brand); cursor:pointer; }
+
+  /* ---- users table ---- */
+  .tools { display:flex; align-items:center; gap:10px; margin:10px 14px 4px; flex-wrap:wrap; }
+  .search { flex:1; min-width:180px; position:relative; }
+  .search input { width:100%; padding:9px 12px 9px 32px; border:1px solid var(--line); border-radius:10px; font-size:13.5px; font-family:inherit; }
+  .search input:focus { outline:none; border-color:var(--brand); }
+  .search::before { content:"🔎"; position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:12px; opacity:.6; }
+  .count { color:var(--muted); font-size:12px; }
+
+  #usersTable th.sortable { cursor:pointer; user-select:none; }
+  #usersTable th.sortable:hover { color:var(--ink); }
+  #usersTable th .arrow { opacity:.35; font-size:9px; }
+  #usersTable th.sorted .arrow { opacity:1; color:var(--brand); }
+  #usersTable td { vertical-align:middle; }
+
+  .who-cell { display:flex; align-items:center; gap:10px; }
+  .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+            font-weight:800; font-size:13px; color:#fff; background:var(--brand); flex:none; }
+  .avatar.admin { background:#7c3aed; }
+  .who-name { font-weight:700; }
+  .who-sub { font-size:11px; color:var(--muted); }
+
+  /* Numbers read as a column of digits, not prose. */
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  /* The bar sits under a right-aligned number, so it must grow leftwards
+     from the same edge — anchored left it read as a broken cell. */
+  .bar { height:4px; border-radius:2px; background:var(--brand); opacity:.55; margin:3px 0 0 auto; }
+
+  .pill.on   { background:#e7f7ec; color:#1f7a3f; }
+  .pill.off  { background:#eef2f7; color:#68748c; }
+  .pill.dead { background:#fdecec; color:#b42318; }
+
+  tr.disabled td { opacity:.55; }
+  tr.disabled .who-name { text-decoration:line-through; }
+
+  .row-actions { display:flex; gap:6px; justify-content:flex-end; }
+  .mini { border:1px solid var(--line); background:#fff; border-radius:8px; padding:5px 9px;
+          font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; color:var(--ink); white-space:nowrap; }
+  .mini:hover { background:#f7f9fd; }
+  .mini:disabled { opacity:.5; cursor:default; }
+  .mini.on { background:#e7f7ec; border-color:#bfe6cc; color:#1f7a3f; }
+  .mini.danger { color:#b42318; border-color:#f3c6c2; }
+  .mini.danger:hover { background:#fdecec; }
+  .mini.revive { color:#1f7a3f; border-color:#bfe6cc; }
+
+  @media (max-width: 720px) {
+    th.hide-sm, td.hide-sm { display:none; }
+    .row-actions { flex-wrap:wrap; }
+  }
   #dash { display:none; }
 </style>
 </head>
@@ -73,6 +124,7 @@
     <input id="u" autocomplete="username" autocapitalize="off" spellcheck="false">
     <label>Password</label>
     <input id="p" type="password" autocomplete="current-password">
+    <label class="keep"><input type="checkbox" id="keepMe" checked> Keep me signed in on this computer</label>
     <button class="btn btn-primary" id="loginBtn">Sign in</button>
     <div class="err" id="loginErr"></div>
   </div>
@@ -80,7 +132,7 @@
   <!-- Dashboard -->
   <div id="dash">
     <header class="bar">
-      <h1>🎯 Exam Activity</h1>
+      <h1>🎯 FlashLingo Admin</h1>
       <div>
         <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
@@ -90,8 +142,20 @@
 
     <div class="card">
       <h2>Users</h2>
+      <div class="tools">
+        <div class="search"><input id="userSearch" placeholder="Search by name…" autocomplete="off" spellcheck="false"></div>
+        <span class="count" id="userCount"></span>
+      </div>
       <div class="scroll"><table id="usersTable">
-        <thead><tr><th>User</th><th>Role</th><th>Activity</th><th>Exams</th><th>Bot practice</th><th>Last activity</th><th>Joined</th></tr></thead>
+        <thead><tr>
+          <th class="sortable" data-sort="username">User <span class="arrow">▼</span></th>
+          <th class="sortable" data-sort="total_count">Activity <span class="arrow">▼</span></th>
+          <th class="sortable hide-sm" data-sort="exam_count">Exams <span class="arrow">▼</span></th>
+          <th class="sortable" data-sort="last_activity">Last seen <span class="arrow">▼</span></th>
+          <th class="sortable hide-sm" data-sort="created_at">Joined <span class="arrow">▼</span></th>
+          <th>Status</th>
+          <th style="text-align:right">Actions</th>
+        </tr></thead>
         <tbody id="usersBody"></tbody>
       </table></div>
     </div>
@@ -112,7 +176,25 @@
 
 <script>
 const TOKEN_KEY = 'eng_admin_token';
-let token = sessionStorage.getItem(TOKEN_KEY) || null;
+
+// "Keep me signed in" decides WHERE the token lives, not whether it is stored:
+//   localStorage   → survives closing the browser (the default)
+//   sessionStorage → gone when the tab closes, for a shared computer
+// Read both on load, because the choice may have been different last time.
+function readToken() {
+  try { return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null; }
+  catch (e) { return null; }
+}
+function writeToken(t, keep) {
+  try {
+    // Always clear the other one, or logging out of a "keep me" session would
+    // leave a token behind in the store nobody thought to clear.
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+    if (t) (keep ? localStorage : sessionStorage).setItem(TOKEN_KEY, t);
+  } catch (e) {}
+}
+let token = readToken();
 
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function pctClass(p){ return p>=75?'pct-good':p>=50?'pct-mid':'pct-low'; }
@@ -144,58 +226,157 @@ async function doLogin(){
     const data = await res.json();
     if (!res.ok){ errEl.textContent = data.error || 'Login failed'; return; }
     if (data.user.role !== 'admin'){ errEl.textContent = 'This account is not an admin.'; return; }
-    token = data.token; sessionStorage.setItem(TOKEN_KEY, token);
+    token = data.token;
+    writeToken(token, document.getElementById('keepMe').checked);
     showDash();
   } catch(e){ errEl.textContent = 'Network error'; }
 }
 
-function logout(){ token=null; sessionStorage.removeItem(TOKEN_KEY); document.getElementById('dash').style.display='none'; document.getElementById('login').style.display='block'; }
+function logout(){
+  token = null;
+  writeToken(null, false);
+  document.getElementById('dash').style.display='none';
+  document.getElementById('login').style.display='block';
+}
 
 let _selectedUser = null;
 
 const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', battle:'⚔️ Battle' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
+// ---- users table ----------------------------------------------------------
+let _users = [];
+let _sort = { key: 'last_activity', dir: -1 };   // most recently seen first
+let _filter = '';
+
+// "3 hours ago" answers the question an admin actually has; the exact stamp
+// stays on hover for when it matters.
+function relTime(s){
+  if (!s) return '—';
+  const d = new Date(String(s).replace(' ','T')+'Z');
+  if (isNaN(d)) return s;
+  const secs = Math.round((Date.now() - d.getTime()) / 1000);
+  if (secs < 60) return 'just now';
+  const mins = Math.round(secs/60);   if (mins < 60) return mins + 'm ago';
+  const hrs  = Math.round(mins/60);   if (hrs  < 24) return hrs  + 'h ago';
+  const days = Math.round(hrs/24);    if (days < 30) return days + 'd ago';
+  const mos  = Math.round(days/30);   if (mos  < 12) return mos  + 'mo ago';
+  return Math.round(mos/12) + 'y ago';
+}
+// Vietnamese names are full of diacritics, so a literal match makes the box
+// useless: typing "bo" would never find "Bố ck", and "vk" never "Vk shidou".
+// Fold accents on both sides and compare the bare letters. đ/Đ decompose to
+// nothing under NFD, so they are mapped by hand.
+function fold(s){
+  return String(s == null ? '' : s)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+    .toLowerCase();
+}
+
+function initials(name){
+  const parts = String(name||'?').trim().split(/\s+/);
+  const s = (parts[0]||'?')[0] + (parts.length > 1 ? parts[parts.length-1][0] : '');
+  return s.toUpperCase();
+}
+
 async function loadUsers(){
   const { users } = await api('admin/users');
-  const totalUsers = users.length;
-  const totalActs = users.reduce((s,u)=>s+(u.total_count||0),0);
-  const totalExams = users.reduce((s,u)=>s+(u.exam_count||0),0);
+  _users = users || [];
+  const totalActs = _users.reduce((s,u)=>s+(u.total_count||0),0);
+  const totalExams = _users.reduce((s,u)=>s+(u.exam_count||0),0);
+  const off = _users.filter(u=>u.disabled).length;
   document.getElementById('stats').innerHTML =
-    `<div class="stat"><b>${totalUsers}</b><span>Users</span></div>`+
+    `<div class="stat"><b>${_users.length}</b><span>Users${off?` · ${off} disabled`:''}</span></div>`+
     `<div class="stat"><b>${totalActs}</b><span>Activities (30d)</span></div>`+
     `<div class="stat"><b>${totalExams}</b><span>Exam attempts</span></div>`;
+  renderUsers();
+}
+
+function renderUsers(){
   const body = document.getElementById('usersBody');
-  if (!users.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No users yet.</td></tr>`; return; }
-  body.innerHTML = users.map(u=>{
-    return `<tr class="clickable" data-uid="${u.id}" data-name="${esc(u.username)}">
-      <td><b>${esc(u.username)}</b></td>
-      <td><span class="pill ${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
-      <td><b>${u.total_count||0}</b></td>
-      <td>${u.exam_count||0}</td>
-      <td><button class="btn btn-ghost bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
-                  title="Let this user practise against a bot (unlimited, 20 shots)">${u.allow_bot?'✅ On':'— Off'}</button></td>
-      <td class="muted">${fmtDate(u.last_activity)}</td>
-      <td class="muted">${fmtDate(u.created_at)}</td>
+  const q = fold(_filter.trim());
+  const rows = _users.filter(u => !q || fold(u.username).includes(q));
+
+  const { key, dir } = _sort;
+  rows.sort((a,b)=>{
+    let x = a[key], y = b[key];
+    if (key === 'username') return String(x).localeCompare(String(y), 'vi') * dir;
+    x = (x == null || x === '') ? (typeof y === 'number' ? -1 : '') : x;
+    y = (y == null || y === '') ? (typeof x === 'number' ? -1 : '') : y;
+    return (x < y ? -1 : x > y ? 1 : 0) * dir;
+  });
+
+  document.getElementById('userCount').textContent =
+    rows.length === _users.length ? `${_users.length} users` : `${rows.length} of ${_users.length}`;
+  document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
+    const on = th.getAttribute('data-sort') === key;
+    th.classList.toggle('sorted', on);
+    th.querySelector('.arrow').textContent = on ? (dir === 1 ? '▲' : '▼') : '▼';
+  });
+
+  if (!rows.length){
+    body.innerHTML = `<tr><td colspan="7" class="empty">${q ? 'No user matches “'+esc(q)+'”.' : 'No users yet.'}</td></tr>`;
+    return;
+  }
+  const busiest = Math.max(1, ...rows.map(u=>u.total_count||0));
+  body.innerHTML = rows.map(u=>{
+    const pct = Math.round((u.total_count||0) / busiest * 100);
+    return `<tr class="clickable ${u.disabled?'disabled':''}" data-uid="${u.id}" data-name="${esc(u.username)}">
+      <td>
+        <div class="who-cell">
+          <span class="avatar ${u.role==='admin'?'admin':''}">${esc(initials(u.username))}</span>
+          <span>
+            <span class="who-name">${esc(u.username)}</span>
+            <span class="who-sub">${u.role==='admin'?'admin · ':''}#${u.id}${u.has_device?' · 📱':''}</span>
+          </span>
+        </div>
+      </td>
+      <td class="num"><b>${u.total_count||0}</b><div class="bar" style="width:${pct}%"></div></td>
+      <td class="num hide-sm">${u.exam_count||0}</td>
+      <td class="muted" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
+      <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
+      <td>${u.disabled
+            ? '<span class="pill dead">Disabled</span>'
+            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}</td>
+      <td>
+        <div class="row-actions">
+          <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
+                  title="Practice against a bot: unlimited, 20 shots, no rewards">${u.allow_bot?'🤖 On':'🤖 Off'}</button>
+          ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
+                  title="Free this account's slot on its device (max 2 accounts per device)">📱 Free slot</button>` : ''}
+          ${u.role === 'admin' ? '' : (u.disabled
+            ? `<button class="mini revive act-enable" data-uid="${u.id}">↩︎ Enable</button>`
+            : `<button class="mini danger act-disable" data-uid="${u.id}" data-name="${esc(u.username)}"
+                  title="Sign this account out everywhere and block sign-in. Nothing is deleted.">🚫 Disable</button>`)}
+        </div>
+      </td>
     </tr>`;
   }).join('');
-  // The toggle lives inside a clickable row, so it must not also select it.
-  body.querySelectorAll('.bot-toggle').forEach(btn=>{
+
+  // Buttons live inside a clickable row, so each must stop the row selecting.
+  const act = (sel, run) => body.querySelectorAll(sel).forEach(btn=>{
     btn.onclick = async (e)=>{
       e.stopPropagation();
-      const uid = btn.getAttribute('data-uid');
-      const turningOn = !btn.classList.contains('on');
       btn.disabled = true;
-      try {
-        await api('admin/user-flags', { method:'POST', body:{ userId: Number(uid), allowBot: turningOn } });
-        btn.classList.toggle('on', turningOn);
-        btn.textContent = turningOn ? '✅ On' : '— Off';
-      } catch (err) {
-        alert('Could not change that: ' + (err && err.message ? err.message : err));
-      }
-      btn.disabled = false;
+      try { await run(btn); await loadUsers(); }
+      catch (err) { alert('Could not do that: ' + (err && err.message ? err.message : err)); btn.disabled = false; }
     };
   });
+  act('.bot-toggle', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
+  act('.act-clear', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
+  act('.act-enable', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), disabled: false } }));
+  act('.act-disable', b => {
+    // Disabling signs a child out of every device at once. Worth one question.
+    if (!confirm('Disable “' + b.dataset.name + '”?\n\nThey will be signed out everywhere and cannot sign in. Nothing is deleted — you can enable them again at any time.')) {
+      return Promise.reject(new Error('cancelled'));
+    }
+    return api('admin/user-flags', { method:'POST', body:{ userId: Number(b.dataset.uid), disabled: true } });
+  });
+
   body.querySelectorAll('tr.clickable').forEach(tr=>{
     tr.onclick = ()=>{
       body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));
@@ -238,6 +419,17 @@ document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
 document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadActivity(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
+document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
+document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
+  th.onclick = ()=>{
+    const key = th.getAttribute('data-sort');
+    // Same column toggles direction; a new column starts on its natural one —
+    // names A-Z, everything else biggest/most-recent first.
+    if (_sort.key === key) _sort.dir *= -1;
+    else _sort = { key, dir: key === 'username' ? 1 : -1 };
+    renderUsers();
+  };
+});
 document.getElementById('allBtn').onclick = ()=>{ document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected')); loadActivity(null,null); };
 
 // Auto-enter dashboard if we already have a token (verify by loading).

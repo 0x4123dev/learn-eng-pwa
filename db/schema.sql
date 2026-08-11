@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS users (
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),
   -- Opaque random id the client keeps in localStorage; caps how many accounts
   -- one device may create. See db/004-device-limit.sql for the reasoning.
-  device_id     TEXT
+  device_id     TEXT,
+  -- Admin switch. Disabling keeps the row and all history; see 005.
+  disabled      INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id);
 

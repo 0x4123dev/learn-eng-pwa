@@ -34,6 +34,17 @@
                     <span id="loginVersion" style="font-size:10px;color:#aaa;opacity:0.6;"></span>
                 </div>
 
+                <!-- Shown instead of the create form once this device has used up
+                     its profile slots, so the child is never offered a form the
+                     server would refuse. -->
+                <div class="onboarding-section" id="deviceFullNote" style="display: none;">
+                    <div class="device-full-card">
+                        <div class="device-full-icon">🔒</div>
+                        <div class="device-full-title">This device already has its profiles</div>
+                        <div class="device-full-sub">Choose one above to keep learning. To make room, delete a profile with 🗑️.</div>
+                    </div>
+                </div>
+
                 <div class="onboarding-section" id="existingUsersSection" style="display: none;">
                     <h2>Choose your profile</h2>
                     <div class="user-list" id="userList"></div>
@@ -45,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="onboarding-section">
+                <div class="onboarding-section" id="createUserSection">
                     <h2 id="createUserTitle">Create your profile</h2>
                     <form class="create-user-form" id="createUserForm" onsubmit="createUser(event)">
                         <div class="input-group">

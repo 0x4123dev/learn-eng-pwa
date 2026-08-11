@@ -1,9 +1,10 @@
 import { requireAuth, json, err } from '../_lib.js';
 
-// POST /api/admin/user-flags  { userId, allowBot?, clearDevice? }
+// POST /api/admin/user-flags  { userId, allowBot?, clearDevice?, disabled? }
 // Per-user switches, set from the admin dashboard.
 //   allowBot     — reveals the "practice vs bot" button in the child's arena.
 //   clearDevice  — releases this account's hold on its device's signup slot.
+//   disabled     — switches the account off everywhere (see db/005).
 // Deliberately admin-only — a child must not be able to grant either to
 // themselves: practice battles bypass the ammo economy entirely, and clearing
 // a device would reopen the account limit it exists to enforce.
@@ -24,16 +25,32 @@ export async function onRequestPost({ request, env }) {
 
   const wantsBot = typeof body.allowBot !== 'undefined';
   const wantsClear = !!body.clearDevice;
-  if (!wantsBot && !wantsClear) return err('Nothing to change');
+  const wantsDisable = typeof body.disabled !== 'undefined';
+  if (!wantsBot && !wantsClear && !wantsDisable) return err('Nothing to change');
 
-  const user = await env.DB.prepare('SELECT id, allow_bot FROM users WHERE id = ?').bind(userId).first();
+  const user = await env.DB.prepare('SELECT id, role, allow_bot, disabled FROM users WHERE id = ?')
+    .bind(userId).first();
   if (!user) return err('User not found', 404);
 
-  const out = { ok: true, userId, allowBot: !!user.allow_bot };
+  // Two ways an admin could lock everyone out of this dashboard forever, both
+  // one careless click away. requireAuth refuses a disabled account, so a
+  // disabled admin cannot even reach the endpoint that would re-enable them —
+  // the only fix would be editing production data by hand.
+  if (wantsDisable && body.disabled) {
+    if (userId === auth.uid) return err('Không thể tự khoá tài khoản của mình', 400, { code: 'self_disable' });
+    if (user.role === 'admin') return err('Không thể khoá tài khoản admin', 400, { code: 'admin_disable' });
+  }
+
+  const out = { ok: true, userId, allowBot: !!user.allow_bot, disabled: !!user.disabled };
   if (wantsBot) {
     const allowBot = body.allowBot ? 1 : 0;
     await env.DB.prepare('UPDATE users SET allow_bot = ? WHERE id = ?').bind(allowBot, userId).run();
     out.allowBot = !!allowBot;
+  }
+  if (wantsDisable) {
+    const disabled = body.disabled ? 1 : 0;
+    await env.DB.prepare('UPDATE users SET disabled = ? WHERE id = ?').bind(disabled, userId).run();
+    out.disabled = !!disabled;
   }
   if (wantsClear) {
     // Frees one signup slot on whatever device registered this account. The

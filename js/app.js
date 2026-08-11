@@ -239,8 +239,26 @@ function setupAvatarPicker() {
     });
 }
 
+// One device may hold only so many profiles. Mirrors the server's per-device
+// account cap; see EngAuth.MAX_DEVICE_PROFILES for why the number lives twice.
+function maxDeviceProfiles() {
+    return (typeof EngAuth !== 'undefined' && EngAuth.MAX_DEVICE_PROFILES) || 2;
+}
+function deviceProfilesFull() {
+    return getUsers().length >= maxDeviceProfiles();
+}
+
 function checkExistingUsers() {
     const users = getUsers();
+    // Offering "Create your profile" on a full device is offering a form the
+    // server will refuse — the child fills it in, picks an avatar, sets a
+    // passcode, and only then finds out. Hide it instead and point at the
+    // two things that actually work: sign in, or delete one.
+    const full = deviceProfilesFull();
+    const createSection = document.getElementById('createUserSection');
+    const fullNote = document.getElementById('deviceFullNote');
+    if (createSection) createSection.style.display = full ? 'none' : 'block';
+    if (fullNote) fullNote.style.display = full ? 'block' : 'none';
 
     if (users.length > 0) {
         // Show existing users
@@ -315,6 +333,14 @@ function createUser(e) {
     document.getElementById('passcodeError').textContent = '';
 
     const users = getUsers();
+
+    // Belt and braces: the form is hidden when the device is full, but a
+    // stale page or a re-submit must not slip a third profile through.
+    if (users.length >= maxDeviceProfiles()) {
+        showToast('This device already has ' + maxDeviceProfiles() + ' profiles');
+        checkExistingUsers();
+        return;
+    }
 
     // Check if username exists
     if (users.includes(username)) {
