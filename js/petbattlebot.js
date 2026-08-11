@@ -50,7 +50,11 @@ function botTakeTurn(game) {
   if (!game || game.finished) return;
   const C = game.calc;
   const wind = game.wind();
-  const shots = Math.max(1, Math.min(C.maxShotsThisTurn(game.foeAmmo), 1 + Math.floor(Math.random() * 3)));
+  // Math.max(1, …) fired a phantom poop on an empty clip, so the bot kept
+  // shooting from a visible "0 💩" and the battle never ended.
+  const maxShots = C.maxShotsThisTurn(game.foeAmmo);
+  if (maxShots <= 0) { game.turnNo += 1; _botEndOfTurn(); return; }
+  const shots = Math.max(1, Math.min(maxShots, 1 + Math.floor(Math.random() * 3)));
   const aim = botAim(C, game.terrain, game.foePos, -game.meFacing, game.mePos, wind, null, game.rules);
 
   game.turnNo = game.turnNo + 1;

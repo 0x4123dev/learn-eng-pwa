@@ -5,8 +5,11 @@ import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS } from '../_battle.j
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
 // client cannot claim more than the rules allow.
 function maxTurnDamage(shots, level) {
-  const n = Math.max(0, Math.min(BARRELS, Math.trunc(shots || 0)));
-  return Math.ceil(n * (12 + 0.12 * Math.max(1, level || 1)) * 1.5);
+  const n = Math.max(0, Math.min(BARRELS, Math.trunc(Number(shots) || 0)));
+  // Rounds per shot, exactly as battlecalc.damageAt does. Ceiling the total
+  // instead was TIGHTER than the honest maximum and shaved a point off real
+  // volleys at some levels.
+  return n * Math.round((12 + 0.12 * Math.max(1, level || 1)) * 1.5);
 }
 
 // POST /api/battle/turn { battleId, angle, power, shots, damage }

@@ -107,6 +107,27 @@ suite('bot practice: the bot actually plays', () => {
     });
 });
 
+suite('bot practice: the bot obeys its own ammo', () => {
+    // Math.max(1, …) fired a phantom poop on an empty clip: the HUD showed
+    // "0 💩" while the bot kept shooting, and with rounds now running until
+    // the ammo does, the battle could not end.
+    test('an empty clip passes the turn instead of firing', () => {
+        const src = read('js/petbattlebot.js');
+        assert.truthy(src.includes('if (maxShots <= 0)'), 'no empty-clip guard');
+        const fn = src.slice(src.indexOf('function botTakeTurn'), src.indexOf('function _botEndOfTurn'));
+        assert.truthy(fn.indexOf('maxShots <= 0') < fn.indexOf('botAim'),
+            'the guard must come before the bot spends effort aiming');
+    });
+
+    test('the bot never fires more than it holds', () => {
+        for (const ammo of [0, 1, 2, 3, 4, 10]) {
+            const max = calc.maxShotsThisTurn(ammo);
+            assert.truthy(max <= ammo, `maxShotsThisTurn(${ammo}) = ${max}`);
+            assert.truthy(max <= calc.BARRELS);
+        }
+    });
+});
+
 suite('bot practice: it stays worthless, on purpose', () => {
     test('a practice result is flagged as practice', () => {
         const botSrc = read('js/petbattlebot.js');

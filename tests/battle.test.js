@@ -172,6 +172,57 @@ suite('battle: ammo is earned only by learning', () => {
         }
     });
 
+    // A poop that visibly lands on the house has to hurt it. Damage used to be
+    // measured from the pet's GROUND ANCHOR with a ~21px blast radius at level
+    // 17, while the drawn house once spanned 104px — so most of the building was
+    // decoration and a child watched direct hits do nothing.
+    test('anywhere on the castle counts as a hit', () => {
+        const V2 = C.fieldRules(2);
+        const target = { x: 1000, y: 400 };
+        const half = V2.castle.halfW;
+        for (const dx of [0, 20, 30, half - 1, half]) {
+            for (const sign of [1, -1]) {
+                const dmg = C.damageAt({ x: target.x + sign * dx, y: target.y }, target, 17, V2);
+                assert.truthy(dmg > 0, `a poop ${dx}px from centre dealt nothing — it landed on the house`);
+            }
+        }
+    });
+
+    test('the collision target matches the larger castle silhouette', () => {
+        const V2 = C.fieldRules(2);
+        assert.equal(V2.castle.halfW, 70);
+        assert.equal(V2.castle.height, 122);
+    });
+
+    test('a shot beyond the castle still falls off, and a far miss is nothing', () => {
+        const V2 = C.fieldRules(2);
+        const target = { x: 1000, y: 400 };
+        const near = C.damageAt({ x: 1000 + V2.castle.halfW + 8, y: 400 }, target, 17, V2);
+        const far = C.damageAt({ x: 1000 + V2.castle.halfW + 200, y: 400 }, target, 17, V2);
+        assert.truthy(near > 0, 'a graze just past the wall should still count');
+        assert.equal(far, 0, 'a shot in the next field must do nothing');
+    });
+
+    test('a hit on the castle cannot exceed what the server would allow', () => {
+        // The server clamps a volley to maxTurnDamage; widening the target
+        // must not let a legitimate volley be rejected as impossible.
+        const V2 = C.fieldRules(2);
+        for (const level of [1, 17, 50, 200]) {
+            const perShot = C.damageAt({ x: 1000, y: 400 }, { x: 1000, y: 400 }, level, V2);
+            for (const shots of [1, 2, 3, 4]) {
+                assert.truthy(perShot * shots <= C.maxTurnDamage(shots, level),
+                    `level ${level}, ${shots} shots: ${perShot * shots} exceeds the server clamp ${C.maxTurnDamage(shots, level)}`);
+            }
+        }
+    });
+
+    test('v1 damage is untouched — it still measures from the pet', () => {
+        const target = { x: 400, y: 400 };
+        assert.equal(C.damageAt({ x: 440, y: 400 }, target, 17), 0, 'v1 must keep its point target');
+        assert.equal(C.damageAt({ x: 440, y: 400 }, target, 17, C.fieldRules(1)), 0);
+        assert.truthy(C.damageAt({ x: 400, y: 400 }, target, 17) > 0);
+    });
+
     // The server is authoritative; a drifted copy would let a client claim
     // ammo the server would never grant.
     test('server and client ammo constants are identical', () => {

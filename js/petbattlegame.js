@@ -4,6 +4,14 @@
 // both phones draw exactly the same battle from just (angle, power, shots).
 
 const PB_HEARTS = 5;
+const PB_CASTLE_HALF_W = 70;
+const PB_CASTLE_HEIGHT = 122;
+
+// Aim bounds, shared by the drag handler, the arrow keys and the manual
+// controls — three ways to set one number, so they must agree or a slider
+// could reach an angle a drag cannot.
+const PB_ANGLE_MIN = 10, PB_ANGLE_MAX = 80;
+const PB_POWER_MIN = 10, PB_POWER_MAX = 100;
 
 // The battle borrows the arena's string table and its 🇬🇧/🇻🇳 choice, so one
 // flag governs the whole flow and the parity test covers these strings too.
@@ -12,10 +20,10 @@ const gT = (k, vars) => (typeof pbT === 'function' ? pbT(k, vars) : k);
 const gLang = () => (typeof _pbLang !== 'undefined' ? _pbLang : 'en');
 
 // Pure presentation helpers: HP remains server-authoritative, while these
-// convert it into readable house damage and heart segments.
+// convert it into readable castle damage and heart segments.
 //
 // SIX stages, because a four-stage ladder meant a 100→99 hit changed nothing on
-// screen: the child landed a shot and the house looked untouched until a
+// screen: the child landed a shot and the castle looked untouched until a
 // quarter of the HP was gone. Exactly 100 is the only pristine state now, so
 // the very first damaging poop always breaks something visible.
 //   100 → 0 · 76-99 → 1 · 51-75 → 2 · 26-50 → 3 · 1-25 → 4 · 0 → 5
@@ -96,6 +104,7 @@ function PetBattleGame(opts) {
   if (this.camera) this.camera.focusOn(this.mePos.x, { instant: true });
   this._panPointer = null;
   this.impactParticles = [];
+  this.castleDebris = [];
   this.houseImpacts = [];
   this._lastHitCount = 0;
   this.sceneRenderer = null;
@@ -308,6 +317,30 @@ PetBattleGame.prototype.render = function () {
           <span class="pb-aim-hand" aria-hidden="true">☝</span>
           <span><strong>${esc(gT('gAimTitle'))}</strong><small>${esc(gT('gAimSub'))}</small></span>
         </div>
+        <!-- Dragging is quick but coarse. These give a child an exact number
+             to dial in after a near miss, without fighting a fingertip. -->
+        <div class="pb-aim-manual" role="group" aria-label="${esc(gT('gManualAria'))}">
+          <div class="pb-aim-row">
+            <span class="pb-aim-name">↗ ${esc(gT('gAngle'))}</span>
+            <button class="pb-step" type="button" id="pbAngleDown"
+                    aria-label="${esc(gT('gAngleLess'))}" onclick="_pbGameNudge('angle', -1)">−</button>
+            <output class="pb-aim-val" id="pbAngleVal" for="pbAngle">45°</output>
+            <button class="pb-step" type="button" id="pbAngleUp"
+                    aria-label="${esc(gT('gAngleMore'))}" onclick="_pbGameNudge('angle', 1)">+</button>
+          </div>
+          <input type="range" class="pb-aim-slider" id="pbAngle" min="10" max="80" step="1" value="45"
+                 aria-label="${esc(gT('gAngle'))}" oninput="_pbGameSetAngle(this.value)">
+          <div class="pb-aim-row">
+            <span class="pb-aim-name">⚡ ${esc(gT('gPower'))}</span>
+            <button class="pb-step" type="button" id="pbPowerDown"
+                    aria-label="${esc(gT('gPowerLess'))}" onclick="_pbGameNudge('power', -1)">−</button>
+            <output class="pb-aim-val" id="pbPowerVal" for="pbPower">60</output>
+            <button class="pb-step" type="button" id="pbPowerUp"
+                    aria-label="${esc(gT('gPowerMore'))}" onclick="_pbGameNudge('power', 1)">+</button>
+          </div>
+          <input type="range" class="pb-aim-slider" id="pbPower" min="10" max="100" step="1" value="60"
+                 aria-label="${esc(gT('gPower'))}" oninput="_pbGameSetPower(this.value)">
+        </div>
         <div class="pb-barrels" role="group" aria-label="${esc(gT('gShotsAria'))}">${barrels}</div>
         <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()">
           <span class="pb-fire-icon" aria-hidden="true"></span>
@@ -384,6 +417,16 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   text('pbBanner', this.banner);
   text('pbFieldAngle', Math.round(this.angle) + '°');
   text('pbFieldPower', Math.round(this.power));
+  // The manual controls must follow a drag, a keypress or an opponent's turn,
+  // never argue with them.
+  text('pbAngleVal', Math.round(this.angle) + '°');
+  text('pbPowerVal', Math.round(this.power));
+  const angleEl = this._el('pbAngle'); if (angleEl) angleEl.value = Math.round(this.angle);
+  const powerEl = this._el('pbPower'); if (powerEl) powerEl.value = Math.round(this.power);
+  const aimLocked = !this.myTurn || this.busy;
+  for (const id of ['pbAngle', 'pbPower', 'pbAngleDown', 'pbAngleUp', 'pbPowerDown', 'pbPowerUp']) {
+    const el = this._el(id); if (el) el.disabled = aimLocked;
+  }
   text('pbTurnText', this.myTurn ? gT('gYourTurn') : gT('gFoeTurn'));
 
   const fire = this._el('pbFire');
@@ -428,8 +471,8 @@ PetBattleGame.prototype._bindAimControls = function () {
     const forward = (x - startX) * this.meFacing;
     if (forward < 4) return;
     const distance = Math.hypot(forward, startY - y);
-    this.angle = Math.max(10, Math.min(80, Math.atan2(startY - y, forward) * 180 / Math.PI));
-    this.power = Math.max(10, Math.min(100, (distance - 46) / .58));
+    this.angle = Math.max(PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, Math.atan2(startY - y, forward) * 180 / Math.PI));
+    this.power = Math.max(PB_POWER_MIN, Math.min(PB_POWER_MAX, (distance - 46) / .58));
     this._updateUi(this.calc.maxShotsThisTurn(this.myAmmo));
     this.draw();
     _pbBroadcastAim(this);
@@ -504,10 +547,10 @@ PetBattleGame.prototype._bindAimControls = function () {
       if (key === 'End') { this.cameraAnchor('foe'); return; }
       if (key === 'Escape') { this._followCancelled = true; return; }
     }
-    if (key === 'ArrowLeft') this.angle = Math.max(10, this.angle - 1);
-    else if (key === 'ArrowRight') this.angle = Math.min(80, this.angle + 1);
-    else if (key === 'ArrowDown') this.power = Math.max(10, this.power - 2);
-    else if (key === 'ArrowUp') this.power = Math.min(100, this.power + 2);
+    if (key === 'ArrowLeft') this.angle = Math.max(PB_ANGLE_MIN, this.angle - 1);
+    else if (key === 'ArrowRight') this.angle = Math.min(PB_ANGLE_MAX, this.angle + 1);
+    else if (key === 'ArrowDown') this.power = Math.max(PB_POWER_MIN, this.power - 2);
+    else if (key === 'ArrowUp') this.power = Math.min(PB_POWER_MAX, this.power + 2);
     else return;
     this._updateUi(this.calc.maxShotsThisTurn(this.myAmmo));
     this.draw();
@@ -661,7 +704,7 @@ PetBattleGame.prototype._drawWorld = function () {
     ctx.fill();
   }
 
-  // The pet lives inside a defensive house. House wear follows real HP.
+  // The pet lives inside a defensive castle. Structural wear follows real HP.
   const meAim = this.angle;
   const foeAim = this.foeAiming ? this.foeAiming.angle : 45;
   this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level);
@@ -735,6 +778,14 @@ PetBattleGame.prototype._drawWorld = function () {
     ctx.fillStyle = p.color;
     ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(1, p.size * fade), 0, Math.PI * 2); ctx.fill();
   }
+  // Large masonry fragments sell structural damage much better than sparks.
+  for (const piece of this.castleDebris) {
+    const fade = Math.max(0, 1 - piece.t / piece.life);
+    ctx.save(); ctx.globalAlpha = fade; ctx.translate(piece.x, piece.y); ctx.rotate(piece.rotation);
+    ctx.fillStyle = piece.color; ctx.strokeStyle = '#4b3433'; ctx.lineWidth = 1.5;
+    ctx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
+    ctx.strokeRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h); ctx.restore();
+  }
   for (const hit of this.houseImpacts) {
     const k = hit.t / hit.life;
     ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k);
@@ -754,94 +805,172 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   ctx.translate(pos.x, pos.y);
   if (facing < 0) ctx.scale(-1, 1);
 
-  // shadow, walls and roof
-  ctx.fillStyle = 'rgba(22,31,50,.28)';
-  ctx.beginPath(); ctx.ellipse(0, 4, 51, 9, 0, 0, Math.PI * 2); ctx.fill();
+  const round = (x, y, w, h, r) => {
+    ctx.beginPath();
+    if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, w, h, r);
+    else ctx.rect(x, y, w, h);
+  };
+  const stone = ctx.createLinearGradient(-PB_CASTLE_HALF_W, -PB_CASTLE_HEIGHT, PB_CASTLE_HALF_W, 0);
+  stone.addColorStop(0, damage >= 4 ? '#826b68' : '#e3b56f');
+  stone.addColorStop(.48, damage >= 3 ? '#aa7863' : '#c98b56');
+  stone.addColorStop(1, damage >= 2 ? '#805447' : '#9b5d43');
+  const dark = '#3a2d32';
+  const mortar = 'rgba(83,55,48,.58)';
 
-  // At zero HP the shelter is gone: only rubble and the pet remain outdoors.
+  // A broad shadow makes the 140px silhouette feel planted, not pasted on.
+  ctx.fillStyle = 'rgba(15,23,42,.34)';
+  ctx.beginPath(); ctx.ellipse(0, 5, 78, 12, 0, 0, Math.PI * 2); ctx.fill();
+
+  const rubble = damage >= 5
+    ? [[-60,-8,31,15,-.18],[-33,-17,26,16,.21],[-4,-8,38,17,-.09],[30,-13,31,18,.16],[59,-7,27,14,-.22],[-48,-29,20,15,.12],[42,-31,24,16,-.12]]
+    : damage >= 4
+      ? [[-58,-7,26,13,-.16],[-24,-8,22,12,.18],[22,-7,28,13,-.11],[58,-9,24,14,.2],[44,-25,18,12,-.2]]
+      : damage >= 3
+        ? [[-59,-7,22,12,-.14],[54,-8,25,13,.18],[-39,-15,18,11,.22]]
+        : damage >= 2
+          ? [[49,-8,25,13,.18],[18,-8,19,11,-.12]]
+          : damage >= 1 ? [[56,-8,26,14,.2],[39,-15,18,12,-.18]] : [];
+
+  // At zero HP the castle is truly gone: big masonry chunks remain while the
+  // dog stands in first air, so destruction reads even with motion disabled.
   if (damage >= 5) {
-    ctx.fillStyle = '#6f3f35';
-    for (const piece of [[-42,-9,25,12],[0,-7,30,14],[34,-10,22,11],[-20,-20,18,12]]) {
-      ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[0] * .012);
-      ctx.fillRect(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3]); ctx.restore();
+    for (const piece of rubble) {
+      ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[4]);
+      ctx.fillStyle = piece[0] % 2 ? '#9b6953' : '#c18b61';
+      round(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3], 3); ctx.fill();
+      ctx.strokeStyle = '#5e4039'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
     }
-    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -31, -72, 62, 68);
-    ctx.fillStyle = 'rgba(15,23,42,.86)'; ctx.beginPath(); ctx.roundRect(-25, -89, 50, 20, 8); ctx.fill();
+    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -37, -88, 74, 82);
+    ctx.fillStyle = 'rgba(15,23,42,.88)'; round(-29, -111, 58, 23, 9); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
     ctx.save(); if (facing < 0) ctx.scale(-1, 1);
-    ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -75); ctx.restore();
+    ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -95); ctx.restore();
     ctx.restore();
     return;
   }
-  const wall = ctx.createLinearGradient(-42, -56, 42, 0);
-  wall.addColorStop(0, damage >= 4 ? '#9a6254' : '#f0a65b');
-  wall.addColorStop(1, damage >= 3 ? '#b56a4a' : '#d97945');
-  ctx.fillStyle = wall;
-  ctx.fillRect(-43, -58, 86, 58);
-  // Continuous soot means every damaging hit changes the house, even before
-  // it crosses one of the larger crack/scorch milestones.
-  ctx.fillStyle = `rgba(43,25,30,${(wear * .28).toFixed(3)})`;
-  ctx.fillRect(-43, -58, 86, 58);
-  ctx.strokeStyle = '#6f3f35'; ctx.lineWidth = 3; ctx.strokeRect(-43, -58, 86, 58);
-  ctx.fillStyle = damage >= 4 ? '#743d45' : '#b84c57';
-  ctx.beginPath(); ctx.moveTo(-52, -57); ctx.lineTo(0, -91); ctx.lineTo(52, -57); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#6b3340'; ctx.lineWidth = 4; ctx.stroke();
 
-  // window and the pet safely framed inside it
-  ctx.fillStyle = damage >= 5 ? '#251f27' : '#dff6ff';
-  ctx.fillRect(-27, -55, 54, 45);
-  ctx.save(); ctx.beginPath(); ctx.rect(-25, -53, 50, 41); ctx.clip();
-  if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -25, -61, 50, 54);
-  ctx.restore();
-  ctx.strokeStyle = accent; ctx.lineWidth = 4; ctx.strokeRect(-27, -55, 54, 45);
-  ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -55); ctx.lineTo(0, -10); ctx.stroke();
-
-  ctx.fillStyle = accent; ctx.beginPath(); ctx.roundRect(-25, -107, 50, 19, 8); ctx.fill();
-  ctx.fillStyle = '#fff'; ctx.font = '900 11px sans-serif'; ctx.textAlign = 'center';
-  ctx.save(); if (facing < 0) ctx.scale(-1, 1);
-  ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -93); ctx.restore();
-
-  // side cannon uses the same angle as the visible aiming guide
-  const rad = angle * Math.PI / 180;
-  ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(0, -34, 10, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 7; ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(0, -34);
-  ctx.lineTo(Math.cos(-rad) * 31, -34 + Math.sin(-rad) * 31);
-  ctx.stroke();
-
-  // deterministic damage marks; no random flicker between clients.
-  // STAGE 1 is the important one: the very first damaging poop must take a
-  // real bite out of the silhouette, not add a hairline crack nobody sees.
-  if (damage >= 1) {
-    // a corner of the parapet is simply gone, with the dark interior behind it
-    ctx.fillStyle = '#3f2930';
-    ctx.beginPath(); ctx.moveTo(43, -58); ctx.lineTo(43, -30); ctx.lineTo(12, -58); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#f0a65b';
-    ctx.beginPath(); ctx.moveTo(43, -30); ctx.lineTo(43, -24); ctx.lineTo(30, -37); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#5b352f'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(12, -58); ctx.lineTo(24, -44); ctx.lineTo(18, -33); ctx.stroke();
+  // Foundation and main curtain wall. At critical damage the middle is no
+  // longer painted at all: two jagged wall remnants replace one dark overlay.
+  ctx.fillStyle = '#68483f'; round(-PB_CASTLE_HALF_W, -18, PB_CASTLE_HALF_W * 2, 18, 4); ctx.fill();
+  if (damage < 4) {
+    ctx.fillStyle = stone; round(-64, -67, 128, 58, 5); ctx.fill();
+    ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+  } else {
+    ctx.fillStyle = stone;
+    ctx.beginPath();
+    ctx.moveTo(-64, -9); ctx.lineTo(-64, -67); ctx.lineTo(-47, -74); ctx.lineTo(-35, -50);
+    ctx.lineTo(-19, -56); ctx.lineTo(-11, -27); ctx.lineTo(1, -20); ctx.lineTo(1, -9); ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(30, -9); ctx.lineTo(30, -34); ctx.lineTo(42, -45); ctx.lineTo(49, -27);
+    ctx.lineTo(64, -32); ctx.lineTo(64, -9); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
   }
+
+  // Left tower survives longest; its broken stage has a genuinely missing
+  // upper half rather than a cosmetic crack drawn on top.
+  ctx.fillStyle = stone;
+  if (damage < 3) {
+    round(-70, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    for (const x of [-69, -56, -43]) { ctx.fillRect(x, -109, 10, 16); }
+  } else {
+    ctx.beginPath(); ctx.moveTo(-70,-8); ctx.lineTo(-70,-63); ctx.lineTo(-59,-72);
+    ctx.lineTo(-51,-55); ctx.lineTo(-42,-61); ctx.lineTo(-32,-45); ctx.lineTo(-32,-8); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+  }
+
+  // The forward/right tower loses a 38×42px bite on the FIRST hit. This is
+  // deliberately large enough to read on a 320px phone screen.
+  ctx.fillStyle = stone;
+  if (damage === 0) {
+    round(32, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    for (const x of [33, 46, 59]) ctx.fillRect(x, -109, 10, 16);
+  } else if (damage < 4) {
+    ctx.beginPath();
+    ctx.moveTo(32,-8); ctx.lineTo(32,-57); ctx.lineTo(42,-65); ctx.lineTo(49,-55);
+    ctx.lineTo(58,-68); ctx.lineTo(70,-57); ctx.lineTo(70,-8); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    // Exposed black interior below the jagged edge; above it stays transparent
+    // so the missing tower chunk changes the outer silhouette against the sky.
+    ctx.fillStyle = dark;
+    ctx.beginPath(); ctx.moveTo(35,-55); ctx.lineTo(42,-65); ctx.lineTo(49,-55);
+    ctx.lineTo(58,-68); ctx.lineTo(67,-57); ctx.lineTo(67,-43); ctx.lineTo(35,-43); ctx.closePath(); ctx.fill();
+  }
+
+  // Central keep gives the castle its recognisable crown. Stage two removes
+  // the whole right crown and leaves a stepped, broken profile.
+  if (damage < 2) {
+    ctx.fillStyle = stone; round(-33, -111, 66, 54, 5); ctx.fill();
+    ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    for (const x of [-31, -11, 10]) ctx.fillRect(x, -123, 14, 15);
+  } else if (damage < 4) {
+    ctx.fillStyle = stone;
+    ctx.beginPath(); ctx.moveTo(-33,-57); ctx.lineTo(-33,-111); ctx.lineTo(-18,-123);
+    ctx.lineTo(-5,-105); ctx.lineTo(8,-112); ctx.lineTo(17,-89); ctx.lineTo(10,-71); ctx.lineTo(24,-57); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = dark;
+    ctx.beginPath(); ctx.moveTo(12,-76); ctx.lineTo(17,-89); ctx.lineTo(24,-74);
+    ctx.lineTo(24,-59); ctx.lineTo(12,-59); ctx.closePath(); ctx.fill();
+  }
+
+  // Stone courses reinforce scale without visual noise.
+  ctx.strokeStyle = mortar; ctx.lineWidth = 1.5;
+  if (damage < 4) {
+    for (const y of [-53, -34, -16]) { ctx.beginPath(); ctx.moveTo(-62, y); ctx.lineTo(62, y); ctx.stroke(); }
+    for (const x of [-45, -18, 18, 45]) { ctx.beginPath(); ctx.moveTo(x, -66); ctx.lineTo(x, -10); ctx.stroke(); }
+  }
+
+  // Arched kennel window. At critical damage the dog is outdoors between the
+  // standing wall remnants; otherwise it remains visibly protected inside.
+  if (damage < 4) {
+    ctx.fillStyle = '#172033';
+    ctx.beginPath(); ctx.arc(0, -63, 30, Math.PI, 0); ctx.lineTo(30, -13); ctx.lineTo(-30, -13); ctx.closePath(); ctx.fill();
+    ctx.save();
+    ctx.beginPath(); ctx.arc(0, -62, 27, Math.PI, 0); ctx.lineTo(27, -14); ctx.lineTo(-27, -14); ctx.closePath(); ctx.clip();
+    ctx.fillStyle = '#bfe7f4'; ctx.fillRect(-28, -65, 56, 53);
+    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -31, -75, 62, 68);
+    ctx.restore();
+    ctx.strokeStyle = accent; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(0, -63, 30, Math.PI, 0); ctx.lineTo(30, -13); ctx.lineTo(-30, -13); ctx.closePath(); ctx.stroke();
+  } else if (img && img.complete && img.naturalWidth) {
+    ctx.drawImage(img, -34, -82, 68, 75);
+  }
+
+  // Soot scales continuously, while missing geometry communicates milestones.
+  ctx.fillStyle = `rgba(38,27,33,${(wear * .24).toFixed(3)})`;
+  if (damage < 4) ctx.fillRect(-64, -67, 128, 58);
+
+  // Cannon remains aligned with the deterministic 34px muzzle used by physics.
+  const rad = angle * Math.PI / 180;
+  ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.arc(0, -34, 12, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#172033'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(0, -34); ctx.lineTo(Math.cos(-rad) * 34, -34 + Math.sin(-rad) * 34); ctx.stroke();
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Persistent fractures are thick, branched and high-contrast. They never
+  // substitute for the missing wall pieces above; they explain the collapse.
   if (damage >= 2) {
-    ctx.strokeStyle = '#5b352f'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-35, -48); ctx.lineTo(-26, -39); ctx.lineTo(-34, -29);
-    ctx.moveTo(34, -20); ctx.lineTo(24, -27); ctx.lineTo(30, -38); ctx.stroke();
+    ctx.strokeStyle = '#3e2c2e'; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-23,-101); ctx.lineTo(-12,-87); ctx.lineTo(-20,-73);
+    ctx.moveTo(42,-52); ctx.lineTo(29,-43); ctx.lineTo(38,-29); ctx.lineTo(27,-18); ctx.stroke();
   }
   if (damage >= 3) {
-    ctx.fillStyle = 'rgba(45,35,35,.55)';
-    ctx.beginPath(); ctx.arc(-30, -9, 8, 0, Math.PI * 2); ctx.arc(31, -49, 6, 0, Math.PI * 2); ctx.fill();
-    // the opposite parapet corner follows
-    ctx.fillStyle = '#3f2930';
-    ctx.beginPath(); ctx.moveTo(-43, -58); ctx.lineTo(-43, -36); ctx.lineTo(-16, -58); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#30262c';
+    ctx.beginPath(); ctx.moveTo(-64,-48); ctx.lineTo(-51,-60); ctx.lineTo(-38,-48);
+    ctx.lineTo(-45,-31); ctx.lineTo(-61,-27); ctx.closePath(); ctx.fill();
   }
-  if (damage >= 4) {
-    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(-11, -51); ctx.lineTo(7, -28); ctx.moveTo(12, -52); ctx.lineTo(-6, -31); ctx.stroke();
-    ctx.fillStyle = 'rgba(31,41,55,.46)';
-    ctx.beginPath(); ctx.arc(28, -82, 11, 0, Math.PI * 2); ctx.arc(36, -96, 8, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#3f2930';
-    ctx.beginPath(); ctx.moveTo(-52, -57); ctx.lineTo(-20, -77); ctx.lineTo(-6, -58); ctx.closePath(); ctx.fill();
+
+  for (const piece of rubble) {
+    ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[4]);
+    ctx.fillStyle = piece[0] > 0 ? '#b47a59' : '#cf9865';
+    round(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3], 3); ctx.fill();
+    ctx.strokeStyle = '#5e4039'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
   }
+
+  // Level badge floats above the crown and remains readable at every stage.
+  ctx.fillStyle = accent; round(-30, -149, 60, 23, 9); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
+  ctx.save(); if (facing < 0) ctx.scale(-1, 1);
+  ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -133); ctx.restore();
   ctx.restore();
 };
 
@@ -902,7 +1031,7 @@ PetBattleGame.prototype._hasActiveAnimation = function () {
   // A travelling camera counts: the frame loop must keep running until the
   // world has finished sliding, or a pan would freeze halfway.
   const camMoving = !!(this.camera && this.camera.isPannable() && !this.camera.settled());
-  return camMoving || this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
+  return camMoving || this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.castleDebris.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
 };
 
 PetBattleGame.prototype._requestFrame = function () {
@@ -942,6 +1071,11 @@ PetBattleGame.prototype.step = function (k) {
     p.t += k; p.x += p.vx * k; p.y += p.vy * k; p.vy += .16 * k;
     return p.t < p.life;
   });
+  this.castleDebris = this.castleDebris.filter(piece => {
+    piece.t += k; piece.x += piece.vx * k; piece.y += piece.vy * k;
+    piece.vy += .2 * k; piece.rotation += piece.spin * k;
+    return piece.t < piece.life;
+  });
   this.houseImpacts = this.houseImpacts.filter(hit => (hit.t += k) < hit.life);
   this.emotes = this.emotes.filter(e => e.static || (e.t += k) < e.life);
   if (!this.flying.length) return;
@@ -970,7 +1104,20 @@ PetBattleGame.prototype.step = function (k) {
           }
         }
         if (f.damage > 0) {
-          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 43, t: 0, life: this.reducedMotion ? 1 : 34 });
+          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 62, t: 0, life: this.reducedMotion ? 1 : 34 });
+          if (!this.reducedMotion) {
+            const masonry = ['#e0ae6b', '#bd7954', '#8b5a4c', '#5b4140'];
+            for (let i = 0; i < 14; i++) {
+              const side = i % 2 ? 1 : -1;
+              this.castleDebris.push({
+                x: f.target.x + side * (8 + i % 4), y: f.target.y - 62 - (i % 3) * 5,
+                vx: side * (1.1 + (i % 5) * .38), vy: -2.2 - (i % 4) * .55,
+                rotation: i * .47, spin: side * (.045 + (i % 3) * .018),
+                w: 8 + (i % 4) * 3, h: 6 + (i % 3) * 3,
+                color: masonry[i % masonry.length], t: 0, life: 34 + (i % 5) * 5,
+              });
+            }
+          }
         }
       }
     }
@@ -993,7 +1140,7 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
     const sim = C.simulateShot({
       terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(), rules: this.rules,
     });
-    const bulletDamage = C.damageAt(sim.hit, target, level);
+    const bulletDamage = C.damageAt(sim.hit, target, level, this.rules);
     damage += bulletDamage;
     if (bulletDamage > 0) this._lastHitCount += 1;
     return {
@@ -1147,6 +1294,35 @@ function _pbBroadcastAim(g) {
   // Let the opponent watch us line up the shot (throttled inside BattleLink).
   if (g && g.link && g.myTurn) g.link.sendAim(g.angle, g.power, g.shots);
 }
+function _pbGameSetAngle(v) {
+  const g = _pbCurrentGame();
+  if (!g || !g.myTurn || g.busy || g.finished) return;
+  const n = Number(v);
+  if (!isFinite(n)) return;
+  g.angle = Math.max(PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, n));
+  g._updateUi(g.calc.maxShotsThisTurn(g.myAmmo));
+  g.draw();
+  _pbBroadcastAim(g);
+}
+function _pbGameSetPower(v) {
+  const g = _pbCurrentGame();
+  if (!g || !g.myTurn || g.busy || g.finished) return;
+  const n = Number(v);
+  if (!isFinite(n)) return;
+  g.power = Math.max(PB_POWER_MIN, Math.min(PB_POWER_MAX, n));
+  g._updateUi(g.calc.maxShotsThisTurn(g.myAmmo));
+  g.draw();
+  _pbBroadcastAim(g);
+}
+// One step per tap: the point of these buttons is the exact ±1 a fingertip
+// cannot manage on a 320px slider.
+function _pbGameNudge(which, delta) {
+  const g = _pbCurrentGame();
+  if (!g) return;
+  if (which === 'angle') _pbGameSetAngle(g.angle + delta);
+  else _pbGameSetPower(g.power + delta);
+}
+
 function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }

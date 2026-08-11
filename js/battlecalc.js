@@ -73,7 +73,11 @@ function ammoBreakdown(stats) {
 
 // How many barrels can be loaded this turn.
 function maxShotsThisTurn(ammoLeft) {
-  return Math.max(0, Math.min(BARRELS, Math.trunc(ammoLeft || 0)));
+  // Math.trunc('three') is NaN, and NaN <= 0 is FALSE — so junk ammo slipped
+  // past the empty-clip guard and fired a phantom volley. Coerce first.
+  const n = Math.trunc(Number(ammoLeft));
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(BARRELS, n));
 }
 
 // ---- deterministic randomness (mulberry32) ----
@@ -102,12 +106,19 @@ const FIELD_RULES = {
     spawnX: [90, 710], gravity: 0.18, windAccel: 0.004,
     v0Base: 4, v0Gain: 0.09, plateau: 46, lane: 150, waveScale: 1,
     groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 900,
+    castle: null,                    // v1 measured damage from the pet's feet
   },
   2: {
     version: 2, worldW: 2000, viewW: 800, worldH: 450,
     spawnX: [140, 1860], gravity: 0.15, windAccel: 0.002,
     v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
     groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+    // The drawn castle spans x ±70 and stands 122px tall. Damage used to be
+    // measured from the pet's GROUND ANCHOR with a blast radius of about 21px
+    // at level 17 — so a poop could land squarely on the house and deal
+    // nothing, because it was 40px from the dog's feet. The castle is now the
+    // target it looks like.
+    castle: { halfW: 70, height: 122 },
   },
 };
 // Anything unknown, missing or legacy is v1 — an unrecognised version must
@@ -244,11 +255,26 @@ function shellSize(level) {
 }
 
 // Damage one landed shell does to a target standing at {x,y}.
-function damageAt(hit, target, level) {
+//
+// `target` is the pet's ground anchor. When the rules describe a castle, the
+// shell is measured against that BOX rather than the anchor point: a child who
+// lands a poop on the wall has hit the house, and the game has to agree with
+// its own drawing. Outside the box the old radial falloff still applies, so a
+// near miss still grazes.
+function damageAt(hit, target, level, rules) {
   if (!hit) return 0;
-  const dx = hit.x - target.x;
-  const dy = hit.y - target.y;
-  const dist = Math.sqrt(dx * dx + dy * dy);
+  const R = rules || FIELD_RULES[1];
+  let dist;
+  if (R.castle) {
+    const dx = Math.max(0, Math.abs(hit.x - target.x) - R.castle.halfW);
+    // Above the roof only; a shell at or below ground level is level with it.
+    const dy = Math.max(0, (target.y - R.castle.height) - hit.y);
+    dist = Math.sqrt(dx * dx + dy * dy);
+  } else {
+    const dx = hit.x - target.x;
+    const dy = hit.y - target.y;
+    dist = Math.sqrt(dx * dx + dy * dy);
+  }
   const r = blastRadius(level);
   if (dist > r) return 0;
   const base = shotDamage(level);
@@ -294,9 +320,15 @@ function powerProfile(level) {
 
 // The most a turn could possibly do — the server clamps reported damage to
 // this so a tampered client can't claim a bigger hit than physics allows.
+//
+// It must round the SAME WAY damageAt does, per shot, not once at the end.
+// Ceiling the aggregate looked safer but was actually tighter: at level 120
+// three dead-centre hits legitimately total 120 while ceil(3 × 26.4 × 1.5)
+// is 119, so the server quietly shaved a point off an honest volley and the
+// child's HP bar jumped back up when the turn reconciled.
 function maxTurnDamage(shots, level) {
-  const n = Math.max(0, Math.min(BARRELS, Math.trunc(shots || 0)));
-  return Math.ceil(n * shotDamage(level) * 1.5);
+  const n = Math.max(0, Math.min(BARRELS, Math.trunc(Number(shots) || 0)));
+  return n * Math.round(shotDamage(level) * 1.5);
 }
 
 // Top-level `const` in a classic script is script-scoped, NOT a window

@@ -328,9 +328,28 @@ suite('battle game: Gunbound-style house arena', () => {
     test('a single point of damage visibly breaks the house', () => {
         assert.equal(game.pbHouseDamageStage(100), 0, '100 HP is the only pristine state');
         assert.equal(game.pbHouseDamageStage(99), 1, 'one point of damage must show');
-        assert.truthy(gameSrc.includes('if (damage >= 1) {'), 'stage 1 needs its own art');
-        const stage1 = gameSrc.slice(gameSrc.indexOf('if (damage >= 1) {'), gameSrc.indexOf('if (damage >= 2) {'));
-        assert.truthy(stage1.includes('#3f2930'), 'stage 1 must reveal a dark breach, not just a hairline');
+        assert.truthy(gameSrc.includes('if (damage === 0) {'), 'the pristine tower needs its own art');
+        assert.truthy(gameSrc.includes('else if (damage < 4) {'), 'stage 1 needs a broken-tower silhouette');
+        assert.truthy(gameSrc.includes('38×42px bite'), 'stage 1 breach must be deliberately phone-readable');
+        assert.truthy(gameSrc.includes('Exposed black interior'), 'the missing wall must expose the castle interior');
+    });
+
+    test('every castle stage renders safely in both directions', () => {
+        const gradient = { addColorStop() {} };
+        const ctx = new Proxy({ createLinearGradient: () => gradient }, {
+            get(target, key) {
+                if (key in target) return target[key];
+                if (typeof key === 'string') return () => {};
+            },
+            set(target, key, value) { target[key] = value; return true; },
+        });
+        for (const hp of [100, 99, 75, 50, 25, 0]) {
+            for (const facing of [1, -1]) {
+                game.PetBattleGame.prototype._drawHouse.call(
+                    { ctx }, { x: 140, y: 360 }, null, facing, hp, 45, '#38bdf8', 17
+                );
+            }
+        }
     });
 
     test('five hearts drain proportionally with every HP change', () => {
@@ -391,16 +410,75 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes('PetBattleGame.prototype.step = function (k)'), 'step must take elapsed time');
         assert.truthy(gameSrc.includes('(t - last) / 16.667'), 'frames must be measured, not counted');
         assert.truthy(gameSrc.includes('Math.min(3, k)'), 'a backgrounded tab must not teleport a shell');
-        assert.falsy(gameSrc.includes('type="range"'));
         assert.falsy(gameSrc.includes('>1 TIA<'));
+    });
+
+    // Dragging the battlefield is quick but coarse. Manual controls came back
+    // so a child can dial in the last two degrees after a near miss — three
+    // ways to set one number, which only works while they all agree.
+    test('angle and power can be set by hand as well as by dragging', () => {
+        assert.truthy(gameSrc.includes('id="pbAngle"') && gameSrc.includes('id="pbPower"'), 'sliders missing');
+        assert.truthy(gameSrc.includes('type="range"'), 'a coarse control is still wanted');
+        for (const id of ['pbAngleDown', 'pbAngleUp', 'pbPowerDown', 'pbPowerUp']) {
+            assert.truthy(gameSrc.includes(`id="${id}"`), `${id} stepper missing`);
+        }
+        assert.truthy(gameSrc.includes("_pbGameNudge('angle', -1)"), 'the point is an exact single step');
+        assert.truthy(gameSrc.includes("_pbGameNudge('power', 1)"));
+    });
+
+    test('every way of aiming clamps to the same range', () => {
+        const bounds = gameSrc.match(/PB_ANGLE_MIN = (\d+), PB_ANGLE_MAX = (\d+)/);
+        const pbounds = gameSrc.match(/PB_POWER_MIN = (\d+), PB_POWER_MAX = (\d+)/);
+        assert.truthy(bounds && pbounds, 'aim bounds must be named, not scattered');
+        // …and the slider, the drag handler and the arrow keys must all use them.
+        assert.truthy(gameSrc.includes(`min="${bounds[1]}" max="${bounds[2]}"`), 'the angle slider disagrees with the clamp');
+        assert.truthy(gameSrc.includes(`min="${pbounds[1]}" max="${pbounds[2]}"`), 'the power slider disagrees with the clamp');
+        // Every path must clamp through the NAMED constants, not a retyped
+        // literal — that is what keeps them from drifting apart.
+        const angleClamps = (gameSrc.match(/Math\.(?:max|min)\(PB_ANGLE_(?:MIN|MAX)/g) || []).length;
+        const powerClamps = (gameSrc.match(/Math\.(?:max|min)\(PB_POWER_(?:MIN|MAX)/g) || []).length;
+        assert.truthy(angleClamps >= 4, `only ${angleClamps} angle clamps use the constant`);
+        assert.truthy(powerClamps >= 4, `only ${powerClamps} power clamps use the constant`);
+        assert.falsy(/this\.angle = Math\.max\(10, Math\.min\(80/.test(gameSrc),
+            'the drag handler still retypes the angle bounds');
+        assert.falsy(/this\.power = Math\.max\(10, Math\.min\(100/.test(gameSrc),
+            'the drag handler still retypes the power bounds');
+    });
+
+    test('manual aim is refused when it is not your turn', () => {
+        for (const fn of ['_pbGameSetAngle', '_pbGameSetPower']) {
+            const body = gameSrc.slice(gameSrc.indexOf('function ' + fn));
+            assert.truthy(body.slice(0, 260).includes('!g.myTurn || g.busy'),
+                `${fn} must not let a child re-aim mid-flight or on the opponent's turn`);
+        }
+        assert.truthy(gameSrc.includes("for (const id of ['pbAngle', 'pbPower', 'pbAngleDown'"),
+            'the controls must also be visibly disabled, not just inert');
+    });
+
+    test('a manual change is broadcast like any other aim', () => {
+        for (const fn of ['_pbGameSetAngle', '_pbGameSetPower']) {
+            const body = gameSrc.slice(gameSrc.indexOf('function ' + fn), gameSrc.indexOf('function ' + fn) + 400);
+            assert.truthy(body.includes('_pbBroadcastAim(g)'),
+                `${fn} must let the opponent watch the aim move`);
+        }
+    });
+
+    test('the sliders follow a drag instead of arguing with it', () => {
+        const ui = gameSrc.slice(gameSrc.indexOf('prototype._updateUi'));
+        assert.truthy(ui.includes("this._el('pbAngle'); if (angleEl) angleEl.value"),
+            'a drag must move the slider too, or the two disagree');
+        assert.truthy(ui.includes("text('pbAngleVal'"), 'the number must track the model');
     });
 
     test('pet levels stay visible and a destroyed house leaves pet and rubble outdoors', () => {
         assert.truthy(gameSrc.includes('pb-hud-level'));
         assert.truthy(gameSrc.includes("ctx.fillText('LV.'"));
-        assert.truthy(gameSrc.includes('// At zero HP the shelter is gone'));
-        assert.truthy(gameSrc.includes('if (damage >= 4)'));
+        assert.truthy(gameSrc.includes('// At zero HP the castle is truly gone'));
+        assert.truthy(gameSrc.includes('if (damage < 4)'), 'critical damage must replace the intact wall');
+        assert.truthy(gameSrc.includes('if (damage >= 5)'), 'zero HP must collapse to rubble');
         assert.truthy(gameSrc.includes('this.houseImpacts.push'));
+        assert.truthy(gameSrc.includes('this.castleDebris.push'), 'impact must throw large masonry fragments');
+        assert.truthy(gameSrc.includes('this.castleDebris = this.castleDebris.filter'), 'debris animation must clean itself up');
     });
 });
 
