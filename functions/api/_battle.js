@@ -90,6 +90,50 @@ export async function areFriends(env, aId, bId) {
   return !!row;
 }
 
+// A brand-new friendship cannot battle yet. Three days is exactly the window
+// ammo is earned over (activities in the last 3 days — see ammoStatsFor), so
+// a fresh pair of friends starts a battle having actually studied for it.
+//
+// Without this, the cheapest way to a trophy was: register a second account,
+// befriend yourself, battle immediately. The ammo economy could not stop it —
+// the ammo check only asks "do you have shots", and a determined child can
+// farm 20 correct answers in minutes on the throwaway account.
+export const FRIEND_BATTLE_DELAY_MS = 3 * 24 * 60 * 60 * 1000;
+
+// When may these two battle each other? null = right now.
+//
+// The clock starts when the friendship was ACCEPTED, not when it was sent:
+// a request that sits unanswered for a week is not three days of studying
+// together. Both accept paths (friends/respond.js and the auto-accept in
+// friends/index.js) write responded_at, but created_at is the fallback so a
+// row that somehow lacks it fails CLOSED — it still has to wait.
+export async function friendBattleReadyAt(env, aId, bId) {
+  const row = await env.DB.prepare(
+    `SELECT strftime('%s', COALESCE(responded_at, created_at)) AS since
+       FROM friendships
+      WHERE status = 'accepted'
+        AND ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?))`
+  ).bind(aId, bId, bId, aId).first();
+  if (!row) return null;                       // not friends — a different error
+  return friendReadyFrom(row.since);
+}
+
+// Shared by the challenge endpoint and the friends list so the countdown a
+// child sees and the rule the server enforces can never disagree.
+// `since` is a SQLite strftime('%s') string — seconds, UTC.
+export function friendReadyFrom(since) {
+  // Fail CLOSED on a date we cannot read. Number(null) and Number('') are both
+  // 0 — not NaN — so a NULL column would otherwise compute a 1970 deadline,
+  // sail past "is it in the future?" and hand back exactly the free pass this
+  // gate exists to remove. created_at is NOT NULL with a default, so this
+  // branch is unreachable in practice; it is here so "unknown" never means
+  // "allowed".
+  const seconds = (since === null || since === undefined || since === '') ? NaN : Number(since);
+  if (!Number.isFinite(seconds)) return Date.now() + FRIEND_BATTLE_DELAY_MS;
+  const at = seconds * 1000 + FRIEND_BATTLE_DELAY_MS;
+  return at > Date.now() ? at : null;
+}
+
 // When may this user battle again? (null = right now)
 export async function nextBattleAt(env, userId) {
   const row = await env.DB.prepare(

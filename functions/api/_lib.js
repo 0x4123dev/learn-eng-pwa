@@ -106,6 +106,9 @@ export function json(data, status = 200) {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
   });
 }
-export function err(message, status = 400) {
-  return json({ error: message }, status);
+// `extra` carries machine-readable detail alongside the human message — e.g.
+// the challenge endpoint returns readyAt so the client can count down instead
+// of just repeating a sentence the child cannot act on.
+export function err(message, status = 400, extra = null) {
+  return json(Object.assign({ error: message }, extra || {}), status);
 }

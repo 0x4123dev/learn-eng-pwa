@@ -99,6 +99,11 @@ const PB_STR = {
     cooldownTitle: '⏳ Next battle in <b>{t}</b>',
     cooldownSub: 'Study 3 days to load up! 🚀',
     noFriends: 'No friends to battle yet.', goFriends: '👥 Add a friend',
+    // A new friendship has to age 3 days before it can be fought — the same
+    // 3 days shots are earned over. The server decides; this only shows it.
+    friendNewDays: '⏳ {n} days to go', friendNewDay1: '⏳ 1 day to go', friendNewSoon: '⏳ Ready soon',
+    friendAllNew: '⏳ Your friends are still new — battles open 3 days after you connect. Keep studying! 🚀',
+    friendNewWhy: '⏳ New friends can battle after 3 days — study to load up! 🚀',
 
     histTitle: '📜 Battle history',
     histEmpty: 'No battles yet. Challenge a friend! ⚔️',
@@ -206,6 +211,9 @@ const PB_STR = {
     cooldownTitle: '⏳ Trận sau sau <b>{t}</b>',
     cooldownSub: 'Học 3 ngày để nạp đạn! 🚀',
     noFriends: 'Chưa có bạn nào để thách đấu.', goFriends: '👥 Kết bạn ngay',
+    friendNewDays: '⏳ còn {n} ngày', friendNewDay1: '⏳ còn 1 ngày', friendNewSoon: '⏳ sắp được rồi',
+    friendAllNew: '⏳ Bạn bè còn mới — sau 3 ngày kết bạn mới đấu được. Học tiếp nhé! 🚀',
+    friendNewWhy: '⏳ Bạn mới phải chờ 3 ngày mới đấu được — học bài để nạp đạn nhé! 🚀',
 
     histTitle: '📜 Lịch sử đấu',
     histEmpty: 'Chưa có trận nào. Thách đấu một người bạn nhé! ⚔️',
@@ -533,12 +541,25 @@ function renderPetBattle() {
   const ready = !st.readyAt || st.readyAt <= Date.now();
   const friends = (typeof _getFriendsData === 'function' && _getFriendsData())
     ? _getFriendsData().friends : ((typeof _friendsData !== 'undefined' && _friendsData) ? _friendsData.friends : []);
+  // battleReadyAt comes from the server — an absolute time, so the client
+  // never has to know that the rule is "3 days". A friend still ageing is
+  // greyed out with the wait shown, instead of a dead button that just fails.
+  const waiting = (f) => _pbFriendWait(f);
+  const anyWaiting = (friends || []).some(waiting);
+  const allWaiting = !!(friends && friends.length) && friends.every(waiting);
   const list = (friends && friends.length)
-    ? friends.map(f => `
-        <button class="pb-friend" onclick="challengePetFriend(${f.userId})" ${ready && st.ammo > 0 ? '' : 'disabled'}>
+    ? friends.map(f => {
+        const wait = waiting(f);
+        const label = wait
+          ? `<span class="pb-friend-wait">${wait}</span>`
+          : '<span class="pb-friend-go">⚔️</span>';
+        const off = wait || !ready || st.ammo <= 0;
+        return `
+        <button class="pb-friend${wait ? ' waiting' : ''}" onclick="challengePetFriend(${f.userId})" ${off ? 'disabled' : ''}>
           <span class="pb-friend-name">${pbEsc(f.username)}</span>
-          <span class="pb-friend-go">⚔️</span>
-        </button>`).join('')
+          ${label}
+        </button>`;
+      }).join('') + (anyWaiting ? `<div class="pb-hint pb-friend-why">${pbT('friendNewWhy')}</div>` : '')
     : `<div class="pb-empty">
          ${pbT('noFriends')}
          <button class="pb-btn primary pb-go-friends" onclick="pbGoToFriends()">${pbT('goFriends')}</button>
@@ -550,7 +571,7 @@ function renderPetBattle() {
   // broken.
   const sig = JSON.stringify([
     st.ammo, st.readyAt || 0, !!st.allowBot, ready,
-    (friends || []).map(f => f.userId), _pbMsg, _pbLang, _pbHistoryOpen,
+    (friends || []).map(f => [f.userId, _pbFriendWait(f)]), allWaiting, _pbMsg, _pbLang, _pbHistoryOpen,
     (typeof pbSelectedSceneId === 'function' ? pbSelectedSceneId() : ''),
     _pbHistory().length,
   ]);
@@ -567,7 +588,11 @@ function renderPetBattle() {
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
-          ? `<div class="pb-ready">${pbT('readyPick')}</div>`
+          // "Ready! Pick a friend" reads as a lie when every friend on the
+          // list is still ageing and none of them can be tapped.
+          ? (allWaiting
+              ? `<div class="pb-warn">${pbT('friendAllNew')}</div>`
+              : `<div class="pb-ready">${pbT('readyPick')}</div>`)
           : `<div class="pb-warn">${pbT('noAmmoPick')}</div>`)
       : `<div class="pb-cooldown">
            <div class="pb-cooldown-title">${pbT('cooldownTitle', { t: pbFmtCountdown(st.readyAt - Date.now()) })}</div>
@@ -711,6 +736,21 @@ function pbGoToFriends() {
     const el = document.getElementById('friendsSection');
     if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 120);
+}
+
+// How much longer before this friend can be fought, as a label — or '' if now.
+//
+// The value is a server timestamp, never a locally computed deadline: the
+// device clock on a child's iPad is not trustworthy, and the server would
+// refuse the challenge anyway. A missing/!finite value means "no wait", so an
+// older client or a failed field never locks a friend out by accident.
+function _pbFriendWait(f) {
+  const at = f && Number(f.battleReadyAt);
+  if (!Number.isFinite(at) || at <= Date.now()) return '';
+  const left = at - Date.now();
+  const days = Math.ceil(left / 86400000);
+  if (days < 1) return pbT('friendNewSoon');
+  return days === 1 ? pbT('friendNewDay1') : pbT('friendNewDays', { n: days });
 }
 
 // ---- challenge flow ----

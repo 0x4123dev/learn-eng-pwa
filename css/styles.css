@@ -1347,6 +1347,19 @@
             color: var(--text-primary);
         }
         .pb-friend:disabled { opacity: 0.45; cursor: default; }
+        /* A friend who is merely too NEW is a different state from one you
+           cannot fight right now for lack of ammo. Fading it to 0.45 like the
+           rest would drop the countdown to roughly 2:1 contrast — unreadable
+           on an iPad in daylight, and the countdown is the whole point of the
+           row. So this state keeps full opacity and says why instead. */
+        .pb-friend.waiting:disabled { opacity: 1; background: rgba(148,163,184,.16); border-style: dashed; }
+        .pb-friend.waiting .pb-friend-name { color: #475569; }
+        .pb-friend-wait {
+            font-size: 12px; font-weight: 800; white-space: nowrap;
+            padding: 4px 10px; border-radius: 999px;
+            background: #e2e8f0; color: #334155;
+        }
+        .pb-friend-why { margin-top: 8px; text-align: center; }
         .pb-msg { font-size: 12.5px; color: #dc2626; margin-top: 10px; text-align: center; }
         .pb-invite-card, .pb-result-card {
             text-align: center; padding: 22px 16px; border-radius: 18px;

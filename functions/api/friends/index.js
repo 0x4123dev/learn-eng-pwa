@@ -1,4 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
+import { friendReadyFrom } from '../_battle.js';
 
 // Summary of a user's learning, safe to show a friend: no raw history,
 // no answers — just what a scoreboard would show.
@@ -24,7 +25,8 @@ export async function onRequestGet({ request, env }) {
 
   const rows = await env.DB.prepare(
     `SELECT f.id, f.status, f.requester_id, f.addressee_id,
-            ru.username AS requester_name, au.username AS addressee_name
+            ru.username AS requester_name, au.username AS addressee_name,
+            strftime('%s', COALESCE(f.responded_at, f.created_at)) AS since
        FROM friendships f
        JOIN users ru ON ru.id = f.requester_id
        JOIN users au ON au.id = f.addressee_id
@@ -39,6 +41,10 @@ export async function onRequestGet({ request, env }) {
     const otherId = isRequester ? r.addressee_id : r.requester_id;
     const otherName = isRequester ? r.addressee_name : r.requester_name;
     const entry = { friendshipId: r.id, userId: otherId, username: otherName };
+    // How long until this pair may battle (null = now). Sent as an absolute
+    // timestamp so the client renders a countdown without ever holding its own
+    // copy of the 3-day rule — one number, one source, nothing to drift.
+    if (r.status === 'accepted') entry.battleReadyAt = friendReadyFrom(r.since);
     if (r.status === 'accepted') friends.push(entry);
     else if (isRequester) outgoing.push(entry);
     else incoming.push(entry);

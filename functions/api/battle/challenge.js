@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { areFriends, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground } from '../_battle.js';
+import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground } from '../_battle.js';
 
 // POST /api/battle/challenge { friendId, level, stage, petName, backgroundId }
 // Starts a 60-second invite. Zero ammo ⇒ no battle: you must learn first.
@@ -13,6 +13,17 @@ export async function onRequestPost({ request, env }) {
   const friendId = Math.trunc(+body.friendId);
   if (!friendId) return err('Thiếu friendId');
   if (!(await areFriends(env, auth.uid, friendId))) return err('Chỉ đấu với bạn bè', 403);
+
+  // A friendship must be 3 days old before it can be fought. This is the gate
+  // that makes the ammo economy mean something: otherwise a second account
+  // could be registered, befriended and beaten within the same minute. The
+  // client greys the friend out and counts down, but the rule lives HERE —
+  // the button is a courtesy, this is the enforcement.
+  const friendReadyAt = await friendBattleReadyAt(env, auth.uid, friendId);
+  if (friendReadyAt) {
+    const days = Math.ceil((friendReadyAt - Date.now()) / 86400000);
+    return err(`Bạn mới quá! Còn ${days} ngày nữa mới đấu được — học bài để nạp đạn nhé! 🚀`, 429, { readyAt: friendReadyAt });
+  }
 
   if (await currentBattle(env, auth.uid)) return err('Bạn đang trong một trận đấu', 409);
   if (await currentBattle(env, friendId)) return err('Bạn ấy đang bận đấu trận khác', 409);
