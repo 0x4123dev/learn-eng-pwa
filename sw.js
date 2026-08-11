@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v236';
+const CACHE_NAME = 'flashlingo-v237';
 const ASSETS = [
   '/',
   '/index.html',
