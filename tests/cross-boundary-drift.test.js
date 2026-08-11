@@ -253,6 +253,132 @@ suite('drift: grade 4 units', () => {
     });
 });
 
+// ---- grammar ---------------------------------------------------------------
+suite('drift: grammar units and lessons', () => {
+    const { loadAppCode } = require('./setup');
+    const env = loadAppCode();
+    const unitIds = (env.GRAMMAR_UNITS || []).map(u => u.id);
+    const lessonIds = (env.GRAMMAR_LESSONS || []).map(u => u.unitId);
+
+    // Questions live in grammar-units.js, theory in grammar-lessons.js. A unit
+    // in one and not the other means either a lesson card with nothing to
+    // practise, or practice with no explanation behind it.
+    test('every unit with questions has a lesson, and every lesson has a unit', () => {
+        assert.truthy(unitIds.length >= 13, `only ${unitIds.length} units`);
+        assert.equal(unitIds.filter(u => !lessonIds.includes(u)).join(', '), '',
+            'units with questions but no lesson card');
+        assert.equal(lessonIds.filter(l => !unitIds.includes(l)).join(', '), '',
+            'lesson cards with no questions behind them');
+    });
+
+    // tests/grammar-all-units.test.js runs deep per-unit checks against a
+    // HAND-MAINTAINED list. unit13 is legitimately outside it — it is the Exam
+    // unit, with no textbook PDF refs and a different topic structure — but
+    // nothing recorded that the exclusion was deliberate rather than forgotten.
+    // A unit14 added tomorrow must land in one bucket or the other on purpose.
+    const DEEP_CHECKED = ['unit1', 'unit2', 'unit3', 'unit4', 'unit5', 'unit6',
+        'unit7', 'unit8', 'unit9', 'unit10', 'unit11', 'unit12'];
+    const DELIBERATELY_EXCLUDED = {
+        unit13: 'the Exam unit: mixed revision, no textbook page refs, no per-unit topic syllabus',
+    };
+
+    test('every unit is either deep-checked or excluded on purpose', () => {
+        const unaccounted = unitIds.filter(u => !DEEP_CHECKED.includes(u) && !(u in DELIBERATELY_EXCLUDED));
+        assert.equal(unaccounted.join(', '), '',
+            'new grammar unit is in neither the deep-check list nor the documented exclusions');
+    });
+
+    test('the deep-check list names only units that exist', () => {
+        assert.equal(DEEP_CHECKED.filter(u => !unitIds.includes(u)).join(', '), '',
+            'the deep-check list references units that were removed');
+        // …and it must match the list the other suite actually iterates.
+        const other = read('tests/grammar-all-units.test.js').match(/const ALL_UNIT_IDS = \[([^\]]+)\]/);
+        assert.truthy(other, 'ALL_UNIT_IDS not found in grammar-all-units.test.js');
+        const theirs = (other[1].match(/'[^']+'/g) || []).map(x => x.slice(1, -1));
+        assert.equal(theirs.join(','), DEEP_CHECKED.join(','),
+            'the two lists have drifted — this guard would be checking the wrong thing');
+    });
+});
+
+// ---- exam ------------------------------------------------------------------
+suite('drift: exam questions and the renderer', () => {
+    const vm = require('vm');
+    const ctx = {};
+    vm.createContext(ctx);
+    vm.runInContext(read('js/exam-data.js') + '\nthis.EXAMS = EXAMS;', ctx);
+    const exams = ctx.EXAMS;
+    const examUi = read('js/exam.js');
+
+    // The renderer names 'text' explicitly and sends everything else down the
+    // options[q.correct] path. A new type added to the data would therefore
+    // not be "unhandled" — it would be silently treated as multiple-choice and
+    // throw on a missing options array.
+    const RENDERABLE = ['mcq', 'tf', 'text'];
+
+    test('the data uses only types the renderer can actually draw', () => {
+        const seen = new Set();
+        for (const e of exams) for (const q of (e.questions || [])) seen.add(q.type);
+        const unknown = [...seen].filter(t => !RENDERABLE.includes(t));
+        assert.equal(unknown.join(', '), '',
+            'these types fall through to the multiple-choice path and would throw');
+    });
+
+    test('the renderer still special-cases text, or typed answers break', () => {
+        assert.truthy(examUi.includes("q.type === 'text'"), 'typed answers need their own branch');
+    });
+
+    test('every option-based question can survive that path', () => {
+        const broken = [];
+        for (const e of exams) {
+            for (const q of (e.questions || [])) {
+                if (q.type === 'text') continue;
+                if (!Array.isArray(q.options) || q.options.length === 0) { broken.push(`${e.id} q${q.n}: no options`); continue; }
+                if (!(q.correct >= 0 && q.correct < q.options.length)) broken.push(`${e.id} q${q.n}: correct=${q.correct} of ${q.options.length}`);
+            }
+        }
+        assert.equal(broken.slice(0, 5).join(' | '), '', 'options[q.correct] would be undefined');
+    });
+
+    test('exam ids are unique, because history keys on them', () => {
+        const ids = exams.map(e => e.id);
+        assert.equal(new Set(ids).size, ids.length, 'a duplicate id would merge two exams histories');
+    });
+});
+
+// ---- activity sync ---------------------------------------------------------
+suite('drift: every practice module reaches the admin dashboard', () => {
+    // _localHistoryItems() in js/auth.js enumerates each module's history by
+    // hand. A new tab that forgets to add itself syncs NOTHING — the child's
+    // work simply never appears in the dashboard, with no error anywhere.
+    // This derives the list from the app instead of trusting a second copy.
+    const EXCLUDED = {
+        battleHistory: 'the older local word-matching mode, not a practice session',
+        petBattleHistory: 'battles are already recorded server-side in the battles table',
+    };
+
+    test('no practice history is silently left out of the sync', () => {
+        const found = new Set();
+        for (const f of fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js'))) {
+            const src = read('js/' + f);
+            for (const m of src.matchAll(/appState\.([a-zA-Z]*[Hh]istory)\b/g)) found.add(m[1]);
+        }
+        const auth = read('js/auth.js');
+        const synced = new Set([...auth.matchAll(/appState\.([a-zA-Z]*[Hh]istory)\b/g)].map(m => m[1]));
+        const missing = [...found].filter(h => !synced.has(h) && !(h in EXCLUDED));
+        assert.equal(missing.join(', '), '',
+            'this history never syncs — the child\'s work would be invisible to the dashboard');
+    });
+
+    test('the exclusions still exist, so the list cannot rot', () => {
+        const all = read('js/auth.js') + Object.keys(EXCLUDED).map(k => k).join(' ');
+        for (const key of Object.keys(EXCLUDED)) {
+            const used = fs.readdirSync(path.join(ROOT, 'js'))
+                .some(f => f.endsWith('.js') && read('js/' + f).includes('appState.' + key));
+            assert.truthy(used, `${key} is excluded from sync but no longer exists — drop the exclusion`);
+        }
+    });
+});
+
 suite('drift: the username rule', () => {
     // Already pinned in tests/username.test.js; asserted here too so the whole
     // cross-boundary inventory lives in one place.
