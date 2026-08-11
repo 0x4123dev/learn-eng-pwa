@@ -20,6 +20,25 @@ const TOPICS = [
     { id: 'quality',       name: 'Quality & Description',   icon: '🌟', color: '#FFD60A' }
 ];
 
+// ---- the treasure lesson ----
+// One lesson pays a jackpot every single time it is finished, so a child who
+// wants a stronger battle dog has something to grind for. Deliberately
+// repeatable: there is no "already claimed" flag, and that is the point.
+//
+// It is Lesson 40 of Daily Life. Lesson cards are labelled `idx + 1`, so the
+// card that reads "Lesson 40" is chunk index 39 — off-by-one here would pay
+// out on the wrong lesson and nobody would notice for weeks.
+//
+// Scale, measured against getPointsForLevel() in js/home.js: one run takes a
+// level-1 dog to 16, three runs to 30, ten to 56, and 122 runs to the level
+// cap of 200. Coins are worth roughly 3 Royal Feasts.
+const TOPIC_BONUS_LESSON = { topicId: 'daily', chunkIdx: 39, coins: 1000, xp: 1000 };
+
+function isBonusTopicLesson(topicId, chunkIdx) {
+    return topicId === TOPIC_BONUS_LESSON.topicId
+        && Number(chunkIdx) === TOPIC_BONUS_LESSON.chunkIdx;
+}
+
 // Word-index ranges → topic IDs. Inclusive `from`, exclusive `to`.
 // Aggressive multi-tagging: most ranges map to 2-4 topics so every topic
 // gets ≥100 words across the 1957-word vocabulary.
@@ -784,13 +803,19 @@ function openTopicDetail(topicId) {
             ? `<span class="topic-lesson-due-chip">🔄 ${lessonDue} due</span>`
             : '';
 
+        // The jackpot has to be findable, or nobody grinds a lesson they cannot
+        // see. Says "every time" because a child assumes a bonus is one-off.
+        const bonusChip = isBonusTopicLesson(topicId, idx)
+            ? `<span class="topic-lesson-bonus-chip">💰 +${TOPIC_BONUS_LESSON.coins} 🪙 · +${TOPIC_BONUS_LESSON.xp} XP every time!</span>`
+            : '';
+
         return `
             <div class="topic-lesson-card ${cardClass}">
                 <div class="topic-lesson-card-header">
                     <span class="topic-lesson-card-num">Lesson ${idx + 1}</span>
                     <span class="topic-lesson-card-diff">${diffBadge}</span>
                 </div>
-                ${statusBadge}${dueChip}
+                ${statusBadge}${dueChip}${bonusChip}
                 <div class="topic-lesson-card-preview">${previewWords}</div>
                 <button class="topic-lesson-start-btn" onclick="startTopicLessonChunk('${topicId}', ${idx})">
                     ${btnLabel}

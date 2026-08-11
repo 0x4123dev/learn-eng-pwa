@@ -291,7 +291,27 @@ function completeLesson() {
         return;
     }
 
-    // Handle practice session differently
+    // The jackpot needs to LAND: a number quietly ticking up in a corner is not a
+// reward. Shows what was won, and hands off to the level-up celebration when
+// the dog actually grew — which, at +1000 XP, is most of the time.
+function _showTopicBonusReward(bonus, levelBefore) {
+    const after = (typeof appState !== 'undefined' && appState) ? (appState.dogLevel || 1) : 1;
+    const grew = after > (levelBefore || 1);
+
+    const sub = document.getElementById('completeSubtitle');
+    if (sub) {
+        sub.innerHTML = `💰 TREASURE LESSON! <b>+${bonus.coins}</b> 🪙 and <b>+${bonus.xp}</b> XP`
+            + (grew ? `<br>🎉 Your dog reached <b>level ${after}</b>!` : '')
+            + `<br><span class="topic-bonus-again">Replay it any time — it pays every single time.</span>`;
+    }
+    if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
+    // The celebration owns the screen, so let the completion card land first.
+    if (grew && typeof showLevelUpCelebration === 'function') {
+        setTimeout(() => { try { showLevelUpCelebration(after, levelBefore); } catch (e) {} }, 1200);
+    }
+}
+
+// Handle practice session differently
     if (lessonState.isPracticeSession) {
         const _prevPointsP = appState.points;
         appState.points += lessonState.lessonPoints;
@@ -307,6 +327,22 @@ function completeLesson() {
                 appState.topicProgress[lessonState.topicId][lessonState.topicChunkIdx] = newRecord;
             }
         }
+        // ── The treasure lesson ──
+        // Pays EVERY time, by design (see TOPIC_BONUS_LESSON in js/topics.js):
+        // it is the grind that turns study time into a stronger battle dog.
+        // Awarded before saveUserData so a child who closes the app the instant
+        // the screen appears still keeps it.
+        let _bonus = null;
+        if (typeof isBonusTopicLesson === 'function' && lessonState.isTopicLesson
+            && isBonusTopicLesson(lessonState.topicId, lessonState.topicChunkIdx)) {
+            _bonus = TOPIC_BONUS_LESSON;
+            const _lvlBefore = appState.dogLevel || 1;
+            appState.coins = (appState.coins || 0) + _bonus.coins;
+            appState.dogGrowthXP = (appState.dogGrowthXP || 0) + _bonus.xp;
+            if (typeof getDogLevel === 'function') appState.dogLevel = getDogLevel(appState.dogGrowthXP);
+            lessonState._bonusLevelBefore = _lvlBefore;
+        }
+
         saveUserData(currentUser, appState);
 
         // Pet hooks
@@ -323,6 +359,11 @@ function completeLesson() {
                 ? `${lessonState.wrongInLesson} mistake${lessonState.wrongInLesson !== 1 ? 's' : ''} this round`
                 : 'Mistakes reviewed!';
         }
+
+        // LAST, on purpose: both branches above write completeSubtitle, so a
+        // reward announced before them is overwritten a line later and the
+        // child sees "2 mistakes this round" instead of their 1000 coins.
+        if (_bonus) _showTopicBonusReward(_bonus, lessonState._bonusLevelBefore);
 
         document.getElementById('lessonComplete').classList.add('active');
         return;

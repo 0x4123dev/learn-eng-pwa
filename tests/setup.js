@@ -140,6 +140,7 @@ const EXPORT_NAMES = [
     'TOPICS', 'INDEX_RANGE_TOPICS', 'WORD_TOPIC_OVERRIDES', 'WORD_TOPIC_ADDITIONS',
     'getTopicsForWord', 'getTopicsForWordIndex', 'getWordsForTopic', 'getTopicCounts',
     'getTopicById', 'getDifficultyLabelForWordIdx', 'buildWordTopicsIndex',
+    'TOPIC_BONUS_LESSON', 'isBonusTopicLesson',
     // srs.js
     'initWordSRS', 'updateWordSRS', 'getWordsDueForReview', 'getReviewCount',
     'getSRSMasteryPercent', 'startReviewSession',
