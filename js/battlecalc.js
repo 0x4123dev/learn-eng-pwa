@@ -224,6 +224,9 @@ function simulateShot(opts) {
   let x = from.x + facing * 16;
   let y = from.y - R.muzzleY;
   const wind = opts.wind || 0;
+  // Castles that can stop this shell. The caller passes the TARGET only, so a
+  // shell can never collide with the wall it is fired from.
+  const blockers = Array.isArray(opts.blockers) ? opts.blockers : null;
   const points = [];
   let hit = null;
   let f = 0;
@@ -233,6 +236,21 @@ function simulateShot(opts) {
     x += vx; y += vy;
     points.push({ x, y });
     if (x < -60 || x > R.worldW + 60) break;          // flew off the field
+
+    // The castle is a SOLID building, not a decal. Until this existed the
+    // shell collided with terrain only, so a flat shot sailed straight
+    // through the walls and landed in the field behind — a child watched a
+    // poop go through the house and nothing happen. Checked before terrain,
+    // so a shell arriving at the base of a wall hits the wall.
+    if (R.castle && blockers && f >= R.muzzleClearance) {
+      let struck = null;
+      for (const b of blockers) {
+        if (!b) continue;
+        if (Math.abs(x - b.x) <= R.castle.halfW && y <= b.y && y >= b.y - R.castle.height) { struck = { x, y }; break; }
+      }
+      if (struck) { hit = struck; break; }
+    }
+
     const col = Math.round(x);
     if (f >= R.muzzleClearance && col >= 0 && col < R.worldW && y >= terrain[col]) {
       hit = { x, y: terrain[col] };

@@ -558,6 +558,28 @@ PetBattleGame.prototype._bindAimControls = function () {
   });
 };
 
+// A shell is stopped by the castle it is flying AT, never by the one it was
+// fired from — otherwise the muzzle, which sits inside its own walls, would
+// block every shot at frame one.
+PetBattleGame.prototype._blockersFor = function (from) {
+  if (!this.rules || !this.rules.castle) return null;
+  return [from === this.mePos ? this.foePos : this.mePos];
+};
+
+// The camera has to be looking at the shooter BEFORE the shell leaves the
+// barrel, or a child who scouted the far end of the field fires into a screen
+// showing somewhere else entirely. Defers the launch until the world has
+// finished sliding back.
+PetBattleGame.prototype._afterCameraReaches = function (worldX, run) {
+  const cam = this.camera;
+  this._followCancelled = false;                 // a new volley is worth watching
+  if (!cam || !cam.isPannable()) { run(); return; }
+  cam.focusOn(worldX, { mode: 'turn-focus' });
+  if (cam.settled()) { run(); return; }          // already there, or reduced motion
+  this._pendingLaunch = run;
+  this._requestFrame();
+};
+
 // Labelled jumps: My dog / Centre / Opponent. Available as buttons AND keys,
 // so a child who cannot swipe accurately is never stuck.
 PetBattleGame.prototype.cameraAnchor = function (which) {
@@ -742,6 +764,7 @@ PetBattleGame.prototype._drawWorld = function () {
     const ghost = C.simulateShot({
       terrain: this.terrain, from: this.foePos, facing: -this.meFacing,
       angle: this.foeAiming.angle, power: this.foeAiming.power, wind: this.wind(), rules: this.rules,
+      blockers: [this.mePos],
     });
     ctx.setLineDash([5, 7]);
     ctx.strokeStyle = 'rgba(220,60,60,0.45)';
@@ -1012,6 +1035,7 @@ PetBattleGame.prototype._drawAimGuide = function (pos, facing, angle, power, col
 PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, power) {
   const shot = this.calc.simulateShot({
     terrain: this.terrain, from, facing, angle, power, wind: this.wind(), rules: this.rules,
+    blockers: this._blockersFor(from),
   });
   const ctx = this.ctx;
   ctx.save();
@@ -1028,6 +1052,7 @@ PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, 
 };
 
 PetBattleGame.prototype._hasActiveAnimation = function () {
+  if (this._pendingLaunch) return true;          // keep ticking until it fires
   // A travelling camera counts: the frame loop must keep running until the
   // world has finished sliding, or a pan would freeze halfway.
   const camMoving = !!(this.camera && this.camera.isPannable() && !this.camera.settled());
@@ -1051,6 +1076,11 @@ PetBattleGame.prototype._requestFrame = function () {
     const k = last ? (t - last) / 16.667 : 1;
     this.step(k);
     this._updateCamera(k);
+    if (this._pendingLaunch && (!this.camera || this.camera.settled())) {
+      const launch = this._pendingLaunch;
+      this._pendingLaunch = null;
+      launch();
+    }
     this.draw();
     if (this._hasActiveAnimation()) this._requestFrame();
     else this._lastFrameAt = 0;                    // next burst starts fresh
@@ -1139,6 +1169,7 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
   this.flying = angles.map(a => {
     const sim = C.simulateShot({
       terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(), rules: this.rules,
+      blockers: [target],
     });
     const bulletDamage = C.damageAt(sim.hit, target, level, this.rules);
     damage += bulletDamage;
@@ -1186,14 +1217,23 @@ PetBattleGame.prototype._passTurn = function () {
 // ---- my turn ----
 PetBattleGame.prototype.fire = function () {
   if (!this.myTurn || this.busy || this.finished) return;
-  this._followCancelled = false;                 // a new shot is worth watching
   const C = this.calc;
   // Math.max(1, …) used to fire a phantom poop on an empty clip. Now that a
   // battle runs until the ammo does, an empty turn must pass, not shoot.
   const maxShots = C.maxShotsThisTurn(this.myAmmo);
   if (maxShots <= 0) { this._passTurn(); return; }
-  const shots = Math.max(1, Math.min(maxShots, this.shots));
+  // Lock the turn NOW, before the camera travels, so a second tap during the
+  // pan cannot fire twice.
   this.busy = true;
+  // A child may have scouted anywhere on a 2000px field. Bring the world back
+  // to their own castle first, THEN fire and follow the shell.
+  this._afterCameraReaches(this.mePos.x, () => this._launchMyVolley(maxShots));
+};
+
+PetBattleGame.prototype._launchMyVolley = function (maxShots) {
+  if (this.finished) { this.busy = false; return; }
+  const C = this.calc;
+  const shots = Math.max(1, Math.min(maxShots, this.shots));
   if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && !this.reducedMotion) navigator.vibrate(18);
   this.myAmmo -= shots;
   const damage = this._launch(this.mePos, this.meFacing, this.angle, this.power, shots, this.view.me.level, this.foePos);
@@ -1230,7 +1270,16 @@ PetBattleGame.prototype._replay = function (turn) {
     this.render();
     return;
   }
+  // Same courtesy in reverse: swing to the OPPONENT's castle before their
+  // shell leaves, so a child sees where the incoming poop is coming from
+  // instead of a shell arriving from off-screen.
   this.busy = true;
+  this._afterCameraReaches(this.foePos.x, () => this._launchFoeVolley(turn, shots));
+};
+
+PetBattleGame.prototype._launchFoeVolley = function (turn, shots) {
+  if (this.finished) { this.busy = false; return; }
+  const C = this.calc;
   this.foeAmmo = Math.max(0, this.foeAmmo - shots);
   const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos);
   this._pendingResolve = () => {

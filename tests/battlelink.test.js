@@ -321,10 +321,10 @@ suite('battle turns are never silently dropped', () => {
     });
 
     test('the queue drains when each animation finishes', () => {
-        const fire = gameSrc.slice(gameSrc.indexOf('prototype.fire'), gameSrc.indexOf('prototype._replay'));
+        const fire = gameSrc.slice(gameSrc.indexOf('prototype._launchMyVolley'), gameSrc.indexOf('prototype._replay'));
         assert.truthy(fire.includes('this._drainTurns()'), 'after my own volley');
-        const replay = gameSrc.slice(gameSrc.indexOf('prototype._replay'));
-        assert.truthy(replay.slice(0, 1200).includes('this._drainTurns()'), 'after a replayed volley');
+        const replay = gameSrc.slice(gameSrc.indexOf('prototype._launchFoeVolley'));
+        assert.truthy(replay.slice(0, 1400).includes('this._drainTurns()'), 'after a replayed volley');
     });
 
     test('a destroyed game replays nothing', () => {

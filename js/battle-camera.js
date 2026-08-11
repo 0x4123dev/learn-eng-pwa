@@ -23,7 +23,10 @@ const CAM_SNAP_PX = 0.6;           // close enough — stop easing and settle
 // to world units. A child aiming must never accidentally scroll the field, and
 // a child scouting must never accidentally re-aim.
 const TAP_MS = 250;
-const TAP_SLOP_PX = 8;
+// 8px was tighter than a child's finger: a tap that wobbled 8px across and
+// 2px down measures 8.25px and fell through to "none", so the poop simply did
+// not aim. Still comfortably below PAN_START_PX, so nothing becomes ambiguous.
+const TAP_SLOP_PX = 10;
 const PAN_START_PX = 12;
 const PAN_RATIO = 1.25;            // |dx| must beat |dy| by this to count as a pan
 

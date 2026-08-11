@@ -1071,6 +1071,19 @@
         .pb-scene-invite img { width: 72px; aspect-ratio: 16/9; border-radius: 9px; object-fit: cover; }
         .pb-scene-invite span { min-width: 0; color: #475569; font-size: 10px; }
         .pb-scene-invite b { display: block; color: #1e293b; font-size: 12px; }
+        /* iPad and anything else wide. The app was drawn for a ~390px phone;
+           left alone it simply stretches, so on an iPad Pro the "your name"
+           field was 976px across — a text box nearly a metre wide for a
+           child's first name. Cap the content and centre it so the design
+           reads as deliberate instead of inflated. Screens that genuinely
+           benefit from room (the battlefield, grammar, exams, topics) get a
+           wider cap of their own. */
+        @media (min-width: 700px) {
+            .screen { max-width: 680px; margin-inline: auto; }
+            .pet-battle-screen, .grammar-screen, .exam-screen,
+            .topics-screen, .phrases-screen, .wordform-screen, .rewrite-screen { max-width: 920px; }
+        }
+
         @media (min-width: 700px) { .pb-scene-list { grid-auto-columns: minmax(170px, 25%); } }
         @media (prefers-reduced-motion: reduce) { .pb-scene-option { transition: none; } }
 
@@ -1092,7 +1105,7 @@
         .pb-game-lang { flex-shrink: 0; }
         /* The turn callout is a pale cyan pill, so the flags follow its ink. */
         .pb-game-lang .pb-flag { padding: 3px 6px; border-color: rgba(21, 94, 117, .3); background: rgba(21, 94, 117, .07); opacity: .75; }
-        .pb-game-lang .pb-flag span { font-size: 8.5px; color: #155e75; }
+        .pb-game-lang .pb-flag span { font-size: 10px; color: #155e75; }
         .pb-game-lang .pb-flag.on { opacity: 1; border-color: #c2410c; background: rgba(194, 65, 12, .12); }
         .pb-game-lang .pb-flag.on span { color: #9a3412; }
 
@@ -1342,7 +1355,7 @@
             color: white; background: rgba(15,23,42,.76); backdrop-filter: blur(7px);
             box-shadow: 0 3px 10px rgba(15,23,42,.2);
         }
-        .pb-field-readout small { font-size: 8px; letter-spacing: .1em; color: #bae6fd; font-weight: 900; }
+        .pb-field-readout small { font-size: 10px; letter-spacing: .1em; color: #bae6fd; font-weight: 900; }
         .pb-field-readout b { font-size: 13px; font-variant-numeric: tabular-nums; }
         .pb-drag-hint {
             position: absolute; z-index: 2; right: 12px; bottom: 13px; pointer-events: none;
@@ -1405,7 +1418,7 @@
         .pb-fire-icon { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 38% 38%, #fff 0 8%, #fde047 10% 28%, #fb923c 30% 50%, #dc2626 52% 64%, transparent 66%); filter: drop-shadow(0 2px 3px rgba(127,29,29,.45)); }
         .pb-fire-copy { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
         .pb-fire-copy strong { font-size: 18px; font-weight: 950; letter-spacing: .08em; }
-        .pb-fire-copy small { margin-top: 5px; font-size: 8px; font-weight: 850; letter-spacing: .1em; color: #fff7ed; }
+        .pb-fire-copy small { margin-top: 5px; font-size: 10px; font-weight: 850; letter-spacing: .1em; color: #fff7ed; }
         .pb-fire:not(:disabled):hover { filter: saturate(1.12) brightness(1.04); box-shadow: 0 6px 0 #9f1239, 0 15px 28px rgba(225,29,72,.38); }
         .pb-fire:disabled { background: rgba(0,0,0,0.15); color: var(--text-secondary); box-shadow: none; }
         .pb-fire:disabled::after { display: none; }
@@ -1434,7 +1447,7 @@
             .pb-heart { font-size: 12px; }
             .pb-emotes { gap: 6px; }
             .pb-field-readout { left: 9px; bottom: 9px; }
-            .pb-drag-hint { right: 9px; bottom: 10px; font-size: 8px; }
+            .pb-drag-hint { right: 9px; bottom: 10px; font-size: 10px; }
         }
 
         /* Pet motivation loop: cheering, food quest, quick-feed (petcheer.js) */
@@ -1598,7 +1611,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .home-skills-ring-inner strong { font-size: 15px; color: var(--text-primary); line-height: 1; }
-        .home-skills-ring-inner span { font-size: 8.5px; color: var(--text-secondary); }
+        .home-skills-ring-inner span { font-size: 10px; color: var(--text-secondary); }
         /* 2-column grid: chips always align in tidy pairs instead of a ragged wrap */
         .home-skills-chips { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .home-skills-chip {

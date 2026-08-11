@@ -433,22 +433,22 @@ suite('hit logic: when a hit ends the fight', () => {
 // ── 11. the hit cannot be faked or mis-attributed ──────────────────────────
 suite('hit logic: hits belong to the right pet', () => {
     test('my volley is measured against the opponent, not me', () => {
-        const fire = gameSrc.slice(gameSrc.indexOf('prototype.fire'), gameSrc.indexOf('prototype._replay'));
+        const fire = gameSrc.slice(gameSrc.indexOf('prototype._launchMyVolley'), gameSrc.indexOf('prototype._replay'));
         assert.truthy(fire.includes('this.mePos, this.meFacing') && fire.includes('this.foePos'),
             'my shot must fly from me toward the opponent');
     });
 
     test('a replayed volley is measured against me', () => {
-        const replay = gameSrc.slice(gameSrc.indexOf('prototype._replay'));
-        assert.truthy(replay.slice(0, 800).includes('this.foePos, -this.meFacing'), 'their shot flies from them');
-        assert.truthy(replay.slice(0, 800).includes('this.mePos'), 'and lands on me');
+        const replay = gameSrc.slice(gameSrc.indexOf('prototype._launchFoeVolley'));
+        assert.truthy(replay.slice(0, 900).includes('this.foePos, -this.meFacing'), 'their shot flies from them');
+        assert.truthy(replay.slice(0, 900).includes('this.mePos'), 'and lands on me');
     });
 
     test('damage uses the shooter level, not the target level', () => {
-        const fire = gameSrc.slice(gameSrc.indexOf('prototype.fire'), gameSrc.indexOf('prototype._replay'));
+        const fire = gameSrc.slice(gameSrc.indexOf('prototype._launchMyVolley'), gameSrc.indexOf('prototype._replay'));
         assert.truthy(fire.includes('this.view.me.level'), 'my shot must use my own level');
-        const replay = gameSrc.slice(gameSrc.indexOf('prototype._replay'));
-        assert.truthy(replay.slice(0, 800).includes('this.view.foe.level'), 'their shot must use theirs');
+        const replay = gameSrc.slice(gameSrc.indexOf('prototype._launchFoeVolley'));
+        assert.truthy(replay.slice(0, 900).includes('this.view.foe.level'), 'their shot must use theirs');
     });
 
     test('the same rule set is used for the shot and the damage', () => {
