@@ -86,22 +86,56 @@ suite('unit mastery: retiring a unit', () => {
     });
 });
 
+// These two used to match the exact markup string and the first 400 chars of
+// startUnitPractice. Both broke the day the wrong-word gate was added in front
+// of the mastery check — while the rule itself still worked perfectly. They
+// now RUN the module instead, which is both stricter and immune to a line
+// moving.
+function masteryEnv() {
+    const els = {};
+    const el = (id) => (els[id] || (els[id] = { id, style: {}, innerHTML: '', value: '', focus() {} }));
+    const ctx = {
+        console, Math, Date, String, Array, Object, JSON, Number, RegExp,
+        module: { exports: {} },
+        appState: { unitsRetry: [], unitWordLevels: {}, unitsHistory: [], coins: 0 },
+        currentUser: 'tester', saveUserData() {},
+        document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [] },
+        showToast: (m) => { ctx.lastToast = m; }, renderTopicsHome() {}, createConfetti() {},
+    };
+    vm.createContext(ctx);
+    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-data.js'), 'utf8'), ctx);
+    vm.runInContext(unitsSrc + '\nthis.API = module.exports;\nthis.quiz = () => _unitQuiz;', ctx);
+    return { ctx, api: ctx.API, el };
+}
+
 suite('unit mastery: the rule is enforced, not just displayed', () => {
     test('a mastered card is disabled in the markup', () => {
-        const render = unitsSrc.slice(unitsSrc.indexOf('function renderUnitsBar'), unitsSrc.indexOf('// ---- celebration'));
-        assert.truthy(render.includes('isUnitMastered(u)'), 'the card must know');
-        assert.truthy(render.includes("mastered ? 'disabled aria-disabled=\"true\"' : ''"),
+        const { ctx, api, el } = masteryEnv();
+        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
+        api.renderUnitsBar();
+        const html = el('unitsBar').innerHTML;
+        const card = html.slice(Math.max(0, html.indexOf('Unit 5') - 400), html.indexOf('Unit 5'));
+        assert.truthy(/disabled aria-disabled="true"/.test(card),
             'a retired unit must not be clickable, and must say so to a screen reader');
     });
 
     // A disabled attribute alone is a suggestion: a stale DOM node or a queued
     // tap could still fire the handler.
     test('starting a mastered unit is refused in code', () => {
-        const fn = unitsSrc.slice(unitsSrc.indexOf('function startUnitPractice'));
-        const head = fn.slice(0, 400);
-        assert.truthy(head.includes('isUnitMastered(unit)'), 'the guard must be in the handler too');
-        assert.truthy(head.indexOf('isUnitMastered') < head.indexOf('_unitPool'),
-            'the check must come before any work is done');
+        const { ctx, api } = masteryEnv();
+        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
+        api.startUnitPractice(5);
+        assert.falsy(ctx.quiz(), 'a mastered unit must not start');
+        assert.truthy(/thành thạo/.test(ctx.lastToast || ''), 'and must say why');
+    });
+
+    test('an unmastered unit still starts normally', () => {
+        // The counterweight: it is easy to "fix" the guard into refusing
+        // everything.
+        const { ctx, api } = masteryEnv();
+        ctx.appState.unitsHistory = perfects(5, UNIT_MASTERY_TARGET);
+        api.startUnitPractice(6);
+        assert.truthy(ctx.quiz(), 'unit 6 is not mastered and must open');
     });
 
     test('progress toward mastery is shown while it is still reachable', () => {

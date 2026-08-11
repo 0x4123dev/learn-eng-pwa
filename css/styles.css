@@ -711,6 +711,45 @@
             border-color: rgba(124,58,237,0.4);
         }
         .g4-mix-card .g4-card-meta { margin-top: 6px; }
+        /* ---- owed words: the gate ---- */
+        /* A disabled card with no reason reads as a broken app, so the banner
+           states the debt and is itself the way to pay it. */
+        .unit-owed-banner {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            margin: 0 0 12px; padding: 12px 14px; border-radius: 14px;
+            background: #fff7ed; border: 1.5px solid #fdba74;
+            color: #7c2d12; font-size: 13.5px; font-weight: 700; line-height: 1.5;
+        }
+        .unit-owed-text { flex: 1 1 180px; }
+        .unit-owed-btn {
+            flex: 0 0 auto; border: none; border-radius: 999px; cursor: pointer;
+            padding: 10px 16px; min-height: 44px; font-family: inherit;
+            font-size: 13.5px; font-weight: 800; color: #fff; background: #ea580c;
+        }
+        .unit-owed-btn:active { transform: scale(.97); }
+        .g4-card.locked { opacity: .5; cursor: default; filter: grayscale(.5); }
+
+        /* ---- the drill ---- */
+        .unit-retry-peek { display: flex; justify-content: center; gap: 8px; margin: 10px 0 6px; }
+        .unit-peek-btn {
+            border: 1.5px solid #c7d2fe; background: #eef2ff; color: #3730a3;
+            border-radius: 999px; padding: 8px 14px; min-height: 40px;
+            font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+        }
+        .unit-peek-btn.on { background: #3730a3; border-color: #3730a3; color: #fff; }
+        /* The hidden state keeps the SAME height as the revealed one, or the
+           input jumps under the child's thumb every time they peek. */
+        .unit-retry-reveal {
+            min-height: 34px; margin: 2px 0 8px; text-align: center;
+            font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #1e1b4b;
+        }
+        .unit-retry-reveal.hidden { visibility: hidden; }
+
+        .unit-retry-done { text-align: center; padding: 26px 16px; }
+        .unit-retry-done-emoji { font-size: 44px; line-height: 1; }
+        .unit-retry-done-title { margin-top: 8px; font-size: 18px; font-weight: 900; color: var(--text-primary, #1e293b); }
+        .unit-retry-done-sub { margin-top: 6px; font-size: 13.5px; color: var(--text-secondary, #475569); }
+
         .unit-say-btn {
             border: none; background: rgba(124,58,237,0.12); cursor: pointer;
             border-radius: 50px; padding: 2px 9px; font-size: 14px; line-height: 1.4;
