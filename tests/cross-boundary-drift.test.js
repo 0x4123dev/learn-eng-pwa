@@ -128,6 +128,131 @@ suite('drift: the relay worker', () => {
     });
 });
 
+// ---- the pet -------------------------------------------------------------
+// DOG_STAGES (js/home.js) decides which breed a level maps to. petart.js keeps
+// TWO parallel tables keyed by the same stageCss, and both fall back to
+// chihuahua on a miss — so a breed added to DOG_STAGES alone would render a
+// level-200 Diamond Dog as a chihuahua, with nothing thrown and nothing logged.
+//
+// tests/petart.test.js derives its breed list from PET_BREED_LOOKS itself, so
+// it can only ever prove that table matches itself. These anchor to
+// DOG_STAGES, which is where a new breed actually gets added.
+suite('drift: pet breeds', () => {
+    const { loadAppCode } = require('./setup');
+    const env = loadAppCode();
+    const art = require(path.join(ROOT, 'js', 'petart.js'));
+    const stages = env.DOG_STAGES;
+
+    test('DOG_STAGES is the source of truth and is well formed', () => {
+        assert.truthy(Array.isArray(stages) && stages.length >= 10, 'DOG_STAGES missing');
+        assert.equal(new Set(stages.map(s => s.stageCss)).size, stages.length, 'duplicate stageCss');
+    });
+
+    test('every breed has art AND an accent, not a silent chihuahua', () => {
+        for (const st of stages) {
+            assert.truthy(art.PET_BREED_LOOKS[st.stageCss],
+                `breed "${st.stageCss}" would silently render as a chihuahua`);
+            assert.truthy(art.PET_STAGE_ACCENT[st.stageCss],
+                `breed "${st.stageCss}" has no accent colour and would fall back`);
+        }
+    });
+
+    test('the art tables carry no breeds DOG_STAGES never awards', () => {
+        const known = new Set(stages.map(s => s.stageCss));
+        for (const table of ['PET_BREED_LOOKS', 'PET_STAGE_ACCENT']) {
+            const orphans = Object.keys(art[table]).filter(k => !known.has(k));
+            assert.equal(orphans.join(', '), '', `${table} has keys no level can reach — likely a typo`);
+        }
+    });
+
+    test('stage thresholds ascend, because getDogStage scans backwards', () => {
+        assert.equal(stages[0].minLevel, 1, 'a level-1 pet must match the first stage');
+        for (let i = 1; i < stages.length; i++) {
+            assert.truthy(stages[i].minLevel > stages[i - 1].minLevel,
+                `minLevel ${stages[i].minLevel} does not follow ${stages[i - 1].minLevel} — the wrong breed would be picked`);
+        }
+    });
+
+    test('every breed image is actually shipped', () => {
+        const missing = stages.filter(s => s.img && !fs.existsSync(path.join(ROOT, s.img)));
+        assert.equal(missing.map(s => s.img).join(', '), '', 'breed art referenced but not shipped');
+    });
+
+    // Levelling up offline is exactly when a child is most likely to be
+    // offline — on a plane, in a car — so the reward must not 404.
+    test('every breed image is precached by the service worker', () => {
+        const sw = read('sw.js');
+        const uncached = stages.filter(s => s.img && !sw.includes("'/" + s.img + "'"));
+        assert.equal(uncached.map(s => s.img).join(', '), '',
+            'breed art not in the service-worker cache — the pet would vanish offline');
+    });
+
+    // The opponent's breed arrives over the network, so it may be a breed this
+    // build has never heard of. That must degrade, not break.
+    test('an unknown breed from the network degrades safely', () => {
+        assert.equal(art.petBreedLook('breed-from-a-newer-app'), art.PET_BREED_LOOKS.chihuahua);
+        assert.equal(art.petStageAccent('breed-from-a-newer-app'), art.PET_STAGE_ACCENT.chihuahua);
+    });
+});
+
+// ---- the cup cabinet -------------------------------------------------------
+suite('drift: cup tiers', () => {
+    const cups = require(path.join(ROOT, 'js', 'cups.js'));
+
+    // CUP_LOOK[tier].icon has NO fallback, so a tier missing from it throws
+    // inside renderCupCabinet() and takes the whole Profile screen with it.
+    test('every tier has a look and a name', () => {
+        for (const tier of cups.CUP_TIERS) {
+            assert.truthy(cups.CUP_LOOK[tier], `CUP_LOOK["${tier}"] missing — the Profile screen would throw`);
+            assert.truthy(cups.CUP_NAME[tier], `CUP_NAME["${tier}"] missing`);
+        }
+        assert.equal(Object.keys(cups.CUP_LOOK).length, cups.CUP_TIERS.length);
+    });
+
+    test('tier worths follow the merge rule', () => {
+        // 5 cups = 1 ruby, 5 ruby = 1 diamond. If a worth drifts from the
+        // merge constant, the lifetime total silently stops adding up.
+        const [a, b, c] = cups.CUP_TIERS;
+        assert.equal(cups.CUP_LOOK[a].worth, 1);
+        assert.equal(cups.CUP_LOOK[b].worth, cups.CUP_MERGE);
+        assert.equal(cups.CUP_LOOK[c].worth, cups.CUP_MERGE * cups.CUP_MERGE);
+    });
+});
+
+// ---- grade 4 ---------------------------------------------------------------
+// The unit list is DERIVED from the word bank rather than declared twice, so
+// it cannot drift by construction. These tests protect that property and the
+// data it depends on.
+suite('drift: grade 4 units', () => {
+    const unitsSrc = read('js/units.js');
+
+    test('the unit list is derived from the bank, never hardcoded', () => {
+        const fn = unitsSrc.slice(unitsSrc.indexOf('function unitsList'), unitsSrc.indexOf('// \'mix\' draws'));
+        assert.truthy(fn.includes('unitsBank()'), 'unitsList must read the data');
+        assert.falsy(/\[\s*1\s*,\s*2\s*,/.test(fn), 'a hardcoded unit list would drift from the words');
+    });
+
+    test('every unit in the bank has words behind its card', () => {
+        // units.js reads UNIT_WORDS off the global, the way the browser does.
+        const { UNIT_WORDS } = require(path.join(ROOT, 'js', 'units-data.js'));
+        global.UNIT_WORDS = UNIT_WORDS;
+        const units = require(path.join(ROOT, 'js', 'units.js'));
+        const list = units.unitsList();
+        assert.truthy(list.length >= 12, `only ${list.length} units`);
+        for (const u of list) {
+            assert.truthy(units._unitPool(u).length > 0, `Unit ${u} renders a card with no words`);
+        }
+        // Mix must see the whole bank, or "12 units" is a lie.
+        assert.equal(units._unitPool('mix').length, UNIT_WORDS.length);
+    });
+
+    test('the mastery target is read from the constant, not retyped', () => {
+        const render = unitsSrc.slice(unitsSrc.indexOf('function renderUnitsBar'), unitsSrc.indexOf('// ---- celebration'));
+        assert.truthy(render.includes('UNIT_MASTERY_TARGET'), 'the card must use the constant');
+        assert.falsy(/\$\{perfect\}\/10 /.test(render), 'a hardcoded 10 would drift from the rule');
+    });
+});
+
 suite('drift: the username rule', () => {
     // Already pinned in tests/username.test.js; asserted here too so the whole
     // cross-boundary inventory lives in one place.
