@@ -85,6 +85,42 @@ function cupProgress(tier, c) {
   return { have, need: have >= CUP_MERGE ? 0 : CUP_MERGE - have, ready: have >= CUP_MERGE, top: false };
 }
 
+// ---- server reconciliation ----
+// The cabinet is local, the battles are not. On a fresh install the child has
+// no cups but the server still knows every battle they won, so the shelf is
+// rebuilt from that count.
+//
+// The rule is one-way ON PURPOSE: reconciling may only ADD cups. A server that
+// is briefly behind (a battle just finished, another device has not synced)
+// must never take a trophy off the shelf — under-counting is invisible and
+// self-corrects, while deleting a diamond cup a child earned over 25 wins is
+// not something an app gets to do on a hunch.
+let _cupsReconciled = false;
+
+function applyServerWins(serverWins) {
+  const n = Math.max(0, Math.trunc(Number(serverWins) || 0));
+  const c = cupState();
+  if (!Number.isFinite(n) || n <= c.won) return c;      // never remove anything
+  // Only the unseen wins become cups; merged ruby/diamond tiers are untouched,
+  // so a rebuilt cabinet keeps whatever the child had already fused.
+  c.basic += (n - c.won);
+  c.won = n;
+  _cupSave();
+  return c;
+}
+
+async function reconcileCupsFromServer() {
+  try {
+    if (typeof EngAuth === 'undefined' || typeof currentUser === 'undefined') return null;
+    const token = EngAuth.tokenFor(currentUser);
+    if (!token) return null;                             // offline or unlinked: keep local
+    const r = await EngAuth.api('me/wins', { token });
+    if (!r || !r.ok || !r.data) return null;
+    _cupsReconciled = true;
+    return applyServerWins(r.data.wins);
+  } catch (e) { return null; }                           // a failed sync must never clear cups
+}
+
 // ---- the cabinet (Profile → 🏆 Tủ cúp) ----
 const CUP_NAME = { basic: 'Cúp vàng', ruby: 'Cúp ruby', diamond: 'Cúp kim cương' };
 
@@ -123,6 +159,12 @@ function _cupShelf(tier, c) {
 function renderCupCabinet() {
   const el = document.getElementById('cupCabinet');
   if (!el) return;
+  // First look at the cabinet in a session: ask the server what it remembers,
+  // then redraw. Once per session — the shelf is not worth a request per view.
+  if (!_cupsReconciled) {
+    _cupsReconciled = true;
+    reconcileCupsFromServer().then((c) => { if (c) renderCupCabinet(); }).catch(() => {});
+  }
   const c = cupState();
   const total = cupTotalValue(c);
 
@@ -160,5 +202,7 @@ if (typeof module !== 'undefined' && module.exports) {
     CUP_MERGE, CUP_TIERS, CUP_LOOK, CUP_NAME,
     cupState, awardCup, mergeCups, canMergeCups, cupTotalValue, cupProgress,
     renderCupCabinet, doMergeCups, _cupShelf,
+    applyServerWins, reconcileCupsFromServer,
+    _resetCupReconcile: () => { _cupsReconciled = false; },
   };
 }

@@ -88,6 +88,12 @@ const EngAuth = (function () {
       }
     }
     syncNow();
+    // Rebuild the trophy cabinet from the server's battle record. Fire and
+    // forget: a fresh install should already show its cups by the time the
+    // child opens Profile.
+    if (typeof reconcileCupsFromServer === 'function') {
+      try { reconcileCupsFromServer(); } catch (e) {}
+    }
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
   }
 

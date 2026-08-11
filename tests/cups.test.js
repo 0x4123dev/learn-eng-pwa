@@ -171,6 +171,105 @@ suite('cups: only real wins count', () => {
     });
 });
 
+// The cabinet is local, the battles are not. A reinstall used to wipe 25
+// victories' worth of trophies while the server still knew about every one.
+suite('cups: rebuilt from the server battle record', () => {
+    test('a fresh install recovers every win as a cup', () => {
+        const { api } = load();                       // empty cabinet
+        api.applyServerWins(25);
+        const c = api.cupState();
+        assert.equal(c.basic, 25, 'all 25 wins come back as cups');
+        assert.equal(c.won, 25, 'and lifetime wins is restored');
+        assert.equal(api.cupTotalValue(), 25);
+    });
+
+    test('only the wins the device has not seen are added', () => {
+        const { api } = load({ cups: { basic: 3, ruby: 0, diamond: 0, won: 3 } });
+        api.applyServerWins(7);
+        const c = api.cupState();
+        assert.equal(c.basic, 7, '4 unseen wins added to the 3 already there');
+        assert.equal(c.won, 7);
+    });
+
+    // Merging is a choice the child made; a rebuild must not undo it.
+    test('merged tiers survive a reconcile untouched', () => {
+        const { api } = load({ cups: { basic: 1, ruby: 2, diamond: 1, won: 36 } });
+        api.applyServerWins(40);
+        const c = api.cupState();
+        assert.equal(c.ruby, 2, 'ruby cups must not be melted back down');
+        assert.equal(c.diamond, 1, 'nor the diamond');
+        assert.equal(c.basic, 5, 'the 4 unseen wins land on the basic shelf');
+        assert.equal(api.cupTotalValue(), 40);
+    });
+
+    // The rule that matters: reconciling may only ever ADD.
+    test('a server that is behind never takes a trophy away', () => {
+        const { api } = load({ cups: { basic: 2, ruby: 1, diamond: 0, won: 7 } });
+        const before = api.cupTotalValue();
+        api.applyServerWins(3);                       // stale or another device
+        const c = api.cupState();
+        assert.equal(c.won, 7, 'lifetime wins must not go backwards');
+        assert.equal(api.cupTotalValue(), before, 'total value must never drop');
+        assert.equal(c.ruby, 1);
+    });
+
+    test('junk or missing counts change nothing', () => {
+        for (const bad of [null, undefined, NaN, -5, 'twelve', {}]) {
+            const { api } = load({ cups: { basic: 4, ruby: 0, diamond: 0, won: 4 } });
+            api.applyServerWins(bad);
+            assert.equal(api.cupState().basic, 4, `applyServerWins(${JSON.stringify(bad)}) altered the shelf`);
+            assert.equal(api.cupState().won, 4);
+        }
+    });
+
+    test('reconciling twice does not double-count', () => {
+        const { api } = load();
+        api.applyServerWins(9);
+        api.applyServerWins(9);
+        api.applyServerWins(9);
+        assert.equal(api.cupState().basic, 9);
+        assert.equal(api.cupState().won, 9);
+    });
+
+    test('a win earned locally before the server catches up is kept', () => {
+        const { api } = load({ cups: { basic: 5, ruby: 0, diamond: 0, won: 5 } });
+        api.awardCup();                               // just won, server not updated yet
+        api.applyServerWins(5);                       // server still reports the old count
+        assert.equal(api.cupState().won, 6, 'the fresh win must survive');
+        assert.equal(api.cupState().basic, 6);
+    });
+});
+
+suite('cups: the sync is safe by construction', () => {
+    const src = fs.readFileSync(path.join(root, 'js', 'cups.js'), 'utf8');
+    const server = fs.readFileSync(path.join(root, 'functions', 'api', 'me', 'wins.js'), 'utf8');
+
+    test('a failed or offline request leaves the cabinet alone', () => {
+        const fn = src.slice(src.indexOf('async function reconcileCupsFromServer'));
+        assert.truthy(fn.includes('if (!token) return null'), 'no token must mean no change');
+        assert.truthy(fn.includes('catch (e) { return null; }'), 'a thrown request must not clear cups');
+        assert.truthy(fn.includes('!r.ok'), 'a failed response must not be treated as zero wins');
+    });
+
+    test('the endpoint counts only finished battles this user won', () => {
+        assert.truthy(server.includes('winner_id = ?'), 'must count only this user');
+        assert.truthy(server.includes("status = 'done'"), 'an abandoned battle is not a win');
+        assert.truthy(server.includes("requireAuth"), 'wins must not be readable for anyone else');
+    });
+
+    test('the cabinet asks the server at most once per session', () => {
+        assert.truthy(src.includes('_cupsReconciled'), 'no guard against a request per render');
+        const render = src.slice(src.indexOf('function renderCupCabinet'));
+        assert.truthy(render.indexOf('_cupsReconciled = true') < render.indexOf('reconcileCupsFromServer'),
+            'the flag must be set BEFORE the call, or a slow response re-enters');
+    });
+
+    test('login triggers a reconcile so the cabinet is ready when opened', () => {
+        const auth = fs.readFileSync(path.join(root, 'js', 'auth.js'), 'utf8');
+        assert.truthy(auth.includes('reconcileCupsFromServer'), 'login must rebuild the cabinet');
+    });
+});
+
 suite('cups: wired into the app', () => {
     test('the cabinet has a home in the profile', () => {
         assert.truthy(indexSrc.includes('id="cupCabinet"'), 'no container in the profile');
