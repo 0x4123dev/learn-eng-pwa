@@ -248,6 +248,58 @@ suite('battle game: efficient and accessible UI', () => {
     });
 });
 
+// The manual aim controls and camera anchors were first written in the dark
+// palette of the canvas HUD, then dropped into .pb-controls — a LIGHT frosted
+// card. Measured contrast was 1.2-1.5 against a 4.5 bar: pale text on a
+// near-white panel, which looks fine in a diff and is invisible on a phone.
+// Nothing in a code review catches that, so it is pinned here.
+suite('battle controls: readable on the light panel', () => {
+    // Colours that belong to the dark HUD and must never appear on the light
+    // control card again.
+    const DARK_HUD_INK = ['#cbd5e1', '#e2e8f0', '#94a3b8', 'rgba(255,255,255,0.75)', 'rgba(255, 255, 255, 0.75)'];
+
+    const block = (selector) => {
+        const i = stylesSrc.indexOf(selector + ' {');
+        assert.truthy(i >= 0, `${selector} has no styles`);
+        return stylesSrc.slice(i, stylesSrc.indexOf('}', i));
+    };
+
+    test('the control panel really is light, so its ink must be dark', () => {
+        assert.truthy(block('.pb-controls').includes('background: rgba(255,255,255,.78)'),
+            'if this panel goes dark, every colour below has to be revisited');
+    });
+
+    for (const sel of ['.pb-aim-name', '.pb-aim-val', '.pb-step', '.pb-anchor']) {
+        test(`${sel} does not use dark-HUD ink on the light card`, () => {
+            const css = block(sel);
+            for (const ink of DARK_HUD_INK) {
+                assert.falsy(css.includes(ink), `${sel} uses ${ink} — pale text on a near-white panel`);
+            }
+            assert.truthy(/color: #[0-9a-f]{6}/i.test(css), `${sel} needs an explicit colour`);
+        });
+    }
+
+    test('the steppers are a solid fill, not a translucent tint of their own ink', () => {
+        const css = block('.pb-step');
+        // background rgba(253,224,71,.14) + colour #fde047 was yellow on
+        // near-yellow: a 1.24 contrast ratio.
+        assert.falsy(/background: rgba\(253, ?224, ?71/.test(css), 'a wash of the text colour is not a background');
+        assert.truthy(css.includes('background: #'), 'a 44px button needs a solid fill to read');
+    });
+
+    test('the in-battle flags follow the callout, which is also light', () => {
+        assert.truthy(block('.pb-turn-callout').includes('background: rgba(236,254,255,.9)'),
+            'the callout is a pale pill — white flag text would vanish on it');
+        const flag = stylesSrc.slice(stylesSrc.indexOf('.pb-game-lang .pb-flag span'));
+        assert.falsy(flag.slice(0, 120).includes('rgba(255,255,255'), 'white flag labels on a pale pill');
+    });
+
+    test('every control keeps a 44px touch target', () => {
+        assert.truthy(block('.pb-step').includes('height: 44px'));
+        assert.truthy(block('.pb-anchor').includes('min-height: 44px'));
+    });
+});
+
 suite('battle turns are never silently dropped', () => {
     // _seenTurn (and the poll cursor with it) advanced BEFORE the !busy guard,
     // so an opponent turn arriving mid-animation was marked seen and thrown

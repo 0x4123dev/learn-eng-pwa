@@ -905,21 +905,26 @@
         .pb-empty, .pb-hint { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 16px 8px; }
         /* Manual aim: exact numbers for after a near miss, when dragging a
            fingertip across a 320px canvas cannot find the last two degrees. */
+        /* These sit inside .pb-controls, which is a LIGHT frosted panel. They
+           were first written in the dark palette of the canvas HUD, which put
+           pale text on a near-white card at a contrast of about 1.3 — legible
+           on a mockup, invisible on a phone in daylight. Everything here is
+           dark-on-light and matches .pb-aim-instruction's blue. */
         .pb-aim-manual {
             display: flex; flex-direction: column; gap: 4px;
             padding: 8px 10px; margin: 8px 0; border-radius: 14px;
-            background: rgba(255, 255, 255, 0.08); border: 1.5px solid rgba(255, 255, 255, 0.14);
+            background: rgba(245, 158, 11, 0.10); border: 1.5px solid rgba(217, 119, 6, 0.32);
         }
         .pb-aim-row { display: flex; align-items: center; gap: 8px; }
-        .pb-aim-name { flex: 1; font-size: 11px; font-weight: 800; color: #cbd5e1; letter-spacing: .4px; }
+        .pb-aim-name { flex: 1; font-size: 11.5px; font-weight: 800; color: #1e3a8a; letter-spacing: .4px; }
         .pb-aim-val {
-            min-width: 52px; text-align: center; font-size: 15px; font-weight: 900;
-            color: #fde047; font-variant-numeric: tabular-nums;
+            min-width: 56px; text-align: center; font-size: 16px; font-weight: 900;
+            color: #7c2d12; font-variant-numeric: tabular-nums;
         }
         .pb-step {
             width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; cursor: pointer;
-            border: 2px solid rgba(253, 224, 71, 0.45); background: rgba(253, 224, 71, 0.14);
-            color: #fde047; font-family: inherit; font-size: 20px; font-weight: 900; line-height: 1;
+            border: 2px solid #d97706; background: #fde68a;
+            color: #7c2d12; font-family: inherit; font-size: 22px; font-weight: 900; line-height: 1;
         }
         .pb-step:active { transform: scale(0.92); }
         .pb-step:disabled { opacity: 0.35; cursor: default; transform: none; }
@@ -949,8 +954,8 @@
         .pb-anchors { display: flex; gap: 4px; }
         .pb-anchor {
             min-height: 44px; padding: 4px 8px; border-radius: 10px; cursor: pointer;
-            border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1);
-            color: #e2e8f0; font-family: inherit; font-size: 10px; font-weight: 800;
+            border: 2px solid rgba(30, 58, 138, .3); background: rgba(30, 58, 138, .09);
+            color: #1e3a8a; font-family: inherit; font-size: 10.5px; font-weight: 800;
         }
         .pb-anchor:active { transform: scale(0.95); }
         /* Offscreen opponent: a tappable arrow, not a mystery. */
@@ -1085,10 +1090,11 @@
         /* In-battle flags sit at the end of the turn callout, small enough not
            to compete with the turn status they share a row with. */
         .pb-game-lang { flex-shrink: 0; }
-        .pb-game-lang .pb-flag { padding: 3px 6px; border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.14); }
-        .pb-game-lang .pb-flag span { font-size: 8.5px; color: rgba(255,255,255,0.75); }
-        .pb-game-lang .pb-flag.on { border-color: #fde047; background: rgba(253,224,71,0.22); }
-        .pb-game-lang .pb-flag.on span { color: #fde047; }
+        /* The turn callout is a pale cyan pill, so the flags follow its ink. */
+        .pb-game-lang .pb-flag { padding: 3px 6px; border-color: rgba(21, 94, 117, .3); background: rgba(21, 94, 117, .07); opacity: .75; }
+        .pb-game-lang .pb-flag span { font-size: 8.5px; color: #155e75; }
+        .pb-game-lang .pb-flag.on { opacity: 1; border-color: #c2410c; background: rgba(194, 65, 12, .12); }
+        .pb-game-lang .pb-flag.on span { color: #9a3412; }
 
         /* Battle history — summary + expandable per-battle detail */
         .pb-hist-card {
