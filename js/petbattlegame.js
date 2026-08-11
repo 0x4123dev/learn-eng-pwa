@@ -4,6 +4,12 @@
 // both phones draw exactly the same battle from just (angle, power, shots).
 
 const PB_HEARTS = 5;
+
+// The battlefield is drawn twice as tall as the world is deep. The extra
+// height is pure SKY above the play area — the simulation still lives in a
+// 450px world, so no physics, terrain or replay changes — and it buys room to
+// watch a high lob arc instead of losing it off the top of the frame.
+const PB_SKY_EXTRA = 450;
 const PB_CASTLE_HALF_W = 70;
 const PB_CASTLE_HEIGHT = 122;
 
@@ -278,12 +284,21 @@ PetBattleGame.prototype.render = function () {
         </div>
       </div>
       <div class="pb-field-shell">
-        <canvas id="pbSceneCanvas" class="pb-scene-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}"
+        <canvas id="pbSceneCanvas" class="pb-scene-canvas" width="${C.FIELD_W}" height="${C.FIELD_H + PB_SKY_EXTRA}"
                 aria-hidden="true"></canvas>
-        <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H}" tabindex="0"
+        <canvas id="pbCanvas" class="pb-canvas" width="${C.FIELD_W}" height="${C.FIELD_H + PB_SKY_EXTRA}" tabindex="0"
                 role="img" aria-label="${esc(gT('gCanvasAria'))}" aria-describedby="pbCanvasHelp">
           ${esc(gT('gCanvasFallback'))}
         </canvas>
+        <!-- Wind and both health bars repeated ON the battlefield. The HUD
+             above scrolls out of reach on a tall screen, and wind is the one
+             number that decides a shot — a child should never have to look
+             away from the field to read it. -->
+        <div class="pb-field-status" aria-hidden="true">
+          <span class="pb-fs-side me"><i></i><b id="pbFieldHpMe">100</b></span>
+          <span class="pb-fs-wind" id="pbFieldWind">💨 · 0</span>
+          <span class="pb-fs-side foe"><b id="pbFieldHpFoe">100</b><i></i></span>
+        </div>
         <div class="pb-field-readout" aria-hidden="true">
           <span><small>${esc(gT('gAngle'))}</small><b id="pbFieldAngle">45°</b></span>
           <span><small>${esc(gT('gPower'))}</small><b id="pbFieldPower">60</b></span>
@@ -415,6 +430,14 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   const wind = this.wind();
   text('pbWind', '💨 ' + (wind > 0 ? '→' : wind < 0 ? '←' : '·') + ' ' + Math.abs(wind));
   text('pbBanner', this.banner);
+  // the on-field repeat of wind and health
+  const fw = this.wind();
+  text('pbFieldWind', '💨 ' + (fw > 0 ? '→' : fw < 0 ? '←' : '·') + ' ' + Math.abs(fw));
+  text('pbFieldHpMe', Math.max(0, Math.round(this.myHp)));
+  text('pbFieldHpFoe', Math.max(0, Math.round(this.foeHp)));
+  const fillMe = this._el('pbFieldHpMe'), fillFoe = this._el('pbFieldHpFoe');
+  if (fillMe && fillMe.previousElementSibling) fillMe.previousElementSibling.style.width = Math.max(0, Math.min(100, this.myHp)) + '%';
+  if (fillFoe && fillFoe.nextElementSibling) fillFoe.nextElementSibling.style.width = Math.max(0, Math.min(100, this.foeHp)) + '%';
   text('pbFieldAngle', Math.round(this.angle) + '°');
   text('pbFieldPower', Math.round(this.power));
   // The manual controls must follow a drag, a keypress or an opponent's turn,
@@ -465,7 +488,9 @@ PetBattleGame.prototype._bindAimControls = function () {
     // coordinate and has to be shifted by the camera before it means anything.
     const viewX = (event.clientX - rect.left) * this.canvas.width / rect.width;
     const x = this.camera ? this.camera.toWorldX(viewX) : viewX;
-    const y = (event.clientY - rect.top) * this.canvas.height / rect.height;
+    // The canvas carries PB_SKY_EXTRA of sky above the world, so a pointer y
+    // has to come back down into world space before it means anything.
+    const y = (event.clientY - rect.top) * this.canvas.height / rect.height - PB_SKY_EXTRA;
     const startX = this.mePos.x + this.meFacing * 16;
     const startY = this.mePos.y - 34;
     const forward = (x - startX) * this.meFacing;
@@ -612,8 +637,14 @@ PetBattleGame.prototype._updateCamera = function (k) {
     }
     if (n) cam.follow(sx / n, sv / n);
   } else if (!cam.isHolding(now) && cam.mode === 'fire-follow' && !this.flying.length) {
-    // Shots have landed: settle back on whoever shoots next.
-    cam.focusOn(this.myTurn ? this.mePos.x : this.foePos.x, { mode: 'turn-settle' });
+    // Rest where the poop LANDED. Settling back on "whoever shoots next" swung
+    // the world away from my own castle the instant an incoming shot hit it —
+    // the child was dragged back to the opponent before they could see their
+    // own damage. Firing brings the camera home on its own, so nothing is lost
+    // by staying put.
+    const restAt = (typeof this._lastImpactX === 'number') ? this._lastImpactX
+      : (this.myTurn ? this.mePos.x : this.foePos.x);
+    cam.focusOn(restAt, { mode: 'turn-settle' });
   }
   cam.update(k);
 };
@@ -668,9 +699,9 @@ PetBattleGame.prototype.draw = function () {
   const camX = this.camera ? this.camera.x : 0;
   if (this.sceneRenderer) this.sceneRenderer.setCamera(camX);
   if (this.ctx && this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  if (camX) { this.ctx && this.ctx.save(); this.ctx && this.ctx.translate(-camX, 0); }
+  if (this.ctx) { this.ctx.save(); this.ctx.translate(-camX, PB_SKY_EXTRA); }
   this._drawWorld();
-  if (camX) this.ctx && this.ctx.restore();
+  if (this.ctx) this.ctx.restore();
   this._updateCameraUi();
 };
 
@@ -1250,6 +1281,7 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
       : gT('gMiss');
     this.myTurn = false;
     this.busy = false;
+    this._lastImpactX = this.foePos.x;          // my shot landed over there
     this._logTurn(true, aim, damage);
     this._drainTurns();
     this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage })
@@ -1292,6 +1324,7 @@ PetBattleGame.prototype._launchFoeVolley = function (turn, shots) {
       ? gT('gHitMe', { n: hitCount, d: dealt }) + (houseWorsened ? gT('gHouseWorse') : '')
       : gT('gMissFoe');
     this.busy = false;
+    this._lastImpactX = this.mePos.x;           // their shot landed on ME — stay here
     this._drainTurns();
     this._logTurn(false, { angle: Math.round(turn.angle || 0), power: Math.round(turn.power || 0), shots }, dealt);
     this.render();

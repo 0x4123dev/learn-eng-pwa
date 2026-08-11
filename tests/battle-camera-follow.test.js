@@ -391,10 +391,15 @@ suite('follow: awkward moments', () => {
         assert.falsy(c.isHolding(1900));
     });
 
-    test('after the shots land the camera settles on the next shooter', () => {
+    test('after the shots land the camera rests at the impact, not the next shooter', () => {
+        // This deliberately replaced "settle on whoever shoots next": that
+        // dragged the child away from their own castle the moment an incoming
+        // poop hit it.
         const fn = gameSrc.slice(gameSrc.indexOf('_updateCamera = function'));
-        assert.truthy(fn.slice(0, 1200).includes('this.myTurn ? this.mePos.x : this.foePos.x'),
-            'the world should end up where the next shot will come from');
+        const body = fn.slice(0, 1400);
+        assert.truthy(body.includes('const restAt = (typeof this._lastImpactX'), 'the impact must win');
+        assert.truthy(body.includes('this.myTurn ? this.mePos.x : this.foePos.x'),
+            'with the next shooter kept only as a first-turn fallback');
     });
 
     test('destroying the game abandons any pending launch', () => {
@@ -558,6 +563,137 @@ suite('follow: taps and swipes at a child\'s precision', () => {
         const slop = +(src.match(/TAP_SLOP_PX = (\d+)/) || [])[1];
         const pan = +(src.match(/PAN_START_PX = (\d+)/) || [])[1];
         assert.truthy(pan > slop, `pan ${pan} must exceed slop ${slop} or gestures become ambiguous`);
+    });
+});
+
+// ── 11. the camera rests where the shot landed ────────────────────────────
+// Settling back on "whoever shoots next" dragged the world away from the
+// child's own castle the instant an incoming poop hit it — they were pulled
+// back to the opponent before they could see their own damage.
+suite('follow: the camera stays where the poop landed', () => {
+    test('an incoming hit leaves the camera on MY side', () => {
+        const fn = gameSrc.slice(gameSrc.indexOf('_updateCamera = function'));
+        assert.truthy(fn.slice(0, 1400).includes('this._lastImpactX'),
+            'the resting place must be the impact, not the next shooter');
+    });
+
+    test("my own volley records the opponent's castle as the impact", () => {
+        const fire = gameSrc.slice(gameSrc.indexOf('_launchMyVolley = function'), gameSrc.indexOf('prototype._replay = function'));
+        assert.truthy(fire.includes('this._lastImpactX = this.foePos.x'));
+    });
+
+    test('their volley records MY castle as the impact', () => {
+        const replay = gameSrc.slice(gameSrc.indexOf('_launchFoeVolley = function'));
+        assert.truthy(replay.slice(0, 1600).includes('this._lastImpactX = this.mePos.x'));
+    });
+
+    test('with no impact yet, it still falls back to the next shooter', () => {
+        const fn = gameSrc.slice(gameSrc.indexOf('_updateCamera = function'));
+        assert.truthy(fn.slice(0, 1400).includes('this.myTurn ? this.mePos.x : this.foePos.x'),
+            'the very first turn has no previous impact');
+    });
+
+    test('resting on my castle keeps it on screen', () => {
+        const c = cam();
+        c.focusOn(ME, { mode: 'turn-settle' });
+        settle(c);
+        assert.equal(c.offscreenSide(ME), 0);
+    });
+
+    test('firing afterwards still brings the camera home by itself', () => {
+        const c = cam();
+        c.focusOn(FOE, { instant: true });      // resting after my own shot landed
+        c.focusOn(ME, { mode: 'turn-focus' });  // what fire() stages
+        settle(c);
+        assert.equal(c.x, 0, 'so nothing is lost by resting at the far end');
+    });
+});
+
+// ── 12. the battlefield is twice as tall ──────────────────────────────────
+suite('follow: extra sky above the world', () => {
+    const SKY = +(gameSrc.match(/PB_SKY_EXTRA = (\d+)/) || [])[1];
+
+    test('the extra sky is declared once and equals a full world depth', () => {
+        assert.equal(SKY, V2.worldH, 'twice as tall means one more world of sky');
+    });
+
+    test('both canvases are drawn at the taller size', () => {
+        const matches = (gameSrc.match(/height="\$\{C\.FIELD_H \+ PB_SKY_EXTRA\}"/g) || []).length;
+        assert.equal(matches, 2, 'the scene layer and the gameplay layer must match exactly');
+    });
+
+    test('the world is drawn shifted down by exactly the extra sky', () => {
+        assert.truthy(gameSrc.includes('this.ctx.translate(-camX, PB_SKY_EXTRA)'));
+    });
+
+    test('a pointer y is brought back into world space', () => {
+        assert.truthy(gameSrc.includes('/ rect.height - PB_SKY_EXTRA'),
+            'without this every tap would aim 450px too low');
+    });
+
+    test('the physics world is unchanged — only the view grew', () => {
+        assert.equal(V2.worldH, 450, 'the simulation must not know about the sky');
+        assert.equal(C.fieldRules(1).worldH, 450);
+    });
+
+    test('a tap at the bottom of the canvas maps to the world floor', () => {
+        const canvasH = V2.worldH + SKY;
+        const worldY = canvasH * canvasH / canvasH - SKY;
+        assert.equal(worldY, V2.worldH);
+    });
+
+    test('a tap at the sky line maps to the top of the world', () => {
+        const canvasH = V2.worldH + SKY;
+        assert.equal(SKY * canvasH / canvasH - SKY, 0);
+    });
+
+    test('the arena art keeps its shape instead of stretching to fill', () => {
+        const scenes = fs.readFileSync(path.join(ROOT, 'js', 'battle-scenes.js'), 'utf8');
+        assert.truthy(scenes.includes('const artH = Math.min(height, Math.round(width * this.viewH / this.viewW))'),
+            'stretching a 16:9 arena to 8:9 would squash every landmark');
+        assert.truthy(scenes.includes('const skyH = Math.max(0, height - artH)'));
+        assert.truthy(scenes.includes("this.scene.palette.sky"), 'the sky above must use the arena\'s own colour');
+    });
+});
+
+// ── 13. wind and health on the battlefield ────────────────────────────────
+suite('follow: wind and health are readable without looking away', () => {
+    test('the battlefield carries its own wind and health strip', () => {
+        assert.truthy(gameSrc.includes('pb-field-status'), 'no on-field status');
+        for (const id of ['pbFieldWind', 'pbFieldHpMe', 'pbFieldHpFoe']) {
+            assert.truthy(gameSrc.includes(`id="${id}"`), `${id} missing`);
+        }
+    });
+
+    test('all three track the model on every frame', () => {
+        const ui = gameSrc.slice(gameSrc.indexOf('prototype._updateUi'));
+        for (const id of ['pbFieldWind', 'pbFieldHpMe', 'pbFieldHpFoe']) {
+            assert.truthy(ui.includes(`text('${id}'`), `${id} is rendered once and never updated`);
+        }
+    });
+
+    test('wind shows direction as well as strength', () => {
+        const ui = gameSrc.slice(gameSrc.indexOf("text('pbFieldWind'"));
+        assert.truthy(ui.slice(0, 200).includes("'→'") && ui.slice(0, 200).includes("'←'"),
+            'a number without a direction cannot be aimed with');
+    });
+
+    test('health can never render as a negative number', () => {
+        const ui = gameSrc.slice(gameSrc.indexOf("text('pbFieldHpMe'"));
+        assert.truthy(ui.slice(0, 200).includes('Math.max(0'));
+    });
+
+    test('the strip floats over the field without blocking taps', () => {
+        const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+        const block = css.slice(css.indexOf('.pb-field-status {'), css.indexOf('}', css.indexOf('.pb-field-status {')));
+        assert.truthy(block.includes('position: absolute'));
+        assert.truthy(block.includes('pointer-events: none'), 'it must never swallow an aim tap');
+    });
+
+    test('the two sides are told apart by colour', () => {
+        const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+        assert.truthy(css.includes('.pb-fs-side.me i'), 'my bar needs its own colour');
+        assert.truthy(css.includes('.pb-fs-side.foe i'));
     });
 });
 
