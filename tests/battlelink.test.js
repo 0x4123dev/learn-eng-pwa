@@ -229,7 +229,12 @@ suite('battle game: efficient and accessible UI', () => {
     });
 
     test('HP, controls, live status, and canvas expose accessible semantics', () => {
-        assert.truthy(gameSrc.includes('role="progressbar"'));
+        // The two pet panels were removed; HP now lives on the battlefield
+        // strip, which therefore must NOT be aria-hidden or the information
+        // leaves the screen-reader path entirely.
+        assert.truthy(gameSrc.includes('role="progressbar"'), 'HP must still be a readable value');
+        const strip = gameSrc.slice(gameSrc.indexOf('class="pb-field-status"'), gameSrc.indexOf('class="pb-field-status"') + 200);
+        assert.falsy(strip.includes('aria-hidden'), 'the only source of HP must not be hidden');
         assert.truthy(gameSrc.includes('aria-valuenow'));
         assert.truthy(gameSrc.includes('tabindex="0"'));
         assert.truthy(gameSrc.includes("gT('gCanvasHelp')"), 'the canvas needs a described-by help string');
@@ -441,7 +446,9 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes("key === 'ArrowLeft'"));
         assert.truthy(gameSrc.includes("key === 'ArrowUp'"));
         assert.truthy(gameSrc.includes("if (key === ' ') { this.fire(); return; }"));
-        assert.truthy(gameSrc.includes("gT('gDragHint')"));
+        // The "drag to aim" hint was removed from the canvas at the user's
+        // request; the aim instruction below the field still explains it.
+        assert.truthy(gameSrc.includes("gT('gAimTitle')"), 'aiming must still be explained somewhere');
     });
 
     test('rich feedback includes trajectory dots, wind ribbons, and bounded impact particles', () => {
@@ -523,7 +530,9 @@ suite('battle game: Gunbound-style house arena', () => {
     });
 
     test('pet levels stay visible and a destroyed house leaves pet and rubble outdoors', () => {
-        assert.truthy(gameSrc.includes('pb-hud-level'));
+        // Level moved from the pet panels onto the battlefield strip.
+        assert.truthy(gameSrc.includes('LV.${Math.max(1, Number(v.me.level) || 1)}'), 'my level must be shown');
+        assert.truthy(gameSrc.includes('LV.${Math.max(1, Number(v.foe.level) || 1)}'), "and the opponent's");
         assert.truthy(gameSrc.includes("ctx.fillText('LV.'"));
         assert.truthy(gameSrc.includes('// At zero HP the castle is truly gone'));
         assert.truthy(gameSrc.includes('if (damage < 4)'), 'critical damage must replace the intact wall');

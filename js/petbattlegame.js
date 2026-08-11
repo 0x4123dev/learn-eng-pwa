@@ -233,9 +233,6 @@ PetBattleGame.prototype.render = function () {
   this.shots = Math.max(1, Math.min(this.shots, Math.max(1, maxShots)));
 
   if (!this._shellReady) {
-    const hearts = side => `<div class="pb-hearts" id="pbHearts${side}" aria-hidden="true">
-      ${Array.from({ length: PB_HEARTS }, () => '<span class="pb-heart">♥</span>').join('')}
-    </div>`;
     const barrels = [1, 2, 3, 4].map(n => `
       <button class="pb-barrel" type="button" data-pb-shots="${n}"
               aria-label="${esc(gT('gLoadAria', { n }))}" onclick="_pbGameSetShots(${n})">
@@ -254,33 +251,14 @@ PetBattleGame.prototype.render = function () {
                   onclick="_pbGameSetLang('vi')" aria-pressed="${gLang() === 'vi'}">🇻🇳<span>VI</span></button>
         </div>
       </div>
+      <!-- The two pet panels used to live here with name, HP, hearts, ammo
+           and level. Everything a child needs mid-shot now sits ON the
+           battlefield instead, where their eyes already are; only the round
+           counter and the connection state remain above it. -->
       <div class="pb-hud">
-        <div class="pb-hud-side">
-          <div class="pb-hud-name" id="pbMeName">${esc(v.me.name || gT('gMe'))}</div>
-          <div class="pb-hp" id="pbHpTrackMe" role="progressbar" aria-labelledby="pbMeName pbHpMeText"
-               aria-valuemin="0" aria-valuemax="100">
-            <div class="pb-hp-fill me" id="pbHpMe"></div>
-          </div>
-          <div class="pb-hp-value" id="pbHpMeText"></div>
-          ${hearts('Me')}
-          <div class="pb-hud-ammo" id="pbAmmoMe">${this.myAmmo} 💩</div>
-          <div class="pb-hud-level">LV.${Math.max(1, Number(v.me.level) || 1)}</div>
-        </div>
         <div class="pb-hud-mid">
           <div class="pb-round" id="pbRound"></div>
-          <div class="pb-wind" id="pbWind"></div>
           <div class="pb-link" id="pbLink" role="status" aria-live="polite"></div>
-        </div>
-        <div class="pb-hud-side right">
-          <div class="pb-hud-name" id="pbFoeName">${esc(v.foe.name || gT('gFoe'))}</div>
-          <div class="pb-hp" id="pbHpTrackFoe" role="progressbar" aria-labelledby="pbFoeName pbHpFoeText"
-               aria-valuemin="0" aria-valuemax="100">
-            <div class="pb-hp-fill foe" id="pbHpFoe"></div>
-          </div>
-          <div class="pb-hp-value" id="pbHpFoeText"></div>
-          ${hearts('Foe')}
-          <div class="pb-hud-ammo" id="pbAmmoFoe">${this.foeAmmo} 💩</div>
-          <div class="pb-hud-level">LV.${Math.max(1, Number(v.foe.level) || 1)}</div>
         </div>
       </div>
       <div class="pb-field-shell">
@@ -294,16 +272,27 @@ PetBattleGame.prototype.render = function () {
              above scrolls out of reach on a tall screen, and wind is the one
              number that decides a shot — a child should never have to look
              away from the field to read it. -->
-        <div class="pb-field-status" aria-hidden="true">
-          <span class="pb-fs-side me"><i></i><b id="pbFieldHpMe">100</b></span>
+        <!-- Removing the two pet panels took HP, ammo and level off the
+             screen-reader path with them, so this strip is NOT aria-hidden:
+             it is the only place that information now lives. Progressbar
+             semantics on each side keep the HP readable as a value. -->
+        <div class="pb-field-status" role="group" aria-label="${esc(gT('gFieldStatusAria'))}">
+          <span class="pb-fs-side me" id="pbFieldMe" role="progressbar"
+                aria-valuemin="0" aria-valuemax="100" aria-label="${esc(v.me.name || gT('gMe'))}">
+            <i></i>
+            <b id="pbFieldHpMe">100</b>
+            <em id="pbFieldAmmoMe">0 💩</em>
+            <u>LV.${Math.max(1, Number(v.me.level) || 1)}</u>
+          </span>
           <span class="pb-fs-wind" id="pbFieldWind">💨 · 0</span>
-          <span class="pb-fs-side foe"><b id="pbFieldHpFoe">100</b><i></i></span>
+          <span class="pb-fs-side foe" id="pbFieldFoe" role="progressbar"
+                aria-valuemin="0" aria-valuemax="100" aria-label="${esc(v.foe.name || gT('gFoe'))}">
+            <u>LV.${Math.max(1, Number(v.foe.level) || 1)}</u>
+            <em id="pbFieldAmmoFoe">0 💩</em>
+            <b id="pbFieldHpFoe">100</b>
+            <i></i>
+          </span>
         </div>
-        <div class="pb-field-readout" aria-hidden="true">
-          <span><small>${esc(gT('gAngle'))}</small><b id="pbFieldAngle">45°</b></span>
-          <span><small>${esc(gT('gPower'))}</small><b id="pbFieldPower">60</b></span>
-        </div>
-        <div class="pb-drag-hint" id="pbDragHint" aria-hidden="true">${esc(gT('gDragHint'))}</div>
         <button class="pb-beacon left" id="pbBeaconL" type="button" hidden
                 aria-label="${esc(gT('gGoFoe'))}" onclick="_pbGameAnchor('foe')">◀</button>
         <button class="pb-beacon right" id="pbBeaconR" type="button" hidden
@@ -406,40 +395,28 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
     const next = String(value);
     if (el && el.textContent !== next) el.textContent = next;
   };
-  const hp = (side, value) => {
-    const safe = Math.max(0, Math.min(100, value));
-    const fill = this._el(side === 'Me' ? 'pbHpMe' : 'pbHpFoe');
-    const track = this._el(side === 'Me' ? 'pbHpTrackMe' : 'pbHpTrackFoe');
-    if (fill) fill.style.width = safe + '%';
-    if (track) track.setAttribute('aria-valuenow', String(safe));
-    text(side === 'Me' ? 'pbHpMeText' : 'pbHpFoeText', safe + ' HP');
-    const hearts = this._el(side === 'Me' ? 'pbHeartsMe' : 'pbHeartsFoe');
-    if (hearts && typeof hearts.querySelectorAll === 'function') {
-      const fills = pbHeartFills(safe);
-      hearts.querySelectorAll('.pb-heart').forEach((heart, i) => {
-        heart.style.setProperty('--heart-fill', (fills[i] || 0) + '%');
-      });
-    }
-  };
-
-  hp('Me', this.myHp);
-  hp('Foe', this.foeHp);
-  text('pbAmmoMe', this.myAmmo + ' 💩');
-  text('pbAmmoFoe', this.foeAmmo + ' 💩');
   text('pbRound', gT('gRound', { n: this.roundNo() }));
-  const wind = this.wind();
-  text('pbWind', '💨 ' + (wind > 0 ? '→' : wind < 0 ? '←' : '·') + ' ' + Math.abs(wind));
   text('pbBanner', this.banner);
   // the on-field repeat of wind and health
   const fw = this.wind();
   text('pbFieldWind', '💨 ' + (fw > 0 ? '→' : fw < 0 ? '←' : '·') + ' ' + Math.abs(fw));
   text('pbFieldHpMe', Math.max(0, Math.round(this.myHp)));
   text('pbFieldHpFoe', Math.max(0, Math.round(this.foeHp)));
-  const fillMe = this._el('pbFieldHpMe'), fillFoe = this._el('pbFieldHpFoe');
-  if (fillMe && fillMe.previousElementSibling) fillMe.previousElementSibling.style.width = Math.max(0, Math.min(100, this.myHp)) + '%';
-  if (fillFoe && fillFoe.nextElementSibling) fillFoe.nextElementSibling.style.width = Math.max(0, Math.min(100, this.foeHp)) + '%';
-  text('pbFieldAngle', Math.round(this.angle) + '°');
-  text('pbFieldPower', Math.round(this.power));
+  text('pbFieldAmmoMe', Math.max(0, this.myAmmo) + ' 💩');
+  text('pbFieldAmmoFoe', Math.max(0, this.foeAmmo) + ' 💩');
+  // The bar is the <i> at the outer edge of each side.
+  const bar = (sel, value) => {
+    const el = this.mount && this.mount.querySelector ? this.mount.querySelector(sel) : null;
+    if (el) el.style.width = Math.round(Math.max(0, Math.min(100, value)) * 0.62) + 'px';
+  };
+  bar('.pb-fs-side.me i', this.myHp);
+  bar('.pb-fs-side.foe i', this.foeHp);
+  const announce = (id, value) => {
+    const el = this._el(id);
+    if (el) el.setAttribute('aria-valuenow', String(Math.max(0, Math.min(100, Math.round(value)))));
+  };
+  announce('pbFieldMe', this.myHp);
+  announce('pbFieldFoe', this.foeHp);
   // The manual controls must follow a drag, a keypress or an opponent's turn,
   // never argue with them.
   text('pbAngleVal', Math.round(this.angle) + '°');
@@ -461,8 +438,6 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   text('pbFireHint', this.myTurn ? gT('gFireHint') : gT('gWaitHint'));
   const callout = this._el('pbTurnCallout');
   if (callout) callout.classList.toggle('waiting', !this.myTurn);
-  const dragHint = this._el('pbDragHint');
-  if (dragHint) dragHint.hidden = !this.myTurn || this.busy;
   const controls = this._el('pbControls');
   if (controls) controls.setAttribute('aria-busy', this.busy ? 'true' : 'false');
   if (this.mount && typeof this.mount.querySelectorAll === 'function') {
