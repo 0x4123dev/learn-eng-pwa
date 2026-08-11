@@ -25,7 +25,9 @@
   .err { color:var(--red); font-size:13px; font-weight:600; margin-top:10px; min-height:18px; }
 
   /* Dashboard */
-  header.bar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+  header.bar { display:flex; align-items:center; justify-content:space-between; gap:10px;
+               flex-wrap:wrap; margin-bottom:16px; }
+  header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; }
   header.bar h1 { font-size:20px; margin:0; }
   .stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
   .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; min-width:120px; }
@@ -86,9 +88,11 @@
 
   /* Numbers read as a column of digits, not prose. */
   td.num { text-align:right; font-variant-numeric:tabular-nums; }
-  /* The bar sits under a right-aligned number, so it must grow leftwards
-     from the same edge — anchored left it read as a broken cell. */
-  .bar { height:4px; border-radius:2px; background:var(--brand); opacity:.55; margin:3px 0 0 auto; }
+  /* Named .meter, NOT .bar: <header class="bar"> already exists, and a bare
+     .bar rule styled the page header as a 4px blue strip 24px tall with its
+     buttons spilling over the stats below. A generic class name in a single
+     stylesheet is how that happens. */
+  .meter { height:4px; border-radius:2px; background:var(--brand); opacity:.55; margin:3px 0 0 auto; }
 
   .pill.on   { background:#e7f7ec; color:#1f7a3f; }
   .pill.off  { background:#eef2f7; color:#68748c; }
@@ -107,9 +111,45 @@
   .mini.danger:hover { background:#fdecec; }
   .mini.revive { color:#1f7a3f; border-color:#bfe6cc; }
 
-  @media (max-width: 720px) {
-    th.hide-sm, td.hide-sm { display:none; }
-    .row-actions { flex-wrap:wrap; }
+  @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
+
+  /* ---- phones: a 7-column table is the wrong shape ----
+     On a 393px iPhone the users table was 577px wide, so Status and Actions —
+     the only things here you can actually DO — sat off-screen behind a
+     sideways scroll, and every row stood ~230px tall because the action
+     buttons wrapped into a narrow column. Each row becomes a card instead:
+     nothing is hidden, nothing needs horizontal scrolling, and the buttons
+     get a full-width line of their own. */
+  .sort-mobile { display:none; }
+  @media (max-width: 640px) {
+    .sort-mobile { display:block; padding:8px 10px; border:1px solid var(--line);
+                   border-radius:10px; font-size:13px; font-family:inherit; background:#fff; color:var(--ink); }
+    .scroll { overflow-x:visible; }
+    table.cards thead { display:none; }
+    table.cards, table.cards tbody, table.cards tr, table.cards td { display:block; width:100%; }
+    /* margin on both sides pushed the card past its container and put a 10px
+       sideways scroll back on the page. */
+    table.cards tr { border:1px solid var(--line); border-radius:12px; margin:10px 0; padding:10px 12px; }
+    table.cards tr.selected { border-color:var(--brand); background:#f5fbff; }
+    table.cards td { border-top:none; padding:3px 0; white-space:normal; text-align:left; }
+    /* Without the header row, a bare number means nothing. */
+    table.cards td[data-label]::before {
+      content: attr(data-label) " "; color:var(--muted); font-size:10.5px;
+      text-transform:uppercase; letter-spacing:.3px; margin-right:4px;
+    }
+    /* One stat per line made every card ~226px tall and pushed the buttons
+       below the fold. They are short values, so they flow on one wrapped line. */
+    table.cards td[data-label] { display:inline-block; width:auto; margin-right:14px; }
+    table.cards td.num { text-align:left; }
+    table.cards td.num .meter { display:none; }   /* a bar needs a column to compare within */
+    table.cards td.empty { text-align:center; }
+    table.cards .row-actions { justify-content:flex-start; flex-wrap:wrap; margin-top:8px; }
+    /* 44px is Apple's minimum touch target, and one of these buttons signs a
+       child out of every device — not a control to mis-tap. */
+    table.cards .mini { flex:1 1 auto; min-height:44px; }
+    .who-cell { margin-bottom:2px; }
+    .stat { flex:1 1 100px; }
+    header.bar h1 { font-size:18px; }
   }
   #dash { display:none; }
 </style>
@@ -124,7 +164,7 @@
     <input id="u" autocomplete="username" autocapitalize="off" spellcheck="false">
     <label>Password</label>
     <input id="p" type="password" autocomplete="current-password">
-    <label class="keep"><input type="checkbox" id="keepMe" checked> Keep me signed in on this computer</label>
+    <label class="keep"><input type="checkbox" id="keepMe" checked> Keep me signed in on this device</label>
     <button class="btn btn-primary" id="loginBtn">Sign in</button>
     <div class="err" id="loginErr"></div>
   </div>
@@ -133,7 +173,7 @@
   <div id="dash">
     <header class="bar">
       <h1>🎯 FlashLingo Admin</h1>
-      <div>
+      <div class="bar-actions">
         <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
@@ -144,9 +184,18 @@
       <h2>Users</h2>
       <div class="tools">
         <div class="search"><input id="userSearch" placeholder="Search by name…" autocomplete="off" spellcheck="false"></div>
+        <!-- The sortable column headers are hidden in card layout, so phones
+             get this instead. Both write to the same _sort state. -->
+        <select class="sort-mobile" id="sortSel" aria-label="Sort users by">
+          <option value="last_activity">Recently seen</option>
+          <option value="total_count">Most activity</option>
+          <option value="exam_count">Most exams</option>
+          <option value="username">Name A–Z</option>
+          <option value="created_at">Newest</option>
+        </select>
         <span class="count" id="userCount"></span>
       </div>
-      <div class="scroll"><table id="usersTable">
+      <div class="scroll"><table id="usersTable" class="cards">
         <thead><tr>
           <th class="sortable" data-sort="username">User <span class="arrow">▼</span></th>
           <th class="sortable" data-sort="total_count">Activity <span class="arrow">▼</span></th>
@@ -166,7 +215,7 @@
         <span class="who" id="whoLabel">All users · last 30 days</span>
         <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
       </div>
-      <div class="scroll"><table id="attemptsTable">
+      <div class="scroll"><table id="attemptsTable" class="cards">
         <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Time</th></tr></thead>
         <tbody id="attemptsBody"></tbody>
       </table></div>
@@ -309,6 +358,10 @@ function renderUsers(){
 
   document.getElementById('userCount').textContent =
     rows.length === _users.length ? `${_users.length} users` : `${rows.length} of ${_users.length}`;
+  // Header clicks and the phone dropdown drive the same state, so neither can
+  // show an order the other is not in.
+  const sel = document.getElementById('sortSel');
+  if (sel && sel.value !== key) sel.value = key;
   document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
     const on = th.getAttribute('data-sort') === key;
     th.classList.toggle('sorted', on);
@@ -332,10 +385,10 @@ function renderUsers(){
           </span>
         </div>
       </td>
-      <td class="num"><b>${u.total_count||0}</b><div class="bar" style="width:${pct}%"></div></td>
-      <td class="num hide-sm">${u.exam_count||0}</td>
-      <td class="muted" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
-      <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
+      <td class="num" data-label="Activity"><b>${u.total_count||0}</b><div class="meter" style="width:${pct}%"></div></td>
+      <td class="num hide-sm" data-label="Exams">${u.exam_count||0}</td>
+      <td class="muted" data-label="Last seen" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
+      <td class="muted hide-sm" data-label="Joined" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
       <td>${u.disabled
             ? '<span class="pill dead">Disabled</span>'
             : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}</td>
@@ -397,13 +450,13 @@ async function loadActivity(userId, name){
     const hasScore = (a.total!=null && a.total>0);
     const pct = hasScore ? Math.round(a.score/a.total*100) : null;
     return `<tr>
-      <td class="muted">${fmtDate(a.created_at)}</td>
+      <td class="muted" data-label="When">${fmtDate(a.created_at)}</td>
       <td><b>${esc(a.username)}</b></td>
       <td>${kindPill(a.kind)}</td>
       <td>${esc(a.title||a.ref||'—')}</td>
-      <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
-      <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
-      <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
+      <td data-label="Score">${hasScore ? (a.score+'/'+a.total) : '—'}</td>
+      <td data-label="Result">${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
+      <td class="muted" data-label="Time">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -420,6 +473,11 @@ document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter'
 document.getElementById('logoutBtn').onclick = logout;
 document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadActivity(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
 document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
+document.getElementById('sortSel').addEventListener('change', e=>{
+  const key = e.target.value;
+  _sort = { key, dir: key === 'username' ? 1 : -1 };
+  renderUsers();
+});
 document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
   th.onclick = ()=>{
     const key = th.getAttribute('data-sort');
