@@ -290,6 +290,81 @@ suite('cups: wired into the app', () => {
     });
 });
 
+// A cup counted away in a cabinet motivates nobody. The moment just after a
+// battle is when "two more and this becomes a Ruby Cup" actually lands, so
+// every result card — win, loss and practice — carries the ladder.
+suite('cups: the reward ladder on the result card', () => {
+    const pb = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
+    const styles = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+    const ladder = pb.slice(pb.indexOf('function _pbCupLadderHTML'), pb.indexOf('// ---- 🤖 practice vs bot'));
+
+    test('a win shows the cup that was just earned', () => {
+        assert.truthy(ladder.includes('pb-cup-prize'), 'the prize must be visible, not implied');
+        assert.truthy(ladder.includes("earned ?"), 'only a real win shows +1');
+    });
+
+    test('the next milestone is spelled out, not left to arithmetic', () => {
+        assert.truthy(ladder.includes("pbT('cupNextRuby'"), 'the child should be told how many more');
+        assert.truthy(ladder.includes("pbT('cupNextDiamond'"));
+    });
+
+    test('the diamond cup is always shown, even when far away', () => {
+        assert.truthy(ladder.includes('pb-cup-dream'), 'the thing worth chasing must be on screen');
+        assert.truthy(ladder.includes("pbT('cupDiamondGoal'"), 'and its price named');
+        assert.truthy(styles.includes('.pb-cup-dream-art'), 'it needs art, not just a label');
+        assert.truthy(styles.includes('cup-dream-shimmer'), 'a locked prize should still catch the eye');
+    });
+
+    test('the five-slot row shows progress toward the next ruby', () => {
+        assert.truthy(ladder.includes('pb-cup-slot'), 'progress must be visual');
+        assert.truthy(ladder.includes('length: merge'), 'the row length comes from the merge rule');
+    });
+
+    test('the merge rule comes from the shared constant, not a typed 5', () => {
+        assert.truthy(ladder.includes('CUP_MERGE'), 'a retyped 5 would drift from mergeCups()');
+        assert.truthy(ladder.includes("pbT('cupLadder', { n: merge })"));
+    });
+
+    test('the ladder appears on a WIN', () => {
+        const fin = pb.slice(pb.indexOf('function finishPetBattle'));
+        assert.truthy(fin.includes('_pbCupLadderHTML(!!won)'));
+        assert.truthy(fin.includes("pbT('cupWonBig')"), 'a win needs a loud message');
+    });
+
+    test('the ladder also appears on a LOSS, with a reason to come back', () => {
+        const fin = pb.slice(pb.indexOf('function finishPetBattle'));
+        assert.truthy(fin.includes("pbT('cupLoseTease')"), 'losing should still point at the prize');
+    });
+
+    test('practice shows the same ladder as a promise, but earns nothing', () => {
+        const fn = pb.slice(pb.indexOf('function finishBotBattle'), pb.indexOf('// Battle over'));
+        assert.truthy(fn.includes('_pbCupLadderHTML(false)'), 'practice must not show a +1');
+        assert.truthy(fn.includes("pbT('cupPracticeTease')"), 'and should say what a real win would give');
+        assert.falsy(fn.includes('awardCup'), 'while still awarding nothing');
+    });
+
+    test('every ladder string exists in both languages', () => {
+        for (const key of ['cupWonBig', 'cupNextRuby', 'cupNextDiamond', 'cupTopReached',
+            'cupDiamondName', 'cupDiamondGoal', 'cupLadder', 'cupPracticeTease',
+            'cupLoseTease', 'cupCabinetCta']) {
+            assert.truthy(new RegExp(key + ":\\s*'[^']+'").test(pb), `${key} missing`);
+            assert.truthy((pb.match(new RegExp(key + ':', 'g')) || []).length >= 2,
+                `${key} is only defined once — one language is missing it`);
+        }
+    });
+
+    test('a missing cabinet degrades to no ladder rather than throwing', () => {
+        assert.truthy(ladder.includes("typeof cupState !== 'function'"), 'cups.js may not be loaded');
+        assert.truthy(ladder.includes('catch (e) { return \'\'; }'), 'a broken save must not break the result card');
+    });
+
+    test('the ladder respects reduced motion', () => {
+        const rm = styles.slice(styles.lastIndexOf('@media (prefers-reduced-motion: reduce)', styles.indexOf('.pb-cup-cabinet')));
+        assert.truthy(styles.includes('.pb-cup-prize-icon, .pb-cup-dream-art { animation: none'),
+            'the pop and shimmer must be switchable off');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

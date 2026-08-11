@@ -1024,6 +1024,69 @@
             .pb-mini-window, .pb-mini-mark { transition: none !important; }
         }
 
+        /* The reward ladder on every result card. A cup counted away in a
+           cabinet motivates nobody; the moment just after a battle is when
+           "two more and this becomes a Ruby Cup" actually lands. */
+        .pb-cup-ladder {
+            margin: 12px 0; padding: 14px 12px; border-radius: 18px;
+            background: linear-gradient(160deg, #fffbeb, #fef3c7);
+            border: 2px solid rgba(217, 119, 6, .3);
+            box-shadow: 0 6px 18px rgba(180, 83, 9, .16);
+        }
+        .pb-cup-ladder.teaser { background: linear-gradient(160deg, #f8fafc, #eef2ff); border-color: rgba(99,102,241,.25); }
+        .pb-cup-prize { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+        .pb-cup-prize-icon {
+            font-size: 46px; line-height: 1; display: inline-block;
+            filter: drop-shadow(0 4px 8px rgba(180,83,9,.45));
+            animation: cup-prize-pop .6s cubic-bezier(.2,1.5,.4,1) both;
+        }
+        .pb-cup-prize b { font-size: 26px; font-weight: 900; color: #b45309; }
+        @keyframes cup-prize-pop {
+            0% { opacity: 0; transform: scale(.2) rotate(-25deg); }
+            70% { transform: scale(1.15) rotate(6deg); }
+            100% { opacity: 1; transform: none; }
+        }
+        .pb-cup-row { display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 8px; }
+        .pb-cup-slot {
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            border-radius: 9px; font-size: 17px; background: rgba(0,0,0,.05); color: #cbd5e1;
+        }
+        .pb-cup-slot.on { background: rgba(245,158,11,.22); filter: drop-shadow(0 2px 3px rgba(180,83,9,.35)); }
+        .pb-cup-arrow { margin: 0 4px; font-size: 15px; font-weight: 900; color: #b45309; }
+        .pb-cup-goal.ruby {
+            font-size: 26px; filter: drop-shadow(0 2px 5px rgba(190,18,60,.5)) hue-rotate(-50deg) saturate(2.2);
+        }
+        .pb-cup-next {
+            text-align: center; font-size: 14px; font-weight: 900; color: #92400e;
+            line-height: 1.35; margin-bottom: 10px;
+        }
+        /* The prize at the very top of the ladder, shown even when far away —
+           it is the thing worth chasing. */
+        .pb-cup-dream {
+            display: flex; align-items: center; gap: 12px; padding: 10px;
+            border-radius: 14px; background: linear-gradient(135deg, #1e3a8a, #312e81);
+        }
+        .pb-cup-dream-art {
+            font-size: 40px; line-height: 1; flex-shrink: 0;
+            filter: drop-shadow(0 3px 7px rgba(37,99,235,.65)) hue-rotate(160deg) saturate(1.9) brightness(1.2);
+            opacity: .55;
+            animation: cup-dream-shimmer 2.6s ease-in-out infinite;
+        }
+        .pb-cup-dream-art.unlocked { opacity: 1; }
+        @keyframes cup-dream-shimmer {
+            0%, 100% { transform: none; filter: drop-shadow(0 3px 7px rgba(37,99,235,.65)) hue-rotate(160deg) saturate(1.9) brightness(1.15); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 5px 12px rgba(96,165,250,.9)) hue-rotate(160deg) saturate(2.2) brightness(1.45); }
+        }
+        .pb-cup-dream-copy { min-width: 0; text-align: left; }
+        .pb-cup-dream-copy b { display: block; font-size: 13px; font-weight: 900; color: #bfdbfe; letter-spacing: .5px; }
+        .pb-cup-dream-copy small { display: block; font-size: 11px; color: #c7d2fe; line-height: 1.35; }
+        .pb-cup-rule { text-align: center; font-size: 10.5px; font-weight: 700; color: #a16207; margin-top: 8px; }
+        .pb-cup-tease { font-size: 13px; font-weight: 800; color: #4338ca; margin: 8px 0 2px; }
+        .pb-result-cup { font-size: 17px; font-weight: 900; color: #b45309; margin-top: 6px; letter-spacing: .3px; }
+        @media (prefers-reduced-motion: reduce) {
+            .pb-cup-prize-icon, .pb-cup-dream-art { animation: none !important; }
+        }
+
         /* 🏆 Cup cabinet (Profile) */
         .cup-cabinet { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
         .cup-empty {

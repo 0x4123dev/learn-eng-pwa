@@ -114,6 +114,16 @@ const PB_STR = {
 
     errChallenge: "Couldn't send the challenge", errAccept: "Couldn't join the battle",
     cupWon: '+1 cup for the cabinet!',
+    cupWonBig: '🏆 A CUP IS YOURS!',
+    cupNextRuby: 'Only {n} more and these become a RUBY CUP',
+    cupNextDiamond: '{n} more ruby cups and the DIAMOND CUP is yours',
+    cupTopReached: 'You hold a Diamond Cup 👑',
+    cupDiamondName: 'DIAMOND CUP',
+    cupDiamondGoal: 'The rarest of all — {n} wins to forge one',
+    cupLadder: '{n} cups = 1 ruby · {n} rubies = 1 diamond',
+    cupPracticeTease: 'A real friend battle would have won you this 👇',
+    cupLoseTease: 'So close! Win the next one and this cup is yours 👇',
+    cupCabinetCta: 'Your cabinet is in Profile → 🏆 Cup shelf',
     practiceBtn: '🤖 Practice vs bot', practiceSub: 'Full 20 shots · no waiting · no reward',
     practiceTitle: '🤖 Practice', practiceOver: 'Practice over',
     practiceWin: 'You beat the bot! 🎉', practiceLose: 'The bot won this one 💪',
@@ -211,6 +221,16 @@ const PB_STR = {
 
     errChallenge: 'Không gửi được lời thách đấu', errAccept: 'Không tham gia được',
     cupWon: '+1 cúp vào tủ cúp!',
+    cupWonBig: '🏆 BÉ ĐƯỢC MỘT CHIẾC CÚP!',
+    cupNextRuby: 'Chỉ còn {n} cúp nữa là thành CÚP RUBY',
+    cupNextDiamond: 'Còn {n} cúp ruby nữa là có CÚP KIM CƯƠNG',
+    cupTopReached: 'Bé đang giữ Cúp Kim Cương 👑',
+    cupDiamondName: 'CÚP KIM CƯƠNG',
+    cupDiamondGoal: 'Hiếm nhất — cần {n} trận thắng mới có',
+    cupLadder: '{n} cúp = 1 ruby · {n} ruby = 1 kim cương',
+    cupPracticeTease: 'Thắng bạn bè thật thì bé đã có cúp này 👇',
+    cupLoseTease: 'Suýt nữa rồi! Thắng trận sau là cúp này của bé 👇',
+    cupCabinetCta: 'Tủ cúp của bé ở Hồ sơ → 🏆 Tủ cúp',
     practiceBtn: '🤖 Luyện tập với máy', practiceSub: 'Đủ 20 đạn · không phải chờ · không có thưởng',
     practiceTitle: '🤖 Luyện tập', practiceOver: 'Hết trận luyện tập',
     practiceWin: 'Bé thắng máy rồi! 🎉', practiceLose: 'Máy thắng trận này 💪',
@@ -788,6 +808,50 @@ function startPetBattleGame(view) {
   _pbGame.start();
 }
 
+// The reward ladder, drawn on every result card. A number in a cabinet the
+// child has to go and find is not motivating; the moment they have just won is
+// when "two more and this becomes a Ruby Cup" actually lands. `earned` shows
+// the cup that was just won; practice passes false and gets the same ladder as
+// a promise of what a real win would give.
+function _pbCupLadderHTML(earned) {
+  if (typeof cupState !== 'function') return '';
+  let c;
+  try { c = cupState(); } catch (e) { return ''; }
+  const merge = (typeof CUP_MERGE === 'number') ? CUP_MERGE : 5;
+
+  // Where are they on the ladder, and what is the very next milestone?
+  const toRuby = Math.max(0, merge - (c.basic % merge || 0)) || merge;
+  const needRuby = c.basic >= merge ? 0 : merge - c.basic;
+  const needDiamond = c.ruby >= merge ? 0 : merge - c.ruby;
+  const hasDiamond = c.diamond > 0;
+
+  const next = hasDiamond && c.ruby === 0 && c.basic === 0
+    ? pbT('cupTopReached')
+    : needRuby > 0 ? pbT('cupNextRuby', { n: needRuby })
+    : pbT('cupNextDiamond', { n: Math.max(1, needDiamond) });
+
+  // A row of five slots: filled ones are cups they hold, empty ones are the
+  // gap they can see closing.
+  const filled = Math.min(merge, needRuby > 0 ? c.basic : merge);
+  const slots = Array.from({ length: merge }, (_, i) =>
+    `<span class="pb-cup-slot ${i < filled ? 'on' : ''}">${i < filled ? '🏆' : '·'}</span>`).join('');
+
+  return `
+    <div class="pb-cup-ladder ${earned ? 'earned' : 'teaser'}">
+      ${earned ? `<div class="pb-cup-prize"><span class="pb-cup-prize-icon">🏆</span><b>+1</b></div>` : ''}
+      <div class="pb-cup-row">${slots}<span class="pb-cup-arrow">→</span><span class="pb-cup-goal ruby">🏆</span></div>
+      <div class="pb-cup-next">${next}</div>
+      <div class="pb-cup-dream">
+        <span class="pb-cup-dream-art ${hasDiamond ? 'unlocked' : ''}" aria-hidden="true">🏆</span>
+        <span class="pb-cup-dream-copy">
+          <b>${pbT('cupDiamondName')}</b>
+          <small>${hasDiamond ? pbT('cupTopReached') : pbT('cupDiamondGoal', { n: merge * merge })}</small>
+        </span>
+      </div>
+      <div class="pb-cup-rule">${pbT('cupLadder', { n: merge })}</div>
+    </div>`;
+}
+
 // ---- 🤖 practice vs bot (admin-unlocked, entirely local) ----
 function startBotBattle() {
   if (_pbGame && !_pbGame.finished) return;
@@ -839,6 +903,8 @@ function finishBotBattle(result) {
         <div class="pb-result-emoji">${won ? '🎯' : '🤖'}</div>
         <div class="pb-result-title">${won ? pbT('practiceWin') : pbT('practiceLose')}</div>
         <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ 🤖</div>
+        <div class="pb-cup-tease">${pbT('cupPracticeTease')}</div>
+        ${_pbCupLadderHTML(false)}
         <div class="pb-practice-note">${pbT('practiceNote')}</div>
         <div class="pb-invite-actions">
           <button class="pb-btn primary" onclick="_pbShowingResult=false;startBotBattle()">${pbT('practiceAgain')}</button>
@@ -898,8 +964,10 @@ function finishPetBattle(result) {
         <div class="pb-result-title">${won ? pbT('resultWin') : pbT('resultLose')}</div>
         <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ ${pbEsc(result.foeName || '')}</div>
         <div class="pb-result-coins">+${coins} 🪙</div>
-        ${won ? `<div class="pb-result-cup">🏆 ${pbT('cupWon')}</div>` : ''}
-        <div class="pb-result-hint">${pbT('resultHint')}</div>
+        ${won ? `<div class="pb-result-cup">${pbT('cupWonBig')}</div>`
+              : `<div class="pb-cup-tease">${pbT('cupLoseTease')}</div>`}
+        ${_pbCupLadderHTML(!!won)}
+        <div class="pb-result-hint">${won ? pbT('cupCabinetCta') : pbT('resultHint')}</div>
         <button class="pb-btn primary" onclick="closePetBattle()">${pbT('done')}</button>
       </div>`);
   }
