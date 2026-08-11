@@ -379,6 +379,85 @@ suite('drift: every practice module reaches the admin dashboard', () => {
     });
 });
 
+// ---- friends ---------------------------------------------------------------
+// js/friends.js reads fields straight off the API response. A renamed field
+// does not throw — `undefined` renders as an empty list or a zero, so the
+// Friends tab would calmly report "Chưa có bạn nào" to a child who has five.
+suite('drift: the friends API contract', () => {
+    const listSrc = read('functions/api/friends/index.js');
+    const actSrc = read('functions/api/friends/activity.js');
+    const respondSrc = read('functions/api/friends/respond.js');
+    const client = read('js/friends.js');
+
+    test('the list response still has the three arrays the client destructures', () => {
+        assert.truthy(client.includes('const { friends, incoming, outgoing } = _friendsData'),
+            'client no longer destructures the list — update this guard');
+        assert.truthy(/return json\(\{ friends, incoming, outgoing \}\)/.test(listSrc),
+            'the endpoint must return exactly those three arrays');
+    });
+
+    test('each friendship entry carries every field the rows render', () => {
+        const entry = listSrc.match(/const entry = \{([^}]+)\}/);
+        assert.truthy(entry, 'friendship entry literal not found');
+        for (const field of ['friendshipId', 'userId', 'username']) {
+            assert.truthy(entry[1].includes(field), `entry is missing ${field}`);
+            assert.truthy(client.includes('.' + field), `client no longer reads ${field} — update this guard`);
+        }
+    });
+
+    // The summary is what turns a friend row from a name into a reason to
+    // care. Every key is read directly in the row markup.
+    test('the friend summary returns the keys the card shows', () => {
+        const fn = listSrc.slice(listSrc.indexOf('async function summaryFor'), listSrc.indexOf('// GET /api/friends'));
+        for (const key of ['sessions', 'correct', 'daysThisWeek']) {
+            assert.truthy(new RegExp(key + ':').test(fn), `summaryFor no longer returns ${key}`);
+            assert.truthy(client.includes('s.' + key), `client no longer reads s.${key}`);
+        }
+    });
+
+    test('the activity response aliases match what the card reads', () => {
+        // SQL aliases ARE the API here — renaming one is a silent break.
+        for (const alias of ['day', 'sessions', 'correct', 'total', 'perfects']) {
+            assert.truthy(new RegExp('AS ' + alias + '\\b').test(actSrc), `activity SQL no longer aliases ${alias}`);
+        }
+        assert.truthy(/return json\(\{[\s\S]*user:[\s\S]*byDay:[\s\S]*bySkill:[\s\S]*totals:/.test(actSrc),
+            'the activity payload lost one of the four sections the card renders');
+        for (const key of ['d.byDay', 'd.bySkill', 'd.totals', 'd.user.username']) {
+            assert.truthy(client.includes(key), `client no longer reads ${key} — update this guard`);
+        }
+    });
+
+    test('invite and respond both return the status the client branches on', () => {
+        assert.truthy(client.includes("r.data.status === 'accepted'"), 'client branches on status');
+        assert.truthy(listSrc.includes("status: 'accepted'"), 'inviting an inviter must report acceptance');
+        assert.truthy(/return json\(\{ ok: true, status \}\)/.test(respondSrc), 'respond must echo the new status');
+    });
+});
+
+// ---- cups ------------------------------------------------------------------
+suite('drift: cup tiers have distinct art', () => {
+    const cups = require(path.join(ROOT, 'js', 'cups.js'));
+    const css = read('css/styles.css');
+
+    // All three tiers draw the SAME 🏆 glyph and are told apart only by a CSS
+    // filter. A tier whose class has no styles is not subtly wrong — it is
+    // indistinguishable from the tier below it.
+    test('every tier class is actually styled', () => {
+        for (const tier of cups.CUP_TIERS) {
+            const cls = cups.CUP_LOOK[tier].cls;
+            assert.truthy(css.includes('.' + cls + ' '), `.${cls} has no styles — this tier would look identical to the others`);
+            assert.truthy(css.includes('.' + cls + '-shelf'), `.${cls}-shelf has no styles`);
+        }
+    });
+
+    test('the tiers grow, so the shelf reads as a ladder', () => {
+        const sizes = cups.CUP_TIERS.map(t => cups.CUP_LOOK[t].size);
+        for (let i = 1; i < sizes.length; i++) {
+            assert.truthy(sizes[i] > sizes[i - 1], `tier ${cups.CUP_TIERS[i]} is not drawn larger than the one below`);
+        }
+    });
+});
+
 suite('drift: the username rule', () => {
     // Already pinned in tests/username.test.js; asserted here too so the whole
     // cross-boundary inventory lives in one place.
