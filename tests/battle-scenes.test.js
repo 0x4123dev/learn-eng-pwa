@@ -117,6 +117,50 @@ suite('battle scene integration', () => {
     });
 });
 
+// The arena picker is a horizontal scroller inside a screen the lobby poll
+// rebuilt from innerHTML once a SECOND. Scrolling to look at arena 7 snapped
+// back to arena 1 before a child could tap it.
+suite('battle scene picker: the poll must not fight the finger', () => {
+    const lobby = fs.readFileSync(path.join(ROOT, 'js/petbattle.js'), 'utf8');
+
+    test('the lobby only redraws when something actually changed', () => {
+        assert.truthy(lobby.includes('screen.dataset.pbLobbySig === sig'),
+            'without a change gate the picker is destroyed on every poll tick');
+        const sig = lobby.slice(lobby.indexOf('const sig = JSON.stringify(['), lobby.indexOf('if (screen.dataset.pbLobbySig'));
+        // Everything the lobby draws must be in the signature, or a real
+        // change would be swallowed and the screen would go stale.
+        for (const part of ['st.ammo', 'st.readyAt', 'st.allowBot', 'ready', '_pbMsg', '_pbLang', '_pbHistoryOpen', 'pbSelectedSceneId']) {
+            assert.truthy(sig.includes(part), `${part} is not in the render signature — its change would not repaint`);
+        }
+    });
+
+    test('a genuine redraw carries the scroll position across', () => {
+        assert.truthy(lobby.includes('const keepScroll = prevList ? prevList.scrollLeft : 0'));
+        assert.truthy(lobby.includes('nextList.scrollLeft = keepScroll'),
+            'a redraw must not snap the child back to the first arena');
+    });
+
+    test('every other screen clears the signature, so the lobby is never stale', () => {
+        const clears = (lobby.match(/screen\.dataset\.pbLobbySig = ''/g) || []).length;
+        assert.truthy(clears >= 3, `only ${clears} branches invalidate the cache`);
+    });
+
+    test('the poll constants say what they actually do', () => {
+        // The old names claimed the opposite of the expression: the LOBBY is
+        // what polls every second, not a running battle.
+        assert.truthy(lobby.includes('PB_POLL_LOBBY_MS'), 'name the lobby interval for what it is');
+        assert.falsy(lobby.includes('PB_POLL_LIVE_MS'), 'the misleading name should be gone');
+        assert.truthy(/_pbGame \? PB_POLL_INGAME_MS : PB_POLL_LOBBY_MS/.test(lobby));
+    });
+
+    test('the picker is a scroller, so its scroll position is worth keeping', () => {
+        const css = fs.readFileSync(path.join(ROOT, 'css/styles.css'), 'utf8');
+        const block = css.slice(css.indexOf('.pb-scene-list {'), css.indexOf('}', css.indexOf('.pb-scene-list {')));
+        assert.truthy(block.includes('overflow-x: auto'), 'the list must actually scroll');
+        assert.truthy(block.includes('grid-auto-flow: column'), 'ten arenas in a row');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

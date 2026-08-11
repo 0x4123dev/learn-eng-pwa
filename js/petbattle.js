@@ -16,8 +16,11 @@ let _pbLink = null;        // realtime transport for the running battle
 let _pbShowingResult = false;   // keep the result card up until the child taps Xong
 let _pbSceneId = null;           // committed locally; snapshotted on a friend challenge
 
-const PB_POLL_IDLE_MS = 5000;
-const PB_POLL_LIVE_MS = 1000;    // during the opponent's turn: near-live
+// The lobby polls fast so a 60-second invite shows up promptly; a running
+// battle is driven by the relay, so its tick is just a cheap keepalive. The
+// old names said the opposite of what the expression does.
+const PB_POLL_INGAME_MS = 5000;
+const PB_POLL_LOBBY_MS = 1000;
 
 function pbEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -465,8 +468,9 @@ function renderPetBattle() {
   if (_pbShowingResult) return;              // …and so does the result card
 
   const st = _pbState;
-  if (!st) { screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('loading')}</div>`); return; }
+  if (!st) { screen.dataset.pbLobbySig = ''; screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('loading')}</div>`); return; }
   if (st.offline) {
+    screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('offline')}</div>`);
     return;
   }
@@ -474,6 +478,7 @@ function renderPetBattle() {
   const b = st.battle;
   if (b && b.status === 'invited' && !b.iAmChallenger) {
     const left = Math.max(0, (b.expiresAt || 0) - Date.now());
+    screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(`
       <div class="pb-invite-card">
         <div class="pb-invite-title">${pbT('inviteTitle', { name: pbEsc(b.foe.name || '?') })}</div>
@@ -491,6 +496,7 @@ function renderPetBattle() {
   }
   if (b && b.status === 'invited' && b.iAmChallenger) {
     const left = Math.max(0, (b.expiresAt || 0) - Date.now());
+    screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(`
       <div class="pb-invite-card">
         <div class="pb-invite-title">${pbT('waitingTitle', { name: pbEsc(b.foe.name || '?') })}</div>
@@ -516,6 +522,23 @@ function renderPetBattle() {
          <button class="pb-btn primary pb-go-friends" onclick="pbGoToFriends()">${pbT('goFriends')}</button>
        </div>`;
 
+  // Nothing below changes between polls unless one of these does. Rebuilding
+  // anyway threw away the arena picker's scroll position — and any half-made
+  // tap — once every second, which is what made choosing a background feel
+  // broken.
+  const sig = JSON.stringify([
+    st.ammo, st.readyAt || 0, !!st.allowBot, ready,
+    (friends || []).map(f => f.userId), _pbMsg, _pbLang, _pbHistoryOpen,
+    (typeof pbSelectedSceneId === 'function' ? pbSelectedSceneId() : ''),
+    _pbHistory().length,
+  ]);
+  if (screen.dataset.pbLobbySig === sig && screen.querySelector('.pb-scene-list')) return;
+
+  // When it genuinely must redraw, carry the scroll across rather than
+  // snapping the child back to the first arena.
+  const prevList = screen.querySelector('.pb-scene-list');
+  const keepScroll = prevList ? prevList.scrollLeft : 0;
+
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
     ${_pbScenePicker()}
@@ -536,6 +559,11 @@ function renderPetBattle() {
         <div class="pb-practice-sub">${pbT('practiceSub')}</div>
       </div>` : ''}
     ${_pbHistoryPanel()}`);
+  screen.dataset.pbLobbySig = sig;
+  if (keepScroll) {
+    const nextList = screen.querySelector('.pb-scene-list');
+    if (nextList) nextList.scrollLeft = keepScroll;
+  }
 }
 
 // ---- battle history ----
@@ -686,9 +714,9 @@ function _pbStartPolling() {
   _pbStopPolling();
   const tick = async () => {
     try { if (!_pbGame) await refreshPetBattle(); } catch (e) {}
-    _pbPoll = setTimeout(tick, _pbGame ? PB_POLL_IDLE_MS : PB_POLL_LIVE_MS);
+    _pbPoll = setTimeout(tick, _pbGame ? PB_POLL_INGAME_MS : PB_POLL_LOBBY_MS);
   };
-  _pbPoll = setTimeout(tick, PB_POLL_LIVE_MS);
+  _pbPoll = setTimeout(tick, PB_POLL_LOBBY_MS);
 }
 function _pbStopPolling() {
   if (_pbPoll) { clearTimeout(_pbPoll); _pbPoll = null; }
