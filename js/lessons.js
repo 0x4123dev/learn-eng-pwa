@@ -291,18 +291,21 @@ function completeLesson() {
         return;
     }
 
-    // The jackpot needs to LAND: a number quietly ticking up in a corner is not a
-// reward. Shows what was won, and hands off to the level-up celebration when
-// the dog actually grew — which, at +1000 XP, is most of the time.
+    // This is the ONLY place the hidden gem is ever mentioned. Nothing marks the
+// lesson beforehand, so the whole reward is this moment — it has to land.
+//
+// It deliberately does NOT say "replay it for more". The gem still pays every
+// time, but a child told that farms one lesson and skips the other 42, which
+// is exactly what hiding it was meant to prevent.
 function _showTopicBonusReward(bonus, levelBefore) {
     const after = (typeof appState !== 'undefined' && appState) ? (appState.dogLevel || 1) : 1;
     const grew = after > (levelBefore || 1);
 
     const sub = document.getElementById('completeSubtitle');
     if (sub) {
-        sub.innerHTML = `💰 TREASURE LESSON! <b>+${bonus.coins}</b> 🪙 and <b>+${bonus.xp}</b> XP`
+        sub.innerHTML = `💎 <b>HIDDEN GEM FOUND!</b><br><b>+${bonus.coins}</b> 🪙 and <b>+${bonus.xp}</b> XP`
             + (grew ? `<br>🎉 Your dog reached <b>level ${after}</b>!` : '')
-            + `<br><span class="topic-bonus-again">Replay it any time — it pays every single time.</span>`;
+            + `<br><span class="topic-bonus-again">Lucky you! Keep exploring — who knows what else is out there.</span>`;
     }
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
     // The celebration owns the screen, so let the completion card land first.
@@ -327,11 +330,11 @@ function _showTopicBonusReward(bonus, levelBefore) {
                 appState.topicProgress[lessonState.topicId][lessonState.topicChunkIdx] = newRecord;
             }
         }
-        // ── The treasure lesson ──
-        // Pays EVERY time, by design (see TOPIC_BONUS_LESSON in js/topics.js):
-        // it is the grind that turns study time into a stronger battle dog.
-        // Awarded before saveUserData so a child who closes the app the instant
-        // the screen appears still keeps it.
+        // ── The hidden gem ──
+        // One unmarked lesson pays a jackpot (see TOPIC_BONUS_LESSON in
+        // js/topics.js). Nothing advertises it: a child finds it by working
+        // through the topic and getting lucky. Awarded before saveUserData so
+        // a child who closes the app the instant the screen appears keeps it.
         let _bonus = null;
         if (typeof isBonusTopicLesson === 'function' && lessonState.isTopicLesson
             && isBonusTopicLesson(lessonState.topicId, lessonState.topicChunkIdx)) {

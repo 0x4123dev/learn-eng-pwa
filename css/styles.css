@@ -7793,30 +7793,8 @@
             background: linear-gradient(135deg, rgba(108,92,231,0.20), rgba(58,134,255,0.20));
             color: #4c1d95;
         }
-        /* The treasure lesson. Loud on purpose — it is the one card that is
-           worth coming back to, and a child has to be able to spot it while
-           scrolling 43 lessons. */
-        .topic-lesson-bonus-chip {
-            display: block;
-            margin-top: 6px;
-            font-size: 11px;
-            font-weight: 900;
-            color: #7c2d12;
-            background: linear-gradient(135deg, #fde68a, #fbbf24);
-            border: 1.5px solid #f59e0b;
-            padding: 4px 9px;
-            border-radius: 999px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(245,158,11,.35);
-        }
+        /* Shown only in the moment a hidden gem is found — never on a card. */
         .topic-bonus-again { font-size: 12px; opacity: .85; }
-        @media (prefers-reduced-motion: no-preference) {
-            .topic-lesson-bonus-chip { animation: bonusPulse 2.4s ease-in-out infinite; }
-        }
-        @keyframes bonusPulse {
-            0%, 100% { box-shadow: 0 2px 8px rgba(245,158,11,.35); }
-            50%      { box-shadow: 0 2px 16px rgba(245,158,11,.7); }
-        }
 
         .topic-lesson-due-chip {
             display: inline-block;

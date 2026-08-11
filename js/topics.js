@@ -20,10 +20,15 @@ const TOPICS = [
     { id: 'quality',       name: 'Quality & Description',   icon: '🌟', color: '#FFD60A' }
 ];
 
-// ---- the treasure lesson ----
-// One lesson pays a jackpot every single time it is finished, so a child who
-// wants a stronger battle dog has something to grind for. Deliberately
-// repeatable: there is no "already claimed" flag, and that is the point.
+// ---- the hidden gem ----
+// One lesson pays a jackpot when it is finished. It is a SECRET: nothing in
+// the UI marks it, nothing hints at it, and the card looks exactly like the
+// other 42. A child finds it by working through the topic and getting lucky,
+// which is the point — an advertised jackpot gets farmed and the rest of the
+// topic gets skipped.
+//
+// It still pays every time it is replayed; the child is simply never told
+// that. There is no "already claimed" flag, and that is deliberate.
 //
 // It is Lesson 40 of Daily Life. Lesson cards are labelled `idx + 1`, so the
 // card that reads "Lesson 40" is chunk index 39 — off-by-one here would pay
@@ -803,11 +808,6 @@ function openTopicDetail(topicId) {
             ? `<span class="topic-lesson-due-chip">🔄 ${lessonDue} due</span>`
             : '';
 
-        // The jackpot has to be findable, or nobody grinds a lesson they cannot
-        // see. Says "every time" because a child assumes a bonus is one-off.
-        const bonusChip = isBonusTopicLesson(topicId, idx)
-            ? `<span class="topic-lesson-bonus-chip">💰 +${TOPIC_BONUS_LESSON.coins} 🪙 · +${TOPIC_BONUS_LESSON.xp} XP every time!</span>`
-            : '';
 
         return `
             <div class="topic-lesson-card ${cardClass}">
@@ -815,7 +815,7 @@ function openTopicDetail(topicId) {
                     <span class="topic-lesson-card-num">Lesson ${idx + 1}</span>
                     <span class="topic-lesson-card-diff">${diffBadge}</span>
                 </div>
-                ${statusBadge}${dueChip}${bonusChip}
+                ${statusBadge}${dueChip}
                 <div class="topic-lesson-card-preview">${previewWords}</div>
                 <button class="topic-lesson-start-btn" onclick="startTopicLessonChunk('${topicId}', ${idx})">
                     ${btnLabel}
