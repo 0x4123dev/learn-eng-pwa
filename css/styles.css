@@ -731,10 +731,14 @@
 
         /* ---- the drill ---- */
         .unit-retry-peek { display: flex; justify-content: center; gap: 8px; margin: 10px 0 6px; }
+        /* Held down, not tapped. A long press on iOS otherwise raises the
+           text-selection callout and the magnifier right over the hint. */
         .unit-peek-btn {
             border: 1.5px solid #c7d2fe; background: #eef2ff; color: #3730a3;
-            border-radius: 999px; padding: 8px 14px; min-height: 40px;
+            border-radius: 999px; padding: 8px 14px; min-height: 44px;
             font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+            touch-action: manipulation;
         }
         .unit-peek-btn.on { background: #3730a3; border-color: #3730a3; color: #fff; }
         /* The hidden state keeps the SAME height as the revealed one, or the
