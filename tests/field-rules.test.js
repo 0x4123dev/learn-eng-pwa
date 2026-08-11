@@ -95,6 +95,13 @@ suite('field rules: v3 arena elevations', () => {
     });
 
     test('all v3 arena elevations remain reachable in extreme winds', () => {
+        // This used to measure how close a shell landed to the target's x on
+        // TERRAIN, with a 70px bar borrowed from the castle half-width. That
+        // proxy predates the castle becoming a solid 122px building: a shell
+        // now strikes the WALL on the way past, so "landed 89px beyond" can
+        // still be a clean hit, and the proxy started failing arenas that play
+        // perfectly well. It measures real damage instead — the thing that
+        // actually decides the round — with the blocker the live game passes.
         for (const id of Object.keys(C.BATTLE_TERRAIN_PROFILES)) {
             const t = C.buildTerrain(4242, V3, id);
             const spawns = C.spawnPoints(t, V3);
@@ -102,17 +109,19 @@ suite('field rules: v3 arena elevations', () => {
                 for (const facing of [1, -1]) {
                     const from = facing === 1 ? spawns[0] : spawns[1];
                     const target = facing === 1 ? spawns[1] : spawns[0];
-                    let best = Infinity;
-                    for (let angle = 12; angle <= 84; angle += 3) {
-                        for (let power = 30; power <= 100; power += 3) {
+                    let winning = 0;
+                    for (let angle = 12; angle <= 84; angle += 2) {
+                        for (let power = 30; power <= 100; power += 2) {
                             const shot = C.simulateShot({
                                 terrain: t, from, facing, angle, power, wind, rules: V3,
+                                blockers: [target],
                             });
-                            if (shot.hit) best = Math.min(best, Math.abs(shot.hit.x - target.x));
+                            if (C.damageAt(shot.hit, target, 17, V3) > 0) winning++;
                         }
                     }
-                    assert.truthy(best <= 70,
-                        id + ', wind ' + wind + ', facing ' + facing + ': best miss ' + Math.round(best) + 'px');
+                    assert.truthy(winning > 0,
+                        id + ', wind ' + wind + ', facing ' + facing +
+                        ': no aim can damage the castle — this elevation is unwinnable');
                 }
             }
         }

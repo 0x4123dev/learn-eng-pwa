@@ -123,8 +123,27 @@ const FIELD_RULES = {
   3: {
     // v3 keeps the proven long-world ballistics, but lets the snapshotted
     // arena choose asymmetric spawn elevations. v1/v2 remain replay-stable.
+    //
+    // Wind is DOUBLE v2's, and that was a CORRECTION, not a tuning whim. A
+    // child reported "sao voi moi huong gio, toi luon dung luc 100 va goc 20
+    // deu trung doi thu" — whatever the wind, power 100 / angle 20 hits. The
+    // cause was not weak wind but the shape of the target: the castle is a
+    // 122px-tall WALL, so a flat shot arriving almost horizontally only has to
+    // REACH it, never to drop into a narrow opening. It drifted 11px against a
+    // ±91px target while a lob drifted hundreds. Sweeping 10 arenas x 3 seeds found
+    // 162 aims that beat every wind at 0.002 and ZERO at 0.004, with every
+    // scenario still winnable; 0.006 was measured too and broke reachability
+    // (80%). Nerfing the shell's range was NOT needed.
+    //
+    // Changing a shipped version in place is normally forbidden here — both
+    // phones replay a battle from its stored field_version, so a constant that
+    // moves under a live battle desyncs it. It was safe exactly once: at the
+    // time of the change production D1 held no v3 battle row at all (1 v1 and
+    // 3 v2 rows, all done/declined/expired), so no replay could depend on
+    // these numbers. v3 is frozen from that point on — the next physics change
+    // adds a v4 and bumps FIELD_VERSION_NEW in functions/api/_battle.js.
     version: 3, worldW: 2000, viewW: 800, worldH: 450,
-    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.002,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.004,
     v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
     groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
     castle: { halfW: 70, height: 122 },
