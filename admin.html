@@ -78,6 +78,7 @@
   #usersTable th .arrow { opacity:.35; font-size:9px; }
   #usersTable th.sorted .arrow { opacity:1; color:var(--brand); }
   #usersTable td { vertical-align:middle; }
+  .th-short { display:none; }
 
   .who-cell { display:flex; align-items:center; gap:10px; }
   .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
@@ -113,41 +114,53 @@
 
   @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
 
-  /* ---- phones: a 7-column table is the wrong shape ----
-     On a 393px iPhone the users table was 577px wide, so Status and Actions —
-     the only things here you can actually DO — sat off-screen behind a
-     sideways scroll, and every row stood ~230px tall because the action
-     buttons wrapped into a narrow column. Each row becomes a card instead:
-     nothing is hidden, nothing needs horizontal scrolling, and the buttons
-     get a full-width line of their own. */
+  /* ---- phones: stay a TABLE, but fit ----
+     A card layout was tried and reverted: cards make one user easy to read and
+     several users impossible to COMPARE, which is the whole reason to look at
+     this screen. So the table stays, and everything else gives way instead —
+     smaller type, tighter cells, icon-only buttons, and a user column that
+     stays put while the rest scrolls.
+     Measured on an iPhone 16 (393x852): 577px of table in a 351px box before,
+     fitting after. */
   .sort-mobile { display:none; }
   @media (max-width: 640px) {
     .sort-mobile { display:block; padding:8px 10px; border:1px solid var(--line);
                    border-radius:10px; font-size:13px; font-family:inherit; background:#fff; color:var(--ink); }
-    .scroll { overflow-x:visible; }
-    table.cards thead { display:none; }
-    table.cards, table.cards tbody, table.cards tr, table.cards td { display:block; width:100%; }
-    /* margin on both sides pushed the card past its container and put a 10px
-       sideways scroll back on the page. */
-    table.cards tr { border:1px solid var(--line); border-radius:12px; margin:10px 0; padding:10px 12px; }
-    table.cards tr.selected { border-color:var(--brand); background:#f5fbff; }
-    table.cards td { border-top:none; padding:3px 0; white-space:normal; text-align:left; }
-    /* Without the header row, a bare number means nothing. */
-    table.cards td[data-label]::before {
-      content: attr(data-label) " "; color:var(--muted); font-size:10.5px;
-      text-transform:uppercase; letter-spacing:.3px; margin-right:4px;
+    /* Two columns give way, and only these two, because the row already says
+       both: a disabled account is faded, struck through and offers Enable
+       instead of Disable, and the bot state is the toggle's own colour. The
+       numbers an admin actually compares — activity, exams, last seen — all
+       stay. */
+    th.hide-xs, td.hide-xs { display:none; }
+    .who-sub { display:none; }            /* the #id is not what you scan for */
+    .dev { margin-left:5px; font-size:11px; }
+    /* The last few pixels come from the page gutter rather than from the
+       content: squeezing the cells further would start costing legibility. */
+    .wrap { padding-inline: 10px; }
+    #usersTable { font-size:12.5px; }
+    #usersTable th, #usersTable td { padding:8px 4px; }
+    .th-full { display:none; }
+    .th-short { display:inline; }
+    /* One long name would otherwise set the width of the whole column. */
+    .who-name { display:inline-block; max-width:76px; overflow:hidden;
+                text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }
+    .who-cell { gap:6px; }
+    #usersTable th { font-size:10px; letter-spacing:0; }
+    .avatar { width:24px; height:24px; font-size:10.5px; }
+    .who-sub { font-size:10px; }
+    .pill { padding:2px 6px; font-size:10px; }
+
+    /* The buttons keep their icon and drop the word. Three labelled buttons
+       need ~220px of a 351px screen, which is what pushed them off-screen. */
+    .mini .lbl { display:none; }
+    .mini { padding:0; width:34px; height:34px; display:grid; place-items:center; font-size:15px; }
+    .row-actions { gap:4px; }
+
+    /* Scrolling right must not lose track of WHOSE row you are reading. */
+    #usersTable th:first-child, #usersTable td:first-child {
+      position:sticky; left:0; z-index:1; background:var(--card);
     }
-    /* One stat per line made every card ~226px tall and pushed the buttons
-       below the fold. They are short values, so they flow on one wrapped line. */
-    table.cards td[data-label] { display:inline-block; width:auto; margin-right:14px; }
-    table.cards td.num { text-align:left; }
-    table.cards td.num .meter { display:none; }   /* a bar needs a column to compare within */
-    table.cards td.empty { text-align:center; }
-    table.cards .row-actions { justify-content:flex-start; flex-wrap:wrap; margin-top:8px; }
-    /* 44px is Apple's minimum touch target, and one of these buttons signs a
-       child out of every device — not a control to mis-tap. */
-    table.cards .mini { flex:1 1 auto; min-height:44px; }
-    .who-cell { margin-bottom:2px; }
+    #usersTable tr.selected td:first-child { background:#eaf6ff; }
     .stat { flex:1 1 100px; }
     header.bar h1 { font-size:18px; }
   }
@@ -195,14 +208,14 @@
         </select>
         <span class="count" id="userCount"></span>
       </div>
-      <div class="scroll"><table id="usersTable" class="cards">
+      <div class="scroll"><table id="usersTable">
         <thead><tr>
           <th class="sortable" data-sort="username">User <span class="arrow">▼</span></th>
-          <th class="sortable" data-sort="total_count">Activity <span class="arrow">▼</span></th>
+          <th class="sortable" data-sort="total_count"><span class="th-full">Activity</span><span class="th-short">Acts</span> <span class="arrow">▼</span></th>
           <th class="sortable hide-sm" data-sort="exam_count">Exams <span class="arrow">▼</span></th>
-          <th class="sortable" data-sort="last_activity">Last seen <span class="arrow">▼</span></th>
+          <th class="sortable" data-sort="last_activity"><span class="th-full">Last seen</span><span class="th-short">Seen</span> <span class="arrow">▼</span></th>
           <th class="sortable hide-sm" data-sort="created_at">Joined <span class="arrow">▼</span></th>
-          <th>Status</th>
+          <th class="hide-xs">Status</th>
           <th style="text-align:right">Actions</th>
         </tr></thead>
         <tbody id="usersBody"></tbody>
@@ -215,7 +228,7 @@
         <span class="who" id="whoLabel">All users · last 30 days</span>
         <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
       </div>
-      <div class="scroll"><table id="attemptsTable" class="cards">
+      <div class="scroll"><table id="attemptsTable">
         <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Time</th></tr></thead>
         <tbody id="attemptsBody"></tbody>
       </table></div>
@@ -381,27 +394,30 @@ function renderUsers(){
           <span class="avatar ${u.role==='admin'?'admin':''}">${esc(initials(u.username))}</span>
           <span>
             <span class="who-name">${esc(u.username)}</span>
-            <span class="who-sub">${u.role==='admin'?'admin · ':''}#${u.id}${u.has_device?' · 📱':''}</span>
+            <span class="who-sub">${u.role==='admin'?'admin · ':''}#${u.id}</span>${u.has_device?'<span class="dev" title="Holds a slot on a device">📱</span>':''}
           </span>
         </div>
       </td>
-      <td class="num" data-label="Activity"><b>${u.total_count||0}</b><div class="meter" style="width:${pct}%"></div></td>
-      <td class="num hide-sm" data-label="Exams">${u.exam_count||0}</td>
-      <td class="muted" data-label="Last seen" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
-      <td class="muted hide-sm" data-label="Joined" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
-      <td>${u.disabled
+      <td class="num"><b>${u.total_count||0}</b><div class="meter" style="width:${pct}%"></div></td>
+      <td class="num hide-sm">${u.exam_count||0}</td>
+      <td class="muted" title="${esc(fmtDate(u.last_activity))}">${relTime(u.last_activity)}</td>
+      <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
+      <td class="hide-xs">${u.disabled
             ? '<span class="pill dead">Disabled</span>'
             : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}</td>
       <td>
         <div class="row-actions">
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
-                  title="Practice against a bot: unlimited, 20 shots, no rewards">${u.allow_bot?'🤖 On':'🤖 Off'}</button>
+                  aria-label="Bot practice for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
+                  title="Practice against a bot: unlimited, 20 shots, no rewards">🤖<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
           ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
-                  title="Free this account's slot on its device (max 2 accounts per device)">📱 Free slot</button>` : ''}
+                  aria-label="Free the device slot held by ${esc(u.username)}"
+                  title="Free this account's slot on its device (max 2 accounts per device)">📱<span class="lbl"> Free slot</span></button>` : ''}
           ${u.role === 'admin' ? '' : (u.disabled
-            ? `<button class="mini revive act-enable" data-uid="${u.id}">↩︎ Enable</button>`
+            ? `<button class="mini revive act-enable" data-uid="${u.id}" aria-label="Enable ${esc(u.username)}">↩︎<span class="lbl"> Enable</span></button>`
             : `<button class="mini danger act-disable" data-uid="${u.id}" data-name="${esc(u.username)}"
-                  title="Sign this account out everywhere and block sign-in. Nothing is deleted.">🚫 Disable</button>`)}
+                  aria-label="Disable ${esc(u.username)}"
+                  title="Sign this account out everywhere and block sign-in. Nothing is deleted.">🚫<span class="lbl"> Disable</span></button>`)}
         </div>
       </td>
     </tr>`;
@@ -450,13 +466,13 @@ async function loadActivity(userId, name){
     const hasScore = (a.total!=null && a.total>0);
     const pct = hasScore ? Math.round(a.score/a.total*100) : null;
     return `<tr>
-      <td class="muted" data-label="When">${fmtDate(a.created_at)}</td>
+      <td class="muted">${fmtDate(a.created_at)}</td>
       <td><b>${esc(a.username)}</b></td>
       <td>${kindPill(a.kind)}</td>
       <td>${esc(a.title||a.ref||'—')}</td>
-      <td data-label="Score">${hasScore ? (a.score+'/'+a.total) : '—'}</td>
-      <td data-label="Result">${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
-      <td class="muted" data-label="Time">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
+      <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
+      <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
+      <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
     </tr>`;
   }).join('');
 }
