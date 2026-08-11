@@ -251,16 +251,6 @@ PetBattleGame.prototype.render = function () {
                   onclick="_pbGameSetLang('vi')" aria-pressed="${gLang() === 'vi'}">🇻🇳<span>VI</span></button>
         </div>
       </div>
-      <!-- The two pet panels used to live here with name, HP, hearts, ammo
-           and level. Everything a child needs mid-shot now sits ON the
-           battlefield instead, where their eyes already are; only the round
-           counter and the connection state remain above it. -->
-      <div class="pb-hud">
-        <div class="pb-hud-mid">
-          <div class="pb-round" id="pbRound"></div>
-          <div class="pb-link" id="pbLink" role="status" aria-live="polite"></div>
-        </div>
-      </div>
       <div class="pb-field-shell">
         <canvas id="pbSceneCanvas" class="pb-scene-canvas" width="${C.FIELD_W}" height="${C.FIELD_H + PB_SKY_EXTRA}"
                 aria-hidden="true"></canvas>
@@ -276,21 +266,23 @@ PetBattleGame.prototype.render = function () {
              screen-reader path with them, so this strip is NOT aria-hidden:
              it is the only place that information now lives. Progressbar
              semantics on each side keep the HP readable as a value. -->
+        <!-- Everything mid-shot lives here. No level: each castle already
+             wears its own LV badge, so repeating it twice on one screen was
+             just clutter. -->
         <div class="pb-field-status" role="group" aria-label="${esc(gT('gFieldStatusAria'))}">
           <span class="pb-fs-side me" id="pbFieldMe" role="progressbar"
                 aria-valuemin="0" aria-valuemax="100" aria-label="${esc(v.me.name || gT('gMe'))}">
-            <i></i>
-            <b id="pbFieldHpMe">100</b>
-            <em id="pbFieldAmmoMe">0 💩</em>
-            <u>LV.${Math.max(1, Number(v.me.level) || 1)}</u>
+            <span class="pb-fs-nums"><b id="pbFieldHpMe">100</b><em id="pbFieldAmmoMe">0 💩</em></span>
+            <i class="pb-fs-bar"><u></u></i>
           </span>
-          <span class="pb-fs-wind" id="pbFieldWind">💨 · 0</span>
+          <span class="pb-fs-mid">
+            <span class="pb-fs-wind" id="pbFieldWind">💨 · 0</span>
+            <span class="pb-link" id="pbLink" role="status" aria-live="polite"></span>
+          </span>
           <span class="pb-fs-side foe" id="pbFieldFoe" role="progressbar"
                 aria-valuemin="0" aria-valuemax="100" aria-label="${esc(v.foe.name || gT('gFoe'))}">
-            <u>LV.${Math.max(1, Number(v.foe.level) || 1)}</u>
-            <em id="pbFieldAmmoFoe">0 💩</em>
-            <b id="pbFieldHpFoe">100</b>
-            <i></i>
+            <span class="pb-fs-nums"><b id="pbFieldHpFoe">100</b><em id="pbFieldAmmoFoe">0 💩</em></span>
+            <i class="pb-fs-bar"><u></u></i>
           </span>
         </div>
         <button class="pb-beacon left" id="pbBeaconL" type="button" hidden
@@ -395,7 +387,6 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
     const next = String(value);
     if (el && el.textContent !== next) el.textContent = next;
   };
-  text('pbRound', gT('gRound', { n: this.roundNo() }));
   text('pbBanner', this.banner);
   // the on-field repeat of wind and health
   const fw = this.wind();
@@ -404,13 +395,12 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   text('pbFieldHpFoe', Math.max(0, Math.round(this.foeHp)));
   text('pbFieldAmmoMe', Math.max(0, this.myAmmo) + ' 💩');
   text('pbFieldAmmoFoe', Math.max(0, this.foeAmmo) + ' 💩');
-  // The bar is the <i> at the outer edge of each side.
   const bar = (sel, value) => {
     const el = this.mount && this.mount.querySelector ? this.mount.querySelector(sel) : null;
-    if (el) el.style.width = Math.round(Math.max(0, Math.min(100, value)) * 0.62) + 'px';
+    if (el) el.style.width = Math.max(0, Math.min(100, value)) + '%';
   };
-  bar('.pb-fs-side.me i', this.myHp);
-  bar('.pb-fs-side.foe i', this.foeHp);
+  bar('.pb-fs-side.me .pb-fs-bar u', this.myHp);
+  bar('.pb-fs-side.foe .pb-fs-bar u', this.foeHp);
   const announce = (id, value) => {
     const el = this._el(id);
     if (el) el.setAttribute('aria-valuenow', String(Math.max(0, Math.min(100, Math.round(value)))));

@@ -906,28 +906,46 @@
         /* Wind and health repeated on the battlefield itself. On a tall screen
            the HUD above scrolls out of view, and wind is the one number that
            decides a shot — a child must not have to look away from the field. */
+        /* Everything a child needs mid-shot, laid over the battlefield.
+           No level here — each castle already wears its own LV badge, and
+           the same number twice on one screen is just noise. */
         .pb-field-status {
-            position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2;
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2;
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
             pointer-events: none;
         }
-        .pb-fs-side { display: flex; align-items: center; gap: 6px; min-width: 96px; }
-        .pb-fs-side.foe { justify-content: flex-end; }
-        .pb-fs-side b {
-            font-size: 13px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums;
-            text-shadow: 0 2px 4px rgba(15,23,42,.85);
+        .pb-fs-side { display: flex; flex-direction: column; gap: 6px; min-width: 104px; }
+        .pb-fs-side.foe { align-items: flex-end; }
+        .pb-fs-nums { display: flex; align-items: baseline; gap: 10px; }
+        .pb-fs-side.foe .pb-fs-nums { flex-direction: row-reverse; }
+        .pb-fs-nums b {
+            font-size: 19px; font-weight: 900; color: #fff; line-height: 1;
+            font-variant-numeric: tabular-nums; text-shadow: 0 2px 5px rgba(15,23,42,.9);
         }
-        .pb-fs-side i {
-            display: block; width: 62px; height: 8px; border-radius: 5px;
-            background: rgba(15,23,42,.45); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.5);
+        .pb-fs-nums em {
+            font-style: normal; font-size: 13px; font-weight: 800; color: #fde047;
+            text-shadow: 0 2px 5px rgba(15,23,42,.9);
         }
-        .pb-fs-side.me i { background: linear-gradient(90deg, #4ade80, #16a34a); }
-        .pb-fs-side.foe i { background: linear-gradient(90deg, #fb7185, #e11d48); }
+        .pb-fs-bar {
+            display: block; width: 104px; height: 9px; border-radius: 6px; overflow: hidden;
+            background: rgba(15,23,42,.55); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55);
+        }
+        .pb-fs-bar u { display: block; height: 100%; width: 100%; transition: width .3s ease; }
+        .pb-fs-side.me .pb-fs-bar u { background: linear-gradient(90deg, #4ade80, #16a34a); }
+        .pb-fs-side.foe .pb-fs-bar u { background: linear-gradient(90deg, #fb7185, #e11d48); float: right; }
+        /* Wind, with the connection state tucked under it. */
+        .pb-fs-mid { display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .pb-fs-wind {
-            padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 900;
-            color: #fff; background: rgba(15,23,42,.72); white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(15,23,42,.4);
+            padding: 5px 14px; border-radius: 999px; font-size: 14px; font-weight: 900;
+            color: #fff; background: rgba(15,23,42,.74); white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(15,23,42,.45);
         }
+        .pb-fs-mid .pb-link {
+            padding: 2px 9px; border-radius: 999px; font-size: 10px; font-weight: 800;
+            background: rgba(15,23,42,.6); color: #e2e8f0; white-space: nowrap;
+        }
+        .pb-fs-mid .pb-link.live { color: #4ade80; }
+        .pb-fs-mid .pb-link.slow { color: #fbbf24; }
 
         /* Manual aim: exact numbers for after a near miss, when dragging a
            fingertip across a 320px canvas cannot find the last two degrees. */

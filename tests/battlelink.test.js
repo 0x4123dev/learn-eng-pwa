@@ -530,9 +530,10 @@ suite('battle game: Gunbound-style house arena', () => {
     });
 
     test('pet levels stay visible and a destroyed house leaves pet and rubble outdoors', () => {
-        // Level moved from the pet panels onto the battlefield strip.
-        assert.truthy(gameSrc.includes('LV.${Math.max(1, Number(v.me.level) || 1)}'), 'my level must be shown');
-        assert.truthy(gameSrc.includes('LV.${Math.max(1, Number(v.foe.level) || 1)}'), "and the opponent's");
+        // Level is drawn ON each castle now — the pet panels are gone and
+        // repeating it on the overlay was the same number twice.
+        assert.truthy(gameSrc.includes("ctx.fillText('LV.'"), 'each castle must wear its level');
+        assert.truthy(gameSrc.includes('_drawHouse'), 'and the castle is what draws it');
         assert.truthy(gameSrc.includes("ctx.fillText('LV.'"));
         assert.truthy(gameSrc.includes('// At zero HP the castle is truly gone'));
         assert.truthy(gameSrc.includes('if (damage < 4)'), 'critical damage must replace the intact wall');

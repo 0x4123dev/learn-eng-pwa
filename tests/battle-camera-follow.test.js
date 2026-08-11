@@ -692,8 +692,25 @@ suite('follow: wind and health are readable without looking away', () => {
 
     test('the two sides are told apart by colour', () => {
         const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
-        assert.truthy(css.includes('.pb-fs-side.me i'), 'my bar needs its own colour');
-        assert.truthy(css.includes('.pb-fs-side.foe i'));
+        assert.truthy(css.includes('.pb-fs-side.me .pb-fs-bar u'), 'my bar needs its own colour');
+        assert.truthy(css.includes('.pb-fs-side.foe .pb-fs-bar u'));
+    });
+
+    test('the connection state sits under the wind, not in a bar of its own', () => {
+        assert.truthy(gameSrc.includes('class="pb-fs-mid"'), 'wind and link share a column');
+        const mid = gameSrc.slice(gameSrc.indexOf('class="pb-fs-mid"'), gameSrc.indexOf('class="pb-fs-mid"') + 260);
+        assert.truthy(mid.includes('pbFieldWind') && mid.includes('pbLink'), 'both belong to that column');
+    });
+
+    test('the strip above the battlefield is gone entirely', () => {
+        assert.falsy(gameSrc.includes('id="pbRound"'), 'the round counter was removed');
+        assert.falsy(gameSrc.includes('class="pb-hud"'), 'nothing should sit above the field now');
+    });
+
+    test('level is shown on the castle, not repeated on the strip', () => {
+        const strip = gameSrc.slice(gameSrc.indexOf('class="pb-field-status"'), gameSrc.indexOf('pb-fs-side foe') + 400);
+        assert.falsy(/LV\./.test(strip), 'the same level twice on one screen is clutter');
+        assert.truthy(gameSrc.includes("ctx.fillText('LV.'"), 'the castle must still wear its badge');
     });
 });
 
