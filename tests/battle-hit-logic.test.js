@@ -462,6 +462,94 @@ suite('hit logic: hits belong to the right pet', () => {
     });
 });
 
+// ── 12. the aim preview must not aim for the child ────────────────────────
+// Drawing the whole flight path traced the shell onto the opponent's castle:
+// a child could see exactly where it would land, so there was nothing left to
+// judge and every shot hit. The preview is now a short tracer off the barrel.
+suite('hit logic: the aim preview hints, it does not solve', () => {
+    const SKY = +(gameSrc.match(/PB_SKY_EXTRA = (\d+)/) || [])[1];
+    const MAX = +(gameSrc.match(/PB_AIM_PREVIEW_POINTS = (\d+)/) || [])[1];
+    const GAP = +(gameSrc.match(/PB_AIM_PREVIEW_GAP = (\d+)/) || [])[1];
+    const terrain = C.buildTerrain(4242, V2);
+    const [L, R] = C.spawnPoints(terrain, V2);
+
+    // Mirrors _drawTrajectoryPreview exactly.
+    const preview = (angle, power, wind) => {
+        const s = C.simulateShot({ terrain, from: L, facing: 1, angle, power, wind: wind || 0, rules: V2, blockers: [R] });
+        let drawn = 0, travelled = 0, prev = s.points[0], last = prev;
+        for (let i = 1; i < s.points.length && drawn < MAX; i++) {
+            const p = s.points[i];
+            if (!p) continue;
+            travelled += Math.hypot(p.x - prev.x, p.y - prev.y);
+            prev = p;
+            if (travelled < GAP) continue;
+            travelled = 0;
+            if (p.y < -SKY + 8) continue;
+            drawn++; last = p;
+        }
+        const reach = s.hit ? s.hit.x : Math.max(...s.points.map(p => p.x));
+        return { drawn, last, revealed: last.x - L.x, total: reach - L.x };
+    };
+
+    test('the cap is five points, named rather than buried in a loop', () => {
+        assert.equal(MAX, 5, 'the agreed maximum');
+        assert.truthy(GAP > 0, 'dots must be spaced by distance');
+    });
+
+    test('the preview never draws more than five dots', () => {
+        for (const [a, p] of [[45, 90], [30, 70], [60, 100], [20, 50], [75, 80], [12, 100], [84, 30]]) {
+            assert.truthy(preview(a, p).drawn <= MAX, `${a}°/${p} drew more than ${MAX}`);
+        }
+    });
+
+    // Spacing by frame index was not enough: at full power a shell covers
+    // ~37px per frame, so five evenly-indexed dots stretched the length of the
+    // field and gave the landing away just as badly.
+    test('a full-power shot does not have its landing revealed', () => {
+        for (const [a, p] of [[45, 100], [60, 100], [12, 100], [30, 100]]) {
+            const r = preview(a, p);
+            assert.truthy(r.revealed / r.total < 0.35,
+                `${a}°/${p} revealed ${Math.round(r.revealed / r.total * 100)}% of the flight`);
+        }
+    });
+
+    test('the last dot stays far short of the opponent castle', () => {
+        for (const [a, p] of [[45, 90], [60, 100], [30, 80], [45, 100]]) {
+            const r = preview(a, p);
+            assert.truthy(R.x - r.last.x > 800,
+                `${a}°/${p} traced to within ${Math.round(R.x - r.last.x)}px of the target`);
+        }
+    });
+
+    test('the tracer is short in absolute terms, whatever the power', () => {
+        for (const power of [30, 50, 70, 90, 100]) {
+            const r = preview(45, power);
+            assert.truthy(r.revealed <= MAX * GAP + 60,
+                `power ${power} traced ${Math.round(r.revealed)}px, more than ${MAX} × ${GAP}px allows`);
+        }
+    });
+
+    test('it still shows enough to read the launch direction', () => {
+        const r = preview(45, 80);
+        assert.truthy(r.drawn >= 3, 'too few dots and the preview stops being useful');
+        assert.truthy(r.revealed > 60, 'the arc has to be legible');
+    });
+
+    test('a high lob is still previewed, now that there is sky to draw it in', () => {
+        // The old cull hid everything above world-y 0, which after the canvas
+        // was doubled was visible sky rather than off-screen.
+        const r = preview(75, 90);
+        assert.truthy(r.drawn >= 3, `a steep shot only drew ${r.drawn} dots`);
+    });
+
+    test('wind does not let the preview creep further down the field', () => {
+        for (const wind of [-20, 0, 20]) {
+            const r = preview(45, 90, wind);
+            assert.truthy(r.revealed <= MAX * GAP + 60, `wind ${wind} traced ${Math.round(r.revealed)}px`);
+        }
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

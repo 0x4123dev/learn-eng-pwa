@@ -10,6 +10,18 @@ const PB_HEARTS = 5;
 // 450px world, so no physics, terrain or replay changes — and it buys room to
 // watch a high lob arc instead of losing it off the top of the frame.
 const PB_SKY_EXTRA = 450;
+
+// The aim preview shows the first few points of the arc and stops. Drawing the
+// whole flight path traced the shell onto the opponent's castle, which told a
+// child exactly where it would land and left nothing to judge — the game aimed
+// for them.
+//
+// The dots are spaced by DISTANCE, not by frame index: at full power a shell
+// covers ~37px per frame, so five evenly-indexed dots stretched across the
+// entire field and gave the landing away just as badly. Five dots, 55px apart,
+// stay a short tracer off the barrel whatever the power.
+const PB_AIM_PREVIEW_POINTS = 5;
+const PB_AIM_PREVIEW_GAP = 55;
 const PB_CASTLE_HALF_W = 70;
 const PB_CASTLE_HEIGHT = 122;
 
@@ -1035,13 +1047,25 @@ PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, 
   });
   const ctx = this.ctx;
   ctx.save();
-  for (let i = 8; i < shot.points.length; i += 11) {
+  let drawn = 0;
+  let travelled = 0;
+  let prev = shot.points[0];
+  for (let i = 1; i < shot.points.length && drawn < PB_AIM_PREVIEW_POINTS; i++) {
     const p = shot.points[i];
-    if (!p || p.y < 8) continue;
+    if (!p) continue;
+    travelled += Math.hypot(p.x - prev.x, p.y - prev.y);
+    prev = p;
+    if (travelled < PB_AIM_PREVIEW_GAP) continue;
+    travelled = 0;
+    // `p.y < 8` predates the taller canvas: the world is now drawn 450px down,
+    // so a shell arcing above world-y 0 is still perfectly visible in the sky
+    // band. Only cull what is genuinely off the top of the canvas.
+    if (p.y < -PB_SKY_EXTRA + 8) continue;
+    drawn++;
     // A dark halo + white ring + warm core stays readable on snow, lightning,
     // lava, clouds and night skies. Never fade below 82%: the old 18% tail was
     // effectively invisible on a phone, exactly where landing feedback matters.
-    const major = i % 22 === 8;
+    const major = drawn % 2 === 1;
     const radius = major ? 6.5 : 5;
     ctx.globalAlpha = Math.max(.82, 1 - i / Math.max(1, shot.points.length) * .18);
     ctx.fillStyle = 'rgba(15,23,42,.92)';
