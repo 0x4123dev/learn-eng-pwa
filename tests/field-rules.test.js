@@ -12,6 +12,7 @@ const C = require(path.join(__dirname, '..', 'js', 'battlecalc.js'));
 
 const V1 = C.fieldRules(1);
 const V2 = C.fieldRules(2);
+const V3 = C.fieldRules(3);
 
 // A cheap stable fingerprint of an array of numbers.
 function hash(nums) {
@@ -64,8 +65,56 @@ suite('field rules: v1 is frozen', () => {
     });
 
     test('an unknown or missing field version falls back to v1', () => {
-        for (const bad of [undefined, null, 0, 3, 99, 'two', NaN]) {
+        for (const bad of [undefined, null, 0, 4, 99, 'two', NaN]) {
             assert.equal(C.fieldRules(bad).version, 1, `version ${bad} must not reinterpret a battle`);
+        }
+    });
+});
+
+suite('field rules: v3 arena elevations', () => {
+    test('every arena has a clear, deterministic spawn height difference', () => {
+        const seenHigherSides = new Set();
+        for (const id of Object.keys(C.BATTLE_TERRAIN_PROFILES)) {
+            const a = C.buildTerrain(4242, V3, id);
+            const b = C.buildTerrain(4242, V3, id);
+            const [left, right] = C.spawnPoints(a, V3);
+            assert.equal(hash(a), hash(b), id + ' terrain must replay exactly');
+            assert.truthy(Math.abs(left.y - right.y) >= 60,
+                id + ' spawn height difference is too subtle');
+            seenHigherSides.add(left.y < right.y ? 'left' : 'right');
+        }
+        assert.deepEqual([...seenHigherSides].sort(), ['left', 'right'],
+            'different arenas must favour different sides visually');
+    });
+
+    test('pirate lagoon places one castle at water level and one on the bluff', () => {
+        const t = C.buildTerrain(77, V3, 'pirate-lagoon');
+        const [lowTide, bluff] = C.spawnPoints(t, V3);
+        assert.truthy(lowTide.y >= 390, 'tidal platform should sit near the bottom waterline');
+        assert.truthy(bluff.y <= 290, 'shore platform should sit high on the bluff');
+    });
+
+    test('all v3 arena elevations remain reachable in extreme winds', () => {
+        for (const id of Object.keys(C.BATTLE_TERRAIN_PROFILES)) {
+            const t = C.buildTerrain(4242, V3, id);
+            const spawns = C.spawnPoints(t, V3);
+            for (const wind of [-20, 0, 20]) {
+                for (const facing of [1, -1]) {
+                    const from = facing === 1 ? spawns[0] : spawns[1];
+                    const target = facing === 1 ? spawns[1] : spawns[0];
+                    let best = Infinity;
+                    for (let angle = 12; angle <= 84; angle += 3) {
+                        for (let power = 30; power <= 100; power += 3) {
+                            const shot = C.simulateShot({
+                                terrain: t, from, facing, angle, power, wind, rules: V3,
+                            });
+                            if (shot.hit) best = Math.min(best, Math.abs(shot.hit.x - target.x));
+                        }
+                    }
+                    assert.truthy(best <= 70,
+                        id + ', wind ' + wind + ', facing ' + facing + ': best miss ' + Math.round(best) + 'px');
+                }
+            }
         }
     });
 });

@@ -120,10 +120,43 @@ const FIELD_RULES = {
     // target it looks like.
     castle: { halfW: 70, height: 122 },
   },
+  3: {
+    // v3 keeps the proven long-world ballistics, but lets the snapshotted
+    // arena choose asymmetric spawn elevations. v1/v2 remain replay-stable.
+    version: 3, worldW: 2000, viewW: 800, worldH: 450,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.002,
+    v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+    castle: { halfW: 70, height: 122 },
+  },
 };
 // Anything unknown, missing or legacy is v1 — an unrecognised version must
 // never silently reinterpret a battle that is already in progress.
-function fieldRules(v) { return FIELD_RULES[Number(v) === 2 ? 2 : 1]; }
+function fieldRules(v) {
+  const n = Number(v);
+  return FIELD_RULES[n === 3 ? 3 : n === 2 ? 2 : 1];
+}
+
+// Smaller y means higher ground. Every arena deliberately tells a different
+// tactical story; no v3 match starts with both castles on the same horizon.
+// Targets stay inside the proven 250–400 terrain band so all legal winds remain
+// playable with the existing long-world ballistics.
+const BATTLE_TERRAIN_PROFILES = Object.freeze({
+  'cloudstep-meadow': Object.freeze({ spawnY: [366, 286] }),
+  'clockwork-canyon': Object.freeze({ spawnY: [278, 366] }),
+  'sakura-shrine': Object.freeze({ spawnY: [365, 300] }),
+  'aurora-glacier': Object.freeze({ spawnY: [276, 374] }),
+  'ember-caldera': Object.freeze({ spawnY: [377, 287] }),
+  'pirate-lagoon': Object.freeze({ spawnY: [392, 286] }),
+  'firefly-forest': Object.freeze({ spawnY: [292, 374] }),
+  'moonlit-rooftops': Object.freeze({ spawnY: [375, 280] }),
+  'candy-cloudworks': Object.freeze({ spawnY: [285, 370] }),
+  'cosmic-observatory': Object.freeze({ spawnY: [378, 288] }),
+});
+
+function terrainProfileFor(id) {
+  return BATTLE_TERRAIN_PROFILES[String(id || '')] || BATTLE_TERRAIN_PROFILES['cloudstep-meadow'];
+}
 
 const FIELD_W = FIELD_RULES[1].worldW;
 const FIELD_H = FIELD_RULES[1].worldH;
@@ -137,7 +170,7 @@ const PLATEAU_R = 46;              // levelled ground each side of a pet
 const LANE_LEN = 150;              // clear firing lane in front of a pet
 
 // Rolling hills as a height per x-column, from the shared seed.
-function buildTerrain(seed, rules) {
+function buildTerrain(seed, rules, arenaId) {
   const R = rules || FIELD_RULES[1];
   const rng = makeRng(seed);
   // Wavelengths scale with the world, or a 2000px field would be a picket
@@ -155,13 +188,30 @@ function buildTerrain(seed, rules) {
     for (const w of waves) y -= Math.sin((x / w.len) * Math.PI * 2 + w.ph) * w.amp;
     h[x] = Math.max(R.groundMin, Math.min(R.groundMax, y));
   }
+  const profile = R.version >= 3 ? terrainProfileFor(arenaId) : null;
+  if (profile) {
+    // Blend each natural hill into its authored platform over a wide shoulder.
+    // The easing avoids an artificial vertical cliff at the plateau edge.
+    R.spawnX.forEach((cx, index) => {
+      const target = profile.spawnY[index];
+      const shoulder = R.plateau + 190;
+      for (let x = Math.max(0, cx - shoulder); x <= Math.min(R.worldW - 1, cx + shoulder); x++) {
+        const d = Math.abs(x - cx);
+        const t = Math.max(0, Math.min(1, (shoulder - d) / (shoulder - R.plateau)));
+        const eased = t * t * (3 - 2 * t);
+        h[x] = h[x] * (1 - eased) + target * eased;
+      }
+    });
+  }
   // Each pet stands on a levelled peak with a clear firing lane. Without
   // this, ~13% of seeds put a pet in a valley where its own hillside
   // swallowed the first shot — unfair and confusing for a child.
   for (const cx of R.spawnX) {
-    let peak = h[cx];
-    for (let x = cx - R.plateau; x <= cx + R.plateau; x++) {
-      if (x >= 0 && x < R.worldW) peak = Math.min(peak, h[x]);   // min y = highest ground
+    let peak = profile ? profile.spawnY[R.spawnX.indexOf(cx)] : h[cx];
+    if (!profile) {
+      for (let x = cx - R.plateau; x <= cx + R.plateau; x++) {
+        if (x >= 0 && x < R.worldW) peak = Math.min(peak, h[x]); // min y = highest ground
+      }
     }
     for (let x = cx - R.plateau; x <= cx + R.plateau; x++) {
       if (x >= 0 && x < R.worldW) h[x] = peak;
@@ -358,6 +408,7 @@ const BattleCalc = {
   spawnPoints, windForRound, volleyAngles, simulateShot,
   blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
   FIELD_RULES, fieldRules,
+  BATTLE_TERRAIN_PROFILES, terrainProfileFor,
 };
 if (typeof window !== 'undefined') window.BattleCalc = BattleCalc;
 
@@ -365,7 +416,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
     AMMO_STREAK_BONUS, AMMO_CAP, MAX_TURNS, FIELD_W, FIELD_H, GRAVITY, WIND_ACCEL, FRAME_MS,
-    FIELD_RULES, fieldRules,
+    FIELD_RULES, fieldRules, BATTLE_TERRAIN_PROFILES, terrainProfileFor,
     computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
     spawnPoints, windForRound, volleyAngles, simulateShot,
     blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,

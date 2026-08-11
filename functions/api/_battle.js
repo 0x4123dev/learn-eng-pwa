@@ -20,8 +20,8 @@ export const MAX_TURNS = AMMO_CAP * 2 + 4;
 // the client happens to be running: both phones must derive identical terrain
 // from one seed for the whole match. New challenges are the long world; rows
 // written before this column existed stay v1 forever.
-export const FIELD_VERSION_NEW = 2;
-export const FIELD_VERSION_MAX = 2;
+export const FIELD_VERSION_NEW = 3;
+export const FIELD_VERSION_MAX = 3;
 export function normalizeFieldVersion(v) {
   const n = Math.trunc(Number(v));
   return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;

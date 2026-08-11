@@ -868,7 +868,7 @@ function startBotBattle() {
   // rather than who has been studying longer.
   const view = {
     id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
-    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 2 : 1,
+    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 3 : 1,
     backgroundId: pbSelectedSceneId(),
     me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP },
     foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP },

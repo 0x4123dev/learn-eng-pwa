@@ -647,12 +647,15 @@ suite('follow: extra sky above the world', () => {
         assert.equal(SKY * canvasH / canvasH - SKY, 0);
     });
 
-    test('the arena art keeps its shape instead of stretching to fill', () => {
+    test('the arena art is authored for the full tall canvas', () => {
         const scenes = fs.readFileSync(path.join(ROOT, 'js', 'battle-scenes.js'), 'utf8');
-        assert.truthy(scenes.includes('const artH = Math.min(height, Math.round(width * this.viewH / this.viewW))'),
-            'stretching a 16:9 arena to 8:9 would squash every landmark');
-        assert.truthy(scenes.includes('const skyH = Math.max(0, height - artH)'));
-        assert.truthy(scenes.includes("this.scene.palette.sky"), 'the sky above must use the arena\'s own colour');
+        const builder = fs.readFileSync(path.join(ROOT, 'scripts', 'build-battle-scenes.py'), 'utf8');
+        assert.truthy(builder.includes('far = cover(master, (2000, 900))'),
+            'the asset pipeline must render real 2x-height panoramas');
+        assert.truthy(scenes.includes('this.images.far.height, 0, 0, width, height'),
+            'the renderer must use the full authored image, including its upper atmosphere');
+        assert.falsy(scenes.includes('const skyH = Math.max(0, height - artH)'),
+            'a flat filler sky would bring back the empty upper half');
     });
 });
 

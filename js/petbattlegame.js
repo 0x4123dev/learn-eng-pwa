@@ -69,7 +69,7 @@ function PetBattleGame(opts) {
   // whatever this build prefers — otherwise two phones on different app
   // versions would draw different terrain from the same seed mid-match.
   this.rules = C.fieldRules ? C.fieldRules(this.view.fieldVersion) : null;
-  this.terrain = C.buildTerrain(this.seed, this.rules);
+  this.terrain = C.buildTerrain(this.seed, this.rules, this.view.backgroundId);
   const spawns = C.spawnPoints(this.terrain, this.rules);
   // The challenger always stands on the left, for both viewers.
   this.mePos = this.view.iAmChallenger ? spawns[0] : spawns[1];
@@ -1035,14 +1035,21 @@ PetBattleGame.prototype._drawTrajectoryPreview = function (from, facing, angle, 
   });
   const ctx = this.ctx;
   ctx.save();
-  for (let i = 10; i < shot.points.length; i += 13) {
+  for (let i = 8; i < shot.points.length; i += 11) {
     const p = shot.points[i];
     if (!p || p.y < 8) continue;
-    const fade = Math.max(.18, 1 - i / Math.max(1, shot.points.length));
-    ctx.globalAlpha = fade;
+    // A dark halo + white ring + warm core stays readable on snow, lightning,
+    // lava, clouds and night skies. Never fade below 82%: the old 18% tail was
+    // effectively invisible on a phone, exactly where landing feedback matters.
+    const major = i % 22 === 8;
+    const radius = major ? 6.5 : 5;
+    ctx.globalAlpha = Math.max(.82, 1 - i / Math.max(1, shot.points.length) * .18);
+    ctx.fillStyle = 'rgba(15,23,42,.92)';
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius + 3.5, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(p.x, p.y, i % 26 === 0 ? 4 : 3, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = 'rgba(15,23,42,.65)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius + 1, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = major ? '#facc15' : '#22d3ee';
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius - 1.5, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
 };

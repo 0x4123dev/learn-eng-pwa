@@ -139,29 +139,16 @@
     const height = this.canvas.height || this.viewH;
     ctx.clearRect(0, 0, width, height);
 
-    // The battlefield canvas is taller than the world is deep, so there is
-    // open sky above the play area. The arena art keeps its own 16:9 shape and
-    // sits at the BOTTOM — stretching it to fill would squash every landmark —
-    // and the scene's own sky colour fills the space above it.
-    const artH = Math.min(height, Math.round(width * this.viewH / this.viewW));
-    const skyH = Math.max(0, height - artH);
-    if (skyH > 0) {
-      const sky = ctx.createLinearGradient(0, 0, 0, skyH + 2);
-      sky.addColorStop(0, (this.scene && this.scene.palette && this.scene.palette.sky) || '#8dc7ff');
-      sky.addColorStop(1, (this.scene && this.scene.palette && this.scene.palette.haze) || '#cfe9ff');
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, width, skyH + 2);
-    }
-
+    // Runtime art is authored at the canvas' full 2× height (2000×900), not a
+    // 450px strip pasted below an empty gradient. The simulation still occupies
+    // the lower 450px; this renderer owns the extra atmosphere above it.
     if (this.images.far && this.images.far.width) {
       const sourceMax = Math.max(0, this.images.far.width - this.viewW);
       const sourceX = this.worldW > this.viewW
         ? (this.cameraX / (this.worldW - this.viewW)) * sourceMax : 0;
-      ctx.drawImage(this.images.far, sourceX, 0, this.viewW, this.viewH, 0, skyH, width, artH);
+      ctx.drawImage(this.images.far, sourceX, 0, this.viewW, this.images.far.height, 0, 0, width, height);
     } else {
-      ctx.save(); ctx.translate(0, skyH);
-      this._fallback(ctx, width, artH);
-      ctx.restore();
+      this._fallback(ctx, width, height);
     }
 
     const scaleX = width / this.viewW;
@@ -170,7 +157,7 @@
       if (!image || !image.width) return;
       const x = (zoneX[index] - this.cameraX * 0.88) * scaleX;
       if (x > width || x + 800 * scaleX < 0) return;
-      ctx.drawImage(image, x, skyH, 800 * scaleX, artH);
+      ctx.drawImage(image, x, 0, 800 * scaleX, height);
     });
     this._drawWeather(ctx, width, height, this.reducedMotion ? 0 : ((now || performance.now()) - this._startAt) / 1000);
   };
