@@ -10,8 +10,12 @@ CREATE TABLE IF NOT EXISTS users (
   passcode_hash TEXT NOT NULL,
   salt          TEXT NOT NULL,
   role          TEXT NOT NULL DEFAULT 'user',
-  created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  -- Opaque random id the client keeps in localStorage; caps how many accounts
+  -- one device may create. See db/004-device-limit.sql for the reasoning.
+  device_id     TEXT
 );
+CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id);
 
 CREATE TABLE IF NOT EXISTS exam_attempts (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,

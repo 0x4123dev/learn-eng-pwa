@@ -27,6 +27,44 @@ const EngAuth = (function () {
   function getAccount(username) { return loadStore()[username] || null; }
   function tokenFor(username) { const a = getAccount(username); return a && a.token; }
 
+  // ---- device identity ----
+  // One opaque random id per install, created on first use and kept forever.
+  // The server counts accounts per device from it (max 2), so a throwaway
+  // opponent is not one "new profile" away.
+  //
+  // It is deliberately NOT a fingerprint and NOT tied to the IP: neither
+  // belongs in a children's app, and an IP cap would lock out siblings and
+  // classmates on one home or school network. Clearing site data resets it —
+  // a known limit, covered by the 3-day wait before a new friend can battle.
+  const DEVICE_KEY = 'flashlingo_device_id';
+  function deviceId() {
+    try {
+      let id = localStorage.getItem(DEVICE_KEY);
+      // Must satisfy the server's shape check, or every signup would be
+      // refused with "missing device id" and the child could never register.
+      if (id && /^[A-Za-z0-9_-]{8,64}$/.test(id)) return id;
+      id = 'd' + _randomIdHex(24);
+      localStorage.setItem(DEVICE_KEY, id);
+      return id;
+    } catch (e) {
+      // Private mode with storage disabled: no stable id is possible. Send a
+      // fresh one rather than nothing, so registration still works — the cap
+      // simply cannot bind on a device that forgets everything anyway.
+      return 'd' + _randomIdHex(24);
+    }
+  }
+  function _randomIdHex(nBytes) {
+    try {
+      const a = new Uint8Array(nBytes);
+      crypto.getRandomValues(a);
+      return Array.from(a).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+      let out = '';
+      while (out.length < nBytes * 2) out += Math.random().toString(16).slice(2);
+      return out.slice(0, nBytes * 2);
+    }
+  }
+
   // THE username rule, mirrored from functions/api/register.js. Checked when
   // the profile is CREATED, so the app can never make a name the server will
   // refuse. That failure used to surface much later, in the Friends tab, long
@@ -68,7 +106,7 @@ const EngAuth = (function () {
     if (!passcode) return (_lastLinkStatus = { ok: false, reason: 'no-passcode' });
     if (!tokenFor(username)) {
       try {
-        let r = await api('register', { method: 'POST', body: { username, passcode } });
+        let r = await api('register', { method: 'POST', body: { username, passcode, deviceId: deviceId() } });
         if (r.status === 409) {
           // The name is taken on the server — only the right passcode links it.
           r = await api('login', { method: 'POST', body: { username, passcode } });
@@ -80,7 +118,12 @@ const EngAuth = (function () {
           // Keep the server's own words (e.g. an invalid-name rejection) —
           // a generic "server busy" sent us hunting in the wrong place.
           const detail = (r.data && r.data.error) ? String(r.data.error) : '';
-          const reason = (r.status >= 400 && r.status < 500) ? 'rejected' : 'server';
+          const code = (r.data && r.data.code) ? String(r.data.code) : '';
+          // "Try again after updating the app" is the wrong advice for a
+          // device that has simply used up its two accounts — nothing the
+          // child can do fixes it, so it gets its own reason and its own text.
+          const reason = code === 'device_limit' ? 'device-limit'
+            : (r.status >= 400 && r.status < 500) ? 'rejected' : 'server';
           return (_lastLinkStatus = { ok: false, reason, status: r.status, detail });
         }
       } catch (e) {
@@ -194,7 +237,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, relinkAccount, linkStatus, validUsername, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { syncAccount, relinkAccount, linkStatus, validUsername, deviceId, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.

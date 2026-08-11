@@ -99,6 +99,24 @@ export async function requireAuth(request, env) {
   return verifyToken(bearer(request), secret);
 }
 
+// ---- device identity ----
+// How many accounts one device may create. A family iPad legitimately holds a
+// child and a parent profile; a third is where "another profile" stops being a
+// household and starts being a farm of throwaway opponents.
+export const MAX_ACCOUNTS_PER_DEVICE = 2;
+
+// The client generates this once and keeps it in localStorage. It is an opaque
+// random string — NOT a fingerprint, NOT an IP. Both alternatives were
+// rejected on purpose: fingerprinting a children's app is not acceptable, and
+// an IP cap would lock out siblings and classmates on one home or school
+// network, who are precisely the users this app exists for. Clearing storage
+// resets it; the 3-day friendship delay is what covers that case.
+export function normalizeDeviceId(v) {
+  const id = String(v == null ? '' : v).trim();
+  // Opaque and bounded. Anything else is a client that is not ours.
+  return /^[A-Za-z0-9_-]{8,64}$/.test(id) ? id : null;
+}
+
 // ---- JSON responses ----
 export function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

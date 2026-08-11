@@ -505,7 +505,15 @@ suite('gen: syncAccount', () => {
         vmAwait("EngAuth.syncAccount('Alice', '4321')");
         assert.equal(calls().length, 1, 'no history → register only, no activity call');
         assert.equal(calls()[0].url, '/api/register');
-        assert.deepEqual(JSON.parse(calls()[0].body), { username: 'Alice', passcode: '4321' });
+        const sent = JSON.parse(calls()[0].body);
+        assert.equal(sent.username, 'Alice');
+        assert.equal(sent.passcode, '4321');
+        // Registration also carries the device id the per-device account cap
+        // is counted from. If this ever stops being sent, register.js refuses
+        // every signup outright — see tests/device-account-limit.test.js.
+        assert.truthy(/^[A-Za-z0-9_-]{8,64}$/.test(sent.deviceId),
+            `deviceId missing or malformed: ${JSON.stringify(sent.deviceId)}`);
+        assert.deepEqual(Object.keys(sent).sort(), ['deviceId', 'passcode', 'username']);
         assert.deepEqual(EngAuth.getAccount('Alice'), { token: 'newtok', role: 'student', id: 42 });
     });
 

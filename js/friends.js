@@ -178,6 +178,12 @@ function _frLinkHelpHTML() {
     'no-passcode': '🔑 Hồ sơ này chưa có mật mã. Tạo lại hồ sơ có mật mã để dùng tính năng bạn bè.',
     offline: '📶 Chưa kết nối được máy chủ. Kiểm tra mạng rồi thử lại nhé.',
     server: '⚠️ Máy chủ đang bận. Thử lại sau một chút nhé.',
+    // The count comes from the SERVER's own sentence, never a second copy of
+    // the number here — that is how these two drift apart. Nothing the child
+    // types fixes this, so it gets no passcode box and no "try again"; it
+    // names the only two real ways forward instead.
+    'device-limit': '🔒 ' + (st.detail ? frEsc(st.detail) : 'Máy này đã tạo đủ số tài khoản cho phép.')
+      + '<br>Hãy đăng nhập lại bằng tài khoản đã có, hoặc nhờ bố mẹ mở khoá giúp nhé.',
     rejected: '⚠️ Máy chủ chưa nhận tên hồ sơ này'
       + (st.detail ? ': <b>' + frEsc(st.detail) + '</b>' : '')
       + '. <i>Mật mã không phải vấn đề ở đây</i> — thử lại sau khi cập nhật app nhé.',
@@ -187,6 +193,8 @@ function _frLinkHelpHTML() {
   // A passcode box only helps when the passcode is the problem. Offering one
   // for a name the server refused made the child type 1111 over and over.
   const needsCode = reason === 'bad-passcode' || reason === 'unknown' || reason === 'no-passcode';
+  // "Thử lại" on a device that has used up its accounts just fails again.
+  const canRetry = reason !== 'device-limit';
   return `
     <div class="friend-link-card">
       <div class="friend-link-msg">${msg}</div>
@@ -196,8 +204,8 @@ function _frLinkHelpHTML() {
                  maxlength="4" placeholder="Mật mã 4 số" autocomplete="off"
                  onkeydown="if(event.key==='Enter'){event.preventDefault();relinkFriendsAccount();}">
           <button class="friend-invite-btn" onclick="relinkFriendsAccount()">Kết nối</button>
-        </div>` : `
-        <button class="friend-invite-btn" onclick="retryFriendsLink()">Thử lại</button>`}
+        </div>` : (canRetry ? `
+        <button class="friend-invite-btn" onclick="retryFriendsLink()">Thử lại</button>` : '')}
       ${_friendsMsg ? `<div class="friend-msg">${frEsc(_friendsMsg)}</div>` : ''}
     </div>`;
 }
