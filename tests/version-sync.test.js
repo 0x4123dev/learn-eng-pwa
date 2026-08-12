@@ -51,6 +51,33 @@ suite('the deploy script keeps them that way', () => {
         assert.truthy(sh.includes('/api/version'), 'assets alone are not proof the API updated');
     });
 
+    test('the live check forces a revalidation with a header', () => {
+        // It used to append `?cb=$RANDOM`, which cannot bust anything: Pages
+        // keys its cache on the path alone. A check of a freshly deployed file
+        // once read the previous build and called the change missing when the
+        // deploy had worked — cause unproven between an edge cache and plain
+        // propagation lag, but the header rules the first one out for free.
+        assert.truthy(/Cache-Control: no-cache/.test(sh),
+            'the live check must send a no-cache request header');
+        // Comments are stripped first: this file explains the old `?cb=` trick,
+        // and matching prose instead of code would fail on its own footnote.
+        const code = sh.split('\n').filter(l => !/^\s*#/.test(l)).join('\n');
+        assert.falsy(/\?cb=/.test(code),
+            'a ?cb= query string is decoration on Pages — it never busts the edge cache');
+    });
+
+    test('the check reads both the assets and the API through that header', () => {
+        // Either one fetched normally could be served stale and make the
+        // "live" line a guess.
+        const block = sh.slice(sh.indexOf('confirming $LIVE'));
+        for (const url of ['/js/home.js', '/api/version']) {
+            const i = block.indexOf(url);
+            assert.truthy(i > 0, `${url} is not checked`);
+            const line = block.slice(block.lastIndexOf('curl', i), i);
+            assert.truthy(/NOCACHE/.test(line), `${url} is fetched without the no-cache header`);
+        }
+    });
+
     test('never pushes to GitHub', () => {
         assert.falsy(/git\s+push/.test(sh), 'pushing to GitHub is permission-gated');
     });

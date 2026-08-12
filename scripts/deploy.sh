@@ -107,11 +107,24 @@ npx --yes wrangler@3 pages deploy .cf-dist --project-name "$PROJECT" \
 # reported success with the new index.html live while /api/register still ran
 # the previous build. Both must report the new version before we say "live".
 echo "▸ confirming $LIVE serves v$NEWVER (assets + API)…"
+# Cache-Control: no-cache, NOT a ?cb=… query string.
+#
+# A check of a freshly deployed file once read the PREVIOUS build and reported
+# the change missing when the deploy had in fact worked. Two things could cause
+# that — an edge cache, or the file simply not having propagated yet — and
+# which it was could not be established after the fact.
+#
+# The header removes one of them for certain: it forces a revalidation, whereas
+# a query string cannot, because Pages keys its cache on the path alone. What
+# is left, propagation lag, is what the retry loop below is already for. The
+# header costs nothing, so it is used even though it is not proven to have been
+# the cause.
+NOCACHE=(-H 'Cache-Control: no-cache' -H 'Pragma: no-cache')
 assets=""; apiv=""
 for i in $(seq 1 30); do
-  [ "$assets" = "$NEWVER" ] || assets=$(curl -s "$LIVE/js/home.js?cb=$RANDOM" \
+  [ "$assets" = "$NEWVER" ] || assets=$(curl -s "${NOCACHE[@]}" "$LIVE/js/home.js" \
     | sed -n "s/.*APP_VERSION = 'v\([0-9.]*\)'.*/\1/p" | head -1)
-  [ "$apiv" = "$NEWVER" ] || apiv=$(curl -s "$LIVE/api/version?cb=$RANDOM" \
+  [ "$apiv" = "$NEWVER" ] || apiv=$(curl -s "${NOCACHE[@]}" "$LIVE/api/version" \
     | sed -n 's/.*"version":"\([0-9.]*\)".*/\1/p')
   if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]; then
     echo "✓ live: v$NEWVER — assets ✓  api ✓"; exit 0
