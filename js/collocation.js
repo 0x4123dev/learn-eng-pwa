@@ -117,16 +117,47 @@ function collocLessonHTML() {
 }
 
 // ---- practice flow ----
+// A collocation question is typed when it has no options: letter, open and
+// transform (200 of the 500). pair and mcq are chosen from four.
+//
+// Left to chance the mix swung widely, so a practice is BUILT to a fixed
+// ratio instead: 1 typed in 10, 2 in 20.
+const COL_TYPED_SHARE = 0.1;
+const colIsTyped = (q) => !(q && Array.isArray(q.options) && q.options.length);
+
+// How many of an n-question practice must be typed. Never more than the bank
+// holds, and — once there is room — never zero. The availableTyped > 0 guard
+// matters: without it an empty typed pool still demanded one, the slice
+// returned nothing, and the practice came up a question SHORT.
+function colTypedTarget(n, availableTyped) {
+  const want = Math.round(n * COL_TYPED_SHARE);
+  const floor = (n >= 2 && availableTyped > 0) ? 1 : 0;
+  return Math.max(floor, Math.min(want, availableTyped, n));
+}
+
+function _colShuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function startCollocPractice(n) {
   if (typeof retryGate === 'function' && retryGate('col')) return;
   const bank = collocBank();
   if (!bank.length) return;
-  const shuffled = bank.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  const questions = shuffled.slice(0, Math.min(n || 20, shuffled.length));
+  const size = Math.min(n || 20, bank.length);
+  const typed = bank.filter(colIsTyped);
+  const choice = bank.filter(q => !colIsTyped(q));
+  const wantTyped = colTypedTarget(size, typed.length);
+  // Drawn from each pool separately — that is what makes the count exact —
+  // then shuffled together so the typing is not bunched at the end.
+  const questions = _colShuffle(
+    _colShuffle(typed).slice(0, wantTyped)
+      .concat(_colShuffle(choice).slice(0, size - wantTyped))
+  );
   _colQuiz = { questions, idx: 0, answers: new Array(questions.length).fill(null) };
   renderCollocQuestion();
 }

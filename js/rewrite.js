@@ -152,15 +152,11 @@ function renderRewritePractice() {
         <p class="phrases-sub">Viết lại câu sao cho nghĩa không đổi — ${bank.length} câu, tự gõ phần hoàn thành, có giải thích công thức rõ ràng.</p>
       </div>
 
+      <!-- One size only. Every Rewrite question is typed, so a 5-question
+           round was over almost before it began. -->
       <button class="phrases-cta" onclick="startRewriteQuiz(10)">
         <span class="phrases-cta-icon">⚡</span>
         <span class="phrases-cta-text"><strong>Quick practice</strong><small>10 random questions</small></span>
-        <span class="phrases-cta-arrow">›</span>
-      </button>
-
-      <button class="phrases-cta" onclick="startRewriteQuiz(5)">
-        <span class="phrases-cta-icon">⏱️</span>
-        <span class="phrases-cta-text"><strong>Short practice</strong><small>5 random questions</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
 
