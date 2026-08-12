@@ -493,23 +493,6 @@
     <!-- Confetti -->
     <div class="confetti-container" id="confettiContainer"></div>
 
-    <!-- Word Popup Overlay -->
-    <div class="word-popup-overlay" id="wordPopupOverlay" onclick="closeWordPopup()">
-        <div class="word-popup" onclick="event.stopPropagation()">
-            <div class="word-popup-header">
-                <button class="word-popup-speak" onclick="speakWord(document.getElementById('wordPopupWord').textContent)">🔊</button>
-                <span class="word-popup-word" id="wordPopupWord"></span>
-            </div>
-            <div class="word-popup-phonetic" id="wordPopupPhonetic"></div>
-            <div class="word-popup-vi" id="wordPopupVi"></div>
-            <div class="word-popup-en" id="wordPopupEn"></div>
-            <div class="word-popup-actions">
-                <button class="word-popup-btn known" onclick="markWordKnown()">Đã biết</button>
-                <button class="word-popup-btn learn" onclick="markWordLearn()">Học</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Data -->
     <script src="js/vocabulary.js"></script>
     <script src="js/units-data.js"></script>
