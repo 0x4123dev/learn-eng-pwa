@@ -469,7 +469,7 @@ function finishUnitPractice() {
 
   // Owe every missed word back. Recorded here, after the score is banked, so a
   // child never loses coins they earned by also being told to practise.
-  if (wrong.length) if (typeof retryAdd === 'function') retryAdd('units', wrong);
+  if (wrong.length && typeof retryAdd === 'function') retryAdd('units', wrong);
   const owed = unitsRetryCount();
 
   const detail = document.getElementById('topicsDetail');

@@ -442,7 +442,7 @@ function finishWordformQuiz() {
   // getting something wrong never feels like it took away what was just
   // earned.
   const wrongQs = wrong.map(w => wordformById(w.qid)).filter(Boolean);
-  if (wrongQs.length) if (typeof retryAdd === 'function') retryAdd('wf', wrongQs);
+  if (wrongQs.length && typeof retryAdd === 'function') retryAdd('wf', wrongQs);
   const owed = wfRetryCount();
 
   // Sync word-form activity to the server (best-effort) for the admin view.

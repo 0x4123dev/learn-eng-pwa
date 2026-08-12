@@ -277,7 +277,7 @@ function finishCollocPractice() {
     }
     // Owe every missed question back (after the coins are banked, so a
     // mistake never feels like it took away what was just earned).
-    if (wrong.length) if (typeof retryAdd === 'function') retryAdd('col', wrong);
+    if (wrong.length && typeof retryAdd === 'function') retryAdd('col', wrong);
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
