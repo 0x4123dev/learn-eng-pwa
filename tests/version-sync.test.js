@@ -107,6 +107,18 @@ suite('the deploy script keeps them that way', () => {
         assert.truthy(/ls -S js\/\*\.js/.test(sh), 'the largest script must be found by size');
     });
 
+    test('the probes follow redirects', () => {
+        // Pages 308-redirects /index.html to /. Without -L curl returns an
+        // empty body, which hashes to something else — and the very first run
+        // of this check failed a perfectly good deploy for exactly that.
+        const block = sh.slice(sh.indexOf('confirming $LIVE'));
+        const fetches = [...block.matchAll(/curl -(s\w*)/g)].map(m => m[1]);
+        assert.truthy(fetches.length >= 3, 'expected at least three probes');
+        for (const f of fetches) {
+            assert.truthy(f.includes('L'), `a probe uses curl -${f} — it must follow redirects`);
+        }
+    });
+
     test('a stale file fails the deploy instead of passing quietly', () => {
         assert.truthy(/still serving an older copy of/.test(sh), 'it must say which file');
         assert.truthy(/stale=""/.test(sh) && /stale="\$stale \$f"/.test(sh),

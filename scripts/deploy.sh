@@ -143,9 +143,9 @@ BIGGEST=$(cd .cf-dist && ls -S js/*.js 2>/dev/null | head -1)
 EXTRA_PROBES="index.html sw.js $BIGGEST"
 assets=""; apiv=""
 for i in $(seq 1 30); do
-  [ "$assets" = "$NEWVER" ] || assets=$(curl -s "${NOCACHE[@]}" "$LIVE/js/home.js" \
+  [ "$assets" = "$NEWVER" ] || assets=$(curl -sL "${NOCACHE[@]}" "$LIVE/js/home.js" \
     | sed -n "s/.*APP_VERSION = 'v\([0-9.]*\)'.*/\1/p" | head -1)
-  [ "$apiv" = "$NEWVER" ] || apiv=$(curl -s "${NOCACHE[@]}" "$LIVE/api/version" \
+  [ "$apiv" = "$NEWVER" ] || apiv=$(curl -sL "${NOCACHE[@]}" "$LIVE/api/version" \
     | sed -n 's/.*"version":"\([0-9.]*\)".*/\1/p')
   if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]; then
     # Version markers agree. Now prove the CHANGED files are byte-identical to
@@ -155,7 +155,10 @@ for i in $(seq 1 30); do
     for f in $CHANGED $EXTRA_PROBES; do
       [ -f ".cf-dist/$f" ] || continue
       want=$(md5 -q ".cf-dist/$f" 2>/dev/null || md5sum ".cf-dist/$f" | cut -d' ' -f1)
-      got=$(curl -s "${NOCACHE[@]}" "$LIVE/$f" | (md5 -q /dev/stdin 2>/dev/null || md5sum | cut -d' ' -f1))
+      # -L is required: Pages 308-redirects /index.html to /, and without it
+      # curl returns an empty body, which hashes to something else and reports
+      # a perfectly good deploy as stale.
+      got=$(curl -sL "${NOCACHE[@]}" "$LIVE/$f" | (md5 -q /dev/stdin 2>/dev/null || md5sum | cut -d' ' -f1))
       [ "$want" = "$got" ] || stale="$stale $f"
     done
     if [ -z "$stale" ]; then
