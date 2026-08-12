@@ -55,6 +55,11 @@ function phrasesById(id) {
     const base = phrasesBank().find(q => q.id === id.slice(3)) || null;
     return base ? phrMeaningQuestion(base) : null;
   }
+  // Typed variants carry 'pt-<baseId>' and resolve the same way.
+  if (typeof id === 'string' && id.indexOf('pt-') === 0) {
+    const base = phrasesBank().find(q => q.id === id.slice(3)) || null;
+    return base ? phrTypedQuestion(base) : null;
+  }
   return phrasesBank().find(q => q.id === id) || null;
 }
 
@@ -77,12 +82,69 @@ function phrMeaningQuestion(base) {
   };
 }
 
+// Build the TYPED variant of a base question: the same sentence, but the
+// preposition is produced rather than chosen.
+//
+// Derived, not authored as 913 more records — exactly how the meaning
+// questions work. The bank stays the single source of the sentence, the
+// translation and the explanation, so a data fix reaches the typed form too.
+//
+// Choosing "on" from four options is recognition; typing it is recall, and
+// recall is what a child needs when they write the sentence themselves.
+function phrTypedQuestion(base) {
+  if (!base || !Array.isArray(base.options)) return null;
+  const answer = base.options[base.correct];
+  if (!answer) return null;
+  return {
+    id: 'pt-' + base.id,
+    baseId: base.id,          // the meaning follow-up is looked up by THIS
+    cat: base.cat,
+    typed: true,
+    q: base.q,
+    answer,
+    accept: [answer],
+    phrase: base.phrase,
+    vi: base.vi,
+    explanation: base.explanation,
+  };
+}
+
+// Case / punctuation / spacing-insensitive, like every other typed tab.
+function _phrNormalize(s) {
+  return String(s || '').toLowerCase().normalize('NFC')
+    .replace(/[.,!?;:"\u2019'`]/g, '').replace(/\s+/g, ' ').trim();
+}
+function _phrTextCorrect(text, q) {
+  const u = _phrNormalize(text);
+  if (!u) return false;
+  const list = (q.accept && q.accept.length) ? q.accept : [q.answer];
+  return list.some(a => _phrNormalize(a) === u);
+}
+
+// Typed questions are the ones that teach, but they are slower to answer, so
+// a practice gets a measured dose rather than a random one: 1 in 10, 2 in 20.
+// The count is of BASE questions — the number on the practice button — and a
+// typed variant REPLACES its multiple-choice form, so the practice does not
+// get longer.
+const PHR_TYPED_SHARE = 0.1;
+function phrTypedTarget(n, available) {
+  const want = Math.round(n * PHR_TYPED_SHARE);
+  // The floor must respect availability, or an empty pool still demands one,
+  // the conversion finds nothing, and the practice quietly comes up short.
+  const floor = (n >= 2 && available > 0) ? 1 : 0;
+  return Math.max(floor, Math.min(want, available, n));
+}
+
 // Expand picked base questions into [base, meaning, base, meaning, …] pairs.
 function phrExpandPairs(qs) {
   const out = [];
   qs.forEach(q => {
     out.push(q);
-    const mq = phrMeaningQuestion(q);
+    // A typed variant's own id is 'pt-<baseId>', which no meaning is filed
+    // under — looking up by it silently dropped the follow-up and left the
+    // practice one question shorter than the button promised.
+    const base = q.baseId ? (phrasesBank().find(b => b.id === q.baseId) || q) : q;
+    const mq = phrMeaningQuestion(base);
     if (mq) out.push(mq);
   });
   return out;
@@ -352,7 +414,16 @@ function startPhrasesQuiz(n) {
     qs = bank.slice();
   } else {
     const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
-    qs = phrShuffle(bank, seed).slice(0, Math.min(n, bank.length));
+    const size = Math.min(n, bank.length);
+    const picked = phrShuffle(bank, seed).slice(0, size);
+    // Turn a fixed number of the picks into TYPED variants — 1 in 10, 2 in 20.
+    // A variant replaces its multiple-choice form rather than being added, so
+    // the practice stays the length the button promised. The conversion runs
+    // on a re-shuffle so it is not always the first questions that are typed.
+    const order = phrShuffle(picked.map((_, i) => i), seed ^ 0x5bf03635);
+    const wantTyped = phrTypedTarget(size, picked.length);
+    const typedAt = new Set(order.slice(0, wantTyped));
+    qs = picked.map((q, i) => (typedAt.has(i) && phrTypedQuestion(q)) || q);
   }
   // Every base question is followed by its Vietnamese meaning question.
   qs = phrExpandPairs(qs);
@@ -387,7 +458,11 @@ function renderPhrQuestion() {
   const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : phrEsc(s);
   const qHtml = wrap(q.q).replace('___', '<span class="phrases-blank">_____</span>');
 
-  const opts = q.options.map((opt, i) => {
+  // A typed variant has no options to render — it gets an input instead.
+  // Answers are stored as the raw string for typed questions and as the chosen
+  // INDEX for multiple-choice, so `phrIsCorrect` below is the one place that
+  // knows the difference.
+  const opts = q.typed ? '' : q.options.map((opt, i) => {
     let cls = 'grammar-option';
     if (answered) {
       if (i === q.correct) cls += ' correct';
@@ -402,12 +477,25 @@ function renderPhrQuestion() {
     </button>`;
   }).join('');
 
+  const typedBox = !q.typed ? '' : (answered
+    ? `<div class="wf-text-answer ${phrIsCorrect(userAns, q) ? 'correct' : 'wrong'}">
+         <span class="wf-text-answer-label">Bé gõ:</span>
+         <span class="wf-text-answer-value">${userAns ? phrEsc(userAns) : '<em>(chưa gõ)</em>'}</span>
+       </div>`
+    : `<div class="wf-text-wrap">
+         <input type="text" id="phrTextInput" class="wf-text-input" enterkeyhint="go"
+                placeholder="Gõ từ còn thiếu…" autocomplete="off" autocapitalize="off" spellcheck="false"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();submitPhrTextAnswer();}">
+         <button class="wf-text-submit" onclick="submitPhrTextAnswer()">Check</button>
+       </div>`);
+
   let explain = '';
   if (answered) {
-    const ok = userAns === q.correct;
+    const ok = phrIsCorrect(userAns, q);
     explain = `<div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
       <div class="phrases-vi">📘 ${phrEsc(q.vi)}</div>
-      <div>${ok ? '✅ ' : '❌ '}${phrEsc(q.explanation)}</div>
+      ${!ok && q.typed ? `<div>❌ Đáp án đúng: <b>${phrEsc(q.answer)}</b></div>` : ''}
+      <div>${ok ? '✅ ' : (q.typed ? '' : '❌ ')}${phrEsc(q.explanation)}</div>
     </div>
     <button class="grammar-next-btn" onclick="nextPhrQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
   }
@@ -422,18 +510,40 @@ function renderPhrQuestion() {
       <div class="grammar-question-card">
         <div class="grammar-question-tag">${q.meaning ? '💡 Meaning · Nghĩa của cụm từ' : `${PHRASES_CAT_ICON[q.cat]} ${PHRASES_CAT_LABELS[q.cat]}`}</div>
         <div class="grammar-question-text">${qHtml}</div>
-        <div class="grammar-options">${opts}</div>
+        ${q.typed ? typedBox : `<div class="grammar-options">${opts}</div>`}
         ${explain}
       </div>
     </div>`;
+}
+
+// Multiple-choice answers are stored as the chosen index; typed answers as the
+// string the child typed. Everything else asks HERE rather than comparing to
+// q.correct directly — a typed question has no `correct` index at all, so a
+// bare `answers[i] === q.correct` would mark every one of them wrong.
+function phrIsCorrect(ans, q) {
+  if (!q) return false;
+  if (q.typed) return typeof ans === 'string' && _phrTextCorrect(ans, q);
+  return ans === q.correct;
+}
+
+function submitPhrTextAnswer() {
+  const st = _phrQuiz;
+  if (!st) return;
+  const q = st.questions[st.idx];
+  if (!q || !q.typed || st.answers[st.idx] !== null) return;
+  const inp = document.getElementById('phrTextInput');
+  st.answers[st.idx] = inp ? String(inp.value).trim() : '';
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(phrIsCorrect(st.answers[st.idx], q));
+  renderPhrQuestion();
 }
 
 function answerPhrQuestion(i) {
   const st = _phrQuiz;
   if (!st) return;
   if (st.answers[st.idx] !== null) return;
+  if (st.questions[st.idx] && st.questions[st.idx].typed) return;   // typed: use submitPhrTextAnswer
   st.answers[st.idx] = i;
-  if (typeof petCheerAnswer === 'function') petCheerAnswer(i === st.questions[st.idx].correct);
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(phrIsCorrect(i, st.questions[st.idx]));
   renderPhrQuestion();
 }
 
@@ -451,7 +561,7 @@ function finishPhrasesQuiz() {
   let score = 0;
   const wrong = [];
   st.questions.forEach((q, i) => {
-    if (st.answers[i] === q.correct) score++;
+    if (phrIsCorrect(st.answers[i], q)) score++;
     else wrong.push({ qid: q.id, ua: st.answers[i] });
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
