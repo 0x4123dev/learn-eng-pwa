@@ -123,6 +123,11 @@ function openWordformLesson(key) {
 
 function renderWordformPractice() {
   const bank = wordformBank();
+  // Questions owed from an earlier practice lock the practice buttons. A
+  // disabled CTA with no reason reads as a broken app, so the banner states
+  // the debt and is itself the way to clear it.
+  const owed = wfRetryCount();
+  const owedBanner = (typeof retryOwedBannerHTML === 'function' ? retryOwedBannerHTML('wf') : '');
   const counts = { noun: 0, adj: 0, adv: 0, verb: 0 };
   bank.forEach(q => { counts[q.cat] = (counts[q.cat] || 0) + 1; });
   const catRows = Object.keys(WF_CAT_LABELS).map(c =>
@@ -136,13 +141,15 @@ function renderWordformPractice() {
         <p class="phrases-sub">Chia dạng từ (danh/động/tính/trạng từ) — ${bank.length} câu, gồm cả chọn đáp án và tự gõ, có giải thích rõ ràng.</p>
       </div>
 
-      <button class="phrases-cta" onclick="startWordformQuiz(20)">
+      ${owedBanner}
+
+      <button class="phrases-cta ${owed ? 'locked' : ''}" ${owed ? 'disabled aria-disabled="true"' : ''} onclick="startWordformQuiz(20)">
         <span class="phrases-cta-icon">⚡</span>
         <span class="phrases-cta-text"><strong>Quick practice</strong><small>20 random questions</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
 
-      <button class="phrases-cta" onclick="startWordformQuiz(10)">
+      <button class="phrases-cta ${owed ? 'locked' : ''}" ${owed ? 'disabled aria-disabled="true"' : ''} onclick="startWordformQuiz(10)">
         <span class="phrases-cta-icon">⏱️</span>
         <span class="phrases-cta-text"><strong>Short practice</strong><small>10 random questions</small></span>
         <span class="phrases-cta-arrow">›</span>
@@ -159,6 +166,34 @@ function renderWordformPractice() {
   return body;
 }
 
+// ---- owed questions: every question missed must be typed back ----
+// The rule, the queue, the gate, the 👁 hint and the verdict screen all live in
+// js/retrydrill.js — six tabs share one implementation. This file only says
+// what a Word form question looks like inside it.
+//
+// The drill is harder than the quiz it follows, on purpose: a multiple-choice
+// question guessed wrong comes back as typing, so the form has to be produced
+// rather than recognised.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'wf',
+  screenId: 'wordformScreen',
+  noun: 'câu',
+  resolve: (id) => wordformById(id),
+  idOf: (q) => q.id,
+  answerText: (q) => q.answer,
+  grade: (v, q) => _wfTextCorrect(v, q),
+  promptHTML: (q) => `
+    <div class="wf-retry-base">${WF_CAT_ICON[q.cat] || '🔤'} <b>${wfEsc(q.base)}</b></div>
+    <div class="grammar-question-text">${wfEsc(q.q).replace('___', '<b class="wf-retry-gap">___</b>')}</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">📘 ${wfEsc(q.vi)}<br>💡 ${wfEsc(q.explanation)}</div>`,
+  home: () => renderWordformHome(),
+});
+
+// Kept as named wrappers so the tab reads in its own vocabulary.
+function wfRetryCount() { return (typeof retryCount === 'function' ? retryCount('wf') : 0); }
+function wfRetryList() { return (typeof retryList === 'function' ? retryList('wf') : []); }
+function startWfRetry() { return (typeof startRetryDrill === 'function' ? startRetryDrill('wf') : undefined); }
+
 // ---- wrong-answer aggregation + review panel ----
 function wordformWrongAggregate() {
   const counts = new Map();
@@ -174,6 +209,10 @@ function wordformWrongAggregate() {
   return out;
 }
 function renderWordformReviewPanel() {
+  // Hidden while questions are owed: two "practise your mistakes" buttons that
+  // do different things, one of which does not clear the gate, is a way to
+  // leave a child going round in circles.
+  if (wfRetryCount() > 0) return '';
   const wrong = wordformWrongAggregate();
   if (!wrong.length) return '';
   const chips = wrong.slice(0, 10).map(w =>
@@ -233,6 +272,10 @@ function setWfHistoryFilter(tier) { _wfHistoryFilter = tier; renderWordformHome(
 
 // ---- quiz lifecycle ----
 function startWordformQuiz(n) {
+  // Questions missed earlier are owed back BEFORE a new practice. The buttons
+  // are disabled while anything is owed, but the rule lives here too: a stale
+  // DOM node or a queued tap must not walk past it.
+  if (typeof retryGate === 'function' && retryGate('wf')) return;
   const bank = wordformBank();
   if (!bank.length) return;
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
@@ -241,6 +284,9 @@ function startWordformQuiz(n) {
   renderWfQuestion();
 }
 function startWordformReviewQuiz(qids) {
+  // The all-time review panel is a different, optional thing — it must not be
+  // a side door around the owed-questions gate.
+  if (typeof retryGate === 'function' && retryGate('wf')) return;
   const ids = Array.isArray(qids) ? qids : [];
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
   const qs = wfShuffle(ids.map(wordformById).filter(Boolean), seed);
@@ -392,6 +438,13 @@ function finishWordformQuiz() {
   try { date = Date.now(); } catch (e) { date = 0; }
   saveWordformSession({ id: 'wf-' + date, date, score, total, wrong });
 
+  // Owe every missed question back. Recorded after the coins are banked, so
+  // getting something wrong never feels like it took away what was just
+  // earned.
+  const wrongQs = wrong.map(w => wordformById(w.qid)).filter(Boolean);
+  if (wrongQs.length) if (typeof retryAdd === 'function') retryAdd('wf', wrongQs);
+  const owed = wfRetryCount();
+
   // Sync word-form activity to the server (best-effort) for the admin view.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
@@ -413,9 +466,10 @@ function finishWordformQuiz() {
         <span class="grammar-quiz-progress">${wfTierEmoji(pct)} ${score}/${total} (${pct}%)</span>
       </div>
       ${typeof petRewardCardHTML === 'function' ? petRewardCardHTML(score, total, coinsEarned) : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : '')}
+      ${(typeof retryResultBannerHTML === 'function' ? retryResultBannerHTML('wf', wrong.length) : '')}
       <div class="phrases-section-title">Review${wrong.length ? ` · ${wrong.length} wrong` : ' · perfect! 🎉'}</div>
       ${reviewHtml}
-      ${wrong.length ? `<button class="phrases-cta-secondary phrases-review-btn" onclick='startWordformReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}
+      ${(typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('wf') : '')}
     </div>`;
   _wfQuiz = null;
 }

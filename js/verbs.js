@@ -114,6 +114,7 @@ function formatTime(timestamp) {
 })();
 
 function startSpeedChallenge(level) {
+    if (typeof retryGate === 'function' && retryGate('verbs')) return;
     speedState.level = level;
     speedState.currentIndex = 0;
     speedState.score = 0;
@@ -371,6 +372,9 @@ function completeSpeedChallenge() {
     // Reward coins for the pet shop: 5 per correct verb (matches Grammar).
     const _wfCoins = (speedState.correctCount || 0) * 5;
     appState.coins = (appState.coins || 0) + _wfCoins;
+    // Owe every missed verb back (after the coins are banked). The result
+    // rows carry v1/v2/v3, which is exactly what the drill needs.
+    if (typeof retryAdd === 'function') retryAdd('verbs', (speedState.verbResults || []).filter(r => r && !r.correct));
     // Streak: any completed practice counts as a study event for the day.
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
     const _coinEl = document.getElementById('finalCoins');
@@ -423,3 +427,49 @@ document.addEventListener('keydown', (e) => {
         submitSpeedAnswer();
     }
 });
+
+// ---- owed verbs: every verb missed must be typed back ----
+// Shared engine in js/retrydrill.js. Verbs is the one tab that needs TWO
+// inputs — V2 and V3, exactly as the speed challenge asks for them — so it
+// supplies its own input, reader and echo instead of the engine's defaults.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'verbs',
+  screenId: 'speedChallengeScreen',
+  noun: 'động từ',
+  resolve: (v1) => (typeof irregularVerbs !== 'undefined'
+    ? irregularVerbs.find(v => String(v.v1).toLowerCase() === String(v1).toLowerCase()) : null) || null,
+  idOf: (v) => v.v1,
+  answerText: (v) => v.v2 + ' · ' + v.v3,
+  inputHTML: () => `
+    <div class="verb-retry-inputs">
+      <input type="text" id="retryInput" class="wf-text-input" placeholder="V2 (quá khứ)"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('retryInputV3').focus();}">
+      <input type="text" id="retryInputV3" class="wf-text-input" placeholder="V3 (phân từ II)"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             onkeydown="if(event.key==='Enter'){event.preventDefault();submitRetryAnswer();}">
+      <button class="wf-text-submit" onclick="submitRetryAnswer()">Check</button>
+    </div>`,
+  readAnswer: () => ({
+    v2: (document.getElementById('retryInput') || {}).value || '',
+    v3: (document.getElementById('retryInputV3') || {}).value || '',
+  }),
+  valueText: (val) => (String(val.v2 || '').trim() + ' · ' + String(val.v3 || '').trim()).trim(),
+  grade: (val, v) => {
+    // '/' survives normalising on purpose. Some verbs list alternatives
+    // ("was/were", "learned/learnt"), and the 👁 hint shows that whole string —
+    // so a child who types exactly what the hint showed them must be right.
+    // Accepting only the split parts made the hint a trap.
+    const norm = (x) => String(x || '').toLowerCase().normalize('NFC')
+      .replace(/[^a-z /]/g, '').replace(/\s*\/\s*/g, '/').replace(/\s+/g, ' ').trim();
+    const anyOf = (want, got) => {
+      const w = norm(want);
+      return w === got || w.split('/').some(a => a.trim() === got);
+    };
+    const g2 = norm(val && val.v2), g3 = norm(val && val.v3);
+    return !!g2 && !!g3 && anyOf(v.v2, g2) && anyOf(v.v3, g3);
+  },
+  promptHTML: (v) => `<div class="grammar-question-text">⚡ <b>${retryEsc(v.v1)}</b> → ? → ?</div>`,
+  home: () => renderSpeedChallenge(),
+});
+function verbsRetryCount() { return (typeof retryCount === 'function' ? retryCount('verbs') : 0); }

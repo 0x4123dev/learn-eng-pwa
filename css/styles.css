@@ -728,6 +728,7 @@
         }
         .unit-owed-btn:active { transform: scale(.97); }
         .g4-card.locked { opacity: .5; cursor: default; filter: grayscale(.5); }
+        .phrases-cta.locked { opacity: .5; cursor: default; filter: grayscale(.5); }
 
         /* ---- the drill ---- */
         .unit-retry-peek { display: flex; justify-content: center; gap: 8px; margin: 10px 0 6px; }

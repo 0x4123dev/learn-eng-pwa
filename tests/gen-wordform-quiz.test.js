@@ -455,13 +455,19 @@ suite('gen: wordform finish — coins & history', () => {
         assert.truthy(screen.innerHTML.includes('+5 🪙'), 'coin reward rendered');
     });
 
-    test('result screen offers a re-practice button carrying the missed qids', () => {
-        const screen = makeEl();
-        reset({ doc: { wordformScreen: screen } });
-        wf.startWordformReviewQuiz([WF1]);
-        wf.answerWfQuestion(1);
-        wf.finishWordformQuiz();
-        assert.truthy(screen.innerHTML.includes('startWordformReviewQuiz(["wf-1"])'), 're-practice wiring');
+    test('result screen sends the child to the owed-questions drill', () => {
+        // This used to be an OPTIONAL "re-practice these" button. Missed
+        // questions are now owed back before any new practice opens, so the
+        // results screen hands off to the shared drill instead — see
+        // tests/retry-drill.test.js for the rule itself.
+        const fs2 = require('fs');
+        const src = fs2.readFileSync(require('path').join(__dirname, '..', 'js', 'wordform.js'), 'utf8');
+        const i = src.indexOf('function finishWordformQuiz(');
+        const body = src.slice(i, i + 3000);
+        assert.truthy(/retryResultCtaHTML\('wf'\)/.test(body),
+            'the results screen must offer the owed-questions drill');
+        assert.falsy(/startWordformReviewQuiz\(\$\{JSON\.stringify/.test(body),
+            'the old ungated re-practice button would be a side door around the gate');
     });
 });
 

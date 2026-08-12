@@ -339,6 +339,7 @@ function openPhrSession(idx) {
 
 // ---- quiz lifecycle ----
 function startPhrasesQuiz(n) {
+  if (typeof retryGate === 'function' && retryGate('phr')) return;
   const bank = phrasesBank();
   if (!bank.length) return;
   let qs;
@@ -356,6 +357,7 @@ function startPhrasesQuiz(n) {
 
 // Re-practice a specific set of questions (by id) — used by the review CTAs.
 function startPhrasesReviewQuiz(qids) {
+  if (typeof retryGate === 'function' && retryGate('phr')) return;
   const ids = Array.isArray(qids) ? qids : [];
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
   const qs = phrShuffle(ids.map(phrasesById).filter(Boolean), seed);
@@ -459,6 +461,10 @@ function finishPhrasesQuiz() {
   try { date = Date.now(); } catch (e) { date = 0; }
   savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong });
 
+  // Owe every missed question back. After the coins, so a mistake never
+  // feels like it took away what was just earned.
+  if (typeof retryAdd === 'function') retryAdd('phr', wrong.map(w => phrasesById(w.qid)).filter(Boolean));
+
   // Sync phrases-practice activity to the server (best-effort) for the admin view.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
@@ -501,3 +507,25 @@ if (typeof module !== 'undefined' && module.exports) {
     phrMeaningQuestion, phrExpandPairs, phrasesById,
   };
 }
+
+// ---- owed questions: every question missed must be typed back ----
+// Shared engine in js/retrydrill.js; this only describes a phrases question.
+// The drill is harder than the quiz: the preposition is TYPED, not chosen.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'phr',
+  screenId: 'phrasesScreen',
+  noun: 'câu',
+  resolve: (id) => phrasesById(id),
+  idOf: (q) => q.id,
+  answerText: (q) => (q.options && q.options[q.correct] != null) ? q.options[q.correct] : String(q.answer || ''),
+  grade: (v, q) => {
+    const norm = (x) => String(x || '').toLowerCase().normalize('NFC').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+    const want = (q.options && q.options[q.correct] != null) ? q.options[q.correct] : q.answer;
+    const got = norm(v);
+    return !!got && got === norm(want);
+  },
+  promptHTML: (q) => `<div class="grammar-question-text">${phrEsc(q.q).replace('___', '<b class="wf-retry-gap">___</b>')}</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">📘 ${phrEsc(q.vi || '')}<br>💡 ${phrEsc(q.explanation || '')}</div>`,
+  home: () => renderPhrasesHome(),
+});
+function phrRetryCount() { return (typeof retryCount === 'function' ? retryCount('phr') : 0); }

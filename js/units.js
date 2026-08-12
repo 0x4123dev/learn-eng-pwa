@@ -134,53 +134,38 @@ function _unitAnswerCorrect(input, en) {
   return !!u && u === _unitNormalize(en);
 }
 
-// ---- the wrong-word drill ----
-// Every word missed in a unit practice is owed back before a new unit can be
-// started. Getting a word wrong and moving straight on to a fresh unit is how
-// a child collects a long tail of words they never actually learned.
-//
-// Stored as plain `en` strings on appState (NOT whole word objects): the bank
-// stays the single source of the Vietnamese and the emoji, so a wording fix in
-// units-data.js reaches an owed word too. It PERSISTS, so closing the app is
-// not a way out — and because that could otherwise strand a child on a word
-// they cannot spell, the drill always offers the answer (see the 👁 button).
-function unitsRetryList() {
-  const raw = (typeof appState !== 'undefined' && appState && Array.isArray(appState.unitsRetry))
-    ? appState.unitsRetry : [];
-  const bank = unitsBank();
-  const out = [], seen = Object.create(null);
-  for (const en of raw) {
-    const key = String(en || '').toLowerCase();
-    if (!key || seen[key]) continue;
-    // A word deleted from the bank must not wedge the drill shut forever.
-    const w = bank.find(x => String(x.en).toLowerCase() === key);
-    if (w) { out.push(w); seen[key] = 1; }
-  }
-  return out;
-}
-function unitsRetryCount() { return unitsRetryList().length; }
+// ---- owed words: every word missed must be typed back ----
+// The rule, the queue, the gate, the 👁 hint and the verdict screen live in
+// js/retrydrill.js — six tabs share one implementation. This file only says
+// what a Grade 4 word looks like inside it.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'units',
+  screenId: 'topicsDetail',
+  noun: 'từ',
+  resolve: (en) => unitsBank().find(w => String(w.en).toLowerCase() === String(en).toLowerCase()) || null,
+  idOf: (w) => w.en,
+  answerText: (w) => w.en,
+  grade: (v, w) => _unitAnswerCorrect(v, w.en),
+  promptHTML: (w) => `
+    <div class="unit-q-emoji ${/^[0-9:]+$/.test(w.emoji) ? 'unit-q-number' : ''}">${w.emoji}</div>
+    <div class="unit-q-vi">${unitEsc(w.vi)}</div>`,
+  sayHTML: (w) => `<button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>`,
+  onAnswer: (w, ok) => { _unitSpeak(w.en); if (ok) _unitBumpWordLevel(w.en, true); },
+  // The drill takes over the Topics detail pane, so the home pieces step aside.
+  onOpen: () => {
+    _unitQuiz = null;
+    ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs', 'topicsHistory']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    const d = document.getElementById('topicsDetail');
+    if (d) d.style.display = '';
+  },
+  home: () => { if (typeof renderTopicsHome === 'function') renderTopicsHome(); },
+});
 
-function _unitsRetrySave(words) {
-  if (typeof appState === 'undefined' || !appState) return;
-  appState.unitsRetry = words.map(w => w.en);
-  if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-    try { saveUserData(currentUser, appState); } catch (e) {}
-  }
-}
-function _unitsRetryAdd(words) {
-  const merged = unitsRetryList().slice();
-  const have = Object.create(null);
-  merged.forEach(w => { have[String(w.en).toLowerCase()] = 1; });
-  (words || []).forEach(w => {
-    const k = String(w && w.en || '').toLowerCase();
-    if (k && !have[k]) { merged.push(w); have[k] = 1; }
-  });
-  _unitsRetrySave(merged);
-}
-function _unitsRetryClear(en) {
-  const k = String(en || '').toLowerCase();
-  _unitsRetrySave(unitsRetryList().filter(w => String(w.en).toLowerCase() !== k));
-}
+// Named wrappers so this tab reads in its own vocabulary.
+function unitsRetryList() { return (typeof retryList === 'function' ? retryList('units') : []); }
+function unitsRetryCount() { return (typeof retryCount === 'function' ? retryCount('units') : 0); }
+function startUnitRetry() { return (typeof startRetryDrill === 'function' ? startRetryDrill('units') : undefined); }
 
 // ---- Grade 4 view: one card per unit, with word count + best score ----
 // ---- mastery ----
@@ -225,11 +210,7 @@ function renderUnitsBar() {
     if (!(h.unit in best) || p > best[h.unit]) best[h.unit] = p;
   });
 
-  const owedBanner = owed ? `
-    <div class="unit-owed-banner locked">
-      <div class="unit-owed-text">✍️ Bé có <b>${owed} từ sai</b> cần gõ lại trước khi học Unit mới.</div>
-      <button class="unit-owed-btn" onclick="startUnitRetry()">Luyện ngay →</button>
-    </div>` : '';
+  const owedBanner = (typeof retryOwedBannerHTML === 'function' ? retryOwedBannerHTML('units') : '');
 
   const mixBest = best['mix'];
   const mixCard = `
@@ -337,13 +318,7 @@ function startUnitPractice(unit) {
   // disabled while anything is owed, but the rule lives here too: a stale DOM
   // node, a queued tap or the "practise again" button on an old results screen
   // must not walk past it.
-  if (unitsRetryCount() > 0) {
-    if (typeof showToast === 'function') {
-      showToast('✍️ Luyện lại ' + unitsRetryCount() + ' từ sai trước đã nhé!');
-    }
-    startUnitRetry();
-    return;
-  }
+  if (typeof retryGate === 'function' && retryGate('units')) return;
   // The card is disabled, but a stale DOM node or a queued tap must not slip
   // through — the rule lives here, not only in the markup.
   if (isUnitMastered(unit)) {
@@ -373,183 +348,6 @@ function startUnitPractice(unit) {
     if (el) el.style.display = 'none';
   });
   renderUnitQuestion();
-}
-
-// ---- the drill screen ----
-// Deliberately harder than the unit practice it follows: no letter gaps, the
-// WHOLE word is typed. A word you can only finish from st__ent is not a word
-// you know yet, and these are the ones already missed once.
-//
-// The 👁 button is the safety valve that makes a hard gate fair: it shows the
-// word, and shows it again hidden on a second tap, so a child who genuinely
-// cannot recall it can look, hide, and type it from memory a moment later.
-// Without it a persisted gate could trap them on a single word.
-let _unitRetryQuiz = null;   // { queue:[w], idx, revealed, answered, fixed, missed }
-
-function startUnitRetry() {
-  const owed = unitsRetryList();
-  if (!owed.length) { if (typeof renderTopicsHome === 'function') renderTopicsHome(); return; }
-  _unitQuiz = null;                                  // never both at once
-  _unitRetryQuiz = { queue: owed.slice(), idx: 0, revealed: false, answered: null, fixed: 0, missed: 0 };
-  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs', 'topicsHistory'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  renderUnitRetryQuestion();
-}
-function abandonUnitRetry() { _unitRetryQuiz = null; }
-function isUnitRetryActive() { return !!_unitRetryQuiz; }
-
-// Hold to peek, release to hide.
-//
-// This does NOT re-render, and that is the whole point: a child half-way
-// through typing who reaches for the hint would otherwise have the input
-// rebuilt underneath them and lose what they had already typed. It touches the
-// two nodes that change and nothing else.
-function setUnitRetryReveal(on) {
-  const st = _unitRetryQuiz;
-  if (!st) return;
-  st.revealed = !!on;
-  const box = document.getElementById('unitRetryReveal');
-  const btn = document.getElementById('unitPeekBtn');
-  if (box) box.className = 'unit-retry-reveal' + (st.revealed ? '' : ' hidden');
-  if (btn) {
-    btn.setAttribute('aria-pressed', st.revealed ? 'true' : 'false');
-    btn.className = 'unit-peek-btn' + (st.revealed ? ' on' : '');
-  }
-}
-
-function renderUnitRetryQuestion() {
-  const st = _unitRetryQuiz;
-  const detail = document.getElementById('topicsDetail');
-  if (!st || !detail) return;
-  const done = st.answered;
-  // While a result is on screen the word it belongs to is the one to show —
-  // a correct answer has already been spliced out of the queue.
-  const w = done ? done.w : st.queue[st.idx % st.queue.length];
-  if (!w) { finishUnitRetry(); return; }
-
-  const left = st.queue.length;
-  const isNumberCard = /^[0-9:]+$/.test(w.emoji);
-  const more = left > 0;
-
-  const body = done
-    // Same shape as the unit practice: your answer, then the right one, then
-    // Next. The result belongs to the question that produced it, so it is
-    // shown HERE and never carried onto the next word's screen.
-    ? `<div class="wf-text-answer ${done.ok ? 'correct' : 'wrong'}">
-         <span class="wf-text-answer-label">Bé gõ:</span>
-         <span class="wf-text-answer-value">${done.value ? unitEsc(done.value) : '<em>(chưa gõ)</em>'}</span>
-       </div>
-       <div class="grammar-explanation ${done.ok ? 'correct' : 'wrong'}">
-         <div class="phrases-vi">📘 <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(w.en) : unitEsc(w.en)}</b>
-           <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>
-           — ${unitEsc(w.vi)}</div>
-         <div>${done.ok
-            ? '✅ Chính xác!'
-            : '❌ Đáp án đúng: <b>' + unitEsc(w.en) + '</b> · bé sẽ gặp lại từ này'}</div>
-       </div>
-       <button class="grammar-next-btn" onclick="nextUnitRetryQuestion()">${more ? 'Next →' : 'Xong!'}</button>`
-    : `<div class="unit-retry-peek">
-         <button class="unit-peek-btn" id="unitPeekBtn" type="button" aria-pressed="false"
-                 oncontextmenu="return false"
-                 onmousedown="setUnitRetryReveal(true)" onmouseup="setUnitRetryReveal(false)"
-                 onmouseleave="setUnitRetryReveal(false)"
-                 ontouchstart="event.preventDefault(); setUnitRetryReveal(true)"
-                 ontouchend="setUnitRetryReveal(false)" ontouchcancel="setUnitRetryReveal(false)"
-                 onkeydown="setUnitRetryReveal(true)" onkeyup="setUnitRetryReveal(false)"
-                 onblur="setUnitRetryReveal(false)">👁 Giữ để xem từ</button>
-         <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">🔊</button>
-       </div>
-       <div class="unit-retry-reveal hidden" id="unitRetryReveal">${unitEsc(w.en)}</div>
-       <div class="wf-text-wrap">
-         <input type="text" id="unitRetryInput" class="wf-text-input" enterkeyhint="go"
-                placeholder="Gõ cả từ hoàn chỉnh…" autocomplete="off" autocapitalize="off" spellcheck="false"
-                onkeydown="if(event.key==='Enter'){event.preventDefault();submitUnitRetryAnswer();}">
-         <button class="wf-text-submit" onclick="submitUnitRetryAnswer()">Check</button>
-       </div>`;
-
-  detail.style.display = '';
-  detail.innerHTML = `
-    <div class="phrases-wrap">
-      <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonUnitRetry(); renderTopicsHome()">✕</button>
-        <span class="grammar-quiz-progress">✍️ Luyện từ sai · còn ${left} từ</span>
-        <div class="grammar-progress-bar"><div class="grammar-progress-fill"
-             style="width:${Math.round(st.fixed / Math.max(1, st.fixed + left) * 100)}%"></div></div>
-      </div>
-      <div class="grammar-question-card unit-q-card">
-        <div class="unit-q-emoji ${isNumberCard ? 'unit-q-number' : ''}">${w.emoji}</div>
-        <div class="unit-q-vi">${unitEsc(w.vi)}</div>
-        ${body}
-      </div>
-    </div>`;
-
-  if (!done) {
-    const inp = document.getElementById('unitRetryInput');
-    if (inp) { try { inp.focus(); } catch (e) {} }
-  }
-}
-
-function submitUnitRetryAnswer() {
-  const st = _unitRetryQuiz;
-  if (!st || st.answered || !st.queue.length) return;   // one answer per word
-  const pos = st.idx % st.queue.length;
-  const w = st.queue[pos];
-  const inp = document.getElementById('unitRetryInput');
-  const raw = inp ? inp.value : '';
-  const ok = _unitAnswerCorrect(raw, w.en);
-
-  st.answered = { w, ok, value: String(raw).trim() };
-  _unitSpeak(w.en);
-  if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
-
-  if (ok) {
-    st.queue.splice(pos, 1);          // owed no more
-    st.fixed++;
-    _unitsRetryClear(w.en);           // persist immediately: progress survives a reload
-    _unitBumpWordLevel(w.en, true);
-  } else {
-    st.missed++;
-    // Send it to the back rather than pinning the child on one word — they
-    // meet it again this session, just not immediately.
-    st.queue.push(st.queue.splice(pos, 1)[0]);
-  }
-  if (st.idx >= st.queue.length) st.idx = 0;
-  renderUnitRetryQuestion();          // shows the result for the word just answered
-}
-
-// Clearing the result is what moves on — so a result is never still on screen
-// when the next word appears.
-function nextUnitRetryQuestion() {
-  const st = _unitRetryQuiz;
-  if (!st) return;
-  st.answered = null;
-  st.revealed = false;                // the next word starts hidden again
-  if (!st.queue.length) { finishUnitRetry(); return; }
-  renderUnitRetryQuestion();
-}
-
-function finishUnitRetry() {
-  const st = _unitRetryQuiz;
-  const fixed = st ? st.fixed : 0;
-  _unitRetryQuiz = null;
-  const detail = document.getElementById('topicsDetail');
-  if (!detail) return;
-  detail.innerHTML = `
-    <div class="phrases-wrap">
-      <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="renderTopicsHome()">‹</button>
-        <span class="grammar-quiz-progress">✅ Đã luyện xong ${fixed} từ</span>
-      </div>
-      <div class="unit-retry-done">
-        <div class="unit-retry-done-emoji">🎉</div>
-        <div class="unit-retry-done-title">Hết từ sai rồi!</div>
-        <div class="unit-retry-done-sub">Bé có thể học Unit mới ngay bây giờ.</div>
-      </div>
-      <button class="phrases-cta-secondary phrases-review-btn" onclick="renderTopicsHome()">🏠 Chọn Unit mới</button>
-    </div>`;
-  if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
 }
 
 function abandonUnitPractice() { _unitQuiz = null; }
@@ -671,7 +469,7 @@ function finishUnitPractice() {
 
   // Owe every missed word back. Recorded here, after the score is banked, so a
   // child never loses coins they earned by also being told to practise.
-  if (wrong.length) _unitsRetryAdd(wrong);
+  if (wrong.length) if (typeof retryAdd === 'function') retryAdd('units', wrong);
   const owed = unitsRetryCount();
 
   const detail = document.getElementById('topicsDetail');
@@ -689,14 +487,11 @@ function finishUnitPractice() {
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} ${_unitLabel(st.unit)} · ${score}/${total} (${pct}%)</span>
       </div>
       ${rewardCelebrationHTML(score, total, coinsEarned)}
-      ${owed ? `<div class="unit-owed-banner">
-          <b>❌ ${wrong.length} từ sai</b> trong bài này.
-          Bé cần gõ lại <b>${owed} từ</b> trước khi học Unit mới.
-        </div>` : ''}
+      ${(typeof retryResultBannerHTML === 'function' ? retryResultBannerHTML('units', wrong.length) : '')}
       <div class="phrases-section-title">${wrong.length ? 'Từ cần học lại · ' + wrong.length : 'Perfect! 🎉'}</div>
       ${reviewHtml}
       ${owed
-        ? `<button class="phrases-cta-secondary phrases-review-btn unit-retry-cta" onclick="startUnitRetry()">✍️ Luyện lại ${owed} từ sai</button>`
+        ? (typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('units') : '')
         : `<button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${typeof st.unit === 'number' ? st.unit : "'" + st.unit + "'"})">🔁 Practice ${_unitLabel(st.unit)} again</button>`}
     </div>`;
   fireRewardCelebration(coinsEarned, pct);
@@ -709,9 +504,7 @@ if (typeof module !== 'undefined' && module.exports) {
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,
-    unitsRetryList, unitsRetryCount, _unitsRetryAdd, _unitsRetryClear,
-    startUnitRetry, submitUnitRetryAnswer, nextUnitRetryQuestion, finishUnitRetry,
-    setUnitRetryReveal, isUnitRetryActive, abandonUnitRetry,
+    unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
     _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
   };

@@ -239,6 +239,7 @@ function setRwHistoryFilter(tier) { _rwHistoryFilter = tier; renderRewriteHome()
 
 // ---- quiz lifecycle ----
 function startRewriteQuiz(n) {
+  if (typeof retryGate === 'function' && retryGate('rw')) return;
   const bank = rewriteBank();
   if (!bank.length) return;
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
@@ -247,6 +248,7 @@ function startRewriteQuiz(n) {
   renderRwQuestion();
 }
 function startRewriteReviewQuiz(qids) {
+  if (typeof retryGate === 'function' && retryGate('rw')) return;
   const ids = Array.isArray(qids) ? qids : [];
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
   const qs = rwShuffle(ids.map(rewriteById).filter(Boolean), seed);
@@ -354,6 +356,9 @@ function finishRewriteQuiz() {
   try { date = Date.now(); } catch (e) { date = 0; }
   saveRewriteSession({ id: 'rw-' + date, date, score, total, wrong });
 
+  // Owe every missed question back (after the coins are banked).
+  if (typeof retryAdd === 'function') retryAdd('rw', wrong.map(w => rewriteById(w.qid)).filter(Boolean));
+
   // Sync rewrite activity to the server (best-effort) for the admin view.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
@@ -418,3 +423,22 @@ if (typeof module !== 'undefined' && module.exports) {
     switchRwSubTab, renderRewriteLessons, openRewriteLesson,
   };
 }
+
+// ---- owed questions: every question missed must be typed back ----
+// Shared engine in js/retrydrill.js; this only describes a rewrite item.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'rw',
+  screenId: 'rewriteScreen',
+  noun: 'câu',
+  resolve: (id) => rewriteById(id),
+  idOf: (q) => q.id,
+  answerText: (q) => q.answer,
+  grade: (v, q) => _rwTextCorrect(v, q),
+  promptHTML: (q) => `
+    <div class="rw-retry-cat">${rwEsc(q.catLabel || q.cat || '')}</div>
+    <div class="grammar-question-text">${rwEsc(q.orig)}</div>
+    <div class="rw-retry-stem">→ <b>${rwEsc(q.stem)}</b> …</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">📘 ${rwEsc(q.vi || '')}<br>💡 ${rwEsc(q.explanation || '')}</div>`,
+  home: () => renderRewriteHome(),
+});
+function rwRetryCount() { return (typeof retryCount === 'function' ? retryCount('rw') : 0); }

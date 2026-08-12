@@ -118,6 +118,7 @@ function collocLessonHTML() {
 
 // ---- practice flow ----
 function startCollocPractice(n) {
+  if (typeof retryGate === 'function' && retryGate('col')) return;
   const bank = collocBank();
   if (!bank.length) return;
   const shuffled = bank.slice();
@@ -274,6 +275,9 @@ function finishCollocPractice() {
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}
     }
+    // Owe every missed question back (after the coins are banked, so a
+    // mistake never feels like it took away what was just earned).
+    if (wrong.length) if (typeof retryAdd === 'function') retryAdd('col', wrong);
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
@@ -312,3 +316,19 @@ if (typeof module !== 'undefined' && module.exports) {
     _colNorm, _colAnswerCorrect, _colLetterHint,
   };
 }
+
+// ---- owed questions: every question missed must be typed back ----
+// Shared engine in js/retrydrill.js; this only describes a collocation item.
+if (typeof defineRetryDrill === 'function') defineRetryDrill({
+  key: 'col',
+  screenId: 'phrasesScreen',
+  noun: 'câu',
+  resolve: (id) => collocBank().find(q => String(q.id) === String(id)) || null,
+  idOf: (q) => q.id,
+  answerText: (q) => q.answer,
+  grade: (v, q) => _colAnswerCorrect(v, q),
+  promptHTML: (q) => `<div class="grammar-question-text">${colEsc(q.q).replace('___', '<b class="wf-retry-gap">___</b>')}</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">📘 ${colEsc(q.vi || '')}<br>💡 ${q.explanation || ''}</div>`,
+  home: () => renderCollocHome(),
+});
+function colRetryCount() { return (typeof retryCount === 'function' ? retryCount('col') : 0); }
