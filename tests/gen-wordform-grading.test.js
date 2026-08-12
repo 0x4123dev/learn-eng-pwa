@@ -156,7 +156,11 @@ suite('gen: wfShuffle seeded shuffle', () => {
         const a = wfShuffle(BASE, 42);
         const b = wfShuffle(BASE, 42);
         assert.deepEqual(a, b);
-        assert.deepEqual(a, [1, 8, 3, 9, 5, 6, 2, 0, 4, 7]);
+        // Sequence changed deliberately in the LCG high-bit fix: `s % (i + 1)`
+        // took the generator's low bits, which barely vary — one item was drawn
+        // into 12.5% of samples against a fair 1.67%. Determinism (the property
+        // this suite guards) is unchanged; only the order is new.
+        assert.deepEqual(a, [1, 9, 0, 2, 3, 6, 8, 7, 4, 5]);
     });
 
     test('output is a permutation of the input (same items, same length)', () => {

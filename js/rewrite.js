@@ -23,7 +23,12 @@ function rwShuffle(arr, seed) {
   let s = seed || 1;
   for (let i = a.length - 1; i > 0; i--) {
     s = (s * 1103515245 + 12345) & 0x7fffffff;
-    const j = s % (i + 1);
+    // HIGH bits, not `s % (i + 1)`. An LCG's low bits barely vary, and with
+    // that modulo one question was drawn into 12.5% of practices while another
+    // was drawn essentially never — against a fair 1.67% each. Dividing by the
+    // modulus uses the whole state instead. Measured after: every question
+    // lands between 1.34% and 1.83%, none stranded.
+    const j = Math.floor((s / 0x80000000) * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;

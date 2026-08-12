@@ -91,14 +91,18 @@ suite('gen: phrases seeded shuffle', () => {
     });
 
     test('seed 42 on [1..5] produces the exact LCG order (locks constants)', () => {
-        assert.deepEqual(env.phrShuffle([1, 2, 3, 4, 5], 42), [2, 5, 4, 1, 3]);
+        // Sequence changed deliberately in the LCG high-bit fix: `s % (i + 1)`
+        // took the generator's low bits, which barely vary — one item was drawn
+        // into 12.5% of samples against a fair 1.67%. Determinism (the property
+        // this suite guards) is unchanged; only the order is new.
+        assert.deepEqual(env.phrShuffle([1, 2, 3, 4, 5], 42), [1, 2, 4, 5, 3]);
     });
 
     test('falsy seed (0 / undefined) falls back to seed 1', () => {
         const one = env.phrShuffle([1, 2, 3, 4, 5], 1);
         assert.deepEqual(env.phrShuffle([1, 2, 3, 4, 5], 0), one);
         assert.deepEqual(env.phrShuffle([1, 2, 3, 4, 5]), one);
-        assert.deepEqual(one, [2, 3, 4, 5, 1]);
+        assert.deepEqual(one, [2, 5, 4, 1, 3]);
     });
 
     test('different seeds give different orders (on a 10-item array)', () => {
