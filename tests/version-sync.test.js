@@ -78,6 +78,51 @@ suite('the deploy script keeps them that way', () => {
         }
     });
 
+    test('it proves the changed files by CONTENT, not by version number', () => {
+        // js/home.js carries APP_VERSION, so it looks new the instant the
+        // deploy lands — while the file you actually changed can still be the
+        // previous copy. A version match says the deploy arrived, not that
+        // every file in it did.
+        assert.truthy(/md5/.test(sh), 'the check must compare file content');
+        assert.truthy(/\.cf-dist\/\$f/.test(sh), 'compared against what was built, not the source tree');
+        assert.truthy(/CHANGED=/.test(sh), 'the files this deploy touched must be probed');
+        assert.truthy(/git diff --name-only HEAD~1 HEAD/.test(sh));
+    });
+
+    test('the changed-file probe only trusts a commit made by THIS run', () => {
+        // With --no-bump there is no new commit, so HEAD~1 describes someone
+        // else's work and would name the wrong deploy's files.
+        assert.truthy(/COMMITTED=1/.test(sh), 'the script must record whether it committed');
+        assert.truthy(/if \[ "\$COMMITTED" = "1" \]/.test(sh),
+            'the changed-file list must be gated on that');
+    });
+
+    test('three files are proven on every deploy, changed or not', () => {
+        // The shell, the service worker (a stale one serves the whole app from
+        // an old cache) and the largest script, which is likeliest to lag.
+        const probes = sh.slice(sh.indexOf('EXTRA_PROBES='), sh.indexOf('assets=""'));
+        for (const f of ['index.html', 'sw.js', '$BIGGEST']) {
+            assert.truthy(probes.includes(f), `${f} must be probed on every deploy`);
+        }
+        assert.truthy(/ls -S js\/\*\.js/.test(sh), 'the largest script must be found by size');
+    });
+
+    test('a stale file fails the deploy instead of passing quietly', () => {
+        assert.truthy(/still serving an older copy of/.test(sh), 'it must say which file');
+        assert.truthy(/stale=""/.test(sh) && /stale="\$stale \$f"/.test(sh),
+            'mismatches must be collected, not ignored');
+        const tail = sh.slice(sh.indexOf('if [ -z "$stale" ]'));
+        assert.truthy(/exit 1/.test(tail), 'a stale file must fail the run');
+    });
+
+    test('the byte check runs only once the versions already agree', () => {
+        // Hashing every probe on each of 30 polls would hammer the edge for no
+        // reason; the version markers are the cheap gate in front of it.
+        const gate = sh.indexOf('if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]');
+        const hash = sh.indexOf('want=$(md5');
+        assert.truthy(gate > 0 && hash > gate, 'content hashing must sit inside the version gate');
+    });
+
     test('never pushes to GitHub', () => {
         assert.falsy(/git\s+push/.test(sh), 'pushing to GitHub is permission-gated');
     });

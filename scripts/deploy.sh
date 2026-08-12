@@ -86,10 +86,26 @@ fi
 
 # ---- commit ----------------------------------------------------------------
 # -u: tracked files only, so stray untracked dirs are never swept in.
+COMMITTED=0
 if [ -n "$MSG" ]; then
   git add -u
   if git diff --cached --quiet; then echo "▸ nothing to commit"
-  else git commit -q -m "$MSG"; echo "▸ committed $(git log --oneline -1)"; fi
+  else git commit -q -m "$MSG"; COMMITTED=1; echo "▸ committed $(git log --oneline -1)"; fi
+fi
+
+# ---- what this deploy changed ---------------------------------------------
+# The live check below verifies these BY CONTENT. Checking only js/home.js
+# proved too weak: it carries APP_VERSION, so it always looks new the moment
+# the deploy lands, while the file you actually changed can still be the old
+# one. The files a deploy touched are exactly the ones worth proving.
+# Only meaningful when THIS run made the commit. With --no-bump the previous
+# commit belongs to someone else's work, and probing it would describe the
+# wrong deploy — the fixed probes below still cover the essentials.
+CHANGED=""
+if [ "$COMMITTED" = "1" ]; then
+  CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null \
+    | grep -E '^(js/|css/|img/)|^(index|admin)\.html$|^sw\.js$|^manifest\.json$' \
+    | head -8 || true)
 fi
 
 # ---- build + deploy --------------------------------------------------------
@@ -120,6 +136,11 @@ echo "▸ confirming $LIVE serves v$NEWVER (assets + API)…"
 # header costs nothing, so it is used even though it is not proven to have been
 # the cause.
 NOCACHE=(-H 'Cache-Control: no-cache' -H 'Pragma: no-cache')
+# Always proven, changed or not: the shell, the service worker (a stale one
+# serves the whole app from an old cache), and the largest script — the one
+# most likely to still be in flight.
+BIGGEST=$(cd .cf-dist && ls -S js/*.js 2>/dev/null | head -1)
+EXTRA_PROBES="index.html sw.js $BIGGEST"
 assets=""; apiv=""
 for i in $(seq 1 30); do
   [ "$assets" = "$NEWVER" ] || assets=$(curl -s "${NOCACHE[@]}" "$LIVE/js/home.js" \
@@ -127,7 +148,21 @@ for i in $(seq 1 30); do
   [ "$apiv" = "$NEWVER" ] || apiv=$(curl -s "${NOCACHE[@]}" "$LIVE/api/version" \
     | sed -n 's/.*"version":"\([0-9.]*\)".*/\1/p')
   if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]; then
-    echo "✓ live: v$NEWVER — assets ✓  api ✓"; exit 0
+    # Version markers agree. Now prove the CHANGED files are byte-identical to
+    # what was built — a matching version number says the deploy landed, not
+    # that every file in it did.
+    stale=""
+    for f in $CHANGED $EXTRA_PROBES; do
+      [ -f ".cf-dist/$f" ] || continue
+      want=$(md5 -q ".cf-dist/$f" 2>/dev/null || md5sum ".cf-dist/$f" | cut -d' ' -f1)
+      got=$(curl -s "${NOCACHE[@]}" "$LIVE/$f" | (md5 -q /dev/stdin 2>/dev/null || md5sum | cut -d' ' -f1))
+      [ "$want" = "$got" ] || stale="$stale $f"
+    done
+    if [ -z "$stale" ]; then
+      n=$(printf '%s\n' $CHANGED $EXTRA_PROBES | grep -c . || true)
+      echo "✓ live: v$NEWVER — assets ✓  api ✓  ${n} file(s) byte-verified ✓"; exit 0
+    fi
+    [ $i -lt 30 ] || { echo "⚠ still serving an older copy of:$stale"; exit 1; }
   fi
   sleep 3
 done
