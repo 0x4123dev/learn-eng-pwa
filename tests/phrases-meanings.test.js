@@ -2,6 +2,9 @@
 // Vietnamese meaning question (PHRASE_MEANINGS), and the pair-expansion
 // helpers must produce well-formed follow-up questions.
 const { suite, test, assert } = require('./harness');
+// The quiz tabs render their Next button through the answer gate, exactly as
+// the browser does — index.html always loads it before them.
+Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
 const { PREPOSITION_QUESTIONS } = require(path.join(__dirname, '..', 'js', 'phrases-data.js'));

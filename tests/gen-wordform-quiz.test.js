@@ -3,6 +3,9 @@
 // review-quiz construction from qids. Complements tests/wordform.test.js, which
 // locks the bank data shape (this file asserts behaviour, not data integrity).
 const { suite, test, assert } = require('./harness');
+// The quiz tabs render their Next button through the answer gate, exactly as
+// the browser does — index.html always loads it before them.
+Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
 const { WORDFORM_QUESTIONS: BANK } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));

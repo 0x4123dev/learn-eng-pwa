@@ -1,6 +1,9 @@
 // wordform.test.js — the Word form MCQ bank (js/wordform-data.js) must be
 // well-formed, and the quiz helpers must resolve questions correctly.
 const { suite, test, assert } = require('./harness');
+// The quiz tabs render their Next button through the answer gate, exactly as
+// the browser does — index.html always loads it before them.
+Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
 const { WORDFORM_QUESTIONS } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));

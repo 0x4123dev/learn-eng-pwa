@@ -1,5 +1,8 @@
 // collocation.test.js — the 🧩 Collocation bank (PTNK style) and its grading.
 const { suite, test, assert } = require('./harness');
+// The quiz tabs render their Next button through the answer gate, exactly as
+// the browser does — index.html always loads it before them.
+Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
 const { COLLOCATION_QUESTIONS } = require(path.join(__dirname, '..', 'js', 'collocation-data.js'));

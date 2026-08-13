@@ -455,6 +455,11 @@ function renderPhrQuestion() {
   const userAns = st.answers[st.idx];
   const answered = userAns !== null;
   const total = st.questions.length;
+  // Speak the correct answer once, the moment it is revealed.
+  if (answered && st._spokenIdx !== st.idx) {
+    st._spokenIdx = st.idx;
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer || (q.options && q.options[q.correct]));
+  }
 
   // After answering, every English word becomes tappable (voice + nghĩa).
   const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : phrEsc(s);
@@ -499,7 +504,7 @@ function renderPhrQuestion() {
       ${!ok && q.typed ? `<div>❌ Đáp án đúng: <b>${phrEsc(q.answer)}</b></div>` : ''}
       <div>${ok ? '✅ ' : (q.typed ? '' : '❌ ')}${phrEsc(q.explanation)}</div>
     </div>
-    <button class="grammar-next-btn" onclick="nextPhrQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
+    ${answerGateHTML(q.answer || (q.options && q.options[q.correct]), 'nextPhrQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
   }
 
   screen.innerHTML = `

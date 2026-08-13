@@ -233,10 +233,24 @@ function handleTimeUp() {
     speedState.streak = 0;
     document.getElementById('speedStreak').textContent = speedState.streak;
 
-    // Add penalty delay then next question
-    setTimeout(() => {
-        nextSpeedQuestion();
-    }, SPEED_PENALTY_TIME);
+    speedAnswerGate(verb);
+}
+
+// Speak the correct forms and hold the challenge here until the student taps
+// 🔊. This replaces the old auto-advance timer: the point of the pause is to
+// hear the answer, and a timer would race past it.
+function speedAnswerGate(verb) {
+    const answer = verb.v2 + '/ ' + verb.v3;
+    if (typeof speakAnswer === 'function') speakAnswer(answer);
+    const feedback = document.getElementById('speedFeedback');
+    if (!feedback) return;
+    const holder = document.createElement('div');
+    holder.className = 'speed-answer-gate';
+    // No ungated fallback on purpose: an always-enabled Next here would let a
+    // student skip the listen, which is the whole point of the pause. The
+    // other three tabs depend on answer-audio.js the same way.
+    holder.innerHTML = answerGateHTML(answer, 'nextSpeedQuestion()', 'Next →');
+    feedback.appendChild(holder);
 }
 
 function submitSpeedAnswer() {
@@ -296,9 +310,7 @@ function submitSpeedAnswer() {
         document.getElementById('speedScore').textContent = speedState.score;
         document.getElementById('speedStreak').textContent = speedState.streak;
 
-        setTimeout(() => {
-            nextSpeedQuestion();
-        }, 1000);
+        speedAnswerGate(verb);
     } else {
         inputV2.classList.add(isV2Correct ? 'correct' : 'wrong');
         inputV3.classList.add(isV3Correct ? 'correct' : 'wrong');
@@ -319,9 +331,7 @@ function submitSpeedAnswer() {
         speedState.streak = 0;
         document.getElementById('speedStreak').textContent = speedState.streak;
 
-        setTimeout(() => {
-            nextSpeedQuestion();
-        }, SPEED_PENALTY_TIME);
+        speedAnswerGate(verb);
     }
 }
 

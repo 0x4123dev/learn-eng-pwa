@@ -288,6 +288,29 @@ suite('word audio: generation script', () => {
         assert.deepEqual(all.slice(0, base.length), base, 'flashcard words keep their order');
     });
 
+    test('includeAnswers covers quiz answers, splitting pair answers on "/"', () => {
+        // Word form, Phrases, Collocation and Verbs speak the correct answer
+        // aloud after every question, so every answer needs a recording —
+        // including phrasal answers ("break up") and the two halves of a
+        // collocation pair ("conclusive/ resign"), which are two separate
+        // words to pronounce, not one.
+        const gen = requireGen();
+        const all = gen.collectWords({ includeDictionary: true, includeAnswers: true });
+        assert.contains(all, 'conclusive');
+        assert.contains(all, 'resign');
+        assert.falsy(all.some(w => w.includes('/')), 'a pair answer survived unsplit');
+        assert.contains(all, 'break up');       // phrasal verb answer
+        assert.equal(new Set(all).size, all.length, 'duplicates survived dedup');
+    });
+
+    test('every spoken answer in the gated tabs has a recording', () => {
+        const gen = requireGen();
+        const missing = gen.collectAnswerWords().filter(w =>
+            !fs.existsSync(path.join(root, 'audio', 'words', gen.wordAudioSlug(w) + '.mp3')));
+        assert.deepEqual(missing, [],
+            `answers with no audio would fall back to the robot voice: ${missing.slice(0, 8).join(', ')}`);
+    });
+
     test('shardOf splits work across processes with no gaps and no overlap', () => {
         const gen = requireGen();
         const words = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];

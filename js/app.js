@@ -1052,7 +1052,12 @@ const audioCache = {};      // slug -> Audio element (preloading or ready)
 const audioMissing = {};    // slug -> true (failed once; skip until next session)
 let currentAudio = null;
 
-function speakWord(word) {
+// onDone (optional) fires when this word finishes, so callers can chain —
+// answer-audio.js speaks "conclusive/ resign" as two words back to back.
+// It fires on failure too, or a broken part would stall the chain forever.
+function speakWord(word, onDone) {
+    const finish = () => { if (typeof onDone === 'function') { try { onDone(); } catch (e) {} } };
+
     // Stop any currently playing audio
     if (currentAudio) {
         currentAudio.pause();
@@ -1063,6 +1068,7 @@ function speakWord(word) {
     const slug = wordAudioSlug(word);
     if (!slug || audioMissing[slug] || typeof Audio === 'undefined') {
         speakWordFallback(word);
+        setTimeout(finish, 700);   // no 'ended' event to wait on
         return;
     }
 
@@ -1078,10 +1084,12 @@ function speakWord(word) {
 
     if (audio.currentTime > 0) audio.currentTime = 0;
     currentAudio = audio;
+    audio.onended = finish;
     audio.play().catch(() => {
         audioMissing[slug] = true;
         delete audioCache[slug];
         speakWordFallback(word);
+        setTimeout(finish, 700);
     });
 }
 

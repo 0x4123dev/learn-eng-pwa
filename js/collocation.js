@@ -175,6 +175,12 @@ function renderCollocQuestion() {
   const ans = st.answers[st.idx];
   const answered = ans !== null;
   const total = st.questions.length;
+  // Speak the correct answer once, the moment it is revealed. Pair answers
+  // ("conclusive/ resign") are spoken as their two words, in order.
+  if (answered && st._spokenIdx !== st.idx) {
+    st._spokenIdx = st.idx;
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer);
+  }
   const meta = COLLOC_TYPE_META[q.type] || COLLOC_TYPE_META.mcq;
   const isMcq = q.type === 'pair' || q.type === 'mcq';
 
@@ -231,7 +237,7 @@ function renderCollocQuestion() {
       ${ans.isCorrect ? '' : `<div class="colloc-correct-answer">❌ Đáp án đúng: <b>${wrap(q.answer)}</b></div>`}
       <div>${q.explanation}</div>
     </div>
-    <button class="grammar-next-btn" onclick="nextCollocQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
+    ${answerGateHTML(q.answer, 'nextCollocQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
   }
 
   screen.innerHTML = `

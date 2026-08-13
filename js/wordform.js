@@ -361,6 +361,12 @@ function renderWfQuestion() {
   const userAns = st.answers[st.idx];         // null | { value, isCorrect }
   const answered = userAns !== null;
   const isCorrect = answered && userAns.isCorrect;
+  // Speak the correct answer the moment it is revealed — once per question,
+  // so re-rendering (or tapping 🔊) never starts it over on its own.
+  if (answered && st._spokenIdx !== st.idx) {
+    st._spokenIdx = st.idx;
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer);
+  }
   const total = st.questions.length;
 
   // After answering, every English word becomes tappable (voice + nghĩa);
@@ -410,7 +416,7 @@ function renderWfQuestion() {
       <div class="phrases-vi">📘 ${wfEsc(q.vi)}</div>
       <div>${header}${wfEsc(q.explanation)}</div>
     </div>
-    <button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
+    ${answerGateHTML(q.answer, 'nextWfQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
   }
 
   screen.innerHTML = `

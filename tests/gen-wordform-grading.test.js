@@ -5,6 +5,9 @@
 // wfShuffle and _wfNormalize are module-private, so those are pulled out with a
 // trailing vm epilogue — same technique as tests/gen-exam-helpers.test.js.
 const { suite, test, assert } = require('./harness');
+// The quiz tabs render their Next button through the answer gate, exactly as
+// the browser does — index.html always loads it before them.
+Object.assign(global, require('../js/answer-audio.js'));
 const fs = require('fs');
 const vm = require('vm');
 const path = require('path');

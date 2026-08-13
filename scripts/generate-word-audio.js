@@ -10,6 +10,7 @@
 // set in the gitignored .env file at the repo root (see .env.example).
 //
 // Options:
+//   --answers       also cover every spoken quiz answer (pair answers split)
 //   --dictionary    also cover js/dictionary-data.js (every tap-to-hear word
 //                   in a question, 8,638 entries) — not just the flashcards
 //   --dry-run       list what would be generated, no API calls
@@ -23,7 +24,7 @@
 //                         --shard $i/4 --concurrency 3 &
 //                     done; wait
 //   --force         regenerate even if the mp3 already exists
-//   --voice ID      ElevenLabs voice id   (default: Rachel)
+//   --voice ID      ElevenLabs voice id   (default: the shipped voice, Sarah)
 //   --model ID      ElevenLabs model id   (default: eleven_multilingual_v2)
 //
 // Idempotent: existing files are skipped, so re-running only fills gaps
@@ -46,6 +47,43 @@ const DATA_FILES = [
 
 // Tap-any-word-in-a-question vocabulary (js/tapwords.js). Opt-in: --dictionary.
 const DICTIONARY_FILE = 'js/dictionary-data.js';
+
+// Correct answers spoken aloud after every question in the gated tabs
+// (Word form, Phrases, Collocation, Verbs). Opt-in: --answers.
+const ANSWER_BANKS = [
+    { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS', pick: q => [q.answer] },
+    { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS',
+      pick: q => [q.answer || (q.options && q.options[q.correct])] },
+    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS', pick: q => [q.answer] },
+    { file: 'js/vocabulary.js', global: 'irregularVerbs', pick: v => [v.v2, v.v3] }
+];
+
+// "conclusive/ resign" is two words to pronounce, not one; so is "was/were".
+function answerParts(answer) {
+    return String(answer == null ? '' : answer)
+        .split('/')
+        .map(s => s.trim())
+        .filter(Boolean);
+}
+
+function collectAnswerWords() {
+    const seen = new Set();
+    const out = [];
+    for (const bank of ANSWER_BANKS) {
+        const mod = require(path.join(ROOT, bank.file));
+        for (const item of (mod[bank.global] || [])) {
+            for (const raw of bank.pick(item)) {
+                for (const part of answerParts(raw)) {
+                    const key = part.toLowerCase();
+                    if (seen.has(key) || !wordAudioSlug(key)) continue;
+                    seen.add(key);
+                    out.push(key);
+                }
+            }
+        }
+    }
+    return out;
+}
 
 // The voice every shipped recording was generated with. One app, one speaker:
 // audio/words/ was once built in two voices, because a run that omitted
@@ -110,6 +148,8 @@ function collectWords(opts) {
             add(m[2].replace(/\\(['"\\])/g, '$1'));
         }
     }
+    // Answers are spoken on every question, so they rank above the tap-word tail.
+    if (opts.includeAnswers) collectAnswerWords().forEach(add);
     if (opts.includeDictionary) {
         // The file ends with module.exports, so require() beats parsing it.
         const { WORD_VI } = require(path.join(ROOT, DICTIONARY_FILE));
@@ -256,7 +296,7 @@ async function main() {
         process.exit(2);
     }
 
-    const words = collectWords({ includeDictionary: flag('--dictionary') });
+    const words = collectWords({ includeDictionary: flag('--dictionary'), includeAnswers: flag('--answers') });
     for (const c of findSlugCollisions(words)) {
         console.warn(`⚠ slug collision: "${c.dropped}" reuses ${c.slug}.mp3 (recorded from "${c.kept}")`);
     }
@@ -325,6 +365,7 @@ async function main() {
 
 module.exports = {
     wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, shardOf,
+    collectAnswerWords, answerParts, ANSWER_BANKS,
     loadEnvFile, readVoiceManifest, writeVoiceManifest, voiceConflict,
     SHIPPED_VOICE, DEFAULT_VOICE, DEFAULT_MODEL,
     DATA_FILES, DICTIONARY_FILE, OUT_DIR
