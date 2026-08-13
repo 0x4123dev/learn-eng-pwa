@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 // scripts/build-hot-words.js — rank the words students actually meet.
 //
-// js/tapwords.js makes every English word in a question tappable-to-hear, and
-// the first tap of a word costs a network round trip. Word frequency is
-// brutally skewed — the top 1,000 words cover ~89% of all tappable text — so
-// instead of prefetching ~30 files per question, the app warms this one
-// ranked list in the background (js/app.js warmHotWords).
+// A safety net, not the main mechanism. twPrefetch() already warms each
+// question's own words when it renders, and a question's ~20 words fetch in
+// about half a second while the student spends ten to twenty reading and
+// answering it. So this list only has to cover the very first taps and the
+// case where the network is slow or gone: the 100 commonest words are ~43%
+// of all taps for 1.3 MB, where 1,000 words cost 14.3 MB for 76%.
 //
 // Usage:
-//   node scripts/build-hot-words.js [--count 1000]
+//   node scripts/build-hot-words.js [--count N]   (default 100)
 // Re-run whenever question banks change; tests/hot-words.test.js fails if the
 // shipped list has gone stale.
 
@@ -19,7 +20,7 @@ const vm = require('vm');
 const ROOT = path.join(__dirname, '..');
 const OUT_FILE = path.join(ROOT, 'js', 'hot-words.js');
 const AUDIO_DIR = path.join(ROOT, 'audio', 'words');
-const DEFAULT_COUNT = 1000;
+const DEFAULT_COUNT = 100;
 
 const { wordAudioSlug } = require('./generate-word-audio.js');
 

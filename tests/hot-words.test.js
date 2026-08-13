@@ -1,10 +1,10 @@
-// hot-words.test.js — the top-1000 preload.
+// hot-words.test.js — the small pre-warmed word list.
 //
 // Tapping any word in a question plays a recording, but the first tap of a
-// word costs a network round trip. Word frequency is brutally skewed: the
-// top 1,000 words cover ~89% of everything tappable in the question banks,
-// for ~11 MB. So we ship that ranked list and warm it once, in the
-// background, instead of prefetching 30 files every time a question renders.
+// word costs a network round trip. twPrefetch() already warms each question's
+// own words at render — ~20 words in about half a second, against the ten to
+// twenty the student spends answering — so this list is only a safety net for
+// the very first taps and for a slow or absent network. 100 words, 1.3 MB.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -15,11 +15,11 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const requireBuilder = () => require(path.join(root, 'scripts', 'build-hot-words.js'));
 
 suite('hot words: the generated list', () => {
-    test('js/hot-words.js exists and exports exactly 1000 ranked words', () => {
+    test('js/hot-words.js exists and exports exactly 100 ranked words', () => {
         const { HOT_WORDS } = require(path.join(root, 'js', 'hot-words.js'));
         assert.truthy(Array.isArray(HOT_WORDS), 'HOT_WORDS must be an array');
-        assert.equal(HOT_WORDS.length, 1000);
-        assert.equal(new Set(HOT_WORDS).size, 1000, 'duplicates in the list');
+        assert.equal(HOT_WORDS.length, 100);
+        assert.equal(new Set(HOT_WORDS).size, 100, 'duplicates in the list');
         assert.truthy(HOT_WORDS.every(w => typeof w === 'string' && w === w.toLowerCase().trim()),
             'entries must be clean lowercase words');
     });
@@ -38,7 +38,9 @@ suite('hot words: the generated list', () => {
         // function words must sit far above topic nouns.
         assert.truthy(HOT_WORDS.indexOf('the') >= 0 && HOT_WORDS.indexOf('the') < 10,
             `"the" ranked ${HOT_WORDS.indexOf('the')} — the list is not frequency-ordered`);
-        const rank = (w) => HOT_WORDS.indexOf(w);
+        // A word that did not make the list ranks worse than any that did —
+        // otherwise indexOf's -1 reads as "first" and the check inverts.
+        const rank = (w) => { const i = HOT_WORDS.indexOf(w); return i === -1 ? Infinity : i; };
         assert.truthy(rank('to') < rank('yesterday'), 'function words must outrank topic words');
     });
 
@@ -58,7 +60,7 @@ suite('hot words: the generated list', () => {
         // Guards against the list silently going stale as questions are added.
         const builder = requireBuilder();
         const { HOT_WORDS } = require(path.join(root, 'js', 'hot-words.js'));
-        assert.deepEqual(builder.topWords(1000), HOT_WORDS,
+        assert.deepEqual(builder.topWords(100), HOT_WORDS,
             'js/hot-words.js is stale — re-run: node scripts/build-hot-words.js');
     });
 
