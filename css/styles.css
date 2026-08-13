@@ -3334,8 +3334,11 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
+        /* 0.4 alpha measured 2.97:1 against the indigo overlay through the
+           field's own white film — under AA, and this is the hint telling a
+           child what to type. */
         .speed-input-group input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.72);
         }
 
         .speed-input-group input.correct {
@@ -6825,6 +6828,15 @@
             padding: 8px 0;
         }
 
+        /* .match-card is shared with the lesson screen, where its translucent
+           --glass-bg reads as near-white over the light page. Battle mode puts
+           the very same card on rgba(0,0,0,0.85), where it resolves to grey and
+           the IPA line drops to 1.77:1. Give it an opaque floor HERE only, so
+           the frosted look on the lesson screen is untouched. */
+        .battle-matching-grid .match-card {
+            background: #ffffff;
+        }
+
         .battle-matching-grid .matching-column {
             flex: 1;
             display: flex;
@@ -8600,8 +8612,16 @@
             font-size: 15px; font-weight: 800; color: #b8860b;
             margin-top: 6px;
         }
+        /* Sits on the orange completion overlay, not on a light card like its
+           two siblings above — the inherited #b8860b was 1.17:1 there, i.e.
+           invisible. White on a dark pill instead: 7.5:1, and it matches the
+           white title and stats around it. */
         .speed-complete-coins {
-            font-size: 16px; font-weight: 800; color: #b8860b;
+            display: inline-block;
+            font-size: 16px; font-weight: 800; color: #ffffff;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 4px 14px;
+            border-radius: 999px;
             margin: 10px 0 4px;
         }
         .grammar-result-actions {
