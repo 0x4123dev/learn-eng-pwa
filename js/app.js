@@ -848,6 +848,43 @@ function recordStudy() {
 
 let _profileOriginScreen = 'homeScreen';
 
+// Five stable destinations own the bottom bar. Deeper activity screens inherit
+// their parent highlight, so opening Grammar still reads as being inside Learn.
+const NAV_GROUP_BY_SCREEN = Object.freeze({
+    homeScreen: 'home',
+    learnHubScreen: 'learn',
+    topicsScreen: 'learn',
+    grammarScreen: 'learn',
+    speedChallengeScreen: 'learn',
+    phrasesScreen: 'learn',
+    wordformScreen: 'learn',
+    rewriteScreen: 'learn',
+    petBattleScreen: 'arena',
+    mathHubScreen: 'math',
+    examScreen: 'exam'
+});
+
+function setBottomNavActive(screenOrKey) {
+    const key = NAV_GROUP_BY_SCREEN[screenOrKey] || screenOrKey || '';
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const active = item.dataset && item.dataset.navKey === key;
+        item.classList[active ? 'add' : 'remove']('active');
+        item.setAttribute('aria-current', active ? 'page' : 'false');
+    });
+}
+
+function renderLearnHub() {
+    const label = document.getElementById('learnDueText');
+    if (!label) return;
+    let due = 0;
+    try {
+        due = typeof getReviewCount === 'function' ? Math.max(0, getReviewCount()) : 0;
+    } catch (e) { due = 0; }
+    label.textContent = due
+        ? due + (due === 1 ? ' word is ready to review.' : ' words are ready to review.')
+        : 'Nothing due yet — practise again to build your queue.';
+}
+
 function switchScreen(screenId) {
     // Guard: warn before leaving an in-progress grammar exam (tapping a different
     // bottom-nav tab would otherwise silently discard the user's answers).
@@ -889,12 +926,10 @@ function switchScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (typeof event !== 'undefined' && event && event.target) {
-        event.target.closest('.nav-item')?.classList.add('active');
-    }
+    setBottomNavActive(screenId);
 
     if (screenId === 'homeScreen') renderHome();
+    if (screenId === 'learnHubScreen') renderLearnHub();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
     if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
@@ -912,7 +947,7 @@ function navigateToProfile() {
     document.getElementById('profileScreen').classList.add('active');
 
     // Clear nav highlight (profile is no longer a nav tab)
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    setBottomNavActive('');
 
     renderProfile();
 }
@@ -921,23 +956,7 @@ function navigateFromProfile() {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(_profileOriginScreen).classList.add('active');
 
-    // Restore nav highlight (indices match the bottom-nav button order in index.html)
-    const screenToNav = {
-        homeScreen: 0,
-        topicsScreen: 1,
-        grammarScreen: 2,
-        speedChallengeScreen: 3,
-        phrasesScreen: 4,
-        wordformScreen: 5,
-        rewriteScreen: 6,
-        examScreen: 7
-    };
-    const navIdx = screenToNav[_profileOriginScreen];
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(n => n.classList.remove('active'));
-    if (navIdx !== undefined && navItems[navIdx]) {
-        navItems[navIdx].classList.add('active');
-    }
+    setBottomNavActive(_profileOriginScreen);
 
     if (_profileOriginScreen === 'homeScreen') renderHome();
 }

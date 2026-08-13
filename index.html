@@ -106,7 +106,6 @@
 
             <!-- Home Screen -->
             <div class="screen home-screen" id="homeScreen">
-                <button class="battle-fab" id="battleBtn" onclick="openPetBattle()" title="Đấu trường" aria-label="Đấu trường">⚔️</button>
                 <div class="summer-sun"><img src="img/sun.svg" alt="sun"></div>
                 <div class="home-header">
                     <div class="home-user">
@@ -271,6 +270,91 @@
             <!-- Pet Battle (⚔️ from the pet habitat) -->
             <div class="screen pet-battle-screen" id="petBattleScreen"></div>
 
+            <!-- Navigation hubs keep the bottom bar focused on five user goals. -->
+            <div class="screen nav-hub-screen" id="learnHubScreen">
+                <header class="nav-hub-header">
+                    <span class="nav-hub-kicker">BUILD YOUR SKILLS</span>
+                    <h1>What do you want to learn?</h1>
+                    <p>Learn, review and practise in one place. Your progress stays with every activity.</p>
+                </header>
+                <div class="nav-hub-feature learn-review">
+                    <div>
+                        <span class="nav-hub-feature-label">SMART REVIEW</span>
+                        <strong>Words due today</strong>
+                        <small id="learnDueText" aria-live="polite">Checking your review queue…</small>
+                    </div>
+                    <button type="button" onclick="startReviewSession()">Review now</button>
+                </div>
+                <div class="nav-hub-grid learn-grid" aria-label="Learning activities">
+                    <button class="nav-hub-card topics" type="button"
+                            onclick="switchScreen('topicsScreen'); renderTopicsHome()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Topics</strong><small>Vocabulary and Grade 4 units</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card grammar" type="button"
+                            onclick="switchScreen('grammarScreen'); renderGrammarHome()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="M7 9.2V14c0 1.8 2.2 3 5 3s5-1.2 5-3V9.2"/><path d="M21 7v6"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Grammar</strong><small>Rules, lessons and quizzes</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card verbs" type="button" onclick="switchScreen('speedChallengeScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12l1-9Z"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Irregular Verbs</strong><small>Train V1, V2 and V3 quickly</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card phrases" type="button"
+                            onclick="switchScreen('phrasesScreen'); renderPhrasesHome()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Phrases</strong><small>Prepositions and collocations</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card wordform" type="button"
+                            onclick="switchScreen('wordformScreen'); renderWordformHome()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="m6 16 5-12 5 12"/><path d="M8 12h6"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Word Form</strong><small>Build the correct form from a root</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card rewrite" type="button"
+                            onclick="switchScreen('rewriteScreen'); renderRewriteHome()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5Z"/><path d="m14 6 3 3"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Rewrite</strong><small>Transform sentences without changing meaning</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="screen nav-hub-screen math-hub-screen" id="mathHubScreen">
+                <header class="nav-hub-header math">
+                    <span class="nav-hub-kicker">MATH ZONE</span>
+                    <h1>A new challenge is coming</h1>
+                    <p>This space is ready for number, geometry and problem-solving lessons.</p>
+                </header>
+                <section class="math-empty" aria-labelledby="mathEmptyTitle">
+                    <div class="math-empty-art" aria-hidden="true">
+                        <span>7</span><span>+</span><span>5</span><span>=</span><span>?</span>
+                    </div>
+                    <span class="math-empty-badge">COMING SOON</span>
+                    <h2 id="mathEmptyTitle">Math adventures start here</h2>
+                    <p>New activities will appear here when they are ready. No progress will be lost.</p>
+                    <div class="math-empty-topics" aria-hidden="true">
+                        <span>123</span><span>÷</span><span>△</span><span>×</span>
+                    </div>
+                </section>
+            </div>
+
             <!-- Grammar Screen -->
             <div class="screen grammar-screen" id="grammarScreen"></div>
             <div class="screen phrases-screen" id="phrasesScreen"></div>
@@ -294,37 +378,26 @@
         </div>
 
         <!-- Bottom Navigation -->
-        <nav class="bottom-nav" id="bottomNav" style="display: none;">
-            <button class="nav-item active" onclick="switchScreen('homeScreen')">
-                <span class="icon">🏠</span>
+        <nav class="bottom-nav" id="bottomNav" style="display: none;" aria-label="Primary navigation">
+            <button class="nav-item active" data-nav-key="home" type="button"
+                    onclick="switchScreen('homeScreen')" aria-current="page">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
                 <span>Home</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('topicsScreen'); renderTopicsHome()">
-                <span class="icon">📚</span>
-                <span>Topics</span>
+            <button class="nav-item" data-nav-key="learn" type="button" onclick="switchScreen('learnHubScreen')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg></span>
+                <span>Learn</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('grammarScreen'); renderGrammarHome()">
-                <span class="icon">🎓</span>
-                <span>Grammar</span>
+            <button class="nav-item nav-arena" data-nav-key="arena" type="button" onclick="openPetBattle()">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4v3M17 4v3M4 7h16v13H4V7Z"/><path d="M4 11h16M8 7V4h3v3M13 7V4h3v3"/><path d="M9 20v-5h6v5"/></svg></span>
+                <span>Arena</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('speedChallengeScreen')">
-                <span class="icon">📝</span>
-                <span>Verbs</span>
+            <button class="nav-item" data-nav-key="math" type="button" onclick="switchScreen('mathHubScreen')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h1M12 11h1M16 11h1M8 15h1M12 15h1M16 15h1M8 18h1M12 18h5"/></svg></span>
+                <span>Math</span>
             </button>
-            <button class="nav-item" onclick="switchScreen('phrasesScreen')">
-                <span class="icon">🔗</span>
-                <span>Phrases</span>
-            </button>
-            <button class="nav-item" onclick="switchScreen('wordformScreen')">
-                <span class="icon">🔤</span>
-                <span>Word form</span>
-            </button>
-            <button class="nav-item" onclick="switchScreen('rewriteScreen')">
-                <span class="icon">✍️</span>
-                <span>Rewrite</span>
-            </button>
-            <button class="nav-item" onclick="switchScreen('examScreen')">
-                <span class="icon">🎯</span>
+            <button class="nav-item" data-nav-key="exam" type="button" onclick="switchScreen('examScreen')">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span>
                 <span>Exam</span>
             </button>
         </nav>

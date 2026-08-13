@@ -529,13 +529,8 @@ function goToSkillTab(key) {
     }
     const fn = target[1];
     if (fn && typeof globalThis[fn] === 'function') { try { globalThis[fn](); } catch (e) {} }
-    // Highlight the matching bottom-nav item (switchScreen relies on the click event otherwise)
-    try {
-        const idx = { topicsScreen: 1, grammarScreen: 2, speedChallengeScreen: 3, phrasesScreen: 4, wordformScreen: 5, rewriteScreen: 6, examScreen: 7 }[target[0]];
-        const items = document.querySelectorAll('.nav-item');
-        items.forEach(n => n.classList.remove('active'));
-        if (items[idx]) items[idx].classList.add('active');
-    } catch (e) {}
+    // Direct links from My Skills still belong to one of the five parent tabs.
+    if (typeof setBottomNavActive === 'function') setBottomNavActive(target[0]);
 }
 
 function renderHome() {

@@ -131,33 +131,36 @@ suite('battle history: the panel', () => {
     });
 });
 
-suite('home screen: the arena button replaced the sync button', () => {
+suite('primary navigation: the arena replaces the old home shortcut', () => {
     test('the sync fab is gone from the home screen', () => {
         assert.falsy(indexSrc.includes('syncNowUI()'), 'the manual sync button should be removed');
         assert.falsy(indexSrc.includes('sync-fab'), 'and its markup with it');
     });
 
-    test('a battle fab takes its place', () => {
-        assert.truthy(indexSrc.includes('battle-fab'), 'no arena button on the home screen');
-        assert.truthy(indexSrc.includes('openPetBattle()'), 'the fab must open the arena');
-        assert.truthy(cssSrc.includes('.battle-fab'), 'the fab has no styles');
+    test('Arena is the centre destination in the bottom navigation', () => {
+        const start = indexSrc.indexOf('<nav class="bottom-nav"');
+        const nav = indexSrc.slice(start, indexSrc.indexOf('</nav>', start));
+        assert.truthy(nav.includes('data-nav-key="arena"'), 'the primary nav needs an Arena destination');
+        assert.truthy(nav.includes('openPetBattle()'), 'the Arena destination must open the battle lobby');
+        const keys = [...nav.matchAll(/data-nav-key="([^"]+)"/g)].map(m => m[1]);
+        assert.deepEqual(keys, ['home', 'learn', 'arena', 'math', 'exam']);
     });
 
     // The habitat carried a second ⚔️ button, so the home screen offered the
     // same destination twice.
-    test('there is exactly ONE way into the arena from the home screen', () => {
+    test('there is exactly one primary way into the arena', () => {
         const homeSrc = fs.readFileSync(path.join(root, 'js', 'home.js'), 'utf8');
         const calls = (indexSrc + homeSrc).match(/openPetBattle\(\)/g) || [];
-        assert.equal(calls.length, 1, `found ${calls.length} arena buttons — there should be one`);
+        assert.equal(calls.length, 1, `found ${calls.length} primary arena buttons — there should be one`);
+        assert.falsy(indexSrc.includes('battle-fab'), 'the old floating Home shortcut should be removed');
         assert.falsy(homeSrc.includes('pet-battle-btn-hero'), 'the habitat button should be gone');
         assert.falsy(cssSrc.includes('pet-battle-btn-hero'), 'and its styles with it');
     });
 
-    // Its focus ring and reduced-motion handling had to move with it.
-    test('the surviving fab keeps the accessibility rules', () => {
-        assert.truthy(cssSrc.includes('.battle-fab:focus-visible'), 'keyboard users need the focus ring');
-        assert.truthy(/prefers-reduced-motion[\s\S]{0,400}\.battle-fab/.test(cssSrc),
-            'the fab animates on entry — it must respect reduced motion');
+    test('the five navigation destinations keep accessible state', () => {
+        assert.truthy(indexSrc.includes('aria-label="Primary navigation"'));
+        assert.truthy(indexSrc.includes('aria-current="page"'));
+        assert.truthy(cssSrc.includes('.nav-item:focus-visible'), 'keyboard users need a focus ring');
     });
 
     // Removing the button is only safe because syncing is automatic.

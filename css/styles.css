@@ -537,47 +537,345 @@
         .bottom-nav {
             display: flex;
             flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(124, 58, 237, 0.12);
             padding-bottom: var(--safe-area-bottom);
             box-shadow: 0 -4px 24px rgba(31, 80, 50, 0.1);
             border-radius: 24px 24px 0 0;
             z-index: 300;
+            min-height: 68px;
         }
 
         .nav-item {
             flex: 1;
+            min-width: 0;
+            min-height: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 0 4px;
+            gap: 3px;
+            padding: 7px 2px 5px;
             background: none;
             border: none;
-            color: #B0B0B0;
-            font-size: 11px;
-            font-weight: 700;
-            transition: color 0.2s ease;
+            color: #64748b;
+            font-size: 11.5px;
+            font-weight: 800;
+            transition: color 0.2s ease, background-color 0.2s ease;
             cursor: pointer;
             font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .nav-item.active {
-            color: #7c3aed;
+            color: #6d28d9;
         }
 
         .nav-item .icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-            transition: transform 0.2s ease;
+            width: 34px;
+            height: 30px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            transition: color 0.2s ease, background-color 0.2s ease;
         }
 
-        /* 7 tabs — keep labels compact and on one line */
-        .nav-item { min-width: 0; padding-left: 2px; padding-right: 2px; font-size: 10px; }
+        .nav-item .icon svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .nav-item.active .icon {
+            background: rgba(124, 58, 237, 0.13);
+        }
+        .nav-item.nav-arena .icon {
+            color: #fff;
+            background: linear-gradient(145deg, #fb923c, #ea580c);
+            box-shadow: 0 3px 9px rgba(234, 88, 12, 0.28);
+        }
+        .nav-item.nav-arena.active { color: #c2410c; }
+        .nav-item.nav-arena.active .icon {
+            background: linear-gradient(145deg, #f97316, #c2410c);
+            box-shadow: 0 0 0 3px rgba(249,115,22,.16), 0 4px 10px rgba(194,65,12,.3);
+        }
         .nav-item span:not(.icon) { white-space: nowrap; }
-        .nav-item .icon { font-size: 22px; }
+        .nav-item:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: -4px;
+            border-radius: 16px;
+        }
+
+        /* Five-destination information architecture. The hub cards keep the
+           old modules one tap away without squeezing eight labels into 320px. */
+        .nav-hub-screen {
+            overflow-y: auto;
+            padding: 22px 16px 96px;
+            background:
+                radial-gradient(circle at 90% 4%, rgba(167,139,250,.2), transparent 31%),
+                linear-gradient(180deg, #f8fafc 0%, #eefbf4 100%);
+        }
+        .nav-hub-header {
+            max-width: 640px;
+            margin: 0 auto 18px;
+            padding: 22px 20px;
+            border-radius: 24px;
+            color: #fff;
+            background: linear-gradient(135deg, #6d28d9, #8b5cf6 58%, #0ea5e9);
+            box-shadow: 0 14px 34px rgba(109,40,217,.22);
+        }
+        .nav-hub-header.math {
+            background: linear-gradient(135deg, #075985, #0284c7 54%, #22c55e);
+            box-shadow: 0 14px 34px rgba(2,132,199,.22);
+        }
+        .nav-hub-kicker {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 10px;
+            line-height: 1.2;
+            letter-spacing: .13em;
+            font-weight: 900;
+            color: rgba(255,255,255,.8);
+        }
+        .nav-hub-header h1 {
+            margin: 0;
+            font-size: clamp(24px, 7vw, 34px);
+            line-height: 1.08;
+            color: #fff;
+        }
+        .nav-hub-header p {
+            margin: 9px 0 0;
+            color: rgba(255,255,255,.9);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .nav-hub-grid {
+            max-width: 640px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .nav-hub-card {
+            position: relative;
+            min-width: 0;
+            min-height: 164px;
+            padding: 16px;
+            border: 1px solid rgba(148,163,184,.23);
+            border-radius: 21px;
+            background: rgba(255,255,255,.9);
+            box-shadow: 0 7px 20px rgba(15,23,42,.075);
+            color: #0f172a;
+            text-align: left;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+        }
+        .nav-hub-card:hover {
+            border-color: rgba(109,40,217,.35);
+            box-shadow: 0 9px 24px rgba(15,23,42,.11);
+        }
+        .nav-hub-card:active { background: #f8fafc; }
+        .nav-hub-card:focus-visible,
+        .nav-hub-feature button:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 3px;
+        }
+        .nav-hub-icon {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            color: #6d28d9;
+            background: #ede9fe;
+        }
+        .nav-hub-icon svg {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .nav-hub-card.grammar .nav-hub-icon { color: #0369a1; background: #e0f2fe; }
+        .nav-hub-card.verbs .nav-hub-icon { color: #b45309; background: #fef3c7; }
+        .nav-hub-card.phrases .nav-hub-icon { color: #047857; background: #d1fae5; }
+        .nav-hub-card.wordform .nav-hub-icon { color: #c2410c; background: #ffedd5; }
+        .nav-hub-card.rewrite .nav-hub-icon { color: #be185d; background: #fce7f3; }
+        .nav-hub-copy {
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .nav-hub-copy strong {
+            font-size: 16px;
+            line-height: 1.2;
+            color: #0f172a;
+        }
+        .nav-hub-copy small {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #475569;
+        }
+        .nav-hub-arrow {
+            position: absolute;
+            top: 18px;
+            right: 16px;
+            color: #64748b;
+            font-size: 25px;
+            line-height: 1;
+        }
+        .nav-hub-feature {
+            max-width: 640px;
+            margin: 0 auto 12px;
+            padding: 17px;
+            border-radius: 21px;
+            color: #ecfdf5;
+            background: linear-gradient(135deg, #064e3b, #047857);
+            box-shadow: 0 8px 22px rgba(6,78,59,.18);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+        .nav-hub-feature div { min-width: 0; }
+        .nav-hub-feature-label {
+            display: block;
+            margin-bottom: 3px;
+            color: #a7f3d0;
+            font-size: 10.5px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+        .nav-hub-feature strong { display: block; font-size: 17px; }
+        .nav-hub-feature small { display: block; margin-top: 4px; color: #d1fae5; font-size: 12.5px; }
+        .nav-hub-feature button {
+            flex: 0 0 auto;
+            min-height: 44px;
+            padding: 0 15px;
+            border: 0;
+            border-radius: 14px;
+            color: #064e3b;
+            background: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .math-empty {
+            position: relative;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 34px 22px 28px;
+            overflow: hidden;
+            border: 1px solid rgba(14,165,233,.18);
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 12% 12%, rgba(56,189,248,.16), transparent 29%),
+                radial-gradient(circle at 92% 86%, rgba(34,197,94,.14), transparent 27%),
+                rgba(255,255,255,.92);
+            box-shadow: 0 10px 28px rgba(15,23,42,.08);
+            text-align: center;
+        }
+        .math-empty-art {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 74px;
+            margin-bottom: 18px;
+        }
+        .math-empty-art span {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 58px;
+            border-radius: 17px;
+            color: #0f172a;
+            background: #fff;
+            border: 1px solid rgba(14,165,233,.18);
+            box-shadow: 0 6px 14px rgba(2,132,199,.12);
+            font-size: 25px;
+            font-weight: 900;
+        }
+        .math-empty-art span:nth-child(even) {
+            width: 34px;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            color: #0284c7;
+        }
+        .math-empty-art span:last-child { color: #fff; background: #f97316; border-color: #f97316; }
+        .math-empty-badge {
+            display: inline-flex;
+            padding: 6px 11px;
+            border-radius: 999px;
+            color: #075985;
+            background: #e0f2fe;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .1em;
+        }
+        .math-empty h2 { margin: 12px 0 7px; color: #0f172a; font-size: 22px; line-height: 1.2; }
+        .math-empty p {
+            max-width: 470px;
+            margin: 0 auto;
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+        .math-empty-topics {
+            display: flex;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 22px;
+        }
+        .math-empty-topics span {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0 10px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: #0f766e;
+            background: #ecfdf5;
+            font-size: 16px;
+            font-weight: 900;
+        }
+        @media (max-width: 430px) {
+            .nav-hub-card {
+                min-height: 150px;
+                padding: 14px 12px;
+            }
+            .nav-hub-icon { width: 42px; height: 42px; border-radius: 13px; }
+            .nav-hub-copy strong { font-size: 14px; }
+            .nav-hub-copy small { font-size: 11px; }
+            .math-empty-art { gap: 5px; }
+            .math-empty-art span { width: 44px; height: 52px; font-size: 22px; }
+            .math-empty-art span:nth-child(even) { width: 26px; }
+        }
+        @media (max-width: 350px) {
+            .nav-hub-grid { grid-template-columns: 1fr; }
+            .nav-hub-card { min-height: 126px; }
+            .nav-item { font-size: 10px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .nav-item, .nav-item .icon, .nav-hub-card { transition: none; }
+        }
 
         /* Word form tab — highlight the (BASE) root shown in a question */
         .wf-base {
@@ -628,10 +926,6 @@
         }
         .rw-text-input:focus { border-color: #7c3aed; }
         .rw-text-submit { background: #7c3aed; }
-
-        /* 8 nav tabs — keep them fitting on small screens */
-        .nav-item { font-size: 9px; }
-        .nav-item .icon { font-size: 20px; margin-bottom: 3px; }
 
         /* Skills chart (home bottom) */
         .home-skills-panel {
@@ -950,8 +1244,7 @@
             padding: 7px 10px; border-radius: 10px; background: var(--glass-bg, rgba(255,255,255,0.7)); margin-bottom: 5px; }
 
         /* ===== Pet battle ===== */
-        /* The habitat used to carry a second ⚔️ button; the arena is reached
-           from the top-right .battle-fab now, so there is only one way in. */
+        /* Arena is the centre destination in the five-item bottom navigation. */
         .pet-battle-screen { padding: 16px 0 90px; }
         .pb-wrap { padding: 0 14px; }
         .pb-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -1243,9 +1536,21 @@
             .screen { max-width: 680px; margin-inline: auto; }
             .pet-battle-screen, .grammar-screen, .exam-screen,
             .topics-screen, .phrases-screen, .wordform-screen, .rewrite-screen { max-width: 920px; }
+            .pb-scene-list { grid-auto-columns: minmax(170px, 25%); }
+            .nav-hub-screen { padding: 30px 28px 108px; }
+            .nav-hub-header,
+            .nav-hub-feature,
+            .nav-hub-grid,
+            .math-empty { max-width: 900px; }
+            .nav-hub-header { padding: 28px 30px; }
+            .nav-hub-header h1 { font-size: 28px; }
+            .nav-hub-header p { max-width: 600px; font-size: 14px; }
+            .learn-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+            .nav-hub-card { min-height: 172px; padding: 18px; }
+            .nav-hub-feature { padding: 19px 22px; }
+            .math-empty { padding: 42px 30px 34px; }
+            .math-empty-art { margin-bottom: 22px; }
         }
-
-        @media (min-width: 700px) { .pb-scene-list { grid-auto-columns: minmax(170px, 25%); } }
         @media (prefers-reduced-motion: reduce) { .pb-scene-option { transition: none; } }
 
         /* EN/VI flags — English is the default on every visit */
@@ -1601,14 +1906,15 @@
             overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
         }
         .pb-barrel:focus-visible, .pb-emote:focus-visible, .pb-fire:focus-visible,
-        .pb-btn:focus-visible, .pb-friend:focus-visible, .battle-fab:focus-visible {
+        .pb-btn:focus-visible, .pb-friend:focus-visible {
             outline: 3px solid #2563eb;
             outline-offset: 3px;
         }
         @media (prefers-reduced-motion: reduce) {
-            .pb-hp-fill, .pb-barrel, .pb-emote, .pb-fire, .pb-btn, .pb-friend,
-            .battle-fab { animation: none !important; transition: none !important; }
-            .pb-emote:active, .battle-fab:active { transform: none; }
+            .pb-hp-fill, .pb-barrel, .pb-emote, .pb-fire, .pb-btn, .pb-friend {
+                animation: none !important; transition: none !important;
+            }
+            .pb-emote:active { transform: none; }
             .pb-turn-dot, .pb-fire::after { animation: none !important; }
         }
         @keyframes pbTurnPulse { 0%, 55% { box-shadow: 0 0 0 3px rgba(34,197,94,.18); } 100% { box-shadow: 0 0 0 9px transparent; } }
@@ -1825,10 +2131,6 @@
         .home-skills-day-label { font-size: 9px; color: var(--text-secondary); }
         .home-skills-day.today .home-skills-day-label { color: #7c3aed; font-weight: 800; }
 
-        .nav-item.active .icon {
-            transform: scale(1.15);
-        }
-
         /* ==================== HOME SCREEN ==================== */
         .home-screen {
             padding: 0;
@@ -1902,26 +2204,6 @@
             align-items: center;
             margin-bottom: 0;
         }
-
-        /* Floating ⚔️ arena button (home screen). Replaced the manual "Sync
-           now" icon — syncing already happens on login and after every
-           practice session, so the button was spending prime screen real
-           estate on something the app does by itself.
-           NOTE: no position override here — .screen is already
-           position:absolute (a valid anchor for the fab); a `relative`
-           override detaches the screen from its top/bottom pinning, so
-           it grows past the viewport and can never scroll. */
-        .battle-fab {
-            position: absolute; top: 12px; right: 12px; z-index: 60;
-            width: 40px; height: 40px; border-radius: 50%; border: none;
-            background: linear-gradient(140deg, #fb923c, #ea580c);
-            box-shadow: 0 3px 12px rgba(234, 88, 12, 0.4);
-            font-size: 19px; line-height: 1; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            animation: battlefab-in 0.4s ease both;
-        }
-        .battle-fab:active { transform: scale(0.92); }
-        @keyframes battlefab-in { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 
         .home-user {
             display: flex;
