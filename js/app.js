@@ -1093,6 +1093,56 @@ function speakWord(word, onDone) {
     });
 }
 
+// Speak several words back to back — "drink → drank → drunk".
+//
+// All of them go through ONE reused element, and that matters: phones only
+// permit audio a user gesture started, and the gesture unlocks the specific
+// element it played. Handing word two to a freshly-created element got its
+// play() refused, which fell through to speakWordFallback and finished the
+// sentence in the device's robot voice — a different, often male speaker
+// halfway through the answer.
+let sequenceAudio = null;
+
+function speakSequence(words) {
+    const list = (words || []).map(w => String(w == null ? '' : w).trim()).filter(Boolean);
+    if (!list.length) return 0;
+    if (typeof Audio === 'undefined') {
+        speakWordFallback(list[0]);
+        return list.length;
+    }
+
+    if (currentAudio && currentAudio !== sequenceAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+    if (!sequenceAudio) sequenceAudio = new Audio();
+    const el = sequenceAudio;
+    el.pause();
+    currentAudio = el;
+
+    let i = 0;
+    const playNext = () => {
+        if (i >= list.length) return;
+        const word = list[i++];
+        const slug = wordAudioSlug(word);
+        if (!slug || audioMissing[slug]) {
+            speakWordFallback(word);
+            setTimeout(playNext, 700);       // no 'ended' to wait on
+            return;
+        }
+        el.onended = playNext;
+        el.src = WORD_AUDIO_PATH + slug + '.mp3';
+        el.currentTime = 0;
+        el.play().catch(() => {
+            audioMissing[slug] = true;
+            speakWordFallback(word);
+            setTimeout(playNext, 700);
+        });
+    };
+    playNext();
+    return list.length;
+}
+
 function prefetchAudio(word) {
     const slug = wordAudioSlug(word);
     if (!slug || audioCache[slug] || audioMissing[slug] || typeof Audio === 'undefined') return;

@@ -7,6 +7,7 @@ const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { loadAppCode } = require('./setup');
 
 const root = path.join(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
@@ -114,6 +115,74 @@ suite('answer gate: speaking the answer', () => {
         assert.equal(gate.speakAnswer(''), 0);
         assert.equal(gate.speakAnswer(null), 0);
         assert.deepEqual(spoken, []);
+    });
+});
+
+// Phones only allow audio that a user gesture started. The tap unlocks the
+// ONE element it played; a freshly-created element for the second word was
+// never unlocked, so play() is refused and speakWord falls back to the
+// device's robot voice — which is why "drink → drank → drunk" came out as
+// one real voice followed by a different, male one. Every part of a sequence
+// must therefore go through the same, already-unlocked element.
+suite('answer gate: a sequence plays through one unlocked element', () => {
+    function loadAppWithAudio() {
+        const created = [];
+        const played = [];
+        class FakeAudio {
+            constructor(src) {
+                this._src = src || '';
+                this.currentTime = 0; this.preload = '';
+                created.push(this);
+            }
+            get src() { return this._src; }
+            set src(v) { this._src = v; }
+            cloneNode() { return new FakeAudio(this._src); }
+            pause() {}
+            play() {
+                played.push(this._src);
+                const self = this;
+                // Fire 'ended' synchronously so the whole chain runs inside the
+                // test — the harness does not await, so an async test cannot fail.
+                const p = { catch() { return p; }, then(fn) { if (fn) fn(); return p; } };
+                self.onended && self.onended();
+                return p;
+            }
+        }
+        const synth = { calls: [], cancel() {}, resume() {}, getVoices() { return []; },
+                        speak(u) { this.calls.push(u && u.text); }, speaking: false, pending: false };
+        const app = loadAppCode({
+            includeHome: false,
+            extraGlobals: {
+                Audio: FakeAudio,
+                SpeechSynthesisUtterance: function (t) { this.text = String(t); },
+                window: { speechSynthesis: synth }
+            }
+        });
+        return { app, created, played, synth };
+    }
+
+    test('speakSequence uses a single Audio element for every word', () => {
+        const { app, created, played } = loadAppWithAudio();
+        app.speakSequence(['drink', 'drank', 'drunk']);
+        assert.deepEqual(played, [
+            'audio/words/drink.mp3', 'audio/words/drank.mp3', 'audio/words/drunk.mp3'
+        ]);
+        assert.equal(created.length, 1,
+            `made ${created.length} elements — only the first is gesture-unlocked, the rest get refused`);
+    });
+
+    test('the same element is reused on the next question too', () => {
+        const { app, created } = loadAppWithAudio();
+        app.speakSequence(['drink', 'drank']);
+        const afterFirst = created.length;
+        app.speakSequence(['go', 'went']);
+        assert.equal(created.length, afterFirst, 'a new element per question loses the unlock again');
+    });
+
+    test('speakAnswer routes through speakSequence rather than chaining speakWord', () => {
+        const src = read('js/answer-audio.js');
+        assert.truthy(/speakSequence\(/.test(src),
+            'answer-audio.js must hand the whole sequence to the audio layer');
     });
 });
 

@@ -26,7 +26,12 @@ function answerAudioParts(answer) {
 // Returns how many parts were queued.
 function speakAnswer(answer) {
     const parts = answerAudioParts(answer);
-    if (!parts.length || typeof speakWord !== 'function') return 0;
+    if (!parts.length) return 0;
+    // Preferred path: the audio layer plays the whole run through the one
+    // element the student's tap unlocked, so no part falls back to the
+    // device's robot voice partway through.
+    if (typeof speakSequence === 'function') return speakSequence(parts);
+    if (typeof speakWord !== 'function') return 0;
     let i = 0;
     const playNext = () => {
         if (i >= parts.length) return;
