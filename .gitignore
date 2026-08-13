@@ -9,3 +9,7 @@ node_modules/
 
 # Local secrets (ElevenLabs / Cloudflare) — never commit
 .env
+
+# Local agent tooling (mirrors .claude/ above)
+.agents/
+.codex/

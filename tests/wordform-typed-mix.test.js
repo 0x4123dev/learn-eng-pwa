@@ -1,0 +1,421 @@
+// wordform-typed-mix.test.js — every Word form practice contains real typing.
+//
+// Typed questions are the ones that teach: picking "education" from four
+// options is recognition, producing it is recall. They are only 100 of the 600
+// questions, and the practice used to be a plain random draw — so a
+// 10-question practice contained ZERO typing 23% of the time and averaged 1.35
+// typed instead of a fair 1.67. A child could use the tab for a week and
+// barely type.
+//
+// Two separate faults were behind that, and both are pinned here:
+//
+//   1. The draw was unstratified — the mix was left to chance.
+//   2. wfShuffle took an LCG's LOW bits (`s % (i + 1)`), which barely vary.
+//      One question was drawn into 12.5% of practices against a fair 1.67%,
+//      another essentially never. Because all 100 typed questions sit
+//      contiguously at the END of the bank, the bias landed squarely on them:
+//      they came up 18.6% less often than they should have.
+const { suite, test, assert } = require('./harness');
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+const root = path.join(__dirname, '..');
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+
+function makeEnv() {
+    const els = {};
+    const el = (id) => (els[id] || (els[id] = {
+        id, style: {}, innerHTML: '', value: '', focus() {}, setAttribute() {}, getAttribute() {},
+        classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+        addEventListener() {}, querySelector: () => null, querySelectorAll: () => [],
+    }));
+    let now = 1;
+    const ctx = {
+        console, Math, String, Array, Object, JSON, Number, RegExp, Set, Map,
+        // A different seed per practice, the way Date.now() gives in the app.
+        Date: { now: () => (now = (now * 2654435761 + 12345) & 0x7fffffff) },
+        module: { exports: {} }, appState: { coins: 0 }, currentUser: 'tester', saveUserData() {},
+        document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [],
+            createElement: () => el('x'), addEventListener() {} },
+        showToast() {}, createConfetti() {}, recordStudy() {},
+    };
+    vm.createContext(ctx);
+    vm.runInContext(read('js/wordform-data.js'), ctx);
+    vm.runInContext(read('js/wordform.js')
+        + '\nthis.start = startWordformQuiz; this.quiz = () => _wfQuiz;'
+        + '\nthis.BANK = WORDFORM_QUESTIONS; this.target = wfTypedTarget; this.SHARE = WF_TYPED_SHARE;', ctx);
+    return ctx;
+}
+
+const RUNS = 3000;
+function sample(ctx, n) {
+    const out = [];
+    for (let i = 0; i < RUNS; i++) { ctx.start(n); out.push(ctx.quiz().questions); }
+    return out;
+}
+const typedCount = (qs) => qs.filter(q => q.type === 'text').length;
+
+suite('word form: the typed/mcq mix is built, not hoped for', () => {
+    test('a 10-question practice is always 2 typed + 8 multiple-choice', () => {
+        const ctx = makeEnv();
+        const counts = sample(ctx, 10).map(typedCount);
+        assert.equal(Math.min(...counts), 2, 'a practice came up with fewer than 2 typed');
+        assert.equal(Math.max(...counts), 2, 'a practice came up with more than 2 typed');
+    });
+
+    test('a 20-question practice is always 4 typed + 16 multiple-choice', () => {
+        const ctx = makeEnv();
+        const counts = sample(ctx, 20).map(typedCount);
+        assert.equal(Math.min(...counts), 4);
+        assert.equal(Math.max(...counts), 4);
+    });
+
+    test('no practice can ever contain zero typing', () => {
+        // The whole point. This was 23% of 10-question practices.
+        const ctx = makeEnv();
+        for (const n of [2, 5, 10, 20, 40]) {
+            const zero = sample(ctx, n).filter(qs => typedCount(qs) === 0).length;
+            assert.equal(zero, 0, `${zero} of ${RUNS} ${n}-question practices had no typing`);
+        }
+    });
+
+    test('the ratio is one constant, so both sizes stay in step', () => {
+        const ctx = makeEnv();
+        assert.equal(ctx.SHARE, 0.2);
+        assert.equal(ctx.target(10, 100), 2);
+        assert.equal(ctx.target(20, 100), 4);
+        assert.equal(ctx.target(40, 100), 8);
+    });
+
+    test('it never asks for more typed questions than the bank holds', () => {
+        // A practice bigger than the typed pool must still be buildable.
+        const ctx = makeEnv();
+        assert.equal(ctx.target(20, 3), 3, 'capped at what exists');
+        assert.equal(ctx.target(10, 0), 0, 'an empty typed pool must not wedge the draw');
+        assert.equal(ctx.target(1, 100), 0, 'a single-question practice cannot be 20% typed');
+    });
+
+    test('practices are still the right size, with no repeats', () => {
+        const ctx = makeEnv();
+        for (const n of [10, 20]) {
+            for (const qs of sample(ctx, n)) {
+                assert.equal(qs.length, n, 'wrong practice size');
+                assert.equal(new Set(qs.map(q => q.id)).size, n, 'a question appeared twice');
+            }
+        }
+    });
+
+    test('the typed ones are mixed through, not bunched at the end', () => {
+        // They are drawn from a separate pool, so without a final shuffle they
+        // would all arrive together — and a child would learn to expect them.
+        const ctx = makeEnv();
+        const pos = new Array(10).fill(0);
+        for (const qs of sample(ctx, 10)) qs.forEach((q, k) => { if (q.type === 'text') pos[k]++; });
+        const share = pos.map(p => p / (RUNS * 2));
+        for (let k = 0; k < 10; k++) {
+            assert.truthy(share[k] > 0.04 && share[k] < 0.18,
+                `position ${k + 1} holds ${(share[k] * 100).toFixed(1)}% of typed questions — they are clustering`);
+        }
+    });
+
+    test('"all" keeps the whole bank, ratio untouched', () => {
+        const ctx = makeEnv();
+        ctx.start('all');
+        assert.equal(ctx.quiz().questions.length, ctx.BANK.length);
+    });
+});
+
+suite('word form: the shuffle reaches every question', () => {
+    test('no question is stranded', () => {
+        // The old low-bit shuffle left one question drawn essentially never.
+        const ctx = makeEnv();
+        const seen = new Set(), seenTyped = new Set();
+        for (let i = 0; i < 20000; i++) {
+            ctx.start(10);
+            for (const q of ctx.quiz().questions) { seen.add(q.id); if (q.type === 'text') seenTyped.add(q.id); }
+        }
+        assert.equal(seen.size, ctx.BANK.length, 'some questions are unreachable');
+        assert.equal(seenTyped.size, ctx.BANK.filter(q => q.type === 'text').length,
+            'some typed questions are unreachable');
+    });
+
+    test('every shuffle uses the LCG high bits, in all three tabs', () => {
+        // The same biased line was copy-pasted into three files.
+        for (const f of ['js/wordform.js', 'js/phrases.js', 'js/rewrite.js']) {
+            const src = read(f);
+            assert.falsy(/const j = s % \(i \+ 1\);/.test(src),
+                `${f} still takes the LCG's low bits — one question gets drawn 7x too often`);
+            assert.truthy(/const j = Math\.floor\(\(s \/ 0x80000000\) \* \(i \+ 1\)\);/.test(src),
+                `${f} is missing the high-bit fix`);
+        }
+    });
+
+    test('the shuffle is uniform enough to be fair', () => {
+        // Measured directly: every position should be roughly equally likely.
+        const ctx = makeEnv();
+        const src = read('js/wordform.js');
+        const sandbox = { Math, Array };
+        vm.createContext(sandbox);
+        vm.runInContext(src.slice(src.indexOf('function wfShuffle'), src.indexOf('function wordformBank'))
+            + '\nthis.sh = wfShuffle;', sandbox);
+        const SIZE = 600, TOP = 10, N = 20000, fair = TOP / SIZE;
+        const hits = new Array(SIZE).fill(0);
+        const base = Array.from({ length: SIZE }, (_, i) => i);
+        for (let s = 1; s <= N; s++) {
+            const a = sandbox.sh(base, s);
+            for (let k = 0; k < TOP; k++) hits[a[k]]++;
+        }
+        const rate = hits.map(h => h / N);
+        const lo = Math.min(...rate), hi = Math.max(...rate);
+        assert.truthy(lo > fair * 0.5, `some question is drawn only ${(lo * 100).toFixed(2)}% of the time (fair ${(fair * 100).toFixed(2)}%)`);
+        assert.truthy(hi < fair * 2, `some question is drawn ${(hi * 100).toFixed(2)}% of the time (fair ${(fair * 100).toFixed(2)}%)`);
+    });
+});
+
+
+// ---- collocation: the same rule, a lighter ratio ----
+// Collocation is 40% typed by nature (letter/open/transform = 200 of 500), so
+// this ratio REDUCES typing rather than raising it: 1 in 10 instead of ~4.
+// That is deliberate — those questions are the slowest to answer.
+//
+// Phrases deliberately has no equivalent: all 913 of its questions are
+// four-option, base and meaning alike, so there is nothing to stratify.
+function colEnv() {
+    const els = {};
+    const el = (id) => (els[id] || (els[id] = {
+        id, style: {}, innerHTML: '', value: '', focus() {}, setAttribute() {}, getAttribute() {},
+        classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+        addEventListener() {}, querySelector: () => null, querySelectorAll: () => [],
+    }));
+    const ctx = {
+        console, Math, Date, String, Array, Object, JSON, Number, RegExp, Set, Map,
+        module: { exports: {} }, appState: { coins: 0 }, currentUser: 'tester', saveUserData() {},
+        document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [],
+            createElement: () => el('x'), addEventListener() {} },
+        showToast() {}, createConfetti() {}, recordStudy() {},
+    };
+    vm.createContext(ctx);
+    vm.runInContext(read('js/collocation-data.js'), ctx);
+    vm.runInContext(read('js/collocation.js')
+        + '\nthis.start = startCollocPractice; this.quiz = () => _colQuiz;'
+        + '\nthis.isTyped = colIsTyped; this.target = colTypedTarget; this.SHARE = COL_TYPED_SHARE;'
+        + '\nthis.BANK = COLLOCATION_QUESTIONS;', ctx);
+    return ctx;
+}
+
+suite('collocation: 1 typed in 10, 2 in 20', () => {
+    test('a 10-question practice always has exactly 1 typed', () => {
+        const ctx = colEnv();
+        for (let i = 0; i < 2000; i++) {
+            ctx.start(10);
+            assert.equal(ctx.quiz().questions.filter(ctx.isTyped).length, 1);
+        }
+    });
+
+    test('a 20-question practice always has exactly 2 typed', () => {
+        const ctx = colEnv();
+        for (let i = 0; i < 2000; i++) {
+            ctx.start(20);
+            assert.equal(ctx.quiz().questions.filter(ctx.isTyped).length, 2);
+        }
+    });
+
+    test('typed means "no options to choose from"', () => {
+        // letter / open / transform are typed; pair / mcq are chosen.
+        const ctx = colEnv();
+        const typed = ctx.BANK.filter(ctx.isTyped).map(q => q.type);
+        const choice = ctx.BANK.filter(q => !ctx.isTyped(q)).map(q => q.type);
+        assert.deepEqual([...new Set(typed)].sort(), ['letter', 'open', 'transform']);
+        assert.deepEqual([...new Set(choice)].sort(), ['mcq', 'pair']);
+    });
+
+    test('the ratio is one constant, and both sizes follow it', () => {
+        const ctx = colEnv();
+        assert.equal(ctx.SHARE, 0.1);
+        assert.equal(ctx.target(10, 200), 1);
+        assert.equal(ctx.target(20, 200), 2);
+        assert.equal(ctx.target(40, 200), 4);
+    });
+
+    test('an empty typed pool does not produce a short practice', () => {
+        // The bug this guards: the "at least one" floor ignoring availability,
+        // so the slice returned nothing and the practice lost a question.
+        const ctx = colEnv();
+        assert.equal(ctx.target(10, 0), 0);
+        assert.equal(ctx.target(10, 1), 1);
+        assert.equal(ctx.target(1, 200), 0);
+    });
+
+    test('practices keep their size, with no repeats', () => {
+        const ctx = colEnv();
+        for (const n of [10, 20]) {
+            for (let i = 0; i < 500; i++) {
+                ctx.start(n);
+                const qs = ctx.quiz().questions;
+                assert.equal(qs.length, n);
+                assert.equal(new Set(qs.map(q => q.id)).size, n);
+            }
+        }
+    });
+
+    test('the typed one is not always in the same place', () => {
+        const ctx = colEnv();
+        const pos = new Array(10).fill(0);
+        const N = 3000;
+        for (let i = 0; i < N; i++) {
+            ctx.start(10);
+            ctx.quiz().questions.forEach((q, k) => { if (ctx.isTyped(q)) pos[k]++; });
+        }
+        for (let k = 0; k < 10; k++) {
+            assert.truthy(pos[k] / N > 0.04 && pos[k] / N < 0.18,
+                `position ${k + 1} holds ${(pos[k] / N * 100).toFixed(1)}% of the typed questions`);
+        }
+    });
+});
+
+// ---- phrases: typed variants, derived not authored ----
+// The bank is 913 four-option questions. Rather than write 913 more records, a
+// typed variant is DERIVED from each one — the same sentence with the answer
+// produced instead of chosen — exactly as the meaning follow-ups already are.
+// The bank stays the single source of the sentence, translation and
+// explanation, so a data fix reaches the typed form too.
+function phrEnv() {
+    const els = {};
+    const el = (id) => (els[id] || (els[id] = { id, style: {}, innerHTML: '', value: '', focus() {} }));
+    const ctx = {
+        console, Math, Date, String, Array, Object, JSON, Number, RegExp, Set, Map,
+        module: { exports: {} }, appState: { coins: 0 }, currentUser: 'tester', saveUserData() {},
+        document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [] },
+        showToast() {}, createConfetti() {}, recordStudy() {},
+    };
+    vm.createContext(ctx);
+    for (const f of ['js/phrases-data.js', 'js/phrases-meanings.js']) {
+        try { vm.runInContext(read(f), ctx); } catch (e) {}
+    }
+    vm.runInContext(read('js/phrases.js')
+        + '\nthis.start = startPhrasesQuiz; this.quiz = () => _phrQuiz;'
+        + '\nthis.typedQ = phrTypedQuestion; this.isCorrect = phrIsCorrect; this.byId = phrasesById;'
+        + '\nthis.target = phrTypedTarget; this.SHARE = PHR_TYPED_SHARE; this.BANK = PREPOSITION_QUESTIONS;', ctx);
+    return ctx;
+}
+
+suite('phrases: 1 typed in 10, 2 in 20', () => {
+    test('a 10-question practice always has exactly 1 typed', () => {
+        const ctx = phrEnv();
+        for (let i = 0; i < 800; i++) {
+            ctx.start(10);
+            assert.equal(ctx.quiz().questions.filter(q => q.typed).length, 1);
+        }
+    });
+
+    test('a 20-question practice always has exactly 2 typed', () => {
+        const ctx = phrEnv();
+        for (let i = 0; i < 800; i++) {
+            ctx.start(20);
+            assert.equal(ctx.quiz().questions.filter(q => q.typed).length, 2);
+        }
+    });
+
+    test('a typed variant does NOT cost the practice its meaning follow-up', () => {
+        // The bug this pins: meanings are filed under the BASE id, and a typed
+        // variant's own id is 'pt-<baseId>'. Looking one up by that silently
+        // returned nothing, and a 10-question practice rendered 19 screens
+        // instead of 20 — one question quietly missing.
+        const ctx = phrEnv();
+        for (let i = 0; i < 400; i++) {
+            ctx.start(10);
+            assert.equal(ctx.quiz().questions.length, 20, 'a typed pick lost its meaning question');
+        }
+        ctx.start(20);
+        assert.equal(ctx.quiz().questions.length, 40);
+    });
+
+    test('the variant carries the base id it was derived from', () => {
+        const ctx = phrEnv();
+        const base = ctx.BANK[0];
+        const t = ctx.typedQ(base);
+        assert.equal(t.id, 'pt-' + base.id);
+        assert.equal(t.baseId, base.id, 'without baseId the meaning lookup fails');
+        assert.truthy(ctx.byId(t.id), 'the id must resolve back to a question');
+    });
+
+    test('every one of the 913 variants is well formed and gradeable', () => {
+        const ctx = phrEnv();
+        const bad = [];
+        for (const b of ctx.BANK) {
+            const t = ctx.typedQ(b);
+            if (!t) { bad.push(b.id + ':none'); continue; }
+            if (!ctx.isCorrect(t.answer, t)) bad.push(b.id + ':own answer rejected');
+            if (ctx.isCorrect('zzz', t)) bad.push(b.id + ':junk accepted');
+            if (String(t.q).indexOf('___') < 0) bad.push(b.id + ':no blank');
+            if (t.options) bad.push(b.id + ':still has options');
+        }
+        assert.deepEqual(bad.slice(0, 5), [], `${bad.length} malformed variants`);
+    });
+
+    test('grading is lenient about case and spacing, strict about the word', () => {
+        const ctx = phrEnv();
+        const t = ctx.typedQ(ctx.BANK[0]);
+        assert.truthy(ctx.isCorrect(t.answer, t));
+        assert.truthy(ctx.isCorrect(t.answer.toUpperCase(), t));
+        assert.truthy(ctx.isCorrect('  ' + t.answer + ' ', t));
+        assert.falsy(ctx.isCorrect('zzz', t));
+        assert.falsy(ctx.isCorrect('', t));
+    });
+
+    test('an answer stored for one kind cannot score the other', () => {
+        // Typed answers are strings, multiple-choice answers are indexes. A
+        // bare `answers[i] === q.correct` marked every typed question wrong,
+        // because a typed question has no `correct` index at all.
+        const ctx = phrEnv();
+        const base = ctx.BANK[0];
+        const t = ctx.typedQ(base);
+        assert.falsy(ctx.isCorrect(base.correct, t), 'an index must not pass a typed question');
+        assert.falsy(ctx.isCorrect(t.answer, base), 'a string must not pass a multiple-choice one');
+        assert.truthy(ctx.isCorrect(base.correct, base), 'multiple-choice scoring still works');
+    });
+
+    test('the ratio is one constant, and the floor respects availability', () => {
+        const ctx = phrEnv();
+        assert.equal(ctx.SHARE, 0.1);
+        assert.equal(ctx.target(10, 913), 1);
+        assert.equal(ctx.target(20, 913), 2);
+        assert.equal(ctx.target(10, 0), 0, 'an empty pool must not produce a short practice');
+        assert.equal(ctx.target(1, 913), 0);
+    });
+
+    test('the typed one is not always in the same place', () => {
+        const ctx = phrEnv();
+        const seen = new Set();
+        for (let i = 0; i < 300; i++) {
+            ctx.start(10);
+            ctx.quiz().questions.forEach((q, k) => { if (q.typed) seen.add(k); });
+        }
+        assert.truthy(seen.size >= 4, `the typed question only ever appears at ${seen.size} position(s)`);
+    });
+});
+
+suite('rewrite: one practice size', () => {
+    test('only the 10-question practice is offered', () => {
+        // Every Rewrite question is typed, so a 5-question round was over
+        // almost before it began.
+        const src = read('js/rewrite.js');
+        const sizes = [...src.matchAll(/startRewriteQuiz\((\d+)\)/g)].map(m => Number(m[1]));
+        assert.deepEqual(sizes, [10], `rewrite offers ${sizes.join(', ')} — expected only 10`);
+    });
+
+    test('its questions are all typed, so no ratio applies', () => {
+        const ctx = { console, Math, Date, String, Array, Object, JSON, Number, RegExp };
+        vm.createContext(ctx);
+        vm.runInContext(read('js/rewrite-data.js'), ctx);
+        vm.runInContext('this.R = REWRITE_QUESTIONS;', ctx);
+        const choice = ctx.R.filter(q => Array.isArray(q.options) && q.options.length);
+        assert.equal(choice.length, 0, 'rewrite gained multiple-choice questions — revisit this');
+    });
+});
+
+if (require.main === module) {
+    const harness = require('./harness');
+    process.exit(harness.runAll());
+}
