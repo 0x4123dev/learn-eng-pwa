@@ -12,7 +12,7 @@
       "options": ["|a| = −a", "|a| = a", "|a| = 0", "|a| < 0"],
       "correct": 0,
       "answer": "|a| = −a",
-      "explanation": "🔑 Khi a âm, giá trị tuyệt đối là SỐ ĐỐI của a, nên |a| = −a (kết quả là một số dương).<br>✗ |a| = a chỉ đúng khi a ≥ 0.<br>✗ |a| = 0 chỉ đúng khi a = 0.<br>✗ |a| < 0 sai vì giá trị tuyệt đối không bao giờ âm."
+      "explanation": "🔑 a < 0 nên |a| = −a, tức số đối của a, và kết quả là số dương.<br>✗ |a| = a: chỉ đúng khi a ≥ 0.<br>✗ |a| = 0: chỉ đúng khi a = 0.<br>✗ |a| < 0: giá trị tuyệt đối không âm."
     },
     {
       "id": "m2-2",
@@ -22,7 +22,7 @@
       "options": ["|a| = −a", "|a| = a²", "|a| = a", "|a| = √a"],
       "correct": 2,
       "answer": "|a| = a",
-      "explanation": "🔑 Khi a không âm (a ≥ 0), giá trị tuyệt đối giữ nguyên chính số đó: |a| = a.<br>✗ |a| = −a chỉ dùng cho nhánh a < 0.<br>✗ |a| = a² sai vì |3| = 3 chứ không phải 9.<br>✗ |a| = √a sai vì |4| = 4 chứ không phải 2."
+      "explanation": "🔑 a ≥ 0 nên |a| = a, giữ nguyên chính số đó.<br>✗ |a| = −a: chỉ dùng khi a < 0.<br>✗ |a| = a²: |3| = 3, không phải 9.<br>✗ |a| = √a: |4| = 4, không phải 2."
     },
     {
       "id": "m2-3",
@@ -32,7 +32,7 @@
       "options": ["|a| > 0", "|a| ≥ 0", "|a| ≤ 0", "|a| = a"],
       "correct": 1,
       "answer": "|a| ≥ 0",
-      "explanation": "🔑 |a| là khoảng cách từ điểm a đến gốc 0 trên trục số, mà khoảng cách không bao giờ âm, nên |a| ≥ 0 với mọi a.<br>✗ |a| > 0 sai ở trường hợp a = 0, vì |0| = 0.<br>✗ |a| ≤ 0 sai vì |5| = 5 > 0.<br>✗ |a| = a chỉ đúng khi a ≥ 0."
+      "explanation": "🔑 |a| là khoảng cách tới gốc 0, mà khoảng cách không âm nên |a| ≥ 0.<br>✗ |a| > 0: sai khi a = 0, vì |0| = 0.<br>✗ |a| ≤ 0: sai vì |5| = 5 > 0.<br>✗ |a| = a: chỉ đúng khi a ≥ 0."
     },
     {
       "id": "m2-4",
@@ -42,7 +42,7 @@
       "options": ["a là số dương bất kì", "a là số âm bất kì", "Không tồn tại số a nào", "a = 0"],
       "correct": 3,
       "answer": "a = 0",
-      "explanation": "🔑 Chỉ duy nhất số 0 có khoảng cách tới gốc bằng 0, nên |a| = 0 ⇔ a = 0.<br>✗ Nếu a dương thì |a| = a > 0, khác 0.<br>✗ Nếu a âm thì |a| = −a > 0, cũng khác 0.<br>✗ Có tồn tại chứ, đó chính là số a = 0."
+      "explanation": "🔑 Chỉ số 0 cách gốc 0 một khoảng bằng 0, nên |a| = 0 ⇔ a = 0.<br>✗ a dương: |a| = a > 0, khác 0.<br>✗ a âm: |a| = −a > 0, cũng khác 0.<br>✗ Không tồn tại: có chứ, a = 0."
     },
     {
       "id": "m2-5",
@@ -52,7 +52,7 @@
       "options": ["|a| ≥ 0", "|a| = |−a|", "|a| < 0", "|0| = 0"],
       "correct": 2,
       "answer": "|a| < 0",
-      "explanation": "🔑 |a| là khoảng cách nên luôn ≥ 0; vì vậy |a| < 0 là khẳng định SAI, không bao giờ xảy ra.<br>✗ |a| ≥ 0 là tính chất luôn đúng của giá trị tuyệt đối.<br>✗ |a| = |−a| đúng vì a và −a cách gốc 0 bằng nhau.<br>✗ |0| = 0 đúng theo định nghĩa vì 0 ≥ 0."
+      "explanation": "🔑 |a| là khoảng cách nên luôn ≥ 0, vậy |a| < 0 là câu SAI.<br>✗ |a| ≥ 0: đúng, không phải câu SAI.<br>✗ |a| = |−a|: đúng, không phải câu SAI.<br>✗ |0| = 0: đúng vì 0 ≥ 0."
     },
     {
       "id": "m2-6",
@@ -62,7 +62,7 @@
       "options": ["|a| = |−a|", "|a| = −|−a|", "|a| > |−a| khi a > 0", "|a| < |−a| khi a < 0"],
       "correct": 0,
       "answer": "|a| = |−a|",
-      "explanation": "🔑 a và −a là hai số đối, nằm cách gốc 0 một khoảng bằng nhau, nên |a| = |−a| với mọi a.<br>✗ |a| = −|−a| sai vì vế phải luôn ≤ 0 còn vế trái luôn ≥ 0.<br>✗ Khi a > 0 thì |a| = a và |−a| = a, hai bên bằng nhau chứ không lớn hơn.<br>✗ Khi a < 0 thì |a| = −a và |−a| = −a, vẫn bằng nhau."
+      "explanation": "🔑 a và −a là hai số đối, cách gốc 0 bằng nhau, nên |a| = |−a|.<br>✗ |a| = −|−a|: vế phải ≤ 0, vế trái ≥ 0.<br>✗ a > 0: cả hai đều bằng a, không hơn kém.<br>✗ a < 0: cả hai đều bằng −a, vẫn bằng nhau."
     },
     {
       "id": "m2-7",
@@ -72,7 +72,7 @@
       "options": ["Chỉ x = 5", "Chỉ x = −5", "x = 25", "x = 5 hoặc x = −5"],
       "correct": 3,
       "answer": "x = 5 hoặc x = −5",
-      "explanation": "🔑 Có đúng hai số cách gốc 0 một khoảng 5 đơn vị, nên |x| = 5 ⇔ x = 5 hoặc x = −5.<br>✗ Chỉ lấy x = 5 là bỏ sót nghiệm âm.<br>✗ Chỉ lấy x = −5 là bỏ sót nghiệm dương.<br>✗ x = 25 là nhầm sang phép bình phương, vì |25| = 25 ≠ 5."
+      "explanation": "🔑 Đúng hai số cách gốc 0 là 5 đơn vị: x = 5 hoặc x = −5.<br>✗ Chỉ x = 5: bỏ sót nghiệm âm.<br>✗ Chỉ x = −5: bỏ sót nghiệm dương.<br>✗ x = 25: nhầm sang phép bình phương."
     },
     {
       "id": "m2-8",
@@ -82,7 +82,7 @@
       "options": ["Là số âm", "Là số dương", "Bằng 0", "Bằng chính a"],
       "correct": 1,
       "answer": "Là số dương",
-      "explanation": "🔑 Khi a < 0 thì |a| = −a, mà số đối của một số âm là số dương, nên |a| > 0.<br>✗ |a| không bao giờ là số âm vì |a| ≥ 0.<br>✗ |a| = 0 chỉ khi a = 0, trong khi ở đây a < 0.<br>✗ |a| = a chỉ đúng với nhánh a ≥ 0."
+      "explanation": "🔑 a < 0 nên |a| = −a, mà số đối của số âm là số dương, vậy |a| > 0.<br>✗ Số âm: |a| ≥ 0, không bao giờ âm.<br>✗ Bằng 0: chỉ khi a = 0, mà a < 0.<br>✗ Bằng a: chỉ đúng khi a ≥ 0."
     },
     {
       "id": "m2-9",
@@ -92,7 +92,7 @@
       "options": ["|−a| = −a", "|−a| = 0", "|−a| = a", "|−a| = a²"],
       "correct": 2,
       "answer": "|−a| = a",
-      "explanation": "🔑 Vì a > 0 nên −a < 0; áp dụng |x| = −x khi x < 0 ta được |−a| = −(−a) = a.<br>✗ |−a| = −a sai vì −a đang là số âm, mà giá trị tuyệt đối không thể âm.<br>✗ |−a| = 0 chỉ đúng khi a = 0.<br>✗ |−a| = a² sai, ví dụ a = 3 thì |−3| = 3 chứ không phải 9."
+      "explanation": "🔑 a > 0 nên −a < 0, dùng |x| = −x: |−a| = −(−a) = a.<br>✗ |−a| = −a: −a âm, mà |x| không âm.<br>✗ |−a| = 0: chỉ đúng khi a = 0.<br>✗ |−a| = a²: |−3| = 3, không phải 9."
     },
     {
       "id": "m2-10",
@@ -102,7 +102,7 @@
       "options": ["Khoảng cách từ điểm a đến gốc 0", "Vị trí của điểm a so với điểm 1", "Số đối của a trong mọi trường hợp", "Bình phương của a"],
       "correct": 0,
       "answer": "Khoảng cách từ điểm a đến gốc 0",
-      "explanation": "🔑 Giá trị tuyệt đối |a| chính là khoảng cách từ điểm a đến gốc 0 trên trục số, vì thế nó luôn ≥ 0.<br>✗ |a| không so với điểm 1 mà luôn so với gốc 0.<br>✗ |a| = −a chỉ khi a < 0, không phải mọi trường hợp.<br>✗ Bình phương là a², khác |a|: |−3| = 3 còn (−3)² = 9."
+      "explanation": "🔑 |a| là khoảng cách từ điểm a đến gốc 0, vì thế |a| luôn ≥ 0.<br>✗ So với điểm 1: |a| luôn so với gốc 0.<br>✗ Số đối: |a| = −a chỉ khi a < 0.<br>✗ Bình phương: |−3| = 3 còn (−3)² = 9."
     },
     {
       "id": "m2-11",
@@ -112,7 +112,7 @@
       "options": ["Một số", "Hai số", "Vô số", "Không có số nào"],
       "correct": 3,
       "answer": "Không có số nào",
-      "explanation": "🔑 Vì |x| ≥ 0 với mọi x nên |x| không thể bằng −3; bài toán vô nghiệm.<br>✗ Không có nổi một số nào thỏa mãn.<br>✗ Hai số là đáp án của dạng |x| = 3, không phải |x| = −3.<br>✗ Vô số càng sai vì tập nghiệm rỗng."
+      "explanation": "🔑 |x| ≥ 0 với mọi x nên |x| = −3 vô nghiệm.<br>✗ Một số: không có nổi một số nào.<br>✗ Hai số: đó là đáp án của |x| = 3.<br>✗ Vô số: tập nghiệm rỗng mà."
     },
     {
       "id": "m2-12",
@@ -122,7 +122,7 @@
       "options": ["|a| = a vì a ≥ 0", "|a| = −a vì a < 0", "|a| = a² vì a < 0", "|a| = √a vì a < 0"],
       "correct": 1,
       "answer": "|a| = −a vì a < 0",
-      "explanation": "🔑 Số −2,5 là số âm nên dùng nhánh a < 0 của định nghĩa: |a| = −a, do đó |−2,5| = 2,5.<br>✗ Nhánh |a| = a chỉ dùng khi a ≥ 0, mà −2,5 < 0.<br>✗ Không có công thức |a| = a²; bình phương cho 6,25 chứ không phải 2,5.<br>✗ Không có công thức |a| = √a, hơn nữa √a còn đòi hỏi a ≥ 0."
+      "explanation": "🔑 −2,5 là số âm nên dùng nhánh |a| = −a: |−2,5| = 2,5.<br>✗ |a| = a: chỉ dùng khi a ≥ 0.<br>✗ |a| = a²: không có công thức này.<br>✗ |a| = √a: cũng không có, √a cần a ≥ 0."
     },
     {
       "id": "m2-13",
@@ -132,7 +132,7 @@
       "options": ["0", "2a", "−2a", "a"],
       "correct": 0,
       "answer": "0",
-      "explanation": "🔑 Khi a < 0 thì |a| = −a, nên |a| + a = (−a) + a = 0.<br>✗ 2a là kết quả khi thay nhầm |a| = a.<br>✗ −2a là kết quả của |a| − a khi a < 0, không phải của |a| + a.<br>✗ a là kết quả khi bỏ quên mất một hạng tử."
+      "explanation": "🔑 a < 0 nên |a| = −a, vậy |a| + a = (−a) + a = 0.<br>✗ 2a: thay nhầm |a| = a.<br>✗ −2a: đó là |a| − a khi a < 0.<br>✗ a: bỏ quên mất một hạng tử."
     },
     {
       "id": "m2-14",
@@ -142,7 +142,7 @@
       "options": ["Nhỏ nhất bằng 1, khi a = 1", "Không có giá trị nhỏ nhất", "Nhỏ nhất bằng 0, khi a = 0", "Nhỏ nhất bằng −1, khi a = −1"],
       "correct": 2,
       "answer": "Nhỏ nhất bằng 0, khi a = 0",
-      "explanation": "🔑 Vì |a| ≥ 0 với mọi a và dấu bằng chỉ xảy ra khi a = 0, nên giá trị nhỏ nhất của |a| là 0, đạt được tại a = 0.<br>✗ |a| có thể nhỏ hơn 1, chẳng hạn |0,5| = 0,5.<br>✗ Có giá trị nhỏ nhất chứ, vì |a| luôn bị chặn dưới bởi 0.<br>✗ |a| không bao giờ âm nên không thể bằng −1."
+      "explanation": "🔑 |a| ≥ 0 và dấu bằng chỉ khi a = 0, nên nhỏ nhất là 0 tại a = 0.<br>✗ Bằng 1: |0,5| = 0,5 còn nhỏ hơn.<br>✗ Không có: |a| bị chặn dưới bởi 0.<br>✗ Bằng −1: |a| không bao giờ âm."
     },
     {
       "id": "m2-15",
@@ -152,7 +152,7 @@
       "options": ["|a| luôn bằng a", "|a| luôn là số dương", "|a| có thể bằng 0", "|a| luôn cùng dấu với a"],
       "correct": 1,
       "answer": "|a| luôn là số dương",
-      "explanation": "🔑 Với a ≠ 0, khoảng cách từ a đến gốc 0 khác 0, nên |a| > 0, tức |a| luôn là số dương.<br>✗ |a| = a chỉ đúng khi a > 0; nếu a < 0 thì |a| = −a.<br>✗ |a| = 0 chỉ xảy ra khi a = 0, trái với giả thiết a ≠ 0.<br>✗ |a| luôn dương nên không thể cùng dấu với a khi a âm."
+      "explanation": "🔑 a ≠ 0 nên khoảng cách tới gốc khác 0, vậy |a| > 0.<br>✗ Bằng a: sai khi a < 0, lúc đó |a| = −a.<br>✗ Bằng 0: chỉ khi a = 0, trái giả thiết.<br>✗ Cùng dấu: |a| dương cả khi a âm."
     },
     {
       "id": "m2-16",
@@ -162,7 +162,7 @@
       "options": ["Khi a < 0", "Với mọi số thực a", "Chỉ khi a = 0", "Khi a ≥ 0"],
       "correct": 3,
       "answer": "Khi a ≥ 0",
-      "explanation": "🔑 Theo định nghĩa, |a| = a khi a ≥ 0, tức bao gồm cả a = 0 lẫn mọi số dương.<br>✗ Khi a < 0 thì |a| = −a, khác a.<br>✗ Không đúng với mọi a: lấy a = −4 thì |−4| = 4 ≠ −4.<br>✗ Không chỉ riêng a = 0, vì mọi số dương cũng thỏa mãn."
+      "explanation": "🔑 Định nghĩa: |a| = a khi a ≥ 0, gồm cả a = 0 lẫn mọi số dương.<br>✗ a < 0: lúc đó |a| = −a, khác a.<br>✗ Mọi a: a = −4 cho |−4| = 4 ≠ −4.<br>✗ Chỉ a = 0: mọi số dương cũng thỏa."
     },
     {
       "id": "m2-17",
@@ -172,7 +172,7 @@
       "options": ["x ≤ 0 và x² = a", "x ≥ 0 và x² = a", "x ≥ 0 và x = a²", "x là số bất kì có x² = a"],
       "correct": 1,
       "answer": "x ≥ 0 và x² = a",
-      "explanation": "🔑 Căn bậc hai số học của a (a ≥ 0) là số KHÔNG ÂM có bình phương bằng a: x = √a ⇔ x ≥ 0 và x² = a.<br>✗ x ≤ 0 sai vì căn bậc hai số học không bao giờ âm.<br>✗ x = a² là nhầm phép căn với phép bình phương, vì √9 = 3 chứ không phải 81.<br>✗ Nếu lấy số bất kì thì cả 3 và −3 đều thỏa x² = 9, nhưng √9 chỉ bằng 3."
+      "explanation": "🔑 x = √a ⇔ x ≥ 0 và x² = a, tức căn số học là số KHÔNG ÂM.<br>✗ x ≤ 0: căn số học không bao giờ âm.<br>✗ x = a²: nhầm căn với bình phương, √9 = 3.<br>✗ x bất kì: −3 thỏa x² = 9 mà √9 = 3."
     },
     {
       "id": "m2-18",
@@ -182,7 +182,7 @@
       "options": ["√(a²) = |a|", "√(a²) = a", "√(a²) = −a", "√(a²) = a²"],
       "correct": 0,
       "answer": "√(a²) = |a|",
-      "explanation": "🔑 Vì căn bậc hai số học luôn không âm nên √(a²) = |a|, và công thức này đúng với MỌI số thực a.<br>✗ √(a²) = a chỉ đúng khi a ≥ 0; với a = −5 thì √25 = 5 ≠ −5.<br>✗ √(a²) = −a chỉ đúng khi a ≤ 0.<br>✗ √(a²) = a² sai, ví dụ a = 3 thì √9 = 3 chứ không phải 9."
+      "explanation": "🔑 √(a²) = |a| đúng với MỌI số thực a, vì căn số học luôn không âm.<br>✗ = a: sai khi a âm, √((−5)²) = 5.<br>✗ = −a: chỉ đúng khi a ≤ 0.<br>✗ = a²: a = 3 cho √9 = 3, không phải 9."
     },
     {
       "id": "m2-19",
@@ -192,7 +192,7 @@
       "options": ["Khi a > 0", "Với mọi số thực a", "Khi a ≥ 0", "Khi a ≤ 0"],
       "correct": 2,
       "answer": "Khi a ≥ 0",
-      "explanation": "🔑 Căn bậc hai số học chỉ được định nghĩa cho số không âm, nên √a có nghĩa khi a ≥ 0.<br>✗ a > 0 là thiếu trường hợp a = 0, mà √0 = 0 vẫn có nghĩa.<br>✗ Không phải mọi a, vì √(−4) không tồn tại trong tập số thực.<br>✗ a ≤ 0 sai vì với a âm thì căn hoàn toàn không xác định."
+      "explanation": "🔑 √a chỉ định nghĩa cho số không âm, nên √a có nghĩa khi a ≥ 0.<br>✗ a > 0: thiếu a = 0, mà √0 = 0.<br>✗ Mọi a: √(−4) không có trong ℝ.<br>✗ a ≤ 0: a âm thì căn không xác định."
     },
     {
       "id": "m2-20",
@@ -202,7 +202,7 @@
       "options": ["a", "a²", "0", "−a"],
       "correct": 3,
       "answer": "−a",
-      "explanation": "🔑 √(a²) = |a|, mà a < 0 nên |a| = −a; vậy √(a²) = −a và đó là một số dương.<br>✗ √(a²) = a là lỗi kinh điển: quên dấu giá trị tuyệt đối khi a âm.<br>✗ a² là nhầm giữa lấy căn và bình phương.<br>✗ Kết quả bằng 0 chỉ xảy ra khi a = 0."
+      "explanation": "🔑 √(a²) = |a|, mà a < 0 nên |a| = −a, và đó là một số dương.<br>✗ a: quên dấu tuyệt đối khi a âm.<br>✗ a²: nhầm lấy căn với bình phương.<br>✗ 0: chỉ xảy ra khi a = 0."
     },
     {
       "id": "m2-21",
@@ -212,7 +212,7 @@
       "options": ["a", "−a", "a²", "√a"],
       "correct": 0,
       "answer": "a",
-      "explanation": "🔑 √(a²) = |a|, mà a ≥ 0 nên |a| = a; vậy √(a²) = a.<br>✗ −a sẽ là số âm (khi a > 0), không thể là kết quả của căn bậc hai số học.<br>✗ a² là nhầm phép lấy căn với phép bình phương.<br>✗ √a khác √(a²): với a = 9 thì √(9²) = 9 còn √9 = 3."
+      "explanation": "🔑 √(a²) = |a|, mà a ≥ 0 nên |a| = a.<br>✗ −a: số âm khi a > 0, mà căn không âm.<br>✗ a²: nhầm lấy căn với bình phương.<br>✗ √a: a = 9 cho √(9²) = 9, còn √9 = 3."
     },
     {
       "id": "m2-22",
@@ -222,7 +222,7 @@
       "options": ["√(a²) = |a| với mọi a", "√(a²) = a với mọi a", "√0 = 0", "√a ≥ 0 khi a ≥ 0"],
       "correct": 1,
       "answer": "√(a²) = a với mọi a",
-      "explanation": "🔑 √(a²) = a chỉ đúng khi a ≥ 0, nên nói với mọi a là SAI: lấy a = −2 thì √4 = 2 ≠ −2.<br>✗ √(a²) = |a| là công thức đúng với mọi số thực.<br>✗ √0 = 0 đúng vì 0 ≥ 0 và 0² = 0.<br>✗ √a ≥ 0 đúng vì căn bậc hai số học không bao giờ âm."
+      "explanation": "🔑 √(a²) = a chỉ đúng khi a ≥ 0; lấy a = −2 thì √4 = 2 ≠ −2.<br>✗ √(a²) = |a|: đúng với mọi a.<br>✗ √0 = 0: đúng vì 0 ≥ 0 và 0² = 0.<br>✗ √a ≥ 0: đúng, căn số học không âm."
     },
     {
       "id": "m2-23",
@@ -232,7 +232,7 @@
       "options": ["0", "1,5", "√2", "−4"],
       "correct": 3,
       "answer": "−4",
-      "explanation": "🔑 Căn bậc hai số học luôn ≥ 0, nên một số âm như −4 không thể là kết quả của √a.<br>✗ 0 thì được, vì √0 = 0.<br>✗ 1,5 thì được, vì √2,25 = 1,5.<br>✗ √2 thì được, vì đó là một số dương (căn bậc hai số học của 2)."
+      "explanation": "🔑 Căn số học luôn ≥ 0 nên số âm như −4 không thể là kết quả.<br>✗ 0: được chứ, vì √0 = 0.<br>✗ 1,5: được chứ, vì √2,25 = 1,5.<br>✗ √2: được chứ, đó là một số dương."
     },
     {
       "id": "m2-24",
@@ -242,7 +242,7 @@
       "options": ["x² = −a", "a² = x", "x² = a", "x = a²"],
       "correct": 2,
       "answer": "x² = a",
-      "explanation": "🔑 Theo định nghĩa x = √a ⇔ x ≥ 0 và x² = a, nên bình phương của căn trả lại đúng số dưới căn.<br>✗ x² = −a sai vì x² ≥ 0 còn −a ≤ 0 khi a ≥ 0.<br>✗ a² = x là đảo ngược vai trò: √9 = 3 nhưng 9² = 81 ≠ 3.<br>✗ x = a² cũng là nhầm phép căn thành phép bình phương."
+      "explanation": "🔑 x = √a ⇔ x ≥ 0 và x² = a, nên bình phương trả lại số dưới căn.<br>✗ x² = −a: x² ≥ 0 còn −a ≤ 0.<br>✗ a² = x: đảo vai trò, √9 = 3 mà 9² = 81.<br>✗ x = a²: nhầm căn thành bình phương."
     },
     {
       "id": "m2-25",
@@ -252,7 +252,7 @@
       "options": ["Vì −9 không phải số nguyên", "Vì không có số thực nào bình phương bằng −9", "Vì −9 là số vô tỉ", "Vì √(−9) = −3"],
       "correct": 1,
       "answer": "Vì không có số thực nào bình phương bằng −9",
-      "explanation": "🔑 Bình phương của mọi số thực đều ≥ 0 nên không có x nào để x² = −9; điều kiện a ≥ 0 của √a đã bị vi phạm.<br>✗ −9 vẫn là số nguyên, nên đó không phải lí do.<br>✗ −9 là số hữu tỉ chứ không phải số vô tỉ.<br>✗ √(−9) = −3 sai vì (−3)² = 9 chứ không phải −9, và căn số học thì không âm."
+      "explanation": "🔑 Mọi x² đều ≥ 0 nên không có x nào để x² = −9; √a đòi hỏi a ≥ 0.<br>✗ Số nguyên: −9 vẫn là số nguyên mà.<br>✗ Số vô tỉ: −9 là số hữu tỉ.<br>✗ √(−9) = −3: (−3)² = 9, không phải −9."
     },
     {
       "id": "m2-26",
@@ -262,7 +262,7 @@
       "options": ["6", "−6", "6 hoặc −6", "18"],
       "correct": 0,
       "answer": "6",
-      "explanation": "🔑 Căn bậc hai số học chỉ lấy giá trị KHÔNG ÂM, nên √36 = 6 dù (−6)² cũng bằng 36.<br>✗ −6 bị loại vì kết quả của căn bậc hai số học không âm.<br>✗ 6 hoặc −6 là câu trả lời cho bài x² = 36, không phải cho √36.<br>✗ 18 là lấy 36 chia 2, chẳng liên quan gì tới phép căn."
+      "explanation": "🔑 Căn bậc hai số học chỉ lấy giá trị KHÔNG ÂM, nên √36 = 6.<br>✗ −6: số âm nên bị loại.<br>✗ 6 hoặc −6: đó là đáp án của x² = 36.<br>✗ 18: lấy 36 chia 2, đâu phải căn."
     },
     {
       "id": "m2-27",
@@ -272,7 +272,7 @@
       "options": ["−a", "√a", "a", "a²"],
       "correct": 2,
       "answer": "a",
-      "explanation": "🔑 √a là số có bình phương bằng a, nên (√a)² = a với mọi a ≥ 0.<br>✗ −a là số âm khi a > 0, không thể bằng (√a)² vốn luôn ≥ 0.<br>✗ √a là quên mất phép bình phương ở ngoài.<br>✗ a² là bình phương thêm một lần nữa: (√9)² = 9 chứ không phải 81."
+      "explanation": "🔑 √a là số có bình phương bằng a, nên (√a)² = a với mọi a ≥ 0.<br>✗ −a: âm khi a > 0, mà (√a)² ≥ 0.<br>✗ √a: quên phép bình phương ở ngoài.<br>✗ a²: bình phương thêm một lần nữa."
     },
     {
       "id": "m2-28",
@@ -282,7 +282,7 @@
       "options": ["−7", "49", "−49", "7"],
       "correct": 3,
       "answer": "7",
-      "explanation": "🔑 Dùng √(a²) = |a| với a = −7: √((−7)²) = |−7| = 7.<br>✗ −7 là lỗi áp dụng nhầm √(a²) = a cho một số âm.<br>✗ 49 là mới bình phương mà chưa lấy căn.<br>✗ −49 vừa sai dấu vừa chưa lấy căn."
+      "explanation": "🔑 Dùng √(a²) = |a| với a = −7: √((−7)²) = |−7| = 7.<br>✗ −7: áp dụng nhầm √(a²) = a cho số âm.<br>✗ 49: mới bình phương, chưa lấy căn.<br>✗ −49: vừa sai dấu vừa chưa lấy căn."
     },
     {
       "id": "m2-29",
@@ -292,7 +292,7 @@
       "options": ["Sai vì công thức đúng phải là √(a²) = a²", "Sai vì công thức đúng là √(a²) = |a|, chỉ khi a ≥ 0 mới có √(a²) = a", "Sai vì √(a²) luôn bằng −a", "Không sai, công thức đó luôn đúng"],
       "correct": 1,
       "answer": "Sai vì công thức đúng là √(a²) = |a|, chỉ khi a ≥ 0 mới có √(a²) = a",
-      "explanation": "🔑 Công thức tổng quát là √(a²) = |a|; khi a ≥ 0 thì |a| = a nên mới viết được √(a²) = a, còn khi a < 0 thì √(a²) = −a.<br>✗ √(a²) = a² sai, ví dụ a = 3 cho √9 = 3 chứ không phải 9.<br>✗ √(a²) = −a chỉ đúng khi a ≤ 0, không phải lúc nào cũng vậy.<br>✗ Bạn ấy có sai thật: với a = −5 thì √25 = 5 ≠ −5."
+      "explanation": "🔑 Đúng phải là √(a²) = |a|; chỉ khi a ≥ 0 mới viết được √(a²) = a.<br>✗ = a²: a = 3 cho √9 = 3, không phải 9.<br>✗ Luôn = −a: chỉ đúng khi a ≤ 0.<br>✗ Không sai: a = −5 cho √25 = 5 ≠ −5."
     },
     {
       "id": "m2-30",
@@ -302,7 +302,7 @@
       "options": ["a ≥ 0 và x ≥ 0", "a ≤ 0 và x ≥ 0", "a ≥ 0 và x ≤ 0", "a và x là số bất kì"],
       "correct": 0,
       "answer": "a ≥ 0 và x ≥ 0",
-      "explanation": "🔑 Định nghĩa đầy đủ: với a ≥ 0, x = √a ⇔ x ≥ 0 và x² = a — cả số dưới căn lẫn kết quả đều không âm.<br>✗ a ≤ 0 sai vì căn của số âm không tồn tại trong ℝ.<br>✗ x ≤ 0 sai vì căn bậc hai số học không âm.<br>✗ Bỏ hết điều kiện thì √(−4) hay √9 = −3 cũng bị coi là đúng, điều đó vô lí."
+      "explanation": "🔑 x = √a ⇔ x ≥ 0 và x² = a: số dưới căn lẫn kết quả đều không âm.<br>✗ a ≤ 0: căn của số âm không có trong ℝ.<br>✗ x ≤ 0: căn số học không âm.<br>✗ Bất kì: thế thì √9 = −3 cũng đúng."
     },
     {
       "id": "m2-31",
@@ -312,7 +312,7 @@
       "options": ["Tập số vô tỉ 𝕀", "Tập số nguyên ℤ", "Không thuộc tập hợp nào", "Tập số hữu tỉ ℚ"],
       "correct": 3,
       "answer": "Tập số hữu tỉ ℚ",
-      "explanation": "🔑 Mọi số thập phân hữu hạn hoặc vô hạn tuần hoàn đều viết được thành phân số, nên chúng là số hữu tỉ, thuộc ℚ.<br>✗ 𝕀 chỉ chứa số thập phân vô hạn KHÔNG tuần hoàn.<br>✗ ℤ chỉ gồm các số nguyên, mà 0,5 không phải số nguyên.<br>✗ Chúng chắc chắn thuộc ℚ chứ không phải không thuộc tập nào."
+      "explanation": "🔑 Hữu hạn hay vô hạn tuần hoàn đều viết được thành phân số, nên thuộc ℚ.<br>✗ 𝕀: chỉ chứa số vô hạn KHÔNG tuần hoàn.<br>✗ ℤ: chỉ gồm số nguyên, 0,5 thì không.<br>✗ Không thuộc tập nào: chúng ở ℚ mà."
     },
     {
       "id": "m2-32",
@@ -322,7 +322,7 @@
       "options": ["Số hữu tỉ", "Số nguyên", "Số vô tỉ", "Số tự nhiên"],
       "correct": 2,
       "answer": "Số vô tỉ",
-      "explanation": "🔑 Số thập phân vô hạn KHÔNG tuần hoàn thì không viết được thành phân số, nên gọi là số vô tỉ, kí hiệu 𝕀.<br>✗ Số hữu tỉ ứng với thập phân hữu hạn hoặc vô hạn TUẦN HOÀN.<br>✗ Số nguyên không hề có phần thập phân kéo dài vô hạn.<br>✗ Số tự nhiên là 0; 1; 2; ... nên cũng không phải."
+      "explanation": "🔑 Vô hạn KHÔNG tuần hoàn thì không viết được thành phân số, nên là vô tỉ 𝕀.<br>✗ Hữu tỉ: ứng với hữu hạn hoặc TUẦN HOÀN.<br>✗ Số nguyên: không có phần thập phân.<br>✗ Số tự nhiên: chỉ là 0; 1; 2; ..."
     },
     {
       "id": "m2-33",
@@ -332,7 +332,7 @@
       "options": ["ℝ = ℚ ∪ 𝕀", "ℝ = ℚ ∩ 𝕀", "ℝ = ℚ ∪ ℤ", "ℝ = 𝕀 ∩ ℤ"],
       "correct": 0,
       "answer": "ℝ = ℚ ∪ 𝕀",
-      "explanation": "🔑 Tập số thực là HỢP của tập số hữu tỉ và tập số vô tỉ: ℝ = ℚ ∪ 𝕀.<br>✗ ℚ ∩ 𝕀 là phép giao, mà hai tập này không có phần tử chung nên giao bằng tập rỗng.<br>✗ ℚ ∪ ℤ = ℚ vì ℤ vốn đã nằm trong ℚ, cách viết này thiếu hẳn số vô tỉ.<br>✗ 𝕀 ∩ ℤ cũng rỗng vì không số nguyên nào là số vô tỉ."
+      "explanation": "🔑 ℝ = ℚ ∪ 𝕀: số thực là HỢP của số hữu tỉ và số vô tỉ.<br>✗ ℚ ∩ 𝕀: giao rỗng, không có phần chung.<br>✗ ℚ ∪ ℤ = ℚ: thiếu hẳn số vô tỉ.<br>✗ 𝕀 ∩ ℤ: cũng rỗng, số nguyên đâu vô tỉ."
     },
     {
       "id": "m2-34",
@@ -342,7 +342,7 @@
       "options": ["Đúng, vì cả hai loại đều thuộc ℝ", "Sai, vì ℚ và 𝕀 không có phần tử chung", "Đúng, với các số thập phân vô hạn", "Sai, vì số vô tỉ không thuộc ℝ"],
       "correct": 1,
       "answer": "Sai, vì ℚ và 𝕀 không có phần tử chung",
-      "explanation": "🔑 ℚ và 𝕀 là hai tập rời nhau: một số thập phân hoặc tuần hoàn (hữu tỉ) hoặc không tuần hoàn (vô tỉ), không thể vừa nọ vừa kia.<br>✗ Cùng nằm trong ℝ không có nghĩa là trùng nhau, vì ℝ = ℚ ∪ 𝕀 là hợp của hai phần rời.<br>✗ Thập phân vô hạn vẫn phải chọn một trong hai: tuần hoàn hay không tuần hoàn.<br>✗ Số vô tỉ vẫn là số thực, nên lí do đưa ra ở đây sai."
+      "explanation": "🔑 ℚ và 𝕀 rời nhau: một số hoặc tuần hoàn, hoặc không, chứ không cả hai.<br>✗ Cùng thuộc ℝ: đâu có nghĩa là trùng nhau.<br>✗ Thập phân vô hạn: vẫn phải chọn một loại.<br>✗ Số vô tỉ vẫn thuộc ℝ, lí do này sai."
     },
     {
       "id": "m2-35",
@@ -352,7 +352,7 @@
       "options": ["Chỉ thuộc 𝕀", "Không thuộc ℝ", "Thuộc ℚ và thuộc ℝ", "Chỉ thuộc ℤ"],
       "correct": 2,
       "answer": "Thuộc ℚ và thuộc ℝ",
-      "explanation": "🔑 0,333... là thập phân vô hạn TUẦN HOÀN (chu kì 3) nên là số hữu tỉ, bằng 1/3; mà mọi số hữu tỉ đều nằm trong ℝ = ℚ ∪ 𝕀.<br>✗ Nó không thuộc 𝕀 vì có nhóm chữ số lặp lại.<br>✗ Đã là số hữu tỉ thì chắc chắn là số thực, không thể ngoài ℝ.<br>✗ 1/3 không phải số nguyên nên không thuộc ℤ."
+      "explanation": "🔑 0,333... tuần hoàn chu kì 3 nên bằng 1/3: số hữu tỉ, mà ℚ nằm trong ℝ.<br>✗ Chỉ 𝕀: nó có nhóm chữ số lặp lại.<br>✗ Ngoài ℝ: hữu tỉ thì luôn là số thực.<br>✗ Chỉ ℤ: 1/3 không phải số nguyên."
     },
     {
       "id": "m2-36",
@@ -362,7 +362,7 @@
       "options": ["Số hữu tỉ vì viết được thành phân số", "Số thập phân hữu hạn", "Số thập phân vô hạn tuần hoàn", "Số vô tỉ vì thập phân vô hạn không tuần hoàn"],
       "correct": 3,
       "answer": "Số vô tỉ vì thập phân vô hạn không tuần hoàn",
-      "explanation": "🔑 Phần thập phân của π kéo dài vô hạn mà không lặp theo chu kì nào, nên π là số vô tỉ, π ∈ 𝕀.<br>✗ π không viết được thành phân số nên không phải số hữu tỉ.<br>✗ π không dừng lại sau hữu hạn chữ số.<br>✗ π không có chu kì lặp nên không phải vô hạn tuần hoàn."
+      "explanation": "🔑 Phần thập phân của π vô hạn mà không lặp chu kì, nên π là số vô tỉ.<br>✗ Hữu tỉ: π không viết được thành phân số.<br>✗ Hữu hạn: π không dừng lại bao giờ.<br>✗ Tuần hoàn: π không có chu kì lặp."
     },
     {
       "id": "m2-37",
@@ -372,7 +372,7 @@
       "options": ["Mọi số thực đều là số hữu tỉ", "Mọi số hữu tỉ đều là số thực", "Mọi số vô tỉ đều là số hữu tỉ", "Mọi số thực đều là số vô tỉ"],
       "correct": 1,
       "answer": "Mọi số hữu tỉ đều là số thực",
-      "explanation": "🔑 Vì ℝ = ℚ ∪ 𝕀 nên ℚ nằm trọn trong ℝ: mọi số hữu tỉ đều là số thực.<br>✗ Chiều ngược lại thì sai, vì √2 là số thực nhưng không hữu tỉ.<br>✗ Số vô tỉ và số hữu tỉ là hai loại rời nhau, không loại nào nằm trong loại nào.<br>✗ Số thực có thể là hữu tỉ, ví dụ 0,5, nên không phải số thực nào cũng vô tỉ."
+      "explanation": "🔑 ℝ = ℚ ∪ 𝕀 nên ℚ nằm trọn trong ℝ: hữu tỉ nào cũng là số thực.<br>✗ Mọi số thực hữu tỉ: √2 thì không.<br>✗ Vô tỉ là hữu tỉ: hai loại rời nhau.<br>✗ Mọi số thực vô tỉ: 0,5 là hữu tỉ."
     },
     {
       "id": "m2-38",
@@ -382,7 +382,7 @@
       "options": ["Thập phân hữu hạn, là số hữu tỉ", "Thập phân vô hạn tuần hoàn, là số hữu tỉ", "Thập phân vô hạn không tuần hoàn, là số vô tỉ", "Không phải số thập phân"],
       "correct": 0,
       "answer": "Thập phân hữu hạn, là số hữu tỉ",
-      "explanation": "🔑 2,5 dừng lại sau một chữ số thập phân nên là thập phân HỮU HẠN, viết được thành 5/2, do đó là số hữu tỉ.<br>✗ Nó không kéo dài vô hạn nên không thể là vô hạn tuần hoàn.<br>✗ Nó cũng không phải số vô tỉ vì đã viết được dưới dạng phân số.<br>✗ 2,5 rõ ràng là một số thập phân."
+      "explanation": "🔑 2,5 dừng sau một chữ số nên là hữu hạn, bằng 5/2, tức số hữu tỉ.<br>✗ Vô hạn tuần hoàn: 2,5 đâu kéo dài mãi.<br>✗ Vô tỉ: 2,5 viết được thành phân số.<br>✗ Không phải thập phân: rõ ràng nó là."
     },
     {
       "id": "m2-39",
@@ -392,7 +392,7 @@
       "options": ["Số thập phân hữu hạn", "Số thập phân vô hạn không tuần hoàn", "Số vô tỉ", "Số thập phân vô hạn tuần hoàn"],
       "correct": 3,
       "answer": "Số thập phân vô hạn tuần hoàn",
-      "explanation": "🔑 Phần thập phân kéo dài mãi nhưng chữ số 3 lặp đi lặp lại, nên đây là thập phân vô hạn TUẦN HOÀN, viết gọn 1,2(3).<br>✗ Nó không dừng lại nên không phải hữu hạn.<br>✗ Có chu kì lặp rõ ràng nên không phải không tuần hoàn.<br>✗ Đã tuần hoàn thì là số hữu tỉ, không phải số vô tỉ."
+      "explanation": "🔑 Kéo dài mãi mà chữ số 3 lặp lại: vô hạn TUẦN HOÀN, viết gọn 1,2(3).<br>✗ Hữu hạn: nó có dừng lại đâu.<br>✗ Không tuần hoàn: chu kì 3 rõ ràng.<br>✗ Vô tỉ: tuần hoàn thì là hữu tỉ."
     },
     {
       "id": "m2-40",
@@ -402,7 +402,7 @@
       "options": ["Vì nó lớn hơn 1", "Vì nó có dấu căn", "Vì phần thập phân vô hạn và không tuần hoàn", "Vì nó là số âm"],
       "correct": 2,
       "answer": "Vì phần thập phân vô hạn và không tuần hoàn",
-      "explanation": "🔑 Một số là vô tỉ khi biểu diễn thập phân của nó vô hạn và KHÔNG tuần hoàn, đúng như √2 = 1,414213...<br>✗ Lớn hơn 1 không liên quan, vì 1,5 cũng lớn hơn 1 mà vẫn là số hữu tỉ.<br>✗ Có dấu căn chưa đủ, vì √4 = 2 vẫn là số hữu tỉ.<br>✗ √2 là số dương chứ không phải số âm."
+      "explanation": "🔑 Vô tỉ là khi thập phân vô hạn và KHÔNG tuần hoàn, đúng như √2.<br>✗ Lớn hơn 1: 1,5 cũng vậy mà hữu tỉ.<br>✗ Có dấu căn: √4 = 2 vẫn hữu tỉ.<br>✗ Số âm: √2 là số dương mà."
     },
     {
       "id": "m2-41",
@@ -412,7 +412,7 @@
       "options": ["Tập rỗng", "Tập ℝ", "Tập ℤ", "Tập các số thập phân vô hạn"],
       "correct": 0,
       "answer": "Tập rỗng",
-      "explanation": "🔑 Không có số nào vừa hữu tỉ vừa vô tỉ nên ℚ ∩ 𝕀 là tập rỗng; phải dùng phép HỢP ℚ ∪ 𝕀 mới ra ℝ.<br>✗ ℝ là kết quả của phép hợp chứ không phải phép giao.<br>✗ ℤ nằm trong ℚ nhưng không có phần nào thuộc 𝕀.<br>✗ Thập phân vô hạn tuần hoàn thuộc ℚ, không tuần hoàn thuộc 𝕀, vẫn chẳng có phần chung."
+      "explanation": "🔑 Không số nào vừa hữu tỉ vừa vô tỉ nên ℚ ∩ 𝕀 rỗng; hợp mới ra ℝ.<br>✗ ℝ: đó là kết quả của phép hợp.<br>✗ ℤ: nằm trong ℚ, không dính 𝕀.<br>✗ Thập phân vô hạn: mỗi loại một tập."
     },
     {
       "id": "m2-42",
@@ -422,7 +422,7 @@
       "options": ["0,25", "√3", "√9", "1,5(2)"],
       "correct": 1,
       "answer": "√3",
-      "explanation": "🔑 √3 = 1,7320508... có phần thập phân vô hạn và không tuần hoàn nên là số vô tỉ.<br>✗ 0,25 là thập phân hữu hạn, bằng 1/4, nên là số hữu tỉ.<br>✗ √9 = 3 là số nguyên, thuộc ℚ.<br>✗ 1,5(2) là thập phân vô hạn tuần hoàn nên vẫn là số hữu tỉ."
+      "explanation": "🔑 √3 = 1,7320508... vô hạn và không tuần hoàn nên là số vô tỉ.<br>✗ 0,25: hữu hạn, bằng 1/4, nên hữu tỉ.<br>✗ √9 = 3: là số nguyên, thuộc ℚ.<br>✗ 1,5(2): tuần hoàn nên vẫn hữu tỉ."
     },
     {
       "id": "m2-43",
@@ -432,7 +432,7 @@
       "options": ["12,5", "±5", "5", "625"],
       "correct": 2,
       "answer": "5",
-      "explanation": "🔑 √25 = 5 vì 5 ≥ 0 và 5² = 25, đúng định nghĩa x = √a ⇔ x ≥ 0 và x² = a.<br>✗ 12,5 là lấy 25 chia 2, không phải phép căn.<br>✗ ±5 là nghiệm của x² = 25; căn bậc hai số học chỉ lấy giá trị không âm.<br>✗ 625 là 25², tức làm ngược phép toán."
+      "explanation": "🔑 √25 = 5 vì 5 ≥ 0 và 5² = 25.<br>✗ 12,5: lấy 25 chia 2, đâu phải căn.<br>✗ ±5: đó là nghiệm của x² = 25.<br>✗ 625: là 25², làm ngược phép toán."
     },
     {
       "id": "m2-44",
@@ -442,7 +442,7 @@
       "options": ["−7", "0", "49", "7"],
       "correct": 3,
       "answer": "7",
-      "explanation": "🔑 Vì −7 < 0 nên dùng công thức |a| = −a: |−7| = −(−7) = 7.<br>✗ −7 là giữ nguyên dấu âm, sai vì |a| ≥ 0.<br>✗ 0 chỉ đúng khi số trong dấu là 0.<br>✗ 49 là bình phương của 7, không phải giá trị tuyệt đối."
+      "explanation": "🔑 −7 < 0 nên dùng |a| = −a: |−7| = −(−7) = 7.<br>✗ −7: giữ nguyên dấu âm, mà |a| ≥ 0.<br>✗ 0: chỉ đúng nếu số trong dấu là 0.<br>✗ 49: đó là 7², không phải |−7|."
     },
     {
       "id": "m2-45",
@@ -452,7 +452,7 @@
       "options": ["1", "7", "−7", "19"],
       "correct": 1,
       "answer": "7",
-      "explanation": "🔑 |−3| = 3 (vì −3 < 0 nên lấy số đối) và √16 = 4 (vì 4 ≥ 0 và 4² = 16), nên tổng là 3 + 4 = 7.<br>✗ 1 là kết quả khi lấy nhầm |−3| = −3 rồi cộng 4.<br>✗ −7 là giữ dấu âm cho cả hai, trong khi |a| ≥ 0 và √a ≥ 0.<br>✗ 19 là cộng 3 với 16, tức quên lấy căn."
+      "explanation": "🔑 |−3| = 3 và √16 = 4, nên 3 + 4 = 7.<br>✗ 1: lấy nhầm |−3| = −3.<br>✗ −7: |a| và √a không bao giờ âm.<br>✗ 19: quên lấy căn của 16."
     },
     {
       "id": "m2-46",
@@ -462,7 +462,7 @@
       "options": ["3", "−3", "13", "40"],
       "correct": 0,
       "answer": "3",
-      "explanation": "🔑 Tính trong dấu trước: 5 − 8 = −3; vì −3 < 0 nên |−3| = −(−3) = 3.<br>✗ −3 là quên bước lấy giá trị tuyệt đối, mà |a| ≥ 0.<br>✗ 13 là cộng 5 với 8 thay vì trừ.<br>✗ 40 là nhân 5 với 8, sai hẳn phép tính."
+      "explanation": "🔑 Tính trong dấu trước: 5 − 8 = −3, mà −3 < 0 nên |−3| = 3.<br>✗ −3: quên bước lấy giá trị tuyệt đối.<br>✗ 13: cộng 5 với 8 thay vì trừ.<br>✗ 40: nhân 5 với 8, sai phép tính."
     },
     {
       "id": "m2-47",
@@ -472,7 +472,7 @@
       "options": ["0,125", "0,0625", "0,5", "2,5"],
       "correct": 2,
       "answer": "0,5",
-      "explanation": "🔑 Vì 0,5 ≥ 0 và 0,5² = 0,25 nên √0,25 = 0,5.<br>✗ 0,125 là lấy 0,25 chia 2, không phải phép căn.<br>✗ 0,0625 là 0,25², tức làm ngược phép toán.<br>✗ 2,5 là đặt sai dấu phẩy, vì 2,5² = 6,25 chứ không phải 0,25."
+      "explanation": "🔑 √0,25 = 0,5 vì 0,5 ≥ 0 và 0,5² = 0,25.<br>✗ 0,125: lấy 0,25 chia 2, đâu phải căn.<br>✗ 0,0625: là 0,25², làm ngược phép toán.<br>✗ 2,5: sai dấu phẩy, vì 2,5² = 6,25."
     },
     {
       "id": "m2-48",
@@ -482,7 +482,7 @@
       "options": ["−1", "0", "2", "1"],
       "correct": 3,
       "answer": "1",
-      "explanation": "🔑 |0| = 0 theo định nghĩa và |−1| = −(−1) = 1, nên tổng bằng 0 + 1 = 1.<br>✗ −1 là quên đổi dấu khi lấy giá trị tuyệt đối của số âm.<br>✗ 0 là bỏ sót hạng tử |−1|.<br>✗ 2 là tính nhầm |0| thành 1."
+      "explanation": "🔑 |0| = 0 và |−1| = −(−1) = 1, nên 0 + 1 = 1.<br>✗ −1: quên đổi dấu khi lấy |−1|.<br>✗ 0: bỏ sót hạng tử |−1|.<br>✗ 2: tính nhầm |0| thành 1."
     },
     {
       "id": "m2-49",
@@ -492,7 +492,7 @@
       "options": ["13", "5", "−5", "77"],
       "correct": 1,
       "answer": "5",
-      "explanation": "🔑 √81 = 9 (vì 9 ≥ 0 và 9² = 81) và |−4| = 4, nên 9 − 4 = 5.<br>✗ 13 là cộng thay vì trừ.<br>✗ −5 là lấy nhầm |−4| = −4 rồi đảo ngược phép tính.<br>✗ 77 là 81 − 4, tức quên lấy căn của 81."
+      "explanation": "🔑 √81 = 9 vì 9 ≥ 0 và 9² = 81, còn |−4| = 4, nên 9 − 4 = 5.<br>✗ 13: cộng thay vì trừ.<br>✗ −5: trừ ngược, lấy 4 − 9.<br>✗ 77: là 81 − 4, quên lấy căn 81."
     },
     {
       "id": "m2-50",
@@ -502,7 +502,7 @@
       "options": ["x = −7", "x = 7", "x = √49", "x = −49"],
       "correct": 0,
       "answer": "x = −7",
-      "explanation": "🔑 Có hai số bình phương bằng 49 là 7 và −7; điều kiện x < 0 chọn ra x = −7.<br>✗ x = 7 vi phạm điều kiện x < 0.<br>✗ x = √49 = 7 cũng là số dương nên bị loại, vì căn bậc hai số học luôn ≥ 0.<br>✗ x = −49 sai vì (−49)² = 2401 ≠ 49."
+      "explanation": "🔑 Hai số bình phương bằng 49 là 7 và −7; điều kiện x < 0 chọn −7.<br>✗ x = 7: vi phạm điều kiện x < 0.<br>✗ x = √49 = 7: căn số học luôn ≥ 0.<br>✗ x = −49: (−49)² = 2401 ≠ 49."
     }
   ]
 }

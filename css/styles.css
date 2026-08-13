@@ -8669,6 +8669,60 @@
         }
         .grammar-next-btn:disabled:active { transform: none; }
 
+        /* ── Toán 7 formulas ────────────────────────────────────────────
+           A formula is the whole content of an answer here, so it is set
+           larger than body text and given room to breathe. The exponent is
+           the part that decides the answer — "x⁵" vs "x⁻⁵" — so <sup> is
+           deliberately big (0.75em, not the browser default ~0.58em) and
+           lifted rather than shrunk. Unicode superscript glyphs were used
+           first and could not be enlarged at all: unreadable on a phone. */
+        .math-formula {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1.5;
+        }
+        .math-formula sup,
+        .grammar-question-text sup,
+        .grammar-explanation sup,
+        .math-lesson-body sup {
+            font-size: 0.75em;
+            vertical-align: super;
+            line-height: 0;
+            font-weight: 800;
+            margin-left: 0.5px;
+        }
+        .grammar-question-text sup { font-size: 0.72em; }
+
+        /* The score-tier filter row reuses the sub-tab pills but has five of
+           them, so it scrolls sideways instead of squeezing. */
+        .math-hist-tabs {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .math-hist-tabs .grammar-subtab { flex: 0 0 auto; font-size: 13px; padding: 6px 12px; }
+
+        /* Sub-topic label above a question ("Lũy thừa"), reusing the row chip
+           but reading as a caption rather than a data row. */
+        .math-topic-badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--accent-purple, #7c3aed);
+            background: rgba(124, 58, 237, 0.10);
+            border-radius: 999px;
+            padding: 4px 12px;
+            margin-bottom: 8px;
+        }
+
+        /* Questions and explanations in this tab are maths too, so they get a
+           touch more size and line height than the English tabs need. */
+        .math-hub-screen .grammar-question-text { font-size: 17px; line-height: 1.55; }
+        .math-hub-screen .grammar-explanation { font-size: 15px; line-height: 1.65; }
+        .math-lesson-body { font-size: 15px; line-height: 1.7; }
+
         /* The listen-to-continue row.
            It carries its own OPAQUE surface rather than a translucent tint:
            this row appears on the light quiz screens and inside the dark

@@ -22,6 +22,36 @@ let _mathHistoryFilter = 'all';
 function mathEsc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+// Unicode superscripts (x⁵, xᵐ⁺ⁿ) are drawn as tiny glyphs by the font, and
+// nothing but enlarging the whole line can make them bigger — on a phone the
+// exponent was simply unreadable. Turning them into real <sup> lets CSS size
+// them, which is the only way the child can actually see "x⁻⁵" is negative.
+const MATH_SUPERSCRIPTS = {
+  '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5',
+  '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
+  '⁺': '+', '⁻': '−', '⁼': '=', '⁽': '(', '⁾': ')',
+  'ᵃ': 'a', 'ᵇ': 'b', 'ᶜ': 'c', 'ᵈ': 'd', 'ᵉ': 'e', 'ᵏ': 'k',
+  'ᵐ': 'm', 'ⁿ': 'n', 'ᵖ': 'p', 'ʳ': 'r', 'ˢ': 's', 'ᵗ': 't',
+  'ᵘ': 'u', 'ᵛ': 'v', 'ʷ': 'w', 'ˣ': 'x', 'ʸ': 'y', 'ᶻ': 'z'
+};
+const MATH_SUP_RE = new RegExp('[' + Object.keys(MATH_SUPERSCRIPTS).join('') + ']+', 'g');
+
+// Escape first, then lift the runs of superscript characters into <sup>. The
+// order matters: the same string often holds "khi a < 0".
+function mathFormula(s) {
+  return mathEsc(s).replace(MATH_SUP_RE, run =>
+    '<sup>' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>');
+}
+
+// Same lift, for strings that are already trusted HTML — explanations and
+// lessons carry <br>/<b> that must survive, so these are NOT escaped. The
+// build step (scripts/build-math-data.js) has already neutralised every "<"
+// that is not one of those tags, which is what makes this safe.
+function mathRich(html) {
+  return String(html == null ? '' : html).replace(MATH_SUP_RE, run =>
+    '<sup>' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>');
+}
+
 function mathTier(pct) { return pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak'; }
 function mathTierEmoji(pct) { return pct === 100 ? '⭐' : pct >= 80 ? '✅' : pct >= 60 ? '👍' : '📝'; }
 
@@ -79,10 +109,10 @@ function renderMathHome() {
       <h1>Ôn công thức Toán 7</h1>
       <p>5 chương trọng tâm — chọn đúng công thức, nhớ lâu hơn học vẹt.</p>
     </header>
-    <div class="phrases-subtabs" role="tablist">
-      <button class="phrases-subtab ${_mathSubTab === 'practice' ? 'active' : ''}" role="tab"
+    <div class="grammar-subtabs" role="tablist">
+      <button class="grammar-subtab ${_mathSubTab === 'practice' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('practice')">🧮 Luyện tập</button>
-      <button class="phrases-subtab ${_mathSubTab === 'lessons' ? 'active' : ''}" role="tab"
+      <button class="grammar-subtab ${_mathSubTab === 'lessons' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('lessons')">📘 Lý thuyết</button>
     </div>
     <div class="phrases-wrap">${body}</div>`;
@@ -142,7 +172,7 @@ function renderMathHistoryHTML() {
     return mathTier(Math.round(h.score / h.total * 100)) === _mathHistoryFilter;
   });
   const tabs = Object.keys(MATH_TIER_LABELS).map(t =>
-    `<button class="phrases-hist-tab ${_mathHistoryFilter === t ? 'active' : ''}"
+    `<button class="grammar-subtab ${_mathHistoryFilter === t ? 'active' : ''}"
              onclick="setMathHistoryFilter('${t}')">${MATH_TIER_LABELS[t]}</button>`).join('');
   const rows = list.slice(0, 12).map(h => {
     const pct = h.total ? Math.round(h.score / h.total * 100) : 0;
@@ -153,7 +183,7 @@ function renderMathHistoryHTML() {
   return `
     <details class="phrases-cats-wrap" open>
       <summary>Kết quả gần đây</summary>
-      <div class="phrases-hist-tabs">${tabs}</div>
+      <div class="grammar-subtabs math-hist-tabs">${tabs}</div>
       <div class="phrases-cats">${rows || '<div class="phrases-cat-row"><span>Chưa có lượt nào ở mức này</span></div>'}</div>
     </details>`;
 }
@@ -181,16 +211,18 @@ function openMathLesson(key) {
   const l = mathLessons().find(x => x.key === key);
   const screen = document.getElementById('mathHubScreen');
   if (!l || !screen) return;
+  // Same markup as the Word form / Exam lesson views. Inventing class names
+  // here is how this shipped unreadable the first time: "grammar-lesson-card"
+  // looked plausible and had no styles at all.
   screen.innerHTML = `
-    <div class="phrases-wrap">
-      <button class="topic-detail-back" onclick="renderMathHome()">‹ Quay lại</button>
-      <div class="grammar-lesson-card">
-        <h2>${l.icon} ${mathEsc(l.title)}</h2>
-        <div class="grammar-lesson-body math-lesson-body">${l.content}</div>
-      </div>
+    <div class="exam-lesson-detail">
+      <button class="exam-back-btn" onclick="renderMathHome()">←</button>
+      <h1 class="exam-lesson-detail-title">${l.icon} ${mathEsc(l.title)}</h1>
+      <div class="exam-lesson-content math-lesson-body">${mathRich(l.content)}</div>
       <button class="grammar-next-btn" onclick="startMathQuizForLesson('${mathEsc(l.key)}')">Luyện chương này →</button>
     </div>`;
   screen.scrollTop = 0;
+  if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo(0, 0);
 }
 
 function startMathQuizForLesson(key) {
@@ -238,13 +270,13 @@ function renderMathQuestion() {
     return `
       <button class="${cls}" ${answered ? '' : `onclick="answerMathQuestion(${i})"`}>
         <span class="grammar-option-letter">${'ABCD'[i]}</span>
-        <span class="grammar-option-text math-formula">${mathEsc(opt)}</span>
+        <span class="grammar-option-text math-formula">${mathFormula(opt)}</span>
       </button>`;
   }).join('');
 
   const explain = answered ? `
     <div class="grammar-explanation ${ans === q.correct ? 'correct' : 'wrong'}">
-      <div>${q.explanation}</div>
+      <div>${mathRich(q.explanation)}</div>
     </div>
     <button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>` : '';
 
@@ -255,8 +287,8 @@ function renderMathQuestion() {
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${(st.idx) / total * 100}%"></div></div>
       </div>
-      <div class="phrases-cat-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
-      <div class="grammar-question-text">${mathEsc(q.q)}</div>
+      <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
+      <div class="grammar-question-text">${mathFormula(q.q)}</div>
       <div class="grammar-options">${options}</div>
       ${explain}
     </div>`;
@@ -304,8 +336,8 @@ function finishMathQuiz() {
   const wrongHTML = wrong.map(x => `
     <div class="grammar-review-item">
       <div class="grammar-review-q">${mathEsc(x.q.q)}</div>
-      <div class="grammar-review-a">✅ <b class="math-formula">${mathEsc(x.q.answer)}</b></div>
-      <div class="grammar-review-explain">${x.q.explanation}</div>
+      <div class="grammar-review-a">✅ <b class="math-formula">${mathFormula(x.q.answer)}</b></div>
+      <div class="grammar-review-explain">${mathRich(x.q.explanation)}</div>
     </div>`).join('');
 
   _mathQuiz = null;
@@ -337,8 +369,8 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   idOf: (q) => q.id,
   answerText: (q) => q.answer,
   grade: (v, q) => String(v || '').trim() === String(q.answer).trim(),
-  promptHTML: (q) => `<div class="grammar-question-text">${mathEsc(q.q)}</div>`,
-  explainHTML: (q) => `<div class="grammar-review-explain">${q.explanation}</div>`,
+  promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">${mathRich(q.explanation)}</div>`,
   home: () => renderMathHome(),
 });
 
@@ -350,7 +382,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathBank, mathChapters, mathLessons, mathById, mathChapterQuestions,
     renderMathHome, switchMathSubTab, openMathLesson,
     startMathQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
-    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathTier, mathEsc,
+    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathTier, mathEsc, mathFormula, mathRich,
     MATH_QUIZ_SIZE,
   };
 }

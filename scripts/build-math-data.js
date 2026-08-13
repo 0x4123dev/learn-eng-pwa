@@ -16,19 +16,25 @@ const ROOT = path.join(__dirname, '..');
 const CHAPTERS = [1, 2, 3, 4, 5];
 const PER_CHAPTER = 50;
 
-// Explanations are rendered with innerHTML so their <br>/<b> markup works.
-// The maths itself contains bare "<" ("khi a < 0"), which HTML5 only treats as
-// text by luck of the following space — one "a <b" and the rest of the
-// sentence silently becomes a tag. Escape every "<" that does not open one of
-// the four tags we allow.
-const ALLOWED_TAG = /^<\/?(?:br|b)\s*\/?>/i;
+// Both fields are rendered with innerHTML, and both contain bare "<" from the
+// maths ("khi a < 0") — HTML5 only treats that as text by luck of the space
+// after it, and one "a <b" would swallow the rest of the sentence. So every
+// "<" that does not open a permitted tag is escaped.
+//
+// The permitted set DIFFERS by field, and getting that wrong is what shipped
+// the Lý thuyết tab showing literal "<p>Chương I mở ra…" on screen:
+//   - an explanation is one short paragraph: only <br> and <b>
+//   - a lesson is a document: <p>, <h4>, lists and tables ARE its structure
+const EXPLANATION_TAG = /^<\/?(?:br|b)\s*\/?>/i;
+const LESSON_TAG = /^<\/?(?:p|h4|h5|ul|ol|li|b|i|br|table|tr|td|th|tbody|thead|strong|em)\s*\/?>/i;
 
-function escapeStrayAngles(html) {
+function escapeStrayAngles(html, allowed) {
+    const tag = allowed || EXPLANATION_TAG;
     let out = '';
     for (let i = 0; i < html.length; i++) {
         if (html[i] !== '<') { out += html[i]; continue; }
         const rest = html.slice(i);
-        const m = ALLOWED_TAG.exec(rest);
+        const m = tag.exec(rest);
         if (m) { out += m[0]; i += m[0].length - 1; }
         else out += '&lt;';
     }
@@ -96,7 +102,7 @@ function main() {
         chapters.push({ num: num, title: data.title, icon: data.icon });
         lessons.push({
             key: `ch${num}`, chapter: num, title: `Chương ${num} · ${data.title}`,
-            icon: data.icon, content: escapeStrayAngles(data.lesson)
+            icon: data.icon, content: escapeStrayAngles(data.lesson, LESSON_TAG)
         });
         for (const q of (data.questions || [])) {
             questions.push({
@@ -129,6 +135,6 @@ function main() {
     });
 }
 
-module.exports = { escapeStrayAngles, validateChapter, PER_CHAPTER };
+module.exports = { escapeStrayAngles, validateChapter, PER_CHAPTER, EXPLANATION_TAG, LESSON_TAG };
 
 if (require.main === module) main();

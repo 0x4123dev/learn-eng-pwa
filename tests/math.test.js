@@ -105,6 +105,20 @@ suite('math: the lessons', () => {
         }
     });
 
+    test('lesson markup is real HTML, not escaped into visible text', () => {
+        // The Lý thuyết tab shipped showing literal "<p>Chương I mở ra…" on
+        // screen: the build step escaped every "<" that was not <br> or <b>,
+        // which is right for explanations and wrong for lessons, where <p>,
+        // <h4>, <ul> and <table> ARE the structure. The tag-allowlist test
+        // below passed vacuously, because escaping leaves no tags to check.
+        for (const l of MATH_LESSONS) {
+            assert.truthy(/<p>/.test(l.content), `${l.key}: no real <p> — the HTML was escaped`);
+            assert.truthy(/<h4>/.test(l.content), `${l.key}: no real <h4>`);
+            assert.falsy(/&lt;(?:p|h4|ul|li|table|tr|td)&gt;/.test(l.content),
+                `${l.key}: structural tags are escaped and will render as text`);
+        }
+    });
+
     test('lesson markup stays within the tags the card can render', () => {
         const allowed = /^<\/?(?:p|h4|ul|ol|li|b|i|br|table|tr|td|th|tbody|thead|strong|em)\s*\/?>$/i;
         const bad = [];
@@ -116,6 +130,17 @@ suite('math: the lessons', () => {
         assert.deepEqual(bad.slice(0, 8), []);
     });
 });
+
+// Turn "<sup>-5</sup>" content back into the Unicode the data holds, so a
+// rendered question can be compared against the bank it came from.
+const SUP_BACK = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵',
+    '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '−': '⁻', '=': '⁼',
+    '(': '⁽', ')': '⁾', 'a': 'ᵃ', 'b': 'ᵇ', 'c': 'ᶜ', 'd': 'ᵈ', 'e': 'ᵉ',
+    'k': 'ᵏ', 'm': 'ᵐ', 'n': 'ⁿ', 'p': 'ᵖ', 'r': 'ʳ', 's': 'ˢ', 't': 'ᵗ',
+    'u': 'ᵘ', 'v': 'ᵛ', 'w': 'ʷ', 'x': 'ˣ', 'y': 'ʸ', 'z': 'ᶻ' };
+function supToUnicode(s) {
+    return Array.from(s).map(ch => SUP_BACK[ch] || ch).join('');
+}
 
 suite('math: the practice flow', () => {
     // Enough DOM for the screen to render into, so the quiz can be driven for
@@ -139,9 +164,14 @@ suite('math: the practice flow', () => {
         const ch2 = new Set(math.mathChapterQuestions(2).map(q => q.q));
         let seen = 0;
         for (let i = 0; i < 10; i++) {
-            const shown = /class="grammar-question-text">([^<]*)</.exec(screen.innerHTML);
+            // The question now contains <sup> tags, so read to the closing
+            // </div> and strip markup rather than stopping at the first "<".
+            const shown = /class="grammar-question-text">([\s\S]*?)<\/div>/.exec(screen.innerHTML);
             assert.truthy(shown, 'no question rendered');
-            const text = shown[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+            const text = shown[1]
+                .replace(/<sup>(.*?)<\/sup>/g, (_, inner) => supToUnicode(inner))
+                .replace(/<[^>]*>/g, '')
+                .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
             assert.truthy(ch2.has(text), `question ${i + 1} is not from chapter 2: ${text.slice(0, 60)}`);
             seen++;
             math.answerMathQuestion(0);
@@ -168,6 +198,40 @@ suite('math: the practice flow', () => {
         assert.truthy(/^Chương 1 · /.test(math.mathQuizLabel(1)));
     });
 
+    test('superscripts become <sup>, which can be sized to be readable', () => {
+        // Unicode superscript glyphs (x⁵) are drawn tiny by the font and there
+        // is no way to enlarge them without enlarging the whole line — on a
+        // phone the exponent was unreadable. Real <sup> scales with CSS.
+        assert.equal(math.mathFormula('x⁵'), 'x<sup>5</sup>');
+        assert.equal(math.mathFormula('x⁻⁵'), 'x<sup>−5</sup>');
+        assert.equal(math.mathFormula('xᵐ · xⁿ = xᵐ⁺ⁿ'), 'x<sup>m</sup> · x<sup>n</sup> = x<sup>m+n</sup>');
+        assert.equal(math.mathFormula('(1/x)⁻⁵'), '(1/x)<sup>−5</sup>');
+        assert.equal(math.mathFormula('√(a²) = |a|'), '√(a<sup>2</sup>) = |a|');
+    });
+
+    test('formatting a formula still escapes the HTML around it', () => {
+        // Same string may hold "a < 0"; turning ⁵ into a tag must not open the
+        // door to the rest being treated as markup.
+        assert.equal(math.mathFormula('khi a < 0'), 'khi a &lt; 0');
+        assert.equal(math.mathFormula('<b>x²</b>'), '&lt;b&gt;x<sup>2</sup>&lt;/b&gt;');
+    });
+
+    test('explanations get readable exponents without losing their markup', () => {
+        // Explanations arrive as trusted HTML (<br>, <b>) so they cannot be
+        // escaped — but they are full of maths too, and the exponents were
+        // just as unreadable there as in the options.
+        assert.equal(math.mathRich('🔑 x⁻ⁿ = 1/xⁿ<br>✗ x⁵: sai.'),
+            '🔑 x<sup>−n</sup> = 1/x<sup>n</sup><br>✗ x<sup>5</sup>: sai.');
+        assert.equal(math.mathRich('<b>√(a²)</b> = |a|'), '<b>√(a<sup>2</sup>)</b> = |a|');
+        // Already-escaped text must be left alone, not double-escaped.
+        assert.equal(math.mathRich('khi a &lt; 0'), 'khi a &lt; 0');
+    });
+
+    test('the rendered options use the formula formatter', () => {
+        assert.truthy(/mathFormula\(opt\)/.test(read('js/math.js')),
+            'options must render through mathFormula or the exponents stay tiny');
+    });
+
     test('escaping protects the "a < 0" text the maths is full of', () => {
         assert.equal(math.mathEsc('khi a < 0'), 'khi a &lt; 0');
         assert.equal(math.mathEsc('<b>x</b>'), '&lt;b&gt;x&lt;/b&gt;');
@@ -183,6 +247,21 @@ suite('math: wiring', () => {
         assert.truthy(html.indexOf('js/math-data.js') < html.indexOf('js/math.js'),
             'math.js must load after its data');
         assert.truthy(html.includes('id="mathHubScreen"'), 'the Math screen is missing');
+    });
+
+    test('every class math.js renders actually has styles', () => {
+        // The Lý thuyết view shipped unreadable because it used
+        // "grammar-lesson-card" and "grammar-lesson-body" — plausible names
+        // that exist nowhere in the stylesheet, so the lesson rendered with no
+        // card, no padding and no width. Nothing failed; it just looked broken.
+        const css = read('css/styles.css');
+        const src = read('js/math.js');
+        const used = new Set();
+        for (const m of src.matchAll(/class="([^"$]*)"/g)) {
+            for (const cls of m[1].split(/\s+/)) if (cls) used.add(cls);
+        }
+        const missing = [...used].filter(c => !new RegExp('\\.' + c + '\\b').test(css)).sort();
+        assert.deepEqual(missing, [], `these classes have no styles: ${missing.join(', ')}`);
     });
 
     test('the service worker precaches the math files', () => {
