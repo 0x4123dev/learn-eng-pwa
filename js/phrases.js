@@ -450,6 +450,8 @@ function renderPhrQuestion() {
   if (!screen || !_phrQuiz) return;
   const st = _phrQuiz;
   const q = st.questions[st.idx];
+  // Warm this question's words now: they become tappable once answered.
+  if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation);
   const userAns = st.answers[st.idx];
   const answered = userAns !== null;
   const total = st.questions.length;

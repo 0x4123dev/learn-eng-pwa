@@ -170,6 +170,8 @@ function renderCollocQuestion() {
   const st = _colQuiz;
   if (!screen || !st) return;
   const q = st.questions[st.idx];
+  // Warm this question's words now: they become tappable once answered.
+  if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const ans = st.answers[st.idx];
   const answered = ans !== null;
   const total = st.questions.length;

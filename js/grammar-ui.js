@@ -818,6 +818,8 @@ function renderGrammarQuestion() {
     const state = _grammarQuizState;
     if (!state) return;
     const q = state.questions[state.currentIdx];
+    // Warm this question's words now: they become tappable once answered.
+    if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || q.parts || [], q.explanation);
     if (q.type === 'arrangement') return renderArrangementQuestion();
     return renderMCQuestion();
 }

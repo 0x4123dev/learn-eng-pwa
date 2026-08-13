@@ -356,6 +356,8 @@ function renderWfQuestion() {
   if (!screen || !_wfQuiz) return;
   const st = _wfQuiz;
   const q = st.questions[st.idx];
+  // Warm this question's words now: they become tappable once answered.
+  if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const userAns = st.answers[st.idx];         // null | { value, isCorrect }
   const answered = userAns !== null;
   const isCorrect = answered && userAns.isCorrect;

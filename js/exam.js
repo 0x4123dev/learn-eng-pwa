@@ -241,6 +241,8 @@ function renderExamQuestion() {
     if (!s) return;
     const screen = document.getElementById('examScreen');
     const q = s.questions[s.idx];
+    // Warm this question's words now: they become tappable once answered.
+    if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.passage);
     const ans = s.answers[s.idx];
     const showing = ans !== null;
     const total = s.questions.length;

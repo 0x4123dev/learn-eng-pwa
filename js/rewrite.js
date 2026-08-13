@@ -265,6 +265,8 @@ function renderRwQuestion() {
   if (!screen || !_rwQuiz) return;
   const st = _rwQuiz;
   const q = st.questions[st.idx];
+  // Warm this question's words now: they become tappable once answered.
+  if (typeof twPrefetch === 'function') twPrefetch(q.orig, q.stem, q.answer, q.explanation);
   const userAns = st.answers[st.idx];         // null | { value, isCorrect }
   const answered = userAns !== null;
   const isCorrect = answered && userAns.isCorrect;

@@ -225,6 +225,10 @@ function init() {
     // Show version on login screen
     var lv = document.getElementById('loginVersion');
     if (lv && typeof APP_VERSION !== 'undefined') lv.textContent = APP_VERSION;
+
+    // Warm the commonest tap-to-hear words. Deferred and idle-scheduled so it
+    // never competes with the first screen; a no-op once already warmed.
+    setTimeout(() => { try { warmHotWords(); } catch (e) {} }, 3000);
 }
 
 function setupAvatarPicker() {
@@ -1096,6 +1100,67 @@ function prefetchAudio(word) {
 // Preload audio for an array of words (call when lesson starts)
 function preloadLessonAudio(words) {
     words.forEach(w => prefetchAudio(w.en || w));
+}
+
+// ── Hot-word warming ────────────────────────────────────────────────────
+// Any English word in a question is tappable-to-hear (js/tapwords.js), and a
+// word's first tap otherwise costs a network round trip. HOT_WORDS (generated
+// by scripts/build-hot-words.js) is the 1,000 commonest words across every
+// quiz bank — ~76% of all tappable text for ~14 MB — warmed once in the
+// background so most taps never wait.
+//
+// fetch(), not Audio elements: 1,000 media elements would be a memory
+// problem, and the service worker caches the response either way.
+const HOT_WORDS_FLAG = 'hotWordsWarmed';   // words warmed so far (resume point)
+const WARM_BATCH = 6;
+const warmedSlugs = new Set();             // fetched this session — never twice
+
+// Pull one recording into the service-worker cache without creating a media
+// element. Returns true if this call started the fetch. Used both by the hot
+// list and by twPrefetch, which warms the current question's words while the
+// student is still answering it (tap-to-hear only unlocks after they answer,
+// so that whole window is free network time).
+function warmWord(word) {
+    const slug = wordAudioSlug(word);
+    if (!slug || warmedSlugs.has(slug) || audioMissing[slug] || typeof fetch !== 'function') return false;
+    warmedSlugs.add(slug);
+    fetch(WORD_AUDIO_PATH + slug + '.mp3').catch(() => {});
+    return true;
+}
+
+function warmHotWords(list) {
+    list = list || (typeof HOT_WORDS !== 'undefined' ? HOT_WORDS : []);
+    if (!list.length || typeof fetch !== 'function') return 0;
+
+    // Never spend someone's data behind their back.
+    const conn = (typeof navigator !== 'undefined' && navigator.connection) || null;
+    if (conn && (conn.saveData || /(^|\W)2g$/.test(conn.effectiveType || ''))) return 0;
+
+    // Resume where a previous visit stopped; skip entirely once finished.
+    let i = 0;
+    try { i = Math.max(0, parseInt(localStorage.getItem(HOT_WORDS_FLAG), 10) || 0); } catch (e) {}
+    if (i >= list.length) return 0;
+
+    const idle = (fn) => (typeof requestIdleCallback === 'function')
+        ? requestIdleCallback(fn)
+        : setTimeout(fn, 300);
+
+    const step = () => {
+        if (i >= list.length) return;
+        const batch = list.slice(i, i + WARM_BATCH);
+        i += batch.length;
+        // Record progress as the batch is dispatched, not when it resolves:
+        // a visit that ends mid-warm then resumes here instead of restarting.
+        try { localStorage.setItem(HOT_WORDS_FLAG, String(i)); } catch (e) {}
+        const done = () => idle(step);
+        Promise.all(batch.map(w => {
+            warmedSlugs.add(wordAudioSlug(w));
+            return fetch(WORD_AUDIO_PATH + wordAudioSlug(w) + '.mp3').catch(() => {});
+        })).then(done, done);
+    };
+    const remaining = list.length - i;   // captured before step() advances i
+    idle(step);
+    return remaining;
 }
 
 function speakWordFallback(word) {

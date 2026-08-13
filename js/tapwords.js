@@ -27,6 +27,25 @@ function tapwordsWrap(text) {
   );
 }
 
+// Warm the recordings for text the student is about to be able to tap.
+// Tap-to-hear unlocks only after a question is answered, so calling this when
+// the question renders buys the whole reading-and-answering window of free
+// network time — by the time the words become tappable, they are cached.
+// Most words are already warm from HOT_WORDS; this covers the tail.
+function twPrefetch(...texts) {
+  if (typeof warmWord !== 'function') return 0;
+  let started = 0;
+  for (const text of texts.flat()) {
+    // Tags stripped first: <b>/<br> are formatting, never tappable words.
+    const plain = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ');
+    for (const m of plain.match(/[A-Za-zÀ-ɏḀ-ỿ']+/g) || []) {
+      if (!/^[A-Za-z]+(?:'[a-z]+)?$/.test(m)) continue;
+      try { if (warmWord(m)) started++; } catch (e) {}
+    }
+  }
+  return started;
+}
+
 // Lookup with light morphology fallback for words outside the bank list.
 const TW_IRREGULAR = {
   went: 'go', gone: 'go', taught: 'teach', thought: 'think', bought: 'buy',
@@ -106,5 +125,5 @@ function twShowChip(word, hit) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { tapwordsWrap, twLookup, twCandidates, tapWord, twShowChip, twEsc };
+  module.exports = { tapwordsWrap, twPrefetch, twLookup, twCandidates, tapWord, twShowChip, twEsc };
 }
