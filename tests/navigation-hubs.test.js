@@ -52,11 +52,15 @@ suite('navigation hubs: old modules remain easy to find', () => {
         assert.truthy(hub.includes('id="learnDueText"'), 'Learn must show the live review count');
     });
 
-    test('Math has an honest placeholder ready for future lessons', () => {
+    test('Math is now a real tab, rendered by js/math.js', () => {
+        // It shipped as an honest "coming soon" placeholder; the Toán 7 formula
+        // practice replaced it, so the screen is an empty container the tab
+        // renders into rather than static markup.
         const hub = blockBetween(html, 'id="mathHubScreen"', '<!-- Grammar Screen -->');
-        assert.truthy(hub.includes('COMING SOON'));
-        assert.truthy(hub.includes('Math adventures start here'));
-        assert.falsy(/onclick=/.test(hub), 'the placeholder should not expose fake activities');
+        assert.falsy(hub.includes('COMING SOON'), 'the placeholder outlived the real tab');
+        assert.truthy(html.includes('js/math.js'), 'index.html must load the Math tab');
+        assert.truthy(/mathHubScreen'\s*&&\s*typeof renderMathHome/.test(app),
+            'opening the tab must render it');
     });
 
     test('deep screens inherit their parent bottom-nav state', () => {

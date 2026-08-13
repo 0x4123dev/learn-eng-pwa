@@ -1,0 +1,508 @@
+{
+  "chapter": 4,
+  "title": "Tam giác bằng nhau",
+  "icon": "④",
+  "lesson": "<p>Chương IV là chương HÌNH HỌC quan trọng nhất của Toán 7 tập 1. Cả chương xoay quanh một câu hỏi duy nhất: <b>làm sao biết hai tam giác bằng nhau?</b> Chứng minh được hai tam giác bằng nhau là con lập tức suy ra được hàng loạt cạnh bằng nhau, góc bằng nhau — đó là chìa khoá vạn năng của hình học lớp 7. Nhưng trước hết, hãy nắm thật chắc chuyện số đo góc trong tam giác đã.</p><h4>📌 Công thức</h4><p><b>1. Tổng ba góc và góc ngoài</b></p><ul><li><b>∠A + ∠B + ∠C = 180°</b> — luôn đúng với MỌI tam giác, không trừ một tam giác nào.</li><li><b>Góc ngoài</b> tại một đỉnh bằng TỔNG hai góc trong KHÔNG kề với nó. Ví dụ: góc ngoài tại C = ∠A + ∠B.</li><li>Góc ngoài và góc trong kề nó là hai góc kề bù: cộng lại bằng 180°.</li><li>Tam giác <b>vuông tại A</b>: vì ∠A = 90° nên <b>∠B + ∠C = 90°</b> — hai góc nhọn phụ nhau.</li></ul><p><b>2. Ba trường hợp bằng nhau của TAM GIÁC THƯỜNG</b></p><table><tr><td><b>Tên</b></td><td><b>Cần những gì</b></td><td><b>Nhớ kĩ</b></td></tr><tr><td><b>c-c-c</b></td><td>Ba cạnh bằng ba cạnh</td><td>Không cần góc nào cả</td></tr><tr><td><b>c-g-c</b></td><td>Hai cạnh và góc XEN GIỮA hai cạnh đó</td><td>Sai vị trí góc là hỏng cả bài!</td></tr><tr><td><b>g-c-g</b></td><td>Một cạnh và hai góc KỀ cạnh đó</td><td>Cạnh phải nằm giữa hai góc</td></tr></table><p><b>3. Bốn trường hợp bằng nhau của TAM GIÁC VUÔNG</b></p><table><tr><td><b>Tên</b></td><td><b>Cần những gì</b></td></tr><tr><td><b>Hai cạnh góc vuông</b></td><td>Hai cạnh góc vuông bằng hai cạnh góc vuông (thực chất là c-g-c với góc xen giữa 90°)</td></tr><tr><td><b>Cạnh góc vuông - góc nhọn kề</b></td><td>Một cạnh góc vuông và góc nhọn kề nó bằng nhau (thực chất là g-c-g)</td></tr><tr><td><b>Cạnh huyền - góc nhọn</b></td><td>Cạnh huyền và một góc nhọn bằng nhau</td></tr><tr><td><b>Cạnh huyền - cạnh góc vuông</b></td><td>Cạnh huyền và một cạnh góc vuông bằng nhau</td></tr></table><p>Nhắc lại: <b>cạnh huyền</b> là cạnh đối diện góc vuông (cạnh dài nhất), hai cạnh còn lại là <b>cạnh góc vuông</b>.</p><p><b>4. Tam giác cân, tam giác đều, đường trung trực</b></p><ul><li>Tam giác cân tại A: <b>AB = AC ⇔ ∠B = ∠C</b> — đúng theo CẢ HAI chiều. AB, AC là cạnh bên; BC là cạnh đáy; ∠B, ∠C là hai góc đáy.</li><li>Tam giác đều: <b>AB = BC = CA ⇔ ∠A = ∠B = ∠C = 60°</b>.</li><li>Tam giác cân mà có một góc bằng 60° thì chắc chắn là tam giác đều.</li><li>Đường trung trực d của AB: đường thẳng <b>vuông góc với AB tại trung điểm</b> của AB. Tính chất: <b>M ∈ d ⇔ MA = MB</b>.</li></ul><h4>💡 Ví dụ</h4><ul><li><b>Tìm góc:</b> Tam giác ABC có ∠A = 60°, ∠B = 70° ⇒ ∠C = 180° − 60° − 70° = 50°. Góc ngoài tại C = ∠A + ∠B = 130°, và đúng bằng 180° − 50°. Hai cách tính cho cùng một kết quả — dùng cách nào cũng được.</li><li><b>Dùng c-g-c:</b> Hai đoạn thẳng AB và CD cắt nhau tại trung điểm O của mỗi đoạn. Ta có OA = OB, OC = OD, còn ∠AOC = ∠BOD vì đối đỉnh — và đây đúng là góc xen giữa. Vậy △OAC = △OBD theo c-g-c, suy ra AC = BD.</li><li><b>Dùng c-c-c:</b> Tam giác ABC cân tại A, M là trung điểm BC. Khi đó AB = AC, BM = CM, AM là cạnh chung ⇒ △ABM = △ACM theo c-c-c. Từ đó suy ra ∠B = ∠C và ∠AMB = ∠AMC = 90°, tức là AM chính là đường trung trực của BC.</li><li><b>Tam giác vuông:</b> △ABC vuông tại A và △DEF vuông tại D có BC = EF (hai cạnh huyền) và ∠B = ∠E. Vậy hai tam giác bằng nhau theo cạnh huyền - góc nhọn. Nếu thay bằng AB = DE và ∠B = ∠E thì lại là cạnh góc vuông - góc nhọn kề.</li><li><b>Tam giác cân:</b> △ABC cân tại A có ∠A = 40° ⇒ mỗi góc đáy = (180° − 40°) : 2 = 70°. Nhưng nếu đề cho ∠B = 50° thì ∠C = 50° và ∠A = 180° − 50° − 50° = 80°. Hai bài toán ngược nhau, đừng lẫn công thức!</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>Bịa ra trường hợp c-c-g:</b> hai cạnh bằng nhau và một góc bằng nhau nhưng góc KHÔNG xen giữa thì <b>không kết luận được gì</b>. Chỉ c-g-c mới đúng. Đây là lỗi mất điểm số một.</li><li><b>Bịa ra trường hợp g-g-g:</b> ba góc bằng nhau chỉ cho hai tam giác cùng hình dạng — một cái có thể to gấp đôi cái kia. Muốn bằng nhau, bắt buộc phải có ít nhất MỘT cặp cạnh bằng nhau.</li><li><b>Nói góc ngoài bằng góc trong kề nó:</b> sai. Chúng KỀ BÙ, tổng bằng 180°. Góc ngoài bằng tổng hai góc trong KHÔNG kề.</li><li><b>Lẫn 180° với 360° và 90°:</b> 180° là tổng ba góc của tam giác; 360° là tổng bốn góc của tứ giác; 90° chỉ là tổng hai góc nhọn của tam giác vuông.</li><li><b>Nhầm cân với đều:</b> tam giác cân chỉ chắc chắn có hai góc đáy bằng nhau, chúng có thể là 50°, 70°, 80°… Chỉ tam giác ĐỀU mới có ba góc cùng bằng 60°.</li><li><b>Đảo ngược tính chất trung trực:</b> phải nhớ đủ hai chiều — M thuộc trung trực thì MA = MB, và ngược lại MA = MB thì M thuộc trung trực. Đừng viết thành MA = AB.</li><li><b>Viết sai thứ tự đỉnh:</b> khi ghi △ABC = △MNP thì A↔M, B↔N, C↔P, kéo theo AB = MN, AC = MP, BC = NP. Ghi lộn thứ tự là suy ra sai toàn bộ.</li></ul>",
+  "questions": [
+    {
+      "id": "m4-1",
+      "ch": 4,
+      "topic": "Tổng ba góc",
+      "q": "Tổng ba góc trong một tam giác bằng bao nhiêu?",
+      "options": ["∠A + ∠B + ∠C = 180°", "∠A + ∠B + ∠C = 360°", "∠A + ∠B + ∠C = 90°", "∠A + ∠B = ∠C"],
+      "correct": 0,
+      "answer": "∠A + ∠B + ∠C = 180°",
+      "explanation": "🔑 Tổng ba góc trong bất kỳ tam giác nào cũng bằng 180°.<br>✗ 360° là tổng bốn góc của tứ giác.<br>✗ 90° chỉ là tổng hai góc nhọn của tam giác vuông.<br>✗ ∠A + ∠B = ∠C không phải một định lý — chỉ đúng tình cờ khi ∠C = 90°."
+    },
+    {
+      "id": "m4-2",
+      "ch": 4,
+      "topic": "Tổng ba góc",
+      "q": "Tam giác ABC có ∠A = 60°, ∠B = 70°. Số đo của ∠C là bao nhiêu?",
+      "options": ["∠C = 130°", "∠C = 50°", "∠C = 60°", "∠C = 70°"],
+      "correct": 1,
+      "answer": "∠C = 50°",
+      "explanation": "🔑 ∠C = 180° − (∠A + ∠B) = 180° − 130° = 50°.<br>✗ 130° mới chỉ là tổng hai góc đã cho, còn thiếu bước lấy 180° trừ đi.<br>✗ 60° là số đo của ∠A, không phải ∠C.<br>✗ 70° là số đo của ∠B, chép nhầm sang ∠C."
+    },
+    {
+      "id": "m4-3",
+      "ch": 4,
+      "topic": "Tam giác vuông",
+      "q": "Tam giác ABC vuông tại A. Hệ thức nào sau đây đúng?",
+      "options": ["∠B + ∠C = 180°", "∠B + ∠C = 45°", "∠B + ∠C = 90°", "∠B = ∠C = 90°"],
+      "correct": 2,
+      "answer": "∠B + ∠C = 90°",
+      "explanation": "🔑 Vì ∠A = 90° nên ∠B + ∠C = 180° − 90° = 90°: hai góc nhọn của tam giác vuông luôn phụ nhau.<br>✗ 180° là tổng CẢ BA góc, không phải tổng hai góc nhọn.<br>✗ 45° là số đo của MỖI góc nhọn khi tam giác vuông cân, không phải tổng của chúng.<br>✗ Một tam giác không thể có hai góc 90°, vì khi đó riêng hai góc ấy đã đủ 180° mà vẫn còn thừa ∠A."
+    },
+    {
+      "id": "m4-4",
+      "ch": 4,
+      "topic": "Góc ngoài",
+      "q": "Góc ngoài tại một đỉnh của tam giác bằng gì?",
+      "options": ["Bằng góc trong kề với nó", "Bằng 180°", "Bằng tổng ba góc trong của tam giác", "Bằng tổng hai góc trong không kề với nó"],
+      "correct": 3,
+      "answer": "Bằng tổng hai góc trong không kề với nó",
+      "explanation": "🔑 Góc ngoài tại một đỉnh bằng TỔNG hai góc trong không kề với nó.<br>✗ Góc ngoài và góc trong kề nó là hai góc kề bù, cộng lại bằng 180° chứ không bằng nhau.<br>✗ 180° là tổng của góc ngoài với góc trong kề nó, không phải riêng góc ngoài.<br>✗ Tổng ba góc trong luôn là 180°, nếu góc ngoài bằng 180° thì nó là góc bẹt — vô lí."
+    },
+    {
+      "id": "m4-5",
+      "ch": 4,
+      "topic": "Góc ngoài",
+      "q": "Tam giác ABC có ∠A = 50°, ∠B = 65°. Số đo góc ngoài tại đỉnh C là bao nhiêu?",
+      "options": ["65°", "115°", "130°", "50°"],
+      "correct": 1,
+      "answer": "115°",
+      "explanation": "🔑 Góc ngoài tại C bằng tổng hai góc trong không kề: ∠A + ∠B = 50° + 65° = 115°.<br>✗ 65° là góc trong ∠B, không phải góc ngoài tại C.<br>✗ 130° là 65° × 2, nhân đôi một góc là hiểu sai công thức.<br>✗ 50° là góc trong ∠A."
+    },
+    {
+      "id": "m4-6",
+      "ch": 4,
+      "topic": "Góc ngoài",
+      "q": "Góc ngoài tại đỉnh A và góc trong ∠A của tam giác ABC có quan hệ gì?",
+      "options": ["Chúng kề bù, tổng bằng 180°", "Chúng luôn bằng nhau", "Chúng phụ nhau, tổng bằng 90°", "Góc ngoài luôn gấp đôi góc trong ∠A"],
+      "correct": 0,
+      "answer": "Chúng kề bù, tổng bằng 180°",
+      "explanation": "🔑 Góc ngoài tại A và góc trong ∠A là hai góc kề bù nên tổng của chúng bằng 180°.<br>✗ Chúng chỉ bằng nhau trong trường hợp đặc biệt cùng bằng 90°, không phải luôn luôn.<br>✗ Phụ nhau (tổng 90°) là quan hệ của hai góc nhọn trong tam giác vuông, không phải quan hệ này.<br>✗ Góc ngoài gấp đôi góc trong chỉ xảy ra khi ∠A = 60°, đó là trường hợp riêng chứ không phải quy luật."
+    },
+    {
+      "id": "m4-7",
+      "ch": 4,
+      "topic": "Tổng ba góc",
+      "q": "Một tam giác có thể có nhiều nhất bao nhiêu góc tù (góc lớn hơn 90°)?",
+      "options": ["Ba góc tù", "Hai góc tù", "Không có góc tù nào", "Một góc tù"],
+      "correct": 3,
+      "answer": "Một góc tù",
+      "explanation": "🔑 Vì tổng ba góc chỉ có 180° nên nhiều nhất một góc được phép lớn hơn 90°.<br>✗ Ba góc tù thì tổng đã vượt quá 270°, lớn hơn 180° rất nhiều.<br>✗ Hai góc tù thì riêng hai góc đó đã hơn 180°, không còn chỗ cho góc thứ ba.<br>✗ Nói không có góc tù nào là sai, vì tam giác tù có thật, ví dụ 100° + 50° + 30° = 180°."
+    },
+    {
+      "id": "m4-8",
+      "ch": 4,
+      "topic": "Tam giác vuông",
+      "q": "Trong một tam giác vuông, góc nhọn này gấp đôi góc nhọn kia. Góc nhọn nhỏ hơn bằng bao nhiêu độ?",
+      "options": ["45°", "60°", "30°", "20°"],
+      "correct": 2,
+      "answer": "30°",
+      "explanation": "🔑 Hai góc nhọn có tổng 90°; gọi góc nhỏ là x thì góc kia là 2x, nên 3x = 90° và x = 30°.<br>✗ 45° chỉ đúng khi hai góc nhọn BẰNG nhau, còn ở đây chúng gấp đôi nhau.<br>✗ 60° là số đo của góc nhọn LỚN, không phải góc nhỏ hơn.<br>✗ Nếu góc nhỏ là 20° thì góc kia là 40°, tổng mới được 60°, chưa đủ 90°."
+    },
+    {
+      "id": "m4-9",
+      "ch": 4,
+      "topic": "Tam giác vuông",
+      "q": "Tam giác MNP vuông tại M có ∠N = 35°. Số đo ∠P là bao nhiêu?",
+      "options": ["145°", "35°", "55°", "90°"],
+      "correct": 2,
+      "answer": "55°",
+      "explanation": "🔑 Hai góc nhọn của tam giác vuông phụ nhau nên ∠P = 90° − 35° = 55°.<br>✗ 145° là kết quả của 180° − 35°, quên rằng ∠M đã chiếm mất 90°.<br>✗ 35° là số đo ∠N; hai góc nhọn chỉ bằng nhau khi cùng bằng 45°.<br>✗ 90° là số đo ∠M, một tam giác không thể có hai góc vuông."
+    },
+    {
+      "id": "m4-10",
+      "ch": 4,
+      "topic": "Tổng ba góc",
+      "q": "Bộ ba số đo nào sau đây KHÔNG thể là ba góc của một tam giác?",
+      "options": ["100°; 50°; 30°", "60°; 60°; 60°", "90°; 45°; 45°", "80°; 60°; 50°"],
+      "correct": 3,
+      "answer": "80°; 60°; 50°",
+      "explanation": "🔑 Ba góc của một tam giác phải có tổng đúng bằng 180°, mà 80° + 60° + 50° = 190° nên bộ này không hợp lệ.<br>✗ 100° + 50° + 30° = 180°, đây là một tam giác tù bình thường.<br>✗ 60° + 60° + 60° = 180°, đó chính là tam giác đều.<br>✗ 90° + 45° + 45° = 180°, đó là tam giác vuông cân."
+    },
+    {
+      "id": "m4-11",
+      "ch": 4,
+      "topic": "Trường hợp c-c-c",
+      "q": "Trường hợp bằng nhau nào của tam giác chỉ cần so sánh ba cạnh, không cần góc nào?",
+      "options": ["c-c-c (cạnh - cạnh - cạnh)", "c-g-c (cạnh - góc - cạnh)", "g-c-g (góc - cạnh - góc)", "g-g-g (góc - góc - góc)"],
+      "correct": 0,
+      "answer": "c-c-c (cạnh - cạnh - cạnh)",
+      "explanation": "🔑 Trường hợp c-c-c: ba cạnh của tam giác này bằng ba cạnh của tam giác kia thì hai tam giác bằng nhau.<br>✗ c-g-c còn cần thêm một góc, và phải đúng là góc XEN GIỮA hai cạnh.<br>✗ g-c-g cần một cạnh cùng hai góc kề cạnh ấy, tức là vẫn phải dùng góc.<br>✗ g-g-g hoàn toàn KHÔNG phải trường hợp bằng nhau — ba góc bằng nhau chỉ cho hai tam giác cùng hình dạng, kích thước có thể khác hẳn."
+    },
+    {
+      "id": "m4-12",
+      "ch": 4,
+      "topic": "Trường hợp c-g-c",
+      "q": "Trong trường hợp bằng nhau c-g-c, góc bằng nhau phải nằm ở vị trí nào?",
+      "options": ["Góc đối diện với một trong hai cạnh đã cho", "Góc xen giữa hai cạnh đã cho", "Góc bất kì trong tam giác cũng được", "Góc lớn nhất của tam giác"],
+      "correct": 1,
+      "answer": "Góc xen giữa hai cạnh đã cho",
+      "explanation": "🔑 Trường hợp c-g-c đòi hỏi hai cạnh bằng nhau và góc XEN GIỮA đúng hai cạnh ấy bằng nhau.<br>✗ Nếu góc đối diện với một cạnh thì đó là kiểu <b>c-c-g</b> — không phải trường hợp bằng nhau, vì từ dữ kiện đó có thể vẽ ra hai tam giác khác nhau.<br>✗ Góc bất kì thì quá lỏng lẻo, bắt buộc phải là góc xen giữa.<br>✗ Góc lớn nhất hay nhỏ nhất không liên quan; chỉ vị trí xen giữa mới quan trọng."
+    },
+    {
+      "id": "m4-13",
+      "ch": 4,
+      "topic": "Trường hợp g-c-g",
+      "q": "Điều kiện về vị trí của cạnh trong trường hợp bằng nhau g-c-g là gì?",
+      "options": ["Cạnh dài nhất của tam giác", "Cạnh đối diện với một trong hai góc đã cho", "Cạnh bất kì cũng được", "Cạnh kề với cả hai góc đã cho"],
+      "correct": 3,
+      "answer": "Cạnh kề với cả hai góc đã cho",
+      "explanation": "🔑 Trường hợp g-c-g: một cạnh và HAI GÓC KỀ cạnh ấy bằng nhau thì hai tam giác bằng nhau.<br>✗ Cạnh dài nhất hay ngắn nhất không phải điều kiện; chỉ vị trí kề hai góc mới quan trọng.<br>✗ Cạnh đối diện với một góc cho ta kiểu <b>g-g-c</b>, ở lớp 7 chưa được dùng như một trường hợp bằng nhau.<br>✗ Chọn cạnh bất kì là hiểu sai — cạnh phải nằm giữa hai góc đã cho."
+    },
+    {
+      "id": "m4-14",
+      "ch": 4,
+      "topic": "Trường hợp không hợp lệ",
+      "q": "Trường hợp nào sau đây KHÔNG phải là trường hợp bằng nhau của hai tam giác?",
+      "options": ["c-c-c", "c-g-c", "g-g-g", "g-c-g"],
+      "correct": 2,
+      "answer": "g-g-g",
+      "explanation": "🔑 g-g-g không phải trường hợp bằng nhau: ba góc bằng nhau chỉ đảm bảo hai tam giác cùng hình dạng, một cái có thể to gấp nhiều lần cái kia.<br>✗ c-c-c là trường hợp bằng nhau đầu tiên được học.<br>✗ c-g-c là trường hợp bằng nhau với góc xen giữa hai cạnh.<br>✗ g-c-g là trường hợp bằng nhau với cạnh kề hai góc."
+    },
+    {
+      "id": "m4-15",
+      "ch": 4,
+      "topic": "Trường hợp không hợp lệ",
+      "q": "△ABC và △MNP có AB = MN, BC = NP và ∠A = ∠M. Có kết luận được hai tam giác bằng nhau không?",
+      "options": ["Có, theo trường hợp c-g-c", "Không, vì ∠A không xen giữa hai cạnh AB và BC", "Có, theo trường hợp c-c-c", "Có, theo trường hợp g-c-g"],
+      "correct": 1,
+      "answer": "Không, vì ∠A không xen giữa hai cạnh AB và BC",
+      "explanation": "🔑 Muốn dùng c-g-c thì góc phải XEN GIỮA hai cạnh; góc xen giữa AB và BC là ∠B chứ không phải ∠A, nên dữ kiện chưa đủ.<br>✗ Đây chính là cái bẫy <b>c-c-g</b> mà rất nhiều bạn tưởng nhầm là c-g-c.<br>✗ c-c-c đòi ba cặp cạnh bằng nhau, ở đây mới có hai cặp.<br>✗ g-c-g đòi hai cặp góc bằng nhau, ở đây mới có một cặp góc."
+    },
+    {
+      "id": "m4-16",
+      "ch": 4,
+      "topic": "Trường hợp c-g-c",
+      "q": "△ABC và △DEF có AB = DE, ∠B = ∠E, BC = EF. Hai tam giác bằng nhau theo trường hợp nào?",
+      "options": ["c-g-c", "c-c-c", "g-c-g", "Chưa đủ dữ kiện để kết luận"],
+      "correct": 0,
+      "answer": "c-g-c",
+      "explanation": "🔑 ∠B xen giữa hai cạnh AB và BC, ∠E xen giữa DE và EF, nên △ABC = △DEF theo c-g-c.<br>✗ c-c-c cần ba cặp cạnh bằng nhau, đề chỉ cho hai cặp cạnh.<br>✗ g-c-g cần hai cặp góc bằng nhau, đề chỉ cho một cặp góc.<br>✗ Dữ kiện đã hoàn toàn đủ, vì góc đã cho đúng là góc xen giữa."
+    },
+    {
+      "id": "m4-17",
+      "ch": 4,
+      "topic": "Trường hợp g-c-g",
+      "q": "△ABC và △MNP có ∠B = ∠N, BC = NP, ∠C = ∠P. Hai tam giác bằng nhau theo trường hợp nào?",
+      "options": ["g-c-g", "c-g-c", "c-c-c", "g-g-g"],
+      "correct": 0,
+      "answer": "g-c-g",
+      "explanation": "🔑 BC là cạnh kề với cả ∠B và ∠C, NP kề với cả ∠N và ∠P, nên △ABC = △MNP theo g-c-g.<br>✗ c-g-c cần hai cặp cạnh bằng nhau, đề chỉ cho một cặp cạnh.<br>✗ c-c-c cần ba cặp cạnh, đề chỉ cho một cặp.<br>✗ g-g-g không phải trường hợp bằng nhau của tam giác."
+    },
+    {
+      "id": "m4-18",
+      "ch": 4,
+      "topic": "Trường hợp c-c-c",
+      "q": "△ABC và △DEF có AB = DE, AC = DF, BC = EF. Kết luận nào đúng?",
+      "options": ["Hai tam giác chỉ cùng hình dạng, chưa chắc bằng nhau", "Cần thêm một cặp góc bằng nhau mới kết luận được", "△ABC = △DEF theo trường hợp c-c-c", "△ABC = △DEF theo trường hợp c-g-c"],
+      "correct": 2,
+      "answer": "△ABC = △DEF theo trường hợp c-c-c",
+      "explanation": "🔑 Ba cặp cạnh tương ứng bằng nhau nên △ABC = △DEF theo trường hợp c-c-c.<br>✗ Ba cạnh bằng nhau là bằng nhau hoàn toàn, không phải chỉ cùng hình dạng — chính g-g-g mới dừng ở mức cùng hình dạng.<br>✗ Không cần thêm góc nào cả, c-c-c đã là một trường hợp đầy đủ.<br>✗ c-g-c cần một cặp góc xen giữa, mà đề bài không cho góc nào."
+    },
+    {
+      "id": "m4-19",
+      "ch": 4,
+      "topic": "Tam giác bằng nhau",
+      "q": "Nếu △ABC = △MNP thì cặp cạnh nào sau đây bằng nhau?",
+      "options": ["AB = NP", "AC = MP", "BC = MN", "AB = MP"],
+      "correct": 1,
+      "answer": "AC = MP",
+      "explanation": "🔑 Khi viết △ABC = △MNP, các đỉnh tương ứng theo đúng thứ tự A↔M, B↔N, C↔P, nên AC = MP.<br>✗ AB tương ứng với MN chứ không phải NP.<br>✗ BC tương ứng với NP chứ không phải MN.<br>✗ AB tương ứng với MN, viết AB = MP là ghép sai cặp đỉnh."
+    },
+    {
+      "id": "m4-20",
+      "ch": 4,
+      "topic": "Tam giác bằng nhau",
+      "q": "Biết △ABC = △DEF và ∠A = 55°. Số đo ∠D là bao nhiêu?",
+      "options": ["125°", "35°", "Không xác định được", "55°"],
+      "correct": 3,
+      "answer": "55°",
+      "explanation": "🔑 Hai tam giác bằng nhau có các góc tương ứng bằng nhau, mà A tương ứng với D nên ∠D = ∠A = 55°.<br>✗ 125° là góc bù với 55°, chẳng liên quan gì tới hai tam giác bằng nhau.<br>✗ 35° là góc phụ với 55°, cũng không phải góc tương ứng.<br>✗ Hoàn toàn xác định được, vì bằng nhau nghĩa là mọi cạnh và mọi góc tương ứng đều bằng nhau."
+    },
+    {
+      "id": "m4-21",
+      "ch": 4,
+      "topic": "Trường hợp không hợp lệ",
+      "q": "Hai tam giác có ba góc bằng nhau từng đôi một thì kết luận nào đúng?",
+      "options": ["Chúng bằng nhau theo trường hợp g-g-g", "Chúng bằng nhau theo trường hợp g-c-g", "Chúng bằng nhau vì tam giác nào cũng có tổng ba góc là 180°", "Chưa chắc bằng nhau, vì tam giác này có thể lớn hơn tam giác kia"],
+      "correct": 3,
+      "answer": "Chưa chắc bằng nhau, vì tam giác này có thể lớn hơn tam giác kia",
+      "explanation": "🔑 Ba góc bằng nhau chỉ cho hai tam giác cùng hình dạng; kích thước có thể khác nhau nên chưa kết luận được là bằng nhau.<br>✗ g-g-g không tồn tại như một trường hợp bằng nhau.<br>✗ g-c-g còn cần một cặp CẠNH bằng nhau, mà đề không cho cạnh nào.<br>✗ Tam giác nào cũng có tổng ba góc bằng 180°, nên điều đó chẳng nói lên gì về việc bằng nhau."
+    },
+    {
+      "id": "m4-22",
+      "ch": 4,
+      "topic": "Trường hợp c-g-c",
+      "q": "Hai đoạn thẳng AB và CD cắt nhau tại O là trung điểm của mỗi đoạn. Vì sao △OAC = △OBD?",
+      "options": ["Vì có ba cặp cạnh bằng nhau (c-c-c)", "Vì OA = OB, OC = OD và ∠AOC = ∠BOD là hai góc đối đỉnh (c-g-c)", "Vì có hai cặp góc bằng nhau và một cặp cạnh (g-c-g)", "Vì ba góc của hai tam giác bằng nhau (g-g-g)"],
+      "correct": 1,
+      "answer": "Vì OA = OB, OC = OD và ∠AOC = ∠BOD là hai góc đối đỉnh (c-g-c)",
+      "explanation": "🔑 O là trung điểm nên OA = OB và OC = OD; hai góc ∠AOC, ∠BOD đối đỉnh nên bằng nhau và lại đúng là góc XEN GIỮA hai cặp cạnh ấy — chuẩn trường hợp c-g-c.<br>✗ Đề chưa cho AC = BD nên chưa đủ ba cặp cạnh để dùng c-c-c.<br>✗ g-c-g cần hai cặp góc bằng nhau, ở đây mới có một cặp góc đối đỉnh.<br>✗ g-g-g không phải trường hợp bằng nhau của tam giác."
+    },
+    {
+      "id": "m4-23",
+      "ch": 4,
+      "topic": "Trường hợp c-c-c",
+      "q": "△ABC có AB = AC và M là trung điểm của BC. Vì sao △ABM = △ACM?",
+      "options": ["Vì ∠B = ∠C và BM = CM nên dùng c-g-c", "Vì ∠BAM = ∠CAM và AM là cạnh chung nên dùng g-c-g", "Vì AB = AC, BM = CM và AM là cạnh chung nên dùng c-c-c", "Vì ba góc của hai tam giác bằng nhau nên dùng g-g-g"],
+      "correct": 2,
+      "answer": "Vì AB = AC, BM = CM và AM là cạnh chung nên dùng c-c-c",
+      "explanation": "🔑 AB = AC theo giả thiết, BM = CM vì M là trung điểm, AM là cạnh chung — đủ ba cặp cạnh nên △ABM = △ACM theo c-c-c.<br>✗ Dùng c-g-c với ∠B, ∠C là sai vị trí: các góc này không xen giữa hai cặp cạnh đang xét.<br>✗ ∠BAM = ∠CAM là điều PHẢI CHỨNG MINH, chưa được phép dùng làm giả thiết.<br>✗ g-g-g không phải trường hợp bằng nhau của tam giác."
+    },
+    {
+      "id": "m4-24",
+      "ch": 4,
+      "topic": "Trường hợp không hợp lệ",
+      "q": "Nhận xét sau đúng hay sai: chỉ cần hai cặp cạnh và một cặp góc bằng nhau là suy ra được hai tam giác bằng nhau?",
+      "options": ["Sai, góc đó phải là góc xen giữa hai cạnh thì mới kết luận được", "Đúng, đó chính là trường hợp c-c-g", "Đúng, vì đã có đủ ba yếu tố bằng nhau", "Sai, phải có đủ ba cặp cạnh bằng nhau mới kết luận được"],
+      "correct": 0,
+      "answer": "Sai, góc đó phải là góc xen giữa hai cạnh thì mới kết luận được",
+      "explanation": "🔑 Chỉ khi góc bằng nhau XEN GIỮA hai cạnh (tức trường hợp c-g-c) thì hai tam giác mới chắc chắn bằng nhau.<br>✗ Không hề có trường hợp bằng nhau nào tên là <b>c-c-g</b>; đó là cái bẫy quen thuộc nhất của chương này.<br>✗ Đủ ba yếu tố nhưng sai vị trí thì vẫn vô ích — g-g-g cũng có ba yếu tố mà không kết luận được gì.<br>✗ Không nhất thiết phải có ba cặp cạnh: c-g-c và g-c-g vẫn kết luận được với ít cạnh hơn."
+    },
+    {
+      "id": "m4-25",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Hai tam giác vuông bằng nhau theo trường hợp hai cạnh góc vuông khi nào?",
+      "options": ["Khi hai cạnh huyền của chúng bằng nhau", "Khi hai cạnh góc vuông của tam giác này lần lượt bằng hai cạnh góc vuông của tam giác kia", "Khi hai góc nhọn của chúng bằng nhau", "Khi một cạnh góc vuông và cạnh huyền bằng nhau"],
+      "correct": 1,
+      "answer": "Khi hai cạnh góc vuông của tam giác này lần lượt bằng hai cạnh góc vuông của tam giác kia",
+      "explanation": "🔑 Hai cạnh góc vuông bằng hai cạnh góc vuông thì hai tam giác vuông bằng nhau — thực chất là c-g-c với góc xen giữa bằng 90°.<br>✗ Chỉ hai cạnh huyền bằng nhau thì chưa đủ, còn phải thêm một cạnh góc vuông hoặc một góc nhọn.<br>✗ Hai góc nhọn bằng nhau mà không có cạnh nào bằng nhau thì chỉ suy ra hai tam giác cùng hình dạng.<br>✗ Cạnh huyền cùng một cạnh góc vuông là một trường hợp KHÁC, tên là cạnh huyền - cạnh góc vuông."
+    },
+    {
+      "id": "m4-26",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Trường hợp bằng nhau cạnh huyền - góc nhọn của hai tam giác vuông được phát biểu thế nào?",
+      "options": ["Hai cạnh huyền bằng nhau thì hai tam giác vuông bằng nhau", "Hai góc nhọn bằng nhau thì hai tam giác vuông bằng nhau", "Cạnh huyền bằng nhau và góc vuông bằng nhau thì hai tam giác vuông bằng nhau", "Cạnh huyền và một góc nhọn của tam giác vuông này bằng cạnh huyền và một góc nhọn của tam giác vuông kia thì hai tam giác bằng nhau"],
+      "correct": 3,
+      "answer": "Cạnh huyền và một góc nhọn của tam giác vuông này bằng cạnh huyền và một góc nhọn của tam giác vuông kia thì hai tam giác bằng nhau",
+      "explanation": "🔑 Phải có ĐỦ hai yếu tố: cạnh huyền bằng nhau và một góc nhọn bằng nhau.<br>✗ Chỉ cạnh huyền bằng nhau thì chưa đủ, hai tam giác vuông vẫn có thể béo gầy khác nhau.<br>✗ Chỉ góc nhọn bằng nhau thì chỉ suy ra cùng hình dạng, kích thước vẫn có thể khác.<br>✗ Mọi tam giác vuông đều có góc vuông 90°, nên yếu tố góc vuông bằng nhau chẳng cho thêm thông tin gì."
+    },
+    {
+      "id": "m4-27",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Hai tam giác vuông có cạnh huyền bằng nhau và một cạnh góc vuông bằng nhau thì sao?",
+      "options": ["Bằng nhau, theo trường hợp cạnh huyền - cạnh góc vuông", "Chưa chắc bằng nhau vì còn thiếu một cạnh góc vuông nữa", "Chỉ bằng nhau khi có thêm điều kiện hai góc nhọn bằng nhau", "Không bao giờ bằng nhau"],
+      "correct": 0,
+      "answer": "Bằng nhau, theo trường hợp cạnh huyền - cạnh góc vuông",
+      "explanation": "🔑 Cạnh huyền và một cạnh góc vuông bằng nhau là một trường hợp bằng nhau riêng, chỉ có ở tam giác vuông.<br>✗ Không cần cạnh góc vuông thứ hai: khi biết cạnh huyền và một cạnh góc vuông thì cạnh còn lại đã bị xác định.<br>✗ Không cần thêm điều kiện góc nhọn nào, hai yếu tố đã cho là đủ.<br>✗ Nói không bao giờ bằng nhau là hiểu ngược hoàn toàn định lí."
+    },
+    {
+      "id": "m4-28",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Trường hợp cạnh góc vuông - góc nhọn kề của tam giác vuông tương ứng với trường hợp nào của tam giác thường?",
+      "options": ["c-c-c", "c-g-c", "g-c-g", "g-g-g"],
+      "correct": 2,
+      "answer": "g-c-g",
+      "explanation": "🔑 Cạnh góc vuông vừa kề góc vuông 90° vừa kề góc nhọn đã cho, nên nó nằm giữa hai góc — đúng trường hợp g-c-g.<br>✗ c-c-c chỉ dùng cạnh, mà trường hợp này có dùng góc nhọn.<br>✗ c-g-c cần hai cạnh, mà trường hợp này chỉ cho một cạnh góc vuông.<br>✗ g-g-g không phải trường hợp bằng nhau của tam giác."
+    },
+    {
+      "id": "m4-29",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Chỉ biết hai tam giác vuông có yếu tố nào sau đây thì VẪN CHƯA kết luận được chúng bằng nhau?",
+      "options": ["Hai cạnh góc vuông bằng nhau", "Cạnh huyền và một góc nhọn bằng nhau", "Hai góc nhọn bằng nhau", "Cạnh huyền và một cạnh góc vuông bằng nhau"],
+      "correct": 2,
+      "answer": "Hai góc nhọn bằng nhau",
+      "explanation": "🔑 Chỉ hai góc nhọn bằng nhau thì chưa đủ: không có yếu tố cạnh nào nên hai tam giác vuông vẫn có thể to nhỏ khác nhau.<br>✗ Hai cạnh góc vuông bằng nhau là một trường hợp bằng nhau hợp lệ.<br>✗ Cạnh huyền và một góc nhọn bằng nhau là một trường hợp bằng nhau hợp lệ.<br>✗ Cạnh huyền và một cạnh góc vuông bằng nhau cũng là một trường hợp bằng nhau hợp lệ."
+    },
+    {
+      "id": "m4-30",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "△MNP vuông tại M và △XYZ vuông tại X có NP = YZ, ∠N = ∠Y. Hai tam giác bằng nhau theo trường hợp nào?",
+      "options": ["Cạnh huyền - góc nhọn", "Hai cạnh góc vuông", "Cạnh huyền - cạnh góc vuông", "Chưa đủ dữ kiện để kết luận"],
+      "correct": 0,
+      "answer": "Cạnh huyền - góc nhọn",
+      "explanation": "🔑 NP và YZ đối diện góc vuông nên là hai cạnh huyền; thêm cặp góc nhọn ∠N = ∠Y là đủ trường hợp cạnh huyền - góc nhọn.<br>✗ Trường hợp hai cạnh góc vuông cần hai cặp cạnh góc vuông, mà đề không cho cạnh góc vuông nào.<br>✗ Cạnh huyền - cạnh góc vuông cần thêm một cặp cạnh góc vuông, còn đề cho góc chứ không cho cạnh đó.<br>✗ Dữ kiện đã đủ, vì cạnh huyền cộng một góc nhọn là một trường hợp hoàn chỉnh."
+    },
+    {
+      "id": "m4-31",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "△ABC vuông tại A và △MNP vuông tại M có AB = MN, AC = MP. Kết luận nào đúng?",
+      "options": ["Chưa kết luận được vì chưa biết cạnh huyền", "Bằng nhau theo trường hợp cạnh huyền - góc nhọn", "Chưa kết luận được vì chưa biết góc nhọn nào", "Bằng nhau theo trường hợp hai cạnh góc vuông"],
+      "correct": 3,
+      "answer": "Bằng nhau theo trường hợp hai cạnh góc vuông",
+      "explanation": "🔑 AB, AC và MN, MP đều là cạnh góc vuông; hai cặp bằng nhau nên hai tam giác bằng nhau theo trường hợp hai cạnh góc vuông.<br>✗ Không cần biết cạnh huyền: khi hai cạnh góc vuông đã bằng nhau thì cạnh huyền tự khắc bằng nhau.<br>✗ Cạnh huyền - góc nhọn cần cạnh huyền và góc nhọn, mà đề không cho hai yếu tố đó.<br>✗ Không cần thêm góc nhọn nào, vì góc vuông 90° đã đóng vai trò góc xen giữa."
+    },
+    {
+      "id": "m4-32",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Vì sao trường hợp hai cạnh góc vuông thực chất chỉ là một dạng của c-g-c?",
+      "options": ["Vì hai cạnh huyền luôn bằng nhau", "Vì góc vuông 90° chính là góc xen giữa hai cạnh góc vuông", "Vì hai góc nhọn của tam giác vuông luôn bằng 45°", "Vì mọi tam giác vuông đều bằng nhau"],
+      "correct": 1,
+      "answer": "Vì góc vuông 90° chính là góc xen giữa hai cạnh góc vuông",
+      "explanation": "🔑 Hai cạnh góc vuông kẹp lấy góc 90°, nên ta có đủ cạnh - góc xen giữa - cạnh, tức đúng khuôn c-g-c.<br>✗ Cạnh huyền chỉ bằng nhau SAU KHI đã chứng minh hai tam giác bằng nhau, nó là kết quả chứ không phải lí do.<br>✗ Hai góc nhọn chỉ bằng 45° khi tam giác vuông cân, không phải với mọi tam giác vuông.<br>✗ Các tam giác vuông có kích thước rất khác nhau, hoàn toàn không phải cái nào cũng bằng nhau."
+    },
+    {
+      "id": "m4-33",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Tam giác PQR vuông tại P, tam giác HIK vuông tại H, biết PQ = HI và ∠Q = ∠I. Chúng bằng nhau nhờ trường hợp nào?",
+      "options": ["Cạnh góc vuông - góc nhọn kề", "Cạnh huyền - góc nhọn", "Hai cạnh góc vuông", "Cạnh huyền - cạnh góc vuông"],
+      "correct": 0,
+      "answer": "Cạnh góc vuông - góc nhọn kề",
+      "explanation": "🔑 PQ là cạnh góc vuông và ∠Q là góc nhọn KỀ với cạnh PQ, nên hai tam giác bằng nhau theo cạnh góc vuông - góc nhọn kề.<br>✗ Cạnh huyền - góc nhọn đòi cạnh huyền QR = IK, trong khi đề cho cạnh góc vuông PQ = HI.<br>✗ Hai cạnh góc vuông cần hai cặp cạnh, còn đề chỉ cho một cặp cạnh và một cặp góc.<br>✗ Cạnh huyền - cạnh góc vuông cần cạnh huyền, mà đề bài không hề cho."
+    },
+    {
+      "id": "m4-34",
+      "ch": 4,
+      "topic": "Tam giác vuông bằng nhau",
+      "q": "Trong một tam giác vuông, cạnh huyền là cạnh nào?",
+      "options": ["Cạnh ngắn nhất của tam giác", "Cạnh đối diện với góc vuông", "Cạnh cùng với một cạnh khác tạo nên góc vuông", "Cạnh đối diện với góc nhọn nhỏ nhất"],
+      "correct": 1,
+      "answer": "Cạnh đối diện với góc vuông",
+      "explanation": "🔑 Cạnh huyền là cạnh đối diện với góc vuông; hai cạnh còn lại gọi là cạnh góc vuông.<br>✗ Cạnh huyền là cạnh DÀI NHẤT chứ không phải ngắn nhất, vì nó đối diện góc lớn nhất.<br>✗ Hai cạnh tạo nên góc vuông chính là hai cạnh góc vuông, không phải cạnh huyền.<br>✗ Cạnh đối diện góc nhọn nhỏ nhất là cạnh ngắn nhất của tam giác."
+    },
+    {
+      "id": "m4-35",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "△ABC cân tại A (tức AB = AC) thì hai góc nào bằng nhau?",
+      "options": ["∠A = ∠B", "∠A = ∠C", "Cả ba góc đều bằng nhau", "∠B = ∠C"],
+      "correct": 3,
+      "answer": "∠B = ∠C",
+      "explanation": "🔑 Trong tam giác cân tại A, hai góc ở ĐÁY bằng nhau: AB = AC ⇔ ∠B = ∠C.<br>✗ ∠A là góc ở đỉnh, nói chung khác ∠B.<br>✗ ∠A cũng khác ∠C, trừ trường hợp đặc biệt là tam giác đều.<br>✗ Ba góc chỉ bằng nhau khi tam giác ĐỀU; tam giác cân chỉ chắc chắn có hai góc đáy bằng nhau."
+    },
+    {
+      "id": "m4-36",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "△ABC cân tại A có ∠A = 40°. Số đo mỗi góc ở đáy là bao nhiêu?",
+      "options": ["40°", "50°", "70°", "140°"],
+      "correct": 2,
+      "answer": "70°",
+      "explanation": "🔑 Hai góc đáy bằng nhau nên ∠B = ∠C = (180° − 40°) : 2 = 70°.<br>✗ 40° là góc ở đỉnh ∠A, không phải góc đáy.<br>✗ 50° là kết quả của 90° − 40°, cách tính đó chỉ dùng cho hai góc nhọn của tam giác vuông.<br>✗ 140° mới là tổng hai góc đáy, còn thiếu bước chia đôi."
+    },
+    {
+      "id": "m4-37",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "△ABC có ∠B = ∠C = 55°. Kết luận nào đúng?",
+      "options": ["△ABC là tam giác đều", "△ABC vuông tại A", "△ABC cân tại A", "△ABC cân tại B"],
+      "correct": 2,
+      "answer": "△ABC cân tại A",
+      "explanation": "🔑 Hai góc bằng nhau thì hai cạnh đối diện bằng nhau: ∠B = ∠C ⇔ AB = AC, tức tam giác cân tại A.<br>✗ Tam giác đều cần ba góc cùng bằng 60°, ở đây hai góc là 55°.<br>✗ ∠A = 180° − 110° = 70°, không phải 90° nên tam giác không vuông tại A.<br>✗ Cân tại B nghĩa là BA = BC, tương ứng với ∠A = ∠C, đề bài không cho điều đó."
+    },
+    {
+      "id": "m4-38",
+      "ch": 4,
+      "topic": "Tam giác đều",
+      "q": "Mỗi góc của một tam giác đều bằng bao nhiêu độ?",
+      "options": ["45°", "90°", "180°", "60°"],
+      "correct": 3,
+      "answer": "60°",
+      "explanation": "🔑 Tam giác đều có ba góc bằng nhau nên mỗi góc bằng 180° : 3 = 60°.<br>✗ 45° là góc nhọn của tam giác vuông cân, không phải tam giác đều.<br>✗ 90° là góc vuông; một tam giác chỉ có nhiều nhất một góc vuông nên không thể có ba góc 90°.<br>✗ 180° là tổng CẢ BA góc chứ không phải số đo của một góc."
+    },
+    {
+      "id": "m4-39",
+      "ch": 4,
+      "topic": "Tam giác đều",
+      "q": "Dấu hiệu nào sau đây KHÔNG đủ để kết luận một tam giác là tam giác đều?",
+      "options": ["Tam giác có ba cạnh bằng nhau", "Tam giác cân có hai góc ở đáy bằng nhau", "Tam giác có ba góc bằng nhau", "Tam giác cân có một góc bằng 60°"],
+      "correct": 1,
+      "answer": "Tam giác cân có hai góc ở đáy bằng nhau",
+      "explanation": "🔑 MỌI tam giác cân đều có hai góc đáy bằng nhau, nên câu này không cho thêm thông tin gì và không thể suy ra tam giác đều.<br>✗ Ba cạnh bằng nhau chính là định nghĩa của tam giác đều.<br>✗ Ba góc bằng nhau thì mỗi góc bằng 60°, đó là tam giác đều.<br>✗ Tam giác cân có một góc 60° thì cả ba góc đều bằng 60°, nên nó là tam giác đều."
+    },
+    {
+      "id": "m4-40",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "△ABC cân tại A có ∠B = 50°. Số đo ∠A là bao nhiêu?",
+      "options": ["80°", "50°", "65°", "130°"],
+      "correct": 0,
+      "answer": "80°",
+      "explanation": "🔑 Cân tại A nên ∠C = ∠B = 50°, do đó ∠A = 180° − 50° − 50° = 80°.<br>✗ 50° là số đo góc đáy ∠B, không phải góc ở đỉnh.<br>✗ 65° là kết quả của (180° − 50°) : 2, công thức đó chỉ dùng khi 50° là góc ở ĐỈNH.<br>✗ 130° là 180° − 50°, tức là quên trừ đi góc đáy thứ hai."
+    },
+    {
+      "id": "m4-41",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "Trong tam giác cân, cạnh bên và cạnh đáy được hiểu như thế nào?",
+      "options": ["Hai cạnh đáy là hai cạnh bằng nhau, cạnh bên là cạnh còn lại", "Hai cạnh bên là hai cạnh bằng nhau, cạnh đáy là cạnh còn lại", "Cạnh đáy luôn là cạnh dài nhất của tam giác", "Cạnh đáy luôn là cạnh nằm ngang ở phía dưới"],
+      "correct": 1,
+      "answer": "Hai cạnh bên là hai cạnh bằng nhau, cạnh đáy là cạnh còn lại",
+      "explanation": "🔑 Tam giác cân có hai CẠNH BÊN bằng nhau; cạnh thứ ba là cạnh đáy, và hai góc kề cạnh đáy chính là hai góc đáy bằng nhau.<br>✗ Nói ngược rồi: hai cạnh bằng nhau là cạnh bên, tam giác chỉ có MỘT cạnh đáy.<br>✗ Cạnh đáy có thể ngắn hơn cạnh bên, ví dụ tam giác cân có cạnh bên 5 cm và cạnh đáy 2 cm.<br>✗ Nằm ngang hay không chỉ là cách vẽ hình, không phải định nghĩa toán học."
+    },
+    {
+      "id": "m4-42",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "Tam giác vuông cân tại A có hai góc nhọn bằng bao nhiêu?",
+      "options": ["30° và 60°", "60° và 60°", "45° và 45°", "90° và 90°"],
+      "correct": 2,
+      "answer": "45° và 45°",
+      "explanation": "🔑 Vuông tại A nên ∠B + ∠C = 90°, lại cân tại A nên ∠B = ∠C = 90° : 2 = 45°.<br>✗ 30° và 60° tuy có tổng 90° nhưng hai góc khác nhau, tam giác đó không cân.<br>✗ 60° và 60° cho tổng 120°, vượt quá 90° nên tam giác không thể vuông.<br>✗ Không tam giác nào có hai góc 90° bên cạnh góc vuông ∠A."
+    },
+    {
+      "id": "m4-43",
+      "ch": 4,
+      "topic": "Tam giác đều",
+      "q": "Một tam giác cân có góc ở đỉnh bằng 60° thì đó là tam giác gì?",
+      "options": ["Tam giác đều", "Tam giác vuông cân", "Tam giác tù", "Tam giác cân nhưng không đều"],
+      "correct": 0,
+      "answer": "Tam giác đều",
+      "explanation": "🔑 Hai góc đáy bằng (180° − 60°) : 2 = 60°, nên cả ba góc đều là 60° — đó chính là tam giác đều.<br>✗ Vuông cân phải có một góc 90° và hai góc 45°.<br>✗ Tam giác tù cần một góc lớn hơn 90°, ở đây góc lớn nhất chỉ là 60°.<br>✗ Ba góc bằng nhau kéo theo ba cạnh bằng nhau, nên tam giác này chắc chắn ĐỀU."
+    },
+    {
+      "id": "m4-44",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "Hệ thức AB = AC ⇔ ∠B = ∠C trong tam giác ABC có nghĩa là gì?",
+      "options": ["Chỉ đúng một chiều: có AB = AC mới suy ra được ∠B = ∠C", "Chỉ đúng một chiều: có ∠B = ∠C mới suy ra được AB = AC", "Chỉ đúng khi △ABC là tam giác đều", "Đúng cả hai chiều: cạnh bằng nhau suy ra góc bằng nhau và ngược lại"],
+      "correct": 3,
+      "answer": "Đúng cả hai chiều: cạnh bằng nhau suy ra góc bằng nhau và ngược lại",
+      "explanation": "🔑 Dấu ⇔ nghĩa là tương đương hai chiều: AB = AC thì ∠B = ∠C, và ∠B = ∠C thì AB = AC.<br>✗ Nếu chỉ đúng một chiều thì phải viết ⇒, nhưng ở đây đề ghi rõ là ⇔.<br>✗ Chiều ngược lại (từ góc suy ra cạnh) cũng là một định lí đã học, không bị bỏ đi.<br>✗ Tính chất này đúng với MỌI tam giác cân, không riêng gì tam giác đều."
+    },
+    {
+      "id": "m4-45",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "Đường trung trực của đoạn thẳng AB là đường thẳng như thế nào?",
+      "options": ["Đường thẳng đi qua trung điểm của AB", "Đường thẳng vuông góc với AB", "Đường thẳng song song với AB và cách đều A, B", "Đường thẳng vuông góc với AB tại trung điểm của AB"],
+      "correct": 3,
+      "answer": "Đường thẳng vuông góc với AB tại trung điểm của AB",
+      "explanation": "🔑 Đường trung trực phải thoả ĐỦ hai điều kiện: vuông góc với AB và đi qua trung điểm của AB.<br>✗ Chỉ đi qua trung điểm thì chưa đủ, còn phải vuông góc nữa.<br>✗ Chỉ vuông góc thì chưa đủ, còn phải cắt AB đúng ngay tại trung điểm.<br>✗ Đường song song với AB không bao giờ cắt AB nên không thể là trung trực của AB."
+    },
+    {
+      "id": "m4-46",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "Cho d là đường trung trực của đoạn thẳng AB và điểm M thuộc d. Khi đó ta có điều gì?",
+      "options": ["MA = MB", "MA = AB", "MB = AB", "MA + MB = AB"],
+      "correct": 0,
+      "answer": "MA = MB",
+      "explanation": "🔑 Tính chất đường trung trực: M ∈ d ⇔ MA = MB, mọi điểm trên trung trực đều cách đều hai đầu mút.<br>✗ MA = AB chỉ xảy ra ở một vị trí đặc biệt nào đó, không phải tính chất chung.<br>✗ MB = AB cũng vậy, không suy ra được từ việc M thuộc trung trực.<br>✗ MA + MB = AB chỉ đúng khi M nằm GIỮA A và B trên chính đoạn AB, mà điểm duy nhất như vậy trên d là trung điểm."
+    },
+    {
+      "id": "m4-47",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "Điểm M cách đều hai đầu mút của đoạn thẳng AB, tức MA = MB. Kết luận nào đúng?",
+      "options": ["M là trung điểm của AB", "M nằm trên đoạn thẳng AB", "M nằm trên đường trung trực của AB", "M nằm ngoài đường trung trực của AB"],
+      "correct": 2,
+      "answer": "M nằm trên đường trung trực của AB",
+      "explanation": "🔑 Đây là chiều ngược của tính chất trung trực: MA = MB ⇔ M thuộc đường trung trực của AB.<br>✗ M chỉ là trung điểm khi M nằm trên chính đoạn AB; nói chung M có thể ở rất xa AB.<br>✗ M không nhất thiết nằm trên đoạn AB, vì trung trực còn kéo dài về cả hai phía.<br>✗ Đây là kết luận NGƯỢC hẳn với tính chất vừa nêu."
+    },
+    {
+      "id": "m4-48",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "Đoạn thẳng AB dài 8 cm, đường trung trực d của AB cắt AB tại điểm I. Độ dài IA bằng bao nhiêu?",
+      "options": ["8 cm", "4 cm", "2 cm", "16 cm"],
+      "correct": 1,
+      "answer": "4 cm",
+      "explanation": "🔑 d cắt AB tại trung điểm I nên IA = IB = 8 : 2 = 4 cm.<br>✗ 8 cm là độ dài cả đoạn AB, chưa chia đôi.<br>✗ 2 cm là kết quả của phép chia cho 4, trong khi trung điểm chỉ chia đoạn thành 2 phần.<br>✗ 16 cm là 8 × 2, nhân thay vì chia."
+    },
+    {
+      "id": "m4-49",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "△ABC cân tại A và M là trung điểm của BC. Đường thẳng AM có tính chất gì đối với BC?",
+      "options": ["AM là đường trung trực của BC", "AM song song với BC", "AM đi qua trung điểm nhưng không vuông góc với BC", "AM là đường trung trực của AB"],
+      "correct": 0,
+      "answer": "AM là đường trung trực của BC",
+      "explanation": "🔑 Vì AB = AC nên A cách đều B và C, do đó A thuộc trung trực của BC; M là trung điểm BC cũng thuộc đường ấy, nên AM chính là đường trung trực của BC.<br>✗ AM cắt BC tại M nên không thể song song với BC.<br>✗ AM thực sự vuông góc với BC — điều này rút ra từ △ABM = △ACM.<br>✗ AM đi qua đầu mút A của đoạn AB nên không thể là trung trực của AB."
+    },
+    {
+      "id": "m4-50",
+      "ch": 4,
+      "topic": "Đường trung trực",
+      "q": "Phát biểu nào sau đây về đường trung trực d của đoạn thẳng AB là SAI?",
+      "options": ["Mọi điểm thuộc d đều cách đều A và B", "Mọi điểm cách đều A và B đều nằm ngoài d", "d vuông góc với AB tại trung điểm của AB", "Trung điểm của AB luôn thuộc d"],
+      "correct": 1,
+      "answer": "Mọi điểm cách đều A và B đều nằm ngoài d",
+      "explanation": "🔑 Câu sai là câu nói điểm cách đều A và B thì nằm ngoài d; thực ra mọi điểm cách đều A và B đều NẰM TRÊN d.<br>✗ Mọi điểm thuộc d cách đều A và B là chiều thuận của tính chất, hoàn toàn đúng.<br>✗ d vuông góc với AB tại trung điểm chính là định nghĩa đường trung trực.<br>✗ Trung điểm của AB là giao điểm của d với AB nên chắc chắn thuộc d."
+    }
+  ]
+}

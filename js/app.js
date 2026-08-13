@@ -930,6 +930,7 @@ function switchScreen(screenId) {
 
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'learnHubScreen') renderLearnHub();
+    if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
     if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();

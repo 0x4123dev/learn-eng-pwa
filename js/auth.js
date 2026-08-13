@@ -193,6 +193,10 @@ const EngAuth = (function () {
       title: (h.unit === 'mix' ? 'Mix 12 units' : 'Unit ' + h.unit) + ' words practice',
       score: h.score, total: h.total, at: h.date,
     }));
+    (appState.mathHistory || []).forEach(h => add({
+      type: 'math', title: 'Toán 7 · ' + (h.label || 'công thức'),
+      score: h.score, total: h.total, at: h.date,
+    }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
       score: h.correct, total: h.total, at: h.date, detail: { score: h.score },

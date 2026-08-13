@@ -1,0 +1,508 @@
+{
+  "chapter": 3,
+  "title": "Góc và đường thẳng song song",
+  "icon": "③",
+  "lesson": "<p>Chương III kể một câu chuyện rất gọn: <b>hai đường thẳng cắt nhau thì sinh ra góc</b>, và nếu các góc ở đúng vị trí bằng nhau thì <b>hai đường thẳng đó song song</b>. Cả chương chỉ có mấy công thức, nhưng đề kiểm tra xoay đi xoay lại đúng mấy công thức đó. Con thuộc phần dưới đây là làm được gần hết bài tập.</p><h4>📌 Công thức</h4><p><b>1. Hai góc kề bù</b> — hai góc kề nhau (chung một cạnh), hai cạnh còn lại là hai tia đối nhau:</p><ul><li><b>∠xOz + ∠zOy = 180°</b></li><li>Biết một góc là tính ngay được góc kia: ∠zOy = 180° − ∠xOz.</li></ul><p><b>2. Hai góc đối đỉnh</b> — hai đường thẳng cắt nhau tạo ra 4 góc; hai góc đối nhau qua điểm cắt là hai góc đối đỉnh:</p><ul><li><b>∠O₁ = ∠O₂</b> (hai góc đối đỉnh thì bằng nhau)</li></ul><p><b>3. Tia phân giác</b> — tia nằm giữa hai cạnh và chia góc thành hai phần bằng nhau:</p><ul><li><b>∠xOz = ∠zOy = ½∠xOy</b></li></ul><p><b>4. Dấu hiệu nhận biết hai đường thẳng song song</b> (đi từ GÓC ⇒ SONG SONG):</p><ul><li>Một cặp góc <b>so le trong bằng nhau</b> ⇒ <b>a ∥ b</b></li><li>HOẶC một cặp góc <b>đồng vị bằng nhau</b> ⇒ <b>a ∥ b</b></li></ul><p><b>5. Tính chất hai đường thẳng song song</b> (đi từ SONG SONG ⇒ GÓC):</p><ul><li><b>a ∥ b ⇒</b> các góc so le trong bằng nhau, các góc đồng vị bằng nhau</li><li>Kèm theo: hai góc <b>trong cùng phía bù nhau</b>, tổng bằng 180°.</li></ul><p><b>6. Quan hệ giữa vuông góc và song song</b>:</p><ul><li><b>a ⊥ c và b ⊥ c ⇒ a ∥ b</b> — cùng vuông góc với một đường thứ ba thì song song với nhau.</li><li><b>a ∥ b và c ⊥ a ⇒ c ⊥ b</b> — vuông góc với một trong hai đường song song thì vuông góc với đường còn lại.</li></ul><p><b>7. Tiên đề Euclid</b>: Qua một điểm nằm ngoài một đường thẳng, <b>chỉ có MỘT</b> đường thẳng song song với đường thẳng đó.</p><h4>💡 Ví dụ</h4><ul><li><b>Kề bù:</b> ∠xOz = 130°. Vì ∠xOz và ∠zOy kề bù nên ∠zOy = 180° − 130° = <b>50°</b>.</li><li><b>Đối đỉnh:</b> Hai đường thẳng cắt nhau tại O, một góc bằng 40°. Góc đối đỉnh với nó cũng bằng <b>40°</b>; hai góc còn lại kề bù với nó nên mỗi góc bằng 180° − 40° = <b>140°</b>.</li><li><b>Phân giác:</b> ∠xOy = 80° và Oz là tia phân giác ⇒ ∠xOz = ∠zOy = ½ · 80° = <b>40°</b>. Ngược lại, nếu ∠xOz = 35° và Oz là phân giác thì ∠xOy = 2 · 35° = <b>70°</b>.</li><li><b>Song song:</b> Đường thẳng c cắt a và b, một cặp góc so le trong đều bằng 65° ⇒ <b>a ∥ b</b>. Đã có a ∥ b thì mọi cặp góc đồng vị cũng bằng nhau, còn góc trong cùng phía với góc 65° bằng 180° − 65° = <b>115°</b>.</li><li><b>Vuông góc – song song:</b> a ⊥ c và b ⊥ c ⇒ <b>a ∥ b</b>. Nếu sau đó có thêm d ⊥ a thì vì a ∥ b nên <b>d ⊥ b</b>.</li><li><b>Tiên đề:</b> Qua điểm M ngoài đường thẳng d kẻ được <b>vô số</b> đường thẳng, nhưng chỉ <b>đúng một</b> đường song song với d.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>180° hay 90° hay 360°?</b> Hai góc kề bù có tổng <b>180°</b> (ghép lại thành góc bẹt). <b>90°</b> là hai góc phụ nhau. <b>360°</b> là tổng các góc quanh một điểm. Ba con số này rất hay bị lẫn.</li><li><b>So le trong / đồng vị / trong cùng phía.</b> So le trong nằm ở <b>hai phía khác nhau</b> của đường cắt, phần <b>trong</b>. Đồng vị nằm <b>cùng phía</b> đường cắt và ở <b>cùng vị trí</b> (cùng trên hoặc cùng dưới). Trong cùng phía nằm cùng một bên, phần trong. Khi a ∥ b: so le trong <b>bằng nhau</b>, đồng vị <b>bằng nhau</b>, còn trong cùng phía <b>bù nhau (180°)</b> chứ KHÔNG bằng nhau.</li><li><b>Chiều của mũi tên ⇒.</b> “Góc bằng nhau ⇒ a ∥ b” là <b>dấu hiệu nhận biết</b>; “a ∥ b ⇒ góc bằng nhau” là <b>tính chất</b>. Đề hỏi chiều nào phải trả lời đúng chiều đó.</li><li><b>⊥ và ∥ rất dễ viết nhầm.</b> Nhớ kỹ: hai đường <b>cùng vuông góc</b> với một đường thứ ba thì <b>song song</b> với nhau (a ⊥ c, b ⊥ c ⇒ a ∥ b), chứ không phải a ⊥ b. Vuông góc <b>không</b> bắc cầu, còn song song thì có: a ∥ b, b ∥ c ⇒ a ∥ c.</li><li><b>Tiên đề nói “chỉ MỘT”.</b> Không phải “hai”, cũng không phải “vô số”. Và nếu điểm đó <b>nằm trên</b> đường thẳng thì không kẻ được đường song song nào cả.</li><li><b>Đối đỉnh chứ không phải kề bù.</b> Hai góc đối đỉnh thì <b>bằng nhau</b>; hai góc kề bù thì <b>cộng lại</b> bằng 180°.</li></ul>",
+  "questions": [
+    {
+      "id": "m3-1",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Hai góc kề bù có tổng số đo bằng bao nhiêu?",
+      "options": ["∠xOz + ∠zOy = 180°", "∠xOz + ∠zOy = 90°", "∠xOz + ∠zOy = 360°", "∠xOz = ∠zOy"],
+      "correct": 0,
+      "answer": "∠xOz + ∠zOy = 180°",
+      "explanation": "🔑 Hai góc kề bù kề nhau và hai cạnh ngoài tạo thành một góc bẹt, nên <b>∠xOz + ∠zOy = 180°</b>.<br>✗ 90° là tổng của hai góc <b>phụ nhau</b>, không phải kề bù.<br>✗ 360° là tổng các góc quanh một điểm, không phải tổng hai góc kề bù.<br>✗ ∠xOz = ∠zOy chỉ xảy ra khi mỗi góc bằng 90°, đó không phải tính chất chung."
+    },
+    {
+      "id": "m3-2",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Cho ∠xOz và ∠zOy là hai góc kề bù, biết ∠xOz = 130°. Số đo ∠zOy bằng bao nhiêu?",
+      "options": ["∠zOy = 130°", "∠zOy = 50°", "∠zOy = 230°", "∠zOy = 65°"],
+      "correct": 1,
+      "answer": "∠zOy = 50°",
+      "explanation": "🔑 Kề bù nên ∠zOy = 180° − ∠xOz = 180° − 130° = <b>50°</b>.<br>✗ 130° là lấy bằng chính góc kia — đó là tính chất hai góc <b>đối đỉnh</b>, không phải kề bù.<br>✗ 230° là lấy 360° − 130°, dùng nhầm tổng các góc quanh một điểm.<br>✗ 65° là một nửa của 130° — đó là công thức tia phân giác."
+    },
+    {
+      "id": "m3-3",
+      "ch": 3,
+      "topic": "Hai góc đối đỉnh",
+      "q": "Tính chất của hai góc đối đỉnh được viết như thế nào?",
+      "options": ["∠O₁ + ∠O₂ = 180°", "∠O₁ + ∠O₂ = 90°", "∠O₁ = ∠O₂", "∠O₁ = ½∠O₂"],
+      "correct": 2,
+      "answer": "∠O₁ = ∠O₂",
+      "explanation": "🔑 <b>Hai góc đối đỉnh thì bằng nhau</b>: ∠O₁ = ∠O₂.<br>✗ ∠O₁ + ∠O₂ = 180° là tính chất của hai góc <b>kề bù</b>, không phải đối đỉnh.<br>✗ Tổng 90° là quan hệ của hai góc phụ nhau.<br>✗ ½ là công thức <b>tia phân giác</b>, không liên quan gì đến hai góc đối đỉnh."
+    },
+    {
+      "id": "m3-4",
+      "ch": 3,
+      "topic": "Hai góc đối đỉnh",
+      "q": "Hai đường thẳng cắt nhau tại O tạo thành bốn góc, trong đó có một góc bằng 40°. Góc đối đỉnh với góc 40° bằng bao nhiêu?",
+      "options": ["140°", "180°", "20°", "40°"],
+      "correct": 3,
+      "answer": "40°",
+      "explanation": "🔑 Hai góc đối đỉnh thì bằng nhau, nên góc đối đỉnh với góc 40° cũng bằng <b>40°</b>.<br>✗ 140° = 180° − 40° là số đo góc <b>kề bù</b> với nó, không phải góc đối đỉnh.<br>✗ 180° là số đo góc bẹt, không thể là một trong bốn góc đó.<br>✗ 20° là một nửa của 40° — kết quả khi nhầm sang tia phân giác."
+    },
+    {
+      "id": "m3-5",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Hai đường thẳng cắt nhau tại O, một trong bốn góc tạo thành bằng 35°. Số đo của góc kề bù với góc đó là bao nhiêu?",
+      "options": ["145°", "35°", "55°", "325°"],
+      "correct": 0,
+      "answer": "145°",
+      "explanation": "🔑 Hai góc kề bù có tổng 180°, nên góc cần tìm bằng 180° − 35° = <b>145°</b>.<br>✗ 35° là số đo góc <b>đối đỉnh</b> (bằng chính nó), không phải góc kề bù.<br>✗ 55° = 90° − 35° là quan hệ hai góc <b>phụ nhau</b>, không phải bù nhau.<br>✗ 325° = 360° − 35°, dùng nhầm tổng các góc quanh một điểm."
+    },
+    {
+      "id": "m3-6",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Hai góc kề bù có số đo bằng nhau thì mỗi góc bằng bao nhiêu?",
+      "options": ["45°", "90°", "60°", "180°"],
+      "correct": 1,
+      "answer": "90°",
+      "explanation": "🔑 Tổng hai góc kề bù bằng 180°; hai góc bằng nhau nên mỗi góc bằng 180° : 2 = <b>90°</b>.<br>✗ 45° là 90° : 2, tức đã nhầm tổng hai góc là 90° thay vì 180°.<br>✗ 60° là 180° : 3, chia cho ba trong khi chỉ có hai góc.<br>✗ 180° là tổng của cả hai góc, không phải số đo mỗi góc."
+    },
+    {
+      "id": "m3-7",
+      "ch": 3,
+      "topic": "Góc tạo bởi hai đường thẳng cắt nhau",
+      "q": "Tổng số đo bốn góc tạo bởi hai đường thẳng cắt nhau tại một điểm bằng bao nhiêu?",
+      "options": ["180°", "90°", "360°", "720°"],
+      "correct": 2,
+      "answer": "360°",
+      "explanation": "🔑 Bốn góc đó phủ kín xung quanh điểm cắt nên tổng bằng <b>360°</b> (ví dụ 40° + 140° + 40° + 140° = 360°).<br>✗ 180° chỉ là tổng của <b>hai</b> góc kề bù, tức một nửa số góc.<br>✗ 90° là tổng của hai góc phụ nhau, không liên quan ở đây.<br>✗ 720° là kết quả khi nhân đôi 360° do đếm mỗi góc hai lần."
+    },
+    {
+      "id": "m3-8",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Điều kiện để hai góc ∠xOz và ∠zOy là hai góc kề bù là gì?",
+      "options": ["Hai góc bằng nhau và có chung đỉnh O", "Hai góc có chung đỉnh O và tổng bằng 90°", "Hai góc đối đỉnh nhau qua điểm O", "Hai góc kề nhau (chung cạnh Oz) và hai tia Ox, Oy đối nhau"],
+      "correct": 3,
+      "answer": "Hai góc kề nhau (chung cạnh Oz) và hai tia Ox, Oy đối nhau",
+      "explanation": "🔑 Hai góc kề bù là hai góc <b>kề nhau</b> (chung cạnh Oz) và hai cạnh còn lại Ox, Oy là <b>hai tia đối nhau</b>; khi đó ∠xOz + ∠zOy = 180°.<br>✗ Bằng nhau và chung đỉnh là chưa đủ: hai góc kề bù chỉ bằng nhau khi mỗi góc bằng 90°.<br>✗ Tổng bằng 90° là hai góc <b>phụ nhau</b>, không phải kề bù.<br>✗ Hai góc đối đỉnh thì bằng nhau và không kề nhau — đó là quan hệ hoàn toàn khác."
+    },
+    {
+      "id": "m3-9",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Một góc có số đo 90°. Góc kề bù với nó có số đo bằng bao nhiêu?",
+      "options": ["90°", "0°", "180°", "270°"],
+      "correct": 0,
+      "answer": "90°",
+      "explanation": "🔑 180° − 90° = <b>90°</b>, nên góc kề bù với một góc vuông cũng là góc vuông.<br>✗ 0° là kết quả của 90° − 90°, tức nhầm tổng hai góc kề bù là 90°.<br>✗ 180° là tổng của hai góc chứ không phải số đo góc còn lại.<br>✗ 270° = 360° − 90°, dùng nhầm tổng các góc quanh một điểm."
+    },
+    {
+      "id": "m3-10",
+      "ch": 3,
+      "topic": "Hai góc đối đỉnh",
+      "q": "Khẳng định nào sau đây đúng về hai góc đối đỉnh?",
+      "options": ["Hai góc bằng nhau thì luôn đối đỉnh với nhau", "Hai góc đối đỉnh thì bằng nhau, nhưng hai góc bằng nhau chưa chắc đối đỉnh", "Hai góc đối đỉnh thì bù nhau", "Hai góc đối đỉnh thì có chung một cạnh"],
+      "correct": 1,
+      "answer": "Hai góc đối đỉnh thì bằng nhau, nhưng hai góc bằng nhau chưa chắc đối đỉnh",
+      "explanation": "🔑 Hai góc đối đỉnh luôn bằng nhau, nhưng chiều ngược lại không đúng: hai góc bằng nhau có thể nằm ở bất kỳ đâu.<br>✗ “Bằng nhau thì đối đỉnh” là <b>đảo ngược mệnh đề</b> — một lỗi rất hay gặp và hoàn toàn sai.<br>✗ Bù nhau (tổng 180°) là tính chất của hai góc <b>kề bù</b>, không phải đối đỉnh.<br>✗ Hai góc đối đỉnh không chung cạnh: cạnh của góc này là tia đối cạnh của góc kia."
+    },
+    {
+      "id": "m3-11",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Nếu Oz là tia phân giác của ∠xOy thì công thức nào sau đây đúng?",
+      "options": ["∠xOz + ∠zOy = 180°", "∠xOz = ∠zOy = ½∠xOy", "∠xOz = 2∠xOy", "∠xOz = ∠xOy"],
+      "correct": 1,
+      "answer": "∠xOz = ∠zOy = ½∠xOy",
+      "explanation": "🔑 Tia phân giác chia góc thành hai góc bằng nhau: <b>∠xOz = ∠zOy = ½∠xOy</b>.<br>✗ Tổng bằng 180° là công thức hai góc <b>kề bù</b>, không phải phân giác.<br>✗ ∠xOz = 2∠xOy là ngược chiều: góc con phải NHỎ hơn, bằng một nửa góc lớn.<br>✗ ∠xOz = ∠xOy nghĩa là tia Oz trùng tia Oy, khi đó không có tia phân giác nào cả."
+    },
+    {
+      "id": "m3-12",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Cho ∠xOy = 80° và Oz là tia phân giác của ∠xOy. Số đo ∠xOz bằng bao nhiêu?",
+      "options": ["160°", "100°", "40°", "80°"],
+      "correct": 2,
+      "answer": "40°",
+      "explanation": "🔑 ∠xOz = ½ · ∠xOy = ½ · 80° = <b>40°</b>.<br>✗ 160° là 80° × 2 — nhân đôi thay vì chia đôi.<br>✗ 100° = 180° − 80°, dùng nhầm công thức hai góc kề bù.<br>✗ 80° là giữ nguyên góc lớn, quên mất bước chia đôi."
+    },
+    {
+      "id": "m3-13",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Tia Oz là tia phân giác của ∠xOy và ∠xOz = 35°. Số đo ∠xOy bằng bao nhiêu?",
+      "options": ["35°", "145°", "17,5°", "70°"],
+      "correct": 3,
+      "answer": "70°",
+      "explanation": "🔑 Bài này đi ngược: ∠xOy = 2 · ∠xOz = 2 · 35° = <b>70°</b>.<br>✗ 35° mới chỉ là số đo nửa góc, chưa phải cả góc.<br>✗ 145° = 180° − 35°, dùng nhầm công thức hai góc kề bù.<br>✗ 17,5° là chia đôi thêm một lần nữa — làm ngược chiều phép tính."
+    },
+    {
+      "id": "m3-14",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Tia phân giác của một góc bẹt (180°) chia góc đó thành hai góc, mỗi góc bằng bao nhiêu?",
+      "options": ["90°", "45°", "180°", "360°"],
+      "correct": 0,
+      "answer": "90°",
+      "explanation": "🔑 ½ · 180° = <b>90°</b>, nên tia phân giác của góc bẹt vuông góc với hai cạnh của góc đó.<br>✗ 45° là một nửa của 90°, tức đã chia đôi hai lần.<br>✗ 180° là số đo góc ban đầu, quên bước chia đôi.<br>✗ 360° là nhân đôi thay vì chia đôi."
+    },
+    {
+      "id": "m3-15",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Điều kiện nào sau đây khẳng định tia Oz là tia phân giác của ∠xOy?",
+      "options": ["Oz nằm giữa hai tia Ox, Oy và ∠xOz = ∠zOy", "Oz vuông góc với tia Ox", "∠xOz + ∠zOy = 180°", "Oz là tia đối của tia Ox"],
+      "correct": 0,
+      "answer": "Oz nằm giữa hai tia Ox, Oy và ∠xOz = ∠zOy",
+      "explanation": "🔑 Tia phân giác phải <b>nằm giữa</b> hai cạnh của góc và <b>chia góc thành hai góc bằng nhau</b>.<br>✗ Vuông góc với Ox không đảm bảo chia đôi ∠xOy, trừ trường hợp riêng ∠xOy = 180°.<br>✗ Tổng bằng 180° chỉ là quan hệ kề bù, không nói gì về việc hai góc có bằng nhau hay không.<br>✗ Tia đối của Ox nằm ngoài góc ∠xOy nên không thể là tia phân giác."
+    },
+    {
+      "id": "m3-16",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Một góc cho trước có bao nhiêu tia phân giác?",
+      "options": ["Vô số tia", "Đúng một tia", "Hai tia", "Không có tia nào"],
+      "correct": 1,
+      "answer": "Đúng một tia",
+      "explanation": "🔑 Mỗi góc chỉ có <b>duy nhất một</b> tia phân giác: tia nằm giữa hai cạnh và chia góc thành hai phần bằng nhau.<br>✗ Vô số là nhầm với số tia kẻ được từ đỉnh O — vô số tia, nhưng chỉ một tia chia đôi được góc.<br>✗ Hai tia là sai: nếu có hai tia cùng chia đôi một góc thì chúng phải trùng nhau.<br>✗ “Không có tia nào” sai vì góc nào cũng chia đôi được."
+    },
+    {
+      "id": "m3-17",
+      "ch": 3,
+      "topic": "Tia phân giác và góc kề bù",
+      "q": "Hai góc ∠xOz và ∠zOy kề bù, tia Ot là tia phân giác của ∠xOz. Biết ∠xOz = 100°, số đo ∠tOz bằng bao nhiêu?",
+      "options": ["80°", "100°", "50°", "40°"],
+      "correct": 2,
+      "answer": "50°",
+      "explanation": "🔑 Ot là tia phân giác của ∠xOz nên ∠tOz = ½ · ∠xOz = ½ · 100° = <b>50°</b>.<br>✗ 80° chính là ∠zOy = 180° − 100°, tức đã tính nhầm sang góc kề bù.<br>✗ 100° là giữ nguyên ∠xOz, quên chia đôi.<br>✗ 40° là một nửa của 80° — chia đôi nhầm góc kề bù thay vì chia đôi ∠xOz."
+    },
+    {
+      "id": "m3-18",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Một góc được tia phân giác chia thành hai góc, mỗi góc bằng 25°. Góc ban đầu bằng bao nhiêu?",
+      "options": ["25°", "12,5°", "155°", "50°"],
+      "correct": 3,
+      "answer": "50°",
+      "explanation": "🔑 Góc ban đầu gấp đôi mỗi nửa: 2 · 25° = <b>50°</b>.<br>✗ 25° chỉ là số đo một nửa góc, chưa phải cả góc.<br>✗ 12,5° là chia đôi tiếp — làm ngược chiều phép tính.<br>✗ 155° = 180° − 25°, dùng nhầm công thức hai góc kề bù."
+    },
+    {
+      "id": "m3-19",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Đường thẳng c cắt hai đường thẳng a và b. Điều kiện nào sau đây đủ để kết luận a ∥ b?",
+      "options": ["Một cặp góc so le trong bằng nhau", "Một cặp góc so le trong bù nhau", "Một cặp góc đồng vị bù nhau", "Hai góc kề bù bằng nhau"],
+      "correct": 0,
+      "answer": "Một cặp góc so le trong bằng nhau",
+      "explanation": "🔑 Dấu hiệu nhận biết: một cặp góc <b>so le trong bằng nhau</b> (hoặc một cặp góc <b>đồng vị bằng nhau</b>) ⇒ a ∥ b.<br>✗ So le trong BÙ nhau không phải dấu hiệu; cặp bù nhau khi song song là hai góc <b>trong cùng phía</b>.<br>✗ Đồng vị cũng phải BẰNG nhau, không phải bù nhau.<br>✗ Hai góc kề bù bằng nhau chỉ cho biết mỗi góc bằng 90°, không nói gì về quan hệ giữa a và b."
+    },
+    {
+      "id": "m3-20",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Đường thẳng c cắt a tại A và cắt b tại B, tạo ra một cặp góc đồng vị bằng nhau. Kết luận nào đúng?",
+      "options": ["a ⊥ b", "a ∥ b", "a ⊥ c", "a trùng b"],
+      "correct": 1,
+      "answer": "a ∥ b",
+      "explanation": "🔑 Hai góc đồng vị bằng nhau là dấu hiệu nhận biết: <b>a ∥ b</b>.<br>✗ a ⊥ b là quan hệ vuông góc, chỉ kết luận được khi biết một góc giữa a và b bằng 90°.<br>✗ a ⊥ c cũng cần góc giữa a và c bằng 90°, đề không cho dữ kiện đó.<br>✗ a trùng b là sai vì c cắt chúng tại hai điểm khác nhau A và B."
+    },
+    {
+      "id": "m3-21",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b và đường thẳng c cắt cả hai đường đó. Khi đó các góc so le trong có quan hệ gì?",
+      "options": ["Bù nhau (tổng bằng 180°)", "Phụ nhau (tổng bằng 90°)", "Bằng nhau", "Không có quan hệ gì đặc biệt"],
+      "correct": 2,
+      "answer": "Bằng nhau",
+      "explanation": "🔑 a ∥ b ⇒ các góc <b>so le trong bằng nhau</b> (và các góc đồng vị cũng bằng nhau).<br>✗ Bù nhau là quan hệ của hai góc <b>trong cùng phía</b> khi a ∥ b, không phải so le trong.<br>✗ Phụ nhau (90°) không phải quan hệ của cặp góc nào trong tình huống này.<br>✗ Chúng có quan hệ rất rõ ràng — bằng nhau — đó chính là tính chất của hai đường thẳng song song."
+    },
+    {
+      "id": "m3-22",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc so le trong bằng 65°. Góc so le trong còn lại của cặp đó bằng bao nhiêu?",
+      "options": ["115°", "25°", "130°", "65°"],
+      "correct": 3,
+      "answer": "65°",
+      "explanation": "🔑 a ∥ b ⇒ hai góc so le trong bằng nhau, nên góc còn lại cũng bằng <b>65°</b>.<br>✗ 115° = 180° − 65° là số đo góc <b>trong cùng phía</b>, không phải so le trong.<br>✗ 25° = 90° − 65°, dùng nhầm quan hệ phụ nhau.<br>✗ 130° = 2 · 65°, nhân đôi hoàn toàn vô căn cứ."
+    },
+    {
+      "id": "m3-23",
+      "ch": 3,
+      "topic": "Góc trong cùng phía",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc trong cùng phía bằng 65°. Góc trong cùng phía kia bằng bao nhiêu?",
+      "options": ["65°", "115°", "25°", "180°"],
+      "correct": 1,
+      "answer": "115°",
+      "explanation": "🔑 Khi a ∥ b, hai góc trong cùng phía <b>bù nhau</b>: 180° − 65° = <b>115°</b>.<br>✗ 65° là nhầm sang góc so le trong hoặc đồng vị — chỉ những cặp đó mới bằng nhau.<br>✗ 25° = 90° − 65°, dùng nhầm quan hệ phụ nhau.<br>✗ 180° là tổng của hai góc, không phải số đo góc còn lại."
+    },
+    {
+      "id": "m3-24",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c, một góc đồng vị bằng 110°. Góc đồng vị tương ứng với nó bằng bao nhiêu?",
+      "options": ["70°", "20°", "110°", "55°"],
+      "correct": 2,
+      "answer": "110°",
+      "explanation": "🔑 a ∥ b ⇒ các góc đồng vị bằng nhau, nên góc đó cũng bằng <b>110°</b>.<br>✗ 70° = 180° − 110° là số đo góc kề bù hoặc góc trong cùng phía, không phải góc đồng vị.<br>✗ 20° = 110° − 90°, một phép trừ không có căn cứ nào.<br>✗ 55° là một nửa của 110° — dùng nhầm công thức tia phân giác."
+    },
+    {
+      "id": "m3-25",
+      "ch": 3,
+      "topic": "Chiều của mệnh đề",
+      "q": "Mệnh đề “Hai góc so le trong bằng nhau ⇒ a ∥ b” được gọi là gì?",
+      "options": ["Dấu hiệu nhận biết hai đường thẳng song song", "Tính chất của hai đường thẳng song song", "Tiên đề Euclid về đường thẳng song song", "Định nghĩa hai góc kề bù"],
+      "correct": 0,
+      "answer": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "explanation": "🔑 Đi từ <b>GÓC ⇒ SONG SONG</b> là <b>dấu hiệu nhận biết</b> hai đường thẳng song song.<br>✗ Tính chất là chiều ngược lại: a ∥ b ⇒ các góc so le trong bằng nhau.<br>✗ Tiên đề Euclid nói về số đường thẳng song song kẻ được qua một điểm ngoài đường thẳng.<br>✗ Định nghĩa hai góc kề bù nói về tổng 180°, không liên quan đến hai đường a và b."
+    },
+    {
+      "id": "m3-26",
+      "ch": 3,
+      "topic": "Chiều của mệnh đề",
+      "q": "Mệnh đề “a ∥ b ⇒ các góc đồng vị bằng nhau” được gọi là gì?",
+      "options": ["Dấu hiệu nhận biết hai đường thẳng song song", "Định nghĩa hai đường thẳng song song", "Tính chất của hai đường thẳng song song", "Tiên đề Euclid về đường thẳng song song"],
+      "correct": 2,
+      "answer": "Tính chất của hai đường thẳng song song",
+      "explanation": "🔑 Đi từ <b>SONG SONG ⇒ GÓC bằng nhau</b> là <b>tính chất</b> của hai đường thẳng song song.<br>✗ Dấu hiệu nhận biết là chiều ngược lại: góc bằng nhau ⇒ a ∥ b.<br>✗ Định nghĩa hai đường thẳng song song là hai đường không có điểm chung, không nhắc đến góc.<br>✗ Tiên đề Euclid nói về tính duy nhất của đường thẳng song song kẻ qua một điểm."
+    },
+    {
+      "id": "m3-27",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Khẳng định nào sau đây SAI?",
+      "options": ["Các góc so le trong bằng nhau", "Các góc đồng vị bằng nhau", "Hai góc trong cùng phía bù nhau", "Hai góc trong cùng phía bằng nhau"],
+      "correct": 3,
+      "answer": "Hai góc trong cùng phía bằng nhau",
+      "explanation": "🔑 Khi a ∥ b, hai góc trong cùng phía <b>bù nhau</b> (tổng 180°) chứ không bằng nhau — nên đây là khẳng định SAI.<br>✗ “So le trong bằng nhau” là ĐÚNG, đó là tính chất cơ bản của hai đường song song.<br>✗ “Đồng vị bằng nhau” cũng ĐÚNG, luôn đi kèm với so le trong.<br>✗ “Trong cùng phía bù nhau” là ĐÚNG: tổng của chúng bằng 180°."
+    },
+    {
+      "id": "m3-28",
+      "ch": 3,
+      "topic": "Góc so le trong",
+      "q": "Hai góc so le trong nằm ở vị trí nào so với đường thẳng cắt c?",
+      "options": ["Cùng một phía của c, ở phần trong giữa a và b", "Ở hai phía khác nhau của c, ở phần trong giữa a và b", "Cùng một phía của c, ở phần ngoài", "Cùng phía của c và ở cùng vị trí so với a, b"],
+      "correct": 1,
+      "answer": "Ở hai phía khác nhau của c, ở phần trong giữa a và b",
+      "explanation": "🔑 Hai góc so le trong nằm ở <b>phần trong</b> (giữa a và b) và ở <b>hai phía khác nhau</b> của đường cắt c — “so le” chính là ý nằm chéo nhau.<br>✗ Cùng phía của c, phần trong là mô tả hai góc <b>trong cùng phía</b>.<br>✗ Cùng phía của c, phần ngoài là mô tả hai góc ngoài cùng phía.<br>✗ Cùng phía và cùng vị trí so với a, b là mô tả hai góc <b>đồng vị</b>."
+    },
+    {
+      "id": "m3-29",
+      "ch": 3,
+      "topic": "Góc đồng vị",
+      "q": "Hai góc đồng vị được mô tả như thế nào?",
+      "options": ["Nằm ở hai phía khác nhau của đường cắt, ở phần trong", "Nằm cùng phía của đường cắt và ở cùng vị trí so với hai đường bị cắt", "Nằm cùng phía của đường cắt và cả hai đều ở phần trong", "Nằm đối đỉnh nhau qua cùng một giao điểm"],
+      "correct": 1,
+      "answer": "Nằm cùng phía của đường cắt và ở cùng vị trí so với hai đường bị cắt",
+      "explanation": "🔑 Hai góc đồng vị nằm <b>cùng phía</b> đường cắt và ở <b>cùng vị trí</b> (cùng trên hoặc cùng dưới) so với hai đường bị cắt.<br>✗ “Hai phía khác nhau, phần trong” là mô tả hai góc <b>so le trong</b>.<br>✗ “Cùng phía, cả hai ở phần trong” là mô tả hai góc <b>trong cùng phía</b>.<br>✗ Hai góc đối đỉnh có chung một đỉnh, còn hai góc đồng vị nằm ở hai đỉnh khác nhau."
+    },
+    {
+      "id": "m3-30",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Đường thẳng c cắt a và b, tạo ra một cặp góc so le trong lần lượt bằng 70° và 80°. Kết luận nào đúng?",
+      "options": ["a ∥ b vì hai góc đều là góc nhọn", "a ∥ b vì 70° + 80° nhỏ hơn 180°", "a không song song với b vì hai góc so le trong không bằng nhau", "a ⊥ b"],
+      "correct": 2,
+      "answer": "a không song song với b vì hai góc so le trong không bằng nhau",
+      "explanation": "🔑 Muốn a ∥ b thì cặp góc so le trong phải <b>bằng nhau</b>; ở đây 70° ≠ 80° nên a không song song với b.<br>✗ Cả hai cùng là góc nhọn là chưa đủ — điều kiện bắt buộc là hai góc phải bằng nhau.<br>✗ Tổng nhỏ hơn 180° không phải dấu hiệu nào cả; cặp có tổng đúng 180° mới là hai góc trong cùng phía.<br>✗ a ⊥ b cần một góc giữa a và b bằng 90°, đề không hề cho dữ kiện đó."
+    },
+    {
+      "id": "m3-31",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c, một trong các góc tạo thành bằng 90°. Các góc còn lại bằng bao nhiêu?",
+      "options": ["Tất cả đều bằng 90°", "Một nửa số góc bằng 90°, nửa còn lại bằng 45°", "Không xác định được", "Tất cả đều bằng 180°"],
+      "correct": 0,
+      "answer": "Tất cả đều bằng 90°",
+      "explanation": "🔑 Góc đối đỉnh bằng 90°, góc kề bù bằng 180° − 90° = 90°, và vì a ∥ b nên các góc đồng vị cũng bằng 90°: <b>cả tám góc đều vuông</b> (đây chính là trường hợp c ⊥ a và c ⊥ b).<br>✗ 45° chỉ xuất hiện khi chia đôi 90°, mà ở đây không có phép chia đôi nào.<br>✗ Hoàn toàn xác định được nhờ tính chất góc kề bù, góc đối đỉnh và hai đường thẳng song song.<br>✗ 180° là số đo góc bẹt, không thể là góc tạo bởi hai đường thẳng cắt nhau."
+    },
+    {
+      "id": "m3-32",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc tạo thành bằng 55°, hỏi góc kề bù với nó bằng bao nhiêu?",
+      "options": ["55°", "35°", "125°", "110°"],
+      "correct": 2,
+      "answer": "125°",
+      "explanation": "🔑 Hai góc kề bù luôn có tổng 180°, nên góc cần tìm bằng 180° − 55° = <b>125°</b>.<br>✗ 55° là số đo góc đối đỉnh hoặc góc đồng vị với nó, không phải góc kề bù.<br>✗ 35° = 90° − 55°, dùng nhầm quan hệ phụ nhau.<br>✗ 110° = 2 · 55°, nhân đôi vô căn cứ."
+    },
+    {
+      "id": "m3-33",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Đường thẳng c cắt a và b, hai góc trong cùng phía có số đo 120° và 60°. Kết luận nào đúng?",
+      "options": ["a không song song với b vì hai góc không bằng nhau", "a ∥ b vì hai góc trong cùng phía bù nhau", "a ⊥ b", "Không kết luận được gì"],
+      "correct": 1,
+      "answer": "a ∥ b vì hai góc trong cùng phía bù nhau",
+      "explanation": "🔑 120° + 60° = 180° nên hai góc trong cùng phía bù nhau; điều này kéo theo một cặp góc so le trong bằng nhau, do đó <b>a ∥ b</b>.<br>✗ Hai góc trong cùng phía không cần bằng nhau — điều kiện của chúng là bù nhau.<br>✗ a ⊥ b cần một góc giữa a và b bằng 90°, đề không cho điều đó.<br>✗ Kết luận được rất rõ: tổng bằng 180° chính là dấu hiệu song song."
+    },
+    {
+      "id": "m3-34",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a ∥ b, đường thẳng c cắt a tại điểm A. Hỏi c có cắt b hay không?",
+      "options": ["Không, vì c ∥ b", "Có, c chắc chắn cắt b", "Chỉ cắt khi c ⊥ a", "Không xác định được"],
+      "correct": 1,
+      "answer": "Có, c chắc chắn cắt b",
+      "explanation": "🔑 Nếu c không cắt b thì c ∥ b; khi đó qua điểm A có tới hai đường thẳng a và c cùng song song với b, trái tiên đề Euclid. Vậy <b>c phải cắt b</b>.<br>✗ c ∥ b là không thể, vì c đã cắt a mà a ∥ b.<br>✗ Điều kiện c ⊥ a là không cần thiết: mọi đường thẳng cắt a đều cắt b.<br>✗ Hoàn toàn xác định được nhờ tiên đề về đường thẳng song song."
+    },
+    {
+      "id": "m3-35",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Nếu a ⊥ c và b ⊥ c (a, b phân biệt) thì hai đường thẳng a và b có quan hệ gì?",
+      "options": ["a ⊥ b", "a trùng b", "a cắt b tại một điểm", "a ∥ b"],
+      "correct": 3,
+      "answer": "a ∥ b",
+      "explanation": "🔑 Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì song song với nhau: <b>a ⊥ c, b ⊥ c ⇒ a ∥ b</b>.<br>✗ a ⊥ b là lỗi kinh điển: “cùng vuông góc” cho kết quả SONG SONG chứ không phải vuông góc.<br>✗ a trùng b bị loại vì đề đã nói a, b là hai đường phân biệt.<br>✗ a cắt b là sai vì hai đường thẳng song song không có điểm chung."
+    },
+    {
+      "id": "m3-36",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Cho a ∥ b và c ⊥ a. Kết luận nào sau đây đúng?",
+      "options": ["c ⊥ b", "c ∥ b", "c ∥ a", "c cắt b tạo thành góc 45°"],
+      "correct": 0,
+      "answer": "c ⊥ b",
+      "explanation": "🔑 Đường thẳng vuông góc với một trong hai đường thẳng song song thì cũng vuông góc với đường còn lại: <b>a ∥ b, c ⊥ a ⇒ c ⊥ b</b>.<br>✗ c ∥ b là sai vì c đã cắt a, mà a ∥ b nên c bắt buộc cắt b.<br>✗ c ∥ a mâu thuẫn ngay với giả thiết c ⊥ a.<br>✗ 45° không có căn cứ: góc giữa c và b đúng bằng góc giữa c và a, tức 90°."
+    },
+    {
+      "id": "m3-37",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Hai đường thẳng phân biệt a và b cùng vuông góc với đường thẳng c. Khẳng định nào sau đây SAI?",
+      "options": ["a ∥ b", "a và b không có điểm chung", "Góc giữa a và c bằng 90°", "a ⊥ b"],
+      "correct": 3,
+      "answer": "a ⊥ b",
+      "explanation": "🔑 Từ a ⊥ c và b ⊥ c ta suy ra a ∥ b, nên “a ⊥ b” là khẳng định SAI.<br>✗ “a ∥ b” là ĐÚNG, đó chính là kết luận của quy tắc.<br>✗ “Không có điểm chung” là ĐÚNG vì hai đường song song không cắt nhau.<br>✗ “Góc giữa a và c bằng 90°” là ĐÚNG, đó là ý nghĩa của ký hiệu a ⊥ c."
+    },
+    {
+      "id": "m3-38",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Cho ba đường thẳng phân biệt a, b, c với a ∥ b và b ∥ c. Quan hệ giữa a và c là gì?",
+      "options": ["a ⊥ c", "a cắt c", "a ∥ c", "Không xác định được"],
+      "correct": 2,
+      "answer": "a ∥ c",
+      "explanation": "🔑 Hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba thì song song với nhau: <b>a ∥ b, b ∥ c ⇒ a ∥ c</b>.<br>✗ a ⊥ c là nhầm ký hiệu ∥ thành ⊥; giả thiết không hề có góc vuông nào.<br>✗ a cắt c là sai: nếu chúng cắt nhau thì qua giao điểm đó có hai đường cùng song song với b, trái tiên đề.<br>✗ Hoàn toàn xác định được nhờ tính bắc cầu của quan hệ song song."
+    },
+    {
+      "id": "m3-39",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Cho a ⊥ c, b ⊥ c và d ⊥ a (các đường thẳng phân biệt). Quan hệ giữa d và b là gì?",
+      "options": ["d ∥ b", "d cắt b tạo thành góc 45°", "d trùng b", "d ⊥ b"],
+      "correct": 3,
+      "answer": "d ⊥ b",
+      "explanation": "🔑 Hai bước: từ a ⊥ c và b ⊥ c suy ra a ∥ b; lại có d ⊥ a nên theo quy tắc “vuông góc với một trong hai đường song song” ta được <b>d ⊥ b</b>.<br>✗ d ∥ b là sai: d vuông góc với a, mà a ∥ b, nên d cắt b chứ không song song.<br>✗ 45° không có căn cứ; góc giữa d và b đúng bằng góc giữa d và a, tức 90°.<br>✗ d trùng b không suy ra được — d và b là hai đường khác nhau, thậm chí vuông góc với nhau."
+    },
+    {
+      "id": "m3-40",
+      "ch": 3,
+      "topic": "Ký hiệu ∥ và ⊥",
+      "q": "Hai ký hiệu “a ∥ b” và “a ⊥ b” lần lượt có nghĩa là gì?",
+      "options": ["a vuông góc với b; a song song với b", "a song song với b; a vuông góc với b", "a bằng b; a cắt b", "a cắt b; a trùng b"],
+      "correct": 1,
+      "answer": "a song song với b; a vuông góc với b",
+      "explanation": "🔑 Ký hiệu <b>∥</b> đọc là “song song”, ký hiệu <b>⊥</b> đọc là “vuông góc”.<br>✗ Đảo hai ký hiệu cho nhau là lỗi rất hay gặp khi làm bài vội.<br>✗ ∥ không có nghĩa “bằng nhau”; hai đại lượng bằng nhau dùng dấu =.<br>✗ ⊥ không có nghĩa “trùng nhau”; nó chỉ góc 90° giữa hai đường thẳng."
+    },
+    {
+      "id": "m3-41",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Cho a ∥ b. Nếu đường thẳng c cắt a tạo thành góc 90° thì góc giữa c và b bằng bao nhiêu?",
+      "options": ["45°", "180°", "Không xác định được", "90°"],
+      "correct": 3,
+      "answer": "90°",
+      "explanation": "🔑 c ⊥ a và a ∥ b ⇒ c ⊥ b, nên góc giữa c và b cũng bằng <b>90°</b>.<br>✗ 45° là một nửa của 90°, mà ở đây không có phép chia đôi nào.<br>✗ 180° là số đo góc bẹt, không phải góc giữa hai đường thẳng cắt nhau.<br>✗ Xác định được ngay nhờ quy tắc “vuông góc với một trong hai đường thẳng song song”."
+    },
+    {
+      "id": "m3-42",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Khẳng định nào sau đây là ĐÚNG?",
+      "options": ["Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì song song với nhau", "Hai đường thẳng cùng vuông góc với một đường thẳng thứ ba thì vuông góc với nhau", "Hai đường thẳng cùng song song với một đường thẳng thứ ba thì vuông góc với nhau", "Hai đường thẳng cắt nhau thì song song với nhau"],
+      "correct": 0,
+      "answer": "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì song song với nhau",
+      "explanation": "🔑 <b>a ⊥ c và b ⊥ c ⇒ a ∥ b</b> — cùng vuông góc với một đường thì song song với nhau.<br>✗ “Cùng vuông góc thì vuông góc với nhau” là đổi kết luận từ ∥ thành ⊥, sai hoàn toàn.<br>✗ “Cùng song song thì vuông góc” cũng sai: cùng song song với một đường thì <b>song song</b> với nhau.<br>✗ “Cắt nhau thì song song” tự mâu thuẫn, vì song song nghĩa là không có điểm chung."
+    },
+    {
+      "id": "m3-43",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Bạn Nam viết: “a ⊥ c, b ⊥ c ⇒ a ⊥ b”. Bạn Nam sai ở chỗ nào?",
+      "options": ["Không sai, kết luận của bạn Nam đúng", "Sai ở giả thiết: phải viết là a ∥ c", "Sai ở kết luận: phải là a ∥ b", "Sai ở kết luận: phải là a trùng b"],
+      "correct": 2,
+      "answer": "Sai ở kết luận: phải là a ∥ b",
+      "explanation": "🔑 Quy tắc đúng là <b>a ⊥ c, b ⊥ c ⇒ a ∥ b</b>: cùng vuông góc với một đường thứ ba thì SONG SONG với nhau, không phải vuông góc.<br>✗ Kết luận a ⊥ b là sai nên không thể nói “không sai”.<br>✗ Giả thiết a ⊥ c, b ⊥ c đã đúng và đầy đủ; không cần sửa giả thiết.<br>✗ a trùng b chỉ xảy ra trong trường hợp riêng, không phải kết luận chung của quy tắc."
+    },
+    {
+      "id": "m3-44",
+      "ch": 3,
+      "topic": "Quan hệ vuông góc và song song",
+      "q": "Cho a ∥ b, b ∥ c và d ⊥ a (các đường thẳng phân biệt). Kết luận nào đúng về d và c?",
+      "options": ["d ∥ c", "Chỉ biết d ⊥ a, không suy ra được gì về d và c", "d trùng c", "d ⊥ c"],
+      "correct": 3,
+      "answer": "d ⊥ c",
+      "explanation": "🔑 a ∥ b và b ∥ c ⇒ a ∥ c; lại có d ⊥ a nên <b>d ⊥ c</b> (vuông góc với một trong các đường song song thì vuông góc với tất cả).<br>✗ d ∥ c là sai: d cắt a mà a ∥ c nên d cũng cắt c.<br>✗ Suy ra được rất rõ, chỉ cần dùng tính bắc cầu của quan hệ song song rồi áp dụng quy tắc vuông góc.<br>✗ d trùng c không có căn cứ; hai đường này còn vuông góc với nhau."
+    },
+    {
+      "id": "m3-45",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Qua một điểm nằm ngoài một đường thẳng, có bao nhiêu đường thẳng song song với đường thẳng đó?",
+      "options": ["Đúng một đường thẳng", "Hai đường thẳng", "Vô số đường thẳng", "Không có đường thẳng nào"],
+      "correct": 0,
+      "answer": "Đúng một đường thẳng",
+      "explanation": "🔑 Tiên đề Euclid: qua một điểm nằm ngoài một đường thẳng, <b>chỉ có MỘT</b> đường thẳng song song với đường thẳng đó.<br>✗ Hai đường thẳng là sai — tiên đề khẳng định tính <b>duy nhất</b>.<br>✗ Vô số là nhầm với số đường thẳng kẻ được qua điểm đó (vô số đường, nhưng chỉ một đường song song).<br>✗ “Không có đường nào” chỉ đúng khi điểm đó nằm TRÊN đường thẳng đã cho."
+    },
+    {
+      "id": "m3-46",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Điểm M nằm ngoài đường thẳng d. Qua M đã kẻ được đường thẳng a với a ∥ d. Nếu kẻ tiếp một đường thẳng b qua M sao cho b ∥ d thì điều gì xảy ra?",
+      "options": ["b vuông góc với a", "b cắt a tại M", "b song song với a", "b trùng với a"],
+      "correct": 3,
+      "answer": "b trùng với a",
+      "explanation": "🔑 Theo tiên đề Euclid, qua M chỉ có <b>duy nhất một</b> đường thẳng song song với d, nên b bắt buộc <b>trùng với a</b>.<br>✗ b ⊥ a là vô lý vì cả hai cùng song song với d thì không thể vuông góc với nhau.<br>✗ b cắt a tại M nghĩa là có hai đường phân biệt qua M cùng song song với d — trái tiên đề.<br>✗ “b song song với a” nghe hợp lý nhưng hai đường cùng đi qua M mà song song thì chỉ có thể là một đường duy nhất, tức trùng nhau."
+    },
+    {
+      "id": "m3-47",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Cho điểm A nằm TRÊN đường thẳng d. Qua A kẻ được bao nhiêu đường thẳng song song với d?",
+      "options": ["Đúng một đường thẳng", "Không có đường thẳng nào", "Vô số đường thẳng", "Hai đường thẳng"],
+      "correct": 1,
+      "answer": "Không có đường thẳng nào",
+      "explanation": "🔑 Mọi đường thẳng qua A đều có điểm chung A với d nên không thể song song với d. Tiên đề chỉ áp dụng cho điểm nằm <b>NGOÀI</b> đường thẳng.<br>✗ “Đúng một đường” là áp dụng tiên đề mà quên mất điều kiện điểm phải nằm ngoài d.<br>✗ Vô số là nhầm với số đường thẳng kẻ được qua A — vô số đường, nhưng không đường nào song song với d.<br>✗ Hai đường thẳng không đúng trong bất kỳ trường hợp nào."
+    },
+    {
+      "id": "m3-48",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Phát biểu nào sau đây chính là tiên đề về đường thẳng song song?",
+      "options": ["Qua một điểm nằm ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đó", "Qua một điểm nằm ngoài một đường thẳng, có ít nhất hai đường thẳng song song với đường thẳng đó", "Qua một điểm bất kỳ luôn có một đường thẳng song song với mọi đường thẳng cho trước", "Hai đường thẳng cùng vuông góc với một đường thẳng thứ ba thì song song với nhau"],
+      "correct": 0,
+      "answer": "Qua một điểm nằm ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đó",
+      "explanation": "🔑 Tiên đề Euclid phát biểu đúng như vậy: qua điểm nằm ngoài đường thẳng có <b>duy nhất một</b> đường thẳng song song với nó.<br>✗ “Ít nhất hai” phá vỡ tính duy nhất, trái hẳn với tiên đề.<br>✗ “Qua một điểm bất kỳ” là sai vì điểm bắt buộc phải nằm NGOÀI đường thẳng đã cho.<br>✗ “Cùng vuông góc thì song song” là một quy tắc về quan hệ ⊥ và ∥, không phải tiên đề này."
+    },
+    {
+      "id": "m3-49",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Cho đường thẳng d và điểm M không thuộc d. Số đường thẳng đi qua M và số đường thẳng đi qua M song song với d lần lượt là bao nhiêu?",
+      "options": ["Một và một", "Vô số và vô số", "Vô số và một", "Một và vô số"],
+      "correct": 2,
+      "answer": "Vô số và một",
+      "explanation": "🔑 Qua một điểm kẻ được <b>vô số</b> đường thẳng, nhưng trong số đó chỉ có <b>duy nhất một</b> đường song song với d (tiên đề Euclid).<br>✗ “Một và một” sai ở vế đầu: qua một điểm kẻ được vô số đường thẳng chứ không phải một.<br>✗ “Vô số và vô số” sai ở vế sau, phá vỡ tính duy nhất mà tiên đề khẳng định.<br>✗ “Một và vô số” là đảo ngược cả hai vế."
+    },
+    {
+      "id": "m3-50",
+      "ch": 3,
+      "topic": "Tiên đề Euclid",
+      "q": "Từ tiên đề Euclid, có thể suy ra khẳng định nào sau đây?",
+      "options": ["Qua một điểm nằm ngoài đường thẳng d, kẻ được vô số đường thẳng song song với d", "Hai đường thẳng phân biệt cùng đi qua một điểm thì song song với nhau", "Mọi đường thẳng đều song song với nhau", "Hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba thì song song với nhau"],
+      "correct": 3,
+      "answer": "Hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba thì song song với nhau",
+      "explanation": "🔑 Nếu hai đường phân biệt a, c cùng song song với b mà lại cắt nhau, thì qua giao điểm sẽ có hai đường cùng song song với b — trái tiên đề. Vậy <b>a ∥ c</b>.<br>✗ “Vô số đường song song” trái ngược hẳn với tiên đề (chỉ có duy nhất một).<br>✗ Hai đường phân biệt cùng đi qua một điểm thì <b>cắt nhau</b> tại điểm đó, không thể song song.<br>✗ “Mọi đường thẳng đều song song” là sai hiển nhiên: hai đường bất kỳ hoàn toàn có thể cắt nhau."
+    }
+  ]
+}
