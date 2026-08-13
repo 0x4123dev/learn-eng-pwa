@@ -1033,13 +1033,22 @@ function formatDate(timestamp) {
     }
 }
 
-const audioCache = {};      // key -> Audio object (preloaded)
-const audioPending = {};    // key -> fetch promise (dedup in-flight requests)
+// Every word ships a pre-generated ElevenLabs recording (one voice for the
+// whole app) under audio/words/<slug>.mp3 — see scripts/generate-word-audio.js,
+// which must produce the same slugs.
+const WORD_AUDIO_PATH = 'audio/words/';
+
+function wordAudioSlug(word) {
+    return String(word).toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+const audioCache = {};      // slug -> Audio element (preloading or ready)
+const audioMissing = {};    // slug -> true (failed once; skip until next session)
 let currentAudio = null;
 
 function speakWord(word) {
-    const key = word.toLowerCase().trim();
-
     // Stop any currently playing audio
     if (currentAudio) {
         currentAudio.pause();
@@ -1047,57 +1056,43 @@ function speakWord(word) {
         currentAudio = null;
     }
 
-    // If preloaded audio is ready, play it instantly
-    if (audioCache[key]) {
-        const audio = audioCache[key].cloneNode();
-        currentAudio = audio;
-        audio.play().catch(() => speakWordFallback(word));
+    const slug = wordAudioSlug(word);
+    if (!slug || audioMissing[slug] || typeof Audio === 'undefined') {
+        speakWordFallback(word);
         return;
     }
 
-    // Not cached yet: play TTS instantly, fetch real audio in background for next time
-    speakWordFallback(word);
-    prefetchAudio(key);
+    let audio = audioCache[slug];
+    if (!audio) {
+        audio = new Audio(WORD_AUDIO_PATH + slug + '.mp3');
+        audio.preload = 'auto';
+        audioCache[slug] = audio;
+    }
+
+    const playing = audio.cloneNode();
+    currentAudio = playing;
+    playing.play().catch(() => {
+        audioMissing[slug] = true;
+        delete audioCache[slug];
+        speakWordFallback(word);
+    });
 }
 
-function prefetchAudio(key) {
-    // Skip if already cached or already fetching
-    if (audioCache[key] || audioPending[key]) return;
-
-    audioPending[key] = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`)
-        .then(res => {
-            if (!res.ok) throw new Error('not found');
-            return res.json();
-        })
-        .then(data => {
-            let audioUrl = null;
-            for (const entry of data) {
-                for (const phonetic of (entry.phonetics || [])) {
-                    if (phonetic.audio) {
-                        audioUrl = phonetic.audio;
-                        break;
-                    }
-                }
-                if (audioUrl) break;
-            }
-            if (audioUrl) {
-                // Preload the audio file into browser cache
-                const audio = new Audio();
-                audio.preload = 'auto';
-                audio.src = audioUrl;
-                audioCache[key] = audio;
-            }
-        })
-        .catch(() => {})
-        .finally(() => { delete audioPending[key]; });
+function prefetchAudio(word) {
+    const slug = wordAudioSlug(word);
+    if (!slug || audioCache[slug] || audioMissing[slug] || typeof Audio === 'undefined') return;
+    const audio = new Audio(WORD_AUDIO_PATH + slug + '.mp3');
+    audio.preload = 'auto';
+    audio.onerror = () => {
+        audioMissing[slug] = true;
+        delete audioCache[slug];
+    };
+    audioCache[slug] = audio;
 }
 
 // Preload audio for an array of words (call when lesson starts)
 function preloadLessonAudio(words) {
-    words.forEach(w => {
-        const key = (w.en || w).toLowerCase().trim();
-        prefetchAudio(key);
-    });
+    words.forEach(w => prefetchAudio(w.en || w));
 }
 
 function speakWordFallback(word) {

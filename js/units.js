@@ -32,6 +32,12 @@ function _unitLabel(unit) {
 // the new utterance; (3) the engine can wedge in a paused state.
 let _unitUtt = null;                                   // GC guard (quirk 1)
 function _unitSpeak(text) {
+  // Prefer the app-wide speakWord() — pre-generated ElevenLabs recordings
+  // with a TTS fallback — so unit practice sounds like every other tab.
+  // The speechSynthesis path below only runs standalone (tests, no app.js).
+  try {
+    if (typeof speakWord === 'function') { speakWord(String(text)); return; }
+  } catch (e) {}
   try {
     if (typeof speechSynthesis === 'undefined' || typeof SpeechSynthesisUtterance === 'undefined') return;
     const say = () => {

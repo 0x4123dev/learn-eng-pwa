@@ -1,4 +1,7 @@
-const CACHE_NAME = 'flashlingo-v262';
+const CACHE_NAME = 'flashlingo-v265';
+// Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
+// the files are immutable, so this cache survives CACHE_NAME bumps.
+const AUDIO_CACHE = 'flashlingo-audio-v1';
 const ASSETS = [
   '/',
   '/index.html',
@@ -89,12 +92,13 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate: clean up old caches
+// Activate: clean up old caches (but keep the audio cache — recordings are
+// immutable and re-downloading them on every version bump would be wasteful)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.filter(key => key !== CACHE_NAME && key !== AUDIO_CACHE).map(key => caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
@@ -112,6 +116,22 @@ self.addEventListener('message', event => {
 // Fetch: network-first, fall back to cache (always get latest)
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+
+  // Word recordings are immutable → cache-first, stored in their own
+  // long-lived cache so they play instantly and work offline.
+  if (event.request.url.includes('/audio/words/')) {
+    event.respondWith(
+      caches.open(AUDIO_CACHE).then(cache =>
+        cache.match(event.request).then(hit =>
+          hit || fetch(event.request).then(response => {
+            if (response.ok) cache.put(event.request, response.clone());
+            return response;
+          })
+        )
+      )
+    );
+    return;
+  }
 
   event.respondWith(
     fetch(event.request).then(response => {

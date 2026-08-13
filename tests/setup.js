@@ -152,6 +152,9 @@ const EXPORT_NAMES = [
     // app.js
     'WORDS_PER_LESSON', 'TOTAL_LESSONS', 'STREAK_MILESTONES', 'achievements',
     'createDefaultUserData', 'updateStreak', 'recordStudy', 'shuffleArray',
+    // app.js — word audio (pre-generated recordings + TTS fallback)
+    'WORD_AUDIO_PATH', 'wordAudioSlug', 'speakWord', 'speakWordFallback',
+    'prefetchAudio', 'preloadLessonAudio',
     // grammar
     'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',
     'isArrangementCorrect', 'scoreGrammarQuestion',
