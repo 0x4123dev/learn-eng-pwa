@@ -6,3 +6,6 @@ docs/
 
 .cf-dist/
 node_modules/
+
+# Local secrets (ElevenLabs / Cloudflare) — never commit
+.env

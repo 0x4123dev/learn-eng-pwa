@@ -5,7 +5,9 @@
 // API is only a fallback. Slugs here MUST match wordAudioSlug in js/app.js.
 //
 // Usage:
-//   ELEVENLABS_API_KEY=... node scripts/generate-word-audio.js [options]
+//   node scripts/generate-word-audio.js [options]
+// The key is read from ELEVENLABS_API_KEY — either exported in the shell or
+// set in the gitignored .env file at the repo root (see .env.example).
 //
 // Options:
 //   --dry-run       list what would be generated, no API calls
@@ -38,6 +40,25 @@ const DEFAULT_MODEL = 'eleven_multilingual_v2'; // highest quality tier
 const OUTPUT_FORMAT = 'mp3_44100_128';
 const CONCURRENCY = 3;
 const MAX_RETRIES = 5;
+
+// Minimal .env loader (no dependencies): KEY=VALUE lines, # comments,
+// optional `export ` prefix and single/double quotes. Values already in the
+// real environment always win over the file.
+function loadEnvFile(file) {
+    file = file || path.join(ROOT, '.env');
+    if (!fs.existsSync(file)) return false;
+    for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+        if (line.trim().startsWith('#')) continue;
+        const m = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+        if (!m) continue;
+        let v = m[2].trim();
+        if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+            v = v.slice(1, -1);
+        }
+        if (process.env[m[1]] === undefined) process.env[m[1]] = v;
+    }
+    return true;
+}
 
 // Must stay byte-for-byte in sync with wordAudioSlug in js/app.js.
 function wordAudioSlug(word) {
@@ -133,6 +154,7 @@ async function generateOne(word, opts) {
 }
 
 async function main() {
+    loadEnvFile();   // pick up ELEVENLABS_API_KEY from .env if present
     const args = process.argv.slice(2);
     const flag = (name) => args.includes(name);
     const value = (name, dflt) => {
@@ -209,7 +231,7 @@ async function main() {
     process.exit(failures.length ? 1 : 0);
 }
 
-module.exports = { wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, DATA_FILES, OUT_DIR };
+module.exports = { wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, loadEnvFile, DATA_FILES, OUT_DIR };
 
 if (require.main === module) {
     main().catch(e => { console.error(e); process.exit(1); });

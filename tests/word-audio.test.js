@@ -177,6 +177,29 @@ suite('word audio: generation script', () => {
         assert.deepEqual(gen.cutToBudget(['ab', 'cde', 'fg'], 4), ['ab'], 'hard stop at the first word that busts the budget');
     });
 
+    test('loadEnvFile reads KEY=VALUE lines without overriding existing env', () => {
+        const gen = requireGen();
+        const tmp = path.join(require('os').tmpdir(), 'wa-env-test-' + process.pid);
+        fs.writeFileSync(tmp,
+            '# comment line\n' +
+            'WA_TEST_A=hello\n' +
+            'WA_TEST_B="quoted value"\n' +
+            '\n' +
+            'export WA_TEST_C=world\n');
+        process.env.WA_TEST_C = 'already-set';
+        try {
+            gen.loadEnvFile(tmp);
+            assert.equal(process.env.WA_TEST_A, 'hello');
+            assert.equal(process.env.WA_TEST_B, 'quoted value', 'quotes are stripped');
+            assert.equal(process.env.WA_TEST_C, 'already-set', 'real env always wins over the file');
+        } finally {
+            fs.unlinkSync(tmp);
+            delete process.env.WA_TEST_A;
+            delete process.env.WA_TEST_B;
+            delete process.env.WA_TEST_C;
+        }
+    });
+
     test('script and app agree on filenames', () => {
         const gen = requireGen();
         const { app } = loadWithAudio();
