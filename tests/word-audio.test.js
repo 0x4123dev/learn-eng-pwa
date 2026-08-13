@@ -146,6 +146,14 @@ suite('word audio: service worker caching', () => {
     });
 });
 
+suite('word audio: deploy ships the recordings', () => {
+    test('deploy.sh copies audio/ into .cf-dist', () => {
+        const sh = read('scripts/deploy.sh');
+        assert.truthy(/cp -R [^\n]*\baudio\b/.test(sh),
+            'deploy.sh build must copy audio/ or the recordings never reach the live site');
+    });
+});
+
 // ── Generation script ────────────────────────────────────────────────────
 suite('word audio: generation script', () => {
     const requireGen = () => require(path.join(root, 'scripts', 'generate-word-audio.js'));

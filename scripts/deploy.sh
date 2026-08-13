@@ -112,7 +112,7 @@ fi
 echo "▸ building .cf-dist…"
 rm -rf .cf-dist && mkdir -p .cf-dist
 cp index.html admin.html manifest.json sw.js .nojekyll .cf-dist/
-cp -R css js img functions wrangler.toml .cf-dist/
+cp -R css js img audio functions wrangler.toml .cf-dist/
 
 echo "▸ deploying to $PROJECT…"
 npx --yes wrangler@3 pages deploy .cf-dist --project-name "$PROJECT" \
