@@ -101,6 +101,14 @@ suite('answer gate: speaking the answer', () => {
         assert.deepEqual(spoken, ['was', 'were']);
     });
 
+    test('a verb speaks all three forms in order', () => {
+        // "weave → wove → woven": the base form is part of what the student
+        // is learning to say, not just the two forms they had to type.
+        const { gate, spoken } = loadGate();
+        gate.speakAnswer('weave/ wove/ woven');
+        assert.deepEqual(spoken, ['weave', 'wove', 'woven']);
+    });
+
     test('an empty answer speaks nothing and does not throw', () => {
         const { gate, spoken } = loadGate();
         assert.equal(gate.speakAnswer(''), 0);
@@ -180,6 +188,21 @@ suite('answer gate: wired into every tab that asks for it', () => {
         const leaks = TABS.filter(([f]) =>
             /<button class="grammar-next-btn" onclick=/.test(read(f))).map(([f]) => f);
         assert.deepEqual(leaks, [], `these bypass the gate entirely: ${leaks.join(', ')}`);
+    });
+
+    test('Verbs speaks v1, v2 and v3 — the whole pattern, not just the typed forms', () => {
+        const src = read('js/verbs.js');
+        const m = /const answer = ([^;]+);/.exec(src);
+        assert.truthy(m, 'speedAnswerGate must build the spoken answer');
+        for (const form of ['v1', 'v2', 'v3']) {
+            assert.truthy(m[1].includes('.' + form), `the spoken answer omits ${form}: ${m[1]}`);
+        }
+    });
+
+    test('the hint does not repeat the speaker icon the button already shows', () => {
+        const { gate } = loadGate();
+        assert.falsy(/🔊/.test(gate.ANSWER_GATE_HINT),
+            'the 🔊 button sits right beside this text — two icons read as a glitch');
     });
 
     test('the Verbs speed challenge no longer auto-advances past the answer', () => {

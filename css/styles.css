@@ -8375,7 +8375,12 @@
         }
         .grammar-next-btn:disabled:active { transform: none; }
 
-        /* The listen-to-continue row */
+        /* The listen-to-continue row.
+           It carries its own OPAQUE surface rather than a translucent tint:
+           this row appears on the light quiz screens and inside the dark
+           purple speed-challenge overlay, and a see-through background left
+           the text unreadable on the dark one. A solid chip reads correctly
+           on any backdrop. */
         .answer-gate {
             display: flex;
             align-items: center;
@@ -8383,12 +8388,12 @@
             margin: 12px 0 10px;
             padding: 10px 14px;
             border-radius: 16px;
-            background: rgba(59,130,246,0.10);
-            border: 1px dashed rgba(59,130,246,0.45);
+            background: #eff6ff;
+            border: 1px dashed #60a5fa;
         }
         .answer-gate.heard {
-            background: rgba(16,185,129,0.10);
-            border-color: rgba(16,185,129,0.45);
+            background: #ecfdf5;
+            border-color: #34d399;
             border-style: solid;
         }
         .answer-gate-btn {

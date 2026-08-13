@@ -8,7 +8,8 @@
 // The gate opens on the TAP, never on successful playback: a muted phone, a
 // missing recording or an audio error must not strand a child inside a quiz.
 
-const ANSWER_GATE_HINT = '🔊 Nghe đáp án để tiếp tục';   // "listen to continue"
+// No icon here — the 🔊 button sits immediately to its left.
+const ANSWER_GATE_HINT = 'Nghe đáp án để tiếp tục';      // "listen to continue"
 const ANSWER_GATE_DONE = '✓ Tốt lắm!';                    // "well done"
 
 // "conclusive/ resign" fills two blanks and "was/were" is two verb forms —

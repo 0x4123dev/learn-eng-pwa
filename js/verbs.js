@@ -240,7 +240,9 @@ function handleTimeUp() {
 // 🔊. This replaces the old auto-advance timer: the point of the pause is to
 // hear the answer, and a timer would race past it.
 function speedAnswerGate(verb) {
-    const answer = verb.v2 + '/ ' + verb.v3;
+    // All three forms, the way the pattern is learned and displayed
+    // ("weave → wove → woven"), not just the two the student had to type.
+    const answer = verb.v1 + '/ ' + verb.v2 + '/ ' + verb.v3;
     if (typeof speakAnswer === 'function') speakAnswer(answer);
     const feedback = document.getElementById('speedFeedback');
     if (!feedback) return;
