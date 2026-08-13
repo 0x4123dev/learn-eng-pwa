@@ -127,6 +127,56 @@ suite('word audio: speakWord', () => {
         assert.equal(synth.calls.cancel, 2);
     });
 
+    // iOS Safari throws InvalidStateError when currentTime is set on a media
+    // element that has no source loaded yet. Chrome silently allows it, so
+    // this only ever breaks on a phone — and it breaks HARD: speakWord() is
+    // called inside the matching-card onclick handler BEFORE selectCard(), so
+    // a throw there means the card never selects and the whole screen stops
+    // responding to taps.
+    function iosStrictAudio() {
+        const created = [];
+        class StrictAudio {
+            constructor(src) {
+                this._src = src || ''; this._t = 0; this.preload = '';
+                created.push(this);
+            }
+            get src() { return this._src; }
+            set src(v) { this._src = v; this._loaded = false; }
+            get currentTime() { return this._t; }
+            set currentTime(v) {
+                if (!this._src || !this._loaded) {
+                    const e = new Error('The object is in an invalid state.');
+                    e.name = 'InvalidStateError';
+                    throw e;                      // what iOS does
+                }
+                this._t = v;
+            }
+            cloneNode() { return new StrictAudio(this._src); }
+            pause() {}
+            play() { this._loaded = true; return { catch() { return this; } }; }
+        }
+        return { StrictAudio, created };
+    }
+
+    test('a media element with no source loaded never breaks the tap handler', () => {
+        const { StrictAudio } = iosStrictAudio();
+        const synth = { calls: { cancel: 0, speak: [] }, cancel() { this.calls.cancel++; },
+                        speak(u) { this.calls.speak.push(u && u.text); }, resume() {},
+                        getVoices() { return []; }, speaking: false, pending: false };
+        const app = loadAppCode({
+            includeHome: false,
+            extraGlobals: { Audio: StrictAudio,
+                SpeechSynthesisUtterance: function (t) { this.text = String(t); },
+                window: { speechSynthesis: synth } }
+        });
+        // Leave a sequence player parked with no source — exactly what happens
+        // when the first word of an answer has no recording.
+        app.speakSequence(['zzznotaword', 'apple']);
+        // Now a matching card is tapped. This must not throw.
+        app.speakWord('apple');
+        assert.truthy(true, 'speakWord threw — every card tap on the lesson screen would die with it');
+    });
+
     test('a blocked autoplay is not treated as a missing recording', () => {
         // Browsers refuse play() with NotAllowedError when no user gesture is
         // in play — the auto-pronounce after answering hits this. That is a
@@ -368,6 +418,27 @@ suite('word audio: generation script', () => {
             !fs.existsSync(path.join(root, 'audio', 'words', gen.wordAudioSlug(w) + '.mp3')));
         assert.deepEqual(missing, [],
             `answers with no audio would fall back to the robot voice: ${missing.slice(0, 8).join(', ')}`);
+    });
+
+    test('includeTappable covers the words a student can tap in a question', () => {
+        const gen = requireGen();
+        const words = gen.collectTappableWords();
+        assert.truthy(words.length >= 8000, `only ${words.length} tappable words found`);
+        assert.contains(words, 'underlined');   // appears in question stems
+        assert.contains(words, "don't");        // contraction, tapped as one token
+        // Vietnamese lives in the explanations, which are never made tappable —
+        // so it must not turn up here either (see the guard in answer-gate tests).
+        for (const vn of ['danh', 'trong', 'sai', 'gian']) {
+            assert.notContains(words, vn, `"${vn}" is Vietnamese from an explanation`);
+        }
+    });
+
+    test('every tappable word has a recording', () => {
+        const gen = requireGen();
+        const missing = gen.collectTappableWords().filter(w =>
+            !fs.existsSync(path.join(root, 'audio', 'words', gen.wordAudioSlug(w) + '.mp3')));
+        assert.deepEqual(missing.slice(0, 10), [],
+            `${missing.length} tappable words fall back to the robot voice`);
     });
 
     test('shardOf splits work across processes with no gaps and no overlap', () => {

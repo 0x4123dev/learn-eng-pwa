@@ -42,6 +42,18 @@ suite('hot words: the generated list', () => {
         assert.truthy(rank('to') < rank('yesterday'), 'function words must outrank topic words');
     });
 
+    test('every hot word is one a student can actually tap', () => {
+        // The list exists to make taps instant. Warming words that are never
+        // tappable — Vietnamese from the explanations, `type` metadata, stray
+        // letters — spends the student's data on files nobody can reach.
+        const gen = require(path.join(root, 'scripts', 'generate-word-audio.js'));
+        const { HOT_WORDS } = require(path.join(root, 'js', 'hot-words.js'));
+        const tappable = new Set(gen.collectTappableWords());
+        const strays = HOT_WORDS.filter(w => !tappable.has(w));
+        assert.deepEqual(strays.slice(0, 12), [],
+            `${strays.length} hot words are not tappable anywhere`);
+    });
+
     test('regenerating from the banks reproduces the shipped list', () => {
         // Guards against the list silently going stale as questions are added.
         const builder = requireBuilder();

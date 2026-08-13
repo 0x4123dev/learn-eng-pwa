@@ -1055,13 +1055,25 @@ let currentAudio = null;
 // onDone (optional) fires when this word finishes, so callers can chain —
 // answer-audio.js speaks "conclusive/ resign" as two words back to back.
 // It fires on failure too, or a broken part would stall the chain forever.
+// Stop an element and rewind it, without ever throwing.
+//
+// iOS Safari raises InvalidStateError when currentTime is set on a media
+// element that has no source loaded — Chrome allows it silently, so this only
+// ever fails on a phone. It matters far beyond the audio: speakWord() runs
+// inside the matching-card onclick BEFORE selectCard(), so one throw here
+// stopped every card tap on the lesson screen from registering.
+function resetAudio(el) {
+    if (!el) return;
+    try { el.pause(); } catch (e) {}
+    try { if (el.src && el.currentTime > 0) el.currentTime = 0; } catch (e) {}
+}
+
 function speakWord(word, onDone) {
     const finish = () => { if (typeof onDone === 'function') { try { onDone(); } catch (e) {} } };
 
     // Stop any currently playing audio
     if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
+        resetAudio(currentAudio);
         currentAudio = null;
     }
 
@@ -1082,7 +1094,7 @@ function speakWord(word, onDone) {
         audioCache[slug] = audio;
     }
 
-    if (audio.currentTime > 0) audio.currentTime = 0;
+    resetAudio(audio);
     currentAudio = audio;
     audio.onended = finish;
     audio.play().catch((err) => {
@@ -1128,13 +1140,10 @@ function speakSequence(words, opts) {
         return list.length;
     }
 
-    if (currentAudio && currentAudio !== sequenceAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
+    if (currentAudio && currentAudio !== sequenceAudio) resetAudio(currentAudio);
     if (!sequenceAudio) sequenceAudio = new Audio();
     const el = sequenceAudio;
-    el.pause();
+    try { el.pause(); } catch (e) {}
     currentAudio = el;
 
     let i = 0;
@@ -1150,8 +1159,9 @@ function speakSequence(words, opts) {
             return;
         }
         el.onended = playNext;
+        // A freshly assigned src already starts at 0, and touching currentTime
+        // before the media has loaded is exactly what iOS refuses.
         el.src = WORD_AUDIO_PATH + slug + '.mp3';
-        el.currentTime = 0;
         el.play().catch((err) => {
             if (isAutoplayBlock(err)) return;   // stop quietly; the tap will play it
             audioMissing[slug] = true;

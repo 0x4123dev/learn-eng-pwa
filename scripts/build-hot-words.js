@@ -64,20 +64,35 @@ function loadBank(bank) {
     return sandbox.__bank;
 }
 
-// Count every word in every string anywhere in the bank's object tree —
-// question text, options, explanations, passages, answers.
+// Count words ONLY in the fields the tabs actually make tappable.
+//
+// Walking every string instead swept in `explanation` (Vietnamese teaching
+// notes, which are rendered escaped and never tappable) and metadata like
+// `type: 'mcq'` — so the list warmed megabytes of audio for words no student
+// can reach. These field names mirror TAPPABLE_FIELDS in generate-word-audio.js.
+const COUNTED_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame'];
+const COUNTED_ARRAYS = ['options', 'parts'];
+
 function countWords(node, freq, depth) {
-    if (depth > 12 || node == null) return;
-    if (typeof node === 'string') {
-        for (const w of tappableWords(node)) freq[w] = (freq[w] || 0) + 1;
-        return;
-    }
+    if (depth > 12 || node == null || typeof node !== 'object') return;
     if (Array.isArray(node)) {
         for (const v of node) countWords(v, freq, depth + 1);
         return;
     }
-    if (typeof node === 'object') {
-        for (const v of Object.values(node)) countWords(v, freq, depth + 1);
+    for (const f of COUNTED_FIELDS) {
+        if (typeof node[f] === 'string') {
+            for (const w of tappableWords(node[f])) freq[w] = (freq[w] || 0) + 1;
+        }
+    }
+    for (const a of COUNTED_ARRAYS) {
+        if (Array.isArray(node[a])) {
+            for (const s of node[a]) {
+                if (typeof s === 'string') for (const w of tappableWords(s)) freq[w] = (freq[w] || 0) + 1;
+            }
+        }
+    }
+    for (const v of Object.values(node)) {
+        if (v && typeof v === 'object') countWords(v, freq, depth + 1);
     }
 }
 

@@ -240,6 +240,27 @@ suite('answer gate: the required tap', () => {
     });
 });
 
+// Explanations are Vietnamese teaching notes with English grammar jargon mixed
+// in. They are rendered escaped, never through tapwordsWrap — which is what
+// keeps words like "danh"/"trong"/"sai" from becoming tappable and being read
+// aloud by an English voice. Easy to undo by accident.
+suite('tap words: explanations stay untappable', () => {
+    test('no tab passes an explanation through the word wrapper', () => {
+        const offenders = ['js/wordform.js', 'js/phrases.js', 'js/collocation.js',
+                           'js/grammar-ui.js', 'js/exam.js', 'js/rewrite.js']
+            .filter(f => /(?:tapwordsWrap|twrap|twrapG|\bwrap)\(\s*[a-z]\.explanation/.test(read(f)));
+        assert.deepEqual(offenders, [],
+            `these would make Vietnamese explanation text tappable: ${offenders.join(', ')}`);
+    });
+
+    test('question text, options and answers DO stay tappable', () => {
+        // The other half of the rule — this is the English the student is learning.
+        const wf = read('js/wordform.js');
+        assert.truthy(/wrap\(q\.q\)/.test(wf), 'the question stem must stay tappable');
+        assert.truthy(/wrap\(opt\)/.test(wf), 'options must stay tappable');
+    });
+});
+
 suite('answer gate: wired into every tab that asks for it', () => {
     const TABS = [
         ['js/wordform.js', 'nextWfQuestion()'],

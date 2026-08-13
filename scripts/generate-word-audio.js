@@ -11,6 +11,7 @@
 //
 // Options:
 //   --answers       also cover every spoken quiz answer (pair answers split)
+//   --tappable      also cover every word a student can tap inside a question
 //   --dictionary    also cover js/dictionary-data.js (every tap-to-hear word
 //                   in a question, 8,638 entries) — not just the flashcards
 //   --dry-run       list what would be generated, no API calls
@@ -57,6 +58,68 @@ const ANSWER_BANKS = [
     { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS', pick: q => [q.answer] },
     { file: 'js/vocabulary.js', global: 'irregularVerbs', pick: v => [v.v2, v.v3] }
 ];
+
+// Question banks, and the fields whose text the tabs actually pass through
+// tapwordsWrap(). `explanation` and `vi` are deliberately absent: they are
+// Vietnamese teaching notes rendered escaped, never tappable — including them
+// would generate English recordings for Vietnamese words. Opt-in: --tappable.
+const TAPPABLE_BANKS = [
+    { file: 'js/grammar-units.js', global: 'GRAMMAR_UNITS' },
+    { file: 'js/exam-data.js', global: 'EXAMS' },
+    { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
+    { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
+    { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },
+    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS' }
+];
+const TAPPABLE_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame'];
+const TAPPABLE_ARRAYS = ['options', 'parts'];
+
+// The rule from js/tapwords.js: pure-ASCII letter runs with an optional
+// 's/'t tail, after markup is stripped.
+function tappableWords(text) {
+    const plain = String(text == null ? '' : text)
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&(?:[a-z]+|#\d+);/gi, ' ');
+    const out = [];
+    for (const m of plain.match(/[A-Za-zÀ-ɏḀ-ỿ']+/g) || []) {
+        if (/^[A-Za-z]+(?:'[a-z]+)?$/.test(m)) out.push(m.toLowerCase());
+    }
+    return out;
+}
+
+function collectTappableWords() {
+    const vm = require('vm');
+    const seen = new Set();
+    const out = [];
+    const add = (w) => {
+        if (seen.has(w) || !wordAudioSlug(w)) return;
+        seen.add(w); out.push(w);
+    };
+    for (const bank of TAPPABLE_BANKS) {
+        const sandbox = { module: { exports: {} }, console };
+        sandbox.globalThis = sandbox; sandbox.global = sandbox; sandbox.window = sandbox;
+        const ctx = vm.createContext(sandbox);
+        const abs = path.join(ROOT, bank.file);
+        vm.runInContext(fs.readFileSync(abs, 'utf8'), ctx, { filename: bank.file });
+        vm.runInContext(`globalThis.__bank = typeof ${bank.global} !== 'undefined' ? ${bank.global} : null;`, ctx);
+        const walk = (node, depth) => {
+            if (depth > 8 || !node) return;
+            if (Array.isArray(node)) return node.forEach(n => walk(n, depth + 1));
+            if (typeof node !== 'object') return;
+            for (const f of TAPPABLE_FIELDS) {
+                if (typeof node[f] === 'string') tappableWords(node[f]).forEach(add);
+            }
+            for (const a of TAPPABLE_ARRAYS) {
+                if (Array.isArray(node[a])) {
+                    node[a].filter(x => typeof x === 'string').forEach(s => tappableWords(s).forEach(add));
+                }
+            }
+            Object.values(node).forEach(v => { if (v && typeof v === 'object') walk(v, depth + 1); });
+        };
+        walk(sandbox.__bank, 0);
+    }
+    return out;
+}
 
 // "conclusive/ resign" is two words to pronounce, not one; so is "was/were".
 function answerParts(answer) {
@@ -150,6 +213,7 @@ function collectWords(opts) {
     }
     // Answers are spoken on every question, so they rank above the tap-word tail.
     if (opts.includeAnswers) collectAnswerWords().forEach(add);
+    if (opts.includeTappable) collectTappableWords().forEach(add);
     if (opts.includeDictionary) {
         // The file ends with module.exports, so require() beats parsing it.
         const { WORD_VI } = require(path.join(ROOT, DICTIONARY_FILE));
@@ -296,7 +360,7 @@ async function main() {
         process.exit(2);
     }
 
-    const words = collectWords({ includeDictionary: flag('--dictionary'), includeAnswers: flag('--answers') });
+    const words = collectWords({ includeDictionary: flag('--dictionary'), includeAnswers: flag('--answers'), includeTappable: flag('--tappable') });
     for (const c of findSlugCollisions(words)) {
         console.warn(`⚠ slug collision: "${c.dropped}" reuses ${c.slug}.mp3 (recorded from "${c.kept}")`);
     }
@@ -366,6 +430,7 @@ async function main() {
 module.exports = {
     wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, shardOf,
     collectAnswerWords, answerParts, ANSWER_BANKS,
+    collectTappableWords, tappableWords, TAPPABLE_BANKS,
     loadEnvFile, readVoiceManifest, writeVoiceManifest, voiceConflict,
     SHIPPED_VOICE, DEFAULT_VOICE, DEFAULT_MODEL,
     DATA_FILES, DICTIONARY_FILE, OUT_DIR
