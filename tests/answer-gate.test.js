@@ -295,6 +295,30 @@ suite('answer gate: wired into every tab that asks for it', () => {
             'the 🔊 button sits right beside this text — two icons read as a glitch');
     });
 
+    test('the Check button tells the student it will speak the answer', () => {
+        const m = /<button class="speed-submit-btn" id="speedSubmitBtn">\s*([^<]+)/.exec(read('index.html'));
+        assert.truthy(m, 'the Check button was not found');
+        assert.truthy(/🔊/.test(m[1]),
+            `label "${m[1].trim()}" does not say it pronounces — pressing it is the reliable way to hear the answer`);
+    });
+
+    test('checking is treated as a gesture, timing out is not', () => {
+        // Pressing Check is a real tap, so the browser will allow the audio and
+        // a missing recording may fall back to speech. A timed-out question has
+        // no gesture behind it: the browser refuses playback, and silence beats
+        // finishing the answer in a different voice.
+        const src = read('js/verbs.js');
+        const timeUp = src.slice(src.indexOf('function handleTimeUp'),
+                                src.indexOf('function speedAnswerGate'));
+        assert.truthy(/speedAnswerGate\(verb,\s*false\)/.test(timeUp),
+            'the timer path must declare that no gesture is behind it');
+        const submit = src.slice(src.indexOf('function submitSpeedAnswer'));
+        assert.truthy(/speedAnswerGate\(verb,\s*true\)/.test(submit),
+            'the Check button path must declare its gesture');
+        assert.equal((submit.match(/speedAnswerGate\(verb,\s*true\)/g) || []).length, 2,
+            'both the correct and the wrong branch of Check must pass the gesture');
+    });
+
     test('the Verbs speed challenge no longer auto-advances past the answer', () => {
         // It used to jump to the next verb on a timer, which would skip the
         // required listen. The gate replaces that.

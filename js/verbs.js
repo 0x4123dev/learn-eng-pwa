@@ -233,17 +233,22 @@ function handleTimeUp() {
     speedState.streak = 0;
     document.getElementById('speedStreak').textContent = speedState.streak;
 
-    speedAnswerGate(verb);
+    speedAnswerGate(verb, false);
 }
 
 // Speak the correct forms and hold the challenge here until the student taps
 // 🔊. This replaces the old auto-advance timer: the point of the pause is to
 // hear the answer, and a timer would race past it.
-function speedAnswerGate(verb) {
+// fromGesture — true when the student pressed "Check & 🔊". That press is a
+// real user gesture, so the browser allows the audio and a missing recording
+// may fall back to speech. A timed-out question has no gesture behind it: the
+// browser refuses playback there, so it stays silent and the 🔊 button below
+// is what plays the answer.
+function speedAnswerGate(verb, fromGesture) {
     // All three forms, the way the pattern is learned and displayed
     // ("weave → wove → woven"), not just the two the student had to type.
     const answer = verb.v1 + '/ ' + verb.v2 + '/ ' + verb.v3;
-    if (typeof speakAnswer === 'function') speakAnswer(answer, { auto: true });
+    if (typeof speakAnswer === 'function') speakAnswer(answer, { auto: !fromGesture });
     const feedback = document.getElementById('speedFeedback');
     if (!feedback) return;
     const holder = document.createElement('div');
@@ -312,7 +317,7 @@ function submitSpeedAnswer() {
         document.getElementById('speedScore').textContent = speedState.score;
         document.getElementById('speedStreak').textContent = speedState.streak;
 
-        speedAnswerGate(verb);
+        speedAnswerGate(verb, true);
     } else {
         inputV2.classList.add(isV2Correct ? 'correct' : 'wrong');
         inputV3.classList.add(isV3Correct ? 'correct' : 'wrong');
@@ -333,7 +338,7 @@ function submitSpeedAnswer() {
         speedState.streak = 0;
         document.getElementById('speedStreak').textContent = speedState.streak;
 
-        speedAnswerGate(verb);
+        speedAnswerGate(verb, true);
     }
 }
 
