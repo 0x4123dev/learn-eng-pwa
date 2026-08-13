@@ -155,6 +155,7 @@ const EXPORT_NAMES = [
     // app.js — word audio (pre-generated recordings + TTS fallback)
     'WORD_AUDIO_PATH', 'wordAudioSlug', 'speakWord', 'speakWordFallback',
     'speakSequence', 'warmWord', 'warmHotWords',
+    'audioMissing', 'audioCache',
     'prefetchAudio', 'preloadLessonAudio',
     // grammar
     'GRAMMAR_UNITS', 'getGrammarUnit', 'generateGrammarQuiz', 'getGrammarStats', 'saveGrammarSession',

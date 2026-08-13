@@ -179,7 +179,7 @@ function renderCollocQuestion() {
   // ("conclusive/ resign") are spoken as their two words, in order.
   if (answered && st._spokenIdx !== st.idx) {
     st._spokenIdx = st.idx;
-    if (typeof speakAnswer === 'function') speakAnswer(q.answer);
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer, { auto: true });
   }
   const meta = COLLOC_TYPE_META[q.type] || COLLOC_TYPE_META.mcq;
   const isMcq = q.type === 'pair' || q.type === 'mcq';

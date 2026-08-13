@@ -365,7 +365,7 @@ function renderWfQuestion() {
   // so re-rendering (or tapping 🔊) never starts it over on its own.
   if (answered && st._spokenIdx !== st.idx) {
     st._spokenIdx = st.idx;
-    if (typeof speakAnswer === 'function') speakAnswer(q.answer);
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer, { auto: true });
   }
   const total = st.questions.length;
 

@@ -1085,12 +1085,24 @@ function speakWord(word, onDone) {
     if (audio.currentTime > 0) audio.currentTime = 0;
     currentAudio = audio;
     audio.onended = finish;
-    audio.play().catch(() => {
+    audio.play().catch((err) => {
+        if (isAutoplayBlock(err)) {
+            // The browser refused because no gesture was in play. The file is
+            // fine — blacklisting it here would send every later tap of this
+            // word to the robot voice for the rest of the session.
+            finish();
+            return;
+        }
         audioMissing[slug] = true;
         delete audioCache[slug];
         speakWordFallback(word);
         setTimeout(finish, 700);
     });
+}
+
+// A refused autoplay is a policy decision, not a broken recording.
+function isAutoplayBlock(err) {
+    return !!err && (err.name === 'NotAllowedError' || err.name === 'AbortError');
 }
 
 // Speak several words back to back — "drink → drank → drunk".
@@ -1103,11 +1115,16 @@ function speakWord(word, onDone) {
 // halfway through the answer.
 let sequenceAudio = null;
 
-function speakSequence(words) {
+// opts.fallback === false → if a part cannot play, say nothing rather than
+// substitute the device's robot voice. Used by the automatic pronunciation
+// after answering: the student has to tap 🔊 anyway, and that tap plays the
+// real recording, so a second speaker mid-answer is pure confusion.
+function speakSequence(words, opts) {
+    const allowFallback = !(opts && opts.fallback === false);
     const list = (words || []).map(w => String(w == null ? '' : w).trim()).filter(Boolean);
     if (!list.length) return 0;
     if (typeof Audio === 'undefined') {
-        speakWordFallback(list[0]);
+        if (allowFallback) speakWordFallback(list[0]);
         return list.length;
     }
 
@@ -1126,17 +1143,22 @@ function speakSequence(words) {
         const word = list[i++];
         const slug = wordAudioSlug(word);
         if (!slug || audioMissing[slug]) {
-            speakWordFallback(word);
-            setTimeout(playNext, 700);       // no 'ended' to wait on
+            if (allowFallback) {
+                speakWordFallback(word);
+                setTimeout(playNext, 700);   // no 'ended' to wait on
+            }
             return;
         }
         el.onended = playNext;
         el.src = WORD_AUDIO_PATH + slug + '.mp3';
         el.currentTime = 0;
-        el.play().catch(() => {
+        el.play().catch((err) => {
+            if (isAutoplayBlock(err)) return;   // stop quietly; the tap will play it
             audioMissing[slug] = true;
-            speakWordFallback(word);
-            setTimeout(playNext, 700);
+            if (allowFallback) {
+                speakWordFallback(word);
+                setTimeout(playNext, 700);
+            }
         });
     };
     playNext();

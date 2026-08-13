@@ -17,7 +17,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 function makeAudioMock() {
     const created = [];   // every constructed Audio
     const played = [];    // srcs whose play() was called
-    let failPlay = false;
+    let rejection = null;   // the Error play() should reject with, or null
     class FakeAudio {
         constructor(src) {
             this.src = src || '';
@@ -29,10 +29,22 @@ function makeAudioMock() {
         pause() {}
         play() {
             played.push(this.src);
-            return { catch(fn) { if (failPlay) fn(new Error('404')); } };
+            const self = this;
+            return {
+                catch(fn) {
+                    if (rejection) fn(rejection);
+                    else if (self.onended) self.onended();   // played through
+                    return this;
+                }
+            };
         }
     }
-    return { FakeAudio, created, played, setFailPlay(v) { failPlay = v; } };
+    return {
+        FakeAudio, created, played,
+        // Old boolean helper kept for existing tests; a generic 404-ish failure.
+        setFailPlay(v) { rejection = v ? Object.assign(new Error('404'), { name: 'NotSupportedError' }) : null; },
+        setPlayRejection(err) { rejection = err; }
+    };
 }
 
 function makeSynthMock() {
@@ -60,6 +72,8 @@ function loadWithAudio() {
             window: { speechSynthesis: synth }
         }
     });
+    app.__setPlayRejection = (err) => audio.setPlayRejection(err);
+    app.__isMissing = (w) => !!(app.audioMissing || {})[app.wordAudioSlug(w)];
     return { app, audio, synth };
 }
 
@@ -111,6 +125,51 @@ suite('word audio: speakWord', () => {
         app.speakWord('zzznotaword');   // negative-cached → straight to TTS
         assert.equal(audio.created.length, createdBefore, 'no new Audio for a known-missing word');
         assert.equal(synth.calls.cancel, 2);
+    });
+
+    test('a blocked autoplay is not treated as a missing recording', () => {
+        // Browsers refuse play() with NotAllowedError when no user gesture is
+        // in play — the auto-pronounce after answering hits this. That is a
+        // policy refusal, not a broken file. Marking the word "missing" would
+        // permanently downgrade it to the robot voice for the rest of the
+        // session, so every later TAP of that word would be robotic too.
+        const { app, synth } = loadWithAudio();
+        const err = new Error('play() failed because the user did not interact');
+        err.name = 'NotAllowedError';
+        app.__setPlayRejection(err);
+        app.speakWord('drink');
+        assert.falsy(app.__isMissing('drink'), 'an autoplay refusal must not blacklist the recording');
+        // And with the block lifted, the real recording plays — not the fallback.
+        app.__setPlayRejection(null);
+        const before = synth.calls.cancel;
+        app.speakWord('drink');
+        assert.equal(synth.calls.cancel, before, 'the recording should play, not speech synthesis');
+    });
+
+    test('a genuinely broken recording is still blacklisted', () => {
+        const { app } = loadWithAudio();
+        const err = new Error('no decoder');
+        err.name = 'NotSupportedError';
+        app.__setPlayRejection(err);
+        app.speakWord('zzznotaword');
+        assert.truthy(app.__isMissing('zzznotaword'), 'a real failure must fall back and be remembered');
+    });
+
+    test('auto-pronounce stays silent when blocked instead of using the robot voice', () => {
+        // The student must tap 🔊 anyway (the gate requires it) and that tap
+        // plays the real voice — so a blocked auto-play should say nothing
+        // rather than substitute a different speaker.
+        const { app, synth } = loadWithAudio();
+        const err = new Error('blocked');
+        err.name = 'NotAllowedError';
+        app.__setPlayRejection(err);
+        // Assert on cancel(), which speakWordFallback calls synchronously —
+        // its speak() is deferred by a timer and invisible to this harness.
+        const before = synth.calls.cancel;
+        app.speakSequence(['drink', 'drank', 'drunk'], { fallback: false });
+        assert.equal(synth.calls.cancel, before,
+            'silence is correct here — the robot voice mid-answer is what users hear as "two voices"');
+        assert.falsy(app.__isMissing('drink'), 'and the recording must not be blacklisted either');
     });
 
     test('preloadLessonAudio prefetches each word without playing it', () => {

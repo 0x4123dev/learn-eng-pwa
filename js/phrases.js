@@ -458,7 +458,7 @@ function renderPhrQuestion() {
   // Speak the correct answer once, the moment it is revealed.
   if (answered && st._spokenIdx !== st.idx) {
     st._spokenIdx = st.idx;
-    if (typeof speakAnswer === 'function') speakAnswer(q.answer || (q.options && q.options[q.correct]));
+    if (typeof speakAnswer === 'function') speakAnswer(q.answer || (q.options && q.options[q.correct]), { auto: true });
   }
 
   // After answering, every English word becomes tappable (voice + nghĩa).

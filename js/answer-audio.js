@@ -24,13 +24,19 @@ function answerAudioParts(answer) {
 
 // Speak each part in turn, waiting for one to finish before the next starts.
 // Returns how many parts were queued.
-function speakAnswer(answer) {
+// opts.auto — this is the automatic pronunciation fired when the answer is
+// revealed, not a deliberate tap. Browsers may refuse it (no user gesture),
+// and when they do it must stay SILENT: the student still has to tap 🔊 to
+// continue, and that tap plays the real recording. Substituting the device's
+// robot voice here is what makes an answer come out in two different voices.
+function speakAnswer(answer, opts) {
     const parts = answerAudioParts(answer);
     if (!parts.length) return 0;
     // Preferred path: the audio layer plays the whole run through the one
-    // element the student's tap unlocked, so no part falls back to the
-    // device's robot voice partway through.
-    if (typeof speakSequence === 'function') return speakSequence(parts);
+    // element the student's tap unlocked, so no part falls back partway.
+    if (typeof speakSequence === 'function') {
+        return speakSequence(parts, { fallback: !(opts && opts.auto) });
+    }
     if (typeof speakWord !== 'function') return 0;
     let i = 0;
     const playNext = () => {
