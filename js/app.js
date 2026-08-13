@@ -1194,21 +1194,40 @@ function speakSequence(words, opts) {
     return list.length;
 }
 
+// Warm one word into the service-worker cache.
+//
+// This must NOT build an HTMLAudioElement. Opening a topic detail screen
+// preloads every word in the topic — up to 851 — and one media element per
+// word meant 851 of them alive at once, each with preload="auto". Phones cap
+// how many media elements can exist and the tab locks up; that is what froze
+// the Topics screen after a couple of taps. A fetch costs nothing to keep,
+// the service worker caches it identically, and playback still builds exactly
+// one element, when the word is actually played.
 function prefetchAudio(word) {
-    const slug = wordAudioSlug(word);
-    if (!slug || audioCache[slug] || audioMissing[slug] || typeof Audio === 'undefined') return;
-    const audio = new Audio(WORD_AUDIO_PATH + slug + '.mp3');
-    audio.preload = 'auto';
-    audio.onerror = () => {
-        audioMissing[slug] = true;
-        delete audioCache[slug];
-    };
-    audioCache[slug] = audio;
+    warmWord(word);
 }
 
-// Preload audio for an array of words (call when lesson starts)
+// Warm a screen's worth of words: batched and idle-scheduled so a 400-word
+// topic never floods the network or the main thread.
 function preloadLessonAudio(words) {
-    words.forEach(w => prefetchAudio(w.en || w));
+    const list = (words || [])
+        .map(w => (w && w.en) || w)
+        .filter(w => typeof w === 'string' && w.trim());
+    if (!list.length) return 0;
+
+    const idle = (fn) => (typeof requestIdleCallback === 'function')
+        ? requestIdleCallback(fn)
+        : setTimeout(fn, 60);
+
+    let i = 0;
+    const step = () => {
+        const batch = list.slice(i, i + WARM_BATCH);
+        i += batch.length;
+        batch.forEach(w => warmWord(w));
+        if (i < list.length) idle(step);
+    };
+    step();               // first batch now, the rest as the device allows
+    return list.length;
 }
 
 // ── Hot-word warming ────────────────────────────────────────────────────

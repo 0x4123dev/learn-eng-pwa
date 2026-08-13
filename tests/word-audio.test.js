@@ -222,13 +222,54 @@ suite('word audio: speakWord', () => {
         assert.falsy(app.__isMissing('drink'), 'and the recording must not be blacklisted either');
     });
 
-    test('preloadLessonAudio prefetches each word without playing it', () => {
+    // Opening a topic detail screen preloads every word in the topic — up to
+    // 851 of them. Building an HTMLAudioElement per word meant 851 media
+    // elements, each with preload="auto", all at once: phones cap how many
+    // media elements can exist, and the tab locks up. Warm through fetch()
+    // instead — the service worker caches the response either way, and
+    // playback still creates exactly one element, on demand.
+    test('preloading a big topic creates no media elements at all', () => {
         const { app, audio } = loadWithAudio();
+        const many = Array.from({ length: 400 }, (_, i) => ({ en: 'word' + i }));
+        const before = audio.created.length;
+        app.preloadLessonAudio(many);
+        assert.equal(audio.created.length, before,
+            `${audio.created.length - before} Audio elements for one screen — this is what froze the phone`);
+    });
+
+    test('preloading is batched, not 400 requests in one go', () => {
+        const fetched = [];
+        const idleQueue = [];
+        const app = loadAppCode({
+            includeHome: false,
+            extraGlobals: {
+                fetch: (u) => { fetched.push(u); return Promise.resolve({ ok: true }); },
+                // Capture idle work instead of running it, so we can see how
+                // much the first tick actually dispatches.
+                requestIdleCallback: (fn) => { idleQueue.push(fn); return idleQueue.length; }
+            }
+        });
+        app.preloadLessonAudio(Array.from({ length: 400 }, (_, i) => ({ en: 'w' + i })));
+        assert.truthy(fetched.length <= 12,
+            `${fetched.length} requests fired at once — preloading must not flood the network`);
+        assert.truthy(idleQueue.length > 0 || fetched.length > 0, 'nothing was scheduled at all');
+    });
+
+    test('preloadLessonAudio warms each word through fetch, without playing it', () => {
+        const fetched = [];
+        const audio = makeAudioMock();
+        const app = loadAppCode({
+            includeHome: false,
+            extraGlobals: {
+                Audio: audio.FakeAudio,
+                fetch: (u) => { fetched.push(u); return Promise.resolve({ ok: true }); }
+            }
+        });
         app.preloadLessonAudio([{ en: 'apple' }, 'ice cream']);
-        const srcs = audio.created.map(a => a.src);
-        assert.contains(srcs, 'audio/words/apple.mp3');
-        assert.contains(srcs, 'audio/words/ice-cream.mp3');
+        assert.contains(fetched, 'audio/words/apple.mp3');
+        assert.contains(fetched, 'audio/words/ice-cream.mp3');
         assert.deepEqual(audio.played, [], 'prefetch must not play anything');
+        assert.equal(audio.created.length, 0, 'and must not build media elements');
     });
 
     test('the dictionaryapi.dev dependency is gone', () => {
