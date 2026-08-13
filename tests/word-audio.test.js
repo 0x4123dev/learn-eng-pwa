@@ -392,6 +392,27 @@ suite('word audio: deploy ships the recordings', () => {
         assert.truthy(host[1].startsWith(deployed[1] + '/'),
             `app fetches from ${host[1]} but the audio deploys to ${deployed[1]}`);
     });
+
+    test('old clients asking the app origin for a recording are redirected, not fed HTML', () => {
+        // Pages' SPA fallback answers 200 text/html for any missing path.
+        // Pre-v4.9.2 clients still request /audio/words/ from the app origin;
+        // without the redirect they would "play" index.html.
+        const redirects = read('_redirects');
+        assert.truthy(/^\/audio\/words\/\* https:\/\/eng-pwa-audio\.pages\.dev\/audio\/words\/:splat 301$/m
+            .test(redirects), '_redirects must forward /audio/words/* to the audio project');
+        assert.truthy(/cp [^\n]*\b_redirects\b/.test(read('scripts/deploy.sh')),
+            'and deploy.sh must actually ship _redirects');
+    });
+
+    test('the audio cache never stores an SPA-fallback page as a recording', () => {
+        // The audio cache survives CACHE_NAME bumps by design, so one cached
+        // text/html body would mute that word on that device forever.
+        const sw = read('sw.js');
+        assert.truthy(/function isRecording\(/.test(sw) && /text\/html/.test(sw),
+            'sw.js must refuse to cache non-audio bodies');
+        assert.truthy(/full && !isRecording\(full\)/.test(sw),
+            'and must heal entries poisoned before the guard existed');
+    });
 });
 
 // One app, one speaker. The whole word set was once generated in two voices —

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v285';
+const CACHE_NAME = 'flashlingo-v286';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -135,9 +135,14 @@ async function audioWordResponse(request) {
   // re-download. A ranged request still hits the full cached body.
   const key = self.location.origin + new URL(request.url).pathname;
   let full = await cache.match(key);
+  // Heal poisoned entries: while old clients still requested recordings from
+  // the app origin, its SPA fallback answered 200 text/html — and this cache
+  // outlives CACHE_NAME bumps, so a cached fallback would mute the word
+  // forever.
+  if (full && !isRecording(full)) { await cache.delete(key); full = null; }
   if (!full) {
     full = await fetch(request.url);   // no Range header → always a full 200
-    if (!full.ok) return full;
+    if (!full.ok || !isRecording(full)) return full;   // never cache those
     await cache.put(key, full.clone());
   }
   const range = /bytes=(\d+)-(\d+)?/.exec(request.headers.get('range') || '');
@@ -161,6 +166,12 @@ async function audioWordResponse(request) {
       'Content-Length': String(end - start + 1)
     }
   });
+}
+
+// A response that can safely be cached as a word recording. Anything the SPA
+// fallback produced identifies itself as text/html.
+function isRecording(resp) {
+  return (resp.headers.get('content-type') || '').indexOf('text/html') === -1;
 }
 
 // Fetch: network-first, fall back to cache (always get latest)

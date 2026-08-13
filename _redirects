@@ -1,0 +1,6 @@
+# The word recordings moved to their own Pages project (eng-pwa-audio) so
+# they can never push the app deployment over Cloudflare's 20,000-file limit.
+# Old clients — pages cached before v4.9.2 — still request them from this
+# origin; without this rule the SPA fallback answers 200 text/html and the
+# service worker would cache that HTML as the word's "recording" forever.
+/audio/words/* https://eng-pwa-audio.pages.dev/audio/words/:splat 301
