@@ -10,9 +10,18 @@
 // set in the gitignored .env file at the repo root (see .env.example).
 //
 // Options:
+//   --dictionary    also cover js/dictionary-data.js (every tap-to-hear word
+//                   in a question, 8,638 entries) — not just the flashcards
 //   --dry-run       list what would be generated, no API calls
 //   --limit N       only process the first N missing words
 //   --budget N      stop before exceeding N input characters (quota guard)
+//   --concurrency N in-flight requests for THIS process (default 3)
+//   --shard i/n     take every n-th word starting at i (0-based), so several
+//                   processes can run at once without colliding, e.g.
+//                     for i in 0 1 2 3; do
+//                       node scripts/generate-word-audio.js --dictionary \
+//                         --shard $i/4 --concurrency 3 &
+//                     done; wait
 //   --force         regenerate even if the mp3 already exists
 //   --voice ID      ElevenLabs voice id   (default: Rachel)
 //   --model ID      ElevenLabs model id   (default: eleven_multilingual_v2)
@@ -34,6 +43,9 @@ const DATA_FILES = [
     'js/topic-vocab.js',   // topic picture cards
     'js/vocabulary.js'     // lessons, home, word-of-the-day, word-hunt, topics
 ];
+
+// Tap-any-word-in-a-question vocabulary (js/tapwords.js). Opt-in: --dictionary.
+const DICTIONARY_FILE = 'js/dictionary-data.js';
 
 const DEFAULT_VOICE = '21m00Tcm4TlvDq8ikWAM';   // "Rachel" — clear US female
 const DEFAULT_MODEL = 'eleven_multilingual_v2'; // highest quality tier
@@ -69,20 +81,41 @@ function wordAudioSlug(word) {
 
 // Pull every `en: '...'` / `en: "..."` string out of the data files.
 // Deduped case-insensitively; empty slugs (pure-symbol entries) dropped.
-function collectWords() {
+// With { includeDictionary: true }, the tap-word dictionary is appended —
+// js/tapwords.js makes every English word in a question tappable-to-hear,
+// so its 8,638 entries (inflections included) also need recordings. Appended
+// last so the flashcard words keep their head-of-queue priority.
+function collectWords(opts) {
+    opts = opts || {};
     const seen = new Set();
     const words = [];
+    const add = (raw) => {
+        const word = String(raw).trim();
+        const key = word.toLowerCase();
+        if (!word || seen.has(key) || !wordAudioSlug(word)) return;
+        seen.add(key);
+        words.push(key);
+    };
     for (const rel of DATA_FILES) {
         const src = fs.readFileSync(path.join(ROOT, rel), 'utf8');
         for (const m of src.matchAll(/\ben:\s*(['"])((?:\\.|(?!\1).)*)\1/g)) {
-            const word = m[2].replace(/\\(['"\\])/g, '$1').trim();
-            const key = word.toLowerCase();
-            if (!word || seen.has(key) || !wordAudioSlug(word)) continue;
-            seen.add(key);
-            words.push(key);
+            add(m[2].replace(/\\(['"\\])/g, '$1'));
         }
     }
+    if (opts.includeDictionary) {
+        // The file ends with module.exports, so require() beats parsing it.
+        const { WORD_VI } = require(path.join(ROOT, DICTIONARY_FILE));
+        Object.keys(WORD_VI || {}).forEach(add);
+    }
     return words;
+}
+
+// Slice for one of `total` cooperating processes. Round-robin (not blocks)
+// so each shard gets the same mix of short and long words, and therefore
+// finishes at roughly the same time.
+function shardOf(items, index, total) {
+    if (!total || total <= 1) return items.slice();
+    return items.filter((_, i) => i % total === index);
 }
 
 // Different words can normalize to the same filename ("check-in"/"check in").
@@ -169,8 +202,21 @@ async function main() {
     const dryRun = flag('--dry-run');
     const force = flag('--force');
     const limit = parseInt(value('--limit', '0'), 10) || 0;
+    const concurrency = Math.max(1, parseInt(value('--concurrency', String(CONCURRENCY)), 10) || CONCURRENCY);
+    // --shard i/n: this process takes every n-th word starting at i (0-based).
+    const shardArg = value('--shard', '');
+    let shardIndex = 0, shardTotal = 1;
+    if (shardArg) {
+        const parts = shardArg.split('/').map(Number);
+        if (parts.length !== 2 || !(parts[1] > 0) || !(parts[0] >= 0) || parts[0] >= parts[1]) {
+            console.error(`bad --shard "${shardArg}" — expected i/n with 0 <= i < n`);
+            process.exit(2);
+        }
+        [shardIndex, shardTotal] = parts;
+    }
+    const tag = shardTotal > 1 ? `[shard ${shardIndex + 1}/${shardTotal}] ` : '';
 
-    const words = collectWords();
+    const words = collectWords({ includeDictionary: flag('--dictionary') });
     for (const c of findSlugCollisions(words)) {
         console.warn(`⚠ slug collision: "${c.dropped}" reuses ${c.slug}.mp3 (recorded from "${c.kept}")`);
     }
@@ -186,6 +232,9 @@ async function main() {
         claimed.add(s);
         return true;
     });
+    // Shard BEFORE limit/budget so every process sees the same global list
+    // and they never generate the same file twice.
+    missing = shardOf(missing, shardIndex, shardTotal);
     if (limit) missing = missing.slice(0, limit);
     const budget = parseInt(value('--budget', '0'), 10) || 0;
     if (budget) {
@@ -196,7 +245,7 @@ async function main() {
         }
     }
 
-    console.log(`${words.length} words total, ${missing.length} to generate → ${OUT_DIR}`);
+    console.log(`${tag}${words.length} words total, ${missing.length} to generate → ${OUT_DIR}`);
     if (dryRun) {
         missing.forEach(w => console.log(`  ${wordAudioSlug(w)}.mp3  ← "${w}"`));
         return;
@@ -218,20 +267,23 @@ async function main() {
                 failures.push(r);
                 console.error(`  ✗ ${word}: ${r.error}`);
             }
-            if (done % 50 === 0 || done === missing.length) {
-                console.log(`  …${done}/${missing.length} (${failures.length} failed)`);
+            if (done % 100 === 0 || done === missing.length) {
+                console.log(`  ${tag}…${done}/${missing.length} (${failures.length} failed)`);
             }
         }
     }
-    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    await Promise.all(Array.from({ length: concurrency }, worker));
 
     console.log(failures.length
-        ? `Done with ${failures.length} failure(s) — re-run to retry them.`
-        : 'Done — every word has a recording.');
+        ? `${tag}Done with ${failures.length} failure(s) — re-run to retry them.`
+        : `${tag}Done — every word in this shard has a recording.`);
     process.exit(failures.length ? 1 : 0);
 }
 
-module.exports = { wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, loadEnvFile, DATA_FILES, OUT_DIR };
+module.exports = {
+    wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, shardOf,
+    loadEnvFile, DATA_FILES, DICTIONARY_FILE, OUT_DIR
+};
 
 if (require.main === module) {
     main().catch(e => { console.error(e); process.exit(1); });

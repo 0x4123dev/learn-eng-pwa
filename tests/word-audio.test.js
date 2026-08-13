@@ -220,6 +220,33 @@ suite('word audio: generation script', () => {
         assert.falsy(words.some(w => gen.wordAudioSlug(w) === ''), 'a word produced an empty slug');
     });
 
+    test('includeDictionary adds every tap-word, keeping the priority prefix', () => {
+        // tapwords.js lets students tap ANY English word in a question and
+        // hear it — that vocabulary lives in dictionary-data.js (8,638 words,
+        // inflections included) and dwarfs the flashcard word list.
+        const gen = requireGen();
+        const base = gen.collectWords();
+        const all = gen.collectWords({ includeDictionary: true });
+        assert.truthy(all.length >= 8000, `only ${all.length} words collected`);
+        assert.truthy(all.length > base.length, 'dictionary added nothing');
+        assert.contains(all, 'abilities');   // inflection: dictionary-only
+        assert.equal(new Set(all).size, all.length, 'duplicates survived dedup');
+        assert.equal(all[0], 'doctor', 'unit-practice words must still lead');
+        assert.deepEqual(all.slice(0, base.length), base, 'flashcard words keep their order');
+    });
+
+    test('shardOf splits work across processes with no gaps and no overlap', () => {
+        const gen = requireGen();
+        const words = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+        const shards = [0, 1, 2].map(i => gen.shardOf(words, i, 3));
+        const flat = shards.flat();
+        assert.deepEqual(flat.slice().sort(), words.slice().sort(), 'every word runs exactly once');
+        assert.equal(new Set(flat).size, words.length, 'a word landed in two shards');
+        const sizes = shards.map(s => s.length);
+        assert.truthy(Math.max(...sizes) - Math.min(...sizes) <= 1, `unbalanced: ${sizes}`);
+        assert.deepEqual(gen.shardOf(words, 0, 1), words, 'a single shard is the whole list');
+    });
+
     test('collects in priority order: unit-practice words come first', () => {
         // Unit practice speaks on every answer, so under a character budget
         // (free-tier quota) those words must win. units-data.js starts with
