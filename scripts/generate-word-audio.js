@@ -57,7 +57,16 @@ const ANSWER_BANKS = [
     // answer is only its preposition, which teaches nothing spoken alone.
     { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS',
       pick: q => [q.answer || (q.options && q.options[q.correct]), q.phrase] },
-    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS', pick: q => [q.answer] },
+    // Same idea as phrases: the lesson is "make an effort", not the "make"
+    // that filled the gap. Collocation has no phrase field — the English
+    // collocation is the head of the vi gloss, before the dash. Glosses that
+    // are pure Vietnamese have no head and contribute only their answer.
+    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS',
+      pick: q => {
+          const head = String(q.vi || '').split(/\s[—–-]\s/)[0].trim();
+          const usable = head && !/[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(head);
+          return usable ? [q.answer, head] : [q.answer];
+      } },
     { file: 'js/vocabulary.js', global: 'irregularVerbs', pick: v => [v.v2, v.v3] }
 ];
 

@@ -329,6 +329,37 @@ suite('answer gate: wired into every tab that asks for it', () => {
         assert.falsy(/answerGateHTML/.test(meaningBranch), 'and must not be gated');
     });
 
+    test('Collocation speaks the collocation, not the word that filled the gap', () => {
+        // "___ an effort" is answered with "make", but the lesson is "make an
+        // effort". Collocation questions carry no phrase field; the English
+        // collocation is the head of the vi gloss, before the em dash.
+        Object.assign(global, require('../js/answer-audio.js'));
+        global.COLLOCATION_QUESTIONS = require(path.join(root, 'js', 'collocation-data.js')).COLLOCATION_QUESTIONS;
+        const col = require(path.join(root, 'js', 'collocation.js'));
+
+        assert.equal(col.collocSpokenPhrase({ type: 'mcq', answer: 'make', vi: 'make an effort — nỗ lực' }),
+            'make an effort');
+        // A pair fills two gaps; the gloss documents only the first, so the
+        // half it does not cover still has to be spoken.
+        assert.equal(col.collocSpokenPhrase({ type: 'pair', answer: 'conclusive/ resign', vi: 'conclusive proof — bằng chứng' }),
+            'conclusive proof/ resign');
+        // 25 glosses are pure Vietnamese with no English head. Speaking those
+        // would point an English voice at Vietnamese text.
+        assert.equal(col.collocSpokenPhrase({ type: 'open', answer: 'across', vi: 'tình cờ tìm thấy hoặc gặp' }),
+            'across');
+    });
+
+    test('no collocation is ever spoken as Vietnamese', () => {
+        Object.assign(global, require('../js/answer-audio.js'));
+        global.COLLOCATION_QUESTIONS = require(path.join(root, 'js', 'collocation-data.js')).COLLOCATION_QUESTIONS;
+        const col = require(path.join(root, 'js', 'collocation.js'));
+        const VN = /[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+        const bad = global.COLLOCATION_QUESTIONS
+            .filter(q => VN.test(col.collocSpokenPhrase(q) || ''))
+            .slice(0, 5).map(q => col.collocSpokenPhrase(q));
+        assert.deepEqual(bad, [], 'these would be read aloud in English by mistake');
+    });
+
     test('the Grade 4 units show exactly one speaker after answering', () => {
         // The answered view already had its own 🔊 beside the word. Leaving it
         // next to the gate's 🔊 would offer two buttons where only one unlocks

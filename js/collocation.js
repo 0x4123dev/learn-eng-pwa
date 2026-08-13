@@ -55,6 +55,34 @@ function collocHistoryList() {
   return ((typeof appState !== 'undefined' && appState && appState.collocHistory) || []);
 }
 
+// What to say when the answer is revealed.
+//
+// "___ an effort" is answered with "make", but the lesson is "make an effort";
+// the word alone teaches nothing. Collocation questions carry no phrase field,
+// so the English collocation is taken from the head of the vi gloss —
+// "make an effort — nỗ lực, cố gắng" — everything before the dash.
+//
+// Two cases the naive read gets wrong:
+//   • 25 glosses are pure Vietnamese with no English head. Speaking those
+//     would point an English voice at Vietnamese text, so they fall back to
+//     the answer itself.
+//   • A pair question fills two gaps but its gloss documents only the first,
+//     so any answer half the collocation does not already contain is appended
+//     and spoken after it.
+const COL_VN_CHARS = /[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+
+function collocSpokenPhrase(q) {
+  if (!q) return '';
+  const answer = String(q.answer || '');
+  const head = String(q.vi || '').split(/\s[—–-]\s/)[0].trim();
+  if (!head || COL_VN_CHARS.test(head) || !/[a-z]/i.test(head)) return answer;
+
+  const lower = head.toLowerCase();
+  const extra = answer.split('/').map(s => s.trim()).filter(Boolean)
+    .filter(p => !lower.includes(p.toLowerCase()));
+  return extra.length ? head + '/ ' + extra.join('/ ') : head;
+}
+
 // ---- home view (returned as HTML string; phrases.js injects it) ----
 function renderCollocHome() {
   const bank = collocBank();
@@ -179,7 +207,7 @@ function renderCollocQuestion() {
   // ("conclusive/ resign") are spoken as their two words, in order.
   if (answered && st._spokenIdx !== st.idx) {
     st._spokenIdx = st.idx;
-    if (typeof speakAnswer === 'function') speakAnswer(q.answer, { auto: true });
+    if (typeof speakAnswer === 'function') speakAnswer(collocSpokenPhrase(q), { auto: true });
   }
   const meta = COLLOC_TYPE_META[q.type] || COLLOC_TYPE_META.mcq;
   const isMcq = q.type === 'pair' || q.type === 'mcq';
@@ -237,7 +265,7 @@ function renderCollocQuestion() {
       ${ans.isCorrect ? '' : `<div class="colloc-correct-answer">❌ Đáp án đúng: <b>${wrap(q.answer)}</b></div>`}
       <div>${q.explanation}</div>
     </div>
-    ${answerGateHTML(q.answer, 'nextCollocQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
+    ${answerGateHTML(collocSpokenPhrase(q), 'nextCollocQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
   }
 
   screen.innerHTML = `
@@ -352,7 +380,7 @@ if (typeof module !== 'undefined' && module.exports) {
     collocBank, renderCollocHome, collocLessonHTML, startCollocPractice,
     answerCollocChoice, submitCollocText, nextCollocQuestion, finishCollocPractice,
     isCollocActive, abandonCollocPractice,
-    _colNorm, _colAnswerCorrect, _colLetterHint,
+    _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase,
   };
 }
 
