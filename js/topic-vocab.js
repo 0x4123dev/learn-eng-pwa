@@ -301,6 +301,9 @@ function renderTopicView() {
     // Build cards grouped by category
     let html = '';
 
+    // Every card is a tap-to-hear — warm the recordings while the grid paints.
+    if (typeof preloadLessonAudio === 'function') preloadLessonAudio(TOPIC_HOUSE_VOCAB);
+
     TOPIC_CATEGORIES.forEach(cat => {
         const words = TOPIC_HOUSE_VOCAB.filter(w => w.category === cat.key);
         if (words.length === 0) return;

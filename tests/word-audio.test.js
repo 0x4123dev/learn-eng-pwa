@@ -81,6 +81,25 @@ suite('word audio: speakWord', () => {
         app.speakWord('apple');
         assert.contains(audio.played, 'audio/words/apple.mp3');
         assert.equal(synth.calls.cancel, 0, 'recording played — TTS must stay silent');
+        assert.equal(audio.created.length, 1, 'one element, played directly — no clone');
+    });
+
+    test('repeat taps reuse the downloaded element instead of re-fetching', () => {
+        const { app, audio } = loadWithAudio();
+        app.speakWord('apple');
+        audio.created[0].currentTime = 0.9;   // pretend playback advanced
+        app.speakWord('apple');
+        assert.equal(audio.created.length, 1, 'a second element means a second download per tap');
+        assert.equal(audio.played.length, 2);
+        assert.equal(audio.created[0].currentTime, 0, 'replay must rewind to the start');
+    });
+
+    test('a prefetched word plays through the very element that preloaded it', () => {
+        const { app, audio } = loadWithAudio();
+        app.prefetchAudio('apple');
+        app.speakWord('apple');
+        assert.equal(audio.created.length, 1, 'tap must reuse the preloading element, not fetch again');
+        assert.deepEqual(audio.played, ['audio/words/apple.mp3']);
     });
 
     test('falls back to speech synthesis when the recording is missing, and remembers the miss', () => {
@@ -143,6 +162,37 @@ suite('word audio: service worker caching', () => {
     test('word recordings are served cache-first', () => {
         assert.truthy(/audio\/words\//.test(sw()),
             'fetch handler must special-case audio/words/');
+    });
+
+    test('Range requests are answered with real 206 slices (iOS media)', () => {
+        const s = sw();
+        assert.truthy(/range/i.test(s) && /206/.test(s) && /Content-Range/.test(s),
+            'iOS Safari probes media with Range headers and stalls on a plain 200 from cache');
+    });
+});
+
+// The screens where taps actually happen must warm the recording at render
+// time — otherwise the first tap per word pays the full network round trip
+// (the 1–2s delay users feel on a phone).
+suite('word audio: screens prefetch what they show', () => {
+    test('unit practice prefetches its question words', () => {
+        assert.truthy(/prefetchAudio\(/.test(read('js/units.js')),
+            'renderUnitQuestion must warm the current word');
+    });
+
+    test('topic vocab card grid preloads its words', () => {
+        const n = (read('js/topic-vocab.js').match(/preloadLessonAudio\(/g) || []).length;
+        assert.truthy(n >= 2, `expected the card grid AND practice to preload (found ${n} call sites)`);
+    });
+
+    test('topic detail + mistakes word lists preload their words', () => {
+        const n = (read('js/topics.js').match(/preloadLessonAudio\(/g) || []).length;
+        assert.truthy(n >= 4, `expected detail + mistakes lists to preload too (found ${n} call sites)`);
+    });
+
+    test('word-of-the-day prefetches before its Listen button is shown', () => {
+        assert.truthy(/prefetchAudio\(/.test(read('js/home.js')),
+            'the WOTD story panel must warm its word');
     });
 });
 

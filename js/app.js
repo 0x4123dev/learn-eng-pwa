@@ -1062,6 +1062,9 @@ function speakWord(word) {
         return;
     }
 
+    // Play the cached element itself. A cloneNode() here would copy the URL
+    // but not the downloaded bytes, silently re-fetching the file on every
+    // tap — the preload would never be the thing that actually plays.
     let audio = audioCache[slug];
     if (!audio) {
         audio = new Audio(WORD_AUDIO_PATH + slug + '.mp3');
@@ -1069,9 +1072,9 @@ function speakWord(word) {
         audioCache[slug] = audio;
     }
 
-    const playing = audio.cloneNode();
-    currentAudio = playing;
-    playing.play().catch(() => {
+    if (audio.currentTime > 0) audio.currentTime = 0;
+    currentAudio = audio;
+    audio.play().catch(() => {
         audioMissing[slug] = true;
         delete audioCache[slug];
         speakWordFallback(word);

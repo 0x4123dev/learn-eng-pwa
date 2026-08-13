@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v265';
+const CACHE_NAME = 'flashlingo-v266';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 const AUDIO_CACHE = 'flashlingo-audio-v1';
@@ -113,6 +113,42 @@ self.addEventListener('message', event => {
   }
 });
 
+// Serve a word recording. Cache-first, and Range requests get a real 206
+// slice of the cached body: iOS Safari probes media with Range headers and
+// stalls (or refuses to play) when a service worker answers them with a
+// plain 200 — this was a visible 1–2s delay on every tap-to-hear.
+async function audioWordResponse(request) {
+  const cache = await caches.open(AUDIO_CACHE);
+  // Match/store by URL so a ranged request still hits the full cached body.
+  let full = await cache.match(request.url);
+  if (!full) {
+    full = await fetch(request.url);   // no Range header → always a full 200
+    if (!full.ok) return full;
+    await cache.put(request.url, full.clone());
+  }
+  const range = /bytes=(\d+)-(\d+)?/.exec(request.headers.get('range') || '');
+  if (!range) return full;
+  const buf = await full.arrayBuffer();
+  const start = Number(range[1]);
+  if (start >= buf.byteLength) {
+    return new Response(null, {
+      status: 416,
+      headers: { 'Content-Range': `bytes */${buf.byteLength}` }
+    });
+  }
+  const end = range[2] ? Math.min(Number(range[2]), buf.byteLength - 1) : buf.byteLength - 1;
+  return new Response(buf.slice(start, end + 1), {
+    status: 206,
+    statusText: 'Partial Content',
+    headers: {
+      'Content-Type': 'audio/mpeg',
+      'Accept-Ranges': 'bytes',
+      'Content-Range': `bytes ${start}-${end}/${buf.byteLength}`,
+      'Content-Length': String(end - start + 1)
+    }
+  });
+}
+
 // Fetch: network-first, fall back to cache (always get latest)
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
@@ -120,16 +156,7 @@ self.addEventListener('fetch', event => {
   // Word recordings are immutable → cache-first, stored in their own
   // long-lived cache so they play instantly and work offline.
   if (event.request.url.includes('/audio/words/')) {
-    event.respondWith(
-      caches.open(AUDIO_CACHE).then(cache =>
-        cache.match(event.request).then(hit =>
-          hit || fetch(event.request).then(response => {
-            if (response.ok) cache.put(event.request, response.clone());
-            return response;
-          })
-        )
-      )
-    );
+    event.respondWith(audioWordResponse(event.request));
     return;
   }
 

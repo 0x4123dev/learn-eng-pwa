@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.3.0';
+const APP_VERSION = 'v4.3.1';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -2922,6 +2922,8 @@ function renderWordOfDay() {
     const card = document.getElementById('wotdCard');
     if (!card) return;
     const word = getDailyWord();
+    // Warm the recording now so the story panel's 🔊 Listen is instant.
+    if (typeof prefetchAudio === 'function') prefetchAudio(word.en);
     const today = new Date().toDateString();
     const viewed = appState.wordOfDayViewed === today;
     card.innerHTML = `

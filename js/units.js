@@ -373,6 +373,14 @@ function renderUnitQuestion() {
   const detail = document.getElementById('topicsDetail');
   if (!st || !detail) return;
   const q = st.questions[st.idx];
+  // Warm this word's recording (and the next) so the auto-speak on answer
+  // and the 🔊 tap play instantly instead of waiting on the network.
+  try {
+    if (typeof prefetchAudio === 'function') {
+      prefetchAudio(q.w.en);
+      if (st.questions[st.idx + 1]) prefetchAudio(st.questions[st.idx + 1].w.en);
+    }
+  } catch (e) {}
   const ans = st.answers[st.idx];
   const answered = ans !== null;
   const total = st.questions.length;

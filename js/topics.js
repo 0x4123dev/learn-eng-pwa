@@ -835,6 +835,9 @@ function openTopicDetail(topicId) {
     // ── SR review hub ──
     const srHubHTML = renderTopicSRHub(topicId);
 
+    // Every row below carries a 🔊 — warm the recordings while the list paints.
+    if (typeof preloadLessonAudio === 'function') preloadLessonAudio(words.map(x => x.word));
+
     detail.innerHTML = `
         <button class="topic-detail-back" onclick="renderTopicsHome()">‹ Back</button>
         <div class="topic-detail-header" style="--topic-color:${topic.color}">
@@ -914,6 +917,8 @@ function openReviewDetail() {
     }).join('');
 
     const detail = document.getElementById('topicsDetail');
+    // The mistake rows carry 🔊 buttons too.
+    if (typeof preloadLessonAudio === 'function') preloadLessonAudio(mistakes.map(x => x.word));
     detail.innerHTML = `
         <button class="topic-detail-back" onclick="renderTopicsHome()">‹ Back</button>
         <div class="topic-detail-header" style="--topic-color:#9b59b6">
