@@ -204,6 +204,38 @@ suite('word audio: deploy ships the recordings', () => {
     });
 });
 
+// One app, one speaker. The whole word set was once generated in two voices —
+// the flashcard words with an explicit --voice, the 6,932 dictionary words
+// without it, which silently fell back to a different default. Students heard
+// two different people depending on which word they tapped.
+suite('word audio: one voice for the whole app', () => {
+    const gen = () => require(path.join(root, 'scripts', 'generate-word-audio.js'));
+
+    test('the default voice is the one the shipped audio actually uses', () => {
+        const g = gen();
+        assert.truthy(g.SHIPPED_VOICE, 'the script must name the voice the audio was built with');
+        assert.equal(g.DEFAULT_VOICE, g.SHIPPED_VOICE,
+            'omitting --voice must reproduce the shipped voice, not a different one');
+    });
+
+    test('the voice used is recorded next to the audio', () => {
+        const g = gen();
+        const manifest = g.readVoiceManifest();
+        assert.truthy(manifest, 'audio/words/.voice.json must exist — it is what makes drift detectable');
+        assert.equal(manifest.voice, g.SHIPPED_VOICE);
+    });
+
+    test('a run in a different voice is refused unless forced', () => {
+        const g = gen();
+        const current = { voice: g.SHIPPED_VOICE, model: 'eleven_multilingual_v2' };
+        assert.truthy(g.voiceConflict(current, 'some-other-voice-id', false),
+            'switching voice mid-set must be refused — that is exactly how two voices shipped');
+        assert.falsy(g.voiceConflict(current, g.SHIPPED_VOICE, false), 'same voice is fine');
+        assert.falsy(g.voiceConflict(current, 'some-other-voice-id', true), '--force is the deliberate escape hatch');
+        assert.falsy(g.voiceConflict(null, 'anything', false), 'a fresh set has nothing to conflict with');
+    });
+});
+
 // ── Generation script ────────────────────────────────────────────────────
 suite('word audio: generation script', () => {
     const requireGen = () => require(path.join(root, 'scripts', 'generate-word-audio.js'));

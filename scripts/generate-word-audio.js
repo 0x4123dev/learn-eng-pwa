@@ -47,8 +47,16 @@ const DATA_FILES = [
 // Tap-any-word-in-a-question vocabulary (js/tapwords.js). Opt-in: --dictionary.
 const DICTIONARY_FILE = 'js/dictionary-data.js';
 
-const DEFAULT_VOICE = '21m00Tcm4TlvDq8ikWAM';   // "Rachel" — clear US female
+// The voice every shipped recording was generated with. One app, one speaker:
+// audio/words/ was once built in two voices, because a run that omitted
+// --voice fell back to a different default and nobody noticed until a student
+// heard two different people. DEFAULT_VOICE must therefore always equal
+// SHIPPED_VOICE (tests/word-audio.test.js enforces it), and .voice.json
+// records what the folder actually holds.
+const SHIPPED_VOICE = 'EXAVITQu4vr4xnSDxMaL';   // "Sarah" — clear US female
+const DEFAULT_VOICE = SHIPPED_VOICE;
 const DEFAULT_MODEL = 'eleven_multilingual_v2'; // highest quality tier
+const VOICE_MANIFEST = '.voice.json';
 const OUTPUT_FORMAT = 'mp3_44100_128';
 const CONCURRENCY = 3;
 const MAX_RETRIES = 5;
@@ -145,6 +153,28 @@ function cutToBudget(words, budget) {
     return kept;
 }
 
+// What voice the existing recordings were made with (null if none yet).
+function readVoiceManifest() {
+    try {
+        return JSON.parse(fs.readFileSync(path.join(OUT_DIR, VOICE_MANIFEST), 'utf8'));
+    } catch (e) {
+        return null;
+    }
+}
+
+function writeVoiceManifest(voice, model) {
+    fs.mkdirSync(OUT_DIR, { recursive: true });
+    fs.writeFileSync(path.join(OUT_DIR, VOICE_MANIFEST),
+        JSON.stringify({ voice, model }, null, 2) + '\n');
+}
+
+// True when this run would add recordings in a different voice than the ones
+// already on disk — the mistake that shipped two speakers. --force is the
+// deliberate way to re-voice the whole set.
+function voiceConflict(manifest, voice, force) {
+    return !!(manifest && manifest.voice && manifest.voice !== voice && !force);
+}
+
 async function synthesize(word, opts) {
     const url = `https://api.elevenlabs.io/v1/text-to-speech/${opts.voice}?output_format=${OUTPUT_FORMAT}`;
     const res = await fetch(url, {
@@ -216,6 +246,16 @@ async function main() {
     }
     const tag = shardTotal > 1 ? `[shard ${shardIndex + 1}/${shardTotal}] ` : '';
 
+    // Refuse to mix voices into a set that already has one.
+    const manifest = readVoiceManifest();
+    if (voiceConflict(manifest, opts.voice, force)) {
+        console.error(
+            `✗ audio/words/ was generated with voice ${manifest.voice}, but this run asks for ${opts.voice}.\n` +
+            `  Mixing voices means students hear two different people.\n` +
+            `  Re-voice the whole set with --force, or drop --voice to use the shipped one.`);
+        process.exit(2);
+    }
+
     const words = collectWords({ includeDictionary: flag('--dictionary') });
     for (const c of findSlugCollisions(words)) {
         console.warn(`⚠ slug collision: "${c.dropped}" reuses ${c.slug}.mp3 (recorded from "${c.kept}")`);
@@ -274,6 +314,9 @@ async function main() {
     }
     await Promise.all(Array.from({ length: concurrency }, worker));
 
+    // Record what this folder now holds, so a later run can refuse to mix.
+    if (done > failures.length) writeVoiceManifest(opts.voice, opts.model);
+
     console.log(failures.length
         ? `${tag}Done with ${failures.length} failure(s) — re-run to retry them.`
         : `${tag}Done — every word in this shard has a recording.`);
@@ -282,7 +325,9 @@ async function main() {
 
 module.exports = {
     wordAudioSlug, collectWords, findSlugCollisions, cutToBudget, shardOf,
-    loadEnvFile, DATA_FILES, DICTIONARY_FILE, OUT_DIR
+    loadEnvFile, readVoiceManifest, writeVoiceManifest, voiceConflict,
+    SHIPPED_VOICE, DEFAULT_VOICE, DEFAULT_MODEL,
+    DATA_FILES, DICTIONARY_FILE, OUT_DIR
 };
 
 if (require.main === module) {
