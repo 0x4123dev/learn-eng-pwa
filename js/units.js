@@ -394,11 +394,10 @@ function renderUnitQuestion() {
       </div>
       <div class="grammar-explanation ${ans.isCorrect ? 'correct' : 'wrong'}">
         <div class="phrases-vi">📘 <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.w.en) : unitEsc(q.w.en)}</b>
-          <button class="unit-say-btn" onclick="_unitSpeak('${_unitSpeakAttr(q.w.en)}')" title="Nghe phát âm">🔊</button>
           — ${unitEsc(q.w.vi)}</div>
         <div>${ans.isCorrect ? '✅ Chính xác!' : '❌ Đáp án đúng: <b>' + unitEsc(q.w.en) + '</b>'}</div>
       </div>
-      <button class="grammar-next-btn" onclick="nextUnitQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>`;
+      ${answerGateHTML(q.w.en, 'nextUnitQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
   } else {
     body = `<div class="wf-text-wrap">
         <input type="text" id="unitTextInput" class="wf-text-input" autofocus enterkeyhint="go" placeholder="Gõ cả từ hoàn chỉnh…"
@@ -439,7 +438,10 @@ function submitUnitAnswer() {
   const ok = _unitAnswerCorrect(raw, q.w.en);
   st.answers[st.idx] = { value: raw.trim(), isCorrect: ok };
   _unitBumpWordLevel(q.w.en, ok);
-  _unitSpeak(q.w.en);          // pronounce the word so the student hears it
+  // Speak the word the moment it is revealed. Submitting is a real tap, so the
+  // browser permits it; the 🔊 gate below still has to be tapped before Next.
+  if (typeof speakAnswer === 'function') speakAnswer(q.w.en);
+  else _unitSpeak(q.w.en);
   if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
   renderUnitQuestion();
 }

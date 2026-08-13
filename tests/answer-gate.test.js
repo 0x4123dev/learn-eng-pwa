@@ -266,7 +266,8 @@ suite('answer gate: wired into every tab that asks for it', () => {
         ['js/wordform.js', 'nextWfQuestion()'],
         ['js/phrases.js', 'nextPhrQuestion()'],
         ['js/collocation.js', 'nextCollocQuestion()'],
-        ['js/verbs.js', 'nextSpeedQuestion()']
+        ['js/verbs.js', 'nextSpeedQuestion()'],
+        ['js/units.js', 'nextUnitQuestion()']      // Grade 4 picture-dictionary units
     ];
 
     test('each tab renders its Next button through the gate', () => {
@@ -274,9 +275,16 @@ suite('answer gate: wired into every tab that asks for it', () => {
         assert.deepEqual(missing, [], `tabs still rendering an ungated Next: ${missing.join(', ')}`);
     });
 
-    test('no tab still renders a bare, always-enabled Next button', () => {
-        const leaks = TABS.filter(([f]) =>
-            /<button class="grammar-next-btn" onclick=/.test(read(f))).map(([f]) => f);
+    test('no tab lets a student skip a listen that applies to them', () => {
+        // An ungated Next is only legitimate where there is nothing to hear —
+        // the Vietnamese meaning questions in Phrases. Anywhere else it means
+        // the student can walk past the pronunciation.
+        const leaks = TABS.filter(([f]) => {
+            const src = read(f);
+            const bare = /<button class="grammar-next-btn" onclick=|'<button class="grammar-next-btn" onclick="/.test(src);
+            if (!bare) return false;
+            return !/if \(q\.meaning\)/.test(src);   // guarded by "nothing to pronounce"
+        }).map(([f]) => f);
         assert.deepEqual(leaks, [], `these bypass the gate entirely: ${leaks.join(', ')}`);
     });
 
@@ -293,6 +301,43 @@ suite('answer gate: wired into every tab that asks for it', () => {
         const { gate } = loadGate();
         assert.falsy(/🔊/.test(gate.ANSWER_GATE_HINT),
             'the 🔊 button sits right beside this text — two icons read as a glitch');
+    });
+
+    test('Phrases speaks the whole collocation, not the bare preposition', () => {
+        // The answer to a Phrases question is a preposition — "in". Hearing
+        // "in" on its own teaches nothing; the thing being learned is the
+        // collocation, "rise in", which every question carries as q.phrase.
+        const src = read('js/phrases.js');
+        assert.truthy(/speakAnswer\(\s*q\.phrase/.test(src),
+            'the spoken answer must start from q.phrase');
+        assert.truthy(/answerGateHTML\(\s*q\.phrase/.test(src),
+            'and the 🔊 button must replay the same phrase');
+    });
+
+    test('meaning questions carry no listen gate', () => {
+        // "What is the meaning of \"rise in\"?" is answered in Vietnamese.
+        // There is no English to pronounce, so requiring a listen is a step
+        // that teaches nothing and blocks the student for no reason.
+        const src = read('js/phrases.js');
+        const fn = src.slice(src.indexOf('function phrFooterHTML'),
+                             src.indexOf('function renderPhrQuestion'));
+        assert.truthy(fn, 'phrases.js must decide its footer in one place');
+        assert.truthy(/if \(q\.meaning\)/.test(fn), 'the meaning follow-up must be branched on');
+        // The bare Next belongs to the meaning branch, the gate to the other.
+        const meaningBranch = fn.slice(fn.indexOf('if (q.meaning)'), fn.indexOf('return answerGateHTML'));
+        assert.truthy(/grammar-next-btn/.test(meaningBranch), 'meaning questions get a plain Next');
+        assert.falsy(/answerGateHTML/.test(meaningBranch), 'and must not be gated');
+    });
+
+    test('the Grade 4 units show exactly one speaker after answering', () => {
+        // The answered view already had its own 🔊 beside the word. Leaving it
+        // next to the gate's 🔊 would offer two buttons where only one unlocks
+        // Next — the student taps the wrong one and thinks the app is stuck.
+        const src = read('js/units.js');
+        const answered = src.slice(src.indexOf('let body;'), src.indexOf('function nextUnitQuestion'));
+        assert.falsy(/unit-say-btn/.test(answered),
+            'the answered view must not keep a second speaker alongside the gate');
+        assert.truthy(/answerGateHTML\(/.test(answered), 'the gate is what speaks there now');
     });
 
     test('the Check button tells the student it will speak the answer', () => {
@@ -332,11 +377,19 @@ suite('answer gate: wired into every tab that asks for it', () => {
         assert.deepEqual(missing, [], `tabs that never auto-pronounce: ${missing.join(', ')}`);
     });
 
-    test('answer-audio.js is loaded by the page and precached', () => {
+    test('answer-audio.js is loaded before every tab that calls it, and precached', () => {
         const html = read('index.html');
-        assert.truthy(html.includes('js/answer-audio.js'), 'index.html must load it');
-        assert.truthy(html.indexOf('js/answer-audio.js') < html.indexOf('js/wordform.js'),
-            'it must load before the tabs that call it');
+        const gate = html.indexOf('js/answer-audio.js');
+        assert.truthy(gate !== -1, 'index.html must load it');
+        // Each tab calls answerGateHTML() unconditionally, so the definition
+        // has to exist by the time that script's screen renders. Ordering it
+        // ahead of all five keeps that true even if a call ever moves to load
+        // time.
+        for (const tab of ['units', 'wordform', 'phrases', 'collocation', 'verbs']) {
+            const at = html.indexOf(`js/${tab}.js`);
+            assert.truthy(at !== -1, `index.html does not load js/${tab}.js`);
+            assert.truthy(gate < at, `answer-audio.js loads after js/${tab}.js, which calls it`);
+        }
         assert.truthy(/answer-audio\.js/.test(read('sw.js')), 'sw.js ASSETS must include it');
     });
 });

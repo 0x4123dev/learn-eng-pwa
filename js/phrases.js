@@ -445,6 +445,22 @@ function startPhrasesReviewQuiz(qids) {
 function isPhrasesQuizActive() { return !!_phrQuiz; }
 function abandonPhrasesQuiz() { _phrQuiz = null; }
 
+// What sits under a revealed answer: the listen gate, or a plain Next.
+//
+// A meaning follow-up ("What is the meaning of …?") is answered in Vietnamese.
+// There is no English to pronounce there, so requiring a listen would block the
+// student behind a step that teaches nothing. Every other question hides Next
+// until the collocation has been heard.
+function phrFooterHTML(q, nextLabel) {
+  if (q.meaning) {
+    return '<button class="grammar-next-btn" onclick="nextPhrQuestion()">' + nextLabel + '</button>';
+  }
+  // q.phrase is the collocation being learned ("rise in"); q.answer is only
+  // its preposition, which says nothing on its own.
+  return answerGateHTML(q.phrase || q.answer || (q.options && q.options[q.correct]),
+                        'nextPhrQuestion()', nextLabel);
+}
+
 function renderPhrQuestion() {
   const screen = document.getElementById('phrasesScreen');
   if (!screen || !_phrQuiz) return;
@@ -455,10 +471,15 @@ function renderPhrQuestion() {
   const userAns = st.answers[st.idx];
   const answered = userAns !== null;
   const total = st.questions.length;
-  // Speak the correct answer once, the moment it is revealed.
-  if (answered && st._spokenIdx !== st.idx) {
+  // Speak the whole collocation, once, the moment it is revealed — "rise in",
+  // not the bare "in" the student typed. The preposition alone teaches nothing;
+  // the phrase is the thing being learned.
+  //
+  // A meaning follow-up ("What is the meaning of …?") is answered in
+  // Vietnamese, so there is no English to pronounce and nothing to gate.
+  if (answered && !q.meaning && st._spokenIdx !== st.idx) {
     st._spokenIdx = st.idx;
-    if (typeof speakAnswer === 'function') speakAnswer(q.answer || (q.options && q.options[q.correct]), { auto: true });
+    if (typeof speakAnswer === 'function') speakAnswer(q.phrase || q.answer || (q.options && q.options[q.correct]), { auto: true });
   }
 
   // After answering, every English word becomes tappable (voice + nghĩa).
@@ -504,7 +525,7 @@ function renderPhrQuestion() {
       ${!ok && q.typed ? `<div>❌ Đáp án đúng: <b>${phrEsc(q.answer)}</b></div>` : ''}
       <div>${ok ? '✅ ' : (q.typed ? '' : '❌ ')}${phrEsc(q.explanation)}</div>
     </div>
-    ${answerGateHTML(q.answer || (q.options && q.options[q.correct]), 'nextPhrQuestion()', st.idx + 1 < total ? 'Next →' : 'See results')}`;
+    ${phrFooterHTML(q, st.idx + 1 < total ? 'Next →' : 'See results')}`;
   }
 
   screen.innerHTML = `

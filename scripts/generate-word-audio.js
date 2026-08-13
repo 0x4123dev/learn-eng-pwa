@@ -53,8 +53,10 @@ const DICTIONARY_FILE = 'js/dictionary-data.js';
 // (Word form, Phrases, Collocation, Verbs). Opt-in: --answers.
 const ANSWER_BANKS = [
     { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS', pick: q => [q.answer] },
+    // q.phrase is the collocation actually being learned ("rise in"); the bare
+    // answer is only its preposition, which teaches nothing spoken alone.
     { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS',
-      pick: q => [q.answer || (q.options && q.options[q.correct])] },
+      pick: q => [q.answer || (q.options && q.options[q.correct]), q.phrase] },
     { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS', pick: q => [q.answer] },
     { file: 'js/vocabulary.js', global: 'irregularVerbs', pick: v => [v.v2, v.v3] }
 ];
