@@ -1,7 +1,12 @@
-const CACHE_NAME = 'flashlingo-v269';
+const CACHE_NAME = 'flashlingo-v270';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
-const AUDIO_CACHE = 'flashlingo-audio-v1';
+//
+// Bump this ONLY when the recordings themselves change — re-voicing the set,
+// re-encoding it. v1 held a set built in two different voices; v2 is the
+// single-voice rebuild. Without the bump, a phone that had already cached a
+// word would keep playing the old voice forever.
+const AUDIO_CACHE = 'flashlingo-audio-v2';
 const ASSETS = [
   '/',
   '/index.html',

@@ -1111,7 +1111,9 @@ function preloadLessonAudio(words) {
 //
 // fetch(), not Audio elements: 1,000 media elements would be a memory
 // problem, and the service worker caches the response either way.
-const HOT_WORDS_FLAG = 'hotWordsWarmed';   // words warmed so far (resume point)
+// Words warmed so far (resume point). Keyed to the audio-cache version so a
+// re-voiced set re-warms instead of being suppressed by an old completion mark.
+const HOT_WORDS_FLAG = 'hotWordsWarmed-v2';
 const WARM_BATCH = 6;
 const warmedSlugs = new Set();             // fetched this session — never twice
 

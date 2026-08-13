@@ -137,7 +137,10 @@ suite('hot words: background warming', () => {
         const { app, fetched, store } = loadWithNet();
         app.warmHotWords();
         const after = fetched.length;
-        assert.truthy(store.hotWordsWarmed, 'completion must be recorded');
+        // The key carries the audio version (so a re-voice re-warms), so match
+        // the prefix rather than pinning a name that is meant to change.
+        const flagKey = Object.keys(store).find(k => k.startsWith('hotWordsWarmed'));
+        assert.truthy(flagKey, `completion must be recorded — store held ${JSON.stringify(Object.keys(store))}`);
         assert.equal(app.warmHotWords(), 0, 'second call must be a no-op');
         assert.equal(fetched.length, after, 'nothing re-fetched on a later visit');
     });

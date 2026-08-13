@@ -152,6 +152,27 @@ suite('word audio: unit practice uses the shared voice', () => {
 suite('word audio: service worker caching', () => {
     const sw = () => read('sw.js');
 
+    test('re-voicing the set invalidates the cached recordings', () => {
+        // The audio cache deliberately outlives CACHE_NAME bumps, so a phone
+        // that already cached the old voice would keep playing it forever.
+        // Re-voicing is the one event that MUST bump AUDIO_CACHE — v1 held
+        // the two-voice set, so shipping one voice means v2 or later.
+        const m = /AUDIO_CACHE\s*=\s*'flashlingo-audio-v(\d+)'/.exec(sw());
+        assert.truthy(m, 'AUDIO_CACHE must be versioned');
+        assert.truthy(Number(m[1]) >= 2,
+            'still on audio-v1 — devices would keep serving the old mixed-voice recordings');
+    });
+
+    test('a re-voice also re-warms the hot words', () => {
+        // Same trap one level up: the "already warmed" flag would suppress
+        // re-fetching the new recordings, so it is keyed to the audio version.
+        const app = read('js/app.js');
+        const m = /HOT_WORDS_FLAG\s*=\s*'([^']+)'/.exec(app);
+        assert.truthy(m, 'HOT_WORDS_FLAG must exist');
+        assert.truthy(/v\d+/.test(m[1]),
+            `flag "${m[1]}" carries no audio version — a re-voice would never re-warm`);
+    });
+
     test('a dedicated audio cache exists and survives version-bump cleanup', () => {
         assert.truthy(/AUDIO_CACHE\s*=\s*['"]flashlingo-audio-v\d+['"]/.test(sw()),
             'sw.js must declare AUDIO_CACHE');
