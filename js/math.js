@@ -36,11 +36,49 @@ const MATH_SUPERSCRIPTS = {
 };
 const MATH_SUP_RE = new RegExp('[' + Object.keys(MATH_SUPERSCRIPTS).join('') + ']+', 'g');
 
-// Escape first, then lift the runs of superscript characters into <sup>. The
-// order matters: the same string often holds "khi a < 0".
-function mathFormula(s) {
-  return mathEsc(s).replace(MATH_SUP_RE, run =>
+// "√" on its own is only the hook. A căn bậc hai is the hook PLUS the bar
+// (vinculum) drawn over what is under it — without it, "√36" reads as a tick
+// mark standing next to a number, and "√(a²) = |a|" gives no clue where the
+// radicand stops. The bar is a border-top on the radicand.
+//
+// Stops at "<" so it can never run across a tag and eat the markup: the same
+// function is used on explanation HTML.
+const MATH_RADICAND_CHAR = /[0-9A-Za-zÀ-ỹ⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺ᵃᵇᶜᵈᵉᵏᵐⁿᵖʳˢᵗᵘᵛʷˣʸᶻ.,]/;
+
+function mathRadicals(s) {
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] !== '√') { out += s[i]; continue; }
+    let j = i + 1;
+    let end = j;
+    if (s[j] === '(') {
+      let depth = 0;
+      for (let k = j; k < s.length; k++) {
+        const ch = s[k];
+        if (ch === '<') { end = j; break; }           // a tag — leave it alone
+        if (ch === '(') depth++;
+        else if (ch === ')') { depth--; if (depth === 0) { end = k + 1; break; } }
+      }
+    } else {
+      while (end < s.length && s[end] !== '<' && MATH_RADICAND_CHAR.test(s[end])) end++;
+    }
+    if (end <= j) { out += '√'; continue; }           // nothing under the sign
+    out += '√<span class="math-radicand">' + s.slice(j, end) + '</span>';
+    i = end - 1;
+  }
+  return out;
+}
+
+function mathSuper(s) {
+  return s.replace(MATH_SUP_RE, run =>
     '<sup>' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>');
+}
+
+// Escape first, then draw the radicals, then lift the superscripts. The order
+// matters: the same string often holds "khi a < 0", and the radicand scan must
+// see the Unicode exponents before they become <sup> tags.
+function mathFormula(s) {
+  return mathSuper(mathRadicals(mathEsc(s)));
 }
 
 // Same lift, for strings that are already trusted HTML — explanations and
@@ -48,8 +86,7 @@ function mathFormula(s) {
 // build step (scripts/build-math-data.js) has already neutralised every "<"
 // that is not one of those tags, which is what makes this safe.
 function mathRich(html) {
-  return String(html == null ? '' : html).replace(MATH_SUP_RE, run =>
-    '<sup>' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>');
+  return mathSuper(mathRadicals(String(html == null ? '' : html)));
 }
 
 function mathTier(pct) { return pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak'; }

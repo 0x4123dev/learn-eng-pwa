@@ -112,7 +112,20 @@ fi
 echo "▸ building .cf-dist…"
 rm -rf .cf-dist && mkdir -p .cf-dist
 cp index.html admin.html manifest.json sw.js .nojekyll .cf-dist/
-cp -R css js img audio functions wrangler.toml .cf-dist/
+# audio/ is deliberately absent: the ~13,000 word MP3s deploy separately to
+# the eng-pwa-audio Pages project (scripts/deploy-audio.sh) so they can never
+# push this deployment over Cloudflare's 20,000-file limit.
+cp -R css js img functions wrangler.toml .cf-dist/
+
+# Refuse to ship a deployment that is creeping toward the Pages file cap —
+# better to fail here with a name than mid-upload with an API error.
+COUNT=$(find .cf-dist -type f | wc -l | tr -d ' ')
+echo "▸ .cf-dist: $COUNT files (Pages limit: 20,000/deployment)"
+if [ "$COUNT" -ge 18000 ]; then
+  echo "✗ $COUNT files staged — nearly at Cloudflare's 20,000-file limit." >&2
+  echo "  Find what grew: find .cf-dist -type f | awk -F/ '{print \$2}' | sort | uniq -c | sort -rn | head" >&2
+  exit 1
+fi
 
 echo "▸ deploying to $PROJECT…"
 npx --yes wrangler@3 pages deploy .cf-dist --project-name "$PROJECT" \

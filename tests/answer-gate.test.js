@@ -165,7 +165,9 @@ suite('answer gate: a sequence plays through one unlocked element', () => {
         const { app, created, played } = loadAppWithAudio();
         app.speakSequence(['drink', 'drank', 'drunk']);
         assert.deepEqual(played, [
-            'audio/words/drink.mp3', 'audio/words/drank.mp3', 'audio/words/drunk.mp3'
+            app.WORD_AUDIO_PATH + 'drink.mp3',
+            app.WORD_AUDIO_PATH + 'drank.mp3',
+            app.WORD_AUDIO_PATH + 'drunk.mp3'
         ]);
         assert.equal(created.length, 1,
             `made ${created.length} elements — only the first is gesture-unlocked, the rest get refused`);

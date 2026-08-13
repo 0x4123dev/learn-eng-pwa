@@ -93,7 +93,7 @@ suite('word audio: speakWord', () => {
     test('plays the pre-generated recording, no TTS involved', () => {
         const { app, audio, synth } = loadWithAudio();
         app.speakWord('apple');
-        assert.contains(audio.played, 'audio/words/apple.mp3');
+        assert.contains(audio.played, app.WORD_AUDIO_PATH + 'apple.mp3');
         assert.equal(synth.calls.cancel, 0, 'recording played — TTS must stay silent');
         assert.equal(audio.created.length, 1, 'one element, played directly — no clone');
     });
@@ -113,7 +113,7 @@ suite('word audio: speakWord', () => {
         app.prefetchAudio('apple');
         app.speakWord('apple');
         assert.equal(audio.created.length, 1, 'tap must reuse the preloading element, not fetch again');
-        assert.deepEqual(audio.played, ['audio/words/apple.mp3']);
+        assert.deepEqual(audio.played, [app.WORD_AUDIO_PATH + 'apple.mp3']);
     });
 
     test('falls back to speech synthesis when the recording is missing, and remembers the miss', () => {
@@ -266,8 +266,8 @@ suite('word audio: speakWord', () => {
             }
         });
         app.preloadLessonAudio([{ en: 'apple' }, 'ice cream']);
-        assert.contains(fetched, 'audio/words/apple.mp3');
-        assert.contains(fetched, 'audio/words/ice-cream.mp3');
+        assert.contains(fetched, app.WORD_AUDIO_PATH + 'apple.mp3');
+        assert.contains(fetched, app.WORD_AUDIO_PATH + 'ice-cream.mp3');
         assert.deepEqual(audio.played, [], 'prefetch must not play anything');
         assert.equal(audio.created.length, 0, 'and must not build media elements');
     });
@@ -368,10 +368,29 @@ suite('word audio: screens prefetch what they show', () => {
 });
 
 suite('word audio: deploy ships the recordings', () => {
-    test('deploy.sh copies audio/ into .cf-dist', () => {
-        const sh = read('scripts/deploy.sh');
-        assert.truthy(/cp -R [^\n]*\baudio\b/.test(sh),
-            'deploy.sh build must copy audio/ or the recordings never reach the live site');
+    test('the recordings ship — from their own deploy, not the app one', () => {
+        // They used to ride along in .cf-dist. At ~13,000 MP3s that crowds a
+        // single Cloudflare Pages deployment against its 20,000-file cap, so
+        // the audio now has its own project and its own script. The property
+        // that matters is unchanged: something must actually publish them.
+        const audioSh = read('scripts/deploy-audio.sh');
+        assert.truthy(/eng-pwa-audio/.test(audioSh), 'deploy-audio.sh must target the audio project');
+        assert.truthy(/audio/.test(audioSh), 'deploy-audio.sh must ship audio/');
+
+        const appSh = read('scripts/deploy.sh');
+        assert.falsy(/cp -R [^\n]*\baudio\b/.test(appSh),
+            'the app deploy must NOT carry audio/ — that is what the separate project is for');
+    });
+
+    test('the app the audio serves from is the one it is deployed to', () => {
+        // A mismatch here is silent: every recording 404s and the whole app
+        // quietly falls back to the robot voice.
+        const host = /const WORD_AUDIO_PATH = '([^']+)'/.exec(read('js/app.js'));
+        assert.truthy(host, 'js/app.js must define WORD_AUDIO_PATH');
+        const deployed = /LIVE="([^"]+)"/.exec(read('scripts/deploy-audio.sh'));
+        assert.truthy(deployed, 'deploy-audio.sh must name where it publishes');
+        assert.truthy(host[1].startsWith(deployed[1] + '/'),
+            `app fetches from ${host[1]} but the audio deploys to ${deployed[1]}`);
     });
 });
 

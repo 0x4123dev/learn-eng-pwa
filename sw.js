@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v284';
+const CACHE_NAME = 'flashlingo-v285';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -129,12 +129,16 @@ self.addEventListener('message', event => {
 // plain 200 — this was a visible 1–2s delay on every tap-to-hear.
 async function audioWordResponse(request) {
   const cache = await caches.open(AUDIO_CACHE);
-  // Match/store by URL so a ranged request still hits the full cached body.
-  let full = await cache.match(request.url);
+  // Key by same-origin pathname, not the request URL: the recordings moved to
+  // the eng-pwa-audio Pages project (20,000-files-per-deploy limit), and this
+  // keeps every MP3 a device cached before the move serving without a
+  // re-download. A ranged request still hits the full cached body.
+  const key = self.location.origin + new URL(request.url).pathname;
+  let full = await cache.match(key);
   if (!full) {
     full = await fetch(request.url);   // no Range header → always a full 200
     if (!full.ok) return full;
-    await cache.put(request.url, full.clone());
+    await cache.put(key, full.clone());
   }
   const range = /bytes=(\d+)-(\d+)?/.exec(request.headers.get('range') || '');
   if (!range) return full;

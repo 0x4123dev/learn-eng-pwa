@@ -1058,9 +1058,16 @@ function formatDate(timestamp) {
 }
 
 // Every word ships a pre-generated ElevenLabs recording (one voice for the
-// whole app) under audio/words/<slug>.mp3 — see scripts/generate-word-audio.js,
+// whole app) at audio/words/<slug>.mp3 — see scripts/generate-word-audio.js,
 // which must produce the same slugs.
-const WORD_AUDIO_PATH = 'audio/words/';
+//
+// The MP3s live in their own Cloudflare Pages project (eng-pwa-audio), not in
+// the app deploy: Pages caps a deployment at 20,000 files and the ~13,000
+// recordings were crowding the app out of its own limit. Same Cloudflare CDN,
+// same per-file URLs, and the service worker keys its audio cache by pathname
+// so recordings cached before the move keep playing. New recordings go live
+// with scripts/deploy-audio.sh.
+const WORD_AUDIO_PATH = 'https://eng-pwa-audio.pages.dev/audio/words/';
 
 function wordAudioSlug(word) {
     return String(word).toLowerCase().trim()

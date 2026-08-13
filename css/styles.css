@@ -8694,6 +8694,21 @@
         }
         .grammar-question-text sup { font-size: 0.72em; }
 
+        /* The bar over a radicand — the other half of the căn bậc hai sign.
+           Drawn as a border so it stretches to exactly what is under the root,
+           which is also what shows the reader where the radicand ends. */
+        .math-radicand {
+            border-top: 1.5px solid currentColor;
+            padding: 1px 2px 0 1px;
+            margin-left: -1px;
+        }
+        /* The hook is drawn slightly high in most fonts; nudge it so it meets
+           the bar instead of floating below it. */
+        .math-formula,
+        .math-hub-screen .grammar-question-text,
+        .math-hub-screen .grammar-explanation,
+        .math-lesson-body { --math-radical-gap: 0; }
+
         /* The score-tier filter row reuses the sub-tab pills but has five of
            them, so it scrolls sideways instead of squeezing. */
         .math-hist-tabs {

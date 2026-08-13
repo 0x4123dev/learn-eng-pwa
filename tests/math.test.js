@@ -206,7 +206,9 @@ suite('math: the practice flow', () => {
         assert.equal(math.mathFormula('x⁻⁵'), 'x<sup>−5</sup>');
         assert.equal(math.mathFormula('xᵐ · xⁿ = xᵐ⁺ⁿ'), 'x<sup>m</sup> · x<sup>n</sup> = x<sup>m+n</sup>');
         assert.equal(math.mathFormula('(1/x)⁻⁵'), '(1/x)<sup>−5</sup>');
-        assert.equal(math.mathFormula('√(a²) = |a|'), '√(a<sup>2</sup>) = |a|');
+        // The radicand now carries its overline span too — see the radical test.
+        assert.equal(math.mathFormula('√(a²) = |a|'),
+            '√<span class="math-radicand">(a<sup>2</sup>)</span> = |a|');
     });
 
     test('formatting a formula still escapes the HTML around it', () => {
@@ -216,13 +218,37 @@ suite('math: the practice flow', () => {
         assert.equal(math.mathFormula('<b>x²</b>'), '&lt;b&gt;x<sup>2</sup>&lt;/b&gt;');
     });
 
+    test('a radical gets its overline, so √36 is not a tick beside a number', () => {
+        // "√" alone is only the hook; the căn bậc hai is the hook PLUS the
+        // vinculum over what is under it. Without the bar, √36 reads as a
+        // tick mark next to 36, and √(a²) gives no clue where the radicand
+        // ends. The bar is drawn with a border over a span.
+        assert.equal(math.mathFormula('√36'), '√<span class="math-radicand">36</span>');
+        assert.equal(math.mathFormula('√a'), '√<span class="math-radicand">a</span>');
+        // Balanced parentheses, including nested ones.
+        assert.equal(math.mathFormula('√((−10)²)'),
+            '√<span class="math-radicand">((−10)<sup>2</sup>)</span>');
+        assert.equal(math.mathFormula('√(a²) = |a|'),
+            '√<span class="math-radicand">(a<sup>2</sup>)</span> = |a|');
+        // A bare √ with nothing after it must not swallow the rest.
+        assert.equal(math.mathFormula('dấu √ là căn'), 'dấu √ là căn');
+    });
+
+    test('radicals in explanations keep the surrounding markup intact', () => {
+        assert.equal(math.mathRich('<b>√16</b> = 4'),
+            '<b>√<span class="math-radicand">16</span></b> = 4');
+        // The scan must not run across a tag boundary and eat the markup.
+        assert.equal(math.mathRich('√<b>x</b>'), '√<b>x</b>');
+    });
+
     test('explanations get readable exponents without losing their markup', () => {
         // Explanations arrive as trusted HTML (<br>, <b>) so they cannot be
         // escaped — but they are full of maths too, and the exponents were
         // just as unreadable there as in the options.
         assert.equal(math.mathRich('🔑 x⁻ⁿ = 1/xⁿ<br>✗ x⁵: sai.'),
             '🔑 x<sup>−n</sup> = 1/x<sup>n</sup><br>✗ x<sup>5</sup>: sai.');
-        assert.equal(math.mathRich('<b>√(a²)</b> = |a|'), '<b>√(a<sup>2</sup>)</b> = |a|');
+        assert.equal(math.mathRich('<b>√(a²)</b> = |a|'),
+            '<b>√<span class="math-radicand">(a<sup>2</sup>)</span></b> = |a|');
         // Already-escaped text must be left alone, not double-escaped.
         assert.equal(math.mathRich('khi a &lt; 0'), 'khi a &lt; 0');
     });

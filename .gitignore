@@ -5,6 +5,7 @@
 docs/
 
 .cf-dist/
+.cf-audio-dist/
 node_modules/
 
 # Local secrets (ElevenLabs / Cloudflare) — never commit

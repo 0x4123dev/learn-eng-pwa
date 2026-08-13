@@ -126,7 +126,9 @@ suite('hot words: background warming', () => {
         const n = app.warmHotWords();
         assert.equal(n, 3, 'should schedule all three words');
         assert.deepEqual(fetched.slice().sort(), [
-            'audio/words/ice-cream.mp3', 'audio/words/the.mp3', 'audio/words/zoo.mp3'
+            app.WORD_AUDIO_PATH + 'ice-cream.mp3',
+            app.WORD_AUDIO_PATH + 'the.mp3',
+            app.WORD_AUDIO_PATH + 'zoo.mp3'
         ]);
         assert.equal(audioCreated, 0, '1000 Audio elements would be a memory problem — use fetch');
     });
@@ -225,7 +227,7 @@ suite('hot words: the rest of a question warms while you answer', () => {
         });
         assert.equal(app.warmWord('Ticket'), true);
         assert.equal(app.warmWord('ticket'), false, 'same word, already warmed');
-        assert.deepEqual(fetched, ['audio/words/ticket.mp3']);
+        assert.deepEqual(fetched, [app.WORD_AUDIO_PATH + 'ticket.mp3']);
     });
 
     test('every quiz renderer warms its question before the answer', () => {

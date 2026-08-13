@@ -30,6 +30,11 @@
 //
 // Idempotent: existing files are skipped, so re-running only fills gaps
 // (e.g. words added to the data files since the last run).
+//
+// Going live: the recordings deploy to their own Cloudflare Pages project
+// (eng-pwa-audio — Pages caps a deployment at 20,000 files, and the app must
+// not share its budget with 13,000 MP3s). After generating, run:
+//   scripts/deploy-audio.sh
 
 const fs = require('fs');
 const path = require('path');
