@@ -60,6 +60,13 @@ function mathBoardSwitch(i) {
     return s.active;
 }
 
+// Actions returned to the painter, and what each obliges it to do:
+//   'ink-start' / 'ink'  draw the fresh tail of g.stroke
+//   'pan-start'          FULL repaint — the half-drawn stroke was just deleted
+//   'pan'                full repaint — b.scrollY moved
+//   'ink-end' / 'pan-end'  full repaint at final quality; the gesture is over
+//   'none'               nothing changed on screen; do not repaint
+//
 // ── Gesture machine ──────────────────────────────────────────────────────
 // One finger is a pen; a second finger means "I wanted to scroll" — the stroke
 // that first finger started is removed, and the whole gesture stays a pan until
@@ -70,7 +77,8 @@ function mathBoardSwitch(i) {
 // already was. Anchoring on the newly-arrived second finger instead would make
 // the sheet jump the moment the student rests a thumb down.
 function mathBoardGesture() {
-    return { down: {}, count: 0, mode: 'idle', stroke: null, lead: null };
+    return { down: {}, count: 0, mode: 'idle', // idle | ink | pan
+        stroke: null, lead: null, panY: 0 };
 }
 
 function mathBoardPointerDown(g, b, id, x, y) {
@@ -88,6 +96,7 @@ function mathBoardPointerDown(g, b, id, x, y) {
         b.strokes.pop();
         g.stroke = null;
         g.mode = 'pan';        // lead stays the first finger — it is the anchor
+        g.panY = b.scrollY;    // unclamped accumulator — see mathBoardPointerMove
         return 'pan-start';
     }
     return 'none';             // a third finger during a pan changes nothing
@@ -103,8 +112,9 @@ function mathBoardPointerMove(g, b, id, x, y) {
         return mathBoardExtend(g.stroke, x, y + b.scrollY) ? 'ink' : 'none';
     }
     if (g.mode === 'pan' && key === g.lead) {
-        b.scrollY = Math.max(0, b.scrollY - (y - prevY));   // drag down ⇒ see higher up
-        return 'pan';
+        g.panY -= (y - prevY);              // the finger's true travel, unclamped
+        b.scrollY = Math.max(0, g.panY);    // clamp only what we show, or overscroll
+        return 'pan';                       // at the top would steal the way back
     }
     return 'none';
 }
@@ -136,11 +146,18 @@ function mathBoardPointerUp(g, b, id) {
 // exactly like a lift — anything else wedges the board in ink mode forever.
 function mathBoardPointerCancel(g, b, id) { return mathBoardPointerUp(g, b, id); }
 
+// The board array is shared with the toolbar (undo / xoá / switch board). Any
+// of those can pull the in-progress stroke out from under a finger that is
+// still down, so they must abort the gesture instead of leaving g.stroke
+// pointing at a detached object that silently swallows ink.
+function mathBoardAbort(g) { g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; }
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,
         mathBoardBegin, mathBoardExtend, mathBoardUndo, mathBoardClear,
         mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
+        mathBoardAbort,
     };
 }

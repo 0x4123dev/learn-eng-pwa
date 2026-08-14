@@ -133,4 +133,72 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         assert.equal(b.strokes.length, 1, 'what was drawn stays drawn');
         assert.equal(board.mathBoardPointerDown(g, b, 2, 5, 5), 'ink-start');
     });
+
+    test('aborting mid-stroke stops the finger from inking into a detached stroke', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 10);
+        board.mathBoardUndo(b);              // the toolbar yanks the stroke away
+        board.mathBoardAbort(g);
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 40, 40), 'none',
+            'the finger must not keep feeding an orphaned stroke');
+        assert.equal(b.strokes.length, 0);
+    });
+
+    test('overscrolling past the top does not steal the way back down', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 100);
+        board.mathBoardPointerDown(g, b, 2, 60, 100);
+        board.mathBoardPointerMove(g, b, 1, 10, 400);   // drag 300px past the top
+        assert.equal(b.scrollY, 0, 'nothing above the first line to show');
+        board.mathBoardPointerMove(g, b, 1, 10, 100);   // finger back where it started
+        assert.equal(b.scrollY, 0, 'sheet is back where it started too, not 300px away');
+    });
+
+    test('when the steering finger leaves, a survivor takes over without a jump', () => {
+        const b = freshBoard(); b.scrollY = 500;
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 100);   // lead
+        board.mathBoardPointerDown(g, b, 2, 60, 300);   // survivor, resting 200px lower
+        board.mathBoardPointerUp(g, b, 1);              // the lead lifts mid-pan
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 290), 'pan', 'survivor now steers');
+        assert.equal(b.scrollY, 510, 'delta is from the survivor\'s own y, not the old lead\'s');
+    });
+
+    test('both fingers moving still scrolls once, not twice', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 300);
+        board.mathBoardPointerDown(g, b, 2, 60, 300);
+        board.mathBoardPointerMove(g, b, 1, 10, 250);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 250), 'none',
+            'only the steering finger moves the sheet — otherwise it scrolls at 2x');
+        assert.equal(b.scrollY, 50);
+    });
+
+    test('a cancelled finger during a pan does not wedge the board', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 100);
+        board.mathBoardPointerDown(g, b, 2, 60, 100);
+        board.mathBoardPointerCancel(g, b, 1);
+        board.mathBoardPointerCancel(g, b, 2);
+        assert.equal(board.mathBoardPointerDown(g, b, 5, 5, 5), 'ink-start',
+            'after every finger is cancelled the next tap writes again');
+    });
+
+    test('many small moves scroll exactly as far as one big move', () => {
+        const run = (steps) => {
+            const b = freshBoard();
+            const g = board.mathBoardGesture();
+            board.mathBoardPointerDown(g, b, 1, 10, 1000);
+            board.mathBoardPointerDown(g, b, 2, 60, 1000);
+            let y = 1000;
+            for (let i = 0; i < steps; i++) { y -= 100 / steps; board.mathBoardPointerMove(g, b, 1, 10, y); }
+            return b.scrollY;
+        };
+        assert.equal(run(10), run(1),
+            'getCoalescedEvents replays a move as many sub-moves — they must not drift');
+    });
 });
