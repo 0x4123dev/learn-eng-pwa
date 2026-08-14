@@ -220,6 +220,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     var _mathBoardCtx = null;
     var _mathBoardGestureState = null;
     var _mathBoardClearArmed = 0;
+    var _mathBoardResizeObs = null;
 
     // A live gesture holds a reference into b.strokes (g.stroke) or is mid-pan.
     // Any toolbar action that mutates the board, or that tears the overlay
@@ -271,21 +272,27 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         mathBoardAbortSafe();
         mathBoardSession().open = false;
         _mathBoardClearArmed = 0;
-        const el = document.getElementById('mathBoardOverlay');
-        if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
-        _mathBoardCtx = null;
+        mathBoardDropCanvas();
     };
 
     // The quiz can end while the board is open — the child taps a nav tab and
     // confirms. Nothing else hides the overlay, so without this the sheet stays
     // painted over the whole app with no obvious way out.
     window.mathBoardCloseForSession = function () {
-        const el = document.getElementById('mathBoardOverlay');
-        if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
-        _mathBoardCtx = null;
+        mathBoardDropCanvas();
         _mathBoardGestureState = null;
         _mathBoardClearArmed = 0;
     };
+
+    // Tear the canvas down for good: hide the overlay, drop its DOM, and stop
+    // observing it. The observer outlives a detached target, so skipping the
+    // disconnect leaks the canvas bitmap — megabytes on a retina phone.
+    function mathBoardDropCanvas() {
+        if (_mathBoardResizeObs) { _mathBoardResizeObs.disconnect(); _mathBoardResizeObs = null; }
+        const el = document.getElementById('mathBoardOverlay');
+        if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
+        _mathBoardCtx = null;
+    }
 
     // ← REVIEW (Task 3): every toolbar action mutates b.strokes, which the
     // gesture machine may be holding a live reference into. Aborting first is
@@ -372,6 +379,11 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     function mathBoardMountCanvas() {
         const canvas = document.getElementById('mathBoardCanvas');
         if (!canvas) return;
+        // A ResizeObserver does NOT stop observing when its target is detached,
+        // and every board switch replaces the canvas — so without this the old
+        // observer and its retina bitmap (megabytes) stay alive for the life of
+        // the page, once per switch.
+        if (_mathBoardResizeObs) { _mathBoardResizeObs.disconnect(); _mathBoardResizeObs = null; }
         canvas.style.touchAction = 'none';   // touch-action: none — we own every touch
         // ← REVIEW (Task 4): clamp to at least 1px. A canvas sized during an
         // unsettled layout would be zero-area and silently swallow every stroke.
@@ -440,7 +452,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         mathBoardRepaint();
         // Per-element observer: dies with the canvas on the next re-render,
         // unlike the window-level resize/orientationchange listeners above.
-        if (window.ResizeObserver) new ResizeObserver(mathBoardResize).observe(canvas);
+        if (window.ResizeObserver) {
+            _mathBoardResizeObs = new ResizeObserver(mathBoardResize);
+            _mathBoardResizeObs.observe(canvas);
+        }
     }
 
     function mathBoardRepaint() {
