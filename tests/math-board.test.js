@@ -77,3 +77,60 @@ suite('math board: session and boards', () => {
         assert.equal(board.mathBoardSession().boards.length, 1);
     });
 });
+
+suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
+    function freshBoard() { board.mathBoardReset(); return board.mathBoardActive(); }
+
+    test('one finger draws: down begins a stroke in world coords, move extends it', () => {
+        const b = freshBoard();
+        b.scrollY = 100;
+        const g = board.mathBoardGesture();
+        assert.equal(board.mathBoardPointerDown(g, b, 1, 10, 20), 'ink-start');
+        assert.deepEqual(b.strokes[0].points[0], { x: 10, y: 120 }, 'y is screen + scroll');
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 30, 40), 'ink');
+        assert.deepEqual(b.strokes[0].points[1], { x: 30, y: 140 });
+        assert.equal(board.mathBoardPointerUp(g, b, 1), 'ink-end');
+    });
+
+    test('a second finger cancels the half-drawn stroke and turns into a pan', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 300);
+        board.mathBoardPointerMove(g, b, 1, 10, 305);
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 60, 300), 'pan-start');
+        assert.equal(b.strokes.length, 0, 'the accidental stroke is gone');
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 200), 'pan');
+        assert.equal(b.scrollY, 105, 'finger up 105px ⇒ sheet scrolls down 105px');
+    });
+
+    test('pan clamps at the top of the sheet — no negative scroll', () => {
+        const b = freshBoard();
+        b.scrollY = 30;
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 100);
+        board.mathBoardPointerDown(g, b, 2, 60, 100);
+        board.mathBoardPointerMove(g, b, 1, 10, 400);  // drag far downward
+        assert.equal(b.scrollY, 0, 'clamped, not -270');
+    });
+
+    test('lifting fingers ends the pan; the NEXT single finger inks again', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 100);
+        board.mathBoardPointerDown(g, b, 2, 60, 100);
+        board.mathBoardPointerUp(g, b, 2);
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 50), 'pan',
+            'the surviving finger of a pan never turns back into ink mid-gesture');
+        board.mathBoardPointerUp(g, b, 1);
+        assert.equal(board.mathBoardPointerDown(g, b, 3, 5, 5), 'ink-start');
+    });
+
+    test('pointercancel (incoming call) ends the stroke without corrupting state', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 10, 10);
+        assert.equal(board.mathBoardPointerCancel(g, b, 1), 'ink-end');
+        assert.equal(b.strokes.length, 1, 'what was drawn stays drawn');
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 5, 5), 'ink-start');
+    });
+});
