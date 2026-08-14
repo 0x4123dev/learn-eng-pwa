@@ -89,6 +89,118 @@ function mathRich(html) {
   return mathSuper(mathRadicals(String(html == null ? '' : html)));
 }
 
+// ---- typed answers ----
+// Some questions ask the child to COMPUTE, not just recognise — and there the
+// phone keyboard is the wrong tool twice over: it cannot type √, an exponent
+// or a fraction bar, and it slides up over the very question being asked.
+//
+// So the tab draws its own pad and never focuses an input. The answer is a
+// plain string in JS, painted through mathFormula() — the same renderer that
+// draws the question — so "2⁷" in the answer box looks like "2⁷" in the sum.
+// Nothing on screen is focusable, so iOS has no reason to raise a keyboard.
+const MATH_TYPED_PER_ROUND = 3;
+const MATH_KEYPAD_ROWS = [
+  ['7', '8', '9', '⌫'],
+  ['4', '5', '6', '/'],
+  ['1', '2', '3', '−'],
+  [',', '0', '(', ')']
+];
+// Digit → superscript, for the ^ key. MATH_SUPERSCRIPTS runs the other way.
+const MATH_TO_SUP = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵',
+  '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '−': '⁻', '(': '⁽', ')': '⁾' };
+
+let _mathTyped = { raw: '', sup: false };
+
+function mathTypedReset() { _mathTyped = { raw: '', sup: false }; }
+function mathTypedRaw() { return _mathTyped.raw; }
+function mathTypedSup() { return _mathTyped.sup; }
+function mathIsTyped(q) { return !!q && q.type === 'calc'; }
+
+// "^" is a mode, not a character: press it and the digits that follow land as
+// real superscripts. That keeps backspace honest — one tap removes one glyph
+// the child can see — and stores the same characters the rest of the tab
+// already knows how to draw.
+function mathKeyPress(k) {
+  const st = _mathTyped;
+  if (k === '⌫') {
+    st.raw = st.raw.slice(0, -1);
+    // Leaving the exponent behind would make the next digit a superscript of
+    // nothing, which the child cannot see coming.
+    if (st.sup && !MATH_SUPERSCRIPTS[st.raw.slice(-1)]) st.sup = false;
+    return;
+  }
+  if (k === '^') { st.sup = !st.sup; return; }
+  if (st.sup && MATH_TO_SUP[k]) { st.raw += MATH_TO_SUP[k]; return; }
+  if (st.sup) st.sup = false;      // a symbol the exponent cannot hold
+  st.raw += k;
+}
+
+// Compare on meaning, not on keystrokes: school writes 0,75 where JS writes
+// 0.75, and a maths key prints U+2212 where a keyboard prints a hyphen.
+function mathNormalize(s) {
+  let t = String(s == null ? '' : s);
+  t = t.replace(MATH_SUP_RE, run =>
+    '^' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join(''));
+  return t.replace(/\s+/g, '')
+    .replace(/,/g, '.')
+    .replace(/[−–—]/g, '-')
+    .replace(/[×·⋅]/g, '*')
+    .toLowerCase();
+}
+
+// Deliberately NOT clever about fractions: -6/8 is wrong for -3/4 because rút
+// gọn is the skill being tested. Whatever else counts is listed in accept[] by
+// the author, who knows what the question is for.
+function mathGrade(q, val) {
+  const got = mathNormalize(val);
+  if (!got) return false;
+  const want = [q.answer].concat(q.accept || []).map(mathNormalize);
+  if (want.indexOf(got) !== -1) return true;
+  const n = Number(got);
+  if (got !== '' && !isNaN(n)) {
+    return want.some(w => w !== '' && !isNaN(Number(w)) && Number(w) === n);
+  }
+  return false;
+}
+
+function mathIsCorrect(q, ans) {
+  return mathIsTyped(q) ? mathGrade(q, ans) : ans === q.correct;
+}
+
+function mathTypedBoxHTML(value, state) {
+  const raw = value == null ? _mathTyped.raw : value;
+  return `<div class="math-answer-box ${state || ''}">` +
+    (raw ? `<span class="math-formula">${mathFormula(raw)}</span>`
+         : `<span class="math-answer-placeholder">Đáp án của con…</span>`) +
+    (state ? '' : `<span class="math-caret"></span>`) + `</div>`;
+}
+
+function mathKeypadHTML(q) {
+  const extra = (q && q.keys || []).map(k =>
+    `<button class="math-key math-key-sym${k === '^' ? ' math-key-pow' : ''}${k === '^' && _mathTyped.sup ? ' active' : ''}" onclick="mathKey('${k}')">` +
+    (k === '^' ? 'x<sup>n</sup>' : mathEsc(k)) + `</button>`).join('');
+  const rows = MATH_KEYPAD_ROWS.map(row =>
+    `<div class="math-key-row">` + row.map(k =>
+      `<button class="math-key${k === '⌫' ? ' math-key-del' : ''}" onclick="mathKey('${k}')">${mathEsc(k)}</button>`
+    ).join('') + `</div>`).join('');
+  return `<div class="math-keypad">` +
+    (extra ? `<div class="math-key-row math-key-context">${extra}</div>` : '') +
+    rows + `</div>`;
+}
+
+// Repaint just the answer box and the ^ key rather than the whole screen: a
+// full re-render on every keystroke throws away the button's :active flash,
+// which is the only feedback a child gets that the tap landed.
+function mathKey(k) {
+  mathKeyPress(k);
+  const slot = document.getElementById('mathAnswerSlot');
+  if (slot) slot.innerHTML = mathTypedBoxHTML();
+  const pow = document.querySelector('.math-key-pow');
+  if (pow) pow.className = 'math-key math-key-sym math-key-pow' + (_mathTyped.sup ? ' active' : '');
+  const btn = document.getElementById('mathSubmitBtn');
+  if (btn) btn.disabled = !_mathTyped.raw;
+}
+
 function mathTier(pct) { return pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak'; }
 function mathTierEmoji(pct) { return pct === 100 ? '⭐' : pct >= 80 ? '✅' : pct >= 60 ? '👍' : '📝'; }
 
@@ -273,7 +385,14 @@ function startMathQuiz(chapter) {
   if (typeof retryGate === 'function' && retryGate('math')) return;
   const pool = mathChapterQuestions(chapter);
   if (!pool.length) return;
-  const picked = mathShuffle(pool).slice(0, Math.min(MATH_QUIZ_SIZE, pool.length));
+  // Draw the typed questions on purpose. Left to a plain shuffle they are a
+  // handful among fifty, so most rounds would never ask the child to compute
+  // anything — recognising the formula would go on being the whole tab.
+  const size = Math.min(MATH_QUIZ_SIZE, pool.length);
+  const typed = mathShuffle(pool.filter(mathIsTyped)).slice(0, Math.min(MATH_TYPED_PER_ROUND, size));
+  const mcq = mathShuffle(pool.filter(q => !mathIsTyped(q))).slice(0, size - typed.length);
+  const picked = mathShuffle(typed.concat(mcq));
+  mathTypedReset();
   _mathQuiz = {
     chapter: chapter,
     questions: picked,
@@ -298,21 +417,36 @@ function renderMathQuestion() {
   const answered = ans !== null;
   const total = st.questions.length;
 
-  const options = q.options.map((opt, i) => {
-    let cls = 'grammar-option';
-    if (answered) {
-      if (i === q.correct) cls += ' correct';
-      else if (i === ans) cls += ' wrong';
-    }
-    return `
+  const ok = mathIsCorrect(q, ans);
+
+  let body;
+  if (mathIsTyped(q)) {
+    body = answered
+      // What the child typed, then the right answer if it differed — the same
+      // shape every other tab uses to close a question.
+      ? mathTypedBoxHTML(ans, ok ? 'correct' : 'wrong') +
+        (ok ? '' : `<div class="math-answer-right">✅ <b class="math-formula">${mathFormula(q.answer)}</b></div>`)
+      : `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>
+         ${mathKeypadHTML(q)}
+         <button class="grammar-next-btn" id="mathSubmitBtn" ${_mathTyped.raw ? '' : 'disabled'}
+                 onclick="submitMathTyped()">Kiểm tra</button>`;
+  } else {
+    body = `<div class="grammar-options">` + q.options.map((opt, i) => {
+      let cls = 'grammar-option';
+      if (answered) {
+        if (i === q.correct) cls += ' correct';
+        else if (i === ans) cls += ' wrong';
+      }
+      return `
       <button class="${cls}" ${answered ? '' : `onclick="answerMathQuestion(${i})"`}>
         <span class="grammar-option-letter">${'ABCD'[i]}</span>
         <span class="grammar-option-text math-formula">${mathFormula(opt)}</span>
       </button>`;
-  }).join('');
+    }).join('') + `</div>`;
+  }
 
   const explain = answered ? `
-    <div class="grammar-explanation ${ans === q.correct ? 'correct' : 'wrong'}">
+    <div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
       <div>${mathRich(q.explanation)}</div>
     </div>
     <button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>` : '';
@@ -326,7 +460,7 @@ function renderMathQuestion() {
       </div>
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
-      <div class="grammar-options">${options}</div>
+      ${body}
       ${explain}
     </div>`;
   screen.scrollTop = 0;
@@ -344,9 +478,20 @@ function answerMathQuestion(i) {
   renderMathQuestion();
 }
 
+function submitMathTyped() {
+  const st = _mathQuiz;
+  if (!st || st.answers[st.idx] !== null) return;
+  const raw = mathTypedRaw();
+  if (!raw) return;                       // an empty box is not an answer
+  st.answers[st.idx] = raw;
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(mathGrade(st.questions[st.idx], raw));
+  renderMathQuestion();
+}
+
 function nextMathQuestion() {
   const st = _mathQuiz;
   if (!st) return;
+  mathTypedReset();
   if (st.idx + 1 < st.questions.length) { st.idx++; renderMathQuestion(); }
   else finishMathQuiz();
 }
@@ -356,7 +501,7 @@ function finishMathQuiz() {
   const screen = document.getElementById('mathHubScreen');
   if (!st || !screen) return;
   const total = st.questions.length;
-  const score = st.answers.reduce((s, a, i) => s + (a === st.questions[i].correct ? 1 : 0), 0);
+  const score = st.answers.reduce((s, a, i) => s + (mathIsCorrect(st.questions[i], a) ? 1 : 0), 0);
   const pct = Math.round(score / total * 100);
 
   saveMathSession({
@@ -367,7 +512,7 @@ function finishMathQuiz() {
 
   const wrong = st.questions
     .map((q, i) => ({ q, a: st.answers[i] }))
-    .filter(x => x.a !== x.q.correct);
+    .filter(x => !mathIsCorrect(x.q, x.a));
   // Owe back everything missed before a new practice opens (js/retrydrill.js).
   if (wrong.length && typeof retryAdd === 'function') retryAdd('math', wrong.map(x => x.q));
   const wrongHTML = wrong.map(x => `
@@ -391,6 +536,7 @@ function finishMathQuiz() {
   screen.scrollTop = 0;
 }
 
+function mathQuizQuestions() { return _mathQuiz ? _mathQuiz.questions : []; }
 function isMathQuizActive() { return !!_mathQuiz; }
 function abandonMathQuiz() { _mathQuiz = null; }
 
@@ -404,8 +550,20 @@ function abandonMathQuiz() { _mathQuiz = null; }
 // options, same order, chosen not typed.
 let _mathRetryOptions = [];
 let _mathRetryPicked = null;
+let _mathRetryTyped = false;
 
 function mathRetryInputHTML(q) {
+  // A typed question comes back typed — re-asking it as a choice would hand
+  // the child the answer they failed to produce.
+  if (mathIsTyped(q)) {
+    mathTypedReset();
+    _mathRetryTyped = true;
+    return `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>
+      ${mathKeypadHTML(q)}
+      <button class="grammar-next-btn" id="mathSubmitBtn" disabled
+              onclick="submitRetryAnswer()">Kiểm tra</button>`;
+  }
+  _mathRetryTyped = false;
   _mathRetryOptions = q.options || [];
   _mathRetryPicked = null;
   return `<div class="grammar-options">` + _mathRetryOptions.map((opt, i) => `
@@ -428,9 +586,11 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   idOf: (q) => q.id,
   answerText: (q) => q.answer,
   inputHTML: (q) => mathRetryInputHTML(q),
-  readAnswer: () => _mathRetryPicked,
+  readAnswer: () => _mathRetryTyped ? mathTypedRaw() : _mathRetryPicked,
   valueText: (v) => String(v == null ? '' : v),
-  grade: (v, q) => String(v == null ? '' : v).trim() === String(q.answer).trim(),
+  grade: (v, q) => mathIsTyped(q)
+    ? mathGrade(q, v)
+    : String(v == null ? '' : v).trim() === String(q.answer).trim(),
   promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`,
   explainHTML: (q) => `<div class="grammar-review-explain">${mathRich(q.explanation)}</div>`,
   home: () => renderMathHome(),
@@ -445,6 +605,9 @@ if (typeof module !== 'undefined' && module.exports) {
     renderMathHome, switchMathSubTab, openMathLesson,
     startMathQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
     isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathTier, mathEsc, mathFormula, mathRich,
-    MATH_QUIZ_SIZE,
+    mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped,
+    mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
+    submitMathTyped, mathQuizQuestions,
+    MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }

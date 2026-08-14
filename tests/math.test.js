@@ -15,6 +15,11 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const { MATH_CHAPTERS, MATH_QUESTIONS } = require(path.join(root, 'js', 'math-data.js'));
 const { MATH_LESSONS } = require(path.join(root, 'js', 'math-lessons.js'));
 const PER_CHAPTER = 50;
+// Two kinds of question now share the bank. A "calc" question has no options —
+// the child computes and types the answer on the in-app keypad — so every
+// assertion about options has to be scoped to the multiple-choice half.
+const MCQ = MATH_QUESTIONS.filter(q => q.type !== 'calc');
+const TYPED = MATH_QUESTIONS.filter(q => q.type === 'calc');
 
 // math.js reads these as globals, the way the browser gives them to it.
 global.MATH_CHAPTERS = MATH_CHAPTERS;
@@ -25,9 +30,9 @@ const math = require(path.join(root, 'js', 'math.js'));
 suite('math: the question bank', () => {
     test('five chapters, fifty formula questions each', () => {
         assert.equal(MATH_CHAPTERS.length, 5);
-        assert.equal(MATH_QUESTIONS.length, 5 * PER_CHAPTER);
+        assert.equal(MCQ.length, 5 * PER_CHAPTER);
         for (const c of MATH_CHAPTERS) {
-            assert.equal(MATH_QUESTIONS.filter(q => q.ch === c.num).length, PER_CHAPTER,
+            assert.equal(MCQ.filter(q => q.ch === c.num).length, PER_CHAPTER,
                 `chapter ${c.num} does not have ${PER_CHAPTER} questions`);
             assert.truthy(c.title && c.icon, `chapter ${c.num} missing title/icon`);
         }
@@ -36,12 +41,12 @@ suite('math: the question bank', () => {
     test('ids are unique and follow m<chapter>-<n>', () => {
         const ids = MATH_QUESTIONS.map(q => q.id);
         assert.equal(new Set(ids).size, ids.length, 'duplicate question ids');
-        const bad = MATH_QUESTIONS.filter(q => !new RegExp(`^m${q.ch}-\\d+$`).test(q.id));
+        const bad = MATH_QUESTIONS.filter(q => !new RegExp(`^m${q.ch}-c?\\d+$`).test(q.id));
         assert.deepEqual(bad.map(q => q.id), []);
     });
 
     test('every question offers four distinct options', () => {
-        const bad = MATH_QUESTIONS.filter(q =>
+        const bad = MCQ.filter(q =>
             !Array.isArray(q.options) || q.options.length !== 4 || new Set(q.options).size !== 4);
         assert.deepEqual(bad.map(q => q.id), [], 'these need four distinct options');
     });
@@ -49,14 +54,14 @@ suite('math: the question bank', () => {
     test('the stated answer is the option it points at', () => {
         // The failure this catches is invisible on screen: the explanation
         // praises one formula while the marked-correct button is another.
-        const bad = MATH_QUESTIONS.filter(q => q.options[q.correct] !== q.answer);
+        const bad = MCQ.filter(q => q.options[q.correct] !== q.answer);
         assert.deepEqual(bad.map(q => q.id), [], 'answer does not equal options[correct]');
     });
 
     test('the correct letter is spread across A B C D', () => {
         for (const c of MATH_CHAPTERS) {
             const spread = [0, 0, 0, 0];
-            MATH_QUESTIONS.filter(q => q.ch === c.num).forEach(q => spread[q.correct]++);
+            MCQ.filter(q => q.ch === c.num).forEach(q => spread[q.correct]++);
             spread.forEach((n, i) => {
                 assert.truthy(n >= 8 && n <= 17,
                     `chapter ${c.num}: answer ${'ABCD'[i]} used ${n}/50 times — a child spots a pattern`);
@@ -83,7 +88,7 @@ suite('math: the question bank', () => {
 
     test('no maths is written as LaTeX — the app has no renderer for it', () => {
         const bad = MATH_QUESTIONS.filter(q =>
-            /\\frac|\\sqrt|\\times|\$\$?[^$]/.test(q.q + q.options.join(' ') + q.explanation));
+            /\\frac|\\sqrt|\\times|\$\$?[^$]/.test(q.q + (q.options || []).join(' ') + q.explanation));
         assert.deepEqual(bad.map(q => q.id), []);
     });
 
@@ -186,7 +191,7 @@ suite('math: the practice flow', () => {
     });
 
     test('the mixed round can draw from all five chapters', () => {
-        assert.equal(math.mathChapterQuestions(0).length, 5 * PER_CHAPTER);
+        assert.equal(math.mathChapterQuestions(0).length, 5 * PER_CHAPTER + TYPED.length);
     });
 
     test('a round is ten questions, not the whole chapter', () => {
@@ -339,6 +344,171 @@ suite('math: wiring', () => {
         const src = read('js/math.js');
         assert.falsy(/answerGateHTML|speakAnswer|speakWord/.test(src),
             'audio does not belong in a maths tab');
+    });
+});
+
+// The typed half of the tab. A formula the child can only RECOGNISE is a
+// formula they cannot use, so some questions ask them to compute and type the
+// answer. The iOS keyboard cannot type √, exponents or a fraction bar, and it
+// covers the question while it tries — so the tab draws its own keypad and
+// never focuses an input at all.
+suite('math: typed answers', () => {
+    const POWER = {
+        id: 'm1-51', ch: 1, topic: 'Lũy thừa của số hữu tỉ', type: 'calc',
+        q: 'Viết gọn thành một lũy thừa: 2³ · 2⁴ = ?',
+        answer: '2⁷', accept: [], keys: ['^'],
+        explanation: '🔑 Nhân hai lũy thừa cùng cơ số thì CỘNG số mũ: 3 + 4 = 7.'
+    };
+
+    test('the keypad never renders anything the iOS keyboard can focus', () => {
+        // This is the whole point of drawing our own pad. One <input> and the
+        // system keyboard slides up over the question again.
+        const html = math.mathKeypadHTML(POWER);
+        assert.falsy(/<input|<textarea|contenteditable/i.test(html),
+            'a focusable field would summon the very keyboard we are avoiding');
+    });
+
+    test('a question only offers the symbol keys it declares', () => {
+        // A fractions question showing ∠ and ° is clutter a child has to read
+        // past. The context row comes from the data, not from a fixed list.
+        const html = math.mathKeypadHTML(POWER);
+        assert.truthy(html.includes('^'), 'the power question needs its ^ key');
+        assert.falsy(/√|°|%/.test(html), 'it declared none of these');
+    });
+
+    test('pressing ^ then a digit stores a real superscript', () => {
+        // Stored as ⁷, not "^7": the same renderer draws the answer box and the
+        // question above it, so what the child types looks like what is asked.
+        math.mathTypedReset();
+        ['2', '^', '7'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '2⁷');
+    });
+
+    test('pressing ^ again leaves superscript mode', () => {
+        math.mathTypedReset();
+        ['2', '^', '7', '^', '5'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '2⁷5');
+    });
+
+    test('backspace removes one visible glyph at a time', () => {
+        math.mathTypedReset();
+        ['2', '^', '7'].forEach(math.mathKeyPress);
+        math.mathKeyPress('⌫');
+        assert.equal(math.mathTypedRaw(), '2', 'the exponent goes first, whole');
+        math.mathKeyPress('⌫');
+        assert.equal(math.mathTypedRaw(), '');
+    });
+
+    test('backspace leaves superscript mode when it deletes the last exponent', () => {
+        // Otherwise the next digit silently becomes an exponent of nothing.
+        math.mathTypedReset();
+        ['2', '^', '7'].forEach(math.mathKeyPress);
+        math.mathKeyPress('⌫');
+        math.mathKeyPress('5');
+        assert.equal(math.mathTypedRaw(), '25');
+    });
+
+    test('grading accepts the answer typed as a superscript', () => {
+        assert.truthy(math.mathGrade(POWER, '2⁷'));
+    });
+
+    test('grading rejects a plausible wrong answer', () => {
+        assert.falsy(math.mathGrade(POWER, '2¹²'), '2³·2⁴ multiplies the exponents for nobody');
+        assert.falsy(math.mathGrade(POWER, ''), 'an empty box is not an answer');
+    });
+
+    test('grading reads the Vietnamese decimal comma as a decimal point', () => {
+        const q = { answer: '0.75', accept: [] };
+        assert.truthy(math.mathGrade(q, '0,75'), 'the keypad types a comma, as school does');
+    });
+
+    test('grading treats equal numbers as equal however they are written', () => {
+        const q = { answer: '0.75', accept: [] };
+        assert.truthy(math.mathGrade(q, '.75'));
+        assert.truthy(math.mathGrade(q, ' 0.750 '));
+    });
+
+    test('grading accepts the unicode minus the keypad prints', () => {
+        const q = { answer: '-3/4', accept: [] };
+        assert.truthy(math.mathGrade(q, '−3/4'), 'U+2212 is what a maths key should print');
+    });
+
+    test('grading does NOT quietly accept an unreduced fraction', () => {
+        // Rút gọn is the Toán 7 skill being tested. Anything genuinely
+        // acceptable is listed by the author in accept[], not guessed here.
+        const q = { answer: '-3/4', accept: [] };
+        assert.falsy(math.mathGrade(q, '-6/8'));
+    });
+
+    test('an author can widen what counts via accept[]', () => {
+        const q = { answer: '-3/4', accept: ['-0.75'] };
+        assert.truthy(math.mathGrade(q, '-0,75'));
+    });
+
+    test('mathIsCorrect marks MCQ by index and typed by string', () => {
+        const mcq = { correct: 2, options: ['a', 'b', 'c', 'd'], answer: 'c' };
+        assert.truthy(math.mathIsCorrect(mcq, 2));
+        assert.falsy(math.mathIsCorrect(mcq, 0));
+        assert.truthy(math.mathIsCorrect(POWER, '2⁷'));
+        assert.falsy(math.mathIsCorrect(POWER, '2⁵'));
+    });
+
+    test('a typed question carries an answer but no options', () => {
+        for (const q of TYPED) {
+            assert.truthy(q.answer, `${q.id} has nothing to grade against`);
+            assert.falsy(q.options, `${q.id} is typed — options would never be shown`);
+            assert.truthy(Array.isArray(q.keys), `${q.id} must declare its keypad row`);
+            assert.truthy(/🔑/.test(q.explanation || ''), `${q.id} must explain itself`);
+        }
+    });
+
+    test('at least one typed question exists to try the keypad on', () => {
+        assert.truthy(TYPED.length >= 1);
+    });
+
+    test('every round pulls in the typed questions', () => {
+        // With a handful of typed questions in the bank, a random 10-of-51 draw
+        // would show one about a fifth of the time. They are drawn on purpose.
+        const ch1Typed = TYPED.filter(q => q.ch === 1);
+        assert.truthy(ch1Typed.length, 'chapter 1 needs a typed question for this to mean anything');
+        // startMathQuiz paints as it goes; a null-returning stub makes the
+        // renderer bail early. Restored afterwards — petart.test.js asserts the
+        // app survives with no DOM at all, and a leaked stub would hide that.
+        const hadDocument = Object.prototype.hasOwnProperty.call(global, 'document');
+        const prevDocument = global.document;
+        global.document = { getElementById: () => null, querySelector: () => null };
+        try {
+            for (let i = 0; i < 20; i++) {
+                math.startMathQuiz(1);
+                const picked = math.mathQuizQuestions();
+                assert.equal(picked.length, math.MATH_QUIZ_SIZE, 'a round is still ten questions');
+                assert.equal(picked.filter(q => q.type === 'calc').length,
+                    Math.min(ch1Typed.length, math.MATH_TYPED_PER_ROUND),
+                    'the typed questions must be drawn deliberately, not by luck');
+                math.abandonMathQuiz();
+            }
+        } finally {
+            if (hadDocument) global.document = prevDocument;
+            else delete global.document;
+        }
+    });
+
+    test('the retry drill re-asks a typed question with the keypad, not the options', () => {
+        const src = read('js/math.js');
+        const fn = src.slice(src.indexOf('function mathRetryInputHTML'));
+        assert.truthy(/mathKeypadHTML/.test(fn.slice(0, 700)),
+            'a missed typed question must come back as typing');
+    });
+
+    test('every class the keypad renders has a rule in the stylesheet', () => {
+        const css = read('css/styles.css');
+        const html = math.mathKeypadHTML(POWER) + math.mathTypedBoxHTML();
+        const classes = new Set();
+        for (const m of html.match(/class="([^"]+)"/g) || []) {
+            m.slice(7, -1).split(/\s+/).filter(Boolean).forEach(c => classes.add(c));
+        }
+        const missing = [...classes].filter(c => !new RegExp('\\.' + c + '[\\s,{:.]').test(css));
+        assert.deepEqual(missing, [], 'these classes are rendered but never styled');
     });
 });
 

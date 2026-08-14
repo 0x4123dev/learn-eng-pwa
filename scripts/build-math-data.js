@@ -46,6 +46,42 @@ function fail(msg) {
     process.exitCode = 1;
 }
 
+// Symbols a "calc" question may put on the keypad's context row, on top of the
+// digits/comma/minus/slash/brackets that are always there. Anything outside
+// this list is a typo the child would meet as a dead key.
+const CALC_KEYS = ['^', '√', '°', '%', '×', ':', '|', 'π', '∠', '∥', '⊥'];
+const CALC_KEYS_MAX = 4;
+
+// Typed questions live in data.calc, NOT data.questions — the multiple-choice
+// invariants (four options, answer spread across A-D) are meaningless here and
+// the count check must keep seeing exactly 50 real MCQs per chapter.
+function validateCalc(data, num) {
+    const where = `chapter ${num} (calc)`;
+    let ok = true;
+    const seen = new Set();
+    (data.calc || []).forEach((q, i) => {
+        const id = `m${num}-c${i + 1}`;
+        if (q.id !== id) { fail(`${where}: calc ${i + 1} has id "${q.id}", expected "${id}"`); ok = false; }
+        if (seen.has(q.id)) { fail(`${where}: duplicate id ${q.id}`); ok = false; }
+        seen.add(q.id);
+        if (q.ch !== num) { fail(`${where}: ${q.id} has ch=${q.ch}`); ok = false; }
+        if (q.options) { fail(`${where}: ${q.id} is typed — options would never be shown`); ok = false; }
+        if (!q.q || !String(q.answer || '').trim()) {
+            fail(`${where}: ${q.id} missing q or answer`); ok = false;
+        }
+        if (!/🔑/.test(q.explanation || '')) { fail(`${where}: ${q.id} explanation has no 🔑 rule`); ok = false; }
+        if (!Array.isArray(q.keys)) { fail(`${where}: ${q.id} must declare keys[]`); ok = false; return; }
+        if (q.keys.length > CALC_KEYS_MAX) {
+            fail(`${where}: ${q.id} declares ${q.keys.length} extra keys (max ${CALC_KEYS_MAX})`); ok = false;
+        }
+        for (const k of q.keys) {
+            if (CALC_KEYS.indexOf(k) === -1) { fail(`${where}: ${q.id} unknown key "${k}"`); ok = false; }
+        }
+        if (q.accept && !Array.isArray(q.accept)) { fail(`${where}: ${q.id} accept must be an array`); ok = false; }
+    });
+    return ok;
+}
+
 function validateChapter(data, num) {
     const where = `chapter ${num}`;
     let ok = true;
@@ -98,6 +134,7 @@ function main() {
         if (!fs.existsSync(file)) { fail(`missing ${file}`); allOk = false; continue; }
         const data = JSON.parse(fs.readFileSync(file, 'utf8'));
         if (!validateChapter(data, num)) allOk = false;
+        if (!validateCalc(data, num)) allOk = false;
 
         chapters.push({ num: num, title: data.title, icon: data.icon });
         lessons.push({
@@ -108,6 +145,13 @@ function main() {
             questions.push({
                 id: q.id, ch: q.ch, topic: q.topic, q: q.q,
                 options: q.options, correct: q.correct, answer: q.answer,
+                explanation: escapeStrayAngles(q.explanation)
+            });
+        }
+        for (const q of (data.calc || [])) {
+            questions.push({
+                id: q.id, ch: q.ch, topic: q.topic, type: 'calc', q: q.q,
+                answer: q.answer, accept: q.accept || [], keys: q.keys,
                 explanation: escapeStrayAngles(q.explanation)
             });
         }

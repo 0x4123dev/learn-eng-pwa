@@ -8719,6 +8719,65 @@
         }
         .math-hist-tabs .grammar-subtab { flex: 0 0 auto; font-size: 13px; padding: 6px 12px; }
 
+        /* ---- typed answers: the in-app keypad ----
+           Typed maths questions never focus an input, so iOS never raises its
+           keyboard over the question. The answer box below is a plain div and
+           the pad under it is the only way to type — which also means the only
+           characters that can arrive are ones we drew. */
+        .math-answer-box {
+            display: flex; align-items: center; gap: 2px;
+            min-height: 56px; margin: 4px 0 12px;
+            padding: 10px 14px; border-radius: 12px;
+            border: 2px solid var(--glass-border); background: var(--glass-bg, #fff);
+            font-size: 24px; color: var(--text-primary);
+        }
+        .math-answer-box.correct { border-color: #58cc02; background: rgba(88,204,2,0.10); }
+        .math-answer-box.wrong { border-color: #ff4b4b; background: rgba(255,75,75,0.08); }
+        .math-answer-placeholder { font-size: 16px; color: var(--text-secondary, #6b7280); }
+        .math-answer-right { margin: -6px 0 12px; font-size: 18px; color: var(--text-primary); }
+        /* Stands in for the text caret the box does not have, so the child can
+           see where the next digit will land. */
+        .math-caret {
+            width: 2px; height: 26px; background: #7c3aed; border-radius: 1px;
+            animation: math-caret-blink 1.05s step-end infinite;
+        }
+        @keyframes math-caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .math-keypad { margin-bottom: 12px; }
+        .math-key-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        /* The per-question symbol row. Its keys are the ones a child has to
+           look for, so they read purple against the plain digits. */
+        .math-key-context {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .math-key {
+            flex: 1 1 0; min-height: 52px; font-size: 22px; font-family: inherit;
+            font-weight: 700; cursor: pointer;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .math-key:active { transform: scale(0.94); background: rgba(124, 58, 237, 0.14); }
+        .math-key sup { font-size: 0.7em; }
+        .math-key-del { font-size: 20px; }
+        /* Sized like a digit key, never stretched across the row: a full-width
+           purple bar sitting above "Kiểm tra" reads as the submit button, and a
+           child taps it expecting to answer. Declared after .math-key so the
+           narrower flex basis wins — both are single-class selectors. */
+        .math-key-sym {
+            flex: 0 0 calc((100% - 24px) / 4);
+            background: rgba(124, 58, 237, 0.10);
+            border-color: rgba(124, 58, 237, 0.35);
+            color: var(--accent-purple, #7c3aed);
+        }
+        /* "x^n" is a mode, not a character — it stays lit while the digits
+           that follow are landing as exponents. */
+        .math-key-pow.active {
+            background: #7c3aed; border-color: #7c3aed; color: #fff;
+        }
+
         /* Sub-topic label above a question ("Lũy thừa"), reusing the row chip
            but reading as a caption rather than a data row. */
         .math-topic-badge {
