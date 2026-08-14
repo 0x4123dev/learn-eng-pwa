@@ -149,7 +149,7 @@
       ],
       "correct": 1,
       "answer": "Là số dương",
-      "explanation": "🔑 a < 0 nên |a| = −a, mà số đối của số âm là số dương, vậy |a| > 0.<br>✗ Số âm: |a| ≥ 0, không bao giờ âm.<br>✗ Bằng 0: chỉ khi a = 0, mà a < 0.<br>✗ Bằng a: chỉ đúng khi a ≥ 0."
+      "explanation": "🔑 a là số âm nên |a| là số đối của nó, mà số đối của một số âm là số DƯƠNG. Ví dụ a = −3 thì |−3| = 3 > 0.<br>✗ Số âm: |a| ≥ 0, không bao giờ âm.<br>✗ Bằng 0: chỉ khi a = 0, mà a < 0.<br>✗ Bằng a: chỉ đúng khi a ≥ 0."
     },
     {
       "id": "m2-9",
@@ -179,7 +179,7 @@
       ],
       "correct": 0,
       "answer": "Khoảng cách từ điểm a đến gốc 0",
-      "explanation": "🔑 |a| là khoảng cách từ điểm a đến gốc 0, vì thế |a| luôn ≥ 0.<br>✗ So với điểm 1: |a| luôn so với gốc 0.<br>✗ Số đối: |a| = −a chỉ khi a < 0.<br>✗ Bình phương: |−3| = 3 còn (−3)² = 9."
+      "explanation": "🔑 |a| là khoảng cách từ điểm a đến gốc 0, vì thế |a| luôn ≥ 0.<br>✗ So với điểm 1: |a| luôn so với gốc 0.<br>✗ Số đối: chỉ khi a là số âm thì |a| mới bằng số đối của a; với a dương thì |a| là chính a.<br>✗ Bình phương: |−3| = 3 còn (−3)² = 9."
     },
     {
       "id": "m2-11",
