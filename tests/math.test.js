@@ -598,6 +598,133 @@ suite('math: typed answers', () => {
     });
 });
 
+suite('math: the Lịch sử tab', () => {
+    // History moved out of the practice page into its own sub-tab. These run
+    // against the real functions with a seeded appState; the global is
+    // deleted again after each test so the rest of the process stays clean.
+    const run = (label, score, total, extra) =>
+        Object.assign({ date: '2026-08-14T03:00:00Z', chapter: 1, label, score, total }, extra || {});
+
+    function withHistory(list, fn) {
+        global.appState = { mathHistory: list };
+        try { fn(); } finally { delete global.appState; }
+    }
+
+    test('history is its own sub-tab, no longer embedded in the practice page', () => {
+        const src = read('js/math.js');
+        assert.truthy(src.includes(`switchMathSubTab('history')`), 'no button routes to the history tab');
+        assert.truthy(/_mathSubTab === 'history' \? renderMathHistoryHTML\(\)/.test(src),
+            'the body chooser never shows the history page');
+        assert.truthy(/'lessons' \|\| tab === 'exams' \|\| tab === 'history'/.test(src),
+            'switchMathSubTab would bounce history back to practice');
+        const practice = src.slice(src.indexOf('function renderMathPracticeHTML'),
+            src.indexOf('function mathBestFor'));
+        assert.falsy(practice.includes('renderMathHistoryHTML'),
+            'practice page still embeds the old history block');
+    });
+
+    test('empty history gets an invitation, not a blank page', () => {
+        withHistory([], () => {
+            const html = math.renderMathHistoryHTML();
+            assert.truthy(html.includes('Chưa có kết quả nào'), 'no friendly empty state');
+            assert.truthy(html.includes(`switchMathSubTab('practice')`),
+                'empty state must link back to practice');
+        });
+    });
+
+    test('stats header answers how much, how well, best ever', () => {
+        const stats = math.mathHistoryStats([run('A', 10, 10), run('B', 5, 10), run('C', 8, 10)]);
+        assert.equal(stats.runs, 3);
+        assert.equal(stats.avg, Math.round((100 + 50 + 80) / 3));
+        assert.equal(stats.best, 100);
+        assert.equal(math.mathHistoryStats([]), null, 'no runs → no stats block');
+    });
+
+    test('exam runs wear a badge; practice runs do not', () => {
+        withHistory([run('HK1 Exam 1', 20, 25, { examId: 'hk1-exam1' }), run('Chương 1', 9, 10)], () => {
+            const html = math.renderMathHistoryHTML();
+            assert.equal((html.match(/math-hist-badge/g) || []).length, 1,
+                'exactly the exam row carries the Đề thi badge');
+            assert.truthy(html.includes('HK1 Exam 1'));
+            assert.truthy(html.includes('Chương 1'));
+        });
+    });
+
+    test('the type filter separates Luyện tập from Đề thi', () => {
+        withHistory([run('exam', 20, 25, { examId: 'hk1-exam1' }), run('practice', 9, 10)], () => {
+            global.document = { getElementById: () => null };
+            try {
+                math.setMathHistoryType('exam');
+                assert.deepEqual(math.mathHistoryFiltered().map(h => h.label), ['exam']);
+                math.setMathHistoryType('practice');
+                assert.deepEqual(math.mathHistoryFiltered().map(h => h.label), ['practice']);
+                math.setMathHistoryType('all');
+                assert.equal(math.mathHistoryFiltered().length, 2);
+            } finally {
+                math.setMathHistoryType('all');
+                delete global.document;
+            }
+        });
+    });
+
+    test('the tier filter still works and composes with the type filter', () => {
+        withHistory([
+            run('perfect exam', 25, 25, { examId: 'hk1-exam1' }),
+            run('weak exam', 5, 25, { examId: 'hk1-exam2' }),
+            run('perfect practice', 10, 10),
+        ], () => {
+            global.document = { getElementById: () => null };
+            try {
+                math.setMathHistoryFilter('perfect');
+                assert.deepEqual(math.mathHistoryFiltered().map(h => h.label),
+                    ['perfect exam', 'perfect practice']);
+                math.setMathHistoryType('exam');
+                assert.deepEqual(math.mathHistoryFiltered().map(h => h.label), ['perfect exam']);
+            } finally {
+                math.setMathHistoryFilter('all');
+                math.setMathHistoryType('all');
+                delete global.document;
+            }
+        });
+    });
+
+    test('every run row shows a tier-coloured progress bar sized to its score', () => {
+        withHistory([run('Chương 2', 8, 10)], () => {
+            const html = math.renderMathHistoryHTML();
+            assert.truthy(html.includes('math-hist-fill tier-great'), '80% is the great tier');
+            assert.truthy(html.includes('width:80%'), 'bar width must be the percentage');
+        });
+    });
+
+    test('the list is capped at 40 rows, not the full 300-run store', () => {
+        const many = Array.from({ length: 60 }, (_, i) => run('Run ' + i, 9, 10));
+        withHistory(many, () => {
+            const html = math.renderMathHistoryHTML();
+            assert.equal((html.match(/math-hist-row/g) || []).length, 40);
+        });
+    });
+
+    test('a label with markup in it is escaped, not rendered', () => {
+        withHistory([run('<img src=x onerror=alert(1)>', 9, 10)], () => {
+            assert.falsy(math.renderMathHistoryHTML().includes('<img'),
+                'history labels reach innerHTML — they must be escaped');
+        });
+    });
+
+    test('every class the history page renders has a rule in the stylesheet', () => {
+        const css = read('css/styles.css');
+        withHistory([run('exam', 20, 25, { examId: 'hk1-exam1' }), run('practice', 9, 10)], () => {
+            const html = math.renderMathHistoryHTML();
+            const classes = new Set();
+            for (const m of html.match(/class="([^"]+)"/g) || []) {
+                m.slice(7, -1).split(/\s+/).filter(Boolean).forEach(c => classes.add(c));
+            }
+            const missing = [...classes].filter(c => !new RegExp('\\.' + c + '[\\s,{:.]').test(css));
+            assert.deepEqual(missing, [], 'these classes are rendered but never styled');
+        });
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

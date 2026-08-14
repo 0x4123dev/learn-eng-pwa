@@ -16,8 +16,9 @@ const MATH_HISTORY_CAP = 300;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
-let _mathSubTab = 'practice';  // 'practice' | 'lessons'
+let _mathSubTab = 'practice';  // 'practice' | 'exams' | 'lessons' | 'history'
 let _mathHistoryFilter = 'all';
+let _mathHistoryType = 'all';  // 'all' | 'practice' | 'exam'
 
 function mathEsc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -255,6 +256,7 @@ function renderMathHome() {
   if (!screen) return;
   const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
     : _mathSubTab === 'exams' ? renderMathExamsHTML()
+    : _mathSubTab === 'history' ? renderMathHistoryHTML()
     : renderMathPracticeHTML();
 
   screen.innerHTML = `
@@ -270,12 +272,14 @@ function renderMathHome() {
               onclick="switchMathSubTab('exams')">📝 Đề thi</button>
       <button class="grammar-subtab ${_mathSubTab === 'lessons' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('lessons')">📘 Lý thuyết</button>
+      <button class="grammar-subtab ${_mathSubTab === 'history' ? 'active' : ''}" role="tab"
+              onclick="switchMathSubTab('history')">🕘 Lịch sử</button>
     </div>
     <div class="phrases-wrap">${body}</div>`;
 }
 
 function switchMathSubTab(tab) {
-  _mathSubTab = (tab === 'lessons' || tab === 'exams') ? tab : 'practice';
+  _mathSubTab = (tab === 'lessons' || tab === 'exams' || tab === 'history') ? tab : 'practice';
   renderMathHome();
 }
 
@@ -310,8 +314,7 @@ function renderMathPracticeHTML() {
       <span class="phrases-cta-text"><strong>Ôn tổng hợp</strong><small>${MATH_QUIZ_SIZE} câu trộn cả 5 chương</small></span>
       <span class="phrases-cta-arrow">›</span>
     </button>
-    ${chapterCards}
-    ${renderMathHistoryHTML()}`;
+    ${chapterCards}`;
 }
 
 function mathBestFor(ch) {
@@ -403,31 +406,99 @@ function startMathExam(id) {
   renderMathQuestion();
 }
 
-function renderMathHistoryHTML() {
-  const all = mathHistory();
-  if (!all.length) return '';
-  const list = all.filter(h => {
+// ---- lịch sử view ----
+// A run is either practice (chapter rounds / mixed) or an exam (has examId).
+// The page answers a parent's three questions at a glance — how much, how
+// well, best ever — then lets the child drill into the list two ways at once:
+// by kind (Luyện tập / Đề thi) and by result tier.
+function mathHistoryFiltered() {
+  return mathHistory().filter(h => {
+    if (_mathHistoryType === 'practice' && h.examId) return false;
+    if (_mathHistoryType === 'exam' && !h.examId) return false;
     if (_mathHistoryFilter === 'all') return true;
     return mathTier(Math.round(h.score / h.total * 100)) === _mathHistoryFilter;
   });
-  const tabs = Object.keys(MATH_TIER_LABELS).map(t =>
+}
+
+function mathHistoryStats(list) {
+  if (!list.length) return null;
+  const pcts = list.map(h => (h.total ? Math.round(h.score / h.total * 100) : 0));
+  return {
+    runs: list.length,
+    avg: Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length),
+    best: Math.max(...pcts)
+  };
+}
+
+function mathHistoryWhen(ts) {
+  try {
+    return new Date(ts).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  } catch (e) { return ''; }
+}
+
+function renderMathHistoryHTML() {
+  const all = mathHistory();
+  if (!all.length) {
+    return `
+      <div class="phrases-hero">
+        <div class="phrases-hero-icon">🕘</div>
+        <h1>Chưa có kết quả nào</h1>
+        <p class="phrases-sub">Làm một lượt <b>Luyện tập</b> hoặc một <b>Đề thi</b> là kết quả sẽ hiện ở đây.</p>
+      </div>
+      <button class="phrases-cta" onclick="switchMathSubTab('practice')">
+        <span class="phrases-cta-icon">🧮</span>
+        <span class="phrases-cta-text"><strong>Bắt đầu luyện tập</strong><small>10 câu đầu tiên</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>`;
+  }
+
+  const list = mathHistoryFiltered();
+  const stats = mathHistoryStats(list);
+  const typeTabs = [['all', 'Tất cả'], ['practice', '🧮 Luyện tập'], ['exam', '📝 Đề thi']].map(([t, lbl]) =>
+    `<button class="grammar-subtab ${_mathHistoryType === t ? 'active' : ''}"
+             onclick="setMathHistoryType('${t}')">${lbl}</button>`).join('');
+  const tierTabs = Object.keys(MATH_TIER_LABELS).map(t =>
     `<button class="grammar-subtab ${_mathHistoryFilter === t ? 'active' : ''}"
              onclick="setMathHistoryFilter('${t}')">${MATH_TIER_LABELS[t]}</button>`).join('');
-  const rows = list.slice(0, 12).map(h => {
+
+  const statsHTML = stats ? `
+    <div class="math-hist-stats">
+      <div class="math-hist-stat"><strong>${stats.runs}</strong><span>lượt làm</span></div>
+      <div class="math-hist-stat"><strong>${stats.avg}%</strong><span>trung bình</span></div>
+      <div class="math-hist-stat"><strong>${stats.best}%</strong><span>tốt nhất</span></div>
+    </div>` : '';
+
+  const rows = list.slice(0, 40).map(h => {
     const pct = h.total ? Math.round(h.score / h.total * 100) : 0;
-    let when = '';
-    try { when = new Date(h.date).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) {}
-    return `<div class="phrases-cat-row"><span>${mathTierEmoji(pct)} ${h.label} — ${h.score}/${h.total} · ${pct}%</span><strong>${when}</strong></div>`;
+    const tier = mathTier(pct);
+    return `
+      <div class="math-hist-row">
+        <span class="math-hist-emoji">${mathTierEmoji(pct)}</span>
+        <div class="math-hist-main">
+          <div class="math-hist-title">${h.examId ? '<span class="math-hist-badge">Đề thi</span> ' : ''}${mathEsc(h.label)}</div>
+          <div class="math-hist-bar"><div class="math-hist-fill tier-${tier}" style="width:${pct}%"></div></div>
+        </div>
+        <div class="math-hist-side">
+          <strong>${h.score}/${h.total}</strong>
+          <span>${pct}% · ${mathHistoryWhen(h.date)}</span>
+        </div>
+      </div>`;
   }).join('');
+
   return `
-    <details class="phrases-cats-wrap" open>
-      <summary>Kết quả gần đây</summary>
-      <div class="grammar-subtabs math-hist-tabs">${tabs}</div>
-      <div class="phrases-cats">${rows || '<div class="phrases-cat-row"><span>Chưa có lượt nào ở mức này</span></div>'}</div>
-    </details>`;
+    <div class="phrases-hero">
+      <div class="phrases-hero-icon">🕘</div>
+      <h1>Lịch sử làm bài</h1>
+      <p class="phrases-sub">Mỗi lượt luyện tập và mỗi đề thi đã nộp đều được ghi lại ở đây.</p>
+    </div>
+    ${statsHTML}
+    <div class="grammar-subtabs math-hist-tabs">${typeTabs}</div>
+    <div class="grammar-subtabs math-hist-tabs">${tierTabs}</div>
+    <div class="math-hist-list">${rows || '<div class="phrases-cat-row"><span>Chưa có lượt nào khớp bộ lọc này</span></div>'}</div>`;
 }
 
 function setMathHistoryFilter(tier) { _mathHistoryFilter = tier; renderMathHome(); }
+function setMathHistoryType(t) { _mathHistoryType = t; renderMathHome(); }
 
 // ---- lessons view ----
 function renderMathLessonsHTML() {
@@ -716,6 +787,8 @@ if (typeof module !== 'undefined' && module.exports) {
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, mathQuizQuestions,
     mathExams, mathExamBest, mathExamClock, startMathExam, renderMathExamsHTML,
+    renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
+    setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }
