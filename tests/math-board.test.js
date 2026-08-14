@@ -368,3 +368,53 @@ suite('math board: what the browser found', () => {
         }
     });
 });
+
+// Usability pass: giấy ô ly, the gesture hint, and desktop scrolling.
+suite('math board: easy to draw and use', () => {
+    test('grid lines are anchored to the WORLD, so scrolling visibly moves them', () => {
+        const step = board.MATH_BOARD_GRID_STEP;
+        const g0 = board.mathBoardGridLines(0, 100, 100, step);
+        assert.deepEqual(g0.horizontal, [step, step * 2, step * 3],
+            'unscrolled: lines at every step, none at y=0 (the sheet top is an edge, not a rule)');
+        const g10 = board.mathBoardGridLines(10, 100, 100, step);
+        assert.equal(g10.horizontal[0], step - 10,
+            'scroll 10px and every line climbs 10px — the feedback that makes 2-finger scroll discoverable');
+        assert.deepEqual(g0.vertical, [step, step * 2, step * 3]);
+    });
+
+    test('the grid never doubles a line at the very top after a deep scroll', () => {
+        const step = board.MATH_BOARD_GRID_STEP;
+        const g = board.mathBoardGridLines(step * 5, 100, 100, step);
+        assert.equal(g.horizontal[0], 0, 'a line exactly at the seam draws once at y=0');
+        assert.truthy(g.horizontal.every((y, i) => i === 0 || y - g.horizontal[i - 1] === step),
+            'and the spacing stays perfectly even');
+    });
+
+    test('the grid is painted before the ink, never over it', () => {
+        const src = read('js/math-board.js');
+        const redraw = src.slice(src.indexOf('function mathBoardRedraw'));
+        const body = redraw.slice(0, redraw.indexOf('\n}'));
+        assert.truthy(body.indexOf('mathBoardDrawGrid') < body.indexOf('mathBoardVisibleStrokes'),
+            'grid first, strokes on top — ô ly paper under the pencil, not through it');
+    });
+
+    test('a laptop can scroll the sheet: wheel is handled, and consumed', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/addEventListener\('wheel'/.test(src),
+            'no second finger on a trackpad — the wheel is the only scroll a desktop has');
+        const wheel = src.slice(src.indexOf("addEventListener('wheel'"));
+        assert.truthy(/passive:\s*false/.test(wheel.slice(0, 400)),
+            'passive:false or preventDefault is ignored and the page behind pans too');
+    });
+
+    test('the first open teaches the two gestures, then gets out of the way', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/1 ngón viết/.test(src) && /2 ngón cuộn/.test(src),
+            'the hint must name both gestures');
+        assert.truthy(/mathBoardHintDismiss/.test(src.slice(src.indexOf("addEventListener('pointerdown'"))),
+            'the first touch dismisses it — a hint over a working board is clutter');
+        const close = src.slice(src.indexOf('window.mathBoardCloseForSession'));
+        assert.truthy(/_mathBoardHintDone = false/.test(close.slice(0, close.indexOf('};'))),
+            'a new quiz session earns one fresh reminder');
+    });
+});

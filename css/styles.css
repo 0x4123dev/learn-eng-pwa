@@ -10322,23 +10322,36 @@
 }
 .math-board-overlay.hidden { display: none; }
 .math-board-strip {
-    padding: 10px 14px; background: #eef2ff; border-bottom: 1px solid #c7d2fe;
-    font-weight: 600; max-height: 3.2em; overflow: hidden; cursor: pointer;
+    position: relative; padding: 10px 34px 10px 14px;
+    background: #eef2ff; border-bottom: 1px solid #c7d2fe;
+    font-weight: 600; cursor: pointer;
 }
-.math-board-strip.full { max-height: none; }
+/* Clamp to whole lines — a max-height guillotines the second line through
+   its letters, which reads as a rendering bug, not as "there is more". */
+.math-board-strip .math-formula {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.math-board-strip.full .math-formula { -webkit-line-clamp: unset; }
+/* The chevron is the affordance: without it nothing says the strip is a button. */
+.math-board-strip::after {
+    content: '▾'; position: absolute; right: 12px; top: 8px; color: #6366f1;
+}
+.math-board-strip.full::after { content: '▴'; }
 .math-board-tools {
     display: flex; align-items: center; gap: 6px; padding: 6px 10px;
     border-bottom: 1px solid #e2e8f0; background: #f8fafc;
 }
 .math-board-chips { display: flex; gap: 4px; flex: 1; }
 .math-board-chip {
-    border: 1px solid #cbd5e1; background: #fff; border-radius: 14px;
-    padding: 4px 10px; font-size: 13px;
+    border: 1px solid #cbd5e1; background: #fff; border-radius: 16px;
+    padding: 6px 12px; font-size: 13px; min-height: 36px;   /* kid-sized target */
 }
 .math-board-chip.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
 .math-board-tool {
     border: 1px solid #cbd5e1; background: #fff; border-radius: 10px;
-    padding: 6px 10px; font-size: 14px; min-width: 44px;   /* kid-sized target */
+    padding: 6px 10px; font-size: 14px;
+    min-width: 44px; min-height: 40px;   /* kid-sized target */
 }
 /* min-height/width 0 is load-bearing, not tidying: a canvas is a replaced
    element, so the default min-height:auto pins it to its intrinsic bitmap
@@ -10349,7 +10362,23 @@
 #mathBoardCanvas { flex: 1; width: 100%; min-height: 0; min-width: 0; touch-action: none; }
 .math-board-fab {
     flex: 0 0 auto; margin-left: 8px;
-    width: 40px; height: 40px; border-radius: 50%; font-size: 19px;
+    width: 44px; height: 44px; border-radius: 50%; font-size: 20px;   /* kid-sized target */
     border: none; background: #4f46e5; color: #fff;
     box-shadow: 0 2px 6px rgba(79, 70, 229, .35);
+}
+/* First-open gesture hint: floats over the sheet, dies on the first touch. */
+.math-board-hint {
+    position: absolute; left: 50%; top: 45%; transform: translateX(-50%);
+    background: rgba(15, 23, 42, .82); color: #fff;
+    padding: 10px 16px; border-radius: 20px; font-size: 15px; font-weight: 600;
+    pointer-events: none; white-space: nowrap;
+    animation: mathBoardHintIn .4s ease-out;
+}
+/* The slide-in animates transform ONLY. Putting opacity in the keyframes ties
+   the hint's very visibility to the animation advancing — in a throttled or
+   frozen tab it sits at the from-frame, invisible, until the timer deletes it
+   unseen. A hint that can silently never appear teaches nobody anything. */
+@keyframes mathBoardHintIn {
+    from { transform: translateX(-50%) translateY(10px); }
+    to   { transform: translateX(-50%) translateY(0); }
 }

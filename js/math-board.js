@@ -194,8 +194,40 @@ function mathBoardDrawStroke(ctx, pts, scrollY) {
     ctx.stroke();
 }
 
+// Giấy ô ly. The grid is anchored in WORLD coordinates (line n sits at
+// world y = n·step), which buys three things at once: the sheet looks like
+// the squared paper the student does nháp on anyway, the squares guide the
+// handwriting, and — the part that is easy to miss — a two-finger scroll on
+// an EMPTY board visibly moves something. Without it, the gesture that most
+// needs discovering looks broken the first time it is tried.
+const MATH_BOARD_GRID_STEP = 28;
+const MATH_BOARD_GRID_INK = '#dfe6f3';
+
+function mathBoardGridLines(scrollY, viewW, viewH, step) {
+    const s = step || MATH_BOARD_GRID_STEP;
+    const vertical = [];
+    for (let x = s; x < viewW; x += s) vertical.push(x);
+    const horizontal = [];
+    for (let n = Math.max(1, Math.ceil(scrollY / s)); n * s <= scrollY + viewH; n++) {
+        horizontal.push(n * s - scrollY);
+    }
+    return { vertical, horizontal };
+}
+
+function mathBoardDrawGrid(ctx, scrollY, viewW, viewH) {
+    const g = mathBoardGridLines(scrollY, viewW, viewH, MATH_BOARD_GRID_STEP);
+    ctx.strokeStyle = MATH_BOARD_GRID_INK;
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'butt';
+    ctx.beginPath();
+    for (const x of g.vertical) { ctx.moveTo(x, 0); ctx.lineTo(x, viewH); }
+    for (const y of g.horizontal) { ctx.moveTo(0, y); ctx.lineTo(viewW, y); }
+    ctx.stroke();
+}
+
 function mathBoardRedraw(ctx, b, viewW, viewH) {
     ctx.clearRect(0, 0, viewW, viewH);
+    mathBoardDrawGrid(ctx, b.scrollY, viewW, viewH);
     for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH)) {
         mathBoardDrawStroke(ctx, s.points, b.scrollY);
     }
@@ -221,6 +253,15 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     var _mathBoardGestureState = null;
     var _mathBoardClearArmed = 0;
     var _mathBoardResizeObs = null;
+    // One gesture hint per quiz session: the first open shows "1 ngón viết ·
+    // 2 ngón cuộn" and the first touch (or 4 s) removes it. Reset when the
+    // session closes so the next quiz gets one reminder, not zero, not many.
+    var _mathBoardHintDone = false;
+    // The dismiss timer must be tracked: overlay re-renders schedule a new one
+    // each time, and an orphaned 4 s timer from a previous open fires into the
+    // NEXT session's hint and removes it seconds early — the same stale-timer
+    // shape as the "Chắc chưa?" confirm.
+    var _mathBoardHintTimer = null;
 
     // A live gesture holds a reference into b.strokes (g.stroke) or is mid-pan.
     // Any toolbar action that mutates the board, or that tears the overlay
@@ -291,6 +332,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         mathBoardDropCanvas();
         _mathBoardGestureState = null;
         _mathBoardClearArmed = 0;
+        clearTimeout(_mathBoardHintTimer);
+        _mathBoardHintTimer = null;
+        _mathBoardHintDone = false;   // next quiz session gets its one reminder
     };
 
     // Tear the canvas down for good: hide the overlay, drop its DOM, and stop
@@ -384,8 +428,20 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                       'onclick="mathBoardClearTap()">🗑 Xoá</button>' +
               '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">▾ Thu nhỏ</button>' +
             '</div>' +
-            '<canvas id="mathBoardCanvas"></canvas>';
+            '<canvas id="mathBoardCanvas"></canvas>' +
+            (_mathBoardHintDone ? '' :
+              '<div class="math-board-hint" id="mathBoardHint">☝️ 1 ngón viết &nbsp;·&nbsp; ✌️ 2 ngón cuộn</div>');
         mathBoardMountCanvas();
+        clearTimeout(_mathBoardHintTimer);
+        if (!_mathBoardHintDone) _mathBoardHintTimer = setTimeout(mathBoardHintDismiss, 4000);
+    }
+
+    function mathBoardHintDismiss() {
+        clearTimeout(_mathBoardHintTimer);
+        _mathBoardHintTimer = null;
+        _mathBoardHintDone = true;
+        const hint = document.getElementById('mathBoardHint');
+        if (hint) hint.remove();
     }
 
     function mathBoardMountCanvas() {
@@ -414,6 +470,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             // stray touch on the stale canvas would throw.
             if (!_mathBoardGestureState) return;
             e.preventDefault();
+            mathBoardHintDismiss();   // the first touch means the hint landed
             // Capture is an optimisation — it keeps a stroke alive when the
             // finger slides off the canvas. It is NOT worth the whole gesture:
             // setPointerCapture throws NotFoundError if the pointer is already
@@ -467,6 +524,17 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             mathBoardRepaint();
         });
 
+        // A laptop has no second finger: the trackpad/mouse wheel is its
+        // scroll gesture, and without this the desktop sheet simply cannot
+        // move. passive:false because we consume the scroll ourselves —
+        // otherwise the page behind the overlay pans instead.
+        canvas.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            const b = mathBoardActive();
+            b.scrollY = Math.max(0, b.scrollY + e.deltaY);
+            mathBoardRepaint();
+        }, { passive: false });
+
         mathBoardRepaint();
         // Per-element observer: dies with the canvas on the next re-render,
         // unlike the window-level resize/orientationchange listeners above.
@@ -491,5 +559,6 @@ if (typeof module !== 'undefined' && module.exports) {
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort,
         mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
+        mathBoardGridLines, MATH_BOARD_GRID_STEP,
     };
 }
