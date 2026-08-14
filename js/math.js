@@ -411,6 +411,12 @@ function mathQuizLabel(chapter) {
   return c ? `Chương ${c.num} · ${c.title}` : `Chương ${chapter}`;
 }
 
+// The board's pinned strip shows the question the student is actually on, so
+// they never have to memorize it while writing rough work.
+function mathCurrentQuestion() {
+  return _mathQuiz ? _mathQuiz.questions[_mathQuiz.idx] : null;
+}
+
 function renderMathQuestion() {
   const screen = document.getElementById('mathHubScreen');
   const st = _mathQuiz;
@@ -465,6 +471,8 @@ function renderMathQuestion() {
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
       ${body}
       ${explain}
+      <button class="math-board-fab" type="button" title="Bảng nháp"
+              onclick="openMathBoard()">✏️</button>
     </div>`;
   screen.scrollTop = 0;
 }
@@ -500,6 +508,7 @@ function nextMathQuestion() {
 }
 
 function finishMathQuiz() {
+  if (typeof mathBoardReset === 'function') mathBoardReset();
   const st = _mathQuiz;
   const screen = document.getElementById('mathHubScreen');
   if (!st || !screen) return;
@@ -541,7 +550,10 @@ function finishMathQuiz() {
 
 function mathQuizQuestions() { return _mathQuiz ? _mathQuiz.questions : []; }
 function isMathQuizActive() { return !!_mathQuiz; }
-function abandonMathQuiz() { _mathQuiz = null; }
+function abandonMathQuiz() {
+  if (typeof mathBoardReset === 'function') mathBoardReset();
+  _mathQuiz = null;
+}
 
 // js/retrydrill.js — six tabs share one implementation, and it defaults to a
 // text box because for Word form that IS the lesson: a word guessed right by
@@ -607,7 +619,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathBank, mathChapters, mathLessons, mathById, mathChapterQuestions,
     renderMathHome, switchMathSubTab, openMathLesson,
     startMathQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
-    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathTier, mathEsc, mathFormula, mathRich,
+    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich,
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, mathQuizQuestions,

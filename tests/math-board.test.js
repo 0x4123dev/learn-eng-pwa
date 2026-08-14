@@ -242,3 +242,69 @@ suite('math board: painter', () => {
         assert.truthy(calls.some(c => c[0] === 'arc'), 'single point draws a filled dot');
     });
 });
+
+suite('math board: overlay wiring', () => {
+    test('the browser layer keeps its handwriting-quality contracts', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/touch-action:\s*none/.test(src) || /touchAction\s*=\s*'none'/.test(src),
+            'canvas must own every touch — no browser scroll fights');
+        assert.truthy(/getCoalescedEvents/.test(src), 'coalesced samples or iOS ink has gaps');
+        assert.truthy(/devicePixelRatio/.test(src), 'retina-crisp backing store');
+        assert.truthy(/setPointerCapture/.test(src), 'strokes survive leaving the canvas');
+        assert.truthy(/pointercancel/.test(src), 'incoming call must not wedge the gesture');
+    });
+
+    test('the quiz screen offers the ✏️ scratch-board button', () => {
+        assert.truthy(/math-board-fab/.test(read('js/math.js')),
+            'renderMathQuestion must render the board fab');
+        assert.truthy(/openMathBoard\(\)/.test(read('js/math.js')));
+    });
+
+    test('boards die with the quiz session, both endings', () => {
+        const src = read('js/math.js');
+        const finish = src.slice(src.indexOf('function finishMathQuiz'));
+        const abandon = src.slice(src.indexOf('function abandonMathQuiz'));
+        assert.truthy(/mathBoardReset/.test(finish.slice(0, finish.indexOf('\n}') + 2)),
+            'finishMathQuiz must reset the scratch boards');
+        assert.truthy(/mathBoardReset/.test(abandon.slice(0, abandon.indexOf('\n}') + 2)),
+            'abandonMathQuiz must reset the scratch boards');
+    });
+
+    test('overlay ships: index.html mounts it and loads the script', () => {
+        const html = read('index.html');
+        assert.truthy(/id="mathBoardOverlay"/.test(html));
+        assert.truthy(/js\/math-board\.js/.test(html));
+        const mathIdx = html.indexOf('js/math.js');
+        const boardIdx = html.indexOf('js/math-board.js');
+        assert.truthy(boardIdx > mathIdx, 'board script loads after math.js (it calls mathFormula)');
+    });
+
+    test('toolbar: undo, xoá with a second-tap confirm, chips capped by MAX, minimize', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/mathBoardUndoTap/.test(src));
+        assert.truthy(/Chắc chưa\?/.test(src), 'clear asks before wiping — kid-proofing');
+        assert.truthy(/MATH_BOARD_MAX/.test(src.slice(src.indexOf('function mathBoardChipsHTML'))),
+            'the + chip must respect the 3-board cap');
+        assert.truthy(/minimizeMathBoard/.test(src));
+    });
+
+    test('the pinned strip shows the current question through mathFormula', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/mathCurrentQuestion/.test(src));
+        assert.truthy(/mathFormula\(/.test(src));
+        assert.truthy(/mathCurrentQuestion/.test(read('js/math.js')), 'helper lives in math.js');
+    });
+
+    test('a toolbar tap during a stroke aborts the gesture, never orphans ink', () => {
+        const src = read('js/math-board.js');
+        const tapFns = src.slice(src.indexOf('window.mathBoardUndoTap'));
+        assert.truthy(/mathBoardAbort/.test(tapFns),
+            'undo/xoá/switch must abort a live gesture — g.stroke would dangle otherwise');
+    });
+
+    test('a cancelled stroke is wiped from screen immediately, not on the next move', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/'pan-start'/.test(src),
+            'pointerdown must notice pan-start and full-repaint — the deleted stroke is still painted');
+    });
+});

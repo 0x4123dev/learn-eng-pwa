@@ -130,8 +130,8 @@ suite('gen: sw.js img assets exist on disk', () => {
 // INDEX.HTML — script tags resolve and load in dependency order
 // ============================================================================
 suite('gen: index.html script tags', () => {
-    test('index.html has exactly 51 <script src> tags, all under js/', () => {
-        assert.equal(SCRIPT_SRCS.length, 51,
+    test('index.html has exactly 52 <script src> tags, all under js/', () => {
+        assert.equal(SCRIPT_SRCS.length, 52,
             'script tag count changed — update this characterization');
         const nonJs = SCRIPT_SRCS.filter(s => !/^js\/.+\.js$/.test(s));
         assert.deepEqual(nonJs, [], `unexpected non-js/ script srcs: ${nonJs.join(', ')}`);

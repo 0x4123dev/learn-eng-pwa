@@ -213,6 +213,178 @@ function mathBoardSizeCanvas(canvas, viewW, viewH, dpr) {
     return ctx;
 }
 
+// ── Browser layer ────────────────────────────────────────────────────────
+// Everything below needs a real DOM; the sync test harness never runs it, but
+// pins its contracts by reading this source.
+if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    var _mathBoardCtx = null;
+    var _mathBoardGestureState = null;
+    var _mathBoardClearArmed = 0;
+
+    window.openMathBoard = function () {
+        const s = mathBoardSession();
+        s.open = true;
+        _mathBoardGestureState = mathBoardGesture();
+        _mathBoardClearArmed = 0;
+        mathBoardRenderOverlay();
+    };
+
+    window.minimizeMathBoard = function () {
+        mathBoardSession().open = false;
+        const el = document.getElementById('mathBoardOverlay');
+        if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
+        _mathBoardCtx = null;
+    };
+
+    // ← REVIEW (Task 3): every toolbar action mutates b.strokes, which the
+    // gesture machine may be holding a live reference into. Aborting first is
+    // what stops a finger that is still down from inking into a detached
+    // stroke that then vanishes on the next repaint.
+    window.mathBoardUndoTap = function () {
+        mathBoardAbort(_mathBoardGestureState);
+        mathBoardUndo(mathBoardActive());
+        mathBoardRepaint();
+    };
+
+    // Xoá bảng is destructive for a child: the first tap arms, a second tap
+    // within 2s wipes. The armed button re-labels itself "Chắc chưa?".
+    window.mathBoardClearTap = function () {
+        const now = Date.now();
+        if (now - _mathBoardClearArmed < 2000) {
+            mathBoardAbort(_mathBoardGestureState);
+            mathBoardClear(mathBoardActive());
+            mathBoardActive().scrollY = 0;
+            _mathBoardClearArmed = 0;
+            mathBoardRenderOverlay();
+            return;
+        }
+        _mathBoardClearArmed = now;
+        const btn = document.getElementById('mathBoardClearBtn');
+        if (btn) btn.textContent = 'Chắc chưa?';
+        setTimeout(function () {
+            _mathBoardClearArmed = 0;
+            const b = document.getElementById('mathBoardClearBtn');
+            if (b) b.textContent = '🗑 Xoá';
+        }, 2000);
+    };
+
+    window.mathBoardTabTap = function (i) {
+        mathBoardAbort(_mathBoardGestureState);
+        if (i === -1) { if (mathBoardAdd() === -1) return; }
+        else mathBoardSwitch(i);
+        mathBoardRenderOverlay();
+    };
+
+    function mathBoardChipsHTML() {
+        const s = mathBoardSession();
+        let html = s.boards.map(function (b, i) {
+            return '<button class="math-board-chip ' + (i === s.active ? 'active' : '') +
+                   '" type="button" onclick="mathBoardTabTap(' + i + ')">Bảng ' + (i + 1) + '</button>';
+        }).join('');
+        if (s.boards.length < MATH_BOARD_MAX) {
+            html += '<button class="math-board-chip" type="button" onclick="mathBoardTabTap(-1)">+</button>';
+        }
+        return html;
+    }
+
+    function mathBoardStripHTML() {
+        const q = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
+        if (!q) return '';
+        return '<div class="math-board-strip" onclick="this.classList.toggle(\'full\')">' +
+               '<span class="math-formula">' + mathFormula(q.q) + '</span></div>';
+    }
+
+    function mathBoardRenderOverlay() {
+        const el = document.getElementById('mathBoardOverlay');
+        if (!el) return;
+        el.classList.remove('hidden');
+        el.innerHTML =
+            mathBoardStripHTML() +
+            '<div class="math-board-tools">' +
+              '<span class="math-board-chips">' + mathBoardChipsHTML() + '</span>' +
+              '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">↩️</button>' +
+              '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
+                      'onclick="mathBoardClearTap()">🗑 Xoá</button>' +
+              '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">▾ Thu nhỏ</button>' +
+            '</div>' +
+            '<canvas id="mathBoardCanvas"></canvas>';
+        mathBoardMountCanvas();
+    }
+
+    function mathBoardMountCanvas() {
+        const canvas = document.getElementById('mathBoardCanvas');
+        if (!canvas) return;
+        canvas.style.touchAction = 'none';   // touch-action: none — we own every touch
+        // ← REVIEW (Task 4): clamp to at least 1px. A canvas sized during an
+        // unsettled layout would be zero-area and silently swallow every stroke.
+        const w = Math.max(1, canvas.clientWidth || (canvas.parentNode && canvas.parentNode.clientWidth) || 320);
+        const h = Math.max(1, canvas.clientHeight || 300);
+        // mathBoardSizeCanvas clears the bitmap as a side effect of assigning
+        // canvas.width, so the repaint at the end of this function is required,
+        // not decorative.
+        _mathBoardCtx = mathBoardSizeCanvas(canvas, w, h, window.devicePixelRatio || 1);
+        canvas._viewW = w;
+        canvas._viewH = h;
+
+        canvas.addEventListener('pointerdown', function (e) {
+            e.preventDefault();
+            canvas.setPointerCapture(e.pointerId);
+            const r = canvas.getBoundingClientRect();
+            const act = mathBoardPointerDown(_mathBoardGestureState, mathBoardActive(),
+                e.pointerId, e.clientX - r.left, e.clientY - r.top);
+            // ← REVIEW (Task 3): 'pan-start' means the machine just deleted the
+            // half-drawn stroke. Without this repaint it stays painted on the
+            // canvas until the first pan move — ink that should be gone.
+            if (act === 'pan-start') mathBoardRepaint();
+        });
+
+        canvas.addEventListener('pointermove', function (e) {
+            const g = _mathBoardGestureState;
+            if (!g || !_mathBoardCtx) return;
+            const r = canvas.getBoundingClientRect();
+            const b = mathBoardActive();
+            // getCoalescedEvents: iOS batches touch samples between frames;
+            // without unpacking them, fast writing has straight-line gaps.
+            const events = (e.getCoalescedEvents && e.getCoalescedEvents().length)
+                ? e.getCoalescedEvents() : [e];
+            let repaint = false;
+            for (let i = 0; i < events.length; i++) {
+                const ce = events[i];
+                const act = mathBoardPointerMove(g, b, e.pointerId,
+                    ce.clientX - r.left, ce.clientY - r.top);
+                if (act === 'pan') repaint = true;
+                else if (act === 'ink' && g.stroke) {
+                    // Draw only the fresh tail — repainting the whole sheet on
+                    // every sample is what makes cheap phones lag behind the finger.
+                    const pts = g.stroke.points;
+                    mathBoardDrawStroke(_mathBoardCtx, pts.slice(Math.max(0, pts.length - 3)), b.scrollY);
+                }
+            }
+            if (repaint) mathBoardRepaint();
+        });
+
+        function endGesture(e) {
+            if (!_mathBoardGestureState) return;
+            mathBoardPointerUp(_mathBoardGestureState, mathBoardActive(), e.pointerId);
+            mathBoardRepaint();   // final full-quality pass over the finished stroke
+        }
+        canvas.addEventListener('pointerup', endGesture);
+        canvas.addEventListener('pointercancel', function (e) {
+            if (!_mathBoardGestureState) return;
+            mathBoardPointerCancel(_mathBoardGestureState, mathBoardActive(), e.pointerId);
+            mathBoardRepaint();
+        });
+
+        mathBoardRepaint();
+    }
+
+    function mathBoardRepaint() {
+        const canvas = document.getElementById('mathBoardCanvas');
+        if (!canvas || !_mathBoardCtx) return;
+        mathBoardRedraw(_mathBoardCtx, mathBoardActive(), canvas._viewW, canvas._viewH);
+    }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,

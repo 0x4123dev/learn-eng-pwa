@@ -10309,3 +10309,37 @@
         .exam-lesson-content th { background: rgba(28,176,246,0.1); font-weight: 700; }
         .exam-lesson-content b, .exam-lesson-content strong { color: var(--text-primary); }
         .exam-lesson-back-bottom { margin-top: 22px; }
+
+/* ── Math board (bảng nháp) ─────────────────────────────────────────── */
+.math-board-overlay {
+    position: fixed; inset: 0; bottom: 64px; z-index: 200;
+    display: flex; flex-direction: column;
+    background: #fffef7;   /* warm paper, not stark white */
+}
+.math-board-overlay.hidden { display: none; }
+.math-board-strip {
+    padding: 10px 14px; background: #eef2ff; border-bottom: 1px solid #c7d2fe;
+    font-weight: 600; max-height: 3.2em; overflow: hidden; cursor: pointer;
+}
+.math-board-strip.full { max-height: none; }
+.math-board-tools {
+    display: flex; align-items: center; gap: 6px; padding: 6px 10px;
+    border-bottom: 1px solid #e2e8f0; background: #f8fafc;
+}
+.math-board-chips { display: flex; gap: 4px; flex: 1; }
+.math-board-chip {
+    border: 1px solid #cbd5e1; background: #fff; border-radius: 14px;
+    padding: 4px 10px; font-size: 13px;
+}
+.math-board-chip.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+.math-board-tool {
+    border: 1px solid #cbd5e1; background: #fff; border-radius: 10px;
+    padding: 6px 10px; font-size: 14px; min-width: 44px;   /* kid-sized target */
+}
+#mathBoardCanvas { flex: 1; width: 100%; touch-action: none; }
+.math-board-fab {
+    position: fixed; right: 14px; bottom: 84px; z-index: 150;
+    width: 52px; height: 52px; border-radius: 50%; font-size: 22px;
+    border: none; background: #4f46e5; color: #fff;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, .4);
+}
