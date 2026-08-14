@@ -37,3 +37,43 @@ suite('math board: strokes', () => {
         assert.equal(board.mathBoardUndo(b), null, 'undo on empty board is a no-op');
     });
 });
+
+suite('math board: session and boards', () => {
+    test('a session starts with one empty board and remembers it', () => {
+        board.mathBoardReset();
+        const s = board.mathBoardSession();
+        assert.equal(s.boards.length, 1);
+        assert.equal(s.active, 0);
+        assert.equal(s.open, false);
+        assert.equal(board.mathBoardSession(), s, 'same session on every call');
+    });
+
+    test('adding boards caps at 3 and switches to the new board', () => {
+        board.mathBoardReset();
+        assert.equal(board.mathBoardAdd(), 1);
+        assert.equal(board.mathBoardAdd(), 2);
+        assert.equal(board.mathBoardAdd(), -1, 'fourth board refused');
+        assert.equal(board.mathBoardSession().boards.length, 3);
+        assert.equal(board.mathBoardSession().active, 2);
+    });
+
+    test('switching boards keeps each board\'s ink and scroll position', () => {
+        board.mathBoardReset();
+        const s = board.mathBoardSession();
+        board.mathBoardBegin(s.boards[0], 5, 5);
+        s.boards[0].scrollY = 120;
+        board.mathBoardAdd();                       // now on bảng 2
+        assert.equal(board.mathBoardActive().strokes.length, 0);
+        board.mathBoardSwitch(0);                   // back to bảng 1
+        assert.equal(board.mathBoardActive().strokes.length, 1);
+        assert.equal(board.mathBoardActive().scrollY, 120);
+        assert.equal(board.mathBoardSwitch(9), 0, 'bad index is a no-op');
+    });
+
+    test('reset throws the whole session away — a fresh quiz gets fresh paper', () => {
+        board.mathBoardSession();
+        board.mathBoardAdd();
+        board.mathBoardReset();
+        assert.equal(board.mathBoardSession().boards.length, 1);
+    });
+});

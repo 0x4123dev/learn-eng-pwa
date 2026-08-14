@@ -32,9 +32,38 @@ function mathBoardExtend(stroke, x, y) {
 function mathBoardUndo(b) { return b.strokes.pop() || null; }
 function mathBoardClear(b) { b.strokes.length = 0; }
 
+// One session of scratch paper per quiz. Lives in memory only — the spec says
+// boards die with the session, so nothing here ever touches localStorage.
+let _mathBoardSession = null;
+
+function mathBoardSession() {
+    if (!_mathBoardSession) {
+        _mathBoardSession = { boards: [{ strokes: [], scrollY: 0 }], active: 0, open: false };
+    }
+    return _mathBoardSession;
+}
+
+function mathBoardReset() { _mathBoardSession = null; }
+function mathBoardActive() { const s = mathBoardSession(); return s.boards[s.active]; }
+
+function mathBoardAdd() {
+    const s = mathBoardSession();
+    if (s.boards.length >= MATH_BOARD_MAX) return -1;
+    s.boards.push({ strokes: [], scrollY: 0 });
+    s.active = s.boards.length - 1;
+    return s.active;
+}
+
+function mathBoardSwitch(i) {
+    const s = mathBoardSession();
+    if (i >= 0 && i < s.boards.length) s.active = i;
+    return s.active;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,
         mathBoardBegin, mathBoardExtend, mathBoardUndo, mathBoardClear,
+        mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
     };
 }
