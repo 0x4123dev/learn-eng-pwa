@@ -914,6 +914,22 @@ function switchScreen(screenId) {
         if (typeof abandonWordformQuiz === 'function') abandonWordformQuiz();
     }
 
+    // Guard: warn before leaving an in-progress Toán 7 round — or the retry
+    // drill, which is just as easy to lose to a mis-tap on the bottom bar.
+    // Asked in Vietnamese because the whole tab is.
+    if (screenId !== 'mathHubScreen' &&
+        ((typeof isMathQuizActive === 'function' && isMathQuizActive()) ||
+         (typeof retryDrillKey === 'function' && retryDrillKey() === 'math'))) {
+        if (!confirm('Con đang làm dở bài Toán.\nRa khỏi bây giờ thì phần đã làm sẽ mất.\n\nVẫn ra chứ?')) {
+            return;
+        }
+        if (typeof abandonMathQuiz === 'function') abandonMathQuiz();
+        if (typeof abandonRetryDrill === 'function' &&
+            typeof retryDrillKey === 'function' && retryDrillKey() === 'math') {
+            abandonRetryDrill();
+        }
+    }
+
     // Guard: warn before leaving an in-progress Rewrite practice.
     if (screenId !== 'rewriteScreen' &&
         typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {

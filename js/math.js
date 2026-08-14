@@ -394,10 +394,32 @@ function finishMathQuiz() {
 function isMathQuizActive() { return !!_mathQuiz; }
 function abandonMathQuiz() { _mathQuiz = null; }
 
-// js/retrydrill.js — six tabs share one implementation. This says only what a
-// Toán 7 question looks like inside it. A formula picked wrong comes back as
-// the same multiple choice: the point is recognising the right one, and there
-// is nothing to type.
+// js/retrydrill.js — six tabs share one implementation, and it defaults to a
+// text box because for Word form that IS the lesson: a word guessed right by
+// elimination comes back as typing, so the form has to be produced.
+//
+// A formula is the opposite. Nobody types "xᵐ · xⁿ = xᵐ⁺ⁿ", and the skill
+// being drilled is telling the real formula from three plausible fakes. So
+// the maths drill re-asks the question exactly as it was first shown: same
+// options, same order, chosen not typed.
+let _mathRetryOptions = [];
+let _mathRetryPicked = null;
+
+function mathRetryInputHTML(q) {
+  _mathRetryOptions = q.options || [];
+  _mathRetryPicked = null;
+  return `<div class="grammar-options">` + _mathRetryOptions.map((opt, i) => `
+      <button class="grammar-option" onclick="mathRetryPick(${i})">
+        <span class="grammar-option-letter">${'ABCD'[i]}</span>
+        <span class="grammar-option-text math-formula">${mathFormula(opt)}</span>
+      </button>`).join('') + `</div>`;
+}
+
+function mathRetryPick(i) {
+  _mathRetryPicked = _mathRetryOptions[i];
+  if (typeof submitRetryAnswer === 'function') submitRetryAnswer();
+}
+
 if (typeof defineRetryDrill === 'function') defineRetryDrill({
   key: 'math',
   screenId: 'mathHubScreen',
@@ -405,7 +427,10 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   resolve: (id) => mathById(id),
   idOf: (q) => q.id,
   answerText: (q) => q.answer,
-  grade: (v, q) => String(v || '').trim() === String(q.answer).trim(),
+  inputHTML: (q) => mathRetryInputHTML(q),
+  readAnswer: () => _mathRetryPicked,
+  valueText: (v) => String(v == null ? '' : v),
+  grade: (v, q) => String(v == null ? '' : v).trim() === String(q.answer).trim(),
   promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`,
   explainHTML: (q) => `<div class="grammar-review-explain">${mathRich(q.explanation)}</div>`,
   home: () => renderMathHome(),

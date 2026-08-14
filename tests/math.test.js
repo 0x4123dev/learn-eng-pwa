@@ -309,6 +309,32 @@ suite('math: wiring', () => {
         assert.truthy(/retryGate\('math'\)/.test(src), 'a new practice must be gated on the debt');
     });
 
+    test('the retry drill re-asks a formula as multiple choice, not typing', () => {
+        // The drill defaults to a text box, and for Word form that is the
+        // point — a guessed word comes back as typing. A formula is different:
+        // nobody types "xᵐ · xⁿ = xᵐ⁺ⁿ", and the skill being practised is
+        // RECOGNISING the right one. The tab supplies its own MCQ input.
+        const src = read('js/math.js');
+        assert.truthy(/inputHTML:/.test(src), 'math must override the drill input');
+        assert.truthy(/readAnswer:/.test(src), 'and read the choice back');
+        const cfg = src.slice(src.indexOf('defineRetryDrill({'), src.indexOf('function mathRetryCount'));
+        assert.truthy(/grammar-option/.test(cfg) || /mathRetryInputHTML/.test(cfg),
+            'the drill input must render option buttons');
+        assert.falsy(/retryInput|Gõ /.test(cfg), 'no text box in the maths drill');
+    });
+
+    test('leaving a question mid-quiz asks first', () => {
+        // A mis-tap on the bottom bar should not silently bin the round.
+        const app = read('js/app.js');
+        assert.truthy(/isMathQuizActive/.test(app),
+            'switchScreen must notice an in-progress maths round');
+        const guard = app.slice(app.indexOf("screenId !== 'mathHubScreen'"),
+                                app.indexOf("screenId !== 'mathHubScreen'") + 600);
+        assert.truthy(/confirm\(/.test(guard), 'it must ask before leaving');
+        assert.truthy(/abandonMathQuiz/.test(guard), 'and only then discard the round');
+        assert.truthy(/retryDrillKey/.test(guard), 'the retry drill counts as in-progress too');
+    });
+
     test('the Math tab has no listen gate — nothing here is pronounced', () => {
         const src = read('js/math.js');
         assert.falsy(/answerGateHTML|speakAnswer|speakWord/.test(src),
