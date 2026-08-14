@@ -46,8 +46,8 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // SW.JS — cache manifest structure
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
-    test('ASSETS array literal parses with exactly 83 entries', () => {
-        assert.equal(ASSETS.length, 83,
+    test('ASSETS array literal parses with exactly 84 entries', () => {
+        assert.equal(ASSETS.length, 84,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -91,8 +91,8 @@ suite('gen: sw.js cache manifest', () => {
 // missing file (even a pet png) would break the whole service-worker install.
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
-    test('ASSETS contains 52 /js/*.js, 1 /css/*.css, 27 /img/* entries', () => {
-        assert.equal(JS_ASSETS.length, 52, 'js asset count changed');
+    test('ASSETS contains 53 /js/*.js, 1 /css/*.css, 27 /img/* entries', () => {
+        assert.equal(JS_ASSETS.length, 53, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
         assert.equal(IMG_ASSETS.length, 27, 'img asset count changed');
     });

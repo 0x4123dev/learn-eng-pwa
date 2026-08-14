@@ -30,6 +30,7 @@ const ASSETS = [
   '/js/math-data.js',
   '/js/math-lessons.js',
   '/js/math.js',
+  '/js/math-board.js',
   '/js/tapwords.js',
   '/js/petart.js',
   '/js/petcheer.js',
