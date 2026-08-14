@@ -328,3 +328,43 @@ suite('math board: overlay wiring', () => {
             'both finishMathQuiz and abandonMathQuiz must close the overlay');
     });
 });
+
+// Three defects that only showed up when the board was run in a real browser.
+// None of them can fail a unit test — they are pinned here so a later edit
+// cannot quietly undo them.
+suite('math board: what the browser found', () => {
+    test('the canvas can SHRINK, not just grow', () => {
+        const css = read('css/styles.css');
+        const rule = css.slice(css.indexOf('#mathBoardCanvas'));
+        assert.truthy(/min-height:\s*0/.test(rule.slice(0, rule.indexOf('}'))),
+            'a canvas is a replaced element: without min-height 0 the default ' +
+            'min-height:auto pins it to its bitmap, so a shorter sheet (rotation, ' +
+            'expanded question) overflows under the nav and the ink drifts');
+    });
+
+    test('a refused pointer capture cannot swallow the whole stroke', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/try\s*{\s*canvas\.setPointerCapture\([^)]*\);\s*}\s*catch/.test(src),
+            'setPointerCapture throws NotFoundError when the pointer is already ' +
+            'gone; uncaught, it skips the rest of pointerdown and the tap draws nothing');
+    });
+
+    test('expanding the question resizes the sheet without waiting for an observer', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/mathBoardStripTap/.test(src), 'the strip tap must be a real handler');
+        const fn = src.slice(src.indexOf('window.mathBoardStripTap'));
+        assert.truthy(/mathBoardResize\(\)/.test(fn.slice(0, fn.indexOf('};'))),
+            'resize on the tap we own — some engines never deliver ResizeObserver');
+    });
+
+    test('every toolbar button carries a word, not just an emoji', () => {
+        const src = read('js/math-board.js');
+        const tools = src.slice(src.indexOf('math-board-tools'), src.indexOf('mathBoardCanvas"></canvas>'));
+        const labels = (tools.match(/>([^<>]+)<\/button>/g) || []).map(s => s.slice(1, -9).trim());
+        assert.equal(labels.length, 3, 'undo, xoa, minimize');
+        for (const l of labels) {
+            assert.truthy(/[A-Za-zÀ-ỹ]/.test(l),
+                `"${l}" is glyph-only — an unsupported emoji renders as a hollow box`);
+        }
+    });
+});

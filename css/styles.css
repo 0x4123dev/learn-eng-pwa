@@ -10340,7 +10340,13 @@
     border: 1px solid #cbd5e1; background: #fff; border-radius: 10px;
     padding: 6px 10px; font-size: 14px; min-width: 44px;   /* kid-sized target */
 }
-#mathBoardCanvas { flex: 1; width: 100%; touch-action: none; }
+/* min-height/width 0 is load-bearing, not tidying: a canvas is a replaced
+   element, so the default min-height:auto pins it to its intrinsic bitmap
+   height and `flex: 1` can only ever GROW it. Without this it overflows under
+   the bottom nav when the sheet gets shorter (phone rotated, question strip
+   expanded) — and because its own box never changes, the ResizeObserver never
+   fires, so the bitmap stays out of sync and the ink drifts off the finger. */
+#mathBoardCanvas { flex: 1; width: 100%; min-height: 0; min-width: 0; touch-action: none; }
 .math-board-fab {
     flex: 0 0 auto; margin-left: 8px;
     width: 40px; height: 40px; border-radius: 50%; font-size: 19px;

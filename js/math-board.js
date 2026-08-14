@@ -260,6 +260,15 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     window.addEventListener('resize', mathBoardResize);
     window.addEventListener('orientationchange', mathBoardResize);
 
+    // Expanding the question strip is the one thing that reliably shrinks the
+    // sheet, and it is a tap we own — so resize on the spot rather than trust
+    // the ResizeObserver to notice. (Some engines never deliver it; a stale
+    // bitmap here means the ink lands where the finger is not.)
+    window.mathBoardStripTap = function (el) {
+        el.classList.toggle('full');
+        mathBoardResize();
+    };
+
     window.openMathBoard = function () {
         const s = mathBoardSession();
         s.open = true;
@@ -354,7 +363,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     function mathBoardStripHTML() {
         const q = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
         if (!q) return '';
-        return '<div class="math-board-strip" onclick="this.classList.toggle(\'full\')">' +
+        return '<div class="math-board-strip" onclick="mathBoardStripTap(this)">' +
                '<span class="math-formula">' + mathFormula(q.q) + '</span></div>';
     }
 
@@ -367,7 +376,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             mathBoardStripHTML() +
             '<div class="math-board-tools">' +
               '<span class="math-board-chips">' + mathBoardChipsHTML() + '</span>' +
-              '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">↩️</button>' +
+              // Every tool carries a word, not just a glyph: an emoji that a
+              // device has no font for renders as a hollow box, and a lone box
+              // tells a child nothing.
+              '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">↩️ Lùi</button>' +
               '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
                       'onclick="mathBoardClearTap()">🗑 Xoá</button>' +
               '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">▾ Thu nhỏ</button>' +
@@ -402,7 +414,13 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             // stray touch on the stale canvas would throw.
             if (!_mathBoardGestureState) return;
             e.preventDefault();
-            canvas.setPointerCapture(e.pointerId);
+            // Capture is an optimisation — it keeps a stroke alive when the
+            // finger slides off the canvas. It is NOT worth the whole gesture:
+            // setPointerCapture throws NotFoundError if the pointer is already
+            // gone by the time we run, and an uncaught throw here skips the
+            // code below, so the tap draws nothing at all. (Same shape as the
+            // iOS currentTime throw in app.js that once killed every card tap.)
+            try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
             const r = canvas.getBoundingClientRect();
             const act = mathBoardPointerDown(_mathBoardGestureState, mathBoardActive(),
                 e.pointerId, e.clientX - r.left, e.clientY - r.top);
