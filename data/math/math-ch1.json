@@ -2,7 +2,7 @@
   "chapter": 1,
   "title": "Số hữu tỉ",
   "icon": "①",
-  "lesson": "<p>Chương I mở ra một gia đình số mới: <b>số hữu tỉ</b> — mọi số viết được dưới dạng phân số. Cả chương chỉ có ba nhóm kiến thức: <b>số hữu tỉ và số đối</b>, <b>quy tắc chuyển vế</b>, và <b>bảy công thức luỹ thừa</b>. Thuộc bảng dưới đây là em làm được gần hết bài tập.</p><h4>📌 Công thức</h4><p><b>1. Số hữu tỉ và số đối</b></p><table><tr><td><b>Nội dung</b></td><td><b>Công thức</b></td><td><b>Ghi nhớ</b></td></tr><tr><td>Định nghĩa</td><td>x ∈ ℚ ⇔ x = a/b ; a, b ∈ ℤ ; b ≠ 0</td><td>Tử và mẫu đều là số NGUYÊN, mẫu KHÁC 0</td></tr><tr><td>Số đối</td><td>Số đối của a/b là −a/b</td><td>Chỉ đổi dấu; a/b + (−a/b) = 0</td></tr><tr><td>Số nguyên cũng là số hữu tỉ</td><td>a = a/1</td><td>Vì mẫu 1 ≠ 0 nên mọi số nguyên đều thuộc ℚ</td></tr></table><p><b>2. Quy tắc chuyển vế</b></p><table><tr><td>A + B = C</td><td>⇒ A = C − B</td></tr><tr><td>A − B = C</td><td>⇒ A = C + B</td></tr></table><p>Chỉ cần nhớ một câu: <b>qua vế kia thì đổi dấu</b> — dấu cộng thành dấu trừ, dấu trừ thành dấu cộng.</p><p><b>3. Bảy công thức luỹ thừa</b></p><ul><li><b>x⁰ = 1</b> (với x ≠ 0) và <b>x¹ = x</b></li><li><b>xᵐ · xⁿ = xᵐ⁺ⁿ</b> — nhân thì CỘNG số mũ, cơ số giữ nguyên</li><li><b>xᵐ : xⁿ = xᵐ⁻ⁿ</b> — chia thì TRỪ số mũ (x ≠ 0)</li><li><b>(xᵐ)ⁿ = xᵐⁿ</b> — luỹ thừa của luỹ thừa thì NHÂN hai số mũ</li><li><b>(xy)ⁿ = xⁿyⁿ</b> — số mũ được chia đều cho từng thừa số</li><li><b>(x/y)ⁿ = xⁿ/yⁿ</b> (y ≠ 0) — cả tử lẫn mẫu đều lên mũ</li><li><b>x⁻ⁿ = 1/xⁿ</b> (x ≠ 0) — số mũ âm nghĩa là lật xuống làm mẫu</li></ul><h4>💡 Ví dụ</h4><ul><li><b>Số đối:</b> số đối của −3/5 là <b>3/5</b>, vì −3/5 + 3/5 = 0. Còn 5/3 là số <b>nghịch đảo</b> — hai khái niệm hoàn toàn khác nhau.</li><li><b>Tìm x:</b> x + 3/4 = 5/4 ⇒ chuyển 3/4 sang phải và đổi dấu ⇒ x = 5/4 − 3/4 = 2/4 = <b>1/2</b>.</li><li><b>Tìm x:</b> x − 2/5 = 1/5 ⇒ dấu trừ qua vế kia thành dấu cộng ⇒ x = 1/5 + 2/5 = <b>3/5</b>.</li><li><b>Tìm x:</b> 5 − x = 2 ⇒ x = 5 − 2 = <b>3</b>. Thử lại: 5 − 3 = 2 ✔</li><li><b>Nhân luỹ thừa:</b> 2³ · 2⁴ = 2³⁺⁴ = <b>2⁷</b> = 128. Cơ số vẫn là 2, không phải 4.</li><li><b>Chia luỹ thừa:</b> 5⁶ : 5⁴ = 5⁶⁻⁴ = <b>5²</b> = 25.</li><li><b>Luỹ thừa của luỹ thừa:</b> (x⁴)³ = x¹² vì 4 · 3 = 12.</li><li><b>Luỹ thừa của thương:</b> (2/3)⁴ = 2⁴/3⁴ = <b>16/81</b>.</li><li><b>Số mũ âm:</b> 3⁻² = 1/3² = <b>1/9</b> — kết quả là số dương.</li><li><b>Dấu âm trong ngoặc:</b> (−1/2)³ = (−1)³/2³ = <b>−1/8</b>; số mũ lẻ giữ dấu âm, số mũ chẵn cho kết quả dương.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>Quên điều kiện b ≠ 0:</b> 3/0 không phải số hữu tỉ. Ngược lại, tử được phép bằng 0 — 0/7 = 0 vẫn là số hữu tỉ.</li><li><b>Nhầm số đối với số nghịch đảo:</b> số đối của 2/3 là −2/3 (cộng vào được 0), còn 3/2 là nghịch đảo (nhân vào được 1).</li><li><b>Chuyển vế quên đổi dấu:</b> từ 2 + x = 9 mà viết x = 9 + 2 là sai; đúng phải là x = 9 − 2 = 7.</li><li><b>Nhân luỹ thừa mà nhân số mũ hoặc nhân cơ số:</b> 2³ · 2⁴ = <b>2⁷</b>, không phải 2¹², cũng không phải 4⁷ — cơ số luôn GIỮ nguyên.</li><li><b>Tưởng cộng luỹ thừa cũng cộng số mũ:</b> 2² + 2³ = 4 + 8 = 12, còn 2⁵ = 32 — hoàn toàn khác nhau. Không có công thức cho phép cộng.</li><li><b>Tưởng số mũ âm cho kết quả âm:</b> 3⁻² = 1/9, không phải −9 hay −1/9.</li><li><b>Bỏ sót một phần trong ngoặc:</b> (2/3)⁴ = 2⁴/3⁴ chứ không phải 2⁴/3; và (x⁴)³ = x¹², đừng viết thành x⁴.</li></ul>",
+  "lesson": "<p>Chương I mở ra một gia đình số mới: <b>số hữu tỉ</b> — mọi số viết được dưới dạng phân số. Cả chương chỉ có ba nhóm kiến thức: <b>số hữu tỉ và số đối</b>, <b>quy tắc chuyển vế</b>, và <b>bảy công thức luỹ thừa</b>. Thuộc bảng dưới đây là em làm được gần hết bài tập.</p><h4>📌 Công thức</h4><p><b>1. Số hữu tỉ và số đối</b></p><table><tr><td><b>Nội dung</b></td><td><b>Công thức</b></td><td><b>Ghi nhớ</b></td></tr><tr><td>Định nghĩa</td><td>x ∈ ℚ ⇔ x = a/b ; a, b ∈ ℤ ; b ≠ 0</td><td>Tử và mẫu đều là số NGUYÊN, mẫu KHÁC 0</td></tr><tr><td>Số đối</td><td>Số đối của a/b là −a/b</td><td>Chỉ đổi dấu; a/b + (−a/b) = 0</td></tr><tr><td>Số nguyên cũng là số hữu tỉ</td><td>a = a/1</td><td>Vì mẫu 1 ≠ 0 nên mọi số nguyên đều thuộc ℚ</td></tr></table><p><b>2. Quy tắc chuyển vế</b></p><table><tr><td>A + B = C</td><td>⇒ A = C − B</td></tr><tr><td>A − B = C</td><td>⇒ A = C + B</td></tr></table><p>Chỉ cần nhớ một câu: <b>qua vế kia thì đổi dấu</b> — dấu cộng thành dấu trừ, dấu trừ thành dấu cộng.</p><p><b>3. Bảy công thức luỹ thừa</b></p><ul><li><b>x⁰ = 1</b> (với x ≠ 0) và <b>x¹ = x</b></li><li><b>xᵐ · xⁿ = xᵐ⁺ⁿ</b> — nhân thì CỘNG số mũ, cơ số giữ nguyên</li><li><b>xᵐ : xⁿ = xᵐ⁻ⁿ</b> — chia thì TRỪ số mũ (x ≠ 0)</li><li><b>(xᵐ)ⁿ = xᵐⁿ</b> — luỹ thừa của luỹ thừa thì NHÂN hai số mũ</li><li><b>(xy)ⁿ = xⁿyⁿ</b> — số mũ được chia đều cho từng thừa số</li><li><b>(x/y)ⁿ = xⁿ/yⁿ</b> (y ≠ 0) — cả tử lẫn mẫu đều lên mũ</li><li><b>x⁻ⁿ = 1/xⁿ</b> (x ≠ 0) — số mũ âm nghĩa là lật xuống làm mẫu</li></ul><h4>💡 Ví dụ</h4><ul><li><b>Số đối:</b> số đối của −3/5 là <b>3/5</b>, vì −3/5 + 3/5 = 0. Còn 5/3 là số <b>nghịch đảo</b> — hai khái niệm hoàn toàn khác nhau.</li><li><b>Tìm x:</b> x + 3/4 = 5/4 ⇒ chuyển 3/4 sang phải và đổi dấu ⇒ x = 5/4 − 3/4 = 2/4 = <b>1/2</b>.</li><li><b>Tìm x:</b> x − 2/5 = 1/5 ⇒ dấu trừ qua vế kia thành dấu cộng ⇒ x = 1/5 + 2/5 = <b>3/5</b>.</li><li><b>Tìm x:</b> 5 − x = 2 ⇒ x = 5 − 2 = <b>3</b>. Thử lại: 5 − 3 = 2 ✔</li><li><b>Nhân luỹ thừa:</b> 2³ · 2⁴ = 2³⁺⁴ = <b>2⁷</b> = 128. Cơ số vẫn là 2, không phải 4.</li><li><b>Chia luỹ thừa:</b> 5⁶ : 5⁴ = 5⁶⁻⁴ = <b>5²</b> = 25.</li><li><b>Luỹ thừa của luỹ thừa:</b> (x⁴)³ = x¹² vì 4 · 3 = 12.</li><li><b>Luỹ thừa của phân số (thương):</b> (2/3)⁴ = 2⁴/3⁴ = <b>16/81</b>.</li><li><b>Số mũ âm:</b> 3⁻² = 1/3² = <b>1/9</b> — kết quả là số dương.</li><li><b>Dấu âm trong ngoặc:</b> (−1/2)³ = (−1)³/2³ = <b>−1/8</b>; số mũ lẻ giữ dấu âm, số mũ chẵn cho kết quả dương.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>Quên điều kiện b ≠ 0:</b> 3/0 không phải số hữu tỉ. Ngược lại, tử được phép bằng 0 — 0/7 = 0 vẫn là số hữu tỉ.</li><li><b>Nhầm số đối với số nghịch đảo:</b> số đối của 2/3 là −2/3 (cộng vào được 0), còn 3/2 là nghịch đảo (nhân vào được 1).</li><li><b>Chuyển vế quên đổi dấu:</b> từ 2 + x = 9 mà viết x = 9 + 2 là sai; đúng phải là x = 9 − 2 = 7.</li><li><b>Nhân luỹ thừa mà nhân số mũ hoặc nhân cơ số:</b> 2³ · 2⁴ = <b>2⁷</b>, không phải 2¹², cũng không phải 4⁷ — cơ số luôn GIỮ nguyên.</li><li><b>Tưởng cộng luỹ thừa cũng cộng số mũ:</b> 2² + 2³ = 4 + 8 = 12, còn 2⁵ = 32 — hoàn toàn khác nhau. Không có công thức cho phép cộng.</li><li><b>Tưởng số mũ âm cho kết quả âm:</b> 3⁻² = 1/9, không phải −9 hay −1/9.</li><li><b>Bỏ sót một phần trong ngoặc:</b> (2/3)⁴ = 2⁴/3⁴ chứ không phải 2⁴/3; và (x⁴)³ = x¹², đừng viết thành x⁴.</li></ul>",
   "calc": [
     {
       "id": "m1-c1",
@@ -11,7 +11,9 @@
       "q": "Viết gọn thành một lũy thừa: 2³ · 2⁴ = ?",
       "answer": "2⁷",
       "accept": [],
-      "keys": ["^"],
+      "keys": [
+        "^"
+      ],
       "explanation": "🔑 Nhân hai lũy thừa CÙNG cơ số thì giữ nguyên cơ số và CỘNG các số mũ: 2³ · 2⁴ = 2³⁺⁴ = 2⁷.<br>✗ 2¹² là nhân hai số mũ — đó là quy tắc của (2³)⁴, không phải 2³ · 2⁴.<br>✗ 4⁷ là nhân luôn cả cơ số — cơ số phải giữ nguyên."
     },
     {
@@ -20,7 +22,9 @@
       "topic": "Cộng phân số",
       "q": "Tính rồi rút gọn: 1/2 + 1/4 = ?",
       "answer": "3/4",
-      "accept": ["0,75"],
+      "accept": [
+        "0,75"
+      ],
       "keys": [],
       "explanation": "🔑 Quy đồng mẫu trước rồi mới cộng TỬ, giữ nguyên mẫu: 1/2 = 2/4, nên 2/4 + 1/4 = 3/4.<br>✗ 2/6 là cộng cả tử với tử và mẫu với mẫu — phân số không cộng như thế."
     }
@@ -31,7 +35,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Số hữu tỉ x được viết dưới dạng nào?",
-      "options": ["x = a/b ; a, b ∈ ℤ ; b ≠ 0", "x = a/b ; a, b ∈ ℤ ; a ≠ 0", "x = a/b ; a, b ∈ ℕ ; b ≠ 0", "x = a/b ; a, b ∈ ℤ ; b = 0"],
+      "options": [
+        "x = a/b ; a, b ∈ ℤ ; b ≠ 0",
+        "x = a/b ; a, b ∈ ℤ ; a ≠ 0",
+        "x = a/b ; a, b ∈ ℕ ; b ≠ 0",
+        "x = a/b ; a, b ∈ ℤ ; b = 0"
+      ],
       "correct": 0,
       "answer": "x = a/b ; a, b ∈ ℤ ; b ≠ 0",
       "explanation": "🔑 x ∈ ℚ ⇔ x = a/b với a, b ∈ ℤ và b ≠ 0.<br>✗ a ≠ 0: tử được phép bằng 0, như 0/5.<br>✗ a, b ∈ ℕ: mất hết số âm như −3/4.<br>✗ b = 0: không chia được cho 0."
@@ -41,7 +50,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Trong cách viết x = a/b của một số hữu tỉ, mẫu số b phải thoả điều kiện nào?",
-      "options": ["b > 0", "b ≠ 1", "b ≠ 0", "b ∈ ℕ"],
+      "options": [
+        "b > 0",
+        "b ≠ 1",
+        "b ≠ 0",
+        "b ∈ ℕ"
+      ],
       "correct": 2,
       "answer": "b ≠ 0",
       "explanation": "🔑 Mẫu chỉ cần khác 0, vì không chia được cho 0.<br>✗ b > 0: mẫu âm vẫn được, như 3/(−4).<br>✗ b ≠ 1: mẫu 1 vẫn được, như 5 = 5/1.<br>✗ b ∈ ℕ: mẫu là số nguyên, được âm."
@@ -51,7 +65,12 @@
       "ch": 1,
       "topic": "Số đối",
       "q": "Số đối của số hữu tỉ a/b là số nào?",
-      "options": ["b/a", "−a/b", "|a/b|", "a/b"],
+      "options": [
+        "b/a",
+        "−a/b",
+        "|a/b|",
+        "a/b"
+      ],
       "correct": 1,
       "answer": "−a/b",
       "explanation": "🔑 Số đối chỉ đổi dấu: số đối của a/b là −a/b.<br>✗ b/a: đó là nghịch đảo, tích bằng 1.<br>✗ |a/b|: đó là giá trị tuyệt đối.<br>✗ a/b: là số ban đầu, chưa đổi dấu."
@@ -61,17 +80,27 @@
       "ch": 1,
       "topic": "Số đối",
       "q": "Số đối của −3/5 là số nào?",
-      "options": ["−5/3", "5/3", "−3/5", "3/5"],
+      "options": [
+        "−5/3",
+        "5/3",
+        "−3/5",
+        "3/5"
+      ],
       "correct": 3,
       "answer": "3/5",
-      "explanation": "🔑 Đổi dấu là xong: số đối của −3/5 là 3/5, vì −3/5 + 3/5 = 0.<br>✗ −5/3: lật tử mẫu, lại còn giữ dấu âm.<br>✗ 5/3: là nghịch đảo, không phải số đối.<br>✗ −3/5: chính là số ban đầu."
+      "explanation": "🔑 Đổi dấu là xong: số đối của −3/5 là 3/5, vì −3/5 + 3/5 = 0.<br>✗ −5/3: đó là nghịch đảo của −3/5, vì (−3/5) · (−5/3) = 1, không phải số đối.<br>✗ 5/3: lật tử mẫu rồi bỏ dấu âm, không phải cách tìm số đối.<br>✗ −3/5: chính là số ban đầu, chưa đổi dấu."
     },
     {
       "id": "m1-5",
       "ch": 1,
       "topic": "Số đối",
       "q": "Tổng của một số hữu tỉ và số đối của nó bằng bao nhiêu?",
-      "options": ["0", "1", "2 · (a/b)", "−1"],
+      "options": [
+        "0",
+        "1",
+        "2 · (a/b)",
+        "−1"
+      ],
       "correct": 0,
       "answer": "0",
       "explanation": "🔑 a/b + (−a/b) = 0: hai số đối luôn triệt tiêu.<br>✗ 1: đó là tích của hai số nghịch đảo.<br>✗ 2 · (a/b): đó là cộng với chính nó.<br>✗ −1: tổng hai số đối bằng 0, không âm."
@@ -81,7 +110,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Cách viết nào sau đây KHÔNG cho ta một số hữu tỉ?",
-      "options": ["0/3", "3/0", "−7/1", "2/5"],
+      "options": [
+        "0/3",
+        "3/0",
+        "−7/1",
+        "2/5"
+      ],
       "correct": 1,
       "answer": "3/0",
       "explanation": "🔑 Mẫu phải khác 0, nên 3/0 vô nghĩa, không phải số hữu tỉ.<br>✗ 0/3 = 0: tử bằng 0 vẫn hợp lệ.<br>✗ −7/1: số nguyên nào cũng viết được a/1.<br>✗ 2/5: mẫu 5 ≠ 0, hoàn toàn hợp lệ."
@@ -91,7 +125,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Vì sao mọi số nguyên a đều là số hữu tỉ?",
-      "options": ["a = 1/a", "a = a/0", "a = a/1", "a = 0/a"],
+      "options": [
+        "a = 1/a",
+        "a = a/0",
+        "a = a/1",
+        "a = 0/a"
+      ],
       "correct": 2,
       "answer": "a = a/1",
       "explanation": "🔑 Mọi số nguyên a viết được thành a/1, mẫu 1 ≠ 0 nên a ∈ ℚ.<br>✗ a = 1/a: chỉ đúng khi a = 1 hoặc −1.<br>✗ a = a/0: mẫu bằng 0 là vô nghĩa.<br>✗ a = 0/a: luôn cho 0, chỉ đúng khi a = 0."
@@ -101,7 +140,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Kí hiệu nào diễn tả đúng câu: x là số hữu tỉ?",
-      "options": ["x ∈ ℚ", "x ∈ ℤ", "x ∈ ℕ", "ℚ ∈ x"],
+      "options": [
+        "x ∈ ℚ",
+        "x ∈ ℤ",
+        "x ∈ ℕ",
+        "ℚ ∈ x"
+      ],
       "correct": 0,
       "answer": "x ∈ ℚ",
       "explanation": "🔑 Tập số hữu tỉ kí hiệu là ℚ, nên viết x ∈ ℚ.<br>✗ x ∈ ℤ: đó là số nguyên, hẹp hơn ℚ.<br>✗ x ∈ ℕ: đó là số tự nhiên, hẹp hơn nữa.<br>✗ ℚ ∈ x: viết ngược, phần tử đứng trước."
@@ -111,7 +155,12 @@
       "ch": 1,
       "topic": "Số đối",
       "q": "Số đối của số hữu tỉ x được kí hiệu là gì?",
-      "options": ["1/x", "|x|", "x⁻¹", "−x"],
+      "options": [
+        "1/x",
+        "|x|",
+        "x⁻¹",
+        "−x"
+      ],
       "correct": 3,
       "answer": "−x",
       "explanation": "🔑 Số đối của x là −x, vì x + (−x) = 0.<br>✗ 1/x: là nghịch đảo, tích bằng 1.<br>✗ |x|: là giá trị tuyệt đối, luôn ≥ 0.<br>✗ x⁻¹: cũng là 1/x, vẫn là nghịch đảo."
@@ -121,7 +170,12 @@
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Phân số nào dưới đây biểu diễn CÙNG một số hữu tỉ với 2/3?",
-      "options": ["3/2", "4/6", "2/6", "4/3"],
+      "options": [
+        "3/2",
+        "4/6",
+        "2/6",
+        "4/3"
+      ],
       "correct": 1,
       "answer": "4/6",
       "explanation": "🔑 Nhân cả tử VÀ mẫu với 2 thì giá trị không đổi: 2/3 = 4/6.<br>✗ 3/2: đó là phân số nghịch đảo.<br>✗ 2/6: chỉ nhân mẫu, quên nhân tử.<br>✗ 4/3: chỉ nhân tử, quên nhân mẫu."
@@ -131,17 +185,27 @@
       "ch": 1,
       "topic": "Số đối",
       "q": "Cho x = 7/(−4). Số đối của x là số nào?",
-      "options": ["−7/4", "−4/7", "7/4", "4/7"],
+      "options": [
+        "−7/4",
+        "−4/7",
+        "7/4",
+        "4/7"
+      ],
       "correct": 2,
       "answer": "7/4",
-      "explanation": "🔑 7/(−4) = −7/4, đổi dấu được số đối là 7/4.<br>✗ −7/4: chính là x, chưa đổi dấu.<br>✗ −4/7: lật tử mẫu và giữ dấu âm.<br>✗ 4/7: lật tử mẫu, đó là nghịch đảo."
+      "explanation": "🔑 7/(−4) = −7/4; đổi dấu ta được số đối là 7/4, vì −7/4 + 7/4 = 0.<br>✗ −7/4: chính là x viết gọn lại, chưa đổi dấu.<br>✗ −4/7: đó là nghịch đảo của x, vì 7/(−4) · (−4/7) = 1, không phải số đối.<br>✗ 4/7: lật tử mẫu rồi bỏ dấu, không phải cách tìm số đối."
     },
     {
       "id": "m1-12",
       "ch": 1,
       "topic": "Số hữu tỉ",
       "q": "Điều kiện nào KHÔNG bắt buộc trong định nghĩa số hữu tỉ x = a/b?",
-      "options": ["a ≠ 0", "b ≠ 0", "a ∈ ℤ", "b ∈ ℤ"],
+      "options": [
+        "a ≠ 0",
+        "b ≠ 0",
+        "a ∈ ℤ",
+        "b ∈ ℤ"
+      ],
       "correct": 0,
       "answer": "a ≠ 0",
       "explanation": "🔑 Chỉ cần a, b ∈ ℤ và b ≠ 0; tử được phép bằng 0 (0/7 = 0).<br>✗ b ≠ 0: bắt buộc, bỏ đi thì vô nghĩa.<br>✗ a ∈ ℤ: bắt buộc, tử phải là số nguyên.<br>✗ b ∈ ℤ: bắt buộc, mẫu phải là số nguyên."
@@ -151,7 +215,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Từ đẳng thức A + B = C, quy tắc chuyển vế cho ta điều gì?",
-      "options": ["A = C + B", "A = C − B", "A = B − C", "A = B + C"],
+      "options": [
+        "A = C + B",
+        "A = C − B",
+        "A = B − C",
+        "A = B + C"
+      ],
       "correct": 1,
       "answer": "A = C − B",
       "explanation": "🔑 Qua vế kia thì đổi dấu: A + B = C ⇒ A = C − B.<br>✗ A = C + B: quên đổi dấu.<br>✗ A = B − C: đảo thứ tự nên trái dấu.<br>✗ A = B + C: sai cả dấu lẫn vị trí."
@@ -161,7 +230,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Từ đẳng thức A − B = C, quy tắc chuyển vế cho ta điều gì?",
-      "options": ["A = C − B", "A = B − C", "A = −C − B", "A = C + B"],
+      "options": [
+        "A = C − B",
+        "A = B − C",
+        "A = −C − B",
+        "A = C + B"
+      ],
       "correct": 3,
       "answer": "A = C + B",
       "explanation": "🔑 A − B = C ⇒ A = C + B: dấu trừ qua vế kia thành dấu cộng.<br>✗ A = C − B: quên đổi dấu.<br>✗ A = B − C: đảo thứ tự nên trái dấu.<br>✗ A = −C − B: đổi dấu cả hai số hạng."
@@ -171,7 +245,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Khi chuyển một số hạng từ vế này sang vế kia của một đẳng thức, ta phải làm gì với số hạng đó?",
-      "options": ["Giữ nguyên dấu", "Đổi dấu", "Lấy nghịch đảo", "Bình phương lên"],
+      "options": [
+        "Giữ nguyên dấu",
+        "Đổi dấu",
+        "Lấy nghịch đảo",
+        "Bình phương lên"
+      ],
       "correct": 1,
       "answer": "Đổi dấu",
       "explanation": "🔑 Chuyển vế thì đổi dấu số hạng đó: + thành −, − thành +.<br>✗ Giữ nguyên dấu: 2 + x = 9 ⇒ x = 9 + 2.<br>✗ Lấy nghịch đảo: đó là chuyện nhân chia.<br>✗ Bình phương lên: không có quy tắc đó."
@@ -181,7 +260,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Tìm x biết x + 3/4 = 5/4. Bước chuyển vế đúng là gì?",
-      "options": ["x = 5/4 − 3/4", "x = 5/4 + 3/4", "x = 3/4 − 5/4", "x = 5/4 · 3/4"],
+      "options": [
+        "x = 5/4 − 3/4",
+        "x = 5/4 + 3/4",
+        "x = 3/4 − 5/4",
+        "x = 5/4 · 3/4"
+      ],
       "correct": 0,
       "answer": "x = 5/4 − 3/4",
       "explanation": "🔑 Chuyển 3/4 sang phải và đổi dấu: x = 5/4 − 3/4 = 1/2.<br>✗ x = 5/4 + 3/4: quên đổi dấu.<br>✗ x = 3/4 − 5/4: đảo thứ tự, trái dấu.<br>✗ x = 5/4 · 3/4: chuyển vế không nhân."
@@ -191,7 +275,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Tìm x biết x − 2/5 = 1/5. Bước chuyển vế đúng là gì?",
-      "options": ["x = 1/5 − 2/5", "x = 2/5 − 1/5", "x = 1/5 + 2/5", "x = 1/5 : 2/5"],
+      "options": [
+        "x = 1/5 − 2/5",
+        "x = 2/5 − 1/5",
+        "x = 1/5 + 2/5",
+        "x = 1/5 : 2/5"
+      ],
       "correct": 2,
       "answer": "x = 1/5 + 2/5",
       "explanation": "🔑 A − B = C ⇒ A = C + B, nên x = 1/5 + 2/5 = 3/5.<br>✗ x = 1/5 − 2/5: quên đổi dấu.<br>✗ x = 2/5 − 1/5: đảo vị trí hai số hạng.<br>✗ x = 1/5 : 2/5: chuyển vế không chia."
@@ -201,7 +290,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Từ đẳng thức x + a = b, giá trị của x là gì?",
-      "options": ["x = b + a", "x = a − b", "x = a + b", "x = b − a"],
+      "options": [
+        "x = b + a",
+        "x = a − b",
+        "x = a + b",
+        "x = b − a"
+      ],
       "correct": 3,
       "answer": "x = b − a",
       "explanation": "🔑 Chuyển a sang vế phải và đổi dấu: x = b − a.<br>✗ x = b + a: quên đổi dấu của a.<br>✗ x = a − b: đảo thứ tự nên trái dấu.<br>✗ x = a + b: sai cả dấu lẫn vị trí."
@@ -211,7 +305,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Từ đẳng thức A + B = C, biểu thức đúng của B là gì?",
-      "options": ["B = C − A", "B = C + A", "B = A − C", "B = A + C"],
+      "options": [
+        "B = C − A",
+        "B = C + A",
+        "B = A − C",
+        "B = A + C"
+      ],
       "correct": 0,
       "answer": "B = C − A",
       "explanation": "🔑 Chuyển A sang vế phải và đổi dấu: B = C − A.<br>✗ B = C + A: quên đổi dấu của A.<br>✗ B = A − C: đảo thứ tự nên trái dấu.<br>✗ B = A + C: sai cả dấu lẫn vị trí."
@@ -221,7 +320,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Từ đẳng thức A − B = C, biểu thức đúng của B là gì?",
-      "options": ["B = C − A", "B = C + A", "B = A − C", "B = A + C"],
+      "options": [
+        "B = C − A",
+        "B = C + A",
+        "B = A − C",
+        "B = A + C"
+      ],
       "correct": 2,
       "answer": "B = A − C",
       "explanation": "🔑 A − B = C ⇒ A = C + B ⇒ B = A − C.<br>✗ B = C − A: đảo thứ tự nên trái dấu.<br>✗ B = C + A: sai dấu của A.<br>✗ B = A + C: quên đổi dấu của C."
@@ -231,7 +335,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Tìm x biết x + (−1/3) = 2/3. Giá trị của x là bao nhiêu?",
-      "options": ["1/3", "−1/3", "−1", "1"],
+      "options": [
+        "1/3",
+        "−1/3",
+        "−1",
+        "1"
+      ],
       "correct": 3,
       "answer": "1",
       "explanation": "🔑 Số hạng âm qua vế kia thành cộng: x = 2/3 + 1/3 = 1.<br>✗ 1/3: trừ 1/3 thay vì cộng.<br>✗ −1/3: sai dấu ở kết quả.<br>✗ −1: đổi dấu luôn cả 2/3."
@@ -241,17 +350,27 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Tìm x biết 5 − x = 2. Giá trị của x là bao nhiêu?",
-      "options": ["−3", "3", "7", "−7"],
+      "options": [
+        "−3",
+        "3",
+        "7",
+        "−7"
+      ],
       "correct": 1,
       "answer": "3",
-      "explanation": "🔑 5 − x = 2 ⇒ x = 5 − 2 = 3. Thử lại: 5 − 3 = 2 ✔<br>✗ −3: đổi dấu thừa một lần.<br>✗ 7: lấy 5 + 2 thay vì 5 − 2.<br>✗ −7: vừa cộng sai vừa thêm dấu âm."
+      "explanation": "🔑 Chuyển −x sang vế phải: 5 = 2 + x, rồi chuyển 2 sang vế trái: x = 5 − 2 = 3. Thử lại: 5 − 3 = 2 ✔<br>✗ −3: tính −x = 2 − 5 = −3 rồi quên đổi dấu ở bước cuối; −x = −3 thì x = 3.<br>✗ 7: lấy 5 + 2, nhưng thử lại 5 − 7 = −2, không bằng 2.<br>✗ −7: vừa cộng sai vừa thêm dấu âm; thử lại 5 − (−7) = 12."
     },
     {
       "id": "m1-23",
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Đẳng thức nào là kết quả chuyển vế ĐÚNG của x − 3 = 7?",
-      "options": ["x = 7 − 3", "x = 3 − 7", "x = −7 − 3", "x = 7 + 3"],
+      "options": [
+        "x = 7 − 3",
+        "x = 3 − 7",
+        "x = −7 − 3",
+        "x = 7 + 3"
+      ],
       "correct": 3,
       "answer": "x = 7 + 3",
       "explanation": "🔑 Số hạng −3 qua vế phải thành +3: x = 7 + 3 = 10.<br>✗ x = 7 − 3: giữ nguyên dấu trừ.<br>✗ x = 3 − 7: đảo vị trí, ra số âm.<br>✗ x = −7 − 3: đổi dấu nhầm vế phải."
@@ -261,7 +380,12 @@
       "ch": 1,
       "topic": "Chuyển vế",
       "q": "Bạn An giải: từ 2 + x = 9 suy ra x = 9 + 2. Bạn ấy sai ở chỗ nào?",
-      "options": ["Chuyển số 2 sang vế phải mà không đổi dấu", "Chuyển số 2 sang vế phải và đã đổi dấu", "Cộng hai vế với 2", "Nhân hai vế với 2"],
+      "options": [
+        "Chuyển số 2 sang vế phải mà không đổi dấu",
+        "Chuyển số 2 sang vế phải và đã đổi dấu",
+        "Cộng hai vế với 2",
+        "Nhân hai vế với 2"
+      ],
       "correct": 0,
       "answer": "Chuyển số 2 sang vế phải mà không đổi dấu",
       "explanation": "🔑 Chuyển vế phải đổi dấu: 2 + x = 9 ⇒ x = 9 − 2 = 7.<br>✗ Đã đổi dấu: nếu vậy phải viết 9 − 2.<br>✗ Cộng hai vế với 2: vế trái thành 4 + x.<br>✗ Nhân hai vế với 2: An không hề nhân."
@@ -271,17 +395,27 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Với x ≠ 0, giá trị của x⁰ là bao nhiêu?",
-      "options": ["0", "1", "x", "1/x"],
+      "options": [
+        "0",
+        "1",
+        "x",
+        "1/x"
+      ],
       "correct": 1,
       "answer": "1",
-      "explanation": "🔑 Mọi số khác 0 mũ 0 đều bằng 1: x⁰ = 1.<br>✗ 0: nhầm số mũ 0 với giá trị 0.<br>✗ x: đó là x¹.<br>✗ 1/x: đó là x⁻¹."
+      "explanation": "🔑 Quy ước: mọi số khác 0 có mũ 0 đều bằng 1, nên x⁰ = 1. Ví dụ 5⁰ = 1, (−2)⁰ = 1.<br>✗ 0: nhầm số mũ 0 với kết quả bằng 0.<br>✗ x: đó là x¹, vì x¹ = x.<br>✗ 1/x: đó là nghịch đảo của x, không phải x⁰."
     },
     {
       "id": "m1-26",
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Giá trị của x¹ là bao nhiêu?",
-      "options": ["x", "1", "0", "x²"],
+      "options": [
+        "x",
+        "1",
+        "0",
+        "x²"
+      ],
       "correct": 0,
       "answer": "x",
       "explanation": "🔑 Số mũ 1 giữ nguyên cơ số: x¹ = x.<br>✗ 1: đó là x⁰ (x ≠ 0).<br>✗ 0: không công thức nào cho kết quả này.<br>✗ x²: nhầm số mũ 1 thành 2."
@@ -291,7 +425,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức nào đúng khi nhân hai lũy thừa cùng cơ số?",
-      "options": ["xᵐ · xⁿ = xᵐⁿ", "xᵐ · xⁿ = xᵐ⁻ⁿ", "xᵐ · xⁿ = xᵐ⁺ⁿ", "xᵐ · xⁿ = (x·x)ᵐ⁺ⁿ"],
+      "options": [
+        "xᵐ · xⁿ = xᵐⁿ",
+        "xᵐ · xⁿ = xᵐ⁻ⁿ",
+        "xᵐ · xⁿ = xᵐ⁺ⁿ",
+        "xᵐ · xⁿ = (x·x)ᵐ⁺ⁿ"
+      ],
       "correct": 2,
       "answer": "xᵐ · xⁿ = xᵐ⁺ⁿ",
       "explanation": "🔑 xᵐ · xⁿ = xᵐ⁺ⁿ: nhân thì giữ cơ số, cộng số mũ.<br>✗ xᵐⁿ: nhân số mũ, đó là (xᵐ)ⁿ.<br>✗ xᵐ⁻ⁿ: trừ số mũ, đó là phép chia.<br>✗ (x·x)ᵐ⁺ⁿ: cơ số phải giữ nguyên."
@@ -301,7 +440,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức nào đúng khi chia hai lũy thừa cùng cơ số (x ≠ 0)?",
-      "options": ["xᵐ : xⁿ = xᵐ⁺ⁿ", "xᵐ : xⁿ = xᵐⁿ", "xᵐ : xⁿ = xⁿ⁻ᵐ", "xᵐ : xⁿ = xᵐ⁻ⁿ"],
+      "options": [
+        "xᵐ : xⁿ = xᵐ⁺ⁿ",
+        "xᵐ : xⁿ = xᵐⁿ",
+        "xᵐ : xⁿ = xⁿ⁻ᵐ",
+        "xᵐ : xⁿ = xᵐ⁻ⁿ"
+      ],
       "correct": 3,
       "answer": "xᵐ : xⁿ = xᵐ⁻ⁿ",
       "explanation": "🔑 xᵐ : xⁿ = xᵐ⁻ⁿ: chia thì giữ cơ số, trừ số mũ.<br>✗ xᵐ⁺ⁿ: cộng số mũ, đó là phép nhân.<br>✗ xᵐⁿ: nhân số mũ, đó là (xᵐ)ⁿ.<br>✗ xⁿ⁻ᵐ: trừ ngược, số mũ trái dấu."
@@ -311,7 +455,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức lũy thừa của một lũy thừa là công thức nào?",
-      "options": ["(xᵐ)ⁿ = xᵐ⁺ⁿ", "(xᵐ)ⁿ = xᵐⁿ", "(xᵐ)ⁿ = xᵐ⁻ⁿ", "(xᵐ)ⁿ = mⁿ · x"],
+      "options": [
+        "(xᵐ)ⁿ = xᵐ⁺ⁿ",
+        "(xᵐ)ⁿ = xᵐⁿ",
+        "(xᵐ)ⁿ = xᵐ⁻ⁿ",
+        "(xᵐ)ⁿ = mⁿ · x"
+      ],
       "correct": 1,
       "answer": "(xᵐ)ⁿ = xᵐⁿ",
       "explanation": "🔑 (xᵐ)ⁿ = xᵐⁿ: lũy thừa của lũy thừa thì nhân hai số mũ.<br>✗ xᵐ⁺ⁿ: cộng số mũ, đó là xᵐ · xⁿ.<br>✗ xᵐ⁻ⁿ: trừ số mũ, đó là xᵐ : xⁿ.<br>✗ mⁿ · x: số mũ không xuống làm cơ số."
@@ -321,7 +470,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức lũy thừa của một tích là công thức nào?",
-      "options": ["(xy)ⁿ = xⁿyⁿ", "(xy)ⁿ = xⁿ + yⁿ", "(xy)ⁿ = (xy) · n", "(xy)ⁿ = xⁿy"],
+      "options": [
+        "(xy)ⁿ = xⁿyⁿ",
+        "(xy)ⁿ = xⁿ + yⁿ",
+        "(xy)ⁿ = (xy) · n",
+        "(xy)ⁿ = xⁿy"
+      ],
       "correct": 0,
       "answer": "(xy)ⁿ = xⁿyⁿ",
       "explanation": "🔑 (xy)ⁿ = xⁿyⁿ: số mũ chia đều cho từng thừa số.<br>✗ xⁿ + yⁿ: đổi phép nhân thành cộng.<br>✗ (xy) · n: nhân với n, không lên mũ.<br>✗ xⁿy: quên nâng lũy thừa cho y."
@@ -330,18 +484,28 @@
       "id": "m1-31",
       "ch": 1,
       "topic": "Lũy thừa",
-      "q": "Công thức lũy thừa của một thương (y ≠ 0) là công thức nào?",
-      "options": ["(x/y)ⁿ = xⁿ/y", "(x/y)ⁿ = x/yⁿ", "(x/y)ⁿ = xⁿ/yⁿ", "(x/y)ⁿ = xⁿ − yⁿ"],
+      "q": "Công thức lũy thừa của một phân số x/y (y ≠ 0) là công thức nào?",
+      "options": [
+        "(x/y)ⁿ = xⁿ/y",
+        "(x/y)ⁿ = x/yⁿ",
+        "(x/y)ⁿ = xⁿ/yⁿ",
+        "(x/y)ⁿ = xⁿ − yⁿ"
+      ],
       "correct": 2,
       "answer": "(x/y)ⁿ = xⁿ/yⁿ",
-      "explanation": "🔑 (x/y)ⁿ = xⁿ/yⁿ (y ≠ 0): cả tử lẫn mẫu đều lên mũ n.<br>✗ xⁿ/y: quên nâng lũy thừa cho mẫu.<br>✗ x/yⁿ: quên nâng lũy thừa cho tử.<br>✗ xⁿ − yⁿ: chia không thành phép trừ."
+      "explanation": "🔑 Quy tắc lũy thừa của một phân số (SGK gọi là lũy thừa của một thương): (x/y)ⁿ = xⁿ/yⁿ với y ≠ 0 — cả tử lẫn mẫu đều lên mũ n.<br>✗ xⁿ/y: quên nâng lũy thừa cho mẫu.<br>✗ x/yⁿ: quên nâng lũy thừa cho tử.<br>✗ xⁿ − yⁿ: chia không thành phép trừ."
     },
     {
       "id": "m1-32",
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức của lũy thừa với số mũ nguyên âm (x ≠ 0) là công thức nào?",
-      "options": ["x⁻ⁿ = −xⁿ", "x⁻ⁿ = 1/xⁿ", "x⁻ⁿ = −1/xⁿ", "x⁻ⁿ = xⁿ"],
+      "options": [
+        "x⁻ⁿ = −xⁿ",
+        "x⁻ⁿ = 1/xⁿ",
+        "x⁻ⁿ = −1/xⁿ",
+        "x⁻ⁿ = xⁿ"
+      ],
       "correct": 1,
       "answer": "x⁻ⁿ = 1/xⁿ",
       "explanation": "🔑 x⁻ⁿ = 1/xⁿ: dấu trừ ở số mũ là lật xuống mẫu, không làm kết quả âm.<br>✗ −xⁿ: dấu trừ nhảy ra trước cơ số.<br>✗ −1/xⁿ: thừa dấu âm, 2⁻² = 1/4.<br>✗ xⁿ: bỏ mất dấu trừ ở số mũ."
@@ -351,7 +515,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức x⁰ = 1 đúng với điều kiện nào?",
-      "options": ["x > 0", "x ∈ ℤ", "Mọi giá trị của x", "x ≠ 0"],
+      "options": [
+        "x > 0",
+        "x ∈ ℤ",
+        "Mọi giá trị của x",
+        "x ≠ 0"
+      ],
       "correct": 3,
       "answer": "x ≠ 0",
       "explanation": "🔑 x⁰ = 1 chỉ đúng khi x ≠ 0; riêng 0⁰ không xác định.<br>✗ x > 0: cơ số âm vẫn được, (−3)⁰ = 1.<br>✗ x ∈ ℤ: số hữu tỉ vẫn được, (2/5)⁰ = 1.<br>✗ Mọi giá trị của x: bỏ sót x = 0."
@@ -361,7 +530,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức (x/y)ⁿ = xⁿ/yⁿ cần thêm điều kiện nào?",
-      "options": ["x ≠ 0", "n > 0", "y ≠ 0", "x > y"],
+      "options": [
+        "x ≠ 0",
+        "n > 0",
+        "y ≠ 0",
+        "x > y"
+      ],
       "correct": 2,
       "answer": "y ≠ 0",
       "explanation": "🔑 Mẫu luôn phải khác 0, nên cần y ≠ 0.<br>✗ x ≠ 0: tử được bằng 0, (0/5)³ = 0.<br>✗ n > 0: số mũ âm vẫn dùng được.<br>✗ x > y: so sánh không liên quan."
@@ -371,7 +545,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức x⁻ⁿ = 1/xⁿ đòi hỏi điều kiện nào?",
-      "options": ["x ≠ 0", "n ≠ 0", "x > 0", "n là số chẵn"],
+      "options": [
+        "x ≠ 0",
+        "n ≠ 0",
+        "x > 0",
+        "n là số chẵn"
+      ],
       "correct": 0,
       "answer": "x ≠ 0",
       "explanation": "🔑 xⁿ nằm dưới mẫu nên bắt buộc x ≠ 0.<br>✗ n ≠ 0: điều kiện ở cơ số, không ở mũ.<br>✗ x > 0: cơ số âm vẫn được, (−2)⁻² = 1/4.<br>✗ n là số chẵn: mũ lẻ vẫn đúng, 2⁻³ = 1/8."
@@ -381,7 +560,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Công thức nào dưới đây SAI?",
-      "options": ["xᵐ · xⁿ = xᵐ⁺ⁿ", "xᵐ + xⁿ = xᵐ⁺ⁿ", "(xᵐ)ⁿ = xᵐⁿ", "xᵐ : xⁿ = xᵐ⁻ⁿ"],
+      "options": [
+        "xᵐ · xⁿ = xᵐ⁺ⁿ",
+        "xᵐ + xⁿ = xᵐ⁺ⁿ",
+        "(xᵐ)ⁿ = xᵐⁿ",
+        "xᵐ : xⁿ = xᵐ⁻ⁿ"
+      ],
       "correct": 1,
       "answer": "xᵐ + xⁿ = xᵐ⁺ⁿ",
       "explanation": "🔑 Không có công thức cho phép CỘNG: 2² + 2³ = 12, còn 2⁵ = 32.<br>✗ xᵐ · xⁿ = xᵐ⁺ⁿ: đúng, nhân thì cộng mũ.<br>✗ (xᵐ)ⁿ = xᵐⁿ: đúng, mũ của mũ thì nhân.<br>✗ xᵐ : xⁿ = xᵐ⁻ⁿ: đúng, chia thì trừ mũ."
@@ -391,7 +575,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Viết 1/x⁵ dưới dạng một lũy thừa (x ≠ 0) thì được kết quả nào?",
-      "options": ["x⁵", "−x⁵", "(1/x)⁻⁵", "x⁻⁵"],
+      "options": [
+        "x⁵",
+        "−x⁵",
+        "(1/x)⁻⁵",
+        "x⁻⁵"
+      ],
       "correct": 3,
       "answer": "x⁻⁵",
       "explanation": "🔑 x⁻ⁿ = 1/xⁿ, nên 1/x⁵ = x⁻⁵.<br>✗ x⁵: quên dấu trừ.<br>✗ −x⁵: dấu trừ phải ở số mũ.<br>✗ (1/x)⁻⁵: đảo dấu hai lần, thành x⁵."
@@ -401,7 +590,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Biểu thức (x · y)³ bằng bao nhiêu?",
-      "options": ["3xy", "x³ + y³", "x³y³", "xy³"],
+      "options": [
+        "3xy",
+        "x³ + y³",
+        "x³y³",
+        "xy³"
+      ],
       "correct": 2,
       "answer": "x³y³",
       "explanation": "🔑 (xy)ⁿ = xⁿyⁿ, nên (xy)³ = x³y³.<br>✗ 3xy: nhân với 3, không lên mũ 3.<br>✗ x³ + y³: tích không tách thành tổng.<br>✗ xy³: quên nâng lũy thừa cho x."
@@ -411,7 +605,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Biểu thức (x⁴)³ bằng bao nhiêu?",
-      "options": ["x¹²", "x⁷", "x⁶⁴", "x⁴"],
+      "options": [
+        "x¹²",
+        "x⁷",
+        "x⁶⁴",
+        "x⁴"
+      ],
       "correct": 0,
       "answer": "x¹²",
       "explanation": "🔑 (xᵐ)ⁿ = xᵐⁿ, lấy 4 · 3 = 12 nên (x⁴)³ = x¹².<br>✗ x⁷: cộng mũ 4 + 3, đó là phép nhân.<br>✗ x⁶⁴: lấy 4³ = 64, nhầm cơ số với mũ.<br>✗ x⁴: bỏ quên số mũ 3 ngoài ngoặc."
@@ -421,7 +620,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Biểu thức x⁵ : x² bằng bao nhiêu (x ≠ 0)?",
-      "options": ["x⁷", "x³", "x¹⁰", "x⁻³"],
+      "options": [
+        "x⁷",
+        "x³",
+        "x¹⁰",
+        "x⁻³"
+      ],
       "correct": 1,
       "answer": "x³",
       "explanation": "🔑 Chia thì trừ số mũ: x⁵ : x² = x⁵⁻² = x³.<br>✗ x⁷: cộng mũ, đó là phép nhân.<br>✗ x¹⁰: nhân mũ, đó là (xᵐ)ⁿ.<br>✗ x⁻³: trừ ngược thứ tự (2 − 5)."
@@ -431,7 +635,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Biểu thức x⁻³ · x⁵ bằng bao nhiêu (x ≠ 0)?",
-      "options": ["x⁻⁸", "x⁸", "x⁻¹⁵", "x²"],
+      "options": [
+        "x⁻⁸",
+        "x⁸",
+        "x⁻¹⁵",
+        "x²"
+      ],
       "correct": 3,
       "answer": "x²",
       "explanation": "🔑 Nhân thì cộng mũ, kể cả mũ âm: (−3) + 5 = 2, được x².<br>✗ x⁻⁸: trừ hai số mũ thay vì cộng.<br>✗ x⁸: bỏ mất dấu âm, cộng 3 + 5.<br>✗ x⁻¹⁵: nhân mũ, đó là (xᵐ)ⁿ."
@@ -441,7 +650,12 @@
       "ch": 1,
       "topic": "Lũy thừa",
       "q": "Biểu thức (2/3)⁴ bằng bao nhiêu?",
-      "options": ["2/3⁴", "2⁴/3", "2⁴/3⁴", "(2·4)/(3·4)"],
+      "options": [
+        "2/3⁴",
+        "2⁴/3",
+        "2⁴/3⁴",
+        "(2·4)/(3·4)"
+      ],
       "correct": 2,
       "answer": "2⁴/3⁴",
       "explanation": "🔑 (x/y)ⁿ = xⁿ/yⁿ, nên (2/3)⁴ = 2⁴/3⁴ = 16/81.<br>✗ 2/3⁴: quên nâng lũy thừa cho tử.<br>✗ 2⁴/3: quên nâng lũy thừa cho mẫu.<br>✗ (2·4)/(3·4): nhân với 4, không lên mũ."
@@ -451,7 +665,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Kết quả của 2³ · 2⁴ là gì?",
-      "options": ["2⁷", "2¹²", "4⁷", "2⁻¹"],
+      "options": [
+        "2⁷",
+        "2¹²",
+        "4⁷",
+        "2⁻¹"
+      ],
       "correct": 0,
       "answer": "2⁷",
       "explanation": "🔑 Cùng cơ số 2, nhân thì cộng mũ: 2³ · 2⁴ = 2⁷ = 128.<br>✗ 2¹²: nhân mũ 3 · 4, đó là (xᵐ)ⁿ.<br>✗ 4⁷: nhân cả cơ số; cơ số giữ nguyên.<br>✗ 2⁻¹: trừ mũ 3 − 4, đó là phép chia."
@@ -461,7 +680,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Kết quả của 5⁶ : 5⁴ là gì?",
-      "options": ["5¹⁰", "5²", "5²⁴", "5⁻²"],
+      "options": [
+        "5¹⁰",
+        "5²",
+        "5²⁴",
+        "5⁻²"
+      ],
       "correct": 1,
       "answer": "5²",
       "explanation": "🔑 Chia thì trừ mũ: 5⁶ : 5⁴ = 5⁶⁻⁴ = 5² = 25.<br>✗ 5¹⁰: cộng mũ, đó là phép nhân.<br>✗ 5²⁴: nhân mũ 6 · 4, đó là (xᵐ)ⁿ.<br>✗ 5⁻²: trừ ngược thứ tự (4 − 6)."
@@ -471,7 +695,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Giá trị của (−1/2)³ là bao nhiêu?",
-      "options": ["1/8", "−3/8", "−1/6", "−1/8"],
+      "options": [
+        "1/8",
+        "−3/8",
+        "−1/6",
+        "−1/8"
+      ],
       "correct": 3,
       "answer": "−1/8",
       "explanation": "🔑 (−1/2)³ = (−1)³/2³ = −1/8; mũ lẻ giữ nguyên dấu âm.<br>✗ 1/8: quên dấu âm, mũ chẵn mới dương.<br>✗ −3/8: nhân tử với 3 thay vì mũ 3.<br>✗ −1/6: lấy 2 · 3 thay vì 2³ = 8."
@@ -481,7 +710,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Giá trị của 3⁻² là bao nhiêu?",
-      "options": ["−9", "−1/9", "1/9", "1/6"],
+      "options": [
+        "−9",
+        "−1/9",
+        "1/9",
+        "1/6"
+      ],
       "correct": 2,
       "answer": "1/9",
       "explanation": "🔑 x⁻ⁿ = 1/xⁿ, nên 3⁻² = 1/3² = 1/9.<br>✗ −9: nhầm dấu trừ ở mũ thành giá trị âm.<br>✗ −1/9: thừa dấu âm, kết quả vẫn dương.<br>✗ 1/6: lấy 3 · 2 thay vì 3² = 9."
@@ -491,7 +725,12 @@
       "ch": 1,
       "topic": "Áp dụng chuyển vế",
       "q": "Tìm x biết x + 1/2 = 3/2. Giá trị của x là bao nhiêu?",
-      "options": ["1", "2", "−1", "3/4"],
+      "options": [
+        "1",
+        "2",
+        "−1",
+        "3/4"
+      ],
       "correct": 0,
       "answer": "1",
       "explanation": "🔑 Chuyển 1/2 sang phải và đổi dấu: x = 3/2 − 1/2 = 1.<br>✗ 2: lấy 3/2 + 1/2, quên đổi dấu.<br>✗ −1: lấy 1/2 − 3/2, đảo thứ tự.<br>✗ 3/4: nhân 3/2 · 1/2 thay vì trừ."
@@ -501,7 +740,12 @@
       "ch": 1,
       "topic": "Áp dụng chuyển vế",
       "q": "Tìm x biết x − 1/3 = 1/3. Giá trị của x là bao nhiêu?",
-      "options": ["0", "2/3", "−2/3", "1/9"],
+      "options": [
+        "0",
+        "2/3",
+        "−2/3",
+        "1/9"
+      ],
       "correct": 1,
       "answer": "2/3",
       "explanation": "🔑 A − B = C ⇒ A = C + B, nên x = 1/3 + 1/3 = 2/3.<br>✗ 0: lấy 1/3 − 1/3, quên đổi dấu.<br>✗ −2/3: cộng đúng nhưng thêm dấu âm.<br>✗ 1/9: nhân 1/3 · 1/3 thay vì cộng."
@@ -511,7 +755,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Biểu thức (3 · 4)² bằng biểu thức nào?",
-      "options": ["3² + 4²", "3 · 4²", "(3 + 4)²", "3² · 4²"],
+      "options": [
+        "3² + 4²",
+        "3 · 4²",
+        "(3 + 4)²",
+        "3² · 4²"
+      ],
       "correct": 3,
       "answer": "3² · 4²",
       "explanation": "🔑 (xy)ⁿ = xⁿyⁿ, nên (3 · 4)² = 3² · 4² = 144.<br>✗ 3² + 4²: tích không tách thành tổng.<br>✗ 3 · 4² = 48: quên nâng mũ cho số 3.<br>✗ (3 + 4)²: đổi dấu nhân thành dấu cộng."
@@ -521,7 +770,12 @@
       "ch": 1,
       "topic": "Áp dụng lũy thừa",
       "q": "Rút gọn (x³)² : x⁴ (với x ≠ 0) ta được kết quả nào?",
-      "options": ["x¹⁰", "x¹", "x²", "x⁻²"],
+      "options": [
+        "x¹⁰",
+        "x¹",
+        "x²",
+        "x⁻²"
+      ],
       "correct": 2,
       "answer": "x²",
       "explanation": "🔑 (x³)² = x⁶ (vì 3 · 2 = 6), rồi x⁶ : x⁴ = x².<br>✗ x¹⁰: cộng mũ 6 + 4 thay vì trừ.<br>✗ x¹: tính nhầm (x³)² = x⁵ rồi mới chia.<br>✗ x⁻²: trừ ngược thứ tự (4 − 6)."
