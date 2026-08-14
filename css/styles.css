@@ -8738,6 +8738,9 @@
         /* Stands in for the text caret the box does not have, so the child can
            see where the next digit will land. */
         .math-caret {
+            /* Offset so it cannot be misread as part of the answer — "|a|"
+               with the caret flush against it looks like "|a||". */
+            margin-left: 5px;
             width: 2px; height: 26px; background: #7c3aed; border-radius: 1px;
             animation: math-caret-blink 1.05s step-end infinite;
         }

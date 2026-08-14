@@ -49,7 +49,8 @@ function fail(msg) {
 // Symbols a "calc" question may put on the keypad's context row, on top of the
 // digits/comma/minus/slash/brackets that are always there. Anything outside
 // this list is a typo the child would meet as a dead key.
-const CALC_KEYS = ['^', '√', '°', '%', '×', ':', '|', 'π', '∠', '∥', '⊥'];
+const CALC_KEYS = ['^', '√', '°', '%', '×', ':', '|', 'π', '∠', '∥', '⊥',
+    'a', 'b', 'm', 'n', 'x', 'y'];
 const CALC_KEYS_MAX = 4;
 
 // Typed questions live in data.calc, NOT data.questions — the multiple-choice

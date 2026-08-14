@@ -13,6 +13,16 @@
       "accept": [],
       "keys": ["^"],
       "explanation": "🔑 Nhân hai lũy thừa CÙNG cơ số thì giữ nguyên cơ số và CỘNG các số mũ: 2³ · 2⁴ = 2³⁺⁴ = 2⁷.<br>✗ 2¹² là nhân hai số mũ — đó là quy tắc của (2³)⁴, không phải 2³ · 2⁴.<br>✗ 4⁷ là nhân luôn cả cơ số — cơ số phải giữ nguyên."
+    },
+    {
+      "id": "m1-c2",
+      "ch": 1,
+      "topic": "Cộng phân số",
+      "q": "Tính rồi rút gọn: 1/2 + 1/4 = ?",
+      "answer": "3/4",
+      "accept": ["0,75"],
+      "keys": [],
+      "explanation": "🔑 Quy đồng mẫu trước rồi mới cộng TỬ, giữ nguyên mẫu: 1/2 = 2/4, nên 2/4 + 1/4 = 3/4.<br>✗ 2/6 là cộng cả tử với tử và mẫu với mẫu — phân số không cộng như thế."
     }
   ],
   "questions": [

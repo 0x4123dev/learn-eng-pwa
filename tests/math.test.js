@@ -500,6 +500,82 @@ suite('math: typed answers', () => {
             'a missed typed question must come back as typing');
     });
 
+    // The four things Toán 7 answers are actually made of. Each has to survive
+    // the whole trip: a key exists → pressing it stores the right character →
+    // mathFormula draws it the way the textbook does → grading accepts it.
+    test('số mũ: x then ^ then n renders as a real exponent', () => {
+        math.mathTypedReset();
+        ['x', '^', 'n'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), 'xⁿ', 'letters must lift into the exponent too');
+        assert.truthy(/<sup>n<\/sup>/.test(math.mathFormula(math.mathTypedRaw())));
+    });
+
+    test('căn: √ draws a bar over the radicand, not a lone tick', () => {
+        math.mathTypedReset();
+        ['√', '4', '9'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '√49');
+        assert.truthy(/math-radicand">49</.test(math.mathFormula('√49')),
+            'without the vinculum "√49" is a tick standing next to a number');
+    });
+
+    test('căn: the bar stops where the radicand stops', () => {
+        // √49 + 2 must not draw the bar across the "+ 2".
+        assert.truthy(/math-radicand">49<\/span>\s*\+/.test(math.mathFormula('√49 + 2')));
+    });
+
+    test('giá trị tuyệt đối: |a| can be typed and reads back whole', () => {
+        math.mathTypedReset();
+        ['|', 'a', '|'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '|a|');
+        assert.truthy(math.mathGrade({ answer: '|a|', accept: [] }, '|a|'));
+    });
+
+    test('phân số: a fraction is typed with the / key', () => {
+        math.mathTypedReset();
+        ['3', '/', '4'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '3/4');
+        assert.truthy(math.mathGrade({ answer: '3/4', accept: [] }, '3/4'));
+    });
+
+    test('phân số: a negative fraction survives the keypad minus', () => {
+        math.mathTypedReset();
+        ['−', '3', '/', '4'].forEach(math.mathKeyPress);
+        assert.equal(math.mathTypedRaw(), '−3/4');
+        assert.truthy(math.mathGrade({ answer: '-3/4', accept: [] }, math.mathTypedRaw()));
+    });
+
+    test('a question can put letters and symbols on the context row', () => {
+        const q = { keys: ['√', '|', 'a'] };
+        const html = math.mathKeypadHTML(q);
+        for (const k of q.keys) {
+            assert.truthy(html.indexOf(`mathKey('${k}')`) !== -1, `no key for ${k}`);
+        }
+    });
+
+    test('a question can declare the variable letters its answer needs', () => {
+        // √(a²) = |a| is unanswerable if the pad cannot type an "a".
+        const build = read('scripts/build-math-data.js');
+        const listed = /const CALC_KEYS = \[([^\]]+)\]/.exec(build)[1]
+            .split(',').map(s => s.trim().replace(/^'|'$/g, ''));
+        for (const k of ['a', 'x', 'n']) {
+            assert.truthy(listed.indexOf(k) !== -1, `no "${k}" key — answers using it cannot be typed`);
+        }
+    });
+
+    test('every symbol a question may declare is one the pad can actually store', () => {
+        // The build script validates keys[] against its own list; if the two
+        // drift, a question ships with a key that types nothing.
+        const build = read('scripts/build-math-data.js');
+        const listed = /const CALC_KEYS = \[([^\]]+)\]/.exec(build)[1]
+            .split(',').map(s => s.trim().replace(/^'|'$/g, '')).filter(Boolean);
+        for (const k of listed) {
+            math.mathTypedReset();
+            math.mathKeyPress(k);
+            if (k === '^') { assert.truthy(math.mathTypedSup(), '^ must switch to exponents'); continue; }
+            assert.equal(math.mathTypedRaw(), k, `pressing ${k} stored something else`);
+        }
+    });
+
     test('every class the keypad renders has a rule in the stylesheet', () => {
         const css = read('css/styles.css');
         const html = math.mathKeypadHTML(POWER) + math.mathTypedBoxHTML();

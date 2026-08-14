@@ -105,9 +105,12 @@ const MATH_KEYPAD_ROWS = [
   ['1', '2', '3', '−'],
   [',', '0', '(', ')']
 ];
-// Digit → superscript, for the ^ key. MATH_SUPERSCRIPTS runs the other way.
-const MATH_TO_SUP = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵',
-  '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '−': '⁻', '(': '⁽', ')': '⁾' };
+// Plain character → superscript, for the ^ key. Inverted from the table the
+// renderer already uses rather than written out again: anything mathSuper can
+// draw, the keypad can type, and the two cannot drift apart. Letters matter as
+// much as digits here — Toán 7 is full of xⁿ and aᵐ⁺ⁿ.
+const MATH_TO_SUP = {};
+for (const sup in MATH_SUPERSCRIPTS) MATH_TO_SUP[MATH_SUPERSCRIPTS[sup]] = sup;
 
 let _mathTyped = { raw: '', sup: false };
 
