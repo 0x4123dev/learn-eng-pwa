@@ -253,7 +253,9 @@ function saveMathSession(session) {
 function renderMathHome() {
   const screen = document.getElementById('mathHubScreen');
   if (!screen) return;
-  const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML() : renderMathPracticeHTML();
+  const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
+    : _mathSubTab === 'exams' ? renderMathExamsHTML()
+    : renderMathPracticeHTML();
 
   screen.innerHTML = `
     <header class="nav-hub-header math">
@@ -264,6 +266,8 @@ function renderMathHome() {
     <div class="grammar-subtabs" role="tablist">
       <button class="grammar-subtab ${_mathSubTab === 'practice' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('practice')">🧮 Luyện tập</button>
+      <button class="grammar-subtab ${_mathSubTab === 'exams' ? 'active' : ''}" role="tab"
+              onclick="switchMathSubTab('exams')">📝 Đề thi</button>
       <button class="grammar-subtab ${_mathSubTab === 'lessons' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('lessons')">📘 Lý thuyết</button>
     </div>
@@ -271,7 +275,7 @@ function renderMathHome() {
 }
 
 function switchMathSubTab(tab) {
-  _mathSubTab = (tab === 'lessons') ? 'lessons' : 'practice';
+  _mathSubTab = (tab === 'lessons' || tab === 'exams') ? tab : 'practice';
   renderMathHome();
 }
 
@@ -311,9 +315,92 @@ function renderMathPracticeHTML() {
 }
 
 function mathBestFor(ch) {
-  const runs = mathHistory().filter(h => h.chapter === ch && h.total);
+  // Practice runs only — an exam scored 21/25 is not a chapter's 10-question best.
+  const runs = mathHistory().filter(h => h.chapter === ch && h.total && !h.examId);
   if (!runs.length) return null;
   return Math.max(...runs.map(h => Math.round(h.score / h.total * 100)));
+}
+
+// ---- đề thi view ----
+function mathExams() {
+  return (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS)) ? MATH_EXAMS : [];
+}
+
+function mathExamBest(id) {
+  const runs = mathHistory().filter(h => h.examId === id && h.total);
+  if (!runs.length) return null;
+  return Math.max(...runs.map(h => Math.round(h.score / h.total * 100)));
+}
+
+function renderMathExamsHTML() {
+  const exams = mathExams();
+  const cards = exams.map(e => {
+    const best = mathExamBest(e.id);
+    return `
+      <button class="phrases-cta" onclick="startMathExam('${e.id}')">
+        <span class="phrases-cta-icon">📝</span>
+        <span class="phrases-cta-text">
+          <strong>${mathEsc(e.title)}</strong>
+          <small>${e.questions.length} câu · ${e.durationMin} phút${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small>
+        </span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>`;
+  }).join('');
+  return `
+    <div class="phrases-hero">
+      <div class="phrases-hero-icon">📝</div>
+      <h1>Đề thi thử học kì 1</h1>
+      <p class="phrases-sub">Đề mô phỏng đề thật 2025-2026: <b>25 câu · 90 phút</b>, làm theo thứ tự đề, hết giờ tự nộp bài. Nháp bằng nút ✏️ nhé!</p>
+    </div>
+    ${cards || '<div class="phrases-cat-row"><span>Đề thi đang được cập nhật…</span></div>'}`;
+}
+
+// One ticking clock for the whole tab. Kept OUTSIDE _mathQuiz so a re-render
+// never spawns a second interval — two clocks disagreeing about the deadline
+// is how a child gets "nộp bài" twice.
+let _mathExamTimer = null;
+
+function mathExamClock(msLeft) {
+  const s = Math.max(0, Math.ceil(msLeft / 1000));
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+function mathExamStopClock() {
+  if (_mathExamTimer) { clearInterval(_mathExamTimer); _mathExamTimer = null; }
+}
+
+function mathExamTick() {
+  const st = _mathQuiz;
+  if (!st || !st.endsAt) { mathExamStopClock(); return; }
+  const left = st.endsAt - Date.now();
+  const el = document.getElementById('mathExamClock');
+  if (el) {
+    el.textContent = '⏱ ' + mathExamClock(left);
+    el.classList.toggle('urgent', left < 5 * 60 * 1000);
+  }
+  // Time up: the exam submits itself, exactly like the real thing.
+  if (left <= 0) { mathExamStopClock(); finishMathQuiz(); }
+}
+
+function startMathExam(id) {
+  if (typeof retryGate === 'function' && retryGate('math')) return;
+  const exam = mathExams().find(e => e.id === id);
+  if (!exam || !exam.questions.length) return;
+  mathTypedReset();
+  _mathQuiz = {
+    chapter: 0,
+    examId: exam.id,
+    label: exam.title,
+    // Đề order on purpose — a real paper is not shuffled, and easy-to-hard
+    // pacing is part of what the mock is teaching.
+    questions: exam.questions.slice(),
+    idx: 0,
+    answers: exam.questions.map(() => null),
+    endsAt: Date.now() + exam.durationMin * 60 * 1000
+  };
+  mathExamStopClock();
+  _mathExamTimer = setInterval(mathExamTick, 1000);
+  renderMathQuestion();
 }
 
 function renderMathHistoryHTML() {
@@ -465,6 +552,7 @@ function renderMathQuestion() {
       <div class="grammar-quiz-header phrases-quiz-header">
         <button class="grammar-back-btn" onclick="abandonMathQuiz(); renderMathHome()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
+        ${st.endsAt ? `<span class="math-exam-clock" id="mathExamClock">⏱ ${mathExamClock(st.endsAt - Date.now())}</span>` : ''}
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${(st.idx) / total * 100}%"></div></div>
         <button class="math-board-fab" type="button" title="Bảng nháp" onclick="openMathBoard()">✏️</button>
       </div>
@@ -507,6 +595,7 @@ function nextMathQuestion() {
 }
 
 function finishMathQuiz() {
+  mathExamStopClock();
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   const st = _mathQuiz;
@@ -517,7 +606,8 @@ function finishMathQuiz() {
   const pct = Math.round(score / total * 100);
 
   saveMathSession({
-    date: Date.now(), chapter: st.chapter, label: mathQuizLabel(st.chapter),
+    date: Date.now(), chapter: st.chapter, label: st.label || mathQuizLabel(st.chapter),
+    examId: st.examId || undefined,
     score: score, total: total
   });
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -551,6 +641,7 @@ function finishMathQuiz() {
 function mathQuizQuestions() { return _mathQuiz ? _mathQuiz.questions : []; }
 function isMathQuizActive() { return !!_mathQuiz; }
 function abandonMathQuiz() {
+  mathExamStopClock();
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   _mathQuiz = null;
@@ -624,6 +715,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, mathQuizQuestions,
+    mathExams, mathExamBest, mathExamClock, startMathExam, renderMathExamsHTML,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }

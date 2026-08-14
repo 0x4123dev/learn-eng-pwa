@@ -27,13 +27,20 @@ global.MATH_QUESTIONS = MATH_QUESTIONS;
 global.MATH_LESSONS = MATH_LESSONS;
 const math = require(path.join(root, 'js', 'math.js'));
 
+// Exact per-chapter sizes, pinned so a question can never vanish silently.
+// The base 50 grew when real đề cuối kì 1 papers (2025-2026) were folded in —
+// exams weight ch1/ch2 heavily, so the chapters are deliberately uneven.
+// MCQ only — typed 'calc' questions live outside these pins.
+const CHAPTER_COUNTS = { 1: 76, 2: 75, 3: 65, 4: 54, 5: 56 };
+const TOTAL_MCQ = Object.values(CHAPTER_COUNTS).reduce((a, b) => a + b, 0);
+
 suite('math: the question bank', () => {
-    test('five chapters, fifty formula questions each', () => {
+    test('five chapters with their pinned question counts', () => {
         assert.equal(MATH_CHAPTERS.length, 5);
-        assert.equal(MCQ.length, 5 * PER_CHAPTER);
+        assert.equal(MCQ.length, TOTAL_MCQ);
         for (const c of MATH_CHAPTERS) {
-            assert.equal(MCQ.filter(q => q.ch === c.num).length, PER_CHAPTER,
-                `chapter ${c.num} does not have ${PER_CHAPTER} questions`);
+            assert.equal(MCQ.filter(q => q.ch === c.num).length, CHAPTER_COUNTS[c.num],
+                `chapter ${c.num} does not have ${CHAPTER_COUNTS[c.num]} questions`);
             assert.truthy(c.title && c.icon, `chapter ${c.num} missing title/icon`);
         }
     });
@@ -60,11 +67,14 @@ suite('math: the question bank', () => {
 
     test('the correct letter is spread across A B C D', () => {
         for (const c of MATH_CHAPTERS) {
+            const qs = MCQ.filter(q => q.ch === c.num);
             const spread = [0, 0, 0, 0];
-            MCQ.filter(q => q.ch === c.num).forEach(q => spread[q.correct]++);
+            qs.forEach(q => spread[q.correct]++);
+            // Proportional, not absolute: chapters are no longer all the same
+            // size. 16%..34% keeps the old 8..17-of-50 discipline.
             spread.forEach((n, i) => {
-                assert.truthy(n >= 8 && n <= 17,
-                    `chapter ${c.num}: answer ${'ABCD'[i]} used ${n}/50 times — a child spots a pattern`);
+                assert.truthy(n >= Math.floor(qs.length * 0.16) && n <= Math.ceil(qs.length * 0.34),
+                    `chapter ${c.num}: answer ${'ABCD'[i]} used ${n}/${qs.length} times — a child spots a pattern`);
             });
         }
     });
@@ -191,7 +201,7 @@ suite('math: the practice flow', () => {
     });
 
     test('the mixed round can draw from all five chapters', () => {
-        assert.equal(math.mathChapterQuestions(0).length, 5 * PER_CHAPTER + TYPED.length);
+        assert.equal(math.mathChapterQuestions(0).length, TOTAL_MCQ + TYPED.length);
     });
 
     test('a round is ten questions, not the whole chapter', () => {

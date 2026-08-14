@@ -780,6 +780,406 @@
       "correct": 0,
       "answer": "x = −7",
       "explanation": "🔑 Hai số bình phương bằng 49 là 7 và −7; điều kiện x < 0 chọn −7.<br>✗ x = 7: vi phạm điều kiện x < 0.<br>✗ x = √49 = 7: căn số học luôn ≥ 0.<br>✗ x = −49: (−49)² = 2401 ≠ 49."
+    },
+    {
+      "id": "m2-51",
+      "ch": 2,
+      "topic": "Số thực và số thập phân",
+      "q": "Một số hữu tỉ được viết dưới dạng số thập phân nào?",
+      "options": [
+        "Hữu hạn",
+        "Vô hạn tuần hoàn",
+        "Hữu hạn hoặc vô hạn tuần hoàn",
+        "Vô hạn không tuần hoàn"
+      ],
+      "correct": 2,
+      "answer": "Hữu hạn hoặc vô hạn tuần hoàn",
+      "explanation": "🔑 Mỗi số hữu tỉ được viết dưới dạng số thập phân hữu hạn hoặc vô hạn tuần hoàn (ví dụ 1/4 = 0,25 hữu hạn; 1/3 = 0,333... vô hạn tuần hoàn).<br>✗ Hữu hạn: bỏ sót trường hợp số hữu tỉ có thể là số thập phân vô hạn tuần hoàn (như 1/3).<br>✗ Vô hạn tuần hoàn: bỏ sót trường hợp số hữu tỉ có thể là số thập phân hữu hạn (như 1/4).<br>✗ Vô hạn không tuần hoàn: đây là dạng thập phân của số VÔ TỈ, không phải số hữu tỉ.",
+      "source": "TQC-TN1"
+    },
+    {
+      "id": "m2-52",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Căn bậc hai số học của một số dương a được kí hiệu là gì?",
+      "options": [
+        "a",
+        "√a",
+        "|a|",
+        "a²"
+      ],
+      "correct": 1,
+      "answer": "√a",
+      "explanation": "🔑 Căn bậc hai số học của số dương a được kí hiệu là √a.<br>✗ a: đây chỉ là chính số a, không phải căn bậc hai của nó.<br>✗ |a|: đây là kí hiệu giá trị tuyệt đối của a.<br>✗ a²: đây là kí hiệu bình phương của a, phép toán ngược lại.",
+      "source": "TQC-TN3"
+    },
+    {
+      "id": "m2-53",
+      "ch": 2,
+      "topic": "Số thực và số thập phân",
+      "q": "Trong các khẳng định sau, khẳng định nào đúng?",
+      "options": [
+        "√2 là số vô tỉ",
+        "4/5 ∈ ℤ",
+        "−9/2 ∉ ℚ",
+        "−7 ∈ ℕ"
+      ],
+      "correct": 0,
+      "answer": "√2 là số vô tỉ",
+      "explanation": "🔑 √2 = 1,414213... là số thập phân vô hạn không tuần hoàn nên √2 là số vô tỉ — đúng.<br>✗ 4/5 ∈ ℤ: sai vì 4/5 là số hữu tỉ không nguyên, không thuộc ℤ.<br>✗ −9/2 ∉ ℚ: sai vì −9/2 viết được dưới dạng phân số nên là số hữu tỉ, tức thuộc ℚ.<br>✗ −7 ∈ ℕ: sai vì tập số tự nhiên ℕ không chứa số âm.",
+      "source": "TQC-TN5"
+    },
+    {
+      "id": "m2-54",
+      "ch": 2,
+      "topic": "Số thực và số thập phân",
+      "q": "Tập hợp các số thực được kí hiệu là gì?",
+      "options": [
+        "ℤ",
+        "ℕ",
+        "ℚ",
+        "ℝ"
+      ],
+      "correct": 3,
+      "answer": "ℝ",
+      "explanation": "🔑 Tập hợp các số thực (gồm số hữu tỉ và số vô tỉ) được kí hiệu là ℝ.<br>✗ ℤ: đây là kí hiệu tập hợp các số nguyên.<br>✗ ℕ: đây là kí hiệu tập hợp các số tự nhiên.<br>✗ ℚ: đây là kí hiệu tập hợp các số hữu tỉ, chỉ là một bộ phận của số thực.",
+      "source": "TQC-TN6"
+    },
+    {
+      "id": "m2-55",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Tính √9 + √81 − √16.",
+      "options": [
+        "8",
+        "16",
+        "7",
+        "4"
+      ],
+      "correct": 0,
+      "answer": "8",
+      "explanation": "🔑 √9 = 3 (vì 3² = 9), √81 = 9 (vì 9² = 81), √16 = 4 (vì 4² = 16); tính được 3 + 9 − 4 = 8.<br>✗ 16: cộng nhầm cả ba số thay vì trừ √16 (3 + 9 + 4 = 16).<br>✗ 7: nhớ nhầm √81 = 8 (nhầm với √64 = 8) nên tính 3 + 8 − 4 = 7.<br>✗ 4: nhớ nhầm √16 = 8 (nhầm với √64 = 8) nên tính 3 + 9 − 8 = 4.",
+      "source": "TQC-TL1a"
+    },
+    {
+      "id": "m2-56",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Tính √49 + √25 − √121.",
+      "options": [
+        "23",
+        "2",
+        "0",
+        "1"
+      ],
+      "correct": 3,
+      "answer": "1",
+      "explanation": "🔑 √49 = 7 (vì 7² = 49), √25 = 5 (vì 5² = 25), √121 = 11 (vì 11² = 121); tính được 7 + 5 − 11 = 1.<br>✗ 23: cộng nhầm cả ba số thay vì trừ √121 (7 + 5 + 11 = 23).<br>✗ 2: nhớ nhầm √121 = 10 nên tính 7 + 5 − 10 = 2.<br>✗ 0: nhớ nhầm √49 = 6 nên tính 6 + 5 − 11 = 0.",
+      "source": "TQC-TL1b"
+    },
+    {
+      "id": "m2-57",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Căn bậc hai số học của 49 và của 0,25 lần lượt là bao nhiêu?",
+      "options": [
+        "7 và 0,25",
+        "49 và 0,5",
+        "7 và 0,05",
+        "7 và 0,5"
+      ],
+      "correct": 3,
+      "answer": "7 và 0,5",
+      "explanation": "🔑 Căn bậc hai số học của 49 là 7 (vì 7² = 49); căn bậc hai số học của 0,25 là 0,5 (vì 0,5² = 0,25). Vậy kết quả lần lượt là 7 và 0,5.<br>✗ 7 và 0,25: quên khai căn 0,25, giữ nguyên số đã cho.<br>✗ 49 và 0,5: quên khai căn 49, giữ nguyên số đã cho.<br>✗ 7 và 0,05: tính sai vị trí dấu phẩy khi khai căn 0,25.",
+      "source": "TQC-TL2a"
+    },
+    {
+      "id": "m2-58",
+      "ch": 2,
+      "topic": "Áp dụng tính toán",
+      "q": "Một đám đất hình vuông có diện tích 1000 m². Tính độ dài cạnh hình vuông (làm tròn đến chữ số thập phân thứ nhất).",
+      "options": [
+        "31,7 m",
+        "250 m",
+        "31,6 m",
+        "31,62 m"
+      ],
+      "correct": 2,
+      "answer": "31,6 m",
+      "explanation": "🔑 Cạnh hình vuông = √(diện tích) = √1000 ≈ 31,6227...; làm tròn đến chữ số thập phân thứ nhất được 31,6 m.<br>✗ 31,7 m: làm tròn sai (chữ số hàng phần trăm là 2 nên phải làm tròn xuống 31,6 chứ không lên 31,7).<br>✗ 250 m: nhầm lẫn lấy diện tích chia cho 4 cạnh thay vì khai căn.<br>✗ 31,62 m: làm tròn đến hàng phần trăm, không đúng yêu cầu làm tròn đến chữ số thập phân thứ nhất.",
+      "source": "TQC-TL2b"
+    },
+    {
+      "id": "m2-59",
+      "ch": 2,
+      "topic": "Áp dụng tính toán",
+      "q": "Một tam giác vuông có độ dài hai cạnh góc vuông lần lượt là x (cm) và 2x (cm) (x là số dương) và diện tích tam giác vuông đó bằng 150 cm². Tính x (làm tròn đến độ chính xác 0,05).",
+      "options": [
+        "12,2 cm",
+        "8,65 cm",
+        "150 cm",
+        "12,25 cm"
+      ],
+      "correct": 3,
+      "answer": "12,25 cm",
+      "explanation": "🔑 Diện tích tam giác vuông = ½.x.2x = x²; theo giả thiết x² = 150 nên x = √150 ≈ 12,2474..., làm tròn đến độ chính xác 0,05 được x ≈ 12,25 (cm).<br>✗ 12,2 cm: làm tròn đến chữ số thập phân thứ nhất (0,1) thay vì đúng yêu cầu làm tròn đến độ chính xác 0,05.<br>✗ 8,65 cm: quên hệ số ½ trong công thức diện tích tam giác, tính nhầm x² = 150/2 = 75 rồi lấy căn.<br>✗ 150 cm: nhầm lẫn cho rằng x bằng chính diện tích, không thực hiện phép khai căn bậc hai.",
+      "source": "TQC-TL7"
+    },
+    {
+      "id": "m2-60",
+      "ch": 2,
+      "topic": "Số thực và số thập phân",
+      "q": "Phân số nào biểu diễn được dưới dạng số thập phân hữu hạn?",
+      "options": [
+        "11/30",
+        "7/8",
+        "−4/21",
+        "−2/27"
+      ],
+      "correct": 1,
+      "answer": "7/8",
+      "explanation": "🔑 Một phân số tối giản a/b viết được dưới dạng số thập phân hữu hạn khi mẫu b chỉ chứa các ước nguyên tố 2 và/hoặc 5. Phân số 7/8 có mẫu 8 = 2³ nên là số thập phân hữu hạn (7/8 = 0,875).<br>✗ 11/30: mẫu 30 = 2 · 3 · 5 chứa ước nguyên tố 3 nên là số thập phân vô hạn tuần hoàn.<br>✗ −4/21: mẫu 21 = 3 · 7 chứa ước nguyên tố 3 và 7 nên vô hạn tuần hoàn.<br>✗ −2/27: mẫu 27 = 3³ chứa ước nguyên tố 3 nên vô hạn tuần hoàn.",
+      "source": "PHL-TN2"
+    },
+    {
+      "id": "m2-61",
+      "ch": 2,
+      "topic": "Làm tròn số",
+      "q": "Làm tròn số √84 đến hàng phần mười.",
+      "options": [
+        "9,1",
+        "9,16",
+        "9,17",
+        "9,2"
+      ],
+      "correct": 3,
+      "answer": "9,2",
+      "explanation": "🔑 Căn bậc hai số học của 84 xấp xỉ 9,165 (vì 9,16² ≈ 83,9 và 9,17² ≈ 84,09). Làm tròn đến hàng phần mười: xét chữ số hàng phần trăm là 6 ≥ 5 nên làm tròn lên, 9,165 ≈ 9,2.<br>✗ 9,1: làm tròn xuống thay vì làm tròn lên khi chữ số hàng phần trăm ≥ 5.<br>✗ 9,16: làm tròn đến hàng phần trăm chứ chưa làm tròn đến hàng phần mười như đề yêu cầu.<br>✗ 9,17: cũng là làm tròn đến hàng phần trăm (sai hàng cần làm tròn), không phải hàng phần mười.",
+      "source": "PHL-TN3"
+    },
+    {
+      "id": "m2-62",
+      "ch": 2,
+      "topic": "Số thực và số thập phân",
+      "q": "Phát biểu nào sau đây là đúng?",
+      "options": [
+        "√3 ∈ ℕ",
+        "9/11 ∉ ℚ",
+        "3,572 ∈ ℝ",
+        "9,3(05) là số vô tỉ"
+      ],
+      "correct": 2,
+      "answer": "3,572 ∈ ℝ",
+      "explanation": "🔑 Tập số thực ℝ gồm tất cả số hữu tỉ và số vô tỉ. Số thập phân hữu hạn 3,572 là một số hữu tỉ nên chắc chắn là số thực: 3,572 ∈ ℝ.<br>✗ √3 ∈ ℕ: √3 là số vô tỉ (số thập phân vô hạn không tuần hoàn), không phải số tự nhiên.<br>✗ 9/11 ∉ ℚ: 9/11 là một phân số nên nó LÀ số hữu tỉ, khẳng định không thuộc ℚ là sai.<br>✗ 9,3(05) là số vô tỉ: đây là số thập phân vô hạn TUẦN HOÀN (chu kì 05) nên nó là số hữu tỉ, không phải số vô tỉ.",
+      "source": "PHL-TN4"
+    },
+    {
+      "id": "m2-63",
+      "ch": 2,
+      "topic": "Giá trị tuyệt đối",
+      "q": "Kết quả của phép tính (1/3 − 5/4 : |3/2|) + 3/4 là bao nhiêu?",
+      "options": [
+        "23/12",
+        "1/4",
+        "−19/24",
+        "−5/4"
+      ],
+      "correct": 1,
+      "answer": "1/4",
+      "explanation": "🔑 Trong ngoặc, thực hiện phép chia trước phép trừ: |3/2| = 3/2 (giá trị tuyệt đối của số dương là chính nó); 5/4 : 3/2 = 5/4 · 2/3 = 5/6. Vậy trong ngoặc: 1/3 − 5/6 = −1/2. Cuối cùng: −1/2 + 3/4 = 1/4.<br>✗ 23/12: đọc nhầm dấu trừ trước phép chia thành dấu cộng, tính 1/3 + 5/4 : |3/2| + 3/4 = 1/3 + 5/6 + 3/4 = 23/12.<br>✗ −19/24: nhầm phép chia thành phép nhân, lấy 5/4 · 3/2 = 15/8 rồi tính 1/3 − 15/8 + 3/4 = −19/24.<br>✗ −5/4: tính đúng trong ngoặc ra −1/2 nhưng đổi nhầm dấu phép cộng cuối thành trừ: −1/2 − 3/4 = −5/4.",
+      "source": "PHL-TL1b"
+    },
+    {
+      "id": "m2-64",
+      "ch": 2,
+      "topic": "Áp dụng tính toán",
+      "q": "Giá trị của biểu thức 5/3 · √(3²/4) + √((−3)²/4) · 4/3 − 1²/|−2| là bao nhiêu?",
+      "options": [
+        "1",
+        "0",
+        "4",
+        "5"
+      ],
+      "correct": 2,
+      "answer": "4",
+      "explanation": "🔑 √(3²/4) = √(9/4) = 3/2 và √((−3)²/4) = √(9/4) = 3/2; 1²/|−2| = 1/2. Biểu thức = 5/3 · 3/2 + 3/2 · 4/3 − 1/2 = 5/2 + 2 − 1/2 = 4.<br>✗ 1: nhầm 5/3 và 4/3 thành 2/3 và 1/3 (bỏ sót phần nguyên khi đổi hỗn số), tính ra 2/3·3/2 + 3/2·1/3 − 1/2 = 1.<br>✗ 0: tính sai √((−3)²/4) = −3/2 (giữ nguyên dấu âm trong căn), dẫn tới 5/2 − 2 − 1/2 = 0.<br>✗ 5: bỏ quên dấu giá trị tuyệt đối |−2|, lấy 1²/(−2) = −1/2 rồi cộng thay vì trừ: 5/2 + 2 + 1/2 = 5.",
+      "source": "PHL-TL1c"
+    },
+    {
+      "id": "m2-65",
+      "ch": 2,
+      "topic": "Giá trị tuyệt đối",
+      "q": "Tìm x, biết: |5/9 − x| = (3/2)³ − (3/2)²",
+      "options": [
+        "x = −41/72",
+        "x = −41/72 hoặc x = 121/72",
+        "x = 121/72",
+        "x = 41/72 hoặc x = −121/72"
+      ],
+      "correct": 1,
+      "answer": "x = −41/72 hoặc x = 121/72",
+      "explanation": "🔑 (3/2)³ − (3/2)² = 27/8 − 9/4 = 27/8 − 18/8 = 9/8. Với |5/9 − x| = 9/8, xét hai trường hợp: 5/9 − x = 9/8 cho x = 5/9 − 9/8 = −41/72; và 5/9 − x = −9/8 cho x = 5/9 + 9/8 = 121/72. Vậy x = −41/72 hoặc x = 121/72.<br>✗ x = −41/72: chỉ xét một trường hợp của dấu giá trị tuyệt đối, bỏ sót nghiệm còn lại.<br>✗ x = 121/72: chỉ xét trường hợp còn lại, bỏ sót nghiệm đầu.<br>✗ x = 41/72 hoặc x = −121/72: nhầm dấu khi giải hai trường hợp của phương trình chứa dấu giá trị tuyệt đối.",
+      "source": "PHL-TL2c"
+    },
+    {
+      "id": "m2-66",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Kết quả của phép tính √(4/25) là số nào?",
+      "options": [
+        "4/25",
+        "2/25",
+        "2/5",
+        "4/5"
+      ],
+      "correct": 2,
+      "answer": "2/5",
+      "explanation": "🔑 √(4/25) = √4/√25 = 2/5, vì 2² = 4 và 5² = 25.<br>✗ 4/25: quên lấy căn bậc hai, giữ nguyên phân số ban đầu.<br>✗ 2/25: chỉ lấy căn của tử số, quên lấy căn của mẫu số.<br>✗ 4/5: chỉ lấy căn của mẫu số, quên lấy căn của tử số.",
+      "source": "AD-TN3"
+    },
+    {
+      "id": "m2-67",
+      "ch": 2,
+      "topic": "Làm tròn số",
+      "q": "Làm tròn số 2024 đến hàng chục.",
+      "options": [
+        "2020",
+        "2030",
+        "2000",
+        "3000"
+      ],
+      "correct": 0,
+      "answer": "2020",
+      "explanation": "🔑 Hàng chục của 2024 là chữ số 2, chữ số hàng đơn vị là 4 nhỏ hơn 5 nên giữ nguyên hàng chục: làm tròn được 2020.<br>✗ 2030: làm tròn lên trong khi chữ số hàng đơn vị (4) nhỏ hơn 5, đáng lẽ phải giữ nguyên.<br>✗ 2000: làm tròn nhầm đến hàng trăm thay vì hàng chục.<br>✗ 3000: làm tròn nhầm đến hàng nghìn thay vì hàng chục.",
+      "source": "AD-TN6"
+    },
+    {
+      "id": "m2-68",
+      "ch": 2,
+      "topic": "Áp dụng tính toán",
+      "q": "Thực hiện phép tính: 1/2 + 3/2 · 4/3 + √4.",
+      "options": [
+        "5/2",
+        "13/2",
+        "9/2",
+        "4"
+      ],
+      "correct": 2,
+      "answer": "9/2",
+      "explanation": "🔑 Thực hiện nhân và khai căn trước: 3/2 · 4/3 = 2 và √4 = 2, rồi cộng: 1/2 + 2 + 2 = 9/2.<br>✗ 5/2: cộng số nguyên trực tiếp vào tử số phân số mà không quy đồng mẫu.<br>✗ 13/2: quên lấy căn bậc hai, dùng 4 thay vì √4 = 2.<br>✗ 4: bỏ sót số hạng 1/2, chỉ cộng 3/2 · 4/3 + √4 = 2 + 2.",
+      "source": "AD-TL13c"
+    },
+    {
+      "id": "m2-69",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "Giá trị của √225 là bao nhiêu?",
+      "options": [
+        "−15",
+        "15",
+        "225",
+        "−225"
+      ],
+      "correct": 1,
+      "answer": "15",
+      "explanation": "🔑 Căn bậc hai số học của 225 là số không âm x sao cho x² = 225, tức là √225 = 15 (vì 15² = 225).<br>✗ −15: là số đối của căn bậc hai số học, không phải căn bậc hai số học (căn bậc hai số học luôn không âm).<br>✗ 225: nhầm giá trị dưới dấu căn với kết quả.<br>✗ −225: vừa nhầm giá trị dưới dấu căn vừa đổi dấu.",
+      "source": "TBH-TN2"
+    },
+    {
+      "id": "m2-70",
+      "ch": 2,
+      "topic": "Giá trị tuyệt đối",
+      "q": "Giá trị tuyệt đối của số hữu tỉ −3/2 là bao nhiêu?",
+      "options": [
+        "−3/2",
+        "2/3",
+        "3/2",
+        "−2/3"
+      ],
+      "correct": 2,
+      "answer": "3/2",
+      "explanation": "🔑 Vì −3/2 là số âm nên giá trị tuyệt đối của nó là số đối của nó: |−3/2| = 3/2.<br>✗ −3/2: quên đổi dấu, lấy chính số đã cho.<br>✗ 2/3: nhầm lẫn đảo ngược tử số và mẫu số.<br>✗ −2/3: vừa đảo ngược tử mẫu vừa quên đổi dấu.",
+      "source": "TBH-TN3"
+    },
+    {
+      "id": "m2-71",
+      "ch": 2,
+      "topic": "Giá trị tuyệt đối",
+      "q": "Tìm x, biết |x| = 11/5.",
+      "options": [
+        "x = 11/5",
+        "x = 11/5 hoặc x = −11/5",
+        "x = −11/5",
+        "x = 5/11 hoặc x = −5/11"
+      ],
+      "correct": 1,
+      "answer": "x = 11/5 hoặc x = −11/5",
+      "explanation": "🔑 Vì |x| = 11/5 (11/5 > 0) nên x là số có giá trị tuyệt đối bằng 11/5, tức là x = 11/5 hoặc x = −11/5.<br>✗ x = 11/5: chỉ lấy một nghiệm, bỏ sót nghiệm âm.<br>✗ x = −11/5: chỉ lấy một nghiệm, bỏ sót nghiệm dương.<br>✗ x = 5/11 hoặc x = −5/11: nhầm lẫn đảo ngược tử số và mẫu số.",
+      "source": "TBH-TL13a"
+    },
+    {
+      "id": "m2-72",
+      "ch": 2,
+      "topic": "Căn bậc hai số học",
+      "q": "√81 bằng?",
+      "options": [
+        "9",
+        "18",
+        "81",
+        "9²"
+      ],
+      "correct": 0,
+      "answer": "9",
+      "explanation": "🔑 Căn bậc hai số học của 81 là số không âm x sao cho x² = 81, mà 9² = 81 nên √81 = 9.<br>✗ 18: nhầm 81 = 9 × 9 rồi lấy 9 + 9 thay vì chỉ lấy 9.<br>✗ 81: nhầm giữ nguyên số dưới dấu căn, không lấy căn.<br>✗ 9²: nhầm lấy 9 rồi bình phương lên thay vì chỉ ghi 9.",
+      "source": "LTT-TN3"
+    },
+    {
+      "id": "m2-73",
+      "ch": 2,
+      "topic": "Giá trị tuyệt đối",
+      "q": "Cho |x| = 9 thì giá trị của x là:",
+      "options": [
+        "x = 3",
+        "x = −9",
+        "x = 3 hay x = −3",
+        "x = 9 hay x = −9"
+      ],
+      "correct": 3,
+      "answer": "x = 9 hay x = −9",
+      "explanation": "🔑 |x| = 9 nghĩa là x chính là 9 (số dương) hoặc là số đối của 9 tức −9, nên x = 9 hay x = −9.<br>✗ x = 3: nhầm với |x| = 3 chứ không phải 9.<br>✗ x = −9: chỉ lấy số đối, bỏ sót nghiệm dương x = 9.<br>✗ x = 3 hay x = −3: nhầm đề bài thành |x| = 3.",
+      "source": "LTT-TN4"
+    },
+    {
+      "id": "m2-74",
+      "ch": 2,
+      "topic": "Làm tròn số",
+      "q": "Giá trị gần đúng khi làm tròn đến hàng phần trăm của số 19,257 là:",
+      "options": [
+        "19,26",
+        "19,25",
+        "19",
+        "19,258"
+      ],
+      "correct": 0,
+      "answer": "19,26",
+      "explanation": "🔑 Làm tròn đến hàng phần trăm nghĩa là giữ 2 chữ số sau dấu phẩy; chữ số hàng phần nghìn là 7 (≥ 5) nên làm tròn lên: 19,257 ≈ 19,26.<br>✗ 19,25: làm tròn xuống dù chữ số hàng phần nghìn là 7 ≥ 5 phải làm tròn lên.<br>✗ 19: làm tròn đến hàng đơn vị chứ không phải hàng phần trăm.<br>✗ 19,258: không làm tròn, chỉ cắt bớt chữ số cuối.",
+      "source": "LTT-TN5"
+    },
+    {
+      "id": "m2-75",
+      "ch": 2,
+      "topic": "Áp dụng tính toán",
+      "q": "Tính: (−4/3)² + √49 − |−2/3|",
+      "options": [
+        "41/9",
+        "85/9",
+        "−53/9",
+        "73/9"
+      ],
+      "correct": 3,
+      "answer": "73/9",
+      "explanation": "🔑 (−4/3)² = 16/9; √49 = 7; |−2/3| = 2/3 (giá trị tuyệt đối của số âm là số đối của nó). Vậy 16/9 + 7 − 2/3 = 16/9 + 63/9 − 6/9 = 73/9.<br>✗ 41/9: tính nhầm (−4/3)² = −16/9, làm mất dấu khi bình phương.<br>✗ 85/9: lấy nhầm |−2/3| = −2/3 rồi cộng thay vì trừ.<br>✗ −53/9: tính nhầm √49 = −7.",
+      "source": "LTT-TL1b"
     }
   ]
 }

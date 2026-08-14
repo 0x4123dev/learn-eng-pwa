@@ -753,6 +753,70 @@
       "correct": 1,
       "answer": "Mọi điểm cách đều A và B đều nằm ngoài d",
       "explanation": "🔑 Điểm cách đều A và B thì NẰM TRÊN d, không nằm ngoài.<br>✗ Thuộc d thì cách đều A, B: đúng.<br>✗ d vuông góc tại trung điểm: định nghĩa.<br>✗ Trung điểm thuộc d: đúng, là giao điểm."
+    },
+    {
+      "id": "m4-51",
+      "ch": 4,
+      "topic": "Kí hiệu tam giác bằng nhau",
+      "q": "Cho tam giác ABC và tam giác DEF có AB = EF, BC = FD, AC = ED, ∠A = ∠E, ∠B = ∠F, ∠C = ∠D. Cách viết nào sau đây đúng?",
+      "options": [
+        "△ABC = △DEF",
+        "△ABC = △FDE",
+        "△ABC = △EFD",
+        "△ACB = △DEF"
+      ],
+      "correct": 2,
+      "answer": "△ABC = △EFD",
+      "explanation": "🔑 Khi viết hai tam giác bằng nhau, các đỉnh tương ứng phải khớp với các góc bằng nhau đã cho: ∠A = ∠E nên A ứng với E, ∠B = ∠F nên B ứng với F, ∠C = ∠D nên C ứng với D, do đó viết đúng là △ABC = △EFD.<br>✗ △ABC = △DEF: sai thứ tự đỉnh tương ứng, không khớp với các góc bằng nhau đã cho.<br>✗ △ABC = △FDE: sai thứ tự đỉnh tương ứng, không khớp với các góc bằng nhau đã cho.<br>✗ △ACB = △DEF: đổi chỗ B và C ở vế trái làm sai thứ tự tương ứng đỉnh.",
+      "source": "TQC-TN9"
+    },
+    {
+      "id": "m4-52",
+      "ch": 4,
+      "topic": "Tam giác cân",
+      "q": "Tam giác cân là tam giác có tính chất nào sau đây?",
+      "options": [
+        "Ba cạnh bằng nhau",
+        "Hai cạnh bằng nhau",
+        "Một góc vuông",
+        "Một góc nhọn"
+      ],
+      "correct": 1,
+      "answer": "Hai cạnh bằng nhau",
+      "explanation": "🔑 Theo định nghĩa, tam giác cân là tam giác có hai cạnh bằng nhau.<br>✗ Ba cạnh bằng nhau: đây là định nghĩa của tam giác ĐỀU, không phải tam giác cân.<br>✗ Một góc vuông: đây là đặc điểm của tam giác VUÔNG, không liên quan đến tam giác cân.<br>✗ Một góc nhọn: mọi tam giác đều có ít nhất một góc nhọn, đây không phải đặc điểm riêng của tam giác cân.",
+      "source": "TQC-TN10"
+    },
+    {
+      "id": "m4-53",
+      "ch": 4,
+      "topic": "Trường hợp c-g-c",
+      "q": "Cho tam giác ABC, M là trung điểm của AB. Trên tia đối của tia MC lấy điểm D sao cho MC = MD. Hai tam giác ADM và BCM bằng nhau theo trường hợp nào?",
+      "options": [
+        "c-c-c (AM = BM, AD = BC, MD = MC)",
+        "g-c-g (∠DAM = ∠CBM, AM = BM, ∠AMD = ∠BMC)",
+        "c-g-c (AM = BM, ∠AMD = ∠BMC, MD = MC)",
+        "Cạnh huyền - cạnh góc vuông"
+      ],
+      "correct": 2,
+      "answer": "c-g-c (AM = BM, ∠AMD = ∠BMC, MD = MC)",
+      "explanation": "🔑 Ta có AM = BM (M là trung điểm AB), MD = MC (giả thiết), và ∠AMD = ∠BMC (hai góc đối đỉnh vì A, M, B thẳng hàng và D, M, C thẳng hàng); do đó △ADM = △BCM theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ c-c-c: đề bài không cho biết AD = BC, chỉ có hai cặp cạnh và một góc xen giữa.<br>✗ g-c-g: đề bài không cho biết hai góc ∠DAM và ∠CBM bằng nhau, dữ kiện đã cho là hai cạnh và góc xen giữa.<br>✗ Cạnh huyền - cạnh góc vuông: đây là trường hợp riêng cho tam giác vuông, đề bài không cho tam giác ADM hay BCM vuông.",
+      "source": "TQC-TL6a"
+    },
+    {
+      "id": "m4-54",
+      "ch": 4,
+      "topic": "Tổng ba góc",
+      "q": "Cho tam giác ABC có ∠C = 35° và ∠A = 65°. Số đo góc B bằng bao nhiêu?",
+      "options": [
+        "100°",
+        "80°",
+        "115°",
+        "145°"
+      ],
+      "correct": 1,
+      "answer": "80°",
+      "explanation": "🔑 Trong một tam giác, tổng ba góc bằng 180°: ∠A + ∠B + ∠C = 180°, suy ra ∠B = 180° − 65° − 35° = 80°.<br>✗ 100°: tính nhầm bằng cách cộng 65° + 35° thay vì lấy 180° trừ đi.<br>✗ 115°: chỉ trừ ∠A (180° − 65°) mà quên trừ ∠C.<br>✗ 145°: chỉ trừ ∠C (180° − 35°) mà quên trừ ∠A.",
+      "source": "TBH-TL18b"
     }
   ]
 }

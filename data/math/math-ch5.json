@@ -753,6 +753,102 @@
       "correct": 0,
       "answer": "Đường biểu diễn đi lên đều, số lượt mượn tăng dần qua các tháng",
       "explanation": "🔑 120 < 150 < 180 < 210 → đường đi lên đều, mỗi tháng tăng 30.<br>✗ Đi xuống chỉ khi số liệu giảm dần.<br>✗ Nằm ngang chỉ khi các tháng bằng nhau.<br>✗ Quạt tròn không thấy được thay đổi."
+    },
+    {
+      "id": "m5-51",
+      "ch": 5,
+      "topic": "Thu thập dữ liệu",
+      "q": "Hoạt động nào sau đây là thu thập dữ liệu?",
+      "options": [
+        "Trực nhật lớp",
+        "Ghi danh sách học sinh đi học trễ",
+        "Học bài",
+        "Chơi bóng đá"
+      ],
+      "correct": 1,
+      "answer": "Ghi danh sách học sinh đi học trễ",
+      "explanation": "🔑 Thu thập dữ liệu là hoạt động ghi lại các thông tin, số liệu; ghi danh sách học sinh đi học trễ chính là việc ghi lại số liệu nên là thu thập dữ liệu.<br>✗ Trực nhật lớp: đây là công việc lao động, không tạo ra hay ghi lại số liệu.<br>✗ Học bài: đây là hoạt động học tập cá nhân, không liên quan đến ghi chép số liệu.<br>✗ Chơi bóng đá: đây là hoạt động thể thao, không phải thu thập dữ liệu.",
+      "source": "TQC-TN11"
+    },
+    {
+      "id": "m5-52",
+      "ch": 5,
+      "topic": "Đọc biểu đồ đoạn thẳng",
+      "q": "Biểu đồ đoạn thẳng thống kê số học sinh lớp 7/4 đã giải xong một bài toán tính đến các mốc thời gian (số liệu cộng dồn): đến phút thứ 5 có 2 bạn giải xong, đến phút thứ 7 có 6 bạn giải xong, đến phút thứ 9 có 8 bạn giải xong, đến phút thứ 11 có 10 bạn giải xong (cả lớp). Bạn nào giải xong trong vòng 5 phút thì được thầy giáo thưởng. Hỏi lớp 7/4 có bao nhiêu bạn được thưởng?",
+      "options": [
+        "2 bạn",
+        "6 bạn",
+        "4 bạn",
+        "10 bạn"
+      ],
+      "correct": 0,
+      "answer": "2 bạn",
+      "explanation": "🔑 \"Giải xong trong vòng 5 phút\" nghĩa là tính đến mốc 5 phút; theo số liệu cộng dồn, đến phút thứ 5 có 2 bạn đã giải xong, nên có 2 bạn được thưởng.<br>✗ 6 bạn: nhầm sang số liệu cộng dồn ở mốc phút thứ 7.<br>✗ 4 bạn: nhầm tính số bạn giải xong trong khoảng từ phút 5 đến phút 7 (6 − 2 = 4) thay vì trong vòng 5 phút.<br>✗ 10 bạn: nhầm đó là tổng số học sinh cả lớp (mốc phút thứ 11).",
+      "source": "TQC-TL4"
+    },
+    {
+      "id": "m5-53",
+      "ch": 5,
+      "topic": "Tính hợp lí của dữ liệu",
+      "q": "Điểm kiểm tra học kì I môn Toán của 5 bạn được ghi lại: Minh: 8; Mai: 8,5; Hưng: 7,5; Lan: 10,5; Nhung: 9 (thang điểm 10). Kết quả của bạn nào đã bị ghi nhầm?",
+      "options": [
+        "Minh",
+        "Lan",
+        "Hưng",
+        "Nhung"
+      ],
+      "correct": 1,
+      "answer": "Lan",
+      "explanation": "🔑 Thang điểm kiểm tra tối đa là 10, mà điểm của Lan là 10,5 > 10 nên đây là số liệu không hợp lí, chắc chắn đã ghi nhầm.<br>✗ Minh: điểm 8 nằm trong thang điểm 0–10, hợp lí.<br>✗ Hưng: điểm 7,5 nằm trong thang điểm 0–10, hợp lí.<br>✗ Nhung: điểm 9 nằm trong thang điểm 0–10, hợp lí.",
+      "source": "LTT-TN8"
+    },
+    {
+      "id": "m5-54",
+      "ch": 5,
+      "topic": "Loại dữ liệu",
+      "q": "Bảng thống kê 'Khả năng tự nấu ăn của học sinh lớp 7A' gồm hai dòng dữ liệu: 'Khả năng tự nấu ăn' (Không đạt, Đạt, Giỏi, Xuất sắc) và 'Số bạn tự đánh giá' (15, 15, 6, 4). Hai loại dữ liệu này thuộc loại nào?",
+      "options": [
+        "Cả hai đều là dữ liệu định tính",
+        "'Khả năng tự nấu ăn' là dữ liệu định lượng, 'Số bạn tự đánh giá' là dữ liệu định tính",
+        "'Khả năng tự nấu ăn' là dữ liệu định tính, 'Số bạn tự đánh giá' là dữ liệu định lượng",
+        "Cả hai đều là dữ liệu định lượng"
+      ],
+      "correct": 2,
+      "answer": "'Khả năng tự nấu ăn' là dữ liệu định tính, 'Số bạn tự đánh giá' là dữ liệu định lượng",
+      "explanation": "🔑 'Khả năng tự nấu ăn' nhận giá trị là các mức xếp loại (không phải số) nên là dữ liệu định tính; 'Số bạn tự đánh giá' nhận giá trị là số (đếm được) nên là dữ liệu định lượng.<br>✗ Cả hai đều là dữ liệu định tính: 'Số bạn tự đánh giá' là số nên phải là dữ liệu định lượng.<br>✗ 'Khả năng tự nấu ăn' là dữ liệu định lượng, 'Số bạn tự đánh giá' là dữ liệu định tính: đảo ngược hai loại dữ liệu.<br>✗ Cả hai đều là dữ liệu định lượng: 'Khả năng tự nấu ăn' là các mức xếp loại bằng chữ, không phải số, nên là dữ liệu định tính.",
+      "source": "LTT-TL3a"
+    },
+    {
+      "id": "m5-55",
+      "ch": 5,
+      "topic": "Phân tích bảng số liệu",
+      "q": "Khảo sát khả năng tự nấu ăn của lớp 7A cho kết quả: Không đạt: 15 bạn; Đạt: 15 bạn; Giỏi: 6 bạn; Xuất sắc: 4 bạn. Lớp 7A có tất cả bao nhiêu học sinh?",
+      "options": [
+        "36 học sinh",
+        "44 học sinh",
+        "30 học sinh",
+        "40 học sinh"
+      ],
+      "correct": 3,
+      "answer": "40 học sinh",
+      "explanation": "🔑 Tổng số học sinh bằng tổng số bạn ở tất cả các mức: 15 + 15 + 6 + 4 = 40 học sinh.<br>✗ 36 học sinh: cộng thiếu, bỏ sót nhóm Xuất sắc (4 bạn).<br>✗ 44 học sinh: cộng dư ra 4 học sinh so với tổng đúng.<br>✗ 30 học sinh: chỉ cộng hai nhóm Không đạt và Đạt, quên cộng Giỏi và Xuất sắc.",
+      "source": "LTT-TL3b1"
+    },
+    {
+      "id": "m5-56",
+      "ch": 5,
+      "topic": "Phân tích bảng số liệu",
+      "q": "Với kết quả khảo sát: Không đạt: 15 bạn; Đạt: 15 bạn; Giỏi: 6 bạn; Xuất sắc: 4 bạn (tổng 40 học sinh), tỉ lệ phần trăm của loại 'Giỏi' so với cả lớp là bao nhiêu?",
+      "options": [
+        "15%",
+        "60%",
+        "40%",
+        "10%"
+      ],
+      "correct": 0,
+      "answer": "15%",
+      "explanation": "🔑 Tỉ lệ phần trăm loại Giỏi so với cả lớp là 6/40 × 100% = 15%.<br>✗ 60%: lấy nhầm mẫu số là tổng Giỏi và Xuất sắc (6/10) thay vì cả lớp.<br>✗ 40%: lấy nhầm mẫu số là số bạn Không đạt hoặc Đạt (6/15).<br>✗ 10%: tính tỉ lệ cho nhóm Xuất sắc (4/40 = 10%) thay vì nhóm Giỏi.",
+      "source": "LTT-TL3b2"
     }
   ]
 }

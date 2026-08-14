@@ -88,7 +88,10 @@ function validateChapter(data, num) {
     let ok = true;
     const qs = data.questions || [];
 
-    if (qs.length !== PER_CHAPTER) { fail(`${where}: ${qs.length} questions, expected ${PER_CHAPTER}`); ok = false; }
+    // A floor, not an exact size: chapters grow unevenly as real exam papers
+    // are folded in (đề cuối kì test more ch1/ch2 than ch5). The exact counts
+    // are pinned as characterization in tests/math.test.js instead.
+    if (qs.length < PER_CHAPTER) { fail(`${where}: ${qs.length} questions, expected at least ${PER_CHAPTER}`); ok = false; }
     if (!data.title || !data.icon) { fail(`${where}: missing title/icon`); ok = false; }
     if (!data.lesson || data.lesson.length < 300) { fail(`${where}: lesson missing or too short`); ok = false; }
 
@@ -116,7 +119,10 @@ function validateChapter(data, num) {
     // A child notices when the answer is always B. Nothing subtle is required
     // here — just that no position is starved or dominant.
     spread.forEach((n, i) => {
-        if (n < 8 || n > 17) { fail(`${where}: answer ${'ABCD'[i]} used ${n} times (want 8-17)`); ok = false; }
+        // Proportional, not absolute: chapters grew past 50 when real exam
+        // papers were folded in. 16%..34% keeps the old 8..17-of-50 discipline.
+        const lo = Math.floor(qs.length * 0.16), hi = Math.ceil(qs.length * 0.34);
+        if (n < lo || n > hi) { fail(`${where}: answer ${'ABCD'[i]} used ${n}/${qs.length} times (want ${lo}-${hi})`); ok = false; }
     });
     return ok;
 }

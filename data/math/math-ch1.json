@@ -779,6 +779,422 @@
       "correct": 2,
       "answer": "x²",
       "explanation": "🔑 (x³)² = x⁶ (vì 3 · 2 = 6), rồi x⁶ : x⁴ = x².<br>✗ x¹⁰: cộng mũ 6 + 4 thay vì trừ.<br>✗ x¹: tính nhầm (x³)² = x⁵ rồi mới chia.<br>✗ x⁻²: trừ ngược thứ tự (4 − 6)."
+    },
+    {
+      "id": "m1-51",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Tập hợp các số hữu tỉ được kí hiệu là gì?",
+      "options": [
+        "ℝ",
+        "ℚ",
+        "ℤ",
+        "ℕ"
+      ],
+      "correct": 1,
+      "answer": "ℚ",
+      "explanation": "🔑 Tập hợp các số hữu tỉ được kí hiệu là ℚ.<br>✗ ℝ: đây là kí hiệu tập hợp các số THỰC (rộng hơn, gồm cả số vô tỉ), không phải riêng số hữu tỉ.<br>✗ ℤ: đây là kí hiệu tập hợp các số NGUYÊN.<br>✗ ℕ: đây là kí hiệu tập hợp các số TỰ NHIÊN.",
+      "source": "TQC-TN2"
+    },
+    {
+      "id": "m1-52",
+      "ch": 1,
+      "topic": "Bốn phép tính",
+      "q": "Tính (0,5 + 7/3).(4,5 − 7/3).",
+      "options": [
+        "697/36",
+        "221/6",
+        "2/3",
+        "221/36"
+      ],
+      "correct": 3,
+      "answer": "221/36",
+      "explanation": "🔑 0,5 + 7/3 = 3/6 + 14/6 = 17/6; 4,5 − 7/3 = 27/6 − 14/6 = 13/6; tích = 17/6 × 13/6 = 221/36.<br>✗ 697/36: nhầm dấu, tính 4,5 + 7/3 = 41/6 rồi nhân 17/6 × 41/6.<br>✗ 221/6: nhân đúng tử số (17 × 13 = 221) nhưng quên nhân mẫu số (chỉ giữ một mẫu 6 thay vì 6 × 6 = 36).<br>✗ 2/3: nhầm phép tính, lấy hiệu 17/6 − 13/6 thay vì tích.",
+      "source": "TQC-TL5"
+    },
+    {
+      "id": "m1-53",
+      "ch": 1,
+      "topic": "Lũy thừa",
+      "q": "Kết quả viết dưới dạng lũy thừa của phép tính (−1/2)⁴ · (−1/2) là gì?",
+      "options": [
+        "(−1/2)⁵",
+        "(−1/2)⁴",
+        "(−1/2)³",
+        "1/32"
+      ],
+      "correct": 0,
+      "answer": "(−1/2)⁵",
+      "explanation": "🔑 Quy tắc nhân hai lũy thừa cùng cơ số: xᵐ · xⁿ = xᵐ⁺ⁿ. Ở đây (−1/2)⁴ · (−1/2)¹ = (−1/2)⁴⁺¹ = (−1/2)⁵.<br>✗ (−1/2)⁴: quên nhân thêm thừa số (−1/2) ở đầu, giữ nguyên số mũ ban đầu.<br>✗ (−1/2)³: trừ nhầm số mũ (4 − 1) thay vì cộng.<br>✗ 1/32: tính đúng độ lớn nhưng làm mất dấu trừ, vì (−1/2)⁵ = −1/32 chứ không phải 1/32.",
+      "source": "PHL-TN1"
+    },
+    {
+      "id": "m1-54",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Kết quả của phép tính 2/5 + 5/3 − 7/10 là bao nhiêu?",
+      "options": [
+        "41/30",
+        "83/30",
+        "1/5",
+        "0"
+      ],
+      "correct": 0,
+      "answer": "41/30",
+      "explanation": "🔑 Quy đồng mẫu số rồi cộng trừ tử số: mẫu chung của 5, 3, 10 là 30. 2/5 = 12/30, 5/3 = 50/30, 7/10 = 21/30. Vậy 2/5 + 5/3 − 7/10 = (12 + 50 − 21)/30 = 41/30.<br>✗ 83/30: nhầm dấu, lấy 12/30 + 50/30 + 21/30 (cộng thay vì trừ số hạng cuối).<br>✗ 1/5: quy đồng sai, quên nhân tử số 5/3 lên 30 (dùng nhầm 15/30 thay vì 50/30) rồi tính (12+15−21)/30 = 6/30 = 1/5.<br>✗ 0: cộng trừ trực tiếp tử số trên mẫu chung sai là 5+3+10=18 rồi tính (2+5−7)/18 = 0.",
+      "source": "PHL-TL1a"
+    },
+    {
+      "id": "m1-55",
+      "ch": 1,
+      "topic": "Chuyển vế",
+      "q": "Tìm x, biết: 11/5 + x = 3/5",
+      "options": [
+        "−8/5",
+        "1/5",
+        "8/5",
+        "−14/5"
+      ],
+      "correct": 0,
+      "answer": "−8/5",
+      "explanation": "🔑 Áp dụng quy tắc chuyển vế: muốn tìm x trong 11/5 + x = 3/5, chuyển 11/5 sang vế phải và đổi dấu: x = 3/5 − 11/5 = −8/5.<br>✗ 1/5: đọc nhầm 11/5 (từ hỗn số) thành 2/5, tính 3/5 − 2/5 = 1/5.<br>✗ 8/5: quên đổi dấu khi chuyển vế, tính x = 11/5 − 3/5 = 8/5.<br>✗ −14/5: cộng nhầm tử số thay vì trừ: −(3 + 11)/5 = −14/5.",
+      "source": "PHL-TL2a"
+    },
+    {
+      "id": "m1-56",
+      "ch": 1,
+      "topic": "Áp dụng chuyển vế",
+      "q": "Tìm x, biết: 2,5x − 3/4 = (1/2)²",
+      "options": [
+        "1/10",
+        "−1/5",
+        "1/2",
+        "2/5"
+      ],
+      "correct": 3,
+      "answer": "2/5",
+      "explanation": "🔑 (1/2)² = 1/4. Chuyển vế: 2,5x = 1/4 + 3/4 = 1. Suy ra x = 1 : 2,5 = 2/5.<br>✗ 1/10: quên chuyển 3/4 sang vế phải, chỉ lấy 2,5x = 1/4 rồi tính x = 1/10.<br>✗ −1/5: nhầm dấu khi chuyển vế, tính 2,5x = 1/4 − 3/4 = −1/2 rồi x = −1/5.<br>✗ 1/2: quên bình phương, coi (1/2)² = 1/2, tính 2,5x = 1/2 + 3/4 = 5/4 rồi x = 1/2.",
+      "source": "PHL-TL2b"
+    },
+    {
+      "id": "m1-57",
+      "ch": 1,
+      "topic": "Tỉ số phần trăm",
+      "q": "Một chiếc điện thoại có giá niêm yết là 40 triệu đồng. Nhân dịp Giáng sinh, cửa hàng giảm giá 30% so với giá niêm yết. Hỏi khách phải trả bao nhiêu tiền để mua chiếc điện thoại đó?",
+      "options": [
+        "12 triệu đồng",
+        "26 triệu đồng",
+        "28 triệu đồng",
+        "34 triệu đồng"
+      ],
+      "correct": 2,
+      "answer": "28 triệu đồng",
+      "explanation": "🔑 Giảm giá 30% so với giá niêm yết nghĩa là khách trả 70% giá niêm yết: 40 × (1 − 30%) = 40 × 0,7 = 28 (triệu đồng).<br>✗ 12 triệu đồng: đây là số tiền được GIẢM (40 × 30% = 12 triệu), không phải số tiền phải trả.<br>✗ 26 triệu đồng: tính nhầm mức giảm là 35% thay vì 30% (40 × 0,65 = 26).<br>✗ 34 triệu đồng: tính nhầm mức giảm là 15% thay vì 30% (40 × 0,85 = 34).",
+      "source": "PHL-TL5a"
+    },
+    {
+      "id": "m1-58",
+      "ch": 1,
+      "topic": "Tỉ số phần trăm",
+      "q": "Một cửa hàng bán một chiếc điện thoại với giá 28 triệu đồng (đã giảm 30% so với giá niêm yết 40 triệu đồng) và đạt được 5% lợi nhuận so với giá gốc. Hỏi cửa hàng cần bán chiếc điện thoại với giá giảm bao nhiêu phần trăm so với giá niêm yết để đạt 20% lợi nhuận so với giá gốc?",
+      "options": [
+        "20%",
+        "16%",
+        "5%",
+        "30%"
+      ],
+      "correct": 0,
+      "answer": "20%",
+      "explanation": "🔑 Giá gốc = giá bán : (1 + 5%) = 28 : 1,05 = 80/3 triệu đồng (giá trị đúng, không làm tròn). Để đạt 20% lợi nhuận, giá bán cần là (80/3) × 1,2 = 32 triệu đồng (đúng bằng, không phải xấp xỉ). So với giá niêm yết 40 triệu, mức giảm cần thiết là (40 − 32) : 40 = 20%.<br>✗ 16%: nhầm lấy luôn giá đã giảm 28 triệu làm giá gốc thay vì tính lại giá gốc từ mức lợi nhuận 5%.<br>✗ 5%: nhầm lấy luôn mức lợi nhuận ban đầu làm đáp số mức giảm giá.<br>✗ 30%: giữ nguyên mức giảm giá của đợt khuyến mãi cũ, không tính lại theo yêu cầu lợi nhuận mới.",
+      "source": "PHL-TL5b"
+    },
+    {
+      "id": "m1-59",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Trong các số sau, số nào là số hữu tỉ?",
+      "options": [
+        "√5",
+        "−2/5",
+        "−√3",
+        "6/0"
+      ],
+      "correct": 1,
+      "answer": "−2/5",
+      "explanation": "🔑 Số hữu tỉ viết được dưới dạng a/b với a, b ∈ ℤ, b ≠ 0: −2/5 thoả điều kiện này.<br>✗ √5: 5 không phải số chính phương nên √5 là số vô tỉ.<br>✗ −√3: 3 không phải số chính phương nên −√3 là số vô tỉ.<br>✗ 6/0: mẫu bằng 0, phép chia không xác định.",
+      "source": "AD-TN1"
+    },
+    {
+      "id": "m1-60",
+      "ch": 1,
+      "topic": "Lũy thừa",
+      "q": "Kết quả của phép tính 5⁷/5³ là số nào?",
+      "options": [
+        "5⁴",
+        "5¹⁰",
+        "5²¹",
+        "5³"
+      ],
+      "correct": 0,
+      "answer": "5⁴",
+      "explanation": "🔑 Chia hai luỹ thừa cùng cơ số: 5⁷ : 5³ = 5⁷⁻³ = 5⁴.<br>✗ 5¹⁰: cộng nhầm hai số mũ 7 + 3 thay vì trừ.<br>✗ 5²¹: nhân nhầm hai số mũ 7 × 3 thay vì trừ.<br>✗ 5³: nhầm lấy số mũ của số chia, không thực hiện phép trừ số mũ.",
+      "source": "AD-TN2"
+    },
+    {
+      "id": "m1-61",
+      "ch": 1,
+      "topic": "Số đối",
+      "q": "Số đối của số 4/29 là số nào?",
+      "options": [
+        "4/29",
+        "29/4",
+        "−29/4",
+        "−4/29"
+      ],
+      "correct": 3,
+      "answer": "−4/29",
+      "explanation": "🔑 Số đối chỉ đổi dấu, giữ nguyên phân số: số đối của 4/29 là −4/29.<br>✗ 4/29: là số ban đầu, chưa đổi dấu.<br>✗ 29/4: đó là nghịch đảo (lật tử mẫu), không phải số đối.<br>✗ −29/4: vừa lật tử mẫu vừa đổi dấu, làm sai hai bước cùng lúc.",
+      "source": "AD-TN4"
+    },
+    {
+      "id": "m1-62",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Kết quả của phép tính −7/8 + 1 là số nào?",
+      "options": [
+        "−1/8",
+        "−15/8",
+        "0",
+        "1/8"
+      ],
+      "correct": 3,
+      "answer": "1/8",
+      "explanation": "🔑 Đổi 1 = 8/8 rồi cộng: −7/8 + 8/8 = 1/8.<br>✗ −1/8: cộng tử nhưng để sai dấu kết quả.<br>✗ −15/8: nhầm thành phép trừ −7/8 − 1 = −15/8 thay vì cộng.<br>✗ 0: nhầm cho rằng −7/8 và 1 là hai số đối của nhau, trong khi số đối của −7/8 phải là 7/8, không phải 1.",
+      "source": "AD-TN7"
+    },
+    {
+      "id": "m1-63",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Thực hiện phép tính: −5/11 + 3/17 + (−6/11) + 14/17 + 2025.",
+      "options": [
+        "2025",
+        "0",
+        "4050",
+        "−1"
+      ],
+      "correct": 0,
+      "answer": "2025",
+      "explanation": "🔑 Nhóm các phân số cùng mẫu: (−5/11 + −6/11) + (3/17 + 14/17) + 2025 = (−1) + 1 + 2025 = 2025.<br>✗ 0: cộng đúng hai nhóm phân số được 0 nhưng quên cộng thêm 2025.<br>✗ 4050: nhầm cộng 2025 hai lần.<br>✗ −1: chỉ tính nhóm −5/11 + (−6/11) = −1 rồi dừng lại, bỏ sót các số hạng còn lại.",
+      "source": "AD-TL13a"
+    },
+    {
+      "id": "m1-64",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Thực hiện phép tính: 5/9 · 1/3 + 4/9 · 1/3.",
+      "options": [
+        "1",
+        "2/3",
+        "5/27",
+        "1/3"
+      ],
+      "correct": 3,
+      "answer": "1/3",
+      "explanation": "🔑 Đặt nhân tử chung 1/3: (5/9 + 4/9) · 1/3 = 1 · 1/3 = 1/3.<br>✗ 1: cộng được 5/9 + 4/9 = 1 nhưng quên nhân tiếp với 1/3.<br>✗ 2/3: nhân nhầm kết quả với 2 thay vì giữ nguyên 1/3.<br>✗ 5/27: chỉ tính 5/9 · 1/3 rồi bỏ sót số hạng 4/9 · 1/3.",
+      "source": "AD-TL13b"
+    },
+    {
+      "id": "m1-65",
+      "ch": 1,
+      "topic": "Chuyển vế",
+      "q": "Tìm x, biết: x − 7/8 = 0,2.",
+      "options": [
+        "−27/40",
+        "43/40",
+        "8/40",
+        "35/40"
+      ],
+      "correct": 1,
+      "answer": "43/40",
+      "explanation": "🔑 Chuyển vế: x = 0,2 + 7/8 = 1/5 + 7/8 = 8/40 + 35/40 = 43/40.<br>✗ −27/40: trừ nhầm 0,2 − 7/8 thay vì cộng khi chuyển vế.<br>✗ 8/40: chỉ giữ lại số hạng 1/5 = 8/40, quên cộng thêm 7/8 = 35/40.<br>✗ 35/40: chỉ giữ lại số hạng 7/8 = 35/40, quên cộng thêm 1/5 = 8/40.",
+      "source": "AD-TL14a"
+    },
+    {
+      "id": "m1-66",
+      "ch": 1,
+      "topic": "Chuyển vế",
+      "q": "Tìm x, biết: 1/2 − (x − 4/5) = 11/15.",
+      "options": [
+        "−31/30",
+        "−7/30",
+        "−17/30",
+        "17/30"
+      ],
+      "correct": 3,
+      "answer": "17/30",
+      "explanation": "🔑 Phá ngoặc: 1/2 − x + 4/5 = 11/15, suy ra x − 4/5 = 1/2 − 11/15 = 15/30 − 22/30 = −7/30, suy ra x = −7/30 + 4/5 = −7/30 + 24/30 = 17/30.<br>✗ −31/30: phá ngoặc thiếu, chỉ đổi dấu x mà quên đổi dấu 4/5.<br>✗ −7/30: dừng lại ở bước x − 4/5 = −7/30, quên cộng thêm 4/5 để tìm x.<br>✗ −17/30: tính đúng các bước nhưng ghi sai dấu ở kết quả cuối cùng.",
+      "source": "AD-TL14b"
+    },
+    {
+      "id": "m1-67",
+      "ch": 1,
+      "topic": "Thứ tự thực hiện phép tính",
+      "q": "Thứ tự thực hiện đúng trong một biểu thức có đủ ba loại dấu ngoặc (), [], {} là gì?",
+      "options": [
+        "{ } → ( ) → [ ]",
+        "{ } → [ ] → ( )",
+        "( ) → { } → [ ]",
+        "( ) → [ ] → { }"
+      ],
+      "correct": 3,
+      "answer": "( ) → [ ] → { }",
+      "explanation": "🔑 Trong biểu thức có dấu ngoặc, ta thực hiện trong ngoặc tròn ( ) trước, rồi đến ngoặc vuông [ ], cuối cùng đến ngoặc nhọn { }.<br>✗ { } → ( ) → [ ]: làm ngoặc nhọn trước là sai thứ tự.<br>✗ { } → [ ] → ( ): thực hiện ngược hoàn toàn thứ tự đúng.<br>✗ ( ) → { } → [ ]: đổi chỗ ngoặc vuông và ngoặc nhọn.",
+      "source": "TBH-TN5"
+    },
+    {
+      "id": "m1-68",
+      "ch": 1,
+      "topic": "Số đối",
+      "q": "Số đối của các số thực −2/3; 1 2/3; 0; 1,25; −2025 lần lượt là:",
+      "options": [
+        "−2/3; −1 2/3; 0; −1,25; 2025",
+        "2/3; 1 2/3; 0; −1,25; 2025",
+        "2/3; −1 2/3; 0; −1,25; 2025",
+        "2/3; −1 2/3; 0; 1,25; 2025"
+      ],
+      "correct": 2,
+      "answer": "2/3; −1 2/3; 0; −1,25; 2025",
+      "explanation": "🔑 Số đối của một số là số có giá trị tuyệt đối bằng nó nhưng khác dấu (số đối của 0 là 0): số đối của −2/3 là 2/3; của 1 2/3 là −1 2/3; của 0 là 0; của 1,25 là −1,25; của −2025 là 2025.<br>✗ −2/3; −1 2/3; 0; −1,25; 2025: giữ nguyên dấu ở số đầu tiên (quên đổi dấu −2/3).<br>✗ 2/3; 1 2/3; 0; −1,25; 2025: giữ nguyên dấu ở số thứ hai (quên đổi dấu 1 2/3).<br>✗ 2/3; −1 2/3; 0; 1,25; 2025: giữ nguyên dấu ở số thứ tư (quên đổi dấu 1,25).",
+      "source": "TBH-TL13b"
+    },
+    {
+      "id": "m1-69",
+      "ch": 1,
+      "topic": "Lũy thừa",
+      "q": "Tìm x ∈ ℚ, biết (−6/7) mũ (3x + 4) bằng 36/49.",
+      "options": [
+        "x = 2/3",
+        "x = −2",
+        "x = −2/3",
+        "x = 2"
+      ],
+      "correct": 2,
+      "answer": "x = −2/3",
+      "explanation": "🔑 Vì 36/49 = (6/7)² = (−6/7)² nên (−6/7) mũ (3x + 4) bằng (−6/7)², suy ra 3x + 4 = 2, do đó 3x = −2, vậy x = −2/3.<br>✗ x = 2/3: nhầm dấu khi giải 3x = −2.<br>✗ x = −2: quên chia cho 3 sau khi tìm được 3x = −2.<br>✗ x = 2: vừa quên chia cho 3 vừa nhầm dấu.",
+      "source": "TBH-TL19"
+    },
+    {
+      "id": "m1-70",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Chọn phát biểu đúng trong các câu sau:",
+      "options": [
+        "√5 ∈ ℕ",
+        "5/8 ∈ ℚ",
+        "5/9 là số vô tỉ",
+        "3,125 ∈ ℤ"
+      ],
+      "correct": 1,
+      "answer": "5/8 ∈ ℚ",
+      "explanation": "🔑 5/8 là phân số nên là số hữu tỉ, viết 5/8 ∈ ℚ.<br>✗ √5 ∈ ℕ: √5 ≈ 2,236 không phải số tự nhiên, đây là số vô tỉ.<br>✗ 5/9 là số vô tỉ: 5/9 là số hữu tỉ (viết được dưới dạng phân số), không phải số vô tỉ.<br>✗ 3,125 ∈ ℤ: 3,125 là số thập phân, không phải số nguyên.",
+      "source": "LTT-TN1"
+    },
+    {
+      "id": "m1-71",
+      "ch": 1,
+      "topic": "Lũy thừa",
+      "q": "Kết quả của phép tính (1/3)⁷ : (1/3)⁴ được viết dưới dạng lũy thừa của một số hữu tỉ là:",
+      "options": [
+        "(1/3)¹¹",
+        "(1/3)²⁸",
+        "(1/3)³",
+        "(1/3)²"
+      ],
+      "correct": 2,
+      "answer": "(1/3)³",
+      "explanation": "🔑 Chia hai lũy thừa cùng cơ số: giữ nguyên cơ số, trừ số mũ: (1/3)⁷ : (1/3)⁴ = (1/3)^(7−4) = (1/3)³.<br>✗ (1/3)¹¹: cộng nhầm hai số mũ (7 + 4) thay vì trừ.<br>✗ (1/3)²⁸: nhân nhầm hai số mũ (7 × 4) thay vì trừ.<br>✗ (1/3)²: trừ sai hai số mũ, ra kết quả 2 thay vì 3.",
+      "source": "LTT-TN2"
+    },
+    {
+      "id": "m1-72",
+      "ch": 1,
+      "topic": "Số hữu tỉ",
+      "q": "Tính: (−8/15)·(1/7) + (−8/15)·(2/7) + (−8/15)·(4/7)",
+      "options": [
+        "−8/105",
+        "8/15",
+        "−8/15",
+        "−8/5"
+      ],
+      "correct": 2,
+      "answer": "−8/15",
+      "explanation": "🔑 Đặt −8/15 làm thừa số chung: (−8/15)·(1/7+2/7+4/7) = (−8/15)·(7/7) = (−8/15)·1 = −8/15.<br>✗ −8/105: chỉ tính đúng số hạng đầu tiên (−8/15 · 1/7 = −8/105) rồi quên cộng hai số hạng còn lại.<br>✗ 8/15: làm mất dấu trừ trong quá trình tính.<br>✗ −8/5: nhầm cộng ba lần −8/15 (bỏ qua các thừa số 1/7, 2/7, 4/7): −8/15 + (−8/15) + (−8/15) = −24/15 = −8/5.",
+      "source": "LTT-TL1a"
+    },
+    {
+      "id": "m1-73",
+      "ch": 1,
+      "topic": "Chuyển vế",
+      "q": "Tìm x, biết: 2x − 1/3 = 1/2",
+      "options": [
+        "5/12",
+        "1/12",
+        "5/6",
+        "1/5"
+      ],
+      "correct": 0,
+      "answer": "5/12",
+      "explanation": "🔑 Chuyển vế: 2x = 1/2 + 1/3 = 3/6 + 2/6 = 5/6, suy ra x = 5/6 : 2 = 5/12.<br>✗ 1/12: chuyển vế sai dấu, tính 1/2 − 1/3 = 1/6 rồi chia 2.<br>✗ 5/6: quên chia 2 sau khi tìm được 2x = 5/6.<br>✗ 1/5: cộng nhầm 1/2 + 1/3 thành 2/5 thay vì 5/6.",
+      "source": "LTT-TL2a"
+    },
+    {
+      "id": "m1-74",
+      "ch": 1,
+      "topic": "Áp dụng lũy thừa",
+      "q": "Tìm x, biết: 5 mũ (x + 4) − 3 · 5 mũ (x + 3) = 2 · 5¹¹",
+      "options": [
+        "x = 11",
+        "x = 8",
+        "x = 7",
+        "x = 5"
+      ],
+      "correct": 1,
+      "answer": "x = 8",
+      "explanation": "🔑 Đưa về cùng lũy thừa 5 mũ (x + 3): 5 mũ (x + 4) = 5 · 5 mũ (x + 3), nên vế trái = 5 · 5 mũ (x + 3) − 3 · 5 mũ (x + 3) = 2 · 5 mũ (x + 3). Từ 2 · 5 mũ (x + 3) = 2 · 5¹¹ suy ra x + 3 = 11, vậy x = 8.<br>✗ x = 11: nhầm coi x + 3 = 11 nghĩa là x = 11, quên trừ 3.<br>✗ x = 7: nhầm cho x + 4 = 11 rồi giải ra x = 7.<br>✗ x = 5: tính sai hệ số 5 − 3 = 2 dẫn đến lập sai phương trình theo x.",
+      "source": "LTT-TL2b"
+    },
+    {
+      "id": "m1-75",
+      "ch": 1,
+      "topic": "Bài toán thực tế",
+      "q": "Một cửa hàng thời trang giảm giá 20% cho tất cả sản phẩm; khách hàng có thẻ thân thiết được giảm thêm 15% trên giá đã giảm. Chị Lan là khách hàng thân thiết, mua một chiếc váy có giá niêm yết 1 200 000 đồng. Hỏi chị Lan phải trả bao nhiêu tiền?",
+      "options": [
+        "960 000 đồng",
+        "816 000 đồng",
+        "780 000 đồng",
+        "900 000 đồng"
+      ],
+      "correct": 1,
+      "answer": "816 000 đồng",
+      "explanation": "🔑 Giá sau khi giảm 20%: 1 200 000 × (1 − 20%) = 960 000 đồng. Vì là khách thân thiết, giảm thêm 15% trên giá đã giảm: 960 000 × (1 − 15%) = 816 000 đồng.<br>✗ 960 000 đồng: chỉ tính giảm giá 20% chung, quên giảm thêm 15% cho khách thân thiết.<br>✗ 780 000 đồng: cộng gộp hai mức giảm thành 35% rồi trừ một lần, thay vì giảm liên tiếp hai lần.<br>✗ 900 000 đồng: tính nhầm mức giảm tổng cộng là 25%.",
+      "source": "LTT-TL4a"
+    },
+    {
+      "id": "m1-76",
+      "ch": 1,
+      "topic": "Bài toán thực tế",
+      "q": "Chị Lan (khách hàng thân thiết, được giảm 20% rồi giảm thêm 15% trên giá đã giảm) mua chiếc váy giá niêm yết 1 200 000 đồng và một đôi giày, tổng cộng phải trả 1 496 000 đồng. Hỏi đôi giày ban đầu có giá niêm yết là bao nhiêu?",
+      "options": [
+        "680 000 đồng",
+        "850 000 đồng",
+        "1 000 000 đồng",
+        "800 000 đồng"
+      ],
+      "correct": 2,
+      "answer": "1 000 000 đồng",
+      "explanation": "🔑 Số tiền chị Lan trả cho váy là 816 000 đồng, nên số tiền trả cho giày là 1 496 000 − 816 000 = 680 000 đồng. Vì giày cũng được giảm 20% rồi giảm thêm 15%, giá niêm yết giày là 680 000 : 0,8 : 0,85 = 1 000 000 đồng.<br>✗ 680 000 đồng: lấy luôn số tiền đã trả cho giày làm giá niêm yết, quên tính ngược hai lần giảm giá.<br>✗ 850 000 đồng: chỉ tính ngược một lần giảm giá 20% (680 000 : 0,8), quên tính ngược thêm 15%.<br>✗ 800 000 đồng: chỉ tính ngược một lần giảm giá 15% (680 000 : 0,85), quên tính ngược thêm 20%.",
+      "source": "LTT-TL4b"
     }
   ]
 }

@@ -753,6 +753,246 @@
       "correct": 3,
       "answer": "Hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba thì song song với nhau",
       "explanation": "🔑 Hai đường cùng ∥ b mà cắt nhau thì trái tiên đề ⇒ <b>a ∥ c</b>.<br>✗ Vô số đường ∥: tiên đề nói chỉ một.<br>✗ Cùng qua một điểm: chúng cắt nhau ở đó.<br>✗ Mọi đường đều ∥: chúng có thể cắt nhau."
+    },
+    {
+      "id": "m3-51",
+      "ch": 3,
+      "topic": "Định lí",
+      "q": "Trong các khẳng định sau, khẳng định nào là một định lí?",
+      "options": [
+        "Tổng số đo ba góc của một tam giác bằng 180°",
+        "Tổng hai góc nhọn của tam giác vuông bằng 100°",
+        "Một tam giác bất kỳ luôn có ít nhất một góc tù",
+        "Căn bậc hai số học của một số dương luôn nhỏ hơn 0"
+      ],
+      "correct": 0,
+      "answer": "Tổng số đo ba góc của một tam giác bằng 180°",
+      "explanation": "🔑 Định lí là khẳng định đúng được suy ra từ những khẳng định đúng khác; \"Tổng số đo ba góc của một tam giác bằng 180°\" là một định lí đã được chứng minh.<br>✗ Tổng hai góc nhọn của tam giác vuông bằng 100°: sai, tổng hai góc nhọn của tam giác vuông luôn bằng 90°.<br>✗ Một tam giác bất kỳ luôn có ít nhất một góc tù: sai, ví dụ tam giác đều có ba góc nhọn bằng 60°.<br>✗ Căn bậc hai số học của một số dương luôn nhỏ hơn 0: sai, căn bậc hai số học luôn không âm.",
+      "source": "TQC-TN8"
+    },
+    {
+      "id": "m3-52",
+      "ch": 3,
+      "topic": "Góc so le trong",
+      "q": "Cho hai đường thẳng xx' và yy' song song. Đường thẳng thứ ba cắt xx' tại A và cắt yy' tại B sao cho ∠ABy' = 55°. Tính số đo ∠xAB.",
+      "options": [
+        "125°",
+        "35°",
+        "55°",
+        "110°"
+      ],
+      "correct": 2,
+      "answer": "55°",
+      "explanation": "🔑 Vì xx' ∥ yy' nên ∠xAB và ∠ABy' là hai góc so le trong, do đó ∠xAB = ∠ABy' = 55°.<br>✗ 125°: nhầm ∠xAB là góc kề bù với ∠ABy' nên lấy 180° − 55° = 125°, trong khi hai góc này là so le trong bằng nhau, không kề bù.<br>✗ 35°: nhầm tưởng tổng hai góc này bằng 90° nên lấy 90° − 55° = 35°.<br>✗ 110°: nhầm nhân đôi số đo góc đã cho (2 × 55° = 110°).",
+      "source": "TQC-TL3"
+    },
+    {
+      "id": "m3-53",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Cho tam giác ABC, M là trung điểm AB, D thuộc tia đối của tia MC sao cho MD = MC. Biết △ADM = △BCM nên ∠ADM = ∠BCM. Hai góc so le trong bằng nhau này (tạo bởi cát tuyến DC với hai đường thẳng AD, BC) chứng minh được điều gì?",
+      "options": [
+        "AD = BC",
+        "AB ∥ DC",
+        "AM = MC",
+        "AD ∥ BC"
+      ],
+      "correct": 3,
+      "answer": "AD ∥ BC",
+      "explanation": "🔑 ∠ADM và ∠BCM là hai góc so le trong tạo bởi cát tuyến DC cắt hai đường thẳng AD và BC; vì hai góc so le trong này bằng nhau (∠ADM = ∠BCM, suy ra từ △ADM = △BCM) nên theo dấu hiệu nhận biết, AD ∥ BC.<br>✗ AD = BC: đây là kết quả về độ dài cạnh suy ra trực tiếp từ hai tam giác bằng nhau, không phải điều chứng minh được từ cặp góc so le trong.<br>✗ AB ∥ DC: hai đường thẳng AB và DC cắt nhau tại M nên không song song.<br>✗ AM = MC: đây không phải kết luận từ dấu hiệu góc so le trong, và đề bài cũng không cho AM = MC.",
+      "source": "TQC-TL6b"
+    },
+    {
+      "id": "m3-54",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Tia Oz là tia phân giác của góc mOn. Biết góc mOz = 36°. Số đo góc mOn bằng bao nhiêu?",
+      "options": [
+        "36°",
+        "18°",
+        "72°",
+        "144°"
+      ],
+      "correct": 2,
+      "answer": "72°",
+      "explanation": "🔑 Nếu Oz là tia phân giác của góc mOn thì góc mOz = góc zOn = ½ góc mOn, suy ra góc mOn = 2 · góc mOz = 2 · 36° = 72°.<br>✗ 36°: nhầm góc mOn bằng chính góc mOz (quên nhân đôi).<br>✗ 18°: nhầm chia đôi góc mOz (36° : 2) thay vì nhân đôi.<br>✗ 144°: nhầm nhân bốn lần (36° × 4) thay vì nhân hai.",
+      "source": "PHL-TN6"
+    },
+    {
+      "id": "m3-55",
+      "ch": 3,
+      "topic": "Góc so le trong",
+      "q": "Đường thẳng a lần lượt cắt hai đường thẳng b, c tại hai điểm P và Q. Gọi α là góc ở đỉnh P, nằm trong khoảng giữa P và Q, về phía dưới đường thẳng a. Gọi β là góc ở đỉnh Q, nằm trong khoảng giữa P và Q, về phía trên đường thẳng a. Hai góc α và β là hai góc gì?",
+      "options": [
+        "Hai góc kề bù",
+        "Hai góc đối đỉnh",
+        "Hai góc đồng vị",
+        "Hai góc so le trong"
+      ],
+      "correct": 3,
+      "answer": "Hai góc so le trong",
+      "explanation": "🔑 Hai góc ở hai đỉnh cắt khác nhau (P và Q), cùng nằm trong khoảng giữa hai đường thẳng bị cắt (góc trong) nhưng ở hai phía khác nhau của đường thẳng a (một góc phía trên, một góc phía dưới) là hai góc so le trong.<br>✗ Hai góc kề bù: kề bù là hai góc chung đỉnh và chung một cạnh, còn α, β ở hai đỉnh P, Q khác nhau.<br>✗ Hai góc đối đỉnh: đối đỉnh cũng phải chung một đỉnh, trong khi α ở P còn β ở Q.<br>✗ Hai góc đồng vị: đồng vị là một góc trong, một góc ngoài, cùng phía đường thẳng a; ở đây cả hai góc đều là góc trong nhưng khác phía nên là so le trong.",
+      "source": "PHL-TN7"
+    },
+    {
+      "id": "m3-56",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Một đường thẳng cắt hai đường thẳng khác, tạo thành các góc như sau. Trường hợp nào chắc chắn có hai đường thẳng song song?",
+      "options": [
+        "Hai góc so le trong bằng 90° và 60°",
+        "Hai góc so le trong bằng 65° và 65°",
+        "Hai góc so le trong bằng 35° và 40°",
+        "Hai góc đồng vị bằng 89° và 80°"
+      ],
+      "correct": 1,
+      "answer": "Hai góc so le trong bằng 65° và 65°",
+      "explanation": "🔑 Dấu hiệu nhận biết hai đường thẳng song song: một đường thẳng cắt hai đường thẳng tạo thành một cặp góc so le trong BẰNG NHAU (hoặc một cặp góc đồng vị bằng nhau) thì hai đường thẳng đó song song. Ở phương án có hai góc so le trong đều bằng 65° (bằng nhau) nên hai đường thẳng song song.<br>✗ Hai góc so le trong bằng 90° và 60°: hai góc không bằng nhau (90° ≠ 60°) nên không song song.<br>✗ Hai góc so le trong bằng 35° và 40°: hai góc không bằng nhau nên không song song.<br>✗ Hai góc đồng vị bằng 89° và 80°: hai góc không bằng nhau (89° ≠ 80°) nên không song song.",
+      "source": "PHL-TN8"
+    },
+    {
+      "id": "m3-57",
+      "ch": 3,
+      "topic": "Hai góc đối đỉnh",
+      "q": "Cho AD // BC. Đường thẳng đi qua D và C cắt AD tại D, cắt BC tại C. Tại đỉnh D, ∠ADC và ∠D2 là hai góc đối đỉnh. Biết ∠ADC = 72°, số đo ∠D2 bằng bao nhiêu?",
+      "options": [
+        "72°",
+        "108°",
+        "36°",
+        "144°"
+      ],
+      "correct": 0,
+      "answer": "72°",
+      "explanation": "🔑 Hai góc đối đỉnh thì bằng nhau. Vì ∠D2 đối đỉnh với ∠ADC nên ∠D2 = ∠ADC = 72°.<br>✗ 108°: nhầm ∠D2 là góc kề bù với ∠ADC (180° − 72°) thay vì đối đỉnh.<br>✗ 36°: nhầm chia đôi ∠ADC (72° : 2), tưởng D2 là một nửa của góc đã cho.<br>✗ 144°: nhầm nhân đôi ∠ADC (72° × 2) thay vì lấy bằng nhau.",
+      "source": "PHL-TL4b"
+    },
+    {
+      "id": "m3-58",
+      "ch": 3,
+      "topic": "Góc so le trong",
+      "q": "Cho AD // BC. Đường thẳng đi qua D và C cắt AD tại D, cắt BC tại C. Biết ∠ADC = 72°. Gọi Cx là tia đối của tia CB. ∠DCx (so le trong với ∠ADC) bằng bao nhiêu độ?",
+      "options": [
+        "108°",
+        "180°",
+        "36°",
+        "72°"
+      ],
+      "correct": 3,
+      "answer": "72°",
+      "explanation": "🔑 Vì AD // BC nên đường thẳng DC cắt hai đường thẳng song song tạo ra hai góc so le trong bằng nhau: ∠DCx = ∠ADC = 72°.<br>✗ 108°: nhầm lấy góc kề bù (180° − 72°) thay vì lấy góc so le trong bằng nhau.<br>✗ 180°: nhầm cộng dồn hai góc lại với nhau.<br>✗ 36°: nhầm chia đôi 72° thay vì giữ nguyên (hai góc so le trong luôn bằng nhau).",
+      "source": "PHL-TL4b2"
+    },
+    {
+      "id": "m3-59",
+      "ch": 3,
+      "topic": "Tia phân giác",
+      "q": "Cho góc xCy = 108°. Tia Cz là tia phân giác của góc xCy. Tính số đo góc xCz.",
+      "options": [
+        "108°",
+        "54°",
+        "27°",
+        "216°"
+      ],
+      "correct": 1,
+      "answer": "54°",
+      "explanation": "🔑 Nếu Cz là tia phân giác của góc xCy thì góc xCz = góc zCy = ½ góc xCy = ½ · 108° = 54°.<br>✗ 108°: nhầm góc xCz bằng cả góc xCy, quên chia đôi.<br>✗ 27°: nhầm chia tư (108° : 4) thay vì chia đôi.<br>✗ 216°: nhầm nhân đôi (108° × 2) thay vì chia đôi.",
+      "source": "PHL-TL4c"
+    },
+    {
+      "id": "m3-60",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a // b bị cắt bởi một đường thẳng, một góc đồng vị bằng 60°. Góc đồng vị tương ứng với nó bằng bao nhiêu?",
+      "options": [
+        "120°",
+        "60°",
+        "30°",
+        "180°"
+      ],
+      "correct": 1,
+      "answer": "60°",
+      "explanation": "🔑 Vì a // b nên hai góc đồng vị bằng nhau: góc còn lại cũng bằng 60°.<br>✗ 120°: nhầm sang tính góc kề bù (180° − 60°) thay vì góc đồng vị.<br>✗ 30°: nhầm chia đôi góc đã cho.<br>✗ 180°: nhầm cộng hai góc đồng vị lại với nhau, trong khi chúng bằng nhau chứ không phải bù nhau.",
+      "source": "AD-TN12"
+    },
+    {
+      "id": "m3-61",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Cho a // b, cùng bị cắt bởi một đường thẳng lần lượt tại A và B, trong đó ∠A1 và ∠B1 là một cặp góc đồng vị. Biết ∠A1 = 50°, tính ∠B1 và ∠B2 (kề bù với ∠B1).",
+      "options": [
+        "∠B1 = 130°, ∠B2 = 50°",
+        "∠B1 = 50°, ∠B2 = 50°",
+        "∠B1 = 50°, ∠B2 = 130°",
+        "∠B1 = 40°, ∠B2 = 140°"
+      ],
+      "correct": 2,
+      "answer": "∠B1 = 50°, ∠B2 = 130°",
+      "explanation": "🔑 Vì a // b nên ∠A1 = ∠B1 = 50° (hai góc đồng vị). Mặt khác ∠B1 và ∠B2 kề bù nên ∠B2 = 180° − ∠B1 = 180° − 50° = 130°.<br>✗ ∠B1 = 130°, ∠B2 = 50°: đảo ngược hai kết quả cho nhau.<br>✗ ∠B1 = 50°, ∠B2 = 50°: quên ∠B1 và ∠B2 kề bù, tưởng nhầm chúng cũng bằng nhau.<br>✗ ∠B1 = 40°, ∠B2 = 140°: tính sai góc đồng vị bằng cách lấy 90° − 50° thay vì giữ nguyên bằng 50°.",
+      "source": "AD-TL17b"
+    },
+    {
+      "id": "m3-62",
+      "ch": 3,
+      "topic": "Hai góc kề bù",
+      "q": "Cho hai tia đối nhau Oa và Od (cùng nằm trên một đường thẳng). Hai tia Ob, Oc nằm cùng phía so với đường thẳng ad, được sắp xếp theo thứ tự quanh O là Oa, Ob, Oc, Od. Góc kề bù với ∠aOb là góc nào?",
+      "options": [
+        "∠bOd",
+        "∠bOc",
+        "∠dOc",
+        "∠aOc"
+      ],
+      "correct": 0,
+      "answer": "∠bOd",
+      "explanation": "🔑 Hai góc kề bù có một cạnh chung và hai cạnh còn lại là hai tia đối nhau. Cạnh chung của ∠aOb là Ob; vì Oa và Od là hai tia đối nhau nên góc kề bù với ∠aOb là ∠bOd (∠aOb + ∠bOd = 180°).<br>✗ ∠bOc: có chung cạnh Ob với ∠aOb nhưng cạnh Oc không đối với Oa.<br>✗ ∠dOc: không có cạnh chung với ∠aOb.<br>✗ ∠aOc: có chung cạnh Oa với ∠aOb nhưng cạnh Oc không đối với Ob.",
+      "source": "TBH-TN8"
+    },
+    {
+      "id": "m3-63",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Cho định lí: 'Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác thì hai đường thẳng đó song song với nhau.' Giả thiết của định lí này là gì?",
+      "options": [
+        "Hai đường thẳng đó song song với nhau",
+        "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác thì hai đường thẳng đó song song với nhau",
+        "Hai đường thẳng phân biệt cùng vuông góc",
+        "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác"
+      ],
+      "correct": 3,
+      "answer": "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác",
+      "explanation": "🔑 Giả thiết (GT) là điều đã cho trước; ở đây GT là 'hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác', còn kết luận (KL) là 'hai đường thẳng đó song song với nhau'.<br>✗ Hai đường thẳng đó song song với nhau: đây là kết luận (KL), không phải giả thiết.<br>✗ ...thì hai đường thẳng đó song song với nhau: đây là toàn bộ định lí (cả GT lẫn KL), không riêng giả thiết.<br>✗ Hai đường thẳng phân biệt cùng vuông góc: thiếu cụm 'với một đường thẳng khác', không đầy đủ giả thiết.",
+      "source": "TBH-TN11"
+    },
+    {
+      "id": "m3-64",
+      "ch": 3,
+      "topic": "Tính chất hai đường thẳng song song",
+      "q": "Đường thẳng a song song với đường thẳng b, cả hai cùng bị cắt bởi một cát tuyến. Tại giao điểm với a có hai góc kề bù là ∠A1 và ∠A2; góc ∠A1 và góc ∠B1 (tại giao điểm với b) là một cặp góc đồng vị. Biết ∠B1 = 130°, tính ∠A1 và ∠A2.",
+      "options": [
+        "∠A1 = 50°, ∠A2 = 130°",
+        "∠A1 = 130°, ∠A2 = 130°",
+        "∠A1 = 50°, ∠A2 = 50°",
+        "∠A1 = 130°, ∠A2 = 50°"
+      ],
+      "correct": 3,
+      "answer": "∠A1 = 130°, ∠A2 = 50°",
+      "explanation": "🔑 Vì a // b nên ∠A1 = ∠B1 = 130° (hai góc đồng vị). Vì ∠A1 và ∠A2 kề bù nên ∠A1 + ∠A2 = 180°, suy ra ∠A2 = 180° − 130° = 50°.<br>✗ ∠A1 = 50°, ∠A2 = 130°: nhầm lẫn đổi chỗ kết quả của ∠A1 và ∠A2.<br>✗ ∠A1 = 130°, ∠A2 = 130°: nhầm tưởng ∠A2 bằng ∠A1 (nhầm với góc đối đỉnh) thay vì kề bù.<br>✗ ∠A1 = 50°, ∠A2 = 50°: tính sai ∠A1 (lấy 180° − 130° thay vì lấy bằng ∠B1) rồi lại lấy ∠A2 bằng ∠A1.",
+      "source": "TBH-TL17"
+    },
+    {
+      "id": "m3-65",
+      "ch": 3,
+      "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
+      "q": "Cho định lí: 'Nếu một đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau thì hai đường thẳng a, b song song với nhau.' Giả thiết (GT) của định lí này là gì?",
+      "options": [
+        "Đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau",
+        "Hai đường thẳng a, b song song với nhau",
+        "Đường thẳng c cắt hai đường thẳng a, b",
+        "Hai đường thẳng a, b có một cặp góc so le trong"
+      ],
+      "correct": 0,
+      "answer": "Đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau",
+      "explanation": "🔑 Giả thiết là phần điều kiện cho trước trong định lí: 'đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau'; kết luận là 'hai đường thẳng a, b song song với nhau'.<br>✗ Hai đường thẳng a, b song song với nhau: đây là kết luận (KL), không phải giả thiết.<br>✗ Đường thẳng c cắt hai đường thẳng a, b: thiếu điều kiện về cặp góc so le trong bằng nhau, chưa đủ giả thiết.<br>✗ Hai đường thẳng a, b có một cặp góc so le trong: thiếu vế 'đường thẳng c cắt a, b' và thiếu 'bằng nhau', không đúng giả thiết.",
+      "source": "TBH-TL18a"
     }
   ]
 }
