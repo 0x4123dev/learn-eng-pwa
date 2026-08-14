@@ -2,7 +2,7 @@
   "chapter": 3,
   "title": "Góc và đường thẳng song song",
   "icon": "③",
-  "lesson": "<p>Chương III kể một câu chuyện rất gọn: <b>hai đường thẳng cắt nhau thì sinh ra góc</b>, và nếu các góc ở đúng vị trí bằng nhau thì <b>hai đường thẳng đó song song</b>. Cả chương chỉ có mấy công thức, nhưng đề kiểm tra xoay đi xoay lại đúng mấy công thức đó. Con thuộc phần dưới đây là làm được gần hết bài tập.</p><h4>📌 Công thức</h4><p><b>1. Hai góc kề bù</b> — hai góc kề nhau (chung một cạnh), hai cạnh còn lại là hai tia đối nhau:</p><ul><li><b>∠xOz + ∠zOy = 180°</b></li><li>Biết một góc là tính ngay được góc kia: ∠zOy = 180° − ∠xOz.</li></ul><p><b>2. Hai góc đối đỉnh</b> — hai đường thẳng cắt nhau tạo ra 4 góc; hai góc đối nhau qua điểm cắt là hai góc đối đỉnh:</p><ul><li><b>∠O₁ = ∠O₂</b> (hai góc đối đỉnh thì bằng nhau)</li></ul><p><b>3. Tia phân giác</b> — tia nằm giữa hai cạnh và chia góc thành hai phần bằng nhau:</p><ul><li><b>∠xOz = ∠zOy = ½∠xOy</b></li></ul><p><b>4. Dấu hiệu nhận biết hai đường thẳng song song</b> (đi từ GÓC ⇒ SONG SONG):</p><ul><li>Một cặp góc <b>so le trong bằng nhau</b> ⇒ <b>a ∥ b</b></li><li>HOẶC một cặp góc <b>đồng vị bằng nhau</b> ⇒ <b>a ∥ b</b></li></ul><p><b>5. Tính chất hai đường thẳng song song</b> (đi từ SONG SONG ⇒ GÓC):</p><ul><li><b>a ∥ b ⇒</b> các góc so le trong bằng nhau, các góc đồng vị bằng nhau</li><li>Kèm theo: hai góc <b>trong cùng phía bù nhau</b>, tổng bằng 180°.</li></ul><p><b>6. Quan hệ giữa vuông góc và song song</b>:</p><ul><li><b>a ⊥ c và b ⊥ c ⇒ a ∥ b</b> — cùng vuông góc với một đường thứ ba thì song song với nhau.</li><li><b>a ∥ b và c ⊥ a ⇒ c ⊥ b</b> — vuông góc với một trong hai đường song song thì vuông góc với đường còn lại.</li></ul><p><b>7. Tiên đề Euclid</b>: Qua một điểm nằm ngoài một đường thẳng, <b>chỉ có MỘT</b> đường thẳng song song với đường thẳng đó.</p><h4>💡 Ví dụ</h4><ul><li><b>Kề bù:</b> ∠xOz = 130°. Vì ∠xOz và ∠zOy kề bù nên ∠zOy = 180° − 130° = <b>50°</b>.</li><li><b>Đối đỉnh:</b> Hai đường thẳng cắt nhau tại O, một góc bằng 40°. Góc đối đỉnh với nó cũng bằng <b>40°</b>; hai góc còn lại kề bù với nó nên mỗi góc bằng 180° − 40° = <b>140°</b>.</li><li><b>Phân giác:</b> ∠xOy = 80° và Oz là tia phân giác ⇒ ∠xOz = ∠zOy = ½ · 80° = <b>40°</b>. Ngược lại, nếu ∠xOz = 35° và Oz là phân giác thì ∠xOy = 2 · 35° = <b>70°</b>.</li><li><b>Song song:</b> Đường thẳng c cắt a và b, một cặp góc so le trong đều bằng 65° ⇒ <b>a ∥ b</b>. Đã có a ∥ b thì mọi cặp góc đồng vị cũng bằng nhau, còn góc trong cùng phía với góc 65° bằng 180° − 65° = <b>115°</b>.</li><li><b>Vuông góc – song song:</b> a ⊥ c và b ⊥ c ⇒ <b>a ∥ b</b>. Nếu sau đó có thêm d ⊥ a thì vì a ∥ b nên <b>d ⊥ b</b>.</li><li><b>Tiên đề:</b> Qua điểm M ngoài đường thẳng d kẻ được <b>vô số</b> đường thẳng, nhưng chỉ <b>đúng một</b> đường song song với d.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>180° hay 90° hay 360°?</b> Hai góc kề bù có tổng <b>180°</b> (ghép lại thành góc bẹt). <b>90°</b> là hai góc phụ nhau. <b>360°</b> là tổng các góc quanh một điểm. Ba con số này rất hay bị lẫn.</li><li><b>So le trong / đồng vị / trong cùng phía.</b> So le trong nằm ở <b>hai phía khác nhau</b> của đường cắt, phần <b>trong</b>. Đồng vị nằm <b>cùng phía</b> đường cắt và ở <b>cùng vị trí</b> (cùng trên hoặc cùng dưới). Trong cùng phía nằm cùng một bên, phần trong. Khi a ∥ b: so le trong <b>bằng nhau</b>, đồng vị <b>bằng nhau</b>, còn trong cùng phía <b>bù nhau (180°)</b> chứ KHÔNG bằng nhau.</li><li><b>Chiều của mũi tên ⇒.</b> “Góc bằng nhau ⇒ a ∥ b” là <b>dấu hiệu nhận biết</b>; “a ∥ b ⇒ góc bằng nhau” là <b>tính chất</b>. Đề hỏi chiều nào phải trả lời đúng chiều đó.</li><li><b>⊥ và ∥ rất dễ viết nhầm.</b> Nhớ kỹ: hai đường <b>cùng vuông góc</b> với một đường thứ ba thì <b>song song</b> với nhau (a ⊥ c, b ⊥ c ⇒ a ∥ b), chứ không phải a ⊥ b. Vuông góc <b>không</b> bắc cầu, còn song song thì có: a ∥ b, b ∥ c ⇒ a ∥ c.</li><li><b>Tiên đề nói “chỉ MỘT”.</b> Không phải “hai”, cũng không phải “vô số”. Và nếu điểm đó <b>nằm trên</b> đường thẳng thì không kẻ được đường song song nào cả.</li><li><b>Đối đỉnh chứ không phải kề bù.</b> Hai góc đối đỉnh thì <b>bằng nhau</b>; hai góc kề bù thì <b>cộng lại</b> bằng 180°.</li></ul>",
+  "lesson": "<p>Chương III gói trong một câu chuyện gọn: <b>hai đường thẳng cắt nhau sinh ra các cặp góc đặc biệt</b>, và khi một đường thẳng cắt hai đường thẳng khác mà các góc ở đúng vị trí bằng nhau thì <b>hai đường thẳng đó song song</b>. Con thuộc mấy bảng dưới đây là làm được gần hết bài tập.</p><h4>1. Góc ở vị trí đặc biệt</h4><table><thead><tr><th>Loại</th><th>Định nghĩa</th><th>Công thức</th></tr></thead><tbody><tr><td><b>Kề bù</b></td><td>Chung một cạnh, hai cạnh còn lại là hai tia đối nhau</td><td><b>∠xOz + ∠zOy = 180°</b></td></tr><tr><td><b>Đối đỉnh</b></td><td>Mỗi cạnh của góc này là tia đối của một cạnh của góc kia</td><td>Bằng nhau: <b>∠O₁ = ∠O₂</b></td></tr><tr><td><b>Tia phân giác</b></td><td>Tia nằm giữa hai cạnh, chia góc thành hai phần bằng nhau</td><td><b>∠xOz = ∠zOy = ½∠xOy</b></td></tr></tbody></table><ul><li><b>Ví dụ kề bù:</b> ∠xOz = 130° ⇒ ∠zOy = 180° − 130° = <b>50°</b>.</li><li><b>Ví dụ đối đỉnh:</b> hai đường thẳng cắt nhau, một góc 40° ⇒ góc đối đỉnh cũng <b>40°</b>; hai góc còn lại kề bù = 180° − 40° = <b>140°</b>.</li><li><b>Ví dụ phân giác:</b> ∠xOy = 80°, Oz là phân giác ⇒ ∠xOz = ∠zOy = <b>40°</b>. Ngược lại ∠xOz = 35° ⇒ ∠xOy = 2 · 35° = <b>70°</b>.</li></ul><h4>2. Đường thẳng song song (c cắt a và b)</h4><ul><li><b>Nhớ vị trí góc:</b> <i>so le trong</i> — hai phía khác nhau của c, phần trong; <i>đồng vị</i> — cùng phía c, cùng vị trí (cùng trên hoặc cùng dưới); <i>trong cùng phía</i> — cùng một bên, phần trong.</li><li><b>Dấu hiệu (GÓC ⇒ ∥):</b> một cặp <b>so le trong bằng nhau</b> HOẶC một cặp <b>đồng vị bằng nhau</b> ⇒ <b>a ∥ b</b>.</li><li><b>Tính chất (∥ ⇒ GÓC):</b> a ∥ b ⇒ so le trong <b>bằng nhau</b>, đồng vị <b>bằng nhau</b>, trong cùng phía <b>bù nhau (tổng 180°)</b> — chứ KHÔNG bằng nhau.</li><li><b>Ví dụ:</b> cặp so le trong cùng bằng 65° ⇒ a ∥ b; khi đó mọi cặp đồng vị cũng bằng nhau, còn góc trong cùng phía = 180° − 65° = <b>115°</b>.</li></ul><h4>3. Vuông góc – song song – tiên đề Euclid</h4><ul><li><b>a ⊥ c và b ⊥ c ⇒ a ∥ b</b> — hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì song song với nhau (KHÔNG phải a ⊥ b).</li><li><b>a ∥ b và c ⊥ a ⇒ c ⊥ b</b> — vuông góc với một trong hai đường song song thì vuông góc với đường còn lại. Ví dụ: a ⊥ c, b ⊥ c ⇒ a ∥ b; thêm d ⊥ a thì <b>d ⊥ b</b>.</li><li><b>a ∥ b và b ∥ c ⇒ a ∥ c</b> — song song có \"bắc cầu\"; vuông góc thì KHÔNG.</li><li><b>Tiên đề Euclid:</b> qua một điểm ở ngoài một đường thẳng, <b>chỉ có MỘT</b> đường thẳng song song với đường thẳng đó. Qua M ngoài d kẻ được vô số đường thẳng nhưng chỉ đúng một đường song song với d; nếu điểm nằm trên d thì không kẻ được đường song song nào.</li></ul><h4>⚠️ Tránh nhầm</h4><ul><li><b>180° – 90° – 360°:</b> kề bù tổng <b>180°</b> (góc bẹt); hai góc kề bù mà bằng nhau ⇒ mỗi góc là góc vuông <b>90°</b>; các góc quanh một điểm tổng <b>360°</b>.</li><li><b>Đối đỉnh thì bằng nhau</b>, kề bù thì <b>cộng lại bằng 180°</b> — đừng lẫn hai loại.</li><li><b>Chiều mũi tên ⇒:</b> góc bằng nhau ⇒ a ∥ b là <b>dấu hiệu nhận biết</b>; a ∥ b ⇒ góc bằng nhau là <b>tính chất</b>. Đề hỏi chiều nào trả lời đúng chiều đó.</li></ul><h4>📌 Công thức cần thuộc</h4><table><thead><tr><th>Điều đã biết</th><th>Suy ra</th></tr></thead><tbody><tr><td>∠xOz, ∠zOy kề bù</td><td><b>∠xOz + ∠zOy = 180°</b></td></tr><tr><td>Hai góc đối đỉnh</td><td><b>∠O₁ = ∠O₂</b></td></tr><tr><td>Oz là tia phân giác của ∠xOy</td><td><b>∠xOz = ∠zOy = ½∠xOy</b></td></tr><tr><td>So le trong (hoặc đồng vị) bằng nhau</td><td><b>a ∥ b</b></td></tr><tr><td>a ∥ b</td><td>So le trong <b>=</b>, đồng vị <b>=</b>, trong cùng phía <b>bù nhau 180°</b></td></tr><tr><td>a ⊥ c và b ⊥ c</td><td><b>a ∥ b</b></td></tr><tr><td>a ∥ b và c ⊥ a</td><td><b>c ⊥ b</b></td></tr><tr><td>a ∥ b và b ∥ c</td><td><b>a ∥ c</b></td></tr><tr><td>Điểm ngoài đường thẳng (tiên đề Euclid)</td><td>Chỉ <b>MỘT</b> đường thẳng song song đi qua điểm đó</td></tr></tbody></table>",
   "questions": [
     {
       "id": "m3-1",
@@ -17,7 +17,7 @@
       ],
       "correct": 0,
       "answer": "∠xOz + ∠zOy = 180°",
-      "explanation": "🔑 Kề bù: tổng = <b>180°</b> (ghép lại thành góc bẹt).<br>✗ 90°: đó là hai góc phụ nhau.<br>✗ 360°: tổng góc quanh một điểm.<br>✗ Bằng nhau: chỉ khi mỗi góc 90°."
+      "explanation": "🔑 Hai góc kề bù có tổng số đo bằng <b>180°</b>. Ví dụ: ∠xOz = 60° thì ∠zOy = 180° − 60° = 120°.<br>✗ ∠xOz + ∠zOy = 90°: SGK chỉ nói tổng hai góc kề bù bằng 180°, không có tính chất tổng 90°.<br>✗ ∠xOz + ∠zOy = 360°: 360° là tổng cả bốn góc khi hai đường thẳng cắt nhau (hai cặp kề bù: 180° + 180°), không phải tổng của một cặp kề bù.<br>✗ ∠xOz = ∠zOy: hai góc kề bù chỉ bằng nhau khi mỗi góc là góc vuông 90°, không phải lúc nào cũng vậy."
     },
     {
       "id": "m3-2",
@@ -47,7 +47,7 @@
       ],
       "correct": 2,
       "answer": "Chúng bằng nhau",
-      "explanation": "🔑 Hai góc đối đỉnh thì <b>bằng nhau</b>. Ví dụ: hai đường thẳng cắt nhau tạo một góc 40° thì góc đối đỉnh với nó cũng bằng 40°.<br>✗ Tổng số đo bằng 180°: đó là hai góc kề bù, không phải đối đỉnh.<br>✗ Tổng số đo bằng 90°: đó là hai góc phụ nhau.<br>✗ Góc này bằng một nửa góc kia: nhầm với tia phân giác chia đôi một góc."
+      "explanation": "🔑 Hai góc đối đỉnh thì <b>bằng nhau</b>. Ví dụ: hai đường thẳng cắt nhau tạo một góc 40° thì góc đối đỉnh với nó cũng bằng 40°.<br>✗ Tổng số đo bằng 180°: đó là hai góc kề bù (hai góc bù nhau), không phải hai góc đối đỉnh.<br>✗ Tổng số đo bằng 90°: SGK không có tính chất nào như vậy; hai góc đối đỉnh là bằng nhau.<br>✗ Góc này bằng một nửa góc kia: nhầm với tia phân giác chia một góc thành hai góc bằng nhau."
     },
     {
       "id": "m3-4",
@@ -77,7 +77,7 @@
       ],
       "correct": 0,
       "answer": "145°",
-      "explanation": "🔑 Kề bù ⇒ 180° − 35° = <b>145°</b>.<br>✗ 35°: bằng nhau là góc đối đỉnh.<br>✗ 55°: 90° − 35°, đó là phụ nhau.<br>✗ 325°: 360° − 35°, nhầm góc quanh điểm."
+      "explanation": "🔑 Hai góc kề bù có tổng số đo bằng 180° ⇒ góc kề bù với góc 35° bằng 180° − 35° = <b>145°</b>.<br>✗ 35°: đó là góc đối đỉnh với góc đã cho (hai góc đối đỉnh thì bằng nhau), không phải góc kề bù.<br>✗ 55°: lấy 90° − 35° là sai, vì tổng hai góc kề bù là 180°, không phải 90°.<br>✗ 325°: lấy 360° − 35° là sai; 360° là tổng cả bốn góc, còn một cặp kề bù chỉ có tổng 180°."
     },
     {
       "id": "m3-6",
@@ -107,7 +107,7 @@
       ],
       "correct": 2,
       "answer": "360°",
-      "explanation": "🔑 Bốn góc phủ kín quanh điểm cắt ⇒ tổng <b>360°</b>.<br>✗ 180°: chỉ là tổng hai góc kề bù.<br>✗ 90°: đó là hai góc phụ nhau.<br>✗ 720°: đếm mỗi góc hai lần."
+      "explanation": "🔑 Bốn góc chia được thành hai cặp góc kề bù, mỗi cặp có tổng 180° ⇒ tổng bốn góc là 180° + 180° = <b>360°</b>.<br>✗ 180°: chỉ là tổng của một cặp góc kề bù, tức là mới hai trong bốn góc.<br>✗ 90°: đó là số đo của một góc vuông, không phải tổng của bốn góc.<br>✗ 720°: đếm mỗi góc hai lần; 360° + 360° = 720° là sai."
     },
     {
       "id": "m3-8",
@@ -122,7 +122,7 @@
       ],
       "correct": 3,
       "answer": "Hai góc kề nhau (chung cạnh Oz) và hai tia Ox, Oy đối nhau",
-      "explanation": "🔑 Kề bù = chung cạnh Oz, còn Ox, Oy là <b>hai tia đối nhau</b>.<br>✗ Bằng nhau: chỉ khi mỗi góc 90°.<br>✗ Tổng 90°: đó là hai góc phụ nhau.<br>✗ Đối đỉnh: bằng nhau, không kề nhau."
+      "explanation": "🔑 Theo SGK: hai góc có một cạnh chung, hai cạnh còn lại là <b>hai tia đối nhau</b> được gọi là hai góc kề bù. Ví dụ: ∠xOz = 120° và ∠zOy = 60° chung cạnh Oz, còn Ox và Oy là hai tia đối nhau.<br>✗ Hai góc bằng nhau và có chung đỉnh O: hai góc kề bù không cần bằng nhau (chúng chỉ bằng nhau khi mỗi góc là 90°).<br>✗ Hai góc có chung đỉnh O và tổng bằng 90°: tổng hai góc kề bù là 180°, không phải 90°.<br>✗ Hai góc đối đỉnh nhau qua điểm O: hai góc đối đỉnh không có cạnh chung nên không kề nhau."
     },
     {
       "id": "m3-9",
@@ -311,13 +311,13 @@
       "q": "Cho a ∥ b và đường thẳng c cắt cả hai đường đó. Khi đó các góc so le trong có quan hệ gì?",
       "options": [
         "Bù nhau (tổng bằng 180°)",
-        "Phụ nhau (tổng bằng 90°)",
+        "Có tổng số đo bằng 90°",
         "Bằng nhau",
         "Không có quan hệ gì đặc biệt"
       ],
       "correct": 2,
       "answer": "Bằng nhau",
-      "explanation": "🔑 a ∥ b ⇒ so le trong <b>bằng nhau</b> (đồng vị cũng vậy).<br>✗ Bù nhau: đó là hai góc trong cùng phía.<br>✗ Phụ nhau 90°: không cặp góc nào vậy.<br>✗ Có quan hệ rất rõ: chúng bằng nhau."
+      "explanation": "🔑 Nếu một đường thẳng cắt hai đường thẳng song song thì hai góc so le trong <b>bằng nhau</b> (hai góc đồng vị cũng bằng nhau). Ví dụ: một góc so le trong bằng 65° thì góc so le trong kia cũng bằng 65°.<br>✗ Bù nhau (tổng bằng 180°): đó là quan hệ của hai góc trong cùng phía khi a ∥ b, không phải của hai góc so le trong.<br>✗ Có tổng số đo bằng 90°: không có tính chất nào như vậy; hai góc so le trong bằng nhau chứ không cộng thành 90°.<br>✗ Không có quan hệ gì đặc biệt: có quan hệ rất rõ — chúng bằng nhau, đó là tính chất của hai đường thẳng song song."
     },
     {
       "id": "m3-22",
@@ -332,7 +332,7 @@
       ],
       "correct": 3,
       "answer": "65°",
-      "explanation": "🔑 a ∥ b ⇒ so le trong bằng nhau ⇒ <b>65°</b>.<br>✗ 115°: 180° − 65°, là trong cùng phía.<br>✗ 25°: 90° − 65°, nhầm phụ nhau.<br>✗ 130°: nhân đôi 65°, vô căn cứ."
+      "explanation": "🔑 a ∥ b ⇒ hai góc so le trong bằng nhau ⇒ góc còn lại cũng bằng <b>65°</b>.<br>✗ 115°: 180° − 65° là quan hệ bù nhau của hai góc trong cùng phía, không phải của hai góc so le trong.<br>✗ 25°: lấy 90° − 65° là vô căn cứ; hai góc so le trong bằng nhau chứ không cộng thành 90°.<br>✗ 130°: nhân đôi 65° là vô căn cứ; không có tính chất nào như vậy."
     },
     {
       "id": "m3-23",
@@ -347,7 +347,7 @@
       ],
       "correct": 1,
       "answer": "115°",
-      "explanation": "🔑 a ∥ b ⇒ trong cùng phía <b>bù nhau</b>: 180° − 65° = <b>115°</b>.<br>✗ 65°: bằng nhau là so le trong, đồng vị.<br>✗ 25°: 90° − 65°, nhầm phụ nhau.<br>✗ 180°: đó là tổng của hai góc."
+      "explanation": "🔑 a ∥ b ⇒ hai góc trong cùng phía <b>bù nhau</b> (tổng bằng 180°) ⇒ 180° − 65° = <b>115°</b>.<br>✗ 65°: bằng nhau là quan hệ của cặp góc so le trong hoặc đồng vị, không phải của hai góc trong cùng phía.<br>✗ 25°: lấy 90° − 65° là vô căn cứ; tổng hai góc trong cùng phía là 180°, không phải 90°.<br>✗ 180°: đó là tổng số đo của cả hai góc, không phải số đo của góc còn lại."
     },
     {
       "id": "m3-24",
@@ -368,7 +368,7 @@
       "id": "m3-25",
       "ch": 3,
       "topic": "Chiều của mệnh đề",
-      "q": "Mệnh đề “Hai góc so le trong bằng nhau ⇒ a ∥ b” được gọi là gì?",
+      "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b. Khẳng định “Nếu trong các góc tạo thành có một cặp góc so le trong bằng nhau thì a song song với b” được gọi là gì?",
       "options": [
         "Dấu hiệu nhận biết hai đường thẳng song song",
         "Tính chất của hai đường thẳng song song",
@@ -377,7 +377,7 @@
       ],
       "correct": 0,
       "answer": "Dấu hiệu nhận biết hai đường thẳng song song",
-      "explanation": "🔑 <b>GÓC ⇒ SONG SONG</b> là dấu hiệu nhận biết.<br>✗ Tính chất: chiều ngược, a ∥ b ⇒ góc.<br>✗ Tiên đề Euclid: nói về số đường ∥ qua M.<br>✗ Kề bù: chỉ nói tổng bằng 180°."
+      "explanation": "🔑 Đó chính là <b>dấu hiệu nhận biết hai đường thẳng song song</b>: có một cặp góc so le trong bằng nhau (hoặc một cặp góc đồng vị bằng nhau) thì a ∥ b. Ví dụ: hai góc so le trong cùng bằng 60° thì a ∥ b.<br>✗ Tính chất của hai đường thẳng song song: là chiều ngược lại — biết a ∥ b trước, rồi mới suy ra các cặp góc so le trong bằng nhau.<br>✗ Tiên đề Euclid về đường thẳng song song: nói rằng qua một điểm ở ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đó.<br>✗ Định nghĩa hai góc kề bù: nói về hai góc có một cạnh chung, hai cạnh còn lại là hai tia đối nhau — không liên quan đến song song."
     },
     {
       "id": "m3-26",
@@ -488,16 +488,16 @@
       "id": "m3-33",
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
-      "q": "Đường thẳng c cắt a và b, hai góc trong cùng phía có số đo 120° và 60°. Kết luận nào đúng?",
+      "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b, tạo thành một cặp góc đồng vị cùng có số đo 120°. Kết luận nào đúng?",
       "options": [
-        "a không song song với b vì hai góc không bằng nhau",
-        "a ∥ b vì hai góc trong cùng phía bù nhau",
+        "a ∥ b vì có một cặp góc đồng vị bằng nhau",
+        "a không song song với b vì 120° + 120° khác 180°",
         "a ⊥ b",
-        "Không kết luận được gì"
+        "Chưa kết luận được, phải đo thêm cặp góc so le trong"
       ],
-      "correct": 1,
-      "answer": "a ∥ b vì hai góc trong cùng phía bù nhau",
-      "explanation": "🔑 120° + 60° = 180° ⇒ hai góc trong cùng phía <b>bù nhau</b> ⇒ <b>a ∥ b</b>.<br>✗ a không song song vì hai góc không bằng nhau: trong cùng phía không cần bằng nhau, chỉ cần <b>bù nhau</b> (tổng 180°) là đủ để a ∥ b.<br>✗ a ⊥ b: đề không cho góc 90° nào.<br>✗ Không kết luận được gì: kết luận được, vì tổng bằng 180° chính là dấu hiệu nhận biết hai đường thẳng song song."
+      "correct": 0,
+      "answer": "a ∥ b vì có một cặp góc đồng vị bằng nhau",
+      "explanation": "🔑 Dấu hiệu nhận biết (SGK): nếu đường thẳng c cắt hai đường thẳng phân biệt a, b và trong các góc tạo thành có một cặp góc so le trong bằng nhau <b>hoặc</b> một cặp góc đồng vị bằng nhau thì a và b song song với nhau. Ở đây cặp góc đồng vị cùng bằng 120° ⇒ a ∥ b.<br>✗ a không song song với b vì 120° + 120° khác 180°: dấu hiệu chỉ cần hai góc đồng vị <b>bằng nhau</b>, không xét tổng của chúng.<br>✗ a ⊥ b: đề không cho góc 90° nào.<br>✗ Chưa kết luận được, phải đo thêm cặp góc so le trong: một cặp góc đồng vị bằng nhau đã đủ để kết luận a ∥ b."
     },
     {
       "id": "m3-34",

@@ -2,7 +2,7 @@
   "chapter": 1,
   "title": "Số hữu tỉ",
   "icon": "①",
-  "lesson": "<p>Chương I mở ra một gia đình số mới: <b>số hữu tỉ</b> — mọi số viết được dưới dạng phân số. Cả chương chỉ có ba nhóm kiến thức: <b>số hữu tỉ và số đối</b>, <b>quy tắc chuyển vế</b>, và <b>bảy công thức luỹ thừa</b>. Thuộc bảng dưới đây là em làm được gần hết bài tập.</p><h4>📌 Công thức</h4><p><b>1. Số hữu tỉ và số đối</b></p><table><tr><td><b>Nội dung</b></td><td><b>Công thức</b></td><td><b>Ghi nhớ</b></td></tr><tr><td>Định nghĩa</td><td>x ∈ ℚ ⇔ x = a/b ; a, b ∈ ℤ ; b ≠ 0</td><td>Tử và mẫu đều là số NGUYÊN, mẫu KHÁC 0</td></tr><tr><td>Số đối</td><td>Số đối của a/b là −a/b</td><td>Chỉ đổi dấu; a/b + (−a/b) = 0</td></tr><tr><td>Số nguyên cũng là số hữu tỉ</td><td>a = a/1</td><td>Vì mẫu 1 ≠ 0 nên mọi số nguyên đều thuộc ℚ</td></tr></table><p><b>2. Quy tắc chuyển vế</b></p><table><tr><td>A + B = C</td><td>⇒ A = C − B</td></tr><tr><td>A − B = C</td><td>⇒ A = C + B</td></tr></table><p>Chỉ cần nhớ một câu: <b>qua vế kia thì đổi dấu</b> — dấu cộng thành dấu trừ, dấu trừ thành dấu cộng.</p><p><b>3. Bảy công thức luỹ thừa</b></p><ul><li><b>x⁰ = 1</b> (với x ≠ 0) và <b>x¹ = x</b></li><li><b>xᵐ · xⁿ = xᵐ⁺ⁿ</b> — nhân thì CỘNG số mũ, cơ số giữ nguyên</li><li><b>xᵐ : xⁿ = xᵐ⁻ⁿ</b> — chia thì TRỪ số mũ (x ≠ 0)</li><li><b>(xᵐ)ⁿ = xᵐⁿ</b> — luỹ thừa của luỹ thừa thì NHÂN hai số mũ</li><li><b>(xy)ⁿ = xⁿyⁿ</b> — số mũ được chia đều cho từng thừa số</li><li><b>(x/y)ⁿ = xⁿ/yⁿ</b> (y ≠ 0) — cả tử lẫn mẫu đều lên mũ</li><li><b>x⁻ⁿ = 1/xⁿ</b> (x ≠ 0) — số mũ âm nghĩa là lật xuống làm mẫu</li></ul><h4>💡 Ví dụ</h4><ul><li><b>Số đối:</b> số đối của −3/5 là <b>3/5</b>, vì −3/5 + 3/5 = 0. Còn 5/3 là số <b>nghịch đảo</b> — hai khái niệm hoàn toàn khác nhau.</li><li><b>Tìm x:</b> x + 3/4 = 5/4 ⇒ chuyển 3/4 sang phải và đổi dấu ⇒ x = 5/4 − 3/4 = 2/4 = <b>1/2</b>.</li><li><b>Tìm x:</b> x − 2/5 = 1/5 ⇒ dấu trừ qua vế kia thành dấu cộng ⇒ x = 1/5 + 2/5 = <b>3/5</b>.</li><li><b>Tìm x:</b> 5 − x = 2 ⇒ x = 5 − 2 = <b>3</b>. Thử lại: 5 − 3 = 2 ✔</li><li><b>Nhân luỹ thừa:</b> 2³ · 2⁴ = 2³⁺⁴ = <b>2⁷</b> = 128. Cơ số vẫn là 2, không phải 4.</li><li><b>Chia luỹ thừa:</b> 5⁶ : 5⁴ = 5⁶⁻⁴ = <b>5²</b> = 25.</li><li><b>Luỹ thừa của luỹ thừa:</b> (x⁴)³ = x¹² vì 4 · 3 = 12.</li><li><b>Luỹ thừa của phân số (thương):</b> (2/3)⁴ = 2⁴/3⁴ = <b>16/81</b>.</li><li><b>Số mũ âm:</b> 3⁻² = 1/3² = <b>1/9</b> — kết quả là số dương.</li><li><b>Dấu âm trong ngoặc:</b> (−1/2)³ = (−1)³/2³ = <b>−1/8</b>; số mũ lẻ giữ dấu âm, số mũ chẵn cho kết quả dương.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>Quên điều kiện b ≠ 0:</b> 3/0 không phải số hữu tỉ. Ngược lại, tử được phép bằng 0 — 0/7 = 0 vẫn là số hữu tỉ.</li><li><b>Nhầm số đối với số nghịch đảo:</b> số đối của 2/3 là −2/3 (cộng vào được 0), còn 3/2 là nghịch đảo (nhân vào được 1).</li><li><b>Chuyển vế quên đổi dấu:</b> từ 2 + x = 9 mà viết x = 9 + 2 là sai; đúng phải là x = 9 − 2 = 7.</li><li><b>Nhân luỹ thừa mà nhân số mũ hoặc nhân cơ số:</b> 2³ · 2⁴ = <b>2⁷</b>, không phải 2¹², cũng không phải 4⁷ — cơ số luôn GIỮ nguyên.</li><li><b>Tưởng cộng luỹ thừa cũng cộng số mũ:</b> 2² + 2³ = 4 + 8 = 12, còn 2⁵ = 32 — hoàn toàn khác nhau. Không có công thức cho phép cộng.</li><li><b>Tưởng số mũ âm cho kết quả âm:</b> 3⁻² = 1/9, không phải −9 hay −1/9.</li><li><b>Bỏ sót một phần trong ngoặc:</b> (2/3)⁴ = 2⁴/3⁴ chứ không phải 2⁴/3; và (x⁴)³ = x¹², đừng viết thành x⁴.</li></ul>",
+  "lesson": "<p>Cả chương I gói trong một câu thôi, em nhé: muốn so sánh hay cộng, trừ, nhân, chia các số hữu tỉ, ta <b>viết chúng dưới dạng phân số rồi áp dụng quy tắc với phân số</b>. Còn lại chỉ cần thuộc quy tắc chuyển vế và bảy công thức luỹ thừa ở bảng 📌 cuối bài.</p><h4>1. Số hữu tỉ và số đối</h4><table><tr><td><b>Định nghĩa</b></td><td>Số hữu tỉ là số viết được dưới dạng phân số a/b, với a, b ∈ ℤ, b ≠ 0. Tập hợp kí hiệu là ℚ. Tử được bằng 0 (0/7 = 0 ∈ ℚ), mẫu thì KHÔNG: 3/0 không phải số hữu tỉ</td></tr><tr><td><b>Ai thuộc ℚ?</b></td><td>Mọi số nguyên (a = a/1), số thập phân, hỗn số</td></tr><tr><td><b>Số đối</b></td><td>Số đối của a/b là −a/b — chỉ đổi dấu; a/b + (−a/b) = 0. Số đối của −3/5 là <b>3/5</b>; đừng nhầm với <b>nghịch đảo</b> 5/3 (nhân vào được 1)</td></tr><tr><td><b>So sánh, tính</b></td><td>Đưa về phân số; nếu cả hai đã là số thập phân thì tính trực tiếp. Trên trục số, số nhỏ hơn nằm trước số lớn hơn</td></tr></table><h4>2. Quy tắc chuyển vế</h4><p>Chỉ một câu: <b>qua vế kia thì đổi dấu</b>. Thứ tự tính: trong ngoặc trước; luỹ thừa → nhân, chia → cộng, trừ.</p><ul><li>x + 3/4 = 5/4 ⇒ x = 5/4 − 3/4 = <b>1/2</b></li><li>x − 2/5 = 1/5 ⇒ x = 1/5 + 2/5 = <b>3/5</b></li><li>5 − x = 2 ⇒ x = 5 − 2 = <b>3</b> (thử lại: 5 − 3 = 2 ✔)</li></ul><h4>3. Bảy công thức luỹ thừa</h4><table><tr><td>xᵐ · xⁿ = xᵐ⁺ⁿ</td><td>nhân: CỘNG mũ, giữ cơ số</td><td>2³ · 2⁴ = 2⁷ = 128</td></tr><tr><td>xᵐ : xⁿ = xᵐ⁻ⁿ</td><td>chia: TRỪ mũ</td><td>5⁶ : 5⁴ = 5² = 25</td></tr><tr><td>(xᵐ)ⁿ = xᵐⁿ</td><td>luỹ thừa của luỹ thừa: NHÂN mũ</td><td>(x⁴)³ = x¹²</td></tr><tr><td>(x·y)ⁿ = xⁿ·yⁿ</td><td>tích: cả hai lên mũ</td><td>(2·5)³ = 2³·5³</td></tr><tr><td>(x/y)ⁿ = xⁿ/yⁿ</td><td>thương: tử lẫn mẫu lên mũ</td><td>(2/3)⁴ = 2⁴/3⁴ = 16/81</td></tr><tr><td>x⁰ = 1; x¹ = x</td><td>quy ước (x ≠ 0)</td><td>5⁰ = 1</td></tr><tr><td>x⁻ⁿ = 1/xⁿ</td><td>mũ âm: lật xuống mẫu</td><td>3⁻² = 1/9 (số dương!)</td></tr><tr><td>dấu âm trong ngoặc</td><td>mũ lẻ giữ dấu âm, mũ chẵn ra dương</td><td>(−1/2)³ = −1/8</td></tr></table><h4>⚠️ Lỗi thường gặp</h4><ul><li>Chuyển vế quên đổi dấu: 2 + x = 9 ⇒ x = 9 − 2 = <b>7</b>, không phải 9 + 2.</li><li>2³ · 2⁴ = <b>2⁷</b> — không phải 2¹² hay 4⁷: cơ số GIỮ nguyên, mũ chỉ cộng khi nhân.</li><li>Phép cộng KHÔNG có công thức: 2² + 2³ = 4 + 8 = 12, còn 2⁵ = 32.</li><li>3⁻² = <b>1/9</b>, không phải −9 hay −1/9.</li><li>(2/3)⁴ = 2⁴/3⁴ chứ không phải 2⁴/3 — đừng bỏ sót phần nào trong ngoặc.</li></ul><h4>📌 Công thức</h4><ul><li>Số hữu tỉ: a/b với a, b ∈ ℤ, b ≠ 0 — tập hợp ℚ; a = a/1</li><li>Số đối của a/b là −a/b; a/b + (−a/b) = 0</li><li>Chuyển vế: A + B = C ⇒ A = C − B; A − B = C ⇒ A = C + B</li><li>x⁰ = 1; x¹ = x; x⁻ⁿ = 1/xⁿ (x ≠ 0)</li><li>xᵐ · xⁿ = xᵐ⁺ⁿ; xᵐ : xⁿ = xᵐ⁻ⁿ (x ≠ 0, m ≥ n)</li><li>(xᵐ)ⁿ = xᵐⁿ; (x·y)ⁿ = xⁿ·yⁿ; (x/y)ⁿ = xⁿ/yⁿ (y ≠ 0)</li></ul>",
   "calc": [
     {
       "id": "m1-c1",
@@ -133,7 +133,7 @@
       ],
       "correct": 2,
       "answer": "a = a/1",
-      "explanation": "🔑 Mọi số nguyên a viết được thành a/1, mẫu 1 ≠ 0 nên a ∈ ℚ.<br>✗ a = 1/a: chỉ đúng khi a = 1 hoặc −1.<br>✗ a = a/0: mẫu bằng 0 là vô nghĩa.<br>✗ a = 0/a: luôn cho 0, chỉ đúng khi a = 0."
+      "explanation": "🔑 Mọi số nguyên a đều viết được dưới dạng phân số a/1 với mẫu 1 ≠ 0, nên a là số hữu tỉ. Ví dụ trong SGK: −7 = −7/1.<br>✗ a = 1/a: chỉ đúng khi a = 1 hoặc a = −1, không đúng cho mọi số nguyên.<br>✗ a = a/0: mẫu bằng 0 là vô nghĩa, vì không chia được cho 0.<br>✗ a = 0/a: khi a ≠ 0 thì 0/a luôn bằng 0, không bằng a; còn khi a = 0 thì 0/0 vô nghĩa vì mẫu phải khác 0."
     },
     {
       "id": "m1-8",
@@ -538,22 +538,22 @@
       ],
       "correct": 2,
       "answer": "y ≠ 0",
-      "explanation": "🔑 Mẫu luôn phải khác 0, nên cần y ≠ 0.<br>✗ x ≠ 0: tử được bằng 0, (0/5)³ = 0.<br>✗ n > 0: số mũ âm vẫn dùng được.<br>✗ x > y: so sánh không liên quan."
+      "explanation": "🔑 Lũy thừa của một thương bằng thương các lũy thừa, và mẫu số luôn phải khác 0 nên cần y ≠ 0. Ví dụ: (2/3)² = 2²/3² = 4/9.<br>✗ x ≠ 0: tử được phép bằng 0, chẳng hạn (0/5)³ = 0.<br>✗ n > 0: với n = 0 công thức vẫn đúng, vì theo quy ước x⁰ = 1 (x ≠ 0) nên hai vế đều bằng 1.<br>✗ x > y: so sánh tử với mẫu không liên quan đến điều kiện của công thức."
     },
     {
       "id": "m1-35",
       "ch": 1,
       "topic": "Lũy thừa",
-      "q": "Công thức x⁻ⁿ = 1/xⁿ đòi hỏi điều kiện nào?",
+      "q": "Công thức x⁻ⁿ = 1/xⁿ (với n là số tự nhiên dương) đòi hỏi thêm điều kiện nào?",
       "options": [
         "x ≠ 0",
-        "n ≠ 0",
         "x > 0",
+        "x ∈ ℤ",
         "n là số chẵn"
       ],
       "correct": 0,
       "answer": "x ≠ 0",
-      "explanation": "🔑 xⁿ nằm dưới mẫu nên bắt buộc x ≠ 0.<br>✗ n ≠ 0: điều kiện ở cơ số, không ở mũ.<br>✗ x > 0: cơ số âm vẫn được, (−2)⁻² = 1/4.<br>✗ n là số chẵn: mũ lẻ vẫn đúng, 2⁻³ = 1/8."
+      "explanation": "🔑 SGK định nghĩa x⁻ⁿ = 1/xⁿ với n là số tự nhiên dương, x ≠ 0 — vì xⁿ nằm dưới mẫu nên cơ số phải khác 0. Ví dụ: 1/100 = 1/10² = 10⁻².<br>✗ x > 0: cơ số âm vẫn được, (−2)⁻² = 1/(−2)² = 1/4.<br>✗ x ∈ ℤ: cơ số là số hữu tỉ khác 0 đều được, chẳng hạn x = 1/2.<br>✗ n là số chẵn: mũ lẻ vẫn đúng, 2⁻³ = 1/2³ = 1/8."
     },
     {
       "id": "m1-36",
@@ -634,16 +634,16 @@
       "id": "m1-41",
       "ch": 1,
       "topic": "Lũy thừa",
-      "q": "Biểu thức x⁻³ · x⁵ bằng bao nhiêu (x ≠ 0)?",
+      "q": "Viết kết quả của phép tính (−2)³ · (−2)⁴ dưới dạng một lũy thừa thì được kết quả nào?",
       "options": [
-        "x⁻⁸",
-        "x⁸",
-        "x⁻¹⁵",
-        "x²"
+        "(−2)⁷",
+        "(−2)¹²",
+        "4⁷",
+        "(−2)¹"
       ],
-      "correct": 3,
-      "answer": "x²",
-      "explanation": "🔑 Nhân thì cộng mũ, kể cả mũ âm: (−3) + 5 = 2, được x².<br>✗ x⁻⁸: trừ hai số mũ thay vì cộng.<br>✗ x⁸: bỏ mất dấu âm, cộng 3 + 5.<br>✗ x⁻¹⁵: nhân mũ, đó là (xᵐ)ⁿ."
+      "correct": 0,
+      "answer": "(−2)⁷",
+      "explanation": "🔑 Khi nhân hai lũy thừa cùng cơ số, ta giữ nguyên cơ số và cộng hai số mũ: (−2)³ · (−2)⁴ = (−2)³⁺⁴ = (−2)⁷.<br>✗ (−2)¹²: nhân hai số mũ 3 · 4, đó là công thức (xᵐ)ⁿ = xᵐⁿ.<br>✗ 4⁷: nhân cả cơ số; cơ số phải giữ nguyên.<br>✗ (−2)¹: trừ số mũ 4 − 3, đó là phép chia hai lũy thừa."
     },
     {
       "id": "m1-42",

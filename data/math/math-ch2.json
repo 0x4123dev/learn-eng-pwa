@@ -2,7 +2,7 @@
   "chapter": 2,
   "title": "Số thực",
   "icon": "②",
-  "lesson": "<p>Chương II mở ra một họ số mới: <b>số thực</b>. Từ trước tới giờ con quen với phân số và số thập phân — tất cả đều là <b>số hữu tỉ</b>. Nhưng có những số như √2 hay π viết mãi không hết mà chẳng lặp theo quy luật nào: đó là <b>số vô tỉ</b>. Gộp hai họ ấy lại, ta được tập <b>số thực ℝ</b>. Chương này còn cho con hai công cụ rất hay dùng: <b>căn bậc hai số học √a</b> và <b>giá trị tuyệt đối |a|</b>.</p><h4>📌 Công thức</h4><p><b>1. Nhận dạng số thập phân</b></p><ul><li><b>Thập phân hữu hạn</b> (viết một lúc rồi dừng) → là <b>số hữu tỉ</b>, thuộc ℚ. Ví dụ: 2,5 = 5/2.</li><li><b>Thập phân vô hạn tuần hoàn</b> (có một nhóm chữ số lặp đi lặp lại mãi) → cũng là <b>số hữu tỉ</b>, thuộc ℚ. Ví dụ: 0,333... = 0,(3) = 1/3.</li><li><b>Thập phân vô hạn KHÔNG tuần hoàn</b> → là <b>số vô tỉ</b>, thuộc 𝕀. Ví dụ: √2 = 1,414213...; π = 3,141592...</li><li><b>ℝ = ℚ ∪ 𝕀</b> — tập số thực là HỢP của số hữu tỉ và số vô tỉ. Hai tập ℚ và 𝕀 không có phần tử chung, nên một số đã là hữu tỉ thì không thể là vô tỉ.</li></ul><p><b>2. Căn bậc hai số học</b></p><ul><li>Với a ≥ 0: <b>x = √a ⇔ x ≥ 0 và x² = a</b>. Nhớ hai chữ KHÔNG ÂM: số dưới căn phải không âm, và kết quả cũng không âm.</li><li><b>√(a²) = |a|</b> — công thức này đúng với MỌI số thực a, kể cả khi a âm.</li></ul><p><b>3. Giá trị tuyệt đối</b></p><table><tr><td><b>Trường hợp</b></td><td><b>Công thức</b></td><td><b>Ví dụ</b></td></tr><tr><td>a ≥ 0</td><td><b>|a| = a</b></td><td>|7| = 7 và |0| = 0</td></tr><tr><td>a < 0</td><td><b>|a| = −a</b></td><td>|−7| = −(−7) = 7</td></tr></table><ul><li><b>|a| ≥ 0</b> với mọi a — giá trị tuyệt đối không bao giờ âm, vì nó chính là khoảng cách từ điểm a đến gốc 0 trên trục số.</li><li>|a| = 0 chỉ khi a = 0, và |a| = |−a| với mọi a (hai số đối cách gốc bằng nhau).</li></ul><h4>💡 Ví dụ</h4><ul><li><b>√36 = ?</b> Cả 6 và −6 đều có bình phương bằng 36, nhưng căn bậc hai số học chỉ lấy số không âm → <b>√36 = 6</b>.</li><li><b>√((−10)²) = ?</b> Dùng √(a²) = |a| với a = −10 → |−10| = <b>10</b>. Đừng viết ra −10.</li><li><b>|−2,5| = ?</b> Vì −2,5 < 0 nên dùng nhánh |a| = −a → |−2,5| = −(−2,5) = <b>2,5</b>.</li><li><b>|−3| + √16 = ?</b> |−3| = 3 và √16 = 4 (vì 4 ≥ 0 và 4² = 16) → tổng bằng <b>7</b>.</li><li><b>Xếp loại 0,25 ; 0,(3) ; π.</b> 0,25 hữu hạn → ℚ; 0,(3) vô hạn tuần hoàn → ℚ; π vô hạn không tuần hoàn → 𝕀. Cả ba đều nằm trong ℝ.</li></ul><h4>⚠️ Lỗi thường gặp</h4><ul><li><b>Viết √(a²) = a.</b> Đây là lỗi số một của cả lớp. Công thức đúng là <b>√(a²) = |a|</b>. Thử a = −5 mà xem: √((−5)²) = √25 = 5, chứ không phải −5. Chỉ khi biết chắc a ≥ 0 con mới được bỏ dấu giá trị tuyệt đối đi.</li><li><b>Quên điều kiện a ≥ 0 của √a.</b> √(−9) không có nghĩa trong ℝ, vì không số thực nào bình phương ra được số âm.</li><li><b>Nghĩ rằng |a| có thể âm.</b> Luôn có |a| ≥ 0, nên bài |x| = −3 là vô nghiệm, không có giá trị x nào cả.</li><li><b>Trả lời √25 = ±5.</b> ±5 là nghiệm của phương trình x² = 25. Còn √25 thì chỉ bằng 5 thôi.</li><li><b>Lẫn tuần hoàn với không tuần hoàn.</b> Nhiều bạn thấy vô hạn là vội kết luận vô tỉ. Hãy tìm nhóm chữ số lặp: có lặp → hữu tỉ (ℚ); không lặp → vô tỉ (𝕀).</li><li><b>Viết ℝ = ℚ ∩ 𝕀.</b> Phải là dấu HỢP: <b>ℝ = ℚ ∪ 𝕀</b>. Phép giao ℚ ∩ 𝕀 chỉ cho tập rỗng, vì chẳng số nào vừa hữu tỉ vừa vô tỉ.</li></ul>",
+  "lesson": "<p>Chương II gộp <b>số hữu tỉ</b> và <b>số vô tỉ</b> thành tập <b>số thực ℝ</b>, và cho em hai công cụ mới: <b>căn bậc hai số học √a</b> và <b>giá trị tuyệt đối |a|</b>.</p><h4>1. Ba dạng số thập phân</h4><table><tr><th>Dạng thập phân</th><th>Loại số</th><th>Ví dụ</th></tr><tr><td>Hữu hạn (viết rồi dừng)</td><td>hữu tỉ, thuộc ℚ</td><td>2,5 = 5/2</td></tr><tr><td>Vô hạn tuần hoàn (có nhóm chữ số lặp mãi)</td><td>hữu tỉ, thuộc ℚ</td><td>0,(3) = 0,333... = 1/3</td></tr><tr><td>Vô hạn KHÔNG tuần hoàn</td><td>vô tỉ</td><td>√2 = 1,414213...; π = 3,141592...</td></tr></table><ul><li><b>Số hữu tỉ và số vô tỉ được gọi chung là số thực.</b> Tập hợp các số thực được kí hiệu là ℝ. Một số không thể vừa hữu tỉ vừa vô tỉ.</li><li>Thấy vô hạn đừng vội kết luận vô tỉ: có nhóm chữ số lặp → hữu tỉ; không lặp → vô tỉ.</li></ul><h4>2. Căn bậc hai số học</h4><ul><li><b>Căn bậc hai số học</b> của một số a không âm, kí hiệu là √a, là số x <b>không âm</b> sao cho x² = a. Nhớ hai chữ KHÔNG ÂM: số dưới căn không âm, kết quả cũng không âm.</li><li>Với a <b>dương</b>: √(a²) = a, ví dụ √(3²) = 3. Trong căn là bình phương của số âm thì tính bên trong trước: √((−5)²) = √25 = 5, <b>không phải −5</b> — lỗi số một của cả lớp!</li><li>√(−9) <b>không có nghĩa</b> trong ℝ: không số thực nào bình phương ra số âm.</li><li>√25 = 5 thôi, <b>không phải ±5</b>: căn bậc hai số học chỉ lấy số không âm.</li></ul><h4>3. Giá trị tuyệt đối</h4><p>Khoảng cách từ điểm a trên trục số đến gốc O là <b>giá trị tuyệt đối</b> của số a, kí hiệu là |a|.</p><table><tr><th>Số a</th><th>|a| là gì?</th><th>Ví dụ</th></tr><tr><td>Số 0</td><td>bằng <b>0</b></td><td>|0| = 0</td></tr><tr><td>Số dương</td><td>là <b>chính nó</b></td><td>|2| = 2; |5/8| = 5/8</td></tr><tr><td>Số âm</td><td>là <b>số đối của nó</b></td><td>|−2| = 2; |−5,1| = 5,1; |−√2| = √2</td></tr></table><ul><li><b>|a| ≥ 0</b> với mọi a; |a| = 0 chỉ khi a = 0; |a| = |−a| (hai số đối cách gốc bằng nhau).</li><li>Vì |a| không bao giờ âm nên |x| = −3 <b>vô nghiệm</b>; bạn Minh viết |−2,5| = −2,5 là sai đấy!</li></ul><h4>💡 Ví dụ nhanh</h4><ul><li>√36 = <b>6</b> (6 và −6 đều bình phương ra 36, nhưng chỉ lấy số không âm).</li><li>√((−10)²) = √100 = <b>10</b> — tính bên trong trước, đừng viết −10.</li><li>|−2,5| = <b>2,5</b> (số âm → lấy số đối).</li><li>|−3| + √16 = 3 + 4 = <b>7</b>.</li><li>Xếp loại: 0,25 hữu hạn và 0,(3) tuần hoàn → hữu tỉ; π không tuần hoàn → vô tỉ; cả ba đều thuộc ℝ.</li></ul><h4>📌 Ghi nhớ nhanh</h4><ul><li><b>ℝ</b> = số hữu tỉ (thập phân hữu hạn hoặc vô hạn tuần hoàn) + số vô tỉ (vô hạn không tuần hoàn).</li><li><b>√a</b> (chỉ khi a ≥ 0) = số không âm có bình phương bằng a; <b>√(a²) = a</b> với a dương.</li><li><b>|a|</b>: số dương → chính nó; số âm → số đối; |0| = 0; luôn có <b>|a| ≥ 0</b> và |a| = |−a|.</li></ul>",
   "calc": [
     {
       "id": "m2-c1",
@@ -35,31 +35,31 @@
       "id": "m2-1",
       "ch": 2,
       "topic": "Giá trị tuyệt đối",
-      "q": "Khi a < 0 thì giá trị tuyệt đối |a| bằng gì?",
+      "q": "Giá trị tuyệt đối của một số âm bằng gì?",
       "options": [
-        "|a| = −a",
-        "|a| = a",
-        "|a| = 0",
-        "|a| < 0"
+        "Số đối của nó",
+        "Chính nó",
+        "Bằng 0",
+        "Một số âm"
       ],
       "correct": 0,
-      "answer": "|a| = −a",
-      "explanation": "🔑 Khi a < 0 thì |a| = −a. Đừng sợ dấu trừ: −a là số đối của a, mà số đối của một số âm là số DƯƠNG. Ví dụ a = −3 thì |−3| = −(−3) = 3.<br>✗ |a| = a: chỉ đúng khi a ≥ 0; nếu giữ nguyên a = −3 thì được −3, mà |−3| = 3.<br>✗ |a| = 0: chỉ đúng khi a = 0, mà ở đây a < 0.<br>✗ |a| < 0: giá trị tuyệt đối là khoảng cách đến gốc 0 nên không bao giờ âm."
+      "answer": "Số đối của nó",
+      "explanation": "🔑 Giá trị tuyệt đối của một số âm là số đối của nó. Ví dụ |−2| = 2; |−5,1| = 5,1; |−√2| = √2. (Số đối của a kí hiệu là −a, và số đối của một số âm là một số dương.)<br>✗ Chính nó: đó là quy tắc cho số DƯƠNG, ví dụ |2| = 2; còn |−2| = 2 chứ không phải −2.<br>✗ Bằng 0: chỉ có |0| = 0; một số âm cách gốc O một khoảng lớn hơn 0.<br>✗ Một số âm: giá trị tuyệt đối là khoảng cách từ điểm đó đến gốc O nên không bao giờ âm."
     },
     {
       "id": "m2-2",
       "ch": 2,
       "topic": "Giá trị tuyệt đối",
-      "q": "Với a ≥ 0 thì |a| bằng biểu thức nào?",
+      "q": "Giá trị tuyệt đối của một số dương bằng gì?",
       "options": [
-        "|a| = −a",
-        "|a| = a²",
-        "|a| = a",
-        "|a| = √a"
+        "Số đối của nó",
+        "Chính nó",
+        "Bằng 0",
+        "Nhỏ hơn số đó"
       ],
-      "correct": 2,
-      "answer": "|a| = a",
-      "explanation": "🔑 a ≥ 0 nên |a| = a, giữ nguyên chính số đó.<br>✗ |a| = −a: chỉ dùng khi a < 0.<br>✗ |a| = a²: |3| = 3, không phải 9.<br>✗ |a| = √a: |4| = 4, không phải 2."
+      "correct": 1,
+      "answer": "Chính nó",
+      "explanation": "🔑 Giá trị tuyệt đối của một số dương là chính nó. Ví dụ |2| = 2; |5/8| = 5/8.<br>✗ Số đối của nó: đó là quy tắc cho số ÂM, ví dụ |−2| = 2; với số dương thì giữ nguyên: |2| = 2.<br>✗ Bằng 0: chỉ có giá trị tuyệt đối của 0 mới bằng 0; số dương cách gốc O một khoảng đúng bằng chính nó.<br>✗ Nhỏ hơn số đó: |2| = 2, bằng đúng số đó chứ không nhỏ hơn."
     },
     {
       "id": "m2-3",
@@ -89,7 +89,7 @@
       ],
       "correct": 3,
       "answer": "a = 0",
-      "explanation": "🔑 Chỉ số 0 cách gốc 0 một khoảng bằng 0, nên |a| = 0 ⇔ a = 0.<br>✗ a dương: |a| = a > 0, khác 0.<br>✗ a âm: |a| = −a > 0, cũng khác 0.<br>✗ Không tồn tại: có chứ, a = 0."
+      "explanation": "🔑 Giá trị tuyệt đối của 0 là 0, và chỉ điểm 0 cách gốc O một khoảng bằng 0, nên |a| = 0 thì a = 0.<br>✗ a là số dương bất kì: giá trị tuyệt đối của số dương là chính nó, ví dụ |2| = 2 ≠ 0.<br>✗ a là số âm bất kì: giá trị tuyệt đối của số âm là số đối của nó, là một số dương, ví dụ |−2| = 2 ≠ 0.<br>✗ Không tồn tại số a nào: có chứ, a = 0 thỏa mãn vì |0| = 0."
     },
     {
       "id": "m2-5",
@@ -164,7 +164,7 @@
       ],
       "correct": 2,
       "answer": "|−a| = a",
-      "explanation": "🔑 a > 0 nên −a < 0, dùng |x| = −x: |−a| = −(−a) = a.<br>✗ |−a| = −a: −a âm, mà |x| không âm.<br>✗ |−a| = 0: chỉ đúng khi a = 0.<br>✗ |−a| = a²: |−3| = 3, không phải 9."
+      "explanation": "🔑 Hai số đối nhau thì có giá trị tuyệt đối bằng nhau, nên |−a| = |a| = a (a là số dương nên giá trị tuyệt đối của nó là chính nó). Ví dụ a = 3: |−3| = |3| = 3.<br>✗ |−a| = −a: −a là số đối của số dương a nên là số âm, mà giá trị tuyệt đối không bao giờ âm; |−3| = 3 chứ không phải −3.<br>✗ |−a| = 0: chỉ có |0| = 0, mà đề cho a > 0.<br>✗ |−a| = a²: nhầm với bình phương; |−3| = 3 chứ không phải 9."
     },
     {
       "id": "m2-10",
@@ -200,16 +200,16 @@
       "id": "m2-12",
       "ch": 2,
       "topic": "Giá trị tuyệt đối",
-      "q": "Muốn tính |−2,5| ta áp dụng công thức nào?",
+      "q": "Bạn Minh viết |−2,5| = −2,5. Khẳng định của Minh đúng hay sai?",
       "options": [
-        "|a| = a vì a ≥ 0",
-        "|a| = −a vì a < 0",
-        "|a| = a² vì a < 0",
-        "|a| = √a vì a < 0"
+        "Sai, vì giá trị tuyệt đối của số âm là số đối của nó: |−2,5| = 2,5",
+        "Đúng, vì −2,5 là số âm nên giá trị tuyệt đối cũng âm",
+        "Sai, vì |−2,5| = 0",
+        "Đúng, vì giá trị tuyệt đối giữ nguyên số đã cho"
       ],
-      "correct": 1,
-      "answer": "|a| = −a vì a < 0",
-      "explanation": "🔑 −2,5 là số âm nên dùng nhánh |a| = −a: |−2,5| = 2,5.<br>✗ |a| = a: chỉ dùng khi a ≥ 0.<br>✗ |a| = a²: không có công thức này.<br>✗ |a| = √a: cũng không có, √a cần a ≥ 0."
+      "correct": 0,
+      "answer": "Sai, vì giá trị tuyệt đối của số âm là số đối của nó: |−2,5| = 2,5",
+      "explanation": "🔑 Minh viết sai. Giá trị tuyệt đối của một số âm là số đối của nó, nên |−2,5| = 2,5. Giá trị tuyệt đối là khoảng cách từ điểm đó đến gốc O nên không bao giờ âm.<br>✗ Đúng, vì −2,5 là số âm nên giá trị tuyệt đối cũng âm: khoảng cách không thể âm; điểm −2,5 cách gốc O đúng 2,5 đơn vị.<br>✗ Sai, vì |−2,5| = 0: chỉ có |0| = 0; ở đây |−2,5| = 2,5.<br>✗ Đúng, vì giá trị tuyệt đối giữ nguyên số đã cho: chỉ số dương và số 0 mới có giá trị tuyệt đối là chính nó."
     },
     {
       "id": "m2-13",
@@ -224,7 +224,7 @@
       ],
       "correct": 0,
       "answer": "0",
-      "explanation": "🔑 a < 0 nên |a| = −a, vậy |a| + a = (−a) + a = 0.<br>✗ 2a: thay nhầm |a| = a.<br>✗ −2a: đó là |a| − a khi a < 0.<br>✗ a: bỏ quên mất một hạng tử."
+      "explanation": "🔑 a là số âm nên giá trị tuyệt đối của a là số đối của nó; mà tổng của một số với số đối của nó bằng 0, vậy |a| + a = 0. Ví dụ a = −3: |−3| + (−3) = 3 − 3 = 0.<br>✗ 2a: lấy nhầm giá trị tuyệt đối của số âm bằng chính nó; với a = −3 thì kết quả là 0 chứ không phải −6.<br>✗ −2a: đó là kết quả của |a| − a; với a = −3: |−3| − (−3) = 3 + 3 = 6.<br>✗ a: bỏ quên mất |a|; với a = −3: |−3| + (−3) = 0 chứ không phải −3."
     },
     {
       "id": "m2-14",
@@ -254,7 +254,7 @@
       ],
       "correct": 1,
       "answer": "|a| luôn là số dương",
-      "explanation": "🔑 a ≠ 0 nên khoảng cách tới gốc khác 0, vậy |a| > 0.<br>✗ Bằng a: sai khi a < 0, lúc đó |a| = −a.<br>✗ Bằng 0: chỉ khi a = 0, trái giả thiết.<br>✗ Cùng dấu: |a| dương cả khi a âm."
+      "explanation": "🔑 a ≠ 0 nên điểm a cách gốc O một khoảng khác 0, vậy |a| là số dương. Ví dụ |2| = 2 > 0 và |−2| = 2 > 0.<br>✗ |a| luôn bằng a: sai với số âm — giá trị tuyệt đối của số âm là số đối của nó, ví dụ |−4| = 4 ≠ −4.<br>✗ |a| có thể bằng 0: chỉ có |0| = 0, mà đề cho a ≠ 0.<br>✗ |a| luôn cùng dấu với a: |−2| = 2 là số dương trong khi −2 là số âm."
     },
     {
       "id": "m2-16",
@@ -269,7 +269,7 @@
       ],
       "correct": 3,
       "answer": "Khi a ≥ 0",
-      "explanation": "🔑 Định nghĩa: |a| = a khi a ≥ 0, gồm cả a = 0 lẫn mọi số dương.<br>✗ a < 0: lúc đó |a| = −a, khác a.<br>✗ Mọi a: a = −4 cho |−4| = 4 ≠ −4.<br>✗ Chỉ a = 0: mọi số dương cũng thỏa."
+      "explanation": "🔑 Giá trị tuyệt đối của một số dương là chính nó (|2| = 2) và giá trị tuyệt đối của 0 là 0, nên |a| = a đúng với mọi a ≥ 0.<br>✗ Khi a < 0: giá trị tuyệt đối của số âm là số đối của nó, ví dụ |−4| = 4 ≠ −4, nên đẳng thức không xảy ra.<br>✗ Với mọi số thực a: sai với số âm — giống bạn Minh trong SGK viết |−2,5| = −2,5 là viết sai.<br>✗ Chỉ khi a = 0: mọi số dương cũng thỏa mãn, ví dụ |2| = 2."
     },
     {
       "id": "m2-17",
@@ -290,16 +290,16 @@
       "id": "m2-18",
       "ch": 2,
       "topic": "Căn bậc hai số học",
-      "q": "Công thức rút gọn nào đúng với mọi số thực a?",
+      "q": "Tính √(21,5²).",
       "options": [
-        "√(a²) = |a|",
-        "√(a²) = a",
-        "√(a²) = −a",
-        "√(a²) = a²"
+        "21,5",
+        "−21,5",
+        "462,25",
+        "√21,5"
       ],
       "correct": 0,
-      "answer": "√(a²) = |a|",
-      "explanation": "🔑 √(a²) = |a| đúng với MỌI số thực a, vì căn số học luôn không âm.<br>✗ = a: sai khi a âm, √((−5)²) = 5.<br>✗ = −a: chỉ đúng khi a ≤ 0.<br>✗ = a²: a = 3 cho √9 = 3, không phải 9."
+      "answer": "21,5",
+      "explanation": "🔑 Vì 21,5 > 0 nên √(21,5²) = 21,5: căn bậc hai số học của 21,5² là số không âm có bình phương bằng 21,5², số đó chính là 21,5. SGK làm tương tự: √(191²) = 191.<br>✗ −21,5: căn bậc hai số học không bao giờ là số âm.<br>✗ 462,25: đó là 21,5², tức số nằm dưới dấu căn, chưa lấy căn.<br>✗ √21,5: nhầm bước; √(21,5²) = 21,5 còn √21,5 ≈ 4,64, hai số khác nhau."
     },
     {
       "id": "m2-19",
@@ -320,22 +320,22 @@
       "id": "m2-20",
       "ch": 2,
       "topic": "Căn bậc hai số học",
-      "q": "Với a < 0, biểu thức √(a²) rút gọn thành gì?",
+      "q": "Tính √((−5)²).",
       "options": [
-        "a",
-        "a²",
-        "0",
-        "−a"
+        "5",
+        "−5",
+        "25",
+        "−25"
       ],
-      "correct": 3,
-      "answer": "−a",
-      "explanation": "🔑 √(a²) = |a|, mà khi a < 0 thì |a| = −a. Chú ý: −a ở đây là số <b>dương</b>! Ví dụ a = −5 thì √((−5)²) = √25 = 5 = −(−5).<br>✗ a: a đang là số âm, mà căn số học không bao giờ âm; với a = −5 thì √((−5)²) = 5 chứ không phải −5.<br>✗ a²: nhầm lấy căn với bình phương; với a = −5 thì √((−5)²) = 5 chứ không phải 25.<br>✗ 0: √(a²) = 0 chỉ khi a = 0, trái giả thiết a < 0."
+      "correct": 0,
+      "answer": "5",
+      "explanation": "🔑 Tính bình phương trước: (−5)² = 25. Sau đó √25 = 5, vì 5 > 0 và 5² = 25. Vậy √((−5)²) = √25 = 5.<br>✗ −5: căn bậc hai số học là số không âm nên không thể bằng −5.<br>✗ 25: mới dừng ở bước (−5)² = 25, còn phải lấy căn: √25 = 5.<br>✗ −25: (−5)² = 25 là số dương, và √25 = 5."
     },
     {
       "id": "m2-21",
       "ch": 2,
       "topic": "Căn bậc hai số học",
-      "q": "Giá trị của √(a²) khi a ≥ 0 là gì?",
+      "q": "Với a là số thực dương, √(a²) bằng gì?",
       "options": [
         "a",
         "−a",
@@ -344,7 +344,7 @@
       ],
       "correct": 0,
       "answer": "a",
-      "explanation": "🔑 √(a²) = |a|, mà a ≥ 0 nên |a| = a.<br>✗ −a: số âm khi a > 0, mà căn không âm.<br>✗ a²: nhầm lấy căn với bình phương.<br>✗ √a: a = 9 cho √(9²) = 9, còn √9 = 3."
+      "explanation": "🔑 Vì a là số dương nên √(a²) = a: căn bậc hai số học của a² là số không âm có bình phương bằng a², số đó chính là a. Ví dụ trong SGK: √(3²) = 3 vì 3 > 0.<br>✗ −a: −a là số đối của số dương a nên là số âm, mà căn bậc hai số học không bao giờ âm.<br>✗ a²: đó là số nằm dưới dấu căn; √(3²) = 3 chứ không phải 9.<br>✗ √a: nhầm bước; √(9²) = 9 còn √9 = 3, hai kết quả khác nhau."
     },
     {
       "id": "m2-22",
@@ -352,14 +352,14 @@
       "topic": "Căn bậc hai số học",
       "q": "Trong các khẳng định sau, khẳng định nào SAI?",
       "options": [
-        "√(a²) = |a| với mọi a",
-        "√(a²) = a với mọi a",
+        "√(3²) = 3",
+        "√((−4)²) = −4",
         "√0 = 0",
-        "√a ≥ 0 khi a ≥ 0"
+        "√81 = 9"
       ],
       "correct": 1,
-      "answer": "√(a²) = a với mọi a",
-      "explanation": "🔑 √(a²) = a chỉ đúng khi a ≥ 0; lấy a = −2 thì √4 = 2 ≠ −2.<br>✗ √(a²) = |a|: đúng với mọi a.<br>✗ √0 = 0: đúng vì 0 ≥ 0 và 0² = 0.<br>✗ √a ≥ 0: đúng, căn số học không âm."
+      "answer": "√((−4)²) = −4",
+      "explanation": "🔑 √((−4)²) = √16 = 4, không phải −4, vì căn bậc hai số học luôn là số không âm. Vậy khẳng định √((−4)²) = −4 là SAI.<br>✗ √(3²) = 3: đúng, vì 3 > 0 (Ví dụ trong SGK: √(3²) = 3).<br>✗ √0 = 0: đúng, vì 0 ≥ 0 và 0² = 0.<br>✗ √81 = 9: đúng, vì 9 > 0 và 9² = 81."
     },
     {
       "id": "m2-23",
@@ -440,7 +440,7 @@
       "id": "m2-28",
       "ch": 2,
       "topic": "Căn bậc hai số học",
-      "q": "Rút gọn √((−7)²) ta được kết quả nào?",
+      "q": "Tính √((−7)²).",
       "options": [
         "−7",
         "49",
@@ -449,22 +449,22 @@
       ],
       "correct": 3,
       "answer": "7",
-      "explanation": "🔑 Dùng √(a²) = |a| với a = −7: √((−7)²) = |−7| = 7.<br>✗ −7: áp dụng nhầm √(a²) = a cho số âm.<br>✗ 49: mới bình phương, chưa lấy căn.<br>✗ −49: vừa sai dấu vừa chưa lấy căn."
+      "explanation": "🔑 Tính trong ngoặc trước: (−7)² = 49, rồi √49 = 7 vì 7 ≥ 0 và 7² = 49. Vậy √((−7)²) = 7.<br>✗ −7: căn bậc hai số học không bao giờ là số âm; cứ tính (−7)² = 49 rồi lấy √49 sẽ ra 7.<br>✗ 49: mới bình phương xong, chưa lấy căn.<br>✗ −49: vừa sai dấu vừa chưa lấy căn."
     },
     {
       "id": "m2-29",
       "ch": 2,
       "topic": "Căn bậc hai số học",
-      "q": "Bạn An viết √(a²) = a với mọi số thực a. Bạn ấy sai ở chỗ nào?",
+      "q": "Bạn An viết √((−3)²) = −3. Bạn ấy viết đúng hay sai?",
       "options": [
-        "Sai vì công thức đúng phải là √(a²) = a²",
-        "Sai vì công thức đúng là √(a²) = |a|, chỉ khi a ≥ 0 mới có √(a²) = a",
-        "Sai vì √(a²) luôn bằng −a",
-        "Không sai, công thức đó luôn đúng"
+        "Sai, vì (−3)² = 9 và √9 = 3",
+        "Đúng, vì dấu căn và bình phương triệt tiêu nhau",
+        "Sai, vì √((−3)²) phải bằng 9",
+        "Đúng, vì kết quả phải cùng dấu với số ban đầu"
       ],
-      "correct": 1,
-      "answer": "Sai vì công thức đúng là √(a²) = |a|, chỉ khi a ≥ 0 mới có √(a²) = a",
-      "explanation": "🔑 Đúng phải là √(a²) = |a|; chỉ khi a ≥ 0 mới viết được √(a²) = a.<br>✗ = a²: a = 3 cho √9 = 3, không phải 9.<br>✗ Luôn = −a: chỉ đúng khi a ≤ 0.<br>✗ Không sai: a = −5 cho √25 = 5 ≠ −5."
+      "correct": 0,
+      "answer": "Sai, vì (−3)² = 9 và √9 = 3",
+      "explanation": "🔑 Tính cụ thể: (−3)² = 9, mà √9 = 3 vì 3 ≥ 0 và 3² = 9. Căn bậc hai số học không bao giờ là số âm, nên viết √((−3)²) = −3 là sai.<br>✗ Đúng, vì dấu căn và bình phương triệt tiêu nhau: điều đó chỉ đúng với số dương, ví dụ √(3²) = 3; với −3 phải tính (−3)² = 9 trước rồi lấy √9 = 3.<br>✗ Sai, vì √((−3)²) phải bằng 9: 9 mới là (−3)², còn phải lấy căn nữa: √9 = 3.<br>✗ Đúng, vì kết quả phải cùng dấu với số ban đầu: căn bậc hai số học luôn không âm, ở đây √9 = 3 là số dương."
     },
     {
       "id": "m2-30",
@@ -479,7 +479,7 @@
       ],
       "correct": 0,
       "answer": "a ≥ 0 và x ≥ 0",
-      "explanation": "🔑 x = √a ⇔ x ≥ 0 và x² = a: số dưới căn lẫn kết quả đều không âm.<br>✗ a ≤ 0: căn của số âm không có trong ℝ.<br>✗ x ≤ 0: căn số học không âm.<br>✗ Bất kì: thế thì √9 = −3 cũng đúng."
+      "explanation": "🔑 Theo định nghĩa trong sách: căn bậc hai số học của một số a KHÔNG ÂM, kí hiệu là √a, là số x không âm sao cho x² = a. Vậy cần a ≥ 0 và x ≥ 0, ví dụ √16 = 4 vì 4 ≥ 0 và 4² = 16.<br>✗ a ≤ 0 và x ≥ 0: số dưới căn phải không âm, không có căn bậc hai của số âm.<br>✗ a ≥ 0 và x ≤ 0: căn bậc hai số học là số không âm, không thể đòi x ≤ 0.<br>✗ a và x là số bất kì: thế thì √9 = −3 cũng đúng, trái với định nghĩa."
     },
     {
       "id": "m2-31",
@@ -487,14 +487,14 @@
       "topic": "Số thực và số thập phân",
       "q": "Số thập phân hữu hạn và số thập phân vô hạn tuần hoàn thuộc tập hợp số nào?",
       "options": [
-        "Tập số vô tỉ 𝕀",
+        "Tập số vô tỉ",
         "Tập số nguyên ℤ",
         "Không thuộc tập hợp nào",
         "Tập số hữu tỉ ℚ"
       ],
       "correct": 3,
       "answer": "Tập số hữu tỉ ℚ",
-      "explanation": "🔑 Hữu hạn hay vô hạn tuần hoàn đều viết được thành phân số, nên thuộc ℚ.<br>✗ 𝕀: chỉ chứa số vô hạn KHÔNG tuần hoàn.<br>✗ ℤ: chỉ gồm số nguyên, 0,5 thì không.<br>✗ Không thuộc tập nào: chúng ở ℚ mà."
+      "explanation": "🔑 Số thập phân hữu hạn hay vô hạn tuần hoàn đều viết được dưới dạng phân số, nên là số hữu tỉ, thuộc ℚ. Ví dụ 0,5 = 1/2; 0,(3) = 1/3.<br>✗ Tập số vô tỉ: chỉ gồm các số thập phân vô hạn KHÔNG tuần hoàn.<br>✗ Tập số nguyên ℤ: 0,5 đâu phải số nguyên.<br>✗ Không thuộc tập hợp nào: chúng thuộc ℚ mà."
     },
     {
       "id": "m2-32",
@@ -509,22 +509,22 @@
       ],
       "correct": 2,
       "answer": "Số vô tỉ",
-      "explanation": "🔑 Vô hạn KHÔNG tuần hoàn thì không viết được thành phân số, nên là vô tỉ 𝕀.<br>✗ Hữu tỉ: ứng với hữu hạn hoặc TUẦN HOÀN.<br>✗ Số nguyên: không có phần thập phân.<br>✗ Số tự nhiên: chỉ là 0; 1; 2; ..."
+      "explanation": "🔑 Số vô tỉ là số viết được dưới dạng số thập phân vô hạn không tuần hoàn, ví dụ √2 = 1,4142135... không dừng và không có chu kì.<br>✗ Số hữu tỉ: viết được dưới dạng thập phân hữu hạn hoặc vô hạn TUẦN HOÀN.<br>✗ Số nguyên: không có phần thập phân kéo dài mãi.<br>✗ Số tự nhiên: chỉ là 0; 1; 2; ..."
     },
     {
       "id": "m2-33",
       "ch": 2,
       "topic": "Số thực và số thập phân",
-      "q": "Công thức nào mô tả đúng tập số thực ℝ?",
+      "q": "Tập hợp số thực ℝ gồm những số nào?",
       "options": [
-        "ℝ = ℚ ∪ 𝕀",
-        "ℝ = ℚ ∩ 𝕀",
-        "ℝ = ℚ ∪ ℤ",
-        "ℝ = 𝕀 ∩ ℤ"
+        "Số hữu tỉ và số vô tỉ",
+        "Chỉ các số hữu tỉ",
+        "Chỉ các số vô tỉ",
+        "Chỉ các số nguyên và số thập phân hữu hạn"
       ],
       "correct": 0,
-      "answer": "ℝ = ℚ ∪ 𝕀",
-      "explanation": "🔑 ℝ = ℚ ∪ 𝕀: số thực là HỢP của số hữu tỉ và số vô tỉ.<br>✗ ℚ ∩ 𝕀: giao rỗng, không có phần chung.<br>✗ ℚ ∪ ℤ = ℚ: thiếu hẳn số vô tỉ.<br>✗ 𝕀 ∩ ℤ: cũng rỗng, số nguyên đâu vô tỉ."
+      "answer": "Số hữu tỉ và số vô tỉ",
+      "explanation": "🔑 Số hữu tỉ và số vô tỉ được gọi chung là số thực; tập hợp các số thực kí hiệu là ℝ. Ví dụ 3/4 là số hữu tỉ, √2 là số vô tỉ, cả hai đều là số thực.<br>✗ Chỉ các số hữu tỉ: thiếu các số vô tỉ như √2 và π.<br>✗ Chỉ các số vô tỉ: thiếu các số hữu tỉ như 0,5 và 1/3.<br>✗ Chỉ các số nguyên và số thập phân hữu hạn: còn thiếu số thập phân vô hạn tuần hoàn như 0,(3) và số vô tỉ như √2."
     },
     {
       "id": "m2-34",
@@ -532,14 +532,14 @@
       "topic": "Số thực và số thập phân",
       "q": "Một số vừa là số hữu tỉ vừa là số vô tỉ. Khẳng định này đúng hay sai?",
       "options": [
-        "Đúng, vì cả hai loại đều thuộc ℝ",
-        "Sai, vì ℚ và 𝕀 không có phần tử chung",
+        "Đúng, vì cả hai loại đều là số thực",
+        "Sai, vì không có số nào vừa hữu tỉ vừa vô tỉ",
         "Đúng, với các số thập phân vô hạn",
-        "Sai, vì số vô tỉ không thuộc ℝ"
+        "Sai, vì số vô tỉ không phải là số thực"
       ],
       "correct": 1,
-      "answer": "Sai, vì ℚ và 𝕀 không có phần tử chung",
-      "explanation": "🔑 ℚ và 𝕀 rời nhau: một số hoặc tuần hoàn, hoặc không, chứ không cả hai.<br>✗ Cùng thuộc ℝ: đâu có nghĩa là trùng nhau.<br>✗ Thập phân vô hạn: vẫn phải chọn một loại.<br>✗ Số vô tỉ vẫn thuộc ℝ, lí do này sai."
+      "answer": "Sai, vì không có số nào vừa hữu tỉ vừa vô tỉ",
+      "explanation": "🔑 Mỗi số thập phân hoặc là hữu hạn hay vô hạn tuần hoàn (số hữu tỉ), hoặc là vô hạn không tuần hoàn (số vô tỉ), không thể vừa thế này vừa thế kia. Ví dụ 0,(3) là hữu tỉ, còn √2 = 1,4142... là vô tỉ.<br>✗ Đúng, vì cả hai loại đều là số thực: cùng được gọi chung là số thực không có nghĩa là trùng nhau.<br>✗ Đúng, với các số thập phân vô hạn: vô hạn tuần hoàn là hữu tỉ, vô hạn không tuần hoàn là vô tỉ, vẫn chỉ thuộc một loại.<br>✗ Sai, vì số vô tỉ không phải là số thực: lí do này sai, số vô tỉ vẫn là số thực."
     },
     {
       "id": "m2-35",
@@ -584,7 +584,7 @@
       ],
       "correct": 1,
       "answer": "Mọi số hữu tỉ đều là số thực",
-      "explanation": "🔑 ℝ = ℚ ∪ 𝕀 nên ℚ nằm trọn trong ℝ: hữu tỉ nào cũng là số thực.<br>✗ Mọi số thực hữu tỉ: √2 thì không.<br>✗ Vô tỉ là hữu tỉ: hai loại rời nhau.<br>✗ Mọi số thực vô tỉ: 0,5 là hữu tỉ."
+      "explanation": "🔑 Số hữu tỉ và số vô tỉ được gọi chung là số thực, nên mọi số hữu tỉ đều là số thực. Ví dụ 0,5 và 1/3 đều là số thực.<br>✗ Mọi số thực đều là số hữu tỉ: √2 là số thực nhưng là số vô tỉ.<br>✗ Mọi số vô tỉ đều là số hữu tỉ: số vô tỉ như √2 không viết được dưới dạng phân số.<br>✗ Mọi số thực đều là số vô tỉ: 0,5 là số thực nhưng là số hữu tỉ."
     },
     {
       "id": "m2-38",
@@ -635,16 +635,16 @@
       "id": "m2-41",
       "ch": 2,
       "topic": "Số thực và số thập phân",
-      "q": "Tập hợp ℚ ∩ 𝕀 (giao của tập số hữu tỉ và tập số vô tỉ) là tập nào?",
+      "q": "Có số nào vừa là số hữu tỉ vừa là số vô tỉ không?",
       "options": [
-        "Tập rỗng",
-        "Tập ℝ",
-        "Tập ℤ",
-        "Tập các số thập phân vô hạn"
+        "Không có số nào như vậy",
+        "Có, đó là các số thập phân vô hạn",
+        "Có, đó là số 0",
+        "Có, mọi số thực đều như vậy"
       ],
       "correct": 0,
-      "answer": "Tập rỗng",
-      "explanation": "🔑 Không số nào vừa hữu tỉ vừa vô tỉ nên ℚ ∩ 𝕀 rỗng; hợp mới ra ℝ.<br>✗ ℝ: đó là kết quả của phép hợp.<br>✗ ℤ: nằm trong ℚ, không dính 𝕀.<br>✗ Thập phân vô hạn: mỗi loại một tập."
+      "answer": "Không có số nào như vậy",
+      "explanation": "🔑 Số hữu tỉ viết được dưới dạng số thập phân hữu hạn hoặc vô hạn tuần hoàn, còn số vô tỉ là số thập phân vô hạn KHÔNG tuần hoàn, nên mỗi số chỉ thuộc đúng một loại. Ví dụ 0,(3) là hữu tỉ, √2 là vô tỉ.<br>✗ Có, đó là các số thập phân vô hạn: tuần hoàn thì hữu tỉ, không tuần hoàn thì vô tỉ, vẫn chỉ một loại.<br>✗ Có, đó là số 0: 0 là số hữu tỉ, không phải số vô tỉ.<br>✗ Có, mọi số thực đều như vậy: mỗi số thực hoặc hữu tỉ hoặc vô tỉ, không bao giờ cả hai."
     },
     {
       "id": "m2-42",
@@ -668,19 +668,19 @@
       "q": "Giá trị của √25 là bao nhiêu?",
       "options": [
         "12,5",
-        "±5",
+        "5 hoặc −5",
         "5",
         "625"
       ],
       "correct": 2,
       "answer": "5",
-      "explanation": "🔑 √25 = 5 vì 5 ≥ 0 và 5² = 25.<br>✗ 12,5: lấy 25 chia 2, đâu phải căn.<br>✗ ±5: đó là nghiệm của x² = 25.<br>✗ 625: là 25², làm ngược phép toán."
+      "explanation": "🔑 √25 = 5 vì 5 ≥ 0 và 5² = 25.<br>✗ 12,5: lấy 25 chia 2, đâu phải căn.<br>✗ 5 hoặc −5: cả hai số này bình phương đều bằng 25, nhưng căn bậc hai số học chỉ lấy số không âm, nên √25 = 5.<br>✗ 625: là 25², làm ngược phép toán."
     },
     {
       "id": "m2-44",
       "ch": 2,
       "topic": "Áp dụng tính toán",
-      "q": "Thay a = −7 vào định nghĩa giá trị tuyệt đối, ta được kết quả nào?",
+      "q": "Tính |−7|.",
       "options": [
         "−7",
         "0",
@@ -689,7 +689,7 @@
       ],
       "correct": 3,
       "answer": "7",
-      "explanation": "🔑 −7 < 0 nên dùng |a| = −a: |−7| = −(−7) = 7.<br>✗ −7: giữ nguyên dấu âm, mà |a| ≥ 0.<br>✗ 0: chỉ đúng nếu số trong dấu là 0.<br>✗ 49: đó là 7², không phải |−7|."
+      "explanation": "🔑 Giá trị tuyệt đối của một số âm là số đối của nó: số đối của −7 là 7 nên |−7| = 7, giống như |−2| = 2; |−5,1| = 5,1.<br>✗ −7: giá trị tuyệt đối là khoảng cách đến gốc O nên không bao giờ âm; viết |−7| = −7 là sai giống như Minh viết |−2,5| = −2,5.<br>✗ 0: chỉ giá trị tuyệt đối của 0 mới bằng 0.<br>✗ 49: đó là (−7)², không phải |−7|."
     },
     {
       "id": "m2-45",
@@ -749,7 +749,7 @@
       ],
       "correct": 3,
       "answer": "1",
-      "explanation": "🔑 |0| = 0 và |−1| = −(−1) = 1, nên 0 + 1 = 1.<br>✗ −1: quên đổi dấu khi lấy |−1|.<br>✗ 0: bỏ sót hạng tử |−1|.<br>✗ 2: tính nhầm |0| thành 1."
+      "explanation": "🔑 Giá trị tuyệt đối của 0 là 0, còn giá trị tuyệt đối của một số âm là số đối của nó nên |−1| = 1. Vậy |0| + |−1| = 0 + 1 = 1.<br>✗ −1: |−1| là số đối của −1, tức là 1; giá trị tuyệt đối không bao giờ âm.<br>✗ 0: bỏ sót hạng tử |−1| = 1.<br>✗ 2: tính nhầm |0| thành 1, trong khi giá trị tuyệt đối của 0 là 0."
     },
     {
       "id": "m2-49",
