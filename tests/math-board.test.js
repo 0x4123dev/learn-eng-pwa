@@ -307,4 +307,24 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/'pan-start'/.test(src),
             'pointerdown must notice pan-start and full-repaint — the deleted stroke is still painted');
     });
+
+    test('the board survives the box changing size — rotation, URL bar, strip expand', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/ResizeObserver/.test(src) && /orientationchange/.test(src),
+            'a canvas whose bitmap stops matching its box draws ink away from the finger');
+    });
+
+    test('the destructive-clear confirm cannot survive the button being rebuilt', () => {
+        const src = read('js/math-board.js');
+        const render = src.slice(src.indexOf('function mathBoardRenderOverlay'));
+        assert.truthy(/_mathBoardClearArmed = 0/.test(render.slice(0, render.indexOf('\n    }'))),
+            'a re-render must disarm, or one tap wipes a board that looked unarmed');
+    });
+
+    test('ending the quiz closes the overlay, not just the session state', () => {
+        assert.truthy(/mathBoardCloseForSession/.test(read('js/math-board.js')));
+        const m = read('js/math.js');
+        assert.truthy((m.match(/mathBoardCloseForSession/g) || []).length >= 2,
+            'both finishMathQuiz and abandonMathQuiz must close the overlay');
+    });
 });

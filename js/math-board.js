@@ -221,6 +221,44 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     var _mathBoardGestureState = null;
     var _mathBoardClearArmed = 0;
 
+    // A live gesture holds a reference into b.strokes (g.stroke) or is mid-pan.
+    // Any toolbar action that mutates the board, or that tears the overlay
+    // down, must abort first — but C3 can null the gesture state entirely
+    // (overlay closed under a live stroke), so this must tolerate "no gesture"
+    // rather than assume one, unlike the plain mathBoardAbort(g) it wraps.
+    function mathBoardAbortSafe() {
+        if (_mathBoardGestureState) mathBoardAbort(_mathBoardGestureState);
+    }
+
+    // The canvas box changes size for three ordinary reasons: rotation, the
+    // iOS URL bar collapsing, and the question strip being expanded. A bitmap
+    // that no longer matches its box is scaled like an image, which puts the
+    // ink somewhere the finger is not — so re-size and repaint from the
+    // vectors, which lose nothing.
+    function mathBoardResize() {
+        const canvas = document.getElementById('mathBoardCanvas');
+        if (!canvas) return;
+        canvas.style.width = '';    // release the locked box before measuring,
+        canvas.style.height = '';   // or clientWidth reports the old size
+        const w = Math.max(1, canvas.clientWidth);
+        const h = Math.max(1, canvas.clientHeight);
+        if (w === canvas._viewW && h === canvas._viewH) {
+            // unchanged: restore the inline box and stop, or the ResizeObserver
+            // below would keep re-triggering itself forever
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            return;
+        }
+        _mathBoardCtx = mathBoardSizeCanvas(canvas, w, h, window.devicePixelRatio || 1);
+        canvas._viewW = w;
+        canvas._viewH = h;
+        mathBoardRepaint();
+    }
+    // Registered ONCE here, not inside mathBoardMountCanvas — that function
+    // reruns on every board switch, and window listeners would accumulate.
+    window.addEventListener('resize', mathBoardResize);
+    window.addEventListener('orientationchange', mathBoardResize);
+
     window.openMathBoard = function () {
         const s = mathBoardSession();
         s.open = true;
@@ -230,10 +268,23 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     };
 
     window.minimizeMathBoard = function () {
+        mathBoardAbortSafe();
         mathBoardSession().open = false;
+        _mathBoardClearArmed = 0;
         const el = document.getElementById('mathBoardOverlay');
         if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
         _mathBoardCtx = null;
+    };
+
+    // The quiz can end while the board is open — the child taps a nav tab and
+    // confirms. Nothing else hides the overlay, so without this the sheet stays
+    // painted over the whole app with no obvious way out.
+    window.mathBoardCloseForSession = function () {
+        const el = document.getElementById('mathBoardOverlay');
+        if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
+        _mathBoardCtx = null;
+        _mathBoardGestureState = null;
+        _mathBoardClearArmed = 0;
     };
 
     // ← REVIEW (Task 3): every toolbar action mutates b.strokes, which the
@@ -241,7 +292,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // what stops a finger that is still down from inking into a detached
     // stroke that then vanishes on the next repaint.
     window.mathBoardUndoTap = function () {
-        mathBoardAbort(_mathBoardGestureState);
+        mathBoardAbortSafe();
         mathBoardUndo(mathBoardActive());
         mathBoardRepaint();
     };
@@ -251,11 +302,17 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     window.mathBoardClearTap = function () {
         const now = Date.now();
         if (now - _mathBoardClearArmed < 2000) {
-            mathBoardAbort(_mathBoardGestureState);
-            mathBoardClear(mathBoardActive());
-            mathBoardActive().scrollY = 0;
+            mathBoardAbortSafe();
+            const b = mathBoardActive();
+            mathBoardClear(b);
+            b.scrollY = 0;
             _mathBoardClearArmed = 0;
-            mathBoardRenderOverlay();
+            // A full mathBoardRenderOverlay() would also disarm the button, but
+            // nothing about the board list changed here — only its strokes — so
+            // a plain repaint is enough, as long as the label is put back by hand.
+            const btn = document.getElementById('mathBoardClearBtn');
+            if (btn) btn.textContent = '🗑 Xoá';
+            mathBoardRepaint();
             return;
         }
         _mathBoardClearArmed = now;
@@ -269,7 +326,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     };
 
     window.mathBoardTabTap = function (i) {
-        mathBoardAbort(_mathBoardGestureState);
+        mathBoardAbortSafe();
         if (i === -1) { if (mathBoardAdd() === -1) return; }
         else mathBoardSwitch(i);
         mathBoardRenderOverlay();
@@ -297,6 +354,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     function mathBoardRenderOverlay() {
         const el = document.getElementById('mathBoardOverlay');
         if (!el) return;
+        _mathBoardClearArmed = 0;   // the armed button is about to be destroyed
         el.classList.remove('hidden');
         el.innerHTML =
             mathBoardStripHTML() +
@@ -327,6 +385,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         canvas._viewH = h;
 
         canvas.addEventListener('pointerdown', function (e) {
+            // C3 can null the gesture state out from under an open overlay
+            // (session ended while the board was up); without this guard a
+            // stray touch on the stale canvas would throw.
+            if (!_mathBoardGestureState) return;
             e.preventDefault();
             canvas.setPointerCapture(e.pointerId);
             const r = canvas.getBoundingClientRect();
@@ -376,6 +438,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         });
 
         mathBoardRepaint();
+        // Per-element observer: dies with the canvas on the next re-render,
+        // unlike the window-level resize/orientationchange listeners above.
+        if (window.ResizeObserver) new ResizeObserver(mathBoardResize).observe(canvas);
     }
 
     function mathBoardRepaint() {

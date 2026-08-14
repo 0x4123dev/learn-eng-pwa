@@ -466,13 +466,12 @@ function renderMathQuestion() {
         <button class="grammar-back-btn" onclick="abandonMathQuiz(); renderMathHome()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${(st.idx) / total * 100}%"></div></div>
+        <button class="math-board-fab" type="button" title="Bảng nháp" onclick="openMathBoard()">✏️</button>
       </div>
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
       ${body}
       ${explain}
-      <button class="math-board-fab" type="button" title="Bảng nháp"
-              onclick="openMathBoard()">✏️</button>
     </div>`;
   screen.scrollTop = 0;
 }
@@ -508,6 +507,7 @@ function nextMathQuestion() {
 }
 
 function finishMathQuiz() {
+  if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   const st = _mathQuiz;
   const screen = document.getElementById('mathHubScreen');
@@ -551,6 +551,7 @@ function finishMathQuiz() {
 function mathQuizQuestions() { return _mathQuiz ? _mathQuiz.questions : []; }
 function isMathQuizActive() { return !!_mathQuiz; }
 function abandonMathQuiz() {
+  if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   _mathQuiz = null;
 }
