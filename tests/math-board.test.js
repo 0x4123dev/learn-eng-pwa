@@ -202,3 +202,43 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
             'getCoalescedEvents replays a move as many sub-moves — they must not drift');
     });
 });
+
+suite('math board: painter', () => {
+    test('only strokes whose y-range crosses the viewport are redrawn', () => {
+        const mk = (y1, y2) => ({ points: [{ x: 0, y: y1 }, { x: 5, y: y2 }] });
+        const strokes = [mk(0, 50), mk(400, 450), mk(900, 950)];
+        const vis = board.mathBoardVisibleStrokes(strokes, 380, 300); // viewport 380..680
+        assert.deepEqual(vis, [strokes[1]], 'stroke above and stroke below are skipped');
+        assert.deepEqual(board.mathBoardVisibleStrokes(strokes, 40, 300), [strokes[0]],
+            'a stroke straddling the top edge still draws');
+        assert.deepEqual(board.mathBoardVisibleStrokes(strokes, 0, 420), [strokes[0], strokes[1]],
+            'and one straddling the bottom edge draws too');
+    });
+
+    test('a stroke renders as midpoint quadratics with round caps, offset by scroll', () => {
+        const calls = [];
+        const ctx = new Proxy({}, {
+            get: (t, k) => {
+                if (k === 'set') return undefined;
+                return (...a) => { calls.push([k, ...a]); };
+            },
+            set: (t, k, v) => { calls.push(['set:' + k, v]); return true; }
+        });
+        const pts = [{ x: 0, y: 100 }, { x: 10, y: 110 }, { x: 20, y: 120 }];
+        board.mathBoardDrawStroke(ctx, pts, 100);
+        assert.truthy(calls.some(c => c[0] === 'set:lineCap' && c[1] === 'round'), 'round cap');
+        assert.truthy(calls.some(c => c[0] === 'moveTo' && c[2] === 0), 'starts at y − scroll');
+        assert.truthy(calls.some(c => c[0] === 'quadraticCurveTo'), 'curves, not polylines');
+        assert.truthy(calls.some(c => c[0] === 'stroke'));
+    });
+
+    test('a dot (tap without moving) still leaves a visible mark', () => {
+        const calls = [];
+        const ctx = new Proxy({}, {
+            get: (t, k) => (...a) => { calls.push([k, ...a]); },
+            set: () => true
+        });
+        board.mathBoardDrawStroke(ctx, [{ x: 5, y: 5 }], 0);
+        assert.truthy(calls.some(c => c[0] === 'arc'), 'single point draws a filled dot');
+    });
+});

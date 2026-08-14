@@ -152,6 +152,67 @@ function mathBoardPointerCancel(g, b, id) { return mathBoardPointerUp(g, b, id);
 // pointing at a detached object that silently swallows ink.
 function mathBoardAbort(g) { g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; }
 
+// ── Painter ──────────────────────────────────────────────────────────────
+// The canvas is only ever viewport-sized; scrolling changes which slice of
+// the world we draw, never the canvas. That is what makes the sheet endless
+// without ever meeting iOS's canvas-size ceiling.
+
+function mathBoardVisibleStrokes(strokes, scrollY, viewH) {
+    const top = scrollY, bottom = scrollY + viewH;
+    return strokes.filter(s => {
+        let min = Infinity, max = -Infinity;
+        for (const p of s.points) { if (p.y < min) min = p.y; if (p.y > max) max = p.y; }
+        return max >= top && min <= bottom;
+    });
+}
+
+// Midpoint-quadratic smoothing: each recorded point becomes the control point
+// of a curve between neighbouring midpoints — cheap, stable, and it reads as
+// ink instead of connect-the-dots.
+function mathBoardDrawStroke(ctx, pts, scrollY) {
+    if (!pts.length) return;
+    ctx.strokeStyle = MATH_BOARD_INK;
+    ctx.fillStyle = MATH_BOARD_INK;
+    ctx.lineWidth = MATH_BOARD_INK_WIDTH;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    if (pts.length === 1) {              // a tap is a dot, not nothing
+        ctx.beginPath();
+        ctx.arc(pts[0].x, pts[0].y - scrollY, MATH_BOARD_INK_WIDTH / 2, 0, Math.PI * 2);
+        ctx.fill();
+        return;
+    }
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y - scrollY);
+    for (let i = 1; i < pts.length - 1; i++) {
+        const mx = (pts[i].x + pts[i + 1].x) / 2;
+        const my = (pts[i].y + pts[i + 1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y - scrollY, mx, my - scrollY);
+    }
+    const last = pts[pts.length - 1];
+    ctx.lineTo(last.x, last.y - scrollY);
+    ctx.stroke();
+}
+
+function mathBoardRedraw(ctx, b, viewW, viewH) {
+    ctx.clearRect(0, 0, viewW, viewH);
+    for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH)) {
+        mathBoardDrawStroke(ctx, s.points, b.scrollY);
+    }
+}
+
+// Size the backing store to devicePixelRatio so 3px ink is 3 crisp pixels,
+// not a blurry smear on retina.
+function mathBoardSizeCanvas(canvas, viewW, viewH, dpr) {
+    canvas.width = Math.round(viewW * dpr);
+    canvas.height = Math.round(viewH * dpr);
+    canvas.style.width = viewW + 'px';
+    canvas.style.height = viewH + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,
@@ -159,5 +220,6 @@ if (typeof module !== 'undefined' && module.exports) {
         mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort,
+        mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
     };
 }
