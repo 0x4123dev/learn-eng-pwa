@@ -58,7 +58,23 @@ function wordformById(id) {
 //
 // A child who guessed cannot answer either. Options live in
 // js/wordform-followups.js, keyed by the base question's id.
-const WF_FOLLOW_PARTS = ['m', 'r'];
+//
+// A third question appears ONLY where the answer is built with a negative
+// prefix (RELY → unreliable). Position in the sentence can explain why the
+// blank needs an adjective; it can never explain why it needs *un*reliable
+// rather than reliable — only the meaning of the sentence does. Answers
+// without a prefix have nothing to ask, so they get two questions, not three.
+const WF_FOLLOW_PARTS = ['m', 'r', 'neg'];
+const WF_FOLLOW_TITLES = {
+  m: 'Nghĩa của từ',
+  r: 'Vì sao chọn dạng từ này?',
+  neg: 'Vì sao dùng dạng phủ định?',
+};
+
+// The parts THIS follow-up actually has, in order.
+function wfFollowParts(q) {
+  return WF_FOLLOW_PARTS.filter(k => q && q[k]);
+}
 
 function wfFollowupQuestion(base) {
   if (!base || typeof WORDFORM_FOLLOWUPS === 'undefined') return null;
@@ -67,7 +83,7 @@ function wfFollowupQuestion(base) {
   const ok = (b) => b && Array.isArray(b.o) && b.o.length === 4 &&
                     typeof b.c === 'number' && b.c >= 0 && b.c < 4;
   if (!ok(f.m) || !ok(f.r)) return null;
-  return {
+  const out = {
     id: 'wfu-' + base.id,
     baseId: base.id,
     followup: true,
@@ -80,6 +96,19 @@ function wfFollowupQuestion(base) {
     m: { q: 'What is the meaning of "' + base.answer + '"?', options: f.m.o, correct: f.m.c },
     r: { q: 'Vì sao chỗ trống phải là "' + base.answer + '"?', options: f.r.o, correct: f.r.c },
   };
+  // The negative-prefix question, where there is one. `w` is the positive form
+  // the child might have written instead, and the prefix is whatever the answer
+  // carries in front of it.
+  if (ok(f.neg) && f.neg.w && base.answer.toLowerCase().endsWith(String(f.neg.w).toLowerCase())) {
+    out.neg = {
+      q: 'Vì sao là "' + base.answer + '" chứ không phải "' + f.neg.w + '"?',
+      options: f.neg.o,
+      correct: f.neg.c,
+      positive: f.neg.w,
+      prefix: base.answer.slice(0, base.answer.length - String(f.neg.w).length),
+    };
+  }
+  return out;
 }
 
 // Expand picked questions into [base, follow-up, base, follow-up, …].
@@ -95,16 +124,16 @@ function wfExpandFollowups(qs) {
   return out;
 }
 
-// A follow-up screen holds two questions, so its answer is a pair. It counts as
-// two points: understanding the word and understanding the rule are separate
-// things to get right.
+// A follow-up screen holds two questions — three on a negative prefix — so its
+// answer is a set, and it is worth one point per question: understanding the
+// word and understanding the rule are separate things to get right.
 function wfFollowScore(q, ans) {
   let score = 0;
-  WF_FOLLOW_PARTS.forEach(k => { if (ans && ans[k] === q[k].correct) score++; });
+  wfFollowParts(q).forEach(k => { if (ans && ans[k] === q[k].correct) score++; });
   return score;
 }
-function wfFollowDone(ans) {
-  return !!ans && WF_FOLLOW_PARTS.every(k => ans[k] !== null && ans[k] !== undefined);
+function wfFollowDone(q, ans) {
+  return !!ans && wfFollowParts(q).every(k => ans[k] !== null && ans[k] !== undefined);
 }
 
 // ---- history storage (per-user, in appState) ----
@@ -469,11 +498,12 @@ function renderWfFollowup() {
   const total = st.questions.length;
   if (typeof twPrefetch === 'function') twPrefetch(q.stem || q.answer, [], q.explanation, q.answer);
 
-  const done = wfFollowDone(ans);
+  const done = wfFollowDone(q, ans);
   const catLabel = (WF_CAT_LABELS[q.cat] || '').replace(/^[A-Za-z]+ /, '');   // "(tính từ)"
 
-  const block = (key, stepNo, title) => {
+  const block = (key, stepNo) => {
     const part = q[key];
+    const title = WF_FOLLOW_TITLES[key];
     const picked = ans[key];
     const shown = picked !== null && picked !== undefined;
     const opts = part.options.map((opt, i) => {
@@ -491,9 +521,17 @@ function renderWfFollowup() {
     let note = '';
     if (shown) {
       const ok = picked === part.correct;
-      const body = key === 'm'
-        ? `<b>${wfEsc(q.answer)}</b> = ${wfEsc(part.options[part.correct])}. ${wfEsc(q.vi)}`
-        : wfEsc(q.explanation);
+      let body;
+      if (key === 'm') {
+        body = `<b>${wfEsc(q.answer)}</b> = ${wfEsc(part.options[part.correct])}. ${wfEsc(q.vi)}`;
+      } else if (key === 'neg') {
+        // The reason is the option itself, so repeating it when the child got
+        // it right is noise; what is worth adding is the mechanic.
+        const rule = `Tiền tố <b>${wfEsc(part.prefix)}-</b> đảo ngược nghĩa của <b>${wfEsc(part.positive)}</b>.`;
+        body = ok ? rule : `${wfEsc(part.options[part.correct])}. ${rule}`;
+      } else {
+        body = wfEsc(q.explanation);
+      }
       note = `<div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
         <div>${ok ? '✅&nbsp;' : `❌ Đáp án đúng: <b>${String.fromCharCode(65 + part.correct)}</b>. `}${body}</div>
       </div>`;
@@ -507,10 +545,20 @@ function renderWfFollowup() {
       </div>`;
   };
 
-  // Step 2 waits for step 1; before that, a line saying so beats a blank gap.
-  const step2 = (ans.m === null || ans.m === undefined)
-    ? `<div class="wf-follow-locked">🔒 Trả lời câu 1 để mở câu 2</div>`
-    : block('r', '2', 'Vì sao chọn dạng từ này?');
+  // Each step waits for the one before it; a line saying so beats a blank gap.
+  // Only ONE lock line: everything past the first unanswered step is hidden
+  // behind it, not stacked up as a column of padlocks.
+  const parts = wfFollowParts(q);
+  const stepHtml = [];
+  for (let i = 0; i < parts.length; i++) {
+    const prev = parts[i - 1];
+    if (prev && (ans[prev] === null || ans[prev] === undefined)) {
+      stepHtml.push(`<div class="wf-follow-locked">🔒 Trả lời câu ${i} để mở câu ${i + 1}</div>`);
+      break;
+    }
+    stepHtml.push(block(parts[i], String(i + 1)));
+  }
+  const steps = stepHtml.join('');
 
   screen.innerHTML = `
     <div class="phrases-wrap">
@@ -518,8 +566,7 @@ function renderWfFollowup() {
       <div class="grammar-question-card wf-follow-card">
         <div class="grammar-question-tag wf-follow-tag">🧠 Hiểu đáp án · ${wfEsc(q.answer)} ${wfEsc(catLabel)}</div>
         ${wfFollowRecapHTML(st, q)}
-        ${block('m', '1', 'Nghĩa của từ')}
-        ${step2}
+        ${steps}
         ${done ? `<button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>` : ''}
       </div>
     </div>`;
@@ -529,13 +576,16 @@ function answerWfFollowup(key, i) {
   const st = _wfQuiz;
   if (!st) return;
   const q = st.questions[st.idx];
-  if (!q || !q.followup || WF_FOLLOW_PARTS.indexOf(key) === -1) return;
-  if (st.answers[st.idx] === null) st.answers[st.idx] = { m: null, r: null };
+  if (!q || !q.followup || !q[key]) return;
+  const parts = wfFollowParts(q);
+  if (parts.indexOf(key) === -1) return;
+  if (st.answers[st.idx] === null) st.answers[st.idx] = { m: null, r: null, neg: null };
   const ans = st.answers[st.idx];
   if (ans[key] !== null && ans[key] !== undefined) return;     // first answer stands
-  // Step 2 is not on screen until step 1 is answered; a queued tap must not
-  // walk past that either.
-  if (key === 'r' && (ans.m === null || ans.m === undefined)) return;
+  // A later step is not on screen until the one before it is answered; a queued
+  // tap must not walk past that either.
+  const prev = parts[parts.indexOf(key) - 1];
+  if (prev && (ans[prev] === null || ans[prev] === undefined)) return;
   ans[key] = i;
   if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q[key].correct);
   renderWfFollowup();
@@ -655,20 +705,25 @@ function nextWfQuestion() {
 // guesses landed, so the result screen reports the two understanding checks in
 // their own right.
 function wfUnderstandCardHTML(fu) {
-  if (!fu || !fu.n) return '';
-  const row = (icon, label, got) => {
-    const pct = Math.round((got / fu.n) * 100);
+  const seen = fu && (fu.count || fu.n);          // `n` — sessions saved before v4.11.3
+  if (!seen) return '';
+  const row = (icon, label, got, of) => {
+    const pct = Math.round((got / of) * 100);
     return `<div class="wf-understand-row">
       <span class="wf-understand-label">${icon} ${label}</span>
       <span class="wf-understand-bar"><i style="width:${pct}%"></i></span>
-      <b class="wf-understand-num">${got}/${fu.n}</b>
+      <b class="wf-understand-num">${got}/${of}</b>
     </div>`;
   };
+  // The prefix row appears only when the practice actually contained a
+  // negative-prefix answer — a 0/0 bar would read as a failure.
+  const negRow = fu.negCount ? row('🚫', 'Lý do dùng dạng phủ định', fu.neg, fu.negCount) : '';
   return `
     <div class="wf-understand-card">
       <div class="wf-understand-title">🧠 Hiểu bài</div>
-      ${row('💡', 'Nghĩa của từ', fu.m)}
-      ${row('📐', 'Lý do chọn dạng từ', fu.r)}
+      ${row('💡', 'Nghĩa của từ', fu.m, seen)}
+      ${row('📐', 'Lý do chọn dạng từ', fu.r, seen)}
+      ${negRow}
     </div>`;
 }
 
@@ -682,14 +737,21 @@ function finishWordformQuiz() {
   let total = 0;
   let score = 0;
   const wrong = [];
-  const fu = { n: 0, m: 0, r: 0 };            // follow-ups seen / meaning right / reason right
+  // count/m/r: follow-ups seen, meanings right, reasons right. negCount/neg
+  // count only the ones that ASKED about a negative prefix — most practices
+  // contain none, and 0/0 is not a score.
+  const fu = { count: 0, m: 0, r: 0, negCount: 0, neg: 0 };
+  let checksAsked = 0;
   st.questions.forEach((q, i) => {
     const a = st.answers[i];
     if (q.followup) {
-      total += WF_FOLLOW_PARTS.length;
+      const parts = wfFollowParts(q);
+      total += parts.length;
+      checksAsked += parts.length;
       score += wfFollowScore(q, a);
-      fu.n++;
-      WF_FOLLOW_PARTS.forEach(k => { if (a && a[k] === q[k].correct) fu[k]++; });
+      fu.count++;
+      if (q.neg) fu.negCount++;
+      parts.forEach(k => { if (a && a[k] === q[k].correct) fu[k]++; });
       return;
     }
     total++;
@@ -699,7 +761,7 @@ function finishWordformQuiz() {
   const pct = total ? Math.round((score / total) * 100) : 0;
   // "perfect! 🎉" over a missed understanding check would be a lie the child can
   // see: the card right above it says 0/1.
-  const checksMissed = WF_FOLLOW_PARTS.length * fu.n - fu.m - fu.r;
+  const checksMissed = checksAsked - fu.m - fu.r - fu.neg;
 
   // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
   const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
@@ -783,7 +845,7 @@ if (typeof module !== 'undefined' && module.exports) {
     submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
     switchWfSubTab, renderWordformLessons, openWordformLesson,
-    wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone,
+    wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone, wfFollowParts,
     answerWfFollowup, renderWfFollowup, wfUnderstandCardHTML,
   };
 }

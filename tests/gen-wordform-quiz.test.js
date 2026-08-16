@@ -59,6 +59,7 @@ function playAll(idx) {
         wf.answerWfQuestion(idx);
         wf.answerWfFollowup('m', idx);
         wf.answerWfFollowup('r', idx);
+        wf.answerWfFollowup('neg', idx);
         wf.nextWfQuestion();
     }
     if (guard >= 2100) throw new Error('quiz never finished');
@@ -71,6 +72,7 @@ function lastSession() { return global.appState.wordformHistory[0]; }
 function passCheck(qid) {
     wf.answerWfFollowup('m', FU[qid].m.c);
     wf.answerWfFollowup('r', FU[qid].r.c);
+    if (FU[qid].neg) wf.answerWfFollowup('neg', FU[qid].neg.c);
 }
 
 // ---- lifecycle & quiz length ------------------------------------------------
@@ -107,15 +109,17 @@ suite('gen: wordform quiz lifecycle', () => {
         wf.startWordformQuiz(5);
         assert.truthy(screen.innerHTML.includes('>1/10<'), 'first question renders progress 1/10');
         playAll(0);
-        assert.equal(lastSession().total, 15);
-        assert.equal(lastSession().fu.n, 5, 'one understanding check per question');
+        // 5 questions + 5 two-part checks, plus one more point for each drawn
+        // question whose answer carries a negative prefix.
+        assert.equal(lastSession().total, 15 + lastSession().fu.negCount);
+        assert.equal(lastSession().fu.count, 5, 'one understanding check per question');
     });
 
     test('startWordformQuiz(10) builds a 10-question quiz (session total = 30 points)', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformQuiz(10);
         playAll(0);
-        assert.equal(lastSession().total, 30);
+        assert.equal(lastSession().total, 30 + lastSession().fu.negCount);
     });
 
     test("startWordformQuiz('all') uses the whole 600-question bank in bank order", () => {
@@ -123,7 +127,8 @@ suite('gen: wordform quiz lifecycle', () => {
         wf.startWordformQuiz('all');
         wf.finishWordformQuiz(); // finish with nothing answered → every q lands in wrong[]
         const s = lastSession();
-        assert.equal(s.total, 1800, '600 questions + 600 two-part checks');
+        assert.equal(s.total, 1824, '600 questions + 600 checks, 24 of them three-part');
+        assert.equal(s.fu.negCount, 24, 'exactly the negative-prefix answers ask the third question');
         // Only word-form questions are owed back; the checks are not typed drills.
         assert.deepEqual(s.wrong.map(w => w.qid), BANK.map(q => q.id), "'all' must not shuffle");
     });
@@ -132,8 +137,8 @@ suite('gen: wordform quiz lifecycle', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformQuiz(9999);
         wf.finishWordformQuiz();
-        assert.equal(lastSession().total, 1800);
-        assert.equal(lastSession().fu.n, 600);
+        assert.equal(lastSession().total, 1824);
+        assert.equal(lastSession().fu.count, 600);
     });
 
     test('startWordformQuiz on an empty bank does not start a quiz', () => {
@@ -260,7 +265,7 @@ suite('gen: wordform answering (mcq)', () => {
         wf.nextWfQuestion(); // past the last screen → finish
         const s = lastSession();
         assert.equal(s.total, 6);
-        assert.equal(s.fu.n, 2);
+        assert.equal(s.fu.count, 2);
         assert.deepEqual(s.wrong.map(w => w.ua), [1, 1], 'both answers recorded');
         assert.deepEqual(s.wrong.map(w => w.qid).sort(), [WF1, WF2]);
     });
@@ -383,7 +388,7 @@ suite('gen: wordform finish — coins & history', () => {
         assert.equal(st.coins - 40, 5 * s.score);
         // Every point is accounted for: what was scored, the word-form questions
         // missed, and the understanding checks missed.
-        const checksMissed = 2 * s.fu.n - s.fu.m - s.fu.r;
+        const checksMissed = 2 * s.fu.count + s.fu.negCount - s.fu.m - s.fu.r - s.fu.neg;
         assert.equal(s.score + s.wrong.length + checksMissed, s.total,
             'score + wrong + missed checks must cover every point');
     });

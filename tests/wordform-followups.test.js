@@ -111,6 +111,118 @@ suite('word form follow-ups: data', () => {
     });
 });
 
+suite('word form follow-ups: the negative-prefix question', () => {
+    const NEG_PREFIXES = ['un', 'in', 'im', 'ir', 'il', 'dis', 'non'];
+    const negIds = Object.keys(FU).filter(id => FU[id].neg);
+
+    test('24 questions ask it — the ones whose answer really carries a prefix', () => {
+        assert.equal(negIds.length, 24);
+        negIds.forEach(id => {
+            const q = BANK.find(x => x.id === id);
+            const a = q.answer.toLowerCase();
+            const w = FU[id].neg.w.toLowerCase();
+            assert.truthy(NEG_PREFIXES.some(p => a === p + w),
+                `${id}: "${q.answer}" is not a negative prefix + "${FU[id].neg.w}"`);
+        });
+    });
+
+    test('it is NOT asked where the prefix is only a lookalike', () => {
+        // invention, imagination, inspiration, understandable, unite… all start
+        // with prefix letters and negate nothing. Asking "why not vention?" is
+        // nonsense, so those questions must keep their two checks.
+        ['wf-73', 'wf-148', 'wf-161', 'wf-12', 'wf-316', 'wf-45', 'wf-330'].forEach(id => {
+            assert.truthy(!FU[id].neg, `${id} should not ask about a negative prefix`);
+        });
+    });
+
+    test('4 distinct options, a valid index, and no giveaway of either form', () => {
+        negIds.forEach(id => {
+            const q = BANK.find(x => x.id === id);
+            const n = FU[id].neg;
+            assert.truthy(Array.isArray(n.o) && n.o.length === 4, `${id}: needs 4 options`);
+            assert.truthy(n.c >= 0 && n.c < 4, `${id}: bad correct index`);
+            assert.equal(new Set(n.o.map(norm)).size, 4, `${id}: duplicate options`);
+            n.o.forEach((t, i) => {
+                assert.truthy(t.length <= 95, `${id}.neg.o[${i}]: ${t.length} chars — max 95`);
+                [q.answer, n.w].forEach(word => {
+                    const re = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                    assert.truthy(!re.test(t), `${id}.neg.o[${i}]: names "${word}", already in the question`);
+                });
+            });
+        });
+    });
+
+    test('the right answer argues from meaning, not from word class', () => {
+        // Word class is what the SECOND question asks; position in the sentence
+        // can never explain a prefix.
+        negIds.forEach(id => {
+            const right = FU[id].neg.o[FU[id].neg.c];
+            assert.truthy(!/danh từ|tính từ|trạng từ|động từ/i.test(right),
+                `${id}: the correct reason falls back on word class — "${right}"`);
+        });
+    });
+
+    test('a quoted English phrase is quoted from the sentence itself', () => {
+        negIds.forEach(id => {
+            const q = BANK.find(x => x.id === id);
+            FU[id].neg.o.forEach((t, i) => {
+                (t.match(/'([^']+)'/g) || []).forEach(qt => {
+                    const s = qt.replace(/'/g, '');
+                    if (!/^[A-Za-z][A-Za-z' -]*$/.test(s)) return;
+                    assert.truthy(q.q.toLowerCase().includes(s.toLowerCase()),
+                        `${id}.neg.o[${i}]: quotes '${s}', not in the sentence`);
+                });
+            });
+        });
+    });
+
+    test('the built question contrasts the two forms and names the prefix', () => {
+        const id = negIds[0];
+        const f = wf.wfFollowupQuestion(BANK.find(x => x.id === id));
+        assert.truthy(f.neg, 'the third part must be built');
+        assert.truthy(f.neg.q.includes(BANK.find(x => x.id === id).answer), 'question names the answer');
+        assert.truthy(f.neg.q.includes(f.neg.positive), 'question names the positive form');
+        assert.equal(f.neg.prefix + f.neg.positive, BANK.find(x => x.id === id).answer);
+        assert.deepEqual(wf.wfFollowParts(f), ['m', 'r', 'neg']);
+    });
+
+    test('a three-part check is worth three points and needs all three answered', () => {
+        const f = wf.wfFollowupQuestion(BANK.find(x => x.id === negIds[0]));
+        const all = { m: f.m.correct, r: f.r.correct, neg: f.neg.correct };
+        assert.equal(wf.wfFollowScore(f, all), 3);
+        assert.equal(wf.wfFollowScore(f, { ...all, neg: (f.neg.correct + 1) % 4 }), 2);
+        assert.truthy(!wf.wfFollowDone(f, { m: 0, r: 0 }));
+    });
+
+    test('step 3 stays locked until step 2 is answered', () => {
+        const screen = { innerHTML: '' };
+        const savedDoc = global.document;
+        global.document = { getElementById: id => (id === 'wordformScreen' ? screen : null), querySelectorAll: () => [] };
+        try {
+            const id = negIds[0];
+            const base = BANK.find(x => x.id === id);
+            wf.startWordformReviewQuiz([id]);
+            wf.answerWfQuestion(base.type === 'mcq' ? base.correct : 0);
+            if (base.type === 'text') { /* typed questions need submitWfText */ }
+            wf.nextWfQuestion();
+            assert.truthy(screen.innerHTML.includes('Trả lời câu 1 để mở câu 2'), 'step 2 locked');
+            wf.answerWfFollowup('neg', 0);            // must not sneak past the lock
+            assert.truthy(!screen.innerHTML.includes('Vì sao là'), 'step 3 must not be reachable yet');
+            wf.answerWfFollowup('m', FU[id].m.c);
+            assert.truthy(screen.innerHTML.includes('Trả lời câu 2 để mở câu 3'), 'step 3 locked');
+            wf.answerWfFollowup('r', FU[id].r.c);
+            assert.truthy(screen.innerHTML.includes('Vì sao là'), 'step 3 now open');
+            assert.truthy(!screen.innerHTML.includes('grammar-next-btn'), 'Next waits for step 3');
+            wf.answerWfFollowup('neg', FU[id].neg.c);
+            assert.truthy(screen.innerHTML.includes('grammar-next-btn'), 'Next appears once all three are answered');
+            assert.truthy(screen.innerHTML.includes('đảo ngược nghĩa của'), 'the prefix rule is explained');
+        } finally {
+            wf.abandonWordformQuiz();
+            global.document = savedDoc;
+        }
+    });
+});
+
 suite('word form follow-ups: quiz behaviour', () => {
     test('wfFollowupQuestion builds a two-part question from the bank entry', () => {
         const base = BANK[0];
@@ -217,10 +329,15 @@ suite('word form follow-ups: quiz behaviour', () => {
     });
 
     test('a follow-up is only done when BOTH questions are answered', () => {
-        assert.falsy(wf.wfFollowDone(null));
-        assert.falsy(wf.wfFollowDone({ m: 0, r: null }));
-        assert.falsy(wf.wfFollowDone({ m: null, r: 0 }));
-        assert.truthy(wf.wfFollowDone({ m: 0, r: 3 }));
+        const two = wf.wfFollowupQuestion(BANK.find(q => !FU[q.id].neg));
+        assert.falsy(wf.wfFollowDone(two, null));
+        assert.falsy(wf.wfFollowDone(two, { m: 0, r: null }));
+        assert.falsy(wf.wfFollowDone(two, { m: null, r: 0 }));
+        assert.truthy(wf.wfFollowDone(two, { m: 0, r: 3 }));
+        // …and all THREE when the answer carries a negative prefix.
+        const three = wf.wfFollowupQuestion(BANK.find(q => FU[q.id].neg));
+        assert.falsy(wf.wfFollowDone(three, { m: 0, r: 3 }));
+        assert.truthy(wf.wfFollowDone(three, { m: 0, r: 3, neg: 1 }));
     });
 
     test('it scores two points, one per question', () => {
@@ -234,11 +351,16 @@ suite('word form follow-ups: quiz behaviour', () => {
     });
 
     test('the understanding card reports both checks, and stays away when empty', () => {
-        assert.equal(wf.wfUnderstandCardHTML({ n: 0, m: 0, r: 0 }), '');
+        assert.equal(wf.wfUnderstandCardHTML({ count: 0, m: 0, r: 0 }), '');
         assert.equal(wf.wfUnderstandCardHTML(null), '');
-        const html = wf.wfUnderstandCardHTML({ n: 10, m: 9, r: 6 });
+        const html = wf.wfUnderstandCardHTML({ count: 10, m: 9, r: 6, negCount: 0, neg: 0 });
         assert.truthy(html.includes('9/10'), 'meaning score missing');
         assert.truthy(html.includes('6/10'), 'reason score missing');
         assert.truthy(html.includes('60%'), 'the reason bar should be 60% wide');
+        assert.truthy(!html.includes('phủ định'), 'no prefix row when the practice had no prefix answer');
+        // The prefix row counts only the questions that asked — 0/0 is not a score.
+        const withNeg = wf.wfUnderstandCardHTML({ count: 10, m: 9, r: 6, negCount: 2, neg: 1 });
+        assert.truthy(withNeg.includes('phủ định'), 'prefix row missing');
+        assert.truthy(withNeg.includes('1/2'), 'the prefix row is out of the 2 that asked, not 10');
     });
 });
