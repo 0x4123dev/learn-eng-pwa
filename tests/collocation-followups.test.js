@@ -87,6 +87,30 @@ suite('collocation follow-ups: data', () => {
         }
     });
 
+    test('the right meaning is the bank\'s own gloss, not a paraphrase of it', () => {
+        // The first authoring pass drifted here — a checker bug pushed authors
+        // off the gloss and "quyền truy cập" came out as "vào được hệ thống dù
+        // không được phép". Accurate, but no longer the thing the bank teaches.
+        // Every meaning must share real wording with the gloss it comes from.
+        const GLUE = new Set(['sự', 'việc', 'một', 'cái', 'làm', 'là', 'của', 'cho', 'được', 'bị',
+                              'điều', 'người', 'ai', 'gì', 'đó', 'các', 'những', 'và', 'với', 'về',
+                              'có', 'không']);
+        const tok = s => String(s).toLowerCase().normalize('NFC')
+            .replace(/[.,!?;:"'’`()[\]/]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+        let checked = 0;
+        for (const q of BANK) {
+            const parts = String(q.vi || '').split(/\s[—–-]\s/);
+            if (parts.length < 2) continue;              // 25 glosses carry no Vietnamese half
+            checked++;
+            const gloss = tok(parts.slice(1).join(' ')).filter(w => !GLUE.has(w));
+            if (!gloss.length) continue;
+            const right = tok(FU[q.id].m.o[FU[q.id].m.c]);
+            assert.truthy(gloss.some(w => right.includes(w)),
+                `${q.id}: meaning "${FU[q.id].m.o[FU[q.id].m.c]}" shares no wording with the gloss "${parts.slice(1).join(' ')}"`);
+        }
+        assert.equal(checked, 475, 'the number of glossed questions changed — recheck this rule');
+    });
+
     test('a quoted English string is quoted from the question itself', () => {
         for (const q of BANK) {
             const corpus = [q.q, q.frame, q.answer, q.keyword, q.explanation.replace(/<[^>]+>/g, ' ')]
