@@ -680,6 +680,10 @@ function answerWfQuestion(i) {
   const st = _wfQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
+  // A check screen answers through answerWfFollowup; letting a stale node or a
+  // queued tap through here would write a single-value answer over the check's
+  // two-part one and lock it unanswerable.
+  if (!q || q.followup) return;
   st.answers[st.idx] = { value: i, isCorrect: i === q.correct };
   if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q.correct);
   renderWfQuestion();
@@ -688,6 +692,7 @@ function submitWfText() {
   const st = _wfQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
+  if (!q || q.followup) return;                 // see answerWfQuestion
   const inp = document.getElementById('wfTextInput');
   const raw = inp ? inp.value : '';
   st.answers[st.idx] = { value: raw.trim(), isCorrect: _wfTextCorrect(raw, q) };

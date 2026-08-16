@@ -23,6 +23,7 @@ const ASSETS = [
   '/js/phrases-meanings.js',
   '/js/phrases.js',
   '/js/collocation-data.js',
+  '/js/collocation-followups.js',
   '/js/collocation.js',
   '/js/dictionary-data.js',
   '/js/hot-words.js',

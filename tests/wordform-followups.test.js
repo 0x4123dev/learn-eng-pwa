@@ -328,6 +328,30 @@ suite('word form follow-ups: quiz behaviour', () => {
         }
     });
 
+    test('a base-question tap cannot land on a check screen', () => {
+        // A queued tap or a stale node reaching answerWfQuestion would write a
+        // single-value answer over the check's two-part one and lock it.
+        const screen = { innerHTML: '' };
+        const savedDoc = global.document;
+        global.document = { getElementById: id => (id === 'wordformScreen' ? screen : null), querySelectorAll: () => [] };
+        try {
+            const base = BANK.find(q => q.type === 'mcq');
+            wf.startWordformReviewQuiz([base.id]);
+            wf.answerWfQuestion(base.correct);
+            wf.nextWfQuestion();
+            wf.answerWfQuestion(0);             // must be ignored, not recorded
+            wf.submitWfText();
+            assert.truthy(screen.innerHTML.includes('Trả lời câu 1 để mở câu 2'),
+                'the check must still be waiting for its own answer');
+            wf.answerWfFollowup('m', FU[base.id].m.c);
+            wf.answerWfFollowup('r', FU[base.id].r.c);
+            assert.truthy(screen.innerHTML.includes('grammar-next-btn'), 'and must still be answerable');
+        } finally {
+            wf.abandonWordformQuiz();
+            global.document = savedDoc;
+        }
+    });
+
     test('a follow-up is only done when BOTH questions are answered', () => {
         const two = wf.wfFollowupQuestion(BANK.find(q => !FU[q.id].neg));
         assert.falsy(wf.wfFollowDone(two, null));

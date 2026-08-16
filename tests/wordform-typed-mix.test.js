@@ -42,6 +42,10 @@ function makeEnv() {
     };
     vm.createContext(ctx);
     vm.runInContext(read('js/wordform-data.js'), ctx);
+    // Loaded because the browser loads it: every drawn question drags an
+    // understanding check behind it, so the quiz array is twice the practice
+    // size. Leaving it out would measure a draw the app never performs.
+    vm.runInContext(read('js/wordform-followups.js'), ctx);
     vm.runInContext(read('js/wordform.js')
         + '\nthis.start = startWordformQuiz; this.quiz = () => _wfQuiz;'
         + '\nthis.BANK = WORDFORM_QUESTIONS; this.target = wfTypedTarget; this.SHARE = WF_TYPED_SHARE;', ctx);
@@ -49,9 +53,11 @@ function makeEnv() {
 }
 
 const RUNS = 3000;
+// The DRAW is what these tests are about, so the understanding checks the quiz
+// interleaves are filtered back out; `rawSize` below covers the interleaving.
 function sample(ctx, n) {
     const out = [];
-    for (let i = 0; i < RUNS; i++) { ctx.start(n); out.push(ctx.quiz().questions); }
+    for (let i = 0; i < RUNS; i++) { ctx.start(n); out.push(ctx.quiz().questions.filter(q => !q.followup)); }
     return out;
 }
 const typedCount = (qs) => qs.filter(q => q.type === 'text').length;
@@ -106,6 +112,17 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
         }
     });
 
+    test('each drawn question is followed by its own understanding check', () => {
+        const ctx = makeEnv();
+        ctx.start(10);
+        const qs = ctx.quiz().questions;
+        assert.equal(qs.length, 20, '10 questions + 10 checks');
+        for (let i = 0; i < qs.length; i += 2) {
+            assert.truthy(!qs[i].followup, `screen ${i + 1} should be a question`);
+            assert.equal(qs[i + 1].baseId, qs[i].id, `screen ${i + 2} should check the question before it`);
+        }
+    });
+
     test('the typed ones are mixed through, not bunched at the end', () => {
         // They are drawn from a separate pool, so without a final shuffle they
         // would all arrive together — and a child would learn to expect them.
@@ -122,7 +139,7 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
     test('"all" keeps the whole bank, ratio untouched', () => {
         const ctx = makeEnv();
         ctx.start('all');
-        assert.equal(ctx.quiz().questions.length, ctx.BANK.length);
+        assert.equal(ctx.quiz().questions.filter(q => !q.followup).length, ctx.BANK.length);
     });
 });
 
@@ -133,7 +150,11 @@ suite('word form: the shuffle reaches every question', () => {
         const seen = new Set(), seenTyped = new Set();
         for (let i = 0; i < 20000; i++) {
             ctx.start(10);
-            for (const q of ctx.quiz().questions) { seen.add(q.id); if (q.type === 'text') seenTyped.add(q.id); }
+            for (const q of ctx.quiz().questions) {
+                if (q.followup) continue;                  // checks are derived, not drawn
+                seen.add(q.id);
+                if (q.type === 'text') seenTyped.add(q.id);
+            }
         }
         assert.equal(seen.size, ctx.BANK.length, 'some questions are unreachable');
         assert.equal(seenTyped.size, ctx.BANK.filter(q => q.type === 'text').length,

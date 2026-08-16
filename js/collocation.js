@@ -83,6 +83,79 @@ function collocSpokenPhrase(q) {
   return extra.length ? head + '/ ' + extra.join('/ ') : head;
 }
 
+// ---- follow-up: proving the collocation was understood, not guessed ----
+// Picking "conclusive/ resign" out of four is a 1-in-4 shot, and the child who
+// guessed right looks exactly like the child who knew. So every question is
+// followed by ONE screen carrying TWO questions about the answer just given:
+// what the collocation MEANS, and WHY those words go together — four usage
+// claims, of which exactly one is true.
+//
+// Options live in js/collocation-followups.js, keyed by question id. Built the
+// same way as the Word form checks (js/wordform-followups.js).
+const COL_FOLLOW_PARTS = ['m', 'r'];
+const COL_FOLLOW_TITLES = { m: 'Nghĩa của cụm từ', r: 'Vì sao đáp án đúng là vậy?' };
+
+// The collocation being taught. The bank documents it at the head of `vi`
+// ("make an effort — nỗ lực, cố gắng"); 25 glosses are pure Vietnamese and
+// fall back to the answer, exactly as collocSpokenPhrase does.
+function collocPhrase(q) {
+  if (!q) return '';
+  const head = String(q.vi || '').split(/\s[—–-]\s/)[0].trim();
+  if (!head || COL_VN_CHARS.test(head) || !/[a-z]/i.test(head)) return String(q.answer || '');
+  return head;
+}
+
+// The sentence with its blank(s) filled in — what the child should have
+// written. A pair question has two gaps and an answer of "first/ second";
+// a transform question's gap is in `frame`, not in `q`.
+function collocFilledParts(q) {
+  const src = (q.type === 'transform') ? String(q.frame || q.q || '') : String(q.q || '');
+  return { src, fills: String(q.answer || '').split('/').map(s => s.trim()).filter(Boolean) };
+}
+
+function collocFollowupQuestion(base) {
+  if (!base || typeof COLLOCATION_FOLLOWUPS === 'undefined') return null;
+  const f = COLLOCATION_FOLLOWUPS[base.id];
+  if (!f) return null;
+  const ok = (b) => b && Array.isArray(b.o) && b.o.length === 4 &&
+                    typeof b.c === 'number' && b.c >= 0 && b.c < 4;
+  if (!ok(f.m) || !ok(f.r)) return null;
+  const phrase = collocPhrase(base);
+  return {
+    id: 'colu-' + base.id,
+    baseId: base.id,
+    followup: true,
+    type: base.type,
+    phrase,
+    answer: base.answer,
+    vi: base.vi,
+    explanation: base.explanation,
+    m: { q: 'What is the meaning of "' + phrase + '"?', options: f.m.o, correct: f.m.c },
+    r: { q: 'Vì sao đáp án đúng là "' + base.answer + '"?', options: f.r.o, correct: f.r.c },
+  };
+}
+
+// [question, check, question, check, …]. A question with no follow-up data is
+// left on its own rather than dropped: a gap costs the check, not the question.
+function colExpandFollowups(qs) {
+  const out = [];
+  qs.forEach(q => {
+    out.push(q);
+    const f = collocFollowupQuestion(q);
+    if (f) out.push(f);
+  });
+  return out;
+}
+
+function colFollowScore(q, ans) {
+  let score = 0;
+  COL_FOLLOW_PARTS.forEach(k => { if (ans && ans[k] === q[k].correct) score++; });
+  return score;
+}
+function colFollowDone(ans) {
+  return !!ans && COL_FOLLOW_PARTS.every(k => ans[k] !== null && ans[k] !== undefined);
+}
+
 // ---- home view (returned as HTML string; phrases.js injects it) ----
 function renderCollocHome() {
   const bank = collocBank();
@@ -182,10 +255,13 @@ function startCollocPractice(n) {
   const wantTyped = colTypedTarget(size, typed.length);
   // Drawn from each pool separately — that is what makes the count exact —
   // then shuffled together so the typing is not bunched at the end.
-  const questions = _colShuffle(
+  // Each question drags its understanding check along right behind it. The
+  // practice button still promises the number of COLLOCATION questions — that
+  // is what a child counts — so the size above is left alone.
+  const questions = colExpandFollowups(_colShuffle(
     _colShuffle(typed).slice(0, wantTyped)
       .concat(_colShuffle(choice).slice(0, size - wantTyped))
-  );
+  ));
   _colQuiz = { questions, idx: 0, answers: new Array(questions.length).fill(null) };
   renderCollocQuestion();
 }
@@ -193,11 +269,140 @@ function startCollocPractice(n) {
 function abandonCollocPractice() { _colQuiz = null; }
 function isCollocActive() { return !!_colQuiz; }
 
+// The header is identical on both kinds of screen, so it is written once.
+function colQuizHeaderHTML(st) {
+  const total = st.questions.length;
+  return `
+      <div class="grammar-quiz-header phrases-quiz-header">
+        <button class="grammar-back-btn" onclick="abandonCollocPractice(); renderPhrasesHome()">✕</button>
+        <span class="grammar-quiz-progress">🧩 ${st.idx + 1}/${total}</span>
+        <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(st.idx / total * 100)}%"></div></div>
+      </div>`;
+}
+
+// The check asks about a sentence that has already scrolled away, so it comes
+// back with its blank(s) filled — next to what the child actually wrote.
+function collocFollowRecapHTML(st, q) {
+  const base = st.questions[st.idx - 1];
+  if (!base || base.id !== q.baseId) return '';
+  const wrap = (s) => (typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : colEsc(s);
+  const { src, fills } = collocFilledParts(base);
+  let at = 0;
+  const sentence = wrap(src).replace(/_{2,}/g,
+    () => `<b class="col-recap-answer">${colEsc(fills[at++] || '')}</b>`);
+
+  const ans = st.answers[st.idx - 1];
+  let line = '';
+  if (ans) {
+    const given = String(ans.value || '');
+    line = ans.isCorrect
+      ? `<div class="wf-recap-you ok">✅&nbsp;Bé trả lời đúng: <b>${colEsc(q.answer)}</b></div>`
+      : `<div class="wf-recap-you bad">❌&nbsp;Bé trả lời: <s>${given ? colEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${colEsc(q.answer)}</b></div>`;
+  }
+  return `
+      <div class="wf-follow-recap">
+        <div class="wf-recap-label">Câu vừa rồi</div>
+        <div class="wf-recap-q">${sentence}</div>
+        ${line}
+      </div>`;
+}
+
+// One screen, two questions — the second withheld until the first is answered.
+// Eight options at once is a wall to a nine-year-old, and side by side each
+// question hints at the other.
+function renderCollocFollowup() {
+  const screen = document.getElementById('phrasesScreen');
+  const st = _colQuiz;
+  if (!screen || !st) return;
+  const q = st.questions[st.idx];
+  const ans = st.answers[st.idx] || { m: null, r: null };
+  const total = st.questions.length;
+  if (typeof twPrefetch === 'function') twPrefetch(q.phrase, [], q.explanation, q.answer);
+  const done = colFollowDone(ans);
+
+  const block = (key, stepNo) => {
+    const part = q[key];
+    const picked = ans[key];
+    const shown = picked !== null && picked !== undefined;
+    const opts = part.options.map((opt, i) => {
+      let cls = 'grammar-option';
+      if (shown) {
+        if (i === part.correct) cls += ' correct';
+        else if (i === picked) cls += ' wrong';
+      }
+      return `<button class="${cls}" onclick="answerCollocFollowup('${key}',${i})">
+        <span class="grammar-option-letter">${String.fromCharCode(65 + i)}</span>
+        <span class="grammar-option-text">${colEsc(opt)}</span>
+      </button>`;
+    }).join('');
+
+    let note = '';
+    if (shown) {
+      const ok = picked === part.correct;
+      // The meaning check explains itself; the reason check hands back the
+      // bank's own 🔑 note, which is richer than any option can be.
+      //
+      // `vi` normally already reads "a matter of time — chỉ là vấn đề thời
+      // gian", so restating the phrase in front of it printed the collocation
+      // twice in one line.
+      const viHead = String(q.vi || '').toLowerCase().indexOf(String(q.phrase).toLowerCase()) === 0;
+      const body = key !== 'm'
+        ? q.explanation
+        : (viHead
+            ? `<b>${colEsc(q.phrase)}</b>${colEsc(q.vi.slice(q.phrase.length))}`
+            : `<b>${colEsc(q.phrase)}</b> = ${colEsc(part.options[part.correct])}. ${colEsc(q.vi)}`);
+      note = `<div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
+        <div>${ok ? '✅&nbsp;' : `❌ Đáp án đúng: <b>${String.fromCharCode(65 + part.correct)}</b>. `}${body}</div>
+      </div>`;
+    }
+    return `
+      <div class="wf-follow-block${shown ? ' answered' : ''}">
+        <div class="wf-follow-step"><span class="wf-follow-step-no">${stepNo}</span>${COL_FOLLOW_TITLES[key]}</div>
+        <div class="wf-follow-q">${colEsc(part.q)}</div>
+        <div class="grammar-options">${opts}</div>
+        ${note}
+      </div>`;
+  };
+
+  const step2 = (ans.m === null || ans.m === undefined)
+    ? `<div class="wf-follow-locked">🔒 Trả lời câu 1 để mở câu 2</div>`
+    : block('r', '2');
+
+  screen.innerHTML = `
+    <div class="phrases-wrap">
+      ${colQuizHeaderHTML(st)}
+      <div class="grammar-question-card wf-follow-card">
+        <div class="grammar-question-tag wf-follow-tag">🧠 Hiểu đáp án · ${colEsc(q.phrase)}</div>
+        ${collocFollowRecapHTML(st, q)}
+        ${block('m', '1')}
+        ${step2}
+        ${done ? `<button class="grammar-next-btn" onclick="nextCollocQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function answerCollocFollowup(key, i) {
+  const st = _colQuiz;
+  if (!st) return;
+  const q = st.questions[st.idx];
+  if (!q || !q.followup || COL_FOLLOW_PARTS.indexOf(key) === -1) return;
+  if (st.answers[st.idx] === null) st.answers[st.idx] = { m: null, r: null };
+  const ans = st.answers[st.idx];
+  if (ans[key] !== null && ans[key] !== undefined) return;     // the first answer stands
+  // Step 2 is not on screen until step 1 is answered; a queued tap must not
+  // walk past that either.
+  if (key === 'r' && (ans.m === null || ans.m === undefined)) return;
+  ans[key] = i;
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q[key].correct);
+  renderCollocFollowup();
+}
+
 function renderCollocQuestion() {
   const screen = document.getElementById('phrasesScreen');
   const st = _colQuiz;
   if (!screen || !st) return;
   const q = st.questions[st.idx];
+  if (q && q.followup) { renderCollocFollowup(); return; }
   // Warm this question's words now: they become tappable once answered.
   if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const ans = st.answers[st.idx];
@@ -270,11 +475,7 @@ function renderCollocQuestion() {
 
   screen.innerHTML = `
     <div class="phrases-wrap">
-      <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonCollocPractice(); renderPhrasesHome()">✕</button>
-        <span class="grammar-quiz-progress">🧩 ${st.idx + 1}/${total}</span>
-        <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(st.idx / total * 100)}%"></div></div>
-      </div>
+      ${colQuizHeaderHTML(st)}
       <div class="grammar-question-card">
         <div class="grammar-question-tag">${meta.icon} ${meta.label}</div>
         <div class="grammar-question-text">${qHtml}</div>
@@ -293,6 +494,11 @@ function answerCollocChoice(i) {
   const st = _colQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
+  // A check screen has no options of its own — its taps go through
+  // answerCollocFollowup. Without this guard a stale node or a queued tap
+  // reads q.options[i] of undefined, and the answer it writes would overwrite
+  // the check's own two-part answer.
+  if (!q || q.followup || !Array.isArray(q.options)) return;
   st.answers[st.idx] = { choice: i, value: q.options[i], isCorrect: i === q.correct };
   if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q.correct);
   renderCollocQuestion();
@@ -302,6 +508,7 @@ function submitCollocText() {
   const st = _colQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
+  if (!q || q.followup) return;                 // see answerCollocChoice
   const inp = document.getElementById('colTextInput');
   const raw = inp ? inp.value : '';
   st.answers[st.idx] = { value: raw.trim(), isCorrect: _colAnswerCorrect(raw, q) };
@@ -316,18 +523,56 @@ function nextCollocQuestion() {
   else finishCollocPractice();
 }
 
+// The score alone cannot separate a child who knows the collocations from one
+// whose guesses landed, so the result screen reports the two checks separately.
+function colUnderstandCardHTML(fu) {
+  if (!fu || !fu.count) return '';
+  const row = (icon, label, got) => {
+    const pct = Math.round((got / fu.count) * 100);
+    return `<div class="wf-understand-row">
+      <span class="wf-understand-label">${icon} ${label}</span>
+      <span class="wf-understand-bar"><i style="width:${pct}%"></i></span>
+      <b class="wf-understand-num">${got}/${fu.count}</b>
+    </div>`;
+  };
+  return `
+    <div class="wf-understand-card">
+      <div class="wf-understand-title">🧠 Hiểu bài</div>
+      ${row('💡', 'Nghĩa của cụm từ', fu.m)}
+      ${row('📐', 'Lý do đáp án đúng', fu.r)}
+    </div>`;
+}
+
 function finishCollocPractice() {
   const st = _colQuiz;
   if (!st) return;
-  const total = st.questions.length;
+  // A check screen is worth TWO points, so the denominator counts points, not
+  // screens: 20 collocations plus their two checks each is 60. Reporting 20/40
+  // for a practice the child answered 60 things in would read as a bug, and
+  // would make the percentage wrong.
+  let total = 0;
   let score = 0;
   const wrong = [];
+  const fu = { count: 0, m: 0, r: 0 };
+  let baseCount = 0;
   st.questions.forEach((q, i) => {
     const a = st.answers[i];
+    if (q.followup) {
+      total += COL_FOLLOW_PARTS.length;
+      score += colFollowScore(q, a);
+      fu.count++;
+      COL_FOLLOW_PARTS.forEach(k => { if (a && a[k] === q[k].correct) fu[k]++; });
+      return;
+    }
+    baseCount++;
+    total++;
     if (a && a.isCorrect) score++;
     else wrong.push(q);
   });
   const pct = total ? Math.round(score / total * 100) : 0;
+  // "Perfect! 🎉" over a missed check would be a lie the child can see: the
+  // card right above it says 0/1.
+  const checksMissed = COL_FOLLOW_PARTS.length * fu.count - fu.m - fu.r;
 
   // Shared systems: coins, streak, history, server sync (see feature-sync tests).
   const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
@@ -337,7 +582,7 @@ function finishCollocPractice() {
     if (!Array.isArray(appState.collocHistory)) appState.collocHistory = [];
     let date = 0;
     try { date = Date.now(); } catch (e) {}
-    appState.collocHistory.unshift({ score, total, date });
+    appState.collocHistory.unshift({ score, total, date, fu });
     if (appState.collocHistory.length > 300) appState.collocHistory.length = 300;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}
@@ -366,9 +611,11 @@ function finishCollocPractice() {
       ${typeof rewardCelebrationHTML === 'function'
         ? rewardCelebrationHTML(score, total, coinsEarned)
         : `<div class="unit-reward-card"><div class="unit-reward-coins">+${coinsEarned} 🪙</div></div>`}
-      <div class="phrases-section-title">${wrong.length ? 'Câu cần xem lại · ' + wrong.length : 'Perfect! 🎉'}</div>
+      ${colUnderstandCardHTML(fu)}
+      <div class="phrases-section-title">${wrong.length ? 'Câu cần xem lại · ' + wrong.length
+        : (checksMissed ? 'Các câu collocation đều đúng 👍' : 'Perfect! 🎉')}</div>
       ${reviewHtml}
-      <button class="phrases-cta-secondary phrases-review-btn" onclick="startCollocPractice(${total})">🔁 Practice again</button>
+      <button class="phrases-cta-secondary phrases-review-btn" onclick="startCollocPractice(${baseCount})">🔁 Practice again</button>
     </div>`;
   }
   if (typeof fireRewardCelebration === 'function') fireRewardCelebration(coinsEarned, pct);
@@ -381,6 +628,9 @@ if (typeof module !== 'undefined' && module.exports) {
     answerCollocChoice, submitCollocText, nextCollocQuestion, finishCollocPractice,
     isCollocActive, abandonCollocPractice,
     _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase,
+    collocPhrase, collocFilledParts, collocFollowupQuestion, colExpandFollowups,
+    colFollowScore, colFollowDone, answerCollocFollowup, renderCollocFollowup,
+    colUnderstandCardHTML,
   };
 }
 
