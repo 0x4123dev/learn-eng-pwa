@@ -47,6 +47,65 @@ function wordformById(id) {
   return wordformBank().find(q => q.id === id) || null;
 }
 
+// ---- follow-up: proving the answer was understood, not guessed ----
+// Picking "dangerous" out of four options can be luck, or a half-remembered
+// "-ous looks right". So every word-form question is followed by ONE screen
+// carrying TWO questions about the answer just given:
+//
+//   1. what the English word MEANS in Vietnamese, and
+//   2. WHY the blank needs that word class — four real grammar reasons, only
+//      one of which describes this sentence.
+//
+// A child who guessed cannot answer either. Options live in
+// js/wordform-followups.js, keyed by the base question's id.
+const WF_FOLLOW_PARTS = ['m', 'r'];
+
+function wfFollowupQuestion(base) {
+  if (!base || typeof WORDFORM_FOLLOWUPS === 'undefined') return null;
+  const f = WORDFORM_FOLLOWUPS[base.id];
+  if (!f) return null;
+  const ok = (b) => b && Array.isArray(b.o) && b.o.length === 4 &&
+                    typeof b.c === 'number' && b.c >= 0 && b.c < 4;
+  if (!ok(f.m) || !ok(f.r)) return null;
+  return {
+    id: 'wfu-' + base.id,
+    baseId: base.id,
+    followup: true,
+    cat: base.cat,
+    base: base.base,
+    answer: base.answer,
+    vi: base.vi,
+    explanation: base.explanation,
+    m: { q: 'What is the meaning of "' + base.answer + '"?', options: f.m.o, correct: f.m.c },
+    r: { q: 'Vì sao chỗ trống phải là "' + base.answer + '"?', options: f.r.o, correct: f.r.c },
+  };
+}
+
+// Expand picked questions into [base, follow-up, base, follow-up, …].
+// A question with no follow-up data is simply left on its own rather than
+// dropped, so a gap in the data costs the understanding check, not the question.
+function wfExpandFollowups(qs) {
+  const out = [];
+  qs.forEach(q => {
+    out.push(q);
+    const f = wfFollowupQuestion(q);
+    if (f) out.push(f);
+  });
+  return out;
+}
+
+// A follow-up screen holds two questions, so its answer is a pair. It counts as
+// two points: understanding the word and understanding the rule are separate
+// things to get right.
+function wfFollowScore(q, ans) {
+  let score = 0;
+  WF_FOLLOW_PARTS.forEach(k => { if (ans && ans[k] === q[k].correct) score++; });
+  return score;
+}
+function wfFollowDone(ans) {
+  return !!ans && WF_FOLLOW_PARTS.every(k => ans[k] !== null && ans[k] !== undefined);
+}
+
 // ---- history storage (per-user, in appState) ----
 function wordformHistory() {
   if (typeof appState !== 'undefined' && appState) {
@@ -143,7 +202,7 @@ function renderWordformPractice() {
       <div class="phrases-hero">
         <div class="phrases-hero-icon">🔤</div>
         <h1>Word form</h1>
-        <p class="phrases-sub">Chia dạng từ (danh/động/tính/trạng từ) — ${bank.length} câu, gồm cả chọn đáp án và tự gõ, có giải thích rõ ràng.</p>
+        <p class="phrases-sub">Chia dạng từ (danh/động/tính/trạng từ) — ${bank.length} câu, gồm cả chọn đáp án và tự gõ. Mỗi câu có thêm một màn hỏi lại: <b>nghĩa của từ</b> và <b>vì sao chọn dạng đó</b>.</p>
       </div>
 
       ${owedBanner}
@@ -321,6 +380,11 @@ function startWordformQuiz(n) {
       .concat(wfShuffle(mcq, seed ^ 0x5bf03635).slice(0, size - wantTyped));
     qs = wfShuffle(picked, seed ^ 0x2545f491);
   }
+  // Each question drags its understanding check along right behind it. The
+  // practice buttons still promise the number of WORD-FORM questions — that is
+  // what a child counts — so the count above is left alone and the screens
+  // roughly double.
+  qs = wfExpandFollowups(qs);
   _wfQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
   renderWfQuestion();
 }
@@ -330,7 +394,7 @@ function startWordformReviewQuiz(qids) {
   if (typeof retryGate === 'function' && retryGate('wf')) return;
   const ids = Array.isArray(qids) ? qids : [];
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
-  const qs = wfShuffle(ids.map(wordformById).filter(Boolean), seed);
+  const qs = wfExpandFollowups(wfShuffle(ids.map(wordformById).filter(Boolean), seed));
   if (!qs.length) return;
   _wfQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
   renderWfQuestion();
@@ -351,11 +415,107 @@ function _wfTextCorrect(text, q) {
   return list.some(a => _wfNormalize(a) === u);
 }
 
+// The quiz header is identical on both kinds of screen, so it is written once.
+function wfQuizHeaderHTML(st) {
+  const total = st.questions.length;
+  return `
+      <div class="grammar-quiz-header phrases-quiz-header">
+        <button class="grammar-back-btn" onclick="abandonWordformQuiz(); renderWordformHome()">✕</button>
+        <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
+        <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
+      </div>`;
+}
+
+// One screen, two questions. The second one is withheld until the first is
+// answered: eight options at once is a wall to a nine-year-old, and asking
+// "why is it an adjective?" beside "what does it mean?" lets each answer hint
+// at the other.
+function renderWfFollowup() {
+  const screen = document.getElementById('wordformScreen');
+  if (!screen || !_wfQuiz) return;
+  const st = _wfQuiz;
+  const q = st.questions[st.idx];
+  const ans = st.answers[st.idx] || { m: null, r: null };
+  const total = st.questions.length;
+  if (typeof twPrefetch === 'function') twPrefetch(q.answer, [], q.explanation);
+
+  const done = wfFollowDone(ans);
+  const catLabel = (WF_CAT_LABELS[q.cat] || '').replace(/^[A-Za-z]+ /, '');   // "(tính từ)"
+
+  const block = (key, stepNo, title) => {
+    const part = q[key];
+    const picked = ans[key];
+    const shown = picked !== null && picked !== undefined;
+    const opts = part.options.map((opt, i) => {
+      let cls = 'grammar-option';
+      if (shown) {
+        if (i === part.correct) cls += ' correct';
+        else if (i === picked) cls += ' wrong';
+      }
+      return `<button class="${cls}" onclick="answerWfFollowup('${key}',${i})">
+        <span class="grammar-option-letter">${String.fromCharCode(65 + i)}</span>
+        <span class="grammar-option-text">${wfEsc(opt)}</span>
+      </button>`;
+    }).join('');
+
+    let note = '';
+    if (shown) {
+      const ok = picked === part.correct;
+      const body = key === 'm'
+        ? `<b>${wfEsc(q.answer)}</b> = ${wfEsc(part.options[part.correct])}. ${wfEsc(q.vi)}`
+        : wfEsc(q.explanation);
+      note = `<div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
+        <div>${ok ? '✅&nbsp;' : `❌ Đáp án đúng: <b>${String.fromCharCode(65 + part.correct)}</b>. `}${body}</div>
+      </div>`;
+    }
+    return `
+      <div class="wf-follow-block${shown ? ' answered' : ''}">
+        <div class="wf-follow-step"><span class="wf-follow-step-no">${stepNo}</span>${title}</div>
+        <div class="wf-follow-q">${wfEsc(part.q)}</div>
+        <div class="grammar-options">${opts}</div>
+        ${note}
+      </div>`;
+  };
+
+  // Step 2 waits for step 1; before that, a line saying so beats a blank gap.
+  const step2 = (ans.m === null || ans.m === undefined)
+    ? `<div class="wf-follow-locked">🔒 Trả lời câu 1 để mở câu 2</div>`
+    : block('r', '2', 'Vì sao chọn dạng từ này?');
+
+  screen.innerHTML = `
+    <div class="phrases-wrap">
+      ${wfQuizHeaderHTML(st)}
+      <div class="grammar-question-card wf-follow-card">
+        <div class="grammar-question-tag wf-follow-tag">🧠 Hiểu đáp án · ${wfEsc(q.answer)} ${wfEsc(catLabel)}</div>
+        ${block('m', '1', 'Nghĩa của từ')}
+        ${step2}
+        ${done ? `<button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function answerWfFollowup(key, i) {
+  const st = _wfQuiz;
+  if (!st) return;
+  const q = st.questions[st.idx];
+  if (!q || !q.followup || WF_FOLLOW_PARTS.indexOf(key) === -1) return;
+  if (st.answers[st.idx] === null) st.answers[st.idx] = { m: null, r: null };
+  const ans = st.answers[st.idx];
+  if (ans[key] !== null && ans[key] !== undefined) return;     // first answer stands
+  // Step 2 is not on screen until step 1 is answered; a queued tap must not
+  // walk past that either.
+  if (key === 'r' && (ans.m === null || ans.m === undefined)) return;
+  ans[key] = i;
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q[key].correct);
+  renderWfFollowup();
+}
+
 function renderWfQuestion() {
   const screen = document.getElementById('wordformScreen');
   if (!screen || !_wfQuiz) return;
   const st = _wfQuiz;
   const q = st.questions[st.idx];
+  if (q && q.followup) { renderWfFollowup(); return; }
   // Warm this question's words now: they become tappable once answered.
   if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const userAns = st.answers[st.idx];         // null | { value, isCorrect }
@@ -421,11 +581,7 @@ function renderWfQuestion() {
 
   screen.innerHTML = `
     <div class="phrases-wrap">
-      <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonWordformQuiz(); renderWordformHome()">✕</button>
-        <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
-        <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
-      </div>
+      ${wfQuizHeaderHTML(st)}
       <div class="grammar-question-card">
         <div class="grammar-question-text">${qHtml}</div>
         ${bodyHtml}
@@ -464,18 +620,55 @@ function nextWfQuestion() {
   else finishWordformQuiz();
 }
 
+// The score alone cannot separate a child who knows the rules from one whose
+// guesses landed, so the result screen reports the two understanding checks in
+// their own right.
+function wfUnderstandCardHTML(fu) {
+  if (!fu || !fu.n) return '';
+  const row = (icon, label, got) => {
+    const pct = Math.round((got / fu.n) * 100);
+    return `<div class="wf-understand-row">
+      <span class="wf-understand-label">${icon} ${label}</span>
+      <span class="wf-understand-bar"><i style="width:${pct}%"></i></span>
+      <b class="wf-understand-num">${got}/${fu.n}</b>
+    </div>`;
+  };
+  return `
+    <div class="wf-understand-card">
+      <div class="wf-understand-title">🧠 Hiểu bài</div>
+      ${row('💡', 'Nghĩa của từ', fu.m)}
+      ${row('📐', 'Lý do chọn dạng từ', fu.r)}
+    </div>`;
+}
+
 function finishWordformQuiz() {
   const st = _wfQuiz;
   if (!st) return;
-  const total = st.questions.length;
+  // A follow-up screen is worth TWO points, so the denominator counts points,
+  // not screens: 20 word-form questions plus their two checks each is 60.
+  // Reporting 20/40 for a practice a child answered 60 things in would read as
+  // a bug, and would make the percentage — which the history tiers use — wrong.
+  let total = 0;
   let score = 0;
   const wrong = [];
+  const fu = { n: 0, m: 0, r: 0 };            // follow-ups seen / meaning right / reason right
   st.questions.forEach((q, i) => {
     const a = st.answers[i];
+    if (q.followup) {
+      total += WF_FOLLOW_PARTS.length;
+      score += wfFollowScore(q, a);
+      fu.n++;
+      WF_FOLLOW_PARTS.forEach(k => { if (a && a[k] === q[k].correct) fu[k]++; });
+      return;
+    }
+    total++;
     if (a && a.isCorrect) score++;
     else wrong.push({ qid: q.id, ua: a ? a.value : null });
   });
   const pct = total ? Math.round((score / total) * 100) : 0;
+  // "perfect! 🎉" over a missed understanding check would be a lie the child can
+  // see: the card right above it says 0/1.
+  const checksMissed = WF_FOLLOW_PARTS.length * fu.n - fu.m - fu.r;
 
   // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
   const coinsEarned = score * 5 + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
@@ -485,7 +678,7 @@ function finishWordformQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  saveWordformSession({ id: 'wf-' + date, date, score, total, wrong });
+  saveWordformSession({ id: 'wf-' + date, date, score, total, wrong, fu });
 
   // Owe every missed question back. Recorded after the coins are banked, so
   // getting something wrong never feels like it took away what was just
@@ -515,8 +708,10 @@ function finishWordformQuiz() {
         <span class="grammar-quiz-progress">${wfTierEmoji(pct)} ${score}/${total} (${pct}%)</span>
       </div>
       ${typeof petRewardCardHTML === 'function' ? petRewardCardHTML(score, total, coinsEarned) : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙 earned</div>` : '')}
+      ${wfUnderstandCardHTML(fu)}
       ${(typeof retryResultBannerHTML === 'function' ? retryResultBannerHTML('wf', wrong.length) : '')}
-      <div class="phrases-section-title">Review${wrong.length ? ` · ${wrong.length} wrong` : ' · perfect! 🎉'}</div>
+      <div class="phrases-section-title">Review${wrong.length ? ` · ${wrong.length} wrong`
+        : (checksMissed ? ' · các câu chia dạng từ đều đúng 👍' : ' · perfect! 🎉')}</div>
       ${reviewHtml}
       ${(typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('wf') : '')}
     </div>`;
@@ -557,5 +752,7 @@ if (typeof module !== 'undefined' && module.exports) {
     submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
     switchWfSubTab, renderWordformLessons, openWordformLesson,
+    wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone,
+    answerWfFollowup, renderWfFollowup, wfUnderstandCardHTML,
   };
 }

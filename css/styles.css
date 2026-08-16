@@ -906,6 +906,47 @@
         .wf-text-answer-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
         .wf-text-answer-value { font-weight: 800; color: var(--text-primary); }
 
+        /* Word form — the understanding check that follows every question:
+           two questions on one card, the second unlocked by the first. */
+        /* Both selectors: .grammar-question-tag is defined later in this file and
+           capitalises every word, which would render the answer as "Punishment". */
+        .grammar-question-tag.wf-follow-tag {
+            background: linear-gradient(135deg, #2f80ed, #1d4ed8);
+            text-transform: none;
+        }
+        .wf-follow-block + .wf-follow-block,
+        .wf-follow-block + .wf-follow-locked { margin-top: 18px; padding-top: 16px; border-top: 2px dashed var(--glass-border); }
+        .wf-follow-step {
+            display: flex; align-items: center; gap: 7px;
+            font-size: 12.5px; font-weight: 800; letter-spacing: .2px;
+            color: var(--text-secondary); text-transform: uppercase; margin-bottom: 7px;
+        }
+        .wf-follow-step-no {
+            flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%;
+            background: #2f80ed; color: #fff; font-size: 12px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .wf-follow-block.answered .wf-follow-step-no { background: #58cc02; }
+        .wf-follow-q {
+            font-size: 16.5px; font-weight: 700; color: var(--text-primary);
+            line-height: 1.45; margin-bottom: 10px;
+        }
+        .wf-follow-locked {
+            font-size: 14px; font-weight: 600; color: var(--text-secondary);
+            text-align: center; padding: 14px 10px;
+        }
+        /* Result screen: how much was understood, next to how much was scored. */
+        .wf-understand-card {
+            background: var(--glass-bg, #fff); border: 2px solid var(--glass-border);
+            border-radius: 16px; padding: 14px 16px; margin: 12px 0;
+        }
+        .wf-understand-title { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px; }
+        .wf-understand-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .wf-understand-label { flex: 0 0 auto; font-size: 13px; font-weight: 600; color: var(--text-secondary); width: 46%; }
+        .wf-understand-bar { flex: 1 1 auto; height: 8px; border-radius: 4px; background: rgba(127,127,127,0.22); overflow: hidden; }
+        .wf-understand-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #2f80ed, #58cc02); }
+        .wf-understand-num { flex: 0 0 auto; font-size: 13px; font-weight: 800; color: var(--text-primary); }
+
         /* Rewrite tab — typed sentence transformation */
         .rewrite-screen { padding: 16px; padding-bottom: 90px; }
         .rw-orig {

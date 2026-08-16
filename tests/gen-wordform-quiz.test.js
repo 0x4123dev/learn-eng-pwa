@@ -9,7 +9,12 @@ Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
 const { WORDFORM_QUESTIONS: BANK } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));
+// Every question drags an understanding check behind it, so a practice of N
+// word-form questions is 2N screens and 3N points. Loaded here explicitly, not
+// left to whichever test file ran first, so these numbers are deterministic.
+const { WORDFORM_FOLLOWUPS: FU } = require(path.join(__dirname, '..', 'js', 'wordform-followups.js'));
 global.WORDFORM_QUESTIONS = BANK;
+global.WORDFORM_FOLLOWUPS = FU;
 global.appState = { coins: 0, wordformHistory: [] };
 global.currentUser = 'tester';
 global.saveUserData = () => {};
@@ -46,16 +51,27 @@ function reset(opts = {}) {
 
 // Answer every remaining question with index `idx` and advance; the last
 // nextWfQuestion() triggers finishWordformQuiz (needs a wordformScreen in doc).
+// A follow-up screen ignores answerWfQuestion, so both kinds of answer are
+// offered on every screen and only the applicable one lands.
 function playAll(idx) {
     let guard = 0;
-    while (wf.isWordformQuizActive() && guard++ < 700) {
+    while (wf.isWordformQuizActive() && guard++ < 2100) {
         wf.answerWfQuestion(idx);
+        wf.answerWfFollowup('m', idx);
+        wf.answerWfFollowup('r', idx);
         wf.nextWfQuestion();
     }
-    if (guard >= 700) throw new Error('quiz never finished');
+    if (guard >= 2100) throw new Error('quiz never finished');
 }
 
 function lastSession() { return global.appState.wordformHistory[0]; }
+
+// Answer the understanding check on screen correctly (its two correct indices
+// are derived from the id, so they must be read rather than assumed).
+function passCheck(qid) {
+    wf.answerWfFollowup('m', FU[qid].m.c);
+    wf.answerWfFollowup('r', FU[qid].r.c);
+}
 
 // ---- lifecycle & quiz length ------------------------------------------------
 suite('gen: wordform quiz lifecycle', () => {
@@ -85,20 +101,21 @@ suite('gen: wordform quiz lifecycle', () => {
         assert.falsy(wf.isWordformQuizActive(), 'home render must not start a quiz');
     });
 
-    test('startWordformQuiz(5) builds a 5-question quiz (session total = 5)', () => {
+    test('startWordformQuiz(5) builds 5 questions + 5 checks (10 screens, 15 points)', () => {
         const screen = makeEl();
         reset({ doc: { wordformScreen: screen } });
         wf.startWordformQuiz(5);
-        assert.truthy(screen.innerHTML.includes('>1/5<'), 'first question renders progress 1/5');
+        assert.truthy(screen.innerHTML.includes('>1/10<'), 'first question renders progress 1/10');
         playAll(0);
-        assert.equal(lastSession().total, 5);
+        assert.equal(lastSession().total, 15);
+        assert.equal(lastSession().fu.n, 5, 'one understanding check per question');
     });
 
-    test('startWordformQuiz(10) builds a 10-question quiz (session total = 10)', () => {
+    test('startWordformQuiz(10) builds a 10-question quiz (session total = 30 points)', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformQuiz(10);
         playAll(0);
-        assert.equal(lastSession().total, 10);
+        assert.equal(lastSession().total, 30);
     });
 
     test("startWordformQuiz('all') uses the whole 600-question bank in bank order", () => {
@@ -106,7 +123,8 @@ suite('gen: wordform quiz lifecycle', () => {
         wf.startWordformQuiz('all');
         wf.finishWordformQuiz(); // finish with nothing answered → every q lands in wrong[]
         const s = lastSession();
-        assert.equal(s.total, 600);
+        assert.equal(s.total, 1800, '600 questions + 600 two-part checks');
+        // Only word-form questions are owed back; the checks are not typed drills.
         assert.deepEqual(s.wrong.map(w => w.qid), BANK.map(q => q.id), "'all' must not shuffle");
     });
 
@@ -114,7 +132,8 @@ suite('gen: wordform quiz lifecycle', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformQuiz(9999);
         wf.finishWordformQuiz();
-        assert.equal(lastSession().total, 600);
+        assert.equal(lastSession().total, 1800);
+        assert.equal(lastSession().fu.n, 600);
     });
 
     test('startWordformQuiz on an empty bank does not start a quiz', () => {
@@ -139,7 +158,7 @@ suite('gen: wordform quiz lifecycle', () => {
         wf.answerWfQuestion(0);
         wf.startWordformReviewQuiz([WF1]); // replaces the 5-question quiz
         wf.finishWordformQuiz();
-        assert.equal(lastSession().total, 1, 'finish must reflect the newest quiz');
+        assert.equal(lastSession().total, 3, 'finish must reflect the newest quiz (1 question + its 2-part check)');
     });
 
     test('a random quiz picks distinct questions that all resolve in the bank', () => {
@@ -160,7 +179,9 @@ suite('gen: wordform answering (mcq)', () => {
         reset({ doc: { wordformScreen: screen } });
         wf.startWordformReviewQuiz([WF1]);
         wf.answerWfQuestion(3); // wf-1 correct = 3
-        assert.truthy(screen.innerHTML.includes('See results'), 'last answered question offers See results');
+        // Its understanding check comes next, so the last WORD-FORM question is
+        // no longer the last screen.
+        assert.truthy(screen.innerHTML.includes('Next →'), 'the check follows the answer');
         assert.truthy(screen.innerHTML.includes('✅'), 'correct feedback rendered');
         wf.finishWordformQuiz();
         assert.equal(lastSession().score, 1);
@@ -222,13 +243,24 @@ suite('gen: wordform answering (mcq)', () => {
         const screen = makeEl();
         reset({ doc: { wordformScreen: screen } });
         wf.startWordformReviewQuiz([WF1, WF2]); // index 1 is wrong for both
+        // Two questions, each followed by its check: four screens.
         wf.answerWfQuestion(1);
         wf.nextWfQuestion();
-        assert.truthy(screen.innerHTML.includes('>2/2<'), 'progress advances to 2/2');
+        assert.truthy(screen.innerHTML.includes('>2/4<'), 'the check follows question 1');
+        assert.truthy(screen.innerHTML.includes('wf-follow-card'), 'screen 2 is the understanding check');
+        wf.answerWfFollowup('m', 0);
+        wf.answerWfFollowup('r', 0);
+        wf.nextWfQuestion();
+        assert.truthy(screen.innerHTML.includes('>3/4<'), 'progress advances to question 2');
         wf.answerWfQuestion(1);
-        wf.nextWfQuestion(); // past the last question → finish
+        wf.nextWfQuestion();
+        assert.truthy(screen.innerHTML.includes('>4/4<'), 'and to its check');
+        wf.answerWfFollowup('m', 0);
+        wf.answerWfFollowup('r', 0);
+        wf.nextWfQuestion(); // past the last screen → finish
         const s = lastSession();
-        assert.equal(s.score, 0);
+        assert.equal(s.total, 6);
+        assert.equal(s.fu.n, 2);
         assert.deepEqual(s.wrong.map(w => w.ua), [1, 1], 'both answers recorded');
         assert.deepEqual(s.wrong.map(w => w.qid).sort(), [WF1, WF2]);
     });
@@ -349,7 +381,11 @@ suite('gen: wordform finish — coins & history', () => {
         playAll(0);
         const s = lastSession();
         assert.equal(st.coins - 40, 5 * s.score);
-        assert.equal(s.score, s.total - s.wrong.length, 'score + wrong must cover all questions');
+        // Every point is accounted for: what was scored, the word-form questions
+        // missed, and the understanding checks missed.
+        const checksMissed = 2 * s.fu.n - s.fu.m - s.fu.r;
+        assert.equal(s.score + s.wrong.length + checksMissed, s.total,
+            'score + wrong + missed checks must cover every point');
     });
 
     test("session shape: id 'wf-<timestamp>', numeric date, score/total/wrong", () => {
@@ -361,7 +397,7 @@ suite('gen: wordform finish — coins & history', () => {
         const s = lastSession();
         assert.inRange(s.date, before, Date.now(), 'date must be the Date.now() at finish time');
         assert.equal(s.id, 'wf-' + s.date);
-        assert.equal(s.total, 1);
+        assert.equal(s.total, 3);
         assert.truthy(Array.isArray(s.wrong));
     });
 
@@ -453,9 +489,12 @@ suite('gen: wordform finish — coins & history', () => {
         reset({ doc: { wordformScreen: screen } });
         wf.startWordformReviewQuiz([WF1]);
         wf.answerWfQuestion(3);
+        wf.nextWfQuestion();
+        passCheck(WF1);                       // the question AND its two checks
         wf.finishWordformQuiz();
-        assert.truthy(screen.innerHTML.includes('1/1 (100%)'), 'score line rendered');
-        assert.truthy(screen.innerHTML.includes('+5 🪙'), 'coin reward rendered');
+        assert.truthy(screen.innerHTML.includes('3/3 (100%)'), 'score line rendered');
+        assert.truthy(screen.innerHTML.includes('+15 🪙'), 'coin reward rendered');
+        assert.truthy(screen.innerHTML.includes('wf-understand-card'), 'the understanding summary is shown');
     });
 
     test('result screen sends the child to the owed-questions drill', () => {
@@ -466,7 +505,7 @@ suite('gen: wordform finish — coins & history', () => {
         const fs2 = require('fs');
         const src = fs2.readFileSync(require('path').join(__dirname, '..', 'js', 'wordform.js'), 'utf8');
         const i = src.indexOf('function finishWordformQuiz(');
-        const body = src.slice(i, i + 3000);
+        const body = src.slice(i, i + 4200);
         assert.truthy(/retryResultCtaHTML\('wf'\)/.test(body),
             'the results screen must offer the owed-questions drill');
         assert.falsy(/startWordformReviewQuiz\(\$\{JSON\.stringify/.test(body),
@@ -482,7 +521,7 @@ suite('gen: wordform review quiz & sessions', () => {
         assert.truthy(wf.isWordformQuizActive());
         wf.finishWordformQuiz();
         const s = lastSession();
-        assert.equal(s.total, 2);
+        assert.equal(s.total, 6, '2 questions + 2 two-part checks');
         assert.deepEqual(s.wrong.map(w => w.qid).sort(), [WF1, WF2]);
     });
 
@@ -490,7 +529,7 @@ suite('gen: wordform review quiz & sessions', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformReviewQuiz([WF1, 'nope', 'wf-999999']);
         wf.finishWordformQuiz();
-        assert.equal(lastSession().total, 1);
+        assert.equal(lastSession().total, 3);
         assert.equal(lastSession().wrong[0].qid, WF1);
     });
 
@@ -517,7 +556,7 @@ suite('gen: wordform review quiz & sessions', () => {
         reset({ doc: { wordformScreen: makeEl() } });
         wf.startWordformReviewQuiz([WF1, WF1]);
         wf.finishWordformQuiz();
-        assert.equal(lastSession().total, 2);
+        assert.equal(lastSession().total, 6);
         assert.deepEqual(lastSession().wrong.map(w => w.qid), [WF1, WF1]);
     });
 
@@ -526,10 +565,12 @@ suite('gen: wordform review quiz & sessions', () => {
         reset({ doc: { wordformScreen: screen } });
         wf.startWordformReviewQuiz([WF1]);
         wf.answerWfQuestion(3);
+        wf.nextWfQuestion();
+        passCheck(WF1);
         wf.finishWordformQuiz();
         screen.innerHTML = '';
         wf.openWfSession(0);
-        assert.truthy(screen.innerHTML.includes('1/1 (100%)'), 'session score rendered');
+        assert.truthy(screen.innerHTML.includes('3/3 (100%)'), 'session score rendered');
         assert.truthy(screen.innerHTML.includes('Perfect session'), 'perfect sessions show the empty-review note');
     });
 

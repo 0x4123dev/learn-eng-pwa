@@ -278,14 +278,16 @@ suite('answer gate: wired into every tab that asks for it', () => {
     });
 
     test('no tab lets a student skip a listen that applies to them', () => {
-        // An ungated Next is only legitimate where there is nothing to hear —
-        // the Vietnamese meaning questions in Phrases. Anywhere else it means
-        // the student can walk past the pronunciation.
+        // An ungated Next is only legitimate where there is nothing to hear:
+        // the Vietnamese meaning questions in Phrases, and the Word form
+        // understanding check — both are answered in Vietnamese, and the Word
+        // form one comes AFTER the gated screen that already spoke the answer.
+        // Anywhere else it means the student can walk past the pronunciation.
         const leaks = TABS.filter(([f]) => {
             const src = read(f);
             const bare = /<button class="grammar-next-btn" onclick=|'<button class="grammar-next-btn" onclick="/.test(src);
             if (!bare) return false;
-            return !/if \(q\.meaning\)/.test(src);   // guarded by "nothing to pronounce"
+            return !/if \(q\.meaning\)|q\.followup/.test(src);   // guarded by "nothing to pronounce"
         }).map(([f]) => f);
         assert.deepEqual(leaks, [], `these bypass the gate entirely: ${leaks.join(', ')}`);
     });
