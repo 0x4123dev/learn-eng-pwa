@@ -127,7 +127,10 @@ if [ "$COUNT" -ge 18000 ]; then
   exit 1
 fi
 
-echo "▸ deploying to $PROJECT…"
+# Braces are load-bearing: "$PROJECT…" makes bash read the first byte of the
+# multibyte "…" as part of the NAME under some locales, and `set -u` then kills
+# the deploy after the build with "PROJECT\xe2: unbound variable".
+echo "▸ deploying to ${PROJECT}…"
 npx --yes wrangler@3 pages deploy .cf-dist --project-name "$PROJECT" \
   --branch main --commit-dirty=true 2>&1 | tail -4
 

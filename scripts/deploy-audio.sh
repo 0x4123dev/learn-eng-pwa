@@ -69,7 +69,9 @@ fi
 # Create-if-missing; an "already exists" error is the normal case.
 npx --yes wrangler@3 pages project create "$PROJECT" --production-branch master 2>/dev/null || true
 
-echo "▸ deploying $COUNT files to $PROJECT…"
+# Braces: see the same fix in scripts/deploy.sh — "$PROJECT…" swallows the
+# first byte of "…" into the variable name under some locales.
+echo "▸ deploying $COUNT files to ${PROJECT}…"
 (cd .cf-audio-dist && npx --yes wrangler@3 pages deploy . \
   --project-name "$PROJECT" --branch master --commit-dirty=true)
 
