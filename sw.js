@@ -4,9 +4,12 @@ const CACHE_NAME = 'flashlingo-v302';
 //
 // Bump this ONLY when the recordings themselves change — re-voicing the set,
 // re-encoding it. v1 held a set built in two different voices; v2 is the
-// single-voice rebuild. Without the bump, a phone that had already cached a
-// word would keep playing the old voice forever.
-const AUDIO_CACHE = 'flashlingo-audio-v2';
+// single-voice rebuild; v3 fixed 71 words the model was substituting for a
+// different word entirely (van -> "from", hazard -> "HazardO", etc.), found
+// by transcribing all 13,083 recordings and cross-checking with a second
+// model. Without the bump, a phone that had already cached one of those
+// words would keep playing the wrong one forever.
+const AUDIO_CACHE = 'flashlingo-audio-v3';
 const ASSETS = [
   '/',
   '/index.html',
