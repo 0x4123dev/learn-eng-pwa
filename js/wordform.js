@@ -74,6 +74,7 @@ function wfFollowupQuestion(base) {
     cat: base.cat,
     base: base.base,
     answer: base.answer,
+    stem: base.q,             // shown again on the check — see renderWfFollowup
     vi: base.vi,
     explanation: base.explanation,
     m: { q: 'What is the meaning of "' + base.answer + '"?', options: f.m.o, correct: f.m.c },
@@ -426,6 +427,35 @@ function wfQuizHeaderHTML(st) {
       </div>`;
 }
 
+// The check asks about a sentence that has already scrolled away. "Vì sao chỗ
+// trống phải là 'dangerous'?" is unanswerable — guessable at best — without the
+// sentence in front of you, so the question comes back, this time with the
+// blank filled in, together with what the child actually put there.
+function wfFollowRecapHTML(st, q) {
+  if (!q.stem) return '';
+  const wrap = (s) => (typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : wfEsc(s);
+  const sentence = wrap(q.stem).replace('___', `<b class="wf-recap-answer">${wfEsc(q.answer)}</b>`);
+
+  // The word-form question sits immediately before its own check.
+  const prev = st.questions[st.idx - 1];
+  const prevAns = st.answers[st.idx - 1];
+  let line = '';
+  if (prev && prev.id === q.baseId && prevAns) {
+    const given = (prev.type === 'text')
+      ? String(prevAns.value || '')
+      : ((prev.options && prev.options[prevAns.value]) || '');
+    line = prevAns.isCorrect
+      ? `<div class="wf-recap-you ok">✅&nbsp;Bé trả lời đúng: <b>${wfEsc(q.answer)}</b></div>`
+      : `<div class="wf-recap-you bad">❌&nbsp;Bé trả lời: <s>${given ? wfEsc(given) : '(bỏ trống)'}</s> · Đúng: <b>${wfEsc(q.answer)}</b></div>`;
+  }
+  return `
+      <div class="wf-follow-recap">
+        <div class="wf-recap-label">Câu vừa rồi</div>
+        <div class="wf-recap-q">${sentence}</div>
+        ${line}
+      </div>`;
+}
+
 // One screen, two questions. The second one is withheld until the first is
 // answered: eight options at once is a wall to a nine-year-old, and asking
 // "why is it an adjective?" beside "what does it mean?" lets each answer hint
@@ -437,7 +467,7 @@ function renderWfFollowup() {
   const q = st.questions[st.idx];
   const ans = st.answers[st.idx] || { m: null, r: null };
   const total = st.questions.length;
-  if (typeof twPrefetch === 'function') twPrefetch(q.answer, [], q.explanation);
+  if (typeof twPrefetch === 'function') twPrefetch(q.stem || q.answer, [], q.explanation, q.answer);
 
   const done = wfFollowDone(ans);
   const catLabel = (WF_CAT_LABELS[q.cat] || '').replace(/^[A-Za-z]+ /, '');   // "(tính từ)"
@@ -487,6 +517,7 @@ function renderWfFollowup() {
       ${wfQuizHeaderHTML(st)}
       <div class="grammar-question-card wf-follow-card">
         <div class="grammar-question-tag wf-follow-tag">🧠 Hiểu đáp án · ${wfEsc(q.answer)} ${wfEsc(catLabel)}</div>
+        ${wfFollowRecapHTML(st, q)}
         ${block('m', '1', 'Nghĩa của từ')}
         ${step2}
         ${done ? `<button class="grammar-next-btn" onclick="nextWfQuestion()">${st.idx + 1 < total ? 'Next →' : 'See results'}</button>` : ''}

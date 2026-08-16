@@ -914,6 +914,20 @@
             background: linear-gradient(135deg, #2f80ed, #1d4ed8);
             text-transform: none;
         }
+        .wf-follow-recap {
+            background: rgba(47,128,237,0.07); border-left: 3px solid #2f80ed;
+            border-radius: 10px; padding: 10px 12px; margin-bottom: 16px;
+        }
+        .wf-recap-label {
+            font-size: 11px; font-weight: 800; letter-spacing: .3px;
+            color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;
+        }
+        .wf-recap-q { font-size: 15px; line-height: 1.5; color: var(--text-primary); }
+        .wf-recap-answer { color: #1d4ed8; font-weight: 800; }
+        .wf-recap-you { font-size: 13.5px; font-weight: 600; margin-top: 6px; }
+        .wf-recap-you.ok { color: #3d8b00; }
+        .wf-recap-you.bad { color: #d63a3a; }
+        .wf-recap-you s { opacity: .75; }
         .wf-follow-block + .wf-follow-block,
         .wf-follow-block + .wf-follow-locked { margin-top: 18px; padding-top: 16px; border-top: 2px dashed var(--glass-border); }
         .wf-follow-step {

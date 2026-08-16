@@ -176,6 +176,46 @@ suite('word form follow-ups: quiz behaviour', () => {
         }
     });
 
+    test('the check shows the sentence again, with the blank filled', () => {
+        // "Vì sao chỗ trống phải là X?" cannot be answered from memory alone.
+        const screen = { innerHTML: '' };
+        const savedDoc = global.document;
+        global.document = { getElementById: id => (id === 'wordformScreen' ? screen : null), querySelectorAll: () => [] };
+        try {
+            const base = BANK.find(q => q.type === 'mcq' && q.correct !== 0);
+            wf.startWordformReviewQuiz([base.id]);
+            wf.answerWfQuestion(0);                 // deliberately wrong
+            wf.nextWfQuestion();
+            const html = screen.innerHTML;
+            assert.truthy(html.includes('wf-follow-recap'), 'the check must recap the question');
+            const tail = base.q.split('___')[1].trim().split(' ').slice(0, 3).join(' ');
+            assert.truthy(html.includes(tail), `the original sentence must be shown again (looking for "${tail}")`);
+            assert.truthy(html.includes(`<b class="wf-recap-answer">${base.answer}</b>`), 'the blank is filled with the answer');
+            assert.truthy(html.includes(base.options[0]), "the child's own wrong answer is shown back");
+            assert.truthy(html.includes('wf-recap-you bad'), 'a wrong answer is marked as wrong');
+        } finally {
+            wf.abandonWordformQuiz();
+            global.document = savedDoc;
+        }
+    });
+
+    test('a correct answer is recapped as correct, not struck through', () => {
+        const screen = { innerHTML: '' };
+        const savedDoc = global.document;
+        global.document = { getElementById: id => (id === 'wordformScreen' ? screen : null), querySelectorAll: () => [] };
+        try {
+            const base = BANK.find(q => q.type === 'mcq');
+            wf.startWordformReviewQuiz([base.id]);
+            wf.answerWfQuestion(base.correct);
+            wf.nextWfQuestion();
+            assert.truthy(screen.innerHTML.includes('wf-recap-you ok'), 'a correct answer is marked correct');
+            assert.truthy(!screen.innerHTML.includes('<s>'), 'nothing to strike through');
+        } finally {
+            wf.abandonWordformQuiz();
+            global.document = savedDoc;
+        }
+    });
+
     test('a follow-up is only done when BOTH questions are answered', () => {
         assert.falsy(wf.wfFollowDone(null));
         assert.falsy(wf.wfFollowDone({ m: 0, r: null }));
