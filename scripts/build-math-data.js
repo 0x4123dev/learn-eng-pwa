@@ -83,6 +83,22 @@ function validateCalc(data, num) {
     return ok;
 }
 
+// An option that is nothing but single letters joined by dashes — "c-g-c",
+// "g-c-g". Four of those on a screen are four near-identical strings that mean
+// nothing at all until somebody tells you the convention, and a child who has
+// not memorised the shorthand cannot even read the question, let alone answer
+// it. Spell the name out; keep the shorthand in brackets so the notation is
+// still taught: "cạnh – góc – cạnh (c-g-c)".
+const LETTER_SOUP = /^[a-zA-ZÀ-ỹ](\s*[-–—]\s*[a-zA-ZÀ-ỹ])+$/;
+
+// "Hai tam giác bằng nhau theo trường hợp nào?" is a question about a pair of
+// triangles — so a pair of triangles has to be on the screen. Asked without
+// one, it degenerates into "which label maps onto which other label", which is
+// what the old m4-28 did: no figure, no data, nothing to work out, just a
+// convention you either memorised or did not.
+const CLASSIFY_CASE = /bằng nhau theo trường hợp (bằng nhau )?nào|theo trường hợp bằng nhau nào/i;
+const NAMES_A_FIGURE = /△\s*[A-Z]{3}|tam giác\s+[A-Z]{3}/;
+
 function validateChapter(data, num) {
     const where = `chapter ${num}`;
     let ok = true;
@@ -107,6 +123,18 @@ function validateChapter(data, num) {
             fail(`${where}: ${q.id} needs exactly 4 options`); ok = false; return;
         }
         if (new Set(q.options).size !== 4) { fail(`${where}: ${q.id} has duplicate options`); ok = false; }
+        q.options.forEach((o, k) => {
+            if (LETTER_SOUP.test(String(o).trim())) {
+                fail(`${where}: ${q.id} option ${'ABCD'[k]} is bare shorthand "${o}" — `
+                    + 'spell it out, e.g. "cạnh – góc – cạnh (c-g-c)"');
+                ok = false;
+            }
+        });
+        if (CLASSIFY_CASE.test(q.q || '') && !NAMES_A_FIGURE.test(q.q || '')) {
+            fail(`${where}: ${q.id} asks which congruence case applies but names no triangle — `
+                + 'give the child a figure with real data, e.g. "△ABC và △DEF có AB = DE, ∠B = ∠E…"');
+            ok = false;
+        }
         if (!(q.correct >= 0 && q.correct <= 3)) { fail(`${where}: ${q.id} correct=${q.correct}`); ok = false; return; }
         if (q.options[q.correct] !== q.answer) {
             fail(`${where}: ${q.id} answer does not match options[${q.correct}]`); ok = false;

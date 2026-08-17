@@ -778,14 +778,14 @@ const MATH_EXAMS = [
     "topic": "Trường hợp c-g-c",
     "q": "△DEF và △GHK có DE = GH, ∠D = ∠G, DF = GK. Hai tam giác bằng nhau theo trường hợp nào?",
     "options": [
-     "g-c-g",
-     "c-g-c",
-     "c-c-c",
+     "góc – cạnh – góc (g-c-g)",
+     "cạnh – góc – cạnh (c-g-c)",
+     "cạnh – cạnh – cạnh (c-c-c)",
      "Không đủ dữ kiện để kết luận"
     ],
     "correct": 1,
-    "answer": "c-g-c",
-    "explanation": "🔑 ∠D nằm xen giữa hai cạnh DE và DF (tương ứng ∠G xen giữa GH và GK), cùng với DE = GH, DF = GK, đủ điều kiện trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ g-c-g: g-c-g cần hai góc và cạnh xen giữa hai góc đó, ở đây chỉ có một góc được cho.<br>✗ c-c-c: c-c-c cần ba cặp cạnh bằng nhau, ở đây chỉ có hai cặp cạnh.<br>✗ Không đủ dữ kiện để kết luận: sai vì dữ kiện đã đủ cho trường hợp c-g-c.",
+    "answer": "cạnh – góc – cạnh (c-g-c)",
+    "explanation": "🔑 ∠D nằm xen giữa hai cạnh DE và DF (tương ứng ∠G xen giữa GH và GK), cùng với DE = GH, DF = GK, đủ điều kiện trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ góc – cạnh – góc: g-c-g cần hai góc và cạnh xen giữa hai góc đó, ở đây chỉ có một góc được cho.<br>✗ cạnh – cạnh – cạnh: c-c-c cần ba cặp cạnh bằng nhau, ở đây chỉ có hai cặp cạnh.<br>✗ Không đủ dữ kiện để kết luận: sai vì dữ kiện đã đủ cho trường hợp c-g-c.",
     "source": "hk1-exam2-TL5a"
    },
    {
@@ -1210,14 +1210,14 @@ const MATH_EXAMS = [
     "topic": "Trường hợp c-g-c",
     "q": "Cho △ABC và △MNP có AB = MN, ∠B = ∠N, BC = NP. Hai tam giác này bằng nhau theo trường hợp nào?",
     "options": [
-     "c-c-c",
-     "c-g-c",
-     "g-c-g",
+     "cạnh – cạnh – cạnh (c-c-c)",
+     "cạnh – góc – cạnh (c-g-c)",
+     "góc – cạnh – góc (g-c-g)",
      "Không đủ dữ kiện để kết luận"
     ],
     "correct": 1,
-    "answer": "c-g-c",
-    "explanation": "🔑 Hai cạnh AB = MN, BC = NP và góc xen giữa hai cạnh đó là ∠B = ∠N bằng nhau, nên △ABC = △MNP theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ c-c-c: dữ kiện đã cho có một góc bằng nhau, không phải ba cạnh.<br>✗ g-c-g: dữ kiện có hai cạnh và một góc, không phải hai góc và một cạnh.<br>✗ Không đủ dữ kiện: sai vì ∠B, ∠N nằm xen giữa hai cặp cạnh đã cho nên đủ điều kiện c-g-c.",
+    "answer": "cạnh – góc – cạnh (c-g-c)",
+    "explanation": "🔑 Hai cạnh AB = MN, BC = NP và góc xen giữa hai cạnh đó là ∠B = ∠N bằng nhau, nên △ABC = △MNP theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ cạnh – cạnh – cạnh: dữ kiện đã cho có một góc bằng nhau, không phải ba cạnh.<br>✗ góc – cạnh – góc: dữ kiện có hai cạnh và một góc, không phải hai góc và một cạnh.<br>✗ Không đủ dữ kiện: sai vì ∠B, ∠N nằm xen giữa hai cặp cạnh đã cho nên đủ điều kiện c-g-c.",
     "source": "hk1-exam3-TL10"
    },
    {
@@ -2922,14 +2922,14 @@ const MATH_EXAMS = [
     "topic": "Trường hợp c-g-c",
     "q": "Tam giác ABC và tam giác DEF có AB = DE, ∠A = ∠D, AC = DF (góc A xen giữa hai cạnh AB và AC; góc D xen giữa hai cạnh DE và DF). Hai tam giác này bằng nhau theo trường hợp nào?",
     "options": [
-     "c-c-c",
-     "c-g-c",
-     "g-c-g",
+     "cạnh – cạnh – cạnh (c-c-c)",
+     "cạnh – góc – cạnh (c-g-c)",
+     "góc – cạnh – góc (g-c-g)",
      "Cạnh huyền - góc nhọn"
     ],
     "correct": 1,
-    "answer": "c-g-c",
-    "explanation": "🔑 Hai cạnh AB = DE, AC = DF và góc xen giữa hai cạnh đó bằng nhau (∠A = ∠D) nên △ABC = △DEF theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ c-c-c: sai vì chỉ có hai cặp cạnh bằng nhau, không có thông tin về cạnh BC = EF.<br>✗ g-c-g: sai vì trường hợp này cần hai góc và cạnh xen giữa, còn dữ kiện đề bài cho hai cạnh và một góc.<br>✗ Cạnh huyền - góc nhọn: sai vì đề bài không cho biết hai tam giác vuông.",
+    "answer": "cạnh – góc – cạnh (c-g-c)",
+    "explanation": "🔑 Hai cạnh AB = DE, AC = DF và góc xen giữa hai cạnh đó bằng nhau (∠A = ∠D) nên △ABC = △DEF theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ cạnh – cạnh – cạnh: sai vì chỉ có hai cặp cạnh bằng nhau, không có thông tin về cạnh BC = EF.<br>✗ góc – cạnh – góc: sai vì trường hợp này cần hai góc và cạnh xen giữa, còn dữ kiện đề bài cho hai cạnh và một góc.<br>✗ Cạnh huyền - góc nhọn: sai vì đề bài không cho biết hai tam giác vuông.",
     "source": "hk1-exam7-TL4b"
    },
    {
@@ -3345,7 +3345,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "c-g-c (cạnh - góc - cạnh)",
-    "explanation": "🔑 Hai cặp cạnh bằng nhau (GH = XY, HI = YZ) và góc xen giữa hai cạnh đó bằng nhau (∠H = ∠Y) nên △GHI = △XYZ theo trường hợp c-g-c.<br>✗ c-c-c: sai vì đề chỉ cho hai cặp cạnh, không có cặp cạnh thứ ba.<br>✗ g-c-g: sai vì dữ kiện cho hai cạnh và một góc xen giữa, không phải hai góc và một cạnh.<br>✗ Không đủ dữ kiện để kết luận: sai vì dữ kiện đã đủ điều kiện của trường hợp c-g-c.",
+    "explanation": "🔑 Hai cặp cạnh bằng nhau (GH = XY, HI = YZ) và góc xen giữa hai cạnh đó bằng nhau (∠H = ∠Y) nên △GHI = △XYZ theo trường hợp c-g-c.<br>✗ cạnh – cạnh – cạnh: sai vì đề chỉ cho hai cặp cạnh, không có cặp cạnh thứ ba.<br>✗ góc – cạnh – góc: sai vì dữ kiện cho hai cạnh và một góc xen giữa, không phải hai góc và một cạnh.<br>✗ Không đủ dữ kiện để kết luận: sai vì dữ kiện đã đủ điều kiện của trường hợp c-g-c.",
     "source": "hk1-exam8-Q22"
    },
    {
@@ -4205,14 +4205,14 @@ const MATH_EXAMS = [
     "topic": "Trường hợp c-g-c",
     "q": "Cho △ABC và △DEF có AB = DE, AC = DF và ∠A = ∠D (∠A là góc xen giữa AB và AC). Hai tam giác này bằng nhau theo trường hợp nào?",
     "options": [
-     "c-c-c",
-     "c-g-c",
-     "g-c-g",
+     "cạnh – cạnh – cạnh (c-c-c)",
+     "cạnh – góc – cạnh (c-g-c)",
+     "góc – cạnh – góc (g-c-g)",
      "Không đủ điều kiện để kết luận"
     ],
     "correct": 1,
-    "answer": "c-g-c",
-    "explanation": "🔑 Hai cạnh AB = DE, AC = DF và góc xen giữa ∠A = ∠D bằng nhau nên △ABC = △DEF theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ c-c-c: cần cả ba cặp cạnh bằng nhau, nhưng đề chỉ cho hai cặp cạnh và một góc.<br>✗ g-c-g: cần hai góc và cạnh xen giữa, không phù hợp với dữ kiện đã cho.<br>✗ Không đủ điều kiện: sai vì góc ∠A xen giữa đúng hai cạnh AB, AC đã cho nên đủ điều kiện c-g-c.",
+    "answer": "cạnh – góc – cạnh (c-g-c)",
+    "explanation": "🔑 Hai cạnh AB = DE, AC = DF và góc xen giữa ∠A = ∠D bằng nhau nên △ABC = △DEF theo trường hợp cạnh - góc - cạnh (c-g-c).<br>✗ cạnh – cạnh – cạnh: cần cả ba cặp cạnh bằng nhau, nhưng đề chỉ cho hai cặp cạnh và một góc.<br>✗ góc – cạnh – góc: cần hai góc và cạnh xen giữa, không phù hợp với dữ kiện đã cho.<br>✗ Không đủ điều kiện: sai vì góc ∠A xen giữa đúng hai cạnh AB, AC đã cho nên đủ điều kiện c-g-c.",
     "source": "hk1e10-TL22"
    },
    {

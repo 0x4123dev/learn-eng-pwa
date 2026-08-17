@@ -205,14 +205,14 @@
       "topic": "Trường hợp không hợp lệ",
       "q": "Trường hợp nào sau đây KHÔNG phải là trường hợp bằng nhau của hai tam giác?",
       "options": [
-        "c-c-c",
-        "c-g-c",
-        "g-g-g",
-        "g-c-g"
+        "cạnh – cạnh – cạnh (c-c-c)",
+        "cạnh – góc – cạnh (c-g-c)",
+        "góc – góc – góc (g-g-g)",
+        "góc – cạnh – góc (g-c-g)"
       ],
       "correct": 2,
-      "answer": "g-g-g",
-      "explanation": "🔑 g-g-g không phải trường hợp bằng nhau: ba góc chỉ cho cùng hình dạng.<br>✗ c-c-c: hợp lệ, ba cạnh bằng ba cạnh.<br>✗ c-g-c: hợp lệ, góc xen giữa hai cạnh.<br>✗ g-c-g: hợp lệ, cạnh kề hai góc."
+      "answer": "góc – góc – góc (g-g-g)",
+      "explanation": "🔑 Ba góc bằng nhau chỉ cho hai tam giác cùng HÌNH DẠNG, không cùng kích thước — nên góc – góc – góc không phải trường hợp bằng nhau.<br>✗ cạnh – cạnh – cạnh: hợp lệ, ba cạnh bằng ba cạnh.<br>✗ cạnh – góc – cạnh: hợp lệ, góc xen giữa hai cạnh.<br>✗ góc – cạnh – góc: hợp lệ, cạnh kề hai góc."
     },
     {
       "id": "m4-15",
@@ -235,14 +235,14 @@
       "topic": "Trường hợp c-g-c",
       "q": "△ABC và △DEF có AB = DE, ∠B = ∠E, BC = EF. Hai tam giác bằng nhau theo trường hợp nào?",
       "options": [
-        "c-g-c",
-        "c-c-c",
-        "g-c-g",
+        "cạnh – góc – cạnh (c-g-c)",
+        "cạnh – cạnh – cạnh (c-c-c)",
+        "góc – cạnh – góc (g-c-g)",
         "Chưa đủ dữ kiện để kết luận"
       ],
       "correct": 0,
-      "answer": "c-g-c",
-      "explanation": "🔑 ∠B xen giữa AB, BC và ∠E xen giữa DE, EF ⇒ c-g-c.<br>✗ c-c-c: cần ba cặp cạnh, đề cho hai.<br>✗ g-c-g: cần hai cặp góc, đề cho một.<br>✗ Chưa đủ: góc đã cho đúng là xen giữa."
+      "answer": "cạnh – góc – cạnh (c-g-c)",
+      "explanation": "🔑 ∠B xen giữa AB và BC, ∠E xen giữa DE và EF ⇒ cạnh – góc – cạnh (c-g-c).<br>✗ cạnh – cạnh – cạnh: cần ba cặp cạnh, đề cho hai.<br>✗ góc – cạnh – góc: cần hai cặp góc, đề cho một.<br>✗ Chưa đủ dữ kiện: góc đã cho đúng là góc xen giữa, đủ để kết luận."
     },
     {
       "id": "m4-17",
@@ -250,14 +250,14 @@
       "topic": "Trường hợp g-c-g",
       "q": "△ABC và △MNP có ∠B = ∠N, BC = NP, ∠C = ∠P. Hai tam giác bằng nhau theo trường hợp nào?",
       "options": [
-        "g-c-g",
-        "c-g-c",
-        "c-c-c",
-        "g-g-g"
+        "góc – cạnh – góc (g-c-g)",
+        "cạnh – góc – cạnh (c-g-c)",
+        "cạnh – cạnh – cạnh (c-c-c)",
+        "góc – góc – góc (g-g-g)"
       ],
       "correct": 0,
-      "answer": "g-c-g",
-      "explanation": "🔑 BC kề ∠B và ∠C, NP kề ∠N và ∠P ⇒ g-c-g.<br>✗ c-g-c: cần hai cặp cạnh, đề cho một.<br>✗ c-c-c: cần ba cặp cạnh, đề cho một.<br>✗ g-g-g: không phải trường hợp bằng nhau."
+      "answer": "góc – cạnh – góc (g-c-g)",
+      "explanation": "🔑 Cạnh BC kề ∠B và ∠C, cạnh NP kề ∠N và ∠P ⇒ góc – cạnh – góc (g-c-g).<br>✗ cạnh – góc – cạnh: cần hai cặp cạnh, đề cho một.<br>✗ cạnh – cạnh – cạnh: cần ba cặp cạnh, đề cho một.<br>✗ góc – góc – góc: không phải trường hợp bằng nhau."
     },
     {
       "id": "m4-18",
@@ -413,16 +413,16 @@
       "id": "m4-28",
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
-      "q": "Trường hợp cạnh góc vuông - góc nhọn kề của tam giác vuông tương ứng với trường hợp nào của tam giác thường?",
+      "q": "△ABC vuông tại A và △DEF vuông tại D có AB = DE và ∠B = ∠E. Hai tam giác bằng nhau theo trường hợp nào?",
       "options": [
-        "c-c-c",
-        "c-g-c",
-        "g-c-g",
-        "g-g-g"
+        "góc – cạnh – góc (g-c-g)",
+        "cạnh – góc – cạnh (c-g-c)",
+        "cạnh – cạnh – cạnh (c-c-c)",
+        "Chưa đủ dữ kiện để kết luận"
       ],
-      "correct": 2,
-      "answer": "g-c-g",
-      "explanation": "🔑 Cạnh góc vuông kề cả góc 90° và góc nhọn ⇒ nằm giữa hai góc: g-c-g.<br>✗ c-c-c: chỉ dùng cạnh, đây có góc.<br>✗ c-g-c: cần hai cạnh, đây chỉ một.<br>✗ g-g-g: không phải trường hợp bằng nhau."
+      "correct": 0,
+      "answer": "góc – cạnh – góc (g-c-g)",
+      "explanation": "🔑 Hai đầu của cạnh AB là ∠A = 90° và ∠B; hai đầu của DE là ∠D = 90° và ∠E. Cạnh nằm giữa hai góc đã biết bằng nhau ⇒ góc – cạnh – góc (g-c-g).<br>✗ cạnh – góc – cạnh: cần hai cặp cạnh bằng nhau, đề chỉ cho một.<br>✗ cạnh – cạnh – cạnh: đề không cho cặp cạnh nào ngoài AB = DE.<br>✗ Chưa đủ dữ kiện: góc vuông cũng là một góc bằng nhau, cộng với ∠B = ∠E là đủ."
     },
     {
       "id": "m4-29",

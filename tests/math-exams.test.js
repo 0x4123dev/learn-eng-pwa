@@ -39,6 +39,35 @@ suite('math exams: the ten papers', () => {
         }
     });
 
+    test('no option is bare shorthand a child cannot read', () => {
+        // Same rule as the practice bank (tests/math.test.js): four options
+        // reading "c-c-c / c-g-c / g-c-g / …" are four near-identical strings
+        // that mean nothing until somebody explains the convention. Spell the
+        // case out and keep the shorthand in brackets.
+        const LETTER_SOUP = /^[a-zA-ZÀ-ỹ](\s*[-–—]\s*[a-zA-ZÀ-ỹ])+$/;
+        const bad = [];
+        for (const e of MATH_EXAMS) for (const q of e.questions) {
+            (q.options || []).forEach((o, i) => {
+                if (LETTER_SOUP.test(String(o).trim())) bad.push(`${e.id}#${q.n}.${'ABCD'[i]}="${o}"`);
+            });
+        }
+        assert.deepEqual(bad, [], 'spell these out, e.g. "cạnh – góc – cạnh (c-g-c)"');
+    });
+
+    test('"which congruence case?" always comes with a figure to look at', () => {
+        const CLASSIFY = /bằng nhau theo trường hợp (bằng nhau )?nào|theo trường hợp bằng nhau nào/i;
+        const FIGURE = /△\s*[A-Z]{3}|tam giác\s+[A-Z]{3}/;
+        const bare = [];
+        let asked = 0;
+        for (const e of MATH_EXAMS) for (const q of e.questions) {
+            if (!CLASSIFY.test(q.q || '')) continue;
+            asked++;
+            if (!FIGURE.test(q.q)) bare.push(`${e.id}#${q.n}`);
+        }
+        assert.truthy(asked >= 6, `only ${asked} such questions — the scan broke`);
+        assert.deepEqual(bare, [], 'these ask which case applies without showing any triangle');
+    });
+
     test('the ma trận shape holds: chapter quotas within tolerance', () => {
         const want = { 1: [6, 8], 2: [6, 8], 3: [4, 6], 4: [2, 4], 5: [2, 4] };
         for (const e of MATH_EXAMS) {

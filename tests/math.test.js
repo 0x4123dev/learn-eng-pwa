@@ -58,6 +58,55 @@ suite('math: the question bank', () => {
         assert.deepEqual(bad.map(q => q.id), [], 'these need four distinct options');
     });
 
+    test('no option is bare shorthand a child cannot read', () => {
+        // "c-c-c / c-g-c / g-c-g / g-g-g" put four near-identical strings on
+        // screen that mean nothing until somebody explains the convention —
+        // the child is left matching letter patterns instead of reading a
+        // triangle. Spell the name out and keep the shorthand in brackets.
+        // scripts/build-math-data.js refuses these at build time too.
+        const LETTER_SOUP = /^[a-zA-ZÀ-ỹ](\s*[-–—]\s*[a-zA-ZÀ-ỹ])+$/;
+        const bad = [];
+        MCQ.forEach(q => (q.options || []).forEach((o, i) => {
+            if (LETTER_SOUP.test(String(o).trim())) bad.push(`${q.id}.${'ABCD'[i]}="${o}"`);
+        }));
+        assert.deepEqual(bad, [], 'spell these out, e.g. "cạnh – góc – cạnh (c-g-c)"');
+    });
+
+    test('the congruence-case questions name the case in words', () => {
+        // The four that used to be letter soup. Pinned by content rather than
+        // by id so a rewrite that quietly drops the words fails here.
+        ['m4-14', 'm4-16', 'm4-17', 'm4-28'].forEach(id => {
+            const q = MATH_QUESTIONS.find(x => x.id === id);
+            assert.truthy(q, `${id} is gone`);
+            const spelled = q.options.filter(o => /cạnh|góc/.test(o) && /\(/.test(o));
+            assert.truthy(spelled.length >= 3,
+                `${id}: expected the cases written out, got ${JSON.stringify(q.options)}`);
+        });
+    });
+
+    test('"which congruence case?" always comes with a figure to look at', () => {
+        // Asked without one, the question stops being about triangles and
+        // becomes "which label maps onto which other label" — answerable only
+        // from memorised convention. scripts/build-math-data.js refuses these.
+        const CLASSIFY = /bằng nhau theo trường hợp (bằng nhau )?nào|theo trường hợp bằng nhau nào/i;
+        const FIGURE = /△\s*[A-Z]{3}|tam giác\s+[A-Z]{3}/;
+        const asked = MATH_QUESTIONS.filter(q => CLASSIFY.test(q.q || ''));
+        assert.truthy(asked.length >= 4, `only ${asked.length} such questions — the scan broke`);
+        const bare = asked.filter(q => !FIGURE.test(q.q)).map(q => q.id);
+        assert.deepEqual(bare, [], 'these ask which case applies without showing any triangle');
+    });
+
+    test('m4-28 asks about a triangle, not about naming conventions', () => {
+        // It used to ask which general-triangle case the right-triangle case
+        // "cạnh góc vuông – góc nhọn kề" corresponds to: a mapping between two
+        // vocabularies, with no triangle to look at and nothing to work out.
+        const q = MATH_QUESTIONS.find(x => x.id === 'm4-28');
+        assert.truthy(/△[A-Z]{3}/.test(q.q), 'the question must put a real triangle in front of the child');
+        assert.truthy(!/tương ứng với trường hợp nào/.test(q.q), 'the naming-mapping phrasing is back');
+        assert.truthy(/🔑/.test(q.explanation) && /∠/.test(q.explanation),
+            'the explanation should reason about the angles, not restate the convention');
+    });
+
     test('the stated answer is the option it points at', () => {
         // The failure this catches is invisible on screen: the explanation
         // praises one formula while the marked-correct button is another.
