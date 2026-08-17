@@ -1,6 +1,13 @@
 import { requireAuth, json, err } from './_lib.js';
 
-const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'wordform', 'rewrite', 'verbs', 'battle'];
+// Every type js/auth.js can emit. A type missing from this list is not
+// rejected loudly — clean() returns null, the row is dropped, the response is
+// still ok, and the client marks it synced and never sends it again. That is
+// exactly what happened to Collocation and Math: both tabs recorded history,
+// both uploaded it, and none of it ever reached the admin. Keep this in step
+// with _localHistoryItems() — tests/feature-sync.test.js pins the two together.
+const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'collocation', 'wordform',
+               'rewrite', 'verbs', 'math', 'battle'];
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 // Convert a JS ms timestamp to D1's 'YYYY-MM-DD HH:MM:SS' (UTC).

@@ -123,7 +123,7 @@ function richAppState() {
 
 function seedRich(opts = {}) {
     reset(Object.assign({ user: 'Tester', appState: richAppState() }, opts));
-    seedAccount('Tester', { token: 'tok123', role: 'user', id: 1 });
+    seedAccount('Tester', { token: 'tok123', role: 'user', id: 1, syncEpoch: 2 });
 }
 
 function makeBtn() {
@@ -352,9 +352,29 @@ suite('gen: syncNow batch', () => {
         assert.equal(acct.role, 'user');
     });
 
+    test('an account behind the sync epoch resends its whole window once', () => {
+        // Collocation and Math activities were uploaded, silently dropped by the
+        // server, and marked synced — so they could never be recovered by a
+        // retry. Raising the epoch forgets those marks exactly once.
+        seedRich();
+        seedAccount('Tester', {
+            token: 'tok123', syncEpoch: 1,
+            syncedKeys: ['lesson|' + AT.les, 'grammar|' + AT.gram, 'verbs|' + AT.vb],
+        });
+        assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 6, total: 6 },
+            'every item in the window goes up again, not just the unmarked ones');
+        const acct = EngAuth.getAccount('Tester');
+        assert.equal(acct.syncEpoch, 2, 'the account is stamped with the epoch it caught up to');
+        assert.equal(acct.syncedKeys.length, 6, 'the stale marks are gone, the fresh ones stand');
+
+        // …and only once: the next sync is back to normal de-duplication.
+        assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 0, total: 6 });
+        assert.equal(calls().length, 1, 'no second upload');
+    });
+
     test('a pre-existing syncedKey skips ONLY that item: 5 of 6 sent, total still 6', () => {
         seedRich();
-        seedAccount('Tester', { token: 'tok123', syncedKeys: ['grammar|' + AT.gram] });
+        seedAccount('Tester', { token: 'tok123', syncEpoch: 2, syncedKeys: ['grammar|' + AT.gram] });
         assert.deepEqual(vmAwait('EngAuth.syncNow()'), { ok: true, synced: 5, total: 6 });
         const types = sentItems().map(i => i.type);
         assert.notContains(types, 'grammar');
@@ -365,7 +385,7 @@ suite('gen: syncNow batch', () => {
     test('syncedKeys are capped at the LAST 2000: oldest keys are evicted, the 6 new ones kept', () => {
         seedRich();
         const filler = Array.from({ length: 2000 }, (_, i) => 'exam|' + i);
-        seedAccount('Tester', { token: 'tok123', syncedKeys: filler });
+        seedAccount('Tester', { token: 'tok123', syncEpoch: 2, syncedKeys: filler });
         vmAwait('EngAuth.syncNow()');
         const keys = EngAuth.getAccount('Tester').syncedKeys;
         assert.equal(keys.length, 2000, '2000 old + 6 new sliced back to 2000');
@@ -514,7 +534,10 @@ suite('gen: syncAccount', () => {
         assert.truthy(/^[A-Za-z0-9_-]{8,64}$/.test(sent.deviceId),
             `deviceId missing or malformed: ${JSON.stringify(sent.deviceId)}`);
         assert.deepEqual(Object.keys(sent).sort(), ['deviceId', 'passcode', 'username']);
-        assert.deepEqual(EngAuth.getAccount('Alice'), { token: 'newtok', role: 'student', id: 42 });
+        // syncNow runs straight after registering and stamps the account with
+        // the sync epoch it has caught up to.
+        assert.deepEqual(EngAuth.getAccount('Alice'),
+            { token: 'newtok', role: 'student', id: 42, syncEpoch: 2, syncedKeys: [] });
     });
 
     test('register 409 (name taken) falls back to login and stores that token', () => {

@@ -54,6 +54,7 @@
   .pill.kind-rewrite { background:#f3e8ff; color:#7c3aed; }
   .pill.kind-collocation { background:#e0f2fe; color:#0369a1; }
   .pill.kind-verbs { background:#fdeef2; color:#d6407a; }
+  .pill.kind-math { background:#fff7e0; color:#b26a00; }
   .pill.kind-battle { background:#eef2f7; color:#586074; }
   .pct-good { color:var(--green); font-weight:700; }
   .pct-mid { color:var(--amber); font-weight:700; }
@@ -303,7 +304,7 @@ function logout(){
 
 let _selectedUser = null;
 
-const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', battle:'⚔️ Battle' };
+const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', math:'🔢 Toán', battle:'⚔️ Battle' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
 // ---- users table ----------------------------------------------------------

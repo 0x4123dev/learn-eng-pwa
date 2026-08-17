@@ -194,8 +194,12 @@ const EngAuth = (function () {
       score: h.score, total: h.total, at: h.date,
     }));
     (appState.mathHistory || []).forEach(h => add({
-      type: 'math', title: 'Toán 7 · ' + (h.label || 'công thức'),
+      // A mock exam and a chapter drill are different things to a parent
+      // reading the timeline, and the session records which it was.
+      type: 'math',
+      title: 'Toán 7 · ' + (h.examId ? 'Đề thi: ' : '') + (h.label || 'công thức'),
       score: h.score, total: h.total, at: h.date,
+      detail: h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
     }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
@@ -203,6 +207,11 @@ const EngAuth = (function () {
     }));
     return items;
   }
+
+  // Raise this to make every device re-upload its whole 30-day window once —
+  // used when a bug meant activities were accepted by the client but never
+  // stored. v2: the server rejected 'collocation' and 'math' (v4.11.6).
+  const SYNC_EPOCH = 2;
 
   // Upload any local history not yet synced for the active user. Idempotent:
   // client-side de-dup via stored keys + server-side OR IGNORE. Used by the
@@ -214,6 +223,15 @@ const EngAuth = (function () {
     if (!acct || !acct.token) return { ok: false, reason: 'no-account' };
 
     const all = _localHistoryItems();
+    // A key marked synced is never sent again — which is why the server
+    // silently dropping 'collocation' and 'math' lost them for good rather
+    // than retrying. Bumping SYNC_EPOCH forgets those marks once, so the last
+    // 30 days go up again. Re-sending is free: the server inserts OR IGNORE
+    // against a unique (user, type, second) index.
+    if (acct.syncEpoch !== SYNC_EPOCH) {
+      setAccount(u, { syncEpoch: SYNC_EPOCH, syncedKeys: [] });
+      acct.syncedKeys = [];
+    }
     const synced = new Set(acct.syncedKeys || []);
     const keyOf = (o) => o.type + '|' + o.at;
     const items = all.filter(o => !synced.has(keyOf(o)));

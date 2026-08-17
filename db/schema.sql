@@ -40,7 +40,9 @@ CREATE INDEX IF NOT EXISTS idx_attempts_created ON exam_attempts(created_at);
 CREATE TABLE IF NOT EXISTS activities (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id     INTEGER NOT NULL,
-  type        TEXT NOT NULL,            -- lesson | review | grammar | phrases | verbs | battle
+  type        TEXT NOT NULL,            -- lesson | review | grammar | phrases | collocation
+                                        -- | wordform | rewrite | verbs | math | battle
+                                        -- (the accepted list lives in functions/api/activity.js)
   title       TEXT,
   score       INTEGER,
   total       INTEGER,

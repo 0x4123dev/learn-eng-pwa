@@ -682,6 +682,10 @@ function finishMathQuiz() {
     score: score, total: total
   });
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
+  // Push it to the server now, like every other tab. Without this the session
+  // sat in localStorage until some OTHER tab finished a practice and flushed
+  // the queue — so a child who only did maths showed up as inactive.
+  if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
   const wrong = st.questions
     .map((q, i) => ({ q, a: st.answers[i] }))
