@@ -106,7 +106,11 @@ function petFoodQuestOnFeed(foodId) {
   return true;
 }
 
-function petQuestLineHTML() {
+// `perCorrect` turns the coins still needed into a number of questions. It is
+// not always 5: the maths tab pays 2, and quoting 5 there told a child they
+// were less than half as far from the treat as they really are.
+function petQuestLineHTML(perCorrect) {
+  const rate = (Number.isFinite(+perCorrect) && +perCorrect > 0) ? +perCorrect : PET_COINS_PER_CORRECT;
   const st = _pcState();
   if (!st) return '';
   const { food, done } = petFoodQuestState();
@@ -122,7 +126,7 @@ function petQuestLineHTML() {
     <div class="pet-quest-line">
       <div class="pet-quest-ask">${petFaceEmoji()} ${name} muốn ăn ${food.emoji} <b>${_pcEsc(food.name)}</b> hôm nay!</div>
       <div class="pet-quest-bar"><div class="pet-quest-fill" style="width:${pct}%"></div></div>
-      <div class="pet-quest-meta">${coins}/${food.price} 🪙 ${left ? `· còn <b>${left}</b> 🪙 nữa (${Math.ceil(left / 5)} câu đúng)` : '· đủ rồi, cho bé ăn nhé!'}</div>
+      <div class="pet-quest-meta">${coins}/${food.price} 🪙 ${left ? `· còn <b>${left}</b> 🪙 nữa (${Math.ceil(left / rate)} câu đúng)` : '· đủ rồi, cho bé ăn nhé!'}</div>
     </div>`;
 }
 
@@ -131,6 +135,9 @@ function petQuestLineHTML() {
 // (+5 bonus coins, paid out on the finish screen).
 const PET_COMBO_STEP = 5;
 const PET_COMBO_BONUS = 5;
+// What one correct answer is worth in the English tabs — the default the
+// "how many more questions?" line quotes when a caller names no rate.
+const PET_COINS_PER_CORRECT = 5;
 let _petCombo = { streak: 0, best: 0, bonus: 0 };
 
 function petCheerReset() { _petCombo = { streak: 0, best: 0, bonus: 0 }; }
@@ -218,7 +225,7 @@ function petEvolutionLineHTML() {
 }
 
 // The celebration + feeding card shown on every practice finish screen.
-function petRewardCardHTML(score, total, coinsEarned) {
+function petRewardCardHTML(score, total, coinsEarned, perCorrect) {
   const st = _pcState();
   const pct = total ? Math.round(score / total * 100) : 0;
   const msg = pct === 100 ? 'PERFECT! Xuất sắc! 🏆'
@@ -254,7 +261,7 @@ function petRewardCardHTML(score, total, coinsEarned) {
               <div class="pet-hunger-bar"><div class="pet-hunger-fill ${hungerCls}" style="width:${hunger}%"></div></div>
             </div>
           </div>
-          ${petQuestLineHTML()}
+          ${petQuestLineHTML(perCorrect)}
           <div class="pet-feed-row">${foodBtns}</div>
           ${petEvolutionLineHTML()}
         </div>

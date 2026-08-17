@@ -32,15 +32,38 @@ suite('feature sync: shared systems coverage', () => {
         }
     });
 
-    test('every English practice module awards pet-shop coins', () => {
-        // math.js is deliberately outside the pet economy — it feeds the streak
-        // and the admin timeline, but not the coin balance. If that changes,
-        // move it into this list rather than loosening the rule.
-        for (const f of PRACTICE_MODULES.filter(f => f !== 'math.js')) {
+    test('every practice module awards pet-shop coins', () => {
+        for (const f of PRACTICE_MODULES) {
             assert.truthy(/appState\.coins/.test(read(f)), `${f} never awards coins`);
         }
-        assert.falsy(/appState\.coins/.test(read('math.js')),
-            'math.js now awards coins — add it to the list above');
+    });
+
+    test('every module that cheers an answer also banks the combo bonus', () => {
+        // petCheerAnswer pops "+N 🪙" on each streak; petComboBonus() is what
+        // pays and RESETS it. A module that cheers without banking leaves the
+        // unclaimed total to ride into whichever practice finishes next —
+        // which is what maths did until v4.11.8.
+        for (const f of PRACTICE_MODULES) {
+            const src = read(f);
+            if (!/petCheerAnswer\(/.test(src)) continue;
+            assert.truthy(/petComboBonus\(\)/.test(src),
+                `${f} cheers combos but never banks them — the bonus leaks to another tab`);
+        }
+    });
+
+    test('maths pays half the English rate, from one named constant', () => {
+        const src = read('math.js');
+        const m = /const MATH_COINS_PER_CORRECT = (\d+)/.exec(src);
+        assert.truthy(m, 'math.js should name its coin rate rather than inlining it');
+        assert.equal(Number(m[1]), 2);
+        assert.truthy(/score \* MATH_COINS_PER_CORRECT/.test(src), 'the rate must actually be used');
+        // The pet card turns "coins still needed" into "questions still to
+        // answer". Quoting the English rate on the maths screen halves it.
+        assert.truthy(/petRewardCardHTML\(score, total, coinsEarned, MATH_COINS_PER_CORRECT\)/.test(src),
+            'the maths reward card must be told the maths rate');
+        const pet = read('petcheer.js');
+        assert.truthy(/Math\.ceil\(left \/ rate\)/.test(pet),
+            'petcheer.js still hardcodes the questions-remaining rate');
     });
 
     test('profile derives accuracy and session count from all skills, not legacy counters', () => {

@@ -13,6 +13,8 @@
 
 const MATH_QUIZ_SIZE = 10;
 const MATH_HISTORY_CAP = 300;
+// Pet-shop coins per correct answer. The English tabs pay 5; maths pays 2.
+const MATH_COINS_PER_CORRECT = 2;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
@@ -676,6 +678,20 @@ function finishMathQuiz() {
   const score = st.answers.reduce((s, a, i) => s + (mathIsCorrect(st.questions[i], a) ? 1 : 0), 0);
   const pct = Math.round(score / total * 100);
 
+  // Coins for the pet shop. Half the English rate: a maths question is one
+  // pick from four formulas, not a word produced from nothing.
+  //
+  // The combo bonus is banked HERE and nowhere else. Maths already cheered
+  // every answer through petCheerAnswer — which pops "+N 🪙" on each streak —
+  // but never called petComboBonus(), so that promise was never paid out and
+  // the unclaimed total rode along into whichever English practice came next.
+  const coinsEarned = score * MATH_COINS_PER_CORRECT
+    + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
+  if (typeof appState !== 'undefined' && appState) {
+    appState.coins = (appState.coins || 0) + coinsEarned;
+  }
+
+  // Banked before the session is saved, so one write persists both.
   saveMathSession({
     date: Date.now(), chapter: st.chapter, label: st.label || mathQuizLabel(st.chapter),
     examId: st.examId || undefined,
@@ -707,6 +723,9 @@ function finishMathQuiz() {
         <h2>${score}/${total} · ${pct}%</h2>
         <p>${mathQuizLabel(st.chapter)}</p>
       </div>
+      ${typeof petRewardCardHTML === 'function'
+        ? petRewardCardHTML(score, total, coinsEarned, MATH_COINS_PER_CORRECT)
+        : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙</div>` : '')}
       ${wrong.length ? `<h3 class="topic-detail-list-title">Cần xem lại (${wrong.length})</h3>${wrongHTML}` : ''}
       <button class="grammar-next-btn" onclick="renderMathHome()">Xong</button>
     </div>`;

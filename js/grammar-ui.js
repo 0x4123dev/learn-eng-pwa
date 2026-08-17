@@ -1114,10 +1114,16 @@ function finishGrammarQuiz() {
     const tierEmoji = isPerfect ? '🏆' : pct >= 80 ? '⭐' : pct >= 60 ? '👍' : '💪';
     const tierMsg = isPerfect ? 'Perfect score!' : pct >= 80 ? 'Great job!' : pct >= 60 ? 'Good effort!' : 'Keep practising!';
 
-    // Award coins as a small reward
-    const coinsEarned = session.score * 5;
-    if (appState && typeof appState.coins === 'number') {
-        appState.coins += coinsEarned;
+    // Award coins as a small reward. The combo bonus is part of it: every
+    // streak already popped "+N 🪙" on screen through petCheerAnswer, and
+    // petComboBonus() is what actually pays and clears it — without this the
+    // unclaimed total rode along into whichever practice finished next.
+    const coinsEarned = session.score * 5
+        + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
+    if (appState) {
+        // `|| 0` rather than a typeof guard: a profile that has never held a
+        // coin has no `coins` key at all, and the guard paid it nothing.
+        appState.coins = (appState.coins || 0) + coinsEarned;
         if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
     }
     if (isPerfect && typeof createConfetti === 'function') createConfetti();
