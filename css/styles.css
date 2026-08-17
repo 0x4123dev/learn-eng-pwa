@@ -8791,6 +8791,53 @@
         .math-hist-stat strong { display: block; font-size: 20px; color: var(--primary, #4f46e5); }
         .math-hist-stat span { font-size: 12px; color: var(--text-secondary, #64748b); }
 
+        /* Which questions keep coming back wrong, and how often. */
+        .math-wrong-panel { margin: 0 0 14px; }
+        .math-wrong-list {
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px; overflow: hidden;
+        }
+        .math-wrong-row {
+            display: flex; gap: 10px; align-items: flex-start;
+            padding: 10px 12px; border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        .math-wrong-row:first-child { border-top: none; }
+        .math-wrong-count {
+            flex: 0 0 auto; min-width: 34px; text-align: center;
+            font-size: 13px; font-weight: 800; color: #d63a3a;
+            background: rgba(214,58,58,0.10); border-radius: 8px; padding: 3px 6px;
+        }
+        .math-wrong-main { flex: 1 1 auto; min-width: 0; }
+        .math-wrong-q { font-size: 14.5px; line-height: 1.45; color: var(--text-primary); }
+        .math-wrong-a { font-size: 14px; margin-top: 3px; color: #3d8b00; }
+        .math-wrong-more, .math-wrong-note {
+            font-size: 12.5px; color: var(--text-secondary, #64748b); padding: 8px 4px 0;
+        }
+        .math-wrong-note b { color: #d63a3a; }
+
+        /* Grade 4 — the words that keep coming back wrong. */
+        .g4-wrong-panel { margin-top: 16px; }
+        .g4-wrong-list { display: flex; flex-direction: column; gap: 6px; }
+        .g4-wrong-chip {
+            display: flex; align-items: center; gap: 8px; width: 100%;
+            padding: 9px 12px; border-radius: 12px; cursor: pointer; text-align: left;
+            font-family: inherit; font-size: 14.5px; color: var(--text-primary);
+            background: var(--glass-bg, rgba(255,255,255,0.8));
+            border: 1.5px solid var(--glass-border);
+        }
+        .g4-wrong-emoji { flex: 0 0 auto; font-size: 20px; }
+        .g4-wrong-en { flex: 0 0 auto; font-weight: 800; }
+        .g4-wrong-vi {
+            flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--text-secondary);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .g4-wrong-count {
+            flex: 0 0 auto; font-style: normal; font-size: 13px; font-weight: 800;
+            color: #d63a3a; background: rgba(214,58,58,0.10);
+            border-radius: 8px; padding: 3px 7px;
+        }
+        .g4-wrong-more { font-size: 12.5px; color: var(--text-secondary, #64748b); padding: 8px 4px 0; }
+
         .math-hist-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
         .math-hist-row {
             display: flex; align-items: center; gap: 10px;

@@ -198,6 +198,49 @@ function isUnitMastered(unit, history) {
   return unitPerfectCount(unit, history) >= UNIT_MASTERY_TARGET;
 }
 
+// ---- words to review: which ones, and how often ----
+// A score of 6/10 tells a child nothing they can act on. Counting how many
+// times each word has been missed across every past practice does: the list is
+// exactly what to look at again, hardest first. Same idea as the Word form tab.
+function unitsWrongAggregate() {
+  const hist = (typeof appState !== 'undefined' && appState && appState.unitsHistory) || [];
+  const counts = new Map();
+  hist.forEach(s => (s.wrong || []).forEach(en => {
+    counts.set(en, (counts.get(en) || 0) + 1);
+  }));
+  const bank = unitsBank();
+  const out = [];
+  counts.forEach((misses, en) => {
+    const w = bank.find(x => x.en === en);
+    if (w) out.push({ w, misses });
+  });
+  // Most-missed first; ties alphabetical so the order does not jitter.
+  out.sort((a, b) => b.misses - a.misses || a.w.en.localeCompare(b.w.en));
+  return out;
+}
+
+function renderUnitsWrongPanelHTML() {
+  // Hidden while words are owed: the drill IS the way to clear them, and two
+  // competing "practise your mistakes" routes leave a child going in circles.
+  if (unitsRetryCount() > 0) return '';
+  const wrong = unitsWrongAggregate();
+  if (!wrong.length) return '';
+  const chips = wrong.slice(0, 12).map(({ w, misses }) => `
+    <button class="g4-wrong-chip" onclick="_unitSpeak('${_unitSpeakAttr(w.en)}')" title="Nghe phát âm">
+      <span class="g4-wrong-emoji">${w.emoji}</span>
+      <span class="g4-wrong-en">${unitEsc(w.en)}</span>
+      <span class="g4-wrong-vi">${unitEsc(w.vi)}</span>
+      <i class="g4-wrong-count">${misses}×</i>
+    </button>`).join('');
+  const more = wrong.length > 12 ? `<div class="g4-wrong-more">… và ${wrong.length - 12} từ nữa</div>` : '';
+  return `
+    <div class="g4-wrong-panel">
+      <div class="phrases-section-title">📉 Từ hay sai <span class="phrases-count">${wrong.length}</span></div>
+      <div class="g4-wrong-list">${chips}</div>
+      ${more}
+    </div>`;
+}
+
 function renderUnitsBar() {
   const bar = document.getElementById('unitsBar');
   if (!bar) return;
@@ -258,7 +301,7 @@ function renderUnitsBar() {
     </button>`;
   }).join('');
 
-  bar.innerHTML = `${owedBanner}<div class="g4-grid">${mixCard}${cards}</div>`;
+  bar.innerHTML = `${owedBanner}<div class="g4-grid">${mixCard}${cards}</div>${renderUnitsWrongPanelHTML()}`;
 }
 
 // ---- celebration reward card (shared with collocation.js) ----
@@ -473,7 +516,9 @@ function finishUnitPractice() {
     if (!Array.isArray(appState.unitsHistory)) appState.unitsHistory = [];
     let date = 0;
     try { date = Date.now(); } catch (e) {}
-    appState.unitsHistory.unshift({ unit: st.unit, score, total, date });
+    // The missed words themselves, not just the count: without them the
+    // history can say "6/10" forever and never say WHICH six.
+    appState.unitsHistory.unshift({ unit: st.unit, score, total, date, wrong: wrong.map(w => w.en) });
     if (appState.unitsHistory.length > 300) appState.unitsHistory.length = 300;
     // Count today toward the daily streak, like lessons and grammar do.
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -523,5 +568,6 @@ if (typeof module !== 'undefined' && module.exports) {
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
     _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
+    unitsWrongAggregate, renderUnitsWrongPanelHTML,
   };
 }

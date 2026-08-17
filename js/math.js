@@ -438,6 +438,47 @@ function mathHistoryWhen(ts) {
   } catch (e) { return ''; }
 }
 
+// ---- questions to review: which ones, and how often ----
+// "20%" three times over says a child is struggling but not with WHAT. Counting
+// how many times each question has been missed across every past run does, and
+// the list doubles as the shortest possible revision sheet.
+function mathWrongAggregate() {
+  const counts = new Map();
+  mathHistory().forEach(s => (s.wrong || []).forEach(id => {
+    counts.set(id, (counts.get(id) || 0) + 1);
+  }));
+  const out = [];
+  counts.forEach((misses, id) => {
+    const q = mathById(id);
+    if (q) out.push({ q, misses });
+  });
+  out.sort((a, b) => b.misses - a.misses || String(a.q.id).localeCompare(String(b.q.id)));
+  return out;
+}
+
+function renderMathWrongPanelHTML() {
+  const wrong = mathWrongAggregate();
+  if (!wrong.length) return '';
+  const rows = wrong.slice(0, 15).map(({ q, misses }) => `
+    <div class="math-wrong-row">
+      <span class="math-wrong-count">${misses}×</span>
+      <div class="math-wrong-main">
+        <div class="math-wrong-q">${mathEsc(q.q)}</div>
+        <div class="math-wrong-a">✅ <b class="math-formula">${mathFormula(q.answer)}</b></div>
+      </div>
+    </div>`).join('');
+  const more = wrong.length > 15
+    ? `<div class="math-wrong-more">… và ${wrong.length - 15} câu nữa</div>` : '';
+  const owed = (typeof retryCount === 'function' ? retryCount('math') : 0);
+  return `
+    <div class="math-wrong-panel">
+      <div class="phrases-section-title">📉 Câu hay sai <span class="phrases-count">${wrong.length}</span></div>
+      <div class="math-wrong-list">${rows}</div>
+      ${more}
+      ${owed ? `<div class="math-wrong-note">Còn <b>${owed}</b> câu đang nợ — làm lại để mở khoá luyện tập.</div>` : ''}
+    </div>`;
+}
+
 function renderMathHistoryHTML() {
   const all = mathHistory();
   if (!all.length) {
@@ -494,6 +535,7 @@ function renderMathHistoryHTML() {
       <p class="phrases-sub">Mỗi lượt luyện tập và mỗi đề thi đã nộp đều được ghi lại ở đây.</p>
     </div>
     ${statsHTML}
+    ${renderMathWrongPanelHTML()}
     <div class="grammar-subtabs math-hist-tabs">${typeTabs}</div>
     <div class="grammar-subtabs math-hist-tabs">${tierTabs}</div>
     <div class="math-hist-list">${rows || '<div class="phrases-cat-row"><span>Chưa có lượt nào khớp bộ lọc này</span></div>'}</div>`;
@@ -691,11 +733,18 @@ function finishMathQuiz() {
     appState.coins = (appState.coins || 0) + coinsEarned;
   }
 
+  const wrong = st.questions
+    .map((q, i) => ({ q, a: st.answers[i] }))
+    .filter(x => !mathIsCorrect(x.q, x.a));
+
   // Banked before the session is saved, so one write persists both.
   saveMathSession({
     date: Date.now(), chapter: st.chapter, label: st.label || mathQuizLabel(st.chapter),
     examId: st.examId || undefined,
-    score: score, total: total
+    score: score, total: total,
+    // Which questions were missed, not just how many — that is what makes a
+    // "câu hay sai" list possible at all.
+    wrong: wrong.map(x => x.q.id),
   });
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
   // Push it to the server now, like every other tab. Without this the session
@@ -703,9 +752,6 @@ function finishMathQuiz() {
   // the queue — so a child who only did maths showed up as inactive.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
-  const wrong = st.questions
-    .map((q, i) => ({ q, a: st.answers[i] }))
-    .filter(x => !mathIsCorrect(x.q, x.a));
   // Owe back everything missed before a new practice opens (js/retrydrill.js).
   if (wrong.length && typeof retryAdd === 'function') retryAdd('math', wrong.map(x => x.q));
   const wrongHTML = wrong.map(x => `
@@ -812,6 +858,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathExams, mathExamBest, mathExamClock, startMathExam, renderMathExamsHTML,
     renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
+    mathWrongAggregate, renderMathWrongPanelHTML,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }
