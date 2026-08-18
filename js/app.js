@@ -628,6 +628,8 @@ function loginUser(username) {
     if (appState.dogLevel === undefined) appState.dogLevel = typeof getDogLevel === 'function' ? getDogLevel(appState.dogGrowthXP) : 1;
     if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
     if (appState.petPoops === undefined) appState.petPoops = [];
+    if (!Array.isArray(appState.petBattleCastleSkins)) appState.petBattleCastleSkins = ['stone-keep'];
+    if (appState.petBattleCastleSkin === undefined) appState.petBattleCastleSkin = 'stone-keep';
 
     // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
     if (appState.currentLesson > 0) {

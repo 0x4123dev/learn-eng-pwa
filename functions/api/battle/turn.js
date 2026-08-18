@@ -1,15 +1,26 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS , normalizeAbilities } from '../_battle.js';
+import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS, parseHires, startingHp } from '../_battle.js';
 
 // The most damage a volley could physically do (mirrors battlecalc.shotDamage
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
 // client cannot claim more than the rules allow.
-function maxTurnDamage(shots, level) {
+function teammateCount(hires, id) {
+  return hires.filter(value => value === id).length;
+}
+
+function maxTurnDamage(shots, level, gunners) {
   const n = Math.max(0, Math.min(BARRELS, Math.trunc(Number(shots) || 0)));
   // Rounds per shot, exactly as battlecalc.damageAt does. Ceiling the total
   // instead was TIGHTER than the honest maximum and shaved a point off real
   // volleys at some levels.
-  return n * Math.round((12 + 0.12 * Math.max(1, level || 1)) * 1.5);
+  const shell = Math.round((12 + 0.12 * Math.max(1, level || 1)) * 1.5);
+  return n * shell + Math.max(0, gunners) * Math.max(1, Math.round(shell * 0.6));
+}
+
+function guardedDamage(damage, guards) {
+  let next = Math.max(0, Math.trunc(Number(damage) || 0));
+  for (let i = 0; i < Math.max(0, guards); i++) next = Math.floor(next * 0.5);
+  return next;
 }
 
 // POST /api/battle/turn { battleId, angle, power, shots, damage }
@@ -33,17 +44,29 @@ export async function onRequestPost({ request, env }) {
 
   const myAmmo = meIsChallenger ? b.challenger_ammo : b.opponent_ammo;
   const myLevel = meIsChallenger ? b.challenger_level : b.opponent_level;
+  const myHires = parseHires(meIsChallenger ? b.challenger_hires : b.opponent_hires);
+  const foeHires = parseHires(meIsChallenger ? b.opponent_hires : b.challenger_hires);
+  const gunners = teammateCount(myHires, 'gunner');
+  const guards = teammateCount(foeHires, 'shield');
   const shots = Math.max(0, Math.min(BARRELS, Math.min(myAmmo, Math.trunc(+body.shots || 0))));
   const angle = Math.max(0, Math.min(90, +body.angle || 0));
   const power = Math.max(0, Math.min(100, +body.power || 0));
-  const damage = shots > 0
-    ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel), Math.trunc(+body.damage || 0)))
+  const hasRawDamage = Object.prototype.hasOwnProperty.call(body, 'rawDamage');
+  const reported = hasRawDamage ? body.rawDamage : body.damage;
+  const rawDamage = shots > 0
+    ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel, gunners), Math.trunc(+reported || 0)))
     : 0;
-
-  const abilities = normalizeAbilities(body.abilities);
-  const rocket = body.rocket ? 1 : 0;
+  // New clients report pre-guard damage, so the server—not a device—applies
+  // permanent Royal Guards. Older clients already reported final damage and
+  // remain compatible until their service worker updates.
+  const damage = hasRawDamage ? guardedDamage(rawDamage, guards) : rawDamage;
+  const abilities = [];
+  const rocket = gunners;
 
   const now = Date.now();
+  const myHpBefore = meIsChallenger ? b.challenger_hp : b.opponent_hp;
+  const engineers = teammateCount(myHires, 'engineer');
+  const myHp = Math.min(startingHp(myLevel), Math.max(0, myHpBefore) + engineers * 15);
   const foeHp = Math.max(0, (meIsChallenger ? b.opponent_hp : b.challenger_hp) - damage);
   const nextTurnNo = b.turn_no + 1;
   const myAmmoAfter = myAmmo - shots;
@@ -64,26 +87,25 @@ export async function onRequestPost({ request, env }) {
 
   const myAmmoLeft = myAmmoAfter;
   const fields = meIsChallenger
-    ? { myAmmoCol: 'challenger_ammo', foeHpCol: 'opponent_hp' }
-    : { myAmmoCol: 'opponent_ammo', foeHpCol: 'challenger_hp' };
+    ? { myAmmoCol: 'challenger_ammo', myHpCol: 'challenger_hp', foeHpCol: 'opponent_hp' }
+    : { myAmmoCol: 'opponent_ammo', myHpCol: 'opponent_hp', foeHpCol: 'challenger_hp' };
 
   if (over) {
-    const myHp = meIsChallenger ? b.challenger_hp : b.opponent_hp;
     let winnerId = null;
     if (foeHp <= 0 && myHp > 0) winnerId = auth.uid;
     else if (myHp > foeHp) winnerId = auth.uid;
     else if (foeHp > myHp) winnerId = meIsChallenger ? b.opponent_id : b.challenger_id;
     await env.DB.prepare(
-      `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.foeHpCol} = ?,
+      `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.myHpCol} = ?, ${fields.foeHpCol} = ?,
               status = 'done', winner_id = ?, finished_at = ?, turn_user_id = NULL
         WHERE id = ?`
-    ).bind(myAmmoLeft, foeHp, winnerId, now, id).run();
+    ).bind(myAmmoLeft, myHp, foeHp, winnerId, now, id).run();
   } else {
     await env.DB.prepare(
-      `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.foeHpCol} = ?,
+      `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.myHpCol} = ?, ${fields.foeHpCol} = ?,
               turn_no = ?, turn_user_id = ?, turn_started_at = ?
         WHERE id = ?`
-    ).bind(myAmmoLeft, foeHp, nextTurnNo, nextUserId, now, id).run();
+    ).bind(myAmmoLeft, myHp, foeHp, nextTurnNo, nextUserId, now, id).run();
   }
 
   const fresh = await env.DB.prepare('SELECT * FROM battles WHERE id = ?').bind(id).first();

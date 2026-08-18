@@ -46,8 +46,8 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // SW.JS — cache manifest structure
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
-    test('ASSETS array literal parses with exactly 96 entries', () => {
-        assert.equal(ASSETS.length, 96,
+    test('ASSETS array literal parses with exactly 97 entries', () => {
+        assert.equal(ASSETS.length, 97,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -91,8 +91,8 @@ suite('gen: sw.js cache manifest', () => {
 // missing file (even a pet png) would break the whole service-worker install.
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
-    test('ASSETS contains 62 /js/*.js, 1 /css/*.css, 30 /img/* entries', () => {
-        assert.equal(JS_ASSETS.length, 62, 'js asset count changed');
+    test('ASSETS contains 63 /js/*.js, 1 /css/*.css, 30 /img/* entries', () => {
+        assert.equal(JS_ASSETS.length, 63, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
         assert.equal(IMG_ASSETS.length, 30, 'img asset count changed');
     });
@@ -132,8 +132,8 @@ suite('gen: sw.js img assets exist on disk', () => {
 // INDEX.HTML — script tags resolve and load in dependency order
 // ============================================================================
 suite('gen: index.html script tags', () => {
-    test('index.html has exactly 61 <script src> tags, all under js/', () => {
-        assert.equal(SCRIPT_SRCS.length, 61,
+    test('index.html has exactly 62 <script src> tags, all under js/', () => {
+        assert.equal(SCRIPT_SRCS.length, 62,
             'script tag count changed — update this characterization');
         const nonJs = SCRIPT_SRCS.filter(s => !/^js\/.+\.js$/.test(s));
         assert.deepEqual(nonJs, [], `unexpected non-js/ script srcs: ${nonJs.join(', ')}`);

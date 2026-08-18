@@ -1554,13 +1554,10 @@
            rather than a single tap: duplicates are a real plan (two Vệ sĩ =
            two shields), so adding a second of the same must be one gesture. */
 
-        /* ---- đồng đội trigger chips ----
-           One chip per hired charge, beside the barrels. A spent chip stays on
-           screen greyed rather than vanishing, so the child can always see
-           what they paid for and what is left. */
+        /* ---- always-active teammate status ---- */
         .pb-squad { display: flex; gap: 10px; justify-content: center; margin: 8px 0 3px; }
         .pb-squad-chip {
-            width: 52px; height: 52px; padding: 3px; border-radius: 15px; cursor: pointer;
+            position: relative; width: 52px; height: 52px; padding: 3px; border-radius: 15px;
             display: flex; align-items: center; justify-content: center;
             border: 2px solid rgba(100,116,139,.48);
             background: linear-gradient(145deg, #fff, #e2e8f0);
@@ -1577,14 +1574,8 @@
         }
         .pb-squad-avatar { width: 44px; height: 44px; border-radius: 11px; object-fit: cover; display: block; }
         .pb-squad-emoji { font-size: 24px; line-height: 1; }
-        .pb-squad-chip:active { transform: scale(.92); }
-        .pb-squad-chip:disabled { cursor: default; }
-        .pb-squad-chip.spent { opacity: .32; filter: grayscale(1); }
-        /* Bought, aimed, not yet fired — this is the shot it rides. */
-        .pb-squad-chip.armed {
-            background: #1d4ed8; border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(37,99,235,.3), 0 6px 16px rgba(30,64,175,.32);
-        }
+        .pb-squad-chip.active { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18), 0 6px 16px rgba(15,118,110,.22); }
+        .pb-squad-active { position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #16a34a; font-size: 15px; font-weight: 950; line-height: 1; }
 
         .pb-hire-panel {
             background:
@@ -1715,6 +1706,43 @@
         .pb-scene-invite img { width: 72px; aspect-ratio: 16/9; border-radius: 9px; object-fit: cover; }
         .pb-scene-invite span { min-width: 0; color: #475569; font-size: 10px; }
         .pb-scene-invite b { display: block; color: #1e293b; font-size: 12px; }
+
+        /* Castle Workshop — collectible cosmetics with truthful affordability
+           states. The horizontal rail stays compact on phones and becomes a
+           four-card showcase on iPad without stretching the artwork. */
+        .pb-castle-shop {
+            margin: 14px 0; padding: 13px; overflow: hidden; border: 1px solid rgba(124,58,237,.2); border-radius: 20px;
+            background: radial-gradient(circle at 85% 0, rgba(216,180,254,.34), transparent 36%), linear-gradient(145deg,#fff,#f5f3ff);
+            box-shadow: 0 10px 28px rgba(76,29,149,.1);
+        }
+        .pb-castle-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; color: #312e81; }
+        .pb-castle-head div { min-width: 0; }
+        .pb-castle-head strong, .pb-castle-head span { display: block; }
+        .pb-castle-head strong { font-size: 17px; font-weight: 950; }
+        .pb-castle-head span { margin-top: 2px; color: #6d5f87; font-size: 12px; font-weight: 700; }
+        .pb-castle-head > b { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; color: #713f12; background: #fef3c7; font-size: 13px; }
+        .pb-castle-cosmetic { display: flex; align-items: center; gap: 6px; margin: 10px 0; padding: 7px 9px; border-radius: 10px; color: #4c1d95; background: rgba(237,233,254,.88); font-size: 12px; font-weight: 800; line-height: 1.35; }
+        .pb-castle-list {
+            display: grid; grid-auto-flow: column; grid-auto-columns: minmax(174px, 72%); gap: 10px; overflow-x: auto;
+            padding: 3px 3px 9px; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: thin;
+        }
+        .pb-castle-card { position: relative; display: flex; flex-direction: column; min-width: 0; overflow: hidden; scroll-snap-align: start; border: 2px solid #ddd6fe; border-radius: 17px; background: #fff; box-shadow: 0 5px 14px rgba(49,46,129,.11); }
+        .pb-castle-card.selected { border-color: #7c3aed; box-shadow: 0 0 0 3px #ede9fe, 0 9px 22px rgba(109,40,217,.2); }
+        .pb-castle-art { position: relative; aspect-ratio: 8/5; overflow: hidden; background: #e0f2fe; }
+        .pb-castle-art canvas { display: block; width: 100%; height: 100%; }
+        .pb-castle-art span { position: absolute; top: 7px; left: 7px; padding: 4px 7px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; color: #fff; background: rgba(15,23,42,.75); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .04em; }
+        .pb-castle-card[data-tier="Mythic"] .pb-castle-art span { color: #422006; background: #fde68a; }
+        .pb-castle-copy { min-height: 63px; padding: 9px 10px 5px; }
+        .pb-castle-copy b, .pb-castle-copy small { display: block; }
+        .pb-castle-copy b { color: #1e1b4b; font-size: 14px; font-weight: 950; line-height: 1.2; }
+        .pb-castle-copy small { margin-top: 3px; color: #64748b; font-size: 11.5px; line-height: 1.3; }
+        .pb-castle-meta { display: flex; justify-content: space-between; align-items: center; gap: 5px; padding: 0 10px 8px; color: #92400e; font-size: 11px; font-weight: 900; }
+        .pb-castle-meta em { color: #047857; font-style: normal; }
+        .pb-castle-card button { min-height: 46px; margin: auto 9px 10px; padding: 8px 10px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(135deg,#7c3aed,#4f46e5); font: 900 12px/1.2 inherit; cursor: pointer; box-shadow: 0 5px 12px rgba(79,70,229,.24); }
+        .pb-castle-card button:hover:not(:disabled) { filter: brightness(1.08); }
+        .pb-castle-card button:focus-visible { outline: 4px solid #2563eb; outline-offset: 3px; }
+        .pb-castle-card button:disabled { color: #64748b; background: #e2e8f0; box-shadow: none; cursor: not-allowed; opacity: 1; }
+        .pb-castle-card.selected button:disabled { color: #4c1d95; background: #ede9fe; }
         /* iPad and anything else wide. The app was drawn for a ~390px phone;
            left alone it simply stretches, so on an iPad Pro the "your name"
            field was 976px across — a text box nearly a metre wide for a
@@ -1727,6 +1755,7 @@
             .pet-battle-screen, .grammar-screen, .exam-screen,
             .topics-screen, .phrases-screen, .wordform-screen, .rewrite-screen { max-width: 920px; }
             .pb-scene-list { grid-auto-columns: minmax(170px, 25%); }
+            .pb-castle-list { grid-auto-columns: minmax(190px, 24%); }
             .nav-hub-screen { padding: 30px 28px 108px; }
             .nav-hub-header,
             .nav-hub-feature,
@@ -1741,7 +1770,7 @@
             .math-empty { padding: 42px 30px 34px; }
             .math-empty-art { margin-bottom: 22px; }
         }
-        @media (prefers-reduced-motion: reduce) { .pb-scene-option { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .pb-scene-option, .pb-castle-card button { transition: none; } }
 
         /* EN/VI flags — English is the default on every visit */
         .pb-lang { display: flex; gap: 5px; margin-left: auto; }

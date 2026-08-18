@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { ammoStatsFor, reapStale, battleView, TURN_MS , hiresJson, startingHp } from '../_battle.js';
+import { ammoStatsFor, reapStale, battleView, TURN_MS, normalizeCastleSkin, hiresJson, startingHp } from '../_battle.js';
 
 // POST /api/battle/respond { battleId, accept, level, stage, petName }
 // Accepting snapshots the opponent's ammo/level and starts turn 1.
@@ -37,7 +37,7 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare(
     `UPDATE battles
         SET status = 'active', opponent_ammo = ?, opponent_level = ?, opponent_stage = ?,
-            opponent_name = ?, opponent_hires = ?, opponent_hp = ?,
+            opponent_name = ?, opponent_hires = ?, opponent_hp = ?, opponent_castle_skin = ?,
             turn_no = 1, turn_user_id = ?, turn_started_at = ?
       WHERE id = ?`
   ).bind(
@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env }) {
     myLevel,
     String(body.stage || 'chihuahua').slice(0, 20),
     String(body.petName || me?.username || 'Pet').slice(0, 20),
-    hiresJson(body.hires), startingHp(myLevel),
+    hiresJson(body.hires), startingHp(myLevel), normalizeCastleSkin(body.castleSkin),
     b.challenger_id, now, id
   ).run();
 

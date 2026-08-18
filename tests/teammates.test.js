@@ -19,8 +19,8 @@ suite('teammates: the roster', () => {
         assert.equal(T.TEAM_ROSTER.length, 3);
         const fee = (id) => T.teammateById(id).fee;
         assert.equal(fee('gunner'), 600);
-        assert.equal(fee('engineer'), 1000);
-        assert.equal(fee('shield'), 1400);
+        assert.equal(fee('engineer'), 600);
+        assert.equal(fee('shield'), 600);
     });
 
     test('every teammate carries what the UI needs to draw it', () => {
@@ -61,7 +61,7 @@ suite('teammates: hiring and coins', () => {
 
     test('the fee is the sum of what was actually hired', () => {
         assert.equal(T.hireCost(['gunner', 'gunner']), 1200);
-        assert.equal(T.hireCost(['gunner', 'engineer', 'shield']), 3000);
+        assert.equal(T.hireCost(['gunner', 'engineer', 'shield']), 1800);
         assert.equal(T.hireCost([]), 0);
         assert.equal(T.hireCost(null), 0);
     });
@@ -132,7 +132,7 @@ suite('teammates: the three abilities', () => {
         assert.equal(T.shieldedDamage(40), 20);
     });
 
-    test('an odd volley rounds in favour of the child who paid 1,400', () => {
+    test('an odd volley rounds in favour of the child who hired the guard', () => {
         assert.equal(T.shieldedDamage(21), 10);
         assert.equal(T.shieldedDamage(1), 0, 'a shield fully absorbs a graze');
     });
@@ -265,8 +265,8 @@ suite('teammates: the hire cart', () => {
     });
 
     test('a squad you cannot afford is refused, not silently trimmed', () => {
-        // 600 + 1400 = 2000; with 1,500 xu the Vệ sĩ must not go in.
-        assert.deepEqual(T.hireAdd(['gunner'], 'shield', 1500), ['gunner'],
+        // 600 + 600 = 1,200; with 1,100 xu the Vệ sĩ must not go in.
+        assert.deepEqual(T.hireAdd(['gunner'], 'shield', 1100), ['gunner'],
             'the cart must not exceed the purse');
         assert.deepEqual(T.hireAdd([], 'gunner', 599), [], 'not even one');
         assert.deepEqual(T.hireAdd([], 'gunner', 600), ['gunner'], 'exactly enough is enough');
@@ -292,7 +292,7 @@ suite('teammates: the hire cart', () => {
 
     test('a full cart reports what it costs', () => {
         const cart = T.hireAdd(T.hireAdd([], 'gunner', 9999), 'engineer', 9999);
-        assert.equal(T.hireCost(cart), 1600);
+        assert.equal(T.hireCost(cart), 1200);
     });
 });
 
@@ -310,13 +310,13 @@ function fakeView(over) {
 }
 
 suite('teammates: the squad inside a live battle', () => {
-    test('each side gets one charge per hire, unused', () => {
+    test('each side gets one always-active teammate per hire', () => {
         const g = new game.PetBattleGame({
             view: fakeView({ me: { hires: ['gunner', 'gunner', 'shield'] } }), mount: null,
         });
         assert.equal(g.myCharges.length, 3);
         assert.deepEqual(g.myCharges.map(c => c.id), ['gunner', 'gunner', 'shield']);
-        assert.truthy(g.myCharges.every(c => c.used === false), 'nobody starts spent');
+        assert.truthy(g.myCharges.every(c => c.active === true), 'every hired teammate starts active');
     });
 
     test('a squad relayed from the other phone is not trusted blindly', () => {
@@ -368,99 +368,47 @@ suite('teammates: the squad inside a live battle', () => {
     });
 });
 
-suite('teammates: triggering a charge', () => {
+suite('teammates: passive for the whole battle', () => {
     const mk = (over) => new game.PetBattleGame({ view: fakeView(over), mount: null });
 
-    test('the engineer repairs, and only once', () => {
+    test('the engineer repairs automatically on every owner turn', () => {
         const g = mk({ me: { hires: ['engineer'], level: 0 } });
-        g.myHp = 60;
-        const key = g.myCharges[0].key;
-        assert.truthy(g.useCharge(key), 'the first tap must work');
-        assert.equal(g.myHp, 75);
-        assert.truthy(g.myCharges[0].used, 'the charge is spent');
-        assert.falsy(g.useCharge(key), 'a spent charge cannot fire again');
-        assert.equal(g.myHp, 75, 'and cannot heal again');
+        g.myHp = 60; g._applyMyTurnPassives(); assert.equal(g.myHp, 75);
+        g.myHp = 50; g._applyMyTurnPassives(); assert.equal(g.myHp, 65, 'still works next round');
+        assert.truthy(g.myCharges[0].active, 'the mechanic remains active');
     });
 
-    test('a repair never overfills the castle the pet earned', () => {
+    test('automatic repair never overfills the castle the pet earned', () => {
         const g = mk({ me: { hires: ['engineer'], level: 120 } });   // max 112
         g.myHp = 105;
-        g.useCharge(g.myCharges[0].key);
+        g._applyMyTurnPassives();
         assert.equal(g.myHp, 112, 'capped at this castle, not a flat 100');
     });
 
-    test('a charge cannot be spent on the opponent’s turn', () => {
-        const g = mk({ me: { hires: ['engineer'] } });
-        g.myTurn = false;
-        g.myHp = 50;
-        assert.falsy(g.useCharge(g.myCharges[0].key));
-        assert.equal(g.myHp, 50);
-        assert.falsy(g.myCharges[0].used, 'and it stays in hand');
-    });
-
-    test('a charge cannot be spent after the battle ends', () => {
-        const g = mk({ me: { hires: ['engineer'] } });
-        g.finished = true;
-        g.myHp = 50;
-        assert.falsy(g.useCharge(g.myCharges[0].key));
-        assert.equal(g.myHp, 50);
-    });
-
-    test('an unknown charge key does nothing', () => {
-        const g = mk({ me: { hires: ['engineer'] } });
-        assert.falsy(g.useCharge('nope-9'));
-        assert.falsy(g.myCharges[0].used);
-    });
-
-    test('the shield halves the next volley that lands on me, then falls', () => {
+    test('the shield halves every volley that lands on me', () => {
         const g = mk({ me: { hires: ['shield'] } });
-        assert.equal(g._incomingDamage(40), 40, 'no shield, no reduction');
-        g.useCharge(g.myCharges[0].key);
-        assert.truthy(g.myShieldUp);
         assert.equal(g._incomingDamage(40), 20, 'halved');
-        assert.falsy(g.myShieldUp, 'a shield absorbs one volley only');
-        assert.equal(g._incomingDamage(40), 40, 'the next one lands in full');
+        assert.equal(g._incomingDamage(40), 20, 'still halved next round');
     });
 
-    test('the opponent’s shield halves what I deal them', () => {
+    test('the opponent’s shield remains active too', () => {
         const g = mk({ foe: { hires: ['shield'] } });
-        g.foeShieldUp = true;
         assert.equal(g._outgoingDamage(31), 15, 'rounded in the defender’s favour');
-        assert.falsy(g.foeShieldUp);
-        assert.equal(g._outgoingDamage(31), 31);
+        assert.equal(g._outgoingDamage(31), 15);
     });
 
-    test('the gunner arms the next volley rather than firing alone', () => {
+    test('the gunner is active without a click', () => {
         const g = mk({ me: { hires: ['gunner'] } });
-        assert.falsy(g.myRocket);
-        g.useCharge(g.myCharges[0].key);
-        assert.truthy(g.myRocket, 'armed, waiting for the shot the child aims');
-        assert.truthy(g.myCharges[0].used);
+        assert.equal(g._mateCount(g.myCharges, 'gunner'), 1);
+        assert.truthy(g.myCharges[0].active);
     });
 
-    test('abilities used on my turn are carried on that turn’s payload', () => {
-        const g = mk({ me: { hires: ['engineer', 'shield'] } });
-        g.useCharge(g.myCharges[0].key);
-        g.useCharge(g.myCharges[1].key);
-        assert.deepEqual(g.myPending, ['engineer', 'shield'],
-            'the opponent has to be told, or the two phones disagree on HP');
-    });
-
-    test('a relayed turn applies the opponent’s abilities too', () => {
+    test('the opponent mechanic also repairs every turn automatically', () => {
         const g = mk({ foe: { hires: ['engineer', 'shield'], level: 0 } });
         g.foeHp = 50;
-        g._applyFoeAbilities(['engineer', 'shield']);
+        g._applyFoeTurnPassives();
         assert.equal(g.foeHp, 65, 'their engineer repaired their castle');
-        assert.truthy(g.foeShieldUp, 'and their guard raised a shield');
-        assert.truthy(g.foeCharges[0].used && g.foeCharges[1].used,
-            'their bench must show the charges as spent');
-    });
-
-    test('a relayed turn cannot invent abilities they never hired', () => {
-        const g = mk({ foe: { hires: [] } });
-        g.foeHp = 50;
-        g._applyFoeAbilities(['engineer', 'engineer', 'dragon']);
-        assert.equal(g.foeHp, 50, 'a tampered turn must not heal a castle for free');
+        assert.equal(g._incomingDamage(40), 40, 'their guard protects them, not me');
     });
 });
 
@@ -511,13 +459,13 @@ suite('teammates: a charge changes the fight', () => {
         assert.equal(dealt, T.shieldedDamage(raw));
     });
 
-    test('a spent bench is visible to both sides', () => {
+    test('the active bench stays visible to both sides', () => {
         const g = mk({ me: { hires: ['engineer'] }, foe: { hires: ['engineer'] } });
         g.myHp = 50; g.foeHp = 50;
-        g.useCharge(g.myCharges[0].key);
-        g._applyFoeAbilities(['engineer']);
-        assert.truthy(g.myCharges[0].used, 'my bench shows it spent');
-        assert.truthy(g.foeCharges[0].used, 'and so does theirs');
+        g._applyMyTurnPassives();
+        g._applyFoeTurnPassives();
+        assert.truthy(g.myCharges[0].active, 'my bench shows it active');
+        assert.truthy(g.foeCharges[0].active, 'and so does theirs');
         assert.equal(g.myHp, 65);
         assert.equal(g.foeHp, 65);
     });
@@ -541,17 +489,12 @@ suite('teammates: every rendered class is styled', () => {
 });
 
 suite('teammates: the chip tells the truth', () => {
-    test('an armed Pháo thủ reads as armed, not as spent', () => {
-        // The charge is marked used on tap, but the rocket has not flown yet.
-        // Showing it greyed would tell the child their money is gone when the
-        // boosted shot is still ahead of them.
+    test('every hired teammate reads as permanently active', () => {
         const src = read('js/petbattlegame.js');
-        const pass = src.slice(src.indexOf("querySelectorAll('[data-pb-charge]')"));
-        const block = pass.slice(0, 700);
-        assert.truthy(/const armed = charge\.id === 'gunner'/.test(block),
-            'the armed state must be computed');
-        assert.truthy(/toggle\('spent', !!charge\.used && !armed\)/.test(block),
-            'an armed gunner must not also be painted spent');
+        const block = src.slice(src.indexOf('const squadChips ='), src.indexOf('const barrels ='));
+        assert.truthy(/pb-squad-chip active/.test(block), 'the active state must be visible');
+        assert.truthy(/pb-squad-active/.test(block), 'an always-on badge must be present');
+        assert.falsy(/onclick=/.test(block), 'teammates must not require a click');
     });
 });
 
@@ -697,13 +640,15 @@ suite('teammates: the server and the client agree', () => {
             'foe.hires must be the other bench');
     });
 
-    test('a turn carries the charges it spent', () => {
+    test('the server derives permanent passives from the paid squad', () => {
         const turn = read('functions/api/battle/turn.js');
-        assert.truthy(/abilities/.test(turn), 'the turn must record spent charges');
-        assert.truthy(/rocket/.test(turn), 'and whether a rocket rode the volley');
+        assert.truthy(/parseHires/.test(turn), 'the paid squad must be read on every turn');
+        assert.truthy(/teammateCount\(myHires, 'engineer'\)/.test(turn), 'mechanics repair every turn');
+        assert.truthy(/teammateCount\(foeHires, 'shield'\)/.test(turn), 'guards protect every turn');
+        assert.truthy(/const rocket = gunners/.test(turn), 'every gunner launches every volley');
+        assert.truthy(/rawDamage/.test(turn), 'the server must apply defence, not trust the device');
         const state = read('functions/api/battle/state.js');
-        assert.truthy(/abilities/.test(state) && /rocket/.test(state),
-            'and the opponent must be able to read them back');
+        assert.truthy(/rocket/.test(state), 'the opponent must replay the automatic rockets');
     });
 
     test('the migration adds every column the endpoints write', () => {

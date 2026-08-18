@@ -1,5 +1,5 @@
 // battle-teammates.js — hired đồng đội: who they are, what they cost, and
-// exactly what their one ability does.
+// exactly what their always-on ability does.
 //
 // PURE by design: no DOM, no network, no randomness. Both phones run these
 // functions over the same relayed action stream, so a battle stays a
@@ -14,7 +14,7 @@
 // was already paid for.
 
 // One squad slot per hire, five max — not an economy rule but a screen one:
-// the castle interior shows five ledges and the trigger chips have to sit
+// the castle interior shows five ledges and the active status chips have to sit
 // beside the fire controls on a phone.
 const TEAM_MAX_HIRES = 5;
 
@@ -29,8 +29,8 @@ const TEAM_ROSTER = [
     // both, so it sharpens the existing skill instead of replacing it.
     ratio: 0.6,
   },
-  { id: 'engineer', emoji: '🔧', fee: 1000, repair: 15 },
-  { id: 'shield', emoji: '🛡️', fee: 1400, factor: 0.5 },
+  { id: 'engineer', emoji: '🔧', fee: 600, repair: 15 },
+  { id: 'shield', emoji: '🛡️', fee: 600, factor: 0.5 },
 ];
 
 const GUNNER_RATIO = 0.6;      // rocket damage, as a share of one shell
@@ -93,12 +93,24 @@ function applyRepair(hp, maxHp) {
   return Math.min(cap, Math.max(0, _num(hp)) + ENGINEER_REPAIR);
 }
 
-// Floored, so ties go to the child who spent 1,400 xu — and a 1-damage graze
+function teammateCount(list, id) {
+  return normalizeHires(list).filter(value => value === id).length;
+}
+
+function applyRepairs(hp, maxHp, count) {
+  let next = hp;
+  for (let i = 0; i < Math.max(0, _num(count)); i++) next = applyRepair(next, maxHp);
+  return next;
+}
+
+// Floored, so ties go to the child who hired the guard — and a 1-damage graze
 // is absorbed completely, which is what a shield should feel like.
-function shieldedDamage(damage) {
-  const d = _num(damage);
+function shieldedDamage(damage, count) {
+  let d = _num(damage);
   if (d <= 0) return 0;
-  return Math.floor(d * SHIELD_FACTOR);
+  const guards = Math.max(1, _num(count) || 1);
+  for (let i = 0; i < guards; i++) d = Math.floor(d * SHIELD_FACTOR);
+  return d;
 }
 
 // ---- the lobby's hire cart ----
@@ -126,17 +138,16 @@ function hireRemove(list, id) {
   return cart.slice(0, at).concat(cart.slice(at + 1));
 }
 
-// One charge per hire, in the order they were hired. The battle marks them
-// used; the castle sprites and the chip row both read this same list.
+// One always-active teammate per hire, in the order they were hired.
 function buildCharges(list) {
-  return normalizeHires(list).map((id, i) => ({ key: `${id}-${i}`, id, used: false }));
+  return normalizeHires(list).map((id, i) => ({ key: `${id}-${i}`, id, active: true }));
 }
 
 const BattleTeam = {
   TEAM_MAX_HIRES, TEAM_ROSTER, GUNNER_RATIO, ENGINEER_REPAIR, SHIELD_FACTOR,
   HP_BASE, HP_LEVELS_PER_POINT, HP_BONUS_MAX,
   teammateById, normalizeHires, hireCost, hpBonus, startingHp,
-  rocketDamage, applyRepair, shieldedDamage, buildCharges, hireAdd, hireRemove,
+  rocketDamage, applyRepair, applyRepairs, shieldedDamage, teammateCount, buildCharges, hireAdd, hireRemove,
 };
 if (typeof window !== 'undefined') window.BattleTeam = BattleTeam;
 

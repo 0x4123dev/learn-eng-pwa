@@ -69,16 +69,16 @@ const PB_STR = {
     powFoot: 'Maxes out at level {n} · level up by studying 📚',
 
     hireTitle: '⚔️ Hire teammates',
-    hireSub: 'They fight from inside your castle. One use each, this battle only.',
+    hireSub: 'They fight automatically from inside your castle for the whole battle.',
     hireCoins: '🪙 {n}',
     hireTotal: 'Squad cost: {n} 🪙',
     hireFull: 'Bench full ({n} max)',
     hireNone: 'No teammates — save your coins for pet food 🍖',
     hireTrial: '🤖 Free to try in practice — coins are only spent on a real battle.',
     hirePoor: 'Not enough coins',
-    hireGunner: 'Rocket Ranger', hireGunnerAb: 'Launches a guided missile with your next volley',
-    hireEngineer: 'Castle Mechanic', hireEngineerAb: 'Rebuilds your castle for +15 HP',
-    hireShield: 'Royal Guard', hireShieldAb: 'Blocks half the damage from the next hit',
+    hireGunner: 'Rocket Ranger', hireGunnerAb: 'Automatically launches a rocket with every volley',
+    hireEngineer: 'Castle Mechanic', hireEngineerAb: 'Automatically rebuilds +15 HP on every turn',
+    hireShield: 'Royal Guard', hireShieldAb: 'Automatically blocks half the damage from every hit',
 
     vsMine: 'Your pet', vsLevel: 'level {n}',
     vsStronger: 'Your pet is stronger! 💪',
@@ -148,6 +148,10 @@ const PB_STR = {
     practiceAgain: '🤖 Play again',
     sceneTitle: 'Choose your arena', sceneHint: 'Swipe to explore 10 worlds', sceneAria: 'Battle arena',
     sceneInvite: 'Arena selected by the challenger',
+    castleTitle: 'Castle Workshop', castleHint: 'Collect 10 cosmetic castles',
+    castleCosmetic: 'Looks only — no HP or defence bonus', castleOwned: 'Owned', castleUse: 'Use skin',
+    castleUsing: 'Equipped', castleBuy: 'Buy for {n} coins', castlePoor: 'Need {n} more coins',
+    castleConfirm: 'Buy {name} for {n} coins?', castleBought: '{name} unlocked and equipped!',
 
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'You', gFoe: 'Friend',
@@ -161,10 +165,10 @@ const PB_STR = {
     gFire: 'FIRE!', gFireHint: 'PRESS SPACE TO FIRE', gFireAria: 'Fire',
     gWaiting: 'WAITING', gWaitHint: 'OPPONENT IS PLAYING', gWaitAria: 'Waiting for the opponent',
     gControlsAria: 'Firing controls', gShotsAria: 'Number of poops', gEmotesAria: 'Quick reactions',
-    gSquadAria: 'Your teammates',
-    gUseGunner: 'Rocket Ranger: launch a guided missile with your next volley',
-    gUseEngineer: 'Castle Mechanic: rebuild your castle by 15 HP',
-    gUseShield: 'Royal Guard: block half of the next hit',
+    gSquadAria: 'Your always-active teammates',
+    gUseGunner: 'Rocket Ranger active for every volley',
+    gUseEngineer: 'Castle Mechanic active on every turn',
+    gUseShield: 'Royal Guard active against every hit',
     gEmoteAria: 'Send reaction {e}',
     gCanvasAria: 'Artillery battlefield between two pets',
     gCanvasFallback: 'Artillery battlefield between two pets. Drag the aim line or use the controls below.',
@@ -197,16 +201,16 @@ const PB_STR = {
     powFoot: 'Tối đa ở cấp {n} · lên cấp bằng cách học bài 📚',
 
     hireTitle: '⚔️ Thuê đồng đội',
-    hireSub: 'Đồng đội đứng trong lâu đài. Mỗi người dùng được 1 lần, chỉ trận này.',
+    hireSub: 'Đồng đội tự động chiến đấu trong lâu đài suốt toàn bộ trận đấu.',
     hireCoins: '🪙 {n}',
     hireTotal: 'Tiền thuê: {n} 🪙',
     hireFull: 'Đã đủ quân ({n} người)',
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
     hireTrial: '🤖 Thử miễn phí ở trận luyện tập — chỉ tốn xu khi đánh thật.',
     hirePoor: 'Không đủ xu',
-    hireGunner: 'Xạ thủ Tên lửa', hireGunnerAb: 'Phóng tên lửa dẫn đường theo loạt đạn kế tiếp',
-    hireEngineer: 'Kỹ sư Thành trì', hireEngineerAb: 'Xây lại lâu đài và hồi +15 HP',
-    hireShield: 'Hộ vệ Hoàng gia', hireShieldAb: 'Chặn một nửa sát thương của đòn kế tiếp',
+    hireGunner: 'Xạ thủ Tên lửa', hireGunnerAb: 'Tự động phóng rocket trong mỗi lượt bắn',
+    hireEngineer: 'Kỹ sư Thành trì', hireEngineerAb: 'Tự động sửa +15 HP trong mỗi lượt',
+    hireShield: 'Hộ vệ Hoàng gia', hireShieldAb: 'Tự động giảm nửa sát thương của mọi đòn đánh',
 
     vsMine: 'Pet của bé', vsLevel: 'cấp {n}',
     vsStronger: 'Pet của bé mạnh hơn! 💪',
@@ -274,6 +278,10 @@ const PB_STR = {
     practiceAgain: '🤖 Chơi lại',
     sceneTitle: 'Chọn đấu trường', sceneHint: 'Vuốt để khám phá 10 thế giới', sceneAria: 'Đấu trường',
     sceneInvite: 'Đấu trường do người thách đấu chọn',
+    castleTitle: 'Xưởng Lâu Đài', castleHint: 'Sưu tập 10 skin lâu đài',
+    castleCosmetic: 'Chỉ thay đổi ngoại hình — không tăng HP hay phòng thủ', castleOwned: 'Đã sở hữu', castleUse: 'Sử dụng',
+    castleUsing: 'Đang dùng', castleBuy: 'Mua với {n} xu', castlePoor: 'Thiếu {n} xu',
+    castleConfirm: 'Mua {name} với {n} xu?', castleBought: 'Đã mở khóa và sử dụng {name}!',
 
     // ---- the battle itself (js/petbattlegame.js) ----
     gMe: 'Bé', gFoe: 'Bạn',
@@ -287,10 +295,10 @@ const PB_STR = {
     gFire: 'KHAI HỎA!', gFireHint: 'NHẤN SPACE ĐỂ BẮN', gFireAria: 'Bắn đạn',
     gWaiting: 'ĐANG CHỜ', gWaitHint: 'ĐỐI THỦ ĐANG CHƠI', gWaitAria: 'Đang chờ đối thủ',
     gControlsAria: 'Điều khiển bắn', gShotsAria: 'Số viên phân', gEmotesAria: 'Cảm xúc nhanh',
-    gSquadAria: 'Đồng đội của bé',
-    gUseGunner: 'Xạ thủ Tên lửa: phóng tên lửa dẫn đường theo loạt đạn kế tiếp',
-    gUseEngineer: 'Kỹ sư Thành trì: xây lại lâu đài và hồi 15 HP',
-    gUseShield: 'Hộ vệ Hoàng gia: chặn một nửa sát thương của đòn kế tiếp',
+    gSquadAria: 'Đồng đội luôn hoạt động của bé',
+    gUseGunner: 'Xạ thủ Tên lửa đang hoạt động trong mọi lượt bắn',
+    gUseEngineer: 'Kỹ sư Thành trì đang hoạt động trong mọi lượt',
+    gUseShield: 'Hộ vệ Hoàng gia đang bảo vệ trước mọi đòn đánh',
     gEmoteAria: 'Gửi cảm xúc {e}',
     gCanvasAria: 'Chiến trường pháo binh giữa hai thú cưng',
     gCanvasFallback: 'Chiến trường pháo binh giữa hai thú cưng. Kéo đường ngắm hoặc dùng điều khiển bên dưới.',
@@ -470,6 +478,80 @@ function _pbTeam() {
 
 function _pbCoins() {
   return (typeof appState !== 'undefined' && appState) ? (appState.coins || 0) : 0;
+}
+
+function pbOwnedCastleSkins() {
+  const list = (typeof appState !== 'undefined' && appState && Array.isArray(appState.petBattleCastleSkins))
+    ? appState.petBattleCastleSkins : [];
+  const valid = list.map(id => CastleSkins.normalize(id)).filter((id, i, a) => a.indexOf(id) === i);
+  if (!valid.includes(CastleSkins.defaultId)) valid.unshift(CastleSkins.defaultId);
+  return valid;
+}
+
+function pbSelectedCastleSkinId() {
+  if (typeof CastleSkins === 'undefined') return 'stone-keep';
+  const saved = (typeof appState !== 'undefined' && appState) ? appState.petBattleCastleSkin : '';
+  const id = CastleSkins.normalize(saved);
+  return pbOwnedCastleSkins().includes(id) ? id : CastleSkins.defaultId;
+}
+
+function _pbSaveCastleState(owned, selected) {
+  if (typeof appState === 'undefined' || !appState) return;
+  appState.petBattleCastleSkins = owned;
+  appState.petBattleCastleSkin = selected;
+  if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+    try { saveUserData(currentUser, appState); } catch (e) {}
+  }
+}
+
+function pbSelectCastleSkin(id) {
+  const skinId = CastleSkins.normalize(id);
+  const owned = pbOwnedCastleSkins();
+  if (!owned.includes(skinId)) return false;
+  _pbSaveCastleState(owned, skinId);
+  renderPetBattle();
+  return true;
+}
+
+function pbBuyCastleSkin(id) {
+  const skin = CastleSkins.get(id), owned = pbOwnedCastleSkins();
+  if (owned.includes(skin.id)) return pbSelectCastleSkin(skin.id);
+  const coins = _pbCoins();
+  if (coins < skin.price) { _pbMsg = pbT('castlePoor', { n: skin.price - coins }); renderPetBattle(); return false; }
+  const ok = typeof window === 'undefined' || typeof window.confirm !== 'function'
+    || window.confirm(pbT('castleConfirm', { name: skin.name[_pbLang], n: skin.price.toLocaleString() }));
+  if (!ok) return false;
+  appState.coins = coins - skin.price;
+  owned.push(skin.id);
+  _pbSaveCastleState(owned, skin.id);
+  _pbMsg = pbT('castleBought', { name: skin.name[_pbLang] });
+  renderPetBattle();
+  return true;
+}
+
+function _pbCastleWorkshop() {
+  if (typeof CastleSkins === 'undefined') return '';
+  const selected = pbSelectedCastleSkinId(), owned = pbOwnedCastleSkins(), coins = _pbCoins(), lang = _pbLang === 'vi' ? 'vi' : 'en';
+  return `<section class="pb-castle-shop" aria-labelledby="pbCastleTitle">
+    <div class="pb-castle-head"><div><strong id="pbCastleTitle">${pbT('castleTitle')}</strong><span>${pbT('castleHint')}</span></div><b>🪙 ${coins.toLocaleString()}</b></div>
+    <div class="pb-castle-cosmetic"><span aria-hidden="true">✦</span>${pbT('castleCosmetic')}</div>
+    <div class="pb-castle-list">${CastleSkins.skins.map(skin => {
+      const has = owned.includes(skin.id), on = selected === skin.id, short = Math.max(0, skin.price - coins);
+      const label = on ? pbT('castleUsing') : has ? pbT('castleUse') : short ? pbT('castlePoor', { n: short.toLocaleString() }) : pbT('castleBuy', { n: skin.price.toLocaleString() });
+      const action = has ? `pbSelectCastleSkin('${skin.id}')` : `pbBuyCastleSkin('${skin.id}')`;
+      return `<article class="pb-castle-card ${on ? 'selected' : ''}" data-tier="${skin.tier}">
+        <div class="pb-castle-art"><canvas width="240" height="150" data-castle-preview="${skin.id}" aria-hidden="true"></canvas><span>${skin.tier}</span></div>
+        <div class="pb-castle-copy"><b>${pbEsc(skin.name[lang])}</b><small>${pbEsc(skin.desc[lang])}</small></div>
+        <div class="pb-castle-meta"><span>${skin.price ? `🪙 ${skin.price.toLocaleString()}` : pbT('castleOwned')}</span>${has && !on ? `<em>${pbT('castleOwned')}</em>` : ''}</div>
+        <button type="button" aria-pressed="${on}" onclick="${action}" ${on || (!has && short) ? 'disabled' : ''}>${label}</button>
+      </article>`;
+    }).join('')}</div>
+  </section>`;
+}
+
+function _pbRenderCastlePreviews(root) {
+  if (typeof CastleSkins === 'undefined' || !root || !root.querySelectorAll) return;
+  root.querySelectorAll('canvas[data-castle-preview]').forEach(canvas => CastleSkins.drawPreview(canvas, canvas.dataset.castlePreview));
 }
 
 function pbHire(id) {
@@ -719,6 +801,7 @@ function renderPetBattle() {
     st.ammo, st.readyAt || 0, !!st.allowBot, ready,
     (friends || []).map(f => [f.userId, _pbFriendWait(f)]), allWaiting, _pbMsg, _pbLang, _pbHistoryOpen,
     (typeof pbSelectedSceneId === 'function' ? pbSelectedSceneId() : ''),
+    pbSelectedCastleSkinId(), pbOwnedCastleSkins().join(','),
     _pbHistory().length,
     _pbHires.join(","), _pbCoins(),
   ]);
@@ -728,10 +811,13 @@ function renderPetBattle() {
   // snapping the child back to the first arena.
   const prevList = screen.querySelector('.pb-scene-list');
   const keepScroll = prevList ? prevList.scrollLeft : 0;
+  const prevCastleList = screen.querySelector('.pb-castle-list');
+  const keepCastleScroll = prevCastleList ? prevCastleList.scrollLeft : 0;
 
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
     ${_pbScenePicker()}
+    ${_pbCastleWorkshop()}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
@@ -755,9 +841,14 @@ function renderPetBattle() {
       </div>` : ''}
     ${_pbHistoryPanel()}`);
   screen.dataset.pbLobbySig = sig;
+  _pbRenderCastlePreviews(screen);
   if (keepScroll) {
     const nextList = screen.querySelector('.pb-scene-list');
     if (nextList) nextList.scrollLeft = keepScroll;
+  }
+  if (keepCastleScroll) {
+    const nextCastleList = screen.querySelector('.pb-castle-list');
+    if (nextCastleList) nextCastleList.scrollLeft = keepCastleScroll;
   }
 }
 
@@ -904,13 +995,13 @@ function _pbFriendWait(f) {
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), hires: pbHireCommit() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()),
   });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, hires: pbHireCommit() }, _pbMyPet()) });
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()) });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }
@@ -1063,8 +1154,8 @@ function startBotBattle() {
     // Try before you buy: the squad fights here for free. The bot gets no
     // teammates of its own — it has no idea how to trigger a charge, and a
     // bench that never acts would teach the child the wrong thing.
-    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP, hires: pbHireCart() },
-    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP, hires: [] },
+    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP, hires: pbHireCart(), castleSkin: pbSelectedCastleSkinId() },
+    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP, hires: [], castleSkin: CastleSkins.defaultId },
   };
 
   _pbStopPolling();                 // practice talks to nobody
@@ -1174,6 +1265,8 @@ if (typeof module !== 'undefined' && module.exports) {
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
     pbSelectedSceneId, choosePetBattleScene, _pbScenePicker, _pbSceneInvite,
+    pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
+    _pbCastleWorkshop, _pbRenderCastlePreviews,
     startBotBattle, finishBotBattle,
     _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,

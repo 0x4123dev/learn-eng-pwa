@@ -133,17 +133,13 @@ function PetBattleGame(opts) {
   this.myTurn = !!this.view.myTurn;
   this.myHp = this.view.me.hp;
   this.foeHp = this.view.foe.hp;
-  // Hired đồng đội, one charge each. Normalised on arrival: the foe's list
+  // Hired đồng đội are passive for the whole battle. Normalised on arrival: the foe's list
   // came off another device and must never be trusted for length or contents.
   this.myCharges = TEAM.buildCharges(this.view.me.hires);
   this.foeCharges = TEAM.buildCharges(this.view.foe.hires);
   // A castle repairs up to ITS OWN ceiling, which food raises.
   this.myMaxHp = TEAM.startingHp(this.view.me.level);
   this.foeMaxHp = TEAM.startingHp(this.view.foe.level);
-  this.myShieldUp = false;
-  this.foeShieldUp = false;
-  this.myRocket = false;          // a Pháo thủ armed for the next volley
-  this.myPending = [];            // charges spent this turn, sent with it
   this.myAmmo = this.view.me.ammo;
   this.foeAmmo = this.view.foe.ammo;
   this.craters = [];
@@ -296,17 +292,17 @@ PetBattleGame.prototype.render = function () {
   this.shots = Math.max(1, Math.min(this.shots, Math.max(1, maxShots)));
 
   if (!this._shellReady) {
-    // A chip per hired đồng đội. The Pháo thủ's arms the next volley (it stays
-    // lit until the shot goes); the other two act the moment they are tapped.
+    // A status chip per hired đồng đội. They are not buttons: every teammate
+    // is active automatically and stays active until the battle ends.
     const squadChips = (this.myCharges || []).length ? `
-        <div class="pb-squad" role="group" aria-label="${esc(gT('gSquadAria'))}">
+        <div class="pb-squad" role="list" aria-label="${esc(gT('gSquadAria'))}">
           ${this.myCharges.map(c => {
             const avatar = pbMateAvatarURL(c.id, 38);
-            return `<button class="pb-squad-chip" type="button" data-pb-charge="${c.key}"
-                    aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}"
-                    onclick="_pbGameUseCharge('${c.key}')">
+            return `<div class="pb-squad-chip active" role="listitem"
+                    aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}">
               <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}">
-            </button>`;
+              <span class="pb-squad-active" aria-hidden="true">∞</span>
+            </div>`;
           }).join('')}
         </div>` : '';
     const barrels = [1, 2, 3, 4].map(n => `
@@ -508,17 +504,6 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   const controls = this._el('pbControls');
   if (controls) controls.setAttribute('aria-busy', this.busy ? 'true' : 'false');
   if (this.mount && typeof this.mount.querySelectorAll === 'function') {
-    this.mount.querySelectorAll('[data-pb-charge]').forEach(btn => {
-      const charge = this.chargeByKey(btn.getAttribute('data-pb-charge'));
-      if (!charge) return;
-      // A Pháo thủ is marked used the moment it is tapped, but its rocket has
-      // not flown yet — it must read as ARMED (lit), not spent (greyed), or the
-      // child cannot tell the shot they are about to take is the boosted one.
-      const armed = charge.id === 'gunner' && !!this.myRocket;
-      btn.disabled = !!charge.used || !this.myTurn || this.busy || this.finished;
-      btn.classList.toggle('armed', armed);
-      btn.classList.toggle('spent', !!charge.used && !armed);
-    });
     this.mount.querySelectorAll('[data-pb-shots]').forEach(btn => {
       const n = +(btn.getAttribute('data-pb-shots') || 0);
       btn.disabled = n > maxShots;
@@ -813,8 +798,8 @@ PetBattleGame.prototype._drawWorld = function () {
   // The pet lives inside a defensive castle. Structural wear follows real HP.
   const meAim = this.angle;
   const foeAim = this.foeAiming ? this.foeAiming.angle : 45;
-  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level, this.myCharges);
-  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185', this.view.foe.level, this.foeCharges);
+  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level, this.myCharges, this.view.me.castleSkin);
+  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185', this.view.foe.level, this.foeCharges, this.view.foe.castleSkin);
 
   // A bright, anchored guide makes angle and power visible on the battlefield.
   if (this.myTurn && !this.busy && !this.flying.length) {
@@ -1138,8 +1123,8 @@ function pbMateAvatarURL(id, size) {
   return PB_MATE_PORTRAITS[id];
 }
 
-// One hired teammate on an interior ledge. A spent charge sits greyed so the
-// bench always shows what is still in hand — on the opponent's castle too.
+// One hired teammate on an interior ledge. Every teammate remains vivid
+// because their passive ability lasts for the whole battle.
 function pbDrawSquad(ctx, rules, charges, facing) {
   if (!ctx || !Array.isArray(charges) || !charges.length) return;
   const spots = pbLedgeSpots(charges.length);
@@ -1152,21 +1137,21 @@ function pbDrawSquad(ctx, rules, charges, facing) {
     ctx.save();
     ctx.translate(spot.x, spot.y);
     // Ledge plank, in masonry space so it scales with the wall.
-    ctx.fillStyle = charge.used ? 'rgba(70,52,46,.5)' : '#6b4a3d';
+    ctx.fillStyle = '#6b4a3d';
     ctx.fillRect(-15, 0, 30, 4);
     ctx.fillStyle = 'rgba(15,23,42,.22)';
     ctx.beginPath(); ctx.ellipse(0, 0, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
     // Characters stand upright and unstretched: correct the mirror, and the
     // castle's slight non-uniform scale, but let them GROW with the fortress.
     ctx.scale(facing < 0 ? -1 : 1, cs.sx / cs.sy);
-    ctx.globalAlpha = charge.used ? 0.34 : 1;
+    ctx.globalAlpha = 1;
     draw(ctx);
     ctx.globalAlpha = 1;
     ctx.restore();
   }
 }
 
-PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level, charges) {
+PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level, charges, castleSkinId) {
   const ctx = this.ctx;
   const damage = pbHouseDamageStage(hp);
   const wear = 1 - Math.max(0, Math.min(100, Number(hp) || 0)) / 100;
@@ -1183,12 +1168,14 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, w, h, r);
     else ctx.rect(x, y, w, h);
   };
+  const skin = (typeof CastleSkins !== 'undefined') ? CastleSkins.get(castleSkinId) : null;
+  const palette = skin ? skin.colors : ['#e3b56f','#c98b56','#9b5d43','#65473e','#f97316','#bfe7f4'];
   const stone = ctx.createLinearGradient(-PB_CASTLE_HALF_W, -PB_CASTLE_HEIGHT, PB_CASTLE_HALF_W, 0);
-  stone.addColorStop(0, damage >= 4 ? '#826b68' : '#e3b56f');
-  stone.addColorStop(.48, damage >= 3 ? '#aa7863' : '#c98b56');
-  stone.addColorStop(1, damage >= 2 ? '#805447' : '#9b5d43');
-  const dark = '#3a2d32';
-  const mortar = 'rgba(83,55,48,.58)';
+  stone.addColorStop(0, damage >= 4 ? palette[3] : palette[0]);
+  stone.addColorStop(.48, damage >= 3 ? palette[2] : palette[1]);
+  stone.addColorStop(1, damage >= 2 ? palette[3] : palette[2]);
+  const dark = '#211c2b';
+  const mortar = palette[3];
 
   // A broad shadow makes the 140px silhouette feel planted, not pasted on.
   ctx.fillStyle = 'rgba(15,23,42,.34)';
@@ -1209,9 +1196,9 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   if (damage >= 5) {
     for (const piece of rubble) {
       ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[4]);
-      ctx.fillStyle = piece[0] % 2 ? '#9b6953' : '#c18b61';
+      ctx.fillStyle = piece[0] % 2 ? palette[2] : palette[1];
       round(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3], 3); ctx.fill();
-      ctx.strokeStyle = '#5e4039'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = palette[3]; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
     }
     if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -37, -88, 74, 82);
     ctx.fillStyle = 'rgba(15,23,42,.88)'; round(-29, -111, 58, 23, 9); ctx.fill();
@@ -1224,10 +1211,10 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
 
   // Foundation and main curtain wall. At critical damage the middle is no
   // longer painted at all: two jagged wall remnants replace one dark overlay.
-  ctx.fillStyle = '#68483f'; round(-PB_CASTLE_HALF_W, -18, PB_CASTLE_HALF_W * 2, 18, 4); ctx.fill();
+  ctx.fillStyle = palette[3]; round(-PB_CASTLE_HALF_W, -18, PB_CASTLE_HALF_W * 2, 18, 4); ctx.fill();
   if (damage < 4) {
     ctx.fillStyle = stone; round(-64, -67, 128, 58, 5); ctx.fill();
-    ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
   } else {
     ctx.fillStyle = stone;
     ctx.beginPath();
@@ -1236,32 +1223,32 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     ctx.beginPath();
     ctx.moveTo(30, -9); ctx.lineTo(30, -34); ctx.lineTo(42, -45); ctx.lineTo(49, -27);
     ctx.lineTo(64, -32); ctx.lineTo(64, -9); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
   }
 
   // Left tower survives longest; its broken stage has a genuinely missing
   // upper half rather than a cosmetic crack drawn on top.
   ctx.fillStyle = stone;
   if (damage < 3) {
-    round(-70, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    round(-70, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
     for (const x of [-69, -56, -43]) { ctx.fillRect(x, -109, 10, 16); }
   } else {
     ctx.beginPath(); ctx.moveTo(-70,-8); ctx.lineTo(-70,-63); ctx.lineTo(-59,-72);
     ctx.lineTo(-51,-55); ctx.lineTo(-42,-61); ctx.lineTo(-32,-45); ctx.lineTo(-32,-8); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
   }
 
   // The forward/right tower loses a 38×42px bite on the FIRST hit. This is
   // deliberately large enough to read on a 320px phone screen.
   ctx.fillStyle = stone;
   if (damage === 0) {
-    round(32, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    round(32, -96, 38, 88, 5); ctx.fill(); ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
     for (const x of [33, 46, 59]) ctx.fillRect(x, -109, 10, 16);
   } else if (damage < 4) {
     ctx.beginPath();
     ctx.moveTo(32,-8); ctx.lineTo(32,-57); ctx.lineTo(42,-65); ctx.lineTo(49,-55);
     ctx.lineTo(58,-68); ctx.lineTo(70,-57); ctx.lineTo(70,-8); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
     // Exposed black interior below the jagged edge; above it stays transparent
     // so the missing tower chunk changes the outer silhouette against the sky.
     ctx.fillStyle = dark;
@@ -1273,13 +1260,13 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   // the whole right crown and leaves a stepped, broken profile.
   if (damage < 2) {
     ctx.fillStyle = stone; round(-33, -111, 66, 54, 5); ctx.fill();
-    ctx.strokeStyle = '#65473e'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
     for (const x of [-31, -11, 10]) ctx.fillRect(x, -123, 14, 15);
   } else if (damage < 4) {
     ctx.fillStyle = stone;
     ctx.beginPath(); ctx.moveTo(-33,-57); ctx.lineTo(-33,-111); ctx.lineTo(-18,-123);
     ctx.lineTo(-5,-105); ctx.lineTo(8,-112); ctx.lineTo(17,-89); ctx.lineTo(10,-71); ctx.lineTo(24,-57); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#583d38'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = dark;
     ctx.beginPath(); ctx.moveTo(12,-76); ctx.lineTo(17,-89); ctx.lineTo(24,-74);
     ctx.lineTo(24,-59); ctx.lineTo(12,-59); ctx.closePath(); ctx.fill();
@@ -1299,7 +1286,7 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     ctx.beginPath(); ctx.arc(0, -63, 30, Math.PI, 0); ctx.lineTo(30, -13); ctx.lineTo(-30, -13); ctx.closePath(); ctx.fill();
     ctx.save();
     ctx.beginPath(); ctx.arc(0, -62, 27, Math.PI, 0); ctx.lineTo(27, -14); ctx.lineTo(-27, -14); ctx.closePath(); ctx.clip();
-    ctx.fillStyle = '#bfe7f4'; ctx.fillRect(-28, -65, 56, 53);
+    ctx.fillStyle = palette[5]; ctx.fillRect(-28, -65, 56, 53);
     if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -31, -75, 62, 68);
     ctx.restore();
     ctx.strokeStyle = accent; ctx.lineWidth = 4;
@@ -1334,10 +1321,15 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
 
   for (const piece of rubble) {
     ctx.save(); ctx.translate(piece[0], piece[1]); ctx.rotate(piece[4]);
-    ctx.fillStyle = piece[0] > 0 ? '#b47a59' : '#cf9865';
+    ctx.fillStyle = piece[0] > 0 ? palette[2] : palette[1];
     round(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3], 3); ctx.fill();
-    ctx.strokeStyle = '#5e4039'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = palette[3]; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
   }
+
+  // Skin ornaments are drawn after the masonry but before the squad/badge.
+  // At heavy damage they disappear with the wall, so cosmetics never hide a
+  // missing chunk or make a destroyed castle look intact.
+  if (typeof CastleSkins !== 'undefined') CastleSkins.drawOrnaments(ctx, skin ? skin.id : castleSkinId, damage);
 
   // The hired squad, on their storeys inside the keep.
   pbDrawSquad(ctx, this.rules, charges, facing);
@@ -1538,7 +1530,7 @@ PetBattleGame.prototype.step = function (k) {
 };
 
 // Fire a volley locally and return the damage it deals to `target`.
-PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, level, target, rocket) {
+PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, level, target, rocketCount) {
   const C = this.calc;
   const angles = C.volleyAngles(angle, shots, this.seed, this.turnNo);
   let damage = 0;
@@ -1558,10 +1550,11 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
     };
   });
 
-  // A Pháo thủ's rocket: one extra projectile on the UNSPREAD aim line, so it
+  // Every hired Pháo thủ launches on EVERY volley. Rockets share the unspread
+  // aim line, so strong aim is rewarded throughout the whole paid battle.
   // lands where the child actually pointed. Good aim is rewarded twice; a miss
   // wastes both, which is the whole point of tying it to their own shot.
-  if (rocket) {
+  for (let rocketIndex = 0; rocketIndex < Math.max(0, Math.trunc(Number(rocketCount) || 0)); rocketIndex++) {
     const sim = C.simulateShot({
       terrain: this.terrain, from, facing, angle, power, wind: this.wind(), rules: this.rules,
       blockers: [target],
@@ -1572,7 +1565,7 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
     this.flying.push({
       points: sim.points, hit: sim.hit,
       i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0, damage: hit, target,
-      done: false, size: C.shellSize(level), level, spin: 1, rocket: true,
+      done: false, size: C.shellSize(level), level, spin: rocketIndex % 2 ? -1 : 1, rocket: true,
     });
   }
   return Math.min(100, damage);
@@ -1602,6 +1595,7 @@ PetBattleGame.prototype._logTurn = function (mine, aim, damage) {
 // treats shots=0 as a skip and charges no ammo.
 PetBattleGame.prototype._passTurn = function () {
   if (!this.myTurn || this.busy || this.finished) return;
+  this._applyMyTurnPassives();
   this.myTurn = false;
   this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots: 0, damage: 0 })
     .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
@@ -1610,68 +1604,29 @@ PetBattleGame.prototype._passTurn = function () {
 };
 
 // ---- my turn ----
-// ---- hired đồng đội: spending a charge ----
-// Abilities ride on the TURN payload rather than travelling as their own
-// messages. One action stream per battle is what keeps both phones replaying
-// the same fight: an ability that arrived out of band could land on a
-// different HP than the one it was aimed at.
-
-PetBattleGame.prototype.chargeByKey = function (key) {
-  return (this.myCharges || []).find(c => c.key === key) || null;
+// ---- hired đồng đội: always-on passives ----
+PetBattleGame.prototype._mateCount = function (charges, id) {
+  return (charges || []).filter(charge => charge.id === id).length;
 };
 
-// True when the charge actually fired. The guards mirror fire(): a charge is
-// as much a move as a shot, so it obeys the same turn rules.
-PetBattleGame.prototype.useCharge = function (key) {
-  if (this.finished || !this.myTurn || this.busy) return false;
-  const charge = this.chargeByKey(key);
-  if (!charge || charge.used) return false;
-  const TEAM = this.team;
-
-  if (charge.id === 'engineer') {
-    this.myHp = TEAM.applyRepair(this.myHp, this.myMaxHp);
-    this.myPending.push('engineer');
-  } else if (charge.id === 'shield') {
-    this.myShieldUp = true;
-    this.myPending.push('shield');
-  } else if (charge.id === 'gunner') {
-    // Armed, not fired: the rocket rides the shot the child is about to aim,
-    // so it is spent on the volley and reported with it.
-    this.myRocket = true;
-  } else {
-    return false;
-  }
-  charge.used = true;
-  this.render();
-  return true;
+PetBattleGame.prototype._applyMyTurnPassives = function () {
+  this.myHp = this.team.applyRepairs(this.myHp, this.myMaxHp, this._mateCount(this.myCharges, 'engineer'));
 };
 
-// A shield halves ONE volley and then falls, whichever side raised it.
+PetBattleGame.prototype._applyFoeTurnPassives = function () {
+  this.foeHp = this.team.applyRepairs(this.foeHp, this.foeMaxHp, this._mateCount(this.foeCharges, 'engineer'));
+};
+
+// Guards protect every incoming volley for the full battle. Multiple guards
+// stack deterministically, just as duplicate hires occupy multiple ledges.
 PetBattleGame.prototype._incomingDamage = function (raw) {
-  if (!this.myShieldUp) return raw;
-  this.myShieldUp = false;
-  return this.team.shieldedDamage(raw);
+  const guards = this._mateCount(this.myCharges, 'shield');
+  return guards ? this.team.shieldedDamage(raw, guards) : raw;
 };
 
 PetBattleGame.prototype._outgoingDamage = function (raw) {
-  if (!this.foeShieldUp) return raw;
-  this.foeShieldUp = false;
-  return this.team.shieldedDamage(raw);
-};
-
-// Replay the opponent's charges. Every one is checked against the bench they
-// actually hired — a turn arrives from another device, so a payload claiming
-// five engineers must not heal a castle it never paid for.
-PetBattleGame.prototype._applyFoeAbilities = function (abilities) {
-  if (!Array.isArray(abilities)) return;
-  const TEAM = this.team;
-  for (const id of abilities) {
-    const charge = (this.foeCharges || []).find(c => c.id === id && !c.used);
-    if (!charge) continue;                       // not hired, or already spent
-    charge.used = true;
-    if (id === 'engineer') this.foeHp = TEAM.applyRepair(this.foeHp, this.foeMaxHp);
-    else if (id === 'shield') this.foeShieldUp = true;
-  }
+  const guards = this._mateCount(this.foeCharges, 'shield');
+  return guards ? this.team.shieldedDamage(raw, guards) : raw;
 };
 
 PetBattleGame.prototype.fire = function () {
@@ -1693,16 +1648,14 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
   if (this.finished) { this.busy = false; return; }
   const C = this.calc;
   const shots = Math.max(1, Math.min(maxShots, this.shots));
+  this._applyMyTurnPassives();
   if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && !this.reducedMotion) navigator.vibrate(18);
   this.myAmmo -= shots;
-  const rocket = !!this.myRocket;
-  this.myRocket = false;
+  const rocket = this._mateCount(this.myCharges, 'gunner');
   const raw = this._launch(this.mePos, this.meFacing, this.angle, this.power, shots, this.view.me.level, this.foePos, rocket);
-  // Their Vệ sĩ, if one is up, eats half of this — resolved here so the number
+  // Their Vệ sĩ eats part of every volley — resolved here so the number
   // shown, the number stored and the number relayed are all the same one.
   const damage = this._outgoingDamage(raw);
-  const abilities = this.myPending.slice();
-  this.myPending = [];
 
   const aim = { angle: Math.round(this.angle), power: Math.round(this.power), shots };
 
@@ -1719,7 +1672,7 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
     this._lastImpactX = this.foePos.x;          // my shot landed over there
     this._logTurn(true, aim, damage);
     this._drainTurns();
-    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage, abilities, rocket })
+    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage, rawDamage: raw, abilities: [], rocket })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
     this.render();
@@ -1748,10 +1701,9 @@ PetBattleGame.prototype._launchFoeVolley = function (turn, shots) {
   if (this.finished) { this.busy = false; return; }
   const C = this.calc;
   this.foeAmmo = Math.max(0, this.foeAmmo - shots);
-  // Their charges resolve BEFORE their shot: a Kỹ sư repairs the castle this
-  // volley is fired from, and a Vệ sĩ raised now guards against my next one.
-  this._applyFoeAbilities(turn.abilities);
-  const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos, !!turn.rocket);
+  this._applyFoeTurnPassives();
+  const rockets = this._mateCount(this.foeCharges, 'gunner');
+  const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos, rockets);
   this._pendingResolve = () => {
     const dealt = this._incomingDamage(Math.max(damage, turn.damage || 0));
     const oldHouseStage = pbHouseDamageStage(this.myHp);
@@ -1845,7 +1797,6 @@ function _pbGameNudge(which, delta) {
 
 function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
-function _pbGameUseCharge(key) { const g = _pbCurrentGame(); if (g) g.useCharge(key); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
 function _pbGameAnchor(which) { const g = _pbCurrentGame(); if (g) g.cameraAnchor(which); }

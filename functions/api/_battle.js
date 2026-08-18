@@ -31,7 +31,7 @@ export function normalizeFieldVersion(v) {
 // ---- hired đồng đội ----
 // Re-typed from js/battle-teammates.js because Functions are ESM and that file
 // is a classic script. tests/teammates.test.js pins the two copies together.
-export const TEAM_FEES = { gunner: 600, engineer: 1000, shield: 1400 };
+export const TEAM_FEES = { gunner: 600, engineer: 600, shield: 600 };
 export const TEAM_MAX_HIRES = 5;
 const HP_BASE = 100;
 const HP_LEVELS_PER_POINT = 10;
@@ -78,6 +78,18 @@ export const BATTLE_BACKGROUND_IDS = Object.freeze([
 export function normalizeBattleBackground(id) {
   const value = String(id || '');
   return BATTLE_BACKGROUND_IDS.includes(value) ? value : BATTLE_BACKGROUND_DEFAULT;
+}
+
+// Cosmetic-only whitelist. Never accept an asset path from a device, and
+// never use this value in HP, damage, armour or collision calculations.
+export const CASTLE_SKIN_DEFAULT = 'stone-keep';
+export const CASTLE_SKIN_IDS = Object.freeze([
+  'stone-keep', 'forest-fort', 'desert-citadel', 'frost-bastion', 'coral-palace',
+  'sakura-castle', 'clockwork-keep', 'dragon-fortress', 'crystal-citadel', 'celestial-palace',
+]);
+export function normalizeCastleSkin(id) {
+  const value = String(id || '');
+  return CASTLE_SKIN_IDS.includes(value) ? value : CASTLE_SKIN_DEFAULT;
 }
 
 export const COOLDOWN_MS = 72 * 60 * 60 * 1000;   // 3 days between battles
@@ -228,6 +240,7 @@ export function battleView(b, viewerId) {
     stage: meIsChallenger ? b.challenger_stage : b.opponent_stage,
     hp: meIsChallenger ? b.challenger_hp : b.opponent_hp,
     hires: meIsChallenger ? cHires : oHires,
+    castleSkin: normalizeCastleSkin(meIsChallenger ? b.challenger_castle_skin : b.opponent_castle_skin),
   };
   const foe = {
     id: meIsChallenger ? b.opponent_id : b.challenger_id,
@@ -237,6 +250,7 @@ export function battleView(b, viewerId) {
     stage: meIsChallenger ? b.opponent_stage : b.challenger_stage,
     hp: meIsChallenger ? b.opponent_hp : b.challenger_hp,
     hires: meIsChallenger ? oHires : cHires,
+    castleSkin: normalizeCastleSkin(meIsChallenger ? b.opponent_castle_skin : b.challenger_castle_skin),
   };
   return {
     id: b.id,

@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground, hiresJson, startingHp } from '../_battle.js';
+import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground, normalizeCastleSkin, hiresJson, startingHp } from '../_battle.js';
 
 // POST /api/battle/challenge { friendId, level, stage, petName, backgroundId }
 // Starts a 60-second invite. Zero ammo ⇒ no battle: you must learn first.
@@ -47,15 +47,15 @@ export async function onRequestPost({ request, env }) {
   const res = await env.DB.prepare(
     `INSERT INTO battles (challenger_id, opponent_id, status, seed, field_version, background_id,
                           challenger_ammo, challenger_level, challenger_stage, challenger_name,
-                          challenger_hires, challenger_hp,
+                          challenger_hires, challenger_hp, challenger_castle_skin,
                           created_at, expires_at)
-     VALUES (?, ?, 'invited', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, 'invited', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     auth.uid, friendId, seed, FIELD_VERSION_NEW, backgroundId, ammo,
     myLevel,
     String(body.stage || 'chihuahua').slice(0, 20),
     String(body.petName || me?.username || 'Pet').slice(0, 20),
-    myHires, startingHp(myLevel),
+    myHires, startingHp(myLevel), normalizeCastleSkin(body.castleSkin),
     now, now + INVITE_TTL_MS
   ).run();
 
