@@ -88,10 +88,13 @@ suite('castle skins: purchase and equip', () => {
     assert.equal(st.coins, 3000, 'equipping an owned skin must be free');
   }));
 
-  test('the shop clearly says skins do not improve defence', () => state(0, () => {
+  // The shop no longer carries a "looks only" disclaimer: the fairness is
+  // enforced in the renderer and on the server, which the rest of this file
+  // tests, and a child does not need to be told what they never doubted.
+  test('the shop offers a preview of every skin', () => state(0, () => {
     const html = pb._pbCastleWorkshop();
-    assert.truthy(/no HP or defence bonus/i.test(html));
     assert.equal((html.match(/data-castle-preview=/g) || []).length, 10);
+    assert.falsy(/no HP or defence bonus|không tăng HP/i.test(html), 'the disclaimer was removed');
   }));
 });
 

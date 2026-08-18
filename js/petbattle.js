@@ -149,7 +149,7 @@ const PB_STR = {
     sceneTitle: 'Choose your arena', sceneHint: 'Swipe to explore 10 worlds', sceneAria: 'Battle arena',
     sceneInvite: 'Arena selected by the challenger',
     castleTitle: 'Castle Workshop', castleHint: 'Collect 10 cosmetic castles',
-    castleCosmetic: 'Looks only — no HP or defence bonus', castleOwned: 'Owned', castleUse: 'Use skin',
+    castleOwned: 'Owned', castleUse: 'Use skin',
     castleUsing: 'Equipped', castleBuy: 'Buy for {n} coins', castlePoor: 'Need {n} more coins',
     castleConfirm: 'Buy {name} for {n} coins?', castleBought: '{name} unlocked and equipped!',
 
@@ -279,7 +279,7 @@ const PB_STR = {
     sceneTitle: 'Chọn đấu trường', sceneHint: 'Vuốt để khám phá 10 thế giới', sceneAria: 'Đấu trường',
     sceneInvite: 'Đấu trường do người thách đấu chọn',
     castleTitle: 'Xưởng Lâu Đài', castleHint: 'Sưu tập 10 skin lâu đài',
-    castleCosmetic: 'Chỉ thay đổi ngoại hình — không tăng HP hay phòng thủ', castleOwned: 'Đã sở hữu', castleUse: 'Sử dụng',
+    castleOwned: 'Đã sở hữu', castleUse: 'Sử dụng',
     castleUsing: 'Đang dùng', castleBuy: 'Mua với {n} xu', castlePoor: 'Thiếu {n} xu',
     castleConfirm: 'Mua {name} với {n} xu?', castleBought: 'Đã mở khóa và sử dụng {name}!',
 
@@ -534,7 +534,6 @@ function _pbCastleWorkshop() {
   const selected = pbSelectedCastleSkinId(), owned = pbOwnedCastleSkins(), coins = _pbCoins(), lang = _pbLang === 'vi' ? 'vi' : 'en';
   return `<section class="pb-castle-shop" aria-labelledby="pbCastleTitle">
     <div class="pb-castle-head"><div><strong id="pbCastleTitle">${pbT('castleTitle')}</strong><span>${pbT('castleHint')}</span></div><b>🪙 ${coins.toLocaleString()}</b></div>
-    <div class="pb-castle-cosmetic"><span aria-hidden="true">✦</span>${pbT('castleCosmetic')}</div>
     <div class="pb-castle-list">${CastleSkins.skins.map(skin => {
       const has = owned.includes(skin.id), on = selected === skin.id, short = Math.max(0, skin.price - coins);
       const label = on ? pbT('castleUsing') : has ? pbT('castleUse') : short ? pbT('castlePoor', { n: short.toLocaleString() }) : pbT('castleBuy', { n: skin.price.toLocaleString() });
@@ -817,8 +816,8 @@ function renderPetBattle() {
 
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
-    ${_pbScenePicker()}
     ${_pbCastleWorkshop()}
+    ${_pbScenePicker()}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
