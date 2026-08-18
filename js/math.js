@@ -836,6 +836,7 @@ function renderMathQuestion() {
       </div>
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
+      ${typeof mathQuestionFigureHTML === 'function' ? mathQuestionFigureHTML(q.fig) : ''}
       ${mathHintHTML(q)}
       ${body}
       ${explain}

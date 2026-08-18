@@ -8973,6 +8973,14 @@
         /* Hình vẽ của mỗi khái niệm hình học (js/math-figures.js).
            Vẽ bằng SVG nên nét vẫn sắc ở mọi cỡ máy, và màu lấy từ biến theme
            để hình không biến mất khi bé đổi giao diện. */
+        /* Hình của ĐỀ BÀI: to hơn hình trong gợi ý, và đứng ngay dưới câu hỏi.
+           Nó không phải minh hoạ thêm — với hình học nó chính là đề. */
+        .math-q-figwrap {
+            margin: 4px 0 14px; padding: 6px 0;
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px;
+        }
+        .math-q-figwrap .math-fig { max-width: 340px; background: none; }
         .math-hint-figwrap { margin: 6px 0 8px; }
         .math-fig {
             display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto;

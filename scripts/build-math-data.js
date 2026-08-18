@@ -12,6 +12,11 @@
 const fs = require('fs');
 const path = require('path');
 
+// Hình của đề bài (khoá "fig") được vẽ bằng khuôn trong js/math-figures.js.
+// Nạp thẳng từ đó để một khuôn bị đổi tên là build gãy ngay, thay vì ra tới
+// máy bé mới thành một ô trống.
+const { MATH_Q_FIGURES, mathQuestionFigureHTML } = require(path.join(__dirname, '..', 'js', 'math-figures.js'));
+
 const ROOT = path.join(__dirname, '..');
 const CHAPTERS = [1, 2, 3, 4, 5];
 const PER_CHAPTER = 50;
@@ -123,6 +128,15 @@ function validateChapter(data, num) {
             fail(`${where}: ${q.id} needs exactly 4 options`); ok = false; return;
         }
         if (new Set(q.options).size !== 4) { fail(`${where}: ${q.id} has duplicate options`); ok = false; }
+        if (q.fig !== undefined) {
+            if (!q.fig || typeof q.fig !== 'object' || !q.fig.t) {
+                fail(`${where}: ${q.id} fig must be an object with a "t" template name`); ok = false;
+            } else if (!MATH_Q_FIGURES[q.fig.t]) {
+                fail(`${where}: ${q.id} unknown figure template "${q.fig.t}"`); ok = false;
+            } else if (!mathQuestionFigureHTML(q.fig)) {
+                fail(`${where}: ${q.id} figure "${q.fig.t}" draws nothing — check its parameters`); ok = false;
+            }
+        }
         q.options.forEach((o, k) => {
             if (LETTER_SOUP.test(String(o).trim())) {
                 fail(`${where}: ${q.id} option ${'ABCD'[k]} is bare shorthand "${o}" — `
@@ -179,6 +193,7 @@ function main() {
         for (const q of (data.questions || [])) {
             questions.push({
                 id: q.id, ch: q.ch, topic: q.topic, q: q.q,
+                fig: q.fig || undefined,
                 options: q.options, correct: q.correct, answer: q.answer,
                 explanation: escapeStrayAngles(q.explanation)
             });

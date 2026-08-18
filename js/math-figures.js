@@ -361,7 +361,7 @@ const MATH_FIGURES = {
   'trung-truc': _mfSvg(
     _mfLine(40, 84, 160, 84) + _mfLine(100, 14, 100, 108)
     + _mfLine(100, 30, 40, 84, 'mf-d') + _mfLine(100, 30, 160, 84, 'mf-d')
-    + _mfRight(100, 84, 12, 0, 'a') + _mfRight(100, 84, 12, 90, 'a')
+    + _mfRight(100, 84, 12, 0, 'a')
     + _mfTicks(40, 84, 100, 84, 1, 'b') + _mfTicks(100, 84, 160, 84, 1, 'b')
     + _mfTicks(100, 30, 40, 84, 2, 'c') + _mfTicks(100, 30, 160, 84, 2, 'c')
     + _mfDot(40, 84) + _mfDot(100, 84) + _mfDot(160, 84) + _mfDot(100, 30)
@@ -421,7 +421,9 @@ function _mfqKeBu(f) {
 function _mfqKeBuPhanGiac(f) {
   const a = Math.min(160, Math.max(30, +f.a || 100));
   const l = f.l || ['', ''];
-  return _mfAng(100, 88, 34, 0, a, l[0], 48)
+  const pl = _mfP(100, 88, 52, a * 0.25);
+  return _mfWedge(100, 88, 34, 0, a, _mfK(l[0]))
+    + (l[0] ? _mfT(pl[0], pl[1] + 4, l[0], 'middle', 'mf-val mf-' + _mfK(l[0])) : '')
     + _mfAng(100, 88, 22, a / 2, a, l[1], 32)
     + _mfLine(18, 88, 182, 88) + _mfRay(100, 88, 58, a)
     + _mfRay(100, 88, 52, a / 2, 'mf-l mf-hi')
@@ -447,20 +449,22 @@ function _mfqDoiDinh(f) {
 function _mfqPhanGiac(f) {
   const w = Math.min(180, Math.max(30, +f.w || 80));
   const lh = f.lh || ['', ''];
-  const pw = _mfP(100, 100, 56, w / 2);
+  const pw = _mfP(100, 100, 64, w * 0.62);
   // Không có số nào để ghi thì vẫn phải thấy "hai nửa bằng nhau" — đó là cả
   // nội dung của khái niệm tia phân giác.
   const bare = !lh[0] && !lh[1];
   return (bare ? _mfWedge(100, 100, 30, 0, w / 2, 'b') + _mfWedge(100, 100, 30, w / 2, w, 'b')
         + _mfAtick(100, 100, 30, w / 4, 'b') + _mfAtick(100, 100, 30, w * 3 / 4, 'b') : '')
-    + _mfAng(100, 100, 30, 0, w / 2, lh[0], 20)
-    + _mfAng(100, 100, 30, w / 2, w, lh[1], 20)
-    + _mfRay(100, 100, 88, 0) + _mfRay(100, 100, 88, w)
-    + _mfRay(100, 100, 78, w / 2, 'mf-l mf-hi')
+    // Nhãn số đặt xa tâm: hai nửa của một góc 50° mà ghi sát đỉnh thì hai con
+    // số chồng lên nhau, và bé đọc thành một số thứ ba.
+    + _mfAng(100, 100, 30, 0, w / 2, lh[0], 44)
+    + _mfAng(100, 100, 30, w / 2, w, lh[1], 66)
+    + _mfRay(100, 100, 78, 0) + _mfRay(100, 100, 78, w)
+    + _mfRay(100, 100, 70, w / 2, 'mf-l mf-hi')
     + _mfDot(100, 100) + _mfT(100, 114, 'O')
-    + _mfT(..._mfP(100, 100, 96, 0), 'x', 'start')
-    + _mfT(..._mfP(100, 100, 96, w), 'y', w > 100 ? 'end' : 'start')
-    + _mfT(..._mfP(100, 100, 86, w / 2), 'z', 'start')
+    + _mfT(..._mfP(100, 100, 88, 0), 'x', 'start')
+    + _mfT(..._mfP(100, 100, 88, w), 'y', w > 100 ? 'end' : 'start')
+    + _mfT(..._mfP(100, 100, 80, w / 2), 'z', w > 150 ? 'middle' : 'start')
     + (f.lw ? _mfT(pw[0], pw[1], f.lw, 'middle', 'mf-val mf-' + _mfK(f.lw)) : '');
 }
 
@@ -706,7 +710,7 @@ function _mfqTrungTruc(f) {
   const l = f.l || {};
   const A = [40, 84], B = [160, 84], I = [100, 84];
   let out = _mfLine(A[0], A[1], B[0], B[1]) + _mfLine(100, 14, 100, 110)
-    + _mfRight(100, 84, 12, 0, 'b') + _mfRight(100, 84, 12, 90, 'b')
+    + _mfRight(100, 84, 12, 0, 'b')
     + _mfTicks(A[0], A[1], I[0], I[1], 1, 'b') + _mfTicks(I[0], I[1], B[0], B[1], 1, 'b')
     + _mfDot(A[0], A[1]) + _mfDot(I[0], I[1]) + _mfDot(B[0], B[1])
     + _mfT(34, 89, 'A', 'end') + _mfT(93, 99, 'I', 'end') + _mfT(166, 89, 'B', 'start')

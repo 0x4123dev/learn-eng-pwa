@@ -12,13 +12,14 @@ const root = path.join(__dirname, '..');
 const { MATH_QUESTIONS } = require(path.join(root, 'js', 'math-data.js'));
 const { MATH_GLOSSARY } = require(path.join(root, 'js', 'math-glossary.js'));
 const { MATH_EXAMS } = require(path.join(root, 'js', 'math-exams.js'));
-const { MATH_FIGURES, mathFigureHTML } = require(path.join(root, 'js', 'math-figures.js'));
+const { MATH_FIGURES, mathFigureHTML, MATH_Q_FIGURES, mathQuestionFigureHTML } = require(path.join(root, 'js', 'math-figures.js'));
 
 global.MATH_QUESTIONS = MATH_QUESTIONS;
 global.MATH_GLOSSARY = MATH_GLOSSARY;
 global.MATH_EXAMS = MATH_EXAMS;
 global.MATH_FIGURES = MATH_FIGURES;
 global.mathFigureHTML = mathFigureHTML;
+global.mathQuestionFigureHTML = mathQuestionFigureHTML;
 global.appState = { coins: 0, mathHistory: [] };
 global.currentUser = 'tester';
 global.saveUserData = () => {};
@@ -45,6 +46,7 @@ function coordsOf(svg) {
   attr(/<rect[^>]*x="(-?[\d.]+)"[^>]*y="(-?[\d.]+)"[^>]*width="([\d.]+)"[^>]*height="([\d.]+)"/g, m => {
     pts.push([+m[1], +m[2]], [+m[1] + +m[3], +m[2] + +m[4]]);
   });
+  attr(/<text[^>]*x="(-?[\d.]+)"[^>]*y="(-?[\d.]+)"/g, m => pts.push([+m[1], +m[2]]));
   attr(/<path[^>]*d="([^"]+)"/g, m => {
     const t = m[1].trim().split(/[\s,]+/);
     for (let i = 0; i < t.length; i++) {
@@ -169,5 +171,108 @@ suite('math figures: on the hint panel', () => {
         assert.truthy(sw.indexOf("'/js/math-figures.js'") > 0, 'the figures are not cached offline');
         assert.truthy(idx.indexOf('js/math-figures.js') < idx.indexOf('js/math.js'),
             'math.js must load after the figures it draws with');
+    });
+});
+
+// ---- hình của ĐỀ BÀI ---------------------------------------------------
+// Hình vẽ sai một nét thì bé giải sai cả bài mà không hiểu vì sao, nên ba
+// điều dưới đây được canh bằng máy chứ không bằng mắt: hình phải nằm trong
+// khung, nhãn không được đè lên nhau, và — quan trọng nhất — hình không được
+// ghi sẵn đáp án.
+const WITH_FIG = MATH_QUESTIONS.filter(q => q.fig);
+
+function textsOf(svg) {
+    return (svg.match(/<text[^>]*x="(-?[\d.]+)"[^>]*y="(-?[\d.]+)"[^>]*>([^<]*)</g) || []).map(t => {
+        const m = /x="(-?[\d.]+)"[^>]*y="(-?[\d.]+)"[^>]*>([^<]*)/.exec(t);
+        return { x: +m[1], y: +m[2], s: m[3] };
+    });
+}
+
+suite('math figures: the drawing that comes with the question', () => {
+    test('every Chương 3 and 4 question that can be drawn has a drawing', () => {
+        const ch34 = MATH_QUESTIONS.filter(q => q.ch === 3 || q.ch === 4);
+        assert.equal(ch34.length, 119, 'chapter sizes moved — recheck which questions need a figure');
+        // Năm câu còn lại là loại vẽ ra sẽ lộ đáp án (m3-6, m3-16, m3-42) hoặc
+        // không có gì để vẽ (m3-51 chọn mệnh đề nào là định lí, m4-10 chọn bộ
+        // ba số). Cố vẽ cho đủ 119 là làm hỏng chính năm câu đó.
+        const bare = ch34.filter(q => !q.fig).map(q => q.id).sort();
+        assert.deepEqual(bare, ['m3-16', 'm3-42', 'm3-51', 'm3-6', 'm4-10'].sort());
+        assert.truthy(WITH_FIG.length >= 114, `only ${WITH_FIG.length} questions carry a figure`);
+    });
+
+    test('no chapter outside 3 and 4 carries one — the tab is not an art gallery', () => {
+        const stray = WITH_FIG.filter(q => q.ch !== 3 && q.ch !== 4).map(q => q.id);
+        assert.deepEqual(stray, []);
+    });
+
+    test('every fig names a template that exists and actually draws', () => {
+        WITH_FIG.forEach(q => {
+            assert.truthy(MATH_Q_FIGURES[q.fig.t], `${q.id}: unknown template "${q.fig.t}"`);
+            const html = mathQuestionFigureHTML(q.fig);
+            assert.truthy(html.indexOf('<svg') > 0, `${q.id}: template drew nothing`);
+        });
+    });
+
+    test('THE RULE: a figure states the question, never the answer', () => {
+        // Con số duy nhất được phép ghi lên hình là con số đề đã cho. Ghi thêm
+        // con số phải tìm là biến bài toán thành bài chép lại.
+        const leaks = [];
+        WITH_FIG.forEach(q => {
+            textsOf(mathQuestionFigureHTML(q.fig)).forEach(t => {
+                // Chỉ soi nhãn mang SỐ ĐO (có ° hoặc cm). "∠1", "∠3", "2x" là
+                // tên gọi và ẩn số, không phải con số đề cho.
+                if (!/°|cm/.test(t.s)) return;
+                (t.s.match(/\d+/g) || []).forEach(n => {
+                    if (q.q.indexOf(n) === -1) leaks.push(`${q.id}: figure says "${t.s}" but the question never mentions ${n}`);
+                });
+            });
+        });
+        assert.deepEqual(leaks.slice(0, 5), [], `${leaks.length} figure(s) put a number on screen that the question did not give`);
+    });
+
+    test('nothing is drawn outside the canvas, captions and labels included', () => {
+        const out = [];
+        WITH_FIG.forEach(q => {
+            coordsOf(mathQuestionFigureHTML(q.fig)).forEach(p => {
+                if (!Number.isFinite(p[0]) || !Number.isFinite(p[1])
+                    || p[0] < -PAD || p[0] > W + PAD || p[1] < -PAD || p[1] > H + PAD) {
+                    out.push(`${q.id} (${q.fig.t}) @ ${p[0]},${p[1]}`);
+                }
+            });
+        });
+        assert.deepEqual([...new Set(out)].slice(0, 5), [], `${out.length} points fall off the canvas`);
+    });
+
+    test('no two labels land on top of each other', () => {
+        // "25°" in lên "25°" đọc thành một số thứ ba — lỗi này mắt bỏ sót rất dễ
+        // khi chỉnh toạ độ, nên để máy canh.
+        const clash = [];
+        const check = (name, svg) => {
+            const L = textsOf(svg);
+            for (let i = 0; i < L.length; i++) {
+                for (let j = i + 1; j < L.length; j++) {
+                    const d = Math.hypot(L[i].x - L[j].x, L[i].y - L[j].y);
+                    if (d < 12) clash.push(`${name}: "${L[i].s}" over "${L[j].s}" (${d.toFixed(1)} apart)`);
+                }
+            }
+        };
+        WITH_FIG.forEach(q => check(q.id, mathQuestionFigureHTML(q.fig)));
+        Object.keys(MATH_FIGURES).forEach(id => check('glossary/' + id, MATH_FIGURES[id]));
+        assert.deepEqual(clash.slice(0, 5), [], `${clash.length} overlapping label(s)`);
+    });
+
+    test('the question card draws it, above the options', () => {
+        const src = fs.readFileSync(path.join(root, 'js', 'math.js'), 'utf8');
+        const i = src.indexOf('mathQuestionFigureHTML(q.fig)');
+        assert.truthy(i > 0, 'renderMathQuestion never draws the question figure');
+        assert.truthy(src.indexOf('grammar-question-text') < i, 'the figure must follow the question text');
+        assert.truthy(i < src.lastIndexOf('${body}'), 'the figure must come before the options');
+    });
+
+    test('the build refuses a figure it cannot draw', () => {
+        const src = fs.readFileSync(path.join(root, 'scripts', 'build-math-data.js'), 'utf8');
+        assert.truthy(/MATH_Q_FIGURES\[q\.fig\.t\]/.test(src), 'the build never checks the template name');
+        assert.truthy(/unknown figure template/.test(src), 'a bad template must fail the build, not ship');
+        assert.truthy(/fig: q\.fig/.test(src), 'the build must carry fig through to js/math-data.js');
     });
 });
