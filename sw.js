@@ -33,6 +33,7 @@ const ASSETS = [
   '/js/answer-audio.js',
   '/js/math-data.js',
   '/js/math-lessons.js',
+  '/js/math-glossary.js',
   '/js/math-exams.js',
   '/js/math.js',
   '/js/math-board.js',

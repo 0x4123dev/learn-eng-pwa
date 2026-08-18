@@ -8791,6 +8791,30 @@
         .math-hist-stat strong { display: block; font-size: 20px; color: var(--primary, #4f46e5); }
         .math-hist-stat span { font-size: 12px; color: var(--text-secondary, #64748b); }
 
+        /* Gợi ý: định nghĩa các khái niệm câu hỏi đang dùng (Chương 3, 4).
+           Đóng mặc định — mở ra là do bé chọn, nên nó vẫn là gợi ý chứ không
+           phải lý thuyết in sẵn phía trên mọi câu trả lời. */
+        .math-hint-btn {
+            display: flex; align-items: center; gap: 6px; width: 100%;
+            margin: 10px 0 12px; padding: 10px 14px;
+            font-family: inherit; font-size: 14px; font-weight: 700; text-align: left;
+            color: #7c4a03; background: rgba(255,193,7,0.14);
+            border: 1.5px solid rgba(255,193,7,0.45); border-radius: 12px; cursor: pointer;
+        }
+        .math-hint-btn.open { margin-bottom: 0; border-radius: 12px 12px 0 0; }
+        .math-hint-caret { margin-left: auto; font-weight: 800; opacity: .7; }
+        .math-hint-open { margin: 10px 0 12px; }
+        .math-hint-body {
+            border: 1.5px solid rgba(255,193,7,0.45); border-top: none;
+            border-radius: 0 0 12px 12px; background: rgba(255,193,7,0.07);
+            padding: 4px 14px 12px;
+        }
+        .math-hint-item { padding-top: 10px; }
+        .math-hint-item + .math-hint-item { border-top: 1px dashed rgba(255,193,7,0.5); }
+        .math-hint-term { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+        .math-hint-def { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+        .math-hint-def b { color: var(--text-primary); }
+
         /* Which questions keep coming back wrong, and how often. */
         .math-wrong-panel { margin: 0 0 14px; }
         .math-wrong-list {

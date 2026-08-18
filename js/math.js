@@ -235,6 +235,68 @@ function mathShuffle(arr) {
   return a;
 }
 
+// ---- gợi ý: định nghĩa các khái niệm câu hỏi đang dùng ----
+// Chỉ Chương 3 và 4 — hai chương mà một câu hỏi thường bắc lên hai, ba định
+// nghĩa cùng lúc ("tia phân giác của một góc bẹt"), nên quên một chữ là mất
+// câu hỏi dù phép tính chỉ là 180 : 2.
+//
+// Khớp theo `topic` TRƯỚC (ngân hàng đã tự gán nhãn khái niệm cho từng câu),
+// rồi mới dò thuật ngữ trong đề bài. Không gắn tay từng câu: một câu được
+// viết lại vẫn tự khớp đúng.
+const MATH_HINT_CHAPTERS = [3, 4];
+const MATH_HINT_MAX = 4;          // gợi ý, không phải cả trang lý thuyết
+
+function mathGlossary() {
+  return (typeof MATH_GLOSSARY !== 'undefined') ? MATH_GLOSSARY : [];
+}
+
+function mathHintsFor(q) {
+  if (!q || MATH_HINT_CHAPTERS.indexOf(q.ch) === -1) return [];
+  const topic = String(q.topic || '').toLowerCase();
+  const text = String(q.q || '').toLowerCase();
+  const scored = [];
+  mathGlossary().forEach(e => {
+    if (e.ch !== q.ch) return;
+    const keys = e.m || [];
+    // 2 điểm nếu khớp chủ đề, 1 điểm nếu chỉ xuất hiện trong đề bài.
+    let score = 0;
+    if (keys.some(k => topic.includes(String(k).toLowerCase()))) score = 2;
+    else if (keys.some(k => text.includes(String(k).toLowerCase()))) score = 1;
+    if (score) scored.push({ e: e, score: score });
+  });
+  // Chủ đề trước, rồi giữ nguyên thứ tự trong từ điển để danh sách không nhảy.
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, MATH_HINT_MAX).map(x => x.e);
+}
+
+// Đóng lại giữa các câu: mở sẵn thì hết là gợi ý, thành đáp án bày ra.
+let _mathHintOpen = false;
+function toggleMathHint() {
+  _mathHintOpen = !_mathHintOpen;
+  renderMathQuestion();
+}
+
+function mathHintHTML(q) {
+  const hints = mathHintsFor(q);
+  if (!hints.length) return '';
+  if (!_mathHintOpen) {
+    return `<button class="math-hint-btn" onclick="toggleMathHint()">
+        💡 Gợi ý · ${hints.length} khái niệm liên quan <span class="math-hint-caret">›</span>
+      </button>`;
+  }
+  const items = hints.map(e => `
+      <div class="math-hint-item">
+        <div class="math-hint-term">${mathEsc(e.t)}</div>
+        <div class="math-hint-def">${mathRich(e.d)}</div>
+      </div>`).join('');
+  return `<div class="math-hint-open">
+      <button class="math-hint-btn open" onclick="toggleMathHint()">
+        💡 Gợi ý <span class="math-hint-caret">⌄</span>
+      </button>
+      <div class="math-hint-body">${items}</div>
+    </div>`;
+}
+
 // ---- history ----
 function mathHistory() {
   if (typeof appState === 'undefined' || !appState) return [];
@@ -587,6 +649,7 @@ function startMathQuizForLesson(key) {
 // ---- quiz ----
 // chapter 0 = mixed revision across all five chapters.
 function startMathQuiz(chapter) {
+  _mathHintOpen = false;
   if (typeof retryGate === 'function' && retryGate('math')) return;
   const pool = mathChapterQuestions(chapter);
   if (!pool.length) return;
@@ -673,6 +736,7 @@ function renderMathQuestion() {
       </div>
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
+      ${mathHintHTML(q)}
       ${body}
       ${explain}
     </div>`;
@@ -702,6 +766,7 @@ function submitMathTyped() {
 }
 
 function nextMathQuestion() {
+  _mathHintOpen = false;
   const st = _mathQuiz;
   if (!st) return;
   mathTypedReset();
@@ -859,6 +924,7 @@ if (typeof module !== 'undefined' && module.exports) {
     renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
     mathWrongAggregate, renderMathWrongPanelHTML,
+    mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }
