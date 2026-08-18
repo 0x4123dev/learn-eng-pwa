@@ -659,19 +659,20 @@ suite('math: the Lịch sử tab', () => {
         try { fn(); } finally { delete global.appState; }
     }
 
-    test('history is its own sub-tab, no longer embedded in the practice page', () => {
+    test('history is a section of its own, reachable from the Toán 7 menu', () => {
+        // It used to be a tab inside the practice page, then a sub-tab; now
+        // that the tab holds two subjects it is one of the three cards under
+        // Toán 7, next to Học kì 1 and Học kì 2.
         const src = read('js/math.js');
-        assert.truthy(src.includes(`switchMathSubTab('history')`), 'no button routes to the history tab');
-        assert.truthy(/_mathSubTab === 'history' \? renderMathHistoryHTML\(\)/.test(src),
-            'the body chooser never shows the history page');
-        assert.truthy(/'lessons' \|\| tab === 'exams' \|\| tab === 'history'/.test(src),
-            'switchMathSubTab would bounce history back to practice');
+        assert.truthy(src.includes(`openMathSection('history')`), 'nothing routes to the history section');
+        assert.truthy(/_mathView === 'history'/.test(src), 'renderMathHome never shows the history page');
+        assert.truthy(/if \(tab === 'history'\) \{ openMathSection\('history'\); return; \}/.test(src),
+            'switchMathSubTab must still get callers to history, not bounce them to practice');
         const practice = src.slice(src.indexOf('function renderMathPracticeHTML'),
             src.indexOf('function mathBestFor'));
         assert.falsy(practice.includes('renderMathHistoryHTML'),
             'practice page still embeds the old history block');
     });
-
     test('empty history gets an invitation, not a blank page', () => {
         withHistory([], () => {
             const html = math.renderMathHistoryHTML();

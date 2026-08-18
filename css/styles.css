@@ -8791,6 +8791,80 @@
         .math-hist-stat strong { display: block; font-size: 20px; color: var(--primary, #4f46e5); }
         .math-hist-stat span { font-size: 12px; color: var(--text-secondary, #64748b); }
 
+        /* Math tab menu: two subjects, three levels, one back arrow. */
+        .math-back-btn {
+            position: absolute; left: 10px; top: 10px;
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 800; line-height: 1;
+            font-family: inherit; cursor: pointer;
+            color: var(--text-primary); background: rgba(255,255,255,0.7);
+            border: 1.5px solid var(--glass-border);
+        }
+        .nav-hub-header.math { position: relative; }
+        /* The arrow is absolutely placed, so the first line has to step around
+           it — otherwise the kicker reads "‹ATH WARS". */
+        .nav-hub-header.math.with-back .nav-hub-kicker { padding-left: 42px; }
+        .math-section-cta .phrases-cta-icon { font-size: 30px; }
+        /* A tint dark enough to keep .phrases-cta's white text readable — the
+           first attempt used a pale wash and the label vanished into it. */
+        .math-section-cta.wars {
+            background: linear-gradient(135deg, #12a5a5, #6d3ad6);
+            box-shadow: 0 8px 22px rgba(18,165,165,0.30);
+        }
+
+        /* ⚔️ Math Wars — the 60-second mental-arithmetic round. */
+        .wars-clock {
+            flex: 0 0 auto; font-size: 15px; font-weight: 800;
+            color: #0f766e; background: rgba(45,190,190,0.16);
+            border-radius: 10px; padding: 3px 9px;
+        }
+        .wars-clock.low { color: #d63a3a; background: rgba(214,58,58,0.14); }
+        .wars-sum {
+            text-align: center; margin: 26px 0 22px;
+            font-size: 40px; font-weight: 800; letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+        .wars-gap { color: #2dbebe; }
+        .wars-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .wars-option {
+            padding: 22px 8px; border-radius: 16px; cursor: pointer;
+            font-family: inherit; font-size: 28px; font-weight: 800;
+            color: var(--text-primary);
+            background: var(--glass-bg, rgba(255,255,255,0.85));
+            border: 2px solid var(--glass-border);
+        }
+        .wars-option:active { transform: scale(0.97); border-color: #2dbebe; }
+        .wars-result-card {
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 18px; padding: 18px 14px; margin-bottom: 14px;
+        }
+        .wars-result-title { text-align: center; font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+        .wars-stats { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .wars-stat { flex: 0 0 auto; text-align: center; min-width: 62px; }
+        .wars-stat-label { font-size: 13px; font-weight: 700; }
+        .wars-stat.wrong .wars-stat-label { color: #f472a8; }
+        .wars-stat.right .wars-stat-label { color: #2dbebe; }
+        .wars-stat-value { font-size: 30px; font-weight: 400; color: var(--text-secondary); }
+        /* The donut: one conic sweep for the accuracy, a hole punched by the
+           inner disc. No canvas, no library, and it scales with the font. */
+        .wars-donut {
+            flex: 0 0 auto; width: 132px; height: 132px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(#2dbebe calc(var(--pct) * 1%), #e2e5e5 0);
+        }
+        .wars-donut-hole {
+            width: 96px; height: 96px; border-radius: 50%;
+            background: var(--card-bg, #fff);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .wars-donut-label { font-size: 12px; color: var(--text-secondary); }
+        .wars-donut-value { font-size: 30px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
+        .wars-donut-value span { font-size: 15px; font-weight: 600; }
+        .wars-mean { text-align: center; margin-top: 14px; font-size: 14px; color: var(--text-secondary); }
+        .wars-mean b { font-size: 20px; color: var(--text-primary); }
+        .wars-skipped { text-align: center; margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+
         /* Gợi ý: định nghĩa các khái niệm câu hỏi đang dùng (Chương 3, 4).
            Đóng mặc định — mở ra là do bé chọn, nên nó vẫn là gợi ý chứ không
            phải lý thuyết in sẵn phía trên mọi câu trả lời. */

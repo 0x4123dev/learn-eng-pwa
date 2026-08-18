@@ -35,6 +35,7 @@ const ASSETS = [
   '/js/math-lessons.js',
   '/js/math-glossary.js',
   '/js/math-exams.js',
+  '/js/mathwars.js',
   '/js/math.js',
   '/js/math-board.js',
   '/js/tapwords.js',

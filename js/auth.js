@@ -201,6 +201,14 @@ const EngAuth = (function () {
       score: h.score, total: h.total, at: h.date,
       detail: h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
     }));
+    (appState.warsHistory || []).forEach(h => add({
+      // Math Wars rides the 'math' type: it IS maths practice, and a type the
+      // server does not know is dropped in silence (see functions/api/activity.js).
+      type: 'math',
+      title: 'Math Wars · ' + (h.correct || 0) + '/' + (h.total || 0) + ' trong 60s',
+      score: h.correct, total: h.total, at: h.date,
+      detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut },
+    }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
       score: h.correct, total: h.total, at: h.date, detail: { score: h.score },

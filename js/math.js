@@ -18,7 +18,8 @@ const MATH_COINS_PER_CORRECT = 2;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
-let _mathSubTab = 'practice';  // 'practice' | 'exams' | 'lessons' | 'history'
+let _mathSubTab = 'practice';  // chỉ có nghĩa bên trong Học kì 1: 'practice' | 'exams' | 'lessons'
+let _mathView = 'home';        // 'home' | 'toan7' | 'hk1' | 'history' | 'wars'
 let _mathHistoryFilter = 'all';
 let _mathHistoryType = 'all';  // 'all' | 'practice' | 'exam'
 
@@ -315,35 +316,125 @@ function saveMathSession(session) {
 }
 
 // ---- home ----
+// ---- the menu ----------------------------------------------------------
+// Three levels, because two different subjects live in this tab and flattening
+// them put "Đề thi Toán 7" next to "Math Wars" as if they were the same kind
+// of thing:
+//
+//   home  ├─ 📘 Toán 7 ──┬─ Học kì 1 ─┬─ 🧮 Luyện tập
+//         │              │            ├─ 📘 Lý thuyết
+//         │              │            └─ 📝 Đề thi
+//         │              ├─ Học kì 2 (sắp có)
+//         │              └─ 🕘 Lịch sử
+//         └─ ⚔️ Math Wars ─┬─ ⚔️ Luyện tập
+//                          └─ 📊 Thống kê
+//
+// _mathView is where the child is; _mathSubTab only means anything inside HK1.
 function renderMathHome() {
   const screen = document.getElementById('mathHubScreen');
   if (!screen) return;
-  const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
-    : _mathSubTab === 'exams' ? renderMathExamsHTML()
-    : _mathSubTab === 'history' ? renderMathHistoryHTML()
-    : renderMathPracticeHTML();
-
-  screen.innerHTML = `
-    <header class="nav-hub-header math">
-      <span class="nav-hub-kicker">TOÁN 7 · TẬP 1</span>
-      <h1>Ôn công thức Toán 7</h1>
-      <p>5 chương trọng tâm — chọn đúng công thức, nhớ lâu hơn học vẹt.</p>
-    </header>
-    <div class="grammar-subtabs" role="tablist">
+  if (_mathView === 'wars') {
+    screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
+      'Cộng – trừ – nhân – chia trong 60 giây.', 'openMathSection(\'home\')')
+      + (typeof renderWarsHomeHTML === 'function' ? renderWarsHomeHTML() : '');
+    return;
+  }
+  if (_mathView === 'history') {
+    screen.innerHTML = mathHeaderHTML('TOÁN 7', 'Lịch sử làm bài',
+      'Mọi lượt luyện tập và đề thi đã nộp.', 'openMathSection(\'toan7\')')
+      + `<div class="phrases-wrap">${renderMathHistoryHTML()}</div>`;
+    return;
+  }
+  if (_mathView === 'hk1') {
+    const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
+      : _mathSubTab === 'exams' ? renderMathExamsHTML()
+      : renderMathPracticeHTML();
+    screen.innerHTML = mathHeaderHTML('TOÁN 7 · HỌC KÌ 1', 'Ôn công thức Toán 7',
+      '5 chương trọng tâm — chọn đúng công thức, nhớ lâu hơn học vẹt.', 'openMathSection(\'toan7\')')
+      + `<div class="grammar-subtabs" role="tablist">
       <button class="grammar-subtab ${_mathSubTab === 'practice' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('practice')">🧮 Luyện tập</button>
-      <button class="grammar-subtab ${_mathSubTab === 'exams' ? 'active' : ''}" role="tab"
-              onclick="switchMathSubTab('exams')">📝 Đề thi</button>
       <button class="grammar-subtab ${_mathSubTab === 'lessons' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('lessons')">📘 Lý thuyết</button>
-      <button class="grammar-subtab ${_mathSubTab === 'history' ? 'active' : ''}" role="tab"
-              onclick="switchMathSubTab('history')">🕘 Lịch sử</button>
+      <button class="grammar-subtab ${_mathSubTab === 'exams' ? 'active' : ''}" role="tab"
+              onclick="switchMathSubTab('exams')">📝 Đề thi</button>
     </div>
     <div class="phrases-wrap">${body}</div>`;
+    return;
+  }
+  if (_mathView === 'toan7') { screen.innerHTML = renderToan7MenuHTML(); return; }
+  screen.innerHTML = renderMathMenuHTML();
 }
 
+// One header shape for every level, carrying the back arrow that leaves it.
+function mathHeaderHTML(kicker, title, sub, back) {
+  return `
+    <header class="nav-hub-header math${back ? ' with-back' : ''}">
+      ${back ? `<button class="math-back-btn" onclick="${back}">‹</button>` : ''}
+      <span class="nav-hub-kicker">${mathEsc(kicker)}</span>
+      <h1>${mathEsc(title)}</h1>
+      <p>${mathEsc(sub)}</p>
+    </header>`;
+}
+
+function renderMathMenuHTML() {
+  const runs = mathHistory().length;
+  const wars = (typeof warsHistory === 'function') ? warsHistory().length : 0;
+  return mathHeaderHTML('TOÁN', 'Chọn phần muốn học', 'Ôn kiến thức Toán 7, hoặc luyện tính nhẩm.', '')
+    + `<div class="phrases-wrap">
+      <button class="phrases-cta math-section-cta" onclick="openMathSection('toan7')">
+        <span class="phrases-cta-icon">📘</span>
+        <span class="phrases-cta-text"><strong>Toán 7</strong><small>Công thức, lý thuyết và đề thi theo học kì${runs ? ` · ${runs} lượt đã làm` : ''}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+      <button class="phrases-cta math-section-cta wars" onclick="openMathSection('wars')">
+        <span class="phrases-cta-icon">⚔️</span>
+        <span class="phrases-cta-text"><strong>Math Wars</strong><small>Tính nhẩm cộng – trừ – nhân – chia trong 60 giây${wars ? ` · ${wars} trận` : ''}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+    </div>`;
+}
+
+function renderToan7MenuHTML() {
+  const runs = mathHistory().length;
+  const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
+  return mathHeaderHTML('TOÁN 7', 'Chọn học kì', 'Tập 1 đã có đủ; tập 2 đang được soạn.', 'openMathSection(\'home\')')
+    + `<div class="phrases-wrap">
+      ${owed}
+      <button class="phrases-cta" onclick="openMathSection('hk1')">
+        <span class="phrases-cta-icon">①</span>
+        <span class="phrases-cta-text"><strong>Học kì 1</strong><small>${mathBank().length} câu · Luyện tập, Lý thuyết, Đề thi</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+      <button class="phrases-cta locked" disabled aria-disabled="true">
+        <span class="phrases-cta-icon">②</span>
+        <span class="phrases-cta-text"><strong>Học kì 2</strong><small>Sắp có — đang soạn nội dung</small></span>
+        <span class="phrases-cta-arrow">🔒</span>
+      </button>
+      <button class="phrases-cta" onclick="openMathSection('history')">
+        <span class="phrases-cta-icon">🕘</span>
+        <span class="phrases-cta-text"><strong>Lịch sử làm bài</strong><small>${runs ? `${runs} lượt đã làm · thống kê và câu hay sai` : 'Chưa có lượt nào'}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+    </div>`;
+}
+
+function openMathSection(v) {
+  const known = ['home', 'toan7', 'hk1', 'history', 'wars'];
+  _mathView = (known.indexOf(v) === -1) ? 'home' : v;
+  // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen
+  // the child has walked away from and "finishes" a round they are not in.
+  if (_mathView !== 'wars' && typeof abandonWars === 'function' && typeof isWarsActive === 'function'
+      && isWarsActive()) abandonWars();
+  renderMathHome();
+}
+
+// Kept as the way in from anywhere: 'history' now names a VIEW of its own
+// rather than a tab inside Học kì 1, so it moves the child up a level.
 function switchMathSubTab(tab) {
-  _mathSubTab = (tab === 'lessons' || tab === 'exams' || tab === 'history') ? tab : 'practice';
+  if (tab === 'history') { openMathSection('history'); return; }
+  _mathSubTab = (tab === 'lessons' || tab === 'exams') ? tab : 'practice';
+  _mathView = 'hk1';
   renderMathHome();
 }
 
@@ -925,6 +1016,7 @@ if (typeof module !== 'undefined' && module.exports) {
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
     mathWrongAggregate, renderMathWrongPanelHTML,
     mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
+    openMathSection, renderMathMenuHTML, renderToan7MenuHTML, mathHeaderHTML,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
   };
 }
