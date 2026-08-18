@@ -240,11 +240,13 @@ suite('drift: grade 4 units', () => {
         // units.js reads the banks off the globals, the way the browser does.
         const { UNIT_WORDS } = require(path.join(ROOT, 'js', 'units-data.js'));
         const { UNIT_WORDS_HK1 } = require(path.join(ROOT, 'js', 'units-hk1-data.js'));
+        const { UNIT_WORDS_HK2 } = require(path.join(ROOT, 'js', 'units-hk2-data.js'));
         global.UNIT_WORDS = UNIT_WORDS;
         global.UNIT_WORDS_HK1 = UNIT_WORDS_HK1;
+        global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
         const units = require(path.join(ROOT, 'js', 'units.js'));
 
-        const sizes = { pre: 12, hk1: 5 };
+        const sizes = { pre: 12, hk1: 5, hk2: 5 };
         for (const [set, want] of Object.entries(sizes)) {
             const list = units.unitsList(set);
             assert.truthy(list.length >= want, `${set}: only ${list.length} units`);
@@ -257,6 +259,7 @@ suite('drift: grade 4 units', () => {
         }
         assert.equal(units.unitsBank('pre').length, UNIT_WORDS.length);
         assert.equal(units.unitsBank('hk1').length, UNIT_WORDS_HK1.length);
+        assert.equal(units.unitsBank('hk2').length, UNIT_WORDS_HK2.length);
     });
 
     test('the mastery target is read from the constant, not retyped', () => {

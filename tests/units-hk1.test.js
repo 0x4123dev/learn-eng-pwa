@@ -9,7 +9,9 @@ const path = require('path');
 
 const { UNIT_WORDS } = require(path.join(__dirname, '..', 'js', 'units-data.js'));
 const { UNIT_WORDS_HK1, UNIT_HK1_TITLES, UNIT_HK1_BOOKS } = require(path.join(__dirname, '..', 'js', 'units-hk1-data.js'));
+const { UNIT_WORDS_HK2 } = require(path.join(__dirname, '..', 'js', 'units-hk2-data.js'));
 global.UNIT_WORDS = UNIT_WORDS;
+global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
 global.UNIT_WORDS_HK1 = UNIT_WORDS_HK1;
 global.UNIT_HK1_TITLES = UNIT_HK1_TITLES;
 global.UNIT_HK1_BOOKS = UNIT_HK1_BOOKS;
@@ -162,10 +164,12 @@ suite('units HK1: bank shape', () => {
 });
 
 suite('units: the three word sets', () => {
-    test('Pre, HK1 and HK2 are the sets, HK2 is the one still coming', () => {
+    test('Pre, HK1 and HK2 are the sets, and all three have words', () => {
         assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'hk1', 'hk2']);
-        assert.truthy(units.UNIT_SETS.find(s => s.id === 'hk2').soon);
-        assert.equal(units.unitsBank('hk2').length, 0);
+        for (const set of units.UNIT_SETS) {
+            assert.truthy(units.unitsBank(set.id).length > 0, `${set.id} has no words`);
+            assert.falsy(set.soon, `${set.id} is still flagged "coming soon"`);
+        }
     });
 
     test('the Pre set still holds the original picture dictionary', () => {
@@ -174,7 +178,8 @@ suite('units: the three word sets', () => {
     });
 
     test('unitsAllWords spans every set, so an owed word always resolves', () => {
-        assert.equal(units.unitsAllWords().length, UNIT_WORDS.length + UNIT_WORDS_HK1.length);
+        assert.equal(units.unitsAllWords().length,
+            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length);
     });
 
     test('HK1 is the default set, and switching remembers itself', () => {
@@ -216,10 +221,11 @@ suite('units: unit keys across sets', () => {
         const hk1 = units._unitPool('hk1-1').map(w => w.en);
         assert.truthy(pre1.includes('doctor') && !hk1.includes('doctor'));
         assert.truthy(hk1.includes('Japan') && !pre1.includes('Japan'));
-        assert.equal(units._unitPool('hk2-1').length, 0);
         // The merged card really does serve both of its book units.
         assert.truthy(hk1.includes('get up'), 'unit 1 must also carry book unit 2');
         assert.equal(units._unitPool('hk1-9').length, 0, 'HK1 stops at Unit 5');
+        // HK2 is its own book entirely.
+        assert.falsy(units._unitPool('hk2-1').some(w => hk1.includes(w.en)));
     });
 
     test('labels name the set, except Pre which keeps the old wording', () => {

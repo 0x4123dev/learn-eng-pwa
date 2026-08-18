@@ -48,6 +48,7 @@ const OUT_DIR = path.join(ROOT, 'audio', 'words');
 const DATA_FILES = [
     'js/units-data.js',      // Topics tab unit practice (Pre set)
     'js/units-hk1-data.js',  // Topics tab unit practice (HK1 set)
+    'js/units-hk2-data.js',  // Topics tab unit practice (HK2 set)
     'js/topic-vocab.js',     // topic picture cards
     'js/vocabulary.js'       // lessons, home, word-of-the-day, word-hunt, topics
 ];

@@ -10,7 +10,8 @@
 //   hk1 — Tiếng Anh 4 Global Success, Tập một: the book's ten units merged
 //         two-by-two into five units carrying the whole Wordlist from
 //         pages 78-80 (js/units-hk1-data.js)
-//   hk2 — Tập hai, not written yet ("sắp có")
+//   hk2 — Tiếng Anh 4 Global Success, Tập hai: book units 11..20 merged the
+//         same way, carrying the whole Wordlist from pages 74-75
 //
 // A unit is addressed by a KEY. 'pre' keeps its bare keys (3, 'mix') so every
 // history row, best score and mastery count written before the split still
@@ -21,7 +22,7 @@ let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[
 const UNIT_SETS = [
   { id: 'pre', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
   { id: 'hk1', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
-  { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2', soon: true },
+  { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
 ];
 
 // Which set the cards are showing. Stored per user so the tab reopens where
@@ -48,7 +49,7 @@ function switchUnitSet(set) {
 function unitsBank(set) {
   const s = set || currentUnitSet();
   if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? UNIT_WORDS_HK1 : [];
-  if (s === 'hk2') return [];
+  if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? UNIT_WORDS_HK2 : [];
   return (typeof UNIT_WORDS !== 'undefined') ? UNIT_WORDS : [];
 }
 // Every word the tab knows, across all sets. Used where a word arrives with no
@@ -61,14 +62,20 @@ function unitsList(set) {
 }
 function unitTitle(set, unit) {
   if (set === 'hk1' && typeof UNIT_HK1_TITLES !== 'undefined') return UNIT_HK1_TITLES[unit] || '';
+  if (set === 'hk2' && typeof UNIT_HK2_TITLES !== 'undefined') return UNIT_HK2_TITLES[unit] || '';
   return '';
 }
-// HK1 units are renumbered 1..5, each merging two textbook units. The card
-// says which pair it covers ("Bài 1-2") so a child can still find the lesson
-// in the book.
+// The textbook units a practice unit merges. HK1 and HK2 both renumber theirs
+// 1..5, so the card says which pair it covers ("Bài 1-2", "Bài 11-12") — the
+// number alone would not point anywhere in the book.
+function unitBooks(set, unit) {
+  const map = set === 'hk1' ? (typeof UNIT_HK1_BOOKS !== 'undefined' ? UNIT_HK1_BOOKS : null)
+            : set === 'hk2' ? (typeof UNIT_HK2_BOOKS !== 'undefined' ? UNIT_HK2_BOOKS : null)
+            : null;
+  return (map && map[unit]) || null;
+}
 function unitBooksLabel(set, unit) {
-  if (set !== 'hk1' || typeof UNIT_HK1_BOOKS === 'undefined') return '';
-  const b = UNIT_HK1_BOOKS[unit];
+  const b = unitBooks(set, unit);
   if (!b || !b.length) return '';
   return 'Bài ' + (b.length > 1 ? b[0] + '-' + b[b.length - 1] : b[0]);
 }
@@ -672,7 +679,7 @@ function finishUnitPractice() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    unitsBank, unitsAllWords, unitsList, unitTitle, unitBooksLabel,
+    unitsBank, unitsAllWords, unitsList, unitTitle, unitBooks, unitBooksLabel,
     UNIT_SETS, currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
     _unitKey, _unitParse, _unitKeyArg,
     buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,

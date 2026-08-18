@@ -107,6 +107,7 @@ function masteryEnv() {
     vm.createContext(ctx);
     vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-data.js'), 'utf8'), ctx);
     vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-hk1-data.js'), 'utf8'), ctx);
+    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-hk2-data.js'), 'utf8'), ctx);
     vm.runInContext(unitsSrc + '\nthis.API = module.exports;\nthis.quiz = () => _unitQuiz;', ctx);
     return { ctx, api: ctx.API, el };
 }
