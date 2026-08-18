@@ -91,6 +91,110 @@ suite('math wars: the numbers stay in the child\'s head', () => {
     });
 });
 
+// The ladder is the whole reason a Grade 4 child can start this mode at all:
+// bậc 1 is "đáp án < 20", and it only widens after ten correct answers in a
+// row. None of it is on screen — these tests are the only place it is visible.
+suite('math wars: the hidden difficulty ladder', () => {
+    function at(level, streak) {
+        global.appState = { coins: 0, warsHistory: [], warsProgress: { level: level, streak: streak || 0 } };
+    }
+
+    test('a brand-new child starts at bậc 1 — nothing above 19, anywhere', () => {
+        global.appState = { coins: 0, warsHistory: [] };   // no ladder recorded yet
+        assert.equal(w.warsProgress().level, 0, 'a first-time child must start at the bottom');
+        assert.equal(w.warsMax(), 19, 'bậc 1 is "đáp án < 20"');
+        const rand = seeded(29);
+        const bad = [];
+        for (let i = 0; i < RUNS; i++) {
+            const q = w.warsQuestion(rand);
+            const nums = [q.a, q.b, q.answer].concat(q.options);
+            if (nums.some(n => !Number.isInteger(n) || n < 0 || n > 19)) bad.push(q);
+        }
+        assert.deepEqual(bad.slice(0, 3), [], `${bad.length}/${RUNS} questions broke out of bậc 1`);
+    });
+
+    test('every bậc widens by ten and the last one is the old 0–99', () => {
+        assert.deepEqual(
+            Array.from({ length: w.WARS_LEVELS }, (_, i) => w.warsLevelMax(i)),
+            [19, 29, 39, 49, 59, 69, 79, 89, 99]);
+        assert.equal(w.warsLevelMax(99), w.WARS_MAX, 'past the top bậc it just stays at 99');
+        assert.equal(w.warsLevelMax(-3), 19, 'and a broken level falls back to the bottom');
+    });
+
+    test('each bậc holds its own ceiling, operands and options included', () => {
+        for (let lv = 0; lv < w.WARS_LEVELS; lv++) {
+            at(lv);
+            const cap = w.warsLevelMax(lv);
+            const rand = seeded(31 + lv);
+            for (let i = 0; i < 2000; i++) {
+                const q = w.warsQuestion(rand);
+                [q.a, q.b, q.answer].concat(q.options).forEach(n => {
+                    assert.truthy(Number.isInteger(n) && n >= 0 && n <= cap,
+                        `bậc ${lv + 1} (≤${cap}) produced ${n} in "${q.q}"`);
+                });
+            }
+        }
+    });
+
+    test('ten correct in a row opens the next bậc — and only then', () => {
+        at(0);
+        for (let i = 0; i < w.WARS_LEVEL_UP_STREAK - 1; i++) {
+            w.warsNoteAnswer(true);
+            assert.equal(w.warsProgress().level, 0, `bậc moved after only ${i + 1} correct`);
+        }
+        w.warsNoteAnswer(true);
+        assert.equal(w.warsProgress().level, 1, 'ten correct in a row must open bậc 2');
+        assert.equal(w.warsMax(), 29, 'bậc 2 is "đáp án < 30"');
+        assert.equal(w.warsProgress().streak, 0, 'the count restarts for the next bậc');
+    });
+
+    test('one wrong answer costs the streak but never the bậc already earned', () => {
+        at(2, 9);                                    // one answer from bậc 4
+        w.warsNoteAnswer(false);
+        assert.equal(w.warsProgress().streak, 0, 'a slip must reset the count');
+        assert.equal(w.warsProgress().level, 2, 'but a child never loses ground they earned');
+        assert.equal(w.warsMax(), 39);
+    });
+
+    test('the streak carries across rounds — ten correct is ten correct', () => {
+        at(0);
+        for (let i = 0; i < 6; i++) w.warsNoteAnswer(true);   // end of one round
+        assert.equal(w.warsProgress().level, 0);
+        for (let i = 0; i < 4; i++) w.warsNoteAnswer(true);   // start of the next
+        assert.equal(w.warsProgress().level, 1, 'a streak that spans two rounds still counts');
+    });
+
+    test('the ladder stops at the top instead of running off the end', () => {
+        at(w.WARS_LEVELS - 1, 0);
+        for (let i = 0; i < 100; i++) w.warsNoteAnswer(true);
+        assert.equal(w.warsProgress().level, w.WARS_LEVELS - 1, 'the top bậc is the top');
+        assert.equal(w.warsMax(), w.WARS_MAX);
+    });
+
+    test('a round is pinned to the bậc it opened at, and records it', () => {
+        at(1);
+        w.startWarsRound();
+        // Ten correct answers would open bậc 3 mid-round; the sums under the
+        // child's fingers must not change while they are looking at them.
+        for (let i = 0; i < w.WARS_QUESTIONS; i++) {
+            if (!w.isWarsActive()) break;
+            w.answerWars(0);
+        }
+        const run = global.appState.warsHistory[0];
+        assert.equal(run.level, 2, 'the run must record the bậc it was played at');
+        assert.equal(run.max, 29, 'and the ceiling that bậc used');
+    });
+
+    test('the bậc is never written on the screen', () => {
+        at(3);
+        const html = w.renderWarsPracticeHTML() + w.renderWarsHistoryHTML();
+        assert.truthy(!/bậc|Bậc|cấp độ|level|Level/.test(html),
+            'the ladder must stay invisible — the child just plays');
+        assert.truthy(!/0–99|0-99/.test(html),
+            'and the copy must not promise a range the bậc has not reached');
+    });
+});
+
 suite('math wars: scoring a round', () => {
     function reset() {
         global.appState = { coins: 0, warsHistory: [] };

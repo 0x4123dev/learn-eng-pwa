@@ -207,7 +207,9 @@ const EngAuth = (function () {
       type: 'math',
       title: 'Math Wars · ' + (h.correct || 0) + '/' + (h.total || 0) + ' câu',
       score: h.correct, total: h.total, at: h.date,
-      detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut },
+      // level = the hidden difficulty bậc the round was played at (1 = đáp án
+      // dưới 20). The child never sees it; a parent reading the timeline can.
+      detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut, level: h.level, max: h.max },
     }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',

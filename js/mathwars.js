@@ -21,11 +21,71 @@ const WARS_MAX = 99;                 // hàng chục: nothing above this, anywhe
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
 const WARS_HISTORY_CAP = 300;
 
+// ---- the hidden difficulty ladder -------------------------------------
+// A Grade 4 child starting on 63 : 7 gives up; the same child starting on
+// 12 : 2 finishes the round and comes back. So the round is not one
+// difficulty — it is a ladder, and the child is never told they are on it.
+//
+// Bậc 1 keeps every answer under 20. Ten correct answers IN A ROW (the
+// "10 bài đúng 100%" the ladder is built around) opens bậc 2, under 30, and
+// so on to 99. A wrong answer costs the streak, not the bậc: the ladder only
+// ever goes up, because a child who has to re-earn ground they already had
+// learns that trying is what costs them.
+//
+// The streak is counted across rounds, not inside one, so ten correct spread
+// over the end of one round and the start of the next still counts.
+const WARS_LEVEL_BASE = 20;          // trần bậc 1: đáp án < 20
+const WARS_LEVEL_STEP = 10;          // mỗi bậc nới thêm 10
+const WARS_LEVEL_UP_STREAK = 10;     // 10 câu đúng liên tiếp thì lên bậc
+// 19, 29, 39 … 99 — the last bậc is the old fixed range.
+const WARS_LEVELS = Math.floor((WARS_MAX + 1 - WARS_LEVEL_BASE) / WARS_LEVEL_STEP) + 1;
+
 let _warsQuiz = null;   // { questions, idx, answers, startedAt, endsAt, timer }
 let _warsView = 'practice';  // 'practice' | 'history'
+// Where the ladder lives when there is no appState to keep it in (tests, and
+// the first paint before a user is loaded).
+let _warsProgressFallback = { level: 0, streak: 0 };
 
 function warsEsc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ---- where the child is on the ladder ---------------------------------
+// Kept on appState so it rides the same save/sync as coins and history, and
+// deliberately kept OFF the screen: the child sees "Math Wars", not "bậc 3".
+function warsProgress() {
+  const home = (typeof appState !== 'undefined' && appState) ? appState : null;
+  const p = home ? home.warsProgress : _warsProgressFallback;
+  const level = Math.min(WARS_LEVELS - 1, Math.max(0, Math.floor((p && p.level) || 0)));
+  const streak = Math.max(0, Math.floor((p && p.streak) || 0));
+  const out = { level: level, streak: streak };
+  if (home) home.warsProgress = out; else _warsProgressFallback = out;
+  return out;
+}
+
+// The ceiling for a bậc: bậc 1 → 19, bậc 2 → 29 … capped at 99.
+function warsLevelMax(level) {
+  const lv = Math.min(WARS_LEVELS - 1, Math.max(0, Math.floor(level || 0)));
+  return Math.min(WARS_MAX, WARS_LEVEL_BASE + WARS_LEVEL_STEP * lv - 1);
+}
+
+function warsMax() { return warsLevelMax(warsProgress().level); }
+
+// Called once per answered question. Ten in a row and the ceiling moves;
+// one slip and the count starts over, but the bậc already earned stays.
+function warsNoteAnswer(ok) {
+  const home = (typeof appState !== 'undefined' && appState) ? appState : null;
+  const p = warsProgress();
+  if (!ok) { p.streak = 0; }
+  else {
+    p.streak += 1;
+    if (p.streak >= WARS_LEVEL_UP_STREAK) {
+      p.streak = 0;
+      if (p.level < WARS_LEVELS - 1) p.level += 1;
+    }
+  }
+  if (home) home.warsProgress = p; else _warsProgressFallback = p;
+  return p;
 }
 
 // ---- the questions ----------------------------------------------------
@@ -33,26 +93,27 @@ function warsEsc(s) {
 function _warsInt(rand, lo, hi) { return lo + Math.floor(rand() * (hi - lo + 1)); }
 
 // One question per operator, each built so that BOTH operands and the answer
-// land inside 0..99 — a child doing this in their head never meets a number
-// they have not been taught to hold.
-function warsBuild(op, rand) {
+// land inside 0..max — a child doing this in their head never meets a number
+// they have not been taught to hold, and never one above the bậc they are on.
+function warsBuild(op, rand, max) {
   const r = rand || Math.random;
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
   let a, b, ans;
   if (op === '+') {
-    a = _warsInt(r, 2, 89);
-    b = _warsInt(r, 2, WARS_MAX - a);      // tổng không vượt 99
+    a = _warsInt(r, 2, hi - 2);
+    b = _warsInt(r, 2, hi - a);            // tổng không vượt trần
     ans = a + b;
   } else if (op === '−') {
-    a = _warsInt(r, 11, WARS_MAX);
+    a = _warsInt(r, 11, hi);
     b = _warsInt(r, 2, a - 1);             // hiệu luôn dương
     ans = a - b;
   } else if (op === '×') {
     b = _warsInt(r, 2, 9);
-    a = _warsInt(r, 2, Math.floor(WARS_MAX / b));
+    a = _warsInt(r, 2, Math.max(2, Math.floor(hi / b)));
     ans = a * b;
   } else {                                  // ':' — chia hết, không dư
     b = _warsInt(r, 2, 9);
-    ans = _warsInt(r, 2, Math.floor(WARS_MAX / b));
+    ans = _warsInt(r, 2, Math.max(2, Math.floor(hi / b)));
     a = b * ans;                            // số bị chia dựng ngược từ thương
   }
   return { a: a, b: b, op: op, answer: ans };
@@ -61,8 +122,9 @@ function warsBuild(op, rand) {
 // Wrong answers a child could actually arrive at: off by one, off by ten,
 // digits swapped, or the neighbouring operation. Never a number outside the
 // range, never a repeat, never the right answer twice.
-function warsDistractors(q, rand) {
+function warsDistractors(q, rand, max) {
   const r = rand || Math.random;
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
   const swap = (n) => (n >= 10 && n <= 99) ? (n % 10) * 10 + Math.floor(n / 10) : null;
   const pool = [
     q.answer + 1, q.answer - 1, q.answer + 2, q.answer - 2,
@@ -83,26 +145,27 @@ function warsDistractors(q, rand) {
     const n = pool[i];
     if (out.length >= 3) return;
     if (n === null || !Number.isFinite(n)) return;
-    if (n < 0 || n > WARS_MAX || seen[n]) return;
+    if (n < 0 || n > hi || seen[n]) return;
     seen[n] = 1;
     out.push(n);
   });
   // Nothing plausible left (tiny answers run out of neighbours) — fill from
   // the range rather than ship a question with two options.
   let n = 0;
-  while (out.length < 3 && n <= WARS_MAX) {
+  while (out.length < 3 && n <= hi) {
     if (!seen[n]) { seen[n] = 1; out.push(n); }
     n++;
   }
   return out;
 }
 
-function warsQuestion(rand) {
+function warsQuestion(rand, max) {
   const r = rand || Math.random;
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
   const ops = ['+', '−', '×', ':'];
   const op = ops[_warsInt(r, 0, ops.length - 1)];
-  const q = warsBuild(op, r);
-  const opts = [q.answer].concat(warsDistractors(q, r));
+  const q = warsBuild(op, r, hi);
+  const opts = [q.answer].concat(warsDistractors(q, r, hi));
   for (let i = opts.length - 1; i > 0; i--) {
     const j = Math.floor(r() * (i + 1));
     const t = opts[i]; opts[i] = opts[j]; opts[j] = t;
@@ -116,12 +179,12 @@ function warsQuestion(rand) {
   };
 }
 
-function warsQuestions(n, rand) {
+function warsQuestions(n, rand, max) {
   const out = [];
   const seen = {};
   let guard = 0;
   while (out.length < n && guard++ < n * 40) {
-    const q = warsQuestion(rand);
+    const q = warsQuestion(rand, max);
     if (seen[q.q]) continue;      // no repeat inside one round
     seen[q.q] = 1;
     out.push(q);
@@ -220,8 +283,14 @@ function warsLeftMs() {
 function startWarsRound() {
   warsStopClock();
   const now = Date.now();
+  // The bậc is pinned when the round opens, so a ladder step earned on
+  // question 9 does not change the sums under the child's fingers — it shows
+  // up in the next round, which is the only place they could notice it.
+  const level = warsProgress().level;
   _warsQuiz = {
-    questions: warsQuestions(WARS_QUESTIONS),
+    level: level,
+    max: warsLevelMax(level),
+    questions: warsQuestions(WARS_QUESTIONS, null, warsLevelMax(level)),
     idx: 0,
     answers: [],
     askedAt: now,
@@ -257,6 +326,7 @@ function answerWars(i) {
   const q = st.questions[st.idx];
   const now = Date.now();
   st.answers.push({ pick: i, ok: i === q.correct, ms: Math.max(0, now - st.askedAt) });
+  warsNoteAnswer(i === q.correct);
   if (typeof petCheerAnswer === 'function') petCheerAnswer(i === q.correct);
   st.idx++;
   st.askedAt = now;
@@ -290,6 +360,11 @@ function finishWars(timedOut) {
     meanMs: answered ? Math.round(msSum / answered) : 0,
     elapsedMs: Math.min(WARS_SECONDS * 1000, Date.now() - st.startedAt),
     timedOut: !!timedOut,
+    // Not shown anywhere in the app — it is here so a parent (and the admin
+    // timeline) can see the sums were getting harder, and so a run's score
+    // can be read against the bậc it was scored at.
+    level: (st.level || 0) + 1,
+    max: st.max || WARS_MAX,
   };
   warsSaveRun(run);
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -413,7 +488,7 @@ function renderWarsPracticeHTML() {
     <div class="phrases-hero">
       <div class="phrases-hero-icon">⚔️</div>
       <h1>Math Wars</h1>
-      <p class="phrases-sub">${WARS_QUESTIONS} phép tính cộng – trừ – nhân – chia trong <b>${warsLengthLabel()}</b>. Số nào cũng nằm trong khoảng 0–${WARS_MAX} nên tính nhẩm được hết.</p>
+      <p class="phrases-sub">${WARS_QUESTIONS} phép tính cộng – trừ – nhân – chia trong <b>${warsLengthLabel()}</b>. Số nào cũng tính nhẩm được, không cần giấy bút.</p>
     </div>
     <button class="phrases-cta" onclick="startWarsRound()">
       <span class="phrases-cta-icon">⚔️</span>
@@ -478,6 +553,8 @@ function renderWarsHomeHTML() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_COINS_PER_CORRECT,
+    WARS_LEVEL_BASE, WARS_LEVEL_STEP, WARS_LEVEL_UP_STREAK, WARS_LEVELS,
+    warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
     warsBuild, warsDistractors, warsQuestion, warsQuestions,
     warsHistory, warsStats, warsSaveRun, warsEsc,
     startWarsRound, answerWars, finishWars, abandonWars, warsQuit, isWarsActive,
