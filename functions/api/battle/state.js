@@ -19,7 +19,7 @@ export async function onRequestGet({ request, env }) {
   if (b.challenger_id !== auth.uid && b.opponent_id !== auth.uid) return err('Forbidden', 403);
 
   const turns = await env.DB.prepare(
-    `SELECT turn_no, user_id, angle, power, shots, damage, created_at
+    `SELECT turn_no, user_id, angle, power, shots, damage, abilities, rocket, created_at
        FROM battle_turns WHERE battle_id = ? AND turn_no > ?
       ORDER BY turn_no`
   ).bind(id, since).all();

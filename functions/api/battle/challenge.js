@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground } from '../_battle.js';
+import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground, hiresJson, startingHp } from '../_battle.js';
 
 // POST /api/battle/challenge { friendId, level, stage, petName, backgroundId }
 // Starts a 60-second invite. Zero ammo ⇒ no battle: you must learn first.
@@ -38,17 +38,24 @@ export async function onRequestPost({ request, env }) {
   const now = Date.now();
   const seed = (Math.floor(Math.random() * 0x7fffffff) ^ now) >>> 0;
   const backgroundId = normalizeBattleBackground(body.backgroundId);
+  // The squad is snapshotted on the battle: it was paid for THIS fight, and a
+  // replay later must show the bench that actually fought. Normalised here
+  // because the list arrived from a device.
+  const myLevel = Math.max(1, Math.trunc(+body.level || 1));
+  const myHires = hiresJson(body.hires);
 
   const res = await env.DB.prepare(
     `INSERT INTO battles (challenger_id, opponent_id, status, seed, field_version, background_id,
                           challenger_ammo, challenger_level, challenger_stage, challenger_name,
+                          challenger_hires, challenger_hp,
                           created_at, expires_at)
-     VALUES (?, ?, 'invited', ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, 'invited', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     auth.uid, friendId, seed, FIELD_VERSION_NEW, backgroundId, ammo,
-    Math.max(1, Math.trunc(+body.level || 1)),
+    myLevel,
     String(body.stage || 'chihuahua').slice(0, 20),
     String(body.petName || me?.username || 'Pet').slice(0, 20),
+    myHires, startingHp(myLevel),
     now, now + INVITE_TTL_MS
   ).run();
 

@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS } from '../_battle.js';
+import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS , normalizeAbilities } from '../_battle.js';
 
 // The most damage a volley could physically do (mirrors battlecalc.shotDamage
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
@@ -40,6 +40,9 @@ export async function onRequestPost({ request, env }) {
     ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel), Math.trunc(+body.damage || 0)))
     : 0;
 
+  const abilities = normalizeAbilities(body.abilities);
+  const rocket = body.rocket ? 1 : 0;
+
   const now = Date.now();
   const foeHp = Math.max(0, (meIsChallenger ? b.opponent_hp : b.challenger_hp) - damage);
   const nextTurnNo = b.turn_no + 1;
@@ -55,9 +58,9 @@ export async function onRequestPost({ request, env }) {
 
   // Record the turn (UNIQUE(battle_id, turn_no) makes a double-submit harmless).
   await env.DB.prepare(
-    `INSERT OR IGNORE INTO battle_turns (battle_id, turn_no, user_id, angle, power, shots, damage, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(id, b.turn_no, auth.uid, angle, power, shots, damage, now).run();
+    `INSERT OR IGNORE INTO battle_turns (battle_id, turn_no, user_id, angle, power, shots, damage, abilities, rocket, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(id, b.turn_no, auth.uid, angle, power, shots, damage, JSON.stringify(abilities), rocket, now).run();
 
   const myAmmoLeft = myAmmoAfter;
   const fields = meIsChallenger

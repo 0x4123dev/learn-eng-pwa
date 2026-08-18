@@ -74,7 +74,7 @@ const PB_STR = {
     hireTotal: 'Squad cost: {n} 🪙',
     hireFull: 'Bench full ({n} max)',
     hireNone: 'No teammates — save your coins for pet food 🍖',
-    hireTrial: '🤖 Free to try in practice. Friend battles get them next.',
+    hireTrial: '🤖 Free to try in practice — coins are only spent on a real battle.',
     hirePoor: 'Not enough coins',
     hireGunner: 'Gunner', hireGunnerAb: 'Fires a rocket along your next shot',
     hireEngineer: 'Engineer', hireEngineerAb: 'Repairs your castle +15 HP',
@@ -202,7 +202,7 @@ const PB_STR = {
     hireTotal: 'Tiền thuê: {n} 🪙',
     hireFull: 'Đã đủ quân ({n} người)',
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
-    hireTrial: '🤖 Thử miễn phí ở trận luyện tập. Đánh với bạn sẽ có sau.',
+    hireTrial: '🤖 Thử miễn phí ở trận luyện tập — chỉ tốn xu khi đánh thật.',
     hirePoor: 'Không đủ xu',
     hireGunner: 'Pháo thủ', hireGunnerAb: 'Bắn tên lửa theo đúng đường đạn của bé',
     hireEngineer: 'Kỹ sư', hireEngineerAb: 'Sửa lâu đài +15 HP',
@@ -903,13 +903,13 @@ function _pbFriendWait(f) {
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), hires: pbHireCommit() }, _pbMyPet()),
   });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true }, _pbMyPet()) });
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, hires: pbHireCommit() }, _pbMyPet()) });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }

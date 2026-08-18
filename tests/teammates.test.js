@@ -613,24 +613,96 @@ suite('teammates: you hire a person, not a weapon', () => {
     });
 });
 
-suite('teammates: nobody pays for a squad that cannot turn up', () => {
-    test('a friend challenge does not charge for teammates yet', () => {
-        // The server still stamps field_version 3 and does not persist hires,
-        // so a squad bought here would never reach the arena. Charging for it
-        // would take real coins for nothing.
+suite('teammates: a friend battle really carries the squad', () => {
+    test('challenging commits the squad and charges once', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function challengePetFriend'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.falsy(/pbHireCommit\(\)/.test(body),
-            'do not debit coins until the server carries the squad');
+        assert.truthy(/hires: pbHireCommit\(\)/.test(body),
+            'the squad must travel with the challenge, and be paid for exactly once');
     });
 
-    test('accepting a challenge does not charge either', () => {
+    test('accepting commits the squad too', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function acceptPetBattle'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.falsy(/pbHireCommit\(\)/.test(body),
-            'do not debit coins until the server carries the squad');
+        assert.truthy(/hires: pbHireCommit\(\)/.test(body),
+            'the accepting side hires from the same lobby');
+    });
+
+    test('practice still never charges', () => {
+        const src = read('js/petbattle.js');
+        const fn = src.slice(src.indexOf('function startBotBattle'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        assert.truthy(/hires: pbHireCart\(\)/.test(body));
+        assert.falsy(/pbHireCommit\(\)/.test(body), 'practice pays nothing, so it charges nothing');
+    });
+});
+
+suite('teammates: the server and the client agree', () => {
+    const server = () => read('functions/api/_battle.js');
+    const num = (name) => {
+        const m = new RegExp('export const ' + name + '\\s*=\\s*(\\d+)').exec(server());
+        return m ? Number(m[1]) : null;
+    };
+
+    test('new battles are stamped with the fortress the client draws', () => {
+        assert.equal(num('FIELD_VERSION_NEW'), 4);
+        assert.equal(num('FIELD_VERSION_MAX'), 4);
+        assert.equal(calc.fieldRules(4).version, 4, 'the client must be able to draw it');
+    });
+
+    test('the fees the server charges are the fees the shop showed', () => {
+        // The server cannot import the client module (classic script vs ESM),
+        // so the roster is re-typed there. If the two drift, a child is billed
+        // a different price than the one on the card they tapped.
+        const src = server();
+        for (const mate of T.TEAM_ROSTER) {
+            const re = new RegExp("'?" + mate.id + "'?\\s*:\\s*" + mate.fee + "\\b");
+            assert.truthy(re.test(src),
+                `server fee for ${mate.id} is missing or not ${mate.fee}`);
+        }
+    });
+
+    test('the bench cap matches on both sides', () => {
+        const m = /export const TEAM_MAX_HIRES\s*=\s*(\d+)/.exec(server());
+        assert.truthy(m, 'the server must cap the squad too — the list arrives from a device');
+        assert.equal(Number(m[1]), T.TEAM_MAX_HIRES);
+    });
+
+    test('starting HP is computed the same way on both sides', () => {
+        const src = server();
+        const base = /const HP_BASE\s*=\s*(\d+)/.exec(src);
+        const per = /const HP_LEVELS_PER_POINT\s*=\s*(\d+)/.exec(src);
+        const cap = /const HP_BONUS_MAX\s*=\s*(\d+)/.exec(src);
+        assert.truthy(base && per && cap, 'the server must know the HP rule');
+        assert.equal(Number(base[1]), T.HP_BASE);
+        assert.equal(Number(per[1]), T.HP_LEVELS_PER_POINT);
+        assert.equal(Number(cap[1]), T.HP_BONUS_MAX);
+    });
+
+    test('the battle view hands each side its own squad', () => {
+        const src = server();
+        assert.truthy(/hires:\s*meIsChallenger \? cHires : oHires/.test(src),
+            'me.hires must be the viewer’s own bench');
+        assert.truthy(/hires:\s*meIsChallenger \? oHires : cHires/.test(src),
+            'foe.hires must be the other bench');
+    });
+
+    test('a turn carries the charges it spent', () => {
+        const turn = read('functions/api/battle/turn.js');
+        assert.truthy(/abilities/.test(turn), 'the turn must record spent charges');
+        assert.truthy(/rocket/.test(turn), 'and whether a rocket rode the volley');
+        const state = read('functions/api/battle/state.js');
+        assert.truthy(/abilities/.test(state) && /rocket/.test(state),
+            'and the opponent must be able to read them back');
+    });
+
+    test('the migration adds every column the endpoints write', () => {
+        const sql = read('db/006-battle-teammates.sql');
+        for (const col of ['challenger_hires', 'opponent_hires', 'abilities', 'rocket']) {
+            assert.truthy(sql.includes(col), `migration is missing ${col}`);
+        }
     });
 });
 

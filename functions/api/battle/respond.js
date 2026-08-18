@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { ammoStatsFor, reapStale, battleView, TURN_MS } from '../_battle.js';
+import { ammoStatsFor, reapStale, battleView, TURN_MS , hiresJson, startingHp } from '../_battle.js';
 
 // POST /api/battle/respond { battleId, accept, level, stage, petName }
 // Accepting snapshots the opponent's ammo/level and starts turn 1.
@@ -32,17 +32,20 @@ export async function onRequestPost({ request, env }) {
 
   const me = await env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(auth.uid).first();
   const now = Date.now();
+  const myLevel = Math.max(1, Math.trunc(+body.level || 1));
   // The challenger always fires first.
   await env.DB.prepare(
     `UPDATE battles
         SET status = 'active', opponent_ammo = ?, opponent_level = ?, opponent_stage = ?,
-            opponent_name = ?, turn_no = 1, turn_user_id = ?, turn_started_at = ?
+            opponent_name = ?, opponent_hires = ?, opponent_hp = ?,
+            turn_no = 1, turn_user_id = ?, turn_started_at = ?
       WHERE id = ?`
   ).bind(
     ammo,
-    Math.max(1, Math.trunc(+body.level || 1)),
+    myLevel,
     String(body.stage || 'chihuahua').slice(0, 20),
     String(body.petName || me?.username || 'Pet').slice(0, 20),
+    hiresJson(body.hires), startingHp(myLevel),
     b.challenger_id, now, id
   ).run();
 

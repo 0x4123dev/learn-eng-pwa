@@ -20,11 +20,51 @@ export const MAX_TURNS = AMMO_CAP * 2 + 4;
 // the client happens to be running: both phones must derive identical terrain
 // from one seed for the whole match. New challenges are the long world; rows
 // written before this column existed stay v1 forever.
-export const FIELD_VERSION_NEW = 3;
-export const FIELD_VERSION_MAX = 3;
+export const FIELD_VERSION_NEW = 4;
+export const FIELD_VERSION_MAX = 4;
 export function normalizeFieldVersion(v) {
   const n = Math.trunc(Number(v));
   return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;
+}
+
+
+// ---- hired đồng đội ----
+// Re-typed from js/battle-teammates.js because Functions are ESM and that file
+// is a classic script. tests/teammates.test.js pins the two copies together.
+export const TEAM_FEES = { gunner: 600, engineer: 1000, shield: 1400 };
+export const TEAM_MAX_HIRES = 5;
+const HP_BASE = 100;
+const HP_LEVELS_PER_POINT = 10;
+const HP_BONUS_MAX = 15;
+
+// A squad arrives from a device, so it is never trusted: unknown ids dropped,
+// length clamped. Stored as JSON text on the battle row.
+export function normalizeHires(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(id => Object.prototype.hasOwnProperty.call(TEAM_FEES, id))
+             .slice(0, TEAM_MAX_HIRES);
+}
+
+export function hiresJson(list) {
+  return JSON.stringify(normalizeHires(list));
+}
+
+export function parseHires(text) {
+  try { return normalizeHires(JSON.parse(text || '[]')); } catch (e) { return []; }
+}
+
+// Food is the only thing that touches a fight: +1 castle HP per 10 pet levels,
+// capped so a well-fed pet is rewarded but never unbeatable by better aim.
+export function startingHp(level) {
+  const lv = Math.max(0, Math.trunc(Number(level) || 0));
+  return HP_BASE + Math.min(HP_BONUS_MAX, Math.floor(lv / HP_LEVELS_PER_POINT));
+}
+
+// Which abilities a turn may legally claim, given the bench that side hired
+// and what they have already spent earlier in the battle.
+export function normalizeAbilities(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(id => id === 'engineer' || id === 'shield').slice(0, TEAM_MAX_HIRES);
 }
 
 // A challenge snapshots one immutable arena so both clients load the same
@@ -178,6 +218,8 @@ export async function reapStale(env) {
 export function battleView(b, viewerId) {
   if (!b) return null;
   const meIsChallenger = b.challenger_id === viewerId;
+  const cHires = parseHires(b.challenger_hires);
+  const oHires = parseHires(b.opponent_hires);
   const me = {
     id: meIsChallenger ? b.challenger_id : b.opponent_id,
     name: meIsChallenger ? b.challenger_name : b.opponent_name,
@@ -185,6 +227,7 @@ export function battleView(b, viewerId) {
     level: meIsChallenger ? b.challenger_level : b.opponent_level,
     stage: meIsChallenger ? b.challenger_stage : b.opponent_stage,
     hp: meIsChallenger ? b.challenger_hp : b.opponent_hp,
+    hires: meIsChallenger ? cHires : oHires,
   };
   const foe = {
     id: meIsChallenger ? b.opponent_id : b.challenger_id,
@@ -193,6 +236,7 @@ export function battleView(b, viewerId) {
     level: meIsChallenger ? b.opponent_level : b.challenger_level,
     stage: meIsChallenger ? b.opponent_stage : b.challenger_stage,
     hp: meIsChallenger ? b.opponent_hp : b.challenger_hp,
+    hires: meIsChallenger ? oHires : cHires,
   };
   return {
     id: b.id,
