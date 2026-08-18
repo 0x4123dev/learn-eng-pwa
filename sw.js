@@ -7,9 +7,11 @@ const CACHE_NAME = 'flashlingo-v320';
 // single-voice rebuild; v3 fixed 71 words the model was substituting for a
 // different word entirely (van -> "from", hazard -> "HazardO", etc.), found
 // by transcribing all 13,083 recordings and cross-checking with a second
-// model. Without the bump, a phone that had already cached one of those
-// words would keep playing the wrong one forever.
-const AUDIO_CACHE = 'flashlingo-audio-v3';
+// model; v4 fixed four more the sweep had filed as "probably a homophone" —
+// web was live saying "You win", which is how that heuristic was caught out.
+// Without the bump, a phone that had already cached one of those words would
+// keep playing the wrong one forever.
+const AUDIO_CACHE = 'flashlingo-audio-v4';
 const ASSETS = [
   '/',
   '/index.html',
