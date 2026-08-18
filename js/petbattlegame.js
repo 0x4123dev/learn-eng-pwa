@@ -905,52 +905,147 @@ PetBattleGame.prototype._drawWorld = function () {
 };
 
 // ---- the hired squad, drawn as little characters ----
-// Emoji were the first cut and read as UI, not as somebody the child bought.
-// These are drawn characters in the same flat, thick-outlined style as the
-// castle and the pets, so a teammate feels like a unit standing in your keep.
+// Chibi proportions on purpose — a big head, small body and a bold dark
+// outline are what make a 16px-tall figure on a phone still read as somebody,
+// the way the units in a tower-defence game do. Flat blocks did not.
 //
-// Each is authored inside roughly a 22x26 box with its feet at y=0, in native
-// castle space, and is drawn upright regardless of which way the castle faces.
+// Each is authored inside roughly a 30x34 box with its feet at y=0, in native
+// castle space, and is drawn upright whichever way the castle faces.
+const PB_MATE_INK = '#20232e';       // one dark ink for every outline
+
+// Shared chibi body: boots, torso, arms, then a big round head. Colours differ
+// per character; the silhouette does not, so they read as one squad.
+function _pbChibi(ctx, o) {
+  const ink = PB_MATE_INK;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  // ground shadow
+  ctx.fillStyle = 'rgba(15,23,42,.28)';
+  ctx.beginPath(); ctx.ellipse(0, 0, 11, 3.2, 0, 0, Math.PI * 2); ctx.fill();
+
+  // boots
+  ctx.fillStyle = o.boot; ctx.strokeStyle = ink; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.roundRect(-8, -7, 6.5, 7, 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(1.5, -7, 6.5, 7, 2); ctx.fill(); ctx.stroke();
+
+  // torso — slightly barrel-shaped, wider at the shoulders
+  ctx.fillStyle = o.body;
+  ctx.beginPath();
+  ctx.moveTo(-8.5, -8);
+  ctx.quadraticCurveTo(-9.5, -19, -7, -21);
+  ctx.lineTo(7, -21);
+  ctx.quadraticCurveTo(9.5, -19, 8.5, -8);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // belt / trim
+  ctx.fillStyle = o.trim;
+  ctx.beginPath(); ctx.roundRect(-8.6, -12, 17.2, 3.4, 1.4); ctx.fill(); ctx.stroke();
+
+  // arms
+  ctx.fillStyle = o.body;
+  ctx.beginPath(); ctx.roundRect(-12, -20, 4.6, 10, 2.3); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(7.4, -20, 4.6, 10, 2.3); ctx.fill(); ctx.stroke();
+  // hands
+  ctx.fillStyle = o.skin;
+  ctx.beginPath(); ctx.arc(-9.7, -10.2, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(9.7, -10.2, 2.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+  // head — big, that is the whole trick
+  ctx.fillStyle = o.skin;
+  ctx.beginPath(); ctx.arc(0, -27.5, 8.4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  // Helmet BEFORE the face: every brim sits at about y -27, so drawing it
+  // afterwards painted straight over both eyes and left three blank faces.
+  if (o.helmet) o.helmet(ctx, ink);
+
+  // Eyes low on the head — under the brim, and low is what reads as "cute"
+  // rather than "adult" at these proportions.
+  ctx.fillStyle = ink;
+  ctx.beginPath(); ctx.ellipse(-3.2, -24.6, 1.4, 1.9, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(3.2, -24.6, 1.4, 1.9, 0, 0, Math.PI * 2); ctx.fill();
+  // glints, so the face is alive even at 16px on a phone
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(-2.7, -25.4, .55, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.7, -25.4, .55, 0, Math.PI * 2); ctx.fill();
+  // a small smile
+  ctx.strokeStyle = ink; ctx.lineWidth = 1.1;
+  ctx.beginPath(); ctx.arc(0, -22.6, 2.2, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+  if (o.prop) o.prop(ctx, ink);
+}
+
 const PB_MATE_ART = {
-  // Pháo thủ — helmeted gunner shouldering a rocket tube.
+  // Pháo thủ — blue artillery helmet, rocket on the shoulder.
   gunner: function (ctx) {
-    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);          // legs/boots
-    ctx.fillStyle = '#2563eb'; ctx.fillRect(-8, -22, 16, 14);        // tunic
-    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();  // head
-    ctx.fillStyle = '#1e3a8a';                                        // helmet
-    ctx.beginPath(); ctx.arc(0, -26, 6.4, Math.PI, 0); ctx.fill();
-    ctx.fillRect(-6.4, -26, 12.8, 2.4);
-    ctx.fillStyle = '#6b7280'; ctx.fillRect(-13, -20, 22, 5);        // rocket tube
-    ctx.fillStyle = '#ef4444';                                        // warhead
-    ctx.beginPath(); ctx.moveTo(9, -20); ctx.lineTo(15, -17.5); ctx.lineTo(9, -15); ctx.closePath(); ctx.fill();
+    _pbChibi(ctx, {
+      body: '#2f6fd0', trim: '#1b4a8f', boot: '#39434f', skin: '#f6cda6',
+      helmet: (c, ink) => {
+        c.fillStyle = '#1d4ed8'; c.strokeStyle = ink; c.lineWidth = 1.6;
+        c.beginPath(); c.arc(0, -29, 8.9, Math.PI, 0); c.fill(); c.stroke();
+        c.beginPath(); c.roundRect(-9.6, -29.6, 19.2, 3.2, 1.4); c.fill(); c.stroke();
+        // little star, so the helmet is not just a dome
+        c.fillStyle = '#fde047';
+        c.beginPath(); c.arc(0, -33.4, 1.9, 0, Math.PI * 2); c.fill();
+      },
+      prop: (c, ink) => {
+        // rocket tube across the body
+        c.save();
+        c.translate(2, -17); c.rotate(-0.28);
+        c.fillStyle = '#6b7280'; c.strokeStyle = ink; c.lineWidth = 1.5;
+        c.beginPath(); c.roundRect(-13, -2.6, 21, 5.2, 2.4); c.fill(); c.stroke();
+        c.fillStyle = '#ef4444';
+        c.beginPath(); c.moveTo(8, -2.8); c.lineTo(14.5, 0); c.lineTo(8, 2.8); c.closePath();
+        c.fill(); c.stroke();
+        c.restore();
+      },
+    });
   },
-  // Kỹ sư — builder in a hard hat with a raised hammer.
+
+  // Kỹ sư — yellow hard hat, hammer raised.
   engineer: function (ctx) {
-    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);
-    ctx.fillStyle = '#f59e0b'; ctx.fillRect(-8, -22, 16, 14);        // hi-vis overalls
-    ctx.fillStyle = '#78350f'; ctx.fillRect(-8, -16, 16, 2.5);       // tool belt
-    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#fbbf24';                                        // hard hat
-    ctx.beginPath(); ctx.arc(0, -26, 6.6, Math.PI, 0); ctx.fill();
-    ctx.fillRect(-8, -26, 16, 2.4);
-    ctx.strokeStyle = '#6b4a3d'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';  // hammer haft
-    ctx.beginPath(); ctx.moveTo(7, -18); ctx.lineTo(12, -28); ctx.stroke();
-    ctx.fillStyle = '#9ca3af'; ctx.fillRect(9, -32, 8, 5);           // hammer head
+    _pbChibi(ctx, {
+      body: '#f59e0b', trim: '#7c4a12', boot: '#39434f', skin: '#f6cda6',
+      helmet: (c, ink) => {
+        c.fillStyle = '#fbbf24'; c.strokeStyle = ink; c.lineWidth = 1.6;
+        c.beginPath(); c.arc(0, -29.5, 8.9, Math.PI, 0); c.fill(); c.stroke();
+        c.beginPath(); c.roundRect(-10.6, -30, 21.2, 3, 1.5); c.fill(); c.stroke();
+        c.beginPath(); c.moveTo(0, -38.2); c.lineTo(-1.6, -30); c.lineTo(1.6, -30);
+        c.closePath(); c.fill(); c.stroke();
+      },
+      prop: (c, ink) => {
+        c.save();
+        c.translate(10.5, -12); c.rotate(0.5);
+        c.strokeStyle = '#8b5a2b'; c.lineWidth = 2.8;
+        c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -13); c.stroke();
+        c.fillStyle = '#9ca3af'; c.strokeStyle = ink; c.lineWidth = 1.5;
+        c.beginPath(); c.roundRect(-5, -18.5, 10, 5.4, 1.6); c.fill(); c.stroke();
+        c.restore();
+      },
+    });
   },
-  // Vệ sĩ — guard behind a tall tower shield.
+
+  // Vệ sĩ — green helm, tall tower shield planted in front.
   shield: function (ctx) {
-    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);
-    ctx.fillStyle = '#0f766e'; ctx.fillRect(-8, -22, 16, 14);
-    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#134e4a';                                        // helm
-    ctx.beginPath(); ctx.arc(0, -26, 6.4, Math.PI, 0); ctx.fill();
-    ctx.fillRect(-6.4, -26, 12.8, 2.2);
-    ctx.fillStyle = '#38bdf8';                                        // tower shield
-    ctx.beginPath();
-    ctx.moveTo(-16, -26); ctx.lineTo(-4, -26); ctx.lineTo(-4, -10); ctx.lineTo(-10, -4);
-    ctx.lineTo(-16, -10); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#0c4a6e'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = '#e0f2fe'; ctx.fillRect(-11.5, -22, 3, 10);      // boss stripe
+    _pbChibi(ctx, {
+      body: '#0f766e', trim: '#0b4f49', boot: '#39434f', skin: '#f6cda6',
+      helmet: (c, ink) => {
+        c.fillStyle = '#134e4a'; c.strokeStyle = ink; c.lineWidth = 1.6;
+        c.beginPath(); c.arc(0, -29, 8.9, Math.PI, 0); c.fill(); c.stroke();
+        c.beginPath(); c.roundRect(-9.4, -29.6, 18.8, 3.2, 1.4); c.fill(); c.stroke();
+        // crest
+        c.fillStyle = '#22d3ee';
+        c.beginPath(); c.roundRect(-1.4, -37.5, 2.8, 8, 1.4); c.fill(); c.stroke();
+      },
+      prop: (c, ink) => {
+        c.fillStyle = '#38bdf8'; c.strokeStyle = ink; c.lineWidth = 1.7;
+        c.beginPath();
+        c.moveTo(-17, -24); c.lineTo(-4.5, -24); c.lineTo(-4.5, -8);
+        c.quadraticCurveTo(-10.8, -1.5, -17, -8);
+        c.closePath(); c.fill(); c.stroke();
+        c.fillStyle = '#e0f2fe';
+        c.beginPath(); c.roundRect(-12.4, -21, 3, 11, 1.4); c.fill();
+        c.fillStyle = '#0ea5e9';
+        c.beginPath(); c.arc(-10.8, -15.5, 2.2, 0, Math.PI * 2); c.fill(); c.stroke();
+      },
+    });
   },
 };
 
@@ -976,7 +1071,7 @@ function pbMateAvatarURL(id, size) {
     ctx.scale(dpr, dpr);
     // The art is authored feet-at-zero in roughly a 33x32 box; 40 units of
     // room leaves a little air around the character.
-    const k = px / 40;
+    const k = px / 44;
     ctx.translate(px / 2, px - px * 0.10);
     ctx.scale(k, k);
     draw(ctx);

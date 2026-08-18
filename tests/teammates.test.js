@@ -706,6 +706,74 @@ suite('teammates: the server and the client agree', () => {
     });
 });
 
+suite('teammates: the shop tells the truth about money', () => {
+    const pb = require(path.join(root, 'js', 'petbattle.js'));
+
+    function withCoins(coins, fn) {
+        const hadState = Object.prototype.hasOwnProperty.call(global, 'appState');
+        const hadDoc = Object.prototype.hasOwnProperty.call(global, 'document');
+        const prev = global.appState;
+        const prevDoc = global.document;
+        global.appState = { coins };
+        global.BattleTeam = T;
+        // pbHire re-renders the lobby; a null-returning stub makes that a
+        // no-op. Restored afterwards — petart.test.js asserts the app survives
+        // with no DOM at all, and a leaked stub would hide that.
+        global.document = { getElementById: () => null, querySelector: () => null };
+        try { return fn(); }
+        finally {
+            if (hadState) global.appState = prev; else delete global.appState;
+            if (hadDoc) global.document = prevDoc; else delete global.document;
+        }
+    }
+
+    test('683 xu really does buy a 600 xu Pháo thủ', () => {
+        withCoins(683, () => {
+            pb.pbHireReset();
+            pb.pbHire('gunner');
+            assert.deepEqual(pb.pbHireCart(), ['gunner'], 'the hire must go through');
+        });
+    });
+
+    test('after hiring, the card does NOT cry "not enough coins"', () => {
+        // The warning is about a SECOND gunner (1,200 > 683), but printed under
+        // the card just bought it reads as "your purchase failed".
+        withCoins(683, () => {
+            pb.pbHireReset();
+            pb.pbHire('gunner');
+            const html = pb._pbHirePanel();
+            // Just the gunner's card: the cards after it legitimately say
+            // "not enough coins" (83 xu left cannot buy a 1,000 xu Kỹ sư).
+            const after = html.slice(html.indexOf('data-mate="gunner"'));
+            const next = after.indexOf('data-mate=', 1);
+            const card = next === -1 ? after : after.slice(0, next);
+            assert.falsy(card.includes(pb.pbT('hirePoor')),
+                'a hired teammate must not be captioned "not enough coins"');
+            assert.truthy(card.includes('>1<'), 'and it should show the one that was hired');
+        });
+    });
+
+    test('a teammate you genuinely cannot afford still says so', () => {
+        withCoins(300, () => {
+            pb.pbHireReset();
+            const html = pb._pbHirePanel();
+            assert.truthy(html.includes(pb.pbT('hirePoor')),
+                'with 300 xu nothing is affordable and the child should be told');
+        });
+    });
+
+    test('the purse shows what is left to spend, so the money is visible going out', () => {
+        withCoins(683, () => {
+            pb.pbHireReset();
+            const before = pb._pbHirePanel();
+            assert.truthy(before.includes('683'), 'starts at the full purse');
+            pb.pbHire('gunner');
+            const after = pb._pbHirePanel();
+            assert.truthy(after.includes('83'), 'after a 600 hire, 83 xu remain');
+        });
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

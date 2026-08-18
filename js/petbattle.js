@@ -531,10 +531,11 @@ function _pbHirePanel() {
     // Ask the cart itself whether this hire would go through, so a button can
     // never promise something the purchase would then refuse.
     const canAdd = TEAM.hireAdd(cart, mate.id, coins).length > cart.length;
-    const why = full ? pbT('hireFull', { n: TEAM.TEAM_MAX_HIRES })
+    const why = (owned > 0) ? ''
+              : full ? pbT('hireFull', { n: TEAM.TEAM_MAX_HIRES })
               : !canAdd ? pbT('hirePoor') : '';
     return `
-      <div class="pb-hire-card${owned ? ' has' : ''}">
+      <div class="pb-hire-card${owned ? ' has' : ''}" data-mate="${mate.id}">
         ${_pbMateAvatar(mate)}
         <div class="pb-hire-info">
           <div class="pb-hire-name">${pbT(PB_HIRE_LABEL[mate.id])}</div>
@@ -553,7 +554,7 @@ function _pbHirePanel() {
     <div class="pb-hire-panel">
       <div class="pb-hire-head">
         <span class="pb-hire-title">${pbT('hireTitle')}</span>
-        <span class="pb-hire-purse">${pbT('hireCoins', { n: coins })}</span>
+        <span class="pb-hire-purse">${pbT('hireCoins', { n: Math.max(0, coins - total) })}</span>
       </div>
       <div class="pb-hire-sub">${pbT('hireSub')}</div>
       <div class="pb-hire-list">${cards}</div>
@@ -1174,6 +1175,7 @@ if (typeof module !== 'undefined' && module.exports) {
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
     pbSelectedSceneId, choosePetBattleScene, _pbScenePicker, _pbSceneInvite,
     startBotBattle, finishBotBattle,
+    _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },
     _pbGetState: () => _pbState,
