@@ -85,10 +85,27 @@ if [ "$TEST" = "1" ]; then
 fi
 
 # ---- commit ----------------------------------------------------------------
-# -u: tracked files only, so stray untracked dirs are never swept in.
+# ONLY the four files the bump step above rewrote. This used to be `git add -u`,
+# which stages every modified tracked file — and with two Claude sessions open
+# on this repo that meant a deploy silently swallowed the other one's work in
+# progress: a maths session's chapter files landed inside a battle-titled
+# commit that way. A deploy commits its own version bump and nothing else.
+#
+# The list is written out literally rather than held in a variable: an
+# unquoted expansion splits in bash but NOT in zsh, and a pathspec that
+# silently became one long filename would stage nothing at all.
 COMMITTED=0
 if [ -n "$MSG" ]; then
-  git add -u
+  # Anything else modified still SHIPS — the bundle is built from the working
+  # tree, as it always was — it simply is not committed under this message.
+  # Say so out loud rather than letting it go out unremarked.
+  others=$(git diff --name-only | grep -vxF \
+    -e js/home.js -e sw.js -e package.json -e functions/api/version.js || true)
+  if [ -n "$others" ]; then
+    echo "▸ note: these ship with the deploy but stay OUT of the commit:"
+    echo "$others" | sed 's/^/    /'
+  fi
+  git add -- js/home.js sw.js package.json functions/api/version.js
   if git diff --cached --quiet; then echo "▸ nothing to commit"
   else git commit -q -m "$MSG"; COMMITTED=1; echo "▸ committed $(git log --oneline -1)"; fi
 fi
