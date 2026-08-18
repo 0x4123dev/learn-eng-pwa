@@ -108,12 +108,13 @@ function _mfSvg(body) {
 //   dưới bên phải, hướng xuống là 306°, hướng lên là 126°.
 const _MF_A = [70, 35], _MF_B = [110, 90], _MF_UP = 126, _MF_DOWN = 306;
 
-function _mfCutBase(parallel) {
+function _mfCutBase(parallel, names) {
+  const n = names || ['a', 'b', 'c'];
   return _mfLine(12, 35, 188, 35)
     + _mfLine(12, 90, 188, 90)
     + _mfLine(55.5, 15, 124.5, 110)
     + (parallel ? _mfPar(12, 35, 188, 35, 0.85) + _mfPar(12, 90, 188, 90, 0.85) : '')
-    + _mfT(194, 31, 'a', 'end') + _mfT(194, 86, 'b', 'end') + _mfT(50, 14, 'c', 'end');
+    + _mfT(194, 31, n[0], 'end') + _mfT(194, 86, n[1], 'end') + _mfT(50, 14, n[2], 'end');
 }
 
 // ---- Chương 3 ----------------------------------------------------------
@@ -449,22 +450,27 @@ function _mfqDoiDinh(f) {
 function _mfqPhanGiac(f) {
   const w = Math.min(180, Math.max(30, +f.w || 80));
   const lh = f.lh || ['', ''];
-  const pw = _mfP(100, 100, 64, w * 0.62);
+  const nm = f.names || ['x', 'y', 'z', 'O'];
+  // Đỉnh góc dịch ngang theo độ mở: một góc 50° vẽ từ giữa khung thì nửa
+  // trái bỏ trống, hình dồn hết sang phải và bé phải nheo mắt vào một góc.
+  const R = 88;
+  const cx = _mfN(100 - (Math.min(0, R * Math.cos(w * Math.PI / 180)) + R) / 2);
+  const pw = _mfP(cx, 100, 64, w * 0.62);
   // Không có số nào để ghi thì vẫn phải thấy "hai nửa bằng nhau" — đó là cả
   // nội dung của khái niệm tia phân giác.
   const bare = !lh[0] && !lh[1];
-  return (bare ? _mfWedge(100, 100, 30, 0, w / 2, 'b') + _mfWedge(100, 100, 30, w / 2, w, 'b')
-        + _mfAtick(100, 100, 30, w / 4, 'b') + _mfAtick(100, 100, 30, w * 3 / 4, 'b') : '')
+  return (bare ? _mfWedge(cx, 100, 30, 0, w / 2, 'b') + _mfWedge(cx, 100, 30, w / 2, w, 'b')
+        + _mfAtick(cx, 100, 30, w / 4, 'b') + _mfAtick(cx, 100, 30, w * 3 / 4, 'b') : '')
     // Nhãn số đặt xa tâm: hai nửa của một góc 50° mà ghi sát đỉnh thì hai con
     // số chồng lên nhau, và bé đọc thành một số thứ ba.
-    + _mfAng(100, 100, 30, 0, w / 2, lh[0], 44)
-    + _mfAng(100, 100, 30, w / 2, w, lh[1], 66)
-    + _mfRay(100, 100, 78, 0) + _mfRay(100, 100, 78, w)
-    + _mfRay(100, 100, 70, w / 2, 'mf-l mf-hi')
-    + _mfDot(100, 100) + _mfT(100, 114, 'O')
-    + _mfT(..._mfP(100, 100, 88, 0), 'x', 'start')
-    + _mfT(..._mfP(100, 100, 88, w), 'y', w > 100 ? 'end' : 'start')
-    + _mfT(..._mfP(100, 100, 80, w / 2), 'z', w > 150 ? 'middle' : 'start')
+    + _mfAng(cx, 100, 30, 0, w / 2, lh[0], 44)
+    + _mfAng(cx, 100, 30, w / 2, w, lh[1], 66)
+    + _mfRay(cx, 100, 78, 0) + _mfRay(cx, 100, 78, w)
+    + _mfRay(cx, 100, 70, w / 2, 'mf-l mf-hi')
+    + _mfDot(cx, 100) + _mfT(cx, 114, nm[3])
+    + _mfT(..._mfP(cx, 100, 88, 0), nm[0], 'start')
+    + _mfT(..._mfP(cx, 100, 88, w), nm[1], w > 100 ? 'end' : 'start')
+    + _mfT(..._mfP(cx, 100, 80, w / 2), nm[2], w > 150 ? 'middle' : 'start')
     + (f.lw ? _mfT(pw[0], pw[1], f.lw, 'middle', 'mf-val mf-' + _mfK(f.lw)) : '');
 }
 
@@ -483,7 +489,7 @@ function _mfqCut2(f) {
     const g = _MF_POS[p];
     if (g) out += _mfAng(g[0], g[1], 20, g[2], g[3], angles[p], 32);
   });
-  return out + _mfCutBase(!!f.par);
+  return out + _mfCutBase(!!f.par, f.names);
 }
 
 // Quan hệ vuông góc — song song, bốn thế thường gặp.
@@ -518,6 +524,10 @@ function _mfqVuongSong(f) {
       + _mfRight(140, 36, 12, 0, 'b')
       + _mfAng(140, 88, 15, 0, 90, f.ask || '?', 28)
       + lbl(42, 16, 'c') + lbl(132, 16, 'd') + lbl(190, 32, 'a') + lbl(190, 84, 'b');
+  }
+  if (m === 'two-lines') {                       // hai đường phân biệt, không cắt nhau
+    return _mfLine(16, 42, 184, 42) + _mfLine(16, 82, 184, 82)
+      + lbl(190, 38, 'a') + lbl(190, 78, 'b');
   }
   if (m === 'kihieu') {                          // ∥ và ⊥ cạnh nhau cho dễ so
     return _mfLine(8, 40, 88, 40) + _mfLine(8, 76, 88, 76)
@@ -588,6 +598,9 @@ function _mfqTamGiacVuong(f) {
     + _mfAng(40, 30, 22, 270, 328.3, angles[v[2]], 34)
     + _mfPoly([[40, 98], [150, 98], [40, 30]], 'mf-l mf-tri')
     + (f.eq ? _mfTicks(40, 98, 150, 98, 1, 'c') + _mfTicks(40, 98, 40, 30, 1, 'c') : '')
+    + (f.sides && f.sides[0] ? _mfT(95, 112, f.sides[0], 'middle', 'mf-val mf-' + _mfK(f.sides[0])) : '')
+    + (f.sides && f.sides[1] ? _mfT(30, 68, f.sides[1], 'end', 'mf-val mf-' + _mfK(f.sides[1])) : '')
+    + (f.area ? _mfT(112, 62, f.area, 'middle', 'mf-cap') : '')
     + _mfRight(40, 98, 14, 0, 'b')
     + _mfT(32, 109, v[0], 'end') + _mfT(158, 109, v[1], 'start') + _mfT(36, 22, v[2], 'end');
 }
@@ -733,7 +746,7 @@ function _mfqTrungTuyen(f) {
     + _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c')
     + _mfDot(100, 100)
     + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start')
-    + _mfT(100, 114, 'M', 'middle');
+    + _mfT(100, 114, f.mid || 'M', 'middle');
 }
 
 // Hai đoạn cắt nhau tại trung điểm của mỗi đoạn (bài △OAC = △OBD).
@@ -753,6 +766,7 @@ function _mfqHaiDoanCat(f) {
 
 // M là trung điểm AB, D nằm trên tia đối của tia MC sao cho MD = MC.
 function _mfqDoiTia(f) {
+  const v = f.v || ['A', 'B', 'C', 'D', 'M'];
   const A = [30, 30], B = [150, 96], C = [40, 100], M = [90, 63];
   const D = [2 * M[0] - C[0], 2 * M[1] - C[1]];
   return _mfLine(A[0], A[1], B[0], B[1]) + _mfLine(C[0], C[1], D[0], D[1])
@@ -761,9 +775,9 @@ function _mfqDoiTia(f) {
     + _mfTicks(A[0], A[1], M[0], M[1], 1, 'b') + _mfTicks(M[0], M[1], B[0], B[1], 1, 'b')
     + _mfTicks(C[0], C[1], M[0], M[1], 2, 'c') + _mfTicks(M[0], M[1], D[0], D[1], 2, 'c')
     + _mfDot(M[0], M[1])
-    + _mfT(24, 26, 'A', 'end') + _mfT(158, 101, 'B', 'start')
-    + _mfT(34, 111, 'C', 'end') + _mfT(D[0] + 6, D[1] - 4, 'D', 'start')
-    + _mfT(88, 55, 'M', 'end');
+    + _mfT(24, 26, v[0], 'end') + _mfT(158, 101, v[1], 'start')
+    + _mfT(34, 111, v[2], 'end') + _mfT(D[0] + 6, D[1] - 4, v[3], 'start')
+    + _mfT(88, 55, v[4], 'end');
 }
 
 const MATH_Q_FIGURES = {

@@ -123,7 +123,9 @@ suite('math hints: the panel', () => {
 
     test('the question card carries the panel, and it closes between questions', () => {
         const src = fs.readFileSync(path.join(root, 'js', 'math.js'), 'utf8');
-        assert.truthy(/\$\{mathHintHTML\(q\)\}/.test(src), 'the question card must render the panel');
+        // Tham số thứ hai là cờ "đang thi" — xem tests/math-figures.test.js.
+        assert.truthy(/\$\{mathHintHTML\(q, !!st\.examId\)\}/.test(src),
+            'the question card must render the panel, and tell it whether this is an exam');
         const next = src.slice(src.indexOf('function nextMathQuestion('), src.indexOf('function nextMathQuestion(') + 200);
         assert.truthy(/_mathHintOpen = false/.test(next),
             'left open, the hint stops being a hint and becomes theory above every answer');

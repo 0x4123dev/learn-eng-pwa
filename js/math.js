@@ -277,7 +277,11 @@ function toggleMathHint() {
   renderMathQuestion();
 }
 
-function mathHintHTML(q) {
+// exam = đang làm đề thi thử. Đề thi là để bé TỰ làm: một bảng định nghĩa mở
+// sẵn ngay dưới câu hỏi thì điểm số không còn nói lên bé nhớ được gì, và cái
+// bé cần biết trước hôm thi thật — mình còn quên chỗ nào — cũng mất luôn.
+function mathHintHTML(q, exam) {
+  if (exam) return '';
   const hints = mathHintsFor(q);
   if (!hints.length) return '';
   if (!_mathHintOpen) {
@@ -837,7 +841,7 @@ function renderMathQuestion() {
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
       ${typeof mathQuestionFigureHTML === 'function' ? mathQuestionFigureHTML(q.fig) : ''}
-      ${mathHintHTML(q)}
+      ${mathHintHTML(q, !!st.examId)}
       ${body}
       ${explain}
     </div>`;

@@ -117,6 +117,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc đối đỉnh",
     "q": "Hai góc được gọi là đối đỉnh khi nào?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 50,
+     "l": [
+      "∠1",
+      "",
+      "∠3",
+      ""
+     ]
+    },
     "options": [
      "Hai góc có chung một cạnh và tổng bằng 180°",
      "Hai góc có số đo bằng nhau",
@@ -133,6 +143,21 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠mOn = 96° và Ot là tia phân giác của ∠mOn. Số đo ∠mOt bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 96,
+     "names": [
+      "m",
+      "n",
+      "t",
+      "O"
+     ],
+     "lw": "96°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "24°",
      "48°",
@@ -149,6 +174,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tiên đề Euclid",
     "q": "Điền cụm từ thích hợp vào chỗ trống: “Qua một điểm M nằm ngoài đường thẳng d, ta vẽ được … đường thẳng đi qua M và song song với d.”",
+    "fig": {
+     "t": "euclid",
+     "m": "point"
+    },
     "options": [
      "hai",
      "đúng một",
@@ -165,6 +194,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Định lí",
     "q": "Định lí “Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì chúng song song với nhau” có giả thiết (GT) là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba",
      "Hai đường thẳng đó song song với nhau",
@@ -181,6 +214,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác DEF có ∠D = 48°, ∠E = 97°. Số đo ∠F bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "D",
+      "E",
+      "F"
+     ],
+     "angles": {
+      "D": "48°",
+      "E": "97°",
+      "F": "?"
+     }
+    },
     "options": [
      "45°",
      "55°",
@@ -341,6 +387,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho hai đường thẳng song song a và b, bị cắt bởi đường thẳng c tại hai điểm phân biệt. Một góc so le trong tạo bởi c và a bằng 62°. Góc kề bù với góc so le trong tương ứng tạo bởi c và b bằng bao nhiêu?",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A3": "62°",
+      "B2": "?"
+     }
+    },
     "options": [
      "62°",
      "28°",
@@ -357,6 +411,16 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Cho tam giác PQR, gọi K là trung điểm của QR. Trên tia đối của tia KP lấy điểm S sao cho KS = KP. Hãy chọn kết luận đúng.",
+    "fig": {
+     "t": "doi-tia",
+     "v": [
+      "Q",
+      "R",
+      "P",
+      "S",
+      "K"
+     ]
+    },
     "options": [
      "△KQS = △KRP theo trường hợp c-g-c",
      "△KQS = △KRP theo trường hợp c-c-c",
@@ -373,6 +437,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác vuông",
     "q": "Một tam giác vuông có độ dài hai cạnh góc vuông lần lượt là x (cm) và 3x (cm) (x > 0), diện tích tam giác bằng 54 cm². Giá trị của x là bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-vuong",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "sides": [
+      "3x",
+      "x"
+     ],
+     "area": "S = 54 cm²"
+    },
     "options": [
      "9",
      "6",
@@ -537,6 +614,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc đối đỉnh",
     "q": "Hai đường thẳng cắt nhau tại O tạo thành hai góc đối đỉnh ∠aOb và ∠cOd. Biết ∠aOb = 63°. Số đo ∠cOd bằng bao nhiêu?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 63,
+     "l": [
+      "63°",
+      "",
+      "?",
+      ""
+     ]
+    },
     "options": [
      "27°",
      "117°",
@@ -553,6 +640,15 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Tia Oz là tia phân giác của ∠xOy, biết ∠xOy = 54°. Số đo ∠xOz bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 54,
+     "lw": "54°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "54°",
      "108°",
@@ -569,6 +665,13 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b, tạo thành một cặp góc đồng vị đều có số đo 75°. Hai đường thẳng a và b có song song với nhau không?",
+    "fig": {
+     "t": "cut2",
+     "angles": {
+      "A1": "75°",
+      "B1": "75°"
+     }
+    },
     "options": [
      "Có, vì một cặp góc đồng vị bằng nhau",
      "Không, vì góc đồng vị phải bằng 90° mới suy ra song song",
@@ -601,6 +704,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác ABC có ∠A = 75°, ∠B = 45°. Số đo ∠C bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "A": "75°",
+      "B": "45°",
+      "C": "?"
+     }
+    },
     "options": [
      "70°",
      "80°",
@@ -761,6 +877,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho hai đường thẳng a ∥ b cùng bị cắt bởi đường thẳng c. Tại giao điểm của c với a có một góc bằng 64°. Gọi α là góc so le trong với góc đó tại giao điểm của c với b. Tính số đo góc kề bù với α.",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A3": "64°",
+      "B1": "?"
+     }
+    },
     "options": [
      "116°",
      "64°",
@@ -777,6 +901,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "△DEF và △GHK có DE = GH, ∠D = ∠G, DF = GK. Hai tam giác bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "D",
+       "E",
+       "F"
+      ],
+      [
+       "G",
+       "H",
+       "K"
+      ]
+     ]
+    },
     "options": [
      "góc – cạnh – góc (g-c-g)",
      "cạnh – góc – cạnh (c-g-c)",
@@ -793,6 +933,18 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "△ABC cân tại A có ∠B = 68°. Số đo góc ở đỉnh A bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "B": "68°",
+      "A": "?"
+     }
+    },
     "options": [
      "68°",
      "56°",
@@ -969,6 +1121,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc đối đỉnh",
     "q": "Hai đường thẳng cắt nhau tại O tạo thành bốn góc, trong đó có một góc bằng 72°. Góc đối đỉnh với góc 72° đó bằng bao nhiêu?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 72,
+     "l": [
+      "72°",
+      "",
+      "?",
+      ""
+     ]
+    },
     "options": [
      "18°",
      "108°",
@@ -985,6 +1147,15 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠xOy = 130° và Oz là tia phân giác của ∠xOy. Số đo ∠xOz bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 130,
+     "lw": "130°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "130°",
      "260°",
@@ -1001,6 +1172,18 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng phân biệt m và n, tạo thành một cặp góc trong cùng phía có tổng số đo bằng 180°. Kết luận nào sau đây đúng?",
+    "fig": {
+     "t": "cut2",
+     "names": [
+      "m",
+      "n",
+      "c"
+     ],
+     "angles": {
+      "A4": "∠A",
+      "B1": "∠B"
+     }
+    },
     "options": [
      "m và n cắt nhau tại một điểm trên c",
      "m vuông góc với n",
@@ -1017,6 +1200,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Định lí, giả thiết và kết luận",
     "q": "Cho định lí: 'Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì chúng song song với nhau.' Giả thiết (GT) của định lí này là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba",
      "Hai đường thẳng đó song song với nhau",
@@ -1033,6 +1220,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác ABC có ∠A = 55°, ∠B = 65°. Số đo ∠C bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "A": "55°",
+      "B": "65°",
+      "C": "?"
+     }
+    },
     "options": [
      "50°",
      "70°",
@@ -1193,6 +1393,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng song song a và b lần lượt tại A và B, tạo thành ∠A₁ = 70° (∠A₁ và ∠B₁ là hai góc đồng vị). Biết ∠B₁ và ∠B₂ là hai góc kề bù, tính ∠B₂.",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A1": "70°",
+      "B2": "?"
+     }
+    },
     "options": [
      "70°",
      "110°",
@@ -1209,6 +1417,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Cho △ABC và △MNP có AB = MN, ∠B = ∠N, BC = NP. Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "B",
+       "A",
+       "C"
+      ],
+      [
+       "N",
+       "M",
+       "P"
+      ]
+     ]
+    },
     "options": [
      "cạnh – cạnh – cạnh (c-c-c)",
      "cạnh – góc – cạnh (c-g-c)",
@@ -1225,6 +1449,15 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Cho tam giác ABC cân tại A (AB = AC), tia phân giác của ∠A cắt BC tại D. Vì sao △ABD = △ACD?",
+    "fig": {
+     "t": "trung-tuyen",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "mid": "D"
+    },
     "options": [
      "Vì AB = AC, ∠BAD = ∠CAD, AD là cạnh chung nên theo trường hợp c-g-c",
      "Vì AB = AC, BD = CD, AD là cạnh chung nên theo trường hợp c-c-c",
@@ -1385,6 +1618,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc đối đỉnh",
     "q": "Hai góc được gọi là đối đỉnh khi nào?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 50,
+     "l": [
+      "∠1",
+      "",
+      "∠3",
+      ""
+     ]
+    },
     "options": [
      "Khi hai góc có chung một cạnh và tổng số đo bằng 180°",
      "Khi hai góc cùng có số đo 90°",
@@ -1401,6 +1644,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Khi Oz là tia phân giác của ∠xOy, tia Oz có vị trí như thế nào so với hai tia Ox, Oy?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 100
+    },
     "options": [
      "Oz là tia đối của Ox",
      "Oz vuông góc với Ox",
@@ -1417,6 +1664,13 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng a và b, tạo thành một cặp góc trong cùng phía có tổng số đo bằng 180°. Kết luận nào sau đây đúng?",
+    "fig": {
+     "t": "cut2",
+     "angles": {
+      "A4": "∠A",
+      "B1": "∠B"
+     }
+    },
     "options": [
      "a ∥ b",
      "a ⊥ b",
@@ -1433,6 +1687,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Giả thiết - Kết luận",
     "q": "Cho định lí: “Nếu hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba thì hai đường thẳng đó song song với nhau.” Kết luận (KL) của định lí này là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "par3"
+    },
     "options": [
      "Hai đường thẳng phân biệt cùng song song với một đường thẳng thứ ba",
      "Hai đường thẳng đó song song với nhau",
@@ -1449,6 +1707,14 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác cân là tam giác có đặc điểm gì?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ]
+    },
     "options": [
      "Có ba cạnh bằng nhau",
      "Có một góc vuông",
@@ -1609,6 +1875,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho a ∥ b, đường thẳng c cắt a tại A và cắt b tại B. Biết góc tạo bởi c và a bằng 115°. Gọi ∠B₁ là góc tạo bởi c và b ở vị trí đồng vị với góc đó, và ∠B₂ là góc kề bù với ∠B₁. Tính ∠B₁ và ∠B₂.",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A1": "115°",
+      "B2": "?"
+     }
+    },
     "options": [
      "∠B₁ = 115°; ∠B₂ = 65°",
      "∠B₁ = 65°; ∠B₂ = 115°",
@@ -1625,6 +1899,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Cho △MNP và △XYZ có MN = XY, ∠M = ∠X, MP = XZ. Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "M",
+       "N",
+       "P"
+      ],
+      [
+       "X",
+       "Y",
+       "Z"
+      ]
+     ]
+    },
     "options": [
      "c-c-c (cạnh - cạnh - cạnh)",
      "c-g-c (cạnh - góc - cạnh)",
@@ -1641,6 +1931,18 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác ABC cân tại A, biết góc ở đáy ∠B = 58°. Tính số đo góc ở đỉnh ∠A.",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "B": "58°",
+      "A": "?"
+     }
+    },
     "options": [
      "58°",
      "122°",
@@ -1825,6 +2127,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc kề bù",
     "q": "Hai đường thẳng cắt nhau tạo thành bốn góc, trong đó có một góc bằng 55°. Góc kề bù với góc 55° đó bằng bao nhiêu?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 55,
+     "l": [
+      "55°",
+      "?",
+      "",
+      ""
+     ]
+    },
     "options": [
      "55°",
      "35°",
@@ -1841,6 +2153,15 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠xOy = 54° và Oz là tia phân giác của ∠xOy. Số đo ∠xOz bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 54,
+     "lw": "54°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "27°",
      "54°",
@@ -1857,6 +2178,18 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng t cắt hai đường thẳng phân biệt p và q, tạo thành một cặp góc so le trong đều bằng 72°. Kết luận nào sau đây đúng?",
+    "fig": {
+     "t": "cut2",
+     "names": [
+      "p",
+      "q",
+      "t"
+     ],
+     "angles": {
+      "A3": "72°",
+      "B1": "72°"
+     }
+    },
     "options": [
      "p ∥ q vì cặp góc so le trong bù nhau",
      "p ∥ q vì cặp góc so le trong bằng nhau",
@@ -1873,6 +2206,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Giả thiết – Kết luận",
     "q": "Cho định lí: Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì chúng song song với nhau. Phần nào của định lí là Kết luận (KL)?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba",
      "Có một đường thẳng thứ ba",
@@ -1889,6 +2226,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác ABC có ∠A = 48°, ∠B = 77°. Số đo ∠C bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "A": "48°",
+      "B": "77°",
+      "C": "?"
+     }
+    },
     "options": [
      "125°",
      "132°",
@@ -2049,6 +2399,20 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho m ∥ n, cùng bị đường thẳng t cắt tại hai điểm phân biệt. Một góc tạo bởi t và m bằng 65°, và góc so le trong với nó (tạo bởi t và n) cũng bằng 65° vì m ∥ n. Góc kề bù với góc so le trong 65° đó (tại giao điểm của t và n) bằng bao nhiêu?",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "names": [
+      "m",
+      "n",
+      "t"
+     ],
+     "angles": {
+      "A3": "65°",
+      "B1": "65°",
+      "B2": "?"
+     }
+    },
     "options": [
      "65°",
      "115°",
@@ -2065,6 +2429,15 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Một giá đỡ hình chữ V có hai thanh OA và OB bằng nhau (OA = OB), thanh chống OC là tia phân giác của ∠AOB. Vì sao △OAC = △OBC?",
+    "fig": {
+     "t": "trung-tuyen",
+     "v": [
+      "O",
+      "A",
+      "B"
+     ],
+     "mid": "C"
+    },
     "options": [
      "Vì OA = OB, OC chung, ∠AOC = ∠BOC nên bằng nhau theo trường hợp c-c-c",
      "Không đủ dữ kiện để kết luận hai tam giác bằng nhau",
@@ -2081,6 +2454,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Một miếng bìa hình tam giác cân có góc ở đỉnh bằng 36°. Mỗi góc ở đáy của tam giác đó bằng bao nhiêu độ?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "A": "36°",
+      "B": "?",
+      "C": "?"
+     }
+    },
     "options": [
      "82°",
      "144°",
@@ -2253,6 +2639,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc kề bù",
     "q": "Hai góc kề bù có một góc bằng 72°. Số đo góc còn lại là bao nhiêu?",
+    "fig": {
+     "t": "ke-bu",
+     "a": 72,
+     "l": [
+      "72°",
+      "?"
+     ]
+    },
     "options": [
      "72°",
      "18°",
@@ -2269,6 +2663,15 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠xOy = 46° và Oz là tia phân giác của ∠xOy. Số đo ∠xOz bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 46,
+     "lw": "46°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "46°",
      "92°",
@@ -2285,6 +2688,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai đường thẳng song song",
     "q": "Hai đường thẳng phân biệt trong cùng một mặt phẳng mà không cắt nhau thì được gọi là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "two-lines"
+    },
     "options": [
      "Hai đường thẳng song song",
      "Hai đường thẳng vuông góc",
@@ -2317,6 +2724,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác ABC có ∠A = 72°, ∠B = 55°. Số đo ∠C là bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "angles": {
+      "A": "72°",
+      "B": "55°",
+      "C": "?"
+     }
+    },
     "options": [
      "55°",
      "72°",
@@ -2477,6 +2897,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Góc so le trong",
     "q": "Cho hai đường thẳng a và b song song với nhau, bị cắt bởi đường thẳng c, tạo thành một góc so le trong bằng 72°. Tính số đo góc kề bù với góc so le trong còn lại.",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A3": "72°",
+      "B2": "?"
+     }
+    },
     "options": [
      "108°",
      "72°",
@@ -2493,6 +2921,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Tam giác ABC và tam giác DEF có AB = DE, ∠A = ∠D, AC = DF. Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "A",
+       "B",
+       "C"
+      ],
+      [
+       "D",
+       "E",
+       "F"
+      ]
+     ]
+    },
     "options": [
      "c-c-c (cạnh - cạnh - cạnh)",
      "c-g-c (cạnh - góc - cạnh)",
@@ -2509,6 +2953,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác vuông",
     "q": "Một mảnh đất hình tam giác vuông có độ dài hai cạnh góc vuông lần lượt là x (m) và 2x (m) (x > 0), diện tích mảnh đất bằng 128 m². Tính x (làm tròn kết quả đến chữ số thập phân thứ hai).",
+    "fig": {
+     "t": "tam-giac-vuong",
+     "v": [
+      "A",
+      "B",
+      "C"
+     ],
+     "sides": [
+      "2x",
+      "x"
+     ],
+     "area": "S = 128 m²"
+    },
     "options": [
      "8,00 m",
      "11,32 m",
@@ -2681,6 +3138,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc đối đỉnh",
     "q": "Hai góc được gọi là hai góc đối đỉnh khi nào?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 50,
+     "l": [
+      "∠1",
+      "",
+      "∠3",
+      ""
+     ]
+    },
     "options": [
      "Hai góc có chung một cạnh và tổng số đo bằng 180°",
      "Hai góc bằng nhau và cùng chung đỉnh",
@@ -2697,6 +3164,21 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠mIn = 56° và Ip là tia phân giác của ∠mIn. Số đo ∠mIp bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 56,
+     "names": [
+      "m",
+      "n",
+      "p",
+      "I"
+     ],
+     "lw": "56°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "56°",
      "112°",
@@ -2713,6 +3195,13 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b, tạo thành một cặp góc trong cùng phía có tổng số đo bằng 180°. Kết luận nào đúng?",
+    "fig": {
+     "t": "cut2",
+     "angles": {
+      "A4": "∠A",
+      "B1": "∠B"
+     }
+    },
     "options": [
      "a ∥ b",
      "a ⊥ b",
@@ -2745,6 +3234,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác DEF có ∠D = 75°, ∠E = 45°. Số đo ∠F bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "D",
+      "E",
+      "F"
+     ],
+     "angles": {
+      "D": "75°",
+      "E": "45°",
+      "F": "?"
+     }
+    },
     "options": [
      "70°",
      "55°",
@@ -2905,6 +3407,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho a ∥ b và đường thẳng c cắt a tại A, cắt b tại B. Biết một góc tại đỉnh A bằng 72° và góc đó so le trong với một góc tại đỉnh B. Số đo góc kề bù với góc tại đỉnh B nói trên bằng bao nhiêu?",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A3": "72°",
+      "B2": "?"
+     }
+    },
     "options": [
      "108°",
      "72°",
@@ -2921,6 +3431,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Tam giác ABC và tam giác DEF có AB = DE, ∠A = ∠D, AC = DF (góc A xen giữa hai cạnh AB và AC; góc D xen giữa hai cạnh DE và DF). Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "A",
+       "B",
+       "C"
+      ],
+      [
+       "D",
+       "E",
+       "F"
+      ]
+     ]
+    },
     "options": [
      "cạnh – cạnh – cạnh (c-c-c)",
      "cạnh – góc – cạnh (c-g-c)",
@@ -2937,6 +3463,18 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác MNP cân tại M có ∠N = 68°. Số đo ∠M bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "M",
+      "N",
+      "P"
+     ],
+     "angles": {
+      "N": "68°",
+      "M": "?"
+     }
+    },
     "options": [
      "68°",
      "112°",
@@ -3097,6 +3635,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc kề bù",
     "q": "Hai đường thẳng cắt nhau tại một điểm tạo thành bốn góc, trong đó có một góc bằng 52°. Góc kề bù với góc 52° có số đo bằng bao nhiêu?",
+    "fig": {
+     "t": "doi-dinh",
+     "a": 52,
+     "l": [
+      "52°",
+      "?",
+      "",
+      ""
+     ]
+    },
     "options": [
      "52°",
      "38°",
@@ -3113,6 +3661,21 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠mOn = 130° và Ot là tia phân giác của ∠mOn. Số đo ∠mOt bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 130,
+     "names": [
+      "m",
+      "n",
+      "t",
+      "O"
+     ],
+     "lw": "130°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "130°",
      "65°",
@@ -3129,6 +3692,18 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
     "q": "Đường thẳng c cắt hai đường thẳng phân biệt m và n, tạo thành một cặp góc so le trong cùng bằng 78°. Kết luận nào sau đây ĐÚNG?",
+    "fig": {
+     "t": "cut2",
+     "names": [
+      "m",
+      "n",
+      "c"
+     ],
+     "angles": {
+      "A3": "78°",
+      "B1": "78°"
+     }
+    },
     "options": [
      "m ∥ n vì có một cặp góc so le trong bằng nhau",
      "m ∥ n vì có một cặp góc đồng vị bằng nhau",
@@ -3145,6 +3720,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Giả thiết và kết luận",
     "q": "Định lí: “Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì chúng song song với nhau.” Phần Giả thiết (GT) của định lí này là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng đó song song với nhau",
      "Hai đường thẳng đó cắt nhau",
@@ -3161,6 +3740,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác DEF có ∠D = 47°, ∠E = 81°. Số đo ∠F bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "D",
+      "E",
+      "F"
+     ],
+     "angles": {
+      "D": "47°",
+      "E": "81°",
+      "F": "?"
+     }
+    },
     "options": [
      "128°",
      "42°",
@@ -3321,6 +3913,19 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho hai đường thẳng song song p và q bị cắt bởi đường thẳng c. Biết một góc đồng vị tạo bởi c và p bằng 63°. Góc kề bù với góc đồng vị tương ứng tạo bởi c và q bằng bao nhiêu?",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "names": [
+      "p",
+      "q",
+      "c"
+     ],
+     "angles": {
+      "A1": "63°",
+      "B2": "?"
+     }
+    },
     "options": [
      "63°",
      "27°",
@@ -3337,6 +3942,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Tam giác GHI và tam giác XYZ có GH = XY, HI = YZ và ∠H = ∠Y (góc xen giữa hai cạnh GH và HI). Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "H",
+       "G",
+       "I"
+      ],
+      [
+       "Y",
+       "X",
+       "Z"
+      ]
+     ]
+    },
     "options": [
      "c-c-c (cạnh - cạnh - cạnh)",
      "g-c-g (góc - cạnh - góc)",
@@ -3353,6 +3974,18 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác KLM cân tại K, biết góc ở đáy ∠L = 72°. Số đo góc ở đỉnh ∠K bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "K",
+      "L",
+      "M"
+     ],
+     "angles": {
+      "L": "72°",
+      "K": "?"
+     }
+    },
     "options": [
      "36°",
      "72°",
@@ -3532,6 +4165,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc kề bù",
     "q": "Hai góc kề bù là hai góc thoả mãn điều kiện nào?",
+    "fig": {
+     "t": "ke-bu",
+     "a": 125,
+     "l": [
+      "∠1",
+      "∠2"
+     ]
+    },
     "options": [
      "Có chung đỉnh và hai cạnh của góc này là tia đối của hai cạnh góc kia",
      "Có chung đỉnh và bằng nhau",
@@ -3548,6 +4189,16 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Nếu Ot là tia phân giác của ∠mOn thì đẳng thức nào sau đây đúng?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 100,
+     "names": [
+      "m",
+      "n",
+      "t",
+      "O"
+     ]
+    },
     "options": [
      "∠mOt + ∠tOn = 90°",
      "∠mOt = 2∠mOn",
@@ -3564,6 +4215,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tiên đề Euclid",
     "q": "Phát biểu nào sau đây đúng với Tiên đề Euclid?",
+    "fig": {
+     "t": "euclid",
+     "m": "point"
+    },
     "options": [
      "Qua một điểm ở ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đó",
      "Qua một điểm ở ngoài một đường thẳng, có vô số đường thẳng song song với đường thẳng đó",
@@ -3580,6 +4235,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Giả thiết - Kết luận",
     "q": "Cho định lí: 'Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì hai đường thẳng đó song song với nhau.' Kết luận của định lí này là gì?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba",
      "Hai đường thẳng đó song song với nhau",
@@ -3596,6 +4255,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác DEF có ∠D = 72° và ∠E = 45°. Số đo ∠F bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "D",
+      "E",
+      "F"
+     ],
+     "angles": {
+      "D": "72°",
+      "E": "45°",
+      "F": "?"
+     }
+    },
     "options": [
      "53°",
      "117°",
@@ -3756,6 +4428,14 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tính chất hai đường thẳng song song",
     "q": "Cho hai đường thẳng song song a và b bị cắt bởi đường thẳng c. Một góc tạo bởi c và a có số đo 105°. Góc so le trong với nó (tạo bởi c và b) có số đo bao nhiêu?",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "angles": {
+      "A3": "105°",
+      "B1": "?"
+     }
+    },
     "options": [
      "105°",
      "75°",
@@ -3772,6 +4452,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác vuông",
     "q": "Tam giác GHI vuông tại G và tam giác JKL vuông tại J có HI = KL, ∠H = ∠K. Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac-vuong",
+     "m": "ch-gn",
+     "v": [
+      [
+       "G",
+       "H",
+       "I"
+      ],
+      [
+       "J",
+       "K",
+       "L"
+      ]
+     ]
+    },
     "options": [
      "Cạnh góc vuông - góc nhọn kề",
      "Cạnh huyền - góc nhọn",
@@ -3788,6 +4484,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác XYZ cân tại X có góc ở đỉnh ∠X = 52°. Số đo mỗi góc ở đáy bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "X",
+      "Y",
+      "Z"
+     ],
+     "angles": {
+      "X": "52°",
+      "Y": "?",
+      "Z": "?"
+     }
+    },
     "options": [
      "128°",
      "74°",
@@ -3964,6 +4673,19 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Hai góc kề bù",
     "q": "Hai góc ∠aOb và ∠bOc là hai góc kề bù, biết ∠aOb = 115°. Số đo ∠bOc bằng bao nhiêu?",
+    "fig": {
+     "t": "ke-bu",
+     "a": 115,
+     "names": [
+      "a",
+      "c",
+      "b"
+     ],
+     "l": [
+      "115°",
+      "?"
+     ]
+    },
     "options": [
      "115°",
      "75°",
@@ -3980,6 +4702,21 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tia phân giác",
     "q": "Cho ∠mOn = 54° và Ot là tia phân giác của ∠mOn. Số đo ∠mOt bằng bao nhiêu?",
+    "fig": {
+     "t": "phan-giac",
+     "w": 54,
+     "names": [
+      "m",
+      "n",
+      "t",
+      "O"
+     ],
+     "lw": "54°",
+     "lh": [
+      "?",
+      ""
+     ]
+    },
     "options": [
      "54°",
      "108°",
@@ -3996,6 +4733,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Tiên đề Euclid",
     "q": "Cho điểm K không nằm trên đường thẳng d. Phát biểu nào sau đây đúng theo tiên đề Euclid?",
+    "fig": {
+     "t": "euclid",
+     "m": "point"
+    },
     "options": [
      "Có duy nhất một đường thẳng qua K song song với d",
      "Có vô số đường thẳng qua K song song với d",
@@ -4012,6 +4753,10 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Giả thiết - Kết luận",
     "q": "Định lí: “Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng thứ ba thì chúng song song với nhau”. Đâu là phần Kết luận (KL) của định lí này?",
+    "fig": {
+     "t": "vuong-song",
+     "m": "perp2"
+    },
     "options": [
      "Hai đường thẳng đó cùng vuông góc với đường thẳng thứ ba",
      "Hai đường thẳng đó song song với nhau",
@@ -4028,6 +4773,19 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tổng ba góc",
     "q": "Tam giác DEF có ∠D = 72° và ∠E = 55°. Số đo ∠F bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac",
+     "v": [
+      "D",
+      "E",
+      "F"
+     ],
+     "angles": {
+      "D": "72°",
+      "E": "55°",
+      "F": "?"
+     }
+    },
     "options": [
      "127°",
      "17°",
@@ -4188,6 +4946,20 @@ const MATH_EXAMS = [
     "ch": 3,
     "topic": "Góc so le trong",
     "q": "Cho p ∥ q, đường thẳng c cắt p tại A và cắt q tại B. Tại A, góc ∠1 và góc ∠2 là hai góc kề bù, biết ∠1 = 110°. Góc ∠2 và một góc tại B là hai góc so le trong. Tính số đo góc tại B đó.",
+    "fig": {
+     "t": "cut2",
+     "par": true,
+     "names": [
+      "p",
+      "q",
+      "c"
+     ],
+     "angles": {
+      "A4": "110°",
+      "A3": "∠2",
+      "B1": "?"
+     }
+    },
     "options": [
      "70°",
      "110°",
@@ -4204,6 +4976,22 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Trường hợp c-g-c",
     "q": "Cho △ABC và △DEF có AB = DE, AC = DF và ∠A = ∠D (∠A là góc xen giữa AB và AC). Hai tam giác này bằng nhau theo trường hợp nào?",
+    "fig": {
+     "t": "hai-tam-giac",
+     "m": "cgc",
+     "v": [
+      [
+       "A",
+       "B",
+       "C"
+      ],
+      [
+       "D",
+       "E",
+       "F"
+      ]
+     ]
+    },
     "options": [
      "cạnh – cạnh – cạnh (c-c-c)",
      "cạnh – góc – cạnh (c-g-c)",
@@ -4220,6 +5008,18 @@ const MATH_EXAMS = [
     "ch": 4,
     "topic": "Tam giác cân",
     "q": "Tam giác MNP cân tại M, biết ∠N = 68°. Số đo ∠M bằng bao nhiêu?",
+    "fig": {
+     "t": "tam-giac-can",
+     "v": [
+      "M",
+      "N",
+      "P"
+     ],
+     "angles": {
+      "N": "68°",
+      "M": "?"
+     }
+    },
     "options": [
      "68°",
      "112°",

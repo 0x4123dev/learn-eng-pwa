@@ -276,3 +276,97 @@ suite('math figures: the drawing that comes with the question', () => {
         assert.truthy(/fig: q\.fig/.test(src), 'the build must carry fig through to js/math-data.js');
     });
 });
+
+// ---- hình trong ĐỀ THI THỬ ---------------------------------------------
+// Đề thi là để bé TỰ làm: có hình cho hiểu đề, nhưng KHÔNG có bảng gợi ý.
+const EXAM_Q = [];
+MATH_EXAMS.forEach(e => (e.questions || []).forEach(q => EXAM_Q.push({ id: `${e.id}#${q.n}`, q })));
+const EXAM_GEO = EXAM_Q.filter(x => x.q.ch === 3 || x.q.ch === 4);
+const EXAM_FIG = EXAM_Q.filter(x => x.q.fig);
+
+suite('math figures: the mock exam papers', () => {
+    test('almost every geometry question in the ten papers is drawn', () => {
+        assert.equal(EXAM_GEO.length, 80, 'the papers changed — recheck which questions need a figure');
+        assert.equal(EXAM_FIG.length, 77);
+        // Ba câu còn lại chỉ hỏi "phần đã cho gọi là gì" — vẽ ra thì hoặc là
+        // viết sẵn đáp án, hoặc là một cái hộp chữ không phải hình học.
+        const bare = EXAM_GEO.filter(x => !x.q.fig).map(x => x.id).sort();
+        assert.deepEqual(bare, ['hk1-exam2#10', 'hk1-exam6#10', 'hk1-exam7#10']);
+    });
+
+    test('no arithmetic question got one by accident', () => {
+        const stray = EXAM_FIG.filter(x => x.q.ch !== 3 && x.q.ch !== 4).map(x => x.id);
+        assert.deepEqual(stray, []);
+    });
+
+    test('every exam figure names a real template and draws inside the canvas', () => {
+        const out = [];
+        EXAM_FIG.forEach(({ id, q }) => {
+            assert.truthy(MATH_Q_FIGURES[q.fig.t], `${id}: unknown template "${q.fig.t}"`);
+            const svg = mathQuestionFigureHTML(q.fig);
+            assert.truthy(svg.indexOf('<svg') > 0, `${id}: drew nothing`);
+            coordsOf(svg).forEach(p => {
+                if (p[0] < -PAD || p[0] > W + PAD || p[1] < -PAD || p[1] > H + PAD) out.push(`${id} @ ${p[0]},${p[1]}`);
+            });
+        });
+        assert.deepEqual([...new Set(out)].slice(0, 5), [], `${out.length} points fall off the canvas`);
+    });
+
+    test('THE RULE holds in the exam too: the figure never carries the answer', () => {
+        const leaks = [];
+        EXAM_FIG.forEach(({ id, q }) => {
+            textsOf(mathQuestionFigureHTML(q.fig)).forEach(t => {
+                if (!/°|cm|m²/.test(t.s)) return;
+                (t.s.match(/\d+/g) || []).forEach(n => {
+                    if (q.q.indexOf(n) === -1) leaks.push(`${id}: figure says "${t.s}", the question never gives ${n}`);
+                });
+            });
+        });
+        assert.deepEqual(leaks.slice(0, 5), [], `${leaks.length} exam figure(s) show a number the question did not`);
+    });
+
+    test('no two labels overlap in any exam figure', () => {
+        const clash = [];
+        EXAM_FIG.forEach(({ id, q }) => {
+            const L = textsOf(mathQuestionFigureHTML(q.fig));
+            for (let i = 0; i < L.length; i++) {
+                for (let j = i + 1; j < L.length; j++) {
+                    const d = Math.hypot(L[i].x - L[j].x, L[i].y - L[j].y);
+                    if (d < 12) clash.push(`${id}: "${L[i].s}" over "${L[j].s}"`);
+                }
+            }
+        });
+        assert.deepEqual(clash.slice(0, 5), [], `${clash.length} overlapping label(s)`);
+    });
+});
+
+suite('math exam: no hints — the child sits it alone', () => {
+    test('the hint panel is empty in exam mode, however many terms would match', () => {
+        const q = MATH_QUESTIONS.find(x => x.ch === 3 && math.mathHintsFor(x).length > 0);
+        assert.truthy(q, 'no hinted Chương 3 question to test with');
+        assert.truthy(math.mathHintHTML(q, false).length > 0, 'practice must still offer the hint');
+        assert.equal(math.mathHintHTML(q, true), '', 'an exam must not show the hint at all');
+    });
+
+    test('an open hint does not leak into an exam either', () => {
+        const q = MATH_QUESTIONS.find(x => x.ch === 4 && math.mathHintsFor(x).length > 0);
+        math.toggleMathHint();                        // bé mở gợi ý ở phần luyện tập
+        try {
+            assert.truthy(math.mathHintHTML(q, false).indexOf('math-hint-body') > 0);
+            assert.equal(math.mathHintHTML(q, true), '', 'the open state must not carry into the exam');
+        } finally { math.toggleMathHint(); }
+    });
+
+    test('the question card passes the exam flag, so this cannot be bypassed', () => {
+        const src = fs.readFileSync(path.join(root, 'js', 'math.js'), 'utf8');
+        assert.truthy(/mathHintHTML\(q, !!st\.examId\)/.test(src),
+            'renderMathQuestion must tell mathHintHTML whether this is an exam');
+    });
+
+    test('but the exam DOES draw the figure — hình học vẫn cần cái hình', () => {
+        const src = fs.readFileSync(path.join(root, 'js', 'math.js'), 'utf8');
+        const i = src.indexOf('mathQuestionFigureHTML(q.fig)');
+        const j = src.indexOf('mathHintHTML(q, !!st.examId)');
+        assert.truthy(i > 0 && j > i, 'the figure is drawn for every mode, before the hint slot');
+    });
+});
