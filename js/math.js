@@ -348,7 +348,7 @@ function renderMathHome() {
   }
   if (_mathView === 'wars') {
     screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
-      'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '2 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
+      'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '5 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
       + (typeof renderWarsHomeHTML === 'function' ? renderWarsHomeHTML() : '');
     return;
   }

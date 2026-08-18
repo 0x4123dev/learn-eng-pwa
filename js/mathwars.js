@@ -13,10 +13,11 @@
 // and admin-sync systems as every other practice.
 
 const WARS_QUESTIONS = 10;
-// Two minutes, not one. A Grade 4 child doing 63 : 7 in their head needs
-// thinking time; at 60s the clock was the difficulty rather than the sums,
-// and the round ended with half the questions unseen.
-const WARS_SECONDS = 120;
+// Five minutes. A Grade 4 child doing 63 : 7 in their head needs thinking
+// time; at 60s the clock was the difficulty rather than the sums, and even
+// two minutes ended rounds with questions unseen. Ten questions in five
+// minutes is thirty seconds each — room to work it out, still a race.
+const WARS_SECONDS = 300;
 const WARS_MAX = 99;                 // hàng chục: nothing above this, anywhere
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
 const WARS_HISTORY_CAP = 300;
@@ -26,17 +27,19 @@ const WARS_HISTORY_CAP = 300;
 // 12 : 2 finishes the round and comes back. So the round is not one
 // difficulty — it is a ladder, and the child is never told they are on it.
 //
-// Bậc 1 keeps every answer under 20. Ten correct answers IN A ROW (the
-// "10 bài đúng 100%" the ladder is built around) opens bậc 2, under 30, and
-// so on to 99. A wrong answer costs the streak, not the bậc: the ladder only
+// Bậc 1 keeps every answer under 20. More than twenty correct answers IN A
+// ROW opens bậc 2, under 30, and so on to 99. A round is ten questions, so
+// twenty-one means clearing two whole rounds without a single slip and then
+// getting one more right — a bậc is earned by sustained accuracy, not by one
+// good round. A wrong answer costs the streak, not the bậc: the ladder only
 // ever goes up, because a child who has to re-earn ground they already had
 // learns that trying is what costs them.
 //
-// The streak is counted across rounds, not inside one, so ten correct spread
-// over the end of one round and the start of the next still counts.
+// The streak is counted across rounds, not inside one, so a run spread over
+// the end of one round and the start of the next still counts.
 const WARS_LEVEL_BASE = 20;          // trần bậc 1: đáp án < 20
 const WARS_LEVEL_STEP = 10;          // mỗi bậc nới thêm 10
-const WARS_LEVEL_UP_STREAK = 10;     // 10 câu đúng liên tiếp thì lên bậc
+const WARS_LEVEL_UP_STREAK = 21;     // phải đúng > 20 câu liên tiếp mới lên bậc
 // 19, 29, 39 … 99 — the last bậc is the old fixed range.
 const WARS_LEVELS = Math.floor((WARS_MAX + 1 - WARS_LEVEL_BASE) / WARS_LEVEL_STEP) + 1;
 
@@ -71,8 +74,9 @@ function warsLevelMax(level) {
 
 function warsMax() { return warsLevelMax(warsProgress().level); }
 
-// Called once per answered question. Ten in a row and the ceiling moves;
-// one slip and the count starts over, but the bậc already earned stays.
+// Called once per answered question. More than twenty in a row and the
+// ceiling moves; one slip and the count starts over, but the bậc already
+// earned stays.
 function warsNoteAnswer(ok) {
   const home = (typeof appState !== 'undefined' && appState) ? appState : null;
   const p = warsProgress();

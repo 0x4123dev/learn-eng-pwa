@@ -136,32 +136,44 @@ suite('math wars: the hidden difficulty ladder', () => {
         }
     });
 
-    test('ten correct in a row opens the next bậc — and only then', () => {
+    test('more than twenty correct in a row opens the next bậc — and only then', () => {
+        // A round is ten questions, so the bar is two flawless rounds and one
+        // more answer: a bậc is sustained accuracy, not a single lucky round.
+        assert.truthy(w.WARS_LEVEL_UP_STREAK > 20, 'the ladder must ask for more than twenty');
+        assert.truthy(w.WARS_LEVEL_UP_STREAK > 2 * w.WARS_QUESTIONS,
+            'two perfect rounds alone must not be enough');
         at(0);
         for (let i = 0; i < w.WARS_LEVEL_UP_STREAK - 1; i++) {
             w.warsNoteAnswer(true);
             assert.equal(w.warsProgress().level, 0, `bậc moved after only ${i + 1} correct`);
         }
         w.warsNoteAnswer(true);
-        assert.equal(w.warsProgress().level, 1, 'ten correct in a row must open bậc 2');
+        assert.equal(w.warsProgress().level, 1, 'the full streak must open bậc 2');
         assert.equal(w.warsMax(), 29, 'bậc 2 is "đáp án < 30"');
         assert.equal(w.warsProgress().streak, 0, 'the count restarts for the next bậc');
     });
 
     test('one wrong answer costs the streak but never the bậc already earned', () => {
-        at(2, 9);                                    // one answer from bậc 4
+        at(2, w.WARS_LEVEL_UP_STREAK - 1);           // one answer from bậc 4
         w.warsNoteAnswer(false);
         assert.equal(w.warsProgress().streak, 0, 'a slip must reset the count');
         assert.equal(w.warsProgress().level, 2, 'but a child never loses ground they earned');
         assert.equal(w.warsMax(), 39);
     });
 
-    test('the streak carries across rounds — ten correct is ten correct', () => {
+    test('the streak carries across rounds — a run is a run', () => {
+        // The bar is longer than one round by design, so carrying the count
+        // across rounds is the only way the ladder can ever move at all.
+        const need = w.WARS_LEVEL_UP_STREAK;
         at(0);
-        for (let i = 0; i < 6; i++) w.warsNoteAnswer(true);   // end of one round
-        assert.equal(w.warsProgress().level, 0);
-        for (let i = 0; i < 4; i++) w.warsNoteAnswer(true);   // start of the next
-        assert.equal(w.warsProgress().level, 1, 'a streak that spans two rounds still counts');
+        for (let i = 0; i < need - 1; i++) {
+            w.warsNoteAnswer(true);
+            if ((i + 1) % w.WARS_QUESTIONS === 0) {
+                assert.equal(w.warsProgress().level, 0, 'a finished round must not reset the run');
+            }
+        }
+        w.warsNoteAnswer(true);
+        assert.equal(w.warsProgress().level, 1, 'a streak that spans rounds still counts');
     });
 
     test('the ladder stops at the top instead of running off the end', () => {
@@ -291,14 +303,18 @@ suite('math wars: the stats screen', () => {
 });
 
 suite('math wars: the clock', () => {
-    test('a round is two minutes — long enough for a Grade 4 head', () => {
+    test('a round is five minutes — long enough for a Grade 4 head', () => {
         // At 60s the clock was the difficulty rather than the arithmetic, and
-        // rounds ended with half the questions unseen.
-        assert.equal(w.WARS_SECONDS, 120);
-        assert.equal(w.warsLengthLabel(), '2 phút');
+        // even two minutes ended rounds with questions unseen. Ten questions
+        // in five minutes is thirty seconds each.
+        assert.equal(w.WARS_SECONDS, 300);
+        assert.equal(w.warsLengthLabel(), '5 phút');
+        assert.truthy(w.WARS_SECONDS / w.WARS_QUESTIONS >= 30,
+            'every question needs a workable share of the clock');
     });
 
     test('over a minute it reads as a clock; under, as urgent seconds', () => {
+        assert.equal(w.warsClockText(300000), '5:00');
         assert.equal(w.warsClockText(120000), '2:00');
         assert.equal(w.warsClockText(95000), '1:35');
         assert.equal(w.warsClockText(60000), '1:00');
@@ -318,11 +334,14 @@ suite('math wars: the clock', () => {
         });
     });
 
-    test('a fresh round really starts with the full two minutes', () => {
+    test('a fresh round really starts with the full length', () => {
+        // Derived from the constant, so moving the round length cannot leave
+        // this test passing against a stale number.
+        const full = w.WARS_SECONDS * 1000;
         global.appState = { coins: 0, warsHistory: [] };
         w.startWarsRound();
         const left = w.warsLeftMs();
-        assert.truthy(left > 118000 && left <= 120000, `round opened with ${left}ms`);
+        assert.truthy(left > full - 2000 && left <= full, `round opened with ${left}ms of ${full}ms`);
         w.abandonWars();
     });
 });
