@@ -1731,7 +1731,13 @@
         .pb-castle-art { position: relative; aspect-ratio: 8/5; overflow: hidden; background: #e0f2fe; }
         .pb-castle-art canvas { display: block; width: 100%; height: 100%; }
         .pb-castle-art span { position: absolute; top: 7px; left: 7px; padding: 4px 7px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; color: #fff; background: rgba(15,23,42,.75); font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .04em; }
+        .pb-castle-art i { position: absolute; right: 8px; bottom: 7px; color: #fbbf24; font-size: 11px; font-style: normal; letter-spacing: 1px; filter: drop-shadow(0 1px 2px #713f12); }
+        .pb-castle-card[data-tier="Legendary"] { border-color: #f59e0b; background: linear-gradient(#fff,#fffbeb); box-shadow: 0 7px 18px rgba(180,83,9,.18); }
+        .pb-castle-card[data-tier="Legendary"] .pb-castle-art span { color: #451a03; background: linear-gradient(135deg,#fde68a,#f59e0b); }
+        .pb-castle-card[data-tier="Mythic"] { border-color: #a855f7; background: linear-gradient(#fff,#faf5ff); box-shadow: 0 8px 22px rgba(126,34,206,.23); }
+        .pb-castle-card[data-tier="Mythic"] .pb-castle-art::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg,transparent 32%,rgba(255,255,255,.38) 48%,transparent 62%); transform: translateX(-100%); animation: pbCastleShine 3.8s ease-in-out infinite; }
         .pb-castle-card[data-tier="Mythic"] .pb-castle-art span { color: #422006; background: #fde68a; }
+        @keyframes pbCastleShine { 0%,58% { transform: translateX(-100%); } 82%,100% { transform: translateX(100%); } }
         .pb-castle-copy { min-height: 63px; padding: 9px 10px 5px; }
         .pb-castle-copy b, .pb-castle-copy small { display: block; }
         .pb-castle-copy b { color: #1e1b4b; font-size: 14px; font-weight: 950; line-height: 1.2; }
@@ -1770,7 +1776,7 @@
             .math-empty { padding: 42px 30px 34px; }
             .math-empty-art { margin-bottom: 22px; }
         }
-        @media (prefers-reduced-motion: reduce) { .pb-scene-option, .pb-castle-card button { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .pb-scene-option, .pb-castle-card button { transition: none; } .pb-castle-card[data-tier="Mythic"] .pb-castle-art::after { animation: none; transform: none; opacity: .16; } }
 
         /* EN/VI flags — English is the default on every visit */
         .pb-lang { display: flex; gap: 5px; margin-left: auto; }

@@ -12,11 +12,73 @@ var CastleSkins = (() => {
     { id:'dragon-fortress', price:7000, tier:'Legendary', name:{en:'Dragon Fortress',vi:'Pháo Đài Rồng'}, desc:{en:'Dragon horns and ember scales',vi:'Sừng rồng và vảy than hồng'}, colors:['#b9a3a5','#79545d','#442f3a','#211c27','#ef4444','#fecaca'] },
     { id:'crystal-citadel', price:8500, tier:'Mythic', name:{en:'Crystal Citadel',vi:'Thành Pha Lê'}, desc:{en:'Prismatic towers with neon light',vi:'Tháp lăng kính rực ánh neon'}, colors:['#ddd6fe','#a78bfa','#6d55bf','#352b68','#22d3ee','#ecfeff'] },
     { id:'celestial-palace', price:10000, tier:'Mythic', name:{en:'Celestial Palace',vi:'Thiên Cung'}, desc:{en:'A royal palace forged from starlight',vi:'Hoàng cung được rèn từ ánh sao'}, colors:['#fff7d6','#e8c86e','#a77b2c','#574319','#facc15','#ffffff'] },
-  ]);
+  ].map((skin,index) => Object.freeze({...skin,prestige:index+1})));
   const byId = Object.freeze(Object.fromEntries(skins.map(s => [s.id,s])));
   const defaultId = 'stone-keep';
+  const atlasSources = Object.freeze(['img/castle-skins/castles-atlas-a.png','img/castle-skins/castles-atlas-b.png']);
+  const atlasCrops = Object.freeze([{ y:20, h:680 }, { y:150, h:620 }]);
+  const atlasImages = [null, null];
+  const atlasWaiters = [[], []];
   const normalize = id => byId[String(id || '')] ? String(id) : defaultId;
   const get = id => byId[normalize(id)];
+  const atlasCell = id => {
+    const index = skins.findIndex(s => s.id === normalize(id));
+    return { atlas: index < 5 ? 0 : 1, cell: index < 5 ? index : index - 5 };
+  };
+
+  function loadAtlas(index, done) {
+    if (typeof Image === 'undefined') return null;
+    let image = atlasImages[index];
+    if (image && image.complete && image.naturalWidth) { if (done) done(); return image; }
+    if (done) atlasWaiters[index].push(done);
+    if (!image) {
+      image = new Image(); atlasImages[index] = image;
+      image.onload = () => { const callbacks=atlasWaiters[index].splice(0); callbacks.forEach(fn => { try { fn(); } catch (e) {} }); };
+      image.src = atlasSources[index];
+    }
+    return image;
+  }
+
+  function preload(done) {
+    loadAtlas(0, done); loadAtlas(1, done);
+  }
+
+  function drawAtlas(ctx,id,dx,dy,dw,dh) {
+    const position=atlasCell(id), image=loadAtlas(position.atlas);
+    if (!image || !image.complete || !image.naturalWidth) return false;
+    const sw=image.naturalWidth/5, crop=atlasCrops[position.atlas];
+    ctx.drawImage(image,position.cell*sw,crop.y,sw,Math.min(crop.h,image.naturalHeight-crop.y),dx,dy,dw,dh);
+    return true;
+  }
+
+  // Draw the premium sprite as persistent masonry pieces. Each damage stage
+  // removes a genuinely large section of the silhouette; the caller adds the
+  // dog, cannon, cracks and debris on top.
+  function drawBattle(ctx,id,damage) {
+    const skin=get(id);
+    const position=atlasCell(id), image=loadAtlas(position.atlas);
+    if (!image || !image.complete || !image.naturalWidth || damage >= 5) return false;
+    const sw=image.naturalWidth/5, sx=position.cell*sw, crop=atlasCrops[position.atlas], sy=crop.y, sh=Math.min(crop.h,image.naturalHeight-crop.y);
+    if (skin.prestige >= 7 && damage < 4) {
+      ctx.save();
+      const aura=ctx.createRadialGradient(0,-72,12,0,-72,82);
+      aura.addColorStop(0,skin.prestige >= 9?'rgba(167,139,250,.38)':'rgba(251,191,36,.25)');
+      aura.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=aura; ctx.beginPath(); ctx.arc(0,-72,82,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    const drawPiece=(x,y,w,h) => {
+      if (w <= 0 || h <= 0) return;
+      ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+      ctx.drawImage(image,sx,sy,sw,sh,-76,-145,152,145); ctx.restore();
+    };
+    if (damage === 0) drawPiece(-76,-145,152,145);
+    else if (damage === 1) { drawPiece(-76,-145,105,145); drawPiece(29,-67,47,67); }
+    else if (damage === 2) { drawPiece(-76,-145,78,145); drawPiece(2,-53,74,53); }
+    else if (damage === 3) { drawPiece(-76,-88,47,88); drawPiece(-29,-49,48,49); drawPiece(42,-37,34,37); }
+    else { drawPiece(-76,-57,29,57); drawPiece(-38,-34,31,34); drawPiece(38,-29,38,29); }
+    return true;
+  }
 
   function drawOrnaments(ctx,id,damage) {
     if (!ctx || damage >= 4) return;
@@ -52,11 +114,24 @@ var CastleSkins = (() => {
     const skin=get(id),c=skin.colors,w=canvas.width||240,h=canvas.height||150;
     ctx.clearRect(0,0,w,h); const sky=ctx.createLinearGradient(0,0,0,h); sky.addColorStop(0,c[5]); sky.addColorStop(1,'#eff6ff'); ctx.fillStyle=sky; ctx.fillRect(0,0,w,h);
     ctx.fillStyle='rgba(15,23,42,.18)'; ctx.beginPath(); ctx.ellipse(w/2,h-12,w*.36,10,0,0,Math.PI*2); ctx.fill();
+    // The shop communicates value visually: affordable keeps are compact,
+    // while each higher prestige step occupies more of its showcase.
+    const scale=.80+skin.prestige*.025;
+    const artW=(w-10)*scale, artH=(h-10)*scale;
+    const artX=(w-artW)/2, artY=h-artH-3;
+    if (skin.prestige >= 7) {
+      const glow=ctx.createRadialGradient(w/2,h*.55,8,w/2,h*.55,w*.46);
+      glow.addColorStop(0,skin.prestige >= 9?'rgba(139,92,246,.34)':'rgba(251,191,36,.25)');
+      glow.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=glow; ctx.fillRect(0,0,w,h);
+    }
+    if (drawAtlas(ctx,skin.id,artX,artY,artW,artH)) return;
+    const position=atlasCell(skin.id); loadAtlas(position.atlas,()=>drawPreview(canvas,skin.id));
     ctx.save(); ctx.translate(w/2,h-12); ctx.scale(w/220,h/145); const grad=ctx.createLinearGradient(-70,-115,70,0); grad.addColorStop(0,c[0]); grad.addColorStop(.55,c[1]); grad.addColorStop(1,c[2]); ctx.fillStyle=grad; ctx.strokeStyle=c[3]; ctx.lineWidth=3;
     ctx.fillRect(-64,-64,128,58); ctx.strokeRect(-64,-64,128,58); for (const x of [-70,32]) { ctx.fillRect(x,-96,38,90); ctx.strokeRect(x,-96,38,90); } ctx.fillRect(-33,-111,66,54); ctx.strokeRect(-33,-111,66,54);
     ctx.fillStyle=c[0]; for (const x of [-69,-56,-43,33,46,59]) ctx.fillRect(x,-109,10,15); for (const x of [-31,-11,10]) ctx.fillRect(x,-123,14,15);
     ctx.fillStyle='#172033'; ctx.beginPath(); ctx.arc(0,-59,26,Math.PI,0); ctx.lineTo(26,-12); ctx.lineTo(-26,-12); ctx.closePath(); ctx.fill(); ctx.strokeStyle=c[4]; ctx.lineWidth=5; ctx.stroke(); drawOrnaments(ctx,skin.id,0); ctx.restore();
   }
-  return Object.freeze({skins,defaultId,normalize,get,drawPreview,drawOrnaments});
+  return Object.freeze({skins,defaultId,normalize,get,atlasSources,atlasCell,preload,drawPreview,drawBattle,drawOrnaments});
 })();
 if (typeof module!=='undefined' && module.exports) module.exports=CastleSkins;

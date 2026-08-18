@@ -30,6 +30,30 @@ suite('castle skins: fair cosmetic collection', () => {
       assert.equal(skin.colors.length, 6);
     }
   });
+
+  test('visual prestige rises with price so expensive skins look more premium', () => {
+    const paid = CastleSkins.skins.filter(s => s.price > 0);
+    paid.forEach((skin, index) => {
+      assert.equal(skin.prestige, index + 2, `${skin.id} should have the next visual prestige rank`);
+      if (index) assert.truthy(skin.price > paid[index - 1].price, 'price must rise with visual prestige');
+    });
+  });
+
+  test('all ten premium castles map into two production atlases', () => {
+    assert.equal(CastleSkins.atlasSources.length, 2);
+    CastleSkins.atlasSources.forEach(src => assert.truthy(fs.existsSync(path.join(root, src)), `${src} is missing`));
+    const cells = CastleSkins.skins.map(s => CastleSkins.atlasCell(s.id));
+    assert.equal(cells.filter(c => c.atlas === 0).length, 5);
+    assert.equal(cells.filter(c => c.atlas === 1).length, 5);
+    assert.equal(new Set(cells.map(c => `${c.atlas}:${c.cell}`)).size, 10);
+  });
+
+  test('battle renderer uses premium sprites and preserves staged destruction', () => {
+    const src = read('js/castle-skins.js');
+    assert.truthy(/function drawBattle/.test(src));
+    for (const stage of [0,1,2,3,4]) assert.truthy(src.includes(`damage === ${stage}`) || stage === 4, `damage stage ${stage} missing`);
+    assert.truthy(/CastleSkins\.drawBattle/.test(read('js/petbattlegame.js')));
+  });
 });
 
 suite('castle skins: purchase and equip', () => {

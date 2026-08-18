@@ -539,8 +539,9 @@ function _pbCastleWorkshop() {
       const has = owned.includes(skin.id), on = selected === skin.id, short = Math.max(0, skin.price - coins);
       const label = on ? pbT('castleUsing') : has ? pbT('castleUse') : short ? pbT('castlePoor', { n: short.toLocaleString() }) : pbT('castleBuy', { n: skin.price.toLocaleString() });
       const action = has ? `pbSelectCastleSkin('${skin.id}')` : `pbBuyCastleSkin('${skin.id}')`;
-      return `<article class="pb-castle-card ${on ? 'selected' : ''}" data-tier="${skin.tier}">
-        <div class="pb-castle-art"><canvas width="240" height="150" data-castle-preview="${skin.id}" aria-hidden="true"></canvas><span>${skin.tier}</span></div>
+      const stars = Math.min(5, Math.max(1, Math.ceil(skin.prestige / 2)));
+      return `<article class="pb-castle-card ${on ? 'selected' : ''}" data-tier="${skin.tier}" data-prestige="${skin.prestige}">
+        <div class="pb-castle-art"><canvas width="240" height="150" data-castle-preview="${skin.id}" aria-hidden="true"></canvas><span>${skin.tier}</span><i aria-hidden="true">${'★'.repeat(stars)}</i></div>
         <div class="pb-castle-copy"><b>${pbEsc(skin.name[lang])}</b><small>${pbEsc(skin.desc[lang])}</small></div>
         <div class="pb-castle-meta"><span>${skin.price ? `🪙 ${skin.price.toLocaleString()}` : pbT('castleOwned')}</span>${has && !on ? `<em>${pbT('castleOwned')}</em>` : ''}</div>
         <button type="button" aria-pressed="${on}" onclick="${action}" ${on || (!has && short) ? 'disabled' : ''}>${label}</button>

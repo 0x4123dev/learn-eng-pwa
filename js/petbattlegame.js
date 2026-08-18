@@ -169,6 +169,14 @@ function PetBattleGame(opts) {
   this.houseImpacts = [];
   this._lastHitCount = 0;
   this.sceneRenderer = null;
+  if (typeof CastleSkins !== 'undefined' && CastleSkins.preload) {
+    CastleSkins.preload(() => {
+      if (!this._destroyed && this.ctx && this.canvas) {
+        this.draw();
+        this._requestFrame();
+      }
+    });
+  }
 }
 
 // ---- realtime events (all no-ops when the link is unavailable) ----
@@ -1189,7 +1197,55 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
         ? [[-59,-7,22,12,-.14],[54,-8,25,13,.18],[-39,-15,18,11,.22]]
         : damage >= 2
           ? [[49,-8,25,13,.18],[18,-8,19,11,-.12]]
-          : damage >= 1 ? [[56,-8,26,14,.2],[39,-15,18,12,-.18]] : [];
+      : damage >= 1 ? [[56,-8,26,14,.2],[39,-15,18,12,-.18]] : [];
+
+  const premiumCastle = damage < 5 && typeof CastleSkins !== 'undefined'
+    && CastleSkins.drawBattle && CastleSkins.drawBattle(ctx, skin ? skin.id : castleSkinId, damage);
+  if (premiumCastle) {
+    // The dog remains visibly housed inside the grand doorway until the
+    // structure is critically broken, then stands exposed in first air.
+    if (img && img.complete && img.naturalWidth) {
+      if (damage < 4) ctx.drawImage(img, -24, -55, 48, 51);
+      else ctx.drawImage(img, -34, -82, 68, 75);
+    }
+
+    // High-contrast broken edges explain the large transparent bites cut out
+    // of the premium sprite. This stays readable on bright and dark arenas.
+    if (damage >= 1) {
+      ctx.strokeStyle = '#211827'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(29,-67); ctx.lineTo(39,-58); ctx.lineTo(48,-70); ctx.lineTo(59,-57); ctx.lineTo(72,-64);
+      if (damage >= 2) { ctx.moveTo(2,-53); ctx.lineTo(15,-43); ctx.lineTo(28,-55); ctx.lineTo(41,-46); }
+      if (damage >= 3) { ctx.moveTo(-76,-88); ctx.lineTo(-61,-76); ctx.lineTo(-48,-91); ctx.lineTo(-30,-78); }
+      ctx.stroke();
+    }
+    if (damage >= 2) {
+      ctx.strokeStyle = '#fff3'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-31,-94); ctx.lineTo(-18,-79); ctx.lineTo(-26,-63); ctx.moveTo(38,-47); ctx.lineTo(27,-35); ctx.lineTo(36,-20); ctx.stroke();
+    }
+
+    for (const piece of rubble) {
+      ctx.save(); ctx.translate(piece[0],piece[1]); ctx.rotate(piece[4]);
+      ctx.fillStyle = piece[0] > 0 ? palette[2] : palette[1];
+      round(-piece[2]/2,-piece[3]/2,piece[2],piece[3],3); ctx.fill();
+      ctx.strokeStyle = palette[3]; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    }
+
+    // Cannon keeps the deterministic centre muzzle used by the physics.
+    const premiumRad = angle * Math.PI / 180;
+    ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.arc(0,-34,12,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#172033'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(0,-34); ctx.lineTo(Math.cos(-premiumRad)*34,-34+Math.sin(-premiumRad)*34); ctx.stroke();
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.stroke();
+
+    pbDrawSquad(ctx,this.rules,charges,facing);
+    ctx.fillStyle = accent; round(-30,-157,60,23,9); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.save(); ctx.translate(0,-141); ctx.scale(facing < 0 ? -1 : 1,_cs.sx/_cs.sy);
+    ctx.fillText('LV.'+Math.max(1,Number(level)||1),0,0); ctx.restore();
+    ctx.restore();
+    return;
+  }
 
   // At zero HP the castle is truly gone: big masonry chunks remain while the
   // dog stands in first air, so destruction reads even with motion disabled.
