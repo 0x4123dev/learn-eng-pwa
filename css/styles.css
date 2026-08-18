@@ -8889,6 +8889,44 @@
         .math-hint-def { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
         .math-hint-def b { color: var(--text-primary); }
 
+        /* Hình vẽ của mỗi khái niệm hình học (js/math-figures.js).
+           Vẽ bằng SVG nên nét vẫn sắc ở mọi cỡ máy, và màu lấy từ biến theme
+           để hình không biến mất khi bé đổi giao diện. */
+        .math-hint-figwrap { margin: 6px 0 8px; }
+        .math-fig {
+            display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto;
+            background: rgba(255,255,255,0.55); border-radius: 10px; padding: 2px 0;
+        }
+        .math-fig .mf-l { fill: none; stroke: var(--text-primary); stroke-width: 2; stroke-linecap: round; }
+        .math-fig .mf-tri { stroke-linejoin: round; }
+        .math-fig .mf-d { fill: none; stroke: var(--text-secondary); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: .75; }
+        .math-fig .mf-p { fill: var(--text-primary); }
+        .math-fig .mf-sq { fill: none; stroke-width: 1.8; stroke: var(--text-primary); }
+        .math-fig .mf-par { fill: none; stroke: var(--text-secondary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .math-fig .mf-w { stroke-width: 1.6; }
+        .math-fig .mf-arc { fill: none; stroke-width: 1.8; }
+        .math-fig .mf-tick { stroke-width: 2; stroke-linecap: round; }
+        .math-fig .mf-box { fill-opacity: .16; stroke-width: 1.6; }
+        /* Ba màu đánh dấu — đủ để phân biệt cặp góc/cạnh mà không thành cầu vồng. */
+        .math-fig .mf-a { fill: rgba(230,81,0,.20); stroke: #e65100; }
+        .math-fig .mf-b { fill: rgba(21,101,192,.20); stroke: #1565c0; }
+        .math-fig .mf-c { fill: rgba(46,125,50,.20); stroke: #2e7d32; }
+        .math-fig .mf-tick.mf-a, .math-fig .mf-arc.mf-a { stroke: #e65100; }
+        .math-fig .mf-tick.mf-b, .math-fig .mf-arc.mf-b { stroke: #1565c0; }
+        .math-fig .mf-tick.mf-c, .math-fig .mf-arc.mf-c { stroke: #2e7d32; }
+        .math-fig .mf-hi { stroke: #e65100; }
+        /* Đặt SAU bảng màu: nét chỉ mượn màu của mf-a/b/c, không mượn phần tô —
+           ô vuông góc mà bị tô đặc thì thành hình tam giác. */
+        .math-fig .mf-sq, .math-fig .mf-arc, .math-fig .mf-tick { fill: none; }
+        .math-fig .mf-fill { stroke: none; fill: var(--text-primary); }
+        .math-fig .mf-t {
+            font-family: inherit; font-size: 12px; font-weight: 800;
+            fill: var(--text-primary);
+        }
+        .math-fig .mf-cap { font-size: 10px; font-weight: 600; fill: var(--text-secondary); }
+        .math-fig .mf-no { fill: #c62828; font-size: 16px; }
+
+
         /* Which questions keep coming back wrong, and how often. */
         .math-wrong-panel { margin: 0 0 14px; }
         .math-wrong-list {

@@ -285,9 +285,12 @@ function mathHintHTML(q) {
         💡 Gợi ý · ${hints.length} khái niệm liên quan <span class="math-hint-caret">›</span>
       </button>`;
   }
+  // Hình trước, chữ sau: với hình học, câu định nghĩa chỉ đọc được khi trong
+  // đầu đã có sẵn cái hình mà nó đang mô tả.
   const items = hints.map(e => `
       <div class="math-hint-item">
         <div class="math-hint-term">${mathEsc(e.t)}</div>
+        ${typeof mathFigureHTML === 'function' ? mathFigureHTML(e.f) : ''}
         <div class="math-hint-def">${mathRich(e.d)}</div>
       </div>`).join('');
   return `<div class="math-hint-open">
