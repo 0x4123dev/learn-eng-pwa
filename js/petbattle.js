@@ -160,6 +160,10 @@ const PB_STR = {
     gFire: 'FIRE!', gFireHint: 'PRESS SPACE TO FIRE', gFireAria: 'Fire',
     gWaiting: 'WAITING', gWaitHint: 'OPPONENT IS PLAYING', gWaitAria: 'Waiting for the opponent',
     gControlsAria: 'Firing controls', gShotsAria: 'Number of poops', gEmotesAria: 'Quick reactions',
+    gSquadAria: 'Your teammates',
+    gUseGunner: 'Gunner: send a rocket with your next shot',
+    gUseEngineer: 'Engineer: repair your castle',
+    gUseShield: 'Guard: block half of the next hit',
     gEmoteAria: 'Send reaction {e}',
     gCanvasAria: 'Artillery battlefield between two pets',
     gCanvasFallback: 'Artillery battlefield between two pets. Drag the aim line or use the controls below.',
@@ -281,6 +285,10 @@ const PB_STR = {
     gFire: 'KHAI HỎA!', gFireHint: 'NHẤN SPACE ĐỂ BẮN', gFireAria: 'Bắn đạn',
     gWaiting: 'ĐANG CHỜ', gWaitHint: 'ĐỐI THỦ ĐANG CHƠI', gWaitAria: 'Đang chờ đối thủ',
     gControlsAria: 'Điều khiển bắn', gShotsAria: 'Số viên phân', gEmotesAria: 'Cảm xúc nhanh',
+    gSquadAria: 'Đồng đội của bé',
+    gUseGunner: 'Pháo thủ: bắn tên lửa theo phát tiếp theo',
+    gUseEngineer: 'Kỹ sư: sửa lâu đài',
+    gUseShield: 'Vệ sĩ: chặn một nửa đòn sắp tới',
     gEmoteAria: 'Gửi cảm xúc {e}',
     gCanvasAria: 'Chiến trường pháo binh giữa hai thú cưng',
     gCanvasFallback: 'Chiến trường pháo binh giữa hai thú cưng. Kéo đường ngắm hoặc dùng điều khiển bên dưới.',
@@ -440,12 +448,11 @@ function _pbPowerPanel() {
 // "Bé cấp 42 vs cấp 30" — a child sizing up an opponent should see whose pet
 // is stronger before accepting.
 // ---- hiring đồng đội ----
-// OFF until the abilities actually fire. The lobby panel, the coin debit and
-// the castle bench are all in place, but a triggered charge does nothing yet —
-// shipping this half-built would let a child pay 1,400 xu for a Vệ sĩ that
-// never raises a shield. Flip to true in the same change that lands the
-// trigger chips and the server's field_version 4.
-const PB_TEAMMATES_ENABLED = false;
+// The abilities fire, the chips are wired and the bench draws on both castles.
+// Friend battles still run on field_version 3 until the server is bumped, so a
+// hired squad currently reaches the arena through bot practice and the local
+// battle path; the v4 fortress arrives with that server change.
+const PB_TEAMMATES_ENABLED = true;
 
 // The cart lives here, not in appState: a squad is hired FOR ONE BATTLE, so
 // abandoning the lobby must not leave a phantom bench (or a phantom bill)

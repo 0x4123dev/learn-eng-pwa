@@ -140,6 +140,10 @@ function PetBattleGame(opts) {
   // A castle repairs up to ITS OWN ceiling, which food raises.
   this.myMaxHp = TEAM.startingHp(this.view.me.level);
   this.foeMaxHp = TEAM.startingHp(this.view.foe.level);
+  this.myShieldUp = false;
+  this.foeShieldUp = false;
+  this.myRocket = false;          // a Pháo thủ armed for the next volley
+  this.myPending = [];            // charges spent this turn, sent with it
   this.myAmmo = this.view.me.ammo;
   this.foeAmmo = this.view.foe.ammo;
   this.craters = [];
@@ -282,12 +286,29 @@ PetBattleGame.prototype.destroy = function () {
 
 // ---- layout ----
 PetBattleGame.prototype.render = function () {
+  // A game can legitimately exist without a mount — the rules and the ability
+  // state are useful on their own, and the tests drive a battle with no DOM at
+  // all. Drawing is then simply a no-op rather than a crash.
+  if (!this.mount) return;
   const v = this.view, C = this.calc;
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const maxShots = C.maxShotsThisTurn(this.myAmmo);
   this.shots = Math.max(1, Math.min(this.shots, Math.max(1, maxShots)));
 
   if (!this._shellReady) {
+    // A chip per hired đồng đội. The Pháo thủ's arms the next volley (it stays
+    // lit until the shot goes); the other two act the moment they are tapped.
+    const squadChips = (this.myCharges || []).length ? `
+        <div class="pb-squad" role="group" aria-label="${esc(gT('gSquadAria'))}">
+          ${this.myCharges.map(c => {
+            const mate = this.team.teammateById(c.id);
+            return `<button class="pb-squad-chip" type="button" data-pb-charge="${c.key}"
+                    aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}"
+                    onclick="_pbGameUseCharge('${c.key}')">
+              <span class="pb-squad-emoji" aria-hidden="true">${mate ? mate.emoji : ''}</span>
+            </button>`;
+          }).join('')}
+        </div>` : '';
     const barrels = [1, 2, 3, 4].map(n => `
       <button class="pb-barrel" type="button" data-pb-shots="${n}"
               aria-label="${esc(gT('gLoadAria', { n }))}" onclick="_pbGameSetShots(${n})">
@@ -393,6 +414,7 @@ PetBattleGame.prototype.render = function () {
                  aria-label="${esc(gT('gPower'))}" oninput="_pbGameSetPower(this.value)">
         </div>
         <div class="pb-barrels" role="group" aria-label="${esc(gT('gShotsAria'))}">${barrels}</div>
+        ${squadChips}
         <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()">
           <span class="pb-fire-icon" aria-hidden="true"></span>
           <span class="pb-fire-copy"><strong id="pbFireTitle"></strong><small id="pbFireHint"></small></span>
@@ -486,6 +508,17 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   const controls = this._el('pbControls');
   if (controls) controls.setAttribute('aria-busy', this.busy ? 'true' : 'false');
   if (this.mount && typeof this.mount.querySelectorAll === 'function') {
+    this.mount.querySelectorAll('[data-pb-charge]').forEach(btn => {
+      const charge = this.chargeByKey(btn.getAttribute('data-pb-charge'));
+      if (!charge) return;
+      // A Pháo thủ is marked used the moment it is tapped, but its rocket has
+      // not flown yet — it must read as ARMED (lit), not spent (greyed), or the
+      // child cannot tell the shot they are about to take is the boosted one.
+      const armed = charge.id === 'gunner' && !!this.myRocket;
+      btn.disabled = !!charge.used || !this.myTurn || this.busy || this.finished;
+      btn.classList.toggle('armed', armed);
+      btn.classList.toggle('spent', !!charge.used && !armed);
+    });
     this.mount.querySelectorAll('[data-pb-shots]').forEach(btn => {
       const n = +(btn.getAttribute('data-pb-shots') || 0);
       btn.disabled = n > maxShots;
@@ -1321,7 +1354,7 @@ PetBattleGame.prototype.step = function (k) {
 };
 
 // Fire a volley locally and return the damage it deals to `target`.
-PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, level, target) {
+PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, level, target, rocket) {
   const C = this.calc;
   const angles = C.volleyAngles(angle, shots, this.seed, this.turnNo);
   let damage = 0;
@@ -1340,6 +1373,24 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
       done: false, size: C.shellSize(level), level, spin: a % 2 ? 1 : -1,
     };
   });
+
+  // A Pháo thủ's rocket: one extra projectile on the UNSPREAD aim line, so it
+  // lands where the child actually pointed. Good aim is rewarded twice; a miss
+  // wastes both, which is the whole point of tying it to their own shot.
+  if (rocket) {
+    const sim = C.simulateShot({
+      terrain: this.terrain, from, facing, angle, power, wind: this.wind(), rules: this.rules,
+      blockers: [target],
+    });
+    const hit = this.team.rocketDamage(C.damageAt(sim.hit, target, level, this.rules));
+    damage += hit;
+    if (hit > 0) this._lastHitCount += 1;
+    this.flying.push({
+      points: sim.points, hit: sim.hit,
+      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0, damage: hit, target,
+      done: false, size: C.shellSize(level), level, spin: 1, rocket: true,
+    });
+  }
   return Math.min(100, damage);
 };
 
@@ -1375,6 +1426,70 @@ PetBattleGame.prototype._passTurn = function () {
 };
 
 // ---- my turn ----
+// ---- hired đồng đội: spending a charge ----
+// Abilities ride on the TURN payload rather than travelling as their own
+// messages. One action stream per battle is what keeps both phones replaying
+// the same fight: an ability that arrived out of band could land on a
+// different HP than the one it was aimed at.
+
+PetBattleGame.prototype.chargeByKey = function (key) {
+  return (this.myCharges || []).find(c => c.key === key) || null;
+};
+
+// True when the charge actually fired. The guards mirror fire(): a charge is
+// as much a move as a shot, so it obeys the same turn rules.
+PetBattleGame.prototype.useCharge = function (key) {
+  if (this.finished || !this.myTurn || this.busy) return false;
+  const charge = this.chargeByKey(key);
+  if (!charge || charge.used) return false;
+  const TEAM = this.team;
+
+  if (charge.id === 'engineer') {
+    this.myHp = TEAM.applyRepair(this.myHp, this.myMaxHp);
+    this.myPending.push('engineer');
+  } else if (charge.id === 'shield') {
+    this.myShieldUp = true;
+    this.myPending.push('shield');
+  } else if (charge.id === 'gunner') {
+    // Armed, not fired: the rocket rides the shot the child is about to aim,
+    // so it is spent on the volley and reported with it.
+    this.myRocket = true;
+  } else {
+    return false;
+  }
+  charge.used = true;
+  this.render();
+  return true;
+};
+
+// A shield halves ONE volley and then falls, whichever side raised it.
+PetBattleGame.prototype._incomingDamage = function (raw) {
+  if (!this.myShieldUp) return raw;
+  this.myShieldUp = false;
+  return this.team.shieldedDamage(raw);
+};
+
+PetBattleGame.prototype._outgoingDamage = function (raw) {
+  if (!this.foeShieldUp) return raw;
+  this.foeShieldUp = false;
+  return this.team.shieldedDamage(raw);
+};
+
+// Replay the opponent's charges. Every one is checked against the bench they
+// actually hired — a turn arrives from another device, so a payload claiming
+// five engineers must not heal a castle it never paid for.
+PetBattleGame.prototype._applyFoeAbilities = function (abilities) {
+  if (!Array.isArray(abilities)) return;
+  const TEAM = this.team;
+  for (const id of abilities) {
+    const charge = (this.foeCharges || []).find(c => c.id === id && !c.used);
+    if (!charge) continue;                       // not hired, or already spent
+    charge.used = true;
+    if (id === 'engineer') this.foeHp = TEAM.applyRepair(this.foeHp, this.foeMaxHp);
+    else if (id === 'shield') this.foeShieldUp = true;
+  }
+};
+
 PetBattleGame.prototype.fire = function () {
   if (!this.myTurn || this.busy || this.finished) return;
   const C = this.calc;
@@ -1396,7 +1511,14 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
   const shots = Math.max(1, Math.min(maxShots, this.shots));
   if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && !this.reducedMotion) navigator.vibrate(18);
   this.myAmmo -= shots;
-  const damage = this._launch(this.mePos, this.meFacing, this.angle, this.power, shots, this.view.me.level, this.foePos);
+  const rocket = !!this.myRocket;
+  this.myRocket = false;
+  const raw = this._launch(this.mePos, this.meFacing, this.angle, this.power, shots, this.view.me.level, this.foePos, rocket);
+  // Their Vệ sĩ, if one is up, eats half of this — resolved here so the number
+  // shown, the number stored and the number relayed are all the same one.
+  const damage = this._outgoingDamage(raw);
+  const abilities = this.myPending.slice();
+  this.myPending = [];
 
   const aim = { angle: Math.round(this.angle), power: Math.round(this.power), shots };
 
@@ -1413,7 +1535,7 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
     this._lastImpactX = this.foePos.x;          // my shot landed over there
     this._logTurn(true, aim, damage);
     this._drainTurns();
-    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage })
+    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage, abilities, rocket })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
     this.render();
@@ -1442,9 +1564,12 @@ PetBattleGame.prototype._launchFoeVolley = function (turn, shots) {
   if (this.finished) { this.busy = false; return; }
   const C = this.calc;
   this.foeAmmo = Math.max(0, this.foeAmmo - shots);
-  const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos);
+  // Their charges resolve BEFORE their shot: a Kỹ sư repairs the castle this
+  // volley is fired from, and a Vệ sĩ raised now guards against my next one.
+  this._applyFoeAbilities(turn.abilities);
+  const damage = this._launch(this.foePos, -this.meFacing, turn.angle, turn.power, shots, this.view.foe.level, this.mePos, !!turn.rocket);
   this._pendingResolve = () => {
-    const dealt = Math.max(damage, turn.damage || 0);
+    const dealt = this._incomingDamage(Math.max(damage, turn.damage || 0));
     const oldHouseStage = pbHouseDamageStage(this.myHp);
     this.myHp = Math.max(0, this.myHp - dealt);
     const houseWorsened = pbHouseDamageStage(this.myHp) > oldHouseStage;
@@ -1536,6 +1661,7 @@ function _pbGameNudge(which, delta) {
 
 function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
 function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
+function _pbGameUseCharge(key) { const g = _pbCurrentGame(); if (g) g.useCharge(key); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
 function _pbGameAnchor(which) { const g = _pbCurrentGame(); if (g) g.cameraAnchor(which); }

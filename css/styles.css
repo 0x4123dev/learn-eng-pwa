@@ -1535,6 +1535,29 @@
            on screen at the moment the child commits to a battle. Steppers
            rather than a single tap: duplicates are a real plan (two Vệ sĩ =
            two shields), so adding a second of the same must be one gesture. */
+
+        /* ---- đồng đội trigger chips ----
+           One chip per hired charge, beside the barrels. A spent chip stays on
+           screen greyed rather than vanishing, so the child can always see
+           what they paid for and what is left. */
+        .pb-squad { display: flex; gap: 8px; justify-content: center; margin: 6px 0 2px; }
+        .pb-squad-chip {
+            width: 46px; height: 46px; border-radius: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(124,58,237,.45);
+            background: rgba(124,58,237,.12);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pb-squad-emoji { font-size: 24px; line-height: 1; }
+        .pb-squad-chip:active { transform: scale(.92); }
+        .pb-squad-chip:disabled { cursor: default; }
+        .pb-squad-chip.spent { opacity: .32; filter: grayscale(1); }
+        /* Bought, aimed, not yet fired — this is the shot it rides. */
+        .pb-squad-chip.armed {
+            background: #7c3aed; border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,.28);
+        }
+
         .pb-hire-panel {
             background: var(--glass-bg, rgba(255,255,255,.55));
             border: 2px solid var(--glass-border);

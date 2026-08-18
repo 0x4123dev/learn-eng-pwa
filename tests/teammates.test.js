@@ -6,9 +6,11 @@
 // devices would silently diverge mid-battle. That is why the numbers are
 // pinned here rather than trusted to the UI.
 const { suite, test, assert } = require('./harness');
+const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
+const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 const T = require(path.join(root, 'js', 'battle-teammates.js'));
 const calc = require(path.join(root, 'js', 'battlecalc.js'));
 
@@ -363,6 +365,193 @@ suite('teammates: the squad inside a live battle', () => {
         });
         assert.equal(g.myMaxHp, 112, 'level 120 is +12 castle');
         assert.equal(g.foeMaxHp, 100, 'a young pet gets the plain castle');
+    });
+});
+
+suite('teammates: triggering a charge', () => {
+    const mk = (over) => new game.PetBattleGame({ view: fakeView(over), mount: null });
+
+    test('the engineer repairs, and only once', () => {
+        const g = mk({ me: { hires: ['engineer'], level: 0 } });
+        g.myHp = 60;
+        const key = g.myCharges[0].key;
+        assert.truthy(g.useCharge(key), 'the first tap must work');
+        assert.equal(g.myHp, 75);
+        assert.truthy(g.myCharges[0].used, 'the charge is spent');
+        assert.falsy(g.useCharge(key), 'a spent charge cannot fire again');
+        assert.equal(g.myHp, 75, 'and cannot heal again');
+    });
+
+    test('a repair never overfills the castle the pet earned', () => {
+        const g = mk({ me: { hires: ['engineer'], level: 120 } });   // max 112
+        g.myHp = 105;
+        g.useCharge(g.myCharges[0].key);
+        assert.equal(g.myHp, 112, 'capped at this castle, not a flat 100');
+    });
+
+    test('a charge cannot be spent on the opponent’s turn', () => {
+        const g = mk({ me: { hires: ['engineer'] } });
+        g.myTurn = false;
+        g.myHp = 50;
+        assert.falsy(g.useCharge(g.myCharges[0].key));
+        assert.equal(g.myHp, 50);
+        assert.falsy(g.myCharges[0].used, 'and it stays in hand');
+    });
+
+    test('a charge cannot be spent after the battle ends', () => {
+        const g = mk({ me: { hires: ['engineer'] } });
+        g.finished = true;
+        g.myHp = 50;
+        assert.falsy(g.useCharge(g.myCharges[0].key));
+        assert.equal(g.myHp, 50);
+    });
+
+    test('an unknown charge key does nothing', () => {
+        const g = mk({ me: { hires: ['engineer'] } });
+        assert.falsy(g.useCharge('nope-9'));
+        assert.falsy(g.myCharges[0].used);
+    });
+
+    test('the shield halves the next volley that lands on me, then falls', () => {
+        const g = mk({ me: { hires: ['shield'] } });
+        assert.equal(g._incomingDamage(40), 40, 'no shield, no reduction');
+        g.useCharge(g.myCharges[0].key);
+        assert.truthy(g.myShieldUp);
+        assert.equal(g._incomingDamage(40), 20, 'halved');
+        assert.falsy(g.myShieldUp, 'a shield absorbs one volley only');
+        assert.equal(g._incomingDamage(40), 40, 'the next one lands in full');
+    });
+
+    test('the opponent’s shield halves what I deal them', () => {
+        const g = mk({ foe: { hires: ['shield'] } });
+        g.foeShieldUp = true;
+        assert.equal(g._outgoingDamage(31), 15, 'rounded in the defender’s favour');
+        assert.falsy(g.foeShieldUp);
+        assert.equal(g._outgoingDamage(31), 31);
+    });
+
+    test('the gunner arms the next volley rather than firing alone', () => {
+        const g = mk({ me: { hires: ['gunner'] } });
+        assert.falsy(g.myRocket);
+        g.useCharge(g.myCharges[0].key);
+        assert.truthy(g.myRocket, 'armed, waiting for the shot the child aims');
+        assert.truthy(g.myCharges[0].used);
+    });
+
+    test('abilities used on my turn are carried on that turn’s payload', () => {
+        const g = mk({ me: { hires: ['engineer', 'shield'] } });
+        g.useCharge(g.myCharges[0].key);
+        g.useCharge(g.myCharges[1].key);
+        assert.deepEqual(g.myPending, ['engineer', 'shield'],
+            'the opponent has to be told, or the two phones disagree on HP');
+    });
+
+    test('a relayed turn applies the opponent’s abilities too', () => {
+        const g = mk({ foe: { hires: ['engineer', 'shield'], level: 0 } });
+        g.foeHp = 50;
+        g._applyFoeAbilities(['engineer', 'shield']);
+        assert.equal(g.foeHp, 65, 'their engineer repaired their castle');
+        assert.truthy(g.foeShieldUp, 'and their guard raised a shield');
+        assert.truthy(g.foeCharges[0].used && g.foeCharges[1].used,
+            'their bench must show the charges as spent');
+    });
+
+    test('a relayed turn cannot invent abilities they never hired', () => {
+        const g = mk({ foe: { hires: [] } });
+        g.foeHp = 50;
+        g._applyFoeAbilities(['engineer', 'engineer', 'dragon']);
+        assert.equal(g.foeHp, 50, 'a tampered turn must not heal a castle for free');
+    });
+});
+
+suite('teammates: a charge changes the fight', () => {
+    const mk = (over) => new game.PetBattleGame({ view: fakeView(over), mount: null });
+
+    // Find an aim that actually lands, so the rocket has a hit to ride.
+    function landingAim(g) {
+        for (let angle = 20; angle <= 75; angle += 1) {
+            for (let power = 40; power <= 100; power += 5) {
+                const d = g._launch(g.mePos, g.meFacing, angle, power, 1, 40, g.foePos, false);
+                if (d > 0) return { angle, power, base: d };
+            }
+        }
+        return null;
+    }
+
+    test('the rocket adds real damage on top of the volley it rides', () => {
+        const g = mk({ me: { hires: ['gunner'] } });
+        const aim = landingAim(g);
+        assert.truthy(aim, 'no landing shot found — the harness, not the feature, is broken');
+        const withRocket = g._launch(g.mePos, g.meFacing, aim.angle, aim.power, 1, 40, g.foePos, true);
+        assert.truthy(withRocket > aim.base,
+            `rocket added nothing (${aim.base} -> ${withRocket})`);
+        assert.equal(withRocket, aim.base + T.rocketDamage(aim.base),
+            'the rocket must be worth exactly 60% of the shell it followed');
+    });
+
+    test('a rocket riding a miss still misses', () => {
+        const g = mk({ me: { hires: ['gunner'] } });
+        // Straight down into the dirt: nothing reaches the far castle.
+        const base = g._launch(g.mePos, g.meFacing, 89, 10, 1, 40, g.foePos, false);
+        const withRocket = g._launch(g.mePos, g.meFacing, 89, 10, 1, 40, g.foePos, true);
+        assert.equal(base, 0);
+        assert.equal(withRocket, 0, 'a wasted aim wastes the rocket too');
+    });
+
+    test('the whole exchange: their shield really saves them HP', () => {
+        const bare = mk({ me: { hires: [] }, foe: { hires: [] } });
+        const aim = landingAim(bare);
+        assert.truthy(aim);
+
+        const guarded = mk({ me: { hires: [] }, foe: { hires: ['shield'] } });
+        guarded.foeShieldUp = true;
+        const raw = guarded._launch(guarded.mePos, guarded.meFacing, aim.angle, aim.power, 1, 40, guarded.foePos, false);
+        const dealt = guarded._outgoingDamage(raw);
+        assert.truthy(dealt < raw, `shield did not reduce damage (${raw} -> ${dealt})`);
+        assert.equal(dealt, T.shieldedDamage(raw));
+    });
+
+    test('a spent bench is visible to both sides', () => {
+        const g = mk({ me: { hires: ['engineer'] }, foe: { hires: ['engineer'] } });
+        g.myHp = 50; g.foeHp = 50;
+        g.useCharge(g.myCharges[0].key);
+        g._applyFoeAbilities(['engineer']);
+        assert.truthy(g.myCharges[0].used, 'my bench shows it spent');
+        assert.truthy(g.foeCharges[0].used, 'and so does theirs');
+        assert.equal(g.myHp, 65);
+        assert.equal(g.foeHp, 65);
+    });
+});
+
+suite('teammates: every rendered class is styled', () => {
+    test('the hire panel and the trigger chips both have rules', () => {
+        const css = read('css/styles.css');
+        // Classes the two new UIs emit. A chip with no rule is a 46px hole in
+        // the controls that still takes taps.
+        const classes = [
+            'pb-hire-panel', 'pb-hire-head', 'pb-hire-title', 'pb-hire-purse',
+            'pb-hire-sub', 'pb-hire-list', 'pb-hire-card', 'pb-hire-emoji',
+            'pb-hire-info', 'pb-hire-name', 'pb-hire-ability', 'pb-hire-fee',
+            'pb-hire-steps', 'pb-hire-step', 'pb-hire-count', 'pb-hire-total',
+            'pb-squad', 'pb-squad-chip', 'pb-squad-emoji',
+        ];
+        const missing = classes.filter(c => !new RegExp('\\.' + c + '[\\s,{:.]').test(css));
+        assert.deepEqual(missing, [], 'these are rendered but never styled');
+    });
+});
+
+suite('teammates: the chip tells the truth', () => {
+    test('an armed Pháo thủ reads as armed, not as spent', () => {
+        // The charge is marked used on tap, but the rocket has not flown yet.
+        // Showing it greyed would tell the child their money is gone when the
+        // boosted shot is still ahead of them.
+        const src = read('js/petbattlegame.js');
+        const pass = src.slice(src.indexOf("querySelectorAll('[data-pb-charge]')"));
+        const block = pass.slice(0, 700);
+        assert.truthy(/const armed = charge\.id === 'gunner'/.test(block),
+            'the armed state must be computed');
+        assert.truthy(/toggle\('spent', !!charge\.used && !armed\)/.test(block),
+            'an armed gunner must not also be painted spent');
     });
 });
 
