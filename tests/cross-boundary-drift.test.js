@@ -231,23 +231,32 @@ suite('drift: grade 4 units', () => {
     const unitsSrc = read('js/units.js');
 
     test('the unit list is derived from the bank, never hardcoded', () => {
-        const fn = unitsSrc.slice(unitsSrc.indexOf('function unitsList'), unitsSrc.indexOf('// \'mix\' draws'));
-        assert.truthy(fn.includes('unitsBank()'), 'unitsList must read the data');
+        const fn = unitsSrc.slice(unitsSrc.indexOf('function unitsList'), unitsSrc.indexOf('// ---- unit keys ----'));
+        assert.truthy(/unitsBank\(/.test(fn), 'unitsList must read the data');
         assert.falsy(/\[\s*1\s*,\s*2\s*,/.test(fn), 'a hardcoded unit list would drift from the words');
     });
 
-    test('every unit in the bank has words behind its card', () => {
-        // units.js reads UNIT_WORDS off the global, the way the browser does.
+    test('every unit in every word set has words behind its card', () => {
+        // units.js reads the banks off the globals, the way the browser does.
         const { UNIT_WORDS } = require(path.join(ROOT, 'js', 'units-data.js'));
+        const { UNIT_WORDS_HK1 } = require(path.join(ROOT, 'js', 'units-hk1-data.js'));
         global.UNIT_WORDS = UNIT_WORDS;
+        global.UNIT_WORDS_HK1 = UNIT_WORDS_HK1;
         const units = require(path.join(ROOT, 'js', 'units.js'));
-        const list = units.unitsList();
-        assert.truthy(list.length >= 12, `only ${list.length} units`);
-        for (const u of list) {
-            assert.truthy(units._unitPool(u).length > 0, `Unit ${u} renders a card with no words`);
+
+        const sizes = { pre: 12, hk1: 5 };
+        for (const [set, want] of Object.entries(sizes)) {
+            const list = units.unitsList(set);
+            assert.truthy(list.length >= want, `${set}: only ${list.length} units`);
+            for (const u of list) {
+                assert.truthy(units._unitPool(units._unitKey(set, u)).length > 0,
+                    `${set} Unit ${u} renders a card with no words`);
+            }
+            // Mix must see the whole set, or "N units" on the card is a lie.
+            assert.equal(units._unitPool(units._unitKey(set, 'mix')).length, units.unitsBank(set).length);
         }
-        // Mix must see the whole bank, or "12 units" is a lie.
-        assert.equal(units._unitPool('mix').length, UNIT_WORDS.length);
+        assert.equal(units.unitsBank('pre').length, UNIT_WORDS.length);
+        assert.equal(units.unitsBank('hk1').length, UNIT_WORDS_HK1.length);
     });
 
     test('the mastery target is read from the constant, not retyped', () => {

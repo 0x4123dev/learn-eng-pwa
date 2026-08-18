@@ -97,13 +97,16 @@ function masteryEnv() {
     const ctx = {
         console, Math, Date, String, Array, Object, JSON, Number, RegExp,
         module: { exports: {} },
-        appState: { unitsRetry: [], unitWordLevels: {}, unitsHistory: [], coins: 0 },
+        // The mastery rules are set-agnostic; these tests exercise them on the
+        // original 'pre' units, whose keys are bare numbers.
+        appState: { unitsRetry: [], unitWordLevels: {}, unitsHistory: [], coins: 0, unitsSet: 'pre' },
         currentUser: 'tester', saveUserData() {},
         document: { getElementById: el, querySelector: () => null, querySelectorAll: () => [] },
         showToast: (m) => { ctx.lastToast = m; }, renderTopicsHome() {}, createConfetti() {},
     };
     vm.createContext(ctx);
     vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-data.js'), 'utf8'), ctx);
+    vm.runInContext(fs.readFileSync(path.join(root, 'js', 'units-hk1-data.js'), 'utf8'), ctx);
     vm.runInContext(unitsSrc + '\nthis.API = module.exports;\nthis.quiz = () => _unitQuiz;', ctx);
     return { ctx, api: ctx.API, el };
 }

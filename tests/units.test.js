@@ -9,7 +9,7 @@ const units = require(path.join(__dirname, '..', 'js', 'units.js'));
 
 suite('units: word bank', () => {
     test('covers units 1..12 with a non-trivial word list', () => {
-        assert.deepEqual(units.unitsList(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+        assert.deepEqual(units.unitsList('pre'), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
         assert.truthy(UNIT_WORDS.length >= 140, `only ${UNIT_WORDS.length} words`);
     });
 
@@ -26,7 +26,7 @@ suite('units: word bank', () => {
     });
 
     test('every unit has at least 6 words', () => {
-        for (const u of units.unitsList()) {
+        for (const u of units.unitsList('pre')) {
             const n = UNIT_WORDS.filter(w => w.unit === u).length;
             assert.truthy(n >= 6, `unit ${u} has only ${n}`);
         }

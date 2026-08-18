@@ -1,26 +1,104 @@
-// units.js — "Unit 1..12" picture-dictionary practice on the Topics tab.
-// A chip row at the top of Topics opens a typed gap-fill practice: the app
-// shows the picture (emoji) + Vietnamese meaning and a gapped word
-// (st__ent / ch_cken / _ _ _ _ _), and the student types the FULL word.
-// The number of missing letters is random per question: 4, 5 or the
-// whole word. Data lives in js/units-data.js (UNIT_WORDS).
+// units.js — picture-dictionary practice on the Topics → Grade 4 tab.
+// A card grid opens a typed gap-fill practice: the app shows the picture
+// (emoji) + Vietnamese meaning and a gapped word (st__ent / ch_cken /
+// _ _ _ _ _), and the student types the FULL word. The number of missing
+// letters is random per question: 4, 5 or the whole word.
+//
+// Grade 4 is split into three word sets, each with its own units and its own
+// Mix:
+//   pre — the picture-dictionary units the app started with (12 units)
+//   hk1 — Tiếng Anh 4 Global Success, Tập một: the book's ten units merged
+//         two-by-two into five units carrying the whole Wordlist from
+//         pages 78-80 (js/units-hk1-data.js)
+//   hk2 — Tập hai, not written yet ("sắp có")
+//
+// A unit is addressed by a KEY. 'pre' keeps its bare keys (3, 'mix') so every
+// history row, best score and mastery count written before the split still
+// counts; the newer sets prefix theirs ('hk1-3', 'hk1-mix').
 
 let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[] }
 
-function unitsBank() {
-  return (typeof UNIT_WORDS !== 'undefined') ? UNIT_WORDS : [];
+const UNIT_SETS = [
+  { id: 'pre', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
+  { id: 'hk1', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
+  { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2', soon: true },
+];
+
+// Which set the cards are showing. Stored per user so the tab reopens where
+// the child left it; HK1 is the default because that is the book in use.
+let _unitSetFallback = null;
+function currentUnitSet() {
+  let saved = null;
+  if (typeof appState !== 'undefined' && appState && appState.unitsSet) saved = appState.unitsSet;
+  else saved = _unitSetFallback;
+  return UNIT_SETS.some(s => s.id === saved) ? saved : 'hk1';
 }
-function unitsList() {
-  return [...new Set(unitsBank().map(w => w.unit))].sort((a, b) => a - b);
+function switchUnitSet(set) {
+  if (!UNIT_SETS.some(s => s.id === set)) return;
+  _unitSetFallback = set;
+  if (typeof appState !== 'undefined' && appState) {
+    appState.unitsSet = set;
+    if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+      try { saveUserData(currentUser, appState); } catch (e) {}
+    }
+  }
+  if (typeof renderUnitsBar === 'function') renderUnitsBar();
 }
 
-// 'mix' draws from every unit at once; numbers filter to one unit.
-function _unitPool(unit) {
-  const bank = unitsBank();
+function unitsBank(set) {
+  const s = set || currentUnitSet();
+  if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? UNIT_WORDS_HK1 : [];
+  if (s === 'hk2') return [];
+  return (typeof UNIT_WORDS !== 'undefined') ? UNIT_WORDS : [];
+}
+// Every word the tab knows, across all sets. Used where a word arrives with no
+// set attached — an owed word from an earlier practice, a history row.
+function unitsAllWords() {
+  return UNIT_SETS.reduce((all, s) => all.concat(unitsBank(s.id)), []);
+}
+function unitsList(set) {
+  return [...new Set(unitsBank(set).map(w => w.unit))].sort((a, b) => a - b);
+}
+function unitTitle(set, unit) {
+  if (set === 'hk1' && typeof UNIT_HK1_TITLES !== 'undefined') return UNIT_HK1_TITLES[unit] || '';
+  return '';
+}
+// HK1 units are renumbered 1..5, each merging two textbook units. The card
+// says which pair it covers ("Bài 1-2") so a child can still find the lesson
+// in the book.
+function unitBooksLabel(set, unit) {
+  if (set !== 'hk1' || typeof UNIT_HK1_BOOKS === 'undefined') return '';
+  const b = UNIT_HK1_BOOKS[unit];
+  if (!b || !b.length) return '';
+  return 'Bài ' + (b.length > 1 ? b[0] + '-' + b[b.length - 1] : b[0]);
+}
+
+// ---- unit keys ----
+// 'hk1-4' → { set:'hk1', unit:4 }; a bare 4 or 'mix' is the original 'pre' set.
+function _unitKey(set, unit) {
+  return (set && set !== 'pre') ? set + '-' + unit : unit;
+}
+function _unitParse(key) {
+  const s = String(key);
+  const m = s.match(/^(hk1|hk2)-(mix|\d+)$/);
+  if (m) return { set: m[1], unit: m[2] === 'mix' ? 'mix' : Number(m[2]) };
+  return { set: 'pre', unit: s === 'mix' ? 'mix' : Number(s) };
+}
+// The key as a JavaScript literal, for inline onclick handlers.
+function _unitKeyArg(key) {
+  return typeof key === 'number' ? String(key) : "'" + String(key).replace(/'/g, "\\'") + "'";
+}
+
+// 'mix' draws from every unit in its set at once; numbers filter to one unit.
+function _unitPool(key) {
+  const { set, unit } = _unitParse(key);
+  const bank = unitsBank(set);
   return unit === 'mix' ? bank.slice() : bank.filter(w => w.unit === unit);
 }
-function _unitLabel(unit) {
-  return unit === 'mix' ? '🎲 Mix' : 'Unit ' + unit;
+function _unitLabel(key) {
+  const { set, unit } = _unitParse(key);
+  const prefix = set === 'pre' ? '' : (UNIT_SETS.find(s => s.id === set) || {}).name + ' · ';
+  return prefix + (unit === 'mix' ? '🎲 Mix' : 'Unit ' + unit);
 }
 
 // English pronunciation via the Web Speech API. Called from the Check
@@ -148,7 +226,9 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   key: 'units',
   screenId: 'topicsDetail',
   noun: 'từ',
-  resolve: (en) => unitsBank().find(w => String(w.en).toLowerCase() === String(en).toLowerCase()) || null,
+  // Owed words carry no set, and a word can sit in more than one of them
+  // ("art" is Pre Unit 4 and HK1 Unit 7) — any match spells and means the same.
+  resolve: (en) => unitsAllWords().find(w => String(w.en).toLowerCase() === String(en).toLowerCase()) || null,
   idOf: (w) => w.en,
   answerText: (w) => w.en,
   grade: (v, w) => _unitAnswerCorrect(v, w.en),
@@ -192,9 +272,10 @@ function unitPerfectCount(unit, history) {
 }
 
 // Mix is deliberately never mastered: it draws from every unit, so retiring it
-// would leave a fully-mastered child with nothing to do.
+// would leave a fully-mastered child with nothing to do. Matched by suffix so
+// every set's Mix key ('mix', 'hk1-mix') is covered.
 function isUnitMastered(unit, history) {
-  if (String(unit) === 'mix') return false;
+  if (/(^|-)mix$/.test(String(unit))) return false;
   return unitPerfectCount(unit, history) >= UNIT_MASTERY_TARGET;
 }
 
@@ -208,7 +289,7 @@ function unitsWrongAggregate() {
   hist.forEach(s => (s.wrong || []).forEach(en => {
     counts.set(en, (counts.get(en) || 0) + 1);
   }));
-  const bank = unitsBank();
+  const bank = unitsAllWords();
   const out = [];
   counts.forEach((misses, en) => {
     const w = bank.find(x => x.en === en);
@@ -241,59 +322,89 @@ function renderUnitsWrongPanelHTML() {
     </div>`;
 }
 
+function renderUnitSetTabsHTML() {
+  const active = currentUnitSet();
+  return `<div class="grammar-subtabs g4-set-tabs">` + UNIT_SETS.map(s => `
+    <button class="grammar-subtab ${s.id === active ? 'active' : ''}"
+            onclick="switchUnitSet('${s.id}')">${s.label}</button>`).join('') + `</div>`;
+}
+
 function renderUnitsBar() {
+  if (typeof document === 'undefined') return;   // headless (tests)
   const bar = document.getElementById('unitsBar');
   if (!bar) return;
   bar.style.display = '';
+
+  const set = currentUnitSet();
+  const setMeta = UNIT_SETS.find(s => s.id === set) || UNIT_SETS[0];
+  const tabs = renderUnitSetTabsHTML();
+
+  // A set with no words yet says so plainly, instead of showing an empty grid
+  // that reads as a bug.
+  if (setMeta.soon || !unitsBank(set).length) {
+    bar.innerHTML = `${tabs}
+      <div class="g4-soon">
+        <div class="g4-soon-icon">🚧</div>
+        <div class="g4-soon-title">${setMeta.name} — sắp có</div>
+        <div class="g4-soon-sub">${setMeta.sub} đang được soạn. Trong lúc chờ, học ${setMeta.id === 'hk2' ? 'HK1' : 'Pre'} nhé! 📗</div>
+      </div>`;
+    return;
+  }
 
   // Words owed from an earlier practice lock every unit. A disabled card with
   // no explanation reads as a broken app, so the banner says what is owed and
   // is itself the way to clear it.
   const owed = unitsRetryCount();
 
-  // Best score per unit from practice history
+  // Best score per unit key from practice history
   const best = {};
   ((typeof appState !== 'undefined' && appState && appState.unitsHistory) || []).forEach(h => {
-    if (!h.total) return;
+    if (!h || !h.total) return;
     const p = Math.round((h.score / h.total) * 100);
     if (!(h.unit in best) || p > best[h.unit]) best[h.unit] = p;
   });
 
   const owedBanner = (typeof retryOwedBannerHTML === 'function' ? retryOwedBannerHTML('units') : '');
 
-  const mixBest = best['mix'];
+  const list = unitsList(set);
+  const mixKey = _unitKey(set, 'mix');
+  const mixBest = best[mixKey];
   const mixCard = `
     <button class="g4-card g4-mix-card ${owed ? 'locked' : ''}" ${owed ? 'disabled aria-disabled="true"' : ''}
-            onclick="startUnitPractice('mix')">
+            onclick="startUnitPractice(${_unitKeyArg(mixKey)})">
       <div class="g4-card-top">
-        <span class="g4-card-unit">🎲 Mix · 12 Units</span>
+        <span class="g4-card-unit">🎲 Mix · ${list.length} Units</span>
         ${mixBest !== undefined ? `<span class="g4-card-best ${mixBest >= 80 ? 'good' : ''}">${mixBest >= 100 ? '⭐' : ''}${mixBest}%</span>` : ''}
       </div>
       <div class="g4-card-meta">10 từ ngẫu nhiên từ tất cả các Unit</div>
     </button>`;
 
-  const cards = unitsList().map(u => {
-    const words = _unitPool(u);
+  const cards = list.map(u => {
+    const key = _unitKey(set, u);
+    const words = _unitPool(key);
     // Prefer real emoji for the preview (skip digit "pictures")
     const pics = words.map(w => w.emoji).filter(e => !/^[0-9:]+$/.test(e)).slice(0, 3).join(' ');
-    const b = best[u];
-    const perfect = unitPerfectCount(u);
-    const mastered = isUnitMastered(u);
+    const b = best[key];
+    const perfect = unitPerfectCount(key);
+    const mastered = isUnitMastered(key);
     const locked = mastered || !!owed;
+    const title = unitTitle(set, u);
+    const books = unitBooksLabel(set, u);
     return `
     <button class="g4-card ${mastered ? 'mastered' : ''} ${owed && !mastered ? 'locked' : ''}"
             ${locked ? 'disabled aria-disabled="true"' : ''}
-            onclick="startUnitPractice(${u})">
+            onclick="startUnitPractice(${_unitKeyArg(key)})">
       <div class="g4-card-top">
         <span class="g4-card-unit">${mastered ? '👑 ' : ''}Unit ${u}</span>
         ${mastered
           ? '<span class="g4-card-best mastered">Thành thạo</span>'
           : (b !== undefined ? `<span class="g4-card-best ${b >= 80 ? 'good' : ''}">${b >= 100 ? '⭐' : ''}${b}%</span>` : '')}
       </div>
+      ${title ? `<div class="g4-card-title">${unitEsc(title)}</div>` : ''}
       <div class="g4-card-emojis">${pics}</div>
       ${mastered
         ? `<div class="g4-card-meta">Đã đạt ${UNIT_MASTERY_TARGET} lần 10/10 — giỏi lắm! 🎉</div>`
-        : `<div class="g4-card-meta">${words.length} từ vựng</div>
+        : `<div class="g4-card-meta">${words.length} từ vựng${books ? ' · ' + books : ''}</div>
            <div class="g4-mastery">
              <i style="width:${Math.round(perfect / UNIT_MASTERY_TARGET * 100)}%"></i>
            </div>
@@ -301,7 +412,7 @@ function renderUnitsBar() {
     </button>`;
   }).join('');
 
-  bar.innerHTML = `${owedBanner}<div class="g4-grid">${mixCard}${cards}</div>${renderUnitsWrongPanelHTML()}`;
+  bar.innerHTML = `${tabs}${owedBanner}<div class="g4-grid">${mixCard}${cards}</div>${renderUnitsWrongPanelHTML()}`;
 }
 
 // ---- celebration reward card (shared with collocation.js) ----
@@ -553,7 +664,7 @@ function finishUnitPractice() {
       ${reviewHtml}
       ${owed
         ? (typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('units') : '')
-        : `<button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${typeof st.unit === 'number' ? st.unit : "'" + st.unit + "'"})">🔁 Practice ${_unitLabel(st.unit)} again</button>`}
+        : `<button class="phrases-cta-secondary phrases-review-btn" onclick="startUnitPractice(${_unitKeyArg(st.unit)})">🔁 Practice ${_unitLabel(st.unit)} again</button>`}
     </div>`;
   fireRewardCelebration(coinsEarned, pct);
   _unitQuiz = null;
@@ -561,7 +672,10 @@ function finishUnitPractice() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    unitsBank, unitsList, buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
+    unitsBank, unitsAllWords, unitsList, unitTitle, unitBooksLabel,
+    UNIT_SETS, currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
+    _unitKey, _unitParse, _unitKeyArg,
+    buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,

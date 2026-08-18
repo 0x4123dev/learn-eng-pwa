@@ -26,7 +26,7 @@ const engineSrc = read('js/retrydrill.js');
 const cssSrc = read('css/styles.css');
 
 const TAB_FILES = ['units.js', 'wordform.js', 'phrases.js', 'collocation.js', 'rewrite.js', 'verbs.js'];
-const DATA_FILES = ['units-data.js', 'phrases-data.js', 'collocation-data.js',
+const DATA_FILES = ['units-data.js', 'units-hk1-data.js', 'phrases-data.js', 'collocation-data.js',
     'rewrite-data.js', 'wordform-data.js', 'vocabulary.js', 'topic-vocab.js'];
 
 // Load the real engine, the real tab configs and the real question banks in one

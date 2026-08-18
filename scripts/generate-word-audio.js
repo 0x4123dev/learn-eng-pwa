@@ -46,9 +46,10 @@ const OUT_DIR = path.join(ROOT, 'audio', 'words');
 // Order = generation priority under --budget: unit practice speaks on every
 // answer and topic cards on every tap, so they outrank the long lesson tail.
 const DATA_FILES = [
-    'js/units-data.js',    // Topics tab unit practice
-    'js/topic-vocab.js',   // topic picture cards
-    'js/vocabulary.js'     // lessons, home, word-of-the-day, word-hunt, topics
+    'js/units-data.js',      // Topics tab unit practice (Pre set)
+    'js/units-hk1-data.js',  // Topics tab unit practice (HK1 set)
+    'js/topic-vocab.js',     // topic picture cards
+    'js/vocabulary.js'       // lessons, home, word-of-the-day, word-hunt, topics
 ];
 
 // Tap-any-word-in-a-question vocabulary (js/tapwords.js). Opt-in: --dictionary.
