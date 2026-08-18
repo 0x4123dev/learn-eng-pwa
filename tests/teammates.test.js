@@ -555,6 +555,85 @@ suite('teammates: the chip tells the truth', () => {
     });
 });
 
+suite('teammates: practice against the bot', () => {
+    const src = () => read('js/petbattle.js');
+
+    test('a practice battle takes the squad the child picked', () => {
+        const fn = src().slice(src().indexOf('function startBotBattle'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        assert.truthy(/hires:\s*pbHireCart\(\)/.test(body),
+            'the bot view must carry the hired squad, or the panel does nothing here');
+    });
+
+    test('practice is a FREE trial — it must not spend coins', () => {
+        const fn = src().slice(src().indexOf('function startBotBattle'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        assert.falsy(/pbHireCommit\(\)/.test(body),
+            'practice pays no coins and no cups, so it must not charge for teammates either');
+    });
+
+    test('practice runs on the v4 fortress', () => {
+        const fn = src().slice(src().indexOf('function startBotBattle'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        // Practice writes no battle row, so it can show the new castle before
+        // the server is allowed to stamp field_version 4 on real battles.
+        assert.truthy(/FIELD_RULES\) \? 4 : 1/.test(body),
+            'practice should show the fortress the child is hiring into');
+    });
+});
+
+suite('teammates: you hire a person, not a weapon', () => {
+    test('every teammate can be drawn as a portrait', () => {
+        // The chips and the shop must show the CHARACTER — a child is hiring
+        // somebody who has a skill, not buying a rocket tube.
+        for (const mate of T.TEAM_ROSTER) {
+            assert.truthy(typeof game.PB_MATE_ART[mate.id] === 'function',
+                `${mate.id} has no character art to put on its chip`);
+        }
+    });
+
+    test('a portrait is safe to ask for with no DOM at all', () => {
+        assert.equal(game.pbMateAvatarURL('gunner', 40), '',
+            'no canvas available must mean no portrait, not a crash');
+    });
+
+    test('the trigger chip renders the character, not the tool emoji', () => {
+        const src = read('js/petbattlegame.js');
+        const build = src.slice(src.indexOf('const squadChips ='), src.indexOf('const barrels ='));
+        assert.truthy(/pbMateAvatarURL/.test(build), 'the chip must draw the teammate');
+        assert.falsy(/mate\.emoji/.test(build), 'the tool emoji is not the teammate');
+    });
+
+    test('the hire card renders the character too', () => {
+        const src = read('js/petbattle.js');
+        const panel = src.slice(src.indexOf('function _pbHirePanel'));
+        const body = panel.slice(0, panel.indexOf('\n}'));
+        assert.truthy(/pbMateAvatar/.test(body), 'the shop must show who is being hired');
+        assert.falsy(/\$\{mate\.emoji\}/.test(body), 'not the tool they carry');
+    });
+});
+
+suite('teammates: nobody pays for a squad that cannot turn up', () => {
+    test('a friend challenge does not charge for teammates yet', () => {
+        // The server still stamps field_version 3 and does not persist hires,
+        // so a squad bought here would never reach the arena. Charging for it
+        // would take real coins for nothing.
+        const src = read('js/petbattle.js');
+        const fn = src.slice(src.indexOf('async function challengePetFriend'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        assert.falsy(/pbHireCommit\(\)/.test(body),
+            'do not debit coins until the server carries the squad');
+    });
+
+    test('accepting a challenge does not charge either', () => {
+        const src = read('js/petbattle.js');
+        const fn = src.slice(src.indexOf('async function acceptPetBattle'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        assert.falsy(/pbHireCommit\(\)/.test(body),
+            'do not debit coins until the server carries the squad');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());

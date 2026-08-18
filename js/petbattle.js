@@ -74,6 +74,7 @@ const PB_STR = {
     hireTotal: 'Squad cost: {n} 🪙',
     hireFull: 'Bench full ({n} max)',
     hireNone: 'No teammates — save your coins for pet food 🍖',
+    hireTrial: '🤖 Free to try in practice. Friend battles get them next.',
     hirePoor: 'Not enough coins',
     hireGunner: 'Gunner', hireGunnerAb: 'Fires a rocket along your next shot',
     hireEngineer: 'Engineer', hireEngineerAb: 'Repairs your castle +15 HP',
@@ -201,6 +202,7 @@ const PB_STR = {
     hireTotal: 'Tiền thuê: {n} 🪙',
     hireFull: 'Đã đủ quân ({n} người)',
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
+    hireTrial: '🤖 Thử miễn phí ở trận luyện tập. Đánh với bạn sẽ có sau.',
     hirePoor: 'Không đủ xu',
     hireGunner: 'Pháo thủ', hireGunnerAb: 'Bắn tên lửa theo đúng đường đạn của bé',
     hireEngineer: 'Kỹ sư', hireEngineerAb: 'Sửa lâu đài +15 HP',
@@ -503,6 +505,15 @@ function pbHireCommit() {
   return squad;
 }
 
+// A portrait if the canvas art is available, otherwise the tool emoji — the
+// shop must still say something on a browser that refuses us a canvas.
+function _pbMateAvatar(mate) {
+  const url = (typeof pbMateAvatarURL === 'function') ? pbMateAvatarURL(mate.id, 44) : '';
+  return url
+    ? `<img class="pb-hire-avatar" alt="" aria-hidden="true" src="${url}">`
+    : `<span class="pb-hire-emoji">${mate.emoji}</span>`;
+}
+
 const PB_HIRE_LABEL = { gunner: 'hireGunner', engineer: 'hireEngineer', shield: 'hireShield' };
 const PB_HIRE_ABILITY = { gunner: 'hireGunnerAb', engineer: 'hireEngineerAb', shield: 'hireShieldAb' };
 
@@ -524,7 +535,7 @@ function _pbHirePanel() {
               : !canAdd ? pbT('hirePoor') : '';
     return `
       <div class="pb-hire-card${owned ? ' has' : ''}">
-        <span class="pb-hire-emoji">${mate.emoji}</span>
+        ${_pbMateAvatar(mate)}
         <div class="pb-hire-info">
           <div class="pb-hire-name">${pbT(PB_HIRE_LABEL[mate.id])}</div>
           <div class="pb-hire-ability">${pbT(PB_HIRE_ABILITY[mate.id])}</div>
@@ -547,6 +558,7 @@ function _pbHirePanel() {
       <div class="pb-hire-sub">${pbT('hireSub')}</div>
       <div class="pb-hire-list">${cards}</div>
       <div class="pb-hire-total">${cart.length ? pbT('hireTotal', { n: total }) : pbT('hireNone')}</div>
+      <div class="pb-hire-sub pb-hire-trial">${pbT('hireTrial')}</div>
     </div>`;
 }
 
@@ -891,13 +903,13 @@ function _pbFriendWait(f) {
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), hires: pbHireCommit() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId() }, _pbMyPet()),
   });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, hires: pbHireCommit() }, _pbMyPet()) });
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true }, _pbMyPet()) });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }
@@ -1043,10 +1055,15 @@ function startBotBattle() {
   // rather than who has been studying longer.
   const view = {
     id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
-    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 3 : 1,
+    // Practice writes no battle row, so it can show the v4 fortress before
+    // the server is allowed to stamp that version on real battles.
+    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 4 : 1,
     backgroundId: pbSelectedSceneId(),
-    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP },
-    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP },
+    // Try before you buy: the squad fights here for free. The bot gets no
+    // teammates of its own — it has no idea how to trigger a charge, and a
+    // bench that never acts would teach the child the wrong thing.
+    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP, hires: pbHireCart() },
+    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP, hires: [] },
   };
 
   _pbStopPolling();                 // practice talks to nobody

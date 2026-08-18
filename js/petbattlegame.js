@@ -301,11 +301,11 @@ PetBattleGame.prototype.render = function () {
     const squadChips = (this.myCharges || []).length ? `
         <div class="pb-squad" role="group" aria-label="${esc(gT('gSquadAria'))}">
           ${this.myCharges.map(c => {
-            const mate = this.team.teammateById(c.id);
+            const avatar = pbMateAvatarURL(c.id, 38);
             return `<button class="pb-squad-chip" type="button" data-pb-charge="${c.key}"
                     aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}"
                     onclick="_pbGameUseCharge('${c.key}')">
-              <span class="pb-squad-emoji" aria-hidden="true">${mate ? mate.emoji : ''}</span>
+              <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}">
             </button>`;
           }).join('')}
         </div>` : '';
@@ -953,6 +953,38 @@ const PB_MATE_ART = {
     ctx.fillStyle = '#e0f2fe'; ctx.fillRect(-11.5, -22, 3, 10);      // boss stripe
   },
 };
+
+// A portrait for HTML surfaces (the shop card, the trigger chip), drawn from
+// the same PB_MATE_ART that stands on the castle ledge. Cached: the chips
+// rebuild on every control render and re-rasterising three characters each
+// time would be wasted work.
+const _pbAvatarCache = {};
+
+function pbMateAvatarURL(id, size) {
+  const draw = PB_MATE_ART[id];
+  const px = Math.max(8, Math.trunc(Number(size) || 40));
+  if (!draw || typeof document === 'undefined' || !document.createElement) return '';
+  const key = id + '@' + px;
+  if (_pbAvatarCache[key]) return _pbAvatarCache[key];
+  let url = '';
+  try {
+    const c = document.createElement('canvas');
+    const dpr = 2;
+    c.width = px * dpr; c.height = px * dpr;
+    const ctx = c.getContext('2d');
+    if (!ctx) return '';
+    ctx.scale(dpr, dpr);
+    // The art is authored feet-at-zero in roughly a 33x32 box; 40 units of
+    // room leaves a little air around the character.
+    const k = px / 40;
+    ctx.translate(px / 2, px - px * 0.10);
+    ctx.scale(k, k);
+    draw(ctx);
+    url = c.toDataURL('image/png');
+  } catch (e) { return ''; }
+  _pbAvatarCache[key] = url;
+  return url;
+}
 
 // One hired teammate on an interior ledge. A spent charge sits greyed so the
 // bench always shows what is still in hand — on the opponent's castle too.
@@ -1687,5 +1719,6 @@ function _pbGameSetLang(lang) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills,
-    pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART };
+    pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART,
+    pbMateAvatarURL };
 }

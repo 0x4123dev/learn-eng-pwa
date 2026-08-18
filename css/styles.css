@@ -1548,6 +1548,11 @@
             background: rgba(124,58,237,.12);
             -webkit-tap-highlight-color: transparent;
         }
+        /* Portraits of the hired characters. Drawn from the same art that
+           stands on the castle ledge, so the person in the shop is visibly the
+           person who turns up in the keep. */
+        .pb-hire-avatar { width: 44px; height: 44px; flex: 0 0 auto; display: block; }
+        .pb-squad-avatar { width: 38px; height: 38px; display: block; }
         .pb-squad-emoji { font-size: 24px; line-height: 1; }
         .pb-squad-chip:active { transform: scale(.92); }
         .pb-squad-chip:disabled { cursor: default; }
@@ -10754,3 +10759,8 @@
     from { transform: translateX(-50%) translateY(10px); }
     to   { transform: translateX(-50%) translateY(0); }
 }
+
+        /* Teammates fight in practice today; friend battles follow with the
+           server change. Said out loud so a child is not left wondering why
+           their squad did not appear against a friend. */
+        .pb-hire-trial { text-align: center; margin-top: 6px; }
