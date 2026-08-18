@@ -9,6 +9,14 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Hai góc kề bù có tổng số đo bằng bao nhiêu?",
+      "fig": {
+        "t": "ke-bu",
+        "a": 125,
+        "l": [
+          "∠xOz",
+          "∠zOy"
+        ]
+      },
       "options": [
         "∠xOz + ∠zOy = 180°",
         "∠xOz + ∠zOy = 90°",
@@ -24,6 +32,14 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Cho ∠xOz và ∠zOy là hai góc kề bù, biết ∠xOz = 130°. Số đo ∠zOy bằng bao nhiêu?",
+      "fig": {
+        "t": "ke-bu",
+        "a": 130,
+        "l": [
+          "130°",
+          "?"
+        ]
+      },
       "options": [
         "∠zOy = 130°",
         "∠zOy = 50°",
@@ -39,6 +55,16 @@
       "ch": 3,
       "topic": "Hai góc đối đỉnh",
       "q": "Hai góc đối đỉnh thì có quan hệ gì về số đo?",
+      "fig": {
+        "t": "doi-dinh",
+        "a": 50,
+        "l": [
+          "∠1",
+          "",
+          "∠3",
+          ""
+        ]
+      },
       "options": [
         "Tổng số đo bằng 180°",
         "Tổng số đo bằng 90°",
@@ -54,6 +80,16 @@
       "ch": 3,
       "topic": "Hai góc đối đỉnh",
       "q": "Hai đường thẳng cắt nhau tại O tạo thành bốn góc, trong đó có một góc bằng 40°. Góc đối đỉnh với góc 40° bằng bao nhiêu?",
+      "fig": {
+        "t": "doi-dinh",
+        "a": 40,
+        "l": [
+          "40°",
+          "",
+          "?",
+          ""
+        ]
+      },
       "options": [
         "140°",
         "180°",
@@ -69,6 +105,16 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Hai đường thẳng cắt nhau tại O, một trong bốn góc tạo thành bằng 35°. Số đo của góc kề bù với góc đó là bao nhiêu?",
+      "fig": {
+        "t": "doi-dinh",
+        "a": 35,
+        "l": [
+          "35°",
+          "?",
+          "",
+          ""
+        ]
+      },
       "options": [
         "145°",
         "35°",
@@ -99,6 +145,16 @@
       "ch": 3,
       "topic": "Góc tạo bởi hai đường thẳng cắt nhau",
       "q": "Tổng số đo bốn góc tạo bởi hai đường thẳng cắt nhau tại một điểm bằng bao nhiêu?",
+      "fig": {
+        "t": "doi-dinh",
+        "a": 55,
+        "l": [
+          "∠1",
+          "∠2",
+          "∠3",
+          "∠4"
+        ]
+      },
       "options": [
         "180°",
         "90°",
@@ -114,6 +170,14 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Điều kiện để hai góc ∠xOz và ∠zOy là hai góc kề bù là gì?",
+      "fig": {
+        "t": "ke-bu",
+        "a": 125,
+        "l": [
+          "∠xOz",
+          "∠zOy"
+        ]
+      },
       "options": [
         "Hai góc bằng nhau và có chung đỉnh O",
         "Hai góc có chung đỉnh O và tổng bằng 90°",
@@ -129,6 +193,14 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Một góc có số đo 90°. Góc kề bù với nó có số đo bằng bao nhiêu?",
+      "fig": {
+        "t": "ke-bu",
+        "a": 90,
+        "l": [
+          "90°",
+          "?"
+        ]
+      },
       "options": [
         "90°",
         "0°",
@@ -144,6 +216,16 @@
       "ch": 3,
       "topic": "Hai góc đối đỉnh",
       "q": "Khẳng định nào sau đây đúng về hai góc đối đỉnh?",
+      "fig": {
+        "t": "doi-dinh",
+        "a": 55,
+        "l": [
+          "∠1",
+          "",
+          "∠3",
+          ""
+        ]
+      },
       "options": [
         "Hai góc bằng nhau thì luôn đối đỉnh với nhau",
         "Hai góc đối đỉnh thì bằng nhau, nhưng hai góc bằng nhau chưa chắc đối đỉnh",
@@ -159,6 +241,10 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Nếu Oz là tia phân giác của ∠xOy thì công thức nào sau đây đúng?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 100
+      },
       "options": [
         "∠xOz + ∠zOy = 180°",
         "∠xOz = ∠zOy = ½∠xOy",
@@ -174,6 +260,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Cho ∠xOy = 80° và Oz là tia phân giác của ∠xOy. Số đo ∠xOz bằng bao nhiêu?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 80,
+        "lw": "80°",
+        "lh": [
+          "?",
+          ""
+        ]
+      },
       "options": [
         "160°",
         "100°",
@@ -189,6 +284,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Tia Oz là tia phân giác của ∠xOy và ∠xOz = 35°. Số đo ∠xOy bằng bao nhiêu?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 70,
+        "lh": [
+          "35°",
+          ""
+        ],
+        "lw": "?"
+      },
       "options": [
         "35°",
         "145°",
@@ -204,6 +308,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Tia phân giác của một góc bẹt (180°) chia góc đó thành hai góc, mỗi góc bằng bao nhiêu?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 180,
+        "lw": "180°",
+        "lh": [
+          "?",
+          ""
+        ]
+      },
       "options": [
         "90°",
         "45°",
@@ -219,6 +332,10 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Điều kiện nào sau đây khẳng định tia Oz là tia phân giác của ∠xOy?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 100
+      },
       "options": [
         "Oz nằm giữa hai tia Ox, Oy và ∠xOz = ∠zOy",
         "Oz vuông góc với tia Ox",
@@ -249,6 +366,14 @@
       "ch": 3,
       "topic": "Tia phân giác và góc kề bù",
       "q": "Hai góc ∠xOz và ∠zOy kề bù, tia Ot là tia phân giác của ∠xOz. Biết ∠xOz = 100°, số đo ∠tOz bằng bao nhiêu?",
+      "fig": {
+        "t": "ke-bu-phan-giac",
+        "a": 100,
+        "l": [
+          "100°",
+          "?"
+        ]
+      },
       "options": [
         "80°",
         "100°",
@@ -264,6 +389,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Một góc được tia phân giác chia thành hai góc, mỗi góc bằng 25°. Góc ban đầu bằng bao nhiêu?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 50,
+        "lh": [
+          "25°",
+          "25°"
+        ],
+        "lw": "?"
+      },
       "options": [
         "25°",
         "12,5°",
@@ -279,6 +413,13 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Đường thẳng c cắt hai đường thẳng a và b. Điều kiện nào sau đây đủ để kết luận a ∥ b?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A3": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Một cặp góc so le trong bằng nhau",
         "Một cặp góc so le trong bù nhau",
@@ -294,6 +435,13 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Đường thẳng c cắt a tại A và cắt b tại B, tạo ra một cặp góc đồng vị bằng nhau. Kết luận nào đúng?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A1": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "a ⊥ b",
         "a ∥ b",
@@ -309,6 +457,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b và đường thẳng c cắt cả hai đường đó. Khi đó các góc so le trong có quan hệ gì?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A3": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Bù nhau (tổng bằng 180°)",
         "Có tổng số đo bằng 90°",
@@ -324,6 +480,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc so le trong bằng 65°. Góc so le trong còn lại của cặp đó bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A3": "65°",
+          "B1": "?"
+        }
+      },
       "options": [
         "115°",
         "25°",
@@ -339,6 +503,14 @@
       "ch": 3,
       "topic": "Góc trong cùng phía",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc trong cùng phía bằng 65°. Góc trong cùng phía kia bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A4": "65°",
+          "B1": "?"
+        }
+      },
       "options": [
         "65°",
         "115°",
@@ -354,6 +526,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c, một góc đồng vị bằng 110°. Góc đồng vị tương ứng với nó bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "110°",
+          "B1": "?"
+        }
+      },
       "options": [
         "70°",
         "20°",
@@ -369,6 +549,13 @@
       "ch": 3,
       "topic": "Chiều của mệnh đề",
       "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b. Khẳng định “Nếu trong các góc tạo thành có một cặp góc so le trong bằng nhau thì a song song với b” được gọi là gì?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A3": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Dấu hiệu nhận biết hai đường thẳng song song",
         "Tính chất của hai đường thẳng song song",
@@ -384,6 +571,14 @@
       "ch": 3,
       "topic": "Chiều của mệnh đề",
       "q": "Mệnh đề “a ∥ b ⇒ các góc đồng vị bằng nhau” được gọi là gì?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Dấu hiệu nhận biết hai đường thẳng song song",
         "Định nghĩa hai đường thẳng song song",
@@ -399,6 +594,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Khẳng định nào sau đây SAI?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A3": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Các góc so le trong bằng nhau",
         "Các góc đồng vị bằng nhau",
@@ -414,6 +617,9 @@
       "ch": 3,
       "topic": "Góc so le trong",
       "q": "Hai góc so le trong nằm ở vị trí nào so với đường thẳng cắt c?",
+      "fig": {
+        "t": "cut2"
+      },
       "options": [
         "Cùng một phía của c, ở phần trong giữa a và b",
         "Ở hai phía khác nhau của c, ở phần trong giữa a và b",
@@ -429,6 +635,9 @@
       "ch": 3,
       "topic": "Góc đồng vị",
       "q": "Hai góc đồng vị được mô tả như thế nào?",
+      "fig": {
+        "t": "cut2"
+      },
       "options": [
         "Nằm ở hai phía khác nhau của đường cắt, ở phần trong",
         "Nằm cùng phía của đường cắt và ở cùng vị trí so với hai đường bị cắt",
@@ -444,6 +653,13 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Đường thẳng c cắt a và b, tạo ra một cặp góc so le trong lần lượt bằng 70° và 80°. Kết luận nào đúng?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A3": "70°",
+          "B1": "80°"
+        }
+      },
       "options": [
         "a ∥ b vì hai góc đều là góc nhọn",
         "a ∥ b vì 70° + 80° nhỏ hơn 180°",
@@ -459,6 +675,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c, một trong các góc tạo thành bằng 90°. Các góc còn lại bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "90°",
+          "B1": "?"
+        }
+      },
       "options": [
         "Tất cả đều bằng 90°",
         "Một nửa số góc bằng 90°, nửa còn lại bằng 45°",
@@ -474,6 +698,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b bị cắt bởi đường thẳng c. Một góc tạo thành bằng 55°, hỏi góc kề bù với nó bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "55°",
+          "A2": "?"
+        }
+      },
       "options": [
         "55°",
         "35°",
@@ -489,6 +721,13 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Đường thẳng c cắt hai đường thẳng phân biệt a và b, tạo thành một cặp góc đồng vị cùng có số đo 120°. Kết luận nào đúng?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A1": "120°",
+          "B1": "120°"
+        }
+      },
       "options": [
         "a ∥ b vì có một cặp góc đồng vị bằng nhau",
         "a không song song với b vì 120° + 120° khác 180°",
@@ -504,6 +743,10 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a ∥ b, đường thẳng c cắt a tại điểm A. Hỏi c có cắt b hay không?",
+      "fig": {
+        "t": "cut2",
+        "par": true
+      },
       "options": [
         "Không, vì c ∥ b",
         "Có, c chắc chắn cắt b",
@@ -519,6 +762,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Nếu a ⊥ c và b ⊥ c (a, b phân biệt) thì hai đường thẳng a và b có quan hệ gì?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "perp2"
+      },
       "options": [
         "a ⊥ b",
         "a trùng b",
@@ -534,6 +781,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Cho a ∥ b và c ⊥ a. Kết luận nào sau đây đúng?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "par-perp"
+      },
       "options": [
         "c ⊥ b",
         "c ∥ b",
@@ -549,6 +800,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Hai đường thẳng phân biệt a và b cùng vuông góc với đường thẳng c. Khẳng định nào sau đây SAI?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "perp2"
+      },
       "options": [
         "a ∥ b",
         "a và b không có điểm chung",
@@ -564,6 +819,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Cho ba đường thẳng phân biệt a, b, c với a ∥ b và b ∥ c. Quan hệ giữa a và c là gì?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "par3"
+      },
       "options": [
         "a ⊥ c",
         "a cắt c",
@@ -579,6 +838,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Cho a ⊥ c, b ⊥ c và d ⊥ a (các đường thẳng phân biệt). Quan hệ giữa d và b là gì?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "perp2d"
+      },
       "options": [
         "d ∥ b",
         "d cắt b tạo thành góc 45°",
@@ -594,6 +857,10 @@
       "ch": 3,
       "topic": "Ký hiệu ∥ và ⊥",
       "q": "Hai ký hiệu “a ∥ b” và “a ⊥ b” lần lượt có nghĩa là gì?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "kihieu"
+      },
       "options": [
         "a vuông góc với b; a song song với b",
         "a song song với b; a vuông góc với b",
@@ -609,6 +876,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Cho a ∥ b. Nếu đường thẳng c cắt a tạo thành góc 90° thì góc giữa c và b bằng bao nhiêu?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "par-perp"
+      },
       "options": [
         "45°",
         "180°",
@@ -639,6 +910,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Bạn Nam viết: “a ⊥ c, b ⊥ c ⇒ a ⊥ b”. Bạn Nam sai ở chỗ nào?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "perp2"
+      },
       "options": [
         "Không sai, kết luận của bạn Nam đúng",
         "Sai ở giả thiết: phải viết là a ∥ c",
@@ -654,6 +929,10 @@
       "ch": 3,
       "topic": "Quan hệ vuông góc và song song",
       "q": "Cho a ∥ b, b ∥ c và d ⊥ a (các đường thẳng phân biệt). Kết luận nào đúng về d và c?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "par3-perp"
+      },
       "options": [
         "d ∥ c",
         "Chỉ biết d ⊥ a, không suy ra được gì về d và c",
@@ -669,6 +948,10 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Qua một điểm nằm ngoài một đường thẳng, có bao nhiêu đường thẳng song song với đường thẳng đó?",
+      "fig": {
+        "t": "euclid",
+        "m": "point"
+      },
       "options": [
         "Đúng một đường thẳng",
         "Hai đường thẳng",
@@ -684,6 +967,9 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Điểm M nằm ngoài đường thẳng d. Qua M đã kẻ được đường thẳng a với a ∥ d. Nếu kẻ tiếp một đường thẳng b qua M sao cho b ∥ d thì điều gì xảy ra?",
+      "fig": {
+        "t": "euclid"
+      },
       "options": [
         "b vuông góc với a",
         "b cắt a tại M",
@@ -699,6 +985,10 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Cho điểm A nằm TRÊN đường thẳng d. Qua A kẻ được bao nhiêu đường thẳng song song với d?",
+      "fig": {
+        "t": "euclid",
+        "m": "on-line"
+      },
       "options": [
         "Đúng một đường thẳng",
         "Không có đường thẳng nào",
@@ -714,6 +1004,10 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Phát biểu nào sau đây chính là tiên đề về đường thẳng song song?",
+      "fig": {
+        "t": "euclid",
+        "m": "point"
+      },
       "options": [
         "Qua một điểm nằm ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đó",
         "Qua một điểm nằm ngoài một đường thẳng, có ít nhất hai đường thẳng song song với đường thẳng đó",
@@ -729,6 +1023,10 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Cho đường thẳng d và điểm M không thuộc d. Số đường thẳng đi qua M và số đường thẳng đi qua M song song với d lần lượt là bao nhiêu?",
+      "fig": {
+        "t": "euclid",
+        "m": "point"
+      },
       "options": [
         "Một và một",
         "Vô số và vô số",
@@ -744,6 +1042,9 @@
       "ch": 3,
       "topic": "Tiên đề Euclid",
       "q": "Từ tiên đề Euclid, có thể suy ra khẳng định nào sau đây?",
+      "fig": {
+        "t": "euclid"
+      },
       "options": [
         "Qua một điểm nằm ngoài đường thẳng d, kẻ được vô số đường thẳng song song với d",
         "Hai đường thẳng phân biệt cùng đi qua một điểm thì song song với nhau",
@@ -775,6 +1076,14 @@
       "ch": 3,
       "topic": "Góc so le trong",
       "q": "Cho hai đường thẳng xx' và yy' song song. Đường thẳng thứ ba cắt xx' tại A và cắt yy' tại B sao cho ∠ABy' = 55°. Tính số đo ∠xAB.",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "B1": "55°",
+          "A3": "?"
+        }
+      },
       "options": [
         "125°",
         "35°",
@@ -791,6 +1100,9 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Cho tam giác ABC, M là trung điểm AB, D thuộc tia đối của tia MC sao cho MD = MC. Biết △ADM = △BCM nên ∠ADM = ∠BCM. Hai góc so le trong bằng nhau này (tạo bởi cát tuyến DC với hai đường thẳng AD, BC) chứng minh được điều gì?",
+      "fig": {
+        "t": "doi-tia"
+      },
       "options": [
         "AD = BC",
         "AB ∥ DC",
@@ -807,6 +1119,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Tia Oz là tia phân giác của góc mOn. Biết góc mOz = 36°. Số đo góc mOn bằng bao nhiêu?",
+      "fig": {
+        "t": "phan-giac",
+        "w": 72,
+        "lh": [
+          "36°",
+          ""
+        ],
+        "lw": "?"
+      },
       "options": [
         "36°",
         "18°",
@@ -823,6 +1144,13 @@
       "ch": 3,
       "topic": "Góc so le trong",
       "q": "Đường thẳng a lần lượt cắt hai đường thẳng b, c tại hai điểm P và Q. Gọi α là góc ở đỉnh P, nằm trong khoảng giữa P và Q, về phía dưới đường thẳng a. Gọi β là góc ở đỉnh Q, nằm trong khoảng giữa P và Q, về phía trên đường thẳng a. Hai góc α và β là hai góc gì?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A3": "α",
+          "B1": "β"
+        }
+      },
       "options": [
         "Hai góc kề bù",
         "Hai góc đối đỉnh",
@@ -839,6 +1167,9 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Một đường thẳng cắt hai đường thẳng khác, tạo thành các góc như sau. Trường hợp nào chắc chắn có hai đường thẳng song song?",
+      "fig": {
+        "t": "cut2"
+      },
       "options": [
         "Hai góc so le trong bằng 90° và 60°",
         "Hai góc so le trong bằng 65° và 65°",
@@ -855,6 +1186,14 @@
       "ch": 3,
       "topic": "Hai góc đối đỉnh",
       "q": "Cho AD // BC. Đường thẳng đi qua D và C cắt AD tại D, cắt BC tại C. Tại đỉnh D, ∠ADC và ∠D2 là hai góc đối đỉnh. Biết ∠ADC = 72°, số đo ∠D2 bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A2": "72°",
+          "A4": "?"
+        }
+      },
       "options": [
         "72°",
         "108°",
@@ -871,6 +1210,14 @@
       "ch": 3,
       "topic": "Góc so le trong",
       "q": "Cho AD // BC. Đường thẳng đi qua D và C cắt AD tại D, cắt BC tại C. Biết ∠ADC = 72°. Gọi Cx là tia đối của tia CB. ∠DCx (so le trong với ∠ADC) bằng bao nhiêu độ?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A3": "72°",
+          "B1": "?"
+        }
+      },
       "options": [
         "108°",
         "180°",
@@ -887,6 +1234,15 @@
       "ch": 3,
       "topic": "Tia phân giác",
       "q": "Cho góc xCy = 108°. Tia Cz là tia phân giác của góc xCy. Tính số đo góc xCz.",
+      "fig": {
+        "t": "phan-giac",
+        "w": 108,
+        "lw": "108°",
+        "lh": [
+          "?",
+          ""
+        ]
+      },
       "options": [
         "108°",
         "54°",
@@ -903,6 +1259,14 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a // b bị cắt bởi một đường thẳng, một góc đồng vị bằng 60°. Góc đồng vị tương ứng với nó bằng bao nhiêu?",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "60°",
+          "B1": "?"
+        }
+      },
       "options": [
         "120°",
         "60°",
@@ -919,6 +1283,15 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Cho a // b, cùng bị cắt bởi một đường thẳng lần lượt tại A và B, trong đó ∠A1 và ∠B1 là một cặp góc đồng vị. Biết ∠A1 = 50°, tính ∠B1 và ∠B2 (kề bù với ∠B1).",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "A1": "50°",
+          "B1": "?",
+          "B2": "?"
+        }
+      },
       "options": [
         "∠B1 = 130°, ∠B2 = 50°",
         "∠B1 = 50°, ∠B2 = 50°",
@@ -935,6 +1308,23 @@
       "ch": 3,
       "topic": "Hai góc kề bù",
       "q": "Cho hai tia đối nhau Oa và Od (cùng nằm trên một đường thẳng). Hai tia Ob, Oc nằm cùng phía so với đường thẳng ad, được sắp xếp theo thứ tự quanh O là Oa, Ob, Oc, Od. Góc kề bù với ∠aOb là góc nào?",
+      "fig": {
+        "t": "ke-bu",
+        "a": 120,
+        "names": [
+          "d",
+          "a",
+          "b"
+        ],
+        "r2": {
+          "deg": 60,
+          "name": "c"
+        },
+        "l": [
+          "?",
+          "∠aOb"
+        ]
+      },
       "options": [
         "∠bOd",
         "∠bOc",
@@ -951,6 +1341,10 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Cho định lí: 'Nếu hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác thì hai đường thẳng đó song song với nhau.' Giả thiết của định lí này là gì?",
+      "fig": {
+        "t": "vuong-song",
+        "m": "perp2"
+      },
       "options": [
         "Hai đường thẳng đó song song với nhau",
         "Hai đường thẳng phân biệt cùng vuông góc với một đường thẳng khác thì hai đường thẳng đó song song với nhau",
@@ -967,6 +1361,15 @@
       "ch": 3,
       "topic": "Tính chất hai đường thẳng song song",
       "q": "Đường thẳng a song song với đường thẳng b, cả hai cùng bị cắt bởi một cát tuyến. Tại giao điểm với a có hai góc kề bù là ∠A1 và ∠A2; góc ∠A1 và góc ∠B1 (tại giao điểm với b) là một cặp góc đồng vị. Biết ∠B1 = 130°, tính ∠A1 và ∠A2.",
+      "fig": {
+        "t": "cut2",
+        "par": true,
+        "angles": {
+          "B1": "130°",
+          "A1": "?",
+          "A2": "?"
+        }
+      },
       "options": [
         "∠A1 = 50°, ∠A2 = 130°",
         "∠A1 = 130°, ∠A2 = 130°",
@@ -983,6 +1386,13 @@
       "ch": 3,
       "topic": "Dấu hiệu nhận biết hai đường thẳng song song",
       "q": "Cho định lí: 'Nếu một đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau thì hai đường thẳng a, b song song với nhau.' Giả thiết (GT) của định lí này là gì?",
+      "fig": {
+        "t": "cut2",
+        "angles": {
+          "A3": "∠A",
+          "B1": "∠B"
+        }
+      },
       "options": [
         "Đường thẳng c cắt hai đường thẳng a, b và trong số các góc tạo thành có một cặp góc so le trong bằng nhau",
         "Hai đường thẳng a, b song song với nhau",

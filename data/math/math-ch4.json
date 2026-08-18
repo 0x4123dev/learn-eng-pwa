@@ -9,6 +9,14 @@
       "ch": 4,
       "topic": "Tổng ba góc",
       "q": "Tổng ba góc trong một tam giác bằng bao nhiêu?",
+      "fig": {
+        "t": "tam-giac",
+        "angles": {
+          "A": "∠A",
+          "B": "∠B",
+          "C": "∠C"
+        }
+      },
       "options": [
         "∠A + ∠B + ∠C = 180°",
         "∠A + ∠B + ∠C = 360°",
@@ -24,6 +32,14 @@
       "ch": 4,
       "topic": "Tổng ba góc",
       "q": "Tam giác ABC có ∠A = 60°, ∠B = 70°. Số đo của ∠C là bao nhiêu?",
+      "fig": {
+        "t": "tam-giac",
+        "angles": {
+          "A": "60°",
+          "B": "70°",
+          "C": "?"
+        }
+      },
       "options": [
         "∠C = 130°",
         "∠C = 50°",
@@ -39,6 +55,18 @@
       "ch": 4,
       "topic": "Tam giác vuông",
       "q": "Tam giác ABC vuông tại A. Hệ thức nào sau đây đúng?",
+      "fig": {
+        "t": "tam-giac-vuong",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "B": "∠B",
+          "C": "∠C"
+        }
+      },
       "options": [
         "∠B + ∠C = 180°",
         "∠B + ∠C = 45°",
@@ -54,6 +82,19 @@
       "ch": 4,
       "topic": "Góc ngoài",
       "q": "Góc ngoài tại một đỉnh của tam giác bằng gì?",
+      "fig": {
+        "t": "goc-ngoai",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "A": "∠A",
+          "C": "∠C"
+        },
+        "ext": "?"
+      },
       "options": [
         "Bằng góc trong kề với nó",
         "Bằng 180°",
@@ -69,6 +110,19 @@
       "ch": 4,
       "topic": "Góc ngoài",
       "q": "Tam giác ABC có ∠A = 50°, ∠B = 65°. Số đo góc ngoài tại đỉnh C là bao nhiêu?",
+      "fig": {
+        "t": "goc-ngoai",
+        "v": [
+          "A",
+          "C",
+          "B"
+        ],
+        "angles": {
+          "A": "50°",
+          "B": "65°"
+        },
+        "ext": "?"
+      },
       "options": [
         "65°",
         "115°",
@@ -84,6 +138,18 @@
       "ch": 4,
       "topic": "Góc ngoài",
       "q": "Góc ngoài tại đỉnh A và góc trong ∠A của tam giác ABC có quan hệ gì?",
+      "fig": {
+        "t": "goc-ngoai",
+        "v": [
+          "B",
+          "A",
+          "C"
+        ],
+        "angles": {
+          "A": "∠A"
+        },
+        "ext": "?"
+      },
       "options": [
         "Chúng kề bù, tổng bằng 180°",
         "Chúng luôn bằng nhau",
@@ -99,6 +165,9 @@
       "ch": 4,
       "topic": "Tổng ba góc",
       "q": "Một tam giác có thể có nhiều nhất bao nhiêu góc tù (góc lớn hơn 90°)?",
+      "fig": {
+        "t": "tam-giac"
+      },
       "options": [
         "Ba góc tù",
         "Hai góc tù",
@@ -114,6 +183,18 @@
       "ch": 4,
       "topic": "Tam giác vuông",
       "q": "Trong một tam giác vuông, góc nhọn này gấp đôi góc nhọn kia. Góc nhọn nhỏ hơn bằng bao nhiêu độ?",
+      "fig": {
+        "t": "tam-giac-vuong",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "B": "2x",
+          "C": "x"
+        }
+      },
       "options": [
         "45°",
         "60°",
@@ -129,6 +210,18 @@
       "ch": 4,
       "topic": "Tam giác vuông",
       "q": "Tam giác MNP vuông tại M có ∠N = 35°. Số đo ∠P là bao nhiêu?",
+      "fig": {
+        "t": "tam-giac-vuong",
+        "v": [
+          "M",
+          "N",
+          "P"
+        ],
+        "angles": {
+          "N": "35°",
+          "P": "?"
+        }
+      },
       "options": [
         "145°",
         "35°",
@@ -159,6 +252,10 @@
       "ch": 4,
       "topic": "Trường hợp c-c-c",
       "q": "Trường hợp bằng nhau nào của tam giác chỉ cần so sánh ba cạnh, không cần góc nào?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccc"
+      },
       "options": [
         "c-c-c (cạnh - cạnh - cạnh)",
         "c-g-c (cạnh - góc - cạnh)",
@@ -174,6 +271,10 @@
       "ch": 4,
       "topic": "Trường hợp c-g-c",
       "q": "Trong trường hợp bằng nhau c-g-c, góc bằng nhau phải nằm ở vị trí nào?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "cgc"
+      },
       "options": [
         "Góc đối diện với một trong hai cạnh đã cho",
         "Góc xen giữa hai cạnh đã cho",
@@ -189,6 +290,10 @@
       "ch": 4,
       "topic": "Trường hợp g-c-g",
       "q": "Điều kiện về vị trí của cạnh trong trường hợp bằng nhau g-c-g là gì?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "gcg"
+      },
       "options": [
         "Cạnh dài nhất của tam giác",
         "Cạnh đối diện với một trong hai góc đã cho",
@@ -204,6 +309,10 @@
       "ch": 4,
       "topic": "Trường hợp không hợp lệ",
       "q": "Trường hợp nào sau đây KHÔNG phải là trường hợp bằng nhau của hai tam giác?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ggg"
+      },
       "options": [
         "cạnh – cạnh – cạnh (c-c-c)",
         "cạnh – góc – cạnh (c-g-c)",
@@ -219,6 +328,22 @@
       "ch": 4,
       "topic": "Trường hợp không hợp lệ",
       "q": "△ABC và △MNP có AB = MN, BC = NP và ∠A = ∠M. Có kết luận được hai tam giác bằng nhau không?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccg",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "M",
+            "N",
+            "P"
+          ]
+        ]
+      },
       "options": [
         "Có, theo trường hợp c-g-c",
         "Không, vì ∠A không xen giữa hai cạnh AB và BC",
@@ -234,6 +359,22 @@
       "ch": 4,
       "topic": "Trường hợp c-g-c",
       "q": "△ABC và △DEF có AB = DE, ∠B = ∠E, BC = EF. Hai tam giác bằng nhau theo trường hợp nào?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "cgc",
+        "v": [
+          [
+            "B",
+            "A",
+            "C"
+          ],
+          [
+            "E",
+            "D",
+            "F"
+          ]
+        ]
+      },
       "options": [
         "cạnh – góc – cạnh (c-g-c)",
         "cạnh – cạnh – cạnh (c-c-c)",
@@ -249,6 +390,22 @@
       "ch": 4,
       "topic": "Trường hợp g-c-g",
       "q": "△ABC và △MNP có ∠B = ∠N, BC = NP, ∠C = ∠P. Hai tam giác bằng nhau theo trường hợp nào?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "gcg",
+        "v": [
+          [
+            "B",
+            "C",
+            "A"
+          ],
+          [
+            "N",
+            "P",
+            "M"
+          ]
+        ]
+      },
       "options": [
         "góc – cạnh – góc (g-c-g)",
         "cạnh – góc – cạnh (c-g-c)",
@@ -264,6 +421,22 @@
       "ch": 4,
       "topic": "Trường hợp c-c-c",
       "q": "△ABC và △DEF có AB = DE, AC = DF, BC = EF. Kết luận nào đúng?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccc",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E",
+            "F"
+          ]
+        ]
+      },
       "options": [
         "Hai tam giác chỉ cùng hình dạng, chưa chắc bằng nhau",
         "Cần thêm một cặp góc bằng nhau mới kết luận được",
@@ -279,6 +452,22 @@
       "ch": 4,
       "topic": "Tam giác bằng nhau",
       "q": "Nếu △ABC = △MNP thì cặp cạnh nào sau đây bằng nhau?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccc",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "M",
+            "N",
+            "P"
+          ]
+        ]
+      },
       "options": [
         "AB = NP",
         "AC = MP",
@@ -294,6 +483,24 @@
       "ch": 4,
       "topic": "Tam giác bằng nhau",
       "q": "Biết △ABC = △DEF và ∠A = 55°. Số đo ∠D là bao nhiêu?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccc",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E",
+            "F"
+          ]
+        ],
+        "l1": "55°",
+        "l2": "?"
+      },
       "options": [
         "125°",
         "35°",
@@ -309,6 +516,10 @@
       "ch": 4,
       "topic": "Trường hợp không hợp lệ",
       "q": "Hai tam giác có ba góc bằng nhau từng đôi một thì kết luận nào đúng?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ggg"
+      },
       "options": [
         "Chúng bằng nhau theo trường hợp g-g-g",
         "Chúng bằng nhau theo trường hợp g-c-g",
@@ -324,6 +535,15 @@
       "ch": 4,
       "topic": "Trường hợp c-g-c",
       "q": "Hai đoạn thẳng AB và CD cắt nhau tại O là trung điểm của mỗi đoạn. Vì sao △OAC = △OBD?",
+      "fig": {
+        "t": "hai-doan-cat",
+        "v": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
       "options": [
         "Vì có ba cặp cạnh bằng nhau (c-c-c)",
         "Vì OA = OB, OC = OD và ∠AOC = ∠BOD là hai góc đối đỉnh (c-g-c)",
@@ -339,6 +559,14 @@
       "ch": 4,
       "topic": "Trường hợp c-c-c",
       "q": "△ABC có AB = AC và M là trung điểm của BC. Vì sao △ABM = △ACM?",
+      "fig": {
+        "t": "trung-tuyen",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "Vì ∠B = ∠C và BM = CM nên dùng c-g-c",
         "Vì ∠BAM = ∠CAM và AM là cạnh chung nên dùng g-c-g",
@@ -354,6 +582,10 @@
       "ch": 4,
       "topic": "Trường hợp không hợp lệ",
       "q": "Nhận xét sau đúng hay sai: chỉ cần hai cặp cạnh và một cặp góc bằng nhau là suy ra được hai tam giác bằng nhau?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccg"
+      },
       "options": [
         "Sai, góc đó phải là góc xen giữa hai cạnh thì mới kết luận được",
         "Đúng, đó chính là trường hợp c-c-g",
@@ -369,6 +601,10 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Hai tam giác vuông bằng nhau theo trường hợp hai cạnh góc vuông khi nào?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "2cgv"
+      },
       "options": [
         "Khi hai cạnh huyền của chúng bằng nhau",
         "Khi hai cạnh góc vuông của tam giác này lần lượt bằng hai cạnh góc vuông của tam giác kia",
@@ -384,6 +620,10 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Trường hợp bằng nhau cạnh huyền - góc nhọn của hai tam giác vuông được phát biểu thế nào?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "ch-gn"
+      },
       "options": [
         "Hai cạnh huyền bằng nhau thì hai tam giác vuông bằng nhau",
         "Hai góc nhọn bằng nhau thì hai tam giác vuông bằng nhau",
@@ -399,6 +639,10 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Hai tam giác vuông có cạnh huyền bằng nhau và một cạnh góc vuông bằng nhau thì sao?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "ch-cgv"
+      },
       "options": [
         "Bằng nhau, theo trường hợp cạnh huyền - cạnh góc vuông",
         "Chưa chắc bằng nhau vì còn thiếu một cạnh góc vuông nữa",
@@ -414,6 +658,22 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "△ABC vuông tại A và △DEF vuông tại D có AB = DE và ∠B = ∠E. Hai tam giác bằng nhau theo trường hợp nào?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "cgv-gn",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E",
+            "F"
+          ]
+        ]
+      },
       "options": [
         "góc – cạnh – góc (g-c-g)",
         "cạnh – góc – cạnh (c-g-c)",
@@ -429,6 +689,10 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Chỉ biết hai tam giác vuông có yếu tố nào sau đây thì VẪN CHƯA kết luận được chúng bằng nhau?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "none"
+      },
       "options": [
         "Hai cạnh góc vuông bằng nhau",
         "Cạnh huyền và một góc nhọn bằng nhau",
@@ -444,6 +708,22 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "△MNP vuông tại M và △XYZ vuông tại X có NP = YZ, ∠N = ∠Y. Hai tam giác bằng nhau theo trường hợp nào?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "ch-gn",
+        "v": [
+          [
+            "M",
+            "N",
+            "P"
+          ],
+          [
+            "X",
+            "Y",
+            "Z"
+          ]
+        ]
+      },
       "options": [
         "Cạnh huyền - góc nhọn",
         "Hai cạnh góc vuông",
@@ -459,6 +739,22 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "△ABC vuông tại A và △MNP vuông tại M có AB = MN, AC = MP. Kết luận nào đúng?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "2cgv",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "M",
+            "N",
+            "P"
+          ]
+        ]
+      },
       "options": [
         "Chưa kết luận được vì chưa biết cạnh huyền",
         "Bằng nhau theo trường hợp cạnh huyền - góc nhọn",
@@ -474,6 +770,10 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Vì sao trường hợp hai cạnh góc vuông thực chất chỉ là một dạng của c-g-c?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "2cgv"
+      },
       "options": [
         "Vì hai cạnh huyền luôn bằng nhau",
         "Vì góc vuông 90° chính là góc xen giữa hai cạnh góc vuông",
@@ -489,6 +789,22 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Tam giác PQR vuông tại P, tam giác HIK vuông tại H, biết PQ = HI và ∠Q = ∠I. Chúng bằng nhau nhờ trường hợp nào?",
+      "fig": {
+        "t": "hai-tam-giac-vuong",
+        "m": "cgv-gn",
+        "v": [
+          [
+            "P",
+            "Q",
+            "R"
+          ],
+          [
+            "H",
+            "I",
+            "K"
+          ]
+        ]
+      },
       "options": [
         "Cạnh góc vuông - góc nhọn kề",
         "Cạnh huyền - góc nhọn",
@@ -504,6 +820,14 @@
       "ch": 4,
       "topic": "Tam giác vuông bằng nhau",
       "q": "Trong một tam giác vuông, cạnh huyền là cạnh nào?",
+      "fig": {
+        "t": "tam-giac-vuong",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "Cạnh ngắn nhất của tam giác",
         "Cạnh đối diện với góc vuông",
@@ -519,6 +843,14 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "△ABC cân tại A (tức AB = AC) thì hai góc nào bằng nhau?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "∠A = ∠B",
         "∠A = ∠C",
@@ -534,6 +866,19 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "△ABC cân tại A có ∠A = 40°. Số đo mỗi góc ở đáy là bao nhiêu?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "A": "40°",
+          "B": "?",
+          "C": "?"
+        }
+      },
       "options": [
         "40°",
         "50°",
@@ -549,6 +894,19 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "△ABC có ∠B = ∠C = 55°. Kết luận nào đúng?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "ticks": false,
+        "angles": {
+          "B": "55°",
+          "C": "55°"
+        }
+      },
       "options": [
         "△ABC là tam giác đều",
         "△ABC vuông tại A",
@@ -564,6 +922,9 @@
       "ch": 4,
       "topic": "Tam giác đều",
       "q": "Mỗi góc của một tam giác đều bằng bao nhiêu độ?",
+      "fig": {
+        "t": "tam-giac-deu"
+      },
       "options": [
         "45°",
         "90°",
@@ -579,6 +940,9 @@
       "ch": 4,
       "topic": "Tam giác đều",
       "q": "Dấu hiệu nào sau đây KHÔNG đủ để kết luận một tam giác là tam giác đều?",
+      "fig": {
+        "t": "tam-giac-deu"
+      },
       "options": [
         "Tam giác có ba cạnh bằng nhau",
         "Tam giác cân có hai góc ở đáy bằng nhau",
@@ -594,6 +958,18 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "△ABC cân tại A có ∠B = 50°. Số đo ∠A là bao nhiêu?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "B": "50°",
+          "A": "?"
+        }
+      },
       "options": [
         "80°",
         "50°",
@@ -609,6 +985,14 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "Trong tam giác cân, cạnh bên và cạnh đáy được hiểu như thế nào?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "Hai cạnh đáy là hai cạnh bằng nhau, cạnh bên là cạnh còn lại",
         "Hai cạnh bên là hai cạnh bằng nhau, cạnh đáy là cạnh còn lại",
@@ -624,6 +1008,19 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "Tam giác vuông cân tại A có hai góc nhọn bằng bao nhiêu?",
+      "fig": {
+        "t": "tam-giac-vuong",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "eq": true,
+        "angles": {
+          "B": "?",
+          "C": "?"
+        }
+      },
       "options": [
         "30° và 60°",
         "60° và 60°",
@@ -639,6 +1036,17 @@
       "ch": 4,
       "topic": "Tam giác đều",
       "q": "Một tam giác cân có góc ở đỉnh bằng 60° thì đó là tam giác gì?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ],
+        "angles": {
+          "A": "60°"
+        }
+      },
       "options": [
         "Tam giác đều",
         "Tam giác vuông cân",
@@ -654,6 +1062,14 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "Trong tam giác ABC, hai điều \"AB = AC\" và \"∠B = ∠C\" liên hệ với nhau như thế nào?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "Chỉ đúng một chiều: có AB = AC mới suy ra được ∠B = ∠C",
         "Chỉ đúng một chiều: có ∠B = ∠C mới suy ra được AB = AC",
@@ -669,6 +1085,9 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "Đường trung trực của đoạn thẳng AB là đường thẳng như thế nào?",
+      "fig": {
+        "t": "trung-truc"
+      },
       "options": [
         "Đường thẳng đi qua trung điểm của AB",
         "Đường thẳng vuông góc với AB",
@@ -684,6 +1103,10 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "Cho d là đường trung trực của đoạn thẳng AB và điểm M thuộc d. Khi đó ta có điều gì?",
+      "fig": {
+        "t": "trung-truc",
+        "point": true
+      },
       "options": [
         "MA = MB",
         "MA = AB",
@@ -699,6 +1122,10 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "Điểm M cách đều hai đầu mút của đoạn thẳng AB, tức MA = MB. Kết luận nào đúng?",
+      "fig": {
+        "t": "trung-truc",
+        "point": true
+      },
       "options": [
         "M là trung điểm của AB",
         "M nằm trên đoạn thẳng AB",
@@ -714,6 +1141,13 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "Đoạn thẳng AB dài 8 cm, đường trung trực d của AB cắt AB tại điểm I. Độ dài IA bằng bao nhiêu?",
+      "fig": {
+        "t": "trung-truc",
+        "l": {
+          "AB": "AB = 8 cm",
+          "IA": "?"
+        }
+      },
       "options": [
         "8 cm",
         "4 cm",
@@ -729,6 +1163,14 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "△ABC cân tại A và M là trung điểm của BC. Đường thẳng AM có tính chất gì đối với BC?",
+      "fig": {
+        "t": "trung-tuyen",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "AM là đường trung trực của BC",
         "AM song song với BC",
@@ -744,6 +1186,10 @@
       "ch": 4,
       "topic": "Đường trung trực",
       "q": "Phát biểu nào sau đây về đường trung trực d của đoạn thẳng AB là SAI?",
+      "fig": {
+        "t": "trung-truc",
+        "point": true
+      },
       "options": [
         "Mọi điểm thuộc d đều cách đều A và B",
         "Mọi điểm cách đều A và B đều nằm ngoài d",
@@ -759,6 +1205,22 @@
       "ch": 4,
       "topic": "Kí hiệu tam giác bằng nhau",
       "q": "Cho tam giác ABC và tam giác DEF có AB = EF, BC = FD, AC = ED, ∠A = ∠E, ∠B = ∠F, ∠C = ∠D. Cách viết nào sau đây đúng?",
+      "fig": {
+        "t": "hai-tam-giac",
+        "m": "ccc",
+        "v": [
+          [
+            "A",
+            "B",
+            "C"
+          ],
+          [
+            "E",
+            "F",
+            "D"
+          ]
+        ]
+      },
       "options": [
         "△ABC = △DEF",
         "△ABC = △FDE",
@@ -775,6 +1237,14 @@
       "ch": 4,
       "topic": "Tam giác cân",
       "q": "Tam giác cân là tam giác có tính chất nào sau đây?",
+      "fig": {
+        "t": "tam-giac-can",
+        "v": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
       "options": [
         "Ba cạnh bằng nhau",
         "Hai cạnh bằng nhau",
@@ -791,6 +1261,9 @@
       "ch": 4,
       "topic": "Trường hợp c-g-c",
       "q": "Cho tam giác ABC, M là trung điểm của AB. Trên tia đối của tia MC lấy điểm D sao cho MC = MD. Hai tam giác ADM và BCM bằng nhau theo trường hợp nào?",
+      "fig": {
+        "t": "doi-tia"
+      },
       "options": [
         "c-c-c (AM = BM, AD = BC, MD = MC)",
         "g-c-g (∠DAM = ∠CBM, AM = BM, ∠AMD = ∠BMC)",
@@ -807,6 +1280,14 @@
       "ch": 4,
       "topic": "Tổng ba góc",
       "q": "Cho tam giác ABC có ∠C = 35° và ∠A = 65°. Số đo góc B bằng bao nhiêu?",
+      "fig": {
+        "t": "tam-giac",
+        "angles": {
+          "C": "35°",
+          "A": "65°",
+          "B": "?"
+        }
+      },
       "options": [
         "100°",
         "80°",

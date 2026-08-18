@@ -370,6 +370,430 @@ const MATH_FIGURES = {
     + _mfT(100, 118, 'P trên d ⇒ PA = PB', 'middle', 'mf-cap')),
 };
 
+// ---- hình của ĐỀ BÀI ---------------------------------------------------
+// Khác với hình của từ điển (một khái niệm, một hình cố định), hình ở đây vẽ
+// đúng bài toán đang hỏi: góc đã cho ghi bằng số thật của nó, góc phải tìm
+// ghi dấu "?". Bé nhìn hình là nắm được đề trước khi đọc hết câu chữ — mà
+// với hình học thì đó mới là lúc bài toán bắt đầu.
+//
+// Câu hỏi khai báo hình trong data/math/math-ch*.json:
+//     "fig": { "t": "ke-bu", "a": 130, "l": ["130°", "?"] }
+// `t` là tên khuôn dưới đây; các khoá còn lại là tham số của khuôn đó.
+//
+// LUẬT: hình chỉ được vẽ ĐỀ, không bao giờ vẽ ĐÁP ÁN. Ghi sẵn con số phải
+// tìm lên hình là biến bài toán thành bài chép. tests/math-figures.test.js
+// canh đúng chuyện này.
+
+// Số đã cho vẽ màu xanh, chỗ phải tìm vẽ màu cam — hai vai trò khác nhau
+// trong cùng một hình thì không nên cùng một màu.
+function _mfIsAsk(txt) { return /\?/.test(String(txt == null ? '' : txt)); }
+function _mfK(txt) { return _mfIsAsk(txt) ? 'a' : 'b'; }
+
+// Nhãn đặt trên tia phân giác của chính góc nó đang gọi tên, nên nhãn luôn
+// nằm trong lòng góc đó dù góc to hay nhỏ.
+function _mfAng(cx, cy, r, a0, a1, txt, rl) {
+  if (txt == null || txt === '') return '';
+  const k = _mfK(txt);
+  const p = _mfP(cx, cy, (rl || r + 13), (a0 + a1) / 2);
+  return _mfWedge(cx, cy, r, a0, a1, k)
+    + _mfT(p[0], p[1] + 4, txt, 'middle', 'mf-val mf-' + k);
+}
+
+// ---- Chương 3: góc và đường thẳng --------------------------------------
+
+// Hai góc kề bù: x—O—y thẳng hàng, tia Oz dựng đúng số đo đã cho.
+function _mfqKeBu(f) {
+  const a = Math.min(160, Math.max(20, +f.a || 120));
+  const l = f.l || ['', ''];
+  const n = f.names || ['x', 'y', 'z'];
+  const r2 = f.r2;
+  return _mfAng(100, 88, 30, 0, a, l[0])
+    + _mfAng(100, 88, 30, a, 180, l[1])
+    + _mfLine(18, 88, 182, 88) + _mfRay(100, 88, 58, a)
+    + (r2 ? _mfRay(100, 88, 58, +r2.deg) : '')
+    + _mfDot(100, 88) + _mfT(100, 104, 'O')
+    + _mfT(188, 93, n[0], 'end') + _mfT(12, 93, n[1], 'start')
+    + _mfT(..._mfP(100, 88, 68, a), n[2], a > 100 ? 'end' : 'start')
+    + (r2 ? _mfT(..._mfP(100, 88, 68, +r2.deg), r2.name || 't', +r2.deg > 100 ? 'end' : 'start') : '');
+}
+
+// Kề bù CỘNG phân giác: bài "∠xOz và ∠zOy kề bù, Ot là phân giác của ∠xOz".
+function _mfqKeBuPhanGiac(f) {
+  const a = Math.min(160, Math.max(30, +f.a || 100));
+  const l = f.l || ['', ''];
+  return _mfAng(100, 88, 34, 0, a, l[0], 48)
+    + _mfAng(100, 88, 22, a / 2, a, l[1], 32)
+    + _mfLine(18, 88, 182, 88) + _mfRay(100, 88, 58, a)
+    + _mfRay(100, 88, 52, a / 2, 'mf-l mf-hi')
+    + _mfDot(100, 88) + _mfT(100, 104, 'O')
+    + _mfT(188, 93, 'x', 'end') + _mfT(12, 93, 'y', 'start')
+    + _mfT(..._mfP(100, 88, 68, a), 'z', a > 100 ? 'end' : 'start')
+    + _mfT(..._mfP(100, 88, 62, a / 2), 't', 'start');
+}
+
+// Hai đường thẳng cắt nhau: góc đã cho, góc hỏi là đối đỉnh hoặc kề bù.
+function _mfqDoiDinh(f) {
+  const a = Math.min(150, Math.max(25, +f.a || 40));
+  const l = f.l || [];
+  const w = [[0, a], [a, 180], [180, 180 + a], [180 + a, 360]];
+  let out = '';
+  w.forEach((g, i) => { out += _mfAng(100, 64, 22, g[0], g[1], l[i], 34); });
+  return out + _mfLine(20, 64, 180, 64)
+    + _mfRay(100, 64, 54, a) + _mfRay(100, 64, 54, a + 180)
+    + _mfDot(100, 64) + _mfT(94, 78, 'O', 'end');
+}
+
+// Tia phân giác: góc vẽ đúng số đo, tia phân giác chia đôi thật.
+function _mfqPhanGiac(f) {
+  const w = Math.min(180, Math.max(30, +f.w || 80));
+  const lh = f.lh || ['', ''];
+  const pw = _mfP(100, 100, 56, w / 2);
+  // Không có số nào để ghi thì vẫn phải thấy "hai nửa bằng nhau" — đó là cả
+  // nội dung của khái niệm tia phân giác.
+  const bare = !lh[0] && !lh[1];
+  return (bare ? _mfWedge(100, 100, 30, 0, w / 2, 'b') + _mfWedge(100, 100, 30, w / 2, w, 'b')
+        + _mfAtick(100, 100, 30, w / 4, 'b') + _mfAtick(100, 100, 30, w * 3 / 4, 'b') : '')
+    + _mfAng(100, 100, 30, 0, w / 2, lh[0], 20)
+    + _mfAng(100, 100, 30, w / 2, w, lh[1], 20)
+    + _mfRay(100, 100, 88, 0) + _mfRay(100, 100, 88, w)
+    + _mfRay(100, 100, 78, w / 2, 'mf-l mf-hi')
+    + _mfDot(100, 100) + _mfT(100, 114, 'O')
+    + _mfT(..._mfP(100, 100, 96, 0), 'x', 'start')
+    + _mfT(..._mfP(100, 100, 96, w), 'y', w > 100 ? 'end' : 'start')
+    + _mfT(..._mfP(100, 100, 86, w / 2), 'z', 'start')
+    + (f.lw ? _mfT(pw[0], pw[1], f.lw, 'middle', 'mf-val mf-' + _mfK(f.lw)) : '');
+}
+
+// Một đường thẳng cắt hai đường thẳng — cái hình của cả nửa Chương 3.
+// Vị trí góc đặt tên như sách: A1 trên-phải, A2 trên-trái, A3 dưới-trái,
+// A4 dưới-phải (và B1..B4 ở giao điểm dưới).
+const _MF_POS = {
+  A1: [70, 35, 0, 126], A2: [70, 35, 126, 180], A3: [70, 35, 180, 306], A4: [70, 35, 306, 360],
+  B1: [110, 90, 0, 126], B2: [110, 90, 126, 180], B3: [110, 90, 180, 306], B4: [110, 90, 306, 360],
+};
+
+function _mfqCut2(f) {
+  const angles = f.angles || {};
+  let out = '';
+  Object.keys(angles).forEach(p => {
+    const g = _MF_POS[p];
+    if (g) out += _mfAng(g[0], g[1], 20, g[2], g[3], angles[p], 32);
+  });
+  return out + _mfCutBase(!!f.par);
+}
+
+// Quan hệ vuông góc — song song, bốn thế thường gặp.
+function _mfqVuongSong(f) {
+  const m = f.m || 'perp2';
+  const lbl = (x, y, t, an) => _mfT(x, y, t, an || 'end');
+  if (m === 'par-perp') {                       // a ∥ b, c ⊥ a ⇒ c với b?
+    return _mfLine(16, 36, 184, 36) + _mfLine(16, 88, 184, 88) + _mfLine(64, 8, 64, 112)
+      + _mfPar(16, 36, 184, 36, 0.82) + _mfPar(16, 88, 184, 88, 0.82)
+      + _mfRight(64, 36, 12, 0, 'b')
+      + _mfAng(64, 88, 16, 0, 90, f.ask || '?', 30)
+      + lbl(56, 16, 'c') + lbl(190, 32, 'a') + lbl(190, 84, 'b');
+  }
+  if (m === 'par3') {                            // a ∥ b, b ∥ c
+    return _mfLine(16, 26, 184, 26) + _mfLine(16, 62, 184, 62) + _mfLine(16, 98, 184, 98)
+      + _mfPar(16, 26, 184, 26, 0.8) + _mfPar(16, 62, 184, 62, 0.8) + _mfPar(16, 98, 184, 98, 0.8)
+      + lbl(190, 22, 'a') + lbl(190, 58, 'b') + lbl(190, 94, 'c')
+      + _mfT(100, 116, 'a ∥ b và b ∥ c', 'middle', 'mf-cap');
+  }
+  if (m === 'par3-perp') {                       // a ∥ b ∥ c và d ⊥ a
+    return _mfLine(16, 26, 184, 26) + _mfLine(16, 62, 184, 62) + _mfLine(16, 98, 184, 98)
+      + _mfLine(62, 10, 62, 114)
+      + _mfPar(16, 26, 184, 26, 0.82) + _mfPar(16, 62, 184, 62, 0.82) + _mfPar(16, 98, 184, 98, 0.82)
+      + _mfRight(62, 26, 11, 0, 'b')
+      + _mfAng(62, 98, 15, 0, 90, f.ask || '?', 28)
+      + lbl(54, 18, 'd') + lbl(190, 22, 'a') + lbl(190, 58, 'b') + lbl(190, 94, 'c');
+  }
+  if (m === 'perp2d') {                          // a ⊥ c, b ⊥ c rồi d ⊥ a
+    return _mfLine(50, 8, 50, 112) + _mfLine(140, 8, 140, 112)
+      + _mfLine(16, 36, 184, 36) + _mfLine(16, 88, 184, 88)
+      + _mfRight(50, 36, 12, 0, 'b') + _mfRight(50, 88, 12, 0, 'b')
+      + _mfRight(140, 36, 12, 0, 'b')
+      + _mfAng(140, 88, 15, 0, 90, f.ask || '?', 28)
+      + lbl(42, 16, 'c') + lbl(132, 16, 'd') + lbl(190, 32, 'a') + lbl(190, 84, 'b');
+  }
+  if (m === 'kihieu') {                          // ∥ và ⊥ cạnh nhau cho dễ so
+    return _mfLine(8, 40, 88, 40) + _mfLine(8, 76, 88, 76)
+      + _mfPar(8, 40, 88, 40, 0.5) + _mfPar(8, 76, 88, 76, 0.5)
+      + _mfT(48, 108, 'a ∥ b', 'middle', 'mf-cap')
+      + _mfLine(112, 58, 192, 58) + _mfLine(152, 18, 152, 98)
+      + _mfRight(152, 58, 12, 0, 'b')
+      + _mfT(152, 108, 'a ⊥ b', 'middle', 'mf-cap');
+  }
+  return _mfLine(60, 8, 60, 112)                 // perp2: a ⊥ c và b ⊥ c
+    + _mfLine(16, 36, 184, 36) + _mfLine(16, 88, 184, 88)
+    + _mfRight(60, 36, 12, 0, 'b') + _mfRight(60, 88, 12, 0, 'b')
+    + lbl(52, 16, 'c') + lbl(190, 32, 'a') + lbl(190, 84, 'b');
+}
+
+// Tiên đề Euclid: điểm ngoài đường thẳng, hoặc điểm nằm ngay trên nó.
+function _mfqEuclid(f) {
+  if (f.m === 'point') {                         // mới chỉ có d và M, chưa kẻ gì
+    return _mfLine(16, 84, 184, 84)
+      + _mfDot(100, 40) + _mfT(100, 30, 'M')
+      + _mfT(190, 80, 'd', 'end')
+      + _mfT(100, 112, 'M không thuộc d', 'middle', 'mf-cap');
+  }
+  if (f.m === 'on-line') {
+    return _mfLine(16, 70, 184, 70)
+      + _mfLine(40, 20, 160, 120, 'mf-d') + _mfLine(160, 20, 40, 120, 'mf-d')
+      + _mfDot(100, 70) + _mfT(100, 60, 'A')
+      + _mfT(190, 66, 'd', 'end')
+      + _mfT(100, 112, 'A nằm TRÊN d', 'middle', 'mf-cap');
+  }
+  return _mfLine(16, 92, 184, 92) + _mfLine(16, 40, 184, 40)
+    + _mfPar(16, 92, 184, 92, 0.8) + _mfPar(16, 40, 184, 40, 0.8)
+    + _mfLine(73, 10, 163, 110, 'mf-d') + _mfLine(127, 10, 37, 110, 'mf-d')
+    + _mfDot(100, 40) + _mfT(92, 32, 'M', 'end')
+    + _mfT(190, 88, 'd', 'end') + _mfT(190, 36, 'a', 'end');
+}
+
+// ---- Chương 4: tam giác ------------------------------------------------
+// Ba đỉnh cố định trên hình, tên đỉnh do đề đặt: một tam giác vẽ ra thì đỉnh
+// nào là A hoàn toàn tuỳ bài, nhưng số đo góc thì không.
+const _MF_TRI = {
+  P: [[35, 100], [165, 100], [95, 25]],
+  ang: [[0, 51.3], [133, 180], [231.3, 313]],   // góc trong tại từng đỉnh
+  lbl: [[26, 111, 'end'], [174, 111, 'start'], [95, 16, 'middle']],
+};
+
+function _mfqTamGiac(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  const angles = f.angles || {};
+  let out = '';
+  v.forEach((name, i) => {
+    const a = _MF_TRI.ang[i], p = _MF_TRI.P[i];
+    out += _mfAng(p[0], p[1], i === 2 ? 20 : 22, a[0], a[1], angles[name], i === 2 ? 34 : 36);
+  });
+  out += _mfPoly(_MF_TRI.P, 'mf-l mf-tri');
+  v.forEach((name, i) => {
+    const L = _MF_TRI.lbl[i];
+    out += _mfT(L[0], L[1], name, L[2]);
+  });
+  return out;
+}
+
+// Tam giác vuông: v = [đỉnh vuông, đỉnh dưới-phải, đỉnh trên].
+function _mfqTamGiacVuong(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  const angles = f.angles || {};
+  return _mfAng(150, 98, 24, 148.3, 180, angles[v[1]], 36)
+    + _mfAng(40, 30, 22, 270, 328.3, angles[v[2]], 34)
+    + _mfPoly([[40, 98], [150, 98], [40, 30]], 'mf-l mf-tri')
+    + (f.eq ? _mfTicks(40, 98, 150, 98, 1, 'c') + _mfTicks(40, 98, 40, 30, 1, 'c') : '')
+    + _mfRight(40, 98, 14, 0, 'b')
+    + _mfT(32, 109, v[0], 'end') + _mfT(158, 109, v[1], 'start') + _mfT(36, 22, v[2], 'end');
+}
+
+// Góc ngoài: v = [dưới-trái, dưới-phải (nơi có góc ngoài), đỉnh trên].
+function _mfqGocNgoai(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  const angles = f.angles || {};
+  return _mfAng(150, 96, 24, 0, 133, f.ext || '?', 38)
+    + _mfAng(150, 96, 15, 133, 180, angles[v[1]], 30)
+    + _mfAng(30, 96, 20, 0, 51.8, angles[v[0]], 32)
+    + _mfAng(85, 26, 18, 231.8, 312.9, angles[v[2]], 30)
+    + _mfPoly([[30, 96], [150, 96], [85, 26]], 'mf-l mf-tri')
+    + _mfLine(150, 96, 192, 96, 'mf-d')
+    + _mfT(22, 107, v[0], 'end') + _mfT(150, 110, v[1]) + _mfT(85, 17, v[2]);
+}
+
+// Hai tam giác: dấu bằng nhau đặt đúng theo trường hợp đang hỏi.
+const _MF_T1 = [[12, 88], [82, 88], [45, 26]], _MF_T2 = [[118, 88], [188, 88], [151, 26]];
+
+function _mfqHaiTamGiac(f) {
+  const v = f.v || [['A', 'B', 'C'], ['D', 'E', 'F']];
+  const m = f.m || 'ccc';
+  const T = [_MF_T1, _MF_T2];
+  let out = '';
+  if (m === 'ggg') {                              // cùng góc, khác kích thước
+    out += _mfPoly([[14, 76], [64, 76], [38, 32]], 'mf-l mf-tri')
+      + _mfPoly([[110, 96], [190, 96], [148, 26]], 'mf-l mf-tri')
+      + _mfWedge(14, 76, 12, 0, 61.4, 'b') + _mfWedge(110, 96, 16, 0, 61.5, 'b')
+      + _mfWedge(64, 76, 12, 120.6, 180, 'c') + _mfWedge(190, 96, 16, 121, 180, 'c')
+      + _mfT(88, 62, '≠', 'middle', 'mf-no');
+    return out;
+  }
+  T.forEach(P => {
+    if (m === 'ccc') {
+      out += _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+        + _mfTicks(P[1][0], P[1][1], P[2][0], P[2][1], 2, 'b')
+        + _mfTicks(P[2][0], P[2][1], P[0][0], P[0][1], 3, 'b');
+    } else if (m === 'cgc') {
+      out += _mfWedge(P[0][0], P[0][1], 18, 0, 62, 'c')
+        + _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+        + _mfTicks(P[0][0], P[0][1], P[2][0], P[2][1], 2, 'b');
+    } else if (m === 'gcg') {
+      out += _mfWedge(P[0][0], P[0][1], 18, 0, 62, 'c')
+        + _mfWedge(P[1][0], P[1][1], 18, 121, 180, 'c')
+        + _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b');
+    } else if (m === 'ccg') {                     // hai cạnh + góc KHÔNG xen giữa
+      out += _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+        + _mfTicks(P[1][0], P[1][1], P[2][0], P[2][1], 2, 'b')
+        + _mfWedge(P[0][0], P[0][1], 18, 0, 62, 'c');
+    }
+  });
+  if (f.l1) out += _mfAng(_MF_T1[0][0], _MF_T1[0][1], 18, 0, 62, f.l1, 30);
+  if (f.l2) out += _mfAng(_MF_T2[0][0], _MF_T2[0][1], 18, 0, 62, f.l2, 30);
+  T.forEach((P, t) => {
+    out = _mfPoly(P, 'mf-l mf-tri') + out;
+    out += _mfT(P[0][0], 101, v[t][0]) + _mfT(P[1][0], 101, v[t][1]) + _mfT(P[2][0], 18, v[t][2]);
+  });
+  return out + _mfT(100, 62, '=');
+}
+
+// Hai tam giác vuông: góc vuông vẽ sẵn, chỉ đánh dấu yếu tố đề cho thêm.
+const _MF_R1 = [[14, 88], [84, 88], [14, 34]], _MF_R2 = [[120, 88], [190, 88], [120, 34]];
+
+function _mfqHaiTamGiacVuong(f) {
+  const v = f.v || [['A', 'B', 'C'], ['D', 'E', 'F']];
+  const m = f.m || 'ch-gn';
+  let out = '';
+  [_MF_R1, _MF_R2].forEach(P => {
+    out += _mfPoly(P, 'mf-l mf-tri') + _mfRight(P[0][0], P[0][1], 12, 0, 'a');
+    if (m === '2cgv') {
+      out += _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+        + _mfTicks(P[0][0], P[0][1], P[2][0], P[2][1], 2, 'b');
+    } else if (m === 'ch-gn') {
+      out += _mfTicks(P[1][0], P[1][1], P[2][0], P[2][1], 1, 'b')
+        + _mfWedge(P[1][0], P[1][1], 18, 142, 180, 'c');
+    } else if (m === 'ch-cgv') {
+      out += _mfTicks(P[1][0], P[1][1], P[2][0], P[2][1], 1, 'b')
+        + _mfTicks(P[0][0], P[0][1], P[2][0], P[2][1], 2, 'b');
+    } else if (m === 'cgv-gn') {
+      out += _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+        + _mfWedge(P[1][0], P[1][1], 18, 142, 180, 'c');
+    } else if (m === 'ch') {
+      out += _mfTicks(P[1][0], P[1][1], P[2][0], P[2][1], 1, 'b');
+    }
+  });
+  [_MF_R1, _MF_R2].forEach((P, t) => {
+    out += _mfT(P[0][0], 101, v[t][0]) + _mfT(P[1][0], 101, v[t][1]) + _mfT(P[2][0], 26, v[t][2]);
+  });
+  return out + _mfT(100, 62, '=');
+}
+
+// Tam giác cân: v = [đỉnh, đáy trái, đáy phải].
+function _mfqTamGiacCan(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  const angles = f.angles || {};
+  return _mfAng(45, 100, 20, 0, 53.7, angles[v[1]], 32)
+    + _mfAng(155, 100, 20, 126.3, 180, angles[v[2]], 32)
+    + _mfAng(100, 25, 18, 233.7, 306.3, angles[v[0]], 32)
+    + _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
+    + (f.ticks === false ? ''
+       : _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b'))
+    + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start');
+}
+
+function _mfqTamGiacDeu(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  const angles = f.angles || {};
+  return _mfAng(45, 102, 18, 0, 58, angles[v[1]], 30)
+    + _mfAng(155, 102, 18, 122, 180, angles[v[2]], 30)
+    + _mfAng(100, 14, 16, 238, 302, angles[v[0]], 30)
+    + _mfPoly([[100, 14], [45, 102], [155, 102]], 'mf-l mf-tri')
+    + _mfTicks(100, 14, 45, 102, 1, 'b') + _mfTicks(100, 14, 155, 102, 1, 'b')
+    + _mfTicks(45, 102, 155, 102, 1, 'b')
+    + _mfT(100, 10, v[0]) + _mfT(34, 106, v[1], 'end') + _mfT(166, 106, v[2], 'start');
+}
+
+// Đường trung trực: d ⊥ AB tại trung điểm I, kèm điểm M nếu đề nhắc tới.
+function _mfqTrungTruc(f) {
+  const l = f.l || {};
+  const A = [40, 84], B = [160, 84], I = [100, 84];
+  let out = _mfLine(A[0], A[1], B[0], B[1]) + _mfLine(100, 14, 100, 110)
+    + _mfRight(100, 84, 12, 0, 'b') + _mfRight(100, 84, 12, 90, 'b')
+    + _mfTicks(A[0], A[1], I[0], I[1], 1, 'b') + _mfTicks(I[0], I[1], B[0], B[1], 1, 'b')
+    + _mfDot(A[0], A[1]) + _mfDot(I[0], I[1]) + _mfDot(B[0], B[1])
+    + _mfT(34, 89, 'A', 'end') + _mfT(93, 99, 'I', 'end') + _mfT(166, 89, 'B', 'start')
+    + _mfT(108, 20, 'd', 'start');
+  if (f.point) {
+    out += _mfLine(100, 30, A[0], A[1], 'mf-d') + _mfLine(100, 30, B[0], B[1], 'mf-d')
+      + _mfDot(100, 30) + _mfT(109, 34, 'M', 'start');
+  }
+  if (l.AB) out += _mfT(100, 116, l.AB, 'middle', 'mf-val mf-' + _mfK(l.AB));
+  if (l.IA) out += _mfT(66, 78, l.IA, 'middle', 'mf-val mf-' + _mfK(l.IA));
+  return out;
+}
+
+// Tam giác cân + trung tuyến xuống đáy: hình của "AM có tính chất gì?".
+function _mfqTrungTuyen(f) {
+  const v = f.v || ['A', 'B', 'C'];
+  return _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
+    + _mfLine(100, 25, 100, 100, 'mf-l mf-hi')
+    + _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b')
+    + _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c')
+    + _mfDot(100, 100)
+    + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start')
+    + _mfT(100, 114, 'M', 'middle');
+}
+
+// Hai đoạn cắt nhau tại trung điểm của mỗi đoạn (bài △OAC = △OBD).
+function _mfqHaiDoanCat(f) {
+  const v = f.v || ['A', 'B', 'C', 'D'];
+  const O = [100, 60];
+  const A = _mfP(100, 60, 62, 160), B = _mfP(100, 60, 62, 340);
+  const C = _mfP(100, 60, 50, 55), D = _mfP(100, 60, 50, 235);
+  return _mfLine(A[0], A[1], B[0], B[1]) + _mfLine(C[0], C[1], D[0], D[1])
+    + _mfTicks(A[0], A[1], O[0], O[1], 1, 'b') + _mfTicks(O[0], O[1], B[0], B[1], 1, 'b')
+    + _mfTicks(C[0], C[1], O[0], O[1], 2, 'c') + _mfTicks(O[0], O[1], D[0], D[1], 2, 'c')
+    + _mfDot(A[0], A[1]) + _mfDot(B[0], B[1]) + _mfDot(C[0], C[1]) + _mfDot(D[0], D[1]) + _mfDot(100, 60)
+    + _mfT(A[0] - 8, A[1], v[0], 'end') + _mfT(B[0] + 8, B[1], v[1], 'start')
+    + _mfT(C[0] + 4, C[1] - 4, v[2], 'start') + _mfT(D[0] - 4, D[1] + 12, v[3], 'end')
+    + _mfT(108, 56, 'O', 'start');
+}
+
+// M là trung điểm AB, D nằm trên tia đối của tia MC sao cho MD = MC.
+function _mfqDoiTia(f) {
+  const A = [30, 30], B = [150, 96], C = [40, 100], M = [90, 63];
+  const D = [2 * M[0] - C[0], 2 * M[1] - C[1]];
+  return _mfLine(A[0], A[1], B[0], B[1]) + _mfLine(C[0], C[1], D[0], D[1])
+    + _mfLine(A[0], A[1], C[0], C[1]) + _mfLine(B[0], B[1], C[0], C[1])
+    + _mfLine(A[0], A[1], D[0], D[1], 'mf-d') + _mfLine(B[0], B[1], D[0], D[1], 'mf-d')
+    + _mfTicks(A[0], A[1], M[0], M[1], 1, 'b') + _mfTicks(M[0], M[1], B[0], B[1], 1, 'b')
+    + _mfTicks(C[0], C[1], M[0], M[1], 2, 'c') + _mfTicks(M[0], M[1], D[0], D[1], 2, 'c')
+    + _mfDot(M[0], M[1])
+    + _mfT(24, 26, 'A', 'end') + _mfT(158, 101, 'B', 'start')
+    + _mfT(34, 111, 'C', 'end') + _mfT(D[0] + 6, D[1] - 4, 'D', 'start')
+    + _mfT(88, 55, 'M', 'end');
+}
+
+const MATH_Q_FIGURES = {
+  'ke-bu': _mfqKeBu,
+  'ke-bu-phan-giac': _mfqKeBuPhanGiac,
+  'doi-dinh': _mfqDoiDinh,
+  'phan-giac': _mfqPhanGiac,
+  'cut2': _mfqCut2,
+  'vuong-song': _mfqVuongSong,
+  'euclid': _mfqEuclid,
+  'tam-giac': _mfqTamGiac,
+  'tam-giac-vuong': _mfqTamGiacVuong,
+  'goc-ngoai': _mfqGocNgoai,
+  'hai-tam-giac': _mfqHaiTamGiac,
+  'hai-tam-giac-vuong': _mfqHaiTamGiacVuong,
+  'tam-giac-can': _mfqTamGiacCan,
+  'tam-giac-deu': _mfqTamGiacDeu,
+  'trung-truc': _mfqTrungTruc,
+  'trung-tuyen': _mfqTrungTuyen,
+  'hai-doan-cat': _mfqHaiDoanCat,
+  'doi-tia': _mfqDoiTia,
+};
+
+// Khuôn lạ thì không vẽ gì — một câu hỏi vẫn làm được khi thiếu hình, nhưng
+// không làm được nếu cả màn hình vỡ.
+function mathQuestionFigureHTML(fig) {
+  if (!fig || !fig.t) return '';
+  const draw = MATH_Q_FIGURES[fig.t];
+  if (!draw) return '';
+  let body = '';
+  try { body = draw(fig); } catch (e) { return ''; }
+  return body ? `<div class="math-q-figwrap">${_mfSvg(body)}</div>` : '';
+}
+
 // Trả về '' cho id lạ: một mục từ điển chưa có hình vẫn hiện được định nghĩa
 // chứ không làm vỡ cả bảng gợi ý.
 function mathFigureHTML(id) {
@@ -379,5 +803,5 @@ function mathFigureHTML(id) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { MATH_FIGURES, mathFigureHTML };
+  module.exports = { MATH_FIGURES, mathFigureHTML, MATH_Q_FIGURES, mathQuestionFigureHTML };
 }
