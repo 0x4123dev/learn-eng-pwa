@@ -68,6 +68,17 @@ const PB_STR = {
     powBeyond: 'Past the level {n} mark 🎉 · ',
     powFoot: 'Maxes out at level {n} · level up by studying 📚',
 
+    hireTitle: '⚔️ Hire teammates',
+    hireSub: 'They fight from inside your castle. One use each, this battle only.',
+    hireCoins: '🪙 {n}',
+    hireTotal: 'Squad cost: {n} 🪙',
+    hireFull: 'Bench full ({n} max)',
+    hireNone: 'No teammates — save your coins for pet food 🍖',
+    hirePoor: 'Not enough coins',
+    hireGunner: 'Gunner', hireGunnerAb: 'Fires a rocket along your next shot',
+    hireEngineer: 'Engineer', hireEngineerAb: 'Repairs your castle +15 HP',
+    hireShield: 'Guard', hireShieldAb: 'Halves the next volley that hits you',
+
     vsMine: 'Your pet', vsLevel: 'level {n}',
     vsStronger: 'Your pet is stronger! 💪',
     vsWeaker: 'Their pet is stronger — aim carefully! 🎯',
@@ -179,6 +190,17 @@ const PB_STR = {
     powPer10: '+{v} mỗi 10 cấp', powMaxed: 'Đã đạt tối đa 🎉',
     powBeyond: 'Vượt mốc cấp {n} 🎉 · ',
     powFoot: 'Tối đa ở cấp {n} · lên cấp bằng cách học bài 📚',
+
+    hireTitle: '⚔️ Thuê đồng đội',
+    hireSub: 'Đồng đội đứng trong lâu đài. Mỗi người dùng được 1 lần, chỉ trận này.',
+    hireCoins: '🪙 {n}',
+    hireTotal: 'Tiền thuê: {n} 🪙',
+    hireFull: 'Đã đủ quân ({n} người)',
+    hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
+    hirePoor: 'Không đủ xu',
+    hireGunner: 'Pháo thủ', hireGunnerAb: 'Bắn tên lửa theo đúng đường đạn của bé',
+    hireEngineer: 'Kỹ sư', hireEngineerAb: 'Sửa lâu đài +15 HP',
+    hireShield: 'Vệ sĩ', hireShieldAb: 'Giảm một nửa loạt đạn sắp trúng bé',
 
     vsMine: 'Pet của bé', vsLevel: 'cấp {n}',
     vsStronger: 'Pet của bé mạnh hơn! 💪',
@@ -417,6 +439,110 @@ function _pbPowerPanel() {
 
 // "Bé cấp 42 vs cấp 30" — a child sizing up an opponent should see whose pet
 // is stronger before accepting.
+// ---- hiring đồng đội ----
+// OFF until the abilities actually fire. The lobby panel, the coin debit and
+// the castle bench are all in place, but a triggered charge does nothing yet —
+// shipping this half-built would let a child pay 1,400 xu for a Vệ sĩ that
+// never raises a shield. Flip to true in the same change that lands the
+// trigger chips and the server's field_version 4.
+const PB_TEAMMATES_ENABLED = false;
+
+// The cart lives here, not in appState: a squad is hired FOR ONE BATTLE, so
+// abandoning the lobby must not leave a phantom bench (or a phantom bill)
+// behind. Coins are only debited when a battle actually starts.
+let _pbHires = [];
+
+function pbHireCart() { return _pbHires.slice(); }
+function pbHireReset() { _pbHires = []; }
+
+function _pbTeam() {
+  return (typeof BattleTeam !== 'undefined' && BattleTeam.TEAM_ROSTER) ? BattleTeam : null;
+}
+
+function _pbCoins() {
+  return (typeof appState !== 'undefined' && appState) ? (appState.coins || 0) : 0;
+}
+
+function pbHire(id) {
+  const TEAM = _pbTeam();
+  if (!TEAM) return;
+  _pbHires = TEAM.hireAdd(_pbHires, id, _pbCoins());
+  renderPetBattle();
+}
+
+function pbUnhire(id) {
+  const TEAM = _pbTeam();
+  if (!TEAM) return;
+  _pbHires = TEAM.hireRemove(_pbHires, id);
+  renderPetBattle();
+}
+
+// Spend the squad's wages. Called once, when a battle actually begins — win or
+// lose the coins are gone, which is what makes the choice cost something.
+function pbHireCommit() {
+  if (!PB_TEAMMATES_ENABLED) return [];
+  const TEAM = _pbTeam();
+  if (!TEAM) return [];
+  const squad = TEAM.normalizeHires(_pbHires);
+  const cost = TEAM.hireCost(squad);
+  if (typeof appState !== 'undefined' && appState && cost > 0) {
+    if ((appState.coins || 0) < cost) return [];      // purse changed under us
+    appState.coins -= cost;
+    if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
+      saveUserData(currentUser, appState);
+    }
+  }
+  _pbHires = [];
+  return squad;
+}
+
+const PB_HIRE_LABEL = { gunner: 'hireGunner', engineer: 'hireEngineer', shield: 'hireShield' };
+const PB_HIRE_ABILITY = { gunner: 'hireGunnerAb', engineer: 'hireEngineerAb', shield: 'hireShieldAb' };
+
+function _pbHirePanel() {
+  if (!PB_TEAMMATES_ENABLED) return '';
+  const TEAM = _pbTeam();
+  if (!TEAM) return '';
+  const coins = _pbCoins();
+  const cart = TEAM.normalizeHires(_pbHires);
+  const total = TEAM.hireCost(cart);
+  const full = cart.length >= TEAM.TEAM_MAX_HIRES;
+
+  const cards = TEAM.TEAM_ROSTER.map(mate => {
+    const owned = cart.filter(id => id === mate.id).length;
+    // Ask the cart itself whether this hire would go through, so a button can
+    // never promise something the purchase would then refuse.
+    const canAdd = TEAM.hireAdd(cart, mate.id, coins).length > cart.length;
+    const why = full ? pbT('hireFull', { n: TEAM.TEAM_MAX_HIRES })
+              : !canAdd ? pbT('hirePoor') : '';
+    return `
+      <div class="pb-hire-card${owned ? ' has' : ''}">
+        <span class="pb-hire-emoji">${mate.emoji}</span>
+        <div class="pb-hire-info">
+          <div class="pb-hire-name">${pbT(PB_HIRE_LABEL[mate.id])}</div>
+          <div class="pb-hire-ability">${pbT(PB_HIRE_ABILITY[mate.id])}</div>
+          <div class="pb-hire-fee">${pbT('hireCoins', { n: mate.fee })}${why ? ' · ' + why : ''}</div>
+        </div>
+        <div class="pb-hire-steps">
+          <button class="pb-hire-step" onclick="pbUnhire('${mate.id}')" ${owned ? '' : 'disabled'}>−</button>
+          <span class="pb-hire-count">${owned}</span>
+          <button class="pb-hire-step" onclick="pbHire('${mate.id}')" ${canAdd ? '' : 'disabled'}>+</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="pb-hire-panel">
+      <div class="pb-hire-head">
+        <span class="pb-hire-title">${pbT('hireTitle')}</span>
+        <span class="pb-hire-purse">${pbT('hireCoins', { n: coins })}</span>
+      </div>
+      <div class="pb-hire-sub">${pbT('hireSub')}</div>
+      <div class="pb-hire-list">${cards}</div>
+      <div class="pb-hire-total">${cart.length ? pbT('hireTotal', { n: total }) : pbT('hireNone')}</div>
+    </div>`;
+}
+
 function _pbVersusLine(b) {
   const mine = _pbMyPet().level;
   const theirs = (b && b.foe && b.foe.level) || 1;
@@ -574,6 +700,7 @@ function renderPetBattle() {
     (friends || []).map(f => [f.userId, _pbFriendWait(f)]), allWaiting, _pbMsg, _pbLang, _pbHistoryOpen,
     (typeof pbSelectedSceneId === 'function' ? pbSelectedSceneId() : ''),
     _pbHistory().length,
+    _pbHires.join(","), _pbCoins(),
   ]);
   if (screen.dataset.pbLobbySig === sig && screen.querySelector('.pb-scene-list')) return;
 
@@ -598,6 +725,7 @@ function renderPetBattle() {
            <div class="pb-cooldown-title">${pbT('cooldownTitle', { t: pbFmtCountdown(st.readyAt - Date.now()) })}</div>
            <div class="pb-cooldown-sub">${pbT('cooldownSub')}</div>
          </div>`}
+    ${_pbHirePanel()}
     <div class="pb-friend-list">${list}</div>
     ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}
     ${st.allowBot ? `
@@ -756,13 +884,13 @@ function _pbFriendWait(f) {
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), hires: pbHireCommit() }, _pbMyPet()),
   });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true }, _pbMyPet()) });
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, hires: pbHireCommit() }, _pbMyPet()) });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }

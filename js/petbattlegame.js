@@ -25,6 +25,38 @@ const PB_AIM_PREVIEW_GAP = 55;
 const PB_CASTLE_HALF_W = 70;
 const PB_CASTLE_HEIGHT = 122;
 
+// The castle art below is hand-drawn against a 70x122 box across five damage
+// stages. Rather than redraw all of that geometry for the bigger v4 fortress,
+// the whole drawing is SCALED from the active ruleset — so the picture and the
+// hitbox cannot drift apart, which is how v2 shipped a wall you could hit for
+// zero damage.
+function pbCastleScale(rules) {
+  const c = rules && rules.castle;
+  if (!c) return { sx: 1, sy: 1 };
+  return { sx: c.halfW / PB_CASTLE_HALF_W, sy: c.height / PB_CASTLE_HEIGHT };
+}
+
+// Where hired đồng đội stand inside the keep, in the SAME native 70x122 space
+// the art is authored in — the squad is drawn inside the already-scaled
+// context, so measuring against the larger v4 box would scale them twice and
+// hang the planks out in open sky.
+//
+// Placed against real masonry, not a tidy grid: each tower (x ±32..70) takes
+// two storeys, the keep (x ±33, y -111..-57) takes the crow's nest. Nobody
+// stands over the arched kennel window, so the dog is never covered.
+const PB_LEDGE_SLOTS = [
+  { x: -51, y: -30 },
+  { x:  51, y: -30 },
+  { x: -51, y: -62 },
+  { x:  51, y: -62 },
+  { x:   0, y: -88 },
+];
+
+function pbLedgeSpots(count) {
+  const n = Math.max(0, Math.min(PB_LEDGE_SLOTS.length, Math.trunc(Number(count) || 0)));
+  return PB_LEDGE_SLOTS.slice(0, n).map(slot => ({ x: slot.x, y: slot.y }));
+}
+
 // Aim bounds, shared by the drag handler, the arrow keys and the manual
 // controls — three ways to set one number, so they must agree or a slider
 // could reach an angle a drag cannot.
@@ -75,6 +107,10 @@ function PetBattleGame(opts) {
     ? BattleCalc
     : require('./battlecalc.js');
   this.calc = C;
+  const TEAM = (typeof BattleTeam !== 'undefined' && BattleTeam.TEAM_ROSTER)
+    ? BattleTeam
+    : require('./battle-teammates.js');
+  this.team = TEAM;
 
   this.seed = this.view.seed >>> 0;
   // Geometry comes from the version SNAPSHOTTED on the battle, not from
@@ -97,6 +133,13 @@ function PetBattleGame(opts) {
   this.myTurn = !!this.view.myTurn;
   this.myHp = this.view.me.hp;
   this.foeHp = this.view.foe.hp;
+  // Hired đồng đội, one charge each. Normalised on arrival: the foe's list
+  // came off another device and must never be trusted for length or contents.
+  this.myCharges = TEAM.buildCharges(this.view.me.hires);
+  this.foeCharges = TEAM.buildCharges(this.view.foe.hires);
+  // A castle repairs up to ITS OWN ceiling, which food raises.
+  this.myMaxHp = TEAM.startingHp(this.view.me.level);
+  this.foeMaxHp = TEAM.startingHp(this.view.foe.level);
   this.myAmmo = this.view.me.ammo;
   this.foeAmmo = this.view.foe.ammo;
   this.craters = [];
@@ -737,8 +780,8 @@ PetBattleGame.prototype._drawWorld = function () {
   // The pet lives inside a defensive castle. Structural wear follows real HP.
   const meAim = this.angle;
   const foeAim = this.foeAiming ? this.foeAiming.angle : 45;
-  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level);
-  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185', this.view.foe.level);
+  this._drawHouse(this.mePos, this.meImg, this.meFacing, this.myHp, meAim, '#38bdf8', this.view.me.level, this.myCharges);
+  this._drawHouse(this.foePos, this.foeImg, -this.meFacing, this.foeHp, foeAim, '#fb7185', this.view.foe.level, this.foeCharges);
 
   // A bright, anchored guide makes angle and power visible on the battlefield.
   if (this.myTurn && !this.busy && !this.flying.length) {
@@ -828,12 +871,94 @@ PetBattleGame.prototype._drawWorld = function () {
   ctx.globalAlpha = 1;
 };
 
-PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level) {
+// ---- the hired squad, drawn as little characters ----
+// Emoji were the first cut and read as UI, not as somebody the child bought.
+// These are drawn characters in the same flat, thick-outlined style as the
+// castle and the pets, so a teammate feels like a unit standing in your keep.
+//
+// Each is authored inside roughly a 22x26 box with its feet at y=0, in native
+// castle space, and is drawn upright regardless of which way the castle faces.
+const PB_MATE_ART = {
+  // Pháo thủ — helmeted gunner shouldering a rocket tube.
+  gunner: function (ctx) {
+    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);          // legs/boots
+    ctx.fillStyle = '#2563eb'; ctx.fillRect(-8, -22, 16, 14);        // tunic
+    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();  // head
+    ctx.fillStyle = '#1e3a8a';                                        // helmet
+    ctx.beginPath(); ctx.arc(0, -26, 6.4, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-6.4, -26, 12.8, 2.4);
+    ctx.fillStyle = '#6b7280'; ctx.fillRect(-13, -20, 22, 5);        // rocket tube
+    ctx.fillStyle = '#ef4444';                                        // warhead
+    ctx.beginPath(); ctx.moveTo(9, -20); ctx.lineTo(15, -17.5); ctx.lineTo(9, -15); ctx.closePath(); ctx.fill();
+  },
+  // Kỹ sư — builder in a hard hat with a raised hammer.
+  engineer: function (ctx) {
+    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);
+    ctx.fillStyle = '#f59e0b'; ctx.fillRect(-8, -22, 16, 14);        // hi-vis overalls
+    ctx.fillStyle = '#78350f'; ctx.fillRect(-8, -16, 16, 2.5);       // tool belt
+    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fbbf24';                                        // hard hat
+    ctx.beginPath(); ctx.arc(0, -26, 6.6, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-8, -26, 16, 2.4);
+    ctx.strokeStyle = '#6b4a3d'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';  // hammer haft
+    ctx.beginPath(); ctx.moveTo(7, -18); ctx.lineTo(12, -28); ctx.stroke();
+    ctx.fillStyle = '#9ca3af'; ctx.fillRect(9, -32, 8, 5);           // hammer head
+  },
+  // Vệ sĩ — guard behind a tall tower shield.
+  shield: function (ctx) {
+    ctx.fillStyle = '#4b5563'; ctx.fillRect(-9, -9, 18, 9);
+    ctx.fillStyle = '#0f766e'; ctx.fillRect(-8, -22, 16, 14);
+    ctx.fillStyle = '#f5c9a4'; ctx.beginPath(); ctx.arc(0, -25, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#134e4a';                                        // helm
+    ctx.beginPath(); ctx.arc(0, -26, 6.4, Math.PI, 0); ctx.fill();
+    ctx.fillRect(-6.4, -26, 12.8, 2.2);
+    ctx.fillStyle = '#38bdf8';                                        // tower shield
+    ctx.beginPath();
+    ctx.moveTo(-16, -26); ctx.lineTo(-4, -26); ctx.lineTo(-4, -10); ctx.lineTo(-10, -4);
+    ctx.lineTo(-16, -10); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#0c4a6e'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#e0f2fe'; ctx.fillRect(-11.5, -22, 3, 10);      // boss stripe
+  },
+};
+
+// One hired teammate on an interior ledge. A spent charge sits greyed so the
+// bench always shows what is still in hand — on the opponent's castle too.
+function pbDrawSquad(ctx, rules, charges, facing) {
+  if (!ctx || !Array.isArray(charges) || !charges.length) return;
+  const spots = pbLedgeSpots(charges.length);
+  const cs = pbCastleScale(rules);
+  for (let i = 0; i < spots.length; i++) {
+    const charge = charges[i];
+    const spot = spots[i];
+    const draw = PB_MATE_ART[charge && charge.id];
+    if (!draw) continue;
+    ctx.save();
+    ctx.translate(spot.x, spot.y);
+    // Ledge plank, in masonry space so it scales with the wall.
+    ctx.fillStyle = charge.used ? 'rgba(70,52,46,.5)' : '#6b4a3d';
+    ctx.fillRect(-15, 0, 30, 4);
+    ctx.fillStyle = 'rgba(15,23,42,.22)';
+    ctx.beginPath(); ctx.ellipse(0, 0, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
+    // Characters stand upright and unstretched: correct the mirror, and the
+    // castle's slight non-uniform scale, but let them GROW with the fortress.
+    ctx.scale(facing < 0 ? -1 : 1, cs.sx / cs.sy);
+    ctx.globalAlpha = charge.used ? 0.34 : 1;
+    draw(ctx);
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+}
+
+PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level, charges) {
   const ctx = this.ctx;
   const damage = pbHouseDamageStage(hp);
   const wear = 1 - Math.max(0, Math.min(100, Number(hp) || 0)) / 100;
   ctx.save();
   ctx.translate(pos.x, pos.y);
+  // Grow the whole hand-drawn castle to the ruleset's box. Everything below is
+  // authored against 70x122 and needs no edits when the fortress grows.
+  const _cs = pbCastleScale(this.rules);
+  if (_cs.sx !== 1 || _cs.sy !== 1) ctx.scale(_cs.sx, _cs.sy);
   if (facing < 0) ctx.scale(-1, 1);
 
   const round = (x, y, w, h, r) => {
@@ -997,11 +1122,19 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     ctx.strokeStyle = '#5e4039'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
   }
 
+  // The hired squad, on their storeys inside the keep.
+  pbDrawSquad(ctx, this.rules, charges, facing);
+
   // Level badge floats above the crown and remains readable at every stage.
   ctx.fillStyle = accent; round(-30, -149, 60, 23, 9); ctx.fill();
   ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
-  ctx.save(); if (facing < 0) ctx.scale(-1, 1);
-  ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, -133); ctx.restore();
+  ctx.save();
+  ctx.translate(0, -133);
+  // Type, not masonry: correct the mirror and the castle's slight non-uniform
+  // scale so the numerals never come out stretched.
+  ctx.scale(facing < 0 ? -1 : 1, _cs.sx / _cs.sy);
+  ctx.fillText('LV.' + Math.max(1, Number(level) || 1), 0, 0);
+  ctx.restore();
   ctx.restore();
 };
 
@@ -1427,5 +1560,6 @@ function _pbGameSetLang(lang) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills };
+  module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills,
+    pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART };
 }

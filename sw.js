@@ -43,6 +43,7 @@ const ASSETS = [
   '/js/petart.js',
   '/js/petcheer.js',
   '/js/battlecalc.js',
+  '/js/battle-teammates.js',
   '/js/battle-camera.js',
   '/js/battle-scenes.js',
   '/js/friends.js',

@@ -65,7 +65,7 @@ suite('field rules: v1 is frozen', () => {
     });
 
     test('an unknown or missing field version falls back to v1', () => {
-        for (const bad of [undefined, null, 0, 4, 99, 'two', NaN]) {
+        for (const bad of [undefined, null, 0, 5, 99, 'two', NaN]) {
             assert.equal(C.fieldRules(bad).version, 1, `version ${bad} must not reinterpret a battle`);
         }
     });

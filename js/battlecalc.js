@@ -148,12 +148,29 @@ const FIELD_RULES = {
     groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
     castle: { halfW: 70, height: 122 },
   },
+  4: {
+    // v4 changes the BUILDING and nothing else: identical ballistics to v3,
+    // but the castle becomes the hired đồng đội's home and is drawn — and
+    // therefore hit — at fortress scale. The drawn castle and this hitbox are
+    // the same shape by rule; v2 shipped with damage measured 40px from where
+    // the wall was drawn and a poop could land on the house for nothing.
+    //
+    // A bigger box is easier to hit for BOTH sides, so the duel stays
+    // symmetric and matches run slightly shorter, which suits the added
+    // mid-battle decisions. v1–v3 are frozen: a stored battle replays under
+    // the version it was fought in.
+    version: 4, worldW: 2000, viewW: 800, worldH: 450,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.004,
+    v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+    castle: { halfW: 100, height: 165 },
+  },
 };
 // Anything unknown, missing or legacy is v1 — an unrecognised version must
 // never silently reinterpret a battle that is already in progress.
 function fieldRules(v) {
   const n = Number(v);
-  return FIELD_RULES[n === 3 ? 3 : n === 2 ? 2 : 1];
+  return FIELD_RULES[n === 4 ? 4 : n === 3 ? 3 : n === 2 ? 2 : 1];
 }
 
 // Smaller y means higher ground. Every arena deliberately tells a different

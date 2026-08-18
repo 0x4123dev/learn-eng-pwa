@@ -68,8 +68,12 @@ suite('drift: the battlefield version', () => {
     });
 
     test('an unknown version falls back rather than throwing', () => {
-        const maxV = serverNum('FIELD_VERSION_MAX');
-        assert.equal(C.fieldRules(maxV + 1).version, 1, 'a future version must degrade to v1, not crash');
+        // Probe past the highest version the CLIENT knows. The client may run
+        // ahead of the server while a field version is being rolled out (v4
+        // landed here before the server was allowed to stamp it), so
+        // server-max + 1 is not necessarily unknown.
+        const clientMax = Math.max(...Object.keys(C.FIELD_RULES).map(Number));
+        assert.equal(C.fieldRules(clientMax + 1).version, 1, 'a future version must degrade to v1, not crash');
     });
 });
 
