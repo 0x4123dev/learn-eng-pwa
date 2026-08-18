@@ -76,9 +76,9 @@ const PB_STR = {
     hireNone: 'No teammates — save your coins for pet food 🍖',
     hireTrial: '🤖 Free to try in practice — coins are only spent on a real battle.',
     hirePoor: 'Not enough coins',
-    hireGunner: 'Gunner', hireGunnerAb: 'Fires a rocket along your next shot',
-    hireEngineer: 'Engineer', hireEngineerAb: 'Repairs your castle +15 HP',
-    hireShield: 'Guard', hireShieldAb: 'Halves the next volley that hits you',
+    hireGunner: 'Rocket Ranger', hireGunnerAb: 'Launches a guided missile with your next volley',
+    hireEngineer: 'Castle Mechanic', hireEngineerAb: 'Rebuilds your castle for +15 HP',
+    hireShield: 'Royal Guard', hireShieldAb: 'Blocks half the damage from the next hit',
 
     vsMine: 'Your pet', vsLevel: 'level {n}',
     vsStronger: 'Your pet is stronger! 💪',
@@ -162,9 +162,9 @@ const PB_STR = {
     gWaiting: 'WAITING', gWaitHint: 'OPPONENT IS PLAYING', gWaitAria: 'Waiting for the opponent',
     gControlsAria: 'Firing controls', gShotsAria: 'Number of poops', gEmotesAria: 'Quick reactions',
     gSquadAria: 'Your teammates',
-    gUseGunner: 'Gunner: send a rocket with your next shot',
-    gUseEngineer: 'Engineer: repair your castle',
-    gUseShield: 'Guard: block half of the next hit',
+    gUseGunner: 'Rocket Ranger: launch a guided missile with your next volley',
+    gUseEngineer: 'Castle Mechanic: rebuild your castle by 15 HP',
+    gUseShield: 'Royal Guard: block half of the next hit',
     gEmoteAria: 'Send reaction {e}',
     gCanvasAria: 'Artillery battlefield between two pets',
     gCanvasFallback: 'Artillery battlefield between two pets. Drag the aim line or use the controls below.',
@@ -204,9 +204,9 @@ const PB_STR = {
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
     hireTrial: '🤖 Thử miễn phí ở trận luyện tập — chỉ tốn xu khi đánh thật.',
     hirePoor: 'Không đủ xu',
-    hireGunner: 'Pháo thủ', hireGunnerAb: 'Bắn tên lửa theo đúng đường đạn của bé',
-    hireEngineer: 'Kỹ sư', hireEngineerAb: 'Sửa lâu đài +15 HP',
-    hireShield: 'Vệ sĩ', hireShieldAb: 'Giảm một nửa loạt đạn sắp trúng bé',
+    hireGunner: 'Xạ thủ Tên lửa', hireGunnerAb: 'Phóng tên lửa dẫn đường theo loạt đạn kế tiếp',
+    hireEngineer: 'Kỹ sư Thành trì', hireEngineerAb: 'Xây lại lâu đài và hồi +15 HP',
+    hireShield: 'Hộ vệ Hoàng gia', hireShieldAb: 'Chặn một nửa sát thương của đòn kế tiếp',
 
     vsMine: 'Pet của bé', vsLevel: 'cấp {n}',
     vsStronger: 'Pet của bé mạnh hơn! 💪',
@@ -288,9 +288,9 @@ const PB_STR = {
     gWaiting: 'ĐANG CHỜ', gWaitHint: 'ĐỐI THỦ ĐANG CHƠI', gWaitAria: 'Đang chờ đối thủ',
     gControlsAria: 'Điều khiển bắn', gShotsAria: 'Số viên phân', gEmotesAria: 'Cảm xúc nhanh',
     gSquadAria: 'Đồng đội của bé',
-    gUseGunner: 'Pháo thủ: bắn tên lửa theo phát tiếp theo',
-    gUseEngineer: 'Kỹ sư: sửa lâu đài',
-    gUseShield: 'Vệ sĩ: chặn một nửa đòn sắp tới',
+    gUseGunner: 'Xạ thủ Tên lửa: phóng tên lửa dẫn đường theo loạt đạn kế tiếp',
+    gUseEngineer: 'Kỹ sư Thành trì: xây lại lâu đài và hồi 15 HP',
+    gUseShield: 'Hộ vệ Hoàng gia: chặn một nửa sát thương của đòn kế tiếp',
     gEmoteAria: 'Gửi cảm xúc {e}',
     gCanvasAria: 'Chiến trường pháo binh giữa hai thú cưng',
     gCanvasFallback: 'Chiến trường pháo binh giữa hai thú cưng. Kéo đường ngắm hoặc dùng điều khiển bên dưới.',
@@ -510,7 +510,7 @@ function pbHireCommit() {
 function _pbMateAvatar(mate) {
   const url = (typeof pbMateAvatarURL === 'function') ? pbMateAvatarURL(mate.id, 44) : '';
   return url
-    ? `<img class="pb-hire-avatar" alt="" aria-hidden="true" src="${url}">`
+    ? `<img class="pb-hire-avatar" alt="" aria-hidden="true" src="${url}" loading="lazy" decoding="async">`
     : `<span class="pb-hire-emoji">${mate.emoji}</span>`;
 }
 

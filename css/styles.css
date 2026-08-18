@@ -1558,35 +1558,43 @@
            One chip per hired charge, beside the barrels. A spent chip stays on
            screen greyed rather than vanishing, so the child can always see
            what they paid for and what is left. */
-        .pb-squad { display: flex; gap: 8px; justify-content: center; margin: 6px 0 2px; }
+        .pb-squad { display: flex; gap: 10px; justify-content: center; margin: 8px 0 3px; }
         .pb-squad-chip {
-            width: 46px; height: 46px; border-radius: 12px; cursor: pointer;
+            width: 52px; height: 52px; padding: 3px; border-radius: 15px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            border: 2px solid rgba(124,58,237,.45);
-            background: rgba(124,58,237,.12);
+            border: 2px solid rgba(100,116,139,.48);
+            background: linear-gradient(145deg, #fff, #e2e8f0);
+            box-shadow: 0 5px 13px rgba(15,23,42,.2);
             -webkit-tap-highlight-color: transparent;
         }
         /* Portraits of the hired characters. Drawn from the same art that
            stands on the castle ledge, so the person in the shop is visibly the
            person who turns up in the keep. */
-        .pb-hire-avatar { width: 44px; height: 44px; flex: 0 0 auto; display: block; }
-        .pb-squad-avatar { width: 38px; height: 38px; display: block; }
+        .pb-hire-avatar {
+            width: 68px; height: 68px; display: block; object-fit: cover;
+            border-radius: 17px; border: 2px solid rgba(255,255,255,.92);
+            box-shadow: 0 5px 14px rgba(15,23,42,.2);
+        }
+        .pb-squad-avatar { width: 44px; height: 44px; border-radius: 11px; object-fit: cover; display: block; }
         .pb-squad-emoji { font-size: 24px; line-height: 1; }
         .pb-squad-chip:active { transform: scale(.92); }
         .pb-squad-chip:disabled { cursor: default; }
         .pb-squad-chip.spent { opacity: .32; filter: grayscale(1); }
         /* Bought, aimed, not yet fired — this is the shot it rides. */
         .pb-squad-chip.armed {
-            background: #7c3aed; border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124,58,237,.28);
+            background: #1d4ed8; border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.3), 0 6px 16px rgba(30,64,175,.32);
         }
 
         .pb-hire-panel {
-            background: var(--glass-bg, rgba(255,255,255,.55));
-            border: 2px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 12px;
+            background:
+                radial-gradient(circle at 100% 0, rgba(59,130,246,.11), transparent 34%),
+                var(--glass-bg, rgba(255,255,255,.82));
+            border: 1.5px solid rgba(100,116,139,.25);
+            border-radius: 22px;
+            padding: 14px;
             margin-bottom: 12px;
+            box-shadow: 0 9px 26px rgba(15,23,42,.09);
         }
         .pb-hire-head {
             display: flex; align-items: center; justify-content: space-between;
@@ -1598,27 +1606,44 @@
             background: rgba(245,158,11,.16); border-radius: 999px; padding: 3px 10px;
         }
         .pb-hire-sub { font-size: 12px; color: var(--text-secondary, #6b7280); margin-bottom: 10px; }
-        .pb-hire-list { display: flex; flex-direction: column; gap: 8px; }
+        .pb-hire-list { display: flex; flex-direction: column; gap: 10px; }
         .pb-hire-card {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 10px; border-radius: 12px;
-            border: 2px solid var(--glass-border);
-            background: var(--glass-bg, #fff);
+            position: relative; overflow: hidden;
+            display: grid; grid-template-columns: 68px minmax(0, 1fr); align-items: center; gap: 6px 11px;
+            padding: 10px 11px; border-radius: 18px;
+            border: 1.5px solid rgba(148,163,184,.28);
+            background: rgba(255,255,255,.94);
+            box-shadow: 0 5px 16px rgba(15,23,42,.075);
+            transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
         }
+        .pb-hire-card::before {
+            content: ''; position: absolute; inset: 0 auto 0 0; width: 4px;
+            background: #2563eb;
+        }
+        .pb-hire-card[data-mate="engineer"]::before { background: #f59e0b; }
+        .pb-hire-card[data-mate="shield"]::before { background: #0f766e; }
+        .pb-hire-card:hover { border-color: rgba(37,99,235,.35); box-shadow: 0 7px 19px rgba(15,23,42,.12); }
         /* A hired teammate is visibly on the bench, not just a number. */
-        .pb-hire-card.has { border-color: #7c3aed; background: rgba(124,58,237,.10); }
+        .pb-hire-card.has { border-color: #2563eb; background: linear-gradient(135deg, #eff6ff, #fff); }
         .pb-hire-emoji { font-size: 26px; flex: 0 0 auto; }
         .pb-hire-info { flex: 1 1 auto; min-width: 0; }
-        .pb-hire-name { font-size: 15px; font-weight: 800; color: var(--text-primary); }
-        .pb-hire-ability { font-size: 12px; color: var(--text-secondary, #6b7280); }
+        .pb-hire-name { font-size: 15px; line-height: 1.2; font-weight: 900; color: #0f172a; }
+        .pb-hire-ability { margin-top: 3px; font-size: 12px; line-height: 1.35; color: #475569; }
         .pb-hire-fee { font-size: 12px; font-weight: 700; color: #b45309; margin-top: 2px; }
-        .pb-hire-steps { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+        .pb-hire-steps {
+            grid-column: 2; justify-self: end;
+            display: flex; align-items: center; gap: 6px; flex: 0 0 auto;
+        }
         .pb-hire-step {
-            width: 34px; height: 34px; border-radius: 10px; cursor: pointer;
+            width: 44px; height: 44px; border-radius: 13px; cursor: pointer;
             font-size: 20px; font-weight: 800; font-family: inherit; line-height: 1;
-            border: 2px solid var(--glass-border);
-            background: var(--glass-bg, #fff); color: var(--text-primary);
+            border: 1.5px solid #cbd5e1;
+            background: #fff; color: #0f172a;
+            box-shadow: 0 2px 7px rgba(15,23,42,.08);
             -webkit-tap-highlight-color: transparent;
+        }
+        .pb-hire-step:focus-visible, .pb-squad-chip:focus-visible {
+            outline: 3px solid #2563eb; outline-offset: 3px;
         }
         .pb-hire-step:active { transform: scale(.92); }
         .pb-hire-step:disabled { opacity: .35; cursor: default; }
@@ -1626,6 +1651,17 @@
         .pb-hire-total {
             margin-top: 10px; font-size: 13px; font-weight: 700;
             color: var(--text-primary); text-align: center;
+        }
+        @media (min-width: 701px) {
+            .pb-hire-card { grid-template-columns: 76px minmax(0, 1fr) auto; gap: 12px; padding: 11px 13px; }
+            .pb-hire-avatar { width: 76px; height: 76px; }
+            .pb-hire-steps { grid-column: 3; grid-row: 1; }
+        }
+        @media (max-width: 350px) {
+            .pb-hire-card { grid-template-columns: 58px minmax(0, 1fr); padding: 9px; }
+            .pb-hire-avatar { width: 58px; height: 58px; border-radius: 15px; }
+            .pb-hire-name { font-size: 14px; }
+            .pb-hire-ability { font-size: 11px; }
         }
 
         .pb-practice-card { margin-top: 12px; text-align: center; }

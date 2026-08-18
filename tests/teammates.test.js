@@ -597,6 +597,14 @@ suite('teammates: you hire a person, not a weapon', () => {
             'no canvas available must mean no portrait, not a crash');
     });
 
+    test('every teammate has a premium portrait asset', () => {
+        for (const mate of T.TEAM_ROSTER) {
+            const portrait = game.PB_MATE_PORTRAITS[mate.id];
+            assert.truthy(portrait, `${mate.id} has no portrait path`);
+            assert.truthy(fs.existsSync(path.join(root, portrait)), `${portrait} is missing`);
+        }
+    });
+
     test('the trigger chip renders the character, not the tool emoji', () => {
         const src = read('js/petbattlegame.js');
         const build = src.slice(src.indexOf('const squadChips ='), src.indexOf('const barrels ='));
@@ -792,6 +800,14 @@ suite('teammates: the rocket must LOOK like a rocket', () => {
         const launch = src.slice(src.indexOf('PetBattleGame.prototype._launch ='));
         const body = launch.slice(0, 2000);
         assert.truthy(/rocket: true/.test(body), 'the flying object must carry the flag');
+    });
+
+    test('the rocket is purpose-drawn rather than delegated to an emoji font', () => {
+        const src = read('js/petbattlegame.js');
+        assert.truthy(/function _pbDrawRocketProjectile/.test(src), 'the missile needs stable canvas art');
+        const flight = src.slice(src.indexOf('for (const f of this.flying)'), src.indexOf('// the opponent\'s live aim'));
+        assert.truthy(/_pbDrawRocketProjectile/.test(flight), 'the flight loop must draw the missile art');
+        assert.falsy(/fillText\(['"]🚀/.test(flight), 'platform emoji makes the missile inconsistent');
     });
 });
 

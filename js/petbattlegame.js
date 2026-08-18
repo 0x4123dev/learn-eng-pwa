@@ -834,13 +834,10 @@ PetBattleGame.prototype._drawWorld = function () {
     ctx.save();
     ctx.translate(p.x, p.y);
     if (f.rocket) {
-      // Nose-first along its own travel, so it reads as a rocket rather than a
-      // spinning object that happens to be rocket-shaped.
+      // Nose-first along its own travel. This is purpose-drawn game art, not
+      // a platform emoji whose shape and colour change between devices.
       ctx.rotate(Math.atan2(p.y - (prev ? prev.y : p.y), p.x - (prev ? prev.x : p.x)));
-      ctx.font = `900 ${Math.max(18, f.size * 3.4)}px serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(15,23,42,.45)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
-      ctx.fillText('🚀', 0, 0);
+      _pbDrawRocketProjectile(ctx, f.size, f.i);
     } else {
       ctx.rotate((f.i * .08) * (f.spin || 1));
       ctx.font = `900 ${Math.max(20, f.size * 4)}px serif`;
@@ -851,10 +848,15 @@ PetBattleGame.prototype._drawWorld = function () {
     ctx.restore();
     // Trail: warm dust behind a poop, hot exhaust behind a rocket, so the two
     // are still tellable apart mid-flight when they overlap.
-    ctx.fillStyle = f.rocket ? 'rgba(251,146,60,0.45)' : 'rgba(120,78,46,0.34)';
     for (let k = 1; k <= 4; k++) {
       const q = f.points[Math.max(0, f.i - k * 4)];
-      if (q) { ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(2, 6 - k), 0, Math.PI * 2); ctx.fill(); }
+      if (!q) continue;
+      ctx.fillStyle = f.rocket
+        ? (k <= 2 ? `rgba(253,186,116,${.62 - k * .12})` : `rgba(226,232,240,${.42 - k * .07})`)
+        : 'rgba(120,78,46,0.34)';
+      ctx.beginPath();
+      ctx.arc(q.x, q.y, f.rocket ? Math.max(2.5, 7 - k) : Math.max(2, 6 - k), 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 
@@ -987,6 +989,64 @@ function _pbChibi(ctx, o) {
   if (o.prop) o.prop(ctx, ink);
 }
 
+// A compact, deterministic missile renderer for the Rocket Ranger. Keeping it
+// in canvas makes every phone see the same silhouette and preserves the hot
+// exhaust even when the projectile is only twenty pixels long on screen.
+function _pbDrawRocketProjectile(ctx, shellSize, frame) {
+  const scale = Math.max(.9, Math.min(1.35, (Number(shellSize) || 4) * .22));
+  const flicker = frame % 2 ? 1.16 : .92;
+  ctx.save();
+  ctx.scale(scale, scale);
+  ctx.shadowColor = 'rgba(15,23,42,.55)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 2;
+
+  // Exhaust: white-hot core, orange flame, then a dark red outer lick.
+  ctx.fillStyle = '#dc2626';
+  ctx.beginPath();
+  ctx.moveTo(-15, -5); ctx.lineTo(-26 * flicker, 0); ctx.lineTo(-15, 5); ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#fb923c';
+  ctx.beginPath();
+  ctx.moveTo(-15, -3.6); ctx.lineTo(-23 * flicker, 0); ctx.lineTo(-15, 3.6); ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#fff7ed';
+  ctx.beginPath();
+  ctx.moveTo(-15, -1.7); ctx.lineTo(-20 * flicker, 0); ctx.lineTo(-15, 1.7); ctx.closePath();
+  ctx.fill();
+
+  // Rear fins remain visible against both bright sky and dark storm arenas.
+  ctx.fillStyle = '#1d4ed8';
+  ctx.strokeStyle = '#172554';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(-12, -5); ctx.lineTo(-18, -11); ctx.lineTo(-4, -6); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-12, 5); ctx.lineTo(-18, 11); ctx.lineTo(-4, 6); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+
+  // Steel body, cobalt guidance band and orange armour-piercing nose.
+  const body = ctx.createLinearGradient(0, -7, 0, 7);
+  body.addColorStop(0, '#f8fafc');
+  body.addColorStop(.52, '#cbd5e1');
+  body.addColorStop(1, '#64748b');
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') ctx.roundRect(-15, -6, 25, 12, 5);
+  else ctx.rect(-15, -6, 25, 12);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(-5, -6, 6, 12);
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(9, -6); ctx.quadraticCurveTo(20, -3, 24, 0); ctx.quadraticCurveTo(20, 3, 9, 6);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.82)';
+  ctx.beginPath(); ctx.ellipse(5, -3.1, 7.5, 1.25, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
 const PB_MATE_ART = {
   // Pháo thủ — blue artillery helmet, rocket on the shoulder.
   gunner: function (ctx) {
@@ -1064,36 +1124,18 @@ const PB_MATE_ART = {
   },
 };
 
-// A portrait for HTML surfaces (the shop card, the trigger chip), drawn from
-// the same PB_MATE_ART that stands on the castle ledge. Cached: the chips
-// rebuild on every control render and re-rasterising three characters each
-// time would be wasted work.
-const _pbAvatarCache = {};
+// Premium portrait cards for HTML surfaces. The tiny canvas chibis remain on
+// the physical castle ledges where a full card would be unreadable; the shop
+// and ability chips use these high-resolution, device-independent portraits.
+const PB_MATE_PORTRAITS = Object.freeze({
+  gunner: 'img/battle-teammates/rocket-ranger.jpg',
+  engineer: 'img/battle-teammates/castle-mechanic.jpg',
+  shield: 'img/battle-teammates/royal-guard.jpg',
+});
 
 function pbMateAvatarURL(id, size) {
-  const draw = PB_MATE_ART[id];
-  const px = Math.max(8, Math.trunc(Number(size) || 40));
-  if (!draw || typeof document === 'undefined' || !document.createElement) return '';
-  const key = id + '@' + px;
-  if (_pbAvatarCache[key]) return _pbAvatarCache[key];
-  let url = '';
-  try {
-    const c = document.createElement('canvas');
-    const dpr = 2;
-    c.width = px * dpr; c.height = px * dpr;
-    const ctx = c.getContext('2d');
-    if (!ctx) return '';
-    ctx.scale(dpr, dpr);
-    // The art is authored feet-at-zero in roughly a 33x32 box; 40 units of
-    // room leaves a little air around the character.
-    const k = px / 44;
-    ctx.translate(px / 2, px - px * 0.10);
-    ctx.scale(k, k);
-    draw(ctx);
-    url = c.toDataURL('image/png');
-  } catch (e) { return ''; }
-  _pbAvatarCache[key] = url;
-  return url;
+  if (!PB_MATE_PORTRAITS[id] || typeof document === 'undefined') return '';
+  return PB_MATE_PORTRAITS[id];
 }
 
 // One hired teammate on an interior ledge. A spent charge sits greyed so the
@@ -1829,6 +1871,6 @@ function _pbGameSetLang(lang) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills,
-    pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART,
+    pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART, PB_MATE_PORTRAITS,
     pbMateAvatarURL };
 }

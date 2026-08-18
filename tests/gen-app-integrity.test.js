@@ -46,8 +46,8 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // SW.JS — cache manifest structure
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
-    test('ASSETS array literal parses with exactly 93 entries', () => {
-        assert.equal(ASSETS.length, 93,
+    test('ASSETS array literal parses with exactly 96 entries', () => {
+        assert.equal(ASSETS.length, 96,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -91,10 +91,10 @@ suite('gen: sw.js cache manifest', () => {
 // missing file (even a pet png) would break the whole service-worker install.
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
-    test('ASSETS contains 62 /js/*.js, 1 /css/*.css, 27 /img/* entries', () => {
+    test('ASSETS contains 62 /js/*.js, 1 /css/*.css, 30 /img/* entries', () => {
         assert.equal(JS_ASSETS.length, 62, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
-        assert.equal(IMG_ASSETS.length, 27, 'img asset count changed');
+        assert.equal(IMG_ASSETS.length, 30, 'img asset count changed');
     });
 
     for (const asset of JS_ASSETS.concat(CSS_ASSETS)) {
@@ -115,14 +115,16 @@ suite('gen: sw.js img assets exist on disk', () => {
         });
     }
 
-    test('img assets are 3 root svgs + 10 pet pngs + 14 battle-scene essentials', () => {
+    test('img assets are 3 root svgs + 10 pet pngs + 3 teammate portraits + 14 battle-scene essentials', () => {
         const svgs = IMG_ASSETS.filter(a => /^\/img\/[^/]+\.svg$/.test(a));
         const pets = IMG_ASSETS.filter(a => /^\/img\/pets\/[^/]+\.png$/.test(a));
+        const teammates = IMG_ASSETS.filter(a => /^\/img\/battle-teammates\/[^/]+\.jpg$/.test(a));
         const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
         assert.equal(svgs.length, 3, `root svg count: ${svgs.join(', ')}`);
         assert.equal(pets.length, 10, `pet png count: ${pets.join(', ')}`);
+        assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
         assert.equal(scenes.length, 14, `battle scene cache count: ${scenes.join(', ')}`);
-        assert.equal(svgs.length + pets.length + scenes.length, IMG_ASSETS.length);
+        assert.equal(svgs.length + pets.length + teammates.length + scenes.length, IMG_ASSETS.length);
     });
 });
 
