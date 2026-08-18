@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v332';
+const CACHE_NAME = 'flashlingo-v333';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //

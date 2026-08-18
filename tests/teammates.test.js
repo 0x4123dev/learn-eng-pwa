@@ -251,6 +251,14 @@ suite('teammates: the castle they live in', () => {
         assert.deepEqual(game.pbLedgeSpots(1), [game.PB_LEDGE_SLOTS[0]]);
     });
 
+    test('active teammates have high-contrast guard posts inside the castle', () => {
+        const src = read('js/petbattlegame.js');
+        const squad = src.slice(src.indexOf('function pbDrawSquad'), src.indexOf('PetBattleGame.prototype._drawHouse'));
+        assert.truthy(squad.includes("rgba(10,18,33,.88)"), 'each teammate needs a dark interior alcove');
+        assert.truthy(squad.includes("ctx.fillStyle='#22c55e'"), 'active status must remain visible');
+        assert.truthy(squad.includes('*1.12'), 'the chibi must be large enough to read on a phone');
+    });
+
     test('asking for more spots than ledges never invents one', () => {
         assert.equal(game.pbLedgeSpots(99).length, T.TEAM_MAX_HIRES);
         assert.equal(game.pbLedgeSpots(0).length, 0);

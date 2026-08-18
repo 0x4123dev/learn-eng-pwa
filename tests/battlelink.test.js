@@ -460,7 +460,8 @@ suite('battle game: Gunbound-style house arena', () => {
     });
 
     test('poop ammunition replaces tia controls and flies slowly enough to follow', () => {
-        assert.truthy(gameSrc.includes("ctx.fillText('💩'"));
+        assert.truthy(gameSrc.includes('function _pbDrawPoopProjectile'), 'poop needs stable high-contrast canvas art');
+        assert.truthy(gameSrc.includes('_pbDrawPoopProjectile(ctx,f.size,f.i)'), 'flight must use the purpose-drawn shell');
         assert.truthy(gameSrc.includes('pb-poop-stack'));
         assert.truthy(gameSrc.includes('while (f.tick >= 2 && f.i < f.points.length - 1)'),
             'one path point per two 60Hz ticks — the readable pace');
@@ -541,6 +542,8 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes('this.houseImpacts.push'));
         assert.truthy(gameSrc.includes('this.castleDebris.push'), 'impact must throw large masonry fragments');
         assert.truthy(gameSrc.includes('this.castleDebris = this.castleDebris.filter'), 'debris animation must clean itself up');
+        assert.truthy(gameSrc.includes('createRadialGradient(e.x-radius'), 'explosion needs a layered fireball');
+        assert.truthy(gameSrc.includes('navigator.vibrate([28,18,46])'), 'a damaging hit should have bounded haptic feedback');
     });
 });
 

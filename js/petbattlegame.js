@@ -745,7 +745,21 @@ PetBattleGame.prototype.draw = function () {
   const camX = this.camera ? this.camera.x : 0;
   if (this.sceneRenderer) this.sceneRenderer.setCamera(camX);
   if (this.ctx && this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  if (this.ctx) { this.ctx.save(); this.ctx.translate(-camX, PB_SKY_EXTRA); }
+  // Only the world jolts on a damaging impact; the HUD and controls stay
+  // fixed. The quickly decaying two-axis shake makes heavy masonry feel heavy
+  // without moving the player's touch targets.
+  let shakeX=0, shakeY=0;
+  const impact=this.houseImpacts && this.houseImpacts[this.houseImpacts.length-1];
+  if (impact && !this.reducedMotion) {
+    const force=Math.max(0,1-impact.t/impact.life)*7*(impact.strength||1);
+    shakeX=Math.sin(impact.t*2.7)*force;
+    shakeY=Math.cos(impact.t*3.9)*force*.45;
+  }
+  if (this.ctx) {
+    this.ctx.save();
+    this.ctx.translate(-camX, PB_SKY_EXTRA);
+    if (shakeX || shakeY) this.ctx.translate(shakeX,shakeY);
+  }
   this._drawWorld();
   if (this.ctx) this.ctx.restore();
   this._updateCameraUi();
@@ -833,22 +847,19 @@ PetBattleGame.prototype._drawWorld = function () {
       _pbDrawRocketProjectile(ctx, f.size, f.i);
     } else {
       ctx.rotate((f.i * .08) * (f.spin || 1));
-      ctx.font = `900 ${Math.max(20, f.size * 4)}px serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(46,24,16,.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 3;
-      ctx.fillText('💩', 0, 0);
+      _pbDrawPoopProjectile(ctx,f.size,f.i);
     }
     ctx.restore();
     // Trail: warm dust behind a poop, hot exhaust behind a rocket, so the two
     // are still tellable apart mid-flight when they overlap.
-    for (let k = 1; k <= 4; k++) {
-      const q = f.points[Math.max(0, f.i - k * 4)];
+    for (let k = 1; k <= 6; k++) {
+      const q = f.points[Math.max(0, f.i - k * 3)];
       if (!q) continue;
       ctx.fillStyle = f.rocket
         ? (k <= 2 ? `rgba(253,186,116,${.62 - k * .12})` : `rgba(226,232,240,${.42 - k * .07})`)
-        : 'rgba(120,78,46,0.34)';
+        : `rgba(255,221,143,${Math.max(.08,.46-k*.055)})`;
       ctx.beginPath();
-      ctx.arc(q.x, q.y, f.rocket ? Math.max(2.5, 7 - k) : Math.max(2, 6 - k), 0, Math.PI * 2);
+      ctx.arc(q.x, q.y, f.rocket ? Math.max(2.5, 7 - k) : Math.max(2, 7-k*.7), 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -881,12 +892,21 @@ PetBattleGame.prototype._drawWorld = function () {
     ctx.globalAlpha = 1;
   }
 
-  // explosions
+  // Layered impact: expanding shockwave, hot fireball and white-hot core.
+  // It reads against every arena palette and leaves particles/debris to carry
+  // the motion after the central flash is gone.
   for (const e of (this.blasts || [])) {
-    ctx.beginPath();
-    ctx.arc(e.x, e.y, e.r * (1 - e.t / e.life), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,${140 + Math.round(80 * e.t / e.life)},60,${1 - e.t / e.life})`;
-    ctx.fill();
+    const k=Math.min(1,e.t/e.life), fade=1-k, radius=e.r*(.28+k*1.15);
+    ctx.save();
+    ctx.strokeStyle=`rgba(255,247,174,${fade*.9})`; ctx.lineWidth=Math.max(2,8-k*6);
+    ctx.beginPath(); ctx.arc(e.x,e.y,radius,0,Math.PI*2); ctx.stroke();
+    const fire=ctx.createRadialGradient(e.x-radius*.18,e.y-radius*.2,1,e.x,e.y,Math.max(2,radius*.78));
+    fire.addColorStop(0,`rgba(255,255,255,${fade})`);
+    fire.addColorStop(.22,`rgba(255,238,88,${fade*.96})`);
+    fire.addColorStop(.58,`rgba(249,115,22,${fade*.9})`);
+    fire.addColorStop(1,'rgba(127,29,29,0)');
+    ctx.fillStyle=fire; ctx.beginPath(); ctx.arc(e.x,e.y,radius*.82,0,Math.PI*2); ctx.fill();
+    ctx.restore();
   }
 
   for (const p of this.impactParticles) {
@@ -899,17 +919,30 @@ PetBattleGame.prototype._drawWorld = function () {
   for (const piece of this.castleDebris) {
     const fade = Math.max(0, 1 - piece.t / piece.life);
     ctx.save(); ctx.globalAlpha = fade; ctx.translate(piece.x, piece.y); ctx.rotate(piece.rotation);
-    ctx.fillStyle = piece.color; ctx.strokeStyle = '#4b3433'; ctx.lineWidth = 1.5;
-    ctx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
-    ctx.strokeRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h); ctx.restore();
+    ctx.fillStyle = piece.color; ctx.strokeStyle = '#2b1b1d'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-piece.w*.55,-piece.h*.28); ctx.lineTo(-piece.w*.12,-piece.h*.58);
+    ctx.lineTo(piece.w*.55,-piece.h*.22); ctx.lineTo(piece.w*.36,piece.h*.55);
+    ctx.lineTo(-piece.w*.48,piece.h*.38); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.36)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(-piece.w*.36,-piece.h*.2); ctx.lineTo(piece.w*.24,-piece.h*.34); ctx.stroke(); ctx.restore();
   }
   for (const hit of this.houseImpacts) {
     const k = hit.t / hit.life;
     ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k);
-    ctx.strokeStyle = '#fff7ae'; ctx.lineWidth = 7 - k * 4;
+    ctx.strokeStyle = '#fff7ae'; ctx.lineWidth = 8 - k * 5;
     ctx.beginPath(); ctx.arc(hit.x, hit.y, 12 + k * 34, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = '#7c2d12'; ctx.font = '900 19px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('💩 HIT!', hit.x, hit.y - 38 - k * 12); ctx.restore();
+    // Twelve sharp rays connect the explosion to the castle break rather than
+    // looking like a soft decorative bubble.
+    ctx.strokeStyle=`rgba(255,129,45,${1-k})`; ctx.lineWidth=Math.max(1,4-k*3);
+    for (let ray=0;ray<12;ray++) {
+      const a=ray*Math.PI/6, inner=17+k*12, outer=35+k*38;
+      ctx.beginPath(); ctx.moveTo(hit.x+Math.cos(a)*inner,hit.y+Math.sin(a)*inner);
+      ctx.lineTo(hit.x+Math.cos(a)*outer,hit.y+Math.sin(a)*outer); ctx.stroke();
+    }
+    ctx.font = '900 20px sans-serif'; ctx.textAlign = 'center'; ctx.lineJoin='round';
+    ctx.strokeStyle='rgba(38,16,12,.82)'; ctx.lineWidth=5;
+    ctx.strokeText('💩 HIT!', hit.x, hit.y - 43 - k * 14);
+    ctx.fillStyle = '#fff7ae'; ctx.fillText('💩 HIT!', hit.x, hit.y - 43 - k * 14); ctx.restore();
   }
   ctx.globalAlpha = 1;
 };
@@ -980,6 +1013,35 @@ function _pbChibi(ctx, o) {
   ctx.strokeStyle = ink; ctx.lineWidth = 1.1;
   ctx.beginPath(); ctx.arc(0, -22.6, 2.2, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
   if (o.prop) o.prop(ctx, ink);
+}
+
+// Purpose-drawn poop ammunition. Unlike a platform emoji this keeps the same
+// bold silhouette, gloss and outline on Android, iPhone and iPad, and remains
+// readable over snow, storms and dark arenas.
+function _pbDrawPoopProjectile(ctx,shellSize,frame) {
+  const scale=Math.max(.9,Math.min(1.45,(Number(shellSize)||4)*.24));
+  const pulse=1+Math.sin(frame*.45)*.035;
+  ctx.save(); ctx.scale(scale*pulse,scale*pulse);
+  ctx.shadowColor='rgba(255,214,102,.72)'; ctx.shadowBlur=11;
+  ctx.fillStyle='rgba(255,244,190,.38)'; ctx.beginPath(); ctx.arc(0,0,15,0,Math.PI*2); ctx.fill();
+  ctx.shadowColor='rgba(28,14,8,.58)'; ctx.shadowBlur=5; ctx.shadowOffsetY=3;
+  const poop=ctx.createLinearGradient(-8,-14,10,12);
+  poop.addColorStop(0,'#9a5b32'); poop.addColorStop(.5,'#6f351e'); poop.addColorStop(1,'#3f1e16');
+  ctx.fillStyle=poop; ctx.strokeStyle='#24110d'; ctx.lineWidth=2.3; ctx.lineJoin='round';
+  ctx.beginPath();
+  ctx.moveTo(-12,10); ctx.bezierCurveTo(-17,5,-13,0,-8,-1);
+  ctx.bezierCurveTo(-12,-6,-6,-10,-2,-9);
+  ctx.bezierCurveTo(-5,-13,1,-17,5,-14);
+  ctx.bezierCurveTo(10,-11,8,-7,7,-6);
+  ctx.bezierCurveTo(14,-5,15,1,10,3);
+  ctx.bezierCurveTo(17,7,13,12,7,12); ctx.lineTo(-7,12);
+  ctx.bezierCurveTo(-10,12,-12,11,-12,10); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Specular curl makes rotation and travel direction easy to perceive.
+  ctx.strokeStyle='rgba(255,225,181,.75)'; ctx.lineWidth=2; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(-5,-5); ctx.quadraticCurveTo(1,-10,5,-7); ctx.stroke();
+  ctx.fillStyle='#fff8e7'; ctx.beginPath(); ctx.arc(-4,2,2.2,0,Math.PI*2); ctx.arc(5,2,2.2,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#1f130f'; ctx.beginPath(); ctx.arc(-3.5,2.4,1.1,0,Math.PI*2); ctx.arc(4.5,2.4,1.1,0,Math.PI*2); ctx.fill();
+  ctx.restore();
 }
 
 // A compact, deterministic missile renderer for the Rocket Ranger. Keeping it
@@ -1137,6 +1199,7 @@ function pbDrawSquad(ctx, rules, charges, facing) {
   if (!ctx || !Array.isArray(charges) || !charges.length) return;
   const spots = pbLedgeSpots(charges.length);
   const cs = pbCastleScale(rules);
+  const accents={gunner:'#3b82f6',engineer:'#f59e0b',shield:'#14b8a6'};
   for (let i = 0; i < spots.length; i++) {
     const charge = charges[i];
     const spot = spots[i];
@@ -1144,14 +1207,20 @@ function pbDrawSquad(ctx, rules, charges, facing) {
     if (!draw) continue;
     ctx.save();
     ctx.translate(spot.x, spot.y);
-    // Ledge plank, in masonry space so it scales with the wall.
-    ctx.fillStyle = '#6b4a3d';
-    ctx.fillRect(-15, 0, 30, 4);
-    ctx.fillStyle = 'rgba(15,23,42,.22)';
-    ctx.beginPath(); ctx.ellipse(0, 0, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
+    // A luminous arched guard post puts every teammate visibly INSIDE the
+    // castle instead of leaving a tiny character floating on brown masonry.
+    const accent=accents[charge.id]||'#a78bfa';
+    ctx.shadowColor=accent; ctx.shadowBlur=8;
+    ctx.fillStyle='rgba(10,18,33,.88)'; ctx.strokeStyle=accent; ctx.lineWidth=2.2;
+    ctx.beginPath(); ctx.arc(0,-27,15,Math.PI,0); ctx.lineTo(15,2); ctx.lineTo(-15,2); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,255,255,.15)'; ctx.beginPath(); ctx.arc(-5,-29,7,Math.PI*1.08,Math.PI*1.72); ctx.strokeStyle='rgba(255,255,255,.42)'; ctx.lineWidth=1.4; ctx.stroke();
+    ctx.fillStyle='#6b4a3d'; ctx.fillRect(-17,0,34,5);
+    ctx.fillStyle='#22c55e'; ctx.strokeStyle='#f0fdf4'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(11,-38,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
     // Characters stand upright and unstretched: correct the mirror, and the
     // castle's slight non-uniform scale, but let them GROW with the fortress.
-    ctx.scale(facing < 0 ? -1 : 1, cs.sx / cs.sy);
+    ctx.scale((facing < 0 ? -1 : 1)*1.12,(cs.sx/cs.sy)*1.12);
     ctx.globalAlpha = 1;
     draw(ctx);
     ctx.globalAlpha = 1;
@@ -1549,27 +1618,29 @@ PetBattleGame.prototype.step = function (k) {
         this.craters.push({ x: f.hit.x, y: f.hit.y, r: C.blastRadius(f.level) * 0.8 });
         if (!this.reducedMotion) {
           const colors = ['#fff7ae', '#ffb020', '#ff5b36', '#5b3924'];
-          for (let i = 0; i < 18; i++) {
-            const a = (i / 18) * Math.PI * 2;
-            const speed = 1.6 + (i % 5) * .62;
+          for (let i = 0; i < 26 && this.impactParticles.length < 78; i++) {
+            const a = (i / 26) * Math.PI * 2;
+            const speed = 2.1 + (i % 6) * .72;
             this.impactParticles.push({
               x: f.hit.x, y: f.hit.y, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed - 1.3,
-              t: 0, life: 22 + (i % 4) * 4, size: 5 - (i % 3), color: colors[i % colors.length],
+              t: 0, life: 28 + (i % 5) * 4, size: 6.5 - (i % 4), color: colors[i % colors.length],
             });
           }
         }
         if (f.damage > 0) {
-          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 62, t: 0, life: this.reducedMotion ? 1 : 34 });
+          const firstImpact=!this.houseImpacts.length;
+          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 62, t: 0, life: this.reducedMotion ? 1 : 42, strength:Math.min(1,.55+f.damage/25) });
+          if (firstImpact && typeof navigator!=='undefined' && typeof navigator.vibrate==='function' && !this.reducedMotion) navigator.vibrate([28,18,46]);
           if (!this.reducedMotion) {
             const masonry = ['#e0ae6b', '#bd7954', '#8b5a4c', '#5b4140'];
-            for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < 22 && this.castleDebris.length < 48; i++) {
               const side = i % 2 ? 1 : -1;
               this.castleDebris.push({
-                x: f.target.x + side * (8 + i % 4), y: f.target.y - 62 - (i % 3) * 5,
-                vx: side * (1.1 + (i % 5) * .38), vy: -2.2 - (i % 4) * .55,
-                rotation: i * .47, spin: side * (.045 + (i % 3) * .018),
-                w: 8 + (i % 4) * 3, h: 6 + (i % 3) * 3,
-                color: masonry[i % masonry.length], t: 0, life: 34 + (i % 5) * 5,
+                x: f.target.x + side * (6 + i % 5), y: f.target.y - 58 - (i % 4) * 7,
+                vx: side * (2.3 + (i % 6) * .7), vy: -3.4 - (i % 5) * .72,
+                rotation: i * .47, spin: side * (.075 + (i % 4) * .025),
+                w: 11 + (i % 5) * 3.2, h: 8 + (i % 4) * 2.8,
+                color: masonry[i % masonry.length], t: 0, life: 48 + (i % 6) * 5,
               });
             }
           }
