@@ -39,13 +39,16 @@ suite('castle skins: fair cosmetic collection', () => {
     });
   });
 
-  test('all ten premium castles map into two production atlases', () => {
+  test('the starter stays basic while all paid castles use the premium atlases', () => {
     assert.equal(CastleSkins.atlasSources.length, 2);
     CastleSkins.atlasSources.forEach(src => assert.truthy(fs.existsSync(path.join(root, src)), `${src} is missing`));
-    const cells = CastleSkins.skins.map(s => CastleSkins.atlasCell(s.id));
-    assert.equal(cells.filter(c => c.atlas === 0).length, 5);
+    const cells = CastleSkins.skins.filter(s => s.price > 0).map(s => CastleSkins.atlasCell(s.id));
+    assert.equal(cells.filter(c => c.atlas === 0).length, 4);
     assert.equal(cells.filter(c => c.atlas === 1).length, 5);
-    assert.equal(new Set(cells.map(c => `${c.atlas}:${c.cell}`)).size, 10);
+    assert.equal(new Set(cells.map(c => `${c.atlas}:${c.cell}`)).size, 9);
+    const source = read('js/castle-skins.js');
+    assert.truthy(source.includes('normalize(id) === defaultId'), 'free preview must bypass premium artwork');
+    assert.truthy(source.includes('skin.id === defaultId'), 'free battle castle must use the basic renderer');
   });
 
   test('battle renderer uses premium sprites and preserves staged destruction', () => {

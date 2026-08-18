@@ -44,6 +44,9 @@ var CastleSkins = (() => {
   }
 
   function drawAtlas(ctx,id,dx,dy,dw,dh) {
+    // Keep the free starter visibly basic. Premium atlas art is reserved for
+    // paid cosmetics so unlocking a skin feels like a meaningful upgrade.
+    if (normalize(id) === defaultId) return false;
     const position=atlasCell(id), image=loadAtlas(position.atlas);
     if (!image || !image.complete || !image.naturalWidth) return false;
     const sw=image.naturalWidth/5, crop=atlasCrops[position.atlas];
@@ -56,6 +59,7 @@ var CastleSkins = (() => {
   // dog, cannon, cracks and debris on top.
   function drawBattle(ctx,id,damage) {
     const skin=get(id);
+    if (skin.id === defaultId) return false;
     const position=atlasCell(id), image=loadAtlas(position.atlas);
     if (!image || !image.complete || !image.naturalWidth || damage >= 5) return false;
     const sw=image.naturalWidth/5, sx=position.cell*sw, crop=atlasCrops[position.atlas], sy=crop.y, sh=Math.min(crop.h,image.naturalHeight-crop.y);
@@ -126,7 +130,9 @@ var CastleSkins = (() => {
       ctx.fillStyle=glow; ctx.fillRect(0,0,w,h);
     }
     if (drawAtlas(ctx,skin.id,artX,artY,artW,artH)) return;
-    const position=atlasCell(skin.id); loadAtlas(position.atlas,()=>drawPreview(canvas,skin.id));
+    if (skin.id !== defaultId) {
+      const position=atlasCell(skin.id); loadAtlas(position.atlas,()=>drawPreview(canvas,skin.id));
+    }
     ctx.save(); ctx.translate(w/2,h-12); ctx.scale(w/220,h/145); const grad=ctx.createLinearGradient(-70,-115,70,0); grad.addColorStop(0,c[0]); grad.addColorStop(.55,c[1]); grad.addColorStop(1,c[2]); ctx.fillStyle=grad; ctx.strokeStyle=c[3]; ctx.lineWidth=3;
     ctx.fillRect(-64,-64,128,58); ctx.strokeRect(-64,-64,128,58); for (const x of [-70,32]) { ctx.fillRect(x,-96,38,90); ctx.strokeRect(x,-96,38,90); } ctx.fillRect(-33,-111,66,54); ctx.strokeRect(-33,-111,66,54);
     ctx.fillStyle=c[0]; for (const x of [-69,-56,-43,33,46,59]) ctx.fillRect(x,-109,10,15); for (const x of [-31,-11,10]) ctx.fillRect(x,-123,14,15);
