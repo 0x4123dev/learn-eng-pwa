@@ -930,6 +930,21 @@ function switchScreen(screenId) {
         }
     }
 
+    // Guard: the Math Wars round. Its own guard rather than a clause on the
+    // one above, because what is lost is different — two minutes of a timed
+    // round that is scored only when it ends, so walking out mid-way scores
+    // nothing at all.
+    if (screenId !== 'mathHubScreen' &&
+        typeof isWarsActive === 'function' && isWarsActive()) {
+        const left = (typeof warsClockText === 'function' && typeof warsLeftMs === 'function')
+            ? warsClockText(warsLeftMs()) : '';
+        if (!confirm('Con đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
+                   + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) {
+            return;
+        }
+        if (typeof abandonWars === 'function') abandonWars();
+    }
+
     // Guard: warn before leaving an in-progress Rewrite practice.
     if (screenId !== 'rewriteScreen' &&
         typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {

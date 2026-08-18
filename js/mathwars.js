@@ -13,7 +13,10 @@
 // and admin-sync systems as every other practice.
 
 const WARS_QUESTIONS = 10;
-const WARS_SECONDS = 60;
+// Two minutes, not one. A Grade 4 child doing 63 : 7 in their head needs
+// thinking time; at 60s the clock was the difficulty rather than the sums,
+// and the round ended with half the questions unseen.
+const WARS_SECONDS = 120;
 const WARS_MAX = 99;                 // hàng chục: nothing above this, anywhere
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
 const WARS_HISTORY_CAP = 300;
@@ -188,6 +191,27 @@ function warsStopClock() {
 
 function abandonWars() { warsStopClock(); _warsQuiz = null; }
 
+// The ✕ sits exactly where a thumb rests while tapping answers. A round is two
+// minutes of concentration and is scored only at the end, so a stray tap costs
+// everything — it asks first.
+function _warsBackToMenu() {
+  // math.js owns the menu; guarded because mathwars.js is also loaded on its
+  // own in tests, where there is no menu to go back to.
+  if (typeof renderMathHome === 'function') renderMathHome();
+}
+
+function warsQuit() {
+  if (!isWarsActive()) { _warsBackToMenu(); return; }
+  const left = warsClockText(warsLeftMs());
+  const ask = (typeof confirm === 'function')
+    ? confirm('Con đang trong trận Math Wars, còn ' + left + '.\n'
+            + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')
+    : true;
+  if (!ask) return;
+  abandonWars();
+  _warsBackToMenu();
+}
+
 function warsLeftMs() {
   if (!_warsQuiz) return 0;
   return Math.max(0, _warsQuiz.endsAt - Date.now());
@@ -218,7 +242,7 @@ function warsClockTick() {
   const left = warsLeftMs();
   const el = (typeof document !== 'undefined') && document.getElementById('warsClock');
   if (el) {
-    el.textContent = '⏱ ' + Math.ceil(left / 1000) + 's';
+    el.textContent = '⏱ ' + warsClockText(left);
     if (left <= 10000) el.className = 'wars-clock low';
   }
   if (left <= 0) finishWars(true);
@@ -276,9 +300,26 @@ function finishWars(timedOut) {
 }
 
 // ---- rendering ---------------------------------------------------------
+// "107s" is a number to decode; "1:47" is a clock a child has read since they
+// were six. Under a minute it drops back to plain seconds, which counts down
+// more urgently at exactly the moment that matters.
+// One phrase for "how long is a round", so the length can move without
+// leaving "60 giây" written somewhere on screen.
+function warsLengthLabel() {
+  return (WARS_SECONDS % 60 === 0)
+    ? (WARS_SECONDS / 60) + ' phút'
+    : WARS_SECONDS + ' giây';
+}
+
+function warsClockText(ms) {
+  const left = Math.max(0, Math.ceil(ms / 1000));
+  if (left < 60) return left + 's';
+  return Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+}
+
 function warsClockHTML() {
-  const left = Math.ceil(warsLeftMs() / 1000);
-  return `<span class="wars-clock${left <= 10 ? ' low' : ''}" id="warsClock">⏱ ${left}s</span>`;
+  const ms = warsLeftMs();
+  return `<span class="wars-clock${ms <= 10000 ? ' low' : ''}" id="warsClock">⏱ ${warsClockText(ms)}</span>`;
 }
 
 function renderWars() {
@@ -290,7 +331,7 @@ function renderWars() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonWars(); renderMathHome()">✕</button>
+        <button class="grammar-back-btn" onclick="warsQuit()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         ${warsClockHTML()}
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${st.idx / total * 100}%"></div></div>
@@ -348,7 +389,7 @@ function renderWarsResult(run, coinsEarned) {
         : `<div class="grammar-result-coins">+${coinsEarned} 🪙</div>`}
       <button class="phrases-cta" onclick="startWarsRound()">
         <span class="phrases-cta-icon">⚔️</span>
-        <span class="phrases-cta-text"><strong>Đấu lại</strong><small>10 câu · ${WARS_SECONDS} giây</small></span>
+        <span class="phrases-cta-text"><strong>Đấu lại</strong><small>${WARS_QUESTIONS} câu · ${warsLengthLabel()}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
       <button class="phrases-cta-secondary" onclick="switchWarsView('history')">📊 Xem thống kê</button>
@@ -372,11 +413,11 @@ function renderWarsPracticeHTML() {
     <div class="phrases-hero">
       <div class="phrases-hero-icon">⚔️</div>
       <h1>Math Wars</h1>
-      <p class="phrases-sub">${WARS_QUESTIONS} phép tính cộng – trừ – nhân – chia trong <b>${WARS_SECONDS} giây</b>. Số nào cũng nằm trong khoảng 0–${WARS_MAX} nên tính nhẩm được hết.</p>
+      <p class="phrases-sub">${WARS_QUESTIONS} phép tính cộng – trừ – nhân – chia trong <b>${warsLengthLabel()}</b>. Số nào cũng nằm trong khoảng 0–${WARS_MAX} nên tính nhẩm được hết.</p>
     </div>
     <button class="phrases-cta" onclick="startWarsRound()">
       <span class="phrases-cta-icon">⚔️</span>
-      <span class="phrases-cta-text"><strong>Vào trận</strong><small>${WARS_QUESTIONS} câu · ${WARS_SECONDS} giây · 2 🪙 mỗi câu đúng</small></span>
+      <span class="phrases-cta-text"><strong>Vào trận</strong><small>${WARS_QUESTIONS} câu · ${warsLengthLabel()} · 2 🪙 mỗi câu đúng</small></span>
       <span class="phrases-cta-arrow">›</span>
     </button>
     ${s ? `<div class="phrases-cat-row"><span>🏆 Kỷ lục</span><strong>${s.best}/${WARS_QUESTIONS}</strong></div>
@@ -396,7 +437,7 @@ function renderWarsHistoryHTML() {
       </div>
       <button class="phrases-cta" onclick="switchWarsView('practice')">
         <span class="phrases-cta-icon">⚔️</span>
-        <span class="phrases-cta-text"><strong>Vào trận</strong><small>${WARS_QUESTIONS} câu · ${WARS_SECONDS} giây</small></span>
+        <span class="phrases-cta-text"><strong>Vào trận</strong><small>${WARS_QUESTIONS} câu · ${warsLengthLabel()}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>`;
   }
@@ -439,8 +480,9 @@ if (typeof module !== 'undefined' && module.exports) {
     WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_COINS_PER_CORRECT,
     warsBuild, warsDistractors, warsQuestion, warsQuestions,
     warsHistory, warsStats, warsSaveRun, warsEsc,
-    startWarsRound, answerWars, finishWars, abandonWars, isWarsActive,
-    warsLeftMs, warsClockTick, renderWars, renderWarsResult, warsDonutHTML,
+    startWarsRound, answerWars, finishWars, abandonWars, warsQuit, isWarsActive,
+    warsLeftMs, warsClockTick, warsClockText, warsLengthLabel,
+    renderWars, renderWarsResult, warsDonutHTML,
     renderWarsHomeHTML, renderWarsPracticeHTML, renderWarsHistoryHTML,
     switchWarsView, warsWhen,
   };

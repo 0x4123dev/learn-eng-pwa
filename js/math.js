@@ -333,9 +333,15 @@ function saveMathSession(session) {
 function renderMathHome() {
   const screen = document.getElementById('mathHubScreen');
   if (!screen) return;
+  // Tapping the Math tab while a round is running used to repaint the menu
+  // over it: the DOM went, the clock kept ticking, and the round "finished"
+  // into a screen the child had already left. Redraw the round instead.
+  if (typeof isWarsActive === 'function' && isWarsActive()) {
+    if (typeof renderWars === 'function') { renderWars(); return; }
+  }
   if (_mathView === 'wars') {
     screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
-      'Cộng – trừ – nhân – chia trong 60 giây.', 'openMathSection(\'home\')')
+      'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '2 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
       + (typeof renderWarsHomeHTML === 'function' ? renderWarsHomeHTML() : '');
     return;
   }
@@ -389,7 +395,7 @@ function renderMathMenuHTML() {
       </button>
       <button class="phrases-cta math-section-cta wars" onclick="openMathSection('wars')">
         <span class="phrases-cta-icon">⚔️</span>
-        <span class="phrases-cta-text"><strong>Math Wars</strong><small>Tính nhẩm cộng – trừ – nhân – chia trong 60 giây${wars ? ` · ${wars} trận` : ''}</small></span>
+        <span class="phrases-cta-text"><strong>Math Wars</strong><small>Tính nhẩm cộng – trừ – nhân – chia${wars ? ` · ${wars} trận` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
     </div>`;

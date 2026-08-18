@@ -205,7 +205,7 @@ const EngAuth = (function () {
       // Math Wars rides the 'math' type: it IS maths practice, and a type the
       // server does not know is dropped in silence (see functions/api/activity.js).
       type: 'math',
-      title: 'Math Wars · ' + (h.correct || 0) + '/' + (h.total || 0) + ' trong 60s',
+      title: 'Math Wars · ' + (h.correct || 0) + '/' + (h.total || 0) + ' câu',
       score: h.correct, total: h.total, at: h.date,
       detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut },
     }));

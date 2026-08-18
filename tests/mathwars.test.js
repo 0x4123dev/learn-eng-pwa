@@ -1,4 +1,4 @@
-// mathwars.test.js — ⚔️ Math Wars: 10 sums, 60 seconds, numbers a Grade 4
+// mathwars.test.js — ⚔️ Math Wars: 10 sums, two minutes, numbers a Grade 4
 // child can hold in their head.
 //
 // The whole point of the mode is mental arithmetic, so the invariant that
@@ -183,5 +183,120 @@ suite('math wars: the stats screen', () => {
         assert.truthy(html.includes('>70<'), 'accuracy missing from the hole');
         assert.truthy(html.includes('>3<') && html.includes('>7<'), 'wrong/right counts missing');
         assert.truthy(html.includes('2.77s'), 'mean time missing');
+    });
+});
+
+suite('math wars: the clock', () => {
+    test('a round is two minutes — long enough for a Grade 4 head', () => {
+        // At 60s the clock was the difficulty rather than the arithmetic, and
+        // rounds ended with half the questions unseen.
+        assert.equal(w.WARS_SECONDS, 120);
+        assert.equal(w.warsLengthLabel(), '2 phút');
+    });
+
+    test('over a minute it reads as a clock; under, as urgent seconds', () => {
+        assert.equal(w.warsClockText(120000), '2:00');
+        assert.equal(w.warsClockText(95000), '1:35');
+        assert.equal(w.warsClockText(60000), '1:00');
+        assert.equal(w.warsClockText(59000), '59s');
+        assert.equal(w.warsClockText(1200), '2s');
+        assert.equal(w.warsClockText(0), '0s');
+        assert.equal(w.warsClockText(-5000), '0s', 'a finished clock never goes negative');
+    });
+
+    test('the length is quoted from one place, never typed into the copy', () => {
+        const fs2 = require('fs');
+        ['js/mathwars.js', 'js/math.js'].forEach(f => {
+            const src = fs2.readFileSync(path.join(root, f), 'utf8')
+                .split('\n').filter(l => !/^\s*(\/\/|\*)/.test(l)).join('\n');
+            assert.truthy(!/60 giây|60s\b/.test(src),
+                `${f} still says "60 giây" in its own words — change WARS_SECONDS instead`);
+        });
+    });
+
+    test('a fresh round really starts with the full two minutes', () => {
+        global.appState = { coins: 0, warsHistory: [] };
+        w.startWarsRound();
+        const left = w.warsLeftMs();
+        assert.truthy(left > 118000 && left <= 120000, `round opened with ${left}ms`);
+        w.abandonWars();
+    });
+});
+
+suite('math wars: a mis-tap must not cost the round', () => {
+    function armConfirm(answer) {
+        const calls = [];
+        global.confirm = (msg) => { calls.push(msg); return answer; };
+        return calls;
+    }
+
+    test('the ✕ asks first, and "no" leaves the round running', () => {
+        global.appState = { coins: 0, warsHistory: [] };
+        w.startWarsRound();
+        w.answerWars(0);
+        const asked = armConfirm(false);
+        try {
+            w.warsQuit();
+            assert.equal(asked.length, 1, 'it must ask before throwing the round away');
+            assert.truthy(/Math Wars/.test(asked[0]) && /Vẫn ra chứ/.test(asked[0]), asked[0]);
+            assert.truthy(w.isWarsActive(), 'saying no must keep the round alive');
+            assert.deepEqual(global.appState.warsHistory, [], 'nothing may be scored');
+        } finally { delete global.confirm; w.abandonWars(); }
+    });
+
+    test('saying yes ends the round, and it scores nothing', () => {
+        global.appState = { coins: 0, warsHistory: [] };
+        w.startWarsRound();
+        w.answerWars(0);
+        armConfirm(true);
+        try {
+            w.warsQuit();
+            assert.truthy(!w.isWarsActive(), 'the round should be gone');
+            assert.deepEqual(global.appState.warsHistory, [], 'a walked-away round is not a result');
+            assert.equal(global.appState.coins, 0, 'and pays nothing');
+        } finally { delete global.confirm; }
+    });
+
+    test('the countdown left is quoted in the question, so the cost is visible', () => {
+        global.appState = { coins: 0, warsHistory: [] };
+        w.startWarsRound();
+        const asked = armConfirm(false);
+        try {
+            w.warsQuit();
+            assert.truthy(/còn \d/.test(asked[0]), `no time left shown: ${asked[0]}`);
+        } finally { delete global.confirm; w.abandonWars(); }
+    });
+
+    test('the ✕ on a finished round just goes back, no question asked', () => {
+        w.abandonWars();
+        const asked = armConfirm(true);
+        try {
+            w.warsQuit();
+            assert.equal(asked.length, 0, 'nothing is at stake, so nothing to ask');
+        } finally { delete global.confirm; }
+    });
+
+    test('the bottom nav guards the round too, and abandons it only on yes', () => {
+        // switchScreen is the one route the ✕ cannot cover.
+        const fs2 = require('fs');
+        const src = fs2.readFileSync(path.join(root, 'js', 'app.js'), 'utf8');
+        const i = src.indexOf('isWarsActive');
+        assert.truthy(i > 0, 'switchScreen never checks for a running Math Wars round');
+        const block = src.slice(i - 400, i + 700);
+        assert.truthy(/screenId !== 'mathHubScreen'/.test(block), 'the guard must not fire on the Math tab itself');
+        assert.truthy(/confirm\(/.test(block), 'it must ask before leaving');
+        assert.truthy(/return;/.test(block), 'saying no must stay put');
+        assert.truthy(/abandonWars\(\)/.test(block), 'saying yes must stop the clock');
+    });
+
+    test('a stray re-render redraws the round instead of painting over it', () => {
+        // Tapping the Math tab while playing used to repaint the menu on top:
+        // the DOM went, the interval kept ticking, and the round finished into
+        // a screen the child had already left.
+        const fs2 = require('fs');
+        const src = fs2.readFileSync(path.join(root, 'js', 'math.js'), 'utf8');
+        const home = src.slice(src.indexOf('function renderMathHome()'), src.indexOf('function mathHeaderHTML'));
+        assert.truthy(/isWarsActive\(\)/.test(home) && /renderWars\(\)/.test(home),
+            'renderMathHome must hand back to the live round');
     });
 });
