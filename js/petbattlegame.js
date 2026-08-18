@@ -827,16 +827,31 @@ PetBattleGame.prototype._drawWorld = function () {
     const p = f.points[f.i];
     if (!p) continue;
     // The ammunition is intentionally silly and large enough to follow.
+    // A Pháo thủ's rocket flies the same arc but must NOT look like another
+    // poop: it flew and dealt damage from the first build, and drawing 💩 for
+    // it meant the child could not see the teammate had done anything.
+    const prev = f.points[Math.max(0, f.i - 1)];
     ctx.save();
     ctx.translate(p.x, p.y);
-    ctx.rotate((f.i * .08) * (f.spin || 1));
-    ctx.font = `900 ${Math.max(20, f.size * 4)}px serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(46,24,16,.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 3;
-    ctx.fillText('💩', 0, 0);
+    if (f.rocket) {
+      // Nose-first along its own travel, so it reads as a rocket rather than a
+      // spinning object that happens to be rocket-shaped.
+      ctx.rotate(Math.atan2(p.y - (prev ? prev.y : p.y), p.x - (prev ? prev.x : p.x)));
+      ctx.font = `900 ${Math.max(18, f.size * 3.4)}px serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(15,23,42,.45)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+      ctx.fillText('🚀', 0, 0);
+    } else {
+      ctx.rotate((f.i * .08) * (f.spin || 1));
+      ctx.font = `900 ${Math.max(20, f.size * 4)}px serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(46,24,16,.45)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 3;
+      ctx.fillText('💩', 0, 0);
+    }
     ctx.restore();
-    // Warm dust puffs make the slow flight path easy to track.
-    ctx.fillStyle = 'rgba(120,78,46,0.34)';
+    // Trail: warm dust behind a poop, hot exhaust behind a rocket, so the two
+    // are still tellable apart mid-flight when they overlap.
+    ctx.fillStyle = f.rocket ? 'rgba(251,146,60,0.45)' : 'rgba(120,78,46,0.34)';
     for (let k = 1; k <= 4; k++) {
       const q = f.points[Math.max(0, f.i - k * 4)];
       if (q) { ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(2, 6 - k), 0, Math.PI * 2); ctx.fill(); }

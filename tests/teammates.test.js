@@ -774,6 +774,27 @@ suite('teammates: the shop tells the truth about money', () => {
     });
 });
 
+suite('teammates: the rocket must LOOK like a rocket', () => {
+    test('a rocket in flight is not drawn as another poop', () => {
+        // The Pháo thủ's rocket flew and dealt its damage from the first
+        // build, but the flight loop drew 💩 for every projectile — so on
+        // screen it was just a second poop and the child could not tell the
+        // teammate had done anything at all.
+        const src = read('js/petbattlegame.js');
+        const loop = src.slice(src.indexOf('  for (const f of this.flying) {\n    const p = f.points[f.i];'));
+        const body = loop.slice(0, 900);
+        assert.truthy(/f\.rocket/.test(body),
+            'the flight loop must distinguish a rocket from a shell');
+    });
+
+    test('the rocket projectile is still flagged when it launches', () => {
+        const src = read('js/petbattlegame.js');
+        const launch = src.slice(src.indexOf('PetBattleGame.prototype._launch ='));
+        const body = launch.slice(0, 2000);
+        assert.truthy(/rocket: true/.test(body), 'the flying object must carry the flag');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
