@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.13.21';
+const APP_VERSION = 'v4.13.22';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1046,16 +1046,18 @@ function renderShields() {
 // ==================== WORD PET ====================
 
 const DOG_STAGES = [
-    { minLevel: 1,   img: 'img/pets/chihuahua.png', fallback: '🐶', name: 'Chihuahua',     size: 72,  habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
-    { minLevel: 21,  img: 'img/pets/beagle.png',    fallback: '🐕', name: 'Beagle',        size: 84,  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
-    { minLevel: 41,  img: 'img/pets/poodle.png',    fallback: '🐩', name: 'Poodle',        size: 92,  habitat: ['🌳','🍃','🌸','🌺','🌸','🍃'],  stageCss: 'poodle' },
-    { minLevel: 61,  img: 'img/pets/retriever.png',  fallback: '🦮', name: 'Retriever',     size: 100, habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
-    { minLevel: 81,  img: 'img/pets/dalmatian.png',  fallback: '🐕‍🦺', name: 'Dalmatian',     size: 108, habitat: ['🏠','🌻','🌳','🌺','🌻','🏡'],  stageCss: 'dalmatian' },
-    { minLevel: 101, img: 'img/pets/husky.png',      fallback: '🐺', name: 'Husky',         size: 116, habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
-    { minLevel: 121, img: 'img/pets/shepherd.png',    fallback: '🐕', name: 'Shepherd',      size: 124, habitat: ['🌊','🏖️','🐚','🌊','🐚','🏖️'], stageCss: 'shepherd' },
-    { minLevel: 141, img: 'img/pets/akita.png',      fallback: '🐕‍🦺', name: 'Akita',         size: 132, habitat: ['🏰','🌹','⚔️','🌹','🏰','⚔️'], stageCss: 'akita' },
-    { minLevel: 161, img: 'img/pets/royal.png',      fallback: '👑🐶', name: 'Royal Hound',   size: 144, habitat: ['⭐','🌙','🔮','⭐','🌙','✨'], stageCss: 'royal' },
-    { minLevel: 181, img: 'img/pets/diamond.png',    fallback: '💎🐶', name: 'Diamond Dog',   size: 156, habitat: ['👑','✨','🏆','💎','✨','👑'], stageCss: 'diamond' }
+    // Real breeds, ordered by typical adult build. The visible size also grows
+    // at every evolution so the collection reads as a clear small-to-giant journey.
+    { minLevel: 1,   fallback: '🐶', name: 'Chihuahua',        size: 72,  buildKg: '1–3 kg',   habitat: ['🌿','🌱','🌼','🌿','🍀','🌼'],  stageCss: 'chihuahua' },
+    { minLevel: 21,  fallback: '🐕', name: 'Pomeranian',       size: 78,  buildKg: '2–4 kg',   habitat: ['🌸','🍃','🦋','🌸','🍃','🦋'],  stageCss: 'pomeranian' },
+    { minLevel: 41,  fallback: '🐕', name: 'Beagle',           size: 88,  buildKg: '9–14 kg',  habitat: ['🌻','🌿','🦋','🌻','🌿','🦋'],  stageCss: 'beagle' },
+    { minLevel: 61,  fallback: '🐕', name: 'Pembroke Corgi',   size: 96,  buildKg: '10–14 kg', habitat: ['🌾','🌼','🏡','🌾','🌼','🏡'],  stageCss: 'corgi' },
+    { minLevel: 81,  fallback: '🐶', name: 'English Bulldog',  size: 108, buildKg: '18–25 kg', habitat: ['🏠','🧱','🌳','🏠','🧱','🌳'],  stageCss: 'bulldog' },
+    { minLevel: 101, fallback: '🐺', name: 'Siberian Husky',   size: 118, buildKg: '16–27 kg', habitat: ['🏔️','❄️','🌲','❄️','🏔️','🌨️'], stageCss: 'husky' },
+    { minLevel: 121, fallback: '🦮', name: 'Golden Retriever', size: 128, buildKg: '25–34 kg', habitat: ['🌲','🍂','🐿️','🌲','🍁','🍂'], stageCss: 'retriever' },
+    { minLevel: 141, fallback: '🐕', name: 'German Shepherd',  size: 138, buildKg: '30–40 kg', habitat: ['⛰️','🌲','🛡️','⛰️','🌲','🛡️'], stageCss: 'shepherd' },
+    { minLevel: 161, fallback: '🐕‍🦺', name: 'Rottweiler',       size: 148, buildKg: '35–60 kg', habitat: ['🏰','🪨','🌲','🏰','🪨','🌲'], stageCss: 'rottweiler' },
+    { minLevel: 181, fallback: '🐕', name: 'Tibetan Mastiff',  size: 160, buildKg: '45–72 kg', habitat: ['🏔️','🏯','☁️','🏔️','🏯','☁️'], stageCss: 'tibetan-mastiff' }
 ];
 
 // Priced for a child's honest daily rhythm: one 10-question session earns
@@ -1133,58 +1135,55 @@ const DOG_ACCESSORIES = [
 // Values are CSS percentages relative to the pet-wrapper bounding box.
 // sizeMul: multiplier applied to stage.size to get the accessory font-size.
 const BREED_ANCHORS = {
-    // Frontal face breeds (head is centered and large)
     chihuahua: {
         head: { top: '-20%', left: '50%', sizeMul: 0.44 },
         eyes: { top:  '22%', left: '50%', sizeMul: 0.28 },
         neck: { top:  '65%', left: '50%', sizeMul: 0.26 }
+    },
+    pomeranian: {
+        head: { top: '-22%', left: '50%', sizeMul: 0.44 },
+        eyes: { top:  '21%', left: '50%', sizeMul: 0.27 },
+        neck: { top:  '65%', left: '50%', sizeMul: 0.25 }
+    },
+    beagle: {
+        head: { top: '-16%', left: '50%', sizeMul: 0.42 },
+        eyes: { top:  '24%', left: '50%', sizeMul: 0.27 },
+        neck: { top:  '66%', left: '50%', sizeMul: 0.25 }
+    },
+    corgi: {
+        head: { top: '-18%', left: '50%', sizeMul: 0.43 },
+        eyes: { top:  '23%', left: '50%', sizeMul: 0.27 },
+        neck: { top:  '64%', left: '50%', sizeMul: 0.25 }
+    },
+    bulldog: {
+        head: { top: '-16%', left: '50%', sizeMul: 0.46 },
+        eyes: { top:  '23%', left: '50%', sizeMul: 0.29 },
+        neck: { top:  '64%', left: '50%', sizeMul: 0.29 }
     },
     husky: {
         head: { top: '-18%', left: '50%', sizeMul: 0.44 },
         eyes: { top:  '24%', left: '50%', sizeMul: 0.28 },
         neck: { top:  '66%', left: '50%', sizeMul: 0.26 }
     },
-    akita: {
-        head: { top: '-22%', left: '52%', sizeMul: 0.44 },
-        eyes: { top:  '22%', left: '52%', sizeMul: 0.28 },
-        neck: { top:  '66%', left: '52%', sizeMul: 0.26 }
-    },
-    royal: {
-        head: { top: '-24%', left: '50%', sizeMul: 0.48 },
-        eyes: { top:  '18%', left: '50%', sizeMul: 0.30 },
-        neck: { top:  '64%', left: '50%', sizeMul: 0.28 }
-    },
-    // Side-profile full-body breeds (head is top-left quadrant)
-    beagle: {
-        head: { top:   '4%', left: '22%', sizeMul: 0.38 },
-        eyes: { top:  '20%', left: '24%', sizeMul: 0.24 },
-        neck: { top:  '36%', left: '30%', sizeMul: 0.22 }
-    },
-    poodle: {
-        head: { top:  '-2%', left: '18%', sizeMul: 0.40 },
-        eyes: { top:  '20%', left: '20%', sizeMul: 0.24 },
-        neck: { top:  '40%', left: '26%', sizeMul: 0.20 }
-    },
     retriever: {
-        head: { top:   '4%', left: '24%', sizeMul: 0.38 },
-        eyes: { top:  '20%', left: '26%', sizeMul: 0.24 },
-        neck: { top:  '36%', left: '32%', sizeMul: 0.22 }
+        head: { top: '-17%', left: '50%', sizeMul: 0.43 },
+        eyes: { top:  '24%', left: '50%', sizeMul: 0.27 },
+        neck: { top:  '66%', left: '50%', sizeMul: 0.26 }
     },
     shepherd: {
-        head: { top:   '2%', left: '20%', sizeMul: 0.38 },
-        eyes: { top:  '18%', left: '22%', sizeMul: 0.24 },
-        neck: { top:  '38%', left: '28%', sizeMul: 0.20 }
+        head: { top: '-19%', left: '50%', sizeMul: 0.44 },
+        eyes: { top:  '22%', left: '50%', sizeMul: 0.27 },
+        neck: { top:  '65%', left: '50%', sizeMul: 0.27 }
     },
-    // Abstract/non-dog breeds (creative aesthetic placement)
-    dalmatian: {
-        head: { top: '-22%', left: '50%', sizeMul: 0.42 },
-        eyes: { top:  '10%', left: '35%', sizeMul: 0.26 },
-        neck: { top:  '62%', left: '50%', sizeMul: 0.26 }
+    rottweiler: {
+        head: { top: '-16%', left: '50%', sizeMul: 0.46 },
+        eyes: { top:  '23%', left: '50%', sizeMul: 0.29 },
+        neck: { top:  '64%', left: '50%', sizeMul: 0.29 }
     },
-    diamond: {
-        head: { top:  '-8%', left: '68%', sizeMul: 0.40 },
-        eyes: { top:  '10%', left: '65%', sizeMul: 0.24 },
-        neck: { top:  '30%', left: '58%', sizeMul: 0.22 }
+    'tibetan-mastiff': {
+        head: { top: '-24%', left: '50%', sizeMul: 0.50 },
+        eyes: { top:  '19%', left: '50%', sizeMul: 0.30 },
+        neck: { top:  '62%', left: '50%', sizeMul: 0.31 }
     }
 };
 
@@ -1279,15 +1278,15 @@ function getDogStage(level) {
 
 function getDogTitle(level) {
     if (level >= 200) return 'Ultimate Champion';
-    if (level >= 181) return 'Diamond Legend';
-    if (level >= 161) return 'Royal Hound';
-    if (level >= 141) return 'Noble Akita';
-    if (level >= 121) return 'Brave Shepherd';
+    if (level >= 181) return 'Mighty Tibetan Mastiff';
+    if (level >= 161) return 'Powerful Rottweiler';
+    if (level >= 141) return 'Brave German Shepherd';
+    if (level >= 121) return 'Gentle Golden Retriever';
     if (level >= 101) return 'Arctic Husky';
-    if (level >= 81)  return 'Cool Dalmatian';
-    if (level >= 61)  return 'Golden Retriever';
-    if (level >= 41)  return 'Fancy Poodle';
-    if (level >= 21)  return 'Happy Beagle';
+    if (level >= 81)  return 'Strong Bulldog';
+    if (level >= 61)  return 'Cheerful Corgi';
+    if (level >= 41)  return 'Happy Beagle';
+    if (level >= 21)  return 'Fluffy Pomeranian';
     return 'Little Chihuahua';
 }
 
@@ -1678,13 +1677,13 @@ function showPetInfo() {
         const unlocked = level >= s.minLevel;
         const isCurrent = getDogStage(level) === s;
         const dog = typeof petDogSVG === 'function'
-            ? petDogSVG({ stageCss: s.stageCss, size: 58, level: s.minLevel, stageMinLevel: s.minLevel })
+            ? petDogSVG({ stageCss: s.stageCss, size: Math.round(52 + (s.size - 72) * 0.28), level: s.minLevel, stageMinLevel: s.minLevel })
             : `<span class="pet-info-emoji">${s.fallback}</span>`;
         return `<div class="pet-info-stage pet-evolution-card ${unlocked ? 'unlocked' : 'locked'} ${isCurrent ? 'current' : ''}"
                      aria-label="${s.name}, unlocks at level ${s.minLevel}${isCurrent ? ', current dog' : ''}">
             <span class="pet-evolution-art">${dog}</span>
             <span class="pet-info-label">${s.name}</span>
-            <span class="pet-info-pts">Level ${s.minLevel}</span>
+            <span class="pet-info-pts">Level ${s.minLevel} · ${s.buildKg}</span>
             <span class="pet-evolution-state">${isCurrent ? 'My dog' : unlocked ? 'Unlocked' : 'Locked'}</span>
         </div>`;
     }).join('');
@@ -1711,7 +1710,7 @@ function showPetInfo() {
                 <div><span class="pet-collection-kicker">MY PET COLLECTION</span><h3>${currentStage.name}</h3><p>Level ${level} · Keep learning to discover the next cute dog.</p></div>
             </div>
 
-            <div class="pet-collection-section-title"><span>Dog evolution</span><small>10 breeds · 200 levels</small></div>
+            <div class="pet-collection-section-title"><span>Dog evolution</span><small>10 real breeds · small → giant</small></div>
             <div class="pet-info-stages">${stagesHTML}</div>
 
             <div class="pet-collection-section-title"><span>Favorite food</span><small>Food adds growth XP</small></div>
