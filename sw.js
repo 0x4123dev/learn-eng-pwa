@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v346';
+const CACHE_NAME = 'flashlingo-v347';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -142,12 +142,12 @@ const ASSETS = [
   '/manifest.json'
 ];
 
-// Install: cache all app assets
+// Install: cache all app assets, then WAIT. Updating used to call
+// skipWaiting(), which could replace the active worker during a lesson.
+// Waiting applies the update on the next natural close/open instead.
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 
@@ -170,15 +170,6 @@ self.addEventListener('activate', event => {
       )
     ).then(evictReRecorded).then(() => self.clients.claim())
   );
-});
-
-// Listen for the client telling a waiting SW to take over immediately.
-// Used by the page's "new version available" detector in app.js so the
-// new sw.js doesn't sit idle behind an old active SW.
-self.addEventListener('message', event => {
-  if (event && event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
 });
 
 // Serve a word recording. Cache-first, and Range requests get a real 206
