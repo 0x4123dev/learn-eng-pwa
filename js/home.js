@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.13.13';
+const APP_VERSION = 'v4.13.17';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1061,11 +1061,11 @@ const DOG_STAGES = [
 // Priced for a child's honest daily rhythm: one 10-question session earns
 // ~40-50 🪙, so a snack is one session and a big meal is a good day.
 const DOG_FOOD = [
-    { id: 'bone',    emoji: '🦴', name: 'Bone',        price: 30,  growth: 5 },
-    { id: 'steak',   emoji: '🍖', name: 'Steak',       price: 80,  growth: 15 },
-    { id: 'chicken', emoji: '🍗', name: 'Chicken',     price: 150, growth: 30 },
-    { id: 'cake',    emoji: '🧁', name: 'Cake',        price: 240, growth: 50 },
-    { id: 'feast',   emoji: '👑', name: 'Royal Feast', price: 550, growth: 120 }
+    { id: 'bone',    emoji: '🦴', name: 'Crunchy Bone', price: 30,  growth: 5,   note: 'A tiny happy snack',     color: '#60a5fa' },
+    { id: 'steak',   emoji: '🍖', name: 'Juicy Steak',  price: 80,  growth: 15,  note: 'Strong puppy energy',    color: '#fb7185' },
+    { id: 'chicken', emoji: '🍗', name: 'Golden Chicken',price: 150, growth: 30,  note: 'Warm and super tasty',    color: '#f59e0b' },
+    { id: 'cake',    emoji: '🧁', name: 'Pupcake',      price: 240, growth: 50,  note: 'A celebration treat',    color: '#c084fc' },
+    { id: 'feast',   emoji: '👑', name: 'Royal Feast',  price: 550, growth: 120, note: 'The ultimate level boost',color: '#fbbf24' }
 ];
 
 const DOG_ACCESSORIES = [
@@ -1489,7 +1489,7 @@ function renderWordPet() {
             const sz = Math.max(18, Math.round(stage.size * (AMBIENT_SLOT_SIZES[acc.slot] || 0.35)));
             styleStr = `font-size:${sz}px`;
         }
-        return `<span class="pet-accessory acc-${acc.slot} draggable-pet-acc" data-acc-id="${id}" style="${styleStr}">${acc.emoji}</span>`;
+        return `<span class="pet-accessory acc-${acc.slot} draggable-pet-acc pet-accessory-${id}" data-acc-id="${id}" aria-hidden="true" style="${styleStr}"><span class="pet-accessory-glyph">${acc.emoji}</span></span>`;
     }).join('');
 
     // Daily quest tracking
@@ -1523,7 +1523,7 @@ function renderWordPet() {
             <div class="pet-hero-left">
                 <button type="button" class="pet-hero-avatar" onclick="navigateToProfile()" aria-label="Open profile">${avatar}</button>
                 <div class="pet-hero-identity">
-                    <div class="pet-identity-name"><strong>${safePetName}</strong><span>Lv.${level}</span></div>
+                    <div class="pet-identity-name"><strong>${safePetName}</strong><span class="pet-level-chip"><small>LV</small>${level}</span></div>
                     <div class="pet-identity-style">
                         <span>${stage.name} · ${petStyleName}</span>
                         <span class="pet-polish-meter" title="Level shine ${petPolish} of 4" aria-label="Level shine ${petPolish} of 4">${polishPips}</span>
@@ -1677,17 +1677,27 @@ function showPetInfo() {
     const stagesHTML = DOG_STAGES.map(s => {
         const unlocked = level >= s.minLevel;
         const isCurrent = getDogStage(level) === s;
-        return `<div class="pet-info-stage ${unlocked ? '' : 'locked'} ${isCurrent ? 'current' : ''}">
-            <img class="pet-info-emoji" src="${s.img}" alt="${s.name}" style="width:${Math.min(s.size/3, 24)}px;height:${Math.min(s.size/3, 24)}px">
+        const dog = typeof petDogSVG === 'function'
+            ? petDogSVG({ stageCss: s.stageCss, size: 58, level: s.minLevel, stageMinLevel: s.minLevel })
+            : `<span class="pet-info-emoji">${s.fallback}</span>`;
+        return `<div class="pet-info-stage pet-evolution-card ${unlocked ? 'unlocked' : 'locked'} ${isCurrent ? 'current' : ''}"
+                     aria-label="${s.name}, unlocks at level ${s.minLevel}${isCurrent ? ', current dog' : ''}">
+            <span class="pet-evolution-art">${dog}</span>
             <span class="pet-info-label">${s.name}</span>
-            <span class="pet-info-pts">Lv.${s.minLevel}${isCurrent ? ' 🐾' : unlocked ? ' ✅' : ' 🔒'}</span>
+            <span class="pet-info-pts">Level ${s.minLevel}</span>
+            <span class="pet-evolution-state">${isCurrent ? 'My dog' : unlocked ? 'Unlocked' : 'Locked'}</span>
         </div>`;
     }).join('');
 
     // Food catalog
     const foodHTML = DOG_FOOD.map(f =>
-        `<div class="pet-info-stage"><span class="pet-info-emoji">${f.emoji}</span><span class="pet-info-label">${f.name}</span><span class="pet-info-pts">${f.price} 🪙 → +${f.growth} XP</span></div>`
+        `<div class="pet-info-stage pet-food-mini" style="--food-color:${f.color}"><span class="pet-food-mini-art">${petFoodArt(f)}</span><span class="pet-info-label">${f.name}</span><span class="pet-info-pts">${f.price} coins · +${f.growth} XP</span></div>`
     ).join('');
+
+    const currentStage = getDogStage(level);
+    const currentDog = typeof petDogSVG === 'function'
+        ? petDogSVG({ stageCss: currentStage.stageCss, size: 110, level, stageMinLevel: currentStage.minLevel })
+        : currentStage.fallback;
 
     const overlay = document.createElement('div');
     overlay.id = 'petInfoModal';
@@ -1695,14 +1705,16 @@ function showPetInfo() {
     overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
     overlay.innerHTML = `
         <div class="pet-info-modal" style="max-height:80vh;overflow-y:auto">
-            <button class="pet-info-close" onclick="document.getElementById('petInfoModal').remove()">✕</button>
-            <h3 style="margin:0 0 8px;font-size:18px">🐶 My Dog · Lv.${level}</h3>
-            <p style="margin:0 0 12px;font-size:13px;color:var(--text-secondary)">Earn coins from lessons → buy food → grow your dog!</p>
+            <button class="pet-info-close" aria-label="Close dog collection" onclick="document.getElementById('petInfoModal').remove()">✕</button>
+            <div class="pet-collection-hero">
+                <div class="pet-collection-dog">${currentDog}</div>
+                <div><span class="pet-collection-kicker">MY PET COLLECTION</span><h3>${currentStage.name}</h3><p>Level ${level} · Keep learning to discover the next cute dog.</p></div>
+            </div>
 
-            <div style="font-weight:700;font-size:13px;margin-bottom:6px">🐾 Growth Stages</div>
+            <div class="pet-collection-section-title"><span>Dog evolution</span><small>10 breeds · 200 levels</small></div>
             <div class="pet-info-stages">${stagesHTML}</div>
 
-            <div style="font-weight:700;font-size:13px;margin:12px 0 6px">🍖 Food Shop</div>
+            <div class="pet-collection-section-title"><span>Favorite food</span><small>Food adds growth XP</small></div>
             <div class="pet-info-stages">${foodHTML}</div>
 
             <div class="pet-info-tips" style="margin-top:12px">
@@ -1728,6 +1740,33 @@ const ACC_CATEGORIES = [
     { id: 'effect', label: 'Effects', emoji: '✨' },
     { id: 'toy',    label: 'Toys',    emoji: '🎾' }
 ];
+
+function petFoodArt(food) {
+    const id = food && food.id;
+    const common = 'viewBox="0 0 80 80" aria-hidden="true" focusable="false"';
+    if (id === 'bone') return `<svg ${common}><g transform="rotate(-18 40 40)"><path d="M23 34h34a9 9 0 1 1 8 12 9 9 0 1 1-12 8H27a9 9 0 1 1-12-8 9 9 0 1 1 8-12Z" fill="#fff8e7" stroke="#c08457" stroke-width="3"/><path d="M30 39h24" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/></g></svg>`;
+    if (id === 'steak') return `<svg ${common}><path d="M18 50q-5-20 15-31 24-13 34 7 8 17-9 29-19 13-40-5Z" fill="#f87171" stroke="#9f1239" stroke-width="3"/><path d="M28 44q2-13 14-18 12-4 17 5 5 10-6 16-13 7-25-3Z" fill="#fecaca"/><circle cx="46" cy="35" r="7" fill="#fff7ed" stroke="#d97706" stroke-width="2"/><path d="M22 51q18 8 35 0" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/></svg>`;
+    if (id === 'chicken') return `<svg ${common}><path d="M32 20q17-7 27 8 9 14-2 27-13 15-30 3-16-12-6-27 4-7 11-11Z" fill="#fbbf24" stroke="#b45309" stroke-width="3"/><path d="M24 55 14 65m8-3-7-7m4 12-7-7" stroke="#fff7ed" stroke-width="7" stroke-linecap="round"/><path d="M33 27q12-5 19 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/></svg>`;
+    if (id === 'cake') return `<svg ${common}><path d="M22 39h36l-4 27H26Z" fill="#f9a8d4" stroke="#9d174d" stroke-width="3"/><path d="m26 45 4 15m7-15 2 17m11-17-2 15" stroke="#fff" stroke-width="3" opacity=".7"/><path d="M19 39q2-16 16-13 8-14 16-1 12-1 12 14Z" fill="#fff7ed" stroke="#c084fc" stroke-width="3"/><circle cx="42" cy="19" r="5" fill="#ef4444"/><path d="M42 14q1-7 7-8" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/></svg>`;
+    return `<svg ${common}><path d="M14 31 25 42l15-24 15 24 11-11-5 35H19Z" fill="#fbbf24" stroke="#92400e" stroke-width="3"/><circle cx="25" cy="43" r="4" fill="#fb7185"/><circle cx="40" cy="31" r="5" fill="#60a5fa"/><circle cx="55" cy="43" r="4" fill="#c084fc"/><path d="M25 57h30" stroke="#fff7ed" stroke-width="5" stroke-linecap="round"/></svg>`;
+}
+
+function petAccessoryRarity(acc) {
+    const price = Number(acc && acc.price) || 0;
+    if (acc && acc.streakOnly) return { key: 'special', label: 'Streak gift' };
+    if (price >= 30000) return { key: 'legendary', label: 'Legendary' };
+    if (price >= 15000) return { key: 'epic', label: 'Epic' };
+    if (price >= 7000) return { key: 'rare', label: 'Rare' };
+    return { key: 'playful', label: 'Playful' };
+}
+
+function petAccessoryArt(acc) {
+    const rarity = petAccessoryRarity(acc);
+    return `<span class="shop-sticker rarity-${rarity.key}" aria-hidden="true">
+        <span class="shop-sticker-spark one">✦</span><span class="shop-sticker-spark two">●</span>
+        <span class="shop-sticker-glyph">${acc.emoji}</span>
+    </span>`;
+}
 
 function showPetShop() {
     const existing = document.getElementById('petShopModal');
@@ -1764,17 +1803,18 @@ function renderShopContent() {
     const foodItems = DOG_FOOD.map(f => {
         const canAfford = coins >= f.price;
         const feastBonus = f.id === 'feast' && studiedToday;
-        const dragHint = canAfford ? '<span class="drag-hint">⬆ drag to feed</span>' : '';
-        return `<div class="shop-item ${canAfford ? 'draggable-food' : 'disabled'}"
-                     data-food-id="${f.id}" data-food-emoji="${f.emoji}">
-            <span class="shop-item-emoji">${f.emoji}</span>
+        return `<article class="shop-item shop-card food-shop-card ${canAfford ? 'draggable-food' : 'disabled'}"
+                     data-food-id="${f.id}" data-food-emoji="${f.emoji}" style="--food-color:${f.color}">
+            <div class="shop-food-art">${petFoodArt(f)}<span class="shop-xp-burst">+${f.growth} XP</span></div>
             <div class="shop-item-info">
                 <div class="shop-item-name">${f.name}</div>
-                <div class="shop-item-desc">+${f.growth} growth XP${feastBonus ? ' <span class="feast-bonus-hint">(+30 study bonus!)</span>' : ''}</div>
-                ${dragHint}
+                <div class="shop-item-desc">${f.note}</div>
+                ${feastBonus ? '<span class="feast-bonus-hint">Today: +30 bonus XP</span>' : ''}
             </div>
-            <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyFood('${f.id}', this)` : ''}">${f.price} 🪙</button>
-        </div>`;
+            <button type="button" class="shop-buy-btn ${canAfford ? '' : 'disabled'}"
+                    ${canAfford ? `onclick="buyFood('${f.id}', this)"` : 'disabled'}
+                    aria-label="Feed dog ${f.name} for ${f.price} coins">${canAfford ? 'Feed' : 'Need more'} <strong>${f.price}</strong><span aria-hidden="true">●</span></button>
+        </article>`;
     }).join('');
 
     // Filter accessories by category (hide streakOnly items unless earned)
@@ -1787,48 +1827,49 @@ function renderShopContent() {
         const owned = (appState.petAccessories || []).includes(a.id);
         const equipped = (appState.activeAccessories || []).includes(a.id);
         const canAfford = coins >= a.price;
+        const rarity = petAccessoryRarity(a);
         let btnHTML;
         if (owned) {
-            btnHTML = `<button class="shop-buy-btn ${equipped ? 'equipped' : 'owned'}" onclick="toggleAccessory('${a.id}')">${equipped ? '✅ On' : 'Wear'}</button>`;
+            btnHTML = `<button type="button" class="shop-buy-btn ${equipped ? 'equipped' : 'owned'}" onclick="toggleAccessory('${a.id}')">${equipped ? 'Take off' : 'Wear it'}</button>`;
         } else {
-            btnHTML = `<button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="${canAfford ? `buyAccessory('${a.id}')` : ''}">${a.price} 🪙</button>`;
+            btnHTML = `<button type="button" class="shop-buy-btn ${canAfford ? '' : 'disabled'}" ${canAfford ? `onclick="buyAccessory('${a.id}')"` : 'disabled'}>${canAfford ? 'Get it' : 'Need more'} <strong>${a.price}</strong><span aria-hidden="true">●</span></button>`;
         }
-        return `<div class="shop-item ${!owned && !canAfford ? 'disabled' : ''}">
-            <span class="shop-item-emoji">${a.emoji}</span>
+        return `<article class="shop-item shop-card accessory-shop-card rarity-${rarity.key} ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''} ${!owned && !canAfford ? 'disabled' : ''}">
+            <div class="shop-accessory-art">${petAccessoryArt(a)}</div>
             <div class="shop-item-info">
                 <div class="shop-item-name">${a.name}</div>
-                <div class="shop-item-desc">${owned ? (equipped ? 'Equipped' : 'Owned') : a.slot}</div>
+                <div class="shop-item-meta"><span class="shop-rarity rarity-${rarity.key}">${rarity.label}</span><span>${ACC_CATEGORIES.find(c => c.id === a.slot)?.label || a.slot}</span></div>
+                <div class="shop-item-desc">${equipped ? 'Your dog is wearing this' : owned ? 'Ready in your wardrobe' : 'A new look for your best friend'}</div>
             </div>
             ${btnHTML}
-        </div>`;
+        </article>`;
     }).join('');
 
     // Category filter pills for accessories tab
     const catPills = ACC_CATEGORIES.map(c =>
-        `<button class="shop-cat-pill ${_accCategory === c.id ? 'active' : ''}" onclick="_accCategory='${c.id}';refreshShop()">${c.emoji} ${c.label}</button>`
+        `<button type="button" class="shop-cat-pill ${_accCategory === c.id ? 'active' : ''}" aria-pressed="${_accCategory === c.id}" onclick="_accCategory='${c.id}';refreshShop()"><span aria-hidden="true">${c.emoji}</span>${c.label}</button>`
     ).join('');
 
     const isDrawer = _shopTab === 'food';
+    const stage = getDogStage(appState.dogLevel || 1);
+    const miniDog = typeof petDogSVG === 'function'
+        ? petDogSVG({ stageCss: stage.stageCss, size: 74, level: appState.dogLevel || 1, stageMinLevel: stage.minLevel })
+        : stage.fallback;
     return `
         <div class="pet-shop-modal">
-            <button class="pet-info-close" onclick="document.getElementById('petShopModal').remove()">✕</button>
-            ${isDrawer ? `
-                <div class="shop-drawer-header">
-                    <span class="shop-drawer-title">🍖 Food Shop</span>
-                    <span class="shop-coins-inline">🪙 ${coins}</span>
-                    <button class="shop-tab-switch" onclick="_shopTab='acc';refreshShop()">👗 Accessories →</button>
-                </div>
-            ` : `
-                <h3 style="margin:0 0 4px;font-size:18px">🛒 Pet Shop</h3>
-                <div class="shop-coins">🪙 ${coins} coins</div>
-                <div class="shop-tabs">
-                    <button class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">🍖 Food</button>
-                    <button class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">👗 Accessories</button>
-                    <button class="shop-tab ${_shopTab === 'shield' ? 'active' : ''}" onclick="_shopTab='shield';refreshShop()">🛡️ Shields</button>
-                </div>
-            `}
+            <button type="button" class="pet-info-close" aria-label="Close pet shop" onclick="document.getElementById('petShopModal').remove()">✕</button>
+            <div class="shop-hero">
+                <div class="shop-hero-dog">${miniDog}</div>
+                <div class="shop-hero-copy"><span>PAWS & TREATS</span><h3>${isDrawer ? 'What should we eat?' : 'Make your dog shine!'}</h3><p>${isDrawer ? 'Every snack helps your dog grow.' : 'Collect cute styles. Looks only—no battle advantage.'}</p></div>
+                <div class="shop-wallet" aria-label="${coins} coins"><span aria-hidden="true">●</span><strong>${coins}</strong></div>
+            </div>
+            <div class="shop-tabs" role="tablist" aria-label="Pet shop sections">
+                <button type="button" role="tab" aria-selected="${_shopTab === 'food'}" class="shop-tab ${_shopTab === 'food' ? 'active' : ''}" onclick="_shopTab='food';refreshShop()">Treats</button>
+                <button type="button" role="tab" aria-selected="${_shopTab === 'acc'}" class="shop-tab ${_shopTab === 'acc' ? 'active' : ''}" onclick="_shopTab='acc';refreshShop()">Dress up</button>
+                <button type="button" role="tab" aria-selected="${_shopTab === 'shield'}" class="shop-tab ${_shopTab === 'shield' ? 'active' : ''}" onclick="_shopTab='shield';refreshShop()">Shields</button>
+            </div>
             ${_shopTab === 'acc' ? `<div class="shop-categories">${catPills}</div>` : ''}
-            <div class="shop-items">
+            <div class="shop-items ${_shopTab === 'food' ? 'food-grid' : _shopTab === 'acc' ? 'accessory-grid' : ''}">
                 ${_shopTab === 'food' ? foodItems : (_shopTab === 'shield' ? renderShieldShop() : accItems)}
             </div>
         </div>
