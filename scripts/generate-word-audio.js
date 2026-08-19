@@ -203,19 +203,45 @@ const MAX_RETRIES = 5;
 //
 // Keep this list short: it exists for words the default model gets wrong,
 // verified by listening, not as a general dictionary.
+//
+// Each entry is the word broken into the pieces the voice must say, every
+// piece pinned to its own arpabet spelling. One piece for an ordinary word.
+// "P.E." needs two, because it is not a word at all — it is two letter
+// names, and one piece cannot express that (see PIECE_SEPARATOR).
 const PRONUNCIATION_MODEL = 'eleven_turbo_v2';   // English-only; supports <phoneme>
 const PRONUNCIATION = {
-    japan: 'JH AH0 P AE1 N',      // juh-PAN, stress on the second syllable
-    thailand: 'T AY1 L AE2 N D'   // TIE-land — a plain T, never a "th"
+    japan:    [['Japan', 'JH AH0 P AE1 N']],     // juh-PAN, stress on the second syllable
+    thailand: [['Thailand', 'T AY1 L AE2 N D']], // TIE-land — a plain T, never a "th"
+    // The school subject, said as letters: "pee-EE". It reached students as
+    // "pair" under one spelling and as Japanese ("はい") under the other.
+    // Both spellings in the data land here — units-data.js writes "P.E.",
+    // units-hk1-data.js writes "PE" — and they are separate recordings.
+    pe:    [['P', 'P IY1'], ['E', 'IY1']],
+    'p-e': [['P', 'P IY1'], ['E', 'IY1']]
 };
+
+// How the pieces are joined, measured over ten takes each rather than
+// guessed — the first separator that looked perfect over five takes turned
+// out to be the worst of the lot:
+//
+//   full stop    9/10      space        (slurs the two into one "P")
+//   comma        6/10      hyphen       6/10
+//
+// Run together, two <phoneme> tags collapse back into a single syllable and
+// the voice just says "P". The full stop is what holds them apart.
+const PIECE_SEPARATOR = '. ';
 
 // What to send the API for one word, and which model must read it.
 // Words without an override keep the default model and their bare text.
 function synthesisRequest(word, opts) {
-    const ph = PRONUNCIATION[wordAudioSlug(word)];
-    if (!ph) return { text: String(word), model: opts.model };
+    const pieces = PRONUNCIATION[wordAudioSlug(word)];
+    if (!pieces) return { text: String(word), model: opts.model };
+    const tags = pieces.map(([say, ph]) => `<phoneme alphabet="cmu-arpabet" ph="${ph}">${say}</phoneme>`);
+    // The closing stop keeps the last letter from being clipped. A word made
+    // of one piece never needed it, and adding one now would only invalidate
+    // recordings that are already correct.
     return {
-        text: `<phoneme alphabet="cmu-arpabet" ph="${ph}">${word}</phoneme>`,
+        text: tags.length > 1 ? tags.join(PIECE_SEPARATOR) + '.' : tags[0],
         model: PRONUNCIATION_MODEL
     };
 }
@@ -363,11 +389,64 @@ async function synthesize(word, opts) {
     return buf;
 }
 
+// ── Reading the take back ────────────────────────────────────────────────
+// An overridden word is on the list precisely because the model gets it
+// wrong, and it does not get it right every time either: the request that
+// produced a clean "PE" produced a bare "P" on the very next take. So those
+// words — and only those, to keep 13,000 ordinary ones cheap — are
+// transcribed and re-cut until what came out is what was asked for.
+// Even the best spelling measured 9/10, so one take is not enough on its own.
+const STT_MODEL = 'scribe_v1';
+const VERIFY_ATTEMPTS = 6;
+
+// "P.E.", "PE" and a transcript of "P.E." all reduce to "pe".
+function spokenKey(s) {
+    return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+// What the recording actually says, or null if the check could not be run.
+// Best-effort by design: a transcription outage must not block a rebuild.
+async function transcribe(buf, opts) {
+    try {
+        const form = new FormData();
+        form.append('model_id', STT_MODEL);
+        form.append('file', new Blob([buf]), 'word.mp3');
+        const res = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+            method: 'POST',
+            headers: { 'xi-api-key': opts.apiKey },
+            body: form
+        });
+        if (!res.ok) return null;
+        return String((await res.json()).text || '');
+    } catch (e) {
+        return null;
+    }
+}
+
+// True when this take says the word it is filed under. Unverifiable takes
+// pass: refusing them would turn a transcription outage into a failed run.
+async function takeIsGood(word, buf, opts) {
+    if (!PRONUNCIATION[wordAudioSlug(word)]) return true;
+    const heard = await transcribe(buf, opts);
+    return heard === null || spokenKey(heard) === spokenKey(wordAudioSlug(word));
+}
+
 async function generateOne(word, opts) {
     const file = path.join(OUT_DIR, wordAudioSlug(word) + '.mp3');
     for (let attempt = 1; ; attempt++) {
         try {
-            const buf = await synthesize(word, opts);
+            // Re-cut a bad take rather than shipping it. The last one is kept
+            // either way — a wrong recording still beats a missing one, and
+            // the warning names the words to go and listen to.
+            let buf = await synthesize(word, opts);
+            let takes = 1;
+            while (takes < VERIFY_ATTEMPTS && !(await takeIsGood(word, buf, opts))) {
+                buf = await synthesize(word, opts);
+                takes++;
+            }
+            if (takes === VERIFY_ATTEMPTS && !(await takeIsGood(word, buf, opts))) {
+                console.warn(`  ⚠ "${word}" still misread after ${takes} takes — listen to it`);
+            }
             fs.writeFileSync(file, buf);
             return { word, ok: true };
         } catch (e) {
@@ -499,7 +578,8 @@ module.exports = {
     collectAnswerWords, answerParts, ANSWER_BANKS,
     collectTappableWords, tappableWords, TAPPABLE_BANKS,
     loadEnvFile, readVoiceManifest, writeVoiceManifest, voiceConflict,
-    synthesisRequest, PRONUNCIATION, PRONUNCIATION_MODEL,
+    synthesisRequest, PRONUNCIATION, PRONUNCIATION_MODEL, PIECE_SEPARATOR,
+    spokenKey, takeIsGood, VERIFY_ATTEMPTS,
     SHIPPED_VOICE, DEFAULT_VOICE, DEFAULT_MODEL,
     DATA_FILES, DICTIONARY_FILE, OUT_DIR
 };

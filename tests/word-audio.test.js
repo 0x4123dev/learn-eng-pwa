@@ -331,11 +331,23 @@ suite('word audio: service worker caching', () => {
         const s = sw();
         const m = /RE_RECORDED\s*=\s*\[([^\]]*)\]/.exec(s);
         assert.truthy(m, 'sw.js must list the words whose bytes changed under a reused filename');
-        for (const w of ['japan', 'thailand']) {
+        for (const w of ['japan', 'thailand', 'pe', 'p-e']) {
             assert.truthy(m[1].includes(`'${w}'`), `${w} was re-recorded and must bypass the disk cache`);
         }
         assert.truthy(/RE_RECORDED\.includes\(slugOf\(key\)\)\s*\?\s*\{\s*cache:\s*'reload'\s*\}/.test(s),
             'listed words must refetch with cache: reload; everything else stays on the cheap path');
+    });
+
+    test('re-recorded words are evicted from our own cache on activate', () => {
+        // The disk-cache bypass above only runs on a cache MISS. Without an
+        // eviction the service worker keeps answering from its own copy and
+        // never refetches at all — the whole point of listing the word.
+        const s = sw();
+        assert.truthy(/function evictReRecorded/.test(s), 'sw.js must evict re-recorded words by name');
+        assert.truthy(/RE_RECORDED\.map\(\s*[\s\S]{0,120}cache\.delete\(/.test(s),
+            'eviction must delete each listed word from the audio cache');
+        assert.truthy(/\.then\(evictReRecorded\)/.test(s),
+            'activate must run the eviction, or a cached bad word survives the release');
     });
 
     test('a dedicated audio cache exists and survives version-bump cleanup', () => {
@@ -495,17 +507,60 @@ suite('word audio: pronunciation overrides', () => {
 
     test('every override is keyed by a real slug and spelled in arpabet', () => {
         const g = gen();
-        for (const [slug, ph] of Object.entries(g.PRONUNCIATION)) {
+        for (const [slug, pieces] of Object.entries(g.PRONUNCIATION)) {
             assert.equal(g.wordAudioSlug(slug), slug,
                 `"${slug}" is not a slug, so it would never match a word`);
-            assert.truthy(/^[A-Z]{1,2}[0-2]?( [A-Z]{1,2}[0-2]?)*$/.test(ph),
-                `"${ph}" is not arpabet — IPA measured unreliable here and must not creep back in`);
+            assert.truthy(Array.isArray(pieces) && pieces.length,
+                `"${slug}" must list at least one piece to say`);
+            for (const [say, ph] of pieces) {
+                assert.truthy(say, `"${slug}" has a piece with nothing to say`);
+                assert.truthy(/^[A-Z]{1,2}[0-2]?( [A-Z]{1,2}[0-2]?)*$/.test(ph),
+                    `"${ph}" is not arpabet — IPA measured unreliable here and must not creep back in`);
+            }
         }
     });
 
-    test('the two words this was built for stay covered', () => {
+    test('a letter-name abbreviation is sent as one tag per letter', () => {
+        // "P.E." is two letter names, not a word. As a single tag its two
+        // vowels slurred into one syllable and the voice just said "P".
         const g = gen();
-        for (const w of ['japan', 'thailand']) {
+        const r = g.synthesisRequest('P.E.', { model: g.DEFAULT_MODEL });
+        assert.equal(r.text,
+            '<phoneme alphabet="cmu-arpabet" ph="P IY1">P</phoneme>. ' +
+            '<phoneme alphabet="cmu-arpabet" ph="IY1">E</phoneme>.');
+        assert.equal(r.model, g.PRONUNCIATION_MODEL);
+    });
+
+    test('a one-piece word keeps the exact text its recording was cut from', () => {
+        // japan and thailand are already correct on disk. A change to how
+        // pieces are joined must not silently invalidate them.
+        const g = gen();
+        assert.equal(g.synthesisRequest('Japan', { model: g.DEFAULT_MODEL }).text,
+            '<phoneme alphabet="cmu-arpabet" ph="JH AH0 P AE1 N">Japan</phoneme>');
+    });
+
+    test('a misread take is re-cut instead of shipped', () => {
+        // The best spelling measured 9/10 — one take is not enough.
+        const g = gen();
+        assert.truthy(g.VERIFY_ATTEMPTS >= 4, 'too few takes to beat a 1-in-10 misread');
+        assert.equal(g.spokenKey('P.E.'), 'pe', 'transcript and slug must compare on letters alone');
+        assert.equal(g.spokenKey('p-e'), g.spokenKey('PE'), 'both spellings judge against the same target');
+    });
+
+    test('both spellings of the P.E. subject are covered', () => {
+        // units-data.js writes "P.E.", units-hk1-data.js writes "PE" — two
+        // different slugs, so two recordings, and both were wrong.
+        const g = gen();
+        for (const w of ['P.E.', 'PE']) {
+            const r = g.synthesisRequest(w, { model: g.DEFAULT_MODEL });
+            assert.truthy(r.text.includes('ph="P IY1"') && r.text.includes('ph="IY1"'),
+                `"${w}" (${g.wordAudioSlug(w)}.mp3) must be spoken as letters`);
+        }
+    });
+
+    test('the words this was built for stay covered', () => {
+        const g = gen();
+        for (const w of ['japan', 'thailand', 'pe', 'p-e']) {
             assert.truthy(g.PRONUNCIATION[w], `${w} was mispronounced — dropping its override brings the bug back`);
         }
     });

@@ -15,13 +15,20 @@ const CACHE_NAME = 'flashlingo-v335';
 // multilingual voice read both as foreign words.
 const AUDIO_CACHE = 'flashlingo-audio-v5';
 
-// The words v5 re-recorded, and only those. Dropping the service-worker copy
-// is not enough by itself: the CDN serves recordings as
-// `immutable, max-age=1 year`, so the refetch in audioWordResponse can be
-// answered from the browser's OWN disk cache with the very bytes we are
-// replacing. These few go back to the network unconditionally; every other
-// word keeps the cheap cached path, which is the point of a separate cache.
-const RE_RECORDED = ['japan', 'thailand'];
+// Recordings whose BYTES changed under a filename they already had. Two
+// caches hold a stale copy of each, and both have to be dealt with:
+//
+//   ours   — evicted by name on activate (see evictReRecorded). Bumping
+//            AUDIO_CACHE would also do it, but that throws away all ~13,000
+//            recordings to fix a handful; these are the only stale entries.
+//   theirs — the CDN serves recordings as `immutable, max-age=1 year`, so
+//            the refetch in audioWordResponse can be answered from the
+//            browser's OWN disk cache with the very bytes we are replacing.
+//            Listed words therefore refetch with `cache: 'reload'`.
+//
+// Every other word keeps the cheap cached path, which is the point of a
+// separate audio cache. Safe to empty whenever AUDIO_CACHE is next bumped.
+const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e'];
 const ASSETS = [
   '/',
   '/index.html',
@@ -133,6 +140,15 @@ self.addEventListener('install', event => {
   );
 });
 
+// Drop just the recordings that were re-cut under their existing filename.
+// Cheap enough to redo on every activate: it is a handful of deletes, and
+// the words re-download on the next tap.
+async function evictReRecorded() {
+  const cache = await caches.open(AUDIO_CACHE);
+  await Promise.all(RE_RECORDED.map(
+    slug => cache.delete(self.location.origin + '/audio/words/' + slug + '.mp3')));
+}
+
 // Activate: clean up old caches (but keep the audio cache — recordings are
 // immutable and re-downloading them on every version bump would be wasteful)
 self.addEventListener('activate', event => {
@@ -141,7 +157,7 @@ self.addEventListener('activate', event => {
       Promise.all(
         keys.filter(key => key !== CACHE_NAME && key !== AUDIO_CACHE).map(key => caches.delete(key))
       )
-    ).then(() => self.clients.claim())
+    ).then(evictReRecorded).then(() => self.clients.claim())
   );
 });
 
