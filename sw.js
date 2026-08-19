@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v333';
+const CACHE_NAME = 'flashlingo-v334';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -10,8 +10,18 @@ const CACHE_NAME = 'flashlingo-v333';
 // model; v4 fixed four more the sweep had filed as "probably a homophone" —
 // web was live saying "You win", which is how that heuristic was caught out.
 // Without the bump, a phone that had already cached one of those words would
-// keep playing the wrong one forever.
-const AUDIO_CACHE = 'flashlingo-audio-v4';
+// keep playing the wrong one forever. v5 re-recorded japan and thailand: said
+// on their own, with no sentence around them to place the language, the
+// multilingual voice read both as foreign words.
+const AUDIO_CACHE = 'flashlingo-audio-v5';
+
+// The words v5 re-recorded, and only those. Dropping the service-worker copy
+// is not enough by itself: the CDN serves recordings as
+// `immutable, max-age=1 year`, so the refetch in audioWordResponse can be
+// answered from the browser's OWN disk cache with the very bytes we are
+// replacing. These few go back to the network unconditionally; every other
+// word keeps the cheap cached path, which is the point of a separate cache.
+const RE_RECORDED = ['japan', 'thailand'];
 const ASSETS = [
   '/',
   '/index.html',
@@ -162,7 +172,8 @@ async function audioWordResponse(request) {
   // forever.
   if (full && !isRecording(full)) { await cache.delete(key); full = null; }
   if (!full) {
-    full = await fetch(request.url);   // no Range header → always a full 200
+    // no Range header → always a full 200
+    full = await fetch(request.url, RE_RECORDED.includes(slugOf(key)) ? { cache: 'reload' } : undefined);
     if (!full.ok || !isRecording(full)) return full;   // never cache those
     await cache.put(key, full.clone());
   }
@@ -187,6 +198,11 @@ async function audioWordResponse(request) {
       'Content-Length': String(end - start + 1)
     }
   });
+}
+
+// "…/audio/words/japan.mp3" -> "japan", the name generate-word-audio.js gave it.
+function slugOf(url) {
+  return url.slice(url.lastIndexOf('/') + 1).replace(/\.mp3$/, '');
 }
 
 // A response that can safely be cached as a word recording. Anything the SPA

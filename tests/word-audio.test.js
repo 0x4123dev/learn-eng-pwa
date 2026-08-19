@@ -323,6 +323,21 @@ suite('word audio: service worker caching', () => {
             `flag "${m[1]}" carries no audio version — a re-voice would never re-warm`);
     });
 
+    test('a re-recorded word is refetched past the browser cache too', () => {
+        // Bumping AUDIO_CACHE only drops OUR copy. The CDN serves recordings
+        // as `immutable, max-age=1 year`, so the refetch that follows can be
+        // answered from the browser's own disk cache with the stale bytes —
+        // the child would still hear the wrong word.
+        const s = sw();
+        const m = /RE_RECORDED\s*=\s*\[([^\]]*)\]/.exec(s);
+        assert.truthy(m, 'sw.js must list the words whose bytes changed under a reused filename');
+        for (const w of ['japan', 'thailand']) {
+            assert.truthy(m[1].includes(`'${w}'`), `${w} was re-recorded and must bypass the disk cache`);
+        }
+        assert.truthy(/RE_RECORDED\.includes\(slugOf\(key\)\)\s*\?\s*\{\s*cache:\s*'reload'\s*\}/.test(s),
+            'listed words must refetch with cache: reload; everything else stays on the cheap path');
+    });
+
     test('a dedicated audio cache exists and survives version-bump cleanup', () => {
         assert.truthy(/AUDIO_CACHE\s*=\s*['"]flashlingo-audio-v\d+['"]/.test(sw()),
             'sw.js must declare AUDIO_CACHE');
@@ -444,6 +459,55 @@ suite('word audio: one voice for the whole app', () => {
         assert.falsy(g.voiceConflict(current, g.SHIPPED_VOICE, false), 'same voice is fine');
         assert.falsy(g.voiceConflict(current, 'some-other-voice-id', true), '--force is the deliberate escape hatch');
         assert.falsy(g.voiceConflict(null, 'anything', false), 'a fresh set has nothing to conflict with');
+    });
+});
+
+// ── Pronunciation overrides ──────────────────────────────────────────────
+// Sent on its own, with no sentence to place the language, the multilingual
+// model read "Japan" and "Thailand" as foreign words. Both are now pinned to
+// an explicit phoneme spelling.
+suite('word audio: pronunciation overrides', () => {
+    const gen = () => require(path.join(root, 'scripts', 'generate-word-audio.js'));
+
+    test('an ordinary word is sent as bare text on the default model', () => {
+        const g = gen();
+        const r = g.synthesisRequest('apple', { model: g.DEFAULT_MODEL });
+        assert.equal(r.text, 'apple', 'no markup for words the model already says correctly');
+        assert.equal(r.model, g.DEFAULT_MODEL);
+    });
+
+    test('an overridden word is sent as a phoneme tag on the English model', () => {
+        const g = gen();
+        const r = g.synthesisRequest('Japan', { model: g.DEFAULT_MODEL });
+        assert.equal(r.text, '<phoneme alphabet="cmu-arpabet" ph="JH AH0 P AE1 N">Japan</phoneme>');
+        assert.equal(r.model, g.PRONUNCIATION_MODEL);
+        assert.truthy(r.model !== g.DEFAULT_MODEL,
+            'eleven_multilingual_v2 ignores <phoneme> and speaks the markup — the tag needs an English model');
+    });
+
+    test('the override is found by slug, so any capitalisation hits it', () => {
+        const g = gen();
+        for (const w of ['thailand', 'Thailand', ' Thailand ']) {
+            assert.equal(g.synthesisRequest(w, { model: g.DEFAULT_MODEL }).model, g.PRONUNCIATION_MODEL,
+                `"${w}" must reach the override — it is the same recording either way`);
+        }
+    });
+
+    test('every override is keyed by a real slug and spelled in arpabet', () => {
+        const g = gen();
+        for (const [slug, ph] of Object.entries(g.PRONUNCIATION)) {
+            assert.equal(g.wordAudioSlug(slug), slug,
+                `"${slug}" is not a slug, so it would never match a word`);
+            assert.truthy(/^[A-Z]{1,2}[0-2]?( [A-Z]{1,2}[0-2]?)*$/.test(ph),
+                `"${ph}" is not arpabet — IPA measured unreliable here and must not creep back in`);
+        }
+    });
+
+    test('the two words this was built for stay covered', () => {
+        const g = gen();
+        for (const w of ['japan', 'thailand']) {
+            assert.truthy(g.PRONUNCIATION[w], `${w} was mispronounced — dropping its override brings the bug back`);
+        }
     });
 });
 

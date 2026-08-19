@@ -24,6 +24,9 @@
 //                       node scripts/generate-word-audio.js --dictionary \
 //                         --shard $i/4 --concurrency 3 &
 //                     done; wait
+//   --only a,b      work on just these words (comma-separated), whatever data
+//                   file they come from — pair with --force to replace a bad
+//                   recording, e.g. --only japan,thailand --force
 //   --force         regenerate even if the mp3 already exists
 //   --voice ID      ElevenLabs voice id   (default: the shipped voice, Sarah)
 //   --model ID      ElevenLabs model id   (default: eleven_multilingual_v2)
@@ -180,6 +183,43 @@ const OUTPUT_FORMAT = 'mp3_44100_128';
 const CONCURRENCY = 3;
 const MAX_RETRIES = 5;
 
+// ── Pronunciation overrides ──────────────────────────────────────────────
+// A word sent to the API on its own has no sentence around it to hint at the
+// language, and eleven_multilingual_v2 sometimes reads an isolated proper
+// noun as a foreign word: "Japan" and "Thailand" both came out wrong.
+//
+// The cure is to state the pronunciation instead of hoping for it — SSML
+// <phoneme>. That tag is only honoured by the English models;
+// eleven_multilingual_v2 does not implement it and renders the markup as
+// noise (a garbled half-second), so a word listed here is recorded with
+// PRONUNCIATION_MODEL. Same voice, so the speaker never changes — only the
+// engine reading her lines.
+//
+// CMU arpabet, not IPA. Both alphabets are documented, but IPA came back
+// unreliable when measured: four takes of /dʒəˈpæn/ gave "zipon", "epa",
+// one good "Japan", and one where the voice read the markup out loud.
+// The same four takes in arpabet were four clean "Japan"s, and the digits
+// carry the stress explicitly (1 = primary, 0 = unstressed).
+//
+// Keep this list short: it exists for words the default model gets wrong,
+// verified by listening, not as a general dictionary.
+const PRONUNCIATION_MODEL = 'eleven_turbo_v2';   // English-only; supports <phoneme>
+const PRONUNCIATION = {
+    japan: 'JH AH0 P AE1 N',      // juh-PAN, stress on the second syllable
+    thailand: 'T AY1 L AE2 N D'   // TIE-land — a plain T, never a "th"
+};
+
+// What to send the API for one word, and which model must read it.
+// Words without an override keep the default model and their bare text.
+function synthesisRequest(word, opts) {
+    const ph = PRONUNCIATION[wordAudioSlug(word)];
+    if (!ph) return { text: String(word), model: opts.model };
+    return {
+        text: `<phoneme alphabet="cmu-arpabet" ph="${ph}">${word}</phoneme>`,
+        model: PRONUNCIATION_MODEL
+    };
+}
+
 // Minimal .env loader (no dependencies): KEY=VALUE lines, # comments,
 // optional `export ` prefix and single/double quotes. Values already in the
 // real environment always win over the file.
@@ -298,6 +338,7 @@ function voiceConflict(manifest, voice, force) {
 }
 
 async function synthesize(word, opts) {
+    const req = synthesisRequest(word, opts);
     const url = `https://api.elevenlabs.io/v1/text-to-speech/${opts.voice}?output_format=${OUTPUT_FORMAT}`;
     const res = await fetch(url, {
         method: 'POST',
@@ -306,8 +347,8 @@ async function synthesize(word, opts) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            text: word,
-            model_id: opts.model,
+            text: req.text,
+            model_id: req.model,
             voice_settings: { stability: 0.5, similarity_boost: 0.75 }
         })
     });
@@ -378,9 +419,17 @@ async function main() {
         process.exit(2);
     }
 
-    const words = collectWords({ includeDictionary: flag('--dictionary'), includeAnswers: flag('--answers'), includeTappable: flag('--tappable') });
+    // --only a,b — work on just these words, whatever data file they live in.
+    // How a single bad recording gets replaced, without walking 13,000 files.
+    const only = value('--only', '').split(',').map(s => s.trim()).filter(Boolean);
+    const words = only.length
+        ? only
+        : collectWords({ includeDictionary: flag('--dictionary'), includeAnswers: flag('--answers'), includeTappable: flag('--tappable') });
     for (const c of findSlugCollisions(words)) {
         console.warn(`⚠ slug collision: "${c.dropped}" reuses ${c.slug}.mp3 (recorded from "${c.kept}")`);
+    }
+    if (only.length && !force) {
+        console.warn('⚠ --only without --force: words that already have an mp3 are skipped.');
     }
 
     fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -450,6 +499,7 @@ module.exports = {
     collectAnswerWords, answerParts, ANSWER_BANKS,
     collectTappableWords, tappableWords, TAPPABLE_BANKS,
     loadEnvFile, readVoiceManifest, writeVoiceManifest, voiceConflict,
+    synthesisRequest, PRONUNCIATION, PRONUNCIATION_MODEL,
     SHIPPED_VOICE, DEFAULT_VOICE, DEFAULT_MODEL,
     DATA_FILES, DICTIONARY_FILE, OUT_DIR
 };
