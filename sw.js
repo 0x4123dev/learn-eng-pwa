@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v343';
+const CACHE_NAME = 'flashlingo-v344';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -135,6 +135,16 @@ const ASSETS = [
   '/img/battle-scenes/moonlit-rooftops/poster.webp',
   '/img/battle-scenes/candy-cloudworks/poster.webp',
   '/img/battle-scenes/cosmic-observatory/poster.webp',
+  '/img/battle-scenes/tropical-monolith/poster.webp',
+  '/img/battle-scenes/aurora-ice-spire/poster.webp',
+  '/img/battle-scenes/giant-mushroom-grove/poster.webp',
+  '/img/battle-scenes/thunder-totem-canyon/poster.webp',
+  '/img/battle-scenes/crystal-rift/poster.webp',
+  '/img/battle-scenes/sunken-temple-lagoon/poster.webp',
+  '/img/battle-scenes/dragonbone-desert/poster.webp',
+  '/img/battle-scenes/moon-gate-ruins/poster.webp',
+  '/img/battle-scenes/sky-beanstalk/poster.webp',
+  '/img/battle-scenes/candy-volcano/poster.webp',
   '/img/battle-scenes/cloudstep-meadow/far-strip.webp',
   '/img/battle-scenes/cloudstep-meadow/zone-left.webp',
   '/img/battle-scenes/cloudstep-meadow/zone-center.webp',
