@@ -81,6 +81,7 @@ const ASSETS = [
   '/js/battle-camera.js',
   '/js/battle-scenes.js',
   '/js/night-raid-rules.js',
+  '/js/night-raid-choreo.js',
   '/js/night-raid-art.js',
   '/js/night-raid-game.js',
   '/js/night-raid.js',

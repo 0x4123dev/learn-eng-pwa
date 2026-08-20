@@ -60,21 +60,21 @@
                     <h2 id="createUserTitle">Create your profile</h2>
                     <form class="create-user-form" id="createUserForm" onsubmit="createUser(event)">
                         <div class="input-group">
-                            <label class="input-label">Your name</label>
+                            <label class="input-label" for="usernameInput">Your name</label>
                             <input type="text" class="input-field" id="usernameInput" placeholder="Enter your name" maxlength="20" required>
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label">Choose avatar</label>
-                            <div class="avatar-picker" id="avatarPicker">
-                                <div class="avatar-option selected" data-avatar="😊">😊</div>
-                                <div class="avatar-option" data-avatar="🦊">🦊</div>
-                                <div class="avatar-option" data-avatar="🐱">🐱</div>
-                                <div class="avatar-option" data-avatar="🐶">🐶</div>
-                                <div class="avatar-option" data-avatar="🦁">🦁</div>
-                                <div class="avatar-option" data-avatar="🐼">🐼</div>
-                                <div class="avatar-option" data-avatar="🦄">🦄</div>
-                                <div class="avatar-option" data-avatar="🐸">🐸</div>
+                            <span class="input-label" id="avatarPickerLabel">Choose avatar</span>
+                            <div class="avatar-picker" id="avatarPicker" role="group" aria-labelledby="avatarPickerLabel">
+                                <button type="button" class="avatar-option selected" data-avatar="😊" aria-label="Smiling face" aria-pressed="true">😊</button>
+                                <button type="button" class="avatar-option" data-avatar="🦊" aria-label="Fox" aria-pressed="false">🦊</button>
+                                <button type="button" class="avatar-option" data-avatar="🐱" aria-label="Cat" aria-pressed="false">🐱</button>
+                                <button type="button" class="avatar-option" data-avatar="🐶" aria-label="Dog" aria-pressed="false">🐶</button>
+                                <button type="button" class="avatar-option" data-avatar="🦁" aria-label="Lion" aria-pressed="false">🦁</button>
+                                <button type="button" class="avatar-option" data-avatar="🐼" aria-label="Panda" aria-pressed="false">🐼</button>
+                                <button type="button" class="avatar-option" data-avatar="🦄" aria-label="Unicorn" aria-pressed="false">🦄</button>
+                                <button type="button" class="avatar-option" data-avatar="🐸" aria-label="Frog" aria-pressed="false">🐸</button>
                             </div>
                         </div>
 
@@ -109,7 +109,7 @@
                 <div class="summer-sun"><img src="img/sun.svg" alt="sun"></div>
                 <div class="home-header">
                     <div class="home-user">
-                        <div class="home-user-avatar" id="homeAvatar" onclick="navigateToProfile()">😊</div>
+                        <button type="button" class="home-user-avatar" id="homeAvatar" onclick="navigateToProfile()" aria-label="Open profile">😊</button>
                         <div class="home-user-info">
                             <span class="home-user-greeting">Hey superstar! 🌟</span>
                             <span id="appVersion" style="font-size:10px;color:#aaa;opacity:0.6;"></span>
@@ -269,6 +269,7 @@
 
             <!-- Pet Battle (⚔️ from the pet habitat) -->
             <div class="screen pet-battle-screen" id="petBattleScreen"></div>
+            <div class="screen night-raid-screen" id="nightRaidScreen"></div>
 
             <!-- Navigation hubs keep the bottom bar focused on five user goals. -->
             <div class="screen nav-hub-screen" id="learnHubScreen">
@@ -579,6 +580,11 @@
     <script src="js/battle-camera.js"></script>
     <script src="js/battle-scenes.js"></script>
     <script src="js/castle-skins.js"></script>
+    <script src="js/night-raid-rules.js"></script>
+    <script src="js/night-raid-choreo.js"></script>
+    <script src="js/night-raid-art.js"></script>
+    <script src="js/night-raid-game.js"></script>
+    <script src="js/night-raid.js"></script>
     <script src="js/friends.js"></script>
     <script src="js/battlelink.js"></script>
     <script src="js/petbattle.js"></script>
@@ -596,10 +602,12 @@
     <script src="js/exam-lessons.js"></script>
     <!-- Core -->
     <script src="js/math-data.js"></script>
+    <script src="js/math-luythua.js"></script>
     <script src="js/math-lessons.js"></script>
     <script src="js/math-glossary.js"></script>
     <script src="js/math-figures.js"></script>
     <script src="js/math-exams.js"></script>
+    <script src="js/math-source-exams.js"></script>
     <script src="js/mathwars.js"></script>
     <script src="js/math.js"></script>
     <script src="js/math-board.js"></script>

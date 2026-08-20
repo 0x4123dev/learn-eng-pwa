@@ -1,0 +1,161 @@
+// Canvas session for the one Castle Night Raid combat mode.
+var NightRaidGame = (() => {
+  'use strict';
+
+  const W=1000,H=560,LANE_TOP=248,LANE_GAP=55;
+  const Choreo=typeof NightRaidChoreo!=='undefined'?NightRaidChoreo:(typeof require==='function'?require('./night-raid-choreo.js'):null);
+  const laneY=lane=>LANE_TOP+lane*LANE_GAP;
+  const worldX=x=>235+x*80;
+
+  class Game {
+    constructor(canvas,target,options={}) {
+      if(!canvas||!canvas.getContext) throw new Error('Night Raid needs a canvas');
+      this.canvas=canvas;this.ctx=canvas.getContext('2d');this.target=target;this.options=options;
+      this.state=NightRaidRules.createState(target,target.seed);this.selected='goblin';this.commands=[];
+      this.running=false;this.paused=false;this.raf=0;this.last=0;this.acc=0;this.lastPaint=0;this.lastNotify=0;this.finished=false;
+      this.reduce=!!options.reduceEffects||(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+      this.particles=[];this.impactPulse=0;this.replayQueue=null;this.replayIndex=0;this.replaySpeed=1;this.boundFrame=t=>this.frame(t);this.boundPointer=e=>this.pointer(e);this.boundKey=e=>this.key(e);
+      canvas.width=W;canvas.height=H;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','application');
+      canvas.setAttribute('aria-label','Night Raid battlefield. Select a robber, then choose one of five lanes.');
+      canvas.addEventListener('pointerup',this.boundPointer);canvas.addEventListener('keydown',this.boundKey);
+      this.resize();this.ro=typeof ResizeObserver==='function'?new ResizeObserver(()=>this.resize()):null;if(this.ro)this.ro.observe(canvas);
+      NightRaidArt.preloadDefenses(()=>{if(this.running||this.paused)this.paint(performance.now());});
+    }
+    resize(){const r=this.canvas.getBoundingClientRect();if(!r.width)return;this.canvas.style.setProperty('--nr-aspect',W+'/'+H);}
+    start(){if(this.running)return;this.running=true;this.last=performance.now();this.notify();this.raf=requestAnimationFrame(this.boundFrame);}
+    destroy(){this.running=false;cancelAnimationFrame(this.raf);this.canvas.removeEventListener('pointerup',this.boundPointer);this.canvas.removeEventListener('keydown',this.boundKey);if(this.ro)this.ro.disconnect();}
+    setSelected(id){if(NightRaidRules.raiderById(id)){this.selected=id;this.notify();this.paint(performance.now());}}
+    togglePause(){if(!this.options.allowPause)return false;this.paused=!this.paused;this.notify();return this.paused;}
+    deploy(lane){const result=NightRaidRules.deploy(this.state,this.selected,lane);if(result.ok){this.commands.push({at:this.state.timeMs,type:'deploy',unitId:this.selected,lane});this.spark(worldX(NightRaidRules.COLS+.65),laneY(lane)-22,'#ffd47e',7);if(typeof navigator!=='undefined'&&navigator.vibrate&&!this.reduce)navigator.vibrate(8);}this.notify(result);return result;}
+    pointer(event){if(this.options.replay||this.state.status!=='playing'||this.paused)return;const r=this.canvas.getBoundingClientRect(),y=(event.clientY-r.top)*H/r.height;let lane=Math.round((y-LANE_TOP)/LANE_GAP);lane=Math.max(0,Math.min(4,lane));this.deploy(lane);}
+    key(event){if(this.options.replay)return;if(event.key>='1'&&event.key<='5'){this.setSelected(NightRaidRules.RAIDERS[Number(event.key)-1].id);event.preventDefault();return;}if(event.key==='ArrowUp'||event.key==='ArrowDown'){const current=Number(this.canvas.dataset.lane||2),next=Math.max(0,Math.min(4,current+(event.key==='ArrowUp'?-1:1)));this.canvas.dataset.lane=String(next);this.options.onAnnounce&&this.options.onAnnounce('Lane '+(next+1));event.preventDefault();return;}if(event.code==='Space'){this.deploy(Number(this.canvas.dataset.lane||2));event.preventDefault();}if(event.key==='Escape'&&this.options.allowPause){this.togglePause();event.preventDefault();}}
+    playReplay(commands,speed=1){this.replayQueue=NightRaidRules.normalizeCommands(commands);this.replayIndex=0;this.replaySpeed=Math.max(1,Math.min(2,+speed||1));this.options.replay=true;this.start();}
+    replayDeploys(){while(this.replayQueue&&this.replayIndex<this.replayQueue.length&&this.replayQueue[this.replayIndex].at<=this.state.timeMs){const c=this.replayQueue[this.replayIndex++];NightRaidRules.deploy(this.state,c.unitId,c.lane);this.spark(worldX(NightRaidRules.COLS+.65),laneY(c.lane)-22,'#9bd5ff',this.reduce?3:7);}}
+    notify(extra){if(this.options.onUpdate)this.options.onUpdate(this.state,this.selected,extra||null);}
+    spark(x,y,color,count){for(let i=0;i<count;i++){const a=Math.PI*2*i/count+(i%2)*.2,s=25+(i*13%34);this.particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-20,life:500+(i%3)*100,max:700,color,size:3+(i%3)});}}
+    consumeEvents(){for(const e of this.state.events){if(e.type==='castle-hit'||e.type==='bomb-castle'){this.impactPulse=1;this.spark(168,laneY(e.lane)-20,'#ffc06b',this.reduce?5:18);}else if(e.type==='bomb'||e.type==='defense-down'){this.spark(worldX(e.x),laneY(e.lane)-20,e.material==='stone'?'#c5d1de':'#e3a96c',this.reduce?4:13);}else if(e.type==='raider-down'){this.spark(worldX(e.x),laneY(e.lane)-20,'#e6d7ff',this.reduce?3:8);}else if(e.type==='fox-loot'){this.spark(158,laneY(e.lane)-45,'#ffd45f',9);} }
+    }
+    updateParticles(dt){for(const p of this.particles){p.life-=dt;p.x+=p.vx*dt/1000;p.y+=p.vy*dt/1000;p.vy+=75*dt/1000;}this.particles=this.particles.filter(p=>p.life>0);this.impactPulse=Math.max(0,this.impactPulse-dt/500);}
+    frame(now){if(!this.running)return;const raw=Math.min(250,now-this.last);this.last=now;if(!this.paused&&this.state.status==='playing'&&!document.hidden){this.acc+=raw*this.replaySpeed;while(this.acc>=NightRaidRules.TICK_MS){this.replayDeploys();NightRaidRules.tick(this.state,NightRaidRules.TICK_MS);this.consumeEvents();this.acc-=NightRaidRules.TICK_MS;}this.updateParticles(raw);if(now-this.lastPaint>32){this.paint(now);this.lastPaint=now;}if(this.state.status!=='playing'&&!this.finished){this.finished=true;this.paint(now);this.options.onFinish&&this.options.onFinish(this.state,this.commands.slice());}}
+      if(now-this.lastNotify>=200){this.notify();this.lastNotify=now;}
+      if(this.paused||document.hidden)this.paint(now);this.raf=requestAnimationFrame(this.boundFrame);
+    }
+    drawTeammates(ctx){const mates=this.state.teammates||[];for(let i=0;i<mates.length;i++){const x=62+(i%3)*38,y=382-Math.floor(i/3)*52;ctx.save();ctx.translate(x,y);ctx.fillStyle='rgba(6,14,28,.86)';NightRaidArt.roundRect(ctx,-16,-38,32,42,9);ctx.fill();const colors={gunner:'#f05b52',engineer:'#f5b947',shield:'#53b9ee'};ctx.fillStyle=colors[mates[i]]||'#fff';ctx.beginPath();ctx.arc(0,-27,8,0,Math.PI*2);ctx.fill();ctx.fillRect(-8,-18,16,17);ctx.strokeStyle='#e6f0ff';ctx.lineWidth=2;if(mates[i]==='gunner'){ctx.beginPath();ctx.moveTo(5,-17);ctx.lineTo(19,-24);ctx.stroke();}else if(mates[i]==='engineer'){ctx.beginPath();ctx.arc(12,-12,7,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(10,-12,9,-Math.PI/2,Math.PI/2);ctx.stroke();}ctx.restore();}}
+    paint(now){const ctx=this.ctx;ctx.clearRect(0,0,W,H);NightRaidArt.drawScene(ctx,W,H,this.target.sceneId,now,this.reduce);
+      // Castle is deliberately large and remains the visual objective.
+      NightRaidArt.drawCastle(ctx,145,492,this.target.castleSkin||'stone-keep',this.state.castleHp,this.state.castleMaxHp,this.impactPulse);this.drawTeammates(ctx);
+      const defenses=this.state.defenses.slice().sort((a,b)=>a.lane-b.lane||a.x-b.x);for(const d of defenses){if(d.dead&&d.type!=='guard-dog')continue;if((NightRaidRules.defenseById(d.type)||{}).trap&&!d.revealed){ctx.fillStyle='rgba(157,124,79,.22)';ctx.beginPath();ctx.ellipse(worldX(d.x),laneY(d.lane),24,7,0,0,Math.PI*2);ctx.fill();continue;}NightRaidArt.drawDefense(ctx,d,worldX(d.x),laneY(d.lane),now);}
+      for(const r of this.state.raiders)NightRaidArt.drawRaider(ctx,r,worldX(r.x),laneY(r.lane),now);
+      for(const s of this.state.shots)NightRaidArt.drawProjectile(ctx,s,worldX,laneY);
+      for(const p of this.particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;
+      // Selected keyboard lane stays visible without depending on color alone.
+      const focusLane=Number(this.canvas.dataset.lane||-1);if(document.activeElement===this.canvas&&focusLane>=0){ctx.strokeStyle='#fff7b2';ctx.lineWidth=3;ctx.setLineDash([8,7]);ctx.strokeRect(4,laneY(focusLane)-48,W-8,52);ctx.setLineDash([]);}
+      if(this.paused){ctx.fillStyle='rgba(3,8,18,.68)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='700 38px system-ui';ctx.textAlign='center';ctx.fillText('PAUSED',W/2,H/2);}
+    }
+  }
+
+  // One-tap presentation layer. The result is decided by the shared DAM/DEF
+  // rules before the animation starts; canvas only makes that result readable.
+  class AutoBattle {
+    constructor(canvas,target,options={}){
+      if(!canvas||!canvas.getContext)throw new Error('Night Raid needs a canvas');
+      this.canvas=canvas;this.ctx=canvas.getContext('2d');this.target=target;this.options=options;
+      this.result=NightRaidRules.resolveAutoBattle(target,target.attackerDamage);this.soldierCount=Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers||0)));this.state={...this.result,status:'ready',timeMs:0,soldiers:this.soldierCount};
+      this.running=false;this.startedAt=0;this.raf=0;this.finished=false;
+      this.reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Deterministic battle script: enemy fire, casualties and paths are all
+      // staged up-front; reduce-motion replays the same timeline compressed.
+      this.choreo=Choreo.build(this.result,target,this.soldierCount,options.pet||null,target.seed);
+      this.duration=this.reduce?2000:this.choreo.durationMs;this.boundFrame=t=>this.frame(t);
+      this.size=800;this.assets={};
+      this.loadAsset('board','img/night-raid/isometric-home-board-skin-pad.webp');
+      this.loadAsset('squad','img/night-raid/raider-squad.webp');
+      if(options.pet)this.loadAsset('pet','img/night-raid/pet-soldiers-'+(options.pet.atlas==='large'?'large':'small')+'-v2.webp');
+      NightRaidArt.preloadDefenses(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
+      if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
+      const petText=options.pet?` Chó đội trưởng ${options.pet.name}, giống ${options.pet.breed}, cấp ${options.pet.level}, đứng trong đội hình tiến công.`:'';
+      canvas.width=this.size;canvas.height=this.size;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Trận Cướp Đêm tự động trên sân nhà isometric. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${this.result.defense}.${petText}`);
+      this.paint(0);
+    }
+    loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
+    start(){this.paint(0);this.notify();}
+    charge(){if(this.running||this.finished)return false;this.running=true;this.state.status='fighting';this.startedAt=performance.now();this.notify();this.raf=requestAnimationFrame(this.boundFrame);return true;}
+    destroy(){this.running=false;cancelAnimationFrame(this.raf);}
+    notify(){if(this.options.onUpdate)this.options.onUpdate(this.state,null,null);}
+    frame(now){if(!this.running)return;const elapsed=Math.min(this.duration,now-this.startedAt);this.state.timeMs=elapsed;const p=elapsed/this.duration;this.paint(p);if(elapsed>=this.duration){this.running=false;this.finished=true;this.state.status=this.result.status;this.state.timeMs=this.result.durationMs;this.notify();if(this.options.onFinish)this.options.onFinish({...this.state},[]);return;}if(!document.hidden)this.raf=requestAnimationFrame(this.boundFrame);else setTimeout(()=>this.frame(performance.now()),120);if(elapsed%220<18)this.notify();}
+    drawSquadMember(index,x,y,size,alpha=1){const ctx=this.ctx,img=this.assets.squad;if(!img)return;const boxes=[[0,300],[285,675],[670,1065],[1060,1425],[1415,1770],[1760,2172]],box=boxes[index%boxes.length],sx=box[0],sw=box[1]-box[0],h=size,w=h*sw/img.height;ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(-.03);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,-h*.86,w,h);ctx.restore();}
+    drawPetLeader(x,y,size,alpha=1,showBadge=true){const ctx=this.ctx,img=this.assets.pet,pet=this.options.pet;if(!img||!pet)return;const sw=img.width/5,sx=Math.max(0,Math.min(4,pet.cell||0))*sw,h=size,w=h*sw/img.height;ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(-.035);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,-h*.82,w,h);ctx.restore();if(!showBadge)return;ctx.save();ctx.globalAlpha=alpha;ctx.textAlign='center';ctx.font='900 13px system-ui';const name=String(pet.name||pet.breed||'Dog').slice(0,12),labelW=Math.max(52,ctx.measureText(name).width+16);ctx.fillStyle='rgba(42,31,50,.88)';NightRaidArt.roundRect(ctx,x-labelW/2,y+4,labelW,22,11);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(name,x,y+19);ctx.font='950 11px system-ui';ctx.fillStyle='#f48b2d';NightRaidArt.roundRect(ctx,x+labelW/2-24,y-53,42,20,10);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('LV '+pet.level,x+labelW/2-3,y-39);ctx.restore();}
+    // Renders the NightRaidChoreo script at one point in time. Projectiles
+    // fly with real travel time and only explode at their scripted impact.
+    paint(progress){const ctx=this.ctx,S=this.size,ch=this.choreo,C=Choreo;
+      const T=Math.max(0,Math.min(1,progress))*ch.durationMs,now=T;
+      ctx.clearRect(0,0,S,S);
+      if(this.assets.board)ctx.drawImage(this.assets.board,0,0,S,S);else{ctx.fillStyle='#dff2c9';ctx.fillRect(0,0,S,S);}
+      const shade=ctx.createLinearGradient(0,0,0,S);shade.addColorStop(0,'rgba(24,35,73,.08)');shade.addColorStop(1,'rgba(24,35,73,.18)');ctx.fillStyle=shade;ctx.fillRect(0,0,S,S);
+      const won=this.result.won,hpMax=this.target.castleHp||200;
+      const breachP=won&&ch.breachAt!=null?Math.max(0,Math.min(1,(T-ch.breachAt)/Math.max(1,ch.durationMs-ch.breachAt))):0;
+      const hp=won?Math.max(0,hpMax*(1-breachP)):hpMax;
+      let shake=0;
+      if(!this.reduce){for(const e of ch.events){const dt=T-e.t;if(dt<0||dt>260)continue;if(e.type==='fall'||e.type==='breach'||(e.type==='impact'&&e.lethal))shake=Math.max(shake,3*(1-dt/260));}
+        if(breachP>0&&breachP<1)shake=Math.max(shake,2);}
+      ctx.save();ctx.translate(shake*Math.sin(T*.11),0);
+      NightRaidArt.drawCastle(ctx,205,350,this.target.castleSkin||'stone-keep',hp,hpMax,breachP>0&&breachP<.5?1-breachP*2:0);
+      ctx.restore();
+      // Towers wind up before each scripted shot and recoil after it.
+      for(const tw of ch.towers){
+        if(tw.virtual)continue;
+        const dead=won&&ch.breachAt!=null&&T>ch.breachAt+500;
+        let recoil=0,windup=0;
+        for(const f of tw.fireAt){const d=T-f;if(d>=-160&&d<0)windup=Math.max(windup,1+d/160);else if(d>=0&&d<140)recoil=Math.max(recoil,1-d/140);}
+        ctx.save();ctx.translate(tw.x+recoil*3,tw.y);if(windup)ctx.transform(1,0,0,1-windup*.06,0,0);
+        NightRaidArt.drawDefense(ctx,{type:tw.type,hp:100,maxHp:100,dead,lane:0},0,0,now);
+        ctx.restore();
+      }
+      const easeOut=p=>1-(1-p)*(1-p);
+      const actors=[];
+      for(const u of ch.units){
+        const s=C.unitAt(u,T);
+        let x=s.x,y=s.y,rot=0,alpha=1,flash=0;
+        if(s.state==='idle')x+=Math.sin(now*.002+u.index*1.3)*1.2;
+        if(s.moving){const gait=Math.sin((x+y)*.14+u.index*2.1);y-=Math.abs(gait)*3;rot=gait*.05;}
+        else if(s.state==='engage'&&T>ch.engageStart){const lunge=Math.max(0,Math.sin(now*.005+u.index*1.9));x-=lunge*7;rot=-lunge*.06;}
+        if(s.state==='fallen'){const fp=easeOut(Math.min(1,(T-u.fallAt)/420));rot=(u.index%2?1:-1)*1.35*fp;y+=fp*8;alpha=1-.25*fp;}
+        for(const st of u.staggerAt){const d=T-st;if(d>=0&&d<180){x+=Math.sin(d*.25)*3;flash=Math.max(flash,1-d/180);}}
+        actors.push({u,x,y,rot,alpha,flash,facing:s.facing,state:s.state});
+      }
+      actors.sort((a,b)=>(a.state==='fallen'?-900:0)+a.y-((b.state==='fallen'?-900:0)+b.y));
+      for(const a of actors){
+        ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.rot);if(a.facing===1)ctx.scale(-1,1);
+        if(a.u.kind==='pet')this.drawPetLeader(0,0,155,a.alpha,a.facing===-1&&a.state!=='fallen');
+        else this.drawSquadMember(a.u.index%6,0,0,128,a.alpha);
+        if(a.flash&&!this.reduce){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a.flash*.45;ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-58,24,50,0,0,Math.PI*2);ctx.fill();}
+        ctx.restore();
+        if(!this.reduce&&(a.state==='march'||a.state==='charge'||a.state==='flee')){const ph=((a.x*.05+a.u.index*3.7)%1+1)%1;ctx.globalAlpha=.15;ctx.fillStyle='#e7dcc0';ctx.beginPath();ctx.arc(a.x+(a.facing===1?-16:16),a.y-2,3+ph*4,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+      }
+      for(const s of ch.shots){
+        if(T<s.launchAt)continue;
+        const d=T-s.launchAt;
+        if(!this.reduce&&d<240){const g=d/240;ctx.globalAlpha=.38*(1-g);ctx.fillStyle=s.kind==='water'?'#bfe9ff':'#efe6cf';ctx.beginPath();ctx.arc(s.from.x-4-g*10,s.from.y-2-g*8,4+g*9,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+        if(T<=s.impactAt){
+          const p=C.shotAt(s,T);
+          ctx.save();
+          ctx.globalAlpha=.22;ctx.fillStyle='#1c2430';ctx.beginPath();ctx.ellipse(p.x,p.ground+4,5,2.2,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+          if(s.kind==='water'){for(let i=0;i<4;i++){const q=C.shotAt(s,T-i*36);if(q.p<=0)break;ctx.globalAlpha=1-i*.22;ctx.fillStyle=i?'#8fd8ff':'#d9f2ff';ctx.beginPath();ctx.arc(q.x,q.y,4.4-i*.8,0,Math.PI*2);ctx.fill();}}
+          else{ctx.translate(p.x,p.y);ctx.rotate(d*.02);ctx.fillStyle='#8d8a80';ctx.beginPath();ctx.arc(0,0,4.6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c9c6ba';ctx.beginPath();ctx.arc(-1.4,-1.4,1.7,0,Math.PI*2);ctx.fill();}
+          ctx.restore();
+        } else if(T-s.impactAt<340&&!this.reduce){
+          const g=(T-s.impactAt)/340;ctx.save();ctx.globalAlpha=1-g;
+          if(s.kind==='water'){ctx.strokeStyle='#bfe9ff';ctx.lineWidth=2;for(let i=0;i<5;i++){const a2=Math.PI+i*.55,r=4+g*16;ctx.beginPath();ctx.moveTo(s.to.x+Math.cos(a2)*3,s.to.y+Math.sin(a2)*2);ctx.lineTo(s.to.x+Math.cos(a2)*r,s.to.y-Math.abs(Math.sin(a2))*r*.7);ctx.stroke();}}
+          else{ctx.strokeStyle='#efe1bd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(s.to.x,s.to.y,3+g*14,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#a5a095';for(let i=0;i<5;i++){const a2=i*1.26,r=3+g*17;ctx.beginPath();ctx.arc(s.to.x+Math.cos(a2)*r,s.to.y+Math.sin(a2)*r*.6-g*6,1.6,0,Math.PI*2);ctx.fill();}}
+          ctx.restore();
+        }
+      }
+      if(T>ch.engageStart&&T<ch.engageEnd){for(let i=0;i<6;i++){const pulse=Math.max(0,Math.sin(now*.005+i*2.1));if(pulse>.55)NightRaidArt.drawClashSpark(ctx,352+(i%3)*30,352+(i%2)*36,(pulse-.55)*1.6,i);}}
+      if(won&&breachP>0){for(let i=0;i<3;i++)NightRaidArt.drawClashSpark(ctx,215+i*24,270+i*34,.35+.5*Math.sin(now*.02+i),i+6);}
+      const vignette=ctx.createRadialGradient(400,390,240,400,400,600);vignette.addColorStop(.5,'rgba(23,22,45,0)');vignette.addColorStop(1,'rgba(23,22,45,.28)');ctx.fillStyle=vignette;ctx.fillRect(0,0,S,S);
+      ctx.fillStyle='rgba(30,23,49,.78)';NightRaidArt.roundRect(ctx,235,18,330,54,27);ctx.fill();ctx.textAlign='center';ctx.font='900 22px system-ui';ctx.fillStyle='#fff4ba';ctx.fillText(this.state.status==='ready'?'SẴN SÀNG TIẾN QUÂN':this.state.status==='fighting'?'ĐANG GIAO CHIẾN':won?'PHÁ THÀNH CÔNG':'PHÒNG THỦ QUÁ MẠNH',400,52);
+    }
+  }
+  return Object.freeze({Game,AutoBattle,W,H,laneY,worldX});
+})();
+if(typeof module!=='undefined'&&module.exports)module.exports=NightRaidGame;

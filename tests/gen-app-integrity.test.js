@@ -31,6 +31,7 @@ const ASSETS = parseAssets() || [];
 const JS_ASSETS = ASSETS.filter(a => /^\/js\/.+\.js$/.test(a));
 const CSS_ASSETS = ASSETS.filter(a => /^\/css\/.+\.css$/.test(a));
 const IMG_ASSETS = ASSETS.filter(a => /^\/img\//.test(a));
+const MATH_EXAM_ASSETS = ASSETS.filter(a => /^\/assets\/math-exams\/.+\.jpg$/.test(a));
 
 // Parse <script src="..."> entries from index.html, in document order.
 function parseScriptSrcs() {
@@ -46,8 +47,8 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // SW.JS — cache manifest structure
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
-    test('ASSETS array literal parses with exactly 99 entries', () => {
-        assert.equal(ASSETS.length, 99,
+    test('ASSETS array literal parses with exactly 134 entries', () => {
+        assert.equal(ASSETS.length, 134,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -78,10 +79,11 @@ suite('gen: sw.js cache manifest', () => {
     test('ASSETS partitions exactly into shell + js + image entries', () => {
         const shell = ['/', '/index.html', '/css/styles.css', '/manifest.json'];
         const unclassified = ASSETS.filter(a =>
-            !shell.includes(a) && !JS_ASSETS.includes(a) && !IMG_ASSETS.includes(a));
+            !shell.includes(a) && !JS_ASSETS.includes(a) && !IMG_ASSETS.includes(a)
+                && !MATH_EXAM_ASSETS.includes(a));
         assert.deepEqual(unclassified, [],
             `unclassified sw.js ASSETS entries: ${unclassified.join(', ')}`);
-        assert.equal(4 + JS_ASSETS.length + IMG_ASSETS.length, ASSETS.length);
+        assert.equal(4 + JS_ASSETS.length + IMG_ASSETS.length + MATH_EXAM_ASSETS.length, ASSETS.length);
     });
 });
 
@@ -91,10 +93,11 @@ suite('gen: sw.js cache manifest', () => {
 // missing file (even a pet png) would break the whole service-worker install.
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
-    test('ASSETS contains 63 /js/*.js, 1 /css/*.css, 32 /img/* entries', () => {
-        assert.equal(JS_ASSETS.length, 63, 'js asset count changed');
+    test('ASSETS contains 70 JS, 1 CSS, 50 app images and 10 source-paper images', () => {
+        assert.equal(JS_ASSETS.length, 70, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
-        assert.equal(IMG_ASSETS.length, 32, 'img asset count changed');
+        assert.equal(IMG_ASSETS.length, 50, 'img asset count changed');
+        assert.equal(MATH_EXAM_ASSETS.length, 10, 'math source image count changed');
     });
 
     for (const asset of JS_ASSETS.concat(CSS_ASSETS)) {
@@ -107,7 +110,7 @@ suite('gen: sw.js js/css assets exist on disk', () => {
 });
 
 suite('gen: sw.js img assets exist on disk', () => {
-    for (const asset of IMG_ASSETS) {
+    for (const asset of IMG_ASSETS.concat(MATH_EXAM_ASSETS)) {
         test(`cached asset ${asset} exists on disk`, () => {
             const abs = path.join(ROOT, asset.slice(1));
             assert.truthy(fs.existsSync(abs), `missing file for sw.js asset: ${asset}`);
@@ -115,18 +118,20 @@ suite('gen: sw.js img assets exist on disk', () => {
         });
     }
 
-    test('img assets include the two premium castle atlases', () => {
+    test('image cache has no obsolete pet PNGs and includes the premium castle atlases', () => {
         const svgs = IMG_ASSETS.filter(a => /^\/img\/[^/]+\.svg$/.test(a));
         const pets = IMG_ASSETS.filter(a => /^\/img\/pets\/[^/]+\.png$/.test(a));
         const teammates = IMG_ASSETS.filter(a => /^\/img\/battle-teammates\/[^/]+\.jpg$/.test(a));
         const castles = IMG_ASSETS.filter(a => /^\/img\/castle-skins\/castles-atlas-[ab]\.png$/.test(a));
         const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
+        const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|png)$/.test(a));
         assert.equal(svgs.length, 3, `root svg count: ${svgs.join(', ')}`);
-        assert.equal(pets.length, 10, `pet png count: ${pets.join(', ')}`);
+        assert.equal(pets.length, 0, `obsolete pet png count: ${pets.join(', ')}`);
         assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
         assert.equal(castles.length, 2, `castle atlas count: ${castles.join(', ')}`);
-        assert.equal(scenes.length, 14, `battle scene cache count: ${scenes.join(', ')}`);
-        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length, IMG_ASSETS.length);
+        assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
+        assert.equal(nightRaid.length, 18, `night raid art count: ${nightRaid.join(', ')}`);
+        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length, IMG_ASSETS.length);
     });
 });
 
@@ -134,8 +139,8 @@ suite('gen: sw.js img assets exist on disk', () => {
 // INDEX.HTML — script tags resolve and load in dependency order
 // ============================================================================
 suite('gen: index.html script tags', () => {
-    test('index.html has exactly 62 <script src> tags, all under js/', () => {
-        assert.equal(SCRIPT_SRCS.length, 62,
+    test('index.html has exactly 69 <script src> tags, all under js/', () => {
+        assert.equal(SCRIPT_SRCS.length, 69,
             'script tag count changed — update this characterization');
         const nonJs = SCRIPT_SRCS.filter(s => !/^js\/.+\.js$/.test(s));
         assert.deepEqual(nonJs, [], `unexpected non-js/ script srcs: ${nonJs.join(', ')}`);
@@ -239,9 +244,9 @@ suite('gen: manifest.json', () => {
         assert.equal(manifest.start_url, '/');
     });
 
-    test('display standalone, portrait, lang en', () => {
+    test('display standalone, supports both orientations, lang en', () => {
         assert.equal(manifest.display, 'standalone');
-        assert.equal(manifest.orientation, 'portrait');
+        assert.equal(manifest.orientation, 'any');
         assert.equal(manifest.lang, 'en');
     });
 
