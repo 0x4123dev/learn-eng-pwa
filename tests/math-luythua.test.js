@@ -1,11 +1,13 @@
-// math-luythua.test.js — gói "Ôn tập chương 2&3 · Lũy thừa" (js/math-luythua.js).
+// math-luythua.test.js — gói "Ôn tập chương 1&2 · Lũy thừa & Căn bậc hai"
+// (js/math-luythua.js): 20 câu trắc nghiệm công thức lũy thừa + 20 bài tính căn.
 //
 // Gói này được viết tay (không qua scripts/build-math-data.js), nên các bất
 // biến mà build script vẫn kiểm cho ngân hàng chính phải được khóa lại ở đây:
 // đáp án nằm trong 4 lựa chọn, chữ cái đúng rải đều A–D, giải thích có 🔑 và
-// đủ ✗ cho từng lựa chọn sai, và không có "<" trần lọt vào innerHTML.
-// Quan trọng nhất: đủ cả 8 công thức trong bảng LŨY THỪA — thiếu một công
-// thức là gói mất đúng cái lý do nó tồn tại.
+// đủ ✗ cho từng lựa chọn sai, không có "<" trần lọt vào innerHTML, và mỗi đáp
+// số căn phải đúng là căn bậc hai của số trong đề. Quan trọng nhất: đủ cả 8
+// công thức trong bảng LŨY THỪA — thiếu một công thức là gói mất đúng cái lý
+// do nó tồn tại.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -16,6 +18,9 @@ const { MATH_LT_CHAPTER, MATH_LT_LABEL, MATH_LT_QUESTIONS } =
 const { MATH_CHAPTERS, MATH_QUESTIONS } = require(path.join(root, 'js', 'math-data.js'));
 const { MATH_LESSONS } = require(path.join(root, 'js', 'math-lessons.js'));
 
+const MCQ = MATH_LT_QUESTIONS.filter(q => q.type !== 'calc');
+const CALC = MATH_LT_QUESTIONS.filter(q => q.type === 'calc');
+
 // math.js reads these as globals, the way the browser gives them to it.
 global.MATH_CHAPTERS = MATH_CHAPTERS;
 global.MATH_QUESTIONS = MATH_QUESTIONS;
@@ -25,18 +30,26 @@ global.MATH_LT_LABEL = MATH_LT_LABEL;
 global.MATH_LT_QUESTIONS = MATH_LT_QUESTIONS;
 const math = require(path.join(root, 'js', 'math.js'));
 
-suite('luy thua: the 20-question pack', () => {
-    test('exactly 20 questions, ids mlt-1..mlt-20 in order', () => {
-        assert.equal(MATH_LT_QUESTIONS.length, 20);
-        MATH_LT_QUESTIONS.forEach((q, i) => {
-            assert.equal(q.id, `mlt-${i + 1}`, `question ${i + 1} has id "${q.id}"`);
-            assert.equal(q.ch, MATH_LT_CHAPTER, `${q.id} has ch=${q.ch}`);
+suite('luy thua: pack shape', () => {
+    test('40 questions: mlt-1..20 formula MCQs then mlt-c1..c20 typed roots', () => {
+        assert.equal(MATH_LT_QUESTIONS.length, 40);
+        assert.equal(MCQ.length, 20);
+        assert.equal(CALC.length, 20);
+        MCQ.forEach((q, i) => {
+            assert.equal(q.id, `mlt-${i + 1}`, `MCQ ${i + 1} has id "${q.id}"`);
             assert.equal(q.topic, 'Lũy thừa', `${q.id} topic drifted`);
         });
+        CALC.forEach((q, i) => {
+            assert.equal(q.id, `mlt-c${i + 1}`, `calc ${i + 1} has id "${q.id}"`);
+            assert.equal(q.topic, 'Căn bậc hai', `${q.id} topic drifted`);
+        });
+        MATH_LT_QUESTIONS.forEach(q =>
+            assert.equal(q.ch, MATH_LT_CHAPTER, `${q.id} has ch=${q.ch}`));
+        assert.equal(MATH_LT_LABEL, 'Ôn tập chương 1&2 · Lũy thừa & Căn bậc hai');
     });
 
-    test('every question has 4 unique options and the answer is the correct one', () => {
-        for (const q of MATH_LT_QUESTIONS) {
+    test('every MCQ has 4 unique options and the answer is the correct one', () => {
+        for (const q of MCQ) {
             assert.truthy(Array.isArray(q.options) && q.options.length === 4,
                 `${q.id}: needs exactly 4 options`);
             assert.equal(new Set(q.options).size, 4, `${q.id}: duplicate options`);
@@ -46,27 +59,30 @@ suite('luy thua: the 20-question pack', () => {
         }
     });
 
-    test('correct letters are spread evenly: five each of A, B, C, D', () => {
+    test('MCQ correct letters are spread evenly: five each of A, B, C, D', () => {
         // Hand-authored set, so the spread can be pinned exactly — a child who
         // notices "the answer is always C" stops reading the formulas.
         const counts = [0, 0, 0, 0];
-        MATH_LT_QUESTIONS.forEach(q => counts[q.correct]++);
+        MCQ.forEach(q => counts[q.correct]++);
         counts.forEach((n, i) =>
             assert.equal(n, 5, `answer ${'ABCD'[i]} used ${n}/20 times`));
     });
 
-    test('every explanation teaches: 🔑 rule plus one ✗ per wrong option', () => {
+    test('every explanation teaches: 🔑 rule, and one ✗ per wrong MCQ option', () => {
         for (const q of MATH_LT_QUESTIONS) {
             assert.truthy(/🔑/.test(q.explanation), `${q.id}: explanation has no 🔑 rule`);
+        }
+        for (const q of MCQ) {
             const crosses = (q.explanation.match(/✗/g) || []).length;
             assert.equal(crosses, 3, `${q.id}: ${crosses} ✗ marks, expected one per wrong option`);
         }
     });
+});
 
-    test('all 8 formulas from the LŨY THỪA table are covered', () => {
-        // One check per formula in the printed table the pack revises.
+suite('luy thua: the 8 formulas are all covered', () => {
+    test('each formula from the LŨY THỪA table has a recall question', () => {
         const has = (fn, label) =>
-            assert.truthy(MATH_LT_QUESTIONS.some(fn), `no question covers ${label}`);
+            assert.truthy(MCQ.some(fn), `no question covers ${label}`);
         has(q => q.q.includes('x⁰') && q.answer === '1', 'x⁰ = 1');
         has(q => q.q.includes('x¹') && q.answer === 'x', 'x¹ = x');
         has(q => q.answer === 'xᵐ⁺ⁿ', 'xᵐ · xⁿ = xᵐ⁺ⁿ');
@@ -78,33 +94,61 @@ suite('luy thua: the 20-question pack', () => {
     });
 
     test('each formula family also has a numeric application question', () => {
-        const answers = MATH_LT_QUESTIONS.map(q => q.answer);
+        const answers = MCQ.map(q => q.answer);
         // nhân / chia / lũy thừa của lũy thừa / tích / thương / mũ 0 / mũ âm
         ['2⁵', '25', '3⁶', '2³ · 5³', '4/9', '1/8', 'x⁻⁴'].forEach(a =>
             assert.truthy(answers.includes(a), `no application question with answer "${a}"`));
-        assert.truthy(MATH_LT_QUESTIONS.some(q => q.q.includes('(−7)⁰') && q.answer === '1'),
+        assert.truthy(MCQ.some(q => q.q.includes('(−7)⁰') && q.answer === '1'),
             'no numeric x⁰ question');
     });
+});
 
+suite('luy thua: the 20 typed square-root drills', () => {
+    test('every root answer really is the square root of the number asked', () => {
+        for (const q of CALC) {
+            const m = /√(\d+)/.exec(q.q) || /x² = (\d+)/.exec(q.q);
+            assert.truthy(m, `${q.id}: cannot find the radicand in "${q.q}"`);
+            const n = Number(m[1]);
+            const r = Number(q.answer);
+            assert.equal(r * r, n, `${q.id}: ${q.answer}² ≠ ${n}`);
+            assert.truthy(r > 0, `${q.id}: arithmetic square root must be positive`);
+        }
+    });
+
+    test('20 distinct perfect squares, typed on the keypad (no options)', () => {
+        const radicands = CALC.map(q =>
+            Number((/√(\d+)/.exec(q.q) || /x² = (\d+)/.exec(q.q))[1]));
+        assert.equal(new Set(radicands).size, 20, 'duplicate radicands');
+        for (const q of CALC) {
+            assert.equal(q.type, 'calc', `${q.id}: must be typed`);
+            assert.truthy(!q.options, `${q.id}: typed questions must not carry options`);
+            assert.truthy(Array.isArray(q.keys), `${q.id}: keypad keys[] missing`);
+            assert.truthy(math.mathIsTyped(q), `${q.id}: mathIsTyped must treat it as typed`);
+            assert.truthy(math.mathGrade(q, q.answer), `${q.id}: its own answer must grade correct`);
+        }
+        // Both phrasings are present so the child meets the skill from
+        // each direction: "Tính √n" and "x² = n".
+        assert.truthy(CALC.some(q => q.q.startsWith('Tính √')), 'no "Tính √n" phrasing');
+        assert.truthy(CALC.some(q => q.q.includes('x² =')), 'no "x² = n" phrasing');
+    });
+});
+
+suite('luy thua: safety and wiring', () => {
     test('no bare "<" survives into innerHTML fields', () => {
-        // q/options are rendered through mathFormula, explanations through
-        // innerHTML where only <br> and <b> are legitimate tags.
         for (const q of MATH_LT_QUESTIONS) {
             assert.truthy(!q.q.includes('<'), `${q.id}: "<" in question text`);
-            q.options.forEach(o => assert.truthy(!String(o).includes('<'), `${q.id}: "<" in option`));
+            (q.options || []).forEach(o => assert.truthy(!String(o).includes('<'), `${q.id}: "<" in option`));
             const stripped = q.explanation.replace(/<br\s*\/?>|<\/?b>/gi, '');
             assert.truthy(!stripped.includes('<'), `${q.id}: stray "<" in explanation`);
         }
     });
-});
 
-suite('luy thua: wiring into the math tab', () => {
     test('mathById resolves pack questions, so retry drill and the wrong-answer panel work', () => {
         assert.equal(math.mathById('mlt-5').answer, 'xᵐⁿ');
-        assert.equal(math.mathById('mlt-20').answer, 'x⁻⁴');
+        assert.equal(math.mathById('mlt-c16').answer, '17');
     });
 
-    test('startMathLtQuiz runs ALL 20 questions in one round', () => {
+    test('startMathLtQuiz runs ALL 40 questions in one round', () => {
         const prevDocument = global.document;
         const hadDocument = 'document' in global;
         global.document = { getElementById: () => null, querySelector: () => null };
@@ -112,9 +156,8 @@ suite('luy thua: wiring into the math tab', () => {
             math.startMathLtQuiz();
             assert.truthy(math.isMathQuizActive(), 'quiz did not start');
             const qs = math.mathQuizQuestions();
-            assert.equal(qs.length, 20, 'a pack round asks all 20 questions');
-            assert.equal(new Set(qs.map(q => q.id)).size, 20, 'shuffle lost or duplicated a question');
-            assert.equal(math.mathCurrentQuestion().topic, 'Lũy thừa');
+            assert.equal(qs.length, 40, 'a pack round asks all 40 questions');
+            assert.equal(new Set(qs.map(q => q.id)).size, 40, 'shuffle lost or duplicated a question');
         } finally {
             math.abandonMathQuiz();
             if (hadDocument) global.document = prevDocument;
@@ -128,10 +171,10 @@ suite('luy thua: wiring into the math tab', () => {
         global.appState = { mathHistory: [] };
         try {
             const html = math.renderMathPracticeHTML();
-            assert.truthy(html.includes('Ôn tập chương 2&3'), 'card title missing');
+            assert.truthy(html.includes('Ôn tập chương 1&2'), 'card title missing');
             assert.truthy(html.includes('startMathLtQuiz()'), 'card does not start the pack quiz');
-            assert.truthy(html.includes('20 câu'), 'card does not say the pack size');
-            assert.truthy(html.indexOf('Ôn tổng hợp') < html.indexOf('Ôn tập chương 2&3'),
+            assert.truthy(html.includes('40 câu'), 'card does not say the pack size');
+            assert.truthy(html.indexOf('Ôn tổng hợp') < html.indexOf('Ôn tập chương 1&2'),
                 'pack card should sit under Ôn tổng hợp');
         } finally {
             if (hadState) global.appState = prevState;

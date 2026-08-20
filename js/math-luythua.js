@@ -1,23 +1,28 @@
-// math-luythua.js — Ôn tập chương 2&3: gói 20 câu chuyên bảng công thức lũy thừa.
+// math-luythua.js — Ôn tập chương 1&2: 20 câu công thức lũy thừa + 20 bài tính căn.
 //
 // Một menu riêng trong Luyện tập (Toán 7 · Học kì 1), tách khỏi ngân hàng 5
-// chương của math-data.js: mục tiêu của gói là thuộc TRỌN 8 công thức trong
-// bảng LŨY THỪA, nên một lượt hỏi đủ cả 20 câu thay vì rút 10 câu ngẫu nhiên.
+// chương của math-data.js. Một lượt hỏi đủ cả 40 câu (chỉ xáo thứ tự):
+// mục tiêu là thuộc TRỌN bảng lũy thừa và tính nhuyễn căn bậc hai của các số
+// chính phương, không phải rút 10 câu ngẫu nhiên như lượt của các chương.
 //
-// 8 công thức được phủ (mỗi công thức có câu nhận diện + câu áp dụng số):
+// Nửa đầu — 20 câu trắc nghiệm phủ 8 công thức trong bảng LŨY THỪA
+// (mỗi công thức có câu nhận diện + câu áp dụng số):
 //   x⁰ = 1 (x ≠ 0)      x¹ = x
 //   xᵐ · xⁿ = xᵐ⁺ⁿ      xᵐ : xⁿ = xᵐ⁻ⁿ
 //   (xᵐ)ⁿ = xᵐⁿ         (xy)ⁿ = xⁿyⁿ
 //   (x/y)ⁿ = xⁿ/yⁿ      x⁻ⁿ = 1/xⁿ
 //
-// Cùng schema với MATH_QUESTIONS (id/ch/topic/q/options/correct/answer/
-// explanation) để tái dùng nguyên khung quiz, retry drill và bảng "câu hay
-// sai". `ch` là chuỗi 'lt23' — các pin đếm theo chương 1–5 không đụng tới gói
-// này. Bất biến (20 câu, 4 lựa chọn, đáp án rải đều A–D, 🔑 + ✗ đủ 3 ý) được
-// khóa trong tests/math-luythua.test.js.
+// Nửa sau — 20 câu type:'calc' (bé tự tính rồi gõ đáp số trên keypad):
+// √4 … √625 qua 20 số chính phương, xen kẽ dạng "Tính √n" và "x² = n".
+//
+// Cùng schema với MATH_QUESTIONS để tái dùng nguyên khung quiz, keypad,
+// retry drill và bảng "câu hay sai". `ch` là chuỗi 'lt12' — các pin đếm theo
+// chương 1–5 không đụng tới gói này. Bất biến (40 câu, 4 lựa chọn/MCQ, đáp án
+// rải đều A–D, 🔑 + ✗, đáp số căn đúng bình phương) được khóa trong
+// tests/math-luythua.test.js.
 
-const MATH_LT_CHAPTER = 'lt23';
-const MATH_LT_LABEL = 'Ôn tập chương 2&3 · Lũy thừa';
+const MATH_LT_CHAPTER = 'lt12';
+const MATH_LT_LABEL = 'Ôn tập chương 1&2 · Lũy thừa & Căn bậc hai';
 
 const MATH_LT_QUESTIONS = [
   {
@@ -159,6 +164,128 @@ const MATH_LT_QUESTIONS = [
     options: ['x⁴', '−x⁴', 'x⁻⁴', '−x⁻⁴'],
     correct: 2, answer: 'x⁻⁴',
     explanation: '🔑 1/xⁿ = x⁻ⁿ nên 1/x⁴ = x⁻⁴.<br>✗ x⁴: là nghịch đảo của 1/x⁴, không bằng nó.<br>✗ −x⁴: phân số 1/x⁴ không mang dấu trừ.<br>✗ −x⁻⁴: số mũ âm không sinh thêm dấu trừ.'
+    },
+
+  // ---- 20 bài tính căn bậc hai (type:'calc' — gõ đáp số trên keypad) ----
+  {
+    id: 'mlt-c1', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √4',
+    answer: '2', accept: [], keys: [],
+    explanation: '🔑 √4 = 2 vì 2² = 4 và 2 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c2', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √9',
+    answer: '3', accept: [], keys: [],
+    explanation: '🔑 √9 = 3 vì 3² = 9 và 3 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c3', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √16',
+    answer: '4', accept: [], keys: [],
+    explanation: '🔑 √16 = 4 vì 4² = 16 và 4 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c4', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tìm x > 0 biết x² = 25. Vậy x = ?',
+    answer: '5', accept: [], keys: [],
+    explanation: '🔑 x > 0 và x² = 25 thì x = √25 = 5, vì 5² = 25.'
+  },
+  {
+    id: 'mlt-c5', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √36',
+    answer: '6', accept: [], keys: [],
+    explanation: '🔑 √36 = 6 vì 6² = 36 và 6 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c6', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √49',
+    answer: '7', accept: [], keys: [],
+    explanation: '🔑 √49 = 7 vì 7² = 49 và 7 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c7', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √64',
+    answer: '8', accept: [], keys: [],
+    explanation: '🔑 √64 = 8 vì 8² = 64 và 8 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c8', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √81',
+    answer: '9', accept: [], keys: [],
+    explanation: '🔑 √81 = 9 vì 9² = 81 và 9 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c9', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √100',
+    answer: '10', accept: [], keys: [],
+    explanation: '🔑 √100 = 10 vì 10² = 100 và 10 > 0 — căn bậc hai số học luôn là số không âm.'
+  },
+  {
+    id: 'mlt-c10', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √121',
+    answer: '11', accept: [], keys: [],
+    explanation: '🔑 √121 = 11 vì 11² = 121 và 11 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 10² = 100 &lt; 121 &lt; 12² = 144, nên thử 11.'
+  },
+  {
+    id: 'mlt-c11', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tìm x > 0 biết x² = 144. Vậy x = ?',
+    answer: '12', accept: [], keys: [],
+    explanation: '🔑 x > 0 và x² = 144 thì x = √144 = 12, vì 12² = 144.<br>Mẹo ước lượng: 11² = 121 &lt; 144 &lt; 13² = 169, nên thử 12.'
+  },
+  {
+    id: 'mlt-c12', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √169',
+    answer: '13', accept: [], keys: [],
+    explanation: '🔑 √169 = 13 vì 13² = 169 và 13 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 12² = 144 &lt; 169 &lt; 14² = 196, nên thử 13.'
+  },
+  {
+    id: 'mlt-c13', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √196',
+    answer: '14', accept: [], keys: [],
+    explanation: '🔑 √196 = 14 vì 14² = 196 và 14 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 13² = 169 &lt; 196 &lt; 15² = 225, nên thử 14.'
+  },
+  {
+    id: 'mlt-c14', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tìm x > 0 biết x² = 225. Vậy x = ?',
+    answer: '15', accept: [], keys: [],
+    explanation: '🔑 x > 0 và x² = 225 thì x = √225 = 15, vì 15² = 225.<br>Mẹo ước lượng: 14² = 196 &lt; 225 &lt; 16² = 256, nên thử 15.'
+  },
+  {
+    id: 'mlt-c15', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √256',
+    answer: '16', accept: [], keys: [],
+    explanation: '🔑 √256 = 16 vì 16² = 256 và 16 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 15² = 225 &lt; 256 &lt; 17² = 289, nên thử 16.'
+  },
+  {
+    id: 'mlt-c16', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √289',
+    answer: '17', accept: [], keys: [],
+    explanation: '🔑 √289 = 17 vì 17² = 289 và 17 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 16² = 256 &lt; 289 &lt; 18² = 324, nên thử 17.'
+  },
+  {
+    id: 'mlt-c17', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tìm x > 0 biết x² = 324. Vậy x = ?',
+    answer: '18', accept: [], keys: [],
+    explanation: '🔑 x > 0 và x² = 324 thì x = √324 = 18, vì 18² = 324.<br>Mẹo ước lượng: 17² = 289 &lt; 324 &lt; 19² = 361, nên thử 18.'
+  },
+  {
+    id: 'mlt-c18', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √361',
+    answer: '19', accept: [], keys: [],
+    explanation: '🔑 √361 = 19 vì 19² = 361 và 19 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 18² = 324 &lt; 361 &lt; 20² = 400, nên thử 19.'
+  },
+  {
+    id: 'mlt-c19', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tìm x > 0 biết x² = 400. Vậy x = ?',
+    answer: '20', accept: [], keys: [],
+    explanation: '🔑 x > 0 và x² = 400 thì x = √400 = 20, vì 20² = 400.<br>Mẹo ước lượng: 19² = 361 &lt; 400 &lt; 21² = 441, nên thử 20.'
+  },
+  {
+    id: 'mlt-c20', ch: MATH_LT_CHAPTER, type: 'calc', topic: 'Căn bậc hai',
+    q: 'Tính √625',
+    answer: '25', accept: [], keys: [],
+    explanation: '🔑 √625 = 25 vì 25² = 625 và 25 > 0 — căn bậc hai số học luôn là số không âm.<br>Mẹo ước lượng: 24² = 576 &lt; 625 &lt; 26² = 676, nên thử 25.'
   }
 ];
 
