@@ -85,6 +85,28 @@ function cupProgress(tier, c) {
   return { have, need: have >= CUP_MERGE ? 0 : CUP_MERGE - have, ready: have >= CUP_MERGE, top: false };
 }
 
+// ---- selling ----
+// A cup can be traded for coins: 500 per basic-cup of worth, so a ruby pays
+// 5x and a diamond 25x. Selling removes the trophy but NEVER touches `won` —
+// the lifetime win count is history, and because reconciliation only adds
+// cups when the server knows MORE wins than `won`, a sold cup can never be
+// resurrected by a sync.
+const CUP_SELL_PRICE = 500;                // coins per basic-cup of worth
+
+function cupSellPrice(tier) {
+  const look = CUP_LOOK[tier];
+  return look ? CUP_SELL_PRICE * look.worth : 0;
+}
+
+function sellCup(tier) {
+  const c = cupState();
+  if (!CUP_LOOK[tier] || c[tier] <= 0) return null;
+  c[tier] -= 1;
+  appState.coins = Math.max(0, Math.trunc(Number(appState.coins) || 0)) + cupSellPrice(tier);
+  _cupSave();
+  return c;
+}
+
 // ---- server reconciliation ----
 // The cabinet is local, the battles are not. On a fresh install the child has
 // no cups but the server still knows every battle they won, so the shelf is
@@ -145,6 +167,10 @@ function _cupShelf(tier, c) {
          </button>`
       : `Còn <b>${p.need}</b> ${CUP_NAME[tier].toLowerCase()} nữa là gộp được`;
 
+  const sell = n > 0
+    ? `<button class="cup-sell-btn" onclick="promptSellCup('${tier}')">🪙 Bán 1 — nhận ${cupSellPrice(tier)} xu</button>`
+    : '';
+
   return `
     <div class="cup-shelf ${look.cls}-shelf">
       <div class="cup-shelf-head">
@@ -153,6 +179,7 @@ function _cupShelf(tier, c) {
       </div>
       <div class="cup-row">${cups}</div>
       <div class="cup-shelf-foot">${foot}</div>
+      ${sell}
     </div>`;
 }
 
@@ -197,10 +224,46 @@ function doMergeCups(tier) {
   return before === cupTotalValue();
 }
 
+// Selling asks first: the cup leaves the shelf for good, so the child must
+// say "chắc chưa" out loud before any coin changes hands.
+function promptSellCup(tier) {
+  if (cupState()[tier] <= 0) return;
+  const host = document.getElementById('cupCabinet');
+  if (!host) return;
+  document.querySelector('.cup-sell-backdrop')?.remove();
+  const price = cupSellPrice(tier);
+  host.insertAdjacentHTML('beforeend', `
+    <div class="cup-sell-backdrop" role="presentation" onclick="if(event.target===this)cancelSellCup()" onkeydown="if(event.key==='Escape')cancelSellCup()">
+      <section class="cup-sell-dialog" role="dialog" aria-modal="true" aria-labelledby="cupSellTitle">
+        <div class="cup-sell-icon">🏆→🪙</div>
+        <h3 id="cupSellTitle">Bán 1 ${CUP_NAME[tier].toLowerCase()}?</h3>
+        <p>Con sẽ nhận <b>+${price} xu</b>, nhưng chiếc cúp sẽ rời khỏi tủ mãi mãi. Chắc chưa?</p>
+        <div class="cup-sell-actions">
+          <button type="button" class="cup-sell-cancel" onclick="cancelSellCup()">Thôi, giữ cúp</button>
+          <button type="button" class="cup-sell-confirm" onclick="confirmSellCup('${tier}')">Bán lấy ${price} xu</button>
+        </div>
+      </section>
+    </div>`);
+  requestAnimationFrame?.(() => document.querySelector('.cup-sell-cancel')?.focus());
+}
+
+function cancelSellCup() {
+  document.querySelector('.cup-sell-backdrop')?.remove();
+}
+
+function confirmSellCup(tier) {
+  cancelSellCup();
+  const price = cupSellPrice(tier);
+  if (!sellCup(tier)) return;
+  if (typeof showToast === 'function') showToast('🪙 +' + price + ' xu — con đang có ' + Math.floor(appState.coins) + ' xu');
+  renderCupCabinet();
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     CUP_MERGE, CUP_TIERS, CUP_LOOK, CUP_NAME,
     cupState, awardCup, mergeCups, canMergeCups, cupTotalValue, cupProgress,
+    cupSellPrice, sellCup, promptSellCup, cancelSellCup, confirmSellCup,
     renderCupCabinet, doMergeCups, _cupShelf,
     applyServerWins, reconcileCupsFromServer,
     _resetCupReconcile: () => { _cupsReconciled = false; },

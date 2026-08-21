@@ -12052,3 +12052,17 @@
 .pet-hero-coins{height:44px;min-height:44px;padding:0 13px;border-radius:22px}
 .pet-hero-streak{height:44px;min-height:44px;padding:0 12px;border-radius:22px;display:flex;align-items:center;gap:4px}
 .pet-hero-info{background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.25)}
+
+/* ── Trophy cabinet: sell a cup for coins, with a make-sure dialog ── */
+.cup-sell-btn{margin-top:7px;width:100%;min-height:38px;border:1px solid #f2d38b;border-radius:12px;background:#fff8e3;color:#8a5d13;font-weight:900;font-size:12px;cursor:pointer}
+.cup-sell-btn:active{background:#ffedbf}
+.cup-sell-backdrop{position:fixed;inset:0;z-index:4000;display:grid;place-items:center;padding:18px;background:rgba(10,14,24,.55);backdrop-filter:blur(3px)}
+.cup-sell-dialog{width:min(360px,100%);padding:18px;border-radius:22px;background:#fff;color:#2b2b33;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.cup-sell-icon{font-size:34px;margin-bottom:6px}
+.cup-sell-dialog h3{margin:0 0 6px;font-size:18px}
+.cup-sell-dialog p{margin:0 0 14px;font-size:13px;line-height:1.5;color:#565664}
+.cup-sell-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cup-sell-actions button{min-height:48px;border-radius:14px;font-weight:900;cursor:pointer;font-size:13px}
+.cup-sell-cancel{border:1px solid #d6d9e2;background:#f4f5f9;color:#3c3f4c}
+.cup-sell-confirm{border:0;background:linear-gradient(135deg,#ffca4f,#f59f22);color:#5b3a06;box-shadow:0 4px 0 #c77c14}
+.cup-sell-confirm:active{transform:translateY(2px);box-shadow:0 2px 0 #c77c14}

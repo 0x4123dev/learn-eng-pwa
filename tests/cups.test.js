@@ -369,3 +369,45 @@ if (require.main === module) {
     const harness = require('./harness');
     process.exit(harness.runAll());
 }
+
+// ---- selling ----
+suite('cups: selling for coins', () => {
+    test('selling a basic cup pays 500 coins and takes one cup off the shelf', () => {
+        const { api, ctx } = load({ coins: 100, cups: { basic: 3, ruby: 0, diamond: 0, won: 3 } });
+        const c = api.sellCup('basic');
+        assert.equal(c.basic, 2);
+        assert.equal(ctx.appState.coins, 600);
+    });
+
+    test('ruby and diamond sell at their honest worth: 2500 and 12500', () => {
+        assert.equal(load().api.cupSellPrice('basic'), 500);
+        assert.equal(load().api.cupSellPrice('ruby'), 2500);
+        assert.equal(load().api.cupSellPrice('diamond'), 12500);
+        const { api, ctx } = load({ coins: 0, cups: { basic: 0, ruby: 1, diamond: 1, won: 30 } });
+        api.sellCup('ruby'); api.sellCup('diamond');
+        assert.equal(ctx.appState.coins, 15000);
+    });
+
+    test('an empty shelf sells nothing and pays nothing', () => {
+        const { api, ctx } = load({ coins: 7, cups: { basic: 0, ruby: 0, diamond: 0, won: 5 } });
+        assert.equal(api.sellCup('basic'), null);
+        assert.equal(ctx.appState.coins, 7);
+    });
+
+    test('selling never touches the lifetime win count, so a sync cannot resurrect the cup', () => {
+        const { api, ctx } = load({ coins: 0, cups: { basic: 4, ruby: 0, diamond: 0, won: 4 } });
+        api.sellCup('basic');
+        assert.equal(ctx.appState.cups.won, 4, 'won is history, not inventory');
+        // The server still remembers 4 wins — reconciling must ADD nothing.
+        api.applyServerWins(4);
+        assert.equal(ctx.appState.cups.basic, 3, 'the sold cup stayed sold');
+    });
+
+    test('the cabinet offers a sell button and a make-sure dialog', () => {
+        assert.truthy(cupsSrc.includes('cup-sell-btn'));
+        assert.truthy(cupsSrc.includes("promptSellCup('${tier}')"));
+        assert.truthy(cupsSrc.includes('Chắc chưa?'), 'the dialog must ask before the cup is gone');
+        assert.truthy(cupsSrc.includes('cup-sell-confirm') && cupsSrc.includes('cancelSellCup'));
+        assert.truthy(cssSrc.includes('.cup-sell-backdrop'));
+    });
+});
