@@ -47,8 +47,8 @@ const SCRIPT_SRCS = parseScriptSrcs();
 // SW.JS — cache manifest structure
 // ============================================================================
 suite('gen: sw.js cache manifest', () => {
-    test('ASSETS array literal parses with exactly 134 entries', () => {
-        assert.equal(ASSETS.length, 134,
+    test('ASSETS array literal parses with exactly 128 entries', () => {
+        assert.equal(ASSETS.length, 128,
             'sw.js ASSETS entry count changed — update this characterization');
     });
 
@@ -93,10 +93,10 @@ suite('gen: sw.js cache manifest', () => {
 // missing file (even a pet png) would break the whole service-worker install.
 // ============================================================================
 suite('gen: sw.js js/css assets exist on disk', () => {
-    test('ASSETS contains 70 JS, 1 CSS, 50 app images and 10 source-paper images', () => {
+    test('ASSETS contains 70 JS, 1 CSS, 44 app images and 10 source-paper images', () => {
         assert.equal(JS_ASSETS.length, 70, 'js asset count changed');
         assert.equal(CSS_ASSETS.length, 1, 'css asset count changed');
-        assert.equal(IMG_ASSETS.length, 50, 'img asset count changed');
+        assert.equal(IMG_ASSETS.length, 44, 'img asset count changed');
         assert.equal(MATH_EXAM_ASSETS.length, 10, 'math source image count changed');
     });
 
@@ -130,7 +130,7 @@ suite('gen: sw.js img assets exist on disk', () => {
         assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
         assert.equal(castles.length, 2, `castle atlas count: ${castles.join(', ')}`);
         assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
-        assert.equal(nightRaid.length, 18, `night raid art count: ${nightRaid.join(', ')}`);
+        assert.equal(nightRaid.length, 12, `night raid art count: ${nightRaid.join(', ')}`);
         assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length, IMG_ASSETS.length);
     });
 });

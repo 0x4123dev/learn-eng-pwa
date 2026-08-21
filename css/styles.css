@@ -11927,29 +11927,16 @@
 @media(prefers-reduced-motion:reduce){.nr-builder .nr-build-shop,.nr-build-grid-cell>i{transition:none}.nr-build-drag-ghost{filter:none}.nr-purchase-backdrop{animation:none}}
 @media(max-width:600px) and (max-aspect-ratio:1/1){.nr-battle:has(.nr-auto-command) .nr-canvas-wrap canvas{min-width:720px;transform:translateX(-145px)}.nr-auto-command{min-height:86px;display:grid;align-items:center}}
 
-/* Premium isometric raid stage. The pet remains a real DOM SVG so the exact
-   breed, level outfit and accessible name are preserved during canvas combat. */
+/* Premium isometric raid stage. The pet and squad are drawn on the canvas
+   by NightRaidGame.AutoBattle; no DOM overlay remains. */
 .nr-iso-fight{isolation:isolate;background:#dcefc8}
 .nr-iso-fight canvas{aspect-ratio:1/1!important;background:#dcefc8!important;object-fit:contain}
-.nr-raid-pet{position:absolute;z-index:6;width:clamp(62px,10%,88px);display:grid;justify-items:center;pointer-events:none;filter:drop-shadow(0 7px 6px rgba(54,43,25,.28));transform-origin:50% 90%}
-.nr-pet-3d-art{display:block;width:100%;aspect-ratio:3/5;background-repeat:no-repeat;background-size:500% 100%;filter:drop-shadow(0 10px 7px rgba(47,34,22,.3))}
-.nr-pet-3d-art.small{background-image:url('../img/night-raid/pet-raiders-small.webp')}
-.nr-pet-3d-art.large{background-image:url('../img/night-raid/pet-raiders-large.webp')}
-.nr-pet-3d-art.pet-0{background-position:0 50%}.nr-pet-3d-art.pet-1{background-position:25% 50%}.nr-pet-3d-art.pet-2{background-position:50% 50%}.nr-pet-3d-art.pet-3{background-position:75% 50%}.nr-pet-3d-art.pet-4{background-position:100% 50%}
-.nr-raid-pet>strong{max-width:86px;margin-top:-4px;padding:3px 6px;border:1.5px solid rgba(255,255,255,.92);border-radius:999px;background:rgba(54,38,46,.88);color:#fff;font-size:9px;font-weight:950;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 3px 8px rgba(45,30,34,.22)}
-.nr-pet-level{position:absolute;z-index:3;right:-5px;top:8px;padding:3px 5px;border:1.5px solid #fff;border-radius:999px;background:linear-gradient(135deg,#ffb42e,#ff6e3d);color:#fff;font-size:9px;font-weight:1000;box-shadow:0 3px 8px rgba(122,52,20,.24)}
-.nr-raid-pet.scout{left:62%;top:61%;transform:translate(-50%,-50%)}
-.nr-raid-pet.battle{left:59%;top:62%;transform:translate(-50%,-50%) scale(1.04);transition:left 1.35s cubic-bezier(.2,.72,.22,1),top 1.35s cubic-bezier(.2,.72,.22,1),transform .24s}
-.nr-battle.is-fighting .nr-raid-pet.battle{left:42%;top:47%;animation:nr-pet-charge-bob .24s ease-in-out infinite alternate}
-.nr-battle.is-won .nr-raid-pet.battle{left:28%;top:36%;transform:translate(-50%,-50%) scale(1.1)}
-.nr-battle.is-lost .nr-raid-pet.battle{left:62%;top:65%;transform:translate(-50%,-50%) scale(.94);filter:grayscale(.25) drop-shadow(0 10px 8px rgba(54,43,25,.3))}
-@keyframes nr-pet-charge-bob{from{transform:translate(-50%,-50%) rotate(-3deg) scale(1.04)}to{transform:translate(-50%,calc(-50% - 7px)) rotate(3deg) scale(1.08)}}
 .nr-scout-field.nr-iso-fight{max-width:680px;margin-inline:auto}
 .nr-scout-field.nr-iso-fight canvas{max-height:none;object-fit:contain}
 .nr-canvas-wrap.nr-iso-fight{place-items:center;overflow:hidden;background:linear-gradient(#d9edc5,#bedca6)}
 .nr-canvas-wrap.nr-iso-fight canvas{width:min(100%,calc(100dvh - 168px));height:auto;max-width:800px;max-height:100%;min-width:0!important;transform:none!important}
-@media(max-width:600px){.nr-raid-pet{width:clamp(38px,10%,44px)}.nr-canvas-wrap.nr-iso-fight canvas{width:100%;max-height:100%}.nr-battle-status{bottom:8px}}
-@media(prefers-reduced-motion:reduce){.nr-raid-pet.battle{transition:none}.nr-battle.is-fighting .nr-raid-pet.battle{animation:none}}
+@media(max-width:600px){.nr-canvas-wrap.nr-iso-fight canvas{width:100%;max-height:100%}.nr-battle-status{bottom:8px}}
+@media(prefers-reduced-motion:reduce){}
 @media(prefers-reduced-motion:reduce){.nr-charge,.nr-iso-cell>i{transition:none!important}.nr-charge:active:not(:disabled){transform:none}}
 @media (prefers-reduced-motion:reduce){.nr-build-shop,.nr-iso-cell>i{transition:none}}
 

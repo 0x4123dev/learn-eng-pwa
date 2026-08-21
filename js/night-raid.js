@@ -65,7 +65,6 @@ var NightRaid = (() => {
     const c=document.getElementById('nrHeroCanvas');if(c){const paintHero=()=>{if(!c.isConnected)return;const ctx=c.getContext('2d');NightRaidArt.drawScene(ctx,c.width,c.height,'moonlit-village',0,true);NightRaidArt.drawCastle(ctx,200,390,appState.petBattleCastleSkin||'stone-keep',100,100,0);const dog={type:'guard-dog',lane:2,hp:100,maxHp:100};NightRaidArt.drawDefense(ctx,dog,330,376,0);for(let i=0;i<5;i++)NightRaidArt.drawRaider(ctx,{id:'hero'+i,type:NightRaidRules.RAIDERS[i].id,lane:i,hp:30,maxHp:30},610+i*65,338+(i%2)*28,0);};paintHero();if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(paintHero);}
   }
 
-  function renderRoute(){return scoutBot();}
 
   function scout(level,targetOverride,online){cleanup();view='scout';const target=targetOverride||NightRaidRules.trainingTarget(level);const r=root();if(!r)return;
     const mine=ownPower(),theirs=NightRaidRules.combatPower(target.layout,target.dogLevel,target.teammates);target.attackerDamage=target.attackerDamage||mine.damage;target.attackerDefense=target.attackerDefense||mine.defense;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):mine.soldiers;target.defense=target.defense||theirs.defense;
@@ -84,9 +83,7 @@ var NightRaid = (() => {
   }
   function updateHud(state){const status=document.getElementById('nrBattleStatus'),btn=document.getElementById('nrChargeButton'),battle=document.getElementById('nrBattleRoot');if(status)status.textContent=state.status==='ready'?`Pet và ${state.soldiers||0} lính đang chờ lệnh`:state.status==='fighting'?'Đang chém phá cổng thành!':state.status==='won'?'Đã phá được lâu đài!':'Đội hình buộc phải rút lui';if(battle){battle.classList.toggle('is-fighting',state.status==='fighting');battle.classList.toggle('is-won',state.status==='won');battle.classList.toggle('is-lost',state.status==='lost');}if(btn&&state.status!=='ready'){btn.disabled=true;btn.classList.add('charging');btn.querySelector('span').textContent=state.status==='fighting'?'ĐANG GIAO CHIẾN':'ĐANG TÍNH KẾT QUẢ';}}
   function chargeArmy(){if(game&&game.charge()){announce('Chó đội trưởng dẫn toàn quân tiến lên');if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate([18,25,18]);}}
-  function selectUnit(id){if(game&&game.setSelected)game.setSelected(id);}
   function announce(text){const live=document.getElementById('nrLive');if(live)live.textContent=text;}
-  function togglePause(){if(game&&game.togglePause)game.togglePause();}
   function quit(){if(!game)return renderHome();if(confirm('Rút lui khỏi phi vụ này? Tiến trình trận sẽ không được tính.')){cleanup();renderHome();}}
 
   function finishRaid(target,state,commands,online){const stars=state.status==='won'?1+(state.margin>=25?1:0)+(state.margin>=60?1:0):0;let reward=0,loss=0;if(!online){const soldiersUsed=Math.min(NightRaidRules.MAX_SOLDIERS,appState.nightRaidLayout?.soldiers||0);if(soldiersUsed)appState.nightRaidLayout.soldiers=Math.max(0,appState.nightRaidLayout.soldiers-soldiersUsed);if(stars){const capLeft=Math.max(0,120-appState.nightRaidRewardToday);reward=Math.min(capLeft,target.reward||20);appState.nightRaidRewardToday+=reward;appState.coins=Math.max(0,+appState.coins||0)+reward;}else{loss=Math.min(20,Math.max(0,+appState.coins||0));appState.coins=Math.max(0,(+appState.coins||0)-loss);}appState.nightRaidHistory.unshift({kind:'bot',targetId:target.id,won:!!stars,stars,reward,loss,soldiersUsed,at:Date.now()});appState.nightRaidHistory=appState.nightRaidHistory.slice(0,100);save();syncHome();}
@@ -183,19 +180,15 @@ var NightRaid = (() => {
 
   function replayReport(index){const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':'Phòng thủ đã chặn được toàn bộ đội cướp.'}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.defense||'?'}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({open,close,renderHome,renderRoute,scoutBot,scoutTraining:()=>scoutBot(),showLiveTargets,scoutLive,startRaid,selectUnit,togglePause,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,beginBuildDrag,beginPlacedDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport});
+  return Object.freeze({open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,beginBuildDrag,beginPlacedDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport});
 })();
 
 function openNightRaid(){NightRaid.open();}
 function closeNightRaid(){NightRaid.close();}
 function nrHome(){NightRaid.renderHome();}
-function nrShowRoute(){NightRaid.renderRoute();}
-function nrScoutTraining(n){NightRaid.scoutTraining(n);}
 function nrScoutBot(){NightRaid.scoutBot();}
 function nrShowLiveTargets(){NightRaid.showLiveTargets();}
 function nrScoutLive(n){NightRaid.scoutLive(n);}
-function nrSelectUnit(id){NightRaid.selectUnit(id);}
-function nrTogglePause(){NightRaid.togglePause();}
 function nrChargeArmy(){NightRaid.chargeArmy();}
 function nrQuitRaid(){NightRaid.quit();}
 function nrShowBuilder(){NightRaid.renderBuilder();}
