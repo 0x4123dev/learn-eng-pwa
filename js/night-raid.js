@@ -40,11 +40,15 @@ var NightRaid = (() => {
     return {level,name:appState.petName||stage.name,breed:stage.name,atlas,cell};
   }
   function makeBotTarget(){
-    const damage=ownPower().damage,targetRatio=.78+Math.random()*.34;
+    const mine=ownPower(),damage=mine.damage,targetRatio=.78+Math.random()*.34;
     const candidates=Array.from({length:20},(_,i)=>NightRaidRules.trainingTarget(i+1));
     candidates.sort((a,b)=>Math.abs(a.defense-damage*targetRatio)-Math.abs(b.defense-damage*targetRatio));
     const target={...candidates[0],id:'bot-'+Date.now(),botMode:true,title:{en:'Bot Patrol Home',vi:'Nhà Bot Tuần Tra'}};
     target.reward=Math.max(20,Math.min(60,20+Math.floor(target.defense/45)*10));
+    // Bot practice only: 4 test soldiers always march with the dog, and the
+    // real barracks stock joins ON TOP (capped at the squad limit). Online
+    // raids against real homes keep the honest produced count.
+    target.attackerSoldiers=Math.min(NightRaidRules.MAX_SOLDIERS,4+Math.max(0,mine.soldiers));
     return target;
   }
   function scoutBot(){return scout(1,makeBotTarget(),false);}
@@ -92,8 +96,24 @@ var NightRaid = (() => {
     const def=document.getElementById('nrScoutDef');if(def){def.hidden=false;const strong=def.querySelector('strong');if(strong)strong.textContent=target.defense;}
     document.getElementById('nrScoutSecret')?.remove();
     document.getElementById('nrStartRaid')?.closest('.nr-home-fabs')?.remove();
-    const status=document.getElementById('nrBattleStatus');if(status){status.hidden=false;status.textContent=`Pet và ${target.attackerSoldiers} lính đang tiến quân`;}
-    game=new NightRaidGame.AutoBattle(canvas,target,{pet:raidPetDescriptor(),onUpdate:updateHud,onFinish:(state,commands)=>finishRaid(target,state,commands,online)});game.start();
+    const status=document.getElementById('nrBattleStatus');if(status){status.hidden=false;status.textContent='Đang chuẩn bị đội hình Phaser…';}
+    const options={pet:raidPetDescriptor(),onUpdate:updateHud,onFinish:(state,commands)=>finishRaid(target,state,commands,online)};
+    // Phaser is intentionally lazy: every other app screen and the scout
+    // preview keep their existing lightweight Canvas renderer. Only the
+    // committed TIEN QUAN result battle pays the engine download cost.
+    let phaserHost=null;
+    if(typeof NightRaidPhaser!=='undefined'){
+      try{
+        await NightRaidPhaser.ensureRuntime();
+        if(view!=='battle'||!canvas.isConnected)return;
+        phaserHost=document.createElement('div');phaserHost.id='nrPhaserBattle';phaserHost.className='nr-phaser-battle';
+        canvas.replaceWith(phaserHost);game=new NightRaidPhaser.AutoBattle(phaserHost,target,options);await game.start();
+      }catch(error){console.warn('Night Raid Phaser fallback',error);if(game){game.destroy();game=null;}if(phaserHost&&phaserHost.isConnected)phaserHost.replaceWith(canvas);}
+    }
+    // A blocked/unsupported runtime must never strand a paid raid: the old
+    // renderer produces the same deterministic result and reward callback.
+    if(!game){game=new NightRaidGame.AutoBattle(canvas,target,options);game.start();}
+    if(status)status.textContent=`Pet và ${target.attackerSoldiers} lính đang tiến quân`;
     setTimeout(()=>{if(view==='battle'&&game&&game.charge)chargeArmy();},700);
   }
   function updateHud(state){const status=document.getElementById('nrBattleStatus'),battle=document.getElementById('nrBattleRoot');if(status)status.textContent=state.status==='ready'?`Pet và ${state.soldiers||0} lính đang tiến quân`:state.status==='fighting'?'Đang chém phá cổng thành!':state.status==='won'?'Đã phá được lâu đài!':'Đội hình buộc phải rút lui';if(battle){battle.classList.toggle('is-fighting',state.status==='fighting');battle.classList.toggle('is-won',state.status==='won');battle.classList.toggle('is-lost',state.status==='lost');}}

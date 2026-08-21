@@ -255,6 +255,17 @@ suite('night raid: only one combat loop',()=>{
     assert.falsy(ui.includes('startSiege'));
     assert.falsy(ui.includes('wavePlan'));
   });
+  test('bot raids field 4 test soldiers plus the real barracks stock',()=>{
+    // Practice against bots must always show a readable squad with the dog:
+    // a 4-soldier test floor, with produced soldiers joining on top, capped
+    // at the squad limit. Only the bot target carries this — online raids
+    // against real homes keep the honest produced count.
+    const botBlock=ui.slice(ui.indexOf('function makeBotTarget'),ui.indexOf('function scoutBot'));
+    assert.truthy(botBlock.includes('target.attackerSoldiers=Math.min(NightRaidRules.MAX_SOLDIERS,4+Math.max(0,mine.soldiers))'),'bot squad = 4 + produced, capped');
+    assert.equal((ui.match(/4\+Math\.max\(0,mine\.soldiers\)/g)||[]).length,1,'the test floor exists exactly once — on the bot target only');
+    // The free test soldiers are never charged back to the barracks stock.
+    assert.truthy(ui.includes("soldiersUsed=Math.min(NightRaidRules.MAX_SOLDIERS,appState.nightRaidLayout?.soldiers||0)")||ui.includes('appState.nightRaidLayout.soldiers=Math.max(0,appState.nightRaidLayout.soldiers-soldiersUsed)'),'deduction stays based on real stock');
+  });
   test('the castle has structural stages, persistent crater and projectile trails',()=>{
     const art=read('js/night-raid-art.js');
     assert.truthy(art.includes('const damage=ratio<=0?4'));
