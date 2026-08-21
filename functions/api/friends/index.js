@@ -32,6 +32,7 @@ export async function onRequestGet({ request, env }) {
        JOIN users au ON au.id = f.addressee_id
       WHERE (f.requester_id = ? OR f.addressee_id = ?)
         AND f.status IN ('pending', 'accepted')
+        AND ru.disabled = 0 AND au.disabled = 0
       ORDER BY f.id DESC`
   ).bind(auth.uid, auth.uid).all();
 
@@ -68,7 +69,9 @@ export async function onRequestPost({ request, env }) {
   const username = String(body.username || '').trim();
   if (!username) return err('Cần tên bạn bè');
 
-  const other = await env.DB.prepare('SELECT id, username FROM users WHERE username = ?')
+  // Same 404 as a name that never existed: login already refuses to reveal
+  // which usernames are real, and friend search must not become that oracle.
+  const other = await env.DB.prepare('SELECT id, username FROM users WHERE username = ? AND disabled = 0')
     .bind(username).first();
   if (!other) return err('Không tìm thấy bạn này', 404);
   if (other.id === auth.uid) return err('Không thể kết bạn với chính mình');

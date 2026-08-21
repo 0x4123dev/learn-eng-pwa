@@ -1,7 +1,7 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, FIELD_VERSION_NEW, normalizeBattleBackground, normalizeCastleSkin, hiresJson, startingHp } from '../_battle.js';
+import { areFriends, friendBattleReadyAt, ammoStatsFor, nextBattleAt, currentBattle, reapStale, battleView, INVITE_TTL_MS, randomBattleBackground, fieldVersionForBattleBackground, normalizeCastleSkin, hiresJson, startingHp } from '../_battle.js';
 
-// POST /api/battle/challenge { friendId, level, stage, petName, backgroundId }
+// POST /api/battle/challenge { friendId, level, stage, petName }
 // Starts a 60-second invite. Zero ammo ⇒ no battle: you must learn first.
 export async function onRequestPost({ request, env }) {
   const auth = await requireAuth(request, env);
@@ -13,6 +13,11 @@ export async function onRequestPost({ request, env }) {
   const friendId = Math.trunc(+body.friendId);
   if (!friendId) return err('Thiếu friendId');
   if (!(await areFriends(env, auth.uid, friendId))) return err('Chỉ đấu với bạn bè', 403);
+
+  // The friends list hides disabled accounts, but the rule lives HERE too: a
+  // stale client must not battle a switched-off account by raw id.
+  const foe = await env.DB.prepare('SELECT disabled FROM users WHERE id = ?').bind(friendId).first();
+  if (!foe || foe.disabled) return err('Chỉ đấu với bạn bè', 403);
 
   // A friendship must be 3 days old before it can be fought. This is the gate
   // that makes the ammo economy mean something: otherwise a second account
@@ -37,7 +42,10 @@ export async function onRequestPost({ request, env }) {
   const me = await env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(auth.uid).first();
   const now = Date.now();
   const seed = (Math.floor(Math.random() * 0x7fffffff) ^ now) >>> 0;
-  const backgroundId = normalizeBattleBackground(body.backgroundId);
+  // The arena is a server-side surprise, not a client preference: 50% classic
+  // long worlds and 50% compact obstacle worlds that require a high lob.
+  const backgroundId = randomBattleBackground();
+  const fieldVersion = fieldVersionForBattleBackground(backgroundId);
   // The squad is snapshotted on the battle: it was paid for THIS fight, and a
   // replay later must show the bench that actually fought. Normalised here
   // because the list arrived from a device.
@@ -51,7 +59,7 @@ export async function onRequestPost({ request, env }) {
                           created_at, expires_at)
      VALUES (?, ?, 'invited', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
-    auth.uid, friendId, seed, FIELD_VERSION_NEW, backgroundId, ammo,
+    auth.uid, friendId, seed, fieldVersion, backgroundId, ammo,
     myLevel,
     String(body.stage || 'chihuahua').slice(0, 20),
     String(body.petName || me?.username || 'Pet').slice(0, 20),

@@ -16,6 +16,12 @@ export async function onRequestPost({ request, env }) {
   if (row.addressee_id !== auth.uid) return err('Không phải lời mời của bạn', 403);
   if (row.status !== 'pending') return err('Lời mời đã được xử lý', 409);
 
+  // A freshly disabled requester has already vanished from the friends list;
+  // a stale client must not be able to accept its invite by raw id.
+  const requester = await env.DB.prepare('SELECT disabled FROM users WHERE id = ?')
+    .bind(row.requester_id).first();
+  if (!requester || requester.disabled) return err('Không tìm thấy lời mời', 404);
+
   const status = body.accept ? 'accepted' : 'declined';
   await env.DB.prepare(
     `UPDATE friendships SET status = ?, responded_at = datetime('now') WHERE id = ?`

@@ -15,7 +15,7 @@ export async function onRequestGet({ request, env }) {
     return err('Chỉ xem được hoạt động của bạn bè', 403);
   }
 
-  const user = await env.DB.prepare('SELECT id, username FROM users WHERE id = ?')
+  const user = await env.DB.prepare('SELECT id, username FROM users WHERE id = ? AND disabled = 0')
     .bind(friendId).first();
   if (!user) return err('Không tìm thấy người dùng', 404);
 
