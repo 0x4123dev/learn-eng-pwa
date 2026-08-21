@@ -23,7 +23,14 @@ var NightRaidPhaser = (() => {
 
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const easeOut=p=>1-(1-p)*(1-p);
-  const squadBoxes=[[0,300],[285,675],[670,1065],[1060,1425],[1415,1770],[1760,2172]];
+  const squadRows=6, squadCols=8;
+  const petCols=Object.freeze({small:8,large:7});
+  const defenseRows=Object.freeze(['wood-fence','stone-wall','pebble-pup','water-cannon','spike-trap']);
+  const economyRows=Object.freeze(['training-barracks','rice-field']);
+  const castleRows=Object.freeze([
+    ['stone-keep','forest-fort','desert-citadel','frost-bastion','coral-palace'],
+    ['sakura-castle','clockwork-keep','dragon-fortress','crystal-citadel','celestial-palace'],
+  ]);
 
   function decodeToCanvas(src){return new Promise((resolve,reject)=>{const image=new Image();image.decoding='async';image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d',{alpha:true});ctx.drawImage(image,0,0);resolve(canvas);};image.onerror=()=>reject(new Error('Cannot decode '+src));image.src=src;});}
 
@@ -100,8 +107,16 @@ var NightRaidPhaser = (() => {
     }
     prepareAssets(){
       if(this.assetCanvases)return Promise.resolve();const petAtlas=(this.options.pet||{}).atlas==='large'?'large':'small';
-      const sources={board:'img/night-raid/isometric-home-board-skin-pad.webp',squad:'img/night-raid/raider-squad.webp',pet:'img/night-raid/pet-soldiers-'+petAtlas+'-v2.webp'};
-      for(const id of ['pebble-pup','wood-fence','stone-wall','spike-trap','water-cannon'])sources['def-'+id]='img/night-raid/'+id+'.webp';
+      this.petAtlas=petAtlas;
+      const sources={
+        board:'img/night-raid/isometric-home-board-skin-pad.webp',
+        squad:'img/night-raid/animation/raider-actions-v2.webp',
+        pet:'img/night-raid/animation/pet-actions-'+petAtlas+'-v2.webp',
+        defenses:'img/night-raid/animation/defense-damage-v2.webp',
+        economy:'img/night-raid/animation/economy-damage-v2.webp',
+        castleA:'img/night-raid/animation/castle-damage-a-v2.webp',
+        castleB:'img/night-raid/animation/castle-damage-b-v2.webp',
+      };
       return Promise.all(Object.entries(sources).map(([key,src])=>decodeToCanvas(src).then(canvas=>[key,canvas]))).then(entries=>{this.assetCanvases=Object.fromEntries(entries);});
     }
     mount(){
@@ -118,47 +133,57 @@ var NightRaidPhaser = (() => {
       });
     }
     makeTexture(scene,key,color,size=22){const g=scene.add.graphics();g.fillStyle(color,1).fillCircle(size/2,size/2,size/2-1).generateTexture(key,size,size).destroy();}
-    // Torso and legs are two crops of the SAME frame. The torso stays stable
-    // while the leg band mirrors every half-step, so the unit reads as
-    // alternating legs instead of a rocking cardboard cutout.
+    addGrid(texture,prefix,cols,rows){
+      const source=texture.getSourceImage(),width=source.width,height=source.height;
+      for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+        const x0=Math.round(col*width/cols),x1=Math.round((col+1)*width/cols),y0=Math.round(row*height/rows),y1=Math.round((row+1)*height/rows);
+        texture.add(prefix+row+'-'+col,0,x0,y0,x1-x0,y1-y0);
+      }
+    }
+    // Generated action atlases provide real paw/leg and weapon poses. Phaser
+    // swaps frames; it no longer deforms one still image to fake a walk.
     makeActor(scene,texKey,frameKey,height){
-      const upper=scene.add.image(0,0,texKey,frameKey),lower=scene.add.image(0,0,texKey,frameKey);
-      const fw=upper.frame.realWidth,fh=upper.frame.realHeight,width=height*fw/fh;
-      for(const s of [upper,lower]){s.setOrigin(.5,.86);s.setDisplaySize(width,height);}
-      upper.setCrop(0,0,fw,fh*.66);lower.setCrop(0,fh*.64,fw,fh*.36);
-      return {upper,lower,width,height,sx:upper.scaleX,sy:upper.scaleY};
+      const sprite=scene.add.image(0,0,texKey,frameKey),fw=sprite.frame.realWidth,fh=sprite.frame.realHeight,width=height*fw/fh;
+      sprite.setOrigin(.5,.88).setDisplaySize(width,height);
+      return {sprite,width,height,sx:sprite.scaleX,sy:sprite.scaleY};
     }
     createScene(scene){
       // Phaser's Canvas renderer corrupts direct WebP textures in some iOS
       // and embedded WebViews. Browser Canvas2D decodes them correctly, so
       // materialize each image once and let Phaser use the safe canvas copy.
-      scene.textures.addCanvas('nr-board',this.assetCanvases.board);scene.textures.addCanvas('nr-squad',this.assetCanvases.squad);scene.textures.addCanvas('nr-pet',this.assetCanvases.pet);
-      for(const id of ['pebble-pup','wood-fence','stone-wall','spike-trap','water-cannon'])scene.textures.addCanvas('nr-def-'+id,this.assetCanvases['def-'+id]);
+      scene.textures.addCanvas('nr-board',this.assetCanvases.board);scene.textures.addCanvas('nr-squad-actions',this.assetCanvases.squad);scene.textures.addCanvas('nr-pet-actions',this.assetCanvases.pet);
+      scene.textures.addCanvas('nr-defense-damage',this.assetCanvases.defenses);scene.textures.addCanvas('nr-economy-damage',this.assetCanvases.economy);
+      scene.textures.addCanvas('nr-castle-a-damage',this.assetCanvases.castleA);scene.textures.addCanvas('nr-castle-b-damage',this.assetCanvases.castleB);
       scene.add.image(400,400,'nr-board').setDisplaySize(800,800).setDepth(0);
       scene.add.rectangle(400,400,800,800,0x172044,.12).setDepth(1);
       this.makeTexture(scene,'nr-spark',0xffe477,18);this.makeTexture(scene,'nr-dust',0xdac8a6,26);this.makeTexture(scene,'nr-rubble',0x9b7559,18);this.makeTexture(scene,'nr-smoke',0x34404c,34);
-      const squadTexture=scene.textures.get('nr-squad');
-      squadBoxes.forEach((box,i)=>squadTexture.add('unit-'+i,0,box[0],0,box[1]-box[0],724));
-      const petTexture=scene.textures.get('nr-pet'),petCell=clamp(Math.trunc(+(this.options.pet||{}).cell||0),0,4),petW=petTexture.getSourceImage().width/5;
-      petTexture.add('leader',0,Math.round(petCell*petW),0,Math.round(petW),724);
+      this.addGrid(scene.textures.get('nr-squad-actions'),'unit-',squadCols,squadRows);
+      this.addGrid(scene.textures.get('nr-pet-actions'),'pet-',petCols[this.petAtlas],5);
+      this.addGrid(scene.textures.get('nr-defense-damage'),'def-',3,defenseRows.length);
+      this.addGrid(scene.textures.get('nr-economy-damage'),'eco-',3,economyRows.length);
+      this.addGrid(scene.textures.get('nr-castle-a-damage'),'castle-a-',3,5);this.addGrid(scene.textures.get('nr-castle-b-damage'),'castle-b-',3,5);
+      this.petCell=clamp(Math.trunc(+(this.options.pet||{}).cell||0),0,4);
 
       // Everything on the ground shares one depth space (its foot/ground y),
       // so soldiers genuinely walk BEHIND far buildings and in front of near
       // ones instead of floating over the whole base.
-      this.castleCanvas=document.createElement('canvas');this.castleCanvas.width=340;this.castleCanvas.height=340;this.castleCtx=this.castleCanvas.getContext('2d',{alpha:true});
-      scene.textures.addCanvas('nr-castle-live',this.castleCanvas);
       const CASTLE=NightRaidChoreo.CASTLE;
-      this.castle=scene.add.image(CASTLE.x,CASTLE.y,'nr-castle-live').setOrigin(.5,320/340).setDepth(CASTLE.y-30).setDisplaySize(300,300);
-      this.castleBaseScale={x:this.castle.scaleX,y:this.castle.scaleY};
-      this.paintCastle(1,0);
-      if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(()=>{if(this.scene)this.paintCastle(this.result.won&&this.finished?0:1,0);});
+      const skin=this.target.castleSkin||'stone-keep',group=castleRows[1].includes(skin)?1:0,row=Math.max(0,castleRows[group].indexOf(skin));
+      this.castleFrames={key:group?'nr-castle-b-damage':'nr-castle-a-damage',prefix:'castle-'+(group?'b-':'a-')+row+'-'};
+      this.castle=scene.add.image(CASTLE.x,CASTLE.y,this.castleFrames.key,this.castleFrames.prefix+'0').setOrigin(.5,.9).setDepth(CASTLE.y-30).setDisplaySize(430,258);
 
       this.defenders=[];
-      for(const tower of this.choreo.towers){if(tower.virtual||!scene.textures.exists('nr-def-'+tower.type))continue;const size=tower.type==='spike-trap'?58:86;const sprite=scene.add.image(tower.x,tower.y,'nr-def-'+tower.type).setOrigin(.5,1).setDisplaySize(size,size).setDepth(tower.y);this.defenders.push({tower,sprite,sx:sprite.scaleX,sy:sprite.scaleY});}
+      for(const tower of this.choreo.towers){
+        if(tower.virtual)continue;const dr=defenseRows.indexOf(tower.type),er=economyRows.indexOf(tower.type);if(dr<0&&er<0)continue;
+        const key=dr>=0?'nr-defense-damage':'nr-economy-damage',prefix=(dr>=0?'def-'+dr:'eco-'+er)+'-',size=tower.type==='spike-trap'?64:(er>=0?94:88);
+        const sprite=scene.add.image(tower.x,tower.y,key,prefix+'0').setOrigin(.5,.9).setDisplaySize(size,size).setDepth(tower.y);
+        this.defenders.push({tower,sprite,prefix,sx:sprite.scaleX,sy:sprite.scaleY,stage:0});
+      }
       this.actors=this.choreo.units.map(unit=>{
         const pet=unit.kind==='pet';
-        const part=this.makeActor(scene,pet?'nr-pet':'nr-squad',pet?'leader':'unit-'+(unit.index%6),pet?112:108);
-        return {unit,...part,pet,index:unit.index,dustTick:-1};
+        const cols=pet?petCols[this.petAtlas]:squadCols,row=pet?this.petCell:unit.index%squadRows,prefix=(pet?'pet-':'unit-')+row+'-';
+        const part=this.makeActor(scene,pet?'nr-pet-actions':'nr-squad-actions',prefix+'0',pet?112:108);
+        return {unit,...part,pet,index:unit.index,prefix,cols,walk:4,dustTick:-1,frame:-1};
       });
       this.trail=scene.add.graphics().setDepth(2);
       this.projectiles=scene.add.graphics().setDepth(800);
@@ -168,9 +193,6 @@ var NightRaidPhaser = (() => {
       this.rubble=scene.add.particles(0,0,'nr-rubble',{speed:{min:90,max:300},angle:{min:115,max:260},lifespan:{min:500,max:1200},scale:{start:.8,end:.28},rotate:{min:-260,max:260},gravityY:540,quantity:0,emitting:false}).setDepth(980);
       this.smoke=scene.add.particles(0,0,'nr-smoke',{speed:{min:10,max:44},angle:{min:210,max:325},lifespan:{min:650,max:1350},scale:{start:.3,end:1.2},alpha:{start:.34,end:0},quantity:0,emitting:false}).setDepth(940);
       this.paintFrame(0);
-    }
-    paintCastle(ratio,impact){
-      if(!this.castleCtx)return;const ctx=this.castleCtx;ctx.clearRect(0,0,340,340);const max=this.target.castleHp||200,hp=Math.max(0,max*ratio);NightRaidArt.drawCastle(ctx,170,320,this.target.castleSkin||'stone-keep',hp,max,impact);const texture=this.scene&&this.scene.textures.get('nr-castle-live');if(texture)texture.refresh();
     }
     charge(){if(this.running||this.finished)return false;if(!this.scene){this.pendingCharge=true;return true;}this.beginCharge();return true;}
     beginCharge(){if(this.running||this.finished)return;this.pendingCharge=false;this.running=true;this.startedAt=performance.now()-this.elapsed;this.state.status='fighting';if(this.audio){this.audio.ensure();this.audio.warCry();}this.notify();}
@@ -223,7 +245,11 @@ var NightRaidPhaser = (() => {
     }
     paintFrame(progress){
       if(!this.scene)return;const T=clamp(progress,0,1)*this.choreo.durationMs,C=NightRaidChoreo,ch=this.choreo,breachP=this.result.won&&ch.breachAt!=null?clamp((T-ch.breachAt)/Math.max(1,ch.durationMs-ch.breachAt),0,1):0;
-      if(this.castle){const collapse=clamp(breachP*1.55,0,1);this.castle.setAlpha(1-collapse*.82).setAngle(breachP?Math.sin(T*.075)*3.5*(1-collapse):0).setScale(this.castleBaseScale.x*(1-breachP*.12),this.castleBaseScale.y*(1-breachP*.3));}
+      if(this.castle){
+        const stage=breachP>.68?2:breachP>.12?1:0;
+        if(stage!==this.castleStage){this.castleStage=stage;this.castle.setFrame(this.castleFrames.prefix+stage);}
+        this.castle.setAlpha(1).setAngle(stage===1&&!this.reduce?Math.sin(T*.075)*1.4:0);
+      }
       if(!this.reduce)this.paintTrail(T);
       // Towers wind up before each scripted shot, recoil after it, and — on a
       // breach — crack, tip over and hit the ground on the choreo schedule.
@@ -233,11 +259,13 @@ var NightRaidPhaser = (() => {
         let angle=0,dy=0,alpha=1,broken=false;
         if(tw.fallAt!=null&&!this.reduce){
           if(T>tw.fallAt-240&&T<=tw.fallAt)dy=Math.sin((tw.fallAt-T)*.09)*2;      // pre-collapse tremble
-          if(T>tw.fallAt){const fp=easeOut(Math.min(1,(T-tw.fallAt)/520));angle=(tw.gx%2?1:-1)*74*fp;dy=fp*10;alpha=1-.62*fp;broken=fp>0;}
-        } else if(tw.fallAt!=null&&this.reduce&&T>tw.fallAt){angle=(tw.gx%2?1:-1)*74;alpha=.4;broken=true;}
+          if(T>tw.fallAt){const fp=easeOut(Math.min(1,(T-tw.fallAt)/520));dy=fp*5;broken=fp>0;}
+        } else if(tw.fallAt!=null&&this.reduce&&T>tw.fallAt){broken=true;}
+        const stage=tw.fallAt==null||T<tw.fallAt?0:T<tw.fallAt+420?1:2;
+        if(stage!==d.stage){d.stage=stage;d.sprite.setFrame(d.prefix+stage);}
         d.sprite.x=tw.x+recoil*3;d.sprite.y=tw.y+dy;d.sprite.angle=angle;d.sprite.setAlpha(alpha);
         d.sprite.setScale(d.sx,d.sy*(windup?1-windup*.06:1));
-        if(broken)d.sprite.setTint(0x9a8877);else d.sprite.clearTint();
+        if(broken&&stage<2)d.sprite.setTint(0xe9d4c0);else d.sprite.clearTint();
         d.sprite.setDepth(tw.y);
       });
       this.actors.forEach(actor=>{
@@ -246,30 +274,26 @@ var NightRaidPhaser = (() => {
         const cadence=this.reduce?.008:(rushing?.024:.017);
         const phase=T*cadence+actor.index*1.47,gait=moving?Math.sin(phase):0,lift=Math.abs(gait);
         let x=pose.x,y=pose.y,angle=0,alpha=1,flash=0;
-        if(moving){y-=lift*(actor.pet?4.5:3.5);angle=pose.facing*-(rushing?5:2.4)+gait*1.1;}
+        if(moving)y-=lift*(actor.pet?2.2:1.6);
         else if(pose.state==='idle'){y-=Math.abs(Math.sin(T*.0016+actor.index))*1.2;}
-        else if(pose.state==='engage'&&T>ch.engageStart&&!this.reduce){const lunge=Math.max(0,Math.sin(T*.005+actor.index*1.9));x+=pose.facing*lunge*7;angle=pose.facing*lunge*4;}
-        if(pose.state==='fallen'){const fp=easeOut(Math.min(1,(T-u.fallAt)/420));angle=(actor.index%2?78:-78)*fp;y+=fp*8;alpha=1-.45*fp;}
+        else if(pose.state==='engage'&&T>ch.engageStart&&!this.reduce){const lunge=Math.max(0,Math.sin(T*.005+actor.index*1.9));x+=pose.facing*lunge*5;}
+        if(pose.state==='fallen')y+=5;
         for(const st of u.staggerAt){const d=T-st;if(d>=0&&d<200){x+=Math.sin(d*.22)*3;flash=Math.max(flash,1-d/200);}}
-        const flip=pose.facing===1,swap=moving&&gait<0,depth=(pose.state==='fallen'?y-60:y)+(actor.pet?.5:0);
-        for(const s of [actor.upper,actor.lower]){s.x=x;s.y=y;s.angle=angle;s.setAlpha(alpha);s.setDepth(depth);}
-        actor.upper.flipX=flip;actor.lower.flipX=swap?!flip:flip;
-        actor.upper.setScale(actor.sx,actor.sy*(moving?1-lift*.03:1));actor.lower.setScale(actor.sx,actor.sy);
-        if(flash>.35&&!this.reduce){actor.upper.setTintFill(0xfff2f2);actor.lower.setTintFill(0xfff2f2);}
-        else{actor.upper.clearTint();actor.lower.clearTint();}
+        let frame=0;
+        if(pose.state==='fallen')frame=actor.cols-1;
+        else if(flash>.2)frame=Math.max(0,actor.cols-2);
+        else if(pose.state==='engage'&&!moving)frame=Math.min(actor.cols-2,actor.walk+Math.floor((T+actor.index*83)/190)%2);
+        else if(moving)frame=Math.floor((T+actor.index*91)/(rushing?95:125))%actor.walk;
+        if(frame!==actor.frame){actor.frame=frame;actor.sprite.setFrame(actor.prefix+frame);}
+        // The atlases are authored facing LEFT (toward the castle): mirror
+        // only when a unit moves right — fleeing home or repositioning.
+        const flip=pose.facing===1,depth=(pose.state==='fallen'?y-60:y)+(actor.pet?.5:0);
+        actor.sprite.x=x;actor.sprite.y=y;actor.sprite.angle=angle;actor.sprite.setAlpha(alpha).setDepth(depth).setFlipX(flip).setScale(actor.sx,actor.sy);
+        if(flash>.35&&!this.reduce)actor.sprite.setTintFill(0xfff2f2);else actor.sprite.clearTint();
         if(moving){const tick=Math.floor(phase/Math.PI);if(tick!==actor.dustTick){actor.dustTick=tick;this.dust.explode(actor.pet?2:1,x+(flip?-14:14),y+2);this.stepPulse=true;}}
       });
       this.projectiles.clear();for(const shot of ch.shots)this.drawProjectile(this.scene,shot,T);
-      if(this.result.won&&breachP>.18){
-        const reveal=clamp((breachP-.18)/.45,0,1);this.damageMark.setVisible(true).clear().setAlpha(reveal);
-        this.damageMark.fillStyle(0x5b4132,.48).fillEllipse(205,354,185,35);
-        const stones=[[141,340,22,13,0xc8a27c],[165,329,17,15,0x927057],[185,344,24,13,0xd5b18d],[210,331,19,17,0xa77e61],[232,345,26,14,0xc39370],[259,334,19,15,0x84634f],[282,346,16,11,0xb78c68],[155,352,14,9,0x795b49],[220,356,17,10,0xe0bea0],[269,356,20,9,0x694d41]];
-        stones.forEach(c=>this.damageMark.fillStyle(c[4],1).fillEllipse(c[0],c[1],c[2],c[3]).lineStyle(2,0x563e31,.62).strokeEllipse(c[0],c[1],c[2],c[3]));
-        this.damageMark.fillStyle(0xbc765f,1).fillTriangle(169,335,182,299,193,338).fillTriangle(238,341,249,305,260,342);
-        this.damageMark.lineStyle(3,0x704538,.9).strokeTriangle(169,335,182,299,193,338).strokeTriangle(238,341,249,305,260,342);
-        this.damageMark.fillStyle(0x352b28,.82).fillEllipse(208,342,35,15);
-      }
-      else this.damageMark.setVisible(false);
+      this.damageMark.setVisible(false);
     }
     updateScene(_time,delta){
       if(!this.running||this.finished)return;this.elapsed=Math.min(this.duration,performance.now()-this.startedAt);const p=this.elapsed/this.duration,T=p*this.choreo.durationMs;this.state.timeMs=this.elapsed;this.paintFrame(p);

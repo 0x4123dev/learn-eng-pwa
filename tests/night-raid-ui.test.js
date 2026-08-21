@@ -158,11 +158,15 @@ suite('night raid: app integration',()=>{
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
   });
-  test('Phaser units walk with a real gait, planted footprints and battle audio',()=>{
-    // The torso stays stable while the leg crop swaps each half-step —
-    // the old side-to-side "cardboard wobble" must not come back.
-    assert.truthy(phaser.includes('setCrop'),'two-part stride sprite');
-    assert.truthy(phaser.includes('lower.flipX=swap?!flip:flip'),'legs must swap each half-step');
+  test('Phaser units walk and attack with real animation frames, planted footprints and battle audio',()=>{
+    // Production atlases now supply distinct paw/leg, weapon, hit and fallen
+    // poses; the old deformation of one still image must not come back.
+    assert.truthy(phaser.includes("raider-actions-v2.webp"),'raider action atlas');
+    assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
+    assert.truthy(phaser.includes("actor.sprite.setFrame(actor.prefix+frame)"),'runtime swaps true frames');
+    assert.truthy(phaser.includes("pose.state==='engage'"),'attack frames follow combat state');
+    assert.truthy(phaser.includes("pose.state==='fallen'"),'fallen frame follows casualty state');
+    assert.falsy(phaser.includes('setCrop'),'no split-body fake stride');
     assert.falsy(phaser.includes('x=pose.x+stride'),'no side-to-side wobble slide');
     assert.truthy(phaser.includes('paintTrail'),'planted footprints pass');
     assert.truthy(/Math\.floor\(T\/STEP\)\*STEP/.test(phaser),'prints quantised to the step grid, not sliding with the sprite');
@@ -171,8 +175,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(phaser.includes('AudioContext'),'synthesized battle sound');
     for(const cue of ['warCry','launch(kind)','impactShot','demolish','breach','retreat','step()'])assert.truthy(phaser.includes(cue),cue);
     assert.truthy(phaser.includes('this.reduce?null:new RaidAudio'),'reduced effects stay silent');
-    // Buildings break for real: towers tremble, tip over and land as rubble.
+    // Buildings break for real using authored damaged/ruined silhouettes.
     assert.truthy(phaser.includes('tw.fallAt'),'towers topple on the choreo schedule');
+    assert.truthy(phaser.includes('defense-damage-v2.webp'));
+    assert.truthy(phaser.includes('economy-damage-v2.webp'));
+    assert.truthy(phaser.includes('d.sprite.setFrame(d.prefix+stage)'));
+    assert.truthy(phaser.includes('castle-damage-a-v2.webp'));
+    assert.truthy(phaser.includes('castle-damage-b-v2.webp'));
+    assert.truthy(phaser.includes('this.castle.setFrame(this.castleFrames.prefix+stage)'));
     assert.truthy(phaser.includes("event.type==='demolish'"),'collapse bursts rubble and smoke');
     // One shared depth space so units walk behind far buildings.
     assert.truthy(phaser.includes('setDepth(tower.y)')||phaser.includes('setDepth(tw.y)'),'towers depth-sort by ground y');
@@ -180,6 +190,13 @@ suite('night raid: app integration',()=>{
     const choreo=read('js/night-raid-choreo.js');
     assert.truthy(choreo.includes('cellAnchor'),'towers project from home grid cells');
     assert.truthy(choreo.includes('left:144, top:200, size:512, cells:12'),'projection matches .nr-free-grid (18%/25%/64% of 800)');
+  });
+  test('every generated Night Raid atlas is present and kept lazy',()=>{
+    const files=['raider-actions-v2.webp','pet-actions-small-v2.webp','pet-actions-large-v2.webp','defense-damage-v2.webp','economy-damage-v2.webp','castle-damage-a-v2.webp','castle-damage-b-v2.webp'];
+    for(const file of files){
+      assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',file)),file);
+      assert.falsy(sw.includes("'/img/night-raid/animation/"+file+"'"),file+' must not bloat app install; runtime fetch cache owns it');
+    }
   });
   test('Phaser is lazy, renderer-only and falls back without changing battle rules',()=>{
     assert.falsy(html.includes('src="js/phaser.min.js"'),'the 1 MB engine must not block initial app load');
