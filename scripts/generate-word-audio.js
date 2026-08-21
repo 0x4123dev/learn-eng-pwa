@@ -217,7 +217,10 @@ const PRONUNCIATION = {
     // Both spellings in the data land here — units-data.js writes "P.E.",
     // units-hk1-data.js writes "PE" — and they are separate recordings.
     pe:    [['P', 'P IY1'], ['E', 'IY1']],
-    'p-e': [['P', 'P IY1'], ['E', 'IY1']]
+    'p-e': [['P', 'P IY1'], ['E', 'IY1']],
+    // Both reported mispronounced by ear on the live app (2026-08-21).
+    birthday: [['birthday', 'B ER1 TH D EY2']], // BIRTH-day, not "birt-hay"
+    jam:      [['jam', 'JH AE1 M']]             // one clean "jam", not "yam"/"jahm"
 };
 
 // How the pieces are joined, measured over ten takes each rather than
