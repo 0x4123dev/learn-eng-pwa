@@ -46,7 +46,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
   });
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
-    for(const token of ['isometric-home-board-skin-pad.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','TỔNG DAM','TỔNG DEF'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['isometric-home-board-skin-pad.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
     assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
     assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
@@ -90,6 +90,19 @@ suite('night raid: app integration',()=>{
   test('phone shop opens as an unobscured top sheet',()=>{
     for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right','.nr-builder.shop-open .nr-builder-zoom'])assert.truthy(css.includes(token),token);
     assert.truthy(css.includes('.nr-builder-shop-fab{z-index:50}'));
+  });
+  test('the home screen is the same island stage as the builder',()=>{
+    // Full-screen board with the equipped castle and placed buildings as the
+    // background, the builder's DAM/DEF/LINH/coin chips, and the actions as
+    // SHOP-style fabs floating on top. Read-only: nothing drags here.
+    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// Scouting is a full-screen look'));
+    assert.truthy(home.includes('nr-home-stage'));
+    assert.truthy(home.includes('nr-builder-world'),'home reuses the pannable island world');
+    assert.truthy(home.includes('nr-builder-hud'),'home shows the builder power chips');
+    for(const fab of ['nrScoutBot()','nrShowLiveTargets()','nrShowBuilder()','nrShowReports()'])assert.truthy(home.includes(fab),fab);
+    assert.truthy(css.includes('.nr-home-fab'),'fabs share the SHOP button look');
+    assert.falsy(home.includes('nrBeginPlacedDrag'),'home buildings must not drag');
+    assert.truthy(css.includes('.nr-home-stage .nr-placed{pointer-events:none}'),'panning must work over buildings');
   });
   test('the builder offers a landscape rotate that never breaks panning',()=>{
     // iOS cannot lock orientation from a web app, so NGANG rotates the whole
