@@ -11099,6 +11099,11 @@
         .exam-lesson-content b, .exam-lesson-content strong { color: var(--text-primary); }
         .exam-lesson-back-bottom { margin-top: 22px; }
 
+/* Screen-reader-only live region. Night Raid's announcements used this class
+   for months while it was never defined, so every announce() printed itself
+   in plain text at the bottom of the battle screen. */
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
+
 /* ── Math board (bảng nháp) ─────────────────────────────────────────── */
 .math-board-overlay {
     /* A child of .screens-container, which is already position: relative and
@@ -11873,6 +11878,20 @@
 .nr-result-pop .nr-loss{margin:8px auto;padding:10px;font-size:15px;width:min(320px,100%)}
 .nr-result-pop .nr-result-actions{margin-top:12px}
 .nr-auto-command.hidden{display:none}
+/* Scout stage: the whole island fills the screen like the home builder.
+   Only OUR army's numbers float over the board — the enemy DEF is a secret
+   the child learns by attacking. */
+.nr-scout-stage .nr-battle-hud{grid-template-columns:auto minmax(0,1fr) auto}
+.nr-scout-title{min-width:0}
+.nr-scout-title strong{display:block;color:#fff;font-size:clamp(15px,4vw,20px);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nr-scout-flag{justify-self:end;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:13px;background:rgba(12,25,48,.78);border:1px solid rgba(190,218,255,.22);color:#cfe4ff;font-size:12px;font-weight:800;white-space:nowrap}
+.nr-scout-flag svg{width:17px;height:17px;fill:none;stroke:#7fd1ff;stroke-width:2}
+.nr-scout-army{position:absolute;left:12px;bottom:44px;display:grid;gap:2px;padding:10px 14px;border-radius:16px;background:rgba(5,14,28,.82);border:1px solid rgba(190,218,255,.24);color:#fff;backdrop-filter:blur(6px)}
+.nr-scout-army span{font-size:9px;font-weight:950;letter-spacing:.12em;color:#9fb4da}
+.nr-scout-army strong{font-size:22px;color:#ffcf6b;line-height:1;font-variant-numeric:tabular-nums}
+.nr-scout-army small{font-size:11px;color:#cfe0f5;font-weight:700}
+.nr-scout-secret{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:calc(100% - 20px);padding:7px 13px;border-radius:999px;background:rgba(5,14,28,.72);color:#ffd98c;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nr-charge.charging{cursor:wait;filter:saturate(.75)}
 @keyframes nrPopFade{from{opacity:0}to{opacity:1}}
 @keyframes nrPopIn{from{opacity:0;transform:translateY(46px) scale(.82)}to{opacity:1;transform:none}}
 @keyframes nrBannerDrop{from{opacity:0;transform:translateX(-50%) translateY(-160%) scale(1.25)}to{opacity:1;transform:translateX(-50%) translateY(-38%)}}
@@ -11929,6 +11948,8 @@
 @media(min-width:768px){.nr-builder-shop-fab{right:calc(22px + env(safe-area-inset-right))}.nr-builder-zoom{right:calc(22px + env(safe-area-inset-right))}.nr-builder .nr-build-shop{left:50%;right:auto;width:min(760px,calc(100% - 32px));transform:translate(-50%,calc(100% + 28px))}.nr-builder .nr-build-shop.open{transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){.nr-builder .nr-build-shop,.nr-build-grid-cell>i{transition:none}.nr-build-drag-ghost{filter:none}.nr-purchase-backdrop{animation:none}}
 @media(max-width:600px) and (max-aspect-ratio:1/1){.nr-battle:has(.nr-auto-command) .nr-canvas-wrap canvas{min-width:720px;transform:translateX(-145px)}.nr-auto-command{min-height:86px;display:grid;align-items:center}}
+/* Scouting shows the WHOLE island on phones too - never the cropped combat zoom. */
+@media(max-width:600px) and (max-aspect-ratio:1/1){.nr-battle.nr-scout-stage .nr-canvas-wrap canvas{min-width:0;transform:none;width:100%;height:auto}}
 
 /* Premium isometric raid stage. The pet and squad are drawn on the canvas
    by NightRaidGame.AutoBattle; no DOM overlay remains. */

@@ -87,9 +87,15 @@ suite('night raid: app integration',()=>{
     for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right','.nr-builder.shop-open .nr-builder-zoom'])assert.truthy(css.includes(token),token);
     assert.truthy(css.includes('.nr-builder-shop-fab{z-index:50}'));
   });
-  test('battle has one charge button and draws the exact owned soldier count',()=>{
-    assert.truthy(ui.includes('onclick="nrChargeArmy()"'));
-    assert.truthy(ui.includes('Pet dẫn ${target.attackerSoldiers} lính cùng xông vào'));
+  test('one TIẾN QUÂN on the scout screen goes straight into the fight',()=>{
+    // The scout screen is a full-screen island (like the home builder) with a
+    // single charge button; the battle screen has no second button and the
+    // army marches on its own.
+    assert.truthy(ui.includes('nr-scout-stage'));
+    assert.truthy(ui.includes('id="nrStartRaid"'));
+    assert.truthy(ui.includes('<span>TIẾN QUÂN</span>'));
+    assert.falsy(ui.includes('nrChargeButton'),'the battle screen must not ask again');
+    assert.truthy(ui.includes("if(view==='battle'&&game&&game.charge)chargeArmy()"),'battle auto-charges');
     assert.truthy(game.includes('class AutoBattle'));
     assert.truthy(game.includes('drawClashSpark'));
     assert.truthy(game.includes('Choreo.build(this.result,target,this.soldierCount'));
@@ -97,6 +103,19 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('QUÂN TA · ${target.attackerSoldiers} LÍNH'));
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
+  });
+  test('enemy DEF is a secret until the attack begins',()=>{
+    // Scout overlays show only OUR army; the number first appears on the
+    // battle HUD, and the targets API no longer ships it to the list at all.
+    const scoutBlock=ui.slice(ui.indexOf('function scout('),ui.indexOf('async function startRaid'));
+    assert.falsy(scoutBlock.includes('NHÀ ĐỊCH'),'scout screen must not name the enemy stat');
+    assert.falsy(scoutBlock.includes('target.defense'),'scout screen must not read the enemy DEF');
+    assert.truthy(scoutBlock.includes('nr-scout-secret'));
+    assert.truthy(ui.includes('Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}'),'target list shows difficulty, not DEF');
+    const targetsApi=read('functions/api/night-raid/targets.js');
+    assert.falsy(/defense:full\.defense/.test(targetsApi),'targets payload must not carry the exact DEF');
+    const battleBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
+    assert.truthy(battleBlock.includes('NHÀ ĐỊCH · DEF'),'attacking is how the child earns the number');
   });
   test('armored dog is a small canvas squad leader and marches with the formation',()=>{
     assert.truthy(game.includes("'img/night-raid/pet-soldiers-'"));
