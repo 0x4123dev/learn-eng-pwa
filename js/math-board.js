@@ -11,11 +11,26 @@
 const MATH_BOARD_MAX = 3;          // bảng 1/2/3 — enough for one solution
 const MATH_BOARD_MIN_DIST = 2;     // CSS px between recorded points
 const MATH_BOARD_INK = '#1e293b';
-const MATH_BOARD_INK_WIDTH = 3;
+const MATH_BOARD_INK_WIDTH = 4;
+const MATH_BOARD_PEN_WIDTHS = [2.5, 4, 6];
+const MATH_BOARD_ERASER_RADIUS = 16;
+const MATH_BOARD_FORMULA_GAP = 48;
+const MATH_BOARD_SUPERSCRIPTS = {
+    '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+    '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+    'x': 'ˣ', 'n': 'ⁿ', 'y': 'ʸ', '+': '⁺', '−': '⁻',
+    '(': '⁽', ')': '⁾'
+};
 
-function mathBoardBegin(b, x, y) {
-    const stroke = { points: [{ x, y }] };
+function mathBoardHistory(b) {
+    if (!Array.isArray(b.history)) b.history = [];
+    return b.history;
+}
+
+function mathBoardBegin(b, x, y, width) {
+    const stroke = { points: [{ x, y }], width: width || MATH_BOARD_INK_WIDTH };
     b.strokes.push(stroke);
+    mathBoardHistory(b).push({ type: 'add', stroke: stroke });
     return stroke;
 }
 
@@ -29,8 +44,115 @@ function mathBoardExtend(stroke, x, y) {
     return true;
 }
 
-function mathBoardUndo(b) { return b.strokes.pop() || null; }
-function mathBoardClear(b) { b.strokes.length = 0; }
+function mathBoardUndo(b) {
+    const action = mathBoardHistory(b).pop();
+    if (!action) return b.strokes.pop() || null;
+    if (action.type === 'add') {
+        const i = b.strokes.indexOf(action.stroke);
+        if (i !== -1) b.strokes.splice(i, 1);
+        return action.stroke;
+    }
+    if (action.type === 'erase') {
+        action.removed.slice().sort(function (a, c) { return a.index - c.index; })
+            .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
+        return action.removed;
+    }
+    if (action.type === 'clear') {
+        b.strokes.push.apply(b.strokes, action.strokes);
+        b.formulae = action.formulae || [];
+        return action.strokes;
+    }
+    if (action.type === 'formula-add') {
+        const formulae = mathBoardFormulae(b);
+        const i = formulae.indexOf(action.formula);
+        if (i !== -1) formulae.splice(i, 1);
+        if (b.formulaDraft === action.formula) b.formulaDraft = null;
+        return action.formula;
+    }
+    return null;
+}
+function mathBoardClear(b) {
+    const formulae = mathBoardFormulae(b);
+    if (b.strokes.length || formulae.length) {
+        mathBoardHistory(b).push({ type: 'clear', strokes: b.strokes.slice(), formulae: formulae.slice() });
+    }
+    b.strokes.length = 0;
+    b.formulae = [];
+    b.formulaDraft = null;
+    b.formulaSup = false;
+}
+
+function mathBoardFormulae(b) {
+    if (!Array.isArray(b.formulae)) b.formulae = [];
+    return b.formulae;
+}
+
+function mathBoardFormulaDraft(b, scrollY, viewHeight, scrollX) {
+    const formulae = mathBoardFormulae(b);
+    if (b.formulaDraft && formulae.indexOf(b.formulaDraft) !== -1) return b.formulaDraft;
+    const last = formulae[formulae.length - 1];
+    const viewTop = scrollY || 0;
+    const viewBottom = viewTop + (viewHeight || 500);
+    const y = last && last.y >= viewTop && last.y + MATH_BOARD_FORMULA_GAP < viewBottom
+        ? last.y + MATH_BOARD_FORMULA_GAP : viewTop + 28;
+    const formula = { raw: '', x: (scrollX || 0) + 18, y: y };
+    formulae.push(formula);
+    b.formulaDraft = formula;
+    b.formulaSup = false;
+    mathBoardHistory(b).push({ type: 'formula-add', formula: formula });
+    return formula;
+}
+
+function mathBoardFormulaKeyPress(b, key, scrollY, viewHeight, scrollX) {
+    if (key === '^') { b.formulaSup = !b.formulaSup; return b.formulaDraft; }
+    const formula = mathBoardFormulaDraft(b, scrollY, viewHeight, scrollX);
+    if (key === '⌫') {
+        formula.raw = formula.raw.slice(0, -1);
+        if (!formula.raw) b.formulaSup = false;
+        return formula;
+    }
+    if (b.formulaSup && MATH_BOARD_SUPERSCRIPTS[key]) {
+        formula.raw += MATH_BOARD_SUPERSCRIPTS[key];
+        return formula;
+    }
+    if (b.formulaSup) b.formulaSup = false;
+    formula.raw += key;
+    return formula;
+}
+
+function mathBoardFormulaNewLine(b) {
+    b.formulaDraft = null;
+    b.formulaSup = false;
+}
+
+function mathBoardDistanceToSegment(px, py, ax, ay, bx, by) {
+    const dx = bx - ax, dy = by - ay;
+    if (!dx && !dy) return Math.hypot(px - ax, py - ay);
+    const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+// A finger cannot scrub individual pixels precisely. Remove the whole pen
+// stroke it touches, like an object eraser, and record it for Undo.
+function mathBoardEraseAt(b, x, y, radius, removed) {
+    const hitRadius = radius || MATH_BOARD_ERASER_RADIUS;
+    const erased = removed || [];
+    let count = 0;
+    for (let i = b.strokes.length - 1; i >= 0; i--) {
+        const pts = b.strokes[i].points;
+        let hit = pts.length === 1 && Math.hypot(x - pts[0].x, y - pts[0].y) <= hitRadius;
+        for (let p = 1; !hit && p < pts.length; p++) {
+            hit = mathBoardDistanceToSegment(x, y, pts[p - 1].x, pts[p - 1].y,
+                pts[p].x, pts[p].y) <= hitRadius;
+        }
+        if (hit) {
+            erased.push({ index: i, stroke: b.strokes[i] });
+            b.strokes.splice(i, 1);
+            count++;
+        }
+    }
+    return count;
+}
 
 // One session of scratch paper per quiz. Lives in memory only — the spec says
 // boards die with the session, so nothing here ever touches localStorage.
@@ -38,7 +160,7 @@ let _mathBoardSession = null;
 
 function mathBoardSession() {
     if (!_mathBoardSession) {
-        _mathBoardSession = { boards: [{ strokes: [], scrollY: 0 }], active: 0, open: false };
+        _mathBoardSession = { boards: [{ strokes: [], scrollX: 0, scrollY: 0 }], active: 0, open: false };
     }
     return _mathBoardSession;
 }
@@ -49,7 +171,7 @@ function mathBoardActive() { const s = mathBoardSession(); return s.boards[s.act
 function mathBoardAdd() {
     const s = mathBoardSession();
     if (s.boards.length >= MATH_BOARD_MAX) return -1;
-    s.boards.push({ strokes: [], scrollY: 0 });
+    s.boards.push({ strokes: [], scrollX: 0, scrollY: 0 });
     s.active = s.boards.length - 1;
     return s.active;
 }
@@ -77,26 +199,48 @@ function mathBoardSwitch(i) {
 // already was. Anchoring on the newly-arrived second finger instead would make
 // the sheet jump the moment the student rests a thumb down.
 function mathBoardGesture() {
-    return { down: {}, count: 0, mode: 'idle', // idle | ink | pan
-        stroke: null, lead: null, panY: 0 };
+    return { down: {}, count: 0, mode: 'idle', // idle | ink | erase | pan
+        stroke: null, lead: null, panX: 0, panY: 0, eraseRemoved: null };
 }
 
-function mathBoardPointerDown(g, b, id, x, y) {
+function mathBoardPointerDown(g, b, id, x, y, tool, width) {
     const key = String(id);
     if (g.down[key]) return 'none';
-    g.down[key] = { y: y };
+    g.down[key] = { x: x, y: y };
     g.count++;
     if (g.mode === 'idle') {
+        if (tool === 'erase') {
+            g.mode = 'erase';
+            g.lead = key;
+            g.eraseRemoved = [];
+            mathBoardEraseAt(b, x + (b.scrollX || 0), y + b.scrollY,
+                MATH_BOARD_ERASER_RADIUS, g.eraseRemoved);
+            return 'erase';
+        }
         g.mode = 'ink';
         g.lead = key;
-        g.stroke = mathBoardBegin(b, x, y + b.scrollY);
+        g.stroke = mathBoardBegin(b, x + (b.scrollX || 0), y + b.scrollY, width);
         return 'ink-start';
     }
     if (g.mode === 'ink') {
         b.strokes.pop();
+        const history = mathBoardHistory(b);
+        if (history.length && history[history.length - 1].stroke === g.stroke) history.pop();
         g.stroke = null;
         g.mode = 'pan';        // lead stays the first finger — it is the anchor
+        g.panX = b.scrollX || 0;
         g.panY = b.scrollY;    // unclamped accumulator — see mathBoardPointerMove
+        return 'pan-start';
+    }
+    if (g.mode === 'erase') {
+        // A second finger means scroll, even while the eraser is selected.
+        // Restore anything removed before that intent became unambiguous.
+        g.eraseRemoved.slice().sort(function (a, c) { return a.index - c.index; })
+            .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
+        g.eraseRemoved = null;
+        g.mode = 'pan';
+        g.panX = b.scrollX || 0;
+        g.panY = b.scrollY;
         return 'pan-start';
     }
     return 'none';             // a third finger during a pan changes nothing
@@ -106,13 +250,21 @@ function mathBoardPointerMove(g, b, id, x, y) {
     const key = String(id);
     const p = g.down[key];
     if (!p) return 'none';
-    const prevY = p.y;
+    const prevX = p.x, prevY = p.y;
+    p.x = x;
     p.y = y;
     if (g.mode === 'ink' && key === g.lead && g.stroke) {
-        return mathBoardExtend(g.stroke, x, y + b.scrollY) ? 'ink' : 'none';
+        return mathBoardExtend(g.stroke, x + (b.scrollX || 0), y + b.scrollY) ? 'ink' : 'none';
+    }
+    if (g.mode === 'erase' && key === g.lead) {
+        return mathBoardEraseAt(b, x + (b.scrollX || 0), y + b.scrollY,
+            MATH_BOARD_ERASER_RADIUS, g.eraseRemoved)
+            ? 'erase' : 'none';
     }
     if (g.mode === 'pan' && key === g.lead) {
+        g.panX -= (x - prevX);
         g.panY -= (y - prevY);              // the finger's true travel, unclamped
+        b.scrollX = Math.max(0, g.panX);
         b.scrollY = Math.max(0, g.panY);    // clamp only what we show, or overscroll
         return 'pan';                       // at the top would steal the way back
     }
@@ -130,6 +282,15 @@ function mathBoardPointerUp(g, b, id) {
         g.mode = 'idle';
         g.lead = null;
         return 'ink-end';
+    }
+    if (g.mode === 'erase' && wasLead) {
+        if (g.eraseRemoved && g.eraseRemoved.length) {
+            mathBoardHistory(b).push({ type: 'erase', removed: g.eraseRemoved });
+        }
+        g.eraseRemoved = null;
+        g.mode = 'idle';
+        g.lead = null;
+        return 'erase-end';
     }
     if (g.mode === 'pan') {
         if (g.count === 0) { g.mode = 'idle'; g.lead = null; return 'pan-end'; }
@@ -150,47 +311,58 @@ function mathBoardPointerCancel(g, b, id) { return mathBoardPointerUp(g, b, id);
 // of those can pull the in-progress stroke out from under a finger that is
 // still down, so they must abort the gesture instead of leaving g.stroke
 // pointing at a detached object that silently swallows ink.
-function mathBoardAbort(g) { g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; }
+function mathBoardAbort(g, b) {
+    if (b && g.mode === 'erase' && g.eraseRemoved && g.eraseRemoved.length) {
+        mathBoardHistory(b).push({ type: 'erase', removed: g.eraseRemoved });
+    }
+    g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; g.eraseRemoved = null;
+}
 
 // ── Painter ──────────────────────────────────────────────────────────────
 // The canvas is only ever viewport-sized; scrolling changes which slice of
 // the world we draw, never the canvas. That is what makes the sheet endless
 // without ever meeting iOS's canvas-size ceiling.
 
-function mathBoardVisibleStrokes(strokes, scrollY, viewH) {
+function mathBoardVisibleStrokes(strokes, scrollY, viewH, scrollX, viewW) {
     const top = scrollY, bottom = scrollY + viewH;
+    const left = scrollX || 0, right = viewW == null ? Infinity : left + viewW;
     return strokes.filter(s => {
-        let min = Infinity, max = -Infinity;
-        for (const p of s.points) { if (p.y < min) min = p.y; if (p.y > max) max = p.y; }
-        return max >= top && min <= bottom;
+        let minY = Infinity, maxY = -Infinity, minX = Infinity, maxX = -Infinity;
+        for (const p of s.points) {
+            if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+            if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+        }
+        return maxY >= top && minY <= bottom && maxX >= left && minX <= right;
     });
 }
 
 // Midpoint-quadratic smoothing: each recorded point becomes the control point
 // of a curve between neighbouring midpoints — cheap, stable, and it reads as
 // ink instead of connect-the-dots.
-function mathBoardDrawStroke(ctx, pts, scrollY) {
+function mathBoardDrawStroke(ctx, pts, scrollY, width, scrollX) {
     if (!pts.length) return;
+    const offsetX = scrollX || 0;
     ctx.strokeStyle = MATH_BOARD_INK;
     ctx.fillStyle = MATH_BOARD_INK;
-    ctx.lineWidth = MATH_BOARD_INK_WIDTH;
+    ctx.lineWidth = width || MATH_BOARD_INK_WIDTH;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     if (pts.length === 1) {              // a tap is a dot, not nothing
         ctx.beginPath();
-        ctx.arc(pts[0].x, pts[0].y - scrollY, MATH_BOARD_INK_WIDTH / 2, 0, Math.PI * 2);
+        ctx.arc(pts[0].x - offsetX, pts[0].y - scrollY,
+            (width || MATH_BOARD_INK_WIDTH) / 2, 0, Math.PI * 2);
         ctx.fill();
         return;
     }
     ctx.beginPath();
-    ctx.moveTo(pts[0].x, pts[0].y - scrollY);
+    ctx.moveTo(pts[0].x - offsetX, pts[0].y - scrollY);
     for (let i = 1; i < pts.length - 1; i++) {
         const mx = (pts[i].x + pts[i + 1].x) / 2;
         const my = (pts[i].y + pts[i + 1].y) / 2;
-        ctx.quadraticCurveTo(pts[i].x, pts[i].y - scrollY, mx, my - scrollY);
+        ctx.quadraticCurveTo(pts[i].x - offsetX, pts[i].y - scrollY, mx - offsetX, my - scrollY);
     }
     const last = pts[pts.length - 1];
-    ctx.lineTo(last.x, last.y - scrollY);
+    ctx.lineTo(last.x - offsetX, last.y - scrollY);
     ctx.stroke();
 }
 
@@ -203,10 +375,22 @@ function mathBoardDrawStroke(ctx, pts, scrollY) {
 const MATH_BOARD_GRID_STEP = 28;
 const MATH_BOARD_GRID_INK = '#dfe6f3';
 
-function mathBoardGridLines(scrollY, viewW, viewH, step) {
+// A complete, predictable maths keyboard for questions with typed answers.
+// Keep this independent of q.keys: a child should never have to hunt for √ or
+// |x| because one author forgot to list that symbol on a particular question.
+// The values are the exact tokens understood by mathKeyPress() in math.js.
+const MATH_BOARD_KEY_ROWS = [
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ','],
+    ['⌫', '+', '−', '·', '/', '=', '(', ')', '√', '^', '|', 'x', 'y', 'n']
+];
+
+function mathBoardGridLines(scrollY, viewW, viewH, step, scrollX) {
     const s = step || MATH_BOARD_GRID_STEP;
     const vertical = [];
-    for (let x = s; x < viewW; x += s) vertical.push(x);
+    const left = scrollX || 0;
+    for (let n = Math.max(1, Math.ceil(left / s)); n * s <= left + viewW; n++) {
+        vertical.push(n * s - left);
+    }
     const horizontal = [];
     for (let n = Math.max(1, Math.ceil(scrollY / s)); n * s <= scrollY + viewH; n++) {
         horizontal.push(n * s - scrollY);
@@ -214,8 +398,8 @@ function mathBoardGridLines(scrollY, viewW, viewH, step) {
     return { vertical, horizontal };
 }
 
-function mathBoardDrawGrid(ctx, scrollY, viewW, viewH) {
-    const g = mathBoardGridLines(scrollY, viewW, viewH, MATH_BOARD_GRID_STEP);
+function mathBoardDrawGrid(ctx, scrollY, viewW, viewH, scrollX) {
+    const g = mathBoardGridLines(scrollY, viewW, viewH, MATH_BOARD_GRID_STEP, scrollX);
     ctx.strokeStyle = MATH_BOARD_GRID_INK;
     ctx.lineWidth = 1;
     ctx.lineCap = 'butt';
@@ -227,9 +411,9 @@ function mathBoardDrawGrid(ctx, scrollY, viewW, viewH) {
 
 function mathBoardRedraw(ctx, b, viewW, viewH) {
     ctx.clearRect(0, 0, viewW, viewH);
-    mathBoardDrawGrid(ctx, b.scrollY, viewW, viewH);
-    for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH)) {
-        mathBoardDrawStroke(ctx, s.points, b.scrollY);
+    mathBoardDrawGrid(ctx, b.scrollY, viewW, viewH, b.scrollX || 0);
+    for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH, b.scrollX || 0, viewW)) {
+        mathBoardDrawStroke(ctx, s.points, b.scrollY, s.width, b.scrollX || 0);
     }
 }
 
@@ -253,6 +437,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     var _mathBoardGestureState = null;
     var _mathBoardClearArmed = 0;
     var _mathBoardResizeObs = null;
+    var _mathBoardKeyboardOpen = false;
+    var _mathBoardToolsExpanded = false;
+    var _mathBoardTool = 'pen';
+    var _mathBoardPenWidth = MATH_BOARD_INK_WIDTH;
     // One gesture hint per quiz session: the first open shows "1 ngón viết ·
     // 2 ngón cuộn" and the first touch (or 4 s) removes it. Reset when the
     // session closes so the next quiz gets one reminder, not zero, not many.
@@ -262,6 +450,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // NEXT session's hint and removes it seconds early — the same stale-timer
     // shape as the "Chắc chưa?" confirm.
     var _mathBoardHintTimer = null;
+    // The complete question is the safe default: a child should never solve
+    // from a clipped stem without noticing. Collapse is an explicit choice and
+    // survives switching Bảng 1/2/3 during the same board opening.
+    var _mathBoardQuestionExpanded = true;
 
     // A live gesture holds a reference into b.strokes (g.stroke) or is mid-pan.
     // Any toolbar action that mutates the board, or that tears the overlay
@@ -269,7 +461,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // (overlay closed under a live stroke), so this must tolerate "no gesture"
     // rather than assume one, unlike the plain mathBoardAbort(g) it wraps.
     function mathBoardAbortSafe() {
-        if (_mathBoardGestureState) mathBoardAbort(_mathBoardGestureState);
+        if (_mathBoardGestureState) mathBoardAbort(_mathBoardGestureState, mathBoardActive());
     }
 
     // The canvas box changes size for three ordinary reasons: rotation, the
@@ -305,8 +497,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // sheet, and it is a tap we own — so resize on the spot rather than trust
     // the ResizeObserver to notice. (Some engines never deliver it; a stale
     // bitmap here means the ink lands where the finger is not.)
-    window.mathBoardStripTap = function (el) {
-        el.classList.toggle('full');
+    window.mathBoardStripTap = function () {
+        mathBoardAbortSafe();
+        _mathBoardQuestionExpanded = !_mathBoardQuestionExpanded;
+        mathBoardRenderOverlay();
         mathBoardResize();
     };
 
@@ -315,6 +509,11 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         s.open = true;
         _mathBoardGestureState = mathBoardGesture();
         _mathBoardClearArmed = 0;
+        _mathBoardKeyboardOpen = false;
+        _mathBoardToolsExpanded = false;
+        _mathBoardTool = 'pen';
+        _mathBoardPenWidth = MATH_BOARD_INK_WIDTH;
+        _mathBoardQuestionExpanded = true;
         mathBoardRenderOverlay();
     };
 
@@ -332,6 +531,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         mathBoardDropCanvas();
         _mathBoardGestureState = null;
         _mathBoardClearArmed = 0;
+        _mathBoardKeyboardOpen = false;
+        _mathBoardToolsExpanded = false;
         clearTimeout(_mathBoardHintTimer);
         _mathBoardHintTimer = null;
         _mathBoardHintDone = false;   // next quiz session gets its one reminder
@@ -365,13 +566,14 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             mathBoardAbortSafe();
             const b = mathBoardActive();
             mathBoardClear(b);
+            b.scrollX = 0;
             b.scrollY = 0;
             _mathBoardClearArmed = 0;
             // A full mathBoardRenderOverlay() would also disarm the button, but
             // nothing about the board list changed here — only its strokes — so
             // a plain repaint is enough, as long as the label is put back by hand.
             const btn = document.getElementById('mathBoardClearBtn');
-            if (btn) btn.textContent = '🗑 Xoá';
+            if (btn) btn.textContent = 'Xoá bảng';
             mathBoardRepaint();
             return;
         }
@@ -381,7 +583,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         setTimeout(function () {
             _mathBoardClearArmed = 0;
             const b = document.getElementById('mathBoardClearBtn');
-            if (b) b.textContent = '🗑 Xoá';
+            if (b) b.textContent = 'Xoá bảng';
         }, 2000);
     };
 
@@ -396,7 +598,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         const s = mathBoardSession();
         let html = s.boards.map(function (b, i) {
             return '<button class="math-board-chip ' + (i === s.active ? 'active' : '') +
-                   '" type="button" onclick="mathBoardTabTap(' + i + ')">Bảng ' + (i + 1) + '</button>';
+                   '" type="button" aria-label="Bảng ' + (i + 1) + '" ' +
+                   'onclick="mathBoardTabTap(' + i + ')">B' + (i + 1) + '</button>';
         }).join('');
         if (s.boards.length < MATH_BOARD_MAX) {
             html += '<button class="math-board-chip" type="button" onclick="mathBoardTabTap(-1)">+</button>';
@@ -404,33 +607,264 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         return html;
     }
 
+    function mathBoardWritingToolsHTML() {
+        const penNames = ['Mảnh', 'Vừa', 'Đậm'];
+        const pens = MATH_BOARD_PEN_WIDTHS.map(function (width, i) {
+            const active = _mathBoardTool === 'pen' && _mathBoardPenWidth === width;
+            return '<button class="math-board-write-tool' + (active ? ' active' : '') + '" type="button" ' +
+                   'aria-pressed="' + (active ? 'true' : 'false') + '" ' +
+                   'onclick="mathBoardSelectTool(\'pen\',' + width + ')">' +
+                     '<span class="math-board-pen-sample" style="height:' + width + 'px"></span>' +
+                     '<span>' + penNames[i] + '</span>' +
+                   '</button>';
+        }).join('');
+        const eraseActive = _mathBoardTool === 'erase';
+        return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' + pens +
+               '<button class="math-board-write-tool math-board-eraser' + (eraseActive ? ' active' : '') + '" ' +
+                       'type="button" aria-pressed="' + (eraseActive ? 'true' : 'false') + '" ' +
+                       'onclick="mathBoardSelectTool(\'erase\')">Tẩy nét</button></div>';
+    }
+
+    window.mathBoardSelectTool = function (tool, width) {
+        mathBoardAbortSafe();
+        _mathBoardTool = tool === 'erase' ? 'erase' : 'pen';
+        if (_mathBoardTool === 'pen' && MATH_BOARD_PEN_WIDTHS.indexOf(width) !== -1) {
+            _mathBoardPenWidth = width;
+        }
+        document.querySelectorAll('.math-board-write-tool').forEach(function (button) {
+            button.classList.remove('active');
+            button.setAttribute('aria-pressed', 'false');
+        });
+        const selector = _mathBoardTool === 'erase'
+            ? '.math-board-eraser'
+            : '.math-board-write-tool[onclick*="' + _mathBoardPenWidth + '"]';
+        const selected = document.querySelector(selector);
+        if (selected) {
+            selected.classList.add('active');
+            selected.setAttribute('aria-pressed', 'true');
+        }
+        const canvas = document.getElementById('mathBoardCanvas');
+        if (canvas) canvas.classList.toggle('erasing', _mathBoardTool === 'erase');
+    };
+
     function mathBoardStripHTML() {
         const q = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
         if (!q) return '';
-        return '<div class="math-board-strip" onclick="mathBoardStripTap(this)">' +
-               '<span class="math-formula">' + mathFormula(q.q) + '</span></div>';
+        const full = _mathBoardQuestionExpanded;
+        if (!full) return '';
+        return '<button class="math-board-strip' + (full ? ' full' : '') + '" type="button" ' +
+               'aria-expanded="' + (full ? 'true' : 'false') + '" ' +
+               'aria-label="' + (full ? 'Thu gọn đề bài' : 'Mở rộng đầy đủ đề bài') + '" ' +
+               'onclick="mathBoardStripTap()">' +
+               '<span class="math-board-strip-label">Đề bài</span>' +
+               '<span class="math-formula">' + mathFormula(q.q) + '</span>' +
+               '<span class="math-board-strip-action">Thu gọn đề</span>' +
+               '</button>';
     }
+
+    function mathBoardHintText() {
+        const finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+        return finePointer
+            ? 'Kéo chuột để viết &nbsp;·&nbsp; Trackpad cuộn mọi hướng'
+            : '1 ngón viết &nbsp;·&nbsp; 2 ngón kéo giấy mọi hướng';
+    }
+
+    function mathBoardKeyHTML(key) {
+        let face = mathEsc(key);
+        let label = key;
+        let className = 'math-board-key';
+        if (key === '/') {
+            face = '<span class="math-board-fraction-key" aria-hidden="true"><span>a</span><span>b</span></span>';
+            label = 'Phân số';
+            className += ' math-board-key-symbol';
+        } else if (key === '^') {
+            face = 'x<sup>n</sup>';
+            label = 'Số mũ';
+            className += ' math-board-key-symbol math-key-pow' +
+                (mathBoardActive().formulaSup ? ' active' : '');
+        } else if (key === '|') {
+            face = '|x|';
+            label = 'Giá trị tuyệt đối, bấm trước và sau biểu thức';
+            className += ' math-board-key-symbol';
+        } else if (key === '√') {
+            face = '√x';
+            label = 'Căn bậc hai';
+            className += ' math-board-key-symbol';
+        } else if (key === '⌫') {
+            label = 'Xóa một ký tự';
+            className += ' math-board-key-delete';
+        } else if (key === '(') label = 'Mở ngoặc';
+        else if (key === ')') label = 'Đóng ngoặc';
+        else if (key === '=') label = 'Dấu bằng';
+        return '<button type="button" class="' + className + '" aria-label="' + label + '" ' +
+               'onclick="mathBoardKeyboardKey(\'' + key + '\')">' + face + '</button>';
+    }
+
+    function mathBoardKeyboardHTML() {
+        const numberKeys = MATH_BOARD_KEY_ROWS[0].map(mathBoardKeyHTML).join('');
+        const symbolKeys = MATH_BOARD_KEY_ROWS[1].map(mathBoardKeyHTML).join('');
+        return '<section class="math-board-keyboard' + (_mathBoardKeyboardOpen ? '' : ' hidden') + '" ' +
+               'id="mathBoardKeyboard" aria-label="Bàn phím toán học">' +
+                 '<div class="math-board-key-grid" role="group" aria-label="Các phím nhập công thức">' +
+                   '<div class="math-board-key-row math-board-number-row" aria-label="Enter và các chữ số">' +
+                     '<button type="button" class="math-board-key math-board-key-newline" ' +
+                             'aria-label="Enter, thêm dòng mới" onclick="mathBoardFormulaNewLineTap()">↵ Enter</button>' +
+                     numberKeys +
+                   '</div>' +
+                   '<div class="math-board-key-row math-board-symbol-row" aria-label="Xóa và các ký hiệu toán học">' +
+                     symbolKeys +
+                   '</div>' +
+                 '</div>' +
+                 '<div class="math-board-sr-only" id="mathBoardKeyboardStatus" aria-live="polite">' +
+                   'Bàn phím toán đã mở' +
+                 '</div>' +
+               '</section>';
+    }
+
+    window.mathBoardKeyboardToggle = function () {
+        mathBoardAbortSafe();
+        _mathBoardKeyboardOpen = !_mathBoardKeyboardOpen;
+        if (_mathBoardKeyboardOpen) _mathBoardToolsExpanded = false;
+        const panel = document.getElementById('mathBoardKeyboard');
+        const button = document.getElementById('mathBoardKeyboardBtn');
+        const advanced = document.getElementById('mathBoardAdvancedTools');
+        const toolsButton = document.getElementById('mathBoardToolsBtn');
+        if (panel) panel.classList.toggle('hidden', !_mathBoardKeyboardOpen);
+        if (advanced) advanced.classList.toggle('hidden', !_mathBoardToolsExpanded);
+        if (toolsButton) {
+            toolsButton.setAttribute('aria-expanded', 'false');
+            toolsButton.classList.remove('active');
+            toolsButton.textContent = 'Công cụ';
+        }
+        if (button) {
+            button.setAttribute('aria-expanded', _mathBoardKeyboardOpen ? 'true' : 'false');
+            button.classList.toggle('active', _mathBoardKeyboardOpen);
+            button.textContent = _mathBoardKeyboardOpen ? 'Ẩn bàn phím' : 'Bàn phím toán';
+        }
+        mathBoardResize();
+    };
+
+    window.mathBoardFormulaNewLineTap = function () {
+        mathBoardFormulaNewLine(mathBoardActive());
+        const status = document.getElementById('mathBoardKeyboardStatus');
+        if (status) status.textContent = 'Đã thêm dòng mới trên bảng nháp';
+        mathBoardRenderFormulae();
+    };
+
+    window.mathBoardToolsToggle = function () {
+        mathBoardAbortSafe();
+        _mathBoardToolsExpanded = !_mathBoardToolsExpanded;
+        if (_mathBoardToolsExpanded) _mathBoardKeyboardOpen = false;
+        const advanced = document.getElementById('mathBoardAdvancedTools');
+        const button = document.getElementById('mathBoardToolsBtn');
+        const keyboard = document.getElementById('mathBoardKeyboard');
+        const keyboardButton = document.getElementById('mathBoardKeyboardBtn');
+        if (advanced) advanced.classList.toggle('hidden', !_mathBoardToolsExpanded);
+        if (keyboard) keyboard.classList.toggle('hidden', !_mathBoardKeyboardOpen);
+        if (button) {
+            button.setAttribute('aria-expanded', _mathBoardToolsExpanded ? 'true' : 'false');
+            button.classList.toggle('active', _mathBoardToolsExpanded);
+            button.textContent = _mathBoardToolsExpanded ? 'Ẩn công cụ' : 'Công cụ';
+        }
+        if (keyboardButton) {
+            keyboardButton.setAttribute('aria-expanded', 'false');
+            keyboardButton.classList.remove('active');
+            keyboardButton.textContent = 'Bàn phím toán';
+        }
+        mathBoardResize();
+    };
+
+    window.mathBoardKeyboardKey = function (key) {
+        const canvas = document.getElementById('mathBoardCanvas');
+        const b = mathBoardActive();
+        const formula = mathBoardFormulaKeyPress(b, key, b.scrollY,
+            canvas ? canvas._viewH : 500, b.scrollX || 0);
+        mathBoardRenderFormulae();
+        // A typed calculation is one continuous line of working. Once its
+        // right edge approaches the viewport, move the paper just enough to
+        // keep the newest symbol visible instead of wrapping the mathematics.
+        const note = document.getElementById('mathBoardActiveFormula');
+        if (canvas && note && formula && formula.raw) {
+            const right = formula.x + note.offsetWidth;
+            const visibleRight = (b.scrollX || 0) + canvas._viewW - 18;
+            if (right > visibleRight) {
+                b.scrollX = right - canvas._viewW + 18;
+                mathBoardRepaint();
+            }
+        }
+        const status = document.getElementById('mathBoardKeyboardStatus');
+        if (status) status.textContent = formula && formula.raw
+            ? 'Đã viết lên bảng: ' + formula.raw : 'Đang viết trực tiếp trên bảng nháp';
+        document.querySelectorAll('.math-key-pow').forEach(function (button) {
+            button.classList.toggle('active', !!b.formulaSup);
+        });
+    };
 
     function mathBoardRenderOverlay() {
         const el = document.getElementById('mathBoardOverlay');
         if (!el) return;
         _mathBoardClearArmed = 0;   // the armed button is about to be destroyed
         el.classList.remove('hidden');
+        // iOS Safari may interpret a slow pencil/finger contact as selecting
+        // the overlay text, tint the whole sheet blue, then show Copy/Paste.
+        // The board has no editable text, so those native gestures are always
+        // accidental and can be safely blocked at the overlay boundary.
+        el.onselectstart = function (event) { event.preventDefault(); };
+        el.oncontextmenu = function (event) { event.preventDefault(); };
+        el.ondragstart = function (event) { event.preventDefault(); };
+        // Two fingers anywhere on the board must belong to the board. The
+        // canvas already owns its touches (touch-action: none), but a
+        // two-finger drag that started on the HEADER — strip, tool row, or one
+        // finger on each element — was Safari's page pinch: iOS ignores
+        // user-scalable=no, the visual viewport zoomed and slid, the header
+        // with "Thu nhỏ" left the screen, and the canvas swallowed every
+        // one-finger pan that could have brought it back. Refuse the native
+        // gesture at the overlay boundary; one-finger taps and scrolls (the
+        // long-stem strip, the toolbar) are untouched. Property handlers, not
+        // addEventListener: this function reruns on every board switch, and
+        // properties cannot accumulate.
+        el.ontouchmove = function (event) {
+            if (event.touches && event.touches.length > 1) event.preventDefault();
+        };
+        el.ongesturestart = function (event) { event.preventDefault(); };
+        el.ongesturechange = function (event) { event.preventDefault(); };
         el.innerHTML =
             mathBoardStripHTML() +
             '<div class="math-board-tools">' +
               '<span class="math-board-chips">' + mathBoardChipsHTML() + '</span>' +
-              // Every tool carries a word, not just a glyph: an emoji that a
-              // device has no font for renders as a hollow box, and a lone box
-              // tells a child nothing.
-              '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">↩️ Lùi</button>' +
-              '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
-                      'onclick="mathBoardClearTap()">🗑 Xoá</button>' +
-              '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">▾ Thu nhỏ</button>' +
+              '<div class="math-board-quick-tools">' +
+                (_mathBoardQuestionExpanded ? '' :
+                  '<button class="math-board-tool math-board-question-open" type="button" ' +
+                          'onclick="mathBoardStripTap()">Mở đề</button>') +
+                '<button class="math-board-tool math-board-tools-toggle' + (_mathBoardToolsExpanded ? ' active' : '') + '" ' +
+                        'type="button" id="mathBoardToolsBtn" aria-controls="mathBoardAdvancedTools" ' +
+                        'aria-expanded="' + (_mathBoardToolsExpanded ? 'true' : 'false') + '" ' +
+                        'onclick="mathBoardToolsToggle()">' +
+                        (_mathBoardToolsExpanded ? 'Ẩn công cụ' : 'Công cụ') + '</button>' +
+                '<button class="math-board-tool math-board-keyboard-toggle' + (_mathBoardKeyboardOpen ? ' active' : '') + '" ' +
+                        'type="button" id="mathBoardKeyboardBtn" aria-controls="mathBoardKeyboard" ' +
+                        'aria-expanded="' + (_mathBoardKeyboardOpen ? 'true' : 'false') + '" ' +
+                        'onclick="mathBoardKeyboardToggle()">' +
+                        (_mathBoardKeyboardOpen ? 'Ẩn bàn phím' : 'Bàn phím toán') + '</button>' +
+                '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">Thu nhỏ</button>' +
+              '</div>' +
             '</div>' +
-            '<canvas id="mathBoardCanvas"></canvas>' +
+              '<div class="math-board-advanced-tools' + (_mathBoardToolsExpanded ? '' : ' hidden') + '" ' +
+                   'id="mathBoardAdvancedTools">' +
+                mathBoardWritingToolsHTML() +
+                '<div class="math-board-edit-tools">' +
+                  '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">Lùi một bước</button>' +
+                  '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
+                          'onclick="mathBoardClearTap()">Xoá bảng</button>' +
+                '</div>' +
+              '</div>' +
+            mathBoardKeyboardHTML() +
+            '<div class="math-board-sheet" id="mathBoardSheet">' +
+              '<canvas id="mathBoardCanvas"></canvas>' +
+              '<div class="math-board-formula-layer" id="mathBoardFormulaLayer" aria-label="Công thức trên bảng nháp"></div>' +
+            '</div>' +
             (_mathBoardHintDone ? '' :
-              '<div class="math-board-hint" id="mathBoardHint">☝️ 1 ngón viết &nbsp;·&nbsp; ✌️ 2 ngón cuộn</div>');
+              '<div class="math-board-hint" id="mathBoardHint">' + mathBoardHintText() + '</div>');
         mathBoardMountCanvas();
         clearTimeout(_mathBoardHintTimer);
         if (!_mathBoardHintDone) _mathBoardHintTimer = setTimeout(mathBoardHintDismiss, 4000);
@@ -453,6 +887,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         // the page, once per switch.
         if (_mathBoardResizeObs) { _mathBoardResizeObs.disconnect(); _mathBoardResizeObs = null; }
         canvas.style.touchAction = 'none';   // touch-action: none — we own every touch
+        canvas.classList.toggle('erasing', _mathBoardTool === 'erase');
         // ← REVIEW (Task 4): clamp to at least 1px. A canvas sized during an
         // unsettled layout would be zero-area and silently swallow every stroke.
         const w = Math.max(1, canvas.clientWidth || (canvas.parentNode && canvas.parentNode.clientWidth) || 320);
@@ -480,7 +915,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
             const r = canvas.getBoundingClientRect();
             const act = mathBoardPointerDown(_mathBoardGestureState, mathBoardActive(),
-                e.pointerId, e.clientX - r.left, e.clientY - r.top);
+                e.pointerId, e.clientX - r.left, e.clientY - r.top, _mathBoardTool, _mathBoardPenWidth);
             // ← REVIEW (Task 3): 'pan-start' means the machine just deleted the
             // half-drawn stroke. Without this repaint it stays painted on the
             // canvas until the first pan move — ink that should be gone.
@@ -501,12 +936,13 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                 const ce = events[i];
                 const act = mathBoardPointerMove(g, b, e.pointerId,
                     ce.clientX - r.left, ce.clientY - r.top);
-                if (act === 'pan') repaint = true;
+                if (act === 'pan' || act === 'erase') repaint = true;
                 else if (act === 'ink' && g.stroke) {
                     // Draw only the fresh tail — repainting the whole sheet on
                     // every sample is what makes cheap phones lag behind the finger.
                     const pts = g.stroke.points;
-                    mathBoardDrawStroke(_mathBoardCtx, pts.slice(Math.max(0, pts.length - 3)), b.scrollY);
+                    mathBoardDrawStroke(_mathBoardCtx, pts.slice(Math.max(0, pts.length - 3)),
+                        b.scrollY, g.stroke.width, b.scrollX || 0);
                 }
             }
             if (repaint) mathBoardRepaint();
@@ -531,7 +967,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         canvas.addEventListener('wheel', function (e) {
             e.preventDefault();
             const b = mathBoardActive();
-            b.scrollY = Math.max(0, b.scrollY + e.deltaY);
+            const horizontal = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX;
+            b.scrollX = Math.max(0, (b.scrollX || 0) + horizontal);
+            if (!e.shiftKey) b.scrollY = Math.max(0, b.scrollY + e.deltaY);
             mathBoardRepaint();
         }, { passive: false });
 
@@ -544,21 +982,44 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         }
     }
 
+    function mathBoardRenderFormulae() {
+        const layer = document.getElementById('mathBoardFormulaLayer');
+        if (!layer) return;
+        const b = mathBoardActive();
+        const canvas = document.getElementById('mathBoardCanvas');
+        const viewH = canvas ? canvas._viewH || canvas.clientHeight : 0;
+        layer.innerHTML = mathBoardFormulae(b).filter(function (formula) {
+            return formula.raw && formula.y >= b.scrollY - 50 && formula.y <= b.scrollY + viewH + 20;
+        }).map(function (formula) {
+            const active = formula === b.formulaDraft;
+            return '<div class="math-board-formula-note' + (active ? ' active' : '') + '" ' +
+                   (active ? 'id="mathBoardActiveFormula" ' : '') +
+                   'style="left:' + (formula.x - (b.scrollX || 0)) + 'px;top:' + (formula.y - b.scrollY) + 'px">' +
+                     '<span class="math-formula">' + mathFormula(formula.raw) + '</span>' +
+                   '</div>';
+        }).join('');
+    }
+
     function mathBoardRepaint() {
         const canvas = document.getElementById('mathBoardCanvas');
         if (!canvas || !_mathBoardCtx) return;
         mathBoardRedraw(_mathBoardCtx, mathBoardActive(), canvas._viewW, canvas._viewH);
+        mathBoardRenderFormulae();
     }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,
+        MATH_BOARD_PEN_WIDTHS, MATH_BOARD_ERASER_RADIUS,
         mathBoardBegin, mathBoardExtend, mathBoardUndo, mathBoardClear,
+        mathBoardEraseAt, mathBoardDistanceToSegment,
+        mathBoardFormulae, mathBoardFormulaDraft, mathBoardFormulaKeyPress, mathBoardFormulaNewLine,
         mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort,
         mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
         mathBoardGridLines, MATH_BOARD_GRID_STEP,
+        MATH_BOARD_KEY_ROWS,
     };
 }

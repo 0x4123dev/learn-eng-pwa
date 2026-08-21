@@ -26,7 +26,7 @@ suite('math board: strokes', () => {
         assert.equal(board.mathBoardExtend(s, 13, 10), true, '3px is a real move');
     });
 
-    test('undo removes exactly the last stroke; clear empties the board', () => {
+    test('undo removes the last stroke and can restore a cleared board', () => {
         const b = { strokes: [], scrollY: 0 };
         board.mathBoardBegin(b, 1, 1);
         const s2 = board.mathBoardBegin(b, 2, 2);
@@ -34,7 +34,65 @@ suite('math board: strokes', () => {
         assert.equal(b.strokes.length, 1);
         board.mathBoardClear(b);
         assert.equal(b.strokes.length, 0);
-        assert.equal(board.mathBoardUndo(b), null, 'undo on empty board is a no-op');
+        board.mathBoardUndo(b);
+        assert.equal(b.strokes.length, 1, 'an accidental clear is recoverable');
+    });
+
+    test('each stroke remembers the selected pen width', () => {
+        const b = { strokes: [], scrollY: 0 };
+        assert.equal(board.mathBoardBegin(b, 1, 1, 6).width, 6);
+        assert.deepEqual(board.MATH_BOARD_PEN_WIDTHS, [2.5, 4, 6]);
+        assert.equal(board.MATH_BOARD_INK_WIDTH, 4, 'finger-friendly medium is the default');
+    });
+
+    test('the object eraser removes a touched stroke and Undo restores it', () => {
+        const b = { strokes: [], scrollY: 0 };
+        const left = board.mathBoardBegin(b, 0, 10);
+        board.mathBoardExtend(left, 100, 10);
+        const right = board.mathBoardBegin(b, 0, 80);
+        board.mathBoardExtend(right, 100, 80);
+        const g = board.mathBoardGesture();
+        assert.equal(board.mathBoardPointerDown(g, b, 1, 50, 12, 'erase'), 'erase');
+        assert.equal(board.mathBoardPointerUp(g, b, 1), 'erase-end');
+        assert.deepEqual(b.strokes, [right], 'nearby stroke is untouched');
+        board.mathBoardUndo(b);
+        assert.deepEqual(b.strokes, [left, right], 'one Undo restores the erased gesture');
+    });
+
+    test('two fingers in eraser mode scroll without deleting ink', () => {
+        const b = { strokes: [], scrollY: 0 };
+        const stroke = board.mathBoardBegin(b, 0, 10);
+        board.mathBoardExtend(stroke, 100, 10);
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 50, 10, 'erase');
+        assert.equal(b.strokes.length, 0, 'first contact begins erasing');
+        assert.equal(board.mathBoardPointerDown(g, b, 2, 80, 10, 'erase'), 'pan-start');
+        assert.equal(b.strokes.length, 1, 'second finger restores the tentative erase');
+    });
+
+    test('maths keys create a visible formula draft on the board, not an answer value', () => {
+        const b = { strokes: [], scrollY: 120 };
+        ['√', '4', '9', '=', '7'].forEach(key => board.mathBoardFormulaKeyPress(b, key, 120, 500));
+        assert.equal(b.formulae.length, 1);
+        assert.equal(b.formulae[0].raw, '√49=7');
+        assert.equal(b.formulae[0].y, 148, 'formula starts inside the visible sheet');
+        board.mathBoardFormulaNewLine(b);
+        ['x', '^', '2'].forEach(key => board.mathBoardFormulaKeyPress(b, key, 120, 500));
+        assert.equal(b.formulae.length, 2);
+        assert.equal(b.formulae[1].raw, 'x²');
+        assert.equal(b.formulae[1].y, b.formulae[0].y + 48, 'new line sits below the first');
+    });
+
+    test('undo and clear include keyboard-written formulas', () => {
+        const b = { strokes: [], scrollY: 0 };
+        board.mathBoardFormulaKeyPress(b, 'x', 0, 500);
+        board.mathBoardUndo(b);
+        assert.equal(b.formulae.length, 0, 'undo removes the latest typed line');
+        board.mathBoardFormulaKeyPress(b, 'y', 0, 500);
+        board.mathBoardClear(b);
+        assert.equal(b.formulae.length, 0);
+        board.mathBoardUndo(b);
+        assert.equal(b.formulae[0].raw, 'y', 'undo restores formulae cleared with the board');
     });
 });
 
@@ -57,15 +115,17 @@ suite('math board: session and boards', () => {
         assert.equal(board.mathBoardSession().active, 2);
     });
 
-    test('switching boards keeps each board\'s ink and scroll position', () => {
+    test('switching boards keeps each board\'s ink and two-axis scroll position', () => {
         board.mathBoardReset();
         const s = board.mathBoardSession();
         board.mathBoardBegin(s.boards[0], 5, 5);
+        s.boards[0].scrollX = 240;
         s.boards[0].scrollY = 120;
         board.mathBoardAdd();                       // now on bảng 2
         assert.equal(board.mathBoardActive().strokes.length, 0);
         board.mathBoardSwitch(0);                   // back to bảng 1
         assert.equal(board.mathBoardActive().strokes.length, 1);
+        assert.equal(board.mathBoardActive().scrollX, 240);
         assert.equal(board.mathBoardActive().scrollY, 120);
         assert.equal(board.mathBoardSwitch(9), 0, 'bad index is a no-op');
     });
@@ -83,12 +143,13 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
 
     test('one finger draws: down begins a stroke in world coords, move extends it', () => {
         const b = freshBoard();
+        b.scrollX = 80;
         b.scrollY = 100;
         const g = board.mathBoardGesture();
         assert.equal(board.mathBoardPointerDown(g, b, 1, 10, 20), 'ink-start');
-        assert.deepEqual(b.strokes[0].points[0], { x: 10, y: 120 }, 'y is screen + scroll');
+        assert.deepEqual(b.strokes[0].points[0], { x: 90, y: 120 }, 'x and y are screen + scroll');
         assert.equal(board.mathBoardPointerMove(g, b, 1, 30, 40), 'ink');
-        assert.deepEqual(b.strokes[0].points[1], { x: 30, y: 140 });
+        assert.deepEqual(b.strokes[0].points[1], { x: 110, y: 140 });
         assert.equal(board.mathBoardPointerUp(g, b, 1), 'ink-end');
     });
 
@@ -101,6 +162,16 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         assert.equal(b.strokes.length, 0, 'the accidental stroke is gone');
         assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 200), 'pan');
         assert.equal(b.scrollY, 105, 'finger up 105px ⇒ sheet scrolls down 105px');
+    });
+
+    test('two fingers pan the endless sheet horizontally as well as vertically', () => {
+        const b = freshBoard();
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 120, 200);
+        board.mathBoardPointerDown(g, b, 2, 180, 200);
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 50, 170), 'pan');
+        assert.equal(b.scrollX, 70, 'dragging left reveals paper to the right');
+        assert.equal(b.scrollY, 30, 'the same gesture may move vertically');
     });
 
     test('pan clamps at the top of the sheet — no negative scroll', () => {
@@ -254,6 +325,24 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/pointercancel/.test(src), 'incoming call must not wedge the gesture');
     });
 
+    test('two fingers can never zoom or pan the page away from the header', () => {
+        // Bug: the canvas owns its touches (touch-action: none) but the header
+        // did not. iOS ignores user-scalable=no, so a two-finger drag that
+        // started on the strip or tool row — or one finger on each element —
+        // pinch-zoomed the PAGE: the visual viewport slid, the header with its
+        // "Thu nhỏ" button left the screen, and because the canvas swallows
+        // every one-finger pan there was no gesture left to bring it back.
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
+        assert.truthy(/touch-action:\s*pan-x pan-y/.test(overlay),
+            'overlay must forbid pinch-zoom while keeping child panning');
+        assert.truthy(/ontouchmove\s*=/.test(src) && /touches\.length\s*>\s*1/.test(src),
+            'a second finger inside the overlay must preventDefault');
+        assert.truthy(/ongesturestart\s*=/.test(src) && /ongesturechange\s*=/.test(src),
+            "Safari's proprietary pinch events must be refused too");
+    });
+
     test('the quiz screen offers the ✏️ scratch-board button', () => {
         assert.truthy(/math-board-fab/.test(read('js/math.js')),
             'renderMathQuestion must render the board fab');
@@ -293,6 +382,61 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/mathCurrentQuestion/.test(src));
         assert.truthy(/mathFormula\(/.test(src));
         assert.truthy(/mathCurrentQuestion/.test(read('js/math.js')), 'helper lives in math.js');
+    });
+
+    test('the full question is default and collapsing hides the entire stem', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        assert.truthy(/_mathBoardQuestionExpanded\s*=\s*true/.test(src),
+            'every open must begin with the complete question');
+        assert.truthy(/aria-expanded/.test(src), 'collapse state must be announced');
+        assert.truthy(/Thu gọn đề/.test(src) && /Mở đề/.test(src),
+            'the control needs explicit text, not only a chevron');
+        const strip = css.slice(css.indexOf('.math-board-strip {'), css.indexOf('.math-board-strip-label'));
+        assert.truthy(/position:\s*sticky/.test(strip) && /top:\s*0/.test(strip),
+            'the question must stay visible while the sheet scrolls');
+        const stripHTML = src.slice(src.indexOf('function mathBoardStripHTML'),
+            src.indexOf('function mathBoardHintText'));
+        assert.truthy(/if\s*\(!full\)\s*return\s*''/.test(stripHTML),
+            'collapsed removes the entire question strip from layout, not just its text');
+        assert.truthy(/math-board-question-open/.test(src) && /Mở đề/.test(src),
+            'the restore action moves into the existing toolbar instead of consuming another row');
+    });
+
+    test('iOS cannot select the board or open its copy-paste callout', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
+        assert.truthy(/-webkit-user-select:\s*none/.test(overlay));
+        assert.truthy(/user-select:\s*none/.test(overlay));
+        assert.truthy(/-webkit-touch-callout:\s*none/.test(overlay));
+        assert.truthy(/\.math-board-overlay\s+\*\s*\{[^}]*-webkit-user-select:\s*none/s.test(css),
+            'the lock must reach formula spans on iOS, where inheritance is inconsistent');
+        assert.truthy(/onselectstart/.test(src) && /oncontextmenu/.test(src) && /ondragstart/.test(src),
+            'CSS plus event guards are needed for older iOS WebKit');
+    });
+
+    test('the board adapts from a 320px phone to pointer-based desktop', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        assert.truthy(/@media\s*\(max-width:\s*600px\)/.test(css));
+        assert.truthy(/grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/.test(css),
+            'phone actions must divide the available width without overflow');
+        assert.truthy(/\.math-board-chip[^}]*min-height:\s*44px/s.test(css));
+        assert.truthy(/\.math-board-tool[^}]*min-width:\s*44px;\s*min-height:\s*44px/s.test(css));
+        assert.truthy(/\(pointer:\s*fine\)/.test(css) && /cursor:\s*crosshair/.test(css),
+            'mouse and trackpad users need drawing feedback too');
+        assert.truthy(/matchMedia\('\(pointer: fine\)'\)/.test(src));
+        assert.truthy(/Kéo chuột để viết/.test(src) && /1 ngón viết/.test(src),
+            'the gesture hint must match the current device');
+    });
+
+    test('a long full question leaves writing room in short landscape viewports', () => {
+        const css = read('css/styles.css');
+        const full = css.slice(css.indexOf('.math-board-strip.full {'), css.indexOf('.math-board-strip-label'));
+        assert.truthy(/max-height:\s*min\(46dvh,\s*360px\)/.test(full));
+        assert.truthy(/overflow-y:\s*auto/.test(full));
+        assert.truthy(/@media\s*\(max-height:\s*520px\)/.test(css));
     });
 
     test('a toolbar tap during a stroke aborts the gesture, never orphans ink', () => {
@@ -359,13 +503,80 @@ suite('math board: what the browser found', () => {
 
     test('every toolbar button carries a word, not just an emoji', () => {
         const src = read('js/math-board.js');
-        const tools = src.slice(src.indexOf('math-board-tools'), src.indexOf('mathBoardCanvas"></canvas>'));
+        const toolsStart = src.indexOf('math-board-tools');
+        const tools = src.slice(toolsStart, src.indexOf('mathBoardKeyboardHTML()', toolsStart));
         const labels = (tools.match(/>([^<>]+)<\/button>/g) || []).map(s => s.slice(1, -9).trim());
-        assert.equal(labels.length, 3, 'undo, xoa, minimize');
+        assert.equal(labels.length, 6, 'open question, tools, maths keyboard, minimize, undo, clear');
         for (const l of labels) {
             assert.truthy(/[A-Za-zÀ-ỹ]/.test(l),
                 `"${l}" is glyph-only — an unsupported emoji renders as a hollow box`);
         }
+    });
+
+    test('every question gets a complete, accessible scratch maths keyboard', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        assert.truthy(/mathBoardKeyboardToggle/.test(src) && /aria-controls="mathBoardKeyboard"/.test(src),
+            'the board toolbar must open and identify the keyboard panel');
+        for (const key of ['√', '^', '|', '/', '(', ')', '=', 'x', 'n', 'y']) {
+            assert.truthy(src.includes("'" + key + "'"), 'missing required maths key: ' + key);
+        }
+        assert.truthy(!/mathBoardCanTypeAnswer/.test(src) && !/mathIsTyped/.test(src),
+            'scratch formula typing belongs on every maths question, not only graded text fields');
+        assert.truthy(/aria-live="polite"/.test(src), 'typed formula status must be announced');
+        assert.truthy(/mathBoardFormulaKeyPress/.test(src) && /math-board-formula-layer/.test(src),
+            'keys must write a rendered formula into the whiteboard layer');
+        assert.truthy(!/mathKeyPress\(key\)/.test(src),
+            'the scratch keyboard must never silently change the graded answer');
+        assert.truthy(/\.math-board-key[^}]*min-width:\s*44px;\s*min-height:\s*44px/s.test(css),
+            'every key keeps a comfortable target inside the horizontally scrolling key rail');
+        assert.truthy(/\.math-board-key:focus-visible/.test(css), 'keyboard navigation needs visible focus');
+    });
+
+    test('the bulky drawing controls are collapsed while the maths keyboard stays prominent', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        assert.truthy(/_mathBoardToolsExpanded\s*=\s*false/.test(src),
+            'drawing settings should not consume the board by default');
+        assert.truthy(/math-board-advanced-tools'\s*\+\s*\(_mathBoardToolsExpanded\s*\?\s*''\s*:\s*' hidden'\)/.test(src),
+            'pen sizes, eraser, undo and clear belong in the collapsible tray');
+        assert.truthy(/aria-controls="mathBoardAdvancedTools"/.test(src) && /mathBoardToolsToggle/.test(src));
+        assert.truthy(/Bàn phím toán/.test(src), 'the primary input action needs an unmistakable label');
+        assert.truthy(/\.math-board-keyboard-toggle\s*\{[^}]*background:\s*linear-gradient/s.test(css),
+            'keyboard action must be visually primary, not another white utility button');
+        const renderStart = src.indexOf('function mathBoardRenderOverlay');
+        const render = src.slice(renderStart, src.indexOf('mathBoardMountCanvas();', renderStart));
+        assert.truthy(render.indexOf('mathBoardKeyboardHTML()') < render.indexOf('mathBoardCanvas'),
+            'opening the keyboard must reveal it directly under the controls, before the canvas');
+    });
+
+    test('compact mode gives the writing sheet the maximum possible height', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        const toolbar = css.slice(css.indexOf('.math-board-tools {'), css.indexOf('.math-board-tools::-webkit-scrollbar'));
+        assert.truthy(/display:\s*flex/.test(toolbar) && /flex-wrap:\s*nowrap/.test(toolbar) &&
+            /overflow-x:\s*auto/.test(toolbar),
+            'Bảng, Công cụ, Bàn phím and Thu nhỏ stay on one internally scrollable row');
+        const keyboard = src.slice(src.indexOf('function mathBoardKeyboardHTML'),
+            src.indexOf('window.mathBoardKeyboardToggle'));
+        assert.truthy(!/math-board-keyboard-head/.test(keyboard) && !/Viết công thức lên bảng/.test(keyboard),
+            'the keyboard has no visible header stealing whiteboard height');
+        assert.truthy(/math-board-number-row/.test(keyboard) && /math-board-key-newline/.test(keyboard) &&
+            /mathBoardFormulaNewLineTap/.test(keyboard),
+            'Enter is the first real key on the number row');
+        assert.truthy(/math-board-symbol-row/.test(keyboard) && /symbolKeys/.test(keyboard),
+            'delete, operations, symbols and variables share the second row');
+        assert.truthy(/math-board-sr-only/.test(keyboard) && /aria-live="polite"/.test(keyboard),
+            'screen-reader feedback remains available without occupying visual space');
+        assert.truthy(/\.math-board-key-grid\s*\{[^}]*display:\s*grid/s.test(css) &&
+            /\.math-board-key-row\s*\{[^}]*display:\s*flex[^}]*overflow-x:\s*auto/s.test(css),
+            'the keyboard is exactly two compact, independently scrollable rows');
+        assert.deepEqual(board.MATH_BOARD_KEY_ROWS[0],
+            ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ','],
+            'top row contains only numeric entry after Enter');
+        assert.deepEqual(board.MATH_BOARD_KEY_ROWS[1],
+            ['⌫', '+', '−', '·', '/', '=', '(', ')', '√', '^', '|', 'x', 'y', 'n'],
+            'bottom row starts with delete, then operations, symbols and variables');
     });
 });
 
@@ -380,6 +591,9 @@ suite('math board: easy to draw and use', () => {
         assert.equal(g10.horizontal[0], step - 10,
             'scroll 10px and every line climbs 10px — the feedback that makes 2-finger scroll discoverable');
         assert.deepEqual(g0.vertical, [step, step * 2, step * 3]);
+        const gx = board.mathBoardGridLines(0, 100, 100, step, 10);
+        assert.equal(gx.vertical[0], step - 10,
+            'horizontal scrolling shifts the vertical grid without stretching it');
     });
 
     test('the grid never doubles a line at the very top after a deep scroll', () => {
@@ -405,12 +619,14 @@ suite('math board: easy to draw and use', () => {
         const wheel = src.slice(src.indexOf("addEventListener('wheel'"));
         assert.truthy(/passive:\s*false/.test(wheel.slice(0, 400)),
             'passive:false or preventDefault is ignored and the page behind pans too');
+        assert.truthy(/deltaX/.test(wheel.slice(0, 500)) && /scrollX/.test(wheel.slice(0, 500)),
+            'trackpad horizontal movement must reveal the wider sheet');
     });
 
     test('the first open teaches the two gestures, then gets out of the way', () => {
         const src = read('js/math-board.js');
-        assert.truthy(/1 ngón viết/.test(src) && /2 ngón cuộn/.test(src),
-            'the hint must name both gestures');
+        assert.truthy(/1 ngón viết/.test(src) && /2 ngón kéo giấy mọi hướng/.test(src),
+            'the hint must teach that the sheet moves horizontally and vertically');
         assert.truthy(/mathBoardHintDismiss/.test(src.slice(src.indexOf("addEventListener('pointerdown'"))),
             'the first touch dismisses it — a hint over a working board is clutter');
         const close = src.slice(src.indexOf('window.mathBoardCloseForSession'));
