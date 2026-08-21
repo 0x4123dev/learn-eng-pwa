@@ -11947,14 +11947,15 @@
    actions as SHOP-style fabs floating on the board. */
 .nr-home-stage .nr-placed{pointer-events:none}
 .nr-home-stage .nr-build-grid-cell{pointer-events:none}
-.nr-home-fabs{position:absolute;z-index:40;right:max(14px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));display:grid;gap:10px;justify-items:end}
-.nr-home-fab{min-width:96px;min-height:56px;padding:5px 15px;border:3px solid #fff8c9;border-radius:20px;background:linear-gradient(145deg,#ffd967,#f57f27);color:#5b350c;box-shadow:0 7px 0 #b95b20,0 14px 26px rgba(89,53,20,.26);display:flex;align-items:center;justify-content:center;gap:7px;font-weight:1000;font-size:12px;letter-spacing:.06em;cursor:pointer;touch-action:manipulation}
-.nr-home-fab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.3}
-.nr-home-fab:active{transform:translateY(3px);box-shadow:0 4px 0 #b95b20}
-.nr-home-fab.raid{min-height:64px;font-size:14px;border-color:#ffca5a;background:linear-gradient(135deg,#ff8b2e,#ef3f35);color:#fff;box-shadow:0 8px 0 #9e271f,0 15px 30px rgba(255,77,42,.32)}
-.nr-home-fab.raid:active{box-shadow:0 4px 0 #9e271f}
-@media(min-width:768px){.nr-home-fabs{right:calc(22px + env(safe-area-inset-right))}}
-@media(max-width:700px){.nr-home-fab{min-width:88px;font-size:11px;min-height:52px}.nr-home-fab.raid{min-height:60px;font-size:13px}}
+/* One column of IDENTICAL compact squares — icon on top, tiny label under —
+   so the actions cost as little island as possible. */
+.nr-home-fabs{position:absolute;z-index:40;right:max(12px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));display:grid;gap:9px;justify-items:end}
+.nr-home-fab{width:66px;height:62px;padding:0;border:2px solid #fff8c9;border-radius:17px;background:linear-gradient(145deg,#ffd967,#f57f27);color:#5b350c;box-shadow:0 5px 0 #b95b20,0 10px 20px rgba(89,53,20,.24);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:1000;font-size:10px;letter-spacing:.04em;line-height:1;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+.nr-home-fab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.3}
+.nr-home-fab:active{transform:translateY(3px);box-shadow:0 2px 0 #b95b20}
+.nr-home-fab.raid{border-color:#ffca5a;background:linear-gradient(135deg,#ff8b2e,#ef3f35);color:#fff;box-shadow:0 5px 0 #9e271f,0 10px 22px rgba(255,77,42,.3)}
+.nr-home-fab.raid:active{box-shadow:0 2px 0 #9e271f}
+@media(min-width:768px){.nr-home-fabs{right:calc(22px + env(safe-area-inset-right))}.nr-home-fab{width:74px;height:68px;font-size:10.5px}.nr-home-fab svg{width:25px;height:25px}}
 .nr-builder-world:active{cursor:grabbing}.nr-builder-map{position:relative;isolation:isolate;width:1180px;height:1180px;margin:0;overflow:hidden;background:#e8f0da;box-shadow:0 24px 70px rgba(44,71,48,.22);transform-origin:0 0}
 .nr-builder-map>.nr-board-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .nr-builder-map>.nr-equipped-castle{z-index:3;left:3%;top:1%;width:43%;height:38%;object-fit:contain;background:transparent!important;filter:none!important;box-shadow:none!important;mix-blend-mode:normal;pointer-events:none;-webkit-user-drag:none}
@@ -12000,3 +12001,22 @@
 .nr-build-grid-cell .nr-placed.producer{width:205%;height:205%;bottom:2%}.nr-build-grid-cell .nr-placed.rice-field{width:180%;height:180%;bottom:-12%}.nr-production-badge{position:absolute;z-index:8;left:50%;top:-18px;transform:translateX(-50%);min-width:68px;padding:4px 7px;border:2px solid #fff;border-radius:999px;background:#344d3b;color:#fff;box-shadow:0 5px 10px rgba(40,55,32,.3);font-size:10px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none;display:none}.nr-production-badge.ready{background:linear-gradient(145deg,#ffd959,#f18729);color:#5d370c;animation:nr-ready-pulse 1s ease-in-out infinite alternate}.nr-production-badge.ready,.nr-production-badge.shown{display:block}
 @media(max-width:700px){.nr-pet-power-card{grid-template-columns:62px minmax(0,1fr);padding:10px}.nr-pet-power-art{width:60px;height:60px}.nr-pet-power-art svg{width:74px;height:74px}.nr-pet-power-card dl{grid-column:1/-1}.nr-pet-power-card>div:nth-child(2)>strong{font-size:16px}.nr-builder-power.soldiers{display:none}.nr-collect-all{left:max(8px,env(safe-area-inset-left));bottom:calc(58px + env(safe-area-inset-bottom));min-height:48px;padding:5px 9px}.nr-collect-all svg{width:21px;height:21px}}
 @media(prefers-reduced-motion:reduce){.nr-collect-all.ready,.nr-production-badge.ready{animation:none}}
+
+/* ── Night Raid right rail: ONE size for every control ─────────────────────
+   Home fabs and the builder rail (SHOP, zoom, NGANG, SỬA) share identical
+   compact squares — icon on top, tiny label under — so nothing outgrows its
+   neighbours and the island keeps its screen space. Appended last on purpose:
+   these override the earlier per-button sizes. */
+.nr-builder-shop-fab{min-width:0;min-height:0;width:66px;height:62px;padding:0;flex-direction:column;gap:3px;font-size:10px;letter-spacing:.04em;border-width:2px;border-radius:17px;top:calc(78px + env(safe-area-inset-top));box-shadow:0 5px 0 #b95b20,0 10px 20px rgba(89,53,20,.24)}
+.nr-builder-shop-fab svg{width:22px;height:22px}
+.nr-builder-shop-fab span{font-size:10px;letter-spacing:.04em}
+.nr-builder-shop-fab:active{transform:translateY(3px);box-shadow:0 2px 0 #b95b20}
+.nr-builder-zoom{top:calc(150px + env(safe-area-inset-top));grid-template-columns:66px;grid-template-rows:32px 28px 32px;width:66px;border-radius:17px}
+.nr-builder-zoom button{width:66px;height:32px;font-size:20px}
+.nr-builder-zoom span{font-size:10.5px}
+.nr-builder-rotate,.nr-builder-edit{min-width:0;min-height:0;width:66px;height:62px;padding:0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;letter-spacing:.04em;border-radius:17px}
+.nr-builder-rotate{top:calc(254px + env(safe-area-inset-top))}
+.nr-builder-rotate b{font-size:18px}
+.nr-builder-edit{top:calc(326px + env(safe-area-inset-top))}
+.nr-builder-edit b{font-size:16px}
+@media(min-width:768px){.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{width:74px;height:68px;font-size:10.5px}.nr-builder-zoom{grid-template-columns:74px;width:74px}.nr-builder-zoom button{width:74px}.nr-builder-shop-fab svg{width:25px;height:25px}}
