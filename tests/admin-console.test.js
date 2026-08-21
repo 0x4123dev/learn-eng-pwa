@@ -248,8 +248,8 @@ suite('admin on a phone: still a table at 393px', () => {
         // display:none removes the label from the accessibility tree, so each
         // button would otherwise announce nothing but an emoji.
         const tags = adminHtml.match(/<button class="mini[\s\S]*?>/g) || [];
-        assert.equal(tags.length, 4, `expected 4 row-action buttons, found ${tags.length}`);
-        for (const cls of ['bot-toggle', 'act-clear', 'act-enable', 'act-disable']) {
+        assert.equal(tags.length, 5, `expected 5 row-action buttons, found ${tags.length}`);
+        for (const cls of ['bot-toggle', 'act-coins', 'act-clear', 'act-enable', 'act-disable']) {
             const tag = tags.find(t => t.includes(cls));
             assert.truthy(tag, cls + ' button not found');
             assert.truthy(tag.includes('aria-label='),

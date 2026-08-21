@@ -145,7 +145,31 @@ const EngAuth = (function () {
     if (typeof reconcileCupsFromServer === 'function') {
       try { reconcileCupsFromServer(); } catch (e) {}
     }
+    claimCoinGrants(username);
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
+  }
+
+  // Admin-granted coins are a server-side IOU (coin_grants): claim every
+  // unclaimed row once, add the total to this device's wallet, and let the
+  // server stamp them claimed so a re-sync can never pay the same gift twice.
+  // Fire-and-forget from syncAccount — offline just leaves the IOU waiting.
+  async function claimCoinGrants(username) {
+    const token = tokenFor(username);
+    if (!token) return;
+    try {
+      const r = await api('coins', { method: 'POST', token });
+      const granted = r.ok && r.data ? Math.max(0, Math.trunc(+r.data.granted || 0)) : 0;
+      if (!granted) return;
+      if (typeof appState === 'undefined' || !appState) return;
+      if (typeof currentUser === 'undefined' || currentUser !== username) return;
+      appState.coins = Math.max(0, +appState.coins || 0) + granted;
+      if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
+      if (typeof showToast === 'function') showToast('🎁 Admin tặng bạn ' + granted + ' xu!');
+      const home = document.getElementById('homeScreen');
+      if (home && home.classList.contains('active') && typeof renderHome === 'function') {
+        try { renderHome(); } catch (e) {}
+      }
+    } catch (e) { /* offline — the grant stays unclaimed on the server */ }
   }
 
   // Explicit re-link with a passcode the user typed (used by the Friends tab
@@ -211,6 +235,11 @@ const EngAuth = (function () {
       // dưới 20). The child never sees it; a parent reading the timeline can.
       detail: { meanMs: h.meanMs, answered: h.answered, timedOut: !!h.timedOut, level: h.level, max: h.max },
     }));
+    (appState.nightRaidHistory || []).forEach(h => add({
+      type: 'battle', title: 'Castle Night Raid · ' + (h.won ? 'thắng' : 'thua'),
+      score: h.won ? (h.stars || 1) : 0, total: 3, at: h.at,
+      detail: { targetId: h.targetId, reward: h.reward || 0, mode: h.kind || 'training' },
+    }));
     ((appState.speedChallenge && appState.speedChallenge.history) || []).forEach(h => add({
       type: 'verbs', title: 'Verbs challenge (' + (h.level || '') + ')',
       score: h.correct, total: h.total, at: h.date, detail: { score: h.score },
@@ -218,10 +247,44 @@ const EngAuth = (function () {
     return items;
   }
 
+  // Skill analytics is intentionally separate from the activity timeline.
+  // Each history entry may carry a handful of per-skill summaries; no answer
+  // is posted while the child is working and nothing here changes their UI.
+  function _localSkillItems() {
+    if (typeof appState === 'undefined' || !appState) return [];
+    const items = [];
+    const addSession = (menu, prefix, h) => {
+      if (!h || !Number.isFinite(+h.date) || !Array.isArray(h.skills)) return;
+      const sid = prefix + '-' + String(h.id || h.date).replace(/[^A-Za-z0-9._:-]/g, '').slice(0, 80);
+      h.skills.forEach(s => {
+        if (!s || !s.skillKey || !s.skillLabel || !(+s.attempts > 0)) return;
+        items.push({
+          sessionId: sid, menu, skillKey: s.skillKey, skillLabel: s.skillLabel,
+          attempts: s.attempts, correct: s.correct, wrong: s.wrong,
+          skipped: s.skipped, durationMs: s.durationMs || 0,
+          wrongRefs: s.wrongRefs || [], at: h.date,
+        });
+      });
+    };
+    (appState.mathHistory || []).forEach(h => addSession('math7', 'm7', h));
+    (appState.warsHistory || []).forEach(h => addSession('mathwars', 'mw', h));
+    (appState.unitsHistory || []).forEach(h => addSession('grade4', 'g4', h));
+    (appState.wordformHistory || []).forEach(h => addSession('wordform', 'wf', h));
+    (appState.grammarHistory || []).forEach(h => addSession('grammar', 'gr', h));
+    (appState.phrasesHistory || []).forEach(h => addSession('phrases', 'ph', h));
+    (((appState.speedChallenge || {}).history) || []).forEach(h => addSession('verbs', 'vb', h));
+    (appState.rewriteHistory || []).forEach(h => addSession('rewrite', 'rw', h));
+    (appState.collocHistory || []).forEach(h => addSession('collocation', 'co', h));
+    return items;
+  }
+
   // Raise this to make every device re-upload its whole 30-day window once —
   // used when a bug meant activities were accepted by the client but never
   // stored. v2: the server rejected 'collocation' and 'math' (v4.11.6).
   const SYNC_EPOCH = 2;
+  // v2 adds the five English practice menus. Replaying the local window is
+  // safe because the server key is session + skill and INSERT OR IGNORE.
+  const SKILL_SYNC_EPOCH = 2;
 
   // Upload any local history not yet synced for the active user. Idempotent:
   // client-side de-dup via stored keys + server-side OR IGNORE. Used by the
@@ -233,6 +296,7 @@ const EngAuth = (function () {
     if (!acct || !acct.token) return { ok: false, reason: 'no-account' };
 
     const all = _localHistoryItems();
+    const allSkills = _localSkillItems();
     // A key marked synced is never sent again — which is why the server
     // silently dropping 'collocation' and 'math' lost them for good rather
     // than retrying. Bumping SYNC_EPOCH forgets those marks once, so the last
@@ -245,16 +309,43 @@ const EngAuth = (function () {
     const synced = new Set(acct.syncedKeys || []);
     const keyOf = (o) => o.type + '|' + o.at;
     const items = all.filter(o => !synced.has(keyOf(o)));
-    if (!items.length) return { ok: true, synced: 0, total: all.length };
+    if (allSkills.length && acct.skillSyncEpoch !== SKILL_SYNC_EPOCH) {
+      setAccount(u, { skillSyncEpoch: SKILL_SYNC_EPOCH, syncedSkillKeys: [] });
+      acct.syncedSkillKeys = [];
+    }
+    const syncedSkills = new Set(acct.syncedSkillKeys || []);
+    const skillKeyOf = (o) => o.sessionId + '|' + o.skillKey;
+    const skillItems = allSkills.filter(o => !syncedSkills.has(skillKeyOf(o)));
+    if (!items.length && !skillItems.length) {
+      return { ok: true, synced: 0, total: all.length };
+    }
 
     items.sort((a, b) => b.at - a.at);
     const batch = items.slice(0, 400);
+    skillItems.sort((a, b) => b.at - a.at);
+    const skillBatch = skillItems.slice(0, 400);
     try {
-      const r = await api('activity', { method: 'POST', token: acct.token, body: { items: batch } });
-      if (r.status === 401) { clearAccount(u); return { ok: false, reason: 'auth' }; }
-      if (r.ok) {
+      let activityOk = !batch.length;
+      let skillsOk = !skillBatch.length;
+      if (batch.length) {
+        const r = await api('activity', { method: 'POST', token: acct.token, body: { items: batch } });
+        if (r.status === 401) { clearAccount(u); return { ok: false, reason: 'auth' }; }
+        activityOk = r.ok;
+      }
+      if (skillBatch.length) {
+        const r = await api('skills', { method: 'POST', token: acct.token, body: { items: skillBatch } });
+        if (r.status === 401) { clearAccount(u); return { ok: false, reason: 'auth' }; }
+        skillsOk = r.ok;
+      }
+      if (activityOk) {
         batch.forEach(o => synced.add(keyOf(o)));
         setAccount(u, { syncedKeys: Array.from(synced).slice(-2000) });
+      }
+      if (skillsOk) {
+        skillBatch.forEach(o => syncedSkills.add(skillKeyOf(o)));
+        setAccount(u, { syncedSkillKeys: Array.from(syncedSkills).slice(-4000) });
+      }
+      if (activityOk && skillsOk) {
         return { ok: true, synced: batch.length, total: all.length };
       }
       return { ok: false, reason: 'server' };

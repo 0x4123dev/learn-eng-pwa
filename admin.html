@@ -65,6 +65,69 @@
   .toolbar .who { font-weight:700; }
   .keep { display:flex; align-items:center; gap:8px; margin-top:16px; font-size:13px; color:var(--ink); cursor:pointer; }
   .keep input { width:16px; height:16px; accent-color:var(--brand); cursor:pointer; }
+  :focus-visible { outline:3px solid rgba(28,176,246,.35); outline-offset:2px; }
+
+  /* Admin areas are real tabs, not one very long dashboard. */
+  .admin-tabs { display:flex; gap:6px; margin:0 0 16px; padding:5px; border:1px solid var(--line);
+                border-radius:14px; background:#e9edf5; overflow-x:auto; scrollbar-width:none; }
+  .admin-tabs::-webkit-scrollbar { display:none; }
+  .admin-tab { min-height:44px; flex:1 0 auto; border:0; border-radius:10px; padding:9px 16px;
+               background:transparent; color:var(--muted); font:800 13px/1.2 inherit; cursor:pointer; white-space:nowrap; }
+  .admin-tab[aria-selected="true"] { color:var(--ink); background:#fff; box-shadow:0 2px 9px rgba(20,30,60,.09); }
+  .admin-panel[hidden] { display:none; }
+
+  /* ---- learning strengths / weaknesses (admin only) ---- */
+  .learning-card { padding-bottom:14px; }
+  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+                   padding:14px; border-bottom:1px solid var(--line); }
+  .learning-title { display:flex; gap:10px; align-items:flex-start; }
+  .learning-icon { width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+                   color:#fff; background:linear-gradient(145deg,#7758e8,#9a68f5); flex:none; }
+  .learning-icon svg { width:21px; height:21px; }
+  .learning-title h2 { margin:0 0 3px; color:var(--ink); font-size:16px; text-transform:none; letter-spacing:0; }
+  .learning-title p { margin:0; color:var(--muted); font-size:12px; line-height:1.4; }
+  .learning-filters { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .learning-filters label { font-size:11px; color:var(--muted); font-weight:700; }
+  .learning-filters select { display:block; min-height:38px; margin-top:4px; padding:7px 28px 7px 10px;
+                             border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink);
+                             font:600 13px/1.2 inherit; cursor:pointer; }
+  .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; padding:14px; }
+  .learning-stat { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fbfcff; }
+  .learning-stat b { display:block; font-size:19px; font-variant-numeric:tabular-nums; }
+  .learning-stat span { color:var(--muted); font-size:11px; }
+  .skill-list { display:grid; gap:9px; padding:0 14px; }
+  .skill-row { display:grid; grid-template-columns:minmax(170px,1.6fr) minmax(120px,1fr) 75px 105px;
+               gap:14px; align-items:center; padding:12px; border:1px solid var(--line);
+               border-radius:12px; background:#fff; }
+  .skill-name { min-width:0; }
+  .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px; }
+  .skill-name small { color:var(--muted); font-size:11px; }
+  .skill-track { height:8px; border-radius:999px; overflow:hidden; background:#e9edf4; }
+  .skill-fill { height:100%; border-radius:inherit; background:var(--amber); }
+  .skill-fill.strong { background:var(--green); }
+  .skill-fill.weak { background:var(--red); }
+  .skill-score { text-align:right; font-weight:800; font-variant-numeric:tabular-nums; }
+  .skill-status { display:inline-flex; align-items:center; justify-content:center; min-height:28px;
+                  padding:4px 8px; border-radius:999px; font-size:11px; font-weight:800; text-align:center; }
+  .skill-status.weak { background:#fdecec; color:#b42318; }
+  .skill-status.practice { background:#fff3e0; color:#9a5b00; }
+  .skill-status.strong { background:#e7f7ec; color:#1f7a3f; }
+  .skill-status.learning { background:#eef2f7; color:#586074; }
+  .learning-empty { margin:14px; border:1px dashed #ccd5e3; border-radius:12px; padding:25px 16px;
+                    text-align:center; color:var(--muted); font-size:13px; }
+  .menu-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:9px; padding:0 14px 14px; }
+  .menu-card { min-height:88px; text-align:left; border:1px solid var(--line); border-radius:12px; padding:11px;
+               background:#fff; color:var(--ink); font:inherit; cursor:pointer; }
+  .menu-card:hover { border-color:#b9c9df; transform:translateY(-1px); }
+  .menu-card strong { display:block; font-size:13px; margin-bottom:8px; }
+  .menu-card b { font-size:19px; font-variant-numeric:tabular-nums; }
+  .menu-card small { display:block; margin-top:3px; color:var(--muted); }
+  .priority-card { display:flex; gap:11px; align-items:center; margin:0 14px 14px; padding:12px;
+                   border:1px solid #f2cf9c; border-radius:12px; background:#fff9ed; }
+  .priority-icon { width:38px; height:38px; flex:none; display:grid; place-items:center; border-radius:11px; background:#ffe8bc; }
+  .priority-card strong,.priority-card span { display:block; }
+  .priority-card span { margin-top:2px; color:#76501b; font-size:12px; line-height:1.4; }
+  .skill-section-title { margin:0 14px 9px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
 
   /* ---- users table ---- */
   .tools { display:flex; align-items:center; gap:10px; margin:10px 14px 4px; flex-wrap:wrap; }
@@ -164,6 +227,20 @@
     #usersTable tr.selected td:first-child { background:#eaf6ff; }
     .stat { flex:1 1 100px; }
     header.bar h1 { font-size:18px; }
+    .learning-head { display:block; }
+    .learning-filters { margin-top:12px; justify-content:stretch; }
+    .learning-filters label { flex:1; }
+    .learning-filters label:first-child { flex-basis:100%; }
+    .learning-filters select { width:100%; }
+    .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .skill-row { grid-template-columns:minmax(0,1fr) 64px; gap:8px 12px; }
+    .skill-track { grid-column:1 / -1; grid-row:2; }
+    .skill-status { grid-column:1; grid-row:3; justify-self:start; }
+    .skill-score { grid-column:2; grid-row:1; }
+    .admin-tabs { position:sticky; top:6px; z-index:5; }
+    .admin-tab { padding-inline:13px; }
+    .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .priority-card { align-items:flex-start; }
   }
   #dash { display:none; }
 </style>
@@ -194,7 +271,13 @@
     </header>
     <div class="stats" id="stats"></div>
 
-    <div class="card">
+    <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
+      <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
+      <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
+      <button class="admin-tab" id="tabActivity" role="tab" aria-controls="activityPanel" aria-selected="false" data-tab="activity">🕘 Hoạt động</button>
+    </nav>
+
+    <div class="card admin-panel" id="usersPanel" role="tabpanel" aria-labelledby="tabUsers">
       <h2>Users</h2>
       <div class="tools">
         <div class="search"><input id="userSearch" placeholder="Search by name…" autocomplete="off" spellcheck="false"></div>
@@ -223,7 +306,41 @@
       </table></div>
     </div>
 
-    <div class="card">
+    <section class="card learning-card admin-panel" id="skillsPanel" role="tabpanel" aria-labelledby="tabSkills" hidden>
+      <div class="learning-head">
+        <div class="learning-title">
+          <span class="learning-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/><path d="m4 6 5-3 6 5 5-4"/></svg>
+          </span>
+          <div><h2 id="learningHeading">Phân tích năng lực</h2>
+            <p id="skillWho">Chọn một user để xem dạng bài mạnh và yếu.</p></div>
+        </div>
+        <div class="learning-filters">
+          <label>Người học
+            <select id="skillUser" aria-label="Chọn người học"><option value="">Toàn bộ người học</option></select>
+          </label>
+          <label>Menu
+            <select id="skillMenu">
+              <option value="">Tất cả menu</option><option value="math7">Toán 7</option>
+              <option value="mathwars">Math Wars</option><option value="grade4">Grade 4</option>
+              <option value="grammar">Grammar</option><option value="phrases">Phrases</option>
+              <option value="verbs">Verbs</option><option value="wordform">Word Form</option>
+              <option value="rewrite">Rewrite</option><option value="collocation">Collocation</option>
+            </select>
+          </label>
+          <label>Thời gian
+            <select id="skillDays"><option value="1">1 ngày</option><option value="7">7 ngày</option><option value="30" selected>30 ngày</option>
+              <option value="90">90 ngày</option><option value="365">1 năm</option><option value="all">Toàn bộ</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div id="skillAnalytics" aria-live="polite">
+        <div class="learning-empty">Đang tổng hợp dữ liệu năng lực…</div>
+      </div>
+    </section>
+
+    <div class="card admin-panel" id="activityPanel" role="tabpanel" aria-labelledby="tabActivity" hidden>
       <div class="toolbar">
         <h2 style="margin:0 6px 0 10px;">Activity history</h2>
         <span class="who" id="whoLabel">All users · last 30 days</span>
@@ -303,8 +420,16 @@ function logout(){
 }
 
 let _selectedUser = null;
+let _selectedName = null;
+let _skillUser = null;
+let _skillName = null;
 
 const KIND_LABEL = { exam:'📝 Exam', lesson:'📚 Lesson', review:'🔁 Review', grammar:'🎓 Grammar', phrases:'🔗 Phrases', collocation:'🧩 Collocation', wordform:'🔤 Word form', rewrite:'✍️ Rewrite', verbs:'⚡ Verbs', math:'🔢 Toán', battle:'⚔️ Battle' };
+const SKILL_MENU_LABEL = {
+  math7:'Toán 7', mathwars:'Math Wars', grade4:'Grade 4', grammar:'Grammar',
+  phrases:'Phrases', verbs:'Verbs', wordform:'Word Form', rewrite:'Rewrite', collocation:'Collocation'
+};
+const SKILL_MENU_ICON = { math7:'📐', mathwars:'⚡', grade4:'📚', grammar:'🎓', phrases:'🔗', verbs:'🏃', wordform:'🔤', rewrite:'✍️', collocation:'🧩' };
 function kindPill(k){ return `<span class="pill kind-${esc(k)}">${KIND_LABEL[k]||esc(k)}</span>`; }
 
 // ---- users table ----------------------------------------------------------
@@ -353,6 +478,13 @@ async function loadUsers(){
     `<div class="stat"><b>${_users.length}</b><span>Users${off?` · ${off} disabled`:''}</span></div>`+
     `<div class="stat"><b>${totalActs}</b><span>Activities (30d)</span></div>`+
     `<div class="stat"><b>${totalExams}</b><span>Exam attempts</span></div>`;
+  const learnerSelect = document.getElementById('skillUser');
+  const previous = learnerSelect.value;
+  learnerSelect.innerHTML = '<option value="">Toàn bộ người học</option>' + _users
+    .filter(u=>u.role!=='admin')
+    .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
+    .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
+  if ([...learnerSelect.options].some(o=>o.value===previous)) learnerSelect.value = previous;
   renderUsers();
 }
 
@@ -411,6 +543,9 @@ function renderUsers(){
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
                   aria-label="Bot practice for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
                   title="Practice against a bot: unlimited, 20 shots, no rewards">🤖<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
+          <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}"
+                  aria-label="Give coins to ${esc(u.username)}"
+                  title="Give coins — the child's app claims them on its next sync">💰<span class="lbl"> Coins</span></button>
           ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
                   aria-label="Free the device slot held by ${esc(u.username)}"
                   title="Free this account's slot on its device (max 2 accounts per device)">📱<span class="lbl"> Free slot</span></button>` : ''}
@@ -437,6 +572,17 @@ function renderUsers(){
         body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
   act('.act-clear', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
+  act('.act-coins', b => {
+    const raw = prompt('Give coins to \u201c' + b.dataset.name + '\u201d \u2014 how many?', '50');
+    if (raw === null) return Promise.reject(new Error('cancelled'));
+    const amount = Math.trunc(Number(raw));
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
+      return Promise.reject(new Error('amount must be 1\u2013100000'));
+    }
+    return api('admin/grant-coins', { method:'POST', body:{ userId: Number(b.dataset.uid), amount } })
+      .then(() => alert('\u2705 \u0110\u00e3 t\u1eb7ng ' + amount + ' xu cho ' + b.dataset.name + '. B\u00e9 s\u1ebd nh\u1eadn khi m\u1edf app.'));
+  });
+
   act('.act-enable', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), disabled: false } }));
   act('.act-disable', b => {
@@ -451,9 +597,96 @@ function renderUsers(){
     tr.onclick = ()=>{
       body.querySelectorAll('tr').forEach(r=>r.classList.remove('selected'));
       tr.classList.add('selected');
-      loadActivity(tr.getAttribute('data-uid'), tr.getAttribute('data-name'));
+      const uid = tr.getAttribute('data-uid'), name = tr.getAttribute('data-name');
+      loadActivity(uid, name);
+      selectSkillUser(uid, name);
+      switchAdminTab('skills');
     };
   });
+}
+
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)));
+  document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id !== tab + 'Panel'; });
+  if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
+}
+
+function selectSkillUser(userId, name){
+  _skillUser = userId ? String(userId) : null;
+  _skillName = name || null;
+  const select = document.getElementById('skillUser');
+  if (select) select.value = _skillUser || '';
+  loadSkills(_skillUser, _skillName).catch(()=>{});
+}
+
+function skillState(row){
+  if (row.attempts < 5) return { cls:'learning', label:'Đang thu thập' };
+  if (row.mastery < 60) return { cls:'weak', label:'Cần luyện ngay' };
+  if (row.mastery < 80) return { cls:'practice', label:'Cần luyện thêm' };
+  return { cls:'strong', label:'Mạnh' };
+}
+
+function renderSkills(skills){
+  const root = document.getElementById('skillAnalytics');
+  if (!skills.length){
+    root.innerHTML = '<div class="learning-empty">Chưa đủ dữ liệu kỹ năng trong khoảng thời gian này. Kết quả mới sẽ tự động xuất hiện sau khi user hoàn thành bài.</div>';
+    return;
+  }
+  const attempts = skills.reduce((n,s)=>n+s.attempts,0);
+  const correct = skills.reduce((n,s)=>n+s.correct,0);
+  const accuracy = attempts ? Math.round(correct/attempts*100) : 0;
+  const weak = skills.filter(s=>s.attempts>=5 && s.mastery<60).length;
+  const strong = skills.filter(s=>s.attempts>=5 && s.mastery>=80).length;
+  const ordered = skills.slice().sort((a,b)=>{
+    const ae = a.attempts>=5 ? 0 : 1, be = b.attempts>=5 ? 0 : 1;
+    return ae-be || a.mastery-b.mastery || b.attempts-a.attempts;
+  });
+  const menuGroups = {};
+  skills.forEach(s=>{
+    const group = menuGroups[s.menu] || (menuGroups[s.menu] = { attempts:0, correct:0, weak:0 });
+    group.attempts += s.attempts; group.correct += s.correct;
+    if (s.attempts>=5 && s.mastery<60) group.weak++;
+  });
+  const menuOverview = !document.getElementById('skillMenu').value
+    ? `<div class="skill-section-title">Tổng quan theo menu</div><div class="menu-overview">${Object.keys(menuGroups)
+        .sort((a,b)=>SKILL_MENU_LABEL[a].localeCompare(SKILL_MENU_LABEL[b],'vi'))
+        .map(menu=>{ const g=menuGroups[menu], p=g.attempts?Math.round(g.correct/g.attempts*100):0; return `<button class="menu-card" onclick="setSkillMenu('${menu}')"><strong>${SKILL_MENU_ICON[menu]||'📘'} ${esc(SKILL_MENU_LABEL[menu]||menu)}</strong><b class="${pctClass(p)}">${p}%</b><small>${g.attempts} câu${g.weak?' · '+g.weak+' kỹ năng yếu':''}</small></button>`; }).join('')}</div>`
+    : '';
+  const priority = ordered.find(s=>s.attempts>=5 && s.mastery<80);
+  const priorityHtml = priority ? `<div class="priority-card"><span class="priority-icon" aria-hidden="true">🎯</span><div><strong>Ưu tiên giao bài: ${esc(priority.skillLabel)}</strong><span>${esc(SKILL_MENU_LABEL[priority.menu]||priority.menu)} · đúng ${priority.accuracy}% sau ${priority.attempts} câu. Nên cho luyện thêm dạng này trước.</span></div></div>` : '';
+  root.innerHTML = `<div class="learning-summary">
+      <div class="learning-stat"><b>${attempts}</b><span>Lượt trả lời</span></div>
+      <div class="learning-stat"><b class="${pctClass(accuracy)}">${accuracy}%</b><span>Chính xác</span></div>
+      <div class="learning-stat"><b class="pct-low">${weak}</b><span>Kỹ năng yếu</span></div>
+      <div class="learning-stat"><b class="pct-good">${strong}</b><span>Kỹ năng mạnh</span></div>
+    </div>${priorityHtml}${menuOverview}<div class="skill-section-title">Chi tiết kỹ năng</div><div class="skill-list">${ordered.map(s=>{
+      const state = skillState(s);
+      return `<div class="skill-row">
+        <div class="skill-name"><strong>${esc(s.skillLabel)}</strong><small>${esc(SKILL_MENU_LABEL[s.menu]||s.menu)} · ${s.attempts} câu · ${s.sessions} buổi</small></div>
+        <div class="skill-track" role="progressbar" aria-label="${esc(s.skillLabel)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.accuracy}"><div class="skill-fill ${state.cls}" style="width:${s.accuracy}%"></div></div>
+        <div class="skill-score">${s.accuracy}%</div>
+        <span class="skill-status ${state.cls}">${state.label}</span>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+function setSkillMenu(menu){
+  document.getElementById('skillMenu').value = menu;
+  loadSkills(_skillUser,_skillName).catch(()=>{});
+}
+
+async function loadSkills(userId, name){
+  _skillUser = userId || null;
+  _skillName = name || null;
+  document.getElementById('skillWho').textContent = userId
+    ? ('Người học: ' + (name || ('#' + userId)) + ' · chỉ kết luận mạnh/yếu khi có ít nhất 5 câu')
+    : 'Toàn bộ người học · xem điểm yếu theo từng menu và từng loại bài.';
+  const menu = document.getElementById('skillMenu').value;
+  const days = document.getElementById('skillDays').value;
+  const query = `admin/skills?days=${encodeURIComponent(days)}${userId?'&user_id='+encodeURIComponent(userId):''}${menu?'&menu='+encodeURIComponent(menu):''}`;
+  document.getElementById('skillAnalytics').innerHTML = '<div class="learning-empty">Đang tổng hợp dữ liệu…</div>';
+  const { skills } = await api(query);
+  renderSkills(skills || []);
 }
 
 async function loadActivity(userId, name){
@@ -483,13 +716,26 @@ function showDash(){
   document.getElementById('dash').style.display='block';
   loadUsers().catch(()=>{});
   loadActivity(null, null).catch(()=>{});
+  loadSkills(null, null).catch(()=>{});
 }
 
 document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
-document.getElementById('refreshBtn').onclick = ()=>{ loadUsers().catch(()=>{}); loadActivity(_selectedUser, document.querySelector('tr.selected b')?.textContent).catch(()=>{}); };
+document.getElementById('refreshBtn').onclick = ()=>{
+  loadUsers().catch(()=>{});
+  loadActivity(_selectedUser, _selectedName).catch(()=>{});
+  loadSkills(_skillUser, _skillName).catch(()=>{});
+};
 document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
+document.getElementById('skillUser').addEventListener('change', e=>{
+  const id=e.target.value;
+  const option=e.target.options[e.target.selectedIndex];
+  selectSkillUser(id || null, id ? option.textContent : null);
+});
+document.getElementById('skillMenu').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
+document.getElementById('skillDays').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
+document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
 document.getElementById('sortSel').addEventListener('change', e=>{
   const key = e.target.value;
   _sort = { key, dir: key === 'username' ? 1 : -1 };
@@ -505,7 +751,10 @@ document.querySelectorAll('#usersTable th.sortable').forEach(th=>{
     renderUsers();
   };
 });
-document.getElementById('allBtn').onclick = ()=>{ document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected')); loadActivity(null,null); };
+document.getElementById('allBtn').onclick = ()=>{
+  document.querySelectorAll('#usersBody tr').forEach(r=>r.classList.remove('selected'));
+  loadActivity(null,null);
+};
 
 // Auto-enter dashboard if we already have a token (verify by loading).
 if (token){ showDash(); }

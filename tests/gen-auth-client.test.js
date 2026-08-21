@@ -523,7 +523,8 @@ suite('gen: syncAccount', () => {
         reset({ user: 'Alice', appState: null, plan: (url) =>
             url === '/api/register' ? { ok: true, status: 200, data: { token: 'newtok', user: { role: 'student', id: 42 } } } : null });
         vmAwait("EngAuth.syncAccount('Alice', '4321')");
-        assert.equal(calls().length, 1, 'no history → register only, no activity call');
+        assert.deepEqual(calls().map(c => c.url), ['/api/register', '/api/coins'],
+            'no history → register, then the coin-grant claim');
         assert.equal(calls()[0].url, '/api/register');
         const sent = JSON.parse(calls()[0].body);
         assert.equal(sent.username, 'Alice');
@@ -547,7 +548,7 @@ suite('gen: syncAccount', () => {
             return null;
         } });
         vmAwait("EngAuth.syncAccount('Alice', '4321')");
-        assert.deepEqual(calls().map(c => c.url), ['/api/register', '/api/login']);
+        assert.deepEqual(calls().map(c => c.url), ['/api/register', '/api/login', '/api/coins']);
         assert.equal(EngAuth.tokenFor('Alice'), 'lt9');
     });
 
@@ -555,7 +556,7 @@ suite('gen: syncAccount', () => {
         reset({ user: 'Tester', appState: { wordformHistory: [{ score: 5, total: 5, date: NOW - 500 }] } });
         seedAccount('Tester', { token: 'tok123' });
         vmAwait("EngAuth.syncAccount('Tester', '9999')");
-        assert.deepEqual(calls().map(c => c.url), ['/api/activity']);
+        assert.deepEqual(calls().map(c => c.url), ['/api/activity', '/api/coins']);
         assert.equal(EngAuth.tokenFor('Tester'), 'tok123', 'token untouched');
     });
 
