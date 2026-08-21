@@ -22,6 +22,16 @@ suite('night raid: app integration',()=>{
   test('Night Raid remains inside the Arena navigation group',()=>{
     assert.truthy(read('js/app.js').includes("nightRaidScreen: 'arena'"));
   });
+  test('win/loss ends as a popup over the live battlefield, not a page swap',()=>{
+    // The final frame (breach or retreat) stays as the backdrop; a game-style
+    // banner popup drops in over it. The old full page survives only as the
+    // fallback for paths where the battle DOM is already gone.
+    assert.truthy(ui.includes("document.querySelector('#nrBattleRoot .nr-canvas-wrap')"));
+    assert.truthy(ui.includes('nr-result-pop'));
+    assert.truthy(ui.includes('nr-pop-banner'));
+    assert.truthy(ui.includes('renderResultPage'),'fallback page renderer must survive');
+    for(const token of ['nr-result-pop','nr-pop-scrim','nr-pop-card','nrBannerDrop','nrStarPop','nr-auto-command.hidden'])assert.truthy(css.includes(token),token);
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));
@@ -31,6 +41,9 @@ suite('night raid: app integration',()=>{
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
     for(const token of ['isometric-home-board-skin-pad.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','TỔNG DAM','TỔNG DEF'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
+    assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
+    assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
+    assert.falsy(ui.includes('<canvas id="nrEquippedCastle"'),'visible builder canvas causes black GPU bands on Safari');
   });
   test('builder is a pannable full-screen home with shop drag and free placement',()=>{
     for(const token of ['nr-builder-world','nr-builder-map','nr-builder-shop-fab','nr-free-grid','nr-build-grid-cell'])assert.truthy(ui.includes(token)||css.includes(token),token);
@@ -84,6 +97,8 @@ suite('night raid: app integration',()=>{
     for(const token of ['raidPetDescriptor','drawPetLeader','actors.sort(','pet:raidPetDescriptor()'])assert.truthy(ui.includes(token)||game.includes(token),token);
     assert.falsy(ui.includes('raidPetMarkup'));
     assert.falsy(ui.includes("nr-raid-pet battle"));
+    for(const token of ['drawStepContact','drawStrideSprite','swap=moving&&phase<0','a.step,a.moving,motion',"this.reduce?.38:1","this.reduce?.009:.022"])assert.truthy(game.includes(token),token);
+    assert.truthy(css.includes('filter:none!important'),'iOS castle canvas must not use a GPU drop-shadow rectangle');
   });
   test('battle defenders use the same polished 3D assets as the home builder',()=>{
     const art=read('js/night-raid-art.js');
