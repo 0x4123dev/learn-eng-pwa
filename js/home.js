@@ -1425,19 +1425,25 @@ function renderWordPet() {
         </button>
     `;
 
-    // Naming prompt (first time)
-    if (!appState.petName) {
+    // Naming prompt — first time, or when the child taps ✎ to rename
+    if (!appState.petName || _petRenaming) {
+        const currentName = String(appState.petName || '').replace(/[&<>"']/g, ch => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
         if (topbar) topbar.innerHTML = '';
         if (xpbar_el) xpbar_el.innerHTML = '';
         stage_el.innerHTML += `
             <div class="pet-name-form" style="margin-top:12px">
-                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">Name your dog!</div>
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,0.3)">${_petRenaming ? 'Đổi tên cún của con' : 'Name your dog!'}</div>
                 <input class="pet-name-input" id="petNameInput" type="text"
-                       maxlength="12" placeholder="Enter a name…"
+                       maxlength="12" placeholder="Enter a name…" value="${currentName}"
                        onkeydown="if(event.key==='Enter')savePetName()">
-                <button class="pet-name-btn" onclick="savePetName()">Name it! 🐾</button>
+                <button class="pet-name-btn" onclick="savePetName()">${_petRenaming ? 'Lưu tên mới 🐾' : 'Name it! 🐾'}</button>
+                ${_petRenaming ? '<button class="pet-name-btn pet-name-cancel" onclick="cancelPetRename()">Thôi, giữ tên cũ</button>' : ''}
             </div>
         `;
+        const input = document.getElementById('petNameInput');
+        if (input && _petRenaming) { input.focus(); input.select(); }
         return;
     }
 
@@ -1522,7 +1528,7 @@ function renderWordPet() {
             <div class="pet-hero-left">
                 <button type="button" class="pet-hero-avatar" onclick="navigateToProfile()" aria-label="Open profile">${avatar}</button>
                 <div class="pet-hero-identity">
-                    <div class="pet-identity-name"><strong>${safePetName}</strong><span class="pet-level-chip"><small>LV</small>${level}</span></div>
+                    <div class="pet-identity-name"><strong>${safePetName}</strong><button type="button" class="pet-name-edit" onclick="startPetRename(event)" aria-label="Đổi tên ${safePetName}">✎</button><span class="pet-level-chip"><small>LV</small>${level}</span></div>
                     <div class="pet-identity-style">
                         <span>${stage.name} · ${petStyleName}</span>
                         <span class="pet-polish-meter" title="Level shine ${petPolish} of 4" aria-label="Level shine ${petPolish} of 4">${polishPips}</span>
@@ -2086,14 +2092,30 @@ function showLevelUpCelebration(newLevel, oldLevel) {
     document.body.appendChild(overlay);
 }
 
+// Renaming reuses the first-time naming form; the new name flows everywhere
+// appState.petName is read — the home card, pet battles, and the Night Raid
+// badge that used to say "Dog".
+var _petRenaming = false;
+function startPetRename(event) {
+    if (event && event.stopPropagation) event.stopPropagation();
+    _petRenaming = true;
+    renderWordPet();
+}
+function cancelPetRename() {
+    _petRenaming = false;
+    renderWordPet();
+}
 function savePetName() {
     const input = document.getElementById('petNameInput');
     if (!input) return;
-    const name = input.value.trim();
+    const name = input.value.trim().slice(0, 12);
     if (!name) return;
+    const renamed = _petRenaming && appState.petName && appState.petName !== name;
     appState.petName = name;
+    _petRenaming = false;
     saveUserData(currentUser, appState);
     renderWordPet();
+    if (renamed && typeof showToast === 'function') showToast('🐾 Từ nay cún tên là ' + name + '!');
 }
 
 function toggleAccessory(id) {

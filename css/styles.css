@@ -12032,3 +12032,8 @@
 .nr-scout-stage .nr-battle-status{position:absolute;z-index:30;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%)}
 .nr-scout-stage .nr-battle-status[hidden]{display:none}
 .nr-builder-power[hidden]{display:none}
+
+/* Rename the dog: a small ✎ beside the name on the home hero. */
+.pet-name-edit{width:26px;height:26px;margin-left:2px;padding:0;border:1px solid rgba(255,255,255,.35);border-radius:9px;background:rgba(255,255,255,.16);color:#fff;font-size:13px;line-height:1;cursor:pointer;flex:0 0 auto}
+.pet-name-edit:active{background:rgba(255,255,255,.3)}
+.pet-name-cancel{opacity:.82;filter:saturate(.6)}
