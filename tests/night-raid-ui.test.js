@@ -114,7 +114,7 @@ suite('night raid: app integration',()=>{
     // Full-screen board with the equipped castle and placed buildings as the
     // background, the builder's DAM/DEF/LINH/coin chips, and the actions as
     // SHOP-style fabs floating on top. Read-only: nothing drags here.
-    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// Scouting is a full-screen look'));
+    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// Scouting IS the battlefield'));
     assert.truthy(home.includes('nr-home-stage'));
     assert.truthy(home.includes('nr-builder-world'),'home reuses the pannable island world');
     assert.truthy(home.includes('nr-builder-hud'),'home shows the builder power chips');
@@ -143,11 +143,15 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('<span>TIẾN QUÂN</span>'));
     assert.falsy(ui.includes('nrChargeButton'),'the battle screen must not ask again');
     assert.truthy(ui.includes("if(view==='battle'&&game&&game.charge)chargeArmy()"),'battle auto-charges');
+    // The fight happens IN PLACE on the scout canvas — no screen swap.
+    const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
+    assert.falsy(raidBlock.includes('r.innerHTML'),'startRaid must not rebuild the screen');
+    assert.truthy(raidBlock.includes("getElementById('nrScoutCanvas')"),'the scout canvas becomes the battlefield');
+    assert.truthy(ui.includes('data-nr-pop-host'),'the result popup needs a fixed host over the pannable world');
     assert.truthy(game.includes('class AutoBattle'));
     assert.truthy(game.includes('drawClashSpark'));
     assert.truthy(game.includes('Choreo.build(this.result,target,this.soldierCount'));
     assert.truthy(game.includes('target.attackerSoldiers'));
-    assert.truthy(ui.includes('QUÂN TA · ${target.attackerSoldiers} LÍNH'));
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
   });
@@ -162,7 +166,8 @@ suite('night raid: app integration',()=>{
     const targetsApi=read('functions/api/night-raid/targets.js');
     assert.falsy(/defense:full\.defense/.test(targetsApi),'targets payload must not carry the exact DEF');
     const battleBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
-    assert.truthy(battleBlock.includes('NHÀ ĐỊCH · DEF'),'attacking is how the child earns the number');
+    assert.truthy(battleBlock.includes("def.hidden=false"),'attacking is how the child earns the number');
+    assert.truthy(battleBlock.includes('nrScoutSecret'),'the secret pill leaves once the fight starts');
   });
   test('armored dog is a small canvas squad leader and marches with the formation',()=>{
     assert.truthy(game.includes("'img/night-raid/pet-soldiers-'"));

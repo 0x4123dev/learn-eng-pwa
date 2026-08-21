@@ -12020,3 +12020,15 @@
 .nr-builder-edit{top:calc(326px + env(safe-area-inset-top))}
 .nr-builder-edit b{font-size:16px}
 @media(min-width:768px){.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{width:74px;height:68px;font-size:10.5px}.nr-builder-zoom{grid-template-columns:74px;width:74px}.nr-builder-zoom button{width:74px}.nr-builder-shop-fab svg{width:25px;height:25px}}
+
+/* Scout/battle stage: the opponent board IS the pannable world, edge to edge. */
+.nr-scout-map{background:#0b1a2e}
+.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.nr-scout-stage .nr-pop-host{position:absolute;inset:0;z-index:46;pointer-events:none;display:grid}
+.nr-scout-stage .nr-pop-host .nr-result-pop{pointer-events:auto;position:absolute;inset:0}
+.nr-scout-name-pill{position:absolute;z-index:30;left:50%;top:calc(150px + env(safe-area-inset-top));transform:translateX(-50%);max-width:calc(100% - 24px);display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:rgba(5,14,28,.78);color:#e7f1ff;font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.nr-scout-name-pill svg{width:15px;height:15px;flex:0 0 auto;fill:none;stroke:#7fd1ff;stroke-width:2}
+.nr-scout-stage .nr-scout-secret{position:absolute;z-index:30;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));top:auto;transform:translateX(-50%)}
+.nr-scout-stage .nr-battle-status{position:absolute;z-index:30;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%)}
+.nr-scout-stage .nr-battle-status[hidden]{display:none}
+.nr-builder-power[hidden]{display:none}

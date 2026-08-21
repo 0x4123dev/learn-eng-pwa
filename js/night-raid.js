@@ -66,28 +66,34 @@ var NightRaid = (() => {
     paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();
   }
 
-    // Scouting is a full-screen look at the whole island — castle, land and the
-  // waiting formation — exactly like the home-builder view. Only OUR army's
-  // numbers float over the board: the enemy DEF is a secret the child learns
-  // by attacking, and the one TIẾN QUÂN button goes straight into the fight.
+    // Scouting IS the battlefield, and both look like the island home: the
+  // opponent's board fills the whole screen inside the same pannable world,
+  // the controls float as compact chips/fabs, and TIẾN QUÂN starts the fight
+  // IN PLACE on this very canvas — no screen swap, the result popup drops
+  // over the final frame. Enemy DEF stays hidden until the attack begins.
   function scout(level,targetOverride,online){cleanup();view='scout';const target=targetOverride||NightRaidRules.trainingTarget(level);const r=root();if(!r)return;
     const mine=ownPower();target.attackerDamage=target.attackerDamage||mine.damage;target.attackerDefense=target.attackerDefense||mine.defense;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):mine.soldiers;
-    r.innerHTML=`<div class="nr-battle nr-scout-stage" id="nrScoutRoot"><header class="nr-battle-hud"><button class="nr-back" type="button" onclick="${online?'nrShowLiveTargets()':'nrHome()'}">${svg('map')}<span>${VI.back}</span></button><div class="nr-scout-title"><span class="nr-label">TRINH SÁT</span><strong>${esc((target.title&&target.title.vi)||target.name||'Nhà đối thủ')}</strong></div><span class="nr-scout-flag">${svg('shield')}<b>${target.botMode?'BOT NGẪU NHIÊN':`Nhà cấp ${target.homeLevel||target.level||1}`}</b></span></header><div class="nr-canvas-wrap nr-iso-fight"><canvas id="nrScoutCanvas" width="800" height="800" aria-label="Toàn cảnh lâu đài đối thủ, pet đội trưởng và ${target.attackerSoldiers} lính đang dàn quân"></canvas><div class="nr-scout-army"><span>QUÂN TA</span><strong>DAM ${target.attackerDamage}</strong><small>Pet + ${target.attackerSoldiers} lính</small></div><div class="nr-scout-secret">🔒 DEF nhà địch là bí mật — tiến quân mới biết!</div></div><footer class="nr-auto-command"><button class="nr-charge" type="button" id="nrStartRaid"><span>TIẾN QUÂN</span><small>Đánh ngay — pet dẫn ${target.attackerSoldiers} lính xông vào</small></button></footer><div id="nrLive" class="sr-only" aria-live="polite"></div></div>`;
+    const name=(target.title&&target.title.vi)||target.name||'Nhà đối thủ';
+    const mapBase=typeof innerWidth!=='undefined'&&innerWidth>=768?1500:1180,mapSize=Math.round(mapBase*builderZoom);
+    r.innerHTML=shell(`<main class="nr-builder nr-scout-stage" id="nrBattleRoot"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Toàn cảnh lâu đài đối thủ. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map nr-scout-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapSize}px"><canvas id="nrScoutCanvas" class="nr-scout-canvas" width="800" height="800" aria-label="Lâu đài đối thủ, pet đội trưởng và ${target.attackerSoldiers} lính đang dàn quân"></canvas></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="${online?'nrShowLiveTargets()':'nrHome()'}" aria-label="${online?'Chọn nhà khác':'Về màn Cướp Đêm'}">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM TA</small><strong>${target.attackerDamage}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${target.attackerSoldiers}</strong></div><div class="nr-builder-power defense" id="nrScoutDef" hidden><small>DEF ĐỊCH</small><strong>?</strong></div></div><div class="nr-scout-name-pill">${svg('shield')}<span>${esc(name)}${target.botMode?' · BOT NGẪU NHIÊN':''}</span></div><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" id="nrStartRaid">${svg('moon')}<span>TIẾN QUÂN</span></button></div><div class="nr-scout-secret" id="nrScoutSecret">🔒 DEF nhà địch là bí mật — tiến quân mới biết!</div><div class="nr-battle-status" id="nrBattleStatus" role="status" hidden></div><div class="nr-pop-host" data-nr-pop-host></div></main>`);
     setNav(true);
     const canvas=document.getElementById('nrScoutCanvas');previewGame=new NightRaidGame.AutoBattle(canvas,target,{reduceEffects:true,pet:raidPetDescriptor()});previewGame.start();
+    builderScroll=null;centerBuilderWorld();setupBuilderGestures();
     document.getElementById('nrStartRaid').onclick=()=>{const b=document.getElementById('nrStartRaid');if(b){b.disabled=true;b.classList.add('charging');}startRaid(target,!!online);};
   }
 
   async function startRaid(target,online){
-    if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.shielded){if(typeof showToast==='function')showToast('Khiên Đêm bật đội cướp trở lại — lượt vẫn còn nguyên');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}target=start.data.raid;}
-    cleanup();view='battle';const r=root();if(!r)return;
+    if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.shielded){if(typeof showToast==='function')showToast('Khiên Đêm bật đội cướp trở lại — lượt vẫn còn nguyên');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}Object.assign(target,start.data.raid);}
+    const canvas=document.getElementById('nrScoutCanvas');if(!canvas)return;
+    view='battle';if(previewGame){previewGame.destroy();previewGame=null;}
     const army=ownPower();target.attackerDamage=target.attackerDamage||army.damage;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):army.soldiers;target.defense=target.defense||NightRaidRules.combatPower(target.layout,target.dogLevel,target.teammates).defense;
-    // The enemy DEF appears HERE for the first time — attacking is how the
-    // child earns that intel. No second button either: TIẾN QUÂN was already
-    // pressed on the scout screen, so the army marches on its own.
-    r.innerHTML=`<div class="nr-battle ${online?'online':''}" id="nrBattleRoot"><header class="nr-battle-hud"><div class="nr-auto-stat damage"><small>QUÂN TA · ${target.attackerSoldiers} LÍNH</small><strong>${target.attackerDamage}</strong></div><div class="nr-clash-vs">VS</div><div class="nr-auto-stat defense"><small>NHÀ ĐỊCH · DEF</small><strong>${target.defense}</strong></div><button class="nr-quit-auto" type="button" onclick="nrQuitRaid()" aria-label="Rút lui">${svg('close')}</button></header><div class="nr-canvas-wrap nr-iso-fight"><canvas id="nrGameCanvas" width="800" height="800" aria-label="Sân giao chiến isometric với pet và ${target.attackerSoldiers} lính"></canvas><div class="nr-battle-status" id="nrBattleStatus" role="status">Pet và ${target.attackerSoldiers} lính đang tiến quân</div></div><div id="nrLive" class="sr-only" aria-live="polite"></div></div>`;
-    setNav(true);
-    const canvas=document.getElementById('nrGameCanvas');game=new NightRaidGame.AutoBattle(canvas,target,{pet:raidPetDescriptor(),onUpdate:updateHud,onFinish:(state,commands)=>finishRaid(target,state,commands,online)});game.start();
+    // Attacking is how the child EARNS the number: the hidden DEF chip fills
+    // in, the secret pill and the one button leave, the army marches here.
+    const def=document.getElementById('nrScoutDef');if(def){def.hidden=false;const strong=def.querySelector('strong');if(strong)strong.textContent=target.defense;}
+    document.getElementById('nrScoutSecret')?.remove();
+    document.getElementById('nrStartRaid')?.closest('.nr-home-fabs')?.remove();
+    const status=document.getElementById('nrBattleStatus');if(status){status.hidden=false;status.textContent=`Pet và ${target.attackerSoldiers} lính đang tiến quân`;}
+    game=new NightRaidGame.AutoBattle(canvas,target,{pet:raidPetDescriptor(),onUpdate:updateHud,onFinish:(state,commands)=>finishRaid(target,state,commands,online)});game.start();
     setTimeout(()=>{if(view==='battle'&&game&&game.charge)chargeArmy();},700);
   }
   function updateHud(state){const status=document.getElementById('nrBattleStatus'),battle=document.getElementById('nrBattleRoot');if(status)status.textContent=state.status==='ready'?`Pet và ${state.soldiers||0} lính đang tiến quân`:state.status==='fighting'?'Đang chém phá cổng thành!':state.status==='won'?'Đã phá được lâu đài!':'Đội hình buộc phải rút lui';if(battle){battle.classList.toggle('is-fighting',state.status==='fighting');battle.classList.toggle('is-won',state.status==='won');battle.classList.toggle('is-lost',state.status==='lost');}}
@@ -110,7 +116,7 @@ var NightRaid = (() => {
   // battle DOM is already gone.
   function resultActionsHTML(online){return online?`<button class="nr-primary" type="button" onclick="nrShowLiveTargets()">Cướp nhà khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`:`<button class="nr-primary" type="button" onclick="nrScoutBot()">Tìm nhà bot khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`;}
   function renderResult(target,state,stars,reward,online,loss=0){cleanup();view='result';
-    const wrap=document.querySelector('#nrBattleRoot .nr-canvas-wrap');
+    const wrap=document.querySelector('[data-nr-pop-host]')||document.querySelector('#nrBattleRoot .nr-canvas-wrap');
     if(!wrap)return renderResultPage(target,state,stars,reward,online,loss);
     const won=state.status==='won';
     const command=document.querySelector('#nrBattleRoot .nr-auto-command');if(command)command.classList.add('hidden');
