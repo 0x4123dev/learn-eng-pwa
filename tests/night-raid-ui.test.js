@@ -91,6 +91,25 @@ suite('night raid: app integration',()=>{
     for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right','.nr-builder.shop-open .nr-builder-zoom'])assert.truthy(css.includes(token),token);
     assert.truthy(css.includes('.nr-builder-shop-fab{z-index:50}'));
   });
+  test('production timers hide behind the art until the building is tapped',()=>{
+    // The countdown used to sit permanently over the rice field / barracks.
+    // Now it only shows when READY (to collect) or for 4s after a tap — and
+    // tapping a ready producer collects it on the spot.
+    assert.truthy(css.includes('white-space:nowrap;pointer-events:none;display:none}'),'badge hidden by default');
+    assert.truthy(css.includes('.nr-production-badge.ready,.nr-production-badge.shown{display:block}'));
+    assert.truthy(ui.includes("badge.classList.add('shown')"));
+    assert.truthy(ui.includes('return collectResources(cell.uid)'),'tapping a ready producer collects');
+  });
+  test('moving a building requires pressing SỬA first',()=>{
+    // The grid only shows in edit mode, placed items refuse to drag outside
+    // it, and outside edit mode buildings are transparent to touches so a
+    // finger on them pans the island instead of grabbing anything.
+    assert.truthy(ui.includes('nr-builder-edit'));
+    assert.truthy(ui.includes('nrToggleBuilderGrid()'),'the SỬA fab flips edit mode');
+    assert.truthy(ui.includes('function beginPlacedDrag(event,gx,gy,layer){if(!builderEditing)return;'));
+    assert.truthy(css.includes('.nr-builder:not(.editing):not(.nr-home-stage) .nr-build-grid-cell'));
+    assert.truthy(css.includes('.nr-builder.editing .nr-build-grid-cell>i'),'grid markers show only while editing');
+  });
   test('the home screen is the same island stage as the builder',()=>{
     // Full-screen board with the equipped castle and placed buildings as the
     // background, the builder's DAM/DEF/LINH/coin chips, and the actions as
