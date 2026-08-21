@@ -1591,7 +1591,8 @@ function renderWordPet() {
         xpbar_el.innerHTML = `
             <div class="pet-bottom-strip">
                 <div class="pet-bottom-left">
-                    <div class="hunger-hearts-row" role="img" aria-label="Hunger ${hunger} percent, ${hungerLabel}">
+                    <div class="pet-hearts-name">${safePetName}</div>
+                    <div class="hunger-hearts-row" role="img" aria-label="Hunger of ${safePetName}: ${hunger} percent, ${hungerLabel}">
                         ${heartsHTML}
                         <span class="hunger-label ${hunger <= 25 ? 'hunger-warning' : ''}">${hungerLabel}</span>
                     </div>

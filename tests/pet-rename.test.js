@@ -28,6 +28,12 @@ suite('pet rename: the child can change the dog\'s name from home', () => {
     assert.truthy(save.includes('Từ nay cún tên là'));
   });
 
+  test('the name sits right above the five hunger hearts', () => {
+    assert.truthy(home.includes('pet-hearts-name'));
+    assert.truthy(home.includes('<div class="pet-hearts-name">${safePetName}</div>'));
+    assert.truthy(read('css/styles.css').includes('.pet-hearts-name'));
+  });
+
   test('the name flows into every battle surface that shows the pet', () => {
     assert.truthy(read('js/night-raid.js').includes('appState.petName||stage.name'), 'Night Raid badge');
     assert.truthy(read('js/petbattle.js').includes('st.petName'), 'Arena');

@@ -12037,3 +12037,18 @@
 .pet-name-edit{width:26px;height:26px;margin-left:2px;padding:0;border:1px solid rgba(255,255,255,.35);border-radius:9px;background:rgba(255,255,255,.16);color:#fff;font-size:13px;line-height:1;cursor:pointer;flex:0 0 auto}
 .pet-name-edit:active{background:rgba(255,255,255,.3)}
 .pet-name-cancel{opacity:.82;filter:saturate(.6)}
+
+/* ── Home hero: the dog's name above its five hearts ── */
+.pet-hearts-name{max-width:150px;margin-bottom:2px;font-size:12px;font-weight:900;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── Home hero topbar: ONE control size ──
+   Avatar, identity card, coins, streak and info were five different pills.
+   Everything is now 44px tall with the same dark-glass background and the
+   same rounded language. Appended last on purpose: overrides the originals. */
+.pet-hero-identity{height:44px;max-width:132px;padding:3px 10px 4px;display:flex;flex-direction:column;justify-content:center;border-radius:22px;background:rgba(0,0,0,.35)}
+.pet-identity-name{align-items:center}
+.pet-name-edit{width:20px;height:20px;margin-left:0;border-radius:7px;font-size:11px;display:inline-flex;align-items:center;justify-content:center}
+.pet-identity-style{margin-top:2px}
+.pet-hero-coins{height:44px;min-height:44px;padding:0 13px;border-radius:22px}
+.pet-hero-streak{height:44px;min-height:44px;padding:0 12px;border-radius:22px;display:flex;align-items:center;gap:4px}
+.pet-hero-info{background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.25)}
