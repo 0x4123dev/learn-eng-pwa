@@ -67,6 +67,199 @@ let currentUser = null;
 let userToDelete = null;
 let selectedAvatar = '😊';
 
+// Once a child has signed in, closing the app is NOT a logout: the active
+// profile is remembered in localStorage and signed straight back in on the
+// next open. Only an explicit "Switch user" (or deleting that profile) clears
+// the marker — that click is the passcode boundary. This used to be
+// sessionStorage, which survived a reload but not an app restart, so every
+// morning began with the passcode screen.
+const ACTIVE_USER_KEY = 'flashlingo-active-user';
+const STUDY_CHECKPOINT_KEY = 'flashlingo-study-checkpoint-v1';
+const STUDY_CHECKPOINT_MAX_AGE = 86400000;
+function rememberActiveUser(username) {
+    try {
+        if (username) localStorage.setItem(ACTIVE_USER_KEY, username);
+        else localStorage.removeItem(ACTIVE_USER_KEY);
+    } catch (e) { /* storage may be unavailable in private mode */ }
+}
+function rememberedActiveUser() {
+    try {
+        const username = localStorage.getItem(ACTIVE_USER_KEY);
+        if (username && getUsers().includes(username) && getUserData(username)) return username;
+    } catch (e) { /* fall through to a durable study checkpoint */ }
+    // Devices that signed in before this marker became durable still deserve a
+    // seamless morning: a recent unfinished exercise is proof enough of who
+    // was studying on this device.
+    try {
+        const checkpoint = JSON.parse(localStorage.getItem(STUDY_CHECKPOINT_KEY));
+        const fresh = checkpoint && Date.now() - checkpoint.savedAt <= STUDY_CHECKPOINT_MAX_AGE;
+        const username = fresh && checkpoint.user;
+        return username && getUsers().includes(username) && getUserData(username) ? username : null;
+    } catch (e) { return null; }
+}
+
+let _studyCheckpointTimer = null;
+let _studyCheckpointRestored = false;
+
+function clearStudyCheckpoint() {
+    try { localStorage.removeItem(STUDY_CHECKPOINT_KEY); } catch (e) {}
+}
+
+function checkpointClone(state, without) {
+    const copy = Object.assign({}, state || {});
+    (without || []).forEach(key => { delete copy[key]; });
+    return JSON.parse(JSON.stringify(copy));
+}
+
+function currentDraftInputs() {
+    const drafts = {};
+    const active = document.querySelector('.screen.active');
+    if (!active) return drafts;
+    active.querySelectorAll('input[id],textarea[id]').forEach(el => {
+        if (el.type !== 'password' && el.type !== 'hidden') drafts[el.id] = el.value;
+    });
+    // Speed challenge is an overlay outside the active screen.
+    ['inputV2', 'inputV3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.closest('.active')) drafts[id] = el.value;
+    });
+    return drafts;
+}
+
+function buildStudyCheckpoint() {
+    if (!currentUser) return null;
+    const base = { version:1, user:currentUser, savedAt:Date.now(), drafts:currentDraftInputs() };
+    if (typeof _grammarQuizState !== 'undefined' && _grammarQuizState)
+        return Object.assign(base, { kind:'grammar', screen:'grammarScreen', state:checkpointClone(_grammarQuizState) });
+    if (typeof _phrQuiz !== 'undefined' && _phrQuiz)
+        return Object.assign(base, { kind:'phrases', screen:'phrasesScreen', state:checkpointClone(_phrQuiz) });
+    if (typeof _wfQuiz !== 'undefined' && _wfQuiz)
+        return Object.assign(base, { kind:'wordform', screen:'wordformScreen', state:checkpointClone(_wfQuiz) });
+    if (typeof _rwQuiz !== 'undefined' && _rwQuiz)
+        return Object.assign(base, { kind:'rewrite', screen:'rewriteScreen', state:checkpointClone(_rwQuiz) });
+    if (typeof _colQuiz !== 'undefined' && _colQuiz)
+        return Object.assign(base, { kind:'collocation', screen:'phrasesScreen', state:checkpointClone(_colQuiz) });
+    if (typeof _unitQuiz !== 'undefined' && _unitQuiz)
+        return Object.assign(base, { kind:'units', screen:'topicsScreen', state:checkpointClone(_unitQuiz) });
+    if (typeof _mathQuiz !== 'undefined' && _mathQuiz)
+        return Object.assign(base, { kind:'math', screen:'mathHubScreen', state:checkpointClone(_mathQuiz) });
+    if (typeof _warsQuiz !== 'undefined' && _warsQuiz) {
+        const state = checkpointClone(_warsQuiz, ['timer']);
+        state.remainingMs = typeof warsLeftMs === 'function' ? warsLeftMs() : Math.max(0, state.endsAt - Date.now());
+        return Object.assign(base, { kind:'mathwars', screen:'mathHubScreen', state });
+    }
+    if (typeof _examState !== 'undefined' && _examState && !_examState.finished) {
+        const state = checkpointClone(_examState, ['timerId']);
+        state.remainingMs = Math.max(0, _examState.deadlineTs - Date.now());
+        return Object.assign(base, { kind:'exam', screen:'examScreen', state });
+    }
+    const speedOverlay = document.getElementById('speedGameOverlay');
+    if (speedOverlay && speedOverlay.classList.contains('active') && speedState.currentVerbs.length) {
+        return Object.assign(base, { kind:'verbs', screen:'speedChallengeScreen', state:checkpointClone(speedState, ['timer']) });
+    }
+    const lessonActive = document.getElementById('lessonScreen')?.classList.contains('active');
+    if (lessonActive && lessonState && Array.isArray(lessonState.roundWords) && lessonState.roundWords.length) {
+        const state = checkpointClone(lessonState, ['selectedLeft', 'selectedRight']);
+        // DOM classes know which pairs remain; saving only those prevents
+        // already-matched words from returning after an iOS reload.
+        const remaining = Array.from(document.querySelectorAll('#leftColumn .match-card:not(.matched)'))
+            .map(el => el.dataset.word);
+        if (remaining.length) {
+            state.roundWords = lessonState.roundWords.filter(w => remaining.includes(w.en));
+            state.matchedPairs = 0;
+            return Object.assign(base, { kind:'lesson', screen:'lessonScreen', state });
+        }
+    }
+    return null;
+}
+
+function saveStudyCheckpoint() {
+    try {
+        const checkpoint = buildStudyCheckpoint();
+        if (checkpoint) localStorage.setItem(STUDY_CHECKPOINT_KEY, JSON.stringify(checkpoint));
+        else clearStudyCheckpoint();
+    } catch (e) { /* a checkpoint must never interrupt the exercise */ }
+}
+
+function activateCheckpointScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById(screenId);
+    if (screen) screen.classList.add('active');
+    setBottomNavActive(screenId);
+}
+
+function restoreDraftInputs(drafts) {
+    setTimeout(() => Object.keys(drafts || {}).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.disabled) el.value = drafts[id];
+    }), 0);
+}
+
+function restoreStudyCheckpoint() {
+    if (_studyCheckpointRestored || !currentUser) return false;
+    let checkpoint = null;
+    try { checkpoint = JSON.parse(localStorage.getItem(STUDY_CHECKPOINT_KEY)); } catch (e) {}
+    if (!checkpoint || checkpoint.user !== currentUser || Date.now() - checkpoint.savedAt > STUDY_CHECKPOINT_MAX_AGE) {
+        clearStudyCheckpoint();
+        return false;
+    }
+    _studyCheckpointRestored = true;
+    const s = checkpoint.state;
+    try {
+        activateCheckpointScreen(checkpoint.screen);
+        if (checkpoint.kind === 'grammar') { _grammarQuizState = s; renderGrammarQuestion(); }
+        else if (checkpoint.kind === 'phrases') { _phrQuiz = s; renderPhrQuestion(); }
+        else if (checkpoint.kind === 'wordform') { _wfQuiz = s; renderWfQuestion(); }
+        else if (checkpoint.kind === 'rewrite') { _rwQuiz = s; renderRwQuestion(); }
+        else if (checkpoint.kind === 'collocation') { _colQuiz = s; renderCollocQuestion(); }
+        else if (checkpoint.kind === 'units') {
+            _unitQuiz = s;
+            ['topicsGrid','topicsReviewCard','topicsSrBanner','unitsBar','topicsSubTabs','topicsHistory'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.style.display = 'none';
+            });
+            renderUnitQuestion();
+        }
+        else if (checkpoint.kind === 'math') { _mathQuiz = s; renderMathQuestion(); }
+        else if (checkpoint.kind === 'mathwars') {
+            _warsQuiz = s; _warsQuiz.endsAt = Date.now() + Math.max(1000, s.remainingMs || 0);
+            _warsQuiz.timer = setInterval(warsClockTick, 250); renderWars();
+        }
+        else if (checkpoint.kind === 'exam') {
+            _examState = s; _examState.deadlineTs = Date.now() + Math.max(1000, s.remainingMs || 0);
+            _examState.timerId = setInterval(_examTick, 1000); renderExamQuestion();
+        }
+        else if (checkpoint.kind === 'verbs') {
+            speedState = Object.assign(speedState, s);
+            document.getElementById('speedGameOverlay').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'none';
+            showSpeedQuestion();
+            speedState.timeLeft = Math.max(1000, s.timeLeft || SPEED_TIME_LIMIT);
+            updateTimerBar();
+        }
+        else if (checkpoint.kind === 'lesson') {
+            lessonState = s;
+            document.getElementById('bottomNav').style.display = 'none';
+            renderMatchingRound();
+        }
+        else throw new Error('unknown checkpoint');
+        restoreDraftInputs(checkpoint.drafts);
+        showToast('↩️ Đã mở lại bài đang làm dở');
+        return true;
+    } catch (e) {
+        clearStudyCheckpoint();
+        return false;
+    }
+}
+
+function startStudyCheckpointing() {
+    if (_studyCheckpointTimer) return;
+    _studyCheckpointTimer = setInterval(saveStudyCheckpoint, 1000);
+    window.addEventListener('pagehide', saveStudyCheckpoint);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveStudyCheckpoint();
+    });
+}
+
 let appState = null;
 let selectedDifficultyFilter = 'beginning';
 
@@ -220,6 +413,11 @@ function applyTheme(themeId) {
 function init() {
     setupAvatarPicker();
     checkExistingUsers();
+    // A reload is not a logout. Resume the profile already authenticated in
+    // this tab instead of asking for its passcode again.
+    const resumeUser = rememberedActiveUser();
+    if (resumeUser) loginUser(resumeUser);
+    startStudyCheckpointing();
     registerServiceWorker();
 
     // Show version on login screen
@@ -236,8 +434,12 @@ function setupAvatarPicker() {
     picker.addEventListener('click', (e) => {
         const option = e.target.closest('.avatar-option');
         if (option) {
-            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            document.querySelectorAll('.avatar-option').forEach(o => {
+                o.classList.remove('selected');
+                o.setAttribute('aria-pressed', 'false');
+            });
             option.classList.add('selected');
+            option.setAttribute('aria-pressed', 'true');
             selectedAvatar = option.dataset.avatar;
         }
     });
@@ -287,15 +489,18 @@ function renderUserList(users) {
         const card = document.createElement('div');
         card.className = 'user-card';
         card.innerHTML = `
-            <div class="user-avatar">${userData.avatar || '😊'}</div>
-            <div class="user-info">
-                <div class="user-name">${userData.username}</div>
-                <div class="user-stats">⭐ ${userData.points} points · 🔥 ${userData.streak} streak</div>
-            </div>
-            <button class="delete-user-btn" onclick="event.stopPropagation(); showDeleteModal('${username}')">🗑️</button>
-            <span class="user-arrow">›</span>
+            <button type="button" class="user-open-btn" aria-label="Open ${userData.username}'s profile">
+                <span class="user-avatar" aria-hidden="true">${userData.avatar || '😊'}</span>
+                <span class="user-info">
+                    <span class="user-name">${userData.username}</span>
+                    <span class="user-stats">⭐ ${userData.points} points · 🔥 ${userData.streak} streak</span>
+                </span>
+                <span class="user-arrow" aria-hidden="true">›</span>
+            </button>
+            <button type="button" class="delete-user-btn" aria-label="Delete ${userData.username}'s profile">🗑️</button>
         `;
-        card.onclick = () => showPasscodeModal(username);
+        card.querySelector('.user-open-btn').onclick = () => showPasscodeModal(username);
+        card.querySelector('.delete-user-btn').onclick = () => showDeleteModal(username);
         list.appendChild(card);
     });
 }
@@ -527,6 +732,7 @@ function loginUser(username) {
 
     currentUser = username;
     appState = userData;
+    rememberActiveUser(username);
 
     // Best-effort: link this profile to a server account (for exam-history sync).
     // Fire-and-forget; never blocks login and is a no-op offline.
@@ -630,6 +836,24 @@ function loginUser(username) {
     if (appState.petPoops === undefined) appState.petPoops = [];
     if (!Array.isArray(appState.petBattleCastleSkins)) appState.petBattleCastleSkins = ['stone-keep'];
     if (appState.petBattleCastleSkin === undefined) appState.petBattleCastleSkin = 'stone-keep';
+    // Castle Night Raid is additive and local-first. Never replace a saved
+    // layout or route when an existing learner receives the feature.
+    if (appState.nightRaidRouteLevel === undefined) appState.nightRaidRouteLevel = 1;
+    if (!appState.nightRaidStars || typeof appState.nightRaidStars !== 'object') appState.nightRaidStars = {};
+    if (!Array.isArray(appState.nightRaidHistory)) appState.nightRaidHistory = [];
+    if (appState.nightRaidLayout === undefined) appState.nightRaidLayout = null;
+    if (appState.nightRaidPending === undefined) appState.nightRaidPending = null;
+    if (appState.nightRaidTicketDate === undefined) appState.nightRaidTicketDate = null;
+    if (appState.nightRaidTicketCount === undefined) appState.nightRaidTicketCount = 0;
+    if (appState.nightRaidRewardDate === undefined) appState.nightRaidRewardDate = null;
+    if (appState.nightRaidRewardToday === undefined) appState.nightRaidRewardToday = 0;
+    if (!appState.nightRaidClaimed || typeof appState.nightRaidClaimed !== 'object') appState.nightRaidClaimed = {};
+    if (appState.vaultCoins === undefined) appState.vaultCoins = 0;
+    if (appState.nightShieldUntil === undefined) appState.nightShieldUntil = null;
+    if (appState.nightRaidRuinedUntil === undefined) appState.nightRaidRuinedUntil = null;
+    if (!Array.isArray(appState.battleTeammates)) appState.battleTeammates = [];
+    if (!appState.nightRaidResources || typeof appState.nightRaidResources !== 'object') appState.nightRaidResources = { wood:180, stone:120, food:160 };
+    if (appState.nightRaidResourceAt === undefined) appState.nightRaidResourceAt = Date.now();
 
     // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
     if (appState.currentLesson > 0) {
@@ -698,6 +922,9 @@ function loginUser(username) {
 
     renderHome();
     renderProfile();
+    // Rendering Home creates the shared screen containers that each practice
+    // renderer expects. Restore only after that base UI is ready.
+    setTimeout(restoreStudyCheckpoint, 0);
 
     // v3.37 — show the daily-streak modal once per local day, right after the
     // home screen is mounted. Delayed by a frame so the modal animates over a
@@ -718,6 +945,9 @@ function switchUser() {
     // Reset and show onboarding
     currentUser = null;
     appState = null;
+    rememberActiveUser(null);
+    clearStudyCheckpoint();
+    _studyCheckpointRestored = false;
 
     document.getElementById('bottomNav').style.display = 'none';
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -725,8 +955,13 @@ function switchUser() {
 
     // Reset form
     document.getElementById('usernameInput').value = '';
-    document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
-    document.querySelector('.avatar-option').classList.add('selected');
+    document.querySelectorAll('.avatar-option').forEach(o => {
+        o.classList.remove('selected');
+        o.setAttribute('aria-pressed', 'false');
+    });
+    const firstAvatar = document.querySelector('.avatar-option');
+    firstAvatar.classList.add('selected');
+    firstAvatar.setAttribute('aria-pressed', 'true');
     selectedAvatar = '😊';
 
     // Clear passcode inputs
@@ -757,8 +992,10 @@ function confirmDeleteUser() {
     users = users.filter(u => u !== userToDelete);
     saveUsers(users);
 
+    const deletingActiveSession = rememberedActiveUser() === userToDelete;
     // Delete user data
     deleteUserData(userToDelete);
+    if (deletingActiveSession) rememberActiveUser(null);
 
     closeDeleteModal();
     showToast('User deleted');
@@ -862,6 +1099,7 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     wordformScreen: 'learn',
     rewriteScreen: 'learn',
     petBattleScreen: 'arena',
+    nightRaidScreen: 'arena',
     mathHubScreen: 'math',
     examScreen: 'exam'
 });
@@ -956,8 +1194,10 @@ function switchScreen(screenId) {
         if (typeof abandonRewriteQuiz === 'function') abandonRewriteQuiz();
     }
 
+    const nextScreen = document.getElementById(screenId);
+    if (!nextScreen) return;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
+    nextScreen.classList.add('active');
 
     setBottomNavActive(screenId);
 
@@ -970,6 +1210,15 @@ function switchScreen(screenId) {
     if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
     if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
     if (screenId === 'profileScreen') renderProfile();
+
+    // Do this after rendering: Home replaces its pet hero contents, and scroll
+    // anchoring can otherwise restore the old offset after we reset it.
+    nextScreen.scrollTop = 0;
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => {
+            if (nextScreen.classList.contains('active')) nextScreen.scrollTop = 0;
+        });
+    }
 }
 
 function navigateToProfile() {
@@ -978,7 +1227,9 @@ function navigateToProfile() {
     _profileOriginScreen = activeScreen ? activeScreen.id : 'homeScreen';
 
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('profileScreen').classList.add('active');
+    const profileScreen = document.getElementById('profileScreen');
+    profileScreen.classList.add('active');
+    profileScreen.scrollTop = 0;
 
     // Clear nav highlight (profile is no longer a nav tab)
     setBottomNavActive('');
@@ -1044,33 +1295,29 @@ function registerServiceWorker() {
                 const installing = reg.installing;
                 if (!installing) return;
                 installing.addEventListener('statechange', () => {
-                    // "installed" + an existing controller means a NEW SW has
-                    // finished installing and is waiting to take over from
-                    // the OLD active SW. Tell it to take over now.
+                    // "installed" + an existing controller means a NEW SW is
+                    // ready. Leave it waiting: it activates after the learner
+                    // naturally closes this app, never mid-question.
                     if (installing.state === 'installed' &&
                         navigator.serviceWorker.controller) {
-                        // Tell the waiting SW to skipWaiting (in case the
-                        // OLD active SW doesn't call it on install). Older
-                        // SWs ignore unknown messages, so this is safe.
-                        try { installing.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
+                        console.log('[FlashLingo] Update downloaded — waiting for the next app open.');
                     }
                 });
             });
 
-            // When the active SW changes (a new one took over), reload once
-            // so the user gets the new JS/CSS without a manual refresh.
-            // Guarded by a flag to avoid an infinite reload loop.
-            let _reloadOnControllerChange = false;
+            // Never reload a live lesson when a new worker takes over. The
+            // current page can safely finish with the JS it already loaded;
+            // the new cache is used on the next natural open/reload.
+            const wasControlled = !!navigator.serviceWorker.controller;
+            let updateNoticeShown = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (_reloadOnControllerChange) return;
-                _reloadOnControllerChange = true;
-                console.log('[FlashLingo] New version installed — reloading…');
-                window.location.reload();
+                // Ignore the first-ever worker claiming a previously
+                // uncontrolled page; that is installation, not an update.
+                if (!wasControlled || updateNoticeShown) return;
+                updateNoticeShown = true;
+                console.log('[FlashLingo] New version installed — will use it next time the app opens.');
+                if (typeof showToast === 'function') showToast('✅ App updated — ready next time you open it');
             });
-            // Only enable reload-on-change AFTER initial registration so we
-            // don't reload on the very first load (when controller becomes
-            // the freshly-registered SW for the first time).
-            setTimeout(() => { _reloadOnControllerChange = true; }, 1500);
         })
         .catch(() => {});
 }
