@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/">
+<title>So sánh: Canvas 2D vs Three.js — Cướp Đêm</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: system-ui, sans-serif; background: #0a1526; color: #e8f1ff; padding: 14px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: #9fb4da; font-size: 13px; margin-bottom: 14px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 900px) { .panes { grid-template-columns: 1fr; } }
+  .pane { background: #0f2038; border: 1px solid rgba(180,212,255,.22); border-radius: 16px; overflow: hidden; }
+  .pane h2 { font-size: 14px; padding: 10px 14px; background: rgba(5,14,28,.6); display: flex; justify-content: space-between; }
+  .pane h2 small { color: #7fd1ff; font-weight: 600; }
+  .stage { position: relative; aspect-ratio: 1/1; background: #0a1526; }
+  .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .fps { position: absolute; right: 8px; top: 8px; padding: 4px 9px; border-radius: 9px; background: rgba(4,10,22,.75);
+         font: 700 11px/1.4 ui-monospace, monospace; color: #9fe870; pointer-events: none; }
+  .hint3d { position: absolute; left: 8px; bottom: 8px; padding: 4px 9px; border-radius: 9px; background: rgba(4,10,22,.6);
+            font-size: 11px; color: #cfe0f5; pointer-events: none; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+  button { padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(180,212,255,.3); background: #17304f;
+           color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; }
+  button.primary { background: linear-gradient(135deg, #ff8b2e, #ef3f35); border-color: #ffca5a; }
+  .notes { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px; line-height: 1.55; }
+  @media (max-width: 900px) { .notes { grid-template-columns: 1fr; } }
+  .notes section { background: #0f2038; border: 1px solid rgba(180,212,255,.18); border-radius: 14px; padding: 12px 16px; }
+  .notes h3 { font-size: 13px; margin-bottom: 6px; color: #ffd98c; }
+  .notes li { margin-left: 18px; margin-bottom: 3px; color: #c3d2e8; }
+</style>
+</head>
+<body>
+<h1>Cùng một trận Cướp Đêm — hai cách vẽ</h1>
+<p class="sub">Hai khung dưới chạy CÙNG một kịch bản NightRaidChoreo (cùng seed), đồng bộ từng frame. Trái: renderer Canvas 2D đang chạy thật trong app. Phải: dựng lại bằng Three.js — 3D thật, camera xoay được (kéo chuột), bóng đổ động.</p>
+
+<div class="controls">
+  <button class="primary" id="btnReplay">▶ Chạy lại trận</button>
+  <button id="btnSeed">🎲 Đổi trận khác</button>
+  <button id="btnOrbit">🎥 Camera tự xoay: BẬT</button>
+</div>
+
+<div class="panes">
+  <div class="pane">
+    <h2>Canvas 2D hiện tại <small>ảnh 3D render sẵn + canvas</small></h2>
+    <div class="stage"><canvas id="c2d" width="800" height="800"></canvas><span class="fps" id="fps2d">—</span></div>
+  </div>
+  <div class="pane">
+    <h2>Three.js <small>3D thật · WebGL</small></h2>
+    <div class="stage" id="stage3d"><span class="fps" id="fps3d">—</span><span class="hint3d">Kéo chuột để xoay camera</span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <section>
+    <h3>Canvas 2D + ảnh render sẵn (cách hiện tại)</h3>
+    <ul>
+      <li>Đồ hoạ đẹp ngay vì dùng ảnh 3D vẽ sẵn chất lượng cao</li>
+      <li>Nhẹ (~0 KB thư viện), chạy mượt trên iPad cũ, offline sẵn</li>
+      <li>Không xoay được camera, nhân vật không quay đầu thật — chỉ lật ảnh</li>
+    </ul>
+  </section>
+  <section>
+    <h3>Three.js / Babylon.js (3D thật)</h3>
+    <ul>
+      <li>Camera xoay/zoom tự do, bóng đổ và đạn bay có chiều sâu thật</li>
+      <li>Muốn đẹp như ảnh bên trái phải có MODEL 3D thật (đặt làm hoặc mua) — khối hộp demo này chỉ là placeholder</li>
+      <li>+660 KB thư viện, tốn pin/GPU hơn trên máy yếu; viết lại toàn bộ renderer</li>
+    </ul>
+  </section>
+</div>
+
+<script src="js/night-raid-rules.js"></script>
+<script src="js/night-raid-choreo.js"></script>
+<script src="js/castle-skins.js"></script>
+<script src="js/night-raid-art.js"></script>
+<script src="js/night-raid-game.js"></script>
+<script src="demo/three.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const PET = { name: 'Rex', breed: 'corgi', level: 9, cell: 2, atlas: 'small' };
+  let seed = 12345, game = null, chor = null, duration = 1;
+
+  function makeBattle() {
+    const t = NightRaidRules.trainingTarget(8);
+    const target = Object.assign({}, t, { seed, attackerDamage: t.defense + (seed % 2 ? 80 : -90), attackerSoldiers: 8 });
+    game = new NightRaidGame.AutoBattle(document.getElementById('c2d'), target, { pet: PET });
+    game.state.status = 'fighting';
+    chor = game.choreo; duration = chor.durationMs;
+    build3D();
+  }
+
+  // ---- Three.js pane -------------------------------------------------------
+  const stage = document.getElementById('stage3d');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0e1c33);
+  scene.fog = new THREE.Fog(0x0e1c33, 30, 60);
+  const camera = new THREE.PerspectiveCamera(42, 1, .1, 100);
+  let camAngle = Math.PI * .78, camAuto = true, camEl = .62;
+  const sun = new THREE.DirectionalLight(0xfff2d8, 2.6);
+  sun.position.set(9, 14, 6); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -14; sun.shadow.camera.right = 14;
+  sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -14;
+  scene.add(sun, new THREE.AmbientLight(0x88a7d8, 1.1));
+
+  const W2X = v => (v - 400) / 36, W2Z = v => (v - 400) / 36;  // board 800² → ±11
+  const mat = (c, r = .9) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
+  const box = (w, h, d, c) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c)); m.castShadow = m.receiveShadow = true; return m; };
+  const cyl = (r1, r2, h, c, seg = 20) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r1, r2, h, seg), mat(c)); m.castShadow = m.receiveShadow = true; return m; };
+
+  let world = null, units3d = [], shots3d = [];
+  function build3D() {
+    if (world) scene.remove(world);
+    world = new THREE.Group(); units3d = []; shots3d = [];
+    // island: grass cap on a dirt cliff
+    const grass = cyl(12.6, 12.2, .8, 0x7cb75a, 44); grass.position.y = -.4; world.add(grass);
+    const dirt = cyl(12.2, 10.6, 2.6, 0x8a6b48, 44); dirt.position.y = -2.1; world.add(dirt);
+    // castle (placeholder blocks — a real project would load a modelled castle)
+    const castle = new THREE.Group();
+    const keep = box(3.2, 2.6, 2.6, 0xb9a6c9); keep.position.y = 1.3; castle.add(keep);
+    for (const dx of [-1.5, 1.5]) {
+      const tw = cyl(.62, .7, 3.4, 0xcbbad8); tw.position.set(dx, 1.7, 1.1); castle.add(tw);
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(.85, 1.15, 12), mat(0x3f6fb2)); roof.castShadow = true; roof.position.set(dx, 4, 1.1); castle.add(roof);
+    }
+    const gate = box(1, 1.4, .3, 0x4a3323); gate.position.set(0, .7, 1.35); castle.add(gate);
+    castle.position.set(W2X(chor.castle.x), 0, W2Z(chor.castle.y)); castle.rotation.y = .5;
+    world.add(castle);
+    // defense towers from the SAME script
+    for (const tw of chor.towers) {
+      if (tw.virtual) continue;
+      const g = new THREE.Group();
+      const body = cyl(.42, .52, 1.5, tw.kind === 'water' ? 0x3f8fc4 : 0xc98f4e); body.position.y = .75; g.add(body);
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(.6, .7, 10), mat(0x74513a)); cap.castShadow = true; cap.position.y = 1.85; g.add(cap);
+      g.position.set(W2X(tw.x), 0, W2Z(tw.y)); world.add(g);
+    }
+    // trees for depth
+    const rng = NightRaidRules.makeRng(seed ^ 0x77);
+    for (let i = 0; i < 14; i++) {
+      const a = rng() * Math.PI * 2, r = 9.4 + rng() * 1.8;
+      const t = new THREE.Group();
+      const trunk = cyl(.12, .16, .6, 0x6b4a2f, 8); trunk.position.y = .3; t.add(trunk);
+      const crown = new THREE.Mesh(new THREE.ConeGeometry(.62 + rng() * .3, 1.3, 10), mat(0x3e7a3a)); crown.castShadow = true; crown.position.y = 1.2; t.add(crown);
+      t.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); world.add(t);
+    }
+    // units driven by the SAME choreography
+    for (const u of chor.units) {
+      const g = new THREE.Group(), pet = u.kind === 'pet';
+      const body = box(pet ? .62 : .44, pet ? .5 : .62, pet ? .95 : .4, pet ? 0xe08a3c : 0x4d7fd0); body.position.y = pet ? .45 : .5; g.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(pet ? .3 : .24, 14, 12), mat(pet ? 0xf0a45a : 0xf2c99a)); head.castShadow = true;
+      head.position.set(0, pet ? .82 : 1.02, pet ? .5 : 0); g.add(head);
+      if (pet) { const tail = box(.12, .12, .34, 0xc9752e); tail.position.set(0, .62, -.6); g.add(tail); }
+      else { const helm = new THREE.Mesh(new THREE.ConeGeometry(.26, .3, 10), mat(0x2f4f8f)); helm.castShadow = true; helm.position.y = 1.22; g.add(helm); }
+      world.add(g); units3d.push({ u, g, pet });
+    }
+    // projectiles
+    for (const s of chor.shots) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(s.kind === 'water' ? .14 : .17, 10, 8),
+        mat(s.kind === 'water' ? 0x9fdcff : 0x8d8a80, .6));
+      m.castShadow = true; m.visible = false; world.add(m); shots3d.push({ s, m });
+    }
+    scene.add(world);
+  }
+
+  // ---- shared clock, both panes render the same instant --------------------
+  const fps2dEl = document.getElementById('fps2d'), fps3dEl = document.getElementById('fps3d');
+  let start = performance.now(), acc2 = 0, acc3 = 0, frames = 0, lastFpsAt = performance.now(), warmup = 20;
+  function frame(now) {
+    const T = Math.min(duration, ((now - start) % (duration + 1800)));
+    const p = T / duration;
+    let t0 = performance.now();
+    game.paint(p);
+    acc2 += performance.now() - t0;
+
+    t0 = performance.now();
+    for (const it of units3d) {
+      const s = NightRaidChoreo.unitAt(it.u, T);
+      it.g.position.set(W2X(s.x), 0, W2Z(s.y));
+      const gait = s.moving ? Math.abs(Math.sin((s.x + s.y) * .14 + it.u.index * 2.1)) : 0;
+      it.g.position.y = gait * .12;
+      it.g.rotation.y = s.facing === 1 ? Math.PI * 1.5 : Math.PI * .5;
+      it.g.rotation.z = s.state === 'fallen' ? Math.min(1, (T - it.u.fallAt) / 420) * 1.45 : (s.moving ? Math.sin((s.x + s.y) * .14) * .07 : 0);
+      if (s.state === 'fallen') it.g.position.y = -.15;
+    }
+    for (const it of shots3d) {
+      const live = T >= it.s.launchAt && T <= it.s.impactAt;
+      it.m.visible = live;
+      if (live) {
+        const q = NightRaidChoreo.shotAt(it.s, T);
+        it.m.position.set(W2X(q.x), .5 + Math.sin(Math.PI * q.p) * (it.s.apex / 46), W2Z(q.ground));
+      }
+    }
+    if (camAuto) camAngle += .0022;
+    camera.position.set(Math.cos(camAngle) * 21, 21 * camEl, Math.sin(camAngle) * 21);
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+    acc3 += performance.now() - t0;
+
+    // The very first frames pay one-time shader compilation — keep them out
+    // of the average or the 3D pane looks 100x slower than it runs.
+    if (warmup > 0) { warmup--; acc2 = acc3 = 0; frames = 0; }
+    else {
+      frames++;
+      if (now - lastFpsAt > 700 && frames > 5) {
+        fps2dEl.textContent = (acc2 / frames).toFixed(1) + ' ms/frame';
+        fps3dEl.textContent = (acc3 / frames).toFixed(1) + ' ms/frame';
+        acc2 = acc3 = frames = 0; lastFpsAt = now;
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  // Headless benchmark: render N synchronized frames without rAF and report
+  // the average cost of each pane. Used by automated checks.
+  window.__bench = (n = 60) => {
+    let a2 = 0, a3 = 0;
+    for (let i = 0; i < n; i++) {
+      const T = (i / n) * duration;
+      let t0 = performance.now(); game.paint(T / duration); a2 += performance.now() - t0;
+      t0 = performance.now();
+      for (const it of units3d) { const s = NightRaidChoreo.unitAt(it.u, T); it.g.position.set(W2X(s.x), 0, W2Z(s.y)); }
+      for (const it of shots3d) { const live = T >= it.s.launchAt && T <= it.s.impactAt; it.m.visible = live; if (live) { const q = NightRaidChoreo.shotAt(it.s, T); it.m.position.set(W2X(q.x), .5 + Math.sin(Math.PI * q.p) * (it.s.apex / 46), W2Z(q.ground)); } }
+      camera.position.set(Math.cos(i * .05) * 21, 21 * .62, Math.sin(i * .05) * 21);
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+      a3 += performance.now() - t0;
+    }
+    return { canvas2d: +(a2 / n).toFixed(2), threejs: +(a3 / n).toFixed(2) };
+  };
+
+  function fit() {
+    const r = stage.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    camera.aspect = 1; camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', fit);
+
+  // simple drag-orbit (no OrbitControls dependency)
+  let dragging = false, lastX = 0, lastY = 0;
+  renderer.domElement.addEventListener('pointerdown', e => { dragging = true; camAuto = false; syncOrbitBtn(); lastX = e.clientX; lastY = e.clientY; });
+  addEventListener('pointermove', e => {
+    if (!dragging) return;
+    camAngle += (e.clientX - lastX) * .008;
+    camEl = Math.max(.18, Math.min(1.15, camEl + (e.clientY - lastY) * .004));
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  addEventListener('pointerup', () => { dragging = false; });
+
+  const orbitBtn = document.getElementById('btnOrbit');
+  function syncOrbitBtn() { orbitBtn.textContent = '🎥 Camera tự xoay: ' + (camAuto ? 'BẬT' : 'TẮT'); }
+  orbitBtn.onclick = () => { camAuto = !camAuto; syncOrbitBtn(); };
+  document.getElementById('btnReplay').onclick = () => { start = performance.now(); };
+  document.getElementById('btnSeed').onclick = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; makeBattle(); start = performance.now(); };
+
+  makeBattle(); fit();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
