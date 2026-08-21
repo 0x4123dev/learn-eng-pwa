@@ -11925,6 +11925,15 @@
 .nr-builder{position:relative;width:100%;height:100%;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:#b9e8f4;color:#29412f;box-shadow:none;overflow:hidden;isolation:isolate}
 .nr-builder,.nr-builder img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.nr-builder img{-webkit-user-drag:none}
 .nr-builder-world{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;touch-action:none;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(63,94,63,.35) transparent;background:radial-gradient(circle at 50% 35%,#eef7dd 0,#c9ebd0 48%,#a6d3c4 100%);cursor:grab}
+/* Fake landscape: iOS cannot lock orientation from a web app, so the whole
+   builder rotates 90deg — the child turns the device and the island fills the
+   wide way. Pan deltas are remapped in JS while this class is on. */
+.nr-builder.rotated{position:fixed;z-index:3600;top:0;left:0;width:100dvh;height:100dvw;margin:0;padding:0;border-radius:0;transform:rotate(90deg) translateY(-100%);transform-origin:top left;background:#c9ebd0}
+.nr-builder-rotate{position:absolute;z-index:34;right:max(12px,env(safe-area-inset-right));top:calc(200px + env(safe-area-inset-top));min-width:62px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:5px;border:2px solid rgba(255,255,255,.95);border-radius:15px;background:rgba(255,253,242,.95);color:#29412f;font-weight:950;font-size:12px;box-shadow:0 7px 20px rgba(51,68,38,.2);cursor:pointer;touch-action:manipulation}
+.nr-builder-rotate b{font-size:19px;line-height:1;font-weight:1000}
+.nr-builder-rotate.active{background:linear-gradient(145deg,#ffe89a,#ffc65b);border-color:#e8ad3b;color:#644211}
+.nr-builder.shop-open .nr-builder-rotate{opacity:0;pointer-events:none}
+@media(min-width:768px){.nr-builder-rotate{right:calc(22px + env(safe-area-inset-right))}}
 .nr-builder-world:active{cursor:grabbing}.nr-builder-map{position:relative;isolation:isolate;width:1180px;height:1180px;margin:0;overflow:hidden;background:#e8f0da;box-shadow:0 24px 70px rgba(44,71,48,.22);transform-origin:0 0}
 .nr-builder-map>.nr-board-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .nr-builder-map>.nr-equipped-castle{z-index:3;left:3%;top:1%;width:43%;height:38%;object-fit:contain;background:transparent!important;filter:none!important;box-shadow:none!important;mix-blend-mode:normal;pointer-events:none;-webkit-user-drag:none}

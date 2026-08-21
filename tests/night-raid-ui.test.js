@@ -91,6 +91,17 @@ suite('night raid: app integration',()=>{
     for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right','.nr-builder.shop-open .nr-builder-zoom'])assert.truthy(css.includes(token),token);
     assert.truthy(css.includes('.nr-builder-shop-fab{z-index:50}'));
   });
+  test('the builder offers a landscape rotate that never breaks panning',()=>{
+    // iOS cannot lock orientation from a web app, so NGANG rotates the whole
+    // builder 90deg in CSS; pan deltas are remapped so dragging still follows
+    // the finger, and the app nav hides while the sideways stage is up.
+    assert.truthy(ui.includes('nrRotateBuilder'));
+    assert.truthy(ui.includes('builderRotated'));
+    assert.truthy(css.includes('.nr-builder.rotated'));
+    assert.truthy(css.includes('rotate(90deg) translateY(-100%)'));
+    assert.truthy(ui.includes('viewport.scrollLeft=builderGesture.left-dy'),'rotated pan must swap axes');
+    assert.truthy(ui.includes('setNav(builderRotated)'),'the nav would cover the sideways stage');
+  });
   test('one TIẾN QUÂN on the scout screen goes straight into the fight',()=>{
     // The scout screen is a full-screen island (like the home builder) with a
     // single charge button; the battle screen has no second button and the
