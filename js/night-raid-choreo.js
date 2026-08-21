@@ -12,6 +12,14 @@ var NightRaidChoreo = (() => {
 
   const CASTLE = Object.freeze({ x:205, y:350 });
   const WALL_X = 295;                                       // west of this = at the castle wall
+  // The builder grid (.nr-free-grid: left 18%, top 25%, 64% square, 12 cells)
+  // projected onto the 800px battle board — towers stand exactly where the
+  // defender placed them at home instead of a synthetic strip by the castle.
+  const GRID = Object.freeze({ left:144, top:200, size:512, cells:12 });
+  const cellAnchor = (gx,gy) => ({
+    x: Math.round(GRID.left + (gx + .5) * GRID.size / GRID.cells),
+    y: Math.round(GRID.top + (gy + 1) * GRID.size / GRID.cells),
+  });
   const SPEED = Object.freeze({ pebble:340, water:520 });   // projectile px/s on the 800px board
   const APEX = Object.freeze({ pebble:.24, water:.07 });    // arc height per px of range
   const TOWER_COOLDOWN = Object.freeze({ pebble:1500, water:2100 });
@@ -79,10 +87,13 @@ var NightRaidChoreo = (() => {
         { t:arriveAt, x:meetX, y:meetY, state:'engage', ease:'inout' },
       ]});
     }
+    // The pet leads from a separate diagonal track. Keeping a readable gap
+    // from rank one prevents the dog and soldiers merging into one dragged
+    // bitmap on phone-sized canvases.
     if (pet) units.push({ kind:'pet', index:n, fallAt:null, staggerAt:[], keys:[
-      { t:0, x:518, y:512, state:'idle' },
-      { t:80, x:518, y:512, state:'march' },
-      { t:Math.min(engageStart, 2500), x:318, y:352, state:'engage', ease:'inout' },
+      { t:0, x:500, y:470, state:'idle' },
+      { t:80, x:500, y:470, state:'march' },
+      { t:Math.min(engageStart, 2450), x:300, y:322, state:'engage', ease:'inout' },
     ]});
 
     // --- casualties: squad only, pet always survives ------------------------
@@ -111,25 +122,25 @@ var NightRaidChoreo = (() => {
       // segment already reports the survivors as charging or fleeing.
       u.keys.push({ t:Math.round(engageEnd + rng() * 220), x:at.x, y:at.y, state:won ? 'charge' : 'flee' });
       if (won) {
-        const gx = u.kind === 'pet' ? CASTLE.x + 62 : CASTLE.x + 68 + (u.index % 3) * 20;
-        const gy = u.kind === 'pet' ? CASTLE.y + 4 : CASTLE.y + 14 + (u.index % 2) * 16;
+        const gx = u.kind === 'pet' ? CASTLE.x + 48 : CASTLE.x + 72 + (u.index % 3) * 20;
+        const gy = u.kind === 'pet' ? CASTLE.y - 20 : CASTLE.y + 16 + (u.index % 2) * 16;
         u.keys.push({ t:durationMs, x:gx, y:gy, state:'charge', ease:'in' });
       } else {
         u.keys.push({ t:Math.round(durationMs - 100 - rng() * 180), x:u.keys[0].x + 26, y:u.keys[0].y + 16, state:'flee', ease:'in' });
       }
     }
 
-    // --- defending towers: same board slots the renderer already uses -------
+    // --- defending towers: the defender's real home layout on the board -----
     const layoutCells = Rules.normalizeLayout(target && target.layout).cells
-      .filter(c => !Rules.defenseById(c.type).trap).slice(0, 7);
-    const towers = layoutCells.map((c, i) => {
-      const def = Rules.defenseById(c.type);
-      return { type:c.type, x:285 + (i % 3) * 54, y:318 + (i % 3) * 34 + Math.floor(i / 3) * 34,
-        ranged:!!def.ranged, kind:c.type === 'water-cannon' ? 'water' : 'pebble', fireAt:[] };
+      .filter(c => !Rules.defenseById(c.type).trap).slice(0, 10);
+    const towers = layoutCells.map(c => {
+      const def = Rules.defenseById(c.type), at = cellAnchor(c.gx, c.gy);
+      return { type:c.type, x:at.x, y:at.y, gx:c.gx, gy:c.gy,
+        ranged:!!def.ranged, kind:c.type === 'water-cannon' ? 'water' : 'pebble', fireAt:[], fallAt:null };
     });
     let shooters = towers.filter(t => t.ranged);
     if (!shooters.length) {
-      const archer = { type:'castle-archer', x:235, y:262, ranged:true, kind:'pebble', fireAt:[], virtual:true };
+      const archer = { type:'castle-archer', x:235, y:262, ranged:true, kind:'pebble', fireAt:[], fallAt:null, virtual:true };
       towers.push(archer); shooters = [archer];
     }
 
@@ -171,8 +182,18 @@ var NightRaidChoreo = (() => {
     });
     shots.sort((a,b) => a.launchAt - b.launchAt);
 
+    // --- a won raid physically breaks the base: towers topple one by one ----
+    if (won) {
+      const doomed = towers.filter(t => !t.virtual).slice()
+        .sort((a,b) => (a.x + a.y) - (b.x + b.y));
+      doomed.forEach((t, i) => {
+        t.fallAt = Math.min(durationMs - 260, Math.round(engageEnd + 380 + i * 300 + rng() * 200));
+      });
+    }
+
     // --- event feed for particles and screen shake --------------------------
     const events = [];
+    for (const t of towers) if (t.fallAt != null) events.push({ t:t.fallAt, type:'demolish', x:t.x, y:t.y - 30 });
     for (const s of shots) {
       events.push({ t:s.launchAt, type:'launch', x:s.from.x, y:s.from.y, kind:s.kind });
       events.push({ t:s.impactAt, type:'impact', x:s.to.x, y:s.to.y, kind:s.kind, lethal:s.lethal });

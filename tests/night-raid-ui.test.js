@@ -2,17 +2,17 @@ const { suite, test, assert } = require('./harness');
 const fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),css=read('css/styles.css'),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),sw=read('sw.js');
+const html=read('index.html'),css=read('css/styles.css'),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),phaser=read('js/night-raid-phaser.js'),sw=read('sw.js');
 
 suite('night raid: app integration',()=>{
-  test('one dedicated screen and four ordered scripts ship in the app shell',()=>{
+  test('one dedicated screen and five ordered Night Raid scripts ship in the app shell',()=>{
     assert.truthy(html.includes('id="nightRaidScreen"'));
-    const order=['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid.js'].map(x=>html.indexOf(x));
+    const order=['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','night-raid.js'].map(x=>html.indexOf(x));
     assert.truthy(order.every(n=>n>=0));
     assert.truthy(order.every((n,i)=>i===0||order[i-1]<n));
   });
   test('all Night Raid scripts work offline',()=>{
-    for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));
+    for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));
   });
   test('Arena exposes the game only through its feature-gated card',()=>{
     const arena=read('js/petbattle.js');
@@ -143,10 +143,13 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('<span>TIẾN QUÂN</span>'));
     assert.falsy(ui.includes('nrChargeButton'),'the battle screen must not ask again');
     assert.truthy(ui.includes("if(view==='battle'&&game&&game.charge)chargeArmy()"),'battle auto-charges');
-    // The fight happens IN PLACE on the scout canvas — no screen swap.
+    // The fight happens IN PLACE in the scout world — no screen swap. Phaser
+    // replaces only the preview canvas after the user commits to TIEN QUAN.
     const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.falsy(raidBlock.includes('r.innerHTML'),'startRaid must not rebuild the screen');
-    assert.truthy(raidBlock.includes("getElementById('nrScoutCanvas')"),'the scout canvas becomes the battlefield');
+    assert.truthy(raidBlock.includes("getElementById('nrScoutCanvas')"),'the scout canvas anchors the in-place swap');
+    assert.truthy(raidBlock.includes('canvas.replaceWith(phaserHost)'),'only the battle renderer is replaced');
+    assert.truthy(raidBlock.includes('new NightRaidPhaser.AutoBattle'),'TIEN QUAN uses the Phaser renderer');
     assert.truthy(ui.includes('data-nr-pop-host'),'the result popup needs a fixed host over the pannable world');
     assert.truthy(game.includes('class AutoBattle'));
     assert.truthy(game.includes('drawClashSpark'));
@@ -154,6 +157,38 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('target.attackerSoldiers'));
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
+  });
+  test('Phaser units walk with a real gait, planted footprints and battle audio',()=>{
+    // The torso stays stable while the leg crop swaps each half-step —
+    // the old side-to-side "cardboard wobble" must not come back.
+    assert.truthy(phaser.includes('setCrop'),'two-part stride sprite');
+    assert.truthy(phaser.includes('lower.flipX=swap?!flip:flip'),'legs must swap each half-step');
+    assert.falsy(phaser.includes('x=pose.x+stride'),'no side-to-side wobble slide');
+    assert.truthy(phaser.includes('paintTrail'),'planted footprints pass');
+    assert.truthy(/Math\.floor\(T\/STEP\)\*STEP/.test(phaser),'prints quantised to the step grid, not sliding with the sprite');
+    assert.truthy(phaser.includes("u.kind==='pet'"),'pet leaves paw prints, soldiers boot prints');
+    // Sound is synthesized (no assets), created only after the TIEN QUAN gesture.
+    assert.truthy(phaser.includes('AudioContext'),'synthesized battle sound');
+    for(const cue of ['warCry','launch(kind)','impactShot','demolish','breach','retreat','step()'])assert.truthy(phaser.includes(cue),cue);
+    assert.truthy(phaser.includes('this.reduce?null:new RaidAudio'),'reduced effects stay silent');
+    // Buildings break for real: towers tremble, tip over and land as rubble.
+    assert.truthy(phaser.includes('tw.fallAt'),'towers topple on the choreo schedule');
+    assert.truthy(phaser.includes("event.type==='demolish'"),'collapse bursts rubble and smoke');
+    // One shared depth space so units walk behind far buildings.
+    assert.truthy(phaser.includes('setDepth(tower.y)')||phaser.includes('setDepth(tw.y)'),'towers depth-sort by ground y');
+    // Choreo places towers from the defender's real 12x12 grid, matching the builder.
+    const choreo=read('js/night-raid-choreo.js');
+    assert.truthy(choreo.includes('cellAnchor'),'towers project from home grid cells');
+    assert.truthy(choreo.includes('left:144, top:200, size:512, cells:12'),'projection matches .nr-free-grid (18%/25%/64% of 800)');
+  });
+  test('Phaser is lazy, renderer-only and falls back without changing battle rules',()=>{
+    assert.falsy(html.includes('src="js/phaser.min.js"'),'the 1 MB engine must not block initial app load');
+    assert.truthy(phaser.includes("script.src='js/phaser.min.js'"));
+    assert.truthy(phaser.includes('NightRaidRules.resolveAutoBattle'));
+    assert.truthy(phaser.includes('NightRaidChoreo.build'));
+    assert.truthy(ui.includes("console.warn('Night Raid Phaser fallback'"));
+    assert.truthy(ui.includes('new NightRaidGame.AutoBattle(canvas,target,options)'),'Canvas fallback must remain');
+    assert.truthy(css.includes('.nr-phaser-battle'));
   });
   test('enemy DEF is a secret until the attack begins',()=>{
     // Scout overlays show only OUR army; the number first appears on the

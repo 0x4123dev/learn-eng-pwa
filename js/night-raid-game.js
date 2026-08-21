@@ -145,7 +145,7 @@ var NightRaidGame = (() => {
       // Towers wind up before each scripted shot and recoil after it.
       for(const tw of ch.towers){
         if(tw.virtual)continue;
-        const dead=won&&ch.breachAt!=null&&T>ch.breachAt+500;
+        const dead=tw.fallAt!=null?T>tw.fallAt:won&&ch.breachAt!=null&&T>ch.breachAt+500;
         let recoil=0,windup=0;
         for(const f of tw.fireAt){const d=T-f;if(d>=-160&&d<0)windup=Math.max(windup,1+d/160);else if(d>=0&&d<140)recoil=Math.max(recoil,1-d/140);}
         ctx.save();ctx.translate(tw.x+recoil*3,tw.y);if(windup)ctx.transform(1,0,0,1-windup*.06,0,0);

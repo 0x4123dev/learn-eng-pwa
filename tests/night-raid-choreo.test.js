@@ -118,6 +118,33 @@ suite('night raid choreography: deterministic battle script', () => {
     }
   });
 
+  test('towers stand exactly where the defender placed them on the home grid', () => {
+    // Same projection as the builder's .nr-free-grid on the 800px board:
+    // left 18%, top 25%, 64% square, 12 cells.
+    const s = buildOf(bigWin, 8, PET);
+    const cells = R.normalizeLayout(bigWin.target.layout).cells
+      .filter(c => !R.defenseById(c.type).trap).slice(0, 10);
+    const real = s.towers.filter(t => !t.virtual);
+    assert.equal(real.length, cells.length);
+    real.forEach((t, i) => {
+      assert.equal(t.x, Math.round(144 + (cells[i].gx + .5) * 512 / 12));
+      assert.equal(t.y, Math.round(200 + (cells[i].gy + 1) * 512 / 12));
+    });
+  });
+
+  test('a won raid breaks the base: every real tower topples before the end', () => {
+    const s = buildOf(bigWin, 8, PET);
+    const real = s.towers.filter(t => !t.virtual);
+    assert.truthy(real.length >= 1);
+    for (const t of real) {
+      assert.truthy(t.fallAt != null, t.type + ' must fall');
+      assert.inRange(t.fallAt, s.engageEnd, s.durationMs - 200);
+      assert.truthy(s.events.some(e => e.type === 'demolish' && e.t === t.fallAt), 'demolish event fires with the collapse');
+    }
+    const lost = buildOf(heavyLoss, 8, PET);
+    for (const t of lost.towers) assert.equal(t.fallAt, null);
+  });
+
   test('winning survivors charge the castle after the breach', () => {
     const s = buildOf(bigWin, 8, PET);
     for (const u of s.units.filter(u => u.fallAt == null)) {
