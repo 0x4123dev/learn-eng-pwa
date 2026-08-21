@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v393';
+const CACHE_NAME = 'flashlingo-v394';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -28,7 +28,7 @@ const AUDIO_CACHE = 'flashlingo-audio-v5';
 //
 // Every other word keeps the cheap cached path, which is the point of a
 // separate audio cache. Safe to empty whenever AUDIO_CACHE is next bumped.
-const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e'];
+const RE_RECORDED = ['japan', 'thailand', 'pe', 'p-e', 'birthday', 'jam'];
 const ASSETS = [
   '/',
   '/index.html',
