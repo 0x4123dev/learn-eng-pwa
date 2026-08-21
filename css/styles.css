@@ -11855,7 +11855,10 @@
    the way the big mobile games end a fight. */
 .nr-result-pop{position:absolute;inset:0;z-index:6;display:grid;place-items:center;padding:16px}
 .nr-pop-scrim{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(5,12,26,.16) 0%,rgba(5,12,26,.58) 100%);animation:nrPopFade .4s ease-out both}
-.nr-pop-card{position:relative;width:min(430px,94%);max-height:calc(100% - 30px);overflow-y:auto;padding:46px 18px 16px;border-radius:26px;background:linear-gradient(180deg,rgba(19,42,76,.97),rgba(11,26,51,.97));border:1px solid rgba(180,212,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);text-align:center;color:#fff;animation:nrPopIn .5s cubic-bezier(.34,1.56,.64,1) .05s both}
+.nr-pop-card{position:relative;width:min(430px,94%);border-radius:26px;background:linear-gradient(180deg,rgba(19,42,76,.97),rgba(11,26,51,.97));border:1px solid rgba(180,212,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);text-align:center;color:#fff;animation:nrPopIn .5s cubic-bezier(.34,1.56,.64,1) .05s both}
+/* Scrolling lives on the body, NOT the card: the banner hangs above the card
+   edge and an overflow on the card decapitated it. */
+.nr-pop-body{max-height:min(72dvh,560px);overflow-y:auto;overscroll-behavior:contain;padding:44px 18px 16px;border-radius:26px}
 .nr-result-pop .nr-pop-banner{position:absolute;top:-2px;left:50%;transform:translateX(-50%) translateY(-38%);padding:11px 28px;border-radius:17px;font-size:clamp(21px,5vw,29px);font-weight:1000;letter-spacing:.04em;white-space:nowrap;animation:nrBannerDrop .55s cubic-bezier(.34,1.56,.64,1) .12s both}
 .nr-result-pop.won .nr-pop-banner{background:linear-gradient(135deg,#ffd76a,#ff9333);color:#4a2404;box-shadow:0 10px 30px rgba(255,160,50,.45)}
 .nr-result-pop.lost .nr-pop-banner{background:linear-gradient(135deg,#8ca3c7,#54688a);color:#0d1930;box-shadow:0 10px 26px rgba(20,35,64,.5)}

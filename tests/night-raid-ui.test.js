@@ -30,7 +30,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('nr-result-pop'));
     assert.truthy(ui.includes('nr-pop-banner'));
     assert.truthy(ui.includes('renderResultPage'),'fallback page renderer must survive');
-    for(const token of ['nr-result-pop','nr-pop-scrim','nr-pop-card','nrBannerDrop','nrStarPop','nr-auto-command.hidden'])assert.truthy(css.includes(token),token);
+    for(const token of ['nr-result-pop','nr-pop-scrim','nr-pop-card','nr-pop-body','nrBannerDrop','nrStarPop','nr-auto-command.hidden'])assert.truthy(css.includes(token),token);
+    // The banner hangs above the card edge, so the card itself must never
+    // scroll-clip — the overflow belongs to .nr-pop-body.
+    assert.truthy(ui.includes('nr-pop-body'));
+    const cardRule=css.slice(css.indexOf('.nr-pop-card{'),css.indexOf('}',css.indexOf('.nr-pop-card{')));
+    assert.falsy(/overflow/.test(cardRule),'.nr-pop-card must not clip its own banner');
+    const bodyRule=css.slice(css.indexOf('.nr-pop-body{'),css.indexOf('}',css.indexOf('.nr-pop-body{')));
+    assert.truthy(/overflow-y:auto/.test(bodyRule),'long content scrolls inside the body instead');
   });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
