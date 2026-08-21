@@ -83,10 +83,51 @@ var NightRaidGame = (() => {
     destroy(){this.running=false;cancelAnimationFrame(this.raf);}
     notify(){if(this.options.onUpdate)this.options.onUpdate(this.state,null,null);}
     frame(now){if(!this.running)return;const elapsed=Math.min(this.duration,now-this.startedAt);this.state.timeMs=elapsed;const p=elapsed/this.duration;this.paint(p);if(elapsed>=this.duration){this.running=false;this.finished=true;this.state.status=this.result.status;this.state.timeMs=this.result.durationMs;this.notify();if(this.options.onFinish)this.options.onFinish({...this.state},[]);return;}if(!document.hidden)this.raf=requestAnimationFrame(this.boundFrame);else setTimeout(()=>this.frame(performance.now()),120);if(elapsed%220<18)this.notify();}
-    drawSquadMember(index,x,y,size,alpha=1){const ctx=this.ctx,img=this.assets.squad;if(!img)return;const boxes=[[0,300],[285,675],[670,1065],[1060,1425],[1415,1770],[1760,2172]],box=boxes[index%boxes.length],sx=box[0],sw=box[1]-box[0],h=size,w=h*sw/img.height;ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(-.03);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,-h*.86,w,h);ctx.restore();}
-    drawPetLeader(x,y,size,alpha=1,showBadge=true){const ctx=this.ctx,img=this.assets.pet,pet=this.options.pet;if(!img||!pet)return;const sw=img.width/5,sx=Math.max(0,Math.min(4,pet.cell||0))*sw,h=size,w=h*sw/img.height;ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(-.035);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,-h*.82,w,h);ctx.restore();if(!showBadge)return;ctx.save();ctx.globalAlpha=alpha;ctx.textAlign='center';ctx.font='900 13px system-ui';const name=String(pet.name||pet.breed||'Dog').slice(0,12),labelW=Math.max(52,ctx.measureText(name).width+16);ctx.fillStyle='rgba(42,31,50,.88)';NightRaidArt.roundRect(ctx,x-labelW/2,y+4,labelW,22,11);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(name,x,y+19);ctx.font='950 11px system-ui';ctx.fillStyle='#f48b2d';NightRaidArt.roundRect(ctx,x+labelW/2-24,y-53,42,20,10);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('LV '+pet.level,x+labelW/2-3,y-39);ctx.restore();}
+    drawStepContact(x,y,phase,pet,alpha=1){const ctx=this.ctx,lead=Math.sin(phase),rear=-lead;
+      ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle='rgba(45,35,25,.2)';ctx.beginPath();ctx.ellipse(x,y+2,pet?22:18,pet?6:5,0,0,Math.PI*2);ctx.fill();
+      const foot=(dx,dy,lift,size)=>{ctx.globalAlpha=alpha*(.24+.62*Math.max(0,1-lift));ctx.fillStyle='#352a22';ctx.beginPath();ctx.ellipse(x+dx,y+dy,size,size*.42,-.18,0,Math.PI*2);ctx.fill();};
+      if(pet){foot(-12,-1,Math.max(0,lead),4.2);foot(11,1,Math.max(0,rear),4.2);foot(-5,3,Math.max(0,rear),3.7);foot(16,3,Math.max(0,lead),3.7);}
+      else{foot(-8,1,Math.max(0,lead),5);foot(8,1,Math.max(0,rear),5);}
+      ctx.restore();
+    }
+    // A real two-frame gait from one authored sprite: the torso remains
+    // stable while the lower-body crop swaps left/right every half-step.
+    // This reads as changing legs instead of translating a cardboard cutout.
+    drawStrideSprite(img,sx,sw,h,w,top,step,moving){const ctx=this.ctx,split=top+h*.67,phase=Math.sin(step),swap=moving&&phase<0;
+      ctx.save();ctx.beginPath();ctx.rect(-w*.55,top-2,w*1.1,split-top+8);ctx.clip();ctx.drawImage(img,sx,0,sw,img.height,-w*.5,top,w,h);ctx.restore();
+      ctx.save();ctx.beginPath();ctx.rect(-w*.58,split-5,w*1.16,h-(split-top)+13);ctx.clip();if(swap)ctx.scale(-1,1);ctx.drawImage(img,sx,0,sw,img.height,-w*.5,top,w,h);ctx.restore();
+    }
+    drawSquadMember(index,x,y,size,alpha=1,step=0,moving=false,motion=1){const ctx=this.ctx,img=this.assets.squad;if(!img)return;const boxes=[[0,300],[285,675],[670,1065],[1060,1425],[1415,1770],[1760,2172]],box=boxes[index%boxes.length],sx=box[0],sw=box[1]-box[0],h=size,w=h*sw/img.height,stride=moving?Math.sin(step)*motion:0,bounce=moving?Math.abs(stride)*8:0;this.drawStepContact(x,y,step,false,alpha);ctx.save();ctx.globalAlpha=alpha;ctx.translate(x+stride*4.2,y-bounce);ctx.rotate(-.03+stride*.075);if(moving)ctx.scale(1+Math.abs(stride)*.035,1-Math.abs(stride)*.05);this.drawStrideSprite(img,sx,sw,h,w,-h*.86,step,moving);ctx.restore();}
+    drawPetLeader(x,y,size,alpha=1,showBadge=true,step=0,moving=false,motion=1){const ctx=this.ctx,img=this.assets.pet,pet=this.options.pet;if(!img||!pet)return;const sw=img.width/5,sx=Math.max(0,Math.min(4,pet.cell||0))*sw,h=size,w=h*sw/img.height,stride=moving?Math.sin(step)*motion:0,bounce=moving?Math.abs(stride)*10:0;this.drawStepContact(x,y,step,true,alpha);ctx.save();ctx.globalAlpha=alpha;ctx.translate(x+stride*5,y-bounce);ctx.rotate(-.035+stride*.085);if(moving)ctx.scale(1+Math.abs(stride)*.04,1-Math.abs(stride)*.055);this.drawStrideSprite(img,sx,sw,h,w,-h*.82,step,moving);ctx.restore();if(!showBadge)return;ctx.save();ctx.globalAlpha=alpha;ctx.textAlign='center';ctx.font='900 13px system-ui';const name=String(pet.name||pet.breed||'Dog').slice(0,12),labelW=Math.max(52,ctx.measureText(name).width+16);ctx.fillStyle='rgba(42,31,50,.88)';NightRaidArt.roundRect(ctx,x-labelW/2,y+4,labelW,22,11);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(name,x,y+19);ctx.font='950 11px system-ui';ctx.fillStyle='#f48b2d';NightRaidArt.roundRect(ctx,x+labelW/2-24,y-53,42,20,10);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('LV '+pet.level,x+labelW/2-3,y-39);ctx.restore();}
     // Renders the NightRaidChoreo script at one point in time. Projectiles
     // fly with real travel time and only explode at their scripted impact.
+    // Footprints and kicked-up dust, replayed from the same script the units
+    // walk: each past step instant is quantised to a fixed 150ms grid, so the
+    // prints stay PLANTED on the ground and fade where the foot fell instead
+    // of sliding along with the sprite. Pure function of T — seeking a replay
+    // shows the same trail.
+    drawTrail(ctx,u,T){const C=Choreo,STEP=150,base=Math.floor(T/STEP)*STEP;
+      for(let k=0;k<8;k++){
+        const tq=base-k*STEP;if(tq<=0)continue;
+        const s=C.unitAt(u,tq);if(!s.moving)continue;
+        const ahead=C.unitAt(u,tq+80),dx=ahead.x-s.x,dy=ahead.y-s.y,len=Math.hypot(dx,dy)||1;
+        const fx=dx/len,fy=dy/len,nx=-fy,ny=fx,n=Math.round(tq/STEP),side=n%2?1:-1,age=T-tq;
+        const rush=s.state==='charge'||s.state==='flee'?1.35:1;
+        const fa=Math.max(0,1-age/1200);
+        if(fa>0){const px=s.x+nx*side*5,py=s.y+ny*side*2.5+2;
+          ctx.save();ctx.translate(px,py);ctx.rotate(Math.atan2(dy,dx));ctx.globalAlpha=fa*.3;ctx.fillStyle='#4a3c2a';
+          if(u.kind==='pet'){ctx.beginPath();ctx.ellipse(0,0,2.7,2,0,0,Math.PI*2);ctx.fill();for(let t=-1;t<=1;t++){ctx.beginPath();ctx.arc(3.1,t*1.9,.95,0,Math.PI*2);ctx.fill();}}
+          else{ctx.beginPath();ctx.ellipse(0,0,3.6,1.7,0,0,Math.PI*2);ctx.fill();}
+          ctx.restore();}
+        const da=Math.max(0,1-age/700);
+        if(da>0&&k<5){const bx=s.x-fx*(11+age*.022),by=s.y-2-age*.012,r=(3.2+age*.017)*rush;
+          ctx.globalAlpha=da*.24*rush;ctx.fillStyle='#e8dcc2';
+          ctx.beginPath();ctx.arc(bx,by,r,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(bx-fx*4.5,by-2.5,r*.68,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(bx+nx*side*3,by-1,r*.5,0,Math.PI*2);ctx.fill();
+          ctx.globalAlpha=1;}
+      }
+    }
     paint(progress){const ctx=this.ctx,S=this.size,ch=this.choreo,C=Choreo;
       const T=Math.max(0,Math.min(1,progress))*ch.durationMs,now=T;
       ctx.clearRect(0,0,S,S);
@@ -111,26 +152,29 @@ var NightRaidGame = (() => {
         NightRaidArt.drawDefense(ctx,{type:tw.type,hp:100,maxHp:100,dead,lane:0},0,0,now);
         ctx.restore();
       }
+      // Trails go down first so every unit walks ON its own footprints.
+      if(!this.reduce)for(const u of ch.units)this.drawTrail(ctx,u,T);
       const easeOut=p=>1-(1-p)*(1-p);
-      const actors=[];
+      const actors=[],motion=this.reduce?.38:1;
       for(const u of ch.units){
         const s=C.unitAt(u,T);
         let x=s.x,y=s.y,rot=0,alpha=1,flash=0;
         if(s.state==='idle')x+=Math.sin(now*.002+u.index*1.3)*1.2;
-        if(s.moving){const gait=Math.sin((x+y)*.14+u.index*2.1);y-=Math.abs(gait)*3;rot=gait*.05;}
+        const step=now*(this.reduce?.009:.022)+u.index*1.7;
+        if(s.moving){const gait=Math.sin(step);x+=gait*1.4;rot=gait*.025;}
         else if(s.state==='engage'&&T>ch.engageStart){const lunge=Math.max(0,Math.sin(now*.005+u.index*1.9));x-=lunge*7;rot=-lunge*.06;}
         if(s.state==='fallen'){const fp=easeOut(Math.min(1,(T-u.fallAt)/420));rot=(u.index%2?1:-1)*1.35*fp;y+=fp*8;alpha=1-.25*fp;}
         for(const st of u.staggerAt){const d=T-st;if(d>=0&&d<180){x+=Math.sin(d*.25)*3;flash=Math.max(flash,1-d/180);}}
-        actors.push({u,x,y,rot,alpha,flash,facing:s.facing,state:s.state});
+        actors.push({u,x,y,rot,alpha,flash,facing:s.facing,state:s.state,moving:s.moving,step});
       }
       actors.sort((a,b)=>(a.state==='fallen'?-900:0)+a.y-((b.state==='fallen'?-900:0)+b.y));
       for(const a of actors){
         ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.rot);if(a.facing===1)ctx.scale(-1,1);
-        if(a.u.kind==='pet')this.drawPetLeader(0,0,155,a.alpha,a.facing===-1&&a.state!=='fallen');
-        else this.drawSquadMember(a.u.index%6,0,0,128,a.alpha);
+        if(a.u.kind==='pet')this.drawPetLeader(0,0,145,a.alpha,a.facing===-1&&a.state!=='fallen',a.step,a.moving,motion);
+        else this.drawSquadMember(a.u.index%6,0,0,122,a.alpha,a.step,a.moving,motion);
         if(a.flash&&!this.reduce){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a.flash*.45;ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-58,24,50,0,0,Math.PI*2);ctx.fill();}
         ctx.restore();
-        if(!this.reduce&&(a.state==='march'||a.state==='charge'||a.state==='flee')){const ph=((a.x*.05+a.u.index*3.7)%1+1)%1;ctx.globalAlpha=.15;ctx.fillStyle='#e7dcc0';ctx.beginPath();ctx.arc(a.x+(a.facing===1?-16:16),a.y-2,3+ph*4,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+        if(!this.reduce&&a.moving){const beat=(Math.sin(a.step)+1)/2;if(beat>.82){ctx.globalAlpha=.1+(beat-.82)*.8;ctx.fillStyle='#e7dcc0';ctx.beginPath();ctx.arc(a.x+(a.facing===1?-18:18),a.y-1,4+(beat-.82)*18,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}}
       }
       for(const s of ch.shots){
         if(T<s.launchAt)continue;

@@ -104,6 +104,20 @@ suite('night raid choreography: deterministic battle script', () => {
     }
   });
 
+  test('pet leads on a visibly separate track from the first soldier rank', () => {
+    const s = buildOf(bigWin, 8, PET);
+    const pet = s.units.find(u => u.kind === 'pet');
+    const squad = s.units.filter(u => u.kind === 'squad');
+    for (const t of [0, 1200, 2400, 3300]) {
+      const dog = C.unitAt(pet, t);
+      const nearest = Math.min(...squad.map(u => {
+        const soldier = C.unitAt(u, t);
+        return Math.hypot(dog.x - soldier.x, dog.y - soldier.y);
+      }));
+      assert.truthy(nearest >= 42, 'pet/soldier gap at '+t+'ms was '+nearest);
+    }
+  });
+
   test('winning survivors charge the castle after the breach', () => {
     const s = buildOf(bigWin, 8, PET);
     for (const u of s.units.filter(u => u.fallAt == null)) {
@@ -131,5 +145,14 @@ suite('night raid choreography: app integration', () => {
     assert.truthy(game.includes('NightRaidChoreo'));
     assert.truthy(game.includes('class AutoBattle'));
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
+  });
+  test('marching units leave planted footprints and kicked-up dust', () => {
+    // The trail is sampled from the same keyframes the units walk, quantised
+    // to a fixed step grid so prints stay where the foot fell and fade there.
+    const game = read('js/night-raid-game.js');
+    assert.truthy(game.includes('drawTrail'), 'trail pass missing');
+    assert.truthy(/Math\.floor\(T\/STEP\)\*STEP/.test(game), 'steps must be quantised, not slide with the sprite');
+    assert.truthy(game.includes("u.kind==='pet'"), 'the pet leaves paw prints, soldiers leave boot prints');
+    assert.truthy(game.includes('this.drawTrail(ctx,u,T)'));
   });
 });
