@@ -58,7 +58,11 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('Chó bảo vệ khu'));
   });
   test('builder supports app-level pinch zoom, visible shop and free item repositioning',()=>{
-    for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','Math.max(.4,Math.min(1.65','zoom 40–165%'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm 2 ngón thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    // The zoom floor is dynamic: a pinch can never shrink the island smaller
+    // than the viewport, which used to strand it in a corner of empty green.
+    assert.truthy(ui.includes('Math.max(viewport.clientWidth,viewport.clientHeight)/base'),'min zoom must cover the viewport');
+    assert.truthy(ui.includes('setBuilderZoom(builderZoom)'),'persisted zoom must be re-clamped on open and rotation');
     assert.truthy(ui.includes("pointerdown=\"nrBeginPlacedDrag"));
     assert.truthy(css.includes('top:calc(78px + env(safe-area-inset-top))'));
   });
