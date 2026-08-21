@@ -63,18 +63,18 @@ function sample(ctx, n) {
 const typedCount = (qs) => qs.filter(q => q.type === 'text').length;
 
 suite('word form: the typed/mcq mix is built, not hoped for', () => {
-    test('a 10-question practice is always 2 typed + 8 multiple-choice', () => {
+    test('a 10-question practice is always 3 typed + 7 multiple-choice', () => {
         const ctx = makeEnv();
         const counts = sample(ctx, 10).map(typedCount);
-        assert.equal(Math.min(...counts), 2, 'a practice came up with fewer than 2 typed');
-        assert.equal(Math.max(...counts), 2, 'a practice came up with more than 2 typed');
+        assert.equal(Math.min(...counts), 3, 'a practice came up with fewer than 3 typed');
+        assert.equal(Math.max(...counts), 3, 'a practice came up with more than 3 typed');
     });
 
-    test('a 20-question practice is always 4 typed + 16 multiple-choice', () => {
+    test('a 20-question practice is always 6 typed + 14 multiple-choice', () => {
         const ctx = makeEnv();
         const counts = sample(ctx, 20).map(typedCount);
-        assert.equal(Math.min(...counts), 4);
-        assert.equal(Math.max(...counts), 4);
+        assert.equal(Math.min(...counts), 6);
+        assert.equal(Math.max(...counts), 6);
     });
 
     test('no practice can ever contain zero typing', () => {
@@ -88,10 +88,10 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
 
     test('the ratio is one constant, so both sizes stay in step', () => {
         const ctx = makeEnv();
-        assert.equal(ctx.SHARE, 0.2);
-        assert.equal(ctx.target(10, 100), 2);
-        assert.equal(ctx.target(20, 100), 4);
-        assert.equal(ctx.target(40, 100), 8);
+        assert.equal(ctx.SHARE, 0.3);
+        assert.equal(ctx.target(10, 100), 3);
+        assert.equal(ctx.target(20, 100), 6);
+        assert.equal(ctx.target(40, 100), 12);
     });
 
     test('it never asks for more typed questions than the bank holds', () => {
@@ -99,7 +99,7 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
         const ctx = makeEnv();
         assert.equal(ctx.target(20, 3), 3, 'capped at what exists');
         assert.equal(ctx.target(10, 0), 0, 'an empty typed pool must not wedge the draw');
-        assert.equal(ctx.target(1, 100), 0, 'a single-question practice cannot be 20% typed');
+        assert.equal(ctx.target(1, 100), 0, 'a single-question practice cannot be 30% typed');
     });
 
     test('practices are still the right size, with no repeats', () => {
@@ -129,9 +129,10 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
         const ctx = makeEnv();
         const pos = new Array(10).fill(0);
         for (const qs of sample(ctx, 10)) qs.forEach((q, k) => { if (q.type === 'text') pos[k]++; });
-        const share = pos.map(p => p / (RUNS * 2));
+        // 3 typed across 10 slots: a fair position is typed 30% of the time.
+        const share = pos.map(p => p / RUNS);
         for (let k = 0; k < 10; k++) {
-            assert.truthy(share[k] > 0.04 && share[k] < 0.18,
+            assert.truthy(share[k] > 0.15 && share[k] < 0.45,
                 `position ${k + 1} holds ${(share[k] * 100).toFixed(1)}% of typed questions — they are clustering`);
         }
     });

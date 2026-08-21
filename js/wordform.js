@@ -372,8 +372,8 @@ function setWfHistoryFilter(tier) { _wfHistoryFilter = tier; renderWordformHome(
 // type at all.
 //
 // Every practice is therefore BUILT to a fixed ratio rather than sampled and
-// hoped over: 2 typed in 10, 4 in 20.
-const WF_TYPED_SHARE = 0.2;
+// hoped over: 3 typed in 10, 6 in 20.
+const WF_TYPED_SHARE = 0.3;
 
 // How many of an n-question practice must be typed. Never more than the bank
 // holds, and never zero once there is room for one.
@@ -732,6 +732,39 @@ function wfUnderstandCardHTML(fu) {
     </div>`;
 }
 
+function wfSkillSummaries(st) {
+  const skillMap = {};
+  const add = (key, label, ok, ref) => {
+    const row = skillMap[key] || (skillMap[key] = {
+      skillKey: key, skillLabel: label, attempts: 0, correct: 0,
+      wrong: 0, skipped: 0, wrongRefs: []
+    });
+    row.attempts++;
+    if (ok === null) row.skipped++;
+    else if (ok) row.correct++;
+    else {
+      row.wrong++;
+      if (ref && row.wrongRefs.length < 20) row.wrongRefs.push(String(ref));
+    }
+  };
+  st.questions.forEach((q, i) => {
+    const answer = st.answers[i];
+    if (q.followup) {
+      const labels = { m: 'Hiểu nghĩa của từ', r: 'Chọn đúng loại từ', neg: 'Tiền tố phủ định' };
+      const keys = { m: 'meaning', r: 'grammar.reason', neg: 'negative.prefix' };
+      wfFollowParts(q).forEach(part => add('wordform.' + keys[part], labels[part],
+        answer ? answer[part] === q[part].correct : null, q.baseId));
+      return;
+    }
+    const cat = String(q.cat || 'general').normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '') || 'general';
+    add('wordform.form.' + cat, q.cat ? ('Biến đổi · ' + q.cat) : 'Chọn dạng từ',
+      answer ? !!answer.isCorrect : null, q.id);
+  });
+  return Object.keys(skillMap).map(k => skillMap[k]);
+}
+
 function finishWordformQuiz() {
   const st = _wfQuiz;
   if (!st) return;
@@ -776,7 +809,10 @@ function finishWordformQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  saveWordformSession({ id: 'wf-' + date, date, score, total, wrong, fu });
+  saveWordformSession({
+    id: 'wf-' + date, date, score, total, wrong, fu,
+    skills: wfSkillSummaries(st)
+  });
 
   // Owe every missed question back. Recorded after the coins are banked, so
   // getting something wrong never feels like it took away what was just
