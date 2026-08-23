@@ -39,6 +39,21 @@ suite('night raid: app integration',()=>{
     const bodyRule=css.slice(css.indexOf('.nr-pop-body{'),css.indexOf('}',css.indexOf('.nr-pop-body{')));
     assert.truthy(/overflow-y:auto/.test(bodyRule),'long content scrolls inside the body instead');
   });
+  test('a sealed castle shows a live countdown everywhere it can be met',()=>{
+    // The child must never meet a castle that silently refuses to be attacked:
+    // wherever a sealed home appears, the same chip says when to come back.
+    for(const token of ['nr-lock-chip','data-nr-lock-until','data-nr-lock-time'])assert.truthy(ui.includes(token),token);
+    assert.truthy(ui.includes('function lockChip('),'one chip renderer, three screens');
+    assert.truthy(ui.includes('updateLockTimers()'),'the chips tick on the existing one-second beat');
+    assert.truthy(ui.includes("lockChip(homeLockedUntil"),'my own home shows how long it stays protected');
+    assert.truthy(ui.includes("lockChip(t.lockedUntil"),'each target card carries its own clock');
+    assert.truthy(ui.includes("lockChip(target.lockedUntil"),'the scout screen replaces TIẾN QUÂN with the clock');
+    assert.truthy(ui.includes("id=\"nrStartRaid\" ${locked?'disabled hidden':''}"),'a sealed castle cannot be charged');
+    assert.truthy(ui.includes('start.data.locked'),'a server-side seal is reported, not swallowed');
+    // When the clock runs out the castle is handed back without a reload.
+    assert.truthy(ui.includes("fab.disabled=false;fab.hidden=false"),'expiry re-arms the charge button');
+    for(const rule of ['.nr-lock-chip','.nr-target-card.locked'])assert.truthy(css.includes(rule),rule);
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));

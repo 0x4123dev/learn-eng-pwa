@@ -12024,6 +12024,24 @@
 /* Scout/battle stage: the opponent board IS the pannable world, edge to edge. */
 .nr-scout-map{background:#0b1a2e}
 .nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* `hidden` alone loses to .nr-home-fab's own display:flex, so a sealed
+   castle kept showing a live-looking TIẾN QUÂN button. */
+.nr-home-fab[hidden]{display:none}
+.nr-lock-chip{z-index:40;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:2px solid rgba(126,222,255,.5);border-radius:999px;background:rgba(6,22,42,.92);color:#dff2ff;box-shadow:0 8px 22px rgba(3,12,26,.4);white-space:nowrap;pointer-events:none}
+.nr-lock-chip svg{width:19px;height:19px;flex:0 0 auto;fill:none;stroke:#7fe2ff;stroke-width:2}
+.nr-lock-chip small{display:block;font-size:9px;font-weight:950;letter-spacing:.07em;color:#9dc4e2}
+.nr-lock-chip b{display:block;font-size:17px;font-weight:950;line-height:1.15;font-variant-numeric:tabular-nums;color:#fff}
+.nr-target-card .nr-lock-chip{position:absolute;z-index:5;left:14px;top:14px;padding:6px 11px;gap:6px}
+.nr-target-card .nr-lock-chip b{font-size:14px}
+.nr-target-card.locked{opacity:.72}
+.nr-target-card.locked .nr-target-art{filter:grayscale(.55)}
+.nr-target-card.locked .nr-target-go{color:#7f97b3}
+.nr-lock-chip.scout{position:static;padding:11px 18px}
+.nr-lock-chip.home{position:absolute;z-index:40;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100% - 24px)}
+@media(max-width:700px){.nr-lock-chip.home{bottom:calc(84px + env(safe-area-inset-bottom))}.nr-lock-chip b{font-size:15px}}
+.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:#dcefc8;touch-action:none}
+.nr-phaser-battle canvas{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain;filter:none!important;transform:none!important}
+.nr-phaser-battle:focus-visible{outline:4px solid #fff0a7;outline-offset:-6px}
 .nr-scout-stage .nr-pop-host{position:absolute;inset:0;z-index:46;pointer-events:none;display:grid}
 .nr-scout-stage .nr-pop-host .nr-result-pop{pointer-events:auto;position:absolute;inset:0}
 .nr-scout-name-pill{position:absolute;z-index:30;left:50%;top:calc(150px + env(safe-area-inset-top));transform:translateX(-50%);max-width:calc(100% - 24px);display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:rgba(5,14,28,.78);color:#e7f1ff;font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
