@@ -372,8 +372,10 @@ function setWfHistoryFilter(tier) { _wfHistoryFilter = tier; renderWordformHome(
 // type at all.
 //
 // Every practice is therefore BUILT to a fixed ratio rather than sampled and
-// hoped over: 3 typed in 10, 6 in 20.
-const WF_TYPED_SHARE = 0.3;
+// hoped over. Raised from 0.3 to a straight half (2026-08-23): at 3-in-10 a
+// practice was still mostly recognition, and producing the form is the skill
+// the tab exists to train. Now: 5 typed in 10, 10 in 20.
+const WF_TYPED_SHARE = 0.5;
 
 // How many of an n-question practice must be typed. Never more than the bank
 // holds, and never zero once there is room for one.
