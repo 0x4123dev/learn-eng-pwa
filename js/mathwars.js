@@ -18,7 +18,12 @@ const WARS_QUESTIONS = 10;
 // two minutes ended rounds with questions unseen. Ten questions in five
 // minutes is thirty seconds each — room to work it out, still a race.
 const WARS_SECONDS = 300;
-const WARS_MAX = 99;                 // hàng chục: nothing above this, anywhere
+const WARS_MAX = 99;                 // hàng chục: trần của thang Math Wars
+// The wars ladder stops at 99, but Đấu Toán needs headroom above it to
+// handicap two children who both reached the top rung. Only a fight ever
+// passes a max above WARS_MAX — every wars call site gets its ceiling from
+// warsLevelMax(), which is still capped at 99, so wars rounds are unchanged.
+const WARS_HARD_MAX = 199;
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
 const WARS_HISTORY_CAP = 300;
 
@@ -101,7 +106,7 @@ function _warsInt(rand, lo, hi) { return lo + Math.floor(rand() * (hi - lo + 1))
 // they have not been taught to hold, and never one above the bậc they are on.
 function warsBuild(op, rand, max) {
   const r = rand || Math.random;
-  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_HARD_MAX, Math.floor(max || warsMax())));
   let a, b, ans;
   if (op === '+') {
     a = _warsInt(r, 2, hi - 2);
@@ -112,11 +117,11 @@ function warsBuild(op, rand, max) {
     b = _warsInt(r, 2, a - 1);             // hiệu luôn dương
     ans = a - b;
   } else if (op === '×') {
-    b = _warsInt(r, 2, 9);
+    b = _warsInt(r, 2, hi > WARS_MAX ? 12 : 9);
     a = _warsInt(r, 2, Math.max(2, Math.floor(hi / b)));
     ans = a * b;
   } else {                                  // ':' — chia hết, không dư
-    b = _warsInt(r, 2, 9);
+    b = _warsInt(r, 2, hi > WARS_MAX ? 12 : 9);
     ans = _warsInt(r, 2, Math.max(2, Math.floor(hi / b)));
     a = b * ans;                            // số bị chia dựng ngược từ thương
   }
@@ -128,7 +133,7 @@ function warsBuild(op, rand, max) {
 // range, never a repeat, never the right answer twice.
 function warsDistractors(q, rand, max) {
   const r = rand || Math.random;
-  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_HARD_MAX, Math.floor(max || warsMax())));
   const swap = (n) => (n >= 10 && n <= 99) ? (n % 10) * 10 + Math.floor(n / 10) : null;
   const pool = [
     q.answer + 1, q.answer - 1, q.answer + 2, q.answer - 2,
@@ -165,7 +170,7 @@ function warsDistractors(q, rand, max) {
 
 function warsQuestion(rand, max) {
   const r = rand || Math.random;
-  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_MAX, Math.floor(max || warsMax())));
+  const hi = Math.max(WARS_LEVEL_BASE - 1, Math.min(WARS_HARD_MAX, Math.floor(max || warsMax())));
   const ops = ['+', '−', '×', ':'];
   const op = ops[_warsInt(r, 0, ops.length - 1)];
   const q = warsBuild(op, r, hi);
@@ -355,6 +360,25 @@ function finishWars(timedOut) {
     appState.coins = (appState.coins || 0) + coinsEarned;
   }
 
+  const opLabels = { '+': 'Phép cộng', '−': 'Phép trừ', '×': 'Phép nhân', ':': 'Phép chia' };
+  const opKeys = { '+': 'add', '−': 'subtract', '×': 'multiply', ':': 'divide' };
+  const skillMap = {};
+  st.questions.forEach((q, i) => {
+    const key = 'mathwars.' + (opKeys[q.op] || 'other');
+    const row = skillMap[key] || (skillMap[key] = {
+      skillKey: key, skillLabel: opLabels[q.op] || 'Phép tính khác',
+      attempts: 0, correct: 0, wrong: 0, skipped: 0, wrongRefs: []
+    });
+    row.attempts++;
+    const answer = st.answers[i];
+    if (!answer) row.skipped++;
+    else if (answer.ok) row.correct++;
+    else {
+      row.wrong++;
+      if (row.wrongRefs.length < 20) row.wrongRefs.push(q.q);
+    }
+  });
+
   const run = {
     date: Date.now(),
     total: st.questions.length,
@@ -369,6 +393,7 @@ function finishWars(timedOut) {
     // can be read against the bậc it was scored at.
     level: (st.level || 0) + 1,
     max: st.max || WARS_MAX,
+    skills: Object.keys(skillMap).map(k => skillMap[k]),
   };
   warsSaveRun(run);
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
@@ -556,7 +581,7 @@ function renderWarsHomeHTML() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_COINS_PER_CORRECT,
+    WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_HARD_MAX, WARS_COINS_PER_CORRECT,
     WARS_LEVEL_BASE, WARS_LEVEL_STEP, WARS_LEVEL_UP_STREAK, WARS_LEVELS,
     warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
     warsBuild, warsDistractors, warsQuestion, warsQuestions,

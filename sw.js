@@ -71,6 +71,7 @@ const ASSETS = [
   '/assets/math-exams/hk1-5-page1.jpg',
   '/assets/math-exams/hk1-5-page2.jpg',
   '/js/mathwars.js',
+  '/js/math-fight-rules.js',
   '/js/math.js',
   '/js/math-board.js',
   '/js/tapwords.js',
