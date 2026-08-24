@@ -94,12 +94,18 @@ suite('drift: the damage clamp', () => {
     });
 
     test('the clamp multiplier matches the client maximum', () => {
-        const m = turnSrc.match(/\* ([\d.]+)\);/);
+        const m = turnSrc.match(/\* scale \* ([\d.]+)\)\)/);
         assert.truthy(m, 'direct-hit multiplier not found in turn.js');
         // maxTurnDamage(shots, level) on the client uses the same 1.5.
         const expected = C.maxTurnDamage(1, 100) / Math.ceil(C.shotDamage(100));
         assert.truthy(Math.abs(+m[1] - 1.5) < 1e-9, `server multiplier ${m[1]} is not 1.5`);
         assert.truthy(expected > 1, 'client maxTurnDamage should exceed a single plain hit');
+    });
+
+    test('v6 long-duel damage is enforced by the server, not trusted from the phone', () => {
+        assert.truthy(turnSrc.includes('b.field_version'), 'the clamp must read the battle\'s snapshotted rules');
+        assert.truthy(turnSrc.includes('modern ? 0.4 : 1'), 'the server must share the v6 damage scale');
+        assert.truthy(turnSrc.includes('Math.min(85, volley)'), 'one reported volley must never erase fresh HP');
     });
 });
 
@@ -136,7 +142,7 @@ suite('drift: the relay worker', () => {
 // DOG_STAGES (js/home.js) decides which breed a level maps to. petart.js keeps
 // TWO parallel tables keyed by the same stageCss, and both fall back to
 // chihuahua on a miss — so a breed added to DOG_STAGES alone would render a
-// level-200 Diamond Dog as a chihuahua, with nothing thrown and nothing logged.
+// level-200 Tibetan Mastiff as a chihuahua, with nothing thrown and nothing logged.
 //
 // tests/petart.test.js derives its breed list from PET_BREED_LOOKS itself, so
 // it can only ever prove that table matches itself. These anchor to
@@ -177,18 +183,19 @@ suite('drift: pet breeds', () => {
         }
     });
 
-    test('every breed image is actually shipped', () => {
-        const missing = stages.filter(s => s.img && !fs.existsSync(path.join(ROOT, s.img)));
-        assert.equal(missing.map(s => s.img).join(', '), '', 'breed art referenced but not shipped');
+    test('every stage uses the live breed-specific SVG rather than stale raster art', () => {
+        for (const st of stages) {
+            assert.falsy(st.img, `${st.stageCss} still points at old raster breed art`);
+            assert.truthy(art.petDogSVG({ stageCss: st.stageCss }).includes(`data-breed="${st.stageCss}"`));
+        }
     });
 
     // Levelling up offline is exactly when a child is most likely to be
     // offline — on a plane, in a car — so the reward must not 404.
-    test('every breed image is precached by the service worker', () => {
+    test('the self-contained SVG renderer is precached by the service worker', () => {
         const sw = read('sw.js');
-        const uncached = stages.filter(s => s.img && !sw.includes("'/" + s.img + "'"));
-        assert.equal(uncached.map(s => s.img).join(', '), '',
-            'breed art not in the service-worker cache — the pet would vanish offline');
+        assert.truthy(sw.includes("'/js/petart.js'"), 'pet SVG renderer would vanish offline');
+        assert.falsy(sw.includes('/img/pets/diamond.png'), 'obsolete fantasy dog is still downloaded');
     });
 
     // The opponent's breed arrives over the network, so it may be a breed this

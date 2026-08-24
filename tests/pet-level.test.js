@@ -74,9 +74,9 @@ suite('getDogStage: level → breed', () => {
         assert.equal(seen.size, 10, `expected 10 stages, got ${seen.size}: ${[...seen].join(', ')}`);
     });
 
-    test('level 200 is Diamond Dog (highest)', () => {
+    test('level 200 is Tibetan Mastiff (largest)', () => {
         const stage = env.getDogStage(200);
-        assert.equal(stage.name, 'Diamond Dog');
+        assert.equal(stage.name, 'Tibetan Mastiff');
     });
 
     test('every stage has required fields', () => {
@@ -87,6 +87,7 @@ suite('getDogStage: level → breed', () => {
             assert.truthy(typeof s.size === 'number');
             assert.truthy(s.stageCss);
             assert.truthy(typeof s.minLevel === 'number');
+            assert.truthy(s.buildKg, `stage ${s.name} missing adult build`);
             assert.truthy(Array.isArray(s.habitat));
         }
     });
@@ -96,6 +97,13 @@ suite('getDogStage: level → breed', () => {
         for (let i = 1; i < stages.length; i++) {
             assert.truthy(stages[i].minLevel > stages[i-1].minLevel,
                 `stage ${stages[i].name} not after ${stages[i-1].name}`);
+        }
+    });
+
+    test('visible dog size increases at every breed evolution', () => {
+        const sizes = env.DOG_STAGES.map(s => s.size);
+        for (let i = 1; i < sizes.length; i++) {
+            assert.truthy(sizes[i] > sizes[i - 1], `${env.DOG_STAGES[i].name} should be larger than ${env.DOG_STAGES[i - 1].name}`);
         }
     });
 });

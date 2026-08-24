@@ -474,22 +474,40 @@ function _mfqPhanGiac(f) {
     + (f.lw ? _mfT(pw[0], pw[1], f.lw, 'middle', 'mf-val mf-' + _mfK(f.lw)) : '');
 }
 
-// Một đường thẳng cắt hai đường thẳng — cái hình của cả nửa Chương 3.
-// Vị trí góc đặt tên như sách: A1 trên-phải, A2 trên-trái, A3 dưới-trái,
-// A4 dưới-phải (và B1..B4 ở giao điểm dưới).
-const _MF_POS = {
-  A1: [70, 35, 0, 126], A2: [70, 35, 126, 180], A3: [70, 35, 180, 306], A4: [70, 35, 306, 360],
-  B1: [110, 90, 0, 126], B2: [110, 90, 126, 180], B3: [110, 90, 180, 306], B4: [110, 90, 306, 360],
-};
-
 function _mfqCut2(f) {
   const angles = f.angles || {};
+  // Nghiêng đường cắt theo số đo đã cho. Một nhãn "63°" không được nằm
+  // trong một cung nhìn rõ là góc tù — hình toán phải đúng cả quan hệ lẫn tỉ lệ.
+  let a = 126;
+  Object.keys(angles).some(p => {
+    const m = /([0-9]+(?:[.,][0-9]+)?)°/.exec(String(angles[p]));
+    if (!m) return false;
+    const shown = +m[1].replace(',', '.');
+    a = /[13]$/.test(p) ? shown : 180 - shown;
+    return true;
+  });
+  a = Math.min(150, Math.max(30, a));
+  const A = [100, 35];
+  const dx = -55 / Math.tan(a * Math.PI / 180);
+  const B = [100 + dx, 90];
+  const pos = {
+    A1: [A[0], A[1], 0, a], A2: [A[0], A[1], a, 180],
+    A3: [A[0], A[1], 180, a + 180], A4: [A[0], A[1], a + 180, 360],
+    B1: [B[0], B[1], 0, a], B2: [B[0], B[1], a, 180],
+    B3: [B[0], B[1], 180, a + 180], B4: [B[0], B[1], a + 180, 360],
+  };
   let out = '';
   Object.keys(angles).forEach(p => {
-    const g = _MF_POS[p];
+    const g = pos[p];
     if (g) out += _mfAng(g[0], g[1], 20, g[2], g[3], angles[p], 32);
   });
-  return out + _mfCutBase(!!f.par, f.names);
+  const n = f.names || ['a', 'b', 'c'];
+  const xAt = y => A[0] + (y - A[1]) * dx / 55;
+  return out + _mfLine(12, 35, 188, 35) + _mfLine(12, 90, 188, 90)
+    + _mfLine(xAt(15), 15, xAt(110), 110)
+    + (f.par ? _mfPar(12, 35, 188, 35, 0.85) + _mfPar(12, 90, 188, 90, 0.85) : '')
+    + _mfT(194, 31, n[0], 'end') + _mfT(194, 86, n[1], 'end')
+    + _mfT(xAt(13) - 3, 13, n[2], 'end');
 }
 
 // Quan hệ vuông góc — song song, bốn thế thường gặp.
@@ -780,6 +798,51 @@ function _mfqDoiTia(f) {
     + _mfT(88, 55, v[4], 'end');
 }
 
+// ---- Chương 5: biểu đồ -------------------------------------------------
+// Đề thi nói "biểu đồ" thì phải cho trẻ ĐỌC một biểu đồ thật, không bắt trẻ
+// dựng lại nó từ một câu văn dài. Số liệu vẫn được nhắc trong đề để SVG chỉ
+// là phần trình bày trực quan, không trở thành nguồn thông tin duy nhất.
+function _mfqLineChart(f) {
+  const labels = f.labels || [];
+  const values = (f.values || []).map(Number);
+  if (labels.length < 2 || labels.length !== values.length || values.some(v => !Number.isFinite(v))) return '';
+  const left = 30, right = 184, top = 14, bottom = 91;
+  const min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+  const pad = Math.max(5, (max - min) * 0.18);
+  const lo = Math.max(0, min - pad), hi = max + pad;
+  const xAt = i => left + (right - left) * i / (values.length - 1);
+  const yAt = v => bottom - (v - lo) * (bottom - top) / (hi - lo || 1);
+  const points = values.map((v, i) => [xAt(i), yAt(v)]);
+  let out = _mfLine(left, top, left, bottom) + _mfLine(left, bottom, right, bottom)
+    + `<polyline class="mf-chart-line" points="${points.map(p => _mfN(p[0]) + ',' + _mfN(p[1])).join(' ')}"/>`;
+  points.forEach((p, i) => {
+    out += `<circle class="mf-chart-dot" cx="${_mfN(p[0])}" cy="${_mfN(p[1])}" r="3.5"/>`
+      + _mfT(p[0], Math.max(10, p[1] - 7), String(values[i]), 'middle', 'mf-cap mf-chart-value')
+      + _mfT(p[0], 108, labels[i], 'middle', 'mf-cap');
+  });
+  return out;
+}
+
+function _mfqPieChart(f) {
+  const segments = f.segments || [];
+  const total = segments.reduce((s, x) => s + (+x.value || 0), 0);
+  if (segments.length < 2 || total <= 0) return '';
+  const cx = 57, cy = 59, r = 43;
+  let start = 90, out = '';
+  segments.forEach((seg, i) => {
+    const sweep = (+seg.value || 0) / total * 360;
+    const p0 = _mfP(cx, cy, r, start), p1 = _mfP(cx, cy, r, start - sweep);
+    const large = sweep > 180 ? 1 : 0;
+    const cls = 'mf-chart-' + ((i % 4) + 1);
+    out += `<path class="mf-chart-slice ${cls}" d="M ${cx} ${cy} L ${_mfN(p0[0])} ${_mfN(p0[1])} A ${r} ${r} 0 ${large} 1 ${_mfN(p1[0])} ${_mfN(p1[1])} Z"/>`;
+    const ly = 22 + i * 24;
+    out += `<rect class="mf-chart-key ${cls}" x="108" y="${ly - 8}" width="9" height="9" rx="2"/>`
+      + _mfT(122, ly, `${seg.label}: ${seg.text == null ? seg.value + '%' : seg.text}`, 'start', 'mf-cap');
+    start -= sweep;
+  });
+  return out;
+}
+
 const MATH_Q_FIGURES = {
   'ke-bu': _mfqKeBu,
   'ke-bu-phan-giac': _mfqKeBuPhanGiac,
@@ -799,12 +862,30 @@ const MATH_Q_FIGURES = {
   'trung-tuyen': _mfqTrungTuyen,
   'hai-doan-cat': _mfqHaiDoanCat,
   'doi-tia': _mfqDoiTia,
+  'line-chart': _mfqLineChart,
+  'pie-chart': _mfqPieChart,
 };
 
 // Khuôn lạ thì không vẽ gì — một câu hỏi vẫn làm được khi thiếu hình, nhưng
 // không làm được nếu cả màn hình vỡ.
 function mathQuestionFigureHTML(fig) {
   if (!fig || !fig.t) return '';
+  if (fig.t === 'source-crop') {
+    const src = String(fig.src || '');
+    const c = Array.isArray(fig.crop) ? fig.crop.map(Number) : [];
+    const size = Array.isArray(fig.size) ? fig.size.map(Number) : [];
+    if (!/^\/assets\/math-exams\/[a-z0-9-]+\.jpg$/.test(src)
+        || c.length !== 4 || size.length !== 2
+        || c.concat(size).some(v => !Number.isFinite(v) || v <= 0)) return '';
+    const [x, y, w, h] = c, [sw, sh] = size;
+    if (x + w > sw || y + h > sh) return '';
+    const alt = String(fig.alt || 'Hình vẽ từ đề thi gốc')
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return `<div class="math-q-figwrap math-source-crop" style="--crop-ratio:${w}/${h}">`
+      + `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" `
+      + `style="width:${sw / w * 100}%;left:${-x / w * 100}%;top:${-y / h * 100}%">`
+      + `</div>`;
+  }
   const draw = MATH_Q_FIGURES[fig.t];
   if (!draw) return '';
   let body = '';

@@ -132,7 +132,7 @@ cp index.html admin.html manifest.json sw.js .nojekyll _redirects .cf-dist/
 # audio/ is deliberately absent: the ~13,000 word MP3s deploy separately to
 # the eng-pwa-audio Pages project (scripts/deploy-audio.sh) so they can never
 # push this deployment over Cloudflare's 20,000-file limit.
-cp -R css js img functions wrangler.toml .cf-dist/
+cp -R css js img assets functions wrangler.toml .cf-dist/
 
 # Refuse to ship a deployment that is creeping toward the Pages file cap —
 # better to fail here with a name than mid-upload with an API error.

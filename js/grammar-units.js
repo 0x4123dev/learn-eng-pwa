@@ -36993,6 +36993,30 @@ function scoreGrammarQuestion(q, userAnswer) {
     return userAnswer === q.correct ? 1 : 0;
 }
 
+function grammarSkillSummaries(questions, answers) {
+    const rows = {};
+    const slug = value => String(value || 'general').normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '') || 'general';
+    questions.forEach((q, i) => {
+        const topic = String(q.topic || q.type || 'Grammar tổng hợp');
+        const key = 'grammar.topic.' + slug(topic);
+        const row = rows[key] || (rows[key] = {
+            skillKey: key, skillLabel: topic, attempts: 0, correct: 0,
+            wrong: 0, skipped: 0, wrongRefs: []
+        });
+        row.attempts++;
+        const answer = answers[i];
+        if (answer === null || answer === undefined || (Array.isArray(answer) && !answer.length)) row.skipped++;
+        else if (scoreGrammarQuestion(q, answer)) row.correct++;
+        else {
+            row.wrong++;
+            if (row.wrongRefs.length < 20) row.wrongRefs.push(String(q.id || ''));
+        }
+    });
+    return Object.keys(rows).map(k => rows[k]);
+}
+
 // Save a completed quiz session to history (also updates the mistake bank)
 function saveGrammarSession(unitId, questions, answers) {
     if (!appState) return;
@@ -37039,6 +37063,7 @@ function saveGrammarSession(unitId, questions, answers) {
         date: Date.now(),
         score: correctCount,
         total: questions.length,
+        skills: grammarSkillSummaries(questions, answers),
         questions: questions.map((q, i) => ({
             id: q.id,
             type: q.type,

@@ -352,6 +352,25 @@ function nextSpeedQuestion() {
     }
 }
 
+function verbSkillSummaries(results, level) {
+    const levelNames = { 0:'Tất cả cấp độ', 1:'Cơ bản', 2:'Trung bình', 3:'Khó', 4:'Chuyên gia', 5:'Master' };
+    const rows = {
+        v2: { skillKey:'verbs.v2.level.' + level, skillLabel:'V2 · ' + (levelNames[level] || ('Level ' + level)), attempts:0, correct:0, wrong:0, skipped:0, wrongRefs:[] },
+        v3: { skillKey:'verbs.v3.level.' + level, skillLabel:'V3 · ' + (levelNames[level] || ('Level ' + level)), attempts:0, correct:0, wrong:0, skipped:0, wrongRefs:[] }
+    };
+    const correct = (given, expected) => String(expected || '').toLowerCase().split('/').some(v => v.trim() === String(given || '').trim().toLowerCase());
+    (results || []).forEach(result => {
+        [['v2','userV2'], ['v3','userV3']].forEach(pair => {
+            const form = pair[0], userKey = pair[1], row = rows[form];
+            row.attempts++;
+            if (!String(result[userKey] || '').trim()) row.skipped++;
+            else if (correct(result[userKey], result[form])) row.correct++;
+            else { row.wrong++; if (row.wrongRefs.length < 20) row.wrongRefs.push(String(result.v1 || '')); }
+        });
+    });
+    return [rows.v2, rows.v3].filter(row => row.attempts);
+}
+
 function completeSpeedChallenge() {
     clearInterval(speedState.timer);
 
@@ -409,7 +428,8 @@ function completeSpeedChallenge() {
         correct: speedState.correctCount,
         total: speedState.currentVerbs.length,
         bestStreak: speedState.bestStreakInGame,
-        verbs: speedState.verbResults
+        verbs: speedState.verbResults,
+        skills: verbSkillSummaries(speedState.verbResults, speedState.level)
     });
     // Keep last 50 games
     if (appState.speedChallenge.history.length > 50) {

@@ -90,6 +90,8 @@ suite('bot practice: the bot actually plays', () => {
         assert.truthy(low.angle < perfect.angle, 'jitter must move the aim down');
         assert.truthy(high.angle > perfect.angle, 'and up');
         assert.truthy(bot.BOT_ANGLE_ERROR > 0 && bot.BOT_POWER_ERROR > 0);
+        assert.truthy(bot.BOT_ANGLE_ERROR <= 4 && bot.BOT_POWER_ERROR <= 6,
+            'the practice opponent should punish ignoring wind and terrain');
     });
 
     test('practice gives the full 20 shots and a full health bar', () => {

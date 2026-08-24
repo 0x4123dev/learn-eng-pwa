@@ -5,21 +5,20 @@
 //   (whatever the wind, I always use power 100 / angle 20 and I hit)
 //
 // Why it happened is worth writing down, because the obvious diagnosis was
-// wrong. It was NOT that wind was too weak in absolute terms — it was the
-// shape of the target. The castle is a 122px-tall WALL, so a flat shot
-// arriving almost horizontally only has to REACH it, not land in a window:
+// wrong. It was NOT only that wind was too weak in absolute terms — it was
+// the shape of the target. v3 first strengthened horizontal wind, but v4 then
+// grew the fortress to a 200x165px WALL. A flat shot arriving almost
+// horizontally only has to REACH it, not land in a narrow window:
 //
 //     angle  power   flight   wind drift   tolerance
 //       20°    100    84 fr        11px       +/-91px   <- wind loses
 //       45°     90   142 fr         2px       +/-91px   <- wind loses
 //       60°     80   190 fr       264px       +/-91px
 //
-// A lob has to land inside a window and drifts hundreds of pixels; a flat
-// shot does not. So one aim covered every wind. A sweep of v0Gain x windAccel
-// over 10 arenas x 3 seeds found 162 such aims at windAccel 0.002 and ZERO at
-// 0.004, with every scenario still winnable (0.006 was measured too and broke
-// reachability, at 80%). Doubling the wind coefficient was therefore the fix,
-// and cutting the shell's range was not needed.
+// A lob has to land inside a window and drifts hundreds of pixels; a flat shot
+// does not. v5 therefore keeps the proven horizontal coefficient and adds a
+// small, symmetric lift/downforce component: head and tail wind now bend the
+// arc as well as changing its range. Older versions remain frozen for replay.
 //
 // These tests re-prove the property rather than asserting the number, so a
 // later "small tune" to gravity, v0Gain, spawn distance or the castle box
@@ -31,9 +30,13 @@ const C = require(path.join(__dirname, '..', 'js', 'battlecalc.js'));
 const V1 = C.fieldRules(1);
 const V2 = C.fieldRules(2);
 const V3 = C.fieldRules(3);
+const V4 = C.fieldRules(4);
+const V5 = C.fieldRules(5);
+const V6 = C.fieldRules(6);
 
 const WINDS = [-20, -10, 0, 10, 20];
-const ARENAS = Object.keys(C.BATTLE_TERRAIN_PROFILES);
+const ARENAS = Object.keys(C.BATTLE_TERRAIN_PROFILES)
+    .filter(id => !C.BATTLE_TERRAIN_PROFILES[id].barrier);
 const SEEDS = [4242, 99991, 31337];
 const LEVEL = 17;
 
@@ -59,8 +62,7 @@ function hits(m, angle, power, wind, rules) {
 function windsCovered(m, angle, power, rules) {
     let covered = 0;
     for (const wind of WINDS) {
-        if (!hits(m, angle, power, wind, rules)) break;
-        covered++;
+        if (hits(m, angle, power, wind, rules)) covered++;
     }
     return covered;
 }
@@ -70,8 +72,8 @@ suite('battle balance: the reported exploit is gone', () => {
         let worst = null;
         for (const arenaId of ARENAS) {
             for (const seed of SEEDS) {
-                for (const m of matchups(arenaId, seed, V3)) {
-                    const covered = windsCovered(m, 20, 100, V3);
+                for (const m of matchups(arenaId, seed, V5)) {
+                    const covered = windsCovered(m, 20, 100, V5);
                     assert.truthy(covered < WINDS.length,
                         `20 deg / power 100 hit under all ${WINDS.length} winds on ${arenaId} ` +
                         `(seed ${seed}, ${m.side} side) — the reported exploit is back`);
@@ -90,10 +92,10 @@ suite('battle balance: the reported exploit is gone', () => {
         // 10 arenas x 8 seeds x both sides (800 scenarios) and also found zero.
         const found = [];
         for (const arenaId of ARENAS) {
-            for (const m of matchups(arenaId, SEEDS[0], V3)) {
+            for (const m of matchups(arenaId, SEEDS[0], V5)) {
                 for (let angle = 12; angle <= 84; angle += 4) {
                     for (let power = 40; power <= 100; power += 5) {
-                        if (windsCovered(m, angle, power, V3) === WINDS.length) {
+                        if (windsCovered(m, angle, power, V5) === WINDS.length) {
                             found.push(`${arenaId} ${m.side} ${angle}deg/${power}`);
                         }
                     }
@@ -115,13 +117,13 @@ suite('battle balance: the reported exploit is gone', () => {
         // at +20), so neither side is handed the advantage.
         for (let seed = 1000; seed < 1012; seed++) {
             const arenaId = ARENAS[seed % ARENAS.length];
-            for (const m of matchups(arenaId, seed, V3)) {
+            for (const m of matchups(arenaId, seed, V5)) {
                 for (let round = 1; round <= 10; round++) {
                     const wind = C.windForRound(seed, round);
                     let solved = false;
                     for (let angle = 12; angle <= 84 && !solved; angle += 2) {
                         for (let power = 34; power <= 100; power += 2) {
-                            if (hits(m, angle, power, wind, V3)) { solved = true; break; }
+                            if (hits(m, angle, power, wind, V5)) { solved = true; break; }
                         }
                     }
                     assert.truthy(solved,
@@ -143,11 +145,11 @@ suite('battle balance: the reported exploit is gone', () => {
         const widths = [];
         for (let seed = 1000; seed < 1008; seed++) {
             const arenaId = ARENAS[seed % ARENAS.length];
-            for (const m of matchups(arenaId, seed, V3)) {
+            for (const m of matchups(arenaId, seed, V5)) {
                 for (let round = 1; round <= 6; round++) {
                     const wind = C.windForRound(seed, round);
                     let n = 0;
-                    for (const [angle, power] of GRID) if (hits(m, angle, power, wind, V3)) n++;
+                    for (const [angle, power] of GRID) if (hits(m, angle, power, wind, V5)) n++;
                     widths.push(n);
                 }
             }
@@ -172,8 +174,8 @@ suite('battle balance: wind is felt, not overwhelming', () => {
         // v3 was edited in place ONCE, and only because production D1 held no
         // v3 battle row to desync. It is frozen now: a battle stores its
         // field_version and both phones replay from it, so moving any of these
-        // numbers under a live battle desyncs the two devices. The next
-        // physics change adds a v4 and bumps FIELD_VERSION_NEW.
+        // numbers under a live battle desyncs the two devices. All later
+        // physics changes must add a new version and bump FIELD_VERSION_NEW.
         assert.equal(V3.gravity, 0.15, 'v3 is frozen — add a v4 instead');
         assert.equal(V3.v0Gain, 0.165, 'v3 is frozen — add a v4 instead');
         assert.equal(V3.v0Base, 4, 'v3 is frozen — add a v4 instead');
@@ -181,6 +183,26 @@ suite('battle balance: wind is felt, not overwhelming', () => {
         assert.equal(V3.worldW, 2000, 'v3 is frozen — add a v4 instead');
         assert.equal(V3.castle.halfW, 70, 'v3 is frozen — add a v4 instead');
         assert.equal(V3.castle.height, 122, 'v3 is frozen — add a v4 instead');
+        assert.equal(V4.windLift, undefined, 'v4 is frozen — stored fortress battles cannot gain new physics');
+        assert.equal(V4.castle.halfW, 100);
+        assert.equal(V4.castle.height, 165);
+    });
+
+    test('v5 makes wind bend the arc without changing the fortress hitbox', () => {
+        assert.equal(V5.windLift, 0.0055);
+        assert.equal(V5.windAccel, V4.windAccel);
+        assert.equal(V5.gravity, V4.gravity);
+        assert.equal(V5.v0Gain, V4.v0Gain);
+        assert.deepEqual(V5.castle, V4.castle);
+    });
+
+    test('v6 keeps v5 ballistics while preventing a fresh-castle one-volley kill', () => {
+        assert.equal(V6.windLift, V5.windLift);
+        assert.deepEqual(V6.castle, V5.castle);
+        assert.equal(V6.damageScale, 0.4);
+        assert.equal(V6.maxVolleyDamage, 85);
+        assert.truthy(C.maxTurnDamage(4, 200, V6) < 100,
+            'even a max-level four-shell volley must leave counter-play');
     });
 
     test('changing the wind moves a lob far enough to force a re-aim', () => {

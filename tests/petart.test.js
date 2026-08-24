@@ -15,8 +15,8 @@ const RIG_PARTS = ['pd-shadow', 'pd-body-grp', 'pd-head-grp', 'pd-tail', 'pd-hea
 suite('pet art: the rig', () => {
     test('covers all ten breed stages', () => {
         assert.equal(BREEDS.length, 10);
-        for (const b of ['chihuahua', 'beagle', 'poodle', 'retriever', 'dalmatian',
-            'husky', 'shepherd', 'akita', 'royal', 'diamond']) {
+        for (const b of ['chihuahua', 'pomeranian', 'beagle', 'corgi', 'bulldog',
+            'husky', 'retriever', 'shepherd', 'rottweiler', 'tibetan-mastiff']) {
             assert.truthy(art.PET_BREED_LOOKS[b], `missing breed ${b}`);
         }
     });
@@ -35,6 +35,23 @@ suite('pet art: the rig', () => {
     test('breeds actually look different (colour or markings)', () => {
         const shapes = new Set(BREEDS.map(b => art.petDogSVG({ stageCss: b, size: 40 })));
         assert.equal(shapes.size, BREEDS.length, 'two breeds render identically');
+    });
+
+    test('signature breeds have recognisable anatomy, not fantasy variants', () => {
+        const bulldog = art.petDogSVG({ stageCss: 'bulldog', size: 96 });
+        const mastiff = art.petDogSVG({ stageCss: 'tibetan-mastiff', size: 96 });
+        assert.truthy(bulldog.includes('rx="31"') && bulldog.includes('rx="19"'), 'bulldog needs a broad head and short wide muzzle');
+        assert.truthy(bulldog.includes('pd-ear') && bulldog.includes('Q18 23 21 14'), 'bulldog needs rose-fold ears');
+        assert.truthy(mastiff.includes('Q84 16 80 29') && mastiff.includes('rx="33"'), 'mastiff needs a lion-like mane and giant body');
+        assert.falsy(BREEDS.includes('diamond') || BREEDS.includes('royal'), 'fantasy dog types must not replace real breeds');
+    });
+
+    test('Pomeranian fluff is a continuous ruff, not four swollen circles on its face', () => {
+        const svg = art.petDogSVG({ stageCss: 'pomeranian', size: 100, level: 38, stageMinLevel: 21 });
+        const fluff = svg.match(/<g class="pd-breed-detail pd-pomeranian-fluff"[\s\S]*?<\/g>/)?.[0] || '';
+        assert.truthy(fluff.includes('pd-cheek-fluff'));
+        assert.truthy(fluff.includes('pd-chest-ruff'));
+        assert.equal((fluff.match(/<circle\b/g) || []).length, 0);
     });
 
     test('no external references — fully offline and CSP-safe', () => {

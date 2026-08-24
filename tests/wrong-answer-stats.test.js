@@ -104,6 +104,19 @@ suite('Toán 7: questions to review', () => {
         assert.equal(agg[0].misses, 3);
     });
 
+    test('questions are grouped into useful maths skills, with miss totals', () => {
+        const grouped = math.mathWrongSkillAggregate([
+            { q: Q[0], misses: 3 },
+            { q: Q[1], misses: 1 },
+            { q: Q[2], misses: 2 },
+        ]);
+        assert.equal(grouped[0].label, 'Số hữu tỉ');
+        assert.equal(grouped[0].misses, 4);
+        assert.equal(grouped[0].questions, 2);
+        assert.equal(grouped[1].label, 'Số đối');
+        assert.equal(grouped[1].misses, 2);
+    });
+
     test('exam runs count the same as practice runs', () => {
         global.appState = { mathHistory: [
             { chapter: 0, examId: 'm1', score: 20, total: 25, date: 2, wrong: [Q[1].id] },
@@ -125,9 +138,13 @@ suite('Toán 7: questions to review', () => {
             { chapter: 1, score: 8, total: 10, date: 1, wrong: [Q[0].id] },
         ] };
         const html = math.renderMathWrongPanelHTML();
-        assert.truthy(html.includes('Câu hay sai'), 'panel title missing');
+        assert.truthy(html.includes('Dạng toán cần ôn'), 'panel title missing');
+        assert.truthy(html.includes('Câu hay sai'), 'question-stat subtitle missing');
         assert.truthy(html.includes('2×'), 'the miss count must be shown');
         assert.truthy(html.includes(math.mathEsc(Q[0].q).slice(0, 24)), 'the question text must be shown');
+        assert.truthy(html.includes('Luyện lại câu hay sai'), 'focused-practice button missing');
+        assert.truthy(html.includes('startMathWrongPractice()'), 'button is not wired');
+        assert.truthy(html.includes('<details'), 'long question list must stay collapsible');
     });
 
     test('an open debt is named on the panel rather than hiding it', () => {
@@ -151,5 +168,24 @@ suite('Toán 7: questions to review', () => {
         const html = math.renderMathHistoryHTML();
         assert.truthy(html.includes('Câu hay sai'), 'the stats screen should list the hard questions');
         assert.truthy(html.includes('Lịch sử làm bài'), 'and still be the history screen');
+    });
+
+    test('the practice screen also surfaces the review card', () => {
+        global.appState = { mathHistory: [
+            { chapter: 1, label: 'Chương 1', score: 8, total: 10, date: 2, wrong: [Q[0].id] },
+        ] };
+        const html = math.renderMathPracticeHTML();
+        assert.truthy(html.includes('Dạng toán cần ôn'));
+        assert.truthy(html.includes('Luyện lại câu hay sai'));
+    });
+
+    test('focused review builds a top-ten quiz, while active debt uses the retry drill', () => {
+        const src = require('fs').readFileSync(path.join(__dirname, '..', 'js', 'math.js'), 'utf8');
+        const start = src.indexOf('function startMathWrongPractice');
+        const end = src.indexOf('\n}', start);
+        const body = src.slice(start, end);
+        assert.truthy(/wrong\.slice\(0, MATH_QUIZ_SIZE\)/.test(body));
+        assert.truthy(/startMathRetry/.test(body), 'active owed questions must use the existing retry flow');
+        assert.truthy(/label: 'Luyện câu hay sai'/.test(body));
     });
 });

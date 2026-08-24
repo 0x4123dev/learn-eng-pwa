@@ -132,10 +132,10 @@ suite('iPad: everything stays comfortably tappable', () => {
         assert.equal(shrinks.map(m => m[0]).join(', '), '', 'a tablet must not get smaller buttons than a phone');
     });
 
-    test('the scene picker shows more arenas per row on a tablet', () => {
-        const i = css.indexOf('@media (min-width: 700px) {');
-        assert.truthy(css.slice(i, i + 900).includes('.pb-scene-list'),
-            'ten arenas at phone width on an iPad wastes the screen');
+    test('the random arena card replaces the old tablet picker', () => {
+        assert.truthy(css.includes('.pb-arena-random {'));
+        assert.falsy(css.includes('.pb-scene-list {'),
+            'users no longer choose an arena, so a tablet carousel is misleading');
     });
 
     test('a tap is forgiving enough for a child on glass', () => {
@@ -279,10 +279,13 @@ suite('iPad: rotating and splitting the screen', () => {
         assert.falsy(/height:\s*(3\d|2\d|1\d)px/.test(block), 'a cramped screen must not get unusable buttons');
     });
 
-    test('the layout is driven by width alone, so rotation just works', () => {
+    test('the only orientation rule hides the rotate affordance after rotation', () => {
         const orientationRules = (css.match(/@media[^{]*orientation/g) || []);
-        assert.equal(orientationRules.length, 0,
-            'width-based rules handle rotation without a separate orientation branch');
+        assert.equal(orientationRules.length, 1);
+        const i = css.indexOf('@media (orientation: landscape)');
+        const block = css.slice(i, i + 260);
+        assert.truthy(block.includes('.pb-landscape-btn'));
+        assert.falsy(block.includes('.pb-canvas'), 'rotation must not resize or transform the physics canvas manually');
     });
 
     test('the bottom nav is a flex child, not a hardcoded reservation', () => {
@@ -295,30 +298,29 @@ suite('iPad: rotating and splitting the screen', () => {
     });
 });
 
-// ── 6. the arena picker on a tablet ────────────────────────────────────────
-suite('iPad: choosing an arena on a big screen', () => {
-    test('the picker still scrolls horizontally', () => {
-        const block = rule('.pb-scene-list');
-        assert.truthy(block.includes('overflow-x: auto'));
+// ── 6. random arena information on a tablet ───────────────────────────────
+suite('iPad: random arena card', () => {
+    test('the card uses a compact two-column composition', () => {
+        const block = rule('.pb-arena-random');
+        assert.truthy(block.includes('grid-template-columns'));
+        assert.truthy(block.includes('overflow: hidden'));
     });
 
-    test('more arenas fit per row above the breakpoint', () => {
-        const i = css.indexOf('@media (min-width: 700px) {');
-        const block = css.slice(i, i + 900);
-        const m = block.match(/grid-auto-columns:\s*minmax\((\d+)px,\s*(\d+)%\)/);
-        assert.truthy(m, 'the picker should reflow on a tablet');
-        assert.truthy(+m[2] < 44, 'a tablet should show more than two arenas at a time');
-    });
-
-    test('the picker keeps its scroll position across a poll', () => {
+    test('there are no obsolete arena radio controls', () => {
         const lobby = read('js/petbattle.js');
-        assert.truthy(lobby.includes('nextList.scrollLeft = keepScroll'),
-            'a wider picker means more scrolling to lose');
+        assert.falsy(lobby.includes('role="radiogroup"'));
+        assert.falsy(lobby.includes('choosePetBattleScene'));
     });
 
-    test('arena art is capped in size, which matters more on a big screen', () => {
-        const block = rule('.pb-scene-option');
-        assert.truthy(block.includes('overflow: hidden'), 'a stretched poster must be cropped, not distorted');
+    test('the stable lobby render gate keeps the card from flashing on every poll', () => {
+        const lobby = read('js/petbattle.js');
+        assert.truthy(lobby.includes("screen.querySelector('.pb-arena-random')"));
+    });
+
+    test('arena preview art is layered rather than stretched across the tablet', () => {
+        const block = rule('.pb-arena-random-art img');
+        assert.truthy(block.includes('position: absolute'));
+        assert.truthy(block.includes('object-fit: cover'));
     });
 
     test('every arena poster keeps its aspect ratio', () => {

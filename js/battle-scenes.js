@@ -17,6 +17,16 @@
     ['moonlit-rooftops', 'Moonlit Rooftops', 'Mái Nhà Ánh Trăng', 'Moon & drifting clouds', 'Trăng và mây trôi', 'night-clouds', ['#405d9b', '#738fc4', '#53516c']],
     ['candy-cloudworks', 'Candy Cloudworks', 'Xưởng Mây Kẹo', 'Rainbow sparkles', 'Lấp lánh cầu vồng', 'sparkles', ['#ef9ac2', '#94dfd3', '#9f75bd']],
     ['cosmic-observatory', 'Cosmic Observatory', 'Đài Thiên Văn', 'Stars & meteors', 'Sao và thiên thạch', 'stars', ['#332b72', '#7a5bc5', '#554382']],
+    ['tropical-monolith', 'Tropical Monolith', 'Trụ Đá Nhiệt Đới', 'Ocean breeze & clouds', 'Gió biển và mây', 'clouds', ['#40a9ed', '#b9edff', '#8d673e'], true],
+    ['aurora-ice-spire', 'Aurora Ice Spire', 'Tháp Băng Cực Quang', 'Aurora & snow', 'Cực quang và tuyết', 'snow', ['#276ed2', '#79d8ff', '#56a9d4'], true],
+    ['giant-mushroom-grove', 'Giant Mushroom Grove', 'Rừng Nấm Khổng Lồ', 'Fireflies & mist', 'Đom đóm và sương', 'fireflies', ['#30317f', '#ad74d6', '#54713d'], true],
+    ['thunder-totem-canyon', 'Thunder Totem Canyon', 'Hẻm Núi Tượng Sấm', 'Rain & lightning', 'Mưa và sấm chớp', 'storm', ['#294e83', '#889bb4', '#9a6334'], true],
+    ['crystal-rift', 'Crystal Rift', 'Khe Nứt Pha Lê', 'Crystal sparkles', 'Pha lê lấp lánh', 'sparkles', ['#20246d', '#815ad1', '#7253ad'], true],
+    ['sunken-temple-lagoon', 'Sunken Temple Lagoon', 'Đầm Phá Đền Chìm', 'Waves & sea spray', 'Sóng và bụi nước', 'waves', ['#53bfee', '#b9f4e6', '#5f8450'], true],
+    ['dragonbone-desert', 'Dragonbone Desert', 'Sa Mạc Xương Rồng', 'Warm dust & embers', 'Bụi ấm và tàn lửa', 'embers', ['#f4a34f', '#f7cf87', '#a66c3f'], true],
+    ['moon-gate-ruins', 'Moonlit Observatory', 'Đài Quan Sát Trăng', 'Stars & drifting clouds', 'Sao và mây trôi', 'night-clouds', ['#1751b5', '#608bcc', '#596274'], true],
+    ['sky-beanstalk', 'Sky Beanstalk', 'Cây Đậu Trên Mây', 'Clouds & pollen', 'Mây và phấn hoa', 'clouds', ['#68c9f4', '#d7f5ff', '#62a15a'], true],
+    ['candy-volcano', 'Candy Volcano', 'Núi Lửa Kẹo Ngọt', 'Rainbow sparkles', 'Lấp lánh cầu vồng', 'sparkles', ['#ef9ec8', '#bce9ff', '#b56b56'], true],
   ];
 
   const SCENES = raw.map((r) => {
@@ -24,16 +34,26 @@
     return Object.freeze({
       id: r[0], name: { en: r[1], vi: r[2] }, description: { en: r[3], vi: r[4] },
       weather: r[5], palette: Object.freeze({ sky: r[6][0], haze: r[6][1], ground: r[6][2] }),
+      highArc: !!r[7],
+      zoneX: Object.freeze(r[7] ? [0, 200, 400] : [0, 600, 1200]),
       poster: dir + 'poster.webp', far: dir + 'far-strip.webp',
       zones: Object.freeze([dir + 'zone-left.webp', dir + 'zone-center.webp', dir + 'zone-right.webp']),
     });
   });
   const BY_ID = Object.freeze(Object.fromEntries(SCENES.map((scene) => [scene.id, scene])));
+  const CLASSIC_IDS = Object.freeze(SCENES.filter(scene => !scene.highArc).map(scene => scene.id));
+  const HIGH_ARC_IDS = Object.freeze(SCENES.filter(scene => scene.highArc).map(scene => scene.id));
 
   function normalizeBattleSceneId(id) {
     return Object.prototype.hasOwnProperty.call(BY_ID, String(id || '')) ? String(id) : DEFAULT_ID;
   }
   function getBattleScene(id) { return BY_ID[normalizeBattleSceneId(id)]; }
+  function randomBattleSceneId(random) {
+    const rng = typeof random === 'function' ? random : Math.random;
+    const roll = Math.max(0, Math.min(0.999999999, Number(rng()) || 0));
+    const pool = roll < 0.5 ? CLASSIC_IDS : HIGH_ARC_IDS;
+    return pool[Math.floor((roll * 2 % 1) * pool.length)];
+  }
   function battleSceneAssetPaths() {
     return SCENES.flatMap((scene) => [scene.poster, scene.far].concat(scene.zones));
   }
@@ -83,7 +103,7 @@
   };
 
   BattleSceneRenderer.prototype._loadNearby = function () {
-    const centers = [400, 1000, 1600];
+    const centers = this.scene.zoneX.map(x => x + 400);
     const focal = this.cameraX + this.viewW / 2;
     centers.forEach((center, index) => {
       if (this.images.zones[index] || Math.abs(center - focal) > this.viewW * 1.65) return;
@@ -152,7 +172,7 @@
     }
 
     const scaleX = width / this.viewW;
-    const zoneX = [0, 600, 1200];
+    const zoneX = this.scene.zoneX;
     this.images.zones.forEach((image, index) => {
       if (!image || !image.width) return;
       const x = (zoneX[index] - this.cameraX * 0.88) * scaleX;
@@ -215,7 +235,11 @@
     if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', this._visibility);
   };
 
-  const api = Object.freeze({ DEFAULT_ID, scenes: SCENES, normalizeBattleSceneId, getBattleScene, battleSceneAssetPaths, BattleSceneRenderer });
+  const api = Object.freeze({
+    DEFAULT_ID, scenes: SCENES, CLASSIC_IDS, HIGH_ARC_IDS,
+    normalizeBattleSceneId, getBattleScene, randomBattleSceneId,
+    battleSceneAssetPaths, BattleSceneRenderer,
+  });
   root.BattleScenes = api;
   root.BattleSceneRenderer = BattleSceneRenderer;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

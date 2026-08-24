@@ -99,11 +99,11 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
             `Stale entries in sw.js ASSETS (file no longer exists): ${stale.join(', ')}`);
     });
 
-    test('sw.js includes the SKIP_WAITING message handler (v3.38.1)', () => {
-        assert.truthy(/type\s*===?\s*['"]SKIP_WAITING['"]/.test(swSrc),
-            'SKIP_WAITING message handler missing (regression of v3.38.1)');
-        assert.truthy(/self\.skipWaiting\(\)/.test(swSrc),
-            'self.skipWaiting() call missing');
+    test('a service-worker update waits for a natural app reopen', () => {
+        assert.falsy(/type\s*===?\s*['"]SKIP_WAITING['"]/.test(swSrc),
+            'the page must not force an update during a lesson');
+        assert.falsy(/self\.skipWaiting\(\)/.test(swSrc),
+            'the worker must not take over while a learner is active');
     });
 });
 
@@ -258,7 +258,7 @@ suite('pet: level evolution boundaries', () => {
                 `level ${lvl} stageCss "${s.stageCss}" invalid`);
         }
     });
-    test('DOG_STAGES is an array with ≥10 entries (chihuahua → diamond)', () => {
+    test('DOG_STAGES is an array with ≥10 real breeds (chihuahua → Tibetan Mastiff)', () => {
         const env = loadAppCode();
         assert.truthy(Array.isArray(env.DOG_STAGES) && env.DOG_STAGES.length >= 10,
             `expected ≥10 stages, got ${env.DOG_STAGES.length}`);

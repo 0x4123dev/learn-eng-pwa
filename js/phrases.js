@@ -554,6 +554,27 @@ function phrIsCorrect(ans, q) {
   return ans === q.correct;
 }
 
+function phrasesSkillSummaries(st) {
+  const rows = {};
+  const add = (key, label, ok, ref) => {
+    const row = rows[key] || (rows[key] = { skillKey:key, skillLabel:label, attempts:0, correct:0, wrong:0, skipped:0, wrongRefs:[] });
+    row.attempts++;
+    if (ok === null) row.skipped++;
+    else if (ok) row.correct++;
+    else { row.wrong++; if (row.wrongRefs.length < 20) row.wrongRefs.push(String(ref || '')); }
+  };
+  st.questions.forEach((q, i) => {
+    const mode = q.meaning ? 'meaning' : (q.typed ? 'typed' : 'choice');
+    const modeLabel = q.meaning ? 'Hiểu nghĩa' : (q.typed ? 'Tự gõ giới từ' : 'Chọn giới từ');
+    const cat = q.cat || 'phrase';
+    const ans = st.answers[i];
+    add('phrases.' + cat + '.' + mode,
+      (PHRASES_CAT_LABELS[cat] || 'Phrases') + ' · ' + modeLabel,
+      ans === null || ans === undefined || ans === '' ? null : phrIsCorrect(ans, q), q.id);
+  });
+  return Object.keys(rows).map(k => rows[k]);
+}
+
 function submitPhrTextAnswer() {
   const st = _phrQuiz;
   if (!st) return;
@@ -602,7 +623,7 @@ function finishPhrasesQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong });
+  savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong, skills: phrasesSkillSummaries(st) });
 
   // Owe every missed question back. After the coins, so a mistake never
   // feels like it took away what was just earned.

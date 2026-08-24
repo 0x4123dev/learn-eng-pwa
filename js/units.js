@@ -636,7 +636,31 @@ function finishUnitPractice() {
     try { date = Date.now(); } catch (e) {}
     // The missed words themselves, not just the count: without them the
     // history can say "6/10" forever and never say WHICH six.
-    appState.unitsHistory.unshift({ unit: st.unit, score, total, date, wrong: wrong.map(w => w.en) });
+    const modeLabels = { 4: 'Điền 4 chữ', 5: 'Điền 5 chữ', full: 'Viết cả từ' };
+    const skillMap = {};
+    st.questions.forEach((q, i) => {
+      const mode = String(q.mode || 'full');
+      const unitKey = String(st.unit).toLowerCase().replace(/[^a-z0-9]+/g, '.')
+        .replace(/^\.|\.$/g, '') || 'mix';
+      const key = 'grade4.unit.' + unitKey.toLowerCase() + '.spelling.' + mode;
+      const row = skillMap[key] || (skillMap[key] = {
+        skillKey: key,
+        skillLabel: _unitLabel(st.unit) + ' · ' + (modeLabels[mode] || 'Chính tả'),
+        attempts: 0, correct: 0, wrong: 0, skipped: 0, wrongRefs: []
+      });
+      row.attempts++;
+      const answer = st.answers[i];
+      if (!answer) row.skipped++;
+      else if (answer.isCorrect) row.correct++;
+      else {
+        row.wrong++;
+        if (row.wrongRefs.length < 20) row.wrongRefs.push(q.w.en);
+      }
+    });
+    appState.unitsHistory.unshift({
+      unit: st.unit, score, total, date, wrong: wrong.map(w => w.en),
+      skills: Object.keys(skillMap).map(k => skillMap[k])
+    });
     if (appState.unitsHistory.length > 300) appState.unitsHistory.length = 300;
     // Count today toward the daily streak, like lessons and grammar do.
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }

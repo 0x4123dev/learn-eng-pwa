@@ -117,6 +117,7 @@ function PetBattleGame(opts) {
   // whatever this build prefers — otherwise two phones on different app
   // versions would draw different terrain from the same seed mid-match.
   this.rules = C.fieldRules ? C.fieldRules(this.view.fieldVersion) : null;
+  this.minAngle = this.rules && this.rules.highArc ? 35 : PB_ANGLE_MIN;
   this.terrain = C.buildTerrain(this.seed, this.rules, this.view.backgroundId);
   const spawns = C.spawnPoints(this.terrain, this.rules);
   // The challenger always stands on the left, for both viewers.
@@ -165,8 +166,10 @@ function PetBattleGame(opts) {
   if (this.camera) this.camera.focusOn(this.mePos.x, { instant: true });
   this._panPointer = null;
   this.impactParticles = [];
+  this.projectileSmoke = [];
   this.castleDebris = [];
   this.houseImpacts = [];
+  this.castleHoles = [];
   this._lastHitCount = 0;
   this.sceneRenderer = null;
   if (typeof CastleSkins !== 'undefined' && CastleSkins.preload) {
@@ -177,6 +180,12 @@ function PetBattleGame(opts) {
       }
     });
   }
+  pbPreloadMateImages(() => {
+    if (!this._destroyed && this.ctx && this.canvas) {
+      this.draw();
+      this._requestFrame();
+    }
+  });
 }
 
 // ---- realtime events (all no-ops when the link is unavailable) ----
@@ -273,6 +282,16 @@ PetBattleGame.prototype.waitingForOpponent = function () {
 
 PetBattleGame.prototype.start = function () {
   this.render();
+  if (typeof window !== 'undefined' && window.addEventListener && !this._orientationHandler) {
+    this._orientationHandler = () => {
+      const landscape = window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
+      const tip = this._el('pbRotateTip');
+      if (tip && landscape) tip.hidden = true;
+      setTimeout(() => { if (!this._destroyed) this.draw(); }, 120);
+    };
+    window.addEventListener('orientationchange', this._orientationHandler);
+    window.addEventListener('resize', this._orientationHandler);
+  }
 };
 
 PetBattleGame.prototype.destroy = function () {
@@ -286,6 +305,39 @@ PetBattleGame.prototype.destroy = function () {
   this._effectTimers = [];
   if (this.sceneRenderer) this.sceneRenderer.destroy();
   this.sceneRenderer = null;
+  if (typeof window !== 'undefined' && window.removeEventListener && this._orientationHandler) {
+    window.removeEventListener('orientationchange', this._orientationHandler);
+    window.removeEventListener('resize', this._orientationHandler);
+  }
+  this._orientationHandler = null;
+};
+
+PetBattleGame.prototype.enterLandscape = async function () {
+  if (typeof document === 'undefined') return false;
+  const game = this.mount && this.mount.querySelector ? this.mount.querySelector('.pb-game') : null;
+  const fullscreenTarget = game || document.documentElement;
+  let locked = false;
+
+  // Orientation lock is accepted by Chromium only from a user gesture and,
+  // on many phones, only after entering fullscreen. Both calls therefore stay
+  // directly inside the button handler; failures are normal on iOS Safari.
+  try {
+    if (!document.fullscreenElement && fullscreenTarget && fullscreenTarget.requestFullscreen) {
+      await fullscreenTarget.requestFullscreen({ navigationUI: 'hide' });
+    }
+  } catch (e) {}
+  try {
+    if (typeof screen !== 'undefined' && screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+      locked = true;
+    }
+  } catch (e) {}
+
+  const isLandscape = typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia('(orientation: landscape)').matches : false;
+  const tip = this._el('pbRotateTip');
+  if (tip) tip.hidden = isLandscape || locked;
+  return locked || isLandscape;
 };
 
 // ---- layout ----
@@ -322,14 +374,21 @@ PetBattleGame.prototype.render = function () {
 
     this.mount.innerHTML = `
       <div class="pb-game">
-      <div class="pb-turn-callout" id="pbTurnCallout" role="status" aria-live="polite">
-        <span class="pb-turn-dot" aria-hidden="true"></span><span id="pbTurnText"></span>
-        <div class="pb-lang pb-game-lang" role="group" aria-label="Language">
-          <button class="pb-flag ${gLang() === 'en' ? 'on' : ''}" type="button"
-                  onclick="_pbGameSetLang('en')" aria-pressed="${gLang() === 'en'}">🇬🇧<span>EN</span></button>
-          <button class="pb-flag ${gLang() === 'vi' ? 'on' : ''}" type="button"
-                  onclick="_pbGameSetLang('vi')" aria-pressed="${gLang() === 'vi'}">🇻🇳<span>VI</span></button>
+      <div class="pb-game-topbar">
+        <div class="pb-turn-callout" id="pbTurnCallout" role="status" aria-live="polite">
+          <span class="pb-turn-dot" aria-hidden="true"></span><span id="pbTurnText"></span>
+          <div class="pb-lang pb-game-lang" role="group" aria-label="Language">
+            <button class="pb-flag ${gLang() === 'en' ? 'on' : ''}" type="button"
+                    onclick="_pbGameSetLang('en')" aria-pressed="${gLang() === 'en'}">🇬🇧<span>EN</span></button>
+            <button class="pb-flag ${gLang() === 'vi' ? 'on' : ''}" type="button"
+                    onclick="_pbGameSetLang('vi')" aria-pressed="${gLang() === 'vi'}">🇻🇳<span>VI</span></button>
+          </div>
         </div>
+        <button class="pb-landscape-btn" type="button" onclick="_pbGameLandscape()"
+                aria-label="${esc(gT('gLandscapeAria'))}" title="${esc(gT('gLandscape'))}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="10" rx="2"></rect><path d="M8 4 5 7l3 3M16 20l3-3-3-3"></path></svg>
+          <span>${esc(gT('gLandscape'))}</span>
+        </button>
       </div>
       <div class="pb-field-shell">
         <canvas id="pbSceneCanvas" class="pb-scene-canvas" width="${C.FIELD_W}" height="${C.FIELD_H + PB_SKY_EXTRA}"
@@ -391,7 +450,7 @@ PetBattleGame.prototype.render = function () {
       <div class="pb-controls" id="pbControls" aria-label="${esc(gT('gControlsAria'))}">
         <div class="pb-aim-instruction">
           <span class="pb-aim-hand" aria-hidden="true">☝</span>
-          <span><strong>${esc(gT('gAimTitle'))}</strong><small>${esc(gT('gAimSub'))}</small></span>
+          <span><strong>${esc(gT('gAimTitle'))}</strong><small>${esc(this.rules && this.rules.highArc ? gT('gHighArcSub') : gT('gAimSub'))}</small></span>
         </div>
         <!-- Dragging is quick but coarse. These give a child an exact number
              to dial in after a near miss, without fighting a fingertip. -->
@@ -404,7 +463,7 @@ PetBattleGame.prototype.render = function () {
             <button class="pb-step" type="button" id="pbAngleUp"
                     aria-label="${esc(gT('gAngleMore'))}" onclick="_pbGameNudge('angle', 1)">+</button>
           </div>
-          <input type="range" class="pb-aim-slider" id="pbAngle" min="10" max="80" step="1" value="45"
+          <input type="range" class="pb-aim-slider" id="pbAngle" min="${this.minAngle}" max="80" step="1" value="45"
                  aria-label="${esc(gT('gAngle'))}" oninput="_pbGameSetAngle(this.value)">
           <div class="pb-aim-row">
             <span class="pb-aim-name">⚡ ${esc(gT('gPower'))}</span>
@@ -419,14 +478,22 @@ PetBattleGame.prototype.render = function () {
         </div>
         <div class="pb-barrels" role="group" aria-label="${esc(gT('gShotsAria'))}">${barrels}</div>
         ${squadChips}
-        <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()">
-          <span class="pb-fire-icon" aria-hidden="true"></span>
-          <span class="pb-fire-copy"><strong id="pbFireTitle"></strong><small id="pbFireHint"></small></span>
-        </button>
         <div class="pb-emotes" role="group" aria-label="${esc(gT('gEmotesAria'))}">
           ${['👍', '😮', '🎉', '😅', '🔥'].map(e =>
             `<button class="pb-emote" type="button" aria-label="${esc(gT('gEmoteAria', { e }))}" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
         </div>
+      </div>
+      <div class="pb-fire-dock">
+        <button class="pb-fire" id="pbFire" type="button" onclick="_pbGameFire()">
+          <span class="pb-fire-icon" aria-hidden="true"></span>
+          <span class="pb-fire-copy"><strong id="pbFireTitle"></strong><small id="pbFireHint"></small></span>
+        </button>
+      </div>
+      <div class="pb-rotate-tip" id="pbRotateTip" role="dialog" aria-modal="true" aria-labelledby="pbRotateTitle" hidden>
+        <div class="pb-rotate-phone" aria-hidden="true"><i></i></div>
+        <strong id="pbRotateTitle">${esc(gT('gRotateTitle'))}</strong>
+        <span>${esc(gT('gRotateHint'))}</span>
+        <button type="button" onclick="_pbGameCloseRotateTip()">${esc(gT('gRotateClose'))}</button>
       </div>
       </div>`;
     this.canvas = this._el('pbCanvas');
@@ -471,7 +538,12 @@ PetBattleGame.prototype._updateUi = function (maxShots) {
   text('pbBanner', this.banner);
   // the on-field repeat of wind and health
   const fw = this.wind();
-  text('pbFieldWind', '💨 ' + (fw > 0 ? '→' : fw < 0 ? '←' : '·') + ' ' + Math.abs(fw));
+  const windAbs=Math.abs(fw);
+  const windStrength=windAbs>=14?'strong':windAbs>=7?'medium':windAbs>0?'light':'calm';
+  const windLabel=gT('gWind'+windStrength.charAt(0).toUpperCase()+windStrength.slice(1));
+  text('pbFieldWind','💨 '+(fw>0?'→':fw<0?'←':'·')+' '+windAbs+' · '+windLabel);
+  const windEl=this._el('pbFieldWind');
+  if (windEl && windEl.dataset.strength!==windStrength) windEl.dataset.strength=windStrength;
   text('pbFieldHpMe', Math.max(0, Math.round(this.myHp)));
   text('pbFieldHpFoe', Math.max(0, Math.round(this.foeHp)));
   text('pbFieldAmmoMe', Math.max(0, this.myAmmo) + ' 💩');
@@ -542,7 +614,7 @@ PetBattleGame.prototype._bindAimControls = function () {
     const forward = (x - startX) * this.meFacing;
     if (forward < 4) return;
     const distance = Math.hypot(forward, startY - y);
-    this.angle = Math.max(PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, Math.atan2(startY - y, forward) * 180 / Math.PI));
+    this.angle = Math.max(this.minAngle, Math.min(PB_ANGLE_MAX, Math.atan2(startY - y, forward) * 180 / Math.PI));
     this.power = Math.max(PB_POWER_MIN, Math.min(PB_POWER_MAX, (distance - 46) / .58));
     this._updateUi(this.calc.maxShotsThisTurn(this.myAmmo));
     this.draw();
@@ -618,7 +690,7 @@ PetBattleGame.prototype._bindAimControls = function () {
       if (key === 'End') { this.cameraAnchor('foe'); return; }
       if (key === 'Escape') { this._followCancelled = true; return; }
     }
-    if (key === 'ArrowLeft') this.angle = Math.max(PB_ANGLE_MIN, this.angle - 1);
+    if (key === 'ArrowLeft') this.angle = Math.max(this.minAngle, this.angle - 1);
     else if (key === 'ArrowRight') this.angle = Math.min(PB_ANGLE_MAX, this.angle + 1);
     else if (key === 'ArrowDown') this.power = Math.max(PB_POWER_MIN, this.power - 2);
     else if (key === 'ArrowUp') this.power = Math.min(PB_POWER_MAX, this.power + 2);
@@ -827,6 +899,24 @@ PetBattleGame.prototype._drawWorld = function () {
   if (this.myTurn && !this.busy && !this.flying.length) {
     this._drawTrajectoryPreview(this.mePos, this.meFacing, this.angle, this.power);
     this._drawAimGuide(this.mePos, this.meFacing, this.angle, this.power, '#fde047', false);
+  }
+
+  // Persistent smoke is painted before the ammunition so the projectile stays
+  // crisp at the head of a soft, widening plume. Particles survive the impact
+  // briefly, which gives the same readable shot history as a real shell trail.
+  for (const smoke of this.projectileSmoke) {
+    const age=Math.min(1,smoke.t/smoke.life), fade=Math.pow(1-age,1.45);
+    const radius=smoke.size*(.72+age*.9);
+    ctx.save(); ctx.globalAlpha=fade*(smoke.rocket ? .72 : .54);
+    ctx.fillStyle=smoke.rocket?'#46505d':'#54463e';
+    ctx.beginPath(); ctx.arc(smoke.x,smoke.y,radius,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=fade*.3; ctx.fillStyle=smoke.rocket?'#cbd5e1':'#b69a84';
+    ctx.beginPath(); ctx.arc(smoke.x-radius*.22,smoke.y-radius*.26,radius*.52,0,Math.PI*2); ctx.fill();
+    if (smoke.rocket && age < .24) {
+      ctx.globalAlpha=(1-age/.24)*.75; ctx.fillStyle='#fb923c';
+      ctx.beginPath(); ctx.arc(smoke.x,smoke.y,Math.max(1.5,radius*.28),0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
   }
 
   // shells in flight
@@ -1179,14 +1269,46 @@ const PB_MATE_ART = {
   },
 };
 
-// Premium portrait cards for HTML surfaces. The tiny canvas chibis remain on
-// the physical castle ledges where a full card would be unreadable; the shop
-// and ability chips use these high-resolution, device-independent portraits.
+// One premium portrait source for Hire cards, status chips and castle posts.
+// Keeping a single identity is more important than preserving the old tiny
+// chibi once the child has paid to hire a recognisable character.
 const PB_MATE_PORTRAITS = Object.freeze({
   gunner: 'img/battle-teammates/rocket-ranger.jpg',
   engineer: 'img/battle-teammates/castle-mechanic.jpg',
   shield: 'img/battle-teammates/royal-guard.jpg',
 });
+
+// The Hire panel and the castle must show the same person. These images are
+// cached once for canvas use; the hand-drawn chibi remains only as a resilient
+// fallback while an image is loading or when a browser refuses the asset.
+const PB_MATE_IMAGE_CACHE = Object.create(null);
+let PB_MATE_IMAGES_LOADING = false;
+function pbPreloadMateImages(onReady) {
+  if (typeof Image === 'undefined') return;
+  const ids = Object.keys(PB_MATE_PORTRAITS);
+  if (ids.every(id => PB_MATE_IMAGE_CACHE[id] && PB_MATE_IMAGE_CACHE[id].complete)) {
+    if (typeof onReady === 'function') onReady();
+    return;
+  }
+  if (PB_MATE_IMAGES_LOADING) return;
+  PB_MATE_IMAGES_LOADING = true;
+  let pending = ids.length;
+  const settled = () => {
+    pending -= 1;
+    if (pending <= 0) {
+      PB_MATE_IMAGES_LOADING = false;
+      if (typeof onReady === 'function') onReady();
+    }
+  };
+  for (const id of ids) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = settled;
+    img.onerror = settled;
+    img.src = PB_MATE_PORTRAITS[id];
+    PB_MATE_IMAGE_CACHE[id] = img;
+  }
+}
 
 function pbMateAvatarURL(id, size) {
   if (!PB_MATE_PORTRAITS[id] || typeof document === 'undefined') return '';
@@ -1204,6 +1326,7 @@ function pbDrawSquad(ctx, rules, charges, facing) {
     const charge = charges[i];
     const spot = spots[i];
     const draw = PB_MATE_ART[charge && charge.id];
+    const portrait = PB_MATE_IMAGE_CACHE[charge && charge.id];
     if (!draw) continue;
     ctx.save();
     ctx.translate(spot.x, spot.y);
@@ -1218,20 +1341,112 @@ function pbDrawSquad(ctx, rules, charges, facing) {
     ctx.fillStyle='#6b4a3d'; ctx.fillRect(-17,0,34,5);
     ctx.fillStyle='#22c55e'; ctx.strokeStyle='#f0fdf4'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.arc(11,-38,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    // Characters stand upright and unstretched: correct the mirror, and the
-    // castle's slight non-uniform scale, but let them GROW with the fortress.
-    ctx.scale((facing < 0 ? -1 : 1)*1.12,(cs.sx/cs.sy)*1.12);
-    ctx.globalAlpha = 1;
-    draw(ctx);
-    ctx.globalAlpha = 1;
+    // Correct the castle mirror and its non-uniform scaling. The same premium
+    // portrait used by Hire now fills this arched post, so the teammate is
+    // recognisable even when the camera is zoomed out across the long world.
+    ctx.scale(facing < 0 ? -1 : 1,cs.sx/cs.sy);
+    if (portrait && portrait.complete && portrait.naturalWidth) {
+      ctx.save();
+      ctx.beginPath();
+      if (typeof ctx.roundRect==='function') ctx.roundRect(-14,-43,28,39,6);
+      else ctx.rect(-14,-43,28,39);
+      ctx.clip();
+      ctx.drawImage(portrait,-14,-43,28,39);
+      ctx.restore();
+      ctx.strokeStyle='#f8fafc'; ctx.lineWidth=1.8;
+      ctx.beginPath();
+      if (typeof ctx.roundRect==='function') ctx.roundRect(-14,-43,28,39,6);
+      else ctx.rect(-14,-43,28,39);
+      ctx.stroke();
+    } else {
+      ctx.scale(1.12,1.12);
+      ctx.globalAlpha = 1;
+      draw(ctx);
+      ctx.globalAlpha = 1;
+    }
     ctx.restore();
   }
 }
+
+// Remember a real impact in castle-local coordinates. Nearby hits merge into
+// one larger/deeper cavity instead of stacking black circles, while a strict
+// per-castle cap prevents a long battle from turning into visual noise.
+PetBattleGame.prototype._recordCastleHole = function (target,hit,damage) {
+  if (!target || !hit || damage <= 0) return;
+  const side=Math.abs(target.x-this.mePos.x)<1?'me':'foe';
+  const facing=side==='me'?this.meFacing:-this.meFacing;
+  const cs=pbCastleScale(this.rules);
+  let x=(hit.x-target.x)/Math.max(.001,cs.sx)*(facing<0?-1:1);
+  let y=(hit.y-target.y)/Math.max(.001,cs.sy);
+  x=Math.max(-55,Math.min(55,x)); y=Math.max(-103,Math.min(-24,y));
+  // Keep the dog's doorway readable: a low centre impact bites into the wall
+  // immediately beside it, matching the physical edge the projectile struck.
+  if (Math.abs(x)<29 && y>-79) x=(hit.x>=target.x?1:-1)*38;
+  const radius=Math.max(15,Math.min(27,14+damage*.42));
+  const sameSide=this.castleHoles.filter(h => h.side===side);
+  let hole=sameSide.find(h => Math.hypot(h.x-x,h.y-y)<Math.max(24,h.r+radius*.45));
+  if (hole) {
+    hole.x=(hole.x*hole.hits+x)/(hole.hits+1); hole.y=(hole.y*hole.hits+y)/(hole.hits+1);
+    hole.hits+=1; hole.r=Math.min(32,Math.max(hole.r,radius)+3.5); hole.depth=Math.min(1,hole.depth+.2);
+  } else {
+    if (sameSide.length>=5) {
+      hole=sameSide[0]; hole.x=x; hole.y=y; hole.r=radius; hole.hits=1; hole.depth=.58;
+    } else this.castleHoles.push({side,x,y,r:radius,hits:1,depth:.58});
+  }
+};
+
+// A layered jagged cavity: branching cracks sit under a scorched broken rim,
+// then a radial black core and lower inner lip create visible wall thickness.
+PetBattleGame.prototype._drawCastleHoles = function (pos,damage) {
+  if (!this.ctx || damage>=4 || !Array.isArray(this.castleHoles) || !this.castleHoles.length) return;
+  const side=Math.abs(pos.x-this.mePos.x)<1?'me':'foe', ctx=this.ctx;
+  const holes=this.castleHoles.filter(h => h.side===side);
+  for (let index=0;index<holes.length;index++) {
+    const hole=holes[index]; let x=hole.x, y=hole.y;
+    if (damage>=2 && x>4 && y<-54) y=-46;
+    if (damage>=3) { x=Math.max(-42,Math.min(42,x)); y=Math.max(-46,y); }
+    const r=hole.r;
+    ctx.save(); ctx.translate(x,y); ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle='rgba(45,27,26,.88)'; ctx.lineWidth=2.5;
+    const rays=6+Math.min(4,hole.hits);
+    for (let ray=0;ray<rays;ray++) {
+      const a=(ray/rays)*Math.PI*2+index*.37, inner=r*.75, outer=r*(1.3+(ray%3)*.2);
+      ctx.beginPath(); ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);
+      ctx.lineTo(Math.cos(a+.06)*outer*.72,Math.sin(a+.06)*outer*.72);
+      ctx.lineTo(Math.cos(a-.04)*outer,Math.sin(a-.04)*outer); ctx.stroke();
+    }
+    ctx.beginPath();
+    const teeth=14;
+    for (let i=0;i<teeth;i++) {
+      const a=i/teeth*Math.PI*2, jag=r*(.82+((i*7+hole.hits*3)%5)*.055);
+      const px=Math.cos(a)*jag, py=Math.sin(a)*jag*(.88+hole.depth*.08);
+      if (!i) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.closePath();
+    const cavity=ctx.createRadialGradient(-r*.2,-r*.22,1,0,0,r);
+    cavity.addColorStop(0,'#050609'); cavity.addColorStop(.5,'#171014');
+    cavity.addColorStop(.76,'#3b2421'); cavity.addColorStop(1,'#8a4d34');
+    ctx.fillStyle=cavity; ctx.fill(); ctx.strokeStyle='#241315'; ctx.lineWidth=3.5; ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,.8)'; ctx.beginPath(); ctx.ellipse(-r*.08,-r*.04,r*.56,r*.47,-.12,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,190,133,.52)'; ctx.lineWidth=2.4;
+    ctx.beginPath(); ctx.arc(0,1,r*.68,.16*Math.PI,.84*Math.PI); ctx.stroke();
+    ctx.restore();
+  }
+};
 
 PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, accent, level, charges, castleSkinId) {
   const ctx = this.ctx;
   const damage = pbHouseDamageStage(hp);
   const wear = 1 - Math.max(0, Math.min(100, Number(hp) || 0)) / 100;
+  // Breeds visibly grow with level even inside the castle. Keep the range
+  // gentle so the smallest Chihuahua and largest Mastiff both fit the door.
+  const petScale = .84 + Math.max(0, Math.min(199, (Number(level) || 1) - 1)) / 199 * .22;
+  const petReady = !!(img && img.complete && img.naturalWidth);
+  const drawPet = (x, y, w, h) => {
+    if (!petReady) return;
+    const dw = w * petScale, dh = h * petScale;
+    ctx.drawImage(img, x + (w - dw) / 2, y + h - dh, dw, dh);
+  };
   ctx.save();
   ctx.translate(pos.x, pos.y);
   // Grow the whole hand-drawn castle to the ruleset's box. Everything below is
@@ -1271,11 +1486,12 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   const premiumCastle = damage < 5 && typeof CastleSkins !== 'undefined'
     && CastleSkins.drawBattle && CastleSkins.drawBattle(ctx, skin ? skin.id : castleSkinId, damage);
   if (premiumCastle) {
+    if (typeof this._drawCastleHoles==='function') this._drawCastleHoles(pos,damage);
     // The dog remains visibly housed inside the grand doorway until the
     // structure is critically broken, then stands exposed in first air.
-    if (img && img.complete && img.naturalWidth) {
-      if (damage < 4) ctx.drawImage(img, -24, -55, 48, 51);
-      else ctx.drawImage(img, -34, -82, 68, 75);
+    if (petReady) {
+      if (damage < 4) drawPet(-24, -55, 48, 51);
+      else drawPet(-34, -82, 68, 75);
     }
 
     // High-contrast broken edges explain the large transparent bites cut out
@@ -1325,7 +1541,7 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
       round(-piece[2] / 2, -piece[3] / 2, piece[2], piece[3], 3); ctx.fill();
       ctx.strokeStyle = palette[3]; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
     }
-    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -37, -88, 74, 82);
+    drawPet(-37, -88, 74, 82);
     ctx.fillStyle = 'rgba(15,23,42,.88)'; round(-29, -111, 58, 23, 9); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.font = '900 12px sans-serif'; ctx.textAlign = 'center';
     ctx.save(); if (facing < 0) ctx.scale(-1, 1);
@@ -1404,6 +1620,8 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     for (const x of [-45, -18, 18, 45]) { ctx.beginPath(); ctx.moveTo(x, -66); ctx.lineTo(x, -10); ctx.stroke(); }
   }
 
+  if (typeof this._drawCastleHoles==='function') this._drawCastleHoles(pos,damage);
+
   // Arched kennel window. At critical damage the dog is outdoors between the
   // standing wall remnants; otherwise it remains visibly protected inside.
   if (damage < 4) {
@@ -1412,12 +1630,12 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
     ctx.save();
     ctx.beginPath(); ctx.arc(0, -62, 27, Math.PI, 0); ctx.lineTo(27, -14); ctx.lineTo(-27, -14); ctx.closePath(); ctx.clip();
     ctx.fillStyle = palette[5]; ctx.fillRect(-28, -65, 56, 53);
-    if (img && img.complete && img.naturalWidth) ctx.drawImage(img, -31, -75, 62, 68);
+    drawPet(-31, -75, 62, 68);
     ctx.restore();
     ctx.strokeStyle = accent; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.arc(0, -63, 30, Math.PI, 0); ctx.lineTo(30, -13); ctx.lineTo(-30, -13); ctx.closePath(); ctx.stroke();
-  } else if (img && img.complete && img.naturalWidth) {
-    ctx.drawImage(img, -34, -82, 68, 75);
+  } else if (petReady) {
+    drawPet(-34, -82, 68, 75);
   }
 
   // Soot scales continuously, while missing geometry communicates milestones.
@@ -1550,7 +1768,7 @@ PetBattleGame.prototype._hasActiveAnimation = function () {
   // A travelling camera counts: the frame loop must keep running until the
   // world has finished sliding, or a pan would freeze halfway.
   const camMoving = !!(this.camera && this.camera.isPannable() && !this.camera.settled());
-  return camMoving || this.flying.length > 0 || (this.blasts || []).length > 0 || this.impactParticles.length > 0 || this.castleDebris.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
+  return camMoving || this.flying.length > 0 || (this.blasts || []).length > 0 || this.projectileSmoke.length > 0 || this.impactParticles.length > 0 || this.castleDebris.length > 0 || this.houseImpacts.length > 0 || this.emotes.some(e => !e.static);
 };
 
 PetBattleGame.prototype._requestFrame = function () {
@@ -1591,6 +1809,10 @@ PetBattleGame.prototype.step = function (k) {
   const C = this.calc;
   k = (typeof k === 'number' && isFinite(k) && k > 0) ? Math.min(3, k) : 1;
   this.blasts = (this.blasts || []).filter(b => (b.t += k) < b.life);
+  this.projectileSmoke = this.projectileSmoke.filter(smoke => {
+    smoke.t+=k; smoke.x+=smoke.vx*k; smoke.y+=smoke.vy*k; smoke.size+=.025*k;
+    return smoke.t<smoke.life;
+  });
   this.impactParticles = this.impactParticles.filter(p => {
     p.t += k; p.x += p.vx * k; p.y += p.vy * k; p.vy += .16 * k;
     return p.t < p.life;
@@ -1608,7 +1830,19 @@ PetBattleGame.prototype.step = function (k) {
     if (f.i < f.points.length - 1) {
       f.tick = (f.tick || 0) + k;
       // one path point per two 60Hz ticks — the original readable pace
+      const beforeSmokePoint=f.i;
       while (f.tick >= 2 && f.i < f.points.length - 1) { f.tick -= 2; f.i += 1; }
+      f.smokeTravel=(f.smokeTravel||0)+Math.max(0,f.i-beforeSmokePoint);
+      if (!this.reducedMotion && f.smokeTravel>=2 && this.projectileSmoke.length<180) {
+        f.smokeTravel%=2;
+        const point=f.points[f.i], phase=f.i+(f.rocket?17:3);
+        if (point) this.projectileSmoke.push({
+          x:point.x+Math.sin(phase*.73)*2.4, y:point.y+Math.cos(phase*.51)*1.8,
+          vx:(this.wind?this.wind():0)*.004+Math.sin(phase)*.025,
+          vy:f.rocket?-.075:-.045, size:(f.rocket?6.5:5.2)+(phase%4)*.55,
+          t:0, life:(f.rocket?92:72)+(phase%5)*5, rocket:!!f.rocket,
+        });
+      }
       allDone = false;
     }
     else if (!f.done) {
@@ -1629,14 +1863,17 @@ PetBattleGame.prototype.step = function (k) {
         }
         if (f.damage > 0) {
           const firstImpact=!this.houseImpacts.length;
-          this.houseImpacts.push({ x: f.target.x, y: f.target.y - 62, t: 0, life: this.reducedMotion ? 1 : 42, strength:Math.min(1,.55+f.damage/25) });
+          this._recordCastleHole(f.target,f.hit,f.damage);
+          const impactX=Math.max(f.target.x-58,Math.min(f.target.x+58,f.hit.x));
+          const impactY=Math.max(f.target.y-106,Math.min(f.target.y-22,f.hit.y));
+          this.houseImpacts.push({ x:impactX, y:impactY, t:0, life:this.reducedMotion?1:42, strength:Math.min(1,.55+f.damage/25) });
           if (firstImpact && typeof navigator!=='undefined' && typeof navigator.vibrate==='function' && !this.reducedMotion) navigator.vibrate([28,18,46]);
           if (!this.reducedMotion) {
             const masonry = ['#e0ae6b', '#bd7954', '#8b5a4c', '#5b4140'];
             for (let i = 0; i < 22 && this.castleDebris.length < 48; i++) {
               const side = i % 2 ? 1 : -1;
               this.castleDebris.push({
-                x: f.target.x + side * (6 + i % 5), y: f.target.y - 58 - (i % 4) * 7,
+                x: impactX + side * (4 + i % 5), y: impactY - (i % 4) * 4,
                 vx: side * (2.3 + (i % 6) * .7), vy: -3.4 - (i % 5) * .72,
                 rotation: i * .47, spin: side * (.075 + (i % 4) * .025),
                 w: 11 + (i % 5) * 3.2, h: 8 + (i % 4) * 2.8,
@@ -1695,7 +1932,7 @@ PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, l
       done: false, size: C.shellSize(level), level, spin: rocketIndex % 2 ? -1 : 1, rocket: true,
     });
   }
-  return Math.min(100, damage);
+  return Math.min(Number.isFinite(this.rules && this.rules.maxVolleyDamage) ? this.rules.maxVolleyDamage : 100, damage);
 };
 
 // One line per volley, kept so the child can replay the story of a battle
@@ -1898,7 +2135,7 @@ function _pbGameSetAngle(v) {
   if (!g || !g.myTurn || g.busy || g.finished) return;
   const n = Number(v);
   if (!isFinite(n)) return;
-  g.angle = Math.max(PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, n));
+  g.angle = Math.max(g.minAngle || PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, n));
   g._updateUi(g.calc.maxShotsThisTurn(g.myAmmo));
   g.draw();
   _pbBroadcastAim(g);
@@ -1934,6 +2171,12 @@ function _pbGameFollow() {
   g._requestFrame();
   g.draw();
 }
+function _pbGameLandscape() { const g = _pbCurrentGame(); return g ? g.enterLandscape() : Promise.resolve(false); }
+function _pbGameCloseRotateTip() {
+  const g = _pbCurrentGame();
+  const tip = g && g._el ? g._el('pbRotateTip') : null;
+  if (tip) tip.hidden = true;
+}
 
 // 🇬🇧/🇻🇳 mid-battle. Most of the text is baked into the shell markup, which is
 // built once, so the language switch has to rebuild it — cheap, and it keeps
@@ -1950,5 +2193,6 @@ function _pbGameSetLang(lang) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PetBattleGame, pbHouseDamageStage, pbHeartFills,
     pbCastleScale, pbLedgeSpots, PB_LEDGE_SLOTS, pbDrawSquad, PB_MATE_ART, PB_MATE_PORTRAITS,
+    PB_MATE_IMAGE_CACHE, pbPreloadMateImages,
     pbMateAvatarURL };
 }

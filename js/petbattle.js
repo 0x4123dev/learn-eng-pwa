@@ -14,7 +14,6 @@ let _pbMsg = '';
 let _pbLastTurn = 0;
 let _pbLink = null;        // realtime transport for the running battle
 let _pbShowingResult = false;   // keep the result card up until the child taps Xong
-let _pbSceneId = null;           // committed locally; snapshotted on a friend challenge
 
 // The lobby polls fast so a 60-second invite shows up promptly; a running
 // battle is driven by the relay, so its tick is just a cheap keepalive. The
@@ -26,27 +25,9 @@ function pbEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function pbSelectedSceneId() {
-  if (_pbSceneId) return _pbSceneId;
-  let saved = '';
-  try { saved = localStorage.getItem('petBattleScene') || ''; } catch (e) {}
-  if (!saved && typeof appState !== 'undefined' && appState) saved = appState.petBattleScene || '';
-  _pbSceneId = (typeof BattleScenes !== 'undefined')
-    ? BattleScenes.normalizeBattleSceneId(saved) : (saved || 'cloudstep-meadow');
-  return _pbSceneId;
-}
-
-function choosePetBattleScene(id) {
-  _pbSceneId = (typeof BattleScenes !== 'undefined')
-    ? BattleScenes.normalizeBattleSceneId(id) : String(id || 'cloudstep-meadow');
-  try { localStorage.setItem('petBattleScene', _pbSceneId); } catch (e) {}
-  if (typeof appState !== 'undefined' && appState) {
-    appState.petBattleScene = _pbSceneId;
-    if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-      try { saveUserData(currentUser, appState); } catch (e) {}
-    }
-  }
-  renderPetBattle();
+function pbRandomSceneId() {
+  return (typeof BattleScenes !== 'undefined' && BattleScenes.randomBattleSceneId)
+    ? BattleScenes.randomBattleSceneId() : 'cloudstep-meadow';
 }
 
 // ---- language ----
@@ -61,6 +42,11 @@ const PB_STR = {
     title: '⚔️ Arena',
     loading: 'Loading…',
     offline: '⚠️ You need internet (and to be signed in) to battle friends.',
+    offlineKicker: 'ARENA READY',
+    offlineTitle: 'Your castle is waiting',
+    offlineSignedOut: 'Connect this profile to play friends, earn cups and bring your castle into battle.',
+    offlineNetwork: 'The arena could not reach the battle server. Your learning progress is safe on this device.',
+    offlineProfile: 'Open profile', offlineRetry: 'Try again', offlineLearn: 'Keep learning',
 
     powLevel: 'Level', powNote: 'Higher level = bigger shells, stronger blasts',
     powBlast: 'Blast radius', powDamage: 'Damage per shot', powShell: 'Shell size',
@@ -146,8 +132,12 @@ const PB_STR = {
     practiceWin: 'You beat the bot! 🎉', practiceLose: 'The bot won this one 💪',
     practiceNote: 'Practice earns no coins or cups — beat a friend for those! 🏆',
     practiceAgain: '🤖 Play again',
-    sceneTitle: 'Choose your arena', sceneHint: 'Swipe to explore 10 worlds', sceneAria: 'Battle arena',
-    sceneInvite: 'Arena selected by the challenger',
+    sceneTitle: 'Surprise battlefield', sceneHint: 'The arena is revealed after the challenge',
+    sceneMix: '50% classic world · 50% high-arc obstacle world',
+    sceneInvite: 'Random arena',
+    nightRaidKicker: 'NEW STRATEGY GAME', nightRaidTitle: 'Castle Night Raid',
+    nightRaidSub: 'Scout five lanes, choose the right crew and breach the keep before dawn.',
+    nightRaidCta: 'START NIGHT RAID',
     castleTitle: 'Castle Workshop', castleHint: 'Collect 10 cosmetic castles',
     castleOwned: 'Owned', castleUse: 'Use skin',
     castleUsing: 'Equipped', castleBuy: 'Buy for {n} coins', castlePoor: 'Need {n} more coins',
@@ -161,6 +151,7 @@ const PB_STR = {
     gAngle: 'ANGLE', gPower: 'POWER',
     gDragHint: 'DRAG TO AIM',
     gAimTitle: 'TAP OR DRAG ON THE BATTLEFIELD', gAimSub: 'The aim line sets both angle and power',
+    gHighArcSub: 'Obstacle arena: lob at 35° or higher to clear the centre',
     gShots: '{n} POOP', gLoadAria: 'Load {n} poop',
     gFire: 'FIRE!', gFireHint: 'PRESS SPACE TO FIRE', gFireAria: 'Fire',
     gWaiting: 'WAITING', gWaitHint: 'OPPONENT IS PLAYING', gWaitAria: 'Waiting for the opponent',
@@ -181,7 +172,12 @@ const PB_STR = {
     gFollowShot: '🎯 Follow shot',
     gMinimapAria: 'Battlefield map: your castle, the opponent, and where you are looking',
     gAnchorsAria: 'Jump the view',
+    gLandscape: 'Play sideways', gLandscapeAria: 'Open the battle in landscape mode',
+    gRotateTitle: 'Turn your phone sideways',
+    gRotateHint: 'This browser cannot rotate automatically. Keep this game open and rotate your device.',
+    gRotateClose: 'Got it',
     gFieldStatusAria: 'Health, poop left, level and wind',
+    gWindCalm: 'CALM', gWindLight: 'LIGHT', gWindMedium: 'MEDIUM', gWindStrong: 'STRONG',
     gManualAria: 'Set angle and power by hand',
     gAngleLess: 'Lower the angle by one degree', gAngleMore: 'Raise the angle by one degree',
     gPowerLess: 'Reduce the power by one', gPowerMore: 'Increase the power by one',
@@ -193,6 +189,11 @@ const PB_STR = {
     title: '⚔️ Đấu trường',
     loading: 'Đang tải…',
     offline: '⚠️ Cần mạng (và đăng nhập) để thi đấu với bạn bè.',
+    offlineKicker: 'ĐẤU TRƯỜNG ĐÃ SẴN SÀNG',
+    offlineTitle: 'Lâu đài đang chờ bé',
+    offlineSignedOut: 'Kết nối hồ sơ để đấu với bạn bè, nhận cúp và đưa lâu đài vào trận.',
+    offlineNetwork: 'Đấu trường chưa kết nối được máy chủ. Tiến độ học trên máy vẫn an toàn.',
+    offlineProfile: 'Mở hồ sơ', offlineRetry: 'Thử lại', offlineLearn: 'Tiếp tục học',
 
     powLevel: 'Cấp', powNote: 'Cấp càng cao, đạn càng to và nổ càng mạnh',
     powBlast: 'Bán kính nổ', powDamage: 'Sát thương mỗi phát', powShell: 'Cỡ đạn',
@@ -276,8 +277,12 @@ const PB_STR = {
     practiceWin: 'Bé thắng máy rồi! 🎉', practiceLose: 'Máy thắng trận này 💪',
     practiceNote: 'Luyện tập không có xu và cúp — thắng bạn bè mới có nhé! 🏆',
     practiceAgain: '🤖 Chơi lại',
-    sceneTitle: 'Chọn đấu trường', sceneHint: 'Vuốt để khám phá 10 thế giới', sceneAria: 'Đấu trường',
-    sceneInvite: 'Đấu trường do người thách đấu chọn',
+    sceneTitle: 'Chiến trường bất ngờ', sceneHint: 'Map sẽ hiện sau khi gửi lời thách đấu',
+    sceneMix: '50% map cổ điển · 50% map vật cản phải bắn vòng',
+    sceneInvite: 'Đấu trường ngẫu nhiên',
+    nightRaidKicker: 'GAME CHIẾN THUẬT MỚI', nightRaidTitle: 'Cướp Đêm Lâu Đài',
+    nightRaidSub: 'Trinh sát năm lane, chọn đúng đội cướp và phá thành trước bình minh.',
+    nightRaidCta: 'BẮT ĐẦU CƯỚP ĐÊM',
     castleTitle: 'Xưởng Lâu Đài', castleHint: 'Sưu tập 10 skin lâu đài',
     castleOwned: 'Đã sở hữu', castleUse: 'Sử dụng',
     castleUsing: 'Đang dùng', castleBuy: 'Mua với {n} xu', castlePoor: 'Thiếu {n} xu',
@@ -291,6 +296,7 @@ const PB_STR = {
     gAngle: 'GÓC', gPower: 'LỰC',
     gDragHint: 'KÉO ĐƯỜNG NGẮM',
     gAimTitle: 'CHẠM HOẶC KÉO TRÊN CHIẾN TRƯỜNG', gAimSub: 'Đường ngắm điều khiển cả góc và lực',
+    gHighArcSub: 'Map vật cản: bắn từ 35° trở lên để vượt qua chính giữa',
     gShots: '{n} VIÊN', gLoadAria: 'Nạp {n} viên phân',
     gFire: 'KHAI HỎA!', gFireHint: 'NHẤN SPACE ĐỂ BẮN', gFireAria: 'Bắn đạn',
     gWaiting: 'ĐANG CHỜ', gWaitHint: 'ĐỐI THỦ ĐANG CHƠI', gWaitAria: 'Đang chờ đối thủ',
@@ -311,7 +317,12 @@ const PB_STR = {
     gFollowShot: '🎯 Bám theo đạn',
     gMinimapAria: 'Bản đồ chiến trường: nhà bé, đối thủ, và chỗ bé đang nhìn',
     gAnchorsAria: 'Nhảy tới vị trí',
+    gLandscape: 'Chơi ngang', gLandscapeAria: 'Mở chiến trường ở chế độ màn hình ngang',
+    gRotateTitle: 'Xoay điện thoại nằm ngang',
+    gRotateHint: 'Trình duyệt này không tự xoay được. Giữ màn hình game mở rồi xoay thiết bị.',
+    gRotateClose: 'Đã hiểu',
     gFieldStatusAria: 'Máu, số phân còn lại, cấp và gió',
+    gWindCalm: 'LẶNG', gWindLight: 'NHẸ', gWindMedium: 'VỪA', gWindStrong: 'MẠNH',
     gManualAria: 'Chỉnh góc và lực bằng tay',
     gAngleLess: 'Giảm góc một độ', gAngleMore: 'Tăng góc một độ',
     gPowerLess: 'Giảm lực một đơn vị', gPowerMore: 'Tăng lực một đơn vị',
@@ -358,6 +369,12 @@ function openPetBattle() {
   _pbLang = 'en';                 // every visit starts in English, by design
   _pbHistoryOpen = -1;
   if (typeof switchScreen === 'function') switchScreen('petBattleScreen');
+  if (!_pbToken()) {
+    _pbState = { offline: true };
+    _pbStopPolling();
+    renderPetBattle();
+    return;
+  }
   renderPetBattle();
   refreshPetBattle();
   _pbStartPolling();
@@ -376,7 +393,10 @@ function closePetBattle() {
 async function refreshPetBattle() {
   const r = await _pbApi('battle');
   if (r.ok && r.data) _pbState = r.data;
-  else _pbState = { offline: true };
+  else {
+    _pbState = { offline: true };
+    _pbStopPolling();
+  }
   renderPetBattle();                     // no-op while the result card is up
   return _pbState;
 }
@@ -459,9 +479,8 @@ function _pbPowerPanel() {
 // is stronger before accepting.
 // ---- hiring đồng đội ----
 // The abilities fire, the chips are wired and the bench draws on both castles.
-// Friend battles still run on field_version 3 until the server is bumped, so a
-// hired squad currently reaches the arena through bot practice and the local
-// battle path; the v4 fortress arrives with that server change.
+// Every battle snapshots its field version, so teammate abilities and visuals
+// replay under the exact physics that were active when the challenge started.
 const PB_TEAMMATES_ENABLED = true;
 
 // The cart lives here, not in appState: a squad is hired FOR ONE BATTLE, so
@@ -687,24 +706,40 @@ function _pbAmmoPanel(st) {
     </div>`;
 }
 
-function _pbScenePicker() {
-  if (typeof BattleScenes === 'undefined') return '';
-  const selected = pbSelectedSceneId();
-  const lang = _pbLang === 'vi' ? 'vi' : 'en';
-  return `<section class="pb-scene-picker" aria-labelledby="pbScenePickerTitle">
-    <div class="pb-scene-picker-head">
-      <strong id="pbScenePickerTitle">${pbT('sceneTitle')}</strong><span>${pbT('sceneHint')}</span>
+function _pbRandomArenaCard() {
+  return `<section class="pb-arena-random" aria-labelledby="pbRandomArenaTitle">
+    <div class="pb-arena-random-art" aria-hidden="true">
+      <img src="/img/battle-scenes/cloudstep-meadow/poster.webp" width="160" height="90" alt="" loading="lazy">
+      <img src="/img/battle-scenes/tropical-monolith/poster.webp" width="160" height="90" alt="" loading="lazy">
+      <span>?</span>
     </div>
-    <div class="pb-scene-list" role="radiogroup" aria-label="${pbEsc(pbT('sceneAria'))}">
-      ${BattleScenes.scenes.map(scene => {
-        const on = scene.id === selected;
-        return `<button type="button" class="pb-scene-option" role="radio" aria-checked="${on}"
-                  onclick="choosePetBattleScene('${scene.id}')">
-          <img src="${scene.poster}" width="320" height="180" loading="lazy" alt="">
-          <span class="pb-scene-check" aria-hidden="true">✓</span>
-          <span class="pb-scene-copy"><b>${pbEsc(scene.name[lang])}</b><small>${pbEsc(scene.description[lang])}</small></span>
-        </button>`;
-      }).join('')}
+    <div class="pb-arena-random-copy">
+      <strong id="pbRandomArenaTitle">${pbT('sceneTitle')}</strong>
+      <span>${pbT('sceneHint')}</span>
+      <small>${pbT('sceneMix')}</small>
+    </div>
+  </section>`;
+}
+
+function _pbNightRaidCard() {
+  if (typeof NightRaid === 'undefined') return '';
+  return `<section class="pb-night-raid-card" aria-labelledby="pbNightRaidTitle">
+    <div class="pb-night-raid-art" aria-hidden="true">
+      <svg viewBox="0 0 180 120">
+        <defs><linearGradient id="pbNrSky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0a1734"/><stop offset="1" stop-color="#354e7d"/></linearGradient></defs>
+        <rect width="180" height="120" rx="18" fill="url(#pbNrSky)"/>
+        <circle cx="138" cy="28" r="17" fill="#d9efff"/><circle cx="145" cy="23" r="16" fill="#172a50"/>
+        <path d="M12 94h156v26H12z" fill="#203e39"/><path d="M27 96V58h18V42h22v16h19v38M21 58l15-16 15 16M52 42l11-18 15 18" fill="#ad744e" stroke="#f4c58d" stroke-width="3"/>
+        <path d="M55 96V76a9 9 0 0 1 18 0v20" fill="#111827"/>
+        <path d="M114 99c-9-10-5-24 7-27 10-2 18 7 15 17-2 9-13 15-22 10Z" fill="#8ece6e" stroke="#26352b" stroke-width="3"/>
+        <circle cx="122" cy="80" r="2.5"/><circle cx="130" cy="80" r="2.5"/>
+      </svg>
+    </div>
+    <div class="pb-night-raid-copy">
+      <span>${pbT('nightRaidKicker')}</span>
+      <h2 id="pbNightRaidTitle">${pbT('nightRaidTitle')}</h2>
+      <p>${pbT('nightRaidSub')}</p>
+      <button type="button" class="pb-btn primary" onclick="openNightRaid()">${pbT('nightRaidCta')}</button>
     </div>
   </section>`;
 }
@@ -719,6 +754,29 @@ function _pbSceneInvite(id) {
   </div>`;
 }
 
+function _pbOfflineCard() {
+  const signedIn = !!_pbToken();
+  const copy = signedIn ? pbT('offlineNetwork') : pbT('offlineSignedOut');
+  const primary = signedIn
+    ? `<button type="button" class="pb-btn primary" onclick="refreshPetBattle()">${pbT('offlineRetry')}</button>`
+    : `<button type="button" class="pb-btn primary" onclick="closePetBattle(); navigateToProfile()">${pbT('offlineProfile')}</button>`;
+  return `<section class="pb-offline-card" aria-labelledby="pbOfflineTitle">
+    <div class="pb-offline-art">
+      <img src="img/battle-scenes/cloudstep-meadow/poster.webp" width="640" height="360" alt="" loading="eager">
+      <span class="pb-offline-badge" aria-hidden="true">⚔️</span>
+    </div>
+    <div class="pb-offline-copy" role="status" aria-live="polite">
+      <span class="pb-offline-kicker">${pbT('offlineKicker')}</span>
+      <h2 id="pbOfflineTitle">${pbT('offlineTitle')}</h2>
+      <p>${copy}</p>
+      <div class="pb-offline-actions">
+        ${primary}
+        <button type="button" class="pb-btn" onclick="closePetBattle(); switchScreen('learnHubScreen')">${pbT('offlineLearn')}</button>
+      </div>
+    </div>
+  </section>`;
+}
+
 function renderPetBattle() {
   const screen = document.getElementById('petBattleScreen');
   if (!screen) return;
@@ -729,7 +787,7 @@ function renderPetBattle() {
   if (!st) { screen.dataset.pbLobbySig = ''; screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('loading')}</div>`); return; }
   if (st.offline) {
     screen.dataset.pbLobbySig = '';
-    screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('offline')}</div>`);
+    screen.innerHTML = _pbShell(_pbOfflineCard());
     return;
   }
 
@@ -793,31 +851,25 @@ function renderPetBattle() {
          <button class="pb-btn primary pb-go-friends" onclick="pbGoToFriends()">${pbT('goFriends')}</button>
        </div>`;
 
-  // Nothing below changes between polls unless one of these does. Rebuilding
-  // anyway threw away the arena picker's scroll position — and any half-made
-  // tap — once every second, which is what made choosing a background feel
-  // broken.
+  // Nothing below changes between polls unless one of these does. Avoiding an
+  // unnecessary rebuild keeps the castle workshop and touch focus stable.
   const sig = JSON.stringify([
     st.ammo, st.readyAt || 0, !!st.allowBot, ready,
     (friends || []).map(f => [f.userId, _pbFriendWait(f)]), allWaiting, _pbMsg, _pbLang, _pbHistoryOpen,
-    (typeof pbSelectedSceneId === 'function' ? pbSelectedSceneId() : ''),
     pbSelectedCastleSkinId(), pbOwnedCastleSkins().join(','),
     _pbHistory().length,
     _pbHires.join(","), _pbCoins(),
   ]);
-  if (screen.dataset.pbLobbySig === sig && screen.querySelector('.pb-scene-list')) return;
+  if (screen.dataset.pbLobbySig === sig && screen.querySelector('.pb-arena-random')) return;
 
-  // When it genuinely must redraw, carry the scroll across rather than
-  // snapping the child back to the first arena.
-  const prevList = screen.querySelector('.pb-scene-list');
-  const keepScroll = prevList ? prevList.scrollLeft : 0;
   const prevCastleList = screen.querySelector('.pb-castle-list');
   const keepCastleScroll = prevCastleList ? prevCastleList.scrollLeft : 0;
 
   screen.innerHTML = _pbShell(`
     ${_pbPowerPanel()}
     ${_pbCastleWorkshop()}
-    ${_pbScenePicker()}
+    ${_pbRandomArenaCard()}
+    ${st.allowBot ? _pbNightRaidCard() : ''}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
@@ -842,10 +894,6 @@ function renderPetBattle() {
     ${_pbHistoryPanel()}`);
   screen.dataset.pbLobbySig = sig;
   _pbRenderCastlePreviews(screen);
-  if (keepScroll) {
-    const nextList = screen.querySelector('.pb-scene-list');
-    if (nextList) nextList.scrollLeft = keepScroll;
-  }
   if (keepCastleScroll) {
     const nextCastleList = screen.querySelector('.pb-castle-list');
     if (nextCastleList) nextCastleList.scrollLeft = keepCastleScroll;
@@ -995,7 +1043,7 @@ function _pbFriendWait(f) {
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, backgroundId: pbSelectedSceneId(), castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()),
   });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
@@ -1142,15 +1190,16 @@ function startBotBattle() {
   const pet = _pbMyPet();
   let seed = 1;
   try { seed = (Math.floor(Math.random() * 0x7fffffff) >>> 0) || 1; } catch (e) {}
+  const backgroundId = pbRandomSceneId();
+  const scene = typeof BattleScenes !== 'undefined' ? BattleScenes.getBattleScene(backgroundId) : null;
 
   // The bot mirrors the child's own pet level, so practice measures aim
   // rather than who has been studying longer.
   const view = {
     id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
-    // Practice writes no battle row, so it can show the v4 fortress before
-    // the server is allowed to stamp that version on real battles.
-    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? 4 : 1,
-    backgroundId: pbSelectedSceneId(),
+    // Practice uses the newest rules just like a newly-created friend battle.
+    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? (scene && scene.highArc ? 7 : 6) : 1,
+    backgroundId,
     // Try before you buy: the squad fights here for free. The bot gets no
     // teammates of its own — it has no idea how to trigger a charge, and a
     // bench that never acts would teach the child the wrong thing.
@@ -1264,7 +1313,7 @@ if (typeof module !== 'undefined' && module.exports) {
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
-    pbSelectedSceneId, choosePetBattleScene, _pbScenePicker, _pbSceneInvite,
+    pbRandomSceneId, _pbRandomArenaCard, _pbSceneInvite,
     pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
     _pbCastleWorkshop, _pbRenderCastlePreviews,
     startBotBattle, finishBotBattle,

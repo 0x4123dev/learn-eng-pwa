@@ -31,7 +31,9 @@ var NightRaidRules = (() => {
     Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:1000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
     Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:1000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
     Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:4000, stat:'producer', attack:0, defense:0, producer:'soldier', yield:1, productionMs:PRODUCTION_MS, maxOwned:2, color:'#d8783d' }),
-    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:200, productionMs:PRODUCTION_MS, maxOwned:4, color:'#e5b93d' }),
+    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#e5b93d' }),
+    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#ef5544' }),
+    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#38a9d6' }),
   ]);
 
   const byId = (list, id) => list.find(item => item.id === id) || null;
@@ -78,7 +80,14 @@ var NightRaidRules = (() => {
       if(type.producer){const uid=String(cell&&cell.uid||'');if(/^[A-Za-z0-9-]{8,64}$/.test(uid))entry.uid=uid;entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));}
       clean.push(entry);
     });
-    return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,MAX_SOLDIERS) };
+    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,MAX_SOLDIERS) };
+    // Cosmetic builder metadata travels with the layout so the browser and
+    // server agree where the equipped castle sits. It never affects combat.
+    const castle=value&&value.castlePos;
+    if(castle&&Number.isFinite(+castle.x)&&Number.isFinite(+castle.y)){
+      result.castlePos={x:+clamp(castle.x,27,73).toFixed(2),y:+clamp(castle.y,29,41).toFixed(2)};
+    }
+    return result;
   }
 
   function homeLevel(layout, dogLevel, teammates) {

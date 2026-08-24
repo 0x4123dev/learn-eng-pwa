@@ -18,7 +18,11 @@ suite('night raid: one deterministic combat mode', () => {
   test('barracks and rice use the approved daily economy limits',()=>{
     const barracks=R.defenseById('training-barracks'),rice=R.defenseById('rice-field');
     assert.equal(barracks.price,4000);assert.equal(barracks.maxOwned,2);assert.equal(barracks.yield,1);
-    assert.equal(rice.price,2000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,200);
+    assert.equal(rice.price,2000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
+    for(const id of ['tomato-field','fish-pond']){
+      const farm=R.defenseById(id);
+      assert.truthy(farm,id);assert.equal(farm.price,rice.price);assert.equal(farm.yield,100);assert.equal(farm.productionMs,rice.productionMs);assert.equal(farm.maxOwned,4);
+    }
     assert.equal(barracks.productionMs,24*60*60*1000);assert.equal(R.MAX_SOLDIERS,10);
   });
 
@@ -34,6 +38,13 @@ suite('night raid: one deterministic combat mode', () => {
     const layout=R.normalizeLayout({cells,soldiers:99});
     assert.equal(layout.cells.filter(c=>c.type==='rice-field').length,4);assert.equal(layout.cells.filter(c=>c.type==='training-barracks').length,2);assert.equal(layout.soldiers,10);
     assert.equal(layout.cells[0].uid,'rice-id-0');assert.equal(layout.cells[0].readyAt,1234);
+  });
+
+  test('cosmetic castle position survives normalization and stays on the paved yard',()=>{
+    const centered=R.normalizeLayout({cells:[],castlePos:{x:44.25,y:35.5}});
+    assert.deepEqual(centered.castlePos,{x:44.25,y:35.5});
+    assert.deepEqual(R.normalizeLayout({cells:[],castlePos:{x:-20,y:90}}).castlePos,{x:27,y:41});
+    assert.equal(R.normalizeLayout({cells:[]}).castlePos,undefined);
   });
 
   test('one-button battle follows the visible DAM greater than DEF rule', () => {

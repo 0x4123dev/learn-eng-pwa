@@ -165,12 +165,57 @@ const FIELD_RULES = {
     groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
     castle: { halfW: 100, height: 165 },
   },
+  5: {
+    // v5 restores the aiming challenge lost when v4 enlarged the castle. A
+    // 200px-wide, 165px-tall wall made a flat 100-power shot intersect the
+    // target across too many winds: reaching the far side was often enough.
+    // Horizontal wind alone barely changes a low arc because it is airborne
+    // for less time, so v5 adds deterministic aerodynamic lift/downforce.
+    // Tail/head wind now bends the arc as well as changing its range.
+    //
+    // Measured across 10 arenas × 10 seeds × 9 winds × both directions:
+    // every one of 1,800 scenarios remains reachable (worst: 7 legal aims),
+    // while 100 power / 20° is no longer universal in any of 200 matchups.
+    // v1–v4 stay frozen for stored battles and deterministic replays.
+    version: 5, worldW: 2000, viewW: 800, worldH: 450,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.004, windLift: 0.0055,
+    v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+    castle: { halfW: 100, height: 165 },
+  },
+  6: {
+    // v6 keeps v5 aiming, but stretches a duel into several exchanges. The
+    // large fortress made a four-shell direct volley visually satisfying but
+    // too often fatal. Damage is scaled per shell and the whole volley has a
+    // hard ceiling, including hired Gunner rockets: one lucky tap can never
+    // erase a fresh 100 HP castle.
+    version: 6, worldW: 2000, viewW: 800, worldH: 450,
+    spawnX: [140, 1860], gravity: 0.15, windAccel: 0.004, windLift: 0.0055,
+    v0Base: 4, v0Gain: 0.165, plateau: 92, lane: 300, waveScale: 2.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2600,
+    castle: { halfW: 100, height: 165 },
+    damageScale: 0.4, shellDamageCap: 22, maxVolleyDamage: 85,
+  },
+  7: {
+    // v7 is a compact high-arc battlefield. A battle uses this version only
+    // with one of the ten authored obstacle arenas: the solid centre mass is
+    // part of this height map, so a flat shell hits it instead of flying
+    // through decorative art. The 1200px world is still wider than one phone
+    // viewport, but short enough to keep both forts and the obstacle legible.
+    version: 7, worldW: 1200, viewW: 800, worldH: 450,
+    spawnX: [120, 1080], gravity: 0.15, windAccel: 0.004, windLift: 0.003,
+    v0Base: 4, v0Gain: 0.165, plateau: 82, lane: 150, waveScale: 1.5,
+    groundMin: 250, groundMax: 400, muzzleY: 34, muzzleClearance: 4, maxFrames: 2200,
+    castle: { halfW: 100, height: 165 },
+    damageScale: 0.4, shellDamageCap: 22, maxVolleyDamage: 85,
+    highArc: true,
+  },
 };
 // Anything unknown, missing or legacy is v1 — an unrecognised version must
 // never silently reinterpret a battle that is already in progress.
 function fieldRules(v) {
   const n = Number(v);
-  return FIELD_RULES[n === 4 ? 4 : n === 3 ? 3 : n === 2 ? 2 : 1];
+  return FIELD_RULES[n] || FIELD_RULES[1];
 }
 
 // Smaller y means higher ground. Every arena deliberately tells a different
@@ -188,6 +233,16 @@ const BATTLE_TERRAIN_PROFILES = Object.freeze({
   'moonlit-rooftops': Object.freeze({ spawnY: [375, 280] }),
   'candy-cloudworks': Object.freeze({ spawnY: [285, 370] }),
   'cosmic-observatory': Object.freeze({ spawnY: [378, 288] }),
+  'tropical-monolith': Object.freeze({ spawnY: [350, 305], barrier: { x: 600, halfW: 92, top: 112, shoulder: 48, crown: 32 } }),
+  'aurora-ice-spire': Object.freeze({ spawnY: [322, 282], barrier: { x: 565, halfW: 105, top: 108, shoulder: 52, crown: 56 } }),
+  'giant-mushroom-grove': Object.freeze({ spawnY: [292, 360], barrier: { x: 600, halfW: 126, top: 132, shoulder: 58, crown: 30 } }),
+  'thunder-totem-canyon': Object.freeze({ spawnY: [365, 286], barrier: { x: 650, halfW: 72, top: 122, shoulder: 42, crown: 24 } }),
+  'crystal-rift': Object.freeze({ spawnY: [285, 358], barrier: { x: 600, halfW: 128, top: 118, shoulder: 60, crown: 58 } }),
+  'sunken-temple-lagoon': Object.freeze({ spawnY: [384, 278], barrier: { x: 560, halfW: 86, top: 112, shoulder: 46, crown: 34 } }),
+  'dragonbone-desert': Object.freeze({ spawnY: [360, 282], barrier: { x: 590, halfW: 142, top: 136, shoulder: 62, crown: 55 } }),
+  'moon-gate-ruins': Object.freeze({ spawnY: [286, 365], barrier: { x: 600, halfW: 134, top: 108, shoulder: 56, crown: 38 } }),
+  'sky-beanstalk': Object.freeze({ spawnY: [370, 278], barrier: { x: 560, halfW: 98, top: 116, shoulder: 48, crown: 46 } }),
+  'candy-volcano': Object.freeze({ spawnY: [282, 368], barrier: { x: 650, halfW: 126, top: 104, shoulder: 60, crown: 62 } }),
 });
 
 function terrainProfileFor(id) {
@@ -238,6 +293,28 @@ function buildTerrain(seed, rules, arenaId) {
         h[x] = h[x] * (1 - eased) + target * eased;
       }
     });
+    // Compact arenas have one authored solid obstacle. `top` is intentionally
+    // far above the castle roofs: low/direct fire collides with the obstacle,
+    // while a deliberate high lob can clear it and descend onto the target.
+    // Broad eased shoulders make the visual terrain join the generated art
+    // without a one-pixel vertical seam.
+    if (R.highArc && profile.barrier) {
+      const b = profile.barrier;
+      const reach = b.halfW + b.shoulder;
+      for (let x = Math.max(0, b.x - reach); x <= Math.min(R.worldW - 1, b.x + reach); x++) {
+        const d = Math.abs(x - b.x);
+        let obstacleY;
+        if (d <= b.halfW) {
+          const q = d / b.halfW;
+          obstacleY = b.top + b.crown * q * q;
+        } else {
+          const q = (d - b.halfW) / b.shoulder;
+          const edgeY = b.top + b.crown;
+          obstacleY = edgeY + (h[x] - edgeY) * (q * q * (3 - 2 * q));
+        }
+        h[x] = Math.min(h[x], obstacleY);
+      }
+    }
   }
   // Each pet stands on a levelled peak with a clear firing lane. Without
   // this, ~13% of seeds put a pet in a valley where its own hillside
@@ -317,7 +394,10 @@ function simulateShot(opts) {
   let hit = null;
   let f = 0;
   for (; f < R.maxFrames; f++) {
-    vy += R.gravity;
+    // v5 wind has a small vertical aerodynamic component. Multiplying by
+    // facing makes this head/tail wind rather than privileging one player.
+    // Older frozen rules omit windLift and therefore replay byte-for-byte.
+    vy += R.gravity + (R.windLift || 0) * wind * facing;
     vx += R.windAccel * wind;
     x += vx; y += vy;
     points.push({ x, y });
@@ -381,10 +461,11 @@ function damageAt(hit, target, level, rules) {
   }
   const r = blastRadius(level);
   if (dist > r) return 0;
-  const base = shotDamage(level);
+  const base = shotDamage(level) * (Number.isFinite(R.damageScale) ? R.damageScale : 1);
   const falloff = 1 - (dist / r) * 0.75;            // centre hits hurt most
   const direct = dist <= r * 0.28 ? 1.5 : 1;
-  return Math.max(1, Math.round(base * falloff * direct));
+  const dealt = Math.max(1, Math.round(base * falloff * direct));
+  return Number.isFinite(R.shellDamageCap) ? Math.min(R.shellDamageCap, dealt) : dealt;
 }
 
 // Level 200 is where blast radius and shell size hit their caps — the natural
@@ -430,9 +511,14 @@ function powerProfile(level) {
 // three dead-centre hits legitimately total 120 while ceil(3 × 26.4 × 1.5)
 // is 119, so the server quietly shaved a point off an honest volley and the
 // child's HP bar jumped back up when the turn reconciled.
-function maxTurnDamage(shots, level) {
+function maxTurnDamage(shots, level, rules) {
   const n = Math.max(0, Math.min(BARRELS, Math.trunc(Number(shots) || 0)));
-  return n * Math.round(shotDamage(level) * 1.5);
+  const R = rules || FIELD_RULES[1];
+  const scaled = shotDamage(level) * (Number.isFinite(R.damageScale) ? R.damageScale : 1);
+  const perShell = Math.min(Number.isFinite(R.shellDamageCap) ? R.shellDamageCap : Infinity,
+    Math.round(scaled * 1.5));
+  const volley = n * perShell;
+  return Number.isFinite(R.maxVolleyDamage) ? Math.min(R.maxVolleyDamage, volley) : volley;
 }
 
 // Top-level `const` in a classic script is script-scoped, NOT a window

@@ -7,14 +7,13 @@
 // and verified by parallel agents. Question schema matches the practice bank
 // (ch/topic/q/options/correct/answer/explanation) plus per-exam n.
 //
-// Exams are taken in đề order (not shuffled) under a 90-minute clock —
+// Exams are taken in đề order (not shuffled) with no time limit —
 // js/math.js startMathExam() runs them through the same quiz UI as practice.
 
 const MATH_EXAMS = [
  {
   "id": "hk1-exam1",
   "title": "HK1 Exam 1",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -466,6 +465,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng ghi lại số lượt khách tham quan một bảo tàng: tháng 1: 80; tháng 2: 95; tháng 3: 110; tháng 4: 130. Tổng số lượt khách trong 4 tháng đó là bao nhiêu?",
+    "fig": { "t": "line-chart", "labels": ["T1", "T2", "T3", "T4"], "values": [80, 95, 110, 130] },
     "options": [
      "405",
      "425",
@@ -482,6 +482,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Lớp 7B có 50 học sinh. Biểu đồ hình quạt tròn về phương tiện đến trường cho biết: đi bộ 20%, xe đạp 36%, xe buýt 24%, còn lại là được người thân đưa đón. Hỏi có bao nhiêu bạn được người thân đưa đón?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Đi bộ", "value": 20 }, { "label": "Xe đạp", "value": 36 }, { "label": "Xe buýt", "value": 24 }, { "label": "Đưa đón", "value": 20, "text": "?" }] },
     "options": [
      "10",
      "12",
@@ -511,7 +512,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam2",
   "title": "HK1 Exam 2",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -882,7 +882,8 @@ const MATH_EXAMS = [
      "par": true,
      "angles": {
       "A3": "64°",
-      "B1": "?"
+      "B1": "α",
+      "B2": "?"
      }
     },
     "options": [
@@ -961,6 +962,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ quạt tròn về hình thức giải trí yêu thích của học sinh khối 7 cho biết: Đọc sách 20%, Chơi thể thao 35%, Xem phim 30%, còn lại là Nghe nhạc. Nghe nhạc chiếm bao nhiêu phần trăm?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Đọc sách", "value": 20 }, { "label": "Thể thao", "value": 35 }, { "label": "Xem phim", "value": 30 }, { "label": "Nghe nhạc", "value": 15, "text": "?" }] },
     "options": [
      "20%",
      "25%",
@@ -1018,7 +1020,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam3",
   "title": "HK1 Exam 3",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -1474,6 +1475,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ hình quạt tròn về hình thức giải trí của học sinh lớp 7C cho biết: Đọc sách 35%, Xem phim 25%, Chơi thể thao 30%, còn lại là hoạt động khác. Hoạt động khác chiếm bao nhiêu phần trăm?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Đọc sách", "value": 35 }, { "label": "Xem phim", "value": 25 }, { "label": "Thể thao", "value": 30 }, { "label": "Khác", "value": 10, "text": "?" }] },
     "options": [
      "5%",
      "10%",
@@ -1490,6 +1492,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng cho biết số lượt sách được mượn tại thư viện trường qua các tháng: tháng 9: 80 quyển; tháng 10: 95 quyển; tháng 11: 110 quyển; tháng 12: 125 quyển. Tổng số lượt sách được mượn trong 4 tháng đó là bao nhiêu quyển?",
+    "fig": { "t": "line-chart", "labels": ["T9", "T10", "T11", "T12"], "values": [80, 95, 110, 125] },
     "options": [
      "380 quyển",
      "400 quyển",
@@ -1515,7 +1518,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam4",
   "title": "HK1 Exam 4",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -1778,7 +1780,7 @@ const MATH_EXAMS = [
     "n": 15,
     "ch": 1,
     "topic": "Áp dụng lũy thừa",
-    "q": "Tìm x ∈ ℚ, biết: (2/3) mũ (x + 1) = 4/9.",
+    "q": "Tìm số tự nhiên x, biết: (2/3) mũ (x + 1) = 4/9.",
     "options": [
      "x = 2",
      "x = 3",
@@ -1880,7 +1882,8 @@ const MATH_EXAMS = [
      "par": true,
      "angles": {
       "A1": "115°",
-      "B2": "?"
+      "B1": "? B₁",
+      "B2": "? B₂"
      }
     },
     "options": [
@@ -1959,6 +1962,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ hình quạt tròn về hoạt động giải trí yêu thích của lớp 7C cho biết: đọc sách 30%, xem phim 20%, chơi thể thao 15%, còn lại là nghe nhạc. Hỏi tỉ lệ học sinh thích nghe nhạc là bao nhiêu?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Đọc sách", "value": 30 }, { "label": "Xem phim", "value": 20 }, { "label": "Thể thao", "value": 15 }, { "label": "Nghe nhạc", "value": 35, "text": "?" }] },
     "options": [
      "30%",
      "65%",
@@ -2024,7 +2028,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam5",
   "title": "HK1 Exam 5",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -2499,6 +2502,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng ghi số xe đạp bán được của một cửa hàng: tháng 6: 40 chiếc; tháng 7: 55 chiếc; tháng 8: 65 chiếc; tháng 9: 90 chiếc. Tháng nào có mức tăng so với tháng liền trước là lớn nhất?",
+    "fig": { "t": "line-chart", "labels": ["T6", "T7", "T8", "T9"], "values": [40, 55, 65, 90] },
     "options": [
      "Tháng 7",
      "Tháng 9",
@@ -2536,7 +2540,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam6",
   "title": "HK1 Exam 6",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -2982,6 +2985,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ quạt tròn về phương tiện đến trường của lớp 7B cho biết: xe đạp 35%, đi bộ 25%, xe buýt 20%, phần còn lại là được đưa đón bằng ô tô. Tỉ lệ học sinh được đưa đón bằng ô tô chiếm bao nhiêu phần trăm?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Xe đạp", "value": 35 }, { "label": "Đi bộ", "value": 25 }, { "label": "Xe buýt", "value": 20 }, { "label": "Ô tô", "value": 20, "text": "?" }] },
     "options": [
      "15%",
      "25%",
@@ -2998,6 +3002,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng ghi lại số xe đạp bán được của một cửa hàng: tháng 1: 40 xe; tháng 2: 55 xe; tháng 3: 65 xe; tháng 4: 80 xe. Tổng số xe đạp cửa hàng bán được trong 4 tháng đó là bao nhiêu?",
+    "fig": { "t": "line-chart", "labels": ["T1", "T2", "T3", "T4"], "values": [40, 55, 65, 80] },
     "options": [
      "240 xe",
      "220 xe",
@@ -3035,7 +3040,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam7",
   "title": "HK1 Exam 7",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -3491,6 +3495,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Khảo sát 160 học sinh khối 7 về việc có mua sắm online vào đợt giảm giá cuối năm hay không, biểu đồ quạt tròn cho biết 65% học sinh trả lời 'Có mua sắm'. Hỏi có bao nhiêu học sinh trả lời 'Có mua sắm'?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Có", "value": 65 }, { "label": "Không", "value": 35, "text": "?" }] },
     "options": [
      "65 học sinh",
      "96 học sinh",
@@ -3507,6 +3512,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng cho biết số lượt khách mua hàng tại một cửa hàng trong đợt khuyến mãi: ngày 1: 40 lượt; ngày 2: 55 lượt; ngày 3: 65 lượt; ngày 4: 80 lượt. Tổng số lượt khách mua hàng trong 4 ngày đó là bao nhiêu?",
+    "fig": { "t": "line-chart", "labels": ["N1", "N2", "N3", "N4"], "values": [40, 55, 65, 80] },
     "options": [
      "240 lượt",
      "200 lượt",
@@ -3532,7 +3538,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam8",
   "title": "HK1 Exam 8",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -4002,6 +4007,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ quạt tròn về phương tiện đến trường của học sinh khối 7 cho biết: đi bộ 35%, xe đạp 40%, được đưa đón 15%, phần còn lại là xe buýt. Xe buýt chiếm bao nhiêu phần trăm?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Đi bộ", "value": 35 }, { "label": "Xe đạp", "value": 40 }, { "label": "Đưa đón", "value": 15 }, { "label": "Xe buýt", "value": 10, "text": "?" }] },
     "options": [
      "15%",
      "20%",
@@ -4018,6 +4024,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng cho biết số lượt bạn đọc mượn sách ở thư viện trường: tháng 1: 90; tháng 2: 110; tháng 3: 130; tháng 4: 150. Tổng số lượt mượn sách trong bốn tháng đó là bao nhiêu?",
+    "fig": { "t": "line-chart", "labels": ["T1", "T2", "T3", "T4"], "values": [90, 110, 130, 150] },
     "options": [
      "480 lượt",
      "150 lượt",
@@ -4062,7 +4069,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam9",
   "title": "HK1 Exam 9",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -4331,7 +4337,7 @@ const MATH_EXAMS = [
     "n": 15,
     "ch": 1,
     "topic": "Áp dụng lũy thừa",
-    "q": "Tìm x ∈ ℚ, biết (−2/3)³ˣ⁻² = 16/81.",
+    "q": "Tìm số tự nhiên x, biết (−2/3)³ˣ⁻² = 16/81.",
     "options": [
      "2/3",
      "−2",
@@ -4513,6 +4519,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ quạt tròn",
     "q": "Biểu đồ hình quạt tròn về hoạt động ngoại khóa yêu thích của lớp 7A cho biết: bóng đá 35%, cầu lông 25%, bơi lội 15%, phần còn lại là cờ vua. Nếu lớp có 32 học sinh, có bao nhiêu bạn thích cờ vua?",
+    "fig": { "t": "pie-chart", "segments": [{ "label": "Bóng đá", "value": 35 }, { "label": "Cầu lông", "value": 25 }, { "label": "Bơi lội", "value": 15 }, { "label": "Cờ vua", "value": 25, "text": "?" }] },
     "options": [
      "14 bạn",
      "6 bạn",
@@ -4529,6 +4536,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng cho biết số lượt bạn đọc mượn sách ở thư viện: tháng 6: 80; tháng 7: 95; tháng 8: 110; tháng 9: 90. Nhận xét nào sau đây đúng?",
+    "fig": { "t": "line-chart", "labels": ["T6", "T7", "T8", "T9"], "values": [80, 95, 110, 90] },
     "options": [
      "Số lượt mượn tăng dần từ tháng 6 đến tháng 8 rồi giảm ở tháng 9",
      "Số lượt mượn giảm dần đều qua các tháng",
@@ -4570,7 +4578,6 @@ const MATH_EXAMS = [
  {
   "id": "hk1-exam10",
   "title": "HK1 Exam 10",
-  "durationMin": 90,
   "questions": [
    {
     "n": 1,
@@ -5052,6 +5059,7 @@ const MATH_EXAMS = [
     "ch": 5,
     "topic": "Đọc biểu đồ đoạn thẳng",
     "q": "Biểu đồ đoạn thẳng cho biết số lượt bạn đọc mượn truyện ở thư viện trường: tháng 1: 80; tháng 2: 90; tháng 3: 95; tháng 4: 100. Số lượt mượn truyện tháng 4 tăng bao nhiêu phần trăm so với tháng 1?",
+    "fig": { "t": "line-chart", "labels": ["T1", "T2", "T3", "T4"], "values": [80, 90, 95, 100] },
     "options": [
      "25%",
      "20%",

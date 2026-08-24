@@ -283,19 +283,29 @@ const EXAM_Q = [];
 MATH_EXAMS.forEach(e => (e.questions || []).forEach(q => EXAM_Q.push({ id: `${e.id}#${q.n}`, q })));
 const EXAM_GEO = EXAM_Q.filter(x => x.q.ch === 3 || x.q.ch === 4);
 const EXAM_FIG = EXAM_Q.filter(x => x.q.fig);
+const EXAM_CHART = EXAM_Q.filter(x => /biểu đồ (?:hình )?(?:quạt tròn|đoạn thẳng).*(?:cho biết|ghi)/i.test(x.q.q));
 
 suite('math figures: the mock exam papers', () => {
     test('almost every geometry question in the ten papers is drawn', () => {
         assert.equal(EXAM_GEO.length, 80, 'the papers changed — recheck which questions need a figure');
-        assert.equal(EXAM_FIG.length, 77);
+        assert.equal(EXAM_FIG.filter(x => x.q.ch === 3 || x.q.ch === 4).length, 77);
         // Ba câu còn lại chỉ hỏi "phần đã cho gọi là gì" — vẽ ra thì hoặc là
         // viết sẵn đáp án, hoặc là một cái hộp chữ không phải hình học.
         const bare = EXAM_GEO.filter(x => !x.q.fig).map(x => x.id).sort();
         assert.deepEqual(bare, ['hk1-exam2#10', 'hk1-exam6#10', 'hk1-exam7#10']);
     });
 
-    test('no arithmetic question got one by accident', () => {
-        const stray = EXAM_FIG.filter(x => x.q.ch !== 3 && x.q.ch !== 4).map(x => x.id);
+    test('all 16 questions that ask children to read a chart show the actual chart', () => {
+        assert.equal(EXAM_CHART.length, 16);
+        const missing = EXAM_CHART.filter(x => !x.q.fig
+            || !/^(?:line|pie)-chart$/.test(x.q.fig.t)).map(x => x.id);
+        assert.deepEqual(missing, []);
+        assert.equal(EXAM_FIG.length, 93);
+    });
+
+    test('figures appear only where geometry or chart reading needs them', () => {
+        const stray = EXAM_FIG.filter(x => x.q.ch !== 3 && x.q.ch !== 4
+            && !EXAM_CHART.some(c => c.id === x.id)).map(x => x.id);
         assert.deepEqual(stray, []);
     });
 
@@ -323,6 +333,52 @@ suite('math figures: the mock exam papers', () => {
             });
         });
         assert.deepEqual(leaks.slice(0, 5), [], `${leaks.length} exam figure(s) show a number the question did not`);
+    });
+
+    test('chart data matches the stem and pie slices always make one whole', () => {
+        const bad = [];
+        EXAM_CHART.forEach(({ id, q }) => {
+            if (q.fig.t === 'line-chart') {
+                if (q.fig.labels.length !== q.fig.values.length || q.fig.values.length < 2) bad.push(`${id}: bad point count`);
+                q.fig.values.forEach(v => {
+                    if (!q.q.includes(String(v))) bad.push(`${id}: chart invents ${v}`);
+                });
+            } else {
+                const sum = q.fig.segments.reduce((s, x) => s + Number(x.value), 0);
+                if (sum !== 100) bad.push(`${id}: pie totals ${sum}%`);
+                q.fig.segments.forEach(s => {
+                    if (s.text !== '?' && !q.q.includes(String(s.value))) bad.push(`${id}: pie invents ${s.value}%`);
+                });
+            }
+        });
+        assert.deepEqual(bad, []);
+    });
+
+    test('numeric geometry figures agree with their answers', () => {
+        const bad = [];
+        const number = s => { const m = /-?\d+(?:[.,]\d+)?/.exec(String(s || '')); return m ? +m[0].replace(',', '.') : null; };
+        EXAM_GEO.forEach(({ id, q }) => {
+            const f = q.fig;
+            if (!f) return;
+            const ans = number(q.answer);
+            if (f.t === 'phan-giac' && f.lw && ans !== f.w / 2) bad.push(`${id}: bisector answer ${ans}`);
+            if (f.t === 'ke-bu' && /bao nhiêu/.test(q.q) && ans !== 180 - f.a) bad.push(`${id}: supplementary answer ${ans}`);
+            if (f.t === 'tam-giac') {
+                const given = Object.values(f.angles).map(number).filter(x => x != null);
+                if (given.length === 2 && ans !== 180 - given[0] - given[1]) bad.push(`${id}: triangle answer ${ans}`);
+            }
+            if (f.t === 'cut2') {
+                let base = null;
+                Object.entries(f.angles).forEach(([p, label]) => {
+                    const v = number(/°/.test(label) ? label : '');
+                    if (v == null) return;
+                    const candidate = /[13]$/.test(p) ? v : 180 - v;
+                    if (base == null) base = candidate;
+                    else if (Math.abs(base - candidate) > 1e-9) bad.push(`${id}: ${p}=${v}° conflicts with the other marked angle`);
+                });
+            }
+        });
+        assert.deepEqual(bad, []);
     });
 
     test('no two labels overlap in any exam figure', () => {

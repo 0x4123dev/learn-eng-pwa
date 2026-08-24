@@ -156,6 +156,32 @@ function colFollowDone(ans) {
   return !!ans && COL_FOLLOW_PARTS.every(k => ans[k] !== null && ans[k] !== undefined);
 }
 
+function collocSkillSummaries(st) {
+  const rows = {};
+  const add = (key, label, ok, ref) => {
+    const row = rows[key] || (rows[key] = { skillKey:key, skillLabel:label, attempts:0, correct:0, wrong:0, skipped:0, wrongRefs:[] });
+    row.attempts++;
+    if (ok === null) row.skipped++;
+    else if (ok) row.correct++;
+    else { row.wrong++; if (row.wrongRefs.length < 20) row.wrongRefs.push(String(ref || '')); }
+  };
+  st.questions.forEach((q, i) => {
+    const answer = st.answers[i];
+    if (q.followup) {
+      add('collocation.understanding.meaning', 'Hiểu nghĩa collocation',
+        answer && answer.m !== null && answer.m !== undefined ? answer.m === q.m.correct : null, q.baseId);
+      add('collocation.understanding.reason', 'Hiểu lý do chọn đáp án',
+        answer && answer.r !== null && answer.r !== undefined ? answer.r === q.r.correct : null, q.baseId);
+      return;
+    }
+    const meta = COLLOC_TYPE_META[q.type] || { label:'Collocation tổng hợp' };
+    const answered = answer && (answer.choice !== undefined || String(answer.value || '').trim());
+    add('collocation.form.' + (q.type || 'general'), meta.label,
+      answered ? !!answer.isCorrect : null, q.id);
+  });
+  return Object.keys(rows).map(k => rows[k]);
+}
+
 // ---- home view (returned as HTML string; phrases.js injects it) ----
 function renderCollocHome() {
   const bank = collocBank();
@@ -582,7 +608,7 @@ function finishCollocPractice() {
     if (!Array.isArray(appState.collocHistory)) appState.collocHistory = [];
     let date = 0;
     try { date = Date.now(); } catch (e) {}
-    appState.collocHistory.unshift({ score, total, date, fu });
+    appState.collocHistory.unshift({ score, total, date, fu, skills: collocSkillSummaries(st) });
     if (appState.collocHistory.length > 300) appState.collocHistory.length = 300;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}

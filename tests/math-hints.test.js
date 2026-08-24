@@ -92,6 +92,86 @@ suite('math hints: matching questions to definitions', () => {
         assert.truthy(q, 'no Tiên đề Euclid question');
         assert.equal(math.mathHintsFor(q)[0].t, 'Tiên đề Euclid');
     });
+
+    test('all 119 geometry questions have the manually approved primary hint', () => {
+        // This table is intentionally independent from the matcher. It turns
+        // the complete human review into a regression test instead of merely
+        // checking that a panel happens to exist.
+        const byTopic = {
+            'Hai góc kề bù': 'Hai góc kề bù',
+            'Hai góc đối đỉnh': 'Hai góc đối đỉnh',
+            'Góc tạo bởi hai đường thẳng cắt nhau': 'Hai đường thẳng cắt nhau',
+            'Tia phân giác': 'Tia phân giác',
+            'Tia phân giác và góc kề bù': 'Tia phân giác',
+            'Dấu hiệu nhận biết hai đường thẳng song song': 'Dấu hiệu nhận biết hai đường thẳng song song',
+            'Tính chất hai đường thẳng song song': 'Tính chất hai đường thẳng song song',
+            'Góc trong cùng phía': 'Hai góc trong cùng phía',
+            'Góc so le trong': 'Hai góc so le trong',
+            'Góc đồng vị': 'Hai góc đồng vị',
+            'Quan hệ vuông góc và song song': 'Quan hệ vuông góc — song song',
+            'Ký hiệu ∥ và ⊥': 'Hai đường thẳng song song (a ∥ b)',
+            'Tiên đề Euclid': 'Tiên đề Euclid',
+            'Định lí': 'Định lí · giả thiết · kết luận',
+            'Tổng ba góc': 'Tổng ba góc trong một tam giác',
+            'Tam giác vuông': 'Tam giác vuông',
+            'Góc ngoài': 'Góc ngoài của tam giác',
+            'Trường hợp c-c-c': 'Trường hợp cạnh – cạnh – cạnh (c-c-c)',
+            'Trường hợp c-g-c': 'Trường hợp cạnh – góc – cạnh (c-g-c)',
+            'Trường hợp g-c-g': 'Trường hợp góc – cạnh – góc (g-c-g)',
+            'Tam giác bằng nhau': 'Hai tam giác bằng nhau',
+            'Kí hiệu tam giác bằng nhau': 'Hai tam giác bằng nhau',
+            'Tam giác vuông bằng nhau': 'Tam giác vuông bằng nhau',
+            'Tam giác cân': 'Tam giác cân',
+            'Tam giác đều': 'Tam giác đều',
+            'Đường trung trực': 'Đường trung trực của đoạn thẳng'
+        };
+        const byId = {
+            'm3-25': 'Dấu hiệu nhận biết hai đường thẳng song song',
+            'm3-26': 'Tính chất hai đường thẳng song song',
+            'm4-14': 'Vì sao không có trường hợp g-g-g',
+            'm4-15': 'Trường hợp cạnh – góc – cạnh (c-g-c)',
+            'm4-21': 'Vì sao không có trường hợp g-g-g',
+            'm4-24': 'Trường hợp cạnh – góc – cạnh (c-g-c)',
+            'm4-28': 'Trường hợp góc – cạnh – góc (g-c-g)',
+            'm4-29': 'Vì sao không có trường hợp g-g-g'
+        };
+        const reviewed = MATH_QUESTIONS.filter(q => q.ch === 3 || q.ch === 4);
+        assert.equal(reviewed.length, 119, 'bank changed — review new geometry hints before shipping');
+        reviewed.forEach(q => {
+            const expected = byId[q.id] || byTopic[q.topic];
+            assert.truthy(expected, `${q.id}: topic "${q.topic}" has not been reviewed`);
+            const hints = math.mathHintsFor(q);
+            assert.equal(hints[0] && hints[0].t, expected,
+                `${q.id}: answer "${q.answer}" received the wrong primary hint`);
+        });
+    });
+
+    test('the reported g-g-g card agrees with its stored answer', () => {
+        const q = MATH_QUESTIONS.find(x => x.id === 'm4-14');
+        assert.equal(q.options[q.correct], q.answer);
+        assert.equal(q.answer, 'góc – góc – góc (g-g-g)');
+        assert.equal(math.mathHintsFor(q)[0].t, 'Vì sao không có trường hợp g-g-g');
+    });
+
+    test('non-included-angle traps never receive the unrelated g-g-g hint', () => {
+        for (const id of ['m4-15', 'm4-24']) {
+            const q = MATH_QUESTIONS.find(x => x.id === id);
+            const names = math.mathHintsFor(q).map(e => e.t);
+            assert.equal(names[0], 'Trường hợp cạnh – góc – cạnh (c-g-c)', id);
+            assert.falsy(names.includes('Vì sao không có trường hợp g-g-g'), id);
+        }
+    });
+
+    test('ordinary wording such as “kết luận nào” does not summon theorem theory', () => {
+        for (const id of ['m3-19', 'm3-20', 'm3-30', 'm3-33', 'm3-36', 'm3-44']) {
+            const names = math.mathHintsFor(MATH_QUESTIONS.find(x => x.id === id)).map(e => e.t);
+            assert.falsy(names.includes('Định lí · giả thiết · kết luận'), id);
+        }
+        for (const id of ['m3-63', 'm3-65']) {
+            const names = math.mathHintsFor(MATH_QUESTIONS.find(x => x.id === id)).map(e => e.t);
+            assert.contains(names, 'Định lí · giả thiết · kết luận', id);
+        }
+    });
 });
 
 suite('math hints: the panel', () => {

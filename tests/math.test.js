@@ -35,6 +35,19 @@ const CHAPTER_COUNTS = { 1: 76, 2: 75, 3: 65, 4: 54, 5: 56 };
 const TOTAL_MCQ = Object.values(CHAPTER_COUNTS).reduce((a, b) => a + b, 0);
 
 suite('math: the question bank', () => {
+    test('the two-discount shoe problem states its assumption and teaches the 68% factor', () => {
+        const q = MATH_QUESTIONS.find(item => item.id === 'm1-76');
+        assert.truthy(q, 'm1-76 is missing');
+        assert.truthy(/cho tất cả sản phẩm/.test(q.q) && /cho cả váy và giày/.test(q.q),
+            'the stem must say explicitly that both discounts apply to both products');
+        assert.equal(q.answer, '1 000 000 đồng');
+        assert.truthy(/80% × 85% = 68%/.test(q.explanation),
+            'show the combined paid-price factor before working backwards');
+        assert.truthy(/680 000 : 0,68 = 1 000 000/.test(q.explanation),
+            'one division by 0.68 is easier to follow than two unexplained divisions');
+        assert.truthy(/Kiểm tra lại/.test(q.explanation), 'finish with a substitution check');
+    });
+
     test('five chapters with their pinned question counts', () => {
         assert.equal(MATH_CHAPTERS.length, 5);
         assert.equal(MCQ.length, TOTAL_MCQ);
@@ -269,10 +282,12 @@ suite('math: the practice flow', () => {
         assert.equal(math.mathFormula('x⁵'), 'x<sup>5</sup>');
         assert.equal(math.mathFormula('x⁻⁵'), 'x<sup>−5</sup>');
         assert.equal(math.mathFormula('xᵐ · xⁿ = xᵐ⁺ⁿ'), 'x<sup>m</sup> · x<sup>n</sup> = x<sup>m+n</sup>');
-        assert.equal(math.mathFormula('(1/x)⁻⁵'), '(1/x)<sup>−5</sup>');
-        // The radicand now carries its overline span too — see the radical test.
-        assert.equal(math.mathFormula('√(a²) = |a|'),
-            '√<span class="math-radicand">(a<sup>2</sup>)</span> = |a|');
+        const reciprocal = math.mathFormula('(1/x)⁻⁵');
+        assert.truthy(reciprocal.includes('class="math-frac"'));
+        assert.truthy(reciprocal.endsWith('<sup>−5</sup>'));
+        const rootPower = math.mathFormula('√(a²) = |a|');
+        assert.truthy(rootPower.includes('class="math-root"'));
+        assert.truthy(rootPower.includes('(a<sup>2</sup>)'));
     });
 
     test('formatting a formula still escapes the HTML around it', () => {
@@ -287,20 +302,21 @@ suite('math: the practice flow', () => {
         // vinculum over what is under it. Without the bar, √36 reads as a
         // tick mark next to 36, and √(a²) gives no clue where the radicand
         // ends. The bar is drawn with a border over a span.
-        assert.equal(math.mathFormula('√36'), '√<span class="math-radicand">36</span>');
-        assert.equal(math.mathFormula('√a'), '√<span class="math-radicand">a</span>');
+        assert.truthy(math.mathFormula('√36').includes('<span class="math-radicand">36</span>'));
+        assert.truthy(math.mathFormula('√a').includes('<span class="math-radicand">a</span>'));
         // Balanced parentheses, including nested ones.
-        assert.equal(math.mathFormula('√((−10)²)'),
-            '√<span class="math-radicand">((−10)<sup>2</sup>)</span>');
-        assert.equal(math.mathFormula('√(a²) = |a|'),
-            '√<span class="math-radicand">(a<sup>2</sup>)</span> = |a|');
+        assert.truthy(math.mathFormula('√((−10)²)').includes(
+            '<span class="math-radicand">((−10)<sup>2</sup>)</span>'));
+        assert.truthy(math.mathFormula('√(a²) = |a|').includes(
+            '<span class="math-radicand">(a<sup>2</sup>)</span>'));
         // A bare √ with nothing after it must not swallow the rest.
         assert.equal(math.mathFormula('dấu √ là căn'), 'dấu √ là căn');
     });
 
     test('radicals in explanations keep the surrounding markup intact', () => {
-        assert.equal(math.mathRich('<b>√16</b> = 4'),
-            '<b>√<span class="math-radicand">16</span></b> = 4');
+        const boldRoot = math.mathRich('<b>√16</b> = 4');
+        assert.truthy(boldRoot.startsWith('<b><span class="math-root">'));
+        assert.truthy(boldRoot.includes('<span class="math-radicand">16</span>'));
         // The scan must not run across a tag boundary and eat the markup.
         assert.equal(math.mathRich('√<b>x</b>'), '√<b>x</b>');
     });
@@ -309,12 +325,29 @@ suite('math: the practice flow', () => {
         // Explanations arrive as trusted HTML (<br>, <b>) so they cannot be
         // escaped — but they are full of maths too, and the exponents were
         // just as unreadable there as in the options.
-        assert.equal(math.mathRich('🔑 x⁻ⁿ = 1/xⁿ<br>✗ x⁵: sai.'),
-            '🔑 x<sup>−n</sup> = 1/x<sup>n</sup><br>✗ x<sup>5</sup>: sai.');
-        assert.equal(math.mathRich('<b>√(a²)</b> = |a|'),
-            '<b>√<span class="math-radicand">(a<sup>2</sup>)</span></b> = |a|');
+        const richFraction = math.mathRich('🔑 x⁻ⁿ = 1/xⁿ<br>✗ x⁵: sai.');
+        assert.truthy(richFraction.includes('x<sup>−n</sup>'));
+        assert.truthy(richFraction.includes('class="math-frac"'));
+        assert.truthy(richFraction.includes('<br>✗ x<sup>5</sup>'));
+        const richRoot = math.mathRich('<b>√(a²)</b> = |a|');
+        assert.truthy(richRoot.startsWith('<b><span class="math-root">'));
+        assert.truthy(richRoot.includes('(a<sup>2</sup>)'));
         // Already-escaped text must be left alone, not double-escaped.
         assert.equal(math.mathRich('khi a &lt; 0'), 'khi a &lt; 0');
+    });
+
+    test('fractions, mixed numbers and compound roots are typeset as readable blocks', () => {
+        const rendered = math.mathFormula('1 1/5 · √(5²/4) + √((−5)²/4) · 2 2/5 − 2²/|−4|');
+        assert.equal((rendered.match(/class="math-mixed"/g) || []).length, 2,
+            'both mixed numbers must stay grouped');
+        assert.equal((rendered.match(/class="math-root"/g) || []).length, 2,
+            'both square roots need a visible overline');
+        assert.truthy((rendered.match(/class="math-frac"/g) || []).length >= 5,
+            'every quotient should use a stacked numerator and denominator');
+        assert.truthy(rendered.includes('<span class="math-num">2<sup>2</sup></span>'));
+        assert.truthy(rendered.includes('<span class="math-den">|−4|</span>'));
+        assert.truthy(rendered.includes('class="math-frac-slash">/</span>'),
+            'the visual fraction bar must retain a screen-reader slash');
     });
 
     test('the rendered options use the formula formatter', () => {
@@ -579,7 +612,7 @@ suite('math: typed answers', () => {
 
     test('căn: the bar stops where the radicand stops', () => {
         // √49 + 2 must not draw the bar across the "+ 2".
-        assert.truthy(/math-radicand">49<\/span>\s*\+/.test(math.mathFormula('√49 + 2')));
+        assert.truthy(/math-radicand">49<\/span><\/span>\s*\+/.test(math.mathFormula('√49 + 2')));
     });
 
     test('giá trị tuyệt đối: |a| can be typed and reads back whole', () => {

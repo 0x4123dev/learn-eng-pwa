@@ -19,9 +19,11 @@ export const MAX_TURNS = AMMO_CAP * 2 + 4;
 // The battlefield geometry is SNAPSHOTTED per battle, never read from whatever
 // the client happens to be running: both phones must derive identical terrain
 // from one seed for the whole match. New challenges are the long world; rows
-// written before this column existed stay v1 forever.
-export const FIELD_VERSION_NEW = 4;
-export const FIELD_VERSION_MAX = 4;
+// written before this column existed stay v1 forever. New challenges choose
+// v6 for a classic long arena or v7 for a compact high-arc obstacle arena;
+// FIELD_VERSION_NEW names the newest version the API may stamp.
+export const FIELD_VERSION_NEW = 7;
+export const FIELD_VERSION_MAX = 7;
 export function normalizeFieldVersion(v) {
   const n = Math.trunc(Number(v));
   return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;
@@ -74,10 +76,28 @@ export const BATTLE_BACKGROUND_IDS = Object.freeze([
   'cloudstep-meadow', 'clockwork-canyon', 'sakura-shrine', 'aurora-glacier',
   'ember-caldera', 'pirate-lagoon', 'firefly-forest', 'moonlit-rooftops',
   'candy-cloudworks', 'cosmic-observatory',
+  'tropical-monolith', 'aurora-ice-spire', 'giant-mushroom-grove',
+  'thunder-totem-canyon', 'crystal-rift', 'sunken-temple-lagoon',
+  'dragonbone-desert', 'moon-gate-ruins', 'sky-beanstalk', 'candy-volcano',
 ]);
+export const BATTLE_BACKGROUND_CLASSIC_IDS = Object.freeze(BATTLE_BACKGROUND_IDS.slice(0, 10));
+export const BATTLE_BACKGROUND_HIGH_ARC_IDS = Object.freeze(BATTLE_BACKGROUND_IDS.slice(10));
 export function normalizeBattleBackground(id) {
   const value = String(id || '');
   return BATTLE_BACKGROUND_IDS.includes(value) ? value : BATTLE_BACKGROUND_DEFAULT;
+}
+
+// One random roll gives each family exactly 50% probability and every arena
+// inside that family an equal share. The server snapshots the result so both
+// players — and later replays — always see the same world.
+export function randomBattleBackground(random = Math.random) {
+  const roll = Math.max(0, Math.min(0.999999999, Number(random()) || 0));
+  const pool = roll < 0.5 ? BATTLE_BACKGROUND_CLASSIC_IDS : BATTLE_BACKGROUND_HIGH_ARC_IDS;
+  return pool[Math.floor((roll * 2 % 1) * pool.length)];
+}
+
+export function fieldVersionForBattleBackground(id) {
+  return BATTLE_BACKGROUND_HIGH_ARC_IDS.includes(normalizeBattleBackground(id)) ? 7 : 6;
 }
 
 // Cosmetic-only whitelist. Never accept an asset path from a device, and

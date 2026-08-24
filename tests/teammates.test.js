@@ -256,7 +256,8 @@ suite('teammates: the castle they live in', () => {
         const squad = src.slice(src.indexOf('function pbDrawSquad'), src.indexOf('PetBattleGame.prototype._drawHouse'));
         assert.truthy(squad.includes("rgba(10,18,33,.88)"), 'each teammate needs a dark interior alcove');
         assert.truthy(squad.includes("ctx.fillStyle='#22c55e'"), 'active status must remain visible');
-        assert.truthy(squad.includes('*1.12'), 'the chibi must be large enough to read on a phone');
+        assert.truthy(squad.includes('ctx.drawImage(portrait'), 'the castle must use the same premium portrait as Hire');
+        assert.truthy(squad.includes('PB_MATE_IMAGE_CACHE'), 'castle portraits should be cached, not reloaded every frame');
     });
 
     test('asking for more spots than ledges never invents one', () => {
@@ -523,13 +524,11 @@ suite('teammates: practice against the bot', () => {
             'practice pays no coins and no cups, so it must not charge for teammates either');
     });
 
-    test('practice runs on the v4 fortress', () => {
+    test('practice uses v6 for classic maps and v7 for high-arc maps', () => {
         const fn = src().slice(src().indexOf('function startBotBattle'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        // Practice writes no battle row, so it can show the new castle before
-        // the server is allowed to stamp field_version 4 on real battles.
-        assert.truthy(/FIELD_RULES\) \? 4 : 1/.test(body),
-            'practice should show the fortress the child is hiring into');
+        assert.truthy(body.includes('scene && scene.highArc ? 7 : 6'),
+            'practice must pair each random scene with its snapshotted geometry');
     });
 });
 
@@ -606,9 +605,9 @@ suite('teammates: the server and the client agree', () => {
     };
 
     test('new battles are stamped with the fortress the client draws', () => {
-        assert.equal(num('FIELD_VERSION_NEW'), 4);
-        assert.equal(num('FIELD_VERSION_MAX'), 4);
-        assert.equal(calc.fieldRules(4).version, 4, 'the client must be able to draw it');
+        assert.equal(num('FIELD_VERSION_NEW'), 7);
+        assert.equal(num('FIELD_VERSION_MAX'), 7);
+        assert.equal(calc.fieldRules(7).version, 7, 'the client must be able to draw it');
     });
 
     test('the fees the server charges are the fees the shop showed', () => {

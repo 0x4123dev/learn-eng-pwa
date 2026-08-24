@@ -117,11 +117,10 @@ suite('pet tiers: what each rung actually draws', () => {
         assert.equal(seen.size, art.PET_STAGE_ORDER.length * art.PET_TIERS, 'two milestones render identically');
     });
 
-    test('crowned breeds upgrade their crown instead of stacking a cap', () => {
-        for (const s of ['royal', 'diamond']) {
-            assert.equal(art.PET_STAGE_HAT[s], 'crown', s);
-            assert.truthy(art.petDogSVG({ stageCss: s, tier: 2 }).includes('pd-crown-jewel'), s);
-        }
+    test('the final mastiff earns the crown without becoming a fantasy breed', () => {
+        const s = 'tibetan-mastiff';
+        assert.equal(art.PET_STAGE_HAT[s], 'crown', s);
+        assert.truthy(art.petDogSVG({ stageCss: s, tier: 2 }).includes('pd-crown-jewel'), s);
     });
 
     test('hat silhouettes vary across eras so no two look the same', () => {
@@ -150,7 +149,7 @@ suite('pet polish: every level has a visible upgrade', () => {
     });
 
     test('the dog gently grows at every level within an outfit tier', () => {
-        const width = polish => +art.petDogSVG({ stageCss: 'poodle', size: 100, tier: 1, polish })
+        const width = polish => +art.petDogSVG({ stageCss: 'pomeranian', size: 100, tier: 1, polish })
             .match(/width="(\d+)"/)[1];
         for (let polish = 1; polish < 5; polish++) {
             assert.truthy(width(polish) > width(polish - 1), `polish ${polish} must grow`);

@@ -59,6 +59,23 @@ function _rwTextCorrect(text, q) {
   return list.some(a => _rwNormalize(a) === u);
 }
 
+function rewriteSkillSummaries(st) {
+  const rows = {};
+  st.questions.forEach((q, i) => {
+    const key = 'rewrite.' + String(q.cat || 'general').replace(/[^a-z0-9-]+/gi, '.').toLowerCase();
+    const row = rows[key] || (rows[key] = {
+      skillKey:key, skillLabel:q.catLabel || q.cat || 'Viết lại câu',
+      attempts:0, correct:0, wrong:0, skipped:0, wrongRefs:[]
+    });
+    row.attempts++;
+    const answer = st.answers[i];
+    if (!answer || !String(answer.value || '').trim()) row.skipped++;
+    else if (answer.isCorrect) row.correct++;
+    else { row.wrong++; if (row.wrongRefs.length < 20) row.wrongRefs.push(String(q.id)); }
+  });
+  return Object.keys(rows).map(k => rows[k]);
+}
+
 // ---- history storage (per-user, in appState) ----
 function rewriteHistory() {
   if (typeof appState !== 'undefined' && appState) {
@@ -357,7 +374,7 @@ function finishRewriteQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  saveRewriteSession({ id: 'rw-' + date, date, score, total, wrong });
+  saveRewriteSession({ id: 'rw-' + date, date, score, total, wrong, skills: rewriteSkillSummaries(st) });
 
   // Owe every missed question back (after the coins are banked).
   if (typeof retryAdd === 'function') retryAdd('rw', wrong.map(w => rewriteById(w.qid)).filter(Boolean));

@@ -14,8 +14,8 @@ const BOT_AMMO = 20;
 // How wrong the bot's aim is, in degrees/power units. Big enough that a child
 // who learns the arc will win, small enough that it lands often and the
 // practice is worth having.
-const BOT_ANGLE_ERROR = 7;
-const BOT_POWER_ERROR = 9;
+const BOT_ANGLE_ERROR = 4;
+const BOT_POWER_ERROR = 6;
 
 let _botGame = null;
 

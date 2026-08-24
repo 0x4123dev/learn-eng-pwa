@@ -2,8 +2,8 @@
 //
 // Ten 25-question mock papers modeled on real 2025-2026 đề cuối kì 1. The
 // invariants here are what let a child trust the papers: every answer is one
-// of its options, no paper repeats another's numbers, no question needs a
-// figure, and the 90-minute clock formats like a clock.
+// of its options, geometry and data-reading questions have the figure they
+// need, papers do not repeat one another, and no timer interrupts a child.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -21,12 +21,12 @@ global.MATH_EXAMS = MATH_EXAMS;
 const math = require(path.join(root, 'js', 'math.js'));
 
 suite('math exams: the ten papers', () => {
-    test('ten papers named HK1 Exam 1..10, 25 questions and 90 minutes each', () => {
+    test('ten untimed papers named HK1 Exam 1..10 with 25 questions each', () => {
         assert.equal(MATH_EXAMS.length, 10);
         MATH_EXAMS.forEach((e, i) => {
             assert.equal(e.id, `hk1-exam${i + 1}`);
             assert.equal(e.title, `HK1 Exam ${i + 1}`);
-            assert.equal(e.durationMin, 90);
+            assert.falsy(Object.prototype.hasOwnProperty.call(e, 'durationMin'), `${e.id}: must stay untimed`);
             assert.equal(e.questions.length, 25, `${e.id} must have 25 questions`);
             e.questions.forEach((q, k) => assert.equal(q.n, k + 1, `${e.id} n sequence broken at ${k}`));
         });
@@ -37,6 +37,18 @@ suite('math exams: the ten papers', () => {
             assert.equal(new Set(q.options).size, 4, `${e.id}#${q.n}: options not distinct`);
             assert.equal(q.answer, q.options[q.correct], `${e.id}#${q.n}: answer/correct mismatch`);
         }
+    });
+
+    test('all 250 questions have a readable stem, topic and worked explanation', () => {
+        let count = 0;
+        for (const e of MATH_EXAMS) for (const q of e.questions) {
+            count++;
+            const at = `${e.id}#${q.n}`;
+            assert.truthy(String(q.q || '').trim().length >= 5, `${at}: empty/short stem`);
+            assert.truthy(String(q.topic || '').trim(), `${at}: missing topic`);
+            assert.truthy(String(q.explanation || '').startsWith('🔑'), `${at}: no worked answer`);
+        }
+        assert.equal(count, 250);
     });
 
     test('no option is bare shorthand a child cannot read', () => {
@@ -116,32 +128,23 @@ suite('math exams: the ten papers', () => {
 });
 
 suite('math exams: exam mode wiring', () => {
-    test('the 90-minute clock formats like a clock', () => {
-        assert.equal(math.mathExamClock(90 * 60 * 1000), '90:00');
-        assert.equal(math.mathExamClock(61_000), '1:01');
-        assert.equal(math.mathExamClock(999), '0:01');
-        assert.equal(math.mathExamClock(0), '0:00');
-        assert.equal(math.mathExamClock(-5_000), '0:00', 'never negative on a late tick');
-    });
-
     test('mathExams() serves the bank and mathExamBest() reads only exam history', () => {
         assert.equal(math.mathExams().length, 10);
     });
 
-    test('an exam run is the whole paper in đề order under a deadline', () => {
+    test('an exam run is the whole paper in đề order without a deadline', () => {
         const src = read('js/math.js');
         const fn = src.slice(src.indexOf('function startMathExam'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/endsAt/.test(body), 'the deadline is what makes it an exam');
+        assert.falsy(/endsAt|durationMin|setInterval/.test(body), 'an exam must not start a timer');
         assert.falsy(/mathShuffle/.test(body), 'đề order — a real paper is not shuffled');
         assert.truthy(/examId/.test(body), 'history must know which paper this was');
     });
 
-    test('both quiz endings stop the clock — an orphaned timer submits ghost exams', () => {
+    test('the exam UI never shows or mentions a countdown or automatic submit', () => {
         const src = read('js/math.js');
-        const finish = src.slice(src.indexOf('function finishMathQuiz'));
-        const abandon = src.slice(src.indexOf('function abandonMathQuiz'));
-        assert.truthy(/mathExamStopClock/.test(finish.slice(0, finish.indexOf('\n}'))));
-        assert.truthy(/mathExamStopClock/.test(abandon.slice(0, abandon.indexOf('\n}'))));
+        assert.falsy(/mathExamClock|_mathExamTimer|mathExamTick|math-exam-clock/.test(src));
+        assert.falsy(/90 phút|hết giờ tự nộp/i.test(src));
+        assert.truthy(/không giới hạn thời gian/i.test(src));
     });
 });

@@ -459,6 +459,21 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')"));
     });
 
+    test('both projectile types leave bounded smoke that lingers after flight', () => {
+        assert.truthy(gameSrc.includes('this.projectileSmoke = []'));
+        assert.truthy(gameSrc.includes('this.projectileSmoke = this.projectileSmoke.filter'));
+        assert.truthy(gameSrc.includes('this.projectileSmoke.length<180'), 'smoke must stay bounded on a five-shot volley');
+        assert.truthy(gameSrc.includes("smoke.rocket?'#46505d':'#54463e'"), 'rocket and poop smoke need distinct tones');
+        assert.truthy(gameSrc.includes('this.projectileSmoke.length > 0'), 'lingering smoke must keep the animation loop alive');
+    });
+
+    test('the fire control stays in the thumb zone without scrolling', () => {
+        assert.truthy(gameSrc.includes('class="pb-fire-dock"'));
+        assert.truthy(stylesSrc.includes('.pb-fire-dock'));
+        assert.truthy(stylesSrc.includes('position: fixed'), 'the fire dock must stay visible while the tall arena scrolls');
+        assert.truthy(stylesSrc.includes('env(safe-area-inset-bottom'), 'the fire dock must clear iPhone and iPad safe areas');
+    });
+
     test('poop ammunition replaces tia controls and flies slowly enough to follow', () => {
         assert.truthy(gameSrc.includes('function _pbDrawPoopProjectile'), 'poop needs stable high-contrast canvas art');
         assert.truthy(gameSrc.includes('_pbDrawPoopProjectile(ctx,f.size,f.i)'), 'flight must use the purpose-drawn shell');
@@ -491,13 +506,13 @@ suite('battle game: Gunbound-style house arena', () => {
         const pbounds = gameSrc.match(/PB_POWER_MIN = (\d+), PB_POWER_MAX = (\d+)/);
         assert.truthy(bounds && pbounds, 'aim bounds must be named, not scattered');
         // …and the slider, the drag handler and the arrow keys must all use them.
-        assert.truthy(gameSrc.includes(`min="${bounds[1]}" max="${bounds[2]}"`), 'the angle slider disagrees with the clamp');
+        assert.truthy(gameSrc.includes('min="${this.minAngle}" max="' + bounds[2] + '"'), 'the angle slider disagrees with the active map clamp');
         assert.truthy(gameSrc.includes(`min="${pbounds[1]}" max="${pbounds[2]}"`), 'the power slider disagrees with the clamp');
         // Every path must clamp through the NAMED constants, not a retyped
         // literal — that is what keeps them from drifting apart.
-        const angleClamps = (gameSrc.match(/Math\.(?:max|min)\(PB_ANGLE_(?:MIN|MAX)/g) || []).length;
+        const angleClamps = (gameSrc.match(/Math\.(?:max|min)\((?:this\.|g\.)?minAngle|Math\.min\(PB_ANGLE_MAX/g) || []).length;
         const powerClamps = (gameSrc.match(/Math\.(?:max|min)\(PB_POWER_(?:MIN|MAX)/g) || []).length;
-        assert.truthy(angleClamps >= 4, `only ${angleClamps} angle clamps use the constant`);
+        assert.truthy(angleClamps >= 5, `only ${angleClamps} angle clamps use the active map bounds`);
         assert.truthy(powerClamps >= 4, `only ${powerClamps} power clamps use the constant`);
         assert.falsy(/this\.angle = Math\.max\(10, Math\.min\(80/.test(gameSrc),
             'the drag handler still retypes the angle bounds');
@@ -544,6 +559,16 @@ suite('battle game: Gunbound-style house arena', () => {
         assert.truthy(gameSrc.includes('this.castleDebris = this.castleDebris.filter'), 'debris animation must clean itself up');
         assert.truthy(gameSrc.includes('createRadialGradient(e.x-radius'), 'explosion needs a layered fireball');
         assert.truthy(gameSrc.includes('navigator.vibrate([28,18,46])'), 'a damaging hit should have bounded haptic feedback');
+    });
+
+    test('castle hits leave persistent deep cavities at the real impact point', () => {
+        assert.truthy(gameSrc.includes('this.castleHoles = []'));
+        assert.truthy(gameSrc.includes('prototype._recordCastleHole'));
+        assert.truthy(gameSrc.includes('prototype._drawCastleHoles'));
+        assert.truthy(gameSrc.includes('hole.depth=Math.min(1,hole.depth+.2)'), 'repeat hits should deepen a nearby hole');
+        assert.truthy(gameSrc.includes('if (sameSide.length>=5)'), 'persistent holes must be visually bounded');
+        assert.truthy(gameSrc.includes('this._recordCastleHole(f.target,f.hit,f.damage)'));
+        assert.truthy(gameSrc.includes('createRadialGradient(-r*.2,-r*.22'), 'the hole needs a shaded deep core');
     });
 });
 

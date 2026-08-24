@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS, parseHires, startingHp } from '../_battle.js';
+import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS, parseHires, startingHp, normalizeFieldVersion } from '../_battle.js';
 
 // The most damage a volley could physically do (mirrors battlecalc.shotDamage
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
@@ -8,13 +8,17 @@ function teammateCount(hires, id) {
   return hires.filter(value => value === id).length;
 }
 
-function maxTurnDamage(shots, level, gunners) {
+function maxTurnDamage(shots, level, gunners, fieldVersion) {
   const n = Math.max(0, Math.min(BARRELS, Math.trunc(Number(shots) || 0)));
   // Rounds per shot, exactly as battlecalc.damageAt does. Ceiling the total
   // instead was TIGHTER than the honest maximum and shaved a point off real
   // volleys at some levels.
-  const shell = Math.round((12 + 0.12 * Math.max(1, level || 1)) * 1.5);
-  return n * shell + Math.max(0, gunners) * Math.max(1, Math.round(shell * 0.6));
+  const modern = normalizeFieldVersion(fieldVersion) >= 6;
+  const scale = modern ? 0.4 : 1;
+  const shellCap = modern ? 22 : Infinity;
+  const shell = Math.min(shellCap, Math.round((12 + 0.12 * Math.max(1, level || 1)) * scale * 1.5));
+  const volley = n * shell + Math.max(0, gunners) * Math.max(1, Math.round(shell * 0.6));
+  return modern ? Math.min(85, volley) : volley;
 }
 
 function guardedDamage(damage, guards) {
@@ -54,7 +58,7 @@ export async function onRequestPost({ request, env }) {
   const hasRawDamage = Object.prototype.hasOwnProperty.call(body, 'rawDamage');
   const reported = hasRawDamage ? body.rawDamage : body.damage;
   const rawDamage = shots > 0
-    ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel, gunners), Math.trunc(+reported || 0)))
+    ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel, gunners, b.field_version), Math.trunc(+reported || 0)))
     : 0;
   // New clients report pre-guard damage, so the server—not a device—applies
   // permanent Royal Guards. Older clients already reported final damage and

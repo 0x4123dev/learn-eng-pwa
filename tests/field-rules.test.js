@@ -13,6 +13,11 @@ const C = require(path.join(__dirname, '..', 'js', 'battlecalc.js'));
 const V1 = C.fieldRules(1);
 const V2 = C.fieldRules(2);
 const V3 = C.fieldRules(3);
+const V7 = C.fieldRules(7);
+const CLASSIC_ARENAS = Object.keys(C.BATTLE_TERRAIN_PROFILES)
+    .filter(id => !C.BATTLE_TERRAIN_PROFILES[id].barrier);
+const HIGH_ARC_ARENAS = Object.keys(C.BATTLE_TERRAIN_PROFILES)
+    .filter(id => C.BATTLE_TERRAIN_PROFILES[id].barrier);
 
 // A cheap stable fingerprint of an array of numbers.
 function hash(nums) {
@@ -65,7 +70,7 @@ suite('field rules: v1 is frozen', () => {
     });
 
     test('an unknown or missing field version falls back to v1', () => {
-        for (const bad of [undefined, null, 0, 5, 99, 'two', NaN]) {
+        for (const bad of [undefined, null, 0, 8, 99, 'two', NaN]) {
             assert.equal(C.fieldRules(bad).version, 1, `version ${bad} must not reinterpret a battle`);
         }
     });
@@ -74,7 +79,7 @@ suite('field rules: v1 is frozen', () => {
 suite('field rules: v3 arena elevations', () => {
     test('every arena has a clear, deterministic spawn height difference', () => {
         const seenHigherSides = new Set();
-        for (const id of Object.keys(C.BATTLE_TERRAIN_PROFILES)) {
+        for (const id of CLASSIC_ARENAS) {
             const a = C.buildTerrain(4242, V3, id);
             const b = C.buildTerrain(4242, V3, id);
             const [left, right] = C.spawnPoints(a, V3);
@@ -102,7 +107,7 @@ suite('field rules: v3 arena elevations', () => {
         // still be a clean hit, and the proxy started failing arenas that play
         // perfectly well. It measures real damage instead — the thing that
         // actually decides the round — with the blocker the live game passes.
-        for (const id of Object.keys(C.BATTLE_TERRAIN_PROFILES)) {
+        for (const id of CLASSIC_ARENAS) {
             const t = C.buildTerrain(4242, V3, id);
             const spawns = C.spawnPoints(t, V3);
             for (const wind of [-20, 0, 20]) {
@@ -123,6 +128,79 @@ suite('field rules: v3 arena elevations', () => {
                         id + ', wind ' + wind + ', facing ' + facing +
                         ': no aim can damage the castle — this elevation is unwinnable');
                 }
+            }
+        }
+    });
+});
+
+suite('field rules: v7 compact high-arc arenas', () => {
+    test('ten obstacle arenas use a shorter world without becoming single-screen', () => {
+        assert.equal(HIGH_ARC_ARENAS.length, 10);
+        assert.equal(V7.worldW, 1200);
+        assert.equal(V7.viewW, 800);
+        assert.truthy(V7.worldW < V2.worldW, 'new maps should be shorter than classic maps');
+        assert.truthy(V7.worldW > V7.viewW, 'scouting and camera follow must still have room');
+        assert.deepEqual(V7.spawnX, [120, 1080]);
+        assert.equal(V7.highArc, true);
+    });
+
+    test('the reported 20 degree / 100 power direct shot is blocked everywhere', () => {
+        for (const id of HIGH_ARC_ARENAS) {
+            const terrain = C.buildTerrain(4242, V7, id);
+            const spawns = C.spawnPoints(terrain, V7);
+            for (const wind of [-20, -10, 0, 10, 20]) {
+                for (const side of [0, 1]) {
+                    const target = spawns[1 - side];
+                    const shot = C.simulateShot({
+                        terrain, from: spawns[side], facing: side ? -1 : 1,
+                        angle: 20, power: 100, wind, rules: V7, blockers: [target],
+                    });
+                    assert.equal(C.damageAt(shot.hit, target, 17, V7), 0,
+                        `${id}, side ${side}, wind ${wind}: flat exploit crossed the obstacle`);
+                }
+            }
+        }
+    });
+
+    test('every obstacle arena remains winnable with a legal high lob', () => {
+        for (const id of HIGH_ARC_ARENAS) {
+            const terrain = C.buildTerrain(4242, V7, id);
+            const spawns = C.spawnPoints(terrain, V7);
+            for (const wind of [-20, -10, 0, 10, 20]) {
+                for (const side of [0, 1]) {
+                    const target = spawns[1 - side];
+                    let solved = false;
+                    for (let angle = 35; angle <= 80 && !solved; angle += 2) {
+                        for (let power = 20; power <= 100; power += 2) {
+                            const shot = C.simulateShot({
+                                terrain, from: spawns[side], facing: side ? -1 : 1,
+                                angle, power, wind, rules: V7, blockers: [target],
+                            });
+                            if (C.damageAt(shot.hit, target, 17, V7) > 0) { solved = true; break; }
+                        }
+                    }
+                    assert.truthy(solved, `${id}, side ${side}, wind ${wind}: no high-arc solution`);
+                }
+            }
+        }
+    });
+
+    test('the practice bot coarse grid can clear every obstacle', () => {
+        for (const id of HIGH_ARC_ARENAS) {
+            const terrain = C.buildTerrain(4242, V7, id);
+            const [left, right] = C.spawnPoints(terrain, V7);
+            for (const wind of [-20, 0, 20]) {
+                let solved = false;
+                for (let angle = 35; angle <= 70 && !solved; angle += 5) {
+                    for (let power = 40; power <= 95; power += 5) {
+                        const shot = C.simulateShot({
+                            terrain, from: right, facing: -1, angle, power, wind,
+                            rules: V7, blockers: [left],
+                        });
+                        if (C.damageAt(shot.hit, left, 17, V7) > 0) { solved = true; break; }
+                    }
+                }
+                assert.truthy(solved, `${id}, wind ${wind}: practice bot cannot clear the obstacle`);
             }
         }
     });

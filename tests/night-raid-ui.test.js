@@ -54,6 +54,20 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes("fab.disabled=false;fab.hidden=false"),'expiry re-arms the charge button');
     for(const rule of ['.nr-lock-chip','.nr-target-card.locked'])assert.truthy(css.includes(rule),rule);
   });
+  test('the yard pet atlas survives being handed to CSS as a variable',()=>{
+    // A RELATIVE url() inside a CSS custom property is resolved against the
+    // stylesheet that CONSUMES it, not the page — so `img/night-raid/x.png`
+    // became `/css/img/night-raid/x.png`, 404'd, and the patrolling dog was
+    // invisible while every other check looked healthy. Root-absolute only.
+    const m = ui.match(/asset=`([^`]*pet-walk[^`]*)`/);
+    assert.truthy(m, 'the yard pet atlas url must be built in one place');
+    assert.truthy(m[1].startsWith('/img/'), 'the atlas url must be root-absolute, got: ' + m[1]);
+    assert.truthy(css.includes('var(--nr-pet-atlas)'), 'the sprite still reads the variable');
+    for (const atlas of ['pet-walk-small-v1.png', 'pet-walk-large-v1.png']) {
+      assert.truthy(fs.existsSync(path.join(root, 'img/night-raid', atlas)), atlas + ' missing on disk');
+      assert.truthy(sw.includes("'/img/night-raid/" + atlas + "'"), atlas + ' must be cached for offline');
+    }
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));
@@ -61,7 +75,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
   });
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
-    for(const token of ['isometric-home-board-skin-pad.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['isometric-home-board-expanded-v2.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
     assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
     assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
@@ -76,10 +90,19 @@ suite('night raid: app integration',()=>{
     for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm 2 ngón thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
     // The zoom floor is dynamic: a pinch can never shrink the island smaller
     // than the viewport, which used to strand it in a corner of empty green.
-    assert.truthy(ui.includes('Math.max(viewport.clientWidth,viewport.clientHeight)/base'),'min zoom must cover the viewport');
+    assert.truthy(ui.includes('Math.max(viewport.clientWidth/base,viewport.clientHeight/baseHeight)'),'min zoom must cover the 4:3 map viewport');
+    assert.truthy(ui.includes('baseHeight=base*.75'),'builder map must preserve its rectangular 4:3 world');
     assert.truthy(ui.includes('setBuilderZoom(builderZoom)'),'persisted zoom must be re-clamped on open and rotation');
     assert.truthy(ui.includes("pointerdown=\"nrBeginPlacedDrag"));
     assert.truthy(css.includes('top:calc(78px + env(safe-area-inset-top))'));
+  });
+
+  test('the equipped castle drags only in edit mode and the real pet patrols it',()=>{
+    for(const token of ['beginCastleDrag','castlePos','nr-castle-yard','nr-pet-patrol','yardPetHtml()','pet-walk-${pet.atlas}-v1.png','startPetPatrol','data-nr-yard-pet','dataset.x','state.vx*=-1','--nr-castle-x'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const asset of ['pet-walk-small-v1.png','pet-walk-large-v1.png'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
+    assert.truthy(css.includes('.nr-builder.editing .nr-builder-map>.nr-equipped-castle'),'castle drag must require SỬA');
+    assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'pet patrol must respect reduced motion');
+    for(const token of ['devicePixelRatio','ctx.setTransform','imageSmoothingQuality=\'high\''])assert.truthy(ui.includes(token),token);
   });
 
   test('shop can swipe horizontally and confirms coin purchases before placement',()=>{
@@ -90,7 +113,7 @@ suite('night raid: app integration',()=>{
 
   test('daily production UI shows pet power, countdowns and collect controls',()=>{
     for(const token of ['nr-pet-power-card','nr-production-badge','startProductionTicker','nr-collect-all','nrGridCell','localCollect'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
+    for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png','img/night-raid/tomato-field.png','img/night-raid/fish-pond.png','img/night-raid/isometric-home-board-expanded-v2.webp'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
   });
   test('the placement grid closes after a purchased or moved building is dropped',()=>{
     assert.truthy(ui.includes('function settleBuilderPlacement()'));

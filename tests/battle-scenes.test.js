@@ -8,9 +8,11 @@ const scenes = require('../js/battle-scenes.js');
 const ROOT = path.join(__dirname, '..');
 
 suite('battle scene registry', () => {
-    test('defines exactly ten unique arenas', () => {
-        assert.equal(scenes.scenes.length, 10);
-        assert.equal(new Set(scenes.scenes.map(s => s.id)).size, 10);
+    test('defines ten classic and ten high-arc arenas', () => {
+        assert.equal(scenes.scenes.length, 20);
+        assert.equal(scenes.CLASSIC_IDS.length, 10);
+        assert.equal(scenes.HIGH_ARC_IDS.length, 10);
+        assert.equal(new Set(scenes.scenes.map(s => s.id)).size, 20);
     });
 
     test('invalid server or local values fall back safely', () => {
@@ -18,10 +20,10 @@ suite('battle scene registry', () => {
         assert.equal(scenes.normalizeBattleSceneId('aurora-glacier'), 'aurora-glacier');
     });
 
-    test('registry resolves exactly 50 WebP assets', () => {
+    test('registry resolves exactly 100 WebP assets', () => {
         const paths = scenes.battleSceneAssetPaths();
-        assert.equal(paths.length, 50);
-        assert.equal(new Set(paths).size, 50);
+        assert.equal(paths.length, 100);
+        assert.equal(new Set(paths).size, 100);
         paths.forEach(asset => {
             assert.truthy(asset.startsWith('/img/battle-scenes/'));
             assert.truthy(asset.endsWith('.webp'));
@@ -41,6 +43,15 @@ suite('battle scene registry', () => {
             assert.truthy(scene.poster.endsWith('/poster.webp'));
         });
     });
+
+    test('one roll gives each arena family exactly half the range', () => {
+        assert.truthy(scenes.CLASSIC_IDS.includes(scenes.randomBattleSceneId(() => 0.00)));
+        assert.truthy(scenes.CLASSIC_IDS.includes(scenes.randomBattleSceneId(() => 0.499999)));
+        assert.truthy(scenes.HIGH_ARC_IDS.includes(scenes.randomBattleSceneId(() => 0.50)));
+        assert.truthy(scenes.HIGH_ARC_IDS.includes(scenes.randomBattleSceneId(() => 0.999999)));
+        const all = Array.from({ length: 20 }, (_, i) => scenes.randomBattleSceneId(() => (i + 0.1) / 20));
+        assert.equal(new Set(all).size, 20, 'every map must own an equal slice of the random roll');
+    });
 });
 
 suite('battle scene integration', () => {
@@ -55,9 +66,10 @@ suite('battle scene integration', () => {
         assert.truthy(game.includes('sceneRenderer.setCamera(camX)'));
     });
 
-    test('practice and friend challenges use the selected arena', () => {
-        assert.truthy(lobby.includes('backgroundId: pbSelectedSceneId()'));
-        assert.truthy(lobby.includes('choosePetBattleScene'));
+    test('practice randomises locally and friend challenges leave selection to the server', () => {
+        assert.truthy(lobby.includes('const backgroundId = pbRandomSceneId()'));
+        assert.falsy(lobby.includes('backgroundId: pbSelectedSceneId()'));
+        assert.falsy(lobby.includes('choosePetBattleScene'));
     });
 
     // THE guard for this feature. The arena list is declared twice — once in
@@ -113,14 +125,13 @@ suite('battle scene integration', () => {
         assert.truthy(server.includes('normalizeBattleBackground'));
         assert.truthy(server.includes('backgroundId: normalizeBattleBackground(b.background_id)'));
         assert.truthy(challenge.includes('background_id'));
-        assert.truthy(challenge.includes('normalizeBattleBackground(body.backgroundId)'));
+        assert.truthy(challenge.includes('randomBattleBackground()'));
+        assert.truthy(challenge.includes('fieldVersionForBattleBackground(backgroundId)'));
+        assert.falsy(challenge.includes('body.backgroundId'));
     });
 });
 
-// The arena picker is a horizontal scroller inside a screen the lobby poll
-// rebuilt from innerHTML once a SECOND. Scrolling to look at arena 7 snapped
-// back to arena 1 before a child could tap it.
-suite('battle scene picker: the poll must not fight the finger', () => {
+suite('random battle scene card', () => {
     const lobby = fs.readFileSync(path.join(ROOT, 'js/petbattle.js'), 'utf8');
 
     test('the lobby only redraws when something actually changed', () => {
@@ -129,15 +140,16 @@ suite('battle scene picker: the poll must not fight the finger', () => {
         const sig = lobby.slice(lobby.indexOf('const sig = JSON.stringify(['), lobby.indexOf('if (screen.dataset.pbLobbySig'));
         // Everything the lobby draws must be in the signature, or a real
         // change would be swallowed and the screen would go stale.
-        for (const part of ['st.ammo', 'st.readyAt', 'st.allowBot', 'ready', '_pbMsg', '_pbLang', '_pbHistoryOpen', 'pbSelectedSceneId']) {
+        for (const part of ['st.ammo', 'st.readyAt', 'st.allowBot', 'ready', '_pbMsg', '_pbLang', '_pbHistoryOpen']) {
             assert.truthy(sig.includes(part), `${part} is not in the render signature — its change would not repaint`);
         }
     });
 
-    test('a genuine redraw carries the scroll position across', () => {
-        assert.truthy(lobby.includes('const keepScroll = prevList ? prevList.scrollLeft : 0'));
-        assert.truthy(lobby.includes('nextList.scrollLeft = keepScroll'),
-            'a redraw must not snap the child back to the first arena');
+    test('the lobby explains random selection without interactive arena controls', () => {
+        assert.truthy(lobby.includes('_pbRandomArenaCard()'));
+        assert.truthy(lobby.includes('pb-arena-random'));
+        assert.falsy(lobby.includes('role="radiogroup"'));
+        assert.falsy(lobby.includes('pb-scene-option'));
     });
 
     test('every other screen clears the signature, so the lobby is never stale', () => {
@@ -153,11 +165,11 @@ suite('battle scene picker: the poll must not fight the finger', () => {
         assert.truthy(/_pbGame \? PB_POLL_INGAME_MS : PB_POLL_LOBBY_MS/.test(lobby));
     });
 
-    test('the picker is a scroller, so its scroll position is worth keeping', () => {
+    test('the random card replaces the old horizontal picker CSS', () => {
         const css = fs.readFileSync(path.join(ROOT, 'css/styles.css'), 'utf8');
-        const block = css.slice(css.indexOf('.pb-scene-list {'), css.indexOf('}', css.indexOf('.pb-scene-list {')));
-        assert.truthy(block.includes('overflow-x: auto'), 'the list must actually scroll');
-        assert.truthy(block.includes('grid-auto-flow: column'), 'ten arenas in a row');
+        assert.truthy(css.includes('.pb-arena-random {'));
+        assert.falsy(css.includes('.pb-scene-list {'));
+        assert.falsy(css.includes('.pb-scene-option {'));
     });
 });
 
