@@ -665,6 +665,14 @@ function mathHeaderHTML(kicker, title, sub, back) {
     </header>`;
 }
 
+// Đấu Toán ships hidden and an admin opens it per child. The flag rides home
+// on the coin-grant sync (functions/api/coins.js) and is cached here; the
+// server refuses the endpoints regardless, so this only decides whether the
+// card is worth showing.
+function mathFightUnlocked() {
+  return !!(typeof appState !== 'undefined' && appState && appState.allowMathFight);
+}
+
 function renderMathMenuHTML() {
   const runs = mathHistory().length;
   const wars = (typeof warsHistory === 'function') ? warsHistory().length : 0;
@@ -680,11 +688,11 @@ function renderMathMenuHTML() {
         <span class="phrases-cta-text"><strong>Math Wars</strong><small>Tính nhẩm cộng – trừ – nhân – chia${wars ? ` · ${wars} trận` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
-      <button class="phrases-cta math-section-cta fight" onclick="openMathSection('fight')">
+      ${mathFightUnlocked() ? `<button class="phrases-cta math-section-cta fight" onclick="openMathSection('fight')">
         <span class="phrases-cta-icon">🥊</span>
         <span class="phrases-cta-text"><strong>Đấu Toán</strong><small>Thách bạn bè · 20 câu trong 5 phút · thắng ăn xu</small></span>
         <span class="phrases-cta-arrow">›</span>
-      </button>
+      </button>` : ''}
     </div>`;
 }
 
@@ -714,6 +722,7 @@ function renderToan7MenuHTML() {
 
 function openMathSection(v) {
   const known = ['home', 'toan7', 'hk1', 'history', 'wars', 'fight'];
+  if (v === 'fight' && !mathFightUnlocked()) v = 'home';
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
   // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen
   // the child has walked away from and "finishes" a round they are not in.

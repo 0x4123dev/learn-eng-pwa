@@ -119,3 +119,49 @@ suite('math fight: scoring and settlement', () => {
     assert.truthy(api('index').includes('reapStale'));
   });
 });
+
+suite('math fight: hidden until an admin opens it', () => {
+  test('the switch is app-wide and ships off', () => {
+    const sql = read('db/011-math-fight.sql');
+    assert.truthy(sql.includes('CREATE TABLE IF NOT EXISTS app_flags'), 'one switch table for the app');
+    assert.truthy(sql.includes("INSERT OR IGNORE INTO app_flags(key, value, updated_at) VALUES ('math_fight', 0, 0)"),
+      'it must seed to OFF, or deploying would open the tab for everyone at once');
+    // Not per child: a duel needs two, so a per-child switch would mostly
+    // produce friend lists with nobody to challenge.
+    assert.falsy(sql.includes('allow_math_fight'), 'the switch must not be a per-user column');
+  });
+  test('the server refuses the tab, not just the menu card', () => {
+    const helper = read('functions/api/_math-fight.js');
+    assert.truthy(helper.includes('export async function mathFightEnabled'));
+    assert.truthy(helper.includes("MATH_FIGHT_FLAG = 'math_fight'"));
+    assert.truthy(helper.includes('FROM app_flags WHERE key = ?'));
+    for (const n of ['index', 'challenge'])
+      assert.truthy(api(n).includes('mathFightEnabled(env)'), n + ' must check the switch');
+    // A live bout must stay finishable even if the switch flips mid-fight, or
+    // two children would be stranded with a fight nobody can settle.
+    for (const n of ['progress', 'submit'])
+      assert.falsy(api(n).includes('mathFightEnabled'), n + ' must not strand a fight in progress');
+  });
+  test('the menu card is hidden until the flag says otherwise', () => {
+    const math = read('js/math.js');
+    assert.truthy(math.includes('function mathFightUnlocked()'));
+    assert.truthy(math.includes("mathFightUnlocked() ? `<button"), 'the card renders only when unlocked');
+    assert.truthy(math.includes("if (v === 'fight' && !mathFightUnlocked()) v = 'home'"),
+      'a stale deep link must not open a tab that is switched off');
+  });
+  test('an admin flips it once, for everybody', () => {
+    const flags = read('functions/api/admin/app-flags.js');
+    assert.truthy(flags.includes("auth.role !== 'admin'"), 'only an admin may flip it');
+    assert.truthy(flags.includes("const FLAGS = ['math_fight']"), 'only known flags may be written');
+    assert.truthy(flags.includes('Unknown flag'), 'a mistyped key must be refused, not stored');
+    assert.truthy(flags.includes('ON CONFLICT(key) DO UPDATE'));
+    const html = read('admin.html');
+    assert.truthy(html.includes('mathFightFlag'), 'the dashboard carries the switch');
+    assert.truthy(html.includes("key:'math_fight'"));
+    assert.truthy(html.includes('TẤT CẢ người học'), 'the confirm must say it affects everyone');
+    // The per-user experiment must not linger anywhere.
+    assert.falsy(html.includes('fight-toggle'));
+    assert.falsy(read('functions/api/admin/user-flags.js').includes('allowMathFight'));
+    assert.falsy(read('functions/api/admin/users.js').includes('allow_math_fight'));
+  });
+});

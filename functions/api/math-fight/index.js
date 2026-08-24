@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { MF, currentFight, fightView, pairState, reapStale } from '../_math-fight.js';
+import { MF, currentFight, fightView, mathFightEnabled, pairState, reapStale } from '../_math-fight.js';
 
 // GET /api/math-fight → everything the Đấu Toán tab needs to paint itself:
 // the friends it may challenge, each with the clocks that gate them, plus any
@@ -7,6 +7,7 @@ import { MF, currentFight, fightView, pairState, reapStale } from '../_math-figh
 export async function onRequestGet({ request, env }) {
   const auth = await requireAuth(request, env);
   if (!auth) return err('Unauthorized', 401);
+  if (!(await mathFightEnabled(env))) return err('Đấu Toán chưa được mở cho tài khoản này', 403);
   await reapStale(env);
 
   const rows = await env.DB.prepare(

@@ -191,10 +191,14 @@ suite('device limit: a real household is not locked out', () => {
         // survived, clearDevice on its own would 400.
         assert.falsy(/if \(typeof body\.allowBot === 'undefined'\) return err\('Nothing to change'\)/.test(flagsSrc),
             'the old allowBot-only guard would reject a clearDevice-only request');
-        // Written as "none of the intents were requested" so adding a fourth
+        // Written as "none of the intents were requested" so adding another
         // action does not silently reintroduce the old allowBot-only guard.
-        assert.truthy(/if \(!wantsBot && !wantsClear(?: && !\w+)*\) return err\('Nothing to change'\)/.test(flagsSrc),
+        // Order-agnostic on purpose: what matters is that every intent is in
+        // the conjunction, not which one an author happened to list second.
+        assert.truthy(/if \(!wantsBot(?: && !\w+)+\) return err\('Nothing to change'\)/.test(flagsSrc),
             'the guard must require that NO action was asked for, not just one');
+        for (const intent of ['wantsBot', 'wantsClear', 'wantsDisable'])
+            assert.truthy(new RegExp('!' + intent + '\\b').test(flagsSrc), intent + ' must be part of the guard');
     });
 });
 

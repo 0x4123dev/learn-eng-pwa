@@ -1,6 +1,6 @@
 import { requireAuth, json, err } from '../_lib.js';
 import { areFriends, friendBattleReadyAt } from '../_battle.js';
-import { MF, currentFight, fightView, pairState, randomFightId, reapStale } from '../_math-fight.js';
+import { MF, currentFight, fightView, mathFightEnabled, pairState, randomFightId, reapStale } from '../_math-fight.js';
 
 // POST /api/math-fight/challenge { friendId, level, foeLevel }
 // Opens a 60-second invite. Nobody picks a stake: winning pays MF.PRIZE and
@@ -10,6 +10,7 @@ import { MF, currentFight, fightView, pairState, randomFightId, reapStale } from
 export async function onRequestPost({ request, env }) {
   const auth = await requireAuth(request, env);
   if (!auth) return err('Unauthorized', 401);
+  if (!(await mathFightEnabled(env))) return err('Đấu Toán chưa được mở cho tài khoản này', 403);
   await reapStale(env);
 
   let body; try { body = await request.json(); } catch (e) { return err('Invalid JSON'); }

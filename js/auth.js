@@ -159,9 +159,17 @@ const EngAuth = (function () {
     try {
       const r = await api('coins', { method: 'POST', token });
       const granted = r.ok && r.data ? Math.max(0, Math.trunc(+r.data.granted || 0)) : 0;
-      if (!granted) return;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
+      // The same reply carries the per-user feature flags. Cache them BEFORE
+      // the early return below: a child with no coins waiting still needs to
+      // learn that an admin has opened a tab for them.
+      if (r.ok && r.data && r.data.flags) {
+        const before = !!appState.allowMathFight;
+        appState.allowMathFight = !!r.data.flags.mathFight;
+        if (before !== appState.allowMathFight && typeof saveUserData === 'function') saveUserData(currentUser, appState);
+      }
+      if (!granted) return;
       appState.coins = Math.max(0, +appState.coins || 0) + granted;
       if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
       if (typeof showToast === 'function') showToast('🎁 Admin tặng bạn ' + granted + ' xu!');

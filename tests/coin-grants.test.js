@@ -27,7 +27,21 @@ suite('coin grants: admin gives, the device claims once', () => {
     const src = read('functions/api/coins.js');
     assert.truthy(src.includes('claimed_at IS NULL'), 'only unpaid rows count');
     assert.truthy(/UPDATE coin_grants SET claimed_at/.test(src), 'rows must be stamped so a re-sync cannot double-pay');
-    assert.truthy(src.includes('json({ granted })'), 'client needs the total to add locally');
+    assert.truthy(/json\(\{ granted[,}]/.test(src), 'client needs the total to add locally');
+  });
+
+  test('the same reply carries the per-user feature flags home', () => {
+    // A flag that gates a MENU CARD cannot be delivered by the tab it gates:
+    // the child could never open the tab to learn it was opened for them. This
+    // call already runs on every sync, so it is the one that carries them.
+    const src = read('functions/api/coins.js');
+    assert.truthy(src.includes("key = 'math_fight'"), 'the Dau Toan switch rides home here');
+    assert.truthy(src.includes('flags'), 'flags travel in the same reply');
+    const client = read('js/auth.js');
+    assert.truthy(client.includes('r.data.flags'), 'the client caches what it was told');
+    assert.truthy(client.includes('appState.allowMathFight'));
+    assert.truthy(client.indexOf('r.data.flags') < client.indexOf('if (!granted) return;'),
+      'flags must be cached BEFORE the no-coins early return');
   });
 
   test('the app claims on every login sync and celebrates the gift', () => {

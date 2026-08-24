@@ -23,6 +23,15 @@ export function scoreAnswers(seed, level, answers) {
   return { correct, answered };
 }
 
+// One switch for the whole app: off means nobody sees Đấu Toán, on means
+// everybody does. The hidden menu card is only a courtesy — this is the
+// enforcement, so a stale client cannot walk in before the switch is thrown.
+export const MATH_FIGHT_FLAG = 'math_fight';
+export async function mathFightEnabled(env) {
+  const row = await env.DB.prepare('SELECT value FROM app_flags WHERE key = ?').bind(MATH_FIGHT_FLAG).first();
+  return !!(row && row.value);
+}
+
 export function safeJson(value, fallback) {
   try { const p = JSON.parse(value); return p == null ? fallback : p; } catch (e) { return fallback; }
 }

@@ -265,6 +265,8 @@
     <header class="bar">
       <h1>🎯 FlashLingo Admin</h1>
       <div class="bar-actions">
+        <button class="btn btn-ghost" id="mathFightFlag" aria-pressed="false"
+                title="Đấu Toán: friend-vs-friend maths duels. Off means the tab is hidden for EVERY child.">🥊 Đấu Toán: …</button>
         <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
@@ -711,17 +713,50 @@ async function loadActivity(userId, name){
   }).join('');
 }
 
+// One switch for the whole app, not per child: a duel needs two children, so
+// a per-child switch would mostly produce friend lists with nobody to fight.
+let _appFlags = {};
+function paintAppFlags(){
+  const btn = document.getElementById('mathFightFlag');
+  if (!btn) return;
+  const on = !!_appFlags.math_fight;
+  btn.textContent = on ? '🥊 Đấu Toán: ON' : '🥊 Đấu Toán: OFF';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.style.background = on ? '#12603a' : '';
+  btn.style.color = on ? '#eafff3' : '';
+}
+async function loadAppFlags(){
+  const r = await api('admin/app-flags');
+  _appFlags = (r && r.flags) || {};
+  paintAppFlags();
+}
+async function toggleMathFight(){
+  const btn = document.getElementById('mathFightFlag');
+  const next = !_appFlags.math_fight;
+  if (next && !confirm('Bật Đấu Toán cho TẤT CẢ người học?')) return;
+  if (!next && !confirm('Tắt Đấu Toán cho TẤT CẢ người học?')) return;
+  btn.disabled = true;
+  try {
+    const r = await api('admin/app-flags', { method:'POST', body:{ key:'math_fight', value: next } });
+    _appFlags = (r && r.flags) || _appFlags;
+    paintAppFlags();
+  } catch (e) { alert('Could not do that: ' + (e && e.message ? e.message : e)); }
+  btn.disabled = false;
+}
+
 function showDash(){
   document.getElementById('login').style.display='none';
   document.getElementById('dash').style.display='block';
   loadUsers().catch(()=>{});
   loadActivity(null, null).catch(()=>{});
   loadSkills(null, null).catch(()=>{});
+  loadAppFlags().catch(()=>{});
 }
 
 document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
+document.getElementById('mathFightFlag').onclick = toggleMathFight;
 document.getElementById('refreshBtn').onclick = ()=>{
   loadUsers().catch(()=>{});
   loadActivity(_selectedUser, _selectedName).catch(()=>{});

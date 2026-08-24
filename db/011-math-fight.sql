@@ -49,3 +49,15 @@ CREATE TABLE IF NOT EXISTS math_fight_pairs (
   updated_at    INTEGER NOT NULL,
   PRIMARY KEY (lo_id, hi_id)
 );
+
+-- Đấu Toán ships hidden behind ONE switch for the whole app: off means nobody
+-- sees it, on means everybody does. Deliberately not a per-child column —
+-- a duel needs two children, so a per-child switch would mostly produce
+-- friend lists where nobody can be challenged.
+CREATE TABLE IF NOT EXISTS app_flags (
+  key        TEXT PRIMARY KEY,
+  value      INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL DEFAULT 0,
+  updated_by INTEGER
+);
+INSERT OR IGNORE INTO app_flags(key, value, updated_at) VALUES ('math_fight', 0, 0);
