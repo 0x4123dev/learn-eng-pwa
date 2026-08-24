@@ -1177,6 +1177,18 @@ function switchScreen(screenId) {
         }
     }
 
+    // Guard: warn before walking out of a live Đấu Toán. Unlike a quiz, this
+    // one has another child sitting on the other side and 200 coins on the
+    // table — leaving IS a loss, so say so before it happens rather than
+    // letting the server's walk-away timer decide 20 seconds later.
+    if (screenId !== 'mathHubScreen' &&
+        typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
+        if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
+            return; // stay in the fight
+        }
+        if (MathFight.forfeitNow) MathFight.forfeitNow();
+    }
+
     // Guard: the Math Wars round. Its own guard rather than a clause on the
     // one above, because what is lost is different — two minutes of a timed
     // round that is scored only when it ends, so walking out mid-way scores

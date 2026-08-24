@@ -375,13 +375,19 @@ var MathFight = (() => {
     </div>`;
   }
 
+  // A fight in progress is real money and a real opponent waiting, so leaving
+  // is not a quiet no-op: the screen guard asks first, and a yes forfeits
+  // immediately instead of letting the child drift away and lose 20 seconds
+  // later to a silent walk-away timeout they were never told about.
+  function isFighting() { return st.view === 'fight' && !!st.fight && st.fight.status === 'active'; }
+  function forfeitNow() { if (isFighting()) submit(true); }
   function quit() {
     if (typeof confirm === 'function' && !confirm('Bỏ cuộc là thua và mất tiền cược. Con chắc chưa?')) return;
     submit(true);
   }
   function backToList() { st.fight = null; st.view = 'list'; paintLoading(); refresh(); }
 
-  return Object.freeze({ open, leave, pickFriend, send, respond, answer, submit, quit, backToList, refresh });
+  return Object.freeze({ open, leave, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh });
 })();
 
 function mfPickFriend(id) { MathFight.pickFriend(id); }

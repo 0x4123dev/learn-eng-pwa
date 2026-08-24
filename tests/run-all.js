@@ -20,5 +20,5 @@ for (const f of TEST_FILES) {
     require(path.join(__dirname, f));
 }
 
-const exitCode = harness.runAll();
-process.exit(exitCode);
+// runAll is async now (it awaits each test), so the exit code has to be too.
+harness.runAll().then(exitCode => process.exit(exitCode));

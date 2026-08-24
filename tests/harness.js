@@ -57,7 +57,11 @@ const assert = {
     }
 };
 
-function runAll() {
+// Async tests are AWAITED. They used to be called and dropped: `t.fn()`
+// returned a promise, the harness counted a pass, and any assertion inside
+// resolved into the void. A whole file of screen tests "passed" for an hour
+// while verifying nothing — so if you write `async () => {}` here, it runs.
+async function runAll() {
     const ESC_RED = '\x1b[31m';
     const ESC_GREEN = '\x1b[32m';
     const ESC_YELLOW = '\x1b[33m';
@@ -68,7 +72,7 @@ function runAll() {
         console.log(`\n${ESC_BOLD}━━━ ${s.name} ━━━${ESC_RESET}`);
         for (const t of s.tests) {
             try {
-                t.fn();
+                await t.fn();
                 _passed++;
                 console.log(`  ${ESC_GREEN}✓${ESC_RESET} ${t.name}`);
             } catch (e) {

@@ -721,6 +721,12 @@ function renderToan7MenuHTML() {
 }
 
 function openMathSection(v) {
+    // Same rule inside the Math tab itself: tapping "back" mid-fight is still
+    // walking out on the other child.
+    if (v !== 'fight' && typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
+        if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
+        if (MathFight.forfeitNow) MathFight.forfeitNow();
+    }
   const known = ['home', 'toan7', 'hk1', 'history', 'wars', 'fight'];
   if (v === 'fight' && !mathFightUnlocked()) v = 'home';
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
