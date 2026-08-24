@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Phaser Prototype — Cướp Đêm</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f9fbff; --muted:#b9c8dd; --panel:#0e2138; --gold:#ffd66b; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; background:#071321; color:var(--ink); font-family:ui-rounded,"Nunito",system-ui,sans-serif; }
+    body { padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); }
+    .shell { width:min(1100px,100%); margin:auto; }
+    header { display:flex; align-items:end; justify-content:space-between; gap:14px; margin:2px 2px 12px; }
+    h1 { margin:0; font-size:clamp(20px,4vw,32px); letter-spacing:-.02em; }
+    .lede { margin:5px 0 0; color:var(--muted); font-size:13px; }
+    .badge { flex:none; padding:7px 10px; border:1px solid #365578; border-radius:999px; color:#92ddff; background:#102943; font-size:12px; font-weight:800; }
+    .game-card { position:relative; overflow:hidden; border:1px solid rgba(176,215,255,.25); border-radius:22px; background:var(--panel); box-shadow:0 24px 70px rgba(0,0,0,.4); }
+    #phaser-stage { width:100%; aspect-ratio:16/10; min-height:300px; max-height:72dvh; }
+    #phaser-stage canvas { display:block; width:100%!important; height:100%!important; }
+    .hud { position:absolute; inset:12px 12px auto; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; pointer-events:none; z-index:2; }
+    .hud-card { min-width:118px; padding:9px 11px; border:1px solid rgba(255,255,255,.35); border-radius:14px; background:rgba(5,18,31,.82); box-shadow:0 6px 18px rgba(0,0,0,.22); backdrop-filter:blur(8px); }
+    .hud-card:last-child { text-align:right; }
+    .hud-label { color:#d9e8fa; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+    .meter { width:132px; max-width:31vw; height:8px; margin-top:6px; overflow:hidden; border-radius:999px; background:#26394f; }
+    .meter span { display:block; width:100%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#ffd85e,#ff7348); transition:width .25s ease-out; }
+    .hud-card:last-child .meter span { background:linear-gradient(90deg,#74dcff,#55edb1); }
+    .controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:12px; background:linear-gradient(180deg,#10253e,#0a1b30); }
+    button { min-height:44px; border:1px solid #3f5f80; border-radius:13px; padding:0 15px; color:#f8fbff; background:#173653; font:800 14px/1 inherit; cursor:pointer; transition:background .18s ease-out,border-color .18s ease-out; }
+    button:hover { background:#20496e; }
+    button:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
+    .primary { border-color:#ffdf7b; color:#291506; background:linear-gradient(135deg,#ffd866,#ff8c42); box-shadow:0 6px 18px rgba(255,137,52,.24); }
+    .primary:hover { background:linear-gradient(135deg,#ffe37f,#ff9e57); }
+    .status { flex:1 1 230px; color:#dbe7f5; font-size:13px; line-height:1.35; }
+    .legend { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; }
+    .legend div { padding:10px 12px; border:1px solid #243e5b; border-radius:13px; background:#0c1d31; color:#b9c8dd; font-size:12px; }
+    .legend strong { display:block; margin-bottom:2px; color:#fff; font-size:13px; }
+    @media (max-width:650px) {
+      body { padding-inline:8px; }
+      header { align-items:flex-start; }
+      .badge { display:none; }
+      #phaser-stage { aspect-ratio:4/3; min-height:330px; }
+      .legend { grid-template-columns:1fr; }
+      .hud { inset:8px 8px auto; }
+      .hud-card { min-width:104px; padding:8px; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .meter span,button { transition:none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Night Raid · Phaser 2D prototype</h1>
+        <p class="lede">Chó dẫn đầu, 6 lính tách đội hình, bước chạy, bụi chân, tia chém và phá thành.</p>
+      </div>
+      <span class="badge">LOCAL ONLY</span>
+    </header>
+
+    <section class="game-card" aria-label="Bản thử nghiệm chiến đấu Cướp Đêm">
+      <div class="hud" aria-hidden="true">
+        <div class="hud-card"><div class="hud-label">Đội cướp · 7/7</div><div class="meter"><span id="raidHp"></span></div></div>
+        <div class="hud-card"><div class="hud-label">Thành trì</div><div class="meter"><span id="castleHp"></span></div></div>
+      </div>
+      <div id="phaser-stage"></div>
+      <div class="controls">
+        <button class="primary" id="replay" type="button">Tiến quân</button>
+        <button id="impact" type="button">Xem cú phá thành</button>
+        <button id="motion" type="button" aria-pressed="false">Hiệu ứng: Đầy đủ</button>
+        <p class="status" id="status" role="status" aria-live="polite">Sẵn sàng. Nhấn “Tiến quân” để xem đội hình.</p>
+      </div>
+    </section>
+
+    <div class="legend" aria-label="Nội dung đang kiểm chứng">
+      <div><strong>Chuyển động</strong>Nhịp chân, nghiêng thân, bóng và bụi chân không còn trượt thẳng.</div>
+      <div><strong>Đội hình</strong>Chó đi trước; 6 lính có khoảng cách và nhịp chạy lệch nhau.</div>
+      <div><strong>Va chạm</strong>Tia lửa, mảnh tường, khói, rung camera và hố vỡ giữ lại trên thành.</div>
+    </div>
+  </main>
+
+  <script src="/demo/phaser.min.js"></script>
+  <script>
+  (() => {
+    'use strict';
+    const W=960,H=600, reducedByOS=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let sceneRef=null, reduced=reducedByOS;
+    const stage=document.getElementById('phaser-stage'), status=document.getElementById('status');
+    const raidHp=document.getElementById('raidHp'), castleHp=document.getElementById('castleHp');
+
+    class RaidScene extends Phaser.Scene {
+      constructor(){super('raid');this.actors=[];this.running=false;this.hit=false;this.elapsed=0;}
+      preload(){
+        // Local PNG copies avoid an embedded-WebView WebP texture corruption
+        // seen during prototype QA. They are demo-only and stay untracked.
+        this.load.image('board','/demo/phaser-assets/board.png');
+        this.load.image('castleAtlas','/img/castle-skins/castles-atlas-a.png');
+        this.load.image('dogsheet','/demo/phaser-assets/dogs.png');
+        this.load.image('squad','/demo/phaser-assets/squad.png');
+      }
+      create(){
+        sceneRef=this;window.__raidScene=this;
+        this.cameras.main.setBackgroundColor('#0a1a2d');
+        this.add.image(W/2,H/2,'board').setDisplaySize(W,H).setTint(0x7994a4);
+        this.add.rectangle(W/2,H/2,W,H,0x071321,.22).setDepth(1);
+        this.add.ellipse(242,257,285,105,0x09121b,.26).setDepth(2);
+        this.makeTextures();
+        this.castle=this.add.image(226,237,'castleAtlas','castle0').setDisplaySize(235,370).setDepth(4).setTint(0xd8e4f0);
+        this.crack=this.add.graphics().setDepth(8).setVisible(false);
+        this.makeActors();
+        this.sparkEmitter=this.add.particles(0,0,'spark',{speed:{min:90,max:310},angle:{min:145,max:235},lifespan:{min:240,max:650},scale:{start:.85,end:0},alpha:{start:1,end:0},blendMode:'ADD',gravityY:240,quantity:0,emitting:false}).setDepth(30);
+        this.debrisEmitter=this.add.particles(0,0,'debris',{speed:{min:80,max:260},angle:{min:120,max:255},lifespan:{min:550,max:1200},scale:{start:1,end:.45},rotate:{min:-240,max:240},gravityY:520,quantity:0,emitting:false}).setDepth(26);
+        this.dustEmitter=this.add.particles(0,0,'dust',{speed:{min:8,max:34},angle:{min:205,max:335},lifespan:{min:260,max:620},scale:{start:.42,end:1.05},alpha:{start:.38,end:0},quantity:0,emitting:false}).setDepth(9);
+        this.smokeEmitter=this.add.particles(0,0,'smoke',{speed:{min:12,max:45},angle:{min:220,max:315},lifespan:{min:700,max:1350},scale:{start:.42,end:1.3},alpha:{start:.44,end:0},quantity:0,emitting:false}).setDepth(25);
+        this.resetRaid();
+      }
+      makeTextures(){
+        const g=this.add.graphics();
+        g.fillStyle(0xffed92).fillCircle(8,8,7).generateTexture('spark',16,16).clear();
+        g.fillStyle(0xb98a61).fillRoundedRect(1,2,17,13,3).generateTexture('debris',20,18).clear();
+        g.fillStyle(0xdac7a1,.8).fillCircle(12,12,11).generateTexture('dust',24,24).clear();
+        g.fillStyle(0x283342,.75).fillCircle(16,16,15).generateTexture('smoke',32,32).destroy();
+        const dogTex=this.textures.get('dogsheet');
+        const cuts=[[0,434],[434,434],[868,434],[1302,434],[1736,436]];
+        cuts.forEach((c,i)=>dogTex.add('dog'+i,0,c[0],0,c[1],724));
+        const squadTex=this.textures.get('squad');
+        for(let i=0;i<6;i++)squadTex.add('soldier'+i,0,i*362,0,362,724);
+        this.textures.get('castleAtlas').add('castle0',0,0,20,431,680);
+        this.anims.create({key:'dog-run',frames:cuts.map((_,i)=>({key:'dogsheet',frame:'dog'+i})),frameRate:11,repeat:-1});
+      }
+      makeActors(){
+        const starts=[[845,405],[812,452],[866,482],[780,502],[838,535],[900,520]];
+        const ends=[[428,296],[452,337],[482,300],[480,370],[516,336],[535,385]];
+        for(let i=0;i<6;i++){
+          const sprite=this.add.image(starts[i][0],starts[i][1],'squad','soldier'+i).setOrigin(.5,.86).setDisplaySize(90,120).setDepth(12+i);
+          this.actors.push({sprite,start:starts[i],end:ends[i],delay:250+i*125,phase:i*.92,pet:false});
+        }
+        const dog=this.add.sprite(740,385,'dogsheet','dog0').setOrigin(.5,.76).setDisplaySize(112,108).setDepth(20);
+        dog.play('dog-run');
+        this.actors.push({sprite:dog,start:[740,385],end:[365,272],delay:0,phase:.2,pet:true});
+      }
+      resetRaid(){
+        this.running=false;this.hit=false;this.elapsed=0;
+        this.cameras.main.resetFX();this.cameras.main.setZoom(1);this.cameras.main.centerOn(W/2,H/2);
+        this.castle.setTint(0xd8e4f0).setAngle(0);this.crack.clear().setVisible(false);
+        this.sparkEmitter.stop();this.debrisEmitter.stop();this.smokeEmitter.stop();this.dustEmitter.stop();
+        this.actors.forEach(a=>{a.sprite.setPosition(...a.start).setAngle(0).setScale(a.pet?112/a.sprite.width:90/a.sprite.width,a.pet?108/a.sprite.height:120/a.sprite.height).setAlpha(1);});
+        raidHp.style.width='100%';castleHp.style.width='100%';
+        status.textContent='Sẵn sàng. Nhấn “Tiến quân” để xem đội hình.';
+      }
+      startRaid(){
+        this.resetRaid();this.running=true;status.textContent='Đội hình đang tiến công: chó dẫn đầu, 6 lính theo sau.';
+      }
+      forceImpact(){
+        if(!this.running)this.startRaid();
+        this.elapsed=3980;
+      }
+      impactCastle(){
+        if(this.hit)return;this.hit=true;
+        const x=330,y=248;
+        this.sparkEmitter.explode(reduced?10:34,x,y);
+        this.debrisEmitter.explode(reduced?7:24,x,y);
+        this.smokeEmitter.explode(reduced?5:15,x+6,y-4);
+        if(!reduced){this.cameras.main.shake(360,.012);this.cameras.main.zoomTo(1.075,180,'Quad.easeOut',true);this.time.delayedCall(720,()=>this.cameras.main.zoomTo(1,280,'Sine.easeInOut',true));}
+        this.castle.setTint(0xc4b9b3);
+        this.crack.clear().setVisible(true);
+        this.crack.fillStyle(0x17181d,.92).beginPath().moveTo(306,218).lineTo(339,221).lineTo(351,243).lineTo(336,270).lineTo(305,265).lineTo(290,241).closePath().fillPath();
+        this.crack.lineStyle(5,0xe4c8a0,.96).strokePoints([{x:306,y:218},{x:339,y:221},{x:351,y:243},{x:336,y:270},{x:305,y:265},{x:290,y:241},{x:306,y:218}],true);
+        this.crack.lineStyle(2,0x4b332a,.95);
+        [[300,227,282,211],[341,229,360,214],[341,260,360,279],[303,258,285,278]].forEach(c=>{this.crack.beginPath().moveTo(c[0],c[1]).lineTo(c[2],c[3]).strokePath();});
+        castleHp.style.width='18%';status.textContent='Phá thành! Camera giữ cú đánh, tường bị khoét và mảnh vỡ còn nhìn rõ.';
+      }
+      update(_time,delta){
+        if(!this.running)return;
+        this.elapsed+=Math.min(delta,34);
+        const marchEnd=3650,attackAt=4100;
+        this.actors.forEach((a,i)=>{
+          const local=this.elapsed-a.delay,p=Phaser.Math.Clamp(local/marchEnd,0,1),ease=Phaser.Math.Easing.Sine.InOut(p);
+          const moving=p>0&&p<1;
+          a.sprite.x=Phaser.Math.Linear(a.start[0],a.end[0],ease);
+          a.sprite.y=Phaser.Math.Linear(a.start[1],a.end[1],ease);
+          if(moving&&!reduced){
+            const stride=Math.sin(local*.018+a.phase);
+            a.sprite.y+=Math.abs(stride)*(a.pet?4:3.2);
+            a.sprite.angle=stride*(a.pet?2.4:3.2);
+            const baseX=a.pet?112/a.sprite.width:90/a.sprite.width,baseY=a.pet?108/a.sprite.height:120/a.sprite.height;
+            a.sprite.setScale(baseX*(1-stride*.018),baseY*(1+stride*.025));
+            if(local>0&&Math.floor(local/125)!==a.dustTick){a.dustTick=Math.floor(local/125);this.dustEmitter.explode(a.pet?2:1,a.sprite.x+20,a.sprite.y-2);}
+          } else a.sprite.setAngle(0);
+          a.sprite.setDepth(10+Math.floor(a.sprite.y)+(a.pet?30:i));
+        });
+        if(this.elapsed>attackAt&&!this.hit)this.impactCastle();
+        if(this.hit&&this.elapsed<5600&&!reduced&&Math.floor(this.elapsed/180)!==this.slashTick){
+          this.slashTick=Math.floor(this.elapsed/180);const x=330+Phaser.Math.Between(-28,34),y=250+Phaser.Math.Between(-24,28);this.sparkEmitter.explode(5,x,y);
+        }
+        if(this.elapsed>6100){this.running=false;raidHp.style.width='82%';status.textContent='Kết thúc prototype: đội hình thắng, thành bị phá rõ ràng.';}
+      }
+    }
+
+    window.addEventListener('error',event=>{status.textContent='Lỗi prototype: '+event.message;});
+    if(!window.Phaser){status.textContent='Không tải được Phaser. Kiểm tra kết nối mạng rồi tải lại trang.';return;}
+    // Canvas is deliberate in this first prototype: Safari/iPad and some
+    // embedded WebViews can corrupt large transparent WebP textures through
+    // WebGL. Once the art direction is approved we can A/B WebGL safely.
+    new Phaser.Game({type:Phaser.CANVAS,parent:stage,width:W,height:H,transparent:true,backgroundColor:'#071321',render:{antialias:true,pixelArt:false,roundPixels:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:RaidScene});
+    document.getElementById('replay').addEventListener('click',()=>sceneRef&&sceneRef.startRaid());
+    document.getElementById('impact').addEventListener('click',()=>sceneRef&&sceneRef.forceImpact());
+    const motion=document.getElementById('motion');
+    const paintMotion=()=>{motion.textContent=reduced?'Hiệu ứng: Giảm':'Hiệu ứng: Đầy đủ';motion.setAttribute('aria-pressed',String(reduced));};
+    paintMotion();motion.addEventListener('click',()=>{reduced=!reduced;paintMotion();status.textContent=reduced?'Đã giảm rung camera và số lượng particle.':'Đã bật đầy đủ hiệu ứng Phaser.';});
+  })();
+  </script>
+</body>
+</html>

@@ -25,6 +25,7 @@
   button { padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(180,212,255,.3); background: #17304f;
            color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; }
   button.primary { background: linear-gradient(135deg, #ff8b2e, #ef3f35); border-color: #ffca5a; }
+  button:focus-visible { outline: 3px solid #ffd76a; outline-offset: 2px; }
   .notes { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px; line-height: 1.55; }
   @media (max-width: 900px) { .notes { grid-template-columns: 1fr; } }
   .notes section { background: #0f2038; border: 1px solid rgba(180,212,255,.18); border-radius: 14px; padding: 12px 16px; }
@@ -40,6 +41,8 @@
   <button class="primary" id="btnReplay">▶ Chạy lại trận</button>
   <button id="btnSeed">🎲 Đổi trận khác</button>
   <button id="btnOrbit">🎥 Camera tự xoay: BẬT</button>
+  <button id="btnFocus">🔍 Cận cảnh đội quân</button>
+  <button id="btnCastle">🏰 Cận cảnh lâu đài</button>
 </div>
 
 <div class="panes">
@@ -48,8 +51,8 @@
     <div class="stage"><canvas id="c2d" width="800" height="800"></canvas><span class="fps" id="fps2d">—</span></div>
   </div>
   <div class="pane">
-    <h2>Three.js <small>3D thật · WebGL</small></h2>
-    <div class="stage" id="stage3d"><span class="fps" id="fps3d">—</span><span class="hint3d">Kéo chuột để xoay camera</span></div>
+    <h2>Three.js Art-match <small>mascot 3D · lâu đài 3D · VFX</small></h2>
+    <div class="stage" id="stage3d"><span class="fps" id="fps3d">—</span><span class="hint3d">Kéo để xoay · Chó hiệp sĩ dẫn 6 mascot 3D</span></div>
   </div>
 </div>
 
@@ -66,7 +69,7 @@
     <h3>Three.js / Babylon.js (3D thật)</h3>
     <ul>
       <li>Camera xoay/zoom tự do, bóng đổ và đạn bay có chiều sâu thật</li>
-      <li>Muốn đẹp như ảnh bên trái phải có MODEL 3D thật (đặt làm hoặc mua) — khối hộp demo này chỉ là placeholder</li>
+      <li>Prototype dùng model procedural có rig thật để kiểm chứng camera, bước chân, chiến đấu và phá thành trước khi mua GLB</li>
       <li>+660 KB thư viện, tốn pin/GPU hơn trên máy yếu; viết lại toàn bộ renderer</li>
     </ul>
   </section>
@@ -86,7 +89,7 @@
 
   function makeBattle() {
     const t = NightRaidRules.trainingTarget(8);
-    const target = Object.assign({}, t, { seed, attackerDamage: t.defense + (seed % 2 ? 80 : -90), attackerSoldiers: 8 });
+    const target = Object.assign({}, t, { seed, attackerDamage: t.defense + (seed % 2 ? 80 : -90), attackerSoldiers: 6 });
     game = new NightRaidGame.AutoBattle(document.getElementById('c2d'), target, { pet: PET });
     game.state.status = 'fighting';
     chor = game.choreo; duration = chor.durationMs;
@@ -95,77 +98,90 @@
 
   // ---- Three.js pane -------------------------------------------------------
   const stage = document.getElementById('stage3d');
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference:'high-performance' });
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
   stage.prepend(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0e1c33);
-  scene.fog = new THREE.Fog(0x0e1c33, 30, 60);
+  scene.background = new THREE.Color(0xf6eee3);
+  scene.fog = new THREE.Fog(0xf6eee3, 29, 52);
   const camera = new THREE.PerspectiveCamera(42, 1, .1, 100);
-  let camAngle = Math.PI * .78, camAuto = true, camEl = .62;
-  const sun = new THREE.DirectionalLight(0xfff2d8, 2.6);
+  // Start at the same three-quarter front angle used by the 2D key art so
+  // the castle gate and the marching faces are immediately recognisable.
+  let camAngle = 2.28, camAuto = !matchMedia('(prefers-reduced-motion: reduce)').matches, camEl = .64, camFocus = false, camCastle = false, camDist = 21;
+  const cameraTarget = new THREE.Vector3();
+  const sun = new THREE.DirectionalLight(0xfff0cf, 3.15);
   sun.position.set(9, 14, 6); sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
   sun.shadow.camera.left = -14; sun.shadow.camera.right = 14;
   sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -14;
-  scene.add(sun, new THREE.AmbientLight(0x88a7d8, 1.1));
+  scene.add(sun, new THREE.HemisphereLight(0xccecff, 0x55752d, 1.65), new THREE.AmbientLight(0xffe7ce, .55));
 
   const W2X = v => (v - 400) / 36, W2Z = v => (v - 400) / 36;  // board 800² → ±11
-  const mat = (c, r = .9) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
-  const box = (w, h, d, c) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c)); m.castShadow = m.receiveShadow = true; return m; };
-  const cyl = (r1, r2, h, c, seg = 20) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r1, r2, h, seg), mat(c)); m.castShadow = m.receiveShadow = true; return m; };
+  const mat = (c, r = .78, metal = .02, emissive = 0) => new THREE.MeshStandardMaterial({ color:c, roughness:r, metalness:metal, emissive, emissiveIntensity:emissive?1.8:0 });
+  const mesh = (geo,c,r=.78,metal=.02) => { const m=new THREE.Mesh(geo,mat(c,r,metal));m.castShadow=m.receiveShadow=true;return m; };
+  const box = (w,h,d,c,r,metal) => mesh(new THREE.BoxGeometry(w,h,d),c,r,metal);
+  const cyl = (r1,r2,h,c,seg=16) => mesh(new THREE.CylinderGeometry(r1,r2,h,seg),c);
+  const sphere = (r,c,sx=1,sy=1,sz=1) => {const m=mesh(new THREE.SphereGeometry(r,16,12),c);m.scale.set(sx,sy,sz);return m;};
+  const pivotLimb=(parent,x,y,z,len,width,color)=>{const p=new THREE.Group();p.position.set(x,y,z);const limb=cyl(width,width*.88,len,color,10);limb.position.y=-len/2;p.add(limb);parent.add(p);return p;};
+  const cone=(r,h,c,seg=14)=>mesh(new THREE.ConeGeometry(r,h,seg),c);
+  function eye(parent,x,y,z,scale=1){const e=sphere(.085*scale,0x2a1b18,1,.98,.55);e.position.set(x,y,z);parent.add(e);const glint=sphere(.026*scale,0xffffff);glint.position.set(x-.018*scale,y+.025*scale,z+.047*scale);parent.add(glint);}
+  function boot(limb,color=0x62412d){const b=sphere(.14,color,1.15,.7,1.35);b.position.set(0,-.53,.055);limb.add(b);}
+  function cape(root,color){const c=box(.62,.62,.055,color,.5,.03);c.position.set(0,.88,-.27);c.rotation.x=-.12;root.add(c);return c;}
 
-  let world = null, units3d = [], shots3d = [];
+  let world=null,units3d=[],shots3d=[],castle3d=null,sparks=[];
+  function makeTree(scale=1){const g=new THREE.Group(),trunk=cyl(.13*scale,.19*scale,.75*scale,0x77452a,10);trunk.position.y=.37*scale;g.add(trunk);for(const p of [[0,1,0,.56],[-.29,.78,.06,.42],[.3,.8,-.03,.44],[0,.7,.22,.39]]){const crown=sphere(p[3]*scale,0x68a83c,1,1.04,1);crown.position.set(p[0]*scale,p[1]*scale,p[2]*scale);g.add(crown);}for(const x of [-.24,.08,.3]){const fruit=sphere(.055*scale,0xf28b43);fruit.position.set(x*scale,(.9+Math.abs(x)*.2)*scale,.35*scale);g.add(fruit);}return g;}
+  function makeCastle(){const g=new THREE.Group(),stone=0xd8c59d,stoneDark=0xa98e67,roof=0xd85b45,roofDark=0xa83c34,wood=0x68402b,gold=0xf2bd45;
+    const plinth=cyl(3.05,3.25,.48,0x857057,32);plinth.position.y=.24;g.add(plinth);const court=cyl(2.9,3.03,.16,0xa9c96c,32);court.position.y=.56;g.add(court);
+    const keep=box(3.75,2.45,2.35,stone);keep.position.set(0,1.8,-.08);g.add(keep);const upper=cyl(1.18,1.3,2.75,stone,24);upper.position.set(0,3.6,-.42);g.add(upper);
+    const gate=box(1.12,1.42,.28,wood);gate.position.set(0,1.34,1.24);g.add(gate);for(const x of [-.32,0,.32]){const brace=box(.055,1.22,.05,0x3f281f);brace.position.set(x,1.35,1.4);g.add(brace);}
+    const arch=new THREE.Mesh(new THREE.TorusGeometry(.58,.15,10,24,Math.PI),mat(stoneDark));arch.rotation.z=Math.PI;arch.position.set(0,2.05,1.41);g.add(arch);
+    const chunks=[];const towers=[[-1.75,.9,3.55,.72],[1.75,.9,3.55,.72],[-1.58,-1,3.25,.64],[1.58,-1,3.25,.64],[0,-.42,5.15,1.12]];
+    for(const [x,z,h,r] of towers){const tower=cyl(r*.9,r,h,stone,22);tower.position.set(x,h/2+.52,z);g.add(tower);for(let y=1.15;y<h;y+=.55){const ring=cyl(r+.025,r+.025,.055,stoneDark,22);ring.position.set(x,y,z);g.add(ring);}const cap=cyl(r*1.12,r*1.12,.2,stoneDark,22);cap.position.set(x,h+.48,z);g.add(cap);const rf=cone(r*1.35,r*1.75,roof,20);rf.position.set(x,h+1.43,z);g.add(rf);const roofBand=cyl(r*1.1,r*1.24,.18,roofDark,20);roofBand.position.set(x,h+.68,z);g.add(roofBand);const finial=sphere(.09,gold);finial.position.set(x,h+2.32,z);g.add(finial);chunks.push({m:rf,base:rf.position.clone(),spin:x*.07});
+      const win=box(.22,.44,.085,0x3a2924);win.position.set(x,h*.66,z+r+.025);g.add(win);const glow=box(.11,.27,.025,0xffd56b);glow.material=mat(0x3b291c,.4,0,0xffb62f);glow.position.set(x,h*.66,z+r+.09);g.add(glow);
+    }
+    const battlement=[];for(let i=-4;i<=4;i++){const b=box(.31,.38,.34,stone);b.position.set(i*.43,3.18,1.02);g.add(b);battlement.push(b);}for(let row=0;row<3;row++)for(let i=-3;i<=3;i++){const brick=box(.34,.16,.055,(i+row)%2?stoneDark:0xc6af86);brick.position.set(i*.48+(row%2)*.22,1.05+row*.52,1.31);g.add(brick);}
+    for(const x of [-1.08,1.08]){const flagPole=cyl(.025,.025,1.3,0x5b3a27,8);flagPole.position.set(x,4.08,.85);g.add(flagPole);const flag=box(.48,.28,.025,0xd94745);flag.position.set(x+.24,4.48,.85);g.add(flag);}
+    for(const p of [[-2.05,.66,1.35],[2.05,.66,1.35],[-1.15,.66,1.55],[1.15,.66,1.55]]){const bush=sphere(.25,0x5d9d3d,1.3,.7,1);bush.position.set(...p);g.add(bush);}
+    return{g,chunks:[...chunks,...battlement.map((m,i)=>({m,base:m.position.clone(),spin:(i-4)*.05}))],keep,gate};
+  }
+  function makeMascotSoldier(index){const kinds=['goblin','fox','bat','mouse','puppy','wood'],kind=kinds[index%kinds.length],root=new THREE.Group(),colors={goblin:0x69ad48,fox:0xe58b38,bat:0x8460c5,mouse:0x8f929a,puppy:0xd8a35e,wood:0x9b6637},fur=colors[kind],blue=0x2f66b1,gold=0xe9b64e,red=0xc9473d;
+    const body=sphere(.32,kind==='wood'?0x8b5b32:blue,1,.98,.86);body.position.set(0,.91,0);root.add(body);const belt=box(.58,.1,.38,0x5d3928);belt.position.set(0,.72,.02);root.add(belt);if(kind!=='goblin'&&kind!=='mouse')cape(root,kind==='bat'?0x4d347c:blue);
+    const head=sphere(.31,fur,kind==='goblin'?1.08:1,kind==='puppy'?.92:1,1);head.position.set(0,1.32,.08);root.add(head);const muzzle=sphere(.15,kind==='fox'||kind==='puppy'?0xffdfb0:fur,1.12,.7,.86);muzzle.position.set(0,1.24,.32);root.add(muzzle);eye(root,-.115,1.38,.305,1.08);eye(root,.115,1.38,.305,1.08);const nose=sphere(.055,0x2f211d,1.1,.78,.7);nose.position.set(0,1.27,.44);root.add(nose);
+    if(kind==='goblin'){for(const x of [-1,1]){const e=cone(.18,.5,fur,8);e.rotation.z=x*Math.PI/2;e.position.set(x*.38,1.39,.04);root.add(e);}const band=box(.68,.13,.34,red);band.position.set(0,1.51,.02);root.add(band);}
+    if(kind==='fox'){for(const x of [-.18,.18]){const e=cone(.17,.42,fur,9);e.position.set(x,1.72,.04);e.rotation.z=x*.6;root.add(e);}const helm=cyl(.27,.31,.22,0xbac5ce,16);helm.position.set(0,1.58,.02);root.add(helm);const plume=cone(.1,.52,0x3674c5,10);plume.rotation.z=-.65;plume.position.set(0,1.91,-.02);root.add(plume);}
+    if(kind==='bat'){for(const x of [-1,1]){const e=cone(.16,.48,0x7b54b2,8);e.position.set(x*.18,1.72,.04);e.rotation.z=x*.2;root.add(e);const wing=cone(.36,.88,0x69439b,6);wing.rotation.z=x*1.1;wing.position.set(x*.46,1.02,-.18);root.add(wing);}}
+    if(kind==='mouse'){for(const x of [-.22,.22]){const e=sphere(.16,0xb1a8aa);e.position.set(x,1.55,.02);root.add(e);}const band=box(.65,.12,.35,red);band.position.set(0,1.49,.05);root.add(band);const bomb=sphere(.3,0x34343a);bomb.position.set(0,1,-.35);root.add(bomb);}
+    if(kind==='puppy'){for(const x of [-.25,.25]){const e=sphere(.14,0xb97b42,1,.72,1.4);e.position.set(x,1.47,.05);e.rotation.z=x>0?-.35:.35;root.add(e);}const helm=cyl(.28,.31,.2,0x9caab6,16);helm.position.set(0,1.58,.02);root.add(helm);const badge=sphere(.07,gold);badge.position.set(0,1.61,.29);root.add(badge);}
+    if(kind==='wood'){const helm=cyl(.33,.34,.32,0x7d4e2d,12);helm.position.set(0,1.55,.03);root.add(helm);for(let i=-2;i<=2;i++){const band=box(.7,.055,.38,0xaeb8bf);band.position.set(0,1.49+i*.08,.03);root.add(band);}}
+    const legL=pivotLimb(root,-.17,.73,0,.54,.105,fur),legR=pivotLimb(root,.17,.73,0,.54,.105,fur),armL=pivotLimb(root,-.37,1.08,0,.5,.09,fur),armR=pivotLimb(root,.37,1.08,0,.5,.09,fur);boot(legL);boot(legR);
+    if(kind==='bat'){const staff=cyl(.045,.055,.82,0x603b28,10);staff.position.y=-.6;armR.add(staff);const orb=sphere(.13,0x9b4de4);orb.material=mat(0x4f2478,.28,.05,0x9b4de4);orb.position.y=-1.02;armR.add(orb);}else{const sword=box(.075,.7,.065,kind==='wood'?0x68442c:0xdbe7ee,.2,kind==='wood'?0:.78);sword.position.y=-.62;armR.add(sword);const shield=cyl(.29,.29,.085,kind==='fox'||kind==='puppy'?blue:0x956235,18);shield.rotation.z=Math.PI/2;shield.position.set(0,-.4,.17);armL.add(shield);const rim=cyl(.31,.31,.04,gold,18);rim.rotation.z=Math.PI/2;rim.position.set(0,-.4,.22);armL.add(rim);}
+    root.scale.setScalar(1.12);return{root,legL,legR,armL,armR,tail:null,pet:false,kind};
+  }
+  function makeDog(){const root=new THREE.Group(),fur=0xe3943e,cream=0xffe0b5,blue=0x2e67b3,gold=0xe8b64d,silver=0xbfcad2;const body=sphere(.4,fur,1,.72,1.25);body.position.set(0,.72,0);root.add(body);const armor=sphere(.41,blue,1.03,.64,.88);armor.position.set(0,.78,-.03);root.add(armor);for(const x of [-.34,.34]){const shoulder=sphere(.13,gold,1.2,.82,1);shoulder.position.set(x,.87,.18);root.add(shoulder);}cape(root,blue);const head=sphere(.35,fur,1,.94,.94);head.position.set(0,1.08,.5);root.add(head);const blaze=box(.11,.42,.035,cream);blaze.position.set(0,1.16,.82);root.add(blaze);const muzzle=sphere(.2,cream,1.18,.68,.88);muzzle.position.set(0,1,.79);root.add(muzzle);eye(root,-.13,1.16,.79,1.05);eye(root,.13,1.16,.79,1.05);const nose=sphere(.058,0x2f211d,1.1,.8,.72);nose.position.set(0,1.04,.95);root.add(nose);for(const x of [-.22,.22]){const ear=cone(.17,.44,fur,9);ear.position.set(x,1.48,.48);ear.rotation.z=x>0?-.28:.28;root.add(ear);}const helmet=cyl(.27,.34,.2,silver,18);helmet.position.set(0,1.48,.47);root.add(helmet);const crest=cone(.09,.48,0x3677c8,10);crest.rotation.z=-.55;crest.position.set(0,1.78,.42);root.add(crest);const badge=sphere(.065,gold);badge.position.set(0,1.52,.76);root.add(badge);
+    const legs=[pivotLimb(root,-.24,.62,.29,.46,.085,cream),pivotLimb(root,.24,.62,.29,.46,.085,cream),pivotLimb(root,-.24,.62,-.29,.46,.085,fur),pivotLimb(root,.24,.62,-.29,.46,.085,fur)];legs.forEach(l=>boot(l,0x75472e));const tail=new THREE.Group();tail.position.set(0,.88,-.47);const tailMesh=cyl(.075,.13,.58,fur,10);tailMesh.position.y=.28;tailMesh.rotation.x=-.74;tail.add(tailMesh);root.add(tail);root.scale.setScalar(1.04);return{root,legs,tail,pet:true};}
+  function makeDefense(kind){const g=new THREE.Group(),base=cyl(.52,.66,.28,0x7c654c,14);base.position.y=.14;g.add(base);const body=cyl(.38,.45,1.15,kind==='water'?0x3e9fc9:0xc98c4d,16);body.position.y=.85;g.add(body);const barrel=cyl(.16,.2,.95,kind==='water'?0x52cce8:0x6c4332,12);barrel.rotation.z=Math.PI/2;barrel.position.set(-.38,1.25,0);g.add(barrel);return g;}
   function build3D() {
     if (world) scene.remove(world);
-    world = new THREE.Group(); units3d = []; shots3d = [];
-    // island: grass cap on a dirt cliff
-    const grass = cyl(12.6, 12.2, .8, 0x7cb75a, 44); grass.position.y = -.4; world.add(grass);
-    const dirt = cyl(12.2, 10.6, 2.6, 0x8a6b48, 44); dirt.position.y = -2.1; world.add(dirt);
-    // castle (placeholder blocks — a real project would load a modelled castle)
-    const castle = new THREE.Group();
-    const keep = box(3.2, 2.6, 2.6, 0xb9a6c9); keep.position.y = 1.3; castle.add(keep);
-    for (const dx of [-1.5, 1.5]) {
-      const tw = cyl(.62, .7, 3.4, 0xcbbad8); tw.position.set(dx, 1.7, 1.1); castle.add(tw);
-      const roof = new THREE.Mesh(new THREE.ConeGeometry(.85, 1.15, 12), mat(0x3f6fb2)); roof.castShadow = true; roof.position.set(dx, 4, 1.1); castle.add(roof);
-    }
-    const gate = box(1, 1.4, .3, 0x4a3323); gate.position.set(0, .7, 1.35); castle.add(gate);
-    castle.position.set(W2X(chor.castle.x), 0, W2Z(chor.castle.y)); castle.rotation.y = .5;
-    world.add(castle);
-    // defense towers from the SAME script
+    world=new THREE.Group();units3d=[];shots3d=[];sparks=[];const grass=cyl(12.8,12.35,.72,0x8fc851,48);grass.position.y=-.36;world.add(grass);const dirt=cyl(12.25,10.7,2.8,0x9a7048,48);dirt.position.y=-2.05;world.add(dirt);const rim=new THREE.Mesh(new THREE.TorusGeometry(12.1,.22,8,64),mat(0xb4df69));rim.rotation.x=Math.PI/2;rim.position.y=.02;world.add(rim);
+    for(let lane=0;lane<5;lane++)for(let i=0;i<13;i++){const stone=box(.58,.055,.34,i%3?0xd8c99e:0xc9b785);stone.position.set(-7.4+i*1.18,.035,-4.7+lane*2.25+(i%2)*.06);stone.rotation.y=(i%3-1)*.08;world.add(stone);}
+    castle3d=makeCastle();castle3d.g.position.set(W2X(chor.castle.x),0,W2Z(chor.castle.y));castle3d.g.rotation.y=-.78;world.add(castle3d.g);
     for (const tw of chor.towers) {
       if (tw.virtual) continue;
-      const g = new THREE.Group();
-      const body = cyl(.42, .52, 1.5, tw.kind === 'water' ? 0x3f8fc4 : 0xc98f4e); body.position.y = .75; g.add(body);
-      const cap = new THREE.Mesh(new THREE.ConeGeometry(.6, .7, 10), mat(0x74513a)); cap.castShadow = true; cap.position.y = 1.85; g.add(cap);
+      const g=makeDefense(tw.kind);
       g.position.set(W2X(tw.x), 0, W2Z(tw.y)); world.add(g);
     }
-    // trees for depth
     const rng = NightRaidRules.makeRng(seed ^ 0x77);
-    for (let i = 0; i < 14; i++) {
-      const a = rng() * Math.PI * 2, r = 9.4 + rng() * 1.8;
-      const t = new THREE.Group();
-      const trunk = cyl(.12, .16, .6, 0x6b4a2f, 8); trunk.position.y = .3; t.add(trunk);
-      const crown = new THREE.Mesh(new THREE.ConeGeometry(.62 + rng() * .3, 1.3, 10), mat(0x3e7a3a)); crown.castShadow = true; crown.position.y = 1.2; t.add(crown);
-      t.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); world.add(t);
-    }
-    // units driven by the SAME choreography
-    for (const u of chor.units) {
-      const g = new THREE.Group(), pet = u.kind === 'pet';
-      const body = box(pet ? .62 : .44, pet ? .5 : .62, pet ? .95 : .4, pet ? 0xe08a3c : 0x4d7fd0); body.position.y = pet ? .45 : .5; g.add(body);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(pet ? .3 : .24, 14, 12), mat(pet ? 0xf0a45a : 0xf2c99a)); head.castShadow = true;
-      head.position.set(0, pet ? .82 : 1.02, pet ? .5 : 0); g.add(head);
-      if (pet) { const tail = box(.12, .12, .34, 0xc9752e); tail.position.set(0, .62, -.6); g.add(tail); }
-      else { const helm = new THREE.Mesh(new THREE.ConeGeometry(.26, .3, 10), mat(0x2f4f8f)); helm.castShadow = true; helm.position.y = 1.22; g.add(helm); }
-      world.add(g); units3d.push({ u, g, pet });
-    }
-    // projectiles
+    for(let i=0;i<24;i++){const a=rng()*Math.PI*2,r=9.3+rng()*2.1,t=makeTree(.7+rng()*.55);t.position.set(Math.cos(a)*r,0,Math.sin(a)*r);world.add(t);}const pond=mesh(new THREE.CircleGeometry(2.1,32),0x45a9c8,.18,.05);pond.rotation.x=-Math.PI/2;pond.position.set(5,.045,-6.2);world.add(pond);
+    for(const p of [[-7,-6],[-4,5],[4,-4],[7,4]]){const post=cyl(.06,.08,.8,0x5b3a27,8);post.position.set(p[0],.4,p[1]);world.add(post);const lamp=sphere(.14,0xffd77a);lamp.material=mat(0x362313,.25,0,0xffbd55);lamp.position.set(p[0],.88,p[1]);world.add(lamp);}
+    for(const u of chor.units){const rig=u.kind==='pet'?makeDog():makeMascotSoldier(u.index);world.add(rig.root);units3d.push({u,rig,g:rig.root,pet:rig.pet});}
     for (const s of chor.shots) {
-      const m = new THREE.Mesh(new THREE.SphereGeometry(s.kind === 'water' ? .14 : .17, 10, 8),
-        mat(s.kind === 'water' ? 0x9fdcff : 0x8d8a80, .6));
-      m.castShadow = true; m.visible = false; world.add(m); shots3d.push({ s, m });
+      const g=new THREE.Group(),m=sphere(s.kind==='water'?.16:.2,s.kind==='water'?0x9fe6ff:0x79756e);g.add(m);g.add(new THREE.PointLight(s.kind==='water'?0x6fdcff:0xffb64f,1.4,3));g.visible=false;world.add(g);shots3d.push({s,m:g});
     }
+    for(let i=0;i<32;i++){const s=sphere(.045,i%3?0xffc642:0xff713f);s.visible=false;world.add(s);sparks.push(s);}
     scene.add(world);
   }
 
@@ -183,10 +199,10 @@
     for (const it of units3d) {
       const s = NightRaidChoreo.unitAt(it.u, T);
       it.g.position.set(W2X(s.x), 0, W2Z(s.y));
-      const gait = s.moving ? Math.abs(Math.sin((s.x + s.y) * .14 + it.u.index * 2.1)) : 0;
-      it.g.position.y = gait * .12;
-      it.g.rotation.y = s.facing === 1 ? Math.PI * 1.5 : Math.PI * .5;
-      it.g.rotation.z = s.state === 'fallen' ? Math.min(1, (T - it.u.fallAt) / 420) * 1.45 : (s.moving ? Math.sin((s.x + s.y) * .14) * .07 : 0);
+      const phase=T*.012+it.u.index*1.7,gait=s.moving?Math.sin(phase):0,attack=s.state==='engage'?Math.max(0,Math.sin(T*.018+it.u.index)):0;
+      it.g.position.y=Math.abs(gait)*.09;it.g.rotation.y=s.facing===1?Math.PI*.5:-Math.PI*.5;it.g.rotation.z=s.state==='fallen'?Math.min(1,(T-it.u.fallAt)/420)*1.45:gait*.035;
+      if(it.pet){const [fl,fr,bl,br]=it.rig.legs;fl.rotation.x=gait*.85;fr.rotation.x=-gait*.85;bl.rotation.x=-gait*.72;br.rotation.x=gait*.72;it.rig.tail.rotation.z=Math.sin(T*.018)*.42;}
+      else{it.rig.legL.rotation.x=gait*.9;it.rig.legR.rotation.x=-gait*.9;it.rig.armL.rotation.x=-gait*.65-attack*.35;it.rig.armR.rotation.x=gait*.65-attack*1.5;}
       if (s.state === 'fallen') it.g.position.y = -.15;
     }
     for (const it of shots3d) {
@@ -194,12 +210,16 @@
       it.m.visible = live;
       if (live) {
         const q = NightRaidChoreo.shotAt(it.s, T);
-        it.m.position.set(W2X(q.x), .5 + Math.sin(Math.PI * q.p) * (it.s.apex / 46), W2Z(q.ground));
+        it.m.position.set(W2X(q.x), .55 + Math.sin(Math.PI * q.p) * (it.s.apex / 46), W2Z(q.ground));
       }
     }
+    const breach=chor.won&&chor.breachAt!=null?Math.max(0,Math.min(1,(T-chor.breachAt)/650)):0;castle3d.g.rotation.z=Math.sin(T*.055)*breach*.035;castle3d.chunks.forEach((c,i)=>{c.m.position.copy(c.base);c.m.rotation.set(0,0,0);if(breach){const a=i*.9+.4;c.m.position.x+=Math.cos(a)*breach*(1.2+i*.04);c.m.position.y+=Math.sin(breach*Math.PI)*(.9+i*.08)-breach*.45;c.m.position.z+=Math.sin(a)*breach*1.1;c.m.rotation.x=breach*(i+1)*.35;c.m.rotation.z=breach*c.spin*8;}});
+    const clash=T>chor.engageStart&&T<chor.engageEnd;sparks.forEach((m,i)=>{m.visible=clash;if(clash){const age=((T+i*83)%620)/620,a=i*2.399;m.position.set(W2X(340)+Math.cos(a)*age*1.5,.35+Math.sin(age*Math.PI)*1.7,W2Z(350)+Math.sin(a)*age*1.25);m.scale.setScalar(1-age*.7);}});
     if (camAuto) camAngle += .0022;
-    camera.position.set(Math.cos(camAngle) * 21, 21 * camEl, Math.sin(camAngle) * 21);
-    camera.lookAt(0, 0, 0);
+    if(camFocus&&units3d.length){let sx=0,sz=0;for(const it of units3d){sx+=it.g.position.x;sz+=it.g.position.z;}cameraTarget.set(sx/units3d.length,.86,sz/units3d.length);}else if(camCastle&&castle3d){cameraTarget.set(castle3d.g.position.x,2.15,castle3d.g.position.z);}else cameraTarget.set(0,.75,0);
+    const distance=camDist;
+    camera.position.set(cameraTarget.x+Math.cos(camAngle)*distance,distance*camEl,cameraTarget.z+Math.sin(camAngle)*distance);
+    camera.lookAt(cameraTarget);
     renderer.render(scene, camera);
     acc3 += performance.now() - t0;
 
@@ -227,7 +247,7 @@
       for (const it of units3d) { const s = NightRaidChoreo.unitAt(it.u, T); it.g.position.set(W2X(s.x), 0, W2Z(s.y)); }
       for (const it of shots3d) { const live = T >= it.s.launchAt && T <= it.s.impactAt; it.m.visible = live; if (live) { const q = NightRaidChoreo.shotAt(it.s, T); it.m.position.set(W2X(q.x), .5 + Math.sin(Math.PI * q.p) * (it.s.apex / 46), W2Z(q.ground)); } }
       camera.position.set(Math.cos(i * .05) * 21, 21 * .62, Math.sin(i * .05) * 21);
-      camera.lookAt(0, 0, 0);
+      camera.lookAt(0, .75, 0);
       renderer.render(scene, camera);
       a3 += performance.now() - t0;
     }
@@ -245,6 +265,7 @@
   // simple drag-orbit (no OrbitControls dependency)
   let dragging = false, lastX = 0, lastY = 0;
   renderer.domElement.addEventListener('pointerdown', e => { dragging = true; camAuto = false; syncOrbitBtn(); lastX = e.clientX; lastY = e.clientY; });
+  renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();const close=camFocus||camCastle;camDist=Math.max(close?8:15,Math.min(close?15:27,camDist+Math.sign(e.deltaY)*1.2));},{passive:false});
   addEventListener('pointermove', e => {
     if (!dragging) return;
     camAngle += (e.clientX - lastX) * .008;
@@ -256,6 +277,12 @@
   const orbitBtn = document.getElementById('btnOrbit');
   function syncOrbitBtn() { orbitBtn.textContent = '🎥 Camera tự xoay: ' + (camAuto ? 'BẬT' : 'TẮT'); }
   orbitBtn.onclick = () => { camAuto = !camAuto; syncOrbitBtn(); };
+  syncOrbitBtn();
+  const focusBtn=document.getElementById('btnFocus');
+  const castleBtn=document.getElementById('btnCastle');
+  function syncViewButtons(){focusBtn.textContent=camFocus?'↩ Trở lại toàn cảnh':'🔍 Cận cảnh đội quân';castleBtn.textContent=camCastle?'↩ Trở lại toàn cảnh':'🏰 Cận cảnh lâu đài';}
+  focusBtn.onclick=()=>{const next=!camFocus;camFocus=next;camCastle=false;camDist=next?11.5:21;if(next){camAngle=2.38;camAuto=false;syncOrbitBtn();}syncViewButtons();};
+  castleBtn.onclick=()=>{const next=!camCastle;camCastle=next;camFocus=false;camDist=next?12.8:21;if(next){camAngle=2.38;camAuto=false;syncOrbitBtn();}syncViewButtons();};
   document.getElementById('btnReplay').onclick = () => { start = performance.now(); };
   document.getElementById('btnSeed').onclick = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; makeBattle(); start = performance.now(); };
 
