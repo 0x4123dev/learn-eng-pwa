@@ -187,6 +187,24 @@ suite('night raid: app integration',()=>{
       'at walking pace a far corner takes ~30s, so the old 14s deadline could never be met');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'ambient actions must respect reduced motion');
   });
+  test('bot-unlocked accounts get the yard as their home habitat',()=>{
+    const home=read('js/home.js');
+    // Only the stage changes. Hearts, name, trash, shop and the streak chip
+    // are all rendered elsewhere and must survive untouched.
+    assert.truthy(home.includes('appState.allowBot && typeof NightRaid'),'admin flag gates the swap');
+    assert.truthy(home.includes('NightRaid.mountYardScene'),'the scene is the raid yard, not a copy of it');
+    assert.truthy(ui.includes('function mountYardScene(host,opts)'),'one walk, mounted where it is asked for');
+    assert.truthy(ui.includes('petPatrolRoot||document.querySelector'),'the patrol takes a root instead of assuming one');
+    assert.truthy(home.includes("onTap: () => { try { onPetTap()"),'tapping the dog must still play with it');
+    assert.truthy(home.includes("stage_el.classList.toggle('yard-mode', yardHabitat)"));
+    // The stage is placed by an ID rule, so a class-only override lands half a
+    // screen to the left — the yard override has to carry the ID too.
+    assert.truthy(css.includes('#petHeroStage.yard-mode'),'the override must outrank the ID rule that positions the stage');
+    assert.truthy(/#petHeroStage\.yard-mode[^{]*\{[^}]*left:0/.test(css));
+    // The flag has to arrive through a call the app already makes.
+    assert.truthy(read('functions/api/coins.js').includes('bot: !!(me && me.allow_bot)'));
+    assert.truthy(read('js/auth.js').includes('appState.allowBot = !!r.data.flags.bot'));
+  });
   test('fake landscape keeps every control the same size and on screen',()=>{
     // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked
     // four buttons down the phone's SHORT edge and pushed SỬA off it, while

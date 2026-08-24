@@ -12214,6 +12214,15 @@
 /* The walk trail. Sits UNDER the dog so a print never covers the paw that
    made it, and every node deletes itself when its animation ends. Sizes are
    in cqw so prints stay proportional as the child pinches the yard. */
+/* The raid yard, shrunk into the home habitat. The map is normally sized in
+   pixels by the builder; here it simply fills whatever box it is given. */
+/* The stage is positioned by an ID rule, which outranks any class — so the
+   yard override has to carry the ID too or it lands half a screen to the left. */
+#petHeroStage.yard-mode,.pet-hero-stage.yard-mode{inset:0;left:0;top:0;right:0;bottom:0;width:100%;height:100%;display:block;transform:none}
+.pet-yard-scene{position:absolute;inset:0;border-radius:inherit;overflow:hidden}
+.nr-mini-yard .nr-builder-map,.nr-mini-map{position:absolute;inset:0;width:100%;height:100%;box-shadow:none;border-radius:inherit}
+.nr-mini-map>.nr-equipped-castle{left:50%;top:2%;width:46%;height:52%;transform:translateX(-50%);opacity:1}
+.nr-mini-map .nr-yard-pet{width:clamp(46px,15cqw,86px)}
 .nr-pet-trail{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 /* What the dog leaves behind, and the way out of it. The poops are their own
    layer above the walk trail but under the dog, and each one is a real button

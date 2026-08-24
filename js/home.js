@@ -1559,7 +1559,18 @@ function renderWordPet() {
             hasNeckAccessory: _slotsUsed.indexOf('neck') !== -1,
           })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
-    stage_el.innerHTML = `
+    // Admin-unlocked accounts get the Night Raid yard as their habitat: the
+    // same board, the same castle, and the same dog wandering it. Everything
+    // around the stage — hearts, name, trash, shop, streak — is untouched.
+    const yardHabitat = !!appState.allowBot && typeof NightRaid !== 'undefined' && NightRaid.mountYardScene;
+    // The stage normally hugs the pet SVG. The yard is absolutely positioned,
+    // so without this the whole habitat collapses to zero height.
+    stage_el.classList.toggle('yard-mode', yardHabitat);
+    stage_el.innerHTML = yardHabitat ? `
+        <div class="pet-yard-scene" id="petYardScene" role="img"
+             aria-label="${safePetName} đang đi quanh lâu đài"></div>
+        ${poopsHTML}
+    ` : `
         <div class="pet-wrapper">
             <button type="button" class="pet-creature ${mood}" onclick="onPetTap()"
                     data-stage="${stage.stageCss}" aria-label="Play with ${safePetName}, level ${level} ${stage.name}, ${petStyleName} style, shine ${petPolish} of 4">
@@ -1569,6 +1580,14 @@ function renderWordPet() {
         </div>
         ${poopsHTML}
     `;
+    if (yardHabitat) {
+        try {
+            NightRaid.mountYardScene(document.getElementById('petYardScene'),
+                { onTap: () => { try { onPetTap(); } catch (e) {} } });
+        } catch (e) { /* a broken scene must never take the whole home screen down */ }
+    } else if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
+        try { NightRaid.unmountYardScene(); } catch (e) {}
+    }
 
     // Make equipped accessories draggable on the pet
     setTimeout(() => { try { initAccDrag(); } catch(e) {} }, 50);

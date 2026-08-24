@@ -14,7 +14,8 @@ export async function onRequestPost({ request, env }) {
   if (!auth) return err('Unauthorized', 401);
 
   const flag = await env.DB.prepare("SELECT value FROM app_flags WHERE key = 'math_fight'").first();
-  const flags = { mathFight: !!(flag && flag.value) };
+  const me = await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(auth.uid).first();
+  const flags = { mathFight: !!(flag && flag.value), bot: !!(me && me.allow_bot) };
 
   const row = await env.DB.prepare(
     'SELECT COALESCE(SUM(amount), 0) AS total FROM coin_grants WHERE user_id = ? AND claimed_at IS NULL'

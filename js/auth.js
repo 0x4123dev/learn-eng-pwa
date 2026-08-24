@@ -165,9 +165,11 @@ const EngAuth = (function () {
       // the early return below: a child with no coins waiting still needs to
       // learn that an admin has opened a tab for them.
       if (r.ok && r.data && r.data.flags) {
-        const before = !!appState.allowMathFight;
+        const before = !!appState.allowMathFight + '|' + !!appState.allowBot;
         appState.allowMathFight = !!r.data.flags.mathFight;
-        if (before !== appState.allowMathFight && typeof saveUserData === 'function') saveUserData(currentUser, appState);
+        appState.allowBot = !!r.data.flags.bot;
+        if (before !== !!appState.allowMathFight + '|' + !!appState.allowBot && typeof saveUserData === 'function')
+          saveUserData(currentUser, appState);
       }
       if (!granted) return;
       appState.coins = Math.max(0, +appState.coins || 0) + granted;

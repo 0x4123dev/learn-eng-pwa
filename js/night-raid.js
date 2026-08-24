@@ -234,6 +234,32 @@ var NightRaid = (() => {
     return rects;
   }
   function petBlockedAt(rects,x,y){for(const r of rects)if(x>r.x0&&x<r.x1&&y>r.y0&&y<r.y1)return r;return null;}
+  // The same yard, shrunk into somebody else's screen. The home habitat asked
+  // for this scene, and duplicating the walk would have meant two dogs with
+  // two personalities drifting apart — so the patrol simply learns to run
+  // inside whatever element it is given.
+  let petPatrolRoot=null;
+  function mountYardScene(host,opts){
+    if(!host)return null;
+    ensure();
+    const skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null;
+    host.classList.add('nr-mini-yard');
+    host.innerHTML=`<div class="nr-builder-map nr-mini-map">`
+      +`<img class="nr-board-art" src="img/night-raid/isometric-home-board-skin-pad.webp" alt="" draggable="false">`
+      +`<img class="nr-equipped-castle" id="nrMiniCastle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Lâu đài')}" draggable="false">`
+      +yardPetHtml()+`</div>`;
+    petPatrolRoot=host.querySelector('.nr-builder-map');
+    // The habitat is a wide, short box while the raid yard is nearly square,
+    // so the walk is squeezed into the middle band rather than the full board.
+    petPatrolState=null;
+    startPetPatrol();
+    if((opts||{}).onTap)host.querySelector('[data-nr-yard-pet]')?.addEventListener('click',opts.onTap);
+    return petPatrolRoot;
+  }
+  function unmountYardScene(){
+    if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}
+    petPatrolRoot=null;petPatrolState=null;
+  }
   function petPatrolBounds(){const castle=castlePosition(appState.nightRaidLayout);return{minX:Math.max(14,castle.x-34),maxX:Math.min(86,castle.x+34),minY:Math.max(47,castle.y+6),maxY:88};}
   // A dog that leaves nothing behind reads as sliding over the grass rather
   // than walking on it. Prints are planted where the paw actually fell and
@@ -311,7 +337,7 @@ var NightRaid = (() => {
   function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.38?'bark':roll<.76?'rest':roll<.90?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1700:state.mode==='bark'?3400:state.mode==='rest'?6200:2600);state.frame=0;}
   function petActionFrame(state,now){if(state.mode==='walk'||state.mode==='seek')return state.frame;if(state.mode==='bark')return Math.floor(now/240)%2;if(state.mode==='rest')return 2;if(state.mode==='scratch')return Math.floor(now/260)%2?3:2;return 0;}
   function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundImage=walking?'var(--nr-pet-walk)':'var(--nr-pet-actions)';sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
-  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
+  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=petPatrolRoot||document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
     state.blocked=petBlockedRects();state.blockedAt=performance.now();paintYardPoops();
     // A dog that opens the screen standing inside a barn looks like a bug, so
     // walk it out to the first clear spot along the yard.
@@ -496,7 +522,7 @@ var NightRaid = (() => {
 
   function replayReport(index){setNav(false);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':'Phòng thủ đã chặn được toàn bộ đội cướp.'}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.defense||'?'}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport,cleanYardPoop});
+  return Object.freeze({mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport,cleanYardPoop});
 })();
 
 function openNightRaid(){NightRaid.open();}
