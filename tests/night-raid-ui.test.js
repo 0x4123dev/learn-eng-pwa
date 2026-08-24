@@ -124,6 +124,36 @@ suite('night raid: app integration',()=>{
     const trailRule = css.slice(css.indexOf('.nr-pet-trail{'), css.indexOf('}', css.indexOf('.nr-pet-trail{')));
     assert.truthy(trailRule.includes('z-index:1'), 'the trail sits under the dog');
   });
+  test('the yard pet runs errands, and the mess is the child\'s to clear',()=>{
+    // A dog that only paces is a screensaver. Now and then it walks to the
+    // rice or the pond, squats, and leaves something behind.
+    assert.truthy(ui.includes('const YARD_POND={x:19,y:58}'),
+      'the pond is painted into the board art, so its spot is a measured constant');
+    assert.truthy(ui.includes("if(cell.type!=='rice-field')continue"),'rice fields are the other destination');
+    assert.truthy(ui.includes('state.squatUntil'),'it must stop walking to do its business');
+    assert.truthy(ui.includes('dropYardPoop(state.errand'));
+    // The two traps this feature can fall into, both found by walking every
+    // spot on a built-up yard before shipping:
+    assert.truthy(ui.includes('&&!petBlockedAt(rects,s.x,s.y)'),
+      'a spot inside a building can never be reached, so it must be filtered out');
+    assert.truthy(ui.includes('now>state.errandUntil'),
+      'an errand it cannot reach must be abandoned, or the dog presses into a wall forever');
+    assert.truthy(ui.includes('PET_BODY.height+1, what:'),
+      'the rice spot must sit past the solid box, not inside the crop');
+    // Clearing up: same pay as the chore at home, from the same constants.
+    assert.truthy(ui.includes('POOP_CLEAN_COINS'));
+    assert.truthy(ui.includes('POOP_CLEAN_XP'));
+    assert.truthy(ui.includes('function cleanYardPoop(id)'));
+    assert.truthy(ui.includes('data-nr-clean'),'the tidy-up button lives on the yard screen');
+    assert.truthy(ui.includes('nrCleanYard()'));
+    assert.truthy(ui.includes('appState.nightRaidPoops'),'the mess survives leaving the screen');
+    // Each poop is a real button, so a child can tap the mess itself too.
+    assert.truthy(ui.includes('class="nr-yard-poop"'));
+    assert.truthy(ui.includes("aria-label=\"Dọn phân chó\""));
+    for (const rule of ['.nr-yard-poops{', '.nr-yard-poop{', '.nr-yard-clean{', '@keyframes nr-poop-drop'])
+      assert.truthy(css.includes(rule), rule);
+    assert.truthy(ui.includes('yardPoopSpots,'),'the spots stay checkable from outside');
+  });
   test('fake landscape keeps every control the same size and on screen',()=>{
     // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked
     // four buttons down the phone's SHORT edge and pushed SỬA off it, while

@@ -67,7 +67,7 @@ var NightRaid = (() => {
     const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type);return `<img class="nr-placed ${layer} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)} cấp ${cell.tier}" oncontextmenu="return false"><em>${cell.tier}</em>${productionBadge(cell)}`;};
     let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(!stand&&!floor)continue;grid+=`<div class="nr-build-grid-cell has-stand" data-gx="${gx}" data-gy="${gy}" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}}
     const mapBase=builderMapBase(),mapSize=Math.round(mapBase*builderZoom),mapHeight=Math.round(mapBase*.75*builderZoom);
-    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-expanded-v2.webp" alt="Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrScoutBot()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowLiveTargets()">${svg('people')}<span>NHÀ THẬT</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Kéo để xem · chụm 2 ngón thu phóng</div>${lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
+    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-expanded-v2.webp" alt="Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><button class="nr-yard-clean" type="button" data-nr-clean hidden onclick="nrCleanYard()" aria-label="Dọn phân chó trong sân">🗑️<span>DỌN PHÂN</span><b>0</b></button><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrScoutBot()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowLiveTargets()">${svg('people')}<span>NHÀ THẬT</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Kéo để xem · chụm 2 ngón thu phóng</div>${lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
     paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();
   }
 
@@ -181,6 +181,37 @@ var NightRaid = (() => {
   // either side. Testing only the feet is why it still LOOKED like it walked
   // through a wall — the feet cleared the box while the body crossed it.
   const PET_BODY={halfW:2.4,height:5.4};
+  // Every so often the dog stops what it is doing, walks to the rice or the
+  // pond, and leaves something behind. The pond is not a building — it is
+  // painted into the board art — so its spot was found by sampling the water
+  // colour out of that image rather than guessed by eye.
+  const YARD_POND={x:19,y:58};
+  const YARD_POOP_MAX=4, YARD_POOP_MIN_GAP_MS=18000, YARD_POOP_SPREAD_MS=17000, YARD_SQUAT_MS=1700, YARD_ERRAND_TIMEOUT_MS=14000;
+  function yardPoops(){
+    if(!Array.isArray(appState.nightRaidPoops))appState.nightRaidPoops=[];
+    return appState.nightRaidPoops;
+  }
+  // Where the dog considers worth a visit: its own rice fields, and the pond.
+  function yardPoopSpots(bounds){
+    const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
+    const cw=PET_YARD.width/G,ch=PET_YARD.height/G,spots=[];
+    for(const cell of layout.cells){
+      if(cell.type!=='rice-field')continue;
+      // Stand at the very edge of the crop, just past where the solid box
+      // ends. Aiming at the middle of the field looked right and was wrong:
+      // the dog may not walk into a building, so it would have trudged toward
+      // a spot it could never reach and stood there forever.
+      spots.push({x:PET_YARD.left+cell.gx*cw+cw*.5,
+                  y:PET_YARD.top+cell.gy*ch+ch*1.25+PET_BODY.height+1, what:'ruộng'});
+    }
+    spots.push({x:YARD_POND.x, y:YARD_POND.y, what:'ao'});
+    // Whatever is left must be inside the walk AND actually standable, so a
+    // crowded yard simply offers fewer errands instead of jamming the dog.
+    const rects=petBlockedRects();
+    return spots.filter(s=>s.x>bounds.minX&&s.x<bounds.maxX&&s.y>bounds.minY&&s.y<bounds.maxY
+      &&!petBlockedAt(rects,s.x,s.y));
+  }
+
   function petBlockedRects(){
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
     const cw=PET_YARD.width/G,ch=PET_YARD.height/G,rects=[];
@@ -235,9 +266,47 @@ var NightRaid = (() => {
       layer.appendChild(dust);
     }
   }
+  function dropYardPoop(at){
+    const list=yardPoops();
+    if(list.length>=YARD_POOP_MAX)return;
+    list.push({id:'nr-poop-'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+      x:+at.x.toFixed(2), y:+at.y.toFixed(2), born:Date.now()});
+    appState.nightRaidPoops=list;save();
+    paintYardPoops();
+  }
+  // The poops are their own layer so a repaint of the walk trail never wipes
+  // them, and so the child can tap one directly as well as use the button.
+  function paintYardPoops(){
+    const wrap=document.querySelector('.nr-pet-patrol');if(!wrap)return;
+    let layer=wrap.querySelector('[data-nr-poops]');
+    if(!layer){layer=document.createElement('div');layer.className='nr-yard-poops';layer.dataset.nrPoops='';wrap.appendChild(layer);}
+    const list=yardPoops();
+    layer.innerHTML=list.map(p=>`<button type="button" class="nr-yard-poop" data-poop="${esc(p.id)}" style="left:${p.x}%;top:${p.y}%" aria-label="Dọn phân chó">💩</button>`).join('');
+    layer.querySelectorAll('.nr-yard-poop').forEach(b=>b.onclick=e=>{e.stopPropagation();cleanYardPoop(b.dataset.poop);});
+    const fab=document.querySelector('[data-nr-clean]');
+    if(fab){fab.hidden=!list.length;const n=fab.querySelector('b');if(n)n.textContent=list.length;}
+  }
+  function cleanYardPoop(id){
+    const list=yardPoops(),before=list.length;
+    appState.nightRaidPoops=id?list.filter(p=>p.id!==id):[];
+    const cleared=before-appState.nightRaidPoops.length;
+    if(!cleared)return;
+    // Same pay as tidying up at home, so the chore is worth the same wherever
+    // the child does it.
+    const coins=(typeof POOP_CLEAN_COINS==='number'?POOP_CLEAN_COINS:3)*cleared;
+    const xp=(typeof POOP_CLEAN_XP==='number'?POOP_CLEAN_XP:10)*cleared;
+    appState.coins=Math.max(0,(+appState.coins||0)+coins);
+    appState.dogGrowthXP=(+appState.dogGrowthXP||0)+xp;
+    if(typeof getDogLevel==='function')appState.dogLevel=getDogLevel(appState.dogGrowthXP);
+    save();paintYardPoops();
+    document.querySelectorAll('[data-nr-coins],.nr-builder-power.coins strong').forEach(el=>{el.textContent=Math.max(0,Math.floor(+appState.coins||0));});
+    if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(30);
+    if(typeof showToast==='function')showToast('✨ Dọn sạch! +'+coins+' 🪙 +'+xp+' XP');
+    announce('Đã dọn '+cleared+' bãi phân cho chó');
+  }
   function placePatrolPet(pet,sprite,state){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,state.frame||0));pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
   function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
-    state.blocked=petBlockedRects();state.blockedAt=performance.now();
+    state.blocked=petBlockedRects();state.blockedAt=performance.now();paintYardPoops();
     // A dog that opens the screen standing inside a barn looks like a bug, so
     // walk it out to the first clear spot along the yard.
     for(let guard=0;guard<80&&petBlockedAt(state.blocked,state.x,state.y);guard++){
@@ -248,6 +317,35 @@ var NightRaid = (() => {
       // The yard changes while the child builds, so the solid boxes are re-read
       // about once a second rather than frozen when the walk started.
       if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}
+      // --- errands ------------------------------------------------------
+      // A dog that only ever paces looks like a screensaver. Now and then it
+      // decides on an errand, walks over, squats, and leaves a mess for the
+      // child to clear up.
+      if(state.squatUntil){
+        if(now<state.squatUntil){placePatrolPet(pet,sprite,state);return;}
+        state.squatUntil=0;
+        dropYardPoop(state.errand||{x:state.x,y:state.y});
+        state.errand=null;state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;
+        const a=Math.random()*Math.PI*2;state.vx=Math.cos(a)*7.2;state.vy=Math.sin(a)*2.4;
+      }
+      if(!state.nextErrand)state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;
+      if(!state.errand&&now>=state.nextErrand&&yardPoops().length<YARD_POOP_MAX){
+        const spots=yardPoopSpots(nextBounds);
+        if(spots.length){state.errand=spots[Math.floor(Math.random()*spots.length)];state.errandUntil=now+YARD_ERRAND_TIMEOUT_MS;}
+        else state.nextErrand=now+YARD_POOP_MIN_GAP_MS;
+      }
+      // Give up on an errand it cannot reach. Steering straight at a target
+      // can wedge the dog against a building it has to go around, and a dog
+      // pressed against a wall forever is worse than one that changes its
+      // mind: verified by walking every spot on a built-up yard, where one
+      // rice field could not be reached inside 900 steps.
+      if(state.errand&&now>state.errandUntil){state.errand=null;state.nextErrand=now+YARD_POOP_MIN_GAP_MS;}
+      if(state.errand){
+        const ex=state.errand.x-state.x,ey=state.errand.y-state.y,far=Math.hypot(ex,ey);
+        if(far<1.6){state.squatUntil=now+YARD_SQUAT_MS;state.vx=state.vx>0?.001:-.001;state.vy=0;placePatrolPet(pet,sprite,state);return;}
+        // Steer toward the errand at walking pace instead of teleporting.
+        state.vx=(ex/far)*7.2;state.vy=(ey/far)*2.4;
+      }
       const nx=state.x+state.vx*dt,ny=state.y+state.vy*dt;
       // Slide along whatever it met rather than simply reversing. Reversing
       // in place let the dog lock into a two-step shudder against a wall —
@@ -375,7 +473,7 @@ var NightRaid = (() => {
 
   function replayReport(index){setNav(false);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':'Phòng thủ đã chặn được toàn bộ đội cướp.'}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.defense||'?'}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport});
+  return Object.freeze({yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport,cleanYardPoop});
 })();
 
 function openNightRaid(){NightRaid.open();}
@@ -405,4 +503,5 @@ function nrZoomBuilder(delta){NightRaid.zoomBuilder(delta);}
 function nrRotateBuilder(){NightRaid.rotateBuilder();}
 function nrCollectResources(){NightRaid.collectResources();}
 function nrShowReports(){NightRaid.showReports();}
+function nrCleanYard(){NightRaid.cleanYardPoop();}
 function nrReplayReport(index){NightRaid.replayReport(index);}

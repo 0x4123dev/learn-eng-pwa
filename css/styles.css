@@ -12215,6 +12215,21 @@
    made it, and every node deletes itself when its animation ends. Sizes are
    in cqw so prints stay proportional as the child pinches the yard. */
 .nr-pet-trail{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+/* What the dog leaves behind, and the way out of it. The poops are their own
+   layer above the walk trail but under the dog, and each one is a real button
+   so a child can tap the mess itself as well as the tidy-up fab. */
+.nr-yard-poops{position:absolute;inset:0;z-index:2;pointer-events:none}
+.nr-yard-poop{position:absolute;transform:translate(-50%,-72%);border:0;background:none;padding:4px;
+  font-size:2.1cqw;line-height:1;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 3px 2px rgba(60,44,24,.35));
+  animation:nr-poop-drop .45s cubic-bezier(.2,1.5,.5,1) both}
+@keyframes nr-poop-drop{0%{opacity:0;transform:translate(-50%,-170%) scale(.5)}100%{opacity:1;transform:translate(-50%,-72%) scale(1)}}
+.nr-yard-clean{position:absolute;z-index:41;left:max(12px,env(safe-area-inset-left));bottom:calc(132px + env(safe-area-inset-bottom));
+  display:inline-flex;align-items:center;gap:7px;min-height:52px;padding:8px 15px;border:2px solid #fff;border-radius:18px;
+  background:linear-gradient(145deg,#8ed08a,#3f9c56);color:#fff;font-size:12px;font-weight:950;letter-spacing:.04em;
+  box-shadow:0 6px 16px rgba(35,72,40,.32);cursor:pointer}
+.nr-yard-clean b{min-width:22px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.92);color:#2c6b3c;font-size:12px}
+.nr-yard-clean[hidden]{display:none}
+@media(max-width:700px){.nr-yard-clean{bottom:calc(120px + env(safe-area-inset-bottom));font-size:11px;padding:7px 12px}}
 /* A real paw, not a smudge: the element is the pad and three box-shadows are
    the toes, sitting ahead of it. font-size is set in cqw and the offsets in
    em, so the whole print scales with the yard when the child pinches. */
