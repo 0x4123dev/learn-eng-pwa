@@ -176,16 +176,26 @@ var NightRaid = (() => {
   // in. Flat floor traps are stepped over rather than walked around; anything
   // that stands up is solid. Recomputed as the child builds.
   const PET_YARD={left:12,top:42,width:76,height:47};
+  // The dog is a sprite, not a dot: it is drawn translate(-50%,-100%) from its
+  // feet, so its body rises about 5.4% of the map above them and spreads 2.4%
+  // either side. Testing only the feet is why it still LOOKED like it walked
+  // through a wall — the feet cleared the box while the body crossed it.
+  const PET_BODY={halfW:2.4,height:5.4};
   function petBlockedRects(){
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
     const cw=PET_YARD.width/G,ch=PET_YARD.height/G,rects=[];
     for(const cell of layout.cells){
       const def=NightRaidRules.defenseById(cell.type);
-      if(!def||def.trap)continue;
+      if(!def)continue;
       const x=PET_YARD.left+cell.gx*cw,y=PET_YARD.top+cell.gy*ch;
-      // The sprites are drawn larger than their own cell, so the solid box is
-      // widened to match what the child actually sees standing there.
-      rects.push({x0:x-cw*.45,x1:x+cw*1.45,y0:y-ch*.9,y1:y+ch*1.25});
+      // Two inflations, for two different reasons. The sprites are drawn
+      // larger than their own cell, so the box grows to what the child sees
+      // standing there; then it grows again by the dog's own body, so the
+      // rectangle below is exactly where its FEET may not go.
+      rects.push({
+        x0:x-cw*.45-PET_BODY.halfW, x1:x+cw*1.45+PET_BODY.halfW,
+        y0:y-ch*.9,                 y1:y+ch*1.25+PET_BODY.height,
+      });
     }
     return rects;
   }
@@ -205,13 +215,15 @@ var NightRaid = (() => {
       // about once a second rather than frozen when the walk started.
       if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}
       const nx=state.x+state.vx*dt,ny=state.y+state.vy*dt;
-      const hit=petBlockedAt(state.blocked,nx,ny);
-      if(hit){
-        // Turn away from the face it was about to cross — the shallower
-        // overlap is the one it just touched.
-        const dx=Math.min(nx-hit.x0,hit.x1-nx),dy=Math.min(ny-hit.y0,hit.y1-ny);
-        if(dx<dy)state.vx*=-1;else state.vy*=-1;
-      } else {state.x=nx;state.y=ny;}
+      // Slide along whatever it met rather than simply reversing. Reversing
+      // in place let the dog lock into a two-step shudder against a wall —
+      // 82% of its steps went nowhere and it covered a third of the yard.
+      // Trying each axis on its own keeps it walking the edge of a building
+      // and out the far side.
+      if(!petBlockedAt(state.blocked,nx,ny)){state.x=nx;state.y=ny;}
+      else if(!petBlockedAt(state.blocked,nx,state.y)){state.x=nx;state.vy*=-1;}
+      else if(!petBlockedAt(state.blocked,state.x,ny)){state.y=ny;state.vx*=-1;}
+      else {state.vx*=-1;state.vy*=-1;}
       if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}placePatrolPet(pet,sprite,state);},90);}
   function centerBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');startPetPatrol();const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;requestAnimationFrame(()=>{if(!viewport.isConnected)return;if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}else{viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)*.5);viewport.scrollTop=Math.max(0,(viewport.scrollHeight-viewport.clientHeight)*.18);}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};});}
   function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;

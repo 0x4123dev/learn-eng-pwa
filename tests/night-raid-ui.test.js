@@ -84,8 +84,20 @@ suite('night raid: app integration',()=>{
     assert.equal(yard[2], grid[3], 'PET_YARD.top must match .nr-free-grid');
     assert.equal(yard[3], grid[2], 'PET_YARD.width must match .nr-free-grid');
     assert.equal(yard[4], grid[4], 'PET_YARD.height must match .nr-free-grid');
-    // Flat traps are stepped over; anything that stands up is solid.
-    assert.truthy(ui.includes('if(!def||def.trap)continue'));
+    // Everything placed is solid, traps included — a dog strolling over a
+    // spike trap reads as "walking through" just as much as a wall does.
+    assert.truthy(ui.includes('if(!def)continue'));
+    assert.falsy(ui.includes('if(!def||def.trap)continue'),'traps must not be walkable any more');
+    // The dog is a sprite drawn translate(-50%,-100%) from its feet, so a
+    // point test let the body cross a wall while the feet cleared it. The
+    // boxes are inflated by the body, which is what the child actually sees.
+    assert.truthy(ui.includes('const PET_BODY={halfW:2.4,height:5.4}'));
+    assert.truthy(ui.includes('x0:x-cw*.45-PET_BODY.halfW'));
+    assert.truthy(ui.includes('y1:y+ch*1.25+PET_BODY.height'));
+    // Reversing in place locked the dog into a shudder against a wall, so it
+    // slides: each axis is tried on its own before giving up on both.
+    assert.truthy(ui.includes('else if(!petBlockedAt(state.blocked,nx,state.y)){state.x=nx;state.vy*=-1;}'));
+    assert.truthy(ui.includes('else if(!petBlockedAt(state.blocked,state.x,ny)){state.y=ny;state.vx*=-1;}'));
     assert.truthy(ui.includes('yardBlockedRects:petBlockedRects'),'the geometry stays checkable from outside');
   });
   test('fake landscape keeps every control the same size and on screen',()=>{
