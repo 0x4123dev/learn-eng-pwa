@@ -163,7 +163,7 @@ var NightRaid = (() => {
   // and a RELATIVE url() inside one is resolved against the stylesheet that
   // consumes it — css/styles.css — so `img/...` became `/css/img/...` and 404'd,
   // leaving the yard pet invisible while every other check looked healthy.
-  function yardPetHtml(){const pet=raidPetDescriptor(),asset=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-atlas:url('${asset}')" aria-hidden="true"></div><span>LV ${pet.level}</span></div></div>`;}
+  function yardPetHtml(){const pet=raidPetDescriptor(),asset=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-atlas:url('${asset}')" aria-hidden="true"></div><span>LV ${pet.level}</span></div></div>`;}
   function trimmedCanvasUrl(canvas,padding=8){const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return canvas.toDataURL('image/png');const {width,height}=canvas,data=ctx.getImageData(0,0,width,height).data;let left=width,top=height,right=-1,bottom=-1;for(let y=0;y<height;y++){for(let x=0;x<width;x++){if(data[(y*width+x)*4+3]>8){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}}}if(right<left)return canvas.toDataURL('image/png');left=Math.max(0,left-padding);top=Math.max(0,top-padding);right=Math.min(width-1,right+padding);bottom=Math.min(height-1,bottom+padding);const out=document.createElement('canvas');out.width=right-left+1;out.height=bottom-top+1;out.getContext('2d',{alpha:true}).drawImage(canvas,left,top,out.width,out.height,0,0,out.width,out.height);return out.toDataURL('image/png');}
   function paintEquippedCastle(){const image=document.getElementById('nrEquippedCastle');if(!image)return;const board=image.closest('.nr-builder-map')?.querySelector('.nr-board-art');if(board){board.src='img/night-raid/isometric-home-board-expanded-v2.webp';board.alt='Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng';}const skin=appState.petBattleCastleSkin||'stone-keep',render=()=>{if(!image.isConnected)return;const logicalWidth=400,logicalHeight=340,quality=(typeof devicePixelRatio!=='undefined'&&devicePixelRatio>=2)?4:3,canvas=document.createElement('canvas');canvas.width=logicalWidth*quality;canvas.height=logicalHeight*quality;const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(quality,0,0,quality,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';NightRaidArt.drawCastle(ctx,logicalWidth/2,logicalHeight-16,skin,100,100,0);try{image.src=trimmedCanvasUrl(canvas,8*quality);}catch(_){image.src='img/night-raid/home-castle.webp';}};render();if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(render);}
   function builderMapBase(){return 1600;}
@@ -201,8 +201,42 @@ var NightRaid = (() => {
   }
   function petBlockedAt(rects,x,y){for(const r of rects)if(x>r.x0&&x<r.x1&&y>r.y0&&y<r.y1)return r;return null;}
   function petPatrolBounds(){const castle=castlePosition(appState.nightRaidLayout);return{minX:Math.max(14,castle.x-34),maxX:Math.min(86,castle.x+34),minY:Math.max(47,castle.y+6),maxY:88};}
+  // A dog that leaves nothing behind reads as sliding over the grass rather
+  // than walking on it. Prints are planted where the paw actually fell and
+  // fade there; dust puffs kick up from the same spot. Both are plain DOM
+  // nodes on CSS animations that delete themselves — at roughly five alive at
+  // a time this is far cheaper than a map-sized canvas would be.
+  const PET_PRINT_MS=190, PET_DUST_MS=300;
+  function spawnPetTrail(layer,state,now){
+    if(!layer)return;
+    // Each node deletes itself on animationend, but a tab that is backgrounded
+    // mid-animation never fires one. Cap the layer so a strange state can
+    // never leave a thousand paw prints behind.
+    while(layer.childElementCount>26)layer.firstElementChild.remove();
+    // cqw and cqh are different pixel sizes (the yard is wider than it is
+    // tall), so the direction the paw points must be worked out in pixels,
+    // not in the percentage units the dog walks in.
+    const box=layer.getBoundingClientRect(),ratio=box.height&&box.width?(box.height/100)/(box.width/100):1;
+    const angle=Math.atan2(state.vy*ratio,state.vx)*180/Math.PI;
+    if(now-(state.printAt||0)>=PET_PRINT_MS){
+      state.printAt=now;state.printSide=state.printSide===1?-1:1;
+      const print=document.createElement('i');
+      print.className='nr-pet-print';
+      print.style.cssText=`left:${state.x}%;top:${state.y}%;--nr-a:${angle.toFixed(1)}deg;--nr-side:${state.printSide*.34}cqw`;
+      print.addEventListener('animationend',()=>print.remove(),{once:true});
+      layer.appendChild(print);
+    }
+    if(now-(state.dustAt||0)>=PET_DUST_MS){
+      state.dustAt=now;
+      const dust=document.createElement('i');
+      dust.className='nr-pet-dust';
+      dust.style.cssText=`left:${(state.x-state.vx*.06).toFixed(2)}%;top:${state.y}%`;
+      dust.addEventListener('animationend',()=>dust.remove(),{once:true});
+      layer.appendChild(dust);
+    }
+  }
   function placePatrolPet(pet,sprite,state){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,state.frame||0));pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
-  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
+  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
     state.blocked=petBlockedRects();state.blockedAt=performance.now();
     // A dog that opens the screen standing inside a barn looks like a bug, so
     // walk it out to the first clear spot along the yard.
@@ -224,7 +258,7 @@ var NightRaid = (() => {
       else if(!petBlockedAt(state.blocked,nx,state.y)){state.x=nx;state.vy*=-1;}
       else if(!petBlockedAt(state.blocked,state.x,ny)){state.y=ny;state.vx*=-1;}
       else {state.vx*=-1;state.vy*=-1;}
-      if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}placePatrolPet(pet,sprite,state);},90);}
+      if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}spawnPetTrail(trail,state,now);placePatrolPet(pet,sprite,state);},90);}
   function centerBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');startPetPatrol();const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;requestAnimationFrame(()=>{if(!viewport.isConnected)return;if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}else{viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)*.5);viewport.scrollTop=Math.max(0,(viewport.scrollHeight-viewport.clientHeight)*.18);}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};});}
   function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${stand?', '+NightRaidRules.defenseById(stand.type).name.vi+' cấp '+stand.tier:''}${floor?', có bẫy cấp '+floor.tier:''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}

@@ -12211,6 +12211,34 @@
 /* The pet uses real map coordinates. A low-frequency JS step updates only
    transform and sprite-frame position; wall collisions reverse its velocity. */
 .nr-pet-patrol{position:absolute;z-index:7;inset:0;container-type:size;pointer-events:none;overflow:hidden}
+/* The walk trail. Sits UNDER the dog so a print never covers the paw that
+   made it, and every node deletes itself when its animation ends. Sizes are
+   in cqw so prints stay proportional as the child pinches the yard. */
+.nr-pet-trail{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+/* A real paw, not a smudge: the element is the pad and three box-shadows are
+   the toes, sitting ahead of it. font-size is set in cqw and the offsets in
+   em, so the whole print scales with the yard when the child pinches. */
+.nr-pet-print{position:absolute;font-size:.42cqw;width:1.25em;height:1em;border-radius:50%;
+  background:rgba(84,64,42,.5);
+  box-shadow:1.15em -.68em 0 -.28em rgba(84,64,42,.46),
+             1.5em 0 0 -.3em rgba(84,64,42,.46),
+             1.15em .68em 0 -.28em rgba(84,64,42,.46);
+  transform-origin:center;animation:nr-pet-print-fade 1.9s ease-out forwards}
+/* Positioned first, then turned to face the walk, then nudged sideways: the
+   nudge happens along the ROTATED axis, which puts left and right paws either
+   side of the line the dog actually walked. */
+@keyframes nr-pet-print-fade{
+  0%{opacity:.85;transform:translate(-50%,-50%) rotate(var(--nr-a,0deg)) translateY(var(--nr-side,0)) scale(1)}
+  60%{opacity:.5}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--nr-a,0deg)) translateY(var(--nr-side,0)) scale(.9)}}
+.nr-pet-dust{position:absolute;width:2.1cqw;height:1.3cqw;border-radius:50%;
+  background:radial-gradient(circle at 50% 60%,rgba(226,209,172,.85),rgba(214,193,150,.42) 55%,rgba(214,193,150,0) 76%);
+  animation:nr-pet-dust-puff .85s ease-out forwards}
+@keyframes nr-pet-dust-puff{
+  0%{opacity:.8;transform:translate(-50%,-40%) scale(.35)}
+  55%{opacity:.45}
+  100%{opacity:0;transform:translate(-50%,-40%) translateY(-.9cqw) scale(1.7)}}
+@media(prefers-reduced-motion:reduce){.nr-pet-print,.nr-pet-dust{display:none}}
 .nr-yard-pet{position:absolute;left:0;top:0;width:clamp(38px,4.8cqw,72px);aspect-ratio:1.08;will-change:transform;transform-origin:center bottom}
 .nr-yard-pet-sprite{position:absolute;inset:0;background-image:var(--nr-pet-atlas);background-repeat:no-repeat;background-size:400% 500%;background-position:0 0;filter:drop-shadow(0 5px 3px rgba(47,34,24,.3));transform-origin:center bottom;will-change:background-position,transform}
 .nr-yard-pet>span{position:absolute;left:50%;bottom:1px;transform:translate(-50%,100%);padding:2px 6px;border:2px solid #fff;border-radius:999px;background:#f18a2d;color:#fff;font-size:10px;line-height:1.15;font-weight:1000;white-space:nowrap;box-shadow:0 3px 7px rgba(60,37,19,.25)}

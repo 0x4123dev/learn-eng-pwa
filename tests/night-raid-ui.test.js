@@ -100,6 +100,30 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('else if(!petBlockedAt(state.blocked,state.x,ny)){state.y=ny;state.vx*=-1;}'));
     assert.truthy(ui.includes('yardBlockedRects:petBlockedRects'),'the geometry stays checkable from outside');
   });
+  test('the yard pet leaves paw prints and kicks up dust',()=>{
+    // A dog that leaves nothing behind reads as sliding over the grass. The
+    // prints are planted where the paw fell and fade there, exactly like the
+    // battle trail — but as self-deleting DOM nodes, because a canvas the size
+    // of the yard would cost ~30MB on a phone at 2x.
+    assert.truthy(ui.includes('data-nr-pet-trail'),'the trail needs its own layer under the dog');
+    assert.truthy(ui.includes('function spawnPetTrail(layer,state,now)'));
+    assert.truthy(ui.includes('spawnPetTrail(trail,state,now)'),'the walk loop must actually spawn them');
+    assert.truthy(ui.includes("addEventListener('animationend'"),'every node deletes itself');
+    assert.truthy(ui.includes('while(layer.childElementCount>26)'),
+      'a backgrounded tab never fires animationend, so the layer must be capped');
+    // Left and right paws either side of the line walked, turned to face it.
+    assert.truthy(ui.includes('state.printSide=state.printSide===1?-1:1'));
+    assert.truthy(ui.includes('Math.atan2(state.vy*ratio,state.vx)'),
+      'cqw and cqh are different pixel sizes, so the angle must be worked out in pixels');
+    for (const rule of ['.nr-pet-trail{', '.nr-pet-print{', '.nr-pet-dust{',
+                        '@keyframes nr-pet-print-fade', '@keyframes nr-pet-dust-puff'])
+      assert.truthy(css.includes(rule), rule);
+    assert.truthy(/@media\(prefers-reduced-motion:reduce\)\{\.nr-pet-print,\.nr-pet-dust\{display:none\}\}/.test(css),
+      'a child who asked for less motion gets no trail at all');
+    // The trail must never paint over the paw that made it.
+    const trailRule = css.slice(css.indexOf('.nr-pet-trail{'), css.indexOf('}', css.indexOf('.nr-pet-trail{')));
+    assert.truthy(trailRule.includes('z-index:1'), 'the trail sits under the dog');
+  });
   test('fake landscape keeps every control the same size and on screen',()=>{
     // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked
     // four buttons down the phone's SHORT edge and pushed SỬA off it, while
