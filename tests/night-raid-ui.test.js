@@ -68,6 +68,44 @@ suite('night raid: app integration',()=>{
       assert.truthy(sw.includes("'/img/night-raid/" + atlas + "'"), atlas + ' must be cached for offline');
     }
   });
+  test('the yard pet walks around buildings instead of through them',()=>{
+    // The patrol used to know only a rectangle, so it strolled straight
+    // through rice fields and cannons. It now reads the same 12x12 yard grid
+    // the child builds on — and THAT is the drift risk this test guards:
+    // if .nr-free-grid moves in CSS, the dog's idea of "solid" goes stale.
+    assert.truthy(ui.includes('function petBlockedRects()'));
+    assert.truthy(ui.includes('petBlockedAt(state.blocked,nx,ny)'),'each step must be tested before it is taken');
+    assert.truthy(ui.includes('now-state.blockedAt>1000'),'the yard changes while the child builds');
+    const yard = ui.match(/const PET_YARD=\{left:(\d+),top:(\d+),width:(\d+),height:(\d+)\}/);
+    assert.truthy(yard,'the yard geometry must be one named constant');
+    const grid = css.match(/\.nr-free-grid\{left:(\d+)%;width:(\d+)%;top:(\d+)%;height:(\d+)%\}/);
+    assert.truthy(grid,'the last .nr-free-grid rule must stay machine-readable');
+    assert.equal(yard[1], grid[1], 'PET_YARD.left must match .nr-free-grid');
+    assert.equal(yard[2], grid[3], 'PET_YARD.top must match .nr-free-grid');
+    assert.equal(yard[3], grid[2], 'PET_YARD.width must match .nr-free-grid');
+    assert.equal(yard[4], grid[4], 'PET_YARD.height must match .nr-free-grid');
+    // Flat traps are stepped over; anything that stands up is solid.
+    assert.truthy(ui.includes('if(!def||def.trap)continue'));
+    assert.truthy(ui.includes('yardBlockedRects:petBlockedRects'),'the geometry stays checkable from outside');
+  });
+  test('fake landscape keeps every control the same size and on screen',()=>{
+    // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked
+    // four buttons down the phone's SHORT edge and pushed SỬA off it, while
+    // env(safe-area-inset-*) pointed at the wrong sides entirely.
+    const block = css.slice(css.indexOf('.nr-builder.rotated{'), css.indexOf('@media(max-height:420px)'));
+    assert.truthy(block.length > 200, 'the rotated layout must live in one readable block');
+    assert.truthy(/width:66px;height:66px/.test(block), 'every rail control is one size');
+    for (const control of ['.nr-builder-shop-fab', '.nr-builder-zoom', '.nr-builder-rotate', '.nr-builder-edit'])
+      assert.truthy(block.includes('.nr-builder.rotated ' + control), control + ' must be re-anchored when rotated');
+    // Packed along the short edge: last button ends well inside a 375px phone.
+    const tops = [...block.matchAll(/\.nr-builder\.rotated \.nr-builder-(?:shop-fab|zoom|rotate|edit)\{top:(\d+)px/g)].map(m => +m[1]);
+    assert.equal(tops.length, 4, 'all four rail controls need an explicit slot');
+    assert.truthy(Math.max(...tops) + 66 <= 340, 'the rail must fit the narrow edge of a phone');
+    assert.truthy(block.includes('.nr-builder.rotated .nr-builder-hud{left:14px;right:96px'),
+      'the stat rail must stop short of the buttons, or SHOP sits on the coin counter');
+    assert.truthy(block.includes('.nr-builder.rotated .nr-home-level{position:fixed'),
+      'the house badge must stay on screen when the map is scrolled');
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));

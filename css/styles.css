@@ -11998,6 +11998,36 @@
    builder rotates 90deg — the child turns the device and the island fills the
    wide way. Pan deltas are remapped in JS while this class is on. */
 .nr-builder.rotated{position:fixed;z-index:3600;top:0;left:0;width:100dvh;height:100dvw;margin:0;padding:0;border-radius:0;transform:rotate(90deg) translateY(-100%);transform-origin:top left;background:#c9ebd0}
+/* Fake landscape is a 90deg CSS rotation, and that swaps the axes for every
+   control floating over the stage: element `top` runs along the phone's SHORT
+   edge, and env(safe-area-inset-*) now points at the wrong sides entirely.
+   The scattered portrait offsets therefore stacked four 62px buttons down a
+   375px edge and pushed SỬA 13px off the screen, while the harvest chip lost
+   the front of its own label. Everything that floats is re-anchored here in
+   plain pixels, at ONE size, packed so it cannot run off the end. */
+.nr-builder.rotated .nr-builder-shop-fab,
+.nr-builder.rotated .nr-builder-zoom,
+.nr-builder.rotated .nr-builder-rotate,
+.nr-builder.rotated .nr-builder-edit{
+  right:14px;left:auto;bottom:auto;width:66px;height:66px;min-width:0;min-height:0;
+  padding:0;border-radius:19px;gap:2px;font-size:10px;letter-spacing:.03em;opacity:1;pointer-events:auto}
+.nr-builder.rotated .nr-builder-shop-fab{top:14px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+.nr-builder.rotated .nr-builder-zoom{top:88px;display:grid;grid-template-columns:66px;grid-template-rows:24px 18px 24px;width:66px}
+.nr-builder.rotated .nr-builder-zoom button{width:66px;height:24px;font-size:19px}
+.nr-builder.rotated .nr-builder-zoom span{font-size:10px}
+.nr-builder.rotated .nr-builder-rotate{top:162px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+.nr-builder.rotated .nr-builder-edit{top:236px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+.nr-builder.rotated .nr-builder-shop-fab b,.nr-builder.rotated .nr-builder-rotate b,.nr-builder.rotated .nr-builder-edit b{font-size:17px}
+.nr-builder.rotated .nr-builder-shop-fab svg{width:22px;height:22px}
+/* The stat rail and the two chips: same plain-pixel treatment, no env(). */
+.nr-builder.rotated .nr-builder-hud{left:14px;right:96px;top:14px;gap:6px}
+.nr-builder.rotated .nr-collect-all{left:14px;bottom:14px;top:auto;right:auto;min-height:0;height:66px;padding:6px 12px;border-radius:19px}
+.nr-builder.rotated .nr-builder-tip{left:14px;right:auto;bottom:auto;top:50%;transform:translateY(-50%)}
+/* The house badge lives on the map, so a scrolled map used to carry it away.
+   The rotated stage is a transformed ancestor, which makes it the containing
+   block for position:fixed — so the badge can simply stay on screen. */
+.nr-builder.rotated .nr-home-level{position:fixed;left:14px;bottom:96px;top:auto;right:auto;z-index:36;max-width:none}
+@media(max-height:420px){.nr-builder.rotated .nr-builder-tip{display:none}}
 .nr-builder-rotate{position:absolute;z-index:34;right:max(12px,env(safe-area-inset-right));top:calc(200px + env(safe-area-inset-top));min-width:62px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:5px;border:2px solid rgba(255,255,255,.95);border-radius:15px;background:rgba(255,253,242,.95);color:#29412f;font-weight:950;font-size:12px;box-shadow:0 7px 20px rgba(51,68,38,.2);cursor:pointer;touch-action:manipulation}
 .nr-builder-rotate b{font-size:19px;line-height:1;font-weight:1000}
 .nr-builder-rotate.active{background:linear-gradient(145deg,#ffe89a,#ffc65b);border-color:#e8ad3b;color:#644211}

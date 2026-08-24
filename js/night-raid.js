@@ -170,9 +170,49 @@ var NightRaid = (() => {
   function gridKey(cell){return cell.gx+':'+cell.gy+':'+(NightRaidRules.defenseById(cell.type).trap?'floor':'stand');}
   function rememberBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(viewport)builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};}
   function decorateCastleYard(map,editable){if(!map||map.classList.contains('nr-scout-map'))return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),p=castlePosition(layout),castle=map.querySelector('#nrEquippedCastle');map.style.setProperty('--nr-castle-x',p.x);map.style.setProperty('--nr-castle-y',p.y);if(editable&&!map.querySelector('.nr-castle-yard'))map.insertAdjacentHTML('afterbegin','<div class="nr-castle-yard" aria-hidden="true"><span>KHU ĐẶT NHÀ CHÍNH</span></div>');if(castle){castle.draggable=false;castle.setAttribute('oncontextmenu','return false');if(editable){castle.setAttribute('aria-label',(castle.alt||'Nhà chính')+', bật Sửa rồi kéo trong sân gạch');castle.addEventListener('pointerdown',beginCastleDrag);if(!map.querySelector('.nr-castle-move-hint'))castle.insertAdjacentHTML('afterend','<span class="nr-castle-move-hint" aria-hidden="true">KÉO NHÀ TRONG SÂN GẠCH</span>');}}if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());}
+  // Where the dog may NOT walk. The yard grid is .nr-free-grid — left 12%,
+  // top 42%, 76%x47% of the map, twelve cells each way — so every placed
+  // building maps to a rectangle in the same percentage space the pet walks
+  // in. Flat floor traps are stepped over rather than walked around; anything
+  // that stands up is solid. Recomputed as the child builds.
+  const PET_YARD={left:12,top:42,width:76,height:47};
+  function petBlockedRects(){
+    const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
+    const cw=PET_YARD.width/G,ch=PET_YARD.height/G,rects=[];
+    for(const cell of layout.cells){
+      const def=NightRaidRules.defenseById(cell.type);
+      if(!def||def.trap)continue;
+      const x=PET_YARD.left+cell.gx*cw,y=PET_YARD.top+cell.gy*ch;
+      // The sprites are drawn larger than their own cell, so the solid box is
+      // widened to match what the child actually sees standing there.
+      rects.push({x0:x-cw*.45,x1:x+cw*1.45,y0:y-ch*.9,y1:y+ch*1.25});
+    }
+    return rects;
+  }
+  function petBlockedAt(rects,x,y){for(const r of rects)if(x>r.x0&&x<r.x1&&y>r.y0&&y<r.y1)return r;return null;}
   function petPatrolBounds(){const castle=castlePosition(appState.nightRaidLayout);return{minX:Math.max(14,castle.x-34),maxX:Math.min(86,castle.x+34),minY:Math.max(47,castle.y+6),maxY:88};}
   function placePatrolPet(pet,sprite,state){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,state.frame||0));pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
-  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));state.last=performance.now();placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();state.x+=state.vx*dt;state.y+=state.vy*dt;if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}placePatrolPet(pet,sprite,state);},90);}
+  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
+    state.blocked=petBlockedRects();state.blockedAt=performance.now();
+    // A dog that opens the screen standing inside a barn looks like a bug, so
+    // walk it out to the first clear spot along the yard.
+    for(let guard=0;guard<80&&petBlockedAt(state.blocked,state.x,state.y);guard++){
+      state.x+=2.5;
+      if(state.x>bounds.maxX){state.x=bounds.minX;state.y+=3;}
+      if(state.y>bounds.maxY)state.y=bounds.minY;
+    }state.last=performance.now();placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();
+      // The yard changes while the child builds, so the solid boxes are re-read
+      // about once a second rather than frozen when the walk started.
+      if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}
+      const nx=state.x+state.vx*dt,ny=state.y+state.vy*dt;
+      const hit=petBlockedAt(state.blocked,nx,ny);
+      if(hit){
+        // Turn away from the face it was about to cross — the shallower
+        // overlap is the one it just touched.
+        const dx=Math.min(nx-hit.x0,hit.x1-nx),dy=Math.min(ny-hit.y0,hit.y1-ny);
+        if(dx<dy)state.vx*=-1;else state.vy*=-1;
+      } else {state.x=nx;state.y=ny;}
+      if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}placePatrolPet(pet,sprite,state);},90);}
   function centerBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');startPetPatrol();const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;requestAnimationFrame(()=>{if(!viewport.isConnected)return;if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}else{viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)*.5);viewport.scrollTop=Math.max(0,(viewport.scrollHeight-viewport.clientHeight)*.18);}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};});}
   function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${stand?', '+NightRaidRules.defenseById(stand.type).name.vi+' cấp '+stand.tier:''}${floor?', có bẫy cấp '+floor.tier:''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}
@@ -289,7 +329,7 @@ var NightRaid = (() => {
 
   function replayReport(index){setNav(false);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':'Phòng thủ đã chặn được toàn bộ đội cướp.'}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.defense||'?'}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport});
+  return Object.freeze({yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport});
 })();
 
 function openNightRaid(){NightRaid.open();}
