@@ -153,6 +153,13 @@ suite('night raid: app integration',()=>{
     for (const rule of ['.nr-yard-poops{', '.nr-yard-poop{', '.nr-yard-clean{', '@keyframes nr-poop-drop'])
       assert.truthy(css.includes(rule), rule);
     assert.truthy(ui.includes('yardPoopSpots,'),'the spots stay checkable from outside');
+    // A child who has bought nothing yet still has a dog with needs. The pond
+    // is painted in so it is always there — but the castle drags as far as
+    // x=73 and the walk reaches only 34 either side, which can leave the pond
+    // at x=19 out of range. Without a fallback the dog would simply never go.
+    assert.truthy(ui.includes("what:'bãi cỏ'"),'an empty yard still gets an errand: any clear grass');
+    assert.truthy(ui.includes('for(let tries=0;tries<24;tries++)'),'the grass spot must be searched for, not assumed clear');
+    assert.truthy(ui.includes('if(reachable.length)return reachable'),'rice and pond still come first');
   });
   test('fake landscape keeps every control the same size and on screen',()=>{
     // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked

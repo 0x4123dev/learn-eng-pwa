@@ -208,8 +208,20 @@ var NightRaid = (() => {
     // Whatever is left must be inside the walk AND actually standable, so a
     // crowded yard simply offers fewer errands instead of jamming the dog.
     const rects=petBlockedRects();
-    return spots.filter(s=>s.x>bounds.minX&&s.x<bounds.maxX&&s.y>bounds.minY&&s.y<bounds.maxY
+    const reachable=spots.filter(s=>s.x>bounds.minX&&s.x<bounds.maxX&&s.y>bounds.minY&&s.y<bounds.maxY
       &&!petBlockedAt(rects,s.x,s.y));
+    if(reachable.length)return reachable;
+    // Nothing interesting in range — which is the normal state for a child who
+    // has not bought a rice field yet, and can also happen to the pond: the
+    // castle drags as far as x=73 and the walk only reaches 34 either side of
+    // it, which leaves the pond at x=19 outside. A dog with nowhere special to
+    // go still goes. Pick any clear patch of grass instead.
+    for(let tries=0;tries<24;tries++){
+      const x=bounds.minX+Math.random()*(bounds.maxX-bounds.minX);
+      const y=bounds.minY+Math.random()*(bounds.maxY-bounds.minY);
+      if(!petBlockedAt(rects,x,y))return [{x,y,what:'bãi cỏ'}];
+    }
+    return [];
   }
 
   function petBlockedRects(){
