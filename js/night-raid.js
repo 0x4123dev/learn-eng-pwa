@@ -163,7 +163,7 @@ var NightRaid = (() => {
   // and a RELATIVE url() inside one is resolved against the stylesheet that
   // consumes it — css/styles.css — so `img/...` became `/css/img/...` and 404'd,
   // leaving the yard pet invisible while every other check looked healthy.
-  function yardPetHtml(){const pet=raidPetDescriptor(),asset=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-atlas:url('${asset}')" aria-hidden="true"></div><span>LV ${pet.level}</span></div></div>`;}
+  function yardPetHtml(){const pet=raidPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.png`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div><span>LV ${pet.level}</span></div></div>`;}
   function trimmedCanvasUrl(canvas,padding=8){const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return canvas.toDataURL('image/png');const {width,height}=canvas,data=ctx.getImageData(0,0,width,height).data;let left=width,top=height,right=-1,bottom=-1;for(let y=0;y<height;y++){for(let x=0;x<width;x++){if(data[(y*width+x)*4+3]>8){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}}}if(right<left)return canvas.toDataURL('image/png');left=Math.max(0,left-padding);top=Math.max(0,top-padding);right=Math.min(width-1,right+padding);bottom=Math.min(height-1,bottom+padding);const out=document.createElement('canvas');out.width=right-left+1;out.height=bottom-top+1;out.getContext('2d',{alpha:true}).drawImage(canvas,left,top,out.width,out.height,0,0,out.width,out.height);return out.toDataURL('image/png');}
   function paintEquippedCastle(){const image=document.getElementById('nrEquippedCastle');if(!image)return;const board=image.closest('.nr-builder-map')?.querySelector('.nr-board-art');if(board){board.src='img/night-raid/isometric-home-board-expanded-v2.webp';board.alt='Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng';}const skin=appState.petBattleCastleSkin||'stone-keep',render=()=>{if(!image.isConnected)return;const logicalWidth=400,logicalHeight=340,quality=(typeof devicePixelRatio!=='undefined'&&devicePixelRatio>=2)?4:3,canvas=document.createElement('canvas');canvas.width=logicalWidth*quality;canvas.height=logicalHeight*quality;const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(quality,0,0,quality,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';NightRaidArt.drawCastle(ctx,logicalWidth/2,logicalHeight-16,skin,100,100,0);try{image.src=trimmedCanvasUrl(canvas,8*quality);}catch(_){image.src='img/night-raid/home-castle.webp';}};render();if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(render);}
   function builderMapBase(){return 1600;}
@@ -182,16 +182,18 @@ var NightRaid = (() => {
   // through a wall — the feet cleared the box while the body crossed it.
   const PET_BODY={halfW:2.4,height:5.4};
   // Every so often the dog stops what it is doing, walks to the rice or the
-  // pond, and leaves something behind. The pond is not a building — it is
+  // pond, and does the matching business. The pond is not a building — it is
   // painted into the board art — so its spot was found by sampling the water
   // colour out of that image rather than guessed by eye.
   const YARD_POND={x:19,y:58};
-  const YARD_POOP_MAX=4, YARD_POOP_MIN_GAP_MS=18000, YARD_POOP_SPREAD_MS=17000, YARD_SQUAT_MS=1700, YARD_ERRAND_TIMEOUT_MS=14000;
+  const YARD_POOP_MAX=4, YARD_POOP_MIN_GAP_MS=18000, YARD_POOP_SPREAD_MS=17000, YARD_SQUAT_MS=1700, YARD_ERRAND_TIMEOUT_MS=30000;
   function yardPoops(){
     if(!Array.isArray(appState.nightRaidPoops))appState.nightRaidPoops=[];
     return appState.nightRaidPoops;
   }
-  // Where the dog considers worth a visit: its own rice fields, and the pond.
+  // Where the dog considers worth a visit: pee only beside a rice field and
+  // poop only beside the pond. If a destination is out of reach, that action
+  // is skipped instead of happening on arbitrary grass.
   function yardPoopSpots(bounds){
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
     const cw=PET_YARD.width/G,ch=PET_YARD.height/G,spots=[];
@@ -202,26 +204,15 @@ var NightRaid = (() => {
       // the dog may not walk into a building, so it would have trudged toward
       // a spot it could never reach and stood there forever.
       spots.push({x:PET_YARD.left+cell.gx*cw+cw*.5,
-                  y:PET_YARD.top+cell.gy*ch+ch*1.25+PET_BODY.height+1, what:'ruộng'});
+                  y:PET_YARD.top+cell.gy*ch+ch*1.25+PET_BODY.height+1, what:'ruộng',kind:'pee'});
     }
-    spots.push({x:YARD_POND.x, y:YARD_POND.y, what:'ao'});
+    spots.push({x:YARD_POND.x, y:YARD_POND.y, what:'ao',kind:'poop'});
     // Whatever is left must be inside the walk AND actually standable, so a
     // crowded yard simply offers fewer errands instead of jamming the dog.
     const rects=petBlockedRects();
-    const reachable=spots.filter(s=>s.x>bounds.minX&&s.x<bounds.maxX&&s.y>bounds.minY&&s.y<bounds.maxY
+    const reachable=spots.filter(s=>s.x>14&&s.x<86&&s.y>47&&s.y<88
       &&!petBlockedAt(rects,s.x,s.y));
-    if(reachable.length)return reachable;
-    // Nothing interesting in range — which is the normal state for a child who
-    // has not bought a rice field yet, and can also happen to the pond: the
-    // castle drags as far as x=73 and the walk only reaches 34 either side of
-    // it, which leaves the pond at x=19 outside. A dog with nowhere special to
-    // go still goes. Pick any clear patch of grass instead.
-    for(let tries=0;tries<24;tries++){
-      const x=bounds.minX+Math.random()*(bounds.maxX-bounds.minX);
-      const y=bounds.minY+Math.random()*(bounds.maxY-bounds.minY);
-      if(!petBlockedAt(rects,x,y))return [{x,y,what:'bãi cỏ'}];
-    }
-    return [];
+    return reachable;
   }
 
   function petBlockedRects(){
@@ -316,8 +307,11 @@ var NightRaid = (() => {
     if(typeof showToast==='function')showToast('✨ Dọn sạch! +'+coins+' 🪙 +'+xp+' XP');
     announce('Đã dọn '+cleared+' bãi phân cho chó');
   }
-  function placePatrolPet(pet,sprite,state){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,state.frame||0));pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
-  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:7.2,vy:2.4,frame:0,last:performance.now(),frameAt:0};const state=petPatrolState;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
+  function spawnPetBusinessEffect(map,kind,state){const effect=document.createElement('span');effect.className='nr-pet-event '+kind;effect.setAttribute('aria-hidden','true');effect.style.left=state.x+'%';effect.style.top=state.y+'%';effect.innerHTML='<i></i><b></b>';map.appendChild(effect);setTimeout(()=>effect.remove(),4200);}
+  function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.38?'bark':roll<.76?'rest':roll<.90?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1700:state.mode==='bark'?3400:state.mode==='rest'?6200:2600);state.frame=0;}
+  function petActionFrame(state,now){if(state.mode==='walk'||state.mode==='seek')return state.frame;if(state.mode==='bark')return Math.floor(now/240)%2;if(state.mode==='rest')return 2;if(state.mode==='scratch')return Math.floor(now/260)%2?3:2;return 0;}
+  function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundImage=walking?'var(--nr-pet-walk)':'var(--nr-pet-actions)';sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
+  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
     state.blocked=petBlockedRects();state.blockedAt=performance.now();paintYardPoops();
     // A dog that opens the screen standing inside a barn looks like a bug, so
     // walk it out to the first clear spot along the yard.
@@ -325,7 +319,7 @@ var NightRaid = (() => {
       state.x+=2.5;
       if(state.x>bounds.maxX){state.x=bounds.minX;state.y+=3;}
       if(state.y>bounds.maxY)state.y=bounds.minY;
-    }state.last=performance.now();placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();
+    }state.last=performance.now();if(reduced){state.mode='idle';state.frame=0;}placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();
       // The yard changes while the child builds, so the solid boxes are re-read
       // about once a second rather than frozen when the walk started.
       if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}
@@ -336,14 +330,30 @@ var NightRaid = (() => {
       if(state.squatUntil){
         if(now<state.squatUntil){placePatrolPet(pet,sprite,state);return;}
         state.squatUntil=0;
-        dropYardPoop(state.errand||{x:state.x,y:state.y});
+        if(state.errand?.kind==='poop')dropYardPoop(state.errand);
         state.errand=null;state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;
-        const a=Math.random()*Math.PI*2;state.vx=Math.cos(a)*7.2;state.vy=Math.sin(a)*2.4;
+        state.mode='walk';state.nextCasual=now+1800+Math.random()*1400;
+        const a=Math.random()*Math.PI*2;state.vx=Math.cos(a)*3.4;state.vy=Math.sin(a)*1.15;
       }
+      // Calm behaviours are intentionally separated by several seconds so
+      // the home feels alive without becoming a distracting screensaver.
+      if(state.casualUntil){
+        if(now<state.casualUntil){placePatrolPet(pet,sprite,state,now);return;}
+        state.casualUntil=0;state.mode='walk';state.nextCasual=now+1800+Math.random()*1400;
+      }
+      if(!state.errand&&!state.squatUntil&&now>=state.nextCasual){choosePetIdle(state,now);placePatrolPet(pet,sprite,state,now);return;}
       if(!state.nextErrand)state.nextErrand=now+YARD_POOP_MIN_GAP_MS+Math.random()*YARD_POOP_SPREAD_MS;
       if(!state.errand&&now>=state.nextErrand&&yardPoops().length<YARD_POOP_MAX){
         const spots=yardPoopSpots(nextBounds);
-        if(spots.length){state.errand=spots[Math.floor(Math.random()*spots.length)];state.errandUntil=now+YARD_ERRAND_TIMEOUT_MS;}
+        if(spots.length){
+          // Head for the NEAREST spot, not a random one. Picking at random
+          // sent the dog on 30-second treks across the yard once it walked at
+          // a believable pace — long enough to time out before arriving, and
+          // long enough to turn the whole walk into one endless commute. The
+          // y difference counts for more because the yard is wider than tall.
+          let pick=spots[0],best=Infinity;
+          for(const sp of spots){const d=Math.hypot(sp.x-state.x,(sp.y-state.y)*2.6);if(d<best){best=d;pick=sp;}}
+          state.errand=pick;state.errandUntil=now+YARD_ERRAND_TIMEOUT_MS;state.mode='seek';}
         else state.nextErrand=now+YARD_POOP_MIN_GAP_MS;
       }
       // Give up on an errand it cannot reach. Steering straight at a target
@@ -351,12 +361,12 @@ var NightRaid = (() => {
       // pressed against a wall forever is worse than one that changes its
       // mind: verified by walking every spot on a built-up yard, where one
       // rice field could not be reached inside 900 steps.
-      if(state.errand&&now>state.errandUntil){state.errand=null;state.nextErrand=now+YARD_POOP_MIN_GAP_MS;}
+      if(state.errand&&now>state.errandUntil){state.errand=null;state.mode='walk';state.nextErrand=now+YARD_POOP_MIN_GAP_MS;}
       if(state.errand){
         const ex=state.errand.x-state.x,ey=state.errand.y-state.y,far=Math.hypot(ex,ey);
-        if(far<1.6){state.squatUntil=now+YARD_SQUAT_MS;state.vx=state.vx>0?.001:-.001;state.vy=0;placePatrolPet(pet,sprite,state);return;}
+        if(far<1.6){state.squatUntil=now+YARD_SQUAT_MS;state.mode=state.errand.kind;state.vx=state.vx>0?.001:-.001;state.vy=0;spawnPetBusinessEffect(map,state.mode,state);placePatrolPet(pet,sprite,state,now);return;}
         // Steer toward the errand at walking pace instead of teleporting.
-        state.vx=(ex/far)*7.2;state.vy=(ey/far)*2.4;
+        state.vx=(ex/far)*3.4;state.vy=(ey/far)*1.15;
       }
       const nx=state.x+state.vx*dt,ny=state.y+state.vy*dt;
       // Slide along whatever it met rather than simply reversing. Reversing
@@ -368,7 +378,8 @@ var NightRaid = (() => {
       else if(!petBlockedAt(state.blocked,nx,state.y)){state.x=nx;state.vy*=-1;}
       else if(!petBlockedAt(state.blocked,state.x,ny)){state.y=ny;state.vx*=-1;}
       else {state.vx*=-1;state.vy*=-1;}
-      if(state.x<=nextBounds.minX||state.x>=nextBounds.maxX){state.x=Math.max(nextBounds.minX,Math.min(nextBounds.maxX,state.x));state.vx*=-1;}if(state.y<=nextBounds.minY||state.y>=nextBounds.maxY){state.y=Math.max(nextBounds.minY,Math.min(nextBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=110){state.frame=(state.frame+1)%4;state.frameAt=now;}spawnPetTrail(trail,state,now);placePatrolPet(pet,sprite,state);},90);}
+      const activeBounds=state.errand?{minX:Math.min(nextBounds.minX,state.errand.x-1),maxX:Math.max(nextBounds.maxX,state.errand.x+1),minY:Math.min(nextBounds.minY,state.errand.y-1),maxY:Math.max(nextBounds.maxY,state.errand.y+1)}:nextBounds;
+      if(state.x<=activeBounds.minX||state.x>=activeBounds.maxX){state.x=Math.max(activeBounds.minX,Math.min(activeBounds.maxX,state.x));state.vx*=-1;}if(state.y<=activeBounds.minY||state.y>=activeBounds.maxY){state.y=Math.max(activeBounds.minY,Math.min(activeBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=155){state.frame=(state.frame+1)%4;state.frameAt=now;}spawnPetTrail(trail,state,now);placePatrolPet(pet,sprite,state,now);},90);}
   function centerBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');startPetPatrol();const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;requestAnimationFrame(()=>{if(!viewport.isConnected)return;if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}else{viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)*.5);viewport.scrollTop=Math.max(0,(viewport.scrollHeight-viewport.clientHeight)*.18);}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};});}
   function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${stand?', '+NightRaidRules.defenseById(stand.type).name.vi+' cấp '+stand.tier:''}${floor?', có bẫy cấp '+floor.tier:''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}

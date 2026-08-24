@@ -59,11 +59,12 @@ suite('night raid: app integration',()=>{
     // stylesheet that CONSUMES it, not the page — so `img/night-raid/x.png`
     // became `/css/img/night-raid/x.png`, 404'd, and the patrolling dog was
     // invisible while every other check looked healthy. Root-absolute only.
-    const m = ui.match(/asset=`([^`]*pet-walk[^`]*)`/);
+    const m = ui.match(/walk=`([^`]*pet-walk[^`]*)`/);
     assert.truthy(m, 'the yard pet atlas url must be built in one place');
     assert.truthy(m[1].startsWith('/img/'), 'the atlas url must be root-absolute, got: ' + m[1]);
-    assert.truthy(css.includes('var(--nr-pet-atlas)'), 'the sprite still reads the variable');
-    for (const atlas of ['pet-walk-small-v1.png', 'pet-walk-large-v1.png']) {
+    assert.truthy(css.includes('var(--nr-pet-walk)'), 'the sprite still reads the walk variable');
+    assert.truthy(ui.includes('var(--nr-pet-actions)'), 'the sprite still reads the action variable');
+    for (const atlas of ['pet-walk-small-v1.png', 'pet-walk-large-v1.png','pet-actions-small-v2.png','pet-actions-large-v2.png']) {
       assert.truthy(fs.existsSync(path.join(root, 'img/night-raid', atlas)), atlas + ' missing on disk');
       assert.truthy(sw.includes("'/img/night-raid/" + atlas + "'"), atlas + ' must be cached for offline');
     }
@@ -130,8 +131,11 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('const YARD_POND={x:19,y:58}'),
       'the pond is painted into the board art, so its spot is a measured constant');
     assert.truthy(ui.includes("if(cell.type!=='rice-field')continue"),'rice fields are the other destination');
+    assert.truthy(ui.includes("what:'ruộng',kind:'pee'"),'the rice visit is specifically a pee action');
+    assert.truthy(ui.includes("what:'ao',kind:'poop'"),'the pond visit is specifically a poop action');
     assert.truthy(ui.includes('state.squatUntil'),'it must stop walking to do its business');
-    assert.truthy(ui.includes('dropYardPoop(state.errand'));
+    assert.truthy(ui.includes("if(state.errand?.kind==='poop')dropYardPoop(state.errand)"));
+    assert.truthy(ui.includes('spawnPetBusinessEffect(map,state.mode,state)'));
     // The two traps this feature can fall into, both found by walking every
     // spot on a built-up yard before shipping:
     assert.truthy(ui.includes('&&!petBlockedAt(rects,s.x,s.y)'),
@@ -153,13 +157,35 @@ suite('night raid: app integration',()=>{
     for (const rule of ['.nr-yard-poops{', '.nr-yard-poop{', '.nr-yard-clean{', '@keyframes nr-poop-drop'])
       assert.truthy(css.includes(rule), rule);
     assert.truthy(ui.includes('yardPoopSpots,'),'the spots stay checkable from outside');
-    // A child who has bought nothing yet still has a dog with needs. The pond
-    // is painted in so it is always there — but the castle drags as far as
-    // x=73 and the walk reaches only 34 either side, which can leave the pond
-    // at x=19 out of range. Without a fallback the dog would simply never go.
-    assert.truthy(ui.includes("what:'bãi cỏ'"),'an empty yard still gets an errand: any clear grass');
-    assert.truthy(ui.includes('for(let tries=0;tries<24;tries++)'),'the grass spot must be searched for, not assumed clear');
-    assert.truthy(ui.includes('if(reachable.length)return reachable'),'rice and pond still come first');
+    assert.falsy(ui.includes("what:'bãi cỏ'"),'bathroom actions belong only at their requested destinations');
+    assert.truthy(ui.includes('const activeBounds=state.errand?'),'an errand may leave the normal castle patrol rectangle');
+  });
+  test('the yard pet pauses, barks, rests and scratches with real action sprites',()=>{
+    for(const token of ['choosePetIdle','mode===\'bark\'','mode===\'rest\'','mode===\'scratch\'','data-mode="walk"','--nr-pet-actions'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    // Balance, not literals: pacing was the whole personality and it read as a
+    // screensaver. Barking and resting must together outweigh walking, so the
+    // weights are checked as weights and stay free to be re-tuned.
+    const roll=ui.match(/roll<\.(\d+)\?'bark':roll<\.(\d+)\?'rest'/);
+    assert.truthy(roll,'bark and rest must be the first two draws');
+    const bark=+roll[1]/100, rest=+roll[2]/100 - +roll[1]/100;
+    assert.truthy(bark+rest>=.7,'barking and resting should be most of what it does, got '+((bark+rest)*100)+'%');
+    const dur=ui.match(/mode==='idle'\?(\d+):state\.mode==='bark'\?(\d+):state\.mode==='rest'\?(\d+):(\d+)/);
+    assert.truthy(dur,'each mood needs its own dwell time');
+    assert.truthy(+dur[3]>=5000,'a rest must actually look like a rest, got '+dur[3]+'ms');
+    assert.falsy(ui.includes('nr-pet-bark')||css.includes('nr-pet-bark'),'bark sprite must not get a stray white sound mark');
+    for(const asset of ['pet-actions-small-v2.png','pet-actions-large-v2.png'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
+    // Short strolls between moods, and a walking pace a puppy could keep.
+    const gap=ui.match(/nextCasual=now\+(\d+)\+Math\.random\(\)\*(\d+)/);
+    assert.truthy(gap,'the gap between moods must be a random range');
+    assert.truthy(+gap[1]+ +gap[2] <= 4000,'a walk bout longer than four seconds is pacing again, got '+(+gap[1]+ +gap[2])+'ms');
+    const speed=ui.match(/vx:([\d.]+),vy:([\d.]+)/);
+    assert.truthy(speed && +speed[1]<=4,'the dog was sprinting; walking pace is about half that, got '+(speed&&speed[1]));
+    // Slowing the walk doubled every errand, so it must aim at the closest
+    // destination and be given time to get there.
+    assert.truthy(ui.includes('for(const sp of spots){const d=Math.hypot'),'errands go to the nearest spot');
+    assert.truthy(/YARD_ERRAND_TIMEOUT_MS=(\d+)/.test(ui)&&+ui.match(/YARD_ERRAND_TIMEOUT_MS=(\d+)/)[1]>=25000,
+      'at walking pace a far corner takes ~30s, so the old 14s deadline could never be met');
+    assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'ambient actions must respect reduced motion');
   });
   test('fake landscape keeps every control the same size and on screen',()=>{
     // Rotating the stage 90deg swaps the axes, so the portrait offsets stacked
