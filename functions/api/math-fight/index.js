@@ -39,7 +39,7 @@ export async function onRequestGet({ request, env }) {
   const mine = await currentFight(env, auth.uid);
   return json({
     now: Date.now(),
-    betMin: MF.BET_MIN, betMax: MF.BET_MAX, betStep: MF.BET_STEP,
+    prize: MF.PRIZE,
     questions: MF.QUESTIONS, seconds: MF.SECONDS,
     heartbeatMs: MF.HEARTBEAT_MS,
     friends,

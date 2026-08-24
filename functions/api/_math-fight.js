@@ -110,10 +110,11 @@ export async function settleFight(env, row, now = Date.now()) {
 
 // The coin move for one player, decided by the server and applied by that
 // child's own device to its local wallet — the contract Night Raid already
-// uses. A draw moves nothing.
-export function coinDelta(row, uid) {
+// uses. A draw moves nothing, and a loser with an empty purse pays nothing:
+// the balance the device reports is only ever used to make the loss smaller.
+export function coinDelta(row, uid, balance) {
   if (!row || row.status !== 'done' || !row.winner_id) return 0;
-  return row.winner_id === uid ? row.bet : -row.bet;
+  return MF.coinChange(row.winner_id === uid, balance);
 }
 
 // What one player is allowed to see. Deliberately thin: their own rung and
@@ -125,7 +126,7 @@ export function fightView(row, uid) {
   return {
     fightId: row.id,
     status: row.status,
-    bet: row.bet,
+    prize: row.prize,
     seed: row.seed,
     level: mine ? row.challenger_level : row.opponent_level,
     role: mine ? 'challenger' : 'opponent',

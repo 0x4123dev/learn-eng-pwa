@@ -23,9 +23,6 @@ export async function onRequestPost({ request, env }) {
     await env.DB.prepare("UPDATE math_fights SET status='declined' WHERE id=?").bind(id).run();
     return json({ ok: true, declined: true });
   }
-  const coins = Math.max(0, Math.trunc(+body.coins || 0));
-  if (coins < row.bet) return err('Con chưa đủ ' + row.bet + ' xu để nhận kèo');
-
   // The clock starts on the server, so neither device can lengthen its own
   // five minutes by stalling the accept. Both pulses start alive, or the very
   // first walk-away check would fire before either child has answered.

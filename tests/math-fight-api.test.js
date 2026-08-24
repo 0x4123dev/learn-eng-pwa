@@ -58,10 +58,10 @@ suite('math fight: server helpers', () => {
     assert.truthy(fn.includes('MF.cooldownUntil('));
     assert.truthy(fn.includes('MF.hasWalkedAway('));
   });
-  test('the coin delta is the stake, decided by the server', () => {
+  test('the coin delta is the prize, and a loser never goes negative', () => {
     const s = src();
     const fn = s.slice(s.indexOf('export function coinDelta'));
-    assert.truthy(fn.includes('row.bet'));
+    assert.truthy(fn.includes('MF.coinChange('), 'the floor rule lives in the rules module');
     assert.truthy(fn.includes('winner_id'));
   });
 });
@@ -74,9 +74,14 @@ suite('math fight: challenge and accept', () => {
   test('a challenge is only ever against a friend', () => {
     assert.truthy(api('challenge').includes('areFriends'));
   });
-  test('a challenge enforces the stake, the balance and both cooldowns', () => {
+  test('nobody picks a stake: the prize is a server constant', () => {
     const src = api('challenge');
-    assert.truthy(src.includes('MF.isValidBet('), 'stake must be validated server-side');
+    assert.truthy(src.includes('MF.PRIZE'), 'the prize comes from the rules module');
+    assert.falsy(src.includes('body.bet'), 'a client may not name its own stake');
+    assert.falsy(src.includes('body.coins'), 'challenging costs nothing up front');
+  });
+  test('a challenge enforces both cooldowns and one fight at a time', () => {
+    const src = api('challenge');
     assert.truthy(src.includes('friendBattleReadyAt'), 'the 3-day friendship gate still applies');
     assert.truthy(src.includes('nextReadyAt'), 'the 3-day pair cooldown must be checked');
     assert.truthy(src.includes('currentFight'), 'one fight at a time');

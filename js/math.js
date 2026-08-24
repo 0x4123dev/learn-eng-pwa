@@ -49,48 +49,231 @@ const MATH_SUP_RE = new RegExp('[' + Object.keys(MATH_SUPERSCRIPTS).join('') + '
 // function is used on explanation HTML.
 const MATH_RADICAND_CHAR = /[0-9A-Za-zÀ-ỹ⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺ᵃᵇᶜᵈᵉᵏᵐⁿᵖʳˢᵗᵘᵛʷˣʸᶻ.,]/;
 
-function mathRadicals(s) {
-  let out = '';
-  for (let i = 0; i < s.length; i++) {
-    if (s[i] !== '√') { out += s[i]; continue; }
-    let j = i + 1;
-    let end = j;
-    if (s[j] === '(') {
-      let depth = 0;
-      for (let k = j; k < s.length; k++) {
-        const ch = s[k];
-        if (ch === '<') { end = j; break; }           // a tag — leave it alone
-        if (ch === '(') depth++;
-        else if (ch === ')') { depth--; if (depth === 0) { end = k + 1; break; } }
-      }
-    } else {
-      while (end < s.length && s[end] !== '<' && MATH_RADICAND_CHAR.test(s[end])) end++;
-    }
-    if (end <= j) { out += '√'; continue; }           // nothing under the sign
-    out += '√<span class="math-radicand">' + s.slice(j, end) + '</span>';
-    i = end - 1;
-  }
-  return out;
-}
-
 function mathSuper(s) {
   return s.replace(MATH_SUP_RE, run =>
     '<sup>' + Array.from(run).map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>');
 }
 
-// Escape first, then draw the radicals, then lift the superscripts. The order
-// matters: the same string often holds "khi a < 0", and the radicand scan must
-// see the Unicode exponents before they become <sup> tags.
-function mathFormula(s) {
-  return mathSuper(mathRadicals(mathEsc(s)));
+function _mathBalancedEnd(s, start, open, close) {
+  let depth = 0;
+  for (let i = start; i < s.length; i++) {
+    if (s[i] === open) depth++;
+    else if (s[i] === close && --depth === 0) return i + 1;
+  }
+  return start;
 }
 
-// Same lift, for strings that are already trusted HTML — explanations and
-// lessons carry <br>/<b> that must survive, so these are NOT escaped. The
-// build step (scripts/build-math-data.js) has already neutralised every "<"
-// that is not one of those tags, which is what makes this safe.
+// Return one printable maths atom: a number/letter, (...), or |...|, followed
+// by any Unicode exponent. Keeping the reader small and deterministic avoids
+// turning ordinary Vietnamese punctuation into formula markup.
+function _mathAtomEnd(s, start) {
+  let i = start;
+  if (s[i] === '−' || s[i] === '-') i++;
+  if (s[i] === '(') {
+    const end = _mathBalancedEnd(s, i, '(', ')');
+    if (end === i) return start;
+    i = end;
+  } else if (s[i] === '|') {
+    const end = s.indexOf('|', i + 1);
+    if (end < 0) return start;
+    i = end + 1;
+  } else {
+    const rest = s.slice(i);
+    const number = /^\d+(?:[.,]\d+)?/.exec(rest);
+    const letters = /^[A-Za-zÀ-ỹ]+/.exec(rest);
+    const token = number || letters;
+    if (!token) return start;
+    i += token[0].length;
+  }
+  while (i < s.length && MATH_SUPERSCRIPTS[s[i]]) i++;
+  return i;
+}
+
+function _mathFraction(num, den, escapeText) {
+  return '<span class="math-frac">'
+    + '<span class="math-num">' + _mathTypeset(num, escapeText) + '</span>'
+    + '<span class="math-frac-slash">/</span>'
+    + '<span class="math-den">' + _mathTypeset(den, escapeText) + '</span>'
+    + '</span>';
+}
+
+// A tiny purpose-built typesetter for the notation used in Toán 7. It draws
+// real stacked fractions, grouped mixed numbers, scalable roots and exponents
+// while leaving the stored question/answer strings unchanged for grading.
+function _mathTypeset(value, escapeText) {
+  const s = String(value == null ? '' : value);
+  let out = '';
+  for (let i = 0; i < s.length;) {
+    // Old imported exams used prose/caret notation such as
+    // "5 mũ (x + 4)" and "5^(x+4)". Both are mathematically correct data,
+    // but neither should be printed to a child. Convert them at the shared
+    // renderer boundary so every question, option, answer and explanation
+    // receives the same real raised exponent without rewriting the source.
+    const power = /^([−-]?(?:\([^()]*\)|\|[^|]+\||\d+(?:[.,]\d+)?|[A-Za-z]+))\s*(?:mũ|\^)\s*\(([^()]*)\)/i
+      .exec(s.slice(i));
+    if (power) {
+      out += '<span class="math-power">' + _mathTypeset(power[1], escapeText)
+        + '<sup>' + _mathTypeset(power[2], escapeText) + '</sup></span>';
+      i += power[0].length;
+      continue;
+    }
+
+    // Mixed number: "2 2/5" must read as one quantity, not three loose digits.
+    const mixed = /^([−-]?\d+)\s+(\d+)\/(\d+)/.exec(s.slice(i));
+    if (mixed && (i === 0 || !/[\dA-Za-zÀ-ỹ]/.test(s[i - 1]))) {
+      out += '<span class="math-mixed"><span class="math-whole">'
+        + (escapeText ? mathEsc(mixed[1]) : mixed[1]) + '</span>'
+        + _mathFraction(mixed[2], mixed[3], escapeText) + '</span>';
+      i += mixed[0].length;
+      continue;
+    }
+
+    if (s[i] === '√') {
+      const end = _mathAtomEnd(s, i + 1);
+      if (end > i + 1) {
+        out += '<span class="math-root"><span class="math-root-symbol">√</span>'
+          + '<span class="math-radicand">' + _mathTypeset(s.slice(i + 1, end), escapeText)
+          + '</span></span>';
+        i = end;
+        continue;
+      }
+    }
+
+    const atomEnd = _mathAtomEnd(s, i);
+    if (atomEnd > i && s[atomEnd] === '/') {
+      const denEnd = _mathAtomEnd(s, atomEnd + 1);
+      if (denEnd > atomEnd + 1) {
+        out += _mathFraction(s.slice(i, atomEnd), s.slice(atomEnd + 1, denEnd), escapeText);
+        i = denEnd;
+        continue;
+      }
+    }
+
+    if (MATH_SUPERSCRIPTS[s[i]]) {
+      let end = i + 1;
+      while (end < s.length && MATH_SUPERSCRIPTS[s[end]]) end++;
+      out += '<sup>' + Array.from(s.slice(i, end))
+        .map(ch => MATH_SUPERSCRIPTS[ch] || ch).join('') + '</sup>';
+      i = end;
+      continue;
+    }
+
+    out += escapeText ? mathEsc(s[i]) : s[i];
+    i++;
+  }
+  return out;
+}
+
+function mathFormula(s) {
+  return _mathTypeset(s, true);
+}
+
+// Explanations carry a deliberately tiny trusted tag set. Typeset only the
+// text between those tags so <b>/<br> survive and generated maths spans never
+// get parsed a second time.
 function mathRich(html) {
-  return mathSuper(mathRadicals(String(html == null ? '' : html)));
+  return String(html == null ? '' : html)
+    .split(/(<\/?(?:b|br|i|strong|u)\s*\/?\s*>)/i)
+    .map(part => /^<\/?(?:b|br|i|strong|u)\s*\/?\s*>$/i.test(part)
+      ? part : _mathTypeset(part, false))
+    .join('');
+}
+
+function mathSolutionSteps(source) {
+  return String(source == null ? '' : source)
+    .replace(/^\s*🔑\s*/u, '')
+    .split(/(?:\.\s+|;\s+|,\s+(?=(?:suy ra|nên|do đó|từ đó|vậy|ta được)\b))/i)
+    .map(step => step.trim())
+    .filter(Boolean);
+}
+
+function mathRuleForQuestion(q) {
+  const topic = String(q && q.topic || '');
+  const stem = String(q && q.q || '');
+  const text = `${topic} ${stem}`.toLowerCase();
+
+  if (/√|căn bậc hai/.test(text))
+    return 'Căn bậc hai số học của a ≥ 0 là số không âm có bình phương bằng a. Tính biểu thức dưới dấu căn trước, rồi mới lấy căn.';
+  if (/giá trị tuyệt đối|\|[^|]+\|/.test(text))
+    return 'Giá trị tuyệt đối là khoảng cách đến 0 nên luôn không âm: số âm đổi thành số đối, số không âm giữ nguyên.';
+  if (/lũy thừa|luỹ thừa|mũ|[⁰¹²³⁴⁵⁶⁷⁸⁹ˣⁿᵐ]/.test(text))
+    return 'Đưa các lũy thừa về cùng cơ số. Khi nhân thì cộng số mũ, khi chia thì trừ số mũ; hai lũy thừa cùng cơ số bằng nhau thì các số mũ bằng nhau.';
+  if (/chuyển vế|tìm x|tìm số.*x/.test(text))
+    return 'Muốn tìm x, chuyển hạng tử sang vế kia và đổi dấu, sau đó thực hiện cùng một phép tính hợp lệ trên hai vế.';
+  if (/phần trăm|%|giảm giá|tỉ lệ/.test(text))
+    return 'Đổi tỉ lệ phần trăm p% thành p/100. Muốn tìm giá trị của một phần, lấy tổng nhân với tỉ lệ tương ứng.';
+  if (/số đối/.test(text))
+    return 'Số đối của a là −a; hai số đối có tổng bằng 0. Chỉ đổi dấu, không đảo tử và mẫu.';
+  if (/số thực|số vô tỉ|thập phân/.test(text))
+    return 'Số hữu tỉ viết được dưới dạng phân số và có dạng thập phân hữu hạn hoặc vô hạn tuần hoàn; số vô tỉ có dạng thập phân vô hạn không tuần hoàn.';
+  if (/phân số|số hữu tỉ|\d+\s*\/\s*\d+/.test(text))
+    return 'Với phân số, quy đồng trước khi cộng hoặc trừ; khi nhân thì nhân tử với tử, mẫu với mẫu; khi chia thì nhân với phân số nghịch đảo.';
+  if (/làm tròn/.test(text))
+    return 'Giữ chữ số ở hàng cần làm tròn rồi xét chữ số ngay bên phải: từ 5 trở lên thì tăng 1, nhỏ hơn 5 thì giữ nguyên.';
+  if (/kề bù/.test(text))
+    return 'Hai góc kề bù có tổng số đo bằng 180°, nên góc chưa biết bằng 180° trừ góc đã biết.';
+  if (/đối đỉnh/.test(text))
+    return 'Hai góc đối đỉnh thì bằng nhau; góc kề với chúng tạo thành một cặp kề bù có tổng 180°.';
+  if (/tia phân giác/.test(text))
+    return 'Tia phân giác chia một góc thành hai góc bằng nhau, mỗi góc bằng một nửa góc ban đầu.';
+  if (/tiên đề euclid/.test(text))
+    return 'Qua một điểm nằm ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đã cho.';
+  if (/c-c-c|c-g-c|g-c-g|bằng nhau|cạnh huyền|trường hợp không hợp lệ/.test(text))
+    return 'Đối chiếu các cạnh và góc tương ứng theo đúng thứ tự đỉnh, rồi chọn đúng trường hợp bằng nhau của hai tam giác.';
+  if (/đường trung trực/.test(text))
+    return 'Điểm nằm trên đường trung trực của một đoạn thẳng thì cách đều hai đầu mút; chiều đảo lại cũng đúng.';
+  if (/tổng ba góc|tam giác cân|tam giác vuông|góc ngoài/.test(text))
+    return 'Tổng ba góc trong một tam giác bằng 180°. Tam giác cân có hai góc ở đáy bằng nhau; tam giác vuông có hai góc nhọn phụ nhau.';
+  if (/song song|so le trong|đồng vị|vuông góc/.test(text))
+    return 'Xác định đúng vị trí các góc. Với hai đường thẳng song song, góc so le trong và đồng vị bằng nhau, còn hai góc trong cùng phía bù nhau.';
+  if (/biểu đồ|dữ liệu|thống kê/.test(text))
+    return 'Đọc đúng đại lượng, đơn vị và mốc dữ liệu; sau đó so sánh hoặc tính từ các số liệu đã cho, không suy đoán từ hình thức biểu đồ.';
+  if (/định lí|giả thiết|kết luận/.test(text))
+    return 'Tách rõ điều đề bài cho là giả thiết và điều cần suy ra là kết luận, rồi đối chiếu đúng nội dung định lí.';
+  return 'Đọc lần lượt dữ kiện, xác định quy tắc phù hợp, thực hiện phép biến đổi và kiểm tra kết quả với yêu cầu của đề.';
+}
+
+function mathConclusionForQuestion(q) {
+  if (!q || q.answer == null || String(q.answer).trim() === '') return '';
+  return '<strong>Kết luận:</strong> đáp án đúng là <b>' + String(q.answer).trim() + '</b>.';
+}
+
+// Turn every stored explanation into the same worked-solution layout. The
+// source banks already separate distractor notes with <br>; the first part,
+// however, often contains several calculations in one dense paragraph. This
+// presentation splits that reasoning into numbered, vertically spaced steps
+// while keeping every original detail and every wrong-answer explanation.
+function mathExplanationHTML(source, q) {
+  const rows = String(source == null ? '' : source)
+    .split(/<br\s*\/?\s*>/i).map(row => row.trim()).filter(Boolean);
+  const solution = [];
+  const mistakes = [];
+
+  rows.forEach(row => {
+    if (/^\s*✗/u.test(row)) mistakes.push(row.replace(/^\s*✗\s*/u, ''));
+    else solution.push(...mathSolutionSteps(row));
+  });
+
+  const detailedSolution = solution.slice();
+  if (q) {
+    detailedSolution.unshift('<strong>Quy tắc cần dùng:</strong> ' + mathRuleForQuestion(q));
+    const conclusion = mathConclusionForQuestion(q);
+    if (conclusion) detailedSolution.push(conclusion);
+  }
+
+  const worked = detailedSolution.length ? `
+    <section class="math-worked" aria-label="Lời giải từng bước">
+      <div class="math-explain-title">Cách giải</div>
+      <ol class="math-solution-steps">
+        ${detailedSolution.map(step => `<li><div>${mathRich(step)}</div></li>`).join('')}
+      </ol>
+    </section>` : '';
+  const errors = mistakes.length ? `
+    <section class="math-mistakes" aria-label="Giải thích các phương án sai">
+      <div class="math-explain-title">Vì sao các đáp án khác sai?</div>
+      <ul>${mistakes.map(note => `<li>${mathRich(note)}</li>`).join('')}</ul>
+    </section>` : '';
+  return `<div class="math-explanation-layout">${worked}${errors}</div>`;
 }
 
 // ---- typed answers ----
@@ -116,12 +299,14 @@ const MATH_KEYPAD_ROWS = [
 const MATH_TO_SUP = {};
 for (const sup in MATH_SUPERSCRIPTS) MATH_TO_SUP[MATH_SUPERSCRIPTS[sup]] = sup;
 
-let _mathTyped = { raw: '', sup: false };
+let _mathTyped = { raw: '', sup: false, part: 0, values: [] };
 
-function mathTypedReset() { _mathTyped = { raw: '', sup: false }; }
+function mathTypedReset() { _mathTyped = { raw: '', sup: false, part: 0, values: [] }; }
 function mathTypedRaw() { return _mathTyped.raw; }
 function mathTypedSup() { return _mathTyped.sup; }
-function mathIsTyped(q) { return !!q && q.type === 'calc'; }
+function mathHasAnswerParts(q) { return !!q && Array.isArray(q.answerParts) && q.answerParts.length > 0; }
+function mathIsTyped(q) { return !!q && (q.type === 'calc' || mathHasAnswerParts(q)); }
+function mathIsWritten(q) { return !!q && q.type === 'written' && !mathHasAnswerParts(q); }
 
 // "^" is a mode, not a character: press it and the digits that follow land as
 // real superscripts. That keeps backspace honest — one tap removes one glyph
@@ -161,7 +346,8 @@ function mathNormalize(s) {
 function mathGrade(q, val) {
   const got = mathNormalize(val);
   if (!got) return false;
-  const want = [q.answer].concat(q.accept || []).map(mathNormalize);
+  const want = [q.gradeAnswer == null ? q.answer : q.gradeAnswer]
+    .concat(q.accept || []).map(mathNormalize);
   if (want.indexOf(got) !== -1) return true;
   const n = Number(got);
   if (got !== '' && !isNaN(n)) {
@@ -171,6 +357,15 @@ function mathGrade(q, val) {
 }
 
 function mathIsCorrect(q, ans) {
+  if (mathHasAnswerParts(q)) {
+    return Array.isArray(ans) && ans.length === q.answerParts.length
+      && q.answerParts.every((part, i) => mathGrade(part, ans[i]));
+  }
+  if (mathIsWritten(q)) return ans === true;
+  // A supplied source paper contains one multiple-choice item whose computed
+  // answer is absent from all four options. Let the child inspect the source
+  // note without losing a point for an error in the original paper.
+  if (q && q.sourceIssue) return ans !== null;
   return mathIsTyped(q) ? mathGrade(q, ans) : ans === q.correct;
 }
 
@@ -180,6 +375,40 @@ function mathTypedBoxHTML(value, state) {
     (raw ? `<span class="math-formula">${mathFormula(raw)}</span>`
          : `<span class="math-answer-placeholder">Đáp án của con…</span>`) +
     (state ? '' : `<span class="math-caret"></span>`) + `</div>`;
+}
+
+function mathAnswerPartsHTML(q, answer) {
+  const finished = Array.isArray(answer);
+  const values = finished ? answer : _mathTyped.values;
+  const active = Math.min(_mathTyped.part, q.answerParts.length - 1);
+  return `<div class="math-answer-parts">` + q.answerParts.map((part, i) => {
+    const hasValue = i < values.length;
+    const isActive = !finished && i === active;
+    const state = finished ? (mathGrade(part, values[i]) ? 'correct' : 'wrong') : (hasValue ? 'filled' : '');
+    const box = isActive
+      ? `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>`
+      : mathTypedBoxHTML(hasValue ? values[i] : '', state || 'pending');
+    const correction = finished && !mathGrade(part, values[i])
+      ? `<div class="math-part-correct">Đáp án: <span class="math-formula">${mathFormula(part.answer)}</span></div>` : '';
+    const edit = !finished && hasValue
+      ? `<button type="button" class="math-part-edit" onclick="mathEditAnswerPart(${i})">Sửa</button>` : '';
+    return `<div class="math-answer-part ${isActive ? 'active' : ''}">
+      <div class="math-part-label"><span>${i + 1}</span>${mathEsc(part.label)}</div>
+      ${box}${edit}${correction}
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function mathEditAnswerPart(index) {
+  const st = _mathQuiz;
+  const q = st && st.questions[st.idx];
+  if (!st || st.answers[st.idx] !== null || !mathHasAnswerParts(q)) return;
+  if (!Number.isInteger(index) || index < 0 || index >= _mathTyped.values.length) return;
+  _mathTyped.part = index;
+  _mathTyped.raw = _mathTyped.values[index] || '';
+  _mathTyped.values = _mathTyped.values.slice(0, index);
+  _mathTyped.sup = false;
+  renderMathQuestion();
 }
 
 function mathKeypadHTML(q) {
@@ -214,6 +443,11 @@ function mathTierEmoji(pct) { return pct === 100 ? '⭐' : pct >= 80 ? '✅' : p
 function mathBank() {
   return (typeof MATH_QUESTIONS !== 'undefined') ? MATH_QUESTIONS : [];
 }
+// Gói "Ôn tập chương 2&3 · Lũy thừa" (js/math-luythua.js) — nằm ngoài ngân
+// hàng 5 chương để các pin đếm câu theo chương không phải đổi theo.
+function mathLtBank() {
+  return (typeof MATH_LT_QUESTIONS !== 'undefined') ? MATH_LT_QUESTIONS : [];
+}
 function mathChapters() {
   return (typeof MATH_CHAPTERS !== 'undefined') ? MATH_CHAPTERS : [];
 }
@@ -221,7 +455,15 @@ function mathLessons() {
   return (typeof MATH_LESSONS !== 'undefined') ? MATH_LESSONS : [];
 }
 function mathById(id) {
-  return mathBank().find(q => q.id === id) || null;
+  const practice = mathBank().find(q => q.id === id);
+  if (practice) return practice;
+  const lt = mathLtBank().find(q => q.id === id);
+  if (lt) return lt;
+  for (const exam of mathExams()) {
+    const found = exam.questions.find(q => q.id === id);
+    if (found) return found;
+  }
+  return null;
 }
 function mathChapterQuestions(ch) {
   return ch ? mathBank().filter(q => q.ch === ch) : mathBank();
@@ -247,22 +489,48 @@ function mathShuffle(arr) {
 const MATH_HINT_CHAPTERS = [3, 4];
 const MATH_HINT_MAX = 4;          // gợi ý, không phải cả trang lý thuyết
 
+// Một vài câu dùng cùng nhãn chủ đề nhưng kiểm tra hai lỗi hoàn toàn khác
+// nhau. Ví dụ “Trường hợp không hợp lệ” có thể là g-g-g, hoặc có thể là
+// hai cạnh + một góc KHÔNG xen giữa. Dò một từ chung không đủ an toàn cho
+// các câu này, nên các ngoại lệ được nêu rõ và kiểm tra bằng test.
+const MATH_HINT_OVERRIDES = {
+  'm3-25': ['Dấu hiệu nhận biết hai đường thẳng song song', 'Hai góc so le trong', 'Hai đường thẳng song song (a ∥ b)'],
+  'm3-26': ['Tính chất hai đường thẳng song song', 'Hai góc đồng vị', 'Hai đường thẳng song song (a ∥ b)'],
+  'm4-14': ['Vì sao không có trường hợp g-g-g'],
+  'm4-15': ['Trường hợp cạnh – góc – cạnh (c-g-c)', 'Hai tam giác bằng nhau'],
+  'm4-24': ['Trường hợp cạnh – góc – cạnh (c-g-c)', 'Hai tam giác bằng nhau'],
+  'm4-28': ['Trường hợp góc – cạnh – góc (g-c-g)', 'Tam giác vuông bằng nhau', 'Tam giác vuông', 'Hai tam giác bằng nhau'],
+  'm4-29': ['Vì sao không có trường hợp g-g-g', 'Tam giác vuông bằng nhau', 'Tam giác vuông']
+};
+
 function mathGlossary() {
   return (typeof MATH_GLOSSARY !== 'undefined') ? MATH_GLOSSARY : [];
 }
 
 function mathHintsFor(q) {
   if (!q || MATH_HINT_CHAPTERS.indexOf(q.ch) === -1) return [];
+  const glossary = mathGlossary();
+  const override = MATH_HINT_OVERRIDES[q.id];
+  if (override) {
+    return override.map(name => glossary.find(e => e.ch === q.ch && e.t === name)).filter(Boolean);
+  }
   const topic = String(q.topic || '').toLowerCase();
   const text = String(q.q || '').toLowerCase();
   const scored = [];
-  mathGlossary().forEach(e => {
+  glossary.forEach(e => {
     if (e.ch !== q.ch) return;
     const keys = e.m || [];
-    // 2 điểm nếu khớp chủ đề, 1 điểm nếu chỉ xuất hiện trong đề bài.
+    // Chủ đề luôn hơn chữ tình cờ xuất hiện trong câu; trong cùng một nguồn,
+    // cụm dài/cụ thể hơn thắng cụm ngắn. Nhờ vậy “quan hệ vuông góc và song
+    // song” không bị từ chung “song song” chen lên trước.
     let score = 0;
-    if (keys.some(k => topic.includes(String(k).toLowerCase()))) score = 2;
-    else if (keys.some(k => text.includes(String(k).toLowerCase()))) score = 1;
+    keys.forEach(k => {
+      const key = String(k).toLowerCase();
+      if (!key) return;
+      if (topic === key) score = Math.max(score, 400 + key.length);
+      else if (topic.includes(key)) score = Math.max(score, 300 + key.length);
+      else if (text.includes(key)) score = Math.max(score, 100 + key.length);
+    });
     if (score) scored.push({ e: e, score: score });
   });
   // Chủ đề trước, rồi giữ nguyên thứ tự trong từ điển để danh sách không nhảy.
@@ -352,6 +620,13 @@ function renderMathHome() {
       + (typeof renderWarsHomeHTML === 'function' ? renderWarsHomeHTML() : '');
     return;
   }
+  if (_mathView === 'fight') {
+    screen.innerHTML = mathHeaderHTML('ĐẤU TOÁN', 'Thách bạn bè',
+      '20 câu tính nhẩm trong 5 phút — ai đúng nhiều hơn thì thắng.', 'openMathSection(\'home\')')
+      + '<div class="phrases-wrap" id="mfRoot"></div>';
+    if (typeof MathFight !== 'undefined') MathFight.open();
+    return;
+  }
   if (_mathView === 'history') {
     screen.innerHTML = mathHeaderHTML('TOÁN 7', 'Lịch sử làm bài',
       'Mọi lượt luyện tập và đề thi đã nộp.', 'openMathSection(\'toan7\')')
@@ -405,6 +680,11 @@ function renderMathMenuHTML() {
         <span class="phrases-cta-text"><strong>Math Wars</strong><small>Tính nhẩm cộng – trừ – nhân – chia${wars ? ` · ${wars} trận` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
+      <button class="phrases-cta math-section-cta fight" onclick="openMathSection('fight')">
+        <span class="phrases-cta-icon">🥊</span>
+        <span class="phrases-cta-text"><strong>Đấu Toán</strong><small>Thách bạn bè · 20 câu trong 5 phút · thắng ăn xu</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
     </div>`;
 }
 
@@ -433,12 +713,16 @@ function renderToan7MenuHTML() {
 }
 
 function openMathSection(v) {
-  const known = ['home', 'toan7', 'hk1', 'history', 'wars'];
+  const known = ['home', 'toan7', 'hk1', 'history', 'wars', 'fight'];
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
   // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen
   // the child has walked away from and "finishes" a round they are not in.
   if (_mathView !== 'wars' && typeof abandonWars === 'function' && typeof isWarsActive === 'function'
       && isWarsActive()) abandonWars();
+  // Same reason as the wars clock above: a fight left running behind another
+  // screen would keep polling and pulsing at a DOM the child has walked away
+  // from. Leaving the tab stops its timers; the server still owns the result.
+  if (_mathView !== 'fight' && typeof MathFight !== 'undefined') MathFight.leave();
   renderMathHome();
 }
 
@@ -455,6 +739,19 @@ function switchMathSubTab(tab) {
 function renderMathPracticeHTML() {
   const bank = mathBank();
   const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
+
+  // Gói lũy thừa + căn đứng ngay dưới "Ôn tổng hợp": một lượt = trọn bộ câu.
+  const ltBank = mathLtBank();
+  const ltBest = ltBank.length ? mathBestFor((typeof MATH_LT_CHAPTER !== 'undefined') ? MATH_LT_CHAPTER : 'lt12') : null;
+  const ltCard = !ltBank.length ? '' : `
+    <button class="phrases-cta" onclick="startMathLtQuiz()">
+      <span class="phrases-cta-icon">🔢</span>
+      <span class="phrases-cta-text">
+        <strong>${(typeof MATH_LT_LABEL !== 'undefined') ? MATH_LT_LABEL : 'Ôn tập chương 1&2 · Lũy thừa & Căn bậc hai'}</strong>
+        <small>${ltBank.length} câu — công thức lũy thừa + tự tính căn bậc hai${ltBest !== null ? ` · Tốt nhất: ${ltBest}%` : ''}</small>
+      </span>
+      <span class="phrases-cta-arrow">›</span>
+    </button>`;
 
   const chapterCards = mathChapters().map(c => {
     const n = mathChapterQuestions(c.num).length;
@@ -482,7 +779,9 @@ function renderMathPracticeHTML() {
       <span class="phrases-cta-text"><strong>Ôn tổng hợp</strong><small>${MATH_QUIZ_SIZE} câu trộn cả 5 chương</small></span>
       <span class="phrases-cta-arrow">›</span>
     </button>
-    ${chapterCards}`;
+    ${ltCard}
+    ${chapterCards}
+    ${renderMathWrongPanelHTML()}`;
 }
 
 function mathBestFor(ch) {
@@ -494,7 +793,11 @@ function mathBestFor(ch) {
 
 // ---- đề thi view ----
 function mathExams() {
-  return (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS)) ? MATH_EXAMS : [];
+  const source = (typeof MATH_SOURCE_EXAMS !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS))
+    ? MATH_SOURCE_EXAMS : [];
+  const practice = (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS))
+    ? MATH_EXAMS : [];
+  return practice.concat(source);
 }
 
 function mathExamBest(id) {
@@ -512,7 +815,7 @@ function renderMathExamsHTML() {
         <span class="phrases-cta-icon">📝</span>
         <span class="phrases-cta-text">
           <strong>${mathEsc(e.title)}</strong>
-          <small>${e.questions.length} câu · ${e.durationMin} phút${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small>
+          <small>${e.school ? `${mathEsc(e.school)} · ` : ''}${e.questions.length} câu · Không giới hạn thời gian${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small>
         </span>
         <span class="phrases-cta-arrow">›</span>
       </button>`;
@@ -521,36 +824,9 @@ function renderMathExamsHTML() {
     <div class="phrases-hero">
       <div class="phrases-hero-icon">📝</div>
       <h1>Đề thi thử học kì 1</h1>
-      <p class="phrases-sub">Đề mô phỏng đề thật 2025-2026: <b>25 câu · 90 phút</b>, làm theo thứ tự đề, hết giờ tự nộp bài. Nháp bằng nút ✏️ nhé!</p>
+      <p class="phrases-sub"><b>HK1 1–5</b> được chép từ đề trường năm 2025–2026, giữ nguyên thứ tự câu và hình. Không giới hạn thời gian; dùng nút ✏️ khi cần nháp nhé!</p>
     </div>
     ${cards || '<div class="phrases-cat-row"><span>Đề thi đang được cập nhật…</span></div>'}`;
-}
-
-// One ticking clock for the whole tab. Kept OUTSIDE _mathQuiz so a re-render
-// never spawns a second interval — two clocks disagreeing about the deadline
-// is how a child gets "nộp bài" twice.
-let _mathExamTimer = null;
-
-function mathExamClock(msLeft) {
-  const s = Math.max(0, Math.ceil(msLeft / 1000));
-  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-}
-
-function mathExamStopClock() {
-  if (_mathExamTimer) { clearInterval(_mathExamTimer); _mathExamTimer = null; }
-}
-
-function mathExamTick() {
-  const st = _mathQuiz;
-  if (!st || !st.endsAt) { mathExamStopClock(); return; }
-  const left = st.endsAt - Date.now();
-  const el = document.getElementById('mathExamClock');
-  if (el) {
-    el.textContent = '⏱ ' + mathExamClock(left);
-    el.classList.toggle('urgent', left < 5 * 60 * 1000);
-  }
-  // Time up: the exam submits itself, exactly like the real thing.
-  if (left <= 0) { mathExamStopClock(); finishMathQuiz(); }
 }
 
 function startMathExam(id) {
@@ -566,11 +842,8 @@ function startMathExam(id) {
     // pacing is part of what the mock is teaching.
     questions: exam.questions.slice(),
     idx: 0,
-    answers: exam.questions.map(() => null),
-    endsAt: Date.now() + exam.durationMin * 60 * 1000
+    answers: exam.questions.map(() => null)
   };
-  mathExamStopClock();
-  _mathExamTimer = setInterval(mathExamTick, 1000);
   renderMathQuestion();
 }
 
@@ -622,14 +895,96 @@ function mathWrongAggregate() {
   return out;
 }
 
+function mathWrongSkillLabel(q) {
+  const topic = String(q && q.topic || '').trim();
+  if (topic && !/^(?:I|II)\.|\b(?:Câu|Bài)\s*\d/i.test(topic)) return topic;
+  const chapters = {
+    1: 'Số hữu tỉ và tỉ lệ',
+    2: 'Số thực và căn bậc hai',
+    3: 'Góc và đường thẳng',
+    4: 'Tam giác',
+    5: 'Dữ liệu và biểu đồ',
+    6: 'Hình khối'
+  };
+  return chapters[q && q.ch] || 'Ôn tập tổng hợp';
+}
+
+// Admin analytics uses the same human topic labels as the child's local
+// wrong-answer panel, but stores a stable ASCII key so labels can be improved
+// later without splitting one skill into two database groups.
+function mathAnalyticsSlug(value) {
+  return String(value || 'general').normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '') || 'general';
+}
+
+function mathSkillSummaries(st) {
+  const groups = new Map();
+  st.questions.forEach((q, i) => {
+    const label = mathWrongSkillLabel(q);
+    const key = 'math7.' + mathAnalyticsSlug(label);
+    const row = groups.get(key) || {
+      skillKey: key, skillLabel: label, attempts: 0, correct: 0,
+      wrong: 0, skipped: 0, wrongRefs: []
+    };
+    row.attempts++;
+    const answer = st.answers[i];
+    if (answer === null || answer === 'revealed') row.skipped++;
+    else if (mathIsCorrect(q, answer)) row.correct++;
+    else {
+      row.wrong++;
+      if (q.id != null && row.wrongRefs.length < 20) row.wrongRefs.push(String(q.id));
+    }
+    groups.set(key, row);
+  });
+  return Array.from(groups.values());
+}
+
+function mathWrongSkillAggregate(wrong) {
+  const groups = new Map();
+  (wrong || mathWrongAggregate()).forEach(({ q, misses }) => {
+    const label = mathWrongSkillLabel(q);
+    const current = groups.get(label) || { label, misses: 0, questions: 0 };
+    current.misses += misses;
+    current.questions++;
+    groups.set(label, current);
+  });
+  return Array.from(groups.values())
+    .sort((a, b) => b.misses - a.misses || b.questions - a.questions || a.label.localeCompare(b.label));
+}
+
+function startMathWrongPractice() {
+  const wrong = mathWrongAggregate();
+  if (!wrong.length) return;
+  const owed = (typeof retryCount === 'function') ? retryCount('math') : 0;
+  if (owed && typeof startMathRetry === 'function') { startMathRetry(); return; }
+  const questions = wrong.slice(0, MATH_QUIZ_SIZE).map(x => x.q);
+  _mathHintOpen = false;
+  mathTypedReset();
+  _mathQuiz = {
+    chapter: 0,
+    label: 'Luyện câu hay sai',
+    questions,
+    idx: 0,
+    answers: questions.map(() => null)
+  };
+  renderMathQuestion();
+}
+
 function renderMathWrongPanelHTML() {
   const wrong = mathWrongAggregate();
   if (!wrong.length) return '';
+  const skills = mathWrongSkillAggregate(wrong);
+  const totalMisses = wrong.reduce((sum, item) => sum + item.misses, 0);
+  const chips = skills.slice(0, 8).map(skill => `
+    <div class="math-review-chip">
+      <span>${mathEsc(skill.label)}</span><strong>${skill.misses}×</strong>
+    </div>`).join('');
   const rows = wrong.slice(0, 15).map(({ q, misses }) => `
     <div class="math-wrong-row">
       <span class="math-wrong-count">${misses}×</span>
       <div class="math-wrong-main">
-        <div class="math-wrong-q">${mathEsc(q.q)}</div>
+        <div class="math-wrong-q math-formula">${mathFormula(q.q)}</div>
         <div class="math-wrong-a">✅ <b class="math-formula">${mathFormula(q.answer)}</b></div>
       </div>
     </div>`).join('');
@@ -637,12 +992,27 @@ function renderMathWrongPanelHTML() {
     ? `<div class="math-wrong-more">… và ${wrong.length - 15} câu nữa</div>` : '';
   const owed = (typeof retryCount === 'function' ? retryCount('math') : 0);
   return `
-    <div class="math-wrong-panel">
-      <div class="phrases-section-title">📉 Câu hay sai <span class="phrases-count">${wrong.length}</span></div>
-      <div class="math-wrong-list">${rows}</div>
-      ${more}
-      ${owed ? `<div class="math-wrong-note">Còn <b>${owed}</b> câu đang nợ — làm lại để mở khoá luyện tập.</div>` : ''}
-    </div>`;
+    <section class="math-wrong-panel math-review-card" aria-labelledby="mathReviewTitle">
+      <div class="math-review-head">
+        <svg class="math-review-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5v14h16M7 8l4 4 3-3 5 6"/><circle cx="7" cy="8" r="1"/><circle cx="11" cy="12" r="1"/><circle cx="14" cy="9" r="1"/><circle cx="19" cy="15" r="1"/>
+        </svg>
+        <div><h2 id="mathReviewTitle">Dạng toán cần ôn</h2>
+          <p>Câu hay sai · ${wrong.length} câu · ${totalMisses} lần sai</p></div>
+        <span class="math-review-total">${wrong.length}</span>
+      </div>
+      <div class="math-review-chips">${chips}</div>
+      ${skills.length > 8 ? `<div class="math-wrong-more">… và ${skills.length - 8} dạng toán khác</div>` : ''}
+      <button type="button" class="math-review-cta" onclick="startMathWrongPractice()">
+        <span aria-hidden="true">↻</span>
+        ${owed ? `Luyện câu đang sai (${owed})` : `Luyện lại câu hay sai (${Math.min(wrong.length, MATH_QUIZ_SIZE)})`}
+      </button>
+      <details class="math-review-details">
+        <summary>Xem chi tiết ${Math.min(wrong.length, 15)} câu hay sai</summary>
+        <div class="math-wrong-list">${rows}</div>${more}
+      </details>
+      ${owed ? `<div class="math-wrong-note">Còn <b>${owed}</b> câu cần làm đúng để mở khoá lượt luyện mới.</div>` : ''}
+    </section>`;
 }
 
 function renderMathHistoryHTML() {
@@ -774,6 +1144,25 @@ function startMathQuiz(chapter) {
   renderMathQuestion();
 }
 
+// Ôn tập chương 1&2 — 20 câu công thức lũy thừa + 20 bài tự tính căn.
+// Cả gói trong MỘT lượt (chỉ xáo thứ tự): mục tiêu là thuộc trọn bảng,
+// nên không rút 10 câu ngẫu nhiên như lượt của các chương.
+function startMathLtQuiz() {
+  _mathHintOpen = false;
+  if (typeof retryGate === 'function' && retryGate('math')) return;
+  const pool = mathLtBank();
+  if (!pool.length) return;
+  mathTypedReset();
+  _mathQuiz = {
+    chapter: (typeof MATH_LT_CHAPTER !== 'undefined') ? MATH_LT_CHAPTER : 'lt12',
+    label: (typeof MATH_LT_LABEL !== 'undefined') ? MATH_LT_LABEL : 'Ôn tập chương 1&2 · Lũy thừa & Căn bậc hai',
+    questions: mathShuffle(pool),
+    idx: 0,
+    answers: pool.map(() => null)
+  };
+  renderMathQuestion();
+}
+
 function mathQuizLabel(chapter) {
   if (!chapter) return 'Ôn tổng hợp';
   const c = mathChapters().find(x => x.num === chapter);
@@ -792,27 +1181,52 @@ function renderMathQuestion() {
   if (!screen || !st) return;
   const q = st.questions[st.idx];
   const ans = st.answers[st.idx];
-  const answered = ans !== null;
+  const written = mathIsWritten(q);
+  const revealed = written && (ans === 'revealed' || typeof ans === 'boolean');
+  const answered = ans !== null && ans !== 'revealed';
   const total = st.questions.length;
 
   const ok = mathIsCorrect(q, ans);
 
   let body;
-  if (mathIsTyped(q)) {
-    body = answered
-      // What the child typed, then the right answer if it differed — the same
-      // shape every other tab uses to close a question.
-      ? mathTypedBoxHTML(ans, ok ? 'correct' : 'wrong') +
-        (ok ? '' : `<div class="math-answer-right">✅ <b class="math-formula">${mathFormula(q.answer)}</b></div>`)
-      : `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>
-         ${mathKeypadHTML(q)}
-         <button class="grammar-next-btn" id="mathSubmitBtn" ${_mathTyped.raw ? '' : 'disabled'}
-                 onclick="submitMathTyped()">Kiểm tra</button>`;
+  if (written) {
+    body = !revealed
+      ? `<div class="math-written-help">Làm bài vào giấy hoặc bảng nháp, sau đó xem đáp án để tự đối chiếu.</div>
+         <button class="grammar-next-btn" onclick="revealMathWritten()">Xem đáp án và lời giải</button>`
+      : `<div class="grammar-explanation math-written-solution">${mathExplanationHTML(q.explanation, q)}</div>`
+        + (ans === 'revealed'
+          ? `<div class="math-written-grade"><p>Con tự đối chiếu bài làm:</p>
+               <button class="grammar-next-btn math-self-good" onclick="gradeMathWritten(true)">✓ Con làm đúng</button>
+               <button class="grammar-next-btn math-self-review" onclick="gradeMathWritten(false)">↻ Con cần xem lại</button>
+             </div>`
+          : `<button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>`);
+  } else if (mathIsTyped(q)) {
+    if (mathHasAnswerParts(q)) {
+      body = `<div class="math-written-help math-board-prompt">
+          <button type="button" class="math-open-board" onclick="openMathBoard()">✏️ Mở bảng nháp</button>
+          <span>${mathEsc(q.workNote || 'Làm bài trên bảng nháp, rồi nhập từng kết quả cuối cùng.')}</span>
+        </div>`
+        + mathAnswerPartsHTML(q, answered ? ans : null)
+        + (answered ? '' : `${mathKeypadHTML(q)}
+          <button class="grammar-next-btn" id="mathSubmitBtn" ${_mathTyped.raw ? '' : 'disabled'}
+                  onclick="submitMathTyped()">${_mathTyped.part + 1 < q.answerParts.length ? 'Lưu kết quả này →' : 'Kiểm tra tất cả'}</button>`);
+    } else {
+      body = answered
+        // What the child typed, then the right answer if it differed — the same
+        // shape every other tab uses to close a question.
+        ? mathTypedBoxHTML(ans, ok ? 'correct' : 'wrong') +
+          (ok ? '' : `<div class="math-answer-right">✅ <b class="math-formula">${mathFormula(q.answer)}</b></div>`)
+        : `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>
+           ${mathKeypadHTML(q)}
+           <button class="grammar-next-btn" id="mathSubmitBtn" ${_mathTyped.raw ? '' : 'disabled'}
+                   onclick="submitMathTyped()">Kiểm tra</button>`;
+    }
   } else {
     body = `<div class="grammar-options">` + q.options.map((opt, i) => {
       let cls = 'grammar-option';
       if (answered) {
-        if (i === q.correct) cls += ' correct';
+        if (q.sourceIssue && i === ans) cls += ' source-issue';
+        else if (i === q.correct) cls += ' correct';
         else if (i === ans) cls += ' wrong';
       }
       return `
@@ -823,9 +1237,9 @@ function renderMathQuestion() {
     }).join('') + `</div>`;
   }
 
-  const explain = answered ? `
+  const explain = !written && answered ? `
     <div class="grammar-explanation ${ok ? 'correct' : 'wrong'}">
-      <div>${mathRich(q.explanation)}</div>
+      ${mathExplanationHTML(q.explanation, q)}
     </div>
     <button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>` : '';
 
@@ -834,7 +1248,6 @@ function renderMathQuestion() {
       <div class="grammar-quiz-header phrases-quiz-header">
         <button class="grammar-back-btn" onclick="abandonMathQuiz(); renderMathHome()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
-        ${st.endsAt ? `<span class="math-exam-clock" id="mathExamClock">⏱ ${mathExamClock(st.endsAt - Date.now())}</span>` : ''}
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${(st.idx) / total * 100}%"></div></div>
         <button class="math-board-fab" type="button" title="Bảng nháp" onclick="openMathBoard()">✏️</button>
       </div>
@@ -848,12 +1261,27 @@ function renderMathQuestion() {
   screen.scrollTop = 0;
 }
 
+function revealMathWritten() {
+  const st = _mathQuiz;
+  if (!st || !mathIsWritten(st.questions[st.idx]) || st.answers[st.idx] !== null) return;
+  st.answers[st.idx] = 'revealed';
+  renderMathQuestion();
+}
+
+function gradeMathWritten(ok) {
+  const st = _mathQuiz;
+  if (!st || !mathIsWritten(st.questions[st.idx]) || st.answers[st.idx] !== 'revealed') return;
+  st.answers[st.idx] = !!ok;
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(!!ok);
+  renderMathQuestion();
+}
+
 function answerMathQuestion(i) {
   const st = _mathQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
   st.answers[st.idx] = i;
-  const ok = i === q.correct;
+  const ok = mathIsCorrect(q, i);
   // The debt is filed once, at the end — retryAdd() takes the whole set of
   // missed questions, the same way every other tab feeds the drill.
   if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
@@ -863,10 +1291,24 @@ function answerMathQuestion(i) {
 function submitMathTyped() {
   const st = _mathQuiz;
   if (!st || st.answers[st.idx] !== null) return;
+  const q = st.questions[st.idx];
   const raw = mathTypedRaw();
   if (!raw) return;                       // an empty box is not an answer
-  st.answers[st.idx] = raw;
-  if (typeof petCheerAnswer === 'function') petCheerAnswer(mathGrade(st.questions[st.idx], raw));
+  if (mathHasAnswerParts(q)) {
+    _mathTyped.values[_mathTyped.part] = raw;
+    if (_mathTyped.part + 1 < q.answerParts.length) {
+      _mathTyped.part++;
+      _mathTyped.raw = '';
+      _mathTyped.sup = false;
+      renderMathQuestion();
+      return;
+    }
+    st.answers[st.idx] = _mathTyped.values.slice();
+    if (typeof petCheerAnswer === 'function') petCheerAnswer(mathIsCorrect(q, st.answers[st.idx]));
+  } else {
+    st.answers[st.idx] = raw;
+    if (typeof petCheerAnswer === 'function') petCheerAnswer(mathGrade(q, raw));
+  }
   renderMathQuestion();
 }
 
@@ -880,7 +1322,6 @@ function nextMathQuestion() {
 }
 
 function finishMathQuiz() {
-  mathExamStopClock();
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   const st = _mathQuiz;
@@ -915,6 +1356,7 @@ function finishMathQuiz() {
     // Which questions were missed, not just how many — that is what makes a
     // "câu hay sai" list possible at all.
     wrong: wrong.map(x => x.q.id),
+    skills: mathSkillSummaries(st),
   });
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
   // Push it to the server now, like every other tab. Without this the session
@@ -923,12 +1365,13 @@ function finishMathQuiz() {
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
   // Owe back everything missed before a new practice opens (js/retrydrill.js).
-  if (wrong.length && typeof retryAdd === 'function') retryAdd('math', wrong.map(x => x.q));
+  const retryable = wrong.filter(x => !mathIsWritten(x.q) && !mathHasAnswerParts(x.q));
+  if (retryable.length && typeof retryAdd === 'function') retryAdd('math', retryable.map(x => x.q));
   const wrongHTML = wrong.map(x => `
     <div class="grammar-review-item">
       <div class="grammar-review-q">${mathEsc(x.q.q)}</div>
       <div class="grammar-review-a">✅ <b class="math-formula">${mathFormula(x.q.answer)}</b></div>
-      <div class="grammar-review-explain">${mathRich(x.q.explanation)}</div>
+      <div class="grammar-review-explain">${mathExplanationHTML(x.q.explanation, x.q)}</div>
     </div>`).join('');
 
   _mathQuiz = null;
@@ -937,7 +1380,7 @@ function finishMathQuiz() {
       <div class="grammar-result-card">
         <div class="grammar-result-emoji">${mathTierEmoji(pct)}</div>
         <h2>${score}/${total} · ${pct}%</h2>
-        <p>${mathQuizLabel(st.chapter)}</p>
+        <p>${mathEsc(st.label || mathQuizLabel(st.chapter))}</p>
       </div>
       ${typeof petRewardCardHTML === 'function'
         ? petRewardCardHTML(score, total, coinsEarned, MATH_COINS_PER_CORRECT)
@@ -951,7 +1394,6 @@ function finishMathQuiz() {
 function mathQuizQuestions() { return _mathQuiz ? _mathQuiz.questions : []; }
 function isMathQuizActive() { return !!_mathQuiz; }
 function abandonMathQuiz() {
-  mathExamStopClock();
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   _mathQuiz = null;
@@ -1009,7 +1451,7 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
     ? mathGrade(q, v)
     : String(v == null ? '' : v).trim() === String(q.answer).trim(),
   promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`,
-  explainHTML: (q) => `<div class="grammar-review-explain">${mathRich(q.explanation)}</div>`,
+  explainHTML: (q) => `<div class="grammar-review-explain">${mathExplanationHTML(q.explanation, q)}</div>`,
   home: () => renderMathHome(),
 });
 
@@ -1018,17 +1460,19 @@ function startMathRetry() { return (typeof startRetryDrill === 'function' ? star
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    mathBank, mathChapters, mathLessons, mathById, mathChapterQuestions,
+    mathBank, mathLtBank, mathChapters, mathLessons, mathById, mathChapterQuestions,
     renderMathHome, switchMathSubTab, openMathLesson,
-    startMathQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
-    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich,
-    mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped,
+    startMathQuiz, startMathLtQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
+    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
+    mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
+    mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
-    submitMathTyped, mathQuizQuestions,
-    mathExams, mathExamBest, mathExamClock, startMathExam, renderMathExamsHTML,
+    submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions,
+    mathExams, mathExamBest, startMathExam, renderMathExamsHTML,
     renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
-    mathWrongAggregate, renderMathWrongPanelHTML,
+    mathWrongAggregate, mathWrongSkillLabel, mathWrongSkillAggregate,
+    renderMathWrongPanelHTML, startMathWrongPractice,
     mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
     openMathSection, renderMathMenuHTML, renderToan7MenuHTML, mathHeaderHTML,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,

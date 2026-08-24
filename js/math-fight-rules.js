@@ -15,7 +15,10 @@ var MathFightRules = (() => {
 
   const QUESTIONS = 20;
   const SECONDS = 300;                       // 5 phút — the Math Wars clock
-  const BET_MIN = 100, BET_MAX = 500, BET_STEP = 50;
+  // Nobody picks a stake. Winning pays a flat prize and losing costs the same,
+  // floored at what the loser actually owns — a child with an empty purse can
+  // still play, and still cannot go negative.
+  const PRIZE = 200;
   const INVITE_TTL_MS = 60 * 1000;           // 60s to accept a challenge
   const HEARTBEAT_MS = 5 * 1000;             // client pulse while fighting
   const FORFEIT_MS = 20 * 1000;              // silence this long = walked away
@@ -40,13 +43,11 @@ var MathFightRules = (() => {
     return Math.min(FIGHT_MAX, WARS_LEVEL_BASE + WARS_LEVEL_STEP * L - 1);
   }
 
-  function isValidBet(n) {
-    const v = Number(n);
-    return Number.isInteger(v) && v >= BET_MIN && v <= BET_MAX && v % BET_STEP === 0;
-  }
-  function normalizeBet(n) {
-    const v = int(n, BET_MIN, BET_MAX);
-    return Math.max(BET_MIN, Math.min(BET_MAX, Math.round(v / BET_STEP) * BET_STEP));
+  // What this player's wallet actually moves by. The winner always collects
+  // the full prize; the loser pays what they can and never goes below zero.
+  function coinChange(isWinner, balance) {
+    if (isWinner) return PRIZE;
+    return -Math.min(PRIZE, Math.max(0, Math.trunc(Number(balance) || 0)));
   }
 
   // One pair, one row: the key is the sorted id pair, so a fight started from
@@ -124,10 +125,10 @@ var MathFightRules = (() => {
   }
 
   return Object.freeze({
-    QUESTIONS, SECONDS, BET_MIN, BET_MAX, BET_STEP, INVITE_TTL_MS,
+    QUESTIONS, SECONDS, PRIZE, INVITE_TTL_MS,
     HEARTBEAT_MS, FORFEIT_MS, COOLDOWN_MS, HANDICAP_STEP, STREAK_MAX,
     WARS_TOP_LEVEL, FIGHT_MAX, FIGHT_LEVELS,
-    fightLevelMax, isValidBet, normalizeBet, pairKey, makeRng,
+    fightLevelMax, coinChange, pairKey, makeRng,
     baseLevel, levelsFor, nextPairState, adjudicate, cooldownUntil, hasWalkedAway,
   });
 })();

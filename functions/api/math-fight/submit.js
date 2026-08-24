@@ -34,5 +34,5 @@ export async function onRequestPost({ request, env }) {
     const bothIn = !!(row.c_submitted_at && row.o_submitted_at);
     if (bothIn || body.forfeit || row.deadline_at <= now) row = await settleFight(env, row, now);
   }
-  return json({ fight: fightView(row, auth.uid), coins: coinDelta(row, auth.uid) });
+  return json({ fight: fightView(row, auth.uid), coins: coinDelta(row, auth.uid, body.coins) });
 }

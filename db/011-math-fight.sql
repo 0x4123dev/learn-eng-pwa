@@ -1,6 +1,6 @@
 -- 011-math-fight.sql — Đấu Toán: friend-vs-friend arithmetic duels.
 --
--- Two children stake 100–500 coins and race through 20 sums in 5 minutes.
+-- Two children race through 20 sums in 5 minutes for a flat 200-coin prize.
 -- The server owns every decision: it issues the seed, decides each side's
 -- difficulty rung, marks the answers and names the winner.
 --
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS math_fights (
   id               TEXT PRIMARY KEY,
   challenger_id    INTEGER NOT NULL REFERENCES users(id),
   opponent_id      INTEGER NOT NULL REFERENCES users(id),
-  bet              INTEGER NOT NULL,          -- 100..500, step 50
+  prize            INTEGER NOT NULL,          -- flat, from MF.PRIZE
   seed             INTEGER NOT NULL,
   challenger_level INTEGER NOT NULL,          -- fight rung, handicap included
   opponent_level   INTEGER NOT NULL,

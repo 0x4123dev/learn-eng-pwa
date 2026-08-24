@@ -31,22 +31,19 @@ suite('math fight: the difficulty ladder', () => {
   });
 });
 
-suite('math fight: the stake', () => {
-  test('a bet is 100..500 in steps of 50', () => {
-    assert.truthy(MF.isValidBet(100));
-    assert.truthy(MF.isValidBet(250));
-    assert.truthy(MF.isValidBet(500));
-    assert.falsy(MF.isValidBet(99), 'below the floor');
-    assert.falsy(MF.isValidBet(501), 'above the ceiling');
-    assert.falsy(MF.isValidBet(175), 'off the step');
-    assert.falsy(MF.isValidBet('abc'));
-    assert.falsy(MF.isValidBet(null));
+suite('math fight: the prize', () => {
+  test('winning pays a flat 200, and nobody chooses a stake', () => {
+    assert.equal(MF.PRIZE, 200);
+    assert.equal(MF.coinChange(true, 0), 200, 'the winner is paid whatever they own');
+    assert.equal(MF.coinChange(true, 5000), 200);
+    assert.equal(MF.BET_MIN, undefined, 'there is no stake to pick any more');
   });
-  test('normalizeBet snaps a slider value onto the legal grid', () => {
-    assert.equal(MF.normalizeBet(0), 100);
-    assert.equal(MF.normalizeBet(174), 150);
-    assert.equal(MF.normalizeBet(176), 200);
-    assert.equal(MF.normalizeBet(9999), 500);
+  test('a loser pays what they can and never goes negative', () => {
+    assert.equal(MF.coinChange(false, 5000), -200);
+    assert.equal(MF.coinChange(false, 200), -200);
+    assert.equal(MF.coinChange(false, 120), -120, 'pays only what is in the purse');
+    assert.equal(MF.coinChange(false, 0), 0, 'an empty purse loses nothing');
+    assert.equal(MF.coinChange(false, -50), 0, 'a junk balance cannot become a payout');
   });
 });
 
