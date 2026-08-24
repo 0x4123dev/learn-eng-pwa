@@ -165,3 +165,42 @@ suite('math fight: hidden until an admin opens it', () => {
     assert.falsy(read('functions/api/admin/users.js').includes('allow_math_fight'));
   });
 });
+
+suite('math fight: one fight, one verdict', () => {
+  const ui = () => read('js/math-fight.js');
+  test('finishing first is not a draw', () => {
+    // The server only decides once both are in, so a fight still 'active' has
+    // no winner. Painting the result anyway told whoever finished first that
+    // it was a draw, while the other child later saw the real verdict — two
+    // screens, two answers, same fight.
+    assert.truthy(ui().includes("if (st.fight.status !== 'done') return waitForVerdict()"),
+      'an unsettled fight must wait, not announce');
+    assert.truthy(ui().includes('function waitForVerdict()'));
+    assert.truthy(ui().includes('Đang chờ bạn ấy làm xong'));
+    // Polling progress while waiting doubles as the pulse, so the child who
+    // finished first is never mistaken for one who walked away.
+    const wait = ui().slice(ui().indexOf('function waitForVerdict()'), ui().indexOf('function paintWaiting()'));
+    assert.truthy(wait.includes("api('progress'"), 'the wait must keep the pulse alive');
+  });
+  test('the winner comes from the server, never from guessing the scores', () => {
+    const src = ui();
+    assert.falsy(src.includes('EngAuth.userIdFor'), 'that helper never existed, so the check always fell through');
+    assert.truthy(src.includes('EngAuth.getAccount(currentUser) || {}).id'), 'the account row carries the id');
+    assert.truthy(src.includes('Number(st.fight.winnerId) === Number(me)'));
+    // A draw is only a draw once the fight is settled.
+    assert.truthy(src.includes("const settled = st.fight.status === 'done'"));
+    assert.truthy(src.includes('const drew = settled && !st.fight.winnerId'));
+  });
+});
+
+suite('math fight: an unlocked tab must actually appear', () => {
+  test('feature flags are refreshed on every app open, not only at login', () => {
+    // loginUser only syncs when the profile still holds a passcode, so a
+    // device that simply stayed signed in kept an unlocked tab hidden.
+    const app = read('js/app.js'), auth = read('js/auth.js');
+    assert.truthy(app.includes('EngAuth.refreshFlags(resumeUser)'), 'a resumed session must re-ask for the flags');
+    assert.truthy(auth.includes('refreshFlags: claimCoinGrants'), 'the flag fetch must be callable on its own');
+    // And the screen the child is already looking at must repaint.
+    assert.truthy(auth.includes('renderMathHome()'), 'the Math menu must redraw when the switch arrives');
+  });
+});

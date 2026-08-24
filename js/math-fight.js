@@ -14,7 +14,7 @@ var MathFight = (() => {
 
   let st = {
     view: 'list', data: null, fight: null, qs: [], answers: [], idx: 0,
-    ticker: null, poll: null, pulse: null, busy: false, claimed: '',
+    ticker: null, poll: null, pulse: null, wait: null, busy: false, claimed: '',
   };
 
   function root() { return document.getElementById('mfRoot'); }
@@ -86,7 +86,7 @@ var MathFight = (() => {
   }
   function leave() { stopTimers(); st.fight = null; st.view = 'list'; }
   function stopTimers() {
-    for (const key of ['ticker', 'poll', 'pulse']) { if (st[key]) { clearInterval(st[key]); st[key] = null; } }
+    for (const key of ['ticker', 'poll', 'pulse', 'wait']) { if (st[key]) { clearInterval(st[key]); st[key] = null; } }
   }
 
   // The three-second poll exists to catch an invite arriving, NOT to redraw
@@ -276,8 +276,50 @@ var MathFight = (() => {
       return;
     }
     st.fight = res.data.fight;
+    // Finishing first does NOT end the fight. The server only decides once both
+    // sides are in (or the clock runs out), so a fight still 'active' has no
+    // winner yet — painting the result here announced a draw to whoever
+    // finished first, while the other child later saw the real verdict.
+    if (st.fight.status !== 'done') return waitForVerdict();
     st.moved = applyCoins(res.data.coins);
     paintResult();
+  }
+
+  // Waiting out the opponent. Polling `progress` doubles as the pulse, so the
+  // child who finished first is never mistaken for one who walked away, and
+  // the strip keeps showing how far the other one has got.
+  function waitForVerdict() {
+    st.view = 'waiting';
+    paintWaiting();
+    if (st.wait) clearInterval(st.wait);
+    st.wait = setInterval(async () => {
+      if (!st.fight) return;
+      const res = await api('progress', { method: 'POST', body: { fightId: st.fight.fightId, answers: st.answers } });
+      if (!res.ok || !res.data || !res.data.fight) return;
+      st.fight = res.data.fight;
+      paintWaiting();
+      if (st.fight.status === 'done') {
+        clearInterval(st.wait); st.wait = null;
+        // The verdict is in: ask for the coin move that goes with it.
+        const done = await api('submit', { method: 'POST', body: { fightId: st.fight.fightId, answers: st.answers, coins: coins() } });
+        if (done.ok && done.data && done.data.fight) st.fight = done.data.fight;
+        st.moved = applyCoins(done.ok && done.data ? done.data.coins : 0);
+        paintResult();
+      }
+    }, 2000);
+  }
+  function paintWaiting() {
+    const r = root(); if (!r || !st.fight) return;
+    r.innerHTML = `<div class="mf-invite">
+      <span class="mf-kicker">ĐÃ NỘP BÀI</span>
+      <h3>Đang chờ bạn ấy làm xong…</h3>
+      <div class="mf-result-score">
+        <div><span>CON</span><strong>${st.fight.myCorrect || 0}</strong></div><b>—</b>
+        <div><span>BẠN ẤY</span><strong>${st.fight.foeCorrect || 0}</strong></div>
+      </div>
+      <p>Kết quả chỉ được tính khi cả hai cùng xong, hoặc khi hết 5 phút.</p>
+      <div class="mf-loading" role="status"><i></i><span>Đang chờ kết quả</span></div>
+    </div>`;
   }
 
   // The server decides the coin move; this device applies it to its own wallet
@@ -300,9 +342,16 @@ var MathFight = (() => {
     const r = root(); if (!r || !st.fight) return;
     st.view = 'result';
     if (st.pulse) { clearInterval(st.pulse); st.pulse = null; }
-    const me = (typeof EngAuth !== 'undefined' && EngAuth.userIdFor) ? EngAuth.userIdFor(currentUser) : null;
-    const won = st.fight.winnerId && me != null ? st.fight.winnerId === me : st.fight.myCorrect > st.fight.foeCorrect;
-    const drew = !st.fight.winnerId;
+    // EngAuth has no userIdFor — the account row does. Calling a function that
+    // does not exist meant this always fell through to comparing scores, which
+    // is wrong the moment a fight is decided on time or on a walk-away.
+    let me = null;
+    try { me = (EngAuth.getAccount(currentUser) || {}).id ?? null; } catch (e) { me = null; }
+    const settled = st.fight.status === 'done';
+    const drew = settled && !st.fight.winnerId;
+    const won = st.fight.winnerId != null && me != null
+      ? Number(st.fight.winnerId) === Number(me)
+      : st.fight.myCorrect > st.fight.foeCorrect;
     const quit = st.fight.outcome === 'forfeit';
     const moved = Math.trunc(+st.moved || 0);
     r.innerHTML = `<div class="mf-result ${drew ? 'draw' : won ? 'won' : 'lost'}">

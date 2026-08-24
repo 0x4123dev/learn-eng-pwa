@@ -417,6 +417,13 @@ function init() {
     // this tab instead of asking for its passcode again.
     const resumeUser = rememberedActiveUser();
     if (resumeUser) loginUser(resumeUser);
+    // Feature switches an admin threw since last time. loginUser only syncs
+    // when the profile still holds a passcode, so a device that simply stayed
+    // signed in could keep an unlocked tab hidden indefinitely — which is
+    // exactly what happened to a child waiting for Đấu Toán.
+    if (resumeUser && typeof EngAuth !== 'undefined' && EngAuth.refreshFlags) {
+        try { EngAuth.refreshFlags(resumeUser); } catch (e) { /* offline is fine */ }
+    }
     startStudyCheckpointing();
     registerServiceWorker();
 

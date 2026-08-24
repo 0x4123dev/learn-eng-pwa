@@ -168,8 +168,19 @@ const EngAuth = (function () {
         const before = !!appState.allowMathFight + '|' + !!appState.allowBot;
         appState.allowMathFight = !!r.data.flags.mathFight;
         appState.allowBot = !!r.data.flags.bot;
-        if (before !== !!appState.allowMathFight + '|' + !!appState.allowBot && typeof saveUserData === 'function')
-          saveUserData(currentUser, appState);
+        const after = !!appState.allowMathFight + '|' + !!appState.allowBot;
+        if (before !== after) {
+          if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
+          // A tab that appeared while the child was already looking at the
+          // screen that lists it must actually show up, not wait for the next
+          // navigation.
+          try {
+            if (typeof _mathView !== 'undefined' && typeof renderMathHome === 'function'
+                && document.getElementById('mathHubScreen')?.classList.contains('active')) renderMathHome();
+            if (typeof renderHome === 'function'
+                && document.getElementById('homeScreen')?.classList.contains('active')) renderHome();
+          } catch (e) { /* a repaint failure must not lose the flag we just stored */ }
+        }
       }
       if (!granted) return;
       appState.coins = Math.max(0, +appState.coins || 0) + granted;
@@ -378,7 +389,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { refreshFlags: claimCoinGrants, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.
