@@ -60,6 +60,54 @@ suite('home: the pet bar sits below the garden, not on top of it', () => {
     });
 });
 
+suite('home: the garden shipped, the game did not', () => {
+    // Released on 2026-08-25: every account sees the garden, the castle and the
+    // dog walking about. Night Raid — raiding other children's homes, the build
+    // screen, the shop that spends coins on cannons — is still behind the
+    // admin's bot flag. The risk this suite guards is that widening one quietly
+    // widens the other.
+    const home = read('js/home.js');
+    const arena = read('js/petbattle.js');
+
+    test('the habitat swap is no longer behind the bot flag', () => {
+        const line = (home.match(/const yardHabitat = [^;]*/) || [''])[0];
+        assert.truthy(line, 'the habitat decision could not be found');
+        assert.falsy(line.includes('allowBot'), `still gated: ${line}`);
+        assert.truthy(line.includes('NightRaid.mountYardScene'), 'it must still need the scene to exist');
+    });
+
+    test('Night Raid itself is still gated', () => {
+        // The entry card into the raid lives on the Arena screen.
+        assert.truthy(/st\.allowBot \? _pbNightRaidCard\(\)/.test(arena),
+            'the Night Raid card must stay behind the flag');
+        assert.truthy(arena.includes('st.allowBot'), 'the Arena screen must still read the flag');
+    });
+
+    test('the garden carries no way into the game', () => {
+        // It is scenery. The only thing a finger can do to it is play with the
+        // dog; anything else here would hand every child the raid.
+        const scene = ui.slice(ui.indexOf('function mountYardScene(host,opts)'),
+                               ui.indexOf('function unmountYardScene'));
+        assert.truthy(scene.length > 200, 'mountYardScene could not be sliced out');
+        assert.deepEqual(scene.match(/onclick="[^"]*"/g) || [], [],
+            'the garden must not carry a link into Night Raid');
+        for (const way of ['renderBuilder', 'scoutBot', 'showLiveTargets', 'startRaid', 'nrShowBuilder']) {
+            assert.falsy(scene.includes(way), `the garden calls ${way}`);
+        }
+    });
+
+    test('a brand-new account gets a garden worth looking at', () => {
+        // No saved layout at all: the scene must still put a castle on the lawn
+        // rather than render an empty box.
+        const R = require(path.join(ROOT, 'js', 'night-raid-rules.js'));
+        const fresh = R.normalizeLayout(undefined);
+        assert.equal(fresh.cells.length, 0, 'a new account owns no buildings yet');
+        assert.truthy(fresh.castleCell && Number.isFinite(fresh.castleCell.gx),
+            'but it must still have a castle to stand on the lawn');
+        assert.equal(fresh.soldiers, 0, 'and no army parading around it');
+    });
+});
+
 suite('home: the dog keeps to the middle of the garden', () => {
     // Measured on the real page, as a share of the garden map: the status bar
     // of a notched phone reaches 19.7% down it, and the name, XP bar and Shop

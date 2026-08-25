@@ -1559,10 +1559,16 @@ function renderWordPet() {
             hasNeckAccessory: _slotsUsed.indexOf('neck') !== -1,
           })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
-    // Admin-unlocked accounts get the Night Raid yard as their habitat: the
-    // same board, the same castle, and the same dog wandering it. Everything
-    // around the stage — hearts, name, trash, shop, streak — is untouched.
-    const yardHabitat = !!appState.allowBot && typeof NightRaid !== 'undefined' && NightRaid.mountYardScene;
+    // Every account gets the garden as its habitat: the board, the castle and
+    // the dog wandering about. Everything around the stage — hearts, name,
+    // trash, shop, streak — is untouched.
+    //
+    // This is the SCENE only, not the game. It is drawn from the account's saved
+    // layout (a fresh account gets a bare lawn and a castle), it carries no way
+    // into Night Raid, and the only thing a finger can do to it is play with the
+    // dog. Night Raid itself stays behind the admin's bot flag — the entry card
+    // lives in js/petbattle.js and still checks allowBot.
+    const yardHabitat = typeof NightRaid !== 'undefined' && !!NightRaid.mountYardScene;
     // The stage normally hugs the pet SVG. The yard is absolutely positioned,
     // so without this the whole habitat collapses to zero height.
     stage_el.classList.toggle('yard-mode', yardHabitat);
@@ -1583,7 +1589,11 @@ function renderWordPet() {
     if (yardHabitat) {
         try {
             NightRaid.mountYardScene(document.getElementById('petYardScene'),
-                { onTap: () => { try { onPetTap(); } catch (e) {} } });
+                { onTap: () => { try { onPetTap(); } catch (e) {} },
+                  // Only an account that can reach the build screen can change
+                  // its layout, so for everyone else the server has nothing to
+                  // tell us and the request is pure noise.
+                  skipRefresh: !appState.allowBot });
         } catch (e) { /* a broken scene must never take the whole home screen down */ }
     } else if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
         try { NightRaid.unmountYardScene(); } catch (e) {}

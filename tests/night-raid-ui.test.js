@@ -204,11 +204,15 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-yard-army[data-mode="rest"]'),'rest has a visually distinct pose');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'the squad can stand still for reduced-motion users');
   });
-  test('bot-unlocked accounts get the yard as their home habitat',()=>{
+  test('every account gets the yard as its home habitat',()=>{
     const home=read('js/home.js');
     // Only the stage changes. Hearts, name, trash, shop and the streak chip
     // are all rendered elsewhere and must survive untouched.
-    assert.truthy(home.includes('appState.allowBot && typeof NightRaid'),'admin flag gates the swap');
+    // The garden was released to everyone on 2026-08-25 — it is scenery, not
+    // the game. Night Raid itself is still gated; see the release-boundary
+    // tests in tests/home-yard-layout.test.js.
+    assert.falsy(/allowBot[^\n]*mountYardScene|yardHabitat *= *[^\n]*allowBot/.test(home),
+      'the garden must not be behind the bot flag any more');
     assert.truthy(home.includes('NightRaid.mountYardScene'),'the scene is the raid yard, not a copy of it');
     assert.truthy(ui.includes('function mountYardScene(host,opts)'),'one walk, mounted where it is asked for');
     assert.truthy(ui.includes('isometric-home-board-unified-gate-v3.webp'),'homepage uses the rectangular yard, not the old square board');
