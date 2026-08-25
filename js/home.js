@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.53';
+const APP_VERSION = 'v4.14.54';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1805,10 +1805,10 @@ function showPetShop() {
     // marker on the overlay rather than changing the shop on normal homes.
     const hasYardShop = !!document.querySelector('#petHeroStage.yard-mode');
 
-    // On the animated Night Raid habitat, use the stable full shop for every
-    // tab. The old food drawer competed with the moving GPU layer and its
-    // slide transform was overridden on iOS, leaving the sheet misplaced.
-    const useFoodDrawer = _shopTab === 'food' && !hasYardShop;
+    // Food always opens as a bottom tray so the dog remains visible above it.
+    // The animated yard gets a no-blur overlay in CSS to avoid the old iOS GPU
+    // corruption without falling back to a full-screen modal.
+    const useFoodDrawer = _shopTab === 'food';
     if (useFoodDrawer) {
         // Bottom drawer — dog stays visible at top for drag-to-feed
         overlay.className = 'pet-shop-drawer-overlay';
@@ -1898,6 +1898,10 @@ function renderShopContent() {
         ? petDogSVG({ stageCss: stage.stageCss, size: 74, level: appState.dogLevel || 1, stageMinLevel: stage.minLevel })
         : stage.fallback;
     return `
+        ${isDrawer ? `<div class="shop-floating-feed-target" role="button" tabindex="0" aria-label="Drop food here to feed your dog">
+            <span class="shop-floating-feed-dog">${miniDog}</span>
+            <strong>DROP FOOD HERE</strong>
+        </div>` : ''}
         <div class="pet-shop-modal ${_shopTab === 'food' ? 'food-drag-shop' : ''}">
             <button type="button" class="pet-info-close" aria-label="Close pet shop" onclick="document.getElementById('petShopModal').remove()">✕</button>
             <div class="shop-hero">
@@ -1927,7 +1931,7 @@ function refreshShop() {
     // If switching tabs, we need to recreate with proper overlay type
     const isDrawer = modal.classList.contains('pet-shop-drawer-overlay');
     const hasYardShop = !!document.querySelector('#petHeroStage.yard-mode');
-    const needsDrawer = _shopTab === 'food' && !hasYardShop;
+    const needsDrawer = _shopTab === 'food';
 
     if (isDrawer !== needsDrawer) {
         // Tab changed — rebuild entire shop with correct overlay
@@ -2505,9 +2509,10 @@ function initDragToFeed() {
 // four-legged yard sprite as Night Raid. Food dragging must work with either
 // renderer or the Shop appears broken on the bot-on homepage.
 function petFeedTarget() {
-    return document.querySelector('#petShopModal .food-drag-shop .shop-hero-dog') ||
+    return document.querySelector('#petShopModal .shop-floating-feed-target') ||
+        document.querySelector('#petHeroStage.yard-mode [data-nr-yard-pet]') ||
         document.querySelector('.pet-creature') ||
-        document.querySelector('#petHeroStage.yard-mode [data-nr-yard-pet]');
+        document.querySelector('#petShopModal .food-drag-shop .shop-hero-dog');
 }
 
 function onFoodTouchStart(e) {
