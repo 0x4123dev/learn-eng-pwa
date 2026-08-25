@@ -1368,8 +1368,27 @@ function formatDate(timestamp) {
 // with scripts/deploy-audio.sh.
 const WORD_AUDIO_PATH = 'https://eng-pwa-audio.pages.dev/audio/words/';
 
+// A word that is said as letters rather than read: "IT" the school subject is
+// "eye-TEE". Lower-casing folds it into "it" the pronoun — the 22nd commonest
+// word in the app — so the subject would forever play the pronoun's recording.
+// The alias is keyed on the exact spelling, before the case is thrown away, and
+// only a spelling no ordinary sentence uses may appear here. Mirrored in
+// scripts/generate-word-audio.js; tests/word-audio.test.js keeps the two equal.
+// `say` is what the browser voice is given when the recording has not reached
+// the device — without it the fallback reads "IT" as the pronoun again, which
+// is the very thing being fixed.
+const AUDIO_SLUG_ALIASES = { IT: { slug: 'i-t', say: 'I.T.' } };
+
+function audioAlias(word) {
+    const raw = String(word).trim();
+    return Object.prototype.hasOwnProperty.call(AUDIO_SLUG_ALIASES, raw) ? AUDIO_SLUG_ALIASES[raw] : null;
+}
+
 function wordAudioSlug(word) {
-    return String(word).toLowerCase().trim()
+    const raw = String(word).trim();
+    const alias = audioAlias(raw);
+    if (alias) return alias.slug;
+    return raw.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
@@ -1602,6 +1621,11 @@ function warmHotWords(list) {
 
 function speakWordFallback(word) {
     if (!('speechSynthesis' in window)) return;
+
+    // A word said as letters has to be handed to the voice that way, or the
+    // engine reads it as the ordinary word it is spelled like.
+    const alias = audioAlias(word);
+    if (alias && alias.say) word = alias.say;
 
     const synth = window.speechSynthesis;
     synth.cancel();

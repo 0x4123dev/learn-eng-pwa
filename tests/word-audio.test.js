@@ -87,6 +87,57 @@ suite('word audio: filename slugs', () => {
         assert.equal(app.wordAudioSlug('T-shirt'), 't-shirt');
         assert.equal(app.wordAudioSlug('fire station'), 'fire-station');
     });
+
+    test('a word said as letters gets a file of its own, not the ordinary word\'s', () => {
+        // Grade 4 unit 4 teaches "IT", the school subject — "eye-TEE". Lower-
+        // casing put it in the same file as "it" the pronoun, the 22nd
+        // commonest word in the app, so children heard the pronoun.
+        const { app } = loadWithAudio();
+        assert.equal(app.wordAudioSlug('IT'), 'i-t', 'the subject needs its own recording');
+        assert.equal(app.wordAudioSlug('it'), 'it', 'the pronoun must keep its own');
+        assert.truthy(app.wordAudioSlug('IT') !== app.wordAudioSlug('it'),
+            'they cannot share a recording — they are not the same word');
+        // Nothing else may drift: an alias only ever covers a spelling no
+        // ordinary sentence writes.
+        for (const [w, slug] of [['Apple', 'apple'], ['PE', 'pe'], ['P.E.', 'p-e'], ['It', 'it'], ['iT', 'it']]) {
+            assert.equal(app.wordAudioSlug(w), slug, `${w} must not be aliased`);
+        }
+    });
+
+    test('the app and the generator agree on every slug, aliases included', () => {
+        // Two copies of the same function, in two files, and the app comment
+        // says they must match. An alias added to one and not the other means
+        // the recording is written under a name the player never asks for.
+        const { app } = loadWithAudio();
+        const gen = require(path.join(root, 'scripts', 'generate-word-audio.js'));
+        const words = ['IT', 'it', 'Apple', 'ice cream', "it's", 'T-shirt', 'PE', 'P.E.',
+                       'fire station', 'Japan', ' spaced ', 'birthday'];
+        for (const w of words) {
+            assert.equal(gen.wordAudioSlug(w), app.wordAudioSlug(w), `slug for ${JSON.stringify(w)}`);
+        }
+    });
+
+    test('the letters are spoken even before the recording reaches the device', () => {
+        // The recording is a separate deploy, and a device that has not fetched
+        // it falls back to the browser voice. Handed the raw "IT" that voice
+        // reads the pronoun — the bug, back again, through the side door.
+        const { app, synth } = loadWithAudio();
+        app.speakWordFallback('IT');
+        app.speakWordFallback('it');
+        // speakWordFallback waits a tick before speaking — iOS Safari needs the
+        // gap after cancel() — so the assertion has to wait with it.
+        // An assertion that throws inside a timer callback never reaches the
+        // promise: it becomes an uncaught exception and the test passes anyway.
+        // Verified by breaking the code on purpose — without this try/catch the
+        // suite stayed green.
+        return new Promise((resolve, reject) => setTimeout(() => {
+            try {
+                assert.deepEqual(synth.calls.speak, ['I.T.', 'it'],
+                    `the voice was given ${JSON.stringify(synth.calls.speak)}`);
+                resolve();
+            } catch (e) { reject(e); }
+        }, 60));
+    });
 });
 
 suite('word audio: speakWord', () => {

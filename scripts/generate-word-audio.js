@@ -220,7 +220,11 @@ const PRONUNCIATION = {
     'p-e': [['P', 'P IY1'], ['E', 'IY1']],
     // Both reported mispronounced by ear on the live app (2026-08-21).
     birthday: [['birthday', 'B ER1 TH D EY2']], // BIRTH-day, not "birt-hay"
-    jam:      [['jam', 'JH AE1 M']]             // one clean "jam", not "yam"/"jahm"
+    jam:      [['jam', 'JH AE1 M']],            // one clean "jam", not "yam"/"jahm"
+    // The other subject said as letters, "eye-TEE" (Grade 4, unit 4). It comes
+    // in through the alias above, so this key is the aliased slug rather than
+    // the spelling — "it" must stay the pronoun.
+    'i-t': [['I', 'AY1'], ['T', 'T IY1']]
 };
 
 // How the pieces are joined, measured over ten takes each rather than
@@ -269,8 +273,13 @@ function loadEnvFile(file) {
 }
 
 // Must stay byte-for-byte in sync with wordAudioSlug in js/app.js.
+// Mirror of AUDIO_SLUG_ALIASES in js/app.js — see the note there.
+const AUDIO_SLUG_ALIASES = { IT: { slug: 'i-t', say: 'I.T.' } };
+
 function wordAudioSlug(word) {
-    return String(word).toLowerCase().trim()
+    const raw = String(word).trim();
+    if (Object.prototype.hasOwnProperty.call(AUDIO_SLUG_ALIASES, raw)) return AUDIO_SLUG_ALIASES[raw].slug;
+    return raw.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
@@ -287,10 +296,15 @@ function collectWords(opts) {
     const words = [];
     const add = (raw) => {
         const word = String(raw).trim();
-        const key = word.toLowerCase();
-        if (!word || seen.has(key) || !wordAudioSlug(word)) return;
-        seen.add(key);
-        words.push(key);
+        // Deduped by the file it would be recorded into, not by its spelling.
+        // Lower-casing first threw "IT" (the subject) in with "it" (the
+        // pronoun) before either was recorded, so the subject could never have
+        // a voice of its own. An aliased spelling is kept as written, because
+        // that is the string the slug is looked up by.
+        const slug = wordAudioSlug(word);
+        if (!word || !slug || seen.has(slug)) return;
+        seen.add(slug);
+        words.push(Object.prototype.hasOwnProperty.call(AUDIO_SLUG_ALIASES, word) ? word : word.toLowerCase());
     };
     for (const rel of DATA_FILES) {
         const src = fs.readFileSync(path.join(ROOT, rel), 'utf8');
