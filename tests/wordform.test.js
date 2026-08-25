@@ -14,11 +14,13 @@ const norm = s => String(s).toLowerCase().normalize('NFC').replace(/\s+/g, ' ').
 const CATS = new Set(['noun', 'adj', 'adv', 'verb']);
 
 suite('word form bank', () => {
-  test('has 600 questions (500 mcq + 100 typed) with unique ids', () => {
+  test('has 600 questions (300 mcq + 300 typed) with unique ids', () => {
     assert.equal(WORDFORM_QUESTIONS.length, 600);
     assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, 600);
-    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'mcq').length, 500);
-    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'text').length, 100);
+    // 200 of the original 500 multiple-choice questions were converted to typed
+    // ones on 2026-08-25, so half the bank now asks the child to write the form.
+    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'mcq').length, 300);
+    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'text').length, 300);
   });
 
   test('mcq questions: 4 distinct options with correct = answer', () => {

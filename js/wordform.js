@@ -1,5 +1,6 @@
-// wordform.js — "Word form" tab: word-formation MCQ practice.
-// Data lives in js/wordform-data.js (global WORDFORM_QUESTIONS, 500 items).
+// wordform.js — "Word form" tab: word-formation practice.
+// Data lives in js/wordform-data.js (global WORDFORM_QUESTIONS, 600 items —
+// half multiple choice, half typed since 2026-08-25).
 // Mirrors the Phrases tab: quick practice CTA, a wrong-answer review drill, and
 // a filterable history — and, like Phrases, the clear Vietnamese explanation is
 // revealed when the learner clicks an option.

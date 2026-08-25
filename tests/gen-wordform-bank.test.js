@@ -12,6 +12,12 @@ const MCQ = WORDFORM_QUESTIONS.filter(q => q.type === 'mcq');
 const TEXT = WORDFORM_QUESTIONS.filter(q => q.type === 'text');
 const byId = id => WORDFORM_QUESTIONS.find(q => q.id === id);
 
+// 200 of the wf- questions became typed in 2026-08-25 without moving or being
+// renumbered, so id prefix no longer tells you the format — the file is still
+// 500 wf- entries followed by 100 wft- ones, but 200 of the wf- block are text.
+const WF = WORDFORM_QUESTIONS.filter(q => q.id.startsWith('wf-'));
+const WFT = WORDFORM_QUESTIONS.filter(q => q.id.startsWith('wft-'));
+
 // 37 late mcq entries put "(BASE)" after the sentence instead of inline "___ (BASE)".
 const TAIL_LAYOUT_IDS = [
   'wf-444', 'wf-445', 'wf-446', 'wf-447', 'wf-448', 'wf-449', 'wf-450', 'wf-451',
@@ -27,17 +33,22 @@ const BASE_IS_ANSWER_IDS = [
 ];
 
 suite('gen: wordform bank ids & shape', () => {
-  test('mcq ids run wf-1..wf-500 sequentially in file order', () => {
-    MCQ.forEach((q, i) => assert.equal(q.id, `wf-${i + 1}`, `mcq at index ${i}`));
+  test('wf- ids run wf-1..wf-500 sequentially in file order', () => {
+    WF.forEach((q, i) => assert.equal(q.id, `wf-${i + 1}`, `entry at index ${i}`));
   });
 
-  test('text ids run wft-1..wft-100 sequentially in file order', () => {
-    TEXT.forEach((q, i) => assert.equal(q.id, `wft-${i + 1}`, `text at index ${i}`));
+  test('wft- ids run wft-1..wft-100 sequentially in file order', () => {
+    WFT.forEach((q, i) => assert.equal(q.id, `wft-${i + 1}`, `entry at index ${i}`));
   });
 
-  test('all 500 mcq precede all 100 text entries in the array', () => {
-    assert.equal(WORDFORM_QUESTIONS.map(q => q.type).lastIndexOf('mcq'), 499);
-    assert.equal(WORDFORM_QUESTIONS.findIndex(q => q.type === 'text'), 500);
+  test('all 500 wf- entries precede all 100 wft- entries in the array', () => {
+    const ids = WORDFORM_QUESTIONS.map(q => q.id);
+    assert.equal(ids.findIndex(id => id.startsWith('wft-')), 500);
+    assert.falsy(ids.slice(500).some(id => !id.startsWith('wft-')), 'no wf- entry after the wft- block');
+  });
+
+  test('an id is never reused, whatever format it now carries', () => {
+    assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, 600);
   });
 
   test('every mcq has exactly the documented key set', () => {
@@ -54,15 +65,21 @@ suite('gen: wordform bank ids & shape', () => {
     }
   });
 
-  test('cat distribution: noun 159 / adj 156 / adv 149 / verb 136 overall', () => {
+  test('cat distribution: noun 159 / adj 156 / adv 149 / verb 136, taught in both formats', () => {
     const count = (list, cat) => list.filter(q => q.cat === cat).length;
     const dist = list => ({
       noun: count(list, 'noun'), adj: count(list, 'adj'),
       adv: count(list, 'adv'), verb: count(list, 'verb')
     });
+    // The overall spread is content: it is what the tab actually teaches, and
+    // converting a question to typed does not move it between classes.
     assert.deepEqual(dist(WORDFORM_QUESTIONS), { noun: 159, adj: 156, adv: 149, verb: 136 });
-    assert.deepEqual(dist(MCQ), { noun: 126, adj: 134, adv: 125, verb: 115 });
-    assert.deepEqual(dist(TEXT), { noun: 33, adj: 22, adv: 24, verb: 21 });
+    // The split between formats is free to shift; what must hold is that a
+    // child meets every word class both by choosing and by writing.
+    for (const cat of ['noun', 'adj', 'adv', 'verb']) {
+      assert.truthy(count(MCQ, cat) >= 25, `only ${count(MCQ, cat)} ${cat} questions left to choose from`);
+      assert.truthy(count(TEXT, cat) >= 25, `only ${count(TEXT, cat)} ${cat} questions to type`);
+    }
   });
 
   test('all 600 question sentences are unique (no copy-pasted stems)', () => {
@@ -85,15 +102,15 @@ suite('gen: wordform base & question layout', () => {
     }
   });
 
-  test('563 questions use the inline "___ (BASE)" layout', () => {
+  test('every question is inline "___ (BASE)" apart from the 37 trailing ones', () => {
     const inline = WORDFORM_QUESTIONS.filter(q => q.q.includes(`___ (${q.base})`));
-    assert.equal(inline.length, 563);
-    // all 100 text questions are inline-layout
-    assert.equal(TEXT.filter(q => q.q.includes(`___ (${q.base})`)).length, 100);
+    assert.equal(inline.length, WORDFORM_QUESTIONS.length - TAIL_LAYOUT_IDS.length);
   });
 
-  test('exactly 37 mcq (wf-444..467, wf-488..500) use the trailing "(BASE)" layout', () => {
-    const tail = MCQ.filter(q => !q.q.includes(`___ (${q.base})`));
+  test('exactly 37 questions (wf-444..467, wf-488..500) use the trailing "(BASE)" layout', () => {
+    // Checked across the whole bank rather than the mcq half: thirteen of these
+    // are typed now, and the layout travelled with the sentence.
+    const tail = WORDFORM_QUESTIONS.filter(q => !q.q.includes(`___ (${q.base})`));
     assert.deepEqual(tail.map(q => q.id), TAIL_LAYOUT_IDS);
   });
 
@@ -158,9 +175,10 @@ suite('gen: wordform mcq options & answers', () => {
     }
   });
 
-  test('base word lowercased appears as an option in exactly 486 of 500 mcq (the classic trap)', () => {
+  test('nearly every mcq offers the untransformed base as a trap option', () => {
     const withBase = MCQ.filter(q => q.options.includes(q.base.toLowerCase()));
-    assert.equal(withBase.length, 486);
+    assert.truthy(withBase.length / MCQ.length > 0.9,
+      `only ${withBase.length}/${MCQ.length} mcq offer the base form`);
   });
 
   test('exactly 11 mcq legitimately keep the base form as the answer (at the correct index)', () => {
@@ -172,10 +190,10 @@ suite('gen: wordform mcq options & answers', () => {
     }
   });
 
-  test('in the other 475 mcq offering the base form, it is a wrong option (distractor)', () => {
+  test('wherever the base form is offered but not the answer, it is a wrong option', () => {
     const distractors = MCQ.filter(q =>
       q.options.includes(q.base.toLowerCase()) && q.answer !== q.base.toLowerCase());
-    assert.equal(distractors.length, 475);
+    assert.truthy(distractors.length > 200, 'the trap should still be widespread');
     for (const q of distractors) {
       assert.truthy(q.options.indexOf(q.base.toLowerCase()) !== q.correct,
         `${q.id}: base distractor must not sit at the correct index`);
@@ -183,9 +201,16 @@ suite('gen: wordform mcq options & answers', () => {
   });
 
   test('correct answer position is near-uniform across A/B/C/D', () => {
+    // Pinning the four exact counts meant any change to the bank had to be
+    // hand-reconciled. What actually matters is that no position pays off: a
+    // child who always taps D must do no better than one in four.
     const dist = { 0: 0, 1: 0, 2: 0, 3: 0 };
     MCQ.forEach(q => { dist[q.correct]++; });
-    assert.deepEqual(dist, { 0: 124, 1: 125, 2: 125, 3: 126 });
+    const even = MCQ.length / 4;
+    for (const k of [0, 1, 2, 3]) {
+      assert.inRange(dist[k], Math.floor(even * 0.85), Math.ceil(even * 1.15),
+        `position ${'ABCD'[k]} holds ${dist[k]} of ${MCQ.length} answers`);
+    }
   });
 });
 
@@ -297,34 +322,39 @@ suite('gen: wordform text answers & accept lists', () => {
     }
   });
 
-  test('94 text questions accept one spelling, 6 accept two', () => {
-    assert.equal(TEXT.filter(q => q.accept.length === 1).length, 94);
-    assert.equal(TEXT.filter(q => q.accept.length === 2).length, 6);
-  });
-
-  test('the 6 double-accept questions allow the British -ise spelling', () => {
-    const two = TEXT.filter(q => q.accept.length === 2);
-    assert.deepEqual(two.map(q => q.id), ['wft-19', 'wft-29', 'wft-56', 'wft-65', 'wft-81', 'wft-86']);
-    for (const q of two) {
+  test('a second accepted spelling is only ever the British -ise form', () => {
+    // Anything else in accept[] would be a different word, and marking a
+    // different word right is how a typed question stops teaching.
+    for (const q of TEXT) {
+      assert.inRange(q.accept.length, 1, 2, `${q.id}: accept list size`);
+      if (q.accept.length === 1) continue;
       assert.equal(q.accept[1], q.accept[0].replace('iz', 'is'), `${q.id}: -ise variant`);
     }
+    assert.truthy(TEXT.some(q => q.accept.length === 2), 'the -ise allowance still exists somewhere');
   });
 
-  test('exactly 5 text answers derive via a negative/causative prefix; the other 95 keep the base onset', () => {
-    const prefixed = TEXT.filter(q => q.answer.slice(0, 2) !== q.base.toLowerCase().slice(0, 2));
-    assert.deepEqual(prefixed.map(q => q.id), ['wft-9', 'wft-24', 'wft-37', 'wft-50', 'wft-74']);
-    for (const q of prefixed) {
-      assert.truthy(/^(en|un|in|dis)/.test(q.answer), `${q.id}: ${q.answer} should start with a prefix`);
-      assert.truthy(q.answer.includes(q.base.toLowerCase().slice(0, 5)),
-        `${q.id}: ${q.answer} should still contain the base stem`);
+  test('an answer that drops the base onset is still tied back to its base', () => {
+    // English rewrites some stems outright — EMPIRE → imperial, JUSTICE →
+    // unjust, PRONOUNCE → pronunciation — so "must contain the first five
+    // letters of the base" is not a rule the language keeps. What has to hold
+    // is that the child is told where the word came from: the Vietnamese note
+    // or the explanation names the base every time.
+    const detached = TEXT.filter(q => q.answer.slice(0, 2) !== q.base.toLowerCase().slice(0, 2));
+    assert.truthy(detached.length > 0, 'the bank should still teach prefixed and stem-changing forms');
+    for (const q of detached) {
+      const told = (q.vi + ' ' + q.explanation).toLowerCase().includes(q.base.toLowerCase());
+      assert.truthy(told, `${q.id}: ${q.base} → ${q.answer} is never linked back to the base`);
     }
   });
 });
 
 suite('gen: wordform sampled questions', () => {
-  // every 50th mcq — deterministic 10-question sample across the whole bank
-  for (let n = 50; n <= 500; n += 50) {
-    const id = `wf-${n}`;
+  // Ten multiple-choice questions spread evenly through whatever the mcq half
+  // now contains — sampling by hard-coded id broke the moment 200 of those ids
+  // stopped being multiple choice.
+  for (let k = 0; k < 10; k++) {
+    const q0 = MCQ[Math.floor(k * MCQ.length / 10)];
+    const id = q0.id;
     test(`${id}: base shown in q, answer at correct index, wrong options ✗-explained`, () => {
       const q = byId(id);
       assert.equal(q.type, 'mcq');
@@ -338,16 +368,20 @@ suite('gen: wordform sampled questions', () => {
     });
   }
 
-  // every 20th text question — deterministic 5-question sample
-  for (let n = 20; n <= 100; n += 20) {
-    const id = `wft-${n}`;
-    test(`${id}: lowercase transformed answer, accept list and BASE→ vi note`, () => {
+  // Fifteen typed questions spread across the whole text half, so the sample
+  // reaches both the original wft- block and the converted wf- ones.
+  for (let k = 0; k < 15; k++) {
+    const id = TEXT[Math.floor(k * TEXT.length / 15)].id;
+    test(`${id}: lowercase transformed answer, accept list and vi note`, () => {
       const q = byId(id);
       assert.equal(q.type, 'text');
       assert.truthy(/^[a-z]+$/.test(q.answer), 'answer is a lowercase word');
       assert.truthy(q.answer !== q.base.toLowerCase(), 'answer must differ from the base');
       assert.contains(q.accept, q.answer, 'accept includes the model answer');
-      assert.truthy(q.vi.includes(q.base) && q.vi.includes('→'), 'vi shows BASE → derived form');
+      assert.falsy(q.explanation.includes('✗'), 'a typed question has no options to reject');
+      // wf-444..500 use a short Vietnamese gloss instead of the BASE → form style.
+      const tailBlock = Number((q.id.match(/^wf-(\d+)$/) || [])[1]) >= 444;
+      if (!tailBlock) assert.truthy(q.vi.includes(q.base) && q.vi.includes('→'), 'vi shows BASE → derived form');
     });
   }
 });

@@ -1,8 +1,8 @@
 // wordform-typed-mix.test.js — every Word form practice contains real typing.
 //
 // Typed questions are the ones that teach: picking "education" from four
-// options is recognition, producing it is recall. They are only 100 of the 600
-// questions, and the practice used to be a plain random draw — so a
+// options is recognition, producing it is recall. They were only 100 of the 600
+// questions (300 since 2026-08-25), and the practice used to be a plain random draw — so a
 // 10-question practice contained ZERO typing 23% of the time and averaged 1.35
 // typed instead of a fair 1.67. A child could use the tab for a week and
 // barely type.
@@ -143,6 +143,80 @@ suite('word form: the typed/mcq mix is built, not hoped for', () => {
         const ctx = makeEnv();
         ctx.start('all');
         assert.equal(ctx.quiz().questions.filter(q => !q.followup).length, ctx.BANK.length);
+    });
+});
+
+suite('word form: the 5 typed come from the whole 300-question typed pool', () => {
+    // 200 multiple-choice questions became typed on 2026-08-25 while keeping
+    // their wf- ids, so the typed pool is no longer "the wft- block at the end
+    // of the file". Anything that picked typed questions by id prefix, or by
+    // position, would still hand a child five typed questions — drawn from 100
+    // of them, with the 200 new ones never appearing. These tests read the pool
+    // the same way the app does: by type.
+    test('the bank really holds 300 typed questions, 200 of them converted', () => {
+        const ctx = makeEnv();
+        const typed = ctx.BANK.filter(q => q.type === 'text');
+        assert.equal(typed.length, 300, 'the typed pool');
+        assert.equal(typed.filter(q => q.id.startsWith('wft-')).length, 100, 'originally-typed questions');
+        assert.equal(typed.filter(q => q.id.startsWith('wf-')).length, 200, 'converted questions');
+        assert.equal(ctx.BANK.filter(q => q.type === 'mcq').length, 300, 'the multiple-choice half');
+    });
+
+    test('every one of the 5 typed in a practice is a real typed question', () => {
+        const ctx = makeEnv();
+        const pool = new Set(ctx.BANK.filter(q => q.type === 'text').map(q => q.id));
+        for (const qs of sample(ctx, 10)) {
+            const typed = qs.filter(q => q.type === 'text');
+            assert.equal(typed.length, 5, 'a practice did not have 5 typed questions');
+            for (const q of typed) {
+                assert.truthy(pool.has(q.id), `${q.id} is not in the typed pool`);
+                assert.falsy(q.options, `${q.id} still carries options — a child could tap instead of write`);
+                assert.truthy(Array.isArray(q.accept) && q.accept.includes(q.answer),
+                    `${q.id} has no accept list to grade typing against`);
+            }
+        }
+    });
+
+    test('the draw reaches all 300, not just the original 100', () => {
+        // The failure this catches: 5 typed every time, all five forever drawn
+        // from the same third of the pool.
+        const ctx = makeEnv();
+        const seen = new Set();
+        for (let i = 0; i < 6000; i++) {
+            ctx.start(10);
+            for (const q of ctx.quiz().questions) if (!q.followup && q.type === 'text') seen.add(q.id);
+        }
+        const converted = [...seen].filter(id => id.startsWith('wf-')).length;
+        const original = [...seen].filter(id => id.startsWith('wft-')).length;
+        assert.equal(seen.size, 300, `only ${seen.size} of the 300 typed questions can ever be drawn`);
+        assert.equal(converted, 200, `only ${converted} of the 200 converted questions are reachable`);
+        assert.equal(original, 100, `only ${original} of the 100 original typed questions are reachable`);
+    });
+
+    test('converted and original typed questions come up about equally often', () => {
+        // 200 of 300 are converted, so they should take about two thirds of the
+        // typed slots. A big skew would mean the draw still favours one block.
+        const ctx = makeEnv();
+        let converted = 0, total = 0;
+        for (const qs of sample(ctx, 10)) {
+            for (const q of qs) {
+                if (q.type !== 'text') continue;
+                total++;
+                if (q.id.startsWith('wf-')) converted++;
+            }
+        }
+        const share = converted / total;
+        assert.truthy(share > 0.58 && share < 0.75,
+            `converted questions take ${(share * 100).toFixed(1)}% of typed slots, expected about 67%`);
+    });
+
+    test('a 20-question practice takes 10 typed from the same pool, none repeated', () => {
+        const ctx = makeEnv();
+        for (const qs of sample(ctx, 20)) {
+            const typed = qs.filter(q => q.type === 'text');
+            assert.equal(typed.length, 10);
+            assert.equal(new Set(typed.map(q => q.id)).size, 10, 'the same typed question appeared twice');
+        }
     });
 });
 
