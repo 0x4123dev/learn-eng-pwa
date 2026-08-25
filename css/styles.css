@@ -5177,7 +5177,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 10px;
+            /* The page is viewport-fit=cover, so it runs under the notch and the
+               status bar. Without the inset these chips sat at 8-52px on a
+               device whose status bar is 47-59px tall: the whole header was
+               swallowed, and only a rubber-band pull revealed it. The artwork
+               below still runs full-bleed to the top edge — it is the things a
+               finger has to reach that move down. */
+            padding: calc(8px + env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
+                     8px max(10px, env(safe-area-inset-left));
             background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 100%);
             z-index: 10;
         }
@@ -6484,7 +6491,7 @@
         @media (max-width: 360px) {
             .pet-hero-identity { max-width: 92px; padding-inline: 6px; }
             .pet-hero-avatar { display: none; }
-            .pet-hero-topbar { padding-inline: 8px; }
+            .pet-hero-topbar { padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
             .pet-hero-coins { padding-inline: 8px; }
             .pet-hero-streak { padding-inline: 8px; }
             .pet-shop-btn-hero { padding-inline: 12px; }
@@ -12403,11 +12410,11 @@
 .nr-builder.editing .nr-build-grid-cell.castle-covered>i{background:rgba(255,211,70,.28);border-color:rgba(255,245,171,.92)}
 .nr-build-grid-cell .nr-placed.footprint-2{left:100%;bottom:-100%;width:210%;height:210%;z-index:4}
 .nr-build-grid-cell .nr-placed.footprint-2.rice-field,.nr-build-grid-cell .nr-placed.footprint-2.tomato-field,.nr-build-grid-cell .nr-placed.footprint-2.fish-pond{width:206%;height:206%;bottom:-100%}
-/* The keep occupies four grid cells each way — 4 x 76%/12 wide, 4 x 80%/12
+/* The keep occupies three grid cells each way — 3 x 76%/12 wide, 3 x 80%/12
    tall — so it reads as the home the rest of the base is arranged around. The
    art is taller than its ground on purpose: it stands on the footprint's bottom
    edge and rises above it. */
-.nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:25.33%;height:36%;object-fit:contain;object-position:center bottom}
+.nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:19%;height:27%;object-fit:contain;object-position:center bottom}
 .nr-castle-yard{display:none!important}
 .nr-castle-move-hint{top:calc(var(--nr-castle-y,23.3)*1% + 6px);font-size:10px;padding:4px 8px}
 .nr-builder-map.castle-invalid>.nr-equipped-castle{outline-color:#ff5a52!important;opacity:.66}

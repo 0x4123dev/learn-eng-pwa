@@ -11,12 +11,13 @@ var NightRaidRules = (() => {
   const COLS = 8;
   const BUILD_GRID = 12;
   // The castle is the one building every other thing is arranged around, so it
-  // is the biggest thing on the board: four cells square against the two of a
+  // is the biggest thing on the board: three cells square against the two of a
   // barracks and the one of a trap. Every place that reserves, draws or drags
   // the castle reads this — the footprint used to be the literal 2 in six
   // different files, which is how the drawn castle and its reserved ground
-  // drifted apart.
-  const CASTLE_SIZE = 4;
+  // drifted apart. Four cells swallowed a sixth of the land and looked bulky;
+  // three still towers over everything without crowding the base.
+  const CASTLE_SIZE = 3;
   const START_BUDGET = 80;
   const MAX_COMMANDS = 80;
   const PRODUCTION_MS = 24 * 60 * 60 * 1000;

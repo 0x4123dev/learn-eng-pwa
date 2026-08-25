@@ -66,8 +66,8 @@ suite('night raid builder: the castle can be picked up', () => {
 });
 
 suite('night raid builder: the castle is the biggest thing on the board', () => {
-    test('four cells square, and every other building is smaller', () => {
-        assert.equal(R.CASTLE_SIZE, 4);
+    test('three cells square, and every other building is smaller', () => {
+        assert.equal(R.CASTLE_SIZE, 3);
         const biggest = Math.max(...R.DEFENSES.map(d => R.footprintFor(d)));
         assert.truthy(R.CASTLE_SIZE > biggest,
             `a ${biggest}-cell building matches the keep — it should tower over them`);

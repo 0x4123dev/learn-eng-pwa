@@ -40,11 +40,11 @@ suite('night raid: one deterministic combat mode', () => {
     assert.equal(layout.cells[0].uid,'rice-id-0');assert.equal(layout.cells[0].readyAt,1234);
   });
 
-  test('the castle is four cells square and always lands fully inside the grid',()=>{
+  test('the castle is three cells square and always lands fully inside the grid',()=>{
     // The footprint used to be the literal 2 in six different files. It is one
     // constant now, and these checks read it rather than a copy of it.
     const size=R.CASTLE_SIZE,last=R.BUILD_GRID-size;
-    assert.equal(size,4,'the keep is four cells square');
+    assert.equal(size,3,'the keep is three cells square');
     const fits=cell=>cell.gx>=0&&cell.gy>=0&&cell.gx<=last&&cell.gy<=last;
     const centered=R.normalizeLayout({cells:[],castlePos:{x:44.25,y:35.5}});
     assert.truthy(fits(centered.castleCell),'a legacy percentage position must land on the grid');

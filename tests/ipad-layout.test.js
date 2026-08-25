@@ -107,6 +107,34 @@ suite('iPad: the layout is capped, not stretched', () => {
         assert.truthy(css.includes('--safe-area-top') || css.includes('env(safe-area-inset'),
             'viewport-fit=cover without insets leaves content under the status bar');
     });
+
+    test('every bar pinned to the top edge clears the status bar', () => {
+        // "The stylesheet mentions env(safe-area-inset) somewhere" was the only
+        // check here, and it stayed green while the homepage header sat at
+        // 8-52px on a phone whose status bar is 47-59px tall — the whole header
+        // was swallowed and only a rubber-band pull revealed it. Each bar that
+        // a finger has to reach at the top of a screen is named here instead.
+        const TOP_BARS = [
+            ['.pet-hero-topbar', 'the homepage header: avatar, level, coins, streak'],
+            ['.nr-topbar', 'the Night Raid title bar'],
+            ['.nr-builder-hud', 'the build screen DAM/DEF/coins strip'],
+        ];
+        // The Night Raid stylesheet is minified (`.nr-topbar{`), the older rules
+        // are not (`.pet-hero-topbar {`) — match either. A bar usually has
+        // several rules (a landscape tweak, a narrow-screen tweak); the one that
+        // decides where it sits is the one that positions it.
+        const blockFor = sel => {
+            const re = new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\{[^}]*\\}', 'g');
+            const blocks = css.match(re) || [];
+            return blocks.find(b => /position:/.test(b)) || blocks[0] || null;
+        };
+        for (const [sel, what] of TOP_BARS) {
+            const block = blockFor(sel);
+            assert.truthy(block, `${sel} has no rule at all`);
+            assert.truthy(/safe-area-inset-top/.test(block),
+                `${what} (${sel}) sits under the status bar on a notched device`);
+        }
+    });
 });
 
 // ── 2. touch targets on a big screen ───────────────────────────────────────
