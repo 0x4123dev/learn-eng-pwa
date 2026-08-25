@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.52';
+const APP_VERSION = 'v4.14.53';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1823,12 +1823,13 @@ function showPetShop() {
         // Initialize drag-to-feed after rendering
         setTimeout(() => initDragToFeed(), 50);
     } else {
-        // Full modal for accessories (no dragging needed)
+        // Full modal for accessories and the GPU-safe yard food shop.
         overlay.className = 'pet-info-modal-overlay';
         if (hasYardShop) overlay.classList.add('yard-shop-overlay');
         overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
         overlay.innerHTML = renderShopContent();
         document.body.appendChild(overlay);
+        if (_shopTab === 'food') setTimeout(() => initDragToFeed(), 50);
     }
 }
 
@@ -1841,15 +1842,20 @@ function renderShopContent() {
         const feastBonus = f.id === 'feast' && studiedToday;
         return `<article class="shop-item shop-card food-shop-card ${canAfford ? 'draggable-food' : 'disabled'}"
                      data-food-id="${f.id}" data-food-emoji="${f.emoji}" style="--food-color:${f.color}">
-            <div class="shop-food-art">${petFoodArt(f)}<span class="shop-xp-burst">+${f.growth} XP</span></div>
+            <div class="shop-food-art food-drag-handle" role="button" tabindex="${canAfford ? '0' : '-1'}"
+                 aria-label="${canAfford ? `Drag ${f.name} onto your dog to feed it for ${f.price} coins` : `${f.name} costs ${f.price} coins; not enough coins`}">
+                ${petFoodArt(f)}<span class="shop-xp-burst">+${f.growth} XP</span>
+                ${canAfford ? '<span class="food-drag-grip" aria-hidden="true">⋮⋮</span>' : ''}
+            </div>
             <div class="shop-item-info">
                 <div class="shop-item-name">${f.name}</div>
                 <div class="shop-item-desc">${f.note}</div>
                 ${feastBonus ? '<span class="feast-bonus-hint">Today: +30 bonus XP</span>' : ''}
             </div>
-            <button type="button" class="shop-buy-btn ${canAfford ? '' : 'disabled'}"
-                    ${canAfford ? `onclick="buyFood('${f.id}', this)"` : 'disabled'}
-                    aria-label="Feed dog ${f.name} for ${f.price} coins">${canAfford ? 'Feed' : 'Need more'} <strong>${f.price}</strong><span aria-hidden="true">●</span></button>
+            <div class="shop-food-drag-meta ${canAfford ? '' : 'locked'}">
+                <span class="shop-food-price"><span aria-hidden="true">●</span><strong>${f.price}</strong></span>
+                <span class="shop-food-drag-cue">${canAfford ? 'DRAG TO DOG' : 'NEED MORE COINS'}</span>
+            </div>
         </article>`;
     }).join('');
 
@@ -1892,10 +1898,12 @@ function renderShopContent() {
         ? petDogSVG({ stageCss: stage.stageCss, size: 74, level: appState.dogLevel || 1, stageMinLevel: stage.minLevel })
         : stage.fallback;
     return `
-        <div class="pet-shop-modal">
+        <div class="pet-shop-modal ${_shopTab === 'food' ? 'food-drag-shop' : ''}">
             <button type="button" class="pet-info-close" aria-label="Close pet shop" onclick="document.getElementById('petShopModal').remove()">✕</button>
             <div class="shop-hero">
-                <div class="shop-hero-dog">${miniDog}</div>
+                <div class="shop-hero-dog" ${_shopTab === 'food' ? 'role="button" tabindex="0" aria-label="Drop food here to feed your dog"' : ''}>
+                    ${miniDog}${_shopTab === 'food' ? '<span class="shop-dog-drop-label" aria-hidden="true">DROP HERE</span>' : ''}
+                </div>
                 <div class="shop-hero-copy"><span>PAWS & TREATS</span><h3>${isDrawer ? 'What should we eat?' : 'Make your dog shine!'}</h3><p>${isDrawer ? 'Every snack helps your dog grow.' : 'Collect cute styles. Looks only—no battle advantage.'}</p></div>
                 <div class="shop-wallet" aria-label="${coins} coins"><span aria-hidden="true">●</span><strong>${coins}</strong></div>
             </div>
@@ -2479,27 +2487,33 @@ function evaluatePoopSpawn() {
 let _dragState = null;
 
 function initDragToFeed() {
-    const foodItems = document.querySelectorAll('.draggable-food');
-    foodItems.forEach(item => {
-        item.addEventListener('touchstart', onFoodTouchStart, { passive: false });
-        item.addEventListener('touchmove', onFoodTouchMove, { passive: false });
-        item.addEventListener('touchend', onFoodTouchEnd);
+    const foodHandles = document.querySelectorAll('.draggable-food .food-drag-handle');
+    foodHandles.forEach(handle => {
+        handle.addEventListener('touchstart', onFoodTouchStart, { passive: false });
+        handle.addEventListener('touchmove', onFoodTouchMove, { passive: false });
+        handle.addEventListener('touchend', onFoodTouchEnd);
         // Mouse fallback for desktop testing
-        item.addEventListener('mousedown', onFoodMouseDown);
+        handle.addEventListener('mousedown', onFoodMouseDown);
+        handle.addEventListener('keydown', onFoodKeyPick);
     });
+
+    const dropTarget = petFeedTarget();
+    if (dropTarget) dropTarget.addEventListener('keydown', onFoodKeyDrop);
 }
 
 // The normal home has an SVG .pet-creature; bot-enabled homes use the same
 // four-legged yard sprite as Night Raid. Food dragging must work with either
 // renderer or the Shop appears broken on the bot-on homepage.
 function petFeedTarget() {
-    return document.querySelector('.pet-creature') ||
+    return document.querySelector('#petShopModal .food-drag-shop .shop-hero-dog') ||
+        document.querySelector('.pet-creature') ||
         document.querySelector('#petHeroStage.yard-mode [data-nr-yard-pet]');
 }
 
 function onFoodTouchStart(e) {
     const touch = e.touches[0];
-    const item = e.currentTarget;
+    const item = e.currentTarget.closest('.draggable-food');
+    if (!item) return;
     startFoodDrag(item, touch.clientX, touch.clientY);
     e.preventDefault();
 }
@@ -2517,7 +2531,8 @@ function onFoodTouchEnd(e) {
 }
 
 function onFoodMouseDown(e) {
-    const item = e.currentTarget;
+    const item = e.currentTarget.closest('.draggable-food');
+    if (!item) return;
     startFoodDrag(item, e.clientX, e.clientY);
     e.preventDefault();
 
@@ -2525,6 +2540,26 @@ function onFoodMouseDown(e) {
     const onUp = () => { endFoodDrag(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
+}
+
+function onFoodKeyPick(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const item = e.currentTarget.closest('.draggable-food');
+    const target = petFeedTarget();
+    if (!item || !target) return;
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    startFoodDrag(item, rect.left + rect.width / 2, rect.top + rect.height / 2);
+    _dragState.keyboard = true;
+    target.focus();
+}
+
+function onFoodKeyDrop(e) {
+    if (!_dragState?.keyboard || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    moveFoodDrag(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    endFoodDrag();
 }
 
 function startFoodDrag(item, x, y) {
