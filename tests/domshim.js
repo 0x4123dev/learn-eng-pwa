@@ -113,7 +113,18 @@ class El {
     this._attrs = {};
     this._text = '';
     this._listeners = {};
-    this.style = new Proxy({}, { get: (t, k) => t[k] || '', set: (t, k, v) => (t[k] = v, true) });
+    // Real code sets custom properties through setProperty rather than by
+    // assignment, and a style object without it throws mid-render — which in a
+    // test reads as "the thing under test did nothing" rather than as an error.
+    this.style = new Proxy({}, {
+      get: (t, k) => {
+        if (k === 'setProperty') return (name, value) => { t[name] = String(value); };
+        if (k === 'getPropertyValue') return name => t[name] || '';
+        if (k === 'removeProperty') return name => { delete t[name]; };
+        return t[k] || '';
+      },
+      set: (t, k, v) => (t[k] = v, true),
+    });
     this.ownerDocument = ownerDoc || null;
   }
 

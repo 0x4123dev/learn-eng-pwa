@@ -25,13 +25,41 @@ var NightRaid = (() => {
   };
 
   function root(){return document.getElementById('nightRaidScreen');}
+  // Accounts created between the garden shipping and this fix already have that
+  // bot base saved. It is recognisable: the exact set of buildings the seed
+  // makes, every one at tier 1, and not a single farm or barracks — nothing a
+  // child could arrive at by buying, since buying starts at the shop and the
+  // shop sells producers too. Anything that fails that test is somebody's real
+  // base and is left alone.
+  function seededBaseSignature(cells){
+    const counts={};
+    for(const c of cells){
+      const def=NightRaidRules.defenseById(c.type);
+      if(!def||def.producer||(+c.tier||1)!==1)return null;
+      counts[c.type]=(counts[c.type]||0)+1;
+    }
+    return Object.keys(counts).sort().map(k=>k+':'+counts[k]).join(',');
+  }
+  let _seedSignature=null;
+  function dropSeededBase(layout){
+    const cells=Array.isArray(layout&&layout.cells)?layout.cells:[];
+    if(!cells.length)return layout;
+    if(_seedSignature===null)_seedSignature=seededBaseSignature(NightRaidRules.normalizeLayout(NightRaidRules.trainingTarget(4).layout).cells)||'';
+    if(!_seedSignature||seededBaseSignature(cells)!==_seedSignature)return layout;
+    return Object.assign({},layout,{cells:[]});
+  }
   function ensure(){
     if(typeof appState==='undefined'||!appState)return null;
     if(!Number.isFinite(+appState.nightRaidRouteLevel))appState.nightRaidRouteLevel=1;
     if(!appState.nightRaidStars||typeof appState.nightRaidStars!=='object')appState.nightRaidStars={};
     if(!Array.isArray(appState.nightRaidHistory))appState.nightRaidHistory=[];
-    if(!appState.nightRaidLayout)appState.nightRaidLayout=NightRaidRules.trainingTarget(4).layout;
-    appState.nightRaidLayout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);
+    // A new account starts with an empty lawn and its castle. It used to be
+    // handed trainingTarget(4) — a BOT's base, eleven walls, traps and pups it
+    // never bought and 457 DEF it never earned. That was invisible while the
+    // garden was admin-only; the moment the garden shipped to everyone, every
+    // child opened the app to a fort someone else built.
+    if(!appState.nightRaidLayout)appState.nightRaidLayout={cells:[]};
+    appState.nightRaidLayout=NightRaidRules.normalizeLayout(dropSeededBase(appState.nightRaidLayout));
     if(!Number.isFinite(+appState.vaultCoins))appState.vaultCoins=0;
     if(!Array.isArray(appState.battleTeammates))appState.battleTeammates=[];
     if(appState.nightRaidRewardDate!==today()){appState.nightRaidRewardDate=today();appState.nightRaidRewardToday=0;appState.nightRaidTicketCount=0;}
@@ -179,7 +207,7 @@ var NightRaid = (() => {
   // and a RELATIVE url() inside one is resolved against the stylesheet that
   // consumes it — css/styles.css — so `img/...` became `/css/img/...` and 404'd,
   // leaving the yard pet invisible while every other check looked healthy.
-  function yardPetHtml(opts={}){const pet=raidPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.png`,name=opts.showName===false?'':`<span>${esc(pet.name)}</span>`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk" data-atlas="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div>${name}</div></div>`;}
+  function yardPetHtml(opts={}){const pet=raidPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.png`,name=opts.showName===false?'':`<span>${esc(pet.name)}</span>`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk" data-atlas="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div><b class="nr-pet-say" data-nr-pet-say hidden></b>${name}</div></div>`;}
   function armySlots(count){const cols=Math.min(5,Math.max(1,Math.ceil(count/2))),gap=4.25,slots=[];for(let i=0;i<count;i++){const row=i>=cols?1:0,col=i%cols,rowCount=row?count-cols:Math.min(count,cols);slots.push({x:(col-(rowCount-1)/2)*gap+(row?gap*.48:0),y:row*4.2,row:i%6});}return slots;}
   function yardArmyHtml(){const count=Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+appState.nightRaidLayout?.soldiers||0)));if(!count)return'';return `<div class="nr-yard-army" data-nr-yard-army data-mode="march" aria-label="Đội hình ${count} lính đang duyệt binh trên bãi cỏ">${armySlots(count).map((s,i)=>`<i class="nr-home-soldier" data-unit="${i}" data-row="${s.row}" style="--nr-slot-x:${s.x}%;--nr-slot-y:${s.y}%;--nr-unit-position:0% ${s.row*20}%"><b aria-hidden="true"></b></i>`).join('')}</div>`;}
   function yardBuildingsHtml(){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cellMap=new Map(layout.cells.map(c=>[c.gx+':'+c.gy+':'+(NightRaidRules.defenseById(c.type).trap?'floor':'stand'),c]));const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" alt="" draggable="false"><em>${cell.tier}</em>`;};let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++)for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(stand||floor)grid+=`<div class="nr-build-grid-cell" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}return `<div class="nr-free-grid nr-home-layout" aria-hidden="true">${grid}</div>`;}
@@ -354,14 +382,20 @@ var NightRaid = (() => {
   // y 4.7-17%, where it simply could not be seen. The dog is anchored at its
   // paws and stands PET_SPRITE_H tall, so the band is measured from where its
   // head and feet end up, not from its anchor point.
-  const YARD_TOP_FURNITURE=22, YARD_BOTTOM_FURNITURE=71, PET_SPRITE_H=12.3;
+  // Measured on the homepage garden, as a share of the map: the dog is 12.3
+  // tall from its paws and its speech bubble adds another 7.5 above that
+  // (6.1 for the bubble, 1.3 of gap). The band is set from the top of the
+  // BUBBLE, not the top of the dog — a hungry dog is exactly the one that has a
+  // bubble, and at the old bound it floated at 18.5%, just inside the strip the
+  // status bar covers.
+  const YARD_TOP_FURNITURE=22, YARD_BOTTOM_FURNITURE=71, PET_SPRITE_H=12.3, PET_SAY_H=7.5;
   function petPatrolBounds(){
     const left=PET_YARD.left,right=PET_YARD.left+PET_YARD.width;
     const inset=PET_YARD.width*.12;
     return{
       minX:left+inset,
       maxX:right-inset,
-      minY:Math.max(PET_YARD.top+3,YARD_TOP_FURNITURE+PET_SPRITE_H),
+      minY:Math.max(PET_YARD.top+3,YARD_TOP_FURNITURE+PET_SPRITE_H+PET_SAY_H),
       maxY:Math.min(PET_YARD.top+PET_YARD.height-2,YARD_BOTTOM_FURNITURE-2),
     };
   }
@@ -438,6 +472,24 @@ var NightRaid = (() => {
     announce('Đã dọn '+cleared+' bãi phân cho chó');
   }
   function spawnPetBusinessEffect(map,kind,state){const effect=document.createElement('span');effect.className='nr-pet-event '+kind;effect.setAttribute('aria-hidden','true');effect.style.left=state.x+'%';effect.style.top=state.y+'%';effect.innerHTML='<i></i><b></b>'+(kind==='pee'?'<span class="nr-pet-event-label">I&#39;m peeing</span>':'');map.appendChild(effect);setTimeout(()=>effect.remove(),4200);}
+  // A dog with an empty bowl does not trot around its garden. It lies down and
+  // says so, and keeps saying so until it is fed — the old bubble flashed once
+  // for 2.5s at the top of the stage, where a notched phone hid it behind the
+  // status bar and a child who looked a second later saw nothing at all.
+  // getPetMood lives on the home screen; the yard also mounts inside the raid,
+  // where it does not, so this asks carefully and assumes a fed dog otherwise.
+  const HUNGRY_MOODS={starving:1,hungry:1};
+  function petIsHungry(){
+    try{return typeof getPetMood==='function'&&!!HUNGRY_MOODS[getPetMood()];}catch(_){return false;}
+  }
+  function sayHungry(pet,hungry){
+    const say=pet&&pet.querySelector('[data-nr-pet-say]');
+    if(!say)return;
+    if(!hungry){if(!say.hidden){say.hidden=true;say.textContent='';}return;}
+    if(say.hidden){say.hidden=false;}
+    const line="I'm hungry… 🍖";
+    if(say.textContent!==line)say.textContent=line;
+  }
   function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.38?'bark':roll<.76?'rest':roll<.90?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1700:state.mode==='bark'?3400:state.mode==='rest'?6200:2600);state.frame=0;}
   function petActionFrame(state,now){if(state.mode==='walk'||state.mode==='seek')return state.frame;if(state.mode==='bark')return Math.floor(now/240)%2;if(state.mode==='rest')return 2;if(state.mode==='scratch')return Math.floor(now/260)%2?3:2;return 0;}
   function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek',actionsReady=sprite.dataset.actionsReady==='1';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.dataset.atlas=walking||!actionsReady?'walk':'actions';pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.setProperty('--nr-walk-position',`${state.frame*(100/3)}% ${row*25}%`);sprite.style.setProperty('--nr-action-position',`${frame*(100/3)}% ${row*25}%`);sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
@@ -449,7 +501,20 @@ var NightRaid = (() => {
       state.x+=2.5;
       if(state.x>bounds.maxX){state.x=bounds.minX;state.y+=3;}
       if(state.y>bounds.maxY)state.y=bounds.minY;
-    }state.last=performance.now();if(reduced){state.mode='idle';state.frame=0;}placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();
+    }state.last=performance.now();if(reduced){state.mode='idle';state.frame=0;}
+    if(petIsHungry()){state.mode='rest';state.frame=0;state.errand=null;}
+    sayHungry(pet,petIsHungry());
+    placePatrolPet(pet,sprite,state);if(reduced)return;petPatrolTimer=setInterval(()=>{if(document.hidden||!pet.isConnected)return;const now=performance.now(),dt=Math.min(.2,(now-state.last)/1000);state.last=now;const nextBounds=petPatrolBounds();
+      // Hungry: lie down where it stands, say so, and stop everything else —
+      // no pacing, no errands, no wandering off to a rice field.
+      const hungry=petIsHungry();
+      sayHungry(pet,hungry);
+      if(hungry){
+        if(state.mode!=='rest'){state.mode='rest';state.frame=0;state.errand=null;state.casualUntil=now+1e9;}
+        placePatrolPet(pet,sprite,state,now);
+        return;
+      }
+      if(state.casualUntil>now+1e8){state.casualUntil=0;state.mode='walk';state.nextCasual=now+900;}
       // The yard changes while the child builds, so the solid boxes are re-read
       // about once a second rather than frozen when the walk started.
       if(!state.blocked||now-state.blockedAt>1000){state.blocked=petBlockedRects();state.blockedAt=now;}

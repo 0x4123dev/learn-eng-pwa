@@ -12456,6 +12456,14 @@
 .nr-yard-pet[data-atlas="actions"] .nr-yard-pet-sprite::before{opacity:0}
 .nr-yard-pet[data-atlas="actions"] .nr-yard-pet-sprite::after{opacity:1}
 .nr-yard-pet>span{position:absolute;left:50%;bottom:1px;transform:translate(-50%,100%);padding:2px 6px;border:2px solid #fff;border-radius:999px;background:#f18a2d;color:#fff;font-size:10px;line-height:1.15;font-weight:1000;white-space:nowrap;box-shadow:0 3px 7px rgba(60,37,19,.25);max-width:13cqw;overflow:hidden;text-overflow:ellipsis}
+/* A hungry dog lies down and says so. The bubble is a child of the dog, so it
+   travels with it and can never end up behind the status bar the way the old
+   floating one did — that was pinned to the top of the stage. */
+.nr-pet-say{position:absolute;left:50%;top:-4px;transform:translate(-50%,-100%);z-index:3;padding:3px 8px;border:2px solid #fff;border-radius:999px;background:#f3f4f6;color:#7c2d12;font-size:10px;line-height:1.15;font-weight:1000;white-space:nowrap;box-shadow:0 3px 8px rgba(60,38,8,.28)}
+.nr-pet-say[hidden]{display:none}
+.nr-pet-say::after{content:'';position:absolute;left:50%;bottom:-6px;width:0;height:0;transform:translateX(-50%);border:5px solid transparent;border-top-color:#fff}
+.nr-mini-map .nr-pet-say{font-size:9px;padding:2px 6px}
+
 
 /* The animated mini-yard is already a GPU-composited surface. iOS Safari can
    flash or mis-size it when a second full-screen backdrop-filter is added on

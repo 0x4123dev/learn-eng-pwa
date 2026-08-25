@@ -20,6 +20,71 @@ const html = read('index.html');
 const css = read('css/styles.css');
 const ui = read('js/night-raid.js');
 
+const vm = require('vm');
+const { createDocument } = require('./domshim');
+
+// Mount the garden the way the homepage does, in a sandbox, so tests can see
+// what the app actually writes into appState rather than what a pure rules
+// function would return.
+function mountFreshGarden(seed) {
+    const doc = createDocument('<div id="yard"></div>');
+    // The garden paints the castle skin onto a canvas. The shim has no canvas,
+    // and the exception took the whole mount down before the walk ever started
+    // — which is exactly the sort of thing that makes a test quietly measure
+    // nothing. A permissive stub is enough: the app already falls back to the
+    // webp when the canvas gives it nothing.
+    const noop = new Proxy(function () {}, { get: () => noop, apply: () => noop });
+    const createElement = doc.createElement.bind(doc);
+    doc.createElement = tag => {
+        const el = createElement(tag);
+        if (String(tag).toLowerCase() === 'canvas') {
+            el.getContext = () => noop;
+            el.toDataURL = () => 'data:,';
+            el.width = el.height = 0;
+        }
+        return el;
+    };
+    const ctx = {
+        console, Math, JSON, String, Number, Array, Object, Boolean, Promise, RegExp, Set, Map, Date, isNaN,
+        document: doc, window: { addEventListener() {}, removeEventListener() {} },
+        navigator: { vibrate() {} }, addEventListener() {}, removeEventListener() {},
+        appState: Object.assign({ coins: 0, dogLevel: 1 }, seed || {}),
+        currentUser: 'zzzzz', saveUserData() {}, showToast() {},
+        // The walk runs on an interval. Capturing it lets a test drive the real
+        // loop tick by tick instead of waiting on a clock — and a browser tab
+        // that is not in front never ticks at all, so this is the only place
+        // the walk can actually be observed.
+        setInterval: (fn) => { ctx.__tick = fn; return 1; }, clearInterval() {},
+        setTimeout: () => 0, clearTimeout() {},
+        requestAnimationFrame: () => 0, matchMedia: () => ({ matches: false }),
+        performance: { now: () => ctx.__clock },
+        module: { exports: {} },
+    };
+    ctx.__clock = 0;
+    ctx.__mood = (seed && seed.__mood) || 'happy';
+    ctx.getPetMood = () => ctx.__mood;
+    ctx.run = (times, step) => {
+        for (let i = 0; i < times; i++) { ctx.__clock += (step || 120); if (ctx.__tick) ctx.__tick(); }
+    };
+    ctx.dogAt = () => { const d = doc.querySelector('.nr-yard-pet'); return d && (d.dataset.x + ',' + d.dataset.y); };
+    ctx.dogMode = () => { const d = doc.querySelector('.nr-yard-pet'); return d && d.dataset.mode; };
+    ctx.bubble = () => { const b = doc.querySelector('[data-nr-pet-say]'); return b && !b.hidden ? b.textContent : null; };
+    ctx.globalThis = ctx;
+    vm.createContext(ctx);
+    vm.runInContext(read('js/night-raid-rules.js'), ctx);
+    vm.runInContext('var NightRaidRules = module.exports; module.exports = {};', ctx);
+    vm.runInContext(read('js/night-raid-art.js'), ctx);
+    vm.runInContext(read('js/castle-skins.js'), ctx);
+    vm.runInContext(read('js/night-raid.js'), ctx);
+    ctx.NightRaid.mountYardScene(doc.getElementById('yard'), { skipRefresh: true });
+    // Swallowing a mount failure here once made the hungry-dog tests pass for
+    // the wrong reason: the walk had crashed before it started, so of course the
+    // dog never moved. A sandbox that did not finish mounting is a broken test,
+    // not a passing one.
+    if (!ctx.__tick) throw new Error('the garden mounted without starting its walk');
+    return ctx;
+}
+
 const num = (src, name) => Number((src.match(new RegExp(name + '=([\\d.]+)')) || [])[1]);
 
 suite('home: the pet bar sits below the garden, not on top of it', () => {
@@ -96,15 +161,84 @@ suite('home: the garden shipped, the game did not', () => {
         }
     });
 
-    test('a brand-new account gets a garden worth looking at', () => {
-        // No saved layout at all: the scene must still put a castle on the lawn
-        // rather than render an empty box.
-        const R = require(path.join(ROOT, 'js', 'night-raid-rules.js'));
-        const fresh = R.normalizeLayout(undefined);
-        assert.equal(fresh.cells.length, 0, 'a new account owns no buildings yet');
-        assert.truthy(fresh.castleCell && Number.isFinite(fresh.castleCell.gx),
+    test('a brand-new account gets a bare lawn, not somebody else\'s fort', () => {
+        // This ran against normalizeLayout(undefined) and passed happily while
+        // the app was handing every new account trainingTarget(4) — a BOT's
+        // base: eleven walls, traps and pebble pups nobody bought, and 457 DEF
+        // nobody earned. The seeding happens in ensure(), so the test has to go
+        // through the door the app goes through.
+        const state = mountFreshGarden();
+        const owned = state.appState.nightRaidLayout.cells;
+        assert.deepEqual(owned.map(c => c.type), [],
+            'a new account must own nothing — these were never bought');
+        assert.truthy(state.appState.nightRaidLayout.castleCell,
             'but it must still have a castle to stand on the lawn');
-        assert.equal(fresh.soldiers, 0, 'and no army parading around it');
+        assert.falsy(/trainingTarget\(\d+\)\.layout/.test(ui.slice(ui.indexOf('function ensure()'), ui.indexOf('function ensure()') + 900)),
+            'ensure() must not seed a bot base as the player\'s own home');
+    });
+
+    test('a fort already seeded onto an account is cleared, a real base is not', () => {
+        const R = require(path.join(ROOT, 'js', 'night-raid-rules.js'));
+        const seeded = R.normalizeLayout(R.trainingTarget(4).layout);
+        assert.truthy(seeded.cells.length >= 8, 'the seed we are matching against still has buildings');
+
+        // Accounts made between the garden shipping and the fix carry that fort.
+        const cleaned = mountFreshGarden({ nightRaidLayout: { cells: seeded.cells } });
+        assert.deepEqual(cleaned.appState.nightRaidLayout.cells.map(c => c.type), [],
+            'the seeded fort should have been cleared');
+
+        // Anything a child actually built must survive: a farm cannot be seeded,
+        // and neither can an upgraded tier.
+        const real = mountFreshGarden({ nightRaidLayout: { cells: seeded.cells.concat([{ type: 'rice-field', gx: 6, gy: 6, tier: 1 }]) } });
+        assert.truthy(real.appState.nightRaidLayout.cells.some(c => c.type === 'rice-field'),
+            'a bought farm was thrown away');
+        assert.truthy(real.appState.nightRaidLayout.cells.length > 1, 'the rest of a real base went with it');
+
+        const upgraded = mountFreshGarden({ nightRaidLayout: { cells: seeded.cells.map((c, i) => i ? c : Object.assign({}, c, { tier: 2 })) } });
+        assert.truthy(upgraded.appState.nightRaidLayout.cells.length > 0,
+            'an upgraded building means the base was played with, not seeded');
+    });
+});
+
+suite('home: a hungry dog lies down and says so', () => {
+    test('it does not take a single step while it is hungry', () => {
+        const g = mountFreshGarden({ __mood: 'starving' });
+        const start = g.dogAt();
+        g.run(200);                              // twenty-odd seconds of walking
+        assert.equal(g.dogAt(), start, 'the dog wandered off while it was starving');
+        assert.equal(g.dogMode(), 'rest', 'it should be lying down');
+    });
+
+    test('the bubble is on it, and stays on it', () => {
+        const g = mountFreshGarden({ __mood: 'hungry' });
+        assert.truthy(/hungry/i.test(g.bubble() || ''), `bubble says ${JSON.stringify(g.bubble())}`);
+        g.run(200);
+        assert.truthy(/hungry/i.test(g.bubble() || ''),
+            'the old bubble flashed for 2.5s and vanished — this one waits to be fed');
+    });
+
+    test('it walks again once it is fed, and the bubble goes', () => {
+        const g = mountFreshGarden({ __mood: 'starving' });
+        g.run(20);
+        const parked = g.dogAt();
+        g.__mood = 'happy';
+        g.run(60);
+        assert.truthy(g.dogAt() !== parked, 'a fed dog must get up and move');
+        assert.equal(g.bubble(), null, 'and stop complaining');
+    });
+
+    test('a fed dog was never held still in the first place', () => {
+        // Guards the obvious way to break this: freezing every dog.
+        const g = mountFreshGarden();
+        const start = g.dogAt();
+        g.run(60);
+        assert.truthy(g.dogAt() !== start, 'a happy dog stopped walking');
+        assert.equal(g.bubble(), null);
+    });
+
+    test('hunger cancels an errand rather than leaving it half-done', () => {
+        assert.truthy(ui.includes('state.errand=null'), 'a hungry dog must drop what it was going to do');
+        assert.truthy(ui.includes('function petIsHungry()'), 'the walk must know what hungry means');
     });
 });
 
@@ -120,7 +254,8 @@ suite('home: the dog keeps to the middle of the garden', () => {
     })();
 
     const bounds = (() => {
-        const top = num(ui, 'YARD_TOP_FURNITURE'), bottom = num(ui, 'YARD_BOTTOM_FURNITURE'), h = num(ui, 'PET_SPRITE_H');
+        const top = num(ui, 'YARD_TOP_FURNITURE'), bottom = num(ui, 'YARD_BOTTOM_FURNITURE');
+        const h = num(ui, 'PET_SPRITE_H') + num(ui, 'PET_SAY_H');   // dog plus the bubble over its head
         if (!YARD) return null;
         return {
             minX: YARD.left + YARD.width * .12,
@@ -137,11 +272,13 @@ suite('home: the dog keeps to the middle of the garden', () => {
             'the patrol band could not be parsed');
     });
 
-    test('the dog never walks up behind the status bar', () => {
-        // The dog is anchored at its paws, so its head is a sprite-height above.
-        const head = bounds.minY - bounds.spriteH;
-        assert.truthy(head >= STATUS_BAR,
-            `its head reaches ${head.toFixed(1)}% while the status bar covers down to ${STATUS_BAR}%`);
+    test('the dog never walks up behind the status bar, bubble and all', () => {
+        // The dog is anchored at its paws; its head is a sprite-height above,
+        // and when it is hungry a speech bubble sits above that. Measuring only
+        // to the head left the bubble floating at 18.5%, inside the strip.
+        const top = bounds.minY - bounds.spriteH;
+        assert.truthy(top >= STATUS_BAR,
+            `the top of it reaches ${top.toFixed(1)}% while the status bar covers down to ${STATUS_BAR}%`);
     });
 
     test('the dog never walks down behind the name, the XP bar or the Shop button', () => {

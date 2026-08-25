@@ -1688,7 +1688,10 @@ function renderWordPet() {
     // Auto-show speech bubble (priority: emo > hunger > stink)
     if (_emoMessage) {
         setTimeout(() => showPetSpeechBubble(_emoMessage), 700);
-    } else if (hunger === 0) {
+    } else if (hunger === 0 && !yardHabitat) {
+        // In the garden the dog lies down and carries its own "I'm hungry"
+        // bubble until it is fed, so this 2.5-second flash would be the same
+        // sentence twice.
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     } else if ((appState.petPoops || []).some(p => (Date.now() - p.born) / 3600000 >= POOP_STINK_HOURS)) {
         setTimeout(() => showPetSpeechBubble("It's so stinky! Please clean up! 🤢"), 600);
