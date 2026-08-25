@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.47';
+const APP_VERSION = 'v4.14.48';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1799,10 +1799,16 @@ function showPetShop() {
 
     const overlay = document.createElement('div');
     overlay.id = 'petShopModal';
+    // The bot-enabled homepage renders a continuously animated Night Raid
+    // yard. Safari can corrupt a fixed backdrop-filter layer above that
+    // composited scene, so the shop uses a solid scrim there instead. Keep a
+    // marker on the overlay rather than changing the shop on normal homes.
+    const hasYardShop = !!document.querySelector('#petHeroStage.yard-mode');
 
     if (_shopTab === 'food') {
         // Bottom drawer — dog stays visible at top for drag-to-feed
         overlay.className = 'pet-shop-drawer-overlay';
+        if (hasYardShop) overlay.classList.add('yard-shop-overlay');
         overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
         overlay.innerHTML = renderShopContent();
         document.body.appendChild(overlay);
@@ -1815,6 +1821,7 @@ function showPetShop() {
     } else {
         // Full modal for accessories (no dragging needed)
         overlay.className = 'pet-info-modal-overlay';
+        if (hasYardShop) overlay.classList.add('yard-shop-overlay');
         overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
         overlay.innerHTML = renderShopContent();
         document.body.appendChild(overlay);
@@ -2477,6 +2484,14 @@ function initDragToFeed() {
     });
 }
 
+// The normal home has an SVG .pet-creature; bot-enabled homes use the same
+// four-legged yard sprite as Night Raid. Food dragging must work with either
+// renderer or the Shop appears broken on the bot-on homepage.
+function petFeedTarget() {
+    return document.querySelector('.pet-creature') ||
+        document.querySelector('#petHeroStage.yard-mode [data-nr-yard-pet]');
+}
+
 function onFoodTouchStart(e) {
     const touch = e.touches[0];
     const item = e.currentTarget;
@@ -2522,7 +2537,7 @@ function startFoodDrag(item, x, y) {
     _dragState = { ghost, foodId, emoji, startX: x, startY: y, item };
 
     // Show drop target hint on pet
-    const creature = document.querySelector('.pet-creature');
+    const creature = petFeedTarget();
     if (creature) creature.classList.add('drop-target-hint');
 
     // Haptic feedback (if available)
@@ -2535,7 +2550,7 @@ function moveFoodDrag(x, y) {
     _dragState.ghost.style.top = y + 'px';
 
     // Check proximity to dog — highlight if close
-    const creature = document.querySelector('.pet-creature');
+    const creature = petFeedTarget();
     if (creature) {
         const rect = creature.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
@@ -2551,7 +2566,7 @@ function endFoodDrag() {
     const { ghost, foodId, item } = _dragState;
 
     // Check if dropped on dog
-    const creature = document.querySelector('.pet-creature');
+    const creature = petFeedTarget();
     if (creature) {
         const rect = creature.getBoundingClientRect();
         const ghostRect = ghost.getBoundingClientRect();
