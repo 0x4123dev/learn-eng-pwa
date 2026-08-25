@@ -40,11 +40,30 @@ suite('night raid: one deterministic combat mode', () => {
     assert.equal(layout.cells[0].uid,'rice-id-0');assert.equal(layout.cells[0].readyAt,1234);
   });
 
-  test('cosmetic castle position survives normalization and stays on the paved yard',()=>{
+  test('the castle is four cells square and always lands fully inside the grid',()=>{
+    // The footprint used to be the literal 2 in six different files. It is one
+    // constant now, and these checks read it rather than a copy of it.
+    const size=R.CASTLE_SIZE,last=R.BUILD_GRID-size;
+    assert.equal(size,4,'the keep is four cells square');
+    const fits=cell=>cell.gx>=0&&cell.gy>=0&&cell.gx<=last&&cell.gy<=last;
     const centered=R.normalizeLayout({cells:[],castlePos:{x:44.25,y:35.5}});
-    assert.deepEqual(centered.castlePos,{x:44.25,y:35.5});
-    assert.deepEqual(R.normalizeLayout({cells:[],castlePos:{x:-20,y:90}}).castlePos,{x:27,y:41});
-    assert.equal(R.normalizeLayout({cells:[]}).castlePos,undefined);
+    assert.truthy(fits(centered.castleCell),'a legacy percentage position must land on the grid');
+    assert.deepEqual(R.normalizeLayout({cells:[],castleCell:{gx:-20,gy:90}}).castleCell,{gx:0,gy:last},
+      'nonsense coordinates are pulled back to the nearest corner that still fits');
+    assert.truthy(fits(R.normalizeLayout({cells:[]}).castleCell),'a brand-new base starts on the grid');
+  });
+
+  test('nothing may share the ground the castle stands on',()=>{
+    // A base packed with buildings where the keep now sits: every one of them
+    // has to be moved aside, not dropped, or a child loses what they bought.
+    const size=R.CASTLE_SIZE,cells=[];
+    for(let gy=0;gy<6;gy++)for(let gx=0;gx<6;gx++)cells.push({type:'wood-fence',gx,gy});
+    cells.push({type:'training-barracks',gx:4,gy:1},{type:'rice-field',gx:5,gy:2});
+    const out=R.normalizeLayout({castleCell:{gx:4,gy:1},cells}),C=out.castleCell;
+    assert.equal(out.cells.length,cells.length,'a building was dropped instead of relocated');
+    const under=out.cells.filter(c=>{const d=R.defenseById(c.type);
+      return !d.trap&&R.rectsOverlap({gx:c.gx,gy:c.gy,size:R.footprintFor(d)},{gx:C.gx,gy:C.gy,size});});
+    assert.deepEqual(under.map(c=>c.type+'@'+c.gx+','+c.gy),[],'these are standing inside the castle');
   });
 
   test('one-button battle follows the visible DAM greater than DEF rule', () => {
@@ -81,7 +100,9 @@ suite('night raid: one deterministic combat mode', () => {
       {type:'spike-trap',lane:0,col:2},
       {type:'dragon',lane:2,col:3},
     ]});
-    assert.equal(layout.cells.length, 2, 'one stand plus one floor trap');
+    assert.equal(layout.cells.length, 3, 'stand collisions relocate instead of deleting owned items');
+    const stands=layout.cells.filter(c=>!R.defenseById(c.type).trap);
+    assert.falsy(stands[0].gx===stands[1].gx&&stands[0].gy===stands[1].gy);
     assert.equal(layout.dogLane, 4);
   });
 
@@ -92,11 +113,23 @@ suite('night raid: one deterministic combat mode', () => {
       {type:'spike-trap',gx:99,gy:99,tier:1},
     ]});
     assert.equal(R.BUILD_GRID,12);
-    assert.equal(layout.cells.length,2,'one stand plus one floor per visual tile');
+    assert.equal(layout.cells.length,3,'owned items move to the nearest free visual tile');
     assert.equal(layout.cells[0].gx,11);
     assert.equal(layout.cells[0].gy,11);
     assert.equal(layout.cells[0].lane,4);
     assert.equal(layout.cells[0].col,8);
+  });
+
+  test('farms, ponds and barracks reserve four cells without overlap',()=>{
+    for(const id of ['rice-field','tomato-field','fish-pond','training-barracks'])assert.equal(R.footprintFor(id),2,id+' uses a 2x2 footprint');
+    const layout=R.normalizeLayout({castleCell:{gx:5,gy:1},cells:[
+      {type:'rice-field',gx:0,gy:0,uid:'rice-big-1'},
+      {type:'fish-pond',gx:1,gy:1,uid:'pond-big-1'},
+      {type:'training-barracks',gx:5,gy:1,uid:'barracks-big-1'},
+    ]});
+    const boxes=layout.cells.map(c=>({gx:c.gx,gy:c.gy,size:R.footprintFor(c.type)}));
+    for(let a=0;a<boxes.length;a++)for(let b=a+1;b<boxes.length;b++)assert.falsy(R.rectsOverlap(boxes[a],boxes[b]),'large buildings must not overlap');
+    for(const box of boxes)assert.falsy(R.rectsOverlap(box,{gx:5,gy:1,size:2}),'large buildings must not overlap the castle');
   });
 
   test('deployment spends budget and rejects overspend', () => {

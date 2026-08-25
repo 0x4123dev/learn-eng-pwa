@@ -10,6 +10,13 @@ var NightRaidRules = (() => {
   const LANES = 5;
   const COLS = 8;
   const BUILD_GRID = 12;
+  // The castle is the one building every other thing is arranged around, so it
+  // is the biggest thing on the board: four cells square against the two of a
+  // barracks and the one of a trap. Every place that reserves, draws or drags
+  // the castle reads this — the footprint used to be the literal 2 in six
+  // different files, which is how the drawn castle and its reserved ground
+  // drifted apart.
+  const CASTLE_SIZE = 4;
   const START_BUDGET = 80;
   const MAX_COMMANDS = 80;
   const PRODUCTION_MS = 24 * 60 * 60 * 1000;
@@ -30,15 +37,20 @@ var NightRaidRules = (() => {
     Object.freeze({ id:'stone-wall', name:{en:'Stone Wall',vi:'Tường Đá'}, price:1000, stat:'defense', attack:0, defense:80, hp:300, blocker:true, material:'stone', color:'#91a0b2' }),
     Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:1000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
     Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:1000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
-    Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:4000, stat:'producer', attack:0, defense:0, producer:'soldier', yield:1, productionMs:PRODUCTION_MS, maxOwned:2, color:'#d8783d' }),
-    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#e5b93d' }),
-    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#ef5544' }),
-    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:2000, stat:'producer', attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#38a9d6' }),
+    Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:4000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, productionMs:PRODUCTION_MS, maxOwned:2, color:'#d8783d' }),
+    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:2000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#e5b93d' }),
+    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:2000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#ef5544' }),
+    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:2000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#38a9d6' }),
   ]);
 
   const byId = (list, id) => list.find(item => item.id === id) || null;
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n) || 0));
   const int = (n, lo, hi) => Math.trunc(clamp(n, lo, hi));
+  const footprintFor = value => {
+    const def=typeof value==='string'?byId(DEFENSES,value):value;
+    return def&&def.footprint===2?2:1;
+  };
+  const rectsOverlap=(a,b)=>a.gx<b.gx+b.size&&a.gx+a.size>b.gx&&a.gy<b.gy+b.size&&a.gy+a.size>b.gy;
 
   function makeRng(seed) {
     let a = (Number(seed) || 1) >>> 0;
@@ -57,36 +69,43 @@ var NightRaidRules = (() => {
 
   function normalizeLayout(value) {
     const cells = Array.isArray(value && value.cells) ? value.cells : [];
-    const seen = new Set();
+    const castleRaw=value&&value.castleCell;
+    const legacy=value&&value.castlePos;
+    const castleCell={
+      gx:castleRaw&&Number.isFinite(+castleRaw.gx)?int(castleRaw.gx,0,BUILD_GRID-CASTLE_SIZE):legacy&&Number.isFinite(+legacy.x)?int(Math.round((+legacy.x-12)/76*BUILD_GRID-CASTLE_SIZE/2),0,BUILD_GRID-CASTLE_SIZE):4,
+      gy:castleRaw&&Number.isFinite(+castleRaw.gy)?int(castleRaw.gy,0,BUILD_GRID-CASTLE_SIZE):legacy&&Number.isFinite(+legacy.y)?int(Math.round((+legacy.y-8)/81*BUILD_GRID-CASTLE_SIZE/2),0,BUILD_GRID-CASTLE_SIZE):1,
+    };
+    const occupied={stand:[{gx:castleCell.gx,gy:castleCell.gy,size:CASTLE_SIZE}],floor:[]};
     const owned = Object.create(null);
     const clean = [];
+    const findSpace=(gx,gy,size,layer)=>{
+      const candidates=[];
+      for(let y=0;y<=BUILD_GRID-size;y++)for(let x=0;x<=BUILD_GRID-size;x++)candidates.push({gx:x,gy:y,size,score:Math.abs(x-gx)+Math.abs(y-gy)});
+      candidates.sort((a,b)=>a.score-b.score||a.gy-b.gy||a.gx-b.gx);
+      return candidates.find(candidate=>!occupied[layer].some(box=>rectsOverlap(candidate,box)))||null;
+    };
     cells.slice(0, BUILD_GRID * BUILD_GRID * 2).forEach(cell => {
       const type = byId(DEFENSES, String(cell && cell.type || ''));
       if (!type) return;
       if (type.maxOwned && (owned[type.id] || 0) >= type.maxOwned) return;
       const hasGrid = Number.isFinite(Number(cell && cell.gx)) && Number.isFinite(Number(cell && cell.gy));
-      const gx = hasGrid ? int(cell.gx, 0, BUILD_GRID - 1) : Math.round((int(cell.col, 1, COLS) - 1) * (BUILD_GRID - 1) / (COLS - 1));
-      const gy = hasGrid ? int(cell.gy, 0, BUILD_GRID - 1) : Math.round(int(cell.lane, 0, LANES - 1) * (BUILD_GRID - 1) / (LANES - 1));
+      const size=footprintFor(type),layer=type.trap?'floor':'stand';
+      const wantedX = hasGrid ? int(cell.gx, 0, BUILD_GRID - size) : Math.round((int(cell.col, 1, COLS) - 1) * (BUILD_GRID - size) / (COLS - 1));
+      const wantedY = hasGrid ? int(cell.gy, 0, BUILD_GRID - size) : Math.round(int(cell.lane, 0, LANES - 1) * (BUILD_GRID - size) / (LANES - 1));
+      const spot=findSpace(wantedX,wantedY,size,layer);
+      if(!spot)return;
+      const gx=spot.gx,gy=spot.gy;
       // Combat still uses five lanes and eight columns. The free builder grid is
       // presentation data mapped deterministically into those battle lanes.
       const lane = Math.round(gy * (LANES - 1) / (BUILD_GRID - 1));
       const col = 1 + Math.round(gx * (COLS - 1) / (BUILD_GRID - 1));
-      const layer = type.trap ? 'floor' : 'stand';
-      const key = gx + ':' + gy + ':' + layer;
-      if (seen.has(key)) return;
-      seen.add(key);
+      occupied[layer].push({gx,gy,size});
       owned[type.id] = (owned[type.id] || 0) + 1;
       const entry={ type:type.id, lane, col, gx, gy, tier:type.producer?1:int(cell.tier || 1, 1, 3) };
       if(type.producer){const uid=String(cell&&cell.uid||'');if(/^[A-Za-z0-9-]{8,64}$/.test(uid))entry.uid=uid;entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));}
       clean.push(entry);
     });
-    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,MAX_SOLDIERS) };
-    // Cosmetic builder metadata travels with the layout so the browser and
-    // server agree where the equipped castle sits. It never affects combat.
-    const castle=value&&value.castlePos;
-    if(castle&&Number.isFinite(+castle.x)&&Number.isFinite(+castle.y)){
-      result.castlePos={x:+clamp(castle.x,27,73).toFixed(2),y:+clamp(castle.y,29,41).toFixed(2)};
-    }
+    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,MAX_SOLDIERS), gridVersion:2, castleCell };
     return result;
   }
 
@@ -378,8 +397,8 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,SCENES,
-    RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,SCENES,
+    RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
     makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
   });

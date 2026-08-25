@@ -2291,8 +2291,10 @@
         .pet-cheer-label { color: #d97706; }
 
         .pet-quest-card {
-            /* bottom margin clears the streak panel's -20px pull */
-            margin: -10px 16px 26px; padding: 12px 14px; border-radius: 16px;
+            /* Let the garden finish visually before the information card
+               starts. The old negative margin made both rounded boxes look
+               stuck together on phones. */
+            margin: 12px 16px 26px; padding: 12px 14px; border-radius: 16px;
             background: var(--glass-bg, rgba(255,255,255,0.85));
             border: 1.5px solid var(--glass-border, rgba(0,0,0,0.06));
             box-shadow: 0 3px 14px rgba(0,0,0,0.06);
@@ -2309,6 +2311,10 @@
         .pet-quest-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #fbbf24, #f97316); transition: width 0.4s ease; }
         .pet-evo-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #34d399, #7c3aed); transition: width 0.4s ease; }
         .pet-quest-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+        /* Coins are already visible in the header and the Feed button carries
+           the exact price. Repeating “2052/240 … đủ rồi” wastes the narrow
+           homepage card; retain it in post-lesson feed cards only. */
+        .pet-quest-card .pet-quest-meta { display: none; }
         .pet-evo-unlock {
             margin-top: 6px; padding: 6px 10px; border-radius: 10px; font-size: 11.5px;
             background: rgba(124,58,237,0.10); color: var(--text-primary);
@@ -6301,12 +6307,14 @@
 
         /* ===== DRAG-TO-FEED (Option E) ===== */
         .draggable-food {
-            cursor: grab;
-            touch-action: none;
             user-select: none;
             position: relative;
         }
-        .draggable-food:active {
+        .draggable-food .food-drag-handle {
+            cursor: grab;
+            touch-action: none;
+        }
+        .draggable-food .food-drag-handle:active {
             cursor: grabbing;
             transform: scale(0.96);
         }
@@ -11660,6 +11668,22 @@
     border-radius: 30px 30px 0 0;
     border-bottom: 0;
 }
+.pet-shop-drawer-overlay .pet-shop-modal.food-drag-shop {
+    max-height: min(56dvh, 590px);
+}
+.pet-shop-drawer-overlay {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: linear-gradient(180deg, rgba(36,20,64,.04) 0 38%, rgba(36,20,64,.2) 55%, rgba(36,20,64,.58) 100%);
+}
+.pet-hero-zone.drop-target-hint {
+    animation: none !important;
+    box-shadow: inset 0 0 0 5px rgba(254,240,138,.9), inset 0 0 34px rgba(254,240,138,.24);
+}
+.pet-hero-zone.drop-target-hint::after { display: none; }
+.pet-hero-zone.drop-target-near {
+    box-shadow: inset 0 0 0 7px rgba(134,239,172,.98), inset 0 0 46px rgba(34,197,94,.32);
+}
 .shop-hero {
     min-height: 118px;
     display: grid;
@@ -11675,6 +11699,7 @@
     box-shadow: 0 7px 0 #4338ca, 0 11px 20px rgba(67, 56, 202, .24);
 }
 .shop-hero-dog {
+    position: relative;
     height: 94px;
     display: grid;
     place-items: end center;
@@ -11806,6 +11831,26 @@
     filter: blur(2px);
 }
 .shop-food-art svg { position: relative; z-index: 1; width: 84px; height: 84px; filter: drop-shadow(0 7px 4px rgba(100, 56, 30, .2)); }
+.food-drag-handle { transition: transform .16s ease, box-shadow .16s ease; }
+.food-drag-handle:focus-visible,
+.pet-hero-zone:focus-visible {
+    outline: 3px solid #111827;
+    outline-offset: 3px;
+}
+.food-drag-grip {
+    position: absolute;
+    left: 8px;
+    bottom: 7px;
+    z-index: 3;
+    padding: 3px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .9);
+    color: #6d28d9;
+    font-size: 12px;
+    font-weight: 950;
+    letter-spacing: -2px;
+    box-shadow: 0 2px 0 #c4b5fd;
+}
 .shop-xp-burst {
     position: absolute;
     top: 7px;
@@ -11868,6 +11913,25 @@
 .shop-buy-btn.disabled,
 .shop-buy-btn:disabled { border-color: #e5e7eb; background: #e5e7eb; color: #6b7280; box-shadow: 0 4px 0 #cbd5e1; cursor: not-allowed; }
 .shop-buy-btn:active:not(:disabled):not(.disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #b45309; }
+.shop-food-drag-meta {
+    min-height: 44px;
+    margin-top: auto;
+    padding: 7px 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    border: 2px dashed #a78bfa;
+    border-radius: 14px;
+    background: #f5f3ff;
+    color: #5b21b6;
+}
+.shop-food-price,
+.shop-food-drag-cue { display: inline-flex; align-items: center; gap: 4px; font-weight: 950; }
+.shop-food-price { color: #92400e; font-size: 12px; }
+.shop-food-price > span { color: #fbbf24; text-shadow: 0 1px 0 #92400e; }
+.shop-food-drag-cue { font-size: 9px; letter-spacing: .035em; text-align: right; }
+.shop-food-drag-meta.locked { border-color: #d1d5db; background: #f3f4f6; color: #6b7280; }
 
 @media (min-width: 700px) {
     .pet-info-stages { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -11891,6 +11955,9 @@
     .shop-sticker { width: 68px; height: 68px; }
     .shop-sticker-glyph { font-size: 37px; }
 }
+@media (max-height: 620px) {
+    .pet-shop-drawer-overlay .pet-shop-modal.food-drag-shop { max-height: 58dvh; }
+}
 @media (max-width: 350px) {
     .shop-items.food-grid,
     .shop-items.accessory-grid { grid-template-columns: 1fr; }
@@ -11904,6 +11971,7 @@
     .shop-item.shop-card,
     .pet-info-close,
     .shop-buy-btn { transition: none !important; }
+    .food-drag-handle { transition: none !important; }
     .pet-creature .pd-tail,
     .pet-creature .pd-ear,
     .pet-creature .pd-dog,
@@ -11993,7 +12061,7 @@
 .nr-shell:has(.nr-builder)>.nr-topbar{display:none}
 .nr-builder{position:relative;width:100%;height:100%;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:#b9e8f4;color:#29412f;box-shadow:none;overflow:hidden;isolation:isolate}
 .nr-builder,.nr-builder img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.nr-builder img{-webkit-user-drag:none}
-.nr-builder-world{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;touch-action:none;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(63,94,63,.35) transparent;background:radial-gradient(circle at 50% 35%,#eef7dd 0,#c9ebd0 48%,#a6d3c4 100%);cursor:grab}
+.nr-builder-world{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;touch-action:none;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(63,94,63,.35) transparent;background:radial-gradient(circle at 50% 35%,#eef7dd 0,#c9ebd0 48%,#a6d3c4 100%);cursor:grab;display:grid;place-content:safe center}
 /* Fake landscape: iOS cannot lock orientation from a web app, so the whole
    builder rotates 90deg — the child turns the device and the island fills the
    wide way. Pan deltas are remapped in JS while this class is on. */
@@ -12188,14 +12256,14 @@
    zone use independent anchors so all ten cosmetic castle silhouettes align
    to the same plaza and future land expansion does not move saved buildings. */
 .nr-builder-map>.nr-board-art{object-fit:fill}
-.nr-builder-map>.nr-equipped-castle{z-index:5;left:calc(var(--nr-castle-x,50)*1%);top:calc(var(--nr-castle-y,41)*1%);width:43%;height:27%;object-fit:contain;object-position:center bottom;transform:translate(-50%,-100%);filter:drop-shadow(0 16px 10px rgba(60,44,24,.26))!important}
+.nr-builder-map>.nr-equipped-castle{z-index:7;left:calc(var(--nr-castle-x,50)*1%);top:calc(var(--nr-castle-y,41)*1%);width:43%;height:27%;object-fit:contain;object-position:center bottom;transform:translate(-50%,-100%);filter:none!important}
 .nr-free-grid{left:14%;top:42%;width:72%;height:47%}
 .nr-build-grid-cell .nr-placed.producer{width:178%;height:178%;bottom:-7%}
 .nr-build-grid-cell .nr-placed:is(.rice-field,.tomato-field,.fish-pond){width:166%;height:166%;bottom:-12%}
 .nr-builder-world{background:linear-gradient(160deg,#f8f2e8 0,#e7f1dc 52%,#c4ddc7 100%)}
 @media(max-width:700px){
   .nr-builder-map>.nr-equipped-castle{width:47%;height:29%}
-  .nr-free-grid{left:12%;width:76%;top:42%;height:47%}
+  .nr-free-grid{left:12%;width:76%;top:10%;height:80%}
 }
 
 /* The main castle is a first-class builder object. Its anchor is stored as
@@ -12205,8 +12273,19 @@
 .nr-castle-yard span{position:absolute;left:50%;top:8px;transform:translateX(-50%);padding:5px 10px;border-radius:999px;background:rgba(73,52,22,.78);color:#fff8d7;font-size:13px;font-weight:950;letter-spacing:.06em;white-space:nowrap}
 .nr-castle-move-hint{position:absolute;z-index:9;left:calc(var(--nr-castle-x,50)*1%);top:calc(var(--nr-castle-y,41)*1% + 8px);transform:translateX(-50%);padding:6px 12px;border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:13px;font-weight:1000;letter-spacing:.05em;white-space:nowrap;opacity:0;pointer-events:none}
 .nr-builder.editing .nr-castle-yard,.nr-builder.editing .nr-castle-move-hint{opacity:1}
-.nr-builder.editing .nr-builder-map>.nr-equipped-castle{pointer-events:auto;cursor:grab;touch-action:none;-webkit-touch-callout:none;outline:5px solid rgba(255,218,74,.72);outline-offset:-8px;border-radius:18%;filter:drop-shadow(0 18px 13px rgba(86,55,20,.38))!important}
-.nr-builder-map.castle-dragging>.nr-equipped-castle{cursor:grabbing;opacity:.84;filter:drop-shadow(0 25px 16px rgba(86,55,20,.46))!important}
+.nr-builder.editing .nr-builder-map>.nr-equipped-castle{pointer-events:none;filter:none!important}
+/* The grab handle for the castle. It sits ABOVE the building grid — the grid is
+   painted over the castle art, which is why the keep could not be dragged at
+   all — and covers exactly the cells the castle owns, so a tap just outside it
+   still reaches the land cell underneath. */
+.nr-castle-pad{position:absolute;z-index:8;display:none;box-sizing:border-box;border:5px solid rgba(255,218,74,.85);border-radius:14px;background:rgba(255,214,92,.16);box-shadow:0 0 0 3px rgba(60,38,8,.28) inset;cursor:grab;touch-action:none;-webkit-touch-callout:none}
+.nr-builder.editing .nr-castle-pad{display:block}
+.nr-castle-pad.dragging{cursor:grabbing;background:rgba(255,214,92,.3)}
+.nr-builder-map.castle-invalid .nr-castle-pad{border-color:#ff5a52;background:rgba(255,90,82,.22)}
+.nr-builder-map.castle-dragging>.nr-equipped-castle{cursor:grabbing;opacity:.84;filter:none!important}
+/* All ten castle skins share this image class across Home, builder and
+   scouting. Never let an older generic rule restore a dark halo. */
+.nr-equipped-castle{filter:none!important;box-shadow:none!important}
 
 /* The pet uses real map coordinates. A low-frequency JS step updates only
    transform and sprite-frame position; wall collisions reverse its velocity. */
@@ -12219,10 +12298,29 @@
 /* The stage is positioned by an ID rule, which outranks any class — so the
    yard override has to carry the ID too or it lands half a screen to the left. */
 #petHeroStage.yard-mode,.pet-hero-stage.yard-mode{inset:0;left:0;top:0;right:0;bottom:0;width:100%;height:100%;display:block;transform:none}
-.pet-yard-scene{position:absolute;inset:0;border-radius:inherit;overflow:hidden}
-.nr-mini-yard .nr-builder-map,.nr-mini-map{position:absolute;inset:0;width:100%;height:100%;box-shadow:none;border-radius:inherit}
-.nr-mini-map>.nr-equipped-castle{left:50%;top:2%;width:46%;height:52%;transform:translateX(-50%);opacity:1}
-.nr-mini-map .nr-yard-pet{width:clamp(46px,15cqw,86px)}
+.pet-yard-scene{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:linear-gradient(180deg,#f7f1e8 0 18%,#dce9c8 62%,#b9d899 100%)}
+/* Keep the 1600×1200 yard at its native 4:3 ratio. Stretching the old square
+   art to fill this short homepage card made the paving oval and detached the
+   castle from its base. Wide tablets get a softly extended backdrop while the
+   coordinate-accurate yard stays centred. */
+.pet-yard-scene:before{content:"";position:absolute;inset:-12px;background:url('../img/night-raid/isometric-home-board-unified-gate-v3.webp') center/cover no-repeat;filter:blur(10px) saturate(.78);opacity:.48;transform:scale(1.06)}
+.nr-mini-yard .nr-builder-map.nr-mini-map{position:absolute;inset:auto;left:50%;top:50%;height:100%;width:auto;aspect-ratio:4/3;transform:translate(-50%,-50%);box-shadow:0 9px 24px rgba(54,72,36,.18);border-radius:inherit}
+.nr-mini-map>.nr-board-art{object-fit:fill}
+.nr-mini-map>.nr-equipped-castle{left:calc(var(--nr-castle-x,50)*1%);top:calc(var(--nr-castle-y,41)*1%);width:44%;height:36%;transform:translate(-50%,-100%);object-position:center bottom;opacity:1}
+.nr-mini-map .nr-home-layout{pointer-events:none}
+.nr-mini-map .nr-home-layout .nr-placed{pointer-events:none;-webkit-user-drag:none}
+.nr-mini-map .nr-home-layout em{display:none}
+.nr-mini-map .nr-yard-pet{width:clamp(34px,10cqw,64px)}
+.nr-mini-yard .nr-yard-pet>span{display:none}
+.nr-yard-army{position:absolute;z-index:6;inset:0;pointer-events:none;overflow:hidden;--nr-army-x:28%;--nr-army-y:82%;--nr-army-dir:1}
+.nr-home-soldier{position:absolute;left:calc(var(--nr-army-x) + var(--nr-slot-x));top:calc(var(--nr-army-y) + var(--nr-slot-y));display:block;width:7.2%;aspect-ratio:2.25;transform:translate(-50%,-100%) scaleX(var(--nr-army-dir));transform-origin:center bottom;transition:left .13s linear,top .2s ease-out;will-change:left,top}
+.nr-home-soldier b{position:absolute;inset:0;display:block;background-image:url('../img/night-raid/animation/raider-actions-v2.webp');background-repeat:no-repeat;background-size:800% 600%;background-position:var(--nr-unit-position,0 0);filter:drop-shadow(0 3px 2px rgba(50,37,24,.24));transform-origin:center bottom}
+.nr-yard-army[data-mode="march"] .nr-home-soldier b{animation:nr-home-soldier-step .31s ease-in-out infinite alternate}
+.nr-yard-army[data-mode="attention"] .nr-home-soldier b{filter:drop-shadow(0 3px 2px rgba(50,37,24,.24)) saturate(1.12);transform:translateY(-2%)}
+.nr-yard-army[data-mode="rest"] .nr-home-soldier:nth-child(odd) b{transform:translateY(6%) rotate(-2deg)}
+.nr-yard-army[data-mode="rest"] .nr-home-soldier:nth-child(even) b{transform:translateY(8%) rotate(2deg)}
+@keyframes nr-home-soldier-step{from{transform:translateY(1%)}to{transform:translateY(-5%)}}
+.nr-mini-map .nr-home-soldier{width:9.2%}
 .nr-pet-trail{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 /* What the dog leaves behind, and the way out of it. The poops are their own
    layer above the walk trail but under the dog, and each one is a real button
@@ -12264,15 +12362,53 @@
   100%{opacity:0;transform:translate(-50%,-40%) translateY(-.9cqw) scale(1.7)}}
 @media(prefers-reduced-motion:reduce){.nr-pet-print,.nr-pet-dust{display:none}}
 .nr-yard-pet{position:absolute;left:0;top:0;width:clamp(38px,4.8cqw,72px);aspect-ratio:1.08;will-change:transform;transform-origin:center bottom}
-.nr-yard-pet-sprite{position:absolute;inset:0;background-image:var(--nr-pet-walk);background-repeat:no-repeat;background-size:400% 500%;background-position:0 0;filter:drop-shadow(0 5px 3px rgba(47,34,24,.3));transform-origin:center bottom;will-change:background-position,transform}
+.nr-yard-pet-sprite{position:absolute;inset:0;filter:drop-shadow(0 5px 3px rgba(47,34,24,.3));transform-origin:center bottom;will-change:transform}
+/* Keep both atlases mounted from the first paint. Switching background-image
+   on the same element made iOS briefly clear the texture whenever the dog
+   stopped. Opacity now selects between two already-decoded layers. */
+.nr-yard-pet-sprite::before,.nr-yard-pet-sprite::after{content:"";position:absolute;inset:0;background-repeat:no-repeat;background-size:400% 500%;will-change:opacity,background-position}
+.nr-yard-pet-sprite::before{background-image:var(--nr-pet-walk);background-position:var(--nr-walk-position,0 0);opacity:1}
+.nr-yard-pet-sprite::after{background-image:var(--nr-pet-actions);background-position:var(--nr-action-position,0 0);opacity:0}
+.nr-yard-pet[data-atlas="actions"] .nr-yard-pet-sprite::before{opacity:0}
+.nr-yard-pet[data-atlas="actions"] .nr-yard-pet-sprite::after{opacity:1}
 .nr-yard-pet>span{position:absolute;left:50%;bottom:1px;transform:translate(-50%,100%);padding:2px 6px;border:2px solid #fff;border-radius:999px;background:#f18a2d;color:#fff;font-size:10px;line-height:1.15;font-weight:1000;white-space:nowrap;box-shadow:0 3px 7px rgba(60,37,19,.25);max-width:13cqw;overflow:hidden;text-overflow:ellipsis}
+
+/* The animated mini-yard is already a GPU-composited surface. iOS Safari can
+   flash or mis-size it when a second full-screen backdrop-filter is added on
+   top, so the homepage shop gets an opaque, stable scrim. */
+.pet-shop-drawer-overlay.yard-shop-overlay,
+.pet-info-modal-overlay.yard-shop-overlay{z-index:1000;height:100dvh;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,20,64,.78);isolation:isolate}
+.pet-shop-drawer-overlay.yard-shop-overlay{
+  background:linear-gradient(180deg,rgba(36,20,64,.04) 0 38%,rgba(36,20,64,.2) 55%,rgba(36,20,64,.58) 100%)}
+.pet-info-modal-overlay.yard-shop-overlay{padding:max(12px,env(safe-area-inset-top)) 10px max(12px,env(safe-area-inset-bottom));overflow:hidden}
+.pet-info-modal-overlay.yard-shop-overlay .pet-shop-modal{width:min(760px,100%);max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)));margin:auto;transform:none}
 .nr-yard-pet[data-mode="rest"]{filter:saturate(.92)}
-.nr-pet-event{position:absolute;z-index:6;width:42px;height:28px;transform:translate(-50%,-42%);pointer-events:none;animation:nr-pet-event-out 4.2s ease-out forwards}
+.nr-pet-event{position:absolute;z-index:10;width:42px;height:28px;transform:translate(-50%,-42%);pointer-events:none;animation:nr-pet-event-out 4.2s ease-out forwards}
 .nr-pet-event i,.nr-pet-event b{position:absolute;display:block}
 .nr-pet-event.pee i{left:11px;top:7px;width:18px;height:9px;border:3px solid rgba(238,199,46,.92);border-radius:50%;box-shadow:0 0 0 5px rgba(255,226,88,.25)}
 .nr-pet-event.pee b{left:20px;top:0;width:5px;height:9px;border-radius:50% 50% 60% 60%;background:#ffe76b;transform:rotate(18deg)}
+.nr-pet-event-label{position:absolute;left:50%;bottom:76px;min-width:max-content;padding:6px 10px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.98);border-radius:13px 13px 13px 4px;background:rgba(255,255,255,.96);color:#4b3523;font-size:11px;font-weight:900;line-height:1;white-space:nowrap;box-shadow:0 4px 12px rgba(70,43,20,.2)}
+.nr-pet-event-label::after{content:'';position:absolute;left:8px;bottom:-7px;border-width:7px 7px 0 0;border-style:solid;border-color:#fff transparent transparent transparent}
 .nr-pet-event.poop i{left:12px;bottom:1px;width:20px;height:10px;border-radius:50% 50% 38% 38%;background:#754522;box-shadow:0 -6px 0 -2px #87522a,0 -10px 0 -4px #9a6030,0 3px 5px rgba(50,31,18,.3)}
 .nr-pet-event.poop b{left:5px;bottom:0;width:32px;height:7px;border:2px solid rgba(80,126,116,.55);border-radius:50%}
 @keyframes nr-pet-event-out{0%,72%{opacity:1}100%{opacity:0;transform:translate(-50%,-52%) scale(.8)}}
 @media(max-width:700px){.nr-yard-pet{width:clamp(36px,4.6cqw,54px)}.nr-castle-yard span,.nr-castle-move-hint{font-size:11px}}
-@media(prefers-reduced-motion:reduce){.nr-yard-pet,.nr-yard-pet-sprite{will-change:auto}.nr-pet-event{animation:none}.nr-castle-yard{transition:none}}
+@media(prefers-reduced-motion:reduce){.nr-yard-pet,.nr-yard-pet-sprite,.nr-home-soldier{will-change:auto}.nr-home-soldier{transition:none}.nr-yard-army[data-mode] .nr-home-soldier b,.nr-pet-event{animation:none}.nr-castle-yard{transition:none}}
+
+/* Unified Night Raid garden: the old paved castle terrace and its internal
+   fence are gone. All twelve rows are buildable; large producers and the
+   castle reserve a real 2 × 2 footprint instead of only looking oversized. */
+.nr-free-grid{left:12%;width:76%;top:10%;height:80%}
+.nr-build-grid-cell.footprint-covered>i{background:rgba(255,187,74,.14)}
+.nr-builder.editing .nr-build-grid-cell.castle-covered>i{background:rgba(255,211,70,.28);border-color:rgba(255,245,171,.92)}
+.nr-build-grid-cell .nr-placed.footprint-2{left:100%;bottom:-100%;width:210%;height:210%;z-index:4}
+.nr-build-grid-cell .nr-placed.footprint-2.rice-field,.nr-build-grid-cell .nr-placed.footprint-2.tomato-field,.nr-build-grid-cell .nr-placed.footprint-2.fish-pond{width:206%;height:206%;bottom:-100%}
+/* The keep occupies four grid cells each way — 4 x 76%/12 wide, 4 x 80%/12
+   tall — so it reads as the home the rest of the base is arranged around. The
+   art is taller than its ground on purpose: it stands on the footprint's bottom
+   edge and rises above it. */
+.nr-builder-map>.nr-equipped-castle,.nr-mini-map>.nr-equipped-castle{width:25.33%;height:36%;object-fit:contain;object-position:center bottom}
+.nr-castle-yard{display:none!important}
+.nr-castle-move-hint{top:calc(var(--nr-castle-y,23.3)*1% + 6px);font-size:10px;padding:4px 8px}
+.nr-builder-map.castle-invalid>.nr-equipped-castle{outline-color:#ff5a52!important;opacity:.66}
+.pet-yard-scene:before{background-image:url('../img/night-raid/isometric-home-board-unified-gate-v3.webp')}

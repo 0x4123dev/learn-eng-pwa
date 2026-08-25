@@ -3,7 +3,16 @@
 var NightRaid = (() => {
   'use strict';
 
-  let game=null,previewGame=null,productionTicker=null,petPatrolTimer=null,petPatrolState=null,view='home',selectedBuild='wood-fence',builderEditing=false,builderShopOpen=false,builderDrag=null,builderScroll=null,builderZoom=1,builderRotated=false,builderGesture=null,builderSuppressClick=false,builderSuppressShopClick=false,pendingBuildPurchase=null,liveTargets=[],raidReports=[],homeLockedUntil=0;
+  // The build screen opens at 60% of the board's own size. At 100% a phone
+  // showed roughly a ninth of the 144 land cells and a child had to pan around
+  // to find their own castle; at 60% the whole base is a short swipe wide and a
+  // land cell is still about 61 x 48 css px, above the ~44px a fingertip needs.
+  const BUILDER_START_ZOOM=.6;
+  // Zooming out further is allowed to letterbox the board — on the build screen
+  // seeing the edges of your land is useful, not a mistake.
+  const BUILDER_MIN_ZOOM=.45;
+
+  let game=null,previewGame=null,productionTicker=null,petPatrolTimer=null,petPatrolState=null,armyParadeTimer=null,armyParadeState=null,view='home',selectedBuild='wood-fence',builderEditing=false,builderShopOpen=false,builderDrag=null,builderScroll=null,builderScrollByView={home:null,builder:null},builderZoom=1,builderZoomByView={home:1,builder:BUILDER_START_ZOOM},builderRotated=false,builderGesture=null,builderSuppressClick=false,builderSuppressShopClick=false,pendingBuildPurchase=null,liveTargets=[],raidReports=[],homeLockedUntil=0;
   const VI={
     title:'Cướp Đêm Lâu Đài',home:'Nhà Cướp Đêm',raid:'CƯỚP ĐÊM',
     build:'Xây Nhà',live:'Nhà người chơi',back:'Quay lại',
@@ -32,8 +41,8 @@ var NightRaid = (() => {
   }
   function save(){try{if(typeof saveUserData==='function'&&typeof currentUser!=='undefined'&&currentUser)saveUserData(currentUser,appState);}catch(e){}}
   function shell(body,title=VI.title){return `<div class="nr-shell"><header class="nr-topbar"><button class="nr-icon-btn" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div><span class="nr-kicker">CASTLE NIGHT RAID</span><h1>${esc(title)}</h1></div><div class="nr-wallet" aria-label="Số xu hiện có">${svg('coin')}<strong data-nr-coins>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></header>${body}<div id="nrLive" class="sr-only" aria-live="polite"></div></div>`;}
-  function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}}
-  if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(document.hidden){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}}else if(view==='home'||view==='builder')startPetPatrol();});
+  function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}}
+  if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(document.hidden){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}}else if(view==='home'||view==='builder'){startPetPatrol();startArmyParade();}});
   function ownPower(){return NightRaidRules.combatPower(appState.nightRaidLayout,appState.dogLevel||1,appState.battleTeammates,appState.nightRaidLayout?.soldiers||0);}
   function raidPetDescriptor(){
     const level=Math.max(1,+appState.dogLevel||1),stage=typeof getDogStage==='function'?getDogStage(level):{stageCss:'chihuahua',minLevel:1,name:'Chihuahua'};
@@ -56,7 +65,7 @@ var NightRaid = (() => {
 
   function open(){ensure();cleanup();view='home';if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderHome();refreshHome();}
   function close(){cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
-  function renderHome(){cleanup();setNav(false);view='home';ensure();const r=root();if(!r)return;
+  function renderHome(){cleanup();setNav(false);view='home';applyViewZoom(view);ensure();const r=root();if(!r)return;
     // The Night Raid home IS the child's island, exactly like the builder:
     // full-screen board with the equipped castle and every placed building,
     // the same DAM/DEF/LINH/coin chips, and the actions as SHOP-style fabs
@@ -64,10 +73,10 @@ var NightRaid = (() => {
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;
     const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));
-    const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type);return `<img class="nr-placed ${layer} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)} cấp ${cell.tier}" oncontextmenu="return false"><em>${cell.tier}</em>${productionBadge(cell)}`;};
+    const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)} cấp ${cell.tier}" oncontextmenu="return false"><em>${cell.tier}</em>${productionBadge(cell)}`;};
     let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(!stand&&!floor)continue;grid+=`<div class="nr-build-grid-cell has-stand" data-gx="${gx}" data-gy="${gy}" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}}
     const mapBase=builderMapBase(),mapSize=Math.round(mapBase*builderZoom),mapHeight=Math.round(mapBase*.75*builderZoom);
-    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-expanded-v2.webp" alt="Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><button class="nr-yard-clean" type="button" data-nr-clean hidden onclick="nrCleanYard()" aria-label="Dọn phân chó trong sân">🗑️<span>DỌN PHÂN</span><b>0</b></button><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrScoutBot()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowLiveTargets()">${svg('people')}<span>NHÀ THẬT</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Kéo để xem · chụm 2 ngón thu phóng</div>${lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
+    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-unified-gate-v3.webp" alt="Khu vườn lâu đài hình chữ nhật có cổng chính cho đội cướp tiến vào"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><button class="nr-yard-clean" type="button" data-nr-clean hidden onclick="nrCleanYard()" aria-label="Dọn phân chó trong sân">🗑️<span>DỌN PHÂN</span><b>0</b></button><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrScoutBot()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowLiveTargets()">${svg('people')}<span>NHÀ THẬT</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Kéo để xem · chụm 2 ngón thu phóng</div>${lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
     paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();
   }
 
@@ -156,36 +165,90 @@ var NightRaid = (() => {
   function buildAsset(def){return 'img/night-raid/'+(def.asset||def.id+'.webp');}
   function buildStatHtml(def){const parts=[];if(def.attack)parts.push(`<b class="damage">+${def.attack} DAM</b>`);if(def.defense)parts.push(`<b class="defense">+${def.defense} DEF</b>`);if(def.producer==='soldier')parts.push('<b class="producer">1 lính/ngày · +20 DAM</b>');if(def.producer==='coins')parts.push(`<b class="producer">+${def.yield} xu/ngày</b>`);return parts.join('');}
   function productionBadge(cell){const def=NightRaidRules.defenseById(cell.type);if(!def?.producer)return'';const ready=cell.readyAt<=Date.now(),label=def.producer==='coins'?`+${def.yield} XU`:'NHẬN LÍNH';return `<span class="nr-production-badge ${ready?'ready':''}" data-ready-at="${cell.readyAt}" data-ready-label="${label}" data-producer-uid="${esc(cell.uid||'')}">${ready?label:'24:00:00'}</span>`;}
-  function placedHtml(cell,layer,gx,gy){if(!cell)return'';const def=NightRaidRules.defenseById(cell.type);return `<img class="nr-placed ${layer} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)}, kéo để đổi vị trí" oncontextmenu="return false" onpointerdown="nrBeginPlacedDrag(event,${gx},${gy},'${layer}')"><em>${cell.tier}</em>${productionBadge(cell)}`;}
-  function castlePosition(layout){const p=layout&&layout.castlePos;return{x:p&&Number.isFinite(+p.x)?Math.max(27,Math.min(73,+p.x)):50,y:p&&Number.isFinite(+p.y)?Math.max(29,Math.min(41,+p.y)):41};}
+  function placedHtml(cell,layer,gx,gy){if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)}, chiếm ${size} × ${size} ô, kéo để đổi vị trí" oncontextmenu="return false" onpointerdown="nrBeginPlacedDrag(event,${gx},${gy},'${layer}')"><em>${cell.tier}</em>${productionBadge(cell)}`;}
+  const CASTLE_SIZE=NightRaidRules.CASTLE_SIZE;
+  const CASTLE_HOME={gx:4,gy:1};
+  // The art is anchored at the BOTTOM CENTRE of its footprint, so it stands on
+  // the ground it occupies and towers upward the way a castle should.
+  function castlePosition(layout){const clean=NightRaidRules.normalizeLayout(layout),p=clean.castleCell||CASTLE_HOME,G=NightRaidRules.BUILD_GRID;return{x:PET_YARD.left+(p.gx+CASTLE_SIZE/2)*PET_YARD.width/G,y:PET_YARD.top+(p.gy+CASTLE_SIZE)*PET_YARD.height/G,gx:p.gx,gy:p.gy};}
+  // The footprint as a percentage box on the map, shared by the drag pad and
+  // the dog's no-walk rectangle.
+  function castleFootprint(layout){const clean=NightRaidRules.normalizeLayout(layout),p=clean.castleCell||CASTLE_HOME,G=NightRaidRules.BUILD_GRID,cw=PET_YARD.width/G,ch=PET_YARD.height/G;return{left:PET_YARD.left+p.gx*cw,top:PET_YARD.top+p.gy*ch,width:CASTLE_SIZE*cw,height:CASTLE_SIZE*ch,gx:p.gx,gy:p.gy};}
   function castleMapStyle(layout){const p=castlePosition(layout);return`--nr-castle-x:${p.x};--nr-castle-y:${p.y};`;}
   // Root-absolute on purpose. This URL is handed to CSS as a custom property,
   // and a RELATIVE url() inside one is resolved against the stylesheet that
   // consumes it — css/styles.css — so `img/...` became `/css/img/...` and 404'd,
   // leaving the yard pet invisible while every other check looked healthy.
-  function yardPetHtml(){const pet=raidPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.png`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div><span>${esc(pet.name)}</span></div></div>`;}
+  function yardPetHtml(opts={}){const pet=raidPetDescriptor(),walk=`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions=`/img/night-raid/pet-actions-${pet.atlas}-v2.png`,name=opts.showName===false?'':`<span>${esc(pet.name)}</span>`;return `<div class="nr-pet-patrol" aria-label="${esc(pet.name)}, ${esc(pet.breed)}, pet cấp ${pet.level}, đang đi tuần quanh lâu đài"><div class="nr-pet-trail" data-nr-pet-trail aria-hidden="true"></div><div class="nr-yard-pet" data-nr-yard-pet data-x="0" data-y="0" data-mode="walk" data-atlas="walk"><div class="nr-yard-pet-sprite" data-row="${pet.cell}" style="--nr-pet-walk:url('${walk}');--nr-pet-actions:url('${actions}')" aria-hidden="true"></div>${name}</div></div>`;}
+  function armySlots(count){const cols=Math.min(5,Math.max(1,Math.ceil(count/2))),gap=4.25,slots=[];for(let i=0;i<count;i++){const row=i>=cols?1:0,col=i%cols,rowCount=row?count-cols:Math.min(count,cols);slots.push({x:(col-(rowCount-1)/2)*gap+(row?gap*.48:0),y:row*4.2,row:i%6});}return slots;}
+  function yardArmyHtml(){const count=Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+appState.nightRaidLayout?.soldiers||0)));if(!count)return'';return `<div class="nr-yard-army" data-nr-yard-army data-mode="march" aria-label="Đội hình ${count} lính đang duyệt binh trên bãi cỏ">${armySlots(count).map((s,i)=>`<i class="nr-home-soldier" data-unit="${i}" data-row="${s.row}" style="--nr-slot-x:${s.x}%;--nr-slot-y:${s.y}%;--nr-unit-position:0% ${s.row*20}%"><b aria-hidden="true"></b></i>`).join('')}</div>`;}
+  function yardBuildingsHtml(){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cellMap=new Map(layout.cells.map(c=>[c.gx+':'+c.gy+':'+(NightRaidRules.defenseById(c.type).trap?'floor':'stand'),c]));const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" alt="" draggable="false"><em>${cell.tier}</em>`;};let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++)for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(stand||floor)grid+=`<div class="nr-build-grid-cell" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}return `<div class="nr-free-grid nr-home-layout" aria-hidden="true">${grid}</div>`;}
+  const petAtlasPreloads=new Map();
+  function preloadPetAtlases(sprite){
+    if(!sprite||typeof Image==='undefined')return;
+    const pet=raidPetDescriptor(),urls={walk:`/img/night-raid/pet-walk-${pet.atlas}-v1.png`,actions:`/img/night-raid/pet-actions-${pet.atlas}-v2.png`};
+    for(const [kind,url] of Object.entries(urls)){
+      let image=petAtlasPreloads.get(url);
+      if(!image){image=new Image();image.decoding='async';image.src=url;petAtlasPreloads.set(url,image);}
+      const ready=()=>{if(sprite.isConnected)sprite.dataset[kind+'Ready']='1';};
+      if(image.complete&&image.naturalWidth)ready();else image.addEventListener('load',ready,{once:true});
+    }
+  }
   function trimmedCanvasUrl(canvas,padding=8){const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return canvas.toDataURL('image/png');const {width,height}=canvas,data=ctx.getImageData(0,0,width,height).data;let left=width,top=height,right=-1,bottom=-1;for(let y=0;y<height;y++){for(let x=0;x<width;x++){if(data[(y*width+x)*4+3]>8){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}}}if(right<left)return canvas.toDataURL('image/png');left=Math.max(0,left-padding);top=Math.max(0,top-padding);right=Math.min(width-1,right+padding);bottom=Math.min(height-1,bottom+padding);const out=document.createElement('canvas');out.width=right-left+1;out.height=bottom-top+1;out.getContext('2d',{alpha:true}).drawImage(canvas,left,top,out.width,out.height,0,0,out.width,out.height);return out.toDataURL('image/png');}
-  function paintEquippedCastle(){const image=document.getElementById('nrEquippedCastle');if(!image)return;const board=image.closest('.nr-builder-map')?.querySelector('.nr-board-art');if(board){board.src='img/night-raid/isometric-home-board-expanded-v2.webp';board.alt='Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng';}const skin=appState.petBattleCastleSkin||'stone-keep',render=()=>{if(!image.isConnected)return;const logicalWidth=400,logicalHeight=340,quality=(typeof devicePixelRatio!=='undefined'&&devicePixelRatio>=2)?4:3,canvas=document.createElement('canvas');canvas.width=logicalWidth*quality;canvas.height=logicalHeight*quality;const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(quality,0,0,quality,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';NightRaidArt.drawCastle(ctx,logicalWidth/2,logicalHeight-16,skin,100,100,0);try{image.src=trimmedCanvasUrl(canvas,8*quality);}catch(_){image.src='img/night-raid/home-castle.webp';}};render();if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(render);}
+  function paintEquippedCastle(targetId='nrEquippedCastle'){const image=document.getElementById(targetId);if(!image)return;const board=image.closest('.nr-builder-map')?.querySelector('.nr-board-art');if(board){board.src='img/night-raid/isometric-home-board-unified-gate-v3.webp';board.alt='Khu vườn lâu đài hình chữ nhật có cổng chính cho đội cướp tiến vào';}const skin=appState.petBattleCastleSkin||'stone-keep',render=()=>{if(!image.isConnected)return;const logicalWidth=400,logicalHeight=340,quality=(typeof devicePixelRatio!=='undefined'&&devicePixelRatio>=2)?4:3,canvas=document.createElement('canvas');canvas.width=logicalWidth*quality;canvas.height=logicalHeight*quality;const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(quality,0,0,quality,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';NightRaidArt.drawCastle(ctx,logicalWidth/2,logicalHeight-16,skin,100,100,0);try{image.src=trimmedCanvasUrl(canvas,8*quality);}catch(_){image.src='img/night-raid/home-castle.webp';}};render();if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(render);}
   function builderMapBase(){return 1600;}
+  // The build screen opens at 60%: at 100% a phone showed nine of the 144 land
+  // cells at a time and a child had to pan to find their own castle. At 60% a
+  // land cell is still 61 x 48 css px — above the 44px a fingertip needs — and
+  // the zoom buttons and pinch still reach 165%.
+  const viewKey=v=>(v==='builder'?'builder':'home');
+  function zoomFor(v){return builderZoomByView[viewKey(v)];}
+  function applyViewZoom(v){builderZoom=zoomFor(v);builderScroll=builderScrollByView[viewKey(v)];}
   function gridKey(cell){return cell.gx+':'+cell.gy+':'+(NightRaidRules.defenseById(cell.type).trap?'floor':'stand');}
-  function rememberBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(viewport)builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};}
-  function decorateCastleYard(map,editable){if(!map||map.classList.contains('nr-scout-map'))return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),p=castlePosition(layout),castle=map.querySelector('#nrEquippedCastle');map.style.setProperty('--nr-castle-x',p.x);map.style.setProperty('--nr-castle-y',p.y);if(editable&&!map.querySelector('.nr-castle-yard'))map.insertAdjacentHTML('afterbegin','<div class="nr-castle-yard" aria-hidden="true"><span>KHU ĐẶT NHÀ CHÍNH</span></div>');if(castle){castle.draggable=false;castle.setAttribute('oncontextmenu','return false');if(editable){castle.setAttribute('aria-label',(castle.alt||'Nhà chính')+', bật Sửa rồi kéo trong sân gạch');castle.addEventListener('pointerdown',beginCastleDrag);if(!map.querySelector('.nr-castle-move-hint'))castle.insertAdjacentHTML('afterend','<span class="nr-castle-move-hint" aria-hidden="true">KÉO NHÀ TRONG SÂN GẠCH</span>');}}if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());}
+  function buildRect(cell){const def=NightRaidRules.defenseById(cell.type);return{gx:+cell.gx,gy:+cell.gy,size:NightRaidRules.footprintFor(def),layer:def.trap?'floor':'stand'};}
+  function buildSpaceFree(layout,gx,gy,size,layer,ignoreCell,includeCastle=true){
+    const G=NightRaidRules.BUILD_GRID,candidate={gx:+gx,gy:+gy,size:+size};
+    if(candidate.gx<0||candidate.gy<0||candidate.gx+size>G||candidate.gy+size>G)return false;
+    if(includeCastle&&layer==='stand'){
+      const castle=layout.castleCell||CASTLE_HOME;
+      if(NightRaidRules.rectsOverlap(candidate,{gx:+castle.gx,gy:+castle.gy,size:CASTLE_SIZE}))return false;
+    }
+    return !layout.cells.some(cell=>cell!==ignoreCell&&buildRect(cell).layer===layer&&NightRaidRules.rectsOverlap(candidate,buildRect(cell)));
+  }
+  function footprintOwner(layout,gx,gy,layer){return layout.cells.find(cell=>{const box=buildRect(cell);return box.layer===layer&&gx>=box.gx&&gx<box.gx+box.size&&gy>=box.gy&&gy<box.gy+box.size;})||null;}
+  function castlePadStyle(box){return `left:${box.left.toFixed(3)}%;top:${box.top.toFixed(3)}%;width:${box.width.toFixed(3)}%;height:${box.height.toFixed(3)}%`;}
+  function mountCastlePad(map,layout){
+    const box=castleFootprint(layout);let pad=map.querySelector('.nr-castle-pad');
+    if(!pad){
+      map.insertAdjacentHTML('beforeend',`<div class="nr-castle-pad" role="button" tabindex="0" aria-label="Nhà chính ${CASTLE_SIZE} × ${CASTLE_SIZE} ô — kéo để chuyển chỗ" style="${castlePadStyle(box)}"></div>`);
+      pad=map.querySelector('.nr-castle-pad');
+      pad.addEventListener('pointerdown',beginCastleDrag);
+    } else pad.setAttribute('style',castlePadStyle(box));
+    return pad;
+  }
+  function rememberBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(viewport)keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});}
+  function keepScroll(at){builderScroll=at;builderScrollByView[viewKey(view)]=at;}
+  function decorateCastleYard(map,editable){if(!map||map.classList.contains('nr-scout-map'))return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),p=castlePosition(layout),castle=map.querySelector('#nrEquippedCastle');map.style.setProperty('--nr-castle-x',p.x);map.style.setProperty('--nr-castle-y',p.y);if(castle){castle.draggable=false;castle.setAttribute('oncontextmenu','return false');if(editable){castle.setAttribute('aria-label',(castle.alt||'Nhà chính')+', bật Sửa rồi kéo trên khu vườn');if(!map.querySelector('.nr-castle-move-hint'))castle.insertAdjacentHTML('afterend','<span class="nr-castle-move-hint" aria-hidden="true">KÉO NHÀ TRÊN VƯỜN</span>');}}
+    // The castle art used to carry the drag itself, and could not be grabbed at
+    // all: the building grid is painted OVER it, so a finger on the keep landed
+    // on an empty land cell instead. The grab handle therefore lives above the
+    // grid — and is sized to the castle's GROUND, not its artwork, so the towers
+    // leaning over neighbouring cells never steal a tap meant for those cells.
+    if(editable)mountCastlePad(map,layout);else map.querySelector('.nr-castle-pad')?.remove();if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());if(view==='home'&&!map.querySelector('[data-nr-yard-army]'))map.insertAdjacentHTML('beforeend',yardArmyHtml());}
   // Where the dog may NOT walk. The yard grid is .nr-free-grid — left 12%,
   // top 42%, 76%x47% of the map, twelve cells each way — so every placed
   // building maps to a rectangle in the same percentage space the pet walks
   // in. Flat floor traps are stepped over rather than walked around; anything
   // that stands up is solid. Recomputed as the child builds.
-  const PET_YARD={left:12,top:42,width:76,height:47};
+  const PET_YARD={left:12,top:10,width:76,height:80};
   // The dog is a sprite, not a dot: it is drawn translate(-50%,-100%) from its
   // feet, so its body rises about 5.4% of the map above them and spreads 2.4%
   // either side. Testing only the feet is why it still LOOKED like it walked
   // through a wall — the feet cleared the box while the body crossed it.
   const PET_BODY={halfW:2.4,height:5.4};
   // Every so often the dog stops what it is doing, walks to the rice or the
-  // pond, and does the matching business. The pond is not a building — it is
-  // painted into the board art — so its spot was found by sampling the water
-  // colour out of that image rather than guessed by eye.
-  const YARD_POND={x:19,y:58};
+  // pond, and does the matching business. Both are now movable 2 × 2 objects,
+  // so destinations are derived from their saved grid coordinates.
   const YARD_POOP_MAX=4, YARD_POOP_MIN_GAP_MS=18000, YARD_POOP_SPREAD_MS=17000, YARD_SQUAT_MS=1700, YARD_ERRAND_TIMEOUT_MS=30000;
   function yardPoops(){
     if(!Array.isArray(appState.nightRaidPoops))appState.nightRaidPoops=[];
@@ -198,19 +261,19 @@ var NightRaid = (() => {
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),G=NightRaidRules.BUILD_GRID;
     const cw=PET_YARD.width/G,ch=PET_YARD.height/G,spots=[];
     for(const cell of layout.cells){
-      if(cell.type!=='rice-field')continue;
+      if(cell.type!=='rice-field'&&cell.type!=='fish-pond')continue;
+      const size=NightRaidRules.footprintFor(cell.type);
       // Stand at the very edge of the crop, just past where the solid box
       // ends. Aiming at the middle of the field looked right and was wrong:
       // the dog may not walk into a building, so it would have trudged toward
       // a spot it could never reach and stood there forever.
-      spots.push({x:PET_YARD.left+cell.gx*cw+cw*.5,
-                  y:PET_YARD.top+cell.gy*ch+ch*1.25+PET_BODY.height+1, what:'ruộng',kind:'pee'});
+      spots.push({x:PET_YARD.left+(cell.gx+size*.5)*cw,
+                  y:PET_YARD.top+(cell.gy+size)*ch+PET_BODY.height+1, what:cell.type==='rice-field'?'ruộng':'ao',kind:cell.type==='rice-field'?'pee':'poop'});
     }
-    spots.push({x:YARD_POND.x, y:YARD_POND.y, what:'ao',kind:'poop'});
     // Whatever is left must be inside the walk AND actually standable, so a
     // crowded yard simply offers fewer errands instead of jamming the dog.
     const rects=petBlockedRects();
-    const reachable=spots.filter(s=>s.x>14&&s.x<86&&s.y>47&&s.y<88
+    const reachable=spots.filter(s=>s.x>PET_YARD.left&&s.x<PET_YARD.left+PET_YARD.width&&s.y>PET_YARD.top&&s.y<PET_YARD.top+PET_YARD.height
       &&!petBlockedAt(rects,s.x,s.y));
     return reachable;
   }
@@ -221,46 +284,68 @@ var NightRaid = (() => {
     for(const cell of layout.cells){
       const def=NightRaidRules.defenseById(cell.type);
       if(!def)continue;
-      const x=PET_YARD.left+cell.gx*cw,y=PET_YARD.top+cell.gy*ch;
+      const size=NightRaidRules.footprintFor(def),x=PET_YARD.left+cell.gx*cw,y=PET_YARD.top+cell.gy*ch;
       // Two inflations, for two different reasons. The sprites are drawn
       // larger than their own cell, so the box grows to what the child sees
       // standing there; then it grows again by the dog's own body, so the
       // rectangle below is exactly where its FEET may not go.
       rects.push({
-        x0:x-cw*.45-PET_BODY.halfW, x1:x+cw*1.45+PET_BODY.halfW,
-        y0:y-ch*.9,                 y1:y+ch*1.25+PET_BODY.height,
+        x0:x-cw*.22-PET_BODY.halfW, x1:x+cw*(size+.22)+PET_BODY.halfW,
+        y0:y-ch*.22,                y1:y+ch*(size+.18)+PET_BODY.height,
       });
     }
+    const castle=layout.castleCell||CASTLE_HOME,x=PET_YARD.left+castle.gx*cw,y=PET_YARD.top+castle.gy*ch;
+    rects.push({x0:x-cw*.25-PET_BODY.halfW,x1:x+cw*(CASTLE_SIZE+.25)+PET_BODY.halfW,y0:y-ch*.45,y1:y+ch*(CASTLE_SIZE+.25)+PET_BODY.height});
     return rects;
   }
   function petBlockedAt(rects,x,y){for(const r of rects)if(x>r.x0&&x<r.x1&&y>r.y0&&y<r.y1)return r;return null;}
+  function armyClearAt(rects,x,y,slots){return slots.every(s=>!petBlockedAt(rects,x+s.x,y+s.y));}
+  function placeArmyParade(army,state,now){army.dataset.mode=state.mode;army.style.setProperty('--nr-army-x',state.x.toFixed(2)+'%');army.style.setProperty('--nr-army-y',state.y.toFixed(2)+'%');army.style.setProperty('--nr-army-dir',state.dir);army.querySelectorAll('[data-unit]').forEach((unit,i)=>{const frame=state.mode==='march'?(Math.floor(now/155)+i%2)%4:state.mode==='attention'?4:0,row=Math.max(0,Math.min(5,+unit.dataset.row||0));unit.style.setProperty('--nr-unit-position',(frame*(100/7))+'% '+(row*20)+'%');});}
+  function startArmyParade(){if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}const map=petPatrolRoot||document.querySelector('.nr-builder-map'),army=map&&map.querySelector('[data-nr-yard-army]');if(!map||!army)return;const units=army.querySelectorAll('[data-unit]'),count=units.length;if(!count)return;const slots=armySlots(count),rects=petBlockedRects(),now=performance.now(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!armyParadeState)armyParadeState={x:28,y:82,dir:1,mode:'march',until:now+6800,last:now};const state=armyParadeState;
+    if(!armyClearAt(rects,state.x,state.y,slots)){let found=null;for(const y of [82,74,66]){for(let x=22;x<=78;x+=4){if(armyClearAt(rects,x,y,slots)){found={x,y};break;}}if(found)break;}if(found){state.x=found.x;state.y=found.y;}}
+    if(reduced){state.mode='attention';placeArmyParade(army,state,now);return;}
+    placeArmyParade(army,state,now);armyParadeTimer=setInterval(()=>{if(document.hidden||!army.isConnected)return;const t=performance.now(),dt=Math.min(.22,(t-state.last)/1000);state.last=t;
+      if(t>=state.until){if(state.mode==='march'){state.mode='attention';state.until=t+1800;}else if(state.mode==='attention'){state.mode='rest';state.until=t+2600;}else{state.mode='march';state.until=t+6200+Math.random()*2600;}}
+      if(state.mode==='march'){let nx=state.x+state.dir*2.7*dt;if(nx<20||nx>80||!armyClearAt(petBlockedRects(),nx,state.y,slots)){state.dir*=-1;nx=state.x;const alternatives=[82,74,66].filter(y=>y!==state.y&&armyClearAt(petBlockedRects(),state.x,y,slots));if(alternatives.length)state.y=alternatives[Math.floor(Math.random()*alternatives.length)];}state.x=nx;}
+      placeArmyParade(army,state,t);
+    },120);
+  }
   // The same yard, shrunk into somebody else's screen. The home habitat asked
   // for this scene, and duplicating the walk would have meant two dogs with
   // two personalities drifting apart — so the patrol simply learns to run
   // inside whatever element it is given.
-  let petPatrolRoot=null;
+  let petPatrolRoot=null,yardRefreshAt=0;
+  async function refreshYardHabitat(host,opts){const now=Date.now();if(now-yardRefreshAt<12000)return;yardRefreshAt=now;const before=JSON.stringify(NightRaidRules.normalizeLayout(appState.nightRaidLayout)),res=await api('home');if(!res.ok||!res.data?.home?.layout)return;appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);const after=JSON.stringify(appState.nightRaidLayout);if(after===before)return;save();if(host.isConnected)mountYardScene(host,Object.assign({},opts,{skipRefresh:true}));}
   function mountYardScene(host,opts){
     if(!host)return null;
     ensure();
     const skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null;
+    const mapStyle=castleMapStyle(appState.nightRaidLayout);
     host.classList.add('nr-mini-yard');
-    host.innerHTML=`<div class="nr-builder-map nr-mini-map">`
-      +`<img class="nr-board-art" src="img/night-raid/isometric-home-board-skin-pad.webp" alt="" draggable="false">`
+    host.innerHTML=`<div class="nr-builder-map nr-mini-map" style="${mapStyle}">`
+      +`<img class="nr-board-art" src="img/night-raid/isometric-home-board-unified-gate-v3.webp" alt="" draggable="false">`
       +`<img class="nr-equipped-castle" id="nrMiniCastle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Lâu đài')}" draggable="false">`
-      +yardPetHtml()+`</div>`;
+      +yardBuildingsHtml()+yardPetHtml({showName:false})+yardArmyHtml()+`</div>`;
     petPatrolRoot=host.querySelector('.nr-builder-map');
-    // The habitat is a wide, short box while the raid yard is nearly square,
-    // so the walk is squeezed into the middle band rather than the full board.
+    // Paint the bought skin onto a transparent canvas. The fallback asset has
+    // its own square background, which looked like a sticker and could never
+    // line up with the paved castle pad underneath it.
+    paintEquippedCastle('nrMiniCastle');
     petPatrolState=null;
     startPetPatrol();
+    armyParadeState=null;
+    startArmyParade();
+    if(!(opts||{}).skipRefresh)refreshYardHabitat(host,opts);
     if((opts||{}).onTap)host.querySelector('[data-nr-yard-pet]')?.addEventListener('click',opts.onTap);
     return petPatrolRoot;
   }
   function unmountYardScene(){
     if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}
-    petPatrolRoot=null;petPatrolState=null;
+    if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}
+    petPatrolRoot=null;petPatrolState=null;armyParadeState=null;
   }
-  function petPatrolBounds(){const castle=castlePosition(appState.nightRaidLayout);return{minX:Math.max(14,castle.x-34),maxX:Math.min(86,castle.x+34),minY:Math.max(47,castle.y+6),maxY:88};}
+  function petPatrolBounds(){return{minX:PET_YARD.left+2,maxX:PET_YARD.left+PET_YARD.width-2,minY:PET_YARD.top+3,maxY:PET_YARD.top+PET_YARD.height-2};}
   // A dog that leaves nothing behind reads as sliding over the grass rather
   // than walking on it. Prints are planted where the paw actually fell and
   // fade there; dust puffs kick up from the same spot. Both are plain DOM
@@ -333,11 +418,11 @@ var NightRaid = (() => {
     if(typeof showToast==='function')showToast('✨ Dọn sạch! +'+coins+' 🪙 +'+xp+' XP');
     announce('Đã dọn '+cleared+' bãi phân cho chó');
   }
-  function spawnPetBusinessEffect(map,kind,state){const effect=document.createElement('span');effect.className='nr-pet-event '+kind;effect.setAttribute('aria-hidden','true');effect.style.left=state.x+'%';effect.style.top=state.y+'%';effect.innerHTML='<i></i><b></b>';map.appendChild(effect);setTimeout(()=>effect.remove(),4200);}
+  function spawnPetBusinessEffect(map,kind,state){const effect=document.createElement('span');effect.className='nr-pet-event '+kind;effect.setAttribute('aria-hidden','true');effect.style.left=state.x+'%';effect.style.top=state.y+'%';effect.innerHTML='<i></i><b></b>'+(kind==='pee'?'<span class="nr-pet-event-label">I&#39;m peeing</span>':'');map.appendChild(effect);setTimeout(()=>effect.remove(),4200);}
   function choosePetIdle(state,now){const roll=Math.random();state.mode=roll<.38?'bark':roll<.76?'rest':roll<.90?'scratch':'idle';state.casualUntil=now+(state.mode==='idle'?1700:state.mode==='bark'?3400:state.mode==='rest'?6200:2600);state.frame=0;}
   function petActionFrame(state,now){if(state.mode==='walk'||state.mode==='seek')return state.frame;if(state.mode==='bark')return Math.floor(now/240)%2;if(state.mode==='rest')return 2;if(state.mode==='scratch')return Math.floor(now/260)%2?3:2;return 0;}
-  function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.backgroundImage=walking?'var(--nr-pet-walk)':'var(--nr-pet-actions)';sprite.style.backgroundPosition=`${frame*(100/3)}% ${row*25}%`;sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
-  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=petPatrolRoot||document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
+  function placePatrolPet(pet,sprite,state,now=performance.now()){const row=Math.max(0,Math.min(4,+sprite.dataset.row||0)),frame=Math.max(0,Math.min(3,petActionFrame(state,now))),walking=state.mode==='walk'||state.mode==='seek',actionsReady=sprite.dataset.actionsReady==='1';pet.dataset.x=state.x.toFixed(2);pet.dataset.y=state.y.toFixed(2);pet.dataset.mode=state.mode;pet.dataset.atlas=walking||!actionsReady?'walk':'actions';pet.style.transform=`translate3d(${state.x}cqw,${state.y}cqh,0) translate(-50%,-100%)`;sprite.style.setProperty('--nr-walk-position',`${state.frame*(100/3)}% ${row*25}%`);sprite.style.setProperty('--nr-action-position',`${frame*(100/3)}% ${row*25}%`);sprite.style.transform=`scaleX(${state.vx>0?-1:1})`;}
+  function startPetPatrol(){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}const map=petPatrolRoot||document.querySelector('.nr-builder-map'),pet=map&&map.querySelector('[data-nr-yard-pet]'),sprite=pet&&pet.querySelector('.nr-yard-pet-sprite'),trail=map&&map.querySelector('[data-nr-pet-trail]');if(!map||!pet||!sprite)return;preloadPetAtlases(sprite);const bounds=petPatrolBounds(),reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,started=performance.now();if(!petPatrolState)petPatrolState={x:bounds.minX+4,y:bounds.minY+4,vx:3.4,vy:1.15,frame:0,last:started,frameAt:0,mode:'walk',casualUntil:0,nextCasual:started+2200};const state=petPatrolState;state.mode=state.mode||'walk';state.nextCasual=state.nextCasual||started+2200;state.x=Math.max(bounds.minX,Math.min(bounds.maxX,state.x));state.y=Math.max(bounds.minY,Math.min(bounds.maxY,state.y));
     state.blocked=petBlockedRects();state.blockedAt=performance.now();paintYardPoops();
     // A dog that opens the screen standing inside a barn looks like a bug, so
     // walk it out to the first clear spot along the yard.
@@ -406,15 +491,51 @@ var NightRaid = (() => {
       else {state.vx*=-1;state.vy*=-1;}
       const activeBounds=state.errand?{minX:Math.min(nextBounds.minX,state.errand.x-1),maxX:Math.max(nextBounds.maxX,state.errand.x+1),minY:Math.min(nextBounds.minY,state.errand.y-1),maxY:Math.max(nextBounds.maxY,state.errand.y+1)}:nextBounds;
       if(state.x<=activeBounds.minX||state.x>=activeBounds.maxX){state.x=Math.max(activeBounds.minX,Math.min(activeBounds.maxX,state.x));state.vx*=-1;}if(state.y<=activeBounds.minY||state.y>=activeBounds.maxY){state.y=Math.max(activeBounds.minY,Math.min(activeBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=155){state.frame=(state.frame+1)%4;state.frameAt=now;}spawnPetTrail(trail,state,now);placePatrolPet(pet,sprite,state,now);},90);}
-  function centerBuilderWorld(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');startPetPatrol();const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;requestAnimationFrame(()=>{if(!viewport.isConnected)return;if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}else{viewport.scrollLeft=Math.max(0,(viewport.scrollWidth-viewport.clientWidth)*.5);viewport.scrollTop=Math.max(0,(viewport.scrollHeight-viewport.clientHeight)*.18);}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};});}
-  function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
-    const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${stand?', '+NightRaidRules.defenseById(stand.type).name.vi+' cấp '+stand.tier:''}${floor?', có bẫy cấp '+floor.tier:''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}
+  function centerBuilderWorld(){
+    const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;
+    decorateCastleYard(viewport.querySelector('.nr-builder-map'),view==='builder');
+    startPetPatrol();startArmyParade();
+    const saved=builderScroll?{left:builderScroll.left,top:builderScroll.top}:null;
+    let placed=false;
+    const place=()=>{
+      if(!viewport.isConnected)return;
+      const map=viewport.querySelector('.nr-builder-map');
+      // The screen may still be laying out on the frame after a render — a
+      // viewport of zero width would compute a scroll of zero and then REMEMBER
+      // it, so every later visit opened on the corner of the land instead of on
+      // the castle. Wait for a real size before deciding anything.
+      if(!map||viewport.clientWidth<40){requestAnimationFrame(place);return;}
+      placed=true;
+      if(saved){viewport.scrollLeft=saved.left;viewport.scrollTop=saved.top;}
+      else{
+        // Open on the castle, not the middle of the land: the build screen now
+        // starts zoomed out and a phone still shows about a third of the board,
+        // so centring the map could leave a child looking at empty grass.
+        const box=castleFootprint(appState.nightRaidLayout),w=map.offsetWidth,h=map.offsetHeight,
+              cx=(box.left+box.width/2)/100*w,cy=(box.top+box.height/2)/100*h;
+        viewport.scrollLeft=Math.max(0,Math.min(w-viewport.clientWidth,cx-viewport.clientWidth/2));
+        viewport.scrollTop=Math.max(0,Math.min(h-viewport.clientHeight,cy-viewport.clientHeight/2));
+      }
+      keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});
+    };
+    // Try straight away — the map's size comes from an inline style, so it is
+    // usually known already — and fall back to a frame later only if the screen
+    // has not been laid out yet. Waiting unconditionally on a frame also meant
+    // nothing was ever placed on a backgrounded tab, where rAF does not fire.
+    place();
+    if(!placed)requestAnimationFrame(place);
+  }
+
+  function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';applyViewZoom(view);ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
+    const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor'),standOwner=footprintOwner(layout,gx,gy,'stand'),floorOwner=footprintOwner(layout,gx,gy,'floor'),castle=layout.castleCell||CASTLE_HOME,castleCovered=gx>=castle.gx&&gx<castle.gx+CASTLE_SIZE&&gy>=castle.gy&&gy<castle.gy+CASTLE_SIZE,covered=(standOwner&&!stand)||(floorOwner&&!floor)||castleCovered;grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''} ${covered?'footprint-covered':''} ${castleCovered?'castle-covered':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${standOwner?', '+NightRaidRules.defenseById(standOwner.type).name.vi+' cấp '+standOwner.tier:''}${floorOwner?', có bẫy cấp '+floorOwner.tier:''}${castleCovered?', nhà chính':''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}
     const tray=NightRaidRules.DEFENSES.map(d=>`<button type="button" draggable="true" class="nr-build-item ${selectedBuild===d.id?'selected':''} ${(+appState.coins||0)<d.price?'unaffordable':''}" onclick="nrSelectBuild('${d.id}')" onpointerdown="nrBeginBuildDrag(event,'${d.id}')" ondragstart="nrNativeBuildDrag(event,'${d.id}')" aria-pressed="${selectedBuild===d.id}"><img class="nr-build-art" src="${buildAsset(d)}" alt=""><span class="nr-build-copy"><strong>${esc(d.name.vi)}</strong><small class="nr-item-stats">${buildStatHtml(d)}</small><span class="nr-coin-price">${svg('coin')} ${d.price} xu</span></span></button>`).join('');
     const mapBase=builderMapBase(),mapSize=Math.round(mapBase*builderZoom),mapHeight=Math.round(mapBase*.75*builderZoom);
-    r.innerHTML=shell(`<main class="nr-builder ${builderEditing?'editing':''} ${builderShopOpen?'shop-open':''} ${builderRotated?'rotated':''}"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Khu đất lâu đài hình chữ nhật 4:3. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-expanded-v2.webp" alt="Khu đất lâu đài hình chữ nhật 4:3 có sân thành và vùng xây dựng mở rộng"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" role="grid" aria-label="Lưới xây dựng 12 nhân 12">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="nrHome()" aria-label="Về màn Cướp Đêm">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><div class="nr-builder-zoom" role="group" aria-label="Thu phóng khu đất"><button type="button" onclick="nrZoomBuilder(-.15)" aria-label="Thu nhỏ khu đất">−</button><span data-nr-zoom>${Math.round(builderZoom*100)}%</span><button type="button" onclick="nrZoomBuilder(.15)" aria-label="Phóng to khu đất">+</button></div><button class="nr-builder-rotate ${builderRotated?'active':''}" type="button" onclick="nrRotateBuilder()" aria-pressed="${builderRotated}" aria-label="${builderRotated?'Trở về màn hình dọc':'Xoay ngang màn hình để nhìn nhà rõ hơn'}"><b>⟳</b><span>${builderRotated?'DỌC':'NGANG'}</span></button><button class="nr-builder-edit ${builderEditing?'active':''}" type="button" onclick="nrToggleBuilderGrid()" aria-pressed="${builderEditing}" aria-label="${builderEditing?'Xong — tắt lưới di chuyển':'Sửa nhà — hiện lưới để di chuyển công trình'}"><b>${builderEditing?'✓':'✎'}</b><span>${builderEditing?'XONG':'SỬA'}</span></button>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">${builderEditing?'Chạm ô để đặt · kéo vật đã xây để đổi chỗ':'Kéo để xem · chụm 2 ngón thu phóng'}</div><button class="nr-builder-shop-fab ${builderShopOpen?'active':''}" type="button" onclick="nrToggleBuildShop()" aria-expanded="${builderShopOpen}" aria-controls="nrBuildShop">${svg('hammer')}<span>${builderShopOpen?'ĐÓNG':'SHOP'}</span></button><section class="nr-build-shop ${builderShopOpen?'open':''}" id="nrBuildShop" aria-label="Cửa hàng công trình"><div class="nr-shop-heading"><div><span class="nr-label">CỬA HÀNG</span><strong>Vuốt ngang để xem · kéo vào đất để mua</strong></div><span>Tối đa 2 trại · 4 mỗi loại nông trại</span></div><div class="nr-build-tray" role="toolbar" aria-label="Công trình có thể mua bằng xu">${tray}</div></section></main>`);paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();setNav(builderRotated);
+    r.innerHTML=shell(`<main class="nr-builder ${builderEditing?'editing':''} ${builderShopOpen?'shop-open':''} ${builderRotated?'rotated':''}"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Khu đất lâu đài hình chữ nhật 4:3. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-unified-gate-v3.webp" alt="Khu vườn lâu đài hình chữ nhật có cổng chính cho đội cướp tiến vào"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" role="grid" aria-label="Lưới xây dựng 12 nhân 12">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="nrHome()" aria-label="Về màn Cướp Đêm">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}/10</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><div class="nr-builder-zoom" role="group" aria-label="Thu phóng khu đất"><button type="button" onclick="nrZoomBuilder(-.15)" aria-label="Thu nhỏ khu đất">−</button><span data-nr-zoom>${Math.round(builderZoom*100)}%</span><button type="button" onclick="nrZoomBuilder(.15)" aria-label="Phóng to khu đất">+</button></div><button class="nr-builder-rotate ${builderRotated?'active':''}" type="button" onclick="nrRotateBuilder()" aria-pressed="${builderRotated}" aria-label="${builderRotated?'Trở về màn hình dọc':'Xoay ngang màn hình để nhìn nhà rõ hơn'}"><b>⟳</b><span>${builderRotated?'DỌC':'NGANG'}</span></button><button class="nr-builder-edit ${builderEditing?'active':''}" type="button" onclick="nrToggleBuilderGrid()" aria-pressed="${builderEditing}" aria-label="${builderEditing?'Xong — tắt lưới di chuyển':'Sửa nhà — hiện lưới để di chuyển công trình'}"><b>${builderEditing?'✓':'✎'}</b><span>${builderEditing?'XONG':'SỬA'}</span></button>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers}/10 lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">${builderEditing?'Chạm ô để đặt · kéo vật đã xây để đổi chỗ':'Kéo để xem · chụm 2 ngón thu phóng'}</div><button class="nr-builder-shop-fab ${builderShopOpen?'active':''}" type="button" onclick="nrToggleBuildShop()" aria-expanded="${builderShopOpen}" aria-controls="nrBuildShop">${svg('hammer')}<span>${builderShopOpen?'ĐÓNG':'SHOP'}</span></button><section class="nr-build-shop ${builderShopOpen?'open':''}" id="nrBuildShop" aria-label="Cửa hàng công trình"><div class="nr-shop-heading"><div><span class="nr-label">CỬA HÀNG</span><strong>Vuốt ngang để xem · kéo vào đất để mua</strong></div><span>Tối đa 2 trại · 4 mỗi loại nông trại</span></div><div class="nr-build-tray" role="toolbar" aria-label="Công trình có thể mua bằng xu">${tray}</div></section></main>`);paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();setNav(builderRotated);
   }
   function selectBuild(id){if(builderSuppressShopClick)return;if(NightRaidRules.defenseById(id)){rememberBuilderWorld();selectedBuild=id;builderEditing=true;builderShopOpen=false;renderBuilder();announce('Đã chọn vật phẩm. Chạm ô sáng để đặt.');}}
-  function buildPurchasePlan(id,gx,gy){const def=NightRaidRules.defenseById(id);if(!def)return null;gx=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-1,Math.trunc(gx)));gy=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-1,Math.trunc(gy)));const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),layer=def.trap?'floor':'stand',at=layout.cells.findIndex(c=>c.gx===gx&&c.gy===gy&&((NightRaidRules.defenseById(c.type).trap?'floor':'stand')===layer)),cell=at>=0?layout.cells[at]:null,old=cell?NightRaidRules.defenseById(cell.type):null,owned=layout.cells.filter(c=>c.type===def.id).length;let cost=def.price,refund=0,title='Mua '+def.name.vi+'?',detail=def.producer==='soldier'?'Tạo 1 lính +20 DAM sau mỗi 24 giờ':def.producer==='coins'?`Thu hoạch ${def.yield} xu sau mỗi 24 giờ`:'Đặt tại hàng '+(gy+1)+', cột '+(gx+1);
+  function buildPurchasePlan(id,gx,gy){const def=NightRaidRules.defenseById(id);if(!def)return null;const size=NightRaidRules.footprintFor(def);gx=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-size,Math.trunc(gx)));gy=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-size,Math.trunc(gy)));const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),layer=def.trap?'floor':'stand',cell=footprintOwner(layout,gx,gy,layer),at=cell?layout.cells.indexOf(cell):-1,old=cell?NightRaidRules.defenseById(cell.type):null,owned=layout.cells.filter(c=>c.type===def.id).length;let cost=def.price,refund=0,title='Mua '+def.name.vi+'?',detail=def.producer==='soldier'?'Chiếm 4 ô · tạo 1 lính +20 DAM sau mỗi 24 giờ':def.producer==='coins'?`Chiếm 4 ô · thu hoạch ${def.yield} xu sau mỗi 24 giờ`:'Đặt tại hàng '+(gy+1)+', cột '+(gx+1);
+    if(!cell&&!buildSpaceFree(layout,gx,gy,size,layer,null,true))return{error:size===2?'Cần một vùng trống 2 × 2 ô để đặt công trình':'Ô này đã có công trình'};
+    if(cell&&(cell.gx!==gx||cell.gy!==gy||NightRaidRules.footprintFor(old)!==size))return{error:'Vùng đặt đang chồng lên công trình khác'};
     if(def.maxOwned&&owned>=def.maxOwned&&(!cell||cell.type!==def.id))return{error:'Chỉ được đặt tối đa '+def.maxOwned+' '+def.name.vi};
     if(cell&&cell.type===def.id){if(def.producer)return{error:def.name.vi+' đang sản xuất, không cần nâng cấp'};if(cell.tier>=3)return{error:def.name.vi+' đã đạt cấp tối đa'};cost=def.price*(cell.tier+1);title='Nâng '+def.name.vi+' lên cấp '+(cell.tier+1)+'?';detail='Công trình mạnh hơn ngay sau khi xác nhận';}
     else if(cell){refund=Math.floor(totalPaid(old,cell.tier)*.5);title='Đổi sang '+def.name.vi+'?';detail='Thu lại '+refund+' xu từ '+old.name.vi+' hiện tại';}
@@ -440,8 +561,16 @@ var NightRaid = (() => {
   // still covers the whole viewport. A fixed 40% let a long pinch shrink the
   // map smaller than the screen — the island ended up pinned to a corner over
   // a sea of empty background with nothing left to drag back.
-  function builderZoomBounds(viewport,map){const base=+map.dataset.baseSize||1600,baseHeight=base*.75;const cover=Math.max(viewport.clientWidth/base,viewport.clientHeight/baseHeight);const min=Math.min(1.65,Math.max(.4,cover));return {min,max:Math.max(1.65,min)};}
-  function setBuilderZoom(next,clientX,clientY){const viewport=document.getElementById('nrBuilderWorld'),map=viewport?.querySelector('.nr-builder-map');if(!viewport||!map)return;const old=builderZoom,bounds=builderZoomBounds(viewport,map),newZoom=Math.max(bounds.min,Math.min(bounds.max,+next||1));if(Math.abs(newZoom-old)<.005)return;const rect=viewport.getBoundingClientRect(),cx=Number.isFinite(clientX)?clientX-rect.left:viewport.clientWidth/2,cy=Number.isFinite(clientY)?clientY-rect.top:viewport.clientHeight/2,anchorX=(viewport.scrollLeft+cx)/old,anchorY=(viewport.scrollTop+cy)/old,base=+map.dataset.baseSize||1600;builderZoom=newZoom;map.style.width=Math.round(base*newZoom)+'px';map.style.height=Math.round(base*.75*newZoom)+'px';viewport.scrollLeft=Math.max(0,anchorX*newZoom-cx);viewport.scrollTop=Math.max(0,anchorY*newZoom-cy);const label=document.querySelector('[data-nr-zoom]');if(label)label.textContent=Math.round(newZoom*100)+'%';builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};}
+  function builderZoomBounds(viewport,map){
+    const base=+map.dataset.baseSize||1600,baseHeight=base*.75;
+    const cover=Math.max(viewport.clientWidth/base,viewport.clientHeight/baseHeight);
+    // The home stage must keep the frame full of garden — a letterboxed yard
+    // behind the pet looks broken. The builder is a map: seeing all of it, with
+    // board edges showing, is the point.
+    const min=view==='builder'?BUILDER_MIN_ZOOM:Math.min(1.65,Math.max(.4,cover));
+    return {min,max:Math.max(1.65,min)};
+  }
+  function setBuilderZoom(next,clientX,clientY){const viewport=document.getElementById('nrBuilderWorld'),map=viewport?.querySelector('.nr-builder-map');if(!viewport||!map)return;const old=builderZoom,bounds=builderZoomBounds(viewport,map),newZoom=Math.max(bounds.min,Math.min(bounds.max,+next||1));if(Math.abs(newZoom-old)<.005)return;const rect=viewport.getBoundingClientRect(),cx=Number.isFinite(clientX)?clientX-rect.left:viewport.clientWidth/2,cy=Number.isFinite(clientY)?clientY-rect.top:viewport.clientHeight/2,anchorX=(viewport.scrollLeft+cx)/old,anchorY=(viewport.scrollTop+cy)/old,base=+map.dataset.baseSize||1600;builderZoom=newZoom;map.style.width=Math.round(base*newZoom)+'px';map.style.height=Math.round(base*.75*newZoom)+'px';viewport.scrollLeft=Math.max(0,anchorX*newZoom-cx);viewport.scrollTop=Math.max(0,anchorY*newZoom-cy);const label=document.querySelector('[data-nr-zoom]');if(label)label.textContent=Math.round(newZoom*100)+'%';keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});builderZoomByView[view==='builder'?'builder':'home']=builderZoom;}
   function zoomBuilder(delta){setBuilderZoom(builderZoom+(+delta||0));}
   // Fake landscape: iOS never lets a web app lock orientation, so the whole
   // builder rotates 90deg in CSS instead — the child turns the device and the
@@ -453,8 +582,8 @@ var NightRaid = (() => {
     // cover floor — re-clamp before the first gesture, not during it.
     setBuilderZoom(builderZoom);const points=new Map();const distance=()=>{const p=[...points.values()];return p.length<2?0:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);};const midpoint=()=>{const p=[...points.values()];return p.length<2?{x:0,y:0}:{x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2};};
     viewport.addEventListener('contextmenu',e=>e.preventDefault());viewport.addEventListener('dragstart',e=>{if(e.target.closest('img'))e.preventDefault();});
-    viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.nr-placed,.nr-build-shop,.nr-builder-shop-fab,.nr-builder-hud,.nr-builder-zoom,.nr-home-fabs,.nr-collect-all,.nr-builder-edit'))return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});try{viewport.setPointerCapture(e.pointerId);}catch(_){}if(points.size===1)builderGesture={mode:'pan',x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop,moved:false};else if(points.size===2){builderGesture={mode:'pinch',distance:distance(),zoom:builderZoom,mid:midpoint(),moved:true};builderSuppressClick=true;}},{passive:true});
-    viewport.addEventListener('pointermove',e=>{if(!points.has(e.pointerId)||!builderGesture)return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size>=2){const mid=midpoint(),ratio=distance()/Math.max(1,builderGesture.distance||distance());if(builderRotated)setBuilderZoom(builderGesture.zoom*ratio);else setBuilderZoom(builderGesture.zoom*ratio,mid.x,mid.y);builderSuppressClick=true;e.preventDefault();return;}if(builderGesture.mode==='pan'){const dx=e.clientX-builderGesture.x,dy=e.clientY-builderGesture.y;if(Math.hypot(dx,dy)>5){builderGesture.moved=true;builderSuppressClick=true;}if(builderRotated){viewport.scrollLeft=builderGesture.left-dy;viewport.scrollTop=builderGesture.top+dx;}else{viewport.scrollLeft=builderGesture.left-dx;viewport.scrollTop=builderGesture.top-dy;}builderScroll={left:viewport.scrollLeft,top:viewport.scrollTop};if(builderGesture.moved)e.preventDefault();}},{passive:false});
+    viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.nr-castle-pad,.nr-placed,.nr-build-shop,.nr-builder-shop-fab,.nr-builder-hud,.nr-builder-zoom,.nr-home-fabs,.nr-collect-all,.nr-builder-edit'))return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});try{viewport.setPointerCapture(e.pointerId);}catch(_){}if(points.size===1)builderGesture={mode:'pan',x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop,moved:false};else if(points.size===2){builderGesture={mode:'pinch',distance:distance(),zoom:builderZoom,mid:midpoint(),moved:true};builderSuppressClick=true;}},{passive:true});
+    viewport.addEventListener('pointermove',e=>{if(!points.has(e.pointerId)||!builderGesture)return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size>=2){const mid=midpoint(),ratio=distance()/Math.max(1,builderGesture.distance||distance());if(builderRotated)setBuilderZoom(builderGesture.zoom*ratio);else setBuilderZoom(builderGesture.zoom*ratio,mid.x,mid.y);builderSuppressClick=true;e.preventDefault();return;}if(builderGesture.mode==='pan'){const dx=e.clientX-builderGesture.x,dy=e.clientY-builderGesture.y;if(Math.hypot(dx,dy)>5){builderGesture.moved=true;builderSuppressClick=true;}if(builderRotated){viewport.scrollLeft=builderGesture.left-dy;viewport.scrollTop=builderGesture.top+dx;}else{viewport.scrollLeft=builderGesture.left-dx;viewport.scrollTop=builderGesture.top-dy;}keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});if(builderGesture.moved)e.preventDefault();}},{passive:false});
     const end=e=>{points.delete(e.pointerId);if(points.size===1){const p=[...points.values()][0];builderGesture={mode:'pan',x:p.x,y:p.y,left:viewport.scrollLeft,top:viewport.scrollTop,moved:true};}else if(!points.size){builderGesture=null;if(builderSuppressClick)setTimeout(()=>{builderSuppressClick=false;},160);}};viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
     // Producers keep their art clean: the countdown badge stays hidden until
     // the child taps a farm / pond / barracks. Read the real grid rectangle
@@ -466,19 +595,73 @@ var NightRaid = (() => {
       const fx=(e.clientX-rect.left)/rect.width,fy=(e.clientY-rect.top)/rect.height;
       const gx=Math.floor(fx*NightRaidRules.BUILD_GRID),gy=Math.floor(fy*NightRaidRules.BUILD_GRID);
       if(gx<0||gy<0||gx>=NightRaidRules.BUILD_GRID||gy>=NightRaidRules.BUILD_GRID)return;
-      const cell=NightRaidRules.normalizeLayout(appState.nightRaidLayout).cells.find(c=>c.gx===gx&&c.gy===gy&&NightRaidRules.defenseById(c.type)?.producer);
+      const clean=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cell=footprintOwner(clean,gx,gy,'stand');
+      if(cell&&!NightRaidRules.defenseById(cell.type)?.producer)return;
       if(!cell)return;
       if(cell.readyAt<=Date.now()&&cell.uid)return collectResources(cell.uid);
-      const badge=viewport.querySelector('.nr-build-grid-cell[data-gx="'+gx+'"][data-gy="'+gy+'"] .nr-production-badge');
+      const badge=viewport.querySelector('.nr-build-grid-cell[data-gx="'+cell.gx+'"][data-gy="'+cell.gy+'"] .nr-production-badge');
       if(!badge)return;
       badge.classList.add('shown');clearTimeout(badge._hideTimer);badge._hideTimer=setTimeout(()=>badge.classList.remove('shown'),4000);
     });
     viewport.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();if(builderRotated)setBuilderZoom(builderZoom+(e.deltaY<0?.1:-.1));else setBuilderZoom(builderZoom+(e.deltaY<0?.1:-.1),e.clientX,e.clientY);},{passive:false});
   }
-  function movePlacedItem(fromGx,fromGy,layer,toGx,toGy){fromGx=+fromGx;fromGy=+fromGy;toGx=+toGx;toGy=+toGy;settleBuilderPlacement();if(fromGx===toGx&&fromGy===toGy)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),sameLayer=c=>(NightRaidRules.defenseById(c.type).trap?'floor':'stand')===layer,source=layout.cells.find(c=>c.gx===fromGx&&c.gy===fromGy&&sameLayer(c));if(!source)return;if(layout.cells.some(c=>c.gx===toGx&&c.gy===toGy&&sameLayer(c))){if(typeof showToast==='function')showToast('Ô này đã có công trình');return;}source.gx=toGx;source.gy=toGy;source.lane=Math.round(toGy*4/(NightRaidRules.BUILD_GRID-1));source.col=1+Math.round(toGx*7/(NightRaidRules.BUILD_GRID-1));rememberBuilderWorld();appState.nightRaidLayout=NightRaidRules.normalizeLayout(layout);builderSuppressClick=false;save();syncHome();renderBuilder();announce('Đã chuyển công trình sang vị trí mới');}
+  function movePlacedItem(fromGx,fromGy,layer,toGx,toGy){fromGx=+fromGx;fromGy=+fromGy;toGx=+toGx;toGy=+toGy;settleBuilderPlacement();if(fromGx===toGx&&fromGy===toGy)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),sameLayer=c=>(NightRaidRules.defenseById(c.type).trap?'floor':'stand')===layer,source=layout.cells.find(c=>c.gx===fromGx&&c.gy===fromGy&&sameLayer(c));if(!source)return;const size=NightRaidRules.footprintFor(source.type);toGx=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-size,toGx));toGy=Math.max(0,Math.min(NightRaidRules.BUILD_GRID-size,toGy));if(!buildSpaceFree(layout,toGx,toGy,size,layer,source,true)){if(typeof showToast==='function')showToast(size===2?'Cần một vùng trống 2 × 2 ô':'Ô này đã có công trình');return;}source.gx=toGx;source.gy=toGy;source.lane=Math.round(toGy*4/(NightRaidRules.BUILD_GRID-1));source.col=1+Math.round(toGx*7/(NightRaidRules.BUILD_GRID-1));rememberBuilderWorld();appState.nightRaidLayout=NightRaidRules.normalizeLayout(layout);builderSuppressClick=false;save();syncHome();renderBuilder();announce('Đã chuyển công trình sang vị trí mới');}
   function beginPlacedDrag(event,gx,gy,layer){if(!builderEditing)return;event.preventDefault();const src=event.currentTarget.currentSrc||event.currentTarget.src;smoothBuilderDrag(event,src,()=>{},target=>{builderSuppressClick=true;movePlacedItem(gx,gy,layer,+target.dataset.gx,+target.dataset.gy);});}
-  function beginCastleDrag(event){if(!builderEditing||(event.pointerType==='mouse'&&event.button!==0))return;event.preventDefault();event.stopPropagation();const castle=event.currentTarget,map=castle.closest('.nr-builder-map');if(!map)return;const pointerId=event.pointerId,startX=event.clientX,startY=event.clientY,start=castlePosition(appState.nightRaidLayout);let x=start.x,y=start.y,moved=false;try{castle.setPointerCapture(pointerId);}catch(_){}castle.classList.add('nr-castle-drag-source');map.classList.add('castle-dragging');const move=e=>{if(e.pointerId!==pointerId)return;const rect=map.getBoundingClientRect(),dx=e.clientX-startX,dy=e.clientY-startY;if(Math.hypot(dx,dy)>4)moved=true;if(!moved)return;if(builderRotated){x=start.x+dy/Math.max(1,rect.height)*100;y=start.y-dx/Math.max(1,rect.width)*100;}else{x=start.x+dx/Math.max(1,rect.width)*100;y=start.y+dy/Math.max(1,rect.height)*100;}x=Math.max(27,Math.min(73,x));y=Math.max(29,Math.min(41,y));map.style.setProperty('--nr-castle-x',x.toFixed(2));map.style.setProperty('--nr-castle-y',y.toFixed(2));e.preventDefault();};const finish=e=>{if(e.pointerId!==pointerId)return;document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',finish);document.removeEventListener('pointercancel',finish);try{castle.releasePointerCapture(pointerId);}catch(_){}castle.classList.remove('nr-castle-drag-source');map.classList.remove('castle-dragging');if(!moved)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);layout.castlePos={x:+x.toFixed(2),y:+y.toFixed(2)};appState.nightRaidLayout=NightRaidRules.normalizeLayout(layout);builderSuppressClick=true;setTimeout(()=>{builderSuppressClick=false;},160);save();syncHome();announce('Đã chuyển nhà chính trong sân gạch');};document.addEventListener('pointermove',move,{passive:false});document.addEventListener('pointerup',finish);document.addEventListener('pointercancel',finish);}
-  function gridCell(gx,gy){const cell=NightRaidRules.normalizeLayout(appState.nightRaidLayout).cells.find(c=>c.gx===gx&&c.gy===gy&&NightRaidRules.defenseById(c.type)?.producer&&c.readyAt<=Date.now());if(cell)return collectResources(cell.uid);buildCell(gx,gy);}
+  function beginCastleDrag(event){
+    if(!builderEditing||(event.pointerType==='mouse'&&event.button!==0))return;
+    event.preventDefault();event.stopPropagation();
+    const pad=event.currentTarget,map=pad.closest('.nr-builder-map'),grid=map?.querySelector('.nr-free-grid');
+    if(!map||!grid)return;
+    const G=NightRaidRules.BUILD_GRID,MAX=G-CASTLE_SIZE;
+    const pointerId=event.pointerId,startX=event.clientX,startY=event.clientY;
+    const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),start=layout.castleCell||CASTLE_HOME;
+    const cellAt=(clientX,clientY)=>{const rect=grid.getBoundingClientRect();return{
+      cx:Math.floor((clientX-rect.left)/Math.max(1,rect.width)*G),
+      cy:Math.floor((clientY-rect.top)/Math.max(1,rect.height)*G)};};
+    // Keep the castle where it was grabbed rather than snapping its corner to
+    // the finger — a four-cell keep that jumps two cells on touch is impossible
+    // to place accurately.
+    const first=cellAt(startX,startY),grabX=first.cx-start.gx,grabY=first.cy-start.gy;
+    let gx=start.gx,gy=start.gy,moved=false,valid=true;
+    try{pad.setPointerCapture(pointerId);}catch(_){}
+    pad.classList.add('dragging');map.classList.add('castle-dragging');
+    const paint=()=>{
+      const preview=castlePosition({cells:layout.cells,castleCell:{gx,gy}});
+      map.style.setProperty('--nr-castle-x',preview.x.toFixed(2));
+      map.style.setProperty('--nr-castle-y',preview.y.toFixed(2));
+      pad.setAttribute('style',castlePadStyle(castleFootprint({cells:layout.cells,castleCell:{gx,gy}}))+';');
+      map.classList.toggle('castle-invalid',!valid);
+    };
+    const move=e=>{
+      if(e.pointerId!==pointerId)return;
+      if(Math.hypot(e.clientX-startX,e.clientY-startY)>4)moved=true;
+      if(!moved)return;
+      const at=cellAt(e.clientX,e.clientY);
+      gx=Math.max(0,Math.min(MAX,at.cx-grabX));
+      gy=Math.max(0,Math.min(MAX,at.cy-grabY));
+      valid=buildSpaceFree(layout,gx,gy,CASTLE_SIZE,'stand',null,false);
+      paint();e.preventDefault();
+    };
+    const finish=e=>{
+      if(e.pointerId!==pointerId)return;
+      document.removeEventListener('pointermove',move);
+      document.removeEventListener('pointerup',finish);
+      document.removeEventListener('pointercancel',finish);
+      try{pad.releasePointerCapture(pointerId);}catch(_){}
+      pad.classList.remove('dragging');map.classList.remove('castle-dragging','castle-invalid');
+      if(!moved)return;
+      if(!valid){gx=start.gx;gy=start.gy;valid=true;paint();decorateCastleYard(map,true);if(typeof showToast==='function')showToast(`Nhà chính cần một vùng trống ${CASTLE_SIZE} × ${CASTLE_SIZE} ô`);return;}
+      layout.castleCell={gx,gy};
+      appState.nightRaidLayout=NightRaidRules.normalizeLayout(layout);
+      builderSuppressClick=true;setTimeout(()=>{builderSuppressClick=false;},160);
+      save();syncHome();announce('Đã chuyển nhà chính trên khu vườn');
+      rememberBuilderWorld();renderBuilder();
+    };
+    document.addEventListener('pointermove',move,{passive:false});
+    document.addEventListener('pointerup',finish);
+    document.addEventListener('pointercancel',finish);
+  }
+  function gridCell(gx,gy){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cell=footprintOwner(layout,gx,gy,'stand');if(cell&&NightRaidRules.defenseById(cell.type)?.producer&&cell.readyAt<=Date.now())return collectResources(cell.uid);buildCell(gx,gy);}
   // ---- raid lock countdowns -------------------------------------------
   // A breached home is sealed for 20 hours (server-side, see _night-raid.js).
   // Every place that can show that clock renders the same chip and lets the
