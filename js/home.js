@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.51';
+const APP_VERSION = 'v4.14.52';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1805,7 +1805,11 @@ function showPetShop() {
     // marker on the overlay rather than changing the shop on normal homes.
     const hasYardShop = !!document.querySelector('#petHeroStage.yard-mode');
 
-    if (_shopTab === 'food') {
+    // On the animated Night Raid habitat, use the stable full shop for every
+    // tab. The old food drawer competed with the moving GPU layer and its
+    // slide transform was overridden on iOS, leaving the sheet misplaced.
+    const useFoodDrawer = _shopTab === 'food' && !hasYardShop;
+    if (useFoodDrawer) {
         // Bottom drawer — dog stays visible at top for drag-to-feed
         overlay.className = 'pet-shop-drawer-overlay';
         if (hasYardShop) overlay.classList.add('yard-shop-overlay');
@@ -1914,7 +1918,8 @@ function refreshShop() {
 
     // If switching tabs, we need to recreate with proper overlay type
     const isDrawer = modal.classList.contains('pet-shop-drawer-overlay');
-    const needsDrawer = _shopTab === 'food';
+    const hasYardShop = !!document.querySelector('#petHeroStage.yard-mode');
+    const needsDrawer = _shopTab === 'food' && !hasYardShop;
 
     if (isDrawer !== needsDrawer) {
         // Tab changed — rebuild entire shop with correct overlay
