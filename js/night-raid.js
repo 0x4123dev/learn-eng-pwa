@@ -345,7 +345,26 @@ var NightRaid = (() => {
     if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}
     petPatrolRoot=null;petPatrolState=null;armyParadeState=null;
   }
-  function petPatrolBounds(){return{minX:PET_YARD.left+2,maxX:PET_YARD.left+PET_YARD.width-2,minY:PET_YARD.top+3,maxY:PET_YARD.top+PET_YARD.height-2};}
+  // The dog keeps to the MIDDLE of the yard rather than roaming it corner to
+  // corner. Measured on the homepage yard, as a share of the map: the garden
+  // runs full-bleed to the top of the screen and the page is viewport-fit=cover,
+  // so a notched phone's status bar covers the top 19.7% of it — a dog up there
+  // is behind the clock. Below 71% sit the dog's name, the XP bar and the Shop
+  // buttons. It used to walk the whole yard and spent much of its time at
+  // y 4.7-17%, where it simply could not be seen. The dog is anchored at its
+  // paws and stands PET_SPRITE_H tall, so the band is measured from where its
+  // head and feet end up, not from its anchor point.
+  const YARD_TOP_FURNITURE=22, YARD_BOTTOM_FURNITURE=71, PET_SPRITE_H=12.3;
+  function petPatrolBounds(){
+    const left=PET_YARD.left,right=PET_YARD.left+PET_YARD.width;
+    const inset=PET_YARD.width*.12;
+    return{
+      minX:left+inset,
+      maxX:right-inset,
+      minY:Math.max(PET_YARD.top+3,YARD_TOP_FURNITURE+PET_SPRITE_H),
+      maxY:Math.min(PET_YARD.top+PET_YARD.height-2,YARD_BOTTOM_FURNITURE-2),
+    };
+  }
   // A dog that leaves nothing behind reads as sliding over the grass rather
   // than walking on it. Prints are planted where the paw actually fell and
   // fade there; dust puffs kick up from the same spot. Both are plain DOM

@@ -114,8 +114,11 @@ suite('iPad: the layout is capped, not stretched', () => {
         // 8-52px on a phone whose status bar is 47-59px tall — the whole header
         // was swallowed and only a rubber-band pull revealed it. Each bar that
         // a finger has to reach at the top of a screen is named here instead.
+        // The homepage is deliberately absent: its garden runs full-bleed to
+        // the top edge and carries nothing a finger needs — the pet bar moved
+        // out to a card of its own, and the dog is kept to the middle of the
+        // garden (see tests/home-yard-layout.test.js).
         const TOP_BARS = [
-            ['.pet-hero-topbar', 'the homepage header: avatar, level, coins, streak'],
             ['.nr-topbar', 'the Night Raid title bar'],
             ['.nr-builder-hud', 'the build screen DAM/DEF/coins strip'],
         ];

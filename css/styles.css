@@ -5171,23 +5171,100 @@
         }
 
         /* Hero top bar — glassmorphism HUD */
+        /* The pet bar — name, level, coins, streak, profile.
+           It used to float over the top of the garden. Two things were wrong
+           with that: it covered the grass the dog walks on, and since the page
+           is served viewport-fit=cover it sat under the status bar on a notched
+           phone, where a rubber-band pull was the only way to see it. It is a
+           card now, between the food-wish card and the streak panel, and it is
+           dressed to match them: the chips below all assumed a dark photo
+           behind them, so their colours are restated for a light card. */
         .pet-hero-topbar {
-            position: sticky;
-            top: 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            /* The page is viewport-fit=cover, so it runs under the notch and the
-               status bar. Without the inset these chips sat at 8-52px on a
-               device whose status bar is 47-59px tall: the whole header was
-               swallowed, and only a rubber-band pull revealed it. The artwork
-               below still runs full-bleed to the top edge — it is the things a
-               finger has to reach that move down. */
-            padding: calc(8px + env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
-                     8px max(10px, env(safe-area-inset-left));
-            background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 100%);
-            z-index: 10;
+            gap: 10px;
+            margin: 0 16px 26px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: var(--glass-bg, rgba(255,255,255,0.85));
+            border: 1.5px solid var(--glass-border, rgba(0,0,0,0.06));
+            box-shadow: 0 3px 14px rgba(0,0,0,0.06);
+            position: relative;
+            /* The streak panel below is pulled up 20px and rides at z-index 15;
+               without a seat of its own this card would slide under it. */
+            z-index: 16;
         }
+        .pet-hero-topbar:empty { display: none; }
+        /* Two rows, not one. Six things across a 375px phone left the identity
+           block about 45px wide: the dog's name collapsed to nothing and the
+           breed read "Pomera…". The name and face get a row, the numbers get a
+           row, and everything is legible and comfortably tappable. */
+        .pet-hero-topbar { flex-wrap: wrap; row-gap: 12px; }
+        .pet-hero-topbar .pet-hero-left { flex: 1 1 100%; min-width: 0; gap: 10px; }
+        .pet-hero-topbar .pet-hero-right { flex: 1 1 100%; gap: 8px; }
+        .pet-hero-topbar .pet-hero-coins,
+        .pet-hero-topbar .pet-hero-streak { flex: 1 1 auto; justify-content: center; }
+        .pet-hero-topbar .pet-hero-streak { display: flex; align-items: center; }
+        .pet-hero-topbar .pet-hero-info { flex: 0 0 44px; }
+        /* On the artwork this was a translucent white disc; on a card it needs a
+           real edge or the emoji floats loose. */
+        .pet-hero-topbar .pet-hero-avatar {
+            background: linear-gradient(160deg, #fff7ed, #fed7aa);
+            border: 2px solid rgba(249, 115, 22, .28);
+            backdrop-filter: none;
+            box-shadow: 0 2px 6px rgba(120, 53, 15, .12);
+        }
+        /* The identity block was its own little glass card because it sat on a
+           photo. Inside a card that reads as a box in a box, so it loses the
+           chrome and takes the room instead — the breed line used to be
+           truncated to 120px and read "Pomeranian · Brill…". */
+        .pet-hero-topbar .pet-hero-identity {
+            flex: 1 1 auto;
+            max-width: none;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            color: var(--text-primary, #1f2937);
+        }
+        .pet-hero-topbar .pet-identity-name { justify-content: flex-start; gap: 7px; }
+        /* Without min-width the ellipsis rule lets the name shrink to zero
+           before anything else in the row gives an inch. */
+        .pet-hero-topbar .pet-identity-name strong { font-size: 15px; font-weight: 800; min-width: 3ch; }
+        .pet-hero-topbar .pet-identity-name > span.pet-level-chip { margin-left: auto; }
+        .pet-hero-topbar .pet-identity-style {
+            color: var(--text-secondary, #6b7280);
+            font-size: 10px;
+        }
+        .pet-hero-topbar .pet-polish-pip {
+            background: rgba(0, 0, 0, .14);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
+        }
+        .pet-hero-topbar .pet-polish-pip.active {
+            background: #f59e0b;
+            box-shadow: 0 0 5px rgba(245, 158, 11, .7);
+        }
+        .pet-hero-topbar .pet-hero-coins {
+            background: linear-gradient(160deg, #fffbeb, #fde68a);
+            color: #92400e;
+            border: 1.5px solid rgba(217, 119, 6, .22);
+            backdrop-filter: none;
+        }
+        .pet-hero-topbar .pet-hero-streak {
+            background: linear-gradient(160deg, #fff7ed, #fed7aa);
+            color: #c2410c;
+            border: 1.5px solid rgba(234, 88, 12, .2);
+            backdrop-filter: none;
+        }
+        .pet-hero-topbar .pet-hero-info {
+            background: rgba(0, 0, 0, .05);
+            border: 1.5px solid rgba(0, 0, 0, .07);
+            color: var(--text-primary, #1f2937);
+            backdrop-filter: none;
+        }
+        .pet-hero-topbar .pet-name-edit { color: var(--text-secondary, #6b7280); }
         .pet-hero-left, .pet-hero-right {
             display: flex;
             align-items: center;
@@ -6491,7 +6568,7 @@
         @media (max-width: 360px) {
             .pet-hero-identity { max-width: 92px; padding-inline: 6px; }
             .pet-hero-avatar { display: none; }
-            .pet-hero-topbar { padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
+            .pet-hero-topbar { margin-inline: 10px; padding-inline: 10px; gap: 8px; }
             .pet-hero-coins { padding-inline: 8px; }
             .pet-hero-streak { padding-inline: 8px; }
             .pet-shop-btn-hero { padding-inline: 12px; }
