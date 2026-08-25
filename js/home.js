@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.54';
+const APP_VERSION = 'v4.14.55';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1843,7 +1843,7 @@ function renderShopContent() {
         return `<article class="shop-item shop-card food-shop-card ${canAfford ? 'draggable-food' : 'disabled'}"
                      data-food-id="${f.id}" data-food-emoji="${f.emoji}" style="--food-color:${f.color}">
             <div class="shop-food-art food-drag-handle" role="button" tabindex="${canAfford ? '0' : '-1'}"
-                 aria-label="${canAfford ? `Drag ${f.name} onto your dog to feed it for ${f.price} coins` : `${f.name} costs ${f.price} coins; not enough coins`}">
+                 aria-label="${canAfford ? `Drag ${f.name} into the home garden to feed your dog for ${f.price} coins` : `${f.name} costs ${f.price} coins; not enough coins`}">
                 ${petFoodArt(f)}<span class="shop-xp-burst">+${f.growth} XP</span>
                 ${canAfford ? '<span class="food-drag-grip" aria-hidden="true">⋮⋮</span>' : ''}
             </div>
@@ -1854,7 +1854,7 @@ function renderShopContent() {
             </div>
             <div class="shop-food-drag-meta ${canAfford ? '' : 'locked'}">
                 <span class="shop-food-price"><span aria-hidden="true">●</span><strong>${f.price}</strong></span>
-                <span class="shop-food-drag-cue">${canAfford ? 'DRAG TO DOG' : 'NEED MORE COINS'}</span>
+                <span class="shop-food-drag-cue">${canAfford ? 'DRAG TO GARDEN' : 'NEED MORE COINS'}</span>
             </div>
         </article>`;
     }).join('');
@@ -1898,16 +1898,10 @@ function renderShopContent() {
         ? petDogSVG({ stageCss: stage.stageCss, size: 74, level: appState.dogLevel || 1, stageMinLevel: stage.minLevel })
         : stage.fallback;
     return `
-        ${isDrawer ? `<div class="shop-floating-feed-target" role="button" tabindex="0" aria-label="Drop food here to feed your dog">
-            <span class="shop-floating-feed-dog">${miniDog}</span>
-            <strong>DROP FOOD HERE</strong>
-        </div>` : ''}
         <div class="pet-shop-modal ${_shopTab === 'food' ? 'food-drag-shop' : ''}">
             <button type="button" class="pet-info-close" aria-label="Close pet shop" onclick="document.getElementById('petShopModal').remove()">✕</button>
             <div class="shop-hero">
-                <div class="shop-hero-dog" ${_shopTab === 'food' ? 'role="button" tabindex="0" aria-label="Drop food here to feed your dog"' : ''}>
-                    ${miniDog}${_shopTab === 'food' ? '<span class="shop-dog-drop-label" aria-hidden="true">DROP HERE</span>' : ''}
-                </div>
+                <div class="shop-hero-dog">${miniDog}</div>
                 <div class="shop-hero-copy"><span>PAWS & TREATS</span><h3>${isDrawer ? 'What should we eat?' : 'Make your dog shine!'}</h3><p>${isDrawer ? 'Every snack helps your dog grow.' : 'Collect cute styles. Looks only—no battle advantage.'}</p></div>
                 <div class="shop-wallet" aria-label="${coins} coins"><span aria-hidden="true">●</span><strong>${coins}</strong></div>
             </div>
@@ -2501,18 +2495,18 @@ function initDragToFeed() {
         handle.addEventListener('keydown', onFoodKeyPick);
     });
 
-    const dropTarget = petFeedTarget();
-    if (dropTarget) dropTarget.addEventListener('keydown', onFoodKeyDrop);
+    const dropZone = petFeedZone();
+    if (dropZone) {
+        dropZone.tabIndex = 0;
+        dropZone.setAttribute('aria-label', 'Home and garden food drop area');
+        dropZone.addEventListener('keydown', onFoodKeyDrop);
+    }
 }
 
-// The normal home has an SVG .pet-creature; bot-enabled homes use the same
-// four-legged yard sprite as Night Raid. Food dragging must work with either
-// renderer or the Shop appears broken on the bot-on homepage.
-function petFeedTarget() {
-    return document.querySelector('#petShopModal .shop-floating-feed-target') ||
-        document.querySelector('#petHeroStage.yard-mode [data-nr-yard-pet]') ||
-        document.querySelector('.pet-creature') ||
-        document.querySelector('#petShopModal .food-drag-shop .shop-hero-dog');
+// Feeding accepts the whole habitat rather than a moving dog-sized target.
+// This keeps the gesture easy while the yard pet wanders around the map.
+function petFeedZone() {
+    return document.getElementById('petHeroZone') || document.querySelector('.pet-hero-zone');
 }
 
 function onFoodTouchStart(e) {
@@ -2550,7 +2544,7 @@ function onFoodMouseDown(e) {
 function onFoodKeyPick(e) {
     if (e.key !== 'Enter' && e.key !== ' ') return;
     const item = e.currentTarget.closest('.draggable-food');
-    const target = petFeedTarget();
+    const target = petFeedZone();
     if (!item || !target) return;
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
@@ -2581,9 +2575,9 @@ function startFoodDrag(item, x, y) {
 
     _dragState = { ghost, foodId, emoji, startX: x, startY: y, item };
 
-    // Show drop target hint on pet
-    const creature = petFeedTarget();
-    if (creature) creature.classList.add('drop-target-hint');
+    // Highlight the complete home-and-garden frame.
+    const zone = petFeedZone();
+    if (zone) zone.classList.add('drop-target-hint');
 
     // Haptic feedback (if available)
     if (navigator.vibrate) navigator.vibrate(30);
@@ -2594,15 +2588,12 @@ function moveFoodDrag(x, y) {
     _dragState.ghost.style.left = x + 'px';
     _dragState.ghost.style.top = y + 'px';
 
-    // Check proximity to dog — highlight if close
-    const creature = petFeedTarget();
-    if (creature) {
-        const rect = creature.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dist = Math.hypot(x - cx, y - cy);
-        const isNear = dist < Math.max(80, rect.width * 0.8);
-        creature.classList.toggle('drop-target-near', isNear);
+    // The whole visible habitat is a valid drop rectangle.
+    const zone = petFeedZone();
+    if (zone) {
+        const rect = zone.getBoundingClientRect();
+        const isInside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+        zone.classList.toggle('drop-target-near', isInside);
     }
 }
 
@@ -2610,20 +2601,18 @@ function endFoodDrag() {
     if (!_dragState) return;
     const { ghost, foodId, item } = _dragState;
 
-    // Check if dropped on dog
-    const creature = petFeedTarget();
-    if (creature) {
-        const rect = creature.getBoundingClientRect();
+    // Charge only when the food lands inside the home-and-garden frame.
+    const zone = petFeedZone();
+    if (zone) {
+        const rect = zone.getBoundingClientRect();
         const ghostRect = ghost.getBoundingClientRect();
         const gx = ghostRect.left + ghostRect.width / 2;
         const gy = ghostRect.top + ghostRect.height / 2;
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dist = Math.hypot(gx - cx, gy - cy);
+        const isInside = gx >= rect.left && gx <= rect.right && gy >= rect.top && gy <= rect.bottom;
 
-        creature.classList.remove('drop-target-hint', 'drop-target-near');
+        zone.classList.remove('drop-target-hint', 'drop-target-near');
 
-        if (dist < Math.max(80, rect.width * 0.8)) {
+        if (isInside) {
             // SUCCESS — feed the dog!
             if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
             ghost.remove();
