@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.14.68';
+const APP_VERSION = 'v4.14.69';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
@@ -1559,24 +1559,15 @@ function renderWordPet() {
             hasNeckAccessory: _slotsUsed.indexOf('neck') !== -1,
           })
         : `<span style="font-size:${stage.size}px;line-height:1">${stage.fallback}</span>`;
-    // Every account gets the garden as its habitat: the board, the castle and
-    // the dog wandering about. Everything around the stage — hearts, name,
-    // trash, shop, streak — is untouched.
-    //
-    // This is the SCENE only, not the game. It is drawn from the account's saved
-    // layout (a fresh account gets a bare lawn and a castle), it carries no way
-    // into Night Raid, and the only thing a finger can do to it is play with the
-    // dog. Night Raid itself stays behind the admin's bot flag — the entry card
-    // lives in js/petbattle.js and still checks allowBot.
-    const yardHabitat = typeof NightRaid !== 'undefined' && !!NightRaid.mountYardScene;
-    // The stage normally hugs the pet SVG. The yard is absolutely positioned,
-    // so without this the whole habitat collapses to zero height.
-    stage_el.classList.toggle('yard-mode', yardHabitat);
-    stage_el.innerHTML = yardHabitat ? `
-        <div class="pet-yard-scene" id="petYardScene" role="img"
-             aria-label="${safePetName} đang đi quanh lâu đài"></div>
-        ${poopsHTML}
-    ` : `
+    // Home is the pet's close-up again: no Night Raid castle or garden here.
+    // Keeping the live SVG at full size makes every breed, collar, shine and
+    // level-up accessory immediately visible. The castle garden now belongs
+    // to the Arena header, where its combat meaning is clear.
+    if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
+        try { NightRaid.unmountYardScene(); } catch (e) {}
+    }
+    stage_el.classList.remove('yard-mode');
+    stage_el.innerHTML = `
         <div class="pet-wrapper">
             <button type="button" class="pet-creature ${mood}" onclick="onPetTap()"
                     data-stage="${stage.stageCss}" aria-label="Play with ${safePetName}, level ${level} ${stage.name}, ${petStyleName} style, shine ${petPolish} of 4">
@@ -1586,18 +1577,6 @@ function renderWordPet() {
         </div>
         ${poopsHTML}
     `;
-    if (yardHabitat) {
-        try {
-            NightRaid.mountYardScene(document.getElementById('petYardScene'),
-                { onTap: () => { try { onPetTap(); } catch (e) {} },
-                  // Only an account that can reach the build screen can change
-                  // its layout, so for everyone else the server has nothing to
-                  // tell us and the request is pure noise.
-                  skipRefresh: !appState.allowBot });
-        } catch (e) { /* a broken scene must never take the whole home screen down */ }
-    } else if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
-        try { NightRaid.unmountYardScene(); } catch (e) {}
-    }
 
     // Make equipped accessories draggable on the pet
     setTimeout(() => { try { initAccDrag(); } catch(e) {} }, 50);
@@ -1688,10 +1667,7 @@ function renderWordPet() {
     // Auto-show speech bubble (priority: emo > hunger > stink)
     if (_emoMessage) {
         setTimeout(() => showPetSpeechBubble(_emoMessage), 700);
-    } else if (hunger === 0 && !yardHabitat) {
-        // In the garden the dog lies down and carries its own "I'm hungry"
-        // bubble until it is fed, so this 2.5-second flash would be the same
-        // sentence twice.
+    } else if (hunger === 0) {
         setTimeout(() => showPetSpeechBubble("I'm so hungry… buy me food! 😢"), 500);
     } else if ((appState.petPoops || []).some(p => (Date.now() - p.born) / 3600000 >= POOP_STINK_HOURS)) {
         setTimeout(() => showPetSpeechBubble("It's so stinky! Please clean up! 🤢"), 600);
