@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flashlingo-v453';
+const CACHE_NAME = 'flashlingo-v454';
 // Pre-generated word recordings (audio/words/*.mp3). Versioned separately:
 // the files are immutable, so this cache survives CACHE_NAME bumps.
 //
@@ -89,6 +89,11 @@ const ASSETS = [
   '/js/night-raid-phaser.js',
   '/js/phaser.min.js',
   '/js/night-raid.js',
+  '/js/ghost-offering-event.js',
+  '/img/ghost-offering/courtyard-v1.webp',
+  '/img/ghost-offering/roast-pig-v1.webp',
+  '/img/ghost-offering/boiled-chicken-v1.webp',
+  '/img/ghost-offering/fruit-basket-v1.webp',
   '/img/night-raid/isometric-home-board-skin-pad.webp',
   '/img/night-raid/isometric-home-board-unified-gate-v3.webp',
   '/img/night-raid/isometric-home-board-frame-v4.png',
