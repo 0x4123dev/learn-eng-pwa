@@ -1,7 +1,16 @@
 // Five real 2025-2026 HK1 papers transcribed from the PDFs supplied by the
-// user. Wording, numbers, order and choices follow the source papers. Written
-// questions use self-assessment because a proof cannot be graded honestly by
-// matching one typed string.
+// user. Wording, numbers, order and choices follow the source papers.
+//
+// The tự luận questions are NOT self-assessed. Every one of them carries
+// answerParts — the final results the child types after working the problem on
+// paper — and the app marks those, so a wrong answer costs the mark exactly as
+// it would at school. Only the WORKING stays on paper; a proof still cannot be
+// graded by string matching, so those questions ask for the conclusion the
+// proof arrives at rather than the proof itself.
+//
+// (This note used to say the opposite, long after the code had moved on. It
+// was believed. tests/math-source-exams.test.js now checks the claim rather
+// than leaving it to a comment.)
 
 function _srcMcq(id, n, ch, topic, q, options, correct, answer, explanation, fig, sourceIssue) {
   const out = { id, n, ch, topic, q, options, correct, answer, explanation };
