@@ -49,12 +49,28 @@ function switchUnitSet(set) {
   if (typeof renderUnitsBar === 'function') renderUnitsBar();
 }
 
+// Each word remembers which set it came from. An owed word is stored by id and
+// looked up again later, and the id used to be the English alone — which is
+// wrong wherever two sets spell a word the same and mean different things:
+// "ring" is a piece of jewellery in Pre and a bell ringing in Post-HK, "right"
+// is a direction in HK2 and "suitable" in Post-HK. Twenty such pairs exist
+// across the four sets, and a child who missed one of them was handed the other
+// word's meaning to type back.
+//
+// Tagged in place, once: the arrays are module constants and the objects are
+// shared with every draw, so copying them here would break nothing visibly and
+// cost something on every practice.
+function _unitsTagSet(bank, set) {
+  if (bank.length && bank[0].set === set) return bank;
+  for (const w of bank) w.set = set;
+  return bank;
+}
 function unitsBank(set) {
   const s = set || currentUnitSet();
-  if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? UNIT_WORDS_HK1 : [];
-  if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? UNIT_WORDS_HK2 : [];
-  if (s === 'posthk') return (typeof UNIT_WORDS_POSTHK !== 'undefined') ? UNIT_WORDS_POSTHK : [];
-  return (typeof UNIT_WORDS !== 'undefined') ? UNIT_WORDS : [];
+  if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK1, 'hk1') : [];
+  if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? _unitsTagSet(UNIT_WORDS_HK2, 'hk2') : [];
+  if (s === 'posthk') return (typeof UNIT_WORDS_POSTHK !== 'undefined') ? _unitsTagSet(UNIT_WORDS_POSTHK, 'posthk') : [];
+  return (typeof UNIT_WORDS !== 'undefined') ? _unitsTagSet(UNIT_WORDS, 'pre') : [];
 }
 // Every word the tab knows, across all sets. Used where a word arrives with no
 // set attached — an owed word from an earlier practice, a history row.
@@ -241,14 +257,29 @@ function _unitAnswerCorrect(input, en) {
 // The rule, the queue, the gate, the 👁 hint and the verdict screen live in
 // js/retrydrill.js — six tabs share one implementation. This file only says
 // what a Grade 4 word looks like inside it.
-if (typeof defineRetryDrill === 'function') defineRetryDrill({
+// Named and exported rather than passed straight in, so the two functions that
+// decide what an owed word IS can be tested without standing up the whole drill.
+const UNITS_RETRY_CONFIG = {
   key: 'units',
   screenId: 'topicsDetail',
   noun: 'từ',
-  // Owed words carry no set, and a word can sit in more than one of them
-  // ("art" is Pre Unit 4 and HK1 Unit 7) — any match spells and means the same.
-  resolve: (en) => unitsAllWords().find(w => String(w.en).toLowerCase() === String(en).toLowerCase()) || null,
-  idOf: (w) => w.en,
+  // An owed word is stored as "set|word" so it comes back meaning what it meant
+  // when it was missed. Debts written before this carry the bare word; those
+  // still resolve, to the first set that spells it — the old behaviour, kept
+  // deliberately rather than dropping a child's outstanding work on the floor.
+  resolve: (id) => {
+    const raw = String(id);
+    const cut = raw.indexOf('|');
+    const set = cut > 0 ? raw.slice(0, cut) : null;
+    const en = (cut > 0 ? raw.slice(cut + 1) : raw).toLowerCase();
+    const match = w => String(w.en).toLowerCase() === en;
+    if (set) {
+      const found = unitsBank(set).find(match);
+      if (found) return found;
+    }
+    return unitsAllWords().find(match) || null;
+  },
+  idOf: (w) => (w.set ? w.set + '|' : '') + w.en,
   answerText: (w) => w.en,
   grade: (v, w) => _unitAnswerCorrect(v, w.en),
   promptHTML: (w) => `
@@ -265,7 +296,8 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
     if (d) d.style.display = '';
   },
   home: () => { if (typeof renderTopicsHome === 'function') renderTopicsHome(); },
-});
+};
+if (typeof defineRetryDrill === 'function') defineRetryDrill(UNITS_RETRY_CONFIG);
 
 // Named wrappers so this tab reads in its own vocabulary.
 function unitsRetryList() { return (typeof retryList === 'function' ? retryList('units') : []); }
@@ -716,6 +748,7 @@ function finishUnitPractice() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     unitsBank, unitsAllWords, unitsList, unitTitle, unitBooks, unitBooksLabel,
+    UNITS_RETRY_CONFIG, _unitPool,
     UNIT_SETS, currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
     _unitKey, _unitParse, _unitKeyArg,
     buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,

@@ -137,6 +137,34 @@ suite('post-hk: the tab, the five units and the mix', () => {
         }
     });
 
+    test('an owed word comes back meaning what it meant when it was missed', () => {
+        // Twenty pairs across the four sets spell a word the same and mean
+        // different things. The debt used to store the English alone and look
+        // it up across every set in order, so a child who missed "ring" in the
+        // science unit (a bell ringing) was handed Pre's "cái nhẫn" to type
+        // back. Twelve of those pairs were live before Post-HK existed.
+        const cfg = units.UNITS_RETRY_CONFIG;
+        assert.truthy(cfg && typeof cfg.resolve === 'function' && typeof cfg.idOf === 'function',
+            'the drill config is not reachable — this test would measure nothing');
+        const bank = units.unitsBank('posthk');
+        const clash = ['ring', 'right', 'round'];
+        for (const en of clash) {
+            const mine = bank.find(w => w.en === en);
+            assert.truthy(mine, `${en} is not in the post-hk bank`);
+            assert.equal(mine.set, 'posthk', `${en} carries no set, so its debt cannot be told apart`);
+            // The id the debt stores must name the set...
+            const id = mine.set + '|' + mine.en;
+            // ...and reading it back must return THIS word, not the other set's.
+            const other = units.unitsAllWords().find(w => w.en === en && w.set !== 'posthk');
+            assert.truthy(other, `${en} no longer clashes — this test is measuring nothing`);
+            assert.truthy(other.vi !== mine.vi, `${en}: the two sets agree, pick a different word`);
+            assert.equal(cfg.resolve(id).vi, mine.vi, `${id} resolved to the wrong meaning`);
+            assert.equal(cfg.idOf(mine), id, 'the debt id must carry the set');
+            // A debt written before the fix has no set and must still resolve.
+            assert.truthy(cfg.resolve(en), `a bare "${en}" debt must not be dropped`);
+        }
+    });
+
     test('the bank loads in the page and offline, before units.js needs it', () => {
         const index = read('index.html'), sw = read('sw.js');
         assert.truthy(index.includes('js/units-posthk-data.js'), 'the page never loads the bank');
