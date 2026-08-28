@@ -38,6 +38,7 @@ const ASSETS = [
   '/js/units-data.js',
   '/js/units-hk1-data.js',
   '/js/units-hk2-data.js',
+  '/js/units-posthk-data.js',
   '/js/retrydrill.js',
   '/js/units.js',
   '/js/topics.js',

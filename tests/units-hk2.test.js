@@ -17,6 +17,7 @@ global.UNIT_HK1_BOOKS = UNIT_HK1_BOOKS;
 global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
 global.UNIT_HK2_TITLES = UNIT_HK2_TITLES;
 global.UNIT_HK2_BOOKS = UNIT_HK2_BOOKS;
+global.UNIT_WORDS_POSTHK = require(path.join(__dirname, '..', 'js', 'units-posthk-data.js')).UNIT_WORDS_POSTHK;
 const units = require(path.join(__dirname, '..', 'js', 'units.js'));
 
 // The Wordlist, transcribed from the book. Bracketed hints in the book
@@ -177,9 +178,10 @@ suite('units HK2: it plugs into the same machinery', () => {
             'the two semesters keep separate mastery ladders');
     });
 
-    test('unitsAllWords now spans all three sets', () => {
+    test('unitsAllWords now spans every set', () => {
+        const { UNIT_WORDS_POSTHK } = require(path.join(__dirname, '..', 'js', 'units-posthk-data.js'));
         assert.equal(units.unitsAllWords().length,
-            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length);
+            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length);
         // A word owed from HK2 must resolve, even though the debt stores only
         // the English.
         const bank = units.unitsAllWords();

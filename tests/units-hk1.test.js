@@ -10,7 +10,12 @@ const path = require('path');
 const { UNIT_WORDS } = require(path.join(__dirname, '..', 'js', 'units-data.js'));
 const { UNIT_WORDS_HK1, UNIT_HK1_TITLES, UNIT_HK1_BOOKS } = require(path.join(__dirname, '..', 'js', 'units-hk1-data.js'));
 const { UNIT_WORDS_HK2 } = require(path.join(__dirname, '..', 'js', 'units-hk2-data.js'));
+const { UNIT_WORDS_POSTHK, UNIT_POSTHK_TITLES, UNIT_POSTHK_SOURCE } =
+    require(path.join(__dirname, '..', 'js', 'units-posthk-data.js'));
 global.UNIT_WORDS = UNIT_WORDS;
+global.UNIT_WORDS_POSTHK = UNIT_WORDS_POSTHK;
+global.UNIT_POSTHK_TITLES = UNIT_POSTHK_TITLES;
+global.UNIT_POSTHK_SOURCE = UNIT_POSTHK_SOURCE;
 global.UNIT_WORDS_HK2 = UNIT_WORDS_HK2;
 global.UNIT_WORDS_HK1 = UNIT_WORDS_HK1;
 global.UNIT_HK1_TITLES = UNIT_HK1_TITLES;
@@ -164,8 +169,8 @@ suite('units HK1: bank shape', () => {
 });
 
 suite('units: the three word sets', () => {
-    test('Pre, HK1 and HK2 are the sets, and all three have words', () => {
-        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'hk1', 'hk2']);
+    test('Pre, HK1, HK2 and Post-HK are the sets, and all four have words', () => {
+        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'hk1', 'hk2', 'posthk']);
         for (const set of units.UNIT_SETS) {
             assert.truthy(units.unitsBank(set.id).length > 0, `${set.id} has no words`);
             assert.falsy(set.soon, `${set.id} is still flagged "coming soon"`);
@@ -179,7 +184,7 @@ suite('units: the three word sets', () => {
 
     test('unitsAllWords spans every set, so an owed word always resolves', () => {
         assert.equal(units.unitsAllWords().length,
-            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length);
+            UNIT_WORDS.length + UNIT_WORDS_HK1.length + UNIT_WORDS_HK2.length + UNIT_WORDS_POSTHK.length);
     });
 
     test('HK1 is the default set, and switching remembers itself', () => {

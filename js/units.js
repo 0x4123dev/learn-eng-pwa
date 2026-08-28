@@ -23,6 +23,9 @@ const UNIT_SETS = [
   { id: 'pre', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
   { id: 'hk1', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
   { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
+  // After the semester exam the class moves on to the two English-medium
+  // subject books. Their glossaries are one word bank, split by subject.
+  { id: 'posthk', label: '📙 Post-HK', name: 'Post-HK', sub: 'Global Maths 4 & Science 4 · Glossary' },
 ];
 
 // Which set the cards are showing. Stored per user so the tab reopens where
@@ -50,6 +53,7 @@ function unitsBank(set) {
   const s = set || currentUnitSet();
   if (s === 'hk1') return (typeof UNIT_WORDS_HK1 !== 'undefined') ? UNIT_WORDS_HK1 : [];
   if (s === 'hk2') return (typeof UNIT_WORDS_HK2 !== 'undefined') ? UNIT_WORDS_HK2 : [];
+  if (s === 'posthk') return (typeof UNIT_WORDS_POSTHK !== 'undefined') ? UNIT_WORDS_POSTHK : [];
   return (typeof UNIT_WORDS !== 'undefined') ? UNIT_WORDS : [];
 }
 // Every word the tab knows, across all sets. Used where a word arrives with no
@@ -63,6 +67,7 @@ function unitsList(set) {
 function unitTitle(set, unit) {
   if (set === 'hk1' && typeof UNIT_HK1_TITLES !== 'undefined') return UNIT_HK1_TITLES[unit] || '';
   if (set === 'hk2' && typeof UNIT_HK2_TITLES !== 'undefined') return UNIT_HK2_TITLES[unit] || '';
+  if (set === 'posthk' && typeof UNIT_POSTHK_TITLES !== 'undefined') return UNIT_POSTHK_TITLES[unit] || '';
   return '';
 }
 // The textbook units a practice unit merges. HK1 and HK2 both renumber theirs
@@ -75,6 +80,13 @@ function unitBooks(set, unit) {
   return (map && map[unit]) || null;
 }
 function unitBooksLabel(set, unit) {
+  // Post-HK words come from a glossary at the BACK of a book rather than from
+  // any one unit of it, so "Bài 3-4" would point nowhere. The card names the
+  // book instead — two subjects share this tab and the child needs to know
+  // which one a unit belongs to.
+  if (set === 'posthk') {
+    return (typeof UNIT_POSTHK_SOURCE !== 'undefined' && UNIT_POSTHK_SOURCE[unit]) || '';
+  }
   const b = unitBooks(set, unit);
   if (!b || !b.length) return '';
   return 'Bài ' + (b.length > 1 ? b[0] + '-' + b[b.length - 1] : b[0]);
@@ -87,7 +99,7 @@ function _unitKey(set, unit) {
 }
 function _unitParse(key) {
   const s = String(key);
-  const m = s.match(/^(hk1|hk2)-(mix|\d+)$/);
+  const m = s.match(/^(hk1|hk2|posthk)-(mix|\d+)$/);
   if (m) return { set: m[1], unit: m[2] === 'mix' ? 'mix' : Number(m[2]) };
   return { set: 'pre', unit: s === 'mix' ? 'mix' : Number(s) };
 }
