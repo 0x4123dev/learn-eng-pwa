@@ -1133,6 +1133,18 @@ function renderLearnHub() {
 }
 
 function switchScreen(screenId) {
+    // Guard the live Ghost Offering scene. Previously the bottom navigation
+    // merely hid the Arena screen, leaving go-event-active/overflow:hidden on
+    // it. Returning to Arena then showed a lobby that could no longer scroll.
+    if (screenId !== 'petBattleScreen' &&
+        typeof GhostOfferingEvent !== 'undefined' &&
+        GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) {
+        if (!confirm('Con đang chơi Cướp Cô Hồn.\nThoát bây giờ thì dây đang kéo sẽ bị bỏ.\n\nCon có chắc muốn thoát không?')) {
+            return false;
+        }
+        GhostOfferingEvent.close();
+    }
+
     // Guard: warn before leaving an in-progress grammar exam (tapping a different
     // bottom-nav tab would otherwise silently discard the user's answers).
     if (screenId !== 'grammarScreen' &&
@@ -1238,6 +1250,7 @@ function switchScreen(screenId) {
             if (nextScreen.classList.contains('active')) nextScreen.scrollTop = 0;
         });
     }
+    return true;
 }
 
 function navigateToProfile() {
@@ -1441,19 +1454,34 @@ function speakWord(word, onDone) {
 
     resetAudio(audio);
     currentAudio = audio;
-    audio.onended = finish;
+
+    // A recording that is missing does not arrive as a 404. The recordings are
+    // served by their own Pages project, and Pages answers an unknown path with
+    // its index page: HTTP 200, text/html, 127 bytes. The element accepts that,
+    // some browsers RESOLVE play() on it, and the failure surfaces later as an
+    // `error` event — with only onended wired, nothing ran at all and the child
+    // heard silence, with onDone never firing to release a chained word.
+    let settled = false;
+    const giveUp = () => {
+        if (settled) return;
+        settled = true;
+        audioMissing[slug] = true;
+        delete audioCache[slug];
+        audio.onerror = null;
+        speakWordFallback(word);
+        setTimeout(finish, 700);
+    };
+    audio.onended = () => { if (!settled) { settled = true; finish(); } };
+    audio.onerror = giveUp;
     audio.play().catch((err) => {
         if (isAutoplayBlock(err)) {
             // The browser refused because no gesture was in play. The file is
             // fine — blacklisting it here would send every later tap of this
             // word to the robot voice for the rest of the session.
-            finish();
+            if (!settled) { settled = true; finish(); }
             return;
         }
-        audioMissing[slug] = true;
-        delete audioCache[slug];
-        speakWordFallback(word);
-        setTimeout(finish, 700);
+        giveUp();
     });
 }
 

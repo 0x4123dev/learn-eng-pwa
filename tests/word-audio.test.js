@@ -18,6 +18,10 @@ function makeAudioMock() {
     const created = [];   // every constructed Audio
     const played = [];    // srcs whose play() was called
     let rejection = null;   // the Error play() should reject with, or null
+    // A third outcome the browsers really produce: play() resolves, nothing is
+    // heard, and the element fires `error` afterwards — what happens when the
+    // response was 200 text/html rather than an mp3.
+    let stall = false;
     class FakeAudio {
         constructor(src) {
             this.src = src || '';
@@ -33,6 +37,7 @@ function makeAudioMock() {
             return {
                 catch(fn) {
                     if (rejection) fn(rejection);
+                    else if (stall) { /* resolves, but nothing ever plays */ }
                     else if (self.onended) self.onended();   // played through
                     return this;
                 }
@@ -43,7 +48,8 @@ function makeAudioMock() {
         FakeAudio, created, played,
         // Old boolean helper kept for existing tests; a generic 404-ish failure.
         setFailPlay(v) { rejection = v ? Object.assign(new Error('404'), { name: 'NotSupportedError' }) : null; },
-        setPlayRejection(err) { rejection = err; }
+        setPlayRejection(err) { rejection = err; },
+        setPlayStall(on) { stall = !!on; }
     };
 }
 
@@ -73,6 +79,7 @@ function loadWithAudio() {
         }
     });
     app.__setPlayRejection = (err) => audio.setPlayRejection(err);
+    app.__setPlayStall = (on) => audio.setPlayStall(on);
     app.__isMissing = (w) => !!(app.audioMissing || {})[app.wordAudioSlug(w)];
     return { app, audio, synth };
 }
@@ -115,6 +122,32 @@ suite('word audio: filename slugs', () => {
         for (const w of words) {
             assert.equal(gen.wordAudioSlug(w), app.wordAudioSlug(w), `slug for ${JSON.stringify(w)}`);
         }
+    });
+
+    test('a recording that fails to decode still reaches the fallback voice', () => {
+        // A missing recording does not 404. The recordings live in their own
+        // Pages project, which answers an unknown path with its index page:
+        // HTTP 200, text/html, 127 bytes. Browsers differ on whether play()
+        // rejects for that or resolves and then fires `error` on the element.
+        // Only onended was wired, so on the second kind the child heard
+        // silence and a chained word never got its turn.
+        const { app, audio, synth } = loadWithAudio();
+        app.__setPlayStall(true);              // play() resolves, nothing is heard
+        const before = synth.calls.speak.length;
+        let released = false;
+        app.speakWord('IT', () => { released = true; });
+        const el = audio.created[audio.created.length - 1];
+        assert.truthy(typeof el.onerror === 'function', 'nothing listens for a decode failure');
+        el.onerror(new Error('decode'));                    // the browser gives up on the file
+        assert.truthy(app.__isMissing('IT'), 'the broken recording must be remembered as missing');
+        return new Promise((resolve, reject) => setTimeout(() => {
+            try {
+                assert.truthy(synth.calls.speak.length > before,
+                    'the fallback voice never spoke — the child hears nothing');
+                assert.truthy(released, 'onDone never fired, so a chained word would stall forever');
+                resolve();
+            } catch (e) { reject(e); }
+        }, 800));   // the fallback releases onDone 700ms after it starts speaking
     });
 
     test('the letters are spoken even before the recording reaches the device', () => {
