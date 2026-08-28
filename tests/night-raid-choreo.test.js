@@ -23,10 +23,10 @@ suite('night raid choreography: deterministic battle script', () => {
     assert.equal(JSON.stringify(c), JSON.stringify(d));
   });
 
-  test('battle lasts eight to twelve seconds with ordered phases', () => {
+  test('battle lasts seven to sixteen seconds with ordered phases', () => {
     for (const f of [bigWin, narrowWin, heavyLoss]) {
       const s = buildOf(f, 8, PET);
-      assert.inRange(s.durationMs, 8000, 12000);
+      assert.inRange(s.durationMs, 7000, 16000);
       assert.truthy(s.engageStart < s.engageEnd && s.engageEnd < s.durationMs);
       if (s.won) assert.equal(s.breachAt, s.engageEnd);
       else assert.equal(s.retreatAt, s.engageEnd);
@@ -99,7 +99,7 @@ suite('night raid choreography: deterministic battle script', () => {
     for (const u of squad) {
       const idle = C.unitAt(u, 0);
       assert.equal(idle.state, 'idle');
-      const arrive = u.keys.find(k => k.ease === 'inout');
+      const arrive = u.keys.find(k => k.ease);
       assert.truthy(arrive, 'march segment uses easing');
     }
   });
@@ -108,7 +108,9 @@ suite('night raid choreography: deterministic battle script', () => {
     const s = buildOf(bigWin, 8, PET);
     const pet = s.units.find(u => u.kind === 'pet');
     const squad = s.units.filter(u => u.kind === 'squad');
-    for (const t of [0, 1200, 2400, 3300]) {
+    // During the march-in the dog reads as its own track; once the assault
+    // spreads over the yard, paths may legitimately cross near buildings.
+    for (const t of [0, 800, 1600]) {
       const dog = C.unitAt(pet, t);
       const nearest = Math.min(...squad.map(u => {
         const soldier = C.unitAt(u, t);
@@ -132,25 +134,99 @@ suite('night raid choreography: deterministic battle script', () => {
     });
   });
 
-  test('a won raid breaks the base: every real tower topples before the end', () => {
+  test('a won raid breaks the base: every real tower topples before the breach', () => {
     const s = buildOf(bigWin, 8, PET);
     const real = s.towers.filter(t => !t.virtual);
     assert.truthy(real.length >= 1);
     for (const t of real) {
       assert.truthy(t.fallAt != null, t.type + ' must fall');
-      assert.inRange(t.fallAt, s.engageEnd, s.durationMs - 200);
+      assert.inRange(t.fallAt, s.engageStart, s.breachAt, t.type + ' falls while being attacked, not by itself after the breach');
       assert.truthy(s.events.some(e => e.type === 'demolish' && e.t === t.fallAt), 'demolish event fires with the collapse');
     }
     const lost = buildOf(heavyLoss, 8, PET);
     for (const t of lost.towers) assert.equal(t.fallAt, null);
   });
 
-  test('winning survivors charge the castle after the breach', () => {
+  test('winning survivors reach the castle at the breach, then carry the loot home', () => {
     const s = buildOf(bigWin, 8, PET);
     for (const u of s.units.filter(u => u.fallAt == null)) {
+      const atBreach = C.unitAt(u, s.breachAt + 60);
+      assert.truthy(atBreach.x < 340, u.kind + u.index + ' is at the castle when it breaks');
       const end = C.unitAt(u, s.durationMs);
-      assert.equal(end.state, 'charge');
-      assert.truthy(end.x < 320, 'ends at the castle');
+      assert.equal(end.state, 'carry', 'the raid ends by CARRYING the loot, not standing around');
+      assert.truthy(end.x > 500, u.kind + u.index + ' runs the loot back home');
+    }
+  });
+});
+
+suite('night raid choreography: the battle moves like a real raid', () => {
+  test('every soldier marches at one believable shared speed', () => {
+    const s = buildOf(bigWin, 8, PET);
+    const speeds = [];
+    for (const u of s.units.filter(u => u.kind === 'squad')) {
+      const from = u.keys.find(k => k.state === 'march');
+      const to = u.keys[u.keys.indexOf(from) + 1];
+      const d = Math.hypot(to.x - from.x, to.y - from.y);
+      const v = d / Math.max(1, to.t - from.t) * 1000;
+      assert.inRange(v, 70, 150, 'march speed was ' + v.toFixed(0) + ' px/s');
+      speeds.push(v);
+    }
+    const spread = Math.max(...speeds) / Math.min(...speeds);
+    assert.truthy(spread <= 1.4,
+      'identical soldiers must not move at wildly different speeds (spread ' + spread.toFixed(2) + ')');
+  });
+
+  test('a building only breaks while someone is actually smashing it', () => {
+    const s = buildOf(bigWin, 8, PET);
+    for (const t of s.towers.filter(t => !t.virtual)) {
+      const near = s.units.some(u => {
+        const pose = C.unitAt(u, t.fallAt - 80);
+        return Math.hypot(pose.x - t.x, pose.y - t.y) < 95;
+      });
+      assert.truthy(near, t.type + ' fell with no attacker anywhere near it');
+      assert.truthy(Array.isArray(t.hitAt) && t.hitAt.length >= 2, t.type + ' takes real blows');
+      assert.truthy(t.hitAt[t.hitAt.length - 1] <= t.fallAt, 'the last blow lands before the collapse');
+      assert.truthy(t.crackAt != null && t.crackAt < t.fallAt, 'damage shows before the fall');
+      assert.truthy(s.events.some(e => e.type === 'smash' && e.t === t.hitAt[0]),
+        'each blow is a visible smash event');
+    }
+  });
+
+  test('a stone wall takes visibly longer to break than a wooden fence', () => {
+    const target = { ...R.trainingTarget(8), layout: { cells: [
+      { type: 'wood-fence', gx: 3, gy: 7, tier: 1 },
+      { type: 'stone-wall', gx: 8, gy: 7, tier: 1 },
+    ] } };
+    const result = R.resolveAutoBattle(target, (target.defense || 100) + 150);
+    const s = C.build(result, target, 2, null, target.seed);
+    const fence = s.towers.find(t => t.type === 'wood-fence');
+    const wall = s.towers.find(t => t.type === 'stone-wall');
+    assert.truthy(fence && wall && fence.fallAt != null && wall.fallAt != null);
+    const fenceWork = fence.fallAt - fence.hitAt[0];
+    const wallWork = wall.fallAt - wall.hitAt[0];
+    assert.truthy(wallWork > fenceWork * 1.4,
+      'stone (' + wallWork + 'ms) must outlast wood (' + fenceWork + 'ms)');
+  });
+
+  test('a won raid has a real looting beat between the breach and going home', () => {
+    const s = buildOf(bigWin, 8, PET);
+    const loots = s.events.filter(e => e.type === 'loot');
+    assert.truthy(loots.length >= 2, 'grabbing the loot is visible');
+    for (const e of loots) assert.inRange(e.t, s.breachAt, s.durationMs);
+    const survivor = s.units.find(u => u.kind === 'squad' && u.fallAt == null);
+    const looting = C.unitAt(survivor, s.breachAt + 400);
+    assert.truthy(['charge', 'loot'].includes(looting.state), 'survivors spend time AT the castle looting');
+    assert.truthy(s.durationMs - s.breachAt >= 2200,
+      'breach -> loot -> carry home needs real time, got ' + (s.durationMs - s.breachAt) + 'ms');
+  });
+
+  test('on a loss the same script stays honest: no falls, no loot, a real retreat', () => {
+    const s = buildOf(heavyLoss, 8, PET);
+    assert.falsy(s.events.some(e => e.type === 'loot'), 'a repelled raid steals nothing');
+    for (const u of s.units.filter(u => u.fallAt == null)) {
+      const end = C.unitAt(u, s.durationMs);
+      assert.equal(end.state, 'flee');
+      assert.truthy(end.x > 480, 'survivors make it back off the field');
     }
   });
 });

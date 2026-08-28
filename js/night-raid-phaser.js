@@ -23,7 +23,26 @@ var NightRaidPhaser = (() => {
 
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const easeOut=p=>1-(1-p)*(1-p);
-  const squadRows=6, squadCols=8;
+  const squadRows=6, squadCols=8, squadWalkCols=6;
+  // Horizontal visual centroids measured inside each authored atlas cell.
+  // Compensating these keeps the torso over the same world coordinate even
+  // when a sword, shield or wide running pose changes the transparent bounds.
+  const squadWalkAnchors=Object.freeze([
+    [ .0171, .0432,-.0091, .0200, .0493, .0448],
+    [ .0090, .0019, .0312,-.0161, .0262,-.0002],
+    [ .0214, .0347,-.0014, .0089, .0192, .0005],
+    [ .0414, .0339, .0021,-.0140, .0268, .0007],
+    [ .0139, .0248, .0458, .0302, .0965, .0499],
+    [ .0195,-.0087, .0066,-.0249, .0101, .0688],
+  ]);
+  const squadActionAnchors=Object.freeze([
+    [ .0417, .0627,-.0409,-.1082,-.0933, .0596, .0789, .0448],
+    [ .0739, .0755,-.0054,-.0582,-.0105, .0622,-.0050,-.0340],
+    [ .0413, .0371,-.0104,-.0612,-.0775, .0071, .0074, .0069],
+    [ .0485, .0810, .0646,-.0368,-.0574,-.0848,-.0274,-.0240],
+    [ .0231, .0013,-.0445,-.1180,-.0979, .0197,-.0273,-.0433],
+    [ .0311, .0345,-.0086,-.0825,-.1500,-.0150,-.0619,-.0989],
+  ]);
   const petCols=Object.freeze({small:8,large:7});
   const defenseRows=Object.freeze(['wood-fence','stone-wall','pebble-pup','water-cannon','spike-trap']);
   const economyRows=Object.freeze(['training-barracks','rice-field']);
@@ -79,6 +98,14 @@ var NightRaidPhaser = (() => {
       if(lethal)this.tone({from:220,to:90,dur:.35,peak:.12});
     }
     fall(){this.burst({dur:.22,peak:.16,freq:340,rate:.7});this.tone({type:'square',from:110,to:55,dur:.25,peak:.08});}
+    // One melee blow landing on a building: wood knocks, stone clunks deeper.
+    smash(material){
+      if(material==='stone')this.burst({dur:.13,peak:.13,freq:420,rate:.7});
+      else this.burst({dur:.11,peak:.12,type:'bandpass',freq:material==='soft'?700:900,q:1.6,rate:.9});
+      this.tone({type:'square',from:material==='stone'?95:150,to:material==='stone'?50:80,dur:.1,peak:.05});
+    }
+    // Coins scooped into the sack.
+    lootChime(){this.tone({type:'triangle',from:880,to:1320,dur:.16,peak:.09});this.tone({t:.05,type:'triangle',from:1174,to:1568,dur:.14,peak:.07});}
     // A tower cracking apart and hitting the ground.
     demolish(){this.burst({dur:.7,peak:.26,freq:300,rate:.5});this.burst({t:.06,dur:.4,peak:.17,type:'bandpass',freq:1100,q:.8,rate:.8});this.tone({type:'square',from:80,to:38,dur:.6,peak:.1});}
     breach(){this.demolish();this.burst({t:.1,dur:1.1,peak:.28,freq:220,rate:.4});this.tone({t:.3,type:'sawtooth',from:262,to:392,dur:.9,peak:.11});}
@@ -111,6 +138,7 @@ var NightRaidPhaser = (() => {
       const sources={
         board:'img/night-raid/isometric-home-board-skin-pad.webp',
         squad:'img/night-raid/animation/raider-actions-v2.webp',
+        squadWalk:'img/night-raid/animation/raider-walk-v3.png',
         pet:'img/night-raid/animation/pet-actions-'+petAtlas+'-v2.webp',
         defenses:'img/night-raid/animation/defense-damage-v2.webp',
         economy:'img/night-raid/animation/economy-damage-v2.webp',
@@ -151,13 +179,14 @@ var NightRaidPhaser = (() => {
       // Phaser's Canvas renderer corrupts direct WebP textures in some iOS
       // and embedded WebViews. Browser Canvas2D decodes them correctly, so
       // materialize each image once and let Phaser use the safe canvas copy.
-      scene.textures.addCanvas('nr-board',this.assetCanvases.board);scene.textures.addCanvas('nr-squad-actions',this.assetCanvases.squad);scene.textures.addCanvas('nr-pet-actions',this.assetCanvases.pet);
+      scene.textures.addCanvas('nr-board',this.assetCanvases.board);scene.textures.addCanvas('nr-squad-actions',this.assetCanvases.squad);scene.textures.addCanvas('nr-squad-walk',this.assetCanvases.squadWalk);scene.textures.addCanvas('nr-pet-actions',this.assetCanvases.pet);
       scene.textures.addCanvas('nr-defense-damage',this.assetCanvases.defenses);scene.textures.addCanvas('nr-economy-damage',this.assetCanvases.economy);
       scene.textures.addCanvas('nr-castle-a-damage',this.assetCanvases.castleA);scene.textures.addCanvas('nr-castle-b-damage',this.assetCanvases.castleB);
       scene.add.image(400,400,'nr-board').setDisplaySize(800,800).setDepth(0);
       scene.add.rectangle(400,400,800,800,0x172044,.12).setDepth(1);
       this.makeTexture(scene,'nr-spark',0xffe477,18);this.makeTexture(scene,'nr-dust',0xdac8a6,26);this.makeTexture(scene,'nr-rubble',0x9b7559,18);this.makeTexture(scene,'nr-smoke',0x34404c,34);
       this.addGrid(scene.textures.get('nr-squad-actions'),'unit-',squadCols,squadRows);
+      this.addGrid(scene.textures.get('nr-squad-walk'),'walk-',squadWalkCols,squadRows);
       this.addGrid(scene.textures.get('nr-pet-actions'),'pet-',petCols[this.petAtlas],5);
       this.addGrid(scene.textures.get('nr-defense-damage'),'def-',3,defenseRows.length);
       this.addGrid(scene.textures.get('nr-economy-damage'),'eco-',3,economyRows.length);
@@ -181,9 +210,9 @@ var NightRaidPhaser = (() => {
       }
       this.actors=this.choreo.units.map(unit=>{
         const pet=unit.kind==='pet';
-        const cols=pet?petCols[this.petAtlas]:squadCols,row=pet?this.petCell:unit.index%squadRows,prefix=(pet?'pet-':'unit-')+row+'-';
-        const part=this.makeActor(scene,pet?'nr-pet-actions':'nr-squad-actions',prefix+'0',pet?112:108);
-        return {unit,...part,pet,index:unit.index,prefix,cols,walk:4,dustTick:-1,frame:-1};
+        const cols=pet?petCols[this.petAtlas]:squadCols,row=pet?this.petCell:unit.index%squadRows,actionPrefix=(pet?'pet-':'unit-')+row+'-';
+        const part=this.makeActor(scene,pet?'nr-pet-actions':'nr-squad-actions',actionPrefix+'0',pet?112:108);
+        return {unit,...part,pet,index:unit.index,row,actionPrefix,walkPrefix:'walk-'+row+'-',cols,dustTick:-1,frameKey:''};
       });
       this.trail=scene.add.graphics().setDepth(2);
       this.projectiles=scene.add.graphics().setDepth(800);
@@ -203,12 +232,18 @@ var NightRaidPhaser = (() => {
         if(event.type==='launch')this.audio.launch(event.kind);
         else if(event.type==='impact')this.audio.impactShot(event.kind,event.lethal);
         else if(event.type==='fall')this.audio.fall();
+        else if(event.type==='smash')this.audio.smash(event.material);
+        else if(event.type==='loot')this.audio.lootChime();
         else if(event.type==='demolish')this.audio.demolish();
         else if(event.type==='breach'){this.audio.breach();this.audio.warCry();}
         else if(event.type==='retreat')this.audio.retreat();
       }
       if(this.reduce)return;
       if(event.type==='launch'){this.spark.explode(4,event.x,event.y);return;}
+      // A blow on a building chips it: a few sparks and a puff of dust.
+      if(event.type==='smash'){this.spark.explode(3,event.x,event.y);this.dust.explode(2,event.x,event.y+18);return;}
+      // Coins fly while the sacks are filled.
+      if(event.type==='loot'){this.spark.explode(6,event.x,event.y);return;}
       const lethal=event.type==='breach'||event.type==='fall'||event.lethal,count=lethal?18:7;
       this.spark.explode(count,event.x,event.y);if(lethal)this.rubble.explode(event.type==='breach'?26:9,event.x,event.y);
       if(event.type==='fall')this.scene.cameras.main.shake(140,.004);
@@ -256,12 +291,18 @@ var NightRaidPhaser = (() => {
       this.defenders.forEach(d=>{
         const tw=d.tower;let recoil=0,windup=0;
         for(const f of tw.fireAt){const dt=T-f;if(dt>=-160&&dt<0)windup=Math.max(windup,1+dt/160);else if(dt>=0&&dt<140)recoil=Math.max(recoil,1-dt/140);}
+        // Every melee blow visibly jolts the building being smashed.
+        if(!this.reduce)for(const h of (tw.hitAt||[])){const dh=T-h;if(dh>=0&&dh<130)recoil=Math.max(recoil,1.5*(1-dh/130));}
         let angle=0,dy=0,alpha=1,broken=false;
         if(tw.fallAt!=null&&!this.reduce){
           if(T>tw.fallAt-240&&T<=tw.fallAt)dy=Math.sin((tw.fallAt-T)*.09)*2;      // pre-collapse tremble
           if(T>tw.fallAt){const fp=easeOut(Math.min(1,(T-tw.fallAt)/520));dy=fp*5;broken=fp>0;}
         } else if(tw.fallAt!=null&&this.reduce&&T>tw.fallAt){broken=true;}
-        const stage=tw.fallAt==null||T<tw.fallAt?0:T<tw.fallAt+420?1:2;
+        // Damage tells the story of the fight: intact -> cracked while the
+        // blows land (crackAt) -> rubble at the collapse. It no longer waits
+        // for the breach to happen elsewhere.
+        const crack=tw.crackAt!=null?tw.crackAt:tw.fallAt;
+        const stage=tw.fallAt==null||T<crack?0:T<tw.fallAt?1:2;
         if(stage!==d.stage){d.stage=stage;d.sprite.setFrame(d.prefix+stage);}
         d.sprite.x=tw.x+recoil*3;d.sprite.y=tw.y+dy;d.sprite.angle=angle;d.sprite.setAlpha(alpha);
         d.sprite.setScale(d.sx,d.sy*(windup?1-windup*.06:1));
@@ -270,7 +311,7 @@ var NightRaidPhaser = (() => {
       });
       this.actors.forEach(actor=>{
         const u=actor.unit,pose=C.unitAt(u,T);
-        const rushing=pose.state==='charge'||pose.state==='flee',moving=pose.moving&&!this.reduce;
+        const rushing=pose.state==='charge'||pose.state==='flee'||pose.state==='carry',moving=pose.moving&&!this.reduce;
         const cadence=this.reduce?.008:(rushing?.024:.017);
         const phase=T*cadence+actor.index*1.47,gait=moving?Math.sin(phase):0,lift=Math.abs(gait);
         let x=pose.x,y=pose.y,angle=0,alpha=1,flash=0;
@@ -279,16 +320,26 @@ var NightRaidPhaser = (() => {
         else if(pose.state==='engage'&&T>ch.engageStart&&!this.reduce){const lunge=Math.max(0,Math.sin(T*.005+actor.index*1.9));x+=pose.facing*lunge*5;}
         if(pose.state==='fallen')y+=5;
         for(const st of u.staggerAt){const d=T-st;if(d>=0&&d<200){x+=Math.sin(d*.22)*3;flash=Math.max(flash,1-d/200);}}
-        let frame=0;
-        if(pose.state==='fallen')frame=actor.cols-1;
+        let texture=actor.pet?'nr-pet-actions':'nr-squad-actions',prefix=actor.actionPrefix,frame=0;
+        // Soldiers use the authored six-frame run cycle while advancing or
+        // retreating. The action atlas takes over again for weapon swings,
+        // stagger and fallen poses so the castle assault stays expressive.
+        if(moving&&!actor.pet){texture='nr-squad-walk';prefix=actor.walkPrefix;frame=Math.floor((T+actor.index*91)/(rushing?82:112))%squadWalkCols;}
+        else if(pose.state==='fallen')frame=actor.cols-1;
         else if(flash>.2)frame=Math.max(0,actor.cols-2);
-        else if(pose.state==='engage'&&!moving)frame=Math.min(actor.cols-2,actor.walk+Math.floor((T+actor.index*83)/190)%2);
-        else if(moving)frame=Math.floor((T+actor.index*91)/(rushing?95:125))%actor.walk;
-        if(frame!==actor.frame){actor.frame=frame;actor.sprite.setFrame(actor.prefix+frame);}
+        else if(pose.state==='engage'&&!moving)frame=Math.min(actor.cols-2,4+Math.floor((T+actor.index*83)/190)%2);
+        else if(pose.state==='loot'&&!moving)frame=Math.min(actor.cols-2,4+Math.floor((T+actor.index*83)/260)%2);
+        else if(moving)frame=Math.floor((T+actor.index*91)/(rushing?95:125))%Math.min(4,actor.cols);
+        const frameKey=texture+'|'+prefix+frame;
+        if(frameKey!==actor.frameKey){actor.frameKey=frameKey;actor.sprite.setTexture(texture,prefix+frame);}
         // The atlases are authored facing LEFT (toward the castle): mirror
         // only when a unit moves right — fleeing home or repositioning.
         const flip=pose.facing===1,depth=(pose.state==='fallen'?y-60:y)+(actor.pet?.5:0);
-        actor.sprite.x=x;actor.sprite.y=y;actor.sprite.angle=angle;actor.sprite.setAlpha(alpha).setDepth(depth).setFlipX(flip).setScale(actor.sx,actor.sy);
+        // A fixed display box prevents a width pop at march → attack. Atlas
+        // centroid compensation removes the remaining per-frame side jump.
+        const actorWidth=actor.pet?actor.width:actor.height*1.32;
+        const artAnchor=actor.pet?0:(moving?squadWalkAnchors[actor.row][frame]:squadActionAnchors[actor.row][frame]);
+        actor.sprite.x=x+(flip?1:-1)*artAnchor*actorWidth;actor.sprite.y=y;actor.sprite.angle=angle;actor.sprite.setAlpha(alpha).setDepth(depth).setFlipX(flip).setDisplaySize(actorWidth,actor.height);
         if(flash>.35&&!this.reduce)actor.sprite.setTintFill(0xfff2f2);else actor.sprite.clearTint();
         if(moving){const tick=Math.floor(phase/Math.PI);if(tick!==actor.dustTick){actor.dustTick=tick;this.dust.explode(actor.pet?2:1,x+(flip?-14:14),y+2);this.stepPulse=true;}}
       });

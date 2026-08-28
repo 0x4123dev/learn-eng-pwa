@@ -512,7 +512,7 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('raidPetMarkup'));
     assert.falsy(ui.includes("nr-raid-pet battle"));
     for(const token of ['drawStepContact','drawStrideSprite','swap=moving&&phase<0','a.step,a.moving,motion',"this.reduce?.38:1","this.reduce?.009:.022"])assert.truthy(game.includes(token),token);
-    for(const token of ["loadAsset('squadWalk'","img=moving&&walk?walk:actions","state==='engage'?4+"])assert.truthy(game.includes(token),token);
+    for(const token of ["loadAsset('squadWalk'","img=moving&&walk?walk:actions","(state==='engage'||state==='loot')?4+"])assert.truthy(game.includes(token),token);
     for(const token of ['SQUAD_WALK_ANCHORS','SQUAD_ACTION_ANCHORS',"w=h*1.32","-w*(.5+anchor)"])assert.truthy(game.includes(token),token);
     assert.truthy(css.includes('filter:none!important'),'iOS castle canvas must not use a GPU drop-shadow rectangle');
   });
