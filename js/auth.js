@@ -146,6 +146,7 @@ const EngAuth = (function () {
       try { reconcileCupsFromServer(); } catch (e) {}
     }
     claimCoinGrants(username);
+    syncAssets(username);
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
   }
 
@@ -218,6 +219,59 @@ const EngAuth = (function () {
         try { renderHome(); } catch (e) {}
       }
     } catch (e) { /* offline — the grant stays unclaimed on the server */ }
+  }
+
+  // ---- owned-asset backup (db/016) ----
+  // One PUT both backs up this device and restores it: the server merges
+  // add-only (sets union, numbers max) and replies with the result, which is
+  // applied back the same way — so neither a wiped device nor a stale server
+  // copy can ever SHRINK what the child owns. Fire-and-forget on every
+  // account sync; offline just means the next sync carries it.
+  async function syncAssets(username) {
+    const token = tokenFor(username);
+    if (!token) return;
+    try {
+      if (typeof appState === 'undefined' || !appState) return;
+      if (typeof currentUser === 'undefined' || currentUser !== username) return;
+      const num = v => typeof v === 'number' && Number.isFinite(v);
+      const body = {
+        accessories: Array.isArray(appState.petAccessories) ? appState.petAccessories : [],
+        castleSkins: Array.isArray(appState.petBattleCastleSkins) ? appState.petBattleCastleSkins : [],
+        stickers: Array.isArray(appState.stickers) ? appState.stickers : [],
+      };
+      if (num(appState.dogGrowthXP)) body.dogGrowthXP = appState.dogGrowthXP;
+      if (num(appState.streakShields)) body.streakShields = appState.streakShields;
+      const r = await api('assets', { method: 'PUT', token, body });
+      if (!r.ok || !r.data || !r.data.assets) return;
+      if (typeof currentUser === 'undefined' || currentUser !== username) return;
+      const merged = r.data.assets;
+      let changed = false;
+      const addAll = (key, ids) => {
+        if (!Array.isArray(ids)) return;
+        if (!Array.isArray(appState[key])) appState[key] = [];
+        for (const id of ids) {
+          if (!appState[key].includes(id)) { appState[key].push(id); changed = true; }
+        }
+      };
+      addAll('petAccessories', merged.accessories);
+      addAll('petBattleCastleSkins', merged.castleSkins);
+      addAll('stickers', merged.stickers);
+      if (num(merged.dogGrowthXP) && merged.dogGrowthXP > (+appState.dogGrowthXP || 0)) {
+        appState.dogGrowthXP = merged.dogGrowthXP;
+        changed = true;
+      }
+      // The dog's level is derived state — re-derive it from the restored XP,
+      // monotonically (a level never goes down; see the login migration).
+      if (typeof getDogLevel === 'function') {
+        const lvl = getDogLevel(appState.dogGrowthXP);
+        if (num(lvl) && lvl > (+appState.dogLevel || 1)) { appState.dogLevel = lvl; changed = true; }
+      }
+      if (num(merged.streakShields) && merged.streakShields > (+appState.streakShields || 0)) {
+        appState.streakShields = Math.min(3, merged.streakShields);
+        changed = true;
+      }
+      if (changed && typeof saveUserData === 'function') saveUserData(currentUser, appState);
+    } catch (e) { /* offline — the next sync carries the backup */ }
   }
 
   // Explicit re-link with a passcode the user typed (used by the Friends tab
@@ -446,7 +500,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { refreshFlags: claimCoinGrants, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { refreshFlags: claimCoinGrants, syncAssets, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.
@@ -456,6 +510,8 @@ async function syncNowUI() {
   if (btn) { btn.classList.remove('ok'); btn.classList.add('syncing'); btn.disabled = true; }
   let res;
   try { res = await EngAuth.syncNow(); } catch (e) { res = { ok: false, reason: 'error' }; }
+  // The manual button also refreshes the owned-asset backup (fire-and-forget).
+  try { if (typeof currentUser !== 'undefined' && currentUser) EngAuth.syncAssets(currentUser); } catch (e) {}
   if (btn) { btn.classList.remove('syncing'); btn.disabled = false; }
   const toast = (m) => { if (typeof showToast === 'function') showToast(m); };
   if (res && res.ok) {

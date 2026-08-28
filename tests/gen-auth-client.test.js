@@ -556,7 +556,9 @@ suite('gen: syncAccount', () => {
         reset({ user: 'Tester', appState: { wordformHistory: [{ score: 5, total: 5, date: NOW - 500 }] } });
         seedAccount('Tester', { token: 'tok123' });
         vmAwait("EngAuth.syncAccount('Tester', '9999')");
-        assert.deepEqual(calls().map(c => c.url), ['/api/activity', '/api/coins']);
+        // /api/assets is the owned-asset backup (db/016) that rides every
+        // account sync — see tests/money-client.test.js for its behaviour.
+        assert.deepEqual(calls().map(c => c.url), ['/api/activity', '/api/coins', '/api/assets']);
         assert.equal(EngAuth.tokenFor('Tester'), 'tok123', 'token untouched');
     });
 

@@ -235,9 +235,12 @@ suite('money server: the home PUT can never wipe what a child owns', () => {
   });
 });
 
-suite('money server: ghost offering pays once and caps the wallet', () => {
+suite('money server: ghost offering rewards ride the receipt-protected grant pipeline', () => {
   const SESSION = '12345678-90ab-cdef-1234-567890abcdef';
-  test('a replayed claim awards nothing and the wallet gains the reward once', async () => {
+  const grants = (world, uid) => world.db.prepare(
+    'SELECT amount, note, claimed_at FROM coin_grants WHERE user_id=?').all(uid);
+
+  test('an award is one unclaimed grant; a replay adds nothing', async () => {
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
     const claim = () => world.call(ghostHandler().onRequestPost, {
@@ -247,24 +250,35 @@ suite('money server: ghost offering pays once and caps the wallet', () => {
     assert.equal(first.status, 200, JSON.stringify(first.data));
     assert.truthy(first.data.awarded);
     assert.equal(first.data.reward, 50);
-    assert.equal(first.data.coins, 50, 'the reward reaches a wallet that did not exist yet');
+    const rows = grants(world, user.uid);
+    assert.equal(rows.length, 1, 'exactly one IOU per awarded item');
+    assert.equal(rows[0].amount, 50);
+    assert.truthy(String(rows[0].note).includes('chicken1'), 'the note names the item');
+    assert.falsy(rows[0].claimed_at, 'the IOU waits for the receipt-protected claim');
+    // The event must NOT hand-write the raid wallet any more — that mirror
+    // was silently overwritten by the next syncHome on another device.
+    const home = world.db.prepare(
+      'SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(user.uid);
+    assert.falsy(home && home.lootable_coins > 0, 'no direct wallet write');
     const replay = await claim();
     assert.falsy(replay.data.awarded, 'a replay must not award again');
     assert.equal(replay.data.reward, 0);
-    assert.equal(replay.data.coins, 50, 'a replay must not change the wallet');
+    assert.equal(grants(world, user.uid).length, 1, 'a replay mints no second IOU');
   });
 
-  test('the reward respects the 100000 wallet cap', async () => {
+  test('end to end: the event reward arrives through POST /api/coins with a receipt', async () => {
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
-    world.db.prepare(
-      'INSERT INTO night_raid_homes(user_id,lootable_coins,updated_at) VALUES(?,?,?)'
-    ).run(user.uid, 99990, Date.now());
-    const r = await world.call(ghostHandler().onRequestPost, {
+    await world.call(ghostHandler().onRequestPost, {
       token: user.token, body: { itemId: 'pig', sessionId: SESSION },
     });
-    assert.truthy(r.data.awarded);
-    assert.equal(r.data.coins, 100000, 'the wallet is capped, not overflowed');
+    const paid = await world.call(coinsHandler().onRequestPost,
+      { token: user.token, body: { proto: 2 } });
+    assert.equal(paid.data.granted, 200, 'the pig reward is paid by the grant pipeline');
+    assert.truthy(paid.data.receipt, 'and it is crash-protected like any other grant');
+    const again = await world.call(coinsHandler().onRequestPost,
+      { token: user.token, body: { proto: 2, ackReceipts: [paid.data.receipt] } });
+    assert.equal(again.data.granted, 0, 'acked means paid exactly once');
   });
 });
 
@@ -300,6 +314,102 @@ suite('money server: the daily snapshot is a real recovery net', () => {
     });
     assert.equal(r.status, 200);
     assert.equal(snapshotBalance(world.db, user.uid), 700);
+  });
+});
+
+suite('money server: the asset backup may only ever add', () => {
+  const assetsHandler = () => loadModule('functions/api/assets.js');
+  const put = (world, user, body) => world.call(assetsHandler().onRequestPut,
+    { method: 'PUT', token: user.token, body });
+
+  test('a first sync stores the device assets and echoes them back', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    const r = await put(world, user, {
+      accessories: ['bow', 'cap'], castleSkins: ['stone-keep', 'royal-keep'],
+      stickers: ['star1'], dogGrowthXP: 30000, streakShields: 2,
+    });
+    assert.equal(r.status, 200, JSON.stringify(r.data));
+    assert.deepEqual(r.data.assets.accessories, ['bow', 'cap']);
+    assert.deepEqual(r.data.assets.castleSkins, ['stone-keep', 'royal-keep']);
+    assert.equal(r.data.assets.dogGrowthXP, 30000);
+    assert.equal(r.data.assets.streakShields, 2);
+  });
+
+  test('a wiped device syncing empty arrays cannot shrink the backup', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    await put(world, user, { accessories: ['bow'], castleSkins: ['royal-keep'],
+      stickers: ['star1'], dogGrowthXP: 30000, streakShields: 2 });
+    const wiped = await put(world, user, {
+      accessories: [], castleSkins: [], stickers: [], dogGrowthXP: 0, streakShields: 0,
+    });
+    assert.deepEqual(wiped.data.assets.accessories, ['bow'], 'owned assets never vanish');
+    assert.deepEqual(wiped.data.assets.castleSkins, ['royal-keep']);
+    assert.equal(wiped.data.assets.dogGrowthXP, 30000, 'XP is monotonic');
+    assert.equal(wiped.data.assets.streakShields, 2);
+    // …and the reply IS the restore: the wiped device gets everything back.
+  });
+
+  test('new purchases from a second device merge in as a union', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    await put(world, user, { accessories: ['bow'] });
+    const merged = await put(world, user, { accessories: ['cap'], stickers: ['star2'] });
+    assert.deepEqual(merged.data.assets.accessories.sort(), ['bow', 'cap']);
+    assert.deepEqual(merged.data.assets.stickers, ['star2']);
+  });
+
+  test('junk is sanitized: bad ids dropped, numbers clamped, shapes tolerated', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    const r = await put(world, user, {
+      accessories: ['bow', '<script>', 'x'.repeat(100), 42],
+      castleSkins: 'not-an-array',
+      dogGrowthXP: 1e12, streakShields: 99,
+    });
+    assert.deepEqual(r.data.assets.accessories, ['bow', '42']);
+    assert.deepEqual(r.data.assets.castleSkins, []);
+    assert.equal(r.data.assets.dogGrowthXP, 99999999, 'XP is capped');
+    assert.equal(r.data.assets.streakShields, 3, 'shields cap at 3');
+  });
+
+  test('GET returns the stored backup and strangers are refused', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    await put(world, user, { accessories: ['bow'] });
+    const r = await world.call(assetsHandler().onRequestGet, { method: 'GET', token: user.token });
+    assert.deepEqual(r.data.assets.accessories, ['bow']);
+    const anon = await world.call(assetsHandler().onRequestGet, { method: 'GET' });
+    assert.equal(anon.status, 401);
+  });
+});
+
+suite('money server: the admin can SEE a wipe before restoring it', () => {
+  test('the users list carries the latest and 7-day-peak snapshot balances', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const quiet = await world.createUser({});
+    const gmt7 = ms => new Date(ms + 7 * 3600000).toISOString().slice(0, 10);
+    const day = 24 * 3600000;
+    // Yesterday the child had 5000; today the device reports 0 — a wipe.
+    world.db.prepare(`INSERT INTO user_coin_snapshots
+      (user_id,snapshot_date,balance,observed_at) VALUES (?,?,?,?)`)
+      .run(kid.uid, gmt7(Date.now() - day), 5000, Date.now() - day);
+    world.db.prepare(`INSERT INTO user_coin_snapshots
+      (user_id,snapshot_date,balance,observed_at) VALUES (?,?,?,?)`)
+      .run(kid.uid, gmt7(Date.now()), 0, Date.now());
+    const r = await world.call(
+      loadModule('functions/api/admin/users.js').onRequestGet,
+      { method: 'GET', token: admin.token });
+    assert.equal(r.status, 200, JSON.stringify(r.data));
+    const row = r.data.users.find(u => u.id === kid.uid);
+    assert.equal(row.coin_latest, 0, 'the wiped balance is visible');
+    assert.equal(row.coin_peak7, 5000, 'the recoverable peak is right beside it');
+    const none = r.data.users.find(u => u.id === quiet.uid);
+    assert.equal(none.coin_latest, null, 'no snapshots -> no claim about the wallet');
+    assert.equal(none.coin_peak7, null);
   });
 });
 

@@ -146,6 +146,39 @@ suite('money invariants: mercenary wages', () => {
   });
 });
 
+suite('money invariants: a truly full disk warns instead of silently dropping the session', () => {
+  // rewrite/wordform/phrases shed their own oldest history entries when
+  // localStorage throws — but when even a lone entry cannot be written they
+  // used to give up in SILENCE, with the coins already awarded in memory.
+  const MODULES = [
+    { file: 'rewrite', fn: 'saveRewriteSession' },
+    { file: 'wordform', fn: 'saveWordformSession' },
+    { file: 'phrases', fn: 'savePhrasesSession' },
+  ];
+  for (const m of MODULES) {
+    test(m.file + ': the give-up path surfaces a warning toast', () => {
+      const mod = require(path.join(root, 'js', m.file + '.js'));
+      assert.truthy(typeof mod[m.fn] === 'function', m.fn + ' must be exported for this test');
+      const prev = { appState: global.appState, currentUser: global.currentUser,
+        saveUserData: global.saveUserData, showToast: global.showToast };
+      const toasts = [];
+      global.appState = {};
+      global.currentUser = 'Kid';
+      global.saveUserData = () => { const e = new Error('QuotaExceededError'); e.name = 'QuotaExceededError'; throw e; };
+      global.showToast = msg => toasts.push(msg);
+      try {
+        mod[m.fn]({ score: 9, total: 10, date: Date.now() }); // must not throw
+        assert.truthy(toasts.length >= 1, 'the child must be told the save failed');
+        assert.truthy(/lưu|đầy/i.test(toasts.join(' ')), 'the warning says what happened');
+      } finally {
+        for (const k of Object.keys(prev)) {
+          if (prev[k] === undefined) delete global[k]; else global[k] = prev[k];
+        }
+      }
+    });
+  }
+});
+
 suite('money invariants: a full disk must not blow up a payout', () => {
   const math = require(path.join(root, 'js', 'math.js'));
 

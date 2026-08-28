@@ -130,6 +130,15 @@ CREATE TABLE IF NOT EXISTS night_raid_daily (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Owned-asset backup (db/016): accessories, castle skins, stickers, shields,
+-- dogGrowthXP as one JSON blob per learner, merged add-only (sets union,
+-- numbers max) so no sync can shrink what a child owns.
+CREATE TABLE IF NOT EXISTS user_assets (
+  user_id     INTEGER PRIMARY KEY REFERENCES users(id),
+  assets_json TEXT NOT NULL DEFAULT '{}',
+  updated_at  INTEGER NOT NULL
+);
+
 -- Admin coin gifts (db/010). An IOU the child's device claims exactly once:
 -- claimed_at IS NULL rows are paid out by POST /api/coins, then stamped.
 CREATE TABLE IF NOT EXISTS coin_grants (

@@ -10,6 +10,10 @@ export async function onRequestGet({ request, env }) {
   const { results } = await env.DB.prepare(
     `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot, u.disabled,
             (u.device_id IS NOT NULL) AS has_device,
+            (SELECT s.balance FROM user_coin_snapshots s WHERE s.user_id = u.id
+              ORDER BY s.snapshot_date DESC LIMIT 1) AS coin_latest,
+            (SELECT MAX(s.balance) FROM user_coin_snapshots s WHERE s.user_id = u.id
+              AND s.snapshot_date >= date('now','+7 hours','-6 days')) AS coin_peak7,
             (SELECT COUNT(*) FROM exam_attempts e WHERE e.user_id = u.id) AS exam_count,
             (SELECT COUNT(*) FROM activities  c WHERE c.user_id = u.id) AS activity_count,
             MAX(
@@ -27,6 +31,12 @@ export async function onRequestGet({ request, env }) {
     // Whether this account is holding a slot on some device's 2-account quota
     // — the admin needs to see that before deciding whether clearing helps.
     has_device: !!u.has_device,
+    // The wallet as the recovery net saw it: the newest daily snapshot and
+    // the highest of the last 7 days. A latest far below the peak is the
+    // signature of a wiped device — the UI flags it and pre-fills the
+    // restore grant with the difference.
+    coin_latest: u.coin_latest == null ? null : Number(u.coin_latest),
+    coin_peak7: u.coin_peak7 == null ? null : Number(u.coin_peak7),
     exam_count: u.exam_count || 0,
     activity_count: u.activity_count || 0,
     total_count: (u.exam_count || 0) + (u.activity_count || 0),

@@ -349,7 +349,7 @@
         <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
       </div>
       <div class="scroll"><table id="attemptsTable">
-        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Time</th></tr></thead>
+        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Balance</th><th>Time</th></tr></thead>
         <tbody id="attemptsBody"></tbody>
       </table></div>
     </div>
@@ -523,6 +523,13 @@ function renderUsers(){
   const busiest = Math.max(1, ...rows.map(u=>u.total_count||0));
   body.innerHTML = rows.map(u=>{
     const pct = Math.round((u.total_count||0) / busiest * 100);
+    // A latest snapshot far below this week's peak is the signature of a
+    // wiped device (cleared storage, re-created profile). Flag it and offer
+    // the difference as the restore grant. Peaks under 200 xu stay quiet —
+    // that is normal spending noise, not a wipe.
+    const coinDrop = (u.coin_peak7 != null && u.coin_latest != null
+        && u.coin_peak7 >= 200 && u.coin_latest < u.coin_peak7 / 2)
+      ? (u.coin_peak7 - u.coin_latest) : 0;
     return `<tr class="clickable ${u.disabled?'disabled':''}" data-uid="${u.id}" data-name="${esc(u.username)}">
       <td>
         <div class="who-cell">
@@ -539,15 +546,16 @@ function renderUsers(){
       <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
       <td class="hide-xs">${u.disabled
             ? '<span class="pill dead">Disabled</span>'
-            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}</td>
+            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}${coinDrop
+            ? `<span class="pill dead" title="Wallet dropped: ${u.coin_latest} xu now vs ${u.coin_peak7} xu peak this week — possible wiped device. The Coins button pre-fills the ${coinDrop} xu to restore.">▼ ${coinDrop} xu</span>` : ''}</td>
       <td>
         <div class="row-actions">
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
                   aria-label="Bot practice for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
                   title="Practice against a bot: unlimited, 20 shots, no rewards">🤖<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
-          <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}"
+          <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
                   aria-label="Give coins to ${esc(u.username)}"
-                  title="Give coins — the child's app claims them on its next sync">💰<span class="lbl"> Coins</span></button>
+                  title="${coinDrop?`Restore — pre-filled with the ${coinDrop} xu this wallet lost vs its weekly peak`:'Give coins — the child\'s app claims them on its next sync'}">💰<span class="lbl"> ${coinDrop?'Restore':'Coins'}</span></button>
           ${u.has_device ? `<button class="mini act-clear" data-uid="${u.id}"
                   aria-label="Free the device slot held by ${esc(u.username)}"
                   title="Free this account's slot on its device (max 2 accounts per device)">📱<span class="lbl"> Free slot</span></button>` : ''}
@@ -575,7 +583,9 @@ function renderUsers(){
   act('.act-clear', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
   act('.act-coins', b => {
-    const raw = prompt('Give coins to \u201c' + b.dataset.name + '\u201d \u2014 how many?', '50');
+    // A detected wipe pre-fills the exact difference to restore; otherwise 50.
+    const suggested = (Number(b.dataset.refill) > 0) ? String(Math.trunc(Number(b.dataset.refill))) : '50';
+    const raw = prompt('Give coins to \u201c' + b.dataset.name + '\u201d \u2014 how many?', suggested);
     if (raw === null) return Promise.reject(new Error('cancelled'));
     const amount = Math.trunc(Number(raw));
     if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
@@ -697,7 +707,7 @@ async function loadActivity(userId, name){
   const q = userId ? ('admin/activity?user_id='+encodeURIComponent(userId)) : 'admin/activity';
   const { activity } = await api(q);
   const body = document.getElementById('attemptsBody');
-  if (!activity.length){ body.innerHTML = `<tr><td colspan="7" class="empty">No activity yet.</td></tr>`; return; }
+  if (!activity.length){ body.innerHTML = `<tr><td colspan="8" class="empty">No activity yet.</td></tr>`; return; }
   body.innerHTML = activity.map(a=>{
     const hasScore = (a.total!=null && a.total>0);
     const pct = hasScore ? Math.round(a.score/a.total*100) : null;
@@ -708,6 +718,7 @@ async function loadActivity(userId, name){
       <td>${esc(a.title||a.ref||'—')}</td>
       <td>${hasScore ? (a.score+'/'+a.total) : '—'}</td>
       <td>${pct!=null ? `<span class="${pctClass(pct)}">${pct}%</span>` : '—'}</td>
+      <td>${a.coin_balance!=null ? `<b>${Number(a.coin_balance).toLocaleString('en-US')} xu</b>` : '—'}</td>
       <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
     </tr>`;
   }).join('');

@@ -175,6 +175,69 @@ suite('money client: grant receipts — the gift survives every crash point', ()
   });
 });
 
+suite('money client: owned assets ride the backup both ways', () => {
+  const SERVER_ASSETS = {
+    accessories: ['bow', 'cap'], castleSkins: ['stone-keep', 'royal-keep'],
+    stickers: ['star1'], dogGrowthXP: 30000, streakShields: 2,
+  };
+
+  test('a fresh device is restored from the sync reply, dog level included', async () => {
+    const { ctx, calls } = loadAuth(url =>
+      url === '/api/assets' ? { data: { ok: true, assets: SERVER_ASSETS } } : null);
+    ctx.appState = { coins: 0, petAccessories: [], petBattleCastleSkins: ['stone-keep'],
+      stickers: [], dogGrowthXP: 0, dogLevel: 1, streakShields: 0 };
+    ctx.currentUser = 'Kid';
+    ctx.getDogLevel = xp => Math.max(1, Math.floor(xp / 1000)); // stand-in formula
+    let saves = 0; ctx.saveUserData = () => { saves++; };
+    await ctx.EngAuth.syncAssets('Kid');
+    assert.deepEqual(ctx.appState.petAccessories.sort(), ['bow', 'cap']);
+    assert.deepEqual(ctx.appState.petBattleCastleSkins.sort(), ['royal-keep', 'stone-keep']);
+    assert.deepEqual(ctx.appState.stickers, ['star1']);
+    assert.equal(ctx.appState.dogGrowthXP, 30000);
+    assert.equal(ctx.appState.dogLevel, 30, 'the dog level is re-derived from restored XP');
+    assert.equal(ctx.appState.streakShields, 2);
+    assert.truthy(saves >= 1, 'the restore must be persisted');
+    const put = calls.find(c => c.url === '/api/assets');
+    assert.equal(put.method, 'PUT', 'one round trip backs up AND restores');
+  });
+
+  test('local purchases are uploaded, and the merge never loses either side', async () => {
+    const { ctx, calls } = loadAuth((url, body) =>
+      url === '/api/assets'
+        ? { data: { ok: true, assets: {
+            accessories: ['bow'].concat(body.accessories || []),
+            castleSkins: body.castleSkins || [], stickers: body.stickers || [],
+            dogGrowthXP: Math.max(30000, body.dogGrowthXP || 0),
+            streakShields: body.streakShields || 0 } } }
+        : null);
+    ctx.appState = { petAccessories: ['crown'], petBattleCastleSkins: ['stone-keep'],
+      stickers: [], dogGrowthXP: 45000, dogLevel: 45, streakShields: 1 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.syncAssets('Kid');
+    const put = calls.find(c => c.url === '/api/assets');
+    assert.deepEqual(put.body.accessories, ['crown'], 'local ownership is uploaded');
+    assert.equal(put.body.dogGrowthXP, 45000);
+    assert.deepEqual(ctx.appState.petAccessories.sort(), ['bow', 'crown'],
+      'the merged union lands locally');
+    assert.equal(ctx.appState.dogGrowthXP, 45000, 'a lower server XP never lowers local');
+  });
+
+  test('offline or a switched profile changes nothing', async () => {
+    const { ctx } = loadAuth(() => { throw new Error('network down'); });
+    ctx.appState = { petAccessories: ['crown'], dogGrowthXP: 45000, dogLevel: 45 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.syncAssets('Kid');
+    assert.deepEqual(ctx.appState.petAccessories, ['crown']);
+    const { ctx: c2 } = loadAuth(url =>
+      url === '/api/assets' ? { data: { ok: true, assets: SERVER_ASSETS } } : null);
+    c2.appState = { petAccessories: [], dogGrowthXP: 0, dogLevel: 1 };
+    c2.currentUser = 'SomeoneElse';
+    await c2.EngAuth.syncAssets('Kid');
+    assert.deepEqual(c2.appState.petAccessories, [],
+      'a reply for Kid must never write into another profile');
+  });
+});
+
 // ---- js/night-raid.js under a scripted EngAuth.api ----
 function loadNightRaid(apiPlan) {
   const apiCalls = [];
@@ -260,6 +323,8 @@ suite('money client: night raid sync can never invent a zero', () => {
     const put = apiCalls.find(c => c.path === 'night-raid/home' && c.method === 'PUT');
     assert.equal(put.body.coins, 1234);
     assert.equal(put.body.dogLevel, 2);
+    assert.falsy('vaultCoins' in put.body,
+      'vault_coins is a dead write-only column — the client must stop feeding it');
   });
 });
 

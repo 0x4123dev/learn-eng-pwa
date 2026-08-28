@@ -41,6 +41,17 @@ suite('daily coin balance recovery snapshots', () => {
     assert.truthy(admin.includes('<th>Balance</th>'));
     assert.truthy(admin.includes('a.coin_balance!=null'));
   });
+  test('the users list flags a suspected wipe and pre-fills the restore grant', () => {
+    // Behavioural coverage of the endpoint fields (coin_latest, coin_peak7)
+    // lives in tests/money-server.test.js; these pin the UI wiring.
+    const usersApi = read('functions/api/admin/users.js');
+    assert.truthy(usersApi.includes('coin_latest'));
+    assert.truthy(usersApi.includes('coin_peak7'));
+    assert.truthy(admin.includes('coinDrop'), 'a drop is computed per user row');
+    assert.truthy(admin.includes('▼'), 'a wiped wallet shows a visible drop badge');
+    assert.truthy(admin.includes('data-refill'), 'the Coins button carries the suggested restore');
+    assert.truthy(admin.includes("b.dataset.refill"), 'the prompt pre-fills the recovery amount');
+  });
 });
 
 if (require.main === module) require('./harness').runAll();

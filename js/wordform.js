@@ -152,7 +152,14 @@ function saveWordformSession(session) {
   if (typeof appState !== 'undefined' && typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
     while (true) {
       try { saveUserData(currentUser, appState); break; }
-      catch (e) { if (hist.length > 1) hist.pop(); else break; }
+      catch (e) {
+        if (hist.length > 1) { hist.pop(); continue; }
+        // Even a lone entry cannot be written: localStorage is truly full.
+        // Say so — giving up in silence left the coins awarded in memory and
+        // the session looking saved when nothing reached disk.
+        if (typeof showToast === 'function') showToast('⚠️ Bộ nhớ máy đầy — kết quả chưa được lưu');
+        break;
+      }
     }
   }
 }
@@ -888,7 +895,7 @@ if (typeof module !== 'undefined' && module.exports) {
     renderWordformHome, startWordformQuiz, startWordformReviewQuiz, answerWfQuestion,
     submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
-    switchWfSubTab, renderWordformLessons, openWordformLesson,
+    switchWfSubTab, renderWordformLessons, openWordformLesson, saveWordformSession,
     wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone, wfFollowParts,
     answerWfFollowup, renderWfFollowup, wfUnderstandCardHTML,
   };
