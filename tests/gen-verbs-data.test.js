@@ -242,5 +242,5 @@ suite('gen: sampled verb integrity (every 8th entry)', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

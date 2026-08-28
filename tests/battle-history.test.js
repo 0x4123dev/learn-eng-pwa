@@ -183,5 +183,5 @@ suite('primary navigation: the arena replaces the old home shortcut', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

@@ -586,7 +586,14 @@ function saveMathSession(session) {
   list.unshift(session);
   if (list.length > MATH_HISTORY_CAP) list.length = MATH_HISTORY_CAP;
   if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-    saveUserData(currentUser, appState);
+    // localStorage full: shed the oldest history entries and retry, like the
+    // other practice menus (rewrite/wordform/phrases). Letting the quota
+    // error escape aborted finishMathQuiz AFTER the coins were already added
+    // in memory, so the award never reached disk.
+    while (true) {
+      try { saveUserData(currentUser, appState); break; }
+      catch (e) { if (list.length > 1) list.pop(); else break; }
+    }
   }
 }
 
@@ -1482,7 +1489,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
     mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
-    submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions,
+    submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions, saveMathSession,
     mathExams, mathExamBest, startMathExam, renderMathExamsHTML,
     renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,

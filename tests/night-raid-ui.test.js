@@ -197,41 +197,71 @@ suite('night raid: app integration',()=>{
     for(const mode of ["state.mode='attention'","state.mode='rest'","state.mode='march'"])
       assert.truthy(ui.includes(mode),mode);
     assert.truthy(ui.includes('armyClearAt(petBlockedRects()'),'the formation turns rather than walking through a bought building');
-    assert.truthy(ui.includes('startArmyParade()'),'the parade starts in both the full home and homepage habitat');
+    assert.truthy(ui.includes('function advanceArmyLane(state,slots,dt)'),'lane changes have an explicit walking interpolation');
+    assert.truthy(ui.includes('5.2*dt')&&ui.includes('state.targetY'),'vertical movement is time-based rather than a one-frame teleport');
+    assert.falsy(ui.includes('state.y=alternatives[Math.floor(Math.random()*alternatives.length)]'),'collision handling must never jump directly to a distant lane');
+    assert.truthy(ui.includes('startArmyParade(petPatrolRoot)')&&ui.includes('startArmyParade(activeMap)'),'the parade starts against the explicit visible map in both habitats');
     assert.truthy(css.includes("raider-actions-v2.webp"),'the home parade reuses the authored animated soldier atlas');
+    assert.truthy(css.includes("raider-walk-v3.png"),'marching uses the dedicated six-frame locomotion atlas');
+    assert.truthy(css.includes('aspect-ratio:1.5'),'soldier boxes preserve the authored 3:2 frame instead of squashing the body');
+    assert.falsy(css.includes('aspect-ratio:2.25'),'the old wide, flattened soldier frame must not return');
+    assert.truthy(css.includes('.nr-home-soldier::after{'),'a separate contact shadow seats each raised soldier on the grass');
+    assert.truthy(css.includes('drop-shadow(0 .48cqw .28cqw'),'the sprite body has a deeper layered shadow for readable 3D separation');
+    assert.truthy(ui.includes("%6"),'the six authored gait frames all play');
     assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the homepage parade remains visible offline');
+    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v3.png'"),'the walk cycle remains visible offline');
     assert.truthy(css.includes('.nr-yard-army[data-mode="attention"]'),'attention has a visually distinct pose');
     assert.truthy(css.includes('.nr-yard-army[data-mode="rest"]'),'rest has a visually distinct pose');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'the squad can stand still for reduced-motion users');
   });
-  test('every account gets the yard as its home habitat',()=>{
+  test('marching soldiers leave a restrained footprint trail',()=>{
+    assert.truthy(ui.includes('data-nr-army-trail'),'the squad needs a trail layer beneath it');
+    assert.truthy(ui.includes('spawnArmyTrail(trail,state,slots,t)'),'march ticks plant prints at current positions');
+    assert.truthy(ui.includes('while(layer.childElementCount>34)'),'the ambient trail stays bounded');
+    assert.truthy(css.includes('.nr-army-print{'),'soldier prints have their own visual');
+    assert.truthy(css.includes('@keyframes nr-army-print-fade'),'soldier prints fade from the lawn');
+    assert.truthy(css.includes('.nr-army-dust{'),'soldier heels kick up a restrained dust puff');
+    assert.truthy(css.includes('@keyframes nr-army-dust-puff'),'dust expands and fades in place');
+    assert.truthy(css.includes('.nr-army-print,.nr-army-dust{display:none}'),'reduced motion removes decorative trails');
+  });
+  test('the compact home HUD keeps soldier count between defense and coins',()=>{
+    assert.truthy(/nr-builder-power damage[\s\S]*nr-builder-power defense[\s\S]*nr-builder-power soldiers[\s\S]*nr-builder-power coins/.test(ui));
+    assert.falsy(css.includes('.nr-builder-power.soldiers{display:none}'),'phones must not hide the real soldier count');
+  });
+  test('Home shows the evolving dog; the castle yard moves to the Arena header',()=>{
     const home=read('js/home.js');
-    // Only the stage changes. Hearts, name, trash, shop and the streak chip
-    // are all rendered elsewhere and must survive untouched.
-    // The garden was released to everyone on 2026-08-25 — it is scenery, not
-    // the game. Night Raid itself is still gated; see the release-boundary
-    // tests in tests/home-yard-layout.test.js.
-    assert.falsy(/allowBot[^\n]*mountYardScene|yardHabitat *= *[^\n]*allowBot/.test(home),
-      'the garden must not be behind the bot flag any more');
-    assert.truthy(home.includes('NightRaid.mountYardScene'),'the scene is the raid yard, not a copy of it');
+    const arena=read('js/petbattle.js');
+    assert.falsy(home.includes('NightRaid.mountYardScene'),'Home must never replace the close-up dog with a castle yard');
+    assert.truthy(home.includes("stage_el.classList.remove('yard-mode')"),'the old full-yard stage mode must be removed');
+    assert.truthy(home.includes('<div class="pet-wrapper">')&&home.includes('${petArtHTML}'),
+      'Home must render the live SVG dog and its level accessories');
+    assert.truthy(arena.includes('id="pbArenaYard"')&&arena.includes('NightRaid.mountYardScene(host'),
+      'the same living castle yard belongs in the Arena header');
+    assert.truthy(arena.includes('onclick="pbShowDogInfo()"')&&arena.includes('aria-modal="true"'),
+      'Arena info opens the accessible dog power dialog');
+    assert.falsy(arena.includes('class="pb-arena-pet-id"'),'the redundant dog name/level box must not cover the garden');
+    assert.falsy(arena.includes('pbArenaZoom')||arena.includes('_pbBindArenaYardZoom'),'Arena keeps one stable camera without pinch or button zoom');
     assert.truthy(ui.includes('function mountYardScene(host,opts)'),'one walk, mounted where it is asked for');
-    assert.truthy(ui.includes('isometric-home-board-unified-gate-v3.webp'),'homepage uses the rectangular yard, not the old square board');
-    assert.truthy(ui.includes("paintEquippedCastle('nrMiniCastle')"),'homepage paints the equipped skin without the fallback image background');
-    assert.truthy(ui.includes('style="${mapStyle}"'),'castle uses the saved map anchor on the homepage too');
-    assert.truthy(ui.includes('function yardBuildingsHtml()'),'homepage paints the real bought-building layout');
+    assert.truthy(ui.includes('isometric-home-board-unified-gate-v3.webp'),'Arena uses the rectangular yard, not the old square board');
+    assert.truthy(ui.includes("paintEquippedCastle('nrMiniCastle')"),'Arena paints the equipped castle skin');
+    assert.truthy(ui.includes('style="${mapStyle}"'),'castle uses the saved map anchor in Arena too');
+    assert.truthy(ui.includes('function yardBuildingsHtml()'),'Arena paints the real bought-building layout');
     assert.truthy(ui.includes('+yardBuildingsHtml()+yardPetHtml'),'farms, barracks and defenses mount under the living actors');
     assert.truthy(ui.includes("res.data?.home?.layout"),'homepage refreshes the authoritative server home');
     assert.truthy(ui.includes("skipRefresh:true"),'the server refresh remounts once without a request loop');
-    assert.truthy(css.includes('.nr-mini-map .nr-home-layout{pointer-events:none}'),'visible buildings do not steal pet or food-drop gestures');
-    assert.truthy(css.includes('.nr-mini-map .nr-home-layout em{display:none}'),'homepage hides construction-tier bubbles such as the repeated 1 badges');
-    assert.truthy(css.includes('.nr-mini-map .nr-yard-pet{width:clamp(34px,10cqw,64px)}'),'homepage pet stays proportional to farms and defenses');
-    assert.truthy(ui.includes('petPatrolRoot||document.querySelector'),'the patrol takes a root instead of assuming one');
-    assert.truthy(home.includes("onTap: () => { try { onPetTap()"),'tapping the dog must still play with it');
-    assert.truthy(home.includes("stage_el.classList.toggle('yard-mode', yardHabitat)"));
-    // The stage is placed by an ID rule, so a class-only override lands half a
-    // screen to the left — the yard override has to carry the ID too.
-    assert.truthy(css.includes('#petHeroStage.yard-mode'),'the override must outrank the ID rule that positions the stage');
-    assert.truthy(/#petHeroStage\.yard-mode[^{]*\{[^}]*left:0/.test(css));
+    assert.truthy(css.includes('.nr-mini-map .nr-home-layout{pointer-events:none}'),'visible buildings do not steal header gestures');
+    assert.truthy(css.includes('.nr-mini-map .nr-home-layout em{display:none}'),'Arena header hides construction-tier bubbles');
+    assert.truthy(css.includes('.nr-mini-map .nr-yard-pet{width:clamp(34px,10cqw,64px)}'),'Arena pet stays proportional to farms and defenses');
+    assert.truthy(ui.includes('function startPetPatrol(map)')&&ui.includes('startPetPatrol(activeMap)'),'the patrol is explicitly attached to the newly rendered visible map');
+    assert.truthy(ui.includes("document.querySelector('.screen.active .nr-builder-map')"),'visibility resume may only discover a map inside the active screen');
+    assert.falsy(ui.includes("petPatrolRoot||document.querySelector('.nr-builder-map')"),'a stale hidden Arena dog must never steal the Night Raid timer');
+    assert.truthy(css.includes('.pb-arena-pet-hero'),'Arena gives the moved yard a bounded header card');
+    assert.truthy(css.includes('.pb-arena-info'),'the dog information target is visually explicit');
+    assert.falsy(css.includes('.pb-arena-zoom')||css.includes('--pb-yard-zoom'),'removed Arena zoom leaves no stale controls or transform variables');
+    assert.truthy(css.includes("url('../img/night-raid/castle-grounds-river-mountains-v2.webp')"),'Arena continues into a matching river-and-mountain landscape outside the estate');
+    assert.truthy(css.includes('.pb-arena-yard .nr-mini-map>.nr-board-art{clip-path:polygon('),'Arena masks the cream studio backdrop around the garden art');
+    assert.truthy(css.includes('mix-blend-mode:darken'),'remaining pale source pixels blend into the endless meadow instead of showing as white seams');
+    assert.truthy(arena.includes('class="pb-arena-info"')&&arena.includes('<svg viewBox="0 0 24 24" aria-hidden="true">'),'Arena uses a polished vector information icon instead of a plain text glyph');
     assert.truthy(css.includes('aspect-ratio:4/3'),'the yard must preserve the source art ratio');
     assert.truthy(css.includes('.nr-mini-map>.nr-equipped-castle{left:calc(var(--nr-castle-x,50)*1%)'),'castle feet follow the same coordinate system as the paving');
     // Pinning that whole declaration verbatim meant any change to the castle —
@@ -282,7 +312,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
   });
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
-    for(const token of ['isometric-home-board-unified-gate-v3.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['isometric-home-board-frame-v4.png','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
     assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
     assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
@@ -294,14 +324,14 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('Chó bảo vệ khu'));
   });
   test('builder supports app-level pinch zoom, visible shop and free item repositioning',()=>{
-    for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm 2 ngón thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    // The zoom floor is dynamic: a pinch can never shrink the island smaller
-    // than the viewport, which used to strand it in a corner of empty green.
-    assert.truthy(ui.includes('Math.max(viewport.clientWidth/base,viewport.clientHeight/baseHeight)'),'min zoom must cover the 4:3 map viewport');
-    assert.truthy(ui.includes('baseHeight=base*.75'),'builder map must preserve its rectangular 4:3 world');
+    for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm hai ngón để thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    assert.truthy(ui.includes('ESTATE_MIN_ZOOM=.03,ESTATE_MAX_ZOOM=4'),'pinch zoom must range from distant estate to close inspection');
+    assert.truthy(css.includes('endless-meadow-tile-v2.jpg')&&css.includes('background-repeat:repeat'),'space inside and beyond the fence must use the same endless grass texture');
+    assert.truthy(ui.includes("plane.className='nr-world-plane'")&&ui.includes('plane.appendChild(map)'),'the meadow and estate must stay inside one real camera plane while zooming and panning');
     assert.truthy(ui.includes('setBuilderZoom(builderZoom)'),'persisted zoom must be re-clamped on open and rotation');
     assert.truthy(ui.includes("pointerdown=\"nrBeginPlacedDrag"));
-    assert.truthy(css.includes('top:calc(78px + env(safe-area-inset-top))'));
+    assert.truthy(css.includes('.nr-builder-hud{position:absolute')&&css.includes('top:10px'),'the app owns the safe area once; the battle HUD stays at the top of its screen');
+    assert.truthy(css.includes('.nr-home-stage>.nr-home-fabs')&&css.includes('top:66px;display:flex'),'home actions form a compact top row instead of a middle-screen rail');
   });
 
   test('the equipped castle drags only in edit mode and the real pet patrols it',()=>{
@@ -320,7 +350,8 @@ suite('night raid: app integration',()=>{
 
   test('daily production UI shows pet power, countdowns and collect controls',()=>{
     for(const token of ['nr-pet-power-card','nr-production-badge','startProductionTicker','nr-collect-all','nrGridCell','localCollect'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png','img/night-raid/tomato-field.png','img/night-raid/fish-pond.png','img/night-raid/isometric-home-board-unified-gate-v3.webp'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
+    for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png','img/night-raid/tomato-field.png','img/night-raid/fish-pond.png','img/night-raid/isometric-home-board-frame-v4.png','img/night-raid/endless-meadow-tile-v2.jpg'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
+    assert.truthy(sw.includes("'/img/night-raid/isometric-home-board-frame-v4.png'")&&sw.includes("'/img/night-raid/endless-meadow-tile-v2.jpg'"),'the unified estate remains available offline');
   });
   test('the placement grid closes after a purchased or moved building is dropped',()=>{
     assert.truthy(ui.includes('function settleBuilderPlacement()'));
@@ -407,8 +438,13 @@ suite('night raid: app integration',()=>{
     // Production atlases now supply distinct paw/leg, weapon, hit and fallen
     // poses; the old deformation of one still image must not come back.
     assert.truthy(phaser.includes("raider-actions-v2.webp"),'raider action atlas');
+    assert.truthy(phaser.includes("raider-walk-v3.png"),'six-frame raider walk atlas');
     assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
-    assert.truthy(phaser.includes("actor.sprite.setFrame(actor.prefix+frame)"),'runtime swaps true frames');
+    assert.truthy(phaser.includes("actor.sprite.setTexture(texture,prefix+frame)"),'runtime swaps between walk and action frames');
+    assert.truthy(phaser.includes("texture='nr-squad-walk'"),'moving soldiers use the dedicated walk cycle');
+    assert.truthy(phaser.includes('squadWalkAnchors'),'walk frames share a stable torso anchor instead of teleporting sideways');
+    assert.truthy(phaser.includes('squadActionAnchors'),'the march-to-attack texture swap preserves the same anchor');
+    assert.truthy(phaser.includes('actor.height*1.32'),'walk and attack keep one display width');
     assert.truthy(phaser.includes("pose.state==='engage'"),'attack frames follow combat state');
     assert.truthy(phaser.includes("pose.state==='fallen'"),'fallen frame follows casualty state');
     assert.falsy(phaser.includes('setCrop'),'no split-body fake stride');
@@ -439,6 +475,7 @@ suite('night raid: app integration',()=>{
   test('generated battle-only atlases stay lazy while the home parade remains offline',()=>{
     const files=['pet-actions-small-v2.webp','pet-actions-large-v2.webp','defense-damage-v2.webp','economy-damage-v2.webp','castle-damage-a-v2.webp','castle-damage-b-v2.webp'];
     assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-actions-v2.webp')));
+    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v3.png')),'the dedicated walk atlas ships with the app');
     assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the atlas now used on Home is part of the offline shell');
     for(const file of files){
       assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',file)),file);
@@ -475,6 +512,8 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('raidPetMarkup'));
     assert.falsy(ui.includes("nr-raid-pet battle"));
     for(const token of ['drawStepContact','drawStrideSprite','swap=moving&&phase<0','a.step,a.moving,motion',"this.reduce?.38:1","this.reduce?.009:.022"])assert.truthy(game.includes(token),token);
+    for(const token of ["loadAsset('squadWalk'","img=moving&&walk?walk:actions","state==='engage'?4+"])assert.truthy(game.includes(token),token);
+    for(const token of ['SQUAD_WALK_ANCHORS','SQUAD_ACTION_ANCHORS',"w=h*1.32","-w*(.5+anchor)"])assert.truthy(game.includes(token),token);
     assert.truthy(css.includes('filter:none!important'),'iOS castle canvas must not use a GPU drop-shadow rectangle');
   });
   test('battle defenders use the same polished 3D assets as the home builder',()=>{

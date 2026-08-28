@@ -374,5 +374,5 @@ suite('device profiles: the app stops offering a form that would be refused', ()
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

@@ -691,5 +691,5 @@ suite('grammar: lessons sub-tab data (v3.25)', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

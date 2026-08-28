@@ -1,15 +1,8 @@
-// home-yard-layout.test.js — the homepage garden is just the garden.
+// home-yard-layout.test.js — Home owns the close-up pet HUD; Arena owns the yard.
 //
-// The pet bar (avatar, name, level, coins, streak, profile) used to float over
-// the top of the garden. It covered the grass the dog walks on, and because the
-// page is served viewport-fit=cover it sat under the status bar on a notched
-// phone: measured on the real page it occupied the top 20% of the garden while
-// an iPhone status bar reaches 19.7% of it. Only a rubber-band pull revealed it.
-//
-// It is a card of its own now, between the food-wish card and the streak panel,
-// and nothing a finger needs sits at the top edge any more. Which means the one
-// thing that still has to stay out of that strip is the dog — so it keeps to
-// the middle of the garden instead of roaming it corner to corner.
+// Once the castle garden moved out of Home, the compact pet bar could return to
+// its original place at the top of the pet hero. Safe-area padding keeps it
+// reachable on notched phones while the large dog stays fully visible below.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -87,41 +80,28 @@ function mountFreshGarden(seed) {
 
 const num = (src, name) => Number((src.match(new RegExp(name + '=([\\d.]+)')) || [])[1]);
 
-suite('home: the pet bar sits below the garden, not on top of it', () => {
-    test('the bar is no longer inside the garden', () => {
+suite('home: the pet bar is back inside the close-up dog habitat', () => {
+    test('the bar is inside the pet hero again', () => {
         const zone = html.slice(html.indexOf('id="petHeroZone"'), html.indexOf('id="evolutionOverlay"'));
-        assert.falsy(zone.includes('petHeroTopbar'), 'the bar is back inside the garden');
-        assert.truthy(zone.includes('petHeroStage'), 'the garden itself must stay');
+        assert.truthy(zone.includes('petHeroTopbar'), 'the pet bar must be restored to the dog habitat');
+        assert.truthy(zone.indexOf('petHeroTopbar') < zone.indexOf('petHeroStage'),
+            'the information bar must appear above the close-up dog');
     });
 
-    test('it lands between the food-wish card and the streak panel', () => {
+    test('it no longer consumes a separate card below the food wish', () => {
         const at = id => html.indexOf('id="' + id + '"');
-        assert.truthy(at('petHeroTopbar') > at('petQuestCard'), 'the bar must follow the food-wish card');
-        assert.truthy(at('petHeroTopbar') < at('streakPanel'), 'and come before the streak panel');
+        assert.truthy(at('petHeroTopbar') < at('petQuestCard'), 'the bar must be part of the hero, before the food-wish card');
     });
 
-    test('it is dressed as a card, not as chips on a photo', () => {
+    test('it uses the original over-art HUD treatment', () => {
         const rule = (css.match(/\.pet-hero-topbar \{[^}]*\}/) || [''])[0];
         assert.truthy(rule, 'the bar has no rule');
-        assert.falsy(/position:\s*sticky/.test(rule), 'nothing pins it to the top edge any more');
-        assert.falsy(/linear-gradient\(to bottom, rgba\(0,0,0/.test(rule),
-            'the dark scrim only made sense over artwork');
-        assert.truthy(/border-radius/.test(rule) && /box-shadow/.test(rule), 'it should read as a card');
-        // The streak panel is pulled up 20px and rides at z-index 15; a card
-        // with a lower seat slides underneath it.
-        const streak = (css.match(/\.streak-panel \{[^}]*\}/) || [''])[0];
-        const z = r => Number((r.match(/z-index:\s*(\d+)/) || [])[1]);
-        assert.truthy(z(rule) > z(streak),
-            `the bar sits at z-index ${z(rule)} under a streak panel at ${z(streak)}`);
-    });
-
-    test('the chips are recoloured for a light card', () => {
-        // Every one of these was white-on-translucent-black, which is invisible
-        // on a white card.
-        for (const chip of ['pet-hero-avatar', 'pet-hero-coins', 'pet-hero-streak', 'pet-hero-info', 'pet-hero-identity']) {
-            assert.truthy(css.includes('.pet-hero-topbar .' + chip),
-                `${chip} still wears its over-the-photo colours`);
-        }
+        assert.truthy(/position:\s*sticky/.test(rule), 'the restored HUD must stay at the top of the hero');
+        assert.truthy(/linear-gradient\(to bottom, rgba\(0,0,0/.test(rule),
+            'the restored HUD needs its contrast scrim over artwork');
+        const appRule = (css.match(/\.app\s*\{[^}]*\}/) || [''])[0];
+        assert.truthy(appRule.includes('padding-top: var(--safe-area-top)'), 'the app shell clears the notch once for every screen');
+        assert.falsy(rule.includes('safe-area-inset-top'), 'the hero must not count the notch twice and drift down over the dog');
     });
 });
 
@@ -134,11 +114,15 @@ suite('home: the garden shipped, the game did not', () => {
     const home = read('js/home.js');
     const arena = read('js/petbattle.js');
 
-    test('the habitat swap is no longer behind the bot flag', () => {
-        const line = (home.match(/const yardHabitat = [^;]*/) || [''])[0];
-        assert.truthy(line, 'the habitat decision could not be found');
-        assert.falsy(line.includes('allowBot'), `still gated: ${line}`);
-        assert.truthy(line.includes('NightRaid.mountYardScene'), 'it must still need the scene to exist');
+    test('Home keeps the evolving dog close-up and Arena owns the garden', () => {
+        assert.falsy(home.includes('NightRaid.mountYardScene'), 'Home must not mount the castle garden');
+        assert.truthy(home.includes("stage_el.classList.remove('yard-mode')"), 'Home must leave full-yard layout mode');
+        assert.truthy(home.includes('<div class="pet-wrapper">') && home.includes('${petArtHTML}'),
+            'Home must render the live dog art so level accessories remain visible');
+        assert.truthy(arena.includes('id="pbArenaYard"') && arena.includes('NightRaid.mountYardScene(host'),
+            'Arena must mount the account castle garden in its header');
+        assert.truthy(arena.includes('onclick="pbShowDogInfo()"') && arena.includes('aria-modal="true"'),
+            'Arena must expose dog power through an accessible info dialog');
     });
 
     test('Night Raid itself is still gated', () => {

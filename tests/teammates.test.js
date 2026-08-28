@@ -765,5 +765,5 @@ suite('teammates: the rocket must LOOK like a rocket', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

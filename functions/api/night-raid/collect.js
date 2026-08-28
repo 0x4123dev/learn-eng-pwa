@@ -14,6 +14,10 @@ export async function onRequestPost({request,env}) {
   }
   layout.soldiers=soldiers;
   if(!collectedCoins&&!collectedSoldiers)return json({ok:true,nothingReady:true,layout,coins,soldiers});
-  await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=?,updated_at=? WHERE user_id=?').bind(JSON.stringify(layout),coins,now,auth.uid).run();
-  return json({ok:true,layout,coins,soldiers,collectedCoins,collectedSoldiers});
+  // Add the harvest as a DELTA instead of writing back the absolute number:
+  // the old read-modify-write raced with a concurrent collect or a raid
+  // deduction, and whichever wrote last silently undid the other's money.
+  await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=MIN(100000,MAX(0,lootable_coins)+?),updated_at=? WHERE user_id=?').bind(JSON.stringify(layout),collectedCoins,now,auth.uid).run();
+  const fresh=await env.DB.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
+  return json({ok:true,layout,coins:Math.max(0,Math.trunc(+((fresh&&fresh.lootable_coins))||0)),soldiers,collectedCoins,collectedSoldiers});
 }

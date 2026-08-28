@@ -1,0 +1,11 @@
+-- users.allow_bot: per-user QA/feature gate (Night Raid, bot opponents,
+-- ghost-offering previews). The column has existed in PRODUCTION since the
+-- Night Raid rollout (added by hand), but no checked-in SQL created it — so a
+-- database rebuilt from this repo broke POST /api/coins (the grant-claim path
+-- selects allow_bot on every sync) with an error the client swallows as
+-- "offline". This migration closes that gap for rebuilds.
+--
+-- Do NOT run against the live eng_pwa_db: the column already exists there and
+-- SQLite has no ADD COLUMN IF NOT EXISTS — it would fail with "duplicate
+-- column name", which is the correct no-op signal.
+ALTER TABLE users ADD COLUMN allow_bot INTEGER NOT NULL DEFAULT 0;

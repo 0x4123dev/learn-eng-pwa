@@ -15,7 +15,11 @@ CREATE TABLE IF NOT EXISTS users (
   -- one device may create. See db/004-device-limit.sql for the reasoning.
   device_id     TEXT,
   -- Admin switch. Disabling keeps the row and all history; see 005.
-  disabled      INTEGER NOT NULL DEFAULT 0
+  disabled      INTEGER NOT NULL DEFAULT 0,
+  -- Per-user QA/feature gate (Night Raid, bot opponents, event previews).
+  -- Read by POST /api/coins on EVERY sync — without this column a rebuilt
+  -- database breaks the whole coin-claim path. See db/014.
+  allow_bot     INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id);
 
@@ -54,6 +58,23 @@ CREATE INDEX IF NOT EXISTS idx_activities_user    ON activities(user_id, created
 CREATE INDEX IF NOT EXISTS idx_activities_created ON activities(created_at);
 -- Idempotency: one activity per (user, type, second) so re-syncs never duplicate.
 CREATE UNIQUE INDEX IF NOT EXISTS idx_activities_dedup ON activities(user_id, type, created_at);
+
+-- Daily wallet recovery checkpoint recorded by the activity-sync request.
+CREATE TABLE IF NOT EXISTS user_coin_snapshots (
+  user_id            INTEGER NOT NULL,
+  snapshot_date      TEXT NOT NULL,
+  balance            INTEGER NOT NULL,
+  observed_at        INTEGER NOT NULL,
+  source_activity_at INTEGER,
+  source_type        TEXT,
+  source_title       TEXT,
+  created_at         TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at         TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, snapshot_date),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE INDEX IF NOT EXISTS idx_coin_snapshots_recent
+  ON user_coin_snapshots(user_id, observed_at DESC);
 
 -- Skill-level learning analytics. One row is one completed session × skill,
 -- not one row per click/question. This keeps D1 writes small while preserving
@@ -122,3 +143,19 @@ CREATE TABLE IF NOT EXISTS coin_grants (
 );
 CREATE INDEX IF NOT EXISTS idx_coin_grants_unclaimed
   ON coin_grants(user_id) WHERE claimed_at IS NULL;
+
+-- Daily 22:00–24:00 GMT+7 ghost-offering event (db/012).
+CREATE TABLE IF NOT EXISTS ghost_offering_claims (
+  user_id INTEGER NOT NULL, event_date TEXT NOT NULL, item_id TEXT NOT NULL,
+  reward INTEGER NOT NULL, claimed_at INTEGER NOT NULL,
+  PRIMARY KEY (user_id, event_date, item_id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE INDEX IF NOT EXISTS idx_ghost_offering_user_date
+  ON ghost_offering_claims(user_id, event_date);
+CREATE TABLE IF NOT EXISTS ghost_offering_world_claims (
+  event_date TEXT NOT NULL, item_id TEXT NOT NULL, user_id INTEGER NOT NULL,
+  reward INTEGER NOT NULL, claimed_at INTEGER NOT NULL,
+  PRIMARY KEY (event_date, item_id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

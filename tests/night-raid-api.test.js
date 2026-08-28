@@ -20,7 +20,10 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     const src=read('functions/api/night-raid/collect.js');
     assert.truthy(src.includes('cell.readyAt>now'));
     assert.truthy(src.includes('soldiers<NR.MAX_SOLDIERS'));
-    assert.truthy(src.includes("UPDATE night_raid_homes SET layout_json=?,lootable_coins=?"));
+    // The harvest is applied as a capped DELTA, never an absolute overwrite —
+    // the absolute form raced with concurrent collects/raids and lost money.
+    // Executed behavioural coverage lives in tests/money-server.test.js.
+    assert.truthy(src.includes("lootable_coins=MIN(100000,MAX(0,lootable_coins)+?)"));
   });
   test('finish resolves the snapshotted DAM and DEF with shared deterministic rules',()=>{
     const src=read('functions/api/night-raid/finish.js');

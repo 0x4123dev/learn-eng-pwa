@@ -108,7 +108,7 @@ suite('iPad: the layout is capped, not stretched', () => {
             'viewport-fit=cover without insets leaves content under the status bar');
     });
 
-    test('every bar pinned to the top edge clears the status bar', () => {
+    test('the app owns the top safe area exactly once', () => {
         // "The stylesheet mentions env(safe-area-inset) somewhere" was the only
         // check here, and it stayed green while the homepage header sat at
         // 8-52px on a phone whose status bar is 47-59px tall — the whole header
@@ -131,11 +131,14 @@ suite('iPad: the layout is capped, not stretched', () => {
             const blocks = css.match(re) || [];
             return blocks.find(b => /position:/.test(b)) || blocks[0] || null;
         };
+        const appBlock = blockFor('.app');
+        assert.truthy(appBlock && /padding-top:\s*var\(--safe-area-top\)/.test(appBlock),
+            'the app shell must clear the status bar for every child screen');
         for (const [sel, what] of TOP_BARS) {
             const block = blockFor(sel);
             assert.truthy(block, `${sel} has no rule at all`);
-            assert.truthy(/safe-area-inset-top/.test(block),
-                `${what} (${sel}) sits under the status bar on a notched device`);
+            assert.falsy(/safe-area-inset-top/.test(block),
+                `${what} (${sel}) double-counts the notch and falls into the middle of the screen`);
         }
     });
 });
@@ -419,5 +422,5 @@ suite('iPad: installing and running as an app', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

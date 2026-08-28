@@ -111,5 +111,5 @@ suite('tapwords: dictionary integrity + coverage invariant', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

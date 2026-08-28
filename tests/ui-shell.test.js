@@ -15,6 +15,16 @@ suite('primary navigation UX', () => {
             'bottom navigation must not reopen a screen halfway down');
     });
 
+    test('a live Ghost Offering round cannot be discarded by a navigation mis-tap', () => {
+        const nav = app.slice(app.indexOf('function switchScreen'), app.indexOf('function navigateToProfile'));
+        assert.truthy(nav.includes('GhostOfferingEvent.isActive()'));
+        assert.truthy(nav.includes("confirm('Con đang chơi Cướp Cô Hồn."));
+        assert.truthy(nav.includes('GhostOfferingEvent.close()'), 'confirmed exit must clean up the Arena scroll lock');
+        assert.truthy(nav.includes('return false;'), 'cancel keeps the active game on screen');
+        assert.truthy(battle.includes('GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return'),
+            'tapping Arena itself must not replace the running scene with its lobby');
+    });
+
     test('the home profile entry is a labelled button', () => {
         assert.truthy(/<button[^>]+home-user-avatar[^>]+aria-label="Open profile"/.test(html));
     });
@@ -48,4 +58,3 @@ suite('arena unavailable state', () => {
         assert.truthy(/_pbStopPolling\(\)/.test(refresh));
     });
 });
-

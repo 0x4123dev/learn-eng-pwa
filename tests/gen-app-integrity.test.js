@@ -137,14 +137,16 @@ suite('gen: sw.js img assets exist on disk', () => {
         const teammates = IMG_ASSETS.filter(a => /^\/img\/battle-teammates\/[^/]+\.jpg$/.test(a));
         const castles = IMG_ASSETS.filter(a => /^\/img\/castle-skins\/castles-atlas-[ab]\.png$/.test(a));
         const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
-        const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|png)$/.test(a));
+        const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|png|jpe?g)$/.test(a));
+        const ghostOffering = IMG_ASSETS.filter(a => /^\/img\/ghost-offering\/.+\.(?:webp|png)$/.test(a));
         assert.equal(svgs.length, 3, `root svg count: ${svgs.join(', ')}`);
         assert.equal(pets.length, 0, `obsolete pet png count: ${pets.join(', ')}`);
         assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
         assert.equal(castles.length, 2, `castle atlas count: ${castles.join(', ')}`);
         assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
-        assert.equal(nightRaid.length, 19, `night raid art count: ${nightRaid.join(', ')}`);
-        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length, IMG_ASSETS.length);
+        assert.equal(nightRaid.length, 23, `night raid art count: ${nightRaid.join(', ')}`);
+        assert.equal(ghostOffering.length, 4, `ghost offering art count: ${ghostOffering.join(', ')}`);
+        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length, IMG_ASSETS.length);
     });
 });
 
@@ -321,5 +323,5 @@ suite('gen: app version consistency', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

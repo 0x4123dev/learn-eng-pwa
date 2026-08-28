@@ -27,6 +27,7 @@ suite('coin grants: admin gives, the device claims once', () => {
     const src = read('functions/api/coins.js');
     assert.truthy(src.includes('claimed_at IS NULL'), 'only unpaid rows count');
     assert.truthy(/UPDATE coin_grants SET claimed_at/.test(src), 'rows must be stamped so a re-sync cannot double-pay');
+    assert.truthy(src.includes('RETURNING amount'), 'claiming and reading must be one atomic statement');
     assert.truthy(/json\(\{ granted[,}]/.test(src), 'client needs the total to add locally');
   });
 
@@ -48,6 +49,7 @@ suite('coin grants: admin gives, the device claims once', () => {
     const src = read('js/auth.js');
     assert.truthy(src.includes('claimCoinGrants(username)'), 'syncAccount must trigger the claim');
     assert.truthy(src.includes("api('coins', { method: 'POST', token })"));
+    assert.truthy(src.includes('Math.trunc(+r.data.granted || 0)'), 'signed corrections must not be clamped away');
     assert.truthy(src.includes('appState.coins = Math.max(0, +appState.coins || 0) + granted'));
     assert.truthy(src.includes('🎁'), 'the child should see the gift arrive');
   });

@@ -323,5 +323,5 @@ suite('coverage: PDF lesson topics (≥5 questions per topic)', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

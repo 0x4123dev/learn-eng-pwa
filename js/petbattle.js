@@ -53,6 +53,8 @@ const PB_STR = {
     powPer10: '+{v} every 10 levels', powMaxed: 'Fully maxed 🎉',
     powBeyond: 'Past the level {n} mark 🎉 · ',
     powFoot: 'Maxes out at level {n} · level up by studying 📚',
+    powInfo: 'Dog battle power', powInfoOpen: 'Open dog battle information', powInfoClose: 'Close dog information',
+    powYardAria: '{name} patrols the castle garden',
 
     hireTitle: '⚔️ Hire teammates',
     hireSub: 'They fight automatically from inside your castle for the whole battle.',
@@ -200,6 +202,8 @@ const PB_STR = {
     powPer10: '+{v} mỗi 10 cấp', powMaxed: 'Đã đạt tối đa 🎉',
     powBeyond: 'Vượt mốc cấp {n} 🎉 · ',
     powFoot: 'Tối đa ở cấp {n} · lên cấp bằng cách học bài 📚',
+    powInfo: 'Sức mạnh chiến đấu của chó', powInfoOpen: 'Mở thông tin chiến đấu của chó', powInfoClose: 'Đóng thông tin chó',
+    powYardAria: '{name} đang tuần tra khu vườn lâu đài',
 
     hireTitle: '⚔️ Thuê đồng đội',
     hireSub: 'Đồng đội tự động chiến đấu trong lâu đài suốt toàn bộ trận đấu.',
@@ -342,6 +346,7 @@ function pbT(key, vars) {
 
 function pbSetLang(lang) {
   _pbLang = (lang === 'vi') ? 'vi' : 'en';
+  pbCloseDogInfo();
   renderPetBattle();
 }
 function _pbToken() {
@@ -366,6 +371,10 @@ function _pbMyPet() {
 
 // ---- screen ----
 function openPetBattle() {
+  // Tapping the already-active Arena tab must not replace a running event with
+  // the lobby. Other tabs use switchScreen's explicit leave confirmation.
+  if (typeof GhostOfferingEvent !== 'undefined' &&
+      GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return;
   _pbLang = 'en';                 // every visit starts in English, by design
   _pbHistoryOpen = -1;
   if (typeof switchScreen === 'function') switchScreen('petBattleScreen');
@@ -381,6 +390,8 @@ function openPetBattle() {
 }
 function closePetBattle() {
   _pbShowingResult = false;
+  pbCloseDogInfo();
+  _pbUnmountArenaYard();
   if (typeof botClearGame === 'function') botClearGame();
   _pbStopPolling();
   _pbCloseLink();
@@ -397,6 +408,8 @@ async function refreshPetBattle() {
     _pbState = { offline: true };
     _pbStopPolling();
   }
+  if (typeof GhostOfferingEvent !== 'undefined' &&
+      GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return _pbState;
   renderPetBattle();                     // no-op while the result card is up
   return _pbState;
 }
@@ -426,6 +439,72 @@ function _pbShell(inner) {
       </div>
       ${inner}
     </div>`;
+}
+
+// The castle homestead is combat context, so it belongs at the top of Arena
+// instead of replacing the dog's close-up on Home. The compact identity and
+// a real 44px info button stay readable above the animated scene.
+function _pbArenaPetHeader() {
+  const pet = _pbMyPet();
+  let breed = pet.stage;
+  try { breed = getDogStage(pet.level).name; } catch (e) {}
+  return `<section class="pb-arena-pet-hero" aria-label="${pbEsc(pet.petName)}, ${pbEsc(breed)}, ${pbT('powLevel')} ${pet.level}">
+    <div class="pb-arena-yard" id="pbArenaYard" role="img" aria-label="${pbT('powYardAria', { name: pbEsc(pet.petName) })}"></div>
+    <button type="button" class="pb-arena-info" onclick="pbShowDogInfo()" aria-label="${pbT('powInfoOpen')}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 10.7v6M12 7.2h.01"/></svg>
+    </button>
+  </section>`;
+}
+
+function _pbMountArenaYard() {
+  const host = document.getElementById('pbArenaYard');
+  if (!host) return;
+  if (typeof NightRaid !== 'undefined' && NightRaid.mountYardScene) {
+    try {
+      NightRaid.mountYardScene(host, { skipRefresh: !(_pbState && _pbState.allowBot) });
+      return;
+    } catch (e) {}
+  }
+  const pet = _pbMyPet();
+  try {
+    const stage = getDogStage(pet.level);
+    host.innerHTML = petDogSVG({ stageCss: stage.stageCss, size: 150, level: pet.level, stageMinLevel: stage.minLevel });
+  } catch (e) { host.textContent = '🐶'; }
+}
+
+function _pbUnmountArenaYard() {
+  if (typeof NightRaid !== 'undefined' && NightRaid.unmountYardScene) {
+    try { NightRaid.unmountYardScene(); } catch (e) {}
+  }
+}
+
+let _pbDogInfoReturnFocus = null;
+function pbCloseDogInfo() {
+  const overlay = typeof document !== 'undefined' ? document.getElementById('pbDogInfoModal') : null;
+  if (overlay) overlay.remove();
+  const returnFocus = _pbDogInfoReturnFocus;
+  _pbDogInfoReturnFocus = null;
+  if (returnFocus && returnFocus.isConnected && typeof returnFocus.focus === 'function') returnFocus.focus();
+}
+
+function pbShowDogInfo() {
+  if (typeof document === 'undefined') return;
+  pbCloseDogInfo();
+  _pbDogInfoReturnFocus = document.activeElement;
+  const overlay = document.createElement('div');
+  overlay.id = 'pbDogInfoModal';
+  overlay.className = 'pb-dog-info-overlay';
+  overlay.onclick = function (event) { if (event.target === overlay) pbCloseDogInfo(); };
+  overlay.onkeydown = function (event) { if (event.key === 'Escape') pbCloseDogInfo(); };
+  overlay.innerHTML = `<section class="pb-dog-info-dialog" role="dialog" aria-modal="true" aria-labelledby="pbDogInfoTitle" tabindex="-1">
+    <div class="pb-dog-info-heading"><h2 id="pbDogInfoTitle">${pbT('powInfo')}</h2>
+      <button type="button" class="pb-dog-info-close" onclick="pbCloseDogInfo()" aria-label="${pbT('powInfoClose')}">×</button>
+    </div>
+    ${_pbPowerPanel()}
+  </section>`;
+  document.body.appendChild(overlay);
+  const close = overlay.querySelector('.pb-dog-info-close');
+  if (close) close.focus();
 }
 
 // The arena showed ammo only, so a child had no idea their pet's LEVEL also
@@ -780,12 +859,17 @@ function _pbOfflineCard() {
 function renderPetBattle() {
   const screen = document.getElementById('petBattleScreen');
   if (!screen) return;
+  // A lobby refresh may have started just before the event stopped polling.
+  // Its late response must never replace the already-mounted event scene.
+  if (typeof GhostOfferingEvent !== 'undefined' &&
+      GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return;
   if (_pbGame) return;                       // the running game owns the screen
   if (_pbShowingResult) return;              // …and so does the result card
 
   const st = _pbState;
-  if (!st) { screen.dataset.pbLobbySig = ''; screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('loading')}</div>`); return; }
+  if (!st) { _pbUnmountArenaYard(); screen.dataset.pbLobbySig = ''; screen.innerHTML = _pbShell(`<div class="pb-empty">${pbT('loading')}</div>`); return; }
   if (st.offline) {
+    _pbUnmountArenaYard();
     screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(_pbOfflineCard());
     return;
@@ -793,6 +877,7 @@ function renderPetBattle() {
 
   const b = st.battle;
   if (b && b.status === 'invited' && !b.iAmChallenger) {
+    _pbUnmountArenaYard();
     const left = Math.max(0, (b.expiresAt || 0) - Date.now());
     screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(`
@@ -811,6 +896,7 @@ function renderPetBattle() {
     return;
   }
   if (b && b.status === 'invited' && b.iAmChallenger) {
+    _pbUnmountArenaYard();
     const left = Math.max(0, (b.expiresAt || 0) - Date.now());
     screen.dataset.pbLobbySig = '';
     screen.innerHTML = _pbShell(`
@@ -822,7 +908,7 @@ function renderPetBattle() {
       </div>`);
     return;
   }
-  if (b && b.status === 'active') { startPetBattleGame(b); return; }
+  if (b && b.status === 'active') { _pbUnmountArenaYard(); startPetBattleGame(b); return; }
 
   const ready = !st.readyAt || st.readyAt <= Date.now();
   const friends = (typeof _getFriendsData === 'function' && _getFriendsData())
@@ -865,11 +951,13 @@ function renderPetBattle() {
   const prevCastleList = screen.querySelector('.pb-castle-list');
   const keepCastleScroll = prevCastleList ? prevCastleList.scrollLeft : 0;
 
+  _pbUnmountArenaYard();
   screen.innerHTML = _pbShell(`
-    ${_pbPowerPanel()}
+    ${_pbArenaPetHeader()}
     ${_pbCastleWorkshop()}
     ${_pbRandomArenaCard()}
     ${st.allowBot ? _pbNightRaidCard() : ''}
+    ${typeof GhostOfferingEvent !== 'undefined' ? GhostOfferingEvent.cardHTML() : ''}
     ${_pbAmmoPanel(st)}
     ${ready
       ? (st.ammo > 0
@@ -893,6 +981,8 @@ function renderPetBattle() {
       </div>` : ''}
     ${_pbHistoryPanel()}`);
   screen.dataset.pbLobbySig = sig;
+  if (typeof GhostOfferingEvent !== 'undefined') GhostOfferingEvent.syncLobbyCard();
+  _pbMountArenaYard();
   _pbRenderCastlePreviews(screen);
   if (keepCastleScroll) {
     const nextCastleList = screen.querySelector('.pb-castle-list');
@@ -1317,8 +1407,9 @@ if (typeof module !== 'undefined' && module.exports) {
     pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
     _pbCastleWorkshop, _pbRenderCastlePreviews,
     startBotBattle, finishBotBattle,
-    _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset,
-    _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbVersusLine, pbGoToFriends,
+    _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset, pbHireCommit,
+    _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbArenaPetHeader,
+    pbShowDogInfo, pbCloseDogInfo, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },
     _pbGetState: () => _pbState,
   };

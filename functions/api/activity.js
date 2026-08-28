@@ -9,6 +9,7 @@ import { requireAuth, json, err } from './_lib.js';
 const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'collocation', 'wordform',
                'rewrite', 'verbs', 'math', 'battle'];
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+const GMT7_MS = 7 * 60 * 60 * 1000;
 
 // Convert a JS ms timestamp to D1's 'YYYY-MM-DD HH:MM:SS' (UTC).
 function sqlTime(ms) {
@@ -23,6 +24,33 @@ function clean(a) {
   let detailJson = null;
   try { if (a.detail) detailJson = JSON.stringify(a.detail).slice(0, 4000); } catch (e) {}
   return { type, title, score, total, detailJson, at: a.at };
+}
+
+function cleanBalance(value) {
+  if (!Number.isFinite(+value)) return null;
+  return Math.max(0, Math.min(100000, Math.trunc(+value)));
+}
+function gmt7Date(ms) {
+  return new Date(ms + GMT7_MS).toISOString().slice(0, 10);
+}
+function coinSnapshot(env, uid, body, source) {
+  const balance = cleanBalance(body.coinBalance);
+  if (balance == null || !source) return null;
+  const observedAt = Date.now();
+  const activityAt = Number.isFinite(+source.at) ? Math.trunc(+source.at) : observedAt;
+  // MAX, not last-write: this row is the recovery net. A device that was
+  // wiped (or reset to a fresh profile) reports 0 on its next sync — with
+  // last-write-wins that 0 destroyed the very number the admin needed to
+  // restore the wallet. The highest balance seen today is what recovery wants.
+  return env.DB.prepare(`INSERT INTO user_coin_snapshots
+    (user_id,snapshot_date,balance,observed_at,source_activity_at,source_type,source_title)
+    VALUES(?,?,?,?,?,?,?) ON CONFLICT(user_id,snapshot_date) DO UPDATE SET
+      balance=MAX(user_coin_snapshots.balance,excluded.balance),observed_at=excluded.observed_at,
+      source_activity_at=excluded.source_activity_at,source_type=excluded.source_type,
+      source_title=excluded.source_title,updated_at=datetime('now')
+    WHERE excluded.observed_at >= user_coin_snapshots.observed_at`)
+    .bind(uid, gmt7Date(observedAt), balance, observedAt, activityAt,
+      source.type, source.title);
 }
 
 // POST /api/activity
@@ -41,17 +69,21 @@ export async function onRequestPost({ request, env }) {
   if (Array.isArray(body.items)) {
     const rows = body.items.slice(0, 500).map(clean).filter(Boolean)
       .filter(r => !(Number.isFinite(+r.at) && +r.at < cutoff)); // drop >30d-old
-    if (rows.length) {
-      const stmts = rows.map(r => {
-        const at = Number.isFinite(+r.at) ? sqlTime(+r.at) : sqlTime(Date.now());
-        // OR IGNORE + the unique (user_id, type, created_at) index makes re-syncs idempotent.
-        return env.DB.prepare(
-          `INSERT OR IGNORE INTO activities (user_id, type, title, score, total, detail_json, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`
-        ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson, at);
-      });
-      await env.DB.batch(stmts);
-    }
+    const stmts = rows.map(r => {
+      const at = Number.isFinite(+r.at) ? sqlTime(+r.at) : sqlTime(Date.now());
+      // OR IGNORE + the unique (user_id, type, created_at) index makes re-syncs idempotent.
+      return env.DB.prepare(
+        `INSERT OR IGNORE INTO activities (user_id, type, title, score, total, detail_json, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson, at);
+    });
+    // Coins earned in pet chores, Night Raid or the shop produce no activity
+    // items, so a balance-only sync (items: []) must still leave its snapshot
+    // — otherwise a day of pure economy play records nothing recoverable.
+    const snapshot = coinSnapshot(env, auth.uid, body,
+      rows[0] || { at: Date.now(), type: 'sync', title: 'Balance sync' });
+    if (snapshot) stmts.push(snapshot);
+    if (stmts.length) await env.DB.batch(stmts);
     await env.DB.prepare("DELETE FROM activities WHERE created_at < datetime('now','-30 days')").run();
     return json({ ok: true, count: rows.length });
   }

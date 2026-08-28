@@ -94,6 +94,16 @@ suite('night raid builder: the castle is the biggest thing on the board', () => 
         assert.truthy(ui.includes('cw*(CASTLE_SIZE+.25)') && ui.includes('ch*(CASTLE_SIZE+.25)'),
             'the no-walk rectangle must follow the real footprint');
     });
+
+    test('farms and barracks read much larger than tactical defenses', () => {
+        const small = ruleFor(/\.nr-build-grid-cell \.nr-placed\.footprint-1\{[^}]*\}/);
+        const large = ruleFor(/\.nr-build-grid-cell \.nr-placed\.footprint-2\.producer\{[^}]*\}/);
+        const smallWidth = Number((small.match(/width:([\d.]+)%/) || [])[1]);
+        const largeWidth = Number((large.match(/width:([\d.]+)%/) || [])[1]);
+        assert.truthy(smallWidth <= 100, `one-cell defenses render at ${smallWidth}% instead of fitting their tile`);
+        assert.truthy(largeWidth >= smallWidth * 2.2,
+            `a ${largeWidth}% facility is not clearly larger than a ${smallWidth}% defense`);
+    });
 });
 
 suite('night raid builder: the board opens small enough to see', () => {
@@ -106,13 +116,28 @@ suite('night raid builder: the board opens small enough to see', () => {
         assert.truthy(w >= 44 && h >= 44, `a land cell would be ${w.toFixed(0)} x ${h.toFixed(0)} css px`);
     });
 
-    test('zooming out past "fills the screen" is allowed here, but not on Home', () => {
-        // The homepage yard is a framed scene: letterboxing it looks broken.
-        // The build screen is a map, where seeing your own edges is the point.
-        assert.truthy(ui.includes("view==='builder'?BUILDER_MIN_ZOOM:Math.min(1.65,Math.max(.4,cover))"),
-            'the two screens must not share one floor');
+    test('Home and Builder share one zooming estate and endless meadow camera', () => {
+        assert.truthy(ui.includes('ESTATE_MIN_ZOOM=.03,ESTATE_MAX_ZOOM=4'), 'the camera must support very wide free zoom');
+        assert.truthy(ui.includes('return {min:ESTATE_MIN_ZOOM,max:ESTATE_MAX_ZOOM}'),
+            'Home and Builder must share the same meadow camera range');
         assert.truthy(css.includes('place-content:safe center'),
-            'plain centring makes the left half of an oversized board unreachable — scrollLeft cannot go negative');
+            'the tiny estate must remain centred and recoverable');
+        assert.truthy(css.includes('endless-meadow-tile-v2.jpg') && css.includes('background-repeat:repeat'),
+            'the world around the fence must be an effectively endless meadow in either orientation');
+        assert.truthy(css.includes('background-size:var(--nr-ground-size,2048px)') && ui.includes('Math.round(MEADOW_TILE_SIZE*builderZoom)'),
+            'the meadow texture must scale with the same camera zoom as the estate');
+        assert.truthy(ui.includes("plane.className='nr-world-plane'") && ui.includes('plane.appendChild(map)'),
+            'the meadow and estate must be children of one real scroll plane');
+        assert.truthy(ui.includes('WORLD_PLANE_SIZE=32768') && ui.includes("plane.style.width=WORLD_PLANE_SIZE+'px'"),
+            'the lightweight meadow plane must be effectively unreachable without allocating a giant bitmap');
+        assert.truthy(ui.includes('viewport.scrollLeft+cx-plane.offsetWidth/2') && ui.includes('worldX*newZoom'),
+            'zoom anchoring must preserve the logical point around the shared world centre');
+        assert.truthy(ui.includes('isometric-home-board-frame-v4.png'),
+            'the full estate must use a true-alpha frame instead of a second opaque lawn');
+        assert.truthy(css.includes('.nr-estate-map{isolation:auto') && css.includes('-webkit-clip-path:none') && css.includes('clip-path:none'),
+            'the transparent frame must not be cut into another visible rectangle on Safari');
+        assert.truthy(css.includes('mix-blend-mode:normal'),
+            'the one meadow texture must show through the transparent frame without colour blending');
     });
 
     test('zoom and scroll are remembered per screen', () => {

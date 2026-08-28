@@ -218,5 +218,5 @@ suite('friend battle delay: the client only renders what the server decided', ()
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

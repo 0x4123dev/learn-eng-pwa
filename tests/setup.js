@@ -47,7 +47,8 @@ function buildSandbox(opts) {
             querySelector: () => null,
             querySelectorAll: () => [],
             scrollTo: () => {},
-            scrollIntoView: () => {}
+            scrollIntoView: () => {},
+            animate: () => ({ finished: Promise.resolve(), onfinish: null, cancel: () => {} })
         };
         el.parentNode = null;
         return el;
@@ -206,6 +207,10 @@ const EXPORT_NAMES = [
     'getWeekStart', 'formatWeekRange', 'generateWeeklyRecap', 'getRecapMessage',
     'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
     'getHomeSkillStats', '_homeSkillSessions', '_homeAllSessionsCount',
+    // login + profile migration (money-client tests)
+    'loginUser', 'getUserData', 'createDefaultUserData',
+    // shop spend paths (money-invariants tests)
+    'buyFood', 'buyAccessory', 'buyShield',
     // daily-challenge
     'getDailyWords', 'seededRandom'
     // (v3.47: Music & Videos tabs removed — no video globals.)

@@ -175,5 +175,5 @@ suite('arena language: the rules layer stayed language-free', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

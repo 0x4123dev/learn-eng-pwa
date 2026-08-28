@@ -402,5 +402,5 @@ suite('grammar: every unit has a unique color (no palette collisions)', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

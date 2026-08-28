@@ -90,5 +90,5 @@ suite('navigation hubs: old modules remain easy to find', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

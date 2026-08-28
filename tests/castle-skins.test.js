@@ -49,6 +49,9 @@ suite('castle skins: fair cosmetic collection', () => {
     const source = read('js/castle-skins.js');
     assert.truthy(source.includes('normalize(id) === defaultId'), 'free preview must bypass premium artwork');
     assert.truthy(source.includes('skin.id === defaultId'), 'free battle castle must use the basic renderer');
+    assert.truthy(source.includes('const atlasFrames'), 'each uneven atlas silhouette needs its own safe crop');
+    assert.truthy(source.includes('frame.x,crop.y,frame.w'), 'renderers must use the measured frame instead of equal fifths');
+    assert.falsy(source.includes('position.cell*sw,crop.y,sw'), 'equal fifths leak neighbouring castle fragments');
   });
 
   test('battle renderer uses premium sprites and preserves staged destruction', () => {

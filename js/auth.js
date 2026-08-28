@@ -149,16 +149,16 @@ const EngAuth = (function () {
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
   }
 
-  // Admin-granted coins are a server-side IOU (coin_grants): claim every
-  // unclaimed row once, add the total to this device's wallet, and let the
-  // server stamp them claimed so a re-sync can never pay the same gift twice.
+  // Admin coin adjustments are server-side IOUs (coin_grants): claim every
+  // unclaimed row once, apply the signed total to this device's wallet, and
+  // let the server stamp them claimed so a re-sync cannot pay them twice.
   // Fire-and-forget from syncAccount — offline just leaves the IOU waiting.
   async function claimCoinGrants(username) {
     const token = tokenFor(username);
     if (!token) return;
     try {
       const r = await api('coins', { method: 'POST', token });
-      const granted = r.ok && r.data ? Math.max(0, Math.trunc(+r.data.granted || 0)) : 0;
+      const granted = r.ok && r.data ? Math.trunc(+r.data.granted || 0) : 0;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
       // The same reply carries the per-user feature flags. Cache them BEFORE
@@ -184,8 +184,13 @@ const EngAuth = (function () {
       }
       if (!granted) return;
       appState.coins = Math.max(0, +appState.coins || 0) + granted;
+      appState.coins = Math.max(0, appState.coins);
       if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
-      if (typeof showToast === 'function') showToast('🎁 Admin tặng bạn ' + granted + ' xu!');
+      if (typeof showToast === 'function') {
+        showToast(granted > 0
+          ? '🎁 Admin tặng bạn ' + granted + ' xu!'
+          : '🧾 Đã điều chỉnh số dư ' + granted + ' xu');
+      }
       const home = document.getElementById('homeScreen');
       if (home && home.classList.contains('active') && typeof renderHome === 'function') {
         try { renderHome(); } catch (e) {}
@@ -307,6 +312,17 @@ const EngAuth = (function () {
   // safe because the server key is session + skill and INSERT OR IGNORE.
   const SKILL_SYNC_EPOCH = 2;
 
+  // The wallet as a clamped integer, or null when it is not a real number
+  // yet (fresh install, half-hydrated profile). Null means "say nothing":
+  // reporting 0 for an unhydrated wallet would poison the recovery snapshot
+  // with exactly the value a wipe leaves behind.
+  function _walletBalance() {
+    if (typeof appState === 'undefined' || !appState) return null;
+    const c = appState.coins;
+    if (typeof c !== 'number' || !Number.isFinite(c)) return null;
+    return Math.max(0, Math.min(100000, Math.trunc(c)));
+  }
+
   // Upload any local history not yet synced for the active user. Idempotent:
   // client-side de-dup via stored keys + server-side OR IGNORE. Used by the
   // completion hooks, on login, and by the manual "Sync now" button.
@@ -338,6 +354,19 @@ const EngAuth = (function () {
     const skillKeyOf = (o) => o.sessionId + '|' + o.skillKey;
     const skillItems = allSkills.filter(o => !syncedSkills.has(skillKeyOf(o)));
     if (!items.length && !skillItems.length) {
+      // Coins earned in pet chores, Night Raid, cup sales or the shop leave
+      // no history item — so a day of pure economy play used to record no
+      // recovery snapshot at all. A quiet sync still reports the wallet,
+      // once per changed balance.
+      const balance = _walletBalance();
+      if (balance != null && acct.lastCoinReport !== balance) {
+        try {
+          const r = await api('activity', { method: 'POST', token: acct.token,
+            body: { items: [], coinBalance: balance, coinObservedAt: Date.now() } });
+          if (r.status === 401) { clearAccount(u); return { ok: false, reason: 'auth' }; }
+          if (r.ok) setAccount(u, { lastCoinReport: balance });
+        } catch (e) { /* offline — report again on the next sync */ }
+      }
       return { ok: true, synced: 0, total: all.length };
     }
 
@@ -349,8 +378,14 @@ const EngAuth = (function () {
       let activityOk = !batch.length;
       let skillsOk = !skillBatch.length;
       if (batch.length) {
-        const r = await api('activity', { method: 'POST', token: acct.token, body: { items: batch } });
+        // An unhydrated wallet is OMITTED, never sent as 0 — the server
+        // snapshot keeps its stored value when the field is absent.
+        const balance = _walletBalance();
+        const body = { items: batch, coinObservedAt: Date.now() };
+        if (balance != null) body.coinBalance = balance;
+        const r = await api('activity', { method: 'POST', token: acct.token, body });
         if (r.status === 401) { clearAccount(u); return { ok: false, reason: 'auth' }; }
+        if (r.ok && balance != null) setAccount(u, { lastCoinReport: balance });
         activityOk = r.ok;
       }
       if (skillBatch.length) {

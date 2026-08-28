@@ -191,5 +191,5 @@ suite('units HK2: it plugs into the same machinery', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

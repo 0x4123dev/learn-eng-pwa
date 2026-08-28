@@ -431,5 +431,5 @@ suite('answer gate: wired into every tab that asks for it', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

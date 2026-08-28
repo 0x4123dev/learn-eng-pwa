@@ -253,5 +253,5 @@ suite('battle balance: wind is felt, not overwhelming', () => {
 
 if (require.main === module) {
     const harness = require('./harness');
-    process.exit(harness.runAll());
+    harness.runAll().then(code => process.exit(code));
 }

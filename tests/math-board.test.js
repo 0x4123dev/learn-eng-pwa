@@ -38,11 +38,14 @@ suite('math board: strokes', () => {
         assert.equal(b.strokes.length, 1, 'an accidental clear is recoverable');
     });
 
-    test('each stroke remembers the selected pen width', () => {
+    test('the whiteboard uses one fixed thin pen instead of a width picker', () => {
         const b = { strokes: [], scrollY: 0 };
-        assert.equal(board.mathBoardBegin(b, 1, 1, 6).width, 6);
-        assert.deepEqual(board.MATH_BOARD_PEN_WIDTHS, [2.5, 4, 6]);
-        assert.equal(board.MATH_BOARD_INK_WIDTH, 4, 'finger-friendly medium is the default');
+        assert.equal(board.mathBoardBegin(b, 1, 1).width, 2.5);
+        assert.deepEqual(board.MATH_BOARD_PEN_WIDTHS, [2.5]);
+        assert.equal(board.MATH_BOARD_INK_WIDTH, 2.5, 'the only pen is the smallest thin stroke');
+        const src = read('js/math-board.js');
+        assert.truthy(/Bút mảnh/.test(src) && !/\['Mảnh', 'Vừa', 'Đậm'\]/.test(src),
+            'the toolbar can switch back to the pen but cannot choose a thickness');
     });
 
     test('the object eraser removes a touched stroke and Undo restores it', () => {
@@ -160,8 +163,9 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerMove(g, b, 1, 10, 305);
         assert.equal(board.mathBoardPointerDown(g, b, 2, 60, 300), 'pan-start');
         assert.equal(b.strokes.length, 0, 'the accidental stroke is gone');
-        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 200), 'pan');
-        assert.equal(b.scrollY, 105, 'finger up 105px ⇒ sheet scrolls down 105px');
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 10, 200), 'none');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 195), 'pan');
+        assert.equal(b.scrollY, 105, 'both fingers up 105px ⇒ sheet scrolls down 105px');
     });
 
     test('two fingers pan the endless sheet horizontally as well as vertically', () => {
@@ -169,7 +173,8 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         const g = board.mathBoardGesture();
         board.mathBoardPointerDown(g, b, 1, 120, 200);
         board.mathBoardPointerDown(g, b, 2, 180, 200);
-        assert.equal(board.mathBoardPointerMove(g, b, 1, 50, 170), 'pan');
+        assert.equal(board.mathBoardPointerMove(g, b, 1, 50, 170), 'none');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 110, 170), 'pan');
         assert.equal(b.scrollX, 70, 'dragging left reveals paper to the right');
         assert.equal(b.scrollY, 30, 'the same gesture may move vertically');
     });
@@ -181,6 +186,7 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerDown(g, b, 1, 10, 100);
         board.mathBoardPointerDown(g, b, 2, 60, 100);
         board.mathBoardPointerMove(g, b, 1, 10, 400);  // drag far downward
+        board.mathBoardPointerMove(g, b, 2, 60, 400);
         assert.equal(b.scrollY, 0, 'clamped, not -270');
     });
 
@@ -222,8 +228,10 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerDown(g, b, 1, 10, 100);
         board.mathBoardPointerDown(g, b, 2, 60, 100);
         board.mathBoardPointerMove(g, b, 1, 10, 400);   // drag 300px past the top
+        board.mathBoardPointerMove(g, b, 2, 60, 400);
         assert.equal(b.scrollY, 0, 'nothing above the first line to show');
-        board.mathBoardPointerMove(g, b, 1, 10, 100);   // finger back where it started
+        board.mathBoardPointerMove(g, b, 1, 10, 100);   // fingers back where they started
+        board.mathBoardPointerMove(g, b, 2, 60, 100);
         assert.equal(b.scrollY, 0, 'sheet is back where it started too, not 300px away');
     });
 
@@ -243,8 +251,8 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
         board.mathBoardPointerDown(g, b, 1, 10, 300);
         board.mathBoardPointerDown(g, b, 2, 60, 300);
         board.mathBoardPointerMove(g, b, 1, 10, 250);
-        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 250), 'none',
-            'only the steering finger moves the sheet — otherwise it scrolls at 2x');
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 60, 250), 'pan',
+            'the paired positions produce one centroid pan, not two separate pans');
         assert.equal(b.scrollY, 50);
     });
 
@@ -266,11 +274,36 @@ suite('math board: gesture machine — 1 ngón viết, 2 ngón cuộn', () => {
             board.mathBoardPointerDown(g, b, 1, 10, 1000);
             board.mathBoardPointerDown(g, b, 2, 60, 1000);
             let y = 1000;
-            for (let i = 0; i < steps; i++) { y -= 100 / steps; board.mathBoardPointerMove(g, b, 1, 10, y); }
+            for (let i = 0; i < steps; i++) {
+                y -= 100 / steps;
+                board.mathBoardPointerMove(g, b, 1, 10, y);
+                board.mathBoardPointerMove(g, b, 2, 60, y);
+            }
             return b.scrollY;
         };
         assert.equal(run(10), run(1),
             'getCoalescedEvents replays a move as many sub-moves — they must not drift');
+    });
+
+    test('two fingers pinch around their midpoint while keeping that world point fixed', () => {
+        const b = freshBoard(); b.scrollX = 100; b.scrollY = 200;
+        const g = board.mathBoardGesture();
+        board.mathBoardPointerDown(g, b, 1, 100, 200);
+        board.mathBoardPointerDown(g, b, 2, 200, 200);
+        board.mathBoardPointerMove(g, b, 1, 50, 200);
+        assert.equal(board.mathBoardPointerMove(g, b, 2, 250, 200), 'zoom');
+        assert.equal(b.zoom, 2, 'doubling finger distance doubles the board scale');
+        assert.equal(b.scrollX, 175, 'world point under the 150px midpoint stays under it');
+        assert.equal(b.scrollY, 300);
+    });
+
+    test('pinch zoom is clamped and drawing coordinates account for zoom', () => {
+        const b = freshBoard(); b.zoom = 2; b.scrollX = 40; b.scrollY = 60;
+        assert.deepEqual(board.mathBoardScreenToWorld(b, 20, 30), { x: 50, y: 75 });
+        b.zoom = 99;
+        assert.equal(board.mathBoardZoom(b), board.MATH_BOARD_MAX_ZOOM);
+        b.zoom = 0.01;
+        assert.equal(board.mathBoardZoom(b), board.MATH_BOARD_MIN_ZOOM);
     });
 });
 
@@ -617,7 +650,7 @@ suite('math board: easy to draw and use', () => {
         assert.truthy(/addEventListener\('wheel'/.test(src),
             'no second finger on a trackpad — the wheel is the only scroll a desktop has');
         const wheel = src.slice(src.indexOf("addEventListener('wheel'"));
-        assert.truthy(/passive:\s*false/.test(wheel.slice(0, 400)),
+        assert.truthy(/passive:\s*false/.test(wheel.slice(0, 800)),
             'passive:false or preventDefault is ignored and the page behind pans too');
         assert.truthy(/deltaX/.test(wheel.slice(0, 500)) && /scrollX/.test(wheel.slice(0, 500)),
             'trackpad horizontal movement must reveal the wider sheet');
@@ -625,8 +658,8 @@ suite('math board: easy to draw and use', () => {
 
     test('the first open teaches the two gestures, then gets out of the way', () => {
         const src = read('js/math-board.js');
-        assert.truthy(/1 ngón viết/.test(src) && /2 ngón kéo giấy mọi hướng/.test(src),
-            'the hint must teach that the sheet moves horizontally and vertically');
+        assert.truthy(/1 ngón viết/.test(src) && /2 ngón kéo hoặc chụm để thu phóng/.test(src),
+            'the hint must teach two-axis pan and pinch zoom');
         assert.truthy(/mathBoardHintDismiss/.test(src.slice(src.indexOf("addEventListener('pointerdown'"))),
             'the first touch dismisses it — a hint over a working board is clutter');
         const close = src.slice(src.indexOf('window.mathBoardCloseForSession'));

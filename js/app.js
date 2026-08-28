@@ -838,7 +838,13 @@ function loginUser(username) {
     // Dog coin economy migration
     if (appState.coins === undefined) appState.coins = Math.floor(appState.points * 0.5) || 0; // Welcome bonus
     if (appState.dogGrowthXP === undefined) appState.dogGrowthXP = Math.floor(appState.points * 0.3) || 0; // Seed from points
-    if (appState.dogLevel === undefined) appState.dogLevel = typeof getDogLevel === 'function' ? getDogLevel(appState.dogGrowthXP) : 1;
+    // Only derive the level when the formula is actually loaded. Writing the
+    // literal 1 when home.js failed to load (a half-updated service-worker
+    // cache) branded the dog level 1 PERMANENTLY — the === undefined guard
+    // then protected the wrong value on every later login. Left undefined,
+    // every reader falls back to (appState.dogLevel || 1) for display and the
+    // next healthy login derives the real level from XP.
+    if (appState.dogLevel === undefined && typeof getDogLevel === 'function') appState.dogLevel = getDogLevel(appState.dogGrowthXP);
     if (appState.lastDecayDate === undefined) appState.lastDecayDate = null;
     if (appState.petPoops === undefined) appState.petPoops = [];
     if (!Array.isArray(appState.petBattleCastleSkins)) appState.petBattleCastleSkins = ['stone-keep'];
