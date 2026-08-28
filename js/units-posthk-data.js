@@ -6,8 +6,12 @@
 //   • "Global Maths 4"   — Glossary, pages 76-79 (A → whole number)
 //   • "Global Science 4" — Glossary, pages 74-79 (amount → wooden)
 //
-// Every entry in both glossaries is here: 76 maths terms and 122 science terms,
-// 198 in all. The English and the Vietnamese are the book's own; the glossary's
+// Both glossaries in full, less one word: 75 maths terms and 122 science terms,
+// 197 in all. "dong" is dropped — the currency is not vocabulary worth a card.
+// The English and the Vietnamese are the book's own, except "soft": the book
+// glosses it "(âm thanh) nhỏ" because it teaches the word in the loud/soft pair
+// of the sound unit, and the everyday sense is the one worth carrying. The
+// glossary's
 // third column (IPA) and fourth (which book unit teaches the word) are not
 // carried, because nothing in the tab renders them — a word card shows the
 // word, its meaning and a picture, and the pronunciation comes from the
@@ -31,7 +35,6 @@ const UNIT_WORDS_POSTHK = [
   { unit: 1, book: 1, en: 'dividend', vi: 'số bị chia', emoji: '🔢' },
   { unit: 1, book: 1, en: 'division', vi: 'phép chia', emoji: '➗' },
   { unit: 1, book: 1, en: 'divisor', vi: 'số chia', emoji: '🔢' },
-  { unit: 1, book: 1, en: 'dong', vi: 'đồng (Việt Nam đồng)', emoji: '💵' },
   { unit: 1, book: 1, en: 'equal', vi: 'bằng', emoji: '🟰' },
   { unit: 1, book: 1, en: 'even', vi: 'chẵn', emoji: '2️⃣' },
   { unit: 1, book: 1, en: 'greater (than)', vi: 'lớn hơn', emoji: '⬆️' },
@@ -135,7 +138,7 @@ const UNIT_WORDS_POSTHK = [
   { unit: 3, book: 3, en: 'send', vi: 'toả ra, phát (khói)', emoji: '📤' },
   { unit: 3, book: 3, en: 'shadow', vi: 'bóng', emoji: '🌚' },
   { unit: 3, book: 3, en: 'smoke', vi: 'khói', emoji: '💨' },
-  { unit: 3, book: 3, en: 'soft', vi: '(âm thanh) nhỏ', emoji: '🤫' },
+  { unit: 3, book: 3, en: 'soft', vi: 'mềm', emoji: '🧸' },
   { unit: 3, book: 3, en: 'solid', vi: 'thể rắn', emoji: '🧊' },
   { unit: 3, book: 3, en: 'sound', vi: 'âm thanh', emoji: '🔊' },
   { unit: 3, book: 3, en: 'state', vi: 'thể', emoji: '🔄' },

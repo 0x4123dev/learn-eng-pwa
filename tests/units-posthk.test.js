@@ -10,6 +10,11 @@
 // entry the glossary prints is somewhere in the five practice units. A word
 // that quietly falls out of the bank is a word the child is never asked, and
 // nothing on screen would say so.
+//
+// One word is left out on purpose — "dong", the currency — and one is glossed
+// differently from the book: "soft" is taught here as the everyday word rather
+// than as the quiet half of the loud/soft pair in the sound unit. Both are
+// pinned below, so a later "restore the glossary" edit has to be deliberate.
 const { suite, test, assert } = require('./harness');
 const path = require('path');
 
@@ -31,11 +36,13 @@ const fs = require('fs');
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
 suite('post-hk: the glossary arrived whole', () => {
-    test('198 words: 76 from the maths book, 122 from the science book', () => {
-        assert.equal(UNIT_WORDS_POSTHK.length, 198);
+    test('197 words: 75 from the maths book, 122 from the science book', () => {
+        // 198 in the two glossaries; "dong" is deliberately not taught.
+        assert.equal(UNIT_WORDS_POSTHK.length, 197);
+        assert.falsy(UNIT_WORDS_POSTHK.some(w => w.en === 'dong'), 'the currency is back in the bank');
         const maths = UNIT_WORDS_POSTHK.filter(w => w.unit <= 2).length;
         const science = UNIT_WORDS_POSTHK.filter(w => w.unit >= 3).length;
-        assert.equal(maths, 76, 'the Global Maths 4 glossary');
+        assert.equal(maths, 75, 'the Global Maths 4 glossary, less "dong"');
         assert.equal(science, 122, 'the Global Science 4 glossary');
     });
 
@@ -74,6 +81,9 @@ suite('post-hk: the glossary arrived whole', () => {
             'omnivore', 'public transport', 'straw mushroom', 'sunlight', 'too much',
             'torch', 'vitamin', 'wooden',
         ];
+        // "soft" is taught as the everyday word, not as the quiet half of the
+        // book's loud/soft pair.
+        assert.equal((UNIT_WORDS_POSTHK.find(w => w.en === 'soft') || {}).vi, 'mềm');
         const missing = must.filter(w => !have.has(w));
         assert.deepEqual(missing, [], 'missing from the bank: ' + missing.join(', '));
     });
@@ -99,7 +109,7 @@ suite('post-hk: the tab, the five units and the mix', () => {
 
     test('the tab shows five units', () => {
         assert.deepEqual(units.unitsList('posthk'), [1, 2, 3, 4, 5]);
-        assert.equal(units.unitsBank('posthk').length, 198);
+        assert.equal(units.unitsBank('posthk').length, 197);
     });
 
     test('each unit says which subject and which book it is', () => {
@@ -122,7 +132,7 @@ suite('post-hk: the tab, the five units and the mix', () => {
             'the unit-key parser does not recognise posthk keys');
         const pool = units._unitPool ? units._unitPool('posthk-mix') : null;
         if (pool) {
-            assert.equal(pool.length, 198, 'the mix must reach every word');
+            assert.equal(pool.length, 197, 'the mix must reach every word');
             assert.equal(new Set(pool.map(w => w.unit)).size, 5, 'the mix must span all five units');
         }
     });
