@@ -169,8 +169,9 @@ suite('units HK1: bank shape', () => {
 });
 
 suite('units: the three word sets', () => {
-    test('Pre, HK1, HK2 and Post-HK are the sets, and all four have words', () => {
-        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'hk1', 'hk2', 'posthk']);
+    test('Pre, Post, HK1 and HK2 are the sets, and all four have words', () => {
+        // Post sits second, right after the picture dictionary.
+        assert.deepEqual(units.UNIT_SETS.map(s => s.id), ['pre', 'posthk', 'hk1', 'hk2']);
         for (const set of units.UNIT_SETS) {
             assert.truthy(units.unitsBank(set.id).length > 0, `${set.id} has no words`);
             assert.falsy(set.soon, `${set.id} is still flagged "coming soon"`);

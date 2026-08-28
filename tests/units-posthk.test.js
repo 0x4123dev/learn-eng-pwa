@@ -99,11 +99,17 @@ suite('post-hk: the glossary arrived whole', () => {
 });
 
 suite('post-hk: the tab, the five units and the mix', () => {
-    test('it is a set of its own, next to Pre, HK1 and HK2', () => {
+    test('it is the second tab, right after Pre, and reads "Post"', () => {
         const ids = units.UNIT_SETS.map(s => s.id);
-        assert.truthy(ids.includes('posthk'), `sets are ${ids.join(', ')}`);
+        assert.deepEqual(ids, ['pre', 'posthk', 'hk1', 'hk2'], `sets are ${ids.join(', ')}`);
         const set = units.UNIT_SETS.find(s => s.id === 'posthk');
         assert.truthy(set.label && set.name && set.sub, 'the tab needs a label, a name and a subtitle');
+        assert.equal(set.name, 'Post');
+        assert.truthy(set.label.includes('Post') && !set.label.includes('Post-HK'),
+            `the tab reads "${set.label}"`);
+        // The id is written into owed words and history rows; renaming it would
+        // strand both, so the display name moved and the id did not.
+        assert.equal(set.id, 'posthk');
         assert.falsy(set.soon, 'it is not "coming soon" — the words are here');
     });
 

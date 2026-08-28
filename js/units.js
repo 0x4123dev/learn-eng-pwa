@@ -21,11 +21,13 @@ let _unitQuiz = null;   // { unit, questions:[{w, gapped, mode}], idx, answers:[
 
 const UNIT_SETS = [
   { id: 'pre', label: '📘 Pre', name: 'Pre', sub: 'Từ điển tranh · 12 Unit' },
+  // The two English-medium subject books the class moves on to. Their
+  // glossaries are one word bank, split by subject. The id stays 'posthk' even
+  // though the tab reads "Post": it is written into every owed word and every
+  // history row, and renaming it would strand both.
+  { id: 'posthk', label: '📙 Post', name: 'Post', sub: 'Global Maths 4 & Science 4 · Glossary' },
   { id: 'hk1', label: '📗 HK1', name: 'HK1', sub: 'Global Success Tập 1 · Bài 1-10' },
   { id: 'hk2', label: '📕 HK2', name: 'HK2', sub: 'Global Success Tập 2 · Bài 11-20' },
-  // After the semester exam the class moves on to the two English-medium
-  // subject books. Their glossaries are one word bank, split by subject.
-  { id: 'posthk', label: '📙 Post-HK', name: 'Post-HK', sub: 'Global Maths 4 & Science 4 · Glossary' },
 ];
 
 // Which set the cards are showing. Stored per user so the tab reopens where
