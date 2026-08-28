@@ -112,6 +112,69 @@ suite('money client: every wallet reaches the recovery snapshot', () => {
   });
 });
 
+suite('money client: grant receipts — the gift survives every crash point', () => {
+  const R = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6';
+  function accounts(store) { return JSON.parse(store['flashlingo_accounts']); }
+
+  test('claim declares proto 2, saves the coins, then acks the receipt', async () => {
+    const { ctx, calls, store } = loadAuth((url, body) => {
+      if (url !== '/api/coins') return null;
+      if (body && body.ackOnly) return { data: { granted: 0, receipt: null, flags: {} } };
+      return { data: { granted: 50, receipt: R, flags: {} } };
+    });
+    ctx.appState = { coins: 100 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.refreshFlags('Kid');
+    const coins = calls.filter(c => c.url === '/api/coins');
+    assert.equal(coins.length, 2, 'one claim, one ack');
+    assert.equal(coins[0].body.proto, 2, 'the claim must opt into the receipt protocol');
+    assert.truthy(coins[1].body.ackOnly, 'the second call only acks');
+    assert.deepEqual(coins[1].body.ackReceipts, [R]);
+    assert.equal(ctx.appState.coins, 150);
+    assert.deepEqual(accounts(store).Kid.pendingCoinReceipts, [],
+      'an acked receipt does not linger');
+  });
+
+  test('a failed ack keeps the receipt stored, and the next sync retries it', async () => {
+    let ackAttempts = 0;
+    const { ctx, calls, store } = loadAuth((url, body) => {
+      if (url !== '/api/coins') return null;
+      if (body && body.ackOnly) { ackAttempts++; return { ok: false, status: 500, data: null }; }
+      return { data: { granted: 50, receipt: ackAttempts === 0 ? R : null, granted2: 0, flags: {} } };
+    });
+    ctx.appState = { coins: 100 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.refreshFlags('Kid');
+    assert.equal(ctx.appState.coins, 150, 'the coins landed even though the ack failed');
+    assert.deepEqual(accounts(store).Kid.pendingCoinReceipts, [R],
+      'the unacked receipt is kept durably for retry');
+    // Next sync: the claim call itself must carry the stored receipt as an ack.
+    await ctx.EngAuth.refreshFlags('Kid');
+    const claims = calls.filter(c => c.url === '/api/coins' && !(c.body && c.body.ackOnly));
+    assert.deepEqual(claims[1].body.ackReceipts, [R],
+      'stored receipts ride along with the next claim');
+    assert.deepEqual(accounts(store).Kid.pendingCoinReceipts, [],
+      'a successful claim call clears the retried receipts');
+  });
+
+  test('the crash guard leaves the claim unacked so the server re-offers it', async () => {
+    const { ctx, calls, store } = loadAuth((url, body) => {
+      if (url !== '/api/coins') return null;
+      return { data: { granted: 50, receipt: R, flags: {} } };
+    });
+    // The profile switched between sync start and reply — the coins must NOT
+    // be applied, and crucially nothing may ack the receipt: the unacked
+    // pending row is exactly what lets the server pay it again later.
+    ctx.appState = { coins: 100 };
+    ctx.currentUser = 'SomeoneElse';
+    await ctx.EngAuth.refreshFlags('Kid');
+    assert.equal(ctx.appState.coins, 100, 'a switched profile gets no coins');
+    assert.equal(calls.filter(c => c.url === '/api/coins').length, 1, 'no ack was sent');
+    assert.falsy((accounts(store).Kid.pendingCoinReceipts || []).length,
+      'no receipt is stored for coins that were never applied');
+  });
+});
+
 // ---- js/night-raid.js under a scripted EngAuth.api ----
 function loadNightRaid(apiPlan) {
   const apiCalls = [];

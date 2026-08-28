@@ -139,7 +139,14 @@ CREATE TABLE IF NOT EXISTS coin_grants (
   note        TEXT,
   granted_by  INTEGER NOT NULL,
   created_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  claimed_at  TEXT
+  claimed_at  TEXT,
+  -- Receipt protocol (db/015): claimed_at alone means PENDING — paid out but
+  -- not yet saved on the child's device. The client acks with the receipt
+  -- once the coins are durably in localStorage, which sets confirmed_at. A
+  -- pending row older than 10 minutes with no ack is offered again, so a
+  -- crash between claim and save no longer loses the gift.
+  receipt      TEXT,
+  confirmed_at TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_coin_grants_unclaimed
   ON coin_grants(user_id) WHERE claimed_at IS NULL;

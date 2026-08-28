@@ -83,6 +83,86 @@ suite('money server: coin grants pay exactly once', () => {
   });
 });
 
+suite('money server: grant receipts survive a crash between claim and save', () => {
+  function grant(world, uid, amount) {
+    world.db.prepare(
+      'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,?)'
+    ).run(uid, amount, '', 1);
+  }
+  // Simulate the stale window passing without waiting 10 real minutes.
+  function ageClaims(world, uid) {
+    world.db.prepare(
+      "UPDATE coin_grants SET claimed_at=datetime('now','-11 minutes') WHERE user_id=?"
+    ).run(uid);
+  }
+  const claim = (world, user, body) =>
+    world.call(coinsHandler().onRequestPost, { token: user.token, body });
+
+  test('a proto-2 claim returns a receipt, and an acked grant never pays again', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    grant(world, user.uid, 50);
+    const first = await claim(world, user, { proto: 2 });
+    assert.equal(first.data.granted, 50);
+    assert.truthy(/^[a-f0-9]{32}$/.test(String(first.data.receipt || '')),
+      'a paid claim must carry a receipt to ack');
+    const ack = await claim(world, user, { ackOnly: true, ackReceipts: [first.data.receipt] });
+    assert.equal(ack.data.granted, 0, 'an ack-only call must never claim');
+    ageClaims(world, user.uid);
+    const later = await claim(world, user, { proto: 2 });
+    assert.equal(later.data.granted, 0, 'a confirmed grant is final — no re-offer, ever');
+  });
+
+  test('an unacked claim is re-offered after the stale window — the crashed device gets the gift back', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    grant(world, user.uid, 50);
+    const first = await claim(world, user, { proto: 2 });
+    assert.equal(first.data.granted, 50);
+    // The client crashed before saving: no ack. A fresh pending claim must
+    // NOT be re-offered immediately (another device syncing seconds later)…
+    const rushed = await claim(world, user, { proto: 2 });
+    assert.equal(rushed.data.granted, 0, 'a fresh pending claim is not re-offered');
+    // …but after the window it is offered again, with a new receipt.
+    ageClaims(world, user.uid);
+    const retry = await claim(world, user, { proto: 2 });
+    assert.equal(retry.data.granted, 50, 'the lost gift comes back');
+    assert.truthy(retry.data.receipt && retry.data.receipt !== first.data.receipt,
+      'a re-offer gets its own receipt');
+    await claim(world, user, { ackOnly: true, ackReceipts: [retry.data.receipt] });
+    ageClaims(world, user.uid);
+    const done = await claim(world, user, { proto: 2 });
+    assert.equal(done.data.granted, 0, 'once saved and acked, it is over');
+  });
+
+  test('a legacy client (no proto) keeps claim-equals-confirm and cannot be double-paid', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    grant(world, user.uid, 50);
+    const legacy = await claim(world, user, undefined); // old clients send no body
+    assert.equal(legacy.data.granted, 50);
+    assert.falsy(legacy.data.receipt, 'legacy claims carry no receipt');
+    ageClaims(world, user.uid);
+    assert.equal((await claim(world, user, undefined)).data.granted, 0);
+    assert.equal((await claim(world, user, { proto: 2 })).data.granted, 0,
+      'a legacy claim is confirmed on the spot — never re-offered to anyone');
+  });
+
+  test("an ack from the wrong account confirms nothing", async () => {
+    const world = createWorld();
+    const alice = await world.createUser({ username: 'alice' });
+    const bob = await world.createUser({ username: 'bob' });
+    grant(world, alice.uid, 50);
+    const first = await claim(world, alice, { proto: 2 });
+    assert.equal(first.data.granted, 50);
+    await claim(world, bob, { ackOnly: true, ackReceipts: [first.data.receipt] });
+    ageClaims(world, alice.uid);
+    const retry = await claim(world, alice, { proto: 2 });
+    assert.equal(retry.data.granted, 50,
+      "bob's ack must not have confirmed alice's pending claim");
+  });
+});
+
 suite('money server: the home PUT can never wipe what a child owns', () => {
   test('an empty PUT leaves wallet, dog level, layout, skin and teammates untouched', async () => {
     const world = createWorld();

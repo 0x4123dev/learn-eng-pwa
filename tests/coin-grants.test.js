@@ -48,7 +48,12 @@ suite('coin grants: admin gives, the device claims once', () => {
   test('the app claims on every login sync and celebrates the gift', () => {
     const src = read('js/auth.js');
     assert.truthy(src.includes('claimCoinGrants(username)'), 'syncAccount must trigger the claim');
-    assert.truthy(src.includes("api('coins', { method: 'POST', token })"));
+    // proto 2 = the receipt protocol (db/015): claim carries any unacked
+    // receipts, and a paid claim is acked only after the wallet is saved.
+    // Behavioural coverage lives in tests/money-client.test.js /
+    // tests/money-server.test.js.
+    assert.truthy(src.includes("api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending } })"));
+    assert.truthy(src.includes('pendingCoinReceipts'), 'unacked receipts must be stored durably');
     assert.truthy(src.includes('Math.trunc(+r.data.granted || 0)'), 'signed corrections must not be clamped away');
     assert.truthy(src.includes('appState.coins = Math.max(0, +appState.coins || 0) + granted'));
     assert.truthy(src.includes('🎁'), 'the child should see the gift arrive');

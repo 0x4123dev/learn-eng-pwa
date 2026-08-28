@@ -151,14 +151,26 @@ const EngAuth = (function () {
 
   // Admin coin adjustments are server-side IOUs (coin_grants): claim every
   // unclaimed row once, apply the signed total to this device's wallet, and
-  // let the server stamp them claimed so a re-sync cannot pay them twice.
+  // ACK with the claim's receipt once the coins are durably saved — the
+  // receipt protocol (db/015). If anything dies between the server stamping
+  // the rows and this device saving the wallet, the claim is simply never
+  // acked and the server offers the same coins again after its window.
   // Fire-and-forget from syncAccount — offline just leaves the IOU waiting.
+  function _pendingReceipts(username) {
+    const a = getAccount(username);
+    return (a && Array.isArray(a.pendingCoinReceipts)) ? a.pendingCoinReceipts : [];
+  }
   async function claimCoinGrants(username) {
     const token = tokenFor(username);
     if (!token) return;
     try {
-      const r = await api('coins', { method: 'POST', token });
+      // Receipts from earlier claims whose ack never got through ride along
+      // with this claim, so a lost ack is repaired on the very next sync.
+      const pending = _pendingReceipts(username);
+      const r = await api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending } });
+      if (r.ok && pending.length) setAccount(username, { pendingCoinReceipts: [] });
       const granted = r.ok && r.data ? Math.trunc(+r.data.granted || 0) : 0;
+      const receipt = (r.ok && r.data && typeof r.data.receipt === 'string' && r.data.receipt) || null;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
       // The same reply carries the per-user feature flags. Cache them BEFORE
@@ -183,9 +195,19 @@ const EngAuth = (function () {
         }
       }
       if (!granted) return;
+      // The receipt is stored DURABLY before the wallet write: if anything
+      // below dies, the next sync still acks it. (And if we die before even
+      // this line, the un-acked claim is re-offered by the server instead.)
+      if (receipt) setAccount(username, { pendingCoinReceipts: _pendingReceipts(username).concat(receipt) });
       appState.coins = Math.max(0, +appState.coins || 0) + granted;
       appState.coins = Math.max(0, appState.coins);
       if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
+      if (receipt) {
+        try {
+          const a = await api('coins', { method: 'POST', token, body: { ackOnly: true, ackReceipts: [receipt] } });
+          if (a.ok) setAccount(username, { pendingCoinReceipts: _pendingReceipts(username).filter(x => x !== receipt) });
+        } catch (e) { /* the stored receipt is acked on the next sync */ }
+      }
       if (typeof showToast === 'function') {
         showToast(granted > 0
           ? '🎁 Admin tặng bạn ' + granted + ' xu!'
