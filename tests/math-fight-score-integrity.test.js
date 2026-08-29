@@ -24,6 +24,7 @@ const wars = require(path.join(ROOT, 'js', 'mathwars.js'));
 // shared builder can be called exactly the way the client calls it.
 const { MATH_FIGHT_BANK } = require(path.join(ROOT, 'js', 'math-fight-bank.js'));
 global.MATH_FIGHT_BANK = MATH_FIGHT_BANK;
+global.MathFightRules = MF;
 global.warsQuestions = wars.warsQuestions;
 
 const progressHandler = () => loadModule('functions/api/math-fight/progress.js');
@@ -271,11 +272,15 @@ suite('math fight: every question is worth answering', () => {
     assert.equal(marked.answered, MF.QUESTIONS);
   });
 
-  test('a solo Math Wars round keeps its easy on-ramp', () => {
-    // The fight rule must not leak into solo practice, where a beginner level
-    // is deliberately gentle.
-    const easy = wars.warsQuestions(60, MF.makeRng(5), 19);
-    assert.truthy(easy.some(q => Math.abs(q.answer) < 10),
-      'solo practice at the lowest level still offers small sums');
+  test('solo Math Wars draws from the same bank, so it is not free either', () => {
+    // Both modes now share the one curated set of sums — see
+    // tests/mathwars-bank.test.js. The raw generator survives only as the
+    // fallback for a device whose lazy-loaded bank has not arrived yet, and
+    // it is deliberately still unconstrained there: a round with easy sums
+    // beats no round at all.
+    const round = wars.warsRoundQuestions(0);
+    assert.equal(round.length, wars.WARS_QUESTIONS);
+    assert.deepEqual(round.filter(q => q.answer < 10).map(q => q.q), [],
+      'practice must not hand out one-digit answers any more');
   });
 });

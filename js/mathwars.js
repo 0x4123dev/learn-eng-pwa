@@ -192,6 +192,25 @@ function warsQuestion(rand, max) {
 // five-minute match against a friend is not the place for "3 + 4", and nearly
 // half the questions at the lowest level used to have a one-digit answer.
 // Solo practice passes nothing and keeps its gentle on-ramp.
+// A practice round comes from the SAME pre-authored bank the Đấu Toán match
+// draws from (js/math-fight-bank.js), so solo practice cannot hand out a free
+// question either — nearly half of what the generator produced at the lower
+// levels could be answered without calculating.
+//
+// The generator stays as the fallback: the bank is lazy-loaded with the Math
+// tab, and a round must never come up empty.
+function warsRoundQuestions(level) {
+  const R = typeof MathFightRules !== 'undefined' ? MathFightRules : null;
+  const bank = typeof MATH_FIGHT_BANK !== 'undefined' ? MATH_FIGHT_BANK : null;
+  if (R && R.bankRound && bank) {
+    // The Math Wars ladder tops out at 99, which is tier 8 of the bank.
+    const tier = Math.min(8, Math.max(0, Math.floor(level || 0)));
+    const round = R.bankRound(bank, WARS_QUESTIONS, tier, null);
+    if (round.length === WARS_QUESTIONS) return round;
+  }
+  return warsQuestions(WARS_QUESTIONS, null, warsLevelMax(level));
+}
+
 function warsQuestions(n, rand, max, opts) {
   const min = Math.max(0, Math.trunc((opts && opts.minAnswer) || 0));
   const out = [];
@@ -306,7 +325,7 @@ function startWarsRound() {
   _warsQuiz = {
     level: level,
     max: warsLevelMax(level),
-    questions: warsQuestions(WARS_QUESTIONS, null, warsLevelMax(level)),
+    questions: warsRoundQuestions(level),
     idx: 0,
     answers: [],
     askedAt: now,
@@ -591,7 +610,7 @@ if (typeof module !== 'undefined' && module.exports) {
     WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_HARD_MAX, WARS_COINS_PER_CORRECT,
     WARS_LEVEL_BASE, WARS_LEVEL_STEP, WARS_LEVEL_UP_STREAK, WARS_LEVELS,
     warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
-    warsBuild, warsDistractors, warsQuestion, warsQuestions,
+    warsBuild, warsDistractors, warsQuestion, warsQuestions, warsRoundQuestions,
     warsHistory, warsStats, warsSaveRun, warsEsc,
     startWarsRound, answerWars, finishWars, abandonWars, warsQuit, isWarsActive,
     warsLeftMs, warsClockTick, warsClockText, warsLengthLabel,

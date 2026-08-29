@@ -81,24 +81,32 @@ var MathFightRules = (() => {
     return out;
   }
 
-  function fightQuestions(seed, level, bank) {
+  // Drawing a round from the bank. Đấu Toán and Math Wars both come through
+  // here, so the two modes share ONE curated set of sums and neither can hand
+  // out a free question. `rand` is seeded for a match (both sides must build
+  // the identical round) and plain random for solo practice.
+  function bankRound(bank, count, maxTier, rand) {
     const source = bank || (typeof MATH_FIGHT_BANK !== 'undefined' ? MATH_FIGHT_BANK : null);
     if (!source || !source.length) return [];
-    const pool = fightPool(source, level);
+    const r = rand || Math.random;
+    const pool = fightPool(source, maxTier);
     if (!pool.length) return [];
-    const rand = makeRng(seed);
     // Draw without replacement so a round never repeats a sum.
     const order = pool.slice();
     for (let i = order.length - 1; i > 0; i--) {
-      const j = Math.floor(rand() * (i + 1));
+      const j = Math.floor(r() * (i + 1));
       const t = order[i]; order[i] = order[j]; order[j] = t;
     }
-    return order.slice(0, QUESTIONS).map(entry => {
+    return order.slice(0, count).map(entry => {
       const [a, b, op, answer] = entry;
-      const options = fightOptions(answer, rand);
+      const options = fightOptions(answer, r);
       return { q: a + ' ' + op + ' ' + b, a, b, op, answer,
         options, correct: options.indexOf(answer) };
     });
+  }
+
+  function fightQuestions(seed, level, bank) {
+    return bankRound(bank, QUESTIONS, level, makeRng(seed));
   }
 
   // What this player's wallet actually moves by. The winner always collects
@@ -186,7 +194,7 @@ var MathFightRules = (() => {
     QUESTIONS, SECONDS, PRIZE, INVITE_TTL_MS,
     HEARTBEAT_MS, FORFEIT_MS, COOLDOWN_MS, HANDICAP_STEP, STREAK_MAX,
     WARS_TOP_LEVEL, FIGHT_MAX, FIGHT_LEVELS,
-    fightLevelMax, FIGHT_MIN_ANSWER, FIGHT_MIN_TIER, fightQuestions, fightOptions, coinChange, pairKey, makeRng,
+    fightLevelMax, FIGHT_MIN_ANSWER, FIGHT_MIN_TIER, fightQuestions, fightOptions, bankRound, coinChange, pairKey, makeRng,
     baseLevel, levelsFor, nextPairState, adjudicate, cooldownUntil, hasWalkedAway,
   });
 })();
