@@ -289,7 +289,16 @@ suite('money server: the daily snapshot is a real recovery net', () => {
   }
   const item = () => ({ type: 'lesson', title: 'Vocabulary lesson #1', score: 4, total: 5, at: Date.now() });
 
-  test('a wiped device syncing 0 cannot erase the day\'s recovery balance', async () => {
+  function snapshotPeak(db, uid) {
+    const row = db.prepare('SELECT peak_balance FROM user_coin_snapshots WHERE user_id=?').get(uid);
+    return row ? row.peak_balance : null;
+  }
+
+  test('balance is what the child has NOW; peak_balance is what recovery needs', async () => {
+    // These are two different questions and they used to share one column:
+    // MAX-ing `balance` protected a wiped device but made the admin's Balance
+    // column report the day's high-water mark — 18,440 xu beside a wallet
+    // that really held ~10,000.
     const world = createWorld();
     const user = await world.createUser({});
     const post = (coinBalance) => world.call(activityHandler().onRequestPost, {
@@ -297,11 +306,28 @@ suite('money server: the daily snapshot is a real recovery net', () => {
     });
     await post(500);
     assert.equal(snapshotBalance(world.db, user.uid), 500);
-    await post(0); // the wiped device reporting in
-    assert.equal(snapshotBalance(world.db, user.uid), 500,
-      'the snapshot must keep the day\'s highest balance, not the last one');
+    assert.equal(snapshotPeak(world.db, user.uid), 500);
+    await post(200); // the child SPENT 300 on the pet shop
+    assert.equal(snapshotBalance(world.db, user.uid), 200,
+      'the admin must see the wallet as it is now, not the day\'s peak');
+    assert.equal(snapshotPeak(world.db, user.uid), 500,
+      'the recovery high-water mark survives honest spending');
     await post(800);
-    assert.equal(snapshotBalance(world.db, user.uid), 800, 'a real gain still raises it');
+    assert.equal(snapshotBalance(world.db, user.uid), 800);
+    assert.equal(snapshotPeak(world.db, user.uid), 800, 'a real gain raises the peak too');
+  });
+
+  test('a wiped device reporting 0 keeps the recoverable peak', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    const post = (coinBalance) => world.call(activityHandler().onRequestPost, {
+      token: user.token, body: { items: [item()], coinBalance, coinObservedAt: Date.now() },
+    });
+    await post(5000);
+    await post(0); // cleared storage / fresh profile
+    assert.equal(snapshotBalance(world.db, user.uid), 0, 'the truth: this device now holds nothing');
+    assert.equal(snapshotPeak(world.db, user.uid), 5000,
+      'and the 5000 xu to restore is still on record');
   });
 
   test('a sync with no new activity still records the balance', async () => {
@@ -407,6 +433,7 @@ suite('money server: the admin can SEE a wipe before restoring it', () => {
     const row = r.data.users.find(u => u.id === kid.uid);
     assert.equal(row.coin_latest, 0, 'the wiped balance is visible');
     assert.equal(row.coin_peak7, 5000, 'the recoverable peak is right beside it');
+    assert.truthy(row.coin_peak7 > row.coin_latest, 'which is what the wipe badge reads');
     const none = r.data.users.find(u => u.id === quiet.uid);
     assert.equal(none.coin_latest, null, 'no snapshots -> no claim about the wallet');
     assert.equal(none.coin_peak7, null);

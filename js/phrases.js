@@ -389,8 +389,8 @@ function openPhrSession(idx) {
   const items = wrong.length
     ? wrong.map(({ q, ua }) => `
         <div class="grammar-review-item wrong">
-          <div class="grammar-review-q">${phrEsc(q.q).replace('___', `[${phrEsc(q.options[q.correct])}]`)}</div>
-          <div class="phrases-review-line">Your answer: <s>${ua != null ? phrEsc(q.options[ua]) : '—'}</s> · Correct: <b>${phrEsc(q.options[q.correct])}</b></div>
+          <div class="grammar-review-q">${phrEsc(q.q).replace('___', `[${phrEsc(phrRightText(q))}]`)}</div>
+          <div class="phrases-review-line">Your answer: <s>${phrEsc(phrGivenText(q, ua))}</s> · Correct: <b>${phrEsc(phrRightText(q))}</b></div>
           <div class="phrases-vi">📘 ${phrEsc(q.vi)}</div>
           <div class="grammar-review-explain">${phrEsc(q.explanation)}</div>
         </div>`).join('')
@@ -558,6 +558,26 @@ function phrIsCorrect(ans, q) {
   return ans === q.correct;
 }
 
+// A wrong answer arrives in one of two shapes: an option INDEX from a
+// multiple-choice question, or the TEXT a child typed. A typed question has
+// `answer` and NO `options`, so the review markup's `q.options[q.correct]`
+// threw a TypeError on it — and because that happened while building the
+// result screen, the practice could never finish: the screen froze, the child
+// tapped "see result" again, and every tap re-paid the coins and appended
+// another identical session. Read both shapes through here.
+function phrRightText(q) {
+  if (!q) return '—';
+  if (q.typed) return String(q.answer || '—');
+  const list = q.options || [];
+  return String(list[q.correct] != null ? list[q.correct] : (q.answer || '—'));
+}
+function phrGivenText(q, ua) {
+  if (ua == null || ua === '') return '—';
+  if (q && q.typed) return String(ua).trim() || '—';
+  const list = (q && q.options) || [];
+  return String(list[ua] != null ? list[ua] : ua);
+}
+
 function phrasesSkillSummaries(st) {
   const rows = {};
   const add = (key, label, ok, ref) => {
@@ -610,6 +630,12 @@ function nextPhrQuestion() {
 function finishPhrasesQuiz() {
   const st = _phrQuiz;
   if (!st) return;
+  // Claim the practice BEFORE paying or rendering. This used to be the LAST
+  // line of the function, so anything that threw in between (a typed question
+  // in the review list, a full disk, a missing screen) left the quiz "active":
+  // the child saw no result, tapped again, and was paid AND recorded again —
+  // the duplicate rows and inflated balance in the admin timeline.
+  _phrQuiz = null;
   const total = st.questions.length;
   let score = 0;
   const wrong = [];
@@ -641,8 +667,8 @@ function finishPhrasesQuiz() {
     if (!q) return '';
     return `
     <div class="grammar-review-item wrong">
-      <div class="grammar-review-q">${phrEsc(q.q).replace('___', `[${phrEsc(q.options[q.correct])}]`)}</div>
-      <div class="phrases-review-line">Your answer: <s>${w.ua != null ? phrEsc(q.options[w.ua]) : '—'}</s> · Correct: <b>${phrEsc(q.options[q.correct])}</b></div>
+      <div class="grammar-review-q">${phrEsc(q.q).replace('___', `[${phrEsc(phrRightText(q))}]`)}</div>
+      <div class="phrases-review-line">Your answer: <s>${phrEsc(phrGivenText(q, w.ua))}</s> · Correct: <b>${phrEsc(phrRightText(q))}</b></div>
       <div class="phrases-vi">📘 ${phrEsc(q.vi)}</div>
       <div class="grammar-review-explain">${phrEsc(q.explanation)}</div>
     </div>`;
@@ -663,7 +689,6 @@ function finishPhrasesQuiz() {
       ${wrong.length ? `<div class="phrases-section-title">Review · ${wrong.length} wrong</div>${reviewHtml}
         <button class="phrases-cta-secondary phrases-review-btn" onclick='startPhrasesReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}
     </div>`;
-  _phrQuiz = null;
 }
 
 if (typeof module !== 'undefined' && module.exports) {

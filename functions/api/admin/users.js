@@ -12,7 +12,8 @@ export async function onRequestGet({ request, env }) {
             (u.device_id IS NOT NULL) AS has_device,
             (SELECT s.balance FROM user_coin_snapshots s WHERE s.user_id = u.id
               ORDER BY s.snapshot_date DESC LIMIT 1) AS coin_latest,
-            (SELECT MAX(s.balance) FROM user_coin_snapshots s WHERE s.user_id = u.id
+            (SELECT MAX(COALESCE(s.peak_balance,s.balance)) FROM user_coin_snapshots s
+              WHERE s.user_id = u.id
               AND s.snapshot_date >= date('now','+7 hours','-6 days')) AS coin_peak7,
             (SELECT COUNT(*) FROM exam_attempts e WHERE e.user_id = u.id) AS exam_count,
             (SELECT COUNT(*) FROM activities  c WHERE c.user_id = u.id) AS activity_count,

@@ -437,18 +437,22 @@ suite('gen: wordform finish — coins & history', () => {
         assert.falsy(wf.isWordformQuizActive());
     });
 
-    test('finish saves coins+history BEFORE rendering: missing screen throws but state is already persisted', () => {
-        // characterization: finishWordformQuiz has no null check on the screen
-        // element, so with the null-document stub it crashes at screen.innerHTML —
-        // after the coin award and history save, but before clearing _wfQuiz.
+    test('a render crash still finishes the practice exactly once', () => {
+        // The result render can throw (a missing screen here; in production it
+        // was a typed question in the review list). The practice must still be
+        // FINISHED: coins banked once, session saved once, and the quiz closed
+        // — otherwise the child taps "see result" again and is paid again.
+        // See tests/quiz-finish-once.test.js.
         const st = reset(); // every getElementById → null
         wf.startWordformReviewQuiz([WF1]);
         wf.answerWfQuestion(3);
         assert.throws(() => wf.finishWordformQuiz(), 'null screen crashes the result render');
-        assert.equal(st.coins, 5, 'coins were awarded before the crash');
-        assert.equal(st.wordformHistory.length, 1, 'session was saved before the crash');
-        assert.truthy(wf.isWordformQuizActive(), 'quiz never got cleared');
-        wf.abandonWordformQuiz();
+        assert.equal(st.coins, 5, 'coins were awarded once');
+        assert.equal(st.wordformHistory.length, 1, 'session was saved once');
+        assert.falsy(wf.isWordformQuizActive(), 'the quiz is closed despite the crash');
+        try { wf.finishWordformQuiz(); } catch (e) {}
+        assert.equal(st.coins, 5, 'a second tap pays nothing');
+        assert.equal(st.wordformHistory.length, 1, 'and records nothing');
     });
 
     test('a hopelessly full disk keeps the session in memory and warns', () => {
@@ -518,7 +522,7 @@ suite('gen: wordform finish — coins & history', () => {
         const fs2 = require('fs');
         const src = fs2.readFileSync(require('path').join(__dirname, '..', 'js', 'wordform.js'), 'utf8');
         const i = src.indexOf('function finishWordformQuiz(');
-        const body = src.slice(i, i + 4200);
+        const body = src.slice(i, i + 4800);
         assert.truthy(/retryResultCtaHTML\('wf'\)/.test(body),
             'the results screen must offer the owed-questions drill');
         assert.falsy(/startWordformReviewQuiz\(\$\{JSON\.stringify/.test(body),

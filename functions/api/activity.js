@@ -38,18 +38,24 @@ function coinSnapshot(env, uid, body, source) {
   if (balance == null || !source) return null;
   const observedAt = Date.now();
   const activityAt = Number.isFinite(+source.at) ? Math.trunc(+source.at) : observedAt;
-  // MAX, not last-write: this row is the recovery net. A device that was
-  // wiped (or reset to a fresh profile) reports 0 on its next sync — with
-  // last-write-wins that 0 destroyed the very number the admin needed to
-  // restore the wallet. The highest balance seen today is what recovery wants.
+  // Two different questions, two columns (db/017):
+  //   balance      — the LATEST observation, so the admin timeline shows the
+  //                  wallet as it is now. MAX-ing this made the column report
+  //                  the day's high-water mark: 18,440 xu beside a wallet that
+  //                  really held ~10,000 after an honest afternoon of shopping.
+  //   peak_balance — the day's MAX, which is what a wipe radar and a restore
+  //                  grant need: a cleared device honestly reports 0, and that
+  //                  0 must not erase the number required to put the coins back.
   return env.DB.prepare(`INSERT INTO user_coin_snapshots
-    (user_id,snapshot_date,balance,observed_at,source_activity_at,source_type,source_title)
-    VALUES(?,?,?,?,?,?,?) ON CONFLICT(user_id,snapshot_date) DO UPDATE SET
-      balance=MAX(user_coin_snapshots.balance,excluded.balance),observed_at=excluded.observed_at,
+    (user_id,snapshot_date,balance,peak_balance,observed_at,source_activity_at,source_type,source_title)
+    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id,snapshot_date) DO UPDATE SET
+      balance=excluded.balance,
+      peak_balance=MAX(COALESCE(user_coin_snapshots.peak_balance,user_coin_snapshots.balance),excluded.balance),
+      observed_at=excluded.observed_at,
       source_activity_at=excluded.source_activity_at,source_type=excluded.source_type,
       source_title=excluded.source_title,updated_at=datetime('now')
     WHERE excluded.observed_at >= user_coin_snapshots.observed_at`)
-    .bind(uid, gmt7Date(observedAt), balance, observedAt, activityAt,
+    .bind(uid, gmt7Date(observedAt), balance, balance, observedAt, activityAt,
       source.type, source.title);
 }
 

@@ -63,7 +63,12 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_activities_dedup ON activities(user_id, ty
 CREATE TABLE IF NOT EXISTS user_coin_snapshots (
   user_id            INTEGER NOT NULL,
   snapshot_date      TEXT NOT NULL,
+  -- What the device reported LAST (the admin timeline's Balance column).
   balance            INTEGER NOT NULL,
+  -- The highest balance seen that day (db/017). The wipe radar and any
+  -- restore grant read this one: a device that was cleared reports 0, and
+  -- that 0 must not erase the number needed to put the coins back.
+  peak_balance       INTEGER,
   observed_at        INTEGER NOT NULL,
   source_activity_at INTEGER,
   source_type        TEXT,

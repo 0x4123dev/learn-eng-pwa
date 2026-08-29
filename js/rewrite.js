@@ -360,6 +360,8 @@ function nextRwQuestion() {
 function finishRewriteQuiz() {
   const st = _rwQuiz;
   if (!st) return;
+  // Claimed BEFORE the payout and the render — see finishPhrasesQuiz.
+  _rwQuiz = null;
   const total = st.questions.length;
   let score = 0;
   const wrong = [];
@@ -408,7 +410,6 @@ function finishRewriteQuiz() {
       ${reviewHtml}
       ${wrong.length ? `<button class="phrases-cta-secondary phrases-review-btn" onclick='startRewriteReviewQuiz(${JSON.stringify(wrong.map(w => w.qid))})'>🔁 Re-practice these (${wrong.length})</button>` : ''}
     </div>`;
-  _rwQuiz = null;
 }
 
 // ---- review a past session (read-only) ----

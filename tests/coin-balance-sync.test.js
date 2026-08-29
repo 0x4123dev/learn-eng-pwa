@@ -28,9 +28,12 @@ suite('daily coin balance recovery snapshots', () => {
     assert.truthy(activity.includes('ON CONFLICT(user_id,snapshot_date) DO UPDATE SET'));
     assert.truthy(activity.includes('excluded.observed_at >= user_coin_snapshots.observed_at'));
     assert.truthy(activity.includes('gmt7Date(observedAt)'));
-    // MAX, not last-write: a wiped device syncing 0 must not erase the very
-    // number the admin needs for recovery (see tests/money-server.test.js).
-    assert.truthy(activity.includes('MAX(user_coin_snapshots.balance,excluded.balance)'));
+    // Two columns, two questions (db/017): `balance` is the LATEST reading, so
+    // the admin timeline shows the wallet as it is now; `peak_balance` keeps
+    // the day's high-water mark for the wipe radar and restore grants.
+    // Behavioural coverage: tests/money-server.test.js.
+    assert.truthy(activity.includes('balance=excluded.balance'));
+    assert.truthy(/peak_balance=MAX\(/.test(activity));
   });
   test('invalid balances are rejected and valid balances are clamped', () => {
     assert.truthy(activity.includes("if (!Number.isFinite(+value)) return null"));

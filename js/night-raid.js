@@ -121,9 +121,14 @@ var NightRaid = (() => {
     const mapBase=typeof innerWidth!=='undefined'&&innerWidth>=768?1500:1180,mapSize=Math.round(mapBase*builderZoom);
     r.innerHTML=shell(`<main class="nr-builder nr-scout-stage" id="nrBattleRoot"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Toàn cảnh lâu đài đối thủ. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map nr-scout-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapSize}px"><canvas id="nrScoutCanvas" class="nr-scout-canvas" width="800" height="800" aria-label="Lâu đài đối thủ, pet đội trưởng và ${target.attackerSoldiers} lính đang dàn quân"></canvas></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="${online?'nrShowLiveTargets()':'nrHome()'}" aria-label="${online?'Chọn nhà khác':'Về màn Cướp Đêm'}">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM TA</small><strong>${target.attackerDamage}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${target.attackerSoldiers}</strong></div><div class="nr-builder-power defense" id="nrScoutDef" hidden><small>DEF ĐỊCH</small><strong>?</strong></div></div><div class="nr-scout-name-pill">${svg('shield')}<span>${esc(name)}${target.botMode?' · BOT NGẪU NHIÊN':''}</span></div><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" id="nrStartRaid" ${locked?'disabled hidden':''}>${svg('moon')}<span>TIẾN QUÂN</span></button>${locked?lockChip(target.lockedUntil,'NHÀ VỪA BỊ PHÁ · CƯỚP LẠI SAU','scout'):''}</div><div class="nr-scout-secret" id="nrScoutSecret" ${locked?'hidden':''}>🔒 DEF nhà địch là bí mật — tiến quân mới biết!</div><div class="nr-battle-status" id="nrBattleStatus" role="status" hidden></div><div class="nr-pop-host" data-nr-pop-host></div></main>`);
     setNav(true);
-    const canvas=document.getElementById('nrScoutCanvas');previewGame=new NightRaidGame.AutoBattle(canvas,target,{reduceEffects:true,pet:raidPetDescriptor()});previewGame.start();
+    // ARM THE BUTTON FIRST. Everything below is preview, camera and ticker —
+    // decoration. When one of them threw, this line never ran and the child
+    // was left tapping a dead TIẾN QUÂN; the raid was unplayable.
+    const startBtn=document.getElementById('nrStartRaid');
+    if(startBtn)startBtn.onclick=()=>{const b=document.getElementById('nrStartRaid');if(b){b.disabled=true;b.classList.add('charging');}startRaid(target,!!online);};
+    const canvas=document.getElementById('nrScoutCanvas');
+    try{previewGame=new NightRaidGame.AutoBattle(canvas,target,{reduceEffects:true,pet:raidPetDescriptor()});previewGame.start();}catch(e){console.warn('Night Raid preview',e);}
     builderScroll=null;centerBuilderWorld();setupBuilderGestures();startProductionTicker();
-    document.getElementById('nrStartRaid').onclick=()=>{const b=document.getElementById('nrStartRaid');if(b){b.disabled=true;b.classList.add('charging');}startRaid(target,!!online);};
   }
 
   async function startRaid(target,online){
@@ -600,7 +605,12 @@ var NightRaid = (() => {
       if(state.x<=activeBounds.minX||state.x>=activeBounds.maxX){state.x=Math.max(activeBounds.minX,Math.min(activeBounds.maxX,state.x));state.vx*=-1;}if(state.y<=activeBounds.minY||state.y>=activeBounds.maxY){state.y=Math.max(activeBounds.minY,Math.min(activeBounds.maxY,state.y));state.vy*=-1;}if(now-state.frameAt>=155){state.frame=(state.frame+1)%4;state.frameAt=now;}spawnPetTrail(trail,state,now);placePatrolPet(pet,sprite,state,now);},90);}
   function ensureWorldPlane(viewport){
     if(!viewport)return null;let plane=viewport.querySelector(':scope > .nr-world-plane');
-    const map=viewport.querySelector(':scope > .nr-estate-map');
+    // EVERY pannable stage, not just the home estate. The scout/battle board
+    // is `.nr-builder-map.nr-scout-map`, so matching only `.nr-estate-map`
+    // returned a null plane there — and setBuilderZoom then threw on
+    // plane.offsetWidth, killing scout() on the line BEFORE it wired the
+    // TIẾN QUÂN button. The button rendered, looked enabled, and did nothing.
+    const map=viewport.querySelector(':scope > .nr-builder-map');
     if(!plane&&map){plane=document.createElement('div');plane.className='nr-world-plane';plane.dataset.nrWorldPlane='';viewport.insertBefore(plane,map);plane.appendChild(map);}
     return plane;
   }
@@ -692,7 +702,7 @@ var NightRaid = (() => {
   // exact point under the fingers when the estate changes size; using the
   // estate's offset inside that plane also prevents the jump that occurred
   // when crossing from a centred small map to an overflowing large one.
-  function setBuilderZoom(next,clientX,clientY){const viewport=document.getElementById('nrBuilderWorld'),map=viewport?.querySelector('.nr-builder-map');if(!viewport||!map)return;const plane=ensureWorldPlane(viewport);layoutBuilderWorld(viewport,map);const old=Math.max(.001,builderZoom),bounds=builderZoomBounds(viewport,map),newZoom=Math.max(bounds.min,Math.min(bounds.max,+next||1)),rect=viewport.getBoundingClientRect(),cx=Number.isFinite(clientX)?clientX-rect.left:viewport.clientWidth/2,cy=Number.isFinite(clientY)?clientY-rect.top:viewport.clientHeight/2,worldX=(viewport.scrollLeft+cx-plane.offsetWidth/2)/old,worldY=(viewport.scrollTop+cy-plane.offsetHeight/2)/old,base=+map.dataset.baseSize||1600;builderZoom=newZoom;map.style.width=Math.round(base*newZoom)+'px';map.style.height=Math.round(base*.75*newZoom)+'px';layoutBuilderWorld(viewport,map);viewport.scrollLeft=Math.max(0,plane.offsetWidth/2+worldX*newZoom-cx);viewport.scrollTop=Math.max(0,plane.offsetHeight/2+worldY*newZoom-cy);const label=document.querySelector('[data-nr-zoom]');if(label)label.textContent=Math.round(newZoom*100)+'%';keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});builderZoomByView[view==='builder'?'builder':'home']=builderZoom;}
+  function setBuilderZoom(next,clientX,clientY){const viewport=document.getElementById('nrBuilderWorld'),map=viewport?.querySelector('.nr-builder-map');if(!viewport||!map)return;const plane=ensureWorldPlane(viewport);if(!plane)return;layoutBuilderWorld(viewport,map);const old=Math.max(.001,builderZoom),bounds=builderZoomBounds(viewport,map),newZoom=Math.max(bounds.min,Math.min(bounds.max,+next||1)),rect=viewport.getBoundingClientRect(),cx=Number.isFinite(clientX)?clientX-rect.left:viewport.clientWidth/2,cy=Number.isFinite(clientY)?clientY-rect.top:viewport.clientHeight/2,worldX=(viewport.scrollLeft+cx-plane.offsetWidth/2)/old,worldY=(viewport.scrollTop+cy-plane.offsetHeight/2)/old,base=+map.dataset.baseSize||1600;builderZoom=newZoom;map.style.width=Math.round(base*newZoom)+'px';map.style.height=Math.round(base*.75*newZoom)+'px';layoutBuilderWorld(viewport,map);viewport.scrollLeft=Math.max(0,plane.offsetWidth/2+worldX*newZoom-cx);viewport.scrollTop=Math.max(0,plane.offsetHeight/2+worldY*newZoom-cy);const label=document.querySelector('[data-nr-zoom]');if(label)label.textContent=Math.round(newZoom*100)+'%';keepScroll({left:viewport.scrollLeft,top:viewport.scrollTop});builderZoomByView[view==='builder'?'builder':'home']=builderZoom;}
   function zoomBuilder(delta){setBuilderZoom(builderZoom+(+delta||0));}
   // Fake landscape: iOS never lets a web app lock orientation, so the whole
   // builder rotates 90deg in CSS instead — the child turns the device and the

@@ -775,6 +775,10 @@ function wfSkillSummaries(st) {
 function finishWordformQuiz() {
   const st = _wfQuiz;
   if (!st) return;
+  // Claimed BEFORE the payout and the render — see finishPhrasesQuiz: with the
+  // clear at the END, one throw in between turned every frustrated tap into
+  // another payout and another identical history row.
+  _wfQuiz = null;
   // A follow-up screen is worth TWO points, so the denominator counts points,
   // not screens: 20 word-form questions plus their two checks each is 60.
   // Reporting 20/40 for a practice a child answered 60 things in would read as
@@ -856,7 +860,6 @@ function finishWordformQuiz() {
       ${reviewHtml}
       ${(typeof retryResultCtaHTML === 'function' ? retryResultCtaHTML('wf') : '')}
     </div>`;
-  _wfQuiz = null;
 }
 
 // ---- review a past session (read-only) ----
