@@ -150,16 +150,13 @@ function saveWordformSession(session) {
   hist.unshift(session);
   if (hist.length > WF_HISTORY_CAP) hist.length = WF_HISTORY_CAP;
   if (typeof appState !== 'undefined' && typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-    while (true) {
-      try { saveUserData(currentUser, appState); break; }
-      catch (e) {
-        if (hist.length > 1) { hist.pop(); continue; }
-        // Even a lone entry cannot be written: localStorage is truly full.
-        // Say so — giving up in silence left the coins awarded in memory and
-        // the session looking saved when nothing reached disk.
-        if (typeof showToast === 'function') showToast('⚠️ Bộ nhớ máy đầy — kết quả chưa được lưu');
-        break;
-      }
+    // saveUserData sheds old history itself now (halving, bounded — see
+    // js/app.js). The old pop-one-line-and-retry loop here did hundreds of
+    // full re-stringifies and froze the app right at "see result".
+    try { saveUserData(currentUser, appState); }
+    catch (e) {
+      // Even shedding could not fit it: the disk is truly full. Say so.
+      if (typeof showToast === 'function') showToast('⚠️ Bộ nhớ máy đầy — kết quả chưa được lưu');
     }
   }
 }

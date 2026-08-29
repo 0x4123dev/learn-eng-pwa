@@ -182,28 +182,26 @@ suite('money invariants: a truly full disk warns instead of silently dropping th
 suite('money invariants: a full disk must not blow up a payout', () => {
   const math = require(path.join(root, 'js', 'math.js'));
 
-  test('saveMathSession survives a QuotaExceeded save by shedding old history', () => {
-    // Every other practice menu already sheds oldest entries on a full
-    // localStorage. math.js let the throw escape — aborting finishMathQuiz
-    // AFTER the coins were added in memory, so the award never reached disk.
-    const prev = { appState: global.appState, currentUser: global.currentUser, saveUserData: global.saveUserData };
-    global.appState = { mathHistory: [{ old: 1 }, { old: 2 }, { old: 3 }] };
+  test('saveMathSession survives a QuotaExceeded save and warns, never crashes', () => {
+    // Shedding now lives inside app.js saveUserData (halving, bounded —
+    // tests/appstate-quota.test.js). The menu's job is only: keep the session
+    // in memory, swallow the failure, and TELL the child nothing was saved.
+    const prev = { appState: global.appState, currentUser: global.currentUser,
+      saveUserData: global.saveUserData, showToast: global.showToast };
+    global.appState = { mathHistory: [{ old: 1 }] };
     global.currentUser = 'Kid';
-    let attempts = 0;
-    global.saveUserData = () => {
-      attempts++;
-      if (attempts < 3) { const e = new Error('QuotaExceededError'); e.name = 'QuotaExceededError'; throw e; }
-    };
+    const toasts = [];
+    global.showToast = msg => toasts.push(msg);
+    global.saveUserData = () => { const e = new Error('QuotaExceededError'); e.name = 'QuotaExceededError'; throw e; };
     try {
-      math.saveMathSession({ score: 9, total: 10, date: Date.now() });
-      assert.equal(global.appState.mathHistory[0].score, 9, 'the new session is kept');
-      assert.truthy(attempts >= 3, 'the save retries after shedding');
-      assert.truthy(global.appState.mathHistory.length < 4, 'old history was shed to make room');
+      math.saveMathSession({ score: 9, total: 10, date: Date.now() }); // must not throw
+      assert.equal(global.appState.mathHistory[0].score, 9, 'the new session is kept in memory');
+      assert.truthy(toasts.length >= 1, 'the child must be told the save failed');
+      assert.truthy(/lưu|đầy/i.test(toasts.join(' ')), 'the warning says what happened');
     } finally {
-      global.appState = prev.appState; global.currentUser = prev.currentUser; global.saveUserData = prev.saveUserData;
-      if (prev.appState === undefined) delete global.appState;
-      if (prev.currentUser === undefined) delete global.currentUser;
-      if (prev.saveUserData === undefined) delete global.saveUserData;
+      for (const k of Object.keys(prev)) {
+        if (prev[k] === undefined) delete global[k]; else global[k] = prev[k];
+      }
     }
   });
 });

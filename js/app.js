@@ -315,8 +315,60 @@ function getUserData(username) {
     return data ? JSON.parse(data) : null;
 }
 
+// Every practice menu's history lives inside this ONE blob, so it only ever
+// grows — and every save re-stringifies all of it. Left unbounded it crossed
+// 3MB on a busy profile: each save cost 100ms+ on an old iPad (the app "gets
+// laggier every week"), and the old shed-one-line-and-retry loops did HUNDREDS
+// of full re-stringifies when localStorage finally filled — a hard freeze the
+// moment a child tapped "see result". Shedding now happens here, by HALVING,
+// so it converges in a handful of attempts and every menu shares it.
+const HISTORY_BOOKS = Object.freeze([
+    // newest entry sits at index 0 (unshift-style) — trim from the tail
+    { key: 'phrasesHistory', keep: 'head' }, { key: 'wordformHistory', keep: 'head' },
+    { key: 'rewriteHistory', keep: 'head' }, { key: 'collocHistory', keep: 'head' },
+    { key: 'unitsHistory', keep: 'head' }, { key: 'grammarHistory', keep: 'head' },
+    { key: 'mathHistory', keep: 'head' }, { key: 'warsHistory', keep: 'head' },
+    { key: 'nightRaidHistory', keep: 'head' },
+    // appended oldest-first (push-style) — trim from the head
+    { key: 'lessonHistory', keep: 'tail' },
+]);
+const HISTORY_FLOOR = 40;                 // recent sessions that always survive
+const APPSTATE_SOFT_LIMIT = 2400000;      // ~2.4MB of a ~5MB origin quota
+
+// Halve every history book still above the floor, keeping the NEWEST half.
+// Returns false when nothing could shrink — the caller must stop retrying.
+function shedHistoriesOnce(data) {
+    let shrank = false;
+    for (const book of HISTORY_BOOKS) {
+        const list = data && data[book.key];
+        if (!Array.isArray(list) || list.length <= HISTORY_FLOOR) continue;
+        const keep = Math.max(HISTORY_FLOOR, Math.floor(list.length / 2));
+        data[book.key] = book.keep === 'tail' ? list.slice(-keep) : list.slice(0, keep);
+        shrank = true;
+    }
+    const speed = data && data.speedChallenge;
+    if (speed && Array.isArray(speed.history) && speed.history.length > 20) {
+        speed.history = speed.history.slice(-Math.max(20, Math.floor(speed.history.length / 2)));
+        shrank = true;
+    }
+    return shrank;
+}
+
 function saveUserData(username, data) {
-    localStorage.setItem(`flashlingo-user-${username}`, JSON.stringify(data));
+    let json = JSON.stringify(data);
+    // Proactive bound: trim BEFORE the disk fills, so steady-state saves
+    // (which run after every finished session) stay cheap on old devices.
+    while (json.length > APPSTATE_SOFT_LIMIT && shedHistoriesOnce(data)) {
+        json = JSON.stringify(data);
+    }
+    let guard = 8;
+    while (true) {
+        try { localStorage.setItem(`flashlingo-user-${username}`, json); return; }
+        catch (e) {
+            if (guard-- <= 0 || !shedHistoriesOnce(data)) throw e;
+            json = JSON.stringify(data);
+        }
+    }
 }
 
 function deleteUserData(username) {

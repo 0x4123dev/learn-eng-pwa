@@ -208,7 +208,7 @@ const EXPORT_NAMES = [
     'computeCurrentHunger', 'getPetMood', 'evaluatePoopSpawn',
     'getHomeSkillStats', '_homeSkillSessions', '_homeAllSessionsCount',
     // login + profile migration (money-client tests)
-    'loginUser', 'getUserData', 'createDefaultUserData',
+    'loginUser', 'getUserData', 'createDefaultUserData', 'saveUserData',
     // shop spend paths (money-invariants tests)
     'buyFood', 'buyAccessory', 'buyShield',
     // daily-challenge

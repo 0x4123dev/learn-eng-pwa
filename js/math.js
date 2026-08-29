@@ -586,13 +586,13 @@ function saveMathSession(session) {
   list.unshift(session);
   if (list.length > MATH_HISTORY_CAP) list.length = MATH_HISTORY_CAP;
   if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
-    // localStorage full: shed the oldest history entries and retry, like the
-    // other practice menus (rewrite/wordform/phrases). Letting the quota
-    // error escape aborted finishMathQuiz AFTER the coins were already added
-    // in memory, so the award never reached disk.
-    while (true) {
-      try { saveUserData(currentUser, appState); break; }
-      catch (e) { if (list.length > 1) list.pop(); else break; }
+    // saveUserData sheds old history itself now (halving, bounded — see
+    // js/app.js). A quota error must not escape: finishMathQuiz has already
+    // added the coins in memory, and an old pop-one-line-and-retry loop here
+    // did hundreds of full re-stringifies — a hard freeze at "see result".
+    try { saveUserData(currentUser, appState); }
+    catch (e) {
+      if (typeof showToast === 'function') showToast('⚠️ Bộ nhớ máy đầy — kết quả chưa được lưu');
     }
   }
 }

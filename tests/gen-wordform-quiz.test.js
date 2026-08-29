@@ -451,7 +451,7 @@ suite('gen: wordform finish — coins & history', () => {
         wf.abandonWordformQuiz();
     });
 
-    test('saveUserData throwing trims history down to just the newest session', () => {
+    test('a hopelessly full disk keeps the session in memory and warns', () => {
         const filler = [
             { id: 'old-a', date: 1, score: 1, total: 1, wrong: [] },
             { id: 'old-b', date: 2, score: 1, total: 1, wrong: [] },
@@ -462,11 +462,19 @@ suite('gen: wordform finish — coins & history', () => {
             appState: { coins: 0, wordformHistory: filler },
             saveUserData: () => { throw new Error('quota exceeded'); },
         });
+        const toasts = [];
+        global.showToast = msg => toasts.push(msg);
         wf.startWordformReviewQuiz([WF1]);
         wf.answerWfQuestion(3);
-        wf.finishWordformQuiz(); // retry loop pops old sessions until save "fits"
-        assert.equal(st.wordformHistory.length, 1);
-        assert.truthy(st.wordformHistory[0].id.startsWith('wf-'), 'only the new session survives');
+        // Shedding now lives inside app.js saveUserData (halving, bounded —
+        // tests/appstate-quota.test.js). The menu must not throw, must keep
+        // everything in memory, and must WARN that nothing reached disk.
+        wf.finishWordformQuiz();
+        delete global.showToast;
+        assert.equal(st.wordformHistory.length, 4, 'nothing is dropped from memory');
+        assert.truthy(st.wordformHistory[0].id.startsWith('wf-'), 'the new session leads');
+        assert.truthy(toasts.length >= 1 && /lưu|đầy/i.test(toasts.join(' ')),
+            'the child is told the save failed');
     });
 
     test('finish survives a missing appState (coins/history silently skipped)', () => {
