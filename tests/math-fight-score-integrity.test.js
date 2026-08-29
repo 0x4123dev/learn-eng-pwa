@@ -284,3 +284,80 @@ suite('math fight: every question is worth answering', () => {
       'practice must not hand out one-digit answers any more');
   });
 });
+
+// ---------------------------------------------------------------------------
+// The whole thing, once, the way two children actually play it: a challenge is
+// sent and accepted, both answer, the server decides, and each wallet moves.
+// Every screenshot bug this file was opened for lives somewhere on this path.
+suite('math fight: two children can play a match end to end', () => {
+  const challengeHandler = () => loadModule('functions/api/math-fight/challenge.js');
+  const respondHandler = () => loadModule('functions/api/math-fight/respond.js');
+
+  async function twoFriends() {
+    const world = createWorld();
+    const kid = await world.createUser({ username: 'Kid' });
+    const pal = await world.createUser({ username: 'Pal' });
+    // Đấu Toán is behind an admin flag, and a fresh friendship has to wait
+    // three days before it may battle — so the fixture ages the friendship.
+    world.db.prepare("INSERT OR REPLACE INTO app_flags(key,value,updated_at) VALUES('math_fight',1,0)").run();
+    world.db.prepare(`INSERT INTO friendships (requester_id, addressee_id, status, created_at, responded_at)
+      VALUES (?,?,'accepted', datetime('now','-10 days'), datetime('now','-10 days'))`)
+      .run(kid.uid, pal.uid);
+    return { world, kid, pal };
+  }
+
+  test('challenge, accept, answer, and both wallets move the right way', async () => {
+    const { world, kid, pal } = await twoFriends();
+    const post = (h, u, b) => world.call(h, { token: u.token, body: b });
+
+    const invite = await post(challengeHandler().onRequestPost, kid, { friendId: pal.uid, level: 3, foeLevel: 3 });
+    assert.equal(invite.status, 200, JSON.stringify(invite.data));
+    const fightId = invite.data.fight.fightId;
+
+    const accepted = await post(respondHandler().onRequestPost, pal, { fightId, accept: true });
+    assert.equal(accepted.status, 200, JSON.stringify(accepted.data));
+    const row = () => world.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
+    assert.equal(row().status, 'active', 'both children are in the bout');
+
+    // Each side draws its OWN round from the shared bank, at its own level.
+    const mine = MF.fightQuestions(row().seed, row().challenger_level, MATH_FIGHT_BANK);
+    const theirs = MF.fightQuestions(row().seed, row().opponent_level, MATH_FIGHT_BANK);
+    assert.equal(mine.length, MF.QUESTIONS);
+    assert.deepEqual(mine.filter(q => q.answer < 10).map(q => q.q), [],
+      'no free question reaches a real match');
+
+    // The child answers everything; the friend gets eight right.
+    await post(submitHandler().onRequestPost, kid,
+      { fightId, answers: mine.map(q => q.answer), coins: 9000 });
+    await post(progressHandler().onRequestPost, kid, { fightId, answers: [] }); // the poll that used to wipe it
+    const end = await post(submitHandler().onRequestPost, pal,
+      { fightId, answers: theirs.map((q, i) => (i < 8 ? q.answer : null)), coins: 15850 });
+    assert.equal(end.status, 200, JSON.stringify(end.data));
+
+    const done = row();
+    assert.equal(done.status, 'done');
+    assert.equal(done.c_correct, 20, 'the child who finished first keeps every mark');
+    assert.equal(done.o_correct, 8);
+    assert.equal(done.winner_id, kid.uid, 'and wins');
+
+    // The coin move each device applies to its own wallet.
+    const server = loadModule('functions/api/_math-fight.js');
+    assert.equal(server.coinDelta(done, kid.uid, 9000), MF.PRIZE, 'the winner collects the prize');
+    assert.equal(server.coinDelta(done, pal.uid, 15850), -MF.PRIZE, 'the loser pays it');
+  });
+
+  test('a loser with an empty purse pays nothing', async () => {
+    const { world, kid, pal } = await twoFriends();
+    const post = (h, u, b) => world.call(h, { token: u.token, body: b });
+    const invite = await post(challengeHandler().onRequestPost, kid, { friendId: pal.uid, level: 3, foeLevel: 3 });
+    const fightId = invite.data.fight.fightId;
+    await post(respondHandler().onRequestPost, pal, { fightId, accept: true });
+    const row = world.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
+    const mine = MF.fightQuestions(row.seed, row.challenger_level, MATH_FIGHT_BANK);
+    await post(submitHandler().onRequestPost, kid, { fightId, answers: mine.map(q => q.answer), coins: 0 });
+    await post(submitHandler().onRequestPost, pal, { fightId, answers: [], coins: 0 });
+    const done = world.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
+    const server = loadModule('functions/api/_math-fight.js');
+    assert.equal(server.coinDelta(done, pal.uid, 0), 0, 'an empty wallet is never pushed below zero');
+  });
+});
