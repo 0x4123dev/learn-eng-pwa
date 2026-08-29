@@ -188,12 +188,19 @@ function warsQuestion(rand, max) {
   };
 }
 
-function warsQuestions(n, rand, max) {
+// opts.minAnswer keeps trivial sums out of a round. Đấu Toán uses it: a
+// five-minute match against a friend is not the place for "3 + 4", and nearly
+// half the questions at the lowest level used to have a one-digit answer.
+// Solo practice passes nothing and keeps its gentle on-ramp.
+function warsQuestions(n, rand, max, opts) {
+  const min = Math.max(0, Math.trunc((opts && opts.minAnswer) || 0));
   const out = [];
   const seen = {};
-  let guard = 0;
-  while (out.length < n && guard++ < n * 40) {
+  // Rejecting the easy half needs more draws than an unfiltered round does.
+  let guard = 0, limit = n * (min ? 200 : 40);
+  while (out.length < n && guard++ < limit) {
     const q = warsQuestion(rand, max);
+    if (min && Math.abs(q.answer) < min) continue;
     if (seen[q.q]) continue;      // no repeat inside one round
     seen[q.q] = 1;
     out.push(q);

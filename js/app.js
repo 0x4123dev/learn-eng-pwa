@@ -1266,7 +1266,7 @@ function switchScreen(screenId) {
     // letting the server's walk-away timer decide 20 seconds later.
     if (screenId !== 'mathHubScreen' &&
         typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
-        if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
+        if (!confirm('Con đang đấu toán với bạn.\n\nThoát bây giờ sẽ ĐÓNG trận và chấm điểm luôn — con bị XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
             return; // stay in the fight
         }
         if (MathFight.forfeitNow) MathFight.forfeitNow();

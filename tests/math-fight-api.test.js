@@ -36,8 +36,12 @@ suite('math fight: schema', () => {
 suite('math fight: server helpers', () => {
   const src = () => read('functions/api/_math-fight.js');
   test('scoring runs the shared generator, never a client-supplied score', () => {
-    assert.truthy(src().includes('warsQuestions('));
-    assert.truthy(src().includes('MF.fightLevelMax('));
+    // The round is drawn by ONE builder that the device and the server both
+    // call (MF.fightQuestions), so the twenty questions can never drift apart
+    // and mark a child wrong for a right answer. Behavioural coverage:
+    // tests/math-fight-score-integrity.test.js.
+    assert.truthy(src().includes('MF.fightQuestions('));
+    assert.truthy(src().includes('wars.warsQuestions'), 'the generator is injected on the server');
     assert.falsy(/body\.correct/.test(src()), 'the client must never report a score');
   });
   test('the pair row is read and written through the sorted key', () => {

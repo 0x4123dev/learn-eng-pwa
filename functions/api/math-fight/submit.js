@@ -16,7 +16,12 @@ export async function onRequestPost({ request, env }) {
   if (!mine && row.opponent_id !== auth.uid) return err('Forbidden', 403);
 
   const now = Date.now();
-  if (row.status === 'active') {
+  // A side that has already submitted is FINISHED, and nothing may rewrite
+  // that. Leaving the screen calls submit(forfeit) — which, after a real
+  // submission, used to blank c_submitted_at and turn a finished 20/20 into a
+  // walk-away. One submission per side, the first one, is the whole rule.
+  const alreadyIn = mine ? row.c_submitted_at : row.o_submitted_at;
+  if (row.status === 'active' && !alreadyIn) {
     const answers = Array.isArray(body.answers) ? body.answers.slice(0, MF.QUESTIONS) : [];
     const level = mine ? row.challenger_level : row.opponent_level;
     const marked = scoreAnswers(row.seed, level, answers);
@@ -33,6 +38,12 @@ export async function onRequestPost({ request, env }) {
 
     const bothIn = !!(row.c_submitted_at && row.o_submitted_at);
     if (bothIn || body.forfeit || row.deadline_at <= now) row = await settleFight(env, row, now);
+  } else if (row.status === 'active') {
+    // A repeat call from a side that is already in: no score changes, but the
+    // fight may now be settleable (the other side finished, or time ran out).
+    if (!!(row.c_submitted_at && row.o_submitted_at) || row.deadline_at <= now) {
+      row = await settleFight(env, row, now);
+    }
   }
   return json({ fight: fightView(row, auth.uid), coins: coinDelta(row, auth.uid, body.coins) });
 }

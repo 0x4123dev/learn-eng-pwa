@@ -43,6 +43,18 @@ var MathFightRules = (() => {
     return Math.min(FIGHT_MAX, WARS_LEVEL_BASE + WARS_LEVEL_STEP * L - 1);
   }
 
+  // Every fight answer has at least two digits. The device draws the round to
+  // show it and the server draws the same round to mark it, so this has to be
+  // ONE function: two call sites with their own arguments drifted apart would
+  // mark a child wrong for a right answer. The generator comes from Math Wars,
+  // reached as a global on the device and injected on the server.
+  const FIGHT_MIN_ANSWER = 10;
+  function fightQuestions(seed, level, gen) {
+    const build = gen || (typeof warsQuestions === 'function' ? warsQuestions : null);
+    if (!build) return [];
+    return build(QUESTIONS, makeRng(seed), fightLevelMax(level), { minAnswer: FIGHT_MIN_ANSWER });
+  }
+
   // What this player's wallet actually moves by. The winner always collects
   // the full prize; the loser pays what they can and never goes below zero.
   function coinChange(isWinner, balance) {
@@ -128,7 +140,7 @@ var MathFightRules = (() => {
     QUESTIONS, SECONDS, PRIZE, INVITE_TTL_MS,
     HEARTBEAT_MS, FORFEIT_MS, COOLDOWN_MS, HANDICAP_STEP, STREAK_MAX,
     WARS_TOP_LEVEL, FIGHT_MAX, FIGHT_LEVELS,
-    fightLevelMax, coinChange, pairKey, makeRng,
+    fightLevelMax, FIGHT_MIN_ANSWER, fightQuestions, coinChange, pairKey, makeRng,
     baseLevel, levelsFor, nextPairState, adjudicate, cooldownUntil, hasWalkedAway,
   });
 })();

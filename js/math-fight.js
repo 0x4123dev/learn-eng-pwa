@@ -84,7 +84,19 @@ var MathFight = (() => {
     st.poll = setInterval(refresh, 3000);
     refresh();
   }
-  function leave() { stopTimers(); st.fight = null; st.view = 'list'; }
+  // A five-minute match used to sit behind the ordinary bottom nav, so one
+  // mis-tap on Home/Learn/Exam dropped a child out of a live fight — and
+  // leaving mid-fight is a forfeit that costs the stake. The nav is hidden
+  // while the questions are up, exactly as Night Raid hides it during a raid,
+  // and restored the moment the fight is not live any more. Every exit runs
+  // through here, so the nav can never be left hidden.
+  function lockScreen(locked) {
+    if (typeof document === 'undefined') return;
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = locked ? 'none' : '';
+  }
+
+  function leave() { stopTimers(); lockScreen(false); st.fight = null; st.view = 'list'; }
   function stopTimers() {
     for (const key of ['ticker', 'poll', 'pulse', 'wait']) { if (st[key]) { clearInterval(st[key]); st[key] = null; } }
   }
@@ -198,7 +210,7 @@ var MathFight = (() => {
     const res = await api('respond', { method: 'POST', body: { fightId: st.fight.fightId, accept } });
     st.busy = false;
     if (!res.ok) return toast((res.data && res.data.error) || 'Không trả lời được lời thách');
-    if (!accept) { st.fight = null; st.view = 'list'; return refresh(); }
+    if (!accept) { lockScreen(false); st.fight = null; st.view = 'list'; return refresh(); }
     st.fight = res.data.fight;
     startBout();
   }
@@ -208,10 +220,12 @@ var MathFight = (() => {
     if (st.view === 'fight' || !st.fight) return;
     const gen = typeof warsQuestions === 'function' ? warsQuestions : null;
     if (!gen || !R()) return toast('Không dựng được đề — hãy tải lại app');
+    // Drawn by MF.fightQuestions, the same call the server marks with.
     st.view = 'fight';
+    lockScreen(true);
     // The sums are rebuilt locally from the server's seed so they appear with
     // no round trip. The server holds the same twenty and marks them itself.
-    st.qs = gen(R().QUESTIONS, R().makeRng(st.fight.seed), R().fightLevelMax(st.fight.level));
+    st.qs = R().fightQuestions(st.fight.seed, st.fight.level, gen);
     st.answers = new Array(R().QUESTIONS).fill(null);
     st.idx = 0;
     if (st.pulse) clearInterval(st.pulse);
@@ -270,6 +284,7 @@ var MathFight = (() => {
     st.busy = false;
     if (!res.ok || !res.data || !res.data.fight) {
       st.view = 'result';
+      lockScreen(false);
       const r = root();
       if (r) r.innerHTML = `<div class="mf-empty"><h3>Kết quả đang chờ đồng bộ</h3><p>Mạng chập chờn — xu sẽ được cộng khi kết nối lại.</p>
         <button class="mf-primary" type="button" onclick="mfBackToList()">Về danh sách</button></div>`;
@@ -290,6 +305,7 @@ var MathFight = (() => {
   // the strip keeps showing how far the other one has got.
   function waitForVerdict() {
     st.view = 'waiting';
+    lockScreen(false);   // already submitted: the score is final, let them move
     paintWaiting();
     if (st.wait) clearInterval(st.wait);
     st.wait = setInterval(async () => {
@@ -341,6 +357,7 @@ var MathFight = (() => {
   function paintResult() {
     const r = root(); if (!r || !st.fight) return;
     st.view = 'result';
+    lockScreen(false);
     if (st.pulse) { clearInterval(st.pulse); st.pulse = null; }
     // EngAuth has no userIdFor — the account row does. Calling a function that
     // does not exist meant this always fell through to comparing scores, which
@@ -385,7 +402,7 @@ var MathFight = (() => {
     if (typeof confirm === 'function' && !confirm('Bỏ cuộc là thua và mất tiền cược. Con chắc chưa?')) return;
     submit(true);
   }
-  function backToList() { st.fight = null; st.view = 'list'; paintLoading(); refresh(); }
+  function backToList() { lockScreen(false); st.fight = null; st.view = 'list'; paintLoading(); refresh(); }
 
   return Object.freeze({ open, leave, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh });
 })();

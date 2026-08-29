@@ -11,7 +11,7 @@ export const MF = MathFightRules;
 // heartbeat, the final submit and the reaper — one scoring path, no way in for
 // a forged score.
 export function scoreAnswers(seed, level, answers) {
-  const qs = wars.warsQuestions(MF.QUESTIONS, MF.makeRng(seed), MF.fightLevelMax(level));
+  const qs = MF.fightQuestions(seed, level, wars.warsQuestions);
   const list = Array.isArray(answers) ? answers : [];
   let correct = 0, answered = 0;
   for (let i = 0; i < qs.length; i++) {
