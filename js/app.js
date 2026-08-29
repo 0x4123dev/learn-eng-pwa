@@ -206,7 +206,12 @@ function restoreStudyCheckpoint() {
     // Grammar and Exam checkpoints need a bank that no longer loads at
     // startup (js/lazy-data.js). Reopening the question before it lands would
     // show an empty one, so wait — and come back here when it arrives.
-    const needsBank = { grammar: 'grammarScreen', exam: 'examScreen' }[checkpoint.kind];
+    const needsBank = {
+        grammar: 'grammarScreen', exam: 'examScreen',
+        phrases: 'phrasesScreen', collocation: 'phrasesScreen',
+        wordform: 'wordformScreen', rewrite: 'rewriteScreen',
+        math: 'mathHubScreen', mathwars: 'mathHubScreen',
+    }[checkpoint.kind];
     if (needsBank && typeof LazyData !== 'undefined' && !LazyData.ready(needsBank)) {
         LazyData.ensure(needsBank).then(() => restoreStudyCheckpoint());
         return false;
@@ -1305,9 +1310,15 @@ function switchScreen(screenId) {
     if (typeof LazyData !== 'undefined' && LazyData.filesFor(screenId).length) {
         const paint = () => {
             if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
-            if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
+            else if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
+            else if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
+            else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
+            else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
+            else if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
         };
-        if (LazyData.ready(screenId)) paint();
+        // ensure() is a no-op once the bank is in, but it also records this as
+        // the tab to warm next time — so call it either way.
+        if (LazyData.ready(screenId)) { LazyData.ensure(screenId); paint(); }
         else {
             const target = document.getElementById(screenId);
             if (target && !target.innerHTML.trim()) {

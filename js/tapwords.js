@@ -94,6 +94,14 @@ function tapWord(el, ev) {
   const raw = (el && el.textContent ? el.textContent : '').trim();
   if (!raw) return;
   if (typeof _unitSpeak === 'function') _unitSpeak(raw);
+  // The offline dictionary is 352 KB and belongs to no single screen, so it is
+  // no longer part of the app's first paint (js/lazy-data.js). Speak the word
+  // immediately either way, and fetch the meaning the first time one is asked
+  // for — after that it is already in memory.
+  if (typeof LazyData !== 'undefined' && !LazyData.dictionaryReady()) {
+    LazyData.ensureDictionary().then(() => twShowChip(raw, twLookup(raw)));
+    return;
+  }
   twShowChip(raw, twLookup(raw));
 }
 

@@ -188,18 +188,30 @@ suite('gen: index.html script tags', () => {
             `scripts loaded by index.html but missing from sw.js ASSETS: ${uncached.join(', ')}`);
     });
 
-    test('ordering: phrases-data.js loads before phrases.js', () => {
-        const a = SCRIPT_SRCS.indexOf('js/phrases-data.js');
-        const b = SCRIPT_SRCS.indexOf('js/phrases.js');
-        assert.truthy(a !== -1 && b !== -1, 'phrases scripts not found in index.html');
-        assert.truthy(a < b, `phrases-data.js (idx ${a}) must precede phrases.js (idx ${b})`);
+    test('the phrases bank is deferred, and its tab waits for it', () => {
+        // phrases-data.js (370 KB) no longer blocks the first paint; the ordering
+        // rule it used to satisfy is replaced by a stronger one — switchScreen
+        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
+        assert.equal(SCRIPT_SRCS.indexOf('js/phrases-data.js'), -1, 'js/phrases-data.js must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/phrases.js') !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        const block = lazy.slice(lazy.indexOf('phrasesScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/phrases-data.js'),
+            'js/phrases-data.js must be listed under phrasesScreen in the loader');
+        assert.contains(ASSETS, '/js/phrases-data.js', 'and must stay cached for offline use');
     });
 
-    test('ordering: wordform-data.js loads before wordform.js', () => {
-        const a = SCRIPT_SRCS.indexOf('js/wordform-data.js');
-        const b = SCRIPT_SRCS.indexOf('js/wordform.js');
-        assert.truthy(a !== -1 && b !== -1, 'wordform scripts not found in index.html');
-        assert.truthy(a < b, `wordform-data.js (idx ${a}) must precede wordform.js (idx ${b})`);
+    test('the word form bank is deferred, and its tab waits for it', () => {
+        // wordform-data.js (349 KB) no longer blocks the first paint; the ordering
+        // rule it used to satisfy is replaced by a stronger one — switchScreen
+        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
+        assert.equal(SCRIPT_SRCS.indexOf('js/wordform-data.js'), -1, 'js/wordform-data.js must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/wordform.js') !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        const block = lazy.slice(lazy.indexOf('wordformScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/wordform-data.js'),
+            'js/wordform-data.js must be listed under wordformScreen in the loader');
+        assert.contains(ASSETS, '/js/wordform-data.js', 'and must stay cached for offline use');
     });
 
     test('the exam bank is deferred, and the Exam tab waits for it', () => {
@@ -222,18 +234,30 @@ suite('gen: index.html script tags', () => {
         assert.truthy(a < b, `auth.js (idx ${a}) must precede app.js (idx ${b})`);
     });
 
-    test('ordering: rewrite-data.js loads before rewrite.js', () => {
-        const a = SCRIPT_SRCS.indexOf('js/rewrite-data.js');
-        const b = SCRIPT_SRCS.indexOf('js/rewrite.js');
-        assert.truthy(a !== -1 && b !== -1, 'rewrite scripts not found in index.html');
-        assert.truthy(a < b, `rewrite-data.js (idx ${a}) must precede rewrite.js (idx ${b})`);
+    test('the rewrite bank is deferred, and its tab waits for it', () => {
+        // rewrite-data.js (189 KB) no longer blocks the first paint; the ordering
+        // rule it used to satisfy is replaced by a stronger one — switchScreen
+        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
+        assert.equal(SCRIPT_SRCS.indexOf('js/rewrite-data.js'), -1, 'js/rewrite-data.js must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/rewrite.js') !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        const block = lazy.slice(lazy.indexOf('rewriteScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/rewrite-data.js'),
+            'js/rewrite-data.js must be listed under rewriteScreen in the loader');
+        assert.contains(ASSETS, '/js/rewrite-data.js', 'and must stay cached for offline use');
     });
 
-    test('ordering: phrases-meanings.js loads before phrases.js', () => {
-        const a = SCRIPT_SRCS.indexOf('js/phrases-meanings.js');
-        const b = SCRIPT_SRCS.indexOf('js/phrases.js');
-        assert.truthy(a !== -1 && b !== -1, 'phrases-meanings/phrases not found in index.html');
-        assert.truthy(a < b, `phrases-meanings.js (idx ${a}) must precede phrases.js (idx ${b})`);
+    test('the phrase meanings bank is deferred, and its tab waits for it', () => {
+        // phrases-meanings.js (102 KB) no longer blocks the first paint; the ordering
+        // rule it used to satisfy is replaced by a stronger one — switchScreen
+        // renders the tab only once the bank has landed (tests/lazy-data.test.js).
+        assert.equal(SCRIPT_SRCS.indexOf('js/phrases-meanings.js'), -1, 'js/phrases-meanings.js must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/phrases.js') !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        const block = lazy.slice(lazy.indexOf('phrasesScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/phrases-meanings.js'),
+            'js/phrases-meanings.js must be listed under phrasesScreen in the loader');
+        assert.contains(ASSETS, '/js/phrases-meanings.js', 'and must stay cached for offline use');
     });
 
     test('the grammar bank is deferred, and the Grammar tab waits for it', () => {

@@ -185,10 +185,14 @@ suite('luy thua: safety and wiring', () => {
     test('the pack script is registered: index.html tag order and sw.js cache', () => {
         const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
         const html = read('index.html');
-        assert.truthy(html.includes('<script src="js/math-luythua.js"></script>'),
-            'index.html does not load js/math-luythua.js');
-        assert.truthy(html.indexOf('js/math-luythua.js') < html.indexOf('js/math.js"'),
-            'data script must load before js/math.js');
+        // The maths banks are deferred (js/lazy-data.js): they load when the
+        // Toán tab opens instead of on every app start. See tests/lazy-data.test.js.
+        assert.falsy(html.includes('<script src="js/math-luythua.js"></script>'),
+            'the pack must not be an eager script any more');
+        const lazy = read('js/lazy-data.js');
+        const block = lazy.slice(lazy.indexOf('mathHubScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/math-luythua.js'),
+            'the pack must be listed under mathHubScreen in the loader');
         assert.truthy(read('sw.js').includes("'/js/math-luythua.js'"),
             'sw.js ASSETS is missing /js/math-luythua.js');
     });

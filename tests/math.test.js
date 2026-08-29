@@ -364,11 +364,16 @@ suite('math: the practice flow', () => {
 suite('math: wiring', () => {
     test('index.html loads the data before math.js', () => {
         const html = read('index.html');
-        for (const f of ['js/math-data.js', 'js/math-lessons.js', 'js/math.js']) {
-            assert.truthy(html.includes(f), `index.html does not load ${f}`);
+        // math.js ships eagerly; its banks are deferred until the Toán tab is
+        // opened (js/lazy-data.js), which is what keeps app start light.
+        assert.truthy(html.includes('js/math.js'), 'index.html does not load js/math.js');
+        const lazy = read('js/lazy-data.js');
+        const block = lazy.slice(lazy.indexOf('mathHubScreen:'));
+        const list = block.slice(0, block.indexOf(']'));
+        for (const f of ['js/math-data.js', 'js/math-lessons.js']) {
+            assert.falsy(html.includes('<script src="' + f + '"></script>'), f + ' must not be eager');
+            assert.truthy(list.includes(f), f + ' must be deferred under mathHubScreen');
         }
-        assert.truthy(html.indexOf('js/math-data.js') < html.indexOf('js/math.js'),
-            'math.js must load after its data');
         assert.truthy(html.includes('id="mathHubScreen"'), 'the Math screen is missing');
     });
 

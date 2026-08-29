@@ -23,7 +23,18 @@ var LazyData = (() => {
   const SCREEN_FILES = Object.freeze({
     grammarScreen: ['js/grammar-units.js', 'js/grammar-lessons.js'],
     examScreen: ['js/exam-data.js', 'js/exam-lessons.js'],
+    // Collocation is a sub-tab of Phrases, so it shares that screen's banks.
+    phrasesScreen: ['js/phrases-data.js', 'js/phrases-meanings.js',
+                    'js/collocation-data.js', 'js/collocation-followups.js'],
+    wordformScreen: ['js/wordform-data.js', 'js/wordform-followups.js', 'js/wordform-lessons.js'],
+    rewriteScreen: ['js/rewrite-data.js', 'js/rewrite-lessons.js'],
+    mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js',
+                    'js/math-luythua.js', 'js/math-source-exams.js'],
   });
+
+  // The offline dictionary belongs to no single screen — a child can tap any
+  // word anywhere — so it is fetched the first time one is actually tapped.
+  const DICTIONARY = ['js/dictionary-data.js'];
 
   const loaded = Object.create(null);   // file → true once it has run
   const inFlight = Object.create(null); // file → Promise
@@ -54,19 +65,35 @@ var LazyData = (() => {
   function ensure(screenId) {
     const files = filesFor(screenId);
     if (!files.length) return Promise.resolve();
+    rememberTab(screenId);
     return Promise.all(files.map(loadFile));
   }
 
-  // Fetch every deferred bank once the app is interactive. Kept off the
-  // critical path but NOT postponed indefinitely: a child who opens Grammar
-  // ten seconds in should find it already there.
+  // Warm ONLY the tab this child came back to.
+  //
+  // Warming every bank in the background still made an old iPad parse and hold
+  // ~7.6 MB it might never need — the weight simply moved a second later. The
+  // service worker precaches all of these files at install, so OFFLINE never
+  // depended on the warm-up; only speed did. So remember the last tab opened
+  // and have that one ready, and let the rest be read from the cache the
+  // moment they are actually asked for.
+  const LAST_TAB_KEY = 'flashlingo-last-tab';
+  function rememberTab(screenId) {
+    if (!SCREEN_FILES[screenId]) return;
+    try { localStorage.setItem(LAST_TAB_KEY, screenId); } catch (e) {}
+  }
+  function lastTab() {
+    try { const v = localStorage.getItem(LAST_TAB_KEY); return SCREEN_FILES[v] ? v : null; }
+    catch (e) { return null; }
+  }
   let warmed = false;
   function warmAll() {
     if (warmed) return Promise.resolve();
     warmed = true;
-    const all = [];
-    for (const screenId of Object.keys(SCREEN_FILES)) all.push.apply(all, SCREEN_FILES[screenId]);
-    return all.reduce((chain, file) => chain.then(() => loadFile(file)), Promise.resolve());
+    const screenId = lastTab();
+    if (!screenId) return Promise.resolve();
+    return SCREEN_FILES[screenId].reduce(
+      (chain, file) => chain.then(() => loadFile(file)), Promise.resolve());
   }
   function warmSoon() {
     const go = () => warmAll();
@@ -74,6 +101,10 @@ var LazyData = (() => {
     else setTimeout(go, 800);
   }
 
-  return { SCREEN_FILES, ensure, ready, warmAll, warmSoon, filesFor };
+  function ensureDictionary() { return Promise.all(DICTIONARY.map(loadFile)); }
+  function dictionaryReady() { return DICTIONARY.every(f => loaded[f]); }
+
+  return { SCREEN_FILES, DICTIONARY, ensure, ready, warmAll, warmSoon, filesFor,
+    ensureDictionary, dictionaryReady };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = LazyData;

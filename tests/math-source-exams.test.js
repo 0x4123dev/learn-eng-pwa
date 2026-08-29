@@ -74,7 +74,7 @@ suite('math source exams: five supplied papers', () => {
 suite('math source exams: original figures and app wiring', () => {
     test('every crop stays inside a real cached source-page image', () => {
         const figs = MATH_SOURCE_EXAMS.flatMap(e => e.questions).filter(q => q.fig);
-        assert.equal(figs.length, 20);
+        assert.equal(figs.length, 22);
         figs.forEach(q => {
             const fig = q.fig;
             assert.equal(fig.t, 'source-crop', `${q.id}: wrong figure type`);
@@ -86,7 +86,28 @@ suite('math source exams: original figures and app wiring', () => {
             const html = mathQuestionFigureHTML(fig);
             assert.truthy(html.includes('math-source-crop'), `${q.id}: crop did not render`);
             assert.truthy(html.includes(fig.alt), `${q.id}: no accessible description`);
+            assert.truthy(html.includes(`width="${W}"`) && html.includes(`height="${H}"`),
+                `${q.id}: source image has no intrinsic dimensions`);
+            assert.truthy(html.includes('loading="eager"'), `${q.id}: Safari-unsafe lazy source image`);
+            assert.falsy(html.includes('loading="lazy"'), `${q.id}: source image can render as a blank crop`);
         });
+    });
+
+    test('every source question that depends on a supplied figure or table keeps it', () => {
+        const requiredFigureIds = [
+            's1-12', 's1-15', 's1-16',
+            's2-5', 's2-7', 's2-8', 's2-11', 's2-12',
+            's3-10', 's3-12', 's3-17',
+            's4-6', 's4-8', 's4-16', 's4-17', 's4-18',
+            's5-6', 's5-7', 's5-8', 's5-11', 's5-13', 's5-14'
+        ];
+        const byId = new Map(MATH_SOURCE_EXAMS.flatMap(e => e.questions).map(q => [q.id, q]));
+        requiredFigureIds.forEach(id => {
+            assert.truthy(byId.get(id), `${id}: source question missing`);
+            assert.truthy(byId.get(id).fig, `${id}: required source figure/table missing`);
+        });
+        const actual = [...byId.values()].filter(q => q.fig).map(q => q.id).sort();
+        assert.deepEqual(actual, requiredFigureIds.slice().sort(), 'figure inventory changed without audit');
     });
 
     test('the five source papers appear after the ten practice papers', () => {
@@ -110,8 +131,14 @@ suite('math source exams: original figures and app wiring', () => {
     test('the bank and every source image load offline before math.js', () => {
         const index = read('index.html');
         const sw = read('sw.js');
-        assert.truthy(index.includes('js/math-source-exams.js'));
-        assert.truthy(index.indexOf('js/math-source-exams.js') < index.indexOf('js/math.js'));
+        // Deferred with the rest of the maths banks (js/lazy-data.js), still
+        // cached for offline use.
+        assert.falsy(index.includes('<script src="js/math-source-exams.js"></script>'),
+            'the source-exam bank must not block the first paint');
+        const lazy = read('js/lazy-data.js');
+        const block = lazy.slice(lazy.indexOf('mathHubScreen:'));
+        assert.truthy(block.slice(0, block.indexOf(']')).includes('js/math-source-exams.js'),
+            'it must be listed under mathHubScreen in the loader');
         assert.truthy(sw.includes("'/js/math-source-exams.js'"));
         const images = new Set(MATH_SOURCE_EXAMS.flatMap(e => e.questions)
             .filter(q => q.fig).map(q => q.fig.src));

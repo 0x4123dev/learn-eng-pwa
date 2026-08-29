@@ -17,18 +17,21 @@ const eagerScripts = (html.match(/src="js\/[^"]+"/g) || []).map(s => s.slice(5, 
 
 suite('startup weight: the biggest banks are not in the first paint', () => {
   test('the two giant question banks are no longer eager scripts', () => {
-    for (const f of ['js/grammar-units.js', 'js/exam-data.js']) {
+    for (const f of ['js/grammar-units.js', 'js/exam-data.js', 'js/collocation-data.js',
+      'js/phrases-data.js', 'js/wordform-data.js', 'js/wordform-followups.js',
+      'js/collocation-followups.js', 'js/math-exams.js', 'js/math-data.js',
+      'js/rewrite-data.js', 'js/dictionary-data.js']) {
       assert.falsy(eagerScripts.includes(f),
         f + ' (' + sizeKB(f) + ' KB) must not block the first paint');
     }
   });
 
-  test('startup JavaScript stays under 5 MB', () => {
+  test('startup JavaScript stays under 2.5 MB', () => {
     const total = eagerScripts.reduce((n, f) => {
       try { return n + fs.statSync(path.join(root, f)).size; } catch (e) { return n; }
     }, 0);
     const mb = total / 1048576;
-    assert.truthy(mb < 5, 'eager JS is ' + mb.toFixed(1) + ' MB across ' + eagerScripts.length + ' files');
+    assert.truthy(mb < 2.5, 'eager JS is ' + mb.toFixed(1) + ' MB across ' + eagerScripts.length + ' files');
   });
 
   test('every deferred bank is still cached for offline use', () => {
@@ -55,13 +58,15 @@ suite('lazy data loader: loads once, on demand, and survives failure', () => {
       createElement: () => ({ set src(v) { this._src = v; }, get src() { return this._src; }, async: true }),
       querySelector: () => null,
     };
+    const store = {};
     const ctx = { document: doc, console, Promise, Object, Array, JSON, String, Number,
-      setTimeout: fn => fn(), requestIdleCallback: null };
+      setTimeout: fn => fn(), requestIdleCallback: null,
+      localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k,v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
     ctx.window = ctx; ctx.global = ctx; ctx.globalThis = ctx;
     vm.createContext(ctx);
     vm.runInContext(read('js/lazy-data.js') + '\n;globalThis.LazyData = LazyData;', ctx,
       { filename: 'js/lazy-data.js' });
-    return { ctx, injected, finish: (ok) => injected.forEach(n => ok === false ? n.onerror && n.onerror() : n.onload && n.onload()) };
+    return { ctx, injected, store, finish: (ok) => injected.forEach(n => ok === false ? n.onerror && n.onerror() : n.onload && n.onload()) };
   }
 
   test('a screen with no lazy data is ready immediately', () => {
@@ -165,3 +170,118 @@ suite('startup weight: a half-finished lesson still comes back', () => {
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
 }
+
+suite('startup weight: phase two — every tab bank is deferred', () => {
+  const lazy = read('js/lazy-data.js');
+  const SCREENS = {
+    phrasesScreen: ['js/phrases-data.js', 'js/phrases-meanings.js',
+                    'js/collocation-data.js', 'js/collocation-followups.js'],
+    wordformScreen: ['js/wordform-data.js', 'js/wordform-followups.js', 'js/wordform-lessons.js'],
+    rewriteScreen: ['js/rewrite-data.js', 'js/rewrite-lessons.js'],
+    mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js'],
+  };
+  for (const [screen, files] of Object.entries(SCREENS)) {
+    test(screen + ' owns its banks in the loader', () => {
+      const block = lazy.slice(lazy.indexOf(screen + ':'));
+      const list = block.slice(0, block.indexOf(']'));
+      for (const f of files) {
+        assert.truthy(list.includes(f), screen + ' must defer ' + f);
+        assert.falsy(eagerScripts.includes(f), f + ' must not also be an eager script');
+      }
+    });
+  }
+
+  test('no tab is entered by an inline render that skips the loader', () => {
+    // index.html used to call renderPhrasesHome() / renderWordformHome() /
+    // renderRewriteHome() inline right after switchScreen — which would paint
+    // an empty bank before the data arrived.
+    for (const fn of ['renderPhrasesHome', 'renderWordformHome', 'renderRewriteHome', 'renderGrammarHome']) {
+      assert.falsy(new RegExp('switchScreen\\([^)]*\\);\\s*' + fn + '\\(\\)').test(html),
+        fn + '() inline bypasses the lazy loader');
+    }
+  });
+
+  test('switchScreen can paint every deferred tab once its bank lands', () => {
+    const app = read('js/app.js');
+    for (const r of ['renderPhrasesHome', 'renderWordformHome', 'renderRewriteHome',
+                     'renderMathHome', 'renderGrammarHome', 'renderExamHome']) {
+      assert.truthy(app.includes(r), 'switchScreen must be able to render ' + r);
+    }
+  });
+
+  test('a half-finished practice in ANY deferred tab waits for its bank', () => {
+    const app = read('js/app.js');
+    const map = app.slice(app.indexOf('const needsBank'), app.indexOf('const needsBank') + 400);
+    for (const kind of ['grammar', 'exam', 'phrases', 'collocation', 'wordform', 'rewrite', 'math']) {
+      assert.truthy(map.includes(kind + ':'), 'checkpoint kind "' + kind + '" must name its screen');
+    }
+  });
+
+  test('the offline dictionary loads on the first tapped word, not at startup', () => {
+    assert.falsy(eagerScripts.includes('js/dictionary-data.js'),
+      'the 352 KB dictionary must not block the first paint');
+    const tw = read('js/tapwords.js');
+    assert.truthy(tw.includes('LazyData'), 'tapWord must fetch the dictionary on demand');
+    assert.truthy(/dictionary-data\.js/.test(lazy) || /dictionary-data\.js/.test(tw),
+      'the dictionary file must be named somewhere in the lazy path');
+  });
+});
+
+suite('startup weight: the device only carries the tabs it actually uses', () => {
+  // Warming EVERY bank in the background still made an old iPad parse and hold
+  // ~7.6 MB it might never need. The service worker already precaches all of
+  // them, so offline never depended on that warm-up — only speed did. Warm the
+  // one tab the child came back to; fetch the rest from the cache on demand.
+  function mountLoader(lastTab) {
+    const injected = [];
+    const store = lastTab ? { 'flashlingo-last-tab': lastTab } : {};
+    const doc = {
+      head: { appendChild(n) { injected.push(n); setTimeout(() => n.onload && n.onload(), 0); } },
+      createElement: () => ({ src: '', async: true }),
+    };
+    const ctx = { document: doc, console, Promise, Object, Array, JSON, String, Number,
+      setTimeout: fn => fn(), requestIdleCallback: null,
+      localStorage: { getItem: k => (k in store ? store[k] : null),
+        setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
+    ctx.window = ctx; ctx.global = ctx; ctx.globalThis = ctx;
+    vm.createContext(ctx);
+    vm.runInContext(read('js/lazy-data.js') + '\n;globalThis.LazyData = LazyData;', ctx,
+      { filename: 'js/lazy-data.js' });
+    return { ctx, injected, store };
+  }
+
+  test('warm-up loads ONLY the tab the child used last', () => {
+    const m = mountLoader('mathHubScreen');
+    return m.ctx.LazyData.warmAll().then(() => {
+      const files = m.injected.map(n => n.src);
+      assert.truthy(files.length > 0, 'the remembered tab is warmed');
+      assert.truthy(files.every(f => f.indexOf('math') !== -1),
+        'only the maths banks may be warmed, got: ' + files.join(', '));
+      assert.falsy(files.some(f => f.indexOf('grammar-units') !== -1),
+        'a tab the child never opens must not be parsed at all');
+    });
+  });
+
+  test('a child with no history warms nothing — every bank waits to be asked', () => {
+    const m = mountLoader(null);
+    return m.ctx.LazyData.warmAll().then(() => {
+      assert.equal(m.injected.length, 0, 'nothing is loaded speculatively');
+    });
+  });
+
+  test('opening a tab remembers it for next time', () => {
+    const m = mountLoader(null);
+    return m.ctx.LazyData.ensure('rewriteScreen').then(() => {
+      assert.equal(m.store['flashlingo-last-tab'], 'rewriteScreen');
+    });
+  });
+
+  test('offline never depended on the warm-up: the SW precaches every bank', () => {
+    const sw = read('sw.js');
+    const lazy = read('js/lazy-data.js');
+    for (const f of (lazy.match(/'js\/[a-z0-9-]+\.js'/g) || []).map(s => s.slice(1, -1))) {
+      assert.truthy(sw.includes("'/" + f + "'"), f + ' must be precached');
+    }
+    assert.truthy(sw.includes('cache.addAll(ASSETS)'), 'install must precache them all');
+  });
+});
