@@ -52,6 +52,9 @@ function mountFight(serverReplies) {
       api: (p, opts) => { posts.push({ path: p, body: (opts || {}).body }); return Promise.resolve(serverReplies(p, opts)); },
     },
     __answerConfirm: true,
+    // The bout draws its twenty sums from the pre-authored bank, a global
+    // script on the device (js/math-fight-bank.js).
+    MATH_FIGHT_BANK: require(path.join(__dirname, '..', 'js', 'math-fight-bank.js')).MATH_FIGHT_BANK,
   };
   ctx.globalThis = ctx;
   vm.createContext(ctx);

@@ -43,16 +43,62 @@ var MathFightRules = (() => {
     return Math.min(FIGHT_MAX, WARS_LEVEL_BASE + WARS_LEVEL_STEP * L - 1);
   }
 
-  // Every fight answer has at least two digits. The device draws the round to
-  // show it and the server draws the same round to mark it, so this has to be
-  // ONE function: two call sites with their own arguments drifted apart would
-  // mark a child wrong for a right answer. The generator comes from Math Wars,
-  // reached as a global on the device and injected on the server.
+  // A match draws its twenty sums from the pre-authored bank
+  // (js/math-fight-bank.js), not from a generator. Nearly half of what the
+  // generator produced at the lower levels was free — 11 − 10 = 1, 12 − 2 = 10,
+  // 2 × 5 = 10 — and a five-minute race against a friend should not hand out
+  // points. Every sum in the bank has to be calculated.
+  //
+  // The device draws the round to show it and the server draws the same round
+  // to mark it, so this is ONE function. Two call sites with their own
+  // arguments is exactly how a child gets marked wrong for a right answer.
+  // The bank is a global script on the device and is injected on the server.
   const FIGHT_MIN_ANSWER = 10;
-  function fightQuestions(seed, level, gen) {
-    const build = gen || (typeof warsQuestions === 'function' ? warsQuestions : null);
-    if (!build) return [];
-    return build(QUESTIONS, makeRng(seed), fightLevelMax(level), { minAnswer: FIGHT_MIN_ANSWER });
+  // The lowest levels hold too few sums of their own to fill a round without
+  // repeating, and a ceiling of 39 is still gentle, so they borrow upward.
+  const FIGHT_MIN_TIER = 2;
+
+  function fightPool(bank, level) {
+    const top = Math.max(int(level, 0, FIGHT_LEVELS - 1), FIGHT_MIN_TIER);
+    return bank.filter(q => q[4] <= top);
+  }
+
+  // Wrong answers a child could actually arrive at: off by one, off by ten, or
+  // the tens and units swapped. Never negative, never a repeat of the answer.
+  function fightOptions(answer, rand) {
+    const out = [answer];
+    const swapped = answer >= 10 && answer < 100
+      ? (answer % 10) * 10 + Math.floor(answer / 10) : answer + 11;
+    for (const candidate of [answer + 1, answer - 1, answer + 10, answer - 10, swapped,
+                             answer + 2, answer - 2, answer + 20]) {
+      if (out.length >= 4) break;
+      if (candidate > 0 && out.indexOf(candidate) === -1) out.push(candidate);
+    }
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      const t = out[i]; out[i] = out[j]; out[j] = t;
+    }
+    return out;
+  }
+
+  function fightQuestions(seed, level, bank) {
+    const source = bank || (typeof MATH_FIGHT_BANK !== 'undefined' ? MATH_FIGHT_BANK : null);
+    if (!source || !source.length) return [];
+    const pool = fightPool(source, level);
+    if (!pool.length) return [];
+    const rand = makeRng(seed);
+    // Draw without replacement so a round never repeats a sum.
+    const order = pool.slice();
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      const t = order[i]; order[i] = order[j]; order[j] = t;
+    }
+    return order.slice(0, QUESTIONS).map(entry => {
+      const [a, b, op, answer] = entry;
+      const options = fightOptions(answer, rand);
+      return { q: a + ' ' + op + ' ' + b, a, b, op, answer,
+        options, correct: options.indexOf(answer) };
+    });
   }
 
   // What this player's wallet actually moves by. The winner always collects
@@ -140,7 +186,7 @@ var MathFightRules = (() => {
     QUESTIONS, SECONDS, PRIZE, INVITE_TTL_MS,
     HEARTBEAT_MS, FORFEIT_MS, COOLDOWN_MS, HANDICAP_STEP, STREAK_MAX,
     WARS_TOP_LEVEL, FIGHT_MAX, FIGHT_LEVELS,
-    fightLevelMax, FIGHT_MIN_ANSWER, fightQuestions, coinChange, pairKey, makeRng,
+    fightLevelMax, FIGHT_MIN_ANSWER, FIGHT_MIN_TIER, fightQuestions, fightOptions, coinChange, pairKey, makeRng,
     baseLevel, levelsFor, nextPairState, adjudicate, cooldownUntil, hasWalkedAway,
   });
 })();

@@ -20,8 +20,10 @@ const { createWorld, loadModule } = require('./pages-harness');
 const ROOT = path.join(__dirname, '..');
 const MF = require(path.join(ROOT, 'js', 'math-fight-rules.js'));
 const wars = require(path.join(ROOT, 'js', 'mathwars.js'));
-// On the device the generator is a global script; mirror that so the shared
-// builder can be called the way the client calls it.
+// On the device the question bank is a global script; mirror that so the
+// shared builder can be called exactly the way the client calls it.
+const { MATH_FIGHT_BANK } = require(path.join(ROOT, 'js', 'math-fight-bank.js'));
+global.MATH_FIGHT_BANK = MATH_FIGHT_BANK;
 global.warsQuestions = wars.warsQuestions;
 
 const progressHandler = () => loadModule('functions/api/math-fight/progress.js');
@@ -148,6 +150,7 @@ function mountFight(reply) {
     })),
     confirm: () => true,
     navigator: { vibrate() {} },
+    MATH_FIGHT_BANK,          // the bank is a global script on the device
     setInterval: (fn, ms) => { const id = { fn, ms }; timers.add(id); return id; },
     clearInterval: (id) => timers.delete(id),
     setTimeout: (fn) => { fn(); return 0; }, clearTimeout() {},

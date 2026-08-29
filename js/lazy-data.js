@@ -29,7 +29,8 @@ var LazyData = (() => {
     wordformScreen: ['js/wordform-data.js', 'js/wordform-followups.js', 'js/wordform-lessons.js'],
     rewriteScreen: ['js/rewrite-data.js', 'js/rewrite-lessons.js'],
     mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js',
-                    'js/math-luythua.js', 'js/math-source-exams.js'],
+                    'js/math-luythua.js', 'js/math-source-exams.js',
+                    'js/math-fight-bank.js'],
   });
 
   // The offline dictionary belongs to no single screen — a child can tap any

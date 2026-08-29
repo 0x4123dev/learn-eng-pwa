@@ -1,0 +1,135 @@
+#!/usr/bin/env node
+// Builds js/math-fight-bank.js — the 1000 pre-authored sums a Đấu Toán match
+// draws from. Run: node scripts/build-math-fight-bank.js
+//
+// Why a bank at all. The match used to generate its questions, and nearly half
+// of what it produced at the lower levels was free: 11 − 10 = 1, 12 − 2 = 10,
+// 2 × 5 = 10. A five-minute race against a friend should not hand out points.
+//
+// What counts as too easy — every rule here removes questions a child answers
+// without calculating:
+//   • an answer under 10                        (11 − 10 = 1, 10 : 5 = 2)
+//   • + or − where both numbers are single digit (2 + 8 = 10)
+//   • − taking away a single digit: no borrowing (12 − 2 = 10, 184 − 4 = 180)
+//   • × or : by 2 — doubling and halving         (2 × 5 = 10, 26 : 2 = 13)
+//
+// Times tables are deliberately KEPT: 7 × 8 = 56 is the skill this game is
+// for. An earlier rule that dropped every single-digit pair took the whole
+// times table with it and left the lowest level as addition only.
+const fs = require('fs');
+const path = require('path');
+
+const MIN_ANSWER = 10;      // every answer has at least two digits
+const MAX_ANSWER = 199;     // the ceiling the fight levels already use
+const TARGET = 1000;
+
+function build() {
+  const out = [];
+  const add = (a, b, op, answer) => out.push({ a, b, op, answer });
+
+  // + : at least one number is two digits, so it is never a bonds-to-ten fact
+  for (let a = 3; a <= MAX_ANSWER; a++) {
+    for (let b = 3; a + b <= MAX_ANSWER; b++) {
+      if (a <= 9 && b <= 9) continue;
+      if (a + b < MIN_ANSWER) continue;
+      add(a, b, '+', a + b);
+    }
+  }
+  // − : the number taken away is two digits, so the child must borrow
+  for (let a = 20; a <= MAX_ANSWER; a++) {
+    for (let b = 10; b < a; b++) {
+      const ans = a - b;
+      if (ans < MIN_ANSWER) continue;
+      add(a, b, '−', ans);
+    }
+  }
+  // × : both factors 3 or more — the times table, never doubling
+  for (let a = 3; a <= MAX_ANSWER; a++) {
+    for (let b = 3; a * b <= MAX_ANSWER; b++) {
+      if (a * b < MIN_ANSWER) continue;
+      add(a, b, '×', a * b);
+    }
+  }
+  // : exact division, divisor 3 or more, and a two-digit quotient
+  for (let b = 3; b <= 20; b++) {
+    for (let q = MIN_ANSWER; b * q <= MAX_ANSWER; q++) add(b * q, b, ':', q);
+  }
+  return out;
+}
+
+// Deterministic shuffle: the bank must be reproducible from this script alone.
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function shuffled(list, r) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+// A question's tier is the lowest fight level whose ceiling can hold it, so a
+// beginner never meets a sum built for the top of the ladder.
+const FIGHT_LEVELS = 19;
+const levelMax = L => Math.min(199, 20 + 10 * L - 1);
+function tierOf(q) {
+  const top = Math.max(q.a, q.b, q.answer);
+  for (let L = 0; L < FIGHT_LEVELS; L++) if (top <= levelMax(L)) return L;
+  return FIGHT_LEVELS - 1;
+}
+
+function pick(all) {
+  const r = rng(0x4d415448);
+  const byOp = { '+': [], '−': [], '×': [], ':': [] };
+  for (const q of all) byOp[q.op].push(q);
+  // Spread each operation across the tiers rather than taking whatever the
+  // enumeration happened to list first, or every easy tier would be empty.
+  const chosen = [];
+  const ops = Object.keys(byOp);
+  const want = Math.floor(TARGET / ops.length);
+  for (const op of ops) {
+    const tiers = {};
+    for (const q of byOp[op]) (tiers[tierOf(q)] = tiers[tierOf(q)] || []).push(q);
+    const keys = Object.keys(tiers).map(Number).sort((x, y) => x - y);
+    const pool = keys.map(t => shuffled(tiers[t], r));
+    let i = 0;
+    while (chosen.filter(q => q.op === op).length < want) {
+      let took = false;
+      for (const bucket of pool) if (bucket.length) { chosen.push(bucket.pop()); took = true;
+        if (chosen.filter(q => q.op === op).length >= want) break; }
+      if (!took) break;                       // this operation is exhausted
+      if (i++ > TARGET * 4) break;
+    }
+  }
+  // Top up to exactly TARGET from whatever is left, keeping the tier spread.
+  const taken = new Set(chosen.map(q => q.a + q.op + q.b));
+  const rest = shuffled(all.filter(q => !taken.has(q.a + q.op + q.b)), r);
+  while (chosen.length < TARGET && rest.length) chosen.push(rest.pop());
+  return chosen.sort((x, y) => tierOf(x) - tierOf(y) || x.op.localeCompare(y.op) || x.a - y.a || x.b - y.b);
+}
+
+const all = build();
+const bank = pick(all);
+const counts = bank.reduce((m, q) => (m[q.op] = (m[q.op] || 0) + 1, m), {});
+
+const lines = bank.map(q => `  [${q.a},${q.b},'${q.op}',${q.answer},${tierOf(q)}],`).join('\n');
+const file = `// math-fight-bank.js — the ${bank.length} pre-authored sums a Đấu Toán match draws
+// from. GENERATED by scripts/build-math-fight-bank.js — do not hand-edit; run
+// the script instead, and tests/math-fight-bank.test.js will check the result.
+//
+// Every entry is [a, b, op, answer, tier]. \`tier\` is the lowest fight level
+// whose ceiling holds the sum, so a beginner never meets a top-of-ladder one.
+//
+// Nothing here can be answered without calculating: no answer under 10, no
+// single-digit + or −, no taking away a single digit, no doubling or halving.
+// Times tables are kept on purpose — 7 × 8 is the skill the game is for.
+var MATH_FIGHT_BANK = [
+${lines}
+];
+if (typeof module !== 'undefined' && module.exports) module.exports = { MATH_FIGHT_BANK };
+`;
+fs.writeFileSync(path.join(__dirname, '..', 'js', 'math-fight-bank.js'), file);
+console.log(`built ${bank.length} questions →`, Object.entries(counts).map(([o, n]) => `${o}:${n}`).join('  '));
+const tiers = bank.reduce((m, q) => (m[tierOf(q)] = (m[tierOf(q)] || 0) + 1, m), {});
+console.log('tiers:', Object.keys(tiers).sort((a, b) => a - b).map(t => `${t}:${tiers[t]}`).join(' '));

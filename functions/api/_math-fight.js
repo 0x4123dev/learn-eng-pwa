@@ -1,5 +1,5 @@
 import MathFightRules from '../../js/math-fight-rules.js';
-import wars from '../../js/mathwars.js';
+import { MATH_FIGHT_BANK } from '../../js/math-fight-bank.js';
 
 // Same shape as _night-raid.js: the shared browser rules re-exported so every
 // endpoint reads one set of constants.
@@ -11,7 +11,7 @@ export const MF = MathFightRules;
 // heartbeat, the final submit and the reaper — one scoring path, no way in for
 // a forged score.
 export function scoreAnswers(seed, level, answers) {
-  const qs = MF.fightQuestions(seed, level, wars.warsQuestions);
+  const qs = MF.fightQuestions(seed, level, MATH_FIGHT_BANK);
   const list = Array.isArray(answers) ? answers : [];
   let correct = 0, answered = 0;
   for (let i = 0; i < qs.length; i++) {

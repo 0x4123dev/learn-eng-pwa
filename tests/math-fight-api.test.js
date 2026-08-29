@@ -41,7 +41,7 @@ suite('math fight: server helpers', () => {
     // and mark a child wrong for a right answer. Behavioural coverage:
     // tests/math-fight-score-integrity.test.js.
     assert.truthy(src().includes('MF.fightQuestions('));
-    assert.truthy(src().includes('wars.warsQuestions'), 'the generator is injected on the server');
+    assert.truthy(src().includes('MATH_FIGHT_BANK'), 'the pre-authored bank is injected on the server');
     assert.falsy(/body\.correct/.test(src()), 'the client must never report a score');
   });
   test('the pair row is read and written through the sorted key', () => {
