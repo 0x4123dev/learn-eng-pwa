@@ -2408,6 +2408,25 @@
         .unit-q-emoji.unit-q-number { font-size: 54px; font-weight: 800; color: #1cb0f6; }
         .unit-q-vi { font-size: 15px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px; }
         .unit-gap { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin: 6px 0 14px; }
+        /* Post glossary terms are maths/science CONCEPTS the child meets here
+           first, so each card carries a sentence that shows what the word
+           means. Blank while answering, filled in with its Vietnamese
+           translation once the answer is in. */
+        .unit-q-ex {
+            font-size: 15px; line-height: 1.55; color: var(--text-primary);
+            margin: 2px 10px 10px; padding: 10px 12px;
+            background: rgba(124,58,237,0.06); border-radius: 12px;
+        }
+        .unit-ex-blank {
+            display: inline-block; min-width: 74px;
+            border-bottom: 2px solid #7c3aed; color: transparent;
+            vertical-align: bottom; letter-spacing: 2px;
+        }
+        .unit-ex-word { color: #2e7d0f; font-weight: 800; }
+        .unit-q-exvi {
+            font-size: 14px; font-weight: 600; color: var(--text-secondary);
+            margin: -4px 10px 12px; padding: 0 12px;
+        }
         .unit-gap-ch {
             min-width: 24px; height: 34px; line-height: 34px; padding: 0 2px;
             border-radius: 8px; background: rgba(0,0,0,0.05);

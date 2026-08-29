@@ -566,6 +566,44 @@ function startUnitPractice(unit) {
 function abandonUnitPractice() { _unitQuiz = null; }
 function isUnitPracticeActive() { return !!_unitQuiz; }
 
+// The Post set is a maths/science glossary, and the child meets these CONCEPTS
+// in the app before school teaches them — a two-word gloss ("hiệu", "thể")
+// cannot carry a concept on its own. So each term comes with a sentence that
+// DEFINES it by showing it, and the Vietnamese translation of that sentence is
+// what actually delivers the idea.
+//
+// While answering, the term is a blank: the sentence is context and cue at
+// once, so the child has something to think from instead of a bare gloss. The
+// translation is withheld until the answer is in, or the card would give
+// itself away.
+//
+// Brackets in a lemma mean two things — `greater (than)` is an attached part
+// ("9 is greater than 4"), `DIY (Do It Yourself)` is an expansion — so both the
+// literal and the bracket-stripped spelling are tried.
+function _unitExampleParts(w) {
+  if (!w || !w.ex) return null;
+  const literal = String(w.en).trim();
+  const stripped = literal.replace(/[()]/g, '').replace(/\s+/g, ' ').trim();
+  for (const target of (literal === stripped ? [literal] : [literal, stripped])) {
+    const re = new RegExp('(^|[^A-Za-z-])(' + target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-z-])', 'i');
+    const m = w.ex.match(re);
+    if (!m) continue;
+    const at = m.index + m[1].length;
+    return { before: w.ex.slice(0, at), term: w.ex.substr(at, m[2].length), after: w.ex.slice(at + m[2].length) };
+  }
+  return null;
+}
+
+function _unitExampleHTML(w, revealed) {
+  const parts = _unitExampleParts(w);
+  if (!parts) return '';
+  const filled = revealed
+    ? `<b class="unit-ex-word">${unitEsc(parts.term)}</b>`
+    : '<span class="unit-ex-blank">______</span>';
+  const vi = revealed && w.exVi ? `<div class="unit-q-exvi">${unitEsc(w.exVi)}</div>` : '';
+  return `<div class="unit-q-ex">${unitEsc(parts.before)}${filled}${unitEsc(parts.after)}</div>${vi}`;
+}
+
 function _unitGapHTML(gap, revealed) {
   return '<div class="unit-gap">' + gap.display.map(d => {
     if (d.ch === ' ') return '<span class="unit-gap-space"></span>';
@@ -625,6 +663,7 @@ function renderUnitQuestion() {
       <div class="grammar-question-card unit-q-card">
         <div class="unit-q-emoji ${isNumberCard ? 'unit-q-number' : ''}">${q.w.emoji}</div>
         <div class="unit-q-vi">${unitEsc(q.w.vi)}</div>
+        ${_unitExampleHTML(q.w, answered)}
         ${_unitGapHTML(q.gap, answered)}
         ${body}
       </div>
@@ -755,6 +794,7 @@ if (typeof module !== 'undefined' && module.exports) {
     _unitKey, _unitParse, _unitKeyArg,
     buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
+    _unitExampleParts, _unitExampleHTML,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
