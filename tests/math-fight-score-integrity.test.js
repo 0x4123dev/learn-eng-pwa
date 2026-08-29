@@ -140,6 +140,7 @@ const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 function mountFight(reply) {
   const doc = createDocument('<div id="mfRoot"></div><div id="bottomNav"></div>');
   const timers = new Set();
+  const posts = [];
   const ctx = {
     console, Math, JSON, Date, String, Number, Array, Object, Boolean, Promise, RegExp, Set, Map, isNaN,
     document: doc, window: {}, currentUser: 'z',
@@ -156,14 +157,18 @@ function mountFight(reply) {
     clearInterval: (id) => timers.delete(id),
     setTimeout: (fn) => { fn(); return 0; }, clearTimeout() {},
     EngAuth: { tokenFor: () => 'tok', getAccount: () => ({ id: 11 }),
-      api: (p, opts) => Promise.resolve(reply(p, opts)) },
+      api: (p, opts) => { posts.push({ path: 'math-fight/' + p.replace(/^math-fight\/?/, ''), body: (opts || {}).body });
+        return Promise.resolve(reply(p, opts)); } },
   };
   ctx.globalThis = ctx;
   vm.createContext(ctx);
   vm.runInContext(read('js/math-fight-rules.js'), ctx);
   vm.runInContext(read('js/math-fight.js'), ctx);
+  // Buttons in this app carry onclick="mfAnswer(0,3)" attributes; run them in
+  // the same sandbox so a tap in a test does what a tap does on the device.
+  doc.__runInline = code => vm.runInContext(code, ctx);
   const navDisplay = () => doc.getElementById('bottomNav').style.display;
-  return { ctx, doc, navDisplay };
+  return { ctx, doc, navDisplay, posts };
 }
 
 const ACTIVE_FIGHT = {
@@ -359,5 +364,144 @@ suite('math fight: two children can play a match end to end', () => {
     const done = world.db.prepare('SELECT * FROM math_fights WHERE id=?').get(fightId);
     const server = loadModule('functions/api/_math-fight.js');
     assert.equal(server.coinDelta(done, pal.uid, 0), 0, 'an empty wallet is never pushed below zero');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The running scoreboard. The strip showed st.fight.myCorrect — the SERVER's
+// count, which only arrives on the five-second pulse. A child who answered the
+// first question correctly watched their own score sit at 0 for five seconds
+// and reasonably concluded the game was broken.
+//
+// The device can count its own marks exactly: it holds the same twenty sums
+// the server marks, so comparing the chosen value with q.answer is the same
+// arithmetic. The opponent's number still comes from the server, because only
+// the server knows it.
+suite('math fight: my own score updates the moment I answer', () => {
+  function bout(reply) {
+    const h = mountFight(reply || (() => listReply(ACTIVE_FIGHT)));
+    return h.ctx.MathFight.refresh().then(() => h);
+  }
+  const mine = h => h.doc.getElementById('mfMine').textContent;
+  const st = h => h.ctx.MathFight;
+
+  test('answering the first question correctly shows 1 at once', async () => {
+    const h = await bout();
+    const q = h.ctx.MathFight.__questions()[0];
+    assert.equal(mine(h), '0', 'the round starts at zero');
+    h.ctx.MathFight.answer(q.correct);
+    assert.equal(mine(h), '1', 'the child must see their mark immediately, not in five seconds');
+  });
+
+  test('a wrong answer does not raise the score', async () => {
+    const h = await bout();
+    const q = h.ctx.MathFight.__questions()[0];
+    h.ctx.MathFight.answer((q.correct + 1) % 4);
+    assert.equal(mine(h), '0', 'only correct answers count');
+  });
+
+  test('the count keeps up across several questions', async () => {
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    h.ctx.MathFight.answer(qs[0].correct);                 // right
+    h.ctx.MathFight.answer((qs[1].correct + 1) % 4);       // wrong
+    h.ctx.MathFight.answer(qs[2].correct);                 // right
+    assert.equal(mine(h), '2', 'two right out of three');
+  });
+
+  test('a stale pulse cannot pull my own score backwards', async () => {
+    // The server's number arrives seconds late. It must never overwrite a
+    // count the child has already earned on screen.
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    h.ctx.MathFight.answer(qs[0].correct);
+    h.ctx.MathFight.answer(qs[1].correct);
+    assert.equal(mine(h), '2');
+    await h.ctx.MathFight.__beat();      // the server still believes it is 0
+    assert.equal(mine(h), '2', 'my own marks are mine to count');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The whole answering journey, tap by tap: what is on the card, what a tap
+// records, how the round advances, and what happens on the last question.
+suite('math fight: answering, question by question', () => {
+  async function bout() {
+    const h = mountFight(p => p === 'submit'
+      ? { ok: true, data: { fight: ACTIVE_FIGHT, coins: 0 } }
+      : listReply(ACTIVE_FIGHT));
+    await h.ctx.MathFight.refresh();
+    return h;
+  }
+  const text = h => h.doc.getElementById('mfRoot').textContent;
+
+  test('the card shows the sum, four choices and the position in the round', async () => {
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    assert.equal(qs.length, 20, 'a full round');
+    const body = text(h);
+    assert.truthy(body.includes(qs[0].q), 'the sum itself must be on screen: ' + qs[0].q);
+    assert.truthy(body.includes('Câu 1 / 20'), 'the child can see how far along they are');
+    const options = h.doc.querySelectorAll('.mf-option');
+    assert.equal(options.length, 4, 'four choices');
+    const shown = [...options].map(o => Number(o.textContent));
+    assert.deepEqual(shown.slice().sort((a, b) => a - b), qs[0].options.slice().sort((a, b) => a - b),
+      'the buttons show the four options the round was built with');
+    assert.truthy(shown.includes(qs[0].answer), 'one of them must be right');
+  });
+
+  test('a tap records the VALUE chosen and moves to the next question', async () => {
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    h.ctx.MathFight.answer(0);
+    const body = text(h);
+    assert.truthy(body.includes('Câu 2 / 20'), 'the round advances');
+    assert.truthy(body.includes(qs[1].q), 'and shows the next sum');
+    assert.falsy(body.includes('Câu 1 / 20'), 'the old question is gone');
+  });
+
+  test('the answer sent to the server is the number, never the button index', async () => {
+    // The server marks by value. Sending an index would mark every answer
+    // wrong for a child who chose the fourth button.
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    const chosen = qs[0].options[3];
+    h.ctx.MathFight.answer(3);
+    await h.ctx.MathFight.__beat();
+    const sent = h.posts.filter(p => p.path === 'math-fight/progress').pop();
+    assert.truthy(sent, 'the pulse carries the answers');
+    assert.equal(sent.body.answers[0], chosen, 'the value chosen, not the index 3');
+  });
+
+  test('tapping twice on one question cannot answer it twice', async () => {
+    const h = await bout();
+    // Tap through the DOM, the way a finger does: the second tap lands on the
+    // button from question 1, which is still alive in the detached card.
+    const stale = h.doc.querySelectorAll('.mf-option')[0];
+    stale.dispatch('click', {});
+    stale.dispatch('click', {});
+    assert.truthy(text(h).includes('Câu 2 / 20'),
+      'a double tap must not skip a question the child never saw');
+  });
+
+  test('the last answer ends the round and submits', async () => {
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    for (const q of qs) h.ctx.MathFight.answer(q.correct);
+    await new Promise(r => setTimeout(r, 0));
+    const submitted = h.posts.filter(p => p.path === 'math-fight/submit');
+    assert.truthy(submitted.length >= 1, 'finishing the twentieth question submits the round');
+    assert.equal(submitted[0].body.answers.filter(v => v !== null).length, 20,
+      'all twenty answers go up');
+  });
+
+  test('every answer the child gave is carried, in order', async () => {
+    const h = await bout();
+    const qs = h.ctx.MathFight.__questions();
+    const given = [];
+    for (let i = 0; i < 5; i++) { const pick = (qs[i].correct + i) % 4; given.push(qs[i].options[pick]); h.ctx.MathFight.answer(pick); }
+    await h.ctx.MathFight.__beat();
+    const sent = h.posts.filter(p => p.path === 'math-fight/progress').pop();
+    assert.deepEqual(sent.body.answers.slice(0, 5), given, 'order and values must survive');
   });
 });

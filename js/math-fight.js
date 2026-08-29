@@ -242,7 +242,7 @@ var MathFight = (() => {
     const done = st.answers.filter(v => v !== null).length;
     r.innerHTML = `<div class="mf-bout">
       <div class="mf-strip">
-        <span class="mf-score me"><small>CON</small><b id="mfMine">${st.fight.myCorrect || 0}</b>✓</span>
+        <span class="mf-score me"><small>CON</small><b id="mfMine">${myCorrect()}</b>✓</span>
         <span class="mf-clock" id="mfClock">${shortClock(left(st.fight.deadlineAt))}</span>
         <span class="mf-score foe"><small>BẠN ẤY</small><b id="mfFoe">${st.fight.foeCorrect || 0}</b>✓</span>
       </div>
@@ -250,14 +250,34 @@ var MathFight = (() => {
       <div class="mf-count">Câu ${st.idx + 1} / ${st.qs.length}</div>
       <div class="mf-question">${esc(q.q)} = ?</div>
       <div class="mf-options">${q.options.map((o, i) =>
-        `<button class="mf-option" type="button" onclick="mfAnswer(${i})">${o}</button>`).join('')}</div>
+        `<button class="mf-option" type="button" onclick="mfAnswer(${i},${st.idx})">${o}</button>`).join('')}</div>
       <button class="mf-quit" type="button" onclick="mfQuit()">Bỏ cuộc</button>
     </div>`;
   }
 
-  function answer(i) {
+  // How many of MY answers are right, counted here rather than waited for.
+  // The strip used to show st.fight.myCorrect — the server's number, which
+  // only lands on the five-second pulse — so a child who answered the first
+  // question correctly watched their own score sit at 0 and thought the game
+  // was broken. The device holds the same twenty sums the server marks, so
+  // this is the same arithmetic, available instantly.
+  function myCorrect() {
+    let n = 0;
+    for (let i = 0; i < st.qs.length; i++) {
+      const given = st.answers[i];
+      if (given !== null && given !== undefined && given === st.qs[i].answer) n++;
+    }
+    return n;
+  }
+
+  // `forIdx` is the question the tapped button was DRAWN for. A fast double
+  // tap lands the second one on the old button, which is still alive in the
+  // detached card — without this it answered the NEXT question, one the child
+  // had not even seen, with a choice they made for the previous sum.
+  function answer(i, forIdx) {
     const q = st.qs[st.idx];
     if (!q || st.view !== 'fight') return;
+    if (forIdx !== undefined && Number(forIdx) !== st.idx) return;
     st.answers[st.idx] = q.options[i];
     st.idx++;
     if (st.idx >= st.qs.length) { beat(); return submit(false); }
@@ -273,7 +293,10 @@ var MathFight = (() => {
     if (!res.ok || !res.data || !res.data.fight) return;
     st.fight = res.data.fight;
     const mine = document.getElementById('mfMine'), foe = document.getElementById('mfFoe');
-    if (mine) mine.textContent = st.fight.myCorrect || 0;
+    // My own marks are counted here, so a pulse that is seconds behind can
+    // never pull the number on screen backwards. Only the opponent's count
+    // has to come from the server — it is the one thing the device cannot know.
+    if (mine) mine.textContent = myCorrect();
     if (foe) foe.textContent = st.fight.foeCorrect || 0;
     if (st.fight.status === 'done') paintResult();
   }
@@ -406,12 +429,14 @@ var MathFight = (() => {
   }
   function backToList() { lockScreen(false); st.fight = null; st.view = 'list'; paintLoading(); refresh(); }
 
-  return Object.freeze({ open, leave, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh });
+  return Object.freeze({ open, leave, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh,
+    // Test hooks: the drawn round and one pulse, so a test can play a bout.
+    __questions: () => st.qs, __beat: beat, __myCorrect: myCorrect });
 })();
 
 function mfPickFriend(id) { MathFight.pickFriend(id); }
 function mfSend(id) { MathFight.send(id); }
 function mfRespond(ok) { MathFight.respond(ok); }
-function mfAnswer(i) { MathFight.answer(i); }
+function mfAnswer(i, forIdx) { MathFight.answer(i, forIdx); }
 function mfQuit() { MathFight.quit(); }
 function mfBackToList() { MathFight.backToList(); }
