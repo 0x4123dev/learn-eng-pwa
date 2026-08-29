@@ -505,3 +505,66 @@ suite('math fight: answering, question by question', () => {
     assert.deepEqual(sent.body.answers.slice(0, 5), given, 'order and values must survive');
   });
 });
+
+// ---------------------------------------------------------------------------
+// One source of truth for the twenty sums.
+//
+// The round used to be DERIVED on both sides from a shared seed: the device
+// drew it to show, the server drew it to mark. That is correct only while the
+// two agree — and a device running yesterday's app draws yesterday's round,
+// answers it perfectly, and is marked against today's. Every answer wrong, a
+// final score of 0 next to a child who counted 17 right.
+//
+// The server now SENDS the round it will mark. A device cannot be marked
+// against questions it never showed.
+suite('math fight: the server sends the round it will mark', () => {
+  test('an active fight carries its twenty questions to the device', async () => {
+    const a = await arena();
+    const server = loadModule('functions/api/_math-fight.js');
+    const row = a.row();
+    const view = server.fightView(row, a.kid.uid);
+    assert.truthy(Array.isArray(view.questions), 'the round travels with the fight');
+    assert.equal(view.questions.length, MF.QUESTIONS);
+    for (const q of view.questions) {
+      assert.truthy(q.q && typeof q.answer === 'number', 'each question carries its sum and answer');
+      assert.equal(q.options.length, 4);
+      assert.equal(q.options[q.correct], q.answer);
+    }
+    // And it is exactly what the server marks with.
+    const marked = server.scoreAnswers(row.seed, row.challenger_level, view.questions.map(q => q.answer));
+    assert.equal(marked.correct, MF.QUESTIONS, 'answering what was sent scores full marks');
+  });
+
+  test('each side is sent its OWN round when the levels differ', async () => {
+    // The handicap gives the two children different levels on purpose.
+    const a = await arena();
+    a.world.db.prepare('UPDATE math_fights SET challenger_level=2, opponent_level=9 WHERE id=?').run(FIGHT_ID);
+    const server = loadModule('functions/api/_math-fight.js');
+    const row = a.row();
+    const kidRound = server.fightView(row, a.kid.uid).questions.map(q => q.q);
+    const palRound = server.fightView(row, a.friend.uid).questions.map(q => q.q);
+    assert.falsy(kidRound.join('|') === palRound.join('|'), 'a handicap means two different rounds');
+    const kidMarked = server.scoreAnswers(row.seed, row.challenger_level,
+      server.fightView(row, a.kid.uid).questions.map(q => q.answer));
+    const palMarked = server.scoreAnswers(row.seed, row.opponent_level,
+      server.fightView(row, a.friend.uid).questions.map(q => q.answer));
+    assert.equal(kidMarked.correct, MF.QUESTIONS, 'each child is marked against the round they were sent');
+    assert.equal(palMarked.correct, MF.QUESTIONS);
+  });
+
+  test('the device answers the round the server sent, not one it drew itself', async () => {
+    const fight = Object.assign({}, ACTIVE_FIGHT, {
+      questions: [{ q: '11 + 12', a: 11, b: 12, op: '+', answer: 23, options: [22, 23, 24, 33], correct: 1 }]
+        .concat(Array.from({ length: 19 }, (_, i) => ({
+          q: `${20 + i} + ${30 + i}`, a: 20 + i, b: 30 + i, op: '+',
+          answer: 50 + i * 2, options: [50 + i * 2, 1, 2, 3], correct: 0 }))),
+    });
+    const h = mountFight(() => listReply(fight));
+    await h.ctx.MathFight.refresh();
+    const shown = h.ctx.MathFight.__questions();
+    assert.equal(shown[0].q, '11 + 12', 'the card shows the server round');
+    assert.truthy(h.doc.getElementById('mfRoot').textContent.includes('11 + 12'));
+    h.ctx.MathFight.answer(1);            // the correct option for 11 + 12
+    assert.equal(h.doc.getElementById('mfMine').textContent, '1', 'and it is marked against that round');
+  });
+});

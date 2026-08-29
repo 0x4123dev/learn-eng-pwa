@@ -218,7 +218,12 @@ var MathFight = (() => {
   // ---- the bout --------------------------------------------------------
   function startBout() {
     if (st.view === 'fight' || !st.fight) return;
-    if (!R() || typeof MATH_FIGHT_BANK === 'undefined') {
+    // The server sends the round it will mark, so the card can never show one
+    // set of sums while the marking uses another. Drawing locally survives
+    // only for a server old enough not to send them.
+    const sent = Array.isArray(st.fight.questions) && st.fight.questions.length
+      ? st.fight.questions : null;
+    if (!sent && (!R() || typeof MATH_FIGHT_BANK === 'undefined')) {
       return toast('Không dựng được đề — hãy tải lại app');
     }
     // Drawn by MF.fightQuestions from the pre-authored bank — the same call,
@@ -227,7 +232,7 @@ var MathFight = (() => {
     lockScreen(true);
     // The sums are rebuilt locally from the server's seed so they appear with
     // no round trip. The server holds the same twenty and marks them itself.
-    st.qs = R().fightQuestions(st.fight.seed, st.fight.level, MATH_FIGHT_BANK);
+    st.qs = sent || R().fightQuestions(st.fight.seed, st.fight.level, MATH_FIGHT_BANK);
     st.answers = new Array(R().QUESTIONS).fill(null);
     st.idx = 0;
     if (st.pulse) clearInterval(st.pulse);

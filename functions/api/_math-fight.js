@@ -138,6 +138,14 @@ export function fightView(row, uid) {
     prize: row.prize,
     seed: row.seed,
     level: mine ? row.challenger_level : row.opponent_level,
+    // The round travels WITH the fight. It used to be derived on both sides
+    // from the seed — correct only while the device and the server agree, and
+    // a device running yesterday's app draws yesterday's round, answers it
+    // perfectly and is marked against today's: every answer wrong, a final 0
+    // beside a child who counted 17 right. A device cannot be marked against
+    // questions it was never shown.
+    questions: row.status === 'invited' ? null
+      : MF.fightQuestions(row.seed, mine ? row.challenger_level : row.opponent_level, MATH_FIGHT_BANK),
     role: mine ? 'challenger' : 'opponent',
     foeId: mine ? row.opponent_id : row.challenger_id,
     startedAt: row.started_at || null,
