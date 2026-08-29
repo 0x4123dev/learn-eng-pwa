@@ -209,6 +209,7 @@ const EXPORT_NAMES = [
     'getHomeSkillStats', '_homeSkillSessions', '_homeAllSessionsCount',
     // login + profile migration (money-client tests)
     'loginUser', 'getUserData', 'createDefaultUserData', 'saveUserData',
+    'restoreStudyCheckpoint',
     // shop spend paths (money-invariants tests)
     'buyFood', 'buyAccessory', 'buyShield',
     // daily-challenge

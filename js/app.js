@@ -203,6 +203,14 @@ function restoreStudyCheckpoint() {
         clearStudyCheckpoint();
         return false;
     }
+    // Grammar and Exam checkpoints need a bank that no longer loads at
+    // startup (js/lazy-data.js). Reopening the question before it lands would
+    // show an empty one, so wait — and come back here when it arrives.
+    const needsBank = { grammar: 'grammarScreen', exam: 'examScreen' }[checkpoint.kind];
+    if (needsBank && typeof LazyData !== 'undefined' && !LazyData.ready(needsBank)) {
+        LazyData.ensure(needsBank).then(() => restoreStudyCheckpoint());
+        return false;
+    }
     _studyCheckpointRestored = true;
     const s = checkpoint.state;
     try {
@@ -1290,6 +1298,30 @@ function switchScreen(screenId) {
 
     setBottomNavActive(screenId);
 
+    // The Grammar and Exam banks are 4.7 MB and no longer block the first
+    // paint (js/lazy-data.js). Render such a tab only once its bank has
+    // arrived, or the child meets an empty question list. Everything else
+    // renders synchronously exactly as before.
+    if (typeof LazyData !== 'undefined' && LazyData.filesFor(screenId).length) {
+        const paint = () => {
+            if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
+            if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
+        };
+        if (LazyData.ready(screenId)) paint();
+        else {
+            const target = document.getElementById(screenId);
+            if (target && !target.innerHTML.trim()) {
+                target.innerHTML = '<div class="lazy-loading" role="status">Đang tải bài…</div>';
+            }
+            LazyData.ensure(screenId).then(() => {
+                // The child may have moved on while it downloaded.
+                if (document.getElementById(screenId)?.classList.contains('active')) paint();
+            });
+        }
+        nextScreen.scrollTop = 0;
+        return true;
+    }
+
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'learnHubScreen') renderLearnHub();
     if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
@@ -1742,4 +1774,10 @@ if ('speechSynthesis' in window) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    // The deferred question banks (js/lazy-data.js) start downloading once the
+    // app is interactive, so a tab opened a few seconds later finds them
+    // already in memory — without any of that weight in the first paint.
+    if (typeof LazyData !== 'undefined') LazyData.warmSoon();
+});

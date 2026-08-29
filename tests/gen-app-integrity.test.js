@@ -202,11 +202,17 @@ suite('gen: index.html script tags', () => {
         assert.truthy(a < b, `wordform-data.js (idx ${a}) must precede wordform.js (idx ${b})`);
     });
 
-    test('ordering: exam-data.js loads before exam.js', () => {
-        const a = SCRIPT_SRCS.indexOf('js/exam-data.js');
-        const b = SCRIPT_SRCS.indexOf('js/exam.js');
-        assert.truthy(a !== -1 && b !== -1, 'exam scripts not found in index.html');
-        assert.truthy(a < b, `exam-data.js (idx ${a}) must precede exam.js (idx ${b})`);
+    test('the exam bank is deferred, and the Exam tab waits for it', () => {
+        // exam-data.js is 1.5 MB and no longer blocks the first paint. The
+        // ordering rule it used to satisfy is replaced by a stronger one:
+        // switchScreen renders the tab only after the bank has loaded.
+        // See tests/lazy-data.test.js.
+        assert.equal(SCRIPT_SRCS.indexOf('js/exam-data.js'), -1,
+            'the 1.5 MB exam bank must not be an eager script');
+        assert.truthy(SCRIPT_SRCS.indexOf('js/exam.js') !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        assert.truthy(/examScreen:\s*\[[^\]]*js\/exam-data\.js/.test(lazy),
+            'exam-data.js must be listed under examScreen in the loader');
     });
 
     test('ordering: auth.js loads before app.js', () => {
@@ -230,14 +236,19 @@ suite('gen: index.html script tags', () => {
         assert.truthy(a < b, `phrases-meanings.js (idx ${a}) must precede phrases.js (idx ${b})`);
     });
 
-    test('ordering: grammar-units.js and grammar-lessons.js load before grammar-ui.js', () => {
-        const units = SCRIPT_SRCS.indexOf('js/grammar-units.js');
-        const lessons = SCRIPT_SRCS.indexOf('js/grammar-lessons.js');
+    test('the grammar bank is deferred, and the Grammar tab waits for it', () => {
+        // grammar-units.js alone is 2.9 MB — the heaviest file in the app and
+        // the biggest single cause of a slow, memory-hungry start on an old
+        // iPad. It now loads on demand (and warms in the background).
         const ui = SCRIPT_SRCS.indexOf('js/grammar-ui.js');
-        assert.truthy(units !== -1 && lessons !== -1 && ui !== -1,
-            'grammar scripts not found in index.html');
-        assert.truthy(units < ui, `grammar-units.js (idx ${units}) must precede grammar-ui.js (idx ${ui})`);
-        assert.truthy(lessons < ui, `grammar-lessons.js (idx ${lessons}) must precede grammar-ui.js (idx ${ui})`);
+        assert.equal(SCRIPT_SRCS.indexOf('js/grammar-units.js'), -1,
+            'the 2.9 MB grammar bank must not be an eager script');
+        assert.truthy(ui !== -1, 'the tab code still ships eagerly');
+        const lazy = fs.readFileSync(path.join(ROOT, 'js/lazy-data.js'), 'utf8');
+        for (const f of ['js/grammar-units.js', 'js/grammar-lessons.js']) {
+            assert.truthy(new RegExp('grammarScreen:\\s*\\[[^\\]]*' + f.replace(/[./]/g, '\\$&')).test(lazy),
+                f + ' must be listed under grammarScreen in the loader');
+        }
     });
 
     test('topic-vocab.js is cached by sw.js but has NO index.html script tag (loaded elsewhere)', () => {
