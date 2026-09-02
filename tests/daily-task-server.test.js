@@ -343,7 +343,7 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     assert.equal(r.data.dailyTask.justRewarded, true);
   });
 
-  test('a broken daily_tasks row cannot fail the sync', async () => {
+  test('a broken match_json counts nothing and does not fail the sync', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
     world.db.prepare(
@@ -354,6 +354,40 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     });
     assert.equal(r.status, 200, 'activity sync must succeed even if evaluation cannot');
     assert.equal(r.data.ok, true);
+  });
+
+  test('an evaluation that throws cannot fail the sync', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases', 1);
+    const real = world.env.DB;
+    world.env.DB = {
+      prepare: sql => { if (/FROM daily_tasks/.test(sql)) throw new Error('D1 down'); return real.prepare(sql); },
+      batch: s => real.batch(s),
+    };
+    const r = await world.call(activityHandler().onRequestPost, {
+      token: kid.token,
+      body: { items: [{ type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: Date.now() }] },
+    });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.dailyTask, null, 'a failed evaluation is reported as unknown, not as "no tasks"');
+    assert.equal(world.db.prepare('SELECT COUNT(*) n FROM activities WHERE user_id=?').get(kid.uid).n, 1, 'the activity itself still landed');
+  });
+
+  test('a balance-only sync (items: []) skips evaluation but still snapshots the balance', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases', 1);
+    const r = await world.call(activityHandler().onRequestPost, {
+      token: kid.token, body: { items: [], coinBalance: 4200 },
+    });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.count, 0);
+    assert.equal(r.data.dailyTask, null, 'nothing new landed, so progress could not have moved');
+    const snap = world.db.prepare('SELECT balance FROM user_coin_snapshots WHERE user_id=?').get(kid.uid);
+    assert.equal(snap.balance, 4200);
   });
 });
 

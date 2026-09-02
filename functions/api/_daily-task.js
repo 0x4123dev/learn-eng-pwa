@@ -70,8 +70,7 @@ export async function progress(env, uid, now = Date.now()) {
   const { results } = await env.DB.prepare(
     'SELECT id, kind, label, target, activity_type, match_json, created_at FROM daily_tasks WHERE user_id = ? AND active = 1 ORDER BY id'
   ).bind(uid).all();
-  const tasks = [];
-  for (const row of results || []) {
+  const tasks = await Promise.all((results || []).map(async row => {
     let match = {};
     try {
       match = JSON.parse(row.match_json) || {};
@@ -87,8 +86,8 @@ export async function progress(env, uid, now = Date.now()) {
     ).bind(uid, row.activity_type, startUtc, endUtc, ...m.binds).first();
     const count = Number((r && r.n) || 0);
     const target = Math.min(MAX_TARGET, Math.max(1, Math.trunc(+row.target || 1)));
-    tasks.push({ id: row.id, kind: row.kind, label: row.label, target, count, done: count >= target, created_at: row.created_at });
-  }
+    return { id: row.id, kind: row.kind, label: row.label, target, count, done: count >= target, created_at: row.created_at };
+  }));
   return { date, tasks, allDone: tasks.length > 0 && tasks.every(t => t.done) };
 }
 

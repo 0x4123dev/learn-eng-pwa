@@ -66,7 +66,10 @@ async function dailyTaskSummary(env, uid) {
   try {
     const e = await evaluate(env, uid);
     return { allDone: e.allDone, justRewarded: e.justRewarded, rewardedToday: e.rewardedToday };
-  } catch (e) { return null; }
+  } catch (err) {
+    console.warn('daily-task: evaluate failed for user ' + uid + ': ' + (err && err.message));
+    return null;
+  }
 }
 
 // POST /api/activity
@@ -101,7 +104,9 @@ export async function onRequestPost({ request, env }) {
     if (snapshot) stmts.push(snapshot);
     if (stmts.length) await env.DB.batch(stmts);
     await env.DB.prepare("DELETE FROM activities WHERE created_at < datetime('now','-30 days')").run();
-    return json({ ok: true, count: rows.length, dailyTask: await dailyTaskSummary(env, auth.uid) });
+    // A balance-only sync (items: [], nothing new landed) cannot have moved
+    // task progress — skip the evaluation rather than run it for a no-op.
+    return json({ ok: true, count: rows.length, dailyTask: rows.length ? await dailyTaskSummary(env, auth.uid) : null });
   }
 
   const r = clean(body);
