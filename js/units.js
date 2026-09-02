@@ -543,6 +543,8 @@ function startUnitPractice(unit) {
   // Words this child has missed before come first, up to half the practice,
   // until each has been typed right five times running (js/wrong-priority.js).
   // The child is not told; the practice simply contains what they need.
+  // Falls back to a plain shuffle when the engine is not loaded, which is the
+  // case in the test files that load this tab on its own.
   let words;
   if (typeof prioPick === 'function') {
     words = prioPick('units', pool, 10, { idOf: UNITS_RETRY_CONFIG.idOf });
@@ -783,16 +785,17 @@ function finishUnitPractice() {
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
-  // Wrong-priority (js/wrong-priority.js): a real practice moves the streak.
+  // Owe every missed word back. Recorded here, after the score is banked, so a
+  // child never loses coins they earned by also being told to practise.
+  if (wrong.length && typeof retryAdd === 'function') retryAdd('units', wrong);
+  // The silent priority list (js/wrong-priority.js): every word answered in a
+  // real practice moves its streak. Same right/wrong line as the owed drill.
   if (typeof prioRecord === 'function') {
     const idOf = UNITS_RETRY_CONFIG.idOf;
     prioRecord('units',
       st.questions.filter((q, i) => st.answers[i] && st.answers[i].isCorrect).map(q => idOf(q.w)),
       wrong.map(idOf));
   }
-  // Owe every missed word back. Recorded here, after the score is banked, so a
-  // child never loses coins they earned by also being told to practise.
-  if (wrong.length && typeof retryAdd === 'function') retryAdd('units', wrong);
   const owed = unitsRetryCount();
 
   const detail = document.getElementById('topicsDetail');
