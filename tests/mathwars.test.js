@@ -400,16 +400,40 @@ suite('math wars: a mis-tap must not cost the round', () => {
     });
 
     test('the bottom nav guards the round too, and abandons it only on yes', () => {
-        // switchScreen is the one route the ✕ cannot cover.
-        const fs2 = require('fs');
-        const src = fs2.readFileSync(path.join(root, 'js', 'app.js'), 'utf8');
-        const i = src.indexOf('isWarsActive');
-        assert.truthy(i > 0, 'switchScreen never checks for a running Math Wars round');
-        const block = src.slice(i - 400, i + 700);
-        assert.truthy(/screenId !== 'mathHubScreen'/.test(block), 'the guard must not fire on the Math tab itself');
-        assert.truthy(/confirm\(/.test(block), 'it must ask before leaving');
-        assert.truthy(/return;/.test(block), 'saying no must stay put');
-        assert.truthy(/abandonWars\(\)/.test(block), 'saying yes must stop the clock');
+        // switchScreen is the one route the ✕ cannot cover. Run the real
+        // function rather than reading its source: this used to be a substring
+        // check for "return;", which passed happily right up until the guard
+        // started reporting its refusal as "return false;" — proving nothing
+        // about whether the round actually survived.
+        const { loadAppCode } = require('./setup');
+        const shell = (saysYes) => {
+            const stopped = [];
+            const app = loadAppCode({
+                includeHome: false,
+                extraGlobals: {
+                    confirm: () => saysYes,
+                    isWarsActive: () => true,
+                    warsClockText: () => '1:30',
+                    warsLeftMs: () => 90000,
+                    abandonWars: () => { stopped.push(1); },
+                },
+            });
+            return { app, stopped };
+        };
+
+        const no = shell(false);
+        assert.equal(no.app.switchScreen('homeScreen'), false, 'saying no must stay put');
+        assert.equal(no.stopped.length, 0, 'and the clock must keep running');
+
+        const yes = shell(true);
+        assert.truthy(yes.app.switchScreen('homeScreen') !== false, 'saying yes must leave');
+        assert.equal(yes.stopped.length, 1, 'saying yes must stop the clock');
+
+        // The one thing behaviour cannot show: that the guard sits behind a
+        // screenId test, so tapping Math itself never asks.
+        const onMath = shell(false);
+        assert.truthy(onMath.app.switchScreen('mathHubScreen') !== false,
+            'the guard must not fire on the Math tab itself');
     });
 
     test('a stray re-render redraws the round instead of painting over it', () => {

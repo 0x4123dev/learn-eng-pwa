@@ -621,6 +621,11 @@ function renderMathHome() {
   if (typeof isWarsActive === 'function' && isWarsActive()) {
     if (typeof renderWars === 'function') { renderWars(); return; }
   }
+  // Same for a round or a đề thi in progress. Tapping the Math tab painted the
+  // menu on top of it: the questions vanished but _mathQuiz stayed alive, so
+  // the next tab change asked "con đang làm dở bài Toán" about work the child
+  // could no longer see. Redraw the question instead.
+  if (_mathQuiz) { renderMathQuestion(); return; }
   if (_mathView === 'wars') {
     screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
       'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '5 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
@@ -866,6 +871,7 @@ function startMathExam(id) {
     idx: 0,
     answers: exam.questions.map(() => null)
   };
+  mathLockScreen(true);
   renderMathQuestion();
 }
 
@@ -1268,7 +1274,7 @@ function renderMathQuestion() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonMathQuiz(); renderMathHome()">✕</button>
+        <button class="grammar-back-btn" onclick="mathQuizQuit()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${(st.idx) / total * 100}%"></div></div>
         <button class="math-board-fab" type="button" title="Bảng nháp" onclick="openMathBoard()">✏️</button>
@@ -1349,6 +1355,7 @@ function finishMathQuiz() {
   const st = _mathQuiz;
   const screen = document.getElementById('mathHubScreen');
   if (!st || !screen) return;
+  mathLockScreen(false);   // the paper is over: the score is banked, let them move
   const total = st.questions.length;
   const score = st.answers.reduce((s, a, i) => s + (mathIsCorrect(st.questions[i], a) ? 1 : 0), 0);
   const pct = Math.round(score / total * 100);
@@ -1419,6 +1426,41 @@ function abandonMathQuiz() {
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   _mathQuiz = null;
+  mathLockScreen(false);
+}
+
+// A đề thi is a whole sitting of work that is scored only when it ends, and
+// the bottom bar sits under the thumb for all 25 questions. The confirm() in
+// switchScreen is a net, not a lock — so the bar goes away while a paper is
+// open, exactly as Đấu Toán hides it during a live match. Every exit runs back
+// through abandonMathQuiz() or finishMathQuiz(), so the bar can never be left
+// hidden with nothing to come back to.
+function mathLockScreen(locked) {
+  if (typeof document === 'undefined') return;
+  const nav = document.getElementById('bottomNav');
+  if (nav) nav.style.display = locked ? 'none' : '';
+}
+
+function mathQuizAnswered() {
+  const st = _mathQuiz;
+  return st ? st.answers.filter(a => a !== null).length : 0;
+}
+
+// The ✕ on the question card used to bin the round on a single tap — one
+// stray touch at question 20 of a paper and the whole sitting was gone, with
+// nothing saved and nothing asked. Ask, but only when there is work to lose.
+function mathQuizQuit() {
+  const st = _mathQuiz;
+  if (st) {
+    const done = mathQuizAnswered();
+    if (done && typeof confirm === 'function') {
+      const what = st.examId ? 'bài thi' : 'bài luyện tập';
+      if (!confirm(`Con đang làm dở ${what} — đã làm ${done}/${st.questions.length} câu.\n`
+        + 'Ra bây giờ thì phần đã làm sẽ mất và KHÔNG được tính điểm.\n\nVẫn ra chứ?')) return;
+    }
+  }
+  abandonMathQuiz();
+  renderMathHome();
 }
 
 // js/retrydrill.js — six tabs share one implementation, and it defaults to a
@@ -1491,6 +1533,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions, saveMathSession,
     mathExams, mathExamBest, startMathExam, renderMathExamsHTML,
+    mathQuizQuit, mathQuizAnswered, mathLockScreen,
     renderMathHistoryHTML, mathHistoryFiltered, mathHistoryStats, mathHistoryWhen,
     setMathHistoryFilter, setMathHistoryType, renderMathPracticeHTML,
     mathWrongAggregate, mathWrongSkillLabel, mathWrongSkillAggregate,

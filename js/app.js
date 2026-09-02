@@ -1203,6 +1203,10 @@ function renderLearnHub() {
         : 'Nothing due yet — practise again to build your queue.';
 }
 
+// Returns FALSE when the switch did not happen — a guard below asked the child
+// and they chose to stay, or the screen does not exist. Callers that do more
+// than switch (openPetBattle starts polling) MUST check it: carrying on after a
+// refusal is how the Arena once ended up running behind a live đề thi.
 function switchScreen(screenId) {
     // Guard the live Ghost Offering scene. Previously the bottom navigation
     // merely hid the Arena screen, leaving go-event-active/overflow:hidden on
@@ -1221,7 +1225,7 @@ function switchScreen(screenId) {
     if (screenId !== 'grammarScreen' &&
         typeof isGrammarQuizActive === 'function' && isGrammarQuizActive()) {
         if (!confirm('You are in the middle of an exam.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return; // stay on the quiz
+            return false; // stay on the quiz
         }
         if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
     }
@@ -1230,7 +1234,7 @@ function switchScreen(screenId) {
     if (screenId !== 'examScreen' &&
         typeof isExamActive === 'function' && isExamActive()) {
         if (!confirm('You are in the middle of a timed exam.\nIf you leave now, your progress will be lost and it will NOT be saved.\n\nLeave anyway?')) {
-            return; // stay on the exam
+            return false; // stay on the exam
         }
         if (typeof abandonExam === 'function') abandonExam();
     }
@@ -1239,7 +1243,7 @@ function switchScreen(screenId) {
     if (screenId !== 'wordformScreen' &&
         typeof isWordformQuizActive === 'function' && isWordformQuizActive()) {
         if (!confirm('You are in the middle of a Word form practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return;
+            return false;
         }
         if (typeof abandonWordformQuiz === 'function') abandonWordformQuiz();
     }
@@ -1251,7 +1255,7 @@ function switchScreen(screenId) {
         ((typeof isMathQuizActive === 'function' && isMathQuizActive()) ||
          (typeof retryDrillKey === 'function' && retryDrillKey() === 'math'))) {
         if (!confirm('Con đang làm dở bài Toán.\nRa khỏi bây giờ thì phần đã làm sẽ mất.\n\nVẫn ra chứ?')) {
-            return;
+            return false;
         }
         if (typeof abandonMathQuiz === 'function') abandonMathQuiz();
         if (typeof abandonRetryDrill === 'function' &&
@@ -1267,7 +1271,7 @@ function switchScreen(screenId) {
     if (screenId !== 'mathHubScreen' &&
         typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) {
         if (!confirm('Con đang đấu toán với bạn.\n\nThoát bây giờ sẽ ĐÓNG trận và chấm điểm luôn — con bị XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) {
-            return; // stay in the fight
+            return false; // stay in the fight
         }
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
@@ -1282,7 +1286,7 @@ function switchScreen(screenId) {
             ? warsClockText(warsLeftMs()) : '';
         if (!confirm('Con đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
                    + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) {
-            return;
+            return false;
         }
         if (typeof abandonWars === 'function') abandonWars();
     }
@@ -1291,13 +1295,13 @@ function switchScreen(screenId) {
     if (screenId !== 'rewriteScreen' &&
         typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {
         if (!confirm('You are in the middle of a Rewrite practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
-            return;
+            return false;
         }
         if (typeof abandonRewriteQuiz === 'function') abandonRewriteQuiz();
     }
 
     const nextScreen = document.getElementById(screenId);
-    if (!nextScreen) return;
+    if (!nextScreen) return false;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     nextScreen.classList.add('active');
 

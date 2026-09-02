@@ -375,9 +375,13 @@ function openPetBattle() {
   // the lobby. Other tabs use switchScreen's explicit leave confirmation.
   if (typeof GhostOfferingEvent !== 'undefined' &&
       GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return;
+  // switchScreen asks before walking out of a live đề thi / quiz. It returns
+  // false when the child says no — and everything below (render, refresh,
+  // polling) would otherwise run anyway, leaving the Arena alive underneath
+  // the paper they chose to stay in.
+  if (typeof switchScreen === 'function' && switchScreen('petBattleScreen') === false) return;
   _pbLang = 'en';                 // every visit starts in English, by design
   _pbHistoryOpen = -1;
-  if (typeof switchScreen === 'function') switchScreen('petBattleScreen');
   if (!_pbToken()) {
     _pbState = { offline: true };
     _pbStopPolling();
