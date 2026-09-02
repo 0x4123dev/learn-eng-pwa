@@ -1,5 +1,6 @@
 import { requireAuth, json, err } from '../_lib.js';
 import { NR, RAID_LOCK_MS, nightDate, ticketStats, safeJson, resultReward } from '../_night-raid.js';
+import { SHIELD_RAID_LOSS } from '../_daily-task.js';
 
 export async function onRequestPost({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -11,8 +12,10 @@ export async function onRequestPost({request,env}) {
   const snapshot=safeJson(raid.snapshot_json,null);if(!snapshot)return err('Broken raid snapshot',500);
   const sim=NR.resolveAutoBattle(snapshot),date=nightDate(),stats=await ticketStats(env,auth.uid,date);
   const reward=resultReward(sim,snapshot,stats.reward),victimLoss=sim.won?Math.min(Math.floor(Math.max(0,+snapshot.lootableCoins||0)*.10),reward):0;
-  const attackerLoss=sim.won?0:Math.min(30,Math.max(10,Math.floor(Math.max(0,+snapshot.attackerLootableCoins||0)*.05)));
-  const soldiersUsed=Math.max(0,Math.min(NR.MAX_SOLDIERS,Math.trunc(+snapshot.attackerSoldiers||0))),result={won:sim.won,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:sim.won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
+  // Hitting a shield costs a flat 200 (the client floors the wallet at 0);
+  // an ordinary defeat costs the 10–30 xu marching fee.
+  const attackerLoss=sim.won?0:(snapshot.shielded?SHIELD_RAID_LOSS:Math.min(30,Math.max(10,Math.floor(Math.max(0,+snapshot.attackerLootableCoins||0)*.05))));
+  const soldiersUsed=Math.max(0,Math.min(NR.MAX_SOLDIERS,Math.trunc(+snapshot.attackerSoldiers||0))),result={won:sim.won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:sim.won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
   // A breach seals the home for a flat 20 hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=sim.won?now+RAID_LOCK_MS:0;

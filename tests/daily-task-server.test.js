@@ -516,6 +516,77 @@ suite('daily task: POST /api/night-raid/shield', () => {
   });
 });
 
+
+function startHandler() { return loadModule('functions/api/night-raid/start.js'); }
+function finishHandler() { return loadModule('functions/api/night-raid/finish.js'); }
+
+async function raid(world, attacker, defender) {
+  const s = await world.call(startHandler().onRequestPost, { token: attacker.token, body: { targetId: defender.uid } });
+  assert.truthy(s.ok && s.data && s.data.raid, 'start must create a raid: ' + JSON.stringify(s.data));
+  const f = await world.call(finishHandler().onRequestPost, { token: attacker.token, body: { raidId: s.data.raid.raidId } });
+  assert.truthy(f.ok && f.data && f.data.result, 'finish must resolve: ' + JSON.stringify(f.data));
+  return { start: s.data.raid, result: f.data.result };
+}
+
+suite('daily task: raiding a shielded castle', () => {
+  test('shielded target: the raid runs, the raider loses, pays 200, the defender is untouched', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const defender = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, 800);
+    await seedHome(world, defender, 800);
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
+
+    const { start, result } = await raid(world, attacker, defender);
+    assert.equal(start.shielded, true);
+    assert.equal(start.defense, 100000);
+    assert.equal(result.won, false);
+    assert.equal(result.shielded, true);
+    assert.equal(result.loss, 200);
+    assert.equal(result.reward, 0);
+    assert.equal(homeRow(world, attacker.uid).lootable_coins, 600);
+    assert.equal(homeRow(world, defender.uid).lootable_coins, 800);
+    assert.equal(homeRow(world, defender.uid).ruined_until, null);
+    const daily = world.db.prepare('SELECT tickets_used FROM night_raid_daily WHERE user_id=?').get(attacker.uid);
+    assert.equal(daily.tickets_used, 1, 'the ticket is spent, not returned');
+  });
+
+  test('a raider with fewer than 200 coins is emptied, not driven negative', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const defender = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, 50);
+    await seedHome(world, defender, 800);
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
+    const { result } = await raid(world, attacker, defender);
+    assert.equal(result.loss, 200, 'the client applies max(0, coins - loss)');
+    assert.equal(homeRow(world, attacker.uid).lootable_coins, 0);
+  });
+
+  test('an unshielded (or expired-shield) target is raided by the normal rules', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const defender = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, 800);
+    await seedHome(world, defender, 800);
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() - 1000, defender.uid);
+    const { start, result } = await raid(world, attacker, defender);
+    assert.falsy(start.shielded);
+    assert.falsy(result.shielded);
+    assert.truthy(result.loss <= 30, 'normal loss is capped at 30: ' + result.loss);
+  });
+
+  test('GET /api/night-raid/home reports the owner\'s own shieldUntil', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    const until = Date.now() + 3600000;
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(until, kid.uid);
+    const r = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.home.shieldUntil, until);
+  });
+});
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
 }

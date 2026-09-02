@@ -72,8 +72,11 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     assert.truthy(targets.includes('lockedUntil:raidLockUntil(row,now)'),'each card carries its own clock');
     assert.truthy(read('functions/api/_night-raid.js').includes('lockedUntil:raidLockUntil(row)'),'my own home reports its seal too');
   });
-  test('shield bounce happens before a raid row consumes a ticket',()=>{
+  test('a shielded target is still raided, with DEF pinned to the rules ceiling before the raid row is written',()=>{
     const src=read('functions/api/night-raid/start.js');
-    assert.truthy(src.indexOf('shielded:true')<src.indexOf('INSERT INTO night_raids'));
+    // The LOCKED (breached-home) bounce keeps its own `ticketReturned:true`; only the shield bounce is gone.
+    assert.falsy(src.includes('shielded:true,ticketReturned:true'), 'the shield bounce is gone — the raider spends the ticket and loses');
+    assert.truthy(src.includes('target.shielded=true;target.defense=100000'));
+    assert.truthy(src.indexOf('target.shielded=true')<src.indexOf('INSERT INTO night_raids'));
   });
 });

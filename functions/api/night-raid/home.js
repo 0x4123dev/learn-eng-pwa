@@ -5,7 +5,8 @@ export async function onRequestGet({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid is not enabled',403);
   const row=await env.DB.prepare('SELECT h.*, u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
-  return json({home:row?homeSnapshot(row):null});
+  // shieldUntil is for the OWNER only — targets.js never exposes it.
+  return json({home:row?Object.assign(homeSnapshot(row),{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null});
 }
 export async function onRequestPut({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
