@@ -22,9 +22,9 @@ function load(opts) {
     document: { getElementById: id => el(id), querySelectorAll: () => [] },
     appState: opts.appState || {},
     currentUser: 'kid',
-    saveUserData() {},
+    saveUserData: () => calls.push(['save']),
     showToast: m => calls.push(['toast', m]),
-    switchScreen: s => { calls.push(['switchScreen', s]); return true; },
+    switchScreen: s => { calls.push(['switchScreen', s]); return opts.switchOk === false ? false : true; },
     setBottomNavActive: s => calls.push(['nav', s]),
     switchTopicsSubTab: t => calls.push(['switchTopicsSubTab', t]),
     switchUnitSet: s => calls.push(['switchUnitSet', s]),
@@ -47,8 +47,13 @@ const TASKS = [
   { id: 1, kind: 'units:hk1-mix', label: 'Units HK1 · 🎲 Mix', target: 5, count: 2, done: false },
   { id: 2, kind: 'phrases', label: 'Phrases practice', target: 1, count: 1, done: true },
 ];
+// Counts are only trusted for the current GMT+7 day (see todayGmt7() in
+// js/daily-task.js), so the fixtures follow the clock instead of pinning a
+// date that would go stale overnight and fail the suite tomorrow.
+const TODAY = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+const TOMORROW = new Date(Date.now() + 31 * 3600000).toISOString().slice(0, 10);
 function stateWith(over) {
-  return { dailyTask: Object.assign({ fetchedAt: Date.now(), date: '2026-09-02', tasks: TASKS, allDone: false, rewardedToday: false, shields: { count: 0, activeUntil: 0 } }, over || {}) };
+  return { dailyTask: Object.assign({ fetchedAt: Date.now(), date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, shields: { count: 0, activeUntil: 0 } }, over || {}) };
 }
 
 suite('daily task client: home card', () => {
@@ -140,7 +145,7 @@ suite('daily task client: refresh', () => {
     assert.deepEqual(calls, []);
   });
   test('stores the reply in appState, repaints, and claims coins + celebrates on justRewarded', async () => {
-    const reply = { date: '2026-09-02', tasks: [TASKS[1]], allDone: true, rewardedToday: true, justRewarded: true, shields: { count: 1, activeUntil: 0 } };
+    const reply = { date: TODAY, tasks: [TASKS[1]], allDone: true, rewardedToday: true, justRewarded: true, shields: { count: 1, activeUntil: 0 } };
     const { DailyTask, calls, sandbox, html } = load({ appState: {}, api: async () => ({ ok: true, data: reply }) });
     const st = await DailyTask.refresh('home');
     assert.equal(st.allDone, true);
@@ -151,26 +156,127 @@ suite('daily task client: refresh', () => {
     assert.truthy(html.dailyTaskCard.includes('1/1'));
   });
   test('a replayed justRewarded for the same date (offline cache) does not celebrate twice', async () => {
-    const reply = { date: '2026-09-02', tasks: [TASKS[1]], allDone: true, rewardedToday: true, justRewarded: true, shields: { count: 1, activeUntil: 0 } };
+    const reply = { date: TODAY, tasks: [TASKS[1]], allDone: true, rewardedToday: true, justRewarded: true, shields: { count: 1, activeUntil: 0 } };
     const { DailyTask, calls, sandbox } = load({ appState: {}, api: async () => ({ ok: true, data: reply }) });
     await DailyTask.refresh('sync');
     assert.equal(calls.filter(c => c[0] === 'toast').length, 1);
-    assert.equal(sandbox.appState.dailyTask.celebratedDate, '2026-09-02');
+    assert.equal(sandbox.appState.dailyTask.celebratedDate, TODAY);
     await DailyTask.refresh('sync');
     assert.equal(calls.filter(c => c[0] === 'toast').length, 1, 'same date → no second celebration');
     assert.equal(calls.filter(c => c[0] === 'refreshFlags').length, 1);
-    reply.date = '2026-09-03';
+    reply.date = TOMORROW;
     await DailyTask.refresh('sync');
     assert.equal(calls.filter(c => c[0] === 'toast').length, 2, 'a new date celebrates again');
   });
   test('a fresh cache is reused on a home render but not on a sync', async () => {
     let n = 0;
-    const api = async () => { n++; return { ok: true, data: { date: '2026-09-02', tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } } }; };
+    const api = async () => { n++; return { ok: true, data: { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } } }; };
     const { DailyTask } = load({ appState: stateWith(), api });
     await DailyTask.refresh('home');
     assert.equal(n, 0, 'fetchedAt is now → throttled');
     await DailyTask.refresh('sync');
     assert.equal(n, 1);
+  });
+});
+
+suite('daily task client: a cached day that is not today', () => {
+  test('yesterday counts are shown as unknown, but the tasks still open', () => {
+    const { DailyTask, html } = load({ appState: stateWith({ date: '2000-01-01' }) });
+    DailyTask.renderHomeCard();
+    assert.truthy(html.dailyTaskCard.includes('Đang cập nhật'), html.dailyTaskCard);
+    assert.falsy(html.dailyTaskCard.includes('1/2'), 'yesterday progress is not passed off as today');
+    DailyTask.renderScreen();
+    assert.falsy(html.dailyTaskScreen.includes('2/5'));
+    assert.truthy(html.dailyTaskScreen.includes('…'));
+    assert.truthy(html.dailyTaskScreen.includes("DailyTask.go('units:hk1-mix')"), 'the child can still go and learn');
+  });
+});
+
+suite('daily task client: open', () => {
+  test('a refused switchScreen paints nothing', () => {
+    const { DailyTask, html, calls } = load({ appState: stateWith(), switchOk: false });
+    DailyTask.open();
+    assert.falsy(html.dailyTaskScreen, 'no HTML built for a screen we never reached');
+    assert.deepEqual(calls, [['switchScreen', 'dailyTaskScreen']]);
+  });
+  test('opening paints the screen and leaves the nav to switchScreen', () => {
+    const { DailyTask, html, calls } = load({ appState: stateWith() });
+    DailyTask.open();
+    assert.truthy(html.dailyTaskScreen.includes('Nhiệm vụ hôm nay'));
+    assert.falsy(calls.some(c => c[0] === 'nav'), 'switchScreen already highlighted the bar');
+  });
+  test('with no tasks the screen offers no reward to chase', () => {
+    const { DailyTask, html } = load({ appState: stateWith({ tasks: [] }) });
+    DailyTask.renderScreen();
+    assert.truthy(html.dailyTaskScreen.includes('Hôm nay chưa có nhiệm vụ nào'));
+    assert.falsy(html.dailyTaskScreen.includes('dt-reward'));
+  });
+});
+
+suite('daily task client: shield button', () => {
+  test('every server refusal gets its own child-sized reason', async () => {
+    const cases = [['empty', 'Con chưa có khiên nào'], ['active', 'Khiên đang bật rồi'], ['no_home', 'Hãy mở Cướp Đêm và xây nhà trước']];
+    for (const [code, msg] of cases) {
+      const { DailyTask, calls } = load({
+        appState: stateWith(),
+        api: async p => (p === 'night-raid/shield' ? { ok: false, data: { code } } : { ok: false, data: null }),
+      });
+      await DailyTask.activateShield();
+      assert.truthy(calls.some(c => c[0] === 'toast' && c[1] === msg), code + ' → ' + JSON.stringify(calls));
+    }
+  });
+  test('offline: the thrown request is caught and explained, never left silent', async () => {
+    const { DailyTask, calls } = load({ appState: stateWith(), api: async () => { throw new Error('network down'); } });
+    await DailyTask.activateShield();
+    assert.truthy(calls.some(c => c[0] === 'toast' && c[1].includes('Không có mạng')), JSON.stringify(calls));
+    assert.falsy(calls.some(c => c[0] === 'api' && c[1] === 'me/daily-tasks'), 'no refresh after a failed send');
+  });
+  test('a double tap spends one shield, not two', async () => {
+    let posts = 0;
+    const api = async p => {
+      if (p === 'night-raid/shield') { posts++; return new Promise(r => setTimeout(() => r({ ok: true, data: {} }), 5)); }
+      return { ok: true, data: { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } } };
+    };
+    const { DailyTask } = load({ appState: stateWith(), api });
+    const first = DailyTask.activateShield();
+    const second = DailyTask.activateShield();
+    await first; await second;
+    assert.equal(posts, 1);
+    await DailyTask.activateShield();
+    assert.equal(posts, 2, 'the guard lifts once the first one is done');
+  });
+});
+
+suite('daily task client: refresh housekeeping', () => {
+  test('a background sync repaints the card but not a task screen nobody is on', async () => {
+    const reply = { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } };
+    const { DailyTask, html } = load({ appState: {}, api: async () => ({ ok: true, data: reply }) });
+    await DailyTask.refresh('sync');
+    assert.truthy(html.dailyTaskCard.includes('1/2'));
+    assert.falsy(html.dailyTaskScreen, 'the hidden screen is left alone');
+    DailyTask.renderScreen();
+    assert.truthy(html.dailyTaskScreen.includes('Units HK1'), 'and still paints on demand');
+  });
+  test('a poll that found nothing new does not rewrite the profile', async () => {
+    const reply = { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } };
+    const { DailyTask, calls, sandbox } = load({ appState: {}, api: async () => ({ ok: true, data: reply }) });
+    await DailyTask.refresh('sync');
+    assert.equal(calls.filter(c => c[0] === 'save').length, 1);
+    const first = sandbox.appState.dailyTask.fetchedAt;
+    await DailyTask.refresh('sync');
+    assert.equal(calls.filter(c => c[0] === 'save').length, 1, 'unchanged → no second write');
+    assert.truthy(sandbox.appState.dailyTask.fetchedAt >= first, 'the throttle stamp still moves');
+    reply.tasks = [Object.assign({}, TASKS[0], { count: 3 })];
+    await DailyTask.refresh('sync');
+    assert.equal(calls.filter(c => c[0] === 'save').length, 2, 'real progress is written');
+  });
+  test('a profile switch mid-flight never lands one child tasks in the other profile', async () => {
+    const reply = { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } };
+    const { DailyTask, sandbox } = load({ appState: {}, api: async () => new Promise(r => setTimeout(() => r({ ok: true, data: reply }), 5)) });
+    const pending = DailyTask.refresh('sync');
+    sandbox.currentUser = 'other-kid';
+    await pending;
+    assert.falsy(sandbox.appState.dailyTask, 'nothing written for the child who never asked');
   });
 });
 
