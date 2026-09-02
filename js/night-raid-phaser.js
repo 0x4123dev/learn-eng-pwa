@@ -125,7 +125,7 @@ var NightRaidPhaser = (() => {
       this.duration=this.reduce?2200:this.choreo.durationMs;this.game=null;this.scene=null;this.running=false;this.finished=false;this.pendingCharge=false;this.elapsed=0;this.lastNotify=0;this.lastEvent=-1;
       this.audio=this.reduce?null:new RaidAudio();this.stepPulse=false;this.lastStepSound=-1e9;
       const pet=options.pet,petText=pet?` Chó đội trưởng ${pet.name}, giống ${pet.breed}, cấp ${pet.level}.`:'';
-      host.setAttribute('tabindex','0');host.setAttribute('role','img');host.setAttribute('aria-label',`Trận Cướp Đêm bằng Phaser. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${this.result.defense}.${petText}`);
+      host.setAttribute('tabindex','0');host.setAttribute('role','img');host.setAttribute('aria-label',`Trận Cướp Đêm bằng Phaser. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${target.shielded?'Khiên Đêm':this.result.defense}.${petText}`);
       this.visibility=()=>{if(!this.game||this.finished)return;if(document.hidden)this.game.loop.sleep();else{this.startedAt=performance.now()-this.elapsed;this.game.loop.wake();}};
       document.addEventListener('visibilitychange',this.visibility);
     }

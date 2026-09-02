@@ -523,6 +523,16 @@ suite('night raid: app integration',()=>{
     assert.truthy(art.includes("img/night-raid/'+id+'.webp"));
     assert.truthy(game.includes('NightRaidArt.preloadDefenses'));
   });
+  test('a shielded castle hides DEF everywhere the number would show',()=>{
+    const ui=read('js/night-raid.js');
+    assert.truthy(ui.includes("target.shielded?'🛡️ KHIÊN':target.defense"));
+    assert.equal((ui.match(/\(state\.shielded\|\|target\.shielded\)\?'🛡️ KHIÊN'/g)||[]).length,2);
+    assert.truthy(ui.includes("report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN'"));
+    assert.truthy(ui.includes("report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')"));
+    assert.truthy(ui.includes("lockChip(homeShieldUntil,'KHIÊN ĐÊM ĐANG BẬT"));
+    assert.truthy(ui.includes("homeShieldUntil>Date.now()?'':lockChip(homeLockedUntil"));
+    for(const f of ['js/night-raid-game.js','js/night-raid-phaser.js'])assert.truthy(read(f).includes("target.shielded?'Khiên Đêm':this.result.defense"),f);
+  });
 });
 
 suite('night raid: mobile UX and accessibility',()=>{

@@ -85,7 +85,7 @@ var NightRaidGame = (() => {
       NightRaidArt.preloadDefenses(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
       if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
       const petText=options.pet?` Chó đội trưởng ${options.pet.name}, giống ${options.pet.breed}, cấp ${options.pet.level}, đứng trong đội hình tiến công.`:'';
-      canvas.width=this.size;canvas.height=this.size;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Trận Cướp Đêm tự động trên sân nhà isometric. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${this.result.defense}.${petText}`);
+      canvas.width=this.size;canvas.height=this.size;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Trận Cướp Đêm tự động trên sân nhà isometric. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${target.shielded?'Khiên Đêm':this.result.defense}.${petText}`);
       this.paint(0);
     }
     loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
