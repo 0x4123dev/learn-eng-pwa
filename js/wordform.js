@@ -439,6 +439,24 @@ function startWordformReviewQuiz(qids) {
 function isWordformQuizActive() { return !!_wfQuiz; }
 function abandonWordformQuiz() { _wfQuiz = null; }
 
+// The ✕ sits exactly where a thumb rests while tapping answers, and it used to
+// bin the whole round on a single touch with nothing said. Ask first — but only
+// when there is work to lose, so starting and changing your mind stays free.
+function wfAnsweredCount() {
+  return _wfQuiz ? _wfQuiz.answers.filter(a => a !== null).length : 0;
+}
+function quitWordformQuiz() {
+  const st = _wfQuiz;
+  if (st) {
+    const done = wfAnsweredCount();
+    if (done && typeof confirm === 'function'
+      && !confirm(`You are ${done}/${st.questions.length} through this Word form practice.\n`
+        + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
+  }
+  abandonWordformQuiz();
+  renderWordformHome();
+}
+
 // Answers are stored as { value, isCorrect } for BOTH mcq (value=index) and
 // text (value=typed string), so scoring is uniform.
 function _wfNormalize(s) {
@@ -457,7 +475,7 @@ function wfQuizHeaderHTML(st) {
   const total = st.questions.length;
   return `
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonWordformQuiz(); renderWordformHome()">✕</button>
+        <button class="grammar-back-btn" onclick="quitWordformQuiz()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>`;
@@ -893,7 +911,7 @@ function openWfSession(idx) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderWordformHome, startWordformQuiz, startWordformReviewQuiz, answerWfQuestion,
-    submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz,
+    submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz, quitWordformQuiz, wfAnsweredCount,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
     switchWfSubTab, renderWordformLessons, openWordformLesson, saveWordformSession,
     wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone, wfFollowParts,

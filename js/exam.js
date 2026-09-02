@@ -38,6 +38,19 @@ function isExamActive() {
 function abandonExam() {
     if (_examState && _examState.timerId) clearInterval(_examState.timerId);
     _examState = null;
+    examLockScreen(false);
+}
+
+// A timed paper is forty to ninety minutes with a clock running, and walking
+// out saves nothing at all — quitExam says so in as many words. The bottom bar
+// had no business sitting under the thumb for that whole hour, so it goes away
+// while the paper is open, the way Đấu Toán and the Toán 7 đề thi already do.
+// Both exits (abandonExam, finishExam) put it back, so it can never be left
+// hidden with nothing to come back to.
+function examLockScreen(locked) {
+    if (typeof document === 'undefined') return;
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = locked ? 'none' : '';
 }
 
 function _fmtClock(totalSec) {
@@ -204,6 +217,7 @@ function startExam(examId) {
         finished: false,
     };
     _examState.timerId = setInterval(_examTick, 1000);
+    examLockScreen(true);
     renderExamQuestion();
 }
 
@@ -384,6 +398,7 @@ function finishExam(auto) {
     if (!s || s.finished) return;
     s.finished = true;
     if (s.timerId) clearInterval(s.timerId);
+    examLockScreen(false);   // the paper is scored: the child may move again
 
     const total = s.questions.length;
     const score = s.answers.filter(a => a && a.isCorrect).length;

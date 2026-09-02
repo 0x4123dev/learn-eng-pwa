@@ -564,6 +564,26 @@ function startUnitPractice(unit) {
 }
 
 function abandonUnitPractice() { _unitQuiz = null; }
+
+// The ✕ sits exactly where a thumb rests while tapping answers, and it used to
+// bin the whole round on a single touch with nothing said. Ask first — but only
+// when there is work to lose, so starting and changing your mind stays free.
+function unitAnsweredCount() {
+  return _unitQuiz ? _unitQuiz.answers.filter(a => a !== null).length : 0;
+}
+function quitUnitPractice() {
+  const st = _unitQuiz;
+  if (st) {
+    const done = unitAnsweredCount();
+    if (done && typeof confirm === 'function'
+      && !confirm(`You are ${done}/${st.questions.length} through this practice.\n`
+        + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
+  }
+  abandonUnitPractice();
+  // renderTopicsHome lives in another file; guarded because this module is also
+  // loaded on its own in tests, where there is no home screen to go back to.
+  if (typeof renderTopicsHome === 'function') renderTopicsHome();
+}
 function isUnitPracticeActive() { return !!_unitQuiz; }
 
 // The Post set is a maths/science glossary, and the child meets these CONCEPTS
@@ -656,7 +676,7 @@ function renderUnitQuestion() {
   detail.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonUnitPractice(); renderTopicsHome()">✕</button>
+        <button class="grammar-back-btn" onclick="quitUnitPractice()">✕</button>
         <span class="grammar-quiz-progress">${_unitLabel(st.unit)} · ${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round((st.idx / total) * 100)}%"></div></div>
       </div>
@@ -796,7 +816,7 @@ if (typeof module !== 'undefined' && module.exports) {
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     _unitExampleParts, _unitExampleHTML,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
-    isUnitPracticeActive, abandonUnitPractice, renderUnitsBar, renderUnitsHistory,
+    isUnitPracticeActive, abandonUnitPractice, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
     _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,

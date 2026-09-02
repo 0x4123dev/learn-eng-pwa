@@ -452,7 +452,16 @@ function closeSpeedComplete() {
     renderSpeedChallenge();
 }
 
+// The ✕ sits beside the answer box of a TIMED run that is scored only when it
+// ends, and it used to drop the whole run on one tap with nothing said. Ask —
+// but only once there is a run to lose, so opening and changing your mind
+// stays free. (The finished-game path is closeSpeedComplete, not this one.)
 function exitSpeedGame() {
+    const done = (speedState && Array.isArray(speedState.verbResults))
+        ? speedState.verbResults.length : 0;
+    if (done && typeof confirm === 'function'
+        && !confirm('You are ' + done + ' verbs into this speed run.\n'
+            + 'If you leave now, this run will not be scored.\n\nLeave anyway?')) return;
     clearInterval(speedState.timer);
     document.getElementById('speedGameOverlay').classList.remove('active');
     document.getElementById('bottomNav').style.display = 'flex';

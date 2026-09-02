@@ -281,6 +281,24 @@ function startRewriteReviewQuiz(qids) {
 function isRewriteQuizActive() { return !!_rwQuiz; }
 function abandonRewriteQuiz() { _rwQuiz = null; }
 
+// The ✕ sits exactly where a thumb rests while tapping answers, and it used to
+// bin the whole round on a single touch with nothing said. Ask first — but only
+// when there is work to lose, so starting and changing your mind stays free.
+function rwAnsweredCount() {
+  return _rwQuiz ? _rwQuiz.answers.filter(a => a !== null).length : 0;
+}
+function quitRewriteQuiz() {
+  const st = _rwQuiz;
+  if (st) {
+    const done = rwAnsweredCount();
+    if (done && typeof confirm === 'function'
+      && !confirm(`You are ${done}/${st.questions.length} through this Rewrite practice.\n`
+        + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
+  }
+  abandonRewriteQuiz();
+  renderRewriteHome();
+}
+
 function renderRwQuestion() {
   const screen = document.getElementById('rewriteScreen');
   if (!screen || !_rwQuiz) return;
@@ -322,7 +340,7 @@ function renderRwQuestion() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonRewriteQuiz(); renderRewriteHome()">✕</button>
+        <button class="grammar-back-btn" onclick="quitRewriteQuiz()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
@@ -443,7 +461,7 @@ function openRwSession(idx) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderRewriteHome, startRewriteQuiz, startRewriteReviewQuiz, submitRwText,
-    nextRwQuestion, finishRewriteQuiz, isRewriteQuizActive, abandonRewriteQuiz,
+    nextRwQuestion, finishRewriteQuiz, isRewriteQuizActive, abandonRewriteQuiz, quitRewriteQuiz, rwAnsweredCount,
     setRwHistoryFilter, openRwSession, rewriteById, rewriteBank, _rwTextCorrect, _rwNormalize,
     switchRwSubTab, renderRewriteLessons, openRewriteLesson, saveRewriteSession,
   };

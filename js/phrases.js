@@ -449,6 +449,24 @@ function startPhrasesReviewQuiz(qids) {
 function isPhrasesQuizActive() { return !!_phrQuiz; }
 function abandonPhrasesQuiz() { _phrQuiz = null; }
 
+// The ✕ sits exactly where a thumb rests while tapping answers, and it used to
+// bin the whole round on a single touch with nothing said. Ask first — but only
+// when there is work to lose, so starting and changing your mind stays free.
+function phrAnsweredCount() {
+  return _phrQuiz ? _phrQuiz.answers.filter(a => a !== null).length : 0;
+}
+function quitPhrasesQuiz() {
+  const st = _phrQuiz;
+  if (st) {
+    const done = phrAnsweredCount();
+    if (done && typeof confirm === 'function'
+      && !confirm(`You are ${done}/${st.questions.length} through this Phrases practice.\n`
+        + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
+  }
+  abandonPhrasesQuiz();
+  renderPhrasesHome();
+}
+
 // What sits under a revealed answer: the listen gate, or a plain Next.
 //
 // A meaning follow-up ("What is the meaning of …?") is answered in Vietnamese.
@@ -535,7 +553,7 @@ function renderPhrQuestion() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonPhrasesQuiz(); renderPhrasesHome()">✕</button>
+        <button class="grammar-back-btn" onclick="quitPhrasesQuiz()">✕</button>
         <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
@@ -694,7 +712,7 @@ function finishPhrasesQuiz() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderPhrasesHome, startPhrasesQuiz, startPhrasesReviewQuiz, answerPhrQuestion,
-    nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz,
+    nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz, quitPhrasesQuiz, phrAnsweredCount,
     setPhrHistoryFilter, openPhrSession,
     switchPhrSubTab, renderPhrasesLessons, phrasesLessonEntries, filterPhrLessons,
     phrMeaningQuestion, phrExpandPairs, phrasesById, savePhrasesSession,

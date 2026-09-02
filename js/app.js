@@ -1291,6 +1291,34 @@ function switchScreen(screenId) {
         if (typeof abandonWars === 'function') abandonWars();
     }
 
+    // Guard: Phrases and Collocation share one screen, and BOTH were missing
+    // from this list — a mis-tap on the bottom bar ended either practice with
+    // no question asked at all.
+    if (screenId !== 'phrasesScreen' &&
+        typeof isPhrasesQuizActive === 'function' && isPhrasesQuizActive()) {
+        if (!confirm('You are in the middle of a Phrases practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonPhrasesQuiz === 'function') abandonPhrasesQuiz();
+    }
+
+    if (screenId !== 'phrasesScreen' &&
+        typeof isCollocActive === 'function' && isCollocActive()) {
+        if (!confirm('You are in the middle of a Collocation practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonCollocPractice === 'function') abandonCollocPractice();
+    }
+
+    // Guard: the Grade 4 units practice, which lives on the Topics screen.
+    if (screenId !== 'topicsScreen' &&
+        typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {
+        if (!confirm('You are in the middle of a practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonUnitPractice === 'function') abandonUnitPractice();
+    }
+
     // Guard: warn before leaving an in-progress Rewrite practice.
     if (screenId !== 'rewriteScreen' &&
         typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {

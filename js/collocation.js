@@ -293,6 +293,26 @@ function startCollocPractice(n) {
 }
 
 function abandonCollocPractice() { _colQuiz = null; }
+
+// The ✕ sits exactly where a thumb rests while tapping answers, and it used to
+// bin the whole round on a single touch with nothing said. Ask first — but only
+// when there is work to lose, so starting and changing your mind stays free.
+function colAnsweredCount() {
+  return _colQuiz ? _colQuiz.answers.filter(a => a !== null).length : 0;
+}
+function quitCollocPractice() {
+  const st = _colQuiz;
+  if (st) {
+    const done = colAnsweredCount();
+    if (done && typeof confirm === 'function'
+      && !confirm(`You are ${done}/${st.questions.length} through this Collocation practice.\n`
+        + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
+  }
+  abandonCollocPractice();
+  // renderPhrasesHome lives in another file; guarded because this module is also
+  // loaded on its own in tests, where there is no home screen to go back to.
+  if (typeof renderPhrasesHome === 'function') renderPhrasesHome();
+}
 function isCollocActive() { return !!_colQuiz; }
 
 // The header is identical on both kinds of screen, so it is written once.
@@ -300,7 +320,7 @@ function colQuizHeaderHTML(st) {
   const total = st.questions.length;
   return `
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonCollocPractice(); renderPhrasesHome()">✕</button>
+        <button class="grammar-back-btn" onclick="quitCollocPractice()">✕</button>
         <span class="grammar-quiz-progress">🧩 ${st.idx + 1}/${total}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(st.idx / total * 100)}%"></div></div>
       </div>`;
@@ -652,7 +672,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     collocBank, renderCollocHome, collocLessonHTML, startCollocPractice,
     answerCollocChoice, submitCollocText, nextCollocQuestion, finishCollocPractice,
-    isCollocActive, abandonCollocPractice,
+    isCollocActive, abandonCollocPractice, quitCollocPractice, colAnsweredCount,
     _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase,
     collocPhrase, collocFilledParts, collocFollowupQuestion, colExpandFollowups,
     colFollowScore, colFollowDone, answerCollocFollowup, renderCollocFollowup,

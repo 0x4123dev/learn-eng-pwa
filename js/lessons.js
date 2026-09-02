@@ -240,6 +240,9 @@ function reduceMistake(word) {
 
 function completeLesson() {
     recordStudy();
+    // The lesson is over from here on: the × must stop asking whether to throw
+    // away work that has just been scored and paid for.
+    if (lessonState) lessonState.finished = true;
 
     const accuracy = Math.round((lessonState.correctInLesson / (lessonState.correctInLesson + lessonState.wrongInLesson)) * 100);
 
@@ -566,6 +569,20 @@ function showLessonCompleteUI(points, accuracy, bonusText) {
         accuracy >= 60 && typeof addChantButtonToLessonComplete === 'function') {
         addChantButtonToLessonComplete(lessonState.words);
     }
+}
+
+// The × in the lesson header used to call exitLesson() straight out: half a
+// lesson gone on one tap, nothing saved and nothing said. It asks now — but
+// only when there is work to lose, and never once the lesson is over, because
+// exitLesson() is ALSO how a finished lesson closes (the Continue button below
+// and js/daily-challenge.js both call it) and the coins are already banked.
+function quitLesson() {
+    const st = (typeof lessonState !== 'undefined') ? lessonState : null;
+    const done = st ? (st.correctInLesson || 0) + (st.wrongInLesson || 0) : 0;
+    if (done && st && !st.finished && typeof confirm === 'function'
+        && !confirm('You are ' + done + ' questions into this lesson.\n'
+            + 'If you leave now, this lesson will not be saved.\n\nLeave anyway?')) return;
+    exitLesson();
 }
 
 function exitLesson() {

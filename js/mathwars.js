@@ -287,7 +287,17 @@ function warsStopClock() {
   }
 }
 
-function abandonWars() { warsStopClock(); _warsQuiz = null; }
+function abandonWars() { warsStopClock(); _warsQuiz = null; warsLockScreen(false); }
+
+// Five minutes against a clock, scored only when the clock stops — a mis-tap on
+// the bottom bar costs the whole round and the clock does not wait while the
+// child works out how to get back. So the bar goes away for the round, exactly
+// as it does for Đấu Toán, and every exit below restores it.
+function warsLockScreen(locked) {
+  if (typeof document === 'undefined') return;
+  const nav = document.getElementById('bottomNav');
+  if (nav) nav.style.display = locked ? 'none' : '';
+}
 
 // The ✕ sits exactly where a thumb rests while tapping answers. A round is two
 // minutes of concentration and is scored only at the end, so a stray tap costs
@@ -338,6 +348,7 @@ function startWarsRound() {
   if (typeof setInterval === 'function') {
     _warsQuiz.timer = setInterval(warsClockTick, 250);
   }
+  warsLockScreen(true);
   renderWars();
 }
 
@@ -373,6 +384,7 @@ function finishWars(timedOut) {
   const st = _warsQuiz;
   if (!st) return;
   warsStopClock();
+  warsLockScreen(false);   // the round is scored: let the child leave
   const answered = st.answers.length;
   const correct = st.answers.filter(a => a.ok).length;
   const wrong = answered - correct;
