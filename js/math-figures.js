@@ -592,18 +592,78 @@ const _MF_TRI = {
   lbl: [[26, 111, 'end'], [174, 111, 'start'], [95, 16, 'middle']],
 };
 
+// Build the triangle from the three angles the question states, so the corner
+// labelled 97° is actually drawn obtuse. _MF_TRI stays as the fallback for
+// questions that give no numbers. v[0] is the bottom-left corner, v[1] the
+// bottom-right, v[2] the apex — the caller orders them, this only sizes them.
+function _mfTriFromAngles(A, B) {
+  const rad = Math.PI / 180, C = 180 - A - B;
+  // Side AB along the x-axis; C's position follows from the two base angles.
+  // Law of sines with AB = 1: the apex sits at distance sin(B)/sin(C) from A.
+  const d = Math.sin(B * rad) / Math.sin(C * rad);
+  const raw = [[0, 0], [1, 0], [d * Math.cos(A * rad), -d * Math.sin(A * rad)]];
+  const xs = raw.map(p => p[0]), ys = raw.map(p => p[1]);
+  const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+  const k = Math.min(132 / w, 76 / h);
+  const ox = 100 - (Math.min(...xs) + w / 2) * k, oy = 100 - (Math.max(...ys)) * k;
+  return raw.map(p => [ox + p[0] * k, oy + p[1] * k]);
+}
+
 function _mfqTamGiac(f) {
   const v = f.v || ['A', 'B', 'C'];
   const angles = f.angles || {};
+  const num = (x) => {
+    const m = /(\d+(?:[.,]\d+)?)/.exec(String(x == null ? '' : x));
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
+  };
+  let vals = v.map(name => num(angles[name]));
+  const gap = vals.findIndex(x => x === null);
+  if (gap >= 0 && vals.filter(x => x !== null).length === 2) {
+    vals[gap] = 180 - vals.filter(x => x !== null).reduce((a, b) => a + b, 0);
+  }
+  const usable = vals.every(x => x !== null && x > 8 && x < 164)
+    && Math.abs(vals[0] + vals[1] + vals[2] - 180) < 0.5;
+
+  const P = usable ? _mfTriFromAngles(vals[0], vals[1]) : _MF_TRI.P;
+  // Interior wedge at each corner, measured from that corner toward the other two.
+  const dirTo = (i, j) => {
+    const a = Math.atan2(-(P[j][1] - P[i][1]), P[j][0] - P[i][0]) * 180 / Math.PI;
+    return (a + 360) % 360;
+  };
+  const span = (i, j, k) => {
+    let a0 = dirTo(i, j), a1 = dirTo(i, k);
+    if (((a1 - a0) % 360 + 360) % 360 > 180) { const t = a0; a0 = a1; a1 = t; }
+    return [a0, a0 + (((a1 - a0) % 360 + 360) % 360)];
+  };
   let out = '';
   v.forEach((name, i) => {
-    const a = _MF_TRI.ang[i], p = _MF_TRI.P[i];
-    out += _mfAng(p[0], p[1], i === 2 ? 20 : 22, a[0], a[1], angles[name], i === 2 ? 34 : 36);
+    const [j, k] = [[1, 2], [2, 0], [0, 1]][i];
+    const arc = usable ? span(i, j, k) : _MF_TRI.ang[i];
+    let r = i === 2 ? 20 : 22;
+    let labelR = r + 14;
+    if (usable) {
+      // A short side puts two corner labels within reach of each other. Keep
+      // both the arc and its label inside a fraction of the nearest side so a
+      // flat or small triangle never stacks two numbers in the same place.
+      const near = Math.min(Math.hypot(P[j][0] - P[i][0], P[j][1] - P[i][1]),
+                            Math.hypot(P[k][0] - P[i][0], P[k][1] - P[i][1]));
+      r = Math.max(10, Math.min(r, near * 0.26));
+      labelR = Math.max(13, Math.min(r + 14, near * 0.38));
+    }
+    out += _mfAng(P[i][0], P[i][1], r, arc[0], arc[1], angles[name], labelR);
   });
-  out += _mfPoly(_MF_TRI.P, 'mf-l mf-tri');
+  out += _mfPoly(P, 'mf-l mf-tri');
   v.forEach((name, i) => {
-    const L = _MF_TRI.lbl[i];
-    out += _mfT(L[0], L[1], name, L[2]);
+    if (usable) {
+      // Push the vertex letter outward, away from the triangle's centre.
+      const cx = (P[0][0] + P[1][0] + P[2][0]) / 3, cy = (P[0][1] + P[1][1] + P[2][1]) / 3;
+      const dx = P[i][0] - cx, dy = P[i][1] - cy, m = Math.hypot(dx, dy) || 1;
+      const anchor = dx < -6 ? 'end' : (dx > 6 ? 'start' : 'middle');
+      out += _mfT(P[i][0] + dx / m * 13, P[i][1] + dy / m * 13 + (dy > 0 ? 8 : 0), name, anchor);
+    } else {
+      const L = _MF_TRI.lbl[i];
+      out += _mfT(L[0], L[1], name, L[2]);
+    }
   });
   return out;
 }
