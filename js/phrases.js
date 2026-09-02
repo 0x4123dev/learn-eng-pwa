@@ -729,6 +729,10 @@ function finishPhrasesQuiz() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderPhrasesHome, startPhrasesQuiz, startPhrasesReviewQuiz, answerPhrQuestion,
+    // A practice mixes CHOSEN and TYPED questions, so a caller that can meet
+    // either needs both ways in. Exported for the tests; the page calls the
+    // global directly.
+    submitPhrTextAnswer,
     nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz, quitPhrasesQuiz, phrAnsweredCount,
     setPhrHistoryFilter, openPhrSession,
     switchPhrSubTab, renderPhrasesLessons, phrasesLessonEntries, filterPhrLessons,
