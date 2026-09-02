@@ -391,6 +391,74 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
   });
 });
 
+function shieldHandler() { return loadModule('functions/api/night-raid/shield.js'); }
+function homeHandler() { return loadModule('functions/api/night-raid/home.js'); }
+const NR = loadModule('js/night-raid-rules.js');
+
+function farmLayout() {
+  return NR.normalizeLayout({ cells: [{ type: 'rice-field', lane: 0, col: 1, gx: 0, gy: 0, tier: 1, uid: 'p-testfarm01', readyAt: Date.now() + 3600000 }], soldiers: 2, dogLane: 2 });
+}
+async function seedHome(world, user, coins) {
+  const r = await world.call(homeHandler().onRequestPut, {
+    url: '/api/night-raid/home', method: 'PUT', token: user.token,
+    body: { layout: farmLayout(), teammates: ['gunner'], dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
+  });
+  assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
+}
+function homeRow(world, uid) { return world.db.prepare('SELECT * FROM night_raid_homes WHERE user_id=?').get(uid); }
+
+suite('daily task: POST /api/night-raid/shield', () => {
+  test('no home yet → 404 no_home, inventory untouched', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 404);
+    assert.equal(r.data.code, 'no_home');
+    assert.equal(shields(world, kid.uid), 1);
+  });
+
+  test('no shields → 409 empty', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 409);
+    assert.equal(r.data.code, 'empty');
+  });
+
+  test('spends one shield and protects the home for 24 h; a second press is refused and costs nothing', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    world.db.prepare('UPDATE users SET night_shields=2 WHERE id=?').run(kid.uid);
+    const before = Date.now();
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.shields.count, 1);
+    const until = homeRow(world, kid.uid).shield_until;
+    assert.inRange(until - before, 24 * 3600000 - 5000, 24 * 3600000 + 5000);
+    assert.equal(r.data.shields.activeUntil, until);
+    const again = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(again.status, 409);
+    assert.equal(again.data.code, 'active');
+    assert.equal(again.data.activeUntil, until);
+    assert.equal(shields(world, kid.uid), 1, 'a refused activation does not burn a shield');
+  });
+
+  test('an expired shield can be replaced', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() - 1000, kid.uid);
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 200);
+    assert.truthy(homeRow(world, kid.uid).shield_until > Date.now());
+  });
+});
+
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
 }
