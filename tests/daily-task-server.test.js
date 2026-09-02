@@ -294,6 +294,69 @@ suite('daily task core: the once-a-day reward', () => {
   });
 });
 
+function meHandler() { return loadModule('functions/api/me/daily-tasks.js'); }
+function activityHandler() { return loadModule('functions/api/activity.js'); }
+
+suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
+  test('needs a token; returns empty tasks for a child with nothing assigned', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    const anon = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET' });
+    assert.equal(anon.status, 401);
+    const r = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.tasks, []);
+    assert.equal(r.data.allDone, false);
+    assert.deepEqual(r.data.shields, { count: 0, activeUntil: 0 });
+  });
+
+  test('a synced 100% session moves the counter and pays the reward inside the activity POST', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'collocation', 1);
+    const at = Date.now();
+    const r = await world.call(activityHandler().onRequestPost, {
+      token: kid.token,
+      body: { items: [{ type: 'collocation', title: 'Collocation practice (20 Qs)', score: 20, total: 20, at }] },
+    });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.deepEqual(r.data.dailyTask, { allDone: true, justRewarded: true, rewardedToday: true });
+    assert.equal(rewards(world, kid.uid).length, 1);
+    assert.equal(shields(world, kid.uid), 1);
+    const me = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
+    assert.equal(me.data.tasks[0].count, 1);
+    assert.equal(me.data.tasks[0].done, true);
+    assert.equal(me.data.rewardedToday, true);
+    assert.equal(me.data.justRewarded, false, 'already paid by the activity POST');
+    assert.equal(me.data.shields.count, 1);
+  });
+
+  test('the single-item activity POST also evaluates', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases', 1);
+    const r = await world.call(activityHandler().onRequestPost, {
+      token: kid.token, body: { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 },
+    });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.dailyTask.justRewarded, true);
+  });
+
+  test('a broken daily_tasks row cannot fail the sync', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    world.db.prepare(
+      "INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)"
+    ).run(kid.uid, 'x', 'x', 1, 'phrases', '{"detail":{"field":"a\\"b'  /* not JSON */);
+    const r = await world.call(activityHandler().onRequestPost, {
+      token: kid.token, body: { items: [{ type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: Date.now() }] },
+    });
+    assert.equal(r.status, 200, 'activity sync must succeed even if evaluation cannot');
+    assert.equal(r.data.ok, true);
+  });
+});
+
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
 }

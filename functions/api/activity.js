@@ -1,4 +1,5 @@
 import { requireAuth, json, err } from './_lib.js';
+import { evaluate } from './_daily-task.js';
 
 // Every type js/auth.js can emit. A type missing from this list is not
 // rejected loudly — clean() returns null, the row is dropped, the response is
@@ -59,6 +60,15 @@ function coinSnapshot(env, uid, body, source) {
       source.type, source.title);
 }
 
+// Daily-task evaluation rides on the sync. It must never break the sync: a
+// thrown error here would make the client retry the same activities forever.
+async function dailyTaskSummary(env, uid) {
+  try {
+    const e = await evaluate(env, uid);
+    return { allDone: e.allDone, justRewarded: e.justRewarded, rewardedToday: e.rewardedToday };
+  } catch (e) { return null; }
+}
+
 // POST /api/activity
 //   single: { type, title, score, total, detail }
 //   batch (backfill): { items: [ { ...activity, at: <ms> }, ... ] }  (only items
@@ -91,7 +101,7 @@ export async function onRequestPost({ request, env }) {
     if (snapshot) stmts.push(snapshot);
     if (stmts.length) await env.DB.batch(stmts);
     await env.DB.prepare("DELETE FROM activities WHERE created_at < datetime('now','-30 days')").run();
-    return json({ ok: true, count: rows.length });
+    return json({ ok: true, count: rows.length, dailyTask: await dailyTaskSummary(env, auth.uid) });
   }
 
   const r = clean(body);
@@ -101,5 +111,5 @@ export async function onRequestPost({ request, env }) {
      VALUES (?, ?, ?, ?, ?, ?)`
   ).bind(auth.uid, r.type, r.title, r.score, r.total, r.detailJson).run();
   await env.DB.prepare("DELETE FROM activities WHERE created_at < datetime('now','-30 days')").run();
-  return json({ ok: true, id: res.meta.last_row_id });
+  return json({ ok: true, id: res.meta.last_row_id, dailyTask: await dailyTaskSummary(env, auth.uid) });
 }
