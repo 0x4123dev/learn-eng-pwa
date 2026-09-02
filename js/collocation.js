@@ -276,17 +276,26 @@ function startCollocPractice(n) {
   const bank = collocBank();
   if (!bank.length) return;
   const size = Math.min(n || 20, bank.length);
-  const typed = bank.filter(colIsTyped);
-  const choice = bank.filter(q => !colIsTyped(q));
-  const wantTyped = colTypedTarget(size, typed.length);
+  // Collocations this child has missed before come first, up to half the
+  // practice, until each is answered right five times running
+  // (js/wrong-priority.js). The typed/choice split is drawn from what is
+  // left, so the count stays exact.
+  const forced = (typeof prioForced === 'function') ? prioForced('col', bank, size) : [];
+  const taken = new Set(forced);
+  const rest = bank.filter(q => !taken.has(q));
+  const room = size - forced.length;
+  const typed = rest.filter(colIsTyped);
+  const choice = rest.filter(q => !colIsTyped(q));
+  const wantTyped = colTypedTarget(room, typed.length);
   // Drawn from each pool separately — that is what makes the count exact —
   // then shuffled together so the typing is not bunched at the end.
   // Each question drags its understanding check along right behind it. The
   // practice button still promises the number of COLLOCATION questions — that
   // is what a child counts — so the size above is left alone.
   const questions = colExpandFollowups(_colShuffle(
-    _colShuffle(typed).slice(0, wantTyped)
-      .concat(_colShuffle(choice).slice(0, size - wantTyped))
+    forced
+      .concat(_colShuffle(typed).slice(0, wantTyped))
+      .concat(_colShuffle(choice).slice(0, room - wantTyped))
   ));
   _colQuiz = { questions, idx: 0, answers: new Array(questions.length).fill(null) };
   renderCollocQuestion();
@@ -636,6 +645,14 @@ function finishCollocPractice() {
     // Owe every missed question back (after the coins are banked, so a
     // mistake never feels like it took away what was just earned).
     if (wrong.length && typeof retryAdd === 'function') retryAdd('col', wrong);
+    // Wrong-priority (js/wrong-priority.js): collocations only, not their
+    // check screens, like the owed drill. Kept AFTER retryAdd — a
+    // fixed-window test scans from the start of this function for that call.
+    if (typeof prioRecord === 'function') {
+      prioRecord('col',
+        st.questions.filter((q, i) => !q.followup && st.answers[i] && st.answers[i].isCorrect).map(q => q.id),
+        wrong.map(q => q.id));
+    }
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 

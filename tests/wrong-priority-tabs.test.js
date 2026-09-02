@@ -60,6 +60,7 @@ function makeEnv(state) {
     vm.runInContext(
         'this.unitQuiz = () => _unitQuiz; this.wfQuiz = () => _wfQuiz; this.phrQuiz = () => _phrQuiz;'
         + 'this.colQuiz = () => _colQuiz; this.rwQuiz = () => _rwQuiz;'
+        + 'this.colIsTyped = colIsTyped;'      // const, so invisible on ctx unless exposed like this
         + 'this.VERBS = irregularVerbs; this.UNITS_RETRY_CONFIG = UNITS_RETRY_CONFIG;', ctx);
     return { ctx, el, saves };
 }
@@ -207,6 +208,35 @@ suite('wrong priority tabs: Phrases', () => {
         assert.truthy(Object.keys(store).every(k => !/^p[mt]-/.test(k)),
             'no pm-/pt- ids in the store: ' + Object.keys(store).join(','));
         assert.equal(Object.keys(store).length, base.length, 'one entry per phrase question, none per meaning check');
+    });
+});
+
+suite('wrong priority tabs: Collocation', () => {
+    test('missed collocations are drawn first; the count holds; checks still follow', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.collocBank().filter(q => !ctx.colIsTyped(q)).slice(-5);
+        seed(ctx, 'col', targets.map(q => q.id));
+        ctx.startCollocPractice(10);
+        const base = ctx.colQuiz().questions.filter(q => !q.followup);
+        assert.equal(base.length, 10);
+        const drawn = new Set(base.map(q => q.id));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+        assert.truthy(base.some(ctx.colIsTyped), 'five forced choice questions must not squeeze out every typed one');
+    });
+
+    test('base answers move the streak; checks are not tracked', () => {
+        const { ctx } = makeEnv();
+        ctx.startCollocPractice(10);
+        const st = ctx.colQuiz();
+        const base = st.questions.map((q, i) => ({ q, i })).filter(x => !x.q.followup);
+        const [right, wrong] = base;
+        const store = seed(ctx, 'col', [right.q.id, wrong.q.id], 1);
+        st.answers[right.i] = { value: 0, isCorrect: true };
+        st.answers[wrong.i] = { value: 0, isCorrect: false };
+        ctx.finishCollocPractice();
+        assert.equal(store[right.q.id].s, 2);
+        assert.equal(store[wrong.q.id].s, 0);
+        assert.equal(Object.keys(store).length, base.length, 'one entry per collocation, none per check');
     });
 });
 
