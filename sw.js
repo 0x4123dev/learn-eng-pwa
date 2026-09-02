@@ -94,6 +94,7 @@ const ASSETS = [
   '/js/night-raid.js',
   '/js/ghost-offering-link.js',
   '/js/ghost-offering-event.js',
+  '/js/daily-task-catalog.js',
   '/img/ghost-offering/courtyard-v1.webp',
   '/img/ghost-offering/roast-pig-v2.png',
   '/img/ghost-offering/boiled-chicken-v2.png',
