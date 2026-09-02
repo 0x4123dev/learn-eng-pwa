@@ -1,6 +1,6 @@
 {
   "name": "flashlingo",
-  "version": "4.15.23",
+  "version": "4.16.0",
   "description": "FlashLingo — vocabulary learning PWA",
   "private": true,
   "scripts": {
