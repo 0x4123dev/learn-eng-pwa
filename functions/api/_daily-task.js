@@ -31,7 +31,11 @@ function escapeLike(s) { return String(s).replace(/[\\%_]/g, ch => '\\' + ch); }
 function fieldName(s) { return String(s || '').replace(/[^A-Za-z0-9_]/g, ''); }
 
 // WHERE fragment + binds for one catalog match rule. Field names are
-// whitelisted to [A-Za-z0-9_] because they are interpolated into the JSON path.
+// whitelisted to [A-Za-z0-9_] because they are interpolated into the JSON
+// path. A structurally odd rule (a field that whitelists away to nothing, or
+// a detail clause with neither a prefix nor a non-null value) degrades to
+// '0' — matches nothing — same as an empty rule, rather than throwing or
+// binding undefined.
 export function matchSql(match) {
   const where = [], binds = [];
   const m = match && typeof match === 'object' ? match : {};
@@ -39,15 +43,22 @@ export function matchSql(match) {
   if (m.titleExact) { where.push('title = ?'); binds.push(String(m.titleExact)); }
   if (m.detail && m.detail.field) {
     const f = fieldName(m.detail.field);
-    if (m.detail.prefix != null) {
+    if (!f) {
+      where.push('0');
+    } else if (m.detail.prefix != null) {
       where.push(`json_extract(detail_json, '$.${f}') LIKE ? ESCAPE '\\'`);
       binds.push(escapeLike(m.detail.prefix) + '%');
-    } else {
+    } else if (m.detail.value != null) {
       where.push(`json_extract(detail_json, '$.${f}') = ?`);
       binds.push(m.detail.value);
+    } else {
+      where.push('0');
     }
   }
-  if (m.noField) where.push(`json_extract(detail_json, '$.${fieldName(m.noField)}') IS NULL`);
+  if (m.noField) {
+    const f = fieldName(m.noField);
+    where.push(f ? `json_extract(detail_json, '$.${f}') IS NULL` : '0');
+  }
   if (!where.length) where.push('0');   // an empty rule matches nothing, never everything
   return { sql: where.join(' AND '), binds };
 }
@@ -62,7 +73,12 @@ export async function progress(env, uid, now = Date.now()) {
   const tasks = [];
   for (const row of results || []) {
     let match = {};
-    try { match = JSON.parse(row.match_json) || {}; } catch (e) { match = {}; }
+    try {
+      match = JSON.parse(row.match_json) || {};
+    } catch (e) {
+      console.warn('daily-task: bad match_json for task ' + row.id);
+      match = {};
+    }
     const m = matchSql(match);
     const r = await env.DB.prepare(
       `SELECT COUNT(*) AS n FROM activities
@@ -70,7 +86,7 @@ export async function progress(env, uid, now = Date.now()) {
           AND created_at >= ? AND created_at < ? AND ${m.sql}`
     ).bind(uid, row.activity_type, startUtc, endUtc, ...m.binds).first();
     const count = Number((r && r.n) || 0);
-    const target = Math.max(1, Math.trunc(+row.target || 1));
+    const target = Math.min(MAX_TARGET, Math.max(1, Math.trunc(+row.target || 1)));
     tasks.push({ id: row.id, kind: row.kind, label: row.label, target, count, done: count >= target, created_at: row.created_at });
   }
   return { date, tasks, allDone: tasks.length > 0 && tasks.every(t => t.done) };
@@ -88,19 +104,35 @@ export async function rewardedOn(env, uid, date) {
 // a row pays out. Claim and payout run in ONE batch (one transaction), with
 // the payout statements guarded by SQLite's changes() — the row count of the
 // statement that ran just before them — so a crash between claim and payout
-// cannot leave a claimed day unpaid, and an ignored claim pays nothing.
+// cannot leave a claimed day unpaid, and an ignored claim pays nothing. The
+// coin grant additionally checks NOT EXISTS on its own (user, day)-unique
+// note as a second lock: even if changes() were ever unreliable (e.g. a
+// future D1 quirk), the note makes a duplicate grant for the same day
+// impossible to insert. The shield UPDATE stays chained off the coin
+// grant's changes(), so a day that (for any reason) didn't get paid coins
+// never gets a shield either.
 export async function evaluate(env, uid, now = Date.now()) {
   const p = await progress(env, uid, now);
-  if (!p.tasks.length) return Object.assign(p, { rewardedToday: false, justRewarded: false });
+  if (!p.tasks.length) {
+    const rewardedToday = await rewardedOn(env, uid, p.date);
+    return Object.assign(p, { rewardedToday, justRewarded: false });
+  }
   let rewardedToday = await rewardedOn(env, uid, p.date);
   let justRewarded = false;
   if (p.allDone && !rewardedToday) {
+    const note = 'Daily task ' + p.date;
     const results = await env.DB.batch([
       env.DB.prepare('INSERT OR IGNORE INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, ?, ?)')
         .bind(uid, p.date, DAILY_REWARD.coins, DAILY_REWARD.shields),
-      // changes() here = rows inserted by the claim above (1 or 0).
-      env.DB.prepare('INSERT INTO coin_grants (user_id, amount, note, granted_by) SELECT ?, ?, ?, 0 WHERE changes() > 0')
-        .bind(uid, DAILY_REWARD.coins, 'Daily task ' + p.date),
+      // changes() here = rows inserted by the claim above (1 or 0). NOT
+      // EXISTS is belt-and-braces on top of that: the note is unique per
+      // (user, day) by construction, so this can insert at most once per day
+      // no matter what changes() reports.
+      env.DB.prepare(
+        `INSERT INTO coin_grants (user_id, amount, note, granted_by)
+         SELECT ?, ?, ?, 0 WHERE changes() > 0
+           AND NOT EXISTS (SELECT 1 FROM coin_grants WHERE user_id = ? AND note = ?)`
+      ).bind(uid, DAILY_REWARD.coins, note, uid, note),
       // changes() here = rows inserted by the coin grant above (1 or 0).
       env.DB.prepare('UPDATE users SET night_shields = night_shields + ? WHERE id = ? AND changes() > 0')
         .bind(DAILY_REWARD.shields, uid),

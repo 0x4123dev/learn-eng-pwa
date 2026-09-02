@@ -164,6 +164,24 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(m.binds[0], 'Phrases 100\\% practice\\_%');
   });
 
+  test('matchSql degrades structurally odd rules to \'0\' instead of throwing or binding undefined', () => {
+    assert.equal(core().matchSql({ detail: { field: 'chapter' } }).sql, '0');
+    assert.equal(core().matchSql({ detail: { field: '...', value: 1 } }).sql, '0');
+    assert.equal(core().matchSql({ noField: '...' }).sql, '0');
+  });
+
+  test('a structurally odd match_json never throws; progress just counts zero', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    world.db.prepare(
+      'INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?,?,?,?,?,?,1)'
+    ).run(kid.uid, 'odd', 'Odd task', 1, 'math', '{"detail":{"field":"chapter"}}');
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10, detail: { chapter: 2 } });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks.length, 1);
+    assert.equal(p.tasks[0].count, 0);
+  });
+
   test('no tasks → empty list, never allDone; inactive tasks are ignored', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
@@ -242,6 +260,24 @@ suite('daily task core: the once-a-day reward', () => {
     const r = await world.call(loadModule('functions/api/coins.js').onRequestPost, { token: kid.token, body: { proto: 2 } });
     assert.equal(r.status, 200);
     assert.equal(r.data.granted, 200);
+  });
+
+  test('a replayed batch against a claimed day grants nothing', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases', 1);
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20 });
+    await core().evaluate(world.env, kid.uid, NOW);
+    const real = world.env.DB.prepare.bind(world.env.DB);
+    const blind = Object.create(world.env.DB);
+    blind.prepare = sql => /FROM daily_task_rewards/.test(sql)
+      ? { bind: () => ({ first: async () => null }) } : real(sql);
+    blind.batch = world.env.DB.batch.bind(world.env.DB);
+    const loser = await core().evaluate({ DB: blind }, kid.uid, NOW);
+    assert.equal(loser.justRewarded, false);
+    assert.equal(rewards(world, kid.uid).length, 1);
+    assert.equal(grants(world, kid.uid).length, 1);
+    assert.equal(shields(world, kid.uid), 1);
   });
 
   test('shieldStatus reports inventory and an active shield only while it is active', async () => {
