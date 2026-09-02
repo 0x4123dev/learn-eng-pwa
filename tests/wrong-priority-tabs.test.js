@@ -240,6 +240,41 @@ suite('wrong priority tabs: Collocation', () => {
     });
 });
 
+suite('wrong priority tabs: Rewrite', () => {
+    test('missed sentences are drawn first and the practice is still ten', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.rewriteBank().slice(-5);
+        seed(ctx, 'rw', targets.map(q => q.id));
+        ctx.startRewriteQuiz(10);
+        const qs = ctx.rwQuiz().questions;
+        assert.equal(qs.length, 10);
+        const drawn = new Set(qs.map(q => q.id));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+    });
+
+    test("'all' still takes the whole bank", () => {
+        const { ctx } = makeEnv();
+        seed(ctx, 'rw', [ctx.rewriteBank()[0].id]);
+        ctx.startRewriteQuiz('all');
+        assert.equal(ctx.rwQuiz().questions.length, ctx.rewriteBank().length);
+    });
+
+    test('answers move the streak; unanswered is wrong', () => {
+        const { ctx } = makeEnv();
+        ctx.startRewriteQuiz(10);
+        const st = ctx.rwQuiz();
+        const [right, wrong, blank] = st.questions;
+        const store = seed(ctx, 'rw', [right.id, wrong.id], 1);
+        st.answers[0] = { value: 'x', isCorrect: true };
+        st.answers[1] = { value: 'x', isCorrect: false };
+        ctx.finishRewriteQuiz();
+        assert.equal(store[right.id].s, 2);
+        assert.equal(store[wrong.id].s, 0);
+        assert.equal(store[blank.id].s, 0);
+        assert.equal(store[blank.id].w, 1);
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));

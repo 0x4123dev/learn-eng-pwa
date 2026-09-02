@@ -265,7 +265,16 @@ function startRewriteQuiz(n) {
   const bank = rewriteBank();
   if (!bank.length) return;
   const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
-  const qs = (n === 'all') ? bank.slice() : rwShuffle(bank, seed).slice(0, Math.min(n, bank.length));
+  let qs;
+  if (n === 'all') {
+    qs = bank.slice();
+  } else {
+    // Sentences this child has missed before come first, up to half the
+    // practice, until each is answered right five times running
+    // (js/wrong-priority.js); the rest is the usual seeded draw.
+    const size = Math.min(n, bank.length);
+    qs = (typeof prioPick === 'function') ? prioPick('rw', bank, size) : rwShuffle(bank, seed).slice(0, size);
+  }
   _rwQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
   renderRwQuestion();
 }
@@ -402,6 +411,16 @@ function finishRewriteQuiz() {
 
   // Owe every missed question back (after the coins are banked).
   if (typeof retryAdd === 'function') retryAdd('rw', wrong.map(w => rewriteById(w.qid)).filter(Boolean));
+  // The silent priority list (js/wrong-priority.js): same right/wrong line as
+  // the owed drill above.
+  // Placed AFTER retryAdd on purpose: a test in tests/retry-drill.test.js
+  // searches a fixed 3000-character window from the start of this function
+  // for the retryAdd call, so nothing new may be inserted ahead of it.
+  if (typeof prioRecord === 'function') {
+    prioRecord('rw',
+      st.questions.filter((q, i) => st.answers[i] && st.answers[i].isCorrect).map(q => q.id),
+      wrong.map(w => w.qid));
+  }
 
   // Sync rewrite activity to the server (best-effort) for the admin view.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
