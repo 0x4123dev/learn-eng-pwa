@@ -36,4 +36,7 @@ CREATE TABLE IF NOT EXISTS daily_task_rewards (
 
 -- Night Raid shield inventory. On users, not night_raid_homes: a child can
 -- earn a shield before they have ever opened Cướp Đêm (no home row yet).
+--
+-- Re-running this file fails with "duplicate column name: night_shields",
+-- which is the correct no-op signal (SQLite has no ADD COLUMN IF NOT EXISTS).
 ALTER TABLE users ADD COLUMN night_shields INTEGER NOT NULL DEFAULT 0;
