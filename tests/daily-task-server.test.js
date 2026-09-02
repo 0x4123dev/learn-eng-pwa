@@ -573,7 +573,7 @@ suite('daily task: raiding a shielded castle', () => {
     const { start, result } = await raid(world, attacker, defender);
     assert.falsy(start.shielded);
     assert.falsy(result.shielded);
-    assert.truthy(result.loss <= 30, 'normal loss is capped at 30: ' + result.loss);
+    assert.inRange(result.loss, 0, 30, 'normal loss is 0 on a win or 10-30 on a loss: ' + result.loss);
   });
 
   test('GET /api/night-raid/home reports the owner\'s own shieldUntil', async () => {
@@ -585,6 +585,25 @@ suite('daily task: raiding a shielded castle', () => {
     const r = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
     assert.equal(r.status, 200);
     assert.equal(r.data.home.shieldUntil, until);
+  });
+
+  test('the rules cannot produce a win against a pinned defense of 100000', () => {
+    for (const dmg of [1, 100000, 999999]) {
+      const sim = NR.resolveAutoBattle({ defense: 100000, castleHp: 200, layout: { cells: [], dogLane: 2, soldiers: 0 }, dogLevel: 1, teammates: [], attackerDamage: dmg });
+      assert.equal(sim.won, false, 'damage ' + dmg);
+    }
+  });
+
+  test('raiding the same shielded home twice in one day is refused with 409', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const defender = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, 800);
+    await seedHome(world, defender, 800);
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(Date.now() + 3600000, defender.uid);
+    await raid(world, attacker, defender);
+    const again = await world.call(startHandler().onRequestPost, { token: attacker.token, body: { targetId: defender.uid } });
+    assert.equal(again.status, 409);
   });
 });
 if (require.main === module) {

@@ -45,7 +45,7 @@ suite('night raid Phase 2: schema and endpoints',()=>{
   test('a breached home is sealed for a flat 20 hours',()=>{
     const helper=read('functions/api/_night-raid.js'),finish=read('functions/api/night-raid/finish.js');
     assert.truthy(helper.includes('export const RAID_LOCK_MS = 20 * 3600 * 1000'),'the lock is one named constant');
-    assert.truthy(finish.includes('lockedUntil=sim.won?now+RAID_LOCK_MS:0'),'a win seals the home from the moment of the breach');
+    assert.truthy(finish.includes('lockedUntil=won?now+RAID_LOCK_MS:0'),'a win seals the home from the moment of the breach');
     // The old rule expired at ICT midnight: breached at 23:00 bought one hour
     // of peace, breached at 00:30 bought nearly a day.
     assert.falsy(finish.includes('setUTCHours(24,0,0,0)'),'end-of-day protection must not come back');
@@ -55,7 +55,7 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     // lootable coins — or one hit by a raider already at the daily reward cap —
     // stayed wide open, because that UPDATE was skipped entirely.
     const finish=read('functions/api/night-raid/finish.js');
-    assert.truthy(finish.includes("if(sim.won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?')"),
+    assert.truthy(finish.includes("if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?')"),
       'the seal is its own statement, keyed on the win alone');
     assert.falsy(/lootable_coins=MAX\(0,lootable_coins-\?\),ruined_until/.test(finish),'seal and theft must not share a statement');
   });
