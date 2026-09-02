@@ -275,6 +275,44 @@ suite('wrong priority tabs: Rewrite', () => {
     });
 });
 
+suite('wrong priority tabs: Verbs', () => {
+    test('missed verbs are drawn into the next game and the game is still ten', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.VERBS.slice(-5);
+        seed(ctx, 'verbs', targets.map(v => v.v1));
+        ctx.startSpeedChallenge(0);
+        const drawn = ctx.speedState.currentVerbs;
+        assert.equal(drawn.length, 10);
+        const v1s = new Set(drawn.map(v => v.v1));
+        targets.forEach(v => assert.truthy(v1s.has(v.v1), v.v1 + ' was missed before but not drawn'));
+    });
+
+    test('the level filter still applies: a level-2 miss never enters a level-1 game', () => {
+        const { ctx } = makeEnv();
+        const l2 = ctx.VERBS.find(v => v.level === 2);
+        assert.truthy(l2, 'the bank has a level-2 verb');
+        seed(ctx, 'verbs', [l2.v1]);
+        ctx.startSpeedChallenge(1);
+        assert.truthy(ctx.speedState.currentVerbs.length > 0);
+        assert.falsy(ctx.speedState.currentVerbs.some(v => v.v1 === l2.v1));
+    });
+
+    test('a finished game moves the streak by v1', () => {
+        const { ctx } = makeEnv();
+        const [a, b] = ctx.VERBS;
+        const store = seed(ctx, 'verbs', [a.v1, b.v1], 1);
+        ctx.speedState.currentVerbs = [a, b];
+        ctx.speedState.verbResults = [
+            { v1: a.v1, v2: a.v2, v3: a.v3, userV2: a.v2, userV3: a.v3, correct: true, timeUsed: 1000 },
+            { v1: b.v1, v2: b.v2, v3: b.v3, userV2: 'zzz', userV3: 'zzz', correct: false, timeUsed: null },
+        ];
+        ctx.completeSpeedChallenge();
+        assert.equal(store[a.v1].s, 2);
+        assert.equal(store[b.v1].s, 0);
+        assert.equal(store[b.v1].w, 2);
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));

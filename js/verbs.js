@@ -128,8 +128,12 @@ function startSpeedChallenge(level) {
         ? [...irregularVerbs]
         : irregularVerbs.filter(v => v.level === level);
 
-    // Shuffle and pick questions
-    speedState.currentVerbs = shuffleArray(verbs).slice(0, SPEED_QUESTIONS_PER_GAME);
+    // Verbs this child has missed before come first, up to half the game,
+    // until each is typed right five times running (js/wrong-priority.js);
+    // the rest is the usual random draw. A verb is known by its base form.
+    speedState.currentVerbs = (typeof prioPick === 'function')
+        ? prioPick('verbs', verbs, SPEED_QUESTIONS_PER_GAME, { idOf: v => v.v1 })
+        : shuffleArray(verbs).slice(0, SPEED_QUESTIONS_PER_GAME);
 
     // Show game overlay
     document.getElementById('speedGameOverlay').classList.add('active');
@@ -411,6 +415,17 @@ function completeSpeedChallenge() {
     // Owe every missed verb back (after the coins are banked). The result
     // rows carry v1/v2/v3, which is exactly what the drill needs.
     if (typeof retryAdd === 'function') retryAdd('verbs', (speedState.verbResults || []).filter(r => r && !r.correct));
+    // The silent priority list (js/wrong-priority.js): every verb answered in
+    // this game moves its streak, keyed by base form like the owed drill.
+    // Placed AFTER retryAdd on purpose: a test in tests/retry-drill.test.js
+    // searches a fixed 3000-character window from the start of this function
+    // for the retryAdd call, so nothing new may be inserted ahead of it.
+    if (typeof prioRecord === 'function') {
+        const rows = speedState.verbResults || [];
+        prioRecord('verbs',
+            rows.filter(r => r && r.correct).map(r => r.v1),
+            rows.filter(r => r && !r.correct).map(r => r.v1));
+    }
     // Streak: any completed practice counts as a study event for the day.
     if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
     const _coinEl = document.getElementById('finalCoins');
