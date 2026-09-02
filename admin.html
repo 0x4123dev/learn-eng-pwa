@@ -277,6 +277,7 @@
       <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
       <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
       <button class="admin-tab" id="tabActivity" role="tab" aria-controls="activityPanel" aria-selected="false" data-tab="activity">🕘 Hoạt động</button>
+      <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Daily task</button>
     </nav>
 
     <div class="card admin-panel" id="usersPanel" role="tabpanel" aria-labelledby="tabUsers">
@@ -342,6 +343,33 @@
       </div>
     </section>
 
+    <section class="card learning-card admin-panel" id="dailyPanel" role="tabpanel" aria-labelledby="tabDaily" hidden>
+      <div class="learning-head">
+        <div class="learning-title">
+          <span class="learning-icon" aria-hidden="true">📋</span>
+          <div><h2>Daily task</h2>
+            <p id="dailyWho">Chọn một bé, rồi giao "N bài đúng 100%" mỗi ngày. Xong hết task trong ngày bé được 200 xu + 1 Khiên Đêm.</p></div>
+        </div>
+        <div class="learning-filters">
+          <label>Người học
+            <select id="dailyUser" aria-label="Chọn người học"><option value="">— chọn bé —</option></select>
+          </label>
+        </div>
+      </div>
+      <div id="dailyStatus" class="muted" style="margin:6px 10px;"></div>
+      <div class="scroll"><table id="dailyTable">
+        <thead><tr><th>Bài</th><th>Mục tiêu</th><th>Hôm nay</th><th class="hide-sm">Tạo lúc</th><th style="text-align:right">Xoá</th></tr></thead>
+        <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr></tbody>
+      </table></div>
+      <form id="dailyForm" class="learning-filters" style="margin-top:14px;" autocomplete="off">
+        <label>Nhóm bài <select id="dailyGroup"></select></label>
+        <label>Chi tiết <select id="dailyKind"></select></label>
+        <label>Số bài đúng 100% <input id="dailyTarget" type="number" min="1" max="50" value="5" style="width:80px"></label>
+        <button class="btn" type="submit" id="dailySave">💾 Lưu</button>
+        <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
+      </form>
+    </section>
+
     <div class="card admin-panel" id="activityPanel" role="tabpanel" aria-labelledby="tabActivity" hidden>
       <div class="toolbar">
         <h2 style="margin:0 6px 0 10px;">Activity history</h2>
@@ -356,6 +384,7 @@
   </div>
 </div>
 
+<script src="js/daily-task-catalog.js"></script>
 <script>
 const TOKEN_KEY = 'eng_admin_token';
 
@@ -487,6 +516,13 @@ async function loadUsers(){
     .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
     .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
   if ([...learnerSelect.options].some(o=>o.value===previous)) learnerSelect.value = previous;
+  const dailySelect = document.getElementById('dailyUser');
+  const prevDaily = dailySelect.value;
+  dailySelect.innerHTML = '<option value="">— chọn bé —</option>' + _users
+    .filter(u=>u.role!=='admin')
+    .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
+    .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
+  if ([...dailySelect.options].some(o=>o.value===prevDaily)) dailySelect.value = prevDaily;
   renderUsers();
 }
 
@@ -621,6 +657,7 @@ function switchAdminTab(tab){
   document.querySelectorAll('.admin-tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.dataset.tab===tab)));
   document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id !== tab + 'Panel'; });
   if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
+  if (tab === 'daily') loadDailyTasks().catch(()=>{});
 }
 
 function selectSkillUser(userId, name){
@@ -724,6 +761,69 @@ async function loadActivity(userId, name){
   }).join('');
 }
 
+// ── Daily task tab ──────────────────────────────────────────────────────
+function fillDailyKinds(){
+  const groupSel = document.getElementById('dailyGroup');
+  const kindSel = document.getElementById('dailyKind');
+  if (!groupSel.options.length) {
+    groupSel.innerHTML = DailyTaskCatalog.groups().map(g=>`<option value="${g.id}">${esc(g.label)}</option>`).join('');
+  }
+  kindSel.innerHTML = DailyTaskCatalog.entries(groupSel.value).map(e=>`<option value="${e.key}">${esc(e.label)}</option>`).join('');
+}
+function resetDailyForm(){
+  document.getElementById('dailyGroup').selectedIndex = 0;
+  fillDailyKinds();
+  document.getElementById('dailyTarget').value = '5';
+  document.getElementById('dailyKind').focus();
+}
+function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
+async function loadDailyTasks(){
+  fillDailyKinds();
+  const uid = document.getElementById('dailyUser').value;
+  const body = document.getElementById('dailyBody');
+  const status = document.getElementById('dailyStatus');
+  if (!uid){ body.innerHTML = '<tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr>'; status.textContent=''; return; }
+  const r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid));
+  const shield = r.shields || {count:0,activeUntil:0};
+  const done = r.tasks.filter(t=>t.done).length;
+  status.innerHTML = `Hôm nay ${esc(r.date)}: <b>${done}/${r.tasks.length}</b> task xong · ${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}`
+    + ` · 🛡️ <b>${shield.count}</b> khiên${shield.activeUntil>Date.now()?' · đang bật đến '+esc(fmtUntil(shield.activeUntil)):''}`;
+  if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao task nào.</td></tr>'; return; }
+  body.innerHTML = r.tasks.map(t=>`<tr>
+      <td><b>${esc(t.label)}</b><div class="muted" style="font-size:11px">${esc(t.kind)}</div></td>
+      <td class="num">${t.target} bài 100%</td>
+      <td>${t.done?`<span class="pill on">✓ ${t.count}/${t.target}</span>`:`<span class="pill off">${t.count}/${t.target}</span>`}</td>
+      <td class="muted hide-sm" title="${esc(fmtDate(t.created_at))}">${relTime(t.created_at)}</td>
+      <td style="text-align:right"><button class="act-daily-del mini" data-id="${t.id}" data-task-label="${esc(t.label)}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
+    </tr>`).join('');
+  body.querySelectorAll('.act-daily-del').forEach(b=>{
+    b.onclick = async ()=>{
+      if (!confirm('Xoá task “'+b.dataset.taskLabel+'”?\n\nBé sẽ không còn phải làm task này từ hôm nay.')) return;
+      try { await api('admin/daily-tasks?id='+encodeURIComponent(b.dataset.id), { method:'DELETE' }); }
+      catch(e){ alert('Không xoá được: '+e.message); }
+      loadDailyTasks().catch(()=>{});
+    };
+  });
+}
+async function saveDailyTask(ev){
+  ev.preventDefault();
+  const uid = document.getElementById('dailyUser').value;
+  if (!uid){ alert('Chọn một bé trước.'); return; }
+  const kind = document.getElementById('dailyKind').value;
+  const target = Math.trunc(Number(document.getElementById('dailyTarget').value));
+  if (!Number.isFinite(target) || target<1 || target>50){ alert('Số bài phải từ 1 đến 50.'); return; }
+  const btn = document.getElementById('dailySave'); btn.disabled = true;
+  try {
+    await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind, target } });
+    document.getElementById('dailyTarget').value = '5';
+    await loadDailyTasks();
+  } catch(e){
+    alert(/đã có task/.test(e.message) ? 'Bé đã có task này. Xoá task cũ rồi tạo lại nếu muốn đổi số bài.'
+      : /tối đa/.test(e.message) ? e.message + '. Xoá bớt task cũ trước khi thêm.'
+      : 'Không lưu được: '+e.message);
+  } finally { btn.disabled = false; }
+}
+
 // One switch for the whole app, not per child: a duel needs two children, so
 // a per-child switch would mostly produce friend lists with nobody to fight.
 let _appFlags = {};
@@ -772,6 +872,7 @@ document.getElementById('refreshBtn').onclick = ()=>{
   loadUsers().catch(()=>{});
   loadActivity(_selectedUser, _selectedName).catch(()=>{});
   loadSkills(_skillUser, _skillName).catch(()=>{});
+  loadDailyTasks().catch(()=>{});
 };
 document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
 document.getElementById('skillUser').addEventListener('change', e=>{
@@ -781,6 +882,10 @@ document.getElementById('skillUser').addEventListener('change', e=>{
 });
 document.getElementById('skillMenu').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
 document.getElementById('skillDays').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
+document.getElementById('dailyUser').addEventListener('change', ()=>loadDailyTasks().catch(()=>{}));
+document.getElementById('dailyGroup').addEventListener('change', fillDailyKinds);
+document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
+document.getElementById('dailyAdd').onclick = resetDailyForm;
 document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
 document.getElementById('sortSel').addEventListener('change', e=>{
   const key = e.target.value;
