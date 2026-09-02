@@ -110,6 +110,27 @@ suite('wrong priority: bookkeeping', () => {
             assert.equal(ctx.prioStreak('wf', 'q1'), 0, 'threw or miscounted for ' + JSON.stringify(junk));
         }
     });
+
+    test('a junk entry value is replaced on the next miss, not wedged forever', () => {
+        // A stray primitive where an { s, w, t } object belongs: `e.s = ...`
+        // on it would be a silent no-op, so it could never reach 5 and never
+        // graduate. It must be treated as never-tracked, same as no entry.
+        const ctx = engineEnv({ wrongPrio: { wf: { q1: 42 } } });
+        ctx.prioRecord('wf', [], ['q1'], 5);
+        assert.deepEqual(ctx.appState.wrongPrio.wf.q1, { s: 0, w: 1, t: 5 });
+    });
+
+    test('an inherited key can never look like a tracked entry', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: {} } });
+        assert.equal(ctx.prioStreak('wf', 'constructor'), null);
+        assert.equal(ctx.prioStreak('wf', 'toString'), null);
+    });
+
+    test('the missed count does not wrap at 32 bits', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: { q1: entry(0, 2147483647) } } });
+        ctx.prioRecord('wf', [], ['q1'], 1);
+        assert.equal(ctx.appState.wrongPrio.wf.q1.w, 2147483648, '`| 0` would have wrapped this negative');
+    });
 });
 
 suite('wrong priority: the forced part of a draw', () => {
@@ -162,6 +183,16 @@ suite('wrong priority: the forced part of a draw', () => {
     test('no profile: nothing is forced', () => {
         assert.deepEqual(engineEnv().prioForced('wf', pool(10), 10), []);
     });
+
+    test('a junk entry is never forced', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: { q1: 42 } } });
+        assert.deepEqual(ctx.prioForced('wf', pool(10), 10), []);
+    });
+
+    test('an inherited key can never look like a forced entry', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: {} } });
+        assert.deepEqual(ctx.prioForced('wf', [{ id: 'constructor' }], 10), []);
+    });
 });
 
 suite('wrong priority: the whole draw', () => {
@@ -208,6 +239,45 @@ suite('wrong priority: the whole draw', () => {
         const before = ids(p).join();
         ctx.prioPick('wf', p, 10);
         assert.equal(ids(p).join(), before);
+    });
+
+    test('a pool with duplicate ids never yields the same id twice', () => {
+        // Two DIFFERENT objects that resolve to the same id — the forced copy
+        // must not leave its sibling free to be drawn again by chance, and two
+        // untracked duplicates must not both survive into the random fill.
+        const ctx = engineEnv({ wrongPrio: { wf: { q1: entry(0, 1) } } });
+        const p = [{ id: 'q1' }, { id: 'q2' }, { id: 'q1' }, { id: 'q3' }, { id: 'q4' }, { id: 'q3' }];
+        for (let seed = 1; seed <= 20; seed++) {
+            const drawn = ctx.prioPick('wf', p, 4, { rand: lcg(seed) });
+            assert.equal(drawn.length, 4);
+            assert.equal(new Set(ids(drawn)).size, 4,
+                'duplicate-id pool yielded a repeat for seed ' + seed + ': ' + ids(drawn).join(','));
+        }
+    });
+});
+
+suite('wrong priority: prioStore', () => {
+    test('a read never creates the container', () => {
+        const ctx = engineEnv({});
+        assert.equal(ctx.prioStore('wf'), null);
+        assert.deepEqual(ctx.appState, {}, 'reading must not create appState.wrongPrio');
+    });
+
+    test('a read with no profile at all does not throw', () => {
+        assert.equal(engineEnv().prioStore('wf'), null);
+    });
+
+    test('junk in the container is left alone by a read, replaced only when something is written', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: 'nope' } });
+        assert.equal(ctx.prioStore('wf'), null, 'junk is not trusted on a read');
+        assert.equal(ctx.appState.wrongPrio.wf, 'nope', 'a read must not repair it either');
+        ctx.prioRecord('wf', [], ['q1'], 1);
+        assert.deepEqual(ctx.appState.wrongPrio.wf, { q1: { s: 0, w: 1, t: 1 } });
+    });
+
+    test('an existing well-formed slot is returned as-is', () => {
+        const ctx = engineEnv({ wrongPrio: { wf: { q1: entry(0, 1) } } });
+        assert.equal(ctx.prioStore('wf'), ctx.appState.wrongPrio.wf);
     });
 });
 
