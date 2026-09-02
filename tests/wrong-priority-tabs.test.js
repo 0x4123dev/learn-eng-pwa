@@ -358,6 +358,37 @@ suite('wrong priority tabs: Grammar', () => {
     });
 });
 
+suite('wrong priority tabs: the owed-back drill is separate', () => {
+    test('a right retype clears the debt but never moves the streak', () => {
+        const { ctx, el } = makeEnv();
+        const q = ctx.wordformBank().find(q => q.type === 'text');
+        const store = seed(ctx, 'wf', [q.id], 2);
+        ctx.retryAdd('wf', [q]);
+        ctx.startRetryDrill('wf');
+        assert.truthy(ctx.isRetryDrillActive());
+        el('retryInput').value = String(ctx.retryCfg('wf').answerText(q));
+        ctx.submitRetryAnswer();
+        assert.equal(ctx.retryCount('wf'), 0, 'the debt is cleared by a right retype');
+        assert.equal(store[q.id].s, 2, 'but the priority streak is untouched: only real practices count');
+    });
+
+    test('a wrong retype does not count either', () => {
+        const { ctx, el } = makeEnv();
+        const q = ctx.wordformBank().find(q => q.type === 'text');
+        const store = seed(ctx, 'wf', [q.id], 2);
+        ctx.retryAdd('wf', [q]);
+        ctx.startRetryDrill('wf');
+        el('retryInput').value = 'zzz';
+        ctx.submitRetryAnswer();
+        assert.equal(store[q.id].s, 2);
+        assert.equal(store[q.id].w, 1);
+    });
+
+    test('the engine is never called from the drill', () => {
+        assert.falsy(/prioRecord|prioPick|prioForced/.test(read('js/retrydrill.js')));
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));
