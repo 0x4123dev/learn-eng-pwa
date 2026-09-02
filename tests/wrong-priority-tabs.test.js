@@ -313,6 +313,51 @@ suite('wrong priority tabs: Verbs', () => {
     });
 });
 
+suite('wrong priority tabs: Grammar', () => {
+    const genv = loadAppCode({});
+    const fresh = (wrongPrio) => genv.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0, wrongPrio });
+
+    test('missed questions are drawn first and the quiz is still the promised size', () => {
+        const unit = genv.getGrammarUnit('unit12');           // Tenses
+        const targets = unit.questions.slice(-5);
+        const grammar = {};
+        targets.forEach(q => { grammar[q.id] = { s: 0, w: 1, t: 0 }; });
+        fresh({ grammar });
+        const qs = genv.generateGrammarQuiz('unit12', 10);
+        assert.equal(qs.length, 10);
+        assert.equal(new Set(qs.map(q => q.id)).size, 10, 'no question twice');
+        const drawn = new Set(qs.map(q => q.id));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+    });
+
+    test('a miss in one unit never enters another unit\'s quiz', () => {
+        const other = genv.getGrammarUnit('unit1').questions[0];
+        fresh({ grammar: { [other.id]: { s: 0, w: 1, t: 0 } } });
+        assert.falsy(genv.generateGrammarQuiz('unit12', 10).some(q => q.id === other.id));
+    });
+
+    test('saving a session moves the streak; a skipped question is neither right nor wrong', () => {
+        const mcs = genv.getGrammarUnit('unit12').questions.filter(q => q.type !== 'arrangement');
+        const [a, b, c] = mcs;
+        fresh({ grammar: { [a.id]: { s: 4, w: 1, t: 0 }, [b.id]: { s: 2, w: 1, t: 0 }, [c.id]: { s: 2, w: 1, t: 0 } } });
+        genv.saveGrammarSession('unit12', [a, b, c], [a.correct, b.correct === 0 ? 1 : 0, null]);
+        const store = genv.__getAppState().wrongPrio.grammar;
+        assert.falsy(store[a.id], 'the fifth right answer in a row releases the question');
+        assert.equal(store[b.id].s, 0);
+        assert.equal(store[b.id].w, 2);
+        assert.equal(store[c.id].s, 2, 'skipped: untouched, the same line the mistake bank draws');
+    });
+
+    test('the mistake bank is untouched by the new rule', () => {
+        const [a] = genv.getGrammarUnit('unit12').questions.filter(q => q.type !== 'arrangement');
+        fresh({ grammar: {} });
+        genv.saveGrammarSession('unit12', [a], [a.correct === 0 ? 1 : 0]);
+        const st = genv.__getAppState();
+        assert.truthy(st.grammarMistakes[a.id], 'the mistake bank still records a miss');
+        assert.equal(st.wrongPrio.grammar[a.id].s, 0, 'and so does the priority list');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));

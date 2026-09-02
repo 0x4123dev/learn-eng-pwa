@@ -36960,6 +36960,10 @@ function generateGrammarQuiz(unitId, n) {
     const unit = getGrammarUnit(unitId);
     if (!unit) return [];
     const pool = [...unit.questions];
+    // Questions this child has missed before come first, up to half the quiz,
+    // until each is answered right five times running (js/wrong-priority.js).
+    // n <= 0 keeps the old slice path: a negative n is characterized in tests.
+    if (typeof prioPick === 'function' && n > 0) return prioPick('grammar', pool, n);
     // Fisher-Yates shuffle
     for (let i = pool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -37056,6 +37060,16 @@ function saveGrammarSession(unitId, questions, answers) {
             }
         }
     });
+
+    // The silent priority list (js/wrong-priority.js): every answered question
+    // moves its streak. A skipped one is neither right nor wrong — the same
+    // line the mistake bank above draws.
+    if (typeof prioRecord === 'function') {
+        const answered = i => answers[i] !== null && answers[i] !== undefined;
+        prioRecord('grammar',
+            questions.filter((q, i) => answered(i) && scoreGrammarQuestion(q, answers[i]) === 1).map(q => q.id),
+            questions.filter((q, i) => answered(i) && scoreGrammarQuestion(q, answers[i]) !== 1).map(q => q.id));
+    }
 
     const session = {
         id: 'g-' + Date.now(),
