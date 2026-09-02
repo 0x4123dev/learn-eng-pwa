@@ -761,7 +761,14 @@ function _mfqTrungTuyen(f) {
   return _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
     + _mfLine(100, 25, 100, 100, 'mf-l mf-hi')
     + _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b')
-    + _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c')
+    // The two base ticks say "BD = DC is GIVEN". For a genuine median that is
+    // the definition, but both questions using this template ask the child to
+    // PROVE the two triangles equal, and each offers a c-c-c distractor whose
+    // premise is exactly BD = DC. Drawing it handed the child the wrong answer
+    // and contradicted the explanation, which says BD = DC is not a given.
+    // midTicks:false leaves the base unmarked; omitting it keeps the median.
+    + (f.midTicks === false ? ''
+        : _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c'))
     + _mfDot(100, 100)
     + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start')
     + _mfT(100, 114, f.mid || 'M', 'middle');
@@ -882,7 +889,11 @@ function mathQuestionFigureHTML(fig) {
     const alt = String(fig.alt || 'Hình vẽ từ đề thi gốc')
       .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return `<div class="math-q-figwrap math-source-crop" style="--crop-ratio:${w}/${h}">`
-      + `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" `
+      // Do not lazy-load these source pages. Mobile Safari can leave an
+      // absolutely positioned image inside an overflow crop unloaded even
+      // after its question is visible, producing a large blank white box.
+      // Intrinsic dimensions also let WebKit lay the crop out before decode.
+      + `<img src="${src}" alt="${alt}" width="${sw}" height="${sh}" loading="eager" decoding="async" `
       + `style="width:${sw / w * 100}%;left:${-x / w * 100}%;top:${-y / h * 100}%">`
       + `</div>`;
   }
