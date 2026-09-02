@@ -91,6 +91,10 @@
   .learning-filters select { display:block; min-height:38px; margin-top:4px; padding:7px 28px 7px 10px;
                              border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink);
                              font:600 13px/1.2 inherit; cursor:pointer; }
+  /* The daily-task form reuses .learning-filters, but it is a form on the left
+     of the panel, not a filter bar hugging the right edge. */
+  #dailyForm { align-items:flex-end; justify-content:flex-start; }
+  #dailyForm input[type=number] { display:block; margin-top:4px; min-height:38px; }
   .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; padding:14px; }
   .learning-stat { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fbfcff; }
   .learning-stat b { display:block; font-size:19px; font-variant-numeric:tabular-nums; }
@@ -356,7 +360,7 @@
           </label>
         </div>
       </div>
-      <div id="dailyStatus" class="muted" style="margin:6px 10px;"></div>
+      <div id="dailyStatus" class="muted" style="margin:6px 10px;" aria-live="polite"></div>
       <div class="scroll"><table id="dailyTable">
         <thead><tr><th>Bài</th><th>Mục tiêu</th><th>Hôm nay</th><th class="hide-sm">Tạo lúc</th><th style="text-align:right">Xoá</th></tr></thead>
         <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr></tbody>
@@ -364,7 +368,7 @@
       <form id="dailyForm" class="learning-filters" style="margin-top:14px;" autocomplete="off">
         <label>Nhóm bài <select id="dailyGroup"></select></label>
         <label>Chi tiết <select id="dailyKind"></select></label>
-        <label>Số bài đúng 100% <input id="dailyTarget" type="number" min="1" max="50" value="5" style="width:80px"></label>
+        <label>Số lượt đạt mỗi ngày <input id="dailyTarget" type="number" min="1" max="50" value="5" style="width:80px"></label>
         <button class="btn" type="submit" id="dailySave">💾 Lưu</button>
         <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
       </form>
@@ -423,7 +427,15 @@ async function api(path, opts){
   });
   if (res.status===401 || res.status===403){ logout(); throw new Error('unauth'); }
   const data = await res.json().catch(()=>null);
-  if (!res.ok) throw new Error((data && data.error) || ('HTTP '+res.status));
+  if (!res.ok) {
+    // Carry the server's machine-readable code alongside the prose, so callers
+    // can branch on `duplicate`/`too_many` instead of matching Vietnamese text
+    // that any copy edit would silently break.
+    const e = new Error((data && data.error) || ('HTTP '+res.status));
+    e.code = data && data.code;
+    e.status = res.status;
+    throw e;
+  }
   return data;
 }
 
@@ -777,13 +789,28 @@ function resetDailyForm(){
   document.getElementById('dailyKind').focus();
 }
 function fmtUntil(ms){ const d=new Date(ms); return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }
+// Saving needs a child. Say so by greying the button rather than letting the
+// admin fill the form and only then be told to pick one.
+function syncDailySave(){
+  const btn = document.getElementById('dailySave');
+  if (btn) btn.disabled = !document.getElementById('dailyUser').value;
+}
 async function loadDailyTasks(){
   fillDailyKinds();
+  syncDailySave();
   const uid = document.getElementById('dailyUser').value;
   const body = document.getElementById('dailyBody');
   const status = document.getElementById('dailyStatus');
   if (!uid){ body.innerHTML = '<tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr>'; status.textContent=''; return; }
-  const r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid));
+  // A failed reload must not leave the previous child's rows on screen looking
+  // like today's truth, so the table is emptied here and the error rethrown.
+  let r;
+  try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)); }
+  catch(e){
+    status.textContent = 'Không tải được (' + e.message + ')';
+    body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách task.</td></tr>';
+    throw e;
+  }
   const shield = r.shields || {count:0,activeUntil:0};
   const done = r.tasks.filter(t=>t.done).length;
   status.innerHTML = `Hôm nay ${esc(r.date)}: <b>${done}/${r.tasks.length}</b> task xong · ${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}`
@@ -791,16 +818,24 @@ async function loadDailyTasks(){
   if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao task nào.</td></tr>'; return; }
   body.innerHTML = r.tasks.map(t=>`<tr>
       <td><b>${esc(t.label)}</b><div class="muted" style="font-size:11px">${esc(t.kind)}</div></td>
-      <td class="num">${t.target} bài 100%</td>
+      <td class="num">${t.target} lượt đạt</td>
       <td>${t.done?`<span class="pill on">✓ ${t.count}/${t.target}</span>`:`<span class="pill off">${t.count}/${t.target}</span>`}</td>
       <td class="muted hide-sm" title="${esc(fmtDate(t.created_at))}">${relTime(t.created_at)}</td>
-      <td style="text-align:right"><button class="mini act-daily-del" data-id="${t.id}" data-task-label="${esc(t.label)}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
+      <td style="text-align:right"><button class="mini act-daily-del" data-id="${t.id}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
     </tr>`).join('');
-  body.querySelectorAll('.act-daily-del').forEach(b=>{
+  // The rows were just rendered from r.tasks in order, so the task each button
+  // belongs to is right here — no need to smuggle its label through the DOM.
+  [...body.querySelectorAll('.act-daily-del')].forEach((b, i)=>{
+    const t = r.tasks[i];
     b.onclick = async ()=>{
-      if (!confirm('Xoá task “'+b.dataset.taskLabel+'”?\n\nBé sẽ không còn phải làm task này từ hôm nay.')) return;
-      try { await api('admin/daily-tasks?id='+encodeURIComponent(b.dataset.id), { method:'DELETE' }); }
-      catch(e){ alert('Không xoá được: '+e.message); }
+      if (!confirm('Xoá task “'+t.label+'”?\n\nBé sẽ không còn phải làm task này từ hôm nay.')) return;
+      try { await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' }); }
+      catch(e){
+        // A logged-out admin has already been bounced to the login screen by
+        // api(); an alert and a reload on top of that are just noise.
+        if (e.message !== 'unauth') alert('Không xoá được: '+e.message);
+        return;
+      }
       loadDailyTasks().catch(()=>{});
     };
   });
@@ -813,15 +848,20 @@ async function saveDailyTask(ev){
   const target = Math.trunc(Number(document.getElementById('dailyTarget').value));
   if (!Number.isFinite(target) || target<1 || target>50){ alert('Số bài phải từ 1 đến 50.'); return; }
   const btn = document.getElementById('dailySave'); btn.disabled = true;
+  // Only the POST decides whether the task was saved. A reload that fails
+  // afterwards is a display problem, and must never be reported as "not saved"
+  // for a task the server already has.
+  let saved = false;
   try {
     await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind, target } });
-    document.getElementById('dailyTarget').value = '5';
-    await loadDailyTasks();
+    saved = true;
   } catch(e){
-    alert(/đã có task/.test(e.message) ? 'Bé đã có task này. Xoá task cũ rồi tạo lại nếu muốn đổi số bài.'
-      : /tối đa/.test(e.message) ? e.message + '. Xoá bớt task cũ trước khi thêm.'
+    alert(e.code === 'duplicate' ? 'Bé đã có task này. Xoá task cũ rồi tạo lại nếu muốn đổi số bài.'
+      : e.code === 'too_many' ? e.message + '. Xoá bớt task cũ trước khi thêm.'
       : 'Không lưu được: '+e.message);
   } finally { btn.disabled = false; }
+  if (saved) resetDailyForm();
+  loadDailyTasks().catch(()=>{});
 }
 
 // One switch for the whole app, not per child: a duel needs two children, so
@@ -882,7 +922,11 @@ document.getElementById('skillUser').addEventListener('change', e=>{
 });
 document.getElementById('skillMenu').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
 document.getElementById('skillDays').addEventListener('change', ()=>loadSkills(_skillUser,_skillName).catch(()=>{}));
-document.getElementById('dailyUser').addEventListener('change', ()=>loadDailyTasks().catch(()=>{}));
+document.getElementById('dailyUser').addEventListener('change', ()=>{
+  syncDailySave();
+  loadDailyTasks().catch(()=>{});
+});
+syncDailySave();
 document.getElementById('dailyGroup').addEventListener('change', fillDailyKinds);
 document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
 document.getElementById('dailyAdd').onclick = resetDailyForm;

@@ -375,6 +375,24 @@ suite('device profiles: the app stops offering a form that would be refused', ()
     });
 });
 
+suite('admin: the Daily task tab', () => {
+    test('the Daily task tab has a panel and the catalog it needs', () => {
+        assert.truthy(/<button class="admin-tab" id="tabDaily"[^>]*aria-controls="dailyPanel"/.test(adminHtml));
+        assert.truthy(adminHtml.includes('id="dailyPanel"'), 'aria-controls must point at a real panel');
+        assert.truthy(adminHtml.includes('<script src="js/daily-task-catalog.js">'),
+            'DailyTaskCatalog fills both dropdowns');
+    });
+
+    test('the target the admin can type is the target the server accepts', () => {
+        // Two caps in two runtimes: a form that offers 99 when the server tops
+        // out at 50 turns a typo into an error message instead of a task.
+        const client = adminHtml.match(/id="dailyTarget"[^>]*max="(\d+)"/);
+        const server = read('functions/api/_daily-task.js').match(/export const MAX_TARGET = (\d+);/);
+        assert.truthy(client && server, 'both caps must exist');
+        assert.equal(Number(client[1]), Number(server[1]));
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));
