@@ -47,6 +47,13 @@ suite('daily task catalog: shape', () => {
     const accepted = [...(/const TYPES = \[([^\]]*)\]/.exec(server)[1]).matchAll(/'([a-z]+)'/g)].map(m => m[1]);
     for (const e of Catalog.all()) assert.contains(accepted, e.activityType, e.key);
   });
+
+  test('catalog data is frozen: mutation attempts have no effect', () => {
+    try { Catalog.all()[0].match = { nope: true }; } catch (e) { /* strict-mode TypeError, also fine */ }
+    try { Catalog.get('phrases').go.calls[0][0] = 'nope'; } catch (e) { /* strict-mode TypeError, also fine */ }
+    assert.equal(Catalog.get('phrases').match.titlePrefix, 'Phrases practice');
+    assert.truthy(Object.isFrozen(Catalog.get('phrases').go.calls[0]), 'call tuple should be frozen');
+  });
 });
 
 suite('daily task catalog: match rules mirror what js/auth.js actually uploads', () => {
@@ -94,8 +101,30 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
       .map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
     for (const e of Catalog.all()) {
       for (const call of e.go.calls) {
-        assert.truthy(new RegExp('function ' + call[0] + '\\s*\\(').test(src), e.key + ': ' + call[0] + ' is not a function in the app');
+        // Anchored at line start (m flag) so only top-level function
+        // declarations count — matches what globalThis[fn] will find.
+        assert.truthy(new RegExp('^function ' + call[0] + '\\s*\\(', 'm').test(src), e.key + ': ' + call[0] + ' is not a function in the app');
       }
+    }
+  });
+
+  test('titlePrefix/titleExact match rules are real strings in js/auth.js', () => {
+    const auth = fs.readFileSync(path.join(ROOT, 'js', 'auth.js'), 'utf8');
+    // Literal fragments _localHistoryItems() actually builds titles from.
+    [
+      "'Vocabulary lesson #'", "'Phrases practice ('", "'Word form practice ('",
+      "'Rewrite practice ('", "'Collocation practice ('", "'Verbs challenge ('",
+      "' words practice'", "'Mix 12 units'", 'detail: { unitId',
+      'examId: h.examId, chapter: h.chapter',
+    ].forEach(needle => assert.truthy(auth.includes(needle), 'js/auth.js is missing: ' + needle));
+
+    // Derive: every titlePrefix in the catalog must be a real prefix in
+    // auth.js — either '<prefix> (' (Qs-count tabs) or '<prefix> #' (vocab).
+    for (const e of Catalog.all()) {
+      if (!e.match || !e.match.titlePrefix) continue;
+      const prefix = e.match.titlePrefix;
+      const found = auth.includes("'" + prefix + " (") || auth.includes("'" + prefix + " #");
+      assert.truthy(found, e.key + ': titlePrefix "' + prefix + '" not found verbatim in js/auth.js');
     }
   });
 });

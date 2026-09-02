@@ -7,7 +7,17 @@
 // Shared by admin.html (dropdowns), js/daily-task.js (deep links) and
 // functions/api/_daily-task.js (SQL match rules), so the same key means the
 // same thing everywhere. UMD like js/night-raid-rules.js.
-const DailyTaskCatalog = (function () {
+var DailyTaskCatalog = (function () {
+  // Recursively freezes a plain object/array tree so callers can never
+  // mutate catalog data through a returned reference.
+  function freezeDeep(value) {
+    if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+      Object.freeze(value);
+      Object.keys(value).forEach(k => freezeDeep(value[k]));
+    }
+    return value;
+  }
+
   const GROUPS = [
     { id: 'practice', label: 'Luyện tập tiếng Anh' },
     { id: 'grammar', label: 'Grammar (theo unit)' },
@@ -17,9 +27,9 @@ const DailyTaskCatalog = (function () {
     { id: 'units-posthk', label: 'Units Post (Maths 4 & Science 4)' },
     { id: 'math-exam', label: 'Toán 7 · Đề thi' },
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
-  ];
+  ].map(freezeDeep);
 
-  const GRAMMAR_UNITS = [
+  const GRAMMAR_NAMES = [
     ['unit1', 'Unit 1: People'], ['unit2', 'Unit 2: Possessions'], ['unit3', 'Unit 3: Places'],
     ['unit4', 'Unit 4: Free time'], ['unit5', 'Unit 5: Food'], ['unit6', 'Unit 6: Past lives'],
     ['unit7', 'Unit 7: Journeys'], ['unit8', 'Unit 8: Appearance'], ['unit9', 'Unit 9: Entertainment'],
@@ -27,7 +37,7 @@ const DailyTaskCatalog = (function () {
     ['unit13', 'Unit 13: Exam'],
   ];
   // Unit sets: id → { group, set label, unit numbers, per-unit titles }.
-  const UNIT_SETS = [
+  const SETS = [
     { set: 'pre', group: 'units-pre', name: 'Pre', units: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], titles: {} },
     { set: 'hk1', group: 'units-hk1', name: 'HK1', units: [1, 2, 3, 4, 5], titles: {
       1: 'My friends · Time and daily routines', 2: 'My week · My birthday party',
@@ -41,11 +51,11 @@ const DailyTaskCatalog = (function () {
       3: 'Science · Matter, energy, light and sound', 4: 'Science · Living things and food chains',
       5: 'Science · Food, health and everyday science' } },
   ];
-  const MATH_CHAPTERS = [
+  const CHAPTER_TITLES = [
     [1, 'Số hữu tỉ'], [2, 'Số thực'], [3, 'Góc và đường thẳng song song'],
     [4, 'Tam giác bằng nhau'], [5, 'Thu thập và biểu diễn dữ liệu'],
   ];
-  const MATH_EXAMS = [
+  const EXAM_TITLES = [
     ['hk1-exam1', 'HK1 Exam 1'], ['hk1-exam2', 'HK1 Exam 2'], ['hk1-exam3', 'HK1 Exam 3'],
     ['hk1-exam4', 'HK1 Exam 4'], ['hk1-exam5', 'HK1 Exam 5'], ['hk1-exam6', 'HK1 Exam 6'],
     ['hk1-exam7', 'HK1 Exam 7'], ['hk1-exam8', 'HK1 Exam 8'], ['hk1-exam9', 'HK1 Exam 9'],
@@ -56,7 +66,7 @@ const DailyTaskCatalog = (function () {
   ];
 
   function entry(key, group, label, activityType, match, screen, calls) {
-    return { key, group, label, activityType, match, go: { screen, calls } };
+    return freezeDeep({ key, group, label, activityType, match, go: { screen, calls } });
   }
 
   const ENTRIES = [];
@@ -74,12 +84,12 @@ const DailyTaskCatalog = (function () {
   ENTRIES.push(entry('vocab', 'practice', 'Vocabulary lesson (từ vựng hôm nay)', 'lesson',
     { titlePrefix: 'Vocabulary lesson' }, 'homeScreen', [['goLearnToday']]));
   // Grammar — detail_json carries unitId.
-  for (const [id, name] of GRAMMAR_UNITS) {
+  for (const [id, name] of GRAMMAR_NAMES) {
     ENTRIES.push(entry('grammar:' + id, 'grammar', 'Grammar · ' + name, 'grammar',
       { detail: { field: 'unitId', value: id } }, 'grammarScreen', [['startGrammarQuiz', id, 20]]));
   }
   // Units words practice — the title IS the identity ('Unit hk1-3 words practice').
-  for (const s of UNIT_SETS) {
+  for (const s of SETS) {
     const prefix = s.set === 'pre' ? '' : s.set + '-';
     for (const u of s.units) {
       const unitKey = s.set === 'pre' ? u : prefix + u;
@@ -97,11 +107,11 @@ const DailyTaskCatalog = (function () {
   // Toán 7 — detail_json carries examId (mock exams) or chapter (drills).
   ENTRIES.push(entry('math-exam:any-hk1', 'math-exam', 'Toán 7 · Đề thi HK1 bất kỳ', 'math',
     { detail: { field: 'examId', prefix: 'hk1-' } }, 'mathHubScreen', [['openMathSection', 'hk1'], ['switchMathSubTab', 'exams']]));
-  for (const [id, title] of MATH_EXAMS) {
+  for (const [id, title] of EXAM_TITLES) {
     ENTRIES.push(entry('math-exam:' + id, 'math-exam', 'Toán 7 · Đề thi ' + title, 'math',
       { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['startMathExam', id]]));
   }
-  for (const [num, title] of MATH_CHAPTERS) {
+  for (const [num, title] of CHAPTER_TITLES) {
     ENTRIES.push(entry('math-chapter:' + num, 'math-chapter', 'Toán 7 · Chương ' + num + ' · ' + title, 'math',
       { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['startMathQuiz', num]]));
   }
