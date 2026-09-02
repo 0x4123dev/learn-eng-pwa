@@ -130,12 +130,15 @@ var DailyTask = (function () {
     // counts belong to yesterday — show them as unknown until the poll lands.
     const stale = staleDay(s);
     const list = tasks.length ? tasks.map(t => {
+      // Yesterday's tick is as stale as yesterday's count: on a stale day no
+      // task claims to be finished, so every one keeps its Vào học button.
+      const done = !!t.done && !stale;
       const pct = stale ? 0 : Math.max(0, Math.min(100, Math.round((t.count / Math.max(1, t.target)) * 100)));
-      return `<div class="dt-task ${t.done ? 'done' : ''}">
-        <div class="dt-task-top"><strong>${esc(t.label)}</strong><span>${t.done ? '✓ Xong' : (stale ? '…' : t.count + '/' + t.target)}</span></div>
+      return `<div class="dt-task ${done ? 'done' : ''}">
+        <div class="dt-task-top"><strong>${esc(t.label)}</strong><span>${done ? '✓ Xong' : (stale ? '…' : t.count + '/' + t.target)}</span></div>
         <div class="dt-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
         <small>Cần ${t.target} bài đạt</small>
-        ${t.done ? '' : `<button type="button" class="dt-go" onclick="DailyTask.go('${esc(t.kind)}')">Vào học</button>`}
+        ${done ? '' : `<button type="button" class="dt-go" onclick="DailyTask.go('${esc(t.kind)}')">Vào học</button>`}
       </div>`;
     }).join('') : '<p class="dt-empty">Hôm nay chưa có nhiệm vụ nào.</p>';
     const shieldAction = active

@@ -189,6 +189,9 @@ suite('daily task client: a cached day that is not today', () => {
     assert.falsy(html.dailyTaskScreen.includes('2/5'));
     assert.truthy(html.dailyTaskScreen.includes('…'));
     assert.truthy(html.dailyTaskScreen.includes("DailyTask.go('units:hk1-mix')"), 'the child can still go and learn');
+    // Yesterday's tick is worth no more than yesterday's count.
+    assert.falsy(html.dailyTaskScreen.includes('✓ Xong'), 'no task claims to be done on a day we have not counted');
+    assert.truthy(html.dailyTaskScreen.includes("DailyTask.go('phrases')"), 'the stale-done task gets its button back');
   });
 });
 
