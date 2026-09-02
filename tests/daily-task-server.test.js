@@ -398,6 +398,9 @@ const NR = loadModule('js/night-raid-rules.js');
 function farmLayout() {
   return NR.normalizeLayout({ cells: [{ type: 'rice-field', lane: 0, col: 1, gx: 0, gy: 0, tier: 1, uid: 'p-testfarm01', readyAt: Date.now() + 3600000 }], soldiers: 2, dogLane: 2 });
 }
+// `coins` is unused by the shield tests below but kept: Task 6's raid tests
+// seed homes with specific coin/vault amounts (800 lootable, 50 vault) to
+// assert on what a raider can steal.
 async function seedHome(world, user, coins) {
   const r = await world.call(homeHandler().onRequestPut, {
     url: '/api/night-raid/home', method: 'PUT', token: user.token,
@@ -456,6 +459,60 @@ suite('daily task: POST /api/night-raid/shield', () => {
     const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
     assert.equal(r.status, 200);
     assert.truthy(homeRow(world, kid.uid).shield_until > Date.now());
+  });
+
+  test('a child without allow_bot can still spend a shield on an existing home', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    world.db.prepare('UPDATE users SET night_shields=1, allow_bot=0 WHERE id=?').run(kid.uid);
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 200, 'the shield inventory is the child\'s; allow_bot only gates raiding');
+  });
+
+  test('a disabled account is refused before it can touch the inventory', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    world.db.prepare('UPDATE users SET night_shields=1 WHERE id=?').run(kid.uid);
+    world.db.prepare('UPDATE users SET disabled=1 WHERE id=?').run(kid.uid);
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 401);
+    assert.equal(shields(world, kid.uid), 1);
+  });
+
+  test('a race that beats the friendly pre-check is still caught by the batch guard', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await seedHome(world, kid);
+    world.db.prepare('UPDATE users SET night_shields=2 WHERE id=?').run(kid.uid);
+    const now = Date.now();
+    const realUntil = now + 10 * 3600000;
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(realUntil, kid.uid);
+    // A DB proxy that lies to the friendly pre-check (says no shield is up)
+    // on the FIRST "SELECT shield_until" read only; every later read — inside
+    // the batch and inside the shieldStatus() call on the error path — sees
+    // the real, still-active row. batch() passes straight through to the
+    // real DB, since it is the batch's own EXISTS guard, not the pre-check,
+    // that must be the actual authority here.
+    const real = world.env.DB;
+    let shieldReads = 0;
+    world.env.DB = {
+      prepare: sql => {
+        if (/SELECT shield_until FROM night_raid_homes/.test(sql)) {
+          shieldReads++;
+          if (shieldReads === 1) return { bind: () => ({ first: async () => ({ shield_until: 0 }) }) };
+        }
+        return real.prepare(sql);
+      },
+      batch: s => real.batch(s),
+    };
+    const r = await world.call(shieldHandler().onRequestPost, { token: kid.token, body: {} });
+    assert.equal(r.status, 409);
+    assert.equal(r.data.code, 'active');
+    assert.equal(r.data.activeUntil, realUntil, 'the error reports the real timer, not the faked one');
+    assert.equal(shields(world, kid.uid), 2, 'the batch guard refused the spend; nothing was burned');
+    assert.equal(homeRow(world, kid.uid).shield_until, realUntil, 'the real timer was left untouched');
   });
 });
 
