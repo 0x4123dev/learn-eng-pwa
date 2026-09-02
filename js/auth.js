@@ -473,6 +473,11 @@ const EngAuth = (function () {
         batch.forEach(o => synced.add(keyOf(o)));
         setAccount(u, { syncedKeys: Array.from(synced).slice(-2000) });
       }
+      // A finished session may have completed a daily task — repaint the
+      // card now instead of at the next throttled home render.
+      if (activityOk && typeof DailyTask !== 'undefined') {
+        try { DailyTask.refresh('sync'); } catch (e) { /* non-fatal */ }
+      }
       if (skillsOk) {
         skillBatch.forEach(o => syncedSkills.add(skillKeyOf(o)));
         setAccount(u, { syncedSkillKeys: Array.from(syncedSkills).slice(-4000) });

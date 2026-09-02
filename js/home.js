@@ -574,6 +574,11 @@ function renderHome() {
     try { renderHomeStreakPanel(); } catch (e) { /* non-fatal */ }
     try { renderHomeSkillsPanel(); } catch (e) { /* non-fatal */ }
 
+    // Daily tasks (admin-assigned). Card stays empty when there are none.
+    if (typeof DailyTask !== 'undefined') {
+        try { DailyTask.renderHomeCard(); DailyTask.refresh('home'); } catch (e) { /* non-fatal */ }
+    }
+
     // The lesson-start card / difficulty chips / history are GONE from the
     // home page in v3.38 — exit before the legacy code touches them.
     const lessonStartCard = document.getElementById('lessonStartCard');

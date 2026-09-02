@@ -1169,6 +1169,7 @@ let _profileOriginScreen = 'homeScreen';
 // their parent highlight, so opening Grammar still reads as being inside Learn.
 const NAV_GROUP_BY_SCREEN = Object.freeze({
     homeScreen: 'home',
+    dailyTaskScreen: 'home',
     learnHubScreen: 'learn',
     topicsScreen: 'learn',
     grammarScreen: 'learn',

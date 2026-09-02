@@ -140,9 +140,15 @@
                 <!-- Two goals only: grow the pet (above) + keep the streak (here). -->
                 <div class="streak-panel" id="streakPanel"></div>
 
+                <!-- Daily task card — empty unless an admin assigned tasks (js/daily-task.js) -->
+                <div class="daily-task-card" id="dailyTaskCard"></div>
+
                 <!-- Skills chart — accuracy per practice type from answered questions -->
                 <div class="home-skills-panel" id="homeSkillsPanel"></div>
             </div>
+
+            <!-- Daily Task screen — rendered by DailyTask.renderScreen() -->
+            <div class="screen daily-task-screen" id="dailyTaskScreen"></div>
 
             <!-- Lesson Screen -->
             <div class="screen lesson-screen" id="lessonScreen">
@@ -606,6 +612,8 @@
     <script src="js/srs.js"></script>
     <!-- Features -->
     <script src="js/home.js"></script>
+    <script src="js/daily-task-catalog.js"></script>
+    <script src="js/daily-task.js"></script>
     <script src="js/lessons.js"></script>
     <script src="js/verbs.js"></script>
     <script src="js/exam.js"></script>
