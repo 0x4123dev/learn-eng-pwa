@@ -419,7 +419,12 @@ function startPhrasesQuiz(n) {
   } else {
     const seed = (typeof Date !== 'undefined') ? (Date.now() & 0x7fffffff) : 1;
     const size = Math.min(n, bank.length);
-    const picked = phrShuffle(bank, seed).slice(0, size);
+    // Phrases this child has missed before come first, up to half the
+    // practice, until each is answered right five times running
+    // (js/wrong-priority.js); the rest is the usual seeded draw.
+    const picked = (typeof prioPick === 'function')
+      ? prioPick('phr', bank, size)
+      : phrShuffle(bank, seed).slice(0, size);
     // Turn a fixed number of the picks into TYPED variants — 1 in 10, 2 in 20.
     // A variant replaces its multiple-choice form rather than being added, so
     // the practice stays the length the button promised. The conversion runs
@@ -676,6 +681,18 @@ function finishPhrasesQuiz() {
   // Owe every missed question back. After the coins, so a mistake never
   // feels like it took away what was just earned.
   if (typeof retryAdd === 'function') retryAdd('phr', wrong.map(w => phrasesById(w.qid)).filter(Boolean));
+  // The silent priority list (js/wrong-priority.js): phrase questions only —
+  // a typed variant (pt-…) counts for its base phrase, a meaning check (pm-…)
+  // is not tracked, like the owed drill.
+  // Placed AFTER retryAdd on purpose: a test in tests/retry-drill.test.js
+  // searches a fixed 3000-character window from the start of this function
+  // for the retryAdd call, so nothing new may be inserted ahead of it.
+  if (typeof prioRecord === 'function') {
+    const baseId = q => q.baseId || q.id;
+    prioRecord('phr',
+      st.questions.filter((q, i) => !q.meaning && phrIsCorrect(st.answers[i], q)).map(baseId),
+      st.questions.filter((q, i) => !q.meaning && !phrIsCorrect(st.answers[i], q)).map(baseId));
+  }
 
   // Sync phrases-practice activity to the server (best-effort) for the admin view.
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();

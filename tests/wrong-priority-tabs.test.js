@@ -178,6 +178,38 @@ suite('wrong priority tabs: Word form', () => {
     });
 });
 
+suite('wrong priority tabs: Phrases', () => {
+    const baseId = q => q.baseId || q.id;
+
+    test('missed phrases are drawn first; meaning pairs and typed variants still follow', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.phrasesBank().slice(-5);
+        seed(ctx, 'phr', targets.map(q => q.id));
+        ctx.startPhrasesQuiz(10);
+        const base = ctx.phrQuiz().questions.filter(q => !q.meaning);
+        assert.equal(base.length, 10, 'ten phrase questions, as the button promised');
+        const drawn = new Set(base.map(baseId));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+    });
+
+    test('a typed variant records against its base; meaning questions are not tracked', () => {
+        const { ctx } = makeEnv();
+        ctx.startPhrasesQuiz(10);
+        const st = ctx.phrQuiz();
+        const base = st.questions.map((q, i) => ({ q, i })).filter(x => !x.q.meaning);
+        const [right, wrong] = base;
+        const store = seed(ctx, 'phr', [baseId(right.q), baseId(wrong.q)], 1);
+        st.answers[right.i] = right.q.typed ? right.q.answer : right.q.correct;
+        st.answers[wrong.i] = wrong.q.typed ? 'zzz' : (wrong.q.correct === 0 ? 1 : 0);
+        ctx.finishPhrasesQuiz();
+        assert.equal(store[baseId(right.q)].s, 2);
+        assert.equal(store[baseId(wrong.q)].s, 0);
+        assert.truthy(Object.keys(store).every(k => !/^p[mt]-/.test(k)),
+            'no pm-/pt- ids in the store: ' + Object.keys(store).join(','));
+        assert.equal(Object.keys(store).length, base.length, 'one entry per phrase question, none per meaning check');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));
