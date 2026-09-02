@@ -464,11 +464,13 @@
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
     </header>
-    <!-- The landing view. Opening the console, the first question is always
-         "what have they been doing?", so the feed answers it before the
-         dashboard numbers and before any tab has to be chosen. It is no
-         longer a tabpanel: it stays on screen whichever tab is open, and the
-         per-user filter still works through "Show all users". -->
+    <div class="stats" id="stats"></div>
+
+    <!-- The landing view: the three totals read first as the summary, then
+         this feed answers "what have they actually been doing?" — both before
+         any tab has to be chosen. It is no longer a tabpanel: it stays on
+         screen whichever tab is open, and the per-user filter still works
+         through "Show all users". -->
     <div class="card activity-feed" id="activityPanel">
       <div class="toolbar">
         <h2>Hoạt động gần nhất</h2>
@@ -482,7 +484,6 @@
       <div class="pager" id="actPager" aria-live="polite"></div>
     </div>
 
-    <div class="stats" id="stats"></div>
 
     <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
       <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
