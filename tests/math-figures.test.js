@@ -309,6 +309,49 @@ suite('math figures: the mock exam papers', () => {
         assert.deepEqual(stray, []);
     });
 
+    test('a triangle is drawn with its angles in the size order its labels claim', () => {
+        // _MF_TRI is a fixed shape: v[0] opens 51.3°, v[1] 47°, v[2] 81.7°.
+        // Every one of the nine triangle questions used to list its vertices in
+        // question order, so the angle labelled 97° was drawn as the SMALLEST
+        // corner and the 35° answer as the largest. A child checking their
+        // answer against the picture was told the opposite of the truth.
+        const SLOT = [51.3, 47.0, 81.7];
+        const rank = a => a.map((x, i) => [x, i]).sort((p, r) => p[0] - r[0])
+            .map((p, k) => [p[1], k]).sort((p, r) => p[0] - r[0]).map(p => p[1]);
+        const tri = EXAM_FIG.filter(x => x.q.fig.t === 'tam-giac' && x.q.fig.angles);
+        assert.equal(tri.length, 9, 'triangle inventory changed — re-check the drawn order');
+        tri.forEach(({ id, q }) => {
+            const v = q.fig.v;
+            assert.equal(new Set(v).size, 3, `${id}: a vertex is repeated`);
+            const num = s => {
+                const m = /(\d+(?:[.,]\d+)?)/.exec(String(s || ''));
+                return m ? parseFloat(m[1].replace(',', '.')) : null;
+            };
+            const vals = v.map(name => num(q.fig.angles[name]));
+            const gap = vals.findIndex(x => x === null);
+            if (gap >= 0) vals[gap] = 180 - vals.filter(x => x !== null).reduce((a, b) => a + b, 0);
+            assert.deepEqual(rank(vals), rank(SLOT),
+                `${id}: the drawn corners do not match the labelled sizes`);
+        });
+    });
+
+    test('no exam question prints its own answer in the topic badge above it', () => {
+        // renderMathQuestion draws q.topic in a pill directly above the stem,
+        // in exam mode too. Twelve questions carried a badge that WAS the
+        // answer — "Trường hợp c-g-c" over "which congruence case is it?",
+        // "Số hữu tỉ" over "what does ℚ stand for?" — so those were free marks.
+        const norm = s => String(s).toLowerCase().replace(/[^a-z0-9à-ỹ]+/gi, '');
+        const leaks = [];
+        EXAM_Q.forEach(({ id, q }) => {
+            const t = norm(q.topic), a = norm(q.answer), stem = norm(q.q);
+            if (t.length < 5 || stem.includes(t)) return;   // already said in the question
+            if (a.includes(t) || t.includes(a)) leaks.push(id);
+            const m = /^Trường hợp (c-g-c|c-c-c|g-c-g)$/.exec(q.topic || '');
+            if (m && new RegExp(m[1].replace(/-/g, '.'), 'i').test(q.answer)) leaks.push(id);
+        });
+        assert.deepEqual([...new Set(leaks)], [], 'the topic badge gives the answer away');
+    });
+
     test('every exam figure names a real template and draws inside the canvas', () => {
         const out = [];
         EXAM_FIG.forEach(({ id, q }) => {

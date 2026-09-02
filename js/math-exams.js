@@ -217,8 +217,8 @@ const MATH_EXAMS = [
      "t": "tam-giac",
      "v": [
       "D",
-      "E",
-      "F"
+      "F",
+      "E"
      ],
      "angles": {
       "D": "48°",
@@ -234,7 +234,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "35°",
-    "explanation": "🔑 Tổng ba góc trong tam giác bằng 180°: ∠F = 180° − ∠D − ∠E = 180° − 48° − 97° = 35°.<br>✗ 45°: tính nhầm 180° − 48° − 87° hoặc cộng sai.<br>✗ 55°: lấy nhầm 180° − 48° − 77°.<br>✗ 65°: lấy nhầm 180° − 97° − 18°, một phép trừ sai.",
+    "explanation": "🔑 Tổng ba góc trong tam giác bằng 180°: ∠F = 180° − ∠D − ∠E = 180° − 48° − 97° = 35°.<br>✗ 45°: đọc nhầm 97° thành 87° rồi tính 180° − 48° − 87° = 45°.<br>✗ 55°: lấy nhầm 180° − 48° − 77°.<br>✗ 65°: lấy nhầm 180° − 97° − 18°, một phép trừ sai.",
     "source": "hk1-exam1-TN11"
    },
    {
@@ -330,7 +330,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "2",
-    "explanation": "🔑 Tính lần lượt: √64 = 8; |−9| = 9; 1/2 · 6 = 3. Vậy 8 − 9 + 3 = 2.<br>✗ 4: cộng nhầm 8+9-3 rồi tính sai thứ tự.<br>✗ 20: cộng cả ba số 8+9+3 thay vì thực hiện đúng phép trừ và cộng.<br>✗ −4: đổi dấu nhầm thành 8−9−3.",
+    "explanation": "🔑 Tính lần lượt: √64 = 8; |−9| = 9; 1/2 · 6 = 3. Vậy 8 − 9 + 3 = 2.<br>✗ 4: coi 8 − 9 = 1 (đảo thành 9 − 8 cho dễ trừ) rồi cộng 3 thành 4; thật ra 8 − 9 = −1 nên kết quả là 2.<br>✗ 20: cộng cả ba số 8+9+3 thay vì thực hiện đúng phép trừ và cộng.<br>✗ −4: đổi dấu nhầm thành 8−9−3.",
     "source": "hk1-exam1-TL17"
    },
    {
@@ -408,7 +408,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Cho tam giác PQR, gọi K là trung điểm của QR. Trên tia đối của tia KP lấy điểm S sao cho KS = KP. Hãy chọn kết luận đúng.",
     "fig": {
      "t": "doi-tia",
@@ -457,7 +457,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "6",
-    "explanation": "🔑 Diện tích tam giác vuông = (cạnh góc vuông thứ nhất · cạnh góc vuông thứ hai) : 2 = (x · 3x) : 2 = 3x²/2. Từ 3x²/2 = 54 suy ra x² = 36, mà x > 0 nên x = 6.<br>✗ 9: giải sai phương trình, quên chia 3 sau khi có x² = 36.<br>✗ 18: nhầm x² = 54 · 3 thay vì tính đúng 54 · 2 : 3.<br>✗ 3: lấy nhầm căn bậc hai của 9 thay vì đúng của 36.",
+    "explanation": "🔑 Diện tích tam giác vuông = (cạnh góc vuông thứ nhất · cạnh góc vuông thứ hai) : 2 = (x · 3x) : 2 = 3x²/2. Từ 3x²/2 = 54 suy ra x² = 36, mà x > 0 nên x = 6.<br>✗ 9: thử lại thì diện tích là (9 · 27) : 2 = 121,5 cm², không phải 54 cm².<br>✗ 18: đây là độ dài cạnh góc vuông còn lại (3x = 3 · 6 = 18), không phải giá trị của x.<br>✗ 3: lấy nhầm căn bậc hai của 9 thay vì đúng của 36.",
     "source": "hk1-exam1-TL23"
    },
    {
@@ -707,9 +707,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
-      "A",
+      "C",
       "B",
-      "C"
+      "A"
      ],
      "angles": {
       "A": "75°",
@@ -725,7 +725,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "60°",
-    "explanation": "🔑 Tổng ba góc của một tam giác bằng 180°: ∠C = 180° − 75° − 45° = 60°.<br>✗ 70°: tính sai hiệu do chỉ trừ một góc trong hai góc đã cho.<br>✗ 80°: cộng trừ nhầm giữa hai góc đã cho rồi tính sai kết quả.<br>✗ 50°: trừ nhầm 180° − 75° − 45° do tính toán sai bước.",
+    "explanation": "🔑 Tổng ba góc của một tam giác bằng 180°: ∠C = 180° − 75° − 45° = 60°.<br>✗ 70°: cộng nhầm 75° + 45° = 110° rồi lấy 180° − 110° = 70°; tổng đúng của hai góc đã cho là 120°.<br>✗ 80°: cộng nhầm 75° + 45° = 100° rồi lấy 180° − 100° = 80°.<br>✗ 50°: cộng nhầm 75° + 45° = 130° rồi lấy 180° − 130° = 50°.",
     "source": "hk1-exam2-TN11"
    },
    {
@@ -900,7 +900,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "△DEF và △GHK có DE = GH, ∠D = ∠G, DF = GK. Hai tam giác bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -954,7 +954,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "44°",
-    "explanation": "🔑 Tam giác cân tại A nên ∠B = ∠C = 68°. Tổng ba góc bằng 180°: ∠A = 180° − 68° − 68° = 44°.<br>✗ 68°: nhầm góc ở đỉnh A với góc ở đáy B hoặc C.<br>✗ 56°: tính sai bước lấy 180° trừ tổng hai góc đáy.<br>✗ 112°: cộng nhầm hai góc đáy thay vì lấy 180° trừ đi tổng hai góc đáy.",
+    "explanation": "🔑 Tam giác cân tại A nên ∠B = ∠C = 68°. Tổng ba góc bằng 180°: ∠A = 180° − 68° − 68° = 44°.<br>✗ 68°: nhầm góc ở đỉnh A với góc ở đáy B hoặc C.<br>✗ 56°: nhầm 68° là góc ở ĐỈNH rồi tính góc ở đáy (180° − 68°) : 2 = 56°; đề cho 68° là góc ở ĐÁY ∠B.<br>✗ 112°: chỉ trừ MỘT góc 68° (180° − 68° = 112°), quên rằng tam giác cân tại A có hai góc ở đáy cùng bằng 68°.",
     "source": "hk1-exam2-TL5b"
    },
    {
@@ -977,7 +977,7 @@ const MATH_EXAMS = [
    {
     "n": 25,
     "ch": 5,
-    "topic": "Đọc biểu đồ đoạn thẳng",
+    "topic": "Đọc và so sánh số liệu",
     "q": "Số lượt xe đạp công cộng được thuê tại một trạm theo từng tháng: tháng 5: 80 lượt; tháng 6: 95 lượt; tháng 7: 130 lượt; tháng 8: 110 lượt. So với tháng liền trước, tháng nào có số lượt thuê GIẢM?",
     "options": [
      "Tháng 8",
@@ -1140,7 +1140,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "72°",
-    "explanation": "🔑 Hai góc đối đỉnh thì bằng nhau, nên góc đối đỉnh với góc 72° cũng bằng 72°.<br>✗ 18°: nhầm lấy 90° − 72°.<br>✗ 108°: nhầm tính góc kề bù rồi tính sai.<br>✗ 144°: nhầm nhân đôi 72°.",
+    "explanation": "🔑 Hai góc đối đỉnh thì bằng nhau, nên góc đối đỉnh với góc 72° cũng bằng 72°.<br>✗ 18°: nhầm lấy 90° − 72°.<br>✗ 108°: đây là số đo góc KỀ BÙ với góc 72° (180° − 72° = 108°), không phải góc đối đỉnh.<br>✗ 144°: nhầm nhân đôi 72°.",
     "source": "hk1-exam3-TN7"
    },
    {
@@ -1224,9 +1224,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
+      "C",
       "A",
-      "B",
-      "C"
+      "B"
      ],
      "angles": {
       "A": "55°",
@@ -1242,7 +1242,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "60°",
-    "explanation": "🔑 Tổng ba góc trong một tam giác bằng 180°, nên ∠C = 180° − ∠A − ∠B = 180° − 55° − 65° = 60°.<br>✗ 50°: tính sai phép trừ.<br>✗ 70°: cộng nhầm 55° và 65° rồi trừ sai.<br>✗ 120°: quên trừ đúng, tính nhầm số.",
+    "explanation": "🔑 Tổng ba góc trong một tam giác bằng 180°, nên ∠C = 180° − ∠A − ∠B = 180° − 55° − 65° = 60°.<br>✗ 50°: tính sai phép trừ.<br>✗ 70°: cộng nhầm 55° và 65° rồi trừ sai.<br>✗ 120°: đây là tổng ∠A + ∠B (55° + 65°), chưa lấy 180° trừ đi tổng đó.",
     "source": "hk1-exam3-TN11"
    },
    {
@@ -1302,11 +1302,11 @@ const MATH_EXAMS = [
      "x = 7/10",
      "x = 1/10",
      "x = 1",
-     "x = 0,1"
+     "x = 0,4"
     ],
     "correct": 0,
     "answer": "x = 7/10",
-    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 0,4 + 3/10 = 4/10 + 3/10 = 7/10.<br>✗ x = 1/10: trừ nhầm thay vì cộng khi chuyển vế.<br>✗ x = 1: cộng nhầm 0,4 với 3/10 do quy đồng sai.<br>✗ x = 0,1: tính sai phép cộng phân số với số thập phân.",
+    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 0,4 + 3/10 = 4/10 + 3/10 = 7/10.<br>✗ x = 1/10: trừ nhầm thay vì cộng khi chuyển vế.<br>✗ x = 1: cộng nhầm 0,4 với 3/10 do quy đồng sai.<br>✗ x = 0,4: lấy luôn giá trị ở vế phải, quên chuyển 3/10 sang.",
     "source": "hk1-exam3-TL3"
    },
    {
@@ -1370,7 +1370,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "14 học sinh",
-    "explanation": "🔑 Số học sinh giỏi: 40 × 1/4 = 10 (bạn). Số học sinh khá: 40 × 2/5 = 16 (bạn). Số học sinh trung bình: 40 − 10 − 16 = 14 (bạn).<br>✗ 10 học sinh: đây là số học sinh giỏi, không phải trung bình.<br>✗ 16 học sinh: đây là số học sinh khá, không phải trung bình.<br>✗ 26 học sinh: quên trừ số học sinh giỏi, chỉ lấy 40 − 14.",
+    "explanation": "🔑 Số học sinh giỏi: 40 × 1/4 = 10 (bạn). Số học sinh khá: 40 × 2/5 = 16 (bạn). Số học sinh trung bình: 40 − 10 − 16 = 14 (bạn).<br>✗ 10 học sinh: đây là số học sinh giỏi, không phải trung bình.<br>✗ 16 học sinh: đây là số học sinh khá, không phải trung bình.<br>✗ 26 học sinh: đây là tổng số học sinh giỏi và khá (10 + 16 = 26), chưa lấy 40 trừ đi tổng đó.",
     "source": "hk1-exam3-TL7"
    },
    {
@@ -1381,12 +1381,12 @@ const MATH_EXAMS = [
     "options": [
      "14 m",
      "13 m",
-     "84,5 m",
+     "49 m",
      "98 m"
     ],
     "correct": 0,
     "answer": "14 m",
-    "explanation": "🔑 Cạnh hình vuông là căn bậc hai của diện tích: √196 = 14 (vì 14² = 196), vậy cạnh dài 14 m.<br>✗ 13 m: nhầm với 13² = 169 ≠ 196.<br>✗ 84,5 m: nhầm lấy diện tích chia 2 thay vì tính căn bậc hai.<br>✗ 98 m: nhầm lấy nửa diện tích.",
+    "explanation": "🔑 Cạnh hình vuông là căn bậc hai của diện tích: √196 = 14 (vì 14² = 196), vậy cạnh dài 14 m.<br>✗ 13 m: nhầm với 13² = 169 ≠ 196.<br>✗ 49 m: nhầm lấy diện tích chia 4 (196 : 4 = 49) thay vì khai căn.<br>✗ 98 m: nhầm lấy nửa diện tích.",
     "source": "hk1-exam3-TL8"
    },
    {
@@ -1416,7 +1416,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Cho △ABC và △MNP có AB = MN, ∠B = ∠N, BC = NP. Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -1452,6 +1452,7 @@ const MATH_EXAMS = [
     "q": "Cho tam giác ABC cân tại A (AB = AC), tia phân giác của ∠A cắt BC tại D. Vì sao △ABD = △ACD?",
     "fig": {
      "t": "trung-tuyen",
+     "midTicks": false,
      "v": [
       "A",
       "B",
@@ -1484,7 +1485,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "10%",
-    "explanation": "🔑 Tổng các tỉ lệ phần trăm trong biểu đồ quạt tròn luôn bằng 100%, nên hoạt động khác chiếm 100% − 35% − 25% − 30% = 10%.<br>✗ 5%: tính sai phép trừ liên tiếp.<br>✗ 15%: cộng nhầm hai trong ba tỉ lệ đã cho.<br>✗ 20%: chỉ trừ hai trong ba tỉ lệ đã cho, quên trừ 30%.",
+    "explanation": "🔑 Tổng các tỉ lệ phần trăm trong biểu đồ quạt tròn luôn bằng 100%, nên hoạt động khác chiếm 100% − 35% − 25% − 30% = 10%.<br>✗ 5%: cộng tổng ba tỉ lệ đã cho thành 95%, trong khi 35% + 25% + 30% = 90%.<br>✗ 15%: cộng tổng ba tỉ lệ đã cho thành 85%, thiếu 5% so với tổng đúng 90%.<br>✗ 20%: cộng tổng ba tỉ lệ đã cho thành 80%, thừa 10% so với tổng đúng 90%.",
     "source": "hk1-exam3-TL12"
    },
    {
@@ -1501,7 +1502,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "410 quyển",
-    "explanation": "🔑 Tổng số lượt sách mượn trong 4 tháng là 80 + 95 + 110 + 125 = 410 (quyển).<br>✗ 380 quyển: cộng thiếu một tháng trong bốn tháng.<br>✗ 400 quyển: tính sai phép cộng liên tiếp.<br>✗ 425 quyển: cộng thừa 15 do tính nhầm một số hạng.",
+    "explanation": "🔑 Tổng số lượt sách mượn trong 4 tháng là 80 + 95 + 110 + 125 = 410 (quyển).<br>✗ 380 quyển: cộng nhầm 110 + 125 = 205 (đúng ra là 235) nên thiếu 30 quyển so với 410.<br>✗ 400 quyển: tính sai phép cộng liên tiếp.<br>✗ 425 quyển: cộng thừa 15 do tính nhầm một số hạng.",
     "source": "hk1-exam3-TL13"
    }
   ],
@@ -1522,7 +1523,7 @@ const MATH_EXAMS = [
    {
     "n": 1,
     "ch": 1,
-    "topic": "Số hữu tỉ",
+    "topic": "Các tập hợp số",
     "q": "Kí hiệu ℚ dùng để chỉ tập hợp số nào?",
     "options": [
      "Số hữu tỉ",
@@ -1580,7 +1581,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "5/4",
-    "explanation": "🔑 Vì 5/−4 = −5/4 là số âm, nên giá trị tuyệt đối của nó là số đối của nó: |5/−4| = 5/4.<br>✗ −5/4: đây chính là số đã cho ở dạng số đối, không phải giá trị tuyệt đối (giá trị tuyệt đối luôn không âm).<br>✗ 4/−5: nhầm giữa tử và mẫu khi đổi dấu.<br>✗ 5/−4: đây là số ban đầu, chưa lấy giá trị tuyệt đối.",
+    "explanation": "🔑 Vì 5/−4 = −5/4 là số âm, nên giá trị tuyệt đối của nó là số đối của nó: |5/−4| = 5/4.<br>✗ −5/4: đây chính là số đã cho viết ở dạng khác (5/−4 = −5/4), vẫn là số âm nên không thể là giá trị tuyệt đối.<br>✗ 4/−5: nhầm giữa tử và mẫu khi đổi dấu.<br>✗ 5/−4: đây là số ban đầu, chưa lấy giá trị tuyệt đối.",
     "source": "hk1exam4-TN4"
    },
    {
@@ -1757,7 +1758,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "1/3",
-    "explanation": "🔑 Quy đồng mẫu số 6: 2/3 + 1/6 − 1/2 = 4/6 + 1/6 − 3/6 = 2/6 = 1/3.<br>✗ 2/3: đây là số hạng đầu tiên, chưa cộng trừ hết các số hạng còn lại.<br>✗ 1/6: quy đồng sai mẫu số hoặc tính nhầm tử số.<br>✗ 1: cộng nhầm dấu trừ thành dấu cộng ở số hạng −1/2.",
+    "explanation": "🔑 Quy đồng mẫu số 6: 2/3 + 1/6 − 1/2 = 4/6 + 1/6 − 3/6 = 2/6 = 1/3.<br>✗ 2/3: đây là số hạng đầu tiên, chưa cộng trừ hết các số hạng còn lại.<br>✗ 1/6: quy đồng sai mẫu số hoặc tính nhầm tử số.<br>✗ 1: quy đồng đúng nhưng cộng trừ tử số sai — 4 + 1 − 3 = 2 (tức 2/6 = 1/3), không phải 6/6 = 1.",
     "source": "hk1exam4-TL13"
    },
    {
@@ -1773,7 +1774,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "x = 5/8",
-    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 1/4 + 3/8 = 2/8 + 3/8 = 5/8.<br>✗ x = 1/8: quy đồng sai mẫu số khi cộng hai phân số.<br>✗ x = −5/8: chuyển vế nhưng quên đổi dấu số hạng −3/8 thành +3/8.<br>✗ x = 7/8: cộng nhầm tử số (2 + 3 tính sai) khi đã quy đồng đúng mẫu.",
+    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 1/4 + 3/8 = 2/8 + 3/8 = 5/8.<br>✗ x = 1/8: trừ thay vì cộng khi chuyển vế (3/8 − 2/8 = 1/8).<br>✗ x = −5/8: tính đúng độ lớn 5/8 nhưng ghi nhầm dấu âm ở kết quả cuối.<br>✗ x = 7/8: cộng nhầm tử số (2 + 3 tính sai) khi đã quy đồng đúng mẫu.",
     "source": "hk1exam4-TL14"
    },
    {
@@ -1789,7 +1790,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "x = 1",
-    "explanation": "🔑 Ta có 4/9 = (2/3)², nên (2/3) mũ (x + 1) = (2/3)² suy ra x + 1 = 2, do đó x = 1.<br>✗ x = 2: nhầm x + 1 = 2 thành x = 2, quên trừ 1.<br>✗ x = 3: tính sai số mũ của 4/9 (không phải lũy thừa bậc 3 của 2/3).<br>✗ x = 0: nhầm 4/9 với (2/3)¹.",
+    "explanation": "🔑 Ta có 4/9 = (2/3)², nên (2/3) mũ (x + 1) = (2/3)² suy ra x + 1 = 2, do đó x = 1.<br>✗ x = 2: nhầm x + 1 = 2 thành x = 2, quên trừ 1.<br>✗ x = 3: lấy nhầm tử số 4 của 4/9 làm số mũ (x + 1 = 4); thực ra 4/9 = (2/3)².<br>✗ x = 0: nhầm 4/9 với (2/3)¹.",
     "source": "hk1exam4-TL15"
    },
    {
@@ -1894,13 +1895,13 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "∠B₁ = 115°; ∠B₂ = 65°",
-    "explanation": "🔑 Vì a ∥ b nên hai góc đồng vị bằng nhau: ∠B₁ = 115°. Vì ∠B₁ và ∠B₂ kề bù nên ∠B₂ = 180° − 115° = 65°.<br>✗ ∠B₁ = 65°; ∠B₂ = 115°: đảo ngược vai trò hai góc, nhầm đồng vị với kề bù.<br>✗ ∠B₁ = 115°; ∠B₂ = 115°: quên tính chất kề bù có tổng 180°, coi ∠B₂ bằng luôn ∠B₁.<br>✗ ∠B₁ = 65°; ∠B₂ = 65°: tính nhầm góc đồng vị bằng góc trong cùng phía (180° − 115°) ngay từ đầu.",
+    "explanation": "🔑 Vì a ∥ b nên hai góc đồng vị bằng nhau: ∠B₁ = 115°. Vì ∠B₁ và ∠B₂ kề bù nên ∠B₂ = 180° − 115° = 65°.<br>✗ ∠B₁ = 65°; ∠B₂ = 115°: đảo ngược vai trò hai góc, nhầm đồng vị với kề bù.<br>✗ ∠B₁ = 115°; ∠B₂ = 115°: quên tính chất kề bù có tổng 180°, coi ∠B₂ bằng luôn ∠B₁.<br>✗ ∠B₁ = 65°; ∠B₂ = 65°: vừa nhầm góc đồng vị thành góc trong cùng phía (180° − 115° = 65°), vừa coi ∠B₂ bằng luôn ∠B₁ mà quên tính chất kề bù.",
     "source": "hk1exam4-TL21"
    },
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Cho △MNP và △XYZ có MN = XY, ∠M = ∠X, MP = XZ. Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -2232,9 +2233,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
+      "C",
       "A",
-      "B",
-      "C"
+      "B"
      ],
      "angles": {
       "A": "48°",
@@ -2282,7 +2283,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "−9/11",
-    "explanation": "🔑 Đặt nhân tử chung −9/11: kết quả = (−9/11)·(1/6 + 2/6 + 3/6) = (−9/11)·(6/6) = (−9/11)·1 = −9/11.<br>✗ 9/11: nhầm dấu, quên giữ dấu âm khi nhân với 1.<br>✗ −9/66: nhầm cộng ba mẫu số lại với nhau thay vì cộng ba tử số cùng mẫu 6.<br>✗ −27/11: nhầm cộng tử số 1 + 2 + 3 = 6 rồi bỏ qua mẫu, nhân sai thành −9/11 × 3.",
+    "explanation": "🔑 Đặt nhân tử chung −9/11: kết quả = (−9/11)·(1/6 + 2/6 + 3/6) = (−9/11)·(6/6) = (−9/11)·1 = −9/11.<br>✗ 9/11: nhầm dấu, quên giữ dấu âm khi nhân với 1.<br>✗ −9/66: mới nhân −9/11 với số hạng đầu 1/6, chưa cộng hai số hạng còn lại trong ngoặc.<br>✗ −27/11: nhân −9/11 với 3 (số số hạng) thay vì với tổng trong ngoặc 1/6 + 2/6 + 3/6 = 1.",
     "source": "hk1e5-Q13"
    },
    {
@@ -2298,7 +2299,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "1/3",
-    "explanation": "🔑 Chuyển vế: 3x = 3/5 + 2/5 = 5/5 = 1, suy ra x = 1 : 3 = 1/3.<br>✗ 1/15: nhầm nhân 3 vào mẫu số thay vì lấy 1 chia cho 3.<br>✗ 1/5: quên chia cho 3, dừng lại ở 3x = 1 rồi ghi nhầm x = 1/5.<br>✗ 3: nhầm dấu khi chuyển vế, tính 3x = 3/5 − 2/5 = 1/5 rồi nhân chéo sai.",
+    "explanation": "🔑 Chuyển vế: 3x = 3/5 + 2/5 = 5/5 = 1, suy ra x = 1 : 3 = 1/3.<br>✗ 1/15: nhầm dấu khi chuyển vế thành 3x = 3/5 − 2/5 = 1/5 rồi chia cho 3 nên ra 1/15.<br>✗ 1/5: cũng nhầm dấu thành 3x = 1/5 nhưng còn quên chia cho 3.<br>✗ 3: tính đúng 3x = 1 nhưng nhân với 3 thay vì chia cho 3.",
     "source": "hk1e5-Q14"
    },
    {
@@ -2314,7 +2315,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "x = 4",
-    "explanation": "🔑 Đưa về cùng lũy thừa 4 mũ (x + 2): 4 mũ (x + 3) = 4·4 mũ (x + 2), nên 4·4 mũ (x + 2) − 2·4 mũ (x + 2) = 2·4 mũ (x + 2) = 2·4⁶, suy ra 4 mũ (x + 2) = 4⁶, tức x + 2 = 6, vậy x = 4.<br>✗ x = 6: nhầm lấy luôn số mũ ở vế phải (4⁶) làm giá trị x, bỏ qua bước rút gọn hệ số.<br>✗ x = 8: nhầm cộng 2 + 6 thay vì giải x + 2 = 6 bằng phép trừ.<br>✗ x = 2: nhầm coi x + 3 = 6 (quên hệ số 2 ở lũy thừa) rồi giải sai.",
+    "explanation": "🔑 Đưa về cùng lũy thừa 4 mũ (x + 2): 4 mũ (x + 3) = 4·4 mũ (x + 2), nên 4·4 mũ (x + 2) − 2·4 mũ (x + 2) = 2·4 mũ (x + 2) = 2·4⁶, suy ra 4 mũ (x + 2) = 4⁶, tức x + 2 = 6, vậy x = 4.<br>✗ x = 6: nhầm lấy luôn số mũ ở vế phải (4⁶) làm giá trị x, bỏ qua bước rút gọn hệ số.<br>✗ x = 8: nhầm cộng 2 + 6 thay vì giải x + 2 = 6 bằng phép trừ.<br>✗ x = 2: rút gọn vế trái sai nên giải nhầm x + 4 = 6 thay vì x + 2 = 6.",
     "source": "hk1e5-Q15"
    },
    {
@@ -2430,10 +2431,11 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Một giá đỡ hình chữ V có hai thanh OA và OB bằng nhau (OA = OB), thanh chống OC là tia phân giác của ∠AOB. Vì sao △OAC = △OBC?",
     "fig": {
      "t": "trung-tuyen",
+     "midTicks": false,
      "v": [
       "O",
       "A",
@@ -2449,7 +2451,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "Vì OA = OB, OC chung, ∠AOC = ∠BOC (do OC là tia phân giác) nên bằng nhau theo trường hợp c-g-c",
-    "explanation": "🔑 Ta có OA = OB (giả thiết), OC là cạnh chung, và ∠AOC = ∠BOC vì OC là tia phân giác của ∠AOB. Đây là hai cạnh và góc xen giữa chúng bằng nhau, nên △OAC = △OBC theo trường hợp c-g-c.<br>✗ Phương án ghi trường hợp c-c-c ở dòng đầu: sai vì chỉ có hai cạnh và một góc bằng nhau, chưa biết AC = BC nên không dùng được c-c-c.<br>✗ Không đủ dữ kiện để kết luận: sai vì đã đủ hai cạnh và góc xen giữa để dùng c-g-c.<br>✗ Phương án nêu AC = BC làm căn cứ: sai vì AC = BC chưa được cho biết, đó là điều cần suy ra chứ không phải giả thiết.",
+    "explanation": "🔑 Ta có OA = OB (giả thiết), OC là cạnh chung, và ∠AOC = ∠BOC vì OC là tia phân giác của ∠AOB. Đây là hai cạnh và góc xen giữa chúng bằng nhau, nên △OAC = △OBC theo trường hợp c-g-c.<br>✗ Vì OA = OB, OC chung, ∠AOC = ∠BOC nên bằng nhau theo trường hợp c-c-c: ba yếu tố nêu ra đều đúng nhưng gọi sai tên trường hợp — trong đó có một GÓC XEN GIỮA hai cạnh nên phải là c-g-c.<br>✗ Không đủ dữ kiện để kết luận: sai vì đã đủ hai cạnh và góc xen giữa để dùng c-g-c.<br>✗ Vì OA = OB và AC = BC nên bằng nhau theo trường hợp c-c-c: sai vì đề chưa cho AC = BC — đó là điều suy ra được SAU khi đã chứng minh hai tam giác bằng nhau.",
     "source": "hk1e5-Q22"
    },
    {
@@ -2689,7 +2691,7 @@ const MATH_EXAMS = [
    {
     "n": 9,
     "ch": 3,
-    "topic": "Hai đường thẳng song song",
+    "topic": "Vị trí tương đối của hai đường thẳng",
     "q": "Hai đường thẳng phân biệt trong cùng một mặt phẳng mà không cắt nhau thì được gọi là gì?",
     "fig": {
      "t": "vuong-song",
@@ -2730,9 +2732,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
-      "A",
       "B",
-      "C"
+      "C",
+      "A"
      ],
      "angles": {
       "A": "72°",
@@ -2780,7 +2782,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "1/2",
-    "explanation": "🔑 Tính lũy thừa trước: (−1)² = 1, được 5/6 − 1/3 · 1 = 5/6 − 2/6 = 3/6 = 1/2.<br>✗ 7/6: quên bình phương, tính (−1)² = −1 nên ra 5/6 + 1/3.<br>✗ 2/3: đổi sai 1/3 thành 1/6 rồi trừ nhầm.<br>✗ −1/6: trừ nhầm thứ tự 1/3 − 5/6.",
+    "explanation": "🔑 Tính lũy thừa trước: (−1)² = 1, được 5/6 − 1/3 · 1 = 5/6 − 2/6 = 3/6 = 1/2.<br>✗ 7/6: quên bình phương, tính (−1)² = −1 nên ra 5/6 + 1/3.<br>✗ 2/3: đổi sai 1/3 thành 1/6 rồi trừ nhầm.<br>✗ −1/6: nhầm 1/3 · (−1)² = 1 rồi tính 5/6 − 1 = −1/6.",
     "source": "hk1e6-TL1"
    },
    {
@@ -2922,7 +2924,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Tam giác ABC và tam giác DEF có AB = DE, ∠A = ∠D, AC = DF. Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -2994,7 +2996,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "20%",
-    "explanation": "🔑 Tổng tỉ lệ phần trăm của biểu đồ quạt tròn bằng 100%: 100% − 35% − 25% − 20% = 20%.<br>✗ 15%: cộng nhầm ba tỉ lệ đã cho thành 85% thay vì 80%.<br>✗ 25%: nhầm với tỉ lệ đi bộ đã cho.<br>✗ 30%: cộng thiếu một tỉ lệ khi tính tổng ba phần đã biết.",
+    "explanation": "🔑 Tổng tỉ lệ phần trăm của biểu đồ quạt tròn bằng 100%: 100% − 35% − 25% − 20% = 20%.<br>✗ 15%: cộng nhầm ba tỉ lệ đã cho thành 85% thay vì 80%.<br>✗ 25%: nhầm với tỉ lệ đi bộ đã cho.<br>✗ 30%: cộng sai tổng ba phần đã biết thành 70% thay vì 35% + 25% + 20% = 80%.",
     "source": "hk1e6-TL12"
    },
    {
@@ -3011,7 +3013,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "240 xe",
-    "explanation": "🔑 Tổng số xe = 40 + 55 + 65 + 80 = 240 xe.<br>✗ 220 xe: cộng thiếu, bỏ sót 20 xe khi tính tổng.<br>✗ 200 xe: cộng nhầm, chỉ lấy ba tháng đầu (40 + 55 + 65 = 160) rồi cộng sai.<br>✗ 260 xe: cộng thừa 20 xe so với kết quả đúng.",
+    "explanation": "🔑 Tổng số xe = 40 + 55 + 65 + 80 = 240 xe.<br>✗ 220 xe: cộng thiếu, bỏ sót 20 xe khi tính tổng.<br>✗ 200 xe: bỏ sót tháng 1, chỉ cộng ba tháng còn lại (55 + 65 + 80 = 200).<br>✗ 260 xe: cộng thừa 20 xe so với kết quả đúng.",
     "source": "hk1e6-TL13"
    }
   ],
@@ -3118,7 +3120,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "5,27",
-    "explanation": "🔑 Làm tròn đến hàng phần trăm: giữ hai chữ số thập phân, xét chữ số hàng phần nghìn (4) để làm tròn; vì 4 &lt; 5 nên giữ nguyên: 5,2749 ≈ 5,27.<br>✗ 5,28: làm tròn lên sai vì chữ số hàng phần nghìn là 4 (nhỏ hơn 5) nên không được làm tròn lên.<br>✗ 5,3: đây là làm tròn đến hàng phần mười, không đúng yêu cầu hàng phần trăm.<br>✗ 5,275: chưa làm tròn, chỉ là cắt bớt chữ số cuối.",
+    "explanation": "🔑 Làm tròn đến hàng phần trăm: giữ hai chữ số thập phân, xét chữ số hàng phần nghìn (4) để làm tròn; vì 4 &lt; 5 nên giữ nguyên: 5,2749 ≈ 5,27.<br>✗ 5,28: làm tròn lên sai vì chữ số hàng phần nghìn là 4 (nhỏ hơn 5) nên không được làm tròn lên.<br>✗ 5,3: đây là làm tròn đến hàng phần mười, không đúng yêu cầu hàng phần trăm.<br>✗ 5,275: đây là làm tròn đến hàng phần nghìn (ba chữ số thập phân), không đúng yêu cầu hàng phần trăm.",
     "source": "hk1-exam7-TN5"
    },
    {
@@ -3241,9 +3243,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
-      "D",
+      "F",
       "E",
-      "F"
+      "D"
      ],
      "angles": {
       "D": "75°",
@@ -3259,7 +3261,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "60°",
-    "explanation": "🔑 Tổng ba góc trong một tam giác bằng 180°, nên ∠F = 180° − 75° − 45° = 60°.<br>✗ 70°: tính nhầm phép trừ 180° − 75° − 45°.<br>✗ 55°: cộng nhầm hai góc đã cho (75° + 45° = 120°) rồi trừ sai cho 180°.<br>✗ 65°: trừ thiếu hoặc thừa một vài độ do tính nhầm.",
+    "explanation": "🔑 Tổng ba góc trong một tam giác bằng 180°, nên ∠F = 180° − 75° − 45° = 60°.<br>✗ 70°: tính nhầm phép trừ 180° − 75° − 45°.<br>✗ 55°: trừ sai ở bước cuối, vì 180° − 75° − 45° = 60° chứ không phải 55°.<br>✗ 65°: trừ thiếu hoặc thừa một vài độ do tính nhầm.",
     "source": "hk1-exam7-TN11"
    },
    {
@@ -3339,7 +3341,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "684 000 đồng",
-    "explanation": "🔑 Giảm 10% lần một: 800 000 × 0,9 = 720 000 đồng; giảm tiếp 5% trên giá mới: 720 000 × 0,95 = 684 000 đồng.<br>✗ 760 000 đồng: chỉ tính giảm 5% trên giá niêm yết, bỏ sót lần giảm 10% đầu tiên.<br>✗ 640 000 đồng: nhầm cộng gộp hai mức giảm thành 20% (10% + 10%) rồi trừ thẳng vào giá niêm yết: 800 000 × 0,8 = 640 000.<br>✗ 720 000 đồng: mới chỉ tính giảm giá lần một (10%), quên giảm tiếp 5% lần hai.",
+    "explanation": "🔑 Giảm 10% lần một: 800 000 × 0,9 = 720 000 đồng; giảm tiếp 5% trên giá mới: 720 000 × 0,95 = 684 000 đồng.<br>✗ 760 000 đồng: chỉ tính giảm 5% trên giá niêm yết, bỏ sót lần giảm 10% đầu tiên.<br>✗ 640 000 đồng: đây là kết quả khi giảm thẳng 20% trên giá niêm yết (800 000 × 0,8), trong khi đề cho giảm 10% rồi mới giảm tiếp 5% trên giá đã giảm.<br>✗ 720 000 đồng: mới chỉ tính giảm giá lần một (10%), quên giảm tiếp 5% lần hai.",
     "source": "hk1-exam7-TL5a"
    },
    {
@@ -3403,7 +3405,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "60 m",
-    "explanation": "🔑 Cạnh của khu vườn: √225 = 15 m; chu vi hình vuông bằng 4 lần cạnh: 15 × 4 = 60 m.<br>✗ 15 m: đây là độ dài một cạnh, chưa nhân với 4 để ra chu vi.<br>✗ 225 m: nhầm số đo diện tích (m²) thành chu vi (m).<br>✗ 30 m: nhầm công thức chu vi hình chữ nhật (2 × cạnh) thay vì hình vuông (4 × cạnh).",
+    "explanation": "🔑 Cạnh của khu vườn: √225 = 15 m; chu vi hình vuông bằng 4 lần cạnh: 15 × 4 = 60 m.<br>✗ 15 m: đây là độ dài một cạnh, chưa nhân với 4 để ra chu vi.<br>✗ 225 m: nhầm số đo diện tích (m²) thành chu vi (m).<br>✗ 30 m: mới nhân cạnh với 2 (15 × 2 = 30), trong khi chu vi hình vuông bằng cạnh nhân 4.",
     "source": "hk1-exam7-TL3b"
    },
    {
@@ -3433,7 +3435,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Tam giác ABC và tam giác DEF có AB = DE, ∠A = ∠D, AC = DF (góc A xen giữa hai cạnh AB và AC; góc D xen giữa hai cạnh DE và DF). Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -3748,9 +3750,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
+      "F",
       "D",
-      "E",
-      "F"
+      "E"
      ],
      "angles": {
       "D": "47°",
@@ -3878,7 +3880,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "7",
-    "explanation": "🔑 √144 = 12; |−9| = 9 (số đối của số âm); √16 = 4. Vậy 12 − 9 + 4 = 7.<br>✗ 25: cộng nhầm cả ba số thay vì trừ ở giữa: 12 + 9 + 4.<br>✗ −1: nhầm dấu, tính 9 − 12 + 4.<br>✗ 17: tính sai thứ tự, gộp thành 12 + (9 − 4).",
+    "explanation": "🔑 √144 = 12; |−9| = 9 (số đối của số âm); √16 = 4. Vậy 12 − 9 + 4 = 7.<br>✗ 25: cộng nhầm cả ba số thay vì trừ ở giữa: 12 + 9 + 4.<br>✗ −1: đổi nhầm dấu của √16, tính 12 − 9 − 4 = −1.<br>✗ 17: tính sai thứ tự, gộp thành 12 + (9 − 4).",
     "source": "hk1-exam8-Q18"
    },
    {
@@ -3894,7 +3896,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "x = 5 hoặc x = −13",
-    "explanation": "🔑 |x + 4| = 9 nghĩa là x + 4 = 9 hoặc x + 4 = −9, suy ra x = 5 hoặc x = −13.<br>✗ x = 9 hoặc x = −9: nhầm lấy trực tiếp 9 và −9 làm giá trị của x, quên trừ đi 4.<br>✗ x = 5 hoặc x = 13: quên đổi dấu ở trường hợp thứ hai (x + 4 = −9).<br>✗ x = −5 hoặc x = 13: tính sai dấu ở cả hai trường hợp.",
+    "explanation": "🔑 |x + 4| = 9 nghĩa là x + 4 = 9 hoặc x + 4 = −9, suy ra x = 5 hoặc x = −13.<br>✗ x = 9 hoặc x = −9: nhầm lấy trực tiếp 9 và −9 làm giá trị của x, quên trừ đi 4.<br>✗ x = 5 hoặc x = 13: ở trường hợp x + 4 = −9 lại chuyển vế sai, lấy 9 + 4 = 13 thay vì −9 − 4 = −13.<br>✗ x = −5 hoặc x = 13: tính sai dấu ở cả hai trường hợp.",
     "source": "hk1-exam8-Q19"
    },
    {
@@ -3945,7 +3947,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Tam giác GHI và tam giác XYZ có GH = XY, HI = YZ và ∠H = ∠Y (góc xen giữa hai cạnh GH và HI). Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",
@@ -4033,7 +4035,7 @@ const MATH_EXAMS = [
     ],
     "correct": 0,
     "answer": "480 lượt",
-    "explanation": "🔑 Tổng số lượt mượn bốn tháng: 90 + 110 + 130 + 150 = 480 (lượt).<br>✗ 150 lượt: chỉ lấy số liệu của riêng tháng 4, quên cộng ba tháng còn lại.<br>✗ 380 lượt: cộng thiếu một tháng trong bốn tháng.<br>✗ 440 lượt: cộng sai một trong các số liệu khi thực hiện phép cộng.",
+    "explanation": "🔑 Tổng số lượt mượn bốn tháng: 90 + 110 + 130 + 150 = 480 (lượt).<br>✗ 150 lượt: chỉ lấy số liệu của riêng tháng 4, quên cộng ba tháng còn lại.<br>✗ 380 lượt: cộng sai, hụt mất 100 lượt so với tổng đúng 90 + 110 + 130 + 150 = 480.<br>✗ 440 lượt: cộng sai một trong các số liệu khi thực hiện phép cộng.",
     "source": "hk1-exam8-Q25"
    }
   ],
@@ -4073,7 +4075,7 @@ const MATH_EXAMS = [
    {
     "n": 1,
     "ch": 1,
-    "topic": "Số hữu tỉ",
+    "topic": "Các tập hợp số",
     "q": "Kí hiệu ℚ được dùng để chỉ tập hợp số nào?",
     "options": [
      "Số hữu tỉ",
@@ -4264,9 +4266,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
-      "D",
+      "F",
       "E",
-      "F"
+      "D"
      ],
      "angles": {
       "D": "72°",
@@ -4330,7 +4332,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "7",
-    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 4,3 + 2,7 = 7.<br>✗ 1,6: trừ nhầm hai vế (4,3 − 2,7) thay vì cộng.<br>✗ −1,6: vừa trừ nhầm vừa sai dấu.<br>✗ −7: chuyển vế mà quên đổi dấu số 2,7 (giữ nguyên phép trừ).",
+    "explanation": "🔑 Áp dụng quy tắc chuyển vế: x = 4,3 + 2,7 = 7.<br>✗ 1,6: trừ nhầm hai vế (4,3 − 2,7) thay vì cộng.<br>✗ −1,6: vừa trừ nhầm vừa sai dấu.<br>✗ −7: tính đúng 4,3 + 2,7 = 7 nhưng ghi sai dấu ở kết quả cuối.",
     "source": "hk1-exam9-TL14"
    },
    {
@@ -4394,7 +4396,7 @@ const MATH_EXAMS = [
     ],
     "correct": 1,
     "answer": "9/2",
-    "explanation": "🔑 Ta có √81 = 9; |−5| = 5; 2/3 · 3/4 = 1/2. Vậy biểu thức = 9 − 5 + 1/2 = 4 + 1/2 = 9/2.<br>✗ 4: quên cộng thêm 1/2 (dừng lại ở 9 − 5 = 4).<br>✗ 5: tính sai 2/3 · 3/4 = 1 (nhân nhầm) rồi cộng ra 9 − 5 + 1 = 5.<br>✗ 19/2: tính sai |−5| thành −5 rồi lấy 9 − (−5) + 1/2, quên rằng giá trị tuyệt đối luôn không âm.",
+    "explanation": "🔑 Ta có √81 = 9; |−5| = 5; 2/3 · 3/4 = 1/2. Vậy biểu thức = 9 − 5 + 1/2 = 4 + 1/2 = 9/2.<br>✗ 4: quên cộng thêm 1/2 (dừng lại ở 9 − 5 = 4).<br>✗ 5: tính sai 2/3 · 3/4 = 1 (nhân nhầm) rồi cộng ra 9 − 5 + 1 = 5.<br>✗ 19/2: quên trừ |−5| = 5, chỉ tính 9 + 1/2 = 19/2.",
     "source": "hk1-exam9-TL18"
    },
    {
@@ -4426,7 +4428,7 @@ const MATH_EXAMS = [
     ],
     "correct": 3,
     "answer": "14 m",
-    "explanation": "🔑 Cạnh hình vuông là căn bậc hai số học của diện tích: √196 = 14 (m).<br>✗ 13 m: nhớ nhầm 13² = 169 ≠ 196.<br>✗ 98 m: lấy nhầm một nửa diện tích (196 : 2) thay vì tính căn bậc hai.<br>✗ 28 m: nhân đôi kết quả đúng do nhầm chu vi với cạnh.",
+    "explanation": "🔑 Cạnh hình vuông là căn bậc hai số học của diện tích: √196 = 14 (m).<br>✗ 13 m: nhớ nhầm 13² = 169 ≠ 196.<br>✗ 98 m: lấy nhầm một nửa diện tích (196 : 2) thay vì tính căn bậc hai.<br>✗ 28 m: nhân đôi kết quả đúng, trong khi 28² = 784 ≠ 196.",
     "source": "hk1-exam9-TL20"
    },
    {
@@ -4739,20 +4741,20 @@ const MATH_EXAMS = [
     "n": 9,
     "ch": 3,
     "topic": "Tiên đề Euclid",
-    "q": "Cho điểm K không nằm trên đường thẳng d. Phát biểu nào sau đây đúng theo tiên đề Euclid?",
+    "q": "Cho điểm M không nằm trên đường thẳng d. Phát biểu nào sau đây đúng theo tiên đề Euclid?",
     "fig": {
      "t": "euclid",
      "m": "point"
     },
     "options": [
-     "Có duy nhất một đường thẳng qua K song song với d",
-     "Có vô số đường thẳng qua K song song với d",
-     "Không có đường thẳng nào qua K song song với d",
-     "Có đúng hai đường thẳng qua K song song với d"
+     "Có duy nhất một đường thẳng qua M song song với d",
+     "Có vô số đường thẳng qua M song song với d",
+     "Không có đường thẳng nào qua M song song với d",
+     "Có đúng hai đường thẳng qua M song song với d"
     ],
     "correct": 0,
-    "answer": "Có duy nhất một đường thẳng qua K song song với d",
-    "explanation": "🔑 Tiên đề Euclid: qua một điểm nằm ngoài một đường thẳng, có một và chỉ một đường thẳng song song với đường thẳng đó, nên qua K có duy nhất một đường thẳng song song với d.<br>✗ Có vô số đường thẳng qua K song song với d: sai, tiên đề khẳng định chỉ có một.<br>✗ Không có đường thẳng nào: sai, luôn tồn tại đúng một đường thẳng như vậy.<br>✗ Có đúng hai đường thẳng: sai, chỉ có duy nhất một, không phải hai.",
+    "answer": "Có duy nhất một đường thẳng qua M song song với d",
+    "explanation": "🔑 Tiên đề Euclid: qua một điểm nằm ngoài một đường thẳng, có một và chỉ một đường thẳng song song với đường thẳng đó, nên qua M có duy nhất một đường thẳng song song với d.<br>✗ Có vô số đường thẳng qua M song song với d: sai, tiên đề khẳng định chỉ có một.<br>✗ Không có đường thẳng nào: sai, luôn tồn tại đúng một đường thẳng như vậy.<br>✗ Có đúng hai đường thẳng: sai, chỉ có duy nhất một, không phải hai.",
     "source": "hk1e10-TN9"
    },
    {
@@ -4783,9 +4785,9 @@ const MATH_EXAMS = [
     "fig": {
      "t": "tam-giac",
      "v": [
-      "D",
       "E",
-      "F"
+      "F",
+      "D"
      ],
      "angles": {
       "D": "72°",
@@ -4865,7 +4867,7 @@ const MATH_EXAMS = [
     ],
     "correct": 2,
     "answer": "x = 7",
-    "explanation": "🔑 Đưa về cùng lũy thừa 3 mũ (x + 2): 3 mũ (x + 3) − 2 · 3 mũ (x + 2) = 3 mũ (x + 2) · 3 − 2 · 3 mũ (x + 2) = 3 mũ (x + 2) · (3 − 2) = 3 mũ (x + 2). Vậy 3 mũ (x + 2) = 3⁹, suy ra x + 2 = 9, x = 7.<br>✗ x = 9: nhầm đồng nhất trực tiếp số mũ (x + 2) với 9 rồi lấy luôn x = 9 mà không trừ 2.<br>✗ x = 6: nhầm dấu, cho x + 3 = 9 rồi trừ thêm 2 một cách sai.<br>✗ x = 11: nhầm cộng số mũ 9 + 2 thay vì trừ.",
+    "explanation": "🔑 Đưa về cùng lũy thừa 3 mũ (x + 2): 3 mũ (x + 3) − 2 · 3 mũ (x + 2) = 3 mũ (x + 2) · 3 − 2 · 3 mũ (x + 2) = 3 mũ (x + 2) · (3 − 2) = 3 mũ (x + 2). Vậy 3 mũ (x + 2) = 3⁹, suy ra x + 2 = 9, x = 7.<br>✗ x = 9: nhầm đồng nhất trực tiếp số mũ (x + 2) với 9 rồi lấy luôn x = 9 mà không trừ 2.<br>✗ x = 6: quên rút gọn vế trái, cho luôn x + 3 = 9 nên x = 6; thực ra vế trái bằng 3 mũ (x + 2).<br>✗ x = 11: nhầm cộng số mũ 9 + 2 thay vì trừ.",
     "source": "hk1e10-TL15"
    },
    {
@@ -4981,7 +4983,7 @@ const MATH_EXAMS = [
    {
     "n": 22,
     "ch": 4,
-    "topic": "Trường hợp c-g-c",
+    "topic": "Tam giác bằng nhau",
     "q": "Cho △ABC và △DEF có AB = DE, AC = DF và ∠A = ∠D (∠A là góc xen giữa AB và AC). Hai tam giác này bằng nhau theo trường hợp nào?",
     "fig": {
      "t": "hai-tam-giac",

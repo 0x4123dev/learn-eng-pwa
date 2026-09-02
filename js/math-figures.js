@@ -592,18 +592,78 @@ const _MF_TRI = {
   lbl: [[26, 111, 'end'], [174, 111, 'start'], [95, 16, 'middle']],
 };
 
+// Build the triangle from the three angles the question states, so the corner
+// labelled 97° is actually drawn obtuse. _MF_TRI stays as the fallback for
+// questions that give no numbers. v[0] is the bottom-left corner, v[1] the
+// bottom-right, v[2] the apex — the caller orders them, this only sizes them.
+function _mfTriFromAngles(A, B) {
+  const rad = Math.PI / 180, C = 180 - A - B;
+  // Side AB along the x-axis; C's position follows from the two base angles.
+  // Law of sines with AB = 1: the apex sits at distance sin(B)/sin(C) from A.
+  const d = Math.sin(B * rad) / Math.sin(C * rad);
+  const raw = [[0, 0], [1, 0], [d * Math.cos(A * rad), -d * Math.sin(A * rad)]];
+  const xs = raw.map(p => p[0]), ys = raw.map(p => p[1]);
+  const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+  const k = Math.min(132 / w, 76 / h);
+  const ox = 100 - (Math.min(...xs) + w / 2) * k, oy = 100 - (Math.max(...ys)) * k;
+  return raw.map(p => [ox + p[0] * k, oy + p[1] * k]);
+}
+
 function _mfqTamGiac(f) {
   const v = f.v || ['A', 'B', 'C'];
   const angles = f.angles || {};
+  const num = (x) => {
+    const m = /(\d+(?:[.,]\d+)?)/.exec(String(x == null ? '' : x));
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
+  };
+  let vals = v.map(name => num(angles[name]));
+  const gap = vals.findIndex(x => x === null);
+  if (gap >= 0 && vals.filter(x => x !== null).length === 2) {
+    vals[gap] = 180 - vals.filter(x => x !== null).reduce((a, b) => a + b, 0);
+  }
+  const usable = vals.every(x => x !== null && x > 8 && x < 164)
+    && Math.abs(vals[0] + vals[1] + vals[2] - 180) < 0.5;
+
+  const P = usable ? _mfTriFromAngles(vals[0], vals[1]) : _MF_TRI.P;
+  // Interior wedge at each corner, measured from that corner toward the other two.
+  const dirTo = (i, j) => {
+    const a = Math.atan2(-(P[j][1] - P[i][1]), P[j][0] - P[i][0]) * 180 / Math.PI;
+    return (a + 360) % 360;
+  };
+  const span = (i, j, k) => {
+    let a0 = dirTo(i, j), a1 = dirTo(i, k);
+    if (((a1 - a0) % 360 + 360) % 360 > 180) { const t = a0; a0 = a1; a1 = t; }
+    return [a0, a0 + (((a1 - a0) % 360 + 360) % 360)];
+  };
   let out = '';
   v.forEach((name, i) => {
-    const a = _MF_TRI.ang[i], p = _MF_TRI.P[i];
-    out += _mfAng(p[0], p[1], i === 2 ? 20 : 22, a[0], a[1], angles[name], i === 2 ? 34 : 36);
+    const [j, k] = [[1, 2], [2, 0], [0, 1]][i];
+    const arc = usable ? span(i, j, k) : _MF_TRI.ang[i];
+    let r = i === 2 ? 20 : 22;
+    let labelR = r + 14;
+    if (usable) {
+      // A short side puts two corner labels within reach of each other. Keep
+      // both the arc and its label inside a fraction of the nearest side so a
+      // flat or small triangle never stacks two numbers in the same place.
+      const near = Math.min(Math.hypot(P[j][0] - P[i][0], P[j][1] - P[i][1]),
+                            Math.hypot(P[k][0] - P[i][0], P[k][1] - P[i][1]));
+      r = Math.max(10, Math.min(r, near * 0.26));
+      labelR = Math.max(13, Math.min(r + 14, near * 0.38));
+    }
+    out += _mfAng(P[i][0], P[i][1], r, arc[0], arc[1], angles[name], labelR);
   });
-  out += _mfPoly(_MF_TRI.P, 'mf-l mf-tri');
+  out += _mfPoly(P, 'mf-l mf-tri');
   v.forEach((name, i) => {
-    const L = _MF_TRI.lbl[i];
-    out += _mfT(L[0], L[1], name, L[2]);
+    if (usable) {
+      // Push the vertex letter outward, away from the triangle's centre.
+      const cx = (P[0][0] + P[1][0] + P[2][0]) / 3, cy = (P[0][1] + P[1][1] + P[2][1]) / 3;
+      const dx = P[i][0] - cx, dy = P[i][1] - cy, m = Math.hypot(dx, dy) || 1;
+      const anchor = dx < -6 ? 'end' : (dx > 6 ? 'start' : 'middle');
+      out += _mfT(P[i][0] + dx / m * 13, P[i][1] + dy / m * 13 + (dy > 0 ? 8 : 0), name, anchor);
+    } else {
+      const L = _MF_TRI.lbl[i];
+      out += _mfT(L[0], L[1], name, L[2]);
+    }
   });
   return out;
 }
@@ -712,16 +772,45 @@ function _mfqHaiTamGiacVuong(f) {
 }
 
 // Tam giác cân: v = [đỉnh, đáy trái, đáy phải].
+// The shape is DERIVED from the angle the question gives, not fixed. It used
+// to be a single hard-coded triangle with a 72.6° apex, so a question stating
+// a 36° apex was drawn with that apex as the WIDEST corner — the picture said
+// the opposite of the answer. Six of the eight exam items were inverted that
+// way. Reading one number off the labels costs nothing and makes the drawing
+// agree with the text.
 function _mfqTamGiacCan(f) {
   const v = f.v || ['A', 'B', 'C'];
   const angles = f.angles || {};
-  return _mfAng(45, 100, 20, 0, 53.7, angles[v[1]], 32)
-    + _mfAng(155, 100, 20, 126.3, 180, angles[v[2]], 32)
-    + _mfAng(100, 25, 18, 233.7, 306.3, angles[v[0]], 32)
-    + _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
+  const num = (x) => {
+    const m = /(\d+(?:[.,]\d+)?)/.exec(String(x == null ? '' : x));
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
+  };
+  // Either the apex or a base angle pins the whole triangle.
+  const apexGiven = num(angles[v[0]]);
+  const baseGiven = num(angles[v[1]]) != null ? num(angles[v[1]]) : num(angles[v[2]]);
+  let apex = apexGiven != null ? apexGiven
+    : (baseGiven != null ? 180 - 2 * baseGiven : 72.6);
+  if (!(apex > 10 && apex < 160)) apex = 72.6;      // junk label: keep the old shape
+  const beta = (180 - apex) / 2;                    // the two base angles
+  const rad = Math.PI / 180;
+  // Fit inside the 200x120 canvas: cap the half-base at 58 and the height at 78.
+  const t = Math.tan(apex / 2 * rad);
+  const w = Math.min(58, 78 * t);
+  const h = w / t;
+  const ax = 100, ay = 100 - h, lx = 100 - w, rx = 100 + w;
+  const r = Math.max(12, Math.min(20, w * 0.36));
+  // A sharp apex makes a tall, narrow triangle, and the two base labels — each
+  // sitting on its wedge bisector — close in on each other until they overlap.
+  // Pull them in far enough to keep a readable gap at the centre.
+  const halfGap = Math.cos(beta / 2 * rad);
+  const baseLabelR = Math.max(11, Math.min(r + 12, halfGap > 0.05 ? (w - 13) / halfGap : r + 12));
+  return _mfAng(lx, 100, r, 0, beta, angles[v[1]], baseLabelR)
+    + _mfAng(rx, 100, r, 180 - beta, 180, angles[v[2]], baseLabelR)
+    + _mfAng(ax, ay, Math.max(10, r - 2), 180 + beta, 360 - beta, angles[v[0]], r + 14)
+    + _mfPoly([[ax, ay], [lx, 100], [rx, 100]], 'mf-l mf-tri')
     + (f.ticks === false ? ''
-       : _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b'))
-    + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start');
+       : _mfTicks(ax, ay, lx, 100, 1, 'b') + _mfTicks(ax, ay, rx, 100, 1, 'b'))
+    + _mfT(ax, ay - 9, v[0]) + _mfT(lx - 11, 104, v[1], 'end') + _mfT(rx + 11, 104, v[2], 'start');
 }
 
 function _mfqTamGiacDeu(f) {
@@ -761,7 +850,14 @@ function _mfqTrungTuyen(f) {
   return _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
     + _mfLine(100, 25, 100, 100, 'mf-l mf-hi')
     + _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b')
-    + _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c')
+    // The two base ticks say "BD = DC is GIVEN". For a genuine median that is
+    // the definition, but both questions using this template ask the child to
+    // PROVE the two triangles equal, and each offers a c-c-c distractor whose
+    // premise is exactly BD = DC. Drawing it handed the child the wrong answer
+    // and contradicted the explanation, which says BD = DC is not a given.
+    // midTicks:false leaves the base unmarked; omitting it keeps the median.
+    + (f.midTicks === false ? ''
+        : _mfTicks(45, 100, 100, 100, 2, 'c') + _mfTicks(100, 100, 155, 100, 2, 'c'))
     + _mfDot(100, 100)
     + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start')
     + _mfT(100, 114, f.mid || 'M', 'middle');
@@ -882,7 +978,11 @@ function mathQuestionFigureHTML(fig) {
     const alt = String(fig.alt || 'Hình vẽ từ đề thi gốc')
       .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return `<div class="math-q-figwrap math-source-crop" style="--crop-ratio:${w}/${h}">`
-      + `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" `
+      // Do not lazy-load these source pages. Mobile Safari can leave an
+      // absolutely positioned image inside an overflow crop unloaded even
+      // after its question is visible, producing a large blank white box.
+      // Intrinsic dimensions also let WebKit lay the crop out before decode.
+      + `<img src="${src}" alt="${alt}" width="${sw}" height="${sh}" loading="eager" decoding="async" `
       + `style="width:${sw / w * 100}%;left:${-x / w * 100}%;top:${-y / h * 100}%">`
       + `</div>`;
   }

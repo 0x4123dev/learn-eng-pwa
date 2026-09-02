@@ -128,7 +128,8 @@ const TABS = [
     mod: require(path.join(ROOT, 'js', 'wordform.js')),
     file: 'js/wordform.js',
     start: (m) => m.startWordformQuiz(10),
-    answer: (m) => m.answerWfQuestion(0),
+    answer: (m) => { m.answerWfQuestion(0); m.submitWfText(); },
+    answered: (m) => m.wfAnsweredCount(),
     active: (m) => m.isWordformQuizActive(),
     quit: 'quitWordformQuiz',
   },
@@ -138,6 +139,7 @@ const TABS = [
     file: 'js/rewrite.js',
     start: (m) => m.startRewriteQuiz(10),
     answer: (m) => m.submitRwText('anything at all'),
+    answered: (m) => m.rwAnsweredCount(),
     active: (m) => m.isRewriteQuizActive(),
     quit: 'quitRewriteQuiz',
   },
@@ -146,7 +148,16 @@ const TABS = [
     mod: require(path.join(ROOT, 'js', 'phrases.js')),
     file: 'js/phrases.js',
     start: (m) => m.startPhrasesQuiz(10),
-    answer: (m) => m.answerPhrQuestion(0),
+    // Answer whatever is on screen. Roughly one question in ten is TYPED, and
+    // answerPhrQuestion refuses those, so tapping an option alone left the
+    // round with nothing answered whenever the draw put a typed question
+    // first — and then the ✕ had no work to protect and never asked. The test
+    // failed perhaps one run in eight, on the clock, for a reason that had
+    // nothing to do with the exit guard it was meant to check. Both are
+    // offered; exactly one lands, because each refuses the other's shape and
+    // the second sees the answer already recorded.
+    answer: (m) => { m.answerPhrQuestion(0); m.submitPhrTextAnswer(); },
+    answered: (m) => m.phrAnsweredCount(),
     active: (m) => m.isPhrasesQuizActive(),
     quit: 'quitPhrasesQuiz',
   },
@@ -155,7 +166,10 @@ const TABS = [
     mod: require(path.join(ROOT, 'js', 'collocation.js')),
     file: 'js/collocation.js',
     start: (m) => m.startCollocPractice(10),
-    answer: (m) => m.answerCollocChoice(0),
+    // Same as Phrases: answerCollocChoice refuses a question with no options,
+    // which is exactly what a typed one is.
+    answer: (m) => { m.answerCollocChoice(0); m.submitCollocText(); },
+    answered: (m) => m.colAnsweredCount(),
     active: (m) => m.isCollocActive(),
     quit: 'quitCollocPractice',
   },
@@ -165,6 +179,7 @@ const TABS = [
     file: 'js/units.js',
     start: (m) => m.startUnitPractice(1),
     answer: (m) => m.submitUnitAnswer('anything at all'),
+    answered: (m) => m.unitAnsweredCount(),
     active: (m) => m.isUnitPracticeActive(),
     quit: 'quitUnitPractice',
   },
@@ -204,6 +219,10 @@ suite('the ✕ on a question card asks before it bins the round', () => {
         tab.start(m);
         assert.truthy(tab.active(m), `${tab.label}: the round did not start`);
         tab.answer(m);
+        // The ✕ only asks when there is work to lose, so a helper that quietly
+        // answered nothing would make the real assertion below fail for the
+        // wrong reason. Say which it is.
+        assert.truthy(tab.answered(m) > 0, `${tab.label}: the answer did not register`);
         const asked = armConfirm(false);
         m[tab.quit]();
         assert.equal(asked.length, 1, `${tab.label}: it must ask before throwing work away`);
@@ -217,6 +236,7 @@ suite('the ✕ on a question card asks before it bins the round', () => {
       withDom(() => {
         tab.start(m);
         tab.answer(m);
+        assert.truthy(tab.answered(m) > 0, `${tab.label}: the answer did not register`);
         armConfirm(true);
         m[tab.quit]();
         assert.falsy(tab.active(m), `${tab.label}: saying yes must end the round`);

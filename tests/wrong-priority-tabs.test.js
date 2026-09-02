@@ -275,6 +275,120 @@ suite('wrong priority tabs: Rewrite', () => {
     });
 });
 
+suite('wrong priority tabs: Verbs', () => {
+    test('missed verbs are drawn into the next game and the game is still ten', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.VERBS.slice(-5);
+        seed(ctx, 'verbs', targets.map(v => v.v1));
+        ctx.startSpeedChallenge(0);
+        const drawn = ctx.speedState.currentVerbs;
+        assert.equal(drawn.length, 10);
+        const v1s = new Set(drawn.map(v => v.v1));
+        targets.forEach(v => assert.truthy(v1s.has(v.v1), v.v1 + ' was missed before but not drawn'));
+    });
+
+    test('the level filter still applies: a level-2 miss never enters a level-1 game', () => {
+        const { ctx } = makeEnv();
+        const l2 = ctx.VERBS.find(v => v.level === 2);
+        assert.truthy(l2, 'the bank has a level-2 verb');
+        seed(ctx, 'verbs', [l2.v1]);
+        ctx.startSpeedChallenge(1);
+        assert.truthy(ctx.speedState.currentVerbs.length > 0);
+        assert.falsy(ctx.speedState.currentVerbs.some(v => v.v1 === l2.v1));
+    });
+
+    test('a finished game moves the streak by v1', () => {
+        const { ctx } = makeEnv();
+        const [a, b] = ctx.VERBS;
+        const store = seed(ctx, 'verbs', [a.v1, b.v1], 1);
+        ctx.speedState.currentVerbs = [a, b];
+        ctx.speedState.verbResults = [
+            { v1: a.v1, v2: a.v2, v3: a.v3, userV2: a.v2, userV3: a.v3, correct: true, timeUsed: 1000 },
+            { v1: b.v1, v2: b.v2, v3: b.v3, userV2: 'zzz', userV3: 'zzz', correct: false, timeUsed: null },
+        ];
+        ctx.completeSpeedChallenge();
+        assert.equal(store[a.v1].s, 2);
+        assert.equal(store[b.v1].s, 0);
+        assert.equal(store[b.v1].w, 2);
+    });
+});
+
+suite('wrong priority tabs: Grammar', () => {
+    const genv = loadAppCode({});
+    const fresh = (wrongPrio) => genv.__setAppState({ grammarHistory: [], grammarMistakes: {}, coins: 0, wrongPrio });
+
+    test('missed questions are drawn first and the quiz is still the promised size', () => {
+        const unit = genv.getGrammarUnit('unit12');           // Tenses
+        const targets = unit.questions.slice(-5);
+        const grammar = {};
+        targets.forEach(q => { grammar[q.id] = { s: 0, w: 1, t: 0 }; });
+        fresh({ grammar });
+        const qs = genv.generateGrammarQuiz('unit12', 10);
+        assert.equal(qs.length, 10);
+        assert.equal(new Set(qs.map(q => q.id)).size, 10, 'no question twice');
+        const drawn = new Set(qs.map(q => q.id));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+    });
+
+    test('a miss in one unit never enters another unit\'s quiz', () => {
+        const other = genv.getGrammarUnit('unit1').questions[0];
+        fresh({ grammar: { [other.id]: { s: 0, w: 1, t: 0 } } });
+        assert.falsy(genv.generateGrammarQuiz('unit12', 10).some(q => q.id === other.id));
+    });
+
+    test('saving a session moves the streak; a skipped question is neither right nor wrong', () => {
+        const mcs = genv.getGrammarUnit('unit12').questions.filter(q => q.type !== 'arrangement');
+        const [a, b, c] = mcs;
+        fresh({ grammar: { [a.id]: { s: 4, w: 1, t: 0 }, [b.id]: { s: 2, w: 1, t: 0 }, [c.id]: { s: 2, w: 1, t: 0 } } });
+        genv.saveGrammarSession('unit12', [a, b, c], [a.correct, b.correct === 0 ? 1 : 0, null]);
+        const store = genv.__getAppState().wrongPrio.grammar;
+        assert.falsy(store[a.id], 'the fifth right answer in a row releases the question');
+        assert.equal(store[b.id].s, 0);
+        assert.equal(store[b.id].w, 2);
+        assert.equal(store[c.id].s, 2, 'skipped: untouched, the same line the mistake bank draws');
+    });
+
+    test('the mistake bank is untouched by the new rule', () => {
+        const [a] = genv.getGrammarUnit('unit12').questions.filter(q => q.type !== 'arrangement');
+        fresh({ grammar: {} });
+        genv.saveGrammarSession('unit12', [a], [a.correct === 0 ? 1 : 0]);
+        const st = genv.__getAppState();
+        assert.truthy(st.grammarMistakes[a.id], 'the mistake bank still records a miss');
+        assert.equal(st.wrongPrio.grammar[a.id].s, 0, 'and so does the priority list');
+    });
+});
+
+suite('wrong priority tabs: the owed-back drill is separate', () => {
+    test('a right retype clears the debt but never moves the streak', () => {
+        const { ctx, el } = makeEnv();
+        const q = ctx.wordformBank().find(q => q.type === 'text');
+        const store = seed(ctx, 'wf', [q.id], 2);
+        ctx.retryAdd('wf', [q]);
+        ctx.startRetryDrill('wf');
+        assert.truthy(ctx.isRetryDrillActive());
+        el('retryInput').value = String(ctx.retryCfg('wf').answerText(q));
+        ctx.submitRetryAnswer();
+        assert.equal(ctx.retryCount('wf'), 0, 'the debt is cleared by a right retype');
+        assert.equal(store[q.id].s, 2, 'but the priority streak is untouched: only real practices count');
+    });
+
+    test('a wrong retype does not count either', () => {
+        const { ctx, el } = makeEnv();
+        const q = ctx.wordformBank().find(q => q.type === 'text');
+        const store = seed(ctx, 'wf', [q.id], 2);
+        ctx.retryAdd('wf', [q]);
+        ctx.startRetryDrill('wf');
+        el('retryInput').value = 'zzz';
+        ctx.submitRetryAnswer();
+        assert.equal(store[q.id].s, 2);
+        assert.equal(store[q.id].w, 1);
+    });
+
+    test('the engine is never called from the drill', () => {
+        assert.falsy(/prioRecord|prioPick|prioForced/.test(read('js/retrydrill.js')));
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));

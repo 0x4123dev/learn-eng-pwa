@@ -110,6 +110,64 @@ suite('math source exams: original figures and app wiring', () => {
         assert.deepEqual(actual, requiredFigureIds.slice().sort(), 'figure inventory changed without audit');
     });
 
+    test('audited geometry crops keep the complete diagram and exclude neighbouring questions', () => {
+        const byId = new Map(MATH_SOURCE_EXAMS.flatMap(e => e.questions).map(q => [q.id, q]));
+        // The old box started at y=175 and ran 355 tall, which swept in
+        // "C. Học bài. D. Chơi bóng đá." from the question above and a sliced
+        // "ệ là" from the line below — the child saw two other questions'
+        // words wrapped around their pie chart.
+        assert.deepEqual(byId.get('s1-12').fig.crop, [534, 240, 436, 262],
+            's1-12 must show the pie and its legend and NOTHING of the neighbouring questions');
+        assert.deepEqual(byId.get('s2-12').fig.crop, [690, 865, 400, 270],
+            's2-12 must show A, B, C, D, x, y, z and all three numbered angles');
+        assert.deepEqual(byId.get('s3-12').fig.crop, [590, 430, 400, 260],
+            's3-12 must show both parallel lines, x and the 60° angle');
+        // The old box cut the prism's leftmost vertex flush off the edge and
+        // left 150px of blank paper on the right, so the diagram rendered tiny.
+        assert.deepEqual(byId.get('s5-13').fig.crop, [492, 806, 285, 210],
+            's5-13 must show the whole prism and all four measurements');
+        // The old box started right of the "m" label, so the figure named only
+        // n while the question asks the child to prove m // n.
+        assert.deepEqual(byId.get('s5-14').fig.crop, [525, 1035, 460, 300],
+            's5-14 must show BOTH line names m and n');
+    });
+
+    test('the two angles a corresponding-angle slip got wrong stay corrected', () => {
+        // Both shipped wrong for months, and both cost the child a mark while
+        // telling them a false rule. They are pinned here because neither is
+        // derivable from the question text alone — you have to read where the
+        // numbered label actually sits on the scanned figure.
+        const byId = new Map(MATH_SOURCE_EXAMS.flatMap(e => e.questions).map(q => [q.id, q]));
+
+        // s2-12: label 3 sits RIGHT of the transversal and above BC, exactly as
+        // D₂ sits right of it and above AD, so they are ĐỒNG VỊ and equal. The
+        // old answer called them trong cùng phía and said 108°.
+        const c3 = byId.get('s2-12').answerParts.find(p => p.label.includes('∠C₃'));
+        assert.equal(c3.answer, '72', 's2-12: ∠C₃ is corresponding to ∠D₂, not co-interior');
+        assert.truthy(/đồng vị/i.test(byId.get('s2-12').explanation),
+            's2-12: the explanation must name the rule it actually uses');
+        assert.falsy(/trong cùng phía/i.test(byId.get('s2-12').explanation),
+            's2-12: the co-interior claim was the bug');
+
+        // s5-14: label 3 sits BELOW n on the same side as label 1 above it, so
+        // ∠D₃ is a linear pair with ∠D₁. The old answer called them đối đỉnh
+        // and said 60°; the angle vertical to ∠D₁ is ∠D₂, which is not asked.
+        const d3 = byId.get('s5-14').answerParts.find(p => p.label.includes('∠D₃'));
+        assert.equal(d3.answer, '120', 's5-14: ∠D₃ is kề bù with ∠D₁, not đối đỉnh');
+        assert.truthy(/kề bù/i.test(byId.get('s5-14').explanation),
+            's5-14: the explanation must name the rule it actually uses');
+    });
+
+    test('a terminating decimal is explained by the 2-and-5 rule, not by "one prime"', () => {
+        // The old wording said 8 = 2³ "chỉ có thừa số nguyên tố 2", which reads
+        // as though having a single prime factor were the test — and then 27 =
+        // 3³ would qualify too. The child asked exactly that question.
+        const q = MATH_SOURCE_EXAMS.flatMap(e => e.questions).find(x => x.id === 's2-2');
+        assert.truthy(/2 và\/hoặc 5/.test(q.explanation), 's2-2: must state the real rule');
+        assert.truthy(/27/.test(q.explanation) && /vô hạn tuần hoàn/.test(q.explanation),
+            's2-2: must say why a denominator of 27 is NOT terminating');
+    });
+
     test('the five source papers appear after the ten practice papers', () => {
         global.MATH_SOURCE_EXAMS = MATH_SOURCE_EXAMS;
         const exams = math.mathExams();
