@@ -96,7 +96,7 @@ const DailyTaskCatalog = (function () {
   }
   // Toán 7 — detail_json carries examId (mock exams) or chapter (drills).
   ENTRIES.push(entry('math-exam:any-hk1', 'math-exam', 'Toán 7 · Đề thi HK1 bất kỳ', 'math',
-    { detail: { field: 'examId', prefix: 'hk1-' } }, 'mathHubScreen', [['openMathSection', 'exams']]));
+    { detail: { field: 'examId', prefix: 'hk1-' } }, 'mathHubScreen', [['openMathSection', 'hk1'], ['switchMathSubTab', 'exams']]));
   for (const [id, title] of MATH_EXAMS) {
     ENTRIES.push(entry('math-exam:' + id, 'math-exam', 'Toán 7 · Đề thi ' + title, 'math',
       { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['startMathExam', id]]));
