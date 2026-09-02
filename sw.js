@@ -40,6 +40,7 @@ const ASSETS = [
   '/js/units-hk2-data.js',
   '/js/units-posthk-data.js',
   '/js/retrydrill.js',
+  '/js/wrong-priority.js',
   '/js/units.js',
   '/js/topics.js',
   '/js/grammar-units.js',

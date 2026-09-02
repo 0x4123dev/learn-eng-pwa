@@ -142,6 +142,8 @@ const EXPORT_NAMES = [
     'getTopicsForWord', 'getTopicsForWordIndex', 'getWordsForTopic', 'getTopicCounts',
     'getTopicById', 'getDifficultyLabelForWordIdx', 'buildWordTopicsIndex',
     'TOPIC_BONUS_LESSON', 'isBonusTopicLesson',
+    // wrong-priority.js
+    'prioStore', 'prioStreak', 'prioRecord', 'prioForced', 'prioPick',
     // srs.js
     'initWordSRS', 'updateWordSRS', 'getWordsDueForReview', 'getReviewCount',
     'getSRSMasteryPercent', 'startReviewSession',
@@ -226,6 +228,7 @@ function loadAppCode(opts) {
         'js/vocabulary.js',
         'js/topics.js',
         'js/srs.js',
+        'js/wrong-priority.js',
         'js/grammar-units.js',
         'js/grammar-lessons.js',
         'js/app.js'
