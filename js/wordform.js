@@ -431,7 +431,7 @@ function startWordformQuiz(n) {
   // what a child counts — so the count above is left alone and the screens
   // roughly double.
   qs = wfExpandFollowups(qs);
-  _wfQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
+  _wfQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null), qs: (n === 'all' ? 'all' : Number(n)) };
   renderWfQuestion();
 }
 function startWordformReviewQuiz(qids) {
@@ -848,7 +848,7 @@ function finishWordformQuiz() {
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
   saveWordformSession({
-    id: 'wf-' + date, date, score, total, wrong, fu,
+    id: 'wf-' + date, date, score, total, wrong, fu, qs: st.qs,
     skills: wfSkillSummaries(st)
   });
 

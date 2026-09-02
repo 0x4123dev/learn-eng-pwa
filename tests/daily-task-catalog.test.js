@@ -76,12 +76,59 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
 
   test('grammar and maths match on detail fields', () => {
     assert.deepEqual(Catalog.get('grammar:unit12').match, { detail: { field: 'unitId', value: 'unit12' } });
-    assert.equal(Catalog.entries('grammar').length, 13);
+    // 13 units × (bất kỳ + 10 câu + 25 câu)
+    assert.equal(Catalog.entries('grammar').length, 39);
+    assert.deepEqual(Catalog.get('grammar:unit12:10').match, { detail: { field: 'unitQs', value: 'unit12:10' } });
     assert.deepEqual(Catalog.get('math-exam:hk1-source-3').match, { detail: { field: 'examId', value: 'hk1-source-3' } });
     assert.deepEqual(Catalog.get('math-exam:any-hk1').match, { detail: { field: 'examId', prefix: 'hk1-' } });
     assert.deepEqual(Catalog.get('math-chapter:2').match, { detail: { field: 'chapter', value: 2 }, noField: 'examId' });
     assert.equal(Catalog.entries('math-exam').length, 16);
     assert.equal(Catalog.entries('math-chapter').length, 5);
+  });
+
+  test('a task can name one BUTTON, and its deep link opens that same button', () => {
+    // The count already in the activity title is the screen count, not the
+    // button: a 10-question Phrases practice records "(20 Qs)" and Word form
+    // records 30, 31 or 32 for the same button. So the size travels as
+    // detail.qs, written by js/auth.js from what the tab recorded.
+    for (const [key, n, fn] of [
+      ['phrases:10', 10, 'startPhrasesQuiz'], ['phrases:20', 20, 'startPhrasesQuiz'],
+      ['collocation:10', 10, 'startCollocPractice'], ['collocation:20', 20, 'startCollocPractice'],
+      ['wordform:10', 10, 'startWordformQuiz'], ['wordform:20', 20, 'startWordformQuiz'],
+    ]) {
+      const e = Catalog.get(key);
+      assert.truthy(e, key + ' is missing');
+      assert.equal(e.size, n, key + ': size');
+      assert.deepEqual(e.match.detail, { field: 'qs', value: n }, key + ': match');
+      const last = e.go.calls[e.go.calls.length - 1];
+      assert.deepEqual(last, [fn, n], key + ': the deep link must start that same length');
+    }
+    // Grammar's two buttons are 10 and 25, not 10 and 20.
+    assert.deepEqual(Catalog.get('grammar:unit3:25').go.calls, [['startGrammarQuiz', 'unit3', 25]]);
+    assert.equal(Catalog.get('grammar:unit3:10').size, 10);
+    // Rewrite has only a 10-question button and Verbs picks a level, so
+    // neither takes a size — offering one would promise a button that is not
+    // on the screen.
+    assert.equal(Catalog.get('rewrite').size, undefined);
+    assert.equal(Catalog.get('verbs').size, undefined);
+    assert.equal(Catalog.get('rewrite:20'), null);
+  });
+
+  test('Math Wars is its own task and cannot be crossed with the other maths tasks', () => {
+    // All three ride activityType 'math', so the match rules are what keep a
+    // Math Wars round from ticking off a chapter drill and vice versa.
+    const wars = Catalog.get('mathwars');
+    assert.deepEqual(wars.match, { titlePrefix: 'Math Wars' });
+    assert.equal(wars.activityType, 'math');
+    assert.equal(Catalog.entries('math-wars').length, 1);
+    // js/auth.js writes 'Math Wars · 8/10 câu'; Toán 7 writes 'Toán 7 · …'.
+    // Neither prefix is a prefix of the other, and Math Wars carries no
+    // examId or chapter for the detail-based rules to catch.
+    const auth = fs.readFileSync(path.join(ROOT, 'js/auth.js'), 'utf8');
+    assert.truthy(auth.includes("title: 'Math Wars · '"), 'the uploaded title changed');
+    assert.falsy(String(Catalog.get('math-exam:any-hk1').match.titlePrefix || '').startsWith('Math Wars'));
+    assert.deepEqual(wars.go,
+      { screen: 'mathHubScreen', calls: [['openMathSection', 'wars'], ['startWarsRound']] });
   });
 
   test('deep links: units switch set before starting; maths exam passes its id', () => {
@@ -97,7 +144,7 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
 
   test('every go.calls function name exists in the app sources', () => {
     const src = ['js/app.js', 'js/topics.js', 'js/units.js', 'js/phrases.js', 'js/collocation.js', 'js/wordform.js',
-      'js/rewrite.js', 'js/verbs.js', 'js/home.js', 'js/grammar-ui.js', 'js/math.js']
+      'js/rewrite.js', 'js/verbs.js', 'js/home.js', 'js/grammar-ui.js', 'js/math.js', 'js/mathwars.js']
       .map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
     for (const e of Catalog.all()) {
       for (const call of e.go.calls) {
@@ -116,6 +163,7 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
       "'Rewrite practice ('", "'Collocation practice ('", "'Verbs challenge ('",
       "' words practice'", "'Mix 12 units'", 'detail: { unitId',
       'examId: h.examId, chapter: h.chapter',
+      "'Math Wars · '",
     ].forEach(needle => assert.truthy(auth.includes(needle), 'js/auth.js is missing: ' + needle));
 
     // Derive: every titlePrefix in the catalog must be a real prefix in
@@ -123,7 +171,11 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
     for (const e of Catalog.all()) {
       if (!e.match || !e.match.titlePrefix) continue;
       const prefix = e.match.titlePrefix;
-      const found = auth.includes("'" + prefix + " (") || auth.includes("'" + prefix + " #");
+      // Three shapes are in use: '<prefix> (' for the Qs-count tabs,
+      // '<prefix> #' for the vocab lesson, and '<prefix> · ' for Math Wars,
+      // whose title carries its score ('Math Wars · 8/10 câu').
+      const found = auth.includes("'" + prefix + " (") || auth.includes("'" + prefix + " #")
+        || auth.includes("'" + prefix + " · ");
       assert.truthy(found, e.key + ': titlePrefix "' + prefix + '" not found verbatim in js/auth.js');
     }
   });

@@ -27,6 +27,7 @@ var DailyTaskCatalog = (function () {
     { id: 'units-posthk', label: 'Units Post (Maths 4 & Science 4)' },
     { id: 'math-exam', label: 'Toán 7 · Đề thi' },
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
+    { id: 'math-wars', label: 'Toán 7 · Math Wars' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
@@ -65,18 +66,48 @@ var DailyTaskCatalog = (function () {
     ['hk1-source-5', 'HK1 5 (THCS Lý Thánh Tông)'],
   ];
 
-  function entry(key, group, label, activityType, match, screen, calls) {
-    return freezeDeep({ key, group, label, activityType, match, go: { screen, calls } });
+  function entry(key, group, label, activityType, match, screen, calls, size, baseKey) {
+    const e = { key, group, label, activityType, match, go: { screen, calls } };
+    // size = how many questions the child was asked for. The count already in
+    // the activity title is the SCREEN count and cannot stand in for it: a
+    // 10-question Phrases practice records 20, and Word form records 30, 31 or
+    // 32 for the same button. js/auth.js uploads the real figure as detail.qs.
+    if (size != null) { e.size = size; e.baseKey = baseKey || key; }
+    return freezeDeep(e);
+  }
+
+  // Practice tabs that really offer more than one length. Rewrite has only a
+  // 10-question button, Verbs picks a level rather than a length, and the
+  // Units and Toán 7 tabs are fixed — so none of those take a size.
+  const SIZES = { phrases: [10, 20], collocation: [10, 20], wordform: [10, 20] };
+  const GRAMMAR_SIZES = [10, 25];
+  function withSize(match, n) {
+    return Object.assign({}, match, { detail: { field: 'qs', value: n } });
   }
 
   const ENTRIES = [];
   // Practice tabs — one session each, any length. Titles come from js/auth.js.
-  ENTRIES.push(entry('phrases', 'practice', 'Phrases practice', 'phrases',
-    { titlePrefix: 'Phrases practice' }, 'phrasesScreen', [['switchPhrSubTab', 'practice'], ['startPhrasesQuiz', 20]]));
-  ENTRIES.push(entry('collocation', 'practice', 'Collocation practice', 'collocation',
-    { titlePrefix: 'Collocation practice' }, 'phrasesScreen', [['switchPhrSubTab', 'colloc'], ['startCollocPractice', 20]]));
-  ENTRIES.push(entry('wordform', 'practice', 'Word form practice', 'wordform',
-    { titlePrefix: 'Word form practice' }, 'wordformScreen', [['startWordformQuiz', 20]]));
+  // One task per BUTTON the child can press, because that is what an admin
+  // means when they set the day's work. The size-agnostic entry stays first:
+  // tasks assigned before lengths existed still resolve through it.
+  const PRACTICE_SIZED = [
+    ['phrases', 'Phrases practice', 'Phrases', 'phrases', 'phrasesScreen',
+      n => [['switchPhrSubTab', 'practice'], ['startPhrasesQuiz', n]]],
+    ['collocation', 'Collocation practice', 'Collocation', 'collocation', 'phrasesScreen',
+      n => [['switchPhrSubTab', 'colloc'], ['startCollocPractice', n]]],
+    ['wordform', 'Word form practice', 'Word form', 'wordform', 'wordformScreen',
+      n => [['startWordformQuiz', n]]],
+  ];
+  for (const [key, titlePrefix, short, type, screen, calls] of PRACTICE_SIZED) {
+    const sizes = SIZES[key];
+    const big = sizes[sizes.length - 1];
+    ENTRIES.push(entry(key, 'practice', titlePrefix + ' (bất kỳ độ dài)', type,
+      { titlePrefix }, screen, calls(big)));
+    for (const n of sizes) {
+      ENTRIES.push(entry(key + ':' + n, 'practice', short + ' ' + n + ' câu', type,
+        withSize({ titlePrefix }, n), screen, calls(n), n, key));
+    }
+  }
   ENTRIES.push(entry('rewrite', 'practice', 'Rewrite practice', 'rewrite',
     { titlePrefix: 'Rewrite practice' }, 'rewriteScreen', [['startRewriteQuiz', 10]]));
   ENTRIES.push(entry('verbs', 'practice', 'Verbs challenge', 'verbs',
@@ -85,8 +116,15 @@ var DailyTaskCatalog = (function () {
     { titlePrefix: 'Vocabulary lesson' }, 'homeScreen', [['goLearnToday']]));
   // Grammar — detail_json carries unitId.
   for (const [id, name] of GRAMMAR_NAMES) {
-    ENTRIES.push(entry('grammar:' + id, 'grammar', 'Grammar · ' + name, 'grammar',
-      { detail: { field: 'unitId', value: id } }, 'grammarScreen', [['startGrammarQuiz', id, 20]]));
+    ENTRIES.push(entry('grammar:' + id, 'grammar', 'Grammar · ' + name + ' (bất kỳ độ dài)', 'grammar',
+      { detail: { field: 'unitId', value: id } }, 'grammarScreen', [['startGrammarQuiz', id, 25]]));
+    for (const n of GRAMMAR_SIZES) {
+      // A match rule carries one detail clause, so the unit and the length
+      // travel together in a single field that js/auth.js writes as one.
+      ENTRIES.push(entry('grammar:' + id + ':' + n, 'grammar', 'Grammar · ' + name + ' · ' + n + ' câu', 'grammar',
+        { detail: { field: 'unitQs', value: id + ':' + n } }, 'grammarScreen',
+        [['startGrammarQuiz', id, n]], n, 'grammar:' + id));
+    }
   }
   // Units words practice — the title IS the identity ('Unit hk1-3 words practice').
   for (const s of SETS) {
@@ -115,6 +153,16 @@ var DailyTaskCatalog = (function () {
     ENTRIES.push(entry('math-chapter:' + num, 'math-chapter', 'Toán 7 · Chương ' + num + ' · ' + title, 'math',
       { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['startMathQuiz', num]]));
   }
+  // Math Wars rides the 'math' activity type too, but its title is its identity
+  // ('Math Wars · 8/10 câu') and it carries neither examId nor chapter — so it
+  // can never satisfy an exam or a chapter task, nor they it.
+  //
+  // A round records total = the full 10 questions, not the number reached
+  // before the clock ran out. progress() counts only sessions with
+  // score = total, so this task means a clean 10/10: answering four and timing
+  // out scores 4 of 10 and does not count.
+  ENTRIES.push(entry('mathwars', 'math-wars', 'Toán 7 · Math Wars (phải đúng 10/10)', 'math',
+    { titlePrefix: 'Math Wars' }, 'mathHubScreen', [['openMathSection', 'wars'], ['startWarsRound']]));
 
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));
 

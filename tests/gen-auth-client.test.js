@@ -298,7 +298,9 @@ suite('gen: syncNow batch', () => {
         vmAwait('EngAuth.syncNow()');
         assert.deepEqual(sentItems()[1], {
             type: 'grammar', title: 'Grammar: u12',
-            score: 7, total: 10, at: AT.gram, detail: { unitId: 'u12' },
+            // unitQs pairs the unit with the length so a daily task can name
+            // one Grammar button; unitId stays for the size-agnostic tasks.
+            score: 7, total: 10, at: AT.gram, detail: { unitId: 'u12', unitQs: 'u12:10' },
         });
     });
 

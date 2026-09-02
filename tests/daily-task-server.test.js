@@ -115,6 +115,45 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, false);
   });
 
+  test('a task set on one button is not satisfied by the other button', async () => {
+    // The screen count in the title cannot tell the buttons apart — a
+    // 10-question Phrases practice records "(20 Qs)" and a 20-question one
+    // "(40 Qs)", while Word form records 30, 31 or 32 for the SAME button. So
+    // the size travels as detail.qs and the match pins it.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases:20', 1);
+    // The child did the 10-question one, perfectly. It must not count.
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)',
+      score: 20, total: 20, detail: { qs: 10 } });
+    let p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 0, 'a 10-question session satisfied a 20-question task');
+    // A session from before lengths were recorded carries no qs, so it cannot
+    // be claimed for either button.
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
+      score: 40, total: 40, at: '2026-09-02 09:01:00' });
+    p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 0, 'an untagged old session must not count for a sized task');
+    // The real thing.
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
+      score: 40, total: 40, detail: { qs: 20 }, at: '2026-09-02 09:02:00' });
+    p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 1);
+    assert.equal(p.allDone, true);
+  });
+
+  test('the size-agnostic task still counts either button', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'phrases', 2);
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)',
+      score: 20, total: 20, detail: { qs: 10 } });
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (40 Qs)',
+      score: 40, total: 40, detail: { qs: 20 }, at: '2026-09-02 09:01:00' });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 2);
+  });
+
   test('title exact: hk1-mix does not count for hk1-3 and vice versa', async () => {
     const world = createWorld();
     const kid = await world.createUser({});

@@ -436,7 +436,7 @@ function startPhrasesQuiz(n) {
   }
   // Every base question is followed by its Vietnamese meaning question.
   qs = phrExpandPairs(qs);
-  _phrQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
+  _phrQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null), qs: (n === 'all' ? 'all' : Number(n)) };
   renderPhrQuestion();
 }
 
@@ -676,7 +676,7 @@ function finishPhrasesQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong, skills: phrasesSkillSummaries(st) });
+  savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong, qs: st.qs, skills: phrasesSkillSummaries(st) });
 
   // Owe every missed question back. After the coins, so a mistake never
   // feels like it took away what was just earned.

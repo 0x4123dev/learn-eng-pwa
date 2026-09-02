@@ -297,7 +297,7 @@ function startCollocPractice(n) {
       .concat(_colShuffle(typed).slice(0, wantTyped))
       .concat(_colShuffle(choice).slice(0, room - wantTyped))
   ));
-  _colQuiz = { questions, idx: 0, answers: new Array(questions.length).fill(null) };
+  _colQuiz = { questions, idx: 0, answers: new Array(questions.length).fill(null), qs: size };
   renderCollocQuestion();
 }
 
@@ -637,7 +637,7 @@ function finishCollocPractice() {
     if (!Array.isArray(appState.collocHistory)) appState.collocHistory = [];
     let date = 0;
     try { date = Date.now(); } catch (e) {}
-    appState.collocHistory.unshift({ score, total, date, fu, skills: collocSkillSummaries(st) });
+    appState.collocHistory.unshift({ score, total, date, fu, qs: st.qs, skills: collocSkillSummaries(st) });
     if (appState.collocHistory.length > 300) appState.collocHistory.length = 300;
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       try { saveUserData(currentUser, appState); } catch (e) {}

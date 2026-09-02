@@ -296,23 +296,32 @@ const EngAuth = (function () {
     (appState.grammarHistory || []).forEach(h => {
       let name = h.unitId;
       try { const u = getGrammarUnit(h.unitId); if (u && u.name) name = u.name; } catch (e) {}
-      add({ type: 'grammar', title: 'Grammar: ' + name, score: h.score, total: h.total, at: h.date, detail: { unitId: h.unitId } });
+      add({ type: 'grammar', title: 'Grammar: ' + name, score: h.score, total: h.total, at: h.date,
+        // unitQs pairs the unit with the LENGTH the child chose, so a task
+        // can name one button ('Unit 12 · 10 câu'). Grammar has no follow-up
+        // screens, so its total IS the question count. unitId stays for the
+        // size-agnostic tasks and for anything already assigned.
+        detail: { unitId: h.unitId, unitQs: h.unitId + ':' + (h.total || 0) } });
     });
     (appState.phrasesHistory || []).forEach(h => add({
       type: 'phrases', title: 'Phrases practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
+      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
     }));
     (appState.wordformHistory || []).forEach(h => add({
       type: 'wordform', title: 'Word form practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
+      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
     }));
     (appState.rewriteHistory || []).forEach(h => add({
       type: 'rewrite', title: 'Rewrite practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
+      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
     }));
     (appState.collocHistory || []).forEach(h => add({
       type: 'collocation', title: 'Collocation practice (' + (h.total || 0) + ' Qs)',
       score: h.score, total: h.total, at: h.date,
+      ...(h.qs == null ? {} : { detail: { qs: h.qs } }),
     }));
     (appState.unitsHistory || []).forEach(h => add({
       type: 'lesson',

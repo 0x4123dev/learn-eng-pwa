@@ -275,7 +275,7 @@ function startRewriteQuiz(n) {
     const size = Math.min(n, bank.length);
     qs = (typeof prioPick === 'function') ? prioPick('rw', bank, size) : rwShuffle(bank, seed).slice(0, size);
   }
-  _rwQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null) };
+  _rwQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null), qs: (n === 'all' ? 'all' : Number(n)) };
   renderRwQuestion();
 }
 function startRewriteReviewQuiz(qids) {
@@ -407,7 +407,7 @@ function finishRewriteQuiz() {
 
   let date = 0;
   try { date = Date.now(); } catch (e) { date = 0; }
-  saveRewriteSession({ id: 'rw-' + date, date, score, total, wrong, skills: rewriteSkillSummaries(st) });
+  saveRewriteSession({ id: 'rw-' + date, date, score, total, wrong, qs: st.qs, skills: rewriteSkillSummaries(st) });
 
   // Owe every missed question back (after the coins are banked).
   if (typeof retryAdd === 'function') retryAdd('rw', wrong.map(w => rewriteById(w.qid)).filter(Boolean));
