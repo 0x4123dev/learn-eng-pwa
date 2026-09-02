@@ -4,7 +4,9 @@ import { evaluate, shieldStatus } from '../_daily-task.js';
 // GET /api/me/daily-tasks — the child's tasks for today (GMT+7), progress
 // counted from `activities`, whether today's reward is paid, and the shield
 // inventory. Evaluating here too means a child who finished the last session
-// offline still gets paid the moment they look.
+// offline still gets paid the moment they look — but only within the same
+// GMT+7 day: a session finished at 23:58 and synced after midnight counts
+// toward the new day, not the one it was actually played in.
 export async function onRequestGet({ request, env }) {
   const auth = await requireAuth(request, env);
   if (!auth) return err('Unauthorized', 401);
