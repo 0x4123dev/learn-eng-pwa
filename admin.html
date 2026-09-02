@@ -102,8 +102,12 @@
      little more weight than a tab panel did — and a cap, because it is meant
      to be glanced at on the way to somewhere else, not scrolled forever. */
   .activity-feed { border-color:var(--line-2, var(--line)); }
-  .activity-feed .scroll { max-height:min(46vh, 420px); overflow-y:auto; }
-  .activity-feed thead th { position:sticky; top:0; z-index:1; background:var(--head-bg, #f7f9fd); }
+  .pager { display:flex; align-items:center; justify-content:center; gap:12px;
+           padding:10px 14px 12px; border-top:1px solid var(--line); }
+  .pager:empty { display:none; }
+  .pager-btn { min-height:36px; padding:8px 14px; }
+  .pager-btn[disabled] { opacity:.45; cursor:default; }
+  .pager-info { font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
 
   .admin-tabs { display:flex; gap:4px; margin:0 0 18px; padding:5px; border:1px solid var(--line);
                 border-radius:var(--r-md); background:var(--surface-2); overflow-x:auto; scrollbar-width:none; }
@@ -318,8 +322,27 @@
      Measured on an iPhone 16 (393x852): 577px of table in a 351px box before,
      fitting after. */
   @media (max-width: 640px) {
-    /* On a phone the feed is the page, so let it run rather than scroll inside a box. */
-    .activity-feed .scroll { max-height:none; }
+    /* The feed is the landing view, so on a phone the menu underneath it has
+       to stay reachable: with ten rows the card was 658px tall and pushed the
+       tab bar to y=901 on a 375x812 iPhone — one screen down. These three
+       trims (heading on one line, shorter rows, compact stat tiles) bring it
+       back above the fold without dropping a single row. */
+    .activity-feed .toolbar { padding:10px 12px 8px; gap:2px 8px; }
+    .activity-feed .toolbar h2 { margin:0; }
+    .activity-feed .toolbar .who { font-size:11.5px; }
+    /* The three toolbar items fit one line if the middle one is allowed to
+       shrink; wrapping the button onto its own row cost a whole line of the
+       screen the tab bar needed. */
+    .activity-feed .toolbar { flex-wrap:nowrap; }
+    .activity-feed .toolbar .who { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .activity-feed .toolbar #allBtn { min-height:32px; padding:6px 10px; font-size:12px;
+                                      margin-left:auto; flex:0 0 auto; }
+    #attemptsTable th, #attemptsTable td { padding:8px 10px; font-size:12.5px; }
+    .activity-feed .pager { padding:7px 10px 8px; }
+    .activity-feed .pager-btn { min-height:32px; padding:6px 12px; font-size:12.5px; }
+    .stats { gap:8px; }
+    .stat { padding:9px 10px; }
+    .stat b, .stat .stat-num { font-size:20px; }
     /* The last pixels a phone needs come from the page gutter, not from the
        cells: squeezing those further would have cost readability. */
     .wrap { padding-block: 16px 84px; }
@@ -456,6 +479,8 @@
         <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Balance</th><th>Time</th></tr></thead>
         <tbody id="attemptsBody"></tbody>
       </table></div>
+      <div class="pager" id="actPager" aria-live="polite"></div>
+    </div>
 
     <div class="stats" id="stats"></div>
 
@@ -571,9 +596,6 @@
         </div>
       </form>
     </section>
-
-
-    </div>
   </div>
 </div>
 
@@ -939,14 +961,51 @@ async function loadSkills(userId, name){
   renderSkills(skills || []);
 }
 
+// The feed is the first thing on the page, so it must never push the rest of
+// the console below the fold. On a 375x812 iPhone the unpaginated list put the
+// tab bar at y=823 — one row past the screen — and the parent had to scroll
+// through every activity to reach the menu. Ten rows a page, and the page
+// controls sit right under the table.
+const ACT_PAGE_SIZE = 10;
+let _activity = [];
+let _actPage = 0;
+
 async function loadActivity(userId, name){
   _selectedUser = userId || null;
   document.getElementById('whoLabel').textContent = userId ? ('User: '+name) : 'All users · last 30 days';
   const q = userId ? ('admin/activity?user_id='+encodeURIComponent(userId)) : 'admin/activity';
   const { activity } = await api(q);
+  _activity = Array.isArray(activity) ? activity : [];
+  _actPage = 0;                       // a new filter always starts at the top
+  renderActivityPage();
+}
+
+function actPageCount(){ return Math.max(1, Math.ceil(_activity.length / ACT_PAGE_SIZE)); }
+
+function goActivityPage(delta){
+  const last = actPageCount() - 1;
+  const next = Math.min(last, Math.max(0, _actPage + delta));
+  if (next === _actPage) return;
+  _actPage = next;
+  renderActivityPage();
+  // Keep the table head in view: paging is a read, not a jump to the top.
+  const card = document.getElementById('activityPanel');
+  if (card && card.scrollIntoView) card.scrollIntoView({ block:'start', behavior:'smooth' });
+}
+
+function renderActivityPage(){
   const body = document.getElementById('attemptsBody');
-  if (!activity.length){ body.innerHTML = `<tr><td colspan="8" class="empty">No activity yet.</td></tr>`; return; }
-  body.innerHTML = activity.map(a=>{
+  const foot = document.getElementById('actPager');
+  if (!_activity.length){
+    body.innerHTML = `<tr><td colspan="8" class="empty">No activity yet.</td></tr>`;
+    if (foot) foot.innerHTML = '';
+    return;
+  }
+  const pages = actPageCount();
+  if (_actPage > pages - 1) _actPage = pages - 1;
+  const from = _actPage * ACT_PAGE_SIZE;
+  const rows = _activity.slice(from, from + ACT_PAGE_SIZE);
+  body.innerHTML = rows.map(a=>{
     const hasScore = (a.total!=null && a.total>0);
     const pct = hasScore ? Math.round(a.score/a.total*100) : null;
     return `<tr>
@@ -960,6 +1019,15 @@ async function loadActivity(userId, name){
       <td class="muted">${a.kind==='exam' ? fmtTime(a.time_spent_sec) : '—'}</td>
     </tr>`;
   }).join('');
+  if (!foot) return;
+  const to = from + rows.length;
+  foot.innerHTML = `
+    <button type="button" class="btn btn-ghost pager-btn" id="actPrev" ${_actPage===0?'disabled':''} aria-label="Trang trước">‹ Trước</button>
+    <span class="pager-info">${from+1}–${to} / ${_activity.length}${pages>1?` · trang ${_actPage+1}/${pages}`:''}</span>
+    <button type="button" class="btn btn-ghost pager-btn" id="actNext" ${_actPage>=pages-1?'disabled':''} aria-label="Trang sau">Sau ›</button>`;
+  const prev = document.getElementById('actPrev'), next = document.getElementById('actNext');
+  if (prev) prev.onclick = ()=>goActivityPage(-1);
+  if (next) next.onclick = ()=>goActivityPage(1);
 }
 
 // ── Daily task tab ──────────────────────────────────────────────────────

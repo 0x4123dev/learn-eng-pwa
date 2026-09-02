@@ -186,6 +186,21 @@ suite('admin: the users table reads clearly', () => {
             'clicking the same column must toggle direction');
     });
 
+    test('the activity feed is paged at ten, so the menu below it stays reachable', () => {
+        // Shipped once without this: on a 375x812 iPhone the unpaged feed put
+        // the tab bar at y=901 — a whole screen down — and the parent had to
+        // scroll past every activity to reach the menu.
+        assert.truthy(/const ACT_PAGE_SIZE = 10;/.test(adminHtml), 'ten rows a page');
+        assert.truthy(/_activity\.slice\(from, from \+ ACT_PAGE_SIZE\)/.test(adminHtml),
+            'the page must be a slice, not the whole list');
+        assert.truthy(/id="actPager"/.test(adminHtml), 'the page controls need somewhere to render');
+        assert.truthy(/_actPage = 0;\s*\/\/ a new filter always starts at the top/.test(adminHtml),
+            'changing the filter must not leave you on a page that no longer exists');
+        // The feed must not be a tabpanel any more, or switching tabs hides it.
+        assert.falsy(/id="activityPanel"[^>]*role="tabpanel"/.test(adminHtml));
+        assert.falsy(/id="tabActivity"/.test(adminHtml), 'its tab was replaced by the always-on feed');
+    });
+
     test('the activity meter is anchored to the number it belongs to', () => {
         // Right-aligned digits with a left-anchored meter under them read as a
         // broken cell rather than as a comparison.
