@@ -246,10 +246,13 @@ suite('admin on a phone: still a table at 393px', () => {
 
     test('an icon-only button still announces what it does', () => {
         // display:none removes the label from the accessibility tree, so each
-        // button would otherwise announce nothing but an emoji.
+        // button would otherwise announce nothing but an emoji. Every .mini row
+        // action counts: the five in the users table, plus the Daily task tab's
+        // delete, which is the same icon-only button in a different table.
         const tags = adminHtml.match(/<button class="mini[\s\S]*?>/g) || [];
-        assert.equal(tags.length, 5, `expected 5 row-action buttons, found ${tags.length}`);
-        for (const cls of ['bot-toggle', 'act-coins', 'act-clear', 'act-enable', 'act-disable']) {
+        assert.equal(tags.length, 6, `expected 6 row-action buttons, found ${tags.length}`);
+        for (const cls of ['bot-toggle', 'act-coins', 'act-clear', 'act-enable', 'act-disable',
+                           'act-daily-del']) {
             const tag = tags.find(t => t.includes(cls));
             assert.truthy(tag, cls + ' button not found');
             assert.truthy(tag.includes('aria-label='),

@@ -794,7 +794,7 @@ async function loadDailyTasks(){
       <td class="num">${t.target} bài 100%</td>
       <td>${t.done?`<span class="pill on">✓ ${t.count}/${t.target}</span>`:`<span class="pill off">${t.count}/${t.target}</span>`}</td>
       <td class="muted hide-sm" title="${esc(fmtDate(t.created_at))}">${relTime(t.created_at)}</td>
-      <td style="text-align:right"><button class="act-daily-del mini" data-id="${t.id}" data-task-label="${esc(t.label)}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
+      <td style="text-align:right"><button class="mini act-daily-del" data-id="${t.id}" data-task-label="${esc(t.label)}" aria-label="Xoá task ${esc(t.label)}">🗑</button></td>
     </tr>`).join('');
   body.querySelectorAll('.act-daily-del').forEach(b=>{
     b.onclick = async ()=>{
