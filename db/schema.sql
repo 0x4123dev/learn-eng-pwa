@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS users (
   -- Per-user QA/feature gate (Night Raid, bot opponents, event previews).
   -- Read by POST /api/coins on EVERY sync — without this column a rebuilt
   -- database breaks the whole coin-claim path. See db/014.
-  allow_bot     INTEGER NOT NULL DEFAULT 0
+  allow_bot     INTEGER NOT NULL DEFAULT 0,
+  -- Night Raid shield inventory earned from daily tasks (db/018).
+  night_shields INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id);
 
@@ -179,4 +181,28 @@ CREATE TABLE IF NOT EXISTS ghost_offering_world_claims (
   reward INTEGER NOT NULL, claimed_at INTEGER NOT NULL,
   PRIMARY KEY (event_date, item_id),
   FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Admin-assigned daily tasks + once-a-day reward (db/018).
+CREATE TABLE IF NOT EXISTS daily_tasks (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id       INTEGER NOT NULL REFERENCES users(id),
+  kind          TEXT NOT NULL,
+  label         TEXT NOT NULL,
+  target        INTEGER NOT NULL,
+  activity_type TEXT NOT NULL,
+  match_json    TEXT NOT NULL,
+  created_by    INTEGER NOT NULL,
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  active        INTEGER NOT NULL DEFAULT 1
+);
+CREATE INDEX IF NOT EXISTS idx_daily_tasks_user ON daily_tasks(user_id, active);
+
+CREATE TABLE IF NOT EXISTS daily_task_rewards (
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  task_date  TEXT NOT NULL,
+  coins      INTEGER NOT NULL,
+  shields    INTEGER NOT NULL,
+  granted_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, task_date)
 );
