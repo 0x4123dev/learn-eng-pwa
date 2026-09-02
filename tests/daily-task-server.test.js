@@ -606,6 +606,82 @@ suite('daily task: raiding a shielded castle', () => {
     assert.equal(again.status, 409);
   });
 });
+
+function adminHandler() { return loadModule('functions/api/admin/daily-tasks.js'); }
+
+suite('daily task: admin API', () => {
+  test('a child cannot use the admin endpoints', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: kid.token });
+    assert.equal(g.status, 403);
+    const p = await world.call(adminHandler().onRequestPost, { token: kid.token, body: { userId: kid.uid, kind: 'phrases', target: 5 } });
+    assert.equal(p.status, 403);
+    const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=1', method: 'DELETE', token: kid.token });
+    assert.equal(d.status, 403);
+  });
+
+  test('create validates kind, target and user', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const post = body => world.call(adminHandler().onRequestPost, { token: admin.token, body });
+    assert.equal((await post({ userId: kid.uid, kind: 'nope', target: 5 })).status, 400);
+    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 0 })).status, 400);
+    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 51 })).status, 400);
+    assert.equal((await post({ userId: kid.uid, kind: 'phrases', target: 2.5 })).status, 400);
+    assert.equal((await post({ userId: 9999, kind: 'phrases', target: 5 })).status, 404);
+    assert.equal((await post({ userId: admin.uid, kind: 'phrases', target: 5 })).status, 400, 'admins are not learners');
+    const ok = await post({ userId: kid.uid, kind: 'units:hk1-mix', target: 5 });
+    assert.equal(ok.status, 200);
+    assert.equal(ok.data.task.kind, 'units:hk1-mix');
+    assert.equal(ok.data.task.label, 'Units HK1 · 🎲 Mix');
+    assert.equal(ok.data.task.target, 5);
+    const row = world.db.prepare('SELECT * FROM daily_tasks WHERE id=?').get(ok.data.task.id);
+    assert.equal(row.activity_type, 'lesson');
+    assert.deepEqual(JSON.parse(row.match_json), { titleExact: 'Unit hk1-mix words practice' });
+    assert.equal(row.created_by, admin.uid);
+    const dup = await post({ userId: kid.uid, kind: 'units:hk1-mix', target: 3 });
+    assert.equal(dup.status, 409, 'same active kind twice');
+  });
+
+  test('list shows today\'s progress, reward state and shields; delete deactivates', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const a = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'phrases', target: 1 } });
+    const b = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'collocation', target: 2 } });
+    addActivity(world, kid.uid, { type: 'phrases', title: 'Phrases practice (20 Qs)', score: 20, total: 20, at: new Date().toISOString().replace('T', ' ').slice(0, 19) });
+    let g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: admin.token });
+    assert.equal(g.status, 200);
+    assert.equal(g.data.tasks.length, 2);
+    const phr = g.data.tasks.find(t => t.id === a.data.task.id);
+    assert.equal(phr.count, 1);
+    assert.equal(phr.done, true);
+    assert.truthy(phr.created_at);
+    assert.equal(g.data.allDone, false);
+    assert.equal(g.data.rewardedToday, false, 'the admin list never pays out');
+    assert.equal(rewards(world, kid.uid).length, 0);
+    assert.deepEqual(g.data.shields, { count: 0, activeUntil: 0 });
+
+    const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + b.data.task.id, method: 'DELETE', token: admin.token });
+    assert.equal(d.status, 200);
+    g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=' + kid.uid, method: 'GET', token: admin.token });
+    assert.equal(g.data.tasks.length, 1);
+    assert.equal(g.data.allDone, true);
+    const gone = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + b.data.task.id, method: 'DELETE', token: admin.token });
+    assert.equal(gone.status, 404);
+    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'collocation', target: 3 } });
+    assert.equal(again.status, 200, 'a deleted kind can be assigned again');
+  });
+
+  test('GET without a numeric user_id is a 400', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks', method: 'GET', token: admin.token });
+    assert.equal(g.status, 400);
+  });
+});
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
 }
