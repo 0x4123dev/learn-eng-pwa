@@ -540,12 +540,20 @@ function startUnitPractice(unit) {
   }
   const pool = _unitPool(unit);
   if (!pool.length) return;
-  const shuffled = pool.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  // Words this child has missed before come first, up to half the practice,
+  // until each has been typed right five times running (js/wrong-priority.js).
+  // The child is not told; the practice simply contains what they need.
+  let words;
+  if (typeof prioPick === 'function') {
+    words = prioPick('units', pool, 10, { idOf: UNITS_RETRY_CONFIG.idOf });
+  } else {
+    const shuffled = pool.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    words = shuffled.slice(0, Math.min(10, shuffled.length));
   }
-  const words = shuffled.slice(0, Math.min(10, shuffled.length));
   const questions = words.map(w => {
     // Random gap count per question (4, 5 letters or the whole word),
     // like the textbook's st__ent / ch_cken style. Per-word levels are still
@@ -775,6 +783,13 @@ function finishUnitPractice() {
   }
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
+  // Wrong-priority (js/wrong-priority.js): a real practice moves the streak.
+  if (typeof prioRecord === 'function') {
+    const idOf = UNITS_RETRY_CONFIG.idOf;
+    prioRecord('units',
+      st.questions.filter((q, i) => st.answers[i] && st.answers[i].isCorrect).map(q => idOf(q.w)),
+      wrong.map(idOf));
+  }
   // Owe every missed word back. Recorded here, after the score is banked, so a
   // child never loses coins they earned by also being told to practise.
   if (wrong.length && typeof retryAdd === 'function') retryAdd('units', wrong);

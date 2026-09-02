@@ -85,6 +85,62 @@ suite('wrong priority tabs: the sandbox', () => {
     });
 });
 
+suite('wrong priority tabs: Grade 4 units', () => {
+    test('missed words are drawn into the next Mix, and the practice is still ten', () => {
+        const { ctx } = makeEnv();
+        const idOf = ctx.UNITS_RETRY_CONFIG.idOf;
+        const targets = ctx._unitPool('mix').slice(-5);           // 5 = floor(10/2)
+        seed(ctx, 'units', targets.map(idOf));
+        ctx.startUnitPractice('mix');
+        const st = ctx.unitQuiz();
+        assert.truthy(st, 'the practice did not start');
+        assert.equal(st.questions.length, 10);
+        const drawn = new Set(st.questions.map(q => idOf(q.w)));
+        targets.forEach(w => assert.truthy(drawn.has(idOf(w)), w.en + ' was missed before but not drawn'));
+    });
+
+    test('a miss in one unit never turns up while practising another', () => {
+        const { ctx } = makeEnv();
+        const idOf = ctx.UNITS_RETRY_CONFIG.idOf;
+        const units = ctx.unitsList('pre');
+        const other = ctx._unitPool(units[1])[0];
+        seed(ctx, 'units', [idOf(other)]);
+        ctx.startUnitPractice(units[0]);
+        assert.falsy(ctx.unitQuiz().questions.some(q => idOf(q.w) === idOf(other)));
+    });
+
+    test('a miss in one set never turns up in another set', () => {
+        const { ctx } = makeEnv();
+        const idOf = ctx.UNITS_RETRY_CONFIG.idOf;
+        const hk1 = ctx._unitPool('hk1-mix')[0];
+        seed(ctx, 'units', [idOf(hk1)]);
+        ctx.startUnitPractice('mix');                              // the 'pre' set
+        assert.falsy(ctx.unitQuiz().questions.some(q => q.w.en === hk1.en && q.w.set === 'hk1'));
+    });
+
+    test('finishing a practice moves the streak; unanswered is wrong; five in a row releases', () => {
+        const { ctx } = makeEnv();
+        const idOf = ctx.UNITS_RETRY_CONFIG.idOf;
+        ctx.startUnitPractice('mix');
+        const st = ctx.unitQuiz();
+        const [right, wrong, last, blank] = st.questions;
+        const store = seed(ctx, 'units', []);
+        store[idOf(right.w)] = { s: 2, w: 1, t: 0 };
+        store[idOf(wrong.w)] = { s: 2, w: 1, t: 0 };
+        store[idOf(last.w)] = { s: 4, w: 1, t: 0 };
+        st.answers[0] = { value: right.w.en, isCorrect: true };
+        st.answers[1] = { value: 'zzz', isCorrect: false };
+        st.answers[2] = { value: last.w.en, isCorrect: true };
+        ctx.finishUnitPractice();
+        assert.equal(store[idOf(right.w)].s, 3, 'a right answer in a real practice counts');
+        assert.equal(store[idOf(wrong.w)].s, 0, 'a wrong answer resets the streak');
+        assert.equal(store[idOf(wrong.w)].w, 2);
+        assert.falsy(store[idOf(last.w)], 'the fifth right answer in a row releases the word');
+        assert.equal(store[idOf(blank.w)].s, 0, 'an unanswered word is a missed word, as it is for the owed drill');
+        assert.equal(store[idOf(blank.w)].w, 1);
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));
