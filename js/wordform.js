@@ -408,13 +408,22 @@ function startWordformQuiz(n) {
     qs = bank.slice();                       // the whole bank keeps its own mix
   } else {
     const size = Math.min(n, bank.length);
-    const typed = bank.filter(q => q.type === 'text');
-    const mcq = bank.filter(q => q.type !== 'text');
-    const wantTyped = wfTypedTarget(size, typed.length);
+    // Questions this child has missed before come first, up to half the
+    // practice, until each is answered right five times running
+    // (js/wrong-priority.js). The typed/MCQ split below is drawn from what is
+    // left, so the count stays exact and the typing stays mixed in.
+    const forced = (typeof prioForced === 'function') ? prioForced('wf', bank, size) : [];
+    const taken = new Set(forced);
+    const rest = bank.filter(q => !taken.has(q));
+    const room = size - forced.length;
+    const typed = rest.filter(q => q.type === 'text');
+    const mcq = rest.filter(q => q.type !== 'text');
+    const wantTyped = wfTypedTarget(room, typed.length);
     // Drawn from each pool separately — that is what makes the count exact —
     // then shuffled together so the typing is not all bunched at the end.
-    const picked = wfShuffle(typed, seed).slice(0, wantTyped)
-      .concat(wfShuffle(mcq, seed ^ 0x5bf03635).slice(0, size - wantTyped));
+    const picked = forced
+      .concat(wfShuffle(typed, seed).slice(0, wantTyped))
+      .concat(wfShuffle(mcq, seed ^ 0x5bf03635).slice(0, room - wantTyped));
     qs = wfShuffle(picked, seed ^ 0x2545f491);
   }
   // Each question drags its understanding check along right behind it. The
@@ -848,6 +857,14 @@ function finishWordformQuiz() {
   // earned.
   const wrongQs = wrong.map(w => wordformById(w.qid)).filter(Boolean);
   if (wrongQs.length && typeof retryAdd === 'function') retryAdd('wf', wrongQs);
+  // Wrong-priority (js/wrong-priority.js): base questions only, like the
+  // owed drill. Kept AFTER retryAdd — a fixed-window test scans from the
+  // start of this function for that call.
+  if (typeof prioRecord === 'function') {
+    prioRecord('wf',
+      st.questions.filter((q, i) => !q.followup && st.answers[i] && st.answers[i].isCorrect).map(q => q.id),
+      wrong.map(w => w.qid));
+  }
   const owed = wfRetryCount();
 
   // Sync word-form activity to the server (best-effort) for the admin view.

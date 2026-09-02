@@ -141,6 +141,43 @@ suite('wrong priority tabs: Grade 4 units', () => {
     });
 });
 
+suite('wrong priority tabs: Word form', () => {
+    test('missed questions are drawn first; the count and the typing share hold', () => {
+        const { ctx } = makeEnv();
+        const targets = ctx.wordformBank().filter(q => q.type !== 'text').slice(-5);
+        seed(ctx, 'wf', targets.map(q => q.id));
+        ctx.startWordformQuiz(10);
+        const base = ctx.wfQuiz().questions.filter(q => !q.followup);
+        assert.equal(base.length, 10, 'the practice still has the number of questions the button promised');
+        const drawn = new Set(base.map(q => q.id));
+        targets.forEach(q => assert.truthy(drawn.has(q.id), q.id + ' was missed before but not drawn'));
+        assert.truthy(base.some(q => q.type === 'text'), 'five forced MCQs must not squeeze out every typed question');
+        assert.truthy(base.every(q => !q.followup), 'no follow-up sneaks into the base list');
+    });
+
+    test('follow-ups are not tracked; base answers move the streak; unanswered is wrong', () => {
+        const { ctx } = makeEnv();
+        ctx.startWordformQuiz(10);
+        const st = ctx.wfQuiz();
+        const base = st.questions.map((q, i) => ({ q, i })).filter(x => !x.q.followup);
+        const [right, wrong, last, blank] = base;
+        const store = seed(ctx, 'wf', []);
+        store[right.q.id] = { s: 2, w: 1, t: 0 };
+        store[wrong.q.id] = { s: 2, w: 1, t: 0 };
+        store[last.q.id] = { s: 4, w: 1, t: 0 };
+        st.answers[right.i] = { value: 0, isCorrect: true };
+        st.answers[wrong.i] = { value: 0, isCorrect: false };
+        st.answers[last.i] = { value: 0, isCorrect: true };
+        ctx.finishWordformQuiz();
+        assert.equal(store[right.q.id].s, 3);
+        assert.equal(store[wrong.q.id].s, 0);
+        assert.equal(store[wrong.q.id].w, 2);
+        assert.falsy(store[last.q.id], 'released after five in a row');
+        assert.equal(store[blank.q.id].s, 0, 'unanswered counts as wrong');
+        assert.equal(Object.keys(store).length, base.length - 1, 'only base questions are tracked (one was released)');
+    });
+});
+
 if (require.main === module) {
     const harness = require('./harness');
     harness.runAll().then(code => process.exit(code));
