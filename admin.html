@@ -6,179 +6,306 @@
 <meta name="robots" content="noindex">
 <title>FlashLingo — Admin</title>
 <style>
-  :root { --bg:#f4f6fb; --card:#fff; --line:#e3e8f0; --ink:#1c2333; --muted:#68748c; --brand:#1cb0f6; --green:#2ea44f; --amber:#ff9600; --red:#e5484d; }
+  /* ============================================================
+     FlashLingo Admin — a control panel, not the child's app.
+     The child's app is warm, rounded and glassy; this screen is the
+     parent's tool, so it stays calm: one accent, a flat neutral ramp,
+     depth only where it separates a surface from the page.
+     ============================================================ */
+  :root {
+    color-scheme: light;
+
+    /* surfaces */
+    --bg:#f2f5f9; --card:#fff; --surface:#f8fafc; --surface-2:#eef2f7; --hover:#f5f8fd;
+    /* rules */
+    --line:#e4e9f0; --line-soft:#eef1f6; --line-strong:#cfd8e4;
+    /* text */
+    --ink:#16202f; --ink-2:#33415a; --muted:#5a6678; --muted-2:#697489;   /* 4.7:1 on white */
+    /* the one accent: --brand fills, --brand-strong anything that must be read */
+    --brand:#1cb0f6; --brand-strong:#0a6ea8; --brand-tint:#e8f4fd;
+    /* status: bright value for bars/fills, *-ink for text that must pass on white */
+    --green:#2ea44f; --green-ink:#1f7a3f; --green-tint:#e7f7ec;
+    --amber:#ff9600; --amber-ink:#8a5200; --amber-tint:#fff4e3;
+    --red:#e5484d;   --red-ink:#b42318;   --red-tint:#fdecec;
+    /* shape + depth */
+    --r-xs:8px; --r-sm:10px; --r-md:12px; --r-lg:16px;
+    --sh-1:0 1px 2px rgba(17,26,45,.05);
+    --sh-2:0 1px 2px rgba(17,26,45,.05), 0 10px 26px -16px rgba(17,26,45,.30);
+    --sh-3:0 2px 5px rgba(17,26,45,.06), 0 22px 48px -26px rgba(17,26,45,.42);
+    --ring:0 0 0 3px rgba(10,110,168,.18);
+  }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--ink); }
-  a { color: var(--brand); }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 80px; }
+  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+         background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45; }
+  a { color: var(--brand-strong); }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 24px 20px 96px; }
+  :focus-visible { outline:2px solid var(--brand-strong); outline-offset:2px; border-radius:4px; }
 
-  /* Login */
-  .login { max-width: 360px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; box-shadow:0 8px 30px rgba(20,30,60,.08); }
-  .login h1 { font-size:20px; margin:0 0 4px; }
-  .login p { color:var(--muted); font-size:13px; margin:0 0 18px; }
-  .login label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin:12px 0 6px; }
-  .login input { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font-size:15px; }
-  .login input:focus { outline:none; border-color:var(--brand); }
-  .btn { display:inline-block; border:none; border-radius:10px; padding:11px 16px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
-  .btn-primary { background:var(--brand); color:#fff; width:100%; margin-top:18px; }
-  .btn-ghost { background:transparent; border:1px solid var(--line); color:var(--ink); }
-  .err { color:var(--red); font-size:13px; font-weight:600; margin-top:10px; min-height:18px; }
+  /* ---- shared controls ------------------------------------------------ */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px;
+         border:1px solid transparent; border-radius:var(--r-sm); padding:9px 15px; font-size:13.5px;
+         font-weight:650; cursor:pointer; font-family:inherit; color:var(--ink); background:var(--surface-2);
+         transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease; }
+  .btn-primary { background:var(--brand-strong); color:#fff; border-color:var(--brand-strong); box-shadow:var(--sh-1); }
+  .btn-primary:hover:not(:disabled) { background:#095c8d; border-color:#095c8d; }
+  .btn-ghost { background:#fff; border-color:var(--line-strong); color:var(--ink-2); box-shadow:var(--sh-1); }
+  .btn-ghost:hover:not(:disabled) { background:var(--hover); border-color:#b9c6d8; color:var(--ink); }
+  .btn:disabled { opacity:.5; cursor:not-allowed; box-shadow:none; }
 
-  /* Dashboard */
-  header.bar { display:flex; align-items:center; justify-content:space-between; gap:10px;
-               flex-wrap:wrap; margin-bottom:16px; }
-  header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; }
-  header.bar h1 { font-size:20px; margin:0; }
-  .stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; min-width:120px; }
-  .stat b { display:block; font-size:22px; }
-  .stat span { color:var(--muted); font-size:12px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:4px 4px; margin-bottom:16px; overflow:hidden; }
-  .card h2 { font-size:14px; margin:14px 14px 6px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
-  .scroll { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:13.5px; }
-  th, td { text-align:left; padding:10px 14px; border-top:1px solid var(--line); white-space:nowrap; }
-  th { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.3px; }
-  tbody tr.clickable { cursor:pointer; }
-  tbody tr.clickable:hover { background:#f7f9fd; }
-  tr.selected { background:#eaf6ff; }
-  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
-  .pill.admin { background:#efeaff; color:#7c3aed; }
-  .pill.user { background:#eef2f7; color:#68748c; }
-  .pill.kind-exam { background:#e6f0ff; color:#1c5fd6; }
-  .pill.kind-lesson { background:#e7f7ec; color:#1f9d55; }
-  .pill.kind-review { background:#fff3e0; color:#c47700; }
-  .pill.kind-grammar { background:#efeaff; color:#7c3aed; }
-  .pill.kind-phrases { background:#e9f6fe; color:#1591c9; }
-  .pill.kind-wordform { background:#fff0e6; color:#c2560a; }
-  .pill.kind-rewrite { background:#f3e8ff; color:#7c3aed; }
-  .pill.kind-collocation { background:#e0f2fe; color:#0369a1; }
-  .pill.kind-verbs { background:#fdeef2; color:#d6407a; }
-  .pill.kind-math { background:#fff7e0; color:#b26a00; }
-  .pill.kind-battle { background:#eef2f7; color:#586074; }
-  .pct-good { color:var(--green); font-weight:700; }
-  .pct-mid { color:var(--amber); font-weight:700; }
-  .pct-low { color:var(--red); font-weight:700; }
-  .muted { color:var(--muted); }
-  .empty { padding:26px 14px; text-align:center; color:var(--muted); }
-  .toolbar { display:flex; align-items:center; gap:8px; margin:8px 14px; flex-wrap:wrap; }
-  .toolbar .who { font-weight:700; }
-  .keep { display:flex; align-items:center; gap:8px; margin-top:16px; font-size:13px; color:var(--ink); cursor:pointer; }
-  .keep input { width:16px; height:16px; accent-color:var(--brand); cursor:pointer; }
-  :focus-visible { outline:3px solid rgba(28,176,246,.35); outline-offset:2px; }
+  input, select, textarea { font-family:inherit; color:var(--ink); }
+  select, input[type=text], input[type=password], input[type=number], input:not([type]) {
+    background:#fff; border:1px solid var(--line-strong); border-radius:var(--r-sm);
+    transition: border-color .15s ease, box-shadow .15s ease; }
+  select:focus, input:focus { outline:none; border-color:var(--brand-strong); box-shadow:var(--ring); }
+  select { -webkit-appearance:none; appearance:none; padding-right:34px; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%235a6678' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.75 6 6.5 11 1.75'/></svg>");
+    background-repeat:no-repeat; background-position:right 12px center; background-size:11px 8px; }
 
-  /* Admin areas are real tabs, not one very long dashboard. */
-  .admin-tabs { display:flex; gap:6px; margin:0 0 16px; padding:5px; border:1px solid var(--line);
-                border-radius:14px; background:#e9edf5; overflow-x:auto; scrollbar-width:none; }
+  /* ---- Login ---------------------------------------------------------- */
+  .login { max-width: 380px; margin: 12vh auto 0; background:var(--card); border:1px solid var(--line);
+           border-radius:var(--r-lg); padding:30px 28px; box-shadow:var(--sh-3); }
+  .login h1 { font-size:21px; letter-spacing:-.01em; margin:0 0 4px; }
+  .login p { color:var(--muted); font-size:13px; margin:0 0 20px; }
+  .login label { display:block; font-size:12px; font-weight:700; color:var(--ink-2); margin:14px 0 6px; }
+  .login input { width:100%; padding:11px 12px; font-size:15px; min-height:44px; }
+  .login .btn-primary { width:100%; margin-top:20px; min-height:46px; font-size:15px; }
+  .err { color:var(--red-ink); font-size:13px; font-weight:600; margin-top:10px; min-height:18px; }
+  /* .keep is itself a <label>, so it has to out-specify `.login label` above
+     or the checkbox lands on its own line above the text. */
+  .keep, .login label.keep { display:flex; align-items:center; gap:9px; margin:20px 0 0;
+          font-size:13px; font-weight:600; color:var(--ink-2); cursor:pointer; }
+  .keep input { width:17px; height:17px; accent-color:var(--brand-strong); cursor:pointer; }
+
+  /* ---- Page header ---------------------------------------------------- */
+  header.bar { display:flex; align-items:center; justify-content:space-between; gap:12px;
+               flex-wrap:wrap; margin:0 0 22px; }
+  header.bar h1 { font-size:20px; font-weight:750; letter-spacing:-.015em; margin:0; }
+  header.bar .bar-actions { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+  header.bar .bar-actions .btn { min-height:38px; padding:7px 13px; font-size:13px; }
+  /* paintAppFlags() paints this button's background inline when Đấu Toán is ON,
+     so only properties it does NOT set can be styled here. */
+  #mathFightFlag[aria-pressed="true"] { border-color:transparent; box-shadow:var(--sh-1); }
+
+  /* ---- Stat tiles: the only numbers on the page, so they read as metrics */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+           gap:14px; margin-bottom:22px; }
+  .stat { display:flex; flex-direction:column; align-items:flex-start; gap:5px;
+          background:var(--card); border:1px solid var(--line); border-radius:var(--r-md);
+          padding:16px 18px 17px; box-shadow:var(--sh-1); }
+  .stat::before { content:""; width:26px; height:3px; border-radius:999px; background:var(--brand); margin-bottom:3px; }
+  .stat b { display:block; font-size:30px; line-height:1.05; font-weight:750; letter-spacing:-.02em;
+            font-variant-numeric:tabular-nums; }
+  .stat span { color:var(--muted); font-size:12.5px; font-weight:600; }
+
+  /* ---- Tabs ----------------------------------------------------------- */
+  /* The activity feed is the first thing on the page now, so it carries a
+     little more weight than a tab panel did — and a cap, because it is meant
+     to be glanced at on the way to somewhere else, not scrolled forever. */
+  .activity-feed { border-color:var(--line-2, var(--line)); }
+  .activity-feed .scroll { max-height:min(46vh, 420px); overflow-y:auto; }
+  .activity-feed thead th { position:sticky; top:0; z-index:1; background:var(--head-bg, #f7f9fd); }
+
+  .admin-tabs { display:flex; gap:4px; margin:0 0 18px; padding:5px; border:1px solid var(--line);
+                border-radius:var(--r-md); background:var(--surface-2); overflow-x:auto; scrollbar-width:none; }
   .admin-tabs::-webkit-scrollbar { display:none; }
-  .admin-tab { min-height:44px; flex:1 0 auto; border:0; border-radius:10px; padding:9px 16px;
-               background:transparent; color:var(--muted); font:800 13px/1.2 inherit; cursor:pointer; white-space:nowrap; }
-  .admin-tab[aria-selected="true"] { color:var(--ink); background:#fff; box-shadow:0 2px 9px rgba(20,30,60,.09); }
+  .admin-tab { min-height:42px; flex:1 0 auto; border:1px solid transparent; border-radius:var(--r-xs); padding:9px 18px;
+               background:transparent; color:var(--muted); font:650 13.5px/1.2 inherit; cursor:pointer;
+               white-space:nowrap; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
+  .admin-tab:hover { color:var(--ink); background:rgba(255,255,255,.6); }
+  /* The active tab differs on four counts at once — white ground, accent text,
+     heavier weight and a shadow — because one of them alone was not visible. */
+  .admin-tab[aria-selected="true"] { color:var(--brand-strong); font-weight:800; background:#fff;
+               border-color:rgba(10,110,168,.22); box-shadow:0 1px 2px rgba(17,26,45,.06), 0 6px 16px -8px rgba(17,26,45,.30); }
   .admin-panel[hidden] { display:none; }
 
-  /* ---- learning strengths / weaknesses (admin only) ---- */
-  .learning-card { padding-bottom:14px; }
-  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
-                   padding:14px; border-bottom:1px solid var(--line); }
-  .learning-title { display:flex; gap:10px; align-items:flex-start; }
-  .learning-icon { width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
-                   color:#fff; background:linear-gradient(145deg,#7758e8,#9a68f5); flex:none; }
-  .learning-icon svg { width:21px; height:21px; }
-  .learning-title h2 { margin:0 0 3px; color:var(--ink); font-size:16px; text-transform:none; letter-spacing:0; }
-  .learning-title p { margin:0; color:var(--muted); font-size:12px; line-height:1.4; }
-  .learning-filters { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-  .learning-filters label { font-size:11px; color:var(--muted); font-weight:700; }
-  .learning-filters select { display:block; min-height:38px; margin-top:4px; padding:7px 28px 7px 10px;
-                             border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink);
-                             font:600 13px/1.2 inherit; cursor:pointer; }
-  /* The daily-task form reuses .learning-filters, but it is a form on the left
-     of the panel, not a filter bar hugging the right edge. */
-  #dailyForm { align-items:flex-end; justify-content:flex-start; }
-  #dailyForm input[type=number] { display:block; margin-top:4px; min-height:38px; }
-  .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; padding:14px; }
-  .learning-stat { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fbfcff; }
-  .learning-stat b { display:block; font-size:19px; font-variant-numeric:tabular-nums; }
-  .learning-stat span { color:var(--muted); font-size:11px; }
-  .skill-list { display:grid; gap:9px; padding:0 14px; }
-  .skill-row { display:grid; grid-template-columns:minmax(170px,1.6fr) minmax(120px,1fr) 75px 105px;
-               gap:14px; align-items:center; padding:12px; border:1px solid var(--line);
-               border-radius:12px; background:#fff; }
-  .skill-name { min-width:0; }
-  .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px; }
-  .skill-name small { color:var(--muted); font-size:11px; }
-  .skill-track { height:8px; border-radius:999px; overflow:hidden; background:#e9edf4; }
-  .skill-fill { height:100%; border-radius:inherit; background:var(--amber); }
-  .skill-fill.strong { background:var(--green); }
-  .skill-fill.weak { background:var(--red); }
-  .skill-score { text-align:right; font-weight:800; font-variant-numeric:tabular-nums; }
-  .skill-status { display:inline-flex; align-items:center; justify-content:center; min-height:28px;
-                  padding:4px 8px; border-radius:999px; font-size:11px; font-weight:800; text-align:center; }
-  .skill-status.weak { background:#fdecec; color:#b42318; }
-  .skill-status.practice { background:#fff3e0; color:#9a5b00; }
-  .skill-status.strong { background:#e7f7ec; color:#1f7a3f; }
-  .skill-status.learning { background:#eef2f7; color:#586074; }
-  .learning-empty { margin:14px; border:1px dashed #ccd5e3; border-radius:12px; padding:25px 16px;
-                    text-align:center; color:var(--muted); font-size:13px; }
-  .menu-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:9px; padding:0 14px 14px; }
-  .menu-card { min-height:88px; text-align:left; border:1px solid var(--line); border-radius:12px; padding:11px;
-               background:#fff; color:var(--ink); font:inherit; cursor:pointer; }
-  .menu-card:hover { border-color:#b9c9df; transform:translateY(-1px); }
-  .menu-card strong { display:block; font-size:13px; margin-bottom:8px; }
-  .menu-card b { font-size:19px; font-variant-numeric:tabular-nums; }
-  .menu-card small { display:block; margin-top:3px; color:var(--muted); }
-  .priority-card { display:flex; gap:11px; align-items:center; margin:0 14px 14px; padding:12px;
-                   border:1px solid #f2cf9c; border-radius:12px; background:#fff9ed; }
-  .priority-icon { width:38px; height:38px; flex:none; display:grid; place-items:center; border-radius:11px; background:#ffe8bc; }
-  .priority-card strong,.priority-card span { display:block; }
-  .priority-card span { margin-top:2px; color:#76501b; font-size:12px; line-height:1.4; }
-  .skill-section-title { margin:0 14px 9px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
+  /* ---- Cards ---------------------------------------------------------- */
+  .card { background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
+          margin-bottom:18px; overflow:hidden; box-shadow:var(--sh-2); }
+  /* The only .card > h2 is "Users", and it sits directly above the search
+     toolbar — one band of chrome, not two stacked rules. */
+  .card > h2 { font-size:12px; margin:0; padding:16px 20px 0; color:var(--muted);
+               text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  .card > h2 + .tools { padding-top:12px; }
+  .scroll { overflow-x:auto; }
 
-  /* ---- users table ---- */
-  .tools { display:flex; align-items:center; gap:10px; margin:10px 14px 4px; flex-wrap:wrap; }
-  .search { flex:1; min-width:180px; position:relative; }
-  .search input { width:100%; padding:9px 12px 9px 32px; border:1px solid var(--line); border-radius:10px; font-size:13.5px; font-family:inherit; }
-  .search input:focus { outline:none; border-color:var(--brand); }
-  .search::before { content:"🔎"; position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:12px; opacity:.6; }
-  .count { color:var(--muted); font-size:12px; }
+  /* ---- Tables --------------------------------------------------------- */
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:13px 12px; white-space:nowrap; }
+  th:first-child, td:first-child { padding-left:20px; }
+  th:last-child, td:last-child { padding-right:20px; }
+  thead th { background:var(--surface); color:var(--muted); font-size:11px; font-weight:750;
+             text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--line);
+             border-top:1px solid var(--line-soft); }
+  tbody td { border-top:1px solid var(--line-soft); vertical-align:middle; }
+  tbody tr:first-child td { border-top:0; }
+  tbody tr.clickable { cursor:pointer; }
+  tbody tr.clickable:hover { background:var(--hover); }
+  tr.selected, tbody tr.clickable.selected:hover { background:var(--brand-tint); }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .muted { color:var(--muted); }
+  .empty { padding:34px 20px; text-align:center; color:var(--muted); }
+
+  /* ---- Pills ---------------------------------------------------------- */
+  .pill { display:inline-block; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;
+          line-height:1.5; white-space:nowrap; }
+  .pill.admin { background:#efeaff; color:#6427c9; }
+  .pill.user { background:var(--surface-2); color:var(--muted); }
+  .pill.kind-exam { background:#e6f0ff; color:#1c5fd6; }
+  .pill.kind-lesson { background:var(--green-tint); color:var(--green-ink); }
+  .pill.kind-review { background:var(--amber-tint); color:var(--amber-ink); }
+  .pill.kind-grammar { background:#efeaff; color:#6427c9; }
+  .pill.kind-phrases { background:#e4f4fd; color:#0d6f97; }
+  .pill.kind-wordform { background:#fff0e6; color:#b04d08; }
+  .pill.kind-rewrite { background:#f3e8ff; color:#6427c9; }
+  .pill.kind-collocation { background:#e0f2fe; color:#0369a1; }
+  .pill.kind-verbs { background:#fdeef2; color:#bb2f65; }
+  .pill.kind-math { background:#fff4e3; color:#96590a; }
+  .pill.kind-battle { background:var(--surface-2); color:#4c5568; }
+  .pill.on   { background:var(--green-tint); color:var(--green-ink); }
+  .pill.off  { background:var(--surface-2); color:var(--muted); }
+  .pill.dead { background:var(--red-tint); color:var(--red-ink); }
+  .pct-good { color:var(--green-ink); font-weight:700; }
+  .pct-mid  { color:var(--amber-ink); font-weight:700; }
+  .pct-low  { color:var(--red-ink); font-weight:700; }
+
+  /* ---- Toolbars ------------------------------------------------------- */
+  .toolbar { display:flex; align-items:center; gap:12px; padding:14px 20px; flex-wrap:wrap;
+             border-bottom:1px solid var(--line-soft); }
+  .toolbar h2 { margin:0; font-size:12px; color:var(--muted); text-transform:uppercase;
+                letter-spacing:.07em; font-weight:750; }
+  .toolbar .who { font-weight:650; font-size:13.5px; color:var(--ink); }
+  #allBtn { margin-left:auto; }
+  .tools { display:flex; align-items:center; gap:10px; padding:14px 20px; flex-wrap:wrap;
+           border-bottom:1px solid var(--line-soft); }
+  .search { flex:1; min-width:200px; position:relative; }
+  .search input { width:100%; min-height:40px; padding:9px 12px 9px 36px; font-size:13.5px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237b8698' stroke-width='1.6' stroke-linecap='round'><circle cx='7' cy='7' r='4.6'/><path d='M10.5 10.5 14 14'/></svg>");
+    background-repeat:no-repeat; background-position:left 12px center; background-size:15px 15px; }
+  .count { color:var(--muted); font-size:12.5px; font-variant-numeric:tabular-nums; }
+  .sort-mobile { display:none; }
 
   #usersTable th.sortable { cursor:pointer; user-select:none; }
   #usersTable th.sortable:hover { color:var(--ink); }
-  #usersTable th .arrow { opacity:.35; font-size:9px; }
-  #usersTable th.sorted .arrow { opacity:1; color:var(--brand); }
-  #usersTable td { vertical-align:middle; }
+  #usersTable th .arrow { opacity:.3; font-size:9px; }
+  #usersTable th.sorted { color:var(--brand-strong); }
+  #usersTable th.sorted .arrow { opacity:1; color:var(--brand-strong); }
   .th-short { display:none; }
 
-  .who-cell { display:flex; align-items:center; gap:10px; }
-  .avatar { width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
-            font-weight:800; font-size:13px; color:#fff; background:var(--brand); flex:none; }
-  .avatar.admin { background:#7c3aed; }
+  .who-cell { display:flex; align-items:center; gap:11px; }
+  .avatar { width:34px; height:34px; border-radius:10px; display:grid; place-items:center;
+            font-weight:750; font-size:12.5px; color:#fff; background:var(--brand-strong); flex:none;
+            letter-spacing:.02em; }
+  .avatar.admin { background:#6427c9; }
   .who-name { font-weight:700; }
-  .who-sub { font-size:11px; color:var(--muted); }
-
-  /* Numbers read as a column of digits, not prose. */
-  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .who-sub { font-size:11px; color:var(--muted-2); }
+  tr.disabled td { opacity:.55; }
+  tr.disabled .who-name { text-decoration:line-through; }
   /* Named .meter, NOT .bar: <header class="bar"> already exists, and a bare
      .bar rule styled the page header as a 4px blue strip 24px tall with its
      buttons spilling over the stats below. A generic class name in a single
      stylesheet is how that happens. */
-  .meter { height:4px; border-radius:2px; background:var(--brand); opacity:.55; margin:3px 0 0 auto; }
-
-  .pill.on   { background:#e7f7ec; color:#1f7a3f; }
-  .pill.off  { background:#eef2f7; color:#68748c; }
-  .pill.dead { background:#fdecec; color:#b42318; }
-
-  tr.disabled td { opacity:.55; }
-  tr.disabled .who-name { text-decoration:line-through; }
+  .meter { height:4px; border-radius:999px; background:var(--brand); opacity:.6; margin:3px 0 0 auto; }
 
   .row-actions { display:flex; gap:6px; justify-content:flex-end; }
-  .mini { border:1px solid var(--line); background:#fff; border-radius:8px; padding:5px 9px;
-          font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; color:var(--ink); white-space:nowrap; }
-  .mini:hover { background:#f7f9fd; }
-  .mini:disabled { opacity:.5; cursor:default; }
-  .mini.on { background:#e7f7ec; border-color:#bfe6cc; color:#1f7a3f; }
-  .mini.danger { color:#b42318; border-color:#f3c6c2; }
-  .mini.danger:hover { background:#fdecec; }
-  .mini.revive { color:#1f7a3f; border-color:#bfe6cc; }
+  .mini { display:inline-flex; align-items:center; justify-content:center; gap:2px;
+          min-height:32px; border:1px solid var(--line-strong); background:#fff; border-radius:var(--r-xs);
+          padding:5px 10px; font-size:12px; font-weight:650; cursor:pointer; font-family:inherit;
+          color:var(--ink-2); white-space:nowrap; box-shadow:var(--sh-1);
+          transition: background .15s ease, border-color .15s ease, color .15s ease; }
+  .mini:hover:not(:disabled) { background:var(--hover); border-color:#b9c6d8; color:var(--ink); }
+  .mini:disabled { opacity:.5; cursor:default; box-shadow:none; }
+  .mini.on { background:var(--green-tint); border-color:#bfe6cc; color:var(--green-ink); }
+  .mini.on:hover:not(:disabled) { background:#daf1e2; border-color:#a6d9b8; color:var(--green-ink); }
+  .mini.danger { color:var(--red-ink); border-color:#f0cbc7; }
+  .mini.danger:hover:not(:disabled) { background:var(--red-tint); border-color:#e3aba5; color:var(--red-ink); }
+  .mini.revive { color:var(--green-ink); border-color:#bfe6cc; }
+
+  /* ---- learning strengths / weaknesses (admin only) ------------------- */
+  .learning-card { padding-bottom:18px; }
+  .learning-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+                   padding:18px 20px; border-bottom:1px solid var(--line-soft); background:var(--surface); }
+  .learning-title { display:flex; gap:13px; align-items:flex-start; }
+  .learning-icon { width:40px; height:40px; border-radius:var(--r-md); display:grid; place-items:center;
+                   font-size:19px; color:#fff; background:linear-gradient(150deg,#2b7fd4,#0a6ea8); flex:none;
+                   box-shadow:var(--sh-1); }
+  .learning-icon svg { width:21px; height:21px; }
+  .learning-title h2 { margin:0 0 3px; color:var(--ink); font-size:16.5px; font-weight:750;
+                       letter-spacing:-.01em; text-transform:none; }
+  .learning-title p { margin:0; max-width:62ch; color:var(--muted); font-size:12.5px; line-height:1.5; }
+  .learning-filters { display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+  .learning-filters label { display:block; font-size:12px; color:var(--ink-2); font-weight:700; }
+  .learning-filters select { display:block; min-height:40px; margin-top:5px; min-width:150px;
+                             padding:8px 34px 8px 11px; font:600 13.5px/1.2 inherit; }
+
+  .learning-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 20px; }
+  .learning-stat { border:1px solid var(--line); border-radius:var(--r-md); padding:14px 15px; background:var(--surface); }
+  .learning-stat b { display:block; font-size:22px; font-weight:750; letter-spacing:-.02em;
+                     font-variant-numeric:tabular-nums; }
+  .learning-stat span { display:block; margin-top:3px; color:var(--muted); font-size:12px; font-weight:600; }
+  .skill-section-title { margin:4px 20px 10px; font-size:11.5px; color:var(--muted);
+                         text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  .skill-list { display:grid; gap:8px; padding:0 20px; }
+  .skill-row { display:grid; grid-template-columns:minmax(170px,1.6fr) minmax(120px,1fr) 62px 118px;
+               gap:16px; align-items:center; padding:13px 15px; border:1px solid var(--line);
+               border-radius:var(--r-md); background:#fff; }
+  .skill-name { min-width:0; }
+  .skill-name strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+                       font-size:13.5px; font-weight:700; }
+  .skill-name small { display:block; margin-top:2px; color:var(--muted); font-size:11.5px; }
+  .skill-track { height:8px; border-radius:999px; overflow:hidden; background:var(--surface-2); }
+  .skill-fill { height:100%; border-radius:inherit; background:var(--amber); }
+  .skill-fill.strong { background:var(--green); }
+  .skill-fill.weak { background:var(--red); }
+  .skill-score { text-align:right; font-weight:750; font-size:15px; font-variant-numeric:tabular-nums; }
+  .skill-status { display:inline-flex; align-items:center; justify-content:center; min-height:28px;
+                  padding:4px 10px; border-radius:999px; font-size:11px; font-weight:750; text-align:center; }
+  .skill-status.weak { background:var(--red-tint); color:var(--red-ink); }
+  .skill-status.practice { background:var(--amber-tint); color:var(--amber-ink); }
+  .skill-status.strong { background:var(--green-tint); color:var(--green-ink); }
+  .skill-status.learning { background:var(--surface-2); color:var(--muted); }
+  .learning-empty { margin:18px 20px; border:1px dashed var(--line-strong); border-radius:var(--r-md);
+                    padding:30px 18px; text-align:center; color:var(--muted); font-size:13px; background:var(--surface); }
+  .menu-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; padding:0 20px 18px; }
+  .menu-card { min-height:92px; text-align:left; border:1px solid var(--line); border-radius:var(--r-md);
+               padding:13px 14px; background:#fff; color:var(--ink); font:inherit; cursor:pointer;
+               box-shadow:var(--sh-1); transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+  .menu-card:hover { border-color:#b9c6d8; box-shadow:var(--sh-2); transform:translateY(-1px); }
+  .menu-card strong { display:block; font-size:13px; font-weight:700; margin-bottom:8px; }
+  .menu-card b { font-size:21px; font-weight:750; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .menu-card small { display:block; margin-top:3px; color:var(--muted); font-size:11.5px; }
+  .priority-card { display:flex; gap:13px; align-items:center; margin:0 20px 18px; padding:14px 16px;
+                   border:1px solid #f2d9ac; border-left:4px solid var(--amber); border-radius:var(--r-md);
+                   background:#fffaf0; }
+  .priority-icon { width:38px; height:38px; flex:none; display:grid; place-items:center;
+                   border-radius:var(--r-sm); background:#ffe8bc; }
+  .priority-card strong,.priority-card span { display:block; }
+  .priority-card strong { font-size:14px; font-weight:750; }
+  .priority-card span { margin-top:3px; color:#6d4a17; font-size:12.5px; line-height:1.5; }
+
+  /* ---- Daily task panel ----------------------------------------------
+     The two dropdowns carry strings like "Toán 7 · Đề thi HK1 4 (THCS Tương
+     Bình Hiệp)". They used to sit in the right-hand filter bar and were
+     squeezed to ~60px, so the parent could not read what she was assigning.
+     They now get their own labelled grid with full-width controls. */
+  .daily-status { margin:0; padding:13px 20px; background:var(--surface);
+                  border-bottom:1px solid var(--line-soft); font-size:13.5px; color:var(--ink-2); }
+  .daily-status:empty { display:none; }
+  .daily-form { margin:20px 20px 0; padding:18px; border:1px solid var(--line);
+                border-radius:var(--r-md); background:var(--surface); }
+  .daily-form-title { margin:0 0 14px; font-size:11.5px; color:var(--muted);
+                      text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  .daily-form-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+  .field { min-width:0; }
+  .field label { display:block; margin-bottom:5px; font-size:12px; font-weight:700; color:var(--ink-2); }
+  .field select, .field input { display:block; width:100%; min-height:42px; padding:10px 12px;
+                                font-size:14px; }
+  .field select { padding-right:34px; }
+  .field-num input { max-width:220px; }
+  .daily-form-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  @media (min-width: 760px) {
+    .daily-form-grid { grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) 210px; align-items:end; }
+    .field-num input { max-width:none; }
+  }
 
   @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
 
@@ -190,10 +317,15 @@
      stays put while the rest scrolls.
      Measured on an iPhone 16 (393x852): 577px of table in a 351px box before,
      fitting after. */
-  .sort-mobile { display:none; }
   @media (max-width: 640px) {
-    .sort-mobile { display:block; padding:8px 10px; border:1px solid var(--line);
-                   border-radius:10px; font-size:13px; font-family:inherit; background:#fff; color:var(--ink); }
+    /* On a phone the feed is the page, so let it run rather than scroll inside a box. */
+    .activity-feed .scroll { max-height:none; }
+    /* The last pixels a phone needs come from the page gutter, not from the
+       cells: squeezing those further would have cost readability. */
+    .wrap { padding-block: 16px 84px; }
+    .wrap { padding-inline: 10px; }
+    .sort-mobile { display:block; min-height:40px; padding:9px 34px 9px 11px; border-radius:var(--r-sm);
+                   font-size:13px; font-family:inherit; background-color:#fff; color:var(--ink); }
     /* Two columns give way, and only these two, because the row already says
        both: a disabled account is faded, struck through and offers Enable
        instead of Disable, and the bot state is the toggle's own colour. The
@@ -202,50 +334,84 @@
     th.hide-xs, td.hide-xs { display:none; }
     .who-sub { display:none; }            /* the #id is not what you scan for */
     .dev { margin-left:5px; font-size:11px; }
-    /* The last few pixels come from the page gutter rather than from the
-       content: squeezing the cells further would start costing legibility. */
-    .wrap { padding-inline: 10px; }
+    /* The page gutter and the cell padding both give way before the content
+       does: the users table has to fit a 393px screen without the horizontal
+       scroll swallowing the Actions column. */
+    th:first-child, td:first-child { padding-left:10px; }
+    th:last-child, td:last-child { padding-right:10px; }
     #usersTable { font-size:12.5px; }
     #usersTable th, #usersTable td { padding:8px 4px; }
+    #usersTable th:first-child, #usersTable td:first-child { padding-left:8px; }
+    #usersTable th:last-child, #usersTable td:last-child { padding-right:8px; }
     .th-full { display:none; }
     .th-short { display:inline; }
     /* One long name would otherwise set the width of the whole column. */
     .who-name { display:inline-block; max-width:76px; overflow:hidden;
                 text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }
     .who-cell { gap:6px; }
-    #usersTable th { font-size:10px; letter-spacing:0; }
-    .avatar { width:24px; height:24px; font-size:10.5px; }
-    .who-sub { font-size:10px; }
+    #usersTable th { font-size:10px; letter-spacing:.02em; }
+    .avatar { width:24px; height:24px; border-radius:7px; font-size:10.5px; }
     .pill { padding:2px 6px; font-size:10px; }
 
     /* The buttons keep their icon and drop the word. Three labelled buttons
        need ~220px of a 351px screen, which is what pushed them off-screen. */
     .mini .lbl { display:none; }
-    .mini { padding:0; width:34px; height:34px; display:grid; place-items:center; font-size:15px; }
+    .mini { padding:0; width:34px; height:34px; font-size:15px; }
     .row-actions { gap:4px; }
 
     /* Scrolling right must not lose track of WHOSE row you are reading. */
     #usersTable th:first-child, #usersTable td:first-child {
       position:sticky; left:0; z-index:1; background:var(--card);
     }
+    #usersTable thead th:first-child { background:var(--surface); }
     #usersTable tr.selected td:first-child { background:#eaf6ff; }
-    .stat { flex:1 1 100px; }
+
     header.bar h1 { font-size:18px; }
+    /* Three full-size buttons wrapped into stacked blocks. One compact row
+       instead: the toggle takes what is left, the other two stay their size. */
+    header.bar .bar-actions { width:100%; margin-left:0; display:grid;
+                              grid-template-columns:minmax(0,1fr) auto auto; gap:8px; flex-wrap:nowrap; }
+    header.bar .bar-actions .btn { padding:7px 10px; font-size:12.5px; min-height:38px;
+                                   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+    /* Three tiles in one row rather than 2 + a stranded 1: the point of the
+       row is that the three numbers can be compared at a glance. */
+    .stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-bottom:18px; }
+    .stat { padding:12px 12px 13px; gap:3px; }
+    .stat::before { width:20px; }
+    .stat b { font-size:22px; }
+    .stat span { font-size:11.5px; line-height:1.35; }
+    /* Four tabs never fit one phone-width row, and a strip that scrolls can
+       hide the very tab you are on — which is exactly what happened to
+       "Daily task". Two rows of two instead: every section stays visible and
+       the selected one is always on screen. It gives up the sticky strip,
+       because 2 rows pinned to the top would eat a third of the fold. */
+    .admin-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; overflow:visible; }
+    .admin-tab { flex:none; padding-inline:10px; font-size:13px; }
+    .card > h2, .tools, .toolbar, .learning-head, .learning-summary,
+    .skill-section-title, .skill-list, .menu-overview { padding-inline:14px; }
+    .skill-section-title, .learning-empty, .priority-card, .daily-form { margin-inline:14px; }
+    th, td { padding:12px 14px; }
+    .daily-status { padding:12px 14px; }
     .learning-head { display:block; }
-    .learning-filters { margin-top:12px; justify-content:stretch; }
-    .learning-filters label { flex:1; }
-    .learning-filters label:first-child { flex-basis:100%; }
-    .learning-filters select { width:100%; }
+    .learning-filters { margin-top:14px; justify-content:stretch; gap:10px; }
+    .learning-filters label { flex:1 1 100%; }
+    .learning-filters select { width:100%; min-width:0; }
     .learning-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .skill-row { grid-template-columns:minmax(0,1fr) 64px; gap:8px 12px; }
+    .skill-row { grid-template-columns:minmax(0,1fr) 62px; gap:9px 12px; }
     .skill-track { grid-column:1 / -1; grid-row:2; }
     .skill-status { grid-column:1; grid-row:3; justify-self:start; }
     .skill-score { grid-column:2; grid-row:1; }
-    .admin-tabs { position:sticky; top:6px; z-index:5; }
-    .admin-tab { padding-inline:13px; }
     .menu-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .priority-card { align-items:flex-start; }
+    .daily-form { padding:15px; }
+    .daily-form-actions .btn { flex:1 1 auto; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+    .menu-card:hover { transform:none; }
+  }
+
   #dash { display:none; }
 </style>
 </head>
@@ -255,9 +421,9 @@
   <div id="login" class="login">
     <h1>🎯 FlashLingo Admin</h1>
     <p>Sign in with the admin account.</p>
-    <label>Username</label>
+    <label for="u">Username</label>
     <input id="u" autocomplete="username" autocapitalize="off" spellcheck="false">
-    <label>Password</label>
+    <label for="p">Password</label>
     <input id="p" type="password" autocomplete="current-password">
     <label class="keep"><input type="checkbox" id="keepMe" checked> Keep me signed in on this device</label>
     <button class="btn btn-primary" id="loginBtn">Sign in</button>
@@ -275,12 +441,27 @@
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
     </header>
+    <!-- The landing view. Opening the console, the first question is always
+         "what have they been doing?", so the feed answers it before the
+         dashboard numbers and before any tab has to be chosen. It is no
+         longer a tabpanel: it stays on screen whichever tab is open, and the
+         per-user filter still works through "Show all users". -->
+    <div class="card activity-feed" id="activityPanel">
+      <div class="toolbar">
+        <h2>Hoạt động gần nhất</h2>
+        <span class="who" id="whoLabel">All users · last 30 days</span>
+        <button class="btn btn-ghost" id="allBtn">Show all users</button>
+      </div>
+      <div class="scroll"><table id="attemptsTable">
+        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Balance</th><th>Time</th></tr></thead>
+        <tbody id="attemptsBody"></tbody>
+      </table></div>
+
     <div class="stats" id="stats"></div>
 
     <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
       <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
       <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
-      <button class="admin-tab" id="tabActivity" role="tab" aria-controls="activityPanel" aria-selected="false" data-tab="activity">🕘 Hoạt động</button>
       <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Daily task</button>
     </nav>
 
@@ -360,30 +541,38 @@
           </label>
         </div>
       </div>
-      <div id="dailyStatus" class="muted" style="margin:6px 10px;" aria-live="polite"></div>
+      <div id="dailyStatus" class="daily-status" aria-live="polite"></div>
       <div class="scroll"><table id="dailyTable">
         <thead><tr><th>Bài</th><th>Mục tiêu</th><th>Hôm nay</th><th class="hide-sm">Tạo lúc</th><th style="text-align:right">Xoá</th></tr></thead>
         <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr></tbody>
       </table></div>
-      <form id="dailyForm" class="learning-filters" style="margin-top:14px;" autocomplete="off">
-        <label>Nhóm bài <select id="dailyGroup"></select></label>
-        <label>Chi tiết <select id="dailyKind"></select></label>
-        <label>Số lượt đạt mỗi ngày <input id="dailyTarget" type="number" min="1" max="50" value="5" style="width:80px"></label>
-        <button class="btn" type="submit" id="dailySave">💾 Lưu</button>
-        <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
+      <!-- Full-width labelled controls, not a filter bar: every option here is a
+           long sentence ("Grammar · Unit 12: Tenses · 25 câu"), and squeezing
+           these two selects into a flex row made them unreadable. -->
+      <form id="dailyForm" class="daily-form" autocomplete="off">
+        <h3 class="daily-form-title">Giao thêm task</h3>
+        <div class="daily-form-grid">
+          <div class="field">
+            <label for="dailyGroup">Nhóm bài</label>
+            <select id="dailyGroup"></select>
+          </div>
+          <div class="field">
+            <label for="dailyKind">Chi tiết</label>
+            <select id="dailyKind"></select>
+          </div>
+          <div class="field field-num">
+            <label for="dailyTarget">Số lượt đạt mỗi ngày</label>
+            <input id="dailyTarget" type="number" min="1" max="50" value="5" inputmode="numeric">
+          </div>
+        </div>
+        <div class="daily-form-actions">
+          <button class="btn btn-primary" type="submit" id="dailySave">💾 Lưu</button>
+          <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
+        </div>
       </form>
     </section>
 
-    <div class="card admin-panel" id="activityPanel" role="tabpanel" aria-labelledby="tabActivity" hidden>
-      <div class="toolbar">
-        <h2 style="margin:0 6px 0 10px;">Activity history</h2>
-        <span class="who" id="whoLabel">All users · last 30 days</span>
-        <button class="btn btn-ghost" id="allBtn" style="margin-left:auto;">Show all users</button>
-      </div>
-      <div class="scroll"><table id="attemptsTable">
-        <thead><tr><th>When</th><th>User</th><th>Type</th><th>Activity</th><th>Score</th><th>%</th><th>Balance</th><th>Time</th></tr></thead>
-        <tbody id="attemptsBody"></tbody>
-      </table></div>
+
     </div>
   </div>
 </div>
