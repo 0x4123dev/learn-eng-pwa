@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { progress, shieldStatus, taskSpec, rewardedOn, MAX_TARGET } from '../_daily-task.js';
+import { progress, shieldStatus, taskSpec, rewardedOn, MAX_TARGET, MAX_ACTIVE_TASKS } from '../_daily-task.js';
 
 // Admin-only CRUD for a child's daily tasks.
 //   GET    /api/admin/daily-tasks?user_id=N   → tasks with today's progress (read-only, never pays)
@@ -12,8 +12,11 @@ async function requireAdmin(request, env) {
   return { auth };
 }
 
+// A nonexistent user_id stays 200 with an empty task list, not a 404: the
+// admin picks the child from the user list, so an empty list is the
+// friendlier contract for a panel than an error it has to special-case.
 export async function onRequestGet({ request, env }) {
-  const { auth, fail } = await requireAdmin(request, env);
+  const { fail } = await requireAdmin(request, env);
   if (fail) return fail;
   const raw = new URL(request.url).searchParams.get('user_id');
   if (!raw || !/^\d+$/.test(raw)) return err('Bad user_id');
@@ -31,7 +34,7 @@ export async function onRequestPost({ request, env }) {
   const { auth, fail } = await requireAdmin(request, env);
   if (fail) return fail;
   let body;
-  try { body = await request.json(); } catch (e) { return err('Invalid JSON'); }
+  try { body = (await request.json()) || {}; } catch (e) { return err('Invalid JSON'); }
 
   const userId = Math.trunc(Number(body.userId));
   if (!Number.isFinite(userId) || userId <= 0) return err('Bad userId');
@@ -47,6 +50,9 @@ export async function onRequestPost({ request, env }) {
   const dup = await env.DB.prepare('SELECT id FROM daily_tasks WHERE user_id = ? AND kind = ? AND active = 1')
     .bind(userId, spec.kind).first();
   if (dup) return err('Bé đã có task này, xoá rồi tạo lại nếu muốn đổi số bài', 409, { code: 'duplicate', id: dup.id });
+
+  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM daily_tasks WHERE user_id = ? AND active = 1').bind(userId).first();
+  if (Number((n && n.n) || 0) >= MAX_ACTIVE_TASKS) return err('Mỗi bé tối đa ' + MAX_ACTIVE_TASKS + ' task', 400, { code: 'too_many' });
 
   const res = await env.DB.prepare(
     'INSERT INTO daily_tasks (user_id, kind, label, target, activity_type, match_json, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)'

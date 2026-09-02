@@ -9,6 +9,9 @@ export const DAILY_REWARD = { coins: 200, shields: 1 };
 export const SHIELD_MS = 24 * 3600 * 1000;
 export const SHIELD_RAID_LOSS = 200;   // what a raider pays for hitting a shielded home
 export const MAX_TARGET = 50;
+// Every active task costs one COUNT on every activity sync, and allDone
+// needs all of them, so a long list only makes the reward unreachable.
+export const MAX_ACTIVE_TASKS = 10;
 
 function sqlTime(ms) { return new Date(ms).toISOString().replace('T', ' ').slice(0, 19); }
 

@@ -681,6 +681,84 @@ suite('daily task: admin API', () => {
     const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks', method: 'GET', token: admin.token });
     assert.equal(g.status, 400);
   });
+
+  test('a child is capped at MAX_ACTIVE_TASKS active tasks', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const kinds = ['phrases', 'collocation', 'wordform', 'rewrite', 'verbs', 'vocab',
+      'grammar:unit1', 'grammar:unit2', 'grammar:unit3', 'grammar:unit4'];
+    let lastId;
+    for (const kind of kinds) {
+      const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind, target: 5 } });
+      assert.equal(r.status, 200, kind);
+      lastId = r.data.task.id;
+    }
+    const eleventh = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'grammar:unit5', target: 5 } });
+    assert.equal(eleventh.status, 400);
+    assert.equal(eleventh.data.code, 'too_many');
+    await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + lastId, method: 'DELETE', token: admin.token });
+    const again = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'grammar:unit5', target: 5 } });
+    assert.equal(again.status, 200, 'freeing a slot lets the next create through');
+  });
+
+  test('a literal null body is a 400, not a 500', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const p = await world.call(adminHandler().onRequestPost, { token: admin.token, body: null });
+    assert.equal(p.status, 400);
+  });
+
+  test('malformed JSON body is a 400', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const request = new Request('http://app.test/api/admin/daily-tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + admin.token },
+      body: '{not valid json',
+    });
+    const res = await adminHandler().onRequestPost({ request, env: world.env });
+    assert.equal(res.status, 400);
+  });
+
+  test('no token is 401 on GET, POST and DELETE', async () => {
+    const world = createWorld();
+    const g = await world.call(adminHandler().onRequestGet, { url: '/api/admin/daily-tasks?user_id=1', method: 'GET' });
+    assert.equal(g.status, 401);
+    const p = await world.call(adminHandler().onRequestPost, { body: { userId: 1, kind: 'phrases', target: 5 } });
+    assert.equal(p.status, 401);
+    const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=1', method: 'DELETE' });
+    assert.equal(d.status, 401);
+  });
+
+  test('DELETE requires a numeric id', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const bad = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=abc', method: 'DELETE', token: admin.token });
+    assert.equal(bad.status, 400);
+    const missing = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks', method: 'DELETE', token: admin.token });
+    assert.equal(missing.status, 400);
+  });
+
+  test('a numeric-string target ("5") is accepted like a number', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const r = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid.uid, kind: 'phrases', target: '5' } });
+    assert.equal(r.status, 200);
+    assert.equal(r.data.task.target, 5);
+  });
+
+  test('an admin can delete a task belonging to a different child', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid1 = await world.createUser({});
+    const kid2 = await world.createUser({});
+    await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid2.uid, kind: 'phrases', target: 1 } });
+    const t = await world.call(adminHandler().onRequestPost, { token: admin.token, body: { userId: kid1.uid, kind: 'phrases', target: 1 } });
+    const d = await world.call(adminHandler().onRequestDelete, { url: '/api/admin/daily-tasks?id=' + t.data.task.id, method: 'DELETE', token: admin.token });
+    assert.equal(d.status, 200, 'no ownership check ties a task to whichever child was last queried');
+  });
 });
 if (require.main === module) {
   require('./harness').runAll().then(code => process.exit(code));
