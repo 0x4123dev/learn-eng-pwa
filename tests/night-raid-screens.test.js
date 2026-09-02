@@ -90,6 +90,7 @@ function mount(overrides) {
     // exercise the local paths a bot-on child hits first.
     EngAuth: { tokenFor: () => 'tok', api: () => Promise.resolve({ ok: false, data: null }) },
   };
+  Object.assign(ctx, (overrides || {}).ctx || {});
   ctx.global = ctx; ctx.globalThis = ctx; ctx.self = ctx;
   vm.createContext(ctx);
   vm.runInContext(read('js/night-raid.js'), ctx, { filename: 'js/night-raid.js' });
@@ -220,6 +221,164 @@ suite('night raid screens: the camera can never disarm a screen', () => {
     ctx.NightRaid.scoutBot();
     assert.truthy(typeof doc.getElementById('nrStartRaid').onclick === 'function',
       'camera failure must never leave TIẾN QUÂN dead');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// leaving a raid
+// ---------------------------------------------------------------------------
+//
+// The raid stage hides the bottom bar (it sits above the board and was burying
+// TIẾN QUÂN), so the only ways out are the topbar ✕ and the HUD map button.
+// Both went straight out with no question — and for a raid on a REAL house
+// that is not free: functions/api/night-raid/start.js writes the raid row
+// before the first sword swings, and refuses a second visit to the same home
+// on the same date ("Hôm nay con đã thăm nhà này rồi"). Walking out mid-fight
+// burned one of the three houses on offer that night for nothing.
+//
+// js/night-raid.js already had a quit() with the right question in it. Nothing
+// called it: nrQuitRaid() was dead code.
+const LIVE_TARGET = {
+  targetId: 42, name: 'Nhà bạn Bo', homeLevel: 4, difficulty: 'Cân sức',
+  defense: 40, damage: 30, castleHp: 200, seed: 7, lockedUntil: 0,
+  layout: { cells: [], soldiers: 3, dogLane: 2 }, teammates: [], dogLevel: 5,
+};
+
+// A server that hands out one real house and lets the raid start for real.
+function onlineWorld(confirmAnswer) {
+  const asked = [];
+  // EngAuth.api is called with the full 'night-raid/<path>' route.
+  const api = (route) => {
+    if (/\/targets$/.test(route)) return Promise.resolve({ ok: true, data: { targets: [LIVE_TARGET], ticketsLeft: 3 } });
+    if (/\/start$/.test(route)) return Promise.resolve({ ok: true, data: { raid: Object.assign({ raidId: 'a'.repeat(32) }, LIVE_TARGET) } });
+    return Promise.resolve({ ok: false, data: null });
+  };
+  const w = mount({ ctx: {
+    EngAuth: { tokenFor: () => 'tok', api },
+    confirm: (msg) => { asked.push(String(msg)); return confirmAnswer; },
+  } });
+  w.asked = asked;
+  return w;
+}
+
+// showLiveTargets and startRaid are async; the module awaits its own api()
+// promises, so let the microtask queue drain between steps.
+const settle = () => new Promise(r => setImmediate(r));
+
+suite('night raid: the bottom bar, and what it costs to walk out of a raid', () => {
+  test('the raid stage takes the bar away and the home stage gives it back', () => {
+    const { ctx, doc } = mount();
+    const nav = doc.getElementById('bottomNav');
+    ctx.NightRaid.open();
+    assert.truthy(nav.style.display !== 'none', 'the raid HOME is a hub — the bar belongs there');
+    ctx.NightRaid.scoutBot();
+    assert.equal(nav.style.display, 'none', 'the raid stage must not have the bar over it');
+    ctx.NightRaid.renderHome();
+    assert.truthy(nav.style.display !== 'none', 'and it must come back');
+  });
+
+  test('a committed raid on a real house asks before it is thrown away', async () => {
+    const w = onlineWorld(false);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    w.asked.length = 0;
+    tap(w.doc.getElementById('nrStartRaid')); await settle();
+    assert.truthy(w.ctx.NightRaid.isRaiding(), 'the raid should be live after TIẾN QUÂN');
+
+    w.ctx.NightRaid.quit();
+    assert.equal(w.asked.length, 1, 'walking out of a live raid must ask');
+    assert.truthy(/không vào lại|không nhận/i.test(w.asked[0]),
+      `the question must say what it costs — got: ${w.asked[0]}`);
+    assert.truthy(w.ctx.NightRaid.isRaiding(), 'saying no must leave the raid running');
+  });
+
+  test('saying yes leaves, and hands the bottom bar back', async () => {
+    const w = onlineWorld(true);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    tap(w.doc.getElementById('nrStartRaid')); await settle();
+    w.ctx.NightRaid.quit(); await settle();
+    assert.falsy(w.ctx.NightRaid.isRaiding(), 'saying yes ends it');
+    assert.truthy(w.doc.getElementById('bottomNav').style.display !== 'none',
+      'a child must never be left on a screen with no bar and no raid');
+  });
+
+  test('the topbar ✕ asks too — it is the other way out of the same screen', async () => {
+    const w = onlineWorld(false);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    tap(w.doc.getElementById('nrStartRaid')); await settle();
+    w.asked.length = 0;
+    w.ctx.NightRaid.close();
+    assert.equal(w.asked.length, 1, 'the ✕ must ask as well');
+    assert.truthy(w.ctx.NightRaid.isRaiding(), 'saying no must keep the raid');
+  });
+
+  test('scouting is free — no raid exists on the server yet', async () => {
+    const w = onlineWorld(false);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    w.asked.length = 0;
+    assert.falsy(w.ctx.NightRaid.isRaiding(), 'looking at a house is not raiding it');
+    w.ctx.NightRaid.quit();
+    assert.equal(w.asked.length, 0, 'backing out before TIẾN QUÂN costs nothing');
+  });
+
+  test('a bot raid is free to leave — nothing was written anywhere', () => {
+    const asked = [];
+    const w = mount({ ctx: { confirm: (m) => { asked.push(String(m)); return false; } } });
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.scoutBot();
+    tap(w.doc.getElementById('nrStartRaid'));
+    assert.falsy(w.ctx.NightRaid.isRaiding(), 'a bot fight costs no house and no ticket');
+    w.ctx.NightRaid.quit();
+    assert.equal(asked.length, 0, 'and so it must not nag');
+  });
+
+  test('after an online raid, the map button still goes back to the houses', async () => {
+    // The map button is shared by the scout stage, the battle and the result
+    // frame. Once the raid is scored there is nothing to ask about — but it
+    // must still land where the child was, not at the Cướp Đêm home.
+    const w = onlineWorld(true);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    tap(w.doc.getElementById('nrStartRaid')); await settle();
+    // End the fight the way the engine does, so the module runs its own
+    // finish path rather than a hand-placed result.
+    const fight = w.battles[w.battles.length - 1];
+    fight.options.onFinish({ status: 'lost', margin: 0, castleHp: 120, damage: 30, defense: 40 }, []);
+    await settle(); await settle();
+    assert.falsy(w.ctx.NightRaid.isRaiding(), 'a scored raid is not still at stake');
+    w.asked.length = 0;
+    w.ctx.NightRaid.quit(); await settle();
+    assert.equal(w.asked.length, 0, 'a scored raid has nothing left to ask about');
+    assert.truthy(w.doc.getElementById('nightRaidScreen').innerHTML.includes('Nhà người chơi')
+      || w.doc.getElementById('nightRaidScreen').innerHTML.includes('Chọn một lâu đài'),
+      'it must return to the list of real houses');
+  });
+
+  test('the raid stage wires its map button to the asking exit', () => {
+    const { ctx, doc } = mount();
+    ctx.NightRaid.open();
+    ctx.NightRaid.scoutBot();
+    const home = doc.querySelector('.nr-builder-home');
+    assert.truthy(home, 'the raid stage has no way out at all');
+    assert.truthy(String(home.getAttribute('onclick')).includes('nrQuitRaid()'),
+      `the map button calls "${home.getAttribute('onclick')}" — it must ask first`);
+  });
+
+  test('nrQuitRaid is reachable from the markup, not dead code', () => {
+    // It WAS dead: the function existed, carried the right question, and no
+    // screen in the app ever called it.
+    const src = read('js/night-raid.js');
+    const wired = (src.match(/nrQuitRaid\(\)/g) || []).length;
+    assert.truthy(wired >= 2,
+      'nrQuitRaid must be called from the markup as well as declared');
   });
 });
 

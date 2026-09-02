@@ -28,40 +28,70 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 // the registry: every "is something running?" must be answered by switchScreen
 // ---------------------------------------------------------------------------
 suite('leaving a screen: nothing that can be running is left unguarded', () => {
-  // A screen exempt from the bottom-nav question needs a reason, not a shrug.
+  // The scan below reads EVERY `function isX(...)` in js/ and demands a
+  // decision about each one. That is deliberately blunt: the first version of
+  // this test only matched top-level `is*Active` names, and Night Raid — whose
+  // check lives inside a module as `isRaiding()` — walked straight past it
+  // while its raid stage had two unguarded exits. A name-shaped filter decides
+  // what to look at; a list you have to edit decides what is safe.
+  const NOT_AN_ACTIVITY = {
+    isAutoplayBlock: 'a browser capability probe',
+    isArrangementCorrect: 'grades one answer',
+    isQuestionBookmarked: 'reads a bookmark flag',
+    isWordStruggling: 'reads a word\'s SRS record',
+    isBonusTopicLesson: 'classifies a lesson',
+    isUnitMastered: 'reads a mastery total',
+    isActive: 'GhostOfferingEvent — switchScreen guards it as GhostOfferingEvent.isActive()',
+  };
+  // Running activities that switchScreen may skip, each with what is NOT lost.
   const EXEMPT = {
     isRetryDrillActive:
       'the drill persists each item the moment it is fixed (retryClear in ' +
       'js/retrydrill.js), so walking out loses nothing but the item on screen',
   };
 
-  test('switchScreen asks about every live activity in the app', () => {
+  const guard = (() => {
     const app = read('js/app.js');
-    const guard = app.slice(app.indexOf('function switchScreen(screenId) {'),
+    return app.slice(app.indexOf('function switchScreen(screenId) {'),
       app.indexOf('function navigateToProfile'));
-    assert.truthy(guard.length > 500, 'switchScreen not found');
+  })();
 
-    const found = [];
-    for (const file of fs.readdirSync(path.join(ROOT, 'js'))) {
-      if (!file.endsWith('.js') || file === 'phaser.min.js') continue;
-      const src = read('js/' + file);
-      for (const m of src.matchAll(/^function (is[A-Za-z]*Active)\s*\(/gm)) {
-        found.push({ name: m[1], file });
-      }
+  const found = [];
+  for (const file of fs.readdirSync(path.join(ROOT, 'js'))) {
+    if (!file.endsWith('.js') || file === 'phaser.min.js') continue;
+    for (const m of read('js/' + file).matchAll(/function (is[A-Z][A-Za-z]*)\s*\(/g)) {
+      if (!found.some(f => f.name === m[1])) found.push({ name: m[1], file });
     }
-    assert.truthy(found.length >= 8, `only found ${found.length} activity checks — the scan is broken`);
+  }
 
+  test('the scan actually reads the codebase', () => {
+    assert.truthy(guard.length > 500, 'switchScreen not found');
+    assert.truthy(found.length >= 15, `only found ${found.length} is…() functions — the scan is broken`);
+    for (const name of ['isMathQuizActive', 'isExamActive', 'isRaiding', 'isFighting']) {
+      assert.truthy(found.some(f => f.name === name), `the scan missed ${name}`);
+    }
+  });
+
+  test('switchScreen asks about every live activity in the app', () => {
     const unguarded = found
-      .filter(f => !EXEMPT[f.name] && !guard.includes(f.name))
+      .filter(f => !EXEMPT[f.name] && !NOT_AN_ACTIVITY[f.name] && !guard.includes(f.name))
       .map(f => `${f.name} (js/${f.file})`);
     assert.deepEqual(unguarded, [],
       'switchScreen never asks about:\n  ' + unguarded.join('\n  ') +
-      '\nAdd a guard, or an EXEMPT entry here saying why nothing is lost.');
+      '\nAdd a guard, or say in EXEMPT what cannot be lost, or in ' +
+      'NOT_AN_ACTIVITY that this is not a running activity at all.');
   });
 
-  test('an exemption states what it is that cannot be lost', () => {
+  test('every entry in both lists says why it is there', () => {
     for (const [name, why] of Object.entries(EXEMPT)) {
-      assert.truthy(String(why).length > 40, `${name} needs a real reason`);
+      assert.truthy(String(why).length > 40, `${name} needs a real reason, not a shrug`);
+    }
+    for (const [name, why] of Object.entries(NOT_AN_ACTIVITY)) {
+      assert.truthy(String(why).length > 10, `${name} needs a reason`);
+    }
+    // A stale entry is worse than none: it hides a name nobody checks any more.
+    for (const name of Object.keys(EXEMPT).concat(Object.keys(NOT_AN_ACTIVITY))) {
+      assert.truthy(found.some(f => f.name === name), `${name} no longer exists — drop it`);
     }
   });
 });

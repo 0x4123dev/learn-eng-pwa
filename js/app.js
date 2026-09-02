@@ -1291,6 +1291,20 @@ function switchScreen(screenId) {
         if (typeof abandonWars === 'function') abandonWars();
     }
 
+    // Guard: a live Night Raid. The raid stage hides the bottom bar, so this is
+    // a backstop rather than the front line — but the server has already
+    // written the raid row by the time the army marches, and start.js refuses
+    // a second visit to the same home today, so leaving costs the house.
+    // NightRaid.close() asks and clears the raid before it calls us, so a child
+    // who has already answered is never asked twice.
+    if (screenId !== 'nightRaidScreen' &&
+        typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) {
+        if (!confirm('Con đang cướp nhà bạn.\nBỏ ngang thì hôm nay không vào lại nhà này được nữa, và không nhận được xu nào.\n\nVẫn thoát?')) {
+            return false;
+        }
+        if (NightRaid.abandonRaid) NightRaid.abandonRaid();
+    }
+
     // Guard: Phrases and Collocation share one screen, and BOTH were missing
     // from this list — a mis-tap on the bottom bar ended either practice with
     // no question asked at all.

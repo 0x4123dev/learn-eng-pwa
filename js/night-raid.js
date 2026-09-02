@@ -71,6 +71,25 @@ var NightRaid = (() => {
   }
   function save(){try{if(typeof saveUserData==='function'&&typeof currentUser!=='undefined'&&currentUser)saveUserData(currentUser,appState);}catch(e){}}
   function shell(body,title=VI.title){return `<div class="nr-shell"><header class="nr-topbar"><button class="nr-icon-btn" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div><span class="nr-kicker">CASTLE NIGHT RAID</span><h1>${esc(title)}</h1></div><div class="nr-wallet" aria-label="Số xu hiện có">${svg('coin')}<strong data-nr-coins>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></header>${body}<div id="nrLive" class="sr-only" aria-live="polite"></div></div>`;}
+  // What is at stake on the raid stage right now. `committed` turns true the
+  // moment TIẾN QUÂN goes through on a REAL house: functions/api/night-raid/
+  // start.js has written the raid row by then, and start.js refuses a second
+  // visit to the same home on the same date — so walking out from here burns
+  // one of the three houses on offer tonight and pays nothing for it.
+  // A bot fight is never committed: nothing is written anywhere.
+  let raidStage=null;
+  function isRaiding(){return !!(raidStage&&raidStage.committed);}
+  function abandonRaid(){raidStage=null;}
+  // The raid is over and scored. Nothing is at stake any more, but keep the
+  // `online` flag so the map button still goes back to the list of houses
+  // rather than dumping the child at the Cướp Đêm home.
+  function settleRaid(){if(raidStage)raidStage.committed=false;}
+  function confirmLeaveRaid(){
+    if(!isRaiding()||typeof confirm!=='function')return true;
+    return confirm('Bỏ dở trận này?\n\nMáy chủ đã ghi nhận con vào nhà này — hôm nay con '
+      + 'KHÔNG vào lại được nữa, và cũng KHÔNG nhận được xu nào.\n\nVẫn bỏ?');
+  }
+
   function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}petPatrolRoot=null;}
   if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(document.hidden){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}}else if(view==='home'||view==='builder'){const map=document.querySelector('.screen.active .nr-builder-map');startPetPatrol(map);startArmyParade(map);}});
   function ownPower(){return NightRaidRules.combatPower(appState.nightRaidLayout,appState.dogLevel||1,appState.battleTeammates,appState.nightRaidLayout?.soldiers||0);}
@@ -94,8 +113,8 @@ var NightRaid = (() => {
   function scoutBot(){return scout(1,makeBotTarget(),false);}
 
   function open(){ensure();cleanup();view='home';if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderHome();refreshHome();}
-  function close(){cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
-  function renderHome(){cleanup();setNav(false);view='home';applyViewZoom(view);ensure();const r=root();if(!r)return;
+  function close(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
+  function renderHome(){cleanup();abandonRaid();setNav(false);view='home';applyViewZoom(view);ensure();const r=root();if(!r)return;
     // The Night Raid home IS the child's island, exactly like the builder:
     // full-screen board with the equipped castle and every placed building,
     // the same DAM/DEF/LINH/coin chips, and the actions as SHOP-style fabs
@@ -115,11 +134,11 @@ var NightRaid = (() => {
   // the controls float as compact chips/fabs, and TIẾN QUÂN starts the fight
   // IN PLACE on this very canvas — no screen swap, the result popup drops
   // over the final frame. Enemy DEF stays hidden until the attack begins.
-  function scout(level,targetOverride,online){cleanup();view='scout';const target=targetOverride||NightRaidRules.trainingTarget(level);const r=root();if(!r)return;
+  function scout(level,targetOverride,online){cleanup();view='scout';raidStage={online:!!online,committed:false};const target=targetOverride||NightRaidRules.trainingTarget(level);const r=root();if(!r)return;
     const mine=ownPower();target.attackerDamage=target.attackerDamage||mine.damage;target.attackerDefense=target.attackerDefense||mine.defense;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):mine.soldiers;
     const name=(target.title&&target.title.vi)||target.name||'Nhà đối thủ',locked=!!lockLeft(target.lockedUntil);
     const mapBase=typeof innerWidth!=='undefined'&&innerWidth>=768?1500:1180,mapSize=Math.round(mapBase*builderZoom);
-    r.innerHTML=shell(`<main class="nr-builder nr-scout-stage" id="nrBattleRoot"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Toàn cảnh lâu đài đối thủ. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map nr-scout-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapSize}px"><canvas id="nrScoutCanvas" class="nr-scout-canvas" width="800" height="800" aria-label="Lâu đài đối thủ, pet đội trưởng và ${target.attackerSoldiers} lính đang dàn quân"></canvas></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="${online?'nrShowLiveTargets()':'nrHome()'}" aria-label="${online?'Chọn nhà khác':'Về màn Cướp Đêm'}">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM TA</small><strong>${target.attackerDamage}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${target.attackerSoldiers}</strong></div><div class="nr-builder-power defense" id="nrScoutDef" hidden><small>DEF ĐỊCH</small><strong>?</strong></div></div><div class="nr-scout-name-pill">${svg('shield')}<span>${esc(name)}${target.botMode?' · BOT NGẪU NHIÊN':''}</span></div><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" id="nrStartRaid" ${locked?'disabled hidden':''}>${svg('moon')}<span>TIẾN QUÂN</span></button>${locked?lockChip(target.lockedUntil,'NHÀ VỪA BỊ PHÁ · CƯỚP LẠI SAU','scout'):''}</div><div class="nr-scout-secret" id="nrScoutSecret" ${locked?'hidden':''}>🔒 DEF nhà địch là bí mật — tiến quân mới biết!</div><div class="nr-battle-status" id="nrBattleStatus" role="status" hidden></div><div class="nr-pop-host" data-nr-pop-host></div></main>`);
+    r.innerHTML=shell(`<main class="nr-builder nr-scout-stage" id="nrBattleRoot"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Toàn cảnh lâu đài đối thủ. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng."><div class="nr-builder-map nr-scout-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapSize}px"><canvas id="nrScoutCanvas" class="nr-scout-canvas" width="800" height="800" aria-label="Lâu đài đối thủ, pet đội trưởng và ${target.attackerSoldiers} lính đang dàn quân"></canvas></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="nrQuitRaid()" aria-label="${online?'Chọn nhà khác':'Về màn Cướp Đêm'}">${svg('map')}</button><div class="nr-builder-power damage"><small>DAM TA</small><strong>${target.attackerDamage}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${target.attackerSoldiers}</strong></div><div class="nr-builder-power defense" id="nrScoutDef" hidden><small>DEF ĐỊCH</small><strong>?</strong></div></div><div class="nr-scout-name-pill">${svg('shield')}<span>${esc(name)}${target.botMode?' · BOT NGẪU NHIÊN':''}</span></div><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" id="nrStartRaid" ${locked?'disabled hidden':''}>${svg('moon')}<span>TIẾN QUÂN</span></button>${locked?lockChip(target.lockedUntil,'NHÀ VỪA BỊ PHÁ · CƯỚP LẠI SAU','scout'):''}</div><div class="nr-scout-secret" id="nrScoutSecret" ${locked?'hidden':''}>🔒 DEF nhà địch là bí mật — tiến quân mới biết!</div><div class="nr-battle-status" id="nrBattleStatus" role="status" hidden></div><div class="nr-pop-host" data-nr-pop-host></div></main>`);
     setNav(true);
     // ARM THE BUTTON FIRST. Everything below is preview, camera and ticker —
     // decoration. When one of them threw, this line never ran and the child
@@ -134,7 +153,7 @@ var NightRaid = (() => {
   async function startRaid(target,online){
     if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.shielded){if(typeof showToast==='function')showToast('Khiên Đêm bật đội cướp trở lại — lượt vẫn còn nguyên');return showLiveTargets();}if(start.ok&&start.data&&start.data.locked){if(typeof showToast==='function')showToast('Nhà này vừa bị phá — còn '+productionTime(lockLeft(start.data.lockedUntil))+' nữa mới cướp lại được');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}Object.assign(target,start.data.raid);}
     const canvas=document.getElementById('nrScoutCanvas');if(!canvas)return;
-    view='battle';if(previewGame){previewGame.destroy();previewGame=null;}
+    view='battle';raidStage={online:!!online,committed:!!online};if(previewGame){previewGame.destroy();previewGame=null;}
     const army=ownPower();target.attackerDamage=target.attackerDamage||army.damage;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):army.soldiers;target.defense=target.defense||NightRaidRules.combatPower(target.layout,target.dogLevel,target.teammates).defense;
     // Attacking is how the child EARNS the number: the hidden DEF chip fills
     // in, the secret pill and the one button leave, the army marches here.
@@ -168,7 +187,16 @@ var NightRaid = (() => {
   // the stacking order and was burying the one TIEN QUAN button. Hide it the
   // way the speed game and lessons already do, restore it on every way out.
   function setNav(hidden){const nav=document.getElementById('bottomNav');if(nav)nav.style.display=hidden?'none':'';}
-  function quit(){if(!game)return renderHome();if(confirm('Rút lui khỏi phi vụ này? Tiến trình trận sẽ không được tính.')){cleanup();renderHome();}}
+  // The map button on the raid stage. It used to go straight to nrHome() /
+  // nrShowLiveTargets(); this function existed with the right question in it
+  // and NOTHING ever called it.
+  function quit(){
+    if(!confirmLeaveRaid())return;
+    const online=!!(raidStage&&raidStage.online);
+    abandonRaid();cleanup();
+    if(online)return showLiveTargets();
+    renderHome();
+  }
 
   function finishRaid(target,state,commands,online){const stars=state.status==='won'?1+(state.margin>=25?1:0)+(state.margin>=60?1:0):0;let reward=0,loss=0;if(!online){const soldiersUsed=Math.min(NightRaidRules.MAX_SOLDIERS,appState.nightRaidLayout?.soldiers||0);if(soldiersUsed)appState.nightRaidLayout.soldiers=Math.max(0,appState.nightRaidLayout.soldiers-soldiersUsed);if(stars){const capLeft=Math.max(0,120-appState.nightRaidRewardToday);reward=Math.min(capLeft,target.reward||20);appState.nightRaidRewardToday+=reward;appState.coins=Math.max(0,+appState.coins||0)+reward;}else{loss=Math.min(20,Math.max(0,+appState.coins||0));appState.coins=Math.max(0,(+appState.coins||0)-loss);}appState.nightRaidHistory.unshift({kind:'bot',targetId:target.id,won:!!stars,stars,reward,loss,soldiersUsed,at:Date.now()});appState.nightRaidHistory=appState.nightRaidHistory.slice(0,100);save();syncHome();}
     if(online)return finishOnline(target,state,commands);
@@ -180,7 +208,7 @@ var NightRaid = (() => {
   // full-page renderer survives below as the fallback for any path where the
   // battle DOM is already gone.
   function resultActionsHTML(online){return online?`<button class="nr-primary" type="button" onclick="nrShowLiveTargets()">Cướp nhà khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`:`<button class="nr-primary" type="button" onclick="nrScoutBot()">Tìm nhà bot khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`;}
-  function renderResult(target,state,stars,reward,online,loss=0){cleanup();view='result';
+  function renderResult(target,state,stars,reward,online,loss=0){cleanup();settleRaid();view='result';
     const wrap=document.querySelector('[data-nr-pop-host]')||document.querySelector('#nrBattleRoot .nr-canvas-wrap');
     if(!wrap)return renderResultPage(target,state,stars,reward,online,loss);
     const won=state.status==='won';
@@ -194,7 +222,7 @@ var NightRaid = (() => {
     // Let the final frame breathe for a beat before the banner drops.
     setTimeout(()=>{if(view!=='result')return;wrap.appendChild(pop);announce(won?'Phá thành thành công':'Đội hình thất bại');if(won&&typeof createConfetti==='function'){try{createConfetti();}catch(e){}}},650);
   }
-  function renderResultPage(target,state,stars,reward,online,loss=0){setNav(false);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.'}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${state.defense||target.defense}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:`<div class="nr-loss">-${loss} xu phí hành quân</div>`}<div class="nr-result-actions">${resultActionsHTML(online)}</div></main>`);}
+  function renderResultPage(target,state,stars,reward,online,loss=0){settleRaid();setNav(false);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.'}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${state.defense||target.defense}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:`<div class="nr-loss">-${loss} xu phí hành quân</div>`}<div class="nr-result-actions">${resultActionsHTML(online)}</div></main>`);}
 
   function totalPaid(def,tier){let n=0;for(let i=1;i<=tier;i++)n+=def.price*i;return n;}
   function buildAsset(def){return 'img/night-raid/'+(def.asset||def.id+'.webp');}
@@ -847,7 +875,7 @@ var NightRaid = (() => {
 
   function replayReport(index){setNav(false);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':'Phòng thủ đã chặn được toàn bộ đội cướp.'}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.defense||'?'}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport,cleanYardPoop});
+  return Object.freeze({mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,isRaiding,abandonRaid,scoutBot,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,showReports,replayReport,cleanYardPoop});
 })();
 
 function openNightRaid(){NightRaid.open();}
