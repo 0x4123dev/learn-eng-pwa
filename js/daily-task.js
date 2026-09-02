@@ -58,11 +58,13 @@ var DailyTask = (function () {
         if (typeof currentUser === 'undefined' || currentUser !== asked) return st();
         if (!r.ok || !r.data || typeof appState === 'undefined' || !appState) return st();
         const date = r.data.date || '';
-        // The service worker replays cached GET /api/ responses when offline,
-        // so a stale reply can carry justRewarded:true again. Celebrate at most
-        // once per date and remember it in the profile.
+        // The reward is usually paid inside the POST /api/activity that
+        // finished the last task, so by the time this GET runs justRewarded is
+        // already false and only rewardedToday is true. Celebrate the FIRST
+        // time this profile sees today's reward (either flag), at most once per
+        // date — the service worker can replay a cached reply when offline.
         const alreadyCelebrated = prev && prev.celebratedDate === date;
-        const celebrateNow = !!r.data.justRewarded && !alreadyCelebrated;
+        const celebrateNow = !!(r.data.justRewarded || r.data.rewardedToday) && !!date && !alreadyCelebrated;
         const next = {
           fetchedAt: Date.now(), date,
           tasks: Array.isArray(r.data.tasks) ? r.data.tasks : [],

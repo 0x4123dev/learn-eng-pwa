@@ -168,6 +168,16 @@ suite('daily task client: refresh', () => {
     await DailyTask.refresh('sync');
     assert.equal(calls.filter(c => c[0] === 'toast').length, 2, 'a new date celebrates again');
   });
+  test('a reward paid inside the activity POST (GET shows rewardedToday only) still celebrates once', async () => {
+    const reply = { date: TODAY, tasks: [TASKS[1]], allDone: true, rewardedToday: true, justRewarded: false, shields: { count: 1, activeUntil: 0 } };
+    const { DailyTask, calls, sandbox } = load({ appState: {}, api: async () => ({ ok: true, data: reply }) });
+    await DailyTask.refresh('sync');
+    assert.equal(calls.filter(c => c[0] === 'toast').length, 1, 'first sight of today\'s reward celebrates');
+    assert.equal(calls.filter(c => c[0] === 'refreshFlags').length, 1, 'and claims the coins');
+    assert.equal(sandbox.appState.dailyTask.celebratedDate, TODAY);
+    await DailyTask.refresh('sync');
+    assert.equal(calls.filter(c => c[0] === 'toast').length, 1, 'later polls stay quiet');
+  });
   test('a fresh cache is reused on a home render but not on a sync', async () => {
     let n = 0;
     const api = async () => { n++; return { ok: true, data: { date: TODAY, tasks: TASKS, allDone: false, rewardedToday: false, justRewarded: false, shields: { count: 0, activeUntil: 0 } } }; };
