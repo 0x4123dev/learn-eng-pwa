@@ -712,16 +712,45 @@ function _mfqHaiTamGiacVuong(f) {
 }
 
 // Tam giác cân: v = [đỉnh, đáy trái, đáy phải].
+// The shape is DERIVED from the angle the question gives, not fixed. It used
+// to be a single hard-coded triangle with a 72.6° apex, so a question stating
+// a 36° apex was drawn with that apex as the WIDEST corner — the picture said
+// the opposite of the answer. Six of the eight exam items were inverted that
+// way. Reading one number off the labels costs nothing and makes the drawing
+// agree with the text.
 function _mfqTamGiacCan(f) {
   const v = f.v || ['A', 'B', 'C'];
   const angles = f.angles || {};
-  return _mfAng(45, 100, 20, 0, 53.7, angles[v[1]], 32)
-    + _mfAng(155, 100, 20, 126.3, 180, angles[v[2]], 32)
-    + _mfAng(100, 25, 18, 233.7, 306.3, angles[v[0]], 32)
-    + _mfPoly([[100, 25], [45, 100], [155, 100]], 'mf-l mf-tri')
+  const num = (x) => {
+    const m = /(\d+(?:[.,]\d+)?)/.exec(String(x == null ? '' : x));
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
+  };
+  // Either the apex or a base angle pins the whole triangle.
+  const apexGiven = num(angles[v[0]]);
+  const baseGiven = num(angles[v[1]]) != null ? num(angles[v[1]]) : num(angles[v[2]]);
+  let apex = apexGiven != null ? apexGiven
+    : (baseGiven != null ? 180 - 2 * baseGiven : 72.6);
+  if (!(apex > 10 && apex < 160)) apex = 72.6;      // junk label: keep the old shape
+  const beta = (180 - apex) / 2;                    // the two base angles
+  const rad = Math.PI / 180;
+  // Fit inside the 200x120 canvas: cap the half-base at 58 and the height at 78.
+  const t = Math.tan(apex / 2 * rad);
+  const w = Math.min(58, 78 * t);
+  const h = w / t;
+  const ax = 100, ay = 100 - h, lx = 100 - w, rx = 100 + w;
+  const r = Math.max(12, Math.min(20, w * 0.36));
+  // A sharp apex makes a tall, narrow triangle, and the two base labels — each
+  // sitting on its wedge bisector — close in on each other until they overlap.
+  // Pull them in far enough to keep a readable gap at the centre.
+  const halfGap = Math.cos(beta / 2 * rad);
+  const baseLabelR = Math.max(11, Math.min(r + 12, halfGap > 0.05 ? (w - 13) / halfGap : r + 12));
+  return _mfAng(lx, 100, r, 0, beta, angles[v[1]], baseLabelR)
+    + _mfAng(rx, 100, r, 180 - beta, 180, angles[v[2]], baseLabelR)
+    + _mfAng(ax, ay, Math.max(10, r - 2), 180 + beta, 360 - beta, angles[v[0]], r + 14)
+    + _mfPoly([[ax, ay], [lx, 100], [rx, 100]], 'mf-l mf-tri')
     + (f.ticks === false ? ''
-       : _mfTicks(100, 25, 45, 100, 1, 'b') + _mfTicks(100, 25, 155, 100, 1, 'b'))
-    + _mfT(100, 16, v[0]) + _mfT(34, 104, v[1], 'end') + _mfT(166, 104, v[2], 'start');
+       : _mfTicks(ax, ay, lx, 100, 1, 'b') + _mfTicks(ax, ay, rx, 100, 1, 'b'))
+    + _mfT(ax, ay - 9, v[0]) + _mfT(lx - 11, 104, v[1], 'end') + _mfT(rx + 11, 104, v[2], 'start');
 }
 
 function _mfqTamGiacDeu(f) {
