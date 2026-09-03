@@ -10,6 +10,8 @@
 // Uses the WebSocket Hibernation API: an idle room costs nothing while
 // keeping both connections open.
 
+import GhostOfferingSchedule from '../../js/ghost-offering-schedule.js';
+
 const enc = new TextEncoder();
 
 // ---- token verification (mirrors functions/api/_lib.js) ----
@@ -88,17 +90,17 @@ export default {
       if (botParam !== null && (!profile.allow_bot || !Number.isInteger(botId) || botId < 0 || botId > 1)) {
         return new Response('Invalid QA bot', { status: 403, headers: CORS });
       }
-      const roomDate = '2026-09-10';
-      const eventOpensAt = Date.UTC(2026, 8, 10, 15, 0, 0); // 22:00 GMT+7
-      const eventClosesAt = eventOpensAt + 2 * 60 * 60 * 1000;
-      const now = Date.now();
-      if (!profile.allow_bot && (now < eventOpensAt || now >= eventClosesAt)) {
+      // Window and room names come from js/ghost-offering-schedule.js, the same
+      // file the Pages API and the child's screen read. This Worker ships on a
+      // separate `wrangler deploy`, so a local copy of the date here would let
+      // one half of the event move without the other.
+      if (!profile.allow_bot && !GhostOfferingSchedule.eventWindow().open) {
         return new Response('Event is locked', { status: 403, headers: CORS });
       }
-      const humanTestRoom = 'qa-human-' + roomDate;
+      const humanTestRoom = GhostOfferingSchedule.humanTestRoomId();
       const isHumanTest = offering[1] === humanTestRoom;
       if (isHumanTest && (!profile.allow_bot || botParam !== null)) return new Response('Human QA only', { status: 403, headers: CORS });
-      const expectedRoom = profile.allow_bot ? (isHumanTest ? humanTestRoom : 'qa-' + roomDate) : roomDate;
+      const expectedRoom = GhostOfferingSchedule.roomIdFor({ preview: !!profile.allow_bot, humanTest: isHumanTest });
       if (offering[1] !== expectedRoom) return new Response('Wrong event room', { status: 409, headers: CORS });
       const id = env.GHOST_OFFERING_ROOM.idFromName('offering-' + expectedRoom);
       const fwd = new URL(request.url);

@@ -30,6 +30,8 @@ function transform(src, file) {
     (_, kw, name) => { exported.push(name); return `${kw} ${name}`; });
   out = out.replace(/^export\s+(const|let|var)\s+([A-Za-z_$][\w$]*)/gm,
     (_, kw, name) => { exported.push(name); return `${kw} ${name}`; });
+  // export default { … };  (Cloudflare Worker entry shape)
+  out = out.replace(/^export\s+default\s+/m, '__exportsObj.default = ');
   if (/^export\s/m.test(out)) {
     throw new Error('unsupported export shape left in ' + file);
   }

@@ -193,11 +193,16 @@ suite('ghost offering realtime: two-user concurrency', () => {
   test('clients cannot split the crowd by inventing a different room id', () => {
     assert.truthy(workerSrc.includes("if (offering[1] !== expectedRoom) return new Response('Wrong event room'"));
     assert.truthy(workerSrc.includes("idFromName('offering-' + expectedRoom)"));
-    assert.truthy(apiSrc.includes('previewRoomId(window.eventDate, humanTest)'));
-    assert.truthy(workerSrc.includes("const roomDate = '2026-09-10'"), 'the relay uses the same final room as the API');
-    assert.truthy(workerSrc.includes("const humanTestRoom = 'qa-human-' + roomDate"));
-    assert.truthy(workerSrc.includes('now < eventOpensAt || now >= eventClosesAt'), 'public sockets are accepted only during the final two-hour window');
-    assert.truthy(workerSrc.includes("profile.allow_bot ? (isHumanTest ? humanTestRoom : 'qa-' + roomDate) : roomDate"), 'both QA modes stay outside the public table');
+    // Relay và API cùng đọc js/ghost-offering-schedule.js, nên không thể lệch
+    // phòng nữa — trước đây mỗi bên giữ một bản sao ngày và deploy riêng nhau.
+    const schedule = require('../js/ghost-offering-schedule.js');
+    assert.truthy(apiSrc.includes('GhostOfferingSchedule.roomIdFor({ preview, humanTest })'));
+    assert.truthy(workerSrc.includes("import GhostOfferingSchedule from '../../js/ghost-offering-schedule.js'"),
+      'the relay uses the same final room as the API');
+    assert.truthy(workerSrc.includes('GhostOfferingSchedule.humanTestRoomId()'));
+    assert.truthy(workerSrc.includes('!GhostOfferingSchedule.eventWindow().open'), 'public sockets are accepted only during the final two-hour window');
+    assert.truthy(workerSrc.includes("GhostOfferingSchedule.roomIdFor({ preview: !!profile.allow_bot, humanTest: isHumanTest })"), 'both QA modes stay outside the public table');
+    assert.equal(new Set([schedule.publicRoomId(), schedule.qaRoomId(), schedule.humanTestRoomId()]).size, 3);
     assert.truthy(workerSrc.includes("if (isHumanTest && (!profile.allow_bot || botParam !== null))"), 'bot-off users and simulated bot sockets cannot enter the human QA room');
   });
 

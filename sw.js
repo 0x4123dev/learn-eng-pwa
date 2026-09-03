@@ -86,6 +86,7 @@ const ASSETS = [
   '/js/night-raid-phaser.js',
   '/js/phaser.min.js',
   '/js/night-raid.js',
+  '/js/ghost-offering-schedule.js',
   '/js/ghost-offering-link.js',
   '/js/ghost-offering-event.js',
   '/js/daily-task-catalog.js',

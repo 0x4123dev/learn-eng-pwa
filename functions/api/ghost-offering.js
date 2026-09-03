@@ -1,12 +1,9 @@
 import { requireAuth, json, err } from './_lib.js';
+import GhostOfferingSchedule from '../../js/ghost-offering-schedule.js';
 
-const HOUR = 60 * 60 * 1000;
-// The closing-night ceremony is a one-off event: 22:00 on 10 Sep 2026 in
-// Vietnam, which is 15:00 UTC. Keep this explicit instead of deriving a daily
-// room so clients, claims and the websocket relay cannot disagree on the day.
-const FINAL_EVENT_DATE = '2026-09-10';
-const FINAL_EVENT_OPENS_AT = Date.UTC(2026, 8, 10, 15, 0, 0);
-const FINAL_EVENT_CLOSES_AT = FINAL_EVENT_OPENS_AT + 2 * HOUR;
+// The date, the window and the room names all come from the shared schedule so
+// this API, the child's screen and the websocket Worker cannot disagree on the
+// day. Do not reintroduce a local copy — see js/ghost-offering-schedule.js.
 const ITEMS = Object.freeze({
   pig: 200,
   chicken1: 50, chicken2: 50, chicken3: 50, chicken4: 50, chicken5: 50,
@@ -15,15 +12,12 @@ const ITEMS = Object.freeze({
 });
 
 function eventWindow(now = Date.now()) {
-  const open = now >= FINAL_EVENT_OPENS_AT && now < FINAL_EVENT_CLOSES_AT;
-  return { eventDate: FINAL_EVENT_DATE, opensAt: FINAL_EVENT_OPENS_AT,
-    closesAt: FINAL_EVENT_CLOSES_AT, open, ended: now >= FINAL_EVENT_CLOSES_AT,
-    nextOpensAt: FINAL_EVENT_OPENS_AT };
+  return GhostOfferingSchedule.eventWindow(now);
 }
 
 // allow_bot accounts remain QA testers and can play at any hour. Everyone else
 // may inspect the complete scene beforehand, but the server only accepts a
-// public claim during the final 10 Sep 2026 22:00–24:00 GMT+7 window.
+// public claim inside the window GhostOfferingSchedule defines.
 function botPreviewWindow(now = Date.now()) {
   const window = eventWindow(now);
   return { ...window, realOpen: window.open, open: true, preview: true };
@@ -35,9 +29,6 @@ function newPreviewSession() {
 
 function previewClaimKey(eventDate, sessionId) {
   return `${eventDate}#${sessionId}`;
-}
-function previewRoomId(eventDate, humanTest = false) {
-  return humanTest ? `qa-human-${eventDate}` : `qa-${eventDate}`;
 }
 
 async function previewUser(env, uid) {
@@ -75,7 +66,7 @@ export async function onRequestGet({ request, env }) {
   const sessionId = newPreviewSession();
   const claimKey = preview ? previewClaimKey(window.eventDate, sessionId) : window.eventDate;
   return json({ ok: true, serverNow: Date.now(), ...window, sessionId,
-    humanTest, roomId: preview ? previewRoomId(window.eventDate, humanTest) : window.eventDate,
+    humanTest, roomId: GhostOfferingSchedule.roomIdFor({ preview, humanTest }),
     claimedIds: await claimedIds(env, auth.uid, claimKey, !preview) });
 }
 
@@ -121,6 +112,6 @@ export async function onRequestPost({ request, env }) {
     .bind(auth.uid).first();
   return json({ ok: true, awarded, reward: awarded ? reward : 0, itemId, sessionId,
     coins: wallet ? Math.max(0, Number(wallet.lootable_coins) || 0) : null,
-    humanTest, roomId: preview ? previewRoomId(window.eventDate, humanTest) : window.eventDate,
+    humanTest, roomId: GhostOfferingSchedule.roomIdFor({ preview, humanTest }),
     claimedIds: await claimedIds(env, auth.uid, claimKey, !preview), ...window });
 }

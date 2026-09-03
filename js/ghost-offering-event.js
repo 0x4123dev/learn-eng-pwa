@@ -2,7 +2,11 @@
 // deduplicated by /api/ghost-offering; hook collisions are presentation only.
 (function (global) {
   'use strict';
-  const HOUR=3600000,FINAL_EVENT_DATE='2026-09-10',FINAL_EVENT_OPENS_AT=Date.UTC(2026,8,10,15),FINAL_EVENT_CLOSES_AT=FINAL_EVENT_OPENS_AT+2*HOUR,SWING_LIMIT=58,THROW_SPEED=260,EMPTY_RETRACT_SPEED=130,BOT_NAMES=['Milo','Luna'];
+  // Ngày giờ sự kiện lấy từ js/ghost-offering-schedule.js — nguồn duy nhất,
+  // dùng chung với functions/api/ghost-offering.js và battle-worker.
+  const SCHEDULE=(typeof GhostOfferingSchedule!=='undefined')?GhostOfferingSchedule:require('./ghost-offering-schedule.js');
+  const FINAL_EVENT_DATE=SCHEDULE.EVENT_DATE,FINAL_EVENT_OPENS_AT=SCHEDULE.OPENS_AT,FINAL_EVENT_CLOSES_AT=SCHEDULE.CLOSES_AT;
+  const SWING_LIMIT=58,THROW_SPEED=260,EMPTY_RETRACT_SPEED=130,BOT_NAMES=['Milo','Luna'];
   const BREAKS_REQUIRED={pig:2,chicken:1,fruit:0};
   const PULL_SPEED={pig:32.5,chicken:47.5,fruit:130};
   const ITEMS=[

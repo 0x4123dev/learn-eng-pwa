@@ -19,7 +19,13 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(next.ended, 'the final night does not silently become a daily event');
     assert.equal(next.eventDate, '2026-09-10');
     assert.truthy(ui.includes('Mở 10/09/2026 lúc 22:00'));
-    assert.truthy(api.includes("FINAL_EVENT_DATE = '2026-09-10'"));
+    // Ngày giờ nay chỉ có MỘT nguồn; API đọc đúng nguồn ấy chứ không giữ bản sao.
+    // tests/ghost-offering-schedule.test.js chốt chính con số của nguồn đó.
+    const schedule = require('../js/ghost-offering-schedule.js');
+    assert.equal(open.opensAt, schedule.OPENS_AT, 'màn hình của bé và lịch chung phải trùng');
+    assert.equal(open.eventDate, schedule.EVENT_DATE);
+    assert.truthy(api.includes("from '../../js/ghost-offering-schedule.js'"),
+      'API phải đọc lịch chung, không được chép lại ngày');
   });
   test('every Arena account can inspect the event while bot-on retains all-day QA play', () => {
     assert.truthy(arena.includes("typeof GhostOfferingEvent !== 'undefined' ? GhostOfferingEvent.cardHTML()"));
@@ -185,10 +191,18 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
   });
   test('the 22:00 public room contains real bot-off users only', () => {
     const worker=read('battle-worker/src/index.js');
-    assert.truthy(api.includes("roomId: preview ? previewRoomId(window.eventDate, humanTest) : window.eventDate"),
+    const schedule = require('../js/ghost-offering-schedule.js');
+    assert.equal(schedule.roomIdFor({ preview: false }), schedule.EVENT_DATE,
       'all public users join the same date room');
-    assert.truthy(worker.includes("const expectedRoom = profile.allow_bot ? (isHumanTest ? humanTestRoom : 'qa-' + roomDate) : roomDate"),
+    assert.truthy(api.includes('GhostOfferingSchedule.roomIdFor({ preview, humanTest })'),
+      'the API derives the room instead of concatenating its own');
+    assert.truthy(worker.includes("GhostOfferingSchedule.roomIdFor({ preview: !!profile.allow_bot, humanTest: isHumanTest })"),
       'bot-off sockets cannot enter either QA bot room');
+    for (const [preview, humanTest, want] of [[false, false, schedule.publicRoomId()],
+                                              [true, false, schedule.qaRoomId()],
+                                              [true, true, schedule.humanTestRoomId()]]) {
+      assert.equal(schedule.roomIdFor({ preview, humanTest }), want);
+    }
     assert.truthy(ui.includes('if(state.preview&&!state.humanTest)startQaBots(t)'),
       'simulated bot sockets are created only in bot-on preview');
     assert.truthy(ui.includes('function peopleOnlyRoom(){return !!state&&(!state.preview||state.humanTest);}'));
