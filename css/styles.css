@@ -9173,8 +9173,8 @@
            drawn hook below stretches on its own. */
         .math-root:has(sup) .math-root-symbol { font-size: 1.35em; }
 
-        /* Where masks work, the hook is DRAWN rather than typed, and stretched
-           to the radicand's own box. That buys two things the glyph cannot:
+        /* Where masks work, the hook is DRAWN rather than typed, and built to
+           the radicand's own height. That buys two things the glyph cannot:
            it is identical on every device instead of depending on which serif
            the phone happens to have, and it grows with its content — the √ of
            √(4/25) reaches down past the denominator, where a glyph left "25"
@@ -9204,12 +9204,26 @@
                 text-indent: -999em;
                 overflow: hidden;
                 background-color: currentColor;
-                -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0,52%20L12,43%20L43,88%20L86,0%20L100,0%20L48,100%20L36,100%20L8,59%20Z'%20fill='%23000'/%3E%3C/svg%3E");
-                mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0,52%20L12,43%20L43,88%20L86,0%20L100,0%20L48,100%20L36,100%20L8,59%20Z'%20fill='%23000'/%3E%3C/svg%3E");
-                -webkit-mask-repeat: no-repeat;
-                mask-repeat: no-repeat;
-                -webkit-mask-size: 100% 100%;
-                mask-size: 100% 100%;
+                /* TWO mask layers, drawn the way TeX builds a tall radical:
+                   a HOOK of fixed size pinned to the bottom, and a VERTICAL
+                   extender running from the hook's shoulder up to the bar.
+                   The first version stretched one SVG to the whole box with
+                   preserveAspectRatio="none", so the stroke thinned as the
+                   radical grew — √(4/25) at 2.8em had a visibly lighter hook
+                   than √9. A vertical line keeps its width at any length, and
+                   the hook never scales, so the stroke is the same weight at
+                   every height. The hook's rising stroke turns vertical for its
+                   last .26em (x 48–58 of a 58-wide box) and the extender is the
+                   same .10em wide, overlapping that segment, so there is no
+                   seam. Layers union by default; nothing else to declare. */
+                -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2058%20100'%3E%3Cpath%20d='M0,50%20L11,42%20L31,80%20L48,26%20L48,0%20L58,0%20L58,30%20L38,100%20L29,100%20L7,58%20Z'%20fill='%23000'/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+                mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2058%20100'%3E%3Cpath%20d='M0,50%20L11,42%20L31,80%20L48,26%20L48,0%20L58,0%20L58,30%20L38,100%20L29,100%20L7,58%20Z'%20fill='%23000'/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+                -webkit-mask-repeat: no-repeat, no-repeat;
+                mask-repeat: no-repeat, no-repeat;
+                -webkit-mask-size: .58em 1em, .10em calc(100% - .74em);
+                mask-size: .58em 1em, .10em calc(100% - .74em);
+                -webkit-mask-position: left bottom, right top;
+                mask-position: left bottom, right top;
             }
             /* The fallback sizes the hook by font-size; the drawn one is sized by
                its box, so those two must be neutralised — and in their own rule.
