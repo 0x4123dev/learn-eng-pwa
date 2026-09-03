@@ -9037,13 +9037,25 @@
         /* The bar over a radicand — the other half of the căn bậc hai sign.
            Drawn as a border so it stretches to exactly what is under the root,
            which is also what shows the reader where the radicand ends. */
+        /* A fraction is anchored by its BAR, never by a fixed offset.
+           This used to say `vertical-align: -.55em`, and because an
+           inline-grid takes its baseline from the first row, that constant
+           anchored the NUMERATOR instead — leaving the bar 0.913em BELOW the
+           text baseline when it belongs ~0.25em ABOVE it (the maths axis, i.e.
+           the ink centre of "="). Every fraction hung a full line low, and the
+           taller the content the worse it got (a nested fraction was 2.77em
+           out). `middle` aligns the box's midpoint with baseline + half the
+           PARENT's x-height, so it re-derives itself in every context and font
+           size instead of being tuned per screen; `1fr 1fr` forces the two
+           halves to equal height so that midpoint always IS the bar, whatever
+           the numerator holds — parentheses, exponents, a nested fraction. */
         .math-frac {
             display: inline-grid;
             position: relative;
-            grid-template-rows: auto auto;
+            grid-template-rows: 1fr 1fr;
             min-width: 1.35em;
             margin: 0 .12em;
-            vertical-align: -.55em;
+            vertical-align: middle;
             text-align: center;
             line-height: 1.05;
             white-space: nowrap;
@@ -9082,6 +9094,13 @@
             vertical-align: -.24em;
             white-space: nowrap;
         }
+        /* A plain √36 is placed correctly by the -.24em above (its digits sit
+           0.156em off the text baseline) and must stay there — giving every
+           root `middle` visibly lifts the radicand off the line. It is only a
+           root WRAPPING a fraction that grows tall enough for the constant to
+           fail the same way it failed .math-frac: √(1/4) hung 0.656em low.
+           Align just that case on the maths axis, like the fraction inside. */
+        .math-root:has(.math-frac) { vertical-align: middle; }
         .math-root-symbol {
             display: inline-flex;
             align-items: flex-start;
