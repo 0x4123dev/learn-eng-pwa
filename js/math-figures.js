@@ -916,6 +916,13 @@ function _mfqLineChart(f) {
       + _mfT(p[0], Math.max(10, p[1] - 7), String(values[i]), 'middle', 'mf-cap mf-chart-value')
       + _mfT(p[0], 108, labels[i], 'middle', 'mf-cap');
   });
+  // Tên hai trục. Không có nó thì "5, 7, 9, 11" chỉ là bốn con số: bé không
+  // biết đó là phút hay là số bạn, mà cả bài toán nằm ở chỗ phân biệt hai
+  // thứ đó. Đề nào đã nói rõ trong câu chữ thì bỏ trống cũng được.
+  if (f.truc) {
+    if (f.truc[0]) out += _mfT(100, 118, String(f.truc[0]), 'middle', 'mf-cap');
+    if (f.truc[1]) out += _mfT(6, 8, String(f.truc[1]), 'start', 'mf-cap');
+  }
   return out;
 }
 
@@ -939,6 +946,839 @@ function _mfqPieChart(f) {
   return out;
 }
 
+// ---- bút vẽ thêm cho Chương IX và Chương X -----------------------------
+
+// Ô vuông góc vẽ theo HAI hướng cho trước thay vì theo trục màn hình. Trong
+// một hình khối, góc vuông của mặt đáy đã bị chiếu xiên đi rồi; dấu vuông
+// cũng phải xiên theo đúng hai cạnh nó đang nói tới, nếu không thì nó đang
+// nói về một góc khác với góc thật.
+function _mfCorner(v, p1, p2, r) {
+  const u = (p) => {
+    const dx = p[0] - v[0], dy = p[1] - v[1], L = Math.hypot(dx, dy) || 1;
+    return [dx / L * r, dy / L * r];
+  };
+  const a = u(p1), b = u(p2);
+  return `<polyline class="mf-sq" points="${_mfN(v[0] + a[0])},${_mfN(v[1] + a[1])} `
+    + `${_mfN(v[0] + a[0] + b[0])},${_mfN(v[1] + a[1] + b[1])} `
+    + `${_mfN(v[0] + b[0])},${_mfN(v[1] + b[1])}"/>`;
+}
+
+// Góc của tia từ `from` tới `to`, theo đúng quy ước của file (0° sang phải,
+// tăng ngược chiều kim đồng hồ trên màn hình).
+function _mfDir(from, to) {
+  return (Math.atan2(-(to[1] - from[1]), to[0] - from[0]) * 180 / Math.PI + 360) % 360;
+}
+
+// Cắt / đệm một danh sách tên đỉnh về đúng n ô, để tên nào cũng ở đúng ô của
+// nó dù đề viết thiếu.
+function _mfNames(a, n) {
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(a[i] == null ? '' : String(a[i]));
+  return out;
+}
+
+// Khoảng cách từ một điểm tới ĐOẠN thẳng AB — dùng để tìm chỗ đặt chữ sao cho
+// không đè lên nét vẽ nào.
+function _mfSegD(x, y, A, B) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], L2 = dx * dx + dy * dy;
+  const t = L2 ? Math.min(1, Math.max(0, ((x - A[0]) * dx + (y - A[1]) * dy) / L2)) : 0;
+  return Math.hypot(x - (A[0] + dx * t), y - (A[1] + dy * t));
+}
+
+// ---- Chương IX: đường xiên và các đường đồng quy ------------------------
+
+// §32 — đường vuông góc và đường xiên kẻ từ một điểm đến một đường thẳng.
+// Cả bốn phương án của loại câu này chỉ là hai chữ cái ("AH", "AB", "AC"…),
+// nên KHÔNG có hình thì câu hỏi không còn nội dung nào để trả lời. Hình dựng
+// từ đúng danh sách chân điểm đề cho, xếp trái → phải theo thứ tự đề đọc, và
+// A đặt THẲNG TRÊN chân đường vuông góc: nét vuông góc phải vuông thật chứ
+// không phải vẽ cho giống, vì cả bài toán nằm ở chỗ đoạn nào vuông góc.
+//   { "t":"duong-xien", "A":"A", "d":"d", "feet":["D","H","B","C"], "perp":"H" }
+function _mfqDuongXien(f) {
+  const feet = (Array.isArray(f.feet) && f.feet.length ? f.feet : ['H', 'B', 'C'])
+    .slice(0, 6).map(String);
+  const n = feet.length;
+  const y = 88, top = 26, x0 = 38, x1 = 162;
+  const xs = feet.map((_, i) => (n === 1 ? 100 : x0 + (x1 - x0) * i / (n - 1)));
+  const iH = f.perp == null ? -1 : feet.indexOf(String(f.perp));
+  // Không có chân vuông góc thì A phải lệch khỏi mọi chân điểm: đứng thẳng
+  // trên một chân là đang khẳng định một điều đề không cho.
+  const ax = iH >= 0 ? xs[iH] : (x0 + x1) / 2 + 13;
+  let out = _mfLine(12, y, 188, y) + _mfT(193, y - 4, f.d || 'd', 'end');
+  xs.forEach(x => { out += _mfLine(ax, top, x, y); });
+  if (iH >= 0) {
+    // Ô vuông mở về phía còn chỗ: nếu H là chân ngoài cùng bên phải thì mở
+    // sang trái, không thì mở sang phải — chỗ nào cũng có một đường xiên đi
+    // qua, chọn bên xa đường xiên gần nhất.
+    out += _mfRight(ax, y, 11, iH === n - 1 ? 90 : 0, 'b');
+  }
+  if (f.mid) {                       // điểm nằm giữa A và chân đường vuông góc
+    const my = top + (y - top) * 0.55;
+    out += _mfDot(ax, my) + _mfT(ax - 7, my + 4, String(f.mid), 'end');
+  }
+  out += _mfDot(ax, top) + _mfT(ax, top - 9, f.A || 'A');
+  xs.forEach((x, i) => { out += _mfDot(x, y) + _mfT(x, y + 15, feet[i]); });
+  return out;
+}
+
+// §34 · §35 — ba đường trung tuyến / phân giác / đường cao và điểm đồng quy.
+// Một khuôn cho cả bốn loại đường, vì đề thi vẽ CÙNG một cái hình cho cả bốn
+// và chỉ đổi dấu hiệu: "đường nào là trung tuyến của ΔABC?" và "đường nào là
+// đường cao?" dùng chung một tam giác có ba đoạn kẻ từ ba đỉnh.
+//
+// Chân đường tính THẬT từ loại đường: trung tuyến hạ đúng trung điểm, đường
+// cao hạ đúng chân vuông góc, phân giác chia cạnh đối theo tỉ số hai cạnh kề.
+// Nếu đặt chân ở đâu cũng được thì hình lại nói ngược với đáp án.
+//
+// `dau` (vẽ dấu hiệu: vạch trung điểm, ô vuông góc, cung góc bằng nhau) mặc
+// định TẮT. Câu "đoạn nào là đường trung tuyến?" mà vẽ sẵn hai vạch trung
+// điểm là đã khoanh hộ đáp án; ngược lại câu "biết AM là trung tuyến, tính
+// AG" thì dấu ấy là dữ kiện đề cho, phải vẽ. Người soạn câu quyết định.
+//   { "t":"dong-quy", "v":["A","B","C"], "can":true, "giao":"I",
+//     "ke":[{"tu":"A","chan":"H","loai":"duong-cao","dau":true},
+//           {"tu":"B","chan":"E","loai":"duong-cao"}] }
+// Tam giác chọn góc A ≈ 60°–66° chứ không nhọn hơn: chân đường cao hạ từ B
+// xuống AC nằm ở khoảng 0,4 cạnh, đủ xa đỉnh A để nhãn chân đường và nhãn
+// đỉnh không dồn vào nhau. Tam giác cao vổng lên thì hai chân đường cao trèo
+// gần hết lên đỉnh và ba chữ chồng thành một vệt.
+const _MF_DQ = [[82, 28], [54, 104], [146, 104]];       // lệch hẳn, không cân
+const _MF_DQ_CAN = [[100, 28], [51, 104], [149, 104]];  // cân tại đỉnh v[0]
+
+// Nhãn của khuôn này tính từ tâm tam giác nên có thể trôi ra ngoài khung;
+// kẹp lại để chữ không bị mép SVG cắt mất nửa trên.
+function _mfDqT(x, y, s, an) {
+  return _mfT(Math.min(190, Math.max(10, x)), Math.min(114, Math.max(11, y)), s, an);
+}
+
+function _mfqDongQuy(f) {
+  const v = (f.v || ['A', 'B', 'C']).slice(0, 3).map(String);
+  const P = f.can ? _MF_DQ_CAN : _MF_DQ;
+  const cx = (P[0][0] + P[1][0] + P[2][0]) / 3, cy = (P[0][1] + P[1][1] + P[2][1]) / 3;
+  const OPP = [[1, 2], [2, 0], [0, 1]];
+  const segs = [];
+  (Array.isArray(f.ke) ? f.ke : []).slice(0, 3).forEach(k => {
+    if (!k || typeof k !== 'object') return;
+    const i = v.indexOf(String(k.tu));
+    if (i < 0) return;
+    const Q = P[OPP[i][0]], R = P[OPP[i][1]], V = P[i];
+    const dx = R[0] - Q[0], dy = R[1] - Q[1], L2 = dx * dx + dy * dy || 1;
+    const loai = k.loai || 'thuong';
+    // Ba đoạn "thường" phải trải đều trên ba cạnh (ba chân dồn về một góc thì
+    // ba cái nhãn dính vào nhau) và phải KHÔNG đồng quy — vẽ ba đoạn cắt nhau
+    // tại một điểm là đang cho không cái điều mà câu hỏi bắt nhận ra. Bộ số
+    // này cố ý phá định lí Ceva: 0,45/0,55 × 0,45/0,55 × 0,35/0,65 ≈ 0,36,
+    // xa 1 đủ để ba đoạn hở ra một tam giác nhỏ nhìn thấy được.
+    let t = [0.45, 0.45, 0.35][i];
+    if (loai === 'trung-tuyen' || loai === 'trung-truc') t = 0.5;
+    else if (loai === 'duong-cao') t = ((V[0] - Q[0]) * dx + (V[1] - Q[1]) * dy) / L2;
+    else if (loai === 'phan-giac') {
+      const a = Math.hypot(V[0] - Q[0], V[1] - Q[1]), b = Math.hypot(V[0] - R[0], V[1] - R[1]);
+      t = a / (a + b || 1);
+    }
+    if (k.t != null && Number.isFinite(+k.t)) t = +k.t;   // đề chỉ đích chỗ nào thì theo đề
+    t = Math.min(0.9, Math.max(0.1, t));
+    segs.push({ k, V, Q, R, loai, F: [Q[0] + dx * t, Q[1] + dy * t] });
+  });
+
+  let out = '';
+  segs.forEach(s => {
+    const dau = !!s.k.dau;
+    if (dau && (s.loai === 'trung-tuyen' || s.loai === 'trung-truc')) {
+      out += _mfTicks(s.Q[0], s.Q[1], s.F[0], s.F[1], 2, 'c')
+        + _mfTicks(s.F[0], s.F[1], s.R[0], s.R[1], 2, 'c');
+    }
+    if (dau && (s.loai === 'duong-cao' || s.loai === 'trung-truc')) {
+      // Chỉ đóng dấu vuông khi nó vuông THẬT: trong tam giác thường, trung
+      // tuyến không vuông góc với đáy, đóng dấu vào là vẽ ra một điều sai.
+      const aS = _mfDir(s.F, s.R), aC = _mfDir(s.F, s.V);
+      const d = ((aC - aS) % 360 + 360) % 360;
+      if (Math.abs(d - 90) < 4) out += _mfRight(s.F[0], s.F[1], 10, aS, 'b');
+      else if (Math.abs(d - 270) < 4) out += _mfRight(s.F[0], s.F[1], 10, aC, 'b');
+    }
+    if (dau && s.loai === 'phan-giac') {
+      // Cung phải nằm TRONG góc: lấy min/max của hai số đo là sai khi góc vắt
+      // qua mốc 0° — khi đó máy tô đúng phần góc ngoài. Chọn chiều quay nào
+      // cho ra cung nhỏ hơn 180° mới là góc trong của tam giác.
+      let lo = _mfDir(s.V, s.Q), hi = _mfDir(s.V, s.R);
+      if (((hi - lo) % 360 + 360) % 360 > 180) { const w = lo; lo = hi; hi = w; }
+      hi = lo + ((hi - lo) % 360 + 360) % 360;
+      const mid = (lo + hi) / 2;
+      out += _mfWedge(s.V[0], s.V[1], 15, lo, mid, 'c') + _mfWedge(s.V[0], s.V[1], 15, mid, hi, 'c')
+        + _mfAtick(s.V[0], s.V[1], 15, (lo + mid) / 2, 'c')
+        + _mfAtick(s.V[0], s.V[1], 15, (mid + hi) / 2, 'c');
+    }
+  });
+  if (f.can) {                        // "cân tại A" là dữ kiện, không phải đáp án
+    out += _mfTicks(P[0][0], P[0][1], P[1][0], P[1][1], 1, 'b')
+      + _mfTicks(P[0][0], P[0][1], P[2][0], P[2][1], 1, 'b');
+  }
+  out += _mfPoly(P, 'mf-l mf-tri');
+  segs.forEach(s => { out += _mfLine(s.V[0], s.V[1], s.F[0], s.F[1], 'mf-l mf-hi'); });
+
+  // Nhãn chân đường và nhãn đỉnh đẩy ra XA TÂM tam giác — hướng đó là hướng
+  // duy nhất chắc chắn không đâm vào cạnh nào của tam giác.
+  const cho = [];                     // những chỗ trên hình đã có chữ
+  const dat = (p, s, r) => {
+    const dx = p[0] - cx, dy = p[1] - cy, m = Math.hypot(dx, dy) || 1;
+    const x = p[0] + dx / m * r, y = p[1] + dy / m * r + 4;
+    cho.push([x, y]);
+    return _mfDqT(x, y, s, dx < -6 ? 'end' : (dx > 6 ? 'start' : 'middle'));
+  };
+  segs.forEach(s => { if (s.k.chan) out += dat(s.F, String(s.k.chan), 13); });
+  v.forEach((name, i) => { out += dat(P[i], name, 13); });
+
+  // Điểm đồng quy: giao của hai đoạn đầu tiên, vẽ đúng chỗ chúng cắt nhau —
+  // trọng tâm nằm ở 2/3 đường trung tuyến là điều bé phải đọc ra TỪ hình.
+  //
+  // Nhãn của nó thì phải TÌM chỗ: điểm này nằm giữa lòng hình, quanh nó hướng
+  // nào cũng có thể đã có một đoạn thẳng hoặc một chữ nằm sẵn. Thử tám hướng,
+  // lấy hướng xa mọi nét và mọi chữ nhất. (Đặt cứng sang trái từng che mất ô
+  // vuông góc ở chân đường cao.)
+  if (f.giao && segs.length >= 2) {
+    const [p, q] = segs;
+    const r1 = [p.F[0] - p.V[0], p.F[1] - p.V[1]], r2 = [q.F[0] - q.V[0], q.F[1] - q.V[1]];
+    const den = r1[0] * r2[1] - r1[1] * r2[0];
+    const u = Math.abs(den) > 1e-6
+      ? ((q.V[0] - p.V[0]) * r2[1] - (q.V[1] - p.V[1]) * r2[0]) / den : -1;
+    if (u > 0.05 && u < 0.95) {
+      const G = [p.V[0] + r1[0] * u, p.V[1] + r1[1] * u];
+      const xa = (x, y) => {
+        let d = 1e9;
+        segs.forEach(s => { d = Math.min(d, _mfSegD(x, y, s.V, s.F)); });
+        cho.forEach(c => { d = Math.min(d, Math.hypot(x - c[0], y - c[1]) / 1.6); });
+        return d;
+      };
+      let best = null;
+      for (let a = 0; a < 360; a += 45) {
+        const c = _mfP(G[0], G[1], 14, a);
+        const an = c[0] < G[0] - 4 ? 'end' : (c[0] > G[0] + 4 ? 'start' : 'middle');
+        // Chấm điểm ở GIỮA chữ chứ không ở điểm neo: chữ neo 'start' nằm hẳn
+        // về bên phải điểm neo, đo ở điểm neo là đo hụt mất cả con chữ.
+        const s = xa(c[0] + (an === 'end' ? -5 : an === 'start' ? 5 : 0), c[1]);
+        if (!best || s > best[3]) best = [c[0], c[1] + 4, an, s];
+      }
+      out += _mfDot(G[0], G[1]) + _mfDqT(best[0], best[1], String(f.giao), best[2]);
+    }
+  }
+  return out;
+}
+
+// ---- Chương X: một số hình khối trong thực tiễn -------------------------
+// Một khối vẽ trên mặt giấy phẳng chỉ đọc được nhờ ba quy ước, và ba quy ước
+// đó CHÍNH LÀ nội dung của chương: mặt trước vẽ đúng hình chữ nhật, chiều sâu
+// đẩy chéo lên phải một đoạn cố định, cạnh nào bị khối che thì vẽ nét đứt.
+// Bỏ nét đứt đi là bé đếm được 9 cạnh thay vì 12 — mà "mấy mặt, mấy đỉnh,
+// mấy cạnh" đúng là câu §36 hỏi nhiều nhất.
+//
+// Chiều sâu đẩy lên PHẢI nghĩa là người nhìn đứng chếch bên phải và cao hơn
+// khối: thấy mặt trước, mặt phải và mặt trên; ba mặt kia khuất. Đỉnh sau –
+// trái – dưới là đỉnh duy nhất không nhìn thấy, và ba cạnh chụm vào nó là ba
+// nét đứt.
+const _MF_HOP = {
+  // Mỗi mặt đọc theo vòng: trước-trái, trước-phải, sau-phải, sau-trái.
+  duoi: [[48, 92], [130, 92], [160, 70], [78, 70]],
+  tren: [[48, 48], [130, 48], [160, 26], [78, 26]],
+  // Nhãn đỉnh đặt tay chứ không tính theo tâm khối. Với đỉnh sau-trái, mọi
+  // hướng "ra ngoài" đều rơi vào lòng một mặt bên; chọn chỗ trống hẳn giữa
+  // hai nét đứt thì chữ mới không bị một cạnh cắt ngang.
+  lbl: [[41, 102, 'end'], [137, 102, 'start'], [167, 75, 'start'], [71, 66, 'end'],
+        [41, 45, 'end'], [124, 42, 'end'], [167, 24, 'start'], [74, 20, 'end']],
+};
+
+//   { "t":"hop-chu-nhat", "dai":"7 cm", "rong":"5 cm", "cao":"15 cm" }
+//   { "t":"lap-phuong", "canh":"4 m" }
+//   { "t":"hop-chu-nhat", "v":[["M","N","P","Q"],["A","B","C","D"]] }
+// `v` = [tên bốn đỉnh mặt ĐÁY, tên bốn đỉnh mặt TRÊN] theo cùng vòng đó, nên
+// v[0][k] và v[1][k] luôn là hai đầu của một cạnh bên. `v:false` bỏ hết chữ —
+// câu "cái thùng tôn hình lập phương cạnh 4 m" không cần đỉnh nào có tên.
+function _mfqHinhHop(f) {
+  const D = _MF_HOP.duoi, T = _MF_HOP.tren;
+  const dash = 'mf-d';
+  let out = '';
+  for (let i = 0; i < 4; i++) {
+    const j = (i + 1) % 4;
+    // Cạnh đáy 2–3 và 3–0 chụm vào đỉnh sau-trái (số 3) nên bị khối che.
+    const hid = (i === 2 || i === 3) ? dash : null;
+    out += _mfLine(D[i][0], D[i][1], D[j][0], D[j][1], hid)
+      + _mfLine(T[i][0], T[i][1], T[j][0], T[j][1])
+      + _mfLine(D[i][0], D[i][1], T[i][0], T[i][1], i === 3 ? dash : null);
+  }
+  const v = f.v;
+  if (v !== false && v !== null) {
+    // Đủ 4 tên mỗi mặt hay không cũng phải giữ nguyên vị trí: một mảng thiếu
+    // tên mà để trôi thì tên mặt trên tụt xuống ô của mặt đáy, và cái hình
+    // sai đó nhìn vẫn y như một cái hình đúng.
+    const nm = Array.isArray(v) && v.length === 2 && Array.isArray(v[0]) && Array.isArray(v[1])
+      ? [_mfNames(v[0], 4), _mfNames(v[1], 4)]
+      : [['A', 'B', 'C', 'D'], ["A'", "B'", "C'", "D'"]];
+    nm[0].concat(nm[1]).forEach((s, i) => {
+      const L = _MF_HOP.lbl[i];
+      if (L && s) out += _mfT(L[0], L[1], s, L[2]);
+    });
+  }
+  // Ba kích thước, mỗi cái nằm cạnh đúng cạnh nó đo. Hình lập phương chỉ có
+  // một số đo nên ghi lên cạnh đáy trước — cạnh dễ nhìn nhất.
+  const put = (x, y, txt, an) => (txt ? _mfT(x, y, String(txt), an, 'mf-val mf-' + _mfK(txt)) : '');
+  return out
+    + put(89, 110, f.dai != null ? f.dai : f.canh, 'middle')
+    + put(156, 95, f.rong, 'start')
+    + put(42, 74, f.cao, 'end');
+}
+
+// Hình lăng trụ đứng: một mặt đáy quay thẳng vào người nhìn nên vẽ ĐÚNG HÌNH
+// THẬT, mặt đáy kia đẩy chéo lên phải, ba (bốn) mặt bên là các hình bình hành
+// nối hai đáy. Đã thử vẽ kiểu "đứng thẳng" — hai đáy nằm ngang, cạnh bên dựng
+// đứng — nhưng khi đó mặt đáy bị chiếu bẹp thành một dải mỏng, và câu hỏi
+// nhiều nhất của §37 ("đáy là hình gì?", "cạnh đáy là những cạnh nào?") lại
+// đúng là câu KHÔNG đọc được từ một cái đáy bẹp. Quay đáy ra trước thì đáy
+// hiện nguyên hình tam giác / hình thang, ba mặt bên hiện rõ là ba hình bình
+// hành, và ba cạnh bên hiện rõ là ba đoạn bằng nhau — cũng chính là chiều cao
+// của lăng trụ. Kèm theo: góc vuông của đáy nay nằm trong mặt vẽ thật, nên
+// đóng dấu vuông vào là đóng đúng chỗ vuông thật.
+//
+// `mat` là đa giác đáy trước, đọc theo vòng; `r` là vector chiều sâu. Nhãn
+// đặt tay: quanh một khối, chỗ trống không suy ra được bằng công thức đẩy
+// theo tâm — nó nằm ở những khe giữa các nét, phải ngắm từng hình một.
+const _MF_LTRU = {
+  'lang-tru-tam-giac': {
+    mat: [[44, 102], [114, 102], [64, 44]],
+    r: [38, -26],
+    lbl: [[38, 113, 'end'], [114, 114, 'middle'], [58, 36, 'end'],
+          [90, 89, 'start'], [158, 80, 'start'], [102, 12, 'middle']],
+    canh: [[79, 114, 'middle'], [110, 70, 'middle'], [42, 73, 'end']],
+    cao: [140, 105, 'start'],
+  },
+  // Dùng khi đề cho đáy là tam giác vuông: đáy vẽ thật nên ô vuông là thật.
+  'lang-tru-tam-giac-vuong': {
+    mat: [[52, 102], [122, 102], [52, 44]],
+    r: [38, -26],
+    lbl: [[46, 113, 'end'], [122, 114, 'middle'], [46, 36, 'end'],
+          [98, 89, 'start'], [166, 80, 'start'], [90, 12, 'middle']],
+    canh: [[87, 114, 'middle'], [118, 70, 'middle'], [46, 77, 'end']],
+    cao: [148, 105, 'start'],
+    vuong: true,
+  },
+  // Đáy hình thang: đúng hình mà SGK và đề thi dùng cho lăng trụ đứng tứ giác.
+  'lang-tru-tu-giac': {
+    mat: [[40, 102], [120, 102], [100, 50], [58, 50]],
+    r: [38, -26],
+    lbl: [[34, 113, 'end'], [120, 114, 'middle'], [100, 42, 'middle'], [52, 44, 'end'],
+          [86, 89, 'start'], [164, 80, 'start'], [145, 20, 'start'], [96, 16, 'middle']],
+    canh: [[80, 114, 'middle'], [131, 72, 'middle'], [79, 62, 'middle'], [37, 76, 'end']],
+    cao: [146, 105, 'start'],
+  },
+};
+
+//   { "t":"lang-tru-tam-giac", "v":[["A","B","C"],["A'","B'","C'"]] }
+//   { "t":"lang-tru-tam-giac", "day":["3 cm","5 cm","4 cm"], "cao":"10 cm", "vuong":"A" }
+//   { "t":"lang-tru-tu-giac", "cao":"12 cm" }
+// `v` = [tên các đỉnh mặt đáy TRƯỚC, tên các đỉnh mặt đáy SAU] theo cùng một
+// vòng, nên v[0][k] và v[1][k] luôn là hai đầu của một cạnh bên. `v:false` bỏ
+// hết chữ. `day` ghi số đo từng cạnh đáy theo đúng vòng đó, `cao` là độ dài
+// cạnh bên. `vuong` nêu tên đỉnh có góc vuông ở đáy (chỉ với đáy tam giác).
+function _mfqLangTru(f) {
+  const quad = f.t === 'lang-tru-tu-giac';
+  const S = _MF_LTRU[quad ? 'lang-tru-tu-giac'
+    : (f.vuong ? 'lang-tru-tam-giac-vuong' : 'lang-tru-tam-giac')];
+  const F = S.mat, n = F.length, r = S.r;
+  const B = F.map(p => [p[0] + r[0], p[1] + r[1]]);
+  const cx = F.reduce((s, p) => s + p[0], 0) / n, cy = F.reduce((s, p) => s + p[1], 0) / n;
+
+  // Mặt bên nào quay về phía người nhìn thì thấy: pháp tuyến NGOÀI của cạnh
+  // đáy chấm với vector chiều sâu phải dương. Suy ra chứ không chép tay một
+  // danh sách "cạnh nào nét đứt" — đổi hình đáy là danh sách chép tay sai
+  // ngay, mà sai kiểu đó thì nhìn vẫn thấy giống một cái khối.
+  const hien = F.map((p, i) => {
+    const q = F[(i + 1) % n];
+    let nx = -(q[1] - p[1]), ny = q[0] - p[0];
+    if (nx * ((p[0] + q[0]) / 2 - cx) + ny * ((p[1] + q[1]) / 2 - cy) < 0) { nx = -nx; ny = -ny; }
+    return nx * r[0] + ny * r[1] > 0;
+  });
+
+  let out = '';
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    out += _mfLine(F[i][0], F[i][1], F[j][0], F[j][1])   // đáy trước: luôn nhìn thấy
+      + _mfLine(B[i][0], B[i][1], B[j][0], B[j][1], hien[i] ? null : 'mf-d')
+      // Cạnh bên khuất khi CẢ HAI mặt bên kề nó đều khuất.
+      + _mfLine(F[i][0], F[i][1], B[i][0], B[i][1],
+        (hien[i] || hien[(i + n - 1) % n]) ? null : 'mf-d');
+  }
+
+  let nm = Array.isArray(f.v) && f.v.length === 2 && Array.isArray(f.v[0]) && Array.isArray(f.v[1])
+    ? [_mfNames(f.v[0], n), _mfNames(f.v[1], n)]
+    : (n === 3 ? [['A', 'B', 'C'], ["A'", "B'", "C'"]]
+               : [['A', 'B', 'C', 'D'], ["A'", "B'", "C'", "D'"]]);
+  let day = Array.isArray(f.day) ? f.day.slice(0, n) : (f.day ? [f.day] : []);
+  // Đề gọi tên đỉnh vuông là gì thì XOAY danh sách tên cho đỉnh ấy về đúng
+  // góc vuông của hình — hình cố định, tên là của đề. Số đo cạnh đáy xoay
+  // theo cùng một nhịp, nếu không thì "AB = 3 cm" rơi xuống cạnh BC.
+  if (S.vuong && f.vuong != null) {
+    const k = nm[0].indexOf(String(f.vuong));
+    if (k > 0) {
+      const xoay = a => a.slice(k).concat(a.slice(0, k));
+      nm = nm.map(xoay);
+      if (day.length === n) day = xoay(day);
+    }
+  }
+  if (f.v !== false && f.v !== null) {
+    nm[0].concat(nm[1]).forEach((s, i) => {
+      const L = S.lbl[i];
+      if (L && s) out += _mfT(L[0], L[1], s, L[2]);
+    });
+  }
+  if (S.vuong) out += _mfCorner(F[0], F[1], F[n - 1], 11);
+
+  // Một mặt bên ĐỂ HỞ (thùng không nắp): tô mặt ấy và gọi tên nó. Bài "tính
+  // diện tích thép" không giải được nếu không biết mặt nào thiếu — con số
+  // ấy chỉ có trên hình, đề bài không nói.
+  if (Number.isFinite(+f.ho)) {
+    const i = ((+f.ho % n) + n) % n, j = (i + 1) % n;
+    const M = [F[i], F[j], B[j], B[i]];
+    const g = [M.reduce((s, p) => s + p[0], 0) / 4, M.reduce((s, p) => s + p[1], 0) / 4];
+    out += _mfPoly(M, 'mf-box mf-a')
+      + _mfT(g[0] - 2, g[1] - 8, String(f.hoChu || 'mặt hở'), 'middle', 'mf-cap');
+  }
+
+  const put = (L, txt) => (txt ? _mfT(L[0], L[1], String(txt), L[2], 'mf-val mf-' + _mfK(txt)) : '');
+  S.canh.forEach((L, i) => { out += put(L, day[i]); });
+  return out + put(S.cao, f.cao);
+}
+
+// ---- Hình VẼ LẠI cho năm đề HK1 thật -----------------------------------
+// Năm đề HK1 chép từ PDF trước đây dán thẳng một mẩu ảnh cắt của trang đề vào
+// câu hỏi. Ảnh scan thì mờ, không đổi màu theo theme, phóng to là vỡ, và nặng
+// hơn cả phần còn lại của ứng dụng — nên mọi hình ấy nay được vẽ lại bằng
+// những khuôn dưới đây. Luật không đổi: hình dựng từ chính số đo đề cho (góc
+// 80° phải vẽ ra 80°, cạnh 100 cm phải dài hơn cạnh 60 cm), và không bao giờ
+// ghi sẵn con số phải tìm.
+
+// Một Ô GÓC quanh một đỉnh. Nhãn của nó có ba vai khác hẳn nhau:
+//   '55°'                  số đo đề cho        → tô quạt, chữ xanh
+//   '?' / 'x'              chỗ phải tìm        → tô quạt, chữ cam
+//   '1'                    TÊN của góc (∠D₁)   → chỉ ghi số, KHÔNG tô quạt
+//   {n:'1', so:'80°'}      tên góc kèm số đo   → tô quạt, ghi cả hai
+//   {n:'1', bang:2}        dấu "hai góc này bằng nhau" (vạch trên cung)
+// Tô cả bốn ô quanh một đỉnh thì hình thành một cái đĩa màu và không còn đọc
+// ra góc nào với góc nào — nên nhãn chỉ là TÊN góc thì để trần.
+function _mfOng(v) {
+  if (v == null || v === '') return null;
+  if (typeof v === 'object') {
+    return {
+      n: v.n == null ? '' : String(v.n), so: v.so == null ? '' : String(v.so),
+      quat: v.quat === true || !!v.so || (+v.bang || 0) > 0,
+      bang: +v.bang || 0, r: +v.r || 0,
+    };
+  }
+  const s = String(v);
+  return { n: s, so: '', quat: !/^\d+$/.test(s), bang: 0, r: 0 };
+}
+
+function _mfOMau(o) {
+  if (o.bang > 0) return 'c';
+  return (/\?/.test(o.n + o.so) || /^[a-z]$/.test(o.n)) ? 'a' : 'b';
+}
+
+function _mfVeO(cx, cy, a0, a1, val) {
+  const o = _mfOng(val);
+  if (!o) return '';
+  const k = _mfOMau(o), mid = (a0 + a1) / 2;
+  let out = '';
+  if (o.quat) out += _mfWedge(cx, cy, 13, a0, a1, k);
+  for (let i = 0; i < o.bang; i++) {
+    out += _mfAtick(cx, cy, 13, mid + (i - (o.bang - 1) / 2) * 11, 'c');
+  }
+  const r1 = o.r || (o.quat ? (o.so ? 17 : 26) : 15);
+  if (o.n) {
+    const p = _mfP(cx, cy, r1, mid);
+    out += _mfT(p[0], p[1] + 4, o.n, 'middle', (o.quat && !o.so) ? 'mf-val mf-' + k : '');
+  }
+  if (o.so) {
+    const p = _mfP(cx, cy, r1 + 16, mid);
+    out += _mfT(p[0], p[1] + 4, o.so, 'middle', 'mf-val mf-' + k);
+  }
+  return out;
+}
+
+// Bốn ô góc quanh một giao điểm. `phi` là hướng của đường bị cắt (tia bên
+// phải), `th` là hướng tia đi LÊN của cát tuyến. Tên ô đọc theo mắt bé:
+// trên-phải, trên-trái, dưới-trái, dưới-phải.
+function _mfBienO(phi, th) {
+  return { tp: [phi, th], tt: [th, phi + 180], dt: [phi + 180, th + 180], dp: [th + 180, phi + 360] };
+}
+
+// Chỗ đặt TÊN của một giao điểm: hoặc tên một ô góc còn trống ('tp','tt',
+// 'dt','dp'), hoặc {deg, r} chỉ thẳng hướng và khoảng cách. Đặt bừa thì chữ
+// rơi trúng một nhãn góc — mà "1" chồng lên "D" thì đọc ra một thứ thứ ba.
+function _mfChoTen(P, bien, noi, macDinh) {
+  const q = noi == null ? macDinh : noi;
+  if (q && typeof q === 'object') return _mfP(P[0], P[1], +q.r || 26, +q.deg);
+  const b = bien[q] || bien.tt;
+  return _mfP(P[0], P[1], 26, (b[0] + b[1]) / 2);
+}
+
+function _mfRad(d) { return d * Math.PI / 180; }
+
+// Hai đường thẳng bị MỘT hoặc HAI cát tuyến cắt — cái hình của gần hết
+// Chương 3 trong năm đề: so le trong, đồng vị, kề bù, hai đường song song.
+//   { "t":"cat-tuyen", "par":true, "ten":["a","b"],
+//     "cat":[{ "diem":["A","B"], "goc":{ "A":{"dt":"?"}, "B":{"tp":"55°"} } }] }
+// Hướng cát tuyến suy THẲNG từ nhãn số đo nếu hình có nhãn ấy, nên một góc
+// ghi 55° không bao giờ bị vẽ thành góc tù; chỉ khi hình không có số đo nào
+// (chỉ đánh số ∠A₁, ∠A₂…) thì mới lấy `a` của đề bài.
+function _mfqCatTuyen(f) {
+  const Y = (Array.isArray(f.y) && f.y.length === 2) ? f.y.map(Number) : [34, 92];
+  const ng = (Array.isArray(f.nghieng) && f.nghieng.length === 2) ? f.nghieng.map(Number) : [0, 0];
+  const X0 = 16, X1 = 184, PV = 100;
+  const yL = (i, x) => Y[i] - (x - PV) * Math.tan(_mfRad(ng[i]));
+  const cats = (Array.isArray(f.cat) && f.cat.length ? f.cat : [{}]).slice(0, 2);
+
+  let net = '', chu = '';
+  for (let i = 0; i < 2; i++) net += _mfLine(X0, yL(i, X0), X1, yL(i, X1));
+  if (f.par) for (let i = 0; i < 2; i++) net += _mfPar(X0, yL(i, X0), X1, yL(i, X1), 0.9);
+
+  // `ten` chỉ đặt tên đầu bên phải; `dau` đặt cả hai đầu, cho những đề gọi
+  // đường thẳng là xx′ chứ không gọi là a.
+  const dau = Array.isArray(f.dau) ? f.dau : [[null, (f.ten || [])[0]], [null, (f.ten || [])[1]]];
+  for (let i = 0; i < 2; i++) {
+    const d = dau[i] || [];
+    if (d[0]) chu += _mfT(8, yL(i, 8) - 6, String(d[0]), 'start');
+    if (d[1]) chu += _mfT(192, yL(i, 192) - 6, String(d[1]), 'end');
+  }
+
+  const P = {};
+  cats.forEach((c, k) => {
+    const ten = c.diem || (k === 0 ? ['A', 'B'] : ['C', 'D']);
+    const goc = c.goc || {};
+    let th = Number.isFinite(+c.a) ? +c.a : 115;
+    Object.keys(goc).some(nm => {
+      const li = ten.indexOf(nm);
+      if (li < 0) return false;
+      return Object.keys(goc[nm]).some(o => {
+        const g = _mfOng(goc[nm][o]);
+        const m = g && /(\d+(?:[.,]\d+)?)\s*°/.exec(g.n + ' ' + g.so);
+        if (!m) return false;
+        const s = parseFloat(m[1].replace(',', '.'));
+        th = ng[li] + ((o === 'tp' || o === 'dt') ? s : 180 - s);
+        return true;
+      });
+    });
+    th = Math.min(Math.max(ng[0], ng[1]) + 168, Math.max(Math.min(ng[0], ng[1]) + 12, th));
+
+    const midX = Number.isFinite(+c.x) ? +c.x * 200 : (cats.length === 1 ? 100 : (k === 0 ? 68 : 142));
+    const A = [midX + (Y[1] - Y[0]) / Math.tan(_mfRad(th)) / 2, 0];
+    A[1] = yL(0, A[0]);
+    // Giao với đường dưới giải THẲNG từ phương trình hai đường, để cát tuyến
+    // vẫn là một đoạn thẳng dù hai đường nghiêng khác nhau.
+    const cs = Math.cos(_mfRad(th)), sn = Math.sin(_mfRad(th)), t1 = Math.tan(_mfRad(ng[1]));
+    const den = cs * t1 - sn;
+    const t = Math.abs(den) < 1e-6 ? 0 : (Y[1] - (A[0] - PV) * t1 - A[1]) / den;
+    const B = [A[0] + t * cs, A[1] - t * sn];
+    const pts = [A, B];
+    P[ten[0]] = A; P[ten[1]] = B;
+
+    // Cát tuyến kéo dài qua hai giao điểm một quãng, để nó là một ĐƯỜNG
+    // THẲNG chứ không phải cái thang bắc giữa hai đường.
+    const bx = y => A[0] + (A[1] - y) / Math.tan(_mfRad(th));
+    const yTop = Math.min(Y[0], Y[1]) - 22, yBot = Math.max(Y[0], Y[1]) + 20;
+    net += _mfLine(bx(yTop), yTop, bx(yBot), yBot);
+    if (c.ten) chu += _mfT(bx(yTop) + (th > 90 ? -7 : 7), yTop - 1, String(c.ten));
+    if (c.duoi) chu += _mfT(bx(yBot) + (th > 90 ? 7 : -7), yBot + 7, String(c.duoi));
+
+    ten.slice(0, 2).forEach((nm, i) => {
+      const b = _mfBienO(ng[i], th), g = goc[nm] || {};
+      Object.keys(b).forEach(o => { chu += _mfVeO(pts[i][0], pts[i][1], b[o][0], b[o][1], g[o]); });
+      if (c.vuong) chu += _mfRight(pts[i][0], pts[i][1], 11, b[i === 0 ? 'dp' : 'tp'][0], 'b');
+      net += _mfDot(pts[i][0], pts[i][1]);
+      if (nm) {
+        const q = _mfChoTen(pts[i], b, (c.noi || [])[i], i === 0 ? 'tt' : 'dt');
+        chu += _mfT(q[0], q[1] + 4, nm);
+      }
+    });
+  });
+
+  // Tia phụ (tia phân giác, tia bắc sang đường kia) và điểm đánh dấu thêm.
+  (Array.isArray(f.tia) ? f.tia : []).forEach(r => {
+    const V = P[r.tu];
+    if (!V) return;
+    const d = +r.huong, cs = Math.cos(_mfRad(d)), sn = Math.sin(_mfRad(d));
+    let len = +r.dai || 34, E = null;
+    if (r.toi != null) {                        // tia chạy tới khi gặp đường kia
+      const i = +r.toi, t1 = Math.tan(_mfRad(ng[i])), den = cs * t1 - sn;
+      if (Math.abs(den) > 1e-6) {
+        const tt = (Y[i] - (V[0] - PV) * t1 - V[1]) / den;
+        if (tt > 0) { E = [V[0] + tt * cs, V[1] - tt * sn]; len = tt + (+r.qua || 0); }
+      }
+    }
+    const tip = [V[0] + len * cs, V[1] - len * sn];
+    net += _mfLine(V[0], V[1], tip[0], tip[1]);
+    if (E) {
+      net += _mfDot(E[0], E[1]);
+      if (r.dat) chu += _mfT(E[0] + ((r.at || [0, 0])[0]), E[1] + ((r.at || [0, 0])[1]), String(r.dat));
+    }
+    if (r.ten) chu += _mfT(tip[0] + ((r.tenAt || [0, 0])[0]), tip[1] + ((r.tenAt || [0, 0])[1]), String(r.ten));
+    if (Array.isArray(r.cung) && r.cung.length === 2) {
+      const a0 = +r.cung[0], a1 = +r.cung[1];
+      chu += _mfWedge(V[0], V[1], 18, a0, d, 'c') + _mfWedge(V[0], V[1], 18, d, a1, 'c')
+        + _mfAtick(V[0], V[1], 18, (a0 + d) / 2, 'c') + _mfAtick(V[0], V[1], 18, (d + a1) / 2, 'c');
+    }
+  });
+  (Array.isArray(f.them) ? f.them : []).forEach(p => {
+    const i = +p.duong || 0, x = +p.x, at = p.at || [0, 14];
+    net += _mfDot(x, yL(i, x));
+    if (p.ten) chu += _mfT(x + at[0], yL(i, x) + at[1], String(p.ten));
+  });
+  return net + chu;
+}
+
+// MỘT đường thẳng bị hai đường khác cắt tại hai điểm — hình của câu "∠P₂ và
+// ∠Q₂ là hai góc gì?". Khác `cat-tuyen` ở chỗ hai giao điểm nằm trên CÙNG một
+// đường; vẽ nó theo khuôn cat-tuyen là đang bịa thêm chuyện b ∥ c.
+//   { "t":"cat-hai-duong", "ten":"a",
+//     "giao":[{"ten":"P","huong":70,"tenDuong":"b","goc":{"tt":"1"}}, …] }
+function _mfqCatHaiDuong(f) {
+  const y = 68;
+  let net = _mfLine(10, y, 190, y), chu = '';
+  if (f.ten) chu += _mfT(194, y - 6, String(f.ten), 'end');
+  const gs = (Array.isArray(f.giao) ? f.giao : []).slice(0, 2);
+  const xs = gs.length === 1 ? [100] : [62, 140];
+  gs.forEach((g, i) => {
+    const V = [xs[i], y], th = Math.min(160, Math.max(20, +g.huong || 70));
+    const cs = Math.cos(_mfRad(th)), sn = Math.sin(_mfRad(th));
+    const up = 52 / sn, dn = 46 / sn;
+    net += _mfLine(V[0] - dn * cs, y + dn * sn, V[0] + up * cs, y - up * sn) + _mfDot(V[0], V[1]);
+    if (g.tenDuong) chu += _mfT(V[0] + up * cs + (th > 90 ? -8 : 8), y - up * sn - 1, String(g.tenDuong));
+    const b = _mfBienO(0, th), goc = g.goc || {};
+    Object.keys(b).forEach(o => { chu += _mfVeO(V[0], V[1], b[o][0], b[o][1], goc[o]); });
+    if (g.ten) {
+      const q = _mfChoTen(V, b, g.noi, 'dp');
+      chu += _mfT(q[0], q[1] + 4, String(g.ten));
+    }
+  });
+  return net + chu;
+}
+
+// ---- bốn hình để CHỌN --------------------------------------------------
+// Ba câu trong năm đề cho bốn hình rồi hỏi "hình nào…". Bốn phương án ấy VỐN
+// là bốn cái hình, nên mỗi phương án phải là một hình vẽ riêng, nếu không thì
+// câu hỏi không còn gì để trả lời. Bốn ô xếp 2×2 (100×60 mỗi ô) chứ không xếp
+// một hàng: một hàng bốn ô rộng 50 thì cát tuyến nghiêng 40° chạy hết bề
+// ngang ô trước khi kịp gặp đường thứ hai.
+const _MF_O4 = [[0, 0], [100, 0], [0, 60], [100, 60]];
+
+function _mfKhung4(hinh, cap, ve) {
+  let out = '';
+  for (let i = 0; i < 4; i++) {
+    const o = _MF_O4[i];
+    out += ve(hinh[i] || {}, o[0], o[1], i);
+    const s = (cap || [])[i];
+    if (s) out += _mfT(o[0] + 50, o[1] + 57, String(s), 'middle', 'mf-cap');
+  }
+  return out;
+}
+
+// "Hình vẽ nào sau đây có hai đường thẳng song song?" — bốn ô, mỗi ô hai
+// đường bị một cát tuyến cắt. Độ nghiêng của hai đường SUY RA từ hai số đo
+// đánh dấu: ô nào hai số ăn khớp thì hai đường vẽ ra song song thật, ô nào
+// lệch thì vẽ ra lệch. Vẽ bốn ô y hệt nhau rồi ghi bốn cặp số khác nhau là
+// hình nói dối, và bé không còn cách nào chọn ngoài đoán.
+function _mfqChonSongSong(f) {
+  return _mfKhung4(f.hinh || [], f.cap, (h, ox, oy) => {
+    const marks = [h.tren, h.duoi];
+    const d = marks.map(m => {
+      const o = (m || {}).o || 'tp';
+      const g = /(\d+(?:[.,]\d+)?)/.exec(String((m || {}).goc || ''));
+      const s = (m || {}).vuong ? 90 : (g ? parseFloat(g[1].replace(',', '.')) : 60);
+      return (o === 'tp' || o === 'dt') ? s : 180 - s;
+    });
+    const th = (d[0] + d[1]) / 2, phi = [th - d[0], th - d[1]];
+    const y = [oy + 18, oy + 42], cx = ox + 50, xa = ox + 16, xb = ox + 84;
+    const yL = (i, x) => y[i] - (x - cx) * Math.tan(_mfRad(phi[i]));
+    let out = '';
+    for (let i = 0; i < 2; i++) out += _mfLine(xa, yL(i, xa), xb, yL(i, xb));
+    const A = [cx + (y[1] - y[0]) / Math.tan(_mfRad(th)) / 2, 0];
+    A[1] = yL(0, A[0]);
+    const cs = Math.cos(_mfRad(th)), sn = Math.sin(_mfRad(th)), t1 = Math.tan(_mfRad(phi[1]));
+    const den = cs * t1 - sn;
+    const t = Math.abs(den) < 1e-6 ? 0 : (y[1] - (A[0] - cx) * t1 - A[1]) / den;
+    const B = [A[0] + t * cs, A[1] - t * sn];
+    const bx = yy => A[0] + (A[1] - yy) / Math.tan(_mfRad(th));
+    out += _mfLine(bx(y[0] - 12), y[0] - 12, bx(y[1] + 7), y[1] + 7);
+    [[A, 0], [B, 1]].forEach(pair => {
+      const Q = pair[0], i = pair[1], m = marks[i];
+      out += _mfDot(Q[0], Q[1]);
+      if (!m) return;
+      const b = _mfBienO(phi[i], th), o = m.o || 'tp';
+      if (m.vuong) { out += _mfRight(Q[0], Q[1], 10, b[o][0], 'b'); return; }
+      // Nhãn quay VÀO dải giữa hai đường thì đẩy xa ra (chỗ ấy rộng), quay ra
+      // ngoài thì kéo lại gần (ra xa nữa là chữ trèo khỏi ô).
+      const vao = Math.sin(_mfRad((b[o][0] + b[o][1]) / 2)) * (i ? 1 : -1) > 0;
+      out += _mfVeO(Q[0], Q[1], b[o][0], b[o][1], { n: String(m.goc), r: vao ? 30 : 22, quat: true });
+    });
+    return out;
+  });
+}
+
+// "Hình nào dưới đây có cặp góc đối đỉnh?" — bốn ô, mỗi ô một (hoặc hai)
+// đỉnh với các tia đi ra từ đó. `tia` là hướng các tia (độ), `nhan[i]` là tên
+// của góc nằm giữa tia i và tia kế tiếp. Có cặp đối đỉnh hay không đọc ra từ
+// CHÍNH các hướng ấy, nên hình không thể nói ngược với đáp án.
+function _mfqBonGoc(f) {
+  return _mfKhung4(f.hinh || [], f.cap, (h, ox, oy) => {
+    let out = '';
+    (Array.isArray(h.dinh) ? h.dinh : []).forEach(d => {
+      const at = Array.isArray(d.at) ? d.at : [0, 0];
+      const V = [ox + 50 + at[0], oy + 24 + at[1]];
+      const tia = (Array.isArray(d.tia) ? d.tia : []).map(Number).sort((a, b) => a - b);
+      tia.forEach(a => { out += _mfRay(V[0], V[1], 22, a); });
+      tia.forEach((a, i) => {
+        const s = String((d.nhan || [])[i] == null ? '' : (d.nhan || [])[i]);
+        if (!s) return;
+        const b = i === tia.length - 1 ? tia[0] + 360 : tia[i + 1];
+        // Ô góc càng hẹp thì nhãn càng phải lùi ra xa đỉnh: chỗ hẹp giữa hai
+        // tia không đủ chỗ cho một con số, chữ sẽ nằm đè lên chính hai tia ấy.
+        const p = _mfP(V[0], V[1], (b - a) < 55 ? 18 : 14, (a + b) / 2);
+        out += _mfT(p[0], p[1] + 4, s);
+      });
+      out += _mfDot(V[0], V[1]);
+    });
+    return out;
+  });
+}
+
+// "Hình nào sau đây là hình hộp chữ nhật?" — bốn đồ vật. Phương án của đề là
+// bốn tấm ảnh chụp; vẽ lại thành bốn hình khối để bé vẫn chọn được bằng mắt.
+function _mfKhoi(kind, cx, cy) {
+  if (kind === 'trai-tim') {                    // hộp bánh hình trái tim
+    const w = 16, top = cy - 8, bot = cy + 11;
+    const tim = dy => `<path class="mf-l" d="M${_mfN(cx)} ${_mfN(bot + dy)} `
+      + `C${_mfN(cx - w)} ${_mfN(top + dy + 3)} ${_mfN(cx - w)} ${_mfN(top + dy - 8)} ${_mfN(cx)} ${_mfN(top + dy)} `
+      + `C${_mfN(cx + w)} ${_mfN(top + dy - 8)} ${_mfN(cx + w)} ${_mfN(top + dy + 3)} ${_mfN(cx)} ${_mfN(bot + dy)} Z"/>`;
+    return tim(0) + tim(8)
+      + _mfLine(cx - 12, cy - 7.5, cx - 12, cy + 0.5) + _mfLine(cx + 12, cy - 7.5, cx + 12, cy + 0.5)
+      + _mfLine(cx, cy + 11, cx, cy + 19);
+  }
+  if (kind === 'bat') {                         // cái bát: miệng tròn, thành cong
+    const t = 19, b = 10, yt = cy - 10, yb = cy + 16;
+    return `<path class="mf-d" d="M${_mfN(cx - t)} ${_mfN(yt)} A ${t} 6 0 0 0 ${_mfN(cx + t)} ${_mfN(yt)}"/>`
+      + `<path class="mf-l" d="M${_mfN(cx - t)} ${_mfN(yt)} A ${t} 6 0 0 1 ${_mfN(cx + t)} ${_mfN(yt)}"/>`
+      + `<path class="mf-l" d="M${_mfN(cx - t)} ${_mfN(yt)} L${_mfN(cx - b)} ${_mfN(yb)} `
+      + `A ${b} 4 0 0 0 ${_mfN(cx + b)} ${_mfN(yb)} L${_mfN(cx + t)} ${_mfN(yt)}"/>`;
+  }
+  if (kind === 'nem') {                         // cái nêm: lăng trụ đứng tam giác
+    const F = [[cx - 24, cy + 13], [cx + 19, cy + 13], [cx - 24, cy - 6]];
+    const B = F.map(p => [p[0] + 12, p[1] - 9]);
+    return _mfPoly(F, 'mf-l mf-tri')
+      + _mfLine(F[1][0], F[1][1], B[1][0], B[1][1]) + _mfLine(F[2][0], F[2][1], B[2][0], B[2][1])
+      + _mfLine(B[1][0], B[1][1], B[2][0], B[2][1])
+      + _mfLine(F[0][0], F[0][1], B[0][0], B[0][1], 'mf-d')
+      + _mfLine(B[0][0], B[0][1], B[1][0], B[1][1], 'mf-d')
+      + _mfLine(B[0][0], B[0][1], B[2][0], B[2][1], 'mf-d');
+  }
+  const D = [[cx - 22, cy + 14], [cx + 12, cy + 14], [cx + 24, cy + 4], [cx - 10, cy + 4]];
+  const T = D.map(p => [p[0], p[1] - 18]);
+  let out = '';
+  for (let i = 0; i < 4; i++) {
+    const j = (i + 1) % 4;
+    const hid = (i === 2 || i === 3) ? 'mf-d' : null;
+    out += _mfLine(D[i][0], D[i][1], D[j][0], D[j][1], hid)
+      + _mfLine(T[i][0], T[i][1], T[j][0], T[j][1])
+      + _mfLine(D[i][0], D[i][1], T[i][0], T[i][1], i === 3 ? 'mf-d' : null);
+  }
+  return out;
+}
+
+function _mfqChonKhoi(f) {
+  const ks = Array.isArray(f.khoi) ? f.khoi : [];
+  return _mfKhung4(ks.map(k => ({ k })), f.cap, (h, ox, oy) => _mfKhoi(h.k, ox + 50, oy + 22));
+}
+
+// ---- bảng số liệu ------------------------------------------------------
+// Hai câu Chương 5 cho dữ liệu bằng một cái BẢNG, và cái bảng ấy là toàn bộ
+// đề. Bảng dựng bằng SVG chứ không cắt ảnh: chữ vẫn sắc, vẫn đổi màu theo
+// theme, vẫn đọc được khi mất mạng. Bảng XOAY DỌC (mỗi mục một hàng) vì màn
+// hình điện thoại cao hơn là rộng — năm cột chữ Việt xếp ngang thì cột nào
+// cũng cụt mất một nửa.
+//   { "t":"bang", "cot":["Học sinh","Điểm"], "hang":[["Minh","8"], …] }
+function _mfqBang(f) {
+  const cot = (Array.isArray(f.cot) ? f.cot : []).map(String);
+  const hang = (Array.isArray(f.hang) ? f.hang : [])
+    .map(r => (Array.isArray(r) ? r : [r]).map(x => (x == null ? '' : String(x))));
+  if (cot.length < 2 || !hang.length) return '';
+  const rows = [cot].concat(hang), n = cot.length, W = 176;
+  const rong = [];
+  for (let c = 0; c < n; c++) {
+    let m = 0;
+    rows.forEach(r => { m = Math.max(m, [...(r[c] || '')].length); });
+    rong.push(m * 5.4 + 12);
+  }
+  const tong = rong.reduce((a, b) => a + b, 0);
+  // Bảng nào chữ dài quá khổ thì CO CHỮ lại cho vừa ô, chứ không để chữ tràn
+  // ra ngoài đường kẻ — một cái tiêu đề bị cắt cụt thì bảng mất luôn nghĩa.
+  const k = Math.min(W / tong, 1.6);
+  const w = rong.map(v => v * k), rongTong = tong * k;
+  const co = Math.min(10, 10 * W / tong);
+  const x0 = (200 - rongTong) / 2, yTop = 8, yBot = 112, h = (yBot - yTop) / rows.length;
+  let out = '';
+  for (let i = 0; i <= rows.length; i++) out += _mfLine(x0, yTop + i * h, x0 + rongTong, yTop + i * h, 'mf-l mf-w');
+  let x = x0;
+  for (let c = 0; c <= n; c++) { out += _mfLine(x, yTop, x, yBot, 'mf-l mf-w'); x += w[c] || 0; }
+  rows.forEach((r, i) => {
+    let cx = x0;
+    for (let c = 0; c < n; c++) {
+      if (r[c]) {
+        out += `<text class="mf-t${i ? ' mf-cap' : ''}" x="${_mfN(cx + w[c] / 2)}" `
+          + `y="${_mfN(yTop + i * h + h / 2 + co * 0.35)}" text-anchor="middle" `
+          + `style="font-size:${_mfN(co)}px">${r[c]}</text>`;
+      }
+      cx += w[c];
+    }
+  });
+  return out;
+}
+
+// ---- hai bình nước -----------------------------------------------------
+// Câu "đổ nước từ bình 1 sang bình 2": ba số đo của bình 2 (21, 28, 35 cm)
+// CHỈ có trên hình, đề bài không hề nhắc — không có hình thì câu này không
+// giải được. Bình 2 là lăng trụ đứng có đáy tam giác vuông nằm NGANG, miệng
+// quay lên; vẽ đúng thế đứng ấy thì bé mới thấy vì sao diện tích đáy là
+// 21·28/2 còn chiều cao là quãng nước dâng lên.
+function _mfqHaiBinhNuoc(f) {
+  const b1 = f.b1 || {}, b2 = f.b2 || {};
+  const D = [[8, 104], [52, 104], [64, 94], [20, 94]];
+  const T = D.map(p => [p[0], p[1] - 44]);
+  const W = D.map(p => [p[0], p[1] - 40]);
+  let out = '';
+  for (let i = 0; i < 4; i++) {
+    const j = (i + 1) % 4;
+    out += _mfLine(D[i][0], D[i][1], D[j][0], D[j][1], (i === 2 || i === 3) ? 'mf-d' : null)
+      + _mfLine(T[i][0], T[i][1], T[j][0], T[j][1])
+      + _mfLine(D[i][0], D[i][1], T[i][0], T[i][1], i === 3 ? 'mf-d' : null);
+  }
+  out += _mfPoly(W, 'mf-box mf-b');
+  const t = [[90, 44], [154, 32], [120, 64]];
+  const b = t.map(p => [p[0], p[1] + 40]);
+  const w = t.map(p => [p[0], p[1] + 12]);
+  out += _mfPoly(t, 'mf-l mf-tri')
+    + _mfLine(t[0][0], t[0][1], b[0][0], b[0][1]) + _mfLine(t[1][0], t[1][1], b[1][0], b[1][1])
+    + _mfLine(t[2][0], t[2][1], b[2][0], b[2][1])
+    + _mfLine(b[0][0], b[0][1], b[2][0], b[2][1]) + _mfLine(b[2][0], b[2][1], b[1][0], b[1][1])
+    + _mfLine(b[0][0], b[0][1], b[1][0], b[1][1], 'mf-d')
+    + _mfPoly(w, 'mf-box mf-b')
+    + _mfCorner(t[2], t[0], t[1], 9)
+    + _mfLine(159, t[1][1], 159, w[1][1], 'mf-tick mf-a')
+    + _mfLine(156, t[1][1], 162, t[1][1], 'mf-tick mf-a')
+    + _mfLine(156, w[1][1], 162, w[1][1], 'mf-tick mf-a');
+  const put = (x, y, s, an) => (s ? _mfT(x, y, String(s), an, 'mf-val mf-b') : '');
+  const day = b2.day || [];
+  return out
+    + put(36, 44, b1.canh, 'middle') + put(122, 20, day[0], 'middle')
+    + put(88, 112, day[1], 'middle') + put(156, 102, day[2], 'start')
+    + put(196, 40, b2.hut, 'end')
+    + _mfT(30, 118, String(b1.ten || 'Bình 1'), 'middle', 'mf-cap')
+    + _mfT(124, 118, String(b2.ten || 'Bình 2'), 'middle', 'mf-cap');
+}
+
 const MATH_Q_FIGURES = {
   'ke-bu': _mfqKeBu,
   'ke-bu-phan-giac': _mfqKeBuPhanGiac,
@@ -960,6 +1800,19 @@ const MATH_Q_FIGURES = {
   'doi-tia': _mfqDoiTia,
   'line-chart': _mfqLineChart,
   'pie-chart': _mfqPieChart,
+  'duong-xien': _mfqDuongXien,
+  'dong-quy': _mfqDongQuy,
+  'hop-chu-nhat': _mfqHinhHop,
+  'lap-phuong': _mfqHinhHop,
+  'lang-tru-tam-giac': _mfqLangTru,
+  'lang-tru-tu-giac': _mfqLangTru,
+  'cat-tuyen': _mfqCatTuyen,
+  'cat-hai-duong': _mfqCatHaiDuong,
+  'chon-song-song': _mfqChonSongSong,
+  'bon-goc': _mfqBonGoc,
+  'chon-khoi': _mfqChonKhoi,
+  'bang': _mfqBang,
+  'hai-binh-nuoc': _mfqHaiBinhNuoc,
 };
 
 // Khuôn lạ thì không vẽ gì — một câu hỏi vẫn làm được khi thiếu hình, nhưng

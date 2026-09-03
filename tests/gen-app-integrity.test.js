@@ -110,7 +110,9 @@ suite('gen: sw.js js/css assets exist on disk', () => {
         assert.truthy(JS_ASSETS.length > 30, 'scripts missing from the offline cache');
         assert.equal(CSS_ASSETS.length, 1, 'the app ships exactly one stylesheet');
         assert.truthy(IMG_ASSETS.length > 10, 'images missing from the offline cache');
-        assert.truthy(MATH_EXAM_ASSETS.length > 0, 'the maths source papers must stay cached');
+        // Ảnh chụp trang đề thi từng nằm ở đây. Mọi hình nay đều được vẽ lại
+        // bằng js/math-figures.js, nên precache chúng chỉ tốn 1,9 MB của máy bé.
+        assert.equal(MATH_EXAM_ASSETS.length, 0, 'no question renders a page scan any more');
     });
 
     for (const asset of JS_ASSETS.concat(CSS_ASSETS)) {

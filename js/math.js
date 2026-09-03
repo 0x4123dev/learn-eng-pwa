@@ -440,33 +440,47 @@ function mathKey(k) {
 function mathTier(pct) { return pct === 100 ? 'perfect' : pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'weak'; }
 function mathTierEmoji(pct) { return pct === 100 ? '⭐' : pct >= 80 ? '✅' : pct >= 60 ? '👍' : '📝'; }
 
+// Học kì 1 dùng chương 1..5, học kì 2 dùng chương 6..10, nên một câu hỏi tự
+// nói nó thuộc học kì nào. Các hàm dưới đây trả về ngân hàng của học kì ĐANG
+// mở; mathBankAll() dùng cho việc tra id (lịch sử, drill câu sai) vì một câu
+// có thể được tra khi đang đứng ở học kì khác.
+function mathSemester() { return _mathView === 'hk2' ? 2 : 1; }
+function _mathHk1Bank() { return (typeof MATH_QUESTIONS !== 'undefined') ? MATH_QUESTIONS : []; }
+function _mathHk2Bank() { return (typeof MATH_QUESTIONS_HK2 !== 'undefined') ? MATH_QUESTIONS_HK2 : []; }
 function mathBank() {
-  return (typeof MATH_QUESTIONS !== 'undefined') ? MATH_QUESTIONS : [];
+  return mathSemester() === 2 ? _mathHk2Bank() : _mathHk1Bank();
 }
+function mathBankAll() { return _mathHk1Bank().concat(_mathHk2Bank()); }
 // Gói "Ôn tập chương 2&3 · Lũy thừa" (js/math-luythua.js) — nằm ngoài ngân
 // hàng 5 chương để các pin đếm câu theo chương không phải đổi theo.
 function mathLtBank() {
   return (typeof MATH_LT_QUESTIONS !== 'undefined') ? MATH_LT_QUESTIONS : [];
 }
 function mathChapters() {
+  if (mathSemester() === 2) return (typeof MATH_CHAPTERS_HK2 !== 'undefined') ? MATH_CHAPTERS_HK2 : [];
   return (typeof MATH_CHAPTERS !== 'undefined') ? MATH_CHAPTERS : [];
 }
 function mathLessons() {
+  if (mathSemester() === 2) return (typeof MATH_LESSONS_HK2 !== 'undefined') ? MATH_LESSONS_HK2 : [];
   return (typeof MATH_LESSONS !== 'undefined') ? MATH_LESSONS : [];
 }
 function mathById(id) {
-  const practice = mathBank().find(q => q.id === id);
+  const practice = mathBankAll().find(q => q.id === id);
   if (practice) return practice;
   const lt = mathLtBank().find(q => q.id === id);
   if (lt) return lt;
-  for (const exam of mathExams()) {
+  for (const exam of mathExamsAll()) {
     const found = exam.questions.find(q => q.id === id);
     if (found) return found;
   }
   return null;
 }
 function mathChapterQuestions(ch) {
-  return ch ? mathBank().filter(q => q.ch === ch) : mathBank();
+  // A chapter number is unique across both semesters (1..5 vs 6..10), so a
+  // named chapter can be answered from the full bank; only "ôn tổng hợp"
+  // (ch = 0) has to stay inside the semester the child is standing in.
+  if (ch) return mathBankAll().filter(q => q.ch === ch);
+  return mathBank();
 }
 
 function mathShuffle(arr) {
@@ -645,12 +659,14 @@ function renderMathHome() {
       + `<div class="phrases-wrap">${renderMathHistoryHTML()}</div>`;
     return;
   }
-  if (_mathView === 'hk1') {
+  if (_mathView === 'hk1' || _mathView === 'hk2') {
+    const hk2 = _mathView === 'hk2';
     const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
       : _mathSubTab === 'exams' ? renderMathExamsHTML()
       : renderMathPracticeHTML();
-    screen.innerHTML = mathHeaderHTML('TOÁN 7 · HỌC KÌ 1', 'Ôn công thức Toán 7',
-      '5 chương trọng tâm — chọn đúng công thức, nhớ lâu hơn học vẹt.', 'openMathSection(\'toan7\')')
+    screen.innerHTML = mathHeaderHTML(hk2 ? 'TOÁN 7 · HỌC KÌ 2' : 'TOÁN 7 · HỌC KÌ 1', 'Ôn công thức Toán 7',
+      hk2 ? 'Chương VI đến X — tỉ lệ, đa thức, xác suất, tam giác, hình khối.'
+          : '5 chương trọng tâm — chọn đúng công thức, nhớ lâu hơn học vẹt.', 'openMathSection(\'toan7\')')
       + `<div class="grammar-subtabs" role="tablist">
       <button class="grammar-subtab ${_mathSubTab === 'practice' ? 'active' : ''}" role="tab"
               onclick="switchMathSubTab('practice')">🧮 Luyện tập</button>
@@ -711,7 +727,7 @@ function renderMathMenuHTML() {
 function renderToan7MenuHTML() {
   const runs = mathHistory().length;
   const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
-  return mathHeaderHTML('TOÁN 7', 'Chọn học kì', 'Tập 1 đã có đủ; tập 2 đang được soạn.', 'openMathSection(\'home\')')
+  return mathHeaderHTML('TOÁN 7', 'Chọn học kì', 'Công thức, lý thuyết và đề thi theo từng học kì.', 'openMathSection(\'home\')')
     + `<div class="phrases-wrap">
       ${owed}
       <button class="phrases-cta" onclick="openMathSection('hk1')">
@@ -719,11 +735,17 @@ function renderToan7MenuHTML() {
         <span class="phrases-cta-text"><strong>Học kì 1</strong><small>${mathBank().length} câu · Luyện tập, Lý thuyết, Đề thi</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
+      ${(typeof MATH_QUESTIONS_HK2 !== 'undefined' && MATH_QUESTIONS_HK2.length) ? `
+      <button class="phrases-cta" onclick="openMathSection('hk2')">
+        <span class="phrases-cta-icon">②</span>
+        <span class="phrases-cta-text"><strong>Học kì 2</strong><small>${MATH_QUESTIONS_HK2.length} câu · Luyện tập, Lý thuyết, Đề thi</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>` : `
       <button class="phrases-cta locked" disabled aria-disabled="true">
         <span class="phrases-cta-icon">②</span>
         <span class="phrases-cta-text"><strong>Học kì 2</strong><small>Sắp có — đang soạn nội dung</small></span>
         <span class="phrases-cta-arrow">🔒</span>
-      </button>
+      </button>`}
       <button class="phrases-cta" onclick="openMathSection('history')">
         <span class="phrases-cta-icon">🕘</span>
         <span class="phrases-cta-text"><strong>Lịch sử làm bài</strong><small>${runs ? `${runs} lượt đã làm · thống kê và câu hay sai` : 'Chưa có lượt nào'}</small></span>
@@ -739,7 +761,7 @@ function openMathSection(v) {
         if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
-  const known = ['home', 'toan7', 'hk1', 'history', 'wars', 'fight'];
+  const known = ['home', 'toan7', 'hk1', 'hk2', 'history', 'wars', 'fight'];
   if (v === 'fight' && !mathFightUnlocked()) v = 'home';
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
   // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen
@@ -758,7 +780,7 @@ function openMathSection(v) {
 function switchMathSubTab(tab) {
   if (tab === 'history') { openMathSection('history'); return; }
   _mathSubTab = (tab === 'lessons' || tab === 'exams') ? tab : 'practice';
-  _mathView = 'hk1';
+  if (_mathView !== 'hk1' && _mathView !== 'hk2') _mathView = 'hk1';
   renderMathHome();
 }
 
@@ -768,7 +790,7 @@ function renderMathPracticeHTML() {
   const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
 
   // Gói lũy thừa + căn đứng ngay dưới "Ôn tổng hợp": một lượt = trọn bộ câu.
-  const ltBank = mathLtBank();
+  const ltBank = mathSemester() === 2 ? [] : mathLtBank();
   const ltBest = ltBank.length ? mathBestFor((typeof MATH_LT_CHAPTER !== 'undefined') ? MATH_LT_CHAPTER : 'lt12') : null;
   const ltCard = !ltBank.length ? '' : `
     <button class="phrases-cta" onclick="startMathLtQuiz()">
@@ -819,12 +841,24 @@ function mathBestFor(ch) {
 }
 
 // ---- đề thi view ----
+// Đề tự soạn trước, đề thi thật của các trường xếp sau — cùng một thứ tự ở
+// cả hai học kì, để chỗ đứng của "đề thật" trong danh sách không đổi.
+//
+// Bốn hàm nhỏ thay vì một hàm nhận TÊN biến: các ngân hàng khai báo bằng
+// `const` ở đầu file script, mà `const` cấp cao nhất KHÔNG trở thành thuộc
+// tính của globalThis — tra theo tên sẽ luôn ra rỗng và danh sách đề trống
+// trơn. Phải nhắc thẳng tên biến, có `typeof` chắn vì ngân hàng nạp lười.
+function _mathHk1Exams() { return (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS)) ? MATH_EXAMS : []; }
+function _mathHk1Source() { return (typeof MATH_SOURCE_EXAMS !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS)) ? MATH_SOURCE_EXAMS : []; }
+function _mathHk2Exams() { return (typeof MATH_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_EXAMS_HK2)) ? MATH_EXAMS_HK2 : []; }
+function _mathHk2Source() { return (typeof MATH_SOURCE_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS_HK2)) ? MATH_SOURCE_EXAMS_HK2 : []; }
 function mathExams() {
-  const source = (typeof MATH_SOURCE_EXAMS !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS))
-    ? MATH_SOURCE_EXAMS : [];
-  const practice = (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS))
-    ? MATH_EXAMS : [];
-  return practice.concat(source);
+  return mathSemester() === 2
+    ? _mathHk2Exams().concat(_mathHk2Source())
+    : _mathHk1Exams().concat(_mathHk1Source());
+}
+function mathExamsAll() {
+  return _mathHk1Exams().concat(_mathHk1Source(), _mathHk2Exams(), _mathHk2Source());
 }
 
 function mathExamBest(id) {
@@ -850,8 +884,10 @@ function renderMathExamsHTML() {
   return `
     <div class="phrases-hero">
       <div class="phrases-hero-icon">📝</div>
-      <h1>Đề thi thử học kì 1</h1>
-      <p class="phrases-sub"><b>HK1 1–5</b> được chép từ đề trường năm 2025–2026, giữ nguyên thứ tự câu và hình. Không giới hạn thời gian; dùng nút ✏️ khi cần nháp nhé!</p>
+      <h1>Đề thi thử học kì ${mathSemester()}</h1>
+      <p class="phrases-sub">${mathSemester() === 2
+        ? 'Mười đề tự soạn đứng trước, rồi tới các đề <b>thật của các trường</b> năm 2025–2026 — hình đều được vẽ lại cho nét.'
+        : '<b>HK1 1–5</b> được chép từ đề trường năm 2025–2026, giữ nguyên thứ tự câu và hình.'} Không giới hạn thời gian; dùng nút ✏️ khi cần nháp nhé!</p>
     </div>
     ${cards || '<div class="phrases-cat-row"><span>Đề thi đang được cập nhật…</span></div>'}`;
 }

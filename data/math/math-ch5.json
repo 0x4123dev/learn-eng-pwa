@@ -578,7 +578,29 @@
       "id": "m5-39",
       "ch": 5,
       "topic": "Đọc biểu đồ quạt tròn",
-      "q": "Biểu đồ quạt tròn về môn học yêu thích của lớp 7A cho biết: Toán 40%, Ngữ văn 25%, Tiếng Anh 20%, phần còn lại là Thể dục. Thể dục chiếm bao nhiêu phần trăm?",
+      "q": "Biểu đồ quạt tròn dưới đây cho biết môn học yêu thích của học sinh lớp 7A. Thể dục chiếm bao nhiêu phần trăm?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Toán",
+            "value": 40
+          },
+          {
+            "label": "Ngữ văn",
+            "value": 25
+          },
+          {
+            "label": "Tiếng Anh",
+            "value": 20
+          },
+          {
+            "label": "Thể dục",
+            "value": 15,
+            "text": "?"
+          }
+        ]
+      },
       "options": [
         "10%",
         "15%",
@@ -608,7 +630,28 @@
       "id": "m5-41",
       "ch": 5,
       "topic": "Đọc biểu đồ quạt tròn",
-      "q": "Lớp 7B có 40 học sinh. Biểu đồ quạt tròn cho biết 25% số học sinh đi học bằng xe buýt. Có bao nhiêu bạn đi xe buýt?",
+      "q": "Lớp 7B có 40 học sinh. Dựa vào biểu đồ quạt tròn dưới đây về cách đến trường của lớp, hỏi có bao nhiêu bạn đi xe buýt?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Xe đạp",
+            "value": 40
+          },
+          {
+            "label": "Đi bộ",
+            "value": 20
+          },
+          {
+            "label": "Xe buýt",
+            "value": 25
+          },
+          {
+            "label": "Đưa đón",
+            "value": 15
+          }
+        ]
+      },
       "options": [
         "4 bạn",
         "25 bạn",
@@ -617,7 +660,7 @@
       ],
       "correct": 2,
       "answer": "10 bạn",
-      "explanation": "🔑 Lấy tổng số nhân tỉ lệ: 40 × 25 : 100 = 10 (bạn).<br>✗ 4 bạn là 40 : 10, không phải phần trăm.<br>✗ 25 là phần trăm, không phải số bạn.<br>✗ 15 bạn ứng với 37,5%, không khớp đề."
+      "explanation": "🔑 Lấy tổng số nhân tỉ lệ: 40 × 25 : 100 = 10 (bạn).<br>✗ 4 bạn là 40 : 10, không phải phần trăm.<br>✗ 25 là phần trăm, không phải số bạn.<br>✗ 15 bạn ứng với 37,5%, không khớp biểu đồ."
     },
     {
       "id": "m5-42",
@@ -638,7 +681,22 @@
       "id": "m5-43",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Biểu đồ đoạn thẳng về nhiệt độ trung bình (°C) cho biết: tháng 1: 17; tháng 2: 19; tháng 3: 22; tháng 4: 27. Tháng nào có nhiệt độ cao nhất?",
+      "q": "Biểu đồ đoạn thẳng dưới đây cho biết nhiệt độ trung bình (°C) của các tháng 1, 2, 3, 4 (viết tắt T1, T2, T3, T4). Tháng nào có nhiệt độ cao nhất?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "T1",
+          "T2",
+          "T3",
+          "T4"
+        ],
+        "values": [
+          17,
+          19,
+          22,
+          27
+        ]
+      },
       "options": [
         "Tháng 1",
         "Tháng 2",
@@ -653,7 +711,18 @@
       "id": "m5-44",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Trên biểu đồ đoạn thẳng, đoạn nối hai điểm liên tiếp đi XUỐNG cho ta biết điều gì?",
+      "q": "Biểu đồ đoạn thẳng dưới đây ghi số áo một cửa hàng bán được trong tuần 1 (T1) và tuần 2 (T2). Đoạn nối hai điểm liên tiếp đi XUỐNG cho ta biết điều gì?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "T1",
+          "T2"
+        ],
+        "values": [
+          30,
+          20
+        ]
+      },
       "options": [
         "Đại lượng đó tăng lên",
         "Đại lượng đó không thay đổi",
@@ -668,7 +737,22 @@
       "id": "m5-45",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Số học sinh giỏi của một lớp: năm 2020 là 20; năm 2021 là 25; năm 2022 là 35; năm 2023 là 30. Năm nào số học sinh giỏi GIẢM so với năm liền trước?",
+      "q": "Biểu đồ đoạn thẳng dưới đây cho biết số học sinh giỏi của một lớp trong bốn năm. Năm nào số học sinh giỏi GIẢM so với năm liền trước?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "2020",
+          "2021",
+          "2022",
+          "2023"
+        ],
+        "values": [
+          20,
+          25,
+          35,
+          30
+        ]
+      },
       "options": [
         "Năm 2023",
         "Năm 2021",
@@ -683,22 +767,58 @@
       "id": "m5-46",
       "ch": 5,
       "topic": "Đọc biểu đồ quạt tròn",
-      "q": "Biểu đồ quạt tròn về cách đi học của lớp 7D: xe đạp 45%, đi bộ 30%, xe buýt 15%, bố mẹ đưa 10%. Phần lớn nhất của biểu đồ ứng với cách đi học nào?",
+      "q": "Biểu đồ quạt tròn dưới đây cho biết cách đi học của học sinh lớp 7D. Phần lớn nhất của biểu đồ ứng với cách đi học nào?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Xe đạp",
+            "value": 45
+          },
+          {
+            "label": "Đi bộ",
+            "value": 30
+          },
+          {
+            "label": "Xe buýt",
+            "value": 15
+          },
+          {
+            "label": "Đưa đón",
+            "value": 10
+          }
+        ]
+      },
       "options": [
         "Đi bộ",
         "Xe đạp",
         "Xe buýt",
-        "Bố mẹ đưa"
+        "Đưa đón"
       ],
       "correct": 1,
       "answer": "Xe đạp",
-      "explanation": "🔑 Phần lớn nhất ứng với tỉ lệ lớn nhất: 45% là của xe đạp.<br>✗ Đi bộ 30%, chỉ đứng thứ hai.<br>✗ Xe buýt 15%, đứng thứ ba.<br>✗ Bố mẹ đưa 10%, phần nhỏ nhất."
+      "explanation": "🔑 Phần lớn nhất ứng với tỉ lệ lớn nhất: 45% là của xe đạp.<br>✗ Đi bộ 30%, chỉ đứng thứ hai.<br>✗ Xe buýt 15%, đứng thứ ba.<br>✗ Đưa đón 10%, phần nhỏ nhất."
     },
     {
       "id": "m5-47",
       "ch": 5,
       "topic": "Đọc biểu đồ quạt tròn",
-      "q": "Trong một biểu đồ hình quạt tròn, một phần chiếm đúng NỬA hình tròn. Phần đó ứng với bao nhiêu phần trăm?",
+      "q": "Trong biểu đồ quạt tròn dưới đây, phần A chiếm đúng NỬA hình tròn. Phần A ứng với bao nhiêu phần trăm?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Phần A",
+            "value": 50,
+            "text": "?"
+          },
+          {
+            "label": "Phần B",
+            "value": 50,
+            "text": "?"
+          }
+        ]
+      },
       "options": [
         "25%",
         "40%",
@@ -713,7 +833,18 @@
       "id": "m5-48",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Biểu đồ đoạn thẳng cho biết số cây trường trồng được: năm 2021 là 120 cây; năm 2022 là 150 cây. Số cây năm 2022 thay đổi thế nào so với năm 2021?",
+      "q": "Biểu đồ đoạn thẳng dưới đây cho biết số cây trường trồng được trong hai năm. Số cây năm 2022 thay đổi thế nào so với năm 2021?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "2021",
+          "2022"
+        ],
+        "values": [
+          120,
+          150
+        ]
+      },
       "options": [
         "Giảm 30 cây",
         "Tăng 150 cây",
@@ -728,7 +859,28 @@
       "id": "m5-49",
       "ch": 5,
       "topic": "Đọc biểu đồ quạt tròn",
-      "q": "Biểu đồ quạt tròn của lớp 7A cho biết 20% học sinh thích môn Tin học nhưng không ghi sĩ số lớp. Từ biểu đồ này ta kết luận được gì?",
+      "q": "Biểu đồ quạt tròn dưới đây cho biết môn học yêu thích của lớp 7C nhưng không ghi sĩ số lớp. Từ biểu đồ này, ta kết luận được gì về số bạn thích môn Tin học?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Toán",
+            "value": 35
+          },
+          {
+            "label": "Ngữ văn",
+            "value": 25
+          },
+          {
+            "label": "Tin học",
+            "value": 20
+          },
+          {
+            "label": "Âm nhạc",
+            "value": 20
+          }
+        ]
+      },
       "options": [
         "Có đúng 20 bạn thích môn Tin học",
         "Cứ 100 bạn thì có 20 bạn thích Tin học; muốn biết số bạn cụ thể phải biết sĩ số lớp",
@@ -737,13 +889,28 @@
       ],
       "correct": 1,
       "answer": "Cứ 100 bạn thì có 20 bạn thích Tin học; muốn biết số bạn cụ thể phải biết sĩ số lớp",
-      "explanation": "🔑 Quạt tròn chỉ cho TỈ LỆ; muốn ra số bạn phải nhân với sĩ số.<br>✗ 20% không phải 20 bạn: lớp 40 thì là 8.<br>✗ Vẫn kết luận được về tỉ lệ.<br>✗ Thích nhất hay không còn phải so môn khác."
+      "explanation": "🔑 Quạt tròn chỉ cho TỈ LỆ; muốn ra số bạn phải nhân với sĩ số.<br>✗ 20% không phải 20 bạn: lớp 40 thì là 8.<br>✗ Vẫn kết luận được về tỉ lệ.<br>✗ Trên biểu đồ, Toán 35% mới là phần lớn nhất."
     },
     {
       "id": "m5-50",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Số lượt bạn đọc mượn sách ở thư viện: tháng 9: 120; tháng 10: 150; tháng 11: 180; tháng 12: 210. Nhận xét nào đúng về biểu đồ đoạn thẳng của dãy số liệu này?",
+      "q": "Biểu đồ đoạn thẳng dưới đây cho biết số lượt bạn đọc mượn sách ở thư viện trong bốn tháng cuối năm (T9, T10, T11, T12). Nhận xét nào đúng về biểu đồ này?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "T9",
+          "T10",
+          "T11",
+          "T12"
+        ],
+        "values": [
+          120,
+          150,
+          180,
+          210
+        ]
+      },
       "options": [
         "Đường biểu diễn đi lên đều, số lượt mượn tăng dần qua các tháng",
         "Đường biểu diễn đi xuống, số lượt mượn giảm dần",
@@ -774,7 +941,22 @@
       "id": "m5-52",
       "ch": 5,
       "topic": "Đọc biểu đồ đoạn thẳng",
-      "q": "Biểu đồ đoạn thẳng thống kê số học sinh lớp 7/4 đã giải xong một bài toán tính đến các mốc thời gian (số liệu cộng dồn): đến phút thứ 5 có 2 bạn giải xong, đến phút thứ 7 có 6 bạn giải xong, đến phút thứ 9 có 8 bạn giải xong, đến phút thứ 11 có 10 bạn giải xong (cả lớp). Bạn nào giải xong trong vòng 5 phút thì được thầy giáo thưởng. Hỏi lớp 7/4 có bao nhiêu bạn được thưởng?",
+      "q": "Biểu đồ đoạn thẳng dưới đây cho biết số học sinh lớp 7/4 đã giải xong một bài toán tính đến từng mốc thời gian (trục ngang tính bằng phút; số liệu cộng dồn). Bạn nào giải xong trong vòng 5 phút thì được thầy giáo thưởng. Hỏi lớp 7/4 có bao nhiêu bạn được thưởng?",
+      "fig": {
+        "t": "line-chart",
+        "labels": [
+          "5",
+          "7",
+          "9",
+          "11"
+        ],
+        "values": [
+          2,
+          6,
+          8,
+          10
+        ]
+      },
       "options": [
         "2 bạn",
         "6 bạn",
@@ -783,7 +965,7 @@
       ],
       "correct": 0,
       "answer": "2 bạn",
-      "explanation": "🔑 \"Giải xong trong vòng 5 phút\" nghĩa là tính đến mốc 5 phút; theo số liệu cộng dồn, đến phút thứ 5 có 2 bạn đã giải xong, nên có 2 bạn được thưởng.<br>✗ 6 bạn: nhầm sang số liệu cộng dồn ở mốc phút thứ 7.<br>✗ 4 bạn: nhầm tính số bạn giải xong trong khoảng từ phút 5 đến phút 7 (6 − 2 = 4) thay vì trong vòng 5 phút.<br>✗ 10 bạn: nhầm đó là tổng số học sinh cả lớp (mốc phút thứ 11).",
+      "explanation": "🔑 \"Giải xong trong vòng 5 phút\" nghĩa là tính đến mốc 5 phút; trên biểu đồ, đến phút thứ 5 có 2 bạn đã giải xong, nên có 2 bạn được thưởng.<br>✗ 6 bạn: đó là số liệu cộng dồn ở mốc phút thứ 7.<br>✗ 4 bạn: nhầm tính số bạn giải xong trong khoảng từ phút 5 đến phút 7 (6 − 2 = 4) thay vì trong vòng 5 phút.<br>✗ 10 bạn: đó là số bạn đã giải xong tính đến mốc phút thứ 11, không phải trong vòng 5 phút.",
       "source": "TQC-TL4"
     },
     {
@@ -822,7 +1004,32 @@
       "id": "m5-55",
       "ch": 5,
       "topic": "Phân tích bảng số liệu",
-      "q": "Khảo sát khả năng tự nấu ăn của lớp 7A cho kết quả: Không đạt: 15 bạn; Đạt: 15 bạn; Giỏi: 6 bạn; Xuất sắc: 4 bạn. Lớp 7A có tất cả bao nhiêu học sinh?",
+      "q": "Biểu đồ dưới đây cho biết kết quả khảo sát khả năng tự nấu ăn của lớp 7A; số ghi bên cạnh mỗi mức là SỐ BẠN đạt mức đó. Lớp 7A có tất cả bao nhiêu học sinh?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Không đạt",
+            "value": 15,
+            "text": "15"
+          },
+          {
+            "label": "Đạt",
+            "value": 15,
+            "text": "15"
+          },
+          {
+            "label": "Giỏi",
+            "value": 6,
+            "text": "6"
+          },
+          {
+            "label": "Xuất sắc",
+            "value": 4,
+            "text": "4"
+          }
+        ]
+      },
       "options": [
         "36 học sinh",
         "44 học sinh",
@@ -838,7 +1045,32 @@
       "id": "m5-56",
       "ch": 5,
       "topic": "Phân tích bảng số liệu",
-      "q": "Với kết quả khảo sát: Không đạt: 15 bạn; Đạt: 15 bạn; Giỏi: 6 bạn; Xuất sắc: 4 bạn (tổng 40 học sinh), tỉ lệ phần trăm của loại 'Giỏi' so với cả lớp là bao nhiêu?",
+      "q": "Vẫn với kết quả khảo sát ở biểu đồ dưới đây (số ghi bên cạnh mỗi mức là số bạn; cả lớp có 40 học sinh), tỉ lệ phần trăm của loại 'Giỏi' so với cả lớp là bao nhiêu?",
+      "fig": {
+        "t": "pie-chart",
+        "segments": [
+          {
+            "label": "Không đạt",
+            "value": 15,
+            "text": "15"
+          },
+          {
+            "label": "Đạt",
+            "value": 15,
+            "text": "15"
+          },
+          {
+            "label": "Giỏi",
+            "value": 6,
+            "text": "6"
+          },
+          {
+            "label": "Xuất sắc",
+            "value": 4,
+            "text": "4"
+          }
+        ]
+      },
       "options": [
         "15%",
         "60%",

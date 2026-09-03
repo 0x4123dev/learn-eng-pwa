@@ -200,9 +200,26 @@ suite('math figures: the drawing that comes with the question', () => {
         assert.truthy(WITH_FIG.length >= 114, `only ${WITH_FIG.length} questions carry a figure`);
     });
 
-    test('no chapter outside 3 and 4 carries one — the tab is not an art gallery', () => {
-        const stray = WITH_FIG.filter(q => q.ch !== 3 && q.ch !== 4).map(q => q.id);
+    test('no chapter outside 3, 4 and 5 carries one — the tab is not an art gallery', () => {
+        const stray = WITH_FIG.filter(q => q.ch !== 3 && q.ch !== 4 && q.ch !== 5).map(q => q.id);
         assert.deepEqual(stray, []);
+    });
+
+    test('Chương 5 reads a real chart, the way the đề thi does', () => {
+        // Một câu "đọc biểu đồ" mà kể số liệu bằng lời thì bé không hề đọc
+        // biểu đồ nào — nó thành bài cộng trừ. Ngân hàng luyện tập phải cho
+        // xem hình đúng như mười đề thi thử đang làm.
+        const ch5 = WITH_FIG.filter(q => q.ch === 5);
+        assert.truthy(ch5.length >= 13, `only ${ch5.length} chapter-5 questions draw their chart`);
+        const wrong = ch5.filter(q => q.fig.t !== 'pie-chart' && q.fig.t !== 'line-chart').map(q => q.id);
+        assert.deepEqual(wrong, [], 'a Chương 5 figure is a chart, not a geometry drawing');
+        // Hai câu cố tình KHÔNG có hình: m5-40 hỏi tổng các phần trăm (vẽ ra
+        // là cộng lên thành đáp án) và m5-42 nói về một biểu đồ SAI, tổng mới
+        // 90% — khuôn pie-chart luôn khép kín vòng tròn nên không tả được nó.
+        const bare = MATH_QUESTIONS
+            .filter(q => q.ch === 5 && !q.fig && /^(Đọc biểu đồ|Phân tích bảng)/.test(q.topic || ''))
+            .map(q => q.id).sort();
+        assert.deepEqual(bare, ['m5-40', 'm5-42']);
     });
 
     test('every fig names a template that exists and actually draws', () => {
@@ -344,7 +361,9 @@ suite('math figures: the mock exam papers', () => {
         const leaks = [];
         EXAM_Q.forEach(({ id, q }) => {
             const t = norm(q.topic), a = norm(q.answer), stem = norm(q.q);
-            if (t.length < 5 || stem.includes(t)) return;   // already said in the question
+            // A short answer like "AM" sits inside "tam giác" in a topic name;
+            // that is a letter collision, not a leak. Require both to be long.
+            if (t.length < 5 || a.length < 5 || stem.includes(t)) return;
             if (a.includes(t) || t.includes(a)) leaks.push(id);
             const m = /^Trường hợp (c-g-c|c-c-c|g-c-g)$/.exec(q.topic || '');
             if (m && new RegExp(m[1].replace(/-/g, '.'), 'i').test(q.answer)) leaks.push(id);

@@ -1184,7 +1184,7 @@
       "id": "m1-76",
       "ch": 1,
       "topic": "Bài toán thực tế",
-      "q": "Chị Lan (khách hàng thân thiết, được giảm 20% rồi giảm thêm 15% trên giá đã giảm) mua chiếc váy giá niêm yết 1 200 000 đồng và một đôi giày, tổng cộng phải trả 1 496 000 đồng. Hỏi đôi giày ban đầu có giá niêm yết là bao nhiêu?",
+      "q": "Một cửa hàng giảm 20% cho tất cả sản phẩm. Khách hàng thân thiết được giảm thêm 15% trên giá đã giảm. Chị Lan là khách hàng thân thiết, mua một chiếc váy có giá niêm yết 1 200 000 đồng và một đôi giày. Sau khi áp dụng cả hai mức giảm cho cả váy và giày, chị phải trả tổng cộng 1 496 000 đồng. Hỏi giá niêm yết của đôi giày là bao nhiêu?",
       "options": [
         "680 000 đồng",
         "850 000 đồng",
@@ -1193,7 +1193,7 @@
       ],
       "correct": 2,
       "answer": "1 000 000 đồng",
-      "explanation": "🔑 Số tiền chị Lan trả cho váy là 816 000 đồng, nên số tiền trả cho giày là 1 496 000 − 816 000 = 680 000 đồng. Vì giày cũng được giảm 20% rồi giảm thêm 15%, giá niêm yết giày là 680 000 : 0,8 : 0,85 = 1 000 000 đồng.<br>✗ 680 000 đồng: lấy luôn số tiền đã trả cho giày làm giá niêm yết, quên tính ngược hai lần giảm giá.<br>✗ 850 000 đồng: chỉ tính ngược một lần giảm giá 20% (680 000 : 0,8), quên tính ngược thêm 15%.<br>✗ 800 000 đồng: chỉ tính ngược một lần giảm giá 15% (680 000 : 0,85), quên tính ngược thêm 20%.",
+      "explanation": "🔑 Sau khi giảm 20%, khách trả 100% − 20% = 80% giá niêm yết.<br>🔑 Giảm tiếp 15% trên giá đã giảm nên khách trả 80% × 85% = 68% giá niêm yết.<br><br>1) Tiền thực trả cho chiếc váy:<br>1 200 000 × 68% = 816 000 đồng.<br><br>2) Tiền thực trả cho đôi giày:<br>1 496 000 − 816 000 = 680 000 đồng.<br><br>3) Vì 680 000 đồng bằng 68% giá niêm yết của giày nên:<br>Giá niêm yết của giày = 680 000 : 0,68 = 1 000 000 đồng.<br><br>4) Kiểm tra lại:<br>(1 200 000 + 1 000 000) × 0,68 = 1 496 000 đồng.<br>Vậy giá niêm yết của đôi giày là 1 000 000 đồng.<br><br>✗ 680 000 đồng: đây là số tiền đã trả sau giảm giá, không phải giá niêm yết.<br>✗ 850 000 đồng: chỉ tính ngược lần giảm 20%, còn thiếu lần giảm 15%.<br>✗ 800 000 đồng: chỉ tính ngược lần giảm 15%, còn thiếu lần giảm 20%.",
       "source": "LTT-TL4b"
     }
   ]
