@@ -201,19 +201,41 @@ function _mathTypeset(value, escapeText) {
   return out;
 }
 
+// A page citation is one indivisible token to a reader — "(SGK tr. 5)" — but
+// to the line-breaker it is three words with two break opportunities, so at
+// 320px it could leave "5)." alone on its own line, looking exactly like the
+// split card this panel was just rescued from. Keep it whole.
+//
+// Two shapes, both real: the whole parenthetical when it IS the citation, and
+// a bare "tr. 5" when the reference runs on into the sentence ("SGK tr. 28:
+// chẳng hạn…", 243 of those). The 24-character cap is what stops the first
+// rule swallowing an ordinary parenthetical that happens to end in a number,
+// and excluding < > keeps it from ever reaching across a tag.
+const MATH_CITE_PAREN_RE = /\((?:[^()<>]{0,24}?)tr\.\s*\d+\)/g;
+const MATH_CITE_BARE_RE = /\btr\.\s*\d+/g;
+
+function mathCite(html) {
+  return String(html == null ? '' : html)
+    .replace(MATH_CITE_PAREN_RE, cite => '<span class="math-cite">' + cite + '</span>')
+    .replace(MATH_CITE_BARE_RE, (cite, at, whole) =>
+      /<span class="math-cite">[^<]*$/.test(whole.slice(0, at))
+        ? cite
+        : '<span class="math-cite">' + cite + '</span>');
+}
+
 function mathFormula(s) {
-  return _mathTypeset(s, true);
+  return mathCite(_mathTypeset(s, true));
 }
 
 // Explanations carry a deliberately tiny trusted tag set. Typeset only the
 // text between those tags so <b>/<br> survive and generated maths spans never
 // get parsed a second time.
 function mathRich(html) {
-  return String(html == null ? '' : html)
+  return mathCite(String(html == null ? '' : html)
     .split(/(<\/?(?:b|br|i|strong|u)\s*\/?\s*>)/i)
     .map(part => /^<\/?(?:b|br|i|strong|u)\s*\/?\s*>$/i.test(part)
       ? part : _mathTypeset(part, false))
-    .join('');
+    .join(''));
 }
 
 // A stored explanation is one paragraph that already names its own parts:
