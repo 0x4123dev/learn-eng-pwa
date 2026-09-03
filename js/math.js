@@ -40,6 +40,19 @@ const MATH_SUPERSCRIPTS = {
 };
 const MATH_SUP_RE = new RegExp('[' + Object.keys(MATH_SUPERSCRIPTS).join('') + ']+', 'g');
 
+// The same argument as MATH_SUPERSCRIPTS, one row down: y₁ and x₂ are drawn by
+// the font as glyphs so small a child cannot tell ₁ from ₂ on a phone, and no
+// amount of enlarging the line helps. Turning them into real <sub> lets CSS
+// size them like every other index in the app. 204 subscripts in the banks.
+const MATH_SUBSCRIPTS = {
+  '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5',
+  '₆': '6', '₇': '7', '₈': '8', '₉': '9',
+  '₊': '+', '₋': '−', '₌': '=', '₍': '(', '₎': ')',
+  'ₐ': 'a', 'ₑ': 'e', 'ₕ': 'h', 'ᵢ': 'i', 'ⱼ': 'j', 'ₖ': 'k', 'ₗ': 'l',
+  'ₘ': 'm', 'ₙ': 'n', 'ₒ': 'o', 'ₚ': 'p', 'ᵣ': 'r', 'ₛ': 's', 'ₜ': 't',
+  'ᵤ': 'u', 'ᵥ': 'v', 'ₓ': 'x'
+};
+
 // "√" on its own is only the hook. A căn bậc hai is the hook PLUS the bar
 // (vinculum) drawn over what is under it — without it, "√36" reads as a tick
 // mark standing next to a number, and "√(a²) = |a|" gives no clue where the
@@ -109,8 +122,23 @@ function _mathTypeset(value, escapeText) {
     // but neither should be printed to a child. Convert them at the shared
     // renderer boundary so every question, option, answer and explanation
     // receives the same real raised exponent without rewriting the source.
-    const power = /^([−-]?(?:\([^()]*\)|\|[^|]+\||\d+(?:[.,]\d+)?|[A-Za-z]+))\s*(?:mũ|\^)\s*\(([^()]*)\)/i
-      .exec(s.slice(i));
+    // Two notations, both stored in the banks and neither fit to show a child.
+    // The parenthesised one covers either spelling — "5 mũ (x + 4)", "5^(x+4)".
+    // The bare one is caret-ONLY: "mũ" is also an ordinary Vietnamese noun
+    // ("số mũ" = exponent) and occurs as prose 343 times, where there is no
+    // base to raise; a caret never means anything else. 884 exponents in the
+    // banks are written bare — "x^2", "ax^m", "(−3)^2" — and until now every
+    // one of them printed the caret raw.
+    //
+    // A letter base is ONE letter on purpose: "ax^m" is a·xᵐ, not (ax)ᵐ, so a
+    // greedy letter run would raise the coefficient along with the variable.
+    // The base's parentheses may themselves contain a pair — "(2 · (−3))^2" is
+    // real bank content — so the group allows one level of nesting.
+    const POWER_BASE = '([−-]?(?:\\((?:[^()]|\\([^()]*\\))*\\)|\\|[^|]+\\||\\d+(?:[.,]\\d+)?|[A-Za-z]))';
+    const power = new RegExp('^' + POWER_BASE + '\\s*(?:mũ|\\^)\\s*\\(([^()]*)\\)', 'i')
+      .exec(s.slice(i))
+      || new RegExp('^' + POWER_BASE + '\\^(\\d+|[A-Za-z])')
+        .exec(s.slice(i));
     if (power) {
       out += '<span class="math-power">' + _mathTypeset(power[1], escapeText)
         + '<sup>' + _mathTypeset(power[2], escapeText) + '</sup></span>';
@@ -158,6 +186,15 @@ function _mathTypeset(value, escapeText) {
       continue;
     }
 
+    if (MATH_SUBSCRIPTS[s[i]]) {
+      let end = i + 1;
+      while (end < s.length && MATH_SUBSCRIPTS[s[end]]) end++;
+      out += '<sub>' + Array.from(s.slice(i, end))
+        .map(ch => MATH_SUBSCRIPTS[ch] || ch).join('') + '</sub>';
+      i = end;
+      continue;
+    }
+
     out += escapeText ? mathEsc(s[i]) : s[i];
     i++;
   }
@@ -179,63 +216,110 @@ function mathRich(html) {
     .join('');
 }
 
+// A stored explanation is one paragraph that already names its own parts:
+// "Lý thuyết: …" and then "Áp dụng: …". Those two labels are the only place it
+// may legitimately be broken.
+//
+// This used to split on ". ", "; " and some ", ", which shredded one
+// explanation into a dozen numbered boxes — and broke inside "(SGK tr. 5)",
+// where box 4 read "(SGK tr" and box 5 read "5)". Sentence punctuation is not
+// structure. Everything else in the paragraph — "Kết luận", "Thử lại",
+// "Bước 3 — …" — stays INSIDE its section, because it is the same thought
+// continuing, and a reader wants it in one place rather than spread over five
+// numbered cards.
+const MATH_SECTION_RE = /(?:<(?:b|strong)>\s*)?(Lý thuyết(?:\s*\d)?|Áp dụng)\s*:?\s*(?:<\/(?:b|strong)>)?\s*:?\s*/gi;
+
+// Inside a section, a wall of prose is still a wall. A child reads a worked
+// example one step at a time, so each step gets its own LINE — a <br> inside
+// the one box, not a box of its own, which is what shredded these panels
+// before.
+//
+// Breaks are inserted at:
+//   • "Bước N —" markers, so every step of a solution starts a line;
+//   • the connectives that mark a deduction — "suy ra", "nên", "do đó",
+//     "từ đó", "vậy", "ta được" — which is where one step ends;
+//   • a full stop that really ends a sentence.
+//
+// "Really" is the whole difficulty. A period is NOT a sentence end when it
+// sits inside brackets — "(SGK tr. 6)" — or after "tr", which appears 2,815
+// times as a page citation and 243 of those outside any bracket ("Định lí 1
+// tr. 60, cạnh lớn hơn…"). Breaking there is how the old code produced a card
+// reading "(SGK tr" and another reading "5)".
+const MATH_STEP_RE = /^(?:<(?:b|strong)>\s*)?Bước\s*\d/i;
+const MATH_DEDUCE_RE = /^,\s+(?:suy ra|nên|do đó|từ đó|vậy|ta được)\b/i;
+
+function _mathIsUpper(ch) {
+  return !!ch && ch !== ch.toLowerCase() && ch === ch.toUpperCase();
+}
+
+function mathLineBreaks(html) {
+  const text = String(html == null ? '' : html);
+  let out = '';
+  let depth = 0;
+  for (let i = 0; i < text.length;) {
+    if (text[i] === '<') {
+      const close = text.indexOf('>', i);
+      const tag = close < 0 ? text.slice(i) : text.slice(i, close + 1);
+      // A step marker starts a line, even mid-sentence.
+      if (MATH_STEP_RE.test(text.slice(i)) && out && !/<br\s*\/?>\s*$/i.test(out)) out += '<br>';
+      out += tag;
+      i += tag.length;
+      continue;
+    }
+    if (MATH_STEP_RE.test(text.slice(i)) && out && !/<br\s*\/?>\s*$/i.test(out)) out += '<br>';
+    const deduce = MATH_DEDUCE_RE.exec(text.slice(i));
+    if (deduce && depth === 0) {
+      out += ',<br>' + deduce[0].slice(1).replace(/^\s+/, '');
+      i += deduce[0].length;
+      continue;
+    }
+    const ch = text[i];
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth = Math.max(0, depth - 1);
+    out += ch;
+    i++;
+    if (ch !== '.' || depth > 0) continue;
+    if (/(?:^|[\s(>])tr$/i.test(out.slice(0, -1))) continue;   // a page citation, not a stop
+    const rest = text.slice(i);
+    const gap = /^\s+/.exec(rest);
+    if (!gap) continue;
+    const next = rest.slice(gap[0].length);
+    if (!next) continue;
+    const first = next[0];
+    // Not before an opening bracket: "…bằng nhau. (SGK tr. 5)" is a citation
+    // belonging to the sentence it follows, not a line of its own.
+    if (!(_mathIsUpper(first) || /[0-9]/.test(first) || next.startsWith('<b'))) continue;
+    out += '<br>';
+    i += gap[0].length;
+  }
+  return out.replace(/(?:<br\s*\/?>\s*){2,}/gi, '<br>').replace(/^(?:<br\s*\/?>\s*)+|(?:<br\s*\/?>\s*)+$/gi, '');
+}
+
 function mathSolutionSteps(source) {
-  return String(source == null ? '' : source)
-    .replace(/^\s*🔑\s*/u, '')
-    .split(/(?:\.\s+|;\s+|,\s+(?=(?:suy ra|nên|do đó|từ đó|vậy|ta được)\b))/i)
-    .map(step => step.trim())
-    .filter(Boolean);
-}
+  // 🔑 marks the start of EACH reasoning row in the banks, so once the rows are
+  // rejoined there is one in the middle of the text too — strip them all, not
+  // just the leading one, or 1,359 explanations print a key emoji mid-paragraph.
+  const text = String(source == null ? '' : source).replace(/🔑\s*/gu, '').trim();
+  if (!text) return [];
 
-function mathRuleForQuestion(q) {
-  const topic = String(q && q.topic || '');
-  const stem = String(q && q.q || '');
-  const text = `${topic} ${stem}`.toLowerCase();
+  const marks = [];
+  MATH_SECTION_RE.lastIndex = 0;
+  let m;
+  while ((m = MATH_SECTION_RE.exec(text))) {
+    marks.push({ title: m[1].trim(), start: m.index, bodyStart: m.index + m[0].length });
+  }
+  // No label at all — the older banks store a single 🔑 sentence. One box.
+  if (!marks.length) return [{ title: '', body: mathLineBreaks(text) }];
 
-  if (/√|căn bậc hai/.test(text))
-    return 'Căn bậc hai số học của a ≥ 0 là số không âm có bình phương bằng a. Tính biểu thức dưới dấu căn trước, rồi mới lấy căn.';
-  if (/giá trị tuyệt đối|\|[^|]+\|/.test(text))
-    return 'Giá trị tuyệt đối là khoảng cách đến 0 nên luôn không âm: số âm đổi thành số đối, số không âm giữ nguyên.';
-  if (/lũy thừa|luỹ thừa|mũ|[⁰¹²³⁴⁵⁶⁷⁸⁹ˣⁿᵐ]/.test(text))
-    return 'Đưa các lũy thừa về cùng cơ số. Khi nhân thì cộng số mũ, khi chia thì trừ số mũ; hai lũy thừa cùng cơ số bằng nhau thì các số mũ bằng nhau.';
-  if (/chuyển vế|tìm x|tìm số.*x/.test(text))
-    return 'Muốn tìm x, chuyển hạng tử sang vế kia và đổi dấu, sau đó thực hiện cùng một phép tính hợp lệ trên hai vế.';
-  if (/phần trăm|%|giảm giá|tỉ lệ/.test(text))
-    return 'Đổi tỉ lệ phần trăm p% thành p/100. Muốn tìm giá trị của một phần, lấy tổng nhân với tỉ lệ tương ứng.';
-  if (/số đối/.test(text))
-    return 'Số đối của a là −a; hai số đối có tổng bằng 0. Chỉ đổi dấu, không đảo tử và mẫu.';
-  if (/số thực|số vô tỉ|thập phân/.test(text))
-    return 'Số hữu tỉ viết được dưới dạng phân số và có dạng thập phân hữu hạn hoặc vô hạn tuần hoàn; số vô tỉ có dạng thập phân vô hạn không tuần hoàn.';
-  if (/phân số|số hữu tỉ|\d+\s*\/\s*\d+/.test(text))
-    return 'Với phân số, quy đồng trước khi cộng hoặc trừ; khi nhân thì nhân tử với tử, mẫu với mẫu; khi chia thì nhân với phân số nghịch đảo.';
-  if (/làm tròn/.test(text))
-    return 'Giữ chữ số ở hàng cần làm tròn rồi xét chữ số ngay bên phải: từ 5 trở lên thì tăng 1, nhỏ hơn 5 thì giữ nguyên.';
-  if (/kề bù/.test(text))
-    return 'Hai góc kề bù có tổng số đo bằng 180°, nên góc chưa biết bằng 180° trừ góc đã biết.';
-  if (/đối đỉnh/.test(text))
-    return 'Hai góc đối đỉnh thì bằng nhau; góc kề với chúng tạo thành một cặp kề bù có tổng 180°.';
-  if (/tia phân giác/.test(text))
-    return 'Tia phân giác chia một góc thành hai góc bằng nhau, mỗi góc bằng một nửa góc ban đầu.';
-  if (/tiên đề euclid/.test(text))
-    return 'Qua một điểm nằm ngoài một đường thẳng, chỉ có một đường thẳng song song với đường thẳng đã cho.';
-  if (/c-c-c|c-g-c|g-c-g|bằng nhau|cạnh huyền|trường hợp không hợp lệ/.test(text))
-    return 'Đối chiếu các cạnh và góc tương ứng theo đúng thứ tự đỉnh, rồi chọn đúng trường hợp bằng nhau của hai tam giác.';
-  if (/đường trung trực/.test(text))
-    return 'Điểm nằm trên đường trung trực của một đoạn thẳng thì cách đều hai đầu mút; chiều đảo lại cũng đúng.';
-  if (/tổng ba góc|tam giác cân|tam giác vuông|góc ngoài/.test(text))
-    return 'Tổng ba góc trong một tam giác bằng 180°. Tam giác cân có hai góc ở đáy bằng nhau; tam giác vuông có hai góc nhọn phụ nhau.';
-  if (/song song|so le trong|đồng vị|vuông góc/.test(text))
-    return 'Xác định đúng vị trí các góc. Với hai đường thẳng song song, góc so le trong và đồng vị bằng nhau, còn hai góc trong cùng phía bù nhau.';
-  if (/biểu đồ|dữ liệu|thống kê/.test(text))
-    return 'Đọc đúng đại lượng, đơn vị và mốc dữ liệu; sau đó so sánh hoặc tính từ các số liệu đã cho, không suy đoán từ hình thức biểu đồ.';
-  if (/định lí|giả thiết|kết luận/.test(text))
-    return 'Tách rõ điều đề bài cho là giả thiết và điều cần suy ra là kết luận, rồi đối chiếu đúng nội dung định lí.';
-  return 'Đọc lần lượt dữ kiện, xác định quy tắc phù hợp, thực hiện phép biến đổi và kiểm tra kết quả với yêu cầu của đề.';
-}
-
-function mathConclusionForQuestion(q) {
-  if (!q || q.answer == null || String(q.answer).trim() === '') return '';
-  return '<strong>Kết luận:</strong> đáp án đúng là <b>' + String(q.answer).trim() + '</b>.';
+  const out = [];
+  const preamble = text.slice(0, marks[0].start).trim();
+  if (preamble) out.push({ title: '', body: mathLineBreaks(preamble) });
+  marks.forEach((mark, i) => {
+    const end = i + 1 < marks.length ? marks[i + 1].start : text.length;
+    const body = text.slice(mark.bodyStart, end).trim();
+    if (body) out.push({ title: mark.title, body: mathLineBreaks(body) });
+  });
+  return out;
 }
 
 // Turn every stored explanation into the same worked-solution layout. The
@@ -246,27 +330,35 @@ function mathConclusionForQuestion(q) {
 function mathExplanationHTML(source, q) {
   const rows = String(source == null ? '' : source)
     .split(/<br\s*\/?\s*>/i).map(row => row.trim()).filter(Boolean);
-  const solution = [];
+  // The <br>s inside the reasoning are line breaks, not section boundaries:
+  // "Bước 1 — …<br>Bước 2 — …<br>Bước 3 — Kết luận…" is ONE worked example and
+  // belongs in one card. Rejoin every non-✗ row and let the labels decide the
+  // sections, or a three-step calculation arrives as three cards — one of which
+  // was just the words "Bước 2 —".
+  const reasoning = [];
   const mistakes = [];
 
   rows.forEach(row => {
     if (/^\s*✗/u.test(row)) mistakes.push(row.replace(/^\s*✗\s*/u, ''));
-    else solution.push(...mathSolutionSteps(row));
+    else reasoning.push(row);
   });
+  const solution = mathSolutionSteps(reasoning.join('<br>'));
 
-  const detailedSolution = solution.slice();
-  if (q) {
-    detailedSolution.unshift('<strong>Quy tắc cần dùng:</strong> ' + mathRuleForQuestion(q));
-    const conclusion = mathConclusionForQuestion(q);
-    if (conclusion) detailedSolution.push(conclusion);
-  }
-
-  const worked = detailedSolution.length ? `
-    <section class="math-worked" aria-label="Lời giải từng bước">
+  // No generated "Quy tắc cần dùng" and no generated "Kết luận" any more.
+  // The rule was picked by keyword-matching the topic and stem, and the words
+  // it matched on overlap: "dãy tỉ số bằng NHAU" hit the triangle-congruence
+  // rule, "TỈ LỆ thức" hit the percentages rule. A confidently-worded rule that
+  // belongs to another chapter is worse than no rule — the child is being
+  // taught the wrong thing first, above the correct explanation. What the bank
+  // stored was always right; only what this function invented was wrong.
+  const worked = solution.length ? `
+    <section class="math-worked" aria-label="Lời giải">
       <div class="math-explain-title">Cách giải</div>
-      <ol class="math-solution-steps">
-        ${detailedSolution.map(step => `<li><div>${mathRich(step)}</div></li>`).join('')}
-      </ol>
+      <ul class="math-solution-steps">
+        ${solution.map(part => `<li>${part.title
+          ? `<div class="math-step-title">${mathEsc(part.title)}</div>` : ''
+        }<div>${mathRich(part.body)}</div></li>`).join('')}
+      </ul>
     </section>` : '';
   const errors = mistakes.length ? `
     <section class="math-mistakes" aria-label="Giải thích các phương án sai">

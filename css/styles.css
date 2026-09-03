@@ -9031,20 +9031,31 @@
            during practice and a thinner, larger one in the review five seconds
            later. (`.grammar-option-text` is belt-and-braces: js/math.js emits
            it together with `math-formula`, so options were already covered.) */
-        .math-formula sup,
-        .grammar-question-text sup,
-        .grammar-option-text sup,
-        .grammar-review-q sup,
-        .grammar-review-explain sup,
-        .grammar-explanation sup,
-        .math-hint-def sup,
-        .math-lesson-body sup {
+        .math-formula sup, .math-formula sub,
+        .grammar-question-text sup, .grammar-question-text sub,
+        .grammar-option-text sup, .grammar-option-text sub,
+        .grammar-review-q sup, .grammar-review-q sub,
+        .grammar-review-explain sup, .grammar-review-explain sub,
+        .grammar-explanation sup, .grammar-explanation sub,
+        .math-hint-def sup, .math-hint-def sub,
+        .math-lesson-body sup, .math-lesson-body sub {
             font-size: 0.75em;
             vertical-align: super;
             line-height: 0;
             font-weight: 800;
             margin-left: 0.5px;
         }
+        /* An index rides low, not high — same size and weight as an exponent so
+           x₁ and x² look like they belong to the same notation. `line-height: 0`
+           is what keeps either of them from growing the line. */
+        .math-formula sub,
+        .grammar-question-text sub,
+        .grammar-option-text sub,
+        .grammar-review-q sub,
+        .grammar-review-explain sub,
+        .grammar-explanation sub,
+        .math-hint-def sub,
+        .math-lesson-body sub { vertical-align: sub; }
         .grammar-question-text sup { font-size: 0.72em; }
 
         /* A fraction is anchored by its BAR, never by a fixed offset.
@@ -9753,23 +9764,31 @@
             margin-bottom: 9px; color: #334155; font-size: 13px;
             font-weight: 900; letter-spacing: .045em; text-transform: uppercase;
         }
+        /* One card per SECTION of the explanation — the two the banks actually
+           write, "Lý thuyết" and "Áp dụng" — not one per sentence. The numbered
+           circles went with the numbering: they counted sentences, so a single
+           explanation arrived as up to a dozen cards, two of which were "(SGK
+           tr" and "5)". A number that counts nothing meaningful is worse than
+           no number, and the section's own name says more than "3" ever did. */
         .math-solution-steps {
-            display: grid; gap: 9px; margin: 0; padding: 0;
-            list-style: none; counter-reset: math-step;
+            display: grid; gap: 10px; margin: 0; padding: 0; list-style: none;
         }
         .math-solution-steps > li {
-            counter-increment: math-step; display: grid;
-            grid-template-columns: 30px minmax(0, 1fr); gap: 10px;
-            align-items: start; padding: 11px 12px;
+            padding: 11px 13px;
             border: 1px solid rgba(22, 163, 74, .18); border-radius: 13px;
             background: rgba(255,255,255,.78); color: var(--text-primary);
             font-size: 16px; line-height: 1.8;
+            /* The result card centres its own contents, which is right for a
+               score and wrong for a paragraph: a centred explanation gives the
+               eye a new left edge on every line. The old numbered layout was
+               left-aligned only by accident, because the grid column pinned it.
+               Say it outright now. */
+            text-align: left;
         }
-        .math-solution-steps > li::before {
-            content: counter(math-step); display: grid; place-items: center;
-            width: 28px; height: 28px; margin-top: 2px; border-radius: 50%;
-            background: #dcfce7; color: #166534; font-size: 13px;
-            font-weight: 900; line-height: 1;
+        .math-step-title {
+            margin-bottom: 2px; color: #166534;
+            font-size: 12.5px; font-weight: 900;
+            letter-spacing: .05em; text-transform: uppercase; line-height: 1.3;
         }
         .math-solution-steps > li > div { min-width: 0; overflow-wrap: anywhere; }
         .math-mistakes {
@@ -9780,6 +9799,9 @@
             position: relative; padding: 9px 11px 9px 35px;
             border-radius: 11px; background: rgba(255,255,255,.55);
             color: #475569; font-size: 14px; line-height: 1.65;
+            /* Same reason, and here the centring also left the ✗ marker
+               floating away from the text it marks. */
+            text-align: left;
         }
         .math-mistakes li::before {
             content: '×'; position: absolute; left: 11px; top: 9px;
@@ -9788,10 +9810,7 @@
         .math-power { white-space: nowrap; }
         @media (max-width: 420px) {
             .math-explanation-layout { gap: 14px; }
-            .math-solution-steps > li {
-                grid-template-columns: 28px minmax(0, 1fr); gap: 8px;
-                padding: 10px; font-size: 15.5px;
-            }
+            .math-solution-steps > li { padding: 10px 11px; font-size: 15.5px; }
             .math-mistakes li { font-size: 14px; }
         }
 
