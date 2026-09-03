@@ -22,6 +22,7 @@ var NightRaidPhaser = (() => {
   }
 
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  const lerp=(a,b,p)=>a+(b-a)*p;
   const easeOut=p=>1-(1-p)*(1-p);
   const squadRows=6, squadCols=8, squadWalkCols=6;
   // Horizontal visual centroids measured inside each authored atlas cell.
@@ -50,6 +51,77 @@ var NightRaidPhaser = (() => {
     ['stone-keep','forest-fort','desert-citadel','frost-bastion','coral-palace'],
     ['sakura-castle','clockwork-keep','dragon-fortress','crystal-citadel','celestial-palace'],
   ]);
+  // Per-frame anchors for the castle damage atlases: [base centre x, ground
+  // line y] as fractions of the authored cell, measured from the opaque
+  // pixels (the bottom 12% of rows give the base centre). The generated
+  // frames are NOT registered to each other — the ruin of a stone keep sits
+  // 13% of a cell further left than the intact keep — so drawing every stage
+  // in the same box made the castle jump sideways as it broke. Placing each
+  // stage by its own anchor keeps the footprint still while the walls fall.
+  const castleAnchors=Object.freeze({
+    a:[[[.5073,.9951],[.4310,.9951],[.3730,.9951]],
+       [[.4965,.9951],[.4413,.9951],[.3270,.9951]],
+       [[.4803,.9951],[.4405,.9951],[.3273,.9951]],
+       [[.4793,.9951],[.4505,.9951],[.3377,.9707]],
+       [[.4921,.9610],[.4389,.9659],[.3415,.9610]]],
+    b:[[[.6095,.9945],[.4832,.9945],[.3545,.9945]],
+       [[.5993,.9945],[.4500,.9945],[.3479,.9945]],
+       [[.6127,.9946],[.4437,.9946],[.3314,.9946]],
+       [[.6120,.9945],[.4660,.9945],[.3195,.9945]],
+       [[.6086,.9290],[.4633,.9454],[.3398,.9454]]],
+  });
+  // The frame the gate geometry (NightRaidChoreo.GATE, the slots) was
+  // authored against: atlas a, stone keep, intact. Every other frame is
+  // shifted so its base centre and ground line land where this one's do.
+  const CASTLE_REF=Object.freeze([.5073,.9951]),CASTLE_W=430,CASTLE_H=258,CASTLE_XFADE_MS=250;
+  const FRAME_ZOOM_MIN=1.2,FRAME_ZOOM_MAX=1.75,BREACH_ZOOM=1.9,CAMERA_TAU_MS=380;
+
+  // What the camera should be looking at, as a pure function of battle time:
+  // the castle face and doorway PLUS every standing unit, framed between
+  // 1.2x and 1.75x, with a push-in on the door as it gives. Both armies were
+  // measured off-screen on a 390px phone before this existed — the breach
+  // happened at screen x = -55 while the status pill announced it.
+  function cameraFrame(ch,T){
+    const C=NightRaidChoreo,G=C.GATE||{x:C.CASTLE.x+58,y:C.CASTLE.y+6};
+    let minX=G.x-80,maxX=G.x+50,minY=G.y-150,maxY=G.y+40;
+    for(const u of ch.units){
+      if(u.fallAt!=null&&T>u.fallAt+1200)continue;   // the fallen drop out of the frame after a beat
+      const p=C.unitAt(u,T);
+      minX=Math.min(minX,p.x-36);maxX=Math.max(maxX,p.x+36);minY=Math.min(minY,p.y-104);maxY=Math.max(maxY,p.y+18);
+    }
+    const w=maxX-minX,h=maxY-minY,fit=Math.min(SIZE/w,SIZE/h);
+    let zoom=clamp(fit,FRAME_ZOOM_MIN,FRAME_ZOOM_MAX),cx=(minX+maxX)/2,cy=(minY+maxY)/2;
+    if(ch.breachAt!=null){
+      // Tighten on the door as it gives — but never so far that a straggler
+      // still running up leaves the frame.
+      const k=1-Math.min(1,Math.abs(T-ch.breachAt-150)/750);
+      if(k>0){zoom=lerp(zoom,Math.min(BREACH_ZOOM,Math.max(zoom,fit)),k);cx=lerp(cx,lerp(cx,G.x+10,.5),k);cy=lerp(cy,lerp(cy,G.y-30,.5),k);}
+    }
+    const half=SIZE/zoom/2;
+    // Whatever the push-in wanted, the interest box stays inside the view.
+    cx=2*half>=w?clamp(cx,maxX-half,minX+half):(minX+maxX)/2;
+    cy=2*half>=h?clamp(cy,maxY-half,minY+half):(minY+maxY)/2;
+    return {x:clamp(cx,half,SIZE-half),y:clamp(cy,half,SIZE-half),zoom};
+  }
+  // Cheap separation pass over one frame's standing bodies: any pair closer
+  // than minDist is nudged apart along the line between them, at most
+  // maxPush each, y damped so depth order does not flip. Pure in its input,
+  // so the frame stays a function of T.
+  function separate(points,minDist=36,maxPush=16,iterations=3){
+    const out=points.map(p=>({x:p.x,y:p.y,ox:p.x,oy:p.y}));
+    for(let it=0;it<iterations;it++){
+      for(let i=0;i<out.length;i++)for(let j=i+1;j<out.length;j++){
+        const a=out[i],b=out[j];let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+        if(d>=minDist)continue;
+        if(d<.01){dx=i%2?1:-1;dy=.5;d=Math.hypot(dx,dy);}
+        const push=(minDist-d)/2,ux=dx/d,uy=dy/d;
+        a.x-=ux*push;a.y-=uy*push*.6;b.x+=ux*push;b.y+=uy*push*.6;
+      }
+      // Nobody is shoved further than maxPush from where the script put them.
+      for(const p of out){const dx=p.x-p.ox,dy=p.y-p.oy,d=Math.hypot(dx,dy);if(d>maxPush){p.x=p.ox+dx/d*maxPush;p.y=p.oy+dy/d*maxPush;}}
+    }
+    return out.map(p=>({x:p.x,y:p.y}));
+  }
 
   function decodeToCanvas(src){return new Promise((resolve,reject)=>{const image=new Image();image.decoding='async';image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d',{alpha:true});ctx.drawImage(image,0,0);resolve(canvas);};image.onerror=()=>reject(new Error('Cannot decode '+src));image.src=src;});}
 
@@ -123,7 +195,7 @@ var NightRaidPhaser = (() => {
       this.choreo=NightRaidChoreo.build(this.result,target,this.soldierCount,options.pet||null,target.seed);
       this.reduce=!!options.reduceEffects||(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches);
       this.duration=this.reduce?2200:this.choreo.durationMs;this.game=null;this.scene=null;this.running=false;this.finished=false;this.pendingCharge=false;this.elapsed=0;this.lastNotify=0;this.lastEvent=-1;
-      this.audio=this.reduce?null:new RaidAudio();this.stepPulse=false;this.lastStepSound=-1e9;
+      this.audio=this.reduce?null:new RaidAudio();this.stepPulse=false;this.lastStepSound=-1e9;this.lastGateSound=-1e9;this.cam=null;
       const pet=options.pet,petText=pet?` Chó đội trưởng ${pet.name}, giống ${pet.breed}, cấp ${pet.level}.`:'';
       host.setAttribute('tabindex','0');host.setAttribute('role','img');host.setAttribute('aria-label',`Trận Cướp Đêm bằng Phaser. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${target.shielded?'Khiên Đêm':this.result.defense}.${petText}`);
       this.visibility=()=>{if(!this.game||this.finished)return;if(document.hidden)this.game.loop.sleep();else{this.startedAt=performance.now()-this.elapsed;this.game.loop.wake();}};
@@ -198,8 +270,11 @@ var NightRaidPhaser = (() => {
       // ones instead of floating over the whole base.
       const CASTLE=NightRaidChoreo.CASTLE;
       const skin=this.target.castleSkin||'stone-keep',group=castleRows[1].includes(skin)?1:0,row=Math.max(0,castleRows[group].indexOf(skin));
-      this.castleFrames={key:group?'nr-castle-b-damage':'nr-castle-a-damage',prefix:'castle-'+(group?'b-':'a-')+row+'-'};
-      this.castle=scene.add.image(CASTLE.x,CASTLE.y,this.castleFrames.key,this.castleFrames.prefix+'0').setOrigin(.5,.9).setDepth(CASTLE.y-30).setDisplaySize(430,258);
+      this.castleFrames={key:group?'nr-castle-b-damage':'nr-castle-a-damage',prefix:'castle-'+(group?'b-':'a-')+row+'-',atlas:group?'b':'a',row};
+      // Two sprites: the stage being shown and the stage it is fading from.
+      this.castleBack=scene.add.image(CASTLE.x,CASTLE.y,this.castleFrames.key,this.castleFrames.prefix+'0').setOrigin(.5,.9).setDepth(CASTLE.y-30).setDisplaySize(CASTLE_W,CASTLE_H).setVisible(false);
+      this.castle=scene.add.image(CASTLE.x,CASTLE.y,this.castleFrames.key,this.castleFrames.prefix+'0').setOrigin(.5,.9).setDepth(CASTLE.y-30+.1).setDisplaySize(CASTLE_W,CASTLE_H);
+      this.castleStage=0;
 
       this.defenders=[];
       for(const tower of this.choreo.towers){
@@ -221,7 +296,8 @@ var NightRaidPhaser = (() => {
       this.dust=scene.add.particles(0,0,'nr-dust',{speed:{min:6,max:34},angle:{min:205,max:335},lifespan:{min:280,max:680},scale:{start:.25,end:.95},alpha:{start:.3,end:0},quantity:0,emitting:false}).setDepth(5);
       this.rubble=scene.add.particles(0,0,'nr-rubble',{speed:{min:90,max:300},angle:{min:115,max:260},lifespan:{min:500,max:1200},scale:{start:.8,end:.28},rotate:{min:-260,max:260},gravityY:540,quantity:0,emitting:false}).setDepth(980);
       this.smoke=scene.add.particles(0,0,'nr-smoke',{speed:{min:10,max:44},angle:{min:210,max:325},lifespan:{min:650,max:1350},scale:{start:.3,end:1.2},alpha:{start:.34,end:0},quantity:0,emitting:false}).setDepth(940);
-      this.paintFrame(0);
+      scene.cameras.main.setBounds(0,0,SIZE,SIZE);
+      this.paintFrame(0);this.moveCamera(0,0);
     }
     charge(){if(this.running||this.finished)return false;if(!this.scene){this.pendingCharge=true;return true;}this.beginCharge();return true;}
     beginCharge(){if(this.running||this.finished)return;this.pendingCharge=false;this.running=true;this.startedAt=performance.now()-this.elapsed;this.state.status='fighting';if(this.audio){this.audio.ensure();this.audio.warCry();}this.notify();}
@@ -233,6 +309,8 @@ var NightRaidPhaser = (() => {
         else if(event.type==='impact')this.audio.impactShot(event.kind,event.lethal);
         else if(event.type==='fall')this.audio.fall();
         else if(event.type==='smash')this.audio.smash(event.material);
+        // Eleven hammers on one door must not become a drum roll.
+        else if(event.type==='gatehit'){if(this.elapsed-this.lastGateSound>150){this.lastGateSound=this.elapsed;this.audio.smash('stone');}}
         else if(event.type==='loot')this.audio.lootChime();
         else if(event.type==='demolish')this.audio.demolish();
         else if(event.type==='breach'){this.audio.breach();this.audio.warCry();}
@@ -242,13 +320,15 @@ var NightRaidPhaser = (() => {
       if(event.type==='launch'){this.spark.explode(4,event.x,event.y);return;}
       // A blow on a building chips it: a few sparks and a puff of dust.
       if(event.type==='smash'){this.spark.explode(3,event.x,event.y);this.dust.explode(2,event.x,event.y+18);return;}
+      if(event.type==='gatehit'){this.spark.explode(3,event.x,event.y);return;}
       // Coins fly while the sacks are filled.
       if(event.type==='loot'){this.spark.explode(6,event.x,event.y);return;}
       const lethal=event.type==='breach'||event.type==='fall'||event.lethal,count=lethal?18:7;
       this.spark.explode(count,event.x,event.y);if(lethal)this.rubble.explode(event.type==='breach'?26:9,event.x,event.y);
       if(event.type==='fall')this.scene.cameras.main.shake(140,.004);
       if(event.type==='demolish'){this.rubble.explode(14,event.x,event.y+14);this.smoke.explode(8,event.x,event.y);this.dust.explode(6,event.x,event.y+26);this.scene.cameras.main.shake(220,.006);}
-      if(event.type==='breach'){this.smoke.explode(15,event.x,event.y-8);this.scene.cameras.main.shake(360,.012);this.scene.cameras.main.zoomTo(1.065,170,'Quad.easeOut',true);this.scene.time.delayedCall(720,()=>this.scene&&this.scene.cameras.main.zoomTo(1,260,'Sine.easeInOut',true));}
+      // The camera push-in on the breach lives in cameraFrame(); here only the shake and the smoke.
+      if(event.type==='breach'){this.smoke.explode(15,event.x,event.y-8);this.scene.cameras.main.shake(360,.012);}
     }
     drawProjectile(scene,shot,T){
       if(T<shot.launchAt||T>shot.impactAt)return;const p=NightRaidChoreo.shotAt(shot,T),trail=NightRaidChoreo.shotAt(shot,Math.max(shot.launchAt,T-65));
@@ -278,12 +358,31 @@ var NightRaidPhaser = (() => {
         }
       }
     }
+    // Which ruin stage the castle shows at T, and how far into the crossfade
+    // it is. Stage 1 lands ON the breach (with the shake and smoke), stage 2
+    // once the looting is under way — never a hard swap.
+    castleStageAt(T){
+      const ch=this.choreo;if(!this.result.won||ch.breachAt==null)return {stage:0,xf:1};
+      const t1=ch.breachAt,t2=ch.breachAt+Math.max(900,(ch.durationMs-ch.breachAt)*.35);
+      if(T<t1)return {stage:0,xf:1};
+      if(T<t2)return {stage:1,xf:clamp((T-t1)/CASTLE_XFADE_MS,0,1)};
+      return {stage:2,xf:clamp((T-t2)/CASTLE_XFADE_MS,0,1)};
+    }
+    castlePlace(stage){
+      const CASTLE=NightRaidChoreo.CASTLE,an=(castleAnchors[this.castleFrames.atlas]||castleAnchors.a)[this.castleFrames.row]||castleAnchors.a[0];
+      const a=an[Math.min(stage,an.length-1)];
+      return {x:CASTLE.x+(CASTLE_REF[0]-a[0])*CASTLE_W,y:CASTLE.y+(CASTLE_REF[1]-a[1])*CASTLE_H};
+    }
     paintFrame(progress){
-      if(!this.scene)return;const T=clamp(progress,0,1)*this.choreo.durationMs,C=NightRaidChoreo,ch=this.choreo,breachP=this.result.won&&ch.breachAt!=null?clamp((T-ch.breachAt)/Math.max(1,ch.durationMs-ch.breachAt),0,1):0;
+      if(!this.scene)return;const T=clamp(progress,0,1)*this.choreo.durationMs,C=NightRaidChoreo,ch=this.choreo;
       if(this.castle){
-        const stage=breachP>.68?2:breachP>.12?1:0;
-        if(stage!==this.castleStage){this.castleStage=stage;this.castle.setFrame(this.castleFrames.prefix+stage);}
-        this.castle.setAlpha(1).setAngle(stage===1&&!this.reduce?Math.sin(T*.075)*1.4:0);
+        const {stage,xf}=this.castleStageAt(T);
+        if(stage!==this.castleStage){this.castleStage=stage;this.castle.setFrame(this.castleFrames.prefix+stage);if(stage>0)this.castleBack.setFrame(this.castleFrames.prefix+(stage-1));}
+        const pf=this.castlePlace(stage);
+        this.castle.setPosition(pf.x,pf.y).setAlpha(stage>0?xf:1);
+        if(stage>0&&xf<1){const pb=this.castlePlace(stage-1);this.castleBack.setPosition(pb.x,pb.y).setAlpha(1-xf).setVisible(true);}
+        else this.castleBack.setVisible(false);
+        this.castle.setAngle(stage===1&&!this.reduce?Math.sin(T*.075)*1.2:0);
       }
       if(!this.reduce)this.paintTrail(T);
       // Towers wind up before each scripted shot, recoil after it, and — on a
@@ -309,49 +408,92 @@ var NightRaidPhaser = (() => {
         if(broken&&stage<2)d.sprite.setTint(0xe9d4c0);else d.sprite.clearTint();
         d.sprite.setDepth(tw.y);
       });
-      this.actors.forEach(actor=>{
+      // --- actors: pose everyone first, keep the bodies apart, then draw ----
+      const STRIDE=C.STRIDE_PX||70;
+      const poses=this.actors.map(actor=>{
         const u=actor.unit,pose=C.unitAt(u,T);
         const rushing=pose.state==='charge'||pose.state==='flee'||pose.state==='carry',moving=pose.moving&&!this.reduce;
-        const cadence=this.reduce?.008:(rushing?.024:.017);
-        const phase=T*cadence+actor.index*1.47,gait=moving?Math.sin(phase):0,lift=Math.abs(gait);
-        let x=pose.x,y=pose.y,angle=0,alpha=1,flash=0;
+        // The walk phase is ground covered divided by the stride, so the legs
+        // stop the instant the body stops and slow down as it brakes. Wall
+        // time used to run the cycle at full speed through the last 900 ms
+        // of every eased arrival while the body crept — the classic slide.
+        const cycle=C.odometer(u,T)/(actor.pet?STRIDE*1.15:STRIDE)+actor.index*.37;
+        const gait=moving?Math.sin(cycle*Math.PI*2):0,lift=Math.abs(gait);
+        let x=pose.x,y=pose.y,angle=0,alpha=1,flash=0,sx=1,sy=1,frame=0;
+        let texture=actor.pet?'nr-pet-actions':'nr-squad-actions',prefix=actor.actionPrefix;
         if(moving)y-=lift*(actor.pet?2.2:1.6);
         else if(pose.state==='idle'){y-=Math.abs(Math.sin(T*.0016+actor.index))*1.2;}
-        else if(pose.state==='engage'&&T>ch.engageStart&&!this.reduce){const lunge=Math.max(0,Math.sin(T*.005+actor.index*1.9));x+=pose.facing*lunge*5;}
-        if(pose.state==='fallen')y+=5;
+        // Melee: the pose follows THIS unit's blow schedule — wind up during
+        // the 200 ms before a hit lands, strike for the 120 ms after it,
+        // guard in between — instead of flipping two frames on a 190 ms clock
+        // unrelated to when the blows actually land.
+        if((pose.state==='engage'||pose.state==='loot')&&!moving){
+          let next=Infinity,since=Infinity,strike=0;
+          for(const b of (u.blowAt||[])){const d=b-T;if(d>=0){if(d<next)next=d;}else if(-d<since)since=-d;}
+          if(since<120){frame=5;strike=1-since/120;}
+          else if(next<200){frame=4;strike=-(1-next/200)*.35;}
+          else if(pose.state==='loot'){frame=4;y-=Math.abs(Math.sin(T*.008+actor.index))*3;}
+          else frame=4;
+          x+=pose.facing*strike*7;
+        }
         for(const st of u.staggerAt){const d=T-st;if(d>=0&&d<200){x+=Math.sin(d*.22)*3;flash=Math.max(flash,1-d/200);}}
-        let texture=actor.pet?'nr-pet-actions':'nr-squad-actions',prefix=actor.actionPrefix,frame=0;
         // Soldiers use the authored six-frame run cycle while advancing or
         // retreating. The action atlas takes over again for weapon swings,
         // stagger and fallen poses so the castle assault stays expressive.
-        if(moving&&!actor.pet){texture='nr-squad-walk';prefix=actor.walkPrefix;frame=Math.floor((T+actor.index*91)/(rushing?82:112))%squadWalkCols;}
-        else if(pose.state==='fallen')frame=actor.cols-1;
+        if(pose.state==='fallen'){
+          // A shot lands: a 300 ms hop, tip and squash, then the body dims
+          // on the ground — not a y+=5 teleport onto the last atlas column.
+          const fp=clamp((T-u.fallAt)/300,0,1);
+          y+=-Math.sin(fp*Math.PI)*12+fp*5;angle=(actor.index%2?1:-1)*16*fp;sx=1+.12*fp;sy=1-.22*fp;
+          alpha=1-.45*clamp((T-u.fallAt-300)/600,0,1);
+          frame=fp<.45?actor.cols-2:actor.cols-1;
+        }
         else if(flash>.2)frame=Math.max(0,actor.cols-2);
-        else if(pose.state==='engage'&&!moving)frame=Math.min(actor.cols-2,4+Math.floor((T+actor.index*83)/190)%2);
-        else if(pose.state==='loot'&&!moving)frame=Math.min(actor.cols-2,4+Math.floor((T+actor.index*83)/260)%2);
-        else if(moving)frame=Math.floor((T+actor.index*91)/(rushing?95:125))%Math.min(4,actor.cols);
-        const frameKey=texture+'|'+prefix+frame;
-        if(frameKey!==actor.frameKey){actor.frameKey=frameKey;actor.sprite.setTexture(texture,prefix+frame);}
+        else if(moving&&!actor.pet){texture='nr-squad-walk';prefix=actor.walkPrefix;frame=Math.floor(cycle*squadWalkCols)%squadWalkCols;}
+        else if(moving)frame=Math.floor(cycle*4)%Math.min(4,actor.cols);
+        return {actor,u,pose,x,y,angle,alpha,flash,sx,sy,frame,texture,prefix,moving,cycle,rushing};
+      });
+      if(!this.reduce){
+        const live=poses.filter(p=>p.pose.state!=='fallen'&&p.pose.state!=='idle');
+        const spaced=separate(live.map(p=>({x:p.x,y:p.y})));
+        live.forEach((p,i)=>{p.x=spaced[i].x;p.y=spaced[i].y;});
+      }
+      for(const p of poses){
+        const actor=p.actor,frameKey=p.texture+'|'+p.prefix+p.frame;
+        if(frameKey!==actor.frameKey){actor.frameKey=frameKey;actor.sprite.setTexture(p.texture,p.prefix+p.frame);}
         // The atlases are authored facing LEFT (toward the castle): mirror
         // only when a unit moves right — fleeing home or repositioning.
-        const flip=pose.facing===1,depth=(pose.state==='fallen'?y-60:y)+(actor.pet?.5:0);
+        const flip=p.pose.facing===1,depth=(p.pose.state==='fallen'?p.y-60:p.y)+(actor.pet?.5:0);
         // A fixed display box prevents a width pop at march → attack. Atlas
         // centroid compensation removes the remaining per-frame side jump.
         const actorWidth=actor.pet?actor.width:actor.height*1.32;
-        const artAnchor=actor.pet?0:(moving?squadWalkAnchors[actor.row][frame]:squadActionAnchors[actor.row][frame]);
-        actor.sprite.x=x+(flip?1:-1)*artAnchor*actorWidth;actor.sprite.y=y;actor.sprite.angle=angle;actor.sprite.setAlpha(alpha).setDepth(depth).setFlipX(flip).setDisplaySize(actorWidth,actor.height);
-        if(flash>.35&&!this.reduce)actor.sprite.setTintFill(0xfff2f2);else actor.sprite.clearTint();
-        if(moving){const tick=Math.floor(phase/Math.PI);if(tick!==actor.dustTick){actor.dustTick=tick;this.dust.explode(actor.pet?2:1,x+(flip?-14:14),y+2);this.stepPulse=true;}}
-      });
+        const artAnchor=actor.pet?0:(p.texture==='nr-squad-walk'?squadWalkAnchors[actor.row][p.frame]:squadActionAnchors[actor.row][p.frame]);
+        actor.bodyX=p.x;actor.bodyY=p.y;   // the world point the torso stands on (diagnostics / tests); sprite.x carries the atlas-anchor compensation
+        actor.sprite.x=p.x+(flip?1:-1)*artAnchor*actorWidth;actor.sprite.y=p.y;actor.sprite.angle=p.angle;
+        actor.sprite.setAlpha(p.alpha).setDepth(depth).setFlipX(flip).setDisplaySize(actorWidth*p.sx,actor.height*p.sy);
+        if(p.flash>.35&&!this.reduce)actor.sprite.setTintFill(0xfff2f2);else actor.sprite.clearTint();
+        // Dust and the boot sound only when a foot actually lands: two
+        // contacts per stride cycle, none while the body stands still.
+        if(p.moving){const step=Math.floor(p.cycle*2);if(step!==actor.dustTick){actor.dustTick=step;this.dust.explode(actor.pet?2:1,p.x+(flip?-14:14),p.y+2);this.stepPulse=true;}}
+      }
       this.projectiles.clear();for(const shot of ch.shots)this.drawProjectile(this.scene,shot,T);
       this.damageMark.setVisible(false);
     }
+    // Ease the real camera toward cameraFrame(T): frame-rate independent
+    // smoothing so a 30 fps phone and a 120 Hz tablet land on the same shot.
+    moveCamera(T,dtMs){
+      if(!this.scene)return;const cam=this.scene.cameras.main;
+      const f=this.reduce?{x:SIZE/2,y:SIZE/2,zoom:1}:cameraFrame(this.choreo,T);
+      if(!this.cam||!dtMs)this.cam={x:f.x,y:f.y,zoom:f.zoom};
+      else{const k=1-Math.exp(-dtMs/CAMERA_TAU_MS);this.cam.x+=(f.x-this.cam.x)*k;this.cam.y+=(f.y-this.cam.y)*k;this.cam.zoom+=(f.zoom-this.cam.zoom)*k;}
+      cam.setZoom(this.cam.zoom);cam.centerOn(this.cam.x,this.cam.y);
+    }
     updateScene(_time,delta){
-      if(!this.running||this.finished)return;this.elapsed=Math.min(this.duration,performance.now()-this.startedAt);const p=this.elapsed/this.duration,T=p*this.choreo.durationMs;this.state.timeMs=this.elapsed;this.paintFrame(p);
+      if(!this.running||this.finished)return;this.elapsed=Math.min(this.duration,performance.now()-this.startedAt);const p=this.elapsed/this.duration,T=p*this.choreo.durationMs;this.state.timeMs=this.elapsed;this.paintFrame(p);this.moveCamera(T,delta);
       while(this.lastEvent+1<this.choreo.events.length&&this.choreo.events[this.lastEvent+1].t<=T){this.lastEvent++;this.impact(this.choreo.events[this.lastEvent]);}
       if(this.stepPulse){this.stepPulse=false;if(this.audio&&this.elapsed-this.lastStepSound>170){this.lastStepSound=this.elapsed;this.audio.step();}}
       if(this.elapsed-this.lastNotify>=220){this.lastNotify=this.elapsed;this.notify();}
-      if(this.elapsed>=this.duration){this.running=false;this.finished=true;this.state.status=this.result.status;this.state.timeMs=this.result.durationMs;this.paintFrame(1);this.notify();if(this.options.onFinish)this.options.onFinish({...this.state},[]);}
+      if(this.elapsed>=this.duration){this.running=false;this.finished=true;this.state.status=this.result.status;this.state.timeMs=this.result.durationMs;this.paintFrame(1);this.moveCamera(this.choreo.durationMs,delta);this.notify();if(this.options.onFinish)this.options.onFinish({...this.state},[]);}
     }
     destroy(){
       document.removeEventListener('visibilitychange',this.visibility);this.running=false;
@@ -360,6 +502,6 @@ var NightRaidPhaser = (() => {
     }
   }
 
-  return Object.freeze({ensureRuntime,AutoBattle,SIZE});
+  return Object.freeze({ensureRuntime,AutoBattle,SIZE,cameraFrame,separate,castleAnchors,CASTLE_REF,FRAME_ZOOM_MIN,FRAME_ZOOM_MAX,BREACH_ZOOM});
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=NightRaidPhaser;

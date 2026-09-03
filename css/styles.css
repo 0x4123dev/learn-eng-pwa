@@ -12175,7 +12175,12 @@
 .nr-result-pop .nr-result-score strong{font-size:clamp(21px,4.5vw,30px)}
 .nr-result-pop .nr-result-stars{margin:8px;gap:10px}
 .nr-result-pop .nr-result-stars i{width:30px;height:30px;animation:nrStarPop .45s cubic-bezier(.34,1.56,.64,1) both}
-.nr-result-pop .nr-reward{font-size:16px;padding:8px 14px}
+.nr-result-pop .nr-reward{font-size:16px;padding:8px 14px;white-space:nowrap}
+/* The popup lives outside .nr-result, so the stroke-icon rule above never
+   reached it: the coin rendered as a 60px solid black disc and shoved
+   "+60 xu đã cướp" onto three lines. */
+.nr-result-pop .nr-reward svg,.nr-result-pop .nr-result-crest svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nr-result-pop .nr-reward svg{width:22px;height:22px;flex:0 0 auto}
 .nr-result-pop .nr-loss{margin:8px auto;padding:10px;font-size:15px;width:min(320px,100%)}
 .nr-result-pop .nr-result-actions{margin-top:12px}
 .nr-auto-command.hidden{display:none}
@@ -12784,6 +12789,47 @@
   .nr-home-stage>.nr-home-fabs .nr-home-fab{flex-basis:58px;width:58px;height:52px}
 }
 
+/* Night Raid — NHÀ THẬT is the friends list with raid timers. One row per
+   friend (name, level, ONE answer: CƯỚP NGAY or how long to wait), the child's
+   own status on top, the three random target cards kept below in a compact
+   form. 375px phone first: rows are 68px tall, nothing scrolls sideways. */
+.nr-own-status{display:flex;align-items:center;gap:10px;min-height:52px;margin:0 0 16px;padding:10px 14px;border:1px solid rgba(187,217,255,.18);border-radius:16px;background:#0f203a;color:#dfe9f7;font-size:14px;line-height:1.35}
+.nr-own-status i{flex:0 0 auto;font-style:normal;font-size:22px;line-height:1}
+.nr-own-status b{color:#fff}
+.nr-own-status.safe{border-color:rgba(126,222,255,.45);background:rgba(9,36,60,.92)}
+.nr-own-status.open{border-color:rgba(255,190,90,.4);background:rgba(48,32,14,.78)}
+.nr-live-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 10px}
+.nr-live-head h3{margin:0;color:#fff;font-size:17px}
+.nr-live-head span{color:#9fb4da;font-size:12px;font-weight:800;text-align:right}
+.nr-friend-list{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:10px}
+.nr-friend-row{width:100%;min-height:68px;display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 14px;border:1px solid rgba(187,217,255,.18);border-radius:18px;background:linear-gradient(165deg,#172d4d,#0f1f38);color:#fff;text-align:left;cursor:pointer;touch-action:manipulation}
+.nr-friend-row:disabled{cursor:default}
+.nr-friend-row.wait{opacity:.82}
+.nr-friend-row.ready{border-color:rgba(127,240,162,.5);box-shadow:0 0 0 1px rgba(127,240,162,.18),0 10px 24px rgba(0,0,0,.25)}
+.nr-friend-row.shield{border-color:rgba(126,222,255,.45)}
+.nr-friend-row:focus-visible{outline:3px solid #ffd36a;outline-offset:2px}
+.nr-friend-crest{width:46px;height:46px;border-radius:14px;display:grid;place-content:center;background:radial-gradient(circle at 50% 55%,rgba(123,175,239,.3),transparent 55%),linear-gradient(180deg,#1c3f67,#152b42);color:#b8d9ff}
+.nr-friend-row.wait .nr-friend-crest{filter:grayscale(.55)}
+.nr-friend-crest svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.nr-friend-copy{min-width:0}
+.nr-friend-copy strong{display:block;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nr-friend-copy small{display:block;margin-top:3px;font-size:12px;color:#aebed5}
+.nr-friend-state{flex:0 0 auto;max-width:42vw;text-align:right}
+.nr-friend-state small{display:block;font-size:9px;font-weight:900;letter-spacing:.07em;color:#9dc4e2}
+.nr-friend-state b{display:block;font-size:14px;font-weight:950;line-height:1.2;font-variant-numeric:tabular-nums;color:#ffd36a;white-space:nowrap}
+.nr-friend-row.ready .nr-friend-state b{color:#7ff0a2;font-size:16px}
+.nr-friend-row.shield .nr-friend-state b{color:#7fe2ff}
+.nr-friend-state em{display:block;margin-top:2px;font-style:normal;font-size:11px;color:#9fb4da}
+.nr-live-random{margin-top:4px}
+.nr-live-random .nr-target-card{min-height:112px}
+.nr-live-random .nr-target-art{min-height:92px}
+.nr-live-random .nr-target-art svg{width:56px;height:56px}
+.nr-live-empty{margin:0 0 22px;padding:16px;border:1px dashed rgba(187,217,255,.32);border-radius:18px;background:rgba(15,32,58,.72);color:#c9d8ee;font-size:14px;line-height:1.45}
+.nr-live-empty strong{display:block;margin-bottom:6px;color:#fff;font-size:16px}
+.nr-live-empty b{color:#fff}
+.nr-live-empty .nr-secondary{margin-top:12px}
+.nr-live-actions{display:grid;gap:10px;margin:14px 0 22px}
+
 /* A deferred question bank (js/lazy-data.js) is still downloading. Brief and
    quiet: on a warm cache this is usually never seen. */
 .lazy-loading {
@@ -12865,12 +12911,256 @@
 }
 .dt-shield-btn { background: #7c3aed; margin-top: 8px; }
 .dt-empty { text-align: center; color: #888; padding: 24px 0; }
-.dt-shield {
-    margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: #faf5ff;
-    border: 1.5px solid #ddd6fe;
-}
-.dt-shield strong { display: block; font-size: 16px; }
-.dt-shield small { color: #6b7280; }
-.dt-shield-on { display: block; margin-top: 8px; font-weight: 700; color: #7c3aed; }
 .dt-reward { margin-top: 14px; text-align: center; font-weight: 700; color: #16a34a; }
 .dt-reward.muted { color: #888; font-weight: 500; }
+
+/* Home card: the gift count is a corner bubble on the 📋 icon; the collection
+   chip on the right is the tap target into Kho Khiên & Kiếm. Title and chip
+   are a notch smaller than before so both fit on one line at 375px. */
+.dt-card-icon { position: relative; overflow: visible; }
+.dt-card-badge {
+    position: absolute; top: -7px; right: -8px; min-width: 22px; height: 22px; padding: 0 6px;
+    border-radius: 999px; background: #dc2626; color: #fff; font-size: 12px; font-weight: 900; font-style: normal;
+    display: grid; place-items: center; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(220,38,38,0.35);
+}
+.dt-card-body strong { font-size: 16px; }
+.dt-card-shield { min-height: 32px; display: inline-flex; align-items: center; padding: 5px 9px; font-size: 13px; white-space: nowrap; }
+
+/* ── Task screen — a day the child WANTS to finish ───────────────────── */
+/* Hero: one ring, one sentence. Amber while there is work, green once done. */
+.dt-hero {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 14px; padding: 14px 16px;
+    border-radius: 20px; border: 2.5px solid #f59e0b;
+    background: linear-gradient(135deg, #fff3d6 0%, #ffe6c7 55%, #ffd9e6 100%);
+    box-shadow: 0 6px 22px rgba(245,158,11,0.25);
+}
+.dt-hero.done {
+    border-color: #22c55e; background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
+    box-shadow: 0 6px 22px rgba(34,197,94,0.25);
+}
+.dt-ring-wrap { position: relative; width: 72px; height: 72px; flex: 0 0 auto; display: grid; place-items: center; }
+.dt-ring { position: absolute; inset: 0; width: 72px; height: 72px; transform: rotate(-90deg); }
+.dt-ring .track { fill: none; stroke: rgba(255,255,255,0.75); stroke-width: 7; }
+.dt-ring .fill { fill: none; stroke: #f59e0b; stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+.dt-hero.done .dt-ring .fill { stroke: #22c55e; }
+.dt-ring-wrap b { position: relative; font-size: 17px; font-weight: 900; color: #7c2d12; }
+.dt-hero.done .dt-ring-wrap b { color: #14532d; }
+.dt-hero-text { flex: 1; min-width: 0; }
+.dt-hero-text strong { display: block; font-size: 18px; font-weight: 800; color: #7c2d12; letter-spacing: -0.2px; }
+.dt-hero-text small { display: block; margin-top: 2px; color: #9a3412; font-weight: 600; }
+.dt-hero.done .dt-hero-text strong { color: #14532d; }
+.dt-hero.done .dt-hero-text small { color: #15803d; }
+
+/* The unopened gift — the door to Kho Khiên & Kiếm. */
+.dt-gift-cta {
+    display: flex; align-items: center; gap: 12px; width: 100%; margin: 0 0 14px; padding: 12px 14px;
+    min-height: 60px; border-radius: 16px; border: 2px solid #f59e0b; background: #fff8ea;
+    color: #7c2d12; font: inherit; font-weight: 800; text-align: left; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(245,158,11,0.22);
+}
+.dt-gift-cta:active { transform: scale(0.985); }
+.dt-gift-cta .dt-gift-emoji { font-size: 30px; line-height: 1; animation: amGiftWiggle 3s ease-in-out infinite; }
+.dt-gift-cta strong { display: block; font-size: 16px; }
+.dt-gift-cta small { display: block; font-weight: 600; color: #9a3412; }
+.dt-gift-cta > span:last-child { margin-left: auto; font-size: 22px; }
+
+/* Task rows as check rows: a big circle that fills green when the row is done. */
+.dt-task { display: flex; align-items: flex-start; gap: 10px; padding: 12px 12px 12px 10px; }
+.dt-check {
+    flex: 0 0 auto; width: 30px; height: 30px; margin-top: 1px; border-radius: 50%;
+    border: 2.5px solid #fcd34d; background: #fffbeb; display: grid; place-items: center;
+    color: #fff; font-weight: 900; font-size: 16px; transition: background .25s ease, border-color .25s ease;
+}
+.dt-task.done .dt-check { background: #22c55e; border-color: #22c55e; }
+.dt-task-main { flex: 1; min-width: 0; }
+.dt-task-top strong { font-size: 15px; }
+.dt-task-top span { color: #b45309; }
+.dt-task small { display: block; margin-top: 2px; }
+.dt-go { min-height: 44px; }
+
+/* Collection strip: two mini cards (lit when owned, dashed when not), the
+   shield's state as a pill, then the door to the full armory. */
+.dt-armory { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.dt-mini {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px; min-height: 44px;
+    border-radius: 16px; border: 2px dashed #cbd5e1; background: #f8fafc; color: #64748b;
+    font: inherit; cursor: pointer;
+}
+.dt-mini.has.shield {
+    border: 2px solid #c4b5fd; background: linear-gradient(160deg, #ede9fe, #ddd6fe); color: #4c1d95;
+    box-shadow: 0 4px 14px rgba(124,58,237,0.22);
+}
+.dt-mini.has.sword {
+    border: 2px solid #fda4af; background: linear-gradient(160deg, #ffe4e6, #fecdd3); color: #881337;
+    box-shadow: 0 4px 14px rgba(220,38,38,0.18);
+}
+.dt-mini-icon { font-size: 30px; line-height: 1; }
+.dt-mini:not(.has) .dt-mini-icon { filter: grayscale(1); opacity: .4; }
+.dt-mini b { font-size: 18px; font-weight: 900; }
+.dt-mini small { font-size: 12px; font-weight: 700; }
+.dt-armory-side { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; }
+.dt-pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 8px 12px;
+    border-radius: 999px; background: #f1f5f9; color: #475569; font-weight: 700; font-size: 13px; text-align: center;
+}
+.dt-pill.on { background: #ede9fe; color: #6d28d9; box-shadow: inset 0 0 0 1.5px #c4b5fd; }
+.dt-armory .dt-shield-btn { margin-top: 0; min-height: 44px; }
+.dt-armory-link {
+    display: block; width: 100%; padding: 11px; min-height: 44px; border: 1.5px solid #c4b5fd; border-radius: 12px;
+    background: #fff; color: #6d28d9; font: inherit; font-weight: 700; cursor: pointer;
+}
+
+/* ── Kho Khiên & Kiếm (js/armory.js) — a collection, not a table ─────── */
+.armory-screen { padding-bottom: 100px; }
+.am-h3 { margin: 18px 4px 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #94a3b8; font-weight: 800; }
+
+/* The gift: dashed and grey while empty, warm and breathing when something waits. */
+.am-gift { position: relative; padding: 14px; border-radius: 20px; background: #f8fafc; border: 2px dashed #cbd5e1; }
+.am-gift.has {
+    background: linear-gradient(135deg, #fff3d6 0%, #ffe6c7 55%, #ffd9e6 100%);
+    border: 2.5px solid #f59e0b; box-shadow: 0 8px 26px rgba(245,158,11,0.28);
+    animation: amGiftPulse 2.6s ease-in-out infinite;
+}
+.am-gift-top { display: flex; align-items: center; gap: 12px; }
+.am-gift-icon { font-size: 40px; line-height: 1; flex: 0 0 auto; }
+.am-gift.has .am-gift-icon { animation: amGiftWiggle 3s ease-in-out infinite; }
+.am-gift:not(.has) .am-gift-icon { filter: grayscale(1); opacity: .45; }
+.am-gift-top strong { display: block; font-size: 17px; font-weight: 800; color: #7c2d12; }
+.am-gift-top small { display: block; margin-top: 2px; color: #9a3412; font-weight: 600; line-height: 1.35; }
+.am-gift:not(.has) .am-gift-top strong { color: #475569; }
+.am-gift:not(.has) .am-gift-top small { color: #64748b; }
+.am-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.am-choice {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;
+    padding: 12px 8px 10px; min-height: 116px; border-radius: 16px; border: 0; font: inherit; color: #fff; cursor: pointer;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.18), 0 10px 18px rgba(0,0,0,0.14);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+.am-choice:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.18); }
+.am-choice.shield { background: linear-gradient(160deg, #a78bfa, #6d28d9); }
+.am-choice.sword { background: linear-gradient(160deg, #fb7185, #b91c1c); }
+.am-choice-icon { font-size: 38px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25)); }
+.am-choice strong { font-size: 16px; font-weight: 900; }
+.am-choice small { font-size: 12px; font-weight: 600; opacity: .92; line-height: 1.3; }
+.am-choice:disabled, .am-all:disabled, .am-activate:disabled { opacity: .55; cursor: default; }
+.am-claim-all {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px;
+    border-top: 1px dashed rgba(124,45,18,0.25);
+}
+.am-claim-all > span { grid-column: 1 / -1; font-size: 13px; font-weight: 700; color: #9a3412; }
+.am-all {
+    min-height: 44px; padding: 0 10px; border-radius: 12px; border: 2px solid; background: #fff;
+    font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;
+}
+.am-all.shield { color: #6d28d9; border-color: #c4b5fd; }
+.am-all.sword { color: #b91c1c; border-color: #fda4af; }
+
+/* The collection: two big cards. Lit and glowing when owned; a dashed
+   silhouette of what could be earned when not. */
+.am-collection { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.am-card {
+    position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 4px; padding: 18px 10px 14px; min-height: 172px; border-radius: 20px; border: 2px solid transparent;
+}
+.am-card.shield.has {
+    background: linear-gradient(160deg, #ede9fe, #c4b5fd); border-color: #a78bfa;
+    box-shadow: 0 10px 26px rgba(124,58,237,0.32), inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+.am-card.sword.has {
+    background: linear-gradient(160deg, #ffe4e6, #fda4af); border-color: #fb7185;
+    box-shadow: 0 10px 26px rgba(220,38,38,0.28), inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+.am-card.empty { background: #f8fafc; border: 2px dashed #cbd5e1; }
+.am-card-icon { font-size: 56px; line-height: 1; margin: 6px 0 4px; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.18)); }
+.am-card.empty .am-card-icon { filter: grayscale(1); opacity: .32; }
+.am-card strong { font-size: 16px; font-weight: 900; color: #1f2937; }
+.am-card.shield.has strong { color: #4c1d95; }
+.am-card.sword.has strong { color: #881337; }
+.am-card small { font-size: 12px; color: #4b5563; line-height: 1.35; }
+.am-card.empty strong, .am-card.empty small { color: #94a3b8; }
+.am-count {
+    position: absolute; top: 10px; right: 10px; min-width: 38px; padding: 4px 9px; border-radius: 999px;
+    background: #fff; font-size: 15px; font-weight: 900; box-shadow: 0 2px 6px rgba(0,0,0,0.14);
+    font-variant-numeric: tabular-nums;
+}
+.am-card.shield .am-count { color: #6d28d9; }
+.am-card.sword .am-count { color: #b91c1c; }
+.am-card.empty .am-count { color: #94a3b8; }
+
+/* The rows under the cards: the shield's state / button, the sword meter. */
+.am-row {
+    margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: #fff;
+    border: 1.5px solid rgba(0,0,0,0.06); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.am-row.shield { background: #faf5ff; border-color: #ddd6fe; }
+.am-row.sword { background: #fff1f2; border-color: #fecdd3; }
+.am-pill { display: inline-flex; flex-wrap: wrap; width: 100%; }
+.am-row .dt-shield-btn { margin-top: 0; min-height: 48px; font-size: 16px; }
+.am-bonus { display: flex; align-items: baseline; gap: 6px; }
+.am-bonus strong { font-size: 26px; font-weight: 900; color: #b91c1c; letter-spacing: -0.3px; }
+.am-bonus span { color: #6b7280; font-weight: 700; }
+.am-meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; margin-top: 8px; }
+.am-meter i { display: block; height: 10px; border-radius: 999px; background: rgba(0,0,0,0.08); }
+.am-meter i.on { background: linear-gradient(90deg, #fb7185, #dc2626); box-shadow: 0 0 6px rgba(220,38,38,0.4); }
+.am-muted { display: block; margin-top: 8px; color: #6b7280; font-size: 13px; line-height: 1.35; }
+.am-recent { margin-top: 14px; color: #6b7280; font-size: 13px; }
+.am-recent ul { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.am-recent li { padding: 6px 10px; border-radius: 999px; background: #f1f5f9; font-weight: 600; }
+
+/* The claim moment: the card pops, a shine sweeps across, eight sparks fly
+   out, and the badge counts up (js). CSS-only motion, all off under
+   prefers-reduced-motion. */
+@keyframes amGiftPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 26px rgba(245,158,11,0.28); }
+    50% { transform: scale(1.015); box-shadow: 0 12px 34px rgba(245,158,11,0.42); }
+}
+@keyframes amGiftWiggle {
+    0%, 84%, 100% { transform: rotate(0); }
+    88% { transform: rotate(-12deg); }
+    92% { transform: rotate(12deg); }
+    96% { transform: rotate(-6deg); }
+}
+@keyframes amPop { 0% { transform: scale(1); } 35% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@keyframes amShine { from { transform: translateX(-140%) skewX(-18deg); } to { transform: translateX(260%) skewX(-18deg); } }
+@keyframes amSpark {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; }
+}
+.am-card.am-celebrate { animation: amPop .6s cubic-bezier(.34, 1.56, .64, 1); }
+.am-card.am-celebrate::after {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: amShine .9s ease-out .1s both;
+}
+.am-burst { position: absolute; inset: 0; pointer-events: none; }
+.am-burst i {
+    position: absolute; left: 50%; top: 46%; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--c, #fbbf24); animation: amSpark .9s ease-out .05s both;
+}
+.am-burst i:nth-child(1) { --dx: -66px; --dy: -58px; --c: #fbbf24; }
+.am-burst i:nth-child(2) { --dx: 62px; --dy: -64px; --c: #f472b6; }
+.am-burst i:nth-child(3) { --dx: -74px; --dy: 10px; --c: #34d399; }
+.am-burst i:nth-child(4) { --dx: 76px; --dy: 6px; --c: #60a5fa; }
+.am-burst i:nth-child(5) { --dx: -48px; --dy: 62px; --c: #fb923c; }
+.am-burst i:nth-child(6) { --dx: 52px; --dy: 66px; --c: #a78bfa; }
+.am-burst i:nth-child(7) { --dx: -12px; --dy: -78px; --c: #fde047; }
+.am-burst i:nth-child(8) { --dx: 14px; --dy: 74px; --c: #f87171; }
+@media (prefers-reduced-motion: reduce) {
+    .am-gift.has, .am-gift.has .am-gift-icon, .dt-gift-cta .dt-gift-emoji,
+    .am-card.am-celebrate, .am-burst i { animation: none; }
+    .am-card.am-celebrate::after { display: none; }
+    .dt-ring .fill { transition: none; }
+}
+
+/* Night Raid home: the VŨ KHÍ fab and its "quà chờ mở" badge. Five fabs now
+   share the home-stage row (5 x 66 + 4 x 6 = 354px, exactly a 375px phone
+   minus its 10px gutters), so on anything narrower they may shrink a little
+   instead of sliding off the left edge. */
+.nr-home-stage > .nr-home-fabs .nr-home-fab { flex-shrink: 1; min-width: 0; }
+.nr-home-fab.armory { position: relative; overflow: visible; }
+.nr-home-fab .nr-fab-emoji { font-size: 22px; line-height: 1; }
+.nr-fab-badge {
+    position: absolute; top: -8px; right: -8px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px;
+    background: #dc2626; color: #fff; font-size: 11px; font-weight: 900; font-style: normal;
+    display: grid; place-items: center; border: 2px solid #fff8c9; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}

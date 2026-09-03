@@ -440,7 +440,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(phaser.includes("raider-actions-v2.webp"),'raider action atlas');
     assert.truthy(phaser.includes("raider-walk-v3.png"),'six-frame raider walk atlas');
     assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
-    assert.truthy(phaser.includes("actor.sprite.setTexture(texture,prefix+frame)"),'runtime swaps between walk and action frames');
+    assert.truthy(phaser.includes("actor.sprite.setTexture(p.texture,p.prefix+p.frame)"),'runtime swaps between walk and action frames');
     assert.truthy(phaser.includes("texture='nr-squad-walk'"),'moving soldiers use the dedicated walk cycle');
     assert.truthy(phaser.includes('squadWalkAnchors'),'walk frames share a stable torso anchor instead of teleporting sideways');
     assert.truthy(phaser.includes('squadActionAnchors'),'the march-to-attack texture swap preserves the same anchor');
@@ -593,5 +593,62 @@ suite('night raid: only one combat loop',()=>{
     assert.falsy(skins.includes("ctx.fillStyle='rgba(15,23,42,.18)'; ctx.beginPath(); ctx.ellipse(w/2,h-12"));
     assert.falsy(arena.includes("ctx.fillStyle = 'rgba(15,23,42,.34)'"));
     assert.truthy(css.includes('.nr-equipped-castle{filter:none!important;box-shadow:none!important}'));
+  });
+});
+
+suite('night raid: the fight is framed, the board keeps its shape, the feet do not slide',()=>{
+  const phaserSrc=read('js/night-raid-phaser.js'),choreo=read('js/night-raid-choreo.js');
+  test('TIẾN QUÂN fits the whole 800-board to the screen and the Phaser camera frames the fight inside it',()=>{
+    // Scout opens fitted (not at the home zoom, which showed a third of the
+    // board with the castle cut off), TIẾN QUÂN re-fits, and the world
+    // camera centres on the enemy field rather than on the child's own keep.
+    assert.truthy(ui.includes('function scoutFitZoom(base)'));
+    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'scout opens at the fit zoom');
+    assert.truthy(ui.includes('function frameBattleWorld()'));
+    const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
+    assert.truthy(raidBlock.includes('frameBattleWorld();'),'the tap re-frames the board before Phaser loads');
+    assert.truthy(ui.includes("scoutMap?{left:20,top:23,width:60,height:60}:castleFootprint(appState.nightRaidLayout)"),'scout centres on the field, not the home castle cell');
+    // The real camera lives in Phaser: a pure frame function plus smoothing.
+    assert.truthy(phaserSrc.includes('function cameraFrame(ch,T)'));
+    assert.truthy(phaserSrc.includes('cam.setZoom(this.cam.zoom);cam.centerOn(this.cam.x,this.cam.y)'));
+    assert.truthy(phaserSrc.includes('scene.cameras.main.setBounds(0,0,SIZE,SIZE)'),'the view never leaves the board');
+    assert.truthy(phaserSrc.includes('1-Math.exp(-dtMs/CAMERA_TAU_MS)'),'frame-rate independent smoothing');
+    assert.falsy(phaserSrc.includes('zoomTo(1.065'),'the token zoom nudge is gone; the camera does the push-in');
+  });
+  test('the scout/battle board stays square across the tap, and the raid keeps its own zoom bucket',()=>{
+    assert.truthy(ui.includes("aspect=map.classList.contains('nr-scout-map')?1:.75"),'setBuilderZoom must not force the 4:3 estate height on the 800x800 board');
+    assert.truthy(ui.includes('map.style.height=Math.round(base*aspect*newZoom)'));
+    assert.truthy(ui.includes('builderZoomByView[viewKey(view)]=builderZoom'));
+    assert.truthy(css.includes('.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%'));
+  });
+  test('legs, dust and boot sounds follow ground covered; swings follow the blow schedule; death is a tween',()=>{
+    assert.truthy(choreo.includes('function odometer(unit, t)'));
+    assert.truthy(choreo.includes("ease = 'ramp'"),'every march segment ramps');
+    assert.truthy(phaserSrc.includes('C.odometer(u,T)/(actor.pet?STRIDE*1.15:STRIDE)'),'walk phase from distance, not wall time');
+    assert.truthy(phaserSrc.includes('frame=Math.floor(cycle*squadWalkCols)%squadWalkCols'));
+    assert.falsy(/Math\.floor\(\(T\+actor\.index\*91\)\/\(rushing\?82:112\)\)/.test(phaserSrc),'the wall-clock leg cycle must not return');
+    assert.truthy(phaserSrc.includes('const step=Math.floor(p.cycle*2);if(step!==actor.dustTick)'),'dust on foot-down only');
+    assert.truthy(phaserSrc.includes('if(since<120){frame=5;strike=1-since/120;}')&&phaserSrc.includes('else if(next<200){frame=4;'),'wind-up before the hit, contact after it');
+    assert.falsy(phaserSrc.includes('/190)%2'),'no 190 ms frame flip unrelated to the blows');
+    assert.truthy(phaserSrc.includes('const fp=clamp((T-u.fallAt)/300,0,1);')&&phaserSrc.includes('angle=(actor.index%2?1:-1)*16*fp'),'300 ms hop/tip/squash on death');
+    assert.falsy(phaserSrc.includes("if(pose.state==='fallen')y+=5;"),'no y+=5 teleport onto the fallen frame');
+    assert.truthy(phaserSrc.includes('function separate(points'),'a separation pass keeps the gate crowd apart');
+    assert.truthy(phaserSrc.includes('this.castleBack')&&phaserSrc.includes('castleStageAt(T)')&&phaserSrc.includes('castlePlace(stage)'),'the ruin crossfades and is placed by per-frame anchors');
+    assert.truthy(phaserSrc.includes("event.type==='gatehit'"),'blows on the door spark');
+  });
+  test('polish: status pill speaks Vietnamese, the popup coin is a stroke icon on one line, a lost /finish is retried',()=>{
+    assert.truthy(ui.includes("status.textContent='Đang dàn quân…'"));
+    assert.falsy(ui.includes('Phaser…'),'the engine name must not leak into the status pill');
+    assert.truthy(css.includes('.nr-result-pop .nr-reward svg,.nr-result-pop .nr-result-crest svg{fill:none;stroke:currentColor'));
+    assert.truthy(css.includes('.nr-result-pop .nr-reward svg{width:22px;height:22px;flex:0 0 auto}'));
+    assert.truthy(css.includes('.nr-result-pop .nr-reward{font-size:16px;padding:8px 14px;white-space:nowrap}'));
+    // /start wrote the row (the visit is spent); a failed /finish used to lose
+    // the result for good. The raidId is kept and asked about on the next open.
+    assert.truthy(ui.includes('rememberPendingRaid(target.raidId)'));
+    assert.truthy(ui.includes('async function retryPendingFinish()'));
+    assert.truthy(ui.includes('retryPendingFinish().catch(()=>{})'),'open() retries');
+    const fin=ui.slice(ui.indexOf('async function finishOnline'),ui.indexOf('async function finishOnline')+900);
+    assert.truthy(fin.includes('clearPendingRaid(target.raidId);claimVerified(target.raidId,verified)'),'a verified finish clears the pending raid and claims exactly once');
+    assert.truthy(read('js/app.js').includes('appState.nightRaidPending'),'the field is part of the saved state');
   });
 });

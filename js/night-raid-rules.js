@@ -22,6 +22,29 @@ var NightRaidRules = (() => {
   const MAX_COMMANDS = 80;
   const PRODUCTION_MS = 24 * 60 * 60 * 1000;
   const MAX_SOLDIERS = 10;
+  // Swords — the daily-task reward a child may take instead of a shield
+  // (js/armory.js, functions/api/_daily-task.js). A sword is never spent:
+  // every one in stock adds SWORD_DAMAGE to the attack score, up to SWORD_CAP
+  // swords. Both numbers were sized against the score card below and the
+  // fights it actually produces, not guessed:
+  //   - what a child attacks with: a brand-new account (dog L1, no soldiers,
+  //     no buildings) has 42 DAM; the server test fixture home (dog L7, gunner,
+  //     2 soldiers) 139; a dog L10 with 4 soldiers 140; a strong mid-game army
+  //     (dog L20, 6 soldiers, 2 cannons, gunner) 345. Training keeps defend at
+  //     269 (n=1) … 554 (n=10) … 1029 (n=20).
+  //   - what else buys DAM: a soldier is +20, a gunner teammate +45, a
+  //     2000-xu water cannon +50, a pebble pup +22.
+  //   - what a margin is worth: finish.js gives 2 stars at margin >= 25 and
+  //     3 stars at margin >= 60, and the bot matchmaker (night-raid.js) picks
+  //     a keep whose DEF is 0.78–1.12 x the child's DAM — so a "coin flip" is
+  //     a fight decided by roughly +/-20–30 DAM around 150.
+  // 10 DAM a sword: two swords (+20) are worth a whole soldier, so the HUD
+  // number visibly moves and a fight that was a few points short flips. Ten
+  // swords (+100) turn an exact coin flip (margin 0) into a three-star breach
+  // (margin 100 > 60) — two cannons' worth — and the cap means thirty swords
+  // are still +100, so hoarding can never outgrow building a base.
+  const SWORD_DAMAGE = 10;
+  const SWORD_CAP = 10;
   const SCENES = Object.freeze(['moonlit-village', 'haunted-forest', 'storm-kingdom']);
 
   const RAIDERS = Object.freeze([
@@ -129,12 +152,22 @@ var NightRaidRules = (() => {
     return {level,damage:20+level*2,defense:30+level*3};
   }
 
+  // Swords in stock → the DAM they add. Anything past the cap adds nothing;
+  // a missing or non-numeric count is zero.
+  function swordBonus(swordCount) {
+    return SWORD_DAMAGE * int(swordCount, 0, SWORD_CAP);
+  }
+
   // The builder and the server use this exact score card. Castle skins are
   // deliberately absent: a paid skin changes the home art, never the result.
-  function combatPower(layout, dogLevel, teammates, soldierCount) {
+  // `swordCount` is the child's users.night_swords: the client passes what the
+  // last /api/me/daily-tasks reply said, the server reads the column itself
+  // (functions/api/night-raid/start.js) — same function, same number.
+  function combatPower(layout, dogLevel, teammates, soldierCount, swordCount) {
     const clean=normalizeLayout(layout), mates=normalizeTeammates(teammates);
     const pet=petPower(dogLevel),soldiers=int(soldierCount==null?clean.soldiers:soldierCount,0,MAX_SOLDIERS);
-    let damage=20+pet.damage+soldiers*20;
+    const swords=int(swordCount,0,SWORD_CAP),swordDamage=swordBonus(swords);
+    let damage=20+pet.damage+soldiers*20+swordDamage;
     let defense=50+pet.defense;
     for(const id of mates){
       if(id==='gunner')damage+=45;
@@ -145,7 +178,7 @@ var NightRaidRules = (() => {
       const item=byId(DEFENSES,cell.type), mult=tierMultiplier(cell.tier);
       if(item&&!item.producer){damage+=Math.round((item.attack||0)*mult);defense+=Math.round((item.defense||0)*mult);}
     }
-    return {damage:Math.max(1,Math.round(damage)),defense:Math.max(1,Math.round(defense)),petDamage:pet.damage,petDefense:pet.defense,soldiers,soldierDamage:soldiers*20};
+    return {damage:Math.max(1,Math.round(damage)),defense:Math.max(1,Math.round(defense)),petDamage:pet.damage,petDefense:pet.defense,soldiers,soldierDamage:soldiers*20,swords,swordDamage};
   }
 
   function trainingLayout(level) {
@@ -398,9 +431,9 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,SCENES,
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,SWORD_DAMAGE,SWORD_CAP,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
-    makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
+    makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
   });
 })();

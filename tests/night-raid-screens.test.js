@@ -108,16 +108,37 @@ function tap(el) {
 }
 
 suite('night raid screens: every sub-menu opens and its primary action is armed', () => {
-  test('the home stage renders with all four sub-menu fabs', () => {
+  test('the home stage renders with all five sub-menu fabs', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     const html = doc.getElementById('nightRaidScreen').innerHTML;
-    for (const label of ['CƯỚP ĐÊM', 'NHÀ THẬT', 'XÂY NHÀ', 'NHẬT KÝ']) {
+    for (const label of ['CƯỚP ĐÊM', 'NHÀ THẬT', 'XÂY NHÀ', 'NHẬT KÝ', 'VŨ KHÍ']) {
       assert.truthy(html.includes(label), 'home is missing the ' + label + ' fab');
     }
-    for (const fn of ['nrScoutBot()', 'nrShowLiveTargets()', 'nrShowBuilder()', 'nrShowReports()']) {
+    for (const fn of ['nrScoutBot()', 'nrShowLiveTargets()', 'nrShowBuilder()', 'nrShowReports()', 'nrOpenArmory()']) {
       assert.truthy(html.includes(fn), 'fab not wired to ' + fn);
     }
+    assert.falsy(html.includes('nr-fab-badge'), 'no gift waiting → no badge');
+    assert.equal(typeof ctx.nrOpenArmory, 'function');
+    ctx.nrOpenArmory();   // js/armory.js is not loaded here: must not throw, just say so
+  });
+
+  test('the HUD DAM counts the swords the server will count, and the VŨ KHÍ fab wears the gift badge', () => {
+    const { ctx, doc, state } = mount({ appState: { dailyTask: { swords: { count: 3 }, pending: ['2026-09-01', '2026-09-02'] } } });
+    ctx.NightRaid.open();
+    const html = doc.getElementById('nightRaidScreen').innerHTML;
+    const layout = state.nightRaidLayout;
+    const withSwords = Rules.combatPower(layout, state.dogLevel, state.battleTeammates, layout.soldiers, 3).damage;
+    const without = Rules.combatPower(layout, state.dogLevel, state.battleTeammates, layout.soldiers, 0).damage;
+    assert.equal(withSwords - without, 30);
+    assert.truthy(html.includes(`<small>DAM</small><strong>${withSwords}</strong>`), 'HUD DAM must include the sword bonus');
+    assert.truthy(html.includes('nr-fab-badge'));
+    assert.truthy(/nr-fab-badge"[^>]*>2</.test(html), 'two gifts waiting');
+    // The armory module, when present, is what the fab opens.
+    let opened = 0;
+    ctx.Armory = { open() { opened++; } };
+    ctx.nrOpenArmory();
+    assert.equal(opened, 1);
   });
 
   test('CƯỚP ĐÊM opens scout AND arms the TIẾN QUÂN button', () => {
@@ -379,6 +400,84 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     const wired = (src.match(/nrQuitRaid\(\)/g) || []).length;
     assert.truthy(wired >= 2,
       'nrQuitRaid must be called from the markup as well as declared');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// a /finish that never came back
+// ---------------------------------------------------------------------------
+//
+// /start writes the raid row — tonight's visit to that house is spent — and
+// if /finish then fails (tunnel, app killed) the child saw "Kết quả đang chờ
+// đồng bộ" with 0 xu, and nothing ever asked the server again. The raidId is
+// now remembered and asked about on the next open; finish.js replays a stored
+// result for a 'done' raid and scores an 'active' one still inside its window.
+suite('night raid: a lost /finish is retried on the next open', () => {
+  const RAID = 'b'.repeat(32);
+  function world(finish) {
+    const calls = [];
+    const api = (route, opts) => {
+      calls.push(route);
+      if (/\/finish$/.test(route)) return Promise.resolve(finish(opts));
+      return Promise.resolve({ ok: false, data: null });
+    };
+    return Object.assign(mount({
+      appState: { coins: 100, nightRaidPending: { raidId: RAID, at: Date.now() - 60000 } },
+      ctx: { EngAuth: { tokenFor: () => 'tok', api } },
+    }), { calls });
+  }
+
+  test('a stored win is claimed once, the wallet grows, the pending raid is cleared', async () => {
+    const w = world(() => ({ ok: true, data: { result: { won: true, reward: 60, loss: 0, stars: 2, soldiers: 4 } } }));
+    w.ctx.NightRaid.open(); await settle(); await settle();
+    assert.truthy(w.calls.some(r => /night-raid\/finish$/.test(r)), 'open() asked the server about the pending raid');
+    assert.equal(w.state.coins, 160);
+    assert.equal(w.state.nightRaidPending, null);
+    assert.truthy(w.state.nightRaidClaimed[RAID]);
+    assert.equal(w.state.nightRaidLayout.soldiers, 4, 'the server\'s soldier count wins');
+    assert.truthy(w.toasts.some(t => /\+60 xu/.test(t)), 'the child is told what came in');
+    // Opening again must not pay twice.
+    w.ctx.NightRaid.open(); await settle(); await settle();
+    assert.equal(w.state.coins, 160);
+  });
+
+  test('a stored loss is charged once and cleared', async () => {
+    const w = world(() => ({ ok: true, data: { result: { won: false, reward: 0, loss: 20, stars: 0 } } }));
+    w.ctx.NightRaid.open(); await settle(); await settle();
+    assert.equal(w.state.coins, 80);
+    assert.equal(w.state.nightRaidPending, null);
+  });
+
+  test('an expired or unknown raid is dropped; a mere network failure is kept for next time', async () => {
+    const gone = world(() => ({ ok: false, data: { error: 'Raid expired' } }));
+    gone.ctx.NightRaid.open(); await settle(); await settle();
+    assert.equal(gone.state.nightRaidPending, null, 'nothing left to recover');
+    assert.equal(gone.state.coins, 100);
+    const offline = world(() => ({ ok: false, data: null }));
+    offline.ctx.NightRaid.open(); await settle(); await settle();
+    assert.truthy(offline.state.nightRaidPending && offline.state.nightRaidPending.raidId === RAID, 'still pending — ask again later');
+    assert.equal(offline.state.coins, 100);
+  });
+
+  test('TIẾN QUÂN on a real house remembers the raid the moment /start succeeds', async () => {
+    // A fresh copy of the house: onlineWorld() hands out the shared
+    // LIVE_TARGET object, and startRaid stamps the raidId onto the target it
+    // is given — so after an earlier test the shared one already "has" a raid
+    // and /start is (correctly) skipped.
+    const house = Object.assign({}, LIVE_TARGET, { raidId: undefined });
+    const api = (route) => {
+      if (/\/targets$/.test(route)) return Promise.resolve({ ok: true, data: { targets: [house], ticketsLeft: 3 } });
+      if (/\/start$/.test(route)) return Promise.resolve({ ok: true, data: { raid: Object.assign({}, LIVE_TARGET, { raidId: 'c'.repeat(32) }) } });
+      return Promise.resolve({ ok: false, data: null });
+    };
+    const w = mount({ ctx: { EngAuth: { tokenFor: () => 'tok', api }, confirm: () => true } });
+    w.ctx.NightRaid.open(); await settle();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    assert.equal(w.state.nightRaidPending, undefined, 'scouting writes nothing');
+    tap(w.doc.getElementById('nrStartRaid')); await settle(); await settle();
+    assert.truthy(w.state.nightRaidPending && w.state.nightRaidPending.raidId === 'c'.repeat(32),
+      'the raidId is on disk before the first sword swings');
   });
 });
 
