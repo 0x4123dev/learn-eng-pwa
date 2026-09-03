@@ -71,6 +71,7 @@ const ASSETS = [
   '/js/math-fight-bank.js',
   '/js/math-fight.js',
   '/js/math.js',
+  '/js/math-copy.js',
   '/js/math-board.js',
   '/js/tapwords.js',
   '/js/petart.js',
