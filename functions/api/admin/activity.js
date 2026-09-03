@@ -17,14 +17,20 @@ export async function onRequestGet({ request, env }) {
         SELECT a.created_at AS created_at, a.user_id AS user_id, u.username AS username,
                'exam' AS kind, a.exam_title AS title, a.exam_id AS ref,
                a.score AS score, a.total AS total, a.time_spent_sec AS time_spent_sec,
-               a.auto_submitted AS auto_submitted
+               a.auto_submitted AS auto_submitted,
+               (SELECT s.balance FROM user_coin_snapshots s
+                 WHERE s.user_id=a.user_id AND s.snapshot_date=date(a.created_at,'+7 hours')
+                 LIMIT 1) AS coin_balance
           FROM exam_attempts a JOIN users u ON u.id = a.user_id
           ${filter ? 'WHERE a.user_id = ?1' : ''}
         UNION ALL
         SELECT c.created_at AS created_at, c.user_id AS user_id, u.username AS username,
                c.type AS kind, c.title AS title, NULL AS ref,
                c.score AS score, c.total AS total, NULL AS time_spent_sec,
-               0 AS auto_submitted
+               0 AS auto_submitted,
+               (SELECT s.balance FROM user_coin_snapshots s
+                 WHERE s.user_id=c.user_id AND s.snapshot_date=date(c.created_at,'+7 hours')
+                 LIMIT 1) AS coin_balance
           FROM activities c JOIN users u ON u.id = c.user_id
           ${filter ? 'WHERE c.user_id = ?1' : ''}
      ) ORDER BY created_at DESC LIMIT 1000`;

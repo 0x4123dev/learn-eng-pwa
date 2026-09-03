@@ -1469,9 +1469,8 @@ PetBattleGame.prototype._drawHouse = function (pos, img, facing, hp, angle, acce
   const dark = '#211c2b';
   const mortar = palette[3];
 
-  // A broad shadow makes the 140px silhouette feel planted, not pasted on.
-  ctx.fillStyle = 'rgba(15,23,42,.34)';
-  ctx.beginPath(); ctx.ellipse(0, 5, 78, 12, 0, 0, Math.PI * 2); ctx.fill();
+  // Do not paint a black ground oval beneath a cosmetic skin. The same castle
+  // art is reused on bright maps where that oval reads as a dirty stain.
 
   const rubble = damage >= 5
     ? [[-60,-8,31,15,-.18],[-33,-17,26,16,.21],[-4,-8,38,17,-.09],[30,-13,31,18,.16],[59,-7,27,14,-.22],[-48,-29,20,15,.12],[42,-31,24,16,-.12]]

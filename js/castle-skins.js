@@ -17,6 +17,21 @@ var CastleSkins = (() => {
   const defaultId = 'stone-keep';
   const atlasSources = Object.freeze(['img/castle-skins/castles-atlas-a.png','img/castle-skins/castles-atlas-b.png']);
   const atlasCrops = Object.freeze([{ y:20, h:680 }, { y:150, h:620 }]);
+  // The source sheets are not five equal sprite cells: several silhouettes
+  // cross those mathematical boundaries. These measured alpha-safe frames
+  // isolate each real castle so neighbouring art can never leak into it.
+  const atlasFrames = Object.freeze([
+    Object.freeze([
+      Object.freeze({x:27,w:447}), Object.freeze({x:477,w:428}),
+      Object.freeze({x:907,w:397}), Object.freeze({x:1306,w:426}),
+      Object.freeze({x:1736,w:402}),
+    ]),
+    Object.freeze([
+      Object.freeze({x:23,w:341}), Object.freeze({x:376,w:309}),
+      Object.freeze({x:696,w:333}), Object.freeze({x:1041,w:331}),
+      Object.freeze({x:1386,w:361}),
+    ]),
+  ]);
   const atlasImages = [null, null];
   const atlasWaiters = [[], []];
   const normalize = id => byId[String(id || '')] ? String(id) : defaultId;
@@ -49,8 +64,8 @@ var CastleSkins = (() => {
     if (normalize(id) === defaultId) return false;
     const position=atlasCell(id), image=loadAtlas(position.atlas);
     if (!image || !image.complete || !image.naturalWidth) return false;
-    const sw=image.naturalWidth/5, crop=atlasCrops[position.atlas];
-    ctx.drawImage(image,position.cell*sw,crop.y,sw,Math.min(crop.h,image.naturalHeight-crop.y),dx,dy,dw,dh);
+    const frame=atlasFrames[position.atlas][position.cell],crop=atlasCrops[position.atlas];
+    ctx.drawImage(image,frame.x,crop.y,frame.w,Math.min(crop.h,image.naturalHeight-crop.y),dx,dy,dw,dh);
     return true;
   }
 
@@ -62,7 +77,7 @@ var CastleSkins = (() => {
     if (skin.id === defaultId) return false;
     const position=atlasCell(id), image=loadAtlas(position.atlas);
     if (!image || !image.complete || !image.naturalWidth || damage >= 5) return false;
-    const sw=image.naturalWidth/5, sx=position.cell*sw, crop=atlasCrops[position.atlas], sy=crop.y, sh=Math.min(crop.h,image.naturalHeight-crop.y);
+    const frame=atlasFrames[position.atlas][position.cell],sw=frame.w,sx=frame.x,crop=atlasCrops[position.atlas],sy=crop.y,sh=Math.min(crop.h,image.naturalHeight-crop.y);
     if (skin.prestige >= 7 && damage < 4) {
       ctx.save();
       const aura=ctx.createRadialGradient(0,-72,12,0,-72,82);
@@ -117,7 +132,8 @@ var CastleSkins = (() => {
     const ctx=canvas.getContext('2d'); if (!ctx) return;
     const skin=get(id),c=skin.colors,w=canvas.width||240,h=canvas.height||150;
     ctx.clearRect(0,0,w,h); const sky=ctx.createLinearGradient(0,0,0,h); sky.addColorStop(0,c[5]); sky.addColorStop(1,'#eff6ff'); ctx.fillStyle=sky; ctx.fillRect(0,0,w,h);
-    ctx.fillStyle='rgba(15,23,42,.18)'; ctx.beginPath(); ctx.ellipse(w/2,h-12,w*.36,10,0,0,Math.PI*2); ctx.fill();
+    // The art already has a detailed base. An extra dark oval looks like a
+    // black stain when these same ten skins appear on the bright Home yard.
     // The shop communicates value visually: affordable keeps are compact,
     // while each higher prestige step occupies more of its showcase.
     const scale=.80+skin.prestige*.025;

@@ -55,7 +55,8 @@ var NightRaidArt = (() => {
   function drawCastle(ctx,x,groundY,skinId,hp,maxHp,impactPulse) {
     const ratio=Math.max(0,Math.min(1,hp/Math.max(1,maxHp))); const damage=ratio<=0?4:ratio<.25?3:ratio<.5?2:ratio<.76?1:0;
     ctx.save();ctx.translate(x,groundY);ctx.scale(1.45,1.45);
-    ctx.fillStyle='rgba(0,0,0,.32)';ctx.beginPath();ctx.ellipse(0,4,98,15,0,0,Math.PI*2);ctx.fill();
+    // The board supplies ground contact; do not bake a black oval into the
+    // castle bitmap reused by Home and the drag-and-drop builder.
     let drawn=false; if(typeof CastleSkins!=='undefined'&&CastleSkins.drawBattle) drawn=CastleSkins.drawBattle(ctx,skinId,damage);
     if(!drawn){const skin=typeof CastleSkins!=='undefined'?CastleSkins.get(skinId):null;drawFallbackCastle(ctx,damage,skin&&skin.colors);}
     // Deep crater with a bright broken inner edge — remains visible after dust clears.

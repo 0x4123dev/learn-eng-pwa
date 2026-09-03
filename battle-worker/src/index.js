@@ -67,17 +67,49 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
 
     const m = url.pathname.match(/^\/room\/(\d+)$/);
-    if (!m) return new Response('Not found', { status: 404, headers: CORS });
+    const offering = url.pathname.match(/^\/offering\/([A-Za-z0-9_-]{1,64})$/);
+    if (!m && !offering) return new Response('Not found', { status: 404, headers: CORS });
     if (request.headers.get('Upgrade') !== 'websocket') {
       return new Response('Expected WebSocket', { status: 426, headers: CORS });
     }
 
-    const battleId = Number(m[1]);
     const secret = await authSecret(env);
     if (!secret) return new Response('Server not configured', { status: 500, headers: CORS });
 
     const payload = await verifyToken(url.searchParams.get('token'), secret);
     if (!payload || !payload.uid) return new Response('Unauthorized', { status: 401, headers: CORS });
+
+    if (offering) {
+      const profile = await env.DB.prepare('SELECT username, allow_bot FROM users WHERE id=?')
+        .bind(payload.uid).first();
+      if (!profile) return new Response('Forbidden', { status: 403, headers: CORS });
+      const botParam = url.searchParams.get('bot');
+      const botId = botParam === null ? null : Number(botParam);
+      if (botParam !== null && (!profile.allow_bot || !Number.isInteger(botId) || botId < 0 || botId > 1)) {
+        return new Response('Invalid QA bot', { status: 403, headers: CORS });
+      }
+      const roomDate = '2026-09-10';
+      const eventOpensAt = Date.UTC(2026, 8, 10, 15, 0, 0); // 22:00 GMT+7
+      const eventClosesAt = eventOpensAt + 2 * 60 * 60 * 1000;
+      const now = Date.now();
+      if (!profile.allow_bot && (now < eventOpensAt || now >= eventClosesAt)) {
+        return new Response('Event is locked', { status: 403, headers: CORS });
+      }
+      const humanTestRoom = 'qa-human-' + roomDate;
+      const isHumanTest = offering[1] === humanTestRoom;
+      if (isHumanTest && (!profile.allow_bot || botParam !== null)) return new Response('Human QA only', { status: 403, headers: CORS });
+      const expectedRoom = profile.allow_bot ? (isHumanTest ? humanTestRoom : 'qa-' + roomDate) : roomDate;
+      if (offering[1] !== expectedRoom) return new Response('Wrong event room', { status: 409, headers: CORS });
+      const id = env.GHOST_OFFERING_ROOM.idFromName('offering-' + expectedRoom);
+      const fwd = new URL(request.url);
+      fwd.searchParams.set('uid', String(payload.uid));
+      fwd.searchParams.set('name', botId === 0 ? 'Milo' : botId === 1 ? 'Luna' : String(profile.username || 'Player').slice(0, 20));
+      fwd.searchParams.set('actor', botId === null ? `user-${payload.uid}` : `bot-${payload.uid}-${botId}`);
+      fwd.searchParams.delete('token');
+      return env.GHOST_OFFERING_ROOM.get(id).fetch(new Request(fwd.toString(), request));
+    }
+
+    const battleId = Number(m[1]);
 
     // Only the two players of a live battle may enter the room.
     const battle = await env.DB.prepare(
@@ -181,5 +213,122 @@ export class BattleRoom {
       if (ws === except) continue;
       try { ws.send(data); } catch (e) {}
     }
+  }
+}
+
+const OFFERING_ITEMS = new Set([
+  'pig', 'chicken1', 'chicken2', 'chicken3', 'chicken4', 'chicken5',
+  'fruit1', 'fruit2', 'fruit3', 'fruit4', 'fruit5', 'fruit6', 'fruit7', 'fruit8',
+]);
+
+// Authoritative transient lock manager for the shared offering table. A
+// socket attachment is durable across hibernation and records at most one
+// held item. Durable Object events are serialized, so simultaneous grabs for
+// one chicken have exactly one winner.
+export class GhostOfferingRoom {
+  constructor(state, env) { this.state = state; this.env = env; }
+
+  async _claimed() {
+    const ids = await this.state.storage.get('claimed');
+    return new Set(Array.isArray(ids) ? ids.filter(id => OFFERING_ITEMS.has(id)) : []);
+  }
+  async _saveClaimed(ids) { await this.state.storage.put('claimed', [...ids]); }
+  async _snapshot(except, uid) {
+    const peers = this.state.getWebSockets().filter(ws => ws !== except);
+    const players = peers.map(ws => { const a = ws.deserializeAttachment() || {}; return { uid: a.uid, actorId: a.actorId, name: a.name }; });
+    const locks = peers.map(ws => {
+      const a = ws.deserializeAttachment() || {};
+      if (!a.itemId) return null;
+      return { itemId: a.itemId, uid: a.uid, actorId: a.actorId, name: a.name,
+        angle: Number.isFinite(a.angle) ? a.angle : 0,
+        length: Number.isFinite(a.length) ? a.length : 0,
+        phase: a.phase === 'retract' ? 'retract' : 'extend',
+        ...(Number.isFinite(a.haul) ? { haul: a.haul } : {}),
+        ...(Number.isFinite(a.x) && Number.isFinite(a.y) ? { x: a.x, y: a.y } : {}) };
+    }).filter(Boolean);
+    return { t: 'offering-state', you: uid, peers: this.state.getWebSockets().length - 1,
+      players, locks, claimed: [...await this._claimed()] };
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+    const uid = Number(url.searchParams.get('uid')) || 0;
+    const name = String(url.searchParams.get('name') || 'Player').slice(0, 20);
+    const actorId = String(url.searchParams.get('actor') || `user-${uid}`).slice(0, 40);
+    const pair = new WebSocketPair();
+    const [client, server] = Object.values(pair);
+    this.state.acceptWebSocket(server, ['uid:' + uid]);
+    server.serializeAttachment({ uid, name, actorId, itemId: null });
+    this._send(server, await this._snapshot(server, uid));
+    this._broadcast(server, { t: 'offering-presence', joined: uid, actorId, name, peers: this.state.getWebSockets().length - 1 });
+    return new Response(null, { status: 101, webSocket: client });
+  }
+
+  async webSocketMessage(ws, raw) {
+    let msg;
+    try { msg = JSON.parse(typeof raw === 'string' ? raw : new TextDecoder().decode(raw)); } catch (_) { return; }
+    const att = ws.deserializeAttachment() || {};
+    const itemId = String(msg && msg.itemId || '');
+    if (!OFFERING_ITEMS.has(itemId)) return;
+
+    if (msg.t === 'offering-grab') {
+      const claimed = await this._claimed();
+      if (claimed.has(itemId)) {
+        this._send(ws, { t: 'offering-denied', itemId, claimed: true });
+        return;
+      }
+      const owner = this.state.getWebSockets().find(other => {
+        const a = other.deserializeAttachment() || {};
+        return other !== ws && a.itemId === itemId;
+      });
+      if (owner || att.itemId) {
+        this._send(ws, { t: 'offering-denied', itemId, owner: owner ? (owner.deserializeAttachment() || {}).uid : att.uid });
+        return;
+      }
+      const next = { uid: att.uid, name: att.name, actorId: att.actorId, itemId, angle: 0, length: 0, phase: 'extend' };
+      ws.serializeAttachment(next);
+      this._send(ws, { t: 'offering-granted', itemId });
+      this._broadcast(ws, { t: 'offering-locked', itemId, uid: att.uid, actorId: att.actorId, name: att.name });
+      return;
+    }
+    if (att.itemId !== itemId) return;
+    if (msg.t === 'offering-progress') {
+      const angle = Math.max(-70, Math.min(70, Number(msg.angle) || 0));
+      const length = Math.max(0, Math.min(1, Number(msg.length) || 0));
+      const phase = msg.phase === 'extend' ? 'extend' : 'retract';
+      const point = Number.isFinite(msg.x) && Number.isFinite(msg.y)
+        ? { x: Math.max(0, Math.min(1, msg.x)), y: Math.max(0, Math.min(1, msg.y)) } : {};
+      const haul = Number.isFinite(msg.haul) ? { haul: Math.max(0, Math.min(1, msg.haul)) } : {};
+      ws.serializeAttachment({ uid: att.uid, name: att.name, actorId: att.actorId, itemId, angle, length, phase, ...point, ...haul });
+      this._broadcast(ws, { t: 'offering-progress', itemId, uid: att.uid, actorId: att.actorId, name: att.name,
+        angle, length, phase, ...point, ...haul });
+    } else if (msg.t === 'offering-release') {
+      ws.serializeAttachment({ uid: att.uid, name: att.name, actorId: att.actorId, itemId: null });
+      this._broadcast(ws, { t: 'offering-released', itemId, uid: att.uid, actorId: att.actorId,
+        reason: msg.reason === 'snap' ? 'snap' : 'release' });
+    } else if (msg.t === 'offering-claimed') {
+      const claimed = await this._claimed();
+      claimed.add(itemId);
+      await this._saveClaimed(claimed);
+      ws.serializeAttachment({ uid: att.uid, name: att.name, actorId: att.actorId, itemId: null });
+      this._broadcast(ws, { t: 'offering-claimed', itemId, uid: att.uid, actorId: att.actorId });
+    }
+  }
+
+  async webSocketClose(ws) { await this._leave(ws); }
+  async webSocketError(ws) { await this._leave(ws); try { ws.close(1011, 'error'); } catch (_) {} }
+  async _leave(ws) {
+    const att = ws.deserializeAttachment() || {};
+    if (att.itemId) this._broadcast(ws, { t: 'offering-released', itemId: att.itemId, uid: att.uid, actorId: att.actorId });
+    const peers = this.state.getWebSockets().filter(other => other !== ws).length;
+    this._broadcast(ws, { t: 'offering-presence', left: att.uid, actorId: att.actorId, name: att.name, peers });
+    // A bot-on QA table is a fresh round after everybody leaves. Public
+    // claims still survive in D1 and are restored by the Pages API.
+    if (peers === 0) await this.state.storage.delete('claimed');
+  }
+  _send(ws, obj) { try { ws.send(JSON.stringify(obj)); } catch (_) {} }
+  _broadcast(except, obj) {
+    const data = JSON.stringify(obj);
+    for (const ws of this.state.getWebSockets()) if (ws !== except) try { ws.send(data); } catch (_) {}
   }
 }

@@ -13,10 +13,18 @@ compatibility_date = "2024-09-23"
 name = "BATTLE_ROOM"
 class_name = "BattleRoom"
 
+[[durable_objects.bindings]]
+name = "GHOST_OFFERING_ROOM"
+class_name = "GhostOfferingRoom"
+
 # SQLite-backed Durable Objects (available on the free plan).
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["BattleRoom"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["GhostOfferingRoom"]
 
 # Same database as the Pages app: the room verifies tokens and participants.
 [[d1_databases]]

@@ -11,9 +11,11 @@
 const MATH_BOARD_MAX = 3;          // bảng 1/2/3 — enough for one solution
 const MATH_BOARD_MIN_DIST = 2;     // CSS px between recorded points
 const MATH_BOARD_INK = '#1e293b';
-const MATH_BOARD_INK_WIDTH = 4;
-const MATH_BOARD_PEN_WIDTHS = [2.5, 4, 6];
+const MATH_BOARD_INK_WIDTH = 2.5;
+const MATH_BOARD_PEN_WIDTHS = [MATH_BOARD_INK_WIDTH];
 const MATH_BOARD_ERASER_RADIUS = 16;
+const MATH_BOARD_MIN_ZOOM = 0.6;
+const MATH_BOARD_MAX_ZOOM = 2.5;
 const MATH_BOARD_FORMULA_GAP = 48;
 const MATH_BOARD_SUPERSCRIPTS = {
     '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
@@ -160,7 +162,7 @@ let _mathBoardSession = null;
 
 function mathBoardSession() {
     if (!_mathBoardSession) {
-        _mathBoardSession = { boards: [{ strokes: [], scrollX: 0, scrollY: 0 }], active: 0, open: false };
+        _mathBoardSession = { boards: [{ strokes: [], scrollX: 0, scrollY: 0, zoom: 1 }], active: 0, open: false };
     }
     return _mathBoardSession;
 }
@@ -171,7 +173,7 @@ function mathBoardActive() { const s = mathBoardSession(); return s.boards[s.act
 function mathBoardAdd() {
     const s = mathBoardSession();
     if (s.boards.length >= MATH_BOARD_MAX) return -1;
-    s.boards.push({ strokes: [], scrollX: 0, scrollY: 0 });
+    s.boards.push({ strokes: [], scrollX: 0, scrollY: 0, zoom: 1 });
     s.active = s.boards.length - 1;
     return s.active;
 }
@@ -200,7 +202,39 @@ function mathBoardSwitch(i) {
 // the sheet jump the moment the student rests a thumb down.
 function mathBoardGesture() {
     return { down: {}, count: 0, mode: 'idle', // idle | ink | erase | pan
-        stroke: null, lead: null, panX: 0, panY: 0, eraseRemoved: null };
+        stroke: null, lead: null, panX: 0, panY: 0, eraseRemoved: null,
+        pinchX: 0, pinchY: 0, pinchDistance: 0, pinchMoved: {} };
+}
+
+function mathBoardZoom(b) {
+    return Math.max(MATH_BOARD_MIN_ZOOM, Math.min(MATH_BOARD_MAX_ZOOM, Number(b.zoom) || 1));
+}
+
+function mathBoardScreenToWorld(b, x, y) {
+    const zoom = mathBoardZoom(b);
+    return { x: (b.scrollX || 0) + x / zoom, y: (b.scrollY || 0) + y / zoom };
+}
+
+function mathBoardPinchSnapshot(g) {
+    const keys = Object.keys(g.down).slice(0, 2);
+    if (keys.length < 2) return null;
+    const a = g.down[keys[0]], c = g.down[keys[1]];
+    return {
+        x: (a.x + c.x) / 2,
+        y: (a.y + c.y) / 2,
+        distance: Math.max(1, Math.hypot(c.x - a.x, c.y - a.y))
+    };
+}
+
+function mathBoardBeginPinch(g, b) {
+    const pinch = mathBoardPinchSnapshot(g);
+    if (!pinch) return;
+    g.pinchX = pinch.x;
+    g.pinchY = pinch.y;
+    g.pinchDistance = pinch.distance;
+    g.pinchMoved = {};
+    g.panX = b.scrollX || 0;
+    g.panY = b.scrollY || 0;
 }
 
 function mathBoardPointerDown(g, b, id, x, y, tool, width) {
@@ -209,17 +243,18 @@ function mathBoardPointerDown(g, b, id, x, y, tool, width) {
     g.down[key] = { x: x, y: y };
     g.count++;
     if (g.mode === 'idle') {
+        const point = mathBoardScreenToWorld(b, x, y);
         if (tool === 'erase') {
             g.mode = 'erase';
             g.lead = key;
             g.eraseRemoved = [];
-            mathBoardEraseAt(b, x + (b.scrollX || 0), y + b.scrollY,
-                MATH_BOARD_ERASER_RADIUS, g.eraseRemoved);
+            mathBoardEraseAt(b, point.x, point.y,
+                MATH_BOARD_ERASER_RADIUS / mathBoardZoom(b), g.eraseRemoved);
             return 'erase';
         }
         g.mode = 'ink';
         g.lead = key;
-        g.stroke = mathBoardBegin(b, x + (b.scrollX || 0), y + b.scrollY, width);
+        g.stroke = mathBoardBegin(b, point.x, point.y, width);
         return 'ink-start';
     }
     if (g.mode === 'ink') {
@@ -228,8 +263,7 @@ function mathBoardPointerDown(g, b, id, x, y, tool, width) {
         if (history.length && history[history.length - 1].stroke === g.stroke) history.pop();
         g.stroke = null;
         g.mode = 'pan';        // lead stays the first finger — it is the anchor
-        g.panX = b.scrollX || 0;
-        g.panY = b.scrollY;    // unclamped accumulator — see mathBoardPointerMove
+        mathBoardBeginPinch(g, b);
         return 'pan-start';
     }
     if (g.mode === 'erase') {
@@ -239,8 +273,7 @@ function mathBoardPointerDown(g, b, id, x, y, tool, width) {
             .forEach(function (entry) { b.strokes.splice(entry.index, 0, entry.stroke); });
         g.eraseRemoved = null;
         g.mode = 'pan';
-        g.panX = b.scrollX || 0;
-        g.panY = b.scrollY;
+        mathBoardBeginPinch(g, b);
         return 'pan-start';
     }
     return 'none';             // a third finger during a pan changes nothing
@@ -254,16 +287,46 @@ function mathBoardPointerMove(g, b, id, x, y) {
     p.x = x;
     p.y = y;
     if (g.mode === 'ink' && key === g.lead && g.stroke) {
-        return mathBoardExtend(g.stroke, x + (b.scrollX || 0), y + b.scrollY) ? 'ink' : 'none';
+        const point = mathBoardScreenToWorld(b, x, y);
+        return mathBoardExtend(g.stroke, point.x, point.y) ? 'ink' : 'none';
     }
     if (g.mode === 'erase' && key === g.lead) {
-        return mathBoardEraseAt(b, x + (b.scrollX || 0), y + b.scrollY,
-            MATH_BOARD_ERASER_RADIUS, g.eraseRemoved)
+        const point = mathBoardScreenToWorld(b, x, y);
+        return mathBoardEraseAt(b, point.x, point.y,
+            MATH_BOARD_ERASER_RADIUS / mathBoardZoom(b), g.eraseRemoved)
             ? 'erase' : 'none';
     }
+    if (g.mode === 'pan' && g.count >= 2) {
+        g.pinchMoved[key] = true;
+        const pinchKeys = Object.keys(g.down).slice(0, 2);
+        // Pointer Events report each finger separately. Wait until both have
+        // supplied a fresh position, otherwise an ordinary two-finger swipe
+        // briefly looks like a pinch every other event and visibly pulses.
+        if (!pinchKeys.every(function (pinchKey) { return g.pinchMoved[pinchKey]; })) return 'none';
+        const pinch = mathBoardPinchSnapshot(g);
+        if (!pinch) return 'none';
+        const oldZoom = mathBoardZoom(b);
+        const nextZoom = Math.max(MATH_BOARD_MIN_ZOOM, Math.min(MATH_BOARD_MAX_ZOOM,
+            oldZoom * pinch.distance / Math.max(1, g.pinchDistance)));
+        // Keep the world point under the previous midpoint under the new
+        // midpoint. This combines pinch and two-axis pan without a jump.
+        const anchorX = g.panX + g.pinchX / oldZoom;
+        const anchorY = g.panY + g.pinchY / oldZoom;
+        g.panX = anchorX - pinch.x / nextZoom;
+        g.panY = anchorY - pinch.y / nextZoom;
+        b.zoom = nextZoom;
+        b.scrollX = Math.max(0, g.panX);
+        b.scrollY = Math.max(0, g.panY);
+        g.pinchX = pinch.x;
+        g.pinchY = pinch.y;
+        g.pinchDistance = pinch.distance;
+        g.pinchMoved = {};
+        return Math.abs(nextZoom - oldZoom) > 0.0001 ? 'zoom' : 'pan';
+    }
     if (g.mode === 'pan' && key === g.lead) {
-        g.panX -= (x - prevX);
-        g.panY -= (y - prevY);              // the finger's true travel, unclamped
+        const zoom = mathBoardZoom(b);
+        g.panX -= (x - prevX) / zoom;
+        g.panY -= (y - prevY) / zoom;       // the finger's true travel, unclamped
         b.scrollX = Math.max(0, g.panX);
         b.scrollY = Math.max(0, g.panY);    // clamp only what we show, or overscroll
         return 'pan';                       // at the top would steal the way back
@@ -297,6 +360,7 @@ function mathBoardPointerUp(g, b, id) {
         // The steering finger left but others remain: hand the pan to a
         // survivor, which carries its own last y, so the sheet does not jump.
         if (wasLead) g.lead = Object.keys(g.down)[0];
+        if (g.count >= 2) mathBoardBeginPinch(g, b);
         return 'none';
     }
     if (g.count === 0) { g.mode = 'idle'; g.lead = null; }
@@ -316,6 +380,7 @@ function mathBoardAbort(g, b) {
         mathBoardHistory(b).push({ type: 'erase', removed: g.eraseRemoved });
     }
     g.mode = 'idle'; g.stroke = null; g.lead = null; g.down = {}; g.count = 0; g.eraseRemoved = null;
+    g.pinchMoved = {};
 }
 
 // ── Painter ──────────────────────────────────────────────────────────────
@@ -323,9 +388,10 @@ function mathBoardAbort(g, b) {
 // the world we draw, never the canvas. That is what makes the sheet endless
 // without ever meeting iOS's canvas-size ceiling.
 
-function mathBoardVisibleStrokes(strokes, scrollY, viewH, scrollX, viewW) {
-    const top = scrollY, bottom = scrollY + viewH;
-    const left = scrollX || 0, right = viewW == null ? Infinity : left + viewW;
+function mathBoardVisibleStrokes(strokes, scrollY, viewH, scrollX, viewW, zoom) {
+    const z = zoom || 1;
+    const top = scrollY, bottom = scrollY + viewH / z;
+    const left = scrollX || 0, right = viewW == null ? Infinity : left + viewW / z;
     return strokes.filter(s => {
         let minY = Infinity, maxY = -Infinity, minX = Infinity, maxX = -Infinity;
         for (const p of s.points) {
@@ -339,30 +405,32 @@ function mathBoardVisibleStrokes(strokes, scrollY, viewH, scrollX, viewW) {
 // Midpoint-quadratic smoothing: each recorded point becomes the control point
 // of a curve between neighbouring midpoints — cheap, stable, and it reads as
 // ink instead of connect-the-dots.
-function mathBoardDrawStroke(ctx, pts, scrollY, width, scrollX) {
+function mathBoardDrawStroke(ctx, pts, scrollY, width, scrollX, zoom) {
     if (!pts.length) return;
     const offsetX = scrollX || 0;
+    const z = zoom || 1;
     ctx.strokeStyle = MATH_BOARD_INK;
     ctx.fillStyle = MATH_BOARD_INK;
-    ctx.lineWidth = width || MATH_BOARD_INK_WIDTH;
+    ctx.lineWidth = (width || MATH_BOARD_INK_WIDTH) * z;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     if (pts.length === 1) {              // a tap is a dot, not nothing
         ctx.beginPath();
-        ctx.arc(pts[0].x - offsetX, pts[0].y - scrollY,
-            (width || MATH_BOARD_INK_WIDTH) / 2, 0, Math.PI * 2);
+        ctx.arc((pts[0].x - offsetX) * z, (pts[0].y - scrollY) * z,
+            (width || MATH_BOARD_INK_WIDTH) * z / 2, 0, Math.PI * 2);
         ctx.fill();
         return;
     }
     ctx.beginPath();
-    ctx.moveTo(pts[0].x - offsetX, pts[0].y - scrollY);
+    ctx.moveTo((pts[0].x - offsetX) * z, (pts[0].y - scrollY) * z);
     for (let i = 1; i < pts.length - 1; i++) {
         const mx = (pts[i].x + pts[i + 1].x) / 2;
         const my = (pts[i].y + pts[i + 1].y) / 2;
-        ctx.quadraticCurveTo(pts[i].x - offsetX, pts[i].y - scrollY, mx - offsetX, my - scrollY);
+        ctx.quadraticCurveTo((pts[i].x - offsetX) * z, (pts[i].y - scrollY) * z,
+            (mx - offsetX) * z, (my - scrollY) * z);
     }
     const last = pts[pts.length - 1];
-    ctx.lineTo(last.x - offsetX, last.y - scrollY);
+    ctx.lineTo((last.x - offsetX) * z, (last.y - scrollY) * z);
     ctx.stroke();
 }
 
@@ -384,22 +452,23 @@ const MATH_BOARD_KEY_ROWS = [
     ['⌫', '+', '−', '·', '/', '=', '(', ')', '√', '^', '|', 'x', 'y', 'n']
 ];
 
-function mathBoardGridLines(scrollY, viewW, viewH, step, scrollX) {
+function mathBoardGridLines(scrollY, viewW, viewH, step, scrollX, zoom) {
     const s = step || MATH_BOARD_GRID_STEP;
+    const z = zoom || 1;
     const vertical = [];
     const left = scrollX || 0;
-    for (let n = Math.max(1, Math.ceil(left / s)); n * s <= left + viewW; n++) {
-        vertical.push(n * s - left);
+    for (let n = Math.max(1, Math.ceil(left / s)); n * s <= left + viewW / z; n++) {
+        vertical.push((n * s - left) * z);
     }
     const horizontal = [];
-    for (let n = Math.max(1, Math.ceil(scrollY / s)); n * s <= scrollY + viewH; n++) {
-        horizontal.push(n * s - scrollY);
+    for (let n = Math.max(1, Math.ceil(scrollY / s)); n * s <= scrollY + viewH / z; n++) {
+        horizontal.push((n * s - scrollY) * z);
     }
     return { vertical, horizontal };
 }
 
-function mathBoardDrawGrid(ctx, scrollY, viewW, viewH, scrollX) {
-    const g = mathBoardGridLines(scrollY, viewW, viewH, MATH_BOARD_GRID_STEP, scrollX);
+function mathBoardDrawGrid(ctx, scrollY, viewW, viewH, scrollX, zoom) {
+    const g = mathBoardGridLines(scrollY, viewW, viewH, MATH_BOARD_GRID_STEP, scrollX, zoom);
     ctx.strokeStyle = MATH_BOARD_GRID_INK;
     ctx.lineWidth = 1;
     ctx.lineCap = 'butt';
@@ -410,10 +479,11 @@ function mathBoardDrawGrid(ctx, scrollY, viewW, viewH, scrollX) {
 }
 
 function mathBoardRedraw(ctx, b, viewW, viewH) {
+    const zoom = mathBoardZoom(b);
     ctx.clearRect(0, 0, viewW, viewH);
-    mathBoardDrawGrid(ctx, b.scrollY, viewW, viewH, b.scrollX || 0);
-    for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH, b.scrollX || 0, viewW)) {
-        mathBoardDrawStroke(ctx, s.points, b.scrollY, s.width, b.scrollX || 0);
+    mathBoardDrawGrid(ctx, b.scrollY, viewW, viewH, b.scrollX || 0, zoom);
+    for (const s of mathBoardVisibleStrokes(b.strokes, b.scrollY, viewH, b.scrollX || 0, viewW, zoom)) {
+        mathBoardDrawStroke(ctx, s.points, b.scrollY, s.width, b.scrollX || 0, zoom);
     }
 }
 
@@ -608,36 +678,31 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     }
 
     function mathBoardWritingToolsHTML() {
-        const penNames = ['Mảnh', 'Vừa', 'Đậm'];
-        const pens = MATH_BOARD_PEN_WIDTHS.map(function (width, i) {
-            const active = _mathBoardTool === 'pen' && _mathBoardPenWidth === width;
-            return '<button class="math-board-write-tool' + (active ? ' active' : '') + '" type="button" ' +
-                   'aria-pressed="' + (active ? 'true' : 'false') + '" ' +
-                   'onclick="mathBoardSelectTool(\'pen\',' + width + ')">' +
-                     '<span class="math-board-pen-sample" style="height:' + width + 'px"></span>' +
-                     '<span>' + penNames[i] + '</span>' +
+        const penActive = _mathBoardTool === 'pen';
+        const pen = '<button class="math-board-write-tool' + (penActive ? ' active' : '') + '" type="button" ' +
+                   'aria-pressed="' + (penActive ? 'true' : 'false') + '" ' +
+                   'onclick="mathBoardSelectTool(\'pen\')">' +
+                     '<span class="math-board-pen-sample" style="height:' + MATH_BOARD_INK_WIDTH + 'px"></span>' +
+                     '<span>Bút mảnh</span>' +
                    '</button>';
-        }).join('');
         const eraseActive = _mathBoardTool === 'erase';
-        return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' + pens +
+        return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' + pen +
                '<button class="math-board-write-tool math-board-eraser' + (eraseActive ? ' active' : '') + '" ' +
                        'type="button" aria-pressed="' + (eraseActive ? 'true' : 'false') + '" ' +
                        'onclick="mathBoardSelectTool(\'erase\')">Tẩy nét</button></div>';
     }
 
-    window.mathBoardSelectTool = function (tool, width) {
+    window.mathBoardSelectTool = function (tool) {
         mathBoardAbortSafe();
         _mathBoardTool = tool === 'erase' ? 'erase' : 'pen';
-        if (_mathBoardTool === 'pen' && MATH_BOARD_PEN_WIDTHS.indexOf(width) !== -1) {
-            _mathBoardPenWidth = width;
-        }
+        _mathBoardPenWidth = MATH_BOARD_INK_WIDTH;
         document.querySelectorAll('.math-board-write-tool').forEach(function (button) {
             button.classList.remove('active');
             button.setAttribute('aria-pressed', 'false');
         });
         const selector = _mathBoardTool === 'erase'
             ? '.math-board-eraser'
-            : '.math-board-write-tool[onclick*="' + _mathBoardPenWidth + '"]';
+            : '.math-board-write-tool:not(.math-board-eraser)';
         const selected = document.querySelector(selector);
         if (selected) {
             selected.classList.add('active');
@@ -666,7 +731,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         const finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
         return finePointer
             ? 'Kéo chuột để viết &nbsp;·&nbsp; Trackpad cuộn mọi hướng'
-            : '1 ngón viết &nbsp;·&nbsp; 2 ngón kéo giấy mọi hướng';
+            : '1 ngón viết &nbsp;·&nbsp; 2 ngón kéo hoặc chụm để thu phóng';
     }
 
     function mathBoardKeyHTML(key) {
@@ -777,8 +842,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     window.mathBoardKeyboardKey = function (key) {
         const canvas = document.getElementById('mathBoardCanvas');
         const b = mathBoardActive();
+        const zoom = mathBoardZoom(b);
         const formula = mathBoardFormulaKeyPress(b, key, b.scrollY,
-            canvas ? canvas._viewH : 500, b.scrollX || 0);
+            canvas ? canvas._viewH / zoom : 500, b.scrollX || 0);
         mathBoardRenderFormulae();
         // A typed calculation is one continuous line of working. Once its
         // right edge approaches the viewport, move the paper just enough to
@@ -786,9 +852,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         const note = document.getElementById('mathBoardActiveFormula');
         if (canvas && note && formula && formula.raw) {
             const right = formula.x + note.offsetWidth;
-            const visibleRight = (b.scrollX || 0) + canvas._viewW - 18;
+            const visibleRight = (b.scrollX || 0) + canvas._viewW / zoom - 18;
             if (right > visibleRight) {
-                b.scrollX = right - canvas._viewW + 18;
+                b.scrollX = right - canvas._viewW / zoom + 18;
                 mathBoardRepaint();
             }
         }
@@ -936,13 +1002,13 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                 const ce = events[i];
                 const act = mathBoardPointerMove(g, b, e.pointerId,
                     ce.clientX - r.left, ce.clientY - r.top);
-                if (act === 'pan' || act === 'erase') repaint = true;
+                if (act === 'pan' || act === 'zoom' || act === 'erase') repaint = true;
                 else if (act === 'ink' && g.stroke) {
                     // Draw only the fresh tail — repainting the whole sheet on
                     // every sample is what makes cheap phones lag behind the finger.
                     const pts = g.stroke.points;
                     mathBoardDrawStroke(_mathBoardCtx, pts.slice(Math.max(0, pts.length - 3)),
-                        b.scrollY, g.stroke.width, b.scrollX || 0);
+                        b.scrollY, g.stroke.width, b.scrollX || 0, mathBoardZoom(b));
                 }
             }
             if (repaint) mathBoardRepaint();
@@ -967,9 +1033,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         canvas.addEventListener('wheel', function (e) {
             e.preventDefault();
             const b = mathBoardActive();
+            const zoom = mathBoardZoom(b);
             const horizontal = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX;
-            b.scrollX = Math.max(0, (b.scrollX || 0) + horizontal);
-            if (!e.shiftKey) b.scrollY = Math.max(0, b.scrollY + e.deltaY);
+            b.scrollX = Math.max(0, (b.scrollX || 0) + horizontal / zoom);
+            if (!e.shiftKey) b.scrollY = Math.max(0, b.scrollY + e.deltaY / zoom);
             mathBoardRepaint();
         }, { passive: false });
 
@@ -986,15 +1053,19 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         const layer = document.getElementById('mathBoardFormulaLayer');
         if (!layer) return;
         const b = mathBoardActive();
+        const zoom = mathBoardZoom(b);
         const canvas = document.getElementById('mathBoardCanvas');
         const viewH = canvas ? canvas._viewH || canvas.clientHeight : 0;
         layer.innerHTML = mathBoardFormulae(b).filter(function (formula) {
-            return formula.raw && formula.y >= b.scrollY - 50 && formula.y <= b.scrollY + viewH + 20;
+            return formula.raw && formula.y >= b.scrollY - 50 / zoom &&
+                formula.y <= b.scrollY + viewH / zoom + 20 / zoom;
         }).map(function (formula) {
             const active = formula === b.formulaDraft;
             return '<div class="math-board-formula-note' + (active ? ' active' : '') + '" ' +
                    (active ? 'id="mathBoardActiveFormula" ' : '') +
-                   'style="left:' + (formula.x - (b.scrollX || 0)) + 'px;top:' + (formula.y - b.scrollY) + 'px">' +
+                   'style="left:' + ((formula.x - (b.scrollX || 0)) * zoom) + 'px;' +
+                   'top:' + ((formula.y - b.scrollY) * zoom) + 'px;' +
+                   'transform:scale(' + zoom + ');transform-origin:top left">' +
                      '<span class="math-formula">' + mathFormula(formula.raw) + '</span>' +
                    '</div>';
         }).join('');
@@ -1011,13 +1082,13 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MATH_BOARD_MAX, MATH_BOARD_MIN_DIST, MATH_BOARD_INK, MATH_BOARD_INK_WIDTH,
-        MATH_BOARD_PEN_WIDTHS, MATH_BOARD_ERASER_RADIUS,
+        MATH_BOARD_PEN_WIDTHS, MATH_BOARD_ERASER_RADIUS, MATH_BOARD_MIN_ZOOM, MATH_BOARD_MAX_ZOOM,
         mathBoardBegin, mathBoardExtend, mathBoardUndo, mathBoardClear,
         mathBoardEraseAt, mathBoardDistanceToSegment,
         mathBoardFormulae, mathBoardFormulaDraft, mathBoardFormulaKeyPress, mathBoardFormulaNewLine,
         mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
-        mathBoardAbort,
+        mathBoardAbort, mathBoardZoom, mathBoardScreenToWorld,
         mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
         mathBoardGridLines, MATH_BOARD_GRID_STEP,
         MATH_BOARD_KEY_ROWS,
