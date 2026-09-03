@@ -18,7 +18,7 @@ suite('night raid: one deterministic combat mode', () => {
   test('barracks and rice use the approved daily economy limits',()=>{
     const barracks=R.defenseById('training-barracks'),rice=R.defenseById('rice-field');
     assert.equal(barracks.price,8000);assert.equal(barracks.maxOwned,2);assert.equal(barracks.yield,1);
-    assert.equal(rice.price,4000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
+    assert.equal(rice.price,6000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
     for(const id of ['tomato-field','fish-pond']){
       const farm=R.defenseById(id);
       assert.truthy(farm,id);assert.equal(farm.price,rice.price);assert.equal(farm.yield,100);assert.equal(farm.productionMs,rice.productionMs);assert.equal(farm.maxOwned,4);
