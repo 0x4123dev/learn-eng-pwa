@@ -10,15 +10,15 @@ suite('night raid: one deterministic combat mode', () => {
 
   test('every shop item is bought with coins and contributes power or production', () => {
     for (const defense of R.DEFENSES) {
-      assert.truthy(defense.price >= 1000, defense.id + ' must cost at least 1000 coins');
+      assert.truthy(defense.price >= 2000, defense.id + ' must cost at least 2000 coins — prices were doubled 2026-09-03 so a house is a real saving goal, not an afternoon');
       assert.truthy(defense.attack > 0 || defense.defense > 0 || defense.producer);
     }
   });
 
   test('barracks and rice use the approved daily economy limits',()=>{
     const barracks=R.defenseById('training-barracks'),rice=R.defenseById('rice-field');
-    assert.equal(barracks.price,4000);assert.equal(barracks.maxOwned,2);assert.equal(barracks.yield,1);
-    assert.equal(rice.price,2000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
+    assert.equal(barracks.price,8000);assert.equal(barracks.maxOwned,2);assert.equal(barracks.yield,1);
+    assert.equal(rice.price,4000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
     for(const id of ['tomato-field','fish-pond']){
       const farm=R.defenseById(id);
       assert.truthy(farm,id);assert.equal(farm.price,rice.price);assert.equal(farm.yield,100);assert.equal(farm.productionMs,rice.productionMs);assert.equal(farm.maxOwned,4);
