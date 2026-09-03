@@ -92,6 +92,7 @@ const ASSETS = [
   '/js/ghost-offering-event.js',
   '/js/daily-task-catalog.js',
   '/js/daily-task.js',
+  '/js/armory.js',
   '/img/ghost-offering/courtyard-v1.webp',
   '/img/ghost-offering/roast-pig-v2.png',
   '/img/ghost-offering/boiled-chicken-v2.png',

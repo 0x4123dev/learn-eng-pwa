@@ -4,8 +4,18 @@ import { nightDate } from './_night-raid.js';
 // Daily tasks: assigned by an admin, counted from `activities` on read,
 // rewarded once per GMT+7 day. Shared by /api/me/daily-tasks, /api/activity
 // (so a finished session pays out without the child opening the panel),
-// /api/admin/daily-tasks and /api/night-raid/shield.
-export const DAILY_REWARD = { coins: 200, shields: 1 };
+// /api/admin/daily-tasks, /api/daily-task/claim(-all) and
+// /api/night-raid/shield.
+//
+// The reward is 200 xu (paid at once, as a coin_grants IOU) plus ONE pick the
+// child makes later in Kho Khiên & Kiếm: a Night Raid shield or a sword. The
+// `shields` column of daily_task_rewards keeps its db/018 name but since
+// db/019 it counts picks, and `claimed_kind` says what the pick became.
+export const DAILY_REWARD = { coins: 200, picks: 1 };
+export const REWARD_KINDS = Object.freeze(['shield', 'sword']);
+// Which users column each kind lands in. Whitelisted here because the column
+// name is interpolated into the UPDATE; nothing from a request reaches it.
+const KIND_COLUMN = Object.freeze({ shield: 'night_shields', sword: 'night_swords' });
 export const SHIELD_MS = 24 * 3600 * 1000;
 export const SHIELD_RAID_LOSS = 200;   // what a raider pays for hitting a shielded home
 export const MAX_TARGET = 50;
@@ -100,6 +110,31 @@ export async function rewardedOn(env, uid, date) {
   return !!row;
 }
 
+// ---- schema tolerance --------------------------------------------------
+// db/019 adds daily_task_rewards.claimed_kind/claimed_at and
+// users.night_swords. The code must survive the one deploy where it runs
+// against a database that does not have them yet (in either order), so every
+// reader asks PRAGMA table_info first. A positive answer is cached for the
+// life of the isolate, per D1 binding; a negative one is asked again on the
+// next request, so the moment the migration lands the code notices without a
+// redeploy. Table names are literals from this file, never request data.
+const columnCache = new WeakMap();
+export async function hasColumn(env, table, column) {
+  let known = columnCache.get(env.DB);
+  if (!known) { known = new Set(); columnCache.set(env.DB, known); }
+  const key = table + '.' + column;
+  if (known.has(key)) return true;
+  const r = await env.DB.prepare('PRAGMA table_info(' + table + ')').all();
+  const ok = ((r && r.results) || []).some(c => c && c.name === column);
+  if (ok) known.add(key);
+  return ok;
+}
+// Whether the claim flow can run at all: both halves of db/019 are in.
+export async function armoryReady(env) {
+  return (await hasColumn(env, 'daily_task_rewards', 'claimed_kind'))
+    && (await hasColumn(env, 'users', 'night_swords'));
+}
+
 // progress() + pay the day's reward if it is due and not yet paid.
 // The INSERT OR IGNORE on daily_task_rewards is the once-a-day claim: two
 // concurrent callers both see allDone, but only the one whose insert changes
@@ -110,9 +145,13 @@ export async function rewardedOn(env, uid, date) {
 // coin grant additionally checks NOT EXISTS on its own (user, day)-unique
 // note as a second lock: even if changes() were ever unreliable (e.g. a
 // future D1 quirk), the note makes a duplicate grant for the same day
-// impossible to insert. The shield UPDATE stays chained off the coin
-// grant's changes(), so a day that (for any reason) didn't get paid coins
-// never gets a shield either.
+// impossible to insert.
+//
+// The reward row itself IS the child's pick (claimed_kind NULL = waiting in
+// Kho Khiên & Kiếm). Only while db/019 is not applied yet does the batch
+// still push the shield straight into the inventory as 018 did — chained off
+// the coin grant's changes(), so a day that didn't get paid coins never gets a
+// shield either. db/019's backfill then marks those rows 'shield'.
 export async function evaluate(env, uid, now = Date.now()) {
   const p = await progress(env, uid, now);
   if (!p.tasks.length) {
@@ -123,9 +162,10 @@ export async function evaluate(env, uid, now = Date.now()) {
   let justRewarded = false;
   if (p.allDone && !rewardedToday) {
     const note = 'Daily task ' + p.date;
-    const results = await env.DB.batch([
+    const claimable = await armoryReady(env);
+    const statements = [
       env.DB.prepare('INSERT OR IGNORE INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, ?, ?)')
-        .bind(uid, p.date, DAILY_REWARD.coins, DAILY_REWARD.shields),
+        .bind(uid, p.date, DAILY_REWARD.coins, DAILY_REWARD.picks),
       // changes() here = rows inserted by the claim above (1 or 0). NOT
       // EXISTS is belt-and-braces on top of that: the note is unique per
       // (user, day) by construction, so this can insert at most once per day
@@ -135,10 +175,16 @@ export async function evaluate(env, uid, now = Date.now()) {
          SELECT ?, ?, ?, 0 WHERE changes() > 0
            AND NOT EXISTS (SELECT 1 FROM coin_grants WHERE user_id = ? AND note = ?)`
       ).bind(uid, DAILY_REWARD.coins, note, uid, note),
-      // changes() here = rows inserted by the coin grant above (1 or 0).
-      env.DB.prepare('UPDATE users SET night_shields = night_shields + ? WHERE id = ? AND changes() > 0')
-        .bind(DAILY_REWARD.shields, uid),
-    ]);
+    ];
+    if (!claimable) {
+      // Pre-019 database: no column to park the pick in, so it is a shield
+      // right away. changes() here = rows inserted by the coin grant above.
+      statements.push(
+        env.DB.prepare('UPDATE users SET night_shields = night_shields + ? WHERE id = ? AND changes() > 0')
+          .bind(DAILY_REWARD.picks, uid)
+      );
+    }
+    const results = await env.DB.batch(statements);
     justRewarded = !!(results && results[0] && results[0].meta && results[0].meta.changes > 0);
     rewardedToday = true;
   }
@@ -151,4 +197,92 @@ export async function shieldStatus(env, uid, now = Date.now()) {
   const h = await env.DB.prepare('SELECT shield_until FROM night_raid_homes WHERE user_id = ?').bind(uid).first();
   const until = Math.max(0, Math.trunc(+((h && h.shield_until) || 0)));
   return { count: Math.max(0, Math.trunc(+((u && u.night_shields) || 0))), activeUntil: until > now ? until : 0 };
+}
+
+// Sword stock. Zero — not an error — until db/019 is applied.
+export async function swordCount(env, uid) {
+  if (!(await hasColumn(env, 'users', 'night_swords'))) return 0;
+  const u = await env.DB.prepare('SELECT night_swords FROM users WHERE id = ?').bind(uid).first();
+  return Math.max(0, Math.trunc(+((u && u.night_swords) || 0)));
+}
+
+// Reward days the child has earned but not yet turned into anything, oldest
+// first. Empty until db/019 is applied (nothing can be pending before it).
+export async function pendingRewards(env, uid) {
+  if (!(await armoryReady(env))) return [];
+  const { results } = await env.DB.prepare(
+    'SELECT task_date FROM daily_task_rewards WHERE user_id = ? AND claimed_kind IS NULL ORDER BY task_date'
+  ).bind(uid).all();
+  return (results || []).map(r => String(r.task_date));
+}
+
+// The last few reward days with what each became (kind null = still pending),
+// newest first — the "đã nhận gần đây" list.
+export async function recentRewards(env, uid, limit = 7) {
+  const ready = await armoryReady(env);
+  const { results } = await env.DB.prepare(
+    `SELECT task_date${ready ? ', claimed_kind' : ''} FROM daily_task_rewards WHERE user_id = ? ORDER BY task_date DESC LIMIT ?`
+  ).bind(uid, Math.max(1, Math.min(31, Math.trunc(+limit || 7)))).all();
+  // Before 019 every paid day was a shield, credited on the spot.
+  return (results || []).map(r => ({ date: String(r.task_date), kind: ready ? (r.claimed_kind || null) : 'shield' }));
+}
+
+// Everything Kho Khiên & Kiếm shows, in one object — also the reply of the
+// claim endpoints, so the screen repaints from the response alone.
+export async function armoryStatus(env, uid, now = Date.now()) {
+  const [shields, swords, pending, recent, ready] = await Promise.all([
+    shieldStatus(env, uid, now), swordCount(env, uid), pendingRewards(env, uid), recentRewards(env, uid), armoryReady(env),
+  ]);
+  return { shields, swords: { count: swords }, pending, recent, ready };
+}
+
+// Turn one earned day into a shield or a sword. The UPDATE that marks the
+// row claimed is the lock: only the caller whose UPDATE changes a row gets
+// the inventory increment, which is chained off changes() in the same batch
+// (one transaction). A second tap, a replay after a dropped connection, or a
+// second device finds claimed_kind already set, changes nothing and credits
+// nothing — and is told so, with what the day became.
+//   { ok:true, kind }                    claimed just now
+//   { ok:false, code:'bad_kind'|'bad_date' }
+//   { ok:false, code:'not_ready' }       db/019 not applied yet
+//   { ok:false, code:'no_reward' }       that day was never earned
+//   { ok:false, code:'claimed', kind }   already chosen (idempotent no-op)
+export async function claimReward(env, uid, date, kind, now = Date.now()) {
+  if (!REWARD_KINDS.includes(kind)) return { ok: false, code: 'bad_kind' };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ''))) return { ok: false, code: 'bad_date' };
+  if (!(await armoryReady(env))) return { ok: false, code: 'not_ready' };
+  const col = KIND_COLUMN[kind];
+  const results = await env.DB.batch([
+    env.DB.prepare(
+      'UPDATE daily_task_rewards SET claimed_kind = ?, claimed_at = ? WHERE user_id = ? AND task_date = ? AND claimed_kind IS NULL'
+    ).bind(kind, sqlTime(now), uid, date),
+    // changes() here = rows the claim above marked (1 or 0).
+    env.DB.prepare(`UPDATE users SET ${col} = ${col} + 1 WHERE id = ? AND changes() > 0`).bind(uid),
+  ]);
+  if (results && results[0] && results[0].meta && results[0].meta.changes > 0) return { ok: true, kind };
+  const row = await env.DB.prepare('SELECT claimed_kind FROM daily_task_rewards WHERE user_id = ? AND task_date = ?')
+    .bind(uid, date).first();
+  if (!row) return { ok: false, code: 'no_reward' };
+  return { ok: false, code: 'claimed', kind: row.claimed_kind || null };
+}
+
+// "Nhận tất cả làm khiên / làm kiếm": every pending day at once. One UPDATE
+// claims every unclaimed row of this child; the inventory then grows by
+// changes() — exactly the number of rows THAT statement marked, inside the
+// same transaction — so a day another device claimed a moment earlier is
+// neither re-claimed nor credited twice, and a replay credits nothing.
+//   { ok:true, kind, claimed }           claimed = rows turned into `kind` (may be 0)
+//   { ok:false, code:'bad_kind'|'not_ready' }
+export async function claimAllRewards(env, uid, kind, now = Date.now()) {
+  if (!REWARD_KINDS.includes(kind)) return { ok: false, code: 'bad_kind' };
+  if (!(await armoryReady(env))) return { ok: false, code: 'not_ready' };
+  const col = KIND_COLUMN[kind];
+  const results = await env.DB.batch([
+    env.DB.prepare(
+      'UPDATE daily_task_rewards SET claimed_kind = ?, claimed_at = ? WHERE user_id = ? AND claimed_kind IS NULL'
+    ).bind(kind, sqlTime(now), uid),
+    env.DB.prepare(`UPDATE users SET ${col} = ${col} + changes() WHERE id = ?`).bind(uid),
+  ]);
+  const claimed = Number((results && results[0] && results[0].meta && results[0].meta.changes) || 0);
+  return { ok: true, kind, claimed };
 }

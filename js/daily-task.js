@@ -1,6 +1,8 @@
 // Daily Task — the child's side. Tasks are assigned by an admin and counted
 // on the server (GET /api/me/daily-tasks); this file only shows them, sends
 // the child to the right screen, and lets them spend a Night Raid shield.
+// Turning an earned reward into a shield or a sword lives in js/armory.js,
+// which reads the same appState.dailyTask this file keeps up to date.
 // The card on the home screen is EMPTY for a child with no tasks.
 // UMD like js/daily-task-catalog.js — `var` so the inline onclick handlers and
 // the test sandbox both find it on the global object.
@@ -15,6 +17,10 @@ var DailyTask = (function () {
   // from an earlier day still lists the right tasks but its counts are lies.
   function todayGmt7() { return new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10); }
   function staleDay(s) { return !!(s && s.date) && s.date !== todayGmt7(); }
+  function pendingOf(s) { return (s && Array.isArray(s.pending)) ? s.pending : []; }
+  function swordsOf(s) { return Math.max(0, Math.trunc(+((s && s.swords && s.swords.count) || 0))); }
+  function shieldsOf(s) { return Math.max(0, Math.trunc(+((s && s.shields && s.shields.count) || 0))); }
+  function swordDamage() { return (typeof NightRaidRules !== 'undefined' && NightRaidRules.SWORD_DAMAGE) || 10; }
   // Everything worth a localStorage write. fetchedAt is deliberately absent:
   // it moves on every poll and must not by itself dirty the profile.
   function sig(s) {
@@ -22,6 +28,8 @@ var DailyTask = (function () {
     const sh = s.shields || {};
     return (s.date || '') + '|' + ((s.tasks || []).map(t => t.id + ':' + t.count + ':' + t.done).join(','))
       + '|' + (sh.count || 0) + ':' + (sh.activeUntil || 0)
+      + '|' + swordsOf(s) + '|' + pendingOf(s).join(',')
+      + '|' + ((s.recent || []).map(r => r.date + ':' + (r.kind || '')).join(','))
       + '|' + !!s.rewardedToday + '|' + (s.celebratedDate || '');
   }
   function token() {
@@ -42,12 +50,26 @@ var DailyTask = (function () {
     return two(d.getHours()) + ':' + two(d.getMinutes()) + ' ' + two(d.getDate()) + '/' + two(d.getMonth() + 1);
   }
 
-  // reason: 'home' (throttled), 'sync' / 'shield' (always fetch).
+  // The armory half of a server reply (GET me/daily-tasks or a claim
+  // response), normalised. Arrays are copied so nothing downstream can mutate
+  // what the server said.
+  function armoryFrom(data) {
+    const d = data || {};
+    return {
+      shields: d.shields || { count: 0, activeUntil: 0 },
+      swords: { count: Math.max(0, Math.trunc(+((d.swords && d.swords.count) || 0))) },
+      pending: Array.isArray(d.pending) ? d.pending.map(String) : [],
+      recent: Array.isArray(d.recent) ? d.recent.map(r => ({ date: String(r && r.date || ''), kind: (r && r.kind) || null })) : [],
+    };
+  }
+
+  // reason: 'home' (throttled); anything else ('sync', 'shield', 'armory',
+  // 'claim') always fetches.
   async function refresh(reason) {
     const t = token();
     if (!t) return null;
     const prev = st();
-    if (reason !== 'sync' && reason !== 'shield' && prev && Date.now() - (prev.fetchedAt || 0) < THROTTLE_MS) return prev;
+    if ((!reason || reason === 'home') && prev && Date.now() - (prev.fetchedAt || 0) < THROTTLE_MS) return prev;
     if (inflight) return inflight;
     // Which child asked. Switching profile mid-flight must not drop one
     // child's tasks into the other one's appState.
@@ -65,13 +87,12 @@ var DailyTask = (function () {
         // date — the service worker can replay a cached reply when offline.
         const alreadyCelebrated = prev && prev.celebratedDate === date;
         const celebrateNow = !!(r.data.justRewarded || r.data.rewardedToday) && !!date && !alreadyCelebrated;
-        const next = {
+        const next = Object.assign({
           fetchedAt: Date.now(), date,
           tasks: Array.isArray(r.data.tasks) ? r.data.tasks : [],
           allDone: !!r.data.allDone, rewardedToday: !!r.data.rewardedToday,
-          shields: r.data.shields || { count: 0, activeUntil: 0 },
           celebratedDate: celebrateNow ? date : ((prev && prev.celebratedDate) || ''),
-        };
+        }, armoryFrom(r.data));
         const changed = sig(prev) !== sig(next);
         appState.dailyTask = next;
         // fetchedAt always moves in memory (it drives the throttle), but a poll
@@ -82,7 +103,7 @@ var DailyTask = (function () {
           // the next background sync, so the wallet moves while the child is
           // looking at the toast.
           try { EngAuth.refreshFlags(currentUser); } catch (e) {}
-          celebrate();
+          celebrate(next);
         }
         renderHomeCard();
         // Only repaint the task screen when the child is actually on it —
@@ -95,8 +116,28 @@ var DailyTask = (function () {
     return inflight;
   }
 
-  function celebrate() {
-    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu, +1 khiên');
+  // A claim reply carries the whole armory; drop it into appState right away
+  // so the card, the task screen and Kho Khiên & Kiếm all agree before the
+  // next poll. Returns the new state.
+  function applyArmory(armory) {
+    if (typeof appState === 'undefined' || !appState) return null;
+    const prev = st() || { fetchedAt: 0, date: '', tasks: [], allDone: false, rewardedToday: false, celebratedDate: '' };
+    const next = Object.assign({}, prev, armoryFrom(armory));
+    const changed = sig(prev) !== sig(next);
+    appState.dailyTask = next;
+    if (changed) persist();
+    renderHomeCard();
+    const screenEl = document.getElementById('dailyTaskScreen');
+    if (screenEl && screenEl.classList && screenEl.classList.contains('active')) renderScreen();
+    return next;
+  }
+
+  function celebrate(s) {
+    // The shield/sword half is no longer handed out here: it waits in Kho
+    // Khiên & Kiếm until the child chooses. Say how many are waiting — a child
+    // who finished tasks on several days without opening the app has several.
+    const n = Math.max(1, pendingOf(s).length);
+    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!');
     // #confettiContainer sits outside every screen, so this lands wherever
     // the child happens to be when the last task ticks over.
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
@@ -106,17 +147,36 @@ var DailyTask = (function () {
     const host = document.getElementById('dailyTaskCard');
     if (!host) return;
     const s = st();
-    if (!s || !s.tasks || !s.tasks.length) { host.innerHTML = ''; return; }
+    const pending = pendingOf(s);
+    // Empty for a child with nothing assigned — unless a reward is still
+    // waiting (tasks can be switched off after they were earned).
+    if (!s || ((!s.tasks || !s.tasks.length) && !pending.length)) { host.innerHTML = ''; return; }
+    const tasks = s.tasks || [];
     const stale = staleDay(s);
-    const done = s.tasks.filter(t => t.done).length;
-    const subtitle = stale
-      ? 'Đang cập nhật…'
-      : `${done}/${s.tasks.length} nhiệm vụ · ${s.allDone ? 'Xong rồi! 🎉' : 'Bấm để xem'}`;
-    host.innerHTML = `<button type="button" class="dt-card ${!stale && s.allDone ? 'done' : ''}" onclick="DailyTask.open()" aria-label="Mở nhiệm vụ hôm nay">
-      <span class="dt-card-icon" aria-hidden="true">📋</span>
+    const done = tasks.filter(t => t.done).length;
+    const subtitle = !tasks.length
+      ? `${pending.length} phần thưởng chờ con chọn`
+      : stale
+        ? 'Đang cập nhật…'
+        : `${done}/${tasks.length} nhiệm vụ · ${s.allDone ? 'Xong rồi! 🎉' : 'Bấm để xem'}`;
+    // The chip is the shortcut into Kho Khiên & Kiếm: a span rather than a
+    // nested button (invalid inside <button>), stopping the tap from also
+    // opening the task list. The number of days still waiting rides on the
+    // icon as a corner bubble — a second pill beside the chip squeezed the
+    // title onto two lines at 375px — and is read out in the card's label.
+    const giftLabel = pending.length ? ` — ${pending.length} phần thưởng chờ con chọn` : '';
+    host.innerHTML = `<button type="button" class="dt-card ${!stale && s.allDone ? 'done' : ''}" onclick="DailyTask.open()" aria-label="Mở nhiệm vụ hôm nay${giftLabel}">
+      <span class="dt-card-icon" aria-hidden="true">📋${pending.length ? `<i class="dt-card-badge">${pending.length}</i>` : ''}</span>
       <span class="dt-card-body"><strong>Nhiệm vụ hôm nay</strong><small>${subtitle}</small></span>
-      <span class="dt-card-shield" title="Khiên Đêm con đang có">🛡️ ${Math.max(0, +(s.shields && s.shields.count) || 0)}</span>
+      <span class="dt-card-shield" role="button" tabindex="0" onclick="event.stopPropagation();Armory.open()" title="Kho Khiên &amp; Kiếm" aria-label="Mở Kho Khiên và Kiếm">🛡️ ${shieldsOf(s)} ⚔️ ${swordsOf(s)}</span>
     </button>`;
+  }
+
+  // Progress ring geometry: r=26 in a 64-box → circumference 2π·26.
+  const RING_C = 163.4;
+  function ringHtml(pct) {
+    const p = Math.max(0, Math.min(1, +pct || 0));
+    return `<svg class="dt-ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="26"/><circle class="fill" cx="32" cy="32" r="26" style="stroke-dasharray:${RING_C};stroke-dashoffset:${(RING_C * (1 - p)).toFixed(1)}"/></svg>`;
   }
 
   function renderScreen() {
@@ -126,40 +186,87 @@ var DailyTask = (function () {
     const now = Date.now();
     const tasks = (s && s.tasks) || [];
     const shields = (s && s.shields) || { count: 0, activeUntil: 0 };
-    const count = Math.max(0, +shields.count || 0);
+    const count = shieldsOf(s);
+    const swords = swordsOf(s);
+    const pending = pendingOf(s);
     const active = +shields.activeUntil > now ? +shields.activeUntil : 0;
     // A cached day that is not today still names the right tasks, but its
     // counts belong to yesterday — show them as unknown until the poll lands.
     const stale = staleDay(s);
+    const doneCount = stale ? 0 : tasks.filter(t => !!t.done).length;
+    const allDone = !stale && tasks.length > 0 && !!(s && s.allDone);
+
+    // Hero: one ring, one sentence. It is the first thing the child sees, so
+    // it says how close they are — and turns green the moment they are done.
+    const heroTitle = !tasks.length ? 'Hôm nay chưa có nhiệm vụ nào'
+      : stale ? 'Đang cập nhật…'
+      : allDone ? 'Hôm nay xong rồi 🎉'
+      : doneCount ? `Còn ${tasks.length - doneCount} nhiệm vụ nữa thôi!`
+      : 'Bắt đầu thôi!';
+    const heroSub = !tasks.length ? 'Đợi thầy cô giao bài nhé.'
+      : stale ? 'Đang lấy kết quả hôm nay…'
+      : allDone ? (pending.length ? 'Có quà đang chờ con mở 🎁' : '+200 xu đã vào túi. Mai lại có tiếp!')
+      : 'Xong hết là được +200 xu và 1 món quà 🎁';
+    const hero = `<div class="dt-hero ${allDone ? 'done' : ''}">
+        <div class="dt-ring-wrap">${ringHtml(tasks.length ? doneCount / tasks.length : 0)}<b>${stale ? '…' : tasks.length ? doneCount + '/' + tasks.length : '0'}</b></div>
+        <div class="dt-hero-text"><strong>${heroTitle}</strong><small>${heroSub}</small></div>
+      </div>`;
+    // The unopened gift. Shown whenever something is waiting — not only on the
+    // day it was earned, because a child may open the app days later.
+    const giftCta = pending.length
+      ? `<button type="button" class="dt-gift-cta" onclick="Armory.open()"><span class="dt-gift-emoji" aria-hidden="true">🎁</span><span><strong>${pending.length === 1 ? 'Mở quà nào!' : `Có ${pending.length} món quà chờ con!`}</strong><small>Chọn khiên 🛡️ hoặc kiếm ⚔️</small></span><span aria-hidden="true">→</span></button>`
+      : '';
+
     const list = tasks.length ? tasks.map(t => {
       // Yesterday's tick is as stale as yesterday's count: on a stale day no
       // task claims to be finished, so every one keeps its Vào học button.
       const done = !!t.done && !stale;
       const pct = stale ? 0 : Math.max(0, Math.min(100, Math.round((t.count / Math.max(1, t.target)) * 100)));
       return `<div class="dt-task ${done ? 'done' : ''}">
-        <div class="dt-task-top"><strong>${esc(t.label)}</strong><span>${done ? '✓ Xong' : (stale ? '…' : t.count + '/' + t.target)}</span></div>
-        <div class="dt-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
-        <small>Cần ${t.target} bài đạt</small>
-        ${done ? '' : `<button type="button" class="dt-go" onclick="DailyTask.go('${esc(t.kind)}')">Vào học</button>`}
+        <span class="dt-check" aria-hidden="true">${done ? '✓' : ''}</span>
+        <div class="dt-task-main">
+          <div class="dt-task-top"><strong>${esc(t.label)}</strong><span>${done ? '✓ Xong' : (stale ? '…' : t.count + '/' + t.target)}</span></div>
+          <div class="dt-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
+          <small>Cần ${t.target} bài đạt 100%</small>
+          ${done ? '' : `<button type="button" class="dt-go" onclick="DailyTask.go('${esc(t.kind)}')">Vào học</button>`}
+        </div>
       </div>`;
     }).join('') : '<p class="dt-empty">Hôm nay chưa có nhiệm vụ nào.</p>';
-    const shieldAction = active
-      ? `<span class="dt-shield-on">🛡️ Đang bảo vệ đến ${fmtUntil(active)}</span>`
-      : (count > 0 ? `<button type="button" class="dt-shield-btn" onclick="DailyTask.activateShield()">Bật khiên 24h</button>` : '');
+
+    // The collection strip: two mini cards (lit when owned, dashed when not)
+    // and the shield's state as a pill, then the door to the full armory.
+    const shieldState = active
+      ? `<span class="dt-pill on">🛡️ Đang bảo vệ · đến ${fmtUntil(active)}</span>`
+      : count > 0
+        ? `<button type="button" class="dt-shield-btn" onclick="DailyTask.activateShield()">🛡️ Bật khiên 24h</button>`
+        : `<span class="dt-pill">Mỗi kiếm +${swordDamage()} DAM khi đi cướp đêm</span>`;
+    const armory = `<section class="dt-armory" aria-label="Kho Khiên và Kiếm">
+        <button type="button" class="dt-mini shield ${count ? 'has' : ''}" onclick="Armory.open()"><span class="dt-mini-icon" aria-hidden="true">🛡️</span><b>x${count}</b><small>Khiên Đêm</small></button>
+        <button type="button" class="dt-mini sword ${swords ? 'has' : ''}" onclick="Armory.open()"><span class="dt-mini-icon" aria-hidden="true">⚔️</span><b>x${swords}</b><small>Kiếm</small></button>
+        <div class="dt-armory-side">
+          ${shieldState}
+          <button type="button" class="dt-armory-link" onclick="Armory.open()">Mở Kho Khiên &amp; Kiếm →</button>
+        </div>
+      </section>`;
+
+    // What today's reward became, if the child already chose.
+    const todayPick = ((s && s.recent) || []).find(r => r.date === (s && s.date));
+    const pickWord = k => (k === 'sword' ? '1 kiếm ⚔️' : k === 'shield' ? '1 khiên 🛡️' : '1 phần thưởng');
     // Nothing assigned means nothing to earn — no reward line to dangle.
     const reward = !tasks.length ? ''
       : (s && s.allDone && s.rewardedToday)
-        ? '<div class="dt-reward">🎉 Đã nhận 200 xu + 1 khiên hôm nay</div>'
-        : '<div class="dt-reward muted">Xong hết nhiệm vụ: +200 xu, +1 khiên</div>';
+        ? (pending.includes(s.date)
+          ? '<div class="dt-reward">🎉 Đã nhận 200 xu hôm nay — quà đang chờ con mở ở trên!</div>'
+          : `<div class="dt-reward">🎉 Đã nhận 200 xu + ${pickWord(todayPick && todayPick.kind)} hôm nay</div>`)
+        : '<div class="dt-reward muted">Xong hết nhiệm vụ: +200 xu và 1 món quà — con chọn khiên 🛡️ hoặc kiếm ⚔️</div>';
     host.innerHTML = `<div class="dt-head">
         <button type="button" class="close-btn" onclick="DailyTask.close()" aria-label="Đóng">×</button>
         <h2>📋 Nhiệm vụ hôm nay</h2><p>${esc((s && s.date) || '')}</p>
       </div>
+      ${hero}
+      ${giftCta}
       <div class="dt-list">${list}</div>
-      <section class="dt-shield">
-        <div><strong>🛡️ Khiên Đêm: x${count}</strong><small>Bật khiên thì 24 giờ không ai cướp được nhà con</small></div>
-        ${shieldAction}
-      </section>
+      ${armory}
       ${reward}`;
   }
 
@@ -222,6 +329,11 @@ var DailyTask = (function () {
     } finally { shieldBusy = false; }
   }
 
-  return { refresh, renderHomeCard, renderScreen, open, close, go, activateShield };
+  // Read-only view of the cached state for js/armory.js and the HUD.
+  function state() { return st(); }
+  function pendingCount() { return pendingOf(st()).length; }
+  function swordCount() { return swordsOf(st()); }
+
+  return { refresh, applyArmory, renderHomeCard, renderScreen, open, close, go, activateShield, state, pendingCount, swordCount };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyTask;

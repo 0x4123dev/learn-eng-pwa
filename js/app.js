@@ -1170,6 +1170,7 @@ let _profileOriginScreen = 'homeScreen';
 const NAV_GROUP_BY_SCREEN = Object.freeze({
     homeScreen: 'home',
     dailyTaskScreen: 'home',
+    armoryScreen: 'home',
     learnHubScreen: 'learn',
     topicsScreen: 'learn',
     grammarScreen: 'learn',

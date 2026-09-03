@@ -40,7 +40,7 @@ suite('daily task: schema', () => {
       'one reward row per (user, day)');
   });
 
-  test('db/018 and db/schema.sql describe the same tables', () => {
+  test('db/018 + db/019 and db/schema.sql describe the same tables', () => {
     const ddl = (files, setup) => {
       const { db } = createD1();
       if (setup) db.exec(setup);
@@ -49,9 +49,9 @@ suite('daily task: schema', () => {
         .all().map(r => r.name + '::' + String(r.sql).replace(/--[^\n]*/g, '').replace(/\s+/g, ' ').trim()).join('\n');
     };
     assert.equal(
-      ddl(['db/018-daily-tasks.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
+      ddl(['db/018-daily-tasks.sql', 'db/019-armory-swords.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
       ddl(['db/schema.sql']),
-      'the migration and the canonical schema must not drift');
+      'the migrations and the canonical schema must not drift');
   });
 });
 
@@ -249,7 +249,7 @@ suite('daily task core: the once-a-day reward', () => {
     assert.equal(shields(world, kid.uid), 0);
   });
 
-  test('all done → one reward row, one 200-coin grant, +1 shield; repeated calls stay at one', async () => {
+  test('all done → one reward row (unclaimed), one 200-coin grant, NO shield yet; repeated calls stay at one', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
     addTask(world, kid.uid, 'phrases', 1);
@@ -265,12 +265,14 @@ suite('daily task core: the once-a-day reward', () => {
     assert.equal(second.rewardedToday, true);
     assert.equal(rewards(world, kid.uid).length, 1);
     assert.deepEqual(rewards(world, kid.uid).map(r => [r.task_date, r.coins, r.shields]), [['2026-09-02', 200, 1]]);
+    assert.equal(rewards(world, kid.uid)[0].claimed_kind, null, 'the pick waits for the child (db/019)');
     const g = grants(world, kid.uid);
     assert.equal(g.length, 1);
     assert.equal(g[0].amount, 200);
     assert.equal(g[0].note, 'Daily task 2026-09-02');
     assert.equal(g[0].claimed_at, null, 'paid out by the normal /api/coins claim, not here');
-    assert.equal(shields(world, kid.uid), 1);
+    assert.equal(shields(world, kid.uid), 0, 'the shield is no longer auto-granted: it is one of two things the child may claim');
+    assert.deepEqual(await core().pendingRewards(world.env, kid.uid), ['2026-09-02']);
   });
 
   test('the next day starts from zero and can be rewarded again', async () => {
@@ -287,7 +289,8 @@ suite('daily task core: the once-a-day reward', () => {
     e = await core().evaluate(world.env, kid.uid, tomorrow);
     assert.equal(e.justRewarded, true);
     assert.equal(rewards(world, kid.uid).length, 2);
-    assert.equal(shields(world, kid.uid), 2);
+    assert.equal(shields(world, kid.uid), 0);
+    assert.deepEqual(await core().pendingRewards(world.env, kid.uid), ['2026-09-02', '2026-09-03'], 'unclaimed days pile up, oldest first, and never expire');
   });
 
   test('the child then claims the 200 coins through POST /api/coins', async () => {
@@ -316,7 +319,7 @@ suite('daily task core: the once-a-day reward', () => {
     assert.equal(loser.justRewarded, false);
     assert.equal(rewards(world, kid.uid).length, 1);
     assert.equal(grants(world, kid.uid).length, 1);
-    assert.equal(shields(world, kid.uid), 1);
+    assert.equal(shields(world, kid.uid), 0);
   });
 
   test('shieldStatus reports inventory and an active shield only while it is active', async () => {
@@ -362,13 +365,15 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     assert.equal(r.data.ok, true);
     assert.deepEqual(r.data.dailyTask, { allDone: true, justRewarded: true, rewardedToday: true });
     assert.equal(rewards(world, kid.uid).length, 1);
-    assert.equal(shields(world, kid.uid), 1);
+    assert.equal(shields(world, kid.uid), 0, 'no shield until the child claims one');
     const me = await world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
     assert.equal(me.data.tasks[0].count, 1);
     assert.equal(me.data.tasks[0].done, true);
     assert.equal(me.data.rewardedToday, true);
     assert.equal(me.data.justRewarded, false, 'already paid by the activity POST');
-    assert.equal(me.data.shields.count, 1);
+    assert.equal(me.data.shields.count, 0);
+    assert.deepEqual(me.data.swords, { count: 0 });
+    assert.deepEqual(me.data.pending, [me.data.date], 'the day is offered to the child to claim');
   });
 
   test('the single-item activity POST also evaluates', async () => {

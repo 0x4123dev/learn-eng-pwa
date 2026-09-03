@@ -21,7 +21,10 @@ CREATE TABLE IF NOT EXISTS users (
   -- database breaks the whole coin-claim path. See db/014.
   allow_bot     INTEGER NOT NULL DEFAULT 0,
   -- Night Raid shield inventory earned from daily tasks (db/018).
-  night_shields INTEGER NOT NULL DEFAULT 0
+  night_shields INTEGER NOT NULL DEFAULT 0,
+  -- Night Raid sword stock, the other thing a daily-task reward can become
+  -- (db/019). Never spent; the attack bonus is capped in js/night-raid-rules.js.
+  night_swords  INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id);
 
@@ -204,5 +207,8 @@ CREATE TABLE IF NOT EXISTS daily_task_rewards (
   coins      INTEGER NOT NULL,
   shields    INTEGER NOT NULL,
   granted_at TEXT NOT NULL DEFAULT (datetime('now')),
+  -- db/019: NULL = earned, waiting for the child to choose; 'shield' | 'sword'.
+  claimed_kind TEXT,
+  claimed_at TEXT,
   PRIMARY KEY (user_id, task_date)
 );

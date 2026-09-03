@@ -95,10 +95,17 @@ suite('daily task client: task screen', () => {
     r.DailyTask.renderScreen();
     assert.falsy(r.html.dailyTaskScreen.includes('DailyTask.activateShield()'));
   });
-  test('all done + rewarded shows the reward line', () => {
-    const { DailyTask, html } = load({ appState: stateWith({ tasks: [TASKS[1]], allDone: true, rewardedToday: true }) });
-    DailyTask.renderScreen();
-    assert.truthy(html.dailyTaskScreen.includes('Đã nhận 200 xu + 1 khiên'));
+  test('all done + rewarded shows the reward line — and what the pick became, or that it is still waiting', () => {
+    let r = load({ appState: stateWith({ tasks: [TASKS[1]], allDone: true, rewardedToday: true, pending: [TODAY] }) });
+    r.DailyTask.renderScreen();
+    assert.truthy(r.html.dailyTaskScreen.includes('Đã nhận 200 xu'), r.html.dailyTaskScreen);
+    assert.truthy(r.html.dailyTaskScreen.includes('quà đang chờ con mở'), 'today\'s pick is still pending');
+    assert.truthy(r.html.dailyTaskScreen.includes('Hôm nay xong rồi'), 'the hero celebrates');
+    assert.truthy(r.html.dailyTaskScreen.includes('dt-gift-cta') && r.html.dailyTaskScreen.includes('Armory.open()'), 'the gift button points at the armory');
+    r = load({ appState: stateWith({ tasks: [TASKS[1]], allDone: true, rewardedToday: true, pending: [], recent: [{ date: TODAY, kind: 'sword' }] }) });
+    r.DailyTask.renderScreen();
+    assert.truthy(r.html.dailyTaskScreen.includes('Đã nhận 200 xu + 1 kiếm'), r.html.dailyTaskScreen);
+    assert.falsy(r.html.dailyTaskScreen.includes('dt-gift-cta'), 'nothing left to open');
   });
 });
 
