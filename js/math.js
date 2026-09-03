@@ -227,7 +227,15 @@ function mathRich(html) {
 // "Bước 3 — …" — stays INSIDE its section, because it is the same thought
 // continuing, and a reader wants it in one place rather than spread over five
 // numbered cards.
-const MATH_SECTION_RE = /(?:<(?:b|strong)>\s*)?(Lý thuyết(?:\s*\d)?|Áp dụng)\s*:?\s*(?:<\/(?:b|strong)>)?\s*:?\s*/gi;
+// A section label is the full shape a bank writes — bold, and with the colon
+// welded to the label: "<b>Áp dụng:</b>". Nothing looser will do, because
+// "áp dụng" is also an ordinary verb. Matching the bare words case-insensitively
+// promoted prose to a heading 57 times: "<b>Bước 2 — Áp dụng định lí.</b>" broke
+// into a line reading "Bước 2 —" and a fresh ÁP DỤNG card opening "định lí.",
+// and "🔑 Áp dụng quy tắc chuyển vế: …" — one plain sentence, no label anywhere —
+// grew a heading its author never wrote. That is the same sin as the deleted
+// "Quy tắc cần dùng", only quieter. The colon is what tells a label from a verb.
+const MATH_SECTION_RE = /(?:<br\s*\/?>\s*)?<(?:b|strong)>\s*(Lý thuyết(?:\s*\d)?|Áp dụng)\s*(?::\s*<\/(?:b|strong)>|<\/(?:b|strong)>\s*:)\s*/g;
 
 // Inside a section, a wall of prose is still a wall. A child reads a worked
 // example one step at a time, so each step gets its own LINE — a <br> inside
@@ -256,27 +264,39 @@ function mathLineBreaks(html) {
   const text = String(html == null ? '' : html);
   let out = '';
   let depth = 0;
+  // Whether the last thing WRITTEN was a break. It has to be a flag rather than
+  // a look at the tail of `out`, because a step marker is bold: the <br> goes in
+  // before "<b>", then "Bước" is reached with `out` ending in "<b>", a regex on
+  // the tail sees no break, and a second one goes in — "<br><b><br>Bước 2".
+  // That put a blank line under 460 headings and doubled 3,036 breaks.
+  let broke = true;
   for (let i = 0; i < text.length;) {
     if (text[i] === '<') {
       const close = text.indexOf('>', i);
       const tag = close < 0 ? text.slice(i) : text.slice(i, close + 1);
-      // A step marker starts a line, even mid-sentence.
-      if (MATH_STEP_RE.test(text.slice(i)) && out && !/<br\s*\/?>\s*$/i.test(out)) out += '<br>';
-      out += tag;
+      if (MATH_STEP_RE.test(text.slice(i)) && !broke) { out += '<br>'; broke = true; }
+      if (/^<br\s*\/?>$/i.test(tag)) {
+        if (!broke) { out += tag; broke = true; }
+      } else {
+        out += tag;
+      }
       i += tag.length;
       continue;
     }
-    if (MATH_STEP_RE.test(text.slice(i)) && out && !/<br\s*\/?>\s*$/i.test(out)) out += '<br>';
+    if (MATH_STEP_RE.test(text.slice(i)) && !broke) { out += '<br>'; broke = true; }
     const deduce = MATH_DEDUCE_RE.exec(text.slice(i));
     if (deduce && depth === 0) {
       out += ',<br>' + deduce[0].slice(1).replace(/^\s+/, '');
+      broke = false;
       i += deduce[0].length;
       continue;
     }
     const ch = text[i];
     if (ch === '(' || ch === '[') depth++;
     else if (ch === ')' || ch === ']') depth = Math.max(0, depth - 1);
+    if (broke && /\s/.test(ch)) { i++; continue; }   // no leading space on a line
     out += ch;
+    broke = false;
     i++;
     if (ch !== '.' || depth > 0) continue;
     if (/(?:^|[\s(>])tr$/i.test(out.slice(0, -1))) continue;   // a page citation, not a stop
@@ -290,9 +310,10 @@ function mathLineBreaks(html) {
     // belonging to the sentence it follows, not a line of its own.
     if (!(_mathIsUpper(first) || /[0-9]/.test(first) || next.startsWith('<b'))) continue;
     out += '<br>';
+    broke = true;
     i += gap[0].length;
   }
-  return out.replace(/(?:<br\s*\/?>\s*){2,}/gi, '<br>').replace(/^(?:<br\s*\/?>\s*)+|(?:<br\s*\/?>\s*)+$/gi, '');
+  return out.replace(/(?:<br\s*\/?>\s*)+$/i, '');
 }
 
 function mathSolutionSteps(source) {
