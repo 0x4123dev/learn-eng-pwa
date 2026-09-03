@@ -42,9 +42,11 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     assert.truthy(finish.includes('night_raid_daily'));
     assert.truthy(helper.includes('Math.min(200-'));
   });
-  test('a breached home is sealed for a flat 20 hours',()=>{
+  test('a breached home is sealed for a flat 24 hours',()=>{
     const helper=read('functions/api/_night-raid.js'),finish=read('functions/api/night-raid/finish.js');
-    assert.truthy(helper.includes('export const RAID_LOCK_MS = 20 * 3600 * 1000'),'the lock is one named constant');
+    // The executed proof (a won raid writes ruined_until = finished_at + 24 h,
+    // a lost one writes nothing) lives in tests/night-raid-friends.test.js.
+    assert.truthy(helper.includes('export const RAID_LOCK_MS = 24 * 3600 * 1000'),'the lock is one named constant');
     assert.truthy(finish.includes('lockedUntil=won?now+RAID_LOCK_MS:0'),'a win seals the home from the moment of the breach');
     // The old rule expired at ICT midnight: breached at 23:00 bought one hour
     // of peace, breached at 00:30 bought nearly a day.

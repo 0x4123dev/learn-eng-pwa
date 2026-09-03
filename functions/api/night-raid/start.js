@@ -1,5 +1,6 @@
 import { requireAuth, json, err } from '../_lib.js';
 import { NR, RAID_TTL_MS, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, randomRaidId, raidLockUntil } from '../_night-raid.js';
+import { swordCount } from '../_daily-task.js';
 
 export async function onRequestPost({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -18,8 +19,14 @@ export async function onRequestPost({request,env}) {
   const prior=await env.DB.prepare('SELECT id FROM night_raids WHERE attacker_id=? AND defender_id=? AND created_date=?').bind(auth.uid,targetId,date).first();if(prior)return err('Hôm nay con đã thăm nhà này rồi',409);
   const attackerRow=await env.DB.prepare('SELECT h.*,u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
   if(!attackerRow)return err('Hãy mở Nhà Cướp Đêm và chuẩn bị đội hình trước',409);
+  // The attacker's swords come from users.night_swords (db/019), read
+  // tolerantly so a pre-migration database counts zero. homeSnapshot folds
+  // them into attacker.damage through the shared combatPower — the very call
+  // the client's ownPower() makes — so the two numbers agree by construction,
+  // and the snapshot records the count the fight was scored with.
+  attackerRow.night_swords=await swordCount(env,auth.uid);
   const attacker=homeSnapshot(attackerRow),target=homeSnapshot(row),raidId=randomRaidId(),seed=(Math.floor(Math.random()*0x7fffffff)^now)>>>0;
-  target.seed=seed;target.lootableCoins=Math.max(0,+row.lootable_coins||0);target.attackerLootableCoins=Math.max(0,+attackerRow.lootable_coins||0);target.attackerDamage=attacker.damage;target.attackerDefense=attacker.defense;target.attackerSoldiers=attacker.soldiers||0;
+  target.seed=seed;target.lootableCoins=Math.max(0,+row.lootable_coins||0);target.attackerLootableCoins=Math.max(0,+attackerRow.lootable_coins||0);target.attackerDamage=attacker.damage;target.attackerDefense=attacker.defense;target.attackerSoldiers=attacker.soldiers||0;target.attackerSwords=attacker.swords||0;
   if(shielded){target.shielded=true;target.defense=100000;}
   await env.DB.prepare(`INSERT INTO night_raids(id,attacker_id,defender_id,seed,rules_version,snapshot_json,status,created_date,created_at,expires_at)
     VALUES(?,?,?,?,?,?,'active',?,?,?)`).bind(raidId,auth.uid,targetId,seed,NR.RULES_VERSION,JSON.stringify(target),date,now,now+RAID_TTL_MS).run();

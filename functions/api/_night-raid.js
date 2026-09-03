@@ -2,11 +2,13 @@ import NightRaidRules from '../../js/night-raid-rules.js';
 
 export const NR = NightRaidRules;
 export const RAID_TTL_MS = 5 * 60 * 1000;
-// A breached home is sealed for 20 hours: nobody — not even the winner —
-// can raid it again until the timer runs out. This used to expire at ICT
-// midnight instead, so a home breached at 23:00 got one hour of peace while
-// one breached at 00:30 got nearly a full day.
-export const RAID_LOCK_MS = 20 * 3600 * 1000;
+// A breached home is sealed for 24 hours: nobody — not even the winner —
+// can raid it again until the timer runs out. Only a WON raid seals (the home
+// actually got robbed); a failed raid leaves it open. This used to expire at
+// ICT midnight instead, so a home breached at 23:00 got one hour of peace
+// while one breached at 00:30 got nearly a full day; it was then 20 h, which
+// let the same attacker come back four hours earlier every day.
+export const RAID_LOCK_MS = 24 * 3600 * 1000;
 
 // When this home stops being sealed, or 0 when it is raidable right now.
 export function raidLockUntil(row, now = Date.now()) {
@@ -40,8 +42,13 @@ export function homeSnapshot(row) {
   const teammates=NR.normalizeTeammates(safeJson(row.teammates_json,[]));
   const dogLevel=Math.max(1,Math.min(999,Math.trunc(+row.dog_level||1)));
   const castleHp=180+Math.min(50,Math.max(1,+row.home_level||1))*8+teammates.filter(id=>id==='shield').length*25;
-  const power=NR.combatPower(layout,dogLevel,teammates,layout.soldiers);
-  return {targetId:row.user_id,name:row.username||'Castle',level:Math.max(1,+row.home_level||1),homeLevel:Math.max(1,+row.home_level||1),sceneId:['moonlit-village','haunted-forest','storm-kingdom'][Math.abs(Number(row.user_id)||0)%3],seed:1,layout,dogLevel,teammates,soldiers:layout.soldiers,castleSkin:String(row.castle_skin||'stone-keep'),castleHp,damage:power.damage,defense:power.defense,lootableCoins:Math.max(0,+row.lootable_coins||0),lockedUntil:raidLockUntil(row),budget:0};
+  // Swords live on the users row (db/019), so a caller that wants them in the
+  // score has to put `night_swords` on the row first (start.js does, for the
+  // attacker). A home row joined without it — every target, and any pre-019
+  // database — reads as zero, which is exactly what the client computes too.
+  const swords=Math.max(0,Math.trunc(+row.night_swords||0));
+  const power=NR.combatPower(layout,dogLevel,teammates,layout.soldiers,swords);
+  return {targetId:row.user_id,name:row.username||'Castle',level:Math.max(1,+row.home_level||1),homeLevel:Math.max(1,+row.home_level||1),sceneId:['moonlit-village','haunted-forest','storm-kingdom'][Math.abs(Number(row.user_id)||0)%3],seed:1,layout,dogLevel,teammates,soldiers:layout.soldiers,swords,castleSkin:String(row.castle_skin||'stone-keep'),castleHp,damage:power.damage,defense:power.defense,lootableCoins:Math.max(0,+row.lootable_coins||0),lockedUntil:raidLockUntil(row),budget:0};
 }
 export function resultReward(sim,snapshot,dailyReward) {
   if(!sim.won)return 0;

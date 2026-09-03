@@ -19,7 +19,7 @@ export async function onRequestPost({request,env}) {
   // an ordinary defeat costs the 10–30 xu marching fee.
   const attackerLoss=won?0:(snapshot.shielded?SHIELD_RAID_LOSS:Math.min(30,Math.max(10,Math.floor(Math.max(0,+snapshot.attackerLootableCoins||0)*.05))));
   const soldiersUsed=Math.max(0,Math.min(NR.MAX_SOLDIERS,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
-  // A breach seals the home for a flat 20 hours, so the defender always gets
+  // A breach seals the home for a flat 24 hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+RAID_LOCK_MS:0;
   result.lockedUntil=lockedUntil;
