@@ -1434,7 +1434,7 @@ function finishMathQuiz() {
   if (retryable.length && typeof retryAdd === 'function') retryAdd('math', retryable.map(x => x.q));
   const wrongHTML = wrong.map(x => `
     <div class="grammar-review-item">
-      <div class="grammar-review-q">${mathEsc(x.q.q)}</div>
+      <div class="grammar-review-q">${mathFormula(x.q.q)}</div>
       <div class="grammar-review-a">✅ <b class="math-formula">${mathFormula(x.q.answer)}</b></div>
       <div class="grammar-review-explain">${mathExplanationHTML(x.q.explanation, x.q)}</div>
     </div>`).join('');

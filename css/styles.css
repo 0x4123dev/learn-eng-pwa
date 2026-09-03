@@ -9022,9 +9022,22 @@
             letter-spacing: 0.01em;
             line-height: 1.7;
         }
+        /* Every container that prints typeset maths belongs in this list; one
+           left out does not go unstyled, it goes to the browser default —
+           0.83em at normal weight with `line-height: normal`, which also grows
+           the line by 0.18em. The results screen was the one that really hurt:
+           `.grammar-review-q` drew the exponent at weight 700 and
+           `.grammar-review-explain` at weight 400, so the child met x² one way
+           during practice and a thinner, larger one in the review five seconds
+           later. (`.grammar-option-text` is belt-and-braces: js/math.js emits
+           it together with `math-formula`, so options were already covered.) */
         .math-formula sup,
         .grammar-question-text sup,
+        .grammar-option-text sup,
+        .grammar-review-q sup,
+        .grammar-review-explain sup,
         .grammar-explanation sup,
+        .math-hint-def sup,
         .math-lesson-body sup {
             font-size: 0.75em;
             vertical-align: super;
@@ -9034,9 +9047,6 @@
         }
         .grammar-question-text sup { font-size: 0.72em; }
 
-        /* The bar over a radicand — the other half of the căn bậc hai sign.
-           Drawn as a border so it stretches to exactly what is under the root,
-           which is also what shows the reader where the radicand ends. */
         /* A fraction is anchored by its BAR, never by a fixed offset.
            This used to say `vertical-align: -.55em`, and because an
            inline-grid takes its baseline from the first row, that constant
@@ -9087,36 +9097,119 @@
         }
         .math-mixed .math-frac { margin-inline: .04em; vertical-align: middle; }
         .math-whole { font-size: 1.04em; font-weight: 800; }
+        /* A căn bậc hai is the hook PLUS the bar, and a child reads the two
+           as ONE letter sitting on the line of text.
+
+           It used to be an inline-flex with `align-items: center`, a
+           `min-height: 1.15em` radicand and `vertical-align: -.24em`. Between
+           them the digits were centred inside a box nearly twice their height
+           and then pushed down: √9 printed with the 9 sunk below the line and
+           a 0.4em hole between it and the bar, so the hook read as a tick mark
+           standing beside a floating number. Worse, a `sup` inside a flex
+           container is a FLEX ITEM and a flex item ignores `vertical-align`
+           outright — √(21,5²) came out as √(21,52), a different and perfectly
+           plausible number.
+
+           So the radicand is a baseline-aligned inline-block: its own text
+           baseline IS the line's baseline (measured 0.000em), and it carries
+           the bar as its border-top with just enough headroom for the tallest
+           thing under it — a Vietnamese ệ, or an exponent, which needs more. */
         .math-root {
-            display: inline-flex;
-            align-items: stretch;
+            display: inline-block;
+            position: relative;
             margin: 0 .08em;
-            vertical-align: -.24em;
+            vertical-align: baseline;
             white-space: nowrap;
         }
-        /* A plain √36 is placed correctly by the -.24em above (its digits sit
-           0.156em off the text baseline) and must stay there — giving every
-           root `middle` visibly lifts the radicand off the line. It is only a
-           root WRAPPING a fraction that grows tall enough for the constant to
-           fail the same way it failed .math-frac: √(1/4) hung 0.656em low.
-           Align just that case on the maths axis, like the fraction inside. */
-        .math-root:has(.math-frac) { vertical-align: middle; }
+        /* The hook. Fallback rendering: the √ character itself, sized so its
+           ink tops out on the bar. That sizing can only ever be right for ONE
+           font — Georgia's √ ink ascent is 0.832em, Times New Roman's 0.913em,
+           the generic serif Android falls back to 0.930em — so the browsers
+           that can do better get the drawn hook below instead. */
         .math-root-symbol {
-            display: inline-flex;
-            align-items: flex-start;
+            display: inline-block;
+            vertical-align: baseline;
             font-family: Georgia, 'Times New Roman', serif;
-            font-size: 1.32em;
+            font-size: 1.05em;
             line-height: 1;
-            transform: scaleY(1.12);
-            transform-origin: right top;
         }
+        .math-root:has(.math-frac) .math-root-symbol { font-size: 2.09em; }
+        /* The bar over a radicand — the other half of the căn bậc hai sign.
+           Drawn as a border so it stretches to exactly what is under the root,
+           which is also what shows the reader where the radicand ends. */
         .math-radicand {
-            display: inline-flex;
-            align-items: center;
-            min-height: 1.15em;
+            display: inline-block;
+            vertical-align: baseline;
+            line-height: .8;
             border-top: 1.7px solid currentColor;
-            padding: 1px .14em 0 .08em;
-            margin-left: -.08em;
+            padding: .12em .14em 0 .05em;
+            margin-left: -.06em;
+        }
+        /* An exponent is the one thing that reaches higher than the bar: at the
+           standard raise its ink sat 0.103em ABOVE it, so the vinculum sliced
+           the 2 of √(a²) in half — in the very questions that ask what √(a²)
+           is. A radical grows to clear what it covers, so the bar goes up
+           rather than the exponent coming down: the exponent stays exactly the
+           size and height it is everywhere else in the app.
+           Both paddings are set from the tallest ink a radicand can carry, not
+           from the average one, and measured against the bar's UNDERSIDE — the
+           first attempt aimed at its top edge and left the exponent touching
+           the bar in five of the seven contexts. Worst case now: 0.098em of
+           daylight under the bar for text, 0.174em for an exponent. */
+        .math-root:has(sup) .math-radicand { padding-top: .39em; }
+        /* …and the typed hook has to follow the bar up: 1.12em of bar ÷
+           0.832em of Georgia ink ascent. Only the fallback needs this — the
+           drawn hook below stretches on its own. */
+        .math-root:has(sup) .math-root-symbol { font-size: 1.35em; }
+
+        /* Where masks work, the hook is DRAWN rather than typed, and stretched
+           to the radicand's own box. That buys two things the glyph cannot:
+           it is identical on every device instead of depending on which serif
+           the phone happens to have, and it grows with its content — the √ of
+           √(4/25) reaches down past the denominator, where a glyph left "25"
+           dangling 0.78em below the hook's tip.
+           The condition also tests `selector(:has(*))`, because this layer only
+           works as a whole: a browser with masks but without `:has()` kept the
+           .58em gutter and the zero line-height while dropping the mask rule and
+           the two `:has()` rules that lift the bar — a radical with no hook and
+           a sliced exponent. Firefox before 121 (ESR 115 included), Chrome ≤104,
+           Safari ≤15.3 and Samsung Internet ≤20 land there; they now take the
+           typed fallback whole. */
+        @supports (((mask-image: url("data:image/svg+xml,%3Csvg/%3E")) or (-webkit-mask-image: url("data:image/svg+xml,%3Csvg/%3E"))) and (selector(:has(*)))) {
+            /* The drawn hook is positioned against .math-root's own box, so that
+               box has to hug the radicand instead of carrying the surrounding
+               line's leading — otherwise the hook starts 0.32em above the bar
+               and pokes out of the top of the radical. */
+            .math-root { padding-left: .58em; line-height: 0; }
+            .math-root-symbol {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: .58em;
+                font-size: 1em;
+                /* The √ character stays in the DOM so the formula still copies
+                   and still reads aloud; it is only pushed out of sight. */
+                text-indent: -999em;
+                overflow: hidden;
+                background-color: currentColor;
+                -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0,52%20L12,43%20L43,88%20L86,0%20L100,0%20L48,100%20L36,100%20L8,59%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+                mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M0,52%20L12,43%20L43,88%20L86,0%20L100,0%20L48,100%20L36,100%20L8,59%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+                -webkit-mask-repeat: no-repeat;
+                mask-repeat: no-repeat;
+                -webkit-mask-size: 100% 100%;
+                mask-size: 100% 100%;
+            }
+            /* The fallback sizes the hook by font-size; the drawn one is sized by
+               its box, so those two must be neutralised — and in their own rule.
+               A selector list is dropped WHOLE if any selector in it is invalid,
+               so keeping `:has()` out of the mask rule above is what stops a
+               browser that lacks `:has()` from inheriting the .58em gutter with
+               no hook drawn in it. */
+            .math-root-symbol,
+            .math-root:has(sup) .math-root-symbol,
+            .math-root:has(.math-frac) .math-root-symbol { font-size: 1em; }
+            .math-radicand { margin-left: 0; }
         }
         .math-radicand .math-frac { margin-top: .12em; margin-bottom: .18em; }
         .grammar-question-text .math-frac,
@@ -9126,12 +9219,6 @@
             .math-formula { font-size: 17px; }
             .math-frac { margin-inline: .08em; }
         }
-        /* The hook is drawn slightly high in most fonts; nudge it so it meets
-           the bar instead of floating below it. */
-        .math-formula,
-        .math-hub-screen .grammar-question-text,
-        .math-hub-screen .grammar-explanation,
-        .math-lesson-body { --math-radical-gap: 0; }
 
         /* The score-tier filter row reuses the sub-tab pills but has five of
            them, so it scrolls sideways instead of squeezing. */
