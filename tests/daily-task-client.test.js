@@ -116,6 +116,10 @@ suite('daily task client: task screen', () => {
     assert.truthy(r.html.dailyTaskScreen.includes('Thêm 1 ngày hoàn thành liên tiếp để nhận hạt Cà chua'));
     assert.truthy(r.html.dailyTaskScreen.includes('DailyTask.viewSeeds()'));
     assert.truthy(r.html.dailyTaskScreen.includes('Kho hạt · 2'));
+    const earned = load({ appState: stateWith({ seeds: Object.assign({}, seeds, { progress: 0,
+      recent: [{ date: TODAY, id: 'lettuce', name: 'Rau cải' }] }) }) });
+    earned.DailyTask.renderScreen();
+    assert.truthy(earned.html.dailyTaskScreen.includes('aria-label="Tiến độ nhận hạt giống 2 trên 2 ngày"'));
   });
 });
 

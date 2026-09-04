@@ -85,6 +85,7 @@ suite('builder farm: crops draw their day and their mood', () => {
     assert.truthy(out.includes('img/farm/sprout.webp'), 'a crop planted today is the shared sprout');
     assert.truthy(out.includes('img/farm/lettuce-day1.webp'), 'ripe lettuce shows its last day');
     assert.truthy(out.includes('CHÍN · +8 XU'));
+    assert.falsy(out.includes('cấp undefined'), 'crop accessibility labels never announce an undefined tier');
   });
   test('wilted crops draw the wilted sprite and HÉO; the builder wears the wilted class', () => {
     const w = mount({ appState: { farmCtx: WILT } }); w.ctx.NightRaid.renderBuilder();

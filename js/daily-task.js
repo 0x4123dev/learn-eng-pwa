@@ -328,13 +328,14 @@ var DailyTask = (function () {
     if (!seeds.ready) return '';
     const progress = stale ? 0 : seeds.progress;
     const todayReward = seeds.recent.find(r => r.date === (s && s.date));
+    const shownProgress = todayReward ? 2 : progress;
     const art = (typeof FarmRules !== 'undefined' && next && next.id) ? FarmRules.art(next.id + '-day' + next.days) : '';
     const message = todayReward
       ? `Con vừa nhận 1 hạt ${todayReward.name}! Chuỗi mới bắt đầu từ ngày tiếp theo.`
       : progress === 1
         ? `Thêm 1 ngày hoàn thành liên tiếp để nhận hạt ${next.name}.`
         : `Hoàn thành Daily Task 2 ngày liên tiếp để nhận hạt ${next.name}.`;
-    return `<section class="dt-seed-reward ${todayReward ? 'earned' : ''}" aria-label="Tiến độ nhận hạt giống ${progress} trên 2 ngày">
+    return `<section class="dt-seed-reward ${todayReward ? 'earned' : ''}" aria-label="Tiến độ nhận hạt giống ${shownProgress} trên 2 ngày">
       ${art ? `<img src="${art}" alt="Hạt tiếp theo: ${esc(next.name)}">` : '<span class="dt-seed-placeholder" aria-hidden="true">🌱</span>'}
       <div class="dt-seed-copy"><span>THƯỞNG HẠT GIỐNG</span><strong>${todayReward ? '2/2' : progress + '/2'} ngày liên tiếp</strong><small>${esc(message)}</small><div class="dt-seed-steps" aria-hidden="true"><i class="${progress||todayReward?'done':''}"></i><i class="${todayReward?'done':''}"></i></div></div>
       <button type="button" onclick="DailyTask.viewSeeds()">Kho hạt · ${total}</button>
