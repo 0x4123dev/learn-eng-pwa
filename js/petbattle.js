@@ -129,11 +129,6 @@ const PB_STR = {
     cupPracticeTease: 'A real friend battle would have won you this 👇',
     cupLoseTease: 'So close! Win the next one and this cup is yours 👇',
     cupCabinetCta: 'Your cabinet is in Profile → 🏆 Cup shelf',
-    practiceBtn: '🤖 Practice vs bot', practiceSub: 'Full 20 shots · no waiting · no reward',
-    practiceTitle: '🤖 Practice', practiceOver: 'Practice over',
-    practiceWin: 'You beat the bot! 🎉', practiceLose: 'The bot won this one 💪',
-    practiceNote: 'Practice earns no coins or cups — beat a friend for those! 🏆',
-    practiceAgain: '🤖 Play again',
     sceneTitle: 'Surprise battlefield', sceneHint: 'The arena is revealed after the challenge',
     sceneMix: '50% classic world · 50% high-arc obstacle world',
     sceneInvite: 'Random arena',
@@ -276,11 +271,6 @@ const PB_STR = {
     cupPracticeTease: 'Thắng bạn bè thật thì bé đã có cúp này 👇',
     cupLoseTease: 'Suýt nữa rồi! Thắng trận sau là cúp này của bé 👇',
     cupCabinetCta: 'Tủ cúp của bé ở Hồ sơ → 🏆 Tủ cúp',
-    practiceBtn: '🤖 Luyện tập với máy', practiceSub: 'Đủ 20 đạn · không phải chờ · không có thưởng',
-    practiceTitle: '🤖 Luyện tập', practiceOver: 'Hết trận luyện tập',
-    practiceWin: 'Bé thắng máy rồi! 🎉', practiceLose: 'Máy thắng trận này 💪',
-    practiceNote: 'Luyện tập không có xu và cúp — thắng bạn bè mới có nhé! 🏆',
-    practiceAgain: '🤖 Chơi lại',
     sceneTitle: 'Chiến trường bất ngờ', sceneHint: 'Map sẽ hiện sau khi gửi lời thách đấu',
     sceneMix: '50% map cổ điển · 50% map vật cản phải bắn vòng',
     sceneInvite: 'Đấu trường ngẫu nhiên',
@@ -396,7 +386,6 @@ function closePetBattle() {
   _pbShowingResult = false;
   pbCloseDogInfo();
   _pbUnmountArenaYard();
-  if (typeof botClearGame === 'function') botClearGame();
   _pbStopPolling();
   _pbCloseLink();
   if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
@@ -1002,11 +991,6 @@ function renderPetBattle() {
     ${_pbHirePanel()}
     <div class="pb-friend-list">${list}</div>
     ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}
-    ${st.allowBot ? `
-      <div class="pb-practice-card">
-        <button class="pb-btn primary pb-practice-btn" onclick="startBotBattle()">${pbT('practiceBtn')}</button>
-        <div class="pb-practice-sub">${pbT('practiceSub')}</div>
-      </div>` : ''}
     ${_pbHistoryPanel()}`);
   screen.dataset.pbLobbySig = sig;
   if (typeof GhostOfferingEvent !== 'undefined') GhostOfferingEvent.syncLobbyCard();
@@ -1305,77 +1289,8 @@ function _pbCupLadderHTML(earned) {
     </div>`;
 }
 
-// ---- 🤖 practice vs bot (admin-unlocked, entirely local) ----
-function startBotBattle() {
-  if (_pbGame && !_pbGame.finished) return;
-  const screen = document.getElementById('petBattleScreen');
-  if (!screen || typeof PetBattleGame !== 'function' || typeof botSetGame !== 'function') return;
-  if (_pbGame) { try { _pbGame.destroy(); } catch (e) {} _pbGame = null; }
-  _pbShowingResult = false;
-
-  const pet = _pbMyPet();
-  let seed = 1;
-  try { seed = (Math.floor(Math.random() * 0x7fffffff) >>> 0) || 1; } catch (e) {}
-  const backgroundId = pbRandomSceneId();
-  const scene = typeof BattleScenes !== 'undefined' ? BattleScenes.getBattleScene(backgroundId) : null;
-
-  // The bot mirrors the child's own pet level, so practice measures aim
-  // rather than who has been studying longer.
-  const view = {
-    id: 0, status: 'active', seed, iAmChallenger: true, turnNo: 1, myTurn: true,
-    // Practice uses the newest rules just like a newly-created friend battle.
-    fieldVersion: (typeof BattleCalc !== 'undefined' && BattleCalc.FIELD_RULES) ? (scene && scene.highArc ? 7 : 6) : 1,
-    backgroundId,
-    // Try before you buy: the squad fights here for free. The bot gets no
-    // teammates of its own — it has no idea how to trigger a charge, and a
-    // bench that never acts would teach the child the wrong thing.
-    me: { id: -1, name: pet.petName, ammo: BOT_AMMO, level: pet.level, stage: pet.stage, hp: BOT_HP, hires: pbHireCart(), castleSkin: pbSelectedCastleSkinId() },
-    foe: { id: -2, name: '🤖 Bot', ammo: BOT_AMMO, level: pet.level, stage: 'husky', hp: BOT_HP, hires: [], castleSkin: CastleSkins.defaultId },
-  };
-
-  _pbStopPolling();                 // practice talks to nobody
-  _pbGame = new PetBattleGame({
-    view,
-    mount: screen,
-    link: null,
-    // A remote opponent replies through the network; the bot replies here.
-    // Same entry point, so the game code cannot tell them apart.
-    sendTurn: (turn) => { botOnPlayerTurnDone(); return Promise.resolve(null); },
-    onFinish: (result) => finishPetBattle(result),
-  });
-  botSetGame(_pbGame);
-  _pbGame.start();
-}
-
-// Practice pays NOTHING: no coins, no cup, no history row. Only the aim
-// practice is real, and that is the point of it.
-function finishBotBattle(result) {
-  const won = !!result.won;
-  if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
-  _pbGame = null;
-  if (typeof botClearGame === 'function') botClearGame();
-  _pbShowingResult = true;
-  const screen = document.getElementById('petBattleScreen');
-  if (screen) {
-    screen.innerHTML = _pbShell(`
-      <div class="pb-result-card ${won ? 'win' : 'lose'}">
-        <div class="pb-result-emoji">${won ? '🎯' : '🤖'}</div>
-        <div class="pb-result-title">${won ? pbT('practiceWin') : pbT('practiceLose')}</div>
-        <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ 🤖</div>
-        <div class="pb-cup-tease">${pbT('cupPracticeTease')}</div>
-        ${_pbCupLadderHTML(false)}
-        <div class="pb-practice-note">${pbT('practiceNote')}</div>
-        <div class="pb-invite-actions">
-          <button class="pb-btn primary" onclick="_pbShowingResult=false;startBotBattle()">${pbT('practiceAgain')}</button>
-          <button class="pb-btn" onclick="_pbShowingResult=false;closePetBattle()">${pbT('done')}</button>
-        </div>
-      </div>`);
-  }
-}
-
 // Battle over: BOTH players are paid (losing costs nothing).
 function finishPetBattle(result) {
-  if (result && result.practice) return finishBotBattle(result);   // practice pays nothing
   // Both castles standing on equal HP with the ammo gone. It is neither a win
   // nor a defeat, and calling it a defeat — which is what `winnerId === me.id`
   // did to BOTH children — wrote two losses into two histories for one battle.
@@ -1446,7 +1361,6 @@ if (typeof module !== 'undefined' && module.exports) {
     pbRandomSceneId, _pbRandomArenaCard, _pbSceneInvite,
     pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
     _pbCastleWorkshop, _pbRenderCastlePreviews,
-    startBotBattle, finishBotBattle,
     _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset, pbHireCommit,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbArenaPetHeader,
     pbShowDogInfo, pbCloseDogInfo, _pbVersusLine, pbGoToFriends,

@@ -243,10 +243,6 @@ suite('hit logic: you cannot fire what you do not have', () => {
         assert.truthy(fn.slice(0, 500).includes('shots: 0'));
     });
 
-    test('the bot also refuses to fire on empty', () => {
-        const botSrc = fs.readFileSync(path.join(ROOT, 'js', 'petbattlebot.js'), 'utf8');
-        assert.truthy(botSrc.includes('if (maxShots <= 0)'), 'the bot fired phantom poops from an empty clip');
-    });
 });
 
 // ── 7. a volley of several poops ───────────────────────────────────────────

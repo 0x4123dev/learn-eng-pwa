@@ -125,7 +125,6 @@ const ASSETS = [
   '/js/battlelink.js',
   '/js/petbattle.js',
   '/js/petbattlegame.js',
-  '/js/petbattlebot.js',
   '/js/cups.js',
   '/js/wordform-data.js',
   '/js/wordform-followups.js',

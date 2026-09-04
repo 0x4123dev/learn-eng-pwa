@@ -262,7 +262,7 @@ suite('field rules: v2 is the long world', () => {
     });
 
     test('the practice bot can solve v2 without privileged physics', () => {
-        // The bot's own coarse grid from js/petbattlebot.js — 5° and 5 power.
+        // A coarse 5° × 5-power grid, the resolution a child's thumb reaches.
         for (const seed of [1, 4242, 99991, 31337]) {
             const t = C.buildTerrain(seed, V2);
             const [L, R] = C.spawnPoints(t, V2);

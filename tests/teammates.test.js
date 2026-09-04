@@ -507,31 +507,6 @@ suite('teammates: the chip tells the truth', () => {
     });
 });
 
-suite('teammates: practice against the bot', () => {
-    const src = () => read('js/petbattle.js');
-
-    test('a practice battle takes the squad the child picked', () => {
-        const fn = src().slice(src().indexOf('function startBotBattle'));
-        const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/hires:\s*pbHireCart\(\)/.test(body),
-            'the bot view must carry the hired squad, or the panel does nothing here');
-    });
-
-    test('practice is a FREE trial — it must not spend coins', () => {
-        const fn = src().slice(src().indexOf('function startBotBattle'));
-        const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.falsy(/pbHireCommit\(\)/.test(body),
-            'practice pays no coins and no cups, so it must not charge for teammates either');
-    });
-
-    test('practice uses v6 for classic maps and v7 for high-arc maps', () => {
-        const fn = src().slice(src().indexOf('function startBotBattle'));
-        const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(body.includes('scene && scene.highArc ? 7 : 6'),
-            'practice must pair each random scene with its snapshotted geometry');
-    });
-});
-
 suite('teammates: you hire a person, not a weapon', () => {
     test('every teammate can be drawn as a portrait', () => {
         // The chips and the shop must show the CHARACTER — a child is hiring
@@ -606,13 +581,6 @@ suite('teammates: a friend battle really carries the squad', () => {
             'an invite that cannot be accepted costs nothing');
     });
 
-    test('practice still never charges', () => {
-        const src = read('js/petbattle.js');
-        const fn = src.slice(src.indexOf('function startBotBattle'));
-        const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/hires: pbHireCart\(\)/.test(body));
-        assert.falsy(/pbHireCommit\(\)/.test(body), 'practice pays nothing, so it charges nothing');
-    });
 });
 
 suite('teammates: the server and the client agree', () => {

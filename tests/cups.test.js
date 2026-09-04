@@ -156,19 +156,6 @@ suite('cups: only real wins count', () => {
         assert.truthy(/if \(won && typeof awardCup/.test(fin), 'and only when the battle was won');
     });
 
-    test('a practice battle never reaches the award', () => {
-        const fin = pbSrc.slice(pbSrc.indexOf('function finishPetBattle'));
-        const guard = fin.slice(0, fin.indexOf('awardCup'));
-        assert.truthy(guard.includes('result.practice') && guard.includes('return finishBotBattle'),
-            'practice must short-circuit before any reward');
-    });
-
-    test('the practice result path awards nothing at all', () => {
-        const fn = pbSrc.slice(pbSrc.indexOf('function finishBotBattle'), pbSrc.indexOf('// Battle over'));
-        for (const banned of ['awardCup', 'appState.coins', 'petBattleHistory']) {
-            assert.falsy(fn.includes(banned), `practice must not touch ${banned}`);
-        }
-    });
 });
 
 // The cabinet is local, the battles are not. A reinstall used to wipe 25
@@ -334,13 +321,6 @@ suite('cups: the reward ladder on the result card', () => {
     test('the ladder also appears on a LOSS, with a reason to come back', () => {
         const fin = pb.slice(pb.indexOf('function finishPetBattle'));
         assert.truthy(fin.includes("pbT('cupLoseTease')"), 'losing should still point at the prize');
-    });
-
-    test('practice shows the same ladder as a promise, but earns nothing', () => {
-        const fn = pb.slice(pb.indexOf('function finishBotBattle'), pb.indexOf('// Battle over'));
-        assert.truthy(fn.includes('_pbCupLadderHTML(false)'), 'practice must not show a +1');
-        assert.truthy(fn.includes("pbT('cupPracticeTease')"), 'and should say what a real win would give');
-        assert.falsy(fn.includes('awardCup'), 'while still awarding nothing');
     });
 
     test('every ladder string exists in both languages', () => {

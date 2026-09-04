@@ -309,15 +309,6 @@ suite('collision: a solid castle did not make the game unwinnable', () => {
         }
     }
 
-    test('the practice bot can still find a hit against a solid castle', () => {
-        const botMod = require(path.join(ROOT, 'js', 'petbattlebot.js'));
-        for (const seed of [1, 4242, 31337]) {
-            const f = field(seed);
-            const aim = botMod.botAim(C, f.terrain, f.R, -1, f.L, 0, () => 0.5, V2);
-            const s = shoot(f, f.R, -1, aim.angle, aim.power, 0);
-            assert.truthy(s.hit, `seed ${seed}: the bot's shot vanished`);
-        }
-    });
 });
 
 // ── 7. the drawing and the collision agree ─────────────────────────────────
