@@ -259,8 +259,9 @@ suite('night raid screens: the camera can never disarm a screen', () => {
 // leaving a raid
 // ---------------------------------------------------------------------------
 //
-// The raid stage hides the bottom bar (it sits above the board and was burying
-// TIẾN QUÂN), so the only ways out are the topbar ✕ and the HUD map button.
+// Night Raid hides the bottom bar from its garden through the final result, so
+// the app-level way out is the topbar ✕. The HUD map button only navigates
+// between sub-screens inside the mode.
 // Both went straight out with no question — and for a raid on a REAL house
 // that is not free: functions/api/night-raid/start.js writes the raid row
 // before the first sword swings, and refuses a second visit to the same home
@@ -297,15 +298,17 @@ function onlineWorld(confirmAnswer) {
 const settle = () => new Promise(r => setImmediate(r));
 
 suite('night raid: the bottom bar, and what it costs to walk out of a raid', () => {
-  test('the raid stage takes the bar away and the home stage gives it back', () => {
+  test('the bottom bar stays hidden throughout Night Raid and returns only after X', () => {
     const { ctx, doc } = mount();
     const nav = doc.getElementById('bottomNav');
     ctx.NightRaid.open();
-    assert.truthy(nav.style.display !== 'none', 'the raid HOME is a hub — the bar belongs there');
+    assert.equal(nav.style.display, 'none', 'the Night Raid garden is already full-screen');
     ctx.NightRaid.scoutBot();
     assert.equal(nav.style.display, 'none', 'the raid stage must not have the bar over it');
     ctx.NightRaid.renderHome();
-    assert.truthy(nav.style.display !== 'none', 'and it must come back');
+    assert.equal(nav.style.display, 'none', 'returning to the garden must not reveal the app nav');
+    ctx.NightRaid.close();
+    assert.truthy(nav.style.display !== 'none', 'X restores the app nav after leaving Night Raid');
   });
 
   test('a committed raid on a real house asks before it is thrown away', async () => {
@@ -324,7 +327,7 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     assert.truthy(w.ctx.NightRaid.isRaiding(), 'saying no must leave the raid running');
   });
 
-  test('saying yes leaves, and hands the bottom bar back', async () => {
+  test('saying yes leaves the battle but keeps the bottom bar hidden inside Night Raid', async () => {
     const w = onlineWorld(true);
     w.ctx.NightRaid.open();
     w.ctx.NightRaid.showLiveTargets(); await settle();
@@ -332,8 +335,19 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     tap(w.doc.getElementById('nrStartRaid')); await settle();
     w.ctx.NightRaid.quit(); await settle();
     assert.falsy(w.ctx.NightRaid.isRaiding(), 'saying yes ends it');
-    assert.truthy(w.doc.getElementById('bottomNav').style.display !== 'none',
-      'a child must never be left on a screen with no bar and no raid');
+    assert.equal(w.doc.getElementById('bottomNav').style.display, 'none',
+      'the player is back on the Night Raid target list, where the X is the exit');
+  });
+
+  test('the target list has no duplicated back block or giant selection title', async () => {
+    const w = onlineWorld(true);
+    w.ctx.NightRaid.open();
+    w.ctx.NightRaid.showLiveTargets(); await settle();
+    const html = w.doc.getElementById('nightRaidScreen').innerHTML;
+    assert.falsy(html.includes('Chọn nhà để cướp'));
+    assert.falsy(html.includes('>Quay lại<'));
+    assert.truthy(html.includes('nr-raid-overview'));
+    assert.truthy(html.includes('lượt còn lại'));
   });
 
   test('the topbar ✕ asks too — it is the other way out of the same screen', async () => {

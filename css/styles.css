@@ -13302,3 +13302,279 @@
     background: #dc2626; color: #fff; font-size: 11px; font-weight: 900; font-style: normal;
     display: grid; place-items: center; border: 2px solid #fff8c9; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
+
+/* ── Night Raid daylight shell ─────────────────────────────────────────────
+   The garden, target picker, journal and result screens belong to one bright
+   game mode. Only the actual combat canvas remains nocturnal. App navigation
+   is controlled by night-raid.js and stays hidden until the player uses X. */
+.night-raid-screen {
+    min-height: 100dvh;
+    padding-bottom: 0;
+    color: #26452f;
+    background-color: #b9dd7c;
+    background-image:
+        linear-gradient(rgba(231, 247, 201, .78), rgba(193, 226, 132, .78)),
+        url('../img/night-raid/endless-meadow-tile-v2.jpg');
+    background-repeat: repeat;
+    background-size: auto, 1024px 1024px;
+}
+.nr-shell {
+    min-height: 100dvh;
+    color: #26452f;
+    background:
+        radial-gradient(circle at 10% 4%, rgba(255, 255, 255, .72), transparent 30%),
+        linear-gradient(180deg, rgba(239, 249, 218, .92), rgba(198, 229, 142, .88));
+}
+.nr-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    min-height: 74px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    background: rgba(247, 252, 233, .88);
+    border-bottom: 1px solid rgba(83, 128, 66, .18);
+    box-shadow: 0 8px 24px rgba(60, 97, 44, .1);
+    backdrop-filter: blur(16px) saturate(1.15);
+    -webkit-backdrop-filter: blur(16px) saturate(1.15);
+}
+.nr-topbar h1 { color: #24442e; }
+.nr-kicker,
+.nr-label { color: #64805c; }
+.nr-icon-btn,
+.nr-back,
+.nr-topbar button {
+    min-width: 48px;
+    min-height: 48px;
+    color: #31543a;
+    background: rgba(255, 255, 247, .94);
+    border: 2px solid rgba(102, 145, 82, .2);
+    box-shadow: 0 4px 0 rgba(93, 129, 68, .16), 0 8px 18px rgba(62, 91, 46, .1);
+}
+.nr-wallet {
+    color: #8a5c08;
+    background: linear-gradient(145deg, #fff9d9, #ffe996);
+    border: 2px solid rgba(235, 173, 45, .34);
+    box-shadow: 0 4px 0 rgba(183, 126, 22, .16);
+}
+.nr-wallet strong { color: #684508; }
+.pb-night-raid-card {
+    color: #294a32;
+    background: linear-gradient(145deg, #f8ffe9, #dff3b9);
+    border: 2px solid rgba(111, 159, 76, .24);
+    box-shadow: 0 14px 30px rgba(56, 91, 40, .14);
+}
+.pb-night-raid-copy > span { color: #b96512; }
+.pb-night-raid-copy h2 { color: #23442d; }
+.pb-night-raid-copy p { color: #60775a; }
+.nr-home:not(.nr-builder),
+.nr-route,
+.nr-scout,
+.nr-live-targets,
+.nr-result,
+.nr-reports,
+.nr-replay {
+    color: #26452f;
+}
+.nr-section-head h2,
+.nr-live-head h3,
+.nr-report-card h3,
+.nr-empty-state h3 { color: #24442e; }
+.nr-section-head p,
+.nr-live-head span,
+.nr-empty,
+.nr-loading,
+.nr-report-card p { color: #647a5d; }
+.nr-secondary {
+    color: #31543a;
+    background: rgba(255, 255, 247, .92);
+    border: 2px solid rgba(101, 145, 79, .24);
+    box-shadow: 0 4px 0 rgba(84, 123, 62, .14);
+}
+.nr-primary {
+    color: #53320d;
+    background: linear-gradient(145deg, #ffdc6d, #ff9a3d);
+    box-shadow: 0 6px 0 #c46826, 0 12px 24px rgba(154, 91, 28, .2);
+}
+
+/* Compact replacement for the duplicated "Quay lại / Chọn nhà" header. */
+.nr-raid-overview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 78px;
+    margin: 8px 0 16px;
+    padding: 12px 15px;
+    border: 2px solid rgba(105, 154, 77, .24);
+    border-radius: 22px;
+    background: linear-gradient(145deg, rgba(255, 255, 244, .96), rgba(226, 244, 191, .96));
+    box-shadow: 0 8px 0 rgba(96, 135, 67, .12), 0 14px 28px rgba(59, 95, 42, .1);
+}
+.nr-raid-overview-icon {
+    width: 50px;
+    height: 50px;
+    flex: 0 0 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    color: #fff8dc;
+    background: linear-gradient(145deg, #ffb94d, #ef6f32);
+    box-shadow: 0 5px 0 #b85125;
+}
+.nr-raid-overview-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+.nr-raid-overview > span:last-child { min-width: 0; }
+.nr-raid-overview small,
+.nr-raid-overview strong,
+.nr-raid-overview em { display: block; }
+.nr-raid-overview small {
+    color: #b65c1e;
+    font-size: 10px;
+    font-weight: 950;
+    letter-spacing: .1em;
+}
+.nr-raid-overview strong {
+    margin-top: 2px;
+    color: #294b31;
+    font-size: 20px;
+}
+.nr-raid-overview em {
+    margin-top: 2px;
+    color: #6a805f;
+    font-size: 12px;
+    font-style: normal;
+}
+.nr-own-status {
+    color: #3d5d40;
+    background: rgba(255, 255, 245, .9);
+    border: 2px solid rgba(107, 151, 79, .2);
+    box-shadow: 0 7px 18px rgba(58, 92, 41, .08);
+}
+.nr-own-status b { color: #24452d; }
+.nr-own-status.safe {
+    color: #315a40;
+    background: #e8f7da;
+    border-color: #abd58f;
+}
+.nr-own-status.open {
+    color: #714817;
+    background: #fff3cf;
+    border-color: #edc76b;
+}
+.nr-friend-row,
+.nr-target-card {
+    color: #26472f;
+    background: linear-gradient(155deg, rgba(255, 255, 248, .98), rgba(226, 243, 198, .98));
+    border: 2px solid rgba(103, 149, 77, .22);
+    box-shadow: 0 7px 0 rgba(88, 128, 63, .1), 0 13px 25px rgba(57, 91, 41, .09);
+}
+.nr-friend-row.ready {
+    border-color: rgba(47, 169, 91, .48);
+    box-shadow: 0 7px 0 rgba(41, 137, 70, .13), 0 14px 26px rgba(49, 112, 56, .12);
+}
+.nr-friend-crest,
+.nr-target-art {
+    color: #4d8a4a;
+    background: radial-gradient(circle at 50% 50%, #fbffe9, #cceaa5);
+    border: 1px solid rgba(91, 143, 67, .16);
+}
+.nr-friend-copy small,
+.nr-target-copy small,
+.nr-friend-state em { color: #6e8067; }
+.nr-friend-state small { color: #6b8b63; }
+.nr-friend-state b { color: #a96812; }
+.nr-live-empty,
+.nr-empty-state {
+    color: #60775a;
+    background: rgba(250, 255, 237, .88);
+    border: 2px dashed rgba(101, 149, 74, .32);
+}
+.nr-live-empty strong,
+.nr-live-empty b { color: #284831; }
+.nr-loading i {
+    border-color: rgba(72, 125, 60, .16);
+    border-top-color: #ef8b34;
+}
+.nr-lock-chip {
+    color: #31583b;
+    background: rgba(248, 255, 232, .96);
+    border-color: rgba(89, 151, 75, .35);
+    box-shadow: 0 7px 18px rgba(45, 80, 38, .15);
+}
+.nr-lock-chip svg { stroke: #4c9b54; }
+.nr-lock-chip small { color: #67865f; }
+.nr-lock-chip b { color: #294d33; }
+
+/* The old route, journal and fallback result pages used the same navy cards
+   as combat. Give every non-combat surface the garden palette as well. */
+.nr-route-node { color: #294b31; }
+.nr-route-node .nr-node-scene {
+    border-color: rgba(255, 255, 255, .82);
+    box-shadow: 0 8px 0 rgba(77, 111, 58, .13), 0 14px 26px rgba(58, 88, 44, .12);
+}
+.nr-route-legend,
+.nr-progress-card,
+.nr-feature,
+.nr-home-stats,
+.nr-intel > div,
+.nr-replay-summary {
+    color: #294a32;
+    background: rgba(250, 255, 239, .92);
+    border-color: rgba(103, 149, 78, .22);
+}
+.nr-progress-card h3,
+.nr-feature,
+.nr-home-stats strong,
+.nr-intel strong,
+.nr-replay-summary strong { color: #27472f; }
+.nr-progress-card p,
+.nr-feature small,
+.nr-home-stats span,
+.nr-route-legend { color: #687e61; }
+.nr-report-card {
+    background: linear-gradient(145deg, rgba(255, 255, 247, .98), rgba(226, 244, 198, .98));
+    border: 2px solid rgba(102, 148, 76, .22);
+    box-shadow: 0 9px 24px rgba(58, 91, 42, .1);
+}
+.nr-report-crest { background: #dcf3ca; color: #328955; }
+.nr-report-card.breached .nr-report-crest { background: #ffe3d7; color: #cf604e; }
+.nr-result { color: #294a32; }
+.nr-result h2 { color: #24442e; }
+.nr-result > p { color: #647b5e; }
+.nr-result-stats {
+    border-color: rgba(102, 149, 77, .24);
+    box-shadow: 0 9px 22px rgba(58, 91, 42, .1);
+}
+.nr-result-stats div { background: rgba(251, 255, 241, .94); }
+.nr-result-stats span { color: #6c8065; }
+.nr-result-stats strong { color: #294a32; }
+.nr-pop-scrim { background: rgba(52, 77, 43, .42); }
+.nr-pop-card {
+    color: #294a32;
+    background: linear-gradient(180deg, #fffef5, #e5f5cd);
+    border: 2px solid rgba(255, 255, 255, .92);
+    box-shadow: 0 26px 70px rgba(43, 71, 36, .34);
+}
+.nr-result-pop p { color: #5d7458; }
+.nr-result-pop .nr-result-score > div {
+    color: #294a32;
+    background: rgba(255, 255, 247, .82);
+}
+
+@media (max-width: 700px) {
+    .nr-topbar {
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        gap: 8px;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+    }
+    .nr-topbar h1 { font-size: 18px; }
+    .nr-kicker { font-size: 9px; letter-spacing: .09em; }
+    .nr-wallet { padding-inline: 10px; }
+    .nr-raid-overview { margin-top: 6px; }
+    .nr-friend-row { padding: 9px 10px; gap: 9px; }
+}

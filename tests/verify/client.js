@@ -1395,7 +1395,7 @@ async function verifyClient() {
       must(text.includes('Nhà Bí Ẩn'), 'the random house appears too');
       mustEqual(randomCards.length, 1, 'one card per random target the server sent');
       must(friendRows.length >= 2, 'one row per friend (' + friendRows.length + ' found)');
-      must(text.includes('3 LƯỢT'), 'the remaining raid tickets come from the server');
+      must(text.includes('3 lượt còn lại'), 'the remaining raid tickets come from the server');
       return '2 friend houses + 1 random house listed, 3 tickets shown';
     });
 

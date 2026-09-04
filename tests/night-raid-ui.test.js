@@ -418,13 +418,13 @@ suite('night raid: app integration',()=>{
   test('the builder offers a landscape rotate that never breaks panning',()=>{
     // iOS cannot lock orientation from a web app, so NGANG rotates the whole
     // builder 90deg in CSS; pan deltas are remapped so dragging still follows
-    // the finger, and the app nav hides while the sideways stage is up.
+    // the finger. Night Raid now keeps the app nav hidden in every orientation.
     assert.truthy(ui.includes('nrRotateBuilder'));
     assert.truthy(ui.includes('builderRotated'));
     assert.truthy(css.includes('.nr-builder.rotated'));
     assert.truthy(css.includes('rotate(90deg) translateY(-100%)'));
     assert.truthy(ui.includes('viewport.scrollLeft=builderGesture.left-dy'),'rotated pan must swap axes');
-    assert.truthy(ui.includes('setNav(builderRotated)'),'the nav would cover the sideways stage');
+    assert.truthy(ui.includes('setNav(true)'),'the nav would cover the Night Raid stage');
   });
   test('one TIẾN QUÂN on the scout screen goes straight into the fight',()=>{
     // The scout screen is a full-screen island (like the home builder) with a
