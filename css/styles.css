@@ -13583,3 +13583,11 @@
 .nr-free-grid.size-6 .nr-build-grid-cell .nr-placed.farm-item.farm.footprint-2{width:190%;height:190%}
 .nr-build-item.owned-max{opacity:.55;cursor:default}
 .nr-builder.rotated .nr-zone-chips{top:auto;bottom:14px;left:50%}
+
+/* Task bar and wilted harvest button */
+.nr-task-bar{position:absolute;z-index:7;left:14px;right:14px;top:74px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:6px 8px 6px 14px;border-radius:16px;background:rgba(255,251,238,.94);color:#3f4f2c;font-size:12px;font-weight:850;box-shadow:0 8px 20px rgba(74,63,37,.16)}
+.nr-task-bar.done{background:#dcf6bd;color:#2f5d22}.nr-task-bar.wilted{background:#f6e3c6;color:#6b4a1f}
+.nr-task-go{flex:0 0 auto;min-height:32px;padding:0 12px;border:0;border-radius:999px;background:#3f6046;color:#fff;font-weight:950;cursor:pointer}
+.nr-collect-all.wilted{background:linear-gradient(145deg,#f0b46a,#c97a2a);color:#fff;cursor:pointer}.nr-collect-all.wilted:disabled{opacity:1}
+.nr-builder.rotated .nr-task-bar{left:14px;right:96px;top:70px}
+@media (max-width:700px){.nr-task-bar{top:70px;font-size:11px}}

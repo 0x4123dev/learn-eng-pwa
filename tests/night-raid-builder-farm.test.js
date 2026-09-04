@@ -204,5 +204,64 @@ suite('builder farm: extra farm boards', () => {
     assert.truthy(/nr-free-grid[^"]*size-12/.test(html(w)) || html(w).includes('Lưới xây dựng 12'), 'back on the castle');
   });
 });
+suite('builder farm: every screen points at today\'s tasks', () => {
+  test('the task bar says how many tasks are left and what finishing does', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(w).includes('Hôm nay 0/1 nhiệm vụ · xong hết là cây lớn thêm 1 ngày'));
+    assert.truthy(html(w).includes('nrGoLearn()'), 'Vào học is offered');
+    w.ctx.NightRaid.renderHome();
+    assert.truthy(html(w).includes('xong hết là cây lớn thêm 1 ngày'), 'the home stage has the bar too');
+  });
+  test('no tasks → "chưa có nhiệm vụ"; all done → "đã lớn hôm nay"; wilted → "đang héo"', () => {
+    const none = mount({ appState: { dailyTask: { date: TODAY, tasks: [], allDone: false } } }); none.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(none).includes('Hôm nay chưa có nhiệm vụ'));
+    assert.falsy(html(none).includes('nrGoLearn()'));
+    const done = mount({ appState: { dailyTask: { date: TODAY, tasks: [{ id: 1, done: true }], allDone: true }, farmCtx: { today: TODAY, doneYesterday: false, doneToday: true } } }); done.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(done).includes('Cây đã lớn hôm nay'));
+    const wilt = mount({ appState: { farmCtx: WILT } }); wilt.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(wilt).includes('Cây đang héo'));
+  });
+  test('when plants are wilted the harvest button becomes VÀO HỌC ĐỂ CÂY TƯƠI', () => {
+    const w = mount({ appState: { farmCtx: WILT } }); w.ctx.NightRaid.renderBuilder();
+    const out = html(w);
+    assert.truthy(out.includes('VÀO HỌC ĐỂ CÂY TƯƠI'));
+    assert.truthy(/nr-collect-all[^"]*\bwilted\b[^>]*onclick="nrGoLearn\(\)"/.test(out), 'the button leads to the tasks');
+    assert.falsy(out.includes('THU HOẠCH 3'), 'nothing wilted counts as harvestable');
+  });
+  test('Vào học leaves Night Raid and opens the Daily Task screen', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    w.ctx.nrGoLearn();
+    assert.truthy(w.calls.some(c => c[0] === 'dailyTask.open'));
+  });
+});
+
+suite('builder farm: replant what was just harvested', () => {
+  test('replant re-buys the same seeds on the same cells in one PUT, then forgets the list', async () => {
+    const reply = { ok: true, data: { layout: { cells: [{ type: 'wood-fence', gx: 3, gy: 7, tier: 1 }], farms: [{ cells: [] }] }, coins: 9026, collectedCoins: 26, collectedSoldiers: 0,
+      harvested: [{ type: 'tomato', gx: 1, gy: 1, zone: 0 }, { type: 'lettuce', gx: 0, gy: 0, zone: 1 }], wilted: false, dayCount: 6, ctx: FRESH } };
+    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    w.ctx.NightRaid.renderBuilder();
+    await w.ctx.NightRaid.collectResources();
+    assert.truthy(html(w).includes('2 ô · 8 xu'), 'tomato 5 + lettuce 3');
+    w.ctx.NightRaid.replant();
+    const L = w.state.nightRaidLayout;
+    const tomato = L.cells.find(c => c.type === 'tomato' && c.gx === 1 && c.gy === 1);
+    const lettuce = L.farms[0].cells.find(c => c.type === 'lettuce' && c.gx === 0 && c.gy === 0);
+    assert.truthy(tomato && lettuce, 'both seeds are back where they were');
+    assert.equal(tomato.day, 6, 'planted at the dayCount the server just sent');
+    assert.equal(w.state.coins, 9026 - 8);
+    assert.falsy(html(w).includes('TRỒNG LẠI NHƯ CŨ'), 'the offer is spent');
+  });
+  test('replant is disabled and says how much is missing when the child is short', async () => {
+    const reply = { ok: true, data: { layout: { cells: [], farms: [] }, coins: 3, collectedCoins: 120, collectedSoldiers: 0, harvested: [{ type: 'pumpkin', gx: 2, gy: 2, zone: 0 }], wilted: false, dayCount: 6, ctx: FRESH } };
+    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    w.ctx.NightRaid.renderBuilder();
+    await w.ctx.NightRaid.collectResources();
+    assert.truthy(/nr-replant[^>]*disabled/.test(html(w)));
+    assert.truthy(html(w).includes('thiếu 17 xu'));
+    w.ctx.NightRaid.replant();
+    assert.equal(w.state.nightRaidLayout.cells.length, 0, 'nothing planted');
+  });
+});
 
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
