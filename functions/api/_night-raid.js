@@ -138,6 +138,14 @@ export async function nightRaidEnabled(env,userId) {
   const row=await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(userId).first();
   return !!(row&&row.allow_bot);
 }
+// A raid already in flight is a ticket off the shelf. start.js counts it
+// against the allowance, so the two LISTS have to count it the same way or
+// they advertise an attack the server is about to refuse — the same dishonesty
+// the friend rows were fixed for when the allowance ran out.
+export async function inFlightRaids(env,userId,now=Date.now()) {
+  const row=await env.DB.prepare("SELECT COUNT(*) AS n FROM night_raids WHERE attacker_id=? AND status='active' AND expires_at>=?").bind(userId,now).first();
+  return Math.max(0,Number(row&&row.n||0));
+}
 export async function ticketStats(env,userId,date=nightDate()) {
   const daily=await env.DB.prepare('SELECT tickets_used, reward_earned FROM night_raid_daily WHERE user_id = ? AND raid_date = ?').bind(userId,date).first();
   // `date` is an ICT calendar day (nightDate) but created_at is UTC, and

@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
+import { nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidLockUntil, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
 
 // GET /api/night-raid/friends — "Bạn bè · nhà nào đánh được".
 //
@@ -76,6 +76,7 @@ export async function onRequestGet({ request, env }) {
   friends.sort((a, b) => (a.retryAt - b.retryAt) || String(a.name).localeCompare(String(b.name), 'vi'));
 
   const stats = await ticketStats(env, auth.uid, date);
+  const inFlight = await inFlightRaids(env, auth.uid);
   return json({
     friends,
     // My OWN house is a different matter: the owner may of course see that it
@@ -86,7 +87,7 @@ export async function onRequestGet({ request, env }) {
       lockedUntil: mine ? raidLockUntil(mine, now) : 0,
       shieldUntil: Math.max(0, Math.trunc(+(mine && mine.shield_until) || 0)),
     },
-    ticketsLeft: Math.max(0, stats.allowance - stats.used),
+    ticketsLeft: Math.max(0, stats.allowance - stats.used - inFlight),
     learningBoost: stats.allowance > 3,
   });
 }

@@ -586,7 +586,14 @@ suite('teammates: a friend battle really carries the squad', () => {
         assert.truthy(/hires: pending\.squad/.test(body), 'the squad must travel with the challenge');
         assert.truthy(/if \(r\.ok\) pbHireCharge\(pending\); else pbHireRelease\(\);/.test(body),
             'and be paid for exactly once, only when the battle really starts');
-        assert.truthy(body.indexOf('_pbApi') < body.indexOf('pbHireCharge'), 'the charge follows the answer');
+        // Up to 1,000 xu rides on this ordering, so both sides are proven to
+        // exist first: indexOf gives -1 for a string that has been renamed
+        // away, and -1 sorts before every real index.
+        const callAt = body.indexOf('_pbApi');
+        const chargeAt = body.indexOf('pbHireCharge');
+        assert.truthy(callAt >= 0, 'the challenge must actually be sent');
+        assert.truthy(chargeAt >= 0, 'and the wages must actually be charged');
+        assert.truthy(callAt < chargeAt, 'the charge follows the answer');
     });
 
     test('accepting commits the squad too', () => {

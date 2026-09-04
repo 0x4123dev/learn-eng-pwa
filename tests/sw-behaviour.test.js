@@ -146,6 +146,48 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
   test('a whole network outage still installs, so the next open can retry', async () => {
     const worker = bootWorker(() => { throw new Error('offline'); });
     await install(worker);
+    // Resolving is not the point — this used to assert only that, and it
+    // passed with an empty cache while `activate` went on to delete the
+    // previous, COMPLETE one.
+    const stored = [...worker.sandbox.caches._stores.values()][0];
+    assert.truthy(!stored || stored.size === 0, 'nothing could be fetched, so nothing was stored');
+  });
+
+  test('a half-finished install does NOT retire the cache that still works', async () => {
+    // A child on 3G in a car: 60 of 153 assets land, the signal drops. Under
+    // best-effort-plus-unconditional-activate they would have lost a complete
+    // previous cache and been left with a broken one — Grammar and Toán empty
+    // in the tunnel, the raid scene with no art, and nothing to retry.
+    let served = 0;
+    const worker = bootWorker(url => {
+      if (served++ > 60) throw new Error('signal lost');
+      return body('ok', 'application/javascript');
+    });
+    // The previous release's cache, complete and working.
+    const previous = await worker.sandbox.caches.open('flashlingo-v999');
+    await previous.put('/js/app.js', body('OLD BUT WORKING', 'application/javascript'));
+
+    await install(worker);
+    let waited = null;
+    worker.fire('activate', { waitUntil: p => { waited = p; } });
+    await waited;
+
+    assert.truthy(worker.sandbox.caches._stores.has('flashlingo-v999'),
+      'the last cache that worked must survive a bad install');
+    const kept = await (await worker.sandbox.caches.open('flashlingo-v999')).match('/js/app.js');
+    assert.equal(await kept.text(), 'OLD BUT WORKING');
+  });
+
+  test('a complete install DOES retire the old cache — no unbounded growth', async () => {
+    const worker = bootWorker(() => body('ok', 'application/javascript'));
+    const previous = await worker.sandbox.caches.open('flashlingo-v999');
+    await previous.put('/js/app.js', body('OLD', 'application/javascript'));
+    await install(worker);
+    let waited = null;
+    worker.fire('activate', { waitUntil: p => { waited = p; } });
+    await waited;
+    assert.falsy(worker.sandbox.caches._stores.has('flashlingo-v999'),
+      'a good install cleans up after the one it replaces');
   });
 
   test('the SPA fallback is never cached under a script or image key', async () => {
@@ -159,6 +201,31 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
     const stored = [...worker.sandbox.caches._stores.values()][0];
     assert.falsy(stored.has('/js/app.js'), 'an HTML body must not masquerade as the app');
     assert.truthy(stored.has('/index.html'), 'but real HTML entries are still cached');
+  });
+
+  test('and the FETCH path refuses it too — the install guard alone was decorative', async () => {
+    // Verified against the live site: GET /js/does-not-exist.js answers 200
+    // text/html. A renamed file still listed in SCREEN_FILES, or a request
+    // landing mid-deploy, wrote HTML under a .js key and poisoned it for the
+    // life of this CACHE_NAME. `nosniff` hides that online; offline the tab
+    // renders empty, and if the key is /js/app.js the app does not boot.
+    const worker = bootWorker(() => body('<!doctype html>fallback', 'text/html'));
+    const event = fetchEvent(ORIGIN + '/js/exam-data.js');
+    worker.fire('fetch', event);
+    await event.responded;
+    await new Promise(r => setTimeout(r, 0));
+    const hit = await worker.sandbox.caches.match(ORIGIN + '/js/exam-data.js');
+    assert.falsy(hit, 'the SPA fallback must never be stored under a script key');
+  });
+
+  test('a real HTML page still caches normally through the fetch path', async () => {
+    const worker = bootWorker(() => body('<!doctype html>the app', 'text/html'));
+    const event = fetchEvent(ORIGIN + '/index.html');
+    worker.fire('fetch', event);
+    await event.responded;
+    await new Promise(r => setTimeout(r, 0));
+    assert.truthy(await worker.sandbox.caches.match(ORIGIN + '/index.html'),
+      'the guard is about the KEY, not about HTML');
   });
 });
 
@@ -220,6 +287,21 @@ suite('service worker: offline always lands on the app', () => {
     const res = await event.responded;
     assert.truthy(res && res.status === 200, 'the invite link must still open the app');
     assert.equal(await res.text(), '<!doctype html>app');
+  });
+
+  test('the shell fallback reaches for / first, not the redirected copy', async () => {
+    // The live site answers /index.html with a 308 to '/', so that cached
+    // entry is `redirected: true` — and handing a redirected response to a
+    // navigation is a network error, i.e. the browser's error page again.
+    const worker = bootWorker(() => body('<!doctype html>app', 'text/html'));
+    const cache = await worker.sandbox.caches.open('flashlingo-test');
+    await cache.put('/', body('ROOT COPY', 'text/html'));
+    await cache.put('/index.html', body('REDIRECTED COPY', 'text/html'));
+    worker.sandbox.fetch = () => Promise.reject(new Error('offline'));
+    const event = fetchEvent(ORIGIN + '/?ketban=Na', { mode: 'navigate' });
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(await res.text(), 'ROOT COPY', 'the clean entry must win');
   });
 
   test('an uncached URL fails as a Response, never as undefined', async () => {
@@ -293,13 +375,51 @@ suite('service worker: the update banner is actually visible', () => {
     }
   });
 
-  test('it sits above the bottom nav and clears the home indicator', () => {
+  test('it sits ABOVE the bottom nav, not on top of it', () => {
+    // The first version put it 12px off the bottom with z-index 400 — squarely
+    // in the 68px nav band, so "Tải bản mới" landed on the rightmost tabs and
+    // a child reaching for Exam got a full page reload. Clearing the nav is
+    // the requirement; the z-index only decides what happens if they ever do
+    // overlap.
     const rule = CSS.match(/\.sw-update-bar \{[^}]*\}/)[0];
     assert.truthy(/position: fixed/.test(rule), 'it must float over the app');
-    const z = Number((rule.match(/z-index: (\d+)/) || [])[1]);
-    const navZ = Number((CSS.match(/\.bottom-nav \{[^}]*z-index: (\d+)/) || [])[1] || 300);
-    assert.truthy(z > navZ, `z-index ${z} must beat the nav's ${navZ}`);
-    assert.truthy(/safe-area-bottom/.test(rule), 'and sit above the home indicator');
+    const navRule = CSS.match(/\.bottom-nav \{[^}]*\}/)[0];
+    const navHeight = Number((navRule.match(/min-height: (\d+)px/) || [])[1]);
+    assert.truthy(navHeight > 0, 'the nav must declare a height to clear');
+    const bottom = rule.match(/bottom: calc\(([^)]*)\)/);
+    assert.truthy(bottom, 'the offset must be a calc that names the nav height');
+    const px = [...bottom[1].matchAll(/(\d+)px/g)].reduce((n, m) => n + Number(m[1]), 0);
+    assert.truthy(px >= navHeight, `the bar starts ${px}px up; the nav is ${navHeight}px tall`);
+    assert.truthy(/safe-area-bottom/.test(rule), 'and it clears the home indicator too');
+  });
+
+  test('the reload is re-checked at the tap, not only when the banner appeared', () => {
+    // The banner can sit there for twenty minutes while the child starts a
+    // 200-xu Đấu Toán. reload() bypasses every switchScreen guard — there is
+    // no beforeunload anywhere in this app.
+    const go = offer.slice(offer.indexOf("'.sw-update-go'"));
+    assert.truthy(/_busyWithTimedActivity\(\)/.test(go.slice(0, 700)),
+      'the click handler must ask again before reloading');
+    assert.truthy(offer.indexOf('_busyWithTimedActivity') < offer.indexOf("'.sw-update-go'"),
+      'and it must also gate whether the banner appears at all');
+  });
+
+  test('"Để sau" means later, not never', () => {
+    const later = offer.slice(offer.indexOf("'.sw-update-later'"));
+    assert.truthy(/_updateOffered = false/.test(later.slice(0, 600)),
+      'an iOS PWA parked in the switcher must be offered the update again');
+  });
+
+  test('every activity switchScreen guards, the reload guards too', () => {
+    // The first version checked four of the nine. An update that reloads must
+    // be at least as careful as tapping a nav tab.
+    const APP_SRC = APP;
+    const sw = APP_SRC.slice(APP_SRC.indexOf('function switchScreen('));
+    const guarded = [...new Set([...sw.slice(0, 9000).matchAll(/&& (is[A-Za-z]+)\(\)/g)].map(m => m[1]))];
+    const list = APP_SRC.slice(APP_SRC.indexOf('const _BUSY_CHECKS'), APP_SRC.indexOf('function _busyWithTimedActivity'));
+    const missing = guarded.filter(g => !list.includes(`'${g}'`));
+    assert.equal(missing.length, 0, 'not guarded against a reload: ' + missing.join(', '));
+    assert.truthy(guarded.length >= 9, 'the guard list must not have shrunk: ' + guarded.length);
   });
 
   test('the banner respects reduced motion', () => {

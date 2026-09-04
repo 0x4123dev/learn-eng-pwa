@@ -4,7 +4,22 @@
 
 const enc = new TextEncoder();
 const PBKDF2_ITERS = 100000;
-const TOKEN_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
+// Sessions do NOT expire. A child should never be asked to sign in again — a
+// forgotten passcode on a device that was working yesterday is a support call
+// a seven-year-old cannot make, and the 90-day clock this used to run meant
+// every account hit that wall eventually, all at once, months after anyone
+// remembered setting it up.
+//
+// What replaces expiry as the revocation path is `requireAuth` below: it
+// re-reads the user row on EVERY authenticated request, so `disabled = 1` in
+// the admin console cuts an account off within one request, and a deleted user
+// stops working immediately. That is a better switch than a timer — it is
+// immediate, it is per-account, and somebody can actually reach for it.
+//
+// verifyToken ignores `exp` entirely rather than merely stopping stamping it,
+// so the tokens already out there stop expiring too. Otherwise every existing
+// child would still have hit the old 90-day wall once, which is the exact
+// thing this removes.
 
 // ---- encoding ----
 export function toHex(bytes) {
@@ -59,8 +74,7 @@ async function hmacB64(message, secret) {
   return b64urlFromBytes(new Uint8Array(sig));
 }
 export async function signToken(payload, secret) {
-  const full = { ...payload, exp: Date.now() + TOKEN_TTL_MS };
-  const body = b64urlFromString(JSON.stringify(full));
+  const body = b64urlFromString(JSON.stringify({ ...payload }));
   const sig = await hmacB64(body, secret);
   return body + '.' + sig;
 }
@@ -72,7 +86,8 @@ export async function verifyToken(token, secret) {
   if (!timingSafeEqual(sig, expect)) return null;
   let payload;
   try { payload = JSON.parse(stringFromB64url(body)); } catch (e) { return null; }
-  if (payload.exp && Date.now() > payload.exp) return null;
+  // `exp` is deliberately not checked — see the note above signToken. Old
+  // tokens still carry one; it is ignored so they keep working for good.
   return payload;
 }
 
@@ -87,11 +102,11 @@ export async function getAuthSecret(env) {
 
 // ---- request auth ----
 // HEADER ONLY. A `?token=` fallback used to live here, and it was a quiet
-// leak: this token IS the account, it lasts 90 days (TOKEN_TTL_MS above), and
-// a query string is the one part of a request that gets written down
+// leak: this token IS the account, it does not expire (see signToken above),
+// and a query string is the one part of a request that gets written down
 // everywhere — Cloudflare request logs, analytics, any intermediate proxy,
 // Referer headers, a screenshotted address bar. Anyone reading those logs
-// could replay it against every /api/* route until it expired.
+// could replay it against every /api/* route, for good.
 //
 // Nothing needed it: js/auth.js (api()), admin.html and js/night-raid.js all
 // send `Authorization: Bearer …`, and no caller anywhere in the repo built a
@@ -112,10 +127,10 @@ export function bearer(request) {
 // still be enabled.
 //
 // This costs one indexed primary-key lookup per authenticated request, and it
-// is worth it. Tokens live 90 days, so checking only at login would mean an
-// account disabled today keeps full access for up to three months — the switch
-// would appear to work and do nothing. The same lookup also closes a quieter
-// hole: a token for a DELETED user used to keep working until it expired.
+// is what makes the admin's disable switch real. Tokens do not expire, so this
+// row read is now the ONLY revocation path there is: without it, an account
+// disabled today would keep full access forever. The same lookup also closes a
+// quieter hole: a token for a DELETED user used to keep working.
 export async function requireAuth(request, env) {
   const secret = await getAuthSecret(env);
   if (!secret) return null;

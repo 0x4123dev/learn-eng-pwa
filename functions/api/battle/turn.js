@@ -49,8 +49,19 @@ export async function onRequestPost({ request, env }) {
   // and take the turn number off the row, so a duplicate that arrived late —
   // a double tap, or a retry after D1 was slow — was accepted as a BRAND-NEW
   // turn: the child's next shot was silently spent replaying their last aim.
+  //
+  // But a stale number is not proof of a replay. A client that has just walked
+  // its own turnNo backwards while replaying the OPPONENT's moves sends an old
+  // number for a perfectly new shot, and refusing that discards a turn the
+  // child really took. The two are distinguishable: a replay is a turn number
+  // THIS user has already played. So ask battle_turns instead of guessing.
   const claimedTurn = Math.trunc(Number(body.turnNo) || 0);
-  if (claimedTurn && claimedTurn !== b.turn_no) return err('Lượt này đã qua rồi', 409, { turnNo: b.turn_no });
+  if (claimedTurn && claimedTurn !== b.turn_no) {
+    const already = await env.DB.prepare(
+      'SELECT 1 AS hit FROM battle_turns WHERE battle_id = ? AND turn_no = ? AND user_id = ?'
+    ).bind(id, claimedTurn, auth.uid).first();
+    if (already) return err('Lượt này đã qua rồi', 409, { turnNo: b.turn_no });
+  }
 
   const myAmmo = meIsChallenger ? b.challenger_ammo : b.opponent_ammo;
   const myLevel = meIsChallenger ? b.challenger_level : b.opponent_level;

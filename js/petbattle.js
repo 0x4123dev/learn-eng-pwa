@@ -1031,12 +1031,16 @@ function _pbHistory() {
 function pbHistorySummary(list) {
   const h = Array.isArray(list) ? list : _pbHistory();
   const wins = h.filter(b => b.won).length;
+  // A draw is neither. `h.length - wins` counted every tie as a defeat, so one
+  // battle that ended 80–80 was logged as a loss for BOTH children.
+  const draws = h.filter(b => b.draw).length;
   const sum = (k) => h.reduce((n, b) => n + (b[k] || 0), 0);
   const volleys = sum('volleys');
   return {
     total: h.length,
     wins,
-    losses: h.length - wins,
+    draws,
+    losses: h.length - wins - draws,
     winRate: h.length ? Math.round(wins / h.length * 100) : 0,
     damageDealt: sum('damageDealt'),
     damageTaken: sum('damageTaken'),
@@ -1100,9 +1104,9 @@ function _pbHistoryPanel() {
   const rows = h.slice(0, 20).map((b, i) => {
     const open = _pbHistoryOpen === i;
     return `
-      <div class="pb-hist-item ${b.won ? 'win' : 'lose'}">
+      <div class="pb-hist-item ${b.won ? 'win' : b.draw ? 'draw' : 'lose'}">
         <button class="pb-hist-row" onclick="togglePbHistory(${i})">
-          <span class="pb-hist-badge">${b.won ? '🏆' : '💪'}</span>
+          <span class="pb-hist-badge">${b.won ? '🏆' : b.draw ? '🤝' : '💪'}</span>
           <span class="pb-hist-main">
             <span class="pb-hist-foe">${pbEsc(b.foe || '?')}${b.foeLevel ? ` <small>${pbT('histLevel', { n: b.foeLevel })}</small>` : ''}</span>
             <span class="pb-hist-date">${pbFmtDate(b.date)}</span>

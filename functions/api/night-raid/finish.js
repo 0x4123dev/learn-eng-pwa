@@ -28,15 +28,25 @@ export async function onRequestPost({request,env}) {
   const snapshot=safeJson(raid.snapshot_json,null);if(!snapshot)return err('Broken raid snapshot',500);
   const cfg=await readRaidConfig(env);
   const sim=NR.resolveAutoBattle(snapshot),date=nightDate(),stats=await ticketStats(env,auth.uid,date);
-  // A shield decides the raid outright, independent of the rules' 100000-DEF
-  // ceiling: even if the ceiling ever changed, a shielded snapshot can never win.
-  const won=sim.won&&!snapshot.shielded;
   // Both piles are read FRESH, not taken from the snapshot, because every coin
   // this handler moves has to come out of somewhere: the raid transfers money
   // between two children, it never prints or burns it. Reading the real piles
   // is what lets the two UPDATEs below be exactly equal and opposite.
-  const wallets=await env.DB.prepare('SELECT user_id, lootable_coins FROM night_raid_homes WHERE user_id IN (?,?)').bind(raid.attacker_id,raid.defender_id).all();
-  const pile=id=>{const r=((wallets&&wallets.results)||[]).find(w=>Number(w.user_id)===Number(id));return Math.max(0,Math.trunc(+((r&&r.lootable_coins)||0)));};
+  const wallets=await env.DB.prepare('SELECT user_id, lootable_coins, shield_until FROM night_raid_homes WHERE user_id IN (?,?)').bind(raid.attacker_id,raid.defender_id).all();
+  const homeRow=id=>((wallets&&wallets.results)||[]).find(w=>Number(w.user_id)===Number(id));
+  const pile=id=>{const r=homeRow(id);return Math.max(0,Math.trunc(+((r&&r.lootable_coins)||0)));};
+  // A Khiên Đêm raised WHILE the raid is in flight counts. The snapshot pins
+  // the shield as it was at /start, which was a narrow miss while a raid had
+  // to be finished within five minutes — but the window is fifteen now, so a
+  // defender could spend a shield (earned from a daily task, and scarce) on a
+  // house that was already being marched on and get nothing at all for it.
+  // Either shield protects: the one that was up when the troops set out, or
+  // the one that is up when they arrive.
+  const liveShield=Math.max(0,Math.trunc(+((homeRow(raid.defender_id)||{}).shield_until||0)))>Date.now();
+  const shielded=!!snapshot.shielded||liveShield;
+  // A shield decides the raid outright, independent of the rules' 100000-DEF
+  // ceiling: even if the ceiling ever changed, a shielded raid can never win.
+  const won=sim.won&&!shielded;
   // A robbery carries home win_pct of the victim's pile, capped by win_cap and
   // by what is left of today's daily_reward_cap — and the victim loses exactly
   // that, no more. The old formula had a 50 xu floor, which paid best for
@@ -47,12 +57,29 @@ export async function onRequestPost({request,env}) {
   // a Khiên Đêm) and hands that same amount to the DEFENDER, who until now got
   // nothing for holding the wall. Clamped to what the attacker actually has,
   // so a broke raider cannot conjure coins into the defender's pile.
-  const attackerLoss=won?0:Math.min(pile(raid.attacker_id),snapshot.shielded?cfg.shield_loss:cfg.loss);
+  // What the attacker CAN pay, not what the mirror thinks they have.
+  //
+  // The mirror only moves on a syncHome PUT, and syncHome is called from
+  // nowhere outside js/night-raid.js — the shop, the armoury, the cups,
+  // lessons and exams all move appState.coins silently. So the mirror is
+  // routinely stale HIGH, and the defender was credited out of a pile the
+  // attacker no longer had: start a raid, back out, spend the purse, come back
+  // inside the (now fifteen-minute) window and settle. The device paid
+  // max(0, 0 - 100) = 0 and the friend was still handed 100. With two profiles
+  // allowed per device a child could lose to themselves and mint it.
+  //
+  // The attacker is standing right here, so they report their real balance and
+  // it can only make the loss SMALLER. A client that under-reports denies its
+  // own opponent the reward and still loses the raid; it cannot create a coin,
+  // which is the invariant that actually matters.
+  const reported=Number.isFinite(+body.coins)?Math.max(0,Math.trunc(+body.coins)):null;
+  const attackerCan=reported===null?pile(raid.attacker_id):Math.min(pile(raid.attacker_id),reported);
+  const attackerLoss=won?0:Math.min(attackerCan,shielded?cfg.shield_loss:cfg.loss);
   const defenderGain=attackerLoss;
   // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
   // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
   // giữ bấy nhiêu, thắng hay thua cũng không mất.
-  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
   // A breach seals the home for a flat seal_hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;

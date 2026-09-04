@@ -59,7 +59,10 @@
             position: fixed;
             left: 12px;
             right: 12px;
-            bottom: calc(12px + var(--safe-area-bottom));
+            /* ABOVE the bottom nav, not over it. At 12px the bar sat squarely
+               in the 68px nav band, so "Tải bản mới" landed on the rightmost
+               tabs — a child reaching for Exam got a full page reload. */
+            bottom: calc(68px + 12px + var(--safe-area-bottom));
             z-index: 400;
             display: flex;
             align-items: center;
@@ -1951,6 +1954,7 @@
         .pb-hist-item { border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.03); }
         .pb-hist-item.win { background: rgba(22, 163, 74, 0.07); }
         .pb-hist-item.lose { background: rgba(220, 38, 38, 0.06); }
+        .pb-hist-item.draw { background: rgba(100, 116, 139, 0.07); }
         .pb-hist-row {
             width: 100%; display: flex; align-items: center; gap: 8px; padding: 9px 10px;
             background: none; border: none; font-family: inherit; cursor: pointer; text-align: left;
@@ -2092,6 +2096,11 @@
         .pb-btn.primary { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; }
         .pb-btn:disabled { opacity: 0.45; }
         .pb-result-card.win { border-color: rgba(34,197,94,0.5); }
+        /* A tie is its own outcome, not a defeat in different words. Without
+           this the new draw card fell through to the unstyled default while
+           its 🤝 sat above green-for-a-win wording. */
+        .pb-result-card.draw { border-color: rgba(148,163,184,0.6); }
+
         .pb-result-emoji { font-size: 48px; }
         .pb-result-title { font-size: 20px; font-weight: 900; margin: 6px 0; color: var(--text-primary); }
         .pb-result-hp { font-size: 13px; color: var(--text-secondary); }

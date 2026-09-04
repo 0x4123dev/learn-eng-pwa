@@ -26,6 +26,8 @@ bundler, no TypeScript, no linter.
 
 ```bash
 npm test          # the whole suite (11,000+ tests, tests/run-all.js)
+npm run verify    # "is any feature broken?" — see below
+npm run verify -- --live       # …including on the deployed site
 node tests/foo.test.js          # one file — see the WARNING below
 scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy
 ```
@@ -36,6 +38,33 @@ package.json, functions/api/version.js) and `tests/version-sync.test.js` fails
 if any of them drifts. Commit your own code FIRST; deploy.sh now refuses to
 run with an uncommitted working tree, because it builds the bundle from that
 tree and would otherwise ship code that exists in no commit.
+
+### `npm run verify` — the independent check
+
+`npm test` proves the code does what its author thought. `npm run verify`
+proves a CHILD can still do each thing the app offers. They fail in different
+ways, and the gap between them is where this project's worst bugs lived: every
+one of the 52 findings in the September 2026 audit was in code with green
+tests.
+
+Four layers, in `tests/verify/`:
+
+| layer | what it proves |
+|---|---|
+| `manifest.js` | every screen, route and lazy bank in the app is claimed by a named feature that says which layer verifies it |
+| `server.js` | every API route, called for real against a real SQLite DB: refuses a stranger, never 5xx, money paths conserve coins |
+| `client.js` | every screen rendered for real, and its primary interaction driven the way a child would |
+| `live.js` | the deployed site: version matches, the service worker is the one we shipped, every startup script loads, no route answers a stranger |
+
+**The manifest layer is what makes the rest trustworthy.** Add a tab, an API
+route or a lazy bank without listing it in `tests/verify/manifest.js`, and the
+run goes RED — you have to say which feature it belongs to and which layer
+checks it. That is the step that was skipped when HK2 maths shipped
+un-assignable for a whole semester, and when battles started writing a
+`field_version` column no migration created.
+
+A layer that cannot run reports a failure, never a skip. Silence there would
+read exactly like "everything passed".
 
 ⚠️ **Only trust `npm test`.** Running one file directly is fine now that every
 test file ends with `runAll().then(code => process.exit(code))`, but a file

@@ -267,4 +267,66 @@ suite('battle: a draw is a draw', () => {
   });
 });
 
+suite('battle: a stale turn number is not proof of a replay', () => {
+  test('a shot the child really took is accepted even when the client miscounts', async () => {
+    // Reopening a battle resets the poll cursor, so the client replays the
+    // whole history and _replay walked its own turnNo backwards. It then sent
+    // an old number for a brand-new shot, and refusing that discarded a turn
+    // the child had actually taken — they watched the castle HP drop and
+    // jump back.
+    const world = createWorld();
+    const me = await world.createUser({});
+    const foe = await world.createUser({});
+    const id = makeBattle(world, me, foe);
+
+    await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: me.token,
+      body: { battleId: id, turnNo: 1, angle: 45, power: 70, shots: 1, rawDamage: 20 },
+    });
+    await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: foe.token,
+      body: { battleId: id, turnNo: 2, angle: 45, power: 70, shots: 1, rawDamage: 20 },
+    });
+    const before = battleRow(world, id);
+    assert.equal(Number(before.turn_no), 3);
+    assert.equal(Number(before.turn_user_id), me.uid, 'it is our turn again');
+
+    // The miscounting client reports the opponent's turn number (2) — a turn
+    // WE never played — for a genuinely new shot.
+    const r = await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: me.token,
+      body: { battleId: id, turnNo: 2, angle: 50, power: 80, shots: 1, rawDamage: 20 },
+    });
+    assert.truthy(r.ok, 'a real shot must not be thrown away: ' + JSON.stringify(r.data));
+    assert.equal(Number(battleRow(world, id).turn_no), 4, 'and the battle moves on');
+    assert.equal(storedTurns(world, id).length, 3);
+  });
+
+  test('but a genuine replay of our OWN turn is still refused', async () => {
+    const world = createWorld();
+    const me = await world.createUser({});
+    const foe = await world.createUser({});
+    const id = makeBattle(world, me, foe);
+    await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: me.token,
+      body: { battleId: id, turnNo: 1, angle: 45, power: 70, shots: 1, rawDamage: 20 },
+    });
+    await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: foe.token,
+      body: { battleId: id, turnNo: 2, angle: 45, power: 70, shots: 1, rawDamage: 20 },
+    });
+    const before = battleRow(world, id);
+    // Turn 1 was OURS, and it is our turn again — this is the late duplicate.
+    const late = await world.call(turnHandler().onRequestPost, {
+      url: '/api/battle/turn', method: 'POST', token: me.token,
+      body: { battleId: id, turnNo: 1, angle: 45, power: 70, shots: 1, rawDamage: 20 },
+    });
+    assert.falsy(late.ok, 'our own turn must not be replayed into a new one');
+    assert.equal(late.status, 409);
+    assert.equal(Number(battleRow(world, id).turn_no), Number(before.turn_no), 'nothing moved');
+    assert.equal(Number(battleRow(world, id).challenger_ammo), Number(before.challenger_ammo),
+      'and no poop was spent');
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

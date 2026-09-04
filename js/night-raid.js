@@ -1017,11 +1017,18 @@ var NightRaid = (() => {
   // PUT (offline, a 5xx, an expired token) made a paid-for tower vanish on the
   // next open. While this is set the server's layout is NOT adopted; the PUT
   // is retried instead.
-  let homeDirty=false;
+  // Persisted, not just held in memory. The failure this guards against is a
+  // PUT that failed — which almost always means offline — and a child who is
+  // offline usually closes the app. A module-level flag resets on the next
+  // launch, refreshHome adopts the server's older layout, and the tower they
+  // paid for is gone: the exact case the flag exists for was the one it did
+  // not cover.
+  const homeDirty=()=>!!(appState&&appState.nightRaidHomeDirty);
+  const setHomeDirty=v=>{if(appState&&appState.nightRaidHomeDirty!==!!v){appState.nightRaidHomeDirty=!!v;save();}};
   async function syncHome(){
     if(homeRead){try{await homeRead;}catch(e){}}
     const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});
-    homeDirty=!res.ok;
+    setHomeDirty(!res.ok);
     // A PUT that landed makes this device the wallet of record: it has now
     // told the server what it holds, so a later GET must never overwrite it.
     if(res.ok)appState.nightRaidWalletSynced=true;
@@ -1067,7 +1074,7 @@ var NightRaid = (() => {
       const gained=adoptServerCoins(res.data.home.lootableCoins);
       // Local building work the server has not taken yet outranks the server's
       // older copy — otherwise the tower the child just paid for disappears.
-      if(homeDirty)syncHome();
+      if(homeDirty())syncHome();
       else appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);
       save();
       if(gained&&typeof showToast==='function')showToast('Nhà con nhận thêm '+gained+' xu khi con offline');
@@ -1158,7 +1165,7 @@ var NightRaid = (() => {
   function clearPendingRaid(raidId){const p=appState.nightRaidPending;if(p&&(!raidId||p.raidId===raidId)){appState.nightRaidPending=null;save();}}
   // Apply a verified result to the wallet exactly once per raid.
   function claimVerified(raidId,verified){if(appState.nightRaidClaimed?.[raidId])return false;if(!appState.nightRaidClaimed)appState.nightRaidClaimed={};appState.nightRaidClaimed[raidId]=true;if(verified.won)appState.coins=Math.max(0,+appState.coins||0)+Math.max(0,+verified.reward||0);else appState.coins=Math.max(0,(+appState.coins||0)-Math.max(0,+verified.loss||0));if(Number.isFinite(+verified.soldiers))appState.nightRaidLayout.soldiers=Math.max(0,+verified.soldiers);save();syncHome();return true;}
-  async function retryPendingFinish(){const p=appState&&appState.nightRaidPending;if(!p||!p.raidId)return null;const res=await api('finish',{method:'POST',body:{raidId:p.raidId}});const verified=res.ok&&res.data&&res.data.result;
+  async function retryPendingFinish(){const p=appState&&appState.nightRaidPending;if(!p||!p.raidId)return null;const res=await api('finish',{method:'POST',body:{raidId:p.raidId,coins:Math.max(0,Math.trunc(+appState.coins||0))}});const verified=res.ok&&res.data&&res.data.result;
     if(verified){clearPendingRaid(p.raidId);const fresh=claimVerified(p.raidId,verified);if(fresh&&typeof showToast==='function')showToast(verified.won?`Đã đồng bộ trận Cướp Đêm: +${Math.max(0,+verified.reward||0)} xu`:`Đã đồng bộ trận Cướp Đêm: -${Math.max(0,+verified.loss||0)} xu`);if(fresh&&view==='home')refreshHome();return verified;}
     // Nothing left to recover — the row is gone, expired or not ours — so
     // stop asking. Any other failure (offline, no token) is retried next time.
@@ -1171,7 +1178,10 @@ var NightRaid = (() => {
   // clock nobody had paid a ticket for. The server now deletes that row and
   // says so; this says so too, and puts the child back in front of the list.
   const isExpired=res=>!!(res&&res.data&&(res.data.expired||/expired|hết giờ/i.test(String(res.data.error||''))));
-  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId}});const verified=res.ok&&res.data&&res.data.result;
+  // The wallet rides along: finish.js clamps a defeat to what this device can
+  // actually pay, so the defender is never credited money that never left
+  // anybody. See the note beside attackerCan.
+  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId,coins:Math.max(0,Math.trunc(+appState.coins||0))}});const verified=res.ok&&res.data&&res.data.result;
     if(!verified&&isExpired(res)){clearPendingRaid(target.raidId);announce('Trận này đã hết giờ');if(typeof showToast==='function')showToast('Hết giờ trận này rồi — con vào lại nhà đó được ngay');return showLiveTargets();}
     if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
 

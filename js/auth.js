@@ -159,6 +159,51 @@ const EngAuth = (function () {
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
   }
 
+  // ---- a debit that could not be paid is not a debit that is forgiven ----
+  //
+  // `Math.max(0, wallet + delta)` looks harmless and silently prints money.
+  // Cướp Đêm settles the sleeping defender through coin_grants, and the amount
+  // is computed from night_raid_homes.lootable_coins — a MIRROR that only
+  // moves on a syncHome PUT, while the shop, the armoury, the cups, lessons
+  // and exams all move the real wallet without telling any server. So the
+  // mirror sits stale HIGH, the attacker is credited from it, and the clamp
+  // destroys the part of the debt the victim's real purse could not cover:
+  //
+  //     mirror 5000, real wallet 30, reward 100
+  //     attacker +100, victim -30       →  70 xu created from nothing
+  //
+  // So the remainder is CARRIED. The wallet still never shows a negative
+  // number to a child; the shortfall waits in appState.coinDebt and is taken
+  // out of what they earn next. Bounded by the raid config's win_cap, and
+  // settled on every account sync.
+  function coinDebt() {
+    const d = Math.trunc(+(appState && appState.coinDebt) || 0);
+    return d > 0 ? d : 0;
+  }
+  function applySignedGrant(delta) {
+    const wallet = Math.max(0, Math.trunc(+appState.coins || 0));
+    const after = wallet + Math.trunc(delta || 0);
+    if (after < 0) {
+      appState.coins = 0;
+      appState.coinDebt = coinDebt() + (-after);
+      return;
+    }
+    appState.coins = after;
+    settleCoinDebt();
+  }
+  // Pay down what is owed, as far as the purse goes. Returns true when
+  // anything moved, so the caller knows to save.
+  function settleCoinDebt() {
+    const owed = coinDebt();
+    if (!owed) return false;
+    const wallet = Math.max(0, Math.trunc(+appState.coins || 0));
+    const pay = Math.min(owed, wallet);
+    if (!pay) return false;
+    appState.coins = wallet - pay;
+    appState.coinDebt = owed - pay;
+    return true;
+  }
+
   // Admin coin adjustments are server-side IOUs (coin_grants): claim every
   // unclaimed row once, apply the signed total to this device's wallet, and
   // ACK with the claim's receipt once the coins are durably saved — the
@@ -217,8 +262,11 @@ const EngAuth = (function () {
       // un-acked claim is re-offered by the server instead.)
       if (receipt) setAccount(username, { pendingCoinReceipts: _pendingReceipts(username).concat(receipt) });
       if (granted) {
-        appState.coins = Math.max(0, +appState.coins || 0) + granted;
-        appState.coins = Math.max(0, appState.coins);
+        applySignedGrant(granted);
+        if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
+      }
+      // Whatever a past debit could not take is collected here, on every sync.
+      else if (settleCoinDebt()) {
         if (typeof saveUserData === 'function') saveUserData(currentUser, appState);
       }
       if (receipt) {
@@ -533,7 +581,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { refreshFlags: claimCoinGrants, syncAssets, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login };
+  return { refreshFlags: claimCoinGrants, syncAssets, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login, applySignedGrant, settleCoinDebt, coinDebt };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.

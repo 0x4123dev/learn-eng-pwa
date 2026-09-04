@@ -122,8 +122,13 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
         assert.truthy(/_busyWithTimedActivity\(\)/.test(app), 'a timed activity defers the offer');
         const offer = app.slice(app.indexOf('function offerUpdate('), app.indexOf('function registerServiceWorker('));
         assert.truthy(/addEventListener\('click'/.test(offer), 'the reload is behind a button');
-        assert.truthy(offer.indexOf("addEventListener('click'") < offer.indexOf('SKIP_WAITING'),
-            'the message is only posted from inside that click handler');
+        // Both halves must EXIST before their order means anything: indexOf
+        // returns -1 for a string that is gone, and -1 is less than everything.
+        const clickAt = offer.indexOf("addEventListener('click'");
+        const skipAt = offer.indexOf('SKIP_WAITING');
+        assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
+        assert.truthy(skipAt >= 0, 'and that handler must be what asks the worker to take over');
+        assert.truthy(clickAt < skipAt, 'the message is only posted from inside that click handler');
     });
 });
 

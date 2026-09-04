@@ -1,6 +1,6 @@
 // token-and-name-escaping.test.js — two defence-in-depth holes, closed.
 //
-// 1. The session token is the whole account and lives 90 days. It used to be
+// 1. The session token is the whole account and never expires. It used to be
 //    accepted from `?token=` on every REST route, which is the one place a
 //    secret gets written down by everybody: Cloudflare logs, analytics, any
 //    proxy in between, a Referer header. Only the Authorization header counts
@@ -346,6 +346,56 @@ suite('admin dashboard: the same escaper, the same rule', () => {
         assert.equal(tags.filter(t => !t.closing).length, 1,
             'nothing else was parsed as a tag: ' + btn);
     });
+});
+
+
+suite('sessions do not expire, and the disable switch is what revokes them', () => {
+  // A child must never be asked to sign in again: a forgotten passcode on a
+  // device that worked yesterday is a support call a seven-year-old cannot
+  // make. The 90-day clock this used to run meant every account hit that wall
+  // eventually, months after anyone remembered setting it up.
+  const b64url = buf => buf.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  test('a freshly signed token carries no expiry at all', async () => {
+    const lib = loadModule('functions/api/_lib.js');
+    const token = await lib.signToken({ uid: 7, username: 'Na' }, 'secret');
+    const raw = Buffer.from(token.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString();
+    const payload = JSON.parse(raw);
+    assert.falsy('exp' in payload, 'no exp is stamped: ' + raw);
+    assert.equal(payload.uid, 7);
+  });
+
+  test('a token issued under the old 90-day rule keeps working past its date', async () => {
+    // Ignoring `exp` rather than merely not stamping it is what stops every
+    // child who already has a token hitting the old wall once.
+    const lib = loadModule('functions/api/_lib.js');
+    const crypto = require('crypto');
+    const body = b64url(Buffer.from(JSON.stringify({ uid: 7, username: 'Na', exp: Date.now() - 86400000 })));
+    const sig = b64url(crypto.createHmac('sha256', 'secret').update(body).digest());
+    const verified = await lib.verifyToken(body + '.' + sig, 'secret');
+    assert.truthy(verified, 'a token expired under the old rule must still verify');
+    assert.equal(verified.uid, 7);
+  });
+
+  test('a forged signature is still refused — nothing else was loosened', async () => {
+    const lib = loadModule('functions/api/_lib.js');
+    const token = await lib.signToken({ uid: 7 }, 'secret');
+    assert.falsy(await lib.verifyToken(token, 'other-secret'), 'a different secret must not verify');
+    assert.falsy(await lib.verifyToken(token.split('.')[0] + '.deadbeef', 'secret'), 'a bad signature must not verify');
+    assert.falsy(await lib.verifyToken('nonsense', 'secret'));
+  });
+
+  test('disabling the account revokes it on the very next request', async () => {
+    // With no expiry, this row read is the ONLY revocation path there is.
+    const world = createWorld();
+    const kid = await world.createUser({ username: 'NaRevoke' });
+    const handler = loadModule('functions/api/friends/index.js');
+    const before = await world.call(handler.onRequestGet, { url: '/api/friends', method: 'GET', token: kid.token });
+    assert.equal(before.status, 200, 'the token works: ' + JSON.stringify(before.data));
+    world.db.prepare('UPDATE users SET disabled=1 WHERE id=?').run(kid.uid);
+    const after = await world.call(handler.onRequestGet, { url: '/api/friends', method: 'GET', token: kid.token });
+    assert.equal(after.status, 401, 'and stops working the moment the admin flips the switch');
+  });
 });
 
 if (require.main === module) {

@@ -226,8 +226,27 @@ async function precache() {
   return failed;
 }
 
+// How complete a precache has to be before this version is allowed to replace
+// the last one that worked. Best-effort fixed the old failure (one 404 killed
+// the whole update, forever); on its own it created a new one, because
+// `activate` deletes every other cache unconditionally. A child in a car on 3G
+// who gets 60 of 153 assets before the signal drops would have had their
+// COMPLETE previous cache deleted and replaced with a broken one — Grammar and
+// Toán empty in the tunnel, the raid scene with no art, and nothing to retry.
+//
+// So: a mostly-complete install goes live and the stragglers are filled in by
+// the fetch handler; a badly incomplete one still installs (it is not thrown
+// away) but leaves the previous cache alone until a later attempt does better.
+const PRECACHE_MIN_RATIO = 0.9;
+let _precacheComplete = false;
+
 self.addEventListener('install', event => {
-  event.waitUntil(precache());
+  event.waitUntil(precache().then(failed => {
+    _precacheComplete = failed.length <= ASSETS.length * (1 - PRECACHE_MIN_RATIO);
+    if (!_precacheComplete) {
+      console.warn('[sw] too incomplete to retire the previous cache:', failed.length, 'of', ASSETS.length);
+    }
+  }));
 });
 
 // The child taps "Tải bản mới" on the update toast (js/app.js). Until then a
@@ -250,11 +269,16 @@ async function evictReRecorded() {
 // immutable and re-downloading them on every version bump would be wasteful)
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME && key !== AUDIO_CACHE).map(key => caches.delete(key))
-      )
-    ).then(evictReRecorded).then(() => self.clients.claim())
+    caches.keys().then(keys => {
+      // Only retire the old caches once this version has something worth
+      // replacing them with. See PRECACHE_MIN_RATIO.
+      const stale = keys.filter(key => key !== CACHE_NAME && key !== AUDIO_CACHE);
+      if (!_precacheComplete) {
+        console.warn('[sw] keeping', stale.length, 'previous cache(s): this install is incomplete');
+        return Promise.resolve();
+      }
+      return Promise.all(stale.map(key => caches.delete(key)));
+    }).then(evictReRecorded).then(() => self.clients.claim())
   );
 });
 
@@ -315,6 +339,14 @@ function isRecording(resp) {
   return (resp.headers.get('content-type') || '').indexOf('text/html') === -1;
 }
 
+// The same trap, for everything else: HTML arriving under a key that is not a
+// page is Cloudflare Pages' catch-all answering for a file that is not there.
+function isSpaFallback(request, response) {
+  if ((response.headers.get('content-type') || '').indexOf('text/html') === -1) return false;
+  const p = new URL(request.url).pathname;
+  return p !== '/' && !p.endsWith('.html');
+}
+
 // Fetch: network-first, fall back to cache (always get latest)
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
@@ -357,10 +389,21 @@ self.addEventListener('fetch', event => {
     // The network answered: stop the fallback timer rather than leaving one
     // pending per request (a cold start asks for 55 scripts and a stylesheet).
     if (slowTimer !== null) { clearTimeout(slowTimer); slowTimer = null; }
-    // Update cache with fresh response for offline use
-    if (response.ok) {
+    // Update cache with fresh response for offline use — but never store the
+    // SPA fallback under a script or image key. Pages answers an unknown path
+    // with 200 text/html (verified against the live site), so a renamed or
+    // dropped file writes HTML under, say, /js/exam-data.js and poisons that
+    // entry for the life of this CACHE_NAME. `nosniff` hides it while online;
+    // offline the tab renders empty, and if the poisoned key is /js/app.js the
+    // app does not boot at all. `precache()` has guarded this since yesterday;
+    // this path did not, which made the guard mostly decorative.
+    if (response.ok && !isSpaFallback(event.request, response)) {
       const clone = response.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+        // Cache.put rejects on a 206, on `Vary: *`, and when the quota is
+        // full. None of those is a reason to fail the request the child is
+        // waiting on.
+        .catch(err => console.warn('[sw] could not cache', event.request.url, err));
     }
     return response;
   });
@@ -382,8 +425,15 @@ self.addEventListener('fetch', event => {
       // can't-connect page — the whole app is precached, so there is no reason
       // for a deep link to fail offline.
       if (event.request.mode === 'navigate') {
-        const shell = (await caches.match('/index.html')) || (await caches.match('/'));
-        if (shell) return shell;
+        // '/' FIRST. The live site answers /index.html with a 308 to '/', so
+        // the cached /index.html entry has `redirected: true` — and returning
+        // a redirected response to a navigation is a network error, which is
+        // the browser's own error page again. Reaching for it first meant the
+        // fallback picked the one copy that cannot be used.
+        const shell = (await caches.match('/')) || (await caches.match('/index.html'));
+        if (shell && !shell.redirected) return shell;
+        if (shell) return new Response(await shell.text(), {
+          status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
       }
       // Never resolve respondWith with undefined: that throws a TypeError and
       // the browser shows its own error page instead of our failure.

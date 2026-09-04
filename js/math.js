@@ -1727,7 +1727,14 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   grade: (v, q) => mathIsTyped(q)
     ? mathGrade(q, v)
     : String(v == null ? '' : v).trim() === String(q.answer).trim(),
-  promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`,
+  // The FIGURE comes too. Stamping ids on the exam banks let those questions
+  // into this drill for the first time, and 86 of them say "Cho hình vẽ…" —
+  // with the picture dropped they cannot be answered at all, and the owed-drill
+  // gate blocks every new maths practice until one of them is. Render the
+  // question the way the live quiz does (see renderMathQuestion) rather than a
+  // second, thinner copy of it.
+  promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`
+    + (typeof mathQuestionFigureHTML === 'function' ? mathQuestionFigureHTML(q.fig) : ''),
   explainHTML: (q) => `<div class="grammar-review-explain">${mathExplanationHTML(q.explanation, q)}</div>`,
   home: () => renderMathHome(),
 });

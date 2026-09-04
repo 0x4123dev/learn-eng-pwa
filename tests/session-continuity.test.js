@@ -62,8 +62,13 @@ suite('session continuity: a reload is not a logout', () => {
     const offer = app.slice(app.indexOf('function offerUpdate('), start);
     assert.equal((offer.match(/_updateReloading = true/g) || []).length, 1,
       'exactly one place arms the reload');
-    assert.truthy(offer.indexOf("addEventListener('click'") < offer.indexOf('_updateReloading = true'),
-      'and it is inside the click handler');
+    // indexOf returns -1 when a string is gone, and -1 is less than every
+    // index — so an ordering assertion proves nothing until both sides exist.
+    const clickAt = offer.indexOf("addEventListener('click'");
+    const armAt = offer.indexOf('_updateReloading = true');
+    assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
+    assert.truthy(armAt >= 0, 'and that handler is the only thing that arms the reload');
+    assert.truthy(clickAt < armAt, 'and it is inside the click handler');
     // The worker still never takes over by itself.
     const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('message'"));
     assert.falsy(/skipWaiting/.test(install));

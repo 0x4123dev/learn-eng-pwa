@@ -4,6 +4,7 @@
   "description": "FlashLingo — vocabulary learning PWA",
   "private": true,
   "scripts": {
-    "test": "node tests/run-all.js"
+    "test": "node tests/run-all.js",
+    "verify": "node scripts/verify.js"
   }
 }

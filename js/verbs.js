@@ -2,6 +2,13 @@
 // Globals: SPEED_TIME_LIMIT, SPEED_PENALTY_TIME, SPEED_QUESTIONS_PER_GAME, speedState (from app.js)
 
 function renderSpeedChallenge() {
+    // The button used to promise "All 144 verbs" in static markup. The bank
+    // grew to 257 and the label did not — a number a child can count is a
+    // number that has to come from the data.
+    const countEl = document.getElementById('speedAllVerbsCount');
+    if (countEl && typeof irregularVerbs !== 'undefined' && Array.isArray(irregularVerbs)) {
+        countEl.textContent = 'All ' + irregularVerbs.length + ' verbs';
+    }
     // Update leaderboard from appState
     if (appState.speedChallenge) {
         document.getElementById('bestScore').textContent = appState.speedChallenge.bestScore || 0;

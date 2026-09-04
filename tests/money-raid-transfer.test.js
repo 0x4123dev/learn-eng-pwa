@@ -395,4 +395,88 @@ suite('cướp đêm: the bonus ticket counts an ICT day', () => {
   });
 });
 
+suite('cướp đêm: a shield is a shield, whenever it went up', () => {
+  test('a Khiên Đêm raised mid-raid still protects the house', async () => {
+    // The snapshot pins the shield as it was at /start. That was a narrow miss
+    // while a raid had to finish within five minutes; the window is fifteen
+    // now, so a defender could spend a shield — earned from a daily task, and
+    // scarce — on a house already being marched on, and get nothing for it.
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const victim = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, Object.assign({ coins: 900 }, STRONG));
+    await seedHome(world, victim, Object.assign({ coins: 1000 }, WEAK));
+
+    const s = await start(world, attacker, victim);
+    assert.truthy(s.ok && s.data.raid, JSON.stringify(s.data));
+    assert.falsy(s.data.raid.shielded, 'the house really was unshielded when the troops set out');
+
+    // The defender opens the app mid-raid and burns a shield.
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?')
+      .run(Date.now() + 3600000, victim.uid);
+
+    const f = await finish(world, attacker, s.data.raid.raidId);
+    assert.truthy(f.ok, JSON.stringify(f.data));
+    assert.truthy(f.data.result.shielded, 'the result must say a shield was met');
+    assert.falsy(f.data.result.won, 'and a shielded raid always loses');
+    assert.equal(owedTo(world, victim.uid), f.data.result.defenderGain,
+      'the defender is paid for holding, not robbed');
+    assert.truthy(f.data.result.defenderGain > 0);
+  });
+
+  test('a shield that was up at the start still counts if it lapses mid-raid', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const victim = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, Object.assign({ coins: 900 }, STRONG));
+    await seedHome(world, victim, Object.assign({ coins: 1000 }, WEAK));
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?')
+      .run(Date.now() + 60000, victim.uid);
+
+    const s = await start(world, attacker, victim);
+    assert.truthy(s.data.raid.shielded, 'the troops set out against a shielded house');
+    world.db.prepare('UPDATE night_raid_homes SET shield_until=? WHERE user_id=?').run(1, victim.uid);
+    const f = await finish(world, attacker, s.data.raid.raidId);
+    assert.falsy(f.data.result.won, 'the shield they marched into still decides it');
+  });
+
+  test('no shield anywhere is still an ordinary raid', async () => {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const victim = await world.createUser({ allowBot: true });
+    await seedHome(world, attacker, Object.assign({ coins: 500 }, STRONG));
+    await seedHome(world, victim, Object.assign({ coins: 1000 }, WEAK));
+    const s = await start(world, attacker, victim);
+    const f = await finish(world, attacker, s.data.raid.raidId);
+    assert.falsy(f.data.result.shielded);
+    assert.truthy(f.data.result.won, 'a strong army still beats an undefended house');
+  });
+});
+
+suite('cướp đêm: a refusal never costs a door', () => {
+  test('a child with no home of their own is turned away without burning a cooldown', async () => {
+    // The ruins branch used to write its row BEFORE the "you have no home"
+    // check, so a child who had never opened Nhà Cướp Đêm and tapped a sealed
+    // house got a 12 h cooldown on it — and then a 409 saying they could not
+    // raid at all.
+    const world = createWorld();
+    const homeless = await world.createUser({ allowBot: true });
+    const sealed = await world.createUser({ allowBot: true });
+    await seedHome(world, sealed, Object.assign({ coins: 1000 }, WEAK));
+    world.db.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?')
+      .run(Date.now() + 3600000, sealed.uid);
+
+    const r = await start(world, homeless, sealed);
+    assert.falsy(r.ok, 'a child with no home cannot raid');
+    assert.equal(r.status, 409);
+    assert.equal(raidRows(world, homeless.uid).length, 0, 'and nothing is written down against them');
+
+    // Once they build a home, that door is still open to them.
+    await seedHome(world, homeless, Object.assign({ coins: 500 }, STRONG));
+    world.db.prepare('UPDATE night_raid_homes SET ruined_until=0 WHERE user_id=?').run(sealed.uid);
+    const again = await start(world, homeless, sealed);
+    assert.truthy(again.ok && again.data.raid, 'the house was never spent: ' + JSON.stringify(again.data));
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -58,7 +58,13 @@ suite('coin grants: admin gives, the device claims once', () => {
     assert.truthy(src.includes("api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending, device: deviceId() } })"));
     assert.truthy(src.includes('pendingCoinReceipts'), 'unacked receipts must be stored durably');
     assert.truthy(src.includes('Math.trunc(+r.data.granted || 0)'), 'signed corrections must not be clamped away');
-    assert.truthy(src.includes('appState.coins = Math.max(0, +appState.coins || 0) + granted'));
+    // The wallet write moved into applySignedGrant, which carries the part of
+    // a negative grant the purse cannot cover instead of clamping it away —
+    // `Math.max(0, wallet + delta)` was silently printing money whenever a
+    // raid debited a child for more than they actually had.
+    assert.truthy(src.includes('applySignedGrant(granted)'), 'the signed total goes through the ledger');
+    assert.truthy(src.includes('function applySignedGrant'), 'and that ledger lives here');
+    assert.truthy(src.includes('appState.coinDebt = coinDebt() + (-after)'), 'an unpayable debit is carried');
     assert.truthy(src.includes('🎁'), 'the child should see the gift arrive');
   });
 

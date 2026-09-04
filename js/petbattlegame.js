@@ -2021,8 +2021,13 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
     this.busy = false;
     this._lastImpactX = this.foePos.x;          // my shot landed over there
     this._logTurn(true, aim, damage);
+    // Captured BEFORE the drain: _drainTurns replays the opponent's turns and
+    // _replay assigns this.turnNo from the row it is replaying, so reading it
+    // afterwards sent the server a turn number from the PAST — and the server
+    // now checks it.
+    const myTurnNo = this.turnNo;
     this._drainTurns();
-    this.sendTurn({ turnNo: this.turnNo, angle: this.angle, power: this.power, shots, damage, rawDamage: raw, abilities: [], rocket })
+    this.sendTurn({ turnNo: myTurnNo, angle: this.angle, power: this.power, shots, damage, rawDamage: raw, abilities: [], rocket })
       .then((res) => { if (res && res.battle) this._applyServer(res.battle); })
       .catch(() => {});
     this.render();
@@ -2033,7 +2038,10 @@ PetBattleGame.prototype._launchMyVolley = function (maxShots) {
 // ---- the opponent's turn, replayed from (angle, power, shots) ----
 PetBattleGame.prototype._replay = function (turn) {
   const C = this.calc;
-  this.turnNo = turn.turn_no;
+  // Only ever forwards. Reopening a battle resets _pbLastTurn to 0, so the
+  // next poll hands back the WHOLE history and replaying it walked turnNo
+  // back to 1 before _applyServer corrected it six seconds later.
+  this.turnNo = Math.max(this.turnNo || 0, turn.turn_no);
   const shots = Math.max(0, Math.min(C.BARRELS, turn.shots || 0));
   if (shots === 0) {
     this.banner = gT('gSkip', { name: this.view.foe.name || gT('gFoe') });

@@ -48,6 +48,13 @@ export async function onRequestPost({request,env}) {
   // the troops in and finds rubble. It costs no ticket and no xu, but it DOES
   // start this child's own retry_hours clock on this house, which is the whole
   // price of the gamble: one of your houses is now on cooldown for nothing.
+  // The attacker's own home is checked BEFORE the ruins branch writes a row.
+  // It used to sit after it, so a child who had never opened Nhà Cướp Đêm and
+  // tapped a sealed house got the 12 h cooldown recorded against that house —
+  // and then a 409 telling them they could not raid at all. A refusal must not
+  // cost them a door.
+  const attackerRow=await env.DB.prepare('SELECT h.*,u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
+  if(!attackerRow)return err('Hãy mở Nhà Cướp Đêm và chuẩn bị đội hình trước',409);
   if(raidLockUntil(row,now)){
     const ruinedId=randomRaidId();
     await env.DB.prepare(`INSERT INTO night_raids(id,attacker_id,defender_id,seed,rules_version,snapshot_json,result_json,status,created_date,created_at,expires_at,finished_at)
@@ -55,8 +62,6 @@ export async function onRequestPost({request,env}) {
       .bind(ruinedId,auth.uid,targetId,NR.RULES_VERSION,JSON.stringify({ruined:true,targetId,homeLevel:Math.max(1,+row.home_level||1)}),JSON.stringify({ruined:true,won:false,reward:0,loss:0,stars:0}),date,now,now,now).run();
     return json({ruined:true,retryAt:now+cfg.retry_hours*3600000,castleSkin:String(row.castle_skin||'stone-keep'),name:row.username,homeLevel:Math.max(1,+row.home_level||1)});
   }
-  const attackerRow=await env.DB.prepare('SELECT h.*,u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
-  if(!attackerRow)return err('Hãy mở Nhà Cướp Đêm và chuẩn bị đội hình trước',409);
   // The attacker's swords come from users.night_swords (db/019), read
   // tolerantly so a pre-migration database counts zero. homeSnapshot folds
   // them into attacker.damage through the shared combatPower — the very call

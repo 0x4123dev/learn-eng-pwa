@@ -979,6 +979,29 @@ function loginUser(username) {
     if (appState.nightRaidRuinedUntil === undefined) appState.nightRaidRuinedUntil = null;
     if (!appState.nightRaidResources || typeof appState.nightRaidResources !== 'object') appState.nightRaidResources = { wood:180, stone:120, food:160 };
     if (appState.nightRaidResourceAt === undefined) appState.nightRaidResourceAt = Date.now();
+    // Has this profile ever pushed its wallet to the server?
+    //
+    // js/night-raid.js adoptServerCoins restores the wallet from
+    // night_raid_homes.lootable_coins EXACTLY ONCE, for a device that has
+    // nothing of its own to be authoritative with — a reinstall, or a second
+    // phone signing in. It is gated on this flag, which was introduced without
+    // being seeded: so on the first load after that shipped, every EXISTING
+    // child looked like a fresh install, and any of them whose server mirror
+    // was stale-high got a one-off refund with a cheerful toast.
+    //
+    // A profile that has already played Cướp Đêm is not a fresh install, and
+    // anything it has built, earned or been raided for is proof of that. Say
+    // so, so the restore does not fire for a wallet that needs no restoring.
+    if (appState.nightRaidWalletSynced === undefined) {
+        const played = !!(appState.nightRaidLayout
+            || (Array.isArray(appState.nightRaidHistory) && appState.nightRaidHistory.length)
+            || (appState.nightRaidClaimed && Object.keys(appState.nightRaidClaimed).length)
+            || appState.nightRaidPending
+            || appState.vaultCoins > 0);
+        appState.nightRaidWalletSynced = played;
+    }
+    if (appState.coinDebt === undefined) appState.coinDebt = 0;
+    if (appState.nightRaidHomeDirty === undefined) appState.nightRaidHomeDirty = false;
 
     // History recovery: if currentLesson > 0 but lessonHistory is missing/short, reconstruct it
     if (appState.currentLesson > 0) {
@@ -1533,14 +1556,28 @@ let _updateReloading = false;
 let _updateOffered = false;
 let _updateRetryTimer = null;
 
-// A timed activity must not be interrupted by a banner, let alone a reload.
+// Anything a child would lose by reloading. This is the SAME list switchScreen
+// guards with a confirm() — an update that reloads must be at least as careful
+// as tapping a nav tab, and the first version of this checked four of eleven.
+const _BUSY_CHECKS = [
+    'isCollocActive', 'isExamActive', 'isGrammarQuizActive', 'isMathQuizActive',
+    'isPhrasesQuizActive', 'isRewriteQuizActive', 'isUnitPracticeActive',
+    'isWarsActive', 'isWordformQuizActive', 'isRetryDrillActive',
+];
 function _busyWithTimedActivity() {
     try {
-        if (typeof isExamActive === 'function' && isExamActive()) return true;
-        if (typeof isWarsActive === 'function' && isWarsActive()) return true;
+        for (const name of _BUSY_CHECKS) {
+            const fn = typeof globalThis !== 'undefined' ? globalThis[name] : undefined;
+            if (typeof fn === 'function' && fn()) return true;
+        }
         const speed = document.getElementById('speedGameOverlay');
         if (speed && speed.classList.contains('active')) return true;
         if (typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) return true;
+        if (typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) return true;
+        if (typeof GhostOfferingEvent !== 'undefined' && GhostOfferingEvent.isActive
+            && GhostOfferingEvent.isActive()) return true;
+        // A pet battle in progress is a live match against another child.
+        if (typeof _pbGame !== 'undefined' && _pbGame) return true;
     } catch (e) { /* a missing tab is not a reason to withhold the update */ }
     return false;
 }
@@ -1562,15 +1599,33 @@ function offerUpdate(reg) {
         + '<button type="button" class="sw-update-go">Tải bản mới</button>'
         + '<button type="button" class="sw-update-later" aria-label="Để sau">Để sau</button>';
     bar.querySelector('.sw-update-go').addEventListener('click', () => {
+        // Re-check AT THE TAP. The banner may have been sitting there for
+        // twenty minutes while the child started a 200-xu Đấu Toán; reloading
+        // would forfeit it, and window.location.reload() bypasses every
+        // switchScreen guard because there is no beforeunload anywhere.
+        if (_busyWithTimedActivity()) {
+            if (typeof showToast === 'function') showToast('Con đang làm bài — xong bài rồi tải bản mới nhé');
+            return;
+        }
         _updateReloading = true;
         const waiting = reg.waiting || reg.installing;
         if (waiting) waiting.postMessage({ type: 'SKIP_WAITING' });
         // If the worker never takes over (an old sw.js with no message
-        // handler), reload anyway rather than leaving a dead button.
-        setTimeout(() => { if (_updateReloading) window.location.reload(); }, 1500);
+        // handler, or an install still finishing), reload anyway rather than
+        // leaving a dead button. Longer than the worker's own 3.5 s network
+        // timeout, or this reloads straight back into the old controller and
+        // the banner returns in a loop.
+        setTimeout(() => { if (_updateReloading) window.location.reload(); }, 5000);
         bar.remove();
     });
-    bar.querySelector('.sw-update-later').addEventListener('click', () => bar.remove());
+    bar.querySelector('.sw-update-later').addEventListener('click', () => {
+        bar.remove();
+        // "Later" means later, not never. An iOS PWA parked in the app
+        // switcher for days would otherwise never be offered the update again,
+        // which is the exact failure this banner exists to fix.
+        _updateOffered = false;
+        if (!_updateRetryTimer) _updateRetryTimer = setInterval(() => offerUpdate(reg), 15 * 60000);
+    });
     document.body.appendChild(bar);
 }
 

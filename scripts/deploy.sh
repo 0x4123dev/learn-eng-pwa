@@ -51,15 +51,33 @@ done
 #
 # So: commit your own work FIRST, then deploy. That is already the documented
 # workflow; this makes it true rather than merely recommended.
-DIRTY=$(git diff --name-only | grep -vxF   -e js/home.js -e sw.js -e package.json -e functions/api/version.js || true)
+# Checked BEFORE the version bump, so there is no whitelist to be wrong about:
+# at this point nothing has been modified and the tree must simply be clean.
+#
+# `git status --porcelain`, not `git diff --name-only`: the latter sees only
+# UNSTAGED changes to TRACKED files. A staged file was invisible to it and then
+# swallowed by the commit below; a brand-new untracked js/*.js was invisible to
+# it and shipped in the bundle while existing in no commit at all. The old
+# whitelist also exempted js/home.js and sw.js ENTIRELY, not just their version
+# lines, so real uncommitted logic in either passed straight through.
+DIRTY=$(git status --porcelain 2>/dev/null || true)
 if [ -n "$DIRTY" ] && [ "$ALLOW_DIRTY" = "0" ]; then
-  echo "✗ uncommitted changes would ship without being committed:"
+  echo "✗ the working tree is not clean; these would ship without being committed:"
   echo "$DIRTY" | sed 's/^/    /'
   echo
   echo "  Commit them first (stage explicit paths — another session may be"
   echo "  working in this repo), then run deploy.sh again."
   echo "  To ship anyway, knowing HEAD will not match the live site:"
   echo "      scripts/deploy.sh --allow-dirty -m \"…\""
+  exit 1
+fi
+
+# A bump with nothing to commit it under leaves the live site one version ahead
+# of every commit, permanently and silently.
+if [ "$BUMP" = "1" ] && [ -z "$MSG" ]; then
+  echo "✗ -m \"message\" is required when bumping: the four version markers have"
+  echo "  to land in a commit, or HEAD stops describing what is live."
+  echo "  Use --no-bump to deploy an already-committed version."
   exit 1
 fi
 
@@ -135,7 +153,8 @@ if [ -n "$MSG" ]; then
   # anything else modified. It can still be non-empty under --allow-dirty, and
   # then it MUST be said out loud — that is the case where HEAD stops
   # describing what is live.
-  others=$(git diff --name-only | grep -vxF \
+  # Untracked files count here too: they ship in the bundle just the same.
+  others=$(git status --porcelain | awk '{print $NF}' | grep -vxF \
     -e js/home.js -e sw.js -e package.json -e functions/api/version.js || true)
   if [ -n "$others" ]; then
     echo "▸ WARNING (--allow-dirty): these ship but stay OUT of the commit,"
@@ -144,7 +163,14 @@ if [ -n "$MSG" ]; then
   fi
   git add -- js/home.js sw.js package.json functions/api/version.js
   if git diff --cached --quiet; then echo "▸ nothing to commit"
-  else git commit -q -m "$MSG"; COMMITTED=1; echo "▸ committed $(git log --oneline -1)"; fi
+  else
+    # PATHSPEC on the commit too. A bare `git commit -m` commits the whole
+    # index, so anything another session had staged rode along inside a
+    # "chore: vN" commit — the exact accident the explicit `git add` above was
+    # written to prevent, undone one line later.
+    git commit -q -m "$MSG" -- js/home.js sw.js package.json functions/api/version.js
+    COMMITTED=1; echo "▸ committed $(git log --oneline -1)"
+  fi
 fi
 
 # ---- what this deploy changed ---------------------------------------------

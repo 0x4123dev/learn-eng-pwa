@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { nightDate, nightRaidEnabled, ticketStats, homeSnapshot, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
+import { nightDate, nightRaidEnabled, ticketStats, homeSnapshot, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
 
 // GET /api/night-raid/targets — three random castles to gamble on.
 //
@@ -29,5 +29,5 @@ export async function onRequestGet({request,env}) {
     ORDER BY ABS(h.home_level-?), RANDOM() LIMIT 3`).bind(auth.uid,auth.uid,fresh,auth.uid,retryFrom,level).all();
   const stats=await ticketStats(env,auth.uid,date);
   const targets=(rows.results||[]).map(row=>{const full=homeSnapshot(row);const previewCells=full.layout.cells.filter(c=>c.type!=='spike-trap');return {targetId:row.user_id,name:row.username,homeLevel:full.homeLevel,level:full.level,difficulty:full.homeLevel>level+2?'Khó':full.homeLevel<level-2?'Dễ':'Cân bằng',retryAt:retryAvailableAt(row.last_attack,cfg.retry_hours,now),sceneId:full.sceneId,layout:{cells:previewCells,dogLane:full.layout.dogLane},dogLevel:full.dogLevel,castleSkin:full.castleSkin,castleHp:full.castleHp,budget:0,title:{vi:row.username,en:row.username}};});
-  return json({targets,ticketsLeft:Math.max(0,stats.allowance-stats.used),learningBoost:stats.allowance>3});
+  return json({targets,ticketsLeft:Math.max(0,stats.allowance-stats.used-await inFlightRaids(env,auth.uid)),learningBoost:stats.allowance>3});
 }

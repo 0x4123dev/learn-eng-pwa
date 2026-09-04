@@ -366,7 +366,11 @@ function getHomeSkillStats() {
 function _homeSkillSessions() {
     if (!appState) return {};
     const wpl = (typeof WORDS_PER_LESSON !== 'undefined') ? WORDS_PER_LESSON : 5;
-    const norm = (arr, map) => (arr || []).map(map).filter(s => s.total > 0)
+    // Array.isArray, not `arr || []`: every one of these lists comes out of
+    // localStorage, and this runs while the home screen is being drawn. A
+    // single key holding an object instead of a list used to throw here and
+    // take the whole boot with it.
+    const norm = (arr, map) => (Array.isArray(arr) ? arr : []).map(map).filter(s => s.total > 0)
         .sort((a, b) => (b.date || 0) - (a.date || 0));
     let exam = [];
     try {

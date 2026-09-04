@@ -19,6 +19,14 @@ import { requireAuth, json, err, randomHex } from './_lib.js';
 // a call the app makes anyway: a child cannot open the tab to learn that the
 // tab is now open to them.
 const RECLAIM_AFTER = '-10 minutes';
+// …and the backstop, for ANY device. Scoping the re-offer to the claiming
+// device closed a double-pay, but on its own it also made a loss permanent:
+// once a row carries a device id, a child who reinstalls, wipes site data (the
+// device id is regenerated — js/auth.js) or simply moves to a new phone can
+// never be handed that grant again. A day is long enough that the original
+// device has plainly not come back, and short enough that a gift or a defence
+// reward is not gone for good.
+const STRANDED_AFTER = '-24 hours';
 const RECEIPT_RE = /^[a-f0-9]{32}$/;
 const DEVICE_RE = /^[A-Za-z0-9_-]{8,64}$/;
 
@@ -68,9 +76,10 @@ export async function onRequestPost({ request, env }) {
         `UPDATE coin_grants SET claimed_at = datetime('now'), receipt = ?, confirmed_at = NULL, claimed_device = ?
          WHERE user_id = ? AND (claimed_at IS NULL
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)
-               AND (? IS NULL OR claimed_device IS NULL OR claimed_device = ?)))
+               AND (? IS NULL OR claimed_device IS NULL OR claimed_device = ?))
+           OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)))
          RETURNING amount`
-      ).bind(receipt, device, auth.uid, RECLAIM_AFTER, device, device).all();
+      ).bind(receipt, device, auth.uid, RECLAIM_AFTER, device, device, STRANDED_AFTER).all();
     } catch (e) {
       // db/025 has not been applied to this database yet. A child's coins must
       // not depend on the order a deploy and a migration happened to land in,

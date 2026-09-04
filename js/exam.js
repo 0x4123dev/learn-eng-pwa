@@ -27,8 +27,14 @@ let _examSubTab = 'exams';
 // ---- storage -----------------------------------------------------------------
 
 function loadExamHistory() {
+    // ALWAYS an array. `JSON.parse(...) || []` only covers null and invalid
+    // JSON — a stored value that parses to an object, a number or a string
+    // came straight back, and js/home.js `_homeSkillSessions` then called
+    // .map() on it while drawing the home screen. That is on the boot path, so
+    // one junk value under this key stopped the app opening at all, for good.
     try {
-        return JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY)) || [];
+        const parsed = JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY));
+        return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
         return [];
     }
