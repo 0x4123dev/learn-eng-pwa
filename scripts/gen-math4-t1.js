@@ -139,25 +139,171 @@ function balancedDigits() {
 }
 
 // ── Lời giải ─────────────────────────────────────────────────────────────────
+// Một lời giải chỉ chép lại bốn kết quả thì bé làm sai vẫn không biết mình sai
+// ở chỗ nào — nhất là phép chia, nơi có bốn năm lượt chia và hỏng lượt nào
+// cũng ra sai. Nên ở đây viết đúng những gì cô giáo viết lên bảng: cột nào
+// phải nhớ, cột nào phải mượn, mỗi lần nhân viết gì nhớ gì, và phép chia thì
+// tách ra từng lượt — hạ số, chia, nhân xuống, trừ đi.
+//
+// Toàn bộ phần chữ đó được SINH ra từ chính con số của câu ấy, không có câu
+// mẫu nào gõ tay, nên không thể có chuyện lời giải nói một đằng đáp án một
+// nẻo. Không được có "/", "^", "<", ">" ngoài thẻ <b> và <br>.
+//
+// Hình dạng của chuỗi là hình dạng mà js/math.js dựng thành thẻ (xem
+// scripts/math4-spec.md): 🔑 quy tắc, rồi "<b>Áp dụng:</b>", rồi mỗi bước một
+// dòng "<b>Bước N —</b> …" và khép lại bằng "Kết quả: …". Mỗi dòng đúng MỘT
+// việc — một cột, một lượt nhân, một lượt chia — vì một khối chữ dày đặc thì
+// với bé chín tuổi cũng như không có lời giải.
+
+// Tên các cột khi đặt tính, tính từ hàng đơn vị đi sang trái.
+const COLUMN = ['đơn vị', 'chục', 'trăm', 'nghìn', 'chục nghìn', 'trăm nghìn', 'triệu'];
+
+function digitsLTR(n) { return String(n).split('').map(Number); }   // trái → phải
+function digitsRTL(n) { return digitsLTR(n).reverse(); }            // đơn vị trước
+
+function operands(expr) { return expr.split(/[+\-*/]/).map(Number); }
+
+// Phép cộng: chỉ những cột PHẢI NHỚ mới đáng nói, vì đó là chỗ bé làm hỏng.
+// Cột cuối cùng mà còn nhớ thì số 1 ấy chính là hàng cao nhất của tổng.
+function workAdd(a, b) {
+    const A = digitsRTL(a);
+    const B = digitsRTL(b);
+    const n = Math.max(A.length, B.length);
+    const lines = [];
+    let carry = 0;
+    for (let i = 0; i < n; i++) {
+        const da = A[i] || 0;
+        const db = B[i] || 0;
+        const sum = da + db + carry;
+        const carriedIn = carry;
+        carry = sum >= 10 ? 1 : 0;
+        if (!carry) continue;
+        const adds = carriedIn ? `${da} + ${db} + 1 nhớ = ${sum}` : `${da} + ${db} = ${sum}`;
+        const tail = i + 1 < n
+            ? `viết ${sum - 10} nhớ 1 sang cột ${COLUMN[i + 1]}`
+            : `viết ${sum - 10} nhớ 1, và số 1 nhớ ấy chính là chữ số hàng ${COLUMN[i + 1]} của tổng`;
+        lines.push(`Cột ${COLUMN[i]}: ${adds}, ${tail}.`);
+    }
+    if (lines.length < n) lines.push('Các cột khác cộng chưa tới 10 nên cứ viết thẳng xuống.');
+    return lines;
+}
+
+// Phép trừ: kể cột phải mượn, và kể luôn cột bên trái nó — chỗ "số trừ thêm 1"
+// mà bé hay quên. Cách nói này đúng như trên lớp: mượn 1 rồi trả 1.
+function workSub(a, b) {
+    const A = digitsRTL(a);
+    const B = digitsRTL(b);
+    const n = A.length;
+    const lines = [];
+    let borrow = 0;
+    for (let i = 0; i < n; i++) {
+        const top = A[i] || 0;
+        const raw = B[i] || 0;
+        const bottom = raw + borrow;
+        const carriedIn = borrow;
+        const head = carriedIn ? `số trừ ${raw} thêm 1 bằng ${bottom}, ` : '';
+        let line;
+        if (top < bottom) {
+            line = `Cột ${COLUMN[i]}: ${head}${top} không trừ được ${bottom}, mượn 1 thành ${top + 10} ${MINUS} ${bottom} = ${top + 10 - bottom}, viết ${top + 10 - bottom} nhớ 1.`;
+            borrow = 1;
+        } else {
+            line = `Cột ${COLUMN[i]}: ${head}${top} ${MINUS} ${bottom} = ${top - bottom}.`;
+            borrow = 0;
+        }
+        if (carriedIn || borrow) lines.push(line);
+    }
+    if (lines.length < n) lines.push('Các cột khác trừ thẳng, không phải mượn.');
+    return lines;
+}
+
+// Phép nhân: năm lượt nhân, mỗi lượt một dòng. Lượt cuối viết cả hai chữ số
+// chứ không nhớ đi đâu nữa.
+function workMul(a, b) {
+    const A = digitsRTL(a);
+    const lines = [];
+    let carry = 0;
+    for (let i = 0; i < A.length; i++) {
+        const prod = A[i] * b;
+        const total = prod + carry;
+        const carriedIn = carry;
+        const last = i === A.length - 1;
+        carry = Math.floor(total / 10);
+        let line = `Cột ${COLUMN[i]}: ${b} × ${A[i]} = ${prod}`;
+        if (carriedIn) line += `, thêm ${carriedIn} nhớ bằng ${total}`;
+        if (last) line += `, viết ${total}.`;
+        else if (carry) line += `, viết ${total % 10} nhớ ${carry}.`;
+        else line += `, viết ${total % 10}.`;
+        lines.push(line);
+    }
+    return lines;
+}
+
+// Phép chia: mỗi lượt một dòng riêng, đúng thứ tự hạ · chia · nhân · trừ. Đây
+// là chỗ duy nhất trong bốn phép mà một dòng gộp là chắc chắn không đủ.
+function workDiv(a, b) {
+    const D = digitsLTR(a);
+    const lines = [];
+    let cur = 0;
+    let started = false;
+    for (let i = 0; i < D.length; i++) {
+        cur = cur * 10 + D[i];
+        const q = Math.floor(cur / b);
+        const r = cur - q * b;
+        if (!started) {
+            if (cur < b) continue;   // chưa đủ chia, lấy thêm một chữ số nữa
+            started = true;
+            const head = i === 0
+                ? `chữ số đầu ${cur} chia ${b} được ${q}, viết ${q}`
+                : `chữ số đầu ${D[0]} bé hơn ${b} nên lấy hai chữ số đầu; ${cur} chia ${b} được ${q}, viết ${q}`;
+            lines.push(`Lượt 1: ${head}; ${q} × ${b} = ${q * b}; ${cur} ${MINUS} ${q * b} = ${r}.`);
+        } else if (cur === 0) {
+            lines.push(`Lượt ${lines.length + 1}: hạ 0 được 0; 0 chia cho số nào cũng bằng 0, thương viết 0.`);
+        } else if (q === 0) {
+            lines.push(`Lượt ${lines.length + 1}: hạ ${D[i]} được ${cur}; ${cur} bé hơn ${b} nên chưa chia được, thương viết 0 rồi hạ tiếp, vẫn còn ${cur}.`);
+        } else {
+            lines.push(`Lượt ${lines.length + 1}: hạ ${D[i]} được ${cur}; ${cur} chia ${b} được ${q}, viết ${q}; ${q} × ${b} = ${q * b}; ${cur} ${MINUS} ${q * b} = ${r}.`);
+        }
+        cur = r;
+    }
+    lines.push('Không còn chữ số để hạ nữa, số dư bằng 0 nên phép chia này chia hết.');
+    return lines;
+}
+
 // Mười câu quy tắc, xoay vòng, để bé đọc năm lời giải liền nhau không gặp lại
-// đúng một câu chữ. Không được có "/", "^", "<", ">" ngoài thẻ <b> và <br>.
+// đúng một câu chữ.
 const RULES = [
     'Đặt tính thẳng cột: đơn vị dưới đơn vị, chục dưới chục; cộng, trừ, nhân đều tính từ phải sang trái, còn chia thì chia từ trái sang phải.',
     'Cộng từ hàng đơn vị, cột nào được từ 10 trở lên thì viết chữ số hàng đơn vị và nhớ 1 sang cột bên trái.',
-    'Khi trừ, gặp chữ số ở trên bé hơn chữ số ở dưới thì mượn 1 ở cột bên trái, trừ xong nhớ trả lại 1 vào cột vừa mượn.',
-    'Nhân số có năm chữ số với số có một chữ số: nhân lần lượt từ hàng đơn vị, phần chục của mỗi lần nhân thì nhớ sang hàng liền trước.',
-    'Phép chia đi ngược với ba phép kia: chia từ hàng cao nhất bên trái, hạ dần từng chữ số, mỗi lần chia được một chữ số của thương.',
+    'Khi trừ, chữ số ở trên bé hơn chữ số ở dưới thì mượn 1 thành mười mấy để trừ, rồi thêm 1 vào chữ số của số trừ ở cột bên trái.',
+    'Nhân số có năm chữ số với số có một chữ số thì nhân lần lượt từ hàng đơn vị: được từ 10 trở lên thì viết chữ số hàng đơn vị và nhớ phần chục sang cột bên trái.',
+    'Phép chia đi ngược với ba phép kia: chia từ hàng cao nhất bên trái, hạ dần từng chữ số, mỗi lượt chia được một chữ số của thương.',
     'Chỉ cần một chữ số đặt lệch cột là sai cả phép tính, nên viết thật thẳng hàng rồi hãy tính.',
-    'Nhớ 1 khi cộng thì cộng thêm 1 vào cột bên trái; mượn 1 khi trừ thì cột bên trái phải bớt đi 1.',
+    'Nhớ 1 khi cộng thì cột bên trái phải cộng thêm 1; mượn 1 khi trừ thì số trừ ở cột bên trái phải thêm 1.',
     'Tính xong nên thử lại: lấy hiệu cộng với số trừ phải ra số bị trừ, lấy thương nhân với số chia phải ra số bị chia.',
-    'Chia hết nghĩa là đến chữ số cuối cùng vẫn chia được và số dư bằng 0; nếu còn dư thì em đặt tính hoặc hạ số sai rồi.',
+    'Chia hết nghĩa là đến chữ số cuối cùng vẫn chia được và số dư bằng 0; còn dư là em hạ số hoặc đặt tính sai rồi.',
     'Làm bốn phép tính này theo đúng thứ tự cộng, trừ, nhân, chia và viết kết quả thẳng dưới phép tính cho dễ soát lại.',
 ];
 
 function explain(index, parts) {
     const rule = RULES[index % RULES.length];
-    const lines = parts.map((p) => `${p.label} = <b>${p.answer}</b>`);
-    return `🔑 ${rule}<br>${lines.join('<br>')}`;
+    const [add, sub, mul, div] = parts;
+    const [a1, b1] = operands(add.expr);
+    const [a2, b2] = operands(sub.expr);
+    const [a3, b3] = operands(mul.expr);
+    const [a4, b4] = operands(div.expr);
+
+    const rows = ['<b>Áp dụng:</b>'];
+    const step = (n, head, lines, part) => {
+        rows.push(`<b>Bước ${n} —</b> ${head}`);
+        for (const line of lines) rows.push(line);
+        rows.push(`Kết quả: ${part.label} = <b>${part.answer}</b>`);
+    };
+    step(1, 'phép cộng, tính từ hàng đơn vị sang trái.', workAdd(a1, b1), add);
+    step(2, 'phép trừ, cũng tính từ hàng đơn vị.', workSub(a2, b2), sub);
+    step(3, `phép nhân, nhân ${b3} với từng chữ số, cũng bắt đầu từ hàng đơn vị.`, workMul(a3, b3), mul);
+    step(4, 'phép chia thì ngược lại: chia từ trái sang phải, mỗi lượt được một chữ số của thương.', workDiv(a4, b4), div);
+
+    return `🔑 ${rule}<br>${rows.join('<br>')}`;
 }
 
 // ── Sinh ngân hàng ───────────────────────────────────────────────────────────
@@ -227,6 +373,31 @@ function selfCheck(list) {
         const [a4, b4] = nums(div);
         if (a4 < 10000 || a4 > 99999 || b4 < 2 || b4 > 9) throw new Error(`${qn.id}: phép chia lệch khoảng`);
         if (a4 % b4 !== 0) throw new Error(`${qn.id}: phép chia còn dư`);
+
+        // Lời giải bây giờ là phần việc thật, không phải bốn dòng kết quả nữa,
+        // nên phải soát nó như soát một phép tính. Ba điều dưới đây từng là
+        // chỗ hỏng của mọi bản "in ra các bước": số bước không khớp con số.
+        const laps = (qn.explanation.match(/Lượt \d+:/g) || []).length;
+        if (laps !== String(div.answer).length) {
+            throw new Error(`${qn.id}: thương có ${String(div.answer).length} chữ số nhưng lời giải kể ${laps} lượt chia`);
+        }
+        // Các chữ số "viết ..." của phép nhân ghép lại phải ra đúng tích, và các
+        // chữ số "viết ..." của từng lượt chia ghép lại phải ra đúng thương.
+        const rows = qn.explanation.split('<br>');
+        const between = (n) => {
+            const from = rows.findIndex((s) => s.startsWith(`<b>Bước ${n} —</b>`));
+            const to = rows.findIndex((s, k) => k > from && s.startsWith('Kết quả:'));
+            if (from < 0 || to < 0) throw new Error(`${qn.id}: không tìm thấy bước ${n}`);
+            return rows.slice(from + 1, to);
+        };
+        const joinWritten = (lines) => lines.map((s) => (s.match(/viết (\d+)/) || [])[1]).join('');
+        const written = joinWritten(between(3).slice().reverse());
+        if (written !== mul.answer) throw new Error(`${qn.id}: các bước nhân ghép lại ra ${written}, tích là ${mul.answer}`);
+        const quotient = joinWritten(between(4).filter((s) => /^Lượt \d+:/.test(s)));
+        if (quotient !== div.answer) throw new Error(`${qn.id}: các lượt chia ghép lại ra ${quotient}, thương là ${div.answer}`);
+        // Cộng và trừ phải nêu được ít nhất một cột nhớ / một cột mượn.
+        if (!/viết \d+ nhớ 1/.test(qn.explanation)) throw new Error(`${qn.id}: lời giải không chỉ ra cột nhớ nào`);
+        if (!/không trừ được/.test(qn.explanation)) throw new Error(`${qn.id}: lời giải không chỉ ra cột mượn nào`);
     });
     const tuples = new Set(list.map((qn) => qn.answerParts.map((p) => p.expr).join('|')));
     if (tuples.size !== list.length) throw new Error('có hai câu trùng bộ bốn phép tính');

@@ -145,6 +145,46 @@ suite('toán 4: the question bank', () => {
     assert.deepEqual(bad.slice(0, 8), [], `${bad.length} câu có ký tự sẽ bị vẽ sai`);
   });
 
+  test('every lời giải works the problem — it never jumps to the answer', () => {
+    // The one child who opens the solution is the child who got it wrong. A
+    // rule sentence followed by the number already showing in the red box
+    // teaches them nothing: they need the steps, with this question's own
+    // digits. Two things are asserted, both derived from the text rather than
+    // typed here:
+    //
+    //   • the solution has room for steps at all — a floor on its line count,
+    //     per dạng, because a phép chia needs more lines than a phép đổi;
+    //   • it contains INTERMEDIATE values: numbers it computes on the way that
+    //     are not any of the final answers. "30 tấn = 30000 kg" has none and
+    //     fails; "30 × 1000 = 30000" does not.
+    const MIN_ROWS = { 1: 12, 2: 6, 3: 8, 4: 8, 5: 3 };
+    const thin = [], jumped = [];
+    for (const q of MATH4_QUESTIONS) {
+      const rows = q.explanation.split(/<br\s*\/?>/i).filter(r => r.trim()).length;
+      if (rows < MIN_ROWS[q.t]) thin.push(`${q.id}: ${rows} dòng`);
+      const answers = new Set(q.answerParts.map(p => String(p.answer)));
+      const computed = [...q.explanation.matchAll(/=\s*(?:<b>)?([0-9]+)/g)].map(m => m[1]);
+      if (!computed.some(v => !answers.has(v))) jumped.push(q.id);
+    }
+    assert.deepEqual(thin.slice(0, 8), [], `${thin.length} lời giải quá ngắn để có bước nào`);
+    assert.deepEqual(jumped.slice(0, 8), [],
+      `${jumped.length} lời giải nhảy thẳng tới đáp án, không có bước trung gian nào`);
+  });
+
+  test('the rule at the 🔑 is not the same sentence twice in a row', () => {
+    // Ten identical openings in a row teach a child to skip the line, and the
+    // line is where the only reasoning lives.
+    const repeats = [];
+    for (const t of TYPES) {
+      const bank = MATH4_QUESTIONS.filter(q => q.t === t);
+      const ruleOf = (q) => q.explanation.split(/<br\s*\/?>/i)[0].trim();
+      for (let i = 1; i < bank.length; i++) {
+        if (ruleOf(bank[i]) === ruleOf(bank[i - 1])) repeats.push(bank[i].id);
+      }
+    }
+    assert.deepEqual(repeats.slice(0, 8), [], `${repeats.length} câu lặp lại y hệt quy tắc của câu ngay trước`);
+  });
+
   test('every stored answer is accepted, and a number one off is not', () => {
     const { m } = loadMath();
     const rejected = [], accepted = [];

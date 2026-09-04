@@ -22,6 +22,13 @@
 // is 4- or 5-digit, X is always a positive whole number, every division is
 // exact. The two division forms carry the most weight — that is what the real
 // paper asks.
+//
+// About the lời giải. The mistake this dạng exists to catch is NAMING the
+// wrong thành phần: the child reads `84564 : X = 6`, calls X the số bị chia
+// and multiplies. So every ý says, in this order, where X stands → what that
+// makes it → the rule for that thành phần → the sum → a check. Simply
+// asserting "X là số chia" (which is what this file used to do) restates the
+// answer without ever showing the child how to see it for themselves.
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -40,20 +47,76 @@ const OUT = path.join(__dirname, '..', 'data', 'math4', 'math4-t2.json');
 const WEIGHTS = { F1: 46, F2: 46, F3: 34, F4: 24, F5: 24, F6: 26 };
 const FORM_ORDER = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'];
 
-// The rule the child has to remember, per form. This is the sentence that
-// opens the explanation.
+// The canonical school rule per form, worded the way a lớp-4 teacher says it.
+// It is only ever printed AFTER the sentence that names X, because naming the
+// thành phần is the step the child actually gets wrong.
 const RULES = {
-  F1: 'X là số bị chia, muốn tìm số bị chia ta lấy thương nhân với số chia',
-  F2: 'X là số chia, muốn tìm số chia ta lấy số bị chia chia cho thương',
-  F3: 'X là thừa số, muốn tìm thừa số ta lấy tích chia cho thừa số kia',
-  F4: 'X là số hạng chưa biết, ta lấy tổng trừ đi số hạng kia',
-  F5: 'X là số bị trừ, muốn tìm số bị trừ ta lấy hiệu cộng với số trừ',
-  F6: 'X là số trừ, muốn tìm số trừ ta lấy số bị trừ trừ đi hiệu',
+  F1: 'Muốn tìm số bị chia ta lấy thương nhân với số chia',
+  F2: 'Muốn tìm số chia ta lấy số bị chia chia cho thương',
+  F3: 'Muốn tìm thừa số chưa biết ta lấy tích chia cho thừa số kia',
+  F4: 'Muốn tìm số hạng chưa biết ta lấy tổng trừ đi số hạng kia',
+  F5: 'Muốn tìm số bị trừ ta lấy hiệu cộng với số trừ',
+  F6: 'Muốn tìm số trừ ta lấy số bị trừ trừ đi hiệu',
 };
 
-// Which part deserves the "Thử lại" line: the nhân/chia part first — that is
-// where a child slips — then the cộng/trừ one. Ties keep part a).
-const CHECK_PRIORITY = { F1: 0, F2: 0, F3: 0, F4: 1, F5: 1, F6: 1 };
+// HOW THE CHILD CAN TELL which thành phần X is — the missing half of the old
+// explanation, which simply asserted "X là số chia" and left the child no way
+// to see it. The tell is always the same: WHERE X stands. So each sentence
+// points at the vị trí first, then names the other two numbers so the child
+// cannot swap them either.
+//
+// The two forms where X stands AFTER the dấu (F2 and F6) are the ones a child
+// mis-names — they read `84564 : X = 6` and treat X as the số bị chia, then
+// multiply. Every variant of those two spells the contrast out.
+//
+// Three wordings per form, dealt in rotation, so the same sentence never lands
+// twice in a row (see nextVariant).
+const IDENTIFY = {
+  // X : a = b — a là số chia, b là thương
+  F1: [
+    (a, b) => `X đứng trước dấu chia nên X là số bị chia (${a} là số chia, ${b} là thương)`,
+    (a, b) => `X đứng ngay trước dấu chia, tức là ở chỗ của số bị chia; số chia là ${a}, thương là ${b}`,
+    (a, b) => `X là số bị chia vì X đứng trước dấu chia; ${a} là số chia còn ${b} là thương`,
+  ],
+  // a : X = b — a là số bị chia, b là thương
+  F2: [
+    (a, b) => `X đứng sau dấu chia nên X là số chia chứ không phải số bị chia (số bị chia là ${a}, thương là ${b})`,
+    (a, b) => `X đứng ngay sau dấu chia, tức là ở chỗ của số chia; ${a} mới là số bị chia, ${b} là thương`,
+    (a, b) => `X là số chia vì X đứng sau dấu chia, đừng nhầm X với số bị chia; số bị chia ở đây là ${a}, thương là ${b}`,
+  ],
+  // X × a = b — a là thừa số kia, b là tích
+  F3: [
+    (a, b) => `X đứng ở phép nhân nên X là thừa số chưa biết (${a} là thừa số kia, ${b} là tích)`,
+    (a, b) => `trong phép nhân, hai số nhân với nhau đều gọi là thừa số, kết quả gọi là tích; ở đây X là thừa số chưa biết, ${a} là thừa số đã biết, ${b} là tích`,
+    (a, b) => `X là một thừa số của phép nhân, thừa số kia là ${a}, còn ${b} là tích`,
+  ],
+  // X + a = b — a là số hạng kia, b là tổng
+  F4: [
+    (a, b) => `X đứng ở phép cộng nên X là số hạng chưa biết (${a} là số hạng kia, ${b} là tổng)`,
+    (a, b) => `trong phép cộng, hai số cộng với nhau đều gọi là số hạng, kết quả gọi là tổng; ở đây X là số hạng chưa biết, ${a} là số hạng đã biết, ${b} là tổng`,
+    (a, b) => `X là một số hạng của phép cộng, số hạng kia là ${a}, còn ${b} là tổng`,
+  ],
+  // X − a = b — a là số trừ, b là hiệu
+  F5: [
+    (a, b) => `X đứng trước dấu trừ nên X là số bị trừ (${a} là số trừ, ${b} là hiệu)`,
+    (a, b) => `X đứng ngay trước dấu trừ, tức là ở chỗ của số bị trừ; số trừ là ${a}, hiệu là ${b}`,
+    (a, b) => `X là số bị trừ vì X đứng trước dấu trừ; ${a} là số trừ còn ${b} là hiệu`,
+  ],
+  // a − X = b — a là số bị trừ, b là hiệu
+  F6: [
+    (a, b) => `X đứng sau dấu trừ nên X là số trừ chứ không phải số bị trừ (số bị trừ là ${a}, hiệu là ${b})`,
+    (a, b) => `X đứng ngay sau dấu trừ, tức là ở chỗ của số trừ; ${a} mới là số bị trừ, ${b} là hiệu`,
+    (a, b) => `X là số trừ vì X đứng sau dấu trừ, đừng nhầm X với số bị trừ; số bị trừ ở đây là ${a}, hiệu là ${b}`,
+  ],
+};
+
+// The 🔑 line. Same idea three ways, rotated by question index so the file does
+// not read as one sentence repeated a hundred times.
+const OPENERS = [
+  'Muốn tìm X thì nhìn xem X đứng ở chỗ nào trong phép tính đã, biết X là thành phần nào rồi mới dùng quy tắc của thành phần đó.',
+  'Đừng vội tính. Vị trí của X cho biết X là thành phần gì, mỗi thành phần có một quy tắc tìm riêng.',
+  'Gọi đúng tên thành phần của X trước khi tính: X đứng ở chỗ nào thì mang tên của chỗ ấy, chọn nhầm tên là chọn nhầm quy tắc.',
+];
 
 // --------------------------------------------------------------------- PRNG
 
@@ -92,7 +155,17 @@ function d45(cap) {
 //
 // Each builder returns the whole part: what the child reads (`label`), the
 // digits typed (`answer`), the build-time check string (`expr`), the worked
-// line (`work`) and the "Thử lại" line (`check`).
+// line (`work`), the two numbers the equation shows (`a`, `b` — used to name
+// the OTHER thành phần in the explanation) and the "Thử lại" line (`check`).
+//
+// EVERY form carries a check now. It used to be one per question, chosen by a
+// priority table, which left the child who got the other ý wrong with nothing
+// to test their answer against — exactly the child the explanation is for.
+//
+// The check is the original equation with X put back, so the child can see it
+// is the same line they were given. The one exception is F2 (`a : X = b`):
+// putting X back would ask a lớp-4 child to divide 84564 by 14094. There the
+// check is the multiplication that undoes the division, and it says so.
 //
 // `label` uses school notation — × : − (U+2212). `expr` is ASCII + - * / and
 // must evaluate to exactly Number(answer).
@@ -105,11 +178,13 @@ const BUILDERS = {
     const x = b * a;
     return {
       form: 'F1',
+      a,
+      b,
       label: `X : ${a} = ${b}`,
       answer: String(x),
       expr: `${b}*${a}`,
       work: `${b} × ${a}`,
-      check: `${x} : ${a} = ${b}`,
+      check: `Thử lại: ${x} : ${a} = ${b}.`,
     };
   },
 
@@ -123,12 +198,15 @@ const BUILDERS = {
     const a = x * b;
     return {
       form: 'F2',
+      a,
+      b,
       label: `${a} : X = ${b}`,
       answer: String(x),
       expr: `${a}/${b}`,
       work: `${a} : ${b}`,
-      // Thử phép chia bằng phép nhân: số chia × thương = số bị chia.
-      check: `${x} × ${b} = ${a}`,
+      // Thử phép chia bằng phép nhân: số chia × thương = số bị chia. Thay X
+      // vào đúng như đề thì bé phải chia 5 chữ số cho 5 chữ số — không làm nổi.
+      check: `Thử lại bằng phép nhân: ${x} × ${b} = ${a}, đúng bằng số bị chia.`,
     };
   },
 
@@ -139,11 +217,13 @@ const BUILDERS = {
     const b = x * a;
     return {
       form: 'F3',
+      a,
+      b,
       label: `X × ${a} = ${b}`,
       answer: String(x),
       expr: `${b}/${a}`,
       work: `${b} : ${a}`,
-      check: `${x} × ${a} = ${b}`,
+      check: `Thử lại: ${x} × ${a} = ${b}.`,
     };
   },
 
@@ -154,11 +234,13 @@ const BUILDERS = {
     const b = x + a;
     return {
       form: 'F4',
+      a,
+      b,
       label: `X + ${a} = ${b}`,
       answer: String(x),
       expr: `${b}-${a}`,
       work: `${b} − ${a}`,
-      check: `${x} + ${a} = ${b}`,
+      check: `Thử lại: ${x} + ${a} = ${b}.`,
     };
   },
 
@@ -169,11 +251,16 @@ const BUILDERS = {
     const x = a + b;
     return {
       form: 'F5',
+      a,
+      b,
       label: `X − ${a} = ${b}`,
       answer: String(x),
       expr: `${a}+${b}`,
-      work: `${a} + ${b}`,
-      check: `${x} − ${a} = ${b}`,
+      // Hiệu TRƯỚC, số trừ sau — cùng thứ tự với câu quy tắc ngay trên nó
+      // ("lấy hiệu cộng với số trừ"). Cộng thì đảo cũng ra thế, nhưng bé đang
+      // học thuộc quy tắc: dòng tính phải đọc đúng như câu vừa đọc.
+      work: `${b} + ${a}`,
+      check: `Thử lại: ${x} − ${a} = ${b}.`,
     };
   },
 
@@ -184,11 +271,13 @@ const BUILDERS = {
     const a = b + x;
     return {
       form: 'F6',
+      a,
+      b,
       label: `${a} − X = ${b}`,
       answer: String(x),
       expr: `${a}-${b}`,
       work: `${a} − ${b}`,
-      check: `${a} − ${x} = ${b}`,
+      check: `Thử lại: ${a} − ${x} = ${b}.`,
     };
   },
 };
@@ -299,17 +388,39 @@ function spread(pairs) {
 
 const PART_TAG = ['a)', 'b)'];
 
-function explain(parts) {
-  const rules = parts
-    .map((p, i) => `Phần ${PART_TAG[i]} ${RULES[p.form]}.`)
-    .join(' ');
-  const lines = parts.map(
-    (p, i) => `${PART_TAG[i]} ${p.label} nên X = ${p.work} = <b>${p.answer}</b>`
-  );
-  let best = 0;
-  if (CHECK_PRIORITY[parts[1].form] < CHECK_PRIORITY[parts[0].form]) best = 1;
-  const check = `Thử lại phần ${PART_TAG[best]}: ${parts[best].check}.`;
-  return `🔑 ${rules}<br>${lines.join('<br>')}<br>${check}`;
+// One counter per form, advanced in file order, so consecutive appearances of
+// the SAME form always take different wording. (Within one question the two ý
+// are different forms by construction, so they can never collide either.)
+// It is a plain counter, not a random pick: the generator must stay
+// deterministic, and this way it also never repeats a sentence back to back.
+const variantSeen = {};
+
+function nextVariant(form) {
+  const n = variantSeen[form] || 0;
+  variantSeen[form] = n + 1;
+  return n % IDENTIFY[form].length;
+}
+
+/**
+ * Three lines per ý, in the order the child needs them:
+ *   1. the equation, then HOW you can tell which thành phần X is;
+ *   2. the rule for that thành phần, and the sum;
+ *   3. the check, so the child can prove the answer to themselves.
+ * Both ý get all three — a child who missed part b) is not helped by a
+ * "Thử lại" that only covers part a).
+ */
+function explainPart(p, i) {
+  const tell = IDENTIFY[p.form][nextVariant(p.form)](p.a, p.b);
+  return [
+    `${PART_TAG[i]} ${p.label} — ${tell}.`,
+    `${RULES[p.form]}: X = ${p.work} = <b>${p.answer}</b>.`,
+    p.check,
+  ].join('<br>');
+}
+
+function explain(parts, index) {
+  const opener = OPENERS[index % OPENERS.length];
+  return `🔑 ${opener}<br>${parts.map(explainPart).join('<br>')}`;
 }
 
 // ---------------------------------------------------------- self-check (cheap)
@@ -376,7 +487,7 @@ function main() {
 
     parts.forEach((p) => assertPart(p, id));
     const q = 'Tìm X:';
-    const explanation = explain(parts);
+    const explanation = explain(parts, i);
     assertText(q, id);
     assertText(explanation, id);
 

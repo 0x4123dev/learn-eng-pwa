@@ -139,3 +139,52 @@ an arithmetic one like the paper's (`770 g + 230 g = … kg`,
 `4 km − 400 m = … m`). Both parts of one question come from different families.
 The result is always a whole number; the `label` is the line the child fills
 in, ending in `= … <unit>`.
+
+---
+
+## Lời giải phải đi từng bước (bắt buộc)
+
+A solution that prints the rule and then the answer teaches nothing to the one
+child who needs it — the one who got it wrong. **Every phép tính shows the
+steps a child writes on paper**, with the real intermediate values. No line may
+jump from the đề bài straight to the đáp số.
+
+### What the app does with the text
+
+`mathExplanationHTML()` in `js/math.js` splits the stored string on `<br>`,
+rejoins the rows, and lays them out as numbered cards under the heading
+"Cách giải". Two labels — and only these two — start a new card:
+
+```
+<b>Lý thuyết:</b>      <b>Áp dụng:</b>
+```
+
+`Bước 1 —`, `Kết quả:`, `Thử lại:` are NOT card boundaries: they stay inside
+the card as lines, which is what you want — three steps of one division belong
+in one place.
+
+So the shape to write is:
+
+```
+🔑 <rule, in the words a lớp-4 teacher uses>
+<br><b>Áp dụng:</b>
+<br>Bước 1 — …
+<br>Bước 2 — …
+<br>Kết quả: 65252 : 4 = <b>16313</b>
+```
+
+which the app draws as a rule card followed by an "Áp dụng" card holding the
+worked steps.
+
+### What counts as a step
+
+| dạng | the steps a child must see |
+|---|---|
+| ① | phép chia: từng lượt chia (chia — nhân — trừ — hạ), with the digits. Cộng/trừ: name the cột where the nhớ or the mượn happens, in THIS sum |
+| ② | which thành phần X is and HOW you can tell from where it stands; the rule; the substitution; the arithmetic; a Thử lại for **both** ý |
+| ③ | which phép tính is done first and why; the value it produces; then the second, with the running expression rewritten each time |
+| ④ | full Bài giải — câu lời giải, phép tính with its unit, for BOTH steps, then đáp số; plus what in the story tells you which dạng it is |
+| ⑤ | which unit is bigger, so whether the number grows or shrinks; the relation; đổi về cùng đơn vị BEFORE the cộng/trừ; then the arithmetic |
+
+Short lines, one step per line. A wall of text is as unreadable to a nine-year-
+old as no explanation at all — if a step needs two clauses, it needs two lines.

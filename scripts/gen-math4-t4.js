@@ -193,7 +193,9 @@ const CONTEXTS = [
 
   { key: 'bapcai-luong', kind: 'chua', good: 'bắp cải', unit: 'cây', cont: 'luống',
     scene: 'Trên mảnh vườn của {name}', verb: 'trồng', prep: 'thành', hold: 'có',
-    fitVerb: 'trồng được', u: [20, 25, 30], maxAmount: 900, maxCount: 30 },
+    fitVerb: 'trồng được', u: [20, 25, 30], maxAmount: 900, maxCount: 30,
+    // "240 cây bắp cải trồng được số luống là" đọc ngược: cây không trồng luống.
+    capCount: (v) => `Số ${v.cont} trồng hết ${v.qty(v.B)} là:` },
 
   { key: 'gach-xe', kind: 'chua', good: 'gạch', unit: 'viên', cont: 'xe',
     scene: 'Ở công trường nhà {name}', verb: 'xếp', prep: 'lên', hold: 'chở',
@@ -202,7 +204,9 @@ const CONTEXTS = [
   { key: 'ghe-phong', kind: 'chua', good: 'ghế', unit: 'chiếc', amountLabelWord: 'ghế',
     cont: 'phòng học', contShort: 'phòng', scene: 'Ở trường của {name}', verb: 'kê',
     prep: 'vào', hold: 'có', fitVerb: 'kê đủ cho', u: [20, 25, 30],
-    maxAmount: 900, maxCount: 30 },
+    maxAmount: 900, maxCount: 30,
+    // "250 chiếc ghế kê đủ cho số phòng học là" — ghế không kê phòng.
+    capCount: (v) => `Số ${v.cont} kê đủ ${v.qty(v.B)} là:` },
 
   /* --- xe và chuyến -------------------------------------------------- */
   { key: 'hang-chuyen', kind: 'cho', good: 'hàng', unit: 'tấn', cont: 'chuyến',
@@ -268,6 +272,10 @@ const BUNDLES = {
     capUnit: (v) => `Mỗi ${v.cont} ${v.hold} số ${v.unitWord} ${v.good} là:`,
     capCount: (v) => `${v.qty(v.B)} ${v.fitVerb} số ${v.cont} là:`,
     capAmount: (v) => `${v.m} ${v.cont} như thế ${v.hold} số ${v.unitWord} ${v.good} là:`,
+    given: (v) => `${v.n} ${v.cont} như nhau ${v.hold} tất cả ${v.qty(v.A)}`,
+    oneWhat: (v) => `mỗi ${v.contShort} ${v.hold} bao nhiêu ${v.unitWord} ${v.good}`,
+    onePart: (v) => `một ${v.contShort}`,
+    sameEach: (v) => `Mỗi ${v.contShort} vẫn như cũ`,
   },
 
   /* Xe chở hàng theo chuyến. */
@@ -290,6 +298,10 @@ const BUNDLES = {
     capUnit: (v) => `Mỗi chuyến xe chở số ${v.unitWord} ${v.good} là:`,
     capCount: (v) => `Chở hết ${v.qty(v.B)} cần số chuyến là:`,
     capAmount: (v) => `${v.m} chuyến như thế chở số ${v.unitWord} ${v.good} là:`,
+    given: (v) => `${v.n} chuyến như nhau chở tất cả ${v.qty(v.A)}`,
+    oneWhat: (v) => `mỗi chuyến chở bao nhiêu ${v.unitWord} ${v.good}`,
+    onePart: () => 'một chuyến',
+    sameEach: () => 'Mỗi chuyến vẫn chở như cũ',
   },
 
   /* Công việc làm trong nhiều ngày. */
@@ -312,6 +324,10 @@ const BUNDLES = {
     capUnit: (v) => `Mỗi ${v.cont} ${v.teamShort} ${v.wverb} số ${v.good} là:`,
     capCount: (v) => `Để ${v.wverb} ${v.qty(v.B)} cần số ${v.cont} là:`,
     capAmount: (v) => `Trong ${v.m} ${v.cont} ${v.teamShort} ${v.wverb} số ${v.good} là:`,
+    given: (v) => `${v.teamShort} ${v.wverb} tất cả ${v.qty(v.A)} trong ${v.n} ${v.cont} như nhau`,
+    oneWhat: (v) => `mỗi ${v.cont} ${v.teamShort} ${v.wverb} bao nhiêu ${v.good}`,
+    onePart: (v) => `một ${v.cont}`,
+    sameEach: (v) => `Mỗi ${v.cont} vẫn làm như cũ`,
   },
 
   /* Máy bơm: mỗi bể hết mấy giờ. */
@@ -334,6 +350,10 @@ const BUNDLES = {
     capUnit: (v) => `Máy bơm bơm đầy một ${v.contShort} hết số giờ là:`,
     capCount: (v) => `Trong ${v.B} giờ máy bơm bơm đầy được số ${v.contShort} là:`,
     capAmount: (v) => `Bơm đầy ${v.m} ${v.cont} hết số giờ là:`,
+    given: (v) => `${v.n} ${v.cont} như nhau, bơm đầy hết tất cả ${v.A} giờ`,
+    oneWhat: (v) => `bơm đầy một ${v.contShort} hết mấy giờ`,
+    onePart: (v) => `một ${v.contShort}`,
+    sameEach: (v) => `Mỗi ${v.contShort} vẫn hết chừng ấy giờ`,
   },
 };
 
@@ -396,8 +416,68 @@ function buildNumbers(ctx, combo) {
  * Lời văn + bài giải
  * ------------------------------------------------------------------ */
 
-const RULE_RUT = '🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.';
-const RULE_TI = '🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.';
+/* ------------------------------------------------------------------ *
+ * Dòng 🔑
+ *
+ * Trước đây dòng này là MỘT câu, y hệt nhau ở cả 50 câu rút về đơn vị và y
+ * hệt nhau ở cả 50 câu tìm tỉ số. Đọc đến câu thứ ba là bé bỏ qua nó, mà đó
+ * lại đúng là chỗ khó nhất của dạng bài: chọn dạng nào, và phép tính thứ hai
+ * là nhân hay chia. Bài giải bên dưới chỉ trưng ra lựa chọn ấy chứ không nói
+ * vì sao.
+ *
+ * Nên bây giờ dòng 🔑 chỉ thẳng vào con số của CHÍNH bài này, và cái chỉ ra
+ * được là một sự thật kiểm được:
+ *
+ *   • rút về đơn vị ⇔ lượng mới KHÔNG gấp lượng đã cho một số lần tròn
+ *     (buildNumbers ép c % n !== 0, m % n !== 0 nên B : A và m : n không bao
+ *     giờ tròn) — đi đường tỉ số là tắc, buộc phải tìm một phần;
+ *   • tìm tỉ số   ⇔ gấp đúng k lần (B = A × k, m = n × k) — tính tắt được.
+ *
+ * Bốn cách nói cho mỗi dạng × mỗi chiều hỏi, chọn theo chỉ số câu (không dùng
+ * rnd: một lần gọi rnd thêm là cả 100 đề đổi số).
+ * ------------------------------------------------------------------ */
+
+const KEYS = {
+  'rut-count': [
+    (v) => `🔑 Đề cho ${v.given}, nên phải tìm ${v.oneWhat} trước đã — đó là dạng rút về đơn vị.`,
+    (v) => `🔑 Thử xem ${v.shortB} có gấp ${v.shortA} một số lần tròn không: không tròn, nên không đi tắt bằng tỉ số được. Phải rút về đơn vị, tức là tìm ${v.oneWhat}.`,
+    (v) => `🔑 Dạng rút về đơn vị: ${v.given}, vậy chia cho ${v.n} để biết ${v.oneWhat}, rồi mới tính được số ${v.contShort}.`,
+    (v) => `🔑 Chưa biết ${v.oneWhat} thì chưa trả lời được. Tính con số ấy trước rồi mới làm tiếp — đó là dạng rút về đơn vị.`,
+  ],
+  'rut-amount': [
+    (v) => `🔑 Đề cho ${v.given}, nên tìm ${v.oneWhat} trước, rồi mới tính được cho ${v.m} ${v.contShort} — đó là dạng rút về đơn vị.`,
+    (v) => `🔑 ${v.m} ${v.contShort} không gấp ${v.n} ${v.contShort} một số lần tròn, nên không đi tắt bằng tỉ số được. Phải rút về đơn vị, tức là tìm ${v.oneWhat}.`,
+    (v) => `🔑 Dạng rút về đơn vị: biết ${v.onePart} là biết tất cả. Chia cho ${v.n} để tìm ${v.oneWhat}, rồi nhân với ${v.m}.`,
+    (v) => `🔑 ${cap(v.given)}, vậy chia cho ${v.n} là biết ${v.oneWhat}. Biết ${v.onePart} rồi thì ${v.m} ${v.contShort} chỉ việc nhân lên — đó là dạng rút về đơn vị.`,
+  ],
+  'ti-count': [
+    (v) => `🔑 Nhìn hai số là thấy ngay ${v.shortB} gấp ${v.shortA} đúng ${v.k} lần. ${v.sameEach} nên số ${v.contShort} cũng gấp ${v.k} lần — đó là dạng tìm tỉ số.`,
+    (v) => `🔑 Dạng tìm tỉ số: ${v.shortB} chia hết cho ${v.shortA} được ${v.k}, nên khỏi cần tìm ${v.oneWhat}, cứ gấp số ${v.contShort} lên ${v.k} lần.`,
+    (v) => `🔑 ${cap(v.given)}. Lần này ${v.shortB} gấp ${v.shortA} đúng ${v.k} lần, nên số ${v.contShort} cũng gấp lên bấy nhiêu lần — đó là dạng tìm tỉ số.`,
+    (v) => `🔑 Dạng tìm tỉ số. ${v.sameEach}, nên số ${v.amountCount} gấp lên mấy lần thì số ${v.contShort} gấp lên bấy nhiêu lần: ở đây ${v.shortB} gấp ${v.shortA} ${v.k} lần.`,
+  ],
+  'ti-amount': [
+    (v) => `🔑 Nhìn hai số là thấy ngay ${v.m} ${v.contShort} gấp ${v.n} ${v.contShort} đúng ${v.k} lần, nên số ${v.amountCount} cũng gấp ${v.k} lần — đó là dạng tìm tỉ số.`,
+    (v) => `🔑 Dạng tìm tỉ số: ${v.m} ${v.contShort} chia hết cho ${v.n} ${v.contShort} được ${v.k}, nên khỏi cần tìm ${v.oneWhat}, cứ lấy ${v.qty(v.A)} gấp lên ${v.k} lần.`,
+    (v) => `🔑 ${cap(v.given)}. Mà ${v.m} ${v.contShort} gấp ${v.n} ${v.contShort} đúng ${v.k} lần, nên số ${v.amountCount} cũng gấp lên bấy nhiêu lần — đó là dạng tìm tỉ số.`,
+    (v) => `🔑 Dạng tìm tỉ số. ${v.sameEach}, nên số ${v.contShort} gấp lên mấy lần thì số ${v.amountCount} gấp lên bấy nhiêu lần: ở đây gấp ${v.k} lần.`,
+  ],
+};
+
+/* Dòng khép lại: vì sao phép tính thứ hai lại là phép ấy — chỗ Bài giải chỉ
+ * làm chứ không nói. Với hai dạng tỉ số thì nói luôn rằng cách rút về đơn vị
+ * cũng ra đúng số đó: bé nào làm theo cách kia rồi mở lời giải ra thấy một bài
+ * giải khác hẳn sẽ tưởng mình sai.
+ *
+ * ĐỪNG viết "bước 2" ở đây. mathLineBreaks() trong js/math.js xuống dòng trước
+ * MỌI chỗ khớp /Bước\s*\d/i, kể cả giữa câu, nên "Vì sao bước 2 lại là phép
+ * chia?" sẽ hiện thành "Vì sao" một dòng, "bước 2 lại là phép chia?" dòng dưới. */
+const TAILS = {
+  'rut-count': (v) => `Vì sao phép tính thứ hai lại là phép chia? Vì câu hỏi là số ${v.contShort}, tức là xem ${v.shortB} có bao nhiêu lần ${v.short(v.u)}.`,
+  'rut-amount': (v) => `Vì sao phép tính thứ hai lại là phép nhân? Vì ${v.m} ${v.contShort} nhiều gấp ${v.m} lần ${v.onePart}, nên lấy kết quả vừa tìm nhân với ${v.m}.`,
+  'ti-count': (v) => `Làm theo cách rút về đơn vị cũng ra ${v.ans} ${v.cont}: ${v.A} : ${v.n} = ${v.u}, rồi ${v.B} : ${v.u} = ${v.ans}. Chỉ là dài hơn thôi.`,
+  'ti-amount': (v) => `Làm theo cách rút về đơn vị cũng ra ${v.qty(v.ans)}: ${v.A} : ${v.n} = ${v.u}, rồi ${v.u} × ${v.m} = ${v.ans}. Chỉ là dài hơn thôi.`,
+};
 
 const WORK_RUT = [
   'Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.',
@@ -420,6 +500,15 @@ function makeView(ctx, nums, name) {
   v.team = ctx.team ? ctx.team.replace('{name}', name) : '';
   v.qty = (x) => words(x, ctx.unit, ctx.good);
   v.short = (x) => words(x, ctx.unit || ctx.good);
+  // Cụm dùng cho dòng 🔑: "số ki-lô-gam phân đạm", "số sản phẩm", "số giờ".
+  v.amountCount = words(ctx.unitWord, ctx.good);
+  v.shortA = v.short(nums.A);
+  v.shortB = nums.B === undefined ? '' : v.short(nums.B);
+  const b = BUNDLES[ctx.kind];
+  v.given = tidy(b.given(v));
+  v.oneWhat = tidy(b.oneWhat(v));
+  v.onePart = tidy(b.onePart(v));
+  v.sameEach = tidy(b.sameEach(v));
   return v;
 }
 
@@ -433,29 +522,33 @@ function buildQuestion(index, ctx, combo, nums, name) {
   const ask = isCount ? pick(b.askCount)(v) : pick(b.askAmount)(v);
   const q = tidy(`${story} ${ask}`);
 
-  const tag = isCount ? ctx.contShort : ctx.amountTag;
+  // Đáp số mang cả đơn vị lẫn danh từ, đúng như cô giáo chấm: "280 kg thóc",
+  // "480 chiếc ghế", "9 bể nước" — chứ không phải trơ trọi "280 kg", "480
+  // chiếc", vốn không cho biết 480 cái gì.
+  const tag = isCount ? ctx.cont : words(ctx.unit, ctx.good);
   const label = 'Số ' + (isCount ? ctx.contShort : ctx.amountLabelWord);
+  // Bối cảnh nào có câu lời giải riêng thì dùng câu ấy (xem capCount trong
+  // CONTEXTS), vì mẫu chung đọc ngược ở đúng bối cảnh đó.
+  const capCount = () => tidy((ctx.capCount || b.capCount)(v));
 
   const lines = [];
+  lines.push(KEYS[combo][Math.floor(index / 4) % 4](v));
+  lines.push('<b>Bài giải</b>');
   if (isRut) {
-    lines.push(RULE_RUT);
-    lines.push('<b>Bài giải</b>');
     lines.push(tidy(b.capUnit(v)));
     lines.push(`${v.A} : ${v.n} = <b>${v.u}</b> (${ctx.amountTag})`);
     if (isCount) {
-      lines.push(tidy(b.capCount(v)));
+      lines.push(capCount());
       lines.push(`${v.B} : ${v.u} = <b>${v.ans}</b> (${ctx.contShort})`);
     } else {
       lines.push(tidy(b.capAmount(v)));
       lines.push(`${v.u} × ${v.m} = <b>${v.ans}</b> (${ctx.amountTag})`);
     }
   } else {
-    lines.push(RULE_TI);
-    lines.push('<b>Bài giải</b>');
     if (isCount) {
-      lines.push(tidy(`${v.short(v.B)} gấp ${v.short(v.A)} số lần là:`));
+      lines.push(tidy(`${v.shortB} gấp ${v.shortA} số lần là:`));
       lines.push(`${v.B} : ${v.A} = <b>${v.k}</b> (lần)`);
-      lines.push(tidy(b.capCount(v)));
+      lines.push(capCount());
       lines.push(`${v.n} × ${v.k} = <b>${v.ans}</b> (${ctx.contShort})`);
     } else {
       lines.push(tidy(`${v.m} ${ctx.contShort} gấp ${v.n} ${ctx.contShort} số lần là:`));
@@ -464,9 +557,12 @@ function buildQuestion(index, ctx, combo, nums, name) {
       lines.push(`${v.A} × ${v.k} = <b>${v.ans}</b> (${ctx.amountTag})`);
     }
   }
-  lines.push(`Đáp số: <b>${v.ans}</b> ${tag}.`);
+  lines.push(tidy(`Đáp số: <b>${v.ans}</b> ${tag}.`));
+  lines.push(tidy(TAILS[combo](v)));
 
-  const workNote = (isRut ? WORK_RUT : WORK_TI)[index % 4];
+  // index % 4 chính là chỉ số combo, nên lấy nó chọn lời nhắc thì mỗi dạng chỉ
+  // bao giờ thấy đúng MỘT lời nhắc trong bốn. Đếm theo lượt bốn câu mới đủ.
+  const workNote = (isRut ? WORK_RUT : WORK_TI)[(Math.floor(index / 4) + index) % 4];
 
   return {
     id: `g4t4-${index + 1}`,
@@ -489,10 +585,12 @@ const usedExpr = new Set();
 const usedPair = new Set();
 const usedQ = new Set();
 const questions = [];
+const combos = [];
 
 for (let i = 0; i < 100; i++) {
   const ctx = deck[i % deck.length];
   const combo = COMBOS[i % COMBOS.length];
+  combos.push(combo);
   let built = null;
 
   for (let attempt = 0; attempt < 300 && !built; attempt++) {
@@ -529,8 +627,13 @@ fs.writeFileSync(file, JSON.stringify(out, null, 2) + '\n', 'utf8');
 
 const ctxUsed = new Set(usedPair.size ? [...usedPair].map((p) => p.split('|')[0]) : []);
 const shapes = new Set(questions.map((q) => q.q.replace(/\d+/g, '#')));
+// Đếm theo combo, không đếm theo chữ trong lời giải: lời giải của dạng tỉ số
+// bây giờ CÓ nhắc tới "rút về đơn vị" (để trấn an bé làm theo cách kia), nên
+// đếm bằng substring sẽ ra 100/100.
+const keyShapes = new Set(questions.map((q) => q.explanation.split('<br>')[0].replace(/\d+/g, '#')));
 console.log(
-  `math4-t4: ${questions.length} câu · rút về đơn vị ${questions.filter((q) => q.explanation.includes('rút về đơn vị')).length}` +
-  ` · tìm tỉ số ${questions.filter((q) => q.explanation.includes('tìm tỉ số')).length}` +
-  ` · ${ctxUsed.size} bối cảnh · ${shapes.size} mẫu câu · ${path.relative(path.join(__dirname, '..'), file)}`
+  `math4-t4: ${questions.length} câu · rút về đơn vị ${combos.filter((c) => c.startsWith('rut')).length}` +
+  ` · tìm tỉ số ${combos.filter((c) => c.startsWith('ti')).length}` +
+  ` · ${ctxUsed.size} bối cảnh · ${shapes.size} mẫu câu · ${keyShapes.size} mẫu dòng 🔑` +
+  ` · ${path.relative(path.join(__dirname, '..'), file)}`
 );

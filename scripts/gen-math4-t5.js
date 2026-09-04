@@ -58,6 +58,7 @@ const FAMILIES = {
       ['kg', 'g'], ['tạ', 'kg'], ['tấn', 'kg'], ['yến', 'kg'],
       ['tấn', 'tạ'], ['tạ', 'yến'],
     ],
+    via: { 'tấn|yến': 'tạ' },
   },
   dd: {
     key: 'dd',
@@ -70,6 +71,7 @@ const FAMILIES = {
     natural: [
       ['km', 'm'], ['m', 'cm'], ['m', 'dm'], ['dm', 'cm'], ['cm', 'mm'],
     ],
+    via: { 'm|mm': 'cm', 'dm|mm': 'cm' },
   },
   tg: {
     key: 'tg',
@@ -81,6 +83,7 @@ const FAMILIES = {
     natural: [
       ['ngày', 'giờ'], ['giờ', 'phút'], ['phút', 'giây'],
     ],
+    via: { 'giờ|giây': 'phút' },
   },
 };
 
@@ -102,6 +105,31 @@ for (const fam of Object.values(FAMILIES)) {
       throw new Error(`cặp tự nhiên ${big}/${small} không có trong bảng all`);
     }
   }
+  for (const [pairKey, mid] of Object.entries(fam.via || {})) {
+    const [big, small] = pairKey.split('|');
+    if (ratio(fam, big, mid) * ratio(fam, mid, small) !== ratio(fam, big, small)) {
+      throw new Error(`chuỗi đơn vị hỏng: 1 ${big} qua ${mid} xuống ${small}`);
+    }
+  }
+}
+
+// Quan hệ đơn vị viết ra để đưa lên sau chìa khoá 🔑. Với những cặp cách nhau
+// hai bậc (1 giờ = 3600 giây, 1 m = 1000 mm) thì viết cả bậc ở giữa: bé lớp 4
+// thuộc "1 giờ = 60 phút" chứ không thuộc 3600, và con số 3600 rơi từ trên
+// trời xuống là chỗ bé bỏ cuộc.
+function relText(fam, big, small) {
+  const R = ratio(fam, big, small);
+  const mid = (fam.via || {})[`${big}|${small}`];
+  if (mid) return `1 ${big} = ${ratio(fam, big, mid)} ${mid} = ${R} ${small}`;
+  return `1 ${big} = ${R} ${small}`;
+}
+
+// Lỗi thứ hai bé hay mắc (sau lỗi nhân nhầm thành chia) là rơi mất một chữ số
+// 0. Khi tỉ số là 10, 100 hay 1000 thì nói thẳng ra phải thêm (bớt) mấy chữ
+// số 0; các tỉ số khác (24, 60) thì không nói, vì nói ra là nói sai.
+const ZERO_WORD = { 10: 'một', 100: 'hai', 1000: 'ba' };
+function zeroWord(R) {
+  return ZERO_WORD[R] || '';
 }
 
 // Bước nhảy của các con số, để đề đọc lên "tròn" như trong sách:
@@ -127,17 +155,25 @@ const NICE_MULT = [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 20, 25, 30, 40, 50, 60, 80, 1
 //   label — dòng bé điền, kết thúc bằng "= … <đơn vị>"
 //   expr  — đúng phép tính ấy viết bằng ASCII, để bước build tự kiểm lại
 //   rel   — quan hệ đơn vị cần dùng, đưa lên đầu lời giải sau chìa khoá
+//   kind  — kiểu chi tiết, để chọn câu quy tắc cho khớp (xem phần lời giải)
 //   work  — dòng trình bày trong lời giải, có <b> quanh đáp số
+//
+// Dòng `work` phải trả lời được câu hỏi của một bé vừa làm sai: SAI Ở ĐÂU.
+// Hai lỗi có thật ở dạng này là (1) nhân trong khi phải chia, và (2) rơi mất
+// một chữ số 0. Nên mỗi dòng nói rõ đơn vị nào lớn hơn đơn vị nào TRƯỚC khi
+// nhân hay chia, và với phép cộng trừ thì nói rõ phải đưa hai số về cùng một
+// đơn vị rồi mới tính — đó chính là lý do 4 km − 400 m không phải 3600 km.
 
 // Đổi thẳng: "5 tấn = … kg" hoặc "7000 g = … kg".
 function genPlain(fam) {
   const [big, small] = pick(fam.all);
   const R = ratio(fam, big, small);
-  const rel = `1 ${big} = ${R} ${small}`;
+  const rel = relText(fam, big, small);
   const pool = NICE_MULT.filter((v) => v * R <= MAX_VALUE);
   if (!pool.length) return null;
   const n = pick(pool);
   const val = n * R;
+  const z = zeroWord(R);
   if (rnd() < 0.5) {
     // đơn vị lớn sang đơn vị bé: nhân
     return {
@@ -145,7 +181,9 @@ function genPlain(fam) {
       answer: val,
       expr: `${n}*${R}`,
       rel,
-      work: `${n} ${big} = ${n} × ${R} = <b>${val}</b> ${small}`,
+      kind: 'plain-mul',
+      work: `Vì ${small} bé hơn ${big} nên số đo phải to lên, ta nhân với ${R}`
+        + `${z ? ` (viết thêm ${z} chữ số 0)` : ''}: ${n} ${big} = ${n} × ${R} = <b>${val}</b> ${small}.`,
     };
   }
   // đơn vị bé sang đơn vị lớn: chia
@@ -154,7 +192,9 @@ function genPlain(fam) {
     answer: n,
     expr: `${val}/${R}`,
     rel,
-    work: `${val} ${small} = ${val} : ${R} = <b>${n}</b> ${big}`,
+    kind: 'plain-div',
+    work: `Vì ${big} lớn hơn ${small} nên số đo phải bé lại, ta chia cho ${R}`
+      + `${z ? ` (bớt đi ${z} chữ số 0)` : ''}: ${val} ${small} = ${val} : ${R} = <b>${n}</b> ${big}.`,
   };
 }
 
@@ -162,7 +202,7 @@ function genPlain(fam) {
 function genAdd(fam) {
   const [big, small] = pick(fam.natural);
   const R = ratio(fam, big, small);
-  const rel = `1 ${big} = ${R} ${small}`;
+  const rel = relText(fam, big, small);
 
   if (rnd() < 0.5) {
     // hai số hạng cùng đơn vị bé, kết quả hỏi ở đơn vị lớn
@@ -182,7 +222,10 @@ function genAdd(fam) {
       answer: k,
       expr: `(${x}+${y})/${R}`,
       rel,
-      work: `${x} ${small} + ${y} ${small} = ${total} ${small} = <b>${k}</b> ${big}`,
+      kind: 'add-same',
+      work: `Hai số cùng đơn vị ${small} nên cộng thẳng: ${x} ${small} + ${y} ${small} = ${total} ${small}. `
+        + `Đề hỏi ${big}, mà ${big} lớn hơn ${small} nên còn phải chia cho ${R}: `
+        + `${total} : ${R} = <b>${k}</b> ${big}.`,
     };
   }
 
@@ -198,7 +241,10 @@ function genAdd(fam) {
     answer,
     expr: `${n}*${R}+${s}`,
     rel,
-    work: `${n} ${big} + ${s} ${small} = ${n * R} ${small} + ${s} ${small} = <b>${answer}</b> ${small}`,
+    kind: 'add-cross',
+    work: `Hai số khác đơn vị thì chưa cộng được, phải đổi ${n} ${big} ra ${small} trước: `
+      + `${n} × ${R} = ${n * R} ${small}. Xong rồi mới cộng được: `
+      + `${n * R} ${small} + ${s} ${small} = <b>${answer}</b> ${small}.`,
   };
 }
 
@@ -206,7 +252,7 @@ function genAdd(fam) {
 function genSub(fam) {
   const [big, small] = pick(fam.natural);
   const R = ratio(fam, big, small);
-  const rel = `1 ${big} = ${R} ${small}`;
+  const rel = relText(fam, big, small);
   const st = roundStep(R);
 
   if (rnd() < 0.55) {
@@ -223,7 +269,10 @@ function genSub(fam) {
       answer,
       expr: `${n}*${R}-${s}`,
       rel,
-      work: `${n} ${big} − ${s} ${small} = ${n * R} ${small} − ${s} ${small} = <b>${answer}</b> ${small}`,
+      kind: 'sub-cross',
+      work: `Hai số khác đơn vị thì chưa trừ được, phải đổi ${n} ${big} ra ${small} trước: `
+        + `${n} × ${R} = ${n * R} ${small}. Xong rồi mới trừ được: `
+        + `${n * R} ${small} − ${s} ${small} = <b>${answer}</b> ${small}.`,
     };
   }
 
@@ -238,7 +287,10 @@ function genSub(fam) {
     answer: k,
     expr: `(${x}-${y})/${R}`,
     rel,
-    work: `${x} ${small} − ${y} ${small} = ${diff} ${small} = <b>${k}</b> ${big}`,
+    kind: 'sub-same',
+    work: `Hai số cùng đơn vị ${small} nên trừ thẳng: ${x} ${small} − ${y} ${small} = ${diff} ${small}. `
+      + `Đề hỏi ${big}, mà ${big} lớn hơn ${small} nên còn phải chia cho ${R}: `
+      + `${diff} : ${R} = <b>${k}</b> ${big}.`,
   };
 }
 
@@ -246,7 +298,7 @@ function genSub(fam) {
 function genMixed(fam) {
   const [big, small] = pick(fam.natural);
   const R = ratio(fam, big, small);
-  const rel = `1 ${big} = ${R} ${small}`;
+  const rel = relText(fam, big, small);
   const st = roundStep(R);
   const maxB = Math.floor((R - 1) / st);
   if (maxB < 1) return null;
@@ -260,7 +312,10 @@ function genMixed(fam) {
     answer,
     expr: `${a}*${R}+${b}`,
     rel,
-    work: `${a} ${big} ${b} ${small} = ${a * R} ${small} + ${b} ${small} = <b>${answer}</b> ${small}`,
+    kind: 'mixed',
+    work: `${a} ${big} ${b} ${small} là ${a} ${big} và ${b} ${small} gộp lại. `
+      + `Đổi ${a} ${big} ra ${small}: ${a} × ${R} = ${a * R} ${small}, rồi cộng thêm ${b} ${small}: `
+      + `${a * R} ${small} + ${b} ${small} = <b>${answer}</b> ${small}.`,
   };
 }
 
@@ -275,24 +330,34 @@ const SHAPE_NAME = {
 
 // ------------------------------------------------------------ lời giải ----
 // Câu mở đầu sau chìa khoá, xoay vòng để 100 lời giải không đọc như một câu.
-// RULES_ANY hợp với mọi câu; RULES_CALC chỉ dùng khi trong câu có phép tính
-// hoặc số đo hỗn hợp — nói "đổi hai số về cùng đơn vị rồi mới cộng" trong một
-// câu chỉ toàn đổi thẳng thì lạc đề.
+// Bốn nhóm, và nhóm nào chỉ được dùng cho câu thật sự cần nó:
+//   RULES_ANY      — hợp với mọi câu (quy tắc nhân/chia theo bậc đơn vị)
+//   RULES_CROSS    — có phép cộng/trừ hai số KHÁC đơn vị ("4 km − 400 m")
+//   RULES_SAME     — cộng/trừ hai số CÙNG đơn vị rồi đổi kết quả ("770 g + 230 g = … kg")
+//   RULES_MIXNAME  — có số đo mang hai tên đơn vị ("2 giờ 30 phút")
+// Bảo "hai số phải cùng đơn vị mới cộng được" ở một câu mà hai số vốn đã cùng
+// đơn vị thì bé đọc xong vẫn không biết mình sai chỗ nào.
 const RULES_ANY = [
-  (A, B) => `Nhớ ${A} và ${B}. Đổi từ đơn vị lớn sang đơn vị bé thì nhân, đổi từ đơn vị bé sang đơn vị lớn thì chia.`,
-  (A, B) => `Bài này cần ${A} và ${B}. Muốn đổi sang đơn vị bé hơn ta nhân, muốn đổi sang đơn vị lớn hơn ta chia.`,
-  (A, B) => `Dựa vào ${A} và ${B}. Xuống một bậc đơn vị thì nhân, lên một bậc đơn vị thì chia.`,
-  (A, B) => `Theo bảng đơn vị đo thì ${A} và ${B}. Đổi sang đơn vị nhỏ hơn thì nhân, đổi sang đơn vị lớn hơn thì chia, nhớ đếm đủ các chữ số 0.`,
-  (A, B) => `Nhắc lại ${A} và ${B}. Viết mỗi số theo đơn vị mà đề hỏi rồi tính như với số tự nhiên.`,
+  (A, B) => `Nhớ ${A} và ${B}. Đổi ra đơn vị bé hơn thì nhân, đổi ra đơn vị lớn hơn thì chia.`,
+  (A, B) => `Bài này cần ${A} và ${B}. Trước khi tính, hãy xem đơn vị nào lớn hơn để biết nên nhân hay nên chia.`,
+  (A, B) => `Dựa vào ${A} và ${B}. Đơn vị càng bé thì số đo càng lớn, nên xuống một bậc đơn vị là nhân, lên một bậc đơn vị là chia.`,
+  (A, B) => `Theo bảng đơn vị đo thì ${A} và ${B}. Nhân hay chia xong nhớ đếm lại các chữ số 0, thiếu một chữ số 0 là sai cả bài.`,
+  (A, B) => `Nhắc lại ${A} và ${B}. Mỗi lần đổi, viết luôn tên đơn vị bên cạnh số thì mới biết mình đang có bao nhiêu.`,
   (A, B) => `Hai quan hệ cần dùng là ${A} và ${B}. Đơn vị lớn đổi ra đơn vị bé thì nhân, đơn vị bé đổi ra đơn vị lớn thì chia.`,
 ];
-const RULES_CALC = [
-  (A, B) => `Ghi nhớ ${A} và ${B}. Đổi hai số về cùng một đơn vị rồi mới cộng, trừ như với số tự nhiên.`,
-  (A, B) => `Cần thuộc ${A} và ${B}. Cộng trừ xong mới đổi kết quả sang đơn vị mà đề hỏi.`,
-  (A, B) => `Dùng ${A} và ${B}. Hai số phải cùng đơn vị thì mới cộng, trừ được với nhau.`,
-  (A, B) => `Trước hết phải thuộc ${A} và ${B}. Đổi trước, tính sau, rồi ghi đúng đơn vị vào kết quả.`,
+const RULES_CROSS = [
+  (A, B) => `Ghi nhớ ${A} và ${B}. Hai số phải cùng một đơn vị thì mới cộng, trừ được với nhau.`,
+  (A, B) => `Cần thuộc ${A} và ${B}. Đưa hai số về cùng một đơn vị đã, rồi mới cộng trừ như với số tự nhiên.`,
+  (A, B) => `Dùng ${A} và ${B}. Đổi trước, tính sau, và kết quả ghi theo đúng đơn vị mà đề hỏi.`,
 ];
-const RULES_MIXED_POOL = RULES_ANY.concat(RULES_CALC);
+const RULES_SAME = [
+  (A, B) => `Trước hết phải thuộc ${A} và ${B}. Hai số cùng đơn vị thì cộng trừ thẳng, xong mới đổi kết quả sang đơn vị đề hỏi.`,
+  (A, B) => `Bài dùng ${A} và ${B}. Tính xong đừng vội ghi đáp số, còn phải đổi sang đơn vị mà đề hỏi nữa.`,
+];
+const RULES_MIXNAME = [
+  (A, B) => `Nhớ ${A} và ${B}. Số đo có hai tên đơn vị thì đổi phần đơn vị lớn ra đơn vị bé, rồi cộng với phần còn lại.`,
+  (A, B) => `Cần ${A} và ${B}. Gặp số đo viết bằng hai đơn vị, ta đổi phần lớn thành đơn vị bé rồi cộng vào phần bé.`,
+];
 
 // ------------------------------------------------------------- lắp bài ----
 const FAM_PAIRS = [['kl', 'dd'], ['kl', 'tg'], ['dd', 'tg']];
@@ -326,6 +391,7 @@ function makePart(famKey, shape) {
 }
 
 const questions = [];
+let prevRuleTmpl = null;
 const famTally = { kl: 0, dd: 0, tg: 0 };
 const shapeTally = { plain: 0, add: 0, sub: 0, mixed: 0 };
 for (let i = 0; i < COUNT; i += 1) {
@@ -353,9 +419,17 @@ for (let i = 0; i < COUNT; i += 1) {
     shapeTally[p.shape] += 1;
   }
 
-  const hasCalc = a.shape !== 'plain' || b.shape !== 'plain';
-  const pool = hasCalc ? RULES_MIXED_POOL : RULES_ANY;
-  const rule = pool[i % pool.length](a.rel, b.rel);
+  const kinds = [a.kind, b.kind];
+  let pool = RULES_ANY;
+  if (kinds.some((k) => k === 'add-cross' || k === 'sub-cross')) pool = pool.concat(RULES_CROSS);
+  if (kinds.some((k) => k === 'add-same' || k === 'sub-same')) pool = pool.concat(RULES_SAME);
+  if (kinds.includes('mixed')) pool = pool.concat(RULES_MIXNAME);
+  // Xoay vòng, và nếu vòng quay rơi đúng vào câu vừa dùng ở bài trước thì bước
+  // sang câu kế: hai bài liền nhau mở đầu y hệt nhau đọc như máy nói.
+  let tmpl = pool[i % pool.length];
+  if (tmpl === prevRuleTmpl) tmpl = pool[(i + 1) % pool.length];
+  prevRuleTmpl = tmpl;
+  const rule = tmpl(a.rel, b.rel);
 
   questions.push({
     id: `g4t5-${i + 1}`,
@@ -442,6 +516,20 @@ questions.forEach((qq, idx) => {
   if (/[/^<>]/.test(bare)) throw new Error(`${qq.id}: lời giải có ký tự cấm`);
   if (/[/^<>]/.test(qq.q)) throw new Error(`${qq.id}: đề bài có ký tự cấm`);
   if (!qq.explanation.startsWith('🔑 ')) throw new Error(`${qq.id}: lời giải thiếu chìa khoá`);
+
+  // Dòng lời giải phải kết đúng bằng con số bé phải điền VÀ đơn vị mà nhãn
+  // hỏi. Đây là chỗ bắt được lời giải "2000 m = 2 m": một lời giải nói khác
+  // dòng nó đang giải thì tệ hơn là không có lời giải.
+  const lines = qq.explanation.split('<br>');
+  if (lines.length !== 3) throw new Error(`${qq.id}: lời giải phải có 3 dòng`);
+  qq.answerParts.forEach((p, k) => {
+    const tag = k === 0 ? 'a' : 'b';
+    const unit = p.label.match(/ = … (\S+)$/)[1];
+    if (!lines[k + 1].startsWith(`${tag}) `)) throw new Error(`${qq.id}: dòng ${tag} sai đầu dòng`);
+    if (!lines[k + 1].endsWith(`<b>${p.answer}</b> ${unit}.`)) {
+      throw new Error(`${qq.id}: dòng ${tag} phải kết bằng "<b>${p.answer}</b> ${unit}."`);
+    }
+  });
 });
 
 // ------------------------------------------------------------- ghi tệp ----
