@@ -22,6 +22,44 @@ var NightRaidRules = (() => {
   const MAX_COMMANDS = 80;
   const PRODUCTION_MS = 24 * 60 * 60 * 1000;
   const MAX_SOLDIERS = 10;
+
+  // ---- Parade formation on the home lawn -----------------------------------
+  // The soldier sprite is sized in PERCENT of the yard: 6.4% of the width in
+  // the full yard, 7.8% in the mini-map (css .nr-home-soldier), and it is 1.5×
+  // wider than tall. Both maps are 4:3, so at its largest a soldier covers
+  // ARMY_SPRITE_W of the width and ARMY_SPRITE_H of the height.
+  //
+  // The first version spaced the ranks 4.25% apart horizontally and 4.2%
+  // vertically — BELOW the sprite size. Four soldiers overlapped by about a
+  // third each and read as two on screen, so a child who had harvested four
+  // could only count two. Keep both steps above the widest sprite: the whole
+  // point of the parade is that the child can count the army.
+  // tests/night-raid-army.test.js pins the no-overlap invariant.
+  const ARMY_SPRITE_W = 7.8;
+  const ARMY_SPRITE_H = (ARMY_SPRITE_W / 1.5) * (4 / 3);
+  const ARMY_GAP = 8.2;
+  const ARMY_ROW_STEP = 7.4;
+
+  // Slots are offsets in percent from the squad's anchor point: x from its
+  // centre, y downwards. Up to five soldiers stand in one rank; a bigger squad
+  // forms a second rank behind, nudged half a step sideways so the back rank
+  // shows between the shoulders of the front one.
+  function armySlots(count) {
+    const n = int(count, 0, MAX_SOLDIERS);
+    const cols = n <= 5 ? Math.max(1, n) : Math.min(5, Math.ceil(n / 2));
+    const slots = [];
+    for (let i = 0; i < n; i++) {
+      const rank = i >= cols ? 1 : 0;
+      const col = i % cols;
+      const rankCount = rank ? n - cols : Math.min(n, cols);
+      slots.push({
+        x: (col - (rankCount - 1) / 2) * ARMY_GAP + (rank ? ARMY_GAP * 0.48 : 0),
+        y: rank * ARMY_ROW_STEP,
+        row: i % 6,
+      });
+    }
+    return slots;
+  }
   // Swords — the daily-task reward a child may take instead of a shield
   // (js/armory.js, functions/api/_daily-task.js). A sword is never spent:
   // every one in stock adds SWORD_DAMAGE to the attack score, up to SWORD_CAP
@@ -431,7 +469,7 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,SWORD_DAMAGE,SWORD_CAP,SCENES,
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_CAP,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
     makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
