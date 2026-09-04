@@ -145,6 +145,33 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
     await putHome(world, first, { cells: noUid('rice-field', 2, 0) });
     assert.equal(count(first.uid, 'rice-field'), 1, 'buyMax is 1');
   });
+  // Raised by review, 2026-09-04: with buyMax 1, could a child who already owns
+  // a field still REPLACE one — take it away and put one back in the same PUT?
+  // Guarding the answer, because the allowance is max(owned, buyMax) and a
+  // narrower reading of "buying" would make a mis-tap permanent.
+  test('fields: a child may move an owned field, and may rebuild one in the same PUT', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] });
+    const seed = cells => world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
+      .run(JSON.stringify({ cells, soldiers: 0, dogLane: 2 }), kid.uid);
+    const tomatoes = () => stored(world, kid.uid).cells.filter(c => c.type === 'tomato-field');
+    // (a) two owned gardens; one moves to a new square, the other is gone.
+    seed([{ type: 'tomato-field', gx: 0, gy: 0, tier: 1, uid: 'p-toma0001', readyAt: 4242 },
+          { type: 'tomato-field', gx: 4, gy: 0, tier: 1, uid: 'p-toma0002', readyAt: 4242 }]);
+    await putHome(world, kid, { cells: [{ type: 'tomato-field', gx: 8, gy: 8, uid: 'p-toma0001' }] });
+    assert.deepEqual(tomatoes().map(c => [c.gx, c.gy]), [[8, 8]], 'one garden, in its new place — not zero, not two');
+    assert.equal(tomatoes()[0].readyAt, 4242, 'and it keeps the 24h clock it had');
+    // (b) the whole point of the worry: demolish the one you own and put a new
+    // one down in the SAME request. The rebuild is not "a second garden".
+    seed([{ type: 'tomato-field', gx: 0, gy: 0, tier: 1, uid: 'p-toma0001', readyAt: 4242 }]);
+    await putHome(world, kid, { cells: [{ type: 'tomato-field', gx: 6, gy: 6 }] });
+    const rebuilt = tomatoes();
+    assert.equal(rebuilt.length, 1, 'the replacement stands');
+    assert.deepEqual([rebuilt[0].gx, rebuilt[0].gy], [6, 6]);
+    assert.truthy(rebuilt[0].readyAt > 4242, 'a rebuild is a new field, so its 24h clock restarts');
+    assert.truthy(rebuilt[0].uid && rebuilt[0].uid !== 'p-toma0001', 'and it is a new cell');
+  });
   test('farms: kept, capped at three, stamped like the main board', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
