@@ -148,7 +148,9 @@ var NightRaidRules = (() => {
   // pumpkin seed harvested as 11,520 xu, and lootable_coins is what other
   // children steal from, so it minted money into the shared economy. A uid may
   // therefore appear at most once in a layout; later claimants are dropped.
-  function normalizeCells(rawCells, grid, occupied, allowDefense, dayCount, today, seenUids) {
+  // `now` is the wall clock, and only a caller that HAS one (the server) passes
+  // it — it decides whether a legacy barracks timer had already elapsed.
+  function normalizeCells(rawCells, grid, occupied, allowDefense, dayCount, today, seenUids, now) {
     const owned = Object.create(null);
     const clean = [];
     const findSpace=(gx,gy,size,layer)=>{
@@ -203,9 +205,19 @@ var NightRaidRules = (() => {
           // old 24h clock converts the first time the SERVER normalizes it
           // (it alone knows dayCount); a client without dayCount leaves the
           // legacy clock in place and FarmRules.barracksReady says "not yet".
+          //
+          // lastDay = dayCount means "already collected today", so converting
+          // a barracks whose old 24h timer had ALREADY run out silently threw
+          // away a soldier the child had earned and not yet collected. When
+          // the caller knows the wall clock, an elapsed timer converts one day
+          // BEHIND so that owed soldier is collectable on the very next
+          // collect. Without `now` we cannot tell an elapsed timer from a
+          // running one, so we keep the safe stamp: a client has no clock the
+          // server trusts and must never be able to mint a soldier.
+          const legacyAt=Number.isFinite(+(cell&&cell.readyAt))?Math.max(0,Math.trunc(+cell.readyAt)):null;
           if(Number.isFinite(+(cell&&cell.lastDay)))entry.lastDay=int(cell.lastDay,0,1e9);
-          else if(dayCount!==null)entry.lastDay=dayCount;
-          else if(Number.isFinite(+(cell&&cell.readyAt)))entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt));
+          else if(dayCount!==null)entry.lastDay=(now!==null&&legacyAt!==null&&legacyAt<=now)?Math.max(0,dayCount-1):dayCount;
+          else if(legacyAt!==null)entry.readyAt=legacyAt;
         } else entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));
       }
       clean.push(entry);
@@ -213,12 +225,16 @@ var NightRaidRules = (() => {
     return clean;
   }
 
-  // opts = { dayCount, today } — passed by the server (and by a client that
-  // has heard them from the server). Without them nothing about days changes.
+  // opts = { dayCount, today, now } — passed by the server (and by a client
+  // that has heard dayCount/today from the server). Without them nothing about
+  // days changes. `now` is the wall clock and is deliberately SERVER-ONLY: it
+  // is what lets a legacy barracks whose 24h timer had already elapsed keep the
+  // soldier it earned, so no client may supply it.
   function normalizeLayout(value, opts) {
     opts = opts || {};
     const dayCount = Number.isFinite(+opts.dayCount) ? int(opts.dayCount, 0, 1e9) : null;
     const today = DATE_RE.test(String(opts.today || '')) ? String(opts.today) : null;
+    const now = opts.now == null || !Number.isFinite(+opts.now) ? null : Math.max(0, Math.trunc(+opts.now));
     const cells = Array.isArray(value && value.cells) ? value.cells : [];
     const castleRaw=value&&value.castleCell;
     const legacy=value&&value.castlePos;
@@ -228,10 +244,10 @@ var NightRaidRules = (() => {
     };
     const occupied={stand:[{gx:castleCell.gx,gy:castleCell.gy,size:CASTLE_SIZE}],floor:[]};
     const seenUids = new Set();
-    const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today, seenUids);
+    const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today, seenUids, now);
     const plot = Farm ? Farm.FARM_PLOT : null;
     const rawFarms = plot && Array.isArray(value && value.farms) ? value.farms.slice(0, plot.max) : [];
-    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids) }));
+    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids, now) }));
     return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:3, castleCell, farms };
   }
 

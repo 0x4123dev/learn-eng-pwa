@@ -13,7 +13,9 @@ export async function onRequestGet({request,env}) {
   const home=row?homeSnapshot(row):null;
   // Only the server knows dayCount, so only this read can convert a barracks
   // that still carries the old 24h clock (see normalizeLayout in the rules).
-  if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today});
+  // `now` goes with it: a legacy timer that had already elapsed keeps the
+  // soldier it had earned instead of converting to "already collected today".
+  if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});
   // shieldUntil is for the OWNER only — targets.js never exposes it.
   return json({home:home?Object.assign(home,{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null,dayCount:clock.dayCount,ctx:clock.ctx});
 }
@@ -23,14 +25,14 @@ export async function onRequestPut({request,env}) {
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
   const now=Date.now(),clock=await farmClock(env,auth.uid,now),dayCount=clock.dayCount,today=clock.ctx.today;
   const current=await env.DB.prepare('SELECT layout_json,dog_level,castle_skin,lootable_coins,vault_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
-  const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0},{dayCount,today});
+  const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0},{dayCount,today,now});
   // A field the client did not send — or sent as something that is not a
   // number — keeps its stored value. This request used to default every
   // missing field (coins→0, dogLevel→1, layout→empty), so one buggy or
   // half-hydrated client PUT erased the wallet, the dog and every building
   // in a single statement.
   const num=v=>typeof v==='number'&&Number.isFinite(v);
-  const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout,{dayCount,today});
+  const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout,{dayCount,today,now});
   // Every cell the server already knows, by uid — main board and extra farms.
   const oldByUid=new Map(NR.farmRules.allCells(oldLayout).filter(c=>c.uid).map(c=>[c.uid,c]));
   const newUid=prefix=>prefix+crypto.randomUUID().replace(/-/g,'').slice(0,20);

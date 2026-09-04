@@ -14,7 +14,7 @@ export async function onRequestPost({request,env}) {
   const uid=String(body.uid||''),row=await env.DB.prepare('SELECT layout_json,lootable_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
   if(!row)return err('Hãy mở Nhà Cướp Đêm trước',409);
   const now=Date.now(),{dayCount,ctx}=await farmClock(env,auth.uid,now),Farm=NR.farmRules;
-  const layout=NR.normalizeLayout(safeJson(row.layout_json,{cells:[],soldiers:0}),{dayCount,today:ctx.today});
+  const layout=NR.normalizeLayout(safeJson(row.layout_json,{cells:[],soldiers:0}),{dayCount,today:ctx.today,now});
   let coins=Math.max(0,+row.lootable_coins||0),soldiers=layout.soldiers,collectedCoins=0,collectedSoldiers=0,wilted=false;const harvested=[];
   const pay=amount=>{if(coins>=100000)return 0;const gain=Math.min(amount,100000-coins);coins+=gain;collectedCoins+=gain;return gain;};
   // Returns the cells that STAY on the board (harvested crops leave it).

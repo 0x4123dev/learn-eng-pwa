@@ -89,12 +89,12 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
     const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
     assert.truthy(g.ok);
     const legacy = g.data.home.layout.cells.find(c => c.uid === 'p-legacy01');
-    assert.equal(legacy.lastDay, 3, 'converted on read with today\'s dayCount');
+    assert.equal(legacy.lastDay, 2, 'converted on read — one day behind, because readyAt 5 had long since elapsed');
     assert.equal(legacy.readyAt, undefined);
     assert.equal(g.data.dayCount, 3);
     await putHome(world, kid, { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-legacy01', lastDay: 0 }, { type: 'training-barracks', gx: 4, gy: 4, uid: 'p-newone01' }] });
     const cells = stored(world, kid.uid).cells;
-    assert.equal(cells.find(c => c.uid === 'p-legacy01').lastDay, 3, 'the client may not rewind lastDay');
+    assert.equal(cells.find(c => c.uid === 'p-legacy01').lastDay, 2, 'the client may not rewind lastDay');
     assert.equal(cells.find(c => c.uid === 'p-newone01').lastDay, 3);
   });
   test('fields: a second new rice field is dropped, but four owned ones survive', async () => {
@@ -338,7 +338,8 @@ suite('farm server: a legacy barracks must finish converting', () => {
     const day = n => doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
     day(10);                                            // dayCount 1
     world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
-      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: Date.now() - 1000 }],
+      // Still counting: nothing was owed, so this really is a nothingReady reply.
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: Date.now() + 6 * 3600000 }],
       soldiers: 0, dogLane: 2 }), kid.uid);
     const first = await collect(world, kid);
     assert.truthy(first.data.nothingReady, 'the day it converts on is not a day it can pay for');
@@ -358,7 +359,7 @@ suite('farm server: a legacy barracks must finish converting', () => {
     const kid = await world.createUser({ allowBot: true });
     await putHome(world, kid, { cells: [] }, 100);
     world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
-      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: 5 }],
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: Date.now() + 6 * 3600000 }],
       soldiers: 0, dogLane: 2 }), kid.uid);
     let paid = 0;
     for (let n = 12; n >= 9; n--) {
@@ -367,6 +368,50 @@ suite('farm server: a legacy barracks must finish converting', () => {
     }
     assert.equal(paid, 3, 'day one converts; days two, three and four each pay a soldier');
     assert.equal(stored(world, kid.uid).soldiers, 3);
+  });
+  // Found by review, 2026-09-04. The conversion stamped lastDay = dayCount for
+  // EVERY legacy cell, and lastDay = dayCount means "already collected today" —
+  // so a barracks whose old 24h timer had ALREADY run out silently lost the
+  // soldier the child had earned and not yet collected. Up to two per child at
+  // rollout, 20 DAM each. An elapsed timer now converts one day BEHIND; one
+  // still counting keeps today's stamp, because it was owed nothing.
+  test('a legacy timer that had already elapsed keeps the soldier it earned; one still counting does not', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] }, 100);
+    doneOn(world, kid.uid, gmt7(Date.now() - 10 * DAY), gmt7(Date.now() - 9 * DAY));   // dayCount 2
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-elapsed1', readyAt: Date.now() - 1000 },
+              { type: 'training-barracks', gx: 4, gy: 0, tier: 1, uid: 'p-counting1', readyAt: Date.now() + 6 * 3600000 }],
+      soldiers: 0, dogLane: 2 }), kid.uid);
+    const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
+    assert.truthy(g.ok, JSON.stringify(g.data));
+    const seen = g.data.home.layout.cells;
+    assert.equal(seen.find(c => c.uid === 'p-elapsed1').lastDay, 1, 'the elapsed one converts one day behind: its soldier is still owed');
+    assert.equal(seen.find(c => c.uid === 'p-counting1').lastDay, 2, 'the one still counting owes nothing, so it converts to today');
+    const r = await collect(world, kid);
+    assert.equal(r.data.collectedSoldiers, 1, 'exactly one soldier on the very next collect');
+    assert.equal(stored(world, kid.uid).soldiers, 1);
+    assert.equal(mirror(world, kid.uid), 100, 'soldiers are not coins');
+    const after = stored(world, kid.uid).cells;
+    assert.equal(after.find(c => c.uid === 'p-elapsed1').lastDay, 2, 'and it is stamped collected');
+    assert.equal(after.find(c => c.uid === 'p-counting1').lastDay, 2);
+    assert.truthy((await collect(world, kid)).data.nothingReady, 'no second soldier without a new task-day');
+  });
+  test('a client has no clock the server trusts, so it can never mint that soldier', () => {
+    // `now` is server-only on purpose: normalizeLayout without it must keep the
+    // safe stamp, or a client could hand itself a ready barracks by claiming a
+    // readyAt in the past.
+    const Rules = require('../js/night-raid-rules.js');
+    const legacy = { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-elapsed1', readyAt: 5 }] };
+    const clientSide = Rules.normalizeLayout(legacy, { dayCount: 9, today: TODAY }).cells[0];
+    assert.equal(clientSide.lastDay, 9, 'no now: converts to today, exactly as before');
+    assert.equal(Rules.farmRules.barracksReady(clientSide, 9), false, 'and so it is not ready');
+    const forged = Rules.normalizeLayout(legacy, { dayCount: 9, today: TODAY, now: 'yesterday' }).cells[0];
+    assert.equal(forged.lastDay, 9, 'a now that is not a finite number is ignored');
+    const server = Rules.normalizeLayout(legacy, { dayCount: 9, today: TODAY, now: Date.now() }).cells[0];
+    assert.equal(server.lastDay, 8, 'only a real clock unlocks the owed soldier');
+    assert.equal(Rules.farmRules.barracksReady(server, 9), true);
   });
 });
 
