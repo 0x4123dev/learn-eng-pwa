@@ -18,19 +18,24 @@
 // beside the fire controls on a phone.
 const TEAM_MAX_HIRES = 5;
 
-// Priced against the top of the food shop on purpose: a Gunner (600) costs
-// about a Royal Feast (550), so "quân hay đồ ăn?" is a real question every
-// time. A perfect grammar session pays ~50 xu.
+// 200 xu, and the price is set by WHEN the child buys now: hiring moved from
+// the pre-battle lobby into the match itself, so this is the button a child
+// reaches for when the shells are landing and the castle is nearly down. At
+// 600 that rescue cost more than a Royal Feast (550) and a losing child simply
+// could not afford it — the feature would exist and never fire. At 200 it is
+// about four good practice sessions (~50 xu each), cheap enough to be an
+// impulse in the middle of a fight and still dear enough that a five-strong
+// squad (1.000 xu) is a real decision, not free.
 const TEAM_ROSTER = [
   {
-    id: 'gunner', emoji: '🚀', fee: 600,
+    id: 'gunner', emoji: '🚀', fee: 200,
     // Rides the volley the child already aimed and already paid ammo for:
     // one aim, two projectiles. Good aim is rewarded twice; a miss wastes
     // both, so it sharpens the existing skill instead of replacing it.
     ratio: 0.6,
   },
-  { id: 'engineer', emoji: '🔧', fee: 600, repair: 15 },
-  { id: 'shield', emoji: '🛡️', fee: 600, factor: 0.5 },
+  { id: 'engineer', emoji: '🔧', fee: 200, repair: 15 },
+  { id: 'shield', emoji: '🛡️', fee: 200, factor: 0.5 },
 ];
 
 const GUNNER_RATIO = 0.6;      // rocket damage, as a share of one shell

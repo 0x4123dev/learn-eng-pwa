@@ -33,7 +33,7 @@ export function normalizeFieldVersion(v) {
 // ---- hired đồng đội ----
 // Re-typed from js/battle-teammates.js because Functions are ESM and that file
 // is a classic script. tests/teammates.test.js pins the two copies together.
-export const TEAM_FEES = { gunner: 600, engineer: 600, shield: 600 };
+export const TEAM_FEES = { gunner: 200, engineer: 200, shield: 200 };
 export const TEAM_MAX_HIRES = 5;
 const HP_BASE = 100;
 const HP_LEVELS_PER_POINT = 10;

@@ -18,9 +18,9 @@ suite('teammates: the roster', () => {
     test('three specialists at the agreed fees', () => {
         assert.equal(T.TEAM_ROSTER.length, 3);
         const fee = (id) => T.teammateById(id).fee;
-        assert.equal(fee('gunner'), 600);
-        assert.equal(fee('engineer'), 600);
-        assert.equal(fee('shield'), 600);
+        assert.equal(fee('gunner'), 200);
+        assert.equal(fee('engineer'), 200);
+        assert.equal(fee('shield'), 200);
     });
 
     test('every teammate carries what the UI needs to draw it', () => {
@@ -60,16 +60,16 @@ suite('teammates: hiring and coins', () => {
     });
 
     test('the fee is the sum of what was actually hired', () => {
-        assert.equal(T.hireCost(['gunner', 'gunner']), 1200);
-        assert.equal(T.hireCost(['gunner', 'engineer', 'shield']), 1800);
+        assert.equal(T.hireCost(['gunner', 'gunner']), 400);
+        assert.equal(T.hireCost(['gunner', 'engineer', 'shield']), 600);
         assert.equal(T.hireCost([]), 0);
         assert.equal(T.hireCost(null), 0);
     });
 
     test('an over-long or junk squad is priced on what survives normalization', () => {
         const ten = Array.from({ length: 10 }, () => 'gunner');
-        assert.equal(T.hireCost(ten), 5 * 600, 'never charge for hires that were dropped');
-        assert.equal(T.hireCost(['gunner', 'dragon']), 600);
+        assert.equal(T.hireCost(ten), 5 * 200, 'never charge for hires that were dropped');
+        assert.equal(T.hireCost(['gunner', 'dragon']), 200);
     });
 });
 
@@ -274,11 +274,11 @@ suite('teammates: the hire cart', () => {
     });
 
     test('a squad you cannot afford is refused, not silently trimmed', () => {
-        // 600 + 600 = 1,200; with 1,100 xu the Vệ sĩ must not go in.
-        assert.deepEqual(T.hireAdd(['gunner'], 'shield', 1100), ['gunner'],
+        // 200 + 200 = 400; with 300 xu the Vệ sĩ must not go in.
+        assert.deepEqual(T.hireAdd(['gunner'], 'shield', 399), ['gunner'],
             'the cart must not exceed the purse');
-        assert.deepEqual(T.hireAdd([], 'gunner', 599), [], 'not even one');
-        assert.deepEqual(T.hireAdd([], 'gunner', 600), ['gunner'], 'exactly enough is enough');
+        assert.deepEqual(T.hireAdd([], 'gunner', 199), [], 'not even one');
+        assert.deepEqual(T.hireAdd([], 'gunner', 200), ['gunner'], 'exactly enough is enough');
     });
 
     test('the sixth hire is refused however rich the child is', () => {
@@ -301,7 +301,7 @@ suite('teammates: the hire cart', () => {
 
     test('a full cart reports what it costs', () => {
         const cart = T.hireAdd(T.hireAdd([], 'gunner', 9999), 'engineer', 9999);
-        assert.equal(T.hireCost(cart), 1200);
+        assert.equal(T.hireCost(cart), 400);
     });
 });
 
@@ -687,8 +687,8 @@ suite('teammates: the shop tells the truth about money', () => {
         }
     }
 
-    test('683 xu really does buy a 600 xu Pháo thủ', () => {
-        withCoins(683, () => {
+    test('283 xu really does buy a 200 xu Pháo thủ', () => {
+        withCoins(283, () => {
             pb.pbHireReset();
             pb.pbHire('gunner');
             assert.deepEqual(pb.pbHireCart(), ['gunner'], 'the hire must go through');
@@ -696,7 +696,7 @@ suite('teammates: the shop tells the truth about money', () => {
     });
 
     test('after hiring, the card does NOT cry "not enough coins"', () => {
-        // The warning is about a SECOND gunner (1,200 > 683), but printed under
+        // The warning is about a SECOND gunner (400 > 283), but printed under
         // the card just bought it reads as "your purchase failed".
         withCoins(683, () => {
             pb.pbHireReset();
@@ -714,22 +714,22 @@ suite('teammates: the shop tells the truth about money', () => {
     });
 
     test('a teammate you genuinely cannot afford still says so', () => {
-        withCoins(300, () => {
+        withCoins(150, () => {
             pb.pbHireReset();
             const html = pb._pbHirePanel();
             assert.truthy(html.includes(pb.pbT('hirePoor')),
-                'with 300 xu nothing is affordable and the child should be told');
+                'with 150 xu nothing is affordable and the child should be told');
         });
     });
 
     test('the purse shows what is left to spend, so the money is visible going out', () => {
-        withCoins(683, () => {
+        withCoins(283, () => {
             pb.pbHireReset();
             const before = pb._pbHirePanel();
-            assert.truthy(before.includes('683'), 'starts at the full purse');
+            assert.truthy(before.includes('283'), 'starts at the full purse');
             pb.pbHire('gunner');
             const after = pb._pbHirePanel();
-            assert.truthy(after.includes('83'), 'after a 600 hire, 83 xu remain');
+            assert.truthy(after.includes('83'), 'after a 200 hire, 83 xu remain');
         });
     });
 });
