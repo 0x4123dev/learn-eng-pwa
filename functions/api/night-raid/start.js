@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, RAID_TTL_MS, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
+import { NR, RAID_TTL_MS, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
 import { swordCount } from '../_daily-task.js';
 
 export async function onRequestPost({request,env}) {
@@ -68,7 +68,13 @@ export async function onRequestPost({request,env}) {
   // the client's ownPower() makes — so the two numbers agree by construction,
   // and the snapshot records the count the fight was scored with.
   attackerRow.night_swords=await swordCount(env,auth.uid);
-  const attacker=homeSnapshot(attackerRow),target=homeSnapshot(row),raidId=randomRaidId(),seed=(Math.floor(Math.random()*0x7fffffff)^now)>>>0;
+  // The DEFENDER's snapshot is the attacker-facing one: defences, dog, castle
+  // and soldiers, with the garden taken out (see attackerLayout). It is both
+  // what this reply hands the child and what snapshot_json keeps for /finish,
+  // so the raid the client plays and the raid the server scores stay the same
+  // board. The ATTACKER's own snapshot never leaves the server — only its
+  // damage/defense/soldiers/swords are copied onto the target below.
+  const attacker=homeSnapshot(attackerRow),target=raidSnapshot(row),raidId=randomRaidId(),seed=(Math.floor(Math.random()*0x7fffffff)^now)>>>0;
   target.seed=seed;target.lootableCoins=Math.max(0,+row.lootable_coins||0);target.attackerLootableCoins=Math.max(0,+attackerRow.lootable_coins||0);target.attackerDamage=attacker.damage;target.attackerDefense=attacker.defense;target.attackerSoldiers=attacker.soldiers||0;target.attackerSwords=attacker.swords||0;
   if(shielded){target.shielded=true;target.defense=100000;}
   await env.DB.prepare(`INSERT INTO night_raids(id,attacker_id,defender_id,seed,rules_version,snapshot_json,status,created_date,created_at,expires_at)

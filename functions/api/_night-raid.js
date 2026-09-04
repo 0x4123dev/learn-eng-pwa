@@ -174,6 +174,38 @@ export function homeSnapshot(row) {
   return {targetId:row.user_id,name:row.username||'Castle',level:Math.max(1,+row.home_level||1),homeLevel:Math.max(1,+row.home_level||1),sceneId:['moonlit-village','haunted-forest','storm-kingdom'][Math.abs(Number(row.user_id)||0)%3],seed:1,layout,dogLevel,soldiers:layout.soldiers,swords,castleSkin:String(row.castle_skin||'stone-keep'),castleHp,damage:power.damage,defense:power.defense,lootableCoins:Math.max(0,+row.lootable_coins||0),lockedUntil:raidLockUntil(row),budget:0};
 }
 
+// ---- what an ATTACKER may see of a house ---------------------------------
+//
+// homeSnapshot builds the payload for the OWNER's own home AND for a house a
+// child is about to raid, and a target must reveal nothing about its state —
+// the same rule the seal and the shield are kept quiet under, above. Since the
+// farm shipped, that payload carried the defender's crops (each with its uid,
+// the task-day it was planted on and the calendar date) and every private
+// extra farm board. Those are the child's study history and their own boards,
+// and a uid is an identity another child must never hold. Master sent
+// defences only.
+//
+// Removing them cannot move a raid result: combatPower and createState read
+// DEFENSES exclusively (js/night-raid-rules.js — a farm item is not in that
+// list, deliberately), and every combat number in the snapshot — damage,
+// defense, soldiers, castleHp — is computed by homeSnapshot BEFORE this runs.
+// dogLane, castleCell and soldiers stay, because the fight uses them.
+export function attackerLayout(layout) {
+  const F = NR.farmRules;
+  const out = Object.assign({}, layout);
+  // A cell is a farm item when the farm rulebook knows its id; defences are
+  // the ones NR.defenseById finds.
+  out.cells = ((layout && layout.cells) || []).filter(cell => !(F && F.byId(cell && cell.type)));
+  delete out.farms;
+  return out;
+}
+// The snapshot to hand an attacker: homeSnapshot with the garden taken out.
+export function raidSnapshot(row) {
+  const snap = homeSnapshot(row);
+  snap.layout = attackerLayout(snap.layout);
+  return snap;
+}
+
 // What a successful robbery carries home: win_pct of the victim's pile, never
 // more than win_cap, and never more than what is left of today's
 // daily_reward_cap. The victim loses EXACTLY this number (finish.js), so the

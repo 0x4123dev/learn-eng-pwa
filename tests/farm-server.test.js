@@ -370,4 +370,73 @@ suite('farm server: a legacy barracks must finish converting', () => {
   });
 });
 
+const startHandler = () => loadModule('functions/api/night-raid/start.js');
+const targetsHandler = () => loadModule('functions/api/night-raid/targets.js');
+
+suite('farm server: a raid target shows its walls, never its garden', () => {
+  // Found by review, 2026-09-04. homeSnapshot builds the payload for the
+  // OWNER's own home AND for a house a child is about to raid. Since the farm
+  // shipped it handed an attacker the defender's crops — with their uid, the
+  // task-day they were planted on and the date — and their private extra farm
+  // boards. That is the child's study history and their own boards, and a uid
+  // is an identity another child must never hold. Master sent defences only.
+  async function twoHouses() {
+    const world = createWorld();
+    const attacker = await world.createUser({ allowBot: true });
+    const defender = await world.createUser({ allowBot: true, username: 'Bống' });
+    await putHome(world, attacker, { cells: [] });
+    doneOn(world, defender.uid, YESTERDAY);
+    await putHome(world, defender, { cells: [
+      { type: 'stone-wall', gx: 0, gy: 6, tier: 1 },
+      { type: 'wood-fence', gx: 2, gy: 6, tier: 1 },
+      { type: 'pumpkin', gx: 1, gy: 1, uid: 'c-pumpk001' },
+      { type: 'windmill', gx: 8, gy: 8, uid: 'f-windmi01' },
+    ], farms: [{ cells: [{ type: 'rose', gx: 0, gy: 0, uid: 'c-rose0001' }] }] });
+    // Soldiers only ever move in collect.js, so put the garrison there directly.
+    const s = stored(world, defender.uid); s.soldiers = 4;
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify(s), defender.uid);
+    return { world, attacker, defender };
+  }
+  const WALLS = ['stone-wall', 'wood-fence'];
+
+  test('a real raid hands the attacker no crop, no farm building and no farms', async () => {
+    const { world, attacker, defender } = await twoHouses();
+    const r = await world.call(startHandler().onRequestPost, { url: '/api/night-raid/start', method: 'POST',
+      token: attacker.token, body: { targetId: defender.uid } });
+    assert.truthy(r.ok && r.data && r.data.raid, JSON.stringify(r.data));
+    const raid = r.data.raid, wire = JSON.stringify(raid);
+    assert.deepEqual(raid.layout.cells.map(c => c.type).sort(), WALLS, 'defences only');
+    assert.equal(raid.layout.farms, undefined, 'the private extra farm boards are not sent at all');
+    assert.falsy(wire.includes('c-pumpk001'), 'no crop uid reaches the attacker');
+    assert.falsy(wire.includes('c-rose0001'), 'not even from a private farm board');
+    assert.falsy(wire.includes('windmill'), 'and no farm building');
+    // The fight is untouched: every wall, the dog, the castle and the garrison.
+    assert.equal(raid.soldiers, 4, 'the garrison is still part of the gamble');
+    assert.equal(raid.layout.soldiers, 4);
+    assert.truthy(raid.dogLevel >= 1 && raid.castleHp > 0 && raid.defense > 0);
+    // …and the board /finish will score is the same one the child played.
+    const snap = JSON.parse(world.db.prepare('SELECT snapshot_json FROM night_raids WHERE id=?').get(raid.raidId).snapshot_json);
+    assert.deepEqual(snap.layout.cells.map(c => c.type).sort(), WALLS);
+    assert.equal(snap.layout.farms, undefined);
+  });
+  test('the target list card carries no farm item either', async () => {
+    const { world, attacker, defender } = await twoHouses();
+    const r = await world.call(targetsHandler().onRequestGet, { url: '/api/night-raid/targets', method: 'GET', token: attacker.token });
+    assert.truthy(r.ok, JSON.stringify(r.data));
+    const card = (r.data.targets || []).find(t => Number(t.targetId) === defender.uid);
+    assert.truthy(card, 'the defender is offered as a target');
+    assert.deepEqual(card.layout.cells.map(c => c.type).sort(), WALLS);
+    assert.equal(card.layout.farms, undefined);
+  });
+  test('the owner\'s own GET still returns every crop, farm building and board', async () => {
+    const { world, defender } = await twoHouses();
+    const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: defender.token });
+    assert.truthy(g.ok, JSON.stringify(g.data));
+    assert.deepEqual(g.data.home.layout.cells.map(c => c.type).sort(), ['pumpkin', 'stone-wall', 'windmill', 'wood-fence']);
+    assert.equal(g.data.home.layout.cells.find(c => c.type === 'pumpkin').uid, 'c-pumpk001');
+    assert.equal(g.data.home.layout.farms.length, 1);
+    assert.equal(g.data.home.layout.farms[0].cells[0].type, 'rose');
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
