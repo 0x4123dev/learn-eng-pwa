@@ -618,4 +618,177 @@ suite('profile switch: the maths scratch pad is wiped between children', () => {
   });
 });
 
+// ---- ✍️ rounds in progress -------------------------------------------------
+// None of these has a clock. They leak by two roads, both of which are read out
+// of js/app.js below rather than described: the is…Active() guards inside
+// switchScreen, and buildStudyCheckpoint(), which reads them once a second and
+// writes whichever it finds to localStorage tagged with the CURRENT user.
+
+// [module, the quiz variable, the teardown, the is…Active guard, a live value]
+const ROUNDS = [
+  ['js/units.js', '_unitQuiz', 'unitsForgetProfile', 'isUnitPracticeActive',
+    { unit: 3, questions: [{ w: { en: 'chicken' } }], idx: 0, answers: [null] }],
+  ['js/phrases.js', '_phrQuiz', 'phrasesForgetProfile', 'isPhrasesQuizActive',
+    { questions: [{ id: 'p1' }], idx: 0, answers: [null] }],
+  ['js/wordform.js', '_wfQuiz', 'wordformForgetProfile', 'isWordformQuizActive',
+    { questions: [{ id: 'wf-1' }], idx: 0, answers: [null] }],
+  ['js/rewrite.js', '_rwQuiz', 'rewriteForgetProfile', 'isRewriteQuizActive',
+    { questions: [{ id: 'rw-1' }], idx: 0, answers: [null] }],
+  ['js/collocation.js', '_colQuiz', 'collocForgetProfile', 'isCollocActive',
+    { questions: [{ id: 'col-1' }], idx: 0, answers: [null] }],
+  ['js/grammar-ui.js', '_grammarQuizState', 'grammarForgetProfile', 'isGrammarQuizActive',
+    { unitId: 1, questions: [{ id: 'g1' }], currentIdx: 0, answers: [] }],
+  ['js/math.js', '_mathQuiz', 'mathForgetProfile', 'isMathQuizActive',
+    { chapter: 1, questions: [{ id: 'm1' }], idx: 0, answers: [null] }],
+  ['js/retrydrill.js', '_retryDrill', 'retryDrillForgetProfile', 'isRetryDrillActive',
+    { key: 'math', queue: ['x'], idx: 0, revealed: false, answered: null, fixed: 0, missed: 0 }],
+];
+
+suite('profile switch: an unfinished round does not become the next child\'s', () => {
+  for (const [file, varName, teardown, guard, live] of ROUNDS) {
+    test(`${file}: ${teardown}() clears ${varName}, so ${guard}() goes quiet`, () => {
+      const s = loadModule(file, {
+        appState: { coins: 0 }, MATH_QUESTIONS: [], WORDFORM_QUESTIONS: [],
+        PHRASES: [], REWRITE_QUESTIONS: [], COLLOCATION_QUESTIONS: [], GRAMMAR_UNITS: [],
+      }, `\n;globalThis.__set = (v) => { ${varName} = v; };`
+        + `\n;globalThis.__peek = () => ${varName};`);
+
+      s.__set(live);
+      assert.truthy(s[guard](), 'sanity: the previous child is mid-round');
+
+      s[teardown]();
+      assert.equal(s.__peek(), null, `${varName} must be dropped — it is A's work`);
+      assert.falsy(s[guard](),
+        `switchScreen reads ${guard}() and was asking B about a round that was never theirs`);
+    });
+
+    test(`${file}: ${teardown}() is SILENT and reuses the module's own clear`, () => {
+      const src = read(file);
+      const at = src.indexOf(`function ${teardown}()`);
+      assert.truthy(at > 0, `${teardown} must be a real top-level function`);
+      // The function body only: up to its own closing brace at column 0. Any
+      // more and a following comment's prose would be read as code.
+      const rest = src.slice(at);
+      const end = rest.indexOf('\n}');
+      const fn = rest.slice(0, end === -1 ? rest.length : end);
+      assert.falsy(/\bconfirm\s*\(/.test(fn),
+        'the quit✕ asks; this must not — the child has already gone, and whoever '
+        + 'picks the iPad up next would be answering for them');
+      assert.falsy(/switchScreen|renderTopicsHome|renderPhrasesHome|renderMathHome/.test(fn),
+        'and it must not navigate: the caller is on its way to the profile picker');
+      assert.truthy(/\babandon\w*\(\)/.test(fn),
+        'it must reuse the module\'s existing clear rather than writing a second one');
+    });
+
+    test(`${file}: it is reachable — exported to Node and a plain global in the browser`, () => {
+      const src = read(file);
+      assert.truthy(new RegExp('^function ' + teardown + '\\(\\)', 'm').test(src),
+        'a top-level function declaration is what a browser gets; an arrow inside '
+        + 'module.exports is Node-only (see js/cups.js _resetCupReconcile)');
+      // Only where the module has a Node door at all — js/grammar-ui.js has none
+      // and is loaded straight into a vm sandbox by tests/setup.js.
+      if (src.includes('module.exports')) {
+        assert.truthy(src.includes(teardown + ','),
+          `${teardown} must also be listed in module.exports, or no test can reach it`);
+      }
+    });
+  }
+
+  test('every one of them is actually registered in forgetProfileState', () => {
+    const app = read('js/app.js');
+    const fn = app.slice(app.indexOf('function forgetProfileState()'), app.indexOf('function switchUser()'));
+    for (const [, , teardown] of ROUNDS) {
+      assert.truthy(fn.includes(teardown), teardown + ' is not registered — the module is asked nothing');
+    }
+  });
+
+  test('and the checkpoint really does read them, which is the road that persists', () => {
+    const app = read('js/app.js');
+    const fn = app.slice(app.indexOf('function buildStudyCheckpoint()'), app.indexOf('function saveStudyCheckpoint()'));
+    for (const [, varName] of ROUNDS) {
+      if (varName === '_retryDrill') continue;          // not checkpointed; it leaks by the guards only
+      assert.truthy(fn.includes(varName),
+        varName + ' is read by buildStudyCheckpoint, so a round left standing is '
+        + 'written to localStorage under the NEXT child\'s name');
+    }
+    assert.truthy(fn.includes('user:currentUser') || fn.includes('user: currentUser'),
+      'and it is tagged with whoever is logged in AT THAT MOMENT — that is the whole problem');
+  });
+});
+
+suite('profile switch: the combo bonus is coins, and must not change hands', () => {
+  test('an abandoned streak is not paid to whoever finishes the next round', () => {
+    const s = loadModule('js/petcheer.js', { appState: { coins: 0 } });
+    // A answers five in a row: PET_COMBO_STEP hits and the bonus accrues.
+    const step = s.module.exports.PET_COMBO_STEP;   // a top-level const is script-scoped
+    for (let i = 0; i < step; i++) s.petCheerAnswer(true);
+    assert.truthy(s.petComboState().bonus > 0, 'sanity: A has earned a combo bonus');
+
+    s.petCheerForgetProfile();
+    assert.deepEqual(s.petComboState(), { streak: 0, best: 0, bonus: 0 });
+    assert.equal(s.petComboBonus(), 0, 'B\'s next finished round must bank nothing of A\'s');
+  });
+
+  test('nothing else was ever going to clear it', () => {
+    let hits = 0;
+    for (const f of ['js/units.js', 'js/phrases.js', 'js/wordform.js', 'js/rewrite.js',
+      'js/collocation.js', 'js/grammar-ui.js', 'js/math.js', 'js/mathwars.js']) {
+      if (read(f).includes('petCheerReset')) hits++;
+    }
+    assert.equal(hits, 0,
+      'petComboBonus() at the END of a round is the only clear — an abandoned round leaves it standing');
+  });
+});
+
+suite('profile switch: js/app.js forgets its own per-child state too', () => {
+  const app = read('js/app.js');
+  const fn = app.slice(app.indexOf('function forgetProfileState()'), app.indexOf('function switchUser()'));
+
+  test('the matching round is reset — the checkpoint reads lessonState as well', () => {
+    assert.truthy(/lessonState = \{/.test(fn), 'lessonState must be put back to its empty shape');
+    for (const key of ['roundWords', 'lessonPoints', 'matchedPairs', 'correctInLesson']) {
+      assert.truthy(fn.includes(key), 'lessonState.' + key + ' must be reset');
+    }
+  });
+
+  test('the two per-login checkpoint flags are cleared, including the one nothing reset', () => {
+    assert.truthy(/_studyCheckpointRestored = false/.test(fn));
+    assert.truthy(/_studyCheckpointWaited = false/.test(fn),
+      'this one was never reset ANYWHERE: once A hit a slow lazy bank, every later '
+      + 'child\'s own checkpoint was thrown away instead of waited for');
+    // Prove the claim rather than asserting it in prose.
+    const others = app.split('_studyCheckpointWaited').length - 1;
+    assert.truthy(others >= 3, 'sanity: the flag is read and set elsewhere');
+    // Its declaration is the ONLY other place it is set back to false: nothing
+    // ever reset it at runtime, which is exactly what made it outlive a child.
+    const resets = app.match(/_studyCheckpointWaited = false/g) || [];
+    assert.equal(resets.length, 2, 'the declaration, and this teardown — nothing else');
+    assert.truthy(/let _studyCheckpointWaited = false/.test(app), 'one of those two is the declaration');
+  });
+
+  test('the Home screen\'s history view is put back to the top', () => {
+    assert.truthy(/currentHistoryTab = 'history'/.test(fn), 'B landed on A\'s Mistakes tab');
+    assert.truthy(/historyPage = 0/.test(fn), 'and on page 4 of a list they had never seen');
+    assert.truthy(/selectedDifficultyFilter = 'beginning'/.test(fn),
+      'and inside A\'s word band, which is what "next lesson" is picked from');
+  });
+
+  test('the two page-lifetime timers are deliberately LEFT RUNNING', () => {
+    assert.falsy(/_studyCheckpointTimer\s*=\s*null/.test(fn),
+      'stopping the checkpoint saver would leave the NEXT child with no checkpointing at all; '
+      + 'it re-reads currentUser every tick and saves nothing while there is no user');
+    assert.falsy(/_updateRetryTimer\s*=\s*null/.test(fn),
+      'the app-update nag belongs to the page, not to a child');
+    assert.falsy(/_profileOriginScreen\s*=/.test(fn),
+      'openProfile() sets it before anything can read it, so clearing it would be churn');
+  });
+
+  test('and buildStudyCheckpoint returns nothing at all with no user logged in', () => {
+    const build = app.slice(app.indexOf('function buildStudyCheckpoint()'),
+      app.indexOf('function saveStudyCheckpoint()'));
+    assert.truthy(/if \(!currentUser\) return null;/.test(build),
+      'the window between switchUser() and the next login must write nothing');
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

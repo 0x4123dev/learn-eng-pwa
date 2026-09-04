@@ -155,6 +155,17 @@ function startRetryDrill(key) {
   renderRetryDrill();
 }
 function abandonRetryDrill() { _retryDrill = null; }
+
+// SILENT teardown for a profile change. The drill is a queue of the words THIS
+// child owes (js/wrong-priority.js), so it is the previous child's homework by
+// definition — and it survived, because the only clears are retryGoHome() and
+// switchScreen's confirm(). switchScreen's Toán guard reads retryDrillKey()
+// and asked B "Con đang làm dở bài Toán" about A's drill, and
+// _busyWithTimedActivity() reads isRetryDrillActive(), so B was never offered
+// the app update either.
+function retryDrillForgetProfile() {
+  abandonRetryDrill();
+}
 function isRetryDrillActive() { return !!_retryDrill; }
 function retryDrillKey() { return _retryDrill ? _retryDrill.key : null; }
 
@@ -336,7 +347,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     defineRetryDrill, retryCfg, retryList, retryCount, retryAdd, retryClear,
     retryGate, retryOwedBannerHTML, retryResultBannerHTML, retryResultCtaHTML,
-    startRetryDrill, abandonRetryDrill, isRetryDrillActive, retryDrillKey,
+    startRetryDrill, abandonRetryDrill, retryDrillForgetProfile, isRetryDrillActive, retryDrillKey,
     setRetryReveal, renderRetryDrill, submitRetryAnswer, nextRetryQuestion,
     finishRetryDrill, retryGoHome, retryEsc,
   };

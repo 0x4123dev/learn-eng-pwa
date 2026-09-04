@@ -141,6 +141,17 @@ const PET_COINS_PER_CORRECT = 5;
 let _petCombo = { streak: 0, best: 0, bonus: 0 };
 
 function petCheerReset() { _petCombo = { streak: 0, best: 0, bonus: 0 }; }
+
+// SILENT teardown for a profile change. `_petCombo.bonus` is COINS: every
+// fifth correct answer adds PET_COMBO_BONUS to it, and petComboBonus() banks
+// the total at the end of a round. Nothing else calls petCheerReset() — the
+// only clear is petComboBonus() itself, at the end of a quiz — so a child who
+// switched profile mid-round left their accrued bonus standing, and the next
+// round to FINISH paid it into whoever was playing. Two children on one iPad,
+// so that is one child's coins landing in the other's wallet.
+function petCheerForgetProfile() {
+  petCheerReset();
+}
 function petComboState() { return { streak: _petCombo.streak, best: _petCombo.best, bonus: _petCombo.bonus }; }
 
 // Returns the bonus coins earned this session and clears the counter.
@@ -305,7 +316,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     petFaceEmoji, petDisplayName, petDailyEarnEstimate, petFoodQuestToday,
     petFoodQuestState, petFoodQuestOnFeed, petQuestLineHTML,
-    petCheerAnswer, petCheerReset, petComboState, petComboBonus,
+    petCheerAnswer, petCheerReset, petCheerForgetProfile, petComboState, petComboBonus,
     petEvolutionLineHTML, petRewardCardHTML, petQuickFeed, petHungerNow,
     PET_COMBO_STEP, PET_COMBO_BONUS,
   };

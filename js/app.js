@@ -1119,6 +1119,52 @@ function forgetProfileState() {
     if (typeof verbsForgetProfile === 'function') { try { verbsForgetProfile(); } catch (e) {} }
     // The maths scratch pad: four sheets of the previous child's handwriting.
     if (typeof mathBoardForgetProfile === 'function') { try { mathBoardForgetProfile(); } catch (e) {} }
+
+    // Every in-progress round. None of these has a clock, but all of them leak
+    // by the same two roads: the is…Active() guards in switchScreen — which
+    // asked B "You are in the middle of…" about A's work — and, worse,
+    // buildStudyCheckpoint() below, which reads them once a second and writes
+    // whichever it finds into localStorage tagged with the CURRENT user. A
+    // round left standing by A was therefore saved under B's name and offered
+    // back to B, "↩️ Đã mở lại bài đang làm dở", as if it were theirs.
+    if (typeof unitsForgetProfile === 'function') { try { unitsForgetProfile(); } catch (e) {} }
+    if (typeof phrasesForgetProfile === 'function') { try { phrasesForgetProfile(); } catch (e) {} }
+    if (typeof wordformForgetProfile === 'function') { try { wordformForgetProfile(); } catch (e) {} }
+    if (typeof rewriteForgetProfile === 'function') { try { rewriteForgetProfile(); } catch (e) {} }
+    if (typeof collocForgetProfile === 'function') { try { collocForgetProfile(); } catch (e) {} }
+    if (typeof grammarForgetProfile === 'function') { try { grammarForgetProfile(); } catch (e) {} }
+    if (typeof mathForgetProfile === 'function') { try { mathForgetProfile(); } catch (e) {} }
+    if (typeof retryDrillForgetProfile === 'function') { try { retryDrillForgetProfile(); } catch (e) {} }
+    // The combo counter is COINS: petComboBonus() banks whatever has accrued at
+    // the end of the next round to FINISH, whoever is playing by then.
+    if (typeof petCheerForgetProfile === 'function') { try { petCheerForgetProfile(); } catch (e) {} }
+
+    // ---- js/app.js's own per-child state -----------------------------------
+    // A matching round in progress. Its screen is deactivated by switchUser,
+    // but the words, the points and the wrong-word Set are the previous
+    // child's, and buildStudyCheckpoint reads them.
+    lessonState = {
+        categoryId: null, lessonNumber: 0, words: [], currentRound: 0, totalRounds: 0,
+        roundWords: [], selectedLeft: null, selectedRight: null, matchedPairs: 0,
+        correctInLesson: 0, wrongInLesson: 0, lessonPoints: 0,
+    };
+    // "Have we already offered this child their unfinished work?" and "have we
+    // already waited once for a lazy bank?" — both are about ONE child's login.
+    // _studyCheckpointWaited was never reset anywhere: once A hit a slow bank,
+    // B's own perfectly good checkpoint was thrown away instead of waited for.
+    _studyCheckpointRestored = false;
+    _studyCheckpointWaited = false;
+    // Where the Home screen was left standing: A's history tab, A's page, and
+    // the word band A was working through.
+    currentHistoryTab = 'history';
+    historyPage = 0;
+    selectedDifficultyFilter = 'beginning';
+    // Deliberately NOT cleared: _studyCheckpointTimer and _updateRetryTimer.
+    // Neither belongs to a child — the first re-reads currentUser on every tick
+    // and saves nothing while there is no user, and stopping it would leave the
+    // NEXT child with no checkpointing at all; the second is the app-update
+    // nag. _profileOriginScreen is not cleared either: openProfile() sets it
+    // before anything can read it.
 }
 
 function switchUser() {

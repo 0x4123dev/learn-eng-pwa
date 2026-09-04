@@ -1140,6 +1140,20 @@ function abandonGrammarQuiz() {
     _grammarQuizState = null;
 }
 
+// SILENT teardown for a profile change — see js/units.js unitsForgetProfile
+// for the two roads (the switchScreen confirm and the study checkpoint) by
+// which A's unfinished exam reached B. Everything else here is where A left
+// the tab standing: which sub-tab, which unit cards were expanded, which
+// lesson was open, and the history filters.
+function grammarForgetProfile() {
+    abandonGrammarQuiz();
+    _grammarSubTab = 'units';
+    _grammarOpenLesson = null;
+    _grammarExpandedUnits = new Set();
+    _grammarExpandedLessonUnits = new Set();
+    _grammarHistoryFilters = { unit: 'all', tier: 'all' };
+}
+
 // ==================== FINISH QUIZ — RESULT ====================
 function finishGrammarQuiz() {
     const state = _grammarQuizState;

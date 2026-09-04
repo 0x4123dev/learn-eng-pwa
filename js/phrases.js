@@ -454,6 +454,15 @@ function startPhrasesReviewQuiz(qids) {
 function isPhrasesQuizActive() { return !!_phrQuiz; }
 function abandonPhrasesQuiz() { _phrQuiz = null; }
 
+// SILENT teardown for a profile change. The quiz is A's work — see
+// js/units.js unitsForgetProfile for why nothing else clears it — and the
+// sub-tab and tier filter are where A left the tab standing.
+function phrasesForgetProfile() {
+  abandonPhrasesQuiz();
+  _phrHistoryFilter = 'all';
+  _phrSubTab = 'practice';
+}
+
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
 // bin the whole round on a single touch with nothing said. Ask first — but only
 // when there is work to lose, so starting and changing your mind stays free.
@@ -737,7 +746,7 @@ if (typeof module !== 'undefined' && module.exports) {
     // either needs both ways in. Exported for the tests; the page calls the
     // global directly.
     submitPhrTextAnswer,
-    nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz, quitPhrasesQuiz, phrAnsweredCount,
+    nextPhrQuestion, finishPhrasesQuiz, isPhrasesQuizActive, abandonPhrasesQuiz, phrasesForgetProfile, quitPhrasesQuiz, phrAnsweredCount,
     setPhrHistoryFilter, openPhrSession,
     switchPhrSubTab, renderPhrasesLessons, phrasesLessonEntries, filterPhrLessons,
     phrMeaningQuestion, phrExpandPairs, phrasesById, savePhrasesSession,

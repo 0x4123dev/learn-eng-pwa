@@ -290,6 +290,13 @@ function startRewriteReviewQuiz(qids) {
 function isRewriteQuizActive() { return !!_rwQuiz; }
 function abandonRewriteQuiz() { _rwQuiz = null; }
 
+// SILENT teardown for a profile change — see js/units.js unitsForgetProfile.
+function rewriteForgetProfile() {
+  abandonRewriteQuiz();
+  _rwHistoryFilter = 'all';
+  _rwSubTab = 'practice';
+}
+
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
 // bin the whole round on a single touch with nothing said. Ask first — but only
 // when there is work to lose, so starting and changing your mind stays free.
@@ -480,7 +487,7 @@ function openRwSession(idx) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderRewriteHome, startRewriteQuiz, startRewriteReviewQuiz, submitRwText,
-    nextRwQuestion, finishRewriteQuiz, isRewriteQuizActive, abandonRewriteQuiz, quitRewriteQuiz, rwAnsweredCount,
+    nextRwQuestion, finishRewriteQuiz, isRewriteQuizActive, abandonRewriteQuiz, rewriteForgetProfile, quitRewriteQuiz, rwAnsweredCount,
     setRwHistoryFilter, openRwSession, rewriteById, rewriteBank, _rwTextCorrect, _rwNormalize,
     switchRwSubTab, renderRewriteLessons, openRewriteLesson, saveRewriteSession,
   };

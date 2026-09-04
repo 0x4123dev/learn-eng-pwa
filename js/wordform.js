@@ -448,6 +448,13 @@ function startWordformReviewQuiz(qids) {
 function isWordformQuizActive() { return !!_wfQuiz; }
 function abandonWordformQuiz() { _wfQuiz = null; }
 
+// SILENT teardown for a profile change — see js/units.js unitsForgetProfile.
+function wordformForgetProfile() {
+  abandonWordformQuiz();
+  _wfHistoryFilter = 'all';
+  _wfSubTab = 'practice';
+}
+
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
 // bin the whole round on a single touch with nothing said. Ask first — but only
 // when there is work to lose, so starting and changing your mind stays free.
@@ -928,7 +935,7 @@ function openWfSession(idx) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderWordformHome, startWordformQuiz, startWordformReviewQuiz, answerWfQuestion,
-    submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz, quitWordformQuiz, wfAnsweredCount,
+    submitWfText, nextWfQuestion, finishWordformQuiz, isWordformQuizActive, abandonWordformQuiz, wordformForgetProfile, quitWordformQuiz, wfAnsweredCount,
     setWfHistoryFilter, openWfSession, wordformById, wordformBank, _wfTextCorrect,
     switchWfSubTab, renderWordformLessons, openWordformLesson, saveWordformSession,
     wfFollowupQuestion, wfExpandFollowups, wfFollowScore, wfFollowDone, wfFollowParts,

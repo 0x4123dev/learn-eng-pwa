@@ -303,6 +303,13 @@ function startCollocPractice(n) {
 
 function abandonCollocPractice() { _colQuiz = null; }
 
+// SILENT teardown for a profile change — see js/units.js unitsForgetProfile.
+// This one shares the Phrases screen, so it is checkpointed under its own kind
+// ('collocation') and leaks by exactly the same road.
+function collocForgetProfile() {
+  abandonCollocPractice();
+}
+
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
 // bin the whole round on a single touch with nothing said. Ask first — but only
 // when there is work to lose, so starting and changing your mind stays free.
@@ -715,7 +722,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     collocBank, renderCollocHome, collocLessonHTML, startCollocPractice,
     answerCollocChoice, submitCollocText, nextCollocQuestion, finishCollocPractice,
-    isCollocActive, abandonCollocPractice, quitCollocPractice, colAnsweredCount,
+    isCollocActive, abandonCollocPractice, collocForgetProfile, quitCollocPractice, colAnsweredCount,
     _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase, collocQuestionHTML,
     collocPhrase, collocFilledParts, collocFollowupQuestion, colExpandFollowups,
     colFollowScore, colFollowDone, answerCollocFollowup, renderCollocFollowup,

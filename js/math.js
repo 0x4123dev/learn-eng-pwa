@@ -1784,6 +1784,29 @@ function abandonMathQuiz() {
   mathLockScreen(false);
 }
 
+// SILENT teardown for a profile change. abandonMathQuiz() already drops the
+// paper, wipes the scratch pad and puts the bottom bar back — but it is only
+// reached from switchScreen's confirm(), which switchUser() does not go
+// through. So A's đề thi survived: isMathQuizActive() answered B's every tab
+// tap with "Con đang làm dở bài Toán", and the study checkpoint wrote A's
+// questions into localStorage under B's name.
+//
+// The view is reset too, because _mathView is where the tab reopens: B landed
+// inside A's Toán 4 / lịch sử / Đấu Toán rather than on the Maths home.
+function mathForgetProfile() {
+  abandonMathQuiz();
+  if (typeof mathTypedReset === 'function') { try { mathTypedReset(); } catch (e) {} }
+  _mathHintOpen = false;
+  _mathRetryOptions = [];
+  _mathRetryPicked = null;
+  _mathRetryTyped = false;
+  _mathView = 'home';
+  _mathSubTab = 'practice';
+  _mathHistoryBack = 'toan7';
+  _mathHistoryFilter = 'all';
+  _mathHistoryType = 'all';
+}
+
 // A đề thi is a whole sitting of work that is scored only when it ends, and
 // the bottom bar sits under the thumb for all 25 questions. The confirm() in
 // switchScreen is a net, not a lock — so the bar goes away while a paper is
@@ -1889,7 +1912,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathBank, mathLtBank, mathChapters, mathLessons, mathById, mathChapterQuestions,
     renderMathHome, switchMathSubTab, openMathLesson,
     startMathQuiz, startMathLtQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
-    isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
+    isMathQuizActive, abandonMathQuiz, mathForgetProfile, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
     mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart, mathAnswerHTML,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,

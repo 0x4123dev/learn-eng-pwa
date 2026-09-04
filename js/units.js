@@ -575,6 +575,25 @@ function startUnitPractice(unit) {
 
 function abandonUnitPractice() { _unitQuiz = null; }
 
+// SILENT teardown for a profile change.
+//
+// abandonUnitPractice() is the right clear, but the only roads to it are
+// quitUnitPractice()'s ✕ and switchScreen's confirm — and switchUser() goes
+// through neither. So A's half-answered round survived: isUnitPracticeActive()
+// answered B's every tab tap with "You are 6/10 through this practice", and the
+// once-a-second study checkpoint (js/app.js buildStudyCheckpoint) wrote A's
+// questions and A's answers into localStorage under B's NAME, to be handed back
+// to B — "↩️ Đã mở lại bài đang làm dở" — on their next open.
+//
+// The hidden home pieces (topicsGrid and friends) are NOT touched: entering the
+// tab always runs renderTopicsHome(), which restores every one of them.
+// _unitUtt is left alone too — it is a GC guard for an utterance that may still
+// be speaking, not the child's data.
+function unitsForgetProfile() {
+  abandonUnitPractice();
+  _unitSetFallback = null;
+}
+
 // The ✕ sits exactly where a thumb rests while tapping answers, and it used to
 // bin the whole round on a single touch with nothing said. Ask first — but only
 // when there is work to lose, so starting and changing your mind stays free.
@@ -834,7 +853,7 @@ if (typeof module !== 'undefined' && module.exports) {
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     _unitExampleParts, _unitExampleHTML,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
-    isUnitPracticeActive, abandonUnitPractice, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
+    isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
     _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
