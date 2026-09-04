@@ -73,3 +73,5 @@ suite('phrases: meaning questions', () => {
         assert.truthy(phrases.phrasesById('pp-1') && !phrases.phrasesById('pp-1').meaning);
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

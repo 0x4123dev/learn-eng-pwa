@@ -208,3 +208,5 @@ suite('math fight: an unlocked tab must actually appear', () => {
     assert.truthy(auth.includes('renderMathHome()'), 'the Math menu must redraw when the switch arrives');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

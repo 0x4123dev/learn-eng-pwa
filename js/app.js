@@ -602,16 +602,22 @@ function renderUserList(users) {
 
         const card = document.createElement('div');
         card.className = 'user-card';
+        // Escaped, like every other tab escapes an echoed value. These names
+        // are only local — a profile created on this device — so the current
+        // USERNAME_RE keeps markup out of them, but that is one relaxed regex
+        // or one hand-edited profile away from being the sign-in screen
+        // executing whatever a name contains, on every app open.
+        const name = appEsc(userData.username);
         card.innerHTML = `
-            <button type="button" class="user-open-btn" aria-label="Open ${userData.username}'s profile">
-                <span class="user-avatar" aria-hidden="true">${userData.avatar || '😊'}</span>
+            <button type="button" class="user-open-btn" aria-label="Open ${name}'s profile">
+                <span class="user-avatar" aria-hidden="true">${appEsc(userData.avatar || '😊')}</span>
                 <span class="user-info">
-                    <span class="user-name">${userData.username}</span>
-                    <span class="user-stats">⭐ ${userData.points} points · 🔥 ${userData.streak} streak</span>
+                    <span class="user-name">${name}</span>
+                    <span class="user-stats">⭐ ${appEsc(userData.points)} points · 🔥 ${appEsc(userData.streak)} streak</span>
                 </span>
                 <span class="user-arrow" aria-hidden="true">›</span>
             </button>
-            <button type="button" class="delete-user-btn" aria-label="Delete ${userData.username}'s profile">🗑️</button>
+            <button type="button" class="delete-user-btn" aria-label="Delete ${name}'s profile">🗑️</button>
         `;
         card.querySelector('.user-open-btn').onclick = () => showPasscodeModal(username);
         card.querySelector('.delete-user-btn').onclick = () => showDeleteModal(username);
@@ -1477,6 +1483,14 @@ function shuffleArray(array) {
     return arr;
 }
 
+// All five characters, including both quote marks: an escaper that stops at
+// &, < and > still lets a value break out of an attribute, which is where the
+// user list puts a name (aria-label).
+function appEsc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g,
+        c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function showToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
@@ -1503,6 +1517,63 @@ function createConfetti() {
     setTimeout(() => container.innerHTML = '', 4000);
 }
 
+// ---- "there is a new version" ------------------------------------------
+//
+// install deliberately does NOT call skipWaiting(): swapping the worker under
+// a child in the middle of a question is worse than running yesterday's build
+// for another minute. But the only notice this ever gave was a toast wired to
+// `controllerchange` — an event that CANNOT fire while the page that
+// registered the listener is still open, because that page is itself a client
+// keeping the old worker alive. So a PWA left in the iOS app switcher for days
+// downloaded every update and applied none of them, including the ones that
+// fixed money bugs.
+//
+// Now the child is asked. The banner waits for a moment when nothing is timed.
+let _updateReloading = false;
+let _updateOffered = false;
+let _updateRetryTimer = null;
+
+// A timed activity must not be interrupted by a banner, let alone a reload.
+function _busyWithTimedActivity() {
+    try {
+        if (typeof isExamActive === 'function' && isExamActive()) return true;
+        if (typeof isWarsActive === 'function' && isWarsActive()) return true;
+        const speed = document.getElementById('speedGameOverlay');
+        if (speed && speed.classList.contains('active')) return true;
+        if (typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) return true;
+    } catch (e) { /* a missing tab is not a reason to withhold the update */ }
+    return false;
+}
+
+function offerUpdate(reg) {
+    if (_updateOffered) return;
+    if (_busyWithTimedActivity()) {
+        // Ask again shortly rather than dropping the update on the floor.
+        if (!_updateRetryTimer) _updateRetryTimer = setInterval(() => offerUpdate(reg), 60000);
+        return;
+    }
+    if (_updateRetryTimer) { clearInterval(_updateRetryTimer); _updateRetryTimer = null; }
+    _updateOffered = true;
+
+    const bar = document.createElement('div');
+    bar.className = 'sw-update-bar';
+    bar.setAttribute('role', 'status');
+    bar.innerHTML = '<span>✨ Có bản mới của app</span>'
+        + '<button type="button" class="sw-update-go">Tải bản mới</button>'
+        + '<button type="button" class="sw-update-later" aria-label="Để sau">Để sau</button>';
+    bar.querySelector('.sw-update-go').addEventListener('click', () => {
+        _updateReloading = true;
+        const waiting = reg.waiting || reg.installing;
+        if (waiting) waiting.postMessage({ type: 'SKIP_WAITING' });
+        // If the worker never takes over (an old sw.js with no message
+        // handler), reload anyway rather than leaving a dead button.
+        setTimeout(() => { if (_updateReloading) window.location.reload(); }, 1500);
+        bar.remove();
+    });
+    bar.querySelector('.sw-update-later').addEventListener('click', () => bar.remove());
+    document.body.appendChild(bar);
+}
+
 function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
@@ -1518,27 +1589,28 @@ function registerServiceWorker() {
                 if (!installing) return;
                 installing.addEventListener('statechange', () => {
                     // "installed" + an existing controller means a NEW SW is
-                    // ready. Leave it waiting: it activates after the learner
-                    // naturally closes this app, never mid-question.
+                    // ready and waiting. It must never replace the running app
+                    // mid-question, so it stays waiting until the child says
+                    // so — but they have to be TOLD, which is what was missing.
                     if (installing.state === 'installed' &&
                         navigator.serviceWorker.controller) {
-                        console.log('[FlashLingo] Update downloaded — waiting for the next app open.');
+                        offerUpdate(reg);
                     }
                 });
             });
+            // A worker that finished installing while the app was closed is
+            // already sitting in `waiting` when we register.
+            if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg);
 
             // Never reload a live lesson when a new worker takes over. The
-            // current page can safely finish with the JS it already loaded;
-            // the new cache is used on the next natural open/reload.
+            // current page can safely finish with the JS it already loaded.
             const wasControlled = !!navigator.serviceWorker.controller;
-            let updateNoticeShown = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 // Ignore the first-ever worker claiming a previously
                 // uncontrolled page; that is installation, not an update.
-                if (!wasControlled || updateNoticeShown) return;
-                updateNoticeShown = true;
-                console.log('[FlashLingo] New version installed — will use it next time the app opens.');
-                if (typeof showToast === 'function') showToast('✅ App updated — ready next time you open it');
+                if (!wasControlled) return;
+                // Only a tap on "Tải bản mới" gets here — see offerUpdate.
+                if (_updateReloading) window.location.reload();
             });
         })
         .catch(() => {});

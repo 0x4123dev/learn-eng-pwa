@@ -19,6 +19,13 @@
   GhostOfferingLink.prototype._open = function () {
     if (this.closed || !this.token || typeof WebSocket === 'undefined') return this._mode('offline');
     let ws;
+    // WHY THE TOKEN IS IN THE URL HERE (see js/battlelink.js for the long
+    // version). A browser WebSocket handshake cannot carry an Authorization
+    // header, so the URL is the only channel available. This exception is
+    // confined to the battle Worker origin: functions/api/_lib.js `bearer()`
+    // no longer accepts `?token=`, so the REST API cannot be reached with a
+    // token scraped out of a request log. The worker verifies the signature
+    // and deletes `token` from the URL before forwarding to the room.
     try { ws = new WebSocket(`${WS_BASE}/offering/${encodeURIComponent(this.roomId)}?token=${encodeURIComponent(this.token)}${this.botId===null?'':`&bot=${this.botId}`}`); }
     catch (_) { return this._mode('offline'); }
     this.ws = ws;

@@ -69,3 +69,5 @@ suite('coin grants: admin gives, the device claims once', () => {
     assert.truthy(/amount <= 0 \|\| amount > 100000/.test(src), 'the dialog validates before sending');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

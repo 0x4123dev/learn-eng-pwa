@@ -220,3 +220,5 @@ suite('math typesetting: the complete Math bank', () => {
         }));
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

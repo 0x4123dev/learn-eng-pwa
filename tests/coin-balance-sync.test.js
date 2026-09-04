@@ -57,4 +57,4 @@ suite('daily coin balance recovery snapshots', () => {
   });
 });
 
-if (require.main === module) require('./harness').runAll();
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

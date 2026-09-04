@@ -116,3 +116,5 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     assert.truthy(src.indexOf('target.shielded=true')<src.indexOf("VALUES(?,?,?,?,?,?,'active'"));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

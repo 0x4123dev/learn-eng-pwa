@@ -282,6 +282,11 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
     for (const f of (lazy.match(/'js\/[a-z0-9-]+\.js'/g) || []).map(s => s.slice(1, -1))) {
       assert.truthy(sw.includes("'/" + f + "'"), f + ' must be precached');
     }
-    assert.truthy(sw.includes('cache.addAll(ASSETS)'), 'install must precache them all');
+    // install no longer uses cache.addAll: one failing entry out of 153 used to
+    // reject the WHOLE install, and registerServiceWorker swallowed it, so a
+    // single renamed sprite left every device on the previous worker for good.
+    // It is best-effort now — but it must still attempt every ASSETS entry.
+    assert.truthy(/ASSETS\.map\(async url =>/.test(sw), 'install must precache them all');
+    assert.truthy(/event\.waitUntil\(precache\(\)\)/.test(sw), 'and install must wait for it');
   });
 });

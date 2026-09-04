@@ -37,12 +37,90 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Removing user-scalable=no from index.html re-arms double-tap-to-zoom,
+           and with it the ~300ms wait before a tap registers. This takes the
+           wait off the CONTROLS without taking pinch-zoom off the page — a
+           child with low vision must still be able to enlarge the 11.5px nav
+           labels and the Toán figures, WCAG 1.4.4. Element selectors only, so
+           the canvases and pan surfaces that set their own touch-action — the
+           math board overlay, the drawing canvas, the raid builder — still win
+           on specificity. */
+        button, [role="button"], a, label, summary, select,
+        input[type="checkbox"], input[type="radio"] {
+            touch-action: manipulation;
+        }
+
+        /* "There is a new version" — js/app.js offerUpdate. The service worker
+           deliberately never takes over by itself, so this is the only way an
+           update ever reaches a child who keeps the app open in the switcher
+           for days. It sits above the bottom nav rather than over the content,
+           and it is never shown while something is timed. */
+        .sw-update-bar {
+            position: fixed;
+            left: 12px;
+            right: 12px;
+            bottom: calc(12px + var(--safe-area-bottom));
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 28px rgba(31, 80, 50, 0.22);
+            font-size: 14px;
+            color: var(--text-primary);
+            animation: swUpdateIn 0.25s ease-out;
+        }
+        .sw-update-bar span {
+            flex: 1;
+            min-width: 0;
+        }
+        .sw-update-bar button {
+            flex-shrink: 0;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .sw-update-bar .sw-update-go {
+            background: var(--accent-green);
+            color: #fff;
+        }
+        .sw-update-bar .sw-update-later {
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 8px 6px;
+        }
+        @keyframes swUpdateIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .sw-update-bar { animation: none; }
+        }
+
         html, body {
             /* 100dvh accounts for the dynamic viewport (mobile URL bar
                collapse/expand) so the bottom nav truly sits at the
-               bottom — 100% / 100vh leave a gap on iOS Safari. */
+               bottom — 100% / 100vh leave a gap on iOS Safari.
+               The 100vh line MUST stay FIRST: a browser without dvh
+               (iOS Safari < 15.4 — iPad Air 1, iPad mini 2/3) throws the
+               dvh declaration away and keeps this one. Without a first
+               height, html/body fall back to height:auto, the .app shell's
+               height:100% resolves to auto, and .screens-container — which
+               holds nothing but position:absolute .screen children —
+               collapses to 0px: the child sees the bottom nav over a blank
+               gradient and nothing else. min-height cannot save it: a
+               percentage height only resolves against a real height. */
+            height: 100vh;
             height: 100dvh;
-            /* Fallback for browsers without dvh support */
             min-height: 100vh;
             overflow: hidden;
         }
@@ -4967,24 +5045,12 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
-        .pet-info-close {
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            border: none;
-            background: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--text-secondary, #999);
-            padding: 4px;
-        }
-
-        .pet-info-stages {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
+        /* .pet-info-close and .pet-info-stages are styled ~7,000 lines below,
+           with the rest of the redesigned pet-info modal. The original rules
+           that lived here were fully overridden by those and have been
+           removed; the two declarations that were NOT overridden (the close
+           button's `right`, the stages' `margin-bottom`) moved down with
+           them. Do not restyle either one here. */
 
         .pet-info-stage {
             display: flex;
@@ -6058,11 +6124,9 @@
             margin-bottom: 10px;
         }
 
-        .shop-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
+        /* .shop-tabs is styled ~5,800 lines below (a 3-column grid). Every
+           declaration that used to be here was overridden by it, so nothing
+           had to move. */
         .shop-tab {
             flex: 1;
             padding: 6px 0;
@@ -11693,6 +11757,11 @@
 .pet-info-close {
     position: sticky;
     top: 0;
+    /* Carried over from the duplicate block deleted near .pet-info-modal:
+       it was cascading onto this button, so it stays to keep the rendering
+       byte-identical. Inert while the modal scrolls only vertically; it is
+       what pins the button off the right edge if it ever scrolls sideways. */
+    right: 12px;
     float: right;
     z-index: 12;
     width: 44px;
@@ -11764,6 +11833,10 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    /* Carried over from the duplicate block deleted near .pet-info-modal.
+       This one is VISIBLE: home.js renders two .pet-info-stages grids back to
+       back (evolution stages, then foods) and this is the gap between them. */
+    margin-bottom: 16px;
 }
 .pet-info-stage,
 .pet-evolution-card,
@@ -12234,7 +12307,7 @@
 /* Fake landscape: iOS cannot lock orientation from a web app, so the whole
    builder rotates 90deg — the child turns the device and the island fills the
    wide way. Pan deltas are remapped in JS while this class is on. */
-.nr-builder.rotated{position:fixed;z-index:3600;top:0;left:0;width:100dvh;height:100dvw;margin:0;padding:0;border-radius:0;transform:rotate(90deg) translateY(-100%);transform-origin:top left;background:#c9ebd0}
+.nr-builder.rotated{position:fixed;z-index:3600;top:0;left:0;width:100vh;width:100dvh;height:100vw;height:100dvw;margin:0;padding:0;border-radius:0;transform:rotate(90deg) translateY(-100%);transform-origin:top left;background:#c9ebd0}
 /* Fake landscape is a 90deg CSS rotation, and that swaps the axes for every
    control floating over the stage: element `top` runs along the phone's SHORT
    edge, and env(safe-area-inset-*) now points at the wrong sides entirely.
@@ -12565,7 +12638,7 @@
    flash or mis-size it when a second full-screen backdrop-filter is added on
    top, so the homepage shop gets an opaque, stable scrim. */
 .pet-shop-drawer-overlay.yard-shop-overlay,
-.pet-info-modal-overlay.yard-shop-overlay{z-index:1000;height:100dvh;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,20,64,.78);isolation:isolate}
+.pet-info-modal-overlay.yard-shop-overlay{z-index:1000;height:100vh;height:100dvh;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,20,64,.78);isolation:isolate}
 .pet-shop-drawer-overlay.yard-shop-overlay{
   background:linear-gradient(180deg,rgba(36,20,64,.04) 0 38%,rgba(36,20,64,.2) 55%,rgba(36,20,64,.58) 100%)}
 .pet-info-modal-overlay.yard-shop-overlay{padding:max(12px,env(safe-area-inset-top)) 10px max(12px,env(safe-area-inset-bottom));overflow:hidden}

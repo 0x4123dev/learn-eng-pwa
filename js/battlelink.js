@@ -47,6 +47,20 @@ BattleLink.prototype._openSocket = function () {
   }
   let ws;
   try {
+    // WHY THE TOKEN IS IN THE URL HERE, AND NOWHERE ELSE.
+    // The browser WebSocket constructor takes a URL and nothing else — it
+    // cannot send an Authorization header — so the handshake has no other
+    // place to carry proof of who is connecting. This is the ONLY remaining
+    // token-in-a-URL in the app: functions/api/_lib.js `bearer()` accepts the
+    // Authorization header and only the header, so a token seen in a Worker
+    // log cannot be replayed against /api/*.
+    // It is still the full 90-day account token, which is the cost of not
+    // having a short-lived ticket endpoint (that would need a new route under
+    // functions/api/ plus a matching change in battle-worker/src/index.js).
+    // Two things bound the damage in the meantime: the worker verifies the
+    // signature itself and then STRIPS `token` before forwarding to the
+    // Durable Object (battle-worker/src/index.js), and it also checks that
+    // the uid is actually one of this battle's two players.
     ws = new WebSocket(`${BATTLE_WS_BASE}/room/${this.battleId}?token=${encodeURIComponent(this.token)}`);
   } catch (e) {
     this._setMode('polling');

@@ -213,3 +213,5 @@ suite('math hints: the panel', () => {
         assert.truthy(/_mathHintOpen = false/.test(start), 'a fresh practice should start with the hint closed');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

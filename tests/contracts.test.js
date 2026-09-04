@@ -157,3 +157,5 @@ suite('contracts: every asset path points at a real file', () => {
     assert.deepEqual(offenders, [], offenders.join('\n'));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

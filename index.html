@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Pinch-zoom stays ON. `maximum-scale=1.0, user-scalable=no` used to sit
+         here; iOS has ignored both since iOS 10, so all they did was lock
+         Android Chrome out of zooming — a child with low vision could not
+         enlarge the 11.5px nav labels or a Toán figure (WCAG 1.4.4). The
+         double-tap-zoom delay they were meant to suppress is handled by
+         `touch-action: manipulation` in css/styles.css instead. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#ffffff">

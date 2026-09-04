@@ -58,3 +58,5 @@ suite('arena unavailable state', () => {
         assert.truthy(/_pbStopPolling\(\)/.test(refresh));
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

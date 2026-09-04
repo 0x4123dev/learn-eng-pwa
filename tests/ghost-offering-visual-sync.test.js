@@ -226,4 +226,4 @@ suite('ghost offering realtime: 50 shared-screen synchronization cases', () => {
   });
 });
 
-if (require.main === module) require('./harness').runAll();
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

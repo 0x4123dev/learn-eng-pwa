@@ -667,3 +667,5 @@ suite('math board: easy to draw and use', () => {
             'a new quiz session earns one fresh reminder');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

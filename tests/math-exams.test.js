@@ -148,3 +148,5 @@ suite('math exams: exam mode wiring', () => {
         assert.truthy(/không giới hạn thời gian/i.test(src));
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

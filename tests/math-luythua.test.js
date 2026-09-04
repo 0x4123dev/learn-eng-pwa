@@ -197,3 +197,5 @@ suite('luy thua: safety and wiring', () => {
             'sw.js ASSETS is missing /js/math-luythua.js');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

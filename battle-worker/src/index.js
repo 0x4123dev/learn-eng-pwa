@@ -64,6 +64,14 @@ const CORS = {
 
 export default {
   // GET /room/<battleId>?token=…   (WebSocket upgrade)
+  //
+  // The token rides in the query string because a browser WebSocket handshake
+  // cannot set an Authorization header. It is the same account token the REST
+  // API uses, so it must not linger: this Worker verifies the signature here
+  // and then DELETES `token` from the URL before forwarding to the Durable
+  // Object, so the room never sees it. The Pages API (functions/api/_lib.js
+  // `bearer()`) does NOT accept `?token=` at all — a token scraped from a log
+  // of this Worker cannot be replayed against /api/*.
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });

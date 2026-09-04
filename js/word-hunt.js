@@ -13,7 +13,9 @@ let huntState = {
     timer: null,
     timeLeft: HUNT_TIME,
     startTime: 0,
-    huntsCompleted: 0
+    huntsCompleted: 0,
+    // One game ends exactly once — see completeWordHunt().
+    finished: false
 };
 
 function renderWordHuntCard() {
@@ -60,7 +62,8 @@ function openWordHunt() {
         selectedCells: [],
         timer: null,
         timeLeft: HUNT_TIME,
-        startTime: Date.now()
+        startTime: Date.now(),
+        finished: false
     };
 
     huntState.grid = generateGrid(picked);
@@ -310,6 +313,13 @@ function startHuntTimer() {
 }
 
 function completeWordHunt() {
+    // Three callers race for the same game: the 800ms victory delay in
+    // checkHuntSelection(), the 200ms timer tick when the clock hits 0, and
+    // endWordHunt(). Find the last word inside the final 0.8s and the first two
+    // BOTH fire — the win counted twice, so `hunter-10` unlocked on five games,
+    // and the result screen was rebuilt under the child's finger.
+    if (huntState.finished) return;
+    huntState.finished = true;
     clearInterval(huntState.timer);
     const found = huntState.foundWords.length;
     const total = HUNT_WORDS;

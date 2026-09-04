@@ -100,6 +100,9 @@ const SQL_FILES = [
   // One offering pays one child once per event day, however many preview
   // rounds they replay.
   'db/024-ghost-offering-payouts.sql',
+  // The index the Đấu Toán reaper needs: it runs on every 3-second list poll
+  // and had no index on deadline_at at all.
+  'db/026-math-fight-deadline-index.sql',
 ];
 
 function createWorld(opts) {

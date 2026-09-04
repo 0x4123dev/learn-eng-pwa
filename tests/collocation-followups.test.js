@@ -339,3 +339,5 @@ suite('collocation follow-ups: quiz behaviour', () => {
         assert.equal(global.appState.coins, 5 * s.score, 'coins are 5 per point scored');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

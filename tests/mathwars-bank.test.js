@@ -53,4 +53,4 @@ suite('math wars: practice draws from the same 1000-sum bank', () => {
   });
 });
 
-if (require.main === module) require('./harness').runAll().then(c => process.exit(c));
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

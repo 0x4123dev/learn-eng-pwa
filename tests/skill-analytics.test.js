@@ -128,3 +128,5 @@ suite('skill analytics: admin-only dashboard', () => {
     assert.truthy(admin.includes('id="skillAnalytics"'));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -59,3 +59,5 @@ suite('disabled accounts: gone everywhere but the admin site', () => {
       'an admin cannot lock themselves out');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

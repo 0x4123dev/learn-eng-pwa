@@ -59,3 +59,5 @@ suite('word form bank', () => {
     assert.equal(wf.wordformById('nope'), null);
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -40,3 +40,5 @@ suite('pet rename: the child can change the dog\'s name from home', () => {
     assert.truthy(read('js/petcheer.js').includes('st.petName'), 'cheers');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

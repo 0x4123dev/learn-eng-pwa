@@ -188,10 +188,53 @@ const ASSETS = [
 // Install: cache all app assets, then WAIT. Updating used to call
 // skipWaiting(), which could replace the active worker during a lesson.
 // Waiting applies the update on the next natural close/open instead.
+//
+// BEST EFFORT, not all-or-nothing. cache.addAll() rejects the whole install if
+// a SINGLE one of the 153 entries fails, and registerServiceWorker swallows
+// that rejection — so one renamed sprite, or one dropped request on a 3G
+// connection partway through 34 MB, left every device stuck on the previous
+// worker for good. Online the app looked fine (the fetch handler is
+// network-first), so nothing ever surfaced it; offline it served the old
+// release's JS against the new index.html.
+//
+// Failures are collected and logged instead. A missing entry means that one
+// asset needs the network, which is a far smaller problem than an update that
+// can never install.
+async function precache() {
+  const cache = await caches.open(CACHE_NAME);
+  const results = await Promise.allSettled(ASSETS.map(async url => {
+    // Default cache mode, exactly as cache.addAll used: 20 MB of the precache
+    // is night-raid sprite sheets that do not change between releases, and
+    // forcing a network re-download of all of them on every version bump is
+    // what made this install fragile in the first place.
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(response.status + ' ' + url);
+    // Cloudflare Pages answers an unknown path with the SPA fallback: 200 and
+    // text/html. Caching that under a .js or .png key poisons the entry for
+    // the life of this CACHE_NAME — exactly how the word recordings were
+    // muted once (see isRecording below).
+    if (!url.endsWith('.html') && url !== '/' &&
+        (response.headers.get('content-type') || '').indexOf('text/html') !== -1) {
+      throw new Error('SPA fallback for ' + url);
+    }
+    await cache.put(url, response);
+  }));
+  const failed = results
+    .map((r, i) => (r.status === 'rejected' ? ASSETS[i] : null))
+    .filter(Boolean);
+  if (failed.length) console.warn('[sw] precache incomplete:', failed.length, 'of', ASSETS.length, failed.slice(0, 10));
+  return failed;
+}
+
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
+  event.waitUntil(precache());
+});
+
+// The child taps "Tải bản mới" on the update toast (js/app.js). Until then a
+// new worker waits, so an update can never replace the running app in the
+// middle of a lesson.
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 // Drop just the recordings that were re-cut under their existing filename.
@@ -302,15 +345,34 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Network-first, but not network-forever. On "lie-fi" — associated to a
+  // Wi-Fi that cannot reach the internet — a bare fetch() waits for the OS
+  // socket timeout, tens of seconds, and the startup bundle is 55 scripts plus
+  // the stylesheet. A fully cached app took minutes to paint instead of a
+  // second. Anything already in the cache is served the moment the network
+  // fails to answer in time; the network response still wins if it arrives.
+  const NETWORK_TIMEOUT_MS = 3500;
+  let slowTimer = null;
+  const fromNetwork = fetch(event.request).then(response => {
+    // The network answered: stop the fallback timer rather than leaving one
+    // pending per request (a cold start asks for 55 scripts and a stylesheet).
+    if (slowTimer !== null) { clearTimeout(slowTimer); slowTimer = null; }
+    // Update cache with fresh response for offline use
+    if (response.ok) {
+      const clone = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+    }
+    return response;
+  });
+  // If the cache wins the race, nothing else is listening to fromNetwork, and
+  // an offline rejection would surface as an unhandled rejection in the worker.
+  fromNetwork.catch(() => { if (slowTimer !== null) { clearTimeout(slowTimer); slowTimer = null; } });
+  const raceCache = new Promise(resolve => { slowTimer = setTimeout(resolve, NETWORK_TIMEOUT_MS); })
+    .then(() => caches.match(event.request, { ignoreSearch: true }))
+    .then(hit => hit || fromNetwork);
+
   event.respondWith(
-    fetch(event.request).then(response => {
-      // Update cache with fresh response for offline use
-      if (response.ok) {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-      }
-      return response;
-    }).catch(async () => {
+    Promise.race([fromNetwork, raceCache]).catch(async () => {
       // Offline — serve from cache. `ignoreSearch` because a query string is
       // never part of what we precached: the friend-invite link
       // /?ketban=<name> (js/friends.js) missed the cached '/' entirely.

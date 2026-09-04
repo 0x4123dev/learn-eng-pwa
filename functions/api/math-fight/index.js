@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { MF, currentFight, fightView, mathFightEnabled, pairState, reapStale } from '../_math-fight.js';
+import { MF, busyIdsAmong, currentFight, fightView, mathFightEnabled, pairStatesFor, reapStale } from '../_math-fight.js';
 
 // GET /api/math-fight → everything the Đấu Toán tab needs to paint itself:
 // the friends it may challenge, each with the clocks that gate them, plus any
@@ -21,23 +21,35 @@ export async function onRequestGet({ request, env }) {
         AND ru.disabled = 0 AND au.disabled = 0`
   ).bind(auth.uid, auth.uid, auth.uid, auth.uid).all();
 
-  const friends = [];
-  for (const r of (rows.results || [])) {
-    const pair = await pairState(env, auth.uid, r.friend_id);
-    const busy = await currentFight(env, r.friend_id);
-    friends.push({
+  // This screen re-polls every 3 seconds for as long as it is open, so the
+  // per-friend fan-out it used to do here — pairState + currentFight inside
+  // the loop — cost 2N+2 D1 round trips per poll per device, forty-two of them
+  // for a child with twenty friends. Both lookups are now one set-based read
+  // each, so the poll costs the same handful of queries whether the child has
+  // two friends or fifty.
+  const friendRows = rows.results || [];
+  const ids = friendRows.map(r => r.friend_id);
+  const [pairs, busyIds, mine] = await Promise.all([
+    pairStatesFor(env, auth.uid, ids),
+    busyIdsAmong(env, ids),
+    currentFight(env, auth.uid),
+  ]);
+
+  const friends = friendRows.map(r => {
+    const id = Math.trunc(Number(r.friend_id) || 0);
+    const pair = pairs.get(id);
+    return {
       userId: r.friend_id,
       username: r.friend_name || 'Bạn',
       // Absolute timestamps only: the client renders countdowns and never
       // holds its own copy of the 3-day rules.
-      readyAt: pair.nextReadyAt || null,
+      readyAt: (pair && pair.nextReadyAt) || null,
       friendReadyAt: Number(r.since) * 1000 + MF.COOLDOWN_MS,
-      busy: !!busy,
-    });
-  }
+      busy: busyIds.has(id),
+    };
+  });
   friends.sort((a, b) => a.username.localeCompare(b.username, 'vi'));
 
-  const mine = await currentFight(env, auth.uid);
   return json({
     now: Date.now(),
     prize: MF.PRIZE,

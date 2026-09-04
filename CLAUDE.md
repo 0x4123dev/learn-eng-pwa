@@ -4,38 +4,42 @@
 
 ---
 
-## CRITICAL: File Operations Rule
+## File Operations
 
-⚠️ **ALL AGENTS MUST USE THE WRITE TOOL TO SAVE FILES**
+Write files with the **Write** tool, or with an ordinary shell redirect
+(`cat > file << 'EOF'`) — both persist. Prefer Write for anything long: it is
+atomic, it does not go through shell quoting, and a heredoc containing
+backticks or `$` will bite you.
 
-```
-❌ NEVER USE (does not persist):
-   cat > file.md << 'EOF' ... EOF
-   echo "content" > file.md
-   printf '%s' "content" > file.md
-
-✅ ALWAYS USE:
-   Write tool with:
-   - file_path: "/Users/chuzon/go/src/app-analyzer/docs/[folder]/file.md"
-   - content: "The full file content..."
-```
-
-Bash file operations run in a sandbox and **DO NOT PERSIST** to disk.
-The Write tool is the ONLY reliable method for saving files.
+An older version of this file claimed Bash writes "run in a sandbox and DO NOT
+PERSIST". That was not true, and it sent agents down a much slower path for
+routine edits. (It also gave an example path in `app-analyzer`, a different
+repository entirely.) This project lives at
+`/Users/chuzon/go/src/learn-eng-pwa`.
 
 ---
 
 ## Quick Reference
 
+There is exactly ONE npm script. This is a vanilla-JS PWA — no build step, no
+bundler, no TypeScript, no linter.
+
 ```bash
-# Common commands
-npm run dev                    # Start development server
-npm run build                  # Production build
-npm run test                   # Run tests
-npm run test:cov               # Tests with coverage
-npm run lint                   # Lint code
-npm run typecheck              # Type check
+npm test          # the whole suite (11,000+ tests, tests/run-all.js)
+node tests/foo.test.js          # one file — see the WARNING below
+scripts/deploy.sh -m "msg"      # bump the 4 version markers, test, commit, deploy
 ```
+
+⚠️ **Do not bump version numbers by hand.** `scripts/deploy.sh` rewrites all
+four markers itself (js/home.js `APP_VERSION`, sw.js `CACHE_NAME`,
+package.json, functions/api/version.js) and `tests/version-sync.test.js` fails
+if any of them drifts. Commit your own code FIRST; deploy.sh now refuses to
+run with an uncommitted working tree, because it builds the bundle from that
+tree and would otherwise ship code that exists in no commit.
+
+⚠️ **Only trust `npm test`.** Running one file directly is fine now that every
+test file ends with `runAll().then(code => process.exit(code))`, but a file
+that loses that tail exits 0 no matter what fails.
 
 ## Project Structure
 
@@ -134,7 +138,14 @@ Microservice/Complex Architecture:
 
 ### Handoff System
 
-Agents save outputs to `docs/` for the next agent to read:
+Agents save outputs to `docs/` for the next agent to read.
+
+⚠️ **`docs/` is gitignored** (.gitignore), so these handoffs are LOCAL to one
+checkout: they do not reach another clone, another worktree, or a teammate.
+That is fine for passing a plan between agents inside one session; it is not a
+place to record anything that must survive. Durable decisions belong in this
+file, in a code comment next to the thing they explain, or in a test.
+
 
 ```
 @brainstormer      → docs/decisions/YYYY-MM-DD-[topic]-decision.md
@@ -208,9 +219,7 @@ Quality gates that MUST pass before proceeding:
 
 #### Before Code Review (@code-reviewer)
 ```bash
-# Required checks
-npm run typecheck  # Must pass
-npm run lint       # Must pass (no errors)
+# Required checks — there is no typecheck and no lint in this project
 npm test           # Must pass
 [ ] Test report exists: ls docs/test-reports/ | grep [feature]
 ```
@@ -218,9 +227,11 @@ npm test           # Must pass
 #### Before Commit (@git-manager)
 ```bash
 # Required checks
-npm run typecheck && npm run lint && npm test  # All must pass
+npm test           # Must pass
 [ ] Code review approved: grep -i "approved" docs/code-reviews/[feature].md
 [ ] No secrets: git diff --cached | grep -iE "(api.?key|secret|password|token)" && echo "BLOCKED"
+# Stage EXPLICIT paths. Another Claude session may be working in this repo;
+# `git add -A` / `git add -u` swallows their work in progress.
 ```
 
 #### Before Production Deploy
@@ -440,9 +451,10 @@ it('should send welcome email when user is created', async () => {});
 
 ### Coverage Requirements
 
-- Minimum: **80%** line coverage
-- Critical paths: **100%** coverage
-- Run with: `npm run test:cov`
+- Critical paths — anything that moves coins, decides a battle, or writes to
+  D1 — must be covered by an EXECUTED test, never a substring match on source.
+  See tests/money-*.test.js and tests/pages-harness.js for the pattern.
+- There is no coverage tool wired up; `npm run test:cov` does not exist.
 
 ---
 
@@ -589,52 +601,48 @@ LOG_LEVEL=debug
 
 ### Development Setup
 
+There is nothing to install and nothing to build. The app is static files
+served from the repo root.
+
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Setup environment
+# Secrets (ElevenLabs for word audio) — optional, only for the audio scripts
 cp .env.example .env
-# Edit .env with your values
 
-# 3. Run migrations
-npm run db:migrate
+# Look at it: any static server over the repo root works
+python3 -m http.server 8000
 
-# 4. Start development
-npm run dev
+# The API needs D1. To run Pages Functions locally:
+npx wrangler@3 pages dev . --d1 DB=eng_pwa_db
 ```
+
+Database migrations are hand-applied SQL files in `db/`, newest last. Each one
+carries its own `npx wrangler@3 d1 execute` line in a header comment. Apply a
+migration BEFORE deploying the code that reads it.
 
 ---
 
 ## Useful Commands
 
 ```bash
-# Development
-npm run dev              # Start dev server with hot reload
-npm run build            # Build for production
-npm start                # Start production server
+# Testing — the only npm script this project has
+npm test                              # the whole suite
+node tests/foo.test.js                # one file
+FLASHLINGO_TEST_TIMEOUT_MS=60000 npm test   # loosen the per-test timeout
 
-# Testing
-npm test                 # Run tests
-npm run test:cov         # Run tests with coverage
-npm run test:watch       # Run tests in watch mode
+# Deploy (Cloudflare Pages; never pushes to GitHub)
+scripts/deploy.sh -m "fix(x): …"      # bump + test + commit + deploy
+scripts/deploy.sh --no-bump           # already bumped and committed
+scripts/deploy.sh -m "…" --allow-dirty  # ship uncommitted work (HEAD ≠ live)
+scripts/deploy-audio.sh               # the word MP3s (separate Pages project)
 
-# Code Quality
-npm run lint             # Run ESLint
-npm run lint:fix         # Fix linting issues
-npm run typecheck        # Run TypeScript checks
-npm run format           # Format with Prettier
+# Database (hand-applied, newest file last)
+npx wrangler@3 d1 execute eng_pwa_db --remote --file db/0NN-name.sql
+npx wrangler@3 d1 execute eng_pwa_db --remote --command "PRAGMA table_info(x)"
 
-# Database
-npm run db:migrate       # Run migrations
-npm run db:rollback      # Rollback last migration
-npm run db:seed          # Seed database
-npm run db:reset         # Reset database
-
-# Git (via @git-manager)
-"@git-manager commit"
-"@git-manager commit and push"
-"@git-manager create PR"
+# Generated files — regenerate, never hand-edit the output
+node scripts/build-math-data.js data/math     # js/math-data.js, js/math-lessons.js
+node scripts/build-math-fight-bank.js         # js/math-fight-bank.js
+node scripts/build-hot-words.js               # js/hot-words.js
 ```
 
 ---
@@ -645,10 +653,11 @@ npm run db:reset         # Reset database
 
 | Issue | Solution |
 |-------|----------|
-| Tests failing | Run `npm run typecheck` first |
-| Import errors | Check `tsconfig.json` paths |
-| DB connection | Verify `DATABASE_URL` in `.env` |
-| Port in use | Change `PORT` in `.env` |
+| A test file "passes" but prints nothing | It lost its `runAll().then(code => process.exit(code))` tail. Only trust `npm test`. |
+| `no such column: …` from an API test | The mock schema is built from the files listed in `tests/pages-harness.js` `SQL_FILES`. Add the migration there. |
+| A tab renders empty with no error | Its bank is lazy-loaded (`js/lazy-data.js` `SCREEN_FILES`) and the download failed. Every render path must guard the global. |
+| A generated file keeps reverting | It is built by a `scripts/build-*.js`; edit the source under `data/` instead. |
+| Deploy refuses to run | Uncommitted changes would ship without being committed. Commit explicit paths first. |
 
 ### Debug Commands
 

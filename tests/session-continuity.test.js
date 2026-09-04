@@ -43,14 +43,33 @@ suite('session continuity: a reload is not a logout', () => {
     assert.truthy(app.includes(".match-card:not(.matched)"));
   });
 
-  test('a service-worker update never forces a page reload', () => {
+  test('a service-worker update never reloads the page on its own', () => {
+    // The invariant is the same one, restated for the fix: an update must
+    // never take the page out from under a child. What changed is that the
+    // child is now ASKED — waiting silently was its own bug, because
+    // `controllerchange` cannot fire while the page that registered the
+    // listener is still open, so a PWA parked in the app switcher downloaded
+    // every update and applied none of them.
     const start = app.indexOf('function registerServiceWorker()');
     const end = app.indexOf('function formatDate', start);
     const body = app.slice(start, end);
     assert.truthy(body.includes("addEventListener('controllerchange'"));
-    assert.falsy(body.includes('location.reload'));
-    assert.truthy(body.includes('next time the app opens'));
-    assert.falsy(sw.includes('self.skipWaiting()'));
-    assert.falsy(sw.includes("type === 'SKIP_WAITING'"));
+    // A reload only ever happens behind the `_updateReloading` flag, which is
+    // set in one place: the click handler on the "Tải bản mới" button.
+    for (const m of body.match(/[^\n]*location\.reload[^\n]*/g) || []) {
+      assert.truthy(/_updateReloading/.test(m), 'a reload must be gated on the tap: ' + m.trim());
+    }
+    const offer = app.slice(app.indexOf('function offerUpdate('), start);
+    assert.equal((offer.match(/_updateReloading = true/g) || []).length, 1,
+      'exactly one place arms the reload');
+    assert.truthy(offer.indexOf("addEventListener('click'") < offer.indexOf('_updateReloading = true'),
+      'and it is inside the click handler');
+    // The worker still never takes over by itself.
+    const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('message'"));
+    assert.falsy(/skipWaiting/.test(install));
+    assert.truthy(/type === 'SKIP_WAITING'\) self\.skipWaiting\(\)/.test(sw),
+      'the only skipWaiting is the one the page asks for');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

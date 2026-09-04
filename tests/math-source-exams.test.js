@@ -324,3 +324,5 @@ suite('math source exams: hình vẽ lại và app wiring', () => {
         }
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

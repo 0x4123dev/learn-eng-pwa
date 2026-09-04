@@ -189,3 +189,5 @@ suite('Toán 7: questions to review', () => {
         assert.truthy(/label: 'Luyện câu hay sai'/.test(body));
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

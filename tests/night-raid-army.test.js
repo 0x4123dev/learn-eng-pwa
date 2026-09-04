@@ -90,3 +90,5 @@ suite('night raid: the army can be counted', () => {
         }
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

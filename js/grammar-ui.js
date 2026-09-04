@@ -515,11 +515,38 @@ function renderGrammarHistory() {
     ` : '';
 
     // ── Filter chips (T2.7-8) ──
-    const unitChips = ['all', 'unit8', 'unit9', 'unit10', 'unit11'].map(u => {
-        const label = u === 'all' ? 'All units' : (getGrammarUnit(u) ? getGrammarUnit(u).icon + ' Unit ' + u.replace('unit', '') : u);
-        const active = _grammarHistoryFilters.unit === u ? 'active' : '';
-        return `<button class="filter-chip ${active}" onclick="setGrammarHistoryFilter('unit', '${u}')">${label}</button>`;
-    }).join('');
+    // The unit row used to be hard-coded to unit8..unit11. GRAMMAR_UNITS has
+    // grown to 13 — Unit 12 (Tenses) alone is 2,000 questions — so a child who
+    // had only ever practised Unit 12 opened History, saw four chips for units
+    // she had never touched, and got "No matches" behind every one of them,
+    // with no chip for the unit she HAD done. Build the row from her own
+    // history instead: a chip exists only when there is something behind it.
+    const _unitBank = (typeof GRAMMAR_UNITS !== 'undefined' && Array.isArray(GRAMMAR_UNITS))
+        ? GRAMMAR_UNITS : [];
+    const _unitRank = new Map(_unitBank.map((u, i) => [u.id, i]));
+    const _unitChipLabel = (u) => {
+        if (u === 'all') return 'All units';
+        const meta = _unitBank.find(x => x.id === u);
+        // A bank that failed to download must not blank the row: fall back to
+        // the raw id, the way _bankUnavailableHTML keeps the tab usable.
+        return meta ? (meta.icon + ' Unit ' + u.replace('unit', '')) : u;
+    };
+    const historyUnits = Array.from(new Set(
+        appState.grammarHistory.map(s => s.unitId).filter(Boolean)
+    )).sort((a, b) => (_unitRank.has(a) ? _unitRank.get(a) : 999) - (_unitRank.has(b) ? _unitRank.get(b) : 999));
+    // A filter left pointing at a unit that has since dropped out of history
+    // would show "No matches" with no chip left to undo it.
+    if (_grammarHistoryFilters.unit !== 'all' && historyUnits.indexOf(_grammarHistoryFilters.unit) === -1) {
+        _grammarHistoryFilters.unit = 'all';
+    }
+    // One unit means there is nothing to filter — don't show a row that can
+    // only ever be a no-op.
+    const unitChips = historyUnits.length > 1
+        ? ['all'].concat(historyUnits).map(u => {
+            const active = _grammarHistoryFilters.unit === u ? 'active' : '';
+            return `<button class="filter-chip ${active}" onclick="setGrammarHistoryFilter('unit', '${escapeAttr(u)}')">${_unitChipLabel(u)}</button>`;
+        }).join('')
+        : '';
     const tierChips = ['all', 'perfect', 'great', 'ok', 'weak'].map(t => {
         const labels = { all: 'All scores', perfect: '⭐ Perfect', great: '✅ Great', ok: '👍 OK', weak: '📝 Weak' };
         const active = _grammarHistoryFilters.tier === t ? 'active' : '';
@@ -527,7 +554,7 @@ function renderGrammarHistory() {
     }).join('');
     const filtersHTML = `
         <div class="grammar-filters">
-            <div class="grammar-filter-row">${unitChips}</div>
+            ${unitChips ? `<div class="grammar-filter-row">${unitChips}</div>` : ''}
             <div class="grammar-filter-row">${tierChips}</div>
         </div>
     `;

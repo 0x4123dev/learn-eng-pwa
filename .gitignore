@@ -8,6 +8,11 @@ docs/
 .cf-audio-dist/
 node_modules/
 
+# Scratch output from audits and one-off scripts. It was neither ignored nor
+# tracked, so a `git add -A` from a concurrent session on this repo would
+# commit audit screenshots into the app.
+tmp/
+
 # Local secrets (ElevenLabs / Cloudflare) — never commit
 .env
 

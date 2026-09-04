@@ -8,8 +8,21 @@ let _friendsBusy = false;
 let _friendsMsg = '';
 let _friendsLinking = false;
 
+// Escapes ALL FIVE HTML-significant characters, quotes included. It used to
+// stop at & < >, which is only safe for text between tags — the moment an
+// escaped value lands inside an attribute (`title="…"`, `data-name="…"`), a
+// bare `"` closes that attribute and everything after it is parsed as markup.
+// A username cannot contain a quote today (USERNAME_RE in js/auth.js and
+// functions/api/register.js forbid it), but this helper must not depend on a
+// rule kept in two other files: relax that regex, or edit one name straight
+// in the database, and the gap becomes real.
 function frEsc(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function _frToken() {
@@ -276,7 +289,7 @@ function renderFriendsSection() {
   const list = (friends || []).map(f => {
     const s = f.summary || { sessions: 0, correct: 0, daysThisWeek: 0 };
     return `
-    <div class="friend-row" onclick="openFriendActivity(${f.userId}, '${frEsc(f.username).replace(/'/g, '')}')">
+    <div class="friend-row" data-friend-id="${Number(f.userId) || 0}" data-friend-name="${frEsc(f.username)}">
       <div class="friend-face">${_frPetFace(1)}</div>
       <div class="friend-info">
         <div class="friend-name">${frEsc(f.username)}</div>
@@ -317,6 +330,28 @@ function renderFriendsSection() {
     ${list ? `<div class="friend-group-title">Bạn bè (${friends.length})</div>${list}`
            : `<div class="friends-empty">Chưa có bạn nào. Rủ bạn cùng học rồi thi đấu nhé! ⚔️</div>`}
     ${pending ? `<div class="friend-pending">Đang chờ: ${pending}</div>` : ''}`;
+
+  _frBindFriendRows(el);
+}
+
+// A friend's name is DATA. It rides in a data-* attribute and the click
+// behaviour is attached here, so the browser never parses the name as code.
+// The row used to be `onclick="openFriendActivity(1, 'NAME')"`, which made a
+// username part of a JavaScript string inside an HTML attribute — two layers
+// of quoting for one value, and a single stray `"` or `'` escapes both.
+// Nothing an escaper can do makes that construction safe by design; not
+// building it does.
+function _frBindFriendRows(el) {
+  if (!el || typeof el.querySelectorAll !== 'function') return;
+  const rows = el.querySelectorAll('.friend-row[data-friend-id]');
+  if (!rows || !rows.length) return;
+  Array.prototype.forEach.call(rows, (row) => {
+    row.addEventListener('click', () => {
+      const id = Number(row.getAttribute('data-friend-id'));
+      if (!id) return;
+      openFriendActivity(id, row.getAttribute('data-friend-name') || '');
+    });
+  });
 }
 
 // Full 7-day card for one friend (summary only — never their answers).
@@ -373,7 +408,8 @@ if (typeof window !== 'undefined') { try { _frCaptureInvite(); } catch (e) {} }
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderFriendsSection, initFriendsSection, loadFriends, inviteFriend,
-    respondFriend, openFriendActivity, frEsc, retryFriendsLink, relinkFriendsAccount,
+    respondFriend, openFriendActivity, frEsc, _frBindFriendRows,
+    retryFriendsLink, relinkFriendsAccount,
     _frLinkHelpHTML, friendInviteLink, shareFriendLink, acceptQuickInvite,
     dismissQuickInvite, _frCaptureInvite, _frPendingInvite, _frClearPendingInvite,
     FR_INVITE_PARAM, FR_INVITE_KEY,

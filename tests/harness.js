@@ -61,6 +61,28 @@ const assert = {
 // returned a promise, the harness counted a pass, and any assertion inside
 // resolved into the void. A whole file of screen tests "passed" for an hour
 // while verifying nothing — so if you write `async () => {}` here, it runs.
+// No test may hang the suite. `await t.fn()` on a promise that never settles
+// stopped run-all.js dead, and scripts/deploy.sh captures the runner in `$(…)`
+// — so the operator saw "▸ running the suite…" and nothing else, forever, with
+// no way to tell which test was stuck.
+const TEST_TIMEOUT_MS = Number(process.env.FLASHLINGO_TEST_TIMEOUT_MS) || 20000;
+
+function withTimeout(promise, label) {
+    // A synchronous test never touches the timer at all.
+    if (!promise || typeof promise.then !== 'function') return promise;
+    let timer = null;
+    const bell = new Promise((_, reject) => {
+        // Deliberately NOT unref'd: a test whose promise holds nothing open
+        // would otherwise let node exit quietly with status 0 — the silent
+        // pass this timer exists to prevent. `finally` clears it the moment
+        // the test settles, so a green suite is never delayed by it.
+        timer = setTimeout(
+            () => reject(new Error(`timed out after ${TEST_TIMEOUT_MS} ms — ${label}`)),
+            TEST_TIMEOUT_MS);
+    });
+    return Promise.race([promise, bell]).finally(() => { if (timer) clearTimeout(timer); });
+}
+
 async function runAll() {
     const ESC_RED = '\x1b[31m';
     const ESC_GREEN = '\x1b[32m';
@@ -72,7 +94,7 @@ async function runAll() {
         console.log(`\n${ESC_BOLD}━━━ ${s.name} ━━━${ESC_RESET}`);
         for (const t of s.tests) {
             try {
-                await t.fn();
+                await withTimeout(t.fn(), `${s.name} › ${t.name}`);
                 _passed++;
                 console.log(`  ${ESC_GREEN}✓${ESC_RESET} ${t.name}`);
             } catch (e) {

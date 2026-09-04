@@ -463,3 +463,5 @@ suite('night raid choreography: app integration', () => {
     assert.truthy(game.includes('this.drawTrail(ctx,u,T)'));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

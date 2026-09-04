@@ -288,4 +288,4 @@ suite('ghost offering realtime: browser transport', () => {
   });
 });
 
-if (require.main === module) require('./harness').runAll();
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

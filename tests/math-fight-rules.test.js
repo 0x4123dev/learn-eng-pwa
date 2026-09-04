@@ -198,3 +198,5 @@ suite('math fight: questions above the wars ceiling', () => {
     assert.equal(JSON.stringify(a), JSON.stringify(b));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

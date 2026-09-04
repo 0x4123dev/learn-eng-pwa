@@ -175,3 +175,5 @@ suite('night raid: one deterministic combat mode', () => {
     assert.equal(R.trainingStars({status:'won',budget:2,timeMs:100000}), 1);
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

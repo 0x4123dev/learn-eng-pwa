@@ -146,3 +146,5 @@ suite('ghost offering relay: only the right people, at the right time', () => {
         assert.equal(url.searchParams.get('token'), null, 'the auth token must not be handed on to the room');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

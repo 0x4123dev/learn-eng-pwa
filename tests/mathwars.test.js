@@ -447,3 +447,5 @@ suite('math wars: a mis-tap must not cost the round', () => {
             'renderMathHome must hand back to the live round');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

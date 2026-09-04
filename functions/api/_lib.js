@@ -86,12 +86,27 @@ export async function getAuthSecret(env) {
 }
 
 // ---- request auth ----
+// HEADER ONLY. A `?token=` fallback used to live here, and it was a quiet
+// leak: this token IS the account, it lasts 90 days (TOKEN_TTL_MS above), and
+// a query string is the one part of a request that gets written down
+// everywhere — Cloudflare request logs, analytics, any intermediate proxy,
+// Referer headers, a screenshotted address bar. Anyone reading those logs
+// could replay it against every /api/* route until it expired.
+//
+// Nothing needed it: js/auth.js (api()), admin.html and js/night-raid.js all
+// send `Authorization: Bearer …`, and no caller anywhere in the repo built a
+// REST URL with a token in it.
+//
+// The ONE place a token still travels in a URL is the battle Worker's
+// WebSocket handshake (js/battlelink.js, js/ghost-offering-link.js →
+// battle-worker/src/index.js). A browser cannot set headers on a WebSocket
+// upgrade, so that exception is forced by the platform, not chosen — and it
+// is confined to that separate Worker origin. It deliberately does NOT come
+// back here: the REST API accepts the header and only the header.
 export function bearer(request) {
   const h = request.headers.get('Authorization') || '';
   const m = h.match(/^Bearer\s+(.+)$/i);
-  if (m) return m[1].trim();
-  const url = new URL(request.url);
-  return url.searchParams.get('token');
+  return m ? m[1].trim() : null;
 }
 // A valid signature is not enough: the account behind it must still exist and
 // still be enabled.

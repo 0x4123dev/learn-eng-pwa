@@ -41,18 +41,88 @@ export function randomFightId() {
   return Array.from(b).map(v => v.toString(16).padStart(2, '0')).join('');
 }
 
-// The handicap state for one pair, or neutral ground when they have never met.
-export async function pairState(env, aId, bId) {
-  const { lo, hi } = MF.pairKey(aId, bId);
-  const row = await env.DB.prepare(
-    'SELECT leader_id, streak, next_ready_at FROM math_fight_pairs WHERE lo_id=? AND hi_id=?'
-  ).bind(lo, hi).first();
+// The one place a math_fight_pairs row (or the absence of one) is turned into
+// the handicap state the rest of the server reads. Pulled out of pairState so
+// the single-pair read and the list's set-based read cannot drift apart: a
+// friend row that quietly lost its cooldown would let a pair fight twice in
+// three days, which is the whole point of the table.
+function pairStateOf(lo, hi, row) {
   return {
     lo, hi,
     leaderId: row && row.leader_id ? Math.trunc(row.leader_id) : null,
     streak: Math.max(0, Math.trunc(+(row && row.streak) || 0)),
     nextReadyAt: Math.max(0, Math.trunc(+(row && row.next_ready_at) || 0)),
   };
+}
+
+// A single id, the way both readers key their maps.
+function uid(v) { return Math.trunc(Number(v) || 0); }
+
+// The handicap state for one pair, or neutral ground when they have never met.
+export async function pairState(env, aId, bId) {
+  const { lo, hi } = MF.pairKey(aId, bId);
+  const row = await env.DB.prepare(
+    'SELECT leader_id, streak, next_ready_at FROM math_fight_pairs WHERE lo_id=? AND hi_id=?'
+  ).bind(lo, hi).first();
+  return pairStateOf(lo, hi, row);
+}
+
+// Every pair state between one child and a list of friends, in ONE query.
+//
+// The Đấu Toán list polls every 3 seconds for as long as the tab is open, and
+// it used to call pairState once per friend: twenty friends meant forty D1
+// round trips per poll per device. One child's row set is bounded by the
+// friends they have ever fought, so a single read over their side of the
+// table is both smaller and cheaper than the fan-out it replaces.
+//
+// Returns a Map keyed by friend id holding exactly what pairState would have
+// returned for that friend — including the neutral, never-fought row.
+export async function pairStatesFor(env, meId, friendIds) {
+  const me = uid(meId);
+  const out = new Map();
+  for (const v of (friendIds || [])) {
+    const id = uid(v);
+    if (!id || out.has(id)) continue;
+    const { lo, hi } = MF.pairKey(me, id);
+    out.set(id, pairStateOf(lo, hi, null));
+  }
+  if (!out.size) return out;
+  // Both halves are index lookups: lo_id leads the primary key and db/026
+  // adds the hi_id index the other half needs.
+  const rows = await env.DB.prepare(
+    'SELECT lo_id, hi_id, leader_id, streak, next_ready_at FROM math_fight_pairs WHERE lo_id=? OR hi_id=?'
+  ).bind(me, me).all();
+  for (const row of (rows.results || [])) {
+    const lo = uid(row.lo_id), hi = uid(row.hi_id);
+    const other = lo === me ? hi : lo;
+    // Rows left over from a friendship that has since been broken.
+    if (!out.has(other)) continue;
+    out.set(other, pairStateOf(lo, hi, row));
+  }
+  return out;
+}
+
+// Which of these children are already inside a fight — an unanswered invite or
+// a live bout. The set-based twin of currentFight, for the list: same statuses,
+// same meaning, one query instead of one per friend.
+export async function busyIdsAmong(env, userIds) {
+  const want = new Set();
+  for (const v of (userIds || [])) { const id = uid(v); if (id) want.add(id); }
+  const out = new Set();
+  if (!want.size) return out;
+  const ids = Array.from(want);
+  const ph = ids.map(() => '?').join(',');
+  const rows = await env.DB.prepare(
+    `SELECT challenger_id, opponent_id FROM math_fights
+      WHERE status IN ('invited','active')
+        AND (challenger_id IN (${ph}) OR opponent_id IN (${ph}))`
+  ).bind(...ids, ...ids).all();
+  for (const row of (rows.results || [])) {
+    const c = uid(row.challenger_id), o = uid(row.opponent_id);
+    if (want.has(c)) out.add(c);
+    if (want.has(o)) out.add(o);
+  }
+  return out;
 }
 
 export async function savePairState(env, aId, bId, state, nextReadyAt) {
@@ -78,6 +148,15 @@ export async function currentFight(env, userId) {
 // Invites nobody answered expire; bouts whose five minutes ran out are settled
 // on whatever each side had sent. Without this a closed tab would block both
 // children out of the tab forever.
+//
+// This project has no cron and no scheduled worker, so the 3-second list poll
+// is the ONLY clock Đấu Toán has — and the list it paints is wrong without it:
+// an unreaped bout leaves its two players flagged `busy` for good, and the
+// pair's 3-day cooldown does not start until the fight is settled. So it stays
+// on the hot path, and db/026 is what makes it cheap: both statements below
+// read a partial index covering only the handful of rows that are still
+// invited or still active, instead of scanning a math_fights table that grows
+// with every duel ever fought and is never pruned.
 export async function reapStale(env) {
   const now = Date.now();
   await env.DB.prepare(

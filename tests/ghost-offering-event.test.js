@@ -227,4 +227,4 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
   });
 });
 
-if (require.main === module) require('./harness').runAll();
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

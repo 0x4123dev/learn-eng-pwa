@@ -675,3 +675,5 @@ suite('night raid: the fight is framed, the board keeps its shape, the feet do n
     assert.truthy(read('js/app.js').includes('appState.nightRaidPending'),'the field is part of the saved state');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

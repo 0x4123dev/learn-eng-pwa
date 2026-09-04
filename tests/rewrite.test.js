@@ -60,3 +60,5 @@ suite('rewrite bank', () => {
         assert.equal(rw.rewriteById('nope'), null);
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

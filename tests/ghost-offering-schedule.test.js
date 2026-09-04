@@ -150,3 +150,5 @@ suite('ghost offering: the API answers with exactly the shared schedule', () => 
             'a tester must never be able to take an offering off the real table');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -695,7 +695,13 @@ function writeToken(t, keep) {
 }
 let token = readToken();
 
-function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// All five HTML-significant characters, quotes included. Stopping at & < > is
+// only safe between tags; most uses here are INSIDE attributes (data-name,
+// title, aria-label), where one bare `"` in a username would close the
+// attribute and let the rest of the name be parsed as markup. The username
+// rule forbids quotes today — this must not rely on a rule kept in two other
+// files (js/auth.js, functions/api/register.js) staying that way.
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function pctClass(p){ return p>=75?'pct-good':p>=50?'pct-mid':'pct-low'; }
 function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString(); }
 function fmtTime(sec){ if(sec==null) return '—'; const m=Math.floor(sec/60), r=sec%60; return m+':'+String(r).padStart(2,'0'); }

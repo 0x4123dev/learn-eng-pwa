@@ -204,3 +204,5 @@ suite('kho lính: bãi cỏ giới hạn hiển thị, HUD hiện số thật', 
         assert.equal(NR.MAX_SOLDIERS, undefined, 'hằng số trần cũ phải biến mất khỏi rules');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -91,3 +91,5 @@ suite('exam: bank structure', () => {
         assert.equal(getExam('nope'), null);
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -488,3 +488,5 @@ suite('math exam: no hints — the child sits it alone', () => {
         assert.truthy(i > 0 && j > i, 'the figure is drawn for every mode, before the hint slot');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

@@ -9,6 +9,12 @@
 #   scripts/deploy.sh --version 4.3.0 -m "..."   explicit version
 #   scripts/deploy.sh --no-bump                  already bumped & committed
 #   scripts/deploy.sh --no-test                  skip the suite (rarely wise)
+#   scripts/deploy.sh --allow-dirty              ship uncommitted work anyway
+#
+# It REFUSES to run with uncommitted changes: the bundle is built from the
+# working tree, so anything not committed would be live in no commit at all.
+# Commit your own work first (explicit paths — another session may share this
+# repo), then deploy.
 #
 # NEVER pushes to GitHub. Local commits + Cloudflare Pages only.
 set -euo pipefail
@@ -22,16 +28,40 @@ TOKEN_FILE="$HOME/.config/eng-pwa/cloudflare.env"
 : "${CLOUDFLARE_ACCOUNT_ID:=f8b5c3e4cb22d163733b7ce29ecab97c}"  # minhdoanh@gmail.com
 export CLOUDFLARE_ACCOUNT_ID
 
-BUMP=1; TEST=1; MSG=""; NEWVER=""
+BUMP=1; TEST=1; MSG=""; NEWVER=""; ALLOW_DIRTY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --version) NEWVER="$2"; shift 2 ;;
     -m|--message) MSG="$2"; shift 2 ;;
     --no-bump) BUMP=0; shift ;;
     --no-test) TEST=0; shift ;;
+    --allow-dirty) ALLOW_DIRTY=1; shift ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
+
+# ---- HEAD must be what ships ----------------------------------------------
+# The bundle is built from the WORKING TREE, but only the four version markers
+# are committed (see the commit step below, and the reason it has to be that
+# way when two sessions share this repo). Those two facts together meant a
+# deploy could ship code that exists in no commit at all: checking out the
+# deploy commit did not reproduce production, a rollback to it shipped a build
+# the suite had never run on, and another session's half-finished edit could
+# reach a child's phone under a commit that did not contain it.
+#
+# So: commit your own work FIRST, then deploy. That is already the documented
+# workflow; this makes it true rather than merely recommended.
+DIRTY=$(git diff --name-only | grep -vxF   -e js/home.js -e sw.js -e package.json -e functions/api/version.js || true)
+if [ -n "$DIRTY" ] && [ "$ALLOW_DIRTY" = "0" ]; then
+  echo "✗ uncommitted changes would ship without being committed:"
+  echo "$DIRTY" | sed 's/^/    /'
+  echo
+  echo "  Commit them first (stage explicit paths — another session may be"
+  echo "  working in this repo), then run deploy.sh again."
+  echo "  To ship anyway, knowing HEAD will not match the live site:"
+  echo "      scripts/deploy.sh --allow-dirty -m \"…\""
+  exit 1
+fi
 
 # ---- credentials -----------------------------------------------------------
 # Kept OUTSIDE the repo so a token can never be committed by accident.
@@ -77,6 +107,8 @@ fi
 # ---- tests -----------------------------------------------------------------
 # Before the deploy, not after. A red suite must never reach the child's phone.
 if [ "$TEST" = "1" ]; then
+  # With the dirty-tree guard above, the working tree IS HEAD plus the version
+  # bump, so this runs the suite against exactly what is about to ship.
   echo "▸ running the suite…"
   if ! out=$(node tests/run-all.js 2>&1); then
     echo "$out" | tail -30; echo "✗ tests failed — nothing deployed"; exit 1
@@ -99,10 +131,15 @@ if [ -n "$MSG" ]; then
   # Anything else modified still SHIPS — the bundle is built from the working
   # tree, as it always was — it simply is not committed under this message.
   # Say so out loud rather than letting it go out unremarked.
+  # Normally empty: the dirty-tree guard at the top refuses to run with
+  # anything else modified. It can still be non-empty under --allow-dirty, and
+  # then it MUST be said out loud — that is the case where HEAD stops
+  # describing what is live.
   others=$(git diff --name-only | grep -vxF \
     -e js/home.js -e sw.js -e package.json -e functions/api/version.js || true)
   if [ -n "$others" ]; then
-    echo "▸ note: these ship with the deploy but stay OUT of the commit:"
+    echo "▸ WARNING (--allow-dirty): these ship but stay OUT of the commit,"
+    echo "  so this commit does NOT describe what is live:"
     echo "$others" | sed 's/^/    /'
   fi
   git add -- js/home.js sw.js package.json functions/api/version.js

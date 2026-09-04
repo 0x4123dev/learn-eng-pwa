@@ -124,3 +124,5 @@ suite('phrases: lessons list', () => {
         });
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

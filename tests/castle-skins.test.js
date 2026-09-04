@@ -116,3 +116,5 @@ suite('castle skins: battle boundary', () => {
     assert.truthy(/castleSkin: pbSelectedCastleSkinId\(\)/.test(ui));
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

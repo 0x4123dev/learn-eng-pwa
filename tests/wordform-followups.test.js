@@ -388,3 +388,5 @@ suite('word form follow-ups: quiz behaviour', () => {
         assert.truthy(withNeg.includes('1/2'), 'the prefix row is out of the 2 that asked, not 10');
     });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

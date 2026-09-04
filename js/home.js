@@ -1526,9 +1526,18 @@ function renderWordPet() {
 
     // Hero topbar — avatar, level, coins, streak, info
     if (topbar) {
-        const ud = getUserData(currentUser) || appState || {};
-        const avatar = ud.avatar || appState.avatar || '😊';
-        const streak = ud.streak || appState.streak || 0;
+        // appState IS the profile object: js/app.js does `appState = userData`
+        // at login and `saveUserData(currentUser, appState)` writes that same
+        // object straight back, so `avatar` and `streak` here are always the
+        // live values. Re-reading through getUserData() meant a JSON.parse of
+        // the WHOLE profile blob — bounded only by APPSTATE_SOFT_LIMIT, 2.4MB —
+        // on every single Home render: every return to Home, every
+        // claimCoinGrants, buyFood, cleanPoop and toggleAccessory paid
+        // 50-150ms plus a big transient allocation on an old iPad, to read
+        // two fields it already had in memory.
+        const ud = appState || {};
+        const avatar = ud.avatar || '😊';
+        const streak = ud.streak || 0;
         topbar.innerHTML = `
             <div class="pet-hero-left">
                 <button type="button" class="pet-hero-avatar" onclick="navigateToProfile()" aria-label="Open profile">${avatar}</button>

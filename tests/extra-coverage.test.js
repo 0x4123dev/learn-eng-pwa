@@ -99,11 +99,31 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
             `Stale entries in sw.js ASSETS (file no longer exists): ${stale.join(', ')}`);
     });
 
-    test('a service-worker update waits for a natural app reopen', () => {
-        assert.falsy(/type\s*===?\s*['"]SKIP_WAITING['"]/.test(swSrc),
-            'the page must not force an update during a lesson');
-        assert.falsy(/self\.skipWaiting\(\)/.test(swSrc),
-            'the worker must not take over while a learner is active');
+    test('a service-worker update never takes over on its own', () => {
+        // The invariant is unchanged: a new worker must NEVER replace the
+        // running app while a child is in the middle of something. What
+        // changed is that the child is now ASKED. Waiting silently forever was
+        // its own bug — `controllerchange` cannot fire while the page that
+        // registered the listener is still open, so a PWA left in the app
+        // switcher downloaded every update and applied none of them.
+        //
+        // So: install must not skipWaiting, and the only skipWaiting in the
+        // worker must be the one the PAGE asks for by message.
+        const install = swSrc.slice(swSrc.indexOf("addEventListener('install'"),
+                                    swSrc.indexOf("addEventListener('message'"));
+        assert.falsy(/skipWaiting/.test(install), 'install must not take over by itself');
+        assert.equal((swSrc.match(/self\.skipWaiting\(\)/g) || []).length, 1,
+            'exactly one skipWaiting, in the message handler');
+        assert.truthy(/type === 'SKIP_WAITING'\) self\.skipWaiting\(\)/.test(swSrc),
+            'and it is gated on the page asking for it');
+
+        // …and the page only asks after a tap, never while something is timed.
+        const app = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
+        assert.truthy(/_busyWithTimedActivity\(\)/.test(app), 'a timed activity defers the offer');
+        const offer = app.slice(app.indexOf('function offerUpdate('), app.indexOf('function registerServiceWorker('));
+        assert.truthy(/addEventListener\('click'/.test(offer), 'the reload is behind a button');
+        assert.truthy(offer.indexOf("addEventListener('click'") < offer.indexOf('SKIP_WAITING'),
+            'the message is only posted from inside that click handler');
     });
 });
 

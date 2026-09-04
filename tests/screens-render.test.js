@@ -207,3 +207,5 @@ suite('screens: walking out of a live fight', () => {
     for (const src of [app, math]) assert.truthy(src.includes('XỬ THUA'), 'the warning must say what leaving costs');
   });
 });
+
+if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
