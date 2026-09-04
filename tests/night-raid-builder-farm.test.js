@@ -221,13 +221,34 @@ suite('builder farm: every screen points at today\'s tasks', () => {
     const wilt = mount({ appState: { farmCtx: WILT } }); wilt.ctx.NightRaid.renderBuilder();
     assert.truthy(html(wilt).includes('Cây đang héo'));
   });
-  test('when plants are wilted the harvest button becomes VÀO HỌC ĐỂ CÂY TƯƠI', () => {
-    const w = mount({ appState: { farmCtx: WILT } }); w.ctx.NightRaid.renderBuilder();
-    const out = html(w);
-    assert.truthy(out.includes('VÀO HỌC ĐỂ CÂY TƯƠI'));
-    assert.truthy(/nr-collect-all[^"]*\bwilted\b[^>]*onclick="nrGoLearn\(\)"/.test(out), 'the button leads to the tasks');
-    assert.falsy(out.includes('THU HOẠCH 3'), 'nothing wilted counts as harvestable');
-  });
+  // Found by review, 2026-09-04. Both screens used to flip the button on
+  // anyWilted(layout) ALONE. The three coin fields run on their own 24h clock
+  // and a barracks on finished task-days — none of them wilt — so a single
+  // wilted crop anywhere, including on a private extra farm board, replaced
+  // THU HOẠCH on the home AND the builder: the child could not collect a ready
+  // field from its own button, under copy telling them nothing was
+  // harvestable. The flip now needs anyWilted(layout) && !ready.
+  const WILTED_CROP = { type: 'lettuce', gx: 3, gy: 1, uid: 'c-lettuc01', day: 3, at: TWO_AGO };
+  const withField = readyAt => ({ appState: { farmCtx: WILT, nightRaidLayout: {
+    cells: [WILTED_CROP, { type: 'rice-field', gx: 6, gy: 6, tier: 1, uid: 'p-rice0001', readyAt }],
+    soldiers: 2, dogLane: 2, farms: [] } } });
+  for (const [screen, render] of [['builder', w => w.ctx.NightRaid.renderBuilder()], ['home', w => w.ctx.NightRaid.renderHome()]]) {
+    test('a wilted crop does not hide the harvest button for a ready field (' + screen + ')', () => {
+      const w = mount(withField(0)); render(w);
+      const out = html(w);
+      assert.truthy(out.includes('THU HOẠCH 1'), 'the ready rice field is still collectable: ' + (out.match(/THU HOẠCH \d+|ĐANG SẢN XUẤT|VÀO HỌC ĐỂ CÂY TƯƠI/) || [''])[0]);
+      assert.truthy(/nr-collect-all[^"]*"[^>]*onclick="nrCollectResources\(\)"/.test(out), 'and the button harvests');
+      assert.falsy(out.includes('VÀO HỌC ĐỂ CÂY TƯƠI'), 'the study CTA is for when nothing can be collected');
+      assert.falsy(/class="nr-collect-all[^"]*\bwilted\b/.test(out));
+    });
+    test('with nothing ready at all a wilted crop still asks the child to study (' + screen + ')', () => {
+      const w = mount(withField(Date.now() + 3600000)); render(w);
+      const out = html(w);
+      assert.truthy(out.includes('VÀO HỌC ĐỂ CÂY TƯƠI'));
+      assert.truthy(/nr-collect-all[^"]*\bwilted\b[^>]*onclick="nrGoLearn\(\)"/.test(out), 'the button leads to the tasks');
+      assert.falsy(/THU HOẠCH \d/.test(out), 'a wilted crop never counts as harvestable');
+    });
+  }
   test('Vào học leaves Night Raid and opens the Daily Task screen', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     w.ctx.nrGoLearn();
