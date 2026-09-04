@@ -82,4 +82,114 @@ suite('browser namespace parity: what the game actually calls must be there', ()
   });
 });
 
+// ---------------------------------------------------------------------------
+// The same question, asked of the WHOLE repo rather than of one file.
+//
+// The live bug was a property lookup — BattleCalc.volleyShots — on a namespace
+// object that did not carry it. Any module that publishes such an object is
+// exposed to it, in any game. This sweep finds every namespace the browser can
+// reach and checks that every `Namespace.member` written anywhere in js/
+// actually exists on it. It reads the namespaces and the call sites out of the
+// source, so a game added tomorrow is covered without editing this file.
+//
+// Note on scope: a top-level `const` in a classic script lands in the shared
+// global lexical environment, so a BARE name crosses files fine. Only property
+// access on an object can silently miss, which is why that is what is checked.
+suite('browser namespace parity: no call anywhere reaches a member that does not exist', () => {
+  const JS = path.join(ROOT, 'js');
+  const SKIP = /phaser\.min|-data\.js$|dictionary-data|math4-data|units-|exam-data|grammar-units|grammar-lessons|collocation-(data|followups)|phrases-(data|meanings)|wordform-(data|followups|lessons)|rewrite-(data|lessons)|math-(data|exams|lessons|source|fight-bank)|hot-words|topic-vocab/;
+  const sourceFiles = fs.readdirSync(JS).filter(f => f.endsWith('.js') && !SKIP.test(f));
+  const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"])\/\/[^\n]*/g, '$1');
+
+  // Every module that hands the browser one object under a global name.
+  function namespaces() {
+    const found = new Map();
+    for (const f of sourceFiles) {
+      const src = fs.readFileSync(path.join(JS, f), 'utf8');
+      const tail = src.match(/module\.exports\s*=\s*([A-Za-z_][A-Za-z0-9_]*)\s*;?\s*$/m);
+      if (!tail) continue;
+      const name = tail[1];
+      if (!new RegExp('(^|\\n)\\s*(var|const|let)\\s+' + name + '\\s*=').test(src)) continue;
+      let obj;
+      try { obj = require(path.join(JS, f)); } catch (e) { continue; }
+      if (obj && typeof obj === 'object') found.set(name, { file: f, obj });
+    }
+    // battlecalc publishes its namespace INSIDE an object-literal export.
+    const bc = require(path.join(ROOT, 'js', 'battlecalc.js'));
+    if (bc && bc.BattleCalc) found.set('BattleCalc', { file: 'battlecalc.js', obj: bc.BattleCalc });
+    return found;
+  }
+
+  test('at least the game namespaces are under test, so a pass means something', () => {
+    const names = [...namespaces().keys()];
+    for (const expected of ['BattleCalc', 'NightRaidRules', 'FarmRules', 'DailyTask', 'MathFightRules']) {
+      assert.contains(names, expected, 'the sweep should cover ' + expected);
+    }
+    assert.truthy(names.length >= 10, 'only ' + names.length + ' namespaces found — the scan probably broke');
+  });
+
+  test('every Namespace.member written in js/ exists on that namespace', () => {
+    const ns = namespaces();
+    const problems = [];
+    for (const f of sourceFiles) {
+      const src = stripComments(fs.readFileSync(path.join(JS, f), 'utf8'));
+      for (const [name, { obj }] of ns) {
+        for (const m of src.matchAll(new RegExp('\\b' + name + '\\.([A-Za-z_][A-Za-z0-9_]*)', 'g'))) {
+          if (!(m[1] in obj)) problems.push(f + ' → ' + name + '.' + m[1]);
+        }
+      }
+    }
+    assert.deepEqual([...new Set(problems)], [],
+      'these calls would throw in a browser: ' + [...new Set(problems)].join('; '));
+  });
+});
+
+// The two-door shape, found automatically instead of listed by hand — so a
+// module written next month is covered without anyone remembering this file.
+// The shape: a file declares `const Name = { … }` as its browser namespace AND
+// exports an object literal that also carries `Name`. Whatever is in that
+// export but not on `Name` reaches Node and never reaches a child.
+suite('browser namespace parity: the two-door shape is found, not remembered', () => {
+  const JS = path.join(ROOT, 'js');
+  function twoDoorModules() {
+    const out = [];
+    for (const f of fs.readdirSync(JS).filter(x => x.endsWith('.js') && !/phaser\.min/.test(x))) {
+      const src = fs.readFileSync(path.join(JS, f), 'utf8');
+      if (!/module\.exports\s*=\s*\{/.test(src)) continue;
+      for (const m of src.matchAll(/(?:^|\n)\s*(?:const|let|var)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*\{/g)) {
+        const name = m[1];
+        // What makes an object the BROWSER'S DOOR is that it is published on
+        // window. A plain data table that happens to be exported is not one,
+        // and holding it to this rule only produces noise.
+        if (!new RegExp('window\\.' + name + '\\s*=\\s*' + name + '\\b').test(src)) continue;
+        if (!new RegExp('module\\.exports\\s*=\\s*\\{[\\s\\S]*?\\b' + name + '\\b[\\s\\S]*?\\}').test(src)) continue;
+        let mod;
+        try { mod = require(path.join(JS, f)); } catch (e) { continue; }
+        if (mod && mod[name] && typeof mod[name] === 'object') out.push([f, name, mod]);
+      }
+    }
+    return out;
+  }
+
+  test('the detector still finds js/battlecalc.js — otherwise this suite proves nothing', () => {
+    assert.truthy(twoDoorModules().some(([f, n]) => f === 'battlecalc.js' && n === 'BattleCalc'),
+      'the two-door detector found nothing in battlecalc.js; it has probably stopped working');
+  });
+
+  test('every two-door module puts the same members through both doors', () => {
+    const problems = [];
+    for (const [file, name, mod] of twoDoorModules()) {
+      const ns = mod[name];
+      // Constants a module exports only for tests to pin are reachable in a
+      // browser by BARE name (top-level const joins the global lexical scope),
+      // so only a MISSING FUNCTION can break a property lookup at runtime.
+      const missingFns = Object.keys(mod)
+        .filter(k => k !== name && typeof mod[k] === 'function' && !(k in ns));
+      for (const k of missingFns) problems.push(file + ' → ' + name + '.' + k);
+    }
+    assert.deepEqual(problems, [],
+      'these functions reach Node but never reach a browser: ' + problems.join('; '));
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
