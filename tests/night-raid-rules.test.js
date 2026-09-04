@@ -17,13 +17,13 @@ suite('night raid: one deterministic combat mode', () => {
 
   test('barracks and rice use the approved daily economy limits',()=>{
     const barracks=R.defenseById('training-barracks'),rice=R.defenseById('rice-field');
-    assert.equal(barracks.price,8000);assert.equal(barracks.maxOwned,2);assert.equal(barracks.yield,1);
-    assert.equal(rice.price,6000);assert.equal(rice.maxOwned,4);assert.equal(rice.yield,100);
+    assert.equal(barracks.price,8000);assert.equal(barracks.maxOwned,10);assert.equal(barracks.yield,1);
+    assert.equal(rice.price,6000);assert.equal(rice.maxOwned,4);assert.equal(rice.buyMax,1);assert.equal(rice.yield,100);
     for(const id of ['tomato-field','fish-pond']){
       const farm=R.defenseById(id);
       assert.truthy(farm,id);assert.equal(farm.price,rice.price);assert.equal(farm.yield,100);assert.equal(farm.productionMs,rice.productionMs);assert.equal(farm.maxOwned,4);
     }
-    assert.equal(barracks.productionMs,24*60*60*1000);
+    assert.equal(barracks.perTaskDay,true);assert.equal(barracks.productionMs,undefined);
     // Không còn trần kho lính; 10 chỉ là số con lính vẽ trên bãi cỏ.
     assert.equal(R.ARMY_DISPLAY_CAP,10);assert.equal(R.MAX_SOLDIERS,undefined);
   });
@@ -38,7 +38,7 @@ suite('night raid: one deterministic combat mode', () => {
     const cells=[];for(let i=0;i<4;i++)cells.push({type:'rice-field',gx:i,gy:0,uid:'rice-id-'+i,readyAt:1234});cells.push({type:'rice-field',gx:5,gy:0,uid:'rice-id-5',readyAt:1234});
     cells.push({type:'training-barracks',gx:0,gy:1,uid:'barracks-1',readyAt:5678},{type:'training-barracks',gx:1,gy:1,uid:'barracks-2',readyAt:5678},{type:'training-barracks',gx:2,gy:1,uid:'barracks-3',readyAt:5678});
     const layout=R.normalizeLayout({cells,soldiers:99});  // 99 lính là hợp lệ: kho không có trần
-    assert.equal(layout.cells.filter(c=>c.type==='rice-field').length,4);assert.equal(layout.cells.filter(c=>c.type==='training-barracks').length,2);assert.equal(layout.soldiers,99);
+    assert.equal(layout.cells.filter(c=>c.type==='rice-field').length,4);assert.equal(layout.cells.filter(c=>c.type==='training-barracks').length,3);assert.equal(layout.soldiers,99);
     assert.equal(layout.cells[0].uid,'rice-id-0');assert.equal(layout.cells[0].readyAt,1234);
   });
 

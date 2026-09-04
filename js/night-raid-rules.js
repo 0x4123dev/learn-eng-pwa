@@ -4,6 +4,14 @@
 var NightRaidRules = (() => {
   'use strict';
 
+  // Farm items (crops, farm buildings) are defined in js/farm-rules.js. The
+  // browser loads that file first (index.html); Node and the Pages bundle
+  // require it. Kept out of DEFENSES on purpose: homeLevel, combatPower and
+  // createState only ever look at DEFENSES, so the farm can never change a
+  // fight or a matchup.
+  const Farm = typeof FarmRules !== 'undefined' ? FarmRules
+    : (typeof require === 'function' ? require('./farm-rules.js') : null);
+
   const RULES_VERSION = 2;
   const TICK_MS = 100;
   const RAID_MS = 120000;
@@ -103,17 +111,18 @@ var NightRaidRules = (() => {
     Object.freeze({ id:'stone-wall', name:{en:'Stone Wall',vi:'Tường Đá'}, price:2000, stat:'defense', attack:0, defense:80, hp:300, blocker:true, material:'stone', color:'#91a0b2' }),
     Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:2000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
     Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:2000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
-    Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:8000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, productionMs:PRODUCTION_MS, maxOwned:2, color:'#d8783d' }),
-    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#e5b93d' }),
-    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#ef5544' }),
-    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, color:'#38a9d6' }),
+    Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:8000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, perTaskDay:true, maxOwned:10, color:'#d8783d' }),
+    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#e5b93d' }),
+    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#ef5544' }),
+    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#38a9d6' }),
   ]);
 
   const byId = (list, id) => list.find(item => item.id === id) || null;
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n) || 0));
   const int = (n, lo, hi) => Math.trunc(clamp(n, lo, hi));
+  const itemById = id => byId(DEFENSES, id) || (Farm ? Farm.byId(id) : null);
   const footprintFor = value => {
-    const def=typeof value==='string'?byId(DEFENSES,value):value;
+    const def=typeof value==='string'?itemById(value):value;
     return def&&def.footprint===2?2:1;
   };
   const rectsOverlap=(a,b)=>a.gx<b.gx+b.size&&a.gx+a.size>b.gx&&a.gy<b.gy+b.size&&a.gy+a.size>b.gy;
@@ -128,7 +137,75 @@ var NightRaidRules = (() => {
     };
   }
 
-  function normalizeLayout(value) {
+  const UID_RE=/^[A-Za-z0-9-]{8,64}$/,DATE_RE=/^\d{4}-\d{2}-\d{2}$/;
+  // One board's worth of cells → clean cells. `grid` is the board size (12 for
+  // the castle, 6 for an extra farm); `occupied` is seeded with the castle on
+  // the main board and empty on a farm; `allowDefense` is false on a farm.
+  function normalizeCells(rawCells, grid, occupied, allowDefense, dayCount, today) {
+    const owned = Object.create(null);
+    const clean = [];
+    const findSpace=(gx,gy,size,layer)=>{
+      const candidates=[];
+      for(let y=0;y<=grid-size;y++)for(let x=0;x<=grid-size;x++)candidates.push({gx:x,gy:y,size,score:Math.abs(x-gx)+Math.abs(y-gy)});
+      candidates.sort((a,b)=>a.score-b.score||a.gy-b.gy||a.gx-b.gx);
+      return candidates.find(candidate=>!occupied[layer].some(box=>rectsOverlap(candidate,box)))||null;
+    };
+    rawCells.slice(0, grid * grid * 2).forEach(cell => {
+      const type = itemById(String(cell && cell.type || ''));
+      if (!type) return;
+      const isDefense = !!byId(DEFENSES, type.id);
+      if (isDefense && !allowDefense) return;
+      if (type.maxOwned && (owned[type.id] || 0) >= type.maxOwned) return;
+      const hasGrid = Number.isFinite(Number(cell && cell.gx)) && Number.isFinite(Number(cell && cell.gy));
+      const size=footprintFor(type),layer=type.trap?'floor':'stand';
+      const wantedX = hasGrid ? int(cell.gx, 0, grid - size) : Math.round((int(cell.col, 1, COLS) - 1) * (grid - size) / (COLS - 1));
+      const wantedY = hasGrid ? int(cell.gy, 0, grid - size) : Math.round(int(cell.lane, 0, LANES - 1) * (grid - size) / (LANES - 1));
+      const spot=findSpace(wantedX,wantedY,size,layer);
+      if(!spot)return;
+      const gx=spot.gx,gy=spot.gy;
+      occupied[layer].push({gx,gy,size});
+      owned[type.id] = (owned[type.id] || 0) + 1;
+      const uid=String(cell&&cell.uid||'');
+      if (!isDefense) {
+        // Crops and farm buildings: no lane, col or tier — they never fight.
+        const entry={ type:type.id, gx, gy };
+        if(UID_RE.test(uid))entry.uid=uid;
+        if(type.kind==='crop'){
+          entry.day=int(cell && cell.day, 0, 1e9);
+          const at=String(cell&&cell.at||'');
+          if(DATE_RE.test(at))entry.at=at;else if(today)entry.at=today;
+        }
+        clean.push(entry);
+        return;
+      }
+      // Combat still uses five lanes and eight columns. The free builder grid is
+      // presentation data mapped deterministically into those battle lanes.
+      const lane = Math.round(gy * (LANES - 1) / (BUILD_GRID - 1));
+      const col = 1 + Math.round(gx * (COLS - 1) / (BUILD_GRID - 1));
+      const entry={ type:type.id, lane, col, gx, gy, tier:type.producer?1:int(cell.tier || 1, 1, 3) };
+      if(type.producer){
+        if(UID_RE.test(uid))entry.uid=uid;
+        if(type.perTaskDay){
+          // Barracks pay per finished task-day. A cell that still carries the
+          // old 24h clock converts the first time the SERVER normalizes it
+          // (it alone knows dayCount); a client without dayCount leaves the
+          // legacy clock in place and FarmRules.barracksReady says "not yet".
+          if(Number.isFinite(+(cell&&cell.lastDay)))entry.lastDay=int(cell.lastDay,0,1e9);
+          else if(dayCount!==null)entry.lastDay=dayCount;
+          else if(Number.isFinite(+(cell&&cell.readyAt)))entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt));
+        } else entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));
+      }
+      clean.push(entry);
+    });
+    return clean;
+  }
+
+  // opts = { dayCount, today } — passed by the server (and by a client that
+  // has heard them from the server). Without them nothing about days changes.
+  function normalizeLayout(value, opts) {
+    opts = opts || {};
+    const dayCount = Number.isFinite(+opts.dayCount) ? int(opts.dayCount, 0, 1e9) : null;
+    const today = DATE_RE.test(String(opts.today || '')) ? String(opts.today) : null;
     const cells = Array.isArray(value && value.cells) ? value.cells : [];
     const castleRaw=value&&value.castleCell;
     const legacy=value&&value.castlePos;
@@ -137,37 +214,11 @@ var NightRaidRules = (() => {
       gy:castleRaw&&Number.isFinite(+castleRaw.gy)?int(castleRaw.gy,0,BUILD_GRID-CASTLE_SIZE):legacy&&Number.isFinite(+legacy.y)?int(Math.round((+legacy.y-8)/81*BUILD_GRID-CASTLE_SIZE/2),0,BUILD_GRID-CASTLE_SIZE):1,
     };
     const occupied={stand:[{gx:castleCell.gx,gy:castleCell.gy,size:CASTLE_SIZE}],floor:[]};
-    const owned = Object.create(null);
-    const clean = [];
-    const findSpace=(gx,gy,size,layer)=>{
-      const candidates=[];
-      for(let y=0;y<=BUILD_GRID-size;y++)for(let x=0;x<=BUILD_GRID-size;x++)candidates.push({gx:x,gy:y,size,score:Math.abs(x-gx)+Math.abs(y-gy)});
-      candidates.sort((a,b)=>a.score-b.score||a.gy-b.gy||a.gx-b.gx);
-      return candidates.find(candidate=>!occupied[layer].some(box=>rectsOverlap(candidate,box)))||null;
-    };
-    cells.slice(0, BUILD_GRID * BUILD_GRID * 2).forEach(cell => {
-      const type = byId(DEFENSES, String(cell && cell.type || ''));
-      if (!type) return;
-      if (type.maxOwned && (owned[type.id] || 0) >= type.maxOwned) return;
-      const hasGrid = Number.isFinite(Number(cell && cell.gx)) && Number.isFinite(Number(cell && cell.gy));
-      const size=footprintFor(type),layer=type.trap?'floor':'stand';
-      const wantedX = hasGrid ? int(cell.gx, 0, BUILD_GRID - size) : Math.round((int(cell.col, 1, COLS) - 1) * (BUILD_GRID - size) / (COLS - 1));
-      const wantedY = hasGrid ? int(cell.gy, 0, BUILD_GRID - size) : Math.round(int(cell.lane, 0, LANES - 1) * (BUILD_GRID - size) / (LANES - 1));
-      const spot=findSpace(wantedX,wantedY,size,layer);
-      if(!spot)return;
-      const gx=spot.gx,gy=spot.gy;
-      // Combat still uses five lanes and eight columns. The free builder grid is
-      // presentation data mapped deterministically into those battle lanes.
-      const lane = Math.round(gy * (LANES - 1) / (BUILD_GRID - 1));
-      const col = 1 + Math.round(gx * (COLS - 1) / (BUILD_GRID - 1));
-      occupied[layer].push({gx,gy,size});
-      owned[type.id] = (owned[type.id] || 0) + 1;
-      const entry={ type:type.id, lane, col, gx, gy, tier:type.producer?1:int(cell.tier || 1, 1, 3) };
-      if(type.producer){const uid=String(cell&&cell.uid||'');if(/^[A-Za-z0-9-]{8,64}$/.test(uid))entry.uid=uid;entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));}
-      clean.push(entry);
-    });
-    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:2, castleCell };
-    return result;
+    const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today);
+    const plot = Farm ? Farm.FARM_PLOT : null;
+    const rawFarms = plot && Array.isArray(value && value.farms) ? value.farms.slice(0, plot.max) : [];
+    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today) }));
+    return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:3, castleCell, farms };
   }
 
   function homeLevel(layout, dogLevel) {
@@ -271,7 +322,7 @@ var NightRaidRules = (() => {
   function createState(snapshot, seed) {
     const target = snapshot || trainingTarget(1);
     const layout = normalizeLayout(target.layout);
-    const defenses = layout.cells.filter(cell=>!byId(DEFENSES,cell.type).producer).map((cell, index) => {
+    const defenses = layout.cells.filter(cell=>{const d=byId(DEFENSES,cell.type);return d&&!d.producer;}).map((cell, index) => {
       const def = byId(DEFENSES, cell.type);
       const hp = defenseHp(def, cell.tier);
       return { id:'d' + index, type:def.id, lane:cell.lane, x:cell.col + .05, tier:cell.tier, hp, maxHp:hp, cooldown:0, revealed:!def.trap };
@@ -446,7 +497,7 @@ var NightRaidRules = (() => {
 
   return Object.freeze({
     RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_SANITY_CAP,SWORD_METER_PIPS,SCENES,
-    RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
+    RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),itemById,farmRules:Farm,footprintFor,rectsOverlap,
     makeRng,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
   });
