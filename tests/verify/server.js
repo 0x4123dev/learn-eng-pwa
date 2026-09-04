@@ -697,10 +697,12 @@ async function moneyChecks(add, seenSql, drainLogs) {
     }
     const challenge = loadModule('functions/api/battle/challenge.js');
     const respond = loadModule('functions/api/battle/respond.js');
+    const hire = loadModule('functions/api/battle/hire.js');
     const turn = loadModule('functions/api/battle/turn.js');
     const c = await hit(w, challenge.onRequestPost, { url: '/api/battle/challenge', token: a.token, body: { friendId: b.uid, level: 10, stage: 'chihuahua', petName: 'Miu' } });
     const battleId = c.data && c.data.battle && c.data.battle.id;
     const r = await hit(w, respond.onRequestPost, { url: '/api/battle/respond', token: b.token, body: { battleId, accept: true, level: 10 } });
+    const hired = await hit(w, hire.onRequestPost, { url: '/api/battle/hire', token: a.token, body: { battleId, hires: ['engineer'] } });
     // One shot each, so the arena reaches its "both out of ammo" ending and
     // the finishing UPDATE (a different, dynamically built statement) runs.
     w.db.prepare('UPDATE battles SET challenger_ammo=1, opponent_ammo=1 WHERE id=?').run(battleId);
@@ -710,13 +712,14 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const t2 = await hit(w, turn.onRequestPost, { url: '/api/battle/turn', token: b.token, body: { battleId, turnNo: mid.turn_no, angle: 45, power: 80, shots: 1, rawDamage: 9999 } });
     const end = w.db.prepare('SELECT * FROM battles WHERE id=?').get(battleId);
     const turnsRecorded = w.db.prepare('SELECT COUNT(*) AS n FROM battle_turns WHERE battle_id=?').get(battleId).n;
-    const ok = c.status === 200 && r.status === 200 && t1.status === 200 && t2.status === 200
+    const ok = c.status === 200 && r.status === 200 && hired.status === 200 && t1.status === 200 && t2.status === 200
       && String(mid.status) === 'active' && String(end.status) === 'done'
+      && JSON.parse(end.challenger_hires || '[]').includes('engineer')
       && Number(end.challenger_ammo) === 0 && Number(end.opponent_ammo) === 0
       && Number(turnsRecorded) === 2 && allGrants(w) === 0;
     add('money.battle-flow', 'Đấu Thú Cưng: mời → nhận lời → bắn → kết thúc', ok,
-      ok ? `a full arena run: invite → accept → two volleys → status 'done', both magazines spent, 2 turns recorded, winner_id=${end.winner_id}, and the arena created 0 coin_grants rows (it must not print money)`
-         : `challenge=${c.status} respond=${r.status} turn1=${t1.status} turn2=${t2.status} mid=${mid && mid.status} end=${end && end.status} turns=${turnsRecorded} grants=${allGrants(w)} :: ${JSON.stringify(c.data).slice(0, 200)} ${JSON.stringify(t1.data).slice(0, 200)}`);
+      ok ? `a full arena run: invite → accept → hire → two volleys → status 'done', both magazines spent, 2 turns recorded, winner_id=${end.winner_id}, and the arena created 0 coin_grants rows (it must not print money)`
+         : `challenge=${c.status} respond=${r.status} hire=${hired.status} turn1=${t1.status} turn2=${t2.status} mid=${mid && mid.status} end=${end && end.status} turns=${turnsRecorded} grants=${allGrants(w)} :: ${JSON.stringify(c.data).slice(0, 200)} ${JSON.stringify(t1.data).slice(0, 200)}`);
 
     // A client that claims a ceiling it never earned must not be believed.
     const w2 = newWorld(seenSql);
@@ -828,20 +831,25 @@ async function moneyChecks(add, seenSql, drainLogs) {
         .run(kid.uid, gmt7(Date.now() - daysBanked * 86400000));
     };
     const home = loadModule('functions/api/night-raid/home.js');
+    const plantRoute = loadModule('functions/api/night-raid/plant.js');
     const collectRoute = loadModule('functions/api/night-raid/collect.js');
     const boardOf = () => JSON.parse(w.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(kid.uid).layout_json);
     const purseOf = () => Number(w.db.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(kid.uid).lootable_coins);
     const collect = () => hit(w, collectRoute.onRequestPost, { url: '/api/night-raid/collect', token: kid.token, body: {} });
 
     finishADay();                                       // dayCount 1: the farm has a day
-    // Plant through the real PUT, lying about the clock the way a hostile
-    // client would; the server must stamp its own day and date.
+    // Create the home through the layout route, then plant through the only
+    // route allowed to spend a server-owned seed.
     const planted = await hit(w, home.onRequestPut, {
       method: 'PUT', url: '/api/night-raid/home', token: kid.token,
-      body: { layout: { cells: [{ type: crop.id, gx: 1, gy: 1, uid: 'c-verify0001', day: -999, at: '2000-01-01' },
-                                { type: 'training-barracks', gx: 8, gy: 8, uid: 'p-verify0001' }], soldiers: 0, dogLane: 2 },
+      body: { layout: { cells: [{ type: 'training-barracks', gx: 8, gy: 8, uid: 'p-verify0001' }], soldiers: 0, dogLane: 2 },
               dogLevel: 1, castleSkin: 'stone-keep', coins: 0 } });
-    const seeded = boardOf().cells.find(c => c.uid === 'c-verify0001');
+    w.db.prepare('INSERT INTO farm_seed_inventory(user_id,crop_id,quantity) VALUES(?,?,1)').run(kid.uid, crop.id);
+    const plantedSeed = await hit(w, plantRoute.onRequestPost, {
+      method: 'POST', url: '/api/night-raid/plant', token: kid.token,
+      body: { cropId: crop.id, gx: 1, gy: 1, zone: 0, day: -999, at: '2000-01-01' } });
+    const seeded = boardOf().cells.find(c => c.type === crop.id);
+    const plantedUid = seeded && seeded.uid;
     const stampedToday = !!seeded && seeded.day === 1 && seeded.at === gmt7(Date.now());
 
     // One task-day short of ripe: the harvest must not pay a xu for the plant,
@@ -851,24 +859,24 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const early = await collect();
     const earlySoldiers = Number((early.data && early.data.collectedSoldiers) || 0);
     const stillGrowing = early.status === 200 && purseOf() === 0
-      && boardOf().cells.some(c => c.uid === 'c-verify0001');
+      && boardOf().cells.some(c => c.uid === plantedUid);
 
     finishADay();                                       // the day it ripens on
     const paid = await collect();
     const purse = purseOf(), board = boardOf();
-    const gone = !board.cells.some(c => c.uid === 'c-verify0001');
+    const gone = !board.cells.some(c => c.uid === plantedUid);
     const harvestedIt = Array.isArray(paid.data && paid.data.harvested)
       && paid.data.harvested.some(h => h.type === crop.id);
     const soldiers = Number(paid.data && paid.data.collectedSoldiers);
 
-    const ok = planted.status === 200 && stampedToday && stillGrowing && paid.status === 200
+    const ok = planted.status === 200 && plantedSeed.status === 200 && stampedToday && stillGrowing && paid.status === 200
       && Number(paid.data.collectedCoins) === crop.yield && purse === crop.yield
       && gone && harvestedIt && earlySoldiers === 1 && soldiers === 1
       && Number(board.soldiers) === earlySoldiers + soldiers
       && grantsOf(w, kid.uid) === 0;
     add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', ok,
       ok ? `${crop.name.vi} planted on task-day 1 (the server refused the client's day=-999 / at=2000-01-01), paid nothing while it was ${crop.days - 1} of ${crop.days} days grown, then paid exactly ${crop.yield} xu on the day it ripened and left the board; lootable_coins moved by ${crop.yield} and the barracks banked 1 lính on each of the two collects that followed a new task-day; 0 coin_grants rows — the harvest never touches that ledger`
-         : `put=${planted.status} stamped=${stampedToday} (${JSON.stringify(seeded)}) unripeAfter${crop.days - 1}=${stillGrowing} collect=${paid.status} coins=${paid.data && paid.data.collectedCoins} want=${crop.yield} purse=${purse} cropGone=${gone} harvested=${harvestedIt} soldiers=${earlySoldiers}+${soldiers} stock=${board.soldiers} grants=${grantsOf(w, kid.uid)}`);
+         : `put=${planted.status} plant=${plantedSeed.status} stamped=${stampedToday} (${JSON.stringify(seeded)}) unripeAfter${crop.days - 1}=${stillGrowing} collect=${paid.status} coins=${paid.data && paid.data.collectedCoins} want=${crop.yield} purse=${purse} cropGone=${gone} harvested=${harvestedIt} soldiers=${earlySoldiers}+${soldiers} stock=${board.soldiers} grants=${grantsOf(w, kid.uid)}`);
 
     // And the clock the farm does NOT have: hours must move nothing.
     const before = JSON.stringify(boardOf().cells);

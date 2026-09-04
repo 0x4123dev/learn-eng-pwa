@@ -48,18 +48,26 @@ suite('farm server: the clock is the reward table', () => {
 });
 
 const homeHandler = () => loadModule('functions/api/night-raid/home.js');
+const plantHandler = () => loadModule('functions/api/night-raid/plant.js');
 async function putHome(world, kid, layout, coins) {
   return world.call(homeHandler().onRequestPut, { url: '/api/night-raid/home', method: 'PUT', token: kid.token,
     body: { layout, dogLevel: 1, castleSkin: 'stone-keep', coins: coins == null ? 500 : coins } });
 }
+async function plant(world, kid, cropId, gx, gy, zone) {
+  world.db.prepare(`INSERT INTO farm_seed_inventory (user_id, crop_id, quantity) VALUES (?, ?, 1)
+    ON CONFLICT(user_id, crop_id) DO UPDATE SET quantity=quantity+1`).run(kid.uid, cropId);
+  return world.call(plantHandler().onRequestPost, { url: '/api/night-raid/plant', method: 'POST', token: kid.token,
+    body: { cropId, gx, gy, zone: zone || 0 } });
+}
 const stored = (world, uid) => JSON.parse(world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(uid).layout_json);
 
-suite('farm server: home PUT stamps days on the server, not the client', () => {
-  test('a new crop gets day = dayCount and at = today, whatever the client sent', async () => {
+suite('farm server: planting stamps days on the server, not the client', () => {
+  test('a seed gets day = dayCount and at = today from the server', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, TWO_AGO, YESTERDAY);
-    const r = await putHome(world, kid, { cells: [{ type: 'tomato', gx: 1, gy: 1, uid: 'c-aaaaaaaa', day: 999, at: '2020-01-01' }] });
+    await putHome(world, kid, { cells: [] });
+    const r = await plant(world, kid, 'tomato', 1, 1);
     assert.truthy(r.ok, JSON.stringify(r.data));
     const crop = stored(world, kid.uid).cells.find(c => c.type === 'tomato');
     assert.equal(crop.day, 2);
@@ -71,9 +79,11 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, TWO_AGO);
-    await putHome(world, kid, { cells: [{ type: 'pumpkin', gx: 1, gy: 1, uid: 'c-aaaaaaaa' }] });
+    await putHome(world, kid, { cells: [] });
+    await plant(world, kid, 'pumpkin', 1, 1);
+    const uid = stored(world, kid.uid).cells.find(c => c.type === 'pumpkin').uid;
     doneOn(world, kid.uid, YESTERDAY, TODAY);
-    await putHome(world, kid, { cells: [{ type: 'pumpkin', gx: 3, gy: 3, uid: 'c-aaaaaaaa', day: 0, at: '2020-01-01' }] });
+    await putHome(world, kid, { cells: [{ type: 'pumpkin', gx: 3, gy: 3, uid, day: 0, at: '2020-01-01' }] });
     const crop = stored(world, kid.uid).cells.find(c => c.type === 'pumpkin');
     assert.equal(crop.day, 1, 'planted at day 1, still day 1');
     assert.equal(crop.at, TODAY, 'the planting date is the server\'s');
@@ -176,7 +186,8 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, YESTERDAY);
-    await putHome(world, kid, { cells: [], farms: [{ cells: [{ type: 'rose', gx: 0, gy: 0, uid: 'c-rose0001' }] }, { cells: [] }, { cells: [] }, { cells: [] }] });
+    await putHome(world, kid, { cells: [], farms: [{ cells: [] }, { cells: [] }, { cells: [] }, { cells: [] }] });
+    await plant(world, kid, 'rose', 0, 0, 1);
     const s = stored(world, kid.uid);
     assert.equal(s.farms.length, 3);
     assert.equal(s.farms[0].cells[0].day, 1);
@@ -271,7 +282,8 @@ suite('farm server: the Daily Task page gets a farm summary', () => {
   test('with the flag: counts and preview; without: farm is null', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
-    await putHome(world, kid, { cells: [{ type: 'carrot', gx: 1, gy: 1, uid: 'c-carrot01' }] });
+    await putHome(world, kid, { cells: [] });
+    await plant(world, kid, 'carrot', 1, 1);
     doneOn(world, kid.uid, YESTERDAY);
     const r = await me(world, kid);
     assert.truthy(r.ok, JSON.stringify(r.data));
@@ -304,14 +316,16 @@ suite('farm server: a uid is an identity, not a coupon', () => {
     const kid = await world.createUser({ allowBot: true });
     const day = n => doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
     day(20); day(19);                                   // dayCount 2
-    await putHome(world, kid, { cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'c-honest01' }] }, 100);
+    await putHome(world, kid, { cells: [] }, 100);
+    await plant(world, kid, 'pumpkin', 0, 0);
+    const honestUid = stored(world, kid.uid).cells[0].uid;
     assert.equal(stored(world, kid.uid).cells[0].day, 2, 'planted at day 2');
     for (let i = 18; i >= 8; i--) day(i);               // dayCount 13 → the pumpkin is ripe
     const clones = [];
     for (let gx = 0; gx < 12 && clones.length < 96; gx++)
       for (let gy = 0; gy < 12 && clones.length < 96; gy++) {
         if (gx >= 4 && gx < 7 && gy >= 1 && gy < 4) continue;   // the castle footprint
-        clones.push({ type: 'pumpkin', gx, gy, uid: 'c-honest01' });
+        clones.push({ type: 'pumpkin', gx, gy, uid: honestUid });
       }
     await putHome(world, kid, { cells: clones }, 100);
     const kept = stored(world, kid.uid).cells.filter(c => c.type === 'pumpkin');
@@ -461,9 +475,10 @@ suite('farm server: a raid target shows its walls, never its garden', () => {
     await putHome(world, defender, { cells: [
       { type: 'stone-wall', gx: 0, gy: 6, tier: 1 },
       { type: 'wood-fence', gx: 2, gy: 6, tier: 1 },
-      { type: 'pumpkin', gx: 1, gy: 1, uid: 'c-pumpk001' },
       { type: 'windmill', gx: 8, gy: 8, uid: 'f-windmi01' },
-    ], farms: [{ cells: [{ type: 'rose', gx: 0, gy: 0, uid: 'c-rose0001' }] }] });
+    ], farms: [{ cells: [] }] });
+    await plant(world, defender, 'pumpkin', 1, 1);
+    await plant(world, defender, 'rose', 0, 0, 1);
     // Soldiers only ever move in collect.js, so put the garrison there directly.
     const s = stored(world, defender.uid); s.soldiers = 4;
     world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify(s), defender.uid);
@@ -479,8 +494,8 @@ suite('farm server: a raid target shows its walls, never its garden', () => {
     const raid = r.data.raid, wire = JSON.stringify(raid);
     assert.deepEqual(raid.layout.cells.map(c => c.type).sort(), WALLS, 'defences only');
     assert.equal(raid.layout.farms, undefined, 'the private extra farm boards are not sent at all');
-    assert.falsy(wire.includes('c-pumpk001'), 'no crop uid reaches the attacker');
-    assert.falsy(wire.includes('c-rose0001'), 'not even from a private farm board');
+    assert.falsy(wire.includes('pumpkin'), 'no crop reaches the attacker');
+    assert.falsy(wire.includes('rose'), 'not even from a private farm board');
     assert.falsy(wire.includes('windmill'), 'and no farm building');
     // The fight is untouched: every wall, the dog, the castle and the garrison.
     assert.equal(raid.soldiers, 4, 'the garrison is still part of the gamble');
@@ -505,7 +520,7 @@ suite('farm server: a raid target shows its walls, never its garden', () => {
     const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: defender.token });
     assert.truthy(g.ok, JSON.stringify(g.data));
     assert.deepEqual(g.data.home.layout.cells.map(c => c.type).sort(), ['pumpkin', 'stone-wall', 'windmill', 'wood-fence']);
-    assert.equal(g.data.home.layout.cells.find(c => c.type === 'pumpkin').uid, 'c-pumpk001');
+    assert.truthy(/^c-/.test(g.data.home.layout.cells.find(c => c.type === 'pumpkin').uid));
     assert.equal(g.data.home.layout.farms.length, 1);
     assert.equal(g.data.home.layout.farms[0].cells[0].type, 'rose');
   });

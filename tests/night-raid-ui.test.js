@@ -300,15 +300,15 @@ suite('night raid: app integration',()=>{
   test('the six icon controls form one compact vertical rail in portrait and fake landscape',()=>{
     const compact = css.slice(css.indexOf('/* Compact icon rail:'), css.indexOf('/* Daily Task: the garden strip */'));
     assert.truthy(compact.length > 500, 'the final compact rail overrides must stay together');
-    assert.truthy(compact.includes('grid-template-columns:48px'), 'the three navigation actions stack in one column');
-    assert.truthy(compact.includes('.nr-builder-shop-fab{top:calc(276px'), 'SHOP sits directly under the three navigation icons');
-    assert.truthy(compact.includes('.nr-builder-rotate{top:calc(330px'), 'rotate follows SHOP');
-    assert.truthy(compact.includes('.nr-builder-edit{top:calc(384px'), 'edit follows rotate');
+    assert.truthy(compact.includes('grid-template-columns:48px'), 'the four navigation actions stack in one column');
+    assert.truthy(compact.includes('.nr-builder-shop-fab{top:calc(330px'), 'SHOP sits directly under the four navigation icons');
+    assert.truthy(compact.includes('.nr-builder-rotate{top:calc(384px'), 'rotate follows SHOP');
+    assert.truthy(compact.includes('.nr-builder-edit{top:calc(438px'), 'edit follows rotate');
     assert.truthy(compact.includes('.nr-builder-nav-btn>span,.nr-builder-shop-fab>span,.nr-builder-rotate>span,.nr-builder-edit>span'), 'rail labels are visually clipped, not drawn over the map');
     assert.truthy(compact.includes('.nr-shop-tabs button{width:44px;height:44px'), 'shop category icons keep a safe touch target');
-    // Packed along the short edge: all six 44px controls end inside 320px.
+    // Packed along the short edge: all seven 44px controls end inside 375px.
     assert.truthy(compact.includes('.nr-builder.rotated .nr-builder-nav{left:auto;right:14px;top:14px'), 'the rotated rail begins at the top right');
-    assert.truthy(compact.includes('.nr-builder.rotated .nr-builder-edit{top:264px}'), 'the last rotated icon remains on screen');
+    assert.truthy(compact.includes('.nr-builder.rotated .nr-builder-edit{top:314px}'), 'the last rotated icon remains on screen');
     assert.truthy(css.includes('.nr-builder.rotated .nr-builder-hud{left:14px;right:96px'),
       'the stat rail must stop short of the buttons, or SHOP sits on the coin counter');
     assert.truthy(css.includes('.nr-builder-zoom,\n.nr-home-level {\n    display: none !important;'),

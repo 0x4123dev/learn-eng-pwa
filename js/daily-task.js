@@ -20,6 +20,19 @@ var DailyTask = (function () {
   function pendingOf(s) { return (s && Array.isArray(s.pending)) ? s.pending : []; }
   function swordsOf(s) { return Math.max(0, Math.trunc(+((s && s.swords && s.swords.count) || 0))); }
   function shieldsOf(s) { return Math.max(0, Math.trunc(+((s && s.shields && s.shields.count) || 0))); }
+  function seedsOf(s) {
+    const raw = s && s.seeds && typeof s.seeds === 'object' ? s.seeds : {};
+    return {
+      ready: raw.ready !== false,
+      progress: Math.max(0, Math.min(1, Math.trunc(+raw.progress || 0))),
+      goal: 2,
+      next: raw.next || { id: 'lettuce', name: 'Rau cải', days: 1, yield: 8 },
+      inventory: Array.isArray(raw.inventory) ? raw.inventory : [],
+      recent: Array.isArray(raw.recent) ? raw.recent : [],
+      justRewarded: raw.justRewarded || null,
+    };
+  }
+  function seedTotal(s) { return seedsOf(s).inventory.reduce((n, item) => n + Math.max(0, Math.trunc(+item.quantity || 0)), 0); }
   // The garden summary the server attaches for early-access children
   // (functions/api/me/daily-tasks.js). Null when the flag is off.
   function farmOf(s) { return (typeof appState !== 'undefined' && appState && appState.allowBot && s && s.farm && typeof s.farm === 'object') ? s.farm : null; }
@@ -41,6 +54,7 @@ var DailyTask = (function () {
       + '|' + (sh.count || 0) + ':' + (sh.activeUntil || 0)
       + '|' + swordsOf(s) + '|' + pendingOf(s).join(',')
       + '|' + ((s.recent || []).map(r => r.date + ':' + (r.kind || '')).join(','))
+      + '|seed:' + seedsOf(s).progress + ':' + seedsOf(s).next.id + ':' + seedsOf(s).inventory.map(i => i.id + '=' + i.quantity).join(',')
       + '|' + !!s.rewardedToday + '|' + (s.celebratedDate || '')
       + '|' + (s.farm ? [s.farm.crops, s.farm.ripe, s.farm.growing, s.farm.wilted ? 1 : 0].join(':') : '');
   }
@@ -65,13 +79,14 @@ var DailyTask = (function () {
   // The armory half of a server reply (GET me/daily-tasks or a claim
   // response), normalised. Arrays are copied so nothing downstream can mutate
   // what the server said.
-  function armoryFrom(data) {
+  function armoryFrom(data, previous) {
     const d = data || {};
     return {
       shields: d.shields || { count: 0, activeUntil: 0 },
       swords: { count: Math.max(0, Math.trunc(+((d.swords && d.swords.count) || 0))) },
       pending: Array.isArray(d.pending) ? d.pending.map(String) : [],
       recent: Array.isArray(d.recent) ? d.recent.map(r => ({ date: String(r && r.date || ''), kind: (r && r.kind) || null })) : [],
+      seeds: d.seeds && typeof d.seeds === 'object' ? d.seeds : seedsOf(previous),
     };
   }
 
@@ -105,7 +120,7 @@ var DailyTask = (function () {
           allDone: !!r.data.allDone, rewardedToday: !!r.data.rewardedToday,
           farm: (r.data.farm && typeof r.data.farm === 'object') ? r.data.farm : null,
           celebratedDate: celebrateNow ? date : ((prev && prev.celebratedDate) || ''),
-        }, armoryFrom(r.data));
+        }, armoryFrom(r.data, prev));
         const changed = sig(prev) !== sig(next);
         appState.dailyTask = next;
         // fetchedAt always moves in memory (it drives the throttle), but a poll
@@ -135,7 +150,7 @@ var DailyTask = (function () {
   function applyArmory(armory) {
     if (typeof appState === 'undefined' || !appState) return null;
     const prev = st() || { fetchedAt: 0, date: '', tasks: [], allDone: false, rewardedToday: false, celebratedDate: '' };
-    const next = Object.assign({}, prev, armoryFrom(armory));
+    const next = Object.assign({}, prev, armoryFrom(armory, prev));
     const changed = sig(prev) !== sig(next);
     appState.dailyTask = next;
     if (changed) persist();
@@ -151,8 +166,9 @@ var DailyTask = (function () {
     // who finished tasks on several days without opening the app has several.
     const n = Math.max(1, pendingOf(s).length);
     const f = farmOf(s);
+    const seed = seedsOf(s).justRewarded || seedsOf(s).recent.find(r => r.date === s.date);
     const garden = !f ? '' : (f.ctx && !f.ctx.doneYesterday ? ' · Cây tươi lại rồi 🌱' : ' · Cây lớn thêm 1 ngày 🌱') + (f.ripe ? ` · ${f.ripe} cây chín, đi hái nào` : '');
-    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!' + garden);
+    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!' + (seed ? ' · Nhận 1 hạt ' + seed.name + '!' : '') + garden);
     // #confettiContainer sits outside every screen, so this lands wherever
     // the child happens to be when the last task ticks over.
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
@@ -231,6 +247,7 @@ var DailyTask = (function () {
         <div class="dt-ring-wrap">${ringHtml(tasks.length ? doneCount / tasks.length : 0)}<b>${stale ? '…' : tasks.length ? doneCount + '/' + tasks.length : '0'}</b></div>
         <div class="dt-hero-text"><strong>${heroTitle}</strong><small>${heroSub}</small></div>
       </div>`;
+    const seedReward = seedRewardHtml(s, stale);
     const farmStrip = farmStripHtml(f);
     // The unopened gift. Shown whenever something is waiting — not only on the
     // day it was earned, because a child may open the app days later.
@@ -285,6 +302,7 @@ var DailyTask = (function () {
         <h2>📋 Nhiệm vụ hôm nay</h2><p>${esc((s && s.date) || '')}</p>
       </div>
       ${hero}
+      ${seedReward}
       ${farmStrip}
       ${giftCta}
       <div class="dt-list">${list}</div>
@@ -296,7 +314,7 @@ var DailyTask = (function () {
   // doing, and the door into the Night Raid builder where the farm lives.
   function farmStripHtml(f) {
     if (!f) return '';
-    const line = !f.crops ? 'Vườn đang trống. Xong nhiệm vụ rồi ghé SHOP mua hạt nhé'
+    const line = !f.crops ? 'Vườn đang trống. Mở Kho Hạt giống để gieo cây nhé'
       : f.wilted ? `${f.wiltedCount} cây đang héo`
       : `${f.growing} cây đang lớn, ${f.ripe} cây chín`;
     return `<section class="dt-farm ${f.wilted ? 'wilted' : ''}" aria-label="Vườn của con">
@@ -305,9 +323,30 @@ var DailyTask = (function () {
         <button type="button" class="dt-farm-go" onclick="DailyTask.viewFarm()">Xem vườn</button>
       </section>`;
   }
+  function seedRewardHtml(s, stale) {
+    const seeds = seedsOf(s), next = seeds.next, total = seedTotal(s);
+    if (!seeds.ready) return '';
+    const progress = stale ? 0 : seeds.progress;
+    const todayReward = seeds.recent.find(r => r.date === (s && s.date));
+    const art = (typeof FarmRules !== 'undefined' && next && next.id) ? FarmRules.art(next.id + '-day' + next.days) : '';
+    const message = todayReward
+      ? `Con vừa nhận 1 hạt ${todayReward.name}! Chuỗi mới bắt đầu từ ngày tiếp theo.`
+      : progress === 1
+        ? `Thêm 1 ngày hoàn thành liên tiếp để nhận hạt ${next.name}.`
+        : `Hoàn thành Daily Task 2 ngày liên tiếp để nhận hạt ${next.name}.`;
+    return `<section class="dt-seed-reward ${todayReward ? 'earned' : ''}" aria-label="Tiến độ nhận hạt giống ${progress} trên 2 ngày">
+      ${art ? `<img src="${art}" alt="Hạt tiếp theo: ${esc(next.name)}">` : '<span class="dt-seed-placeholder" aria-hidden="true">🌱</span>'}
+      <div class="dt-seed-copy"><span>THƯỞNG HẠT GIỐNG</span><strong>${todayReward ? '2/2' : progress + '/2'} ngày liên tiếp</strong><small>${esc(message)}</small><div class="dt-seed-steps" aria-hidden="true"><i class="${progress||todayReward?'done':''}"></i><i class="${todayReward?'done':''}"></i></div></div>
+      <button type="button" onclick="DailyTask.viewSeeds()">Kho hạt · ${total}</button>
+    </section>`;
+  }
   function viewFarm() {
     if (typeof openNightRaid === 'function') openNightRaid();
     if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.renderBuilder === 'function') NightRaid.renderBuilder();
+  }
+  function viewSeeds() {
+    if (typeof openNightRaid === 'function') openNightRaid();
+    if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.openSeeds === 'function') NightRaid.openSeeds();
   }
 
   function open() {
@@ -374,6 +413,6 @@ var DailyTask = (function () {
   function pendingCount() { return pendingOf(st()).length; }
   function swordCount() { return swordsOf(st()); }
 
-  return { refresh, applyArmory, renderHomeCard, renderScreen, open, close, go, viewFarm, activateShield, state, pendingCount, swordCount };
+  return { refresh, applyArmory, renderHomeCard, renderScreen, open, close, go, viewFarm, viewSeeds, activateShield, state, pendingCount, swordCount };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyTask;

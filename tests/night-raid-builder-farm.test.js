@@ -39,9 +39,22 @@ function mount(o) {
       { type: 'training-barracks', gx: 8, gy: 8, tier: 1, uid: 'p-barrac01', lastDay: 4 },
       { type: 'rice-field', gx: 6, gy: 6, tier: 1, uid: 'p-rice0001', readyAt: 0 },
     ], soldiers: 2, dogLane: 2, farms: [] },
-    dailyTask: { date: TODAY, tasks: [{ id: 1, label: 'Units', target: 2, count: 1, done: false }], allDone: false },
+    dailyTask: { date: TODAY, tasks: [{ id: 1, label: 'Units', target: 2, count: 1, done: false }], allDone: false,
+      seeds: { progress: 1, goal: 2, next: { id: 'lettuce', name: 'Rau cải', days: 1, yield: 8 },
+        inventory: Farm.CROPS.map(c => ({ id: c.id, name: c.name.vi, days: c.days, yield: c.yield, quantity: 3 })), recent: [] } },
   }, o.appState || {});
-  const api = o.api || (() => Promise.resolve({ ok: false, data: null }));
+  const defaultApi = (p, opts) => {
+    if (p === 'night-raid/home' && opts && opts.method === 'PUT') {
+      return Promise.resolve({ ok: true, data: { ok: true, layout: state.nightRaidLayout, dayCount: state.farmDayCount, ctx: state.farmCtx, seeds: state.dailyTask.seeds } });
+    }
+    if (p !== 'night-raid/plant') return Promise.resolve({ ok: false, data: null });
+    const b = opts.body, layout = Rules.normalizeLayout(JSON.parse(JSON.stringify(state.nightRaidLayout)));
+    const cells = b.zone ? layout.farms[b.zone - 1].cells : layout.cells;
+    cells.push({ type: b.cropId, gx: b.gx, gy: b.gy, uid: 'c-server-' + b.cropId + b.gx + b.gy, day: state.farmDayCount, at: TODAY });
+    const item = state.dailyTask.seeds.inventory.find(x => x.id === b.cropId); if (item) item.quantity--;
+    return Promise.resolve({ ok: true, data: { ok: true, layout, dayCount: state.farmDayCount, ctx: FRESH, seeds: state.dailyTask.seeds } });
+  };
+  const api = o.api ? ((p, opts) => o.api(p, opts, defaultApi)) : defaultApi;
   const ctx = {
     console, Math, JSON, Date, String, Number, Array, Object, Boolean, Promise, RegExp, Set, Map, isNaN, parseInt, parseFloat, Error,
     document: doc, window: { addEventListener() {}, innerWidth: 900 }, innerWidth: 900, navigator: { vibrate() {} },
@@ -122,13 +135,17 @@ suite('builder farm: the server clock is adopted', () => {
   });
 });
 
-suite('builder farm: shop tabs and buying', () => {
-  test('four tabs; seeds and farm buildings are priced cards; owned fields say "Mỗi loại 1 cái"', () => {
+suite('builder farm: shop tabs, seed inventory and buying', () => {
+  test('Shop has no seed tab; the peer-level seed menu shows earned quantities without prices', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
-    for (const t of ['Phòng thủ', 'Hạt giống', 'Nông trại', 'Mở rộng']) assert.truthy(html(w).includes(t), 'tab ' + t);
-    w.ctx.NightRaid.selectShopTab('seeds');
-    assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · +120 xu'), 'seed card copy');
+    for (const t of ['Phòng thủ', 'Nông trại', 'Mở rộng']) assert.truthy(html(w).includes(`aria-label="${t}"`), 'tab ' + t);
+    assert.falsy(html(w).includes('onclick="nrSelectShopTab(\'seeds\')"'), 'seeds are not sold in Shop');
+    assert.truthy(html(w).includes('onclick="nrOpenSeeds()"'), 'seed inventory is a peer navigation action');
+    w.ctx.NightRaid.openSeeds();
+    assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · thu 120 xu'), 'seed inventory card copy');
     assert.truthy(html(w).includes("nrSelectBuild('pumpkin')"));
+    assert.truthy(html(w).includes('x3 hạt'));
+    assert.falsy(html(w).includes('nr-item-price'), 'seed cards have no coin price');
     for (const crop of Farm.CROPS) {
       const art = `img/farm/${crop.id}-day${crop.days}.webp`;
       assert.truthy(html(w).includes(`src="${art}"`), crop.id + ' uses its mature crop art');
@@ -139,18 +156,19 @@ suite('builder farm: shop tabs and buying', () => {
     w.ctx.NightRaid.selectShopTab('defense');
     assert.truthy(html(w).includes('Mỗi loại 1 cái'), 'the owned rice field is capped in the shop');
   });
-  test('planting a seed puts a crop on the tapped cell with day = farmDayCount, at = today, and charges the price', () => {
+  test('planting uses the server endpoint, consumes one owned seed and never charges coins', async () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     w.ctx.NightRaid.selectBuild('pumpkin');
-    w.ctx.NightRaid.buildCell(10, 10, true);
+    await w.ctx.NightRaid.buildCell(10, 10, true);
     const crop = w.state.nightRaidLayout.cells.find(c => c.type === 'pumpkin' && c.gx === 10);
     assert.truthy(crop, 'the pumpkin was planted');
     assert.equal(crop.day, 5); assert.equal(crop.at, TODAY);
     assert.truthy(/^c-/.test(crop.uid));
-    assert.equal(w.state.coins, 9000 - 20);
-    assert.truthy(w.calls.some(c => c[0] === 'night-raid/home' && c[1] === 'PUT'), 'the layout is synced');
+    assert.equal(w.state.coins, 9000);
+    assert.equal(w.state.dailyTask.seeds.inventory.find(x => x.id === 'pumpkin').quantity, 2);
+    assert.truthy(w.calls.some(c => c[0] === 'night-raid/plant' && c[1] === 'POST'), 'the seed is spent and planted on the server');
   });
-  test('a second rice field is refused; a growing crop cannot be replaced; not enough coins is refused', () => {
+  test('a second rice field and replacing a growing crop are refused; seeds do not need coins', async () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     w.ctx.NightRaid.selectBuild('rice-field');
     w.ctx.NightRaid.buildCell(0, 9, true);
@@ -160,9 +178,9 @@ suite('builder farm: shop tabs and buying', () => {
     w.ctx.NightRaid.buildCell(1, 1, true);
     assert.equal(w.state.nightRaidLayout.cells.find(c => c.gx === 1 && c.gy === 1).type, 'tomato');
     w.state.coins = 2;
-    w.ctx.NightRaid.buildCell(11, 11, true);
-    assert.falsy(w.state.nightRaidLayout.cells.some(c => c.gx === 11 && c.gy === 11));
-    assert.truthy(w.toasts.some(t => t.includes('Chưa đủ')));
+    await w.ctx.NightRaid.buildCell(11, 11, true);
+    assert.truthy(w.state.nightRaidLayout.cells.some(c => c.type === 'carrot' && c.gx === 11 && c.gy === 11));
+    assert.equal(w.state.coins, 2, 'planting does not spend the last coins');
   });
   test('removing a farm building refunds half its price', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
@@ -192,11 +210,11 @@ suite('builder farm: extra farm boards', () => {
     w.ctx.NightRaid.buyFarmPlot(true);
     assert.equal(w.state.nightRaidLayout.farms.length, 2, 'not enough coins');
   });
-  test('planting on a farm board lands in that farm; a defense cannot be placed there', () => {
+  test('planting on a farm board lands in that farm; a defense cannot be placed there', async () => {
     const w = mount({ appState: { nightRaidLayout: { cells: [], soldiers: 0, dogLane: 2, farms: [{ cells: [] }] } } });
     w.ctx.NightRaid.renderBuilder();
     w.ctx.NightRaid.selectZone(1);
-    w.ctx.NightRaid.selectBuild('lettuce'); w.ctx.NightRaid.buildCell(2, 2, true);
+    w.ctx.NightRaid.selectBuild('lettuce'); await w.ctx.NightRaid.buildCell(2, 2, true);
     assert.equal(w.state.nightRaidLayout.farms[0].cells.length, 1);
     assert.equal(w.state.nightRaidLayout.cells.length, 0);
     w.ctx.NightRaid.selectBuild('stone-wall'); w.ctx.NightRaid.buildCell(0, 0, true);
@@ -298,50 +316,52 @@ suite('builder farm: replant what was just harvested', () => {
   test('replant re-buys the same seeds on the same cells in one PUT, then forgets the list', async () => {
     const reply = { ok: true, data: { layout: { cells: [{ type: 'wood-fence', gx: 3, gy: 7, tier: 1 }], farms: [{ cells: [] }] }, coins: 9026, collectedCoins: 26, collectedSoldiers: 0,
       harvested: [{ type: 'tomato', gx: 1, gy: 1, zone: 0 }, { type: 'lettuce', gx: 0, gy: 0, zone: 1 }], wilted: false, dayCount: 6, ctx: FRESH } };
-    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    const w = mount({ api: (p, opts, fallback) => p === 'night-raid/collect' ? Promise.resolve(reply) : fallback(p, opts) });
     w.ctx.NightRaid.renderBuilder();
     await w.ctx.NightRaid.collectResources();
-    assert.truthy(html(w).includes('2 ô · 8 xu'), 'tomato 5 + lettuce 3');
-    w.ctx.NightRaid.replant();
+    assert.truthy(html(w).includes('2/2 ô có hạt'));
+    await w.ctx.NightRaid.replant();
     const L = w.state.nightRaidLayout;
     const tomato = L.cells.find(c => c.type === 'tomato' && c.gx === 1 && c.gy === 1);
     const lettuce = L.farms[0].cells.find(c => c.type === 'lettuce' && c.gx === 0 && c.gy === 0);
     assert.truthy(tomato && lettuce, 'both seeds are back where they were');
     assert.equal(tomato.day, 6, 'planted at the dayCount the server just sent');
-    assert.equal(w.state.coins, 9026 - 8);
+    assert.equal(w.state.coins, 9026, 'replanting spends seeds, not coins');
+    assert.equal(w.calls.filter(c => c[0] === 'night-raid/plant').length, 2);
     assert.falsy(html(w).includes('TRỒNG LẠI NHƯ CŨ'), 'the offer is spent');
   });
   test('replant is disabled and says how much is missing when the child is short', async () => {
     const reply = { ok: true, data: { layout: { cells: [], farms: [] }, coins: 3, collectedCoins: 120, collectedSoldiers: 0, harvested: [{ type: 'pumpkin', gx: 2, gy: 2, zone: 0 }], wilted: false, dayCount: 6, ctx: FRESH } };
-    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    const noSeeds = { progress: 0, goal: 2, next: { id: 'lettuce', name: 'Rau cải', days: 1 }, inventory: Farm.CROPS.map(c => ({ id: c.id, quantity: 0 })), recent: [] };
+    const w = mount({ appState: { dailyTask: { date: TODAY, tasks: [], allDone: false, seeds: noSeeds } }, api: (p, opts, fallback) => p === 'night-raid/collect' ? Promise.resolve(reply) : fallback(p, opts) });
     w.ctx.NightRaid.renderBuilder();
     await w.ctx.NightRaid.collectResources();
     assert.truthy(/nr-replant[^>]*disabled/.test(html(w)));
-    assert.truthy(html(w).includes('thiếu 17 xu'));
-    w.ctx.NightRaid.replant();
+    assert.truthy(html(w).includes('Kho không còn hạt phù hợp'));
+    await w.ctx.NightRaid.replant();
     assert.equal(w.state.nightRaidLayout.cells.length, 0, 'nothing planted');
   });
 });
 
-suite('builder farm: replant charges only for what went in the ground', () => {
-  // Found by review, 2026-09-04. replant() quoted the whole harvest, then
-  // skipped any cell that was no longer free — but still charged the full
-  // quote, so a child paid for seeds that were never planted.
-  test('a cell that is no longer free is skipped, and not paid for', async () => {
+suite('builder farm: replant consumes only seeds the server plants', () => {
+  test('a blocked cell is skipped and its seed remains untouched', async () => {
     const reply = { ok: true, data: { layout: { cells: [{ type: 'stone-wall', gx: 1, gy: 1, tier: 1 }], farms: [] },
       coins: 9000, collectedCoins: 138, collectedSoldiers: 0,
       // (1,1) is where the wall now stands; (5,5) is open ground.
       harvested: [{ type: 'pumpkin', gx: 1, gy: 1, zone: 0 }, { type: 'tomato', gx: 5, gy: 5, zone: 0 }],
       wilted: false, dayCount: 6, ctx: FRESH } };
-    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    const w = mount({ api: (p, opts, fallback) => p === 'night-raid/collect' ? Promise.resolve(reply)
+      : p === 'night-raid/plant' && opts.body.gx === 1 ? Promise.resolve({ ok: false, data: { error: 'Ô này đã có công trình' } })
+      : fallback(p, opts) });
     w.ctx.NightRaid.renderBuilder();
     await w.ctx.NightRaid.collectResources();
-    assert.truthy(html(w).includes('2 ô · 25 xu'), 'the offer quotes both seeds: pumpkin 20 + tomato 5');
-    w.ctx.NightRaid.replant();
+    assert.truthy(html(w).includes('2/2 ô có hạt'));
+    await w.ctx.NightRaid.replant();
     const cells = w.state.nightRaidLayout.cells;
     assert.truthy(cells.some(c => c.type === 'tomato' && c.gx === 5 && c.gy === 5), 'the free cell is replanted');
     assert.falsy(cells.some(c => c.type === 'pumpkin'), 'the blocked cell is not');
-    assert.equal(w.state.coins, 9000 - 5, 'and only the tomato is charged, not the quoted 25');
+    assert.equal(w.state.coins, 9000, 'neither successful nor refused planting spends coins');
+    assert.equal(w.state.dailyTask.seeds.inventory.find(x => x.id === 'pumpkin').quantity, 3, 'the refused seed remains');
   });
 });
 

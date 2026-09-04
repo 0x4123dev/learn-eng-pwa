@@ -19,7 +19,7 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     assert.truthy(schema.includes('CREATE TABLE IF NOT EXISTS night_raid_config'));
   });
   test('all authenticated endpoints exist',()=>{
-    for(const name of ['home','targets','start','finish','reports','collect']){
+    for(const name of ['home','targets','start','finish','reports','collect','plant']){
       const file=`functions/api/night-raid/${name}.js`;
       assert.truthy(fs.existsSync(path.join(root,file)),file);
       assert.truthy(read(file).includes('requireAuth'));

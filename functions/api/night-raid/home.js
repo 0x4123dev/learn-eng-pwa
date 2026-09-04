@@ -1,6 +1,6 @@
 import { requireAuth, json, err } from '../_lib.js';
 import { NR, nightRaidEnabled, homeSnapshot, safeJson } from '../_night-raid.js';
-import { swordCount } from '../_daily-task.js';
+import { swordCount, seedStatus } from '../_daily-task.js';
 import { farmClock } from '../_farm.js';
 
 export async function onRequestGet({request,env}) {
@@ -17,7 +17,8 @@ export async function onRequestGet({request,env}) {
   // soldier it had earned instead of converting to "already collected today".
   if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});
   // shieldUntil is for the OWNER only — targets.js never exposes it.
-  return json({home:home?Object.assign(home,{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null,dayCount:clock.dayCount,ctx:clock.ctx});
+  const seeds=await seedStatus(env,auth.uid,clock.ctx.today,clock.ctx.doneToday);
+  return json({home:home?Object.assign(home,{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null,dayCount:clock.dayCount,ctx:clock.ctx,seeds});
 }
 export async function onRequestPut({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -45,6 +46,15 @@ export async function onRequestPut({request,env}) {
     else if(def.kind==='crop'){if(same){cell.day=prior.day;cell.at=prior.at;}else{if(!cell.uid)cell.uid=newUid('c-');cell.day=dayCount;cell.at=today;}}
     else if(def.kind==='farm'){if(!cell.uid)cell.uid=newUid('f-');}};
   layout.cells.forEach(stamp);layout.farms.forEach(f=>f.cells.forEach(stamp));
+  // New plants may only enter through /night-raid/plant, which atomically
+  // spends one server-owned seed. Generic layout sync may move an existing
+  // crop (same uid/type), but can never mint a fresh one for free.
+  const minted=NR.farmRules.allCells(layout).filter(cell=>{
+    if(!NR.farmRules.isCrop(cell))return false;
+    const prior=cell.uid?oldByUid.get(cell.uid):null;
+    return !(prior&&prior.type===cell.type);
+  });
+  if(minted.length)return err('Hãy gieo cây từ Kho Hạt giống',409);
   // buyMax: a NEW field of a type the child already owns is dropped. Fields the
   // child already has are never touched — the cap is on BUYING, not on OWNING.
   // The allowance for a type is therefore max(stored count, buyMax): a child

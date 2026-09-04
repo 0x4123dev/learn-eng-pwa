@@ -32,6 +32,7 @@ export async function onRequestGet({ request, env }) {
     allDone: p.allDone, rewardedToday: p.rewardedToday, justRewarded: p.justRewarded,
     shields: armory.shields, swords: armory.swords, pending: armory.pending, recent: armory.recent,
     armoryReady: armory.ready,
+    seeds: p.seeds,
     farm,
   });
 }

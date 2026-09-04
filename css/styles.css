@@ -13835,10 +13835,10 @@
 .nr-builder-nav-btn svg{width:24px;height:24px}
 .nr-builder-nav-btn>span,.nr-builder-shop-fab>span,.nr-builder-rotate>span,.nr-builder-edit>span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{right:max(14px,env(safe-area-inset-right));width:48px;height:48px;min-width:48px;min-height:48px;border-radius:15px}
-.nr-builder-shop-fab{top:calc(276px + env(safe-area-inset-top));padding:0}
+.nr-builder-shop-fab{top:calc(330px + env(safe-area-inset-top));padding:0}
 .nr-builder-shop-fab svg,.nr-builder-rotate svg,.nr-builder-edit svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.3}
-.nr-builder-rotate{top:calc(330px + env(safe-area-inset-top))}
-.nr-builder-edit{top:calc(384px + env(safe-area-inset-top))}
+.nr-builder-rotate{top:calc(384px + env(safe-area-inset-top))}
+.nr-builder-edit{top:calc(438px + env(safe-area-inset-top))}
 .nr-builder.shop-open .nr-builder-shop-fab{top:calc(158px + env(safe-area-inset-top))}
 .nr-builder:has(.nr-builder-nav) .nr-collect-all{bottom:calc(64px + env(safe-area-inset-bottom))}
 .nr-builder:has(.nr-builder-nav) .nr-replant{bottom:calc(126px + env(safe-area-inset-bottom))}
@@ -13849,9 +13849,9 @@
 .nr-builder.rotated .nr-builder-nav{left:auto;right:14px;top:14px;bottom:auto;width:44px;transform:none;grid-template-columns:44px;gap:6px}
 .nr-builder.rotated .nr-builder-nav-btn{width:44px;height:44px;min-height:44px}
 .nr-builder.rotated .nr-builder-shop-fab,.nr-builder.rotated .nr-builder-rotate,.nr-builder.rotated .nr-builder-edit{right:14px;width:44px;height:44px;min-width:44px;min-height:44px}
-.nr-builder.rotated .nr-builder-shop-fab{top:164px}
-.nr-builder.rotated .nr-builder-rotate{top:214px}
-.nr-builder.rotated .nr-builder-edit{top:264px}
+.nr-builder.rotated .nr-builder-shop-fab{top:214px}
+.nr-builder.rotated .nr-builder-rotate{top:264px}
+.nr-builder.rotated .nr-builder-edit{top:314px}
 .nr-builder.rotated.shop-open .nr-builder-shop-fab{top:14px}
 
 /* Daily Task: the garden strip */
@@ -13860,3 +13860,12 @@
 .dt-farm-art{width:56px;height:56px;object-fit:contain;display:grid;place-items:center;font-size:30px}
 .dt-farm-text strong{display:block;font-size:13px}.dt-farm-text small{display:block;font-size:12px;opacity:.85}
 .dt-farm-go{min-height:36px;padding:0 12px;border:0;border-radius:999px;background:#3f6046;color:#fff;font-weight:950;cursor:pointer}
+.dt-seed-reward{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:11px;margin:12px 14px 0;padding:12px;border:2px solid #e4c45d;border-radius:20px;background:linear-gradient(145deg,#fff9d9,#edf8cf);color:#344d38;box-shadow:0 8px 20px rgba(74,91,44,.12)}
+.dt-seed-reward.earned{border-color:#5fbd59;background:linear-gradient(145deg,#eaffd9,#ccefa9)}
+.dt-seed-reward>img,.dt-seed-placeholder{width:64px;height:64px;object-fit:contain;display:grid;place-items:center;font-size:34px;filter:drop-shadow(0 5px 4px rgba(66,70,40,.18))}
+.dt-seed-copy{min-width:0}.dt-seed-copy>span{display:block;color:#77703a;font-size:9px;font-weight:1000;letter-spacing:.09em}.dt-seed-copy>strong{display:block;margin:2px 0;font-size:17px}.dt-seed-copy>small{display:block;color:#52614a;font-size:11px;line-height:1.35}
+.dt-seed-steps{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}.dt-seed-steps i{height:7px;border-radius:999px;background:#d7ddbd}.dt-seed-steps i.done{background:#64b64f}
+.dt-seed-reward>button{min-width:84px;min-height:44px;padding:0 12px;border:0;border-radius:14px;background:#3f6046;color:#fff;font-size:11px;font-weight:950;cursor:pointer}
+.nr-seed-count{display:inline-flex;margin-top:7px;padding:5px 8px;border-radius:999px;background:#dff3bd;color:#426426;font-size:11px;font-weight:1000}.nr-seed-item.owned-max .nr-seed-count{background:#eceee5;color:#7d8577}
+.nr-purchase-price.seed{background:#e8f7cc;color:#3f6429}.nr-purchase-price.seed strong{font-size:18px}
+@media(max-width:520px){.dt-seed-reward{grid-template-columns:54px minmax(0,1fr);padding:10px}.dt-seed-reward>img,.dt-seed-placeholder{width:54px;height:54px}.dt-seed-reward>button{grid-column:1/-1;width:100%}}

@@ -107,6 +107,16 @@ suite('daily task client: task screen', () => {
     assert.truthy(r.html.dailyTaskScreen.includes('Đã nhận 200 xu + 1 kiếm'), r.html.dailyTaskScreen);
     assert.falsy(r.html.dailyTaskScreen.includes('dt-gift-cta'), 'nothing left to open');
   });
+  test('shows the two-day seed streak, next crop and the seed inventory door', () => {
+    const seeds = { ready: true, progress: 1, goal: 2, next: { id: 'tomato', name: 'Cà chua', days: 2, yield: 18 },
+      inventory: [{ id: 'lettuce', name: 'Rau cải', quantity: 2 }], recent: [] };
+    const r = load({ appState: stateWith({ seeds }) });
+    r.DailyTask.renderScreen();
+    assert.truthy(r.html.dailyTaskScreen.includes('1/2 ngày liên tiếp'));
+    assert.truthy(r.html.dailyTaskScreen.includes('Thêm 1 ngày hoàn thành liên tiếp để nhận hạt Cà chua'));
+    assert.truthy(r.html.dailyTaskScreen.includes('DailyTask.viewSeeds()'));
+    assert.truthy(r.html.dailyTaskScreen.includes('Kho hạt · 2'));
+  });
 });
 
 suite('daily task client: Vào học deep links', () => {

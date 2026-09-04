@@ -1,4 +1,5 @@
 import DailyTaskCatalog from '../../js/daily-task-catalog.js';
+import FarmRules from '../../js/farm-rules.js';
 import { nightDate } from './_night-raid.js';
 
 // Daily tasks: assigned by an admin, counted from `activities` on read,
@@ -22,6 +23,8 @@ export const MAX_TARGET = 50;
 // Every active task costs one COUNT on every activity sync, and allDone
 // needs all of them, so a long list only makes the reward unreachable.
 export const MAX_ACTIVE_TASKS = 10;
+export const SEED_STREAK_GOAL = 2;
+export const SEED_CYCLE = Object.freeze(FarmRules.CROPS.map(c => c.id));
 
 function sqlTime(ms) { return new Date(ms).toISOString().replace('T', ' ').slice(0, 19); }
 
@@ -135,6 +138,68 @@ export async function armoryReady(env) {
     && (await hasColumn(env, 'users', 'night_swords'));
 }
 
+export async function seedRewardsReady(env) {
+  return (await hasColumn(env, 'farm_seed_days', 'crop_id'))
+    && (await hasColumn(env, 'farm_seed_inventory', 'quantity'));
+}
+
+function previousDate(date) {
+  const ms = Date.parse(String(date) + 'T12:00:00Z');
+  return Number.isFinite(ms) ? new Date(ms - 86400000).toISOString().slice(0, 10) : '';
+}
+
+function seedCrop(id) {
+  const c = FarmRules.cropById(id);
+  return c ? { id: c.id, name: c.name.vi, days: c.days, yield: c.yield } : null;
+}
+
+// Mirror a completed Daily Task day into the seed ledger, then expose the
+// whole seed reward state. The first consecutive day writes crop_id=NULL; the
+// second writes the next crop and increments inventory in the SAME D1 batch.
+// INSERT OR IGNORE plus changes() makes simultaneous evaluate calls award once.
+export async function seedStatus(env, uid, date, rewardedToday) {
+  const ready = await seedRewardsReady(env);
+  const empty = { ready, progress: 0, goal: SEED_STREAK_GOAL, next: seedCrop(SEED_CYCLE[0]), inventory: [], recent: [], justRewarded: null };
+  if (!ready) return empty;
+  const day = String(date || '');
+  let justRewarded = null;
+  if (rewardedToday && /^\d{4}-\d{2}-\d{2}$/.test(day)) {
+    const exists = await env.DB.prepare('SELECT crop_id FROM farm_seed_days WHERE user_id=? AND task_date=?').bind(uid, day).first();
+    if (!exists) {
+      const latest = await env.DB.prepare('SELECT task_date,crop_id FROM farm_seed_days WHERE user_id=? ORDER BY task_date DESC LIMIT 1').bind(uid).first();
+      const awards = await env.DB.prepare('SELECT COUNT(*) AS n FROM farm_seed_days WHERE user_id=? AND crop_id IS NOT NULL').bind(uid).first();
+      const completesPair = !!(latest && latest.task_date === previousDate(day) && latest.crop_id == null);
+      const cropId = completesPair ? SEED_CYCLE[Math.max(0, Math.trunc(+((awards && awards.n) || 0))) % SEED_CYCLE.length] : null;
+      const statements = [
+        env.DB.prepare('INSERT OR IGNORE INTO farm_seed_days(user_id,task_date,crop_id) VALUES(?,?,?)').bind(uid, day, cropId),
+      ];
+      if (cropId) statements.push(env.DB.prepare(
+        `INSERT INTO farm_seed_inventory(user_id,crop_id,quantity) SELECT ?,?,1 WHERE changes()>0
+         ON CONFLICT(user_id,crop_id) DO UPDATE SET quantity=quantity+1,updated_at=datetime('now')`
+      ).bind(uid, cropId));
+      const results = await env.DB.batch(statements);
+      if (cropId && results && results[0] && results[0].meta && results[0].meta.changes > 0) justRewarded = seedCrop(cropId);
+    }
+  }
+  const [latest, awards, stock, recentRows] = await Promise.all([
+    env.DB.prepare('SELECT task_date,crop_id FROM farm_seed_days WHERE user_id=? ORDER BY task_date DESC LIMIT 1').bind(uid).first(),
+    env.DB.prepare('SELECT COUNT(*) AS n FROM farm_seed_days WHERE user_id=? AND crop_id IS NOT NULL').bind(uid).first(),
+    env.DB.prepare('SELECT crop_id,quantity FROM farm_seed_inventory WHERE user_id=? AND quantity>0 ORDER BY crop_id').bind(uid).all(),
+    env.DB.prepare('SELECT task_date,crop_id FROM farm_seed_days WHERE user_id=? AND crop_id IS NOT NULL ORDER BY task_date DESC LIMIT 6').bind(uid).all(),
+  ]);
+  const awardCount = Math.max(0, Math.trunc(+((awards && awards.n) || 0)));
+  const quantities = new Map(((stock && stock.results) || []).map(r => [String(r.crop_id), Math.max(0, Math.trunc(+r.quantity || 0))]));
+  const current = /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : nightDate();
+  const progress = latest && latest.crop_id == null && (latest.task_date === current || latest.task_date === previousDate(current)) ? 1 : 0;
+  return {
+    ready: true, progress, goal: SEED_STREAK_GOAL,
+    next: seedCrop(SEED_CYCLE[awardCount % SEED_CYCLE.length]),
+    inventory: FarmRules.CROPS.map(c => Object.assign(seedCrop(c.id), { quantity: quantities.get(c.id) || 0 })),
+    recent: ((recentRows && recentRows.results) || []).map(r => Object.assign({ date: String(r.task_date) }, seedCrop(r.crop_id))),
+    justRewarded,
+  };
+}
+
 // progress() + pay the day's reward if it is due and not yet paid.
 // The INSERT OR IGNORE on daily_task_rewards is the once-a-day claim: two
 // concurrent callers both see allDone, but only the one whose insert changes
@@ -156,7 +221,8 @@ export async function evaluate(env, uid, now = Date.now()) {
   const p = await progress(env, uid, now);
   if (!p.tasks.length) {
     const rewardedToday = await rewardedOn(env, uid, p.date);
-    return Object.assign(p, { rewardedToday, justRewarded: false });
+    const seeds = await seedStatus(env, uid, p.date, rewardedToday);
+    return Object.assign(p, { rewardedToday, justRewarded: false, seeds });
   }
   let rewardedToday = await rewardedOn(env, uid, p.date);
   let justRewarded = false;
@@ -188,7 +254,8 @@ export async function evaluate(env, uid, now = Date.now()) {
     justRewarded = !!(results && results[0] && results[0].meta && results[0].meta.changes > 0);
     rewardedToday = true;
   }
-  return Object.assign(p, { rewardedToday, justRewarded });
+  const seeds = await seedStatus(env, uid, p.date, rewardedToday);
+  return Object.assign(p, { rewardedToday, justRewarded, seeds });
 }
 
 // Inventory + whether the castle is shielded right now.

@@ -526,6 +526,9 @@ function screenPlaybook() {
     nightRaidScreen: {
       title: 'Cướp Đêm: nhà của bé, chỉ số DAM/DEF, và cửa hàng nông trại',
       open: async (h) => {
+        const Farm = h.peek('FarmRules');
+        const seeds = { progress: 1, goal: 2, next: { id: 'lettuce', name: 'Rau cải' },
+          inventory: Farm.CROPS.map((crop) => ({ id: crop.id, name: crop.name.vi, quantity: 1 })), recent: [] };
         stubServer(h, (p) => {
           // The real GET returns the home row AND the farm clock the plants are
           // drawn from — {home, dayCount, ctx}. Sending less would let a screen
@@ -535,6 +538,7 @@ function screenPlaybook() {
               home: { coins: h.state().coins, dogLevel: h.state().dogLevel, layout: null },
               dayCount: 3,
               ctx: { today: '2026-01-08', doneYesterday: true, doneToday: false },
+              seeds,
             } };
           }
           return { ok: false, data: { error: 'not stubbed' } };
@@ -550,38 +554,42 @@ function screenPlaybook() {
         // days the child finishes every task, so the task bar has to say so.
         must(text.includes('nhiệm vụ'), 'the task bar ties the garden to today\'s tasks');
 
-        // Seeds, farm decorations and extra boards are all bought through the
-        // builder's SHOP, so walk there the way a finger does.
+        // Coin purchases stay in SHOP. Earned seeds have their own peer-level
+        // inventory action so a child never mistakes them for paid items.
         h.sandbox.nrShowBuilder();
         const shop = el.querySelector('#nrBuildShop');
         must(shop, 'the builder draws no shop — nothing on this screen can be bought');
         const tabs = shop.querySelectorAll('.nr-shop-tabs button');
-        for (const [id, label] of [['defense', 'Phòng thủ'], ['seeds', 'Hạt giống'], ['farm', 'Nông trại'], ['expand', 'Mở rộng']]) {
+        for (const [id, label] of [['defense', 'Phòng thủ'], ['farm', 'Nông trại'], ['expand', 'Mở rộng']]) {
           const tab = tabs.filter((t) => String(t.getAttribute('onclick') || '').includes("nrSelectShopTab('" + id + "')"));
           mustEqual(tab.length, 1, 'the shop offers exactly one "' + id + '" tab');
           mustEqual(tab[0].getAttribute('aria-label'), label, 'the ' + id + ' icon announces "' + label + '"');
           must(!squash(tab[0].textContent), 'the ' + id + ' tab is icon-only and does not spend room on text');
         }
+        mustEqual(tabs.filter((t) => String(t.getAttribute('onclick') || '').includes("nrSelectShopTab('seeds')")).length, 0,
+          'Hạt giống must not remain in the coin shop');
+        must(wiredTo(el, 'nrOpenSeeds').length >= 1, 'the builder has a peer-level seed inventory action');
 
         // Every crop the rules define must be on sale. Derived from the live
         // FarmRules, never from a list typed here: add a crop and forget the
         // shop, and this goes red.
         const Farm = h.peek('FarmRules');
         must(Farm && Array.isArray(Farm.CROPS) && Farm.CROPS.length > 0, 'FarmRules.CROPS is not loaded — js/farm-rules.js never ran');
-        h.sandbox.nrSelectShopTab('seeds');
+        h.sandbox.nrOpenSeeds();
         const tray = el.querySelector('.nr-build-tray');
-        must(tray, 'the seed tab draws no tray');
+        must(tray, 'the seed inventory draws no tray');
         const cards = tray.querySelectorAll('.nr-build-item');
-        mustEqual(cards.length, Farm.CROPS.length, 'the seed tab sells one card per crop in FarmRules.CROPS');
+        mustEqual(cards.length, Farm.CROPS.length, 'the inventory shows one card per crop in FarmRules.CROPS');
         const trayText = squash(tray.textContent);
         for (const crop of Farm.CROPS) {
           const card = cards.filter((c) => String(c.getAttribute('onclick') || '').includes("nrSelectBuild('" + crop.id + "')"));
-          mustEqual(card.length, 1, 'crop "' + crop.id + '" exists in FarmRules but is not for sale in the shop');
+          mustEqual(card.length, 1, 'crop "' + crop.id + '" exists in FarmRules but is missing from the seed inventory');
           must(trayText.includes(crop.name.vi), 'the ' + crop.id + ' card names it in Vietnamese: ' + crop.name.vi);
-          must(squash(card[0].textContent).includes(String(crop.price)), 'the ' + crop.id + ' card prices it at ' + crop.price + ' xu');
+          must(squash(card[0].textContent).includes('x1 hạt'), 'the ' + crop.id + ' card shows the earned quantity');
+          must(!card[0].querySelector('.nr-item-price'), 'the ' + crop.id + ' seed has no coin price');
         }
-        return 'castle yard with DAM/DEF/LÍNH chips and a task bar; shop sells all '
-          + Farm.CROPS.length + ' seeds (' + Farm.CROPS.map((c) => c.name.vi).join(', ') + ') across '
+        return 'castle yard with DAM/DEF/LÍNH chips and a task bar; earned-seed inventory lists all '
+          + Farm.CROPS.length + ' crops (' + Farm.CROPS.map((c) => c.name.vi).join(', ') + '); coin shop keeps '
           + tabs.length + ' tabs';
       },
     },
@@ -1481,8 +1489,6 @@ async function verifyClient() {
           me: { lockedUntil: 0, shieldUntil: 0 }, ticketsLeft: 3,
           friends: [{ userId: 22, name: 'Oleole', homeLevel: 2, difficulty: 'Dễ' },
                     { userId: 33, name: 'Mai', homeLevel: 3, difficulty: 'Vừa' }] } };
-        if (p === 'night-raid/targets') return { ok: true, data: {
-          ticketsLeft: 3, targets: [{ id: 't1', name: 'Nhà Bí Ẩn', homeLevel: 2, difficulty: 'Dễ' }] } };
         return { ok: false, data: { error: 'not stubbed' } };
       });
       h.sandbox.openNightRaid();
@@ -1493,13 +1499,10 @@ async function verifyClient() {
       await settle(8);
       const text = squash(el.textContent);
       const friendRows = el.querySelectorAll('.nr-friend-list li, .nr-friend-row');
-      const randomCards = el.querySelectorAll('.nr-target-card');
       must(text.includes('Oleole') && text.includes('Mai'), 'both friends appear as houses to raid');
-      must(text.includes('Nhà Bí Ẩn'), 'the random house appears too');
-      mustEqual(randomCards.length, 1, 'one card per random target the server sent');
       must(friendRows.length >= 2, 'one row per friend (' + friendRows.length + ' found)');
       must(text.includes('3 lượt còn lại'), 'the remaining raid tickets come from the server');
-      return '2 friend houses + 1 random house listed, 3 tickets shown';
+      return '2 real friend houses listed, 3 tickets shown';
     });
 
   // ===== the wrong-answer paths that carry state =========================

@@ -129,14 +129,14 @@ async function enterScout(w) {
 }
 
 suite('night raid screens: every sub-menu opens and its primary action is armed', () => {
-  test('Night Raid opens on the builder with exactly three navigation menus', () => {
+  test('Night Raid opens on the builder with four peer navigation menus', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     const screen = doc.getElementById('nightRaidScreen');
     const html = screen.innerHTML;
     const buttons = screen.querySelectorAll('.nr-builder-nav-btn');
-    assert.equal(buttons.length, 3, 'builder navigation has Đi cướp, Nhật ký and Vũ khí');
-    for (const label of ['ĐI CƯỚP', 'NHẬT KÝ', 'VŨ KHÍ']) {
+    assert.equal(buttons.length, 4, 'builder navigation also has the earned seed inventory');
+    for (const label of ['ĐI CƯỚP', 'NHẬT KÝ', 'VŨ KHÍ', 'HẠT GIỐNG']) {
       assert.truthy(html.includes(label), 'builder is missing the ' + label + ' menu');
     }
     assert.truthy(html.includes('nr-build-grid-cell'), 'the editable build grid is the landing screen');
@@ -145,7 +145,7 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.falsy(html.includes('nrScoutBot()'), 'and the home stage no longer shortcuts to a bot');
     assert.equal(buttons.find(f => f.classList.contains('raid')).getAttribute('onclick'),
       'nrShowLiveTargets()', 'ĐI CƯỚP must open the list of houses');
-    for (const fn of ['nrShowLiveTargets()', 'nrShowReports()', 'nrOpenArmory()']) {
+    for (const fn of ['nrShowLiveTargets()', 'nrShowReports()', 'nrOpenArmory()', 'nrOpenSeeds()']) {
       assert.truthy(html.includes(fn), 'fab not wired to ' + fn);
     }
     assert.falsy(html.includes('nr-fab-badge'), 'no gift waiting → no badge');

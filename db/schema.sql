@@ -241,3 +241,23 @@ CREATE TABLE IF NOT EXISTS daily_task_rewards (
   claimed_at TEXT,
   PRIMARY KEY (user_id, task_date)
 );
+
+-- Two consecutive completed task-days award one rotating farm seed (db/028).
+-- A NULL crop_id is the first day of an unfinished pair; a non-NULL crop_id
+-- is the seed awarded by the second day.
+CREATE TABLE IF NOT EXISTS farm_seed_days (
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  task_date  TEXT NOT NULL,
+  crop_id    TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, task_date)
+);
+CREATE INDEX IF NOT EXISTS idx_farm_seed_days_rewards
+  ON farm_seed_days(user_id, crop_id, task_date);
+CREATE TABLE IF NOT EXISTS farm_seed_inventory (
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  crop_id    TEXT NOT NULL,
+  quantity   INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, crop_id)
+);

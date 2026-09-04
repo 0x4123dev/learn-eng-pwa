@@ -16,6 +16,8 @@ suite('daily task: schema', () => {
     const tables = world.db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(t => t.name);
     assert.contains(tables, 'daily_tasks');
     assert.contains(tables, 'daily_task_rewards');
+    assert.contains(tables, 'farm_seed_days');
+    assert.contains(tables, 'farm_seed_inventory');
     const u = await world.createUser();
     assert.equal(
       world.db.prepare('SELECT night_shields FROM users WHERE id=?').get(u.uid).night_shields,
@@ -40,16 +42,16 @@ suite('daily task: schema', () => {
       'one reward row per (user, day)');
   });
 
-  test('db/018 + db/019 and db/schema.sql describe the same tables', () => {
+  test('daily-task and farm-seed migrations match db/schema.sql', () => {
     const ddl = (files, setup) => {
       const { db } = createD1();
       if (setup) db.exec(setup);
       for (const f of files) db.exec(fs.readFileSync(path.join(ROOT, f), 'utf8'));
-      return db.prepare("SELECT name, sql FROM sqlite_master WHERE name LIKE 'daily_task%' OR name LIKE 'idx_daily%' ORDER BY name")
+      return db.prepare("SELECT name, sql FROM sqlite_master WHERE name LIKE 'daily_task%' OR name LIKE 'idx_daily%' OR name LIKE 'farm_seed%' OR name LIKE 'idx_farm_seed%' ORDER BY name")
         .all().map(r => r.name + '::' + String(r.sql).replace(/--[^\n]*/g, '').replace(/\s+/g, ' ').trim()).join('\n');
     };
     assert.equal(
-      ddl(['db/018-daily-tasks.sql', 'db/019-armory-swords.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
+      ddl(['db/018-daily-tasks.sql', 'db/019-armory-swords.sql', 'db/028-farm-seed-rewards.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
       ddl(['db/schema.sql']),
       'the migrations and the canonical schema must not drift');
   });
