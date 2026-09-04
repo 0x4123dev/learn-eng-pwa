@@ -46,7 +46,10 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('function lockChip('),'one chip renderer, three screens');
     assert.truthy(ui.includes('updateLockTimers()'),'the chips tick on the existing one-second beat');
     assert.truthy(ui.includes("lockChip(homeLockedUntil"),'my own home shows how long it stays protected');
-    assert.truthy(ui.includes("lockChip(t.lockedUntil"),'each target card carries its own clock');
+    // The card's clock is now the CHILD's retry window (`retryAt`), not the
+    // house's 24 h seal: a list may not tell a child that a house was already
+    // robbed. Same chip, same ticker, a number about the child instead.
+    assert.truthy(ui.includes("lockChip(retryAt,"),'each target card carries its own clock');
     assert.truthy(ui.includes("lockChip(target.lockedUntil"),'the scout screen replaces TIẾN QUÂN with the clock');
     assert.truthy(ui.includes("id=\"nrStartRaid\" ${locked?'disabled hidden':''}"),'a sealed castle cannot be charged');
     assert.truthy(ui.includes('start.data.locked'),'a server-side seal is reported, not swallowed');
@@ -394,7 +397,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(home.includes('nr-home-stage'));
     assert.truthy(home.includes('nr-builder-world'),'home reuses the pannable island world');
     assert.truthy(home.includes('nr-builder-hud'),'home shows the builder power chips');
-    for(const fab of ['nrScoutBot()','nrShowLiveTargets()','nrShowBuilder()','nrShowReports()'])assert.truthy(home.includes(fab),fab);
+    // Four fabs. NHÀ THẬT was folded into CƯỚP ĐÊM — the child is already
+    // standing in their real house — so CƯỚP ĐÊM opens the list of houses and
+    // the bot lives on the button at the foot of that list, not up here.
+    for(const fab of ['nrShowLiveTargets()','nrShowBuilder()','nrShowReports()'])assert.truthy(home.includes(fab),fab);
+    assert.falsy(home.includes('nrScoutBot()'),'the home stage no longer shortcuts to a bot');
+    // That the NHÀ THẬT fab itself is gone is asserted against the RENDERED
+    // html in tests/night-raid-screens.test.js — a grep of the source cannot
+    // tell the markup from the comment that explains why it left.
     assert.truthy(css.includes('.nr-home-fab'),'fabs share the SHOP button look');
     assert.falsy(home.includes('nrBeginPlacedDrag'),'home buildings must not drag');
     assert.truthy(css.includes('.nr-home-stage .nr-placed{pointer-events:none}'),'panning must work over buildings');
@@ -650,7 +660,10 @@ suite('night raid: the fight is framed, the board keeps its shape, the feet do n
     // the result for good. The raidId is kept and asked about on the next open.
     assert.truthy(ui.includes('rememberPendingRaid(target.raidId)'));
     assert.truthy(ui.includes('async function retryPendingFinish()'));
-    assert.truthy(ui.includes('retryPendingFinish().catch(()=>{})'),'open() retries');
+    // The sweep now waits for refreshHome's GET: it ends in claimVerified() ->
+    // syncHome(), a PUT that would otherwise push the device's stale wallet
+    // over coins the server credited the child while they were offline.
+    assert.truthy(ui.includes('.then(()=>retryPendingFinish())'),'open() retries, after the read');
     const fin=ui.slice(ui.indexOf('async function finishOnline'),ui.indexOf('async function finishOnline')+900);
     assert.truthy(fin.includes('clearPendingRaid(target.raidId);claimVerified(target.raidId,verified)'),'a verified finish clears the pending raid and claims exactly once');
     assert.truthy(read('js/app.js').includes('appState.nightRaidPending'),'the field is part of the saved state');

@@ -328,6 +328,138 @@ suite('money client: night raid sync can never invent a zero', () => {
   });
 });
 
+// ---- the defender's wallet: the one number the SERVER moves ----------------
+// Every other coin path starts on the device. This one does not: when someone
+// attacks this child's house and LOSES, functions/api/night-raid/finish.js
+// credits night_raid_homes.lootable_coins while the child is asleep. The
+// device cannot know it happened — and the next PUT /night-raid/home used to
+// push the wallet the phone still remembered straight over it, so the xu the
+// child had earned by defending simply vanished.
+//
+// Both halves are REAL here: the actual client in a vm, the actual Pages
+// handler over a real SQLite row, with nothing between them but the network
+// hop. Executed, not substring-matched.
+const { createWorld, loadModule: loadPagesModule } = require('./pages-harness');
+
+function liveNightRaid(world, user) {
+  const home = loadPagesModule('functions/api/night-raid/home.js');
+  return loadNightRaid(async (p, opts) => {
+    if (p !== 'night-raid/home') return { ok: false, data: null };
+    const method = (opts && opts.method) || 'GET';
+    const r = await world.call(method === 'PUT' ? home.onRequestPut : home.onRequestGet,
+      { url: '/api/night-raid/home', method, token: user.token, body: opts && opts.body });
+    return { ok: r.ok, data: r.data };
+  });
+}
+// open() fires the GET without handing back a promise, so drain the queue the
+// way the browser would between the child's taps.
+const drain = async (ticks = 20) => { for (let i = 0; i < ticks; i++) await new Promise(r => setImmediate(r)); };
+const lootable = (world, uid) =>
+  world.db.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(uid).lootable_coins;
+
+async function seedRaidHome(world, user, coins) {
+  const home = loadPagesModule('functions/api/night-raid/home.js');
+  const r = await world.call(home.onRequestPut, {
+    url: '/api/night-raid/home', method: 'PUT', token: user.token,
+    body: { layout: { cells: [], soldiers: 0, dogLane: 2 }, dogLevel: 2, castleSkin: 'stone-keep', coins },
+  });
+  assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
+  return r;
+}
+
+suite('money client: coins won while the child was offline survive the next sync', () => {
+  test('a defender who beat off a raid while asleep keeps the reward through open + PUT', async () => {
+    const world = createWorld();
+    const user = await world.createUser({ allowBot: true });
+    await seedRaidHome(world, user, 500);
+    // The attack the child slept through: finish.js pays the defender.
+    world.db.prepare('UPDATE night_raid_homes SET lootable_coins=lootable_coins+? WHERE user_id=?')
+      .run(100, user.uid);
+    assert.equal(lootable(world, user.uid), 600);
+
+    const { ctx } = liveNightRaid(world, user);
+    ctx.appState = raidState(500);         // the device still remembers 500
+    ctx.NightRaid.open();
+    await drain();
+    assert.equal(ctx.appState.coins, 600, 'the client must adopt what the server credited');
+
+    // …and the very next PUT must carry the reconciled number, not the stale one.
+    await ctx.NightRaid.collectResources();
+    await drain();
+    assert.equal(lootable(world, user.uid), 600, 'the reward must survive the sync that follows');
+    assert.equal(ctx.appState.coins, 600);
+  });
+
+  test('a device that is AHEAD is never dragged down by a stale row', async () => {
+    // Lessons, the shop, the cups and the armoury all move appState.coins
+    // without telling any server (functions/api/coins.js: "the wallet lives in
+    // the child's device profile"). Adopting the row outright would eat the xu
+    // a child earned in a lesson two minutes ago.
+    const world = createWorld();
+    const user = await world.createUser({ allowBot: true });
+    await seedRaidHome(world, user, 500);
+
+    const { ctx } = liveNightRaid(world, user);
+    ctx.appState = raidState(800);         // +300 earned in a lesson since
+    ctx.NightRaid.open();
+    await drain();
+    assert.equal(ctx.appState.coins, 800, 'a lower row is the device being ahead, not a debt');
+
+    await ctx.NightRaid.collectResources();
+    await drain();
+    assert.equal(lootable(world, user.uid), 800, 'and the PUT brings the row up to date');
+  });
+
+  test('an empty row can never zero a wallet', async () => {
+    const world = createWorld();
+    const user = await world.createUser({ allowBot: true });
+    await seedRaidHome(world, user, 0);
+
+    const { ctx } = liveNightRaid(world, user);
+    ctx.appState = raidState(1000);
+    ctx.NightRaid.open();
+    await drain();
+    assert.equal(ctx.appState.coins, 1000, 'a 0 on the server is not an instruction to be poor');
+  });
+
+  test('a child with no home row yet still gets one, wallet intact', async () => {
+    const world = createWorld();
+    const user = await world.createUser({ allowBot: true });
+    const { ctx } = liveNightRaid(world, user);
+    ctx.appState = raidState(750);
+    ctx.NightRaid.open();
+    await drain();
+    assert.equal(ctx.appState.coins, 750);
+    assert.equal(lootable(world, user.uid), 750, 'the first sync seeds the row from the device');
+  });
+
+  test('a PUT that starts during the GET waits for it instead of overwriting it', async () => {
+    // The race the ordering in open() exists for: a sync fired while the read
+    // is still in the air used to land first and push the stale wallet.
+    let releaseGet, gets = 0;
+    const gate = new Promise(r => { releaseGet = r; });
+    const puts = [];
+    const { ctx } = loadNightRaid(async (p, opts) => {
+      if (p !== 'night-raid/home') return { ok: false, data: null };
+      if ((opts && opts.method) === 'PUT') { puts.push(opts.body.coins); return { ok: true, data: { layout: { cells: [], soldiers: 0 } } }; }
+      gets++;
+      await gate;
+      return { ok: true, data: { home: { lockedUntil: 0, shieldUntil: 0, lootableCoins: 600, layout: { cells: [], soldiers: 0, dogLane: 2 } } } };
+    });
+    ctx.appState = raidState(500);
+    ctx.NightRaid.open();
+    await drain(3);
+    assert.equal(gets, 1, 'the read is in the air');
+    const syncing = ctx.NightRaid.collectResources();   // starts with a syncHome PUT
+    await drain(3);
+    assert.deepEqual(puts, [], 'and no PUT may overtake it');
+    releaseGet();
+    await syncing; await drain();
+    assert.equal(ctx.appState.coins, 600, 'the read landed first');
+    assert.deepEqual(puts, [600], 'so the PUT carried the reconciled wallet, not the stale 500');
+  });
+});
+
 // ---- the login migration (js/app.js) ----
 suite('money client: logging in never costs a wallet or a dog', () => {
   const { loadAppCode } = require('./setup');

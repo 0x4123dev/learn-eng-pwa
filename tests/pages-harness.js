@@ -82,6 +82,9 @@ const SQL_FILES = [
   'db/011-math-fight.sql',
   'db/012-ghost-offering-event.sql',
   'db/013-daily-coin-snapshots.sql',
+  // Must run AFTER 009: it drops the unique (attacker, defender, ICT day)
+  // index 009 creates, which a real database no longer has either.
+  'db/021-night-raid-rules.sql',
 ];
 
 function createWorld(opts) {

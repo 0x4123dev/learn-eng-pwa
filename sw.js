@@ -84,6 +84,7 @@ const ASSETS = [
   '/js/night-raid-choreo.js',
   '/js/night-raid-art.js',
   '/js/night-raid-game.js',
+  '/js/night-raid-ruins.js',
   '/js/night-raid-phaser.js',
   '/js/phaser.min.js',
   '/js/night-raid.js',

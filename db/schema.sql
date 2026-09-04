@@ -133,7 +133,16 @@ CREATE TABLE IF NOT EXISTS night_raids (
 );
 CREATE INDEX IF NOT EXISTS idx_night_raids_attacker_date ON night_raids(attacker_id, created_date, status);
 CREATE INDEX IF NOT EXISTS idx_night_raids_defender_seen ON night_raids(defender_id, seen_by_defender, created_at);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_night_raids_pair_date ON night_raids(attacker_id, defender_id, created_date);
+-- Per PAIR, ordered by time: "when did I last attack this house?" (db/021).
+-- It replaced a UNIQUE index on (attacker_id, defender_id, created_date) —
+-- one attempt per pair per ICT day — which now blocks a legal retry.
+CREATE INDEX IF NOT EXISTS idx_night_raids_pair_recent ON night_raids(attacker_id, defender_id, created_at);
+-- The tunable Cướp Đêm rulebook (db/021). An EMPTY table is the normal state:
+-- RAID_CONFIG_DEFAULTS in functions/api/_night-raid.js fills every gap.
+CREATE TABLE IF NOT EXISTS night_raid_config (
+  key TEXT PRIMARY KEY, value INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL DEFAULT 0, updated_by INTEGER
+);
 CREATE TABLE IF NOT EXISTS night_raid_daily (
   user_id INTEGER NOT NULL, raid_date TEXT NOT NULL, tickets_used INTEGER NOT NULL DEFAULT 0,
   reward_earned INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (user_id, raid_date),

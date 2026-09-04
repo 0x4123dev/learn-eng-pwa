@@ -1,6 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, RAID_LOCK_MS, nightDate, ticketStats, safeJson, resultReward } from '../_night-raid.js';
-import { SHIELD_RAID_LOSS } from '../_daily-task.js';
+import { NR, nightDate, ticketStats, safeJson, readRaidConfig, winReward } from '../_night-raid.js';
 
 export async function onRequestPost({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -8,29 +7,46 @@ export async function onRequestPost({request,env}) {
   const raidId=String(body.raidId||'');if(!/^[a-f0-9]{32}$/.test(raidId))return err('Invalid raid id');
   const raid=await env.DB.prepare('SELECT * FROM night_raids WHERE id=?').bind(raidId).first();if(!raid)return err('Raid not found',404);if(raid.attacker_id!==auth.uid)return err('Forbidden',403);
   if(raid.status==='done')return json({ok:true,result:safeJson(raid.result_json,{})});
+  // status='ruined' lands here too: the troops found rubble, there is nothing
+  // to resolve, and it must never be turned into a ticket or a payout.
   if(raid.status!=='active'||raid.expires_at<Date.now())return err('Raid expired',409);
   const snapshot=safeJson(raid.snapshot_json,null);if(!snapshot)return err('Broken raid snapshot',500);
+  const cfg=await readRaidConfig(env);
   const sim=NR.resolveAutoBattle(snapshot),date=nightDate(),stats=await ticketStats(env,auth.uid,date);
   // A shield decides the raid outright, independent of the rules' 100000-DEF
   // ceiling: even if the ceiling ever changed, a shielded snapshot can never win.
   const won=sim.won&&!snapshot.shielded;
-  const reward=resultReward(won?sim:Object.assign({},sim,{won:false}),snapshot,stats.reward),victimLoss=won?Math.min(Math.floor(Math.max(0,+snapshot.lootableCoins||0)*.10),reward):0;
-  // Hitting a shield costs a flat 200 (the client floors the wallet at 0);
-  // an ordinary defeat costs the 10–30 xu marching fee.
-  const attackerLoss=won?0:(snapshot.shielded?SHIELD_RAID_LOSS:Math.min(30,Math.max(10,Math.floor(Math.max(0,+snapshot.attackerLootableCoins||0)*.05))));
+  // Both piles are read FRESH, not taken from the snapshot, because every coin
+  // this handler moves has to come out of somewhere: the raid transfers money
+  // between two children, it never prints or burns it. Reading the real piles
+  // is what lets the two UPDATEs below be exactly equal and opposite.
+  const wallets=await env.DB.prepare('SELECT user_id, lootable_coins FROM night_raid_homes WHERE user_id IN (?,?)').bind(raid.attacker_id,raid.defender_id).all();
+  const pile=id=>{const r=((wallets&&wallets.results)||[]).find(w=>Number(w.user_id)===Number(id));return Math.max(0,Math.trunc(+((r&&r.lootable_coins)||0)));};
+  // A robbery carries home win_pct of the victim's pile, capped by win_cap and
+  // by what is left of today's daily_reward_cap — and the victim loses exactly
+  // that, no more. The old formula had a 50 xu floor, which paid best for
+  // robbing the poorest house in the game.
+  const reward=won?winReward(pile(raid.defender_id),cfg,stats.reward):0;
+  const victimLoss=reward;
+  // A failed raid costs the attacker `loss` (or `shield_loss` when it broke on
+  // a Khiên Đêm) and hands that same amount to the DEFENDER, who until now got
+  // nothing for holding the wall. Clamped to what the attacker actually has,
+  // so a broke raider cannot conjure coins into the defender's pile.
+  const attackerLoss=won?0:Math.min(pile(raid.attacker_id),snapshot.shielded?cfg.shield_loss:cfg.loss);
+  const defenderGain=attackerLoss;
   // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
   // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
   // giữ bấy nhiêu, thắng hay thua cũng không mất.
-  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
-  // A breach seals the home for a flat 24 hours, so the defender always gets
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
+  // A breach seals the home for a flat seal_hours, so the defender always gets
   // the same protection whatever time of night they were hit.
-  const now=Date.now(),lockedUntil=won?now+RAID_LOCK_MS:0;
+  const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;
   result.lockedUntil=lockedUntil;
   // (Không còn trừ lính khỏi nhà của bên tấn công.)
   const statements=[
     env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'").bind('[]',JSON.stringify(result),now,raidId),
     env.DB.prepare(`INSERT INTO night_raid_daily(user_id,raid_date,tickets_used,reward_earned) VALUES(?,?,1,?)
-      ON CONFLICT(user_id,raid_date) DO UPDATE SET tickets_used=tickets_used+1,reward_earned=MIN(200,reward_earned+excluded.reward_earned)`).bind(auth.uid,date,reward),
+      ON CONFLICT(user_id,raid_date) DO UPDATE SET tickets_used=tickets_used+1,reward_earned=MIN(?,reward_earned+excluded.reward_earned)`).bind(auth.uid,date,reward,cfg.daily_reward_cap),
   ];
   // The lock is its OWN statement. It used to ride along with the coin theft,
   // which meant a breached home with nothing worth stealing — or one raided by
@@ -38,7 +54,13 @@ export async function onRequestPost({request,env}) {
   // attacker, because `victimLoss > 0` was false and the whole UPDATE was skipped.
   if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?').bind(lockedUntil,raid.defender_id));
   if(victimLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(victimLoss,raid.defender_id));
-  if(attackerLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(attackerLoss,raid.attacker_id));
+  if(attackerLoss>0){
+    statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(attackerLoss,raid.attacker_id));
+    // The other half of the transfer. MIN(100000,…) is the same wallet ceiling
+    // home.js enforces on a PUT, so a defeat can never push a pile past a size
+    // the rest of the app refuses to store.
+    statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MIN(100000,MAX(0,lootable_coins)+?) WHERE user_id=?').bind(defenderGain,raid.defender_id));
+  }
     await env.DB.batch(statements);
   return json({ok:true,result});
 }

@@ -113,7 +113,63 @@ var NightRaidArt = (() => {
     ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,4+power*5,0,Math.PI*2);ctx.fill();ctx.restore();
   }
 
+  // ── Nhà tan hoang: the rubble a house is left in after someone raids it ──
+  // The two castle-damage sheets are 3 columns (intact / damaged / RUINS) x 5
+  // rows of castle skins. Column 3 is the pile we want.
+  //
+  // These are NOT five equal cells. Measured on the alpha channel (a pixel
+  // counts as art at alpha >= 24), three of sheet a's rubble piles and four of
+  // sheet b's hang 23-65px BELOW their mathematical row line — the piles were
+  // authored wider and lower than the intact castle above them. Cutting on
+  // col*w/3, row*h/5 therefore saws the bottom off the rubble. Each frame here
+  // is one pile's own opaque box [sx,sy,sw,sh], so the whole pile lands on the
+  // canvas and nothing of its neighbour leaks in.
+  const RUINS_SHEETS=Object.freeze({a:'img/night-raid/animation/castle-damage-a-v2.webp',b:'img/night-raid/animation/castle-damage-b-v2.webp'});
+  const RUINS_FRAMES=Object.freeze({
+    a:Object.freeze([[1029,110,367,139],[1015,306,375,149],[1022,524,348,113],[1009,706,385,108],[1010,886,386,131]].map(f=>Object.freeze(f))),
+    b:Object.freeze([[1211,114,286,101],[1205,319,262,99],[1207,517,265,98],[1209,695,260,84],[1202,824,272,83]].map(f=>Object.freeze(f))),
+  });
+  const ruinsSheets=Object.create(null),ruinsListeners=Object.create(null);
+
+  // Skin -> sheet + row. CastleSkins.atlasCell already owns that mapping (its
+  // shop atlases and these damage sheets were cut in the same skin order), so
+  // ask it rather than keeping a second list here that can silently drift.
+  // Without CastleSkins we degrade to the same default it normalizes to.
+  function ruinsFrame(skinId) {
+    const cell=typeof CastleSkins!=='undefined'&&CastleSkins.atlasCell?CastleSkins.atlasCell(skinId):{atlas:0,cell:0};
+    const sheet=cell.atlas?'b':'a',row=Math.max(0,Math.min(4,Math.trunc(cell.cell)||0)),f=RUINS_FRAMES[sheet][row];
+    return {sheet,row,src:RUINS_SHEETS[sheet],sx:f[0],sy:f[1],sw:f[2],sh:f[3]};
+  }
+
+  // Loads only the one sheet this skin needs (each is ~200-270KB).
+  function preloadRuins(skinId,onReady) {
+    const frame=ruinsFrame(skinId),img=ruinsSheets[frame.sheet];
+    if(img&&img.complete&&img.naturalWidth){if(typeof onReady==='function')onReady();return img;}
+    if(typeof Image==='undefined')return null;
+    const waiting=ruinsListeners[frame.sheet]||(ruinsListeners[frame.sheet]=[]);
+    if(typeof onReady==='function')waiting.push(onReady);
+    if(img)return img;
+    const next=new Image();next.decoding='async';ruinsSheets[frame.sheet]=next;
+    next.onload=()=>{waiting.splice(0).forEach(fn=>{try{fn();}catch(e){}});};
+    next.onerror=()=>{waiting.splice(0).forEach(fn=>{try{fn();}catch(e){}});};
+    next.src=frame.src;return next;
+  }
+
+  // Draws the pile with its base centred on (x, groundY) and `width` px across.
+  // Height follows the frame's own aspect, so no pile is ever squashed, and the
+  // caller gets the box back to hang dust, embers and a signboard off it.
+  // Returns null while the sheet is still decoding — the caller keeps painting.
+  function drawRuins(ctx,x,groundY,skinId,width,alpha) {
+    const frame=ruinsFrame(skinId),img=ruinsSheets[frame.sheet];
+    if(!ctx||!img||!img.complete||!img.naturalWidth)return null;
+    const w=Math.max(1,width||0),h=w*frame.sh/frame.sw,box={x:x-w/2,y:groundY-h,w,h};
+    ctx.save();if(alpha!=null)ctx.globalAlpha=Math.max(0,Math.min(1,alpha));
+    ctx.drawImage(img,frame.sx,frame.sy,frame.sw,frame.sh,box.x,box.y,w,h);
+    ctx.restore();return box;
+  }
+
   preloadDefenses();
-  return Object.freeze({SCENES,roundRect,drawScene,drawCastle,preloadDefenses,drawDefense,drawRaider,drawProjectile,drawClashSpark});
+  return Object.freeze({SCENES,roundRect,drawScene,drawCastle,preloadDefenses,drawDefense,drawRaider,drawProjectile,drawClashSpark,
+    RUINS_SHEETS,RUINS_FRAMES,ruinsFrame,preloadRuins,drawRuins});
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=NightRaidArt;

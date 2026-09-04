@@ -1,9 +1,17 @@
-// NHÀ THẬT as a child sees it: mount the REAL js/night-raid.js against a DOM,
+// CƯỚP ĐÊM as a child sees it: mount the REAL js/night-raid.js against a DOM,
 // answer night-raid/friends and night-raid/targets from a scripted server, and
-// read the screen — a countdown for a sealed friend, CƯỚP NGAY for an open one,
-// the shield marker, the child's own status, the empty state, and the ticker
-// flipping a row the moment its clock runs out. Same mount recipe as
-// tests/night-raid-screens.test.js.
+// read the screen.
+//
+// The rule this suite exists to enforce: A ROW REVEALS NOTHING ABOUT THE STATE
+// OF THE HOUSE BEHIND IT. The list used to shout "🛡️ CÓ KHIÊN", "VỪA BỊ CƯỚP"
+// and "CON ĐÃ THĂM HÔM NAY", which turned the screen into a solved puzzle — a
+// child read the labels, skipped every house that could not be won, and the
+// raid stopped being a raid. A row may show exactly two things: the green
+// ⚔️ TẤN CÔNG key, or the child's OWN wait on that door counting down. Whether
+// a shield is up, and whether somebody already got there, are surprises the
+// troops find on arrival.
+//
+// Same mount recipe as tests/night-raid-screens.test.js.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const { createDocument } = require('./domshim');
@@ -27,21 +35,24 @@ function withCanvas(doc) {
 }
 
 const H = 3600000, M = 60000;
+// The shape /targets sends now: a retry clock of the child's own, and not one
+// word about the castle's seal or its shield.
 const RANDOM_TARGET = {
-  targetId: 900, name: 'Nhà lạ', homeLevel: 2, difficulty: 'Cân bằng', lockedUntil: 0,
+  targetId: 900, name: 'Nhà lạ', homeLevel: 2, difficulty: 'Cân bằng', retryAt: 0,
   layout: { cells: [], soldiers: 1, dogLane: 2 }, dogLevel: 3, castleHp: 200, seed: 3,
 };
 
 // `server` maps a route suffix ('friends' | 'targets' | 'start') to a reply.
 function mount(server, extra) {
   const doc = withCanvas(createDocument('<div id="nightRaidScreen"></div><div id="bottomNav"></div>'));
-  const toasts = [], timers = [], battles = [];
+  const toasts = [], timers = [], battles = [], calls = [];
   class FakeAutoBattle {
     constructor(host, target, options) { this.target = target; this.options = options || {}; battles.push(this); }
     start() {} charge() { return true; } destroy() {}
   }
-  const api = (route) => {
+  const api = (route, opts) => {
     const key = String(route).split('/').pop();
+    calls.push({ key, opts });
     const reply = server && server[key];
     return Promise.resolve(reply === undefined ? { ok: false, data: null } : (typeof reply === 'function' ? reply() : reply));
   };
@@ -79,7 +90,7 @@ function mount(server, extra) {
   ctx.global = ctx; ctx.globalThis = ctx; ctx.self = ctx;
   vm.createContext(ctx);
   vm.runInContext(read('js/night-raid.js'), ctx, { filename: 'js/night-raid.js' });
-  return { ctx, doc, toasts, timers, battles, screen: () => doc.getElementById('nightRaidScreen') };
+  return { ctx, doc, toasts, timers, battles, calls, screen: () => doc.getElementById('nightRaidScreen') };
 }
 const settle = () => new Promise(r => setImmediate(r));
 
@@ -90,77 +101,123 @@ async function openLive(server, extra) {
   return w;
 }
 const rows = w => w.screen().querySelectorAll('.nr-friend-row');
+// Everything a child can read about OTHER people's houses. The child's own
+// status banner is deliberately excluded: their own shield and their own seal
+// are theirs to know.
+function targetsHTML(w) {
+  const list = w.screen().querySelector('.nr-friend-list');
+  const grid = w.screen().querySelector('.nr-target-grid');
+  return (list ? list.innerHTML : '') + (grid ? grid.innerHTML : '');
+}
+// The exact words that used to solve the puzzle for the child.
+const LEAKS = ['KHIÊN', 'khiên', 'VỪA BỊ CƯỚP', 'ĐÃ THĂM', 'đã thăm', 'cướp là thua', 'shield'];
+function assertNoLeaks(w, why) {
+  const html = targetsHTML(w);
+  for (const word of LEAKS) {
+    assert.falsy(html.includes(word), why + ' — the list still says "' + word + '"');
+  }
+}
 
 function friendsReply(friends, me) {
   return { ok: true, data: { friends, me: me || { hasHome: true, homeLevel: 3, lockedUntil: 0, shieldUntil: 0 }, ticketsLeft: 2 } };
 }
 const targetsReply = { ok: true, data: { targets: [RANDOM_TARGET], ticketsLeft: 2 } };
+// The row the server sends now, and nothing else.
+const friend = (over) => Object.assign(
+  { targetId: 7, name: 'Tí', homeLevel: 4, difficulty: 'Cân bằng', retryAt: 0 }, over || {});
 
-suite('NHÀ THẬT: the friends list with raid timers', () => {
-  test('a sealed friend shows how long until that home can be raided again', async () => {
+suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', () => {
+  test('a row the child must wait on shows the countdown, the unlock time, and no reason', async () => {
     const now = Date.now();
     const w = await openLive({
-      friends: friendsReply([{ targetId: 7, name: 'Tí', homeLevel: 4, difficulty: 'Cân bằng', lockedUntil: now + 5 * H + 12 * M, availableAt: now + 5 * H + 12 * M, visitedToday: false, shielded: false, canRaidNow: false }]),
+      friends: friendsReply([friend({ retryAt: now + 5 * H + 12 * M })]),
       targets: targetsReply,
     });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('còn 5 giờ 12 phút'), 'the wait is spelled out in hours and minutes: ' + html.slice(0, 200));
-    assert.truthy(html.includes('cướp lại lúc'), 'and the clock time it comes back');
-    assert.truthy(html.includes('VỪA BỊ CƯỚP'), 'the reason is the seal');
+    assert.truthy(html.includes('còn 5 giờ 12 phút'), 'the wait is spelled out in hours and minutes');
+    assert.truthy(html.includes('vào lại lúc'), 'and the clock time it opens');
+    assert.truthy(html.includes('CHỜ THÊM'), 'the label says only that the child waits');
     const row = rows(w)[0];
-    assert.truthy(row.disabled, 'a sealed home cannot be tapped');
+    assert.truthy(row.disabled, 'a row on its clock cannot be tapped');
     assert.truthy(row.classList.contains('wait'));
-    assert.falsy(html.includes('CƯỚP NGAY'), 'nothing on this list is raidable');
+    // (the page's own instructions name the key; the ROW must not carry one)
+    assert.falsy(row.innerHTML.includes('TẤN CÔNG'), 'and offers no attack key');
+    assertNoLeaks(w, 'a waiting row');
   });
 
-  test('an open friend is a big CƯỚP NGAY and tapping it opens the scout stage', async () => {
+  test('an open row is a green ⚔️ TẤN CÔNG key and tapping it opens the scout stage', async () => {
     const w = await openLive({
-      friends: friendsReply([{ targetId: 8, name: 'Bo', homeLevel: 2, difficulty: 'Dễ', lockedUntil: 0, availableAt: 0, visitedToday: false, shielded: false, canRaidNow: true }]),
+      friends: friendsReply([friend({ targetId: 8, name: 'Bo', homeLevel: 2, difficulty: 'Dễ', retryAt: 0 })]),
       targets: targetsReply,
     });
     const row = rows(w)[0];
-    assert.truthy(w.screen().innerHTML.includes('CƯỚP NGAY'));
+    assert.truthy(row.innerHTML.includes('TẤN CÔNG'), 'the attack key lives on the row itself');
     assert.falsy(row.disabled);
-    assert.truthy(row.classList.contains('ready'));
+    assert.truthy(row.classList.contains('ready'), 'and is painted green');
     assert.equal(row.getAttribute('onclick'), 'nrScoutLive(0)', 'the row rides the same path as a target card');
+    // A <button> inside a <button> is invalid markup that Safari resolves by
+    // dropping one of them, so the key must be an element the row can hold.
+    assert.equal(row.tagName, 'BUTTON');
+    assert.equal(row.querySelectorAll('button').length, 0, 'no button nested inside the row button');
     w.ctx.NightRaid.scoutLive(0); await settle();
     assert.truthy(w.doc.getElementById('nrStartRaid'), 'the scout stage with TIẾN QUÂN is up');
-    assert.truthy(w.screen().innerHTML.includes('Bo'), 'named after the friend');
+    assert.truthy(w.screen().innerHTML.includes('Bo'), 'named after the house');
     const preview = w.battles[w.battles.length - 1];
     assert.equal(preview.target.targetId, 8);
-    assert.deepEqual(preview.target.layout.cells, [], 'the preview never holds a friend layout');
+    assert.deepEqual(preview.target.layout.cells, [], 'the preview never holds a real layout');
   });
 
-  test('a shielded friend carries the shield marker and the warning', async () => {
+  test('a house holding a shield looks exactly like every other open house', async () => {
+    // Even when an older server still volunteers `shielded`, the row must not
+    // repeat it: the shield is the surprise the troops find on arrival.
     const w = await openLive({
-      friends: friendsReply([{ targetId: 9, name: 'Mi', homeLevel: 5, difficulty: 'Khó', lockedUntil: 0, availableAt: 0, visitedToday: false, shielded: true, canRaidNow: true }]),
+      friends: friendsReply([friend({ targetId: 9, name: 'Mi', homeLevel: 5, difficulty: 'Khó', retryAt: 0, shielded: true })]),
       targets: targetsReply,
     });
-    const html = w.screen().innerHTML;
-    assert.truthy(html.includes('🛡️'), 'shield marker');
-    assert.truthy(html.includes('đang có khiên — cướp là thua'), 'and what it means');
-    assert.truthy(rows(w)[0].classList.contains('shield'));
+    const row = rows(w)[0];
+    assert.truthy(row.classList.contains('ready'), 'still just an open house');
+    assert.falsy(row.classList.contains('shield'), 'there is no shield state any more');
+    assert.truthy(row.innerHTML.includes('TẤN CÔNG'));
+    assert.falsy(row.hasAttribute('data-nr-friend-shield'), 'not even in a data attribute');
+    assertNoLeaks(w, 'a shielded house');
   });
 
-  test('a friend visited today waits for the next raid day, not for a seal', async () => {
+  test('a house somebody already robbed looks exactly like every other open house', async () => {
     const now = Date.now();
     const w = await openLive({
-      friends: friendsReply([{ targetId: 10, name: 'Su', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: 0, availableAt: now + 90 * M, visitedToday: true, shielded: false, canRaidNow: false }]),
+      friends: friendsReply([friend({ targetId: 10, name: 'Su', retryAt: 0, lockedUntil: now + 20 * H })]),
       targets: targetsReply,
     });
-    const html = w.screen().innerHTML;
-    assert.truthy(html.includes('CON ĐÃ THĂM HÔM NAY'));
-    assert.truthy(html.includes('còn 1 giờ 30 phút'));
-    assert.truthy(rows(w)[0].disabled);
+    // lockedUntil is the HOUSE's seal. It is not the child's clock, so it must
+    // not gate, grey out or annotate the row.
+    assert.falsy(rows(w)[0].disabled, 'the child may still march on it and find out');
+    assert.truthy(rows(w)[0].innerHTML.includes('TẤN CÔNG'));
+    assertNoLeaks(w, 'an already-robbed house');
   });
 
-  test('raidable friends come first, whatever order the server used', async () => {
+  test('the scout stage a row opens is as blind as the row', async () => {
+    const now = Date.now();
+    const w = await openLive({
+      friends: friendsReply([friend({ targetId: 21, name: 'Kem', retryAt: 0, shielded: true, lockedUntil: now + 20 * H })]),
+      targets: targetsReply,
+    });
+    w.ctx.NightRaid.scoutLive(0); await settle();
+    const html = w.screen().innerHTML;
+    assert.truthy(w.doc.getElementById('nrStartRaid'), 'TIẾN QUÂN is armed, not sealed off');
+    assert.falsy(html.includes('KHIÊN'), 'no shield word on the scout stage either');
+    assert.falsy(html.includes('NHÀ VỪA BỊ PHÁ'), 'and no seal chip');
+    const target = w.battles[w.battles.length - 1].target;
+    assert.falsy(target.shieldClue, 'no shield clue travels with the target');
+    assert.falsy(target.lockedUntil, 'and no seal clock');
+  });
+
+  test('rows the child can attack come first, whatever order the server used', async () => {
     const now = Date.now();
     const w = await openLive({
       friends: friendsReply([
-        { targetId: 1, name: 'Chờ lâu', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: now + 20 * H, availableAt: now + 20 * H, visitedToday: false, shielded: false, canRaidNow: false },
-        { targetId: 2, name: 'Mở', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: 0, availableAt: 0, visitedToday: false, shielded: false, canRaidNow: true },
-        { targetId: 3, name: 'Chờ ít', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: now + 2 * H, availableAt: now + 2 * H, visitedToday: false, shielded: false, canRaidNow: false },
+        friend({ targetId: 1, name: 'Chờ lâu', retryAt: now + 20 * H }),
+        friend({ targetId: 2, name: 'Mở', retryAt: 0 }),
+        friend({ targetId: 3, name: 'Chờ ít', retryAt: now + 2 * H }),
       ]),
       targets: targetsReply,
     });
@@ -173,7 +230,41 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
     assert.equal(w.battles[w.battles.length - 1].target.targetId, RANDOM_TARGET.targetId, 'index 3 is the random house');
   });
 
-  test('the child sees their own home status on top — protected…', async () => {
+  test('an older server that still says availableAt is read the same way', async () => {
+    // Deploys land in whatever order they land. The client must not show a
+    // "0 minutes" wait on every row because the field was renamed under it.
+    const now = Date.now();
+    const w = await openLive({
+      friends: { ok: true, data: { friends: [
+        { targetId: 31, name: 'Cũ', homeLevel: 3, difficulty: 'Cân bằng', availableAt: now + 90 * M, shielded: true, visitedToday: true },
+      ], me: { hasHome: true, lockedUntil: 0, shieldUntil: 0 }, ticketsLeft: 2 } },
+      targets: targetsReply,
+    });
+    assert.truthy(w.screen().innerHTML.includes('còn 1 giờ 30 phút'), 'the old field still drives the clock');
+    assert.truthy(rows(w)[0].disabled);
+    assertNoLeaks(w, 'an old-shaped payload');
+  });
+
+  test('a random castle carries the same two states and no shield halo', async () => {
+    const now = Date.now();
+    const w = await openLive({
+      friends: friendsReply([]),
+      targets: { ok: true, data: { targets: [
+        Object.assign({}, RANDOM_TARGET, { targetId: 91, name: 'Mở', retryAt: 0, shieldClue: true }),
+        Object.assign({}, RANDOM_TARGET, { targetId: 92, name: 'Chờ', retryAt: now + 3 * H }),
+      ], ticketsLeft: 2 } },
+    });
+    const cards = w.screen().querySelectorAll('.nr-target-card');
+    assert.equal(cards.length, 2);
+    assert.falsy(cards[0].disabled, 'the open castle is tappable');
+    assert.falsy(cards[0].innerHTML.includes('shield-clue'), 'the shield halo is gone');
+    assert.truthy(cards[1].disabled, 'the one on the child\'s clock is not');
+    assert.truthy(cards[1].classList.contains('locked'));
+    assert.truthy(cards[1].innerHTML.includes('CHỜ THÊM'), 'and says only that the child waits');
+    assertNoLeaks(w, 'a random castle');
+  });
+
+  test('the child sees their OWN home status on top — protected…', async () => {
     const now = Date.now();
     const w = await openLive({
       friends: friendsReply([], { hasHome: true, homeLevel: 3, lockedUntil: now + 23 * H, shieldUntil: 0 }),
@@ -185,7 +276,7 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
     assert.truthy(html.includes('còn 23 giờ'));
   });
 
-  test('…shielded…', async () => {
+  test('…shielded — a child may know everything about their own house…', async () => {
     const now = Date.now();
     const w = await openLive({
       friends: friendsReply([], { hasHome: true, homeLevel: 3, lockedUntil: 0, shieldUntil: now + 3 * H }),
@@ -194,6 +285,7 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('Nhà con'));
     assert.truthy(html.includes('đang có khiên'));
+    assert.truthy(w.screen().querySelector('.nr-own-status'), 'and it lives in its own banner, not on a row');
   });
 
   test('…or open', async () => {
@@ -209,7 +301,7 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
     assert.truthy(html.includes('Chưa có bạn nào có lâu đài'));
     assert.truthy(html.includes('Bạn bè'), 'it names the Friends tab');
     assert.truthy(html.includes('profileScreen'), 'and offers to take the child there');
-    assert.truthy(html.includes('nrScoutBot()'), 'the bot fallback stays');
+    assert.truthy(html.includes('nrScoutBot()'), 'the bot is reachable from the foot of this screen');
     assert.truthy(html.includes('Nhà ngẫu nhiên'));
     assert.truthy(html.includes('nr-target-card'), 'the random houses stay reachable');
     assert.equal(rows(w).length, 0);
@@ -229,11 +321,11 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
     assert.equal(w.screen().querySelector('.nr-target-card').getAttribute('onclick'), 'nrScoutLive(0)');
   });
 
-  test('the countdown ticks in place and hands the row back as CƯỚP NGAY when it runs out', async () => {
+  test('the countdown ticks in place and hands the row back as TẤN CÔNG when it runs out', async () => {
     const now = Date.now();
     const realNow = Date.now;
     const w = await openLive({
-      friends: friendsReply([{ targetId: 11, name: 'Tèo', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: now + 61 * M, availableAt: now + 61 * M, visitedToday: false, shielded: false, canRaidNow: false }]),
+      friends: friendsReply([friend({ targetId: 11, name: 'Tèo', retryAt: now + 61 * M })]),
       targets: targetsReply,
     });
     // renderHome (inside open()) armed its own tickers first; the live screen's
@@ -246,43 +338,42 @@ suite('NHÀ THẬT: the friends list with raid timers', () => {
       Date.now = () => now + 30 * M;
       tick();
       assert.truthy(row.querySelector('[data-nr-friend-time]').textContent.includes('31 phút'), 'the text follows the clock without a fetch');
-      assert.truthy(row.disabled, 'still sealed');
+      assert.truthy(row.disabled, 'still waiting');
       Date.now = () => now + 61 * M + 1;
       tick();
       assert.falsy(row.disabled, 'the row is live again');
       assert.truthy(row.classList.contains('ready'));
-      assert.truthy(row.innerHTML.includes('CƯỚP NGAY'));
+      assert.truthy(row.innerHTML.includes('TẤN CÔNG'));
       assert.falsy(row.hasAttribute('data-nr-friend-until'), 'and leaves the ticker');
     } finally { Date.now = realNow; }
   });
 
-  test('a shielded friend whose seal runs out flips to the shield warning, not to CƯỚP NGAY', async () => {
+  test('a random castle whose clock runs out is handed back too', async () => {
     const now = Date.now();
     const realNow = Date.now;
     const w = await openLive({
-      friends: friendsReply([{ targetId: 12, name: 'Lan', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: now + M, availableAt: now + M, visitedToday: false, shielded: true, canRaidNow: false }]),
-      targets: targetsReply,
+      friends: friendsReply([]),
+      targets: { ok: true, data: { targets: [Object.assign({}, RANDOM_TARGET, { retryAt: now + M })], ticketsLeft: 2 } },
     });
     try {
       Date.now = () => now + 2 * M;
       w.timers[w.timers.length - 1]();
-      const row = rows(w)[0];
-      assert.falsy(row.disabled);
-      assert.truthy(row.classList.contains('shield'));
-      assert.truthy(row.innerHTML.includes('cướp là thua'));
+      const card = w.screen().querySelector('.nr-target-card');
+      assert.falsy(card.disabled, 'a card left greyed out until the screen reopens is a dead end');
+      assert.falsy(card.classList.contains('locked'));
     } finally { Date.now = realNow; }
   });
 
-  test('the markup keeps every tap target a real button and no friend secret', async () => {
+  test('the markup keeps every tap target a real button and no house secret', async () => {
     const now = Date.now();
     const w = await openLive({
-      friends: friendsReply([{ targetId: 13, name: '<b>x</b>', homeLevel: 3, difficulty: 'Cân bằng', lockedUntil: now + H, availableAt: now + H, visitedToday: false, shielded: false, canRaidNow: false }]),
+      friends: friendsReply([friend({ targetId: 13, name: '<b>x</b>', retryAt: now + H })]),
       targets: targetsReply,
     });
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('&lt;b&gt;x&lt;/b&gt;'), 'names are escaped');
     for (const row of rows(w)) assert.equal(row.tagName, 'BUTTON');
-    assert.falsy(/DEF/.test(w.screen().querySelector('.nr-friend-list').innerHTML), 'no DEF on the list');
+    assert.falsy(/DEF/.test(targetsHTML(w)), 'no DEF on the list');
   });
 });
 

@@ -12204,7 +12204,7 @@
 @keyframes nrStarPop{from{opacity:0;transform:scale(.2) rotate(-40deg)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.nr-pop-scrim,.nr-pop-card,.nr-result-pop .nr-pop-banner,.nr-result-pop .nr-result-stars i{animation:none}}
 .nr-builder-stage{display:grid;grid-template-columns:92px minmax(620px,1fr);align-items:stretch;overflow-x:auto;border:1px solid rgba(182,214,255,.16);border-radius:22px;background:linear-gradient(180deg,#1a3452,#1b3d3b);padding:14px;overscroll-behavior-x:contain}.nr-builder-castle{min-height:360px;border-radius:18px;background:rgba(5,14,29,.5);display:grid;place-content:center;text-align:center;color:#90caff}.nr-builder-castle svg{width:48px;height:48px;fill:none;stroke:currentColor;stroke-width:1.7;margin:auto}.nr-builder-castle span{font-size:9px;letter-spacing:.1em;margin-top:7px}.nr-build-grid{min-width:620px;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(5,68px);gap:4px;margin-left:7px}.nr-build-cell{position:relative;border:1px solid rgba(201,235,215,.17);border-radius:9px;background:rgba(89,130,93,.22);min-width:62px;cursor:pointer}.nr-build-cell:focus-visible{outline:3px solid #ffd36a;outline-offset:1px}.nr-build-cell .trap{position:absolute;left:50%;bottom:7px;width:34px;height:8px;transform:translateX(-50%);background:repeating-linear-gradient(110deg,#aeb8c3 0 4px,#4e5965 4px 8px);clip-path:polygon(0 100%,10% 0,20% 100%,30% 0,40% 100%,50% 0,60% 100%,70% 0,80% 100%,90% 0,100% 100%)}.nr-build-cell .piece{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:38px;height:42px;border-radius:8px;background:#a36a3e;border:3px solid #52372c}.nr-build-cell .piece.stone-wall{background:#96a3af;border-color:#43505b}.nr-build-cell .piece.pebble-pup{border-radius:50% 50% 42% 42%;background:#dda255}.nr-build-cell .piece.water-cannon{border-radius:50%;background:#42bfe8}.nr-dog-lane{display:flex;align-items:center;gap:8px;margin:12px 0;color:#b9cae1;font-size:13px}.nr-dog-lane span{margin-right:auto}.nr-dog-lane button{width:46px;height:46px;border-radius:14px;border:1px solid rgba(189,219,255,.18);background:#142744;color:#dcecff;font-weight:900;cursor:pointer}.nr-dog-lane button.selected{background:#f1b850;color:#1d160c;border-color:#ffd878}.nr-build-tray{display:flex;gap:8px;overflow-x:auto;padding:3px 0 8px}.nr-build-item{flex:1 0 132px;max-width:180px;min-height:84px;border:2px solid transparent;border-radius:17px;background:#122642;color:#fff;padding:8px;display:grid;grid-template-columns:42px 1fr;align-items:center;text-align:left;gap:8px;cursor:pointer}.nr-build-item.selected{border-color:#ffd268}.nr-build-item strong,.nr-build-item small{display:block}.nr-build-item strong{font-size:12px}.nr-build-item small{color:#bdcbe0;font-size:11px;margin-top:3px}.nr-build-symbol{width:40px;height:44px;border-radius:10px;background:#a36a3e;border:3px solid #54392d}.nr-build-symbol.stone-wall{background:#96a3af;border-color:#43505b}.nr-build-symbol.spike-trap{height:14px;clip-path:polygon(0 100%,12% 0,24% 100%,36% 0,48% 100%,60% 0,72% 100%,84% 0,100% 100%);background:#c1ccd7;border:0}.nr-build-symbol.pebble-pup{border-radius:50%;background:#dda255}.nr-build-symbol.water-cannon{border-radius:50%;background:#42bfe8}.nr-builder-note{display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:15px;background:rgba(64,130,197,.12);border:1px solid rgba(114,179,244,.2);color:#bfd8ef;font-size:12px}.nr-builder-note svg{flex:0 0 21px}
-.nr-target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.nr-target-card{min-height:240px;border:1px solid rgba(187,217,255,.18);border-radius:22px;background:linear-gradient(165deg,#172d4d,#0f1f38);color:#fff;padding:14px;text-align:left;display:grid;grid-template-rows:1fr auto;position:relative;cursor:pointer;overflow:hidden}.nr-target-art{min-height:150px;border-radius:17px;display:grid;place-content:center;background:radial-gradient(circle at 50% 55%,rgba(123,175,239,.27),transparent 45%),linear-gradient(180deg,#1c3f67,#152b42);color:#b8d9ff}.nr-target-art.shield-clue{box-shadow:inset 0 0 34px rgba(91,239,224,.24)}.nr-target-art svg{width:82px;height:82px;fill:none;stroke:currentColor;stroke-width:1.25}.nr-target-copy{padding-top:12px}.nr-target-copy strong,.nr-target-copy small{display:block}.nr-target-copy strong{font-size:16px}.nr-target-copy small{color:#aebed5;margin-top:4px}.nr-target-go{position:absolute;right:16px;bottom:17px;font-size:25px;color:#ffd36a}.nr-loading{min-height:280px;display:grid;place-content:center;text-align:center;color:#b8c9df}.nr-loading i{width:42px;height:42px;margin:0 auto 14px;border-radius:50%;border:4px solid rgba(255,255,255,.12);border-top-color:#ffbf5d;animation:nr-spin .8s linear infinite}.nr-wide{width:100%}.nr-empty{color:#b9cae0}
+.nr-target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.nr-target-card{min-height:240px;border:1px solid rgba(187,217,255,.18);border-radius:22px;background:linear-gradient(165deg,#172d4d,#0f1f38);color:#fff;padding:14px;text-align:left;display:grid;grid-template-rows:1fr auto;position:relative;cursor:pointer;overflow:hidden}.nr-target-art{min-height:150px;border-radius:17px;display:grid;place-content:center;background:radial-gradient(circle at 50% 55%,rgba(123,175,239,.27),transparent 45%),linear-gradient(180deg,#1c3f67,#152b42);color:#b8d9ff}.nr-target-art svg{width:82px;height:82px;fill:none;stroke:currentColor;stroke-width:1.25}.nr-target-copy{padding-top:12px}.nr-target-copy strong,.nr-target-copy small{display:block}.nr-target-copy strong{font-size:16px}.nr-target-copy small{color:#aebed5;margin-top:4px}.nr-target-go{position:absolute;right:16px;bottom:17px;font-size:25px;color:#ffd36a}.nr-loading{min-height:280px;display:grid;place-content:center;text-align:center;color:#b8c9df}.nr-loading i{width:42px;height:42px;margin:0 auto 14px;border-radius:50%;border:4px solid rgba(255,255,255,.12);border-top-color:#ffbf5d;animation:nr-spin .8s linear infinite}.nr-wide{width:100%}.nr-empty{color:#b9cae0}
 @keyframes nr-spin{to{transform:rotate(360deg)}}
 .night-raid-screen :is(button,a):focus-visible,.nr-battle :is(button,canvas):focus-visible{outline:3px solid #fff0a7;outline-offset:3px}
 @media (max-width:700px){.pb-night-raid-card{grid-template-columns:112px 1fr;gap:12px}.pb-night-raid-copy p{font-size:12px}.pb-night-raid-copy .pb-btn{width:100%;padding-left:9px;padding-right:9px;font-size:12px}.nr-home,.nr-route,.nr-scout,.nr-builder,.nr-live-targets,.nr-result{padding-left:12px;padding-right:12px}.nr-hero{height:430px;border-radius:23px}.nr-hero-shade{background:linear-gradient(0deg,rgba(3,9,20,.93) 0,rgba(4,12,24,.35) 75%,transparent)}.nr-hero-copy{left:20px;bottom:22px;width:calc(100% - 40px)}.nr-hero h2{font-size:33px}.nr-home-grid{grid-template-columns:1fr}.nr-section-head{align-items:flex-start}.nr-intel{grid-template-columns:1fr}.nr-target-grid{grid-template-columns:1fr}.nr-target-card{min-height:170px;grid-template-columns:150px 1fr;grid-template-rows:1fr;align-items:center}.nr-target-art{min-height:140px}.nr-result{padding-top:5dvh}.nr-battle-hud{grid-template-columns:minmax(150px,1fr) auto 94px}.nr-castle-hp{grid-template-columns:38px minmax(72px,auto)}.nr-castle-hp .nr-meter{grid-column:1/-1}.nr-moon-clock strong{font-size:20px}.nr-command{grid-template-columns:62px 1fr}.nr-unit-card{flex-basis:108px}.nr-unit-card kbd{display:none}}
@@ -12806,7 +12806,6 @@
 .nr-friend-row:disabled{cursor:default}
 .nr-friend-row.wait{opacity:.82}
 .nr-friend-row.ready{border-color:rgba(127,240,162,.5);box-shadow:0 0 0 1px rgba(127,240,162,.18),0 10px 24px rgba(0,0,0,.25)}
-.nr-friend-row.shield{border-color:rgba(126,222,255,.45)}
 .nr-friend-row:focus-visible{outline:3px solid #ffd36a;outline-offset:2px}
 .nr-friend-crest{width:46px;height:46px;border-radius:14px;display:grid;place-content:center;background:radial-gradient(circle at 50% 55%,rgba(123,175,239,.3),transparent 55%),linear-gradient(180deg,#1c3f67,#152b42);color:#b8d9ff}
 .nr-friend-row.wait .nr-friend-crest{filter:grayscale(.55)}
@@ -12817,10 +12816,23 @@
 .nr-friend-state{flex:0 0 auto;max-width:42vw;text-align:right}
 .nr-friend-state small{display:block;font-size:9px;font-weight:900;letter-spacing:.07em;color:#9dc4e2}
 .nr-friend-state b{display:block;font-size:14px;font-weight:950;line-height:1.2;font-variant-numeric:tabular-nums;color:#ffd36a;white-space:nowrap}
-.nr-friend-row.ready .nr-friend-state b{color:#7ff0a2;font-size:16px}
-.nr-friend-row.shield .nr-friend-state b{color:#7fe2ff}
+/* The whole row is the button, but a child still needs to see WHERE to press.
+   The ready half is therefore drawn as a real green attack key — taller than
+   the 44px a fingertip needs — so the strip can never read as plain text.
+   (A nested <button> would be invalid markup inside the row button, hence a
+   <b> that is styled into one.) */
+.nr-friend-row.ready .nr-friend-state b{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 15px;border-radius:14px;border:2px solid #baffd2;background:linear-gradient(160deg,#45dc7a,#1d9a4e);color:#052517;font-size:15px;letter-spacing:.02em;box-shadow:0 4px 0 #157038,0 8px 18px rgba(18,122,62,.3)}
+.nr-friend-row.ready:active .nr-friend-state b{transform:translateY(3px);box-shadow:0 1px 0 #157038}
 .nr-friend-state em{display:block;margin-top:2px;font-style:normal;font-size:11px;color:#9fb4da}
+/* A random castle wears the same green key as a friend row, so the whole
+   screen asks the child for one gesture and not two. Empty on a card the
+   child is still waiting on, where the countdown chip does the talking. */
+.nr-target-card .nr-target-go:not(:empty){right:13px;bottom:13px;display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 13px;border-radius:13px;border:2px solid #baffd2;background:linear-gradient(160deg,#45dc7a,#1d9a4e);color:#052517;font-size:13px;font-weight:950;letter-spacing:.02em;white-space:nowrap;box-shadow:0 3px 0 #157038}
+.nr-target-card:active .nr-target-go:not(:empty){transform:translateY(2px);box-shadow:0 1px 0 #157038}
 .nr-live-random{margin-top:4px}
+/* The card is 112px tall here, so the key needs room of its own under the
+   name rather than floating over it. */
+.nr-live-random .nr-target-copy{padding-right:0;padding-bottom:52px}
 .nr-live-random .nr-target-card{min-height:112px}
 .nr-live-random .nr-target-art{min-height:92px}
 .nr-live-random .nr-target-art svg{width:56px;height:56px}
@@ -12829,6 +12841,40 @@
 .nr-live-empty b{color:#fff}
 .nr-live-empty .nr-secondary{margin-top:12px}
 .nr-live-actions{display:grid;gap:10px;margin:14px 0 22px}
+
+/* ---- "nhà đã tan hoang" ------------------------------------------------
+   The third ending. It is neither a win nor a loss, so it wears neither
+   palette: rubble-brown, and the two money cells say 0 in both directions
+   because a child who watched their army walk home must be TOLD, in words,
+   that the night cost them nothing. */
+.nr-result-pop.ruined .nr-pop-banner{background:linear-gradient(135deg,#c8a97e,#8a6a45);color:#2c1c0b;box-shadow:0 10px 26px rgba(76,54,28,.45)}
+.nr-result-pop.ruined .nr-result-crest,.nr-result.ruined .nr-result-crest{background:linear-gradient(145deg,#c2a680,#7d6242);color:#241708}
+.nr-ruined-score{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.nr-ruined-score>div:first-child,.nr-ruined-score>div:last-child{background:#e9e3d8;color:#5d4a2e}
+.nr-ruined-score strong{font-size:clamp(19px,4vw,26px)}
+.nr-ruined-when{margin:6px auto 10px}
+.nr-ruined-when b{color:#ffd36a;white-space:nowrap}
+.nr-lock-chip.ruined{position:static;margin:0 auto 12px;border-color:rgba(226,197,150,.5)}
+.nr-lock-chip.ruined svg{stroke:#e6c48f}
+/* The defeat card now names where the coins went, so the red box grew a
+   second line. */
+.nr-loss small{display:block;margin-top:6px;font-size:12px;font-weight:800;color:#8c3a2c}
+
+/* ---- NHẬT KÝ: hai mục ---------------------------------------------------
+   "Con đi cướp" above "Nhà con bị cướp". An attack row has no replay button,
+   so its third column is the money instead. */
+.nr-log-section{margin:0 0 26px}
+.nr-log-section .nr-live-head{margin:0 0 10px}
+.nr-attack-card .nr-report-state{color:#8fe0b4}
+.nr-attack-card.lost .nr-report-state{color:#ff9992}
+.nr-attack-card.ruined .nr-report-state{color:#e2c08a}
+.nr-attack-card.lost .nr-report-crest{background:rgba(255,107,101,.13);color:#ff8f89}
+.nr-attack-card.ruined .nr-report-crest{background:rgba(212,175,122,.15);color:#e6c48f}
+.nr-attack-money{justify-self:end;padding:9px 13px;border-radius:14px;font-size:16px;font-weight:950;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nr-attack-money.gain{background:rgba(90,214,148,.15);color:#7ff0a2}
+.nr-attack-money.loss{background:rgba(255,107,101,.14);color:#ff9992}
+.nr-attack-money.none{background:rgba(212,175,122,.14);color:#e2c08a}
+@media (max-width:600px){.nr-attack-card{grid-template-columns:48px minmax(0,1fr) auto}.nr-attack-money{font-size:15px;padding:8px 11px}}
 
 /* A deferred question bank (js/lazy-data.js) is still downloading. Brief and
    quiet: on a warm cache this is usually never seen. */

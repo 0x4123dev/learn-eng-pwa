@@ -311,6 +311,49 @@
     .field-num input { max-width:none; }
   }
 
+  /* ---- Cướp Đêm rulebook ----------------------------------------------
+     Seven integers that decide how generous a robbery is. Each one keeps its
+     own sentence and its own save button, because this screen is used sitting
+     next to the child, tuning ONE number and watching what it does — not
+     filling a form and submitting it. The worked example above the groups is
+     the whole point of the card: it turns "win_pct = 10" into "bé mang về
+     100 xu", which is the number the parent actually has an opinion about. */
+  .raid-example { margin:20px 20px 0; padding:14px 16px; border:1px solid #cfe6f6;
+                  border-left:4px solid var(--brand); border-radius:var(--r-md);
+                  background:var(--brand-tint); color:var(--ink-2);
+                  font-size:13.5px; line-height:1.6; }
+  .raid-example b { color:var(--ink); font-variant-numeric:tabular-nums; }
+  .raid-example-title { display:block; margin-bottom:4px; font-size:11.5px; font-weight:750;
+                        text-transform:uppercase; letter-spacing:.07em; color:var(--brand-strong); }
+  .raid-group { margin:18px 20px 0; padding:2px 18px 14px; border:1px solid var(--line);
+                border-radius:var(--r-md); background:var(--surface); }
+  .raid-group:last-child { margin-bottom:20px; }
+  .raid-group-title { margin:14px 0 2px; font-size:11.5px; color:var(--muted);
+                      text-transform:uppercase; letter-spacing:.07em; font-weight:750; }
+  .raid-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 18px;
+              align-items:start; padding:15px 0; border-top:1px solid var(--line); }
+  .raid-row:first-of-type { border-top:0; }
+  .raid-copy { grid-column:1; grid-row:1 / span 2; min-width:0; }
+  .raid-copy label { display:block; font-size:13.5px; font-weight:700; color:var(--ink); }
+  .raid-help { margin:4px 0 0; max-width:64ch; color:var(--muted); font-size:12.5px; line-height:1.5; }
+  .raid-edit { grid-column:2; grid-row:1; display:flex; align-items:center; gap:8px; }
+  .raid-edit input { width:112px; min-height:42px; padding:10px 12px; font-size:14px;
+                     text-align:right; font-variant-numeric:tabular-nums; }
+  .raid-unit { font-size:12.5px; font-weight:650; color:var(--muted); }
+  /* .btn, not .mini: on a phone every .mini collapses to a 34px icon square,
+     and "did that save?" is not a question to answer with a bare 💾. */
+  .raid-save { min-height:42px; }
+  .raid-foot { grid-column:2; grid-row:2; text-align:right; font-size:11.5px;
+               color:var(--muted-2); font-variant-numeric:tabular-nums; }
+  .raid-note { grid-column:1 / -1; grid-row:3; margin-top:2px; font-size:12.5px; font-weight:650; }
+  .raid-note:empty { display:none; }
+  .raid-note.ok { color:var(--green-ink); }
+  .raid-note.bad { color:var(--red-ink); }
+  /* An edited-but-unsaved box must not be mistaken for the rule in force. */
+  .raid-row.changed .raid-edit input { border-color:var(--amber); box-shadow:0 0 0 3px rgba(255,150,0,.16); }
+  .raid-dirty { color:var(--amber-ink); font-weight:700; font-size:11.5px; }
+  .raid-dirty:empty { display:none; }
+
   @media (max-width: 720px) { th.hide-sm, td.hide-sm { display:none; } }
 
   /* ---- phones: stay a TABLE, but fit ----
@@ -408,7 +451,7 @@
        "Daily task". Two rows of two instead: every section stays visible and
        the selected one is always on screen. It gives up the sticky strip,
        because 2 rows pinned to the top would eat a third of the fold. */
-    .admin-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; overflow:visible; }
+    .admin-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; overflow:visible; }
     .admin-tab { flex:none; padding-inline:10px; font-size:13px; }
     .card > h2, .tools, .toolbar, .learning-head, .learning-summary,
     .skill-section-title, .skill-list, .menu-overview { padding-inline:14px; }
@@ -428,6 +471,14 @@
     .priority-card { align-items:flex-start; }
     .daily-form { padding:15px; }
     .daily-form-actions .btn { flex:1 1 auto; }
+    /* One column: the number, its unit and its save button belong on the same
+       line as each other, but under the sentence that explains them. */
+    .raid-example, .raid-group { margin-inline:14px; }
+    .raid-group { padding-inline:15px; }
+    .raid-row { grid-template-columns:minmax(0,1fr); gap:8px; padding:14px 0; }
+    .raid-copy, .raid-edit, .raid-foot, .raid-note { grid-column:1; grid-row:auto; }
+    .raid-edit input { flex:1 1 auto; width:auto; min-width:0; }
+    .raid-foot { text-align:left; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -489,6 +540,7 @@
       <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
       <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
       <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Daily task</button>
+      <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
     </nav>
 
     <div class="card admin-panel" id="usersPanel" role="tabpanel" aria-labelledby="tabUsers">
@@ -596,6 +648,26 @@
           <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
         </div>
       </form>
+    </section>
+
+    <!-- The Cướp Đêm economy. Every number here used to be a literal in the
+         raid handlers, so making a robbery kinder meant a deploy; they now
+         live in one table this card writes to, and the game reads on the very
+         next raid. The rows are BUILT from RAID_FIELDS below, never written
+         out by hand, so a new rule cannot land in the game with no way to
+         tune it (tests/admin-night-raid-config.test.js pins that). -->
+    <section class="card learning-card admin-panel" id="raidPanel" role="tabpanel" aria-labelledby="tabRaid" hidden>
+      <div class="learning-head">
+        <div class="learning-title">
+          <span class="learning-icon" aria-hidden="true">🌙</span>
+          <div><h2>Cướp Đêm — luật &amp; tiền</h2>
+            <p>Chỉnh xem một trận cướp hào phóng hay khắc nghiệt tới đâu. Lưu xong là áp dụng ngay
+               cho tất cả các bé, không cần cập nhật app.</p></div>
+        </div>
+      </div>
+      <div id="raidStatus" class="daily-status" aria-live="polite"></div>
+      <div id="raidExample" class="raid-example"></div>
+      <div id="raidGroups"></div>
     </section>
   </div>
 </div>
@@ -882,6 +954,7 @@ function switchAdminTab(tab){
   document.querySelectorAll('.admin-panel').forEach(panel=>{ panel.hidden = panel.id !== tab + 'Panel'; });
   if (tab === 'skills') loadSkills(_skillUser, _skillName).catch(()=>{});
   if (tab === 'daily') loadDailyTasks().catch(()=>{});
+  if (tab === 'raid') loadRaidConfig().catch(()=>{});
 }
 
 function selectSkillUser(userId, name){
@@ -1122,6 +1195,175 @@ async function saveDailyTask(ev){
   loadDailyTasks().catch(()=>{});
 }
 
+// ---- Cướp Đêm: the raid rulebook -----------------------------------------
+// One row per tunable number, and the rows are the ONLY place the key list is
+// written on this page. RAID_FIELDS must name exactly the keys the server's
+// RAID_CONFIG_DEFAULTS has — a rule added to the game with no row here would
+// be untunable and invisible, which is the failure this list is arranged to
+// make impossible to ship (tests/admin-night-raid-config.test.js compares the
+// two sets). `unit` is only the word after the box; the range and the default
+// both come from the server, so this page can never claim a limit the
+// endpoint does not enforce.
+const RAID_GROUPS = [
+  { id:'money', title:'💰 Tiền thắng / thua' },
+  { id:'time',  title:'⏳ Thời gian chờ' },
+];
+const RAID_FIELDS = [
+  { key:'win_cap', group:'money', unit:'xu', label:'Trần xu mỗi trận thắng',
+    help:'Trần xu cướp được trong MỘT trận thắng.' },
+  { key:'win_pct', group:'money', unit:'%', label:'Cướp bao nhiêu phần trăm kho xu',
+    help:'Bé cướp được bao nhiêu phần trăm kho xu của nhà bị cướp. Phần thưởng thật = min(trần một trận, % × kho nhà địch).' },
+  { key:'loss', group:'money', unit:'xu', label:'Thua trận mất bao nhiêu xu',
+    help:'Thua trận thì bên tấn công mất bấy nhiêu xu, và bên phòng thủ NHẬN đúng bấy nhiêu.' },
+  { key:'shield_loss', group:'money', unit:'xu', label:'Đâm vào Khiên Đêm mất bao nhiêu xu',
+    help:'Đâm vào nhà đang bật Khiên Đêm thì mất bấy nhiêu (bên thủ cũng nhận đúng số này).' },
+  { key:'daily_reward_cap', group:'money', unit:'xu', label:'Trần xu cướp được cả ngày',
+    help:'Trần tổng xu cướp được trong một ngày.' },
+  { key:'seal_hours', group:'time', unit:'giờ', label:'Nhà bị cướp tan hoang bao lâu',
+    help:'Nhà bị cướp THÀNH CÔNG thì tan hoang bấy nhiêu giờ, không ai cướp được nữa.' },
+  { key:'retry_hours', group:'time', unit:'giờ', label:'Chờ bao lâu mới đánh lại đúng nhà đó',
+    help:'Cùng một bé phải chờ bấy nhiêu giờ mới được đánh lại đúng nhà đó (thắng, thua hay tới nơi thấy nhà tan hoang cũng vậy).' },
+];
+// A pile round enough to do the percentage in your head while you read it.
+const RAID_EXAMPLE_PILE = 3000;
+
+let _raidCfg = null, _raidDefaults = {}, _raidRanges = {};
+
+function fmtXu(n){ return Number(n || 0).toLocaleString('vi-VN'); }
+
+// What the rule would be if this box were saved right now — so the worked
+// example moves while the parent is still typing, which is the only way to
+// see what a number DOES before committing to it. A value the server would
+// refuse is NOT previewed: the example is a promise about the game, and it
+// must never illustrate a rule that cannot be saved.
+function raidLiveValue(key){
+  const input = document.getElementById('raid_' + key);
+  const range = _raidRanges[key];
+  if (input) {
+    const n = Number(String(input.value).trim());
+    if (Number.isInteger(n) && (!range || (n >= range[0] && n <= range[1]))) return n;
+  }
+  return Number((_raidCfg && _raidCfg[key]) || 0);
+}
+
+function paintRaidExample(){
+  const el = document.getElementById('raidExample');
+  if (!el || !_raidCfg) return;
+  const cap = raidLiveValue('win_cap');
+  const pct = raidLiveValue('win_pct');
+  const dayCap = raidLiveValue('daily_reward_cap');
+  const share = Math.floor(RAID_EXAMPLE_PILE * pct / 100);
+  const won = Math.min(cap, share);
+  const raids = won > 0 ? Math.floor(dayCap / won) : 0;
+  el.innerHTML = '<span class="raid-example-title">Thử một trận</span>'
+    + 'Nhà địch đang giữ <b>' + fmtXu(RAID_EXAMPLE_PILE) + ' xu</b>. Bé đánh thắng: '
+    + '<b>' + fmtXu(pct) + '%</b> × ' + fmtXu(RAID_EXAMPLE_PILE) + ' = <b>' + fmtXu(share) + ' xu</b>, '
+    + 'trần một trận <b>' + fmtXu(cap) + ' xu</b> ⇒ bé mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
+    + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.';
+}
+
+function paintRaidStatus(){
+  const status = document.getElementById('raidStatus');
+  if (!status || !_raidCfg) return;
+  const changed = RAID_FIELDS.filter(f => Number(_raidCfg[f.key]) !== Number(_raidDefaults[f.key]));
+  status.innerHTML = '<b>' + RAID_FIELDS.length + '</b> luật đang chạy · '
+    + (changed.length ? '<span class="pill on">' + changed.length + ' luật đã chỉnh tay</span>'
+                      : '<span class="pill off">tất cả đang để mặc định</span>');
+}
+
+// An edited box is not a rule yet. Until Lưu comes back the row says so, and
+// the button is the only way to make it true.
+function syncRaidRow(row){
+  const input = row.querySelector('input');
+  const saved = String(Number(_raidCfg[row.getAttribute('data-key')]));
+  const dirty = String(input.value).trim() !== saved;
+  row.classList.toggle('changed', dirty);
+  row.querySelector('.raid-save').disabled = !dirty;
+  row.querySelector('.raid-dirty').textContent = dirty ? '· chưa lưu' : '';
+}
+
+function renderRaidConfig(){
+  const wrap = document.getElementById('raidGroups');
+  wrap.innerHTML = RAID_GROUPS.map(g => {
+    const rows = RAID_FIELDS.filter(f => f.group === g.id).map(f => {
+      const range = _raidRanges[f.key] || [0, 100000];
+      const id = 'raid_' + f.key;
+      return `<div class="raid-row" data-key="${esc(f.key)}">
+        <div class="raid-copy">
+          <label for="${id}">${esc(f.label)}</label>
+          <p class="raid-help">${esc(f.help)}</p>
+        </div>
+        <div class="raid-edit">
+          <input id="${id}" type="number" inputmode="numeric" step="1" min="${range[0]}" max="${range[1]}"
+                 value="${Number(_raidCfg[f.key])}" aria-describedby="${id}_foot">
+          <span class="raid-unit">${esc(f.unit)}</span>
+          <button class="btn btn-ghost raid-save" type="button" disabled>💾 Lưu</button>
+        </div>
+        <div class="raid-foot" id="${id}_foot">Mặc định ${fmtXu(_raidDefaults[f.key])} ${esc(f.unit)} · nhập ${fmtXu(range[0])}–${fmtXu(range[1])}
+          <span class="raid-dirty"></span></div>
+        <div class="raid-note" aria-live="polite"></div>
+      </div>`;
+    }).join('');
+    return `<div class="raid-group"><h3 class="raid-group-title">${esc(g.title)}</h3>${rows}</div>`;
+  }).join('');
+  wrap.querySelectorAll('.raid-row').forEach(row => {
+    row.querySelector('input').addEventListener('input', ()=>{ syncRaidRow(row); paintRaidExample(); });
+    row.querySelector('.raid-save').onclick = ()=>saveRaidKey(row).catch(()=>{});
+    syncRaidRow(row);
+  });
+  paintRaidStatus();
+  paintRaidExample();
+}
+
+async function loadRaidConfig(){
+  const status = document.getElementById('raidStatus');
+  const wrap = document.getElementById('raidGroups');
+  let r;
+  // A failed reload must not leave the previous numbers on screen looking like
+  // the rules in force, so the groups are cleared and the error rethrown.
+  try { r = await api('admin/night-raid-config'); }
+  catch(e){
+    _raidCfg = null;
+    status.textContent = 'Không tải được luật Cướp Đêm (' + e.message + ')';
+    wrap.innerHTML = '<div class="learning-empty">Không tải được luật Cướp Đêm.</div>';
+    throw e;
+  }
+  _raidCfg = r.config || {};
+  _raidDefaults = r.defaults || {};
+  _raidRanges = r.ranges || {};
+  renderRaidConfig();
+}
+
+// One key per save, and the server's own refusal is what the row reports —
+// never a guess made here. The endpoint refuses an out-of-range number rather
+// than clamping it, so "đã lưu" always means the number on screen is the
+// number the game is playing by.
+async function saveRaidKey(row){
+  const key = row.getAttribute('data-key');
+  const input = row.querySelector('input');
+  const note = row.querySelector('.raid-note');
+  const btn = row.querySelector('.raid-save');
+  btn.disabled = true;
+  note.className = 'raid-note';
+  note.textContent = 'Đang lưu…';
+  try {
+    const r = await api('admin/night-raid-config', { method:'POST', body:{ key, value: String(input.value).trim() } });
+    _raidCfg = r.config || _raidCfg;
+    input.value = String(Number(_raidCfg[key]));
+    const field = RAID_FIELDS.filter(f => f.key === key)[0] || {};
+    note.className = 'raid-note ok';
+    note.textContent = '✓ Đã lưu — từ giờ là ' + fmtXu(_raidCfg[key]) + ' ' + (field.unit || '');
+  } catch(e){
+    // A logged-out admin was already bounced to the login screen by api().
+    if (e.message === 'unauth') return;
+    note.className = 'raid-note bad';
+    note.textContent = '✗ ' + e.message;
+  }
+  document.querySelectorAll('#raidGroups .raid-row').forEach(syncRaidRow);
+  paintRaidStatus();
+  paintRaidExample();
+}
+
 // One switch for the whole app, not per child: a duel needs two children, so
 // a per-child switch would mostly produce friend lists with nobody to fight.
 let _appFlags = {};
@@ -1171,6 +1413,10 @@ document.getElementById('refreshBtn').onclick = ()=>{
   loadActivity(_selectedUser, _selectedName).catch(()=>{});
   loadSkills(_skillUser, _skillName).catch(()=>{});
   loadDailyTasks().catch(()=>{});
+  // Only if the card has been opened once: an admin who never went near the
+  // raid rules should not have their unsaved edits — or a fetch — appear out
+  // of a Refresh they pressed for the users table.
+  if (_raidCfg) loadRaidConfig().catch(()=>{});
 };
 document.getElementById('userSearch').addEventListener('input', e=>{ _filter = e.target.value; renderUsers(); });
 document.getElementById('skillUser').addEventListener('change', e=>{

@@ -14,7 +14,7 @@ var NightRaid = (() => {
   // preventing Safari from allocating a map large enough to exhaust memory.
   const ESTATE_MIN_ZOOM=.03,ESTATE_MAX_ZOOM=4,WORLD_PLANE_SIZE=32768,MEADOW_TILE_SIZE=2048;
 
-  let game=null,previewGame=null,productionTicker=null,petPatrolTimer=null,petPatrolState=null,armyParadeTimer=null,armyParadeState=null,view='home',selectedBuild='wood-fence',builderEditing=false,builderShopOpen=false,builderDrag=null,builderScroll=null,builderScrollByView={home:null,builder:null,scout:null},builderZoom=1,builderZoomByView={home:1,builder:BUILDER_START_ZOOM,scout:1},builderRotated=false,builderGesture=null,builderSuppressClick=false,builderSuppressShopClick=false,pendingBuildPurchase=null,liveTargets=[],raidReports=[],homeLockedUntil=0,homeShieldUntil=0;
+  let game=null,previewGame=null,ruinsShow=null,productionTicker=null,petPatrolTimer=null,petPatrolState=null,armyParadeTimer=null,armyParadeState=null,view='home',selectedBuild='wood-fence',builderEditing=false,builderShopOpen=false,builderDrag=null,builderScroll=null,builderScrollByView={home:null,builder:null,scout:null},builderZoom=1,builderZoomByView={home:1,builder:BUILDER_START_ZOOM,scout:1},builderRotated=false,builderGesture=null,builderSuppressClick=false,builderSuppressShopClick=false,pendingBuildPurchase=null,liveTargets=[],raidReports=[],homeLockedUntil=0,homeShieldUntil=0;
   const VI={
     title:'Cướp Đêm Lâu Đài',home:'Nhà Cướp Đêm',raid:'CƯỚP ĐÊM',
     build:'Xây Nhà',live:'Nhà người chơi',back:'Quay lại',
@@ -89,7 +89,7 @@ var NightRaid = (() => {
       + 'KHÔNG vào lại được nữa, và cũng KHÔNG nhận được xu nào.\n\nVẫn bỏ?');
   }
 
-  function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}petPatrolRoot=null;}
+  function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}destroyRuins();if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}petPatrolRoot=null;}
   if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(document.hidden){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}}else if(view==='home'||view==='builder'){const map=document.querySelector('.screen.active .nr-builder-map');startPetPatrol(map);startArmyParade(map);}});
   // Swords ride on appState.dailyTask (filled by js/daily-task.js from the
   // server); the server scores a raid from users.night_swords through this
@@ -119,20 +119,29 @@ var NightRaid = (() => {
   }
   function scoutBot(){return scout(1,makeBotTarget(),false);}
 
-  function open(){ensure();cleanup();view='home';if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderHome();refreshHome();retryPendingFinish().catch(()=>{});}
+  // The GET goes FIRST and the pending-finish sweep waits for it: refreshHome
+  // adopts coins the server credited while the child was offline, and
+  // retryPendingFinish ends in claimVerified() -> syncHome(), a PUT that would
+  // otherwise push the stale wallet straight over them.
+  function open(){ensure();cleanup();view='home';if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderHome();refreshHome().catch(()=>{}).then(()=>retryPendingFinish()).catch(()=>{});}
   function close(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
   function renderHome(){cleanup();abandonRaid();setNav(false);view='home';applyViewZoom(view);ensure();const r=root();if(!r)return;
     // The Night Raid home IS the child's island, exactly like the builder:
     // full-screen board with the equipped castle and every placed building,
     // the same DAM/DEF/LINH/coin chips, and the actions as SHOP-style fabs
     // floating on top. Read-only: buildings do not drag here.
+    // FOUR fabs, not five. NHÀ THẬT used to sit beside CƯỚP ĐÊM and open the
+    // friends list while CƯỚP ĐÊM dropped the child straight into a bot fight
+    // — two buttons for one idea, and the child is already standing in their
+    // real house, so "NHÀ THẬT" named nothing. CƯỚP ĐÊM now opens the list of
+    // houses; the bot is the "Chơi thử với Bot" button at the foot of it.
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;
     const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));
     const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)} cấp ${cell.tier}" oncontextmenu="return false"><em>${cell.tier}</em>${productionBadge(cell)}`;};
     let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(!stand&&!floor)continue;grid+=`<div class="nr-build-grid-cell has-stand" data-gx="${gx}" data-gy="${gy}" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}}
     const mapBase=builderMapBase(),mapSize=Math.round(mapBase*builderZoom),mapHeight=Math.round(mapBase*.75*builderZoom);
-    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con giữa đồng cỏ rộng. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng thoải mái từ 3 đến 400 phần trăm."><div class="nr-builder-map nr-estate-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-frame-v4.png" alt="Hàng rào, cổng và cảnh quan bao quanh khu vườn lâu đài trên một thảm cỏ liền mạch"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><div class="nr-builder-zoom" role="group" aria-label="Thu phóng khu vườn thoải mái từ 3 đến 400 phần trăm"><button type="button" onclick="nrZoomBuilder(-.15)" aria-label="Thu nhỏ khu vườn">−</button><span data-nr-zoom>${Math.round(builderZoom*100)}%</span><button type="button" onclick="nrZoomBuilder(.15)" aria-label="Phóng to khu vườn">+</button></div><button class="nr-yard-clean" type="button" data-nr-clean hidden onclick="nrCleanYard()" aria-label="Dọn phân chó trong sân">🗑️<span>DỌN PHÂN</span><b>0</b></button><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrScoutBot()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowLiveTargets()">${svg('people')}<span>NHÀ THẬT</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button><button class="nr-home-fab armory" type="button" onclick="nrOpenArmory()" aria-label="Kho Khiên và Kiếm"><b class="nr-fab-emoji" aria-hidden="true">⚔️</b><span>VŨ KHÍ</span>${(appState.dailyTask&&Array.isArray(appState.dailyTask.pending)&&appState.dailyTask.pending.length)?`<i class="nr-fab-badge" aria-label="${appState.dailyTask.pending.length} phần thưởng chờ chọn">${appState.dailyTask.pending.length}</i>`:''}</button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers} lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Thu nhỏ để thấy đồng cỏ · kéo để khám phá</div>${lockChip(homeShieldUntil,'KHIÊN ĐÊM ĐANG BẬT · AI CƯỚP CŨNG THUA','home')}${homeShieldUntil>Date.now()?'':lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
+    r.innerHTML=shell(`<main class="nr-builder nr-home-stage"><section class="nr-builder-world" id="nrBuilderWorld" aria-label="Lâu đài của con giữa đồng cỏ rộng. Kéo một ngón để di chuyển, chụm hai ngón để thu phóng thoải mái từ 3 đến 400 phần trăm."><div class="nr-builder-map nr-estate-map" data-base-size="${mapBase}" style="width:${mapSize}px;height:${mapHeight}px"><img class="nr-board-art" src="img/night-raid/isometric-home-board-frame-v4.png" alt="Hàng rào, cổng và cảnh quan bao quanh khu vườn lâu đài trên một thảm cỏ liền mạch"><img id="nrEquippedCastle" class="nr-equipped-castle" src="img/night-raid/home-castle.webp" alt="${esc((skin&&skin.name.vi)||'Castle skin đang trang bị')}"><div class="nr-home-level"><span><small>CẤP NHÀ</small><strong>${homeLevel}</strong></span><span class="nr-skin-name">${esc((skin&&skin.name.vi)||'Thành Đá')}</span></div><div class="nr-free-grid" aria-hidden="true">${grid}</div></div></section><div class="nr-builder-hud"><button class="nr-builder-home" type="button" onclick="closeNightRaid()" aria-label="Đóng Cướp Đêm">${svg('close')}</button><div class="nr-builder-power damage"><small>DAM</small><strong>${power.damage}</strong></div><div class="nr-builder-power defense"><small>DEF</small><strong>${power.defense}</strong></div><div class="nr-builder-power soldiers"><small>LÍNH</small><strong>${power.soldiers}</strong></div><div class="nr-builder-power coins">${svg('coin')}<strong>${Math.max(0,Math.floor(+appState.coins||0))}</strong></div></div><div class="nr-builder-zoom" role="group" aria-label="Thu phóng khu vườn thoải mái từ 3 đến 400 phần trăm"><button type="button" onclick="nrZoomBuilder(-.15)" aria-label="Thu nhỏ khu vườn">−</button><span data-nr-zoom>${Math.round(builderZoom*100)}%</span><button type="button" onclick="nrZoomBuilder(.15)" aria-label="Phóng to khu vườn">+</button></div><button class="nr-yard-clean" type="button" data-nr-clean hidden onclick="nrCleanYard()" aria-label="Dọn phân chó trong sân">🗑️<span>DỌN PHÂN</span><b>0</b></button><div class="nr-home-fabs"><button class="nr-home-fab raid" type="button" onclick="nrShowLiveTargets()">${svg('moon')}<span>CƯỚP ĐÊM</span></button><button class="nr-home-fab" type="button" onclick="nrShowBuilder()">${svg('hammer')}<span>XÂY NHÀ</span></button><button class="nr-home-fab" type="button" onclick="nrShowReports()">${svg('shield')}<span>NHẬT KÝ</span></button><button class="nr-home-fab armory" type="button" onclick="nrOpenArmory()" aria-label="Kho Khiên và Kiếm"><b class="nr-fab-emoji" aria-hidden="true">⚔️</b><span>VŨ KHÍ</span>${(appState.dailyTask&&Array.isArray(appState.dailyTask.pending)&&appState.dailyTask.pending.length)?`<i class="nr-fab-badge" aria-label="${appState.dailyTask.pending.length} phần thưởng chờ chọn">${appState.dailyTask.pending.length}</i>`:''}</button></div>${production.length?`<button class="nr-collect-all ${ready?'ready':''}" type="button" onclick="nrCollectResources()" ${ready?'':'disabled'}>${svg('coin')}<span><strong>${ready?'THU HOẠCH '+ready:'ĐANG SẢN XUẤT'}</strong><small>${power.soldiers} lính · ${production.length} công trình</small></span></button>`:''}<div class="nr-builder-tip" role="status">Thu nhỏ để thấy đồng cỏ · kéo để khám phá</div>${lockChip(homeShieldUntil,'KHIÊN ĐÊM ĐANG BẬT · AI CƯỚP CŨNG THUA','home')}${homeShieldUntil>Date.now()?'':lockChip(homeLockedUntil,'NHÀ ĐANG ĐƯỢC BẢO VỆ · KHÔNG AI CƯỚP ĐƯỢC','home')}</main>`);
     paintEquippedCastle();centerBuilderWorld();setupBuilderGestures();startProductionTicker();
   }
 
@@ -170,7 +179,7 @@ var NightRaid = (() => {
   function frameBattleWorld(){const map=document.querySelector('#nrBuilderWorld .nr-scout-map');if(!map)return;builderScroll=null;builderZoom=scoutFitZoom(+map.dataset.baseSize||1180);setBuilderZoom(builderZoom);centerBuilderWorld();}
 
   async function startRaid(target,online){
-    if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.locked){if(typeof showToast==='function')showToast('Nhà này vừa bị phá — còn '+productionTime(lockLeft(start.data.lockedUntil))+' nữa mới cướp lại được');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}Object.assign(target,start.data.raid);rememberPendingRaid(target.raidId);}
+    if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.ruined&&!start.data.raid)return playRuinedRaid(target,start.data);if(start.ok&&start.data&&start.data.locked){if(typeof showToast==='function')showToast('Con phải chờ thêm '+productionTime(lockLeft(retryAtOf(start.data)||start.data.lockedUntil))+' nữa mới vào lại nhà này');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}Object.assign(target,start.data.raid);rememberPendingRaid(target.raidId);}
     const canvas=document.getElementById('nrScoutCanvas');if(!canvas)return;
     view='battle';raidStage={online:!!online,committed:!!online};if(previewGame){previewGame.destroy();previewGame=null;}
     frameBattleWorld();
@@ -228,6 +237,11 @@ var NightRaid = (() => {
   // full-page renderer survives below as the fallback for any path where the
   // battle DOM is already gone.
   function resultActionsHTML(online){return online?`<button class="nr-primary" type="button" onclick="nrShowLiveTargets()">Cướp nhà khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`:`<button class="nr-primary" type="button" onclick="nrScoutBot()">Tìm nhà bot khác</button><button class="nr-secondary" type="button" onclick="nrHome()">Về nhà</button>`;}
+  const foeName=t=>String((t&&t.title&&t.title.vi)||(t&&t.name)||'Nhà đối thủ');
+  // Losing now MOVES the coins: /finish hands the defender what the attacker
+  // dropped, and reports it as `defenderGain`. "-20 xu phí hành quân" alone hid
+  // that — the xu went somewhere, and the somewhere has a name on it.
+  const lossHTML=(loss,gain,target)=>`<div class="nr-loss">-${loss} xu phí hành quân${gain>0?`<small>${esc(foeName(target))} đã lấy ${gain} xu này.</small>`:''}</div>`;
   function renderResult(target,state,stars,reward,online,loss=0){cleanup();settleRaid();view='result';
     const wrap=document.querySelector('[data-nr-pop-host]')||document.querySelector('#nrBattleRoot .nr-canvas-wrap');
     if(!wrap)return renderResultPage(target,state,stars,reward,online,loss);
@@ -238,11 +252,67 @@ var NightRaid = (() => {
     const pop=document.createElement('div');pop.id='nrResultPop';pop.className='nr-result-pop '+(won?'won':'lost');pop.setAttribute('role','dialog');pop.setAttribute('aria-modal','true');pop.setAttribute('aria-label','Kết quả Cướp Đêm');
     // The banner hangs above the card edge, so the card itself must never
     // clip (overflow lives on .nr-pop-body) — or the headline loses its top.
-    pop.innerHTML=`<div class="nr-pop-scrim"></div><div class="nr-pop-card"><div class="nr-pop-banner">${won?'CHIẾN THẮNG!':'THẤT BẠI'}</div><div class="nr-pop-body"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}" style="animation-delay:${(.25+i*.18).toFixed(2)}s"></i>`).join('')}</div>`:''}<p>${won?'DAM quân ta cao hơn DEF đối thủ — lâu đài đã bị phá và kho xu đã được mang về!':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm — mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta — cả đội rút lui để bảo toàn lực lượng.')}</p><div class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></div>${won?`<div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:`<div class="nr-loss">-${loss} xu phí hành quân</div>`}<div class="nr-result-actions">${resultActionsHTML(online)}</div></div></div>`;
+    pop.innerHTML=`<div class="nr-pop-scrim"></div><div class="nr-pop-card"><div class="nr-pop-banner">${won?'CHIẾN THẮNG!':'THẤT BẠI'}</div><div class="nr-pop-body"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}" style="animation-delay:${(.25+i*.18).toFixed(2)}s"></i>`).join('')}</div>`:''}<p>${won?'DAM quân ta cao hơn DEF đối thủ — lâu đài đã bị phá và kho xu đã được mang về!':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm — mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta — cả đội rút lui để bảo toàn lực lượng.')}</p><div class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></div>${won?`<div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:lossHTML(loss,Math.max(0,+state.defenderGain||0),target)}<div class="nr-result-actions">${resultActionsHTML(online)}</div></div></div>`;
     // Let the final frame breathe for a beat before the banner drops.
     setTimeout(()=>{if(view!=='result')return;wrap.appendChild(pop);announce(won?'Phá thành thành công':'Đội hình thất bại');if(won&&typeof createConfetti==='function'){try{createConfetti();}catch(e){}}},650);
   }
-  function renderResultPage(target,state,stars,reward,online,loss=0){settleRaid();setNav(false);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm. Mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.')}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:`<div class="nr-loss">-${loss} xu phí hành quân</div>`}<div class="nr-result-actions">${resultActionsHTML(online)}</div></main>`);}
+  function renderResultPage(target,state,stars,reward,online,loss=0){settleRaid();setNav(false);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm. Mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.')}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:lossHTML(loss,Math.max(0,+state.defenderGain||0),target)}<div class="nr-result-actions">${resultActionsHTML(online)}</div></main>`);}
+
+  // ---- "nhà đã tan hoang" -------------------------------------------------
+  // POST /start answers 200 with {ruined:true,retryAt,castleSkin,name,
+  // homeLevel} and NO raid when somebody robbed this house before us. Nothing
+  // is charged: no ticket, no coin, either way. The wrong ending for that is a
+  // red error toast — the child picked a house, tapped TIẾN QUÂN and is owed
+  // the reason the night came to nothing. So the troops march in, find rubble
+  // and turn around (js/night-raid-ruins.js draws it), and only then does a
+  // result card drop, in the same family as CHIẾN THẮNG and THẤT BẠI.
+  function destroyRuins(){if(ruinsShow){try{ruinsShow.destroy();}catch(e){}ruinsShow=null;}}
+  function playRuinedRaid(target,data){
+    view='ruined';raidStage={online:true,committed:false};
+    if(previewGame){previewGame.destroy();previewGame=null;}
+    // The same stage teardown TIẾN QUÂN does: the secret pill, the hidden DEF
+    // chip and the one button all belong to a fight that will not happen.
+    document.getElementById('nrScoutSecret')?.remove();
+    document.getElementById('nrStartRaid')?.closest('.nr-home-fabs')?.remove();
+    const status=document.getElementById('nrBattleStatus');if(status){status.hidden=false;status.textContent='Quân ta đang tiến vào…';}
+    const host=document.getElementById('nrPhaserBattle')||document.getElementById('nrScoutCanvas');
+    const done=()=>{if(view==='ruined')renderRuinedResult(target,data);};
+    // The animation is a bonus, never the gate. A missing or throwing module
+    // must still tell the child what happened and hand back the two buttons.
+    if(host&&typeof NightRaidRuins!=='undefined'&&NightRaidRuins&&typeof NightRaidRuins.play==='function'){
+      try{ruinsShow=NightRaidRuins.play(host,{castleSkin:data.castleSkin||target.castleSkin||'stone-keep',name:data.name||target.name,homeLevel:data.homeLevel||target.homeLevel},{onFinish:done});}
+      catch(error){console.warn('Night Raid ruins',error);ruinsShow=null;done();}
+    }else done();
+  }
+  // 0 xu won and 0 xu lost, said in as many words: a child who has just seen
+  // their army walk home needs to be told, plainly, that it cost them nothing.
+  function ruinedBodyHTML(target,data){
+    const retryAt=retryAtOf(data),name=data.name||target.name||'Nhà này';
+    return `<p>Có đội khác tới trước con. ${esc(name)} đã bị phá tan hoang và đang xây lại, nên quân ta quay về tay không — <b>không mất lượt nào, không mất xu nào</b>.</p>`
+      +`<div class="nr-result-score nr-ruined-score"><div><span>CƯỚP ĐƯỢC</span><strong>0 xu</strong></div><b>·</b><div><span>BỊ MẤT</span><strong>0 xu</strong></div></div>`
+      +(retryAt?`<p class="nr-ruined-when">Con quay lại nhà này được lúc <b>${esc(clockPhrase(retryAt))}</b>.</p>${lockChip(retryAt,'QUAY LẠI SAU','ruined')}`:'')
+      +`<div class="nr-result-actions">${resultActionsHTML(true)}</div>`;
+  }
+  function renderRuinedResult(target,data){
+    settleRaid();view='result';
+    document.getElementById('nrBattleStatus')?.remove();
+    // NOT cleanup(): the rubble the ruins scene painted is this card's
+    // backdrop, exactly as the breached/retreat frame is for win and lose.
+    if(productionTicker){clearInterval(productionTicker);productionTicker=null;}
+    const wrap=document.querySelector('[data-nr-pop-host]');
+    if(!wrap)return renderRuinedResultPage(target,data);
+    document.getElementById('nrResultPop')?.remove();
+    const pop=document.createElement('div');pop.id='nrResultPop';pop.className='nr-result-pop ruined';
+    pop.setAttribute('role','dialog');pop.setAttribute('aria-modal','true');pop.setAttribute('aria-label','Nhà đã tan hoang');
+    pop.innerHTML=`<div class="nr-pop-scrim"></div><div class="nr-pop-card"><div class="nr-pop-banner">NHÀ ĐÃ TAN HOANG</div><div class="nr-pop-body"><div class="nr-result-crest">${svg('castle')}</div>${ruinedBodyHTML(target,data)}</div></div>`;
+    wrap.appendChild(pop);announce('Nhà đã tan hoang — con không mất xu nào');
+    productionTicker=setInterval(updateLockTimers,1000);
+  }
+  function renderRuinedResultPage(target,data){
+    settleRaid();setNav(false);const r=root();if(!r)return;
+    r.innerHTML=shell(`<main class="nr-result ruined"><div class="nr-result-crest">${svg('castle')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>NHÀ ĐÃ TAN HOANG</h2>${ruinedBodyHTML(target,data)}</main>`);
+    productionTicker=setInterval(updateLockTimers,1000);
+  }
 
   function totalPaid(def,tier){let n=0;for(let i=1;i<=tier;i++)n+=def.price*i;return n;}
   function buildAsset(def){return 'img/night-raid/'+(def.asset||def.id+'.webp');}
@@ -875,7 +945,9 @@ var NightRaid = (() => {
       const left=lockLeft(el.dataset.nrLockUntil);
       if(left>0){const time=el.querySelector('[data-nr-lock-time]');if(time)time.textContent=productionTime(left);return;}
       const card=el.closest('.nr-target-card');el.remove();
-      if(card)card.classList.remove('locked');
+      // A card that was only waiting on the child's own clock is handed back
+      // as a live target, not left greyed out until the screen is reopened.
+      if(card){card.classList.remove('locked');card.disabled=false;}
       const fab=document.getElementById('nrStartRaid');if(fab){fab.disabled=false;fab.hidden=false;}
       const secret=document.getElementById('nrScoutSecret');if(secret)secret.hidden=false;
     });
@@ -898,49 +970,117 @@ var NightRaid = (() => {
   // half-hydrated profile can no longer push 0 xu (or dog level 1) over what
   // the server already holds for this child.
   const finite=v=>typeof v==='number'&&Number.isFinite(v);
-  async function syncHome(){const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
-  async function refreshHome(){const res=await api('home');if(!res.ok||!res.data)return;if(!res.data.home){syncHome();return;}homeLockedUntil=Math.max(0,+res.data.home.lockedUntil||0);homeShieldUntil=Math.max(0,+res.data.home.shieldUntil||0);appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);save();if(view==='home')renderHome();}
-  // ---- NHÀ THẬT = bạn bè + khi nào cướp được ------------------------------
-  // GET night-raid/friends answers ONE question per friend: when start.js
-  // would let a raid on that home through (`availableAt`, 0 = right now — the
-  // 24 h seal after a real robbery, or the next raid day when the child already
-  // visited it today). Rows count down to that number on the shared ticker
-  // without asking the server again, and flip to CƯỚP NGAY when it passes.
-  // Timing, name and level only: a friend's layout, DEF and shield clock never
-  // reach this screen; the scout preview shows an empty yard until TIẾN QUÂN.
+  // Set while GET /home is in the air. A PUT that overtakes that GET pushes the
+  // device's stale wallet over coins the server credited while the child was
+  // offline, so a sync started during the read waits for the read to land.
+  let homeRead=null;
+  async function syncHome(){
+    if(homeRead){try{await homeRead;}catch(e){}}
+    const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
+  // The raid wallet is the one number the SERVER can move while the child is
+  // asleep: an attacker who breaks on this house pays the defender, and
+  // finish.js writes that straight into night_raid_homes.lootable_coins. The
+  // device cannot know it happened — so before this, the next PUT simply
+  // overwrote the reward with the wallet the phone still remembered, and the
+  // xu the child had won by defending vanished.
+  //
+  // But the wallet LIVES on the device (see functions/api/coins.js): lessons,
+  // the shop, the cups and the armoury all move appState.coins without telling
+  // any server, and the row only catches up on the next syncHome(). So the row
+  // is stale LOW at least as often as it is ahead, and taking its number
+  // outright would eat the xu a child earned in a lesson two minutes ago.
+  //
+  // Hence: adopt only an INCREASE. A row above the device is money the device
+  // could not have known about; a row below it is the device being ahead, and
+  // the PUT settles that. This direction can never shrink or zero a wallet —
+  // the protection the `finite()` rule above exists for.
+  function adoptServerCoins(lootableCoins){
+    if(!finite(+lootableCoins))return 0;
+    const server=Math.max(0,Math.min(100000,Math.trunc(+lootableCoins))),mine=Math.max(0,Math.trunc(+appState.coins||0));
+    if(!(server>mine))return 0;
+    appState.coins=server;
+    return server-mine;
+  }
+  function refreshHome(){
+    const run=(async()=>{
+      const res=await api('home');
+      // Released BEFORE anything below can PUT, or syncHome() would wait on
+      // the very promise it is being called from and neither would finish.
+      if(homeRead===run)homeRead=null;
+      if(!res.ok||!res.data)return;
+      if(!res.data.home){syncHome();return;}
+      homeLockedUntil=Math.max(0,+res.data.home.lockedUntil||0);homeShieldUntil=Math.max(0,+res.data.home.shieldUntil||0);
+      const gained=adoptServerCoins(res.data.home.lootableCoins);
+      appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);save();
+      if(gained&&typeof showToast==='function')showToast('Nhà con nhận thêm '+gained+' xu khi con offline');
+      if(view==='home')renderHome();
+    })();
+    homeRead=run;
+    return run;
+  }
+  // ---- CƯỚP ĐÊM = danh sách nhà + khi nào con vào lại được -----------------
+  // A row on this list must reveal NOTHING about the state of the house behind
+  // it. It used to shout "🛡️ CÓ KHIÊN", "VỪA BỊ CƯỚP" and "CON ĐÃ THĂM HÔM
+  // NAY", which turned the screen into a solved puzzle: a child simply skipped
+  // every house that could not be won and the raid stopped being a raid. A
+  // shield up, or somebody having got there first, are SURPRISES the troops
+  // find on arrival — the row therefore carries two states and no third:
+  //   • ⚔️ TẤN CÔNG — go now, and find out what is inside; or
+  //   • the child's OWN 12 h wait on that door, counting down to the clock
+  //     time it opens. That clock is about the child, not about the house.
+  // Name, house level and difficulty stay: they describe how big the place is,
+  // never what happened to it. Layout, DEF and shield clock never reach this
+  // screen at all; the scout preview shows an empty yard until TIẾN QUÂN.
   const LIVE_SCENES=['moonlit-village','haunted-forest','storm-kingdom'],LIVE_TZ='Asia/Ho_Chi_Minh';
   function waitPhrase(ms){const mins=Math.max(1,Math.ceil(Math.max(0,+ms||0)/60000)),h=Math.floor(mins/60),m=mins%60;return h?(m?h+' giờ '+m+' phút':h+' giờ'):m+' phút';}
   function clockPhrase(at){const day=t=>new Date(t).toLocaleDateString('en-CA',{timeZone:LIVE_TZ}),now=Date.now(),time=new Date(at).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',timeZone:LIVE_TZ});return time+(day(at)===day(now)?' hôm nay':day(at)===day(now+86400000)?' ngày mai':' ngày '+new Date(at).toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',timeZone:LIVE_TZ}));}
-  const readyStateHtml=shielded=>shielded?'<b>🛡️ CÓ KHIÊN</b><em>đang có khiên — cướp là thua</em>':'<b>CƯỚP NGAY</b>';
+  // The ONE number a row is allowed to carry: when this child may knock on
+  // this door again (0 = right now). `retryAt` is what the server sends now;
+  // `availableAt` is the same number under the name an older deployment uses,
+  // so reading both keeps the list truthful whichever side ships first.
+  const retryAtOf=f=>Math.max(0,+(f&&f.retryAt!=null?f.retryAt:f&&f.availableAt)||0);
+  // The green half of the row. It is a <b> and not a <button> on purpose: the
+  // whole row is already the button (a thumb aimed anywhere on the strip
+  // attacks), and a button nested inside a button is invalid markup that
+  // Safari resolves by dropping one of them.
+  const readyStateHtml=()=>'<b>⚔️ TẤN CÔNG</b>';
   // A friend row becomes a scout target the same way a target card does, minus
   // everything the list does not carry: an empty yard stands in for the layout
-  // until start() replaces it with the real snapshot.
-  function friendTarget(f){const level=Math.max(1,Math.trunc(+f.homeLevel)||1),name=String(f.name||'Nhà bạn');return {targetId:f.targetId,name,title:{vi:name,en:name},homeLevel:level,level,difficulty:f.difficulty||'Cân bằng',lockedUntil:Math.max(0,+f.lockedUntil||0),shieldClue:!!f.shielded,sceneId:LIVE_SCENES[Math.abs(Math.trunc(+f.targetId)||0)%3],seed:1,layout:{cells:[],soldiers:0,dogLane:2},dogLevel:1,castleSkin:'stone-keep',castleHp:180+Math.min(50,level)*8,budget:0,friend:true};}
-  function friendRow(f,index){const availableAt=Math.max(0,+f.availableAt||0),left=lockLeft(availableAt),ready=left<=0,shielded=!!f.shielded,why=lockLeft(f.lockedUntil)?'VỪA BỊ CƯỚP':'CON ĐÃ THĂM HÔM NAY';
-    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(ready?(shielded?'đang có khiên, cướp là thua':'cướp được ngay'):'còn '+waitPhrase(left)+' nữa mới cướp được');
-    return `<li><button type="button" class="nr-friend-row ${ready?(shielded?'shield':'ready'):'wait'}" ${ready?'':`disabled data-nr-friend-until="${availableAt}"`} data-nr-friend-shield="${shielded?1:0}" onclick="nrScoutLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}${shielded?' · 🛡️ đang có khiên':''}</small></span><span class="nr-friend-state" data-nr-friend-state>${ready?readyStateHtml(shielded):`<small>${why}</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>cướp lại lúc ${esc(clockPhrase(availableAt))}</em>`}</span></button></li>`;}
+  // until start() replaces it with the real snapshot. No lockedUntil and no
+  // shield clue travel with it — the scout stage must be as blind as the row.
+  function friendTarget(f){const level=Math.max(1,Math.trunc(+f.homeLevel)||1),name=String(f.name||'Nhà bạn');return {targetId:f.targetId,name,title:{vi:name,en:name},homeLevel:level,level,difficulty:f.difficulty||'Cân bằng',sceneId:LIVE_SCENES[Math.abs(Math.trunc(+f.targetId)||0)%3],seed:1,layout:{cells:[],soldiers:0,dogLane:2},dogLevel:1,castleSkin:'stone-keep',castleHp:180+Math.min(50,level)*8,budget:0,friend:true};}
+  function friendRow(f,index){const retryAt=retryAtOf(f),left=lockLeft(retryAt),ready=left<=0;
+    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(ready?'tấn công ngay được':'còn '+waitPhrase(left)+' nữa con mới vào lại được');
+    return `<li><button type="button" class="nr-friend-row ${ready?'ready':'wait'}" ${ready?'':`disabled data-nr-friend-until="${retryAt}"`} onclick="nrScoutLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}</small></span><span class="nr-friend-state" data-nr-friend-state>${ready?readyStateHtml():`<small>CHỜ THÊM</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>vào lại lúc ${esc(clockPhrase(retryAt))}</em>`}</span></button></li>`;}
   // Ticks beside updateLockTimers: the text only changes when the minute does,
-  // and a row whose clock ran out is handed back as a live CƯỚP NGAY button.
-  function updateFriendTimers(){document.querySelectorAll('.nr-friend-row[data-nr-friend-until]').forEach(row=>{const left=lockLeft(row.dataset.nrFriendUntil),time=row.querySelector('[data-nr-friend-time]');if(left>0){const text='còn '+waitPhrase(left);if(time&&time.textContent!==text)time.textContent=text;return;}const shielded=row.dataset.nrFriendShield==='1';row.removeAttribute('data-nr-friend-until');row.disabled=false;row.classList.remove('wait');row.classList.add(shielded?'shield':'ready');const state=row.querySelector('[data-nr-friend-state]');if(state)state.innerHTML=readyStateHtml(shielded);});}
+  // and a row whose clock ran out is handed back as a live TẤN CÔNG button.
+  function updateFriendTimers(){document.querySelectorAll('.nr-friend-row[data-nr-friend-until]').forEach(row=>{const left=lockLeft(row.dataset.nrFriendUntil),time=row.querySelector('[data-nr-friend-time]');if(left>0){const text='còn '+waitPhrase(left);if(time&&time.textContent!==text)time.textContent=text;return;}row.removeAttribute('data-nr-friend-until');row.disabled=false;row.classList.remove('wait');row.classList.add('ready');const state=row.querySelector('[data-nr-friend-state]');if(state)state.innerHTML=readyStateHtml();});}
   function ownStatusHtml(me){const now=Date.now(),shield=Math.max(0,+(me?me.shieldUntil:homeShieldUntil)||0),lock=Math.max(0,+(me?me.lockedUntil:homeLockedUntil)||0);
     if(shield>now)return `<div class="nr-own-status safe" role="status"><i>🛡️</i><span>Nhà con: <b>đang có khiên</b> đến ${esc(clockPhrase(shield))} — ai cướp cũng thua.</span></div>`;
     if(lock>now)return `<div class="nr-own-status safe" role="status"><i>🏰</i><span>Nhà con: <b>đang được bảo vệ</b> đến ${esc(clockPhrase(lock))} (còn ${waitPhrase(lock-now)}).</span></div>`;
     return '<div class="nr-own-status open" role="status"><i>🏰</i><span>Nhà con: <b>có thể bị cướp</b> — xây thêm phòng thủ hoặc bật khiên.</span></div>';}
   async function showLiveTargets(){cleanup();setNav(false);view='live';const r=root();if(!r)return;
-    const head=(title,copy,label)=>`<div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('people')}<span>${VI.back}</span></button><div><span class="nr-label">${label}</span><h2>${title}</h2><p>${copy}</p></div></div>`;
-    r.innerHTML=shell(`<main class="nr-live-targets">${head('Bạn bè · khi nào cướp được','Đang hỏi máy chủ xem nhà bạn nào đang mở…','CƯỚP ĐÊM')}<div class="nr-loading" role="status"><i></i><span>Đang trinh sát khu phố</span></div></main>`);
+    // `copy` is optional: the loaded list says everything it needs to in the
+    // rows themselves, and a paragraph of rules above them was just a wall of
+    // text between the child and the TẤN CÔNG buttons.
+    const head=(title,copy,label)=>`<div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('people')}<span>${VI.back}</span></button><div><span class="nr-label">${label}</span><h2>${title}</h2>${copy?`<p>${copy}</p>`:''}</div></div>`;
+    r.innerHTML=shell(`<main class="nr-live-targets">${head('Chọn nhà để cướp','Đang mở danh sách các nhà…','CƯỚP ĐÊM')}<div class="nr-loading" role="status"><i></i><span>Đang trinh sát khu phố</span></div></main>`);
     const [friendsRes,targetsRes]=await Promise.all([api('friends'),api('targets')]);if(view!=='live')return;
     const friendsOk=!!(friendsRes.ok&&friendsRes.data),targetsOk=!!(targetsRes.ok&&targetsRes.data);
     if(!friendsOk&&!targetsOk){r.innerHTML=shell(`<main class="nr-live-targets">${head('Chưa thể tìm nhà thật',esc((friendsRes.data&&friendsRes.data.error)||(targetsRes.data&&targetsRes.data.error)||'Máy chủ chưa bật Cướp Đêm cho tài khoản này.'),'CƯỚP ĐÊM')}<button class="nr-secondary nr-wide" onclick="nrScoutBot()">Chơi thử với Bot</button></main>`);return;}
     const me=friendsOk&&friendsRes.data.me?friendsRes.data.me:null;if(me){homeLockedUntil=Math.max(0,+me.lockedUntil||0);homeShieldUntil=Math.max(0,+me.shieldUntil||0);}
-    const friends=(friendsOk?(friendsRes.data.friends||[]):[]).slice().sort((a,b)=>(Math.max(0,+a.availableAt||0)-Math.max(0,+b.availableAt||0))||String(a.name||'').localeCompare(String(b.name||''),'vi'));
+    const friends=(friendsOk?(friendsRes.data.friends||[]):[]).slice().sort((a,b)=>(retryAtOf(a)-retryAtOf(b))||String(a.name||'').localeCompare(String(b.name||''),'vi'));
     const randoms=targetsOk?(targetsRes.data.targets||[]):[],tickets=friendsOk&&Number.isFinite(+friendsRes.data.ticketsLeft)?+friendsRes.data.ticketsLeft:(targetsOk?+targetsRes.data.ticketsLeft||0:0);
     liveTargets=friends.map(friendTarget).concat(randoms);
     const friendList=friends.length?`<ul class="nr-friend-list">${friends.map((f,i)=>friendRow(f,i)).join('')}</ul>`:friendsOk
       ?'<div class="nr-live-empty"><strong>Chưa có bạn nào có lâu đài</strong>Kết bạn trong <b>Hồ sơ → 👥 Bạn bè</b> (gửi link kết bạn cho bạn cùng lớp). Khi bạn xây nhà xong, tên bạn sẽ hiện ở đây kèm giờ cướp được.<button class="nr-secondary nr-wide" type="button" onclick="closeNightRaid();if(typeof switchScreen===\'function\')switchScreen(\'profileScreen\')">Mở 👥 Bạn bè</button></div>'
       :`<p class="nr-empty">Chưa tải được danh sách bạn bè${friendsRes.data&&friendsRes.data.error?' — '+esc(friendsRes.data.error):''}. Kéo xuống để chọn nhà ngẫu nhiên.</p>`;
-    const randomCards=randoms.map((t,i)=>`<button type="button" class="nr-target-card ${lockLeft(t.lockedUntil)?'locked':''}" onclick="nrScoutLive(${friends.length+i})">${lockChip(t.lockedUntil,'CÒN LẠI')}<span class="nr-target-art ${t.shieldClue?'shield-clue':''}">${svg('castle')}</span><span class="nr-target-copy"><strong>${esc(t.name)}</strong><small>Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}</small></span><span class="nr-target-go">›</span></button>`).join('');
-    r.innerHTML=shell(`<main class="nr-live-targets">${head('Bạn bè · khi nào cướp được','Nhà vừa bị cướp được bảo vệ 24 giờ. Hàng xanh: cướp được ngay. Hàng vàng: còn bao lâu nữa mới tới lượt.','CƯỚP ĐÊM · '+tickets+' LƯỢT')}${ownStatusHtml(me)}<div class="nr-live-head"><h3>👥 Bạn bè</h3><span>${friends.length} nhà</span></div>${friendList}<section class="nr-live-random"><div class="nr-live-head"><h3>🎲 Nhà ngẫu nhiên</h3><span>Nhà người chơi cân bằng với con</span></div><div class="nr-target-grid">${randomCards||'<p class="nr-empty">Chưa có nhà phù hợp. Hãy thử lại sau.</p>'}</div></section><div class="nr-live-actions"><button class="nr-secondary nr-wide" type="button" onclick="nrScoutBot()">Chơi thử với Bot</button></div></main>`);
+    // A random castle keeps exactly the two states a friend row has. The old
+    // `shieldClue` class painted a halo on any house holding a shield, which
+    // is the same solved-puzzle leak the friend rows had; and its chip counted
+    // down the HOUSE's 24 h seal, where this one counts the child's own wait.
+    const randomCards=randoms.map((t,i)=>{const retryAt=retryAtOf(t),waiting=!!lockLeft(retryAt);return `<button type="button" class="nr-target-card ${waiting?'locked':''}" ${waiting?'disabled':''} onclick="nrScoutLive(${friends.length+i})">${lockChip(retryAt,'CHỜ THÊM')}<span class="nr-target-art">${svg('castle')}</span><span class="nr-target-copy"><strong>${esc(t.name)}</strong><small>Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}</small></span><span class="nr-target-go">${waiting?'':'⚔️ TẤN CÔNG'}</span></button>`;}).join('');
+    r.innerHTML=shell(`<main class="nr-live-targets">${head('Chọn nhà để cướp','','CƯỚP ĐÊM · '+tickets+' LƯỢT')}${ownStatusHtml(me)}<div class="nr-live-head"><h3>👥 Bạn bè</h3><span>${friends.length} nhà</span></div>${friendList}<section class="nr-live-random"><div class="nr-live-head"><h3>🎲 Nhà ngẫu nhiên</h3><span>Nhà người chơi cân bằng với con</span></div><div class="nr-target-grid">${randomCards||'<p class="nr-empty">Chưa có nhà phù hợp. Hãy thử lại sau.</p>'}</div></section><div class="nr-live-actions"><button class="nr-secondary nr-wide" type="button" onclick="nrScoutBot()">Chơi thử với Bot</button></div></main>`);
     updateFriendTimers();productionTicker=setInterval(()=>{updateLockTimers();updateFriendTimers();},1000);}
   function scoutLive(index){const t=liveTargets[index];if(!t)return;scout(1,t,true);}
   // A raid the server scored but the client never heard about: /start wrote
@@ -958,9 +1098,50 @@ var NightRaid = (() => {
     // Nothing left to recover — the row is gone, expired or not ours — so
     // stop asking. Any other failure (offline, no token) is retried next time.
     const err=String((res.data&&res.data.error)||'');if(/expired|not found|forbidden|invalid raid/i.test(err)||Date.now()-(+p.at||0)>36e5*24)clearPendingRaid(p.raidId);return null;}
-  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId}});const verified=res.ok&&res.data&&res.data.result;if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
+  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId}});const verified=res.ok&&res.data&&res.data.result;if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
 
-  async function showReports(){cleanup();setNav(false);view='reports';const r=root();if(!r)return;r.innerHTML=shell(`<main class="nr-reports"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('shield')}<span>${VI.back}</span></button><div><span class="nr-label">PHASE 2 · PHÒNG THỦ OFFLINE</span><h2>Nhật ký phòng thủ</h2><p>Đang mở sổ trực đêm của lâu đài…</p></div></div><div class="nr-loading" role="status"><i></i><span>Đang tải các trận cướp</span></div></main>`);const res=await api('reports');if(view!=='reports')return;if(!res.ok){r.innerHTML=shell(`<main class="nr-reports"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('shield')}<span>${VI.back}</span></button><div><span class="nr-label">NHẬT KÝ PHÒNG THỦ</span><h2>Chưa thể mở nhật ký</h2><p>${esc(res.data&&res.data.error||'Hãy đăng nhập để xem nhà mình bị cướp ra sao.')}</p></div></div></main>`);return;}raidReports=res.data.reports||[];const unseen=raidReports.filter(x=>!x.seen).map(x=>x.id);r.innerHTML=shell(`<main class="nr-reports"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('shield')}<span>${VI.back}</span></button><div><span class="nr-label">PHASE 2 · ${unseen.length} BÁO CÁO MỚI</span><h2>Nhật ký phòng thủ</h2><p>Xem lại đường quân đã đi để sửa đúng lane còn yếu.</p></div></div><div class="nr-report-list">${raidReports.map((report,i)=>{const breached=!!report.result.won,when=report.finishedAt?new Date(report.finishedAt).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Gần đây';return `<article class="nr-report-card ${breached?'breached':'held'} ${report.seen?'':'new'}"><span class="nr-report-crest">${svg(breached?'castle':'shield')}</span><div><span class="nr-report-state">${breached?'TƯỜNG ĐÃ BỊ PHÁ':(report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN':'PHÒNG THỦ THÀNH CÔNG')}</span><h3>${esc(report.attackerName||'Đội cướp bí ẩn')}</h3><p>${when} · Castle còn ${Math.max(0,Math.ceil(+report.result.castleHp||0))} HP</p></div><button class="nr-secondary" type="button" onclick="nrReplayReport(${i})">${svg('play')} Xem lại</button></article>`;}).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Đêm nay vẫn yên bình</h3><p>Khi có người ghé lâu đài, replay sẽ xuất hiện ở đây.</p></div>'}</div></main>`);if(unseen.length)api('reports',{method:'POST',body:{ids:unseen}});}
+  // ---- NHẬT KÝ = cả hai chiều ---------------------------------------------
+  // The log answered one question — "who came to MY house?" — and never the
+  // one a child asks first: "how did MY raids go?". Every reward and every
+  // defeat the child earned was invisible the moment its result card closed.
+  // /reports now returns both lists, so the page has two sections in the order
+  // the child cares about: what our army did, then what came to our door.
+  // An older deployment sends no `attacks` key at all — that section is then
+  // not drawn, because an empty "Con đi cướp" heading reads as a broken screen.
+  const ATTACK_KINDS={
+    won:{cls:'won',state:'CƯỚP ĐƯỢC',icon:'castle'},
+    lost:{cls:'lost',state:'BỊ ĐÁNH BẬT',icon:'shield'},
+    ruined:{cls:'ruined',state:'NHÀ ĐÃ TAN HOANG',icon:'moon'},
+  };
+  // `kind` is the label the server puts on the row; a row written before that
+  // field existed still has result.won, so fall back to it rather than drop
+  // the raid out of the child's history entirely.
+  function attackKind(a){const key=String((a&&a.kind)||'').toLowerCase();return ATTACK_KINDS[key]||((a&&a.result&&a.result.won)?ATTACK_KINDS.won:ATTACK_KINDS.lost);}
+  function whenPhrase(at){return at?new Date(at).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Gần đây';}
+  function attackCardHTML(a){
+    const kind=attackKind(a),reward=Math.max(0,Math.trunc(+a.reward||0)),loss=Math.max(0,Math.trunc(+a.loss||0)),stars=Math.max(0,Math.min(3,Math.trunc(+a.stars||0)));
+    const money=kind.cls==='won'?`<b class="nr-attack-money gain">+${reward} xu</b>`
+      :kind.cls==='ruined'?'<b class="nr-attack-money none">0 xu</b>'
+      :`<b class="nr-attack-money loss">-${loss} xu</b>`;
+    const note=kind.cls==='won'?(stars?' · '+'★'.repeat(stars):''):kind.cls==='ruined'?' · có đội khác tới trước':'';
+    return `<article class="nr-report-card nr-attack-card ${kind.cls}"><span class="nr-report-crest">${svg(kind.icon)}</span><div><span class="nr-report-state">${kind.state}</span><h3>${esc(a.defenderName||'Nhà bí ẩn')}</h3><p>${whenPhrase(a.finishedAt)}${note}</p></div>${money}</article>`;
+  }
+  function reportCardHTML(report,i){
+    const breached=!!report.result.won;
+    return `<article class="nr-report-card ${breached?'breached':'held'} ${report.seen?'':'new'}"><span class="nr-report-crest">${svg(breached?'castle':'shield')}</span><div><span class="nr-report-state">${breached?'TƯỜNG ĐÃ BỊ PHÁ':(report.result.shielded?'🛡️ KHIÊN ĐÃ CHẶN':'PHÒNG THỦ THÀNH CÔNG')}</span><h3>${esc(report.attackerName||'Đội cướp bí ẩn')}</h3><p>${whenPhrase(report.finishedAt)} · Castle còn ${Math.max(0,Math.ceil(+report.result.castleHp||0))} HP</p></div><button class="nr-secondary" type="button" onclick="nrReplayReport(${i})">${svg('play')} Xem lại</button></article>`;
+  }
+  async function showReports(){cleanup();setNav(false);view='reports';const r=root();if(!r)return;
+    const head=(label,title,copy)=>`<div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrHome()">${svg('shield')}<span>${VI.back}</span></button><div><span class="nr-label">${label}</span><h2>${title}</h2><p>${copy}</p></div></div>`;
+    r.innerHTML=shell(`<main class="nr-reports">${head('NHẬT KÝ CƯỚP ĐÊM','Nhật ký Cướp Đêm','Đang mở sổ trực đêm của lâu đài…')}<div class="nr-loading" role="status"><i></i><span>Đang tải các trận cướp</span></div></main>`);
+    const res=await api('reports');if(view!=='reports')return;
+    if(!res.ok){r.innerHTML=shell(`<main class="nr-reports">${head('NHẬT KÝ CƯỚP ĐÊM','Chưa thể mở nhật ký',esc((res.data&&res.data.error)||'Hãy đăng nhập để xem nhà mình bị cướp ra sao.'))}</main>`);return;}
+    raidReports=res.data.reports||[];
+    const attacks=Array.isArray(res.data.attacks)?res.data.attacks:null;
+    const unseen=raidReports.filter(x=>!x.seen).map(x=>x.id);
+    const attackSection=attacks?`<section class="nr-log-section"><div class="nr-live-head"><h3>⚔️ Con đi cướp</h3><span>${attacks.length} trận</span></div><div class="nr-report-list">${attacks.map(attackCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Con chưa đi cướp nhà nào</h3><p>Bấm CƯỚP ĐÊM ở màn hình nhà rồi chọn một nhà để bắt đầu.</p></div>'}</div></section>`:'';
+    const defenceSection=`<section class="nr-log-section"><div class="nr-live-head"><h3>🏰 Nhà con bị cướp</h3><span>${raidReports.length} trận</span></div><div class="nr-report-list">${raidReports.map(reportCardHTML).join('')||'<div class="nr-empty-state">'+svg('moon')+'<h3>Đêm nay vẫn yên bình</h3><p>Khi có người ghé lâu đài, replay sẽ xuất hiện ở đây.</p></div>'}</div></section>`;
+    r.innerHTML=shell(`<main class="nr-reports">${head('NHẬT KÝ · '+unseen.length+' BÁO CÁO MỚI','Nhật ký Cướp Đêm','Kết quả những trận con đi cướp, và những đội đã ghé lâu đài của con.')}${attackSection}${defenceSection}</main>`);
+    if(unseen.length)api('reports',{method:'POST',body:{ids:unseen}});}
 
   function replayReport(index){setNav(false);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':(report.result.shielded?'Khiên Đêm đã chặn đứng đội cướp.':'Phòng thủ đã chặn được toàn bộ đội cướp.')}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Lâu đài đã giữ được';}});game.playReplay(report.commands||[],2);}}
 

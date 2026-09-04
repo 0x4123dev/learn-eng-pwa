@@ -108,14 +108,24 @@ function tap(el) {
 }
 
 suite('night raid screens: every sub-menu opens and its primary action is armed', () => {
-  test('the home stage renders with all five sub-menu fabs', () => {
+  test('the home stage renders exactly four sub-menu fabs, and CƯỚP ĐÊM opens the houses', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
-    const html = doc.getElementById('nightRaidScreen').innerHTML;
-    for (const label of ['CƯỚP ĐÊM', 'NHÀ THẬT', 'XÂY NHÀ', 'NHẬT KÝ', 'VŨ KHÍ']) {
+    const screen = doc.getElementById('nightRaidScreen');
+    const html = screen.innerHTML;
+    const fabs = screen.querySelectorAll('.nr-home-fab');
+    assert.equal(fabs.length, 4, 'four fabs: NHÀ THẬT was folded into CƯỚP ĐÊM');
+    for (const label of ['CƯỚP ĐÊM', 'XÂY NHÀ', 'NHẬT KÝ', 'VŨ KHÍ']) {
       assert.truthy(html.includes(label), 'home is missing the ' + label + ' fab');
     }
-    for (const fn of ['nrScoutBot()', 'nrShowLiveTargets()', 'nrShowBuilder()', 'nrShowReports()', 'nrOpenArmory()']) {
+    // The child is already standing in their real house, so a fab called
+    // "NHÀ THẬT" named nothing — and it was the only road to the list of
+    // houses while CƯỚP ĐÊM dropped the child straight into a bot fight.
+    assert.falsy(html.includes('NHÀ THẬT'), 'NHÀ THẬT must be gone');
+    assert.falsy(html.includes('nrScoutBot()'), 'and the home stage no longer shortcuts to a bot');
+    assert.equal(fabs.find(f => f.classList.contains('raid')).getAttribute('onclick'),
+      'nrShowLiveTargets()', 'CƯỚP ĐÊM must open the list of houses');
+    for (const fn of ['nrShowLiveTargets()', 'nrShowBuilder()', 'nrShowReports()', 'nrOpenArmory()']) {
       assert.truthy(html.includes(fn), 'fab not wired to ' + fn);
     }
     assert.falsy(html.includes('nr-fab-badge'), 'no gift waiting → no badge');
@@ -141,7 +151,7 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.equal(opened, 1);
   });
 
-  test('CƯỚP ĐÊM opens scout AND arms the TIẾN QUÂN button', () => {
+  test('a bot fight opens scout AND arms the TIẾN QUÂN button', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     ctx.NightRaid.scoutBot();                       // must not throw
@@ -194,7 +204,7 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     });
   });
 
-  test('NHÀ THẬT degrades to a bot offer when the server is unreachable', () => {
+  test('CƯỚP ĐÊM degrades to a bot offer when the server is unreachable', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     return Promise.resolve(ctx.NightRaid.showLiveTargets()).then(() => {
