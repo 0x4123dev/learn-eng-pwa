@@ -122,4 +122,87 @@ suite('builder farm: the server clock is adopted', () => {
   });
 });
 
+suite('builder farm: shop tabs and buying', () => {
+  test('four tabs; seeds and farm buildings are priced cards; owned fields say "Mỗi loại 1 cái"', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    for (const t of ['Phòng thủ', 'Hạt giống', 'Nông trại', 'Mở rộng']) assert.truthy(html(w).includes(t), 'tab ' + t);
+    w.ctx.NightRaid.selectShopTab('seeds');
+    assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · +120 xu'), 'seed card copy');
+    assert.truthy(html(w).includes("nrSelectBuild('pumpkin')"));
+    w.ctx.NightRaid.selectShopTab('farm');
+    assert.truthy(html(w).includes('Cối xay gió') && html(w).includes('8000 xu'));
+    w.ctx.NightRaid.selectShopTab('defense');
+    assert.truthy(html(w).includes('Mỗi loại 1 cái'), 'the owned rice field is capped in the shop');
+  });
+  test('planting a seed puts a crop on the tapped cell with day = farmDayCount, at = today, and charges the price', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectBuild('pumpkin');
+    w.ctx.NightRaid.buildCell(10, 10, true);
+    const crop = w.state.nightRaidLayout.cells.find(c => c.type === 'pumpkin' && c.gx === 10);
+    assert.truthy(crop, 'the pumpkin was planted');
+    assert.equal(crop.day, 5); assert.equal(crop.at, TODAY);
+    assert.truthy(/^c-/.test(crop.uid));
+    assert.equal(w.state.coins, 9000 - 20);
+    assert.truthy(w.calls.some(c => c[0] === 'night-raid/home' && c[1] === 'PUT'), 'the layout is synced');
+  });
+  test('a second rice field is refused; a growing crop cannot be replaced; not enough coins is refused', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectBuild('rice-field');
+    w.ctx.NightRaid.buildCell(0, 9, true);
+    assert.equal(w.state.nightRaidLayout.cells.filter(c => c.type === 'rice-field').length, 1);
+    assert.truthy(w.toasts.some(t => t.includes('Mỗi loại 1')));
+    w.ctx.NightRaid.selectBuild('carrot');
+    w.ctx.NightRaid.buildCell(1, 1, true);
+    assert.equal(w.state.nightRaidLayout.cells.find(c => c.gx === 1 && c.gy === 1).type, 'tomato');
+    w.state.coins = 2;
+    w.ctx.NightRaid.buildCell(11, 11, true);
+    assert.falsy(w.state.nightRaidLayout.cells.some(c => c.gx === 11 && c.gy === 11));
+    assert.truthy(w.toasts.some(t => t.includes('Chưa đủ')));
+  });
+  test('removing a farm building refunds half its price', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectBuild('well'); w.ctx.NightRaid.buildCell(10, 4, true);
+    assert.equal(w.state.coins, 8000);
+    w.ctx.NightRaid.selectBuild('well'); w.ctx.NightRaid.buildCell(10, 4, true);
+    assert.falsy(w.state.nightRaidLayout.cells.some(c => c.type === 'well'));
+    assert.equal(w.state.coins, 8500);
+  });
+});
+
+suite('builder farm: extra farm boards', () => {
+  test('the Mở rộng tab sells one plot for 10000 up to three; buying adds a 6x6 board and switches to it', () => {
+    const w = mount({ appState: { coins: 25000 } }); w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectShopTab('expand');
+    assert.truthy(html(w).includes('Nông trại riêng') && html(w).includes('10000 xu') && html(w).includes('đã có 0/3'));
+    w.ctx.NightRaid.buyFarmPlot(true);
+    assert.equal(w.state.nightRaidLayout.farms.length, 1);
+    assert.equal(w.state.coins, 15000);
+    const out = html(w);
+    assert.truthy(out.includes('NÔNG TRẠI 1'), 'a zone chip appears');
+    assert.truthy(/nr-free-grid size-6/.test(out), 'the new board is 6x6');
+    assert.falsy(out.includes('Phòng thủ'), 'no defense tab on a farm board');
+    w.ctx.NightRaid.buyFarmPlot(true);
+    assert.equal(w.state.nightRaidLayout.farms.length, 2);
+    w.state.coins = 5000;
+    w.ctx.NightRaid.buyFarmPlot(true);
+    assert.equal(w.state.nightRaidLayout.farms.length, 2, 'not enough coins');
+  });
+  test('planting on a farm board lands in that farm; a defense cannot be placed there', () => {
+    const w = mount({ appState: { nightRaidLayout: { cells: [], soldiers: 0, dogLane: 2, farms: [{ cells: [] }] } } });
+    w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectZone(1);
+    w.ctx.NightRaid.selectBuild('lettuce'); w.ctx.NightRaid.buildCell(2, 2, true);
+    assert.equal(w.state.nightRaidLayout.farms[0].cells.length, 1);
+    assert.equal(w.state.nightRaidLayout.cells.length, 0);
+    w.ctx.NightRaid.selectBuild('stone-wall'); w.ctx.NightRaid.buildCell(0, 0, true);
+    assert.equal(w.state.nightRaidLayout.farms[0].cells.length, 1, 'no wall on a farm');
+    assert.truthy(w.toasts.some(t => t.includes('chỉ trồng cây')));
+    w.ctx.NightRaid.selectBuild('barn'); w.ctx.NightRaid.buildCell(4, 4, true);
+    assert.equal(w.state.nightRaidLayout.farms[0].cells.length, 2, 'a 2x2 barn fits at (4,4) on a 6x6 board');
+    assert.truthy(w.state.nightRaidLayout.farms[0].cells.some(c => c.type === 'barn' && c.gx === 4 && c.gy === 4));
+    w.ctx.NightRaid.selectZone(0);
+    assert.truthy(/nr-free-grid[^"]*size-12/.test(html(w)) || html(w).includes('Lưới xây dựng 12'), 'back on the castle');
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

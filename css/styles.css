@@ -13574,3 +13574,12 @@
 .nr-replant.ready{background:linear-gradient(145deg,#73cd58,#3ca845);color:#fff}
 .nr-replant:disabled{opacity:.7;cursor:default}
 .nr-replant small{display:block;font-size:10px;font-weight:800;opacity:.85}
+
+/* Farm shop tabs, zone chips, 6x6 farm board */
+.nr-shop-tabs{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto;scrollbar-width:none}.nr-shop-tabs button{flex:0 0 auto;min-height:36px;padding:0 13px;border:1px solid #d8e2ca;border-radius:999px;background:#fff;color:#4a684d;font-weight:900;cursor:pointer}.nr-shop-tabs button.active{background:linear-gradient(145deg,#ffe89a,#ffc65b);border-color:#e8ad3b;color:#644211}
+.nr-zone-chips{position:absolute;z-index:7;left:50%;top:14px;transform:translateX(-50%);display:flex;gap:6px;padding:5px;border-radius:999px;background:rgba(255,251,238,.92);box-shadow:0 8px 20px rgba(74,63,37,.18)}.nr-zone-chips button{min-height:34px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#5b4a2c;font-size:11px;font-weight:950;letter-spacing:.06em;cursor:pointer}.nr-zone-chips button.active{background:#3f6046;color:#fff}
+.nr-free-grid.size-6{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr))}
+.nr-free-grid.size-6 .nr-build-grid-cell .nr-placed.farm-item.crop{width:120%;height:120%;bottom:6%}
+.nr-free-grid.size-6 .nr-build-grid-cell .nr-placed.farm-item.farm.footprint-2{width:190%;height:190%}
+.nr-build-item.owned-max{opacity:.55;cursor:default}
+.nr-builder.rotated .nr-zone-chips{top:auto;bottom:14px;left:50%}
