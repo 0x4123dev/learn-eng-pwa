@@ -143,6 +143,21 @@ async function reconcileCupsFromServer() {
   } catch (e) { return null; }                           // a failed sync must never clear cups
 }
 
+// SILENT teardown for a profile change. `_cupsReconciled` is a once-a-session
+// latch, and a "session" used to mean the page, not the child: the first child
+// to open the cabinet set it, and from then on NOBODY reconciled. The second
+// child's shelf was then whatever their local appState happened to say — on a
+// device where they had never synced, an empty cabinet beside a server that
+// knew every battle they had won.
+//
+// It asks nothing and navigates nowhere; the caller is already on its way to
+// the profile picker. It deliberately does NOT touch appState.cups: those are
+// the previous child's trophies and belong in the previous child's profile,
+// which loginUser is about to swap out wholesale.
+function cupsForgetProfile() {
+  _cupsReconciled = false;
+}
+
 // ---- the cabinet (Profile → 🏆 Tủ cúp) ----
 const CUP_NAME = { basic: 'Cúp vàng', ruby: 'Cúp ruby', diamond: 'Cúp kim cương' };
 
@@ -266,6 +281,10 @@ if (typeof module !== 'undefined' && module.exports) {
     cupSellPrice, sellCup, promptSellCup, cancelSellCup, confirmSellCup,
     renderCupCabinet, doMergeCups, _cupShelf,
     applyServerWins, reconcileCupsFromServer,
-    _resetCupReconcile: () => { _cupsReconciled = false; },
+    cupsForgetProfile,
+    // Kept as an alias: the old name only ever existed behind module.exports,
+    // so a browser never had it — cupsForgetProfile is the real function.
+    _resetCupReconcile: cupsForgetProfile,
+    _cupsReconciledFlag: () => _cupsReconciled,
   };
 }

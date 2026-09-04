@@ -1096,6 +1096,10 @@ function forgetProfileState() {
     if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.forgetProfile === 'function') {
         try { NightRaid.forgetProfile(); } catch (e) {}
     }
+    // The trophy cabinet's once-a-session reconcile latch, and the friends
+    // list the Profile screen paints before its own refresh lands.
+    if (typeof cupsForgetProfile === 'function') { try { cupsForgetProfile(); } catch (e) {} }
+    if (typeof friendsForgetProfile === 'function') { try { friendsForgetProfile(); } catch (e) {} }
 }
 
 function switchUser() {

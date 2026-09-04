@@ -392,6 +392,26 @@ async function openFriendActivity(friendId, name) {
     ${skills ? `<div class="friend-group-title">Kỹ năng</div>${skills}` : ''}`;
 }
 
+// SILENT teardown for a profile change.
+//
+// `_friendsData` is set from the API and was never cleared, and
+// initFriendsSection() paints from it BEFORE the new request lands — so the
+// second child opened Profile and saw the first child's friends, and the first
+// child's pending invitations, with ✓/✕ buttons wired to friendshipIds that
+// are not theirs. js/petbattle.js reads the same cache to build the "challenge
+// a friend" list, so it also offered them battles against A's friends.
+//
+// Cleared to null rather than to an empty list: null is the "loading…" state,
+// which is the honest thing to show until this child's own list arrives.
+function friendsForgetProfile() {
+  _friendsData = null;
+  _friendsBusy = false;
+  _friendsLinking = false;
+  _friendsMsg = '';
+  const el = typeof document !== 'undefined' ? document.getElementById('friendsSection') : null;
+  if (el) el.innerHTML = '';
+}
+
 // Called by renderProfile(): kicks off a refresh, renders what we have now.
 function initFriendsSection() {
   renderFriendsSection();
@@ -407,7 +427,7 @@ if (typeof window !== 'undefined') { try { _frCaptureInvite(); } catch (e) {} }
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    renderFriendsSection, initFriendsSection, loadFriends, inviteFriend,
+    renderFriendsSection, initFriendsSection, friendsForgetProfile, loadFriends, inviteFriend,
     respondFriend, openFriendActivity, frEsc, _frBindFriendRows,
     retryFriendsLink, relinkFriendsAccount,
     _frLinkHelpHTML, friendInviteLink, shareFriendLink, acceptQuickInvite,

@@ -27,6 +27,61 @@ const vm = require('vm');
 const ROOT = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
+// ---------------------------------------------------------------------------
+// A minimal browser, shared by the behavioural tests below. Elements remember
+// their innerHTML and their classes, which is all these teardowns touch.
+// ---------------------------------------------------------------------------
+function fakeEl() {
+  const classes = new Set();
+  return {
+    innerHTML: '', textContent: '', value: '', dataset: {}, style: {},
+    classList: {
+      add: c => classes.add(c), remove: c => classes.delete(c),
+      contains: c => classes.has(c), toggle: (c, on) => (on ? classes.add(c) : classes.delete(c)),
+    },
+    addEventListener() {}, removeEventListener() {}, appendChild() {}, remove() {},
+    insertAdjacentHTML(_, html) { this.innerHTML += html; },
+    closest: () => null, focus() {}, scrollTop: 0, scrollLeft: 0,
+    querySelector: () => null, querySelectorAll: () => [],
+    removeProperty() {}, setAttribute() {}, getBoundingClientRect: () => ({ width: 0, height: 0 }),
+  };
+}
+
+function fakeDoc() {
+  const byId = {};
+  return {
+    _byId: byId,
+    getElementById: id => (byId[id] = byId[id] || fakeEl()),
+    querySelector: () => null, querySelectorAll: () => [], createElement: () => fakeEl(),
+    addEventListener() {}, removeEventListener() {}, body: fakeEl(),
+    visibilityState: 'visible', hidden: false,
+  };
+}
+
+// Load one app script into a sandbox. `peek` is appended verbatim, which is how
+// a top-level `let` (script-scoped, never a property of the sandbox) is made
+// readable — the same trick the pet-battle arena() below uses.
+function loadModule(file, extra, peek) {
+  const doc = fakeDoc();
+  const sandbox = Object.assign({
+    console, Math, JSON, Date, String, Number, Array, Object, Boolean, Promise,
+    Set, Map, RegExp, Error, isNaN, parseInt, parseFloat, encodeURIComponent, decodeURIComponent,
+    setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+    requestAnimationFrame: () => 0, cancelAnimationFrame() {},
+    document: doc, navigator: { language: 'vi' }, location: { origin: 'http://test', search: '' },
+    localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
+    appState: null, currentUser: null,
+    saveUserData() {}, showToast() {}, switchScreen() {}, renderHome() {}, createConfetti() {},
+    module: { exports: {} },
+  }, extra || {});
+  sandbox.window = sandbox;
+  sandbox.globalThis = sandbox;
+  sandbox.self = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(read(file) + (peek || ''), sandbox, { filename: file });
+  return sandbox;
+}
+
 // js/petbattle.js in a sandbox, with just enough of a browser to start a game.
 function arena() {
   const el = () => ({ innerHTML: '', dataset: {}, classList: { add() {}, remove() {}, contains: () => false },
@@ -168,6 +223,152 @@ suite('profile switch: the app actually asks the modules to forget', () => {
     for (const held of ['raidStage', 'liveTargets', 'builderZone', 'lastHarvest', 'homeLockedUntil']) {
       assert.truthy(fn.includes(held), 'forgetProfile must reset ' + held);
     }
+  });
+});
+
+// ===========================================================================
+//  The same shape, found elsewhere by audit. Each suite below states what the
+//  second child could actually SEE, because a teardown that closes nothing is
+//  just churn in a live app.
+// ===========================================================================
+
+// Let every pending microtask settle: these teardowns sit around awaited
+// network calls, so one tick is not enough to see their effect.
+const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
+
+// ---- 🏆 the trophy cabinet -------------------------------------------------
+function cupboard(wins) {
+  const calls = [];
+  const s = loadModule('js/cups.js', {
+    EngAuth: {
+      tokenFor: u => 'tok-' + u,
+      api: (path) => { calls.push(path); return Promise.resolve({ ok: true, data: { wins: wins[calls.length - 1] } }); },
+    },
+  }, '\n;globalThis.__peekReconciled = () => _cupsReconciled;');
+  s.__calls = calls;
+  return s;
+}
+
+suite('profile switch: the trophy cabinet must reconcile for EVERY child', () => {
+  test('the bug: the latch is per-page, so only the first child ever reconciles', async () => {
+    const s = cupboard([7, 7]);
+    s.currentUser = 'AccountA';
+    s.appState = { cups: { basic: 0, ruby: 0, diamond: 0, won: 0 } };
+    s.renderCupCabinet();
+    await flush();
+    assert.equal(s.__calls.length, 1, 'A asks the server how many battles they won');
+    assert.truthy(s.__peekReconciled(), 'and the latch is now set for the whole page');
+
+    // A profile change that only swaps appState leaves the latch standing.
+    s.currentUser = 'AccountB';
+    s.appState = { cups: { basic: 0, ruby: 0, diamond: 0, won: 0 } };
+    s.renderCupCabinet();
+    await flush();
+    assert.equal(s.__calls.length, 1,
+      'this asserts the BUG on purpose: B never asks, so B\'s shelf is whatever localStorage said');
+    assert.equal(s.appState.cups.won, 0, 'B is shown zero wins on a server that knows seven');
+  });
+
+  test('cupsForgetProfile drops the latch, so the next child reconciles too', async () => {
+    const s = cupboard([7, 7]);
+    s.currentUser = 'AccountA';
+    s.appState = { cups: { basic: 0, ruby: 0, diamond: 0, won: 0 } };
+    s.renderCupCabinet();
+    await flush();
+
+    s.cupsForgetProfile();
+    assert.falsy(s.__peekReconciled(), 'the latch must be down again');
+
+    s.currentUser = 'AccountB';
+    s.appState = { cups: { basic: 0, ruby: 0, diamond: 0, won: 0 } };
+    s.renderCupCabinet();
+    await flush();
+    assert.equal(s.__calls.length, 2, 'B asks for their own win count');
+    assert.equal(s.appState.cups.won, 7, 'and gets their own trophies back');
+  });
+
+  test('it never touches the cups themselves — those leave with the profile', () => {
+    const s = cupboard([0]);
+    s.currentUser = 'AccountA';
+    s.appState = { cups: { basic: 3, ruby: 1, diamond: 0, won: 8 } };
+    s.cupsForgetProfile();
+    assert.deepEqual(s.appState.cups, { basic: 3, ruby: 1, diamond: 0, won: 8 },
+      'appState is the previous child\'s and loginUser swaps it wholesale');
+  });
+
+  test('the browser really has it: the old reset only ever existed under module.exports', () => {
+    const src = read('js/cups.js');
+    assert.truthy(/^function cupsForgetProfile\(\)/m.test(src),
+      'it must be a real top-level function, not an arrow inside module.exports — '
+      + 'a browser never runs that block, which is why _resetCupReconcile could not be called');
+  });
+});
+
+// ---- 👥 the friends list ---------------------------------------------------
+suite('profile switch: the friends list must not be painted for the wrong child', () => {
+  const aData = {
+    friends: [{ userId: 11, username: 'BanCuaA', summary: { sessions: 3, correct: 9, daysThisWeek: 2 } }],
+    incoming: [{ friendshipId: 501, username: 'AiDoMoiA' }],
+    outgoing: [],
+  };
+
+  function fr() {
+    return loadModule('js/friends.js', { EngAuth: { tokenFor: () => 'tok' } },
+      '\n;globalThis.__peekFriends = () => _friendsData;'
+      + '\n;globalThis.__peekMsg = () => _friendsMsg;'
+      + '\n;globalThis.__setFriends = (d) => { _friendsData = d; };');
+  }
+
+  test('the bug: initFriendsSection paints the cache BEFORE the new request lands', () => {
+    const s = fr();
+    s.currentUser = 'AccountA';
+    s.__setFriends(aData);
+    s.currentUser = 'AccountB';                     // the switch, module untouched
+    s.renderFriendsSection();
+    const html = s.document.getElementById('friendsSection').innerHTML;
+    assert.truthy(html.includes('BanCuaA'), 'this asserts the BUG: B is shown A\'s friend');
+    assert.truthy(html.includes('501'),
+      'and A\'s pending invitation, with ✓/✕ wired to a friendshipId that is not B\'s');
+  });
+
+  test('friendsForgetProfile empties the cache and the section it owns', () => {
+    const s = fr();
+    s.currentUser = 'AccountA';
+    s.__setFriends(aData);
+    s.renderFriendsSection();
+    s.friendsForgetProfile();
+
+    assert.equal(s.__peekFriends(), null, 'the list must be gone');
+    assert.equal(s.document.getElementById('friendsSection').innerHTML, '',
+      'and nothing of A left painted');
+
+    // null is the "loading…" state on purpose: B waits rather than being lied to.
+    s.currentUser = 'AccountB';
+    s.renderFriendsSection();
+    const html = s.document.getElementById('friendsSection').innerHTML;
+    assert.falsy(html.includes('BanCuaA'), 'B must not see A\'s friend');
+    assert.falsy(html.includes('501'), 'nor A\'s invitation');
+  });
+
+  test('a stale status message does not follow the child either', () => {
+    const s = fr();
+    s.__setFriends(aData);
+    s.friendsForgetProfile();
+    assert.equal(s.__peekMsg(), '', '"✅ Đã gửi lời mời tới …" belonged to the previous child');
+  });
+
+  test('calling it twice, or with nothing loaded, is harmless', () => {
+    const s = fr();
+    s.friendsForgetProfile();
+    s.friendsForgetProfile();
+    assert.equal(s.__peekFriends(), null);
+  });
+
+  test('the arena reads the same cache, so clearing it closes that road too', () => {
+    const pb = read('js/petbattle.js');
+    assert.truthy(pb.includes('_friendsData'),
+      'js/petbattle.js builds its "challenge a friend" list from _friendsData — '
+      + 'if that ever stops being true, this teardown covers one road fewer');
   });
 });
 
