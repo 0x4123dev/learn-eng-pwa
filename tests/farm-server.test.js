@@ -196,4 +196,31 @@ suite('farm server: collect', () => {
   });
 });
 
+suite('farm server: the Daily Task page gets a farm summary', () => {
+  const meHandler = () => loadModule('functions/api/me/daily-tasks.js');
+  const me = (world, kid) => world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
+  test('with the flag: counts and preview; without: farm is null', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [{ type: 'carrot', gx: 1, gy: 1, uid: 'c-carrot01' }] });
+    doneOn(world, kid.uid, YESTERDAY);
+    const r = await me(world, kid);
+    assert.truthy(r.ok, JSON.stringify(r.data));
+    assert.equal(r.data.farm.crops, 1);
+    assert.equal(r.data.farm.growing, 1);
+    assert.deepEqual(r.data.farm.preview, { id: 'carrot', g: 1, days: 3, wilted: false });
+    assert.equal(r.data.farm.ctx.today, TODAY);
+    const plain = await world.createUser({ allowBot: false });
+    assert.equal((await me(world, plain)).data.farm, null);
+  });
+  test('a child with the flag but no home yet gets an empty summary, not an error', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    const r = await me(world, kid);
+    assert.truthy(r.ok);
+    assert.equal(r.data.farm.crops, 0);
+    assert.equal(r.data.farm.preview, null);
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
