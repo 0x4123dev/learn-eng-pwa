@@ -652,6 +652,22 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         mathBoardRepaint();
     };
 
+    // A toolbar control is a word on the Toán 7 board and a single icon in
+    // the Toán 4 question header. The same handlers toggle both, so the face
+    // is chosen here once rather than at every call site — writing the word
+    // into an icon button was how "🧽" became the text "Chắc chưa?" in a
+    // 44px circle.
+    function mathBoardFace(btn, word, icon, label) {
+        if (!btn) return;
+        if (btn.classList && btn.classList.contains('math-board-icon')) {
+            btn.textContent = icon;
+            btn.setAttribute('aria-label', label || word);
+            btn.setAttribute('title', label || word);
+            return;
+        }
+        btn.textContent = word;
+    }
+
     // Xoá bảng is destructive for a child: the first tap arms, a second tap
     // within 2s wipes. The armed button re-labels itself "Chắc chưa?".
     window.mathBoardClearTap = function () {
@@ -666,18 +682,16 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             // A full mathBoardRenderOverlay() would also disarm the button, but
             // nothing about the board list changed here — only its strokes — so
             // a plain repaint is enough, as long as the label is put back by hand.
-            const btn = document.getElementById('mathBoardClearBtn');
-            if (btn) btn.textContent = 'Xoá bảng';
+            mathBoardFace(document.getElementById('mathBoardClearBtn'), 'Xoá bảng', '🧽', 'Xoá bảng');
             mathBoardRepaint();
             return;
         }
         _mathBoardClearArmed = now;
-        const btn = document.getElementById('mathBoardClearBtn');
-        if (btn) btn.textContent = 'Chắc chưa?';
+        mathBoardFace(document.getElementById('mathBoardClearBtn'),
+            'Chắc chưa?', '❓', 'Chắc chưa? Chạm lần nữa để xoá cả bảng');
         setTimeout(function () {
             _mathBoardClearArmed = 0;
-            const b = document.getElementById('mathBoardClearBtn');
-            if (b) b.textContent = 'Xoá bảng';
+            mathBoardFace(document.getElementById('mathBoardClearBtn'), 'Xoá bảng', '🧽', 'Xoá bảng');
         }, 2000);
     };
 
@@ -755,12 +769,33 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         return html;
     }
 
+    // Toán 4's board keeps three controls and no toolbar row of its own:
+    // wipe the board, the maths keyboard, and put the board away. They ride
+    // in the question header as icons, so the whole row of chips and toggles
+    // stops eating writing space on a tablet the child is working on.
+    function mathBoardIconToolsHTML() {
+        return '<span class="math-board-icon-tools">' +
+          '<button class="math-board-tool math-board-icon" type="button" id="mathBoardClearBtn" ' +
+                  'aria-label="Xoá bảng" title="Xoá bảng" ' +
+                  'onclick="mathBoardClearTap()">🧽</button>' +
+          '<button class="math-board-tool math-board-icon' + (_mathBoardKeyboardOpen ? ' active' : '') + '" ' +
+                  'type="button" id="mathBoardKeyboardBtn" aria-controls="mathBoardKeyboard" ' +
+                  'aria-expanded="' + (_mathBoardKeyboardOpen ? 'true' : 'false') + '" ' +
+                  'aria-label="Bàn phím toán" title="Bàn phím toán" ' +
+                  'onclick="mathBoardKeyboardToggle()">🔢</button>' +
+          '<button class="math-board-tool math-board-icon" type="button" ' +
+                  'aria-label="Thu nhỏ bảng nháp" title="Thu nhỏ" ' +
+                  'onclick="minimizeMathBoard()">✕</button>' +
+        '</span>';
+    }
+
     function mathBoardStripHTML() {
         const q = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
         if (!q) return '';
         if (mathBoardQuestionLocked(q)) {
             return '<div class="math-board-strip full locked">' +
                    '<span class="math-board-strip-label">Đề bài</span>' +
+                   mathBoardIconToolsHTML() +
                    mathBoardQuestionBodyHTML(q) + '</div>';
         }
         const full = _mathBoardQuestionExpanded;
@@ -852,7 +887,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         if (button) {
             button.setAttribute('aria-expanded', _mathBoardKeyboardOpen ? 'true' : 'false');
             button.classList.toggle('active', _mathBoardKeyboardOpen);
-            button.textContent = _mathBoardKeyboardOpen ? 'Ẩn bàn phím' : 'Bàn phím toán';
+            mathBoardFace(button, _mathBoardKeyboardOpen ? 'Ẩn bàn phím' : 'Bàn phím toán',
+                '🔢', _mathBoardKeyboardOpen ? 'Ẩn bàn phím toán' : 'Bàn phím toán');
         }
         mathBoardResize();
     };
@@ -882,7 +918,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         if (keyboardButton) {
             keyboardButton.setAttribute('aria-expanded', 'false');
             keyboardButton.classList.remove('active');
-            keyboardButton.textContent = 'Bàn phím toán';
+            mathBoardFace(keyboardButton, 'Bàn phím toán', '🔢', 'Bàn phím toán');
         }
         mathBoardResize();
     };
@@ -942,8 +978,14 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         };
         el.ongesturestart = function (event) { event.preventDefault(); };
         el.ongesturechange = function (event) { event.preventDefault(); };
+        // Toán 4 carries its three controls in the question header instead, so
+        // the whole row of board chips and toggles — and the panel behind
+        // "Công cụ" — is left out rather than drawn and hidden.
+        const lockedBoard = mathBoardQuestionLocked(
+            (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null);
         el.innerHTML =
             mathBoardStripHTML() +
+            (lockedBoard ? '' :
             '<div class="math-board-tools">' +
               '<span class="math-board-chips">' + mathBoardChipsHTML() + '</span>' +
               '<div class="math-board-quick-tools">' +
@@ -971,7 +1013,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                   '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
                           'onclick="mathBoardClearTap()">Xoá bảng</button>' +
                 '</div>' +
-              '</div>' +
+              '</div>') +
             mathBoardKeyboardHTML() +
             '<div class="math-board-sheet" id="mathBoardSheet">' +
               '<canvas id="mathBoardCanvas"></canvas>' +

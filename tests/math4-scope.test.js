@@ -232,6 +232,47 @@ suite('toán 4 chỉ đổi cho toán 4: the scratch board', () => {
       'and Toán 7 must still toggle');
   });
 
+  test('Toán 4 keeps three controls, in the question header, and no toolbar row', () => {
+    const icons = board.slice(board.indexOf('function mathBoardIconToolsHTML'),
+      board.indexOf('function mathBoardStripHTML'));
+    assert.equal((icons.match(/<button/g) || []).length, 3,
+      'exactly three: wipe the board, the maths keyboard, put it away');
+    assert.truthy(/mathBoardClearTap/.test(icons), 'xoá bảng');
+    assert.truthy(/mathBoardKeyboardToggle/.test(icons), 'bàn phím toán');
+    assert.truthy(/minimizeMathBoard/.test(icons), 'thu nhỏ');
+    // An icon with no name is unusable with VoiceOver and unguessable for a
+    // child, so each one has to say what it does.
+    assert.equal((icons.match(/aria-label="/g) || []).length, 3, 'every icon needs a name');
+    assert.truthy(/lockedBoard \? '' :/.test(board),
+      'the chips-and-toggles row must be left out for Toán 4, not drawn and hidden');
+  });
+
+  test('Toán 7 keeps its whole toolbar — boards, tools, undo, eraser', () => {
+    for (const [needle, what] of [
+      ['mathBoardChipsHTML', 'the B1/B2/+ board chips'],
+      ['mathBoardToolsToggle', 'the Công cụ toggle'],
+      ['mathBoardUndoTap', 'Lùi một bước'],
+      ['mathBoardWritingToolsHTML', 'the pen and eraser'],
+      ['Xoá bảng', 'the worded clear button'],
+    ]) assert.truthy(board.includes(needle), 'Toán 7 lost ' + what);
+  });
+
+  test('a control that is an icon never has a sentence written into it', () => {
+    // mathBoardClearTap arms with "Chắc chưa?" and the keyboard toggle relabels
+    // itself. Writing either straight into a 44px icon button replaces the
+    // icon with text that does not fit.
+    assert.truthy(/function mathBoardFace\(btn, word, icon, label\)/.test(board),
+      'both faces must be chosen in one place');
+    const face = board.slice(board.indexOf('function mathBoardFace'),
+      board.indexOf('window.mathBoardClearTap'));
+    assert.truthy(/math-board-icon/.test(face), 'it decides by looking for the icon class');
+    const after = board.slice(board.indexOf('window.mathBoardClearTap'));
+    assert.falsy(/textContent = 'Chắc chưa\?'/.test(after),
+      'the armed label must go through mathBoardFace');
+    assert.falsy(/textContent = _mathBoardKeyboardOpen \?/.test(after),
+      'so must the keyboard label');
+  });
+
   test('the answer-box labels are printed for grade 4 only', () => {
     const body = board.slice(board.indexOf('function mathBoardQuestionBodyHTML'),
       board.indexOf('function mathBoardStripHTML'));

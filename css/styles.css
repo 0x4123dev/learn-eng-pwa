@@ -11584,6 +11584,26 @@
 .math-board-strip-part .math-formula {
     grid-column: auto; grid-row: auto; display: inline; min-width: 0;
 }
+/* Toán 4's three controls ride in the question header — wipe the board, the
+   maths keyboard, put the board away — so the board keeps no toolbar row of
+   its own and the child gets that space to write in. */
+.math-board-icon-tools {
+    grid-column: 2; grid-row: 1; align-self: center;
+    display: flex; gap: 6px; margin-left: 10px;
+}
+.math-board-icon {
+    display: grid; place-items: center;
+    width: 44px; min-width: 44px; height: 44px; padding: 0;
+    border: 1px solid #c7d2fe; border-radius: 12px;
+    background: #fff; color: #3730a3;
+    font-size: 19px; line-height: 1; cursor: pointer;
+}
+.math-board-icon.active { border-color: #4f46e5; background: #e0e7ff; }
+.math-board-icon:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+@media (max-width: 420px) {
+    .math-board-icon { width: 40px; min-width: 40px; height: 40px; font-size: 17px; }
+    .math-board-icon-tools { gap: 4px; margin-left: 6px; }
+}
 .math-board-tools {
     display: flex; flex-wrap: nowrap; align-items: center; gap: 5px; padding: 5px 8px;
     border-bottom: 1px solid #e2e8f0; background: #f8fafc;

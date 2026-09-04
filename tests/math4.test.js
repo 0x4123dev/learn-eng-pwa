@@ -65,6 +65,7 @@ function loadMath() {
        mathGrade, mathKey, mathTypedReset, submitMathTyped, nextMathQuestion,
        mathCurrentQuestion, mathQuizQuit, isMathQuizActive, mathQuizAnswered,
        mathPartInput, math4FreeEntry, math4AllFilled, math4Clean, math4InputHTML,
+       mathPartSync, math4Values, math4DomValue,
        mathAnswerPartsHTML, mathKeypadHTML, MATH4_ANSWER_MAX,
        MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
      };`,
@@ -365,9 +366,26 @@ function sitPaperFinish(m) {
 suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
   // A tiny stand-in for the browser's input element, so a test can type the
   // way a child does — put the caret somewhere and insert a character there.
-  function fakeInput() {
-    return { value: '', selectionEnd: 0, disabled: false,
+  function fakeInput(qid, value) {
+    const v = value == null ? '' : String(value);
+    return { value: v, selectionEnd: v.length, disabled: false,
+             _attrs: { 'data-q': qid == null ? '' : String(qid) },
+             getAttribute(k) { return this._attrs[k]; },
              setSelectionRange(a) { this.selectionEnd = a; } };
+  }
+
+  // A page whose four boxes already hold `values`, stamped with `qid`, and a
+  // check button — with NOTHING having gone through mathPartInput. That is
+  // the shape iOS leaves behind when it restores a form on a tab it discarded.
+  function pageWith(ctx, q, values, qid) {
+    const els = {};
+    const btn = { disabled: true };
+    q.answerParts.forEach((part, i) => {
+      els['mathPart' + i] = fakeInput(qid === undefined ? q.id : qid, values[i]);
+    });
+    ctx.document.getElementById = (id) =>
+      (id === 'mathSubmitBtn' ? btn : (els[id] || null));
+    return { els, btn };
   }
 
   test('every box is an input the iPad can raise a number pad for', () => {
@@ -537,6 +555,72 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
     assert.truthy(/mathAnswerSlot/.test(html), 'it still types into one active box');
     assert.truthy(/math-answer-parts"/.test(html), 'and is not marked as free entry');
     assert.truthy(/math-key/.test(m.mathKeypadHTML(seven)), 'its keypad still builds');
+  });
+
+  // -------------------------------------------------------------------------
+  // The box on screen is the answer, not a shadow copy of it.
+  //
+  // It WAS a copy, and the copy could fall behind. A value that reaches a
+  // field without firing `input` — iOS restoring a form on a tab it had
+  // discarded is the everyday way — left every box visibly full while the copy
+  // stayed empty, so "Kiểm tra tất cả" never came back on and a child who had
+  // finished the question could not hand it in. Every test above passed
+  // throughout, because every one of them put its values in THROUGH the copy.
+  test('values the browser restored into the boxes still count as answers', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    // Nothing goes through mathPartInput here. That is the whole point.
+    const { btn } = pageWith(ctx, q, q.answerParts.map(p => p.answer));
+    assert.deepEqual(m.math4Values(q), q.answerParts.map(p => String(p.answer)),
+      'the boxes on screen are what the child answered');
+    assert.truthy(m.math4AllFilled(q), 'a full set of boxes is a full set of answers');
+    m.submitMathTyped();
+    assert.equal(m.mathQuizAnswered(), 1, 'a finished question must be markable');
+    assert.truthy(m.mathIsCorrect(q, q.answerParts.map(p => String(p.answer))));
+    assert.falsy(btn.disabled === undefined, 'sanity: the fake button exists');
+  });
+
+  test('and touching any box puts the check button back in step', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    const { btn } = pageWith(ctx, q, q.answerParts.map(p => p.answer));
+    assert.truthy(btn.disabled, 'it starts stuck, the way the child found it');
+    assert.truthy(m.mathPartSync(), 'a tap on a box re-checks the boxes');
+    assert.falsy(btn.disabled, 'and releases the button');
+  });
+
+  test('one emptied box disables it again, even though the copy still has that number', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    q.answerParts.forEach((p, i) => m.mathPartInput(i, p.answer));   // copy is full
+    const { btn } = pageWith(ctx, q, q.answerParts.map((p, i) => i === 2 ? '' : p.answer));
+    assert.falsy(m.math4AllFilled(q), 'the empty box on screen wins over the stale copy');
+    m.mathPartSync();
+    assert.truthy(btn.disabled);
+    m.submitMathTyped();
+    assert.equal(m.mathQuizAnswered(), 0, 'and an empty box cannot be submitted');
+  });
+
+  test('the boxes left over from the previous question are never read', () => {
+    // renderMathQuestion builds its HTML while the PREVIOUS question's inputs
+    // are still in the document. Without the data-q stamp, question 2 would
+    // open pre-filled with question 1's answers and a live check button.
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const first = m.mathCurrentQuestion();
+    answerCurrent(m, first, false);
+    m.nextMathQuestion();
+    const second = m.mathCurrentQuestion();
+    assert.truthy(second && second.id !== first.id, 'the paper must have moved on');
+    // The stale fields still carry question 1's id and answers.
+    pageWith(ctx, second, first.answerParts.map(p => p.answer), first.id);
+    assert.equal(m.math4DomValue(second, 0), null, 'a box from another question is not readable');
+    assert.deepEqual(m.math4Values(second), second.answerParts.map(() => ''),
+      'the new question starts empty');
+    assert.falsy(m.math4AllFilled(second), 'and its check button starts off');
   });
 
   test('a marked Toán 4 question shows the boxes as results, not as inputs', () => {

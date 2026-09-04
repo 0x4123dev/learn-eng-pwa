@@ -473,15 +473,61 @@ function math4Clean(value) {
   return String(value == null ? '' : value).replace(/[^0-9]/g, '').slice(0, MATH4_ANSWER_MAX);
 }
 
+function math4El(i) {
+  return (typeof document !== 'undefined' && document.getElementById)
+    ? document.getElementById('mathPart' + i) : null;
+}
+
+// What is IN the box, or null when there is no box of this question's on
+// screen to read.
+//
+// The `data-q` check is what makes that "of this question's". renderMathQuestion
+// builds its HTML string while the PREVIOUS question's inputs are still in the
+// document, so without the stamp the next question would start with the last
+// one's answers and a live check button.
+function math4DomValue(q, i) {
+  const el = math4El(i);
+  if (!el || typeof el.value !== 'string' || !el.getAttribute) return null;
+  if (String(el.getAttribute('data-q') || '') !== String(q && q.id || '')) return null;
+  return math4Clean(el.value);
+}
+
+// The box on screen is the answer — not a shadow copy of it.
+//
+// It used to be the copy, and the copy could fall behind: a value reaching a
+// field without firing `input` (iOS restoring a form after discarding the tab
+// is the everyday way that happens) left every box visibly full while the
+// stored copy stayed empty, so the check button never came back on and the
+// child could not hand in a finished question. Reading the fields removes the
+// possibility of the two disagreeing rather than patching one cause of it.
+// The stored copy is still kept, and still answers when there is no field to
+// read: a marked question, or Node.
+function math4Values(q) {
+  return q.answerParts.map((part, i) => {
+    const dom = math4DomValue(q, i);
+    return dom !== null ? dom : math4Clean(_mathTyped.values[i]);
+  });
+}
+
 function math4AllFilled(q) {
   if (!math4FreeEntry(q)) return false;
   // Iterate answerParts, never _mathTyped.values: filling box 4 first leaves
   // values sparse, and Array#every SKIPS holes — it would call this complete.
-  return q.answerParts.every((part, i) => (_mathTyped.values[i] || '') !== '');
+  return math4Values(q).every(v => v !== '');
 }
 
-function math4Values(q) {
-  return q.answerParts.map((part, i) => _mathTyped.values[i] || '');
+// Put the check button back in step with the boxes. Called on every keystroke
+// and again whenever the child touches a box, so even if something did get
+// past the two above, the next tap on any box heals it.
+function mathPartSync() {
+  const st = _mathQuiz;
+  const q = st && st.questions[st.idx];
+  if (!st || st.answers[st.idx] !== null || !math4FreeEntry(q)) return false;
+  const ok = math4AllFilled(q);
+  const btn = (typeof document !== 'undefined' && document.getElementById)
+    ? document.getElementById('mathSubmitBtn') : null;
+  if (btn) btn.disabled = !ok;
+  return ok;
 }
 
 // "^" is a mode, not a character: press it and the digits that follow land as
@@ -563,8 +609,9 @@ function math4InputHTML(q, i) {
     `inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off" ` +
     `autocapitalize="off" spellcheck="false" maxlength="${MATH4_ANSWER_MAX}" ` +
     `placeholder="Đáp án của con…" aria-label="Đáp án phép tính ${i + 1}" ` +
-    `value="${mathEsc(v == null ? '' : v)}" ` +
-    `oninput="mathPartInput(${i}, this.value)" onchange="mathPartInput(${i}, this.value)">`;
+    `data-q="${mathEsc(q && q.id || '')}" value="${mathEsc(v == null ? '' : v)}" ` +
+    `oninput="mathPartInput(${i}, this.value)" onchange="mathPartInput(${i}, this.value)" ` +
+    `onfocus="mathPartSync()">`;
 }
 
 function mathAnswerPartsHTML(q, answer) {
@@ -622,9 +669,7 @@ function mathPartInput(index, value) {
       try { el.setSelectionRange(at, at); } catch (e) {}
     }
   }
-  const btn = (typeof document !== 'undefined' && document.getElementById)
-    ? document.getElementById('mathSubmitBtn') : null;
-  if (btn) btn.disabled = !math4AllFilled(q);
+  mathPartSync();
   return clean;
 }
 
@@ -1757,8 +1802,12 @@ function submitMathTyped() {
   // Toán 4: the child fills the boxes in whatever order they like and one
   // press marks the whole question, so there is no per-box save step.
   if (math4FreeEntry(q)) {
-    if (!math4AllFilled(q)) return;       // an empty box is not an answer
-    st.answers[st.idx] = math4Values(q);
+    // Read the boxes, not the copy — this is what the child can see, and it
+    // is what must be marked even if the copy fell behind.
+    const vals = math4Values(q);
+    if (vals.some(v => v === '')) return;   // an empty box is not an answer
+    _mathTyped.values = vals.slice();
+    st.answers[st.idx] = vals;
     if (typeof petCheerAnswer === 'function') petCheerAnswer(mathIsCorrect(q, st.answers[st.idx]));
     renderMathQuestion();
     return;
@@ -2011,8 +2060,8 @@ if (typeof module !== 'undefined' && module.exports) {
     isMathQuizActive, abandonMathQuiz, mathForgetProfile, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
     mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart, mathAnswerHTML,
-    math4FreeEntry, math4Clean, math4AllFilled, math4Values, math4InputHTML, mathPartInput,
-    MATH4_ANSWER_MAX,
+    math4FreeEntry, math4Clean, math4AllFilled, math4Values, math4DomValue,
+    math4InputHTML, mathPartInput, mathPartSync, MATH4_ANSWER_MAX,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions, saveMathSession,
     mathExams, mathExamBest, startMathExam, renderMathExamsHTML,
