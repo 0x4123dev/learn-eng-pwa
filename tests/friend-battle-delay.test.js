@@ -30,16 +30,22 @@ const stylesSrc = read('css/styles.css');
 
 const DAY = 86400000;
 
-// _battle.js is ESM with no imports and no top-level side effects, so dropping
-// the `export` keywords is enough to run the REAL module here. These tests
-// execute the shipped function rather than pattern-matching its source.
+// _battle.js is ESM with no top-level side effects, so dropping the `export`
+// keywords is enough to run the REAL module here. Its two imports (the shared
+// ballistics and teammate rulebooks, which serverVolleyDamage re-runs a volley
+// with) are handed in as sandbox globals instead. These tests execute the
+// shipped function rather than pattern-matching its source.
 const server = (() => {
-    const sandbox = { Date, Number, Math, String, Object, JSON };
+    const sandbox = {
+        Date, Number, Math, String, Object, JSON, console,
+        BattleCalc: require(path.join(ROOT, 'js', 'battlecalc.js')),
+        BattleTeam: require(path.join(ROOT, 'js', 'battle-teammates.js')),
+    };
     vm.createContext(sandbox);
     // `function` declarations land on the sandbox by themselves, but top-level
     // `const` is script-scoped and does not — the same footgun battlecalc.js
     // documents for classic scripts. Hand the constants over explicitly.
-    vm.runInContext(battleSrc.replace(/^export /gm, '') +
+    vm.runInContext(battleSrc.replace(/^import .*$/gm, '').replace(/^export /gm, '') +
         '\nthis.FRIEND_BATTLE_DELAY_MS = FRIEND_BATTLE_DELAY_MS;', sandbox);
     return sandbox;
 })();

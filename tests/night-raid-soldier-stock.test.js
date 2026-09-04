@@ -36,6 +36,17 @@ async function seed(world, user, soldiers, readyAt) {
     const r = await world.call(homeHandler().onRequestPut,
         { url: '/api/night-raid/home', method: 'PUT', token: user.token, body });
     assert.truthy(r.ok, 'seed thất bại: ' + JSON.stringify(r.data));
+    // Kho lính KHÔNG bao giờ đến từ client — kể cả ở lần PUT đầu tiên của một
+    // nhà mới, vốn là đúng chỗ hở mà cái trần 10 lính cũ đang bịt: một acc
+    // chưa từng mở Cướp Đêm PUT soldiers: 1000000 là thắng mọi nhà. Fixture
+    // nào cần sẵn quân thì đặt thẳng vào DB, đúng như collect.js làm.
+    if (soldiers) {
+        const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(user.uid);
+        const stored = JSON.parse(row.layout_json);
+        stored.soldiers = soldiers;
+        world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
+            .run(JSON.stringify(stored), user.uid);
+    }
     return r;
 }
 // PUT /home luôn đặt lại readyAt = now + 24h cho trại mới (chống client tự
@@ -122,6 +133,26 @@ suite('kho lính: chỉ thu hoạch mới đổi được', () => {
         assert.truthy(stale.ok);
         assert.equal(storedSoldiers(world, user.uid), 6, 'PUT không được đổi kho lính');
         assert.equal(NR.normalizeLayout(stale.data.layout).soldiers, 6, 'và phải trả về số thật cho client');
+    });
+
+    test('nhà mới toanh cũng không được khai sẵn quân — lần PUT đầu tiên là 0', async () => {
+        // Merge "lính không giới hạn" (89781322) đổi min(kho cũ, client) thành
+        // "giữ kho cũ nếu đã có nhà", nên nhánh CHƯA có nhà tin thẳng số client
+        // gửi, mà normalizeLayout chỉ chặn ở SOLDIER_SANITY_CAP = 1e6.
+        const world = createWorld();
+        const user = await world.createUser({ allowBot: true });
+        const r = await world.call(homeHandler().onRequestPut, {
+            url: '/api/night-raid/home', method: 'PUT', token: user.token,
+            body: { layout: { cells: [], soldiers: 1000000, dogLane: 2 }, teammates: [] },
+        });
+        assert.truthy(r.ok, JSON.stringify(r.data));
+        assert.equal(storedSoldiers(world, user.uid), 0, 'nhà mới bắt đầu với 0 lính');
+        assert.equal(NR.normalizeLayout(r.data.layout).soldiers, 0, 'và client được trả về số thật');
+        // Và DAM không được vọt lên trần vì một con số client tự khai.
+        const layout = NR.normalizeLayout(JSON.parse(
+            world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(user.uid).layout_json));
+        assert.equal(NR.combatPower(layout, 1, layout.soldiers).damage,
+            NR.combatPower({ cells: [], soldiers: 0 }, 1, 0).damage, 'không có quân trời cho');
     });
 
     test('client cũng không tự nâng kho lính lên được', async () => {

@@ -2,6 +2,13 @@
 // not routed by Pages, so this is a safe place for common logic.
 // NOTE: the ammo constants here MUST match js/battlecalc.js — tests/battle.test.js
 // pins both sources so they can never drift apart.
+//
+// The ballistics are IMPORTED rather than re-typed, the way _night-raid.js and
+// _math-fight.js already import their rulebooks: a re-typed copy of a physics
+// engine would drift on its first tuning pass, and the whole point of
+// serverVolleyDamage is that it is the same arithmetic the child's phone ran.
+import BattleCalc from '../../js/battlecalc.js';
+import BattleTeam from '../../js/battle-teammates.js';
 
 export const BATTLE_ROUNDS = 5;
 export const BARRELS = 4;
@@ -27,6 +34,37 @@ export const FIELD_VERSION_MAX = 7;
 export function normalizeFieldVersion(v) {
   const n = Math.trunc(Number(v));
   return (n >= 1 && n <= FIELD_VERSION_MAX) ? n : 1;
+}
+
+// What this volley COULD have done, re-run from the battle row.
+//
+// Everything a shot depends on is already stored server-side and is
+// deterministic: the seed, the field version, the background (terrain), the
+// turn number (wind and spread), which side is firing (spawn point, facing)
+// and the level. So the server does not have to take the device's word for
+// the damage — it can fire the same shot itself.
+//
+// It used to take that word, clamped only by a theoretical ceiling. A
+// modified client simply reported the ceiling on every turn and never had to
+// aim: a 115 HP castle fell in two volleys while its owner watched shells
+// visibly miss.
+export function serverVolleyDamage(b, opts) {
+  const rules = BattleCalc.fieldRules(normalizeFieldVersion(b.field_version));
+  const seed = (Number(b.seed) || 0) >>> 0;
+  const terrain = BattleCalc.buildTerrain(seed, rules, normalizeBattleBackground(b.background_id));
+  const spawns = BattleCalc.spawnPoints(terrain, rules);
+  // The challenger always stands on the left, for both viewers.
+  const from = opts.meIsChallenger ? spawns[0] : spawns[1];
+  const target = opts.meIsChallenger ? spawns[1] : spawns[0];
+  const facing = opts.meIsChallenger ? 1 : -1;
+  const turnNo = Math.max(1, Math.trunc(Number(opts.turnNo) || 1));
+  const wind = BattleCalc.windForRound(seed, Math.max(1, Math.ceil(turnNo / 2)));
+  return BattleCalc.volleyDamage({
+    terrain, from, target, facing, wind, rules, seed, turnNo,
+    angle: opts.angle, power: opts.power, shots: opts.shots,
+    level: Math.max(1, Math.trunc(Number(opts.level) || 1)),
+    rocket: opts.gunners, rocketDamage: BattleTeam.rocketDamage,
+  });
 }
 
 
@@ -286,6 +324,12 @@ export function battleView(b, viewerId) {
     turnStartedAt: b.turn_started_at,
     expiresAt: b.expires_at,
     winnerId: b.winner_id,
+    // Both castles standing on equal HP with the ammo gone is a DRAW, and the
+    // row records it as winner_id = NULL. The client computed
+    // `won = winnerId === me.id`, which is false for both children — so one
+    // battle told two of them "Thua rồi" and wrote two defeats into two
+    // histories. Say it plainly instead.
+    draw: b.status === 'done' && !b.winner_id,
     finishedAt: b.finished_at,
   };
 }

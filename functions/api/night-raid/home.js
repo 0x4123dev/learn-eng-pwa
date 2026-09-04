@@ -31,7 +31,14 @@ export async function onRequestPut({request,env}) {
   // cũ (mở app trên máy khác, hoặc appState chưa kịp đồng bộ) vẫn có thể
   // kéo kho lính tụt xuống và nuốt mất mẻ vừa thu hoạch. Giữ nguyên số
   // trên máy chủ và bỏ qua số client gửi lên.
-  layout.soldiers=current?oldLayout.soldiers:layout.soldiers;
+  //
+  // Lần PUT ĐẦU TIÊN cũng vậy: mở ngoặc cho số client gửi ở đây chính là lỗ
+  // hổng mà cái cap 10 lính cũ đang bịt. Một tài khoản chưa từng mở Cướp Đêm
+  // PUT {soldiers: 1000000} là được lưu vĩnh viễn (normalizeLayout chỉ chặn ở
+  // SOLDIER_SANITY_CAP = 1e6), và combatPower biến nó thành damage kịch trần
+  // → thắng 3 sao mọi nhà không khiên. Nhà mới bắt đầu với 0 lính; muốn có
+  // lính thì phải xây doanh trại và thu hoạch như mọi người.
+  layout.soldiers=current?oldLayout.soldiers:0;
   for(const cell of layout.cells){const def=NR.defenseById(cell.type);if(!def?.producer)continue;const prior=oldProduction.get(cell.uid);if(prior&&prior.type===cell.type)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid='p-'+crypto.randomUUID().replace(/-/g,'').slice(0,20);cell.readyAt=now+NR.PRODUCTION_MS;}}
   // Dog level is monotonic: dogGrowthXP is never deducted anywhere in the
   // app, so a lower level from a client can only be stale or wrong.

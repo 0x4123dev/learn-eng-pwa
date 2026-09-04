@@ -1895,42 +1895,29 @@ PetBattleGame.prototype.step = function (k) {
 // Fire a volley locally and return the damage it deals to `target`.
 PetBattleGame.prototype._launch = function (from, facing, angle, power, shots, level, target, rocketCount) {
   const C = this.calc;
-  const angles = C.volleyAngles(angle, shots, this.seed, this.turnNo);
+  // The damage itself is decided by BattleCalc.volleyShots, which the SERVER
+  // re-runs from the battle row (functions/api/battle/turn.js) to check what
+  // this device reports. Keeping the arithmetic in one place is what stops
+  // the two from drifting; everything below is only the animation.
+  const resolved = C.volleyShots({
+    terrain: this.terrain, from, facing, angle, power, shots, level, target,
+    wind: this.wind(), rules: this.rules, seed: this.seed, turnNo: this.turnNo,
+    rocket: rocketCount, rocketDamage: d => this.team.rocketDamage(d),
+  });
   let damage = 0;
   this._lastHitCount = 0;
-  this.flying = angles.map(a => {
-    const sim = C.simulateShot({
-      terrain: this.terrain, from, facing, angle: a, power, wind: this.wind(), rules: this.rules,
-      blockers: [target],
-    });
-    const bulletDamage = C.damageAt(sim.hit, target, level, this.rules);
-    damage += bulletDamage;
-    if (bulletDamage > 0) this._lastHitCount += 1;
-    return {
-      points: sim.points, hit: sim.hit,
-      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0, damage: bulletDamage, target,
-      done: false, size: C.shellSize(level), level, spin: a % 2 ? 1 : -1,
-    };
-  });
-
-  // Every hired Pháo thủ launches on EVERY volley. Rockets share the unspread
-  // aim line, so strong aim is rewarded throughout the whole paid battle.
-  // lands where the child actually pointed. Good aim is rewarded twice; a miss
-  // wastes both, which is the whole point of tying it to their own shot.
-  for (let rocketIndex = 0; rocketIndex < Math.max(0, Math.trunc(Number(rocketCount) || 0)); rocketIndex++) {
-    const sim = C.simulateShot({
-      terrain: this.terrain, from, facing, angle, power, wind: this.wind(), rules: this.rules,
-      blockers: [target],
-    });
-    const hit = this.team.rocketDamage(C.damageAt(sim.hit, target, level, this.rules));
-    damage += hit;
-    if (hit > 0) this._lastHitCount += 1;
+  this.flying = [];
+  resolved.forEach((shot, index) => {
+    damage += shot.damage;
+    if (shot.damage > 0) this._lastHitCount += 1;
     this.flying.push({
-      points: sim.points, hit: sim.hit,
-      i: this.reducedMotion ? Math.max(0, sim.points.length - 1) : 0, damage: hit, target,
-      done: false, size: C.shellSize(level), level, spin: rocketIndex % 2 ? -1 : 1, rocket: true,
+      points: shot.sim.points, hit: shot.sim.hit,
+      i: this.reducedMotion ? Math.max(0, shot.sim.points.length - 1) : 0,
+      damage: shot.damage, target, done: false, size: C.shellSize(level), level,
+      spin: shot.rocket ? (index % 2 ? -1 : 1) : (shot.angle % 2 ? 1 : -1),
+      rocket: shot.rocket || undefined,
     });
-  }
+  });
   return Math.min(Number.isFinite(this.rules && this.rules.maxVolleyDamage) ? this.rules.maxVolleyDamage : 100, damage);
 };
 
@@ -2114,9 +2101,13 @@ PetBattleGame.prototype._applyServer = function (b) {
   }
   if (b.status === 'done') {
     this.finished = true;
-    const won = b.winnerId === this.view.me.id;
+    // A tie leaves winnerId null, and `won` is then false for BOTH children —
+    // one battle used to end with two "Thua rồi" screens and two defeats
+    // logged. The server labels it (functions/api/_battle.js battleView).
+    const draw = !!b.draw || (!b.winnerId && b.status === 'done');
+    const won = !draw && b.winnerId === this.view.me.id;
     setTimeout(() => this.onFinish({
-      won, myHp: this.myHp, foeHp: this.foeHp, foeName: this.view.foe.name,
+      won, draw, myHp: this.myHp, foeHp: this.foeHp, foeName: this.view.foe.name,
       foeLevel: this.view.foe.level || 1,
       myLevel: this.view.me.level || 1,
       rounds: (this.log || []).slice(),

@@ -46,6 +46,12 @@ async function ensureClaimsTable(env) {
     event_date TEXT NOT NULL, item_id TEXT NOT NULL, user_id INTEGER NOT NULL,
     reward INTEGER NOT NULL, claimed_at INTEGER NOT NULL,
     PRIMARY KEY (event_date,item_id))`).run();
+  // The PAYOUT ledger (db/024), keyed on the real calendar day and never on a
+  // preview session — see the note in onRequestPost.
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS ghost_offering_payouts (
+    user_id INTEGER NOT NULL, event_date TEXT NOT NULL, item_id TEXT NOT NULL,
+    reward INTEGER NOT NULL, claimed_at INTEGER NOT NULL,
+    PRIMARY KEY (user_id,event_date,item_id))`).run();
 }
 async function claimedIds(env, uid, eventDate, shared = false) {
   const out = shared
@@ -94,23 +100,46 @@ export async function onRequestPost({ request, env }) {
         (event_date,item_id,user_id,reward,claimed_at) VALUES(?,?,?,?,?)`)
         .bind(claimKey, itemId, auth.uid, reward, now).run();
   const awarded = Number(result.meta && result.meta.changes || 0) > 0;
+  // Taking an offering off the table (`awarded`) and BEING PAID for it are two
+  // different things, and conflating them was an unlimited coin faucet.
+  //
+  // A preview round is keyed on `${eventDate}#${sessionId}`, and onRequestGet
+  // mints a brand-new sessionId on EVERY open — deliberately, so a QA tester
+  // can replay the scene. But `preview` is simply users.allow_bot, i.e. every
+  // child with Cướp Đêm switched on, and each replayed round was writing a
+  // real coin_grants row: close the screen, open it again, collect the same
+  // 14 offerings, +530 xu, for as many rounds as the child cares to open.
+  //
+  // So the scene still replays, and the PAYOUT is gated separately on a ledger
+  // keyed by the real calendar day: one offering pays one child once per event
+  // day, however many preview rounds they walk through. (Public claims were
+  // already safe — ghost_offering_world_claims is global and unkeyed by
+  // session — but they go through the same gate so there is one rule.)
+  let paid = false;
   if (awarded) {
     if (!preview) await env.DB.prepare(`INSERT OR IGNORE INTO ghost_offering_claims
       (user_id,event_date,item_id,reward,claimed_at) VALUES(?,?,?,?,?)`)
       .bind(auth.uid, claimKey, itemId, reward, now).run();
+    const payout = await env.DB.prepare(`INSERT OR IGNORE INTO ghost_offering_payouts
+      (user_id,event_date,item_id,reward,claimed_at) VALUES(?,?,?,?,?)`)
+      .bind(auth.uid, window.eventDate, itemId, reward, now).run();
+    paid = Number(payout.meta && payout.meta.changes || 0) > 0;
     // The reward is a coin_grants IOU (granted_by 0 = the event itself), paid
     // through the receipt-protected POST /api/coins pipeline like any admin
     // gift: claimed exactly once, crash-safe, and safe on every device. The
     // old direct write to night_raid_homes.lootable_coins was silently undone
     // by the next syncHome from any device that had not seen the reward.
-    await env.DB.prepare(
+    if (paid) await env.DB.prepare(
       'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,0)'
     ).bind(auth.uid, reward, 'Ghost offering: ' + itemId + (preview ? ' (preview)' : ''))
       .run();
   }
   const wallet = await env.DB.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?')
     .bind(auth.uid).first();
-  return json({ ok: true, awarded, reward: awarded ? reward : 0, itemId, sessionId,
+  // `reward` is what the wallet will actually receive, so a replayed preview
+  // round reports 0 rather than promising xu that no grant will ever deliver.
+  // `replay` lets the screen say why.
+  return json({ ok: true, awarded, reward: paid ? reward : 0, replay: awarded && !paid, itemId, sessionId,
     coins: wallet ? Math.max(0, Number(wallet.lootable_coins) || 0) : null,
     humanTest, roomId: GhostOfferingSchedule.roomIdFor({ preview, humanTest }),
     claimedIds: await claimedIds(env, auth.uid, claimKey, !preview), ...window });

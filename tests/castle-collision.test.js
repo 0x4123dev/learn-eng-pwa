@@ -348,8 +348,14 @@ suite('collision: the blocker is the castle that is drawn', () => {
     });
 
     test('the damage pass uses the same blockers as the flight', () => {
-        assert.truthy(gameSrc.includes('blockers: [target]'),
+        // Now in js/battlecalc.js volleyShots, shared with the server.
+        const calcSrc = fs.readFileSync(path.join(ROOT, 'js/battlecalc.js'), 'utf8');
+        const volley = calcSrc.slice(calcSrc.indexOf('function volleyShots('));
+        const body = volley.slice(0, 1800);
+        assert.truthy(body.includes('blockers: [target]'),
             'the damage simulation must see the same solid castle');
+        assert.equal((body.match(/blockers: \[target\]/g) || []).length, 2,
+            'both the aimed shells and the rockets must be blocked by it');
     });
 });
 

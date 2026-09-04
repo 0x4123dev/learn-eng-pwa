@@ -5,6 +5,17 @@
 
 const EXAM_HISTORY_KEY = 'flashlingo_examHistory';
 
+// Same cap the other practice tabs use (WF_HISTORY_CAP, RW_HISTORY_CAP,
+// PHRASES_HISTORY_CAP, MATH_HISTORY_CAP, GRAMMAR_HISTORY_CAP are all 300).
+// It has teeth here in a way it does not there: an exam attempt used to carry
+// every question's text AND its explanation HTML — 17k–49k chars each — so an
+// uncapped list ate a 5 MB origin quota in ~106 attempts, setItem started
+// throwing, and the newest attempt was dropped on the floor in silence while
+// "Best:" and the History list froze at whatever was last written. Attempts
+// are now stored stripped (see finishExam) at ~4.7 kB, so a full 300 is
+// ~1.4 MB.
+const EXAM_HISTORY_CAP = 300;
+
 // Live exam session (null when not taking an exam).
 // { examId, title, questions, idx, answers[], startTs, endTs, deadlineTs,
 //   timerId, finished }
@@ -23,10 +34,52 @@ function loadExamHistory() {
     }
 }
 
+// Returns true when the list reached disk. The newest attempt is the one the
+// child just sat an exam for, so a full quota must never be answered by
+// dropping it: shed the oldest half and try once more. Only if that also
+// fails do we give up (and say so to the caller) — the alternative is the old
+// silent no-op, where coins were paid, the results screen appeared, and
+// nothing was ever written again.
 function saveExamHistory(list) {
     try {
         localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(list));
-    } catch (e) { /* storage full — ignore */ }
+        return true;
+    } catch (e) {
+        const kept = list.slice(0, Math.max(1, Math.floor(list.length / 2)));
+        try {
+            localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(kept));
+            return true;
+        } catch (e2) {
+            return false;
+        }
+    }
+}
+
+// Look one stored answer row back up in the live bank. Attempts written before
+// v4.17 carried `q` and `explanation` inline; newer ones do not, because both
+// are re-derivable from EXAMS by exam id + question number and the explanation
+// HTML alone was most of the ~29 kB each attempt used to cost. Both shapes
+// render: the stored copy wins when it is there, the bank fills in when it is
+// not, and an exam that has left the bank entirely degrades to a review with
+// the answers and the marks but no question text — never to a crash.
+function _examBankQuestion(attempt, a) {
+    if (!attempt || !a || typeof getExam !== 'function') return null;
+    let ex = null;
+    try { ex = getExam(attempt.examId); } catch (e) { return null; }
+    if (!ex || !Array.isArray(ex.questions)) return null;
+    return ex.questions.find(q => q.n === a.n) || null;
+}
+
+function _examReviewQuestionText(attempt, a) {
+    if (a && a.q) return a.q;
+    const q = _examBankQuestion(attempt, a);
+    return q ? q.q : '';
+}
+
+function _examReviewExplanation(attempt, a) {
+    if (a && a.explanation) return a.explanation;
+    const q = _examBankQuestion(attempt, a);
+    return q ? q.explanation : '';
 }
 
 // ---- helpers -----------------------------------------------------------------
@@ -102,6 +155,16 @@ function switchExamSubTab(tab) {
 }
 
 function renderExamsBody() {
+    // js/exam-data.js is lazy-loaded (js/lazy-data.js SCREEN_FILES). It
+    // resolves even when the download failed, so this can run before EXAMS
+    // exists — and reading an undeclared const throws, leaving the tab stuck
+    // on its loading placeholder for the rest of the session.
+    if (typeof EXAMS === 'undefined' || !Array.isArray(EXAMS)) {
+        return '<div class="lazy-loading" role="status" style="text-align:center">'
+            + '<p>Chưa tải được bộ đề. Con kiểm tra mạng rồi thử lại nhé.</p>'
+            + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
+            + '</div>';
+    }
     const history = loadExamHistory();
 
     const examCards = EXAMS.map(ex => {
@@ -427,20 +490,24 @@ function finishExam(auto) {
         timeSpentSec,
         coinsEarned,
         autoSubmitted: !!auto,
+        // Only what cannot be looked back up. `q` and `explanation` used to
+        // live here too and were 80% of the weight; the review screen now
+        // reads them out of EXAMS by examId + n. `correctAnswer` stays even
+        // though it is derivable: it is short, and it is the one thing that
+        // still has to be true if this exam ever leaves the bank.
         answers: s.questions.map((q, i) => ({
             n: q.n,
-            q: q.q,
             section: q.section || '',
             type: q.type,
             userValue: s.answers[i] ? s.answers[i].value : null,
             isCorrect: !!(s.answers[i] && s.answers[i].isCorrect),
             correctAnswer: q.type === 'text' ? q.answer : q.options[q.correct].replace(/<\/?u>/g, ''),
-            explanation: q.explanation,
         })),
     };
 
     const history = loadExamHistory();
     history.unshift(attempt);
+    if (history.length > EXAM_HISTORY_CAP) history.length = EXAM_HISTORY_CAP;
     saveExamHistory(history);
 
     // Best-effort: sync this attempt to the server so the admin can see it.
@@ -479,15 +546,17 @@ function _renderExamResults(attempt, auto) {
         const userStr = a.type === 'text'
             ? (a.userValue ? escExam(a.userValue) : '<em>(blank)</em>')
             : (a.userValue === null ? '<em>(blank)</em>' : escExam(_optionLetterFor(a)));
+        const qText = _examReviewQuestionText(attempt, a);
+        const explain = _examReviewExplanation(attempt, a);
         return `
         <div class="exam-review-item ${a.isCorrect ? 'correct' : 'wrong'}">
-            <div class="exam-review-q"><span class="exam-review-num">${a.n}</span> ${(typeof tapwordsWrap === 'function' ? tapwordsWrap(a.q) : escExam(a.q)).replace(/\n/g, '<br>')}</div>
+            <div class="exam-review-q"><span class="exam-review-num">${a.n}</span> ${(typeof tapwordsWrap === 'function' ? tapwordsWrap(qText) : escExam(qText)).replace(/\n/g, '<br>')}</div>
             <div class="exam-review-line">
                 <span class="exam-review-badge ${a.isCorrect ? 'ok' : 'no'}">${a.isCorrect ? '✓' : '✗'}</span>
                 <span>Your answer: <strong>${userStr}</strong></span>
             </div>
             ${a.isCorrect ? '' : `<div class="exam-review-line">✅ Correct: <strong>${typeof tapwordsWrap === 'function' ? tapwordsWrap(a.correctAnswer) : escExam(a.correctAnswer)}</strong></div>`}
-            <div class="exam-review-explain">💡 ${a.explanation}</div>
+            ${explain ? `<div class="exam-review-explain">💡 ${explain}</div>` : ''}
         </div>`;
     }).join('');
 

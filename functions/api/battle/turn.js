@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS, parseHires, startingHp, normalizeFieldVersion } from '../_battle.js';
+import { reapStale, battleView, MAX_TURNS, BARRELS, TURN_MS, parseHires, startingHp, normalizeFieldVersion, serverVolleyDamage } from '../_battle.js';
 
 // The most damage a volley could physically do (mirrors battlecalc.shotDamage
 // × direct-hit multiplier) — reported damage is clamped to this so a tampered
@@ -45,6 +45,12 @@ export async function onRequestPost({ request, env }) {
   const meIsChallenger = b.challenger_id === auth.uid;
   if (!meIsChallenger && b.opponent_id !== auth.uid) return err('Forbidden', 403);
   if (b.turn_user_id !== auth.uid) return err('Chưa tới lượt bạn', 409);
+  // The client says which turn it is answering. The server used to ignore that
+  // and take the turn number off the row, so a duplicate that arrived late —
+  // a double tap, or a retry after D1 was slow — was accepted as a BRAND-NEW
+  // turn: the child's next shot was silently spent replaying their last aim.
+  const claimedTurn = Math.trunc(Number(body.turnNo) || 0);
+  if (claimedTurn && claimedTurn !== b.turn_no) return err('Lượt này đã qua rồi', 409, { turnNo: b.turn_no });
 
   const myAmmo = meIsChallenger ? b.challenger_ammo : b.opponent_ammo;
   const myLevel = meIsChallenger ? b.challenger_level : b.opponent_level;
@@ -57,8 +63,27 @@ export async function onRequestPost({ request, env }) {
   const power = Math.max(0, Math.min(100, +body.power || 0));
   const hasRawDamage = Object.prototype.hasOwnProperty.call(body, 'rawDamage');
   const reported = hasRawDamage ? body.rawDamage : body.damage;
+  // What this aim COULD have done, fired again here from the stored seed,
+  // field version, background, turn number and side. The device's number is
+  // still read — an older client, or one whose animation resolved slightly
+  // differently, should not be punished — but it can never exceed what the
+  // shot actually achieves. Before this, `rawDamage` was believed up to a
+  // theoretical ceiling, so a modified client reported the ceiling every turn
+  // and never had to aim at all.
+  let ceiling = maxTurnDamage(shots, myLevel, gunners, b.field_version);
+  if (shots > 0) {
+    try {
+      ceiling = Math.min(ceiling, serverVolleyDamage(b, {
+        meIsChallenger, turnNo: b.turn_no, angle, power, shots, level: myLevel, gunners,
+      }));
+    } catch (e) {
+      // A field we cannot reconstruct must not brick the arena: fall back to
+      // the old ceiling rather than scoring every honest shot as a miss.
+      console.warn('battle: could not re-simulate the volley', e);
+    }
+  }
   const rawDamage = shots > 0
-    ? Math.max(0, Math.min(maxTurnDamage(shots, myLevel, gunners, b.field_version), Math.trunc(+reported || 0)))
+    ? Math.max(0, Math.min(ceiling, Math.trunc(+reported || 0)))
     : 0;
   // New clients report pre-guard damage, so the server—not a device—applies
   // permanent Royal Guards. Older clients already reported final damage and
@@ -94,6 +119,14 @@ export async function onRequestPost({ request, env }) {
     ? { myAmmoCol: 'challenger_ammo', myHpCol: 'challenger_hp', foeHpCol: 'opponent_hp' }
     : { myAmmoCol: 'opponent_ammo', myHpCol: 'opponent_hp', foeHpCol: 'challenger_hp' };
 
+  // Every state write is pinned to the turn it was computed from. Without
+  // `AND turn_no = ? AND turn_user_id = ?` a second copy of this request — a
+  // double tap, or a retry landing after D1 was slow — was applied on top of
+  // whatever had happened since: it rewrote HP and ammo from its own stale
+  // read, erasing the opponent's reply and handing them the turn again. And
+  // because the server derives the turn number from the row rather than from
+  // `body.turnNo`, a late duplicate was otherwise accepted as a brand-new
+  // turn, silently spending the child's next shot on a replay of their last.
   if (over) {
     let winnerId = null;
     if (foeHp <= 0 && myHp > 0) winnerId = auth.uid;
@@ -102,14 +135,14 @@ export async function onRequestPost({ request, env }) {
     await env.DB.prepare(
       `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.myHpCol} = ?, ${fields.foeHpCol} = ?,
               status = 'done', winner_id = ?, finished_at = ?, turn_user_id = NULL
-        WHERE id = ?`
-    ).bind(myAmmoLeft, myHp, foeHp, winnerId, now, id).run();
+        WHERE id = ? AND status = 'active' AND turn_no = ? AND turn_user_id = ?`
+    ).bind(myAmmoLeft, myHp, foeHp, winnerId, now, id, b.turn_no, auth.uid).run();
   } else {
     await env.DB.prepare(
       `UPDATE battles SET ${fields.myAmmoCol} = ?, ${fields.myHpCol} = ?, ${fields.foeHpCol} = ?,
               turn_no = ?, turn_user_id = ?, turn_started_at = ?
-        WHERE id = ?`
-    ).bind(myAmmoLeft, myHp, foeHp, nextTurnNo, nextUserId, now, id).run();
+        WHERE id = ? AND status = 'active' AND turn_no = ? AND turn_user_id = ?`
+    ).bind(myAmmoLeft, myHp, foeHp, nextTurnNo, nextUserId, now, id, b.turn_no, auth.uid).run();
   }
 
   const fresh = await env.DB.prepare('SELECT * FROM battles WHERE id = ?').bind(id).first();

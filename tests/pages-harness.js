@@ -76,6 +76,16 @@ const AUTH_SECRET = 'test-auth-secret';
 const SQL_FILES = [
   'db/schema.sql',
   'db/002-friends-battle.sql',
+  // The ALTERs that finish the arena. They are replayable here because 002
+  // creates `battles`/`battle_turns` from scratch a line earlier — and they
+  // have to be, or the mock keeps answering "no such column" for the columns
+  // every battle handler actually writes. db/022 is the one that had never
+  // been written down at all: challenge.js has been INSERTing field_version
+  // since c6e7752b against a hand-altered production database.
+  'db/003-battle-backgrounds.sql',
+  'db/006-battle-teammates.sql',
+  'db/007-castle-skins.sql',
+  'db/022-battle-field-version.sql',
   'db/008-learning-skills.sql',
   'db/009-night-raid.sql',
   'db/010-coin-grants.sql',
@@ -85,6 +95,11 @@ const SQL_FILES = [
   // Must run AFTER 009: it drops the unique (attacker, defender, ICT day)
   // index 009 creates, which a real database no longer has either.
   'db/021-night-raid-rules.sql',
+  // One in-flight raid per attacker (the other half of the ticket rule).
+  'db/023-night-raid-one-active.sql',
+  // One offering pays one child once per event day, however many preview
+  // rounds they replay.
+  'db/024-ghost-offering-payouts.sql',
 ];
 
 function createWorld(opts) {

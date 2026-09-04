@@ -43,9 +43,20 @@ export async function onRequestPost({ request, env }) {
       : [JSON.stringify(answers), marked.correct, marked.answered, now, id];
     await env.DB.prepare('UPDATE math_fights SET ' + cols + ' WHERE id=?').bind(...args).run();
     row = await env.DB.prepare('SELECT * FROM math_fights WHERE id=?').bind(id).first();
-    // Time is up, or the other side went quiet: settle now rather than leaving
+    // Time is up, or the other side WALKED AWAY: settle now rather than leaving
     // this child staring at a clock that already ran out.
-    if (row.deadline_at <= now || MF.hasWalkedAway(mine ? row.o_beat_at : row.c_beat_at, now)) {
+    //
+    // "Walked away" means gone without finishing. A side that has already
+    // SUBMITTED is simply done, and its beat stops as soon as the child closes
+    // the app or taps another tab (js/math.js openMathSection calls
+    // MathFight.leave). Reading the beat alone therefore ended live fights
+    // twenty seconds later: the child still working was judged on a partial
+    // score and shown THUA with minutes left on the clock. settleFight already
+    // gets this right — `!row.c_submitted_at && hasWalkedAway(...)` — and
+    // submit.js only settles on bothIn/deadline. This is the same rule.
+    const otherSubmitted = mine ? row.o_submitted_at : row.c_submitted_at;
+    const otherGone = !otherSubmitted && MF.hasWalkedAway(mine ? row.o_beat_at : row.c_beat_at, now);
+    if (row.deadline_at <= now || otherGone) {
       row = await settleFight(env, row, now);
     }
   }

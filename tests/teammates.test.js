@@ -572,20 +572,31 @@ suite('teammates: you hire a person, not a weapon', () => {
 });
 
 suite('teammates: a friend battle really carries the squad', () => {
+    // The squad is priced before the request and CHARGED only once the server
+    // has accepted it. Evaluating pbHireCommit() inside the request body took
+    // the wages while the challenge was still in the air, so a 409 "bạn ấy
+    // đang bận", a cooldown, a disabled account or simply being offline cost
+    // up to 1,000 xu and gave nothing back — and so did an invite the friend
+    // declined or let expire.
     test('challenging commits the squad and charges once', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function challengePetFriend'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/hires: pbHireCommit\(\)/.test(body),
-            'the squad must travel with the challenge, and be paid for exactly once');
+        assert.truthy(/const pending = pbHirePrepare\(\);/.test(body), 'the squad is priced first');
+        assert.truthy(/hires: pending\.squad/.test(body), 'the squad must travel with the challenge');
+        assert.truthy(/if \(r\.ok\) pbHireCharge\(pending\); else pbHireRelease\(\);/.test(body),
+            'and be paid for exactly once, only when the battle really starts');
+        assert.truthy(body.indexOf('_pbApi') < body.indexOf('pbHireCharge'), 'the charge follows the answer');
     });
 
     test('accepting commits the squad too', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function acceptPetBattle'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/hires: pbHireCommit\(\)/.test(body),
-            'the accepting side hires from the same lobby');
+        assert.truthy(/const pending = pbHirePrepare\(\);/.test(body), 'the accepting side hires from the same lobby');
+        assert.truthy(/hires: pending\.squad/.test(body));
+        assert.truthy(/if \(r\.ok\) pbHireCharge\(pending\); else pbHireRelease\(\);/.test(body),
+            'an invite that cannot be accepted costs nothing');
     });
 
     test('practice still never charges', () => {
@@ -751,7 +762,13 @@ suite('teammates: the rocket must LOOK like a rocket', () => {
         const src = read('js/petbattlegame.js');
         const launch = src.slice(src.indexOf('PetBattleGame.prototype._launch ='));
         const body = launch.slice(0, 2000);
-        assert.truthy(/rocket: true/.test(body), 'the flying object must carry the flag');
+        // The rocket/shell split is decided in js/battlecalc.js volleyShots
+        // (shared with the server) and carried through onto the flying object.
+        assert.truthy(/rocket: shot\.rocket/.test(body), 'the flying object must carry the flag');
+        const calc = read('js/battlecalc.js');
+        const volley = calc.slice(calc.indexOf('function volleyShots('), calc.indexOf('function volleyTotal('));
+        assert.truthy(/rocket: true/.test(volley) && /rocket: false/.test(volley),
+            'the shared volley must say which shots are rockets');
     });
 
     test('the rocket is purpose-drawn rather than delegated to an emoji font', () => {

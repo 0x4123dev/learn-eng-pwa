@@ -452,6 +452,38 @@ function answerCollocFollowup(key, i) {
   renderCollocFollowup();
 }
 
+// The question as the child must READ it — used by the live quiz AND by the
+// owed drill, from this one function.
+//
+// It was written twice, and the second copy showed a different question from
+// the one it graded: the drill rendered `q.q` alone, which for a transform
+// item is the ORIGINAL sentence (no gap, no key word, no frame — all 50 keep
+// the gap in `q.frame`), dropped the first-letter hint from every `letter`
+// item, and bolded only the first of a pair item's two gaps while still
+// demanding both halves. Everything below therefore reaches both screens.
+//
+//   wrap    how to escape a source string; the quiz passes tapwordsWrap once
+//           the answer is revealed so every English word becomes tappable.
+//   gapHTML what a `___` is drawn as — the quiz's blank, the drill's own.
+function collocQuestionHTML(q, wrap, gapHTML) {
+  if (!q) return '';
+  const esc = (typeof wrap === 'function') ? wrap : colEsc;
+  const gap = gapHTML || '<span class="phrases-blank">_____</span>';
+  const fill = (s) => esc(String(s || '')).replace(/___/g, gap);
+
+  if (q.type === 'transform') {
+    return `<div class="colloc-transform-src">${esc(String(q.q || ''))}</div>
+        <div class="colloc-keyword">Key word: <b>${colEsc(q.keyword || '')}</b> (giữ nguyên, 3–8 từ)</div>
+        <div class="colloc-frame">${fill(q.frame || '')}</div>`;
+  }
+
+  let html = fill(q.q);
+  if (q.type === 'letter') {
+    html += `<div class="colloc-hint">Gợi ý: <b>${colEsc(_colLetterHint(q.answer))}</b></div>`;
+  }
+  return html;
+}
+
 function renderCollocQuestion() {
   const screen = document.getElementById('phrasesScreen');
   const st = _colQuiz;
@@ -475,7 +507,7 @@ function renderCollocQuestion() {
   // After answering, every English word becomes tappable (voice + nghĩa).
   const wrap = (s) => (answered && typeof tapwordsWrap === 'function') ? tapwordsWrap(s) : colEsc(s);
 
-  let qHtml = wrap(q.q).replace(/___/g, '<span class="phrases-blank">_____</span>');
+  const qHtml = collocQuestionHTML(q, wrap);
   let body = '';
 
   if (isMcq) {
@@ -494,14 +526,8 @@ function renderCollocQuestion() {
     }).join('');
     body = `<div class="grammar-options">${opts}</div>`;
   } else {
-    if (q.type === 'letter') {
-      qHtml += `<div class="colloc-hint">Gợi ý: <b>${colEsc(_colLetterHint(q.answer))}</b></div>`;
-    }
-    if (q.type === 'transform') {
-      qHtml = `<div class="colloc-transform-src">${wrap(q.q)}</div>
-        <div class="colloc-keyword">Key word: <b>${colEsc(q.keyword || '')}</b> (giữ nguyên, 3–8 từ)</div>
-        <div class="colloc-frame">${wrap(q.frame || '').replace(/___/g, '<span class="phrases-blank">_____</span>')}</div>`;
-    }
+    // The letter hint and the transform frame are part of the question itself
+    // and are built by collocQuestionHTML above, so the drill gets them too.
     if (!answered) {
       body = `<div class="wf-text-wrap">
         <input type="text" id="colTextInput" class="wf-text-input" autofocus enterkeyhint="go"
@@ -690,7 +716,7 @@ if (typeof module !== 'undefined' && module.exports) {
     collocBank, renderCollocHome, collocLessonHTML, startCollocPractice,
     answerCollocChoice, submitCollocText, nextCollocQuestion, finishCollocPractice,
     isCollocActive, abandonCollocPractice, quitCollocPractice, colAnsweredCount,
-    _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase,
+    _colNorm, _colAnswerCorrect, _colLetterHint, collocSpokenPhrase, collocQuestionHTML,
     collocPhrase, collocFilledParts, collocFollowupQuestion, colExpandFollowups,
     colFollowScore, colFollowDone, answerCollocFollowup, renderCollocFollowup,
     colUnderstandCardHTML,
@@ -707,7 +733,10 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   idOf: (q) => q.id,
   answerText: (q) => q.answer,
   grade: (v, q) => _colAnswerCorrect(v, q),
-  promptHTML: (q) => `<div class="grammar-question-text">${colEsc(q.q).replace('___', '<b class="wf-retry-gap">___</b>')}</div>`,
+  // The SAME renderer the live quiz uses, so the drill asks the question it
+  // grades: a transform item shows its key word and its framed gap, a letter
+  // item keeps its first-letter hint, and a pair item marks BOTH gaps.
+  promptHTML: (q) => `<div class="grammar-question-text">${collocQuestionHTML(q, colEsc, '<b class="wf-retry-gap">___</b>')}</div>`,
   explainHTML: (q) => `<div class="grammar-review-explain">📘 ${colEsc(q.vi || '')}<br>💡 ${q.explanation || ''}</div>`,
   home: () => renderCollocHome(),
 });

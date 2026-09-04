@@ -1,7 +1,11 @@
 import NightRaidRules from '../../js/night-raid-rules.js';
 
 export const NR = NightRaidRules;
-export const RAID_TTL_MS = 5 * 60 * 1000;
+// How long a started raid stays scoreable. Five minutes was not enough for the
+// way children actually play: Phaser sleeps its render loop while the tab is
+// hidden (js/night-raid-phaser.js), so answering a message mid-battle and
+// coming back put /finish past the deadline and threw the raid away.
+export const RAID_TTL_MS = 15 * 60 * 1000;
 
 // ---- the tunable rulebook (db/021-night-raid-rules.sql) -------------------
 //
@@ -136,8 +140,14 @@ export async function nightRaidEnabled(env,userId) {
 }
 export async function ticketStats(env,userId,date=nightDate()) {
   const daily=await env.DB.prepare('SELECT tickets_used, reward_earned FROM night_raid_daily WHERE user_id = ? AND raid_date = ?').bind(userId,date).first();
-  const learned=await env.DB.prepare("SELECT COALESCE(SUM(attempts),0) AS n FROM learning_skill_results WHERE user_id = ? AND created_at >= datetime(?, 'start of day')")
-    .bind(userId,date).first();
+  // `date` is an ICT calendar day (nightDate) but created_at is UTC, and
+  // SQLite reads a bare 'YYYY-MM-DD' as UTC midnight — i.e. 07:00 ICT. The
+  // window was therefore shifted seven hours: practice done between midnight
+  // and 7 a.m. counted for NO day at all, while an hour after midnight the
+  // next morning counted for the day before. ICT day D is [D-1 17:00 UTC,
+  // D 17:00 UTC).
+  const learned=await env.DB.prepare("SELECT COALESCE(SUM(attempts),0) AS n FROM learning_skill_results WHERE user_id = ? AND created_at >= datetime(?, '-7 hours') AND created_at < datetime(?, '+1 day', '-7 hours')")
+    .bind(userId,date,date).first();
   const allowance=3+(Number(learned&&learned.n||0)>=10?1:0);
   return {date,allowance,used:Number(daily&&daily.tickets_used||0),reward:Number(daily&&daily.reward_earned||0)};
 }

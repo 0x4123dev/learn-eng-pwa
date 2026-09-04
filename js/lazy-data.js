@@ -55,7 +55,15 @@ var LazyData = (() => {
       script.src = file;
       script.async = false;            // banks must run in the order listed
       script.onload = () => { loaded[file] = true; resolve(); };
-      script.onerror = () => { console.warn('lazy bank failed', file); resolve(); };
+      script.onerror = () => {
+        console.warn('lazy bank failed', file);
+        // Forget the failed attempt. Leaving the resolved promise in
+        // `inFlight` meant ONE Wi-Fi hiccup on the first visit to a tab left
+        // that tab empty for the whole session: ensure() kept handing back the
+        // same settled promise and never appended a second <script>.
+        delete inFlight[file];
+        resolve();
+      };
       document.head.appendChild(script);
     });
     return inFlight[file];

@@ -209,7 +209,14 @@ suite('hit logic: a legitimate volley is never rejected as cheating', () => {
     });
 
     test('the server clamps the reported number rather than trusting it', () => {
-        assert.truthy(/Math\.min\(maxTurnDamage/.test(turnSrc));
+        // The ceiling starts at the theoretical maximum and is then pulled
+        // down to what the shot ACTUALLY achieved, re-fired server-side from
+        // the stored seed/field/turn (serverVolleyDamage). Clamping to the
+        // theoretical maximum alone let a modified client report that maximum
+        // every turn without ever aiming.
+        assert.truthy(/let ceiling = maxTurnDamage\(/.test(turnSrc), 'the honest ceiling is still the start');
+        assert.truthy(/Math\.min\(ceiling, serverVolleyDamage\(/.test(turnSrc), 'and the re-simulated volley narrows it');
+        assert.truthy(/Math\.min\(ceiling, Math\.trunc\(\+reported/.test(turnSrc), 'the reported value is clamped by it');
     });
 });
 
@@ -452,12 +459,20 @@ suite('hit logic: hits belong to the right pet', () => {
     });
 
     test('the same rule set is used for the shot and the damage', () => {
-        assert.truthy(gameSrc.includes('C.damageAt(sim.hit, target, level, this.rules)'),
+        // The volley moved into js/battlecalc.js (volleyShots) so the SERVER
+        // can re-run the identical arithmetic from the battle row instead of
+        // believing whatever damage a device reports. The invariant is the
+        // same one: the shot and the damage read the battle's snapshotted
+        // rules, never the default set.
+        const calcSrc = fs.readFileSync(path.join(ROOT, 'js', 'battlecalc.js'), 'utf8');
+        const volley = calcSrc.slice(calcSrc.indexOf('function volleyShots('));
+        assert.truthy(volley.slice(0, 1800).includes('damageAt(sim.hit, target, level, rules)'),
             'damage must use the battle\'s snapshotted rules, not the default');
+        assert.truthy(gameSrc.includes('rules: this.rules'), 'the client hands its snapshotted rules in');
     });
 
     test('a miss never shakes the defender', () => {
-        assert.truthy(gameSrc.includes('if (bulletDamage > 0) this._lastHitCount += 1'),
+        assert.truthy(gameSrc.includes('if (shot.damage > 0) this._lastHitCount += 1'),
             'only damaging poops should count as hits');
     });
 });

@@ -31,27 +31,33 @@ function renderSpeedHistory() {
         const isPerfect = accuracy === 100;
         const levelClass = `level-${game.level}`;
 
+        // Everything below comes back off disk (and off the sync), and the
+        // userV2/userV3 halves are literally what the child typed into an
+        // input with no maxlength. It goes into innerHTML, so every one of
+        // them goes through retryEsc (js/retrydrill.js) first — the same
+        // escaper the other four practice tabs use on their echoed answers.
         html += `
         <div class="speed-history-row" onclick="toggleSpeedHistoryDetail(${index})">
             <div class="speed-history-icon ${levelClass}">${levelIcons[game.level] || '📝'}</div>
             <div class="speed-history-info">
-                <div class="speed-history-title">${levelNames[game.level] || 'Level ' + game.level}</div>
+                <div class="speed-history-title">${retryEsc(levelNames[game.level] || ('Level ' + game.level))}</div>
                 <div class="speed-history-date">${formatDate(game.date)} · ${formatTime(game.date)}</div>
             </div>
             <div class="speed-history-stats">
-                <div class="speed-history-score">+${game.score}</div>
-                <div class="speed-history-accuracy${isPerfect ? ' perfect' : ''}">${game.correct}/${game.total}</div>
+                <div class="speed-history-score">+${retryEsc(game.score)}</div>
+                <div class="speed-history-accuracy${isPerfect ? ' perfect' : ''}">${retryEsc(game.correct)}/${retryEsc(game.total)}</div>
             </div>
             <div class="speed-history-expand">▼</div>
         </div>
         <div class="speed-history-detail" id="speedHistoryDetail${index}">
             <div class="verb-result-list">
                 ${(game.verbs || []).map(v => {
+                    const forms = `${retryEsc(v.v1)} → ${retryEsc(v.v2)} → ${retryEsc(v.v3)}`;
                     if (v.correct) {
                         return `<div class="verb-result-item correct">
                             <span class="verb-result-icon">✅</span>
                             <div class="verb-result-text">
-                                <div class="verb-result-forms">${v.v1} → ${v.v2} → ${v.v3}</div>
+                                <div class="verb-result-forms">${forms}</div>
                             </div>
                         </div>`;
                     } else {
@@ -59,8 +65,8 @@ function renderSpeedHistory() {
                         return `<div class="verb-result-item wrong">
                             <span class="verb-result-icon">❌</span>
                             <div class="verb-result-text">
-                                <div class="verb-result-forms">${v.v1} → ${v.v2} → ${v.v3}</div>
-                                <div class="verb-result-user">Your answer: <span class="wrong-text">${userAnswer}</span></div>
+                                <div class="verb-result-forms">${forms}</div>
+                                <div class="verb-result-user">Your answer: <span class="wrong-text">${retryEsc(userAnswer)}</span></div>
                             </div>
                         </div>`;
                     }
@@ -223,7 +229,7 @@ function handleTimeUp() {
     feedback.innerHTML = `
         ⏰ Time's up!
         <div class="correct-answer">
-            ${verb.v1} → ${verb.v2} → ${verb.v3}
+            ${retryEsc(verb.v1)} → ${retryEsc(verb.v2)} → ${retryEsc(verb.v3)}
         </div>
     `;
 
@@ -330,7 +336,7 @@ function submitSpeedAnswer() {
         feedback.innerHTML = `
             ❌ Wrong!
             <div class="correct-answer">
-                ${verb.v1} → ${verb.v2} → ${verb.v3}
+                ${retryEsc(verb.v1)} → ${retryEsc(verb.v2)} → ${retryEsc(verb.v3)}
             </div>
         `;
 
@@ -478,15 +484,42 @@ function exitSpeedGame() {
         && !confirm('You are ' + done + ' verbs into this speed run.\n'
             + 'If you leave now, this run will not be scored.\n\nLeave anyway?')) return;
     clearInterval(speedState.timer);
+    // The run is over. Without this the flag stayed true forever, and the
+    // app-wide Enter listener below kept submitting a verb from whatever tab
+    // the child went to next — reading the hidden V2/V3 boxes, pushing a
+    // bogus row into verbResults, and reading an irregular verb aloud over
+    // the Rewrite/Exam/Word-form answer they had just typed.
+    speedState.isAnswering = false;
     document.getElementById('speedGameOverlay').classList.remove('active');
     document.getElementById('bottomNav').style.display = 'flex';
 }
 
-// Handle Enter key in inputs
+// Is the speed game actually on screen? js/verbs.js is loaded on every tab, so
+// the keydown listener below fires everywhere; the overlay is the one thing
+// that is true only while a verb question is really in front of the child.
+// Deliberately not named is…() — it is not a screen switchScreen guards (the
+// overlay hides the bottom bar), and tests/quiz-exit-guards.test.js reads that
+// naming convention as "a running activity switchScreen must ask about".
+function speedGameOverlayActive() {
+    if (typeof document === 'undefined') return false;
+    const overlay = document.getElementById('speedGameOverlay');
+    if (!overlay || !overlay.classList || typeof overlay.classList.contains !== 'function') return false;
+    return overlay.classList.contains('active');
+}
+
+// Handle Enter key in inputs.
+// The overlay check is the belt to exitSpeedGame's braces: the flag alone was
+// the whole bug, and any future exit path that forgets to clear it lands here
+// harmlessly instead of submitting a verb on someone else's tab. The other
+// tabs' inputs call preventDefault() but not stopPropagation(), so their Enter
+// reaches this listener too.
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && speedState.isAnswering) {
-        submitSpeedAnswer();
+    if (e.key !== 'Enter' || !speedState.isAnswering) return;
+    if (!speedGameOverlayActive()) {
+        speedState.isAnswering = false;   // stale flag: retire it, don't act on it
+        return;
     }
+    submitSpeedAnswer();
 });
 
 // ---- owed verbs: every verb missed must be typed back ----

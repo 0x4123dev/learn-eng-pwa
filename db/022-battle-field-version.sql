@@ -1,0 +1,21 @@
+-- 022-battle-field-version.sql — the column the arena has been writing since
+-- "the long world is playable" (c6e7752b), which no migration ever created.
+--
+-- functions/api/battle/challenge.js INSERTs battles.field_version and both
+-- functions/api/_battle.js and functions/api/battle/turn.js read it, but
+-- db/002 creates `battles` without it and db/003 only adds background_id. The
+-- live D1 was altered by hand, so production works while any database rebuilt
+-- from this directory answers POST /api/battle/challenge with
+-- "no such column: field_version" — a 500 on the very first challenge.
+-- tests/pages-harness.js builds its mock from these files too, which is why
+-- the suite never caught it: every test touching the arena substring-matches
+-- the handler source instead of executing it.
+--
+-- Safe to re-run on the live database only if it does NOT already have the
+-- column (SQLite has no ADD COLUMN IF NOT EXISTS); check first with
+--   npx wrangler@3 d1 execute eng_pwa_db --remote --command "PRAGMA table_info(battles)"
+--
+-- Apply with:
+--   npx wrangler@3 d1 execute eng_pwa_db --remote --file db/022-battle-field-version.sql
+
+ALTER TABLE battles ADD COLUMN field_version INTEGER NOT NULL DEFAULT 1;

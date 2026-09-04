@@ -100,6 +100,8 @@ function rememberedActiveUser() {
 
 let _studyCheckpointTimer = null;
 let _studyCheckpointRestored = false;
+// One retry, not a loop. See restoreStudyCheckpoint.
+let _studyCheckpointWaited = false;
 
 function clearStudyCheckpoint() {
     try { localStorage.removeItem(STUDY_CHECKPOINT_KEY); } catch (e) {}
@@ -108,6 +110,14 @@ function clearStudyCheckpoint() {
 function checkpointClone(state, without) {
     const copy = Object.assign({}, state || {});
     (without || []).forEach(key => { delete copy[key]; });
+    // A Set JSON-stringifies to `{}` — truthy, with no .add and no .has. The
+    // review session's reviewWrongWords (js/srs.js, js/topics.js) went through
+    // here, so after an iOS reload the first wrong match threw a TypeError
+    // inside the click handler (the round wedged with both cards stuck
+    // selected) and completeLesson threw at .has, losing the whole review:
+    // no SRS update, no points, nothing saved. Serialise it as the array it
+    // really is; restoreStudyCheckpoint builds the Set back.
+    Object.keys(copy).forEach(key => { if (copy[key] instanceof Set) copy[key] = Array.from(copy[key]); });
     return JSON.parse(JSON.stringify(copy));
 }
 
@@ -213,6 +223,15 @@ function restoreStudyCheckpoint() {
         math: 'mathHubScreen', mathwars: 'mathHubScreen',
     }[checkpoint.kind];
     if (needsBank && typeof LazyData !== 'undefined' && !LazyData.ready(needsBank)) {
+        // Ask ONCE. LazyData resolves even when a bank fails to download (a
+        // tab must render what it has rather than spin), so `ready()` can
+        // still be false when this promise settles — and re-arming on that was
+        // an unbroken microtask loop with nothing to yield to. A child who was
+        // mid-quiz when js/grammar-units.js failed to load came back to a
+        // frozen page with no error, and because the checkpoint was never
+        // cleared, to a frozen page on EVERY open for the next 24 hours.
+        if (_studyCheckpointWaited) { clearStudyCheckpoint(); return false; }
+        _studyCheckpointWaited = true;
         LazyData.ensure(needsBank).then(() => restoreStudyCheckpoint());
         return false;
     }
@@ -250,6 +269,8 @@ function restoreStudyCheckpoint() {
             updateTimerBar();
         }
         else if (checkpoint.kind === 'lesson') {
+            // The Set checkpointClone flattened to an array, back as a Set.
+            s.reviewWrongWords = new Set(Array.isArray(s.reviewWrongWords) ? s.reviewWrongWords : []);
             lessonState = s;
             document.getElementById('bottomNav').style.display = 'none';
             renderMatchingRound();
@@ -314,9 +335,24 @@ let speedState = {
     verbResults: [] // { v1, v2, v3, userV2, userV3, correct, timeUsed }
 };
 
+// Both readers below are called from checkExistingUsers(), the FIRST thing
+// init() does. An unparseable value there — an interrupted write, a quota
+// failure mid-save, a hand edit — used to throw straight out of init: no user
+// list, no create form, no service worker registered, and no code path
+// anywhere that could repair it. The app was dead until the site data was
+// cleared by hand. Every other JSON.parse of localStorage in this codebase is
+// already wrapped; these two were not.
 function getUsers() {
-    const users = localStorage.getItem('flashlingo-users');
-    return users ? JSON.parse(users) : [];
+    let users = null;
+    try { users = localStorage.getItem('flashlingo-users'); } catch (e) { return []; }
+    if (!users) return [];
+    try {
+        const parsed = JSON.parse(users);
+        if (Array.isArray(parsed)) return parsed;
+    } catch (e) { /* fall through to the repair below */ }
+    // Junk is replaced, not carried: leaving it would re-throw on every open.
+    try { localStorage.removeItem('flashlingo-users'); } catch (e) {}
+    return [];
 }
 
 function saveUsers(users) {
@@ -324,8 +360,14 @@ function saveUsers(users) {
 }
 
 function getUserData(username) {
-    const data = localStorage.getItem(`flashlingo-user-${username}`);
-    return data ? JSON.parse(data) : null;
+    let data = null;
+    try { data = localStorage.getItem(`flashlingo-user-${username}`); } catch (e) { return null; }
+    if (!data) return null;
+    try {
+        const parsed = JSON.parse(data);
+        if (parsed && typeof parsed === 'object') return parsed;
+    } catch (e) { /* a corrupted profile must not take the whole app down */ }
+    return null;
 }
 
 // Every practice menu's history lives inside this ONE blob, so it only ever

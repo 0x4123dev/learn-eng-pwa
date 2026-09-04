@@ -183,7 +183,7 @@ const PB_STR = {
     gManualAria: 'Set angle and power by hand',
     gAngleLess: 'Lower the angle by one degree', gAngleMore: 'Raise the angle by one degree',
     gPowerLess: 'Reduce the power by one', gPowerMore: 'Increase the power by one',
-    resultWin: 'Victory!', resultLose: 'Lost — get them next time!',
+    resultWin: 'Victory!', resultLose: 'Lost — get them next time!', resultDraw: 'A draw — both castles still standing!',
     resultHint: 'Keep studying for 3 days to load up for the next battle! 🚀',
     done: 'Done',
   },
@@ -330,7 +330,7 @@ const PB_STR = {
     gManualAria: 'Chỉnh góc và lực bằng tay',
     gAngleLess: 'Giảm góc một độ', gAngleMore: 'Tăng góc một độ',
     gPowerLess: 'Giảm lực một đơn vị', gPowerMore: 'Tăng lực một đơn vị',
-    resultWin: 'Chiến thắng!', resultLose: 'Thua rồi — lần sau cố lên!',
+    resultWin: 'Chiến thắng!', resultLose: 'Thua rồi — lần sau cố lên!', resultDraw: 'Hòa rồi — hai lâu đài vẫn đứng vững!',
     resultHint: 'Học tiếp 3 ngày để nạp đạn cho trận sau nhé! 🚀',
     done: 'Xong',
   },
@@ -672,21 +672,45 @@ function pbUnhire(id) {
 
 // Spend the squad's wages. Called once, when a battle actually begins — win or
 // lose the coins are gone, which is what makes the choice cost something.
-function pbHireCommit() {
-  if (!PB_TEAMMATES_ENABLED) return [];
+//
+// "When a battle actually begins" is the whole contract, and it used to be
+// broken by the call site: pbHireCommit() was evaluated INSIDE the request
+// body, so the coins left the purse and the cart was emptied while the
+// challenge was still in the air. Every refusal — 409 "bạn ấy đang bận", a
+// 429 cooldown, a disabled account, no ammo, or simply being offline — took
+// 1,000 xu and gave nothing back, and so did an invite the friend declined or
+// let expire. Now the squad is PRICED here and only CHARGED once the server
+// has said yes (pbHireCharge), with pbHireRelease putting the cart back
+// otherwise.
+function pbHirePrepare() {
+  if (!PB_TEAMMATES_ENABLED) return { squad: [], cost: 0 };
   const TEAM = _pbTeam();
-  if (!TEAM) return [];
+  if (!TEAM) return { squad: [], cost: 0 };
   const squad = TEAM.normalizeHires(_pbHires);
   const cost = TEAM.hireCost(squad);
-  if (typeof appState !== 'undefined' && appState && cost > 0) {
-    if ((appState.coins || 0) < cost) return [];      // purse changed under us
-    appState.coins -= cost;
+  if (cost > 0 && typeof appState !== 'undefined' && appState && (appState.coins || 0) < cost) {
+    return { squad: [], cost: 0 };                    // purse changed under us
+  }
+  return { squad, cost };
+}
+function pbHireCharge(pending) {
+  if (!pending || !pending.squad.length) return;
+  if (pending.cost > 0 && typeof appState !== 'undefined' && appState) {
+    appState.coins = Math.max(0, (appState.coins || 0) - pending.cost);
     if (typeof currentUser !== 'undefined' && typeof saveUserData === 'function') {
       saveUserData(currentUser, appState);
     }
   }
   _pbHires = [];
-  return squad;
+}
+// The battle never started: the child keeps both the coins and the squad they
+// picked, so one tap on a busy friend does not undo their shopping.
+function pbHireRelease() { /* nothing was spent and the cart was never emptied */ }
+// Kept for callers that genuinely want the old all-in-one behaviour.
+function pbHireCommit() {
+  const pending = pbHirePrepare();
+  pbHireCharge(pending);
+  return pending.squad;
 }
 
 // A portrait if the canvas art is available, otherwise the tool emoji — the
@@ -1136,14 +1160,18 @@ function _pbFriendWait(f) {
 
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
+  const pending = pbHirePrepare();
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, castleSkin: pbSelectedCastleSkinId(), hires: pending.squad }, _pbMyPet()),
   });
+  if (r.ok) pbHireCharge(pending); else pbHireRelease();
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, castleSkin: pbSelectedCastleSkinId(), hires: pbHireCommit() }, _pbMyPet()) });
+  const pending = pbHirePrepare();
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, castleSkin: pbSelectedCastleSkinId(), hires: pending.squad }, _pbMyPet()) });
+  if (r.ok) pbHireCharge(pending); else pbHireRelease();
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }
@@ -1344,8 +1372,12 @@ function finishBotBattle(result) {
 // Battle over: BOTH players are paid (losing costs nothing).
 function finishPetBattle(result) {
   if (result && result.practice) return finishBotBattle(result);   // practice pays nothing
-  const won = !!result.won;
-  const coins = 20 + (won ? 30 : 0);
+  // Both castles standing on equal HP with the ammo gone. It is neither a win
+  // nor a defeat, and calling it a defeat — which is what `winnerId === me.id`
+  // did to BOTH children — wrote two losses into two histories for one battle.
+  const draw = !!(result && result.draw);
+  const won = !draw && !!result.won;
+  const coins = 20 + (won ? 30 : draw ? 15 : 0);
   // A trophy has to mean a real friend was beaten, so it is awarded here and
   // nowhere else — never on the practice path above.
   if (won && typeof awardCup === 'function') { try { awardCup(1); } catch (e) {} }
@@ -1362,7 +1394,7 @@ function finishPetBattle(result) {
     const theirs = rounds.filter(r => !r.mine);
     const sum = (list, k) => list.reduce((n, r) => n + (r[k] || 0), 0);
     appState.petBattleHistory.unshift({
-      won, myHp: result.myHp, foeHp: result.foeHp, foe: result.foeName, date, coins,
+      won, draw, myHp: result.myHp, foeHp: result.foeHp, foe: result.foeName, date, coins,
       myLevel: result.myLevel || 1, foeLevel: result.foeLevel || 1,
       shotsFired: sum(mine, 'shots'),
       hits: mine.filter(r => r.damage > 0).length,
@@ -1386,9 +1418,9 @@ function finishPetBattle(result) {
   const screen = document.getElementById('petBattleScreen');
   if (screen) {
     screen.innerHTML = _pbShell(`
-      <div class="pb-result-card ${won ? 'win' : 'lose'}">
-        <div class="pb-result-emoji">${won ? '🏆' : '💪'}</div>
-        <div class="pb-result-title">${won ? pbT('resultWin') : pbT('resultLose')}</div>
+      <div class="pb-result-card ${won ? 'win' : draw ? 'draw' : 'lose'}">
+        <div class="pb-result-emoji">${won ? '🏆' : draw ? '🤝' : '💪'}</div>
+        <div class="pb-result-title">${won ? pbT('resultWin') : draw ? pbT('resultDraw') : pbT('resultLose')}</div>
         <div class="pb-result-hp">${result.myHp} ❤️ &nbsp;vs&nbsp; ${result.foeHp} ❤️ ${pbEsc(result.foeName || '')}</div>
         <div class="pb-result-coins">+${coins} 🪙</div>
         ${won ? `<div class="pb-result-cup">${pbT('cupWonBig')}</div>`

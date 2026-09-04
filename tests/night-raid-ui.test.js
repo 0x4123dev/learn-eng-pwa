@@ -52,7 +52,13 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes("lockChip(retryAt,"),'each target card carries its own clock');
     assert.truthy(ui.includes("lockChip(target.lockedUntil"),'the scout screen replaces TIẾN QUÂN with the clock');
     assert.truthy(ui.includes("id=\"nrStartRaid\" ${locked?'disabled hidden':''}"),'a sealed castle cannot be charged');
-    assert.truthy(ui.includes('start.data.locked'),'a server-side seal is reported, not swallowed');
+    // A server-side seal is reported, not swallowed — but through the shape the
+    // server actually sends. start.js answers 409 {error, retryAt}; the old
+    // check looked for a `locked` key no handler has ever produced, so that
+    // branch was dead code and every refusal (429 out of tickets included) fell
+    // through to one generic toast with the button left disabled.
+    assert.truthy(ui.includes('const retryAt=retryAtOf(data)||data.lockedUntil'),'the 409 retryAt is read back');
+    assert.truthy(ui.includes('function armStartButton('),'and every refusal hands TIẾN QUÂN back');
     // When the clock runs out the castle is handed back without a reload.
     assert.truthy(ui.includes("fab.disabled=false;fab.hidden=false"),'expiry re-arms the charge button');
     for(const rule of ['.nr-lock-chip','.nr-target-card.locked'])assert.truthy(css.includes(rule),rule);

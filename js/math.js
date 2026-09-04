@@ -600,6 +600,14 @@ function mathLessons() {
   return (typeof MATH_LESSONS !== 'undefined') ? MATH_LESSONS : [];
 }
 function mathById(id) {
+  // An empty id must never match anything. Before the exam banks were stamped
+  // (_mathStampExamIds), an exam question had no `id` at all, so a history
+  // entry holding `undefined` — or `null`, which is what `undefined` becomes
+  // after a round trip through localStorage — matched `q.id === undefined` on
+  // the FIRST question of the FIRST exam. "Dạng toán cần ôn" then showed a
+  // child a question they had never seen, wearing their own miss count.
+  // The stamping is the fix; this line is the net under it.
+  if (id === undefined || id === null || id === '') return null;
   const practice = mathBankAll().find(q => q.id === id);
   if (practice) return practice;
   const lt = mathLtBank().find(q => q.id === id);
@@ -983,10 +991,41 @@ function mathBestFor(ch) {
 // `const` ở đầu file script, mà `const` cấp cao nhất KHÔNG trở thành thuộc
 // tính của globalThis — tra theo tên sẽ luôn ra rỗng và danh sách đề trống
 // trơn. Phải nhắc thẳng tên biến, có `typeof` chắn vì ngân hàng nạp lười.
-function _mathHk1Exams() { return (typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS)) ? MATH_EXAMS : []; }
-function _mathHk1Source() { return (typeof MATH_SOURCE_EXAMS !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS)) ? MATH_SOURCE_EXAMS : []; }
-function _mathHk2Exams() { return (typeof MATH_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_EXAMS_HK2)) ? MATH_EXAMS_HK2 : []; }
-function _mathHk2Source() { return (typeof MATH_SOURCE_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS_HK2)) ? MATH_SOURCE_EXAMS_HK2 : []; }
+
+// Only MATH_SOURCE_EXAMS ships per-question ids ("s1-1"); the other three
+// banks — 1,108 questions across HK1 Exam 1..10, HK2 Exam 1..10 and the 30
+// đề thật HK2 — carry none. An id is not decoration: finishMathQuiz stores
+// `wrong: [...ids]`, mathById reads that list back for "Dạng toán cần ôn",
+// and retryAdd('math', …) drops any question whose id is empty, so without
+// one a missed đề-thi question is both mis-shown and never re-drilled.
+//
+// So stamp one on, derived from the exam's own id and the question's place
+// in the paper: stable across reloads (nothing random, nothing time-based),
+// unique because the 55 exam ids are unique across all four banks, and it
+// never overwrites an id a bank already wrote.
+//
+// It runs from the four accessors below rather than at parse time because
+// the banks are LAZY-LOADED (js/lazy-data.js SCREEN_FILES.mathHubScreen):
+// when math.js is parsed they do not exist yet. The WeakSet makes it a
+// one-shot pass per bank array — the accessors are called on every render.
+const _mathStampedExams = new WeakSet();
+function _mathStampExamIds(exams) {
+  if (!Array.isArray(exams) || !exams.length || _mathStampedExams.has(exams)) return exams;
+  _mathStampedExams.add(exams);
+  for (const exam of exams) {
+    if (!exam || !Array.isArray(exam.questions)) continue;
+    const base = String(exam.id == null ? '' : exam.id);
+    if (!base) continue;
+    exam.questions.forEach((q, i) => {
+      if (q && (q.id === undefined || q.id === null || q.id === '')) q.id = `${base}-q${i + 1}`;
+    });
+  }
+  return exams;
+}
+function _mathHk1Exams() { return _mathStampExamIds((typeof MATH_EXAMS !== 'undefined' && Array.isArray(MATH_EXAMS)) ? MATH_EXAMS : []); }
+function _mathHk1Source() { return _mathStampExamIds((typeof MATH_SOURCE_EXAMS !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS)) ? MATH_SOURCE_EXAMS : []); }
+function _mathHk2Exams() { return _mathStampExamIds((typeof MATH_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_EXAMS_HK2)) ? MATH_EXAMS_HK2 : []); }
+function _mathHk2Source() { return _mathStampExamIds((typeof MATH_SOURCE_EXAMS_HK2 !== 'undefined' && Array.isArray(MATH_SOURCE_EXAMS_HK2)) ? MATH_SOURCE_EXAMS_HK2 : []); }
 function mathExams() {
   return mathSemester() === 2
     ? _mathHk2Exams().concat(_mathHk2Source())
@@ -1554,8 +1593,11 @@ function finishMathQuiz() {
     examId: st.examId || undefined,
     score: score, total: total,
     // Which questions were missed, not just how many — that is what makes a
-    // "câu hay sai" list possible at all.
-    wrong: wrong.map(x => x.q.id),
+    // "câu hay sai" list possible at all. Every bank is stamped by now, but an
+    // id-less question must drop out rather than be written as `undefined`:
+    // JSON turns that into `null`, and a history full of nulls is a miss count
+    // pinned on whichever question happens to answer to an empty id.
+    wrong: wrong.map(x => x.q.id).filter(id => id !== undefined && id !== null && id !== ''),
     skills: mathSkillSummaries(st),
   });
   if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }

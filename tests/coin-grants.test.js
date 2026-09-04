@@ -52,7 +52,10 @@ suite('coin grants: admin gives, the device claims once', () => {
     // receipts, and a paid claim is acked only after the wallet is saved.
     // Behavioural coverage lives in tests/money-client.test.js /
     // tests/money-server.test.js.
-    assert.truthy(src.includes("api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending } })"));
+    // `device` scopes the server's re-offer window to this install (db/025):
+    // without it a second phone on the same account was handed a grant this
+    // one had already banked but not yet acked.
+    assert.truthy(src.includes("api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending, device: deviceId() } })"));
     assert.truthy(src.includes('pendingCoinReceipts'), 'unacked receipts must be stored durably');
     assert.truthy(src.includes('Math.trunc(+r.data.granted || 0)'), 'signed corrections must not be clamped away');
     assert.truthy(src.includes('appState.coins = Math.max(0, +appState.coins || 0) + granted'));

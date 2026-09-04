@@ -127,7 +127,23 @@ function switchGrammarSubTab(tab) {
 }
 
 // ==================== UNITS LIST ====================
+// A bank that failed to download must not take the tab down with it.
+// LazyData.loadFile resolves on `onerror` (a tab should render what it has),
+// so switchScreen's paint() runs with the global still undeclared — and an
+// undeclared const throws ReferenceError, not undefined. The "Đang tải bài…"
+// placeholder then stayed on screen for good: nothing cleared it, nothing
+// logged, and because the failed file was remembered as in-flight, every
+// return to the tab re-threw. The retry button is the way out.
+function _bankUnavailableHTML(label) {
+    return '<div class="lazy-loading" role="status" style="text-align:center">'
+        + '<p>Chưa tải được ' + label + '. Con kiểm tra mạng rồi thử lại nhé.</p>'
+        + '<button class="grammar-units-bulk-btn" type="button" onclick="location.reload()">Thử lại</button>'
+        + '</div>';
+}
+
 function renderGrammarUnitsList() {
+    if (typeof GRAMMAR_UNITS === 'undefined' || !Array.isArray(GRAMMAR_UNITS)) return _bankUnavailableHTML('phần Ngữ pháp');
+
     // Mistake bank card (only shown if user has mistakes or bookmarks)
     const mistakes = (typeof getActiveMistakes === 'function') ? getActiveMistakes() : [];
     const bookmarks = (typeof getBookmarkedMistakes === 'function') ? getBookmarkedMistakes() : [];

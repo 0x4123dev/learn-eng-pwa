@@ -15,6 +15,11 @@ var MathFight = (() => {
   let st = {
     view: 'list', data: null, fight: null, qs: [], answers: [], idx: 0,
     ticker: null, poll: null, pulse: null, wait: null, busy: false, claimed: '',
+    // The coin move of the fight currently on screen. Reset at the start of
+    // every fight: it used to survive, so a result reached through the pulse
+    // (which never asked for coins at all) displayed the PREVIOUS fight's
+    // "+200 xu vào ví" while nothing had actually moved.
+    moved: 0,
   };
 
   function root() { return document.getElementById('mfRoot'); }
@@ -229,6 +234,7 @@ var MathFight = (() => {
     // Drawn by MF.fightQuestions from the pre-authored bank — the same call,
     // on the same seed, that the server marks the round with.
     st.view = 'fight';
+    st.moved = 0;                       // this fight has moved nothing yet
     lockScreen(true);
     // The sums are rebuilt locally from the server's seed so they appear with
     // no round trip. The server holds the same twenty and marks them itself.
@@ -303,7 +309,25 @@ var MathFight = (() => {
     // has to come from the server — it is the one thing the device cannot know.
     if (mine) mine.textContent = myCorrect();
     if (foe) foe.textContent = st.fight.foeCorrect || 0;
-    if (st.fight.status === 'done') paintResult();
+    if (st.fight.status === 'done') { await claimVerdictCoins(); paintResult(); }
+  }
+
+  // The verdict can land while the child is still ON the question screen: the
+  // opponent walked away, or the clock ran out under the 5-second pulse. Only
+  // `submit` returns the coin move — `progress` deliberately does not — so it
+  // has to be asked for wherever the fight turns out to be over. Without this
+  // a forfeit win announced "THẮNG RỒI!" and paid nothing: applyCoins never
+  // ran, mathFightClaimed stayed unset, and a finished fight is never handed
+  // back by the list (currentFight selects only invited/active), so the 200 xu
+  // was gone for good. The mirror case cost the loser nothing.
+  async function claimVerdictCoins() {
+    if (!st.fight || st.busy) return;
+    st.busy = true;
+    try {
+      const done = await api('submit', { method: 'POST', body: { fightId: st.fight.fightId, answers: st.answers, coins: coins() } });
+      if (done.ok && done.data && done.data.fight) st.fight = done.data.fight;
+      st.moved = applyCoins(done.ok && done.data ? done.data.coins : 0);
+    } finally { st.busy = false; }
   }
 
   async function submit(forfeit) {
@@ -347,9 +371,7 @@ var MathFight = (() => {
       if (st.fight.status === 'done') {
         clearInterval(st.wait); st.wait = null;
         // The verdict is in: ask for the coin move that goes with it.
-        const done = await api('submit', { method: 'POST', body: { fightId: st.fight.fightId, answers: st.answers, coins: coins() } });
-        if (done.ok && done.data && done.data.fight) st.fight = done.data.fight;
-        st.moved = applyCoins(done.ok && done.data ? done.data.coins : 0);
+        await claimVerdictCoins();
         paintResult();
       }
     }, 2000);

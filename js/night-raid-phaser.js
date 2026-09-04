@@ -221,6 +221,13 @@ var NightRaidPhaser = (() => {
     }
     mount(){
       if(this.game)return Promise.resolve();
+      // destroy() can land while start() is still decoding the eight sprite
+      // sheets — the child taps the map button and confirms. Without this
+      // flag mount() went on to build a Phaser.Game parented to a host that
+      // had already been detached, and nothing held a reference to it any
+      // more: an RAF loop rendering into nowhere for the rest of the session,
+      // one per abandoned raid.
+      if(this.destroyed)return Promise.resolve();
       return new Promise((resolve,reject)=>{
         const owner=this;
         class RaidScene extends Phaser.Scene {
@@ -496,6 +503,7 @@ var NightRaidPhaser = (() => {
       if(this.elapsed>=this.duration){this.running=false;this.finished=true;this.state.status=this.result.status;this.state.timeMs=this.result.durationMs;this.paintFrame(1);this.moveCamera(this.choreo.durationMs,delta);this.notify();if(this.options.onFinish)this.options.onFinish({...this.state},[]);}
     }
     destroy(){
+      this.destroyed=true;
       document.removeEventListener('visibilitychange',this.visibility);this.running=false;
       if(this.audio){this.audio.dispose();this.audio=null;}
       if(this.game){try{this.game.loop.sleep();this.game.destroy(false);}catch(_){}this.game=null;}this.scene=null;

@@ -534,6 +534,53 @@ const BattleCalc = {
 };
 if (typeof window !== 'undefined') window.BattleCalc = BattleCalc;
 
+// ---- one volley, one rulebook ---------------------------------------------
+// The client animates the shells this returns and the SERVER re-runs it from
+// the battle row to check what the client reported. Both call this same
+// function, from the same seed, so they cannot drift: turn.js used to accept
+// whatever `rawDamage` a device sent and merely clamp it to a theoretical
+// ceiling, which meant a modified client that always claimed the maximum hit
+// every time without ever having to aim.
+//
+// `rocketDamage` is passed in (js/battle-teammates.js owns that ratio) so this
+// file keeps knowing only about ballistics.
+function volleyShots(opts) {
+  const rules = opts.rules || FIELD_RULES[1];
+  const target = opts.target;
+  const level = opts.level;
+  const wind = opts.wind || 0;
+  const rocketDamageFn = typeof opts.rocketDamage === 'function' ? opts.rocketDamage : (d => d);
+  const shots = Math.max(1, Math.min(BARRELS, Math.trunc(Number(opts.shots) || 0) || 1));
+  const angles = volleyAngles(opts.angle, shots, opts.seed, opts.turnNo);
+  const out = [];
+  for (const a of angles) {
+    const sim = simulateShot({
+      terrain: opts.terrain, from: opts.from, facing: opts.facing,
+      angle: a, power: opts.power, wind, rules, blockers: [target],
+    });
+    out.push({ sim, angle: a, rocket: false, damage: damageAt(sim.hit, target, level, rules) });
+  }
+  // Every hired Pháo thủ launches on EVERY volley, along the unspread aim line.
+  for (let i = 0; i < Math.max(0, Math.trunc(Number(opts.rocket) || 0)); i++) {
+    const sim = simulateShot({
+      terrain: opts.terrain, from: opts.from, facing: opts.facing,
+      angle: opts.angle, power: opts.power, wind, rules, blockers: [target],
+    });
+    out.push({ sim, angle: opts.angle, rocket: true,
+      damage: rocketDamageFn(damageAt(sim.hit, target, level, rules)) });
+  }
+  return out;
+}
+function volleyTotal(list, rules) {
+  const R = rules || FIELD_RULES[1];
+  const sum = (list || []).reduce((total, shot) => total + Math.max(0, Number(shot.damage) || 0), 0);
+  return Math.min(Number.isFinite(R.maxVolleyDamage) ? R.maxVolleyDamage : 100, sum);
+}
+function volleyDamage(opts) {
+  const rules = opts.rules || FIELD_RULES[1];
+  return volleyTotal(volleyShots(opts), rules);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
@@ -542,6 +589,7 @@ if (typeof module !== 'undefined' && module.exports) {
     computeAmmo, ammoBreakdown, maxShotsThisTurn, makeRng, buildTerrain,
     spawnPoints, windForRound, volleyAngles, simulateShot,
     blastRadius, shotDamage, shellSize, damageAt, maxTurnDamage, powerProfile,
+    volleyShots, volleyTotal, volleyDamage,
     POWER_REF_LEVEL, BattleCalc,
   };
 }

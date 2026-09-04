@@ -138,9 +138,15 @@ suite('bot practice: it stays worthless, on purpose', () => {
 
     test('finishPetBattle diverts practice before any payout', () => {
         const fin = pbSrc.slice(pbSrc.indexOf('function finishPetBattle'));
-        const head = fin.slice(0, 400);
-        assert.truthy(head.includes('result.practice'), 'no practice check');
-        assert.truthy(head.indexOf('result.practice') < head.indexOf('coins'), 'the check must come first');
+        // Scan the whole function rather than a fixed window: a comment added
+        // above the payout used to be enough to push `coins` out of a 400-char
+        // slice, and indexOf(-1) then made the ordering assertion vacuous.
+        const body = fin.slice(0, fin.indexOf('\n}\n'));
+        const practiceAt = body.indexOf('result.practice');
+        const coinsAt = body.indexOf('const coins');
+        assert.truthy(practiceAt >= 0, 'no practice check');
+        assert.truthy(coinsAt >= 0, 'the payout line moved — re-point this test');
+        assert.truthy(practiceAt < coinsAt, 'the check must come first');
     });
 
     test('practice never writes a history row', () => {

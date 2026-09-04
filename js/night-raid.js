@@ -178,8 +178,35 @@ var NightRaid = (() => {
   // scouting: the fight must start with the whole field in view.
   function frameBattleWorld(){const map=document.querySelector('#nrBuilderWorld .nr-scout-map');if(!map)return;builderScroll=null;builderZoom=scoutFitZoom(+map.dataset.baseSize||1180);setBuilderZoom(builderZoom);centerBuilderWorld();}
 
+  // TIẾN QUÂN is disabled by its own onclick before the request leaves, and
+  // the ONLY thing that ever switched it back on was updateLockTimers firing
+  // on a [data-nr-lock-until] chip — which the live scout never renders. So a
+  // child out of tickets (a 429, and the common case: the rows still invite
+  // them to attack) was left staring at a dead grey button until they found
+  // the small map icon. Every refusal hands it back now.
+  function armStartButton(){const b=document.getElementById('nrStartRaid');if(b){b.disabled=false;b.classList.remove('charging');}}
   async function startRaid(target,online){
-    if(online&&!target.raidId){const start=await api('start',{method:'POST',body:{targetId:target.targetId}});if(start.ok&&start.data&&start.data.ruined&&!start.data.raid)return playRuinedRaid(target,start.data);if(start.ok&&start.data&&start.data.locked){if(typeof showToast==='function')showToast('Con phải chờ thêm '+productionTime(lockLeft(retryAtOf(start.data)||start.data.lockedUntil))+' nữa mới vào lại nhà này');return showLiveTargets();}if(!start.ok||!start.data||!start.data.raid){if(typeof showToast==='function')showToast(start.data&&start.data.error||'Không thể bắt đầu raid');return;}Object.assign(target,start.data.raid);rememberPendingRaid(target.raidId);}
+    if(online&&!target.raidId){
+      // Push the wallet BEFORE the server snapshots it. A defeat costs
+      // min(server mirror, loss) and the mirror is only as fresh as the last
+      // PUT — a child who had just emptied their purse in the shop paid
+      // nothing for losing, and the defender was handed coins out of a pile
+      // that did not exist.
+      try{await syncHome();}catch(e){/* offline: the raid can still be scored */}
+      const start=await api('start',{method:'POST',body:{targetId:target.targetId}});
+      if(start.ok&&start.data&&start.data.ruined&&!start.data.raid)return playRuinedRaid(target,start.data);
+      if(!start.ok||!start.data||!start.data.raid){
+        armStartButton();
+        const data=start.data||{};
+        // The server answers a house on cooldown with 409 {error, retryAt};
+        // the old code looked for a `locked` key no handler has ever sent, so
+        // this branch was dead and every refusal fell through to one toast.
+        const retryAt=retryAtOf(data)||data.lockedUntil;
+        if(retryAt&&lockLeft(retryAt)){if(typeof showToast==='function')showToast('Con phải chờ thêm '+productionTime(lockLeft(retryAt))+' nữa mới vào lại nhà này');return showLiveTargets();}
+        if(typeof showToast==='function')showToast(data.error||'Không thể bắt đầu raid');
+        return;
+      }
+      Object.assign(target,start.data.raid);rememberPendingRaid(target.raidId);}
     const canvas=document.getElementById('nrScoutCanvas');if(!canvas)return;
     view='battle';raidStage={online:!!online,committed:!!online};if(previewGame){previewGame.destroy();previewGame=null;}
     frameBattleWorld();
@@ -201,10 +228,19 @@ var NightRaid = (() => {
         if(view!=='battle'||!canvas.isConnected)return;
         phaserHost=document.createElement('div');phaserHost.id='nrPhaserBattle';phaserHost.className='nr-phaser-battle';
         canvas.replaceWith(phaserHost);game=new NightRaidPhaser.AutoBattle(phaserHost,target,options);await game.start();
+        // start() decodes eight sprite sheets and boots Phaser, and the child
+        // can hit the map button and confirm during it. cleanup() then called
+        // destroy() on a `game` that was still null, so the instance created
+        // on the line above was unreachable — an orphaned RAF loop rendering
+        // forever into a detached host, one per abandoned raid.
+        if(view!=='battle'){if(game){game.destroy();game=null;}return;}
       }catch(error){console.warn('Night Raid Phaser fallback',error);if(game){game.destroy();game=null;}if(phaserHost&&phaserHost.isConnected)phaserHost.replaceWith(canvas);}
     }
     // A blocked/unsupported runtime must never strand a paid raid: the old
     // renderer produces the same deterministic result and reward callback.
+    // Same reason: without this the fallback renderer was built on a canvas
+    // that had already been detached, while `view` was back on the target list.
+    if(view!=='battle')return;
     if(!game){game=new NightRaidGame.AutoBattle(canvas,target,options);game.start();}
     if(status)status.textContent=`Pet và ${target.attackerSoldiers} lính đang tiến quân`;
     setTimeout(()=>{if(view==='battle'&&game&&game.charge)chargeArmy();},700);
@@ -974,27 +1010,45 @@ var NightRaid = (() => {
   // device's stale wallet over coins the server credited while the child was
   // offline, so a sync started during the read waits for the read to land.
   let homeRead=null;
+  // True while this device holds building work the server has not accepted.
+  // buildCell/movePlacedItem/setDogLane all spend coins locally and then fire
+  // syncHome() without looking at the result, and refreshHome used to
+  // overwrite the layout with the server's copy no matter what — so one failed
+  // PUT (offline, a 5xx, an expired token) made a paid-for tower vanish on the
+  // next open. While this is set the server's layout is NOT adopted; the PUT
+  // is retried instead.
+  let homeDirty=false;
   async function syncHome(){
     if(homeRead){try{await homeRead;}catch(e){}}
-    const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
-  // The raid wallet is the one number the SERVER can move while the child is
-  // asleep: an attacker who breaks on this house pays the defender, and
-  // finish.js writes that straight into night_raid_homes.lootable_coins. The
-  // device cannot know it happened — so before this, the next PUT simply
-  // overwrote the reward with the wallet the phone still remembered, and the
-  // xu the child had won by defending vanished.
+    const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});
+    homeDirty=!res.ok;
+    // A PUT that landed makes this device the wallet of record: it has now
+    // told the server what it holds, so a later GET must never overwrite it.
+    if(res.ok)appState.nightRaidWalletSynced=true;
+    if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
+  // night_raid_homes.lootable_coins is a MIRROR of this device's wallet, not a
+  // second wallet. "Adopt any row that is higher than mine" was a refund loop:
+  // lessons, the shop, the cups and the armoury all move appState.coins
+  // without telling any server, so the row sits ABOVE the device for as long
+  // as it takes the next PUT to land. Build a tower (row 1000), spend 800 in
+  // the home shop (device 200), reopen Cướp Đêm — and open() GETs without
+  // PUTting first, so the row said 1000, the merge took it, and the child was
+  // handed their 800 xu back with a toast thanking them for being offline.
+  // Repeatable as often as the child cared to reopen the screen.
   //
-  // But the wallet LIVES on the device (see functions/api/coins.js): lessons,
-  // the shop, the cups and the armoury all move appState.coins without telling
-  // any server, and the row only catches up on the next syncHome(). So the row
-  // is stale LOW at least as often as it is ahead, and taking its number
-  // outright would eat the xu a child earned in a lesson two minutes ago.
+  // What the merge was really covering is a coin the SERVER moved while the
+  // child was asleep — a raid on this house. That now arrives as a
+  // coin_grants IOU (finish.js), through the same receipt-protected pipeline
+  // as an admin gift, so it lands exactly once and the mirror is not needed
+  // for it.
   //
-  // Hence: adopt only an INCREASE. A row above the device is money the device
-  // could not have known about; a row below it is the device being ahead, and
-  // the PUT settles that. This direction can never shrink or zero a wallet —
-  // the protection the `finite()` rule above exists for.
+  // One case is left, and it is a restore, not a merge: a device that has
+  // never pushed this profile's wallet — a reinstall, or a second phone
+  // signing in — has nothing to be authoritative WITH, so it takes the
+  // server's number once and becomes the source of truth from then on.
   function adoptServerCoins(lootableCoins){
+    if(appState.nightRaidWalletSynced)return 0;
+    appState.nightRaidWalletSynced=true;
     if(!finite(+lootableCoins))return 0;
     const server=Math.max(0,Math.min(100000,Math.trunc(+lootableCoins))),mine=Math.max(0,Math.trunc(+appState.coins||0));
     if(!(server>mine))return 0;
@@ -1011,7 +1065,11 @@ var NightRaid = (() => {
       if(!res.data.home){syncHome();return;}
       homeLockedUntil=Math.max(0,+res.data.home.lockedUntil||0);homeShieldUntil=Math.max(0,+res.data.home.shieldUntil||0);
       const gained=adoptServerCoins(res.data.home.lootableCoins);
-      appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);save();
+      // Local building work the server has not taken yet outranks the server's
+      // older copy — otherwise the tower the child just paid for disappears.
+      if(homeDirty)syncHome();
+      else appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);
+      save();
       if(gained&&typeof showToast==='function')showToast('Nhà con nhận thêm '+gained+' xu khi con offline');
       if(view==='home')renderHome();
     })();
@@ -1043,18 +1101,24 @@ var NightRaid = (() => {
   // whole row is already the button (a thumb aimed anywhere on the strip
   // attacks), and a button nested inside a button is invalid markup that
   // Safari resolves by dropping one of them.
-  const readyStateHtml=()=>'<b>⚔️ TẤN CÔNG</b>';
+  const readyStateHtml=(hasTickets)=>hasTickets!==false?'<b>⚔️ TẤN CÔNG</b>'
+    :'<small>HẾT LƯỢT</small><b>quay lại mai nhé</b>';
   // A friend row becomes a scout target the same way a target card does, minus
   // everything the list does not carry: an empty yard stands in for the layout
   // until start() replaces it with the real snapshot. No lockedUntil and no
   // shield clue travel with it — the scout stage must be as blind as the row.
   function friendTarget(f){const level=Math.max(1,Math.trunc(+f.homeLevel)||1),name=String(f.name||'Nhà bạn');return {targetId:f.targetId,name,title:{vi:name,en:name},homeLevel:level,level,difficulty:f.difficulty||'Cân bằng',sceneId:LIVE_SCENES[Math.abs(Math.trunc(+f.targetId)||0)%3],seed:1,layout:{cells:[],soldiers:0,dogLane:2},dogLevel:1,castleSkin:'stone-keep',castleHp:180+Math.min(50,level)*8,budget:0,friend:true};}
-  function friendRow(f,index){const retryAt=retryAtOf(f),left=lockLeft(retryAt),ready=left<=0;
-    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(ready?'tấn công ngay được':'còn '+waitPhrase(left)+' nữa con mới vào lại được');
-    return `<li><button type="button" class="nr-friend-row ${ready?'ready':'wait'}" ${ready?'':`disabled data-nr-friend-until="${retryAt}"`} onclick="nrScoutLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}</small></span><span class="nr-friend-state" data-nr-friend-state>${ready?readyStateHtml():`<small>CHỜ THÊM</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>vào lại lúc ${esc(clockPhrase(retryAt))}</em>`}</span></button></li>`;}
+  // `hasTickets` is the second half of the same honesty rule the row states
+  // for the clock: a row that says ⚔️ TẤN CÔNG must be attackable. With the
+  // allowance spent every one of them still said it, the child tapped, and the
+  // server answered 429 — which is exactly the refusal that used to kill the
+  // TIẾN QUÂN button on the next screen.
+  function friendRow(f,index,hasTickets){const retryAt=retryAtOf(f),left=lockLeft(retryAt),ready=left<=0&&hasTickets!==false;
+    const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(left>0?'còn '+waitPhrase(left)+' nữa con mới vào lại được':ready?'tấn công ngay được':'hôm nay con hết lượt rồi');
+    return `<li><button type="button" class="nr-friend-row ${ready?'ready':'wait'}" ${ready?'':'disabled'} ${left>0?`data-nr-friend-until="${retryAt}"`:''} onclick="nrScoutLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}</small></span><span class="nr-friend-state" data-nr-friend-state>${left>0?`<small>CHỜ THÊM</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>vào lại lúc ${esc(clockPhrase(retryAt))}</em>`:readyStateHtml(hasTickets)}</span></button></li>`;}
   // Ticks beside updateLockTimers: the text only changes when the minute does,
   // and a row whose clock ran out is handed back as a live TẤN CÔNG button.
-  function updateFriendTimers(){document.querySelectorAll('.nr-friend-row[data-nr-friend-until]').forEach(row=>{const left=lockLeft(row.dataset.nrFriendUntil),time=row.querySelector('[data-nr-friend-time]');if(left>0){const text='còn '+waitPhrase(left);if(time&&time.textContent!==text)time.textContent=text;return;}row.removeAttribute('data-nr-friend-until');row.disabled=false;row.classList.remove('wait');row.classList.add('ready');const state=row.querySelector('[data-nr-friend-state]');if(state)state.innerHTML=readyStateHtml();});}
+  function updateFriendTimers(hasTickets){document.querySelectorAll('.nr-friend-row[data-nr-friend-until]').forEach(row=>{const left=lockLeft(row.dataset.nrFriendUntil),time=row.querySelector('[data-nr-friend-time]');if(left>0){const text='còn '+waitPhrase(left);if(time&&time.textContent!==text)time.textContent=text;return;}row.removeAttribute('data-nr-friend-until');const state=row.querySelector('[data-nr-friend-state]');if(state)state.innerHTML=readyStateHtml(hasTickets);if(hasTickets===false)return;row.disabled=false;row.classList.remove('wait');row.classList.add('ready');});}
   function ownStatusHtml(me){const now=Date.now(),shield=Math.max(0,+(me?me.shieldUntil:homeShieldUntil)||0),lock=Math.max(0,+(me?me.lockedUntil:homeLockedUntil)||0);
     if(shield>now)return `<div class="nr-own-status safe" role="status"><i>🛡️</i><span>Nhà con: <b>đang có khiên</b> đến ${esc(clockPhrase(shield))} — ai cướp cũng thua.</span></div>`;
     if(lock>now)return `<div class="nr-own-status safe" role="status"><i>🏰</i><span>Nhà con: <b>đang được bảo vệ</b> đến ${esc(clockPhrase(lock))} (còn ${waitPhrase(lock-now)}).</span></div>`;
@@ -1072,16 +1136,17 @@ var NightRaid = (() => {
     const friends=(friendsOk?(friendsRes.data.friends||[]):[]).slice().sort((a,b)=>(retryAtOf(a)-retryAtOf(b))||String(a.name||'').localeCompare(String(b.name||''),'vi'));
     const randoms=targetsOk?(targetsRes.data.targets||[]):[],tickets=friendsOk&&Number.isFinite(+friendsRes.data.ticketsLeft)?+friendsRes.data.ticketsLeft:(targetsOk?+targetsRes.data.ticketsLeft||0:0);
     liveTargets=friends.map(friendTarget).concat(randoms);
-    const friendList=friends.length?`<ul class="nr-friend-list">${friends.map((f,i)=>friendRow(f,i)).join('')}</ul>`:friendsOk
+    const hasTickets=tickets>0;
+    const friendList=friends.length?`<ul class="nr-friend-list">${friends.map((f,i)=>friendRow(f,i,hasTickets)).join('')}</ul>`:friendsOk
       ?'<div class="nr-live-empty"><strong>Chưa có bạn nào có lâu đài</strong>Kết bạn trong <b>Hồ sơ → 👥 Bạn bè</b> (gửi link kết bạn cho bạn cùng lớp). Khi bạn xây nhà xong, tên bạn sẽ hiện ở đây kèm giờ cướp được.<button class="nr-secondary nr-wide" type="button" onclick="closeNightRaid();if(typeof switchScreen===\'function\')switchScreen(\'profileScreen\')">Mở 👥 Bạn bè</button></div>'
       :`<p class="nr-empty">Chưa tải được danh sách bạn bè${friendsRes.data&&friendsRes.data.error?' — '+esc(friendsRes.data.error):''}. Kéo xuống để chọn nhà ngẫu nhiên.</p>`;
     // A random castle keeps exactly the two states a friend row has. The old
     // `shieldClue` class painted a halo on any house holding a shield, which
     // is the same solved-puzzle leak the friend rows had; and its chip counted
     // down the HOUSE's 24 h seal, where this one counts the child's own wait.
-    const randomCards=randoms.map((t,i)=>{const retryAt=retryAtOf(t),waiting=!!lockLeft(retryAt);return `<button type="button" class="nr-target-card ${waiting?'locked':''}" ${waiting?'disabled':''} onclick="nrScoutLive(${friends.length+i})">${lockChip(retryAt,'CHỜ THÊM')}<span class="nr-target-art">${svg('castle')}</span><span class="nr-target-copy"><strong>${esc(t.name)}</strong><small>Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}</small></span><span class="nr-target-go">${waiting?'':'⚔️ TẤN CÔNG'}</span></button>`;}).join('');
+    const randomCards=randoms.map((t,i)=>{const retryAt=retryAtOf(t),waiting=!!lockLeft(retryAt),blocked=waiting||!hasTickets;return `<button type="button" class="nr-target-card ${blocked?'locked':''}" ${blocked?'disabled':''} onclick="nrScoutLive(${friends.length+i})">${lockChip(retryAt,'CHỜ THÊM')}<span class="nr-target-art">${svg('castle')}</span><span class="nr-target-copy"><strong>${esc(t.name)}</strong><small>Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}</small></span><span class="nr-target-go">${waiting?'':hasTickets?'⚔️ TẤN CÔNG':'HẾT LƯỢT'}</span></button>`;}).join('');
     r.innerHTML=shell(`<main class="nr-live-targets">${head('Chọn nhà để cướp','','CƯỚP ĐÊM · '+tickets+' LƯỢT')}${ownStatusHtml(me)}<div class="nr-live-head"><h3>👥 Bạn bè</h3><span>${friends.length} nhà</span></div>${friendList}<section class="nr-live-random"><div class="nr-live-head"><h3>🎲 Nhà ngẫu nhiên</h3><span>Nhà người chơi cân bằng với con</span></div><div class="nr-target-grid">${randomCards||'<p class="nr-empty">Chưa có nhà phù hợp. Hãy thử lại sau.</p>'}</div></section><div class="nr-live-actions"><button class="nr-secondary nr-wide" type="button" onclick="nrScoutBot()">Chơi thử với Bot</button></div></main>`);
-    updateFriendTimers();productionTicker=setInterval(()=>{updateLockTimers();updateFriendTimers();},1000);}
+    updateFriendTimers(hasTickets);productionTicker=setInterval(()=>{updateLockTimers();updateFriendTimers(hasTickets);},1000);}
   function scoutLive(index){const t=liveTargets[index];if(!t)return;scout(1,t,true);}
   // A raid the server scored but the client never heard about: /start wrote
   // the row (tonight's visit to that house is spent), then /finish failed or
@@ -1098,7 +1163,17 @@ var NightRaid = (() => {
     // Nothing left to recover — the row is gone, expired or not ours — so
     // stop asking. Any other failure (offline, no token) is retried next time.
     const err=String((res.data&&res.data.error)||'');if(/expired|not found|forbidden|invalid raid/i.test(err)||Date.now()-(+p.at||0)>36e5*24)clearPendingRaid(p.raidId);return null;}
-  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId}});const verified=res.ok&&res.data&&res.data.result;if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
+  // A raid the server refuses to score is NOT a win. The old code fell through
+  // to renderResult with the client's own simulated `state`, so a child who
+  // switched apps mid-battle — Phaser sleeps its loop while the tab is hidden,
+  // so any pause longer than the raid window does it — came back to a
+  // CHIẾN THẮNG banner promising +0 xu, and the house was locked behind a 12 h
+  // clock nobody had paid a ticket for. The server now deletes that row and
+  // says so; this says so too, and puts the child back in front of the list.
+  const isExpired=res=>!!(res&&res.data&&(res.data.expired||/expired|hết giờ/i.test(String(res.data.error||''))));
+  async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId}});const verified=res.ok&&res.data&&res.data.result;
+    if(!verified&&isExpired(res)){clearPendingRaid(target.raidId);announce('Trận này đã hết giờ');if(typeof showToast==='function')showToast('Hết giờ trận này rồi — con vào lại nhà đó được ngay');return showLiveTargets();}
+    if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
 
   // ---- NHẬT KÝ = cả hai chiều ---------------------------------------------
   // The log answered one question — "who came to MY house?" — and never the

@@ -49,7 +49,13 @@ suite('night raid Phase 2: schema and endpoints',()=>{
   });
   test('ticket and reward caps are server-side',()=>{
     const start=read('functions/api/night-raid/start.js'),finish=read('functions/api/night-raid/finish.js'),helper=read('functions/api/_night-raid.js');
-    assert.truthy(start.includes('stats.used>=stats.allowance'));
+    // A ticket is only booked at /finish, so counting tickets_used alone let a
+    // child open one raid per friend in the same minute and finish them all.
+    // An in-flight raid counts against the allowance now; db/023's partial
+    // unique index is the half a race cannot get past. Executed coverage lives
+    // in tests/night-raid-gamble.test.js.
+    assert.truthy(start.includes('stats.used+inFlight>=stats.allowance'));
+    assert.truthy(start.includes("status='active'"), 'in-flight raids must be counted');
     assert.truthy(finish.includes('night_raid_daily'));
     // The 200/day cap became the tunable daily_reward_cap (db/021); what a win
     // pays is still decided here, never by the client. Executed coverage lives

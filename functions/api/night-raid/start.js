@@ -8,7 +8,23 @@ export async function onRequestPost({request,env}) {
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
   const targetId=Math.trunc(+body.targetId);if(!targetId||targetId===auth.uid)return err('Invalid target');
   const cfg=await readRaidConfig(env);
-  const date=nightDate(),stats=await ticketStats(env,auth.uid,date);if(stats.used>=stats.allowance)return err('Hết lượt Cướp Đêm hôm nay',429);
+  const now0=Date.now();
+  // Drop this child's own raids that ran out of time before anything else
+  // reads them. A row left 'active' forever used to keep the pair on cooldown
+  // for the full retry window without a ticket ever being spent, held db/009's
+  // one-row-per-pair-per-day index, and now would hold db/023's
+  // one-active-raid index shut too.
+  await env.DB.prepare("DELETE FROM night_raids WHERE attacker_id=? AND status='active' AND expires_at<?").bind(auth.uid,now0).run();
+  const date=nightDate(),stats=await ticketStats(env,auth.uid,date);
+  // A ticket is only BOOKED at /finish, so counting `tickets_used` alone let a
+  // child open one raid per friend in the same minute — every /start read
+  // used=0 — and then finish them all. An in-flight raid is a ticket the child
+  // has already taken off the shelf, so it counts here; db/023's partial
+  // unique index is the race-proof half of the same rule.
+  const live=await env.DB.prepare("SELECT COUNT(*) AS n FROM night_raids WHERE attacker_id=? AND status='active' AND expires_at>=?").bind(auth.uid,now0).first();
+  const inFlight=Math.max(0,Number(live&&live.n||0));
+  if(inFlight>0)return err('Con đang có một trận Cướp Đêm dở dang — vào lại trận đó trước đã',409,{inFlight:true});
+  if(stats.used+inFlight>=stats.allowance)return err('Hết lượt Cướp Đêm hôm nay',429);
   const row=await env.DB.prepare('SELECT h.*,u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=? AND u.disabled=0').bind(targetId).first();if(!row)return err('Nhà này không còn khả dụng',404);
   // A shielded castle is still raided — and lost. The snapshot pins DEF to the
   // rules' ceiling; finish.js also forces the loss outright, so the shield
@@ -18,9 +34,12 @@ export async function onRequestPost({request,env}) {
   const now=Date.now();const shielded=(+row.shield_until||0)>now;
   // MY OWN cooldown on this house comes first, because it is the one thing the
   // child already knows (they were there) and the one refusal that must not
-  // write a second row. It counts from my last attempt of ANY kind — win, loss
-  // or ruins — which is why the ruins branch below still records one.
-  const last=await env.DB.prepare('SELECT MAX(created_at) AS last_at FROM night_raids WHERE attacker_id=? AND defender_id=?').bind(auth.uid,targetId).first();
+  // write a second row. It counts from my last attempt that ACTUALLY HAPPENED
+  // — win, loss or ruins, which is why the ruins branch below still records
+  // one. A raid the child never got to score (app closed mid-battle, /finish
+  // came back past the deadline) is NOT an attempt: that row used to sit here
+  // as 'active' forever and lock the door for 12 h for nothing.
+  const last=await env.DB.prepare("SELECT MAX(created_at) AS last_at FROM night_raids WHERE attacker_id=? AND defender_id=? AND status IN ('done','ruined')").bind(auth.uid,targetId).first();
   const retryAt=retryAvailableAt(last&&last.last_at,cfg.retry_hours,now);
   if(retryAt)return err('Con vừa đánh nhà này rồi',409,{retryAt});
   // Nhà tan hoang. The house was robbed by somebody and is sealed — but the

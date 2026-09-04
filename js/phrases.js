@@ -678,9 +678,13 @@ function finishPhrasesQuiz() {
   try { date = Date.now(); } catch (e) { date = 0; }
   savePhrasesSession({ id: 'phr-' + date, date, score, total, wrong, qs: st.qs, skills: phrasesSkillSummaries(st) });
 
-  // Owe every missed question back. After the coins, so a mistake never
-  // feels like it took away what was just earned.
-  if (typeof retryAdd === 'function') retryAdd('phr', wrong.map(w => phrasesById(w.qid)).filter(Boolean));
+  // Owe every missed PHRASE question back — never a meaning check (pm-…).
+  // The drill types the English preposition; a meaning question's answer is
+  // Vietnamese, and the drill renders it as one text box, so a missed pm-…
+  // used to lock every Phrases practice behind a question nobody could type.
+  // After the coins, so a mistake never feels like it took away what was
+  // just earned.
+  if (typeof retryAdd === 'function') retryAdd('phr', wrong.map(w => phrasesById(w.qid)).filter(q => q && !q.meaning));
   // The silent priority list (js/wrong-priority.js): phrase questions only —
   // a typed variant (pt-…) counts for its base phrase, a meaning check (pm-…)
   // is not tracked, like the owed drill.
@@ -747,11 +751,25 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   key: 'phr',
   screenId: 'phrasesScreen',
   noun: 'câu',
-  resolve: (id) => phrasesById(id),
+  // Meaning checks (pm-…) are never owed — and any that a previous build
+  // already persisted resolve to null here, so the engine drops them from the
+  // queue instead of wedging the gate shut on an unanswerable question.
+  resolve: (id) => {
+    const q = phrasesById(id);
+    return (q && q.meaning) ? null : q;
+  },
   idOf: (q) => q.id,
   answerText: (q) => (q.options && q.options[q.correct] != null) ? q.options[q.correct] : String(q.answer || ''),
   grade: (v, q) => {
-    const norm = (x) => String(x || '').toLowerCase().normalize('NFC').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+    // Diacritic-insensitive on BOTH sides. The old normaliser stripped
+    // anything outside [a-z0-9 ] AFTER an NFC compose, so "tăng lên" became
+    // the stub "tng ln": typing it back with every accent in place still
+    // matched (both sides collapsed alike), but "tang len" — what a child
+    // types on a keyboard with no Vietnamese input — never could. Decomposing
+    // first keeps the base letters, so both spellings pass.
+    const norm = (x) => String(x || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd')
+      .replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
     const want = (q.options && q.options[q.correct] != null) ? q.options[q.correct] : q.answer;
     const got = norm(v);
     return !!got && got === norm(want);

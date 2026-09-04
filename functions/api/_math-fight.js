@@ -106,13 +106,22 @@ export async function settleFight(env, row, now = Date.now()) {
     { id: row.opponent_id, correct: row.o_correct || 0, ms: oMs, forfeit: oQuit }
   );
 
-  const pair = await pairState(env, row.challenger_id, row.opponent_id);
-  const next = MF.nextPairState(pair, verdict.winnerId);
-  await savePairState(env, row.challenger_id, row.opponent_id, next, MF.cooldownUntil(now));
-
-  await env.DB.prepare(
+  // CLAIM THE FIGHT FIRST. The status guard is what makes this idempotent, and
+  // the pair's handicap used to be written BEFORE it — outside the guard. Two
+  // settlers overlapping (both tickers hitting the deadline, the 5-second
+  // pulse, or reapStale running on any other child's list poll) each read the
+  // pair, each added one to the streak, and the second one's read landed after
+  // the first one's write: one win advanced the ladder two rungs and handed
+  // the loser a double handicap in the next fight.
+  const claim = await env.DB.prepare(
     "UPDATE math_fights SET status='done', finished_at=?, winner_id=?, outcome=? WHERE id=? AND status='active'"
   ).bind(now, verdict.winnerId, verdict.outcome, row.id).run();
+
+  if (Number(claim.meta && claim.meta.changes || 0) > 0) {
+    const pair = await pairState(env, row.challenger_id, row.opponent_id);
+    const next = MF.nextPairState(pair, verdict.winnerId);
+    await savePairState(env, row.challenger_id, row.opponent_id, next, MF.cooldownUntil(now));
+  }
 
   return env.DB.prepare('SELECT * FROM math_fights WHERE id=?').bind(row.id).first();
 }

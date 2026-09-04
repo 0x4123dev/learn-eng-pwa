@@ -174,10 +174,30 @@ CREATE TABLE IF NOT EXISTS coin_grants (
   -- pending row older than 10 minutes with no ack is offered again, so a
   -- crash between claim and save no longer loses the gift.
   receipt      TEXT,
-  confirmed_at TEXT
+  confirmed_at TEXT,
+  -- db/025: which install claimed it. The ten-minute re-offer above is scoped
+  -- to that device, so a second phone on the same account can never be handed
+  -- a grant this one already banked but has not acked yet. That matters twice
+  -- over now that Cướp Đêm settles the sleeping defender through this table
+  -- and an amount can be negative.
+  claimed_device TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_coin_grants_unclaimed
   ON coin_grants(user_id) WHERE claimed_at IS NULL;
+
+-- The ghost-offering PAYOUT ledger (db/024). ghost_offering_claims is keyed on
+-- `${eventDate}#${sessionId}` for preview rounds, which are minted fresh on
+-- every open so QA can replay the scene; this table is keyed on the real
+-- calendar day, so replaying the scene cannot replay the coins.
+CREATE TABLE IF NOT EXISTS ghost_offering_payouts (
+  user_id    INTEGER NOT NULL,
+  event_date TEXT NOT NULL,
+  item_id    TEXT NOT NULL,
+  reward     INTEGER NOT NULL,
+  claimed_at INTEGER NOT NULL,
+  PRIMARY KEY (user_id, event_date, item_id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
 -- Daily 22:00–24:00 GMT+7 ghost-offering event (db/012).
 CREATE TABLE IF NOT EXISTS ghost_offering_claims (

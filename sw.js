@@ -276,6 +276,25 @@ function isRecording(resp) {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+
+  // The API is NEVER cached and never replayed. The Cache API keys on the URL
+  // alone: the Authorization header is not part of that key, the responses
+  // carry no Vary, and the `Cache-Control: no-store` functions/api/_lib.js
+  // sets does not stop cache.put(). So every authenticated GET was being
+  // filed under its path and handed to whoever asked for that path next.
+  //
+  // On a device holding two sibling profiles — the designed maximum — the
+  // second child, offline, was answered with the FIRST child's
+  // /api/night-raid/home, /api/friends and /api/me/daily-tasks, with ok:true.
+  // js/night-raid.js then adopted that castle and wallet into their own
+  // appState and PUT it back under their own token. A stale hit was enough on
+  // its own, too: it made the app believe the server had confirmed something
+  // it had never been asked. admin.html runs in this scope as well, so
+  // /api/admin/* (names, coin peaks, device flags) was landing in Cache
+  // Storage on whatever machine an adult had used.
+  if (url.origin === self.location.origin && url.pathname.startsWith('/api/')) return;
+
   // Word recordings are immutable → cache-first, stored in their own
   // long-lived cache so they play instantly and work offline.
   if (event.request.url.includes('/audio/words/')) {
@@ -291,9 +310,22 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
       }
       return response;
-    }).catch(() => {
-      // Offline — serve from cache
-      return caches.match(event.request);
+    }).catch(async () => {
+      // Offline — serve from cache. `ignoreSearch` because a query string is
+      // never part of what we precached: the friend-invite link
+      // /?ketban=<name> (js/friends.js) missed the cached '/' entirely.
+      const hit = await caches.match(event.request, { ignoreSearch: true });
+      if (hit) return hit;
+      // A navigation lands on the app shell rather than the browser's
+      // can't-connect page — the whole app is precached, so there is no reason
+      // for a deep link to fail offline.
+      if (event.request.mode === 'navigate') {
+        const shell = (await caches.match('/index.html')) || (await caches.match('/'));
+        if (shell) return shell;
+      }
+      // Never resolve respondWith with undefined: that throws a TypeError and
+      // the browser shows its own error page instead of our failure.
+      return Response.error();
     })
   );
 });

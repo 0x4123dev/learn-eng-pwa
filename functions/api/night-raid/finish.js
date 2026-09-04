@@ -9,7 +9,22 @@ export async function onRequestPost({request,env}) {
   if(raid.status==='done')return json({ok:true,result:safeJson(raid.result_json,{})});
   // status='ruined' lands here too: the troops found rubble, there is nothing
   // to resolve, and it must never be turned into a ticket or a payout.
-  if(raid.status!=='active'||raid.expires_at<Date.now())return err('Raid expired',409);
+  if(raid.status!=='active')return err('Raid expired',409);
+  // Out of time. The client is told plainly (409 + expired:true) so it can say
+  // "hết giờ" instead of painting its own simulated win with 0 xu, which is
+  // what a child saw whenever they switched apps mid-battle: Phaser sleeps its
+  // loop while the tab is hidden, so any background longer than the raid
+  // window landed here.
+  if(raid.expires_at<Date.now()){
+    // DELETED, not parked in some 'expired' state: a raid that never scored
+    // must leave no trace at all. The row used to stay 'active' forever, and
+    // start.js's MAX(created_at) then read it as "con vừa đánh nhà này rồi"
+    // for the whole retry window — a 12 h lock bought with no ticket and no
+    // xu. It also held db/009's one-row-per-pair-per-day unique index, so the
+    // child could not simply try that house again.
+    await env.DB.prepare("DELETE FROM night_raids WHERE id=? AND status='active'").bind(raidId).run();
+    return err('Hết giờ trận này rồi — con vào lại nhà đó được ngay',409,{expired:true});
+  }
   const snapshot=safeJson(raid.snapshot_json,null);if(!snapshot)return err('Broken raid snapshot',500);
   const cfg=await readRaidConfig(env);
   const sim=NR.resolveAutoBattle(snapshot),date=nightDate(),stats=await ticketStats(env,auth.uid,date);
@@ -43,8 +58,23 @@ export async function onRequestPost({request,env}) {
   const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;
   result.lockedUntil=lockedUntil;
   // (Không còn trừ lính khỏi nhà của bên tấn công.)
+  //
+  // CLAIM FIRST, then move the money. This UPDATE is the whole idempotency
+  // guard: exactly one caller can flip active→done, and only that caller runs
+  // the batch below. It used to sit INSIDE the batch alongside unguarded coin
+  // UPDATEs, so two overlapping /finish calls (finishOnline racing
+  // retryPendingFinish, a double tap, a retry inside D1 latency) both passed
+  // the status read at the top and both moved the money — the defender was
+  // debited twice for one raid and tickets_used jumped by 2.
+  const claim=await env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'")
+    .bind('[]',JSON.stringify(result),now,raidId).run();
+  if(!Number(claim.meta&&claim.meta.changes||0)){
+    // Somebody else scored it between our read and our write. Their result is
+    // the real one; replay it rather than paying a second time.
+    const settled=await env.DB.prepare('SELECT result_json FROM night_raids WHERE id=?').bind(raidId).first();
+    return json({ok:true,result:safeJson(settled&&settled.result_json,result)});
+  }
   const statements=[
-    env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'").bind('[]',JSON.stringify(result),now,raidId),
     env.DB.prepare(`INSERT INTO night_raid_daily(user_id,raid_date,tickets_used,reward_earned) VALUES(?,?,1,?)
       ON CONFLICT(user_id,raid_date) DO UPDATE SET tickets_used=tickets_used+1,reward_earned=MIN(?,reward_earned+excluded.reward_earned)`).bind(auth.uid,date,reward,cfg.daily_reward_cap),
   ];
@@ -53,6 +83,22 @@ export async function onRequestPost({request,env}) {
   // someone already at the daily reward cap — was left wide open for the next
   // attacker, because `victimLoss > 0` was false and the whole UPDATE was skipped.
   if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?').bind(lockedUntil,raid.defender_id));
+  // ---- moving the money ---------------------------------------------------
+  // night_raid_homes.lootable_coins is a MIRROR of the child's device wallet,
+  // not the wallet itself (functions/api/coins.js): the device overwrites it
+  // on the next syncHome PUT. So writing the other child's loss here and
+  // stopping was not a transfer at all — the victim's phone knew nothing about
+  // it, kept its old balance, and the very next PUT put the stolen coins back.
+  // Every raid therefore PRINTED its reward.
+  //
+  // The side that is standing in front of the screen (the attacker) applies
+  // its own half locally, once per raidId (claimVerified). The side that is
+  // ASLEEP gets a coin_grants IOU — the same receipt-protected pipeline the
+  // admin gifts and the ghost offering use — so the adjustment survives until
+  // their device is next online, and can only ever be applied once.
+  const grants=[];
+  if(victimLoss>0)grants.push([raid.defender_id,-victimLoss,'Cướp Đêm: nhà con bị cướp']);
+  if(defenderGain>0)grants.push([raid.defender_id,defenderGain,'Cướp Đêm: con giữ được nhà']);
   if(victimLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(victimLoss,raid.defender_id));
   if(attackerLoss>0){
     statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(attackerLoss,raid.attacker_id));
@@ -60,6 +106,9 @@ export async function onRequestPost({request,env}) {
     // home.js enforces on a PUT, so a defeat can never push a pile past a size
     // the rest of the app refuses to store.
     statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MIN(100000,MAX(0,lootable_coins)+?) WHERE user_id=?').bind(defenderGain,raid.defender_id));
+  }
+  for(const [uid,amount,note] of grants){
+    statements.push(env.DB.prepare('INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,0)').bind(uid,amount,note));
   }
     await env.DB.batch(statements);
   return json({ok:true,result});

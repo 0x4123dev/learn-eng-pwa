@@ -403,7 +403,10 @@ suite('battle: damage scales with the pet you raised', () => {
 
     test('the server clamps reported damage with the same rule', () => {
         assert.truthy(turnSrc.includes('maxTurnDamage'), 'turn.js must clamp damage');
-        assert.truthy(/Math\.min\(maxTurnDamage/.test(turnSrc), 'clamp must be applied to the reported value');
+        assert.truthy(/Math\.min\(ceiling, Math\.trunc\(\+reported/.test(turnSrc), 'clamp must be applied to the reported value');
+        // …and the ceiling is no longer only theoretical: the server re-fires
+        // the volley from the battle row and takes the lower of the two.
+        assert.truthy(/serverVolleyDamage\(b, \{/.test(turnSrc), 'the shot itself is re-simulated');
     });
 });
 

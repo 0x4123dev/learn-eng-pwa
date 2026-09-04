@@ -453,11 +453,27 @@ function farmLayout() {
   return NR.normalizeLayout({ cells: [{ type: 'rice-field', lane: 0, col: 1, gx: 0, gy: 0, tier: 1, uid: 'p-testfarm01', readyAt: Date.now() + 3600000 }], soldiers: 2, dogLane: 2 });
 }
 async function seedHome(world, user, coins) {
+  const layout = farmLayout();
   const r = await world.call(homeHandler().onRequestPut, {
     url: '/api/night-raid/home', method: 'PUT', token: user.token,
-    body: { layout: farmLayout(), dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
+    body: { layout, dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
   });
   assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
+  // Soldiers cannot arrive through the PUT any more, not even on the first one
+  // for a brand-new home — that was the hole the old 10-soldier cap was
+  // covering (a fresh account PUTting soldiers: 1000000 beat every house).
+  // Only night-raid/collect.js grows the stock, so a fixture that wants an
+  // army writes it the way collect.js would.
+  putSoldiers(world, user.uid, layout.soldiers);
+}
+// Set the soldier stock directly, as night-raid/collect.js does.
+function putSoldiers(world, uid, soldiers) {
+  if (!soldiers) return;
+  const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(uid);
+  const stored = JSON.parse(row.layout_json);
+  stored.soldiers = soldiers;
+  world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
+    .run(JSON.stringify(stored), uid);
 }
 function homeRow(world, uid) { return world.db.prepare('SELECT * FROM night_raid_homes WHERE user_id=?').get(uid); }
 // What js/night-raid.js ownPower() computes on the client for this home and
