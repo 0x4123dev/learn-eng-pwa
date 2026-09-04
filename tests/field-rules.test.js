@@ -261,7 +261,7 @@ suite('field rules: v2 is the long world', () => {
         assert.truthy(worstSolutions >= 1, 'every scenario needs at least one legal shot');
     });
 
-    test('the practice bot can solve v2 without privileged physics', () => {
+    test('a coarse aiming grid can solve v2 without privileged physics', () => {
         // A coarse 5° × 5-power grid, the resolution a child's thumb reaches.
         for (const seed of [1, 4242, 99991, 31337]) {
             const t = C.buildTerrain(seed, V2);

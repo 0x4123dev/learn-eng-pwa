@@ -22,7 +22,7 @@ suite('no bot modes: the Arena has no practice-vs-bot', () => {
   test('js/petbattle.js has no practice entry point, result screen or strings', () => {
     const src = read('js/petbattle.js');
     for (const banned of ['startBotBattle', 'finishBotBattle', 'pb-practice-btn', 'pb-practice-card',
-      'result.practice', 'botSetGame', 'botOnPlayerTurnDone', 'practiceBtn', 'practiceAgain', 'practiceNote']) {
+      'result.practice', 'botSetGame', 'botClearGame', 'botOnPlayerTurnDone', 'practiceBtn', 'practiceAgain', 'practiceNote']) {
       assert.falsy(src.includes(banned), 'js/petbattle.js still mentions ' + banned);
     }
   });

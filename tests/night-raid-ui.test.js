@@ -573,31 +573,25 @@ suite('night raid: mobile UX and accessibility',()=>{
   });
 });
 
-suite('night raid: only one combat loop',()=>{
-  test('UI exposes random bot and live targets through the same startRaid',()=>{
-    assert.truthy(ui.includes('startRaid(target,online)'));
-    assert.truthy(ui.includes('makeBotTarget()'));
-    assert.truthy(ui.includes('nrScoutBot()'));
-    assert.truthy(ui.includes('scout(1,t,true)'));
+suite('night raid: only one combat loop, and only against real houses',()=>{
+  test('the UI reaches startRaid from the live list alone',()=>{
+    assert.truthy(ui.includes('startRaid(target,true)'),'scout must start an ONLINE raid');
+    assert.truthy(ui.includes('scout(t)'),'scoutLive hands the chosen house to scout');
+    assert.falsy(ui.includes('makeBotTarget'));
+    assert.falsy(ui.includes('nrScoutBot'));
     assert.falsy(ui.includes('20 Nhà Huấn Luyện'));
     assert.falsy(ui.includes('Nhà tiếp theo'));
     assert.falsy(ui.includes('startSiege'));
     assert.falsy(ui.includes('wavePlan'));
   });
-  test('a bot raid fields exactly the soldiers the child produced — none are lent',()=>{
-    // Bot practice used to add a floor of 4 free soldiers on top of the real
-    // stock. The HUD then read 6 against a bot and 2 against a real home for
-    // the same army, and a parent counting soldiers could not tell where the
-    // other four went. Both modes now show the produced count.
-    const botBlock=ui.slice(ui.indexOf('function makeBotTarget'),ui.indexOf('function scoutBot'));
-    assert.falsy(/attackerSoldiers\s*=/.test(botBlock),'the bot target must not set its own soldier count');
+  test('a raid fields exactly the soldiers the child produced — none are lent',()=>{
+    const scoutBlock=ui.slice(ui.indexOf('function scout('),ui.indexOf('function scoutFitZoom'));
+    assert.falsy(/attackerSoldiers\s*=\s*\d/.test(scoutBlock),'no fixed soldier count');
     assert.equal((ui.match(/4\+Math\.max\(0,mine\.soldiers\)/g)||[]).length,0,'no soldier floor may come back');
     assert.falsy(/\d\s*\+\s*Math\.max\(0,\s*(mine|army)\.soldiers\)/.test(ui),'no lending in any shape');
-    // scout() is what fills the number in, from the honest produced count.
     assert.truthy(ui.includes('target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)'),
       'scout must fall back to the produced count when the target carries none');
-    // Không còn trừ lính sau trận: lính là quân thường trực.
-    assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui),'trận đánh bot vẫn đang trừ lính khỏi kho');
+    assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui),'a raid must not consume soldiers');
   });
   test('the castle has structural stages, persistent crater and projectile trails',()=>{
     const art=read('js/night-raid-art.js');

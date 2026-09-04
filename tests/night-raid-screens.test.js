@@ -107,6 +107,27 @@ function tap(el) {
   return !!hasInline;
 }
 
+// The bot road is gone. Reach the scout stage the way a child does: open the
+// list of real houses (served by a stubbed API) and tap the first card.
+function liveWorld(overrides) {
+  overrides = overrides || {};
+  const target = Object.assign(Rules.trainingTarget(3),
+    { targetId: 42, name: 'Nhà Bin', homeLevel: 3, difficulty: 'vừa sức' });
+  const api = (p) => {
+    if (p === 'night-raid/friends') return Promise.resolve({ ok: true, data: { me: null, friends: [], ticketsLeft: 3 } });
+    if (p === 'night-raid/targets') return Promise.resolve({ ok: true, data: { targets: [target], ticketsLeft: 3 } });
+    return Promise.resolve({ ok: false, data: null });
+  };
+  const ctx = Object.assign({ EngAuth: { tokenFor: () => 'tok', api } }, overrides.ctx || {});
+  const w = mount(Object.assign({}, overrides, { ctx }));
+  return Object.assign(w, { target });
+}
+async function enterScout(w) {
+  w.ctx.NightRaid.open();
+  await w.ctx.NightRaid.showLiveTargets();
+  w.ctx.NightRaid.scoutLive(0);
+}
+
 suite('night raid screens: every sub-menu opens and its primary action is armed', () => {
   test('the home stage renders exactly four sub-menu fabs, and CƯỚP ĐÊM opens the houses', () => {
     const { ctx, doc } = mount();
@@ -151,24 +172,27 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.equal(opened, 1);
   });
 
-  test('a bot fight opens scout AND arms the TIẾN QUÂN button', () => {
-    const { ctx, doc } = mount();
-    ctx.NightRaid.open();
-    ctx.NightRaid.scoutBot();                       // must not throw
-    const btn = doc.getElementById('nrStartRaid');
+  test('a live fight opens scout AND arms the TIẾN QUÂN button', async () => {
+    const w = liveWorld();
+    await enterScout(w);
+    const btn = w.doc.getElementById('nrStartRaid');
     assert.truthy(btn, 'the TIẾN QUÂN button must exist');
     assert.falsy(btn.disabled, 'and be enabled');
     assert.truthy(typeof btn.onclick === 'function',
       'TIẾN QUÂN must be WIRED — a rendered but dead button is the bug');
   });
 
-  test('tapping TIẾN QUÂN actually starts the battle', () => {
-    const { ctx, doc, battles } = mount();
-    ctx.NightRaid.open();
-    ctx.NightRaid.scoutBot();
-    const before = battles.length;
-    tap(doc.getElementById('nrStartRaid'));
-    assert.truthy(battles.length > before, 'the raid battle must be created on tap');
+  test('tapping TIẾN QUÂN actually starts the battle', async () => {
+    // A real house, so /start answers with a raid row: that is the only road
+    // into a battle now.
+    const w = onlineWorld(true);
+    w.ctx.NightRaid.open();
+    await w.ctx.NightRaid.showLiveTargets();
+    w.ctx.NightRaid.scoutLive(0);
+    const before = w.battles.length;
+    tap(w.doc.getElementById('nrStartRaid'));
+    await settle();
+    assert.truthy(w.battles.length > before, 'the raid battle must be created on tap');
   });
 
   test('XÂY NHÀ opens the builder with its shop and grid', () => {
@@ -204,13 +228,13 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     });
   });
 
-  test('CƯỚP ĐÊM degrades to a bot offer when the server is unreachable', () => {
+  test('CƯỚP ĐÊM offers NO bot when the server is unreachable', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     return Promise.resolve(ctx.NightRaid.showLiveTargets()).then(() => {
       const html = doc.getElementById('nightRaidScreen').innerHTML;
-      assert.truthy(html.includes('nrScoutBot()'),
-        'an offline child must still be offered the bot raid');
+      assert.falsy(html.includes('nrScoutBot()'), 'an offline child must not be handed a bot raid');
+      assert.truthy(html.includes('Chưa tải được nhà người chơi'), 'and is told to try again later');
     });
   });
 
@@ -244,13 +268,12 @@ suite('night raid screens: the camera can never disarm a screen', () => {
     }
   });
 
-  test('a screen whose camera cannot build a plane still arms its button', () => {
+  test('a screen whose camera cannot build a plane still arms its button', async () => {
     // The shim cannot resolve `:scope >`, so ensureWorldPlane returns null here
     // exactly as it did in the browser. The screen must survive it.
-    const { ctx, doc } = mount();
-    ctx.NightRaid.open();
-    ctx.NightRaid.scoutBot();
-    assert.truthy(typeof doc.getElementById('nrStartRaid').onclick === 'function',
+    const w = liveWorld();
+    await enterScout(w);
+    assert.truthy(typeof w.doc.getElementById('nrStartRaid').onclick === 'function',
       'camera failure must never leave TIẾN QUÂN dead');
   });
 });
@@ -298,16 +321,16 @@ function onlineWorld(confirmAnswer) {
 const settle = () => new Promise(r => setImmediate(r));
 
 suite('night raid: the bottom bar, and what it costs to walk out of a raid', () => {
-  test('the bottom bar stays hidden throughout Night Raid and returns only after X', () => {
-    const { ctx, doc } = mount();
-    const nav = doc.getElementById('bottomNav');
-    ctx.NightRaid.open();
+  test('the bottom bar stays hidden throughout Night Raid and returns only after X', async () => {
+    const w = liveWorld();
+    const nav = w.doc.getElementById('bottomNav');
+    w.ctx.NightRaid.open();
     assert.equal(nav.style.display, 'none', 'the Night Raid garden is already full-screen');
-    ctx.NightRaid.scoutBot();
+    await enterScout(w);
     assert.equal(nav.style.display, 'none', 'the raid stage must not have the bar over it');
-    ctx.NightRaid.renderHome();
+    w.ctx.NightRaid.renderHome();
     assert.equal(nav.style.display, 'none', 'returning to the garden must not reveal the app nav');
-    ctx.NightRaid.close();
+    w.ctx.NightRaid.close();
     assert.truthy(nav.style.display !== 'none', 'X restores the app nav after leaving Night Raid');
   });
 
@@ -373,17 +396,6 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     assert.equal(w.asked.length, 0, 'backing out before TIẾN QUÂN costs nothing');
   });
 
-  test('a bot raid is free to leave — nothing was written anywhere', () => {
-    const asked = [];
-    const w = mount({ ctx: { confirm: (m) => { asked.push(String(m)); return false; } } });
-    w.ctx.NightRaid.open();
-    w.ctx.NightRaid.scoutBot();
-    tap(w.doc.getElementById('nrStartRaid'));
-    assert.falsy(w.ctx.NightRaid.isRaiding(), 'a bot fight costs no house and no ticket');
-    w.ctx.NightRaid.quit();
-    assert.equal(asked.length, 0, 'and so it must not nag');
-  });
-
   test('after an online raid, the map button still goes back to the houses', async () => {
     // The map button is shared by the scout stage, the battle and the result
     // frame. Once the raid is scored there is nothing to ask about — but it
@@ -407,11 +419,10 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
       'it must return to the list of real houses');
   });
 
-  test('the raid stage wires its map button to the asking exit', () => {
-    const { ctx, doc } = mount();
-    ctx.NightRaid.open();
-    ctx.NightRaid.scoutBot();
-    const home = doc.querySelector('.nr-builder-home');
+  test('the raid stage wires its map button to the asking exit', async () => {
+    const w = liveWorld();
+    await enterScout(w);
+    const home = w.doc.querySelector('.nr-builder-home');
     assert.truthy(home, 'the raid stage has no way out at all');
     assert.truthy(String(home.getAttribute('onclick')).includes('nrQuitRaid()'),
       `the map button calls "${home.getAttribute('onclick')}" — it must ask first`);

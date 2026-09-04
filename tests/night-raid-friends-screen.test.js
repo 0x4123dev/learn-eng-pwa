@@ -295,22 +295,23 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assert.truthy(html.includes('có thể bị cướp'));
   });
 
-  test('no friends yet: a friendly empty state that points at 👥 Bạn bè, plus the bot and random houses', async () => {
+  test('no friends yet: a friendly empty state that points at 👥 Bạn bè, plus the random houses', async () => {
     const w = await openLive({ friends: friendsReply([]), targets: targetsReply });
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('Chưa có bạn nào có lâu đài'));
     assert.truthy(html.includes('Bạn bè'), 'it names the Friends tab');
     assert.truthy(html.includes('profileScreen'), 'and offers to take the child there');
-    assert.truthy(html.includes('nrScoutBot()'), 'the bot is reachable from the foot of this screen');
+    assert.falsy(html.includes('nrScoutBot()'), 'a friendless child is not handed a bot instead');
     assert.truthy(html.includes('Nhà ngẫu nhiên'));
     assert.truthy(html.includes('nr-target-card'), 'the random houses stay reachable');
     assert.equal(rows(w).length, 0);
   });
 
-  test('both calls failing still degrades to the bot offer (offline child)', async () => {
+  test('both calls failing says so — it does not fall back to a bot (offline child)', async () => {
     const w = await openLive({});
-    assert.truthy(w.screen().innerHTML.includes('nrScoutBot()'));
+    assert.falsy(w.screen().innerHTML.includes('nrScoutBot()'));
     assert.truthy(w.screen().innerHTML.includes('Chưa thể tìm nhà thật'));
+    assert.truthy(w.screen().innerHTML.includes('Chưa tải được nhà người chơi'));
   });
 
   test('friends failing but targets answering keeps the random houses', async () => {

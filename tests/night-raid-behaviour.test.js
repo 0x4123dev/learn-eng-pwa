@@ -17,7 +17,9 @@
 //      Repeatable as often as the child reopened the screen.
 //   2. claimVerified() applies a raid result to the wallet exactly once per
 //      raidId, adds on a win, subtracts on a loss, and never goes negative.
-//   3. The offline bot raid still pays (daily cap included) and still charges.
+//
+// There is no third money path any more: the offline bot raid that paid
+// straight into appState.coins is gone with the bot home it was fought in.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
@@ -326,94 +328,6 @@ suite('night raid EXECUTED: a verified result lands exactly once', () => {
     assert.equal(ctx.appState.coins, 300, 'no verdict, no money');
     assert.truthy(ctx.appState.nightRaidPending, 'the raid stays queued for the next open');
     assert.falsy(ctx.appState.nightRaidClaimed.r6, 'and is NOT banked as claimed');
-  });
-});
-
-suite('night raid EXECUTED: the offline bot fight still pays and still charges', () => {
-  function botFight(over, earnedToday) {
-    const { ctx, box, apiCalls } = loadNightRaid({
-      present: ['nrScoutCanvas'],
-      api: homeServer({ lootableCoins: 0, layout: { cells: [] } }),
-    });
-    ctx.appState = state(Object.assign({ nightRaidWalletSynced: true }, over || {}));
-    ctx.NightRaid.renderHome();
-    assert.equal(ctx.appState.nightRaidRewardToday, 0,
-      'opening the screen is what normalises the daily counter');
-    if (earnedToday !== undefined) ctx.appState.nightRaidRewardToday = earnedToday;
-    return { ctx, box, apiCalls };
-  }
-  const target = () => Object.assign({}, require(path.join(root, 'js/night-raid-rules.js')).trainingTarget(4),
-    { id: 'bot-test', botMode: true, reward: 40 });
-
-  test('winning a bot raid pays target.reward', async () => {
-    const { ctx, box } = botFight({ coins: 100 });
-    await ctx.NightRaid.startRaid(target(), false);
-    assert.equal(box.started, 1, 'the battle really ran through js/night-raid.js');
-    box.options.onFinish({ status: 'won', margin: 30 }, []);
-    assert.equal(ctx.appState.coins, 140);
-    assert.equal(ctx.appState.nightRaidRewardToday, 40, 'and counts against the daily cap');
-    const h = ctx.appState.nightRaidHistory[0];
-    assert.equal(h.kind, 'bot');
-    assert.equal(h.won, true);
-    assert.equal(h.reward, 40);
-  });
-
-  test('the 120-xu daily cap is the ceiling, not a suggestion', async () => {
-    const { ctx, box } = botFight({ coins: 100 }, 100);
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'won', margin: 70 }, []);
-    assert.equal(ctx.appState.coins, 120, 'only the 20 xu left under the cap');
-    assert.equal(ctx.appState.nightRaidRewardToday, 120);
-  });
-
-  test('a capped-out day pays exactly nothing more', async () => {
-    const { ctx, box } = botFight({ coins: 100 }, 120);
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'won', margin: 90 }, []);
-    assert.equal(ctx.appState.coins, 100);
-  });
-
-  test('losing a bot raid costs 20 xu', async () => {
-    const { ctx, box } = botFight({ coins: 100 });
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'lost', margin: 0 }, []);
-    assert.equal(ctx.appState.coins, 80);
-    assert.equal(ctx.appState.nightRaidHistory[0].loss, 20);
-  });
-
-  test('losing with less than 20 xu takes what is there and stops at zero', async () => {
-    const { ctx, box } = botFight({ coins: 6 });
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'lost', margin: 0 }, []);
-    assert.equal(ctx.appState.coins, 0);
-    assert.equal(ctx.appState.nightRaidHistory[0].loss, 6, 'the log records what was actually taken');
-  });
-
-  test('an empty purse loses nothing and still never goes negative', async () => {
-    const { ctx, box } = botFight({ coins: 0 });
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'lost', margin: 0 }, []);
-    assert.equal(ctx.appState.coins, 0);
-  });
-
-  test('a bot fight never asks the server to start or finish a raid', async () => {
-    const { ctx, box, apiCalls } = botFight({ coins: 100 });
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'won', margin: 10 }, []);
-    await flush();
-    assert.falsy(apiCalls.some(c => c.path === 'night-raid/start'), 'bots are local');
-    assert.falsy(apiCalls.some(c => c.path === 'night-raid/finish'), 'and unverified by design');
-    assert.truthy(apiCalls.some(c => c.path === 'night-raid/home' && c.method === 'PUT'),
-      'but the new balance is still pushed to the server');
-  });
-
-  test('the bot payout reaches the PUT the server stores', async () => {
-    const { ctx, box, apiCalls } = botFight({ coins: 100 });
-    await ctx.NightRaid.startRaid(target(), false);
-    box.options.onFinish({ status: 'won', margin: 30 }, []);
-    await flush();
-    const put = apiCalls.filter(c => c.path === 'night-raid/home' && c.method === 'PUT').pop();
-    assert.equal(put.body.coins, 140, 'the wallet the server mirrors is the post-fight one');
   });
 });
 

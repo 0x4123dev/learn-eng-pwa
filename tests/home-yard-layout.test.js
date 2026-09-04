@@ -140,7 +140,7 @@ suite('home: the garden shipped, the game did not', () => {
         assert.truthy(scene.length > 200, 'mountYardScene could not be sliced out');
         assert.deepEqual(scene.match(/onclick="[^"]*"/g) || [], [],
             'the garden must not carry a link into Night Raid');
-        for (const way of ['renderBuilder', 'scoutBot', 'showLiveTargets', 'startRaid', 'nrShowBuilder']) {
+        for (const way of ['renderBuilder', 'showLiveTargets', 'startRaid', 'nrShowBuilder']) {
             assert.falsy(scene.includes(way), `the garden calls ${way}`);
         }
     });
