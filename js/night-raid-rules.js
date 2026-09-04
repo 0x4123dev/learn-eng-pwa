@@ -69,26 +69,24 @@ var NightRaidRules = (() => {
   }
   // Swords — the daily-task reward a child may take instead of a shield
   // (js/armory.js, functions/api/_daily-task.js). A sword is never spent:
-  // every one in stock adds SWORD_DAMAGE to the attack score, up to SWORD_CAP
-  // swords. Both numbers were sized against the score card below and the
-  // fights it actually produces, not guessed:
-  //   - what a child attacks with: a brand-new account (dog L1, no soldiers,
-  //     no buildings) has 42 DAM; the server test fixture home (dog L7,
-  //     2 soldiers) 139; a dog L10 with 4 soldiers 140; a strong mid-game army
-  //     (dog L20, 6 soldiers, 2 cannons) 345.
-  //   - what else buys DAM: a soldier is +20, a 2000-xu water cannon +50,
-  //     a pebble pup +22.
-  //   - what a margin is worth: finish.js gives 2 stars at margin >= 25 and
-  //     3 stars at margin >= 60, and the bot matchmaker (night-raid.js) picks
-  //     a keep whose DEF is 0.78–1.12 x the child's DAM — so a "coin flip" is
-  //     a fight decided by roughly +/-20–30 DAM around 150.
-  // 10 DAM a sword: two swords (+20) are worth a whole soldier, so the HUD
-  // number visibly moves and a fight that was a few points short flips. Ten
-  // swords (+100) turn an exact coin flip (margin 0) into a three-star breach
-  // (margin 100 > 60) — two cannons' worth — and the cap means thirty swords
-  // are still +100, so hoarding can never outgrow building a base.
+  // every one in stock adds SWORD_DAMAGE to the attack score.
+  //
+  // KHÔNG CÒN TRẦN. Trước đây chỉ 10 thanh đầu được tính (SWORD_CAP), thanh
+  // thứ 11 trở đi là đồ trang trí — bé mở quà ra kiếm mà DAM đứng yên. Nay
+  // mọi thanh kiếm đều cộng DAM, giống hệt lính. SWORD_SANITY_CAP chỉ để
+  // chặn NaN/Infinity/rác, KHÔNG phải luật chơi; SWORD_METER_PIPS là số ô
+  // vẽ trên thanh đo trong kho vũ khí, thuần trình bày.
+  //
+  // Cỡ giá trị, để biết một thanh kiếm đáng bao nhiêu:
+  //   - tài khoản mới (chó cấp 1, chưa có lính, chưa xây gì) có 42 DAM;
+  //     chó cấp 7 với 2 lính là 139; chó cấp 20 với 6 lính và 2 pháo là 345.
+  //   - một lính +20 DAM, pháo nước 2000 xu +50, cún sỏi +22.
+  //   - finish.js cho 2 sao khi margin >= 25 và 3 sao khi margin >= 60.
+  // 10 DAM một thanh: hai thanh bằng một lính, nên con số trên HUD nhúc nhích
+  // thấy được và một trận thua sát nút có thể lật lại.
   const SWORD_DAMAGE = 10;
-  const SWORD_CAP = 10;
+  const SWORD_SANITY_CAP = 1000000;
+  const SWORD_METER_PIPS = 10;
   const SCENES = Object.freeze(['moonlit-village', 'haunted-forest', 'storm-kingdom']);
 
   const RAIDERS = Object.freeze([
@@ -194,7 +192,7 @@ var NightRaidRules = (() => {
   // Swords in stock → the DAM they add. Anything past the cap adds nothing;
   // a missing or non-numeric count is zero.
   function swordBonus(swordCount) {
-    return SWORD_DAMAGE * int(swordCount, 0, SWORD_CAP);
+    return SWORD_DAMAGE * int(swordCount, 0, SWORD_SANITY_CAP);
   }
 
   // The builder and the server use this exact score card. Castle skins are
@@ -205,7 +203,7 @@ var NightRaidRules = (() => {
   function combatPower(layout, dogLevel, soldierCount, swordCount) {
     const clean=normalizeLayout(layout);
     const pet=petPower(dogLevel),soldiers=int(soldierCount==null?clean.soldiers:soldierCount,0,SOLDIER_SANITY_CAP);
-    const swords=int(swordCount,0,SWORD_CAP),swordDamage=swordBonus(swords);
+    const swords=int(swordCount,0,SWORD_SANITY_CAP),swordDamage=swordBonus(swords);
     let damage=20+pet.damage+soldiers*20+swordDamage;
     let defense=50+pet.defense;
     for(const cell of clean.cells){
@@ -447,7 +445,7 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_CAP,SCENES,
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_SANITY_CAP,SWORD_METER_PIPS,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
     makeRng,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,

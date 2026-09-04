@@ -13154,6 +13154,10 @@
 .am-meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; margin-top: 8px; }
 .am-meter i { display: block; height: 10px; border-radius: 999px; background: rgba(0,0,0,0.08); }
 .am-meter i.on { background: linear-gradient(90deg, #fb7185, #dc2626); box-shadow: 0 0 6px rgba(220,38,38,0.4); }
+/* Kiếm không còn trần, nhưng thanh đo chỉ có 10 ô: phần dôi ra hiện thành
+   "+n" ngay cuối thanh thay vì đẩy xuống hàng mới. */
+.am-meter { grid-template-columns: repeat(10, 1fr) auto; }
+.am-meter-more { align-self: center; margin-left: 4px; font-size: 11px; font-weight: 800; color: #dc2626; line-height: 1; }
 .am-muted { display: block; margin-top: 8px; color: #6b7280; font-size: 13px; line-height: 1.35; }
 .am-recent { margin-top: 14px; color: #6b7280; font-size: 13px; }
 .am-recent ul { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }

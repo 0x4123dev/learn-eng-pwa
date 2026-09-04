@@ -408,17 +408,19 @@ suite('armory: a database that has not run db/019 yet does not 500 — it behave
 
 suite('armory: swords in the shared score card (js/night-raid-rules.js)', () => {
   const layout = { cells: [{ type: 'water-cannon', gx: 0, gy: 0 }], soldiers: 4, dogLane: 2 };
-  test('combatPower rises by exactly SWORD_DAMAGE x min(swords, SWORD_CAP); DEF never moves', () => {
+  // Kiếm không còn trần: THANH NÀO CŨNG cộng DAM, kể cả thanh thứ 999.
+  test('combatPower rises by exactly SWORD_DAMAGE per sword, with no ceiling; DEF never moves', () => {
     const base = NR.combatPower(layout, 10, 4);
     for (const n of [0, 1, 2, 5, 9, 10, 11, 30, 999]) {
       const p = NR.combatPower(layout, 10, 4, n);
-      const expected = NR.SWORD_DAMAGE * Math.min(n, NR.SWORD_CAP);
+      const expected = NR.SWORD_DAMAGE * n;
       assert.equal(p.damage - base.damage, expected, n + ' swords');
       assert.equal(p.swordDamage, expected);
-      assert.equal(p.swords, Math.min(n, NR.SWORD_CAP), 'the counted stock is what the HUD shows as n/cap');
+      assert.equal(p.swords, n, 'the whole stock counts now');
       assert.equal(p.defense, base.defense, 'swords are attack only');
       assert.equal(NR.swordBonus(n), expected);
     }
+    assert.truthy(NR.swordBonus(11) > NR.swordBonus(10), 'thanh thứ 11 phải cộng thêm DAM');
   });
   test('a missing, non-numeric or negative count is zero swords — the 3-argument call is unchanged', () => {
     const base = NR.combatPower(layout, 10, 4);
@@ -430,19 +432,20 @@ suite('armory: swords in the shared score card (js/night-raid-rules.js)', () => 
     assert.equal(base.swords, 0);
     assert.equal(base.swordDamage, 0);
   });
-  test('the constants mean what the comment says: two swords = a soldier, a full stock beats a coin flip by a 3-star margin', () => {
+  test('the constants mean what the comment says: two swords = a soldier, ten swords beat a coin flip by a 3-star margin', () => {
     assert.equal(NR.SWORD_DAMAGE, 10);
-    assert.equal(NR.SWORD_CAP, 10);
+    assert.equal(NR.SWORD_CAP, undefined, 'trần kiếm đã bị bỏ hẳn');
+    assert.equal(NR.SWORD_METER_PIPS, 10, 'chỉ còn là số ô trên thanh đo');
     const one = NR.combatPower({ cells: [], soldiers: 0 }, 10), soldier = NR.combatPower({ cells: [], soldiers: 1 }, 10);
     assert.equal(NR.swordBonus(2), soldier.damage - one.damage, 'two swords are worth one soldier (+20)');
     // A coin flip: DAM == DEF loses (won = damage > defense). With a full
     // stock the same fight is won by 100, past finish.js's 60-point 3-star line.
     const target = NR.trainingTarget(5);
     assert.falsy(NR.resolveAutoBattle(target, target.defense).won);
-    const full = NR.resolveAutoBattle(target, target.defense + NR.swordBonus(NR.SWORD_CAP));
+    const full = NR.resolveAutoBattle(target, target.defense + NR.swordBonus(10));
     assert.truthy(full.won);
     assert.truthy(full.margin >= 60, 'margin ' + full.margin);
-    assert.equal(NR.swordBonus(30), NR.swordBonus(NR.SWORD_CAP), 'hoarding past the cap adds nothing');
+    assert.equal(NR.swordBonus(30), 300, 'gom thêm kiếm vẫn cộng thêm DAM');
   });
 });
 
@@ -489,7 +492,7 @@ suite('armory: the server scores a raid with the attacker\'s swords, and agrees 
     assert.equal(f.data.result.damage, expected, 'the re-simulation uses the snapshotted DAM, swords included');
   });
 
-  test('the bonus is capped on the server too: 25 swords score as 10', async () => {
+  test('the server counts the whole stock too: 25 swords score as 25', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
     const defender = await world.createUser({ allowBot: true });
@@ -498,8 +501,8 @@ suite('armory: the server scores a raid with the attacker\'s swords, and agrees 
     world.db.prepare('UPDATE users SET night_swords=25 WHERE id=?').run(attacker.uid);
     const s = await world.call(startHandler().onRequestPost, { token: attacker.token, body: { targetId: defender.uid } });
     assert.equal(s.data.raid.attackerSwords, 25, 'the stock is recorded as it is');
-    assert.equal(s.data.raid.attackerDamage - clientOwnPower(world, attacker.uid, 0).damage, NR.SWORD_DAMAGE * NR.SWORD_CAP);
-    assert.equal(s.data.raid.attackerDamage, clientOwnPower(world, attacker.uid, 25).damage, 'client and server cap identically');
+    assert.equal(s.data.raid.attackerDamage - clientOwnPower(world, attacker.uid, 0).damage, NR.SWORD_DAMAGE * 25);
+    assert.equal(s.data.raid.attackerDamage, clientOwnPower(world, attacker.uid, 25).damage, 'client and server score identically');
   });
 
   test('swords make the attacker win a fight they would otherwise have lost', async () => {

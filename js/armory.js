@@ -6,7 +6,7 @@
 // turn each into
 //   🛡️ a shield — spend one and the castle cannot be raided for 24 h, or
 //   ⚔️ a sword  — never spent, +SWORD_DAMAGE attack on every raid, counted
-//                 up to SWORD_CAP swords (js/night-raid-rules.js),
+//                 with no cap (js/night-raid-rules.js),
 // and shows both as a COLLECTION: two big cards, lit when owned, a dashed
 // silhouette when not, with the live DAM bonus and the shield's timer.
 //
@@ -31,11 +31,13 @@ var Armory = (function () {
   }
   function rules() { return (typeof NightRaidRules !== 'undefined' && NightRaidRules) || null; }
   function swordDamage() { const R = rules(); return (R && R.SWORD_DAMAGE) || 10; }
-  function swordCap() { const R = rules(); return (R && R.SWORD_CAP) || 10; }
+  // Số ô vẽ trên thanh đo. Kiếm KHÔNG còn trần: mỗi thanh đều cộng DAM,
+  // thanh đo chỉ là cách nhìn cho nhanh, đầy rồi thì hiện thêm "+n".
+  function meterPips() { const R = rules(); return (R && R.SWORD_METER_PIPS) || 10; }
   function bonusFor(n) {
     const R = rules();
     if (R && typeof R.swordBonus === 'function') return R.swordBonus(n);
-    return swordDamage() * Math.min(swordCap(), Math.max(0, Math.trunc(+n || 0)));
+    return swordDamage() * Math.max(0, Math.trunc(+n || 0));
   }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
   function toast(m) { if (typeof showToast === 'function') { try { showToast(m); } catch (e) {} } }
@@ -143,7 +145,7 @@ var Armory = (function () {
     const now = Date.now();
     const pending = pendingOf(s);
     const shields = shieldsOf(s), swords = swordsOf(s);
-    const cap = swordCap(), each = swordDamage(), bonus = bonusFor(swords);
+    const pips = meterPips(), each = swordDamage(), bonus = bonusFor(swords);
     const activeUntil = s && s.shields && +s.shields.activeUntil > now ? +s.shields.activeUntil : 0;
     const dis = busy ? ' disabled' : '';
     const n = pending.length;
@@ -178,13 +180,12 @@ var Armory = (function () {
         ? `<button type="button" class="dt-shield-btn am-activate" onclick="Armory.activateShield()"${dis}>🛡️ Bật khiên 24h</button>`
         : '<span class="dt-pill am-pill">Khiên: bật là 24 giờ không ai cướp được nhà con</span>';
 
-    const counted = Math.min(swords, cap);
-    const swordNote = swords >= cap
-      ? `Đã đủ ${cap} kiếm — có thêm cũng không tăng DAM nữa. Lần sau chọn khiên nhé!`
-      : swords > 0
-        ? `Thêm ${cap - swords} kiếm nữa là đạt tối đa +${bonusFor(cap)} DAM.`
-        : 'Mỗi kiếm +' + each + ' DAM khi con đi cướp đêm. Không mất sau trận. Tính tối đa ' + cap + ' kiếm.';
-    const meter = Array.from({ length: cap }, (_, i) => `<i class="${i < counted ? 'on' : ''}"></i>`).join('');
+    const lit = Math.min(swords, pips), extra = Math.max(0, swords - pips);
+    const swordNote = swords > 0
+      ? `Mỗi kiếm +${each} DAM, không có giới hạn và không mất sau trận. ${swords} kiếm đang cho +${bonus} DAM.`
+      : `Mỗi kiếm +${each} DAM khi con đi cướp đêm. Không mất sau trận, gom bao nhiêu cũng được.`;
+    const meter = Array.from({ length: pips }, (_, i) => `<i class="${i < lit ? 'on' : ''}"></i>`).join('')
+      + (extra ? `<b class="am-meter-more">+${extra}</b>` : '');
 
     const claimed = ((s && s.recent) || []).filter(r => r && r.kind).slice(0, 5);
     const recentHtml = claimed.length
@@ -204,7 +205,7 @@ var Armory = (function () {
       </div>
       <section class="am-row shield">${shieldRow}</section>
       <section class="am-row sword">
-        <div class="am-bonus"><strong>+${bonus} DAM</strong><span>· ${counted}/${cap} kiếm</span></div>
+        <div class="am-bonus"><strong>+${bonus} DAM</strong><span>· ${swords} kiếm</span></div>
         <div class="am-meter" aria-hidden="true">${meter}</div>
         <small class="am-muted">${swordNote}</small>
       </section>

@@ -80,12 +80,12 @@ suite('armory client: the collection', () => {
     assert.truthy(out.includes('am-card shield empty'), 'the shield card is a silhouette');
     assert.truthy(out.includes('am-card sword empty'));
     assert.truthy(out.includes('+0 DAM'));
-    assert.truthy(out.includes('0/10 kiếm'));
+    assert.truthy(out.includes('0 kiếm'));
     assert.truthy(out.includes('mở quà để lấy khiên'), 'the empty slot says what could be earned');
     assert.falsy(out.includes('Armory.activateShield()'), 'no shield to activate');
   });
 
-  test('two gifts, two shields, three swords: the gift lists both choices for the oldest day, offers open-all, cards are lit, +30 DAM · 3/10', () => {
+  test('two gifts, two shields, three swords: the gift lists both choices for the oldest day, offers open-all, cards are lit, +30 DAM · 3 kiếm', () => {
     const { Armory, html } = mount({ appState: stateWith({ pending: [YESTERDAY, TODAY], shields: { count: 2, activeUntil: 0 }, swords: { count: 3 } }) });
     Armory.render();
     const out = html('armoryScreen');
@@ -103,7 +103,7 @@ suite('armory client: the collection', () => {
     assert.truthy(out.includes('>x2<'), 'shield count badge');
     assert.truthy(out.includes('>x3<'), 'sword count badge');
     assert.truthy(out.includes('+30 DAM'));
-    assert.truthy(out.includes('3/10 kiếm'));
+    assert.truthy(out.includes('3 kiếm'));
     assert.truthy(out.includes('Armory.activateShield()'), 'shields can be switched on from here');
     assert.truthy(out.includes('24 giờ không ai cướp được nhà'), 'one line says what a shield does');
     assert.truthy(out.includes('+10 DAM mỗi lần đi cướp'), 'one line says what a sword does');
@@ -120,15 +120,20 @@ suite('armory client: the collection', () => {
     assert.falsy(out.includes('Armory.claimAll('));
   });
 
-  test('the sword cap: 12 swords show +100 DAM · 10/10 and the "pick shields now" hint', () => {
+  // Kiếm không còn trần: thanh thứ 11 trở đi vẫn cộng DAM. Thanh đo chỉ có
+  // 10 ô nên phần dôi ra hiện thành "+n" chứ không bị nuốt mất.
+  test('12 swords score +120 DAM, the meter fills and shows the overflow', () => {
     const { Armory, html, Rules } = mount({ appState: stateWith({ swords: { count: 12 } }) });
     Armory.render();
     const out = html('armoryScreen');
-    assert.truthy(out.includes('+' + Rules.swordBonus(12) + ' DAM'));
-    assert.truthy(out.includes('+100 DAM'));
-    assert.truthy(out.includes('10/10 kiếm'));
+    assert.equal(Rules.swordBonus(12), 120, 'thanh thứ 11 và 12 vẫn phải cộng DAM');
+    assert.truthy(out.includes('+120 DAM'));
+    assert.truthy(out.includes('· 12 kiếm'), 'số hiện là số kiếm thật, không phải số ô đã sáng');
     assert.truthy(out.includes('>x12<'), 'the stock itself is still shown');
-    assert.truthy(out.includes('Lần sau chọn khiên nhé'));
+    assert.equal((out.match(/<i class="on"><\/i>/g) || []).length, 10, 'thanh đo đầy 10 ô');
+    assert.truthy(out.includes('am-meter-more">+2<'), 'hai thanh dôi ra hiện thành +2');
+    assert.falsy(out.includes('Lần sau chọn khiên nhé'), 'không còn khuyên bỏ kiếm nữa');
+    assert.falsy(/không tăng DAM nữa/.test(out), 'không còn câu nào nói kiếm thừa là vô ích');
   });
 
   test('an active shield reads as a status pill with the time left, and cannot be re-activated', () => {
