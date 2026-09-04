@@ -150,7 +150,7 @@ Mọi thứ nằm trong `night_raid_homes.layout_json` và đi qua ba endpoint �
 | `js/daily-task.js` | Hero nhắc vườn; dải vườn; thẻ Home nhắc héo; "Xem vườn" mở màn xây nhà. |
 | `scripts/build-farm-art.py` (mới) | Đọc ảnh gốc theo bản kê, cắt, thu về cỡ chuẩn, xuất WebP vào `img/farm/`. Kiểu `build-battle-scenes.py`. |
 | `js/petbattle.js`, `js/petbattlebot.js` (xóa), `index.html` | Gỡ luyện tập với máy theo 3.9. |
-| `js/lazy-data.js`, `sw.js` | Thêm `farm-rules.js`, `farm-art-manifest.js`, tranh theo bản kê; bỏ `petbattlebot.js` khỏi precache. |
+| `index.html`, `sw.js` | Nạp `farm-rules.js` và `farm-art-manifest.js` ngay lúc mở app, **trước** `night-raid-rules.js` (file này cần `FarmRules`); hai file nhỏ dưới 10 KB nên không qua `lazy-data.js`. Precache hai file và tranh theo bản kê; bỏ `petbattlebot.js`. |
 | `css/styles.css` | Tab SHOP, chip khu, lưới 6×6, lớp héo, thanh nhiệm vụ, dải vườn trên trang Daily Task. |
 
 Không thêm mục vào `daily-task-catalog.js`: hái vườn không phải việc học, không thể giao làm nhiệm vụ.
