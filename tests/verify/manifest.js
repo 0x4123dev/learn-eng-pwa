@@ -91,7 +91,7 @@ const FEATURES = [
     screens: ['petBattleScreen'],
     routes: ['battle/index', 'battle/challenge', 'battle/respond', 'battle/state', 'battle/turn'],
     verifiedBy: 'client+server' },
-  { id: 'night-raid', name: 'Cướp Đêm',
+  { id: 'night-raid', name: 'Cướp Đêm và nông trại theo ngày nhiệm vụ',
     screens: ['nightRaidScreen'],
     routes: ['night-raid/home', 'night-raid/start', 'night-raid/finish', 'night-raid/targets',
              'night-raid/friends', 'night-raid/reports', 'night-raid/collect', 'night-raid/shield'],

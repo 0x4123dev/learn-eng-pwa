@@ -524,10 +524,19 @@ function screenPlaybook() {
       },
     },
     nightRaidScreen: {
-      title: 'Cướp Đêm: nhà của bé, chỉ số DAM/DEF',
+      title: 'Cướp Đêm: nhà của bé, chỉ số DAM/DEF, và cửa hàng nông trại',
       open: async (h) => {
         stubServer(h, (p) => {
-          if (p === 'night-raid/home') return { ok: true, data: { home: { coins: h.state().coins, dogLevel: h.state().dogLevel, layout: null } } };
+          // The real GET returns the home row AND the farm clock the plants are
+          // drawn from — {home, dayCount, ctx}. Sending less would let a screen
+          // that has lost the clock still look verified.
+          if (p === 'night-raid/home') {
+            return { ok: true, data: {
+              home: { coins: h.state().coins, dogLevel: h.state().dogLevel, layout: null },
+              dayCount: 3,
+              ctx: { today: '2026-01-08', doneYesterday: true, doneToday: false },
+            } };
+          }
           return { ok: false, data: { error: 'not stubbed' } };
         });
         h.sandbox.openNightRaid();
@@ -537,7 +546,42 @@ function screenPlaybook() {
         const text = squash(el.textContent);
         for (const chip of ['DAM', 'DEF', 'LÍNH']) must(text.includes(chip), 'the ' + chip + ' chip is drawn');
         must(wiredTo(el, 'nrShowLiveTargets').length >= 1 || text.includes('CƯỚP ĐÊM'), 'the raid action is offered');
-        return 'castle yard with DAM/DEF/LÍNH chips, ' + el.innerHTML.length + ' chars';
+        // The farm is the other half of this screen: the yard only grows on the
+        // days the child finishes every task, so the task bar has to say so.
+        must(text.includes('nhiệm vụ'), 'the task bar ties the garden to today\'s tasks');
+
+        // Seeds, farm decorations and extra boards are all bought through the
+        // builder's SHOP, so walk there the way a finger does.
+        h.sandbox.nrShowBuilder();
+        const shop = el.querySelector('#nrBuildShop');
+        must(shop, 'the builder draws no shop — nothing on this screen can be bought');
+        const tabs = shop.querySelectorAll('.nr-shop-tabs button');
+        for (const [id, label] of [['defense', 'Phòng thủ'], ['seeds', 'Hạt giống'], ['farm', 'Nông trại'], ['expand', 'Mở rộng']]) {
+          const tab = tabs.filter((t) => String(t.getAttribute('onclick') || '').includes("nrSelectShopTab('" + id + "')"));
+          mustEqual(tab.length, 1, 'the shop offers exactly one "' + id + '" tab');
+          must(squash(tab[0].textContent).includes(label), 'the ' + id + ' tab is labelled "' + label + '"');
+        }
+
+        // Every crop the rules define must be on sale. Derived from the live
+        // FarmRules, never from a list typed here: add a crop and forget the
+        // shop, and this goes red.
+        const Farm = h.peek('FarmRules');
+        must(Farm && Array.isArray(Farm.CROPS) && Farm.CROPS.length > 0, 'FarmRules.CROPS is not loaded — js/farm-rules.js never ran');
+        h.sandbox.nrSelectShopTab('seeds');
+        const tray = el.querySelector('.nr-build-tray');
+        must(tray, 'the seed tab draws no tray');
+        const cards = tray.querySelectorAll('.nr-build-item');
+        mustEqual(cards.length, Farm.CROPS.length, 'the seed tab sells one card per crop in FarmRules.CROPS');
+        const trayText = squash(tray.textContent);
+        for (const crop of Farm.CROPS) {
+          const card = cards.filter((c) => String(c.getAttribute('onclick') || '').includes("nrSelectBuild('" + crop.id + "')"));
+          mustEqual(card.length, 1, 'crop "' + crop.id + '" exists in FarmRules but is not for sale in the shop');
+          must(trayText.includes(crop.name.vi), 'the ' + crop.id + ' card names it in Vietnamese: ' + crop.name.vi);
+          must(squash(card[0].textContent).includes(String(crop.price)), 'the ' + crop.id + ' card prices it at ' + crop.price + ' xu');
+        }
+        return 'castle yard with DAM/DEF/LÍNH chips and a task bar; shop sells all '
+          + Farm.CROPS.length + ' seeds (' + Farm.CROPS.map((c) => c.name.vi).join(', ') + ') across '
+          + tabs.length + ' tabs';
       },
     },
     learnHubScreen: {
