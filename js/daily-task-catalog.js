@@ -52,9 +52,18 @@ var DailyTaskCatalog = (function () {
       3: 'Science · Matter, energy, light and sound', 4: 'Science · Living things and food chains',
       5: 'Science · Food, health and everyday science' } },
   ];
+  // Chapter numbers are unique across the two semesters (1–5 HK1, 6–10 HK2),
+  // and startMathQuiz(ch) answers a named chapter from the full bank — but the
+  // HK2 view has to be opened first so the quiz screen, history and "ôn tổng
+  // hợp" stay on the right semester.
   const CHAPTER_TITLES = [
-    [1, 'Số hữu tỉ'], [2, 'Số thực'], [3, 'Góc và đường thẳng song song'],
-    [4, 'Tam giác bằng nhau'], [5, 'Thu thập và biểu diễn dữ liệu'],
+    [1, 'Số hữu tỉ', 'hk1'], [2, 'Số thực', 'hk1'], [3, 'Góc và đường thẳng song song', 'hk1'],
+    [4, 'Tam giác bằng nhau', 'hk1'], [5, 'Thu thập và biểu diễn dữ liệu', 'hk1'],
+    [6, 'Tỉ lệ thức và đại lượng tỉ lệ', 'hk2'],
+    [7, 'Biểu thức đại số và đa thức một biến', 'hk2'],
+    [8, 'Làm quen với biến cố và xác suất của biến cố', 'hk2'],
+    [9, 'Quan hệ giữa các yếu tố trong một tam giác', 'hk2'],
+    [10, 'Một số hình khối trong thực tiễn', 'hk2'],
   ];
   const EXAM_TITLES = [
     ['hk1-exam1', 'HK1 Exam 1'], ['hk1-exam2', 'HK1 Exam 2'], ['hk1-exam3', 'HK1 Exam 3'],
@@ -64,6 +73,48 @@ var DailyTaskCatalog = (function () {
     ['hk1-source-1', 'HK1 1 (THCS Trần Quý Cáp)'], ['hk1-source-2', 'HK1 2 (THCS Phạm Hữu Lầu)'],
     ['hk1-source-3', 'HK1 3 (THCS An Điền)'], ['hk1-source-4', 'HK1 4 (THCS Tương Bình Hiệp)'],
     ['hk1-source-5', 'HK1 5 (THCS Lý Thánh Tông)'],
+    // HK2 — the admin page had nothing to hand out for semester 2 until these
+    // were listed: the catalog is the only thing the dropdown knows.
+    ['hk2-exam1', 'HK2 Exam 1'],
+    ['hk2-exam2', 'HK2 Exam 2'],
+    ['hk2-exam3', 'HK2 Exam 3'],
+    ['hk2-exam4', 'HK2 Exam 4'],
+    ['hk2-exam5', 'HK2 Exam 5'],
+    ['hk2-exam6', 'HK2 Exam 6'],
+    ['hk2-exam7', 'HK2 Exam 7'],
+    ['hk2-exam8', 'HK2 Exam 8'],
+    ['hk2-exam9', 'HK2 Exam 9'],
+    ['hk2-exam10', 'HK2 Exam 10'],
+    ['hk2-src-01', 'HK2 THCS Chu Văn An (Cầu Ông Lãnh)'],
+    ['hk2-src-02', 'HK2 THCS Chu Văn An (Gia Lai)'],
+    ['hk2-src-03', 'HK2 THCS Chúc Sơn'],
+    ['hk2-src-04', 'HK2 THCS Lý Tự Trọng (Bình Nguyên)'],
+    ['hk2-src-05', 'HK2 THCS Nguyễn Huệ'],
+    ['hk2-src-06', 'HK2 THCS Nguyễn Thị Thập'],
+    ['hk2-src-07', 'HK2 THCS Nguyễn Trường Tộ'],
+    ['hk2-src-08', 'HK2 THCS Phúc Đồng'],
+    ['hk2-src-09', 'HK2 THCS Phước Bửu'],
+    ['hk2-src-10', 'HK2 THCS Phước Thạnh'],
+    ['hk2-src-11', 'HK2 THCS Phương Đông'],
+    ['hk2-src-12', 'HK2 THCS Tam Hưng'],
+    ['hk2-src-13', 'HK2 THCS Võ Trường Toản'],
+    ['hk2-src-14', 'HK2 Tre Việt (Hóc Môn)'],
+    ['hk2-src-15', 'HK2 THCS Bùi Văn Thủ (Hóc Môn)'],
+    ['hk2-src-16', 'HK2 THCS Đặng Công Bỉnh'],
+    ['hk2-src-17', 'HK2 THCS Đặng Thúc Vịnh'],
+    ['hk2-src-18', 'HK2 THCS Đỗ Văn Dậy'],
+    ['hk2-src-19', 'HK2 THCS Đông Thạnh'],
+    ['hk2-src-20', 'HK2 THCS Hà Huy Tập'],
+    ['hk2-src-21', 'HK2 THCS Lý Chính Thắng 1'],
+    ['hk2-src-22', 'HK2 THCS Nguyễn An Khương'],
+    ['hk2-src-23', 'HK2 THCS Nguyễn Hồng Đào'],
+    ['hk2-src-24', 'HK2 THCS Nguyễn Thị Minh Khai'],
+    ['hk2-src-25', 'HK2 THCS Nguyễn Văn Bứa'],
+    ['hk2-src-26', 'HK2 THCS Phan Công Hớn'],
+    ['hk2-src-27', 'HK2 THCS Tam Đông 1'],
+    ['hk2-src-28', 'HK2 THCS Tân Xuân'],
+    ['hk2-src-29', 'HK2 THCS Tô Ký'],
+    ['hk2-src-30', 'HK2 THCS Xuân Thới Thượng'],
   ];
 
   function entry(key, group, label, activityType, match, screen, calls, size, baseKey) {
@@ -145,13 +196,19 @@ var DailyTaskCatalog = (function () {
   // Toán 7 — detail_json carries examId (mock exams) or chapter (drills).
   ENTRIES.push(entry('math-exam:any-hk1', 'math-exam', 'Toán 7 · Đề thi HK1 bất kỳ', 'math',
     { detail: { field: 'examId', prefix: 'hk1-' } }, 'mathHubScreen', [['openMathSection', 'hk1'], ['switchMathSubTab', 'exams']]));
+  ENTRIES.push(entry('math-exam:any-hk2', 'math-exam', 'Toán 7 · Đề thi HK2 bất kỳ', 'math',
+    { detail: { field: 'examId', prefix: 'hk2-' } }, 'mathHubScreen', [['openMathSection', 'hk2'], ['switchMathSubTab', 'exams']]));
+  // startMathExam(id) looks the id up in the semester the child is standing
+  // in, so the deep link opens that semester first — an HK2 id from the HK1
+  // view would simply do nothing.
   for (const [id, title] of EXAM_TITLES) {
+    const sem = id.startsWith('hk2-') ? 'hk2' : 'hk1';
     ENTRIES.push(entry('math-exam:' + id, 'math-exam', 'Toán 7 · Đề thi ' + title, 'math',
-      { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['startMathExam', id]]));
+      { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['openMathSection', sem], ['startMathExam', id]]));
   }
-  for (const [num, title] of CHAPTER_TITLES) {
+  for (const [num, title, sem] of CHAPTER_TITLES) {
     ENTRIES.push(entry('math-chapter:' + num, 'math-chapter', 'Toán 7 · Chương ' + num + ' · ' + title, 'math',
-      { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['startMathQuiz', num]]));
+      { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['openMathSection', sem], ['startMathQuiz', num]]));
   }
   // Math Wars rides the 'math' activity type too, but its title is its identity
   // ('Math Wars · 8/10 câu') and it carries neither examId nor chapter — so it

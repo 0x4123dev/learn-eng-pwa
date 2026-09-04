@@ -82,8 +82,27 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
     assert.deepEqual(Catalog.get('math-exam:hk1-source-3').match, { detail: { field: 'examId', value: 'hk1-source-3' } });
     assert.deepEqual(Catalog.get('math-exam:any-hk1').match, { detail: { field: 'examId', prefix: 'hk1-' } });
     assert.deepEqual(Catalog.get('math-chapter:2').match, { detail: { field: 'chapter', value: 2 }, noField: 'examId' });
-    assert.equal(Catalog.entries('math-exam').length, 16);
-    assert.equal(Catalog.entries('math-chapter').length, 5);
+    // HK1: 10 mock exams + 5 school papers + "bất kỳ"; HK2: 10 mock exams +
+    // 30 school papers + "bất kỳ". The admin dropdown is built from this list
+    // and nothing else — for a whole semester it offered nothing to hand out
+    // until HK2 was added (2026-09-04).
+    assert.equal(Catalog.entries('math-exam').length, 57);
+    assert.equal(Catalog.entries('math-chapter').length, 10);
+    assert.deepEqual(Catalog.get('math-exam:any-hk2').match, { detail: { field: 'examId', prefix: 'hk2-' } });
+    assert.deepEqual(Catalog.get('math-chapter:6').match, { detail: { field: 'chapter', value: 6 }, noField: 'examId' });
+    assert.truthy(Catalog.get('math-exam:hk2-exam1'), 'HK2 mock exams must be assignable');
+    assert.truthy(Catalog.get('math-exam:hk2-src-30'), 'all 30 HK2 school papers must be assignable');
+    // startMathExam/startMathQuiz resolve in the semester the child is standing
+    // in, so every maths deep link opens its semester FIRST.
+    assert.deepEqual(Catalog.get('math-chapter:6').go.calls, [['openMathSection', 'hk2'], ['startMathQuiz', 6]]);
+    assert.deepEqual(Catalog.get('math-chapter:2').go.calls, [['openMathSection', 'hk1'], ['startMathQuiz', 2]]);
+    assert.deepEqual(Catalog.get('math-exam:hk2-src-01').go.calls, [['openMathSection', 'hk2'], ['startMathExam', 'hk2-src-01']]);
+    for (const e of Catalog.entries('math-exam').concat(Catalog.entries('math-chapter'))) {
+      assert.equal(e.go.calls[0][0], 'openMathSection', e.key + ' must open its semester before starting');
+      const sem = e.go.calls[0][1];
+      const wantsHk2 = /(^|:)(hk2-|any-hk2)|math-chapter:(6|7|8|9|10)$/.test(e.key);
+      assert.equal(sem, wantsHk2 ? 'hk2' : 'hk1', e.key + ' opens the wrong semester');
+    }
   });
 
   test('a task can name one BUTTON, and its deep link opens that same button', () => {
@@ -137,7 +156,7 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
     assert.deepEqual(Catalog.get('units:4').go,
       { screen: 'topicsScreen', calls: [['switchTopicsSubTab', 'grade4'], ['switchUnitSet', 'pre'], ['startUnitPractice', 4]] });
     assert.deepEqual(Catalog.get('math-exam:hk1-source-3').go,
-      { screen: 'mathHubScreen', calls: [['startMathExam', 'hk1-source-3']] });
+      { screen: 'mathHubScreen', calls: [['openMathSection', 'hk1'], ['startMathExam', 'hk1-source-3']] });
     assert.deepEqual(Catalog.get('collocation').go,
       { screen: 'phrasesScreen', calls: [['switchPhrSubTab', 'colloc'], ['startCollocPractice', 20]] });
   });
