@@ -791,4 +791,202 @@ suite('profile switch: js/app.js forgets its own per-child state too', () => {
   });
 });
 
+// ===========================================================================
+//  THE GUARD
+//
+//  Everything above is one bug found nineteen times. The shape is always the
+//  same: a module keeps a child's state in a module-level variable, appState
+//  is swapped underneath it, and nothing tells the module. This walks js/ and
+//  fails when a module holds state of that shape without either a
+//  forgetProfile of its own or an entry below saying, in words, why not.
+//
+//  Deliberately narrow. A `const` that never changes is not state; neither is
+//  a plain cache of the static word bank, nor a string that only names which
+//  sub-tab is showing. What it looks for is a MUTABLE CONTAINER OR FLAG — an
+//  object, an array, a Set/Map, a null handle, a boolean latch — because that
+//  is what every one of the nineteen turned out to be. If this ever cries
+//  wolf, the fix is to narrow the shape, not to pad the allow-list.
+// ===========================================================================
+
+// A module-scope `let`/`var` whose initial value is a mutable container, a
+// null handle, or a boolean latch. Strings and numbers are excluded on
+// purpose: `_mathView = 'home'` is a view position, not a child's data.
+const PER_CHILD_SHAPE = /^\s*(?:let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(\{|\[|null|false|true|new Set\(|new Map\()/;
+
+// Files that hold state of that shape and do NOT have a forgetProfile.
+// Every entry is a claim that was checked, and says what was checked.
+const NO_TEARDOWN_NEEDED = {
+  'battle.js':
+    'DEAD CODE. renderBattleCard() and openBattleSetup() have no caller anywhere '
+    + '(index.html, js/, css/, tests/): the two-player battle is unreachable, so '
+    + 'battleState is never filled and its 100ms timer never starts. Delete the '
+    + 'file or wire it up — but do not give an unreachable game a teardown.',
+  'word-hunt.js':
+    'DEAD CODE, same as battle.js: nothing calls startWordHunt() or '
+    + 'renderWordHuntCard(), and #wordHuntOverlay is never filled. If it is ever '
+    + 'wired up again it WILL need one — completeWordHunt() writes '
+    + 'appState._huntWins and calls saveUserData(currentUser, …) from a timer.',
+  'sentence-builder.js':
+    'sentenceBuilderState is reassigned wholesale by offerSentenceBuilder() '
+    + 'before its overlay is shown, and nothing reads it before that. The '
+    + 'overlay is also inescapable except through saveSentence()/'
+    + 'skipSentenceBuilder(), both of which close it — so it cannot still be '
+    + 'open when the child reaches the profile picker.',
+  'daily-task.js':
+    'ALREADY GUARDED, and better than a teardown could: refresh() captures '
+    + '`const asked = currentUser` before the await and returns early if '
+    + 'currentUser has changed, so an in-flight reply cannot land in the next '
+    + "child's appState. shieldBusy is cleared in a finally.",
+  'armory.js':
+    'busy is cleared in a finally; returnTo is set by open() before close() can '
+    + 'read it; flash is consumed by the render() that settle() calls in the '
+    + 'same tick, so none of the three can be observed by the next child.',
+  'topics.js':
+    '_wordTopicsCache is derived from the static word bank, not from the child '
+    + '— the same words for everyone, so there is nothing to leak.',
+  'lazy-data.js':
+    'warmed is "have we started pre-warming the question banks?". The banks are '
+    + 'static files shared by every profile.',
+  'night-raid-art.js':
+    'sharedBattleBoardCutout is a cached art cutout — a picture, identical for '
+    + 'every child.',
+  'night-raid-phaser.js':
+    'runtimePromise memoises the one-time load of the Phaser runtime. A library, '
+    + 'not a child.',
+  'petbattlegame.js':
+    'PB_MATE_IMAGES_LOADING is a latch around preloading the teammate sprite '
+    + 'sheets — static art. The battle itself lives in js/petbattle.js _pbGame, '
+    + 'which pbForgetProfile() destroys.',
+  'math-fight-bank.js':
+    'MATH_FIGHT_BANK is the question bank itself, a `var` only so the browser '
+    + 'and the test sandbox both see it. Never written to.',
+};
+
+function moduleScopeState(file) {
+  const src = read('js/' + file);
+  const lines = src.split('\n');
+  // Module scope is column 0 — except in a file that is ONE IIFE from its
+  // first line of code to its last, where the module's own scope is indented
+  // by two. Requiring the IIFE to be the FIRST thing in the file is what keeps
+  // js/petbattlegame.js's function locals out of this.
+  const first = lines.find(l => l.trim() && !l.trim().startsWith('//')) || '';
+  const wrapped = /^(?:var|const|let)\s+[A-Za-z_$][\w$]*\s*=\s*\(?(?:function\s*\(|\(\s*[\w,\s]*\)\s*=>)/.test(first)
+    || /^\(function\s*\(/.test(first);
+  const found = [];
+  for (const line of lines) {
+    const indent = line.length - line.trimStart().length;
+    if (indent !== 0 && !(wrapped && indent === 2)) continue;
+    const m = line.match(PER_CHILD_SHAPE);
+    if (m) found.push(m[1]);
+  }
+  return found;
+}
+
+// The object an IIFE module hangs itself on: `var NightRaid = (() => {…` or
+// `global.GhostOfferingEvent = {…}`. Null for a script that defines globals.
+function namespaceOf(file, src) {
+  const first = src.split('\n').find(l => l.trim() && !l.trim().startsWith('//')) || '';
+  const named = first.match(/^(?:var|const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*\(/);
+  if (named) return named[1];
+  const onGlobal = src.match(/^\s*global\.([A-Za-z_$][\w$]*)\s*=\s*\{/m);
+  return onGlobal ? onGlobal[1] : null;
+}
+
+suite('GUARD: a module that keeps per-child state must know how to forget it', () => {
+  const files = fs.readdirSync(path.join(ROOT, 'js'))
+    .filter(f => f.endsWith('.js') && f !== 'phaser.min.js').sort();
+
+  test('the detector still sees the bug it was written for', () => {
+    // If a refactor ever makes this stop finding _pbGame, the guard has quietly
+    // stopped guarding — so this is checked before anything is concluded.
+    assert.truthy(moduleScopeState('petbattle.js').includes('_pbGame'),
+      'the original leak must still be detectable, or this whole suite is theatre');
+    assert.truthy(moduleScopeState('math-fight.js').includes('st'),
+      'and so must state inside an IIFE module');
+    assert.falsy(moduleScopeState('petbattlegame.js').includes('allDone'),
+      'while a function local inside a non-IIFE file must NOT be reported');
+    assert.falsy(moduleScopeState('math.js').includes('_mathView'),
+      "and a plain string view position is not a child's data");
+  });
+
+  for (const file of files) {
+    const held = moduleScopeState(file);
+    if (!held.length) continue;
+    test(`js/${file} holds ${held.join(', ')}`, () => {
+      const src = read('js/' + file);
+      const hasTeardown = /[Ff]orgetProfile/.test(src);
+      const excused = NO_TEARDOWN_NEEDED[file];
+      if (hasTeardown) {
+        assert.falsy(excused, `js/${file} has a teardown AND an allow-list entry — drop the entry`);
+        return;
+      }
+      assert.truthy(excused,
+        `js/${file} keeps module-level per-child state (${held.join(', ')}) with no `
+        + 'forgetProfile. Two children share one iPad: give it a SILENT teardown and '
+        + 'register it in forgetProfileState() (js/app.js), or add an entry to '
+        + 'NO_TEARDOWN_NEEDED in this file saying why it cannot be observed by the '
+        + 'next child.');
+      assert.truthy(excused.length > 60,
+        `the reason for js/${file} must be an actual reason, not a shrug`);
+    });
+  }
+
+  test('the allow-list has no entries for files that no longer qualify', () => {
+    const stale = Object.keys(NO_TEARDOWN_NEEDED)
+      .filter(f => !fs.existsSync(path.join(ROOT, 'js', f)) || !moduleScopeState(f).length);
+    assert.deepEqual(stale, [],
+      'these are excused from a rule they no longer trip — delete them: ' + stale.join(', '));
+  });
+
+  test('every teardown in js/ is actually reached from forgetProfileState', () => {
+    const app = read('js/app.js');
+    const fn = app.slice(app.indexOf('function forgetProfileState()'), app.indexOf('function switchUser()'));
+    const missing = [];
+    for (const file of files) {
+      if (file === 'app.js') continue;
+      const src = read('js/' + file);
+      // Named teardowns: `function xForgetProfile()` for a globals script,
+      // `function forgetProfile()` inside an IIFE module.
+      for (const m of src.matchAll(/^\s*function\s+(\w*[Ff]orgetProfile)\s*\(/gm)) {
+        const name = m[1];
+        let reached;
+        if (name === 'forgetProfile') {
+          // An IIFE's member is reached through its namespace object — and the
+          // namespace is read out of the file rather than matched loosely, so
+          // "some module calls .forgetProfile()" cannot excuse this one.
+          const ns = namespaceOf(file, src);
+          assert.truthy(ns, 'js/' + file + ' names its teardown forgetProfile but exposes no namespace');
+          reached = new RegExp('\\b' + ns + '\\.forgetProfile\\(\\)').test(fn);
+          if (!reached) missing.push('js/' + file + ' → ' + ns + '.forgetProfile()');
+          continue;
+        }
+        reached = new RegExp('\\b' + name + '\\(\\)').test(fn);
+        if (!reached) missing.push('js/' + file + ' → ' + name);
+      }
+    }
+    assert.deepEqual(missing, [],
+      'a teardown nobody calls is worse than none — it reads as handled: ' + missing.join(', '));
+  });
+
+  test('and none of them asks a question or navigates', () => {
+    const offenders = [];
+    for (const file of files) {
+      const src = read('js/' + file);
+      for (const m of src.matchAll(/^\s*function\s+(\w*[Ff]orgetProfile)\s*\(\)\s*\{/gm)) {
+        const rest = src.slice(m.index);
+        // The body only, to its own closing brace at this declaration's indent.
+        const indent = ' '.repeat(m[0].length - m[0].trimStart().length);
+        const end = rest.indexOf('\n' + indent + '}');
+        const body = rest.slice(0, end === -1 ? rest.length : end);
+        if (/\bconfirm\s*\(/.test(body)) offenders.push('js/' + file + ' ' + m[1] + ' asks a question');
+        if (/\bswitchScreen\s*\(/.test(body)) offenders.push('js/' + file + ' ' + m[1] + ' navigates');
+      }
+    }
+    assert.deepEqual(offenders, [],
+      'a teardown runs while the child is already walking away: a confirm() would be '
+      + 'answered by whoever picks the iPad up next, and a switchScreen() would fight '
+      + 'the caller for the screen. ' + offenders.join('; '));
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

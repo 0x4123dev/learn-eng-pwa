@@ -1138,6 +1138,12 @@ function forgetProfileState() {
     // The combo counter is COINS: petComboBonus() banks whatever has accrued at
     // the end of the next round to FINISH, whoever is playing by then.
     if (typeof petCheerForgetProfile === 'function') { try { petCheerForgetProfile(); } catch (e) {} }
+    // The Home screen's "name your dog" flag, and the account-link failure
+    // reason that js/friends.js turns into a sentence the child reads.
+    if (typeof homeForgetProfile === 'function') { try { homeForgetProfile(); } catch (e) {} }
+    if (typeof EngAuth !== 'undefined' && EngAuth && typeof EngAuth.forgetProfile === 'function') {
+        try { EngAuth.forgetProfile(); } catch (e) {}
+    }
 
     // ---- js/app.js's own per-child state -----------------------------------
     // A matching round in progress. Its screen is deactivated by switchUser,

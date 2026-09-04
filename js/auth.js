@@ -113,6 +113,14 @@ const EngAuth = (function () {
   //   ok | no-passcode | bad-passcode | offline | server
   let _lastLinkStatus = { reason: 'unknown' };
   function linkStatus() { return _lastLinkStatus; }
+  // SILENT teardown for a profile change. This is not a private diagnostic:
+  // js/friends.js _frLinkHelpHTML() turns it into a sentence the child reads —
+  // "Tên này đã có tài khoản trên máy chủ với mật mã khác", "Máy này đã tạo đủ
+  // số tài khoản cho phép". Left standing, the NEXT child was shown the reason
+  // the PREVIOUS child's link failed, about a name that is not theirs, for as
+  // long as their own syncAccount took to answer. 'unknown' is the honest
+  // state for a link that has not been attempted yet.
+  function forgetProfile() { _lastLinkStatus = { reason: 'unknown' }; }
 
   // Establish/refresh a server account for a local profile using its passcode,
   // then sync any unsynced local history. Called on every login.
@@ -593,7 +601,7 @@ const EngAuth = (function () {
     return api('login', { method: 'POST', body: { username, passcode } });
   }
 
-  return { refreshFlags: claimCoinGrants, syncAssets, syncAccount, relinkAccount, linkStatus, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login, applySignedGrant, settleCoinDebt, coinDebt };
+  return { refreshFlags: claimCoinGrants, syncAssets, syncAccount, relinkAccount, linkStatus, forgetProfile, validUsername, deviceId, MAX_DEVICE_PROFILES, postAttempt, syncNow, tokenFor, getAccount, clearAccount, api, login, applySignedGrant, settleCoinDebt, coinDebt };
 })();
 
 // Manual "Sync now" button handler (home screen). Spins the icon and toasts the result.

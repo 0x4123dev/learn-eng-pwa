@@ -2141,6 +2141,25 @@ function showLevelUpCelebration(newLevel, oldLevel) {
 // appState.petName is read — the home card, pet battles, and the Night Raid
 // badge that used to say "Dog".
 var _petRenaming = false;
+
+// SILENT teardown for a profile change. `_petRenaming` is only cleared by
+// savePetName() and cancelPetRename(), and neither is on the road out of a
+// profile — so a child who tapped ✏️ on their dog and then switched account
+// left the flag standing, and renderWordPet() shows the naming form whenever
+// it is true EVEN THOUGH the next child already has a named dog. The next
+// child was greeted by "Đổi tên cún của con" over somebody else's decision.
+//
+// The three drag states are gesture scratch, each cleared on pointer-up, but a
+// gesture interrupted by a profile change would leave its ghost element behind
+// and the next drag reading a stale anchor. They are declared further down the
+// file, which is fine: this only runs long after the script has finished.
+function homeForgetProfile() {
+    _petRenaming = false;
+    _dragState = null;
+    _accDragState = null;
+    _poopDragState = null;
+}
+
 function startPetRename(event) {
     if (event && event.stopPropagation) event.stopPropagation();
     _petRenaming = true;
