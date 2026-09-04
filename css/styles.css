@@ -12841,6 +12841,12 @@
 
 /* ── Daily Task (admin-assigned) ─────────────────────────────────────── */
 .daily-task-card:empty { display: none; }
+/* Spacing around the day's card follows the one rhythm the rest of Home uses
+   (14px, the streak → skills gap). Without this the card sat flush under the
+   pet stage and the streak panel — whose -20px top margin exists to tuck it
+   under the stage when there is NO card — climbed 6px up over the card. */
+.daily-task-card:not(:empty) { margin-top: 14px; }
+.daily-task-card:not(:empty) + .streak-panel { margin-top: 0; }
 /* The day's assigned work sits at the top of Home and has to LOOK like the
    thing to do next — the glass card it used to be read as one more panel in a
    scroll of panels, and a child skimmed past it. Warm fill, thicker border and
