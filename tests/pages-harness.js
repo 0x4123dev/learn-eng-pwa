@@ -112,6 +112,7 @@ const SQL_FILES = [
   // The index the Đấu Toán reaper needs: it runs on every 3-second list poll
   // and had no index on deadline_at at all.
   'db/026-math-fight-deadline-index.sql',
+  'db/027-battle-reaper-index.sql',
 ];
 
 function createWorld(opts) {
