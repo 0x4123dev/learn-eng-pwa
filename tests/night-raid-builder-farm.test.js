@@ -249,6 +249,39 @@ suite('builder farm: every screen points at today\'s tasks', () => {
       assert.falsy(/THU HOẠCH \d/.test(out), 'a wilted crop never counts as harvestable');
     });
   }
+  // Spec 5.1.3: tapping a wilted plant shows the reason AND a Vào học button.
+  // A toast cannot carry a button, so the screen carries the guarantee: while
+  // anything is wilted there is always a Vào học somewhere. It was not: the
+  // task bar only offered one while there were unfinished tasks, and the
+  // harvest button only becomes VÀO HỌC ĐỂ CÂY TƯƠI when nothing at all is
+  // ready — so a child with a ripe rice field and either no tasks assigned or
+  // all of them already done stared at a dead garden with nothing to press.
+  const wiltedPlusReadyField = task => ({ appState: { farmCtx: WILT, dailyTask: task, nightRaidLayout: {
+    cells: [WILTED_CROP, { type: 'rice-field', gx: 6, gy: 6, tier: 1, uid: 'p-rice0001', readyAt: 0 }],
+    soldiers: 2, dogLane: 2, farms: [] } } });
+  const TASK_STATES = [
+    ['no tasks assigned today', { date: TODAY, tasks: [], allDone: false }],
+    ['some tasks done', { date: TODAY, tasks: [{ id: 1, done: true }, { id: 2, done: false }], allDone: false }],
+    ['every task done', { date: TODAY, tasks: [{ id: 1, done: true }], allDone: true }],
+  ];
+  for (const [screen, render] of [['builder', w => w.ctx.NightRaid.renderBuilder()], ['home', w => w.ctx.NightRaid.renderHome()]]) {
+    for (const [label, task] of TASK_STATES) {
+      test('a wilted garden always offers Vào học — ' + label + ' (' + screen + ')', () => {
+        const w = mount(wiltedPlusReadyField(task)); render(w);
+        const out = html(w);
+        assert.truthy(out.includes('THU HOẠCH 1'), 'the ripe field still has its own harvest button');
+        assert.truthy(/onclick="nrGoLearn\(\)"/.test(out), 'and the child still has a way into today\'s tasks');
+      });
+    }
+  }
+  test('tapping a wilted crop says why AND where the Vào học button is', () => {
+    const w = mount({ appState: { farmCtx: WILT, nightRaidLayout: { cells: [WILTED_CROP], soldiers: 0, dogLane: 2, farms: [] } } });
+    w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.gridCell(3, 1);
+    const toast = w.toasts[w.toasts.length - 1] || '';
+    assert.truthy(toast.includes('héo'), 'the reason: ' + toast);
+    assert.truthy(toast.includes('Vào học'), 'and where the button is: ' + toast);
+  });
   test('Vào học leaves Night Raid and opens the Daily Task screen', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     w.ctx.nrGoLearn();

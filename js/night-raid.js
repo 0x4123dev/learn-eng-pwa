@@ -377,7 +377,12 @@ var NightRaid = (() => {
   // js/daily-task.js) and the wilt context the server sent.
   function taskBarHtml(layout){const s=(typeof DailyTask!=='undefined'&&DailyTask&&typeof DailyTask.state==='function')?DailyTask.state():(appState.dailyTask||null);const tasks=(s&&Array.isArray(s.tasks))?s.tasks:[],done=tasks.filter(t=>t&&t.done).length,allDone=tasks.length>0&&!!(s&&s.allDone),wilted=anyWilted(layout);
     const text=!tasks.length?'Hôm nay chưa có nhiệm vụ — cây đứng chờ':allDone?'Cây đã lớn hôm nay 🌱 · mai làm tiếp':wilted?`Cây đang héo 🥀 · xong ${tasks.length} nhiệm vụ là tươi lại`:`Hôm nay ${done}/${tasks.length} nhiệm vụ · xong hết là cây lớn thêm 1 ngày`;
-    const cta=(!allDone&&tasks.length)?`<button type="button" class="nr-task-go" onclick="nrGoLearn()">Vào học</button>`:'';
+    // While anything is wilted the child must ALWAYS have a way into the tasks
+    // (spec 5.1.3). The harvest button only turns into VÀO HỌC ĐỂ CÂY TƯƠI when
+    // nothing at all is ready, so a child with a ripe field and either no tasks
+    // assigned or all of them already done was left looking at a dead garden
+    // with no button to press. `wilted` keeps the CTA here in those two cases.
+    const cta=(wilted||(!allDone&&tasks.length))?`<button type="button" class="nr-task-go" onclick="nrGoLearn()">Vào học</button>`:'';
     return `<div class="nr-task-bar ${allDone?'done':''} ${wilted?'wilted':''}" role="status"><span>${text}</span>${cta}</div>`;}
   // Out of Cướp Đêm and into the task list. A committed raid still asks first.
   function goLearn(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof DailyTask!=='undefined'&&DailyTask&&typeof DailyTask.open==='function')DailyTask.open();else if(typeof switchScreen==='function')switchScreen('dailyTaskScreen');}
@@ -1015,7 +1020,7 @@ var NightRaid = (() => {
     document.addEventListener('pointerup',finish);
     document.addEventListener('pointercancel',finish);
   }
-  function gridCell(gx,gy){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cell=footprintOwner(layout,gx,gy,'stand');if(cell&&cellReady(cell))return collectResources(cell.uid);if(cell&&isCropCell(cell)&&isWiltedCell(cell)){if(typeof showToast==='function')showToast('Cây đang héo 🥀 — làm xong nhiệm vụ hôm nay để cây tươi rồi hái');return;}buildCell(gx,gy);}
+  function gridCell(gx,gy){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cell=footprintOwner(layout,gx,gy,'stand');if(cell&&cellReady(cell))return collectResources(cell.uid);if(cell&&isCropCell(cell)&&isWiltedCell(cell)){if(typeof showToast==='function')showToast('Cây đang héo 🥀 — làm xong nhiệm vụ hôm nay để cây tươi rồi hái · bấm Vào học ở thanh nhiệm vụ trên đầu màn');return;}buildCell(gx,gy);}
   // ---- raid lock countdowns -------------------------------------------
   // A breached home is sealed for 24 hours (server-side, see _night-raid.js).
   // Every place that can show that clock renders the same chip and lets the
