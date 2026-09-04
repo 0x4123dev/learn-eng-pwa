@@ -87,7 +87,7 @@ var NightRaidGame = (() => {
       canvas.width=this.size;canvas.height=this.size;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Trận Cướp Đêm tự động trên sân nhà isometric. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${target.shielded?'Khiên Đêm':this.result.defense}.${petText}`);
       this.paint(0);
     }
-    loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
+    loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=key==='board'&&NightRaidArt.battleBoardCutout?NightRaidArt.battleBoardCutout(img):img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
     start(){this.paint(0);this.notify();}
     charge(){if(this.running||this.finished)return false;this.running=true;this.state.status='fighting';this.startedAt=performance.now();this.notify();this.raf=requestAnimationFrame(this.boundFrame);return true;}
     destroy(){this.running=false;cancelAnimationFrame(this.raf);}
@@ -141,8 +141,7 @@ var NightRaidGame = (() => {
     paint(progress){const ctx=this.ctx,S=this.size,ch=this.choreo,C=Choreo;
       const T=Math.max(0,Math.min(1,progress))*ch.durationMs,now=T;
       ctx.clearRect(0,0,S,S);
-      if(this.assets.board)ctx.drawImage(this.assets.board,0,0,S,S);else{ctx.fillStyle='#dff2c9';ctx.fillRect(0,0,S,S);}
-      const shade=ctx.createLinearGradient(0,0,0,S);shade.addColorStop(0,'rgba(24,35,73,.08)');shade.addColorStop(1,'rgba(24,35,73,.18)');ctx.fillStyle=shade;ctx.fillRect(0,0,S,S);
+      if(this.assets.board)ctx.drawImage(this.assets.board,0,0,S,S);
       const won=this.result.won,hpMax=this.target.castleHp||200;
       const breachP=won&&ch.breachAt!=null?Math.max(0,Math.min(1,(T-ch.breachAt)/Math.max(1,ch.durationMs-ch.breachAt))):0;
       const hp=won?Math.max(0,hpMax*(1-breachP)):hpMax;
@@ -208,7 +207,6 @@ var NightRaidGame = (() => {
       }
       if(T>ch.engageStart&&T<ch.engageEnd){for(let i=0;i<6;i++){const pulse=Math.max(0,Math.sin(now*.005+i*2.1));if(pulse>.55)NightRaidArt.drawClashSpark(ctx,352+(i%3)*30,352+(i%2)*36,(pulse-.55)*1.6,i);}}
       if(won&&breachP>0){for(let i=0;i<3;i++)NightRaidArt.drawClashSpark(ctx,215+i*24,270+i*34,.35+.5*Math.sin(now*.02+i),i+6);}
-      const vignette=ctx.createRadialGradient(400,390,240,400,400,600);vignette.addColorStop(.5,'rgba(23,22,45,0)');vignette.addColorStop(1,'rgba(23,22,45,.28)');ctx.fillStyle=vignette;ctx.fillRect(0,0,S,S);
       ctx.fillStyle='rgba(30,23,49,.78)';NightRaidArt.roundRect(ctx,235,18,330,54,27);ctx.fill();ctx.textAlign='center';ctx.font='900 22px system-ui';ctx.fillStyle='#fff4ba';ctx.fillText(this.state.status==='ready'?'SẴN SÀNG TIẾN QUÂN':this.state.status==='fighting'?'ĐANG GIAO CHIẾN':won?'PHÁ THÀNH CÔNG':'PHÒNG THỦ QUÁ MẠNH',400,52);
     }
   }

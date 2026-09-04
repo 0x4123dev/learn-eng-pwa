@@ -32,7 +32,8 @@ var LazyData = (() => {
                     'js/math-luythua.js', 'js/math-source-exams.js',
                     'js/math-fight-bank.js',
                     'js/math-data-hk2.js', 'js/math-exams-hk2.js',
-                    'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js'],
+                    'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js',
+                    'js/math4-data.js'],
   });
 
   // The offline dictionary belongs to no single screen — a child can tap any

@@ -314,6 +314,18 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assert.truthy(w.screen().innerHTML.includes('Chưa tải được nhà người chơi'));
   });
 
+  test('a normal bot-off child never sees the QA bot button', async () => {
+    const w = mount({ friends: friendsReply([]), targets: targetsReply });
+    w.ctx.appState.allowBot = false;
+    w.ctx.NightRaid.open();
+    await w.ctx.NightRaid.showLiveTargets();
+    await settle();
+    const html = w.screen().innerHTML;
+    assert.falsy(html.includes('nrScoutBot()'), 'bot practice is reserved for admin-enabled test accounts');
+    assert.falsy(html.includes('Chơi thử với Bot'));
+    assert.truthy(html.includes('nr-target-card'), 'real random houses remain available');
+  });
+
   test('friends failing but targets answering keeps the random houses', async () => {
     const w = await openLive({ targets: targetsReply });
     const html = w.screen().innerHTML;

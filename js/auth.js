@@ -397,11 +397,18 @@ const EngAuth = (function () {
     }));
     (appState.mathHistory || []).forEach(h => add({
       // A mock exam and a chapter drill are different things to a parent
-      // reading the timeline, and the session records which it was.
+      // reading the timeline, and the session records which it was. So is a
+      // Toán 4 paper: it rides the same 'math' type (the server drops types it
+      // does not know) but carries `g4set`, which is what a daily task for it
+      // matches on — `chapter` there is a string and can never collide with a
+      // Toán 7 chapter number.
       type: 'math',
-      title: 'Toán 7 · ' + (h.examId ? 'Đề thi: ' : '') + (h.label || 'công thức'),
+      title: h.grade === 4
+        ? (h.label || 'Toán 4 · Đề ôn')
+        : 'Toán 7 · ' + (h.examId ? 'Đề thi: ' : '') + (h.label || 'công thức'),
       score: h.score, total: h.total, at: h.date,
-      detail: h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
+      detail: h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
+        : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
     }));
     (appState.warsHistory || []).forEach(h => add({
       // Math Wars rides the 'math' type: it IS maths practice, and a type the
@@ -444,7 +451,12 @@ const EngAuth = (function () {
         });
       });
     };
-    (appState.mathHistory || []).forEach(h => addSession('math7', 'm7', h));
+    // Toán 4 rides the same history array as Toán 7 but is a different môn:
+    // filed under 'math7' its sheets would be averaged into Toán 7's numbers
+    // on the admin skill page, where nobody could tell them apart again.
+    (appState.mathHistory || []).forEach(h => h && h.grade === 4
+      ? addSession('math4', 'm4', h)
+      : addSession('math7', 'm7', h));
     (appState.warsHistory || []).forEach(h => addSession('mathwars', 'mw', h));
     (appState.unitsHistory || []).forEach(h => addSession('grade4', 'g4', h));
     (appState.wordformHistory || []).forEach(h => addSession('wordform', 'wf', h));

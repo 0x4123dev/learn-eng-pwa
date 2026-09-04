@@ -614,8 +614,19 @@ function screenPlaybook() {
           mustEqual(missing.length, 0, semester + ' hides chapters that exist in the bank: ' + missing.map((c) => c.title).join(', '));
           listed.push(semester + '=' + chapters.length);
         }
+        // Toán 4 is a second môn in the same tab, and its bank is lazy like
+        // the rest — a card that leads to an empty paper is the failure this
+        // catches.
+        h.sandbox.openMathSection('toan4');
+        const g4 = h.sandbox.math4Types();
+        must(g4.length > 0, 'Toán 4 has no dạng — its bank did not arrive');
+        const g4text = squash(h.el('mathHubScreen').textContent);
+        const hidden = g4.filter((t) => !g4text.includes(t.title));
+        mustEqual(hidden.length, 0, 'Toán 4 hides dạng that exist: ' + hidden.map((t) => t.title).join(', '));
+        must(wiredTo(h.el('mathHubScreen'), 'startMath4Pre').length >= 1, 'Toán 4 offers no Pre paper');
         h.sandbox.openMathSection('home');
-        return 'every chapter listed in both semesters (' + listed.join(', ') + ')';
+        return 'every chapter listed in both semesters (' + listed.join(', ')
+          + '), Toán 4 lists ' + g4.length + ' dạng';
       },
     },
     grammarScreen: {
@@ -1340,6 +1351,40 @@ async function verifyClient() {
       must(!h.sandbox.mathIsCorrect(q2, bad), 'and the grader must agree it is wrong');
       h.run('_mathQuiz = null');
       return chapter.title + ': right answer marked correct, wrong answer marked wrong';
+    });
+
+  await R.check('play-toan4-pre-paper',
+    'Toán 4: làm trọn một đề Pre — gõ đáp án, chấm, khoá thanh dưới',
+    async () => {
+      const h = mountApp();
+      loginTestUser(h, { coins: 0 });
+      h.sandbox.switchScreen('mathHubScreen'); await settle();
+      h.sandbox.openMathSection('toan4');
+      h.sandbox.startMath4Pre();
+      const st = h.peek('_mathQuiz');
+      must(st, 'the Pre paper did not open');
+      mustEqual(st.questions.length, 10, 'a Pre paper is ten questions');
+      mustEqual(st.questions.map((q) => q.t).join(''), '1122334455', 'two of each dạng, in đề order');
+      const nav = h.el('bottomNav');
+      mustEqual(nav.style.display, 'none', 'the bottom bar must be hidden while a paper is open');
+      // Sit it the way a child does: every answer typed on the real keypad.
+      for (let i = 0; i < 10; i++) {
+        const q = h.sandbox.mathCurrentQuestion();
+        must(q, 'ran out of questions at ' + i);
+        must(h.sandbox.mathHasAnswerParts(q), q.id + ' has no answer boxes');
+        for (const part of q.answerParts) {
+          for (const ch of String(part.answer)) h.sandbox.mathKey(ch);
+          h.sandbox.submitMathTyped();
+        }
+        h.sandbox.nextMathQuestion();
+      }
+      must(!h.sandbox.isMathQuizActive(), 'the paper is over');
+      mustEqual(nav.style.display, '', 'the bottom bar must come back');
+      const hist = h.peek('appState').mathHistory;
+      mustEqual(hist[0].score, 10, 'a perfect sitting scores 10');
+      mustEqual(hist[0].grade, 4, 'the run must be filed as Toán 4');
+      mustEqual(hist[0].g4set, 'pre', 'and carry what the daily task matches on');
+      return '10/10 typed on the keypad, filed as ' + hist[0].label;
     });
 
   await R.check('play-word-hunt-find-a-word',
