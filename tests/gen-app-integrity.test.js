@@ -141,6 +141,10 @@ suite('gen: sw.js img assets exist on disk', () => {
         const scenes = IMG_ASSETS.filter(a => /^\/img\/battle-scenes\/[^/]+\/.+\.webp$/.test(a));
         const nightRaid = IMG_ASSETS.filter(a => /^\/img\/night-raid\/.+\.(?:webp|png|jpe?g)$/.test(a));
         const ghostOffering = IMG_ASSETS.filter(a => /^\/img\/ghost-offering\/.+\.(?:webp|png)$/.test(a));
+        // The farm's pictures are counted from the manifest, never a literal:
+        // js/farm-art-manifest.js is the one list, so this can never go stale.
+        const farmArt = require(path.join(ROOT, 'js', 'farm-art-manifest.js'));
+        const farm = IMG_ASSETS.filter(a => /^\/img\/farm\/[^/]+\.webp$/.test(a));
         assert.equal(svgs.length, 3, `root svg count: ${svgs.join(', ')}`);
         assert.equal(pets.length, 0, `obsolete pet png count: ${pets.join(', ')}`);
         assert.equal(teammates.length, 3, `teammate portrait count: ${teammates.join(', ')}`);
@@ -148,7 +152,8 @@ suite('gen: sw.js img assets exist on disk', () => {
         assert.equal(scenes.length, 24, `battle scene cache count: ${scenes.join(', ')}`);
         assert.equal(nightRaid.length, 23, `night raid art count: ${nightRaid.join(', ')}`);
         assert.equal(ghostOffering.length, 4, `ghost offering art count: ${ghostOffering.join(', ')}`);
-        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length, IMG_ASSETS.length);
+        assert.equal(farm.length, farmArt.FILES.length, `farm art count: every manifest entry is precached, nothing else`);
+        assert.equal(svgs.length + pets.length + teammates.length + castles.length + scenes.length + nightRaid.length + ghostOffering.length + farm.length, IMG_ASSETS.length);
     });
 });
 
