@@ -285,4 +285,26 @@ suite('builder farm: replant what was just harvested', () => {
   });
 });
 
+suite('builder farm: replant charges only for what went in the ground', () => {
+  // Found by review, 2026-09-04. replant() quoted the whole harvest, then
+  // skipped any cell that was no longer free — but still charged the full
+  // quote, so a child paid for seeds that were never planted.
+  test('a cell that is no longer free is skipped, and not paid for', async () => {
+    const reply = { ok: true, data: { layout: { cells: [{ type: 'stone-wall', gx: 1, gy: 1, tier: 1 }], farms: [] },
+      coins: 9000, collectedCoins: 138, collectedSoldiers: 0,
+      // (1,1) is where the wall now stands; (5,5) is open ground.
+      harvested: [{ type: 'pumpkin', gx: 1, gy: 1, zone: 0 }, { type: 'tomato', gx: 5, gy: 5, zone: 0 }],
+      wilted: false, dayCount: 6, ctx: FRESH } };
+    const w = mount({ api: p => p === 'night-raid/collect' ? Promise.resolve(reply) : Promise.resolve({ ok: true, data: { ok: true } }) });
+    w.ctx.NightRaid.renderBuilder();
+    await w.ctx.NightRaid.collectResources();
+    assert.truthy(html(w).includes('2 ô · 25 xu'), 'the offer quotes both seeds: pumpkin 20 + tomato 5');
+    w.ctx.NightRaid.replant();
+    const cells = w.state.nightRaidLayout.cells;
+    assert.truthy(cells.some(c => c.type === 'tomato' && c.gx === 5 && c.gy === 5), 'the free cell is replanted');
+    assert.falsy(cells.some(c => c.type === 'pumpkin'), 'the blocked cell is not');
+    assert.equal(w.state.coins, 9000 - 5, 'and only the tomato is charged, not the quoted 25');
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

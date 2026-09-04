@@ -439,4 +439,31 @@ suite('farm server: a raid target shows its walls, never its garden', () => {
   });
 });
 
+suite('farm server: a full wallet must not eat a crop', () => {
+  // Found by review, 2026-09-04. `pay()` clamps to the 100000 ceiling and
+  // returns whatever fitted, and the crop branch removed the plant whenever
+  // that was non-zero — so a purse with 1 xu of room handed over 1 xu and
+  // deleted a 45-xu rice plant. A crop now pays all or nothing and waits on
+  // the board until the child has spent something. The 24h fields keep the
+  // old partial behaviour: they re-arm rather than vanish, so nothing is lost.
+  test('a ripe crop stays on the board when its full yield will not fit', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] }, 100);
+    doneOn(world, kid.uid, gmt7(Date.now() - 9 * DAY), gmt7(Date.now() - 8 * DAY),
+           gmt7(Date.now() - 7 * DAY), gmt7(Date.now() - 6 * DAY), gmt7(Date.now() - DAY));
+    const seed = { cells: [{ type: 'rice', gx: 1, gy: 1, uid: 'c-rice0001', day: 0, at: gmt7(Date.now() - 9 * DAY) }], farms: [], soldiers: 0, dogLane: 2 };
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=99999 WHERE user_id=?').run(JSON.stringify(seed), kid.uid);
+    const full = await collect(world, kid);
+    assert.truthy(full.data.nothingReady, 'nothing is paid');
+    assert.equal(mirror(world, kid.uid), 99999, 'and not one xu moves');
+    assert.equal(stored(world, kid.uid).cells.filter(c => c.type === 'rice').length, 1, 'the plant is still there');
+    // Spend something and the same plant pays in full.
+    world.db.prepare('UPDATE night_raid_homes SET lootable_coins=100 WHERE user_id=?').run(kid.uid);
+    const roomy = await collect(world, kid);
+    assert.equal(roomy.data.collectedCoins, 45);
+    assert.equal(stored(world, kid.uid).cells.filter(c => c.type === 'rice').length, 0);
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

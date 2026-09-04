@@ -25,6 +25,10 @@ export async function onRequestPost({request,env}) {
     if(def.kind==='crop'){
       if(!Farm.progress(cell,dayCount).ripe)return true;
       if(Farm.isWilted(cell,ctx)){wilted=true;return true;}
+      // A crop pays all or nothing. `pay` clamps to the wallet ceiling, so a purse
+      // with 1 xu of room used to hand over 1 xu and delete a 45-xu plant. The
+      // fields keep the old partial behaviour — they re-arm rather than vanish.
+      if(coins+def.yield>100000)return true;
       if(!pay(def.yield))return true;
       harvested.push({type:cell.type,gx:cell.gx,gy:cell.gy,zone});return false;
     }
