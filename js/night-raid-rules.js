@@ -141,7 +141,14 @@ var NightRaidRules = (() => {
   // One board's worth of cells → clean cells. `grid` is the board size (12 for
   // the castle, 6 for an extra farm); `occupied` is seeded with the castle on
   // the main board and empty on a farm; `allowDefense` is false on a farm.
-  function normalizeCells(rawCells, grid, occupied, allowDefense, dayCount, today) {
+  // `seenUids` is shared across every board of one layout. A uid is a cell's
+  // identity: home.js PUT keeps the SERVER's day/lastDay/readyAt for a cell
+  // whose uid it already knows, so a layout carrying the same uid twice let a
+  // client clone one grown plant into a whole field of ripe ones — 20 xu of
+  // pumpkin seed harvested as 11,520 xu, and lootable_coins is what other
+  // children steal from, so it minted money into the shared economy. A uid may
+  // therefore appear at most once in a layout; later claimants are dropped.
+  function normalizeCells(rawCells, grid, occupied, allowDefense, dayCount, today, seenUids) {
     const owned = Object.create(null);
     const clean = [];
     const findSpace=(gx,gy,size,layer)=>{
@@ -153,6 +160,11 @@ var NightRaidRules = (() => {
     rawCells.slice(0, grid * grid * 2).forEach(cell => {
       const type = itemById(String(cell && cell.type || ''));
       if (!type) return;
+      // Reject a repeated uid HERE, before the cell reserves a grid square or a
+      // maxOwned slot — rejecting it later made the clone cost a legitimate cell
+      // its place, so a child with five fields and one duplicated uid kept three.
+      const claim=String(cell&&cell.uid||'');
+      if(claim&&seenUids.has(claim))return;
       const isDefense = !!byId(DEFENSES, type.id);
       if (isDefense && !allowDefense) return;
       if (type.maxOwned && (owned[type.id] || 0) >= type.maxOwned) return;
@@ -165,7 +177,8 @@ var NightRaidRules = (() => {
       const gx=spot.gx,gy=spot.gy;
       occupied[layer].push({gx,gy,size});
       owned[type.id] = (owned[type.id] || 0) + 1;
-      const uid=String(cell&&cell.uid||'');
+      const uid=claim;
+      if(UID_RE.test(uid))seenUids.add(uid);
       if (!isDefense) {
         // Crops and farm buildings: no lane, col or tier — they never fight.
         const entry={ type:type.id, gx, gy };
@@ -214,10 +227,11 @@ var NightRaidRules = (() => {
       gy:castleRaw&&Number.isFinite(+castleRaw.gy)?int(castleRaw.gy,0,BUILD_GRID-CASTLE_SIZE):legacy&&Number.isFinite(+legacy.y)?int(Math.round((+legacy.y-8)/81*BUILD_GRID-CASTLE_SIZE/2),0,BUILD_GRID-CASTLE_SIZE):1,
     };
     const occupied={stand:[{gx:castleCell.gx,gy:castleCell.gy,size:CASTLE_SIZE}],floor:[]};
-    const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today);
+    const seenUids = new Set();
+    const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today, seenUids);
     const plot = Farm ? Farm.FARM_PLOT : null;
     const rawFarms = plot && Array.isArray(value && value.farms) ? value.farms.slice(0, plot.max) : [];
-    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today) }));
+    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids) }));
     return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:3, castleCell, farms };
   }
 

@@ -223,4 +223,60 @@ suite('farm server: the Daily Task page gets a farm summary', () => {
   });
 });
 
+suite('farm server: a uid is an identity, not a coupon', () => {
+  // Found by review, 2026-09-04. home.js PUT keeps the SERVER's day for a cell
+  // whose uid it already knows — so a layout carrying the same uid 96 times
+  // cloned one grown pumpkin into a field of ripe ones: 20 xu of seed
+  // harvested as 11,520 xu. lootable_coins is the pile other children steal
+  // from in a raid, so this minted money into the shared economy, not just
+  // into one device's wallet. normalizeLayout now lets a uid appear once.
+  test('a layout may not carry the same uid twice, on any board', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    const day = n => doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
+    day(20); day(19);                                   // dayCount 2
+    await putHome(world, kid, { cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'c-honest01' }] }, 100);
+    assert.equal(stored(world, kid.uid).cells[0].day, 2, 'planted at day 2');
+    for (let i = 18; i >= 8; i--) day(i);               // dayCount 13 → the pumpkin is ripe
+    const clones = [];
+    for (let gx = 0; gx < 12 && clones.length < 96; gx++)
+      for (let gy = 0; gy < 12 && clones.length < 96; gy++) {
+        if (gx >= 4 && gx < 7 && gy >= 1 && gy < 4) continue;   // the castle footprint
+        clones.push({ type: 'pumpkin', gx, gy, uid: 'c-honest01' });
+      }
+    await putHome(world, kid, { cells: clones }, 100);
+    const kept = stored(world, kid.uid).cells.filter(c => c.type === 'pumpkin');
+    assert.equal(kept.length, 1, 'only the first claimant of a uid survives');
+    const r = await collect(world, kid);
+    assert.equal(r.data.collectedCoins, 120, 'one ripe pumpkin pays once, not 96 times');
+    assert.equal(mirror(world, kid.uid), 220);
+  });
+  test('honest layouts are untouched: distinct uids, missing uids, malformed uids', () => {
+    const R = require(require('path').join(__dirname, '..', 'js', 'night-raid-rules.js'));
+    const honest = R.normalizeLayout({ cells: [
+      { type: 'pumpkin', gx: 0, gy: 0, uid: 'c-aaaaaaaa', day: 1, at: '2026-09-01' },
+      { type: 'tomato', gx: 1, gy: 0, uid: 'c-bbbbbbbb', day: 2, at: '2026-09-02' },
+      { type: 'rice-field', gx: 3, gy: 3, uid: 'p-cccccccc', readyAt: 5 },
+    ], farms: [{ cells: [{ type: 'lettuce', gx: 0, gy: 0, uid: 'c-dddddddd', day: 3, at: '2026-09-03' }] }] });
+    assert.equal(honest.cells.length, 3);
+    assert.equal(honest.farms[0].cells.length, 1);
+    // A cell with no uid is a new planting, not a claim — the server mints one.
+    assert.equal(R.normalizeLayout({ cells: [{ type: 'pumpkin', gx: 0, gy: 0 }, { type: 'pumpkin', gx: 2, gy: 0 }] }).cells.length, 2);
+    // A malformed uid is not a claim either, so it cannot squat the namespace.
+    assert.equal(R.normalizeLayout({ cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'bad' }, { type: 'pumpkin', gx: 2, gy: 0, uid: 'bad' }] }).cells.length, 2);
+    // Rejecting a duplicate must not cost a NEIGHBOUR its place: the check runs
+    // before the cell reserves a grid square or a maxOwned slot. Five fields
+    // with one duplicated uid must keep four — what master kept — not three.
+    const five = [];
+    for (let i = 0; i < 5; i++) five.push({ type: 'rice-field', gx: i * 2, gy: 0, uid: 'p-rice000' + i, readyAt: 1 });
+    five[2].uid = five[1].uid;
+    assert.equal(R.normalizeLayout({ cells: five }).cells.filter(c => c.type === 'rice-field').length, 4);
+    // The set spans boards: a farm board cannot re-use the castle grid's uid.
+    const dup = R.normalizeLayout({ cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'c-aaaaaaaa' }],
+      farms: [{ cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'c-aaaaaaaa' }] }] });
+    assert.equal(dup.cells.length, 1);
+    assert.equal(dup.farms[0].cells.length, 0);
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
