@@ -146,6 +146,7 @@ function PetBattleGame(opts) {
   this.craters = [];
   this.flying = [];                      // shells being animated
   this.banner = '';
+  this.hireOpen = false;
   this.linkMode = this.link ? this.link.mode : 'polling';
   this.foeAiming = null;                  // live "đang ngắm…" from the opponent
   this.emotes = [];                       // floating emoji reactions
@@ -354,17 +355,7 @@ PetBattleGame.prototype.render = function () {
   if (!this._shellReady) {
     // A status chip per hired đồng đội. They are not buttons: every teammate
     // is active automatically and stays active until the battle ends.
-    const squadChips = (this.myCharges || []).length ? `
-        <div class="pb-squad" role="list" aria-label="${esc(gT('gSquadAria'))}">
-          ${this.myCharges.map(c => {
-            const avatar = pbMateAvatarURL(c.id, 38);
-            return `<div class="pb-squad-chip active" role="listitem"
-                    aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}">
-              <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}">
-              <span class="pb-squad-active" aria-hidden="true">∞</span>
-            </div>`;
-          }).join('')}
-        </div>` : '';
+    const squadChips = this._squadHTML();
     const barrels = [1, 2, 3, 4].map(n => `
       <button class="pb-barrel" type="button" data-pb-shots="${n}"
               aria-label="${esc(gT('gLoadAria', { n }))}" onclick="_pbGameSetShots(${n})">
@@ -375,6 +366,10 @@ PetBattleGame.prototype.render = function () {
     this.mount.innerHTML = `
       <div class="pb-game">
       <div class="pb-game-topbar">
+        <button class="pb-game-hire" id="pbHireButton" type="button" onclick="pbOpenBattleHire()"
+                aria-label="${esc(gT('hireButtonAria'))}">
+          <span aria-hidden="true">+</span><b>${esc(gT('hireButton'))}</b><small id="pbHireBalance">${Math.max(0, Number(typeof appState !== 'undefined' && appState ? appState.coins : 0) || 0).toLocaleString()} 🪙</small>
+        </button>
         <div class="pb-turn-callout" id="pbTurnCallout" role="status" aria-live="polite">
           <span class="pb-turn-dot" aria-hidden="true"></span><span id="pbTurnText"></span>
           <div class="pb-lang pb-game-lang" role="group" aria-label="Language">
@@ -477,7 +472,7 @@ PetBattleGame.prototype.render = function () {
                  aria-label="${esc(gT('gPower'))}" oninput="_pbGameSetPower(this.value)">
         </div>
         <div class="pb-barrels" role="group" aria-label="${esc(gT('gShotsAria'))}">${barrels}</div>
-        ${squadChips}
+        <div id="pbSquadSlot">${squadChips}</div>
         <div class="pb-emotes" role="group" aria-label="${esc(gT('gEmotesAria'))}">
           ${['👍', '😮', '🎉', '😅', '🔥'].map(e =>
             `<button class="pb-emote" type="button" aria-label="${esc(gT('gEmoteAria', { e }))}" onclick="_pbGameEmote('${e}')">${e}</button>`).join('')}
@@ -495,6 +490,7 @@ PetBattleGame.prototype.render = function () {
         <span>${esc(gT('gRotateHint'))}</span>
         <button type="button" onclick="_pbGameCloseRotateTip()">${esc(gT('gRotateClose'))}</button>
       </div>
+      <div class="pb-hire-layer" id="pbHireLayer" hidden></div>
       </div>`;
     this.canvas = this._el('pbCanvas');
     this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
@@ -517,7 +513,44 @@ PetBattleGame.prototype.render = function () {
   }
 
   this._updateUi(maxShots);
+  // Busy can change while the dialog is open (for example when a volley lands).
+  // Refresh the footer so Confirm unlocks again at the next safe boundary.
+  if (this.hireOpen && typeof _pbRefreshHireUi === 'function') _pbRefreshHireUi();
   this.draw();
+};
+
+PetBattleGame.prototype._squadHTML = function () {
+  if (!(this.myCharges || []).length) return '';
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<div class="pb-squad" role="list" aria-label="${esc(gT('gSquadAria'))}">
+    ${this.myCharges.map(c => {
+      const avatar = pbMateAvatarURL(c.id, 38);
+      return `<div class="pb-squad-chip active" role="listitem"
+              aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}">
+        <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}">
+        <span class="pb-squad-active" aria-hidden="true">∞</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+};
+
+PetBattleGame.prototype.applyBattleHires = function (battle) {
+  if (!battle || !battle.me || !battle.foe) return false;
+  const mine = this.team.normalizeHires(battle.me.hires);
+  const theirs = this.team.normalizeHires(battle.foe.hires);
+  const beforeMine = this.team.normalizeHires(this.view.me.hires);
+  const beforeTheirs = this.team.normalizeHires(this.view.foe.hires);
+  const changed = JSON.stringify(mine) !== JSON.stringify(beforeMine)
+    || JSON.stringify(theirs) !== JSON.stringify(beforeTheirs);
+  if (!changed) return false;
+  this.view.me.hires = mine;
+  this.view.foe.hires = theirs;
+  this.myCharges = this.team.buildCharges(mine);
+  this.foeCharges = this.team.buildCharges(theirs);
+  const slot = this._el('pbSquadSlot');
+  if (slot) slot.innerHTML = this._squadHTML();
+  this.draw();
+  return true;
 };
 
 PetBattleGame.prototype._el = function (id) {
@@ -2102,6 +2135,7 @@ PetBattleGame.prototype._applyServer = function (b) {
   this.foeHp = b.foe.hp;
   this.myAmmo = b.me.ammo;
   this.foeAmmo = b.foe.ammo;
+  this.applyBattleHires(b);
   this.turnNo = b.turnNo || this.turnNo;
   if (!this.busy) {
     this.myTurn = !!b.myTurn;
@@ -2130,7 +2164,7 @@ function _pbBroadcastAim(g) {
 }
 function _pbGameSetAngle(v) {
   const g = _pbCurrentGame();
-  if (!g || !g.myTurn || g.busy || g.finished) return;
+  if (!g || !g.myTurn || g.busy || g.finished || g.hireOpen) return;
   const n = Number(v);
   if (!isFinite(n)) return;
   g.angle = Math.max(g.minAngle || PB_ANGLE_MIN, Math.min(PB_ANGLE_MAX, n));
@@ -2140,7 +2174,7 @@ function _pbGameSetAngle(v) {
 }
 function _pbGameSetPower(v) {
   const g = _pbCurrentGame();
-  if (!g || !g.myTurn || g.busy || g.finished) return;
+  if (!g || !g.myTurn || g.busy || g.finished || g.hireOpen) return;
   const n = Number(v);
   if (!isFinite(n)) return;
   g.power = Math.max(PB_POWER_MIN, Math.min(PB_POWER_MAX, n));
@@ -2157,8 +2191,8 @@ function _pbGameNudge(which, delta) {
   else _pbGameSetPower(g.power + delta);
 }
 
-function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
-function _pbGameFire() { const g = _pbCurrentGame(); if (g) g.fire(); }
+function _pbGameSetShots(n) { const g = _pbCurrentGame(); if (g && !g.hireOpen) { g.shots = +n; g.render(); _pbBroadcastAim(g); } }
+function _pbGameFire() { const g = _pbCurrentGame(); if (g && !g.hireOpen) g.fire(); }
 function _pbGameEmote(e) { const g = _pbCurrentGame(); if (g) g.sendEmote(e); }
 function _pbCurrentGame() { return (typeof _pbGame !== 'undefined') ? _pbGame : null; }
 function _pbGameAnchor(which) { const g = _pbCurrentGame(); if (g) g.cameraAnchor(which); }

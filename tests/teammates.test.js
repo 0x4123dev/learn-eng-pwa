@@ -490,6 +490,8 @@ suite('teammates: every rendered class is styled', () => {
             'pb-hire-sub', 'pb-hire-list', 'pb-hire-card', 'pb-hire-emoji',
             'pb-hire-info', 'pb-hire-name', 'pb-hire-ability', 'pb-hire-fee',
             'pb-hire-steps', 'pb-hire-step', 'pb-hire-count', 'pb-hire-total',
+            'pb-game-hire', 'pb-hire-layer', 'pb-hire-backdrop', 'pb-hire-dialog',
+            'pb-hire-actions', 'pb-hire-confirm', 'pb-hire-cancel',
             'pb-squad', 'pb-squad-chip', 'pb-squad-emoji',
         ];
         const missing = classes.filter(c => !new RegExp('\\.' + c + '[\\s,{:.]').test(css));
@@ -500,7 +502,7 @@ suite('teammates: every rendered class is styled', () => {
 suite('teammates: the chip tells the truth', () => {
     test('every hired teammate reads as permanently active', () => {
         const src = read('js/petbattlegame.js');
-        const block = src.slice(src.indexOf('const squadChips ='), src.indexOf('const barrels ='));
+        const block = src.slice(src.indexOf('PetBattleGame.prototype._squadHTML'), src.indexOf('PetBattleGame.prototype.applyBattleHires'));
         assert.truthy(/pb-squad-chip active/.test(block), 'the active state must be visible');
         assert.truthy(/pb-squad-active/.test(block), 'an always-on badge must be present');
         assert.falsy(/onclick=/.test(block), 'teammates must not require a click');
@@ -532,7 +534,7 @@ suite('teammates: you hire a person, not a weapon', () => {
 
     test('the trigger chip renders the character, not the tool emoji', () => {
         const src = read('js/petbattlegame.js');
-        const build = src.slice(src.indexOf('const squadChips ='), src.indexOf('const barrels ='));
+        const build = src.slice(src.indexOf('PetBattleGame.prototype._squadHTML'), src.indexOf('PetBattleGame.prototype.applyBattleHires'));
         assert.truthy(/pbMateAvatarURL/.test(build), 'the chip must draw the teammate');
         assert.falsy(/mate\.emoji/.test(build), 'the tool emoji is not the teammate');
     });
@@ -546,41 +548,59 @@ suite('teammates: you hire a person, not a weapon', () => {
     });
 });
 
-suite('teammates: a friend battle really carries the squad', () => {
-    // The squad is priced before the request and CHARGED only once the server
-    // has accepted it. Evaluating pbHireCommit() inside the request body took
-    // the wages while the challenge was still in the air, so a 409 "bạn ấy
-    // đang bận", a cooldown, a disabled account or simply being offline cost
-    // up to 1,000 xu and gave nothing back — and so did an invite the friend
-    // declined or let expire.
-    test('challenging commits the squad and charges once', () => {
+suite('teammates: hiring lives inside the active Gunbound battle', () => {
+    test('the lobby starts a challenge with an empty squad and never charges there', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function challengePetFriend'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/const pending = pbHirePrepare\(\);/.test(body), 'the squad is priced first');
-        assert.truthy(/hires: pending\.squad/.test(body), 'the squad must travel with the challenge');
-        assert.truthy(/if \(r\.ok\) pbHireCharge\(pending\); else pbHireRelease\(\);/.test(body),
-            'and be paid for exactly once, only when the battle really starts');
-        // Up to 1,000 xu rides on this ordering, so both sides are proven to
-        // exist first: indexOf gives -1 for a string that has been renamed
-        // away, and -1 sorts before every real index.
-        const callAt = body.indexOf('_pbApi');
-        const chargeAt = body.indexOf('pbHireCharge');
-        assert.truthy(callAt >= 0, 'the challenge must actually be sent');
-        assert.truthy(chargeAt >= 0, 'and the wages must actually be charged');
-        assert.truthy(callAt < chargeAt, 'the charge follows the answer');
+        assert.truthy(/hires: \[\]/.test(body), 'hiring must not happen before gameplay');
+        assert.falsy(/pbHirePrepare|pbHireCharge/.test(body), 'the lobby must not spend teammate wages');
     });
 
-    test('accepting commits the squad too', () => {
+    test('accepting an invite also enters with an empty squad', () => {
         const src = read('js/petbattle.js');
         const fn = src.slice(src.indexOf('async function acceptPetBattle'));
         const body = fn.slice(0, fn.indexOf('\n}'));
-        assert.truthy(/const pending = pbHirePrepare\(\);/.test(body), 'the accepting side hires from the same lobby');
-        assert.truthy(/hires: pending\.squad/.test(body));
-        assert.truthy(/if \(r\.ok\) pbHireCharge\(pending\); else pbHireRelease\(\);/.test(body),
-            'an invite that cannot be accepted costs nothing');
+        assert.truthy(/hires: \[\]/.test(body));
+        assert.falsy(/pbHirePrepare|pbHireCharge/.test(body));
     });
 
+    test('the battlefield owns the Hire button and modal layer', () => {
+        const gameSrc = read('js/petbattlegame.js');
+        assert.truthy(/id="pbHireButton"/.test(gameSrc));
+        assert.truthy(/onclick="pbOpenBattleHire\(\)"/.test(gameSrc));
+        assert.truthy(/id="pbHireLayer"/.test(gameSrc));
+        const lobby = read('js/petbattle.js');
+        const render = lobby.slice(lobby.indexOf('function renderPetBattle'), lobby.indexOf('// ---- battle history'));
+        assert.falsy(/\$\{_pbHirePanel\(\)\}/.test(render), 'the full roster must not sit in the lobby');
+    });
+
+    test('Confirm sends the squad first, then charges, then returns to the game', () => {
+        const src = read('js/petbattle.js');
+        const fn = src.slice(src.indexOf('async function pbConfirmBattleHire'));
+        const body = fn.slice(0, fn.indexOf('\n}'));
+        const requestAt = body.indexOf("_pbApi('battle/hire'");
+        const chargeAt = body.indexOf('pbHireCharge(pending)');
+        assert.truthy(requestAt >= 0 && chargeAt > requestAt, 'no coins leave before the server accepts');
+        assert.truthy(/game\.applyBattleHires\(r\.data\.battle\)/.test(body), 'the hired soldier must enter the castle immediately');
+        assert.truthy(/layer\.hidden = true/.test(body), 'success returns to the battlefield');
+        assert.truthy(/_pbSetBattleHireIsolation\(game, false\)/.test(body), 'background controls become usable again');
+    });
+
+    test('the modal isolates the battlefield so Space cannot fire behind it', () => {
+        const shell = read('js/petbattle.js');
+        assert.truthy(/child\.setAttribute\('inert'/.test(shell), 'background battle controls must be inert');
+        const gameSrc = read('js/petbattlegame.js');
+        assert.truthy(/g && !g\.hireOpen\) g\.fire\(\)/.test(gameSrc), 'the fire hook must refuse shots behind Hire');
+    });
+
+    test('the in-battle endpoint appends only to the authenticated castle', () => {
+        const src = read('functions/api/battle/hire.js');
+        assert.truthy(/battle\.status !== 'active'/.test(src), 'finished and invited battles cannot hire');
+        assert.truthy(/current\.length \+ additions\.length > TEAM_MAX_HIRES/.test(src), 'the live castle keeps the five-person cap');
+        assert.truthy(/challenger \? 'challenger_hires' : 'opponent_hires'/.test(src), 'each player updates only their own squad');
+        assert.truthy(/battleView\(fresh, auth\.uid\)/.test(src), 'the UI gets the authoritative squad back');
+    });
 });
 
 suite('teammates: the server and the client agree', () => {

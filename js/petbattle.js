@@ -58,6 +58,13 @@ const PB_STR = {
     hireFull: 'Bench full ({n} max)',
     hireNone: 'No teammates — save your coins for pet food 🍖',
     hirePoor: 'Not enough coins',
+    hireButton: 'Hire', hireButtonAria: 'Hire teammates during this battle',
+    hireDialogTitle: 'Hire for this battle',
+    hireCancel: 'Cancel', hireConfirm: 'Confirm hire', hireConfirmFree: 'Choose a teammate',
+    hireWorking: 'Hiring…', hireSuccess: 'Teammates joined your castle!',
+    hireError: "Couldn't hire teammates. Your coins were not spent.",
+    hireSafeWait: 'Wait for the current volley to finish before confirming.',
+    hireExisting: '{n} already in your castle',
     hireGunner: 'Rocket Ranger', hireGunnerAb: 'Automatically launches a rocket with every volley',
     hireEngineer: 'Castle Mechanic', hireEngineerAb: 'Automatically rebuilds +15 HP on every turn',
     hireShield: 'Royal Guard', hireShieldAb: 'Automatically blocks half the damage from every hit',
@@ -200,6 +207,13 @@ const PB_STR = {
     hireFull: 'Đã đủ quân ({n} người)',
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
     hirePoor: 'Không đủ xu',
+    hireButton: 'Thuê lính', hireButtonAria: 'Thuê đồng đội trong trận đấu này',
+    hireDialogTitle: 'Thuê lính cho trận này',
+    hireCancel: 'Hủy', hireConfirm: 'Xác nhận thuê', hireConfirmFree: 'Chọn một đồng đội',
+    hireWorking: 'Đang thuê…', hireSuccess: 'Đồng đội đã vào lâu đài!',
+    hireError: 'Chưa thuê được đồng đội. Xu của bé không bị trừ.',
+    hireSafeWait: 'Chờ loạt đạn hiện tại kết thúc rồi xác nhận nhé.',
+    hireExisting: 'Đã có {n} người trong lâu đài',
     hireGunner: 'Xạ thủ Tên lửa', hireGunnerAb: 'Tự động phóng rocket trong mỗi lượt bắn',
     hireEngineer: 'Kỹ sư Thành trì', hireEngineerAb: 'Tự động sửa +15 HP trong mỗi lượt',
     hireShield: 'Hộ vệ Hoàng gia', hireShieldAb: 'Tự động giảm nửa sát thương của mọi đòn đánh',
@@ -570,13 +584,49 @@ function _pbPowerPanel() {
 // replay under the exact physics that were active when the challenge started.
 const PB_TEAMMATES_ENABLED = true;
 
-// The cart lives here, not in appState: a squad is hired FOR ONE BATTLE, so
-// abandoning the lobby must not leave a phantom bench (or a phantom bill)
-// behind. Coins are only debited when a battle actually starts.
+// The cart lives here, not in appState: it is the pending selection inside the
+// live battle's Hire dialog. Coins are debited only after /battle/hire accepts
+// the squad and returns the updated battle.
 let _pbHires = [];
+let _pbHireError = '';
+let _pbHireBusy = false;
 
 function pbHireCart() { return _pbHires.slice(); }
-function pbHireReset() { _pbHires = []; }
+function pbHireReset() { _pbHires = []; _pbHireError = ''; _pbHireBusy = false; }
+
+function _pbLiveGame() {
+  return (typeof _pbGame !== 'undefined' && _pbGame && !_pbGame.finished) ? _pbGame : null;
+}
+
+function _pbExistingHires() {
+  const game = _pbLiveGame();
+  const TEAM = _pbTeam();
+  return (game && TEAM) ? TEAM.normalizeHires(game.view && game.view.me && game.view.me.hires) : [];
+}
+
+function _pbRefreshHireUi() {
+  const game = _pbLiveGame();
+  if (game && game.hireOpen) {
+    const layer = game._el && game._el('pbHireLayer');
+    if (layer) {
+      layer.hidden = false;
+      layer.innerHTML = _pbBattleHireDialog();
+    }
+    return;
+  }
+  renderPetBattle();
+}
+
+function _pbSetBattleHireIsolation(game, on) {
+  const root = game && game.mount && game.mount.querySelector
+    ? game.mount.querySelector('.pb-game') : null;
+  if (!root || !root.children) return;
+  Array.from(root.children).forEach(child => {
+    if (child.id === 'pbHireLayer') return;
+    if (on) child.setAttribute('inert', '');
+    else child.removeAttribute('inert');
+  });
+}
 
 function _pbTeam() {
   return (typeof BattleTeam !== 'undefined' && BattleTeam.TEAM_ROSTER) ? BattleTeam : null;
@@ -663,15 +713,18 @@ function _pbRenderCastlePreviews(root) {
 function pbHire(id) {
   const TEAM = _pbTeam();
   if (!TEAM) return;
-  _pbHires = TEAM.hireAdd(_pbHires, id, _pbCoins());
-  renderPetBattle();
+  const next = TEAM.hireAdd(_pbHires, id, _pbCoins());
+  if (_pbExistingHires().length + next.length <= TEAM.TEAM_MAX_HIRES) _pbHires = next;
+  _pbHireError = '';
+  _pbRefreshHireUi();
 }
 
 function pbUnhire(id) {
   const TEAM = _pbTeam();
   if (!TEAM) return;
   _pbHires = TEAM.hireRemove(_pbHires, id);
-  renderPetBattle();
+  _pbHireError = '';
+  _pbRefreshHireUi();
 }
 
 // Spend the squad's wages. Called once, when a battle actually begins — win or
@@ -735,14 +788,17 @@ function _pbHirePanel() {
   if (!TEAM) return '';
   const coins = _pbCoins();
   const cart = TEAM.normalizeHires(_pbHires);
+  const existing = _pbExistingHires();
   const total = TEAM.hireCost(cart);
-  const full = cart.length >= TEAM.TEAM_MAX_HIRES;
+  const full = existing.length + cart.length >= TEAM.TEAM_MAX_HIRES;
 
   const cards = TEAM.TEAM_ROSTER.map(mate => {
-    const owned = cart.filter(id => id === mate.id).length;
+    const already = existing.filter(id => id === mate.id).length;
+    const pending = cart.filter(id => id === mate.id).length;
+    const owned = already + pending;
     // Ask the cart itself whether this hire would go through, so a button can
     // never promise something the purchase would then refuse.
-    const canAdd = TEAM.hireAdd(cart, mate.id, coins).length > cart.length;
+    const canAdd = !full && TEAM.hireAdd(cart, mate.id, coins).length > cart.length;
     const why = (owned > 0) ? ''
               : full ? pbT('hireFull', { n: TEAM.TEAM_MAX_HIRES })
               : !canAdd ? pbT('hirePoor') : '';
@@ -755,9 +811,9 @@ function _pbHirePanel() {
           <div class="pb-hire-fee">${pbT('hireCoins', { n: mate.fee })}${why ? ' · ' + why : ''}</div>
         </div>
         <div class="pb-hire-steps">
-          <button class="pb-hire-step" onclick="pbUnhire('${mate.id}')" ${owned ? '' : 'disabled'}>−</button>
+          <button class="pb-hire-step" type="button" aria-label="− ${pbEsc(pbT(PB_HIRE_LABEL[mate.id]))}" onclick="pbUnhire('${mate.id}')" ${pending ? '' : 'disabled'}>−</button>
           <span class="pb-hire-count">${owned}</span>
-          <button class="pb-hire-step" onclick="pbHire('${mate.id}')" ${canAdd ? '' : 'disabled'}>+</button>
+          <button class="pb-hire-step" type="button" aria-label="+ ${pbEsc(pbT(PB_HIRE_LABEL[mate.id]))}" onclick="pbHire('${mate.id}')" ${canAdd ? '' : 'disabled'}>+</button>
         </div>
       </div>`;
   }).join('');
@@ -770,8 +826,91 @@ function _pbHirePanel() {
       </div>
       <div class="pb-hire-sub">${pbT('hireSub')}</div>
       <div class="pb-hire-list">${cards}</div>
+      ${existing.length ? `<div class="pb-hire-existing">${pbT('hireExisting', { n: existing.length })}</div>` : ''}
       <div class="pb-hire-total">${cart.length ? pbT('hireTotal', { n: total }) : pbT('hireNone')}</div>
     </div>`;
+}
+
+function _pbBattleHireDialog() {
+  const TEAM = _pbTeam();
+  const total = TEAM ? TEAM.hireCost(_pbHires) : 0;
+  const game = _pbLiveGame();
+  const unsafe = !!(game && game.busy);
+  const disabled = !total || _pbHireBusy || unsafe;
+  const confirmText = _pbHireBusy ? pbT('hireWorking')
+    : total ? `${pbT('hireConfirm')} · ${pbT('hireCoins', { n: total })}` : pbT('hireConfirmFree');
+  return `<div class="pb-hire-backdrop" onclick="if(event.target===this)pbCloseBattleHire()">
+    <section class="pb-hire-dialog" role="dialog" aria-modal="true" aria-labelledby="pbHireDialogTitle">
+      <div class="pb-hire-dialog-head">
+        <strong id="pbHireDialogTitle">${pbT('hireDialogTitle')}</strong>
+        <button type="button" class="pb-hire-close" id="pbHireClose" onclick="pbCloseBattleHire()" aria-label="${pbEsc(pbT('hireCancel'))}">×</button>
+      </div>
+      <div class="pb-hire-scroll">${_pbHirePanel()}</div>
+      ${unsafe ? `<div class="pb-hire-notice">${pbT('hireSafeWait')}</div>` : ''}
+      ${_pbHireError ? `<div class="pb-hire-error" role="alert">${pbEsc(_pbHireError)}</div>` : ''}
+      <div class="pb-hire-actions">
+        <button type="button" class="pb-hire-cancel" onclick="pbCloseBattleHire()" ${_pbHireBusy ? 'disabled' : ''}>${pbT('hireCancel')}</button>
+        <button type="button" class="pb-hire-confirm" onclick="pbConfirmBattleHire()" ${disabled ? 'disabled' : ''}>${confirmText}</button>
+      </div>
+    </section>
+  </div>`;
+}
+
+function pbOpenBattleHire() {
+  const game = _pbLiveGame();
+  if (!game) return false;
+  pbHireReset();
+  game.hireOpen = true;
+  _pbRefreshHireUi();
+  _pbSetBattleHireIsolation(game, true);
+  const close = game._el && game._el('pbHireClose');
+  if (close && close.focus) close.focus();
+  return true;
+}
+
+function pbCloseBattleHire() {
+  if (_pbHireBusy) return false;
+  const game = _pbLiveGame();
+  pbHireReset();
+  if (!game) return false;
+  game.hireOpen = false;
+  _pbSetBattleHireIsolation(game, false);
+  const layer = game._el && game._el('pbHireLayer');
+  if (layer) { layer.hidden = true; layer.innerHTML = ''; }
+  const trigger = game._el && game._el('pbHireButton');
+  if (trigger && trigger.focus) trigger.focus();
+  return true;
+}
+
+async function pbConfirmBattleHire() {
+  const game = _pbLiveGame();
+  if (!game || game.busy || _pbHireBusy) { _pbRefreshHireUi(); return false; }
+  const pending = pbHirePrepare();
+  if (!pending.squad.length) return false;
+  _pbHireBusy = true;
+  _pbHireError = '';
+  _pbRefreshHireUi();
+  const r = await _pbApi('battle/hire', {
+    method: 'POST', body: { battleId: game.view.id, hires: pending.squad },
+  });
+  _pbHireBusy = false;
+  if (!r.ok || !r.data || !r.data.battle) {
+    _pbHireError = (r.data && r.data.error) || pbT('hireError');
+    _pbRefreshHireUi();
+    return false;
+  }
+  pbHireCharge(pending);
+  game.hireOpen = false;
+  _pbSetBattleHireIsolation(game, false);
+  game.applyBattleHires(r.data.battle);
+  const layer = game._el && game._el('pbHireLayer');
+  if (layer) { layer.hidden = true; layer.innerHTML = ''; }
+  game.banner = pbT('hireSuccess');
+  const balance = game._el && game._el('pbHireBalance');
+  if (balance) balance.textContent = `${_pbCoins().toLocaleString()} 🪙`;
+  game.render();
+  if (typeof EngAuth !== 'undefined' && EngAuth.syncNow) EngAuth.syncNow();
+  return true;
 }
 
 function _pbVersusLine(b) {
@@ -1002,7 +1141,6 @@ function renderPetBattle() {
            <div class="pb-cooldown-title">${pbT('cooldownTitle', { t: pbFmtCountdown(st.readyAt - Date.now()) })}</div>
            <div class="pb-cooldown-sub">${pbT('cooldownSub')}</div>
          </div>`}
-    ${_pbHirePanel()}
     <div class="pb-friend-list">${list}</div>
     ${_pbMsg ? `<div class="pb-msg">${pbEsc(_pbMsg)}</div>` : ''}
     ${_pbHistoryPanel()}`);
@@ -1162,18 +1300,14 @@ function _pbFriendWait(f) {
 
 // ---- challenge flow ----
 async function challengePetFriend(friendId) {
-  const pending = pbHirePrepare();
   const r = await _pbApi('battle/challenge', {
-    method: 'POST', body: Object.assign({ friendId, castleSkin: pbSelectedCastleSkinId(), hires: pending.squad }, _pbMyPet()),
+    method: 'POST', body: Object.assign({ friendId, castleSkin: pbSelectedCastleSkinId(), hires: [] }, _pbMyPet()),
   });
-  if (r.ok) pbHireCharge(pending); else pbHireRelease();
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errChallenge'));
   await refreshPetBattle();
 }
 async function acceptPetBattle(battleId) {
-  const pending = pbHirePrepare();
-  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, castleSkin: pbSelectedCastleSkinId(), hires: pending.squad }, _pbMyPet()) });
-  if (r.ok) pbHireCharge(pending); else pbHireRelease();
+  const r = await _pbApi('battle/respond', { method: 'POST', body: Object.assign({ battleId, accept: true, castleSkin: pbSelectedCastleSkinId(), hires: [] }, _pbMyPet()) });
   _pbMsg = r.ok ? '' : ((r.data && r.data.error) || pbT('errAccept'));
   await refreshPetBattle();
 }
@@ -1375,7 +1509,8 @@ if (typeof module !== 'undefined' && module.exports) {
     _pbRandomArenaCard, _pbSceneInvite,
     pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
     _pbCastleWorkshop, _pbRenderCastlePreviews,
-    _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset, pbHireCommit,
+    _pbHirePanel, _pbBattleHireDialog, pbHire, pbUnhire, pbHireCart, pbHireReset, pbHireCommit,
+    pbOpenBattleHire, pbCloseBattleHire, pbConfirmBattleHire,
     _pbHistoryPanel, _pbHistoryDetail, _pbPowerPanel, _pbArenaPetHeader,
     pbShowDogInfo, pbCloseDogInfo, _pbVersusLine, pbGoToFriends,
     _pbSetState: (s) => { _pbState = s; },
