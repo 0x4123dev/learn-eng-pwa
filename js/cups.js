@@ -5,8 +5,8 @@
 // unreadable row of ninety identical trophies, and there is always a next
 // milestone in view.
 //
-// Practice battles against the bot award nothing: a trophy has to mean a
-// friend was beaten, or it means nothing at all.
+// A cup is awarded on one path only, in finishPetBattle: a trophy has to mean
+// a real friend was beaten, or it means nothing at all.
 
 const CUP_MERGE = 5;                       // cups per ruby, rubies per diamond
 const CUP_TIERS = ['basic', 'ruby', 'diamond'];

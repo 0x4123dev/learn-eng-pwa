@@ -97,9 +97,9 @@ function makeRng(seed) {
 // byte. v2 is the long world — 2000px wide, viewed through the same 800px
 // window — and its constants were chosen by measurement, not by feel:
 // 300 seeds × wind -20/0/+20 × both directions = 1800 scenarios, all of them
-// reachable, worst case still offering 20 legal angle/power solutions, and
-// the practice bot's existing coarse search solving 100% of them (worst miss
-// 34px, inside a blast radius). Flight lands at 2.6-3.3s rendered.
+// reachable, worst case still offering 20 legal angle/power solutions, and a
+// coarse search over angle and power solving 100% of them (worst miss 34px,
+// inside a blast radius). Flight lands at 2.6-3.3s rendered.
 const FIELD_RULES = {
   1: {
     version: 1, worldW: 800, viewW: 800, worldH: 450,

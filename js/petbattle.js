@@ -120,7 +120,6 @@ const PB_STR = {
     cupDiamondName: 'DIAMOND CUP',
     cupDiamondGoal: 'The rarest of all — {n} wins to forge one',
     cupLadder: '{n} cups = 1 ruby · {n} rubies = 1 diamond',
-    cupPracticeTease: 'A real friend battle would have won you this 👇',
     cupLoseTease: 'So close! Win the next one and this cup is yours 👇',
     cupCabinetCta: 'Your cabinet is in Profile → 🏆 Cup shelf',
     sceneTitle: 'Surprise battlefield', sceneHint: 'The arena is revealed after the challenge',
@@ -261,7 +260,6 @@ const PB_STR = {
     cupDiamondName: 'CÚP KIM CƯƠNG',
     cupDiamondGoal: 'Hiếm nhất — cần {n} trận thắng mới có',
     cupLadder: '{n} cúp = 1 ruby · {n} ruby = 1 kim cương',
-    cupPracticeTease: 'Thắng bạn bè thật thì bé đã có cúp này 👇',
     cupLoseTease: 'Suýt nữa rồi! Thắng trận sau là cúp này của bé 👇',
     cupCabinetCta: 'Tủ cúp của bé ở Hồ sơ → 🏆 Tủ cúp',
     sceneTitle: 'Chiến trường bất ngờ', sceneHint: 'Map sẽ hiện sau khi gửi lời thách đấu',
@@ -1240,8 +1238,8 @@ function startPetBattleGame(view) {
 // The reward ladder, drawn on every result card. A number in a cabinet the
 // child has to go and find is not motivating; the moment they have just won is
 // when "two more and this becomes a Ruby Cup" actually lands. `earned` shows
-// the cup that was just won; practice passes false and gets the same ladder as
-// a promise of what a real win would give.
+// the cup that was just won; a loss passes false and gets the same ladder as a
+// promise of what winning the next one would give.
 function _pbCupLadderHTML(earned) {
   if (typeof cupState !== 'function') return '';
   let c;
@@ -1290,7 +1288,7 @@ function finishPetBattle(result) {
   const won = !draw && !!result.won;
   const coins = 20 + (won ? 30 : draw ? 15 : 0);
   // A trophy has to mean a real friend was beaten, so it is awarded here and
-  // nowhere else — never on the practice path above.
+  // nowhere else.
   if (won && typeof awardCup === 'function') { try { awardCup(1); } catch (e) {} }
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coins;

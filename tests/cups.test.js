@@ -279,7 +279,7 @@ suite('cups: wired into the app', () => {
 
 // A cup counted away in a cabinet motivates nobody. The moment just after a
 // battle is when "two more and this becomes a Ruby Cup" actually lands, so
-// every result card — win, loss and practice — carries the ladder.
+// every result card — win and loss alike — carries the ladder.
 suite('cups: the reward ladder on the result card', () => {
     const pb = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
     const styles = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
@@ -335,8 +335,11 @@ suite('cups: the reward ladder on the result card', () => {
     });
 
     test('every ladder string exists in both languages', () => {
+        // cupPracticeTease was dropped with practice-vs-bot mode (2026-09): its
+        // only reader was finishBotBattle, and a string kept alive by nothing
+        // but this list is dead weight that reads as a live promise.
         for (const key of ['cupWonBig', 'cupNextRuby', 'cupNextDiamond', 'cupTopReached',
-            'cupDiamondName', 'cupDiamondGoal', 'cupLadder', 'cupPracticeTease',
+            'cupDiamondName', 'cupDiamondGoal', 'cupLadder',
             'cupLoseTease', 'cupCabinetCta']) {
             assert.truthy(new RegExp(key + ":\\s*'[^']+'").test(pb), `${key} missing`);
             assert.truthy((pb.match(new RegExp(key + ':', 'g')) || []).length >= 2,
