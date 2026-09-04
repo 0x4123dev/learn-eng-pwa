@@ -13563,3 +13563,14 @@
     .nr-raid-overview { margin-top: 6px; }
     .nr-friend-row { padding: 9px 10px; gap: 9px; }
 }
+
+/* Farm on the castle grid: per-day sprites, wilt, task-day badges */
+.nr-production-badge.wilted{background:#7a5a3a;color:#ffe9c9}
+.nr-build-grid-cell .nr-placed.farm-item.crop{width:150%;height:150%;bottom:4%}
+.nr-build-grid-cell .nr-placed.farm-item.farm.footprint-2{left:100%;bottom:-100%;width:205%;height:205%;z-index:4}
+.nr-builder.wilted .nr-builder-map{filter:saturate(.72) sepia(.18)}
+.nr-builder.wilted .nr-builder-map::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:url(../img/farm/dry-ground.webp) center/280px repeat;opacity:.16;mix-blend-mode:multiply}
+.nr-replant{position:absolute;z-index:7;left:14px;bottom:88px;display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:6px 14px;border:0;border-radius:18px;background:#fff;color:#3f6046;font-weight:950;box-shadow:0 8px 20px rgba(58,84,48,.18);cursor:pointer}
+.nr-replant.ready{background:linear-gradient(145deg,#73cd58,#3ca845);color:#fff}
+.nr-replant:disabled{opacity:.7;cursor:default}
+.nr-replant small{display:block;font-size:10px;font-weight:800;opacity:.85}
