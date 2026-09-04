@@ -20,6 +20,17 @@ var DailyTask = (function () {
   function pendingOf(s) { return (s && Array.isArray(s.pending)) ? s.pending : []; }
   function swordsOf(s) { return Math.max(0, Math.trunc(+((s && s.swords && s.swords.count) || 0))); }
   function shieldsOf(s) { return Math.max(0, Math.trunc(+((s && s.shields && s.shields.count) || 0))); }
+  // The garden summary the server attaches for early-access children
+  // (functions/api/me/daily-tasks.js). Null when the flag is off.
+  function farmOf(s) { return (typeof appState !== 'undefined' && appState && appState.allowBot && s && s.farm && typeof s.farm === 'object') ? s.farm : null; }
+  function farmSprite(f) {
+    if (!f || !f.preview || typeof FarmRules === 'undefined') return '';
+    const p = f.preview, ctx = f.ctx || null;
+    const cell = { type: p.id, day: 0, at: p.wilted ? '2000-01-01' : ((ctx && ctx.today) || '') };
+    const wiltCtx = p.wilted ? { today: (ctx && ctx.today) || '2000-01-02', doneYesterday: false, doneToday: false } : null;
+    const src = FarmRules.spriteFor(cell, p.g, wiltCtx);
+    return src ? `<img class="dt-farm-art" src="${src}" alt="">` : '';
+  }
   function swordDamage() { return (typeof NightRaidRules !== 'undefined' && NightRaidRules.SWORD_DAMAGE) || 10; }
   // Everything worth a localStorage write. fetchedAt is deliberately absent:
   // it moves on every poll and must not by itself dirty the profile.
@@ -30,7 +41,8 @@ var DailyTask = (function () {
       + '|' + (sh.count || 0) + ':' + (sh.activeUntil || 0)
       + '|' + swordsOf(s) + '|' + pendingOf(s).join(',')
       + '|' + ((s.recent || []).map(r => r.date + ':' + (r.kind || '')).join(','))
-      + '|' + !!s.rewardedToday + '|' + (s.celebratedDate || '');
+      + '|' + !!s.rewardedToday + '|' + (s.celebratedDate || '')
+      + '|' + (s.farm ? [s.farm.crops, s.farm.ripe, s.farm.growing, s.farm.wilted ? 1 : 0].join(':') : '');
   }
   function token() {
     try {
@@ -91,6 +103,7 @@ var DailyTask = (function () {
           fetchedAt: Date.now(), date,
           tasks: Array.isArray(r.data.tasks) ? r.data.tasks : [],
           allDone: !!r.data.allDone, rewardedToday: !!r.data.rewardedToday,
+          farm: (r.data.farm && typeof r.data.farm === 'object') ? r.data.farm : null,
           celebratedDate: celebrateNow ? date : ((prev && prev.celebratedDate) || ''),
         }, armoryFrom(r.data));
         const changed = sig(prev) !== sig(next);
@@ -137,7 +150,9 @@ var DailyTask = (function () {
     // Khiên & Kiếm until the child chooses. Say how many are waiting — a child
     // who finished tasks on several days without opening the app has several.
     const n = Math.max(1, pendingOf(s).length);
-    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!');
+    const f = farmOf(s);
+    const garden = !f ? '' : (f.ctx && !f.ctx.doneYesterday ? ' · Cây tươi lại rồi 🌱' : ' · Cây lớn thêm 1 ngày 🌱') + (f.ripe ? ` · ${f.ripe} cây chín, đi hái nào` : '');
+    toast('🎉 Xong nhiệm vụ hôm nay! +200 xu — có ' + n + ' phần thưởng chờ con chọn!' + garden);
     // #confettiContainer sits outside every screen, so this lands wherever
     // the child happens to be when the last task ticks over.
     if (typeof createConfetti === 'function') { try { createConfetti(); } catch (e) {} }
@@ -158,7 +173,9 @@ var DailyTask = (function () {
       ? `${pending.length} phần thưởng chờ con chọn`
       : stale
         ? 'Đang cập nhật…'
-        : `${done}/${tasks.length} nhiệm vụ · ${s.allDone ? 'Xong rồi! 🎉' : 'Bấm để xem'}`;
+        : (farmOf(s) && farmOf(s).wilted && !s.allDone)
+          ? `${done}/${tasks.length} nhiệm vụ · Cây đang héo 🥀 · làm nhiệm vụ để cứu cây`
+          : `${done}/${tasks.length} nhiệm vụ · ${s.allDone ? 'Xong rồi! 🎉' : 'Bấm để xem'}`;
     // The chip is the shortcut into Kho Khiên & Kiếm: a span rather than a
     // nested button (invalid inside <button>), stopping the tap from also
     // opening the task list. The number of days still waiting rides on the
@@ -195,6 +212,7 @@ var DailyTask = (function () {
     const stale = staleDay(s);
     const doneCount = stale ? 0 : tasks.filter(t => !!t.done).length;
     const allDone = !stale && tasks.length > 0 && !!(s && s.allDone);
+    const f = farmOf(s), wilted = !!(f && f.wilted && !allDone);
 
     // Hero: one ring, one sentence. It is the first thing the child sees, so
     // it says how close they are — and turns green the moment they are done.
@@ -205,12 +223,15 @@ var DailyTask = (function () {
       : 'Bắt đầu thôi!';
     const heroSub = !tasks.length ? 'Đợi thầy cô giao bài nhé.'
       : stale ? 'Đang lấy kết quả hôm nay…'
-      : allDone ? (pending.length ? 'Có quà đang chờ con mở 🎁' : '+200 xu đã vào túi. Mai lại có tiếp!')
+      : allDone ? (f ? '+200 xu đã vào túi. Cây đã lớn hôm nay 🌼' : (pending.length ? 'Có quà đang chờ con mở 🎁' : '+200 xu đã vào túi. Mai lại có tiếp!'))
+      : wilted ? 'Cây đang héo 🥀. Xong hết nhiệm vụ là cây tươi lại'
+      : f ? 'Xong hết là +200 xu, 1 món quà, và cây lớn thêm 1 ngày 🌱'
       : 'Xong hết là được +200 xu và 1 món quà 🎁';
     const hero = `<div class="dt-hero ${allDone ? 'done' : ''}">
         <div class="dt-ring-wrap">${ringHtml(tasks.length ? doneCount / tasks.length : 0)}<b>${stale ? '…' : tasks.length ? doneCount + '/' + tasks.length : '0'}</b></div>
         <div class="dt-hero-text"><strong>${heroTitle}</strong><small>${heroSub}</small></div>
       </div>`;
+    const farmStrip = farmStripHtml(f);
     // The unopened gift. Shown whenever something is waiting — not only on the
     // day it was earned, because a child may open the app days later.
     const giftCta = pending.length
@@ -264,10 +285,29 @@ var DailyTask = (function () {
         <h2>📋 Nhiệm vụ hôm nay</h2><p>${esc((s && s.date) || '')}</p>
       </div>
       ${hero}
+      ${farmStrip}
       ${giftCta}
       <div class="dt-list">${list}</div>
       ${armory}
       ${reward}`;
+  }
+
+  // The garden in one line: the crop closest to ripe, what the whole plot is
+  // doing, and the door into the Night Raid builder where the farm lives.
+  function farmStripHtml(f) {
+    if (!f) return '';
+    const line = !f.crops ? 'Vườn đang trống. Xong nhiệm vụ rồi ghé SHOP mua hạt nhé'
+      : f.wilted ? `${f.wiltedCount} cây đang héo`
+      : `${f.growing} cây đang lớn, ${f.ripe} cây chín`;
+    return `<section class="dt-farm ${f.wilted ? 'wilted' : ''}" aria-label="Vườn của con">
+        ${farmSprite(f) || '<span class="dt-farm-art dt-farm-empty" aria-hidden="true">🌱</span>'}
+        <div class="dt-farm-text"><strong>Vườn của con</strong><small>${line}</small></div>
+        <button type="button" class="dt-farm-go" onclick="DailyTask.viewFarm()">Xem vườn</button>
+      </section>`;
+  }
+  function viewFarm() {
+    if (typeof openNightRaid === 'function') openNightRaid();
+    if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.renderBuilder === 'function') NightRaid.renderBuilder();
   }
 
   function open() {
@@ -334,6 +374,6 @@ var DailyTask = (function () {
   function pendingCount() { return pendingOf(st()).length; }
   function swordCount() { return swordsOf(st()); }
 
-  return { refresh, applyArmory, renderHomeCard, renderScreen, open, close, go, activateShield, state, pendingCount, swordCount };
+  return { refresh, applyArmory, renderHomeCard, renderScreen, open, close, go, viewFarm, activateShield, state, pendingCount, swordCount };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = DailyTask;

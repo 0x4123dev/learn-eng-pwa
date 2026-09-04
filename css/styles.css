@@ -13591,3 +13591,10 @@
 .nr-collect-all.wilted{background:linear-gradient(145deg,#f0b46a,#c97a2a);color:#fff;cursor:pointer}.nr-collect-all.wilted:disabled{opacity:1}
 .nr-builder.rotated .nr-task-bar{left:14px;right:96px;top:70px}
 @media (max-width:700px){.nr-task-bar{top:70px;font-size:11px}}
+
+/* Daily Task: the garden strip */
+.dt-farm{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:10px;margin:10px 14px 0;padding:10px 12px;border-radius:18px;background:#eef7dd;color:#2f4632}
+.dt-farm.wilted{background:#f6e3c6;color:#6b4a1f}
+.dt-farm-art{width:56px;height:56px;object-fit:contain;display:grid;place-items:center;font-size:30px}
+.dt-farm-text strong{display:block;font-size:13px}.dt-farm-text small{display:block;font-size:12px;opacity:.85}
+.dt-farm-go{min-height:36px;padding:0 12px;border:0;border-radius:999px;background:#3f6046;color:#fff;font-weight:950;cursor:pointer}
