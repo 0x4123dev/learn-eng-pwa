@@ -63,7 +63,6 @@ var NightRaid = (() => {
     if(!appState.nightRaidLayout)appState.nightRaidLayout={cells:[]};
     appState.nightRaidLayout=NightRaidRules.normalizeLayout(dropSeededBase(appState.nightRaidLayout));
     if(!Number.isFinite(+appState.vaultCoins))appState.vaultCoins=0;
-    if(!Array.isArray(appState.battleTeammates))appState.battleTeammates=[];
     if(appState.nightRaidRewardDate!==today()){appState.nightRaidRewardDate=today();appState.nightRaidRewardToday=0;appState.nightRaidTicketCount=0;}
     if(!Number.isFinite(+appState.nightRaidRewardToday))appState.nightRaidRewardToday=0;
     if(!Number.isFinite(+appState.nightRaidTicketCount))appState.nightRaidTicketCount=0;
@@ -96,7 +95,7 @@ var NightRaid = (() => {
   // server); the server scores a raid from users.night_swords through this
   // same combatPower, so the HUD number is the number the fight is scored with.
   function ownSwords(){return Math.max(0,Math.trunc(+(appState.dailyTask?.swords?.count)||0));}
-  function ownPower(){return NightRaidRules.combatPower(appState.nightRaidLayout,appState.dogLevel||1,appState.battleTeammates,appState.nightRaidLayout?.soldiers||0,ownSwords());}
+  function ownPower(){return NightRaidRules.combatPower(appState.nightRaidLayout,appState.dogLevel||1,appState.nightRaidLayout?.soldiers||0,ownSwords());}
   function raidPetDescriptor(){
     const level=Math.max(1,+appState.dogLevel||1),stage=typeof getDogStage==='function'?getDogStage(level):{stageCss:'chihuahua',minLevel:1,name:'Chihuahua'};
     const breeds=['chihuahua','pomeranian','beagle','corgi','bulldog','husky','retriever','shepherd','rottweiler','tibetan-mastiff'],breedIndex=Math.max(0,breeds.indexOf(stage.stageCss)),atlas=breedIndex<5?'small':'large',cell=breedIndex%5;
@@ -128,7 +127,7 @@ var NightRaid = (() => {
     // the same DAM/DEF/LINH/coin chips, and the actions as SHOP-style fabs
     // floating on top. Read-only: buildings do not drag here.
     const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;
-    const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
+    const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));
     const still=(cell,layer)=>{if(!cell)return'';const def=NightRaidRules.defenseById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''}" src="${buildAsset(def)}" draggable="false" alt="${esc(def.name.vi)} cấp ${cell.tier}" oncontextmenu="return false"><em>${cell.tier}</em>${productionBadge(cell)}`;};
     let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor');if(!stand&&!floor)continue;grid+=`<div class="nr-build-grid-cell has-stand" data-gx="${gx}" data-gy="${gy}" style="grid-area:${gy+1}/${gx+1}">${still(floor,'floor')}${still(stand,'stand')}</div>`;}}
@@ -175,7 +174,7 @@ var NightRaid = (() => {
     const canvas=document.getElementById('nrScoutCanvas');if(!canvas)return;
     view='battle';raidStage={online:!!online,committed:!!online};if(previewGame){previewGame.destroy();previewGame=null;}
     frameBattleWorld();
-    const army=ownPower();target.attackerDamage=target.attackerDamage||army.damage;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):army.soldiers;target.defense=target.defense||NightRaidRules.combatPower(target.layout,target.dogLevel,target.teammates).defense;
+    const army=ownPower();target.attackerDamage=target.attackerDamage||army.damage;target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)?Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers))):army.soldiers;target.defense=target.defense||NightRaidRules.combatPower(target.layout,target.dogLevel).defense;
     // Attacking is how the child EARNS the number: the hidden DEF chip fills
     // in, the secret pill and the one button leave, the army marches here.
     const def=document.getElementById('nrScoutDef');if(def){def.hidden=false;const strong=def.querySelector('strong');if(strong)strong.textContent=target.shielded?'🛡️ KHIÊN':target.defense;}
@@ -718,7 +717,7 @@ var NightRaid = (() => {
     if(!placed)requestAnimationFrame(place);
   }
 
-  function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';applyViewZoom(view);ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1,appState.battleTeammates),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
+  function renderBuilder(){cleanup();pendingBuildPurchase=null;view='builder';applyViewZoom(view);ensure();const r=root();if(!r)return;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout);appState.nightRaidLayout=layout;const homeLevel=NightRaidRules.homeLevel(layout,appState.dogLevel||1),power=ownPower(),skin=typeof CastleSkins!=='undefined'?CastleSkins.get(appState.petBattleCastleSkin):null,production=layout.cells.filter(c=>NightRaidRules.defenseById(c.type)?.producer),ready=production.filter(c=>c.readyAt<=Date.now()).length;
     const cellMap=new Map(layout.cells.map(c=>[gridKey(c),c]));let grid='';for(let gy=0;gy<NightRaidRules.BUILD_GRID;gy++){for(let gx=0;gx<NightRaidRules.BUILD_GRID;gx++){const stand=cellMap.get(gx+':'+gy+':stand'),floor=cellMap.get(gx+':'+gy+':floor'),standOwner=footprintOwner(layout,gx,gy,'stand'),floorOwner=footprintOwner(layout,gx,gy,'floor'),castle=layout.castleCell||CASTLE_HOME,castleCovered=gx>=castle.gx&&gx<castle.gx+CASTLE_SIZE&&gy>=castle.gy&&gy<castle.gy+CASTLE_SIZE,covered=(standOwner&&!stand)||(floorOwner&&!floor)||castleCovered;grid+=`<button type="button" class="nr-build-grid-cell ${stand?'has-stand':''} ${floor?'has-floor':''} ${covered?'footprint-covered':''} ${castleCovered?'castle-covered':''}" data-gx="${gx}" data-gy="${gy}" onclick="nrGridCell(${gx},${gy})" ondragover="nrBuildDragOver(event)" ondrop="nrDropBuildItem(event,${gx},${gy})" aria-label="Ô đất hàng ${gy+1}, cột ${gx+1}${standOwner?', '+NightRaidRules.defenseById(standOwner.type).name.vi+' cấp '+standOwner.tier:''}${floorOwner?', có bẫy cấp '+floorOwner.tier:''}${castleCovered?', nhà chính':''}">${placedHtml(floor,'floor',gx,gy)}${placedHtml(stand,'stand',gx,gy)}<i aria-hidden="true"></i></button>`;}}
     const tray=NightRaidRules.DEFENSES.map(d=>`<button type="button" draggable="true" class="nr-build-item ${selectedBuild===d.id?'selected':''} ${(+appState.coins||0)<d.price?'unaffordable':''}" onclick="nrSelectBuild('${d.id}')" onpointerdown="nrBeginBuildDrag(event,'${d.id}')" ondragstart="nrNativeBuildDrag(event,'${d.id}')" aria-pressed="${selectedBuild===d.id}"><img class="nr-build-art" src="${buildAsset(d)}" alt=""><span class="nr-build-copy"><strong>${esc(d.name.vi)}</strong><small class="nr-item-stats">${buildStatHtml(d)}</small><span class="nr-coin-price">${svg('coin')} ${d.price} xu</span></span></button>`).join('');
     const mapBase=builderMapBase(),mapSize=Math.round(mapBase*builderZoom),mapHeight=Math.round(mapBase*.75*builderZoom);
@@ -899,7 +898,7 @@ var NightRaid = (() => {
   // half-hydrated profile can no longer push 0 xu (or dog level 1) over what
   // the server already holds for this child.
   const finite=v=>typeof v==='number'&&Number.isFinite(v);
-  async function syncHome(){const body={layout:appState.nightRaidLayout,teammates:appState.battleTeammates,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
+  async function syncHome(){const body={layout:appState.nightRaidLayout,castleSkin:appState.petBattleCastleSkin||'stone-keep'};if(finite(appState.dogLevel))body.dogLevel=appState.dogLevel;if(finite(appState.coins))body.coins=appState.coins;const res=await api('home',{method:'PUT',body});if(res.ok&&res.data?.layout)appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);return res;}
   async function refreshHome(){const res=await api('home');if(!res.ok||!res.data)return;if(!res.data.home){syncHome();return;}homeLockedUntil=Math.max(0,+res.data.home.lockedUntil||0);homeShieldUntil=Math.max(0,+res.data.home.shieldUntil||0);appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.home.layout);save();if(view==='home')renderHome();}
   // ---- NHÀ THẬT = bạn bè + khi nào cướp được ------------------------------
   // GET night-raid/friends answers ONE question per friend: when start.js
@@ -916,7 +915,7 @@ var NightRaid = (() => {
   // A friend row becomes a scout target the same way a target card does, minus
   // everything the list does not carry: an empty yard stands in for the layout
   // until start() replaces it with the real snapshot.
-  function friendTarget(f){const level=Math.max(1,Math.trunc(+f.homeLevel)||1),name=String(f.name||'Nhà bạn');return {targetId:f.targetId,name,title:{vi:name,en:name},homeLevel:level,level,difficulty:f.difficulty||'Cân bằng',lockedUntil:Math.max(0,+f.lockedUntil||0),shieldClue:!!f.shielded,sceneId:LIVE_SCENES[Math.abs(Math.trunc(+f.targetId)||0)%3],seed:1,layout:{cells:[],soldiers:0,dogLane:2},teammates:[],dogLevel:1,castleSkin:'stone-keep',castleHp:180+Math.min(50,level)*8,budget:0,friend:true};}
+  function friendTarget(f){const level=Math.max(1,Math.trunc(+f.homeLevel)||1),name=String(f.name||'Nhà bạn');return {targetId:f.targetId,name,title:{vi:name,en:name},homeLevel:level,level,difficulty:f.difficulty||'Cân bằng',lockedUntil:Math.max(0,+f.lockedUntil||0),shieldClue:!!f.shielded,sceneId:LIVE_SCENES[Math.abs(Math.trunc(+f.targetId)||0)%3],seed:1,layout:{cells:[],soldiers:0,dogLane:2},dogLevel:1,castleSkin:'stone-keep',castleHp:180+Math.min(50,level)*8,budget:0,friend:true};}
   function friendRow(f,index){const availableAt=Math.max(0,+f.availableAt||0),left=lockLeft(availableAt),ready=left<=0,shielded=!!f.shielded,why=lockLeft(f.lockedUntil)?'VỪA BỊ CƯỚP':'CON ĐÃ THĂM HÔM NAY';
     const label=esc(f.name)+', nhà cấp '+esc(f.homeLevel)+', '+(ready?(shielded?'đang có khiên, cướp là thua':'cướp được ngay'):'còn '+waitPhrase(left)+' nữa mới cướp được');
     return `<li><button type="button" class="nr-friend-row ${ready?(shielded?'shield':'ready'):'wait'}" ${ready?'':`disabled data-nr-friend-until="${availableAt}"`} data-nr-friend-shield="${shielded?1:0}" onclick="nrScoutLive(${index})" aria-label="${label}"><span class="nr-friend-crest">${svg('castle')}</span><span class="nr-friend-copy"><strong>${esc(f.name)}</strong><small>Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}${shielded?' · 🛡️ đang có khiên':''}</small></span><span class="nr-friend-state" data-nr-friend-state>${ready?readyStateHtml(shielded):`<small>${why}</small><b data-nr-friend-time>còn ${waitPhrase(left)}</b><em>cướp lại lúc ${esc(clockPhrase(availableAt))}</em>`}</span></button></li>`;}

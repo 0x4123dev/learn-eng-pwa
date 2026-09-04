@@ -15,7 +15,7 @@ export async function onRequestPut({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid is not enabled',403);
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
-  const current=await env.DB.prepare('SELECT layout_json,teammates_json,dog_level,castle_skin,lootable_coins,vault_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
+  const current=await env.DB.prepare('SELECT layout_json,dog_level,castle_skin,lootable_coins,vault_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
   const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0});
   // A field the client did not send — or sent as something that is not a
   // number — keeps its stored value. This request used to default every
@@ -24,9 +24,6 @@ export async function onRequestPut({request,env}) {
   // in a single statement.
   const num=v=>typeof v==='number'&&Number.isFinite(v);
   const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout);
-  const teammates=body.teammates===undefined
-    ?NR.normalizeTeammates(current?safeJson(current.teammates_json,[]):[])
-    :NR.normalizeTeammates(body.teammates);
   const now=Date.now(),oldProduction=new Map(oldLayout.cells.filter(c=>NR.defenseById(c.type)?.producer&&c.uid).map(c=>[c.uid,c]));
   layout.soldiers=current?Math.min(oldLayout.soldiers,layout.soldiers):layout.soldiers;
   for(const cell of layout.cells){const def=NR.defenseById(cell.type);if(!def?.producer)continue;const prior=oldProduction.get(cell.uid);if(prior&&prior.type===cell.type)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid='p-'+crypto.randomUUID().replace(/-/g,'').slice(0,20);cell.readyAt=now+NR.PRODUCTION_MS;}}
@@ -34,15 +31,15 @@ export async function onRequestPut({request,env}) {
   // app, so a lower level from a client can only be stale or wrong.
   const storedDog=current?Math.max(1,Math.trunc(+current.dog_level||1)):1;
   const dogLevel=Math.max(storedDog,num(body.dogLevel)?Math.max(1,Math.min(999,Math.trunc(body.dogLevel))):1);
-  const homeLevel=NR.homeLevel(layout,dogLevel,teammates);
+  const homeLevel=NR.homeLevel(layout,dogLevel);
   const skin=/^[a-z0-9-]{1,30}$/.test(String(body.castleSkin||''))?String(body.castleSkin)
     :(current?String(current.castle_skin||'stone-keep'):'stone-keep');
   const coins=num(body.coins)?Math.max(0,Math.min(100000,Math.trunc(body.coins)))
     :(current?Math.max(0,Math.trunc(+current.lootable_coins||0)):0);
   const vault=num(body.vaultCoins)?Math.max(0,Math.min(5000,Math.trunc(body.vaultCoins)))
     :(current?Math.max(0,Math.trunc(+current.vault_coins||0)):0);
-  await env.DB.prepare(`INSERT INTO night_raid_homes(user_id,layout_json,teammates_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET layout_json=excluded.layout_json,teammates_json=excluded.teammates_json,dog_level=excluded.dog_level,castle_skin=excluded.castle_skin,home_level=excluded.home_level,lootable_coins=excluded.lootable_coins,vault_coins=excluded.vault_coins,updated_at=excluded.updated_at`)
-    .bind(auth.uid,JSON.stringify(layout),JSON.stringify(teammates),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
+  await env.DB.prepare(`INSERT INTO night_raid_homes(user_id,layout_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
+    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET layout_json=excluded.layout_json,dog_level=excluded.dog_level,castle_skin=excluded.castle_skin,home_level=excluded.home_level,lootable_coins=excluded.lootable_coins,vault_coins=excluded.vault_coins,updated_at=excluded.updated_at`)
+    .bind(auth.uid,JSON.stringify(layout),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
   return json({ok:true,homeLevel,layout,coins});
 }

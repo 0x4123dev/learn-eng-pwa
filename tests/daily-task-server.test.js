@@ -448,7 +448,7 @@ function farmLayout() {
 async function seedHome(world, user, coins) {
   const r = await world.call(homeHandler().onRequestPut, {
     url: '/api/night-raid/home', method: 'PUT', token: user.token,
-    body: { layout: farmLayout(), teammates: ['gunner'], dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
+    body: { layout: farmLayout(), dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
   });
   assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
 }
@@ -633,7 +633,7 @@ suite('daily task: raiding a shielded castle', () => {
 
   test('the rules cannot produce a win against a pinned defense of 100000', () => {
     for (const dmg of [1, 100000, 999999]) {
-      const sim = NR.resolveAutoBattle({ defense: 100000, castleHp: 200, layout: { cells: [], dogLane: 2, soldiers: 0 }, dogLevel: 1, teammates: [], attackerDamage: dmg });
+      const sim = NR.resolveAutoBattle({ defense: 100000, castleHp: 200, layout: { cells: [], dogLane: 2, soldiers: 0 }, dogLevel: 1, attackerDamage: dmg });
       assert.equal(sim.won, false, 'damage ' + dmg);
     }
   });

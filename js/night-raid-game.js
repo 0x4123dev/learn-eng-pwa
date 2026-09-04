@@ -50,10 +50,9 @@ var NightRaidGame = (() => {
       if(now-this.lastNotify>=200){this.notify();this.lastNotify=now;}
       if(this.paused||document.hidden)this.paint(now);this.raf=requestAnimationFrame(this.boundFrame);
     }
-    drawTeammates(ctx){const mates=this.state.teammates||[];for(let i=0;i<mates.length;i++){const x=62+(i%3)*38,y=382-Math.floor(i/3)*52;ctx.save();ctx.translate(x,y);ctx.fillStyle='rgba(6,14,28,.86)';NightRaidArt.roundRect(ctx,-16,-38,32,42,9);ctx.fill();const colors={gunner:'#f05b52',engineer:'#f5b947',shield:'#53b9ee'};ctx.fillStyle=colors[mates[i]]||'#fff';ctx.beginPath();ctx.arc(0,-27,8,0,Math.PI*2);ctx.fill();ctx.fillRect(-8,-18,16,17);ctx.strokeStyle='#e6f0ff';ctx.lineWidth=2;if(mates[i]==='gunner'){ctx.beginPath();ctx.moveTo(5,-17);ctx.lineTo(19,-24);ctx.stroke();}else if(mates[i]==='engineer'){ctx.beginPath();ctx.arc(12,-12,7,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(10,-12,9,-Math.PI/2,Math.PI/2);ctx.stroke();}ctx.restore();}}
     paint(now){const ctx=this.ctx;ctx.clearRect(0,0,W,H);NightRaidArt.drawScene(ctx,W,H,this.target.sceneId,now,this.reduce);
       // Castle is deliberately large and remains the visual objective.
-      NightRaidArt.drawCastle(ctx,145,492,this.target.castleSkin||'stone-keep',this.state.castleHp,this.state.castleMaxHp,this.impactPulse);this.drawTeammates(ctx);
+      NightRaidArt.drawCastle(ctx,145,492,this.target.castleSkin||'stone-keep',this.state.castleHp,this.state.castleMaxHp,this.impactPulse);
       const defenses=this.state.defenses.slice().sort((a,b)=>a.lane-b.lane||a.x-b.x);for(const d of defenses){if(d.dead&&d.type!=='guard-dog')continue;if((NightRaidRules.defenseById(d.type)||{}).trap&&!d.revealed){ctx.fillStyle='rgba(157,124,79,.22)';ctx.beginPath();ctx.ellipse(worldX(d.x),laneY(d.lane),24,7,0,0,Math.PI*2);ctx.fill();continue;}NightRaidArt.drawDefense(ctx,d,worldX(d.x),laneY(d.lane),now);}
       for(const r of this.state.raiders)NightRaidArt.drawRaider(ctx,r,worldX(r.x),laneY(r.lane),now);
       for(const s of this.state.shots)NightRaidArt.drawProjectile(ctx,s,worldX,laneY);

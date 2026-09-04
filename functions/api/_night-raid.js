@@ -39,16 +39,15 @@ export async function ticketStats(env,userId,date=nightDate()) {
 }
 export function homeSnapshot(row) {
   const layout=NR.normalizeLayout(safeJson(row.layout_json,{cells:[],dogLane:2}));
-  const teammates=NR.normalizeTeammates(safeJson(row.teammates_json,[]));
   const dogLevel=Math.max(1,Math.min(999,Math.trunc(+row.dog_level||1)));
-  const castleHp=180+Math.min(50,Math.max(1,+row.home_level||1))*8+teammates.filter(id=>id==='shield').length*25;
+  const castleHp=180+Math.min(50,Math.max(1,+row.home_level||1))*8;
   // Swords live on the users row (db/019), so a caller that wants them in the
   // score has to put `night_swords` on the row first (start.js does, for the
   // attacker). A home row joined without it — every target, and any pre-019
   // database — reads as zero, which is exactly what the client computes too.
   const swords=Math.max(0,Math.trunc(+row.night_swords||0));
-  const power=NR.combatPower(layout,dogLevel,teammates,layout.soldiers,swords);
-  return {targetId:row.user_id,name:row.username||'Castle',level:Math.max(1,+row.home_level||1),homeLevel:Math.max(1,+row.home_level||1),sceneId:['moonlit-village','haunted-forest','storm-kingdom'][Math.abs(Number(row.user_id)||0)%3],seed:1,layout,dogLevel,teammates,soldiers:layout.soldiers,swords,castleSkin:String(row.castle_skin||'stone-keep'),castleHp,damage:power.damage,defense:power.defense,lootableCoins:Math.max(0,+row.lootable_coins||0),lockedUntil:raidLockUntil(row),budget:0};
+  const power=NR.combatPower(layout,dogLevel,layout.soldiers,swords);
+  return {targetId:row.user_id,name:row.username||'Castle',level:Math.max(1,+row.home_level||1),homeLevel:Math.max(1,+row.home_level||1),sceneId:['moonlit-village','haunted-forest','storm-kingdom'][Math.abs(Number(row.user_id)||0)%3],seed:1,layout,dogLevel,soldiers:layout.soldiers,swords,castleSkin:String(row.castle_skin||'stone-keep'),castleHp,damage:power.damage,defense:power.defense,lootableCoins:Math.max(0,+row.lootable_coins||0),lockedUntil:raidLockUntil(row),budget:0};
 }
 export function resultReward(sim,snapshot,dailyReward) {
   if(!sim.won)return 0;

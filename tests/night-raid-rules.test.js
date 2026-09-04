@@ -27,7 +27,7 @@ suite('night raid: one deterministic combat mode', () => {
   });
 
   test('pet power is visible and every collected soldier adds exactly 20 DAM',()=>{
-    const pet=R.petPower(10),base=R.combatPower({cells:[],soldiers:0},10,[]),army=R.combatPower({cells:[],soldiers:4},10,[]);
+    const pet=R.petPower(10),base=R.combatPower({cells:[],soldiers:0},10),army=R.combatPower({cells:[],soldiers:4},10);
     assert.deepEqual(pet,{level:10,damage:40,defense:60});
     assert.equal(army.damage-base.damage,80);assert.equal(army.soldierDamage,80);assert.equal(army.defense,base.defense);
   });
@@ -74,9 +74,9 @@ suite('night raid: one deterministic combat mode', () => {
   });
 
   test('upgrading a cannon raises DAM while upgrading a wall raises DEF', () => {
-    const base=R.combatPower({dogLane:2,cells:[]},1,[]);
-    const cannon=R.combatPower({dogLane:2,cells:[{type:'water-cannon',lane:0,col:1,tier:2}]},1,[]);
-    const wall=R.combatPower({dogLane:2,cells:[{type:'stone-wall',lane:0,col:1,tier:2}]},1,[]);
+    const base=R.combatPower({dogLane:2,cells:[]},1);
+    const cannon=R.combatPower({dogLane:2,cells:[{type:'water-cannon',lane:0,col:1,tier:2}]},1);
+    const wall=R.combatPower({dogLane:2,cells:[{type:'stone-wall',lane:0,col:1,tier:2}]},1);
     assert.truthy(cannon.damage>base.damage);
     assert.truthy(wall.defense>base.defense);
   });
@@ -162,8 +162,8 @@ suite('night raid: one deterministic combat mode', () => {
 
   test('castle skins cannot change home power', () => {
     const target = R.trainingTarget(8);
-    const a = R.homeLevel(target.layout, target.dogLevel, target.teammates);
-    const b = R.homeLevel({...target.layout, castleSkin:'royal'}, target.dogLevel, target.teammates);
+    const a = R.homeLevel(target.layout, target.dogLevel);
+    const b = R.homeLevel({...target.layout, castleSkin:'royal'}, target.dogLevel);
     assert.equal(a, b);
   });
 

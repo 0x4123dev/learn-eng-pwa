@@ -53,7 +53,7 @@ function mount(overrides) {
   }
   const state = Object.assign({
     coins: 9000, dogLevel: 12, dogGrowthXP: 30000, allowBot: true,
-    petBattleCastleSkin: 'stone-keep', battleTeammates: [],
+    petBattleCastleSkin: 'stone-keep',
     nightRaidLayout: { cells: [
       { type: 'wood-fence', gx: 3, gy: 7, tier: 1 },
       { type: 'stone-wall', gx: 8, gy: 7, tier: 1 },
@@ -128,8 +128,8 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     ctx.NightRaid.open();
     const html = doc.getElementById('nightRaidScreen').innerHTML;
     const layout = state.nightRaidLayout;
-    const withSwords = Rules.combatPower(layout, state.dogLevel, state.battleTeammates, layout.soldiers, 3).damage;
-    const without = Rules.combatPower(layout, state.dogLevel, state.battleTeammates, layout.soldiers, 0).damage;
+    const withSwords = Rules.combatPower(layout, state.dogLevel, layout.soldiers, 3).damage;
+    const without = Rules.combatPower(layout, state.dogLevel, layout.soldiers, 0).damage;
     assert.equal(withSwords - without, 30);
     assert.truthy(html.includes(`<small>DAM</small><strong>${withSwords}</strong>`), 'HUD DAM must include the sword bonus');
     assert.truthy(html.includes('nr-fab-badge'));
@@ -262,7 +262,7 @@ suite('night raid screens: the camera can never disarm a screen', () => {
 const LIVE_TARGET = {
   targetId: 42, name: 'Nhà bạn Bo', homeLevel: 4, difficulty: 'Cân sức',
   defense: 40, damage: 30, castleHp: 200, seed: 7, lockedUntil: 0,
-  layout: { cells: [], soldiers: 3, dogLane: 2 }, teammates: [], dogLevel: 5,
+  layout: { cells: [], soldiers: 3, dogLane: 2 }, dogLevel: 5,
 };
 
 // A server that hands out one real house and lets the raid start for real.

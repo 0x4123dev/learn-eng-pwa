@@ -29,7 +29,7 @@ function withCanvas(doc) {
 const H = 3600000, M = 60000;
 const RANDOM_TARGET = {
   targetId: 900, name: 'Nhà lạ', homeLevel: 2, difficulty: 'Cân bằng', lockedUntil: 0,
-  layout: { cells: [], soldiers: 1, dogLane: 2 }, teammates: [], dogLevel: 3, castleHp: 200, seed: 3,
+  layout: { cells: [], soldiers: 1, dogLane: 2 }, dogLevel: 3, castleHp: 200, seed: 3,
 };
 
 // `server` maps a route suffix ('friends' | 'targets' | 'start') to a reply.
@@ -47,7 +47,7 @@ function mount(server, extra) {
   };
   const state = {
     coins: 9000, dogLevel: 12, dogGrowthXP: 30000, allowBot: true,
-    petBattleCastleSkin: 'stone-keep', battleTeammates: [],
+    petBattleCastleSkin: 'stone-keep',
     nightRaidLayout: { cells: [], soldiers: 6, dogLane: 2 },
     nightRaidHistory: [], nightRaidClaimed: {}, nightRaidRewardToday: 0,
     nightRaidRewardDate: null, nightRaidTicketCount: 0, vaultCoins: 0,

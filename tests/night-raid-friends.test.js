@@ -22,7 +22,7 @@ async function seedHome(world, user, o) {
   o = o || {};
   const r = await world.call(homeHandler().onRequestPut, {
     url: '/api/night-raid/home', method: 'PUT', token: user.token,
-    body: { layout: { cells: [], soldiers: o.soldiers == null ? 0 : o.soldiers, dogLane: 2 }, teammates: [],
+    body: { layout: { cells: [], soldiers: o.soldiers == null ? 0 : o.soldiers, dogLane: 2 },
       dogLevel: o.dogLevel || 1, castleSkin: 'stone-keep', coins: o.coins == null ? 800 : o.coins },
   });
   assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
@@ -160,7 +160,7 @@ suite('GET /api/night-raid/friends', () => {
     assert.equal(f.shielded, true, 'a shield is announced…');
     assert.equal(Object.values(f).includes(shieldUntil), false, '…but its deadline is never sent');
     const text = JSON.stringify(list);
-    for (const leak of ['layout', 'cells', 'defense', 'damage', 'lootable', 'teammates', 'dogLevel', 'castleHp', 'shieldUntil":' + shieldUntil]) {
+    for (const leak of ['layout', 'cells', 'defense', 'damage', 'lootable', 'dogLevel', 'castleHp', 'shieldUntil":' + shieldUntil]) {
       assert.equal(text.includes(leak), false, 'must not leak ' + leak);
     }
     assert.equal(f.canRaidNow, true, 'a shielded home can still be visited — the raider just loses');

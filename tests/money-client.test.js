@@ -267,7 +267,7 @@ function loadNightRaid(apiPlan) {
 }
 function raidState(coins) {
   return {
-    coins, dogLevel: 2, vaultCoins: 0, battleTeammates: [],
+    coins, dogLevel: 2, vaultCoins: 0,
     petBattleCastleSkin: 'stone-keep', nightRaidLayout: { cells: [], soldiers: 0 },
     nightRaidClaimed: {}, nightRaidHistory: [],
   };

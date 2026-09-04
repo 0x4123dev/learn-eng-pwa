@@ -66,12 +66,11 @@ var NightRaidRules = (() => {
   // swords. Both numbers were sized against the score card below and the
   // fights it actually produces, not guessed:
   //   - what a child attacks with: a brand-new account (dog L1, no soldiers,
-  //     no buildings) has 42 DAM; the server test fixture home (dog L7, gunner,
+  //     no buildings) has 42 DAM; the server test fixture home (dog L7,
   //     2 soldiers) 139; a dog L10 with 4 soldiers 140; a strong mid-game army
-  //     (dog L20, 6 soldiers, 2 cannons, gunner) 345. Training keeps defend at
-  //     269 (n=1) … 554 (n=10) … 1029 (n=20).
-  //   - what else buys DAM: a soldier is +20, a gunner teammate +45, a
-  //     2000-xu water cannon +50, a pebble pup +22.
+  //     (dog L20, 6 soldiers, 2 cannons) 345.
+  //   - what else buys DAM: a soldier is +20, a 2000-xu water cannon +50,
+  //     a pebble pup +22.
   //   - what a margin is worth: finish.js gives 2 stars at margin >= 25 and
   //     3 stars at margin >= 60, and the bot matchmaker (night-raid.js) picks
   //     a keep whose DEF is 0.78–1.12 x the child's DAM — so a "coin flip" is
@@ -124,11 +123,6 @@ var NightRaidRules = (() => {
     };
   }
 
-  function normalizeTeammates(value) {
-    if (!Array.isArray(value)) return [];
-    return value.filter(id => id === 'gunner' || id === 'engineer' || id === 'shield').slice(0, 5);
-  }
-
   function normalizeLayout(value) {
     const cells = Array.isArray(value && value.cells) ? value.cells : [];
     const castleRaw=value&&value.castleCell;
@@ -171,14 +165,14 @@ var NightRaidRules = (() => {
     return result;
   }
 
-  function homeLevel(layout, dogLevel, teammates) {
+  function homeLevel(layout, dogLevel) {
     const clean = normalizeLayout(layout);
     const value = clean.cells.reduce((sum, cell) => {
       const d = byId(DEFENSES, cell.type);
       return sum + (d ? d.price * (cell.tier === 1 ? 1 : cell.tier === 2 ? 2 : 4) : 0);
     }, 0);
     return Math.max(1, Math.min(50,
-      1 + Math.floor(value / 180) + Math.floor(clamp(dogLevel, 1, 999) / 15) + normalizeTeammates(teammates).length));
+      1 + Math.floor(value / 180) + Math.floor(clamp(dogLevel, 1, 999) / 15)));
   }
 
   function tierMultiplier(tier) {
@@ -201,17 +195,12 @@ var NightRaidRules = (() => {
   // `swordCount` is the child's users.night_swords: the client passes what the
   // last /api/me/daily-tasks reply said, the server reads the column itself
   // (functions/api/night-raid/start.js) — same function, same number.
-  function combatPower(layout, dogLevel, teammates, soldierCount, swordCount) {
-    const clean=normalizeLayout(layout), mates=normalizeTeammates(teammates);
+  function combatPower(layout, dogLevel, soldierCount, swordCount) {
+    const clean=normalizeLayout(layout);
     const pet=petPower(dogLevel),soldiers=int(soldierCount==null?clean.soldiers:soldierCount,0,MAX_SOLDIERS);
     const swords=int(swordCount,0,SWORD_CAP),swordDamage=swordBonus(swords);
     let damage=20+pet.damage+soldiers*20+swordDamage;
     let defense=50+pet.defense;
-    for(const id of mates){
-      if(id==='gunner')damage+=45;
-      else if(id==='engineer'){damage+=15;defense+=30;}
-      else if(id==='shield'){damage+=5;defense+=80;}
-    }
     for(const cell of clean.cells){
       const item=byId(DEFENSES,cell.type), mult=tierMultiplier(cell.tier);
       if(item&&!item.producer){damage+=Math.round((item.attack||0)*mult);defense+=Math.round((item.defense||0)*mult);}
@@ -240,8 +229,7 @@ var NightRaidRules = (() => {
   function trainingTarget(level) {
     const n = int(level, 1, 20);
     const trainingSkins=['forest-fort','desert-citadel','frost-bastion','coral-palace','sakura-castle','clockwork-keep','dragon-fortress','crystal-citadel','celestial-palace'];
-    const teammates = n < 6 ? [] : n < 11 ? ['gunner'] : n < 16 ? ['gunner','engineer'] : ['gunner','engineer','shield'];
-    const layout=trainingLayout(n),dogLevel=Math.max(1,n*3),power=combatPower(layout,dogLevel,teammates);
+    const layout=trainingLayout(n),dogLevel=Math.max(1,n*3),power=combatPower(layout,dogLevel);
     return {
       id:'training-' + n,
       level:n,
@@ -250,9 +238,8 @@ var NightRaidRules = (() => {
       seed:(0x9e3779b9 ^ n * 2654435761) >>> 0,
       layout,
       dogLevel,
-      teammates,
       castleSkin:trainingSkins[Math.min(trainingSkins.length-1,Math.floor((n-1)/2))],
-      castleHp:180 + n * 8 + teammates.filter(id => id === 'shield').length * 25,
+      castleHp:180 + n * 8,
       budget:Math.min(110, START_BUDGET + Math.floor((n - 1) / 5) * 5),
       reward:Math.min(60, 20 + Math.floor((n - 1) / 4) * 10),
       damage:power.damage,
@@ -262,7 +249,7 @@ var NightRaidRules = (() => {
 
   function resolveAutoBattle(snapshot, attackerDamage) {
     const target=snapshot||trainingTarget(1);
-    const targetPower=combatPower(target.layout,target.dogLevel,target.teammates);
+    const targetPower=combatPower(target.layout,target.dogLevel);
     const damage=Math.max(1,int(attackerDamage==null?target.attackerDamage:attackerDamage,1,100000));
     const defense=Math.max(1,int(target.defense||targetPower.defense,1,100000));
     const won=damage>defense, margin=Math.abs(damage-defense);
@@ -299,7 +286,6 @@ var NightRaidRules = (() => {
       status:'playing',
       raiders:[],
       defenses,
-      teammates:normalizeTeammates(target.teammates),
       nextRaiderId:1,
       shots:[],
       events:[],
@@ -340,9 +326,7 @@ var NightRaidRules = (() => {
   }
 
   function castleDamage(state, amount, raider) {
-    const shields = state.teammates.filter(id => id === 'shield').length;
-    const reduction = shields <= 0 ? 0 : shields === 1 ? .35 : shields === 2 ? .50 : .60;
-    const dealt = Math.max(1, Math.round(amount * (1 - reduction)));
+    const dealt = Math.max(1, Math.round(amount));
     state.castleHp = Math.max(0, state.castleHp - dealt);
     state.events.push({ type:'castle-hit', damage:dealt, lane:raider.lane, at:state.timeMs, hp:state.castleHp });
   }
@@ -374,19 +358,6 @@ var NightRaidRules = (() => {
       if (type.splash) alive(state.raiders).filter(r => r !== foe && r.lane === foe.lane && Math.abs(r.x - foe.x) < .7).forEach(r => hitRaider(state, r, 5, defense, null));
       defense.cooldown = type.cooldown;
     });
-
-    // Teammates live visibly in the castle and act on deterministic cooldown boundaries.
-    if (state.teammates.includes('gunner') && Math.floor((state.timeMs - dt) / 10000) < Math.floor(state.timeMs / 10000)) {
-      const target = alive(state.raiders).sort((a,b) => b.hp - a.hp || a.x - b.x)[0];
-      if (target) hitRaider(state, target, 25 * state.teammates.filter(id => id === 'gunner').length, {x:.5}, 'rocket');
-    }
-    if (state.teammates.includes('engineer') && Math.floor((state.timeMs - dt) / 12000) < Math.floor(state.timeMs / 12000)) {
-      const count = state.teammates.filter(id => id === 'engineer').length;
-      state.castleHp = Math.min(state.castleMaxHp, state.castleHp + 12 * count);
-      const weak = alive(state.defenses).sort((a,b) => a.hp/a.maxHp - b.hp/b.maxHp)[0];
-      if (weak) weak.hp = Math.min(weak.maxHp, weak.hp + 15 * count);
-      state.events.push({ type:'repair', at:state.timeMs });
-    }
 
     alive(state.raiders).forEach(raider => {
       const type = raidType(raider);
@@ -471,7 +442,7 @@ var NightRaidRules = (() => {
   return Object.freeze({
     RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_CAP,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
-    makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
+    makeRng,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
   });
 })();

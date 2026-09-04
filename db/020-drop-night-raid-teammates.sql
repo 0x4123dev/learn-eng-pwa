@@ -1,0 +1,22 @@
+-- 020-drop-night-raid-teammates.sql — Night Raid never had teammates.
+--
+-- db/009 gave every castle a `teammates_json` roster ('gunner' | 'engineer' |
+-- 'shield') that combatPower scored at +45 DAM / +15 DAM +30 DEF / +5 DAM
+-- +80 DEF, and that the battle tick let fire a rocket every 10 s and repair
+-- every 12 s. No screen ever hired one: `appState.battleTeammates` was
+-- initialised to [] in two places and read in four, never written, so every
+-- real home stored '[]' and every real raid scored the empty roster. The one
+-- place the roster was not empty was the bot generator, which handed training
+-- keeps 1–3 invisible defenders a child could never match.
+--
+-- The hire-a-teammate feature that IS alive belongs to the Gunbound arena
+-- (js/battle-teammates.js, battles.challenger_hires / opponent_hires) and is
+-- untouched by this migration.
+--
+-- Deploy the code that stops reading and writing this column FIRST; the column
+-- is NOT NULL DEFAULT '[]', so the new code inserts fine while it is still
+-- here, and this statement is safe to run afterwards.
+--
+-- Apply with: npx wrangler@3 d1 execute eng_pwa_db --remote --file db/020-drop-night-raid-teammates.sql
+
+ALTER TABLE night_raid_homes DROP COLUMN teammates_json;

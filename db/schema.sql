@@ -113,10 +113,10 @@ CREATE INDEX IF NOT EXISTS idx_skill_results_user_menu_date
 CREATE INDEX IF NOT EXISTS idx_skill_results_skill_date
   ON learning_skill_results(skill_key, created_at);
 
--- Castle Night Raid (see db/009-night-raid.sql).
+-- Castle Night Raid (see db/009-night-raid.sql; teammates_json dropped in db/020).
 CREATE TABLE IF NOT EXISTS night_raid_homes (
   user_id INTEGER PRIMARY KEY, layout_json TEXT NOT NULL DEFAULT '{"cells":[],"dogLane":2}',
-  teammates_json TEXT NOT NULL DEFAULT '[]', dog_level INTEGER NOT NULL DEFAULT 1,
+  dog_level INTEGER NOT NULL DEFAULT 1,
   castle_skin TEXT NOT NULL DEFAULT 'stone-keep', home_level INTEGER NOT NULL DEFAULT 1,
   lootable_coins INTEGER NOT NULL DEFAULT 0, vault_coins INTEGER NOT NULL DEFAULT 0,
   ruined_until INTEGER, shield_until INTEGER, updated_at INTEGER NOT NULL,

@@ -409,9 +409,9 @@ suite('armory: a database that has not run db/019 yet does not 500 — it behave
 suite('armory: swords in the shared score card (js/night-raid-rules.js)', () => {
   const layout = { cells: [{ type: 'water-cannon', gx: 0, gy: 0 }], soldiers: 4, dogLane: 2 };
   test('combatPower rises by exactly SWORD_DAMAGE x min(swords, SWORD_CAP); DEF never moves', () => {
-    const base = NR.combatPower(layout, 10, ['gunner'], 4);
+    const base = NR.combatPower(layout, 10, 4);
     for (const n of [0, 1, 2, 5, 9, 10, 11, 30, 999]) {
-      const p = NR.combatPower(layout, 10, ['gunner'], 4, n);
+      const p = NR.combatPower(layout, 10, 4, n);
       const expected = NR.SWORD_DAMAGE * Math.min(n, NR.SWORD_CAP);
       assert.equal(p.damage - base.damage, expected, n + ' swords');
       assert.equal(p.swordDamage, expected);
@@ -420,10 +420,10 @@ suite('armory: swords in the shared score card (js/night-raid-rules.js)', () => 
       assert.equal(NR.swordBonus(n), expected);
     }
   });
-  test('a missing, non-numeric or negative count is zero swords — the 4-argument call is unchanged', () => {
-    const base = NR.combatPower(layout, 10, ['gunner'], 4);
+  test('a missing, non-numeric or negative count is zero swords — the 3-argument call is unchanged', () => {
+    const base = NR.combatPower(layout, 10, 4);
     for (const bad of [undefined, null, NaN, 'abc', -3, {}]) {
-      const p = NR.combatPower(layout, 10, ['gunner'], 4, bad);
+      const p = NR.combatPower(layout, 10, 4, bad);
       assert.equal(p.damage, base.damage, String(bad));
       assert.equal(p.swordDamage, 0);
     }
@@ -433,7 +433,7 @@ suite('armory: swords in the shared score card (js/night-raid-rules.js)', () => 
   test('the constants mean what the comment says: two swords = a soldier, a full stock beats a coin flip by a 3-star margin', () => {
     assert.equal(NR.SWORD_DAMAGE, 10);
     assert.equal(NR.SWORD_CAP, 10);
-    const one = NR.combatPower({ cells: [], soldiers: 0 }, 10, []), soldier = NR.combatPower({ cells: [], soldiers: 1 }, 10, []);
+    const one = NR.combatPower({ cells: [], soldiers: 0 }, 10), soldier = NR.combatPower({ cells: [], soldiers: 1 }, 10);
     assert.equal(NR.swordBonus(2), soldier.damage - one.damage, 'two swords are worth one soldier (+20)');
     // A coin flip: DAM == DEF loses (won = damage > defense). With a full
     // stock the same fight is won by 100, past finish.js's 60-point 3-star line.
@@ -452,7 +452,7 @@ function farmLayout() {
 async function seedHome(world, user, coins) {
   const r = await world.call(homeHandler().onRequestPut, {
     url: '/api/night-raid/home', method: 'PUT', token: user.token,
-    body: { layout: farmLayout(), teammates: ['gunner'], dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
+    body: { layout: farmLayout(), dogLevel: 7, castleSkin: 'royal-keep', coins: coins == null ? 800 : coins, vaultCoins: 40 },
   });
   assert.truthy(r.ok, 'seeding the home must succeed: ' + JSON.stringify(r.data));
 }
@@ -462,7 +462,7 @@ function homeRow(world, uid) { return world.db.prepare('SELECT * FROM night_raid
 function clientOwnPower(world, uid, swordsInStock) {
   const h = homeRow(world, uid);
   const layout = NR.normalizeLayout(JSON.parse(h.layout_json));
-  return NR.combatPower(layout, h.dog_level, JSON.parse(h.teammates_json), layout.soldiers, swordsInStock);
+  return NR.combatPower(layout, h.dog_level, layout.soldiers, swordsInStock);
 }
 
 suite('armory: the server scores a raid with the attacker\'s swords, and agrees with the client', () => {
@@ -516,7 +516,7 @@ suite('armory: the server scores a raid with the attacker\'s swords, and agrees 
     world.db.prepare('UPDATE night_raid_homes SET dog_level=? WHERE user_id=?').run(dogLevel, defender.uid);
     const defRow = homeRow(world, defender.uid);
     const layout = NR.normalizeLayout(JSON.parse(defRow.layout_json));
-    const defense = NR.combatPower(layout, dogLevel, JSON.parse(defRow.teammates_json), layout.soldiers).defense;
+    const defense = NR.combatPower(layout, dogLevel, layout.soldiers).defense;
     assert.truthy(defense >= without && defense - without < NR.SWORD_DAMAGE, 'fixture: DEF ' + defense + ' vs DAM ' + without);
     // Enough swords to cross the line by at least one point — here, one.
     const need = Math.max(1, Math.ceil((defense - without + 1) / NR.SWORD_DAMAGE));
@@ -528,7 +528,7 @@ suite('armory: the server scores a raid with the attacker\'s swords, and agrees 
     assert.equal(f.data.result.defense, defense);
     assert.equal(f.data.result.damage, without + need * NR.SWORD_DAMAGE);
     assert.truthy(f.data.result.won, 'with the swords the raid is won');
-    assert.falsy(NR.resolveAutoBattle({ defense, castleHp: 200, layout, dogLevel, teammates: ['gunner'], attackerDamage: without }).won,
+    assert.falsy(NR.resolveAutoBattle({ defense, castleHp: 200, layout, dogLevel, attackerDamage: without }).won,
       'and without them the same fight is lost');
   });
 

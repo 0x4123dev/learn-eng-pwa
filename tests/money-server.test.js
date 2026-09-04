@@ -28,7 +28,7 @@ function homeRow(db, uid) {
 }
 async function seedHome(world, user, over) {
   const body = Object.assign({
-    layout: farmLayout(Date.now() + 3600000), teammates: ['gunner'],
+    layout: farmLayout(Date.now() + 3600000),
     dogLevel: 7, castleSkin: 'royal-keep', coins: 800, vaultCoins: 40,
   }, over || {});
   const r = await world.call(homeHandler().onRequestPut,
@@ -164,7 +164,7 @@ suite('money server: grant receipts survive a crash between claim and save', () 
 });
 
 suite('money server: the home PUT can never wipe what a child owns', () => {
-  test('an empty PUT leaves wallet, dog level, layout, skin and teammates untouched', async () => {
+  test('an empty PUT leaves wallet, dog level, layout and skin untouched', async () => {
     const world = createWorld();
     const user = await world.createUser({ allowBot: true });
     await seedHome(world, user);
@@ -176,7 +176,6 @@ suite('money server: the home PUT can never wipe what a child owns', () => {
     assert.equal(after.lootable_coins, before.lootable_coins, 'wallet must survive an empty PUT');
     assert.equal(after.dog_level, before.dog_level, 'dog level must survive an empty PUT');
     assert.equal(after.castle_skin, before.castle_skin, 'castle skin must survive an empty PUT');
-    assert.equal(after.teammates_json, before.teammates_json, 'teammates must survive an empty PUT');
     assert.deepEqual(JSON.parse(after.layout_json).cells.map(c => c.type),
       JSON.parse(before.layout_json).cells.map(c => c.type), 'buildings must survive an empty PUT');
   });
@@ -187,7 +186,7 @@ suite('money server: the home PUT can never wipe what a child owns', () => {
     await seedHome(world, user);
     const r = await world.call(homeHandler().onRequestPut, {
       method: 'PUT', token: user.token,
-      body: { layout: farmLayout(Date.now() + 3600000), teammates: ['gunner'], dogLevel: 7 },
+      body: { layout: farmLayout(Date.now() + 3600000), dogLevel: 7 },
     });
     assert.equal(r.status, 200);
     assert.equal(homeRow(world.db, user.uid).lootable_coins, 800);

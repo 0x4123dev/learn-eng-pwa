@@ -929,7 +929,6 @@ function loginUser(username) {
     if (appState.vaultCoins === undefined) appState.vaultCoins = 0;
     if (appState.nightShieldUntil === undefined) appState.nightShieldUntil = null;
     if (appState.nightRaidRuinedUntil === undefined) appState.nightRaidRuinedUntil = null;
-    if (!Array.isArray(appState.battleTeammates)) appState.battleTeammates = [];
     if (!appState.nightRaidResources || typeof appState.nightRaidResources !== 'object') appState.nightRaidResources = { wood:180, stone:120, food:160 };
     if (appState.nightRaidResourceAt === undefined) appState.nightRaidResourceAt = Date.now();
 
