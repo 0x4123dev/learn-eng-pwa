@@ -1,30 +1,52 @@
 import { requireAuth, json, err } from '../_lib.js';
 import { NR, nightRaidEnabled, homeSnapshot, safeJson } from '../_night-raid.js';
 import { swordCount } from '../_daily-task.js';
+import { farmClock } from '../_farm.js';
 
 export async function onRequestGet({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid is not enabled',403);
+  const now=Date.now(),clock=await farmClock(env,auth.uid,now);
   const row=await env.DB.prepare('SELECT h.*, u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
   // The owner sees their own DAM the way start.js will score it: swords in.
   if(row)row.night_swords=await swordCount(env,auth.uid);
+  const home=row?homeSnapshot(row):null;
+  // Only the server knows dayCount, so only this read can convert a barracks
+  // that still carries the old 24h clock (see normalizeLayout in the rules).
+  if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today});
   // shieldUntil is for the OWNER only — targets.js never exposes it.
-  return json({home:row?Object.assign(homeSnapshot(row),{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null});
+  return json({home:home?Object.assign(home,{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null,dayCount:clock.dayCount,ctx:clock.ctx});
 }
 export async function onRequestPut({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid is not enabled',403);
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
+  const now=Date.now(),clock=await farmClock(env,auth.uid,now),dayCount=clock.dayCount,today=clock.ctx.today;
   const current=await env.DB.prepare('SELECT layout_json,dog_level,castle_skin,lootable_coins,vault_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
-  const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0});
+  const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0},{dayCount,today});
   // A field the client did not send — or sent as something that is not a
   // number — keeps its stored value. This request used to default every
   // missing field (coins→0, dogLevel→1, layout→empty), so one buggy or
   // half-hydrated client PUT erased the wallet, the dog and every building
   // in a single statement.
   const num=v=>typeof v==='number'&&Number.isFinite(v);
-  const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout);
-  const now=Date.now(),oldProduction=new Map(oldLayout.cells.filter(c=>NR.defenseById(c.type)?.producer&&c.uid).map(c=>[c.uid,c]));
+  const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout,{dayCount,today});
+  // Every cell the server already knows, by uid — main board and extra farms.
+  const oldByUid=new Map(NR.farmRules.allCells(oldLayout).filter(c=>c.uid).map(c=>[c.uid,c]));
+  const newUid=prefix=>prefix+crypto.randomUUID().replace(/-/g,'').slice(0,20);
+  // The server stamps every clock. A client may move a plant or a barracks,
+  // never rewind it: a cell whose uid the server knows keeps the server's
+  // day/at/lastDay/readyAt; a cell it has never seen starts today.
+  const stamp=cell=>{const def=NR.itemById(cell.type);if(!def)return;const prior=cell.uid?oldByUid.get(cell.uid):null,same=!!(prior&&prior.type===cell.type);
+    if(def.producer==='coins'){if(same)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid=newUid('p-');cell.readyAt=now+NR.PRODUCTION_MS;}}
+    else if(def.producer==='soldier'){if(same&&Number.isFinite(+prior.lastDay))cell.lastDay=prior.lastDay;else{if(!cell.uid)cell.uid=newUid('p-');cell.lastDay=dayCount;}delete cell.readyAt;}
+    else if(def.kind==='crop'){if(same){cell.day=prior.day;cell.at=prior.at;}else{if(!cell.uid)cell.uid=newUid('c-');cell.day=dayCount;cell.at=today;}}
+    else if(def.kind==='farm'){if(!cell.uid)cell.uid=newUid('f-');}};
+  layout.cells.forEach(stamp);layout.farms.forEach(f=>f.cells.forEach(stamp));
+  // buyMax: a NEW field of a type the child already owns is dropped. Fields the
+  // child already has are never touched — the cap is on buying, not owning.
+  for(const def of NR.DEFENSES){if(!def.buyMax)continue;const had=oldLayout.cells.filter(c=>c.type===def.id).length,room=Math.max(0,Math.max(had,def.buyMax)-had);let taken=0;
+    layout.cells=layout.cells.filter(c=>{if(c.type!==def.id)return true;const prior=c.uid&&oldByUid.get(c.uid);if(prior&&prior.type===def.id)return true;return ++taken<=room;});}
   // Kho lính CHỈ đổi ở night-raid/collect.js. Trước đây chỗ này lấy
   // min(kho cũ, số client gửi) để chặn gian lận — nhưng từ khi cướp không
   // còn tiêu lính, không có lý do hợp lệ nào để lính giảm, mà một client
@@ -39,7 +61,6 @@ export async function onRequestPut({request,env}) {
   // → thắng 3 sao mọi nhà không khiên. Nhà mới bắt đầu với 0 lính; muốn có
   // lính thì phải xây doanh trại và thu hoạch như mọi người.
   layout.soldiers=current?oldLayout.soldiers:0;
-  for(const cell of layout.cells){const def=NR.defenseById(cell.type);if(!def?.producer)continue;const prior=oldProduction.get(cell.uid);if(prior&&prior.type===cell.type)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid='p-'+crypto.randomUUID().replace(/-/g,'').slice(0,20);cell.readyAt=now+NR.PRODUCTION_MS;}}
   // Dog level is monotonic: dogGrowthXP is never deducted anywhere in the
   // app, so a lower level from a client can only be stale or wrong.
   const storedDog=current?Math.max(1,Math.trunc(+current.dog_level||1)):1;
@@ -54,5 +75,5 @@ export async function onRequestPut({request,env}) {
   await env.DB.prepare(`INSERT INTO night_raid_homes(user_id,layout_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
     VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET layout_json=excluded.layout_json,dog_level=excluded.dog_level,castle_skin=excluded.castle_skin,home_level=excluded.home_level,lootable_coins=excluded.lootable_coins,vault_coins=excluded.vault_coins,updated_at=excluded.updated_at`)
     .bind(auth.uid,JSON.stringify(layout),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
-  return json({ok:true,homeLevel,layout,coins});
+  return json({ok:true,homeLevel,layout,coins,dayCount,ctx:clock.ctx});
 }
