@@ -139,7 +139,7 @@ var NightRaidChoreo = (() => {
     const won = !!(result && result.won);
     const margin = Math.max(0, Number(result && result.margin) || 0);
     const ratio = margin / Math.max(1, Math.max(Number(result && result.damage) || 1, Number(result && result.defense) || 1));
-    const n = Math.max(0, Math.min(Rules.MAX_SOLDIERS, Math.trunc(Number(soldierCount) || 0)));
+    const n = Math.max(0, Math.min(Rules.ARMY_DISPLAY_CAP, Math.trunc(Number(soldierCount) || 0)));
 
     // --- defending buildings: the defender's real home layout on the board --
     // Spike traps cost real coins and add real DEF, so they are on the board

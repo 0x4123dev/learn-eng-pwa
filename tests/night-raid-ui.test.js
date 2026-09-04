@@ -580,8 +580,8 @@ suite('night raid: only one combat loop',()=>{
     // scout() is what fills the number in, from the honest produced count.
     assert.truthy(ui.includes('target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)'),
       'scout must fall back to the produced count when the target carries none');
-    // Deduction still charges the real barracks stock, never a lent squad.
-    assert.truthy(ui.includes("soldiersUsed=Math.min(NightRaidRules.MAX_SOLDIERS,appState.nightRaidLayout?.soldiers||0)")||ui.includes('appState.nightRaidLayout.soldiers=Math.max(0,appState.nightRaidLayout.soldiers-soldiersUsed)'),'deduction stays based on real stock');
+    // Không còn trừ lính sau trận: lính là quân thường trực.
+    assert.falsy(/soldiers\s*-\s*soldiersUsed/.test(ui),'trận đánh bot vẫn đang trừ lính khỏi kho');
   });
   test('the castle has structural stages, persistent crater and projectile trails',()=>{
     const art=read('js/night-raid-art.js');

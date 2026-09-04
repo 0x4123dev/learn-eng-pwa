@@ -32,13 +32,13 @@ const overlaps = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bot
 
 suite('night raid: the army can be counted', () => {
     test('one slot per soldier, for every squad size', () => {
-        for (let n = 0; n <= NR.MAX_SOLDIERS; n++) {
+        for (let n = 0; n <= NR.ARMY_DISPLAY_CAP; n++) {
             assert.equal(NR.armySlots(n).length, n, `${n} soldiers must produce ${n} slots`);
         }
     });
 
     test('no two soldiers overlap at any squad size', () => {
-        for (let n = 2; n <= NR.MAX_SOLDIERS; n++) {
+        for (let n = 2; n <= NR.ARMY_DISPLAY_CAP; n++) {
             const b = boxes(n);
             for (let i = 0; i < b.length; i++) {
                 for (let j = i + 1; j < b.length; j++) {
@@ -83,7 +83,7 @@ suite('night raid: the army can be counted', () => {
         const anchor = css.match(/--nr-army-x:([\d.]+)%/), anchorY = css.match(/--nr-army-y:([\d.]+)%/);
         assert.truthy(anchor && anchorY, 'the squad anchor is missing from the CSS');
         const ax = parseFloat(anchor[1]), ay = parseFloat(anchorY[1]);
-        for (const b of boxes(NR.MAX_SOLDIERS)) {
+        for (const b of boxes(NR.ARMY_DISPLAY_CAP)) {
             assert.truthy(ax + b.left >= 0, 'the left flank marches off the map');
             assert.truthy(ax + b.right <= 100, 'the right flank marches off the map');
             assert.truthy(ay + b.top >= 0 && ay + b.bottom <= 100, 'the squad leaves the lawn vertically');

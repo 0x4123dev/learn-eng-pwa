@@ -190,7 +190,7 @@ var NightRaidPhaser = (() => {
       if(!host||!host.appendChild)throw new Error('Night Raid Phaser needs a host');
       this.host=host;this.target=target;this.options=options;
       this.result=NightRaidRules.resolveAutoBattle(target,target.attackerDamage);
-      this.soldierCount=clamp(Math.trunc(+target.attackerSoldiers||0),0,NightRaidRules.MAX_SOLDIERS);
+      this.soldierCount=clamp(Math.trunc(+target.attackerSoldiers||0),0,NightRaidRules.ARMY_DISPLAY_CAP);
       this.state={...this.result,status:'ready',timeMs:0,soldiers:this.soldierCount};
       this.choreo=NightRaidChoreo.build(this.result,target,this.soldierCount,options.pet||null,target.seed);
       this.reduce=!!options.reduceEffects||(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches);

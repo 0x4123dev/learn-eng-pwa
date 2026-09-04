@@ -16,10 +16,12 @@ suite('night raid Phase 2: schema and endpoints',()=>{
       assert.truthy(read(file).includes('requireAuth'));
     }
   });
-  test('daily collection is server timed and cannot exceed the soldier cap',()=>{
+  test('daily collection is server timed and the soldier stock has no ceiling',()=>{
     const src=read('functions/api/night-raid/collect.js');
     assert.truthy(src.includes('cell.readyAt>now'));
-    assert.truthy(src.includes('soldiers<NR.MAX_SOLDIERS'));
+    // Kho lính bỏ trần: bé nuôi bao nhiêu cũng được (bãi cỏ mới là chỗ giới hạn
+    // hiển thị). Không được để một trần nào lẻn lại vào đây.
+    assert.falsy(/soldiers\s*<\s*NR\./.test(src),'collect.js đặt lại trần cho kho lính');
     // The harvest is applied as a capped DELTA, never an absolute overwrite —
     // the absolute form raced with concurrent collects/raids and lost money.
     // Executed behavioural coverage lives in tests/money-server.test.js.
