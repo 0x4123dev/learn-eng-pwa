@@ -154,11 +154,15 @@ suite('farm server: collect', () => {
   });
   test('a ripe but wilted crop is not harvested and the reply says why', async () => {
     const { world, kid } = await farmWorld([TWO_AGO], [{ type: 'lettuce', gx: 1, gy: 1, uid: 'c-lettuc01', day: 0, at: TWO_AGO }]);
-    const before = JSON.stringify(stored(world, kid.uid));
+    const before = stored(world, kid.uid).cells;
     const r = await collect(world, kid);
     assert.truthy(r.data.nothingReady);
     assert.truthy(r.data.wilted, 'the child is told the plant is wilted');
-    assert.equal(JSON.stringify(stored(world, kid.uid)), before, 'layout untouched');
+    // The CELLS are untouched — the plant is not harvested and not aged. (The
+    // stored JSON itself may be rewritten in its normalized shape now: a
+    // nothingReady collect persists whatever normalizeLayout changed, or a
+    // legacy barracks could never finish converting. See the barracks suite.)
+    assert.deepEqual(stored(world, kid.uid).cells, before, 'the wilted crop stays exactly as it was');
     assert.equal(mirror(world, kid.uid), 100);
     doneOn(world, kid.uid, TODAY);
     const revived = await collect(world, kid);
@@ -276,6 +280,55 @@ suite('farm server: a uid is an identity, not a coupon', () => {
       farms: [{ cells: [{ type: 'pumpkin', gx: 0, gy: 0, uid: 'c-aaaaaaaa' }] }] });
     assert.equal(dup.cells.length, 1);
     assert.equal(dup.farms[0].cells.length, 0);
+  });
+});
+
+suite('farm server: a legacy barracks must finish converting', () => {
+  // Found by review, 2026-09-04. `training-barracks` used to pay one soldier
+  // per 24 h through cell.readyAt; it now pays one per finished task-day
+  // through cell.lastDay, and normalizeLayout converts a legacy cell by
+  // setting lastDay = dayCount and dropping readyAt. A cell converted in THIS
+  // request is rightly not ready in this request — but collect.js sent the
+  // nothingReady reply WITHOUT writing, so the conversion was thrown away.
+  // The next day dayCount had grown, the stored cell still carried readyAt
+  // and no lastDay, so it was converted to the NEW dayCount and was again not
+  // ready. Simulated over four task-days, the child's soldiers never left 0.
+  test('the conversion is written down, and the next task-day pays a soldier', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] }, 100);
+    const day = n => doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
+    day(10);                                            // dayCount 1
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: Date.now() - 1000 }],
+      soldiers: 0, dogLane: 2 }), kid.uid);
+    const first = await collect(world, kid);
+    assert.truthy(first.data.nothingReady, 'the day it converts on is not a day it can pay for');
+    const cell = stored(world, kid.uid).cells.find(c => c.uid === 'p-legacy01');
+    assert.equal(cell.lastDay, 1, 'the conversion is persisted, not discarded with the reply');
+    assert.equal(cell.readyAt, undefined, 'and the old 24h clock is gone for good');
+    assert.equal(stored(world, kid.uid).soldiers, 0);
+    assert.equal(mirror(world, kid.uid), 100, 'the conversion write never touches the money column');
+    day(9);                                             // dayCount 2
+    const second = await collect(world, kid);
+    assert.equal(second.data.collectedSoldiers, 1, 'the next finished task-day pays one soldier');
+    assert.equal(stored(world, kid.uid).soldiers, 1);
+    assert.equal(mirror(world, kid.uid), 100, 'and soldiers are not coins');
+  });
+  test('four task-days in a row: the barracks does not stay stuck at zero', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] }, 100);
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: 5 }],
+      soldiers: 0, dogLane: 2 }), kid.uid);
+    let paid = 0;
+    for (let n = 12; n >= 9; n--) {
+      doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
+      paid += Number((await collect(world, kid)).data.collectedSoldiers || 0);
+    }
+    assert.equal(paid, 3, 'day one converts; days two, three and four each pay a soldier');
+    assert.equal(stored(world, kid.uid).soldiers, 3);
   });
 });
 

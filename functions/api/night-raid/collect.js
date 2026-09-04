@@ -33,7 +33,24 @@ export async function onRequestPost({request,env}) {
   layout.cells=sweep(layout.cells,0);
   layout.farms=layout.farms.map((f,i)=>({cells:sweep(f.cells,i+1)}));
   layout.soldiers=soldiers;
-  if(!collectedCoins&&!collectedSoldiers)return json({ok:true,nothingReady:true,wilted,layout,coins,soldiers,dayCount,ctx});
+  if(!collectedCoins&&!collectedSoldiers){
+    // Nothing was harvested — but normalizeLayout above may still have
+    // CONVERTED a legacy barracks (the old 24h `readyAt` → `lastDay`, paid per
+    // finished task-day), and a conversion only counts if it is written down.
+    // This reply used to throw it away, so the cell went back to storage still
+    // carrying readyAt and no lastDay, and was converted again to the CURRENT
+    // dayCount on the next read — never one day behind it, so
+    // FarmRules.barracksReady stayed false and the child's soldiers stood at 0
+    // for ever. It escaped only when some OTHER write (a builder PUT, or a
+    // collect that harvested something else) happened to save the conversion.
+    //
+    // Layout ONLY: lootable_coins is never touched here. A raid may be
+    // deducting from that column right now, which is exactly why the harvest
+    // below adds its coins as a delta instead of an absolute number.
+    const fixed=JSON.stringify(layout);
+    if(fixed!==String(row.layout_json||''))await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,updated_at=? WHERE user_id=?').bind(fixed,now,auth.uid).run();
+    return json({ok:true,nothingReady:true,wilted,layout,coins,soldiers,dayCount,ctx});
+  }
   // Add the harvest as a DELTA instead of writing back the absolute number:
   // the old read-modify-write raced with a concurrent collect or a raid
   // deduction, and whichever wrote last silently undid the other's money.
