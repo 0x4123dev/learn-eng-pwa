@@ -394,7 +394,8 @@
                    font-size:13px; font-family:inherit; background-color:#fff; color:var(--ink); }
     /* Two columns give way, and only these two, because the row already says
        both: a disabled account is faded, struck through and offers Enable
-       instead of Disable, and the bot state is the toggle's own colour. The
+       instead of Disable, and the early-access state is the toggle's own
+       colour. The
        numbers an admin actually compares — activity, exams, last seen — all
        stay. */
     th.hide-xs, td.hide-xs { display:none; }
@@ -884,13 +885,13 @@ function renderUsers(){
       <td class="muted hide-sm" title="${esc(fmtDate(u.created_at))}">${relTime(u.created_at)}</td>
       <td class="hide-xs">${u.disabled
             ? '<span class="pill dead">Disabled</span>'
-            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🤖 Bot on':'Active'}</span>`}${coinDrop
+            : `<span class="pill ${u.allow_bot?'on':'off'}">${u.allow_bot?'🌱 Chơi trước':'Active'}</span>`}${coinDrop
             ? `<span class="pill dead" title="Wallet dropped: ${u.coin_latest} xu now vs ${u.coin_peak7} xu peak this week — possible wiped device. The Coins button pre-fills the ${coinDrop} xu to restore.">▼ ${coinDrop} xu</span>` : ''}</td>
       <td>
         <div class="row-actions">
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
-                  aria-label="Bot practice for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
-                  title="Practice against a bot: unlimited, 20 shots, no rewards">🤖<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
+                  aria-label="Chơi trước for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
+                  title="Chơi trước cho bé này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
           <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
                   aria-label="Give coins to ${esc(u.username)}"
                   title="${coinDrop?`Restore — pre-filled with the ${coinDrop} xu this wallet lost vs its weekly peak`:'Give coins — the child\'s app claims them on its next sync'}">💰<span class="lbl"> ${coinDrop?'Restore':'Coins'}</span></button>

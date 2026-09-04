@@ -2,11 +2,13 @@ import { requireAuth, json, err } from '../_lib.js';
 
 // POST /api/admin/user-flags  { userId, allowBot?, clearDevice?, disabled? }
 // Per-user switches, set from the admin dashboard.
-//   allowBot     — reveals the "practice vs bot" button in the child's arena.
+//   allowBot     — early access: opens Cướp Đêm and the farm for this child.
+//                  (Historic name: it once revealed a practice-vs-bot button;
+//                  both bot modes were removed 2026-09.)
 //   clearDevice  — releases this account's hold on its device's signup slot.
 //   disabled     — switches the account off everywhere (see db/005).
 // Deliberately admin-only — a child must not be able to grant either to
-// themselves: practice battles bypass the ammo economy entirely, and clearing
+// themselves: early access is the admin's call, and clearing
 // a device would reopen the account limit it exists to enforce.
 //
 // clearDevice is the escape hatch for a real household: a shared iPad with

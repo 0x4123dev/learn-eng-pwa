@@ -283,7 +283,18 @@ suite('cups: wired into the app', () => {
 suite('cups: the reward ladder on the result card', () => {
     const pb = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
     const styles = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
-    const ladder = pb.slice(pb.indexOf('function _pbCupLadderHTML'), pb.indexOf('// ---- 🤖 practice vs bot'));
+    // Just the ladder builder: from its own `function` line to the next one.
+    // The end marker used to be the "practice vs bot" section comment, deleted
+    // with practice mode (2026-09) — indexOf then returned -1, the slice
+    // quietly stretched to the end of the file, and every assertion below was
+    // matching anything, anywhere in js/petbattle.js.
+    const ladder = pb.slice(pb.indexOf('function _pbCupLadderHTML'), pb.indexOf('function finishPetBattle('));
+
+    test('the slice really is only the ladder builder', () => {
+        assert.truthy(ladder.length > 0, 'both slice markers must still exist in js/petbattle.js');
+        assert.falsy(ladder.includes('module.exports'),
+            'the slice ran past the function to the end of the file — the assertions below prove nothing');
+    });
 
     test('a win shows the cup that was just earned', () => {
         assert.truthy(ladder.includes('pb-cup-prize'), 'the prize must be visible, not implied');

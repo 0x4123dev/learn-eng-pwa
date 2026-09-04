@@ -11688,11 +11688,6 @@
     to   { transform: translateX(-50%) translateY(0); }
 }
 
-        /* Teammates fight in practice today; friend battles follow with the
-           server change. Said out loud so a child is not left wondering why
-           their squad did not appear against a friend. */
-        .pb-hire-trial { text-align: center; margin-top: 6px; }
-
 /* ========================================================================== */
 /* PET PLAYROOM — child-friendly dog collection, treats and dress-up          */
 /* ========================================================================== */
@@ -12913,7 +12908,6 @@
 .nr-live-empty strong{display:block;margin-bottom:6px;color:#fff;font-size:16px}
 .nr-live-empty b{color:#fff}
 .nr-live-empty .nr-secondary{margin-top:12px}
-.nr-live-actions{display:grid;gap:10px;margin:14px 0 22px}
 
 /* ---- "nhà đã tan hoang" ------------------------------------------------
    The third ending. It is neither a win nor a loss, so it wears neither

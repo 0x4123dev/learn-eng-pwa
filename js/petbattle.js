@@ -25,11 +25,6 @@ function pbEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function pbRandomSceneId() {
-  return (typeof BattleScenes !== 'undefined' && BattleScenes.randomBattleSceneId)
-    ? BattleScenes.randomBattleSceneId() : 'cloudstep-meadow';
-}
-
 // ---- language ----
 // The arena is where a child spends time voluntarily, so it defaults to
 // ENGLISH — that is the point of the app. Vietnamese is one tap away when a
@@ -62,7 +57,6 @@ const PB_STR = {
     hireTotal: 'Squad cost: {n} 🪙',
     hireFull: 'Bench full ({n} max)',
     hireNone: 'No teammates — save your coins for pet food 🍖',
-    hireTrial: '🤖 Free to try in practice — coins are only spent on a real battle.',
     hirePoor: 'Not enough coins',
     hireGunner: 'Rocket Ranger', hireGunnerAb: 'Automatically launches a rocket with every volley',
     hireEngineer: 'Castle Mechanic', hireEngineerAb: 'Automatically rebuilds +15 HP on every turn',
@@ -206,7 +200,6 @@ const PB_STR = {
     hireTotal: 'Tiền thuê: {n} 🪙',
     hireFull: 'Đã đủ quân ({n} người)',
     hireNone: 'Chưa thuê ai — để dành xu mua đồ ăn cho pet 🍖',
-    hireTrial: '🤖 Thử miễn phí ở trận luyện tập — chỉ tốn xu khi đánh thật.',
     hirePoor: 'Không đủ xu',
     hireGunner: 'Xạ thủ Tên lửa', hireGunnerAb: 'Tự động phóng rocket trong mỗi lượt bắn',
     hireEngineer: 'Kỹ sư Thành trì', hireEngineerAb: 'Tự động sửa +15 HP trong mỗi lượt',
@@ -756,7 +749,6 @@ function _pbHirePanel() {
       <div class="pb-hire-sub">${pbT('hireSub')}</div>
       <div class="pb-hire-list">${cards}</div>
       <div class="pb-hire-total">${cart.length ? pbT('hireTotal', { n: total }) : pbT('hireNone')}</div>
-      <div class="pb-hire-sub pb-hire-trial">${pbT('hireTrial')}</div>
     </div>`;
 }
 
@@ -1358,7 +1350,7 @@ if (typeof module !== 'undefined' && module.exports) {
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
-    pbRandomSceneId, _pbRandomArenaCard, _pbSceneInvite,
+    _pbRandomArenaCard, _pbSceneInvite,
     pbOwnedCastleSkins, pbSelectedCastleSkinId, pbSelectCastleSkin, pbBuyCastleSkin,
     _pbCastleWorkshop, _pbRenderCastlePreviews,
     _pbHirePanel, pbHire, pbUnhire, pbHireCart, pbHireReset, pbHireCommit,

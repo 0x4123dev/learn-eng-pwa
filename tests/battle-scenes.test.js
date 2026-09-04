@@ -66,10 +66,15 @@ suite('battle scene integration', () => {
         assert.truthy(game.includes('sceneRenderer.setCamera(camX)'));
     });
 
-    test('practice randomises locally and friend challenges leave selection to the server', () => {
-        assert.truthy(lobby.includes('const backgroundId = pbRandomSceneId()'));
+    test('the client never picks an arena — the server snapshots it on challenge', () => {
+        // Practice mode was the only local picker, and it is gone (2026-09).
+        // A friend battle takes the arena the server chose, so any client-side
+        // selection creeping back in would put the two players in different
+        // worlds for the same fight.
+        assert.falsy(lobby.includes('pbRandomSceneId'));
         assert.falsy(lobby.includes('backgroundId: pbSelectedSceneId()'));
         assert.falsy(lobby.includes('choosePetBattleScene'));
+        assert.truthy(challenge.includes('backgroundId'), 'the server still stamps the arena');
     });
 
     // THE guard for this feature. The arena list is declared twice — once in

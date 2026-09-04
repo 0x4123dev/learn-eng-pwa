@@ -75,7 +75,6 @@ var NightRaid = (() => {
   // start.js has written the raid row by then, and start.js refuses a second
   // visit to the same home on the same date — so walking out from here burns
   // one of the three houses on offer tonight and pays nothing for it.
-  // A bot fight is never committed: nothing is written anywhere.
   let raidStage=null;
   function isRaiding(){return !!(raidStage&&raidStage.committed);}
   function abandonRaid(){raidStage=null;}
@@ -260,9 +259,9 @@ var NightRaid = (() => {
   // dropped, and reports it as `defenderGain`. "-20 xu phí hành quân" alone hid
   // that — the xu went somewhere, and the somewhere has a name on it.
   const lossHTML=(loss,gain,target)=>`<div class="nr-loss">-${loss} xu phí hành quân${gain>0?`<small>${esc(foeName(target))} đã lấy ${gain} xu này.</small>`:''}</div>`;
-  function renderResult(target,state,stars,reward,online,loss=0){cleanup();settleRaid();view='result';
+  function renderResult(target,state,stars,reward,loss=0){cleanup();settleRaid();view='result';
     const wrap=document.querySelector('[data-nr-pop-host]')||document.querySelector('#nrBattleRoot .nr-canvas-wrap');
-    if(!wrap)return renderResultPage(target,state,stars,reward,online,loss);
+    if(!wrap)return renderResultPage(target,state,stars,reward,loss);
     const won=state.status==='won';
     const command=document.querySelector('#nrBattleRoot .nr-auto-command');if(command)command.classList.add('hidden');
     const status=document.getElementById('nrBattleStatus');if(status)status.remove();
@@ -274,7 +273,7 @@ var NightRaid = (() => {
     // Let the final frame breathe for a beat before the banner drops.
     setTimeout(()=>{if(view!=='result')return;wrap.appendChild(pop);announce(won?'Phá thành thành công':'Đội hình thất bại');if(won&&typeof createConfetti==='function'){try{createConfetti();}catch(e){}}},650);
   }
-  function renderResultPage(target,state,stars,reward,online,loss=0){settleRaid();setNav(true);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm. Mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.')}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:lossHTML(loss,Math.max(0,+state.defenderGain||0),target)}<div class="nr-result-actions">${resultActionsHTML()}</div></main>`);}
+  function renderResultPage(target,state,stars,reward,loss=0){settleRaid();setNav(true);const r=root();if(!r)return;const won=state.status==='won';r.innerHTML=shell(`<main class="nr-result ${won?'won':'lost'}"><div class="nr-result-crest">${svg(won?'castle':'shield')}</div><span class="nr-label">KẾT QUẢ CƯỚP ĐÊM</span><h2>${won?'PHÁ THÀNH THÀNH CÔNG!':'ĐỘI HÌNH THẤT BẠI'}</h2><p>${won?'DAM của quân ta cao hơn DEF đối thủ. Lâu đài đã bị phá và kho xu đã được mang về.':((state.shielded||target.shielded)?'Nhà này đang bật Khiên Đêm. Mạnh mấy cũng thua, cả đội mất 200 xu.':'DEF đối thủ cao hơn DAM quân ta. Cả đội đã rút lui để bảo toàn lực lượng.')}</p><section class="nr-result-score"><div><span>DAM QUÂN TA</span><strong>${state.damage||target.attackerDamage}</strong></div><b>${won?'>':'≤'}</b><div><span>DEF NHÀ ĐỊCH</span><strong>${(state.shielded||target.shielded)?'🛡️ KHIÊN':(state.defense||target.defense)}</strong></div></section>${won?`<div class="nr-result-stars" aria-label="${stars} sao">${[1,2,3].map(i=>`<i class="${i<=stars?'on':''}"></i>`).join('')}</div><div class="nr-reward">${svg('coin')}<span>+${reward} xu đã cướp</span></div>`:lossHTML(loss,Math.max(0,+state.defenderGain||0),target)}<div class="nr-result-actions">${resultActionsHTML()}</div></main>`);}
 
   // ---- "nhà đã tan hoang" -------------------------------------------------
   // POST /start answers 200 with {ruined:true,retryAt,castleSkin,name,
@@ -1166,7 +1165,7 @@ var NightRaid = (() => {
   // anybody. See the note beside attackerCan.
   async function finishOnline(target,state,commands){const res=await api('finish',{method:'POST',body:{raidId:target.raidId,coins:Math.max(0,Math.trunc(+appState.coins||0))}});const verified=res.ok&&res.data&&res.data.result;
     if(!verified&&isExpired(res)){clearPendingRaid(target.raidId);announce('Trận này đã hết giờ');if(typeof showToast==='function')showToast('Hết giờ trận này rồi — con vào lại nhà đó được ngay');return showLiveTargets();}
-    if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,true,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,true,verified.loss||0);}
+    if(!verified){announce('Kết quả đang chờ đồng bộ');if(typeof showToast==='function')showToast('Chưa nhận được kết quả từ máy chủ — sẽ tự đồng bộ khi mở Cướp Đêm lần sau');return renderResult(target,state,0,0,0);}clearPendingRaid(target.raidId);claimVerified(target.raidId,verified);renderResult(target,Object.assign(state,{status:verified.won?'won':'lost',shielded:!!verified.shielded,castleHp:verified.castleHp,damage:verified.damage,defense:verified.defense,margin:verified.margin,defenderGain:Math.max(0,+verified.defenderGain||0)}),verified.stars||0,verified.reward||0,verified.loss||0);}
 
   // ---- NHẬT KÝ = cả hai chiều ---------------------------------------------
   // The log answered one question — "who came to MY house?" — and never the
