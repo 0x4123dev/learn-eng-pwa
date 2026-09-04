@@ -112,10 +112,10 @@ var NightRaid = (() => {
     candidates.sort((a,b)=>Math.abs(a.defense-damage*targetRatio)-Math.abs(b.defense-damage*targetRatio));
     const target={...candidates[0],id:'bot-'+Date.now(),botMode:true,title:{en:'Bot Patrol Home',vi:'Nhà Bot Tuần Tra'}};
     target.reward=Math.max(20,Math.min(60,20+Math.floor(target.defense/45)*10));
-    // Bot practice only: 4 test soldiers always march with the dog, and the
-    // real barracks stock joins ON TOP (capped at the squad limit). Online
-    // raids against real homes keep the honest produced count.
-    target.attackerSoldiers=Math.min(NightRaidRules.MAX_SOLDIERS,4+Math.max(0,mine.soldiers));
+    // Đánh bot dùng ĐÚNG số lính bé nuôi được, không mượn thêm con nào: trước
+    // đây bot cho mượn 4 lính nên HUD nhảy từ 2 lên 6 rồi tụt lại 2 khi cướp
+    // nhà thật, bé không hiểu lính biến đi đâu. Bỏ mượn để hai chế độ nói
+    // cùng một con số. attackerSoldiers để trống — scout() tự lấy mine.soldiers.
     return target;
   }
   function scoutBot(){return scout(1,makeBotTarget(),false);}

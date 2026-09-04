@@ -568,15 +568,19 @@ suite('night raid: only one combat loop',()=>{
     assert.falsy(ui.includes('startSiege'));
     assert.falsy(ui.includes('wavePlan'));
   });
-  test('bot raids field 4 test soldiers plus the real barracks stock',()=>{
-    // Practice against bots must always show a readable squad with the dog:
-    // a 4-soldier test floor, with produced soldiers joining on top, capped
-    // at the squad limit. Only the bot target carries this — online raids
-    // against real homes keep the honest produced count.
+  test('a bot raid fields exactly the soldiers the child produced — none are lent',()=>{
+    // Bot practice used to add a floor of 4 free soldiers on top of the real
+    // stock. The HUD then read 6 against a bot and 2 against a real home for
+    // the same army, and a parent counting soldiers could not tell where the
+    // other four went. Both modes now show the produced count.
     const botBlock=ui.slice(ui.indexOf('function makeBotTarget'),ui.indexOf('function scoutBot'));
-    assert.truthy(botBlock.includes('target.attackerSoldiers=Math.min(NightRaidRules.MAX_SOLDIERS,4+Math.max(0,mine.soldiers))'),'bot squad = 4 + produced, capped');
-    assert.equal((ui.match(/4\+Math\.max\(0,mine\.soldiers\)/g)||[]).length,1,'the test floor exists exactly once — on the bot target only');
-    // The free test soldiers are never charged back to the barracks stock.
+    assert.falsy(/attackerSoldiers\s*=/.test(botBlock),'the bot target must not set its own soldier count');
+    assert.equal((ui.match(/4\+Math\.max\(0,mine\.soldiers\)/g)||[]).length,0,'no soldier floor may come back');
+    assert.falsy(/\d\s*\+\s*Math\.max\(0,\s*(mine|army)\.soldiers\)/.test(ui),'no lending in any shape');
+    // scout() is what fills the number in, from the honest produced count.
+    assert.truthy(ui.includes('target.attackerSoldiers=Number.isFinite(+target.attackerSoldiers)'),
+      'scout must fall back to the produced count when the target carries none');
+    // Deduction still charges the real barracks stock, never a lent squad.
     assert.truthy(ui.includes("soldiersUsed=Math.min(NightRaidRules.MAX_SOLDIERS,appState.nightRaidLayout?.soldiers||0)")||ui.includes('appState.nightRaidLayout.soldiers=Math.max(0,appState.nightRaidLayout.soldiers-soldiersUsed)'),'deduction stays based on real stock');
   });
   test('the castle has structural stages, persistent crater and projectile trails',()=>{
