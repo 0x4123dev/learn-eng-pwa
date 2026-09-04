@@ -217,7 +217,7 @@ var NightRaidPhaser = (() => {
         castleA:'img/night-raid/animation/castle-damage-a-v2.webp',
         castleB:'img/night-raid/animation/castle-damage-b-v2.webp',
       };
-      return Promise.all(Object.entries(sources).map(([key,src])=>decodeToCanvas(src).then(canvas=>[key,canvas]))).then(entries=>{this.assetCanvases=Object.fromEntries(entries);});
+      return Promise.all(Object.entries(sources).map(([key,src])=>decodeToCanvas(src).then(canvas=>[key,canvas]))).then(entries=>{this.assetCanvases=Object.fromEntries(entries);if(NightRaidArt.battleBoardCutout)this.assetCanvases.board=NightRaidArt.battleBoardCutout(this.assetCanvases.board);});
     }
     mount(){
       if(this.game)return Promise.resolve();
@@ -236,7 +236,7 @@ var NightRaidPhaser = (() => {
           create(){try{owner.scene=this;owner.createScene(this);resolve();if(owner.pendingCharge)owner.beginCharge();}catch(error){reject(error);}}
           update(time,delta){owner.updateScene(time,delta);}
         }
-        this.game=new Phaser.Game({type:Phaser.CANVAS,parent:this.host,width:SIZE,height:SIZE,transparent:false,backgroundColor:'#dcefc8',render:{antialias:true,pixelArt:false,roundPixels:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:RaidScene,callbacks:{postBoot:game=>{game.canvas.setAttribute('aria-hidden','true');}}});
+        this.game=new Phaser.Game({type:Phaser.CANVAS,parent:this.host,width:SIZE,height:SIZE,transparent:true,render:{antialias:true,pixelArt:false,roundPixels:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:RaidScene,callbacks:{postBoot:game=>{game.canvas.setAttribute('aria-hidden','true');}}});
       });
     }
     makeTexture(scene,key,color,size=22){const g=scene.add.graphics();g.fillStyle(color,1).fillCircle(size/2,size/2,size/2-1).generateTexture(key,size,size).destroy();}
@@ -262,7 +262,6 @@ var NightRaidPhaser = (() => {
       scene.textures.addCanvas('nr-defense-damage',this.assetCanvases.defenses);scene.textures.addCanvas('nr-economy-damage',this.assetCanvases.economy);
       scene.textures.addCanvas('nr-castle-a-damage',this.assetCanvases.castleA);scene.textures.addCanvas('nr-castle-b-damage',this.assetCanvases.castleB);
       scene.add.image(400,400,'nr-board').setDisplaySize(800,800).setDepth(0);
-      scene.add.rectangle(400,400,800,800,0x172044,.12).setDepth(1);
       this.makeTexture(scene,'nr-spark',0xffe477,18);this.makeTexture(scene,'nr-dust',0xdac8a6,26);this.makeTexture(scene,'nr-rubble',0x9b7559,18);this.makeTexture(scene,'nr-smoke',0x34404c,34);
       this.addGrid(scene.textures.get('nr-squad-actions'),'unit-',squadCols,squadRows);
       this.addGrid(scene.textures.get('nr-squad-walk'),'walk-',squadWalkCols,squadRows);

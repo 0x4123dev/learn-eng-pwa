@@ -12441,9 +12441,12 @@
 .nr-builder-edit b{font-size:16px}
 @media(min-width:768px){.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{width:74px;height:68px;font-size:10.5px}.nr-builder-zoom{grid-template-columns:74px;width:74px}.nr-builder-zoom button{width:74px}.nr-builder-shop-fab svg{width:25px;height:25px}}
 
-/* Scout/battle stage: the opponent board IS the pannable world, edge to edge. */
-.nr-scout-map{background:#0b1a2e}
-.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* Scout/battle stage: one meadow world, with an alpha-cut island and actors.
+   There is deliberately no background on the square map/canvas/Phaser host:
+   the shared world plane remains visible through all of them, so the preview
+   and active fight cannot look like a second picture pasted onto the page. */
+.nr-scout-map{background:transparent}
+.nr-scout-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:transparent}
 /* `hidden` alone loses to .nr-home-fab's own display:flex, so a sealed
    castle kept showing a live-looking TIẾN QUÂN button. */
 .nr-home-fab[hidden]{display:none}
@@ -12459,7 +12462,7 @@
 .nr-lock-chip.scout{position:static;padding:11px 18px}
 .nr-lock-chip.home{position:absolute;z-index:40;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100% - 24px)}
 @media(max-width:700px){.nr-lock-chip.home{bottom:calc(84px + env(safe-area-inset-bottom))}.nr-lock-chip b{font-size:15px}}
-.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:#dcefc8;touch-action:none}
+.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:transparent;touch-action:none}
 .nr-phaser-battle canvas{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain;filter:none!important;transform:none!important}
 .nr-phaser-battle:focus-visible{outline:4px solid #fff0a7;outline-offset:-6px}
 .nr-scout-stage .nr-pop-host{position:absolute;inset:0;z-index:46;pointer-events:none;display:grid}
@@ -13577,6 +13580,51 @@
     .nr-wallet { padding-inline: 10px; }
     .nr-raid-overview { margin-top: 6px; }
     .nr-friend-row { padding: 9px 10px; gap: 9px; }
+}
+
+/* Night Raid compact HUD: pinch remains available everywhere, while the
+   permanent +/- rail and house-level plaque no longer cover the garden. */
+.nr-builder-zoom,
+.nr-home-level {
+    display: none !important;
+}
+.nr-builder-rotate { top: calc(150px + env(safe-area-inset-top)); }
+.nr-builder-edit { top: calc(222px + env(safe-area-inset-top)); }
+.nr-builder.rotated .nr-builder-rotate { top: 88px; }
+.nr-builder.rotated .nr-builder-edit { top: 162px; }
+
+/* The scout and the running battle use a cover camera, not a fitted square.
+   The logical board keeps its proportions and one-finger panning exposes the
+   off-screen part in portrait or landscape. */
+.nr-scout-stage .nr-builder-map {
+    box-shadow: none;
+}
+.nr-scout-stage .nr-builder-world {
+    background-color: #a3aa13;
+    background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg');
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 2048px 2048px;
+}
+.nr-scout-stage .nr-world-plane {
+    background-color: #a3aa13;
+    background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg');
+    background-repeat: repeat;
+    background-position: center;
+}
+
+/* Journal content begins directly below the shared topbar. It identifies its
+   two lists by their section labels, so a second title and paragraph only
+   consumed the first phone viewport. */
+.nr-reports {
+    padding-top: 10px;
+}
+.nr-reports > .nr-log-section:first-child {
+    margin-top: 0;
+}
+.nr-reports .nr-live-head {
+    min-height: 38px;
+    align-items: center;
 }
 
 /* Toán 4 · Đề ôn — the short "what is on this paper" list under the Pre

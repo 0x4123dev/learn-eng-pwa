@@ -265,7 +265,8 @@ suite('NHẬT KÝ: both sides of the night', () => {
     assert.falsy(html.includes('Con đi cướp'), 'an empty heading over nothing reads as a broken screen');
     assert.truthy(html.includes('Nhà con bị cướp'), 'the defence log is unchanged');
     assert.truthy(html.includes('nrReplayReport(0)'));
-    assert.truthy(html.includes('nrHome()'), 'and there is still a way back');
+    assert.truthy(html.includes('closeNightRaid()'), 'the shared X is still the way out');
+    assert.falsy(html.includes('nrHome()'), 'the journal must not add a duplicate back button');
   });
 
   test('an empty attacks list says so instead of showing a bare heading', async () => {
@@ -293,11 +294,12 @@ suite('NHẬT KÝ: both sides of the night', () => {
     assert.truthy(w.screen().innerHTML.includes('&lt;b&gt;x&lt;/b&gt;'));
   });
 
-  test('a server that refuses still offers a way home', async () => {
+  test('a server that refuses keeps the shared X without adding a second back block', async () => {
     const w = await openLog({ ok: false, data: { error: 'Đăng nhập để mở Phase 2' } });
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('Chưa thể mở nhật ký'));
-    assert.truthy(html.includes('nrHome()'));
+    assert.truthy(html.includes('closeNightRaid()'));
+    assert.falsy(html.includes('nrHome()'));
   });
 });
 

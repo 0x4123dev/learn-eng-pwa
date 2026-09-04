@@ -10,6 +10,42 @@ var NightRaidArt = (() => {
   });
   const DEFENSE_ASSET_IDS=Object.freeze(['pebble-pup','wood-fence','stone-wall','spike-trap','water-cannon']);
   const defenseSprites=Object.create(null),defenseListeners=[];let defenseLoadStarted=false,defenseLoaded=0;
+  let sharedBattleBoardCutout=null;
+
+  // The authored isometric board was delivered on a cream studio backdrop.
+  // Scout and battle sit on the same endless meadow as the builder, so keeping
+  // that backdrop turns the board into an obvious square picture. Remove only
+  // the pale pixels connected to the image edge; pale paths, walls and flowers
+  // inside the island remain because vegetation/cliffs isolate them from the
+  // flood fill. Both the Canvas and Phaser renderers reuse this alpha cutout.
+  function battleBoardCutout(source) {
+    if(!source||typeof document==='undefined'||!document.createElement)return source;
+    if(sharedBattleBoardCutout)return sharedBattleBoardCutout;
+    const width=Math.trunc(source.naturalWidth||source.width||0),height=Math.trunc(source.naturalHeight||source.height||0);
+    if(!width||!height)return source;
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext&&canvas.getContext('2d',{willReadFrequently:true});
+    if(!ctx)return source;
+    try{
+      ctx.drawImage(source,0,0,width,height);
+      const pixels=ctx.getImageData(0,0,width,height),data=pixels.data,total=width*height;
+      const outside=new Uint8Array(total),queue=new Int32Array(total);let head=0,tail=0;
+      const isStudioBackdrop=index=>{
+        const p=index*4,a=data[p+3];if(a<12)return true;
+        const r=data[p],g=data[p+1],b=data[p+2],hi=Math.max(r,g,b),lo=Math.min(r,g,b),light=(r+g+b)/3;
+        // Neutral/warm, fairly bright studio paper and its soft shadow. Green
+        // grass and brown cliff faces fail the chroma/hue guards immediately.
+        return light>154&&hi-lo<58&&r>=b-10&&g>=b-22;
+      };
+      const visit=index=>{if(index<0||index>=total||outside[index]||!isStudioBackdrop(index))return;outside[index]=1;queue[tail++]=index;};
+      for(let x=0;x<width;x++){visit(x);visit((height-1)*width+x);}
+      for(let y=1;y<height-1;y++){visit(y*width);visit(y*width+width-1);}
+      while(head<tail){const index=queue[head++],x=index%width;if(x)visit(index-1);if(x<width-1)visit(index+1);if(index>=width)visit(index-width);if(index<total-width)visit(index+width);}
+      for(let index=0;index<total;index++)if(outside[index])data[index*4+3]=0;
+      ctx.putImageData(pixels,0,0);
+    }catch(_){return source;}
+    sharedBattleBoardCutout=canvas;return sharedBattleBoardCutout;
+  }
 
   function preloadDefenses(onUpdate) {
     if(typeof onUpdate==='function')defenseListeners.push(onUpdate);
@@ -169,7 +205,7 @@ var NightRaidArt = (() => {
   }
 
   preloadDefenses();
-  return Object.freeze({SCENES,roundRect,drawScene,drawCastle,preloadDefenses,drawDefense,drawRaider,drawProjectile,drawClashSpark,
+  return Object.freeze({SCENES,roundRect,battleBoardCutout,drawScene,drawCastle,preloadDefenses,drawDefense,drawRaider,drawProjectile,drawClashSpark,
     RUINS_SHEETS,RUINS_FRAMES,ruinsFrame,preloadRuins,drawRuins});
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=NightRaidArt;

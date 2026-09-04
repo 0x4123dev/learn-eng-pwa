@@ -179,7 +179,7 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.truthy(html.includes('nrToggleBuildShop()'), 'the shop fab must be wired');
     assert.truthy(html.includes('nr-build-grid-cell'), 'the build grid must render');
     assert.truthy(html.includes('nrGridCell('), 'grid cells must be tappable');
-    assert.truthy(html.includes('nrZoomBuilder('), 'zoom controls must be wired');
+    assert.truthy(html.includes('chụm hai ngón'), 'pinch zoom remains available without a permanent +/- rail');
   });
 
   test('a building can be bought in the builder and the coins are spent once', () => {
@@ -195,12 +195,15 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
       'the building must land on the yard');
   });
 
-  test('NHẬT KÝ opens without a server and offers a way back', () => {
+  test('NHẬT KÝ opens compactly without a duplicate back/title block', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     return Promise.resolve(ctx.NightRaid.showReports()).then(() => {
       const html = doc.getElementById('nightRaidScreen').innerHTML;
-      assert.truthy(html.includes('nrHome()'), 'the log screen must offer a way home');
+      assert.falsy(html.includes('nrHome()'), 'the journal must not repeat a back button below the shared X');
+      assert.falsy(html.includes('Nhật ký Cướp Đêm'), 'the shared Night Raid topbar already identifies the mode');
+      assert.falsy(html.includes('Kết quả những trận'), 'the long explanatory copy must stay off the first viewport');
+      assert.truthy(html.includes('closeNightRaid()'), 'the shared X remains the one app-level exit');
     });
   });
 

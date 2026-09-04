@@ -303,16 +303,16 @@ suite('night raid: app integration',()=>{
     const block = css.slice(css.indexOf('.nr-builder.rotated{'), css.indexOf('@media(max-height:420px)'));
     assert.truthy(block.length > 200, 'the rotated layout must live in one readable block');
     assert.truthy(/width:66px;height:66px/.test(block), 'every rail control is one size');
-    for (const control of ['.nr-builder-shop-fab', '.nr-builder-zoom', '.nr-builder-rotate', '.nr-builder-edit'])
+    for (const control of ['.nr-builder-shop-fab', '.nr-builder-rotate', '.nr-builder-edit'])
       assert.truthy(block.includes('.nr-builder.rotated ' + control), control + ' must be re-anchored when rotated');
     // Packed along the short edge: last button ends well inside a 375px phone.
-    const tops = [...block.matchAll(/\.nr-builder\.rotated \.nr-builder-(?:shop-fab|zoom|rotate|edit)\{top:(\d+)px/g)].map(m => +m[1]);
-    assert.equal(tops.length, 4, 'all four rail controls need an explicit slot');
+    const tops = [...block.matchAll(/\.nr-builder\.rotated \.nr-builder-(?:shop-fab|rotate|edit)\{top:(\d+)px/g)].map(m => +m[1]);
+    assert.equal(tops.length, 3, 'the three remaining rail controls need an explicit slot');
     assert.truthy(Math.max(...tops) + 66 <= 340, 'the rail must fit the narrow edge of a phone');
     assert.truthy(block.includes('.nr-builder.rotated .nr-builder-hud{left:14px;right:96px'),
       'the stat rail must stop short of the buttons, or SHOP sits on the coin counter');
-    assert.truthy(block.includes('.nr-builder.rotated .nr-home-level{position:fixed'),
-      'the house badge must stay on screen when the map is scrolled');
+    assert.truthy(css.includes('.nr-builder-zoom,\n.nr-home-level {\n    display: none !important;'),
+      'the zoom rail and house-level plaque must not occupy the playfield');
   });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
@@ -332,9 +332,10 @@ suite('night raid: app integration',()=>{
     for(const token of ['nrBeginBuildDrag','nrDropBuildItem','grid-template-columns:repeat(12','setupBuilderGestures','setBuilderZoom','nrBeginPlacedDrag','chụm hai ngón'])assert.truthy(ui.includes(token)||css.includes(token),token);
     assert.falsy(ui.includes('Chó bảo vệ khu'));
   });
-  test('builder supports app-level pinch zoom, visible shop and free item repositioning',()=>{
-    for(const token of ['nr-builder-zoom','nrZoomBuilder','touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm hai ngón để thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
+  test('builder supports pinch zoom without a permanent zoom rail, plus shop and free item repositioning',()=>{
+    for(const token of ['touch-action:none','nr-builder-shop-fab','movePlacedItem','builderZoomBounds','chụm hai ngón để thu phóng'])assert.truthy(ui.includes(token)||css.includes(token),token);
     assert.truthy(ui.includes('ESTATE_MIN_ZOOM=.03,ESTATE_MAX_ZOOM=4'),'pinch zoom must range from distant estate to close inspection');
+    assert.truthy(css.includes('.nr-builder-zoom,\n.nr-home-level {\n    display: none !important;'),'the +/- rail and house-level text stay hidden');
     assert.truthy(css.includes('endless-meadow-tile-v2.jpg')&&css.includes('background-repeat:repeat'),'space inside and beyond the fence must use the same endless grass texture');
     assert.truthy(ui.includes("plane.className='nr-world-plane'")&&ui.includes('plane.appendChild(map)'),'the meadow and estate must stay inside one real camera plane while zooming and panning');
     assert.truthy(ui.includes('setBuilderZoom(builderZoom)'),'persisted zoom must be re-clamped on open and rotation');
@@ -373,7 +374,7 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes("querySelectorAll('.nr-build-grid-cell.drag-over')"));
   });
   test('phone shop opens as an unobscured top sheet',()=>{
-    for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right','.nr-builder.shop-open .nr-builder-zoom'])assert.truthy(css.includes(token),token);
+    for(const token of ['top:calc(150px + env(safe-area-inset-top))','max-height:min(55dvh,460px)','transform-origin:top right'])assert.truthy(css.includes(token),token);
     assert.truthy(css.includes('.nr-builder-shop-fab{z-index:50}'));
   });
   test('production timers hide behind the art until the building is tapped',()=>{
@@ -449,6 +450,19 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('target.attackerSoldiers'));
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
+  });
+  test('scout and battle are one meadow scene, never a square picture on another background',()=>{
+    const art=read('js/night-raid-art.js');
+    assert.truthy(art.includes('function battleBoardCutout(source)'),'the studio backdrop is removed at decode time');
+    assert.truthy(art.includes('const outside=new Uint8Array(total),queue=new Int32Array(total)'),'only edge-connected backdrop pixels are removed');
+    assert.truthy(game.includes("key==='board'&&NightRaidArt.battleBoardCutout"),'Canvas preview uses the transparent island');
+    assert.truthy(phaser.includes('this.assetCanvases.board=NightRaidArt.battleBoardCutout'),'Phaser reuses that exact island');
+    assert.truthy(phaser.includes('transparent:true'),'the Phaser surface reveals the shared meadow');
+    assert.falsy(phaser.includes("backgroundColor:'#dcefc8'"),'a second square background must not return');
+    assert.falsy(phaser.includes('scene.add.rectangle(400,400,800,800,0x172044'),'a full-canvas tint would reveal the square edge');
+    assert.falsy(game.includes("ctx.fillStyle='#dff2c9';ctx.fillRect(0,0,S,S)"),'Canvas fallback must not paint a second board');
+    for(const rule of ['.nr-scout-map{background:transparent}', '.nr-phaser-battle{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:transparent'])assert.truthy(css.includes(rule),rule);
+    assert.truthy(css.includes("background-image: url('../img/night-raid/endless-meadow-tile-v2.jpg')"),'the world owns the only ground layer');
   });
   test('Phaser units walk and attack with real animation frames, planted footprints and battle audio',()=>{
     // Production atlases now supply distinct paw/leg, weapon, hit and fallen
@@ -616,14 +630,14 @@ suite('night raid: only one combat loop',()=>{
   });
 });
 
-suite('night raid: the fight is framed, the board keeps its shape, the feet do not slide',()=>{
+suite('night raid: the fight fills the viewport, the board keeps its shape, the feet do not slide',()=>{
   const phaserSrc=read('js/night-raid-phaser.js'),choreo=read('js/night-raid-choreo.js');
-  test('TIẾN QUÂN fits the whole 800-board to the screen and the Phaser camera frames the fight inside it',()=>{
-    // Scout opens fitted (not at the home zoom, which showed a third of the
-    // board with the castle cut off), TIẾN QUÂN re-fits, and the world
-    // camera centres on the enemy field rather than on the child's own keep.
+  test('TIẾN QUÂN covers the screen and the Phaser camera frames the fight inside it',()=>{
+    // Scout opens as an immersive cover stage; the child pans the off-screen
+    // portion instead of watching a small fitted square in the middle.
     assert.truthy(ui.includes('function scoutFitZoom(base)'));
-    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'scout opens at the fit zoom');
+    assert.truthy(ui.includes('Math.max(w,h)*1.02/Math.max(1,base)'),'the square board covers portrait and landscape viewports');
+    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'scout opens at the immersive zoom');
     assert.truthy(ui.includes('function frameBattleWorld()'));
     const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.truthy(raidBlock.includes('frameBattleWorld();'),'the tap re-frames the board before Phaser loads');
