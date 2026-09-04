@@ -1,6 +1,6 @@
 // Night Raid, screen by screen: mount the REAL js/night-raid.js against a DOM
-// and behave like a child — open the raid, tap CƯỚP ĐÊM, tap TIẾN QUÂN, open
-// XÂY NHÀ / NHẬT KÝ, harvest.
+// and behave like a child — open straight into XÂY NHÀ, tap ĐI CƯỚP, tap
+// TIẾN QUÂN, open NHẬT KÝ, harvest.
 //
 // The bug this suite exists for: the scout screen's map carries
 // `nr-scout-map`, but the camera's ensureWorldPlane only looked for
@@ -114,7 +114,7 @@ function liveWorld(overrides) {
   const target = Object.assign(Rules.trainingTarget(3),
     { targetId: 42, name: 'Nhà Bin', homeLevel: 3, difficulty: 'vừa sức' });
   const api = (p) => {
-    if (p === 'night-raid/friends') return Promise.resolve({ ok: true, data: { me: null, friends: [], ticketsLeft: 3 } });
+    if (p === 'night-raid/friends') return Promise.resolve({ ok: true, data: { me: null, friends: [target], ticketsLeft: 3 } });
     if (p === 'night-raid/targets') return Promise.resolve({ ok: true, data: { targets: [target], ticketsLeft: 3 } });
     return Promise.resolve({ ok: false, data: null });
   };
@@ -129,24 +129,23 @@ async function enterScout(w) {
 }
 
 suite('night raid screens: every sub-menu opens and its primary action is armed', () => {
-  test('the home stage renders exactly four sub-menu fabs, and CƯỚP ĐÊM opens the houses', () => {
+  test('Night Raid opens on the builder with exactly three navigation menus', () => {
     const { ctx, doc } = mount();
     ctx.NightRaid.open();
     const screen = doc.getElementById('nightRaidScreen');
     const html = screen.innerHTML;
-    const fabs = screen.querySelectorAll('.nr-home-fab');
-    assert.equal(fabs.length, 4, 'four fabs: NHÀ THẬT was folded into CƯỚP ĐÊM');
-    for (const label of ['CƯỚP ĐÊM', 'XÂY NHÀ', 'NHẬT KÝ', 'VŨ KHÍ']) {
-      assert.truthy(html.includes(label), 'home is missing the ' + label + ' fab');
+    const buttons = screen.querySelectorAll('.nr-builder-nav-btn');
+    assert.equal(buttons.length, 3, 'builder navigation has Đi cướp, Nhật ký and Vũ khí');
+    for (const label of ['ĐI CƯỚP', 'NHẬT KÝ', 'VŨ KHÍ']) {
+      assert.truthy(html.includes(label), 'builder is missing the ' + label + ' menu');
     }
-    // The child is already standing in their real house, so a fab called
-    // "NHÀ THẬT" named nothing — and it was the only road to the list of
-    // houses while CƯỚP ĐÊM dropped the child straight into a bot fight.
+    assert.truthy(html.includes('nr-build-grid-cell'), 'the editable build grid is the landing screen');
+    assert.falsy(html.includes('>XÂY NHÀ<'), 'there is no redundant link to the screen already open');
     assert.falsy(html.includes('NHÀ THẬT'), 'NHÀ THẬT must be gone');
     assert.falsy(html.includes('nrScoutBot()'), 'and the home stage no longer shortcuts to a bot');
-    assert.equal(fabs.find(f => f.classList.contains('raid')).getAttribute('onclick'),
-      'nrShowLiveTargets()', 'CƯỚP ĐÊM must open the list of houses');
-    for (const fn of ['nrShowLiveTargets()', 'nrShowBuilder()', 'nrShowReports()', 'nrOpenArmory()']) {
+    assert.equal(buttons.find(f => f.classList.contains('raid')).getAttribute('onclick'),
+      'nrShowLiveTargets()', 'ĐI CƯỚP must open the list of houses');
+    for (const fn of ['nrShowLiveTargets()', 'nrShowReports()', 'nrOpenArmory()']) {
       assert.truthy(html.includes(fn), 'fab not wired to ' + fn);
     }
     assert.falsy(html.includes('nr-fab-badge'), 'no gift waiting → no badge');
@@ -307,7 +306,7 @@ function onlineWorld(confirmAnswer) {
   const asked = [];
   // EngAuth.api is called with the full 'night-raid/<path>' route.
   const api = (route) => {
-    if (/\/targets$/.test(route)) return Promise.resolve({ ok: true, data: { targets: [LIVE_TARGET], ticketsLeft: 3 } });
+    if (/\/friends$/.test(route)) return Promise.resolve({ ok: true, data: { me: null, friends: [LIVE_TARGET], ticketsLeft: 3 } });
     if (/\/start$/.test(route)) return Promise.resolve({ ok: true, data: { raid: Object.assign({ raidId: 'a'.repeat(32) }, LIVE_TARGET) } });
     return Promise.resolve({ ok: false, data: null });
   };
@@ -417,8 +416,8 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     w.asked.length = 0;
     w.ctx.NightRaid.quit(); await settle();
     assert.equal(w.asked.length, 0, 'a scored raid has nothing left to ask about');
-    assert.truthy(w.doc.getElementById('nightRaidScreen').innerHTML.includes('Nhà người chơi')
-      || w.doc.getElementById('nightRaidScreen').innerHTML.includes('Chọn một lâu đài'),
+    assert.truthy(w.doc.getElementById('nightRaidScreen').innerHTML.includes('nr-friend-list')
+      || w.doc.getElementById('nightRaidScreen').innerHTML.includes('Chưa có bạn nào có lâu đài'),
       'it must return to the list of real houses');
   });
 
@@ -504,7 +503,7 @@ suite('night raid: a lost /finish is retried on the next open', () => {
     // and /start is (correctly) skipped.
     const house = Object.assign({}, LIVE_TARGET, { raidId: undefined });
     const api = (route) => {
-      if (/\/targets$/.test(route)) return Promise.resolve({ ok: true, data: { targets: [house], ticketsLeft: 3 } });
+      if (/\/friends$/.test(route)) return Promise.resolve({ ok: true, data: { me: null, friends: [house], ticketsLeft: 3 } });
       if (/\/start$/.test(route)) return Promise.resolve({ ok: true, data: { raid: Object.assign({}, LIVE_TARGET, { raidId: 'c'.repeat(32) }) } });
       return Promise.resolve({ ok: false, data: null });
     };

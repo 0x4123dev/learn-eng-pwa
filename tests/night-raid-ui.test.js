@@ -43,13 +43,14 @@ suite('night raid: app integration',()=>{
     // The child must never meet a castle that silently refuses to be attacked:
     // wherever a sealed home appears, the same chip says when to come back.
     for(const token of ['nr-lock-chip','data-nr-lock-until','data-nr-lock-time'])assert.truthy(ui.includes(token),token);
-    assert.truthy(ui.includes('function lockChip('),'one chip renderer, three screens');
+    assert.truthy(ui.includes('function lockChip('),'one shared countdown-chip renderer');
     assert.truthy(ui.includes('updateLockTimers()'),'the chips tick on the existing one-second beat');
     assert.truthy(ui.includes("lockChip(homeLockedUntil"),'my own home shows how long it stays protected');
-    // The card's clock is now the CHILD's retry window (`retryAt`), not the
-    // house's 24 h seal: a list may not tell a child that a house was already
-    // robbed. Same chip, same ticker, a number about the child instead.
-    assert.truthy(ui.includes("lockChip(retryAt,"),'each target card carries its own clock');
+    // Friend rows use their own text timer; the removed random-house cards
+    // must not bring their lock chips back.
+    assert.truthy(ui.includes('data-nr-friend-until'),'friend rows carry the child\'s own retry clock');
+    const liveList=ui.slice(ui.indexOf('async function showLiveTargets'),ui.indexOf('function scoutLive'));
+    assert.falsy(liveList.includes("lockChip(retryAt,"),'random-house cards stay removed');
     assert.truthy(ui.includes("lockChip(target.lockedUntil"),'the scout screen replaces TIẾN QUÂN with the clock');
     assert.truthy(ui.includes("id=\"nrStartRaid\" ${locked?'disabled hidden':''}"),'a sealed castle cannot be charged');
     // A server-side seal is reported, not swallowed — but through the shape the
@@ -396,25 +397,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-builder:not(.editing):not(.nr-home-stage) .nr-build-grid-cell'));
     assert.truthy(css.includes('.nr-builder.editing .nr-build-grid-cell>i'),'grid markers show only while editing');
   });
-  test('the home screen is the same island stage as the builder',()=>{
-    // Full-screen board with the equipped castle and placed buildings as the
-    // background, the builder's DAM/DEF/LINH/coin chips, and the actions as
-    // SHOP-style fabs floating on top. Read-only: nothing drags here.
+  test('the old home entry point redirects to the editable builder',()=>{
+    // There is only one Night Raid home now: the builder. Keeping the legacy
+    // function as an alias prevents old callers from reviving the overlapping
+    // four-button read-only screen.
     const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// Scouting IS the battlefield'));
-    assert.truthy(home.includes('nr-home-stage'));
-    assert.truthy(home.includes('nr-builder-world'),'home reuses the pannable island world');
-    assert.truthy(home.includes('nr-builder-hud'),'home shows the builder power chips');
-    // Four fabs. NHÀ THẬT was folded into CƯỚP ĐÊM — the child is already
-    // standing in their real house — so CƯỚP ĐÊM opens the list of houses and
-    // the bot lives on the button at the foot of that list, not up here.
-    for(const fab of ['nrShowLiveTargets()','nrShowBuilder()','nrShowReports()'])assert.truthy(home.includes(fab),fab);
-    assert.falsy(home.includes('nrScoutBot()'),'the home stage no longer shortcuts to a bot');
-    // That the NHÀ THẬT fab itself is gone is asserted against the RENDERED
-    // html in tests/night-raid-screens.test.js — a grep of the source cannot
-    // tell the markup from the comment that explains why it left.
-    assert.truthy(css.includes('.nr-home-fab'),'fabs share the SHOP button look');
-    assert.falsy(home.includes('nrBeginPlacedDrag'),'home buildings must not drag');
-    assert.truthy(css.includes('.nr-home-stage .nr-placed{pointer-events:none}'),'panning must work over buildings');
+    assert.truthy(home.includes('return renderBuilder()'));
+    assert.falsy(home.includes('nr-home-stage'));
+    assert.falsy(home.includes('nr-home-fabs'));
   });
   test('the builder offers a landscape rotate that never breaks panning',()=>{
     // iOS cannot lock orientation from a web app, so NGANG rotates the whole
@@ -528,7 +518,7 @@ suite('night raid: app integration',()=>{
     assert.falsy(scoutBlock.includes('NHÀ ĐỊCH'),'scout screen must not name the enemy stat');
     assert.falsy(scoutBlock.includes('target.defense'),'scout screen must not read the enemy DEF');
     assert.truthy(scoutBlock.includes('nr-scout-secret'));
-    assert.truthy(ui.includes('Nhà cấp ${t.homeLevel} · ${esc(t.difficulty)}'),'target list shows difficulty, not DEF');
+    assert.truthy(ui.includes("Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}"),'friend list shows difficulty, not DEF');
     const targetsApi=read('functions/api/night-raid/targets.js');
     assert.falsy(/defense:full\.defense/.test(targetsApi),'targets payload must not carry the exact DEF');
     const battleBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));

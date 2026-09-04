@@ -129,6 +129,11 @@ suite('builder farm: shop tabs and buying', () => {
     w.ctx.NightRaid.selectShopTab('seeds');
     assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · +120 xu'), 'seed card copy');
     assert.truthy(html(w).includes("nrSelectBuild('pumpkin')"));
+    for (const crop of Farm.CROPS) {
+      const art = `img/farm/${crop.id}-day${crop.days}.webp`;
+      assert.truthy(html(w).includes(`src="${art}"`), crop.id + ' uses its mature crop art');
+      assert.truthy(fs.existsSync(path.join(root, art)), crop.id + ' shop art exists on disk');
+    }
     w.ctx.NightRaid.selectShopTab('farm');
     assert.truthy(html(w).includes('Cối xay gió') && html(w).includes('8000 xu'));
     w.ctx.NightRaid.selectShopTab('defense');

@@ -52,7 +52,7 @@ function mount(opts) {
       return true;
     },
     setBottomNavActive: s => calls.push(['nav', s]),
-    NightRaid: { renderHome: () => calls.push(['nrRenderHome']) },
+    NightRaid: { renderBuilder: () => calls.push(['nrRenderBuilder']) },
     EngAuth: {
       tokenFor: () => (opts.token === undefined ? 'tok' : opts.token),
       api: async (p, o) => { calls.push(['api', p, (o && o.method) || 'GET', o && o.body]); return opts.api ? opts.api(p, o) : { ok: false, data: null }; },
@@ -201,13 +201,13 @@ suite('armory client: opening and closing', () => {
     Armory.close();
     assert.truthy(doc.getElementById('dailyTaskScreen').classList.contains('active'));
     assert.truthy(html('dailyTaskScreen').includes('Nhiệm vụ hôm nay'), 'the task screen is repainted');
-    // From the Night Raid home — its HUD shows DAM, which the swords change.
+    // From the Night Raid builder — its HUD shows DAM, which the swords change.
     calls.length = 0;
     doc.getElementById('nightRaidScreen').classList.add('active');
     for (const s of doc.querySelectorAll('.screen')) if (s.id !== 'nightRaidScreen') s.classList.remove('active');
     Armory.open(); Armory.close();
     assert.truthy(doc.getElementById('nightRaidScreen').classList.contains('active'));
-    assert.truthy(calls.some(c => c[0] === 'nrRenderHome'), 'Night Raid home re-rendered with the new DAM');
+    assert.truthy(calls.some(c => c[0] === 'nrRenderBuilder'), 'Night Raid builder re-rendered with the new DAM');
   });
 });
 

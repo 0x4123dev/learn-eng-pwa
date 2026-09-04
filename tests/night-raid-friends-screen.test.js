@@ -1,5 +1,5 @@
 // CƯỚP ĐÊM as a child sees it: mount the REAL js/night-raid.js against a DOM,
-// answer night-raid/friends and night-raid/targets from a scripted server, and
+// answer night-raid/friends from a scripted server, and
 // read the screen.
 //
 // The rule this suite exists to enforce: A ROW REVEALS NOTHING ABOUT THE STATE
@@ -223,11 +223,7 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     });
     const names = rows(w).map(r => r.querySelector('strong').textContent);
     assert.deepEqual(names, ['Mở', 'Chờ ít', 'Chờ lâu']);
-    // The random target card follows the friends in the shared index space.
-    const card = w.screen().querySelector('.nr-target-card');
-    assert.equal(card.getAttribute('onclick'), 'nrScoutLive(3)');
-    w.ctx.NightRaid.scoutLive(3); await settle();
-    assert.equal(w.battles[w.battles.length - 1].target.targetId, RANDOM_TARGET.targetId, 'index 3 is the random house');
+    assert.falsy(w.screen().innerHTML.includes('nr-target-card'), 'the removed random-house block stays absent');
   });
 
   test('an older server that still says availableAt is read the same way', async () => {
@@ -245,23 +241,15 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assertNoLeaks(w, 'an old-shaped payload');
   });
 
-  test('a random castle carries the same two states and no shield halo', async () => {
-    const now = Date.now();
+  test('the removed random-house response never renders a card or its info block', async () => {
     const w = await openLive({
       friends: friendsReply([]),
-      targets: { ok: true, data: { targets: [
-        Object.assign({}, RANDOM_TARGET, { targetId: 91, name: 'Mở', retryAt: 0, shieldClue: true }),
-        Object.assign({}, RANDOM_TARGET, { targetId: 92, name: 'Chờ', retryAt: now + 3 * H }),
-      ], ticketsLeft: 2 } },
+      targets: targetsReply,
     });
-    const cards = w.screen().querySelectorAll('.nr-target-card');
-    assert.equal(cards.length, 2);
-    assert.falsy(cards[0].disabled, 'the open castle is tappable');
-    assert.falsy(cards[0].innerHTML.includes('shield-clue'), 'the shield halo is gone');
-    assert.truthy(cards[1].disabled, 'the one on the child\'s clock is not');
-    assert.truthy(cards[1].classList.contains('locked'));
-    assert.truthy(cards[1].innerHTML.includes('CHỜ THÊM'), 'and says only that the child waits');
-    assertNoLeaks(w, 'a random castle');
+    const html = w.screen().innerHTML;
+    assert.falsy(html.includes('Nhà ngẫu nhiên'));
+    assert.falsy(html.includes('Nhà người chơi cân bằng với con'));
+    assert.falsy(html.includes('nr-target-card'));
   });
 
   test('the child sees their OWN home status on top — protected…', async () => {
@@ -295,15 +283,15 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assert.truthy(html.includes('có thể bị cướp'));
   });
 
-  test('no friends yet: a friendly empty state that points at 👥 Bạn bè, plus the random houses', async () => {
+  test('no friends yet: a friendly empty state points at 👥 Bạn bè with no random-house block', async () => {
     const w = await openLive({ friends: friendsReply([]), targets: targetsReply });
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('Chưa có bạn nào có lâu đài'));
     assert.truthy(html.includes('Bạn bè'), 'it names the Friends tab');
     assert.truthy(html.includes('profileScreen'), 'and offers to take the child there');
     assert.falsy(html.includes('nrScoutBot()'), 'a friendless child is not handed a bot instead');
-    assert.truthy(html.includes('Nhà ngẫu nhiên'));
-    assert.truthy(html.includes('nr-target-card'), 'the random houses stay reachable');
+    assert.falsy(html.includes('Nhà ngẫu nhiên'));
+    assert.falsy(html.includes('nr-target-card'));
     assert.equal(rows(w).length, 0);
   });
 
@@ -323,15 +311,14 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     const html = w.screen().innerHTML;
     assert.falsy(html.includes('nrScoutBot()'), 'bot practice is reserved for admin-enabled test accounts');
     assert.falsy(html.includes('Chơi thử với Bot'));
-    assert.truthy(html.includes('nr-target-card'), 'real random houses remain available');
+    assert.falsy(html.includes('nr-target-card'), 'random houses have been removed from this flow');
   });
 
-  test('friends failing but targets answering keeps the random houses', async () => {
+  test('friends failing does not fall back to the removed random houses', async () => {
     const w = await openLive({ targets: targetsReply });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Chưa tải được danh sách bạn bè'));
-    assert.truthy(html.includes('nr-target-card'));
-    assert.equal(w.screen().querySelector('.nr-target-card').getAttribute('onclick'), 'nrScoutLive(0)');
+    assert.truthy(html.includes('Chưa tải được nhà người chơi'));
+    assert.falsy(html.includes('nr-target-card'));
   });
 
   test('the countdown ticks in place and hands the row back as TẤN CÔNG when it runs out', async () => {
@@ -361,20 +348,12 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     } finally { Date.now = realNow; }
   });
 
-  test('a random castle whose clock runs out is handed back too', async () => {
-    const now = Date.now();
-    const realNow = Date.now;
+  test('random castles remain absent even if their old endpoint answers', async () => {
     const w = await openLive({
       friends: friendsReply([]),
-      targets: { ok: true, data: { targets: [Object.assign({}, RANDOM_TARGET, { retryAt: now + M })], ticketsLeft: 2 } },
+      targets: targetsReply,
     });
-    try {
-      Date.now = () => now + 2 * M;
-      w.timers[w.timers.length - 1]();
-      const card = w.screen().querySelector('.nr-target-card');
-      assert.falsy(card.disabled, 'a card left greyed out until the screen reopens is a dead end');
-      assert.falsy(card.classList.contains('locked'));
-    } finally { Date.now = realNow; }
+    assert.equal(w.screen().querySelectorAll('.nr-target-card').length, 0);
   });
 
   test('the markup keeps every tap target a real button and no house secret', async () => {

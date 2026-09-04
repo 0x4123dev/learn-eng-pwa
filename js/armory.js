@@ -235,11 +235,11 @@ var Armory = (function () {
   function close() {
     const to = returnTo || 'homeScreen';
     if (typeof switchScreen === 'function' && switchScreen(to) === false) return;
-    // Repaint the screen we return to with the new stock: the Night Raid home
+    // Repaint the screen we return to with the new stock: the Night Raid builder
     // shows DAM (swords count there), the task screen its collection strip.
     // switchScreen('homeScreen') already calls renderHome(), which repaints the card.
-    if (to === 'nightRaidScreen' && typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.renderHome === 'function') {
-      try { NightRaid.renderHome(); } catch (e) {}
+    if (to === 'nightRaidScreen' && typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.renderBuilder === 'function') {
+      try { NightRaid.renderBuilder(); } catch (e) {}
     } else if (to === 'dailyTaskScreen' && typeof DailyTask !== 'undefined' && DailyTask && typeof DailyTask.renderScreen === 'function') {
       try { DailyTask.renderScreen(); } catch (e) {}
     }
