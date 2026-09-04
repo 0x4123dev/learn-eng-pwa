@@ -91,6 +91,20 @@ var NightRaid = (() => {
       + 'KHÔNG vào lại được nữa, và cũng KHÔNG nhận được xu nào.\n\nVẫn bỏ?');
   }
 
+  // Everything this module holds for ONE child. The profile switcher calls it:
+  // two children share one iPad, and a raid, a builder zone or a cached list of
+  // houses left over from the first child must not greet the second one.
+  // Silent by design — unlike close(), it asks nothing and navigates nowhere,
+  // because the caller is already on its way to the profile picker.
+  function forgetProfile(){
+    raidStage=null;
+    cleanup();
+    view='home';builderZone=0;builderShopTab='defense';builderEditing=false;builderShopOpen=false;
+    builderScroll=null;builderScrollByView={home:null,builder:null,scout:null};
+    lastHarvest=[];liveTargets=[];pendingBuildPurchase=null;
+    homeLockedUntil=0;homeShieldUntil=0;homeRead=null;_seedSignature=null;
+    const r=root();if(r)r.innerHTML='';
+  }
   function cleanup(){if(game){game.destroy();game=null;}if(previewGame){previewGame.destroy();previewGame=null;}destroyRuins();if(productionTicker){clearInterval(productionTicker);productionTicker=null;}if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}petPatrolRoot=null;}
   if(typeof document!=='undefined')document.addEventListener('visibilitychange',()=>{if(document.hidden){if(petPatrolTimer){clearInterval(petPatrolTimer);petPatrolTimer=null;}if(armyParadeTimer){clearInterval(armyParadeTimer);armyParadeTimer=null;}}else if(view==='home'||view==='builder'){const map=document.querySelector('.screen.active .nr-builder-map');startPetPatrol(map);startArmyParade(map);}});
   // Swords ride on appState.dailyTask (filled by js/daily-task.js from the
@@ -1304,7 +1318,7 @@ var NightRaid = (() => {
 
   function replayReport(index){setNav(true);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':(report.result.shielded?'Khiên Đêm đã chặn đứng đội cướp.':'Phòng thủ đã chặn được toàn bộ đội cướp.')}</p></div></div><section class="nr-replay-stage"><canvas id="nrReplayCanvas" width="1000" height="560" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if((report.rulesVersion||1)>=2){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.playReplay(report.commands||[],2);}}
 
-  return Object.freeze({mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,isRaiding,abandonRaid,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,selectShopTab,selectZone,buyFarmPlot,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,replant,goLearn,showReports,replayReport,cleanYardPoop});
+  return Object.freeze({forgetProfile,mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,isRaiding,abandonRaid,showLiveTargets,scoutLive,startRaid,chargeArmy,quit,renderBuilder,selectBuild,selectShopTab,selectZone,buyFarmPlot,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,replant,goLearn,showReports,replayReport,cleanYardPoop});
 })();
 
 function openNightRaid(){NightRaid.open();}

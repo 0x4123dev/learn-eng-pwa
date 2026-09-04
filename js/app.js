@@ -850,6 +850,11 @@ function loginUser(username) {
         return;
     }
 
+    // A profile is entered from several roads, not only through switchUser().
+    // Clear whatever the previous child left in a module before this one's
+    // appState is installed, so nothing of theirs can be rendered as ours.
+    if (currentUser && currentUser !== username) forgetProfileState();
+
     currentUser = username;
     appState = userData;
     rememberActiveUser(username);
@@ -1084,11 +1089,27 @@ function loginUser(username) {
     }, 250);
 }
 
+// Per-child state that lives in a module rather than in appState. Modules opt
+// in by exposing a silent teardown; anything without one simply is not asked.
+function forgetProfileState() {
+    if (typeof pbForgetProfile === 'function') { try { pbForgetProfile(); } catch (e) {} }
+    if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.forgetProfile === 'function') {
+        try { NightRaid.forgetProfile(); } catch (e) {}
+    }
+}
+
 function switchUser() {
     // Save current user data
     if (currentUser && appState) {
         saveUserData(currentUser, appState);
     }
+
+    // Hand nothing of this child to the next one. Two children share one iPad
+    // and battle each other on it; a live pet battle used to survive the
+    // switch, and startPetBattleGame's "a live game keeps the screen" guard
+    // then showed the SECOND child the first child's battle — their pet, their
+    // castle — with the relay still animating turns nobody was controlling.
+    forgetProfileState();
 
     // Reset and show onboarding
     currentUser = null;

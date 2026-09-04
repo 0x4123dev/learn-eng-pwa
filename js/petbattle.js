@@ -373,6 +373,30 @@ function openPetBattle() {
   refreshPetBattle();
   _pbStartPolling();
 }
+// Everything this module holds for ONE child. The profile switcher calls this,
+// because a live battle must not survive into the next account: two children
+// share one iPad, and startPetBattleGame's "a live game keeps the screen" guard
+// then hands the second child the FIRST child's battle — their pet, their
+// castle, and a relay that keeps animating turns with nobody at the controls.
+// Unlike closePetBattle() this navigates nowhere: the caller is already on its
+// way to the profile picker.
+function pbForgetProfile() {
+  _pbShowingResult = false;
+  try { pbCloseDogInfo(); } catch (e) {}
+  try { _pbUnmountArenaYard(); } catch (e) {}
+  _pbStopPolling();
+  _pbCloseLink();
+  if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
+  _pbGame = null;
+  _pbState = null;
+  _pbMsg = '';
+  _pbLastTurn = 0;
+  _pbHires = [];
+  _pbHistoryOpen = -1;
+  const screen = typeof document !== 'undefined' ? document.getElementById('petBattleScreen') : null;
+  if (screen) { screen.innerHTML = ''; delete screen.dataset.pbLobbySig; }
+}
+
 function closePetBattle() {
   _pbShowingResult = false;
   pbCloseDogInfo();
@@ -1344,7 +1368,7 @@ function finishPetBattle(result) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    openPetBattle, closePetBattle, refreshPetBattle, renderPetBattle,
+    openPetBattle, closePetBattle, pbForgetProfile, refreshPetBattle, renderPetBattle,
     challengePetFriend, acceptPetBattle, declinePetBattle, finishPetBattle,
     pbEsc, pbFmtCountdown, pbFmtDate, pbHistorySummary, togglePbHistory,
     pbT, pbSetLang, PB_STR, _pbGetLang: () => _pbLang,
