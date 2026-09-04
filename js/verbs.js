@@ -501,6 +501,43 @@ function exitSpeedGame() {
     document.getElementById('bottomNav').style.display = 'flex';
 }
 
+// SILENT teardown for a profile change. exitSpeedGame() is the ✕ and it ASKS
+// first, which is right for a child abandoning their own run and wrong here —
+// the child has already left, and a confirm() on the way to the profile picker
+// would be answered by whoever picks the iPad up next.
+//
+// What actually follows the child: the 100ms question clock (it counts down
+// against appState, which by then is the new child's), `isAnswering`, which
+// makes the app-wide Enter listener submit a verb from whatever tab B opens,
+// and the run itself — ten verbs, a score and a streak that would be banked
+// into B's profile by finishSpeedChallenge.
+function verbsForgetProfile() {
+    if (typeof speedState === 'undefined' || !speedState) return;
+    if (speedState.timer && typeof clearInterval === 'function') clearInterval(speedState.timer);
+    speedState.timer = null;
+    speedState.isAnswering = false;
+    speedState.currentVerbs = [];
+    speedState.currentIndex = 0;
+    speedState.score = 0;
+    speedState.streak = 0;
+    speedState.bestStreakInGame = 0;
+    speedState.correctCount = 0;
+    speedState.verbResults = [];
+    speedState.level = 0;
+    // timeLeft is deliberately left alone: showSpeedQuestion() sets it on every
+    // question, and reaching for SPEED_TIME_LIMIT (a const in js/app.js) would
+    // make this teardown throw wherever that file is not loaded.
+    if (typeof document === 'undefined') return;
+    // Both overlays are full-screen and neither is a `.screen`, so switchUser's
+    // "deactivate every screen" sweep does not reach them.
+    ['speedGameOverlay', 'speedCompleteOverlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.classList) el.classList.remove('active');
+    });
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = '';
+}
+
 // Is the speed game actually on screen? js/verbs.js is loaded on every tab, so
 // the keydown listener below fires everywhere; the overlay is the one thing
 // that is true only while a verb question is really in front of the child.

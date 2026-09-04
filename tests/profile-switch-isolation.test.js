@@ -72,6 +72,9 @@ function loadModule(file, extra, peek) {
     localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
     appState: null, currentUser: null,
     saveUserData() {}, showToast() {}, switchScreen() {}, renderHome() {}, createConfetti() {},
+    addEventListener() {}, removeEventListener() {}, ResizeObserver: function () {
+      return { observe() {}, disconnect() {} };
+    },
     module: { exports: {} },
   }, extra || {});
   sandbox.window = sandbox;
@@ -369,6 +372,249 @@ suite('profile switch: the friends list must not be painted for the wrong child'
     assert.truthy(pb.includes('_friendsData'),
       'js/petbattle.js builds its "challenge a friend" list from _friendsData — '
       + 'if that ever stops being true, this teardown covers one road fewer');
+  });
+});
+
+// ---- ⏱️ everything with a clock of its own ---------------------------------
+// A timer that outlives the switch does not merely paint the wrong thing: it
+// keeps counting against whatever appState is current, which by then is the
+// NEXT child's. These four are checked for the same three properties — the
+// clock stops, the state goes, and the bottom bar comes back.
+
+suite('profile switch: Đấu Toán stops polling as the child who left', () => {
+  function mf() {
+    const cleared = [];
+    const s = loadModule('js/math-fight.js', {
+      setInterval: () => Math.floor(Math.random() * 1e6) + 1,
+      clearInterval: id => cleared.push(id),
+      MathFightRules: {}, EngAuth: { tokenFor: () => 'tok', api: () => Promise.resolve({ ok: true, data: {} }) },
+    });
+    s.__cleared = cleared;
+    return s;
+  }
+
+  test('all four intervals are stopped and the duel is dropped', () => {
+    const s = mf();
+    s.currentUser = 'AccountA';
+    s.appState = { coins: 900 };
+    s.MathFight.open();                                  // ticker + poll
+    const st = s.MathFight.__st();
+    st.pulse = 4242; st.wait = 4243;                     // as a live bout would set them
+    st.fight = { fightId: 7, status: 'active' };
+    st.data = { friends: [{ userId: 11, username: 'BanCuaA' }] };
+    st.qs = [{ a: 1 }]; st.answers = [3]; st.idx = 1; st.busy = true; st.moved = 200;
+
+    s.MathFight.forgetProfile();
+
+    for (const key of ['ticker', 'poll', 'pulse', 'wait']) {
+      assert.equal(st[key], null, key + ' must be stopped — it re-authenticates as the NEW child');
+    }
+    assert.truthy(s.__cleared.includes(4242) && s.__cleared.includes(4243),
+      'and actually cleared, not merely forgotten');
+    assert.equal(st.fight, null, 'the duel goes');
+    assert.equal(st.data, null, 'and so does the friends-and-coins payload the server sent A');
+    assert.deepEqual(st.qs, []);
+    assert.equal(st.idx, 0);
+    assert.falsy(st.busy, 'a latched busy flag would wedge the next child\'s first tap');
+    assert.equal(st.moved, 0, 'A\'s coin move must not be reported to B');
+    assert.equal(s.document.getElementById('mfRoot').innerHTML, '');
+  });
+
+  test('the bottom bar comes back — a hidden nav with no fight is a trap', () => {
+    const s = mf();
+    s.currentUser = 'AccountA';
+    s.appState = { coins: 900 };
+    s.document.getElementById('bottomNav').style.display = 'none';   // as a live bout leaves it
+    s.MathFight.forgetProfile();
+    assert.equal(s.document.getElementById('bottomNav').style.display, '');
+  });
+
+  test('it is silent: no question, no navigation', () => {
+    const src = read('js/math-fight.js');
+    const fn = src.slice(src.indexOf('function forgetProfile()'), src.indexOf('function stopTimers()'));
+    assert.truthy(fn.includes('leave()'), 'it must reuse leave(), not re-implement the four-timer clear');
+    assert.falsy(fn.includes('confirm('), 'quit() asks; this must not — the child has already gone');
+    assert.falsy(fn.includes('switchScreen'), 'the caller is on its way to the picker');
+  });
+});
+
+suite('profile switch: a timed exam does not keep ticking under the next child', () => {
+  test('examForgetProfile reuses abandonExam, so the clock really stops', () => {
+    const cleared = [];
+    const s = loadModule('js/exam.js', { clearInterval: id => cleared.push(id) },
+      '\n;globalThis.__peekExam = () => _examState;'
+      + '\n;globalThis.__setExam = (v) => { _examState = v; };');
+    s.__setExam({ examId: 'exam1', idx: 4, answers: [1, 2], deadlineTs: Date.now() + 60000, timerId: 99, finished: false });
+    assert.truthy(s.isExamActive(), 'A is mid-paper');
+
+    s.examForgetProfile();
+    assert.equal(s.__peekExam(), null, 'the paper goes');
+    assert.deepEqual(cleared, [99], 'and its clock is cleared, not just dropped');
+    assert.falsy(s.isExamActive(),
+      'switchScreen asks "You are in the middle of a timed exam" off isExamActive() — '
+      + 'B was getting that on every tab tap');
+    assert.equal(s.document.getElementById('bottomNav').style.display, '',
+      'examLockScreen(false): the paper hid the bar, something must put it back');
+  });
+
+  test('it is silent, and it does not re-implement abandonExam', () => {
+    const src = read('js/exam.js');
+    const fn = src.slice(src.indexOf('function examForgetProfile()'),
+      src.indexOf('function examForgetProfile()') + 300);
+    assert.truthy(fn.includes('abandonExam()'));
+    assert.falsy(fn.includes('confirm('));
+    assert.falsy(fn.includes('switchScreen'));
+  });
+});
+
+suite('profile switch: a Math Wars round does not survive the switch', () => {
+  test('warsForgetProfile reuses abandonWars: clock stopped, round dropped, bar back', () => {
+    const cleared = [];
+    const s = loadModule('js/mathwars.js', { clearInterval: id => cleared.push(id) },
+      '\n;globalThis.__peekWars = () => _warsQuiz;'
+      + '\n;globalThis.__setWars = (v) => { _warsQuiz = v; };'
+      + '\n;globalThis.__setWarsView = (v) => { _warsView = v; };'
+      + '\n;globalThis.__peekWarsView = () => _warsView;');
+    s.appState = { warsProgress: { level: 3, streak: 2 } };
+    s.__setWars({ questions: [1, 2], idx: 1, answers: [0], endsAt: Date.now() + 9000, timer: 77 });
+    s.__setWarsView('history');
+    s.document.getElementById('bottomNav').style.display = 'none';
+
+    s.warsForgetProfile();
+    assert.equal(s.__peekWars(), null);
+    assert.deepEqual(cleared, [77], 'the 250ms clock must be cleared');
+    assert.falsy(s.isWarsActive());
+    assert.equal(s.__peekWarsView(), 'practice');
+    assert.equal(s.document.getElementById('bottomNav').style.display, '');
+  });
+
+  test('it is silent', () => {
+    const src = read('js/mathwars.js');
+    const fn = src.slice(src.indexOf('function warsForgetProfile()'),
+      src.indexOf('function warsForgetProfile()') + 300);
+    assert.truthy(fn.includes('abandonWars()'));
+    assert.falsy(fn.includes('confirm('), 'warsQuit() asks; this must not');
+  });
+});
+
+suite('profile switch: the verbs speed run does not follow the child', () => {
+  test('the clock stops, the run is dropped, and both overlays are closed', () => {
+    const cleared = [];
+    const s = loadModule('js/verbs.js', {
+      clearInterval: id => cleared.push(id),
+      irregularVerbs: [], shuffleArray: a => a,
+      unlockAchievement() {}, addPoints() {}, EngAuth: { syncNow() {} },
+    });
+    // speedState lives in js/app.js; verbs.js reaches it as a global.
+    s.speedState = {
+      currentVerbs: [{ v1: 'go' }, { v1: 'see' }], currentIndex: 1, score: 40, streak: 3,
+      bestStreakInGame: 3, correctCount: 4, timer: 55, timeLeft: 12000,
+      isAnswering: true, level: 2, verbResults: [{ v1: 'go', correct: true }],
+    };
+    const overlay = s.document.getElementById('speedGameOverlay');
+    overlay.classList.add('active');
+    s.document.getElementById('bottomNav').style.display = 'none';
+
+    s.verbsForgetProfile();
+
+    assert.deepEqual(cleared, [55], 'the 100ms question clock must be cleared');
+    assert.falsy(s.speedState.isAnswering,
+      'a stale isAnswering makes the app-wide Enter listener submit a verb on B\'s next tab');
+    assert.deepEqual(s.speedState.verbResults, [], 'A\'s answers must not be banked into B');
+    assert.equal(s.speedState.score, 0);
+    assert.equal(s.speedState.currentIndex, 0);
+    assert.equal(s.speedState.timeLeft, 12000,
+      'timeLeft is showSpeedQuestion\'s to set — reaching for js/app.js\'s const here would throw');
+    assert.deepEqual(s.speedState.currentVerbs, []);
+    assert.falsy(overlay.classList.contains('active'),
+      'the overlay is not a `.screen`, so switchUser\'s sweep never reaches it');
+    assert.equal(s.document.getElementById('bottomNav').style.display, '');
+  });
+
+  test('it is silent, unlike the ✕ it stands in for', () => {
+    const src = read('js/verbs.js');
+    const fn = src.slice(src.indexOf('function verbsForgetProfile()'),
+      src.indexOf('// Is the speed game actually on screen?'));
+    assert.falsy(fn.includes('confirm('),
+      'exitSpeedGame() asks — and would be answered by whoever picks the iPad up next');
+    assert.falsy(fn.includes('switchScreen'));
+  });
+
+  test('nothing throws when there is no run and no DOM at all', () => {
+    const s = loadModule('js/verbs.js', {
+      irregularVerbs: [], shuffleArray: a => a, unlockAchievement() {}, EngAuth: { syncNow() {} },
+    });
+    s.speedState = null;
+    s.verbsForgetProfile();          // must not throw
+  });
+});
+
+suite('profile switch: Cướp Cô Hồn lets go without re-arming the Arena', () => {
+  const src = read('js/ghost-offering-event.js');
+  const fn = src.slice(src.indexOf('function forgetProfile(){'), src.indexOf('function syncLobbyCard()'));
+
+  test('it stops the countdown, the socket and the animation loop', () => {
+    assert.truthy(fn.includes('clearInterval(timer)'), 'the 1s countdown');
+    assert.truthy(fn.includes('realtimeLink.close()'), 'the socket still holding A\'s grabs');
+    assert.truthy(fn.includes('stopHookGame()'), 'the requestAnimationFrame loop');
+    assert.truthy(fn.includes('stopQaBots()'));
+    assert.truthy(/\bstate=null\b/.test(fn), 'and the event state itself');
+    assert.truthy(/\bactive=false\b/.test(fn), 'isActive() gates switchScreen — it must go false');
+  });
+
+  test('it unlocks petBattleScreen, which pbForgetProfile does not', () => {
+    assert.truthy(fn.includes("classList.remove('go-event-active')"));
+    assert.truthy(fn.includes("removeProperty('overflow')"),
+      'without this B\'s Arena lobby comes back unable to scroll');
+    assert.truthy(fn.includes('delete screen.dataset.pbLobbySig'),
+      'the same end state as pbForgetProfile, so the order of the two cannot matter');
+  });
+
+  test('and it must NOT do what close() does last: re-arm the arena poll', () => {
+    assert.falsy(fn.includes('_pbStartPolling'),
+      'close() ends with _pbStartPolling() — running that here would undo pbForgetProfile()');
+    assert.falsy(fn.includes('refreshPetBattle'), 'and would fetch the arena as the child who left');
+    assert.truthy(src.includes('_pbStartPolling'), 'close() itself still does it — that is why this is separate');
+  });
+
+  test('it is exported on the module object, the way this IIFE exposes things', () => {
+    assert.truthy(/GhostOfferingEvent=\{open,openHumanTest,close,forgetProfile,/.test(src));
+  });
+});
+
+suite('profile switch: the maths scratch pad is wiped between children', () => {
+  test('mathBoardForgetProfile drops the strokes and closes the sheet', () => {
+    let closed = 0;
+    const s = loadModule('js/math-board.js', {},
+      '\n;globalThis.__peekBoard = () => _mathBoardSession;');
+    s.mathBoardSession().boards[0].strokes.push({ pts: [1, 2, 3] });
+    assert.truthy(s.__peekBoard(), 'A has written on the pad');
+
+    s.mathBoardCloseForSession = () => { closed++; };   // the browser-only UI half
+    s.mathBoardForgetProfile();
+    assert.equal(s.__peekBoard(), null, 'B must not open the board on A\'s handwriting');
+    assert.equal(closed, 1, 'and the full-screen sheet must be taken down, not left painted');
+  });
+
+  test('it works with no browser half at all — that function is a window.* assignment', () => {
+    const s = loadModule('js/math-board.js', {}, '\n;globalThis.__peekBoard = () => _mathBoardSession;');
+    s.mathBoardSession();
+    s.mathBoardForgetProfile();               // mathBoardCloseForSession is undefined here
+    assert.equal(s.__peekBoard(), null);
+  });
+
+  test('nothing else was ever going to call it: reset only runs when a quiz ENDS', () => {
+    const math = read('js/math.js');
+    assert.truthy(math.includes('mathBoardReset'), 'js/math.js clears the pad…');
+    const starts = math.split('_mathQuiz = {').length - 1;
+    assert.truthy(starts >= 4, 'sanity: several roads start a maths quiz');
+    // Every mathBoardReset() call in js/math.js sits in an END-of-quiz function.
+    for (const m of math.matchAll(/mathBoardReset/g)) {
+      const before = math.slice(0, m.index);
+      const fnName = (before.match(/function (\w+)\([^)]*\)\s*\{(?![\s\S]*function \w+\()/) || [])[1];
+      assert.truthy(fnName === 'finishMathQuiz' || fnName === 'abandonMathQuiz',
+        'mathBoardReset is only called from a quiz ending, and switchUser() ends no quiz — got ' + fnName);
+    }
   });
 });
 

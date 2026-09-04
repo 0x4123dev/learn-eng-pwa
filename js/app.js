@@ -1100,6 +1100,25 @@ function forgetProfileState() {
     // list the Profile screen paints before its own refresh lands.
     if (typeof cupsForgetProfile === 'function') { try { cupsForgetProfile(); } catch (e) {} }
     if (typeof friendsForgetProfile === 'function') { try { friendsForgetProfile(); } catch (e) {} }
+    // Cướp Cô Hồn. Not its own close(): that one ends by re-arming the arena
+    // poll, which would undo pbForgetProfile() two lines above. Its teardown
+    // stops at the unlock, and leaves petBattleScreen exactly as
+    // pbForgetProfile does, so the order of the two does not matter.
+    if (typeof GhostOfferingEvent !== 'undefined' && GhostOfferingEvent
+        && typeof GhostOfferingEvent.forgetProfile === 'function') {
+        try { GhostOfferingEvent.forgetProfile(); } catch (e) {}
+    }
+    // Everything with a clock of its own. Each of these keeps ticking against
+    // whatever appState is current, so a timer that outlives the switch spends
+    // the NEXT child's minutes and banks into the next child's profile.
+    if (typeof MathFight !== 'undefined' && MathFight && typeof MathFight.forgetProfile === 'function') {
+        try { MathFight.forgetProfile(); } catch (e) {}
+    }
+    if (typeof examForgetProfile === 'function') { try { examForgetProfile(); } catch (e) {} }
+    if (typeof warsForgetProfile === 'function') { try { warsForgetProfile(); } catch (e) {} }
+    if (typeof verbsForgetProfile === 'function') { try { verbsForgetProfile(); } catch (e) {} }
+    // The maths scratch pad: four sheets of the previous child's handwriting.
+    if (typeof mathBoardForgetProfile === 'function') { try { mathBoardForgetProfile(); } catch (e) {} }
 }
 
 function switchUser() {

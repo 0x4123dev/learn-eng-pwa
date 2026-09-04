@@ -100,6 +100,19 @@ function abandonExam() {
     examLockScreen(false);
 }
 
+// SILENT teardown for a profile change. abandonExam() is exactly the right
+// thing to do — it stops the clock and puts the bottom bar back — but it is
+// only reached through switchScreen's confirm(), and switchUser() does not go
+// through switchScreen. So A's forty-minute paper kept ticking under B: the
+// clock ran, _examTick could auto-submit it, switchScreen answered B's every
+// tab tap with "You are in the middle of a timed exam", and the once-a-second
+// study checkpoint wrote A's half-finished paper into localStorage under B's
+// name — to be offered back to B on their next open.
+function examForgetProfile() {
+    abandonExam();
+    _examSubTab = 'exams';
+}
+
 // A timed paper is forty to ninety minutes with a clock running, and walking
 // out saves nothing at all — quitExam says so in as many words. The bottom bar
 // had no business sitting under the thumb for that whole hour, so it goes away

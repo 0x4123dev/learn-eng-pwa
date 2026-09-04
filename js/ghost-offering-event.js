@@ -187,8 +187,30 @@
   function open(){return enter('bots');}
   function openHumanTest(){return enter('human');}
   function close(){active=false;claiming=false;pendingGrab=null;stopQaBots();if(realtimeLink){realtimeLink.close();realtimeLink=null;}stopHookGame();clearInterval(timer);timer=null;const screen=document.getElementById('petBattleScreen');if(screen){screen.classList.remove('go-event-active');screen.dataset.pbLobbySig='';screen.style.removeProperty('overflow');screen.style.removeProperty('height');screen.scrollTop=0;screen.scrollLeft=0;}if(global.refreshPetBattle)refreshPetBattle();if(global._pbStartPolling)_pbStartPolling();}
+  // SILENT teardown for a profile change. Everything close() does EXCEPT its
+  // last two lines: close() ends by calling refreshPetBattle() and
+  // _pbStartPolling(), which is right when the child is walking back into the
+  // Arena and exactly wrong here — it would re-arm the arena poll for a child
+  // who is on their way to the profile picker, and undo pbForgetProfile().
+  //
+  // What follows the child otherwise: the 1s countdown timer, the realtime
+  // link (a socket still holding A's grabs), the rAF hook-game loop, and the
+  // `go-event-active` class plus the overflow/height locks left on
+  // petBattleScreen — pbForgetProfile() empties that element but does not
+  // unlock it, so B's Arena lobby came back unable to scroll.
+  function forgetProfile(){
+    active=false;claiming=false;pendingGrab=null;lastProgressAt=0;state=null;
+    stopQaBots();
+    if(realtimeLink){try{realtimeLink.close();}catch(e){}realtimeLink=null;}
+    stopHookGame();
+    clearInterval(timer);timer=null;
+    const screen=typeof document!=='undefined'?document.getElementById('petBattleScreen'):null;
+    // `delete` rather than close()'s `=''`, so this and pbForgetProfile leave
+    // the element in the SAME state whichever of them runs last.
+    if(screen){screen.classList.remove('go-event-active');delete screen.dataset.pbLobbySig;screen.style.removeProperty('overflow');screen.style.removeProperty('height');screen.scrollTop=0;screen.scrollLeft=0;}
+  }
   function syncLobbyCard(){startTimer();}
   function isActive(){return active;}
-  global.GhostOfferingEvent={open,openHumanTest,close,isActive,cardHTML,syncLobbyCard,localWindow,fmt,_items:ITEMS,_rayFirstCollision:rayFirstCollision,_remotePathPoint:remotePathPoint};
+  global.GhostOfferingEvent={open,openHumanTest,close,forgetProfile,isActive,cardHTML,syncLobbyCard,localWindow,fmt,_items:ITEMS,_rayFirstCollision:rayFirstCollision,_remotePathPoint:remotePathPoint};
   if(typeof module!=='undefined'&&module.exports)module.exports=global.GhostOfferingEvent;
 })(typeof window!=='undefined'?window:globalThis);

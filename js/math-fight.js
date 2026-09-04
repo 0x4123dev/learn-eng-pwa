@@ -102,6 +102,25 @@ var MathFight = (() => {
   }
 
   function leave() { stopTimers(); lockScreen(false); st.fight = null; st.view = 'list'; }
+
+  // SILENT teardown for a profile change. `st` is this module's whole world: a
+  // live five-minute duel, the friends-and-coins payload the server sent, and
+  // FOUR intervals.
+  //
+  // leave() is only called when the child navigates out of the Fight tab, and
+  // openMathSection is not on the road to the profile picker — so the poll
+  // survived a profile change. It re-reads currentUser on every call, which
+  // means it kept running as the NEW child: within three seconds refresh()
+  // could find B a live fight, call startBout(), paint over mfRoot and hide
+  // the bottom bar on a screen B was not even looking at. leave() already
+  // stops all four timers and restores the nav; the rest is A's data.
+  function forgetProfile() {
+    leave();
+    st.data = null; st.qs = []; st.answers = []; st.idx = 0;
+    st.busy = false; st.claimed = ''; st.moved = 0;
+    if (typeof document !== 'undefined') { const r = root(); if (r) r.innerHTML = ''; }
+  }
+
   function stopTimers() {
     for (const key of ['ticker', 'poll', 'pulse', 'wait']) { if (st[key]) { clearInterval(st[key]); st[key] = null; } }
   }
@@ -456,9 +475,9 @@ var MathFight = (() => {
   }
   function backToList() { lockScreen(false); st.fight = null; st.view = 'list'; paintLoading(); refresh(); }
 
-  return Object.freeze({ open, leave, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh,
+  return Object.freeze({ open, leave, forgetProfile, isFighting, forfeitNow, pickFriend, send, respond, answer, submit, quit, backToList, refresh,
     // Test hooks: the drawn round and one pulse, so a test can play a bout.
-    __questions: () => st.qs, __beat: beat, __myCorrect: myCorrect });
+    __questions: () => st.qs, __beat: beat, __myCorrect: myCorrect, __st: () => st });
 })();
 
 function mfPickFriend(id) { MathFight.pickFriend(id); }

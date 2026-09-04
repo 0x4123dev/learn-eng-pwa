@@ -289,6 +289,21 @@ function warsStopClock() {
 
 function abandonWars() { warsStopClock(); _warsQuiz = null; warsLockScreen(false); }
 
+// SILENT teardown for a profile change. abandonWars() already stops the clock
+// and restores the bottom bar, but it is only reached from openMathSection and
+// from switchScreen's confirm() — neither of which is on the road to the
+// profile picker. So A's round kept its 250ms clock, and the study checkpoint
+// (js/app.js) wrote A's unfinished round into localStorage under B's name.
+// _warsProgressFallback only stands in when there is no appState at all (a
+// logged-out page, a test), so it is not how the ladder normally travels — but
+// it is a per-child level and streak in the one case it IS read, and resetting
+// it costs nothing.
+function warsForgetProfile() {
+  abandonWars();
+  _warsView = 'practice';
+  _warsProgressFallback = { level: 0, streak: 0 };
+}
+
 // Five minutes against a clock, scored only when the clock stops — a mis-tap on
 // the bottom bar costs the whole round and the clock does not wait while the
 // child works out how to get back. So the bar goes away for the round, exactly
@@ -624,7 +639,7 @@ if (typeof module !== 'undefined' && module.exports) {
     warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
     warsBuild, warsDistractors, warsQuestion, warsQuestions, warsRoundQuestions,
     warsHistory, warsStats, warsSaveRun, warsEsc,
-    startWarsRound, answerWars, finishWars, abandonWars, warsQuit, isWarsActive,
+    startWarsRound, answerWars, finishWars, abandonWars, warsForgetProfile, warsQuit, isWarsActive,
     warsLeftMs, warsClockTick, warsClockText, warsLengthLabel,
     renderWars, renderWarsResult, warsDonutHTML,
     renderWarsHomeHTML, renderWarsPracticeHTML, renderWarsHistoryHTML,

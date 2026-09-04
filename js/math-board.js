@@ -168,6 +168,26 @@ function mathBoardSession() {
 }
 
 function mathBoardReset() { _mathBoardSession = null; }
+
+// SILENT teardown for a profile change.
+//
+// mathBoardReset() is called from finishMathQuiz() and abandonMathQuiz() only,
+// and switchUser() reaches neither — it does not go through switchScreen, so
+// no quiz guard fires. A child who switched profile mid-quiz therefore left
+// their working on the pad: the next child opened Toán, tapped ✏️ Bảng nháp,
+// and was looking at somebody else's handwriting on all four sheets. Worse,
+// the overlay is a fixed full-screen sheet whose only exit is its own button,
+// so a board left open was painted over the whole app.
+//
+// mathBoardCloseForSession() is the UI half and only exists in a browser (it
+// is a window.* assignment), hence the typeof guard: in Node the strokes are
+// all there is to drop.
+function mathBoardForgetProfile() {
+    if (typeof mathBoardCloseForSession === 'function') {
+        try { mathBoardCloseForSession(); } catch (e) {}
+    }
+    mathBoardReset();
+}
 function mathBoardActive() { const s = mathBoardSession(); return s.boards[s.active]; }
 
 function mathBoardAdd() {
@@ -1086,7 +1106,7 @@ if (typeof module !== 'undefined' && module.exports) {
         mathBoardBegin, mathBoardExtend, mathBoardUndo, mathBoardClear,
         mathBoardEraseAt, mathBoardDistanceToSegment,
         mathBoardFormulae, mathBoardFormulaDraft, mathBoardFormulaKeyPress, mathBoardFormulaNewLine,
-        mathBoardSession, mathBoardReset, mathBoardActive, mathBoardAdd, mathBoardSwitch,
+        mathBoardSession, mathBoardReset, mathBoardForgetProfile, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort, mathBoardZoom, mathBoardScreenToWorld,
         mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
