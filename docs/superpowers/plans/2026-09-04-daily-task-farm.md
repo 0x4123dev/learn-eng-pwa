@@ -605,16 +605,11 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Create: `functions/api/_farm.js`
 - Test: `tests/farm-server.test.js` (phần 1)
 
-- [ ] **Step 1: Thêm hai migration vào harness**
+- [x] **Step 1: KHÔNG cần thêm migration vào harness** — đã kiểm và bỏ
 
-Trong `tests/pages-harness.js`, mảng `SQL_FILES`, thêm sau `'db/013-daily-coin-snapshots.sql',`:
-```js
-  // Daily tasks and the once-a-day reward row the farm counts its days from.
-  'db/018-daily-tasks.sql',
-  'db/019-armory-swords.sql',
-```
-Run: `node tests/money-conservation.test.js && node tests/money-raid-transfer.test.js`
-Expected: PASS như trước (hai file chỉ tạo bảng và thêm cột).
+Dự định ban đầu là thêm `db/018-daily-tasks.sql` và `db/019-armory-swords.sql` vào `SQL_FILES`. **Sai**: `db/schema.sql` chạy đầu tiên trong danh sách đó và đã chứa sẵn `daily_tasks`, `daily_task_rewards` (kể cả `claimed_kind`, `claimed_at`), `users.night_shields` và `users.night_swords`. Thêm vào làm harness đổ `duplicate column name: night_shields`. Quy tắc của `SQL_FILES`: chỉ nhận `schema.sql` cộng các migration thuần CREATE; migration có `ALTER` đã được gộp vào `schema.sql`.
+
+Đổi lại, một lỗi thật của harness phải sửa: `loadModule` nạp script thường bằng `new Function('module','exports',src)`, mà `require` không phải biến toàn cục trong Node, nên bên trong hàm đó `typeof require === 'undefined'`. `js/night-raid-rules.js` lấy danh mục nông trại qua đúng nhánh dự phòng ấy, nên `NR.farmRules` lặng lẽ thành `null` và mọi luật nông trại phía server test ra "không làm gì" thay vì đỏ. Truyền một `require` thật cho đường dẫn tương đối, ném lỗi với specifier trần.
 
 - [ ] **Step 2: Viết test (đỏ)**
 
