@@ -9604,6 +9604,29 @@
             font: 800 13px/1 inherit; cursor: pointer;
         }
         .math-part-correct { margin-top: 7px; color: #166534; font-size: 14px; font-weight: 700; }
+        /* ---- Toán 4: a real input per box ----
+           An <input inputmode="numeric"> so the iPad raises its own number pad
+           and the child can drag the caret back into the middle of a number to
+           fix one digit. The boxes are independent: fill them in any order,
+           correct any of them, then mark the lot with one button. No "current"
+           box is tracked in JS — :focus-within draws the ring, so the highlight
+           cannot fall out of step with where the child is actually typing. */
+        .math-answer-parts.free { gap: 12px; }
+        .math-answer-input {
+            display: block; width: 100%; box-sizing: border-box;
+            min-height: 56px; margin: 0; padding: 10px 14px;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary);
+            font-family: inherit; font-size: 24px; font-weight: 700;
+            -webkit-appearance: none; appearance: none;
+        }
+        .math-answer-input::placeholder {
+            font-size: 16px; font-weight: 500; color: var(--text-secondary, #6b7280);
+        }
+        .math-answer-input:focus { outline: none; border-color: #7c3aed; }
+        .math-answer-part:focus-within {
+            border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.10);
+        }
         .math-key-context { flex-wrap: wrap; }
         .math-key-context .math-key { flex: 1 1 auto; min-width: 58px; padding-inline: 10px; }
         .math-written-solution { margin-top: 12px; }
@@ -11470,6 +11493,28 @@
     font-size: 12px; font-weight: 800; line-height: 20px; white-space: nowrap;
 }
 .math-board-strip:focus-visible { outline: 3px solid #f59e0b; outline-offset: -3px; }
+/* Toán 4 carries its sums in the answer-box labels, so the board shows them
+   under the stem and has nothing to collapse — hence no pointer cursor. */
+.math-board-strip.locked { cursor: default; }
+.math-board-strip-parts {
+    grid-column: 1 / -1; grid-row: 3;
+    display: grid; gap: 5px; margin-top: 7px;
+}
+.math-board-strip-part {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 17px; font-weight: 700; line-height: 1.35;
+}
+.math-board-strip-part > b {
+    flex: 0 0 auto; align-self: center;
+    display: inline-grid; place-items: center; width: 20px; height: 20px;
+    border-radius: 50%; background: #ddd6fe; color: #5b21b6;
+    font-size: 11px; font-weight: 900;
+}
+/* The strip's own .math-formula rule places it in the strip grid; these are
+   flex children of a part row instead, so hand back normal flow. */
+.math-board-strip-part .math-formula {
+    grid-column: auto; grid-row: auto; display: inline; min-width: 0;
+}
 .math-board-tools {
     display: flex; flex-wrap: nowrap; align-items: center; gap: 5px; padding: 5px 8px;
     border-bottom: 1px solid #e2e8f0; background: #f8fafc;

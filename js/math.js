@@ -454,6 +454,36 @@ function mathHasAnswerParts(q) { return !!q && Array.isArray(q.answerParts) && q
 function mathIsTyped(q) { return !!q && (q.type === 'calc' || mathHasAnswerParts(q)); }
 function mathIsWritten(q) { return !!q && q.type === 'written' && !mathHasAnswerParts(q); }
 
+// Toán 4 types into REAL inputs, so an iPad raises its own number pad and the
+// child can put the caret back in the middle of a number to fix one digit —
+// which the in-app keypad cannot do, because its box is a div with a drawn
+// caret that only ever appends and backspaces.
+//
+// Deliberately NOT every question with answer boxes. Toán 7's source exams
+// share this renderer, and they need glyphs no phone keyboard has (xⁿ, −, ×);
+// their boxes are also labelled steps of ONE worked problem, answered in
+// order. Toán 4's four boxes are four independent sums, filled in any order.
+function math4FreeEntry(q) { return !!q && q.grade === 4 && mathHasAnswerParts(q); }
+
+// Every one of the 500 Toán 4 answers is a plain whole number of at most six
+// digits, so anything else arriving from a hardware keyboard or a paste is a
+// typo the child cannot see is wrong until the paper is marked.
+const MATH4_ANSWER_MAX = 12;
+function math4Clean(value) {
+  return String(value == null ? '' : value).replace(/[^0-9]/g, '').slice(0, MATH4_ANSWER_MAX);
+}
+
+function math4AllFilled(q) {
+  if (!math4FreeEntry(q)) return false;
+  // Iterate answerParts, never _mathTyped.values: filling box 4 first leaves
+  // values sparse, and Array#every SKIPS holes — it would call this complete.
+  return q.answerParts.every((part, i) => (_mathTyped.values[i] || '') !== '');
+}
+
+function math4Values(q) {
+  return q.answerParts.map((part, i) => _mathTyped.values[i] || '');
+}
+
 // "^" is a mode, not a character: press it and the digits that follow land as
 // real superscripts. That keeps backspace honest — one tap removes one glyph
 // the child can see — and stores the same characters the rest of the tab
@@ -523,26 +553,79 @@ function mathTypedBoxHTML(value, state) {
     (state ? '' : `<span class="math-caret"></span>`) + `</div>`;
 }
 
+// One box, as a real text input. type="text" rather than type="number": a
+// number input hides what it considers invalid behind an empty .value, spins
+// on a stray scroll, and on iOS gives a keyboard with e and − on it.
+// inputmode="numeric" is what actually raises the number pad.
+function math4InputHTML(q, i) {
+  const v = _mathTyped.values[i];
+  return `<input class="math-answer-input" id="mathPart${i}" type="text" ` +
+    `inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off" ` +
+    `autocapitalize="off" spellcheck="false" maxlength="${MATH4_ANSWER_MAX}" ` +
+    `placeholder="Đáp án của con…" aria-label="Đáp án phép tính ${i + 1}" ` +
+    `value="${mathEsc(v == null ? '' : v)}" ` +
+    `oninput="mathPartInput(${i}, this.value)" onchange="mathPartInput(${i}, this.value)">`;
+}
+
 function mathAnswerPartsHTML(q, answer) {
   const finished = Array.isArray(answer);
   const values = finished ? answer : _mathTyped.values;
+  const free = !finished && math4FreeEntry(q);
   const active = Math.min(_mathTyped.part, q.answerParts.length - 1);
-  return `<div class="math-answer-parts">` + q.answerParts.map((part, i) => {
-    const hasValue = i < values.length;
-    const isActive = !finished && i === active;
+  return `<div class="math-answer-parts${free ? ' free' : ''}">` + q.answerParts.map((part, i) => {
+    const hasValue = (values[i] || '') !== '';
+    // Free entry has no "current" box — the child chooses one by tapping it,
+    // and :focus-within draws the ring, so no state has to be kept in step.
+    const isActive = !free && !finished && i === active;
     const state = finished ? (mathGrade(part, values[i]) ? 'correct' : 'wrong') : (hasValue ? 'filled' : '');
-    const box = isActive
-      ? `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>`
-      : mathTypedBoxHTML(hasValue ? values[i] : '', state || 'pending');
+    const box = free
+      ? math4InputHTML(q, i)
+      : (isActive
+        ? `<div id="mathAnswerSlot">${mathTypedBoxHTML()}</div>`
+        : mathTypedBoxHTML(hasValue ? values[i] : '', state || 'pending'));
     const correction = finished && !mathGrade(part, values[i])
       ? `<div class="math-part-correct">Đáp án: <span class="math-formula">${mathFormula(part.answer)}</span></div>` : '';
-    const edit = !finished && hasValue
+    // "Sửa" exists only because the keypad can type into one box at a time.
+    // A real input is edited by tapping it.
+    const edit = !free && !finished && hasValue
       ? `<button type="button" class="math-part-edit" onclick="mathEditAnswerPart(${i})">Sửa</button>` : '';
     return `<div class="math-answer-part ${isActive ? 'active' : ''}">
       <div class="math-part-label"><span>${i + 1}</span>${mathEsc(part.label)}</div>
       ${box}${edit}${correction}
     </div>`;
   }).join('') + `</div>`;
+}
+
+// Typing must NOT re-render. renderMathQuestion() replaces the whole screen,
+// which drops focus and drops the iPad keyboard in the middle of a number —
+// so only the stored value and the submit button change here, exactly as
+// mathKey() does for the in-app keypad.
+function mathPartInput(index, value) {
+  const st = _mathQuiz;
+  const q = st && st.questions[st.idx];
+  if (!st || st.answers[st.idx] !== null || !math4FreeEntry(q)) return '';
+  if (!Number.isInteger(index) || index < 0 || index >= q.answerParts.length) return '';
+  const clean = math4Clean(value);
+  _mathTyped.values[index] = clean;
+  _mathTyped.part = index;
+  const el = (typeof document !== 'undefined' && document.getElementById)
+    ? document.getElementById('mathPart' + index) : null;
+  // Write back ONLY when something was dropped. Assigning .value moves the
+  // caret to the end, and keeping the caret where the child put it is the
+  // entire reason this is an input.
+  if (el && el.value !== clean) {
+    const after = String(el.value == null ? '' : el.value).length -
+      (el.selectionEnd == null ? 0 : el.selectionEnd);
+    el.value = clean;
+    if (el.setSelectionRange) {
+      const at = Math.max(0, Math.min(clean.length, clean.length - after));
+      try { el.setSelectionRange(at, at); } catch (e) {}
+    }
+  }
+  const btn = (typeof document !== 'undefined' && document.getElementById)
+    ? document.getElementById('mathSubmitBtn') : null;
+  if (btn) btn.disabled = !math4AllFilled(q);
+  return clean;
 }
 
 // The right answer, for a review card. A multi-box question has no single
@@ -1582,9 +1665,13 @@ function renderMathQuestion() {
           <span>${mathEsc(q.workNote || 'Làm bài trên bảng nháp, rồi nhập từng kết quả cuối cùng.')}</span>
         </div>`
         + mathAnswerPartsHTML(q, answered ? ans : null)
-        + (answered ? '' : `${mathKeypadHTML(q)}
+        + (answered ? '' : (math4FreeEntry(q)
+          // No keypad: the boxes are real inputs and the iPad brings its own.
+          ? `<button class="grammar-next-btn" id="mathSubmitBtn" ${math4AllFilled(q) ? '' : 'disabled'}
+                  onclick="submitMathTyped()">${q.answerParts.length > 1 ? 'Kiểm tra tất cả' : 'Kiểm tra'}</button>`
+          : `${mathKeypadHTML(q)}
           <button class="grammar-next-btn" id="mathSubmitBtn" ${_mathTyped.raw ? '' : 'disabled'}
-                  onclick="submitMathTyped()">${_mathTyped.part + 1 < q.answerParts.length ? 'Lưu kết quả này →' : 'Kiểm tra tất cả'}</button>`);
+                  onclick="submitMathTyped()">${_mathTyped.part + 1 < q.answerParts.length ? 'Lưu kết quả này →' : 'Kiểm tra tất cả'}</button>`));
     } else {
       body = answered
         // What the child typed, then the right answer if it differed — the same
@@ -1667,6 +1754,15 @@ function submitMathTyped() {
   const st = _mathQuiz;
   if (!st || st.answers[st.idx] !== null) return;
   const q = st.questions[st.idx];
+  // Toán 4: the child fills the boxes in whatever order they like and one
+  // press marks the whole question, so there is no per-box save step.
+  if (math4FreeEntry(q)) {
+    if (!math4AllFilled(q)) return;       // an empty box is not an answer
+    st.answers[st.idx] = math4Values(q);
+    if (typeof petCheerAnswer === 'function') petCheerAnswer(mathIsCorrect(q, st.answers[st.idx]));
+    renderMathQuestion();
+    return;
+  }
   const raw = mathTypedRaw();
   if (!raw) return;                       // an empty box is not an answer
   if (mathHasAnswerParts(q)) {
@@ -1915,6 +2011,8 @@ if (typeof module !== 'undefined' && module.exports) {
     isMathQuizActive, abandonMathQuiz, mathForgetProfile, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
     mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart, mathAnswerHTML,
+    math4FreeEntry, math4Clean, math4AllFilled, math4Values, math4InputHTML, mathPartInput,
+    MATH4_ANSWER_MAX,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions, saveMathSession,
     mathExams, mathExamBest, startMathExam, renderMathExamsHTML,

@@ -1367,15 +1367,28 @@ async function verifyClient() {
       mustEqual(st.questions.map((q) => q.t).join(''), '1122334455', 'two of each dạng, in đề order');
       const nav = h.el('bottomNav');
       mustEqual(nav.style.display, 'none', 'the bottom bar must be hidden while a paper is open');
-      // Sit it the way a child does: every answer typed on the real keypad.
+      // Sit it the way a child does on an iPad: tap into each answer box —
+      // a REAL <input inputmode="numeric">, so iOS raises its own number pad —
+      // type the number, then mark the whole question with one press. The
+      // boxes are filled back to front to prove they are independent.
+      let boxes = 0;
       for (let i = 0; i < 10; i++) {
         const q = h.sandbox.mathCurrentQuestion();
         must(q, 'ran out of questions at ' + i);
         must(h.sandbox.mathHasAnswerParts(q), q.id + ' has no answer boxes');
-        for (const part of q.answerParts) {
-          for (const ch of String(part.answer)) h.sandbox.mathKey(ch);
-          h.sandbox.submitMathTyped();
+        must(!h.el('mathAnswerSlot'), q.id + ' still draws the one-box-at-a-time keypad');
+        for (let k = q.answerParts.length - 1; k >= 0; k--) {
+          const input = h.el('mathPart' + k);
+          must(input, q.id + ' box ' + k + ' is not a real input');
+          mustEqual(input.getAttribute('inputmode'), 'numeric',
+            q.id + ' box ' + k + ' would not raise the iPad number pad');
+          input.value = String(q.answerParts[k].answer);
+          h.sandbox.mathPartInput(k, input.value);
+          boxes++;
         }
+        const submit = h.el('mathSubmitBtn');
+        must(submit && !submit.disabled, q.id + ' will not accept a full set of answers');
+        h.sandbox.submitMathTyped();
         h.sandbox.nextMathQuestion();
       }
       must(!h.sandbox.isMathQuizActive(), 'the paper is over');
@@ -1384,7 +1397,7 @@ async function verifyClient() {
       mustEqual(hist[0].score, 10, 'a perfect sitting scores 10');
       mustEqual(hist[0].grade, 4, 'the run must be filed as Toán 4');
       mustEqual(hist[0].g4set, 'pre', 'and carry what the daily task matches on');
-      return '10/10 typed on the keypad, filed as ' + hist[0].label;
+      return '10/10 typed into ' + boxes + ' real number inputs, filed as ' + hist[0].label;
     });
 
   await R.check('play-word-hunt-find-a-word',

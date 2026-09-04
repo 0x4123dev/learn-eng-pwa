@@ -588,6 +588,10 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // the ResizeObserver to notice. (Some engines never deliver it; a stale
     // bitmap here means the ink lands where the finger is not.)
     window.mathBoardStripTap = function () {
+        // Toán 4 has no collapse control, so nothing should be able to hide
+        // its question — not a stale handler, not a keyboard activation.
+        const cur = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
+        if (mathBoardQuestionLocked(cur)) return;
         mathBoardAbortSafe();
         _mathBoardQuestionExpanded = !_mathBoardQuestionExpanded;
         mathBoardRenderOverlay();
@@ -732,9 +736,33 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         if (canvas) canvas.classList.toggle('erasing', _mathBoardTool === 'erase');
     };
 
+    // Toán 4 asks four sums under one heading. `q.q` is only that heading —
+    // "Đặt tính rồi tính:" — and the sums themselves live in the answer-box
+    // labels. A child who opened the board saw the heading and nothing to
+    // work from, so for Toán 4 the whole question comes across, and there is
+    // no collapse control to hide it behind again.
+    function mathBoardQuestionLocked(q) { return !!q && q.grade === 4; }
+
+    function mathBoardQuestionBodyHTML(q) {
+        let html = '<span class="math-formula">' + mathFormula(q.q) + '</span>';
+        const parts = Array.isArray(q.answerParts) ? q.answerParts : [];
+        if (mathBoardQuestionLocked(q) && parts.length) {
+            html += '<span class="math-board-strip-parts">' + parts.map(function (p, i) {
+                return '<span class="math-board-strip-part"><b>' + (i + 1) + '</b>' +
+                       '<span class="math-formula">' + mathFormula(p.label) + '</span></span>';
+            }).join('') + '</span>';
+        }
+        return html;
+    }
+
     function mathBoardStripHTML() {
         const q = (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null;
         if (!q) return '';
+        if (mathBoardQuestionLocked(q)) {
+            return '<div class="math-board-strip full locked">' +
+                   '<span class="math-board-strip-label">Đề bài</span>' +
+                   mathBoardQuestionBodyHTML(q) + '</div>';
+        }
         const full = _mathBoardQuestionExpanded;
         if (!full) return '';
         return '<button class="math-board-strip' + (full ? ' full' : '') + '" type="button" ' +

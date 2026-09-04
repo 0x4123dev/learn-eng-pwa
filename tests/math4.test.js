@@ -64,15 +64,22 @@ function loadMath() {
        openMathSection, renderMathHome, mathIsTyped, mathHasAnswerParts, mathIsCorrect,
        mathGrade, mathKey, mathTypedReset, submitMathTyped, nextMathQuestion,
        mathCurrentQuestion, mathQuizQuit, isMathQuizActive, mathQuizAnswered,
+       mathPartInput, math4FreeEntry, math4AllFilled, math4Clean, math4InputHTML,
+       mathAnswerPartsHTML, mathKeypadHTML, MATH4_ANSWER_MAX,
        MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
      };`,
   ].join('\n'), ctx, { filename: 'math4-combined.js' });
   return { ctx, m: ctx.__math, screen, nav, asked };
 }
 
-// Type one answer on the real keypad, one glyph at a time, then submit it.
-function typeAnswer(m, text) {
-  for (const ch of String(text)) m.mathKey(ch);
+// Fill every box of the current question the way a child does — one tap into
+// a box, then the digits — and press the single check button.
+function answerCurrent(m, q, wrongFirstBox) {
+  q.answerParts.forEach((part, k) => {
+    const want = String(part.answer);
+    const text = (wrongFirstBox && k === 0) ? String(Number(want) + 1) : want;
+    m.mathPartInput(k, text);
+  });
   m.submitMathTyped();
 }
 
@@ -86,10 +93,7 @@ function sitPaper(m, wrongAt) {
     const q = m.mathCurrentQuestion();
     if (!q) break;
     seen.push(q);
-    q.answerParts.forEach((part, k) => {
-      const wrong = wrongAt.has(i) && k === 0;
-      typeAnswer(m, wrong ? String(Number(part.answer) + 1) : part.answer);
-    });
+    answerCurrent(m, q, wrongAt.has(i));
     m.nextMathQuestion();
   }
   return seen;
@@ -287,7 +291,7 @@ suite('toán 4: một tờ đề Pre', () => {
     const { ctx, m, asked } = loadMath();
     m.startMath4Pre();
     const q = m.mathCurrentQuestion();
-    q.answerParts.forEach(p => typeAnswer(m, p.answer));
+    answerCurrent(m, q, false);
     assert.equal(m.mathQuizAnswered(), 1);
 
     ctx.__confirmAnswer = false;
@@ -339,10 +343,211 @@ function sitPaperFinish(m) {
   for (let i = 0; i < 50; i++) {
     const q = m.mathCurrentQuestion();
     if (!q) return;
-    q.answerParts.forEach(p => typeAnswer(m, p.answer));
+    answerCurrent(m, q, false);
     m.nextMathQuestion();
   }
 }
+
+// ---------------------------------------------------------------------------
+// The answer boxes are REAL inputs, for Toán 4 only.
+//
+// They used to be drawn divs fed by an in-app keypad, one box at a time: the
+// child filled box 1, pressed "Lưu kết quả này →", filled box 2, and so on.
+// Two things were wrong with that on an iPad. No input meant no system number
+// pad and no caret, so a wrong digit in the middle of 125422 could only be
+// reached by backspacing over everything after it. And going back to an
+// earlier box through "Sửa" THREW AWAY every box after it, because the edit
+// path truncated the stored values.
+//
+// Now each box is an <input inputmode="numeric">: the iPad raises its own
+// number pad, the caret goes wherever the child taps, boxes are filled in any
+// order, and one press marks the lot.
+suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
+  // A tiny stand-in for the browser's input element, so a test can type the
+  // way a child does — put the caret somewhere and insert a character there.
+  function fakeInput() {
+    return { value: '', selectionEnd: 0, disabled: false,
+             setSelectionRange(a) { this.selectionEnd = a; } };
+  }
+
+  test('every box is an input the iPad can raise a number pad for', () => {
+    const { m, screen } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    const html = screen.innerHTML;
+    assert.equal((html.match(/class="math-answer-input"/g) || []).length, q.answerParts.length,
+      'one real input per answer box');
+    assert.truthy(/inputmode="numeric"/.test(html), 'without inputmode the iPad offers letters');
+    assert.truthy(/type="text"/.test(html) && !/type="number"/.test(html),
+      'type=number spins on a stray scroll and hides what it dislikes behind an empty value');
+    q.answerParts.forEach((part, i) =>
+      assert.truthy(html.includes('id="mathPart' + i + '"'), 'box ' + i + ' needs its own id'));
+  });
+
+  test('the in-app keypad and its one-box-at-a-time save are gone from Toán 4', () => {
+    const { m, screen } = loadMath();
+    m.startMath4Pre();
+    const html = screen.innerHTML;
+    assert.falsy(/math-keypad/.test(html), 'the drawn keypad would sit under the iPad keyboard');
+    assert.falsy(/mathAnswerSlot/.test(html), 'there is no single active box any more');
+    assert.falsy(/Lưu kết quả này/.test(html), 'one press marks the whole question');
+    assert.falsy(/math-part-edit/.test(html), 'a real input is edited by tapping it, not by a Sửa button');
+    assert.truthy(/Kiểm tra tất cả/.test(html), 'the one button marks every box');
+  });
+
+  test('the boxes can be filled in any order, and each keeps its own number', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    assert.truthy(q.answerParts.length >= 4, 'dạng 1 should open the paper with four sums');
+    // Deliberately backwards, then the middle two — the child taps whichever
+    // sum they finished first.
+    const order = [3, 0, 2, 1];
+    order.forEach(i => m.mathPartInput(i, q.answerParts[i].answer));
+    m.submitMathTyped();
+    assert.equal(m.mathQuizAnswered(), 1, 'the question must be marked');
+    assert.truthy(m.mathIsCorrect(q, [0, 1, 2, 3].map(i => q.answerParts[i].answer)),
+      'every box was right, so the question is right');
+  });
+
+  test('fixing box 1 leaves boxes 2-4 alone — the old Sửa button wiped them', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
+    // Go back to the first box and retype it wrong, the way a child would
+    // after spotting a slip. Nothing else may move.
+    m.mathPartInput(0, String(Number(q.answerParts[0].answer) + 1));
+    assert.truthy(m.math4AllFilled(q), 'the later boxes must still hold their numbers');
+    m.submitMathTyped();
+    const st = m.mathCurrentQuestion();
+    assert.equal(st.id, q.id, 'still on the same question');
+    assert.falsy(m.mathIsCorrect(q, q.answerParts.map((p, i) => i === 0
+      ? String(Number(p.answer) + 1) : p.answer)), 'only the retyped box is wrong');
+  });
+
+  test('the check button stays disabled until every box has something in it', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    assert.falsy(m.math4AllFilled(q), 'an untouched paper cannot be submitted');
+    // Fill the LAST box first. A plain values.every() would call this complete,
+    // because assigning index 3 of an empty array leaves holes that every()
+    // silently skips.
+    m.mathPartInput(q.answerParts.length - 1, '7');
+    assert.falsy(m.math4AllFilled(q), 'holes are not filled boxes');
+    m.submitMathTyped();
+    assert.equal(m.mathQuizAnswered(), 0, 'a half-filled question must not be marked');
+    q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
+    assert.truthy(m.math4AllFilled(q));
+    m.submitMathTyped();
+    assert.equal(m.mathQuizAnswered(), 1);
+  });
+
+  test('a box holding only spaces is still empty', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    q.answerParts.forEach((part, i) => m.mathPartInput(i, i === 1 ? '   ' : part.answer));
+    assert.falsy(m.math4AllFilled(q), 'whitespace is not an answer');
+  });
+
+  test('nothing but digits reaches the answer', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    assert.equal(m.mathPartInput(0, '12a3'), '123', 'a letter is dropped');
+    assert.equal(m.mathPartInput(0, '-45'), '45', 'a minus is dropped — no Toán 4 answer is negative');
+    assert.equal(m.mathPartInput(0, '1 2 3'), '123', 'spaces are dropped');
+    assert.equal(m.mathPartInput(0, '9'.repeat(40)).length, m.MATH4_ANSWER_MAX,
+      'a long paste is capped');
+    assert.equal(m.math4Clean(null), '', 'nothing at all is empty, not "null"');
+  });
+
+  test('cleaning a typo keeps the caret where the child was typing', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const el = fakeInput();
+    ctx.document.getElementById = (id) => (id === 'mathPart0' ? el : null);
+    // The child had "1234", put the caret after the "2", and typed "x".
+    el.value = '12x34';
+    el.selectionEnd = 3;
+    m.mathPartInput(0, el.value);
+    assert.equal(el.value, '1234', 'the letter is removed');
+    assert.equal(el.selectionEnd, 2, 'the caret stays between 2 and 3, not at the end');
+  });
+
+  test('a clean keystroke never rewrites the field, so the caret cannot jump', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    let writes = 0;
+    const el = fakeInput();
+    Object.defineProperty(el, 'value', {
+      get() { return this._v || ''; },
+      set(v) { writes++; this._v = v; },
+    });
+    el.value = '1234';       // one write: the child's own typing
+    ctx.document.getElementById = (id) => (id === 'mathPart0' ? el : null);
+    m.mathPartInput(0, '1234');
+    assert.equal(writes, 1, 'assigning .value would send the caret to the end');
+  });
+
+  test('the submit button is enabled and disabled without repainting the screen', () => {
+    const { m, ctx } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    const btn = { disabled: true };
+    ctx.document.getElementById = (id) => (id === 'mathSubmitBtn' ? btn : null);
+    q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
+    assert.falsy(btn.disabled, 'a full set of boxes enables the check button');
+    m.mathPartInput(0, '');
+    assert.truthy(btn.disabled, 'emptying a box disables it again');
+    // A repaint here would drop focus and take the iPad keyboard down mid-number.
+    assert.falsy(/math-answer-input/.test(''), 'sanity');
+  });
+
+  test('typing into an already-marked question changes nothing', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
+    m.submitMathTyped();
+    assert.equal(m.mathPartInput(0, '999'), '', 'the boxes are closed once marked');
+    assert.equal(m.mathQuizAnswered(), 1);
+  });
+
+  test('an index outside the question is refused', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    assert.equal(m.mathPartInput(q.answerParts.length, '5'), '');
+    assert.equal(m.mathPartInput(-1, '5'), '');
+    assert.equal(m.mathPartInput(1.5, '5'), '');
+    assert.falsy(m.math4AllFilled(q), 'none of those may count as a filled box');
+  });
+
+  test('Toán 7 keeps its drawn keypad — it needs glyphs no phone keyboard has', () => {
+    const { m } = loadMath();
+    // Same shape as a Toán 7 source-exam question: answer boxes, but no grade 4.
+    const seven = { id: 's2-10', q: 'Tìm x', answerParts: [
+      { label: 'Nghiệm âm', answer: '-3' }, { label: 'Nghiệm dương', answer: '3' }] };
+    assert.falsy(m.math4FreeEntry(seven), 'only Toán 4 gets free entry');
+    assert.falsy(m.math4AllFilled(seven), 'and the fill check refuses to answer for it');
+    const html = m.mathAnswerPartsHTML(seven, null);
+    assert.falsy(/math-answer-input/.test(html), 'Toán 7 must not get a numeric-only input');
+    assert.truthy(/mathAnswerSlot/.test(html), 'it still types into one active box');
+    assert.truthy(/math-answer-parts"/.test(html), 'and is not marked as free entry');
+    assert.truthy(/math-key/.test(m.mathKeypadHTML(seven)), 'its keypad still builds');
+  });
+
+  test('a marked Toán 4 question shows the boxes as results, not as inputs', () => {
+    const { m } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    const html = m.mathAnswerPartsHTML(q, q.answerParts.map(p => p.answer));
+    assert.falsy(/math-answer-input/.test(html), 'a finished question is not editable');
+    assert.equal((html.match(/math-answer-box correct/g) || []).length, q.answerParts.length);
+  });
+});
 
 suite('toán 4: an admin can hand it out like every other task', () => {
   test('the catalog carries one Toán 4 task, in its own group', () => {
