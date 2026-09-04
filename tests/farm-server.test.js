@@ -107,6 +107,44 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
     await putHome(world, kid, { cells: [0, 1, 2, 3].map(i => ({ type: 'rice-field', gx: i * 2, gy: 0, uid: 'p-rice000' + i, readyAt: 1 })) });
     assert.equal(stored(world, kid.uid).cells.filter(c => c.type === 'rice-field').length, 4, 'owned fields are never taken away');
   });
+  // Found by review, 2026-09-04. The buyMax filter used to keep a cell only
+  // when its uid was one the server already knew, with
+  // room = max(0, max(had, buyMax) - had) = 0 for anyone who owned one at all.
+  // But stamp() runs FIRST and mints a fresh uid for every cell that arrived
+  // without one, so those cells matched nothing and were all dropped: a single
+  // PUT whose producer cells carried no uid turned four rice fields and two
+  // tomato gardens into zero and zero. The limit is on BUYING, never OWNING.
+  test('fields: a uid-less PUT keeps every field the child owns, and still blocks growth', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] });
+    const own = (rice, tomato) => world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
+      .run(JSON.stringify({ cells: [].concat(
+        Array.from({ length: rice }, (_, i) => ({ type: 'rice-field', gx: i * 2, gy: 0, tier: 1, uid: 'p-rice000' + i, readyAt: 1 })),
+        Array.from({ length: tomato }, (_, i) => ({ type: 'tomato-field', gx: i * 2, gy: 4, tier: 1, uid: 'p-toma000' + i, readyAt: 1 }))),
+        soldiers: 0, dogLane: 2 }), kid.uid);
+    const count = (uid, t) => stored(world, uid).cells.filter(c => c.type === t).length;
+    // Exactly what a half-hydrated client sends: the right cells, no uid on any.
+    const noUid = (t, n, gy) => Array.from({ length: n }, (_, i) => ({ type: t, gx: i * 2, gy }));
+    // (a) four rice fields and two tomato gardens, PUT back with NO uid at all.
+    own(4, 2);
+    await putHome(world, kid, { cells: noUid('rice-field', 4, 0).concat(noUid('tomato-field', 2, 4)) });
+    assert.equal(count(kid.uid, 'rice-field'), 4, 'four owned rice fields survive a uid-less PUT');
+    assert.equal(count(kid.uid, 'tomato-field'), 2, 'and so do two owned tomato gardens');
+    // (b) the same child asks for a fifth: the allowance stays at what is owned.
+    own(4, 0);
+    await putHome(world, kid, { cells: noUid('rice-field', 5, 0) });
+    assert.equal(count(kid.uid, 'rice-field'), 4, 'a fifth is refused');
+    // …and the allowance really is `had`, not the maxOwned ceiling: two owned
+    // fields may not become three.
+    own(2, 0);
+    await putHome(world, kid, { cells: noUid('rice-field', 3, 0) });
+    assert.equal(count(kid.uid, 'rice-field'), 2, 'growth past what is owned is blocked');
+    // (c) a child who owns none may buy exactly one.
+    const first = await world.createUser({ allowBot: true });
+    await putHome(world, first, { cells: noUid('rice-field', 2, 0) });
+    assert.equal(count(first.uid, 'rice-field'), 1, 'buyMax is 1');
+  });
   test('farms: kept, capped at three, stamped like the main board', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });

@@ -44,9 +44,20 @@ export async function onRequestPut({request,env}) {
     else if(def.kind==='farm'){if(!cell.uid)cell.uid=newUid('f-');}};
   layout.cells.forEach(stamp);layout.farms.forEach(f=>f.cells.forEach(stamp));
   // buyMax: a NEW field of a type the child already owns is dropped. Fields the
-  // child already has are never touched — the cap is on buying, not owning.
-  for(const def of NR.DEFENSES){if(!def.buyMax)continue;const had=oldLayout.cells.filter(c=>c.type===def.id).length,room=Math.max(0,Math.max(had,def.buyMax)-had);let taken=0;
-    layout.cells=layout.cells.filter(c=>{if(c.type!==def.id)return true;const prior=c.uid&&oldByUid.get(c.uid);if(prior&&prior.type===def.id)return true;return ++taken<=room;});}
+  // child already has are never touched — the cap is on BUYING, not on OWNING.
+  // The allowance for a type is therefore max(stored count, buyMax): a child
+  // with four rice fields keeps all four and is only refused a fifth. Keep the
+  // FIRST `allowance` cells of that type in the incoming layout, drop the rest.
+  //
+  // This must not key on uid. It used to keep a cell only when its uid was one
+  // the server already knew, with room = max(0, max(had,buyMax) - had) = 0 for
+  // anyone who owned one at all — but stamp() above mints a fresh uid for every
+  // cell that arrived without one, so those cells matched nothing and were ALL
+  // dropped: one PUT whose producer cells carried no uid turned four rice
+  // fields and two tomato gardens into zero and zero.
+  for(const def of NR.DEFENSES){if(!def.buyMax)continue;
+    const allowance=Math.max(oldLayout.cells.filter(c=>c.type===def.id).length,def.buyMax);let kept=0;
+    layout.cells=layout.cells.filter(c=>c.type!==def.id||++kept<=allowance);}
   // Kho lính CHỈ đổi ở night-raid/collect.js. Trước đây chỗ này lấy
   // min(kho cũ, số client gửi) để chặn gian lận — nhưng từ khi cướp không
   // còn tiêu lính, không có lý do hợp lệ nào để lính giảm, mà một client
