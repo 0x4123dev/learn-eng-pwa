@@ -806,6 +806,80 @@ async function moneyChecks(add, seenSql, drainLogs) {
         : `status=${pulse.status} coins=${pulse.data && pulse.data.coins}`);
   } catch (e) { add('money.math-fight-flow', 'Đấu Toán: thách đấu → nhận lời → nộp bài → chia xu', false, 'threw: ' + ((e && e.stack) || e)); }
 
+  // ---- Nông trại: một ngày nhiệm vụ xong là cây lớn một nấc, chín thì ra xu ----
+  // Spec 7 asks the verify manifest to cover the farm on the server too. The
+  // client playbook walks the SHOP; this walks the money and the clock: the
+  // ONLY thing that grows a plant is a row in daily_task_rewards, and the
+  // harvest pays the crop's yield out of the same lootable_coins column the
+  // 24h fields always used. Every number below comes from js/farm-rules.js —
+  // the premise of this file is that expectations are read from live data.
+  try {
+    const w = newWorld(seenSql);
+    const kid = await w.createUser({ username: 'Bé Nông Dân', allowBot: true });
+    const Farm = require(path.join(ROOT, 'js', 'farm-rules.js'));
+    const crop = Farm.cropById('carrot') || Farm.CROPS[Farm.CROPS.length - 1];
+    const gmt7 = ms => new Date(ms + 7 * 3600000).toISOString().slice(0, 10);
+    // One finished task-day per past calendar day. daily_task_rewards is keyed
+    // (user_id, task_date), so a day can never be counted twice.
+    let daysBanked = 0;
+    const finishADay = () => {
+      daysBanked++;
+      w.db.prepare('INSERT OR IGNORE INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?,?,200,1)')
+        .run(kid.uid, gmt7(Date.now() - daysBanked * 86400000));
+    };
+    const home = loadModule('functions/api/night-raid/home.js');
+    const collectRoute = loadModule('functions/api/night-raid/collect.js');
+    const boardOf = () => JSON.parse(w.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(kid.uid).layout_json);
+    const purseOf = () => Number(w.db.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(kid.uid).lootable_coins);
+    const collect = () => hit(w, collectRoute.onRequestPost, { url: '/api/night-raid/collect', token: kid.token, body: {} });
+
+    finishADay();                                       // dayCount 1: the farm has a day
+    // Plant through the real PUT, lying about the clock the way a hostile
+    // client would; the server must stamp its own day and date.
+    const planted = await hit(w, home.onRequestPut, {
+      method: 'PUT', url: '/api/night-raid/home', token: kid.token,
+      body: { layout: { cells: [{ type: crop.id, gx: 1, gy: 1, uid: 'c-verify0001', day: -999, at: '2000-01-01' },
+                                { type: 'training-barracks', gx: 8, gy: 8, uid: 'p-verify0001' }], soldiers: 0, dogLane: 2 },
+              dogLevel: 1, castleSkin: 'stone-keep', coins: 0 } });
+    const seeded = boardOf().cells.find(c => c.uid === 'c-verify0001');
+    const stampedToday = !!seeded && seeded.day === 1 && seeded.at === gmt7(Date.now());
+
+    // One task-day short of ripe: the harvest must not pay a xu for the plant,
+    // and must leave it standing. (The barracks beside it does pay a soldier —
+    // that is its own per-task-day clock, and the crop must not ride on it.)
+    for (let i = 1; i < crop.days; i++) finishADay();
+    const early = await collect();
+    const earlySoldiers = Number((early.data && early.data.collectedSoldiers) || 0);
+    const stillGrowing = early.status === 200 && purseOf() === 0
+      && boardOf().cells.some(c => c.uid === 'c-verify0001');
+
+    finishADay();                                       // the day it ripens on
+    const paid = await collect();
+    const purse = purseOf(), board = boardOf();
+    const gone = !board.cells.some(c => c.uid === 'c-verify0001');
+    const harvestedIt = Array.isArray(paid.data && paid.data.harvested)
+      && paid.data.harvested.some(h => h.type === crop.id);
+    const soldiers = Number(paid.data && paid.data.collectedSoldiers);
+
+    const ok = planted.status === 200 && stampedToday && stillGrowing && paid.status === 200
+      && Number(paid.data.collectedCoins) === crop.yield && purse === crop.yield
+      && gone && harvestedIt && earlySoldiers === 1 && soldiers === 1
+      && Number(board.soldiers) === earlySoldiers + soldiers
+      && grantsOf(w, kid.uid) === 0;
+    add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', ok,
+      ok ? `${crop.name.vi} planted on task-day 1 (the server refused the client's day=-999 / at=2000-01-01), paid nothing while it was ${crop.days - 1} of ${crop.days} days grown, then paid exactly ${crop.yield} xu on the day it ripened and left the board; lootable_coins moved by ${crop.yield} and the barracks banked 1 lính on each of the two collects that followed a new task-day; 0 coin_grants rows — the harvest never touches that ledger`
+         : `put=${planted.status} stamped=${stampedToday} (${JSON.stringify(seeded)}) unripeAfter${crop.days - 1}=${stillGrowing} collect=${paid.status} coins=${paid.data && paid.data.collectedCoins} want=${crop.yield} purse=${purse} cropGone=${gone} harvested=${harvestedIt} soldiers=${earlySoldiers}+${soldiers} stock=${board.soldiers} grants=${grantsOf(w, kid.uid)}`);
+
+    // And the clock the farm does NOT have: hours must move nothing.
+    const before = JSON.stringify(boardOf().cells);
+    const idle = await collect();
+    const okIdle = idle.status === 200 && !!idle.data.nothingReady
+      && JSON.stringify(boardOf().cells) === before && purseOf() === crop.yield;
+    add('money.farm-grows-on-tasks-not-hours', 'Cướp Đêm: nông trại không lớn theo giờ', okIdle,
+      okIdle ? 'a second harvest with no new daily_task_rewards row pays nothing and changes no cell — only a finished task-day moves the farm'
+             : `status=${idle.status} nothingReady=${idle.data && idle.data.nothingReady} purse=${purseOf()} want=${crop.yield} boardChanged=${JSON.stringify(boardOf().cells) !== before}`);
+  } catch (e) { add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', false, 'threw: ' + ((e && e.stack) || e)); }
+
   // ---- extra executions purely so dynamically-built SQL is covered ----
   try {
     const w = newWorld(seenSql);
