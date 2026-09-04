@@ -18,12 +18,15 @@ export async function onRequestPost({request,env}) {
   // Hitting a shield costs a flat 200 (the client floors the wallet at 0);
   // an ordinary defeat costs the 10–30 xu marching fee.
   const attackerLoss=won?0:(snapshot.shielded?SHIELD_RAID_LOSS:Math.min(30,Math.max(10,Math.floor(Math.max(0,+snapshot.attackerLootableCoins||0)*.05))));
-  const soldiersUsed=Math.max(0,Math.min(NR.MAX_SOLDIERS,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
+  // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
+  // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
+  // giữ bấy nhiêu, thắng hay thua cũng không mất.
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded:!!snapshot.shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
   // A breach seals the home for a flat 24 hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+RAID_LOCK_MS:0;
   result.lockedUntil=lockedUntil;
-  let soldierLayout=null;if(soldiersUsed>0){const home=await env.DB.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').bind(raid.attacker_id).first();soldierLayout=NR.normalizeLayout(safeJson(home&&home.layout_json,{cells:[],soldiers:0}));soldierLayout.soldiers=Math.max(0,soldierLayout.soldiers-soldiersUsed);result.soldiers=soldierLayout.soldiers;}
+  // (Không còn trừ lính khỏi nhà của bên tấn công.)
   const statements=[
     env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'").bind('[]',JSON.stringify(result),now,raidId),
     env.DB.prepare(`INSERT INTO night_raid_daily(user_id,raid_date,tickets_used,reward_earned) VALUES(?,?,1,?)
@@ -36,7 +39,6 @@ export async function onRequestPost({request,env}) {
   if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?').bind(lockedUntil,raid.defender_id));
   if(victimLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(victimLoss,raid.defender_id));
   if(attackerLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(attackerLoss,raid.attacker_id));
-  if(soldierLayout)statements.push(env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,updated_at=? WHERE user_id=?').bind(JSON.stringify(soldierLayout),now,raid.attacker_id));
-  await env.DB.batch(statements);
+    await env.DB.batch(statements);
   return json({ok:true,result});
 }

@@ -23,7 +23,9 @@ suite('night raid: one deterministic combat mode', () => {
       const farm=R.defenseById(id);
       assert.truthy(farm,id);assert.equal(farm.price,rice.price);assert.equal(farm.yield,100);assert.equal(farm.productionMs,rice.productionMs);assert.equal(farm.maxOwned,4);
     }
-    assert.equal(barracks.productionMs,24*60*60*1000);assert.equal(R.MAX_SOLDIERS,10);
+    assert.equal(barracks.productionMs,24*60*60*1000);
+    // Không còn trần kho lính; 10 chỉ là số con lính vẽ trên bãi cỏ.
+    assert.equal(R.ARMY_DISPLAY_CAP,10);assert.equal(R.MAX_SOLDIERS,undefined);
   });
 
   test('pet power is visible and every collected soldier adds exactly 20 DAM',()=>{
@@ -35,8 +37,8 @@ suite('night raid: one deterministic combat mode', () => {
   test('production metadata survives moves and owned limits are enforced',()=>{
     const cells=[];for(let i=0;i<4;i++)cells.push({type:'rice-field',gx:i,gy:0,uid:'rice-id-'+i,readyAt:1234});cells.push({type:'rice-field',gx:5,gy:0,uid:'rice-id-5',readyAt:1234});
     cells.push({type:'training-barracks',gx:0,gy:1,uid:'barracks-1',readyAt:5678},{type:'training-barracks',gx:1,gy:1,uid:'barracks-2',readyAt:5678},{type:'training-barracks',gx:2,gy:1,uid:'barracks-3',readyAt:5678});
-    const layout=R.normalizeLayout({cells,soldiers:99});
-    assert.equal(layout.cells.filter(c=>c.type==='rice-field').length,4);assert.equal(layout.cells.filter(c=>c.type==='training-barracks').length,2);assert.equal(layout.soldiers,10);
+    const layout=R.normalizeLayout({cells,soldiers:99});  // 99 lính là hợp lệ: kho không có trần
+    assert.equal(layout.cells.filter(c=>c.type==='rice-field').length,4);assert.equal(layout.cells.filter(c=>c.type==='training-barracks').length,2);assert.equal(layout.soldiers,99);
     assert.equal(layout.cells[0].uid,'rice-id-0');assert.equal(layout.cells[0].readyAt,1234);
   });
 

@@ -28,7 +28,13 @@ export async function onRequestPut({request,env}) {
     ?NR.normalizeTeammates(current?safeJson(current.teammates_json,[]):[])
     :NR.normalizeTeammates(body.teammates);
   const now=Date.now(),oldProduction=new Map(oldLayout.cells.filter(c=>NR.defenseById(c.type)?.producer&&c.uid).map(c=>[c.uid,c]));
-  layout.soldiers=current?Math.min(oldLayout.soldiers,layout.soldiers):layout.soldiers;
+  // Kho lính CHỈ đổi ở night-raid/collect.js. Trước đây chỗ này lấy
+  // min(kho cũ, số client gửi) để chặn gian lận — nhưng từ khi cướp không
+  // còn tiêu lính, không có lý do hợp lệ nào để lính giảm, mà một client
+  // cũ (mở app trên máy khác, hoặc appState chưa kịp đồng bộ) vẫn có thể
+  // kéo kho lính tụt xuống và nuốt mất mẻ vừa thu hoạch. Giữ nguyên số
+  // trên máy chủ và bỏ qua số client gửi lên.
+  layout.soldiers=current?oldLayout.soldiers:layout.soldiers;
   for(const cell of layout.cells){const def=NR.defenseById(cell.type);if(!def?.producer)continue;const prior=oldProduction.get(cell.uid);if(prior&&prior.type===cell.type)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid='p-'+crypto.randomUUID().replace(/-/g,'').slice(0,20);cell.readyAt=now+NR.PRODUCTION_MS;}}
   // Dog level is monotonic: dogGrowthXP is never deducted anywhere in the
   // app, so a lower level from a client can only be stale or wrong.

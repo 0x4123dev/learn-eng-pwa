@@ -70,7 +70,7 @@ var NightRaidGame = (() => {
     constructor(canvas,target,options={}){
       if(!canvas||!canvas.getContext)throw new Error('Night Raid needs a canvas');
       this.canvas=canvas;this.ctx=canvas.getContext('2d');this.target=target;this.options=options;
-      this.result=NightRaidRules.resolveAutoBattle(target,target.attackerDamage);this.soldierCount=Math.max(0,Math.min(NightRaidRules.MAX_SOLDIERS,Math.trunc(+target.attackerSoldiers||0)));this.state={...this.result,status:'ready',timeMs:0,soldiers:this.soldierCount};
+      this.result=NightRaidRules.resolveAutoBattle(target,target.attackerDamage);this.soldierCount=Math.max(0,Math.min(NightRaidRules.ARMY_DISPLAY_CAP,Math.trunc(+target.attackerSoldiers||0)));this.state={...this.result,status:'ready',timeMs:0,soldiers:this.soldierCount};
       this.running=false;this.startedAt=0;this.raf=0;this.finished=false;
       this.reduce=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
       // Deterministic battle script: enemy fire, casualties and paths are all

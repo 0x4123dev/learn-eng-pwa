@@ -21,7 +21,14 @@ var NightRaidRules = (() => {
   const START_BUDGET = 80;
   const MAX_COMMANDS = 80;
   const PRODUCTION_MS = 24 * 60 * 60 * 1000;
-  const MAX_SOLDIERS = 10;
+  // Lính KHÔNG còn giới hạn: bé nuôi bao nhiêu cũng được, và không mất lính
+  // sau mỗi trận cướp nữa. Chỉ còn hai con số:
+  //   ARMY_DISPLAY_CAP   nhiều nhất bấy nhiêu con lính đi lại trên bãi cỏ —
+  //                      thuần trình bày, HUD vẫn hiện số thật.
+  //   SOLDIER_SANITY_CAP chặn trên phòng dữ liệu hỏng (NaN, Infinity, số rác
+  //                      từ localStorage cũ). Đây KHÔNG phải luật chơi.
+  const ARMY_DISPLAY_CAP = 10;
+  const SOLDIER_SANITY_CAP = 1000000;
 
   // ---- Parade formation on the home lawn -----------------------------------
   // The soldier sprite is sized in PERCENT of the yard: 6.4% of the width in
@@ -45,7 +52,7 @@ var NightRaidRules = (() => {
   // forms a second rank behind, nudged half a step sideways so the back rank
   // shows between the shoulders of the front one.
   function armySlots(count) {
-    const n = int(count, 0, MAX_SOLDIERS);
+    const n = int(count, 0, ARMY_DISPLAY_CAP);
     const cols = n <= 5 ? Math.max(1, n) : Math.min(5, Math.ceil(n / 2));
     const slots = [];
     for (let i = 0; i < n; i++) {
@@ -167,7 +174,7 @@ var NightRaidRules = (() => {
       if(type.producer){const uid=String(cell&&cell.uid||'');if(/^[A-Za-z0-9-]{8,64}$/.test(uid))entry.uid=uid;entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));}
       clean.push(entry);
     });
-    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,MAX_SOLDIERS), gridVersion:2, castleCell };
+    const result={ cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:2, castleCell };
     return result;
   }
 
@@ -203,7 +210,7 @@ var NightRaidRules = (() => {
   // (functions/api/night-raid/start.js) — same function, same number.
   function combatPower(layout, dogLevel, teammates, soldierCount, swordCount) {
     const clean=normalizeLayout(layout), mates=normalizeTeammates(teammates);
-    const pet=petPower(dogLevel),soldiers=int(soldierCount==null?clean.soldiers:soldierCount,0,MAX_SOLDIERS);
+    const pet=petPower(dogLevel),soldiers=int(soldierCount==null?clean.soldiers:soldierCount,0,SOLDIER_SANITY_CAP);
     const swords=int(swordCount,0,SWORD_CAP),swordDamage=swordBonus(swords);
     let damage=20+pet.damage+soldiers*20+swordDamage;
     let defense=50+pet.defense;
@@ -469,7 +476,7 @@ var NightRaidRules = (() => {
   }
 
   return Object.freeze({
-    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,MAX_SOLDIERS,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_CAP,SCENES,
+    RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_CAP,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),footprintFor,rectsOverlap,
     makeRng,normalizeTeammates,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
     normalizeCommands,simulate,trainingStars,
