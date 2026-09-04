@@ -14,13 +14,14 @@ Tiêu chí bắt buộc, mọi quyết định bên dưới phải thỏa:
 4. **Mọi màn liên quan đều chỉ về việc hoàn thành nhiệm vụ hôm nay**, kể cả trang Daily Task.
 5. **Không có màn hình mới.** Bé trồng trên khu vườn lâu đài đang có. Hạt giống, công trình nông trại, và nông trại riêng đều mua trong nút SHOP đang có.
 6. **Ruộng cũ giữ như cũ**, chỉ giới hạn mỗi loại một cái để xu thụ động không lấn át việc học. **Trại lính chỉ ra lính khi xong nhiệm vụ.**
-7. **Chỉ mở cho tài khoản có cờ `allow_bot`**, để thử với vài bé trước.
+7. **Chỉ mở cho tài khoản có cờ `allow_bot`**, để thử với vài bé trước. Cờ này từ nay chỉ còn nghĩa "được chơi trước": **hai chế độ chơi với bot bị gỡ** (mục 3.9).
 8. Luật đủ ngắn để một bé lớp 4 hiểu trong ba câu.
 
 ## 2. Hiện trạng liên quan
 
 - **Khu vườn lâu đài** (`js/night-raid.js`, `js/night-raid-rules.js`): lưới 12×12 trong màn Cướp Đêm, tab Arena, hiện với `appState.allowBot`. Lâu đài chiếm 3×3. Nút SHOP mở khay ngang một danh sách duy nhất là `DEFENSES`; kéo món vào ô hoặc chạm chọn rồi chạm ô để mua; máy bé trừ ví rồi PUT `layout_json` lên `night_raid_homes`. Bốn công trình sản xuất theo đồng hồ: ruộng lúa, vườn cà chua, ao cá cho 100 xu mỗi 24 giờ, tối đa 4 mỗi loại; trại huấn luyện 4.000 xu cho 1 lính mỗi 24 giờ, tối đa 2. Đồng hồ nằm ở `cell.readyAt` và `PRODUCTION_MS`; server giữ `readyAt` cũ khi PUT (`functions/api/night-raid/home.js:28`) và trả xu khi thu hoạch bằng cộng dồn vào `night_raid_homes.lootable_coins` rồi trả số dư mới cho máy bé (`functions/api/night-raid/collect.js`). `normalizeLayout` **xóa** ô vượt `maxOwned` (`night-raid-rules.js:91`).
 - **Trận cướp** bỏ qua mọi ô có `producer` (`night-raid-rules.js:146, 211`). **Cấp nhà** chỉ cộng giá của món tra được trong `DEFENSES` (`night-raid-rules.js:113`). Món nằm ngoài `DEFENSES` tự động không ảnh hưởng trận đánh và cấp nhà.
+- **Hai chế độ bot**, cả hai chạy hoàn toàn ở máy bé, không có đường server: "Luyện tập với máy" trong Arena (`js/petbattlebot.js`, `startBotBattle`/`finishBotBattle` trong `js/petbattle.js`, nút `pb-practice-btn`, được `allow_bot` mở); và nút CƯỚP ĐÊM trong màn Cướp Đêm cướp một nhà bot luyện tập (`nrScoutBot` → `scoutBot` → `makeBotTarget` chọn trong 20 bậc `trainingTarget`). Nút NHÀ THẬT cạnh đó cướp nhà bé khác qua server. `trainingTarget` còn là snapshot mặc định của `resolveAutoBattle` và `createState` (`night-raid-rules.js:193, 209`).
 - **Khung đất** là một ảnh hàng rào cố định (`isometric-home-board-frame-v4.png`), bên trong trong suốt, lưới CSS đè lên. Số cột và hàng của lưới là tham số CSS, nên cùng khung có thể đè lưới cỡ khác.
 - **Daily Task** (`js/daily-task-catalog.js`, `js/daily-task.js`, `functions/api/_daily-task.js`, `db/018`, `db/019`): admin giao nhiệm vụ theo catalog, mỗi nhiệm vụ là N phiên đạt 100% trong ngày GMT+7. Tiến độ đếm từ `activities` khi đọc. Xong hết thì server chèn một dòng `daily_task_rewards(user_id, task_date)` và trả 200 xu qua `coin_grants`, đúng một lần mỗi ngày. Dòng này là khóa. Trang bé có hero một vòng tròn một câu, danh sách nhiệm vụ với nút Vào học, kho khiên kiếm, và thẻ ở màn Home.
 - **Tranh**: các tấm nền trận đánh được sinh bằng ImageGen, lưu ở kho ảnh sinh của Codex, rồi `scripts/build-battle-scenes.py` dùng PIL cắt, thu nhỏ, xuất WebP vào `img/`. Nông trại dùng lại quy trình này.
@@ -114,7 +115,17 @@ Thuần trưng bày, không sản xuất, không phòng thủ. Là phần "xây 
 - Khi có cây héo, nút đổi thành **VÀO HỌC ĐỂ CÂY TƯƠI** và mở trang Daily Task. Ruộng cũ đến giờ vẫn thu được bằng cách chạm riêng ruộng, vì ruộng không héo.
 - Sau khi thu, nếu vừa hái ít nhất một cây, hiện thêm nút **TRỒNG LẠI NHƯ CŨ**: trồng lại đúng loại hạt vào đúng các ô vừa hái, trừ ví một lần. Không đủ xu thì nút mờ và ghi số xu còn thiếu. Nút này để bé không phải kéo từng ô mỗi ngày.
 
-### 3.9 Nhịp tiền ước tính
+### 3.9 Bỏ chế độ bot
+
+Người dùng chốt: chỉ còn chơi với người thật. Cờ `allow_bot` giữ nguyên tên trong cơ sở dữ liệu và trang admin, chỉ đổi nghĩa thành "được chơi nông trại và Cướp Đêm trước".
+
+- **Gỡ "Luyện tập với máy" ở Arena**: xóa nút `pb-practice-btn`, `startBotBattle`, `finishBotBattle`, nút "chơi lại" của kết quả luyện tập, chuỗi dịch `practiceBtn`/`practiceSub`/`practiceAgain`; xóa file `js/petbattlebot.js`, thẻ script trong `index.html`, dòng precache trong `sw.js`. Đấu với bạn thật giữ nguyên.
+- **Gỡ cướp nhà bot trong Cướp Đêm**: xóa nút CƯỚP ĐÊM gọi `nrScoutBot`, hàm `scoutBot`, `makeBotTarget`, và danh sách 20 nhà bot. Nút NHÀ THẬT trở thành nút cướp chính, lấy tên **CƯỚP ĐÊM** và biểu tượng mặt trăng, mở danh sách nhà thật như nay. Không có nhà thật phù hợp thì màn hình nói rõ "Chưa có nhà nào để cướp đêm nay, mai thử lại", không đưa nhà bot ra thay.
+- Vé cướp 3 mỗi ngày, cộng 1 khi đủ 10 câu, kiếm cộng DAM, khiên chặn cướp: giữ nguyên, chỉ còn dùng cho nhà thật.
+- `trainingTarget` và `trainingLayout` giữ trong `night-raid-rules.js` vì là snapshot mặc định của mô phỏng và được test dùng; không còn nút nào trên màn hình dẫn tới chúng.
+- Không đụng server: cả hai chế độ bot chưa từng có endpoint riêng.
+
+### 3.10 Nhịp tiền ước tính
 
 Mỗi ngày làm xong nhiệm vụ: 200 xu thưởng, xu của các phiên học, tối đa 300 xu ruộng cũ, và xu hái cây. Khu lâu đài thường còn 40 đến 80 ô trống; 40 ô toàn bí ngô cho khoảng 500 xu một ngày. Nông trại riêng 36 ô cho thêm khoảng 450 xu một ngày. Bé mua được nông trại riêng đầu tiên sau khoảng **2 đến 3 tuần** làm xong đều. Các con số là chỗ tinh chỉnh; luật thì cố định.
 
@@ -138,7 +149,8 @@ Mọi thứ nằm trong `night_raid_homes.layout_json` và đi qua ba endpoint �
 | `functions/api/me/daily-tasks.js` | Thêm `farm` khi `allow_bot`. |
 | `js/daily-task.js` | Hero nhắc vườn; dải vườn; thẻ Home nhắc héo; "Xem vườn" mở màn xây nhà. |
 | `scripts/build-farm-art.py` (mới) | Đọc ảnh gốc theo bản kê, cắt, thu về cỡ chuẩn, xuất WebP vào `img/farm/`. Kiểu `build-battle-scenes.py`. |
-| `js/lazy-data.js`, `sw.js` | Thêm `farm-rules.js`, `farm-art-manifest.js`, tranh theo bản kê. |
+| `js/petbattle.js`, `js/petbattlebot.js` (xóa), `index.html` | Gỡ luyện tập với máy theo 3.9. |
+| `js/lazy-data.js`, `sw.js` | Thêm `farm-rules.js`, `farm-art-manifest.js`, tranh theo bản kê; bỏ `petbattlebot.js` khỏi precache. |
 | `css/styles.css` | Tab SHOP, chip khu, lưới 6×6, lớp héo, thanh nhiệm vụ, dải vườn trên trang Daily Task. |
 
 Không thêm mục vào `daily-task-catalog.js`: hái vườn không phải việc học, không thể giao làm nhiệm vụ.
@@ -240,6 +252,8 @@ Chạy bằng Node 22, `npm test`, hàng đợi tự nhận `tests/*.test.js`, m
 - `tests/night-raid-home-put.test.js` (sửa hoặc thêm): PUT không cho lùi `day`, `lastDay`; ô mới nhận `day`, `at` của server; ruộng mới bị bỏ khi đã có cùng loại, ruộng cũ dư giữ nguyên; hơn 3 nông trại riêng bị cắt; món phòng thủ trong nông trại riêng bị bỏ.
 - `tests/daily-task-client.test.js` (mở rộng): hero, dải vườn, thẻ Home đúng chữ ở ba trạng thái tươi, héo, xong; ẩn khi không có cờ. `tests/night-raid-builder-farm.test.js`: SHOP bốn tab, tab Phòng thủ ẩn ở nông trại riêng, ruộng đã có mờ trong SHOP, chip khu chỉ hiện khi có nông trại riêng, nhãn "còn N ngày", THU HOẠCH đổi thành Vào học khi héo, TRỒNG LẠI NHƯ CŨ mờ khi thiếu xu, mất mạng thì mua và hái tắt.
 - `tests/farm-art.test.js`: như 6.1 bước 4.
+- **Bỏ chế độ bot**: xóa `tests/bot-practice.test.js`; sửa `tests/teammates.test.js`, `tests/cups.test.js`, `tests/battle-hit-logic.test.js`, `tests/castle-collision.test.js`, `tests/field-rules.test.js` chỗ đang nạp `petbattlebot.js` hoặc gọi `startBotBattle`/`finishBotBattle` (giữ phần kiểm luật bắn, bỏ phần bot); sửa `tests/night-raid-screens.test.js`, `tests/night-raid-ui.test.js`, `tests/home-yard-layout.test.js` chỗ gọi `scoutBot`/`nrScoutBot`/`makeBotTarget`; `tests/night-raid-rules.test.js` và `tests/night-raid-choreo.test.js` giữ `trainingTarget`. Thêm khẳng định: `index.html` và `sw.js` không còn nhắc `petbattlebot.js`; Arena không có nút luyện tập với máy; màn Cướp Đêm không có nút gọi `nrScoutBot`.
+- `tests/verify/manifest.js`: sửa mô tả mục Cướp Đêm và Arena cho khớp sau khi gỡ bot, vì bản kê lỗi khi nêu thứ app không còn có.
 - Cập nhật kiểm tra danh sách precache và `SCREEN_FILES` cho file mới.
 - Thêm mục nông trại, nông trại riêng, trại lính theo ngày vào bản kê `npm run verify`.
 - Không sửa bốn mốc phiên bản bằng tay; `scripts/deploy.sh` tự bump.
@@ -276,7 +290,8 @@ Chạy bằng Node 22, `npm test`, hàng đợi tự nhận `tests/*.test.js`, m
 | Hái ra xu thẳng, không kho, không chợ, không đơn hàng | Ba hệ đó là móc quay lại và độ phức tạp, không thêm việc học nào. |
 | Số xu nhỏ (hái 8 đến 120) | Bản ×10 cho hàng nghìn xu một ngày, làm 200 xu thưởng nhiệm vụ thành vô nghĩa và chạm trần ví trong hai tuần. |
 | Nông trại riêng 10.000, không cần Giấy Đất | Người dùng chốt. |
-| Theo cờ `allow_bot` | Thử với vài bé trước khi mở rộng. |
+| Theo cờ `allow_bot`, cờ chỉ còn nghĩa "được chơi trước" | Thử với vài bé trước khi mở rộng. |
+| Gỡ cả luyện tập với máy và cướp nhà bot | Người dùng chốt: chỉ chơi với người thật; chơi với máy là thời gian không thành việc học. Cả hai đều ở máy bé nên gỡ không đụng server. |
 | `dayCount` và héo đếm từ `daily_task_rewards` | Dùng lại khóa đúng-một-lần đã có; không bộ đếm mới, không race. |
 | Bản kê tranh là mã, có test tồn tại | Tranh chưa `git add` từng làm khu lâu đài thiếu nền ở checkout sạch. |
 | Không vào `daily-task-catalog.js` | Nông trại không phải việc học. |
