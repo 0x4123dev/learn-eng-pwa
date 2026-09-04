@@ -581,6 +581,16 @@ function volleyDamage(opts) {
   return volleyTotal(volleyShots(opts), rules);
 }
 
+// The volley rulebook is defined BELOW the BattleCalc literal above, so it
+// could not be listed there. The browser reads every constant and function
+// through that namespace (top-level `const` in a classic script is not a
+// window property), and js/petbattlegame.js calls BattleCalc.volleyShots on
+// every shot — so leaving these four off it made the FIRE button consume a
+// poop, throw, and jam the turn with `busy` stuck true, killing the button
+// for the rest of the battle. module.exports carried them, which is why the
+// whole Node suite stayed green while no child could fire.
+Object.assign(BattleCalc, { volleyShots, volleyTotal, volleyDamage, POWER_REF_LEVEL });
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     BATTLE_ROUNDS, BARRELS, AMMO_PER_CORRECT, AMMO_VOLUME_MAX, AMMO_PERFECT_MAX,
