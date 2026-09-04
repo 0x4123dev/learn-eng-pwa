@@ -13827,6 +13827,33 @@
 @media(min-width:768px){.nr-builder-nav{width:320px}.nr-builder-nav-btn{min-height:60px;font-size:11px}.nr-builder-nav-btn svg{width:24px;height:24px}}
 @media(prefers-reduced-motion:reduce){.nr-builder-nav,.nr-builder-nav-btn{transition:none}}
 
+/* Compact icon rail: Night Raid actions sit above SHOP instead of consuming
+   the bottom of the map. Text remains in the DOM for assistive technology but
+   is visually clipped; every icon keeps a 48px touch target. */
+.nr-builder-nav{left:auto;right:max(14px,env(safe-area-inset-right));top:calc(114px + env(safe-area-inset-top));bottom:auto;width:48px;transform:none;grid-template-columns:48px;gap:6px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+.nr-builder-nav-btn{width:48px;height:48px;min-height:48px;padding:0;border:2px solid rgba(255,255,255,.95);border-radius:15px;box-shadow:0 4px 0 #b95b20,0 8px 18px rgba(51,68,38,.2)}
+.nr-builder-nav-btn svg{width:24px;height:24px}
+.nr-builder-nav-btn>span,.nr-builder-shop-fab>span,.nr-builder-rotate>span,.nr-builder-edit>span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{right:max(14px,env(safe-area-inset-right));width:48px;height:48px;min-width:48px;min-height:48px;border-radius:15px}
+.nr-builder-shop-fab{top:calc(276px + env(safe-area-inset-top));padding:0}
+.nr-builder-shop-fab svg,.nr-builder-rotate svg,.nr-builder-edit svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.3}
+.nr-builder-rotate{top:calc(330px + env(safe-area-inset-top))}
+.nr-builder-edit{top:calc(384px + env(safe-area-inset-top))}
+.nr-builder.shop-open .nr-builder-shop-fab{top:calc(158px + env(safe-area-inset-top))}
+.nr-builder:has(.nr-builder-nav) .nr-collect-all{bottom:calc(64px + env(safe-area-inset-bottom))}
+.nr-builder:has(.nr-builder-nav) .nr-replant{bottom:calc(126px + env(safe-area-inset-bottom))}
+.nr-shop-tabs{gap:8px}
+.nr-shop-tabs button{width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center}
+.nr-shop-tabs button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2}
+@media(min-width:768px){.nr-builder-nav{width:48px;grid-template-columns:48px}.nr-builder-nav-btn{min-height:48px}.nr-builder-shop-fab,.nr-builder-rotate,.nr-builder-edit{width:48px;height:48px}.nr-builder-shop-fab svg{width:24px;height:24px}}
+.nr-builder.rotated .nr-builder-nav{left:auto;right:14px;top:14px;bottom:auto;width:44px;transform:none;grid-template-columns:44px;gap:6px}
+.nr-builder.rotated .nr-builder-nav-btn{width:44px;height:44px;min-height:44px}
+.nr-builder.rotated .nr-builder-shop-fab,.nr-builder.rotated .nr-builder-rotate,.nr-builder.rotated .nr-builder-edit{right:14px;width:44px;height:44px;min-width:44px;min-height:44px}
+.nr-builder.rotated .nr-builder-shop-fab{top:164px}
+.nr-builder.rotated .nr-builder-rotate{top:214px}
+.nr-builder.rotated .nr-builder-edit{top:264px}
+.nr-builder.rotated.shop-open .nr-builder-shop-fab{top:14px}
+
 /* Daily Task: the garden strip */
 .dt-farm{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:10px;margin:10px 14px 0;padding:10px 12px;border-radius:18px;background:#eef7dd;color:#2f4632}
 .dt-farm.wilted{background:#f6e3c6;color:#6b4a1f}

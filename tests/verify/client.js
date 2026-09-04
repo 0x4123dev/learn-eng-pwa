@@ -559,7 +559,8 @@ function screenPlaybook() {
         for (const [id, label] of [['defense', 'Phòng thủ'], ['seeds', 'Hạt giống'], ['farm', 'Nông trại'], ['expand', 'Mở rộng']]) {
           const tab = tabs.filter((t) => String(t.getAttribute('onclick') || '').includes("nrSelectShopTab('" + id + "')"));
           mustEqual(tab.length, 1, 'the shop offers exactly one "' + id + '" tab');
-          must(squash(tab[0].textContent).includes(label), 'the ' + id + ' tab is labelled "' + label + '"');
+          mustEqual(tab[0].getAttribute('aria-label'), label, 'the ' + id + ' icon announces "' + label + '"');
+          must(!squash(tab[0].textContent), 'the ' + id + ' tab is icon-only and does not spend room on text');
         }
 
         // Every crop the rules define must be on sale. Derived from the live
