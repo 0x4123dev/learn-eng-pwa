@@ -42,6 +42,9 @@ suite('leaving a screen: nothing that can be running is left unguarded', () => {
     isBonusTopicLesson: 'classifies a lesson',
     isUnitMastered: 'reads a mastery total',
     isActive: 'GhostOfferingEvent — switchScreen guards it as GhostOfferingEvent.isActive()',
+    isCrop: 'FarmRules — classifies one layout cell',
+    isFarmBuilding: 'FarmRules — classifies one layout cell',
+    isWilted: 'FarmRules — reads a planting date against the task-day context',
   };
   // Running activities that switchScreen may skip, each with what is NOT lost.
   const EXEMPT = {
