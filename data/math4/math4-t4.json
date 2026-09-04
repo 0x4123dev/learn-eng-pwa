@@ -1,0 +1,1608 @@
+{
+  "t": 4,
+  "key": "loivan",
+  "title": "Giải toán có lời văn",
+  "icon": "④",
+  "questions": [
+    {
+      "id": "g4t4-1",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Bình có 300 kg phân đạm và đóng đều vào 6 bao. Hỏi muốn đóng hết 1050 kg phân đạm thì cần bao nhiêu bao như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "21",
+          "expr": "1050/(300/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam phân đạm là:<br>300 : 6 = <b>50</b> (kg)<br>1050 kg phân đạm đóng được số bao là:<br>1050 : 50 = <b>21</b> (bao)<br>Đáp số: <b>21</b> bao."
+    },
+    {
+      "id": "g4t4-2",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Nhung có 120 cây bắp cải và trồng đều thành 4 luống. Hỏi cô Nhung cần bao nhiêu cây bắp cải để trồng đủ 21 luống như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số cây",
+          "answer": "630",
+          "expr": "120/4*21"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi luống có số cây bắp cải là:<br>120 : 4 = <b>30</b> (cây)<br>21 luống như thế có số cây bắp cải là:<br>30 × 21 = <b>630</b> (cây)<br>Đáp số: <b>630</b> cây."
+    },
+    {
+      "id": "g4t4-3",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Trong 2 ngày, xưởng may của cô Hạnh may được 120 chiếc áo, mỗi ngày như nhau. Hỏi để may được 240 chiếc áo thì xưởng đó cần bao nhiêu ngày?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ngày",
+          "answer": "4",
+          "expr": "240/120*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>240 chiếc áo gấp 120 chiếc áo số lần là:<br>240 : 120 = <b>2</b> (lần)<br>Để may được 240 chiếc áo cần số ngày là:<br>2 × 2 = <b>4</b> (ngày)<br>Đáp số: <b>4</b> ngày."
+    },
+    {
+      "id": "g4t4-4",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Xe tải của cô Hạnh chở hết 6 tấn hàng trong 2 chuyến, mỗi chuyến chở như nhau. Hỏi 8 chuyến như thế xe đó chở được bao nhiêu tấn hàng?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số tấn",
+          "answer": "24",
+          "expr": "8/2*6"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>8 chuyến gấp 2 chuyến số lần là:<br>8 : 2 = <b>4</b> (lần)<br>8 chuyến như thế chở số tấn hàng là:<br>6 × 4 = <b>24</b> (tấn)<br>Đáp số: <b>24</b> tấn."
+    },
+    {
+      "id": "g4t4-5",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Đào nhận về 30 lít dầu ăn rồi chia đều vào 6 can. Hỏi với 35 lít dầu ăn, chị Đào rót đầy được bao nhiêu can như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số can",
+          "answer": "7",
+          "expr": "35/(30/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi can chứa số lít dầu ăn là:<br>30 : 6 = <b>5</b> (lít)<br>35 lít dầu ăn rót đầy được số can là:<br>35 : 5 = <b>7</b> (can)<br>Đáp số: <b>7</b> can."
+    },
+    {
+      "id": "g4t4-6",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở công trường của chị Mai, 120 kg xi măng được đóng đều vào 3 bao. Hỏi với 4 bao như thế, chị Mai đóng được bao nhiêu ki-lô-gam xi măng?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "160",
+          "expr": "120/3*4"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam xi măng là:<br>120 : 3 = <b>40</b> (kg)<br>4 bao như thế đựng số ki-lô-gam xi măng là:<br>40 × 4 = <b>160</b> (kg)<br>Đáp số: <b>160</b> kg."
+    },
+    {
+      "id": "g4t4-7",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Mai có 30 kg cam và xếp đều vào 6 giỏ. Hỏi 60 kg cam thì xếp được vào mấy giỏ như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số giỏ",
+          "answer": "12",
+          "expr": "60/30*6"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>60 kg gấp 30 kg số lần là:<br>60 : 30 = <b>2</b> (lần)<br>60 kg cam xếp được vào số giỏ là:<br>6 × 2 = <b>12</b> (giỏ)<br>Đáp số: <b>12</b> giỏ."
+    },
+    {
+      "id": "g4t4-8",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Hải rót đều 6 lít mật ong vào 3 lọ. Hỏi 12 lọ như thế chứa bao nhiêu lít mật ong?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "24",
+          "expr": "12/3*6"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>12 lọ gấp 3 lọ số lần là:<br>12 : 3 = <b>4</b> (lần)<br>12 lọ như thế chứa số lít mật ong là:<br>6 × 4 = <b>24</b> (lít)<br>Đáp số: <b>24</b> lít."
+    },
+    {
+      "id": "g4t4-9",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Mai nhận về 40 kg gạo rồi chia đều vào 4 bao. Hỏi muốn đóng hết 180 kg gạo thì cần bao nhiêu bao như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "18",
+          "expr": "180/(40/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam gạo là:<br>40 : 4 = <b>10</b> (kg)<br>180 kg gạo đóng được số bao là:<br>180 : 10 = <b>18</b> (bao)<br>Đáp số: <b>18</b> bao."
+    },
+    {
+      "id": "g4t4-10",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Hùng nhận về 120 kg ngô rồi chia đều vào 4 bao. Hỏi với 7 bao như thế, bác Hùng đóng được bao nhiêu ki-lô-gam ngô?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "210",
+          "expr": "120/4*7"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam ngô là:<br>120 : 4 = <b>30</b> (kg)<br>7 bao như thế đựng số ki-lô-gam ngô là:<br>30 × 7 = <b>210</b> (kg)<br>Đáp số: <b>210</b> kg."
+    },
+    {
+      "id": "g4t4-11",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở trại của bác Thắng, một máy bơm bơm đầy 3 bể nước hết 6 giờ. Hỏi chạy 18 giờ thì máy bơm đó bơm đầy được bao nhiêu bể nước như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bể",
+          "answer": "9",
+          "expr": "18/6*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>18 giờ gấp 6 giờ số lần là:<br>18 : 6 = <b>3</b> (lần)<br>Trong 18 giờ máy bơm bơm đầy được số bể là:<br>3 × 3 = <b>9</b> (bể)<br>Đáp số: <b>9</b> bể."
+    },
+    {
+      "id": "g4t4-12",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Tổ công nhân của thầy Nam làm được 60 sản phẩm sau 3 ngày làm việc đều nhau. Hỏi với 12 ngày như thế, tổ đó làm được tất cả bao nhiêu sản phẩm?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số sản phẩm",
+          "answer": "240",
+          "expr": "12/3*60"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>12 ngày gấp 3 ngày số lần là:<br>12 : 3 = <b>4</b> (lần)<br>Trong 12 ngày tổ đó làm được số sản phẩm là:<br>60 × 4 = <b>240</b> (sản phẩm)<br>Đáp số: <b>240</b> sản phẩm."
+    },
+    {
+      "id": "g4t4-13",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Quý có 10 kg cà phê và đóng đều vào 5 túi. Hỏi với 12 kg cà phê, chú Quý đóng được bao nhiêu túi như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "6",
+          "expr": "12/(10/5)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi đựng số ki-lô-gam cà phê là:<br>10 : 5 = <b>2</b> (kg)<br>12 kg cà phê đóng được số túi là:<br>12 : 2 = <b>6</b> (túi)<br>Đáp số: <b>6</b> túi."
+    },
+    {
+      "id": "g4t4-14",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Trong 5 ngày, đội thủy lợi của cô Hạnh đào được 125 mét mương, mỗi ngày như nhau. Hỏi 12 ngày như thế thì đội đó đào được bao nhiêu mét mương?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số mét",
+          "answer": "300",
+          "expr": "125/5*12"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi ngày đội đó đào được số mét mương là:<br>125 : 5 = <b>25</b> (mét)<br>Trong 12 ngày đội đó đào được số mét mương là:<br>25 × 12 = <b>300</b> (mét)<br>Đáp số: <b>300</b> mét."
+    },
+    {
+      "id": "g4t4-15",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cửa hàng văn phòng phẩm của bác Sáu, 20 chiếc bút được xếp đều vào 2 hộp. Hỏi 40 chiếc bút thì xếp được vào mấy hộp như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số hộp",
+          "answer": "4",
+          "expr": "40/20*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>40 chiếc gấp 20 chiếc số lần là:<br>40 : 20 = <b>2</b> (lần)<br>40 chiếc bút xếp được vào số hộp là:<br>2 × 2 = <b>4</b> (hộp)<br>Đáp số: <b>4</b> hộp."
+    },
+    {
+      "id": "g4t4-16",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Ba rót đều 20 lít sơn vào 4 thùng. Hỏi với 8 thùng như thế, chú Ba rót được bao nhiêu lít sơn?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "40",
+          "expr": "8/4*20"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>8 thùng gấp 4 thùng số lần là:<br>8 : 4 = <b>2</b> (lần)<br>8 thùng như thế chứa số lít sơn là:<br>20 × 2 = <b>40</b> (lít)<br>Đáp số: <b>40</b> lít."
+    },
+    {
+      "id": "g4t4-17",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Long xếp đều 90 quả trứng vào 3 khay. Hỏi với 480 quả trứng, bác Long xếp được vào bao nhiêu khay như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số khay",
+          "answer": "16",
+          "expr": "480/(90/3)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi khay có số quả trứng là:<br>90 : 3 = <b>30</b> (quả)<br>480 quả trứng xếp được vào số khay là:<br>480 : 30 = <b>16</b> (khay)<br>Đáp số: <b>16</b> khay."
+    },
+    {
+      "id": "g4t4-18",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Tuấn xếp đều 120 quyển sách vào 6 thùng. Hỏi anh Tuấn cần bao nhiêu quyển sách để xếp đủ 21 thùng như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số quyển",
+          "answer": "420",
+          "expr": "120/6*21"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng có số quyển sách là:<br>120 : 6 = <b>20</b> (quyển)<br>21 thùng như thế có số quyển sách là:<br>20 × 21 = <b>420</b> (quyển)<br>Đáp số: <b>420</b> quyển."
+    },
+    {
+      "id": "g4t4-19",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm có 60 lít sữa tươi và chia đều vào 5 thùng. Hỏi muốn chia hết 120 lít sữa tươi thì cần bao nhiêu thùng như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số thùng",
+          "answer": "10",
+          "expr": "120/60*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>120 lít gấp 60 lít số lần là:<br>120 : 60 = <b>2</b> (lần)<br>120 lít sữa tươi chia được vào số thùng là:<br>5 × 2 = <b>10</b> (thùng)<br>Đáp số: <b>10</b> thùng."
+    },
+    {
+      "id": "g4t4-20",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Hiền nhận về 60 lít nước lọc rồi chia đều vào 3 bình. Hỏi bà Hiền cần bao nhiêu lít nước lọc để rót đủ 15 bình như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "300",
+          "expr": "15/3*60"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>15 bình gấp 3 bình số lần là:<br>15 : 3 = <b>5</b> (lần)<br>15 bình như thế chứa số lít nước lọc là:<br>60 × 5 = <b>300</b> (lít)<br>Đáp số: <b>300</b> lít."
+    },
+    {
+      "id": "g4t4-21",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cửa hàng của bác Thắng, 12 kg đường được đóng đều vào 6 túi. Hỏi muốn đóng hết 30 kg đường thì cần bao nhiêu túi như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "15",
+          "expr": "30/(12/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi đựng số ki-lô-gam đường là:<br>12 : 6 = <b>2</b> (kg)<br>30 kg đường đóng được số túi là:<br>30 : 2 = <b>15</b> (túi)<br>Đáp số: <b>15</b> túi."
+    },
+    {
+      "id": "g4t4-22",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Thắng nhận về 150 chiếc ghế rồi chia đều vào 5 phòng học. Hỏi bác Thắng cần bao nhiêu chiếc ghế để kê đủ 16 phòng học như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ghế",
+          "answer": "480",
+          "expr": "150/5*16"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi phòng học có số chiếc ghế là:<br>150 : 5 = <b>30</b> (chiếc)<br>16 phòng học như thế có số chiếc ghế là:<br>30 × 16 = <b>480</b> (chiếc)<br>Đáp số: <b>480</b> chiếc."
+    },
+    {
+      "id": "g4t4-23",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Bảy đóng đều 75 kg muối vào 3 bao. Hỏi muốn đóng hết 225 kg muối thì cần bao nhiêu bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "9",
+          "expr": "225/75*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>225 kg gấp 75 kg số lần là:<br>225 : 75 = <b>3</b> (lần)<br>225 kg muối đóng được số bao là:<br>3 × 3 = <b>9</b> (bao)<br>Đáp số: <b>9</b> bao."
+    },
+    {
+      "id": "g4t4-24",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Kiên có 20 kg mì chính và chia đều vào 4 bao. Hỏi 16 bao như thế đựng bao nhiêu ki-lô-gam mì chính?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "80",
+          "expr": "16/4*20"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>16 bao gấp 4 bao số lần là:<br>16 : 4 = <b>4</b> (lần)<br>16 bao như thế đựng số ki-lô-gam mì chính là:<br>20 × 4 = <b>80</b> (kg)<br>Đáp số: <b>80</b> kg."
+    },
+    {
+      "id": "g4t4-25",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Quý lái xe chở 12 tấn cát, chia đều thành 4 chuyến. Hỏi với 15 tấn cát, xe đó phải chở bao nhiêu chuyến như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số chuyến",
+          "answer": "5",
+          "expr": "15/(12/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi chuyến xe chở số tấn cát là:<br>12 : 4 = <b>3</b> (tấn)<br>Chở hết 15 tấn cát cần số chuyến là:<br>15 : 3 = <b>5</b> (chuyến)<br>Đáp số: <b>5</b> chuyến."
+    },
+    {
+      "id": "g4t4-26",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Hạnh nhận về 120 kg thóc rồi chia đều vào 3 bao. Hỏi 7 bao như thế đựng bao nhiêu ki-lô-gam thóc?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "280",
+          "expr": "120/3*7"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam thóc là:<br>120 : 3 = <b>40</b> (kg)<br>7 bao như thế đựng số ki-lô-gam thóc là:<br>40 × 7 = <b>280</b> (kg)<br>Đáp số: <b>280</b> kg."
+    },
+    {
+      "id": "g4t4-27",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cơ sở nước mắm của bác Thắng, 8 lít nước mắm được rót đều vào 4 chai. Hỏi muốn rót hết 24 lít nước mắm thì cần bao nhiêu chai như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số chai",
+          "answer": "12",
+          "expr": "24/8*4"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>24 lít gấp 8 lít số lần là:<br>24 : 8 = <b>3</b> (lần)<br>24 lít nước mắm rót đầy được số chai là:<br>4 × 3 = <b>12</b> (chai)<br>Đáp số: <b>12</b> chai."
+    },
+    {
+      "id": "g4t4-28",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Tuấn có 20 kg lạc và đóng đều vào 2 bao. Hỏi với 8 bao như thế, anh Tuấn đóng được bao nhiêu ki-lô-gam lạc?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "80",
+          "expr": "8/2*20"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>8 bao gấp 2 bao số lần là:<br>8 : 2 = <b>4</b> (lần)<br>8 bao như thế đựng số ki-lô-gam lạc là:<br>20 × 4 = <b>80</b> (kg)<br>Đáp số: <b>80</b> kg."
+    },
+    {
+      "id": "g4t4-29",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Dũng có 600 viên gạch và xếp đều lên 4 xe. Hỏi 1050 viên gạch thì anh Dũng xếp được lên bao nhiêu xe như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số xe",
+          "answer": "7",
+          "expr": "1050/(600/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi xe chở số viên gạch là:<br>600 : 4 = <b>150</b> (viên)<br>1050 viên gạch xếp được lên số xe là:<br>1050 : 150 = <b>7</b> (xe)<br>Đáp số: <b>7</b> xe."
+    },
+    {
+      "id": "g4t4-30",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Sáu có 50 quyển vở và xếp đều vào 5 túi. Hỏi với 16 túi như thế, bác Sáu xếp được bao nhiêu quyển vở?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số quyển",
+          "answer": "160",
+          "expr": "50/5*16"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi có số quyển vở là:<br>50 : 5 = <b>10</b> (quyển)<br>16 túi như thế có số quyển vở là:<br>10 × 16 = <b>160</b> (quyển)<br>Đáp số: <b>160</b> quyển."
+    },
+    {
+      "id": "g4t4-31",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở kho bột nhà chị Hoa, 20 kg bột mì được đóng đều vào 4 túi. Hỏi muốn đóng hết 80 kg bột mì thì cần bao nhiêu túi như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "16",
+          "expr": "80/20*4"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>80 kg gấp 20 kg số lần là:<br>80 : 20 = <b>4</b> (lần)<br>80 kg bột mì đóng được số túi là:<br>4 × 4 = <b>16</b> (túi)<br>Đáp số: <b>16</b> túi."
+    },
+    {
+      "id": "g4t4-32",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Thầy Sơn có 40 kg táo và xếp đều vào 4 thùng. Hỏi thầy Sơn cần bao nhiêu ki-lô-gam táo để xếp đủ 8 thùng như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "80",
+          "expr": "8/4*40"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>8 thùng gấp 4 thùng số lần là:<br>8 : 4 = <b>2</b> (lần)<br>8 thùng như thế đựng số ki-lô-gam táo là:<br>40 × 2 = <b>80</b> (kg)<br>Đáp số: <b>80</b> kg."
+    },
+    {
+      "id": "g4t4-33",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở tiệm bánh của bà Tư, 32 cái bánh được xếp đều vào 4 hộp. Hỏi 120 cái bánh thì bà Tư xếp được vào bao nhiêu hộp như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số hộp",
+          "answer": "15",
+          "expr": "120/(32/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi hộp có số cái bánh là:<br>32 : 4 = <b>8</b> (cái)<br>120 cái bánh xếp được vào số hộp là:<br>120 : 8 = <b>15</b> (hộp)<br>Đáp số: <b>15</b> hộp."
+    },
+    {
+      "id": "g4t4-34",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Yến nhận về 300 kg phân đạm rồi chia đều vào 6 bao. Hỏi cô Yến cần bao nhiêu ki-lô-gam phân đạm để đóng đủ 9 bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "450",
+          "expr": "300/6*9"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam phân đạm là:<br>300 : 6 = <b>50</b> (kg)<br>9 bao như thế đựng số ki-lô-gam phân đạm là:<br>50 × 9 = <b>450</b> (kg)<br>Đáp số: <b>450</b> kg."
+    },
+    {
+      "id": "g4t4-35",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Nhung trồng đều 60 cây bắp cải thành 3 luống. Hỏi muốn trồng hết 240 cây bắp cải thì cần bao nhiêu luống như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số luống",
+          "answer": "12",
+          "expr": "240/60*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>240 cây gấp 60 cây số lần là:<br>240 : 60 = <b>4</b> (lần)<br>240 cây bắp cải trồng được số luống là:<br>3 × 4 = <b>12</b> (luống)<br>Đáp số: <b>12</b> luống."
+    },
+    {
+      "id": "g4t4-36",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Xưởng may của bà Hiền may được 240 chiếc áo trong 6 ngày. Hỏi với 24 ngày như thế, xưởng đó may được tất cả bao nhiêu chiếc áo?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số áo",
+          "answer": "960",
+          "expr": "24/6*240"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>24 ngày gấp 6 ngày số lần là:<br>24 : 6 = <b>4</b> (lần)<br>Trong 24 ngày xưởng đó may được số chiếc áo là:<br>240 × 4 = <b>960</b> (chiếc áo)<br>Đáp số: <b>960</b> chiếc áo."
+    },
+    {
+      "id": "g4t4-37",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Xe tải của chị Mai chở hết 16 tấn hàng trong 4 chuyến, mỗi chuyến chở như nhau. Hỏi muốn chở hết 20 tấn hàng thì cần bao nhiêu chuyến như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số chuyến",
+          "answer": "5",
+          "expr": "20/(16/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi chuyến xe chở số tấn hàng là:<br>16 : 4 = <b>4</b> (tấn)<br>Chở hết 20 tấn hàng cần số chuyến là:<br>20 : 4 = <b>5</b> (chuyến)<br>Đáp số: <b>5</b> chuyến."
+    },
+    {
+      "id": "g4t4-38",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Bảy rót đều 50 lít dầu ăn vào 5 can. Hỏi 6 can như thế chứa bao nhiêu lít dầu ăn?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "60",
+          "expr": "50/5*6"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi can chứa số lít dầu ăn là:<br>50 : 5 = <b>10</b> (lít)<br>6 can như thế chứa số lít dầu ăn là:<br>10 × 6 = <b>60</b> (lít)<br>Đáp số: <b>60</b> lít."
+    },
+    {
+      "id": "g4t4-39",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Tám đóng đều 200 kg xi măng vào 5 bao. Hỏi với 400 kg xi măng, chú Tám đóng được bao nhiêu bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "10",
+          "expr": "400/200*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>400 kg gấp 200 kg số lần là:<br>400 : 200 = <b>2</b> (lần)<br>400 kg xi măng đóng được số bao là:<br>5 × 2 = <b>10</b> (bao)<br>Đáp số: <b>10</b> bao."
+    },
+    {
+      "id": "g4t4-40",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở vườn cam của chú Quý, 25 kg cam được xếp đều vào 5 giỏ. Hỏi chú Quý cần bao nhiêu ki-lô-gam cam để xếp đủ 15 giỏ như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "75",
+          "expr": "15/5*25"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>15 giỏ gấp 5 giỏ số lần là:<br>15 : 5 = <b>3</b> (lần)<br>15 giỏ như thế đựng số ki-lô-gam cam là:<br>25 × 3 = <b>75</b> (kg)<br>Đáp số: <b>75</b> kg."
+    },
+    {
+      "id": "g4t4-41",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm có 16 lít mật ong và rót đều vào 8 lọ. Hỏi 50 lít mật ong thì bà Năm rót đầy được bao nhiêu lọ như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lọ",
+          "answer": "25",
+          "expr": "50/(16/8)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi lọ chứa số lít mật ong là:<br>16 : 8 = <b>2</b> (lít)<br>50 lít mật ong rót đầy được số lọ là:<br>50 : 2 = <b>25</b> (lọ)<br>Đáp số: <b>25</b> lọ."
+    },
+    {
+      "id": "g4t4-42",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Nhung đóng đều 60 kg gạo vào 6 bao. Hỏi 14 bao như thế đựng bao nhiêu ki-lô-gam gạo?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "140",
+          "expr": "60/6*14"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam gạo là:<br>60 : 6 = <b>10</b> (kg)<br>14 bao như thế đựng số ki-lô-gam gạo là:<br>10 × 14 = <b>140</b> (kg)<br>Đáp số: <b>140</b> kg."
+    },
+    {
+      "id": "g4t4-43",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Đào đóng đều 90 kg ngô vào 3 bao. Hỏi với 180 kg ngô, chị Đào đóng được bao nhiêu bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "6",
+          "expr": "180/90*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>180 kg gấp 90 kg số lần là:<br>180 : 90 = <b>2</b> (lần)<br>180 kg ngô đóng được số bao là:<br>3 × 2 = <b>6</b> (bao)<br>Đáp số: <b>6</b> bao."
+    },
+    {
+      "id": "g4t4-44",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Máy bơm của bác Sáu bơm đầy 5 bể nước hết 10 giờ. Hỏi máy bơm đó bơm đầy 15 bể nước như thế hết bao nhiêu giờ?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số giờ",
+          "answer": "30",
+          "expr": "15/5*10"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>15 bể gấp 5 bể số lần là:<br>15 : 5 = <b>3</b> (lần)<br>Bơm đầy 15 bể nước hết số giờ là:<br>10 × 3 = <b>30</b> (giờ)<br>Đáp số: <b>30</b> giờ."
+    },
+    {
+      "id": "g4t4-45",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Trong 5 ngày, tổ công nhân của bà Hiền làm được 200 sản phẩm, mỗi ngày như nhau. Hỏi để làm được 240 sản phẩm thì tổ đó cần bao nhiêu ngày?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ngày",
+          "answer": "6",
+          "expr": "240/(200/5)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi ngày tổ đó làm được số sản phẩm là:<br>200 : 5 = <b>40</b> (sản phẩm)<br>Để làm được 240 sản phẩm cần số ngày là:<br>240 : 40 = <b>6</b> (ngày)<br>Đáp số: <b>6</b> ngày."
+    },
+    {
+      "id": "g4t4-46",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Ba có 12 kg cà phê và đóng đều vào 6 túi. Hỏi chú Ba cần bao nhiêu ki-lô-gam cà phê để đóng đủ 10 túi như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "20",
+          "expr": "12/6*10"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi đựng số ki-lô-gam cà phê là:<br>12 : 6 = <b>2</b> (kg)<br>10 túi như thế đựng số ki-lô-gam cà phê là:<br>2 × 10 = <b>20</b> (kg)<br>Đáp số: <b>20</b> kg."
+    },
+    {
+      "id": "g4t4-47",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Đội thủy lợi của chị Loan đào được 90 mét mương trong 3 ngày. Hỏi để đào được 450 mét mương thì đội đó cần bao nhiêu ngày?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ngày",
+          "answer": "15",
+          "expr": "450/90*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>450 mét mương gấp 90 mét mương số lần là:<br>450 : 90 = <b>5</b> (lần)<br>Để đào được 450 mét mương cần số ngày là:<br>3 × 5 = <b>15</b> (ngày)<br>Đáp số: <b>15</b> ngày."
+    },
+    {
+      "id": "g4t4-48",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm nhận về 48 chiếc bút rồi chia đều vào 4 hộp. Hỏi bà Năm cần bao nhiêu chiếc bút để xếp đủ 16 hộp như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bút",
+          "answer": "192",
+          "expr": "16/4*48"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>16 hộp gấp 4 hộp số lần là:<br>16 : 4 = <b>4</b> (lần)<br>16 hộp như thế có số chiếc bút là:<br>48 × 4 = <b>192</b> (chiếc)<br>Đáp số: <b>192</b> chiếc."
+    },
+    {
+      "id": "g4t4-49",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở xưởng của anh Tuấn, 20 lít sơn được rót đều vào 2 thùng. Hỏi với 50 lít sơn, anh Tuấn rót đầy được bao nhiêu thùng như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số thùng",
+          "answer": "5",
+          "expr": "50/(20/2)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng chứa số lít sơn là:<br>20 : 2 = <b>10</b> (lít)<br>50 lít sơn rót đầy được số thùng là:<br>50 : 10 = <b>5</b> (thùng)<br>Đáp số: <b>5</b> thùng."
+    },
+    {
+      "id": "g4t4-50",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Bảy nhận về 20 quả trứng rồi chia đều vào 2 khay. Hỏi bác Bảy cần bao nhiêu quả trứng để xếp đủ 3 khay như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số trứng",
+          "answer": "30",
+          "expr": "20/2*3"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi khay có số quả trứng là:<br>20 : 2 = <b>10</b> (quả)<br>3 khay như thế có số quả trứng là:<br>10 × 3 = <b>30</b> (quả)<br>Đáp số: <b>30</b> quả."
+    },
+    {
+      "id": "g4t4-51",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở thư viện của bác Hùng, 60 quyển sách được xếp đều vào 2 thùng. Hỏi 240 quyển sách thì bác Hùng xếp được vào bao nhiêu thùng như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số thùng",
+          "answer": "8",
+          "expr": "240/60*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>240 quyển gấp 60 quyển số lần là:<br>240 : 60 = <b>4</b> (lần)<br>240 quyển sách xếp được vào số thùng là:<br>2 × 4 = <b>8</b> (thùng)<br>Đáp số: <b>8</b> thùng."
+    },
+    {
+      "id": "g4t4-52",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Sáu có 48 lít sữa tươi và chia đều vào 4 thùng. Hỏi bác Sáu cần bao nhiêu lít sữa tươi để chia đủ 12 thùng như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "144",
+          "expr": "12/4*48"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>12 thùng gấp 4 thùng số lần là:<br>12 : 4 = <b>3</b> (lần)<br>12 thùng như thế chứa số lít sữa tươi là:<br>48 × 3 = <b>144</b> (lít)<br>Đáp số: <b>144</b> lít."
+    },
+    {
+      "id": "g4t4-53",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Thu nhận về 30 lít nước lọc rồi chia đều vào 6 bình. Hỏi 105 lít nước lọc thì rót đầy được mấy bình như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bình",
+          "answer": "21",
+          "expr": "105/(30/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bình chứa số lít nước lọc là:<br>30 : 6 = <b>5</b> (lít)<br>105 lít nước lọc rót đầy được số bình là:<br>105 : 5 = <b>21</b> (bình)<br>Đáp số: <b>21</b> bình."
+    },
+    {
+      "id": "g4t4-54",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Dũng đóng đều 6 kg đường vào 3 túi. Hỏi 7 túi như thế có tất cả bao nhiêu ki-lô-gam đường?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "14",
+          "expr": "6/3*7"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi đựng số ki-lô-gam đường là:<br>6 : 3 = <b>2</b> (kg)<br>7 túi như thế đựng số ki-lô-gam đường là:<br>2 × 7 = <b>14</b> (kg)<br>Đáp số: <b>14</b> kg."
+    },
+    {
+      "id": "g4t4-55",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Thu nhận về 50 chiếc ghế rồi chia đều vào 2 phòng học. Hỏi 250 chiếc ghế thì kê đủ cho mấy phòng học như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số phòng",
+          "answer": "10",
+          "expr": "250/50*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>250 chiếc gấp 50 chiếc số lần là:<br>250 : 50 = <b>5</b> (lần)<br>250 chiếc ghế kê đủ cho số phòng học là:<br>2 × 5 = <b>10</b> (phòng)<br>Đáp số: <b>10</b> phòng."
+    },
+    {
+      "id": "g4t4-56",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở kho muối của bà Hiền, 125 kg muối được đóng đều vào 5 bao. Hỏi 15 bao như thế đựng bao nhiêu ki-lô-gam muối?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "375",
+          "expr": "15/5*125"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>15 bao gấp 5 bao số lần là:<br>15 : 5 = <b>3</b> (lần)<br>15 bao như thế đựng số ki-lô-gam muối là:<br>125 × 3 = <b>375</b> (kg)<br>Đáp số: <b>375</b> kg."
+    },
+    {
+      "id": "g4t4-57",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Kiên chia đều 25 kg mì chính vào 5 bao. Hỏi 120 kg mì chính thì chia được vào mấy bao như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "24",
+          "expr": "120/(25/5)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam mì chính là:<br>25 : 5 = <b>5</b> (kg)<br>120 kg mì chính chia được vào số bao là:<br>120 : 5 = <b>24</b> (bao)<br>Đáp số: <b>24</b> bao."
+    },
+    {
+      "id": "g4t4-58",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở bãi cát của bác Bảy, một chiếc xe chở hết 18 tấn cát trong 3 chuyến như nhau. Hỏi trong 20 chuyến như thế, xe đó chở được tất cả bao nhiêu tấn cát?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số tấn",
+          "answer": "120",
+          "expr": "18/3*20"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi chuyến xe chở số tấn cát là:<br>18 : 3 = <b>6</b> (tấn)<br>20 chuyến như thế chở số tấn cát là:<br>6 × 20 = <b>120</b> (tấn)<br>Đáp số: <b>120</b> tấn."
+    },
+    {
+      "id": "g4t4-59",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Dũng có 250 kg thóc và đóng đều vào 5 bao. Hỏi 1000 kg thóc thì anh Dũng đóng được bao nhiêu bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "20",
+          "expr": "1000/250*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>1000 kg gấp 250 kg số lần là:<br>1000 : 250 = <b>4</b> (lần)<br>1000 kg thóc đóng được số bao là:<br>5 × 4 = <b>20</b> (bao)<br>Đáp số: <b>20</b> bao."
+    },
+    {
+      "id": "g4t4-60",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Bảy có 10 lít nước mắm và rót đều vào 5 chai. Hỏi bác Bảy cần bao nhiêu lít nước mắm để rót đủ 25 chai như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "50",
+          "expr": "25/5*10"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>25 chai gấp 5 chai số lần là:<br>25 : 5 = <b>5</b> (lần)<br>25 chai như thế chứa số lít nước mắm là:<br>10 × 5 = <b>50</b> (lít)<br>Đáp số: <b>50</b> lít."
+    },
+    {
+      "id": "g4t4-61",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở kho nông sản của chú Tám, 80 kg lạc được đóng đều vào 4 bao. Hỏi với 120 kg lạc, chú Tám đóng được bao nhiêu bao như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "6",
+          "expr": "120/(80/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam lạc là:<br>80 : 4 = <b>20</b> (kg)<br>120 kg lạc đóng được số bao là:<br>120 : 20 = <b>6</b> (bao)<br>Đáp số: <b>6</b> bao."
+    },
+    {
+      "id": "g4t4-62",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Mai có 1200 viên gạch và xếp đều lên 6 xe. Hỏi 14 xe như thế có tất cả bao nhiêu viên gạch?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số viên",
+          "answer": "2800",
+          "expr": "1200/6*14"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi xe chở số viên gạch là:<br>1200 : 6 = <b>200</b> (viên)<br>14 xe như thế chở số viên gạch là:<br>200 × 14 = <b>2800</b> (viên)<br>Đáp số: <b>2800</b> viên."
+    },
+    {
+      "id": "g4t4-63",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Hải xếp đều 60 quyển vở vào 3 túi. Hỏi 300 quyển vở thì xếp được vào mấy túi như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "15",
+          "expr": "300/60*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>300 quyển gấp 60 quyển số lần là:<br>300 : 60 = <b>5</b> (lần)<br>300 quyển vở xếp được vào số túi là:<br>3 × 5 = <b>15</b> (túi)<br>Đáp số: <b>15</b> túi."
+    },
+    {
+      "id": "g4t4-64",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Tư nhận về 20 kg bột mì rồi chia đều vào 4 túi. Hỏi 12 túi như thế đựng bao nhiêu ki-lô-gam bột mì?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "60",
+          "expr": "12/4*20"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>12 túi gấp 4 túi số lần là:<br>12 : 4 = <b>3</b> (lần)<br>12 túi như thế đựng số ki-lô-gam bột mì là:<br>20 × 3 = <b>60</b> (kg)<br>Đáp số: <b>60</b> kg."
+    },
+    {
+      "id": "g4t4-65",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Tư xếp đều 20 kg táo vào 2 thùng. Hỏi 30 kg táo thì xếp được vào mấy thùng như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số thùng",
+          "answer": "3",
+          "expr": "30/(20/2)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng đựng số ki-lô-gam táo là:<br>20 : 2 = <b>10</b> (kg)<br>30 kg táo xếp được vào số thùng là:<br>30 : 10 = <b>3</b> (thùng)<br>Đáp số: <b>3</b> thùng."
+    },
+    {
+      "id": "g4t4-66",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Yến nhận về 20 cái bánh rồi chia đều vào 2 hộp. Hỏi cô Yến cần bao nhiêu cái bánh để xếp đủ 21 hộp như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bánh",
+          "answer": "210",
+          "expr": "20/2*21"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi hộp có số cái bánh là:<br>20 : 2 = <b>10</b> (cái)<br>21 hộp như thế có số cái bánh là:<br>10 × 21 = <b>210</b> (cái)<br>Đáp số: <b>210</b> cái."
+    },
+    {
+      "id": "g4t4-67",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở hợp tác xã của bác Long, 20 kg phân đạm được đóng đều vào 2 bao. Hỏi 100 kg phân đạm thì đóng được mấy bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "10",
+          "expr": "100/20*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>100 kg gấp 20 kg số lần là:<br>100 : 20 = <b>5</b> (lần)<br>100 kg phân đạm đóng được số bao là:<br>2 × 5 = <b>10</b> (bao)<br>Đáp số: <b>10</b> bao."
+    },
+    {
+      "id": "g4t4-68",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Tuấn nhận về 60 cây bắp cải rồi chia đều thành 3 luống. Hỏi 6 luống như thế có bao nhiêu cây bắp cải?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số cây",
+          "answer": "120",
+          "expr": "6/3*60"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>6 luống gấp 3 luống số lần là:<br>6 : 3 = <b>2</b> (lần)<br>6 luống như thế có số cây bắp cải là:<br>60 × 2 = <b>120</b> (cây)<br>Đáp số: <b>120</b> cây."
+    },
+    {
+      "id": "g4t4-69",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Trong 5 ngày, xưởng may của thầy Sơn may được 300 chiếc áo, mỗi ngày như nhau. Hỏi để may được 1440 chiếc áo thì xưởng đó cần bao nhiêu ngày?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ngày",
+          "answer": "24",
+          "expr": "1440/(300/5)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi ngày xưởng đó may được số chiếc áo là:<br>300 : 5 = <b>60</b> (chiếc áo)<br>Để may được 1440 chiếc áo cần số ngày là:<br>1440 : 60 = <b>24</b> (ngày)<br>Đáp số: <b>24</b> ngày."
+    },
+    {
+      "id": "g4t4-70",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Xe tải của cô Hạnh chở hết 10 tấn hàng trong 2 chuyến, mỗi chuyến chở như nhau. Hỏi trong 21 chuyến như thế, xe đó chở được tất cả bao nhiêu tấn hàng?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số tấn",
+          "answer": "105",
+          "expr": "10/2*21"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi chuyến xe chở số tấn hàng là:<br>10 : 2 = <b>5</b> (tấn)<br>21 chuyến như thế chở số tấn hàng là:<br>5 × 21 = <b>105</b> (tấn)<br>Đáp số: <b>105</b> tấn."
+    },
+    {
+      "id": "g4t4-71",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Loan có 10 lít dầu ăn và rót đều vào 5 can. Hỏi 20 lít dầu ăn thì rót đầy được mấy can như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số can",
+          "answer": "10",
+          "expr": "20/10*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>20 lít gấp 10 lít số lần là:<br>20 : 10 = <b>2</b> (lần)<br>20 lít dầu ăn rót đầy được số can là:<br>5 × 2 = <b>10</b> (can)<br>Đáp số: <b>10</b> can."
+    },
+    {
+      "id": "g4t4-72",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Quý có 300 kg xi măng và đóng đều vào 6 bao. Hỏi chú Quý cần bao nhiêu ki-lô-gam xi măng để đóng đủ 24 bao như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "1200",
+          "expr": "24/6*300"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>24 bao gấp 6 bao số lần là:<br>24 : 6 = <b>4</b> (lần)<br>24 bao như thế đựng số ki-lô-gam xi măng là:<br>300 × 4 = <b>1200</b> (kg)<br>Đáp số: <b>1200</b> kg."
+    },
+    {
+      "id": "g4t4-73",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Long nhận về 18 kg cam rồi chia đều vào 3 giỏ. Hỏi 120 kg cam thì bác Long xếp được vào bao nhiêu giỏ như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số giỏ",
+          "answer": "20",
+          "expr": "120/(18/3)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi giỏ đựng số ki-lô-gam cam là:<br>18 : 3 = <b>6</b> (kg)<br>120 kg cam xếp được vào số giỏ là:<br>120 : 6 = <b>20</b> (giỏ)<br>Đáp số: <b>20</b> giỏ."
+    },
+    {
+      "id": "g4t4-74",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm có 16 lít mật ong và rót đều vào 8 lọ. Hỏi 12 lọ như thế có tất cả bao nhiêu lít mật ong?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "24",
+          "expr": "16/8*12"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi lọ chứa số lít mật ong là:<br>16 : 8 = <b>2</b> (lít)<br>12 lọ như thế chứa số lít mật ong là:<br>2 × 12 = <b>24</b> (lít)<br>Đáp số: <b>24</b> lít."
+    },
+    {
+      "id": "g4t4-75",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Thầy Sơn có 50 kg gạo và đóng đều vào 5 bao. Hỏi 150 kg gạo thì thầy Sơn đóng được bao nhiêu bao như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "15",
+          "expr": "150/50*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>150 kg gấp 50 kg số lần là:<br>150 : 50 = <b>3</b> (lần)<br>150 kg gạo đóng được số bao là:<br>5 × 3 = <b>15</b> (bao)<br>Đáp số: <b>15</b> bao."
+    },
+    {
+      "id": "g4t4-76",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở nhà kho của bà Hiền, 125 kg ngô được đóng đều vào 5 bao. Hỏi 25 bao như thế đựng bao nhiêu ki-lô-gam ngô?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "625",
+          "expr": "25/5*125"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>25 bao gấp 5 bao số lần là:<br>25 : 5 = <b>5</b> (lần)<br>25 bao như thế đựng số ki-lô-gam ngô là:<br>125 × 5 = <b>625</b> (kg)<br>Đáp số: <b>625</b> kg."
+    },
+    {
+      "id": "g4t4-77",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Thầy Sơn dùng máy bơm, bơm đầy 4 bể nước trong 16 giờ. Hỏi chạy 28 giờ thì máy bơm đó bơm đầy được bao nhiêu bể nước như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bể",
+          "answer": "7",
+          "expr": "28/(16/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Máy bơm bơm đầy một bể hết số giờ là:<br>16 : 4 = <b>4</b> (giờ)<br>Trong 28 giờ máy bơm bơm đầy được số bể là:<br>28 : 4 = <b>7</b> (bể)<br>Đáp số: <b>7</b> bể."
+    },
+    {
+      "id": "g4t4-78",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Tổ công nhân của anh Tuấn làm được 200 sản phẩm trong 5 ngày. Hỏi với 6 ngày như thế, tổ đó làm được tất cả bao nhiêu sản phẩm?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số sản phẩm",
+          "answer": "240",
+          "expr": "200/5*6"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi ngày tổ đó làm được số sản phẩm là:<br>200 : 5 = <b>40</b> (sản phẩm)<br>Trong 6 ngày tổ đó làm được số sản phẩm là:<br>40 × 6 = <b>240</b> (sản phẩm)<br>Đáp số: <b>240</b> sản phẩm."
+    },
+    {
+      "id": "g4t4-79",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm có 8 kg cà phê và đóng đều vào 4 túi. Hỏi 32 kg cà phê thì bà Năm đóng được bao nhiêu túi như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "16",
+          "expr": "32/8*4"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>32 kg gấp 8 kg số lần là:<br>32 : 8 = <b>4</b> (lần)<br>32 kg cà phê đóng được số túi là:<br>4 × 4 = <b>16</b> (túi)<br>Đáp số: <b>16</b> túi."
+    },
+    {
+      "id": "g4t4-80",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Đội thủy lợi của cô Nhung đào được 150 mét mương sau 5 ngày làm việc đều nhau. Hỏi với 15 ngày như thế, đội đó đào được tất cả bao nhiêu mét mương?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số mét",
+          "answer": "450",
+          "expr": "15/5*150"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>15 ngày gấp 5 ngày số lần là:<br>15 : 5 = <b>3</b> (lần)<br>Trong 15 ngày đội đó đào được số mét mương là:<br>150 × 3 = <b>450</b> (mét)<br>Đáp số: <b>450</b> mét."
+    },
+    {
+      "id": "g4t4-81",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cửa hàng văn phòng phẩm của cô Lan, 40 chiếc bút được xếp đều vào 2 hộp. Hỏi 60 chiếc bút thì xếp được vào mấy hộp như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số hộp",
+          "answer": "3",
+          "expr": "60/(40/2)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi hộp có số chiếc bút là:<br>40 : 2 = <b>20</b> (chiếc)<br>60 chiếc bút xếp được vào số hộp là:<br>60 : 20 = <b>3</b> (hộp)<br>Đáp số: <b>3</b> hộp."
+    },
+    {
+      "id": "g4t4-82",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Kiên có 20 lít sơn và rót đều vào 4 thùng. Hỏi với 21 thùng như thế, anh Kiên rót được bao nhiêu lít sơn?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "105",
+          "expr": "20/4*21"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng chứa số lít sơn là:<br>20 : 4 = <b>5</b> (lít)<br>21 thùng như thế chứa số lít sơn là:<br>5 × 21 = <b>105</b> (lít)<br>Đáp số: <b>105</b> lít."
+    },
+    {
+      "id": "g4t4-83",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở trại gà của chị Hoa, 72 quả trứng được xếp đều vào 6 khay. Hỏi muốn xếp hết 288 quả trứng thì cần bao nhiêu khay như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số khay",
+          "answer": "24",
+          "expr": "288/72*6"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>288 quả gấp 72 quả số lần là:<br>288 : 72 = <b>4</b> (lần)<br>288 quả trứng xếp được vào số khay là:<br>6 × 4 = <b>24</b> (khay)<br>Đáp số: <b>24</b> khay."
+    },
+    {
+      "id": "g4t4-84",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở thư viện của thầy Nam, 100 quyển sách được xếp đều vào 5 thùng. Hỏi 20 thùng như thế có bao nhiêu quyển sách?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số quyển",
+          "answer": "400",
+          "expr": "20/5*100"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>20 thùng gấp 5 thùng số lần là:<br>20 : 5 = <b>4</b> (lần)<br>20 thùng như thế có số quyển sách là:<br>100 × 4 = <b>400</b> (quyển)<br>Đáp số: <b>400</b> quyển."
+    },
+    {
+      "id": "g4t4-85",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Hải chia đều 72 lít sữa tươi vào 6 thùng. Hỏi 180 lít sữa tươi thì chia được vào mấy thùng như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số thùng",
+          "answer": "15",
+          "expr": "180/(72/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng chứa số lít sữa tươi là:<br>72 : 6 = <b>12</b> (lít)<br>180 lít sữa tươi chia được vào số thùng là:<br>180 : 12 = <b>15</b> (thùng)<br>Đáp số: <b>15</b> thùng."
+    },
+    {
+      "id": "g4t4-86",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Thắng có 20 lít nước lọc và rót đều vào 4 bình. Hỏi 9 bình như thế chứa bao nhiêu lít nước lọc?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số lít",
+          "answer": "45",
+          "expr": "20/4*9"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bình chứa số lít nước lọc là:<br>20 : 4 = <b>5</b> (lít)<br>9 bình như thế chứa số lít nước lọc là:<br>5 × 9 = <b>45</b> (lít)<br>Đáp số: <b>45</b> lít."
+    },
+    {
+      "id": "g4t4-87",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cửa hàng của anh Dũng, 25 kg đường được đóng đều vào 5 túi. Hỏi 75 kg đường thì đóng được mấy túi như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "15",
+          "expr": "75/25*5"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>75 kg gấp 25 kg số lần là:<br>75 : 25 = <b>3</b> (lần)<br>75 kg đường đóng được số túi là:<br>5 × 3 = <b>15</b> (túi)<br>Đáp số: <b>15</b> túi."
+    },
+    {
+      "id": "g4t4-88",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Tuấn nhận về 60 chiếc ghế rồi chia đều vào 2 phòng học. Hỏi anh Tuấn cần bao nhiêu chiếc ghế để kê đủ 10 phòng học như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số ghế",
+          "answer": "300",
+          "expr": "10/2*60"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>10 phòng gấp 2 phòng số lần là:<br>10 : 2 = <b>5</b> (lần)<br>10 phòng học như thế có số chiếc ghế là:<br>60 × 5 = <b>300</b> (chiếc)<br>Đáp số: <b>300</b> chiếc."
+    },
+    {
+      "id": "g4t4-89",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Nhung có 120 kg muối và đóng đều vào 6 bao. Hỏi 180 kg muối thì đóng được mấy bao như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số bao",
+          "answer": "9",
+          "expr": "180/(120/6)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam muối là:<br>120 : 6 = <b>20</b> (kg)<br>180 kg muối đóng được số bao là:<br>180 : 20 = <b>9</b> (bao)<br>Đáp số: <b>9</b> bao."
+    },
+    {
+      "id": "g4t4-90",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở quầy hàng của chị Mai, 12 kg mì chính được chia đều vào 4 bao. Hỏi 7 bao như thế có tất cả bao nhiêu ki-lô-gam mì chính?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "21",
+          "expr": "12/4*7"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam mì chính là:<br>12 : 4 = <b>3</b> (kg)<br>7 bao như thế đựng số ki-lô-gam mì chính là:<br>3 × 7 = <b>21</b> (kg)<br>Đáp số: <b>21</b> kg."
+    },
+    {
+      "id": "g4t4-91",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bà Năm lái xe chở 18 tấn cát, chia đều thành 3 chuyến. Hỏi 36 tấn cát thì xe đó phải chở mấy chuyến như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số chuyến",
+          "answer": "6",
+          "expr": "36/18*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>36 tấn gấp 18 tấn số lần là:<br>36 : 18 = <b>2</b> (lần)<br>Chở hết 36 tấn cát cần số chuyến là:<br>3 × 2 = <b>6</b> (chuyến)<br>Đáp số: <b>6</b> chuyến."
+    },
+    {
+      "id": "g4t4-92",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Bác Bảy nhận về 40 kg thóc rồi chia đều vào 2 bao. Hỏi 4 bao như thế có tất cả bao nhiêu ki-lô-gam thóc?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "80",
+          "expr": "4/2*40"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>4 bao gấp 2 bao số lần là:<br>4 : 2 = <b>2</b> (lần)<br>4 bao như thế đựng số ki-lô-gam thóc là:<br>40 × 2 = <b>80</b> (kg)<br>Đáp số: <b>80</b> kg."
+    },
+    {
+      "id": "g4t4-93",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở cơ sở nước mắm của bác Bảy, 8 lít nước mắm được rót đều vào 4 chai. Hỏi muốn rót hết 12 lít nước mắm thì cần bao nhiêu chai như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số chai",
+          "answer": "6",
+          "expr": "12/(8/4)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi chai chứa số lít nước mắm là:<br>8 : 4 = <b>2</b> (lít)<br>12 lít nước mắm rót đầy được số chai là:<br>12 : 2 = <b>6</b> (chai)<br>Đáp số: <b>6</b> chai."
+    },
+    {
+      "id": "g4t4-94",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Anh Tuấn có 40 kg lạc và đóng đều vào 4 bao. Hỏi 14 bao như thế có tất cả bao nhiêu ki-lô-gam lạc?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "140",
+          "expr": "40/4*14"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi bao đựng số ki-lô-gam lạc là:<br>40 : 4 = <b>10</b> (kg)<br>14 bao như thế đựng số ki-lô-gam lạc là:<br>10 × 14 = <b>140</b> (kg)<br>Đáp số: <b>140</b> kg."
+    },
+    {
+      "id": "g4t4-95",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở công trường nhà chú Tám, 400 viên gạch được xếp đều lên 2 xe. Hỏi muốn xếp hết 2000 viên gạch thì cần bao nhiêu xe như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số xe",
+          "answer": "10",
+          "expr": "2000/400*2"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>2000 viên gấp 400 viên số lần là:<br>2000 : 400 = <b>5</b> (lần)<br>2000 viên gạch xếp được lên số xe là:<br>2 × 5 = <b>10</b> (xe)<br>Đáp số: <b>10</b> xe."
+    },
+    {
+      "id": "g4t4-96",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chị Đào nhận về 40 quyển vở rồi chia đều vào 2 túi. Hỏi chị Đào cần bao nhiêu quyển vở để xếp đủ 8 túi như thế?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số quyển",
+          "answer": "160",
+          "expr": "8/2*40"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>8 túi gấp 2 túi số lần là:<br>8 : 2 = <b>4</b> (lần)<br>8 túi như thế có số quyển vở là:<br>40 × 4 = <b>160</b> (quyển)<br>Đáp số: <b>160</b> quyển."
+    },
+    {
+      "id": "g4t4-97",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở kho bột nhà bác Hùng, 6 kg bột mì được đóng đều vào 3 túi. Hỏi muốn đóng hết 80 kg bột mì thì cần bao nhiêu túi như thế?",
+      "workNote": "Tóm tắt bài toán ra bảng nháp rồi tính. Nhớ trình bày Bài giải đầy đủ vào vở: câu lời giải, phép tính rồi đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số túi",
+          "answer": "40",
+          "expr": "80/(6/3)"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi túi đựng số ki-lô-gam bột mì là:<br>6 : 3 = <b>2</b> (kg)<br>80 kg bột mì đóng được số túi là:<br>80 : 2 = <b>40</b> (túi)<br>Đáp số: <b>40</b> túi."
+    },
+    {
+      "id": "g4t4-98",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Cô Yến có 30 kg táo và xếp đều vào 6 thùng. Hỏi 15 thùng như thế đựng bao nhiêu ki-lô-gam táo?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "75",
+          "expr": "30/6*15"
+        }
+      ],
+      "explanation": "🔑 Dạng rút về đơn vị: tìm giá trị của một phần trước, rồi mới trả lời câu hỏi.<br><b>Bài giải</b><br>Mỗi thùng đựng số ki-lô-gam táo là:<br>30 : 6 = <b>5</b> (kg)<br>15 thùng như thế đựng số ki-lô-gam táo là:<br>5 × 15 = <b>75</b> (kg)<br>Đáp số: <b>75</b> kg."
+    },
+    {
+      "id": "g4t4-99",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Ở tiệm bánh của cô Thoa, 36 cái bánh được xếp đều vào 3 hộp. Hỏi với 180 cái bánh, cô Thoa xếp được vào bao nhiêu hộp như thế?",
+      "workNote": "Dùng bảng nháp để tóm tắt và làm từng bước. Vào vở, em viết Bài giải đủ câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số hộp",
+          "answer": "15",
+          "expr": "180/36*3"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>180 cái gấp 36 cái số lần là:<br>180 : 36 = <b>5</b> (lần)<br>180 cái bánh xếp được vào số hộp là:<br>3 × 5 = <b>15</b> (hộp)<br>Đáp số: <b>15</b> hộp."
+    },
+    {
+      "id": "g4t4-100",
+      "t": 4,
+      "topic": "Toán 4 · Giải toán có lời văn",
+      "q": "Chú Ba có 50 kg phân đạm và đóng đều vào 2 bao. Hỏi 10 bao như thế đựng bao nhiêu ki-lô-gam phân đạm?",
+      "workNote": "Nháp ra bảng cho dễ nhìn rồi nhập kết quả. Bài giải trong vở phải có câu lời giải, phép tính và đáp số.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "Số kg",
+          "answer": "250",
+          "expr": "10/2*50"
+        }
+      ],
+      "explanation": "🔑 Dạng tìm tỉ số: xem lượng mới gấp lượng đã biết mấy lần, rồi nhân lên bấy nhiêu lần.<br><b>Bài giải</b><br>10 bao gấp 2 bao số lần là:<br>10 : 2 = <b>5</b> (lần)<br>10 bao như thế đựng số ki-lô-gam phân đạm là:<br>50 × 5 = <b>250</b> (kg)<br>Đáp số: <b>250</b> kg."
+    }
+  ]
+}

@@ -17,9 +17,20 @@ const MATH_HISTORY_CAP = 300;
 const MATH_COINS_PER_CORRECT = 2;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
+// Toán 4 · Đề ôn "Pre": một đề rút ra từ ngân hàng 500 câu, dựng theo đúng
+// hình dạng Phần 2 của đề thi thật — năm dạng bài, mỗi dạng hai câu, đứng
+// theo thứ tự của tờ đề. Rút đều như vậy chứ không xáo ngẫu nhiên cả 500 câu,
+// vì một đề mà bốc trúng năm câu đổi đơn vị thì không còn là đề nữa.
+const MATH4_QUIZ_SIZE = 10;
+const MATH4_PER_TYPE = 2;
+const MATH4_SET = 'pre';
+
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
 let _mathSubTab = 'practice';  // chỉ có nghĩa bên trong Học kì 1: 'practice' | 'exams' | 'lessons'
-let _mathView = 'home';        // 'home' | 'toan7' | 'hk1' | 'history' | 'wars'
+let _mathView = 'home';        // 'home' | 'toan7' | 'toan4' | 'hk1' | 'hk2' | 'history' | 'wars' | 'fight'
+// Lịch sử làm bài mở được từ cả Toán 7 lẫn Toán 4, nên nút ‹ phải quay về
+// đúng chỗ bé vừa đứng — không thì bé bấm ‹ ở Toán 4 lại rơi sang Toán 7.
+let _mathHistoryBack = 'toan7';
 let _mathHistoryFilter = 'all';
 let _mathHistoryType = 'all';  // 'all' | 'practice' | 'exam'
 
@@ -534,6 +545,19 @@ function mathAnswerPartsHTML(q, answer) {
   }).join('') + `</div>`;
 }
 
+// The right answer, for a review card. A multi-box question has no single
+// `answer` — Toán 4 keeps one per box — and printing `q.answer` there rendered
+// an empty green tick next to every missed question, which is the one place a
+// child most needs to see the number they were reaching for.
+function mathAnswerHTML(q) {
+  if (mathHasAnswerParts(q)) {
+    return q.answerParts.map(p =>
+      `<span class="math-answer-line">${mathEsc(p.label)} = <b class="math-formula">${mathFormula(p.answer)}</b></span>`
+    ).join('');
+  }
+  return `<b class="math-formula">${mathFormula(q.answer)}</b>`;
+}
+
 function mathEditAnswerPart(index) {
   const st = _mathQuiz;
   const q = st && st.questions[st.idx];
@@ -591,6 +615,18 @@ function mathBankAll() { return _mathHk1Bank().concat(_mathHk2Bank()); }
 function mathLtBank() {
   return (typeof MATH_LT_QUESTIONS !== 'undefined') ? MATH_LT_QUESTIONS : [];
 }
+// ---- Toán 4 ----
+// Ngân hàng riêng, KHÔNG trộn vào mathBankAll(): đây là môn khác, và mọi thứ
+// đếm theo chương của Toán 7 (lịch sử, "dạng toán cần ôn", drill câu sai) sẽ
+// sai ngay nếu 500 câu lớp 4 lọt vào đó.
+function math4Bank() {
+  return (typeof MATH4_QUESTIONS !== 'undefined' && Array.isArray(MATH4_QUESTIONS)) ? MATH4_QUESTIONS : [];
+}
+function math4Types() {
+  return (typeof MATH4_TYPES !== 'undefined' && Array.isArray(MATH4_TYPES)) ? MATH4_TYPES : [];
+}
+function math4Ready() { return math4Bank().length > 0 && math4Types().length > 0; }
+
 function mathChapters() {
   if (mathSemester() === 2) return (typeof MATH_CHAPTERS_HK2 !== 'undefined') ? MATH_CHAPTERS_HK2 : [];
   return (typeof MATH_CHAPTERS !== 'undefined') ? MATH_CHAPTERS : [];
@@ -737,6 +773,12 @@ function mathHistory() {
   return appState.mathHistory;
 }
 
+// Hai môn dùng chung một mảng lịch sử (một lần ghi, một lần đồng bộ), nên
+// mọi chỗ ĐẾM lượt phải nói rõ mình đang đếm môn nào. Lượt cũ không có
+// `grade` — chúng đều là Toán 7.
+function math4History() { return mathHistory().filter(h => h && h.grade === 4); }
+function math7History() { return mathHistory().filter(h => !h || h.grade !== 4); }
+
 function saveMathSession(session) {
   if (typeof appState === 'undefined' || !appState) return;
   const list = mathHistory();
@@ -797,11 +839,12 @@ function renderMathHome() {
     return;
   }
   if (_mathView === 'history') {
-    screen.innerHTML = mathHeaderHTML('TOÁN 7', 'Lịch sử làm bài',
-      'Mọi lượt luyện tập và đề thi đã nộp.', 'openMathSection(\'toan7\')')
+    screen.innerHTML = mathHeaderHTML('TOÁN', 'Lịch sử làm bài',
+      'Mọi lượt luyện tập và đề thi đã nộp.', `openMathSection('${_mathHistoryBack}')`)
       + `<div class="phrases-wrap">${renderMathHistoryHTML()}</div>`;
     return;
   }
+  if (_mathView === 'toan4') { screen.innerHTML = renderToan4MenuHTML(); return; }
   if (_mathView === 'hk1' || _mathView === 'hk2') {
     const hk2 = _mathView === 'hk2';
     const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
@@ -845,13 +888,19 @@ function mathFightUnlocked() {
 }
 
 function renderMathMenuHTML() {
-  const runs = mathHistory().length;
+  const runs = math7History().length;
+  const g4 = math4History().length;
   const wars = (typeof warsHistory === 'function') ? warsHistory().length : 0;
   return mathHeaderHTML('TOÁN', 'Chọn phần muốn học', 'Ôn kiến thức Toán 7, hoặc luyện tính nhẩm.', '')
     + `<div class="phrases-wrap">
       <button class="phrases-cta math-section-cta" onclick="openMathSection('toan7')">
         <span class="phrases-cta-icon">📘</span>
         <span class="phrases-cta-text"><strong>Toán 7</strong><small>Công thức, lý thuyết và đề thi theo học kì${runs ? ` · ${runs} lượt đã làm` : ''}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+      <button class="phrases-cta math-section-cta" onclick="openMathSection('toan4')">
+        <span class="phrases-cta-icon">📗</span>
+        <span class="phrases-cta-text"><strong>Toán 4</strong><small>Đề ôn theo mẫu đề thi lớp 4${g4 ? ` · ${g4} lượt đã làm` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
       <button class="phrases-cta math-section-cta wars" onclick="openMathSection('wars')">
@@ -868,7 +917,7 @@ function renderMathMenuHTML() {
 }
 
 function renderToan7MenuHTML() {
-  const runs = mathHistory().length;
+  const runs = math7History().length;
   const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
   return mathHeaderHTML('TOÁN 7', 'Chọn học kì', 'Công thức, lý thuyết và đề thi theo từng học kì.', 'openMathSection(\'home\')')
     + `<div class="phrases-wrap">
@@ -897,6 +946,88 @@ function renderToan7MenuHTML() {
     </div>`;
 }
 
+// ---- Toán 4 · Đề ôn -------------------------------------------------------
+// Một mục duy nhất, cố ý. Đề ôn "Pre" là một tờ đề, không phải một danh sách
+// bài tập: bấm vào là làm cả tờ, đúng năm dạng của Phần 2 và đúng thứ tự đó.
+function renderToan4MenuHTML() {
+  const runs = math4History().length;
+  const best = math4Best();
+  const bank = math4Bank().length;
+  const types = math4Types();
+  const ready = math4Ready();
+  const owed = (typeof retryOwedBannerHTML === 'function') ? retryOwedBannerHTML('math') : '';
+  const list = types.map(t => `<li>${mathEsc(t.title)} — ${t.count} câu</li>`).join('');
+  return mathHeaderHTML('TOÁN 4', 'Đề ôn theo mẫu đề thi',
+    'Năm dạng bài của Phần 2, rút từ ngân hàng ' + (bank || 500) + ' câu.', 'openMathSection(\'home\')')
+    + `<div class="phrases-wrap">
+      ${owed}
+      <div class="phrases-hero">
+        <div class="phrases-hero-icon">📗</div>
+        <h1>Đề ôn Pre</h1>
+        <p class="phrases-sub">Mỗi lượt <b>${MATH4_QUIZ_SIZE} câu</b>: ${MATH4_PER_TYPE} câu cho mỗi dạng, xếp theo đúng thứ tự tờ đề. Làm bài ra bảng nháp rồi nhập kết quả.</p>
+      </div>
+      ${ready ? `<button class="phrases-cta" onclick="startMath4Pre()">
+        <span class="phrases-cta-icon">📝</span>
+        <span class="phrases-cta-text"><strong>Pre</strong><small>${MATH4_QUIZ_SIZE} câu · ${types.length} dạng${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>` : `<button class="phrases-cta locked" disabled aria-disabled="true">
+        <span class="phrases-cta-icon">📝</span>
+        <span class="phrases-cta-text"><strong>Pre</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
+        <span class="phrases-cta-arrow">🔒</span>
+      </button>`}
+      ${list ? `<div class="math-g4-types"><h3 class="topic-detail-list-title">Đề ôn gồm</h3><ul>${list}</ul></div>` : ''}
+      <button class="phrases-cta" onclick="openMathSection('history')">
+        <span class="phrases-cta-icon">🕘</span>
+        <span class="phrases-cta-text"><strong>Lịch sử làm bài</strong><small>${runs ? `${runs} lượt đã làm` : 'Chưa có lượt nào'}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
+    </div>`;
+}
+
+function math4Best() {
+  const runs = math4History().filter(h => h.total);
+  if (!runs.length) return null;
+  return Math.max(...runs.map(h => Math.round(h.score / h.total * 100)));
+}
+
+// Rút MATH4_PER_TYPE câu cho MỖI dạng rồi xếp theo thứ tự dạng — không xáo
+// chung cả 500 câu. Một tờ đề mà bốc trúng năm câu đổi đơn vị và không câu
+// nào có lời văn thì không còn kiểm tra được thứ nó định kiểm tra.
+function math4PickQuestions() {
+  const bank = math4Bank();
+  const types = math4Types();
+  const order = types.length ? types.map(t => t.t) : [1, 2, 3, 4, 5];
+  const picked = [];
+  for (const t of order) {
+    const pool = bank.filter(q => q.t === t);
+    if (!pool.length) continue;
+    picked.push(...mathShuffle(pool).slice(0, Math.min(MATH4_PER_TYPE, pool.length)));
+  }
+  return picked;
+}
+
+function startMath4Pre() {
+  _mathHintOpen = false;
+  if (typeof retryGate === 'function' && retryGate('math')) return;
+  const questions = math4PickQuestions();
+  if (!questions.length) return;
+  mathTypedReset();
+  _mathQuiz = {
+    chapter: 'g4-pre',
+    grade: 4,
+    g4set: MATH4_SET,
+    label: 'Toán 4 · Đề ôn Pre',
+    questions: questions,
+    idx: 0,
+    answers: questions.map(() => null)
+  };
+  // Cả tờ đề chỉ được chấm khi nộp, và thanh điều hướng nằm ngay dưới ngón
+  // tay suốt mười câu — giống đề thi Toán 7, thanh đó đi chỗ khác trong lúc
+  // bé làm bài. Muốn ra vẫn ra được bằng nút ✕, nhưng phải trả lời câu hỏi.
+  mathLockScreen(true);
+  renderMathQuestion();
+}
+
 function openMathSection(v) {
     // Same rule inside the Math tab itself: tapping "back" mid-fight is still
     // walking out on the other child.
@@ -904,8 +1035,12 @@ function openMathSection(v) {
         if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
-  const known = ['home', 'toan7', 'hk1', 'hk2', 'history', 'wars', 'fight'];
+  const known = ['home', 'toan7', 'toan4', 'hk1', 'hk2', 'history', 'wars', 'fight'];
   if (v === 'fight' && !mathFightUnlocked()) v = 'home';
+  // Remember the level the child came from BEFORE moving, so ‹ out of the
+  // history list lands back on Toán 7 or Toán 4 — whichever opened it.
+  if (v === 'history' && (_mathView === 'toan7' || _mathView === 'toan4')) _mathHistoryBack = _mathView;
+  if (v === 'toan7' || v === 'toan4') _mathHistoryBack = v;
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
   // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen
   // the child has walked away from and "finishes" a round they are not in.
@@ -1091,7 +1226,8 @@ function startMathExam(id) {
 // well, best ever — then lets the child drill into the list two ways at once:
 // by kind (Luyện tập / Đề thi) and by result tier.
 function mathHistoryFiltered() {
-  return mathHistory().filter(h => {
+  const list = _mathHistoryBack === 'toan4' ? math4History() : math7History();
+  return list.filter(h => {
     if (_mathHistoryType === 'practice' && h.examId) return false;
     if (_mathHistoryType === 'exam' && !h.examId) return false;
     if (_mathHistoryFilter === 'all') return true;
@@ -1160,7 +1296,7 @@ function mathSkillSummaries(st) {
   const groups = new Map();
   st.questions.forEach((q, i) => {
     const label = mathWrongSkillLabel(q);
-    const key = 'math7.' + mathAnalyticsSlug(label);
+    const key = 'math' + (q && q.grade === 4 ? '4' : '7') + '.' + mathAnalyticsSlug(label);
     const row = groups.get(key) || {
       skillKey: key, skillLabel: label, attempts: 0, correct: 0,
       wrong: 0, skipped: 0, wrongRefs: []
@@ -1402,6 +1538,7 @@ function startMathLtQuiz() {
 }
 
 function mathQuizLabel(chapter) {
+  if (chapter === 'g4-pre') return 'Toán 4 · Đề ôn Pre';
   if (!chapter) return 'Ôn tổng hợp';
   const c = mathChapters().find(x => x.num === chapter);
   return c ? `Chương ${c.num} · ${c.title}` : `Chương ${chapter}`;
@@ -1591,6 +1728,11 @@ function finishMathQuiz() {
   saveMathSession({
     date: Date.now(), chapter: st.chapter, label: st.label || mathQuizLabel(st.chapter),
     examId: st.examId || undefined,
+    // Toán 4 và Toán 7 dùng chung mảng lịch sử này. `grade` là thứ duy nhất
+    // phân biệt chúng ở mọi nơi về sau — bộ đếm lượt, danh sách lịch sử,
+    // dòng gửi lên máy chủ và nhiệm vụ hằng ngày.
+    grade: st.grade || undefined,
+    g4set: st.g4set || undefined,
     score: score, total: total,
     // Which questions were missed, not just how many — that is what makes a
     // "câu hay sai" list possible at all. Every bank is stamped by now, but an
@@ -1612,7 +1754,7 @@ function finishMathQuiz() {
   const wrongHTML = wrong.map(x => `
     <div class="grammar-review-item">
       <div class="grammar-review-q">${mathFormula(x.q.q)}</div>
-      <div class="grammar-review-a">✅ <b class="math-formula">${mathFormula(x.q.answer)}</b></div>
+      <div class="grammar-review-a">✅ ${mathAnswerHTML(x.q)}</div>
       <div class="grammar-review-explain">${mathExplanationHTML(x.q.explanation, x.q)}</div>
     </div>`).join('');
 
@@ -1749,7 +1891,7 @@ if (typeof module !== 'undefined' && module.exports) {
     startMathQuiz, startMathLtQuiz, answerMathQuestion, nextMathQuestion, finishMathQuiz,
     isMathQuizActive, abandonMathQuiz, mathQuizLabel, mathCurrentQuestion, mathTier, mathEsc, mathFormula, mathRich, mathExplanationHTML,
     mathTypedReset, mathTypedRaw, mathTypedSup, mathKeyPress, mathKey, mathIsTyped, mathIsWritten,
-    mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart,
+    mathHasAnswerParts, mathAnswerPartsHTML, mathEditAnswerPart, mathAnswerHTML,
     mathNormalize, mathGrade, mathIsCorrect, mathKeypadHTML, mathTypedBoxHTML,
     submitMathTyped, revealMathWritten, gradeMathWritten, mathQuizQuestions, saveMathSession,
     mathExams, mathExamBest, startMathExam, renderMathExamsHTML,
@@ -1760,6 +1902,8 @@ if (typeof module !== 'undefined' && module.exports) {
     renderMathWrongPanelHTML, startMathWrongPractice,
     mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
     openMathSection, renderMathMenuHTML, renderToan7MenuHTML, mathHeaderHTML,
-    MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND,
+    math4Bank, math4Types, math4Ready, math4History, math7History, math4Best,
+    math4PickQuestions, startMath4Pre, renderToan4MenuHTML,
+    MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND, MATH4_QUIZ_SIZE, MATH4_PER_TYPE, MATH4_SET,
   };
 }

@@ -84,6 +84,8 @@ const FEATURES = [
             'js/math-source-exams.js', 'js/math-fight-bank.js', 'js/math-data-hk2.js',
             'js/math-exams-hk2.js', 'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js'],
     verifiedBy: 'client' },
+  { id: 'math4', name: 'Toán 4 — Đề ôn Pre',
+    banks: ['js/math4-data.js'], verifiedBy: 'client' },
   { id: 'math-fight', name: 'Đấu Toán với bạn',
     routes: ['math-fight/index', 'math-fight/challenge', 'math-fight/respond',
              'math-fight/progress', 'math-fight/submit'], verifiedBy: 'server' },

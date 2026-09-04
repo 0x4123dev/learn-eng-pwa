@@ -186,6 +186,39 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, true);
   });
 
+  test('Toán 4 counts for its own task and for no Toán 7 task', async () => {
+    // The two môn share the 'math' activity type and the same history array.
+    // What tells them apart in SQL is detail.g4set — and detail.chapter, which
+    // for a Toán 4 paper is the string 'g4-pre' and can equal no chapter
+    // number. Both directions are checked here: a Toán 4 paper must not pay
+    // off a Toán 7 task, and a Toán 7 round must not pay off the Toán 4 one.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'math4:pre', 1);
+    addTask(world, kid.uid, 'math-chapter:2', 1);
+    addTask(world, kid.uid, 'math-exam:any-hk1', 1);
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Đề ôn Pre', score: 10, total: 10,
+      detail: { grade: 4, g4set: 'pre', chapter: 'g4-pre' }, at: '2026-09-02 09:01:00' });
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10,
+      detail: { chapter: 2 }, at: '2026-09-02 09:02:00' });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.equal(byKind['math4:pre'], 1, 'the Toán 4 paper did not count for its own task');
+    assert.equal(byKind['math-chapter:2'], 1, 'only the Toán 7 round may count here');
+    assert.equal(byKind['math-exam:any-hk1'], 0, 'neither run is an HK1 exam');
+  });
+
+  test('an unfinished Toán 4 paper pays nothing — the task wants a clean sheet', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'math4:pre', 1);
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Đề ôn Pre', score: 9, total: 10,
+      detail: { grade: 4, g4set: 'pre', chapter: 'g4-pre' } });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 0);
+    assert.equal(p.allDone, false);
+  });
+
   test('GMT+7 day boundary: 23:59 counts, 00:01 next day does not, yesterday does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});

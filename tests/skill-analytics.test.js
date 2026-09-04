@@ -34,7 +34,7 @@ suite('skill analytics: storage and access', () => {
 
   test('ingest is bounded and validates the supported menu taxonomy', () => {
     assert.truthy(ingest.includes('const MAX_BATCH = 400'));
-    for (const menu of ['math7', 'mathwars', 'grade4', 'wordform', 'grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {
+    for (const menu of ['math7', 'math4', 'mathwars', 'grade4', 'wordform', 'grammar', 'phrases', 'verbs', 'rewrite', 'collocation']) {
       assert.truthy(ingest.includes("'" + menu + "'"), 'missing menu ' + menu);
     }
     assert.truthy(ingest.includes('slice(0, 20)'), 'wrong references must stay bounded');

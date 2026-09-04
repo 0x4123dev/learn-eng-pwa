@@ -28,6 +28,7 @@ var DailyTaskCatalog = (function () {
     { id: 'math-exam', label: 'Toán 7 · Đề thi' },
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
+    { id: 'math4', label: 'Toán 4 · Đề ôn' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
@@ -220,6 +221,13 @@ var DailyTaskCatalog = (function () {
   // out scores 4 of 10 and does not count.
   ENTRIES.push(entry('mathwars', 'math-wars', 'Toán 7 · Math Wars (phải đúng 10/10)', 'math',
     { titlePrefix: 'Math Wars' }, 'mathHubScreen', [['openMathSection', 'wars'], ['startWarsRound']]));
+  // Toán 4 · Đề ôn. It rides the 'math' activity type like everything else in
+  // the tab, and is told apart by detail.g4set — NOT by chapter, which for a
+  // Toán 4 paper is the string 'g4-pre' and would silently match nothing, and
+  // not by title either, since a title is a label an author may reword.
+  ENTRIES.push(entry('math4:pre', 'math4', 'Toán 4 · Đề ôn Pre (10 câu, 5 dạng)', 'math',
+    { detail: { field: 'g4set', value: 'pre' } }, 'mathHubScreen',
+    [['openMathSection', 'toan4'], ['startMath4Pre']]));
 
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));
 

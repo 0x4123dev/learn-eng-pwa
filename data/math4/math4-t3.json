@@ -1,0 +1,2108 @@
+{
+  "t": 3,
+  "key": "bieuthuc",
+  "title": "Tính giá trị biểu thức",
+  "icon": "③",
+  "questions": [
+    {
+      "id": "g4t3-1",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "99793 − 85424 : 8",
+          "answer": "89115",
+          "expr": "99793-85424/8"
+        },
+        {
+          "label": "11838 × 7 + 15541",
+          "answer": "98407",
+          "expr": "11838*7+15541"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 99793 − 85424 : 8 = 99793 − 10678 = <b>89115</b><br>b) 11838 × 7 + 15541 = 82866 + 15541 = <b>98407</b>"
+    },
+    {
+      "id": "g4t3-2",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "90153 − 4920 × 7",
+          "answer": "55713",
+          "expr": "90153-4920*7"
+        },
+        {
+          "label": "50508 : 9 − 3356",
+          "answer": "2256",
+          "expr": "50508/9-3356"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 90153 − 4920 × 7 = 90153 − 34440 = <b>55713</b><br>b) 50508 : 9 − 3356 = 5612 − 3356 = <b>2256</b>"
+    },
+    {
+      "id": "g4t3-3",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "61056 : 6 + 70144",
+          "answer": "80320",
+          "expr": "61056/6+70144"
+        },
+        {
+          "label": "55574 − 1606 : 2",
+          "answer": "54771",
+          "expr": "55574-1606/2"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 61056 : 6 + 70144 = 10176 + 70144 = <b>80320</b><br>b) 55574 − 1606 : 2 = 55574 − 803 = <b>54771</b>"
+    },
+    {
+      "id": "g4t3-4",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "76091 − 7808 × 9",
+          "answer": "5819",
+          "expr": "76091-7808*9"
+        },
+        {
+          "label": "11779 × 5 + 2335",
+          "answer": "61230",
+          "expr": "11779*5+2335"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 76091 − 7808 × 9 = 76091 − 70272 = <b>5819</b><br>b) 11779 × 5 + 2335 = 58895 + 2335 = <b>61230</b>"
+    },
+    {
+      "id": "g4t3-5",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "45195 : 5 + 55395",
+          "answer": "64434",
+          "expr": "45195/5+55395"
+        },
+        {
+          "label": "14727 × 5 − 72983",
+          "answer": "652",
+          "expr": "14727*5-72983"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 45195 : 5 + 55395 = 9039 + 55395 = <b>64434</b><br>b) 14727 × 5 − 72983 = 73635 − 72983 = <b>652</b>"
+    },
+    {
+      "id": "g4t3-6",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "5664 + 88644 : 6",
+          "answer": "20438",
+          "expr": "5664+88644/6"
+        },
+        {
+          "label": "(5664 + 88644) : 6",
+          "answer": "15718",
+          "expr": "(5664+88644)/6"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 5664 + 88644 : 6 = 5664 + 14774 = <b>20438</b><br>b) (5664 + 88644) : 6 = 94308 : 6 = <b>15718</b>"
+    },
+    {
+      "id": "g4t3-7",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "15100 × 5 + 12186",
+          "answer": "87686",
+          "expr": "15100*5+12186"
+        },
+        {
+          "label": "10336 + 30894 : 3",
+          "answer": "20634",
+          "expr": "10336+30894/3"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 15100 × 5 + 12186 = 75500 + 12186 = <b>87686</b><br>b) 10336 + 30894 : 3 = 10336 + 10298 = <b>20634</b>"
+    },
+    {
+      "id": "g4t3-8",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(3203 + 3583) × 7",
+          "answer": "47502",
+          "expr": "(3203+3583)*7"
+        },
+        {
+          "label": "3203 + 3583 × 7",
+          "answer": "28284",
+          "expr": "3203+3583*7"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) (3203 + 3583) × 7 = 6786 × 7 = <b>47502</b><br>b) 3203 + 3583 × 7 = 3203 + 25081 = <b>28284</b>"
+    },
+    {
+      "id": "g4t3-9",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(2242 + 3458) × 2",
+          "answer": "11400",
+          "expr": "(2242+3458)*2"
+        },
+        {
+          "label": "(14307 + 35845) : 4",
+          "answer": "12538",
+          "expr": "(14307+35845)/4"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) (2242 + 3458) × 2 = 5700 × 2 = <b>11400</b><br>b) (14307 + 35845) : 4 = 50152 : 4 = <b>12538</b>"
+    },
+    {
+      "id": "g4t3-10",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "23897 × 3 − 24960",
+          "answer": "46731",
+          "expr": "23897*3-24960"
+        },
+        {
+          "label": "10326 × 4 + 8325",
+          "answer": "49629",
+          "expr": "10326*4+8325"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 23897 × 3 − 24960 = 71691 − 24960 = <b>46731</b><br>b) 10326 × 4 + 8325 = 41304 + 8325 = <b>49629</b>"
+    },
+    {
+      "id": "g4t3-11",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(24719 + 35146) : 5",
+          "answer": "11973",
+          "expr": "(24719+35146)/5"
+        },
+        {
+          "label": "9999 × 3 − 8041",
+          "answer": "21956",
+          "expr": "9999*3-8041"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) (24719 + 35146) : 5 = 59865 : 5 = <b>11973</b><br>b) 9999 × 3 − 8041 = 29997 − 8041 = <b>21956</b>"
+    },
+    {
+      "id": "g4t3-12",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(64025 − 56545) : 5",
+          "answer": "1496",
+          "expr": "(64025-56545)/5"
+        },
+        {
+          "label": "64025 − 56545 : 5",
+          "answer": "52716",
+          "expr": "64025-56545/5"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) (64025 − 56545) : 5 = 7480 : 5 = <b>1496</b><br>b) 64025 − 56545 : 5 = 64025 − 11309 = <b>52716</b>"
+    },
+    {
+      "id": "g4t3-13",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(80106 + 5064) : 2",
+          "answer": "42585",
+          "expr": "(80106+5064)/2"
+        },
+        {
+          "label": "80106 + 5064 : 2",
+          "answer": "82638",
+          "expr": "80106+5064/2"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) (80106 + 5064) : 2 = 85170 : 2 = <b>42585</b><br>b) 80106 + 5064 : 2 = 80106 + 2532 = <b>82638</b>"
+    },
+    {
+      "id": "g4t3-14",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "1512 × 5 − 3481",
+          "answer": "4079",
+          "expr": "1512*5-3481"
+        },
+        {
+          "label": "72417 − 13284 × 5",
+          "answer": "5997",
+          "expr": "72417-13284*5"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 1512 × 5 − 3481 = 7560 − 3481 = <b>4079</b><br>b) 72417 − 13284 × 5 = 72417 − 66420 = <b>5997</b>"
+    },
+    {
+      "id": "g4t3-15",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "13816 × 3 + 12780",
+          "answer": "54228",
+          "expr": "13816*3+12780"
+        },
+        {
+          "label": "85342 : 2 + 31329",
+          "answer": "74000",
+          "expr": "85342/2+31329"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 13816 × 3 + 12780 = 41448 + 12780 = <b>54228</b><br>b) 85342 : 2 + 31329 = 42671 + 31329 = <b>74000</b>"
+    },
+    {
+      "id": "g4t3-16",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "5503 + 21647 × 4",
+          "answer": "92091",
+          "expr": "5503+21647*4"
+        },
+        {
+          "label": "(80741 − 8741) : 5",
+          "answer": "14400",
+          "expr": "(80741-8741)/5"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 5503 + 21647 × 4 = 5503 + 86588 = <b>92091</b><br>b) (80741 − 8741) : 5 = 72000 : 5 = <b>14400</b>"
+    },
+    {
+      "id": "g4t3-17",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(42312 − 24896) : 4",
+          "answer": "4354",
+          "expr": "(42312-24896)/4"
+        },
+        {
+          "label": "13826 × 5 + 10851",
+          "answer": "79981",
+          "expr": "13826*5+10851"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) (42312 − 24896) : 4 = 17416 : 4 = <b>4354</b><br>b) 13826 × 5 + 10851 = 69130 + 10851 = <b>79981</b>"
+    },
+    {
+      "id": "g4t3-18",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "17243 − 1533 × 9",
+          "answer": "3446",
+          "expr": "17243-1533*9"
+        },
+        {
+          "label": "59374 : 7 − 3730",
+          "answer": "4752",
+          "expr": "59374/7-3730"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 17243 − 1533 × 9 = 17243 − 13797 = <b>3446</b><br>b) 59374 : 7 − 3730 = 8482 − 3730 = <b>4752</b>"
+    },
+    {
+      "id": "g4t3-19",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "36391 + 9463 × 4",
+          "answer": "74243",
+          "expr": "36391+9463*4"
+        },
+        {
+          "label": "92688 : 8 − 10097",
+          "answer": "1489",
+          "expr": "92688/8-10097"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 36391 + 9463 × 4 = 36391 + 37852 = <b>74243</b><br>b) 92688 : 8 − 10097 = 11586 − 10097 = <b>1489</b>"
+    },
+    {
+      "id": "g4t3-20",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "97516 − 30248 × 3",
+          "answer": "6772",
+          "expr": "97516-30248*3"
+        },
+        {
+          "label": "(21232 + 12258) : 5",
+          "answer": "6698",
+          "expr": "(21232+12258)/5"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) 97516 − 30248 × 3 = 97516 − 90744 = <b>6772</b><br>b) (21232 + 12258) : 5 = 33490 : 5 = <b>6698</b>"
+    },
+    {
+      "id": "g4t3-21",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(61782 − 52160) × 2",
+          "answer": "19244",
+          "expr": "(61782-52160)*2"
+        },
+        {
+          "label": "(11161 + 1418) × 7",
+          "answer": "88053",
+          "expr": "(11161+1418)*7"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) (61782 − 52160) × 2 = 9622 × 2 = <b>19244</b><br>b) (11161 + 1418) × 7 = 12579 × 7 = <b>88053</b>"
+    },
+    {
+      "id": "g4t3-22",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "22382 + 98748 : 6",
+          "answer": "38840",
+          "expr": "22382+98748/6"
+        },
+        {
+          "label": "(61829 + 19971) : 4",
+          "answer": "20450",
+          "expr": "(61829+19971)/4"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 22382 + 98748 : 6 = 22382 + 16458 = <b>38840</b><br>b) (61829 + 19971) : 4 = 81800 : 4 = <b>20450</b>"
+    },
+    {
+      "id": "g4t3-23",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "84776 : 8 − 8378",
+          "answer": "2219",
+          "expr": "84776/8-8378"
+        },
+        {
+          "label": "(14447 + 35134) × 2",
+          "answer": "99162",
+          "expr": "(14447+35134)*2"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 84776 : 8 − 8378 = 10597 − 8378 = <b>2219</b><br>b) (14447 + 35134) × 2 = 49581 × 2 = <b>99162</b>"
+    },
+    {
+      "id": "g4t3-24",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "2675 + 8299 × 7",
+          "answer": "60768",
+          "expr": "2675+8299*7"
+        },
+        {
+          "label": "(2675 + 8299) × 7",
+          "answer": "76818",
+          "expr": "(2675+8299)*7"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) 2675 + 8299 × 7 = 2675 + 58093 = <b>60768</b><br>b) (2675 + 8299) × 7 = 10974 × 7 = <b>76818</b>"
+    },
+    {
+      "id": "g4t3-25",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(88492 − 20113) : 3",
+          "answer": "22793",
+          "expr": "(88492-20113)/3"
+        },
+        {
+          "label": "61538 : 2 − 26571",
+          "answer": "4198",
+          "expr": "61538/2-26571"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) (88492 − 20113) : 3 = 68379 : 3 = <b>22793</b><br>b) 61538 : 2 − 26571 = 30769 − 26571 = <b>4198</b>"
+    },
+    {
+      "id": "g4t3-26",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(48635 + 16735) : 5",
+          "answer": "13074",
+          "expr": "(48635+16735)/5"
+        },
+        {
+          "label": "30565 + 47090 : 5",
+          "answer": "39983",
+          "expr": "30565+47090/5"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) (48635 + 16735) : 5 = 65370 : 5 = <b>13074</b><br>b) 30565 + 47090 : 5 = 30565 + 9418 = <b>39983</b>"
+    },
+    {
+      "id": "g4t3-27",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "16767 × 4 − 9709",
+          "answer": "57359",
+          "expr": "16767*4-9709"
+        },
+        {
+          "label": "1713 × 5 + 74981",
+          "answer": "83546",
+          "expr": "1713*5+74981"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 16767 × 4 − 9709 = 67068 − 9709 = <b>57359</b><br>b) 1713 × 5 + 74981 = 8565 + 74981 = <b>83546</b>"
+    },
+    {
+      "id": "g4t3-28",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "23288 + 34219 × 2",
+          "answer": "91726",
+          "expr": "23288+34219*2"
+        },
+        {
+          "label": "69954 + 19074 : 3",
+          "answer": "76312",
+          "expr": "69954+19074/3"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 23288 + 34219 × 2 = 23288 + 68438 = <b>91726</b><br>b) 69954 + 19074 : 3 = 69954 + 6358 = <b>76312</b>"
+    },
+    {
+      "id": "g4t3-29",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(53784 − 30424) : 5",
+          "answer": "4672",
+          "expr": "(53784-30424)/5"
+        },
+        {
+          "label": "12167 × 8 − 24721",
+          "answer": "72615",
+          "expr": "12167*8-24721"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) (53784 − 30424) : 5 = 23360 : 5 = <b>4672</b><br>b) 12167 × 8 − 24721 = 97336 − 24721 = <b>72615</b>"
+    },
+    {
+      "id": "g4t3-30",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "11360 + 59034 : 6",
+          "answer": "21199",
+          "expr": "11360+59034/6"
+        },
+        {
+          "label": "5554 : 2 − 1714",
+          "answer": "1063",
+          "expr": "5554/2-1714"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 11360 + 59034 : 6 = 11360 + 9839 = <b>21199</b><br>b) 5554 : 2 − 1714 = 2777 − 1714 = <b>1063</b>"
+    },
+    {
+      "id": "g4t3-31",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "3266 × 9 − 27514",
+          "answer": "1880",
+          "expr": "3266*9-27514"
+        },
+        {
+          "label": "56403 : 3 + 80478",
+          "answer": "99279",
+          "expr": "56403/3+80478"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 3266 × 9 − 27514 = 29394 − 27514 = <b>1880</b><br>b) 56403 : 3 + 80478 = 18801 + 80478 = <b>99279</b>"
+    },
+    {
+      "id": "g4t3-32",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(88186 − 46935) : 7",
+          "answer": "5893",
+          "expr": "(88186-46935)/7"
+        },
+        {
+          "label": "88186 − 46935 : 7",
+          "answer": "81481",
+          "expr": "88186-46935/7"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) (88186 − 46935) : 7 = 41251 : 7 = <b>5893</b><br>b) 88186 − 46935 : 7 = 88186 − 6705 = <b>81481</b>"
+    },
+    {
+      "id": "g4t3-33",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "5900 × 9 + 29033",
+          "answer": "82133",
+          "expr": "5900*9+29033"
+        },
+        {
+          "label": "(2434 + 1399) × 9",
+          "answer": "34497",
+          "expr": "(2434+1399)*9"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 5900 × 9 + 29033 = 53100 + 29033 = <b>82133</b><br>b) (2434 + 1399) × 9 = 3833 × 9 = <b>34497</b>"
+    },
+    {
+      "id": "g4t3-34",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "45123 + 59143 : 7",
+          "answer": "53572",
+          "expr": "45123+59143/7"
+        },
+        {
+          "label": "27750 × 3 + 5834",
+          "answer": "89084",
+          "expr": "27750*3+5834"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 45123 + 59143 : 7 = 45123 + 8449 = <b>53572</b><br>b) 27750 × 3 + 5834 = 83250 + 5834 = <b>89084</b>"
+    },
+    {
+      "id": "g4t3-35",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(72263 − 56994) × 5",
+          "answer": "76345",
+          "expr": "(72263-56994)*5"
+        },
+        {
+          "label": "20943 : 3 − 3201",
+          "answer": "3780",
+          "expr": "20943/3-3201"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) (72263 − 56994) × 5 = 15269 × 5 = <b>76345</b><br>b) 20943 : 3 − 3201 = 6981 − 3201 = <b>3780</b>"
+    },
+    {
+      "id": "g4t3-36",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "2055 × 6 + 50618",
+          "answer": "62948",
+          "expr": "2055*6+50618"
+        },
+        {
+          "label": "(80453 − 45677) : 9",
+          "answer": "3864",
+          "expr": "(80453-45677)/9"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 2055 × 6 + 50618 = 12330 + 50618 = <b>62948</b><br>b) (80453 − 45677) : 9 = 34776 : 9 = <b>3864</b>"
+    },
+    {
+      "id": "g4t3-37",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "57798 − 21030 : 3",
+          "answer": "50788",
+          "expr": "57798-21030/3"
+        },
+        {
+          "label": "(57798 − 21030) : 3",
+          "answer": "12256",
+          "expr": "(57798-21030)/3"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 57798 − 21030 : 3 = 57798 − 7010 = <b>50788</b><br>b) (57798 − 21030) : 3 = 36768 : 3 = <b>12256</b>"
+    },
+    {
+      "id": "g4t3-38",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "20022 − 2288 × 8",
+          "answer": "1718",
+          "expr": "20022-2288*8"
+        },
+        {
+          "label": "15616 : 4 + 16306",
+          "answer": "20210",
+          "expr": "15616/4+16306"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 20022 − 2288 × 8 = 20022 − 18304 = <b>1718</b><br>b) 15616 : 4 + 16306 = 3904 + 16306 = <b>20210</b>"
+    },
+    {
+      "id": "g4t3-39",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(50131 − 23998) × 2",
+          "answer": "52266",
+          "expr": "(50131-23998)*2"
+        },
+        {
+          "label": "50131 − 23998 × 2",
+          "answer": "2135",
+          "expr": "50131-23998*2"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) (50131 − 23998) × 2 = 26133 × 2 = <b>52266</b><br>b) 50131 − 23998 × 2 = 50131 − 47996 = <b>2135</b>"
+    },
+    {
+      "id": "g4t3-40",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "29418 − 44586 : 9",
+          "answer": "24464",
+          "expr": "29418-44586/9"
+        },
+        {
+          "label": "16360 : 5 − 1914",
+          "answer": "1358",
+          "expr": "16360/5-1914"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 29418 − 44586 : 9 = 29418 − 4954 = <b>24464</b><br>b) 16360 : 5 − 1914 = 3272 − 1914 = <b>1358</b>"
+    },
+    {
+      "id": "g4t3-41",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "85930 − 14009 × 6",
+          "answer": "1876",
+          "expr": "85930-14009*6"
+        },
+        {
+          "label": "(53041 + 33619) : 4",
+          "answer": "21665",
+          "expr": "(53041+33619)/4"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 85930 − 14009 × 6 = 85930 − 84054 = <b>1876</b><br>b) (53041 + 33619) : 4 = 86660 : 4 = <b>21665</b>"
+    },
+    {
+      "id": "g4t3-42",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(2316 + 41452) : 4",
+          "answer": "10942",
+          "expr": "(2316+41452)/4"
+        },
+        {
+          "label": "2316 + 41452 : 4",
+          "answer": "12679",
+          "expr": "2316+41452/4"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) (2316 + 41452) : 4 = 43768 : 4 = <b>10942</b><br>b) 2316 + 41452 : 4 = 2316 + 10363 = <b>12679</b>"
+    },
+    {
+      "id": "g4t3-43",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "56868 + 35106 : 6",
+          "answer": "62719",
+          "expr": "56868+35106/6"
+        },
+        {
+          "label": "(56868 + 35106) : 6",
+          "answer": "15329",
+          "expr": "(56868+35106)/6"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 56868 + 35106 : 6 = 56868 + 5851 = <b>62719</b><br>b) (56868 + 35106) : 6 = 91974 : 6 = <b>15329</b>"
+    },
+    {
+      "id": "g4t3-44",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(14240 − 1415) × 6",
+          "answer": "76950",
+          "expr": "(14240-1415)*6"
+        },
+        {
+          "label": "14240 − 1415 × 6",
+          "answer": "5750",
+          "expr": "14240-1415*6"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) (14240 − 1415) × 6 = 12825 × 6 = <b>76950</b><br>b) 14240 − 1415 × 6 = 14240 − 8490 = <b>5750</b>"
+    },
+    {
+      "id": "g4t3-45",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "15741 : 9 + 27468",
+          "answer": "29217",
+          "expr": "15741/9+27468"
+        },
+        {
+          "label": "(61103 − 53495) × 9",
+          "answer": "68472",
+          "expr": "(61103-53495)*9"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 15741 : 9 + 27468 = 1749 + 27468 = <b>29217</b><br>b) (61103 − 53495) × 9 = 7608 × 9 = <b>68472</b>"
+    },
+    {
+      "id": "g4t3-46",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(14467 + 34491) × 2",
+          "answer": "97916",
+          "expr": "(14467+34491)*2"
+        },
+        {
+          "label": "14467 + 34491 × 2",
+          "answer": "83449",
+          "expr": "14467+34491*2"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) (14467 + 34491) × 2 = 48958 × 2 = <b>97916</b><br>b) 14467 + 34491 × 2 = 14467 + 68982 = <b>83449</b>"
+    },
+    {
+      "id": "g4t3-47",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "4960 + 11700 × 2",
+          "answer": "28360",
+          "expr": "4960+11700*2"
+        },
+        {
+          "label": "(4960 + 11700) × 2",
+          "answer": "33320",
+          "expr": "(4960+11700)*2"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 4960 + 11700 × 2 = 4960 + 23400 = <b>28360</b><br>b) (4960 + 11700) × 2 = 16660 × 2 = <b>33320</b>"
+    },
+    {
+      "id": "g4t3-48",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "55788 − 49986 : 6",
+          "answer": "47457",
+          "expr": "55788-49986/6"
+        },
+        {
+          "label": "(55788 − 49986) : 6",
+          "answer": "967",
+          "expr": "(55788-49986)/6"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 55788 − 49986 : 6 = 55788 − 8331 = <b>47457</b><br>b) (55788 − 49986) : 6 = 5802 : 6 = <b>967</b>"
+    },
+    {
+      "id": "g4t3-49",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "1599 + 11321 × 8",
+          "answer": "92167",
+          "expr": "1599+11321*8"
+        },
+        {
+          "label": "55830 : 5 + 57310",
+          "answer": "68476",
+          "expr": "55830/5+57310"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 1599 + 11321 × 8 = 1599 + 90568 = <b>92167</b><br>b) 55830 : 5 + 57310 = 11166 + 57310 = <b>68476</b>"
+    },
+    {
+      "id": "g4t3-50",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "79649 − 7530 × 9",
+          "answer": "11879",
+          "expr": "79649-7530*9"
+        },
+        {
+          "label": "(4701 + 6940) × 4",
+          "answer": "46564",
+          "expr": "(4701+6940)*4"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 79649 − 7530 × 9 = 79649 − 67770 = <b>11879</b><br>b) (4701 + 6940) × 4 = 11641 × 4 = <b>46564</b>"
+    },
+    {
+      "id": "g4t3-51",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "15333 × 5 + 17429",
+          "answer": "94094",
+          "expr": "15333*5+17429"
+        },
+        {
+          "label": "37351 + 49752 : 2",
+          "answer": "62227",
+          "expr": "37351+49752/2"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 15333 × 5 + 17429 = 76665 + 17429 = <b>94094</b><br>b) 37351 + 49752 : 2 = 37351 + 24876 = <b>62227</b>"
+    },
+    {
+      "id": "g4t3-52",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "3159 × 4 − 7645",
+          "answer": "4991",
+          "expr": "3159*4-7645"
+        },
+        {
+          "label": "9577 − 19686 : 6",
+          "answer": "6296",
+          "expr": "9577-19686/6"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 3159 × 4 − 7645 = 12636 − 7645 = <b>4991</b><br>b) 9577 − 19686 : 6 = 9577 − 3281 = <b>6296</b>"
+    },
+    {
+      "id": "g4t3-53",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "90548 + 64692 : 9",
+          "answer": "97736",
+          "expr": "90548+64692/9"
+        },
+        {
+          "label": "28143 : 3 − 5394",
+          "answer": "3987",
+          "expr": "28143/3-5394"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 90548 + 64692 : 9 = 90548 + 7188 = <b>97736</b><br>b) 28143 : 3 − 5394 = 9381 − 5394 = <b>3987</b>"
+    },
+    {
+      "id": "g4t3-54",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "70830 − 96288 : 3",
+          "answer": "38734",
+          "expr": "70830-96288/3"
+        },
+        {
+          "label": "(24520 − 21977) × 5",
+          "answer": "12715",
+          "expr": "(24520-21977)*5"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 70830 − 96288 : 3 = 70830 − 32096 = <b>38734</b><br>b) (24520 − 21977) × 5 = 2543 × 5 = <b>12715</b>"
+    },
+    {
+      "id": "g4t3-55",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "14315 : 5 − 2836",
+          "answer": "27",
+          "expr": "14315/5-2836"
+        },
+        {
+          "label": "(67163 − 11099) : 4",
+          "answer": "14016",
+          "expr": "(67163-11099)/4"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 14315 : 5 − 2836 = 2863 − 2836 = <b>27</b><br>b) (67163 − 11099) : 4 = 56064 : 4 = <b>14016</b>"
+    },
+    {
+      "id": "g4t3-56",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "23797 + 21513 × 2",
+          "answer": "66823",
+          "expr": "23797+21513*2"
+        },
+        {
+          "label": "60485 + 92496 : 8",
+          "answer": "72047",
+          "expr": "60485+92496/8"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 23797 + 21513 × 2 = 23797 + 43026 = <b>66823</b><br>b) 60485 + 92496 : 8 = 60485 + 11562 = <b>72047</b>"
+    },
+    {
+      "id": "g4t3-57",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "53173 − 72614 : 2",
+          "answer": "16866",
+          "expr": "53173-72614/2"
+        },
+        {
+          "label": "(7555 + 2768) × 7",
+          "answer": "72261",
+          "expr": "(7555+2768)*7"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 53173 − 72614 : 2 = 53173 − 36307 = <b>16866</b><br>b) (7555 + 2768) × 7 = 10323 × 7 = <b>72261</b>"
+    },
+    {
+      "id": "g4t3-58",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(86908 − 3825) : 7",
+          "answer": "11869",
+          "expr": "(86908-3825)/7"
+        },
+        {
+          "label": "(58686 − 54600) × 8",
+          "answer": "32688",
+          "expr": "(58686-54600)*8"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) (86908 − 3825) : 7 = 83083 : 7 = <b>11869</b><br>b) (58686 − 54600) × 8 = 4086 × 8 = <b>32688</b>"
+    },
+    {
+      "id": "g4t3-59",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "24829 + 14685 × 5",
+          "answer": "98254",
+          "expr": "24829+14685*5"
+        },
+        {
+          "label": "(52122 − 45176) × 6",
+          "answer": "41676",
+          "expr": "(52122-45176)*6"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 24829 + 14685 × 5 = 24829 + 73425 = <b>98254</b><br>b) (52122 − 45176) × 6 = 6946 × 6 = <b>41676</b>"
+    },
+    {
+      "id": "g4t3-60",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "12070 × 7 − 71416",
+          "answer": "13074",
+          "expr": "12070*7-71416"
+        },
+        {
+          "label": "31608 − 59280 : 5",
+          "answer": "19752",
+          "expr": "31608-59280/5"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 12070 × 7 − 71416 = 84490 − 71416 = <b>13074</b><br>b) 31608 − 59280 : 5 = 31608 − 11856 = <b>19752</b>"
+    },
+    {
+      "id": "g4t3-61",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(89422 − 10146) : 4",
+          "answer": "19819",
+          "expr": "(89422-10146)/4"
+        },
+        {
+          "label": "(3100 + 6895) × 6",
+          "answer": "59970",
+          "expr": "(3100+6895)*6"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) (89422 − 10146) : 4 = 79276 : 4 = <b>19819</b><br>b) (3100 + 6895) × 6 = 9995 × 6 = <b>59970</b>"
+    },
+    {
+      "id": "g4t3-62",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "12246 : 2 + 78603",
+          "answer": "84726",
+          "expr": "12246/2+78603"
+        },
+        {
+          "label": "6476 + 11376 × 8",
+          "answer": "97484",
+          "expr": "6476+11376*8"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 12246 : 2 + 78603 = 6123 + 78603 = <b>84726</b><br>b) 6476 + 11376 × 8 = 6476 + 91008 = <b>97484</b>"
+    },
+    {
+      "id": "g4t3-63",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "36522 − 10228 × 3",
+          "answer": "5838",
+          "expr": "36522-10228*3"
+        },
+        {
+          "label": "(36522 − 10228) × 3",
+          "answer": "78882",
+          "expr": "(36522-10228)*3"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 36522 − 10228 × 3 = 36522 − 30684 = <b>5838</b><br>b) (36522 − 10228) × 3 = 26294 × 3 = <b>78882</b>"
+    },
+    {
+      "id": "g4t3-64",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(2291 + 90075) : 2",
+          "answer": "46183",
+          "expr": "(2291+90075)/2"
+        },
+        {
+          "label": "(2675 + 6906) × 7",
+          "answer": "67067",
+          "expr": "(2675+6906)*7"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) (2291 + 90075) : 2 = 92366 : 2 = <b>46183</b><br>b) (2675 + 6906) × 7 = 9581 × 7 = <b>67067</b>"
+    },
+    {
+      "id": "g4t3-65",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(61511 − 50583) × 5",
+          "answer": "54640",
+          "expr": "(61511-50583)*5"
+        },
+        {
+          "label": "18599 + 7148 × 2",
+          "answer": "32895",
+          "expr": "18599+7148*2"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) (61511 − 50583) × 5 = 10928 × 5 = <b>54640</b><br>b) 18599 + 7148 × 2 = 18599 + 14296 = <b>32895</b>"
+    },
+    {
+      "id": "g4t3-66",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "98631 − 59247 : 3",
+          "answer": "78882",
+          "expr": "98631-59247/3"
+        },
+        {
+          "label": "(98631 − 59247) : 3",
+          "answer": "13128",
+          "expr": "(98631-59247)/3"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 98631 − 59247 : 3 = 98631 − 19749 = <b>78882</b><br>b) (98631 − 59247) : 3 = 39384 : 3 = <b>13128</b>"
+    },
+    {
+      "id": "g4t3-67",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "78535 − 61415 : 5",
+          "answer": "66252",
+          "expr": "78535-61415/5"
+        },
+        {
+          "label": "92288 : 8 − 5561",
+          "answer": "5975",
+          "expr": "92288/8-5561"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 78535 − 61415 : 5 = 78535 − 12283 = <b>66252</b><br>b) 92288 : 8 − 5561 = 11536 − 5561 = <b>5975</b>"
+    },
+    {
+      "id": "g4t3-68",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "84518 : 2 + 56980",
+          "answer": "99239",
+          "expr": "84518/2+56980"
+        },
+        {
+          "label": "5380 : 4 − 1263",
+          "answer": "82",
+          "expr": "5380/4-1263"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 84518 : 2 + 56980 = 42259 + 56980 = <b>99239</b><br>b) 5380 : 4 − 1263 = 1345 − 1263 = <b>82</b>"
+    },
+    {
+      "id": "g4t3-69",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "29142 × 3 + 2667",
+          "answer": "90093",
+          "expr": "29142*3+2667"
+        },
+        {
+          "label": "1002 × 9 − 5998",
+          "answer": "3020",
+          "expr": "1002*9-5998"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 29142 × 3 + 2667 = 87426 + 2667 = <b>90093</b><br>b) 1002 × 9 − 5998 = 9018 − 5998 = <b>3020</b>"
+    },
+    {
+      "id": "g4t3-70",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "38097 : 9 + 13533",
+          "answer": "17766",
+          "expr": "38097/9+13533"
+        },
+        {
+          "label": "83312 − 3203 × 6",
+          "answer": "64094",
+          "expr": "83312-3203*6"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 38097 : 9 + 13533 = 4233 + 13533 = <b>17766</b><br>b) 83312 − 3203 × 6 = 83312 − 19218 = <b>64094</b>"
+    },
+    {
+      "id": "g4t3-71",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "8513 + 4983 × 4",
+          "answer": "28445",
+          "expr": "8513+4983*4"
+        },
+        {
+          "label": "(8513 + 4983) × 4",
+          "answer": "53984",
+          "expr": "(8513+4983)*4"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) 8513 + 4983 × 4 = 8513 + 19932 = <b>28445</b><br>b) (8513 + 4983) × 4 = 13496 × 4 = <b>53984</b>"
+    },
+    {
+      "id": "g4t3-72",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(31910 − 7919) × 4",
+          "answer": "95964",
+          "expr": "(31910-7919)*4"
+        },
+        {
+          "label": "31910 − 7919 × 4",
+          "answer": "234",
+          "expr": "31910-7919*4"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) (31910 − 7919) × 4 = 23991 × 4 = <b>95964</b><br>b) 31910 − 7919 × 4 = 31910 − 31676 = <b>234</b>"
+    },
+    {
+      "id": "g4t3-73",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "10758 × 9 − 69192",
+          "answer": "27630",
+          "expr": "10758*9-69192"
+        },
+        {
+          "label": "(83094 − 73021) × 5",
+          "answer": "50365",
+          "expr": "(83094-73021)*5"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 10758 × 9 − 69192 = 96822 − 69192 = <b>27630</b><br>b) (83094 − 73021) × 5 = 10073 × 5 = <b>50365</b>"
+    },
+    {
+      "id": "g4t3-74",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "67770 : 5 + 44784",
+          "answer": "58338",
+          "expr": "67770/5+44784"
+        },
+        {
+          "label": "63459 : 9 − 1359",
+          "answer": "5692",
+          "expr": "63459/9-1359"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 67770 : 5 + 44784 = 13554 + 44784 = <b>58338</b><br>b) 63459 : 9 − 1359 = 7051 − 1359 = <b>5692</b>"
+    },
+    {
+      "id": "g4t3-75",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "78312 + 7872 : 8",
+          "answer": "79296",
+          "expr": "78312+7872/8"
+        },
+        {
+          "label": "(78312 + 7872) : 8",
+          "answer": "10773",
+          "expr": "(78312+7872)/8"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) 78312 + 7872 : 8 = 78312 + 984 = <b>79296</b><br>b) (78312 + 7872) : 8 = 86184 : 8 = <b>10773</b>"
+    },
+    {
+      "id": "g4t3-76",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "85723 + 3199 : 7",
+          "answer": "86180",
+          "expr": "85723+3199/7"
+        },
+        {
+          "label": "5968 × 9 + 27246",
+          "answer": "80958",
+          "expr": "5968*9+27246"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 85723 + 3199 : 7 = 85723 + 457 = <b>86180</b><br>b) 5968 × 9 + 27246 = 53712 + 27246 = <b>80958</b>"
+    },
+    {
+      "id": "g4t3-77",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "84364 : 7 − 4765",
+          "answer": "7287",
+          "expr": "84364/7-4765"
+        },
+        {
+          "label": "11860 × 5 + 9411",
+          "answer": "68711",
+          "expr": "11860*5+9411"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 84364 : 7 − 4765 = 12052 − 4765 = <b>7287</b><br>b) 11860 × 5 + 9411 = 59300 + 9411 = <b>68711</b>"
+    },
+    {
+      "id": "g4t3-78",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "85974 + 4256 : 8",
+          "answer": "86506",
+          "expr": "85974+4256/8"
+        },
+        {
+          "label": "7775 × 2 − 4763",
+          "answer": "10787",
+          "expr": "7775*2-4763"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 85974 + 4256 : 8 = 85974 + 532 = <b>86506</b><br>b) 7775 × 2 − 4763 = 15550 − 4763 = <b>10787</b>"
+    },
+    {
+      "id": "g4t3-79",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(3670 + 9841) × 4",
+          "answer": "54044",
+          "expr": "(3670+9841)*4"
+        },
+        {
+          "label": "(21954 + 16056) : 6",
+          "answer": "6335",
+          "expr": "(21954+16056)/6"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) (3670 + 9841) × 4 = 13511 × 4 = <b>54044</b><br>b) (21954 + 16056) : 6 = 38010 : 6 = <b>6335</b>"
+    },
+    {
+      "id": "g4t3-80",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "7897 × 9 − 17684",
+          "answer": "53389",
+          "expr": "7897*9-17684"
+        },
+        {
+          "label": "85610 − 13954 × 3",
+          "answer": "43748",
+          "expr": "85610-13954*3"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 7897 × 9 − 17684 = 71073 − 17684 = <b>53389</b><br>b) 85610 − 13954 × 3 = 85610 − 41862 = <b>43748</b>"
+    },
+    {
+      "id": "g4t3-81",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "5568 + 53760 : 4",
+          "answer": "19008",
+          "expr": "5568+53760/4"
+        },
+        {
+          "label": "(5568 + 53760) : 4",
+          "answer": "14832",
+          "expr": "(5568+53760)/4"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) 5568 + 53760 : 4 = 5568 + 13440 = <b>19008</b><br>b) (5568 + 53760) : 4 = 59328 : 4 = <b>14832</b>"
+    },
+    {
+      "id": "g4t3-82",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(15332 − 7621) × 7",
+          "answer": "53977",
+          "expr": "(15332-7621)*7"
+        },
+        {
+          "label": "67320 : 8 + 1701",
+          "answer": "10116",
+          "expr": "67320/8+1701"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) (15332 − 7621) × 7 = 7711 × 7 = <b>53977</b><br>b) 67320 : 8 + 1701 = 8415 + 1701 = <b>10116</b>"
+    },
+    {
+      "id": "g4t3-83",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(7871 + 3409) : 8",
+          "answer": "1410",
+          "expr": "(7871+3409)/8"
+        },
+        {
+          "label": "70655 − 85059 : 9",
+          "answer": "61204",
+          "expr": "70655-85059/9"
+        }
+      ],
+      "explanation": "🔑 Nhớ quy tắc quen thuộc: trong ngoặc trước, nhân chia tiếp theo, cộng trừ sau cùng.<br>a) (7871 + 3409) : 8 = 11280 : 8 = <b>1410</b><br>b) 70655 − 85059 : 9 = 70655 − 9451 = <b>61204</b>"
+    },
+    {
+      "id": "g4t3-84",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "14020 × 4 − 9895",
+          "answer": "46185",
+          "expr": "14020*4-9895"
+        },
+        {
+          "label": "27420 : 5 − 3841",
+          "answer": "1643",
+          "expr": "27420/5-3841"
+        }
+      ],
+      "explanation": "🔑 Thứ tự thực hiện phép tính: trong ngoặc trước, rồi đến nhân chia, cuối cùng mới là cộng trừ.<br>a) 14020 × 4 − 9895 = 56080 − 9895 = <b>46185</b><br>b) 27420 : 5 − 3841 = 5484 − 3841 = <b>1643</b>"
+    },
+    {
+      "id": "g4t3-85",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "91354 : 2 − 8752",
+          "answer": "36925",
+          "expr": "91354/2-8752"
+        },
+        {
+          "label": "2059 × 4 − 7909",
+          "answer": "327",
+          "expr": "2059*4-7909"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 91354 : 2 − 8752 = 45677 − 8752 = <b>36925</b><br>b) 2059 × 4 − 7909 = 8236 − 7909 = <b>327</b>"
+    },
+    {
+      "id": "g4t3-86",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "5428 : 4 + 47667",
+          "answer": "49024",
+          "expr": "5428/4+47667"
+        },
+        {
+          "label": "(93746 − 84266) × 5",
+          "answer": "47400",
+          "expr": "(93746-84266)*5"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) 5428 : 4 + 47667 = 1357 + 47667 = <b>49024</b><br>b) (93746 − 84266) × 5 = 9480 × 5 = <b>47400</b>"
+    },
+    {
+      "id": "g4t3-87",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(96220 − 1820) : 5",
+          "answer": "18880",
+          "expr": "(96220-1820)/5"
+        },
+        {
+          "label": "16683 + 11145 × 7",
+          "answer": "94698",
+          "expr": "16683+11145*7"
+        }
+      ],
+      "explanation": "🔑 Trong biểu thức không có dấu ngoặc, ta làm phép nhân, phép chia trước rồi mới làm phép cộng, phép trừ; biểu thức có dấu ngoặc thì tính trong ngoặc trước.<br>a) (96220 − 1820) : 5 = 94400 : 5 = <b>18880</b><br>b) 16683 + 11145 × 7 = 16683 + 78015 = <b>94698</b>"
+    },
+    {
+      "id": "g4t3-88",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "60289 + 3640 × 7",
+          "answer": "85769",
+          "expr": "60289+3640*7"
+        },
+        {
+          "label": "22684 − 82827 : 9",
+          "answer": "13481",
+          "expr": "22684-82827/9"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 60289 + 3640 × 7 = 60289 + 25480 = <b>85769</b><br>b) 22684 − 82827 : 9 = 22684 − 9203 = <b>13481</b>"
+    },
+    {
+      "id": "g4t3-89",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "11765 × 5 + 2969",
+          "answer": "61794",
+          "expr": "11765*5+2969"
+        },
+        {
+          "label": "15637 × 4 − 21530",
+          "answer": "41018",
+          "expr": "15637*4-21530"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 11765 × 5 + 2969 = 58825 + 2969 = <b>61794</b><br>b) 15637 × 4 − 21530 = 62548 − 21530 = <b>41018</b>"
+    },
+    {
+      "id": "g4t3-90",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "99810 − 90595 : 5",
+          "answer": "81691",
+          "expr": "99810-90595/5"
+        },
+        {
+          "label": "(99810 − 90595) : 5",
+          "answer": "1843",
+          "expr": "(99810-90595)/5"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 99810 − 90595 : 5 = 99810 − 18119 = <b>81691</b><br>b) (99810 − 90595) : 5 = 9215 : 5 = <b>1843</b>"
+    },
+    {
+      "id": "g4t3-91",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(3263 + 1189) : 6",
+          "answer": "742",
+          "expr": "(3263+1189)/6"
+        },
+        {
+          "label": "(2213 + 4247) × 5",
+          "answer": "32300",
+          "expr": "(2213+4247)*5"
+        }
+      ],
+      "explanation": "🔑 Gặp biểu thức có cả cộng trừ lẫn nhân chia mà không có dấu ngoặc, con làm nhân chia trước, cộng trừ sau; có dấu ngoặc thì ưu tiên phần trong ngoặc.<br>a) (3263 + 1189) : 6 = 4452 : 6 = <b>742</b><br>b) (2213 + 4247) × 5 = 6460 × 5 = <b>32300</b>"
+    },
+    {
+      "id": "g4t3-92",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "9737 × 4 + 54004",
+          "answer": "92952",
+          "expr": "9737*4+54004"
+        },
+        {
+          "label": "85168 : 8 + 10927",
+          "answer": "21573",
+          "expr": "85168/8+10927"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) 9737 × 4 + 54004 = 38948 + 54004 = <b>92952</b><br>b) 85168 : 8 + 10927 = 10646 + 10927 = <b>21573</b>"
+    },
+    {
+      "id": "g4t3-93",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "15754 − 98301 : 7",
+          "answer": "1711",
+          "expr": "15754-98301/7"
+        },
+        {
+          "label": "92897 − 39022 × 2",
+          "answer": "14853",
+          "expr": "92897-39022*2"
+        }
+      ],
+      "explanation": "🔑 Hai phép tính trong cùng một biểu thức phải xếp hàng: trong ngoặc làm trước, không có ngoặc thì nhân chia được làm trước cộng trừ.<br>a) 15754 − 98301 : 7 = 15754 − 14043 = <b>1711</b><br>b) 92897 − 39022 × 2 = 92897 − 78044 = <b>14853</b>"
+    },
+    {
+      "id": "g4t3-94",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "80118 : 3 − 10367",
+          "answer": "16339",
+          "expr": "80118/3-10367"
+        },
+        {
+          "label": "13635 : 3 + 2780",
+          "answer": "7325",
+          "expr": "13635/3+2780"
+        }
+      ],
+      "explanation": "🔑 Con nhìn dấu ngoặc trước đã: có ngoặc thì tính trong ngoặc, không có ngoặc thì làm nhân chia rồi mới cộng trừ.<br>a) 80118 : 3 − 10367 = 26706 − 10367 = <b>16339</b><br>b) 13635 : 3 + 2780 = 4545 + 2780 = <b>7325</b>"
+    },
+    {
+      "id": "g4t3-95",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "15147 : 9 + 80335",
+          "answer": "82018",
+          "expr": "15147/9+80335"
+        },
+        {
+          "label": "6226 + 12964 × 7",
+          "answer": "96974",
+          "expr": "6226+12964*7"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) 15147 : 9 + 80335 = 1683 + 80335 = <b>82018</b><br>b) 6226 + 12964 × 7 = 6226 + 90748 = <b>96974</b>"
+    },
+    {
+      "id": "g4t3-96",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "3121 + 4252 × 8",
+          "answer": "37137",
+          "expr": "3121+4252*8"
+        },
+        {
+          "label": "(3121 + 4252) × 8",
+          "answer": "58984",
+          "expr": "(3121+4252)*8"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 3121 + 4252 × 8 = 3121 + 34016 = <b>37137</b><br>b) (3121 + 4252) × 8 = 7373 × 8 = <b>58984</b>"
+    },
+    {
+      "id": "g4t3-97",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "(11529 − 1411) × 8",
+          "answer": "80944",
+          "expr": "(11529-1411)*8"
+        },
+        {
+          "label": "11529 − 1411 × 8",
+          "answer": "241",
+          "expr": "11529-1411*8"
+        }
+      ],
+      "explanation": "🔑 Biểu thức không có ngoặc thì nhân chia làm trước, cộng trừ làm sau; biểu thức có ngoặc thì phần trong ngoặc được tính đầu tiên.<br>a) (11529 − 1411) × 8 = 10118 × 8 = <b>80944</b><br>b) 11529 − 1411 × 8 = 11529 − 11288 = <b>241</b>"
+    },
+    {
+      "id": "g4t3-98",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "2624 × 9 − 21539",
+          "answer": "2077",
+          "expr": "2624*9-21539"
+        },
+        {
+          "label": "(95357 − 4141) : 4",
+          "answer": "22804",
+          "expr": "(95357-4141)/4"
+        }
+      ],
+      "explanation": "🔑 Dấu ngoặc luôn được tính đầu tiên. Khi không có dấu ngoặc, phép nhân và phép chia làm trước phép cộng và phép trừ.<br>a) 2624 × 9 − 21539 = 23616 − 21539 = <b>2077</b><br>b) (95357 − 4141) : 4 = 91216 : 4 = <b>22804</b>"
+    },
+    {
+      "id": "g4t3-99",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "32776 − 10523 × 3",
+          "answer": "1207",
+          "expr": "32776-10523*3"
+        },
+        {
+          "label": "(32776 − 10523) × 3",
+          "answer": "66759",
+          "expr": "(32776-10523)*3"
+        }
+      ],
+      "explanation": "🔑 Chỉ cần thuộc một câu: ngoặc trước đã, sau đó nhân chia, cộng trừ để sau cùng.<br>a) 32776 − 10523 × 3 = 32776 − 31569 = <b>1207</b><br>b) (32776 − 10523) × 3 = 22253 × 3 = <b>66759</b>"
+    },
+    {
+      "id": "g4t3-100",
+      "t": 3,
+      "topic": "Toán 4 · Tính giá trị biểu thức",
+      "q": "Tính giá trị biểu thức:",
+      "workNote": "Viết từng bước ra bảng nháp — trong ngoặc và nhân chia trước — rồi nhập giá trị của mỗi biểu thức.",
+      "keys": [],
+      "answerParts": [
+        {
+          "label": "1741 × 9 + 57212",
+          "answer": "72881",
+          "expr": "1741*9+57212"
+        },
+        {
+          "label": "29826 : 6 + 12509",
+          "answer": "17480",
+          "expr": "29826/6+12509"
+        }
+      ],
+      "explanation": "🔑 Không có dấu ngoặc thì nhân chia đi trước, cộng trừ theo sau; còn khi có dấu ngoặc, ta tính giá trị trong ngoặc rồi mới tính tiếp.<br>a) 1741 × 9 + 57212 = 15669 + 57212 = <b>72881</b><br>b) 29826 : 6 + 12509 = 4971 + 12509 = <b>17480</b>"
+    }
+  ]
+}

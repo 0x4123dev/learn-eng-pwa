@@ -1,7 +1,7 @@
 import { requireAuth, json, err } from './_lib.js';
 
 const MENUS = [
-  'math7', 'mathwars', 'grade4', 'wordform',
+  'math7', 'math4', 'mathwars', 'grade4', 'wordform',
   'grammar', 'phrases', 'verbs', 'rewrite', 'collocation',
 ];
 const MAX_BATCH = 400;

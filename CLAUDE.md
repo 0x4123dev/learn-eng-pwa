@@ -670,6 +670,8 @@ npx wrangler@3 d1 execute eng_pwa_db --remote --command "PRAGMA table_info(x)"
 
 # Generated files — regenerate, never hand-edit the output
 node scripts/build-math-data.js data/math     # js/math-data.js, js/math-lessons.js
+node scripts/build-math4-data.js              # js/math4-data.js (Toán 4, 5 dạng × 100 câu)
+node scripts/gen-math4-t3.js                  # rebuilds ONE dạng under data/math4/
 node scripts/build-math-fight-bank.js         # js/math-fight-bank.js
 node scripts/build-hot-words.js               # js/hot-words.js
 ```

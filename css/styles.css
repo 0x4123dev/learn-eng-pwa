@@ -13578,3 +13578,26 @@
     .nr-raid-overview { margin-top: 6px; }
     .nr-friend-row { padding: 9px 10px; gap: 9px; }
 }
+
+/* Toán 4 · Đề ôn — the short "what is on this paper" list under the Pre
+   button. It is a table of contents, not a menu: nothing in it is tappable,
+   so it reads quieter than the buttons above it. */
+.math-g4-types {
+    margin: 18px 0 6px;
+}
+.math-g4-types ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+.math-g4-types li {
+    margin: 0;
+}
+
+/* One line per answer box on a review card. Toán 4 questions carry four of
+   them, so they must stack rather than run together on one line. */
+.math-answer-line {
+    display: block;
+}
