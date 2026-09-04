@@ -119,4 +119,81 @@ suite('farm server: home PUT stamps days on the server, not the client', () => {
   });
 });
 
+const collectHandler = () => loadModule('functions/api/night-raid/collect.js');
+const collect = (world, kid, uid) => world.call(collectHandler().onRequestPost, { url: '/api/night-raid/collect', method: 'POST', token: kid.token, body: { uid: uid || '' } });
+const mirror = (world, uid) => world.db.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(uid).lootable_coins;
+
+suite('farm server: collect', () => {
+  async function farmWorld(dates, cells, farms) {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] }, 100);
+    doneOn(world, kid.uid, ...dates);
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({ cells, farms: farms || [], soldiers: 0, dogLane: 2 }), kid.uid);
+    return { world, kid };
+  }
+  test('a ripe fresh crop pays its yield once, is removed, and is reported for replanting', async () => {
+    const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [
+      { type: 'tomato', gx: 1, gy: 1, uid: 'c-tomato01', day: 0, at: TWO_AGO },
+      { type: 'pumpkin', gx: 2, gy: 2, uid: 'c-pumpk001', day: 0, at: TWO_AGO },
+    ], [{ cells: [{ type: 'lettuce', gx: 0, gy: 0, uid: 'c-lettuc01', day: 1, at: YESTERDAY }] }]);
+    const r = await collect(world, kid);
+    assert.truthy(r.ok, JSON.stringify(r.data));
+    assert.equal(r.data.collectedCoins, 18 + 8, 'tomato (2 days) and lettuce (1 day) are ripe; pumpkin is not');
+    assert.equal(r.data.coins, 126);
+    assert.equal(mirror(world, kid.uid), 126);
+    assert.deepEqual(r.data.harvested.map(h => [h.type, h.zone]).sort(), [['lettuce', 1], ['tomato', 0]]);
+    const s = stored(world, kid.uid);
+    assert.falsy(s.cells.some(c => c.type === 'tomato'));
+    assert.truthy(s.cells.some(c => c.type === 'pumpkin'));
+    assert.equal(s.farms[0].cells.length, 0);
+    assert.equal(r.data.dayCount, 2);
+    const again = await collect(world, kid);
+    assert.truthy(again.data.nothingReady, 'nothing left to pay');
+    assert.equal(mirror(world, kid.uid), 126, 'no double pay');
+  });
+  test('a ripe but wilted crop is not harvested and the reply says why', async () => {
+    const { world, kid } = await farmWorld([TWO_AGO], [{ type: 'lettuce', gx: 1, gy: 1, uid: 'c-lettuc01', day: 0, at: TWO_AGO }]);
+    const before = JSON.stringify(stored(world, kid.uid));
+    const r = await collect(world, kid);
+    assert.truthy(r.data.nothingReady);
+    assert.truthy(r.data.wilted, 'the child is told the plant is wilted');
+    assert.equal(JSON.stringify(stored(world, kid.uid)), before, 'layout untouched');
+    assert.equal(mirror(world, kid.uid), 100);
+    doneOn(world, kid.uid, TODAY);
+    const revived = await collect(world, kid);
+    assert.equal(revived.data.collectedCoins, 8, 'finishing today revives and pays');
+  });
+  test('barracks pay one soldier per task-day since the last collect, and not by the clock', async () => {
+    const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-barrac01', lastDay: 0 }]);
+    const r = await collect(world, kid);
+    assert.equal(r.data.collectedSoldiers, 1);
+    assert.equal(stored(world, kid.uid).cells[0].lastDay, 2);
+    const again = await collect(world, kid);
+    assert.truthy(again.data.nothingReady, 'same dayCount → nothing');
+    doneOn(world, kid.uid, TODAY);
+    assert.equal((await collect(world, kid)).data.collectedSoldiers, 1);
+  });
+  test('fields still pay by their 24h clock', async () => {
+    const { world, kid } = await farmWorld([], [{ type: 'rice-field', gx: 0, gy: 0, tier: 1, uid: 'p-rice0001', readyAt: 0 }, { type: 'fish-pond', gx: 4, gy: 0, tier: 1, uid: 'p-fish0001', readyAt: Date.now() + 3600000 }]);
+    const r = await collect(world, kid);
+    assert.equal(r.data.collectedCoins, 100);
+    assert.truthy(stored(world, kid.uid).cells.find(c => c.uid === 'p-rice0001').readyAt > Date.now());
+  });
+  test('uid harvests one cell only', async () => {
+    const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [
+      { type: 'lettuce', gx: 1, gy: 1, uid: 'c-lettuc01', day: 0, at: TWO_AGO },
+      { type: 'lettuce', gx: 2, gy: 1, uid: 'c-lettuc02', day: 0, at: TWO_AGO }]);
+    const r = await collect(world, kid, 'c-lettuc02');
+    assert.equal(r.data.collectedCoins, 8);
+    assert.equal(stored(world, kid.uid).cells.length, 1);
+    assert.equal(stored(world, kid.uid).cells[0].uid, 'c-lettuc01');
+  });
+  test('403 without the flag', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: false });
+    assert.equal((await collect(world, kid)).status, 403);
+  });
+});
+
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));

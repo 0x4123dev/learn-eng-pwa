@@ -49,14 +49,15 @@ async function seed(world, user, soldiers, readyAt) {
     }
     return r;
 }
-// PUT /home luôn đặt lại readyAt = now + 24h cho trại mới (chống client tự
-// khai là đã tới hạn), nên muốn thử thu hoạch thì phải hạ readyAt thẳng trong DB.
+// Trại Huấn Luyện KHÔNG còn chạy theo đồng hồ 24 h: nó trả một lính cho mỗi
+// NGÀY bé làm xong hết nhiệm vụ (js/farm-rules.js barracksReady). PUT /home
+// đóng dấu lastDay = số ngày hiện tại, nên muốn thử thu hoạch thì phải thêm
+// một ngày đã hoàn thành vào daily_task_rewards — hạ readyAt không còn tác
+// dụng gì với trại nữa.
 function makeReady(world, uid) {
-    const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(uid);
-    const layout = JSON.parse(row.layout_json);
-    for (const c of layout.cells) c.readyAt = 1;
-    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?')
-        .run(JSON.stringify(layout), uid);
+    const today = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+    world.db.prepare('INSERT OR IGNORE INTO daily_task_rewards (user_id, task_date, coins, shields) VALUES (?, ?, 200, 1)')
+        .run(uid, today);
 }
 function storedSoldiers(world, uid) {
     const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(uid);
