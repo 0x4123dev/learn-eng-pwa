@@ -11569,6 +11569,19 @@
     grid-column: 1 / -1; grid-row: 3;
     display: grid; gap: 5px; margin-top: 7px;
 }
+/* Two columns, filled DOWNWARDS, so four sums read 1 3 / 2 4. Halving the
+   header height is the point: what it gives back is board to write the đặt
+   tính on. --board-rows is ceil(n/2), set by js/math-board.js, because only
+   it knows how many sums this question has. Narrow screens stay stacked —
+   two columns of a long "1200 m + 800 m = … km" would wrap into mush. */
+@media (min-width: 500px) {
+    .math-board-strip-parts {
+        grid-auto-flow: column;
+        grid-template-rows: repeat(var(--board-rows, 1), auto);
+        grid-auto-columns: minmax(0, 1fr);
+        column-gap: 20px; row-gap: 4px;
+    }
+}
 .math-board-strip-part {
     display: flex; align-items: baseline; gap: 8px;
     font-size: 17px; font-weight: 700; line-height: 1.35;

@@ -1705,10 +1705,14 @@ function renderMathQuestion() {
           : `<button class="grammar-next-btn" onclick="nextMathQuestion()">${st.idx + 1 < total ? 'Câu tiếp →' : 'Xem kết quả'}</button>`);
   } else if (mathIsTyped(q)) {
     if (mathHasAnswerParts(q)) {
-      body = `<div class="math-written-help math-board-prompt">
+      // Toán 4 says it twice otherwise: the stem is already "Đặt tính rồi
+      // tính:" and the note under it "Đặt tính ra bảng nháp rồi nhập kết quả
+      // của từng phép tính." The ✏️ in the quiz header opens the same board,
+      // so the whole banner is a second copy of what is already on screen.
+      body = (math4FreeEntry(q) ? '' : `<div class="math-written-help math-board-prompt">
           <button type="button" class="math-open-board" onclick="openMathBoard()">✏️ Mở bảng nháp</button>
           <span>${mathEsc(q.workNote || 'Làm bài trên bảng nháp, rồi nhập từng kết quả cuối cùng.')}</span>
-        </div>`
+        </div>`)
         + mathAnswerPartsHTML(q, answered ? ans : null)
         + (answered ? '' : (math4FreeEntry(q)
           // No keypad: the boxes are real inputs and the iPad brings its own.

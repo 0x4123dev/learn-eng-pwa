@@ -132,6 +132,21 @@ suite('toán 4 chỉ đổi cho toán 4: the sweep', () => {
     assert.truthy(wouldBreak.some(p => /\//.test(String(p.answer))), 'fractions are in there');
   });
 
+  test('Toán 7 keeps the "Mở bảng nháp" banner — its workNote is not its stem', () => {
+    const math = src('js/math.js');
+    const render = math.slice(math.indexOf('function renderMathQuestion'));
+    assert.truthy(/math4FreeEntry\(q\) \? '' : `<div class="math-written-help math-board-prompt">/
+      .test(render), 'only Toán 4 drops the banner');
+    assert.truthy(/Mở bảng nháp/.test(render), 'Toán 7 still offers it');
+    // And it still has something worth saying: its workNote is a real
+    // instruction, not a restatement of the question.
+    const { m } = loadMath();
+    const noted = allQuestions()
+      .filter(({ q }) => m.mathHasAnswerParts(q) || q.type === 'written')
+      .filter(({ q }) => /bảng nháp/i.test(q.workNote || ''));
+    assert.truthy(noted.length > 0, 'Toán 7 papers point at the board through workNote');
+  });
+
   test('typed Toán 7 questions still get the in-app keypad, glyphs and all', () => {
     const { m } = loadMath();
     const typed = allQuestions().filter(({ q }) => m.mathIsTyped(q) && !m.mathHasAnswerParts(q));
@@ -271,6 +286,38 @@ suite('toán 4 chỉ đổi cho toán 4: the scratch board', () => {
       'the armed label must go through mathBoardFace');
     assert.falsy(/textContent = _mathBoardKeyboardOpen \?/.test(after),
       'so must the keyboard label');
+  });
+
+  test('the sums sit two-up so the header stops eating the writing space', () => {
+    const body = board.slice(board.indexOf('function mathBoardQuestionBodyHTML'),
+      board.indexOf('function mathBoardStripHTML'));
+    assert.truthy(/Math\.ceil\(parts\.length \/ 2\)/.test(body),
+      'the row count must be half the sums, rounded up — two columns, never three');
+    assert.truthy(/--board-rows:/.test(body), 'and be handed to CSS, which cannot count them');
+    const css = src('css/styles.css');
+    const grid = css.slice(css.indexOf('.math-board-strip-parts {'),
+      css.indexOf('.math-board-strip-part {'));
+    // Row-major would read 1 2 / 3 4. The sums must read DOWN each column.
+    assert.truthy(/grid-auto-flow:\s*column/.test(grid),
+      'filled across instead of down would number the sums 1 2 / 3 4');
+    assert.truthy(/grid-template-rows:\s*repeat\(var\(--board-rows/.test(grid),
+      'the row count from the markup must actually be used');
+    assert.truthy(/@media \(min-width: 500px\)/.test(grid),
+      'a narrow phone keeps one column — two would wrap a long đổi-đơn-vị label into mush');
+  });
+
+  test('the two-up header is Toán 4 only, and cannot reach Toán 7', () => {
+    const { m } = loadMath();
+    // The parts list is drawn only for a locked (grade 4) question, so the
+    // grid it lives in can never appear on a Toán 7 board.
+    const body = board.slice(board.indexOf('function mathBoardQuestionBodyHTML'),
+      board.indexOf('function mathBoardStripHTML'));
+    assert.truthy(/mathBoardQuestionLocked\(q\) && parts\.length/.test(body),
+      'the whole block, grid included, is behind the grade-4 gate');
+    const withParts = allQuestions().filter(({ q }) => m.mathHasAnswerParts(q));
+    assert.truthy(withParts.length > 0, 'Toán 7 does have answer-box questions to protect');
+    assert.deepEqual(withParts.filter(({ q }) => q.grade === 4).map(({ q }) => q.id), [],
+      'none of them is grade 4, so none of them draws the grid');
   });
 
   test('the answer-box labels are printed for grade 4 only', () => {

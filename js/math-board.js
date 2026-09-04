@@ -761,10 +761,17 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         let html = '<span class="math-formula">' + mathFormula(q.q) + '</span>';
         const parts = Array.isArray(q.answerParts) ? q.answerParts : [];
         if (mathBoardQuestionLocked(q) && parts.length) {
-            html += '<span class="math-board-strip-parts">' + parts.map(function (p, i) {
-                return '<span class="math-board-strip-part"><b>' + (i + 1) + '</b>' +
-                       '<span class="math-formula">' + mathFormula(p.label) + '</span></span>';
-            }).join('') + '</span>';
+            // Two columns, filled DOWNWARDS: four sums read 1 3 / 2 4, not
+            // 1 2 / 3 4. Half the header height means half again as much
+            // board to write the đặt tính on, which is the whole point of
+            // opening it. The row count is handed to CSS rather than computed
+            // there because only this side knows how many sums there are.
+            const rows = Math.max(1, Math.ceil(parts.length / 2));
+            html += '<span class="math-board-strip-parts" style="--board-rows:' + rows + '">' +
+                parts.map(function (p, i) {
+                    return '<span class="math-board-strip-part"><b>' + (i + 1) + '</b>' +
+                           '<span class="math-formula">' + mathFormula(p.label) + '</span></span>';
+                }).join('') + '</span>';
         }
         return html;
     }

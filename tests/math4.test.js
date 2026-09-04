@@ -413,6 +413,19 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
     assert.truthy(/Kiểm tra tất cả/.test(html), 'the one button marks every box');
   });
 
+  test('the question is not repeated back at the child above the boxes', () => {
+    // The stem already says "Đặt tính rồi tính:" and the ✏️ in the quiz
+    // header already opens the board. The banner that used to sit here said
+    // both again, in a box the width of the screen.
+    const { m, screen } = loadMath();
+    m.startMath4Pre();
+    const html = screen.innerHTML;
+    assert.falsy(/math-board-prompt/.test(html), 'the duplicate banner must be gone');
+    assert.falsy(/Mở bảng nháp/.test(html), 'and its second door to the board with it');
+    assert.truthy(/math-board-fab/.test(html), 'the ✏️ in the header is the way in');
+    assert.truthy(/openMathBoard\(\)/.test(html), 'and it still opens the board');
+  });
+
   test('the boxes can be filled in any order, and each keeps its own number', () => {
     const { m } = loadMath();
     m.startMath4Pre();
