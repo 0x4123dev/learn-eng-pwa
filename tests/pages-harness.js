@@ -58,9 +58,18 @@ function loadModule(file) {
     fn(localImport, localImportDefault, exportsObj);
   } else {
     // Plain-script module (e.g. js/night-raid-rules.js) with a CJS fallback.
+    // It also gets a real `require` for relative specs: js/night-raid-rules.js
+    // reaches js/farm-rules.js through exactly that fallback in Node and in
+    // the Pages bundle (esbuild wraps a `module.exports` file as CJS). Without
+    // one here `typeof require` is 'undefined' inside new Function, its
+    // `FarmRules` silently becomes null, and every farm rule tests as a no-op.
     const module = { exports: {} };
-    const fn = new Function('module', 'exports', src);
-    fn(module, module.exports);
+    const cjsRequire = (spec) => {
+      if (!/^\.{1,2}\//.test(spec)) throw new Error('bare require(' + spec + ') not supported in ' + file);
+      return localImport(spec);
+    };
+    const fn = new Function('module', 'exports', 'require', src);
+    fn(module, module.exports, cjsRequire);
     exportsObj = module.exports;
   }
   cache.set(abs, exportsObj);
