@@ -28,7 +28,7 @@ var DailyTaskCatalog = (function () {
     { id: 'math-exam', label: 'Toán 7 · Đề thi' },
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
-    { id: 'math4', label: 'Toán 4 · Bài luyện 10 câu' },
+    { id: 'math4', label: 'Toán 4' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
