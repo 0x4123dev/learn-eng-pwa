@@ -14028,6 +14028,14 @@ html.math-board-open #bottomNav { display: none !important; }
 .nr-builder.shop-open .nr-builder-menu-toggle{opacity:0;pointer-events:none}
 .nr-builder.rotated .nr-builder-menu-toggle{right:14px;top:364px;width:44px;height:44px}
 .nr-builder.rotated.menu-closed .nr-builder-menu-toggle{top:14px}
+/* iPad already follows the device orientation. Hiding the phone-only 90deg
+   fallback prevents an old rotated state from pushing the ellipsis against
+   the physical Home-indicator edge; close the gap so the rail stays compact. */
+@media(min-width:701px){
+    .nr-builder-rotate{display:none!important}
+    .nr-builder-edit{top:calc(384px + env(safe-area-inset-top))}
+    .nr-builder-menu-toggle{top:calc(438px + env(safe-area-inset-top))}
+}
 @media(prefers-reduced-motion:reduce){.nr-builder-menu-toggle{transition:none}}
 
 /* Direct-attack stage: one rectangular castle estate and three non-overlap

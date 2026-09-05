@@ -358,6 +358,16 @@ suite('iPad: Arena map controls', () => {
     test('every arena poster keeps its aspect ratio', () => {
         assert.truthy(css.includes('aspect-ratio: 16/9'), 'posters must not distort when the card grows');
     });
+
+    test('entering home cannot strand the shop menu in phone rotation mode', () => {
+        const raid = read('js/night-raid.js');
+        assert.truthy(raid.includes("builderMenuOpen=false;builderRotated=false;if(typeof switchScreen"),
+            'Vào nhà must reset the synthetic phone rotation before rendering');
+        assert.truthy(css.includes('@media(min-width:701px){\n    .nr-builder-rotate{display:none!important}'),
+            'the phone-only rotate button must not appear on iPad');
+        assert.truthy(css.includes('.nr-builder.menu-closed .nr-builder-menu-toggle{top:calc(114px'),
+            'the closed ellipsis remains in the first safe rail slot');
+    });
 });
 
 // ── 7. text stays readable, not gigantic ───────────────────────────────────

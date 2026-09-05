@@ -322,6 +322,16 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-builder.menu-closed .nr-builder-nav'), 'closed state hides the navigation actions');
     assert.truthy(css.includes('.nr-builder.menu-closed .nr-builder-menu-toggle{top:calc(114px'), 'ellipsis occupies the first rail slot');
   });
+  test('entering the home always restores a visible iPad menu control',()=>{
+    assert.truthy(ui.includes("builderMenuOpen=false;builderRotated=false;if(typeof switchScreen"),
+      'a previous phone-style rotation must not survive leaving and re-entering the home');
+    assert.truthy(ui.includes("matchMedia('(min-width: 701px)').matches"),
+      'the synthetic 90-degree rotation is guarded from tablet viewports');
+    assert.truthy(css.includes('@media(min-width:701px){\n    .nr-builder-rotate{display:none!important}'),
+      'iPad uses its real device orientation instead of the phone-only rotate control');
+    assert.truthy(css.includes('.nr-builder-edit{top:calc(384px + env(safe-area-inset-top))}'),
+      'the tablet rail closes the space left by the removed rotate control');
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));

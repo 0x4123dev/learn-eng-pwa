@@ -124,7 +124,7 @@ var NightRaid = (() => {
   // adopts coins the server credited while the child was offline, and
   // retryPendingFinish ends in claimVerified() -> syncHome(), a PUT that would
   // otherwise push the stale wallet straight over them.
-  function open(){ensure();cleanup();view='builder';builderEditing=false;builderShopOpen=false;builderMenuOpen=false;if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderBuilder();refreshHome().catch(()=>{}).then(()=>retryPendingFinish()).catch(()=>{});}
+  function open(){ensure();cleanup();view='builder';builderEditing=false;builderShopOpen=false;builderMenuOpen=false;builderRotated=false;if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderBuilder();refreshHome().catch(()=>{}).then(()=>retryPendingFinish()).catch(()=>{});}
   function close(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
   // Compatibility entry point for older callers. Xây Nhà is now the only
   // Night Raid home, so the overlapping read-only stage can never reopen.
@@ -977,7 +977,15 @@ var NightRaid = (() => {
   // Fake landscape: iOS never lets a web app lock orientation, so the whole
   // builder rotates 90deg in CSS instead — the child turns the device and the
   // island fills the wide way. Pan deltas are re-mapped in the gesture code.
-  function rotateBuilder(){builderRotated=!builderRotated;builderScroll=null;renderBuilder();announce(builderRotated?'Đã xoay ngang màn hình — xoay máy để xem':'Đã trở về màn hình dọc');}
+  function rotateBuilder(){
+    // The CSS 90-degree fallback is only for narrow phones that cannot lock
+    // orientation.  On an iPad it rotates an already-landscape viewport and
+    // can move the collapsed menu control onto the physical bottom edge.
+    if(typeof matchMedia==='function'&&matchMedia('(min-width: 701px)').matches){
+      builderRotated=false;builderScroll=null;renderBuilder();announce('Hãy xoay iPad để xem ngang');return;
+    }
+    builderRotated=!builderRotated;builderScroll=null;renderBuilder();announce(builderRotated?'Đã xoay ngang màn hình — xoay máy để xem':'Đã trở về màn hình dọc');
+  }
   if(typeof window!=='undefined')window.addEventListener('resize',()=>{if(view==='builder')setBuilderZoom(builderZoom);});
   function setupBuilderGestures(){const viewport=document.getElementById('nrBuilderWorld');if(!viewport)return;
     // A zoom persisted on another device/orientation may now be below the
