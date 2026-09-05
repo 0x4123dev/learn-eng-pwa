@@ -46,6 +46,19 @@ function loadAuth(plan) {
 }
 
 suite('money client: admin grants land exactly as the server says', () => {
+  test('a Daily Task reward is described as earned, not as an admin gift', async () => {
+    const { ctx } = loadAuth(url =>
+      url === '/api/coins' ? { data: { granted: 200, dailyTaskGranted: 200, flags: {} } } : null);
+    const toasts = [];
+    ctx.showToast = msg => toasts.push(msg);
+    ctx.appState = { coins: 100 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.refreshFlags('Kid');
+    assert.equal(ctx.appState.coins, 300);
+    assert.equal(toasts[0], '🎉 Hoàn thành Daily Task được tặng 200 xu!');
+    assert.falsy(toasts[0].includes('Admin'));
+  });
+
   test('a 50-coin grant adds 50 to the wallet and saves it', async () => {
     const { ctx } = loadAuth(url =>
       url === '/api/coins' ? { data: { granted: 50, flags: { mathFight: false, bot: false } } } : null);

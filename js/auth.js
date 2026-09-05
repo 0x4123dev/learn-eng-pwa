@@ -236,6 +236,7 @@ const EngAuth = (function () {
       const r = await api('coins', { method: 'POST', token, body: { proto: 2, ackReceipts: pending, device: deviceId() } });
       if (r.ok && pending.length) setAccount(username, { pendingCoinReceipts: [] });
       const granted = r.ok && r.data ? Math.trunc(+r.data.granted || 0) : 0;
+      const dailyTaskGranted = r.ok && r.data ? Math.trunc(+r.data.dailyTaskGranted || 0) : 0;
       const receipt = (r.ok && r.data && typeof r.data.receipt === 'string' && r.data.receipt) || null;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
@@ -285,9 +286,15 @@ const EngAuth = (function () {
       }
       if (!granted) return;
       if (typeof showToast === 'function') {
-        showToast(granted > 0
-          ? '🎁 Admin tặng bạn ' + granted + ' xu!'
-          : '🧾 Đã điều chỉnh số dư ' + granted + ' xu');
+        if (granted > 0 && dailyTaskGranted > 0) {
+          const other = granted - dailyTaskGranted;
+          showToast('🎉 Hoàn thành Daily Task được tặng ' + dailyTaskGranted + ' xu!'
+            + (other > 0 ? ' · Nhận thêm ' + other + ' xu' : ''));
+        } else {
+          showToast(granted > 0
+            ? '🎁 Admin tặng bạn ' + granted + ' xu!'
+            : '🧾 Đã điều chỉnh số dư ' + granted + ' xu');
+        }
       }
       const home = document.getElementById('homeScreen');
       if (home && home.classList.contains('active') && typeof renderHome === 'function') {

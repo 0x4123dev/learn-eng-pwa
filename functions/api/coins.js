@@ -78,7 +78,7 @@ export async function onRequestPost({ request, env }) {
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)
                AND (? IS NULL OR claimed_device IS NULL OR claimed_device = ?))
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)))
-         RETURNING amount`
+         RETURNING amount, note`
       ).bind(receipt, device, auth.uid, RECLAIM_AFTER, device, device, STRANDED_AFTER).all();
     } catch (e) {
       // db/025 has not been applied to this database yet. A child's coins must
@@ -90,22 +90,29 @@ export async function onRequestPost({ request, env }) {
         `UPDATE coin_grants SET claimed_at = datetime('now'), receipt = ?, confirmed_at = NULL
          WHERE user_id = ? AND (claimed_at IS NULL
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)))
-         RETURNING amount`
+         RETURNING amount, note`
       ).bind(receipt, auth.uid, RECLAIM_AFTER).all();
     }
   } else {
     claimed = await env.DB.prepare(
-      "UPDATE coin_grants SET claimed_at = datetime('now'), confirmed_at = datetime('now') WHERE user_id = ? AND claimed_at IS NULL RETURNING amount"
+      "UPDATE coin_grants SET claimed_at = datetime('now'), confirmed_at = datetime('now') WHERE user_id = ? AND claimed_at IS NULL RETURNING amount, note"
     ).bind(auth.uid).all();
   }
   const rows = claimed.results || [];
   const granted = rows.reduce(
     (total, row) => total + Math.trunc(Number(row.amount) || 0), 0
   );
+  // Daily Task rewards travel through the same durable IOU pipeline as manual
+  // admin adjustments. Tell the client which part came from completed tasks so
+  // it never calls an earned reward an admin gift.
+  const dailyTaskGranted = rows.reduce((total, row) =>
+    /^Daily task \d{4}-\d{2}-\d{2}$/.test(String(row.note || ''))
+      ? total + Math.trunc(Number(row.amount) || 0)
+      : total, 0);
   // The receipt goes back whenever ROWS were claimed, not when the total is
   // positive. A batch that nets to zero — or to a negative, now that a raid
   // debits the sleeping defender through this table — used to come back with
   // `receipt: null`, so the device could never ack it, and the server offered
   // the very same debit again on every sync after the reclaim window.
-  return json({ granted, receipt: rows.length > 0 ? receipt : null, flags });
+  return json({ granted, dailyTaskGranted, receipt: rows.length > 0 ? receipt : null, flags });
 }

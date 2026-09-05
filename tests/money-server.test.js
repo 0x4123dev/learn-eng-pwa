@@ -55,6 +55,17 @@ suite('money server: a rebuilt database still pays the wallet paths', () => {
 });
 
 suite('money server: coin grants pay exactly once', () => {
+  test('a Daily Task grant is identified separately from an admin gift', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    world.db.prepare(
+      'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,?)'
+    ).run(user.uid, 200, 'Daily task 2026-09-05', 0);
+    const result = await world.call(coinsHandler().onRequestPost, { token: user.token });
+    assert.equal(result.data.granted, 200);
+    assert.equal(result.data.dailyTaskGranted, 200);
+  });
+
   test('two grants are paid in one claim and never again', async () => {
     const world = createWorld();
     const user = await world.createUser({});
