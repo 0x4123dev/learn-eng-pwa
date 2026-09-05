@@ -123,13 +123,18 @@ suite('home: the garden shipped, the game did not', () => {
             'Arena must mount the account castle garden in its header');
         assert.truthy(arena.includes('onclick="pbShowDogInfo()"') && arena.includes('aria-modal="true"'),
             'Arena must expose dog power through an accessible info dialog');
+        assert.truthy(arena.includes('class="pb-arena-home"') && arena.includes('onclick="openNightRaid()"'),
+            'Arena must place the home entry directly over its yard');
     });
 
     test('Night Raid itself is still gated', () => {
-        // The entry card into the raid lives on the Arena screen.
-        assert.truthy(/st\.allowBot \? _pbNightRaidCard\(\)/.test(arena),
-            'the Night Raid card must stay behind the flag');
+        // The entry control over the yard is visible only for enabled accounts.
+        assert.truthy(arena.includes('_pbArenaPetHeader(st.allowBot)'),
+            'the Night Raid home button must stay behind the flag');
         assert.truthy(arena.includes('st.allowBot'), 'the Arena screen must still read the flag');
+        const lobby = arena.slice(arena.indexOf('screen.innerHTML = _pbShell(`'), arena.indexOf('// ---- battle history ----'));
+        assert.falsy(lobby.includes('_pbNightRaidCard()') || lobby.includes('_pbRandomArenaCard()'),
+            'the two removed promotional boxes must not return to the Arena lobby');
     });
 
     test('the garden carries no way into the game', () => {

@@ -9,13 +9,14 @@ const ROOT = path.join(__dirname, '..');
 const F = require(path.join(ROOT, 'js', 'farm-rules.js'));
 const M = require(path.join(ROOT, 'js', 'farm-art-manifest.js'));
 
-suite('farm art: the manifest is the rules plus two extras', () => {
-  test('48 entries: every sprite name, the plot icon and the dry-ground overlay', () => {
+suite('farm art: the manifest is the rules plus the plot choices and overlays', () => {
+  test('51 entries: every sprite name, three selectable plots and legacy overlays', () => {
     const names = M.FILES.map(f => f.name);
-    assert.equal(names.length, 48);
-    assert.equal(new Set(names).size, 48, 'no duplicate names');
+    assert.equal(names.length, 51);
+    assert.equal(new Set(names).size, 51, 'no duplicate names');
     for (const n of F.spriteNames()) assert.contains(names, n, 'missing sprite ' + n);
     assert.contains(names, 'farm-plot');
+    for (const n of ['farm-plot-stone', 'farm-plot-hedge', 'farm-plot-clover']) assert.contains(names, n);
     assert.contains(names, 'dry-ground');
   });
   test('every entry has a size and a prompt', () => {

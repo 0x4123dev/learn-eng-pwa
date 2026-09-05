@@ -278,6 +278,7 @@ var NightRaidRules = (() => {
         cells:normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids, now),
         x:dock.x,
         y:dock.y,
+        style:Farm.plotStyle(f && f.style).id,
       };
     });
     return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:3, castleCell, farms };

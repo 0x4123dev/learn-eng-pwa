@@ -208,27 +208,35 @@ suite('builder farm: shop tabs, seed inventory and buying', () => {
 });
 
 suite('builder farm: extra farm boards', () => {
-  test('the Mở rộng tab sells one plot for 10000 up to three; castle and 6x6 farm stay on one map', () => {
-    const w = mount({ appState: { coins: 25000 } }); w.ctx.NightRaid.renderBuilder();
+  test('the Mở rộng tab sells three equally-priced plot styles up to three total; castle and farms stay on one map', () => {
+    const w = mount({ appState: { coins: 35000 } }); w.ctx.NightRaid.renderBuilder();
     w.ctx.NightRaid.selectShopTab('expand');
-    assert.truthy(html(w).includes('Nông trại riêng') && html(w).includes('10000 xu') && html(w).includes('đã có 0/3'));
-    w.ctx.NightRaid.buyFarmPlot(true);
+    const shop = html(w);
+    for (const name of ['Vườn Thành Đá', 'Vườn Hàng Hoa', 'Vườn Cỏ May Mắn']) assert.truthy(shop.includes(name), name + ' is available');
+    assert.equal((shop.match(/10000 xu/g) || []).length, 3, 'all three choices have the same price');
+    assert.equal((shop.match(/đã có 0\/3/g) || []).length, 3, 'the shared maximum is clear on every card');
+    for (const art of ['stone', 'hedge', 'clover']) assert.truthy(shop.includes(`img/farm/farm-plot-${art}.webp`), art + ' preview');
+    w.ctx.NightRaid.buyFarmPlot('stone',true);
     assert.equal(w.state.nightRaidLayout.farms.length, 1);
-    assert.equal(w.state.coins, 15000);
+    assert.equal(w.state.coins, 25000);
     const out = html(w);
     assert.truthy(out.includes('NÔNG TRẠI 1 · KÉO'), 'the farm gets a drag handle on the shared meadow');
     assert.truthy(out.includes('nr-farm-docks') && (out.match(/data-farm-dock=/g)||[]).length===8, 'eight visible-on-drag square docks surround the castle');
-    assert.truthy(out.includes('nr-farm-surface') && !out.includes('farm-plot.webp'), 'the farm board is a straight CSS square, not the old isometric diamond');
-    assert.truthy(out.includes('data-furrows="3"') && out.includes('ruộng vuông 6 nhân 6 có 3 rãnh đất'), 'the 6x6 board is visibly specified as three horizontal soil beds');
+    assert.truthy(out.includes('nr-farm-surface') && out.includes('data-farm-style="stone"'), 'the selected green style is painted on the farm');
+    assert.falsy(out.includes('data-furrows') || out.includes('3 rãnh đất'), 'the rejected three brown furrows are gone');
     assert.truthy(/nr-free-grid size-6/.test(out), 'the new board is 6x6');
     assert.falsy(out.includes('nr-zone-chips'), 'there is no castle/farm tab switcher');
     assert.truthy(out.includes('aria-label="Phòng thủ"'), 'the unified shop keeps castle items available');
     assert.truthy(out.includes('data-zone="1"'), 'farm cells identify their destination zone');
-    w.ctx.NightRaid.buyFarmPlot(true);
+    w.ctx.NightRaid.buyFarmPlot('hedge',true);
     assert.equal(w.state.nightRaidLayout.farms.length, 2);
+    assert.equal(w.state.nightRaidLayout.farms[1].style, 'hedge');
+    w.ctx.NightRaid.buyFarmPlot('clover',true);
+    assert.equal(w.state.nightRaidLayout.farms.length, 3);
+    assert.deepEqual(w.state.nightRaidLayout.farms.map(f => f.style), ['stone', 'hedge', 'clover']);
     w.state.coins = 5000;
-    w.ctx.NightRaid.buyFarmPlot(true);
-    assert.equal(w.state.nightRaidLayout.farms.length, 2, 'not enough coins');
+    w.ctx.NightRaid.buyFarmPlot('stone',true);
+    assert.equal(w.state.nightRaidLayout.farms.length, 3, 'the shared maximum prevents a fourth farm');
   });
   test('planting on a farm board lands in that farm; a defense cannot be placed there', async () => {
     const w = mount({ appState: { nightRaidLayout: { cells: [], soldiers: 0, dogLane: 2, farms: [{ cells: [] }] } } });

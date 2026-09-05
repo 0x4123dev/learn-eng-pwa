@@ -41,7 +41,7 @@ suite('layout: extra farm plots', () => {
   test('at most three farms, each a 6x6 board of farm items only', () => {
     const farms = [
       { cells: [{ type: 'pumpkin', gx: 5, gy: 5, uid: 'c-11111111', day: 1, at: '2026-09-01' }, { type: 'stone-wall', gx: 0, gy: 0 }, { type: 'rice-field', gx: 2, gy: 2 }, { type: 'barn', gx: 9, gy: 9 }] },
-      { cells: [] }, { cells: [] }, { cells: [{ type: 'well', gx: 0, gy: 0 }] },
+      { cells: [], style: 'hedge' }, { cells: [], style: 'clover' }, { cells: [{ type: 'well', gx: 0, gy: 0 }] },
     ];
     const layout = R.normalizeLayout({ cells: [], farms });
     assert.equal(layout.farms.length, 3, 'the fourth farm is cut');
@@ -52,6 +52,10 @@ suite('layout: extra farm plots', () => {
     const barn = f0.find(c => c.type === 'barn');
     assert.truthy(barn && barn.gx <= 4 && barn.gy <= 4, 'a 2x2 barn is pulled inside the 6x6 board');
     assert.deepEqual({ x:layout.farms[0].x, y:layout.farms[0].y }, R.FARM_PLOT_POSITIONS[0], 'legacy farms get a stable meadow position');
+    assert.deepEqual(layout.farms.map(f => f.style), ['stone', 'hedge', 'clover'], 'every approved visual choice survives normalization');
+  });
+  test('unknown farm styles cannot inject an asset path', () => {
+    assert.equal(R.normalizeLayout({ cells: [], farms: [{ cells: [], style: '../../bad' }] }).farms[0].style, 'stone');
   });
   test('farm meadow positions snap to distinct square docks hugging the castle land', () => {
     const layout=R.normalizeLayout({cells:[],farms:[{cells:[],x:17,y:-999},{cells:[],x:999,y:44}]});

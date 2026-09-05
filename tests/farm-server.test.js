@@ -213,7 +213,7 @@ suite('farm server: collect', () => {
     const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [
       { type: 'tomato', gx: 1, gy: 1, uid: 'c-tomato01', day: 0, at: TWO_AGO },
       { type: 'pumpkin', gx: 2, gy: 2, uid: 'c-pumpk001', day: 0, at: TWO_AGO },
-    ], [{ cells: [{ type: 'lettuce', gx: 0, gy: 0, uid: 'c-lettuc01', day: 1, at: YESTERDAY }] }]);
+    ], [{ style: 'clover', cells: [{ type: 'lettuce', gx: 0, gy: 0, uid: 'c-lettuc01', day: 1, at: YESTERDAY }] }]);
     const r = await collect(world, kid);
     assert.truthy(r.ok, JSON.stringify(r.data));
     assert.equal(r.data.collectedCoins, 18 + 8, 'tomato (2 days) and lettuce (1 day) are ripe; pumpkin is not');
@@ -224,6 +224,7 @@ suite('farm server: collect', () => {
     assert.falsy(s.cells.some(c => c.type === 'tomato'));
     assert.truthy(s.cells.some(c => c.type === 'pumpkin'));
     assert.equal(s.farms[0].cells.length, 0);
+    assert.equal(s.farms[0].style, 'clover', 'harvesting never replaces the purchased plot style');
     assert.equal(r.data.dayCount, 2);
     const again = await collect(world, kid);
     assert.truthy(again.data.nothingReady, 'nothing left to pay');

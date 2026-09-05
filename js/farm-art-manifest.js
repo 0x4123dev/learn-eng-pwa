@@ -40,7 +40,10 @@ var FarmArtManifest = (() => {
     'farmhouse': 'A cozy farmhouse with a tiled roof, chimney smoke, a porch and flower boxes.',
   };
   for (const b of Farm.FARM_BUILDINGS) add(b.id, b.footprint === 2 ? 512 : 256, BUILDING_PROMPT[b.id]);
-  add('farm-plot', 256, 'A small fenced square of tilled farmland seen from above at an angle, with a wooden sign, as a shop icon.');
+  add('farm-plot', 256, 'Legacy fenced square of tilled farmland, kept only for old cached clients.');
+  add('farm-plot-stone', 512, 'A square vivid-green lawn with an ivory castle-stone border and small flowers at the corners, top-down, open centre.');
+  add('farm-plot-hedge', 512, 'A square vivid-green lawn with a soft flower hedge and cream corner posts, top-down, open centre.');
+  add('farm-plot-clover', 512, 'A square enchanted clover lawn with a cream cobblestone rim and glowing green corner markers, top-down, open centre.');
   add('dry-ground', 512, 'A seamless square tile of dry cracked pale-brown soil with a few dead grass tufts, flat, top-down, for tinting a garden that has been neglected.');
 
   const FILES = Object.freeze(files);

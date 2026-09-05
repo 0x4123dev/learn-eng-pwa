@@ -166,8 +166,10 @@ suite('iPad: everything stays comfortably tappable', () => {
         assert.equal(shrinks.map(m => m[0]).join(', '), '', 'a tablet must not get smaller buttons than a phone');
     });
 
-    test('the random arena card replaces the old tablet picker', () => {
-        assert.truthy(css.includes('.pb-arena-random {'));
+    test('the removed Arena promo does not restore the old tablet picker', () => {
+        const lobby = read('js/petbattle.js');
+        const render = lobby.slice(lobby.indexOf('screen.innerHTML = _pbShell(`'), lobby.indexOf('// ---- battle history ----'));
+        assert.falsy(render.includes('_pbRandomArenaCard()'));
         assert.falsy(css.includes('.pb-scene-list {'),
             'users no longer choose an arena, so a tablet carousel is misleading');
     });
@@ -332,29 +334,25 @@ suite('iPad: rotating and splitting the screen', () => {
     });
 });
 
-// ── 6. random arena information on a tablet ───────────────────────────────
-suite('iPad: random arena card', () => {
-    test('the card uses a compact two-column composition', () => {
-        const block = rule('.pb-arena-random');
-        assert.truthy(block.includes('grid-template-columns'));
-        assert.truthy(block.includes('overflow: hidden'));
-    });
-
+// ── 6. streamlined arena controls on a tablet ─────────────────────────────
+suite('iPad: Arena map controls', () => {
     test('there are no obsolete arena radio controls', () => {
         const lobby = read('js/petbattle.js');
         assert.falsy(lobby.includes('role="radiogroup"'));
         assert.falsy(lobby.includes('choosePetBattleScene'));
     });
 
-    test('the stable lobby render gate keeps the card from flashing on every poll', () => {
+    test('the stable lobby render gate keeps the map from flashing on every poll', () => {
         const lobby = read('js/petbattle.js');
-        assert.truthy(lobby.includes("screen.querySelector('.pb-arena-random')"));
+        assert.truthy(lobby.includes("screen.querySelector('.pb-arena-pet-hero')"));
     });
 
-    test('arena preview art is layered rather than stretched across the tablet', () => {
-        const block = rule('.pb-arena-random-art img');
-        assert.truthy(block.includes('position: absolute'));
-        assert.truthy(block.includes('object-fit: cover'));
+    test('Vào nhà and info sit on opposite sides of the same top row', () => {
+        const block = selector => { const i = css.indexOf(selector + '{'); return i < 0 ? '' : css.slice(i, css.indexOf('}', i)); };
+        const home = block('.pb-arena-home'), info = block('.pb-arena-info');
+        assert.truthy(home.includes('left:12px') && home.includes('top:12px'));
+        assert.truthy(info.includes('right:12px') && info.includes('top:12px'));
+        assert.truthy(home.includes('height:46px') && info.includes('height:46px'));
     });
 
     test('every arena poster keeps its aspect ratio', () => {

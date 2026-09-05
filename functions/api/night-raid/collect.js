@@ -35,7 +35,7 @@ export async function onRequestPost({request,env}) {
     return true;
   });
   layout.cells=sweep(layout.cells,0);
-  layout.farms=layout.farms.map((f,i)=>({cells:sweep(f.cells,i+1),x:f.x,y:f.y}));
+  layout.farms=layout.farms.map((f,i)=>({cells:sweep(f.cells,i+1),x:f.x,y:f.y,style:f.style}));
   layout.soldiers=soldiers;
   if(!collectedCoins&&!collectedSoldiers){
     // Nothing was harvested — but normalizeLayout above may still have

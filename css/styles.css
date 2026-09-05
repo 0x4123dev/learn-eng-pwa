@@ -12866,10 +12866,12 @@
 .pb-arena-yard.nr-mini-yard .nr-builder-map.nr-mini-map{height:100%;width:auto;aspect-ratio:4/3;background:transparent;box-shadow:none;transform:translate(-50%,-50%)}
 .pb-arena-yard .nr-mini-map{isolation:auto}
 .pb-arena-yard .nr-mini-map>.nr-board-art{clip-path:polygon(12% 7%,88% 7%,90% 10%,92% 22%,93% 45%,94% 75%,95% 100%,5% 100%,6% 75%,7% 45%,8% 22%,10% 10%);mix-blend-mode:darken;filter:drop-shadow(0 8px 12px rgba(43,82,24,.25))}
+.pb-arena-home{position:absolute;z-index:14;left:12px;top:12px;display:flex;align-items:center;justify-content:center;gap:7px;min-width:116px;height:46px;padding:0 13px;border:2px solid rgba(255,255,255,.96);border-radius:16px;background:linear-gradient(145deg,#efffd8,#9bdc57);color:#234c1c;box-shadow:0 4px 0 #4d8e2e,0 8px 18px rgba(45,84,25,.22),inset 0 1px 0 rgba(255,255,255,.72);font:inherit;font-size:12px;font-weight:1000;letter-spacing:.035em;cursor:pointer;transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.pb-arena-home svg{width:23px;height:23px;fill:rgba(255,255,255,.42);stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
 .pb-arena-info{position:absolute;z-index:14;right:12px;top:12px;display:grid;place-items:center;width:46px;height:46px;padding:0;border:2px solid rgba(255,255,255,.96);border-radius:16px;background:linear-gradient(145deg,#efffd8,#9bdc57);color:#234c1c;box-shadow:0 4px 0 #4d8e2e,0 8px 18px rgba(45,84,25,.22),inset 0 1px 0 rgba(255,255,255,.72);cursor:pointer;transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease}
 .pb-arena-info svg{width:25px;height:25px;fill:rgba(255,255,255,.38);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pb-arena-info:active{transform:translateY(2px);box-shadow:0 2px 0 #4d8e2e,0 5px 12px rgba(45,84,25,.2),inset 0 1px 0 rgba(255,255,255,.72)}
-.pb-arena-info:focus-visible,.pb-dog-info-close:focus-visible{outline:3px solid #5b43e8;outline-offset:3px}
+.pb-arena-info:active,.pb-arena-home:active{transform:translateY(2px);box-shadow:0 2px 0 #4d8e2e,0 5px 12px rgba(45,84,25,.2),inset 0 1px 0 rgba(255,255,255,.72)}
+.pb-arena-info:focus-visible,.pb-arena-home:focus-visible,.pb-dog-info-close:focus-visible{outline:3px solid #5b43e8;outline-offset:3px}
 .pb-dog-info-overlay{position:fixed;inset:0;z-index:4500;display:grid;place-items:center;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));background:rgba(31,24,54,.62);backdrop-filter:blur(7px)}
 .pb-dog-info-dialog{width:min(640px,100%);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;padding:14px;border:2px solid #ffd3af;border-radius:28px;background:#fff8ed;color:#17331d;box-shadow:0 24px 64px rgba(27,19,48,.35)}
 .pb-dog-info-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.pb-dog-info-heading h2{margin:0;font-size:clamp(18px,4vw,25px);line-height:1.15}
@@ -12878,8 +12880,8 @@
 .pb-dog-info-dialog .pb-pow-face{width:82px;height:82px}.pb-dog-info-dialog .pb-pow-face svg{width:82px;height:82px}
 .pb-dog-info-dialog .pb-pow-name{font-size:22px}.pb-dog-info-dialog .pb-pow-level{font-size:18px}.pb-dog-info-dialog .pb-pow-level b{font-size:27px}.pb-dog-info-dialog .pb-pow-note{font-size:14px}
 .pb-dog-info-dialog .pb-pow-row{font-size:16px}.pb-dog-info-dialog .pb-pow-bar{height:9px;margin:6px 0 4px}.pb-dog-info-dialog .pb-pow-hint,.pb-dog-info-dialog .pb-pow-foot{font-size:13px}
-@media(max-width:520px){.pb-arena-pet-hero{height:235px;border-radius:22px}.pb-arena-info{right:10px;top:10px;width:44px;height:44px;border-radius:15px}.pb-dog-info-dialog{padding:12px;border-radius:24px}.pb-dog-info-dialog .pb-pow-top{align-items:flex-start}.pb-dog-info-dialog .pb-pow-face{width:68px;height:68px}.pb-dog-info-dialog .pb-pow-face svg{width:68px;height:68px}.pb-dog-info-dialog .pb-pow-name{font-size:18px}.pb-dog-info-dialog .pb-pow-level{font-size:15px}.pb-dog-info-dialog .pb-pow-note{font-size:12px}.pb-dog-info-dialog .pb-pow-row{font-size:14px}}
-@media(prefers-reduced-motion:reduce){.pb-arena-info{transition:none}.pb-dog-info-dialog .pb-pow-bar i{transition:none}}
+@media(max-width:520px){.pb-arena-pet-hero{height:235px;border-radius:22px}.pb-arena-home{left:10px;top:10px;min-width:108px;height:44px;padding:0 11px;border-radius:15px}.pb-arena-info{right:10px;top:10px;width:44px;height:44px;border-radius:15px}.pb-dog-info-dialog{padding:12px;border-radius:24px}.pb-dog-info-dialog .pb-pow-top{align-items:flex-start}.pb-dog-info-dialog .pb-pow-face{width:68px;height:68px}.pb-dog-info-dialog .pb-pow-face svg{width:68px;height:68px}.pb-dog-info-dialog .pb-pow-name{font-size:18px}.pb-dog-info-dialog .pb-pow-level{font-size:15px}.pb-dog-info-dialog .pb-pow-note{font-size:12px}.pb-dog-info-dialog .pb-pow-row{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.pb-arena-info,.pb-arena-home{transition:none}.pb-dog-info-dialog .pb-pow-bar i{transition:none}}
 
 /* One camera, one world surface. The meadow texture is anchored and scaled by
    NightRaid with the estate, so pinch/pan never exposes a second static photo.
@@ -13905,11 +13907,9 @@
 /* Square farm docks hug the straight edges of the castle land. During a drag
    the eight legal targets become a visible 6×6 guide, and the plot snaps to
    one of them instead of being left at an arbitrary angle or meadow pixel. */
-.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:7px solid #a86027;border-radius:16px;background:#b97836;box-shadow:inset 0 0 0 3px #e4a558,0 14px 18px rgba(48,66,27,.3);touch-action:none}
-.nr-farm-surface{position:absolute;z-index:0;inset:5px;border-radius:8px;background:#805022 url('../img/farm/dry-ground.webp') center/cover;box-shadow:inset 0 0 18px rgba(80,39,15,.42);pointer-events:none;overflow:hidden}
-/* One 6×6 farm is three broad horizontal beds: every bed owns two grid rows.
-   Highlights and dark troughs keep the soil readable beneath planted art. */
-.nr-farm-surface::before{content:"";position:absolute;inset:5%;border-radius:7px;background:linear-gradient(to bottom,#bc7a3c 0 5%,#8c4f24 5% 27%,#5e351d 27% 33%,transparent 33% 36%,#bd7b3d 36% 41%,#8c4f24 41% 63%,#5e351d 63% 69%,transparent 69% 72%,#bd7b3d 72% 77%,#8c4f24 77% 95%,#5e351d 95% 100%);box-shadow:inset 0 2px 2px rgba(255,205,126,.35),inset 0 -3px 4px rgba(58,30,15,.35)}
+.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:4px solid rgba(247,255,218,.92);border-radius:20px;background:#8ee24f;box-shadow:0 14px 18px rgba(48,86,27,.28),inset 0 0 0 2px rgba(83,151,42,.2);touch-action:none}
+.nr-farm-surface{position:absolute;z-index:0;inset:0;width:100%;height:100%;border-radius:16px;object-fit:cover;object-position:center;filter:saturate(1.06) brightness(1.02);pointer-events:none;overflow:hidden}
+.nr-farm-plot.style-hedge{border-color:#efffd2}.nr-farm-plot.style-clover{border-color:#d9ffd2;box-shadow:0 14px 20px rgba(30,110,50,.3),0 0 16px rgba(107,255,109,.2)}
 .nr-farm-plot>.nr-free-grid{z-index:2;left:6%;top:6%;width:88%;height:88%;overflow:visible;transform:none}
 .nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:-24px;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
 .nr-builder.editing .nr-farm-plot-handle{opacity:1;pointer-events:auto}.nr-farm-plot.dragging{z-index:18;filter:drop-shadow(0 20px 16px rgba(48,66,27,.42)) brightness(1.08)}.nr-farm-plot.dragging .nr-farm-plot-handle{cursor:grabbing}.nr-farm-plot.invalid{filter:drop-shadow(0 0 14px #ff4e42) saturate(.55)}

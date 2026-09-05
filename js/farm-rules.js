@@ -35,6 +35,15 @@ var FarmRules = (() => {
     { id: 'farmhouse',    kind: 'farm', name: { en: 'Farmhouse',    vi: 'Nhà nông dân' },          price: 20000, footprint: 2 },
   ]);
   const FARM_PLOT = Object.freeze({ id: 'farm-plot', kind: 'plot', name: { en: 'Extra farm', vi: 'Nông trại riêng' }, price: 10000, size: 6, max: 3 });
+  // The three plots have identical capacity and price. `style` is presentation
+  // only, but it belongs in the saved layout so a child's choice survives a
+  // refresh, another device and every server-side normalize pass.
+  const FARM_PLOT_STYLES = freeze([
+    { id: 'stone',  asset: 'farm-plot-stone',  name: { en: 'Royal stone garden', vi: 'Vườn Thành Đá' } },
+    { id: 'hedge',  asset: 'farm-plot-hedge',  name: { en: 'Flower hedge garden', vi: 'Vườn Hàng Hoa' } },
+    { id: 'clover', asset: 'farm-plot-clover', name: { en: 'Magic clover garden', vi: 'Vườn Cỏ May Mắn' } },
+  ]);
+  function plotStyle(id) { return FARM_PLOT_STYLES.find(s => s.id === id) || FARM_PLOT_STYLES[0]; }
   const ITEMS = Object.freeze(CROPS.concat(FARM_BUILDINGS));
 
   function byId(id) { return ITEMS.find(i => i.id === id) || null; }
@@ -92,7 +101,7 @@ var FarmRules = (() => {
     return names;
   }
 
-  return Object.freeze({ CROPS, FARM_BUILDINGS, FARM_PLOT, ITEMS, DATE_RE, byId, cropById, isCrop, isFarmBuilding,
-    footprintFor, art, progress, isWilted, spriteFor, allCells, farmValue, barracksReady, spriteNames });
+  return Object.freeze({ CROPS, FARM_BUILDINGS, FARM_PLOT, FARM_PLOT_STYLES, ITEMS, DATE_RE, byId, cropById, isCrop, isFarmBuilding,
+    plotStyle, footprintFor, art, progress, isWilted, spriteFor, allCells, farmValue, barracksReady, spriteNames });
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = FarmRules;

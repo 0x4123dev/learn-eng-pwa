@@ -14,9 +14,10 @@ suite('night raid: app integration',()=>{
   test('all Night Raid scripts work offline',()=>{
     for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));
   });
-  test('Arena exposes the game only through its feature-gated card',()=>{
+  test('Arena exposes the game through the feature-gated home button over the map',()=>{
     const arena=read('js/petbattle.js');
-    assert.truthy(arena.includes("st.allowBot ? _pbNightRaidCard() : ''"));
+    assert.truthy(arena.includes('_pbArenaPetHeader(st.allowBot)'));
+    assert.truthy(arena.includes('class="pb-arena-home"'));
     assert.truthy(arena.includes('onclick="openNightRaid()"'));
   });
   test('Night Raid remains inside the Arena navigation group',()=>{
@@ -407,7 +408,8 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes("map.classList.add('farm-dragging')"),'the placement guide appears for the duration of the drag');
     assert.truthy(ui.includes('NightRaidRules.nearestFarmPlotDock(rawX,rawY)'),'the plot snaps instead of keeping an arbitrary meadow coordinate');
     assert.truthy(css.includes('.nr-estate-map.farm-dragging .nr-farm-dock{opacity:1'),'dock guides become visible');
-    assert.truthy(css.includes("url('../img/farm/dry-ground.webp')"),'the aligned square uses a flat soil surface');
+    for(const style of ['stone','hedge','clover'])assert.truthy(fs.existsSync(path.join(root,`img/farm/farm-plot-${style}.webp`)),style+' green plot asset ships');
+    assert.falsy(css.includes(".nr-farm-surface::before"),'the rejected brown furrow overlay stays removed');
   });
   test('the old home entry point redirects to the editable builder',()=>{
     // There is only one Night Raid home now: the builder. Keeping the legacy

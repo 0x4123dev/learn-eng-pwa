@@ -136,7 +136,7 @@ suite('battle scene integration', () => {
     });
 });
 
-suite('random battle scene card', () => {
+suite('streamlined Arena lobby', () => {
     const lobby = fs.readFileSync(path.join(ROOT, 'js/petbattle.js'), 'utf8');
 
     test('the lobby only redraws when something actually changed', () => {
@@ -150,9 +150,10 @@ suite('random battle scene card', () => {
         }
     });
 
-    test('the lobby explains random selection without interactive arena controls', () => {
-        assert.truthy(lobby.includes('_pbRandomArenaCard()'));
-        assert.truthy(lobby.includes('pb-arena-random'));
+    test('the lobby removes the surprise and Night Raid promo boxes', () => {
+        const render = lobby.slice(lobby.indexOf('screen.innerHTML = _pbShell(`'), lobby.indexOf('// ---- battle history ----'));
+        assert.falsy(render.includes('_pbRandomArenaCard()'));
+        assert.falsy(render.includes('_pbNightRaidCard()'));
         assert.falsy(lobby.includes('role="radiogroup"'));
         assert.falsy(lobby.includes('pb-scene-option'));
     });
@@ -170,9 +171,8 @@ suite('random battle scene card', () => {
         assert.truthy(/_pbGame \? PB_POLL_INGAME_MS : PB_POLL_LOBBY_MS/.test(lobby));
     });
 
-    test('the random card replaces the old horizontal picker CSS', () => {
+    test('obsolete horizontal arena controls stay removed', () => {
         const css = fs.readFileSync(path.join(ROOT, 'css/styles.css'), 'utf8');
-        assert.truthy(css.includes('.pb-arena-random {'));
         assert.falsy(css.includes('.pb-scene-list {'));
         assert.falsy(css.includes('.pb-scene-option {'));
     });

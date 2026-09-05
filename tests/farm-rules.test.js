@@ -21,6 +21,10 @@ suite('farm rules: catalog', () => {
   });
   test('the extra farm plot is 10000 xu, 6x6, at most three', () => {
     assert.deepEqual([F.FARM_PLOT.price, F.FARM_PLOT.size, F.FARM_PLOT.max], [10000, 6, 3]);
+    assert.deepEqual(F.FARM_PLOT_STYLES.map(s => [s.id, s.asset]), [
+      ['stone', 'farm-plot-stone'], ['hedge', 'farm-plot-hedge'], ['clover', 'farm-plot-clover'],
+    ]);
+    assert.equal(F.plotStyle('unknown').id, 'stone', 'old or invalid layouts use the first approved style');
   });
   test('byId finds crops and buildings, nothing else', () => {
     assert.equal(F.byId('tomato').days, 2);
