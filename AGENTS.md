@@ -700,7 +700,8 @@ npm install
 4. **Review before merge** - Always use `@code-reviewer`
 5. **Commit atomically** - One logical change per commit
 6. **Document decisions** - Use `@brainstormer` for major choices
+7. **Drag/drop artwork must use true alpha** - Every draggable or placeable asset must have transparent pixels outside its silhouette. Never bake a rectangular lawn, solid background, or fake checkerboard into the image; the map underneath owns the surrounding ground colour. Validate the alpha channel and transparent corners before adding the asset to a registry.
 
 ---
 
-*Last updated: 2026-01-11*
+*Last updated: 2026-09-05*

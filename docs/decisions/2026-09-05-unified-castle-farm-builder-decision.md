@@ -17,5 +17,6 @@ Every visible cell carries its zone id. Shop drag/drop, tap placement, harvestin
 - Existing saves without farm coordinates receive stable default positions.
 - At most three farm plots remain allowed.
 - Defenses are valid only on the castle board; crops and farm decorations work on both castle and farm boards.
+- Every draggable or placeable visual is a true-alpha cutout. Pixels outside the object's silhouette must be transparent: never bake a rectangular lawn, background colour, or checkerboard into an asset. The shared meadow underneath supplies all surrounding ground colour. Validate the alpha channel and transparent canvas corners before registering new artwork.
 - Touch controls remain at least 44px and keyboard-accessible.
 - The server normalizes plot coordinates before persistence.
