@@ -15,6 +15,9 @@ const MATH_QUIZ_SIZE = 10;
 const MATH_HISTORY_CAP = 300;
 // Pet-shop coins per correct answer. The English tabs pay 5; maths pays 2.
 const MATH_COINS_PER_CORRECT = 2;
+// Toán 4 Pre is the one placement-style paper where a completely correct
+// submission earns a visible bonus on top of the normal per-answer coins.
+const MATH4_PRE_PERFECT_BONUS = 100;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
 // Toán 4 · Đề ôn "Pre": một đề rút ra từ ngân hàng 500 câu, dựng theo đúng
@@ -1845,6 +1848,12 @@ function nextMathQuestion() {
   else finishMathQuiz();
 }
 
+function mathPerfectBonus(chapter, score, total) {
+  return chapter === 'g4-pre' && total > 0 && score === total
+    ? MATH4_PRE_PERFECT_BONUS
+    : 0;
+}
+
 function finishMathQuiz() {
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
@@ -1863,8 +1872,10 @@ function finishMathQuiz() {
   // every answer through petCheerAnswer — which pops "+N 🪙" on each streak —
   // but never called petComboBonus(), so that promise was never paid out and
   // the unclaimed total rode along into whichever English practice came next.
+  const perfectBonus = mathPerfectBonus(st.chapter, score, total);
   const coinsEarned = score * MATH_COINS_PER_CORRECT
-    + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
+    + (typeof petComboBonus === 'function' ? petComboBonus() : 0)
+    + perfectBonus;
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coinsEarned;
   }
@@ -1918,6 +1929,12 @@ function finishMathQuiz() {
       ${typeof petRewardCardHTML === 'function'
         ? petRewardCardHTML(score, total, coinsEarned, MATH_COINS_PER_CORRECT)
         : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙</div>` : '')}
+      ${perfectBonus ? `
+        <div class="math-perfect-bonus" role="status">
+          <span class="math-perfect-bonus__title">Thưởng đúng 100%</span>
+          <strong>+${perfectBonus} xu</strong>
+          <span>Toán 4 Pre</span>
+        </div>` : ''}
       ${wrong.length ? `<h3 class="topic-detail-list-title">Cần xem lại (${wrong.length})</h3>${wrongHTML}` : ''}
       <button class="grammar-next-btn" onclick="renderMathHome()">Xong</button>
     </div>`;
@@ -2077,7 +2094,8 @@ if (typeof module !== 'undefined' && module.exports) {
     mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
     openMathSection, renderMathMenuHTML, renderToan7MenuHTML, mathHeaderHTML,
     math4Bank, math4Types, math4Ready, math4History, math7History, math4Best,
-    math4PickQuestions, startMath4Pre, renderToan4MenuHTML,
+    math4PickQuestions, startMath4Pre, renderToan4MenuHTML, mathPerfectBonus,
     MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND, MATH4_QUIZ_SIZE, MATH4_PER_TYPE, MATH4_SET,
+    MATH_COINS_PER_CORRECT, MATH4_PRE_PERFECT_BONUS,
   };
 }

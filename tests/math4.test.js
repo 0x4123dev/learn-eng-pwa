@@ -67,7 +67,8 @@ function loadMath() {
        mathPartInput, math4FreeEntry, math4AllFilled, math4Clean, math4InputHTML,
        mathPartSync, math4Values, math4DomValue,
        mathAnswerPartsHTML, mathKeypadHTML, MATH4_ANSWER_MAX,
-       MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
+       mathPerfectBonus, MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
+       MATH_COINS_PER_CORRECT, MATH4_PRE_PERFECT_BONUS,
      };`,
   ].join('\n'), ctx, { filename: 'math4-combined.js' });
   return { ctx, m: ctx.__math, screen, nav, asked };
@@ -235,8 +236,8 @@ suite('toán 4: một tờ đề Pre', () => {
     assert.truthy(differed, 'ten draws in a row produced the identical paper');
   });
 
-  test('sitting it perfectly banks 10/10 and files the run as Toán 4', () => {
-    const { ctx, m } = loadMath();
+  test('sitting it perfectly banks 10/10, adds the 100 xu bonus, and files the run as Toán 4', () => {
+    const { ctx, m, screen } = loadMath();
     const seen = sitPaper(m, new Set());
     assert.equal(seen.length, 10, 'the paper should have run to the end');
     assert.equal(m.isMathQuizActive(), false, 'finishing must clear the round');
@@ -248,19 +249,35 @@ suite('toán 4: một tờ đề Pre', () => {
     assert.equal(h.g4set, 'pre');
     assert.equal(h.chapter, 'g4-pre');
     assert.equal(h.label, 'Toán 4 · Đề ôn Pre');
-    assert.truthy(ctx.appState.coins > 0, 'a finished paper pays coins');
+    assert.equal(ctx.appState.coins,
+      10 * m.MATH_COINS_PER_CORRECT + m.MATH4_PRE_PERFECT_BONUS,
+      '10 correct answers must pay their normal coins plus exactly 100 xu');
+    assert.truthy(screen.innerHTML.includes('Thưởng đúng 100%'), 'the result must explain why the bonus was paid');
+    assert.truthy(screen.innerHTML.includes('+100 xu'), 'the result must show the bonus amount');
     // Toán 4 rounds must not be counted as Toán 7 rounds anywhere.
     assert.equal(m.math4History().length, 1);
     assert.equal(m.math7History().length, 0);
   });
 
   test('a wrong box costs the mark for that question and nothing else', () => {
-    const { ctx, m } = loadMath();
+    const { ctx, m, screen } = loadMath();
     sitPaper(m, new Set([0, 4, 9]));
     const h = ctx.appState.mathHistory[0];
     assert.equal(h.total, 10);
     assert.equal(h.score, 7, 'three wrong questions should score 7');
     assert.equal((h.wrong || []).length, 3);
+    assert.equal(ctx.appState.coins, 7 * m.MATH_COINS_PER_CORRECT,
+      'an imperfect paper must not receive the 100 xu bonus');
+    assert.truthy(!screen.innerHTML.includes('Thưởng đúng 100%'),
+      'an imperfect result must not advertise the perfect bonus');
+  });
+
+  test('the perfect bonus belongs only to Toán 4 Pre', () => {
+    const { m } = loadMath();
+    assert.equal(m.mathPerfectBonus('g4-pre', 10, 10), 100);
+    assert.equal(m.mathPerfectBonus('g4-pre', 9, 10), 0);
+    assert.equal(m.mathPerfectBonus('ch1', 10, 10), 0);
+    assert.equal(m.mathPerfectBonus('g4-pre', 0, 0), 0);
   });
 
   test('a missed question shows the number wanted in EVERY box, not an empty tick', () => {

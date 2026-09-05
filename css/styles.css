@@ -10206,6 +10206,35 @@
             font-weight: 700;
             margin-bottom: 18px;
         }
+        .math-perfect-bonus {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 3px 12px;
+            margin: -6px 0 18px;
+            padding: 13px 15px;
+            border: 2px solid #f4bf35;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fff9d9 0%, #ffed9e 100%);
+            color: #65420c;
+            box-shadow: 0 7px 16px rgba(180, 118, 0, 0.14);
+        }
+        .math-perfect-bonus__title {
+            font-size: 15px;
+            font-weight: 900;
+        }
+        .math-perfect-bonus strong {
+            grid-row: 1 / span 2;
+            grid-column: 2;
+            font-size: 20px;
+            color: #9a5600;
+            white-space: nowrap;
+        }
+        .math-perfect-bonus > span:last-child {
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0.78;
+        }
         /* Coin-earned banner on Exam results + Verbs complete overlay */
         .exam-result-coins {
             font-size: 15px; font-weight: 800; color: #b8860b;

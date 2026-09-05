@@ -69,3 +69,13 @@ final result: passed
 - HUD, Shop, focus rings, safe-area insets, reduced motion and 44px+ controls remain visible and usable above the world.
 
 final result: passed
+
+## Toán 4 Pre perfect-score reward QA — 2026-09-05
+
+- A 10/10 result shows a separate reward card immediately below the normal coin summary, without covering the score, review area or `Xong` button.
+- The card names the reason (`Thưởng đúng 100%`), amount (`+100 xu`) and scope (`Toán 4 Pre`).
+- Gold/cream styling reuses the existing coin-reward visual language and remains readable on a phone.
+- Imperfect Toán 4 Pre results and perfect results from every other Maths chapter do not render or pay this bonus.
+- Focused Toán 4 suite: 44/44 passed; integrated verification: 267/267 passed; full suite: 11,819/11,819 passed.
+
+final result: passed
