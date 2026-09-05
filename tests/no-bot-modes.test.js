@@ -3,7 +3,8 @@
 // allow_bot used to mean "may practice against a bot" (Arena) and "may raid a
 // training bot home" (Cướp Đêm). Both were pure client code that let a child
 // play without a real friend — and the raid branch printed coins into the
-// local wallet. The flag now means only "gets the farm and Cướp Đêm first".
+// local wallet. Cướp Đêm and its farm are now public to every signed-in child;
+// allow_bot remains only for isolated QA behaviour in other events.
 const { suite, test, assert } = require('./harness');
 const fs = require('fs');
 const path = require('path');
@@ -50,11 +51,20 @@ suite('no bot modes: Cướp Đêm raids real houses only', () => {
   });
 });
 
-suite('no bot modes: the flag is early access, not a bot switch', () => {
+suite('no bot modes: Cướp Đêm no longer uses the QA flag', () => {
   test('admin copy no longer calls the flag "Bot on"', () => {
     assert.falsy(read('admin.html').includes('Bot on'), 'admin.html still labels the flag "Bot on"');
     assert.falsy(read('functions/api/admin/user-flags.js').includes('practice vs bot'),
       'user-flags.js still describes the flag as practice vs bot');
+  });
+  test('the shared access helper is unconditional and the Arena entry is public', () => {
+    const access = read('functions/api/_night-raid.js');
+    const arena = read('js/petbattle.js');
+    const gate = access.slice(access.indexOf('export async function nightRaidEnabled'), access.indexOf('// A raid already'));
+    assert.truthy(gate.includes('return true'));
+    assert.falsy(gate.includes('SELECT allow_bot'));
+    assert.truthy(arena.includes('_pbArenaPetHeader()'));
+    assert.falsy(arena.includes('_pbArenaPetHeader(st.allowBot)'));
   });
 });
 

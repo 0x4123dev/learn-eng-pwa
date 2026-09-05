@@ -1706,12 +1706,15 @@ function offerUpdate(reg) {
         _updateReloading = true;
         const waiting = reg.waiting || reg.installing;
         if (waiting) waiting.postMessage({ type: 'SKIP_WAITING' });
-        // If the worker never takes over (an old sw.js with no message
-        // handler, or an install still finishing), reload anyway rather than
-        // leaving a dead button. Longer than the worker's own 3.5 s network
-        // timeout, or this reloads straight back into the old controller and
-        // the banner returns in a loop.
-        setTimeout(() => { if (_updateReloading) window.location.reload(); }, 5000);
+        // Never use a timed fallback reload. If an old worker ignores the
+        // message or activation is delayed, reloading returns to that same
+        // worker and offers the same update again forever. `controllerchange`
+        // below is the only proof that the new worker actually took over.
+        setTimeout(() => {
+            if (!_updateReloading) return;
+            _updateReloading = false;
+            if (typeof showToast === 'function') showToast('Chưa tải được bản mới — con thử lại khi mở app lần sau nhé');
+        }, 12000);
         bar.remove();
     });
     bar.querySelector('.sw-update-later').addEventListener('click', () => {

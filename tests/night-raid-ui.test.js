@@ -14,9 +14,10 @@ suite('night raid: app integration',()=>{
   test('all Night Raid scripts work offline',()=>{
     for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));
   });
-  test('Arena exposes the game through the feature-gated home button over the map',()=>{
+  test('Arena exposes the game to every child through the home button over the map',()=>{
     const arena=read('js/petbattle.js');
-    assert.truthy(arena.includes('_pbArenaPetHeader(st.allowBot)'));
+    assert.truthy(arena.includes('_pbArenaPetHeader()'));
+    assert.falsy(arena.includes('_pbArenaPetHeader(st.allowBot)'));
     assert.truthy(arena.includes('class="pb-arena-home"'));
     assert.truthy(arena.includes('onclick="openNightRaid()"'));
   });

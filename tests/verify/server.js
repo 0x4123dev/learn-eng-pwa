@@ -489,12 +489,13 @@ async function verifyServer() {
       flagFlips.length
         ? `the math_fight app flag really opens: ${flagFlips.join(', ')}`
         : 'no route changed behaviour when app_flags.math_fight was switched on — either the flag is dead or the sweep never reached the gated routes');
-    const botOpened = routes.flatMap(r => r.methods.map(m => [m + ' ' + r.url, statuses.get(m + ' ' + r.url)]))
-      .filter(([, s]) => s && s['flagOff:plain'] === 403 && s['flagOff:allow_bot'] !== 403).map(([k]) => k);
-    add('feature-flag.allow_bot', 'Cướp Đêm / Cúng Cô Hồn: công tắc theo bé', botOpened.length > 0,
-      botOpened.length
-        ? `users.allow_bot really opens ${botOpened.length} route(s): ${botOpened.join(', ')}`
-        : 'no route opened when users.allow_bot was set — the per-child gate proves nothing');
+    const publicRaid = routes.flatMap(r => r.methods.map(m => [m + ' ' + r.url, statuses.get(m + ' ' + r.url)]))
+      .filter(([key]) => key.includes(' /api/night-raid/'));
+    const gatedRaid = publicRaid.filter(([, s]) => s && s['flagOff:plain'] === 403).map(([key]) => key);
+    add('feature.night-raid-global', 'Cướp Đêm: mở cho mọi bé', publicRaid.length > 0 && gatedRaid.length === 0,
+      gatedRaid.length
+        ? `normal children are still blocked from: ${gatedRaid.join(', ')}`
+        : `all ${publicRaid.length} Night Raid route(s) enter normally for a signed-in child without allow_bot`);
 
     // --- phase 4: the money paths -----------------------------------------
     await moneyChecks(add, seenSql, drainLogs);

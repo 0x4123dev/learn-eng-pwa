@@ -55,14 +55,13 @@ suite('daily task farm ui: the hero and the strip', () => {
     DailyTask.renderScreen();
     assert.truthy(html.dailyTaskScreen.includes('Cây đã lớn hôm nay 🌼'));
   });
-  test('empty garden: the strip invites the child to the shop; no flag: no strip, no farm words', () => {
+  test('empty garden: the strip invites every child, including a bot-off account', () => {
     const empty = load({ appState: stateWith({ farm: farm({ crops: 0, ripe: 0, growing: 0, preview: null }) }) });
     empty.DailyTask.renderScreen();
     assert.truthy(empty.html.dailyTaskScreen.includes('Vườn đang trống'));
     const plain = load({ appState: Object.assign(stateWith(), { allowBot: false }) });
     plain.DailyTask.renderScreen();
-    assert.falsy(plain.html.dailyTaskScreen.includes('cây'), 'no farm copy without the flag');
-    assert.truthy(plain.html.dailyTaskScreen.includes('+200 xu và 1 món quà'), 'the old hero copy stays');
+    assert.truthy(plain.html.dailyTaskScreen.includes('3 cây đang lớn, 1 cây chín'), 'the farm must not depend on allowBot');
   });
   test('Xem vườn opens the clean Cướp Đêm main screen without forcing edit mode', () => {
     const { DailyTask, calls } = load({ appState: stateWith() });

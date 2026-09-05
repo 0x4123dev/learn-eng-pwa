@@ -468,15 +468,15 @@ function _pbShell(inner) {
 // The castle homestead is combat context, so it belongs at the top of Arena
 // instead of replacing the dog's close-up on Home. The compact identity and
 // a real 44px info button stay readable above the animated scene.
-function _pbArenaPetHeader(allowNightRaid) {
+function _pbArenaPetHeader() {
   const pet = _pbMyPet();
   let breed = pet.stage;
   try { breed = getDogStage(pet.level).name; } catch (e) {}
   return `<section class="pb-arena-pet-hero" aria-label="${pbEsc(pet.petName)}, ${pbEsc(breed)}, ${pbT('powLevel')} ${pet.level}">
     <div class="pb-arena-yard" id="pbArenaYard" role="img" aria-label="${pbT('powYardAria', { name: pbEsc(pet.petName) })}"></div>
-    ${allowNightRaid ? `<button type="button" class="pb-arena-home" onclick="openNightRaid()" aria-label="${pbT('powHomeOpen')}">
+    <button type="button" class="pb-arena-home" onclick="openNightRaid()" aria-label="${pbT('powHomeOpen')}">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4H14.8v-5.8H9.2v5.8H3.5z"/></svg><span>${pbT('powHomeCta')}</span>
-    </button>` : ''}
+    </button>
     <button type="button" class="pb-arena-info" onclick="pbShowDogInfo()" aria-label="${pbT('powInfoOpen')}">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 10.7v6M12 7.2h.01"/></svg>
     </button>
@@ -488,7 +488,7 @@ function _pbMountArenaYard() {
   if (!host) return;
   if (typeof NightRaid !== 'undefined' && NightRaid.mountYardScene) {
     try {
-      NightRaid.mountYardScene(host, { skipRefresh: !(_pbState && _pbState.allowBot) });
+      NightRaid.mountYardScene(host, { skipRefresh: false });
       return;
     } catch (e) {}
   }
@@ -1128,7 +1128,7 @@ function renderPetBattle() {
 
   _pbUnmountArenaYard();
   screen.innerHTML = _pbShell(`
-    ${_pbArenaPetHeader(st.allowBot)}
+    ${_pbArenaPetHeader()}
     ${_pbCastleWorkshop()}
     ${typeof GhostOfferingEvent !== 'undefined' ? GhostOfferingEvent.cardHTML() : ''}
     ${_pbAmmoPanel(st)}

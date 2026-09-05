@@ -138,8 +138,12 @@ export function randomRaidId() {
   return Array.from(bytes).map(v=>v.toString(16).padStart(2,'0')).join('');
 }
 export async function nightRaidEnabled(env,userId) {
-  const row=await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(userId).first();
-  return !!(row&&row.allow_bot);
+  // Cướp Đêm is a normal part of the game for every authenticated child.
+  // Keep this helper while all route callers migrate together, but never tie
+  // access to users.allow_bot again: that field is reserved for QA-only event
+  // behaviour and must not hide the castle, farm, or raid economy.
+  void env; void userId;
+  return true;
 }
 // A raid already in flight is a ticket off the shelf. start.js counts it
 // against the allowance, so the two LISTS have to count it the same way or

@@ -129,6 +129,8 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
         assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
         assert.truthy(skipAt >= 0, 'and that handler must be what asks the worker to take over');
         assert.truthy(clickAt < skipAt, 'the message is only posted from inside that click handler');
+        assert.falsy(/setTimeout\([^)]*location\.reload/.test(offer),
+            'a delayed fallback reload would reopen the same waiting worker and loop forever');
     });
 });
 

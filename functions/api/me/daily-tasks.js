@@ -16,9 +16,8 @@ export async function onRequestGet({ request, env }) {
   const now = Date.now();
   const p = await evaluate(env, auth.uid, now);
   const armory = await armoryStatus(env, auth.uid, now);
-  // The garden strip on the task page. Only for early-access children (the
-  // farm lives inside Cướp Đêm); computed AFTER evaluate() so a reward that
-  // just landed already counts as today's day.
+  // The garden strip is available to every child; computed AFTER evaluate()
+  // so a reward that just landed already counts as today's day.
   let farm = null;
   if (await nightRaidEnabled(env, auth.uid)) {
     const row = await env.DB.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id = ?').bind(auth.uid).first();

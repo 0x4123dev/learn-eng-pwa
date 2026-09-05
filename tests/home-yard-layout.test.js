@@ -127,11 +127,11 @@ suite('home: the garden shipped, the game did not', () => {
             'Arena must place the home entry directly over its yard');
     });
 
-    test('Night Raid itself is still gated', () => {
-        // The entry control over the yard is visible only for enabled accounts.
-        assert.truthy(arena.includes('_pbArenaPetHeader(st.allowBot)'),
-            'the Night Raid home button must stay behind the flag');
-        assert.truthy(arena.includes('st.allowBot'), 'the Arena screen must still read the flag');
+    test('Night Raid is visible to every child', () => {
+        assert.truthy(arena.includes('_pbArenaPetHeader()'),
+            'the Night Raid home button must not depend on a QA flag');
+        assert.falsy(arena.includes('_pbArenaPetHeader(st.allowBot)'),
+            'allowBot must not hide the Night Raid entry');
         const lobby = arena.slice(arena.indexOf('screen.innerHTML = _pbShell(`'), arena.indexOf('// ---- battle history ----'));
         assert.falsy(lobby.includes('_pbNightRaidCard()') || lobby.includes('_pbRandomArenaCard()'),
             'the two removed promotional boxes must not return to the Arena lobby');

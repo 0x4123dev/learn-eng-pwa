@@ -271,17 +271,19 @@ suite('farm server: collect', () => {
     assert.equal(stored(world, kid.uid).cells.length, 1);
     assert.equal(stored(world, kid.uid).cells[0].uid, 'c-lettuc01');
   });
-  test('403 without the flag', async () => {
+  test('a normal child enters the route without the QA flag', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: false });
-    assert.equal((await collect(world, kid)).status, 403);
+    const r = await collect(world, kid);
+    assert.equal(r.status, 409, 'no home is a game-state refusal, not a feature gate');
+    assert.truthy(/mở Nhà Cướp Đêm/.test(r.data.error));
   });
 });
 
 suite('farm server: the Daily Task page gets a farm summary', () => {
   const meHandler = () => loadModule('functions/api/me/daily-tasks.js');
   const me = (world, kid) => world.call(meHandler().onRequestGet, { url: '/api/me/daily-tasks', method: 'GET', token: kid.token });
-  test('with the flag: counts and preview; without: farm is null', async () => {
+  test('counts and preview are returned for both QA and normal children', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     await putHome(world, kid, { cells: [] });
@@ -294,7 +296,9 @@ suite('farm server: the Daily Task page gets a farm summary', () => {
     assert.deepEqual(r.data.farm.preview, { id: 'carrot', g: 1, days: 3, wilted: false });
     assert.equal(r.data.farm.ctx.today, TODAY);
     const plain = await world.createUser({ allowBot: false });
-    assert.equal((await me(world, plain)).data.farm, null);
+    const plainFarm = (await me(world, plain)).data.farm;
+    assert.truthy(plainFarm, 'normal children get the garden summary');
+    assert.equal(plainFarm.crops, 0);
   });
   test('a child with the flag but no home yet gets an empty summary, not an error', async () => {
     const world = createWorld();

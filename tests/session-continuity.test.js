@@ -69,6 +69,8 @@ suite('session continuity: a reload is not a logout', () => {
     assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
     assert.truthy(armAt >= 0, 'and that handler is the only thing that arms the reload');
     assert.truthy(clickAt < armAt, 'and it is inside the click handler');
+    assert.falsy(/setTimeout\([^)]*location\.reload/.test(offer),
+      'a timeout must never reload back into the same waiting worker');
     // The worker still never takes over by itself.
     const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('message'"));
     assert.falsy(/skipWaiting/.test(install));

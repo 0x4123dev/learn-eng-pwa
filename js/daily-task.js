@@ -33,9 +33,9 @@ var DailyTask = (function () {
     };
   }
   function seedTotal(s) { return seedsOf(s).inventory.reduce((n, item) => n + Math.max(0, Math.trunc(+item.quantity || 0)), 0); }
-  // The garden summary the server attaches for early-access children
-  // (functions/api/me/daily-tasks.js). Null when the flag is off.
-  function farmOf(s) { return (typeof appState !== 'undefined' && appState && appState.allowBot && s && s.farm && typeof s.farm === 'object') ? s.farm : null; }
+  // The garden is part of Daily Task for every child. `allowBot` remains a QA
+  // event flag and must never hide Cướp Đêm or its farm.
+  function farmOf(s) { return (s && s.farm && typeof s.farm === 'object') ? s.farm : null; }
   function farmSprite(f) {
     if (!f || !f.preview || typeof FarmRules === 'undefined') return '';
     const p = f.preview, ctx = f.ctx || null;
