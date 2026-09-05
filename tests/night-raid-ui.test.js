@@ -624,7 +624,7 @@ suite('night raid: the fight fills the viewport, the board keeps its shape, the 
     assert.truthy(ui.includes('function frameBattleWorld()'));
     const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.truthy(raidBlock.includes('frameBattleWorld();'),'the tap re-frames the board before Phaser loads');
-    assert.truthy(ui.includes("scoutMap?{left:20,top:23,width:60,height:60}:castleFootprint(appState.nightRaidLayout)"),'scout centres on the field, not the home castle cell');
+    assert.truthy(ui.includes("box=scoutMap?{left:20,top:23,width:60,height:60}:focusedFarm?"),'scout centres on the field before applying any home/farm focus');
     // The real camera lives in Phaser: a pure frame function plus smoothing.
     assert.truthy(phaserSrc.includes('function cameraFrame(ch,T)'));
     assert.truthy(phaserSrc.includes('cam.setZoom(this.cam.zoom);cam.centerOn(this.cam.x,this.cam.y)'));
