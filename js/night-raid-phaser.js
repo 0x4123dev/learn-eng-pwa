@@ -208,7 +208,7 @@ var NightRaidPhaser = (() => {
       if(this.assetCanvases)return Promise.resolve();const petAtlas=(this.options.pet||{}).atlas==='large'?'large':'small';
       this.petAtlas=petAtlas;
       const sources={
-        board:'img/night-raid/isometric-home-board-skin-pad.webp',
+        board:'img/night-raid/isometric-home-board-frame-v4.png',
         squad:'img/night-raid/animation/raider-actions-v2.webp',
         squadWalk:'img/night-raid/animation/raider-walk-v3.png',
         pet:'img/night-raid/animation/pet-actions-'+petAtlas+'-v2.webp',
@@ -217,7 +217,7 @@ var NightRaidPhaser = (() => {
         castleA:'img/night-raid/animation/castle-damage-a-v2.webp',
         castleB:'img/night-raid/animation/castle-damage-b-v2.webp',
       };
-      return Promise.all(Object.entries(sources).map(([key,src])=>decodeToCanvas(src).then(canvas=>[key,canvas]))).then(entries=>{this.assetCanvases=Object.fromEntries(entries);if(NightRaidArt.battleBoardCutout)this.assetCanvases.board=NightRaidArt.battleBoardCutout(this.assetCanvases.board);});
+      return Promise.all(Object.entries(sources).map(([key,src])=>decodeToCanvas(src).then(canvas=>[key,canvas]))).then(entries=>{this.assetCanvases=Object.fromEntries(entries);});
     }
     mount(){
       if(this.game)return Promise.resolve();
@@ -261,7 +261,7 @@ var NightRaidPhaser = (() => {
       scene.textures.addCanvas('nr-board',this.assetCanvases.board);scene.textures.addCanvas('nr-squad-actions',this.assetCanvases.squad);scene.textures.addCanvas('nr-squad-walk',this.assetCanvases.squadWalk);scene.textures.addCanvas('nr-pet-actions',this.assetCanvases.pet);
       scene.textures.addCanvas('nr-defense-damage',this.assetCanvases.defenses);scene.textures.addCanvas('nr-economy-damage',this.assetCanvases.economy);
       scene.textures.addCanvas('nr-castle-a-damage',this.assetCanvases.castleA);scene.textures.addCanvas('nr-castle-b-damage',this.assetCanvases.castleB);
-      scene.add.image(400,400,'nr-board').setDisplaySize(800,800).setDepth(0);
+      scene.add.image(400,400,'nr-board').setDisplaySize(800,600).setDepth(0);
       this.makeTexture(scene,'nr-spark',0xffe477,18);this.makeTexture(scene,'nr-dust',0xdac8a6,26);this.makeTexture(scene,'nr-rubble',0x9b7559,18);this.makeTexture(scene,'nr-smoke',0x34404c,34);
       this.addGrid(scene.textures.get('nr-squad-actions'),'unit-',squadCols,squadRows);
       this.addGrid(scene.textures.get('nr-squad-walk'),'walk-',squadWalkCols,squadRows);

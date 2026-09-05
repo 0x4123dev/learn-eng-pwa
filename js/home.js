@@ -219,68 +219,36 @@ function renderHomeStreakPanel() {
     if (!panel || !appState) return;
 
     const streak = appState.streak || 0;
-    const best = appState.bestStreak || streak;
-    const tier = (typeof getStreakTier === 'function') ? getStreakTier(streak) : 0;
     const nextMs = (typeof getNextMilestone === 'function') ? getNextMilestone(streak) : null;
     const studiedToday = (typeof _hasStudiedToday === 'function') ? _hasStudiedToday() : false;
     const days = (typeof _last7DaysCalendar === 'function') ? _last7DaysCalendar() : [];
 
-    // ── Streak tier label ──
-    let tierName, tierColour;
-    if (streak >= 30)      { tierName = 'Super Streak'; tierColour = '#ef4444'; }
-    else if (streak >= 14) { tierName = 'Unstoppable'; tierColour = '#f97316'; }
-    else if (streak >= 7)  { tierName = 'On Fire';     tierColour = '#fbbf24'; }
-    else if (streak >= 3)  { tierName = 'Heating Up';  tierColour = '#fde68a'; }
-    else                   { tierName = 'Getting Started'; tierColour = '#cbd5e1'; }
-
-    // ── Progress to next milestone ──
-    let progressHTML = '';
-    if (nextMs) {
-        const prev = streak >= 30 ? 30 : streak >= 14 ? 14 : streak >= 7 ? 7 : streak >= 3 ? 3 : 0;
-        const pct = Math.min(100, Math.round(((streak - prev) / (nextMs - prev)) * 100));
-        progressHTML = `
-            <div class="home-streak-progress">
-                <div class="home-streak-progress-bar">
-                    <div class="home-streak-progress-fill" style="width:${pct}%"></div>
-                </div>
-                <div class="home-streak-progress-label">
-                    <strong>${nextMs - streak}</strong> day${nextMs - streak !== 1 ? 's' : ''} to <strong>${nextMs}</strong>
-                </div>
-            </div>
-        `;
-    } else {
-        progressHTML = `<div class="home-streak-progress-label">🏆 All milestones reached!</div>`;
-    }
+    const milestoneHTML = nextMs
+        ? `Thêm <strong>${nextMs - streak} ngày</strong><br>để đạt mốc <strong>${nextMs}</strong>`
+        : 'Con đã đạt mọi cột mốc!';
 
     // ── Last-7-days calendar ──
+    const vnDay = { Sun: 'CN', Mon: 'T2', Tue: 'T3', Wed: 'T4', Thu: 'T5', Fri: 'T6', Sat: 'T7' };
     const calendarHTML = days.map(d => `
         <div class="home-streak-day ${d.studied ? 'studied' : ''} ${d.isToday ? 'today' : ''}">
-            <div class="home-streak-day-label">${d.dateLabel}</div>
-            <div class="home-streak-day-dot">${d.studied ? '🔥' : (d.isToday ? '○' : '·')}</div>
+            <div class="home-streak-day-label">${vnDay[d.dateLabel] || d.dateLabel}</div>
+            <div class="home-streak-day-dot">${d.studied ? '●' : '°'}</div>
         </div>
     `).join('');
 
     // ── Today CTA ──
     const ctaHTML = studiedToday
-        ? `<div class="home-streak-done">✓ Studied today — streak safe</div>`
-        : `<button class="home-streak-cta" onclick="goLearnToday()">📚 Learn today's words</button>`;
+        ? `<div class="home-streak-done">Đã học hôm nay</div>`
+        : `<button class="home-streak-cta" onclick="goLearnToday()">Học ngay hôm nay</button>`;
 
     panel.innerHTML = `
         <div class="home-streak-card">
             <div class="home-streak-head">
-                <div class="home-streak-tier" style="color:${tierColour}">${tierName.toUpperCase()}</div>
-                <div class="home-streak-number ${tier > 0 ? 'streak-tier-' + tier : ''}">
-                    🔥 <span>${streak}</span>
-                </div>
-                <div class="home-streak-unit">day${streak !== 1 ? 's' : ''} in a row</div>
+                <div class="home-streak-total"><span class="home-streak-fire" aria-hidden="true">🔥</span><strong>${streak}</strong><span>ngày liên tiếp</span></div>
+                <div class="home-streak-next">${milestoneHTML}</div>
             </div>
 
             <div class="home-streak-week">${calendarHTML}</div>
-
-            ${progressHTML}
-
-            <div class="home-streak-best">Best ever: <strong>${best}</strong> day${best !== 1 ? 's' : ''}</div>
-
             ${ctaHTML}
         </div>
     `;
@@ -428,6 +396,13 @@ function getHomeDailyActivity() {
     return days;
 }
 
+let homeSkillsExpanded = false;
+
+function toggleHomeSkillsDetails() {
+    homeSkillsExpanded = !homeSkillsExpanded;
+    renderHomeSkillsPanel();
+}
+
 function renderHomeSkillsPanel() {
     const panel = document.getElementById('homeSkillsPanel');
     if (!panel || !appState) return;
@@ -499,12 +474,20 @@ function renderHomeSkillsPanel() {
         ? `Accuracy by skill — tap a weak one to practice it!`
         : 'Answer questions in any tab to grow your chart!';
 
-    panel.innerHTML = `
-        <div class="home-skills-title">📊 My Skills</div>
+    const detailsHTML = homeSkillsExpanded ? `<div class="home-skills-details">
         <div class="home-skills-sub">${subtitle}</div>
         ${summaryHTML}
         ${rows}
-        ${practiced.length ? dailyHTML : ''}`;
+        ${practiced.length ? dailyHTML : ''}
+    </div>` : '';
+
+    panel.innerHTML = `
+        <button type="button" class="home-skills-compact" onclick="toggleHomeSkillsDetails()" aria-expanded="${homeSkillsExpanded}" aria-controls="homeSkillsDetails">
+            <span class="home-skills-compact-icon" aria-hidden="true">📊</span>
+            <strong>Kỹ năng của con</strong>
+            <span class="home-skills-compact-link">${homeSkillsExpanded ? 'Thu gọn' : 'Xem chi tiết'} <i aria-hidden="true">›</i></span>
+        </button>
+        <div id="homeSkillsDetails">${detailsHTML}</div>`;
 }
 
 // Tap a skill row → jump straight to that practice tab.

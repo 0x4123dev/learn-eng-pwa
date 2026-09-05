@@ -145,26 +145,28 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assertNoLeaks(w, 'a waiting row');
   });
 
-  test('an open row is a green ⚔️ TẤN CÔNG key and tapping it opens the scout stage', async () => {
+  test('an open row is a green ⚔️ TẤN CÔNG key and tapping it starts battle directly', async () => {
+    const raid = Object.assign({}, RANDOM_TARGET, { targetId: 8, name: 'Bo', raidId: 'b'.repeat(32), attackerDamage: 50, attackerSoldiers: 6, defense: 20 });
     const w = await openLive({
       friends: friendsReply([friend({ targetId: 8, name: 'Bo', homeLevel: 2, difficulty: 'Dễ', retryAt: 0 })]),
       targets: targetsReply,
+      start: { ok: true, data: { raid } },
     });
     const row = rows(w)[0];
     assert.truthy(row.innerHTML.includes('TẤN CÔNG'), 'the attack key lives on the row itself');
     assert.falsy(row.disabled);
     assert.truthy(row.classList.contains('ready'), 'and is painted green');
-    assert.equal(row.getAttribute('onclick'), 'nrScoutLive(0)', 'the row rides the same path as a target card');
+    assert.equal(row.getAttribute('onclick'), 'nrAttackLive(0)', 'the row starts the attack directly');
     // A <button> inside a <button> is invalid markup that Safari resolves by
     // dropping one of them, so the key must be an element the row can hold.
     assert.equal(row.tagName, 'BUTTON');
     assert.equal(row.querySelectorAll('button').length, 0, 'no button nested inside the row button');
-    w.ctx.NightRaid.scoutLive(0); await settle();
-    assert.truthy(w.doc.getElementById('nrStartRaid'), 'the scout stage with TIẾN QUÂN is up');
+    w.ctx.NightRaid.attackLive(0); await settle(); await settle();
+    assert.falsy(w.doc.getElementById('nrStartRaid'), 'there is no intermediate TIẾN QUÂN button');
     assert.truthy(w.screen().innerHTML.includes('Bo'), 'named after the house');
-    const preview = w.battles[w.battles.length - 1];
-    assert.equal(preview.target.targetId, 8);
-    assert.deepEqual(preview.target.layout.cells, [], 'the preview never holds a real layout');
+    const battle = w.battles[w.battles.length - 1];
+    assert.equal(battle.target.targetId, 8);
+    assert.truthy(w.calls.some(c => c.key === 'start'), 'the server start is called from TẤN CÔNG');
   });
 
   test('a house holding a shield looks exactly like every other open house', async () => {
@@ -195,15 +197,16 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
     assertNoLeaks(w, 'an already-robbed house');
   });
 
-  test('the scout stage a row opens is as blind as the row', async () => {
+  test('the direct battle stage starts without leaking a shield or seal first', async () => {
     const now = Date.now();
     const w = await openLive({
       friends: friendsReply([friend({ targetId: 21, name: 'Kem', retryAt: 0, shielded: true, lockedUntil: now + 20 * H })]),
       targets: targetsReply,
+      start: { ok: true, data: { raid: Object.assign({}, RANDOM_TARGET, { targetId: 21, name: 'Kem', raidId: 'd'.repeat(32), attackerDamage: 50, attackerSoldiers: 6, defense: 20 }) } },
     });
-    w.ctx.NightRaid.scoutLive(0); await settle();
+    w.ctx.NightRaid.attackLive(0); await settle(); await settle();
     const html = w.screen().innerHTML;
-    assert.truthy(w.doc.getElementById('nrStartRaid'), 'TIẾN QUÂN is armed, not sealed off');
+    assert.falsy(w.doc.getElementById('nrStartRaid'), 'no intermediate action remains');
     assert.falsy(html.includes('KHIÊN'), 'no shield word on the scout stage either');
     assert.falsy(html.includes('NHÀ VỪA BỊ PHÁ'), 'and no seal chip');
     const target = w.battles[w.battles.length - 1].target;

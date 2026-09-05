@@ -66,7 +66,7 @@ suite('daily task client: home card', () => {
     const { DailyTask, html } = load({ appState: stateWith({ shields: { count: 3, activeUntil: 0 } }) });
     DailyTask.renderHomeCard();
     assert.truthy(html.dailyTaskCard.includes('1/2'), html.dailyTaskCard);
-    assert.truthy(html.dailyTaskCard.includes('🛡️ 3'));
+    assert.truthy(html.dailyTaskCard.includes('3 khiên'));
     assert.truthy(html.dailyTaskCard.includes('DailyTask.open()'));
   });
 });

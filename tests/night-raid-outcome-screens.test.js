@@ -97,15 +97,12 @@ const ACTIVE_RAID = { ok: true, data: { raid: Object.assign({}, FRIEND, {
   attackerDamage: 50, attackerSoldiers: 6, defense: 20, castleHp: 188,
 }) } };
 
-// Walk the child in: list of houses → tap the row → tap TIẾN QUÂN.
+// Walk the child in: the TẤN CÔNG row enters the moving battle directly.
 async function marchOn(server, extra) {
   const w = mount(server, extra);
   w.ctx.NightRaid.open();
   await w.ctx.NightRaid.showLiveTargets(); await settle();
-  w.ctx.NightRaid.scoutLive(0); await settle();
-  const btn = w.doc.getElementById('nrStartRaid');
-  assert.truthy(btn && typeof btn.onclick === 'function', 'TIẾN QUÂN must be armed before we tap it');
-  btn.onclick();
+  w.ctx.NightRaid.attackLive(0); await settle();
   await flush();
   return w;
 }

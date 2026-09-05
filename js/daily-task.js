@@ -184,25 +184,40 @@ var DailyTask = (function () {
     if (!s || ((!s.tasks || !s.tasks.length) && !pending.length)) { host.innerHTML = ''; return; }
     const tasks = s.tasks || [];
     const stale = staleDay(s);
-    const done = tasks.filter(t => t.done).length;
-    const subtitle = !tasks.length
-      ? `${pending.length} phần thưởng chờ con chọn`
-      : stale
-        ? 'Đang cập nhật…'
-        : (farmOf(s) && farmOf(s).wilted && !s.allDone)
-          ? `${done}/${tasks.length} nhiệm vụ · Cây đang héo 🥀 · làm nhiệm vụ để cứu cây`
-          : `${done}/${tasks.length} nhiệm vụ · ${s.allDone ? 'Xong rồi! 🎉' : 'Bấm để xem'}`;
-    // The chip is the shortcut into Kho Khiên & Kiếm: a span rather than a
-    // nested button (invalid inside <button>), stopping the tap from also
-    // opening the task list. The number of days still waiting rides on the
-    // icon as a corner bubble — a second pill beside the chip squeezed the
-    // title onto two lines at 375px — and is read out in the card's label.
+    const done = stale ? 0 : tasks.filter(t => t.done).length;
+    const complete = !stale && tasks.length > 0 && !!s.allDone;
+    const farm = farmOf(s);
+    const headline = stale
+      ? 'Đang cập nhật nhiệm vụ hôm nay…'
+      : complete
+        ? 'Con đã hoàn thành hôm nay!'
+        : tasks.length
+          ? `Con còn ${tasks.length - done} nhiệm vụ hôm nay`
+          : 'Con đã hoàn thành hôm nay!';
+    const subtitle = pending.length
+      ? `Có ${pending.length} phần quà đang chờ con chọn`
+      : complete
+        ? 'Phần thưởng hôm nay đã được nhận'
+        : farm && farm.wilted
+          ? 'Cây đang héo 🥀. Hoàn thành để cây tươi lại'
+        : 'Hoàn thành để nhận xu và quà';
+    const primaryLabel = pending.length
+      ? (pending.length === 1 ? 'Chọn quà hôm nay' : `Chọn ${pending.length} phần quà`)
+      : complete ? 'Xem nhiệm vụ đã hoàn thành' : 'Xem nhiệm vụ hôm nay';
+    const primaryAction = pending.length ? 'Armory.open()' : 'DailyTask.open()';
     const giftLabel = pending.length ? ` — ${pending.length} phần thưởng chờ con chọn` : '';
-    host.innerHTML = `<button type="button" class="dt-card ${!stale && s.allDone ? 'done' : ''}" onclick="DailyTask.open()" aria-label="Mở nhiệm vụ hôm nay${giftLabel}">
-      <span class="dt-card-icon" aria-hidden="true">📋${pending.length ? `<i class="dt-card-badge">${pending.length}</i>` : ''}</span>
-      <span class="dt-card-body"><strong>Nhiệm vụ hôm nay</strong><small>${subtitle}</small></span>
-      <span class="dt-card-shield" role="button" tabindex="0" onclick="event.stopPropagation();Armory.open()" title="Kho Khiên &amp; Kiếm" aria-label="Mở Kho Khiên và Kiếm">🛡️ ${shieldsOf(s)} ⚔️ ${swordsOf(s)}</span>
-    </button>`;
+    host.innerHTML = `<section class="dt-card ${complete ? 'done' : ''}" aria-label="Nhiệm vụ hôm nay${giftLabel}">
+      <div class="dt-card-head">
+        <button type="button" class="dt-card-open" onclick="DailyTask.open()" aria-label="Mở nhiệm vụ hôm nay">
+          <span class="dt-card-icon" aria-hidden="true">📋${pending.length ? `<i class="dt-card-badge">${pending.length}</i>` : ''}</span>
+          <strong>Nhiệm vụ hôm nay</strong>
+        </button>
+        <span class="dt-card-progress">${stale ? '…' : `${done}/${tasks.length || done}`}</span>
+      </div>
+      <div class="dt-card-body"><strong>${headline}</strong><small>${subtitle}</small></div>
+      <button type="button" class="dt-card-primary" onclick="${primaryAction}">${primaryLabel}</button>
+      <button type="button" class="dt-card-armory" onclick="Armory.open()" aria-label="Mở Kho Khiên và Kiếm">🛡️ <span>Kho Khiên &amp; Kiếm · ${shieldsOf(s)} khiên · ${swordsOf(s)} kiếm</span> ⚔️</button>
+    </section>`;
   }
 
   // Progress ring geometry: r=26 in a 64-box → circumference 2π·26.

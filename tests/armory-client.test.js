@@ -239,7 +239,7 @@ suite('armory client: opening a gift', () => {
     assert.falsy(out.includes('am-card shield has am-celebrate') || out.includes('am-card shield empty am-celebrate'), 'only the claimed card');
     assert.truthy(out.includes('class="am-burst"'), 'sparks');
     assert.truthy(out.includes('data-from="0" data-to="1"'), 'the badge counts from 0 up to 1');
-    assert.truthy(html('dailyTaskCard').includes('⚔️ 1'), 'the home card follows');
+    assert.truthy(html('dailyTaskCard').includes('1 kiếm'), 'the home card follows');
     await new Promise(r => setTimeout(r, 900));
     assert.truthy(out.includes(`Armory.claim('${TODAY}','shield')`), 'the next gift is offered');
   });
@@ -326,7 +326,7 @@ suite('daily task client: what the gift changed on the home card and the task sc
     const out = html('dailyTaskCard');
     assert.truthy(out.includes('class="dt-card-badge">2<'), out);
     assert.truthy(out.includes('2 phần thưởng chờ con chọn'), 'the count is read out in the card label');
-    assert.truthy(out.includes('🛡️ 1 ⚔️ 3'));
+    assert.truthy(out.includes('1 khiên · 3 kiếm'));
     assert.truthy(out.includes('Armory.open()'));
     assert.truthy(out.includes('DailyTask.open()'), 'the card itself still opens the task list');
     const none = mount({ appState: stateWith({ pending: [] }) });

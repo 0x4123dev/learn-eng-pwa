@@ -92,6 +92,21 @@ suite('home skills chart', () => {
         assert.equal(g.correct, 2);
         assert.equal(g.total, 4);
     });
+
+    test('skills card is compact by default and expands only on request', () => {
+        const env = envWith({ grammarHistory: [{ score: 4, total: 5 }] });
+        const panel = env.document.getElementById('homeSkillsPanel');
+
+        env.renderHomeSkillsPanel();
+        assert.truthy(panel.innerHTML.includes('Kỹ năng của con'));
+        assert.truthy(panel.innerHTML.includes('Xem chi tiết'));
+        assert.falsy(panel.innerHTML.includes('home-skills-details'));
+
+        env.toggleHomeSkillsDetails();
+        assert.truthy(panel.innerHTML.includes('Thu gọn'));
+        assert.truthy(panel.innerHTML.includes('home-skills-details'));
+        assert.truthy(panel.innerHTML.includes('Grammar'));
+    });
 });
 
 if (require.main === module) {

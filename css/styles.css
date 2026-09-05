@@ -13891,3 +13891,151 @@
 .nr-estate-map.farm-dragging .nr-farm-dock{opacity:1;transform:scale(1)}.nr-estate-map.farm-dragging .nr-farm-dock.occupied:not(.source){opacity:.34;border-color:#e46b55;background-color:rgba(190,56,42,.18)}.nr-estate-map.farm-dragging .nr-farm-dock.active{opacity:1;border-style:solid;border-color:#fff;background-color:rgba(117,213,71,.36);box-shadow:0 0 0 7px rgba(73,165,47,.32),0 12px 24px rgba(42,93,34,.3)}.nr-estate-map.farm-dragging .nr-farm-dock.active.occupied:not(.source){border-color:#ff6659;background-color:rgba(210,53,42,.38);box-shadow:0 0 0 7px rgba(190,45,36,.25)}
 @media(max-width:700px){.nr-farm-plot-handle span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}}
 @media(prefers-reduced-motion:reduce){.nr-farm-plot-handle,.nr-farm-dock{transition:none}}
+
+/* ── Home progress cards — reference-matched compact layout ─────────── */
+.daily-task-card:not(:empty){margin-top:14px}
+.dt-card{
+    display:block;width:calc(100% - 32px);margin:0 16px 14px;padding:14px 13px 11px;
+    border:2px solid #63c77a;border-radius:20px;text-align:initial;
+    background:linear-gradient(145deg,#f2fff6 0%,#e4f9eb 62%,#f4fff7 100%);
+    box-shadow:0 8px 24px rgba(40,119,67,.14);overflow:visible;color:#205b31;
+}
+.dt-card::after{content:none}
+.dt-card:not(.done){border-color:#e6bd55;background:linear-gradient(145deg,#fffbed,#fff3d2 65%,#fffaf0);box-shadow:0 8px 24px rgba(164,117,28,.13)}
+.dt-card-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}
+.dt-card-open{
+    min-width:0;min-height:44px;padding:0;border:0;background:transparent;color:inherit;font:inherit;
+    display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer
+}
+.dt-card-icon{
+    position:relative;overflow:visible;display:block;width:auto;height:auto;flex:0 0 auto;
+    padding:0;border-radius:0;background:transparent;box-shadow:none;font-size:30px;line-height:1
+}
+.dt-card-open>strong{min-width:0;color:#17672f;font-size:17px;font-weight:900;letter-spacing:-.2px}
+.dt-card:not(.done) .dt-card-open>strong{color:#725018}
+.dt-card-badge{top:-8px;right:-9px;min-width:21px;height:21px;padding:0 5px;font-size:11px}
+.dt-card-progress{
+    min-width:50px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.74);
+    color:#253331;font-size:15px;font-weight:900;text-align:center;box-shadow:0 3px 12px rgba(48,89,60,.06)
+}
+.dt-card-body{display:block;text-align:center;padding:9px 4px 10px}
+.dt-card-body>strong{display:block;color:#16813a!important;font-size:15px;font-weight:900;line-height:1.35}
+.dt-card:not(.done) .dt-card-body>strong{color:#835d1b!important}
+.dt-card-body>small{display:block;margin-top:3px;color:#385b43!important;font-size:13px;font-weight:600;line-height:1.35}
+.dt-card:not(.done) .dt-card-body>small{color:#705e39!important}
+.dt-card-primary{
+    width:100%;min-height:46px;padding:10px 16px;border:0;border-radius:13px;
+    background:linear-gradient(135deg,#2eb545,#22a83b);color:#fff;font:inherit;font-size:15px;font-weight:900;
+    box-shadow:0 5px 12px rgba(32,157,57,.25);cursor:pointer;transition:transform .12s ease,filter .12s ease
+}
+.dt-card:not(.done) .dt-card-primary{background:linear-gradient(135deg,#f1b332,#de9221);box-shadow:0 5px 12px rgba(187,119,21,.23)}
+.dt-card-primary:active{transform:scale(.985);filter:brightness(.96)}
+.dt-card-armory{
+    width:100%;min-height:40px;margin:7px 0 -4px;padding:5px 8px;border:0;background:transparent;
+    color:#327943;font:inherit;font-size:12px;font-weight:700;text-align:center;cursor:pointer
+}
+.dt-card:not(.done) .dt-card-armory{color:#715d31}
+
+.streak-panel{
+    flex:none;margin:0;padding:0 16px;background:transparent;border-radius:0;box-shadow:none;position:relative;z-index:15
+}
+.home-streak-card{
+    padding:18px 13px 15px;border-radius:20px;
+    background:linear-gradient(135deg,#232148 0%,#332566 52%,#4c228a 100%);
+    box-shadow:0 9px 24px rgba(40,29,91,.25);overflow:hidden
+}
+.home-streak-card::before{top:-80px;right:-70px;width:220px;height:220px;background:radial-gradient(circle,rgba(138,91,210,.24),transparent 68%)}
+.home-streak-head{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+.home-streak-total{display:flex;align-items:baseline;gap:7px;min-width:0;color:#fff;white-space:nowrap}
+.home-streak-fire{align-self:center;font-size:36px;line-height:1;filter:drop-shadow(0 3px 5px rgba(0,0,0,.22))}
+.home-streak-total>strong{font-size:39px;font-weight:900;line-height:1}
+.home-streak-total>span:last-child{font-size:13px;font-weight:800;color:rgba(255,255,255,.86)}
+.home-streak-next{flex:0 0 auto;color:rgba(255,255,255,.72);font-size:11.5px;font-weight:600;line-height:1.4;text-align:left}
+.home-streak-next strong{color:#fff;font-weight:800}
+.home-streak-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:18px 0 11px}
+.home-streak-day{
+    min-width:0;min-height:44px;padding:6px 2px 5px;gap:3px;border:1px solid transparent;border-radius:9px;
+    background:rgba(139,91,210,.24)
+}
+.home-streak-day.studied{background:rgba(139,91,210,.34);border-color:transparent}
+.home-streak-day.today{outline:0;border:2px solid #ffd62f;padding:5px 1px 4px;box-shadow:0 0 0 1px rgba(255,214,47,.12)}
+.home-streak-day-label{font-size:10px;color:rgba(255,255,255,.75);text-transform:none}
+.home-streak-day-dot{font-size:14px;color:rgba(255,255,255,.72);line-height:1}
+.home-streak-day.studied .home-streak-day-dot{color:#ffb82e}
+.home-streak-done{padding:0;border:0;border-radius:0;background:transparent;color:rgba(255,255,255,.76);font-size:12px;font-weight:700}
+.home-streak-cta{
+    min-height:42px;padding:9px 16px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
+    background:rgba(255,255,255,.12);box-shadow:none;font-size:13px
+}
+.home-streak-cta:hover{box-shadow:none;background:rgba(255,255,255,.17)}
+
+.home-skills-panel{
+    flex-shrink:0;margin:14px 16px 100px;padding:0;border:0;border-radius:17px;
+    background:rgba(255,255,255,.88);box-shadow:0 7px 22px rgba(40,34,87,.09);overflow:hidden
+}
+.home-skills-compact{
+    width:100%;min-height:68px;padding:11px 15px;border:1px solid rgba(93,72,160,.09);border-radius:17px;
+    background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(249,247,255,.94));color:#26333d;
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;
+    font:inherit;text-align:left;cursor:pointer
+}
+.home-skills-compact-icon{font-size:24px;line-height:1}
+.home-skills-compact>strong{font-size:16px;font-weight:900}
+.home-skills-compact-link{color:#8152d2;font-size:13px;font-weight:800;white-space:nowrap}
+.home-skills-compact-link i{display:inline-block;margin-left:5px;font-size:25px;font-style:normal;font-weight:400;line-height:.6;vertical-align:-2px;transition:transform .18s ease}
+.home-skills-compact[aria-expanded="true"] .home-skills-compact-link i{transform:rotate(90deg)}
+.home-skills-details{padding:4px 16px 16px;border-top:1px solid rgba(93,72,160,.08)}
+.home-skills-details .home-skills-sub{margin-top:10px}
+
+@media(max-width:380px){
+    .dt-card{width:calc(100% - 24px);margin-left:12px;margin-right:12px}
+    .dt-card-open>strong{font-size:15px}.dt-card-progress{min-width:46px;padding:7px 9px;font-size:14px}
+    .streak-panel{padding:0 12px}.home-streak-card{padding-left:10px;padding-right:10px}
+    .home-streak-fire{font-size:31px}.home-streak-total>strong{font-size:34px}.home-streak-total>span:last-child{font-size:11px}
+    .home-streak-next{font-size:10px}.home-streak-week{gap:3px}
+    .home-skills-panel{margin-left:12px;margin-right:12px}.home-skills-compact{padding-left:12px;padding-right:12px}
+}
+@media(prefers-reduced-motion:reduce){.dt-card-primary,.home-skills-compact-link i{transition:none}}
+
+/* Night Raid action rail stays out of the map until the child asks for it. */
+.nr-builder-menu-toggle{
+    position:absolute;z-index:43;right:max(14px,env(safe-area-inset-right));top:calc(492px + env(safe-area-inset-top));
+    width:48px;height:48px;padding:0;border:2px solid rgba(255,255,255,.95);border-radius:15px;
+    background:rgba(255,253,245,.94);color:#34483b;box-shadow:0 4px 0 #c7c2ad,0 8px 18px rgba(51,68,38,.2);
+    display:grid;place-items:center;font:inherit;cursor:pointer;transition:top .18s ease,transform .12s ease
+}
+.nr-builder-menu-toggle>b{font-size:22px;line-height:1;letter-spacing:1px}
+.nr-builder-menu-toggle>span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.nr-builder-menu-toggle:active{transform:translateY(2px);box-shadow:0 2px 0 #c7c2ad,0 5px 12px rgba(51,68,38,.17)}
+.nr-builder.menu-closed .nr-builder-nav,
+.nr-builder.menu-closed .nr-builder-shop-fab,
+.nr-builder.menu-closed .nr-builder-rotate,
+.nr-builder.menu-closed .nr-builder-edit{display:none!important}
+.nr-builder.menu-closed .nr-builder-menu-toggle{top:calc(114px + env(safe-area-inset-top));background:linear-gradient(145deg,#ffd967,#f57f27);color:#5b350c;box-shadow:0 4px 0 #b95b20,0 8px 18px rgba(51,68,38,.2)}
+.nr-builder.shop-open .nr-builder-menu-toggle{opacity:0;pointer-events:none}
+.nr-builder.rotated .nr-builder-menu-toggle{right:14px;top:364px;width:44px;height:44px}
+.nr-builder.rotated.menu-closed .nr-builder-menu-toggle{top:14px}
+@media(prefers-reduced-motion:reduce){.nr-builder-menu-toggle{transition:none}}
+
+/* Direct-attack stage: one rectangular castle estate and three non-overlap
+   HUD bands (stats, opponent, status). The result owns the whole overlay. */
+.nr-scout-stage .nr-builder-world{background:#a3aa13 url('../img/night-raid/endless-meadow-tile-v2.jpg') center/2048px repeat}
+.nr-scout-stage .nr-builder-map{background:transparent;box-shadow:none}
+.nr-scout-stage .nr-builder-hud{
+    left:max(10px,env(safe-area-inset-left));right:auto;top:max(10px,env(safe-area-inset-top));
+    width:auto;max-width:calc(100% - max(20px,env(safe-area-inset-right)));padding:0
+}
+.nr-scout-stage .nr-scout-name-pill{
+    top:calc(max(10px,env(safe-area-inset-top)) + 58px);bottom:auto;max-width:min(280px,calc(100% - 20px));
+    overflow:hidden;text-overflow:ellipsis
+}
+.nr-scout-stage .nr-battle-status{
+    left:50%;top:auto;bottom:calc(14px + env(safe-area-inset-bottom));max-width:calc(100% - 24px);
+    overflow:hidden;text-overflow:ellipsis;text-align:center
+}
+.nr-scout-stage .nr-lock-chip.scout{position:absolute;z-index:40;left:50%;top:50%;transform:translate(-50%,-50%)}
+@media(max-width:420px){
+    .nr-scout-stage .nr-builder-hud{gap:4px}
+    .nr-scout-stage .nr-builder-power{padding-inline:7px}
+    .nr-scout-stage .nr-scout-name-pill{top:calc(max(8px,env(safe-area-inset-top)) + 54px)}
+}

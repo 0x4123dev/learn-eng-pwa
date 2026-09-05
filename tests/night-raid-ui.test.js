@@ -51,15 +51,15 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('data-nr-friend-until'),'friend rows carry the child\'s own retry clock');
     const liveList=ui.slice(ui.indexOf('async function showLiveTargets'),ui.indexOf('function scoutLive'));
     assert.falsy(liveList.includes("lockChip(retryAt,"),'random-house cards stay removed');
-    assert.truthy(ui.includes("lockChip(target.lockedUntil"),'the scout screen replaces TIẾN QUÂN with the clock');
-    assert.truthy(ui.includes("id=\"nrStartRaid\" ${locked?'disabled hidden':''}"),'a sealed castle cannot be charged');
+    assert.truthy(ui.includes("lockChip(target.lockedUntil"),'a stale sealed target is redirected with its clock');
+    assert.falsy(ui.includes('id="nrStartRaid"'),'there is no intermediate charge button');
     // A server-side seal is reported, not swallowed — but through the shape the
     // server actually sends. start.js answers 409 {error, retryAt}; the old
     // check looked for a `locked` key no handler has ever produced, so that
     // branch was dead code and every refusal (429 out of tickets included) fell
     // through to one generic toast with the button left disabled.
     assert.truthy(ui.includes('const retryAt=retryAtOf(data)||data.lockedUntil'),'the 409 retryAt is read back');
-    assert.truthy(ui.includes('function armStartButton('),'and every refusal hands TIẾN QUÂN back');
+    assert.truthy(ui.includes('if(direct)return showLiveTargets()'),'a refusal returns to the target list');
     // When the clock runs out the castle is handed back without a reload.
     assert.truthy(ui.includes("fab.disabled=false;fab.hidden=false"),'expiry re-arms the charge button');
     for(const rule of ['.nr-lock-chip','.nr-target-card.locked'])assert.truthy(css.includes(rule),rule);
@@ -314,6 +314,12 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-builder-zoom,\n.nr-home-level {\n    display: none !important;'),
       'the zoom rail and house-level plaque must not occupy the playfield');
   });
+  test('the compact rail is hidden behind an ellipsis and can be collapsed again',()=>{
+    assert.truthy(ui.includes("builderMenuOpen?'menu-open':'menu-closed'"), 'builder renders an explicit rail state');
+    assert.truthy(ui.includes("builderMenuOpen?'‹':'•••'"), 'one control opens and collapses the rail');
+    assert.truthy(css.includes('.nr-builder.menu-closed .nr-builder-nav'), 'closed state hides the navigation actions');
+    assert.truthy(css.includes('.nr-builder.menu-closed .nr-builder-menu-toggle{top:calc(114px'), 'ellipsis occupies the first rail slot');
+  });
   test('Phase 2 includes defense reports and deterministic replay UI',()=>{
     assert.truthy(ui.includes("api('reports'"));
     assert.truthy(ui.includes('nrShowReports()'));
@@ -407,7 +413,7 @@ suite('night raid: app integration',()=>{
     // There is only one Night Raid home now: the builder. Keeping the legacy
     // function as an alias prevents old callers from reviving the overlapping
     // four-button read-only screen.
-    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// Scouting IS the battlefield'));
+    const home=ui.slice(ui.indexOf('function renderHome('),ui.indexOf('// The target list goes straight'));
     assert.truthy(home.includes('return renderBuilder()'));
     assert.falsy(home.includes('nr-home-stage'));
     assert.falsy(home.includes('nr-home-fabs'));
@@ -423,17 +429,13 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('viewport.scrollLeft=builderGesture.left-dy'),'rotated pan must swap axes');
     assert.truthy(ui.includes('setNav(true)'),'the nav would cover the Night Raid stage');
   });
-  test('one TIẾN QUÂN on the scout screen goes straight into the fight',()=>{
-    // The scout screen is a full-screen island (like the home builder) with a
-    // single charge button; the battle screen has no second button and the
-    // army marches on its own.
+  test('one TẤN CÔNG on the list goes straight into the fight',()=>{
     assert.truthy(ui.includes('nr-scout-stage'));
-    assert.truthy(ui.includes('id="nrStartRaid"'));
-    assert.truthy(ui.includes('<span>TIẾN QUÂN</span>'));
+    assert.truthy(ui.includes('onclick="nrAttackLive(${index})"'));
+    assert.falsy(ui.includes('id="nrStartRaid"'));
     assert.falsy(ui.includes('nrChargeButton'),'the battle screen must not ask again');
     assert.truthy(ui.includes("if(view==='battle'&&game&&game.charge)chargeArmy()"),'battle auto-charges');
-    // The fight happens IN PLACE in the scout world — no screen swap. Phaser
-    // replaces only the preview canvas after the user commits to TIEN QUAN.
+    // The fight happens in place on the stage created by the list tap.
     const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.falsy(raidBlock.includes('r.innerHTML'),'startRaid must not rebuild the screen');
     assert.truthy(raidBlock.includes("getElementById('nrScoutCanvas')"),'the scout canvas anchors the in-place swap');
@@ -447,12 +449,11 @@ suite('night raid: app integration',()=>{
     assert.falsy(game.includes('for(let i=0;i<18;i++)'));
     assert.falsy(ui.includes('nr-unit-tray'));
   });
-  test('scout and battle are one meadow scene, never a square picture on another background',()=>{
-    const art=read('js/night-raid-art.js');
-    assert.truthy(art.includes('function battleBoardCutout(source)'),'the studio backdrop is removed at decode time');
-    assert.truthy(art.includes('const outside=new Uint8Array(total),queue=new Int32Array(total)'),'only edge-connected backdrop pixels are removed');
-    assert.truthy(game.includes("key==='board'&&NightRaidArt.battleBoardCutout"),'Canvas preview uses the transparent island');
-    assert.truthy(phaser.includes('this.assetCanvases.board=NightRaidArt.battleBoardCutout'),'Phaser reuses that exact island');
+  test('battle reuses the rectangular castle estate on the shared meadow',()=>{
+    assert.truthy(game.includes("loadAsset('board','img/night-raid/isometric-home-board-frame-v4.png')"),'Canvas uses the builder estate frame');
+    assert.truthy(game.includes("ctx.drawImage(this.assets.board,0,S*.125,S,S*.75)"),'Canvas preserves the 4:3 estate ratio');
+    assert.truthy(phaser.includes("board:'img/night-raid/isometric-home-board-frame-v4.png'"),'Phaser uses the same estate frame');
+    assert.truthy(phaser.includes("setDisplaySize(800,600)"),'Phaser preserves the 4:3 estate ratio');
     assert.truthy(phaser.includes('transparent:true'),'the Phaser surface reveals the shared meadow');
     assert.falsy(phaser.includes("backgroundColor:'#dcefc8'"),'a second square background must not return');
     assert.falsy(phaser.includes('scene.add.rectangle(400,400,800,800,0x172044'),'a full-canvas tint would reveal the square edge');
@@ -517,19 +518,16 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('new NightRaidGame.AutoBattle(canvas,target,options)'),'Canvas fallback must remain');
     assert.truthy(css.includes('.nr-phaser-battle'));
   });
-  test('enemy DEF is a secret until the attack begins',()=>{
-    // Scout overlays show only OUR army; the number first appears on the
-    // battle HUD, and the targets API no longer ships it to the list at all.
+  test('enemy DEF is absent from the list and appears only after start confirms',()=>{
     const scoutBlock=ui.slice(ui.indexOf('function scout('),ui.indexOf('async function startRaid'));
     assert.falsy(scoutBlock.includes('NHÀ ĐỊCH'),'scout screen must not name the enemy stat');
     assert.falsy(scoutBlock.includes('target.defense'),'scout screen must not read the enemy DEF');
-    assert.truthy(scoutBlock.includes('nr-scout-secret'));
+    assert.falsy(scoutBlock.includes('target.defense'));
     assert.truthy(ui.includes("Nhà cấp ${esc(f.homeLevel)} · ${esc(f.difficulty||'Cân bằng')}"),'friend list shows difficulty, not DEF');
     const targetsApi=read('functions/api/night-raid/targets.js');
     assert.falsy(/defense:full\.defense/.test(targetsApi),'targets payload must not carry the exact DEF');
     const battleBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.truthy(battleBlock.includes("def.hidden=false"),'attacking is how the child earns the number');
-    assert.truthy(battleBlock.includes('nrScoutSecret'),'the secret pill leaves once the fight starts');
   });
   test('armored dog is a small canvas squad leader and marches with the formation',()=>{
     assert.truthy(game.includes("'img/night-raid/pet-soldiers-'"));
@@ -585,8 +583,8 @@ suite('night raid: mobile UX and accessibility',()=>{
 
 suite('night raid: only one combat loop, and only against real houses',()=>{
   test('the UI reaches startRaid from the live list alone',()=>{
-    assert.truthy(ui.includes('startRaid(target,true)'),'scout must start an ONLINE raid');
-    assert.truthy(ui.includes('scout(t)'),'scoutLive hands the chosen house to scout');
+    assert.truthy(ui.includes('startRaid(target,true,true)'),'the list tap must start an ONLINE raid directly');
+    assert.truthy(ui.includes('scout(t)'),'attackLive hands the chosen house to the battle stage');
     assert.falsy(ui.includes('makeBotTarget'));
     assert.falsy(ui.includes('nrScoutBot'));
     assert.falsy(ui.includes('20 Nhà Huấn Luyện'));

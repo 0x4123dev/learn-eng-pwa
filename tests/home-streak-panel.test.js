@@ -30,46 +30,43 @@ suite('home: streak panel renders', () => {
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         // 42 should appear inside the streak number wrapper
-        assert.truthy(/<span>42<\/span>/.test(html),
+        assert.truthy(/<strong>42<\/strong>/.test(html),
             `expected streak number 42 in HTML. Got: ${html.slice(0, 200)}`);
     });
 
-    test('streak panel shows best-ever line', () => {
+    test('streak panel stays focused and omits the old best-ever line', () => {
         const env = setup({ streak: 7, bestStreak: 30, lessonHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
-        assert.truthy(/Best ever/.test(html) && html.includes('30'),
-            'best streak (30) should appear');
+        assert.falsy(/Best ever/.test(html), 'the compact reference has no best-ever line');
     });
 
-    test('streak panel shows next-milestone progress bar', () => {
+    test('streak panel names the next milestone without an extra progress bar', () => {
         const env = setup({ streak: 5, bestStreak: 5, lessonHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
         // 5 days → next milestone is 7 → "2 days to 7"
-        assert.truthy(/home-streak-progress-fill/.test(html), 'progress fill present');
+        assert.truthy(/Thêm <strong>2 ngày<\/strong>/.test(html), 'remaining days are explicit');
+        assert.falsy(/home-streak-progress-fill/.test(html), 'the compact reference has no progress bar');
         assert.truthy(/<strong>7<\/strong>/.test(html), 'should mention milestone 7');
     });
 
-    test('streak panel shows "Learn today\'s words" CTA when NOT studied today', () => {
+    test('streak panel shows the Vietnamese learning CTA when NOT studied today', () => {
         const env = setup({ streak: 3, bestStreak: 3, lessonHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
-        assert.truthy(/Learn today/i.test(html),
-            'should show "Learn today\'s words" CTA when not studied today');
-        assert.falsy(/Studied today/.test(html),
-            'should NOT show "Studied today" when nothing logged');
+        assert.truthy(/Học ngay hôm nay/.test(html), 'should show the learning CTA when not studied today');
+        assert.falsy(/Đã học hôm nay/.test(html), 'should NOT show completion copy when nothing logged');
     });
 
-    test('streak panel shows "Studied today" check when lessonHistory has a today entry', () => {
+    test('streak panel shows "Đã học hôm nay" when lessonHistory has a today entry', () => {
         const env = setup({
             streak: 5, bestStreak: 5,
             lessonHistory: [{ lessonNum: 0, date: Date.now(), score: 5, mistakes: 0 }]
         });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
-        assert.truthy(/Studied today/.test(html),
-            'should show "Studied today" check after today\'s lesson');
+        assert.truthy(/Đã học hôm nay/.test(html), 'should show completion copy after today\'s lesson');
     });
 
     test('streak panel shows 7-day calendar with one "today" tile', () => {
@@ -84,23 +81,21 @@ suite('home: streak panel renders', () => {
             'one tile should have "today" class');
     });
 
-    test('streak panel shows tier label that matches streak level', () => {
+    test('streak panel uses Vietnamese day labels', () => {
         const env = setup({ streak: 15, bestStreak: 15, lessonHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
-        // 15 days → "Unstoppable" tier
-        assert.truthy(/UNSTOPPABLE/.test(html), 'tier label "UNSTOPPABLE" missing');
+        assert.truthy(/>CN<|>T2<|>T3<|>T4<|>T5<|>T6<|>T7</.test(html), 'Vietnamese day labels missing');
     });
 
     test('streak panel handles zero-streak (new user)', () => {
         const env = setup({ streak: 0, bestStreak: 0, lessonHistory: [] });
         env.renderHomeStreakPanel();
         const html = env.document.__getLastInnerHTML('streakPanel');
-        assert.truthy(/<span>0<\/span>/.test(html), 'should show 0 streak');
-        assert.truthy(/GETTING STARTED/.test(html),
-            '0-streak should show "Getting Started" tier');
+        assert.truthy(/<strong>0<\/strong>/.test(html), 'should show 0 streak');
+        assert.truthy(/ngày liên tiếp/.test(html), 'streak unit should be Vietnamese');
         // Should still show CTA so user can start
-        assert.truthy(/Learn today/i.test(html), 'should show learn CTA at 0 streak');
+        assert.truthy(/Học ngay hôm nay/.test(html), 'should show learn CTA at 0 streak');
     });
 
     test('streak panel handles being called with no #streakPanel element', () => {

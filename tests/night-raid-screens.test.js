@@ -136,6 +136,8 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     const html = screen.innerHTML;
     const buttons = screen.querySelectorAll('.nr-builder-nav-btn');
     assert.equal(buttons.length, 4, 'builder navigation also has the earned seed inventory');
+    assert.truthy(html.includes('class="nr-builder') && html.includes('menu-closed'), 'the rail starts collapsed');
+    assert.truthy(html.includes('nrToggleBuilderMenu()') && html.includes('•••'), 'ellipsis opens the rail');
     for (const label of ['ĐI CƯỚP', 'NHẬT KÝ', 'VŨ KHÍ', 'HẠT GIỐNG']) {
       assert.truthy(html.includes(label), 'builder is missing the ' + label + ' menu');
     }
@@ -171,14 +173,12 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.equal(opened, 1);
   });
 
-  test('a live fight opens scout AND arms the TIẾN QUÂN button', async () => {
-    const w = liveWorld();
-    await enterScout(w);
-    const btn = w.doc.getElementById('nrStartRaid');
-    assert.truthy(btn, 'the TIẾN QUÂN button must exist');
-    assert.falsy(btn.disabled, 'and be enabled');
-    assert.truthy(typeof btn.onclick === 'function',
-      'TIẾN QUÂN must be WIRED — a rendered but dead button is the bug');
+  test('a live TẤN CÔNG goes directly to a moving battle', async () => {
+    const w = onlineWorld(true);
+    await enterScout(w); await settle(); await settle();
+    assert.falsy(w.doc.getElementById('nrStartRaid'), 'the intermediate TIẾN QUÂN button is gone');
+    assert.truthy(w.battles.length, 'the battle renderer is created directly');
+    assert.truthy(w.battles[w.battles.length - 1].charged, 'the formation begins moving automatically');
   });
 
   test('tapping TIẾN QUÂN actually starts the battle', async () => {
@@ -281,13 +281,12 @@ suite('night raid screens: the camera can never disarm a screen', () => {
     }
   });
 
-  test('a screen whose camera cannot build a plane still arms its button', async () => {
+  test('a screen whose camera cannot build a plane still starts its battle', async () => {
     // The shim cannot resolve `:scope >`, so ensureWorldPlane returns null here
     // exactly as it did in the browser. The screen must survive it.
-    const w = liveWorld();
-    await enterScout(w);
-    assert.truthy(typeof w.doc.getElementById('nrStartRaid').onclick === 'function',
-      'camera failure must never leave TIẾN QUÂN dead');
+    const w = onlineWorld(true);
+    await enterScout(w); await settle(); await settle();
+    assert.truthy(w.battles.length, 'camera failure must never block direct attack');
   });
 });
 
@@ -398,15 +397,15 @@ suite('night raid: the bottom bar, and what it costs to walk out of a raid', () 
     assert.truthy(w.ctx.NightRaid.isRaiding(), 'saying no must keep the raid');
   });
 
-  test('scouting is free — no raid exists on the server yet', async () => {
+  test('tapping a target commits the raid immediately', async () => {
     const w = onlineWorld(false);
     w.ctx.NightRaid.open();
     w.ctx.NightRaid.showLiveTargets(); await settle();
     w.ctx.NightRaid.scoutLive(0); await settle();
     w.asked.length = 0;
-    assert.falsy(w.ctx.NightRaid.isRaiding(), 'looking at a house is not raiding it');
+    assert.truthy(w.ctx.NightRaid.isRaiding(), 'there is no free scout step before the raid');
     w.ctx.NightRaid.quit();
-    assert.equal(w.asked.length, 0, 'backing out before TIẾN QUÂN costs nothing');
+    assert.equal(w.asked.length, 1, 'leaving a committed raid asks for confirmation');
   });
 
   test('after an online raid, the map button still goes back to the houses', async () => {
@@ -507,7 +506,7 @@ suite('night raid: a lost /finish is retried on the next open', () => {
     assert.equal(offline.state.coins, 100);
   });
 
-  test('TIẾN QUÂN on a real house remembers the raid the moment /start succeeds', async () => {
+  test('TẤN CÔNG remembers the raid the moment /start succeeds', async () => {
     // A fresh copy of the house: onlineWorld() hands out the shared
     // LIVE_TARGET object, and startRaid stamps the raidId onto the target it
     // is given — so after an earlier test the shared one already "has" a raid
@@ -521,9 +520,7 @@ suite('night raid: a lost /finish is retried on the next open', () => {
     const w = mount({ ctx: { EngAuth: { tokenFor: () => 'tok', api }, confirm: () => true } });
     w.ctx.NightRaid.open(); await settle();
     w.ctx.NightRaid.showLiveTargets(); await settle();
-    w.ctx.NightRaid.scoutLive(0); await settle();
-    assert.equal(w.state.nightRaidPending, undefined, 'scouting writes nothing');
-    tap(w.doc.getElementById('nrStartRaid')); await settle(); await settle();
+    w.ctx.NightRaid.attackLive(0); await settle(); await settle();
     assert.truthy(w.state.nightRaidPending && w.state.nightRaidPending.raidId === 'c'.repeat(32),
       'the raidId is on disk before the first sword swings');
   });

@@ -200,7 +200,7 @@ const EXPORT_NAMES = [
     'showDailyStreakModal', 'dismissStreakModal', 'dismissStreakModalAndStart',
     'hasShownStreakToday', 'markStreakShownToday',
     // homepage streak panel (v3.38)
-    'renderHomeStreakPanel', 'goLearnToday',
+    'renderHomeStreakPanel', 'goLearnToday', 'renderHomeSkillsPanel', 'toggleHomeSkillsDetails',
     // home.js
     'BEGINNING_LESSONS', 'IELTS_PER_LEVEL',
     'getDifficultyLevel', 'getLessonRangeForDifficulty', 'getNextLessonForDifficulty',

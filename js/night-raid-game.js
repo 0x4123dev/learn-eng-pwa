@@ -77,7 +77,7 @@ var NightRaidGame = (() => {
       this.choreo=Choreo.build(this.result,target,this.soldierCount,options.pet||null,target.seed);
       this.duration=this.reduce?2000:this.choreo.durationMs;this.boundFrame=t=>this.frame(t);
       this.size=800;this.assets={};
-      this.loadAsset('board','img/night-raid/isometric-home-board-skin-pad.webp');
+      this.loadAsset('board','img/night-raid/isometric-home-board-frame-v4.png');
       this.loadAsset('squadActions','img/night-raid/animation/raider-actions-v2.webp');
       this.loadAsset('squadWalk','img/night-raid/animation/raider-walk-v3.png');
       if(options.pet)this.loadAsset('pet','img/night-raid/pet-soldiers-'+(options.pet.atlas==='large'?'large':'small')+'-v2.webp');
@@ -87,7 +87,7 @@ var NightRaidGame = (() => {
       canvas.width=this.size;canvas.height=this.size;canvas.setAttribute('tabindex','0');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Trận Cướp Đêm tự động trên sân nhà isometric. Pet dẫn ${this.soldierCount} lính. Sức công ${this.result.damage}, phòng thủ đối thủ ${target.shielded?'Khiên Đêm':this.result.defense}.${petText}`);
       this.paint(0);
     }
-    loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=key==='board'&&NightRaidArt.battleBoardCutout?NightRaidArt.battleBoardCutout(img):img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
+    loadAsset(key,src){if(typeof Image==='undefined')return;const img=new Image();img.decoding='async';img.onload=()=>{this.assets[key]=img;this.paint(this.duration?this.state.timeMs/this.duration:0);};img.src=src;}
     start(){this.paint(0);this.notify();}
     charge(){if(this.running||this.finished)return false;this.running=true;this.state.status='fighting';this.startedAt=performance.now();this.notify();this.raf=requestAnimationFrame(this.boundFrame);return true;}
     destroy(){this.running=false;cancelAnimationFrame(this.raf);}
@@ -141,7 +141,7 @@ var NightRaidGame = (() => {
     paint(progress){const ctx=this.ctx,S=this.size,ch=this.choreo,C=Choreo;
       const T=Math.max(0,Math.min(1,progress))*ch.durationMs,now=T;
       ctx.clearRect(0,0,S,S);
-      if(this.assets.board)ctx.drawImage(this.assets.board,0,0,S,S);
+      if(this.assets.board)ctx.drawImage(this.assets.board,0,S*.125,S,S*.75);
       const won=this.result.won,hpMax=this.target.castleHp||200;
       const breachP=won&&ch.breachAt!=null?Math.max(0,Math.min(1,(T-ch.breachAt)/Math.max(1,ch.durationMs-ch.breachAt))):0;
       const hp=won?Math.max(0,hpMax*(1-breachP)):hpMax;
@@ -207,7 +207,8 @@ var NightRaidGame = (() => {
       }
       if(T>ch.engageStart&&T<ch.engageEnd){for(let i=0;i<6;i++){const pulse=Math.max(0,Math.sin(now*.005+i*2.1));if(pulse>.55)NightRaidArt.drawClashSpark(ctx,352+(i%3)*30,352+(i%2)*36,(pulse-.55)*1.6,i);}}
       if(won&&breachP>0){for(let i=0;i<3;i++)NightRaidArt.drawClashSpark(ctx,215+i*24,270+i*34,.35+.5*Math.sin(now*.02+i),i+6);}
-      ctx.fillStyle='rgba(30,23,49,.78)';NightRaidArt.roundRect(ctx,235,18,330,54,27);ctx.fill();ctx.textAlign='center';ctx.font='900 22px system-ui';ctx.fillStyle='#fff4ba';ctx.fillText(this.state.status==='ready'?'SẴN SÀNG TIẾN QUÂN':this.state.status==='fighting'?'ĐANG GIAO CHIẾN':won?'PHÁ THÀNH CÔNG':'PHÒNG THỦ QUÁ MẠNH',400,52);
+      // Battle state is rendered by the responsive DOM HUD. Keeping it out of
+      // the canvas prevents a second status banner from covering the estate.
     }
   }
   return Object.freeze({Game,AutoBattle,W,H,laneY,worldX});
