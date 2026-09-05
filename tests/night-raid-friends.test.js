@@ -99,13 +99,14 @@ suite('night raid: the 24 h seal, executed', () => {
 });
 
 suite('GET /api/night-raid/friends', () => {
-  test('needs a token and a Phase-2 account', async () => {
+  test('needs a token, while every signed-in account may enter', async () => {
     const world = createWorld();
     const anon = await world.call(friendsHandler().onRequestGet, { method: 'GET' });
     assert.equal(anon.status, 401);
     const off = await world.createUser({});
     const r = await world.call(friendsHandler().onRequestGet, { method: 'GET', token: off.token });
-    assert.equal(r.status, 403);
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.friends, []);
   });
 
   test('an expired active raid locks neither the list nor a new /start', async () => {
