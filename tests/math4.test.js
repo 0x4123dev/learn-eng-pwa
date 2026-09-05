@@ -352,11 +352,24 @@ suite('toán 4: một tờ đề Mix', () => {
     const menu = screen.innerHTML;
     assert.truthy(menu.includes('startMath4Mix()'), 'the Mix button is missing');
     assert.truthy(menu.includes('startMath4Pre()'), 'the Pre button is missing');
+    assert.falsy(menu.includes('math4-pre-cta'), 'Pre must use the same visible menu-card palette as Mix');
     assert.truthy(menu.includes('Chọn 1 trong 4 đáp án'), 'the Pre interaction is not explained');
     assert.truthy(menu.includes('TOÁN 4'), 'the header does not say which môn this is');
     for (const t of MATH4_TYPES) {
       assert.truthy(menu.includes(t.title), 'dạng not listed: ' + t.title);
     }
+  });
+
+  test('Mix and Pre share the readable primary menu-card colors', () => {
+    const css = src('css/styles.css');
+    const primary = css.match(/\.phrases-cta\s*\{([^}]*)\}/);
+    assert.truthy(primary, 'shared menu-card style is missing');
+    assert.truthy(primary[1].includes('linear-gradient(135deg, #2ecc71, #9b59b6)'),
+      'shared menu-card background must remain visible');
+    assert.truthy(primary[1].includes('color: #fff'),
+      'shared menu-card text color must contrast with its background');
+    assert.falsy(/\.math4-pre-cta\s*\{/.test(css),
+      'Pre must not override the shared menu-card colors');
   });
 
   test('the menu says the bank is loading rather than offering an empty paper', () => {

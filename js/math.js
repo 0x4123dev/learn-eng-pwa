@@ -1113,7 +1113,7 @@ function renderToan4MenuHTML() {
         <span class="phrases-cta-text"><strong>Mix</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
         <span class="phrases-cta-arrow">🔒</span>
       </button>`}
-      ${ready ? `<button class="phrases-cta math4-pre-cta" onclick="startMath4Pre()">
+      ${ready ? `<button class="phrases-cta" onclick="startMath4Pre()">
         <span class="phrases-cta-icon">✓</span>
         <span class="phrases-cta-text"><strong>Pre</strong><small>Chọn 1 trong 4 đáp án · ${MATH4_QUIZ_SIZE} câu · thưởng 50 xu khi đúng 100%${preBest !== null ? ` · Tốt nhất: ${preBest}%` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>

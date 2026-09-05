@@ -10102,6 +10102,10 @@
             box-shadow: 0 8px 22px rgba(155,89,182,0.28);
         }
         .phrases-cta:active { transform: scale(0.98); }
+        .phrases-cta:focus-visible {
+            outline: 3px solid #166534;
+            outline-offset: 3px;
+        }
         .phrases-cta-icon { font-size: 26px; }
         .phrases-cta-text { display: flex; flex-direction: column; flex: 1; }
         .phrases-cta-text strong { font-size: 17px; font-weight: 800; }
@@ -13838,14 +13842,6 @@
     padding: 10px 12px;
     font-size: 1rem;
     text-align: left;
-}
-.math4-pre-cta {
-    border-color: #86efac;
-    background: linear-gradient(135deg, #f0fdf4, #ecfeff);
-}
-.math4-pre-cta:focus-visible {
-    outline: 3px solid #16a34a;
-    outline-offset: 3px;
 }
 @media (max-width: 480px) {
     .math4-pre-prompt { padding: 14px; }
