@@ -1,6 +1,6 @@
 // home.js - Home screen rendering, history, mistakes, and difficulty filtering
 
-const APP_VERSION = 'v4.17.54';
+const APP_VERSION = 'v4.17.55';
 
 // ============================================================================
 //  DAILY STREAK MODAL (v3.37)
