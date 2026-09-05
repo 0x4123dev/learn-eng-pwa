@@ -108,6 +108,19 @@ suite('GET /api/night-raid/friends', () => {
     assert.equal(r.status, 403);
   });
 
+  test('an expired active raid locks neither the list nor a new /start', async () => {
+    const world=createWorld();
+    const me=await world.createUser({allowBot:true}),friend=await world.createUser({allowBot:true});
+    await seedHome(world,me,STRONG);await seedHome(world,friend,WEAK);befriend(world,me,friend);
+    const first=await world.call(startHandler().onRequestPost,{token:me.token,body:{targetId:friend.uid}});
+    assert.truthy(first.ok&&first.data.raid,JSON.stringify(first.data));
+    world.db.prepare('UPDATE night_raids SET expires_at=? WHERE id=?').run(Date.now()-1,first.data.raid.raidId);
+    const row=(await friendsOf(world,me)).friends.find(f=>f.targetId===friend.uid);
+    assert.equal(row.retryAt,0,'the list ignores the expired active row');
+    const again=await world.call(startHandler().onRequestPost,{token:me.token,body:{targetId:friend.uid}});
+    assert.truthy(again.ok&&again.data.raid,'/start agrees and opens the house again: '+JSON.stringify(again.data));
+  });
+
   test('lists only ACCEPTED friends who have a home, whichever way the friendship points', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true, username: 'me' });

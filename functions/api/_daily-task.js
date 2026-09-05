@@ -31,7 +31,8 @@ function sqlTime(ms) { return new Date(ms).toISOString().replace('T', ' ').slice
 // The GMT+7 calendar day containing `now`, as the UTC bounds `activities`
 // rows are stored in.
 export function dayWindowUtc(now = Date.now()) {
-  const date = nightDate(now);
+  const date = typeof now === 'string' ? now : nightDate(now);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid daily-task date');
   const startMs = Date.parse(date + 'T00:00:00Z') - 7 * 3600000;
   return { date, startUtc: sqlTime(startMs), endUtc: sqlTime(startMs + 24 * 3600000) };
 }
@@ -82,10 +83,18 @@ export function matchSql(match) {
 // Today's progress for every active task. `done` = enough sessions with
 // score == total inside the GMT+7 day. Never writes.
 export async function progress(env, uid, now = Date.now()) {
+  const historical = typeof now === 'string';
   const { date, startUtc, endUtc } = dayWindowUtc(now);
-  const { results } = await env.DB.prepare(
-    'SELECT id, kind, label, target, activity_type, match_json, created_at FROM daily_tasks WHERE user_id = ? AND active = 1 ORDER BY id'
-  ).bind(uid).all();
+  // Normal reads retain the established "currently active" contract. A
+  // delayed sync passes an explicit date and uses the preserved effective
+  // interval instead, so today's replacement tasks cannot rewrite yesterday.
+  const taskQuery = historical
+    ? env.DB.prepare(`SELECT id, kind, label, target, activity_type, match_json, created_at, ended_at
+         FROM daily_tasks WHERE user_id = ? AND created_at < ? AND (ended_at IS NULL OR ended_at >= ?) ORDER BY id`)
+        .bind(uid, endUtc, startUtc)
+    : env.DB.prepare(`SELECT id, kind, label, target, activity_type, match_json, created_at
+         FROM daily_tasks WHERE user_id = ? AND active = 1 ORDER BY id`).bind(uid);
+  const { results } = await taskQuery.all();
   const tasks = await Promise.all((results || []).map(async row => {
     let match = {};
     try {

@@ -13066,6 +13066,9 @@
    that the night cost them nothing. */
 .nr-result-pop.ruined .nr-pop-banner{background:linear-gradient(135deg,#c8a97e,#8a6a45);color:#2c1c0b;box-shadow:0 10px 26px rgba(76,54,28,.45)}
 .nr-result-pop.ruined .nr-result-crest,.nr-result.ruined .nr-result-crest{background:linear-gradient(145deg,#c2a680,#7d6242);color:#241708}
+.nr-result-pop.confirming .nr-pop-banner{background:linear-gradient(135deg,#fff1a8,#ffc654);color:#4a3208;box-shadow:0 10px 28px rgba(255,198,84,.35)}
+.nr-result.confirming .nr-result-crest,.nr-result-pop.confirming .nr-result-crest{background:rgba(255,255,255,.12);color:#ffd366}
+.nr-confirm-spinner{display:block;width:34px;height:34px;border:4px solid currentColor;border-right-color:transparent;border-radius:50%;animation:nr-spin .8s linear infinite}
 .nr-ruined-score{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
 .nr-ruined-score>div:first-child,.nr-ruined-score>div:last-child{background:#e9e3d8;color:#5d4a2e}
 .nr-ruined-score strong{font-size:clamp(19px,4vw,26px)}
@@ -13874,7 +13877,10 @@
    the eight legal targets become a visible 6×6 guide, and the plot snaps to
    one of them instead of being left at an arbitrary angle or meadow pixel. */
 .nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:7px solid #a86027;border-radius:16px;background:#b97836;box-shadow:inset 0 0 0 3px #e4a558,0 14px 18px rgba(48,66,27,.3);touch-action:none}
-.nr-farm-surface{position:absolute;z-index:0;inset:5px;border-radius:8px;background:#9a5d2d url('../img/farm/dry-ground.webp') center/cover;box-shadow:inset 0 0 18px rgba(80,39,15,.38);pointer-events:none}
+.nr-farm-surface{position:absolute;z-index:0;inset:5px;border-radius:8px;background:#805022 url('../img/farm/dry-ground.webp') center/cover;box-shadow:inset 0 0 18px rgba(80,39,15,.42);pointer-events:none;overflow:hidden}
+/* One 6×6 farm is three broad horizontal beds: every bed owns two grid rows.
+   Highlights and dark troughs keep the soil readable beneath planted art. */
+.nr-farm-surface::before{content:"";position:absolute;inset:5%;border-radius:7px;background:linear-gradient(to bottom,#bc7a3c 0 5%,#8c4f24 5% 27%,#5e351d 27% 33%,transparent 33% 36%,#bd7b3d 36% 41%,#8c4f24 41% 63%,#5e351d 63% 69%,transparent 69% 72%,#bd7b3d 72% 77%,#8c4f24 77% 95%,#5e351d 95% 100%);box-shadow:inset 0 2px 2px rgba(255,205,126,.35),inset 0 -3px 4px rgba(58,30,15,.35)}
 .nr-farm-plot>.nr-free-grid{z-index:2;left:6%;top:6%;width:88%;height:88%;overflow:visible;transform:none}
 .nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:-24px;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
 .nr-builder.editing .nr-farm-plot-handle{opacity:1;pointer-events:auto}.nr-farm-plot.dragging{z-index:18;filter:drop-shadow(0 20px 16px rgba(48,66,27,.42)) brightness(1.08)}.nr-farm-plot.dragging .nr-farm-plot-handle{cursor:grabbing}.nr-farm-plot.invalid{filter:drop-shadow(0 0 14px #ff4e42) saturate(.55)}

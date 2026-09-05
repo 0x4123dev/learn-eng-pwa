@@ -48,10 +48,10 @@ suite('daily task: schema', () => {
       if (setup) db.exec(setup);
       for (const f of files) db.exec(fs.readFileSync(path.join(ROOT, f), 'utf8'));
       return db.prepare("SELECT name, sql FROM sqlite_master WHERE name LIKE 'daily_task%' OR name LIKE 'idx_daily%' OR name LIKE 'farm_seed%' OR name LIKE 'idx_farm_seed%' ORDER BY name")
-        .all().map(r => r.name + '::' + String(r.sql).replace(/--[^\n]*/g, '').replace(/\s+/g, ' ').trim()).join('\n');
+        .all().map(r => r.name + '::' + String(r.sql).replace(/--[^\n]*/g, '').replace(/\s+/g, ' ').replace(/\s+,/g, ',').replace(/\s+\)/g, ')').trim()).join('\n');
     };
     assert.equal(
-      ddl(['db/018-daily-tasks.sql', 'db/019-armory-swords.sql', 'db/028-farm-seed-rewards.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
+      ddl(['db/018-daily-tasks.sql', 'db/019-armory-swords.sql', 'db/028-farm-seed-rewards.sql', 'db/029-daily-task-effective-dates.sql'], 'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT);'),
       ddl(['db/schema.sql']),
       'the migrations and the canonical schema must not drift');
   });
@@ -420,6 +420,33 @@ suite('daily task: GET /api/me/daily-tasks and the /api/activity hook', () => {
     });
     assert.equal(r.status, 200);
     assert.equal(r.data.dailyTask.justRewarded, true);
+  });
+
+  test('offline sync backfills each affected ICT day once, including the seed earned across two days', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    const spec = core().taskSpec('phrases');
+    const today = core().dayWindowUtc(Date.now()).date;
+    const todayStart = Date.parse(today + 'T00:00:00Z') - 7 * 3600000;
+    const firstAt = todayStart - 2 * 86400000 + 3600000;
+    const secondAt = firstAt + 86400000;
+    const assignedAt = new Date(firstAt - 86400000).toISOString().replace('T', ' ').slice(0, 19);
+    world.db.prepare(`INSERT INTO daily_tasks
+      (user_id,kind,label,target,activity_type,match_json,created_by,created_at,active)
+      VALUES(?,?,?,?,?,?,1,?,1)`).run(kid.uid,spec.kind,spec.label,1,spec.activityType,spec.matchJson,assignedAt);
+    const body={items:[
+      {type:'phrases',title:'Phrases practice (20 Qs)',score:20,total:20,at:firstAt},
+      {type:'phrases',title:'Phrases practice (20 Qs)',score:20,total:20,at:secondAt},
+    ]};
+    const first=await world.call(activityHandler().onRequestPost,{token:kid.token,body});
+    assert.truthy(first.ok,JSON.stringify(first.data));
+    assert.equal(rewards(world,kid.uid).length,2,'both historical days are rewarded');
+    assert.equal(grants(world,kid.uid).length,2,'each day has one coin grant');
+    assert.equal(world.db.prepare('SELECT COALESCE(SUM(quantity),0) AS n FROM farm_seed_inventory WHERE user_id=?').get(kid.uid).n,1,'two consecutive days award one seed');
+    await world.call(activityHandler().onRequestPost,{token:kid.token,body});
+    assert.equal(rewards(world,kid.uid).length,2,'re-sync creates no reward twice');
+    assert.equal(grants(world,kid.uid).length,2,'re-sync creates no grant twice');
+    assert.equal(world.db.prepare('SELECT COALESCE(SUM(quantity),0) AS n FROM farm_seed_inventory WHERE user_id=?').get(kid.uid).n,1,'re-sync creates no seed twice');
   });
 
   test('a broken match_json counts nothing and does not fail the sync', async () => {

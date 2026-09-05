@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidLockUntil, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
+import { COOLDOWN_RAID_STATUS_SQL, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidLockUntil, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
 
 // GET /api/night-raid/friends — "Bạn bè · nhà nào đánh được".
 //
@@ -49,7 +49,8 @@ export async function onRequestGet({ request, env }) {
     `SELECT h.user_id, h.home_level, h.layout_json, h.dog_level, h.castle_skin,
             u.username,
             (SELECT MAX(r.created_at) FROM night_raids r
-              WHERE r.attacker_id = ? AND r.defender_id = h.user_id) AS last_attack
+              WHERE r.attacker_id = ? AND r.defender_id = h.user_id
+                AND r.status IN ${COOLDOWN_RAID_STATUS_SQL}) AS last_attack
        FROM friendships f
        JOIN users u ON u.id = CASE WHEN f.requester_id = ? THEN f.addressee_id ELSE f.requester_id END
        JOIN night_raid_homes h ON h.user_id = u.id

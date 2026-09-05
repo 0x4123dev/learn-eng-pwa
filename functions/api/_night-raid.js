@@ -6,6 +6,9 @@ export const NR = NightRaidRules;
 // hidden (js/night-raid-phaser.js), so answering a message mid-battle and
 // coming back put /finish past the deadline and threw the raid away.
 export const RAID_TTL_MS = 15 * 60 * 1000;
+// Only completed attempts start the per-house retry clock. An active row —
+// especially one whose scoring window expired — is never a completed visit.
+export const COOLDOWN_RAID_STATUS_SQL = "('done','ruined')";
 
 // ---- the tunable rulebook (db/021-night-raid-rules.sql) -------------------
 //

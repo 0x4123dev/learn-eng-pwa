@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { nightDate, nightRaidEnabled, ticketStats, raidSnapshot, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
+import { COOLDOWN_RAID_STATUS_SQL, nightDate, nightRaidEnabled, ticketStats, raidSnapshot, readRaidConfig, retryAvailableAt, inFlightRaids} from '../_night-raid.js';
 
 // GET /api/night-raid/targets — three random castles to gamble on.
 //
@@ -25,10 +25,10 @@ export async function onRequestGet({request,env}) {
   // since db/021 it is my own retry_hours, the same clock start.js enforces.
   const retryFrom=now-cfg.retry_hours*3600000;
   const rows=await env.DB.prepare(`SELECT h.*,u.username,
-      (SELECT MAX(r.created_at) FROM night_raids r WHERE r.attacker_id=? AND r.defender_id=h.user_id) AS last_attack
+      (SELECT MAX(r.created_at) FROM night_raids r WHERE r.attacker_id=? AND r.defender_id=h.user_id AND r.status IN ${COOLDOWN_RAID_STATUS_SQL}) AS last_attack
     FROM night_raid_homes h JOIN users u ON u.id=h.user_id
     WHERE h.user_id<>? AND u.disabled=0 AND h.updated_at>=?
-      AND NOT EXISTS (SELECT 1 FROM night_raids r WHERE r.attacker_id=? AND r.defender_id=h.user_id AND r.created_at>?)
+      AND NOT EXISTS (SELECT 1 FROM night_raids r WHERE r.attacker_id=? AND r.defender_id=h.user_id AND r.status IN ${COOLDOWN_RAID_STATUS_SQL} AND r.created_at>?)
     ORDER BY ABS(h.home_level-?), RANDOM() LIMIT 3`).bind(auth.uid,auth.uid,fresh,auth.uid,retryFrom,level).all();
   const stats=await ticketStats(env,auth.uid,date);
   const targets=(rows.results||[]).map(row=>{const full=raidSnapshot(row);const previewCells=full.layout.cells.filter(c=>c.type!=='spike-trap');return {targetId:row.user_id,name:row.username,homeLevel:full.homeLevel,level:full.level,difficulty:full.homeLevel>level+2?'Khó':full.homeLevel<level-2?'Dễ':'Cân bằng',retryAt:retryAvailableAt(row.last_attack,cfg.retry_hours,now),sceneId:full.sceneId,layout:{cells:previewCells,dogLane:full.layout.dogLane},dogLevel:full.dogLevel,castleSkin:full.castleSkin,castleHp:full.castleHp,budget:0,title:{vi:row.username,en:row.username}};});

@@ -82,7 +82,7 @@ suite('night raid Phase 2: schema and endpoints',()=>{
     // lootable coins — or one hit by a raider already at the daily reward cap —
     // stayed wide open, because that UPDATE was skipped entirely.
     const finish=read('functions/api/night-raid/finish.js');
-    assert.truthy(finish.includes("if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?')"),
+    assert.truthy(/if\(won\)statements\.push\(env\.DB\.prepare\(`UPDATE night_raid_homes SET ruined_until=\? WHERE user_id=\? AND \$\{ownsSettlement\}`\)/.test(finish),
       'the seal is its own statement, keyed on the win alone');
     assert.falsy(/lootable_coins=MAX\(0,lootable_coins-\?\),ruined_until/.test(finish),'seal and theft must not share a statement');
   });

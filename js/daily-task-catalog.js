@@ -164,7 +164,7 @@ var DailyTaskCatalog = (function () {
     { titlePrefix: 'Rewrite practice' }, 'rewriteScreen', [['startRewriteQuiz', 10]]));
   ENTRIES.push(entry('verbs', 'practice', 'Verbs challenge', 'verbs',
     { titlePrefix: 'Verbs challenge' }, 'speedChallengeScreen', [['startSpeedChallenge', 0]]));
-  ENTRIES.push(entry('vocab', 'practice', 'Vocabulary lesson (từ vựng hôm nay · ≥90% là đạt)', 'lesson',
+  ENTRIES.push(entry('vocab', 'practice', 'Vocabulary lesson (từ vựng hôm nay)', 'lesson',
     { titlePrefix: 'Vocabulary lesson' }, 'homeScreen', [['goLearnToday']]));
   // Grammar — detail_json carries unitId.
   for (const [id, name] of GRAMMAR_NAMES) {

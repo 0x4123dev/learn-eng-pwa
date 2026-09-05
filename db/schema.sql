@@ -226,9 +226,11 @@ CREATE TABLE IF NOT EXISTS daily_tasks (
   match_json    TEXT NOT NULL,
   created_by    INTEGER NOT NULL,
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),
-  active        INTEGER NOT NULL DEFAULT 1
+  active        INTEGER NOT NULL DEFAULT 1,
+  ended_at      TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_daily_tasks_user ON daily_tasks(user_id, active);
+CREATE INDEX IF NOT EXISTS idx_daily_tasks_effective ON daily_tasks(user_id, created_at, ended_at);
 
 CREATE TABLE IF NOT EXISTS daily_task_rewards (
   user_id    INTEGER NOT NULL REFERENCES users(id),

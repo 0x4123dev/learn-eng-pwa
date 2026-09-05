@@ -91,6 +91,11 @@ const flush = async (n = 4) => { for (let i = 0; i < n; i++) await settle(); };
 const FRIEND = { targetId: 7, name: 'Tí', homeLevel: 4, difficulty: 'Cân bằng', retryAt: 0 };
 const friendsReply = { ok: true, data: { friends: [FRIEND], me: { hasHome: true, lockedUntil: 0, shieldUntil: 0 }, ticketsLeft: 3 } };
 const targetsReply = { ok: true, data: { targets: [], ticketsLeft: 3 } };
+const ACTIVE_RAID = { ok: true, data: { raid: Object.assign({}, FRIEND, {
+  raidId: 'a'.repeat(32), expiresAt: Date.now() + 15 * M,
+  layout: { cells: [], soldiers: 0, dogLane: 2 }, dogLevel: 1,
+  attackerDamage: 50, attackerSoldiers: 6, defense: 20, castleHp: 188,
+}) } };
 
 // Walk the child in: list of houses → tap the row → tap TIẾN QUÂN.
 async function marchOn(server, extra) {
@@ -104,6 +109,26 @@ async function marchOn(server, extra) {
   await flush();
   return w;
 }
+
+suite('kết quả chỉ xuất hiện sau khi máy chủ xác nhận', () => {
+  test('mất mạng shows a neutral confirmation screen, then retry paints the verified amount', async () => {
+    let finishReply={ok:false,data:null};
+    const w=await marchOn({friends:friendsReply,targets:targetsReply,start:ACTIVE_RAID,finish:()=>finishReply});
+    const battle=w.battles[w.battles.length-1];
+    battle.options.onFinish({status:'won',damage:50,defense:20,castleHp:0},[]);
+    await flush();
+    let out=w.screen().innerHTML;
+    assert.truthy(out.includes('ĐANG XÁC NHẬN'),'there is a dedicated pending result screen');
+    assert.falsy(out.includes('CHIẾN THẮNG')||out.includes('+0 xu'),'an unverified simulation is never celebrated');
+    assert.equal(w.state.coins,9000,'no server verdict means no wallet change');
+    finishReply={ok:true,data:{result:{won:false,shielded:true,reward:0,loss:37,defenderGain:37,stars:0,damage:50,defense:100000,castleHp:188}}};
+    await w.ctx.NightRaid.retryRaidResult();await flush();
+    out=w.screen().innerHTML;
+    assert.truthy(out.includes('THẤT BẠI')&&out.includes('mất 37 xu'),'shield copy uses the server-confirmed loss');
+    assert.falsy(out.includes('mất 200 xu'),'no configured penalty is hardcoded');
+    assert.equal(w.state.coins,8963);
+  });
+});
 
 const RUINED = (over) => ({ ok: true, data: Object.assign(
   { ruined: true, retryAt: 0, castleSkin: 'moss-tower', name: 'Tí', homeLevel: 4 }, over || {}) });

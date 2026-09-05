@@ -104,6 +104,10 @@ suite('builder farm: crops draw their day and their mood', () => {
     const w2 = mount({ appState: { farmDayCount: 4 } }); w2.ctx.NightRaid.renderBuilder();
     assert.truthy(html(w2).includes('chờ nhiệm vụ'));
   });
+  test('placed buildings do not show a redundant level-1 bubble', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    assert.falsy(html(w).includes('<em>1</em>'), 'no numeric tier bubble is drawn on placed buildings');
+  });
   test('THU HOẠCH counts ripe fresh crops, ready barracks and ready fields', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     assert.truthy(html(w).includes('THU HOẠCH 3'), html(w).match(/THU HOẠCH \d+|ĐANG SẢN XUẤT/)[0]);
@@ -133,6 +137,16 @@ suite('builder farm: the server clock is adopted', () => {
     reply = { ok: true, data: { nothingReady: true, wilted: true, layout: { cells: [], farms: [] }, coins: 9018, soldiers: 2, dayCount: 6, ctx: WILT } };
     await w.ctx.NightRaid.collectResources();
     assert.truthy(w.toasts.some(t => t.includes('héo')), 'the child is told the plants are wilted');
+  });
+  test('claiming a ready barracks confirms the soldier was received', async () => {
+    const layout = { cells: [{ type: 'training-barracks', gx: 8, gy: 8, tier: 1, uid: 'p-barrac01', lastDay: 6 }], farms: [], soldiers: 3 };
+    const w = mount({ api: p => p === 'night-raid/collect'
+      ? Promise.resolve({ ok: true, data: { layout, coins: 9000, collectedCoins: 0, collectedSoldiers: 1, soldiers: 3, dayCount: 6, ctx: FRESH } })
+      : Promise.resolve({ ok: true, data: { ok: true } }) });
+    w.ctx.NightRaid.renderBuilder();
+    await w.ctx.NightRaid.collectResources('p-barrac01');
+    assert.truthy(w.toasts.some(t => t.includes('+1 lính') && t.includes('đã thu hoạch')), 'success is visible to the child');
+    assert.equal(w.state.nightRaidLayout.soldiers, 3);
   });
 });
 
@@ -205,6 +219,7 @@ suite('builder farm: extra farm boards', () => {
     assert.truthy(out.includes('NÔNG TRẠI 1 · KÉO'), 'the farm gets a drag handle on the shared meadow');
     assert.truthy(out.includes('nr-farm-docks') && (out.match(/data-farm-dock=/g)||[]).length===8, 'eight visible-on-drag square docks surround the castle');
     assert.truthy(out.includes('nr-farm-surface') && !out.includes('farm-plot.webp'), 'the farm board is a straight CSS square, not the old isometric diamond');
+    assert.truthy(out.includes('data-furrows="3"') && out.includes('ruộng vuông 6 nhân 6 có 3 rãnh đất'), 'the 6x6 board is visibly specified as three horizontal soil beds');
     assert.truthy(/nr-free-grid size-6/.test(out), 'the new board is 6x6');
     assert.falsy(out.includes('nr-zone-chips'), 'there is no castle/farm tab switcher');
     assert.truthy(out.includes('aria-label="Phòng thủ"'), 'the unified shop keeps castle items available');

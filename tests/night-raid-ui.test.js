@@ -384,7 +384,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('white-space:nowrap;pointer-events:none;display:none}'),'badge hidden by default');
     assert.truthy(css.includes('.nr-production-badge.ready,.nr-production-badge.shown{display:block}'));
     assert.truthy(ui.includes("badge.classList.add('shown')"));
-    assert.truthy(ui.includes('return collectResources(cell.uid)'),'tapping a ready producer collects');
+    assert.truthy(ui.includes('if(cellReady(cell)&&cell.uid)return collectResources(cell.uid)'),'tapping a task-day barracks or timed producer collects');
   });
   test('moving a building requires pressing SỬA first',()=>{
     // The grid only shows in edit mode, placed items refuse to drag outside

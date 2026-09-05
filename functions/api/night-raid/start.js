@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, RAID_TTL_MS, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
+import { NR, RAID_TTL_MS, COOLDOWN_RAID_STATUS_SQL, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
 import { swordCount } from '../_daily-task.js';
 
 export async function onRequestPost({request,env}) {
@@ -39,7 +39,7 @@ export async function onRequestPost({request,env}) {
   // one. A raid the child never got to score (app closed mid-battle, /finish
   // came back past the deadline) is NOT an attempt: that row used to sit here
   // as 'active' forever and lock the door for 12 h for nothing.
-  const last=await env.DB.prepare("SELECT MAX(created_at) AS last_at FROM night_raids WHERE attacker_id=? AND defender_id=? AND status IN ('done','ruined')").bind(auth.uid,targetId).first();
+  const last=await env.DB.prepare(`SELECT MAX(created_at) AS last_at FROM night_raids WHERE attacker_id=? AND defender_id=? AND status IN ${COOLDOWN_RAID_STATUS_SQL}`).bind(auth.uid,targetId).first();
   const retryAt=retryAvailableAt(last&&last.last_at,cfg.retry_hours,now);
   if(retryAt)return err('Con vừa đánh nhà này rồi',409,{retryAt});
   // Nhà tan hoang. The house was robbed by somebody and is sealed — but the
@@ -79,5 +79,5 @@ export async function onRequestPost({request,env}) {
   if(shielded){target.shielded=true;target.defense=100000;}
   await env.DB.prepare(`INSERT INTO night_raids(id,attacker_id,defender_id,seed,rules_version,snapshot_json,status,created_date,created_at,expires_at)
     VALUES(?,?,?,?,?,?,'active',?,?,?)`).bind(raidId,auth.uid,targetId,seed,NR.RULES_VERSION,JSON.stringify(target),date,now,now+RAID_TTL_MS).run();
-  return json({raid:Object.assign({},target,{raidId,title:{vi:row.username,en:row.username}})});
+  return json({raid:Object.assign({},target,{raidId,expiresAt:now+RAID_TTL_MS,title:{vi:row.username,en:row.username}})});
 }

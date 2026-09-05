@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightDate, ticketStats, safeJson, readRaidConfig, winReward } from '../_night-raid.js';
+import { NR, nightDate, ticketStats, safeJson, readRaidConfig, winReward, randomRaidId } from '../_night-raid.js';
 
 export async function onRequestPost({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -79,37 +79,32 @@ export async function onRequestPost({request,env}) {
   // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
   // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
   // giữ bấy nhiêu, thắng hay thua cũng không mất.
-  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0};
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0,settlementId:randomRaidId()};
   // A breach seals the home for a flat seal_hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;
   result.lockedUntil=lockedUntil;
   // (Không còn trừ lính khỏi nhà của bên tấn công.)
   //
-  // CLAIM FIRST, then move the money. This UPDATE is the whole idempotency
-  // guard: exactly one caller can flip active→done, and only that caller runs
-  // the batch below. It used to sit INSIDE the batch alongside unguarded coin
-  // UPDATEs, so two overlapping /finish calls (finishOnline racing
-  // retryPendingFinish, a double tap, a retry inside D1 latency) both passed
-  // the status read at the top and both moved the money — the defender was
-  // debited twice for one raid and tickets_used jumped by 2.
-  const claim=await env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'")
-    .bind('[]',JSON.stringify(result),now,raidId).run();
-  if(!Number(claim.meta&&claim.meta.changes||0)){
-    // Somebody else scored it between our read and our write. Their result is
-    // the real one; replay it rather than paying a second time.
-    const settled=await env.DB.prepare('SELECT result_json FROM night_raids WHERE id=?').bind(raidId).first();
-    return json({ok:true,result:safeJson(settled&&settled.result_json,result)});
-  }
+  // Claim, ticket, transfer, grant and lock are ONE transaction. `resultJson`
+  // contains a request-unique settlementId; every side effect checks that the
+  // raid now contains this exact result. Thus a concurrent stale request whose
+  // claim changed zero rows also changes zero money rows inside its batch.
+  const resultJson=JSON.stringify(result);
+  const ownsSettlement=`EXISTS (SELECT 1 FROM night_raids WHERE id=? AND status='done' AND result_json=?)`;
   const statements=[
-    env.DB.prepare(`INSERT INTO night_raid_daily(user_id,raid_date,tickets_used,reward_earned) VALUES(?,?,1,?)
-      ON CONFLICT(user_id,raid_date) DO UPDATE SET tickets_used=tickets_used+1,reward_earned=MIN(?,reward_earned+excluded.reward_earned)`).bind(auth.uid,date,reward,cfg.daily_reward_cap),
+    env.DB.prepare("UPDATE night_raids SET status='done',deploy_log_json=?,result_json=?,finished_at=? WHERE id=? AND status='active'")
+      .bind('[]',resultJson,now,raidId),
+    env.DB.prepare(`INSERT INTO night_raid_daily(user_id,raid_date,tickets_used,reward_earned)
+      SELECT ?,?,1,? WHERE ${ownsSettlement}
+      ON CONFLICT(user_id,raid_date) DO UPDATE SET tickets_used=tickets_used+1,reward_earned=MIN(?,reward_earned+excluded.reward_earned)`)
+      .bind(auth.uid,date,reward,raidId,resultJson,cfg.daily_reward_cap),
   ];
   // The lock is its OWN statement. It used to ride along with the coin theft,
   // which meant a breached home with nothing worth stealing — or one raided by
   // someone already at the daily reward cap — was left wide open for the next
   // attacker, because `victimLoss > 0` was false and the whole UPDATE was skipped.
-  if(won)statements.push(env.DB.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?').bind(lockedUntil,raid.defender_id));
+  if(won)statements.push(env.DB.prepare(`UPDATE night_raid_homes SET ruined_until=? WHERE user_id=? AND ${ownsSettlement}`).bind(lockedUntil,raid.defender_id,raidId,resultJson));
   // ---- moving the money ---------------------------------------------------
   // night_raid_homes.lootable_coins is a MIRROR of the child's device wallet,
   // not the wallet itself (functions/api/coins.js): the device overwrites it
@@ -126,17 +121,22 @@ export async function onRequestPost({request,env}) {
   const grants=[];
   if(victimLoss>0)grants.push([raid.defender_id,-victimLoss,'Cướp Đêm: nhà con bị cướp']);
   if(defenderGain>0)grants.push([raid.defender_id,defenderGain,'Cướp Đêm: con giữ được nhà']);
-  if(victimLoss>0)statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(victimLoss,raid.defender_id));
+  if(victimLoss>0)statements.push(env.DB.prepare(`UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=? AND ${ownsSettlement}`).bind(victimLoss,raid.defender_id,raidId,resultJson));
   if(attackerLoss>0){
-    statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=?').bind(attackerLoss,raid.attacker_id));
+    statements.push(env.DB.prepare(`UPDATE night_raid_homes SET lootable_coins=MAX(0,lootable_coins-?) WHERE user_id=? AND ${ownsSettlement}`).bind(attackerLoss,raid.attacker_id,raidId,resultJson));
     // The other half of the transfer. MIN(100000,…) is the same wallet ceiling
     // home.js enforces on a PUT, so a defeat can never push a pile past a size
     // the rest of the app refuses to store.
-    statements.push(env.DB.prepare('UPDATE night_raid_homes SET lootable_coins=MIN(100000,MAX(0,lootable_coins)+?) WHERE user_id=?').bind(defenderGain,raid.defender_id));
+    statements.push(env.DB.prepare(`UPDATE night_raid_homes SET lootable_coins=MIN(100000,MAX(0,lootable_coins)+?) WHERE user_id=? AND ${ownsSettlement}`).bind(defenderGain,raid.defender_id,raidId,resultJson));
   }
   for(const [uid,amount,note] of grants){
-    statements.push(env.DB.prepare('INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,0)').bind(uid,amount,note));
+    statements.push(env.DB.prepare(`INSERT INTO coin_grants (user_id, amount, note, granted_by) SELECT ?,?,?,0 WHERE ${ownsSettlement}`).bind(uid,amount,note,raidId,resultJson));
   }
-    await env.DB.batch(statements);
+  const batch=await env.DB.batch(statements);
+  const claim=batch&&batch[0];
+  if(!Number(claim&&claim.meta&&claim.meta.changes||0)){
+    const settled=await env.DB.prepare('SELECT result_json FROM night_raids WHERE id=?').bind(raidId).first();
+    return json({ok:true,result:safeJson(settled&&settled.result_json,result)});
+  }
   return json({ok:true,result});
 }

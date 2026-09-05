@@ -62,8 +62,11 @@ function coinSnapshot(env, uid, body, source) {
 
 // Daily-task evaluation rides on the sync. It must never break the sync: a
 // thrown error here would make the client retry the same activities forever.
-async function dailyTaskSummary(env, uid) {
+async function dailyTaskSummary(env, uid, dates = []) {
   try {
+    const today = gmt7Date(Date.now());
+    const historical = [...new Set(dates)].filter(date => date && date !== today).sort();
+    for (const date of historical) await evaluate(env, uid, date);
     const e = await evaluate(env, uid);
     return { allDone: e.allDone, justRewarded: e.justRewarded, rewardedToday: e.rewardedToday };
   } catch (err) {
@@ -106,7 +109,8 @@ export async function onRequestPost({ request, env }) {
     await env.DB.prepare("DELETE FROM activities WHERE created_at < datetime('now','-30 days')").run();
     // A balance-only sync (items: [], nothing new landed) cannot have moved
     // task progress — skip the evaluation rather than run it for a no-op.
-    return json({ ok: true, count: rows.length, dailyTask: rows.length ? await dailyTaskSummary(env, auth.uid) : null });
+    const affectedDates = rows.map(r => gmt7Date(Number.isFinite(+r.at) ? +r.at : Date.now()));
+    return json({ ok: true, count: rows.length, dailyTask: rows.length ? await dailyTaskSummary(env, auth.uid, affectedDates) : null });
   }
 
   const r = clean(body);

@@ -65,7 +65,7 @@ export async function onRequestDelete({ request, env }) {
   if (fail) return fail;
   const raw = new URL(request.url).searchParams.get('id');
   if (!raw || !/^\d+$/.test(raw)) return err('Bad id');
-  const res = await env.DB.prepare('UPDATE daily_tasks SET active = 0 WHERE id = ? AND active = 1').bind(Number(raw)).run();
+  const res = await env.DB.prepare("UPDATE daily_tasks SET active = 0, ended_at = datetime('now') WHERE id = ? AND active = 1").bind(Number(raw)).run();
   if (!(res.meta && res.meta.changes > 0)) return err('Task not found', 404);
   return json({ ok: true, id: Number(raw) });
 }

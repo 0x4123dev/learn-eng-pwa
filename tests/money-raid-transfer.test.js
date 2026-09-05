@@ -132,6 +132,28 @@ suite('cướp đêm: the sleeping side is really settled', () => {
 });
 
 suite('cướp đêm: one raid is settled once', () => {
+  test('a failed settlement batch rolls everything back and a retry restores the whole result', async () => {
+    const world=createWorld();
+    const attacker=await world.createUser({allowBot:true}),victim=await world.createUser({allowBot:true});
+    await seedHome(world,attacker,Object.assign({coins:500},STRONG));
+    await seedHome(world,victim,Object.assign({coins:1000},WEAK));
+    const s=await start(world,attacker,victim),raidId=s.data.raid.raidId;
+    const real=world.env.DB;
+    world.env.DB={prepare:sql=>real.prepare(sql),exec:sql=>real.exec(sql),batch:stmts=>real.batch([...stmts,real.prepare('INSERT INTO missing_settlement_table(x) VALUES(1)')])};
+    let failed=false;try{await finish(world,attacker,raidId);}catch(e){failed=true;}
+    assert.truthy(failed,'the injected failure must escape the handler');
+    assert.equal(world.db.prepare('SELECT status FROM night_raids WHERE id=?').get(raidId).status,'active','claim rolled back');
+    assert.equal(ticketsUsed(world,attacker.uid),0,'ticket rolled back');
+    assert.equal(grantsFor(world,victim.uid).length,0,'grant rolled back');
+    assert.equal(world.db.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').get(victim.uid).lootable_coins,1000,'wallet mirror rolled back');
+    assert.equal(world.db.prepare('SELECT ruined_until FROM night_raid_homes WHERE user_id=?').get(victim.uid).ruined_until,null,'home lock rolled back');
+    world.env.DB=real;
+    const retried=await finish(world,attacker,raidId);
+    assert.truthy(retried.ok&&retried.data.result.won,JSON.stringify(retried.data));
+    assert.equal(ticketsUsed(world,attacker.uid),1);
+    assert.equal(grantsFor(world,victim.uid).length,1);
+    assert.truthy(world.db.prepare('SELECT ruined_until FROM night_raid_homes WHERE user_id=?').get(victim.uid).ruined_until>Date.now());
+  });
   test('two overlapping /finish calls move the money and the ticket exactly once', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
