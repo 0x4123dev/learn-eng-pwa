@@ -213,6 +213,16 @@ suite('math wars: scoring a round', () => {
         w.abandonWars();
     }
 
+    test('10/10 earns exactly 20 xu more than an ordinary full round', () => {
+        assert.equal(w.WARS_PERFECT_BONUS, 20);
+        assert.equal(w.warsCoinsEarned(10, 10), 40, '20 xu for answers + 20 xu perfect bonus');
+        assert.equal(w.warsCoinsEarned(9, 10), 18, '9/10 does not receive the perfect bonus');
+        assert.equal(w.warsCoinsEarned(10, 10, 6), 46, 'pet combo remains additive');
+        const fs2 = require('fs');
+        const src = fs2.readFileSync(path.join(root, 'js', 'mathwars.js'), 'utf8');
+        assert.truthy(src.includes('Đúng 100% · thưởng thêm +'), 'the result tells the child why the extra coins appeared');
+    });
+
     test('a finished round records what happened and pays 2 coins per correct', () => {
         reset();
         w.startWarsRound();

@@ -25,6 +25,7 @@ const WARS_MAX = 99;                 // hàng chục: trần của thang Math Wa
 // warsLevelMax(), which is still capped at 99, so wars rounds are unchanged.
 const WARS_HARD_MAX = 199;
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
+const WARS_PERFECT_BONUS = 20;       // 10/10 earns a visible accuracy bonus
 const WARS_HISTORY_CAP = 300;
 
 // ---- the hidden difficulty ladder -------------------------------------
@@ -407,8 +408,8 @@ function finishWars(timedOut) {
 
   // Coins on the same terms as the Toán 7 tab: 2 per correct answer, plus any
   // combo treats the dog promised on screen during the round.
-  const coinsEarned = correct * WARS_COINS_PER_CORRECT
-    + (typeof petComboBonus === 'function' ? petComboBonus() : 0);
+  const comboBonus = typeof petComboBonus === 'function' ? petComboBonus() : 0;
+  const coinsEarned = warsCoinsEarned(correct, st.questions.length, comboBonus);
   if (typeof appState !== 'undefined' && appState) {
     appState.coins = (appState.coins || 0) + coinsEarned;
   }
@@ -544,6 +545,7 @@ function renderWarsResult(run, coinsEarned) {
       ${typeof petRewardCardHTML === 'function'
         ? petRewardCardHTML(run.correct, run.total, coinsEarned, WARS_COINS_PER_CORRECT)
         : `<div class="grammar-result-coins">+${coinsEarned} 🪙</div>`}
+      ${run.total > 0 && run.correct === run.total ? `<div class="wars-perfect-bonus">🎯 Đúng 100% · thưởng thêm +${WARS_PERFECT_BONUS} xu</div>` : ''}
       <button class="phrases-cta" onclick="startWarsRound()">
         <span class="phrases-cta-icon">⚔️</span>
         <span class="phrases-cta-text"><strong>Đấu lại</strong><small>${WARS_QUESTIONS} câu · ${warsLengthLabel()}</small></span>
@@ -556,6 +558,12 @@ function renderWarsResult(run, coinsEarned) {
 function switchWarsView(v) {
   _warsView = (v === 'history') ? 'history' : 'practice';
   renderMathHome();
+}
+
+function warsCoinsEarned(correct,total,comboBonus=0) {
+  const right=Math.max(0,Math.trunc(+correct||0)),count=Math.max(0,Math.trunc(+total||0));
+  return right*WARS_COINS_PER_CORRECT+Math.max(0,Math.trunc(+comboBonus||0))
+    +(count>0&&right===count?WARS_PERFECT_BONUS:0);
 }
 
 function warsWhen(ts) {
@@ -634,7 +642,7 @@ function renderWarsHomeHTML() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_HARD_MAX, WARS_COINS_PER_CORRECT,
+    WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_HARD_MAX, WARS_COINS_PER_CORRECT, WARS_PERFECT_BONUS,
     WARS_LEVEL_BASE, WARS_LEVEL_STEP, WARS_LEVEL_UP_STREAK, WARS_LEVELS,
     warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
     warsBuild, warsDistractors, warsQuestion, warsQuestions, warsRoundQuestions,
@@ -643,6 +651,6 @@ if (typeof module !== 'undefined' && module.exports) {
     warsLeftMs, warsClockTick, warsClockText, warsLengthLabel,
     renderWars, renderWarsResult, warsDonutHTML,
     renderWarsHomeHTML, renderWarsPracticeHTML, renderWarsHistoryHTML,
-    switchWarsView, warsWhen,
+    switchWarsView, warsWhen, warsCoinsEarned,
   };
 }

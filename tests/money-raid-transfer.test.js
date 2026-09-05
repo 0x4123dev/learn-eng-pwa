@@ -476,12 +476,8 @@ suite('cướp đêm: a shield is a shield, whenever it went up', () => {
   });
 });
 
-suite('cướp đêm: a refusal never costs a door', () => {
-  test('a child with no home of their own is turned away without burning a cooldown', async () => {
-    // The ruins branch used to write its row BEFORE the "you have no home"
-    // check, so a child who had never opened Nhà Cướp Đêm and tapped a sealed
-    // house got a 12 h cooldown on it — and then a 409 saying they could not
-    // raid at all.
+suite('cướp đêm: legacy accounts receive a default home', () => {
+  test('a child with no stored home can raid without a setup-only refusal', async () => {
     const world = createWorld();
     const homeless = await world.createUser({ allowBot: true });
     const sealed = await world.createUser({ allowBot: true });
@@ -489,16 +485,17 @@ suite('cướp đêm: a refusal never costs a door', () => {
     world.db.prepare('UPDATE night_raid_homes SET ruined_until=? WHERE user_id=?')
       .run(Date.now() + 3600000, sealed.uid);
 
-    const r = await start(world, homeless, sealed);
-    assert.falsy(r.ok, 'a child with no home cannot raid');
-    assert.equal(r.status, 409);
-    assert.equal(raidRows(world, homeless.uid).length, 0, 'and nothing is written down against them');
+    const ruins = await start(world, homeless, sealed);
+    assert.truthy(ruins.ok && ruins.data.ruined, 'the child reaches the sealed house instead of a setup refusal');
+    assert.truthy(world.db.prepare('SELECT 1 ok FROM night_raid_homes WHERE user_id=?').get(homeless.uid),
+      'starting creates the child\'s level-1 default castle');
 
-    // Once they build a home, that door is still open to them.
-    await seedHome(world, homeless, Object.assign({ coins: 500 }, STRONG));
+    // A different open door is immediately usable; no builder visit required.
+    const open = await world.createUser({ allowBot: true });
+    await seedHome(world, open, Object.assign({ coins: 500 }, WEAK));
     world.db.prepare('UPDATE night_raid_homes SET ruined_until=0 WHERE user_id=?').run(sealed.uid);
-    const again = await start(world, homeless, sealed);
-    assert.truthy(again.ok && again.data.raid, 'the house was never spent: ' + JSON.stringify(again.data));
+    const again = await start(world, homeless, open);
+    assert.truthy(again.ok && again.data.raid, 'the default home can enter a real raid: ' + JSON.stringify(again.data));
   });
 });
 

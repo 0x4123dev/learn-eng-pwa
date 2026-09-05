@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, RAID_TTL_MS, COOLDOWN_RAID_STATUS_SQL, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt } from '../_night-raid.js';
+import { NR, RAID_TTL_MS, COOLDOWN_RAID_STATUS_SQL, nightDate, nightRaidEnabled, ticketStats, homeSnapshot, raidSnapshot, randomRaidId, raidLockUntil, readRaidConfig, retryAvailableAt, ensureNightRaidHome } from '../_night-raid.js';
 import { swordCount } from '../_daily-task.js';
 
 export async function onRequestPost({request,env}) {
@@ -25,6 +25,12 @@ export async function onRequestPost({request,env}) {
   const inFlight=Math.max(0,Number(live&&live.n||0));
   if(inFlight>0)return err('Con đang có một trận Cướp Đêm dở dang — vào lại trận đó trước đã',409,{inFlight:true});
   if(stats.used+inFlight>=stats.allowance)return err('Hết lượt Cướp Đêm hôm nay',429);
+  // Accounts created before Night Raid do not have a home row until they open
+  // the builder. Materialise both harmless defaults here so an accepted friend
+  // can always be attacked and the attacker is never refused for that legacy
+  // storage detail.
+  await ensureNightRaidHome(env,targetId,now0);
+  await ensureNightRaidHome(env,auth.uid,now0);
   const row=await env.DB.prepare('SELECT h.*,u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=? AND u.disabled=0').bind(targetId).first();if(!row)return err('Nhà này không còn khả dụng',404);
   // A shielded castle is still raided — and lost. The snapshot pins DEF to the
   // rules' ceiling; finish.js also forces the loss outright, so the shield

@@ -1,7 +1,8 @@
 // "Bạn bè · nhà nào đánh được" — the server side, EXECUTED against a real
 // SQLite DB through tests/pages-harness.js (never substring-checked):
 //   - a WON raid seals the defender for exactly 24 h, a LOST one seals nothing;
-//   - GET /api/night-raid/friends lists only accepted friends WITH a home and
+//   - GET /api/night-raid/friends lists every accepted enabled friend, creating
+//     a harmless default home on first attack for older accounts;
 //     tells the child ONE thing about each: my own retry clock (`retryAt`);
 //   - it leaks nothing about the state of that house — not the seal, not a
 //     shield, not the layout or DEF. Those are what the child gambles on.
@@ -122,7 +123,7 @@ suite('GET /api/night-raid/friends', () => {
     assert.truthy(again.ok&&again.data.raid,'/start agrees and opens the house again: '+JSON.stringify(again.data));
   });
 
-  test('lists only ACCEPTED friends who have a home, whichever way the friendship points', async () => {
+  test('lists every ACCEPTED enabled friend, even before they open their home', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true, username: 'me' });
     await seedHome(world, me, WEAK);
@@ -144,13 +145,18 @@ suite('GET /api/night-raid/friends', () => {
 
     const list = await friendsOf(world, me);
     const ids = list.friends.map(f => f.targetId).sort();
-    assert.deepEqual(ids, [iAsked.uid, theyAsked.uid].sort(), 'exactly the two accepted friends with homes');
+    assert.deepEqual(ids, [iAsked.uid, theyAsked.uid, noHome.uid].sort(),
+      'accepted legacy friends do not disappear merely because they never opened Night Raid');
     for (const f of list.friends) {
       assert.equal(f.retryAt, 0, 'nobody has been attacked yet, so everyone is open');
       assert.equal(f.difficulty, 'Cân bằng');
       assert.equal(f.homeLevel, 1);
     }
     assert.equal(typeof list.ticketsLeft, 'number');
+    const opened = await world.call(startHandler().onRequestPost,
+      { token: me.token, body: { targetId: noHome.uid } });
+    assert.truthy(opened.ok && opened.data.raid, 'the default castle is materialised when attacked: ' + JSON.stringify(opened.data));
+    assert.truthy(homeRow(world, noHome.uid), 'the legacy friend now owns a persistent default home');
   });
 
   test('a row is name + level + MY clock, and nothing about the house', async () => {

@@ -40,20 +40,20 @@ export async function onRequestGet({ request, env }) {
     .bind(auth.uid).first();
   const myLevel = Math.max(1, +(mine && mine.home_level) || 1);
 
-  // One row per accepted friend WITH a home. The friendship may point either
+  // One row per accepted friend. The friendship may point either
   // way, so the "other" side is picked per row; disabled accounts vanish the
   // same way they do from GET /api/friends. `last_attack` is MY most recent
   // attempt on that house of ANY kind — win, loss or ruins — the one number
   // start.js gates the retry on (idx_night_raids_pair_recent, db/021).
   const rows = await env.DB.prepare(
-    `SELECT h.user_id, h.home_level, h.layout_json, h.dog_level, h.castle_skin,
+    `SELECT u.id AS user_id, h.home_level, h.layout_json, h.dog_level, h.castle_skin,
             u.username,
             (SELECT MAX(r.created_at) FROM night_raids r
               WHERE r.attacker_id = ? AND r.defender_id = h.user_id
                 AND r.status IN ${COOLDOWN_RAID_STATUS_SQL}) AS last_attack
        FROM friendships f
        JOIN users u ON u.id = CASE WHEN f.requester_id = ? THEN f.addressee_id ELSE f.requester_id END
-       JOIN night_raid_homes h ON h.user_id = u.id
+       LEFT JOIN night_raid_homes h ON h.user_id = u.id
       WHERE f.status = 'accepted'
         AND (f.requester_id = ? OR f.addressee_id = ?)
         AND u.disabled = 0`

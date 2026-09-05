@@ -328,6 +328,14 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('nrReplayReport('));
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
   });
+  test('replay keeps transparent canvas edges over the same green meadow',()=>{
+    const ui=read('js/night-raid.js'),css=read('css/styles.css');
+    assert.truthy(ui.includes("nr-auto-replay"),'modern square replay receives its own aspect class');
+    assert.truthy(css.includes(".nr-replay-stage.nr-auto-replay canvas{aspect-ratio:1/1}"));
+    assert.truthy(css.includes("url('../img/night-raid/endless-meadow-tile-v2.jpg')"));
+    assert.falsy(css.includes('.nr-replay-stage canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;background:#071326}'),
+      'the old black replay canvas must not return');
+  });
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
     for(const token of ['isometric-home-board-frame-v4.png','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);

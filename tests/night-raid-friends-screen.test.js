@@ -289,7 +289,7 @@ suite('CƯỚP ĐÊM: the list of houses tells the child nothing about them', ()
   test('no friends yet: a friendly empty state points at 👥 Bạn bè with no random-house block', async () => {
     const w = await openLive({ friends: friendsReply([]), targets: targetsReply });
     const html = w.screen().innerHTML;
-    assert.truthy(html.includes('Chưa có bạn nào có lâu đài'));
+    assert.truthy(html.includes('Con chưa có bạn để đi cướp'));
     assert.truthy(html.includes('Bạn bè'), 'it names the Friends tab');
     assert.truthy(html.includes('profileScreen'), 'and offers to take the child there');
     assert.falsy(html.includes('nrScoutBot()'), 'a friendless child is not handed a bot instead');

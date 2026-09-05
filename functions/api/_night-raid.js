@@ -145,6 +145,15 @@ export async function nightRaidEnabled(env,userId) {
   void env; void userId;
   return true;
 }
+// Every enabled child owns at least a level-1 castle. Older accounts predate
+// Night Raid and may never have opened its builder, so requiring a pre-existing
+// row made accepted friends silently disappear and impossible to attack.
+export async function ensureNightRaidHome(env,userId,now=Date.now()) {
+  await env.DB.prepare(`INSERT OR IGNORE INTO night_raid_homes
+    (user_id,layout_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
+    SELECT id,'{"cells":[],"dogLane":2}',1,'stone-keep',1,0,0,?
+      FROM users WHERE id=? AND disabled=0`).bind(now,userId).run();
+}
 // A raid already in flight is a ticket off the shelf. start.js counts it
 // against the allowance, so the two LISTS have to count it the same way or
 // they advertise an attack the server is about to refuse — the same dishonesty
