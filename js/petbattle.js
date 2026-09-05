@@ -49,6 +49,7 @@ const PB_STR = {
     powBeyond: 'Past the level {n} mark 🎉 · ',
     powFoot: 'Maxes out at level {n} · level up by studying 📚',
     powInfo: 'Dog battle power', powInfoOpen: 'Open dog battle information', powInfoClose: 'Close dog information',
+    powHomeCta: 'ENTER HOME', powHomeOpen: 'Enter the Night Raid home',
     powYardAria: '{name} patrols the castle garden',
 
     hireTitle: '⚔️ Hire teammates',
@@ -198,6 +199,7 @@ const PB_STR = {
     powBeyond: 'Vượt mốc cấp {n} 🎉 · ',
     powFoot: 'Tối đa ở cấp {n} · lên cấp bằng cách học bài 📚',
     powInfo: 'Sức mạnh chiến đấu của chó', powInfoOpen: 'Mở thông tin chiến đấu của chó', powInfoClose: 'Đóng thông tin chó',
+    powHomeCta: 'VÀO NHÀ', powHomeOpen: 'Vào nhà Cướp Đêm',
     powYardAria: '{name} đang tuần tra khu vườn lâu đài',
 
     hireTitle: '⚔️ Thuê đồng đội',
@@ -472,8 +474,8 @@ function _pbArenaPetHeader(allowNightRaid) {
   try { breed = getDogStage(pet.level).name; } catch (e) {}
   return `<section class="pb-arena-pet-hero" aria-label="${pbEsc(pet.petName)}, ${pbEsc(breed)}, ${pbT('powLevel')} ${pet.level}">
     <div class="pb-arena-yard" id="pbArenaYard" role="img" aria-label="${pbT('powYardAria', { name: pbEsc(pet.petName) })}"></div>
-    ${allowNightRaid ? `<button type="button" class="pb-arena-home" onclick="openNightRaid()" aria-label="Vào nhà Cướp Đêm">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4H14.8v-5.8H9.2v5.8H3.5z"/></svg><span>VÀO NHÀ</span>
+    ${allowNightRaid ? `<button type="button" class="pb-arena-home" onclick="openNightRaid()" aria-label="${pbT('powHomeOpen')}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v9.4H14.8v-5.8H9.2v5.8H3.5z"/></svg><span>${pbT('powHomeCta')}</span>
     </button>` : ''}
     <button type="button" class="pb-arena-info" onclick="pbShowDogInfo()" aria-label="${pbT('powInfoOpen')}">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 10.7v6M12 7.2h.01"/></svg>
