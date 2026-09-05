@@ -51,6 +51,12 @@ suite('layout: extra farm plots', () => {
     assert.truthy(f0.some(c => c.type === 'pumpkin'));
     const barn = f0.find(c => c.type === 'barn');
     assert.truthy(barn && barn.gx <= 4 && barn.gy <= 4, 'a 2x2 barn is pulled inside the 6x6 board');
+    assert.deepEqual({ x:layout.farms[0].x, y:layout.farms[0].y }, R.FARM_PLOT_POSITIONS[0], 'legacy farms get a stable meadow position');
+  });
+  test('farm meadow positions persist and hostile coordinates are bounded', () => {
+    const layout=R.normalizeLayout({cells:[],farms:[{cells:[],x:17,y:-999},{cells:[],x:999,y:44}]});
+    assert.deepEqual({x:layout.farms[0].x,y:layout.farms[0].y},{x:17,y:R.FARM_PLOT_BOUNDS.minY});
+    assert.deepEqual({x:layout.farms[1].x,y:layout.farms[1].y},{x:R.FARM_PLOT_BOUNDS.maxX,y:44});
   });
   test('a layout without farms normalizes to farms: []', () => {
     assert.deepEqual(R.normalizeLayout({ cells: [] }).farms, []);

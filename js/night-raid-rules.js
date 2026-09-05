@@ -18,6 +18,16 @@ var NightRaidRules = (() => {
   const LANES = 5;
   const COLS = 8;
   const BUILD_GRID = 12;
+  // Extra farms live on the same meadow as the castle. Coordinates are the
+  // plot's top-left corner in percentages of the castle board. Negative and
+  // >100 values deliberately put land just outside the fence while keeping it
+  // inside the shared pannable world.
+  const FARM_PLOT_POSITIONS = Object.freeze([
+    Object.freeze({ x:-42, y:-55 }),
+    Object.freeze({ x:104, y:-55 }),
+    Object.freeze({ x:104, y:66 }),
+  ]);
+  const FARM_PLOT_BOUNDS = Object.freeze({ minX:-48, maxX:110, minY:-60, maxY:106 });
   // The castle is the one building every other thing is arranged around, so it
   // is the biggest thing on the board: three cells square against the two of a
   // barracks and the one of a trap. Every place that reserves, draws or drags
@@ -247,7 +257,14 @@ var NightRaidRules = (() => {
     const clean = normalizeCells(cells, BUILD_GRID, occupied, true, dayCount, today, seenUids, now);
     const plot = Farm ? Farm.FARM_PLOT : null;
     const rawFarms = plot && Array.isArray(value && value.farms) ? value.farms.slice(0, plot.max) : [];
-    const farms = rawFarms.map(f => ({ cells: normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids, now) }));
+    const farms = rawFarms.map((f,index) => {
+      const fallback=FARM_PLOT_POSITIONS[index]||FARM_PLOT_POSITIONS[0];
+      return {
+        cells:normalizeCells(Array.isArray(f && f.cells) ? f.cells : [], plot.size, { stand: [], floor: [] }, false, dayCount, today, seenUids, now),
+        x:Number.isFinite(Number(f&&f.x))?int(f.x,FARM_PLOT_BOUNDS.minX,FARM_PLOT_BOUNDS.maxX):fallback.x,
+        y:Number.isFinite(Number(f&&f.y))?int(f.y,FARM_PLOT_BOUNDS.minY,FARM_PLOT_BOUNDS.maxY):fallback.y,
+      };
+    });
     return { cells:clean, dogLane:int(value && value.dogLane, 0, LANES - 1), soldiers:int(value&&value.soldiers,0,SOLDIER_SANITY_CAP), gridVersion:3, castleCell, farms };
   }
 
@@ -529,6 +546,7 @@ var NightRaidRules = (() => {
     RULES_VERSION,TICK_MS,RAID_MS,LANES,COLS,BUILD_GRID,CASTLE_SIZE,START_BUDGET,MAX_COMMANDS,PRODUCTION_MS,ARMY_DISPLAY_CAP,SOLDIER_SANITY_CAP,ARMY_SPRITE_W,ARMY_SPRITE_H,ARMY_GAP,ARMY_ROW_STEP,armySlots,SWORD_DAMAGE,SWORD_SANITY_CAP,SWORD_METER_PIPS,SCENES,
     RAIDERS,DEFENSES,raiderById:id => byId(RAIDERS,id),defenseById:id => byId(DEFENSES,id),itemById,farmRules:Farm,footprintFor,rectsOverlap,
     makeRng,normalizeLayout,homeLevel,tierMultiplier,petPower,swordBonus,combatPower,trainingTarget,resolveAutoBattle,createState,deploy,tick,
+    FARM_PLOT_POSITIONS,FARM_PLOT_BOUNDS,
     normalizeCommands,simulate,trainingStars,
   });
 })();

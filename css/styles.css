@@ -13869,3 +13869,17 @@
 .nr-seed-count{display:inline-flex;margin-top:7px;padding:5px 8px;border-radius:999px;background:#dff3bd;color:#426426;font-size:11px;font-weight:1000}.nr-seed-item.owned-max .nr-seed-count{background:#eceee5;color:#7d8577}
 .nr-purchase-price.seed{background:#e8f7cc;color:#3f6429}.nr-purchase-price.seed strong{font-size:18px}
 @media(max-width:520px){.dt-seed-reward{grid-template-columns:54px minmax(0,1fr);padding:10px}.dt-seed-reward>img,.dt-seed-placeholder{width:54px;height:54px}.dt-seed-reward>button{grid-column:1/-1;width:100%}}
+
+/* Castle and purchased farms share one continuous meadow. Farm positions are
+   saved as percentages of the castle board and may sit outside its fence; the
+   world plane already supplies pannable grass there. */
+.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;filter:drop-shadow(0 14px 12px rgba(48,66,27,.3));touch-action:none}
+.nr-farm-plot>img{position:absolute;z-index:0;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.nr-farm-plot>.nr-free-grid{z-index:2;left:12%;top:24%;width:76%;height:62%;overflow:visible;transform:none}
+.nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:2%;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
+.nr-builder.editing .nr-farm-plot-handle{opacity:1;pointer-events:auto}.nr-farm-plot.dragging{z-index:18;filter:drop-shadow(0 20px 16px rgba(48,66,27,.42)) brightness(1.08)}.nr-farm-plot.dragging .nr-farm-plot-handle{cursor:grabbing}.nr-farm-plot.invalid{filter:drop-shadow(0 0 14px #ff4e42) saturate(.55)}
+.nr-farm-plot.invalid::after{content:"CHỌN VÙNG CỎ TRỐNG";position:absolute;z-index:9;left:50%;top:48%;transform:translate(-50%,-50%);padding:7px 10px;border:3px solid #fff;border-radius:999px;background:#d93d35;color:#fff;font-size:10px;font-weight:1000;white-space:nowrap}
+.nr-builder.wilted .nr-farm-plot{filter:saturate(.72) sepia(.18) drop-shadow(0 14px 12px rgba(48,66,27,.3))}
+.nr-builder.editing .nr-farm-plot>.nr-free-grid{outline:3px dashed rgba(255,231,111,.9);outline-offset:4px;border-radius:12%}
+@media(max-width:700px){.nr-farm-plot-handle span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}}
+@media(prefers-reduced-motion:reduce){.nr-farm-plot-handle{transition:none}}

@@ -186,12 +186,13 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, YESTERDAY);
-    await putHome(world, kid, { cells: [], farms: [{ cells: [] }, { cells: [] }, { cells: [] }, { cells: [] }] });
+    await putHome(world, kid, { cells: [], farms: [{ cells: [], x:-41, y:22 }, { cells: [] }, { cells: [] }, { cells: [] }] });
     await plant(world, kid, 'rose', 0, 0, 1);
     const s = stored(world, kid.uid);
     assert.equal(s.farms.length, 3);
     assert.equal(s.farms[0].cells[0].day, 1);
     assert.equal(s.farms[0].cells[0].at, TODAY);
+    assert.deepEqual({x:s.farms[0].x,y:s.farms[0].y},{x:-41,y:22}, 'the server persists the farm position on the shared meadow');
   });
 });
 

@@ -367,7 +367,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(ui.includes('function settleBuilderPlacement()'));
     assert.truthy(ui.includes('builderEditing=false;builderShopOpen=false'));
     assert.truthy(ui.includes("classList.remove('editing','dragging','shop-open')"));
-    assert.truthy(ui.includes('target=>{buildCell(+target.dataset.gx,+target.dataset.gy);settleBuilderPlacement();}'));
+    assert.truthy(ui.includes('target=>{buildCell(+target.dataset.gx,+target.dataset.gy,false,+target.dataset.zone||0);settleBuilderPlacement();}'));
   });
   test('iOS image callouts are blocked and drag work is frame-coalesced',()=>{
     for(const token of ['oncontextmenu="return false"','-webkit-touch-callout:none','setPointerCapture','requestAnimationFrame(paint)','translate3d(','dropTarget?.classList.remove'])assert.truthy(ui.includes(token)||css.includes(token),token);
@@ -392,7 +392,7 @@ suite('night raid: app integration',()=>{
     // finger on them pans the island instead of grabbing anything.
     assert.truthy(ui.includes('nr-builder-edit'));
     assert.truthy(ui.includes('nrToggleBuilderGrid()'),'the SỬA fab flips edit mode');
-    assert.truthy(ui.includes('function beginPlacedDrag(event,gx,gy,layer){if(!builderEditing)return;'));
+    assert.truthy(ui.includes('function beginPlacedDrag(event,gx,gy,layer,zone){if(!builderEditing)return;'));
     assert.truthy(css.includes('.nr-builder:not(.editing):not(.nr-home-stage) .nr-build-grid-cell'));
     assert.truthy(css.includes('.nr-builder.editing .nr-build-grid-cell>i'),'grid markers show only while editing');
   });
