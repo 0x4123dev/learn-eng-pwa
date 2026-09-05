@@ -64,10 +64,11 @@ suite('daily task farm ui: the hero and the strip', () => {
     assert.falsy(plain.html.dailyTaskScreen.includes('cây'), 'no farm copy without the flag');
     assert.truthy(plain.html.dailyTaskScreen.includes('+200 xu và 1 món quà'), 'the old hero copy stays');
   });
-  test('Xem vườn opens Cướp Đêm and its builder', () => {
+  test('Xem vườn opens the clean Cướp Đêm main screen without forcing edit mode', () => {
     const { DailyTask, calls } = load({ appState: stateWith() });
     DailyTask.viewFarm();
-    assert.truthy(calls.some(c => c[0] === 'openNightRaid') && calls.some(c => c[0] === 'renderBuilder'));
+    assert.equal(calls.filter(c => c[0] === 'openNightRaid').length, 1);
+    assert.falsy(calls.some(c => c[0] === 'renderBuilder'), 'openNightRaid owns the clean main render');
   });
 });
 

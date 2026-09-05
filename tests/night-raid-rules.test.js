@@ -14,6 +14,13 @@ suite('night raid: one deterministic combat mode', () => {
       assert.truthy(defense.attack > 0 || defense.defense > 0 || defense.producer);
     }
   });
+  test('castle defense prices rise above the 2000-xu Pebble Pup in requested 1000-xu steps', () => {
+    assert.equal(R.itemById('pebble-pup').price, 2000);
+    assert.equal(R.itemById('wood-fence').price, 3000);
+    assert.equal(R.itemById('stone-wall').price, 5000);
+    assert.equal(R.itemById('spike-trap').price, 3000);
+    assert.equal(R.itemById('water-cannon').price, 5000);
+  });
 
   test('barracks and rice use the approved daily economy limits',()=>{
     const barracks=R.defenseById('training-barracks'),rice=R.defenseById('rice-field');

@@ -98,7 +98,7 @@ var NightRaidRules = (() => {
   // Cỡ giá trị, để biết một thanh kiếm đáng bao nhiêu:
   //   - tài khoản mới (chó cấp 1, chưa có lính, chưa xây gì) có 42 DAM;
   //     chó cấp 7 với 2 lính là 139; chó cấp 20 với 6 lính và 2 pháo là 345.
-  //   - một lính +20 DAM, pháo nước 2000 xu +50, cún sỏi +22.
+  //   - một lính +20 DAM, pháo nước 5000 xu +50, cún sỏi 2000 xu +22.
   //   - finish.js cho 2 sao khi margin >= 25 và 3 sao khi margin >= 60.
   // 10 DAM một thanh: hai thanh bằng một lính, nên con số trên HUD nhúc nhích
   // thấy được và một trận thua sát nút có thể lật lại.
@@ -117,10 +117,10 @@ var NightRaidRules = (() => {
 
   const DEFENSES = Object.freeze([
     Object.freeze({ id:'pebble-pup', name:{en:'Pebble Pup',vi:'Cún Bắn Đá'}, price:2000, stat:'damage', attack:22, defense:8, hp:42, damage:8, cooldown:1500, ranged:true, color:'#f5b85c' }),
-    Object.freeze({ id:'wood-fence', name:{en:'Wooden Fence',vi:'Hàng Rào Gỗ'}, price:2000, stat:'defense', attack:0, defense:45, hp:120, blocker:true, material:'wood', color:'#a76d3e' }),
-    Object.freeze({ id:'stone-wall', name:{en:'Stone Wall',vi:'Tường Đá'}, price:2000, stat:'defense', attack:0, defense:80, hp:300, blocker:true, material:'stone', color:'#91a0b2' }),
-    Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:2000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
-    Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:2000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
+    Object.freeze({ id:'wood-fence', name:{en:'Wooden Fence',vi:'Hàng Rào Gỗ'}, price:3000, stat:'defense', attack:0, defense:45, hp:120, blocker:true, material:'wood', color:'#a76d3e' }),
+    Object.freeze({ id:'stone-wall', name:{en:'Stone Wall',vi:'Tường Đá'}, price:5000, stat:'defense', attack:0, defense:80, hp:300, blocker:true, material:'stone', color:'#91a0b2' }),
+    Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:3000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
+    Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:5000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
     Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:8000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, perTaskDay:true, maxOwned:10, color:'#d8783d' }),
     Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#e5b93d' }),
     Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#ef5544' }),

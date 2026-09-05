@@ -121,7 +121,7 @@ var NightRaid = (() => {
   // adopts coins the server credited while the child was offline, and
   // retryPendingFinish ends in claimVerified() -> syncHome(), a PUT that would
   // otherwise push the stale wallet straight over them.
-  function open(){ensure();cleanup();view='builder';if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderBuilder();refreshHome().catch(()=>{}).then(()=>retryPendingFinish()).catch(()=>{});}
+  function open(){ensure();cleanup();view='builder';builderEditing=false;builderShopOpen=false;if(typeof switchScreen==='function')switchScreen('nightRaidScreen');renderBuilder();refreshHome().catch(()=>{}).then(()=>retryPendingFinish()).catch(()=>{});}
   function close(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof switchScreen==='function')switchScreen('petBattleScreen');if(typeof renderPetBattle==='function')renderPetBattle();}
   // Compatibility entry point for older callers. Xây Nhà is now the only
   // Night Raid home, so the overlapping read-only stage can never reopen.

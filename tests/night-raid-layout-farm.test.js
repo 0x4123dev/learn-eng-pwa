@@ -8,7 +8,7 @@ const wall = (gx, gy) => ({ type: 'stone-wall', gx, gy, tier: 1 });
 
 suite('layout: farm items live beside defenses', () => {
   test('itemById answers both catalogs', () => {
-    assert.equal(R.itemById('stone-wall').price, 2000);
+    assert.equal(R.itemById('stone-wall').price, 5000);
     assert.equal(R.itemById('tomato').days, 2);
     assert.equal(R.itemById('barn').footprint, 2);
     assert.equal(R.itemById('nope'), null);

@@ -205,6 +205,17 @@ suite('night raid screens: every sub-menu opens and its primary action is armed'
     assert.truthy(html.includes('chụm hai ngón'), 'pinch zoom remains available without a permanent +/- rail');
   });
 
+  test('opening from another screen clears edit mode and hides the placement grid', () => {
+    const { ctx, doc } = mount();
+    ctx.NightRaid.open();
+    ctx.NightRaid.toggleBuilderGrid();
+    assert.truthy(doc.getElementById('nightRaidScreen').innerHTML.includes('nr-builder editing'));
+    ctx.NightRaid.open();
+    const html = doc.getElementById('nightRaidScreen').innerHTML;
+    assert.falsy(html.includes('nr-builder editing'), 'normal entry must not carry the edit grid');
+    assert.falsy(html.includes('nr-builder shop-open'), 'normal entry must not carry the shop');
+  });
+
   test('a building can be bought in the builder and the coins are spent once', () => {
     const { ctx, state } = mount();
     ctx.NightRaid.open();

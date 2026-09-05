@@ -24,7 +24,7 @@ var NightRaidChoreo = (() => {
   });
   const SPEED = Object.freeze({ pebble:340, water:520 });   // projectile px/s on the 800px board
   const APEX = Object.freeze({ pebble:.24, water:.07 });    // arc height per px of range
-  // Same numbers as NightRaidRules.DEFENSES (pebble-pup 1500, water-cannon 2000).
+  // Combat tuning mirrors NightRaidRules.DEFENSES; shop prices do not affect battle damage.
   const TOWER_COOLDOWN = Object.freeze({ pebble:1500, water:2000 });
   const MAX_BUILDINGS = 12;                                 // towers, farms AND traps the crews visit
 

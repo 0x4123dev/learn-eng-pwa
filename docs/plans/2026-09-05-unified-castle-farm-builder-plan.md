@@ -1,5 +1,7 @@
 # Unified castle and farm builder implementation plan
 
+- Ensure every normal entry into Night Raid resets edit/shop state so Daily Task “Xem vườn” displays the clean main map.
+
 1. Extend layout normalization with bounded, deterministic farm plot positions and tests for legacy saves.
 2. Replace the active-zone-only builder markup with a castle grid plus all farm grids in one estate map; remove zone tabs.
 3. Route cell actions and shop drops using explicit zone ids.

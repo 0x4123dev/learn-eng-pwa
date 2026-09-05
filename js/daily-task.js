@@ -343,7 +343,6 @@ var DailyTask = (function () {
   }
   function viewFarm() {
     if (typeof openNightRaid === 'function') openNightRaid();
-    if (typeof NightRaid !== 'undefined' && NightRaid && typeof NightRaid.renderBuilder === 'function') NightRaid.renderBuilder();
   }
   function viewSeeds() {
     if (typeof openNightRaid === 'function') openNightRaid();
