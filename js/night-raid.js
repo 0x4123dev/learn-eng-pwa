@@ -150,7 +150,7 @@ var NightRaid = (() => {
   // with the square 800-board and let one-finger panning reveal the remainder;
   // fitting the whole square to a portrait phone created the tiny box the
   // child saw in the middle of the screen.
-  function scoutFitZoom(base){const w=typeof innerWidth!=='undefined'&&innerWidth>0?innerWidth:390,h=typeof innerHeight!=='undefined'&&innerHeight>0?innerHeight:w*2;return Math.max(ESTATE_MIN_ZOOM,Math.min(ESTATE_MAX_ZOOM,Math.max(w,h)*1.02/Math.max(1,base)));}
+  function scoutFitZoom(base){const w=typeof innerWidth!=='undefined'&&innerWidth>0?innerWidth:390,h=typeof innerHeight!=='undefined'&&innerHeight>0?innerHeight:w*2;const fit=Math.min(w*.92,h*.82);return Math.max(ESTATE_MIN_ZOOM,Math.min(ESTATE_MAX_ZOOM,fit/Math.max(1,base)));}
   // TIẾN QUÂN restores the immersive framing even if the child pinched around
   // while scouting.
   function frameBattleWorld(){const map=document.querySelector('#nrBuilderWorld .nr-scout-map');if(!map)return;builderScroll=null;builderZoom=scoutFitZoom(+map.dataset.baseSize||1180);setBuilderZoom(builderZoom);centerBuilderWorld();}

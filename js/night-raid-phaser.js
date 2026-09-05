@@ -74,13 +74,12 @@ var NightRaidPhaser = (() => {
   // authored against: atlas a, stone keep, intact. Every other frame is
   // shifted so its base centre and ground line land where this one's do.
   const CASTLE_REF=Object.freeze([.5073,.9951]),CASTLE_W=430,CASTLE_H=258,CASTLE_XFADE_MS=250;
-  const FRAME_ZOOM_MIN=1.2,FRAME_ZOOM_MAX=1.75,BREACH_ZOOM=1.9,CAMERA_TAU_MS=380;
+  const FRAME_ZOOM_MIN=.9,FRAME_ZOOM_MAX=1.08,BREACH_ZOOM=1.18,CAMERA_TAU_MS=380;
 
   // What the camera should be looking at, as a pure function of battle time:
-  // the castle face and doorway PLUS every standing unit, framed between
-  // 1.2x and 1.75x, with a push-in on the door as it gives. Both armies were
-  // measured off-screen on a 390px phone before this existed — the breach
-  // happened at screen x = -55 while the status pill announced it.
+  // the castle face and doorway PLUS every standing unit. Keep nearly the
+  // whole 800px estate visible (0.9x–1.08x), with only a restrained push-in
+  // as the door gives, so a child can understand the whole attack at once.
   function cameraFrame(ch,T){
     const C=NightRaidChoreo,G=C.GATE||{x:C.CASTLE.x+58,y:C.CASTLE.y+6};
     let minX=G.x-80,maxX=G.x+50,minY=G.y-150,maxY=G.y+40;

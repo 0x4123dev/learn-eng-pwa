@@ -620,12 +620,12 @@ suite('night raid: only one combat loop, and only against real houses',()=>{
 
 suite('night raid: the fight fills the viewport, the board keeps its shape, the feet do not slide',()=>{
   const phaserSrc=read('js/night-raid-phaser.js'),choreo=read('js/night-raid-choreo.js');
-  test('TIẾN QUÂN covers the screen and the Phaser camera frames the fight inside it',()=>{
-    // Scout opens as an immersive cover stage; the child pans the off-screen
-    // portion instead of watching a small fitted square in the middle.
+  test('the direct attack fits the whole estate and the Phaser camera frames the fight inside it',()=>{
+    // The board opens as a fitted overview; pinch remains available for a
+    // closer look, but a phone must not begin with half the estate off-screen.
     assert.truthy(ui.includes('function scoutFitZoom(base)'));
-    assert.truthy(ui.includes('Math.max(w,h)*1.02/Math.max(1,base)'),'the square board covers portrait and landscape viewports');
-    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'scout opens at the immersive zoom');
+    assert.truthy(ui.includes('Math.min(w*.92,h*.82)'),'the square board fits inside portrait and landscape viewports');
+    assert.truthy(ui.includes('builderZoom=scoutFitZoom(mapBase)'),'attack opens at the overview zoom');
     assert.truthy(ui.includes('function frameBattleWorld()'));
     const raidBlock=ui.slice(ui.indexOf('async function startRaid'),ui.indexOf('function updateHud'));
     assert.truthy(raidBlock.includes('frameBattleWorld();'),'the tap re-frames the board before Phaser loads');
@@ -636,6 +636,10 @@ suite('night raid: the fight fills the viewport, the board keeps its shape, the 
     assert.truthy(phaserSrc.includes('scene.cameras.main.setBounds(0,0,SIZE,SIZE)'),'the view never leaves the board');
     assert.truthy(phaserSrc.includes('1-Math.exp(-dtMs/CAMERA_TAU_MS)'),'frame-rate independent smoothing');
     assert.falsy(phaserSrc.includes('zoomTo(1.065'),'the token zoom nudge is gone; the camera does the push-in');
+    const cameraZoom=phaserSrc.match(/FRAME_ZOOM_MIN=([.\d]+),FRAME_ZOOM_MAX=([.\d]+),BREACH_ZOOM=([.\d]+)/);
+    assert.truthy(cameraZoom,'camera zoom bounds must stay explicit');
+    assert.truthy(+cameraZoom[2]<=1.1,'normal combat must preserve a near-full-field overview');
+    assert.truthy(+cameraZoom[3]<=1.2,'the breach push-in must stay restrained');
   });
   test('the scout/battle board stays square across the tap, and the raid keeps its own zoom bucket',()=>{
     assert.truthy(ui.includes("aspect=map.classList.contains('nr-scout-map')?1:.75"),'setBuilderZoom must not force the 4:3 estate height on the 800x800 board');
