@@ -6,7 +6,8 @@
 // thuộc học kì nào và không cần cờ riêng.
 //
 // Câu hỏi:
-//   { id, ch, topic, q, options[4], correct, answer, explanation, fig? }
+//   trắc nghiệm: { id, ch, topic, q, options[4], correct, answer, explanation, fig? }
+//   tự nhập số: { id, ch, topic, q, type:'calc', keys:[], answer, explanation, fig? }
 //   explanation: '🔑 quy tắc + kết quả<br>✗ vì sao A sai<br>✗ B<br>✗ C'
 //   fig: đặc tả hình SVG do js/math-figures.js vẽ — KHÔNG dùng ảnh chụp.
 //
@@ -524,6 +525,23 @@ const MATH_QUESTIONS_HK2 = [
   {"id":"m10-100","ch":10,"topic":"Hình lăng trụ đứng tam giác và hình lăng trụ đứng tứ giác","q":"Cho hình lăng trụ đứng tam giác ABC.A'B'C' có đáy là tam giác vuông tại B với các kích thước ghi trên hình vẽ. Tính diện tích toàn phần của hình lăng trụ.","options":["468 cm²","360 cm²","414 cm²","468 cm³"],"correct":0,"answer":"468 cm²","explanation":"🔑 <b>Lý thuyết:</b> Hình lăng trụ đứng tam giác có 5 mặt: ba mặt bên là hình chữ nhật và hai mặt đáy là tam giác (SGK tr. 95). Diện tích xung quanh là Sxq = C · h, với C là chu vi một đáy và h là chiều cao lăng trụ (SGK tr. 96); diện tích toàn phần bằng diện tích xung quanh cộng diện tích hai đáy: Stp = Sxq + 2 · Sđáy (SGK tr. 100).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chu vi đáy.</b> Tam giác vuông tại B có ba cạnh 9 cm, 12 cm, 15 cm nên C = 9 + 12 + 15 = 36 (cm).<br><b>Bước 2 — Diện tích xung quanh.</b> Sxq = 36 · 10 = 360 (cm²).<br><b>Bước 3 — Diện tích một mặt đáy.</b> Hai cạnh góc vuông là 9 cm và 12 cm nên Sđáy = ½ · 9 · 12 = 54 (cm²).<br><b>Bước 4 — Diện tích toàn phần.</b> Stp = 360 + 2 · 54 = 360 + 108 = <b>468 cm²</b>.<br>✗ 360 cm²: em mới dừng ở Bước 2: 36 · 10 = 360 là diện tích xung quanh, còn thiếu hai mặt đáy 2 · 54 = 108 cm².<br>✗ 414 cm²: em chỉ cộng thêm MỘT mặt đáy: 360 + 54 = 414; lăng trụ có hai mặt đáy nên phải cộng 2 · 54 = 108.<br>✗ 468 cm³: con số 468 tính đúng nhưng diện tích phải đo bằng cm²; cm³ là đơn vị của thể tích.","fig":{"t":"lang-tru-tam-giac","v":[["A","B","C"],["A'","B'","C'"]],"day":["9 cm","12 cm","15 cm"],"cao":"10 cm","vuong":"B"}}
 ];
 
+// Chỉ đổi những câu có đáp án là ĐÚNG MỘT số trần: không chữ, không đơn vị,
+// không "x =", không công thức và không nhiều kết quả. Đây là một phép đổi
+// hình thức của chính câu cũ, nên giữ nguyên id, lời giải và đáp án; bốn lựa
+// chọn cùng chỉ số correct phải biến mất để bé thực sự tự tính rồi nhập.
+//
+// Khuôn này cố ý chấp nhận số nguyên có dấu và phân số tối giản — đúng hai
+// dạng đang có trong 122 câu đã duyệt. Nếu sau này thêm số thập phân, tác giả
+// phải duyệt và mở khuôn có chủ ý thay vì vô tình biến một câu mới thành tự nhập.
+const MATH_HK2_TYPED_NUMBER_RE = /^[−-]?\d+(?:\/\d+)?$/;
+MATH_QUESTIONS_HK2.forEach(q => {
+  if (!MATH_HK2_TYPED_NUMBER_RE.test(String(q.answer || '').trim())) return;
+  q.type = 'calc';
+  q.keys = [];
+  delete q.options;
+  delete q.correct;
+});
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { MATH_CHAPTERS_HK2, MATH_QUESTIONS_HK2 };
+  module.exports = { MATH_CHAPTERS_HK2, MATH_QUESTIONS_HK2, MATH_HK2_TYPED_NUMBER_RE };
 }

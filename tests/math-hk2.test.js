@@ -59,9 +59,24 @@ suite('Toán 7 HK2: chương và ngân hàng luyện tập', () => {
 });
 
 suite('Toán 7 HK2: mỗi câu hỏi phải tự đứng được', () => {
-    test('bốn phương án khác nhau, và đáp án in ra đúng là ô được chấm', () => {
+    test('122 câu chỉ có một đáp án số đã thành tự nhập, còn lại vẫn là trắc nghiệm', () => {
         if (!ready) return;
-        allQs().forEach(({ id, q }) => {
+        const typed = practiceQs().filter(({ q }) => q.type === 'calc');
+        assert.equal(typed.length, 122, 'phải đổi đúng 122 câu đã duyệt');
+        assert.deepEqual(
+            CHAPTERS.map(ch => typed.filter(({ q }) => q.ch === ch).length),
+            [43, 25, 51, 2, 1],
+            'số câu tự nhập của từng chương bị lệch'
+        );
+        typed.forEach(({ id, q }) => {
+            assert.truthy(/^[−-]?\d+(?:\/\d+)?$/.test(q.answer), `${id}: đáp án không còn là đúng một số`);
+            assert.equal(q.type, 'calc', `${id}: thiếu type calc`);
+            assert.deepEqual(q.keys, [], `${id}: câu số không cần hàng phím ký hiệu phụ`);
+            assert.falsy(Object.prototype.hasOwnProperty.call(q, 'options'), `${id}: câu tự nhập còn lộ lựa chọn`);
+            assert.falsy(Object.prototype.hasOwnProperty.call(q, 'correct'), `${id}: câu tự nhập còn chỉ số lựa chọn`);
+        });
+
+        allQs().filter(({ q }) => q.type !== 'calc').forEach(({ id, q }) => {
             assert.truthy(Array.isArray(q.options) && q.options.length === 4, `${id}: không đủ 4 phương án`);
             assert.equal(new Set(q.options).size, 4, `${id}: có phương án trùng nhau`);
             assert.truthy(Number.isInteger(q.correct) && q.correct >= 0 && q.correct <= 3, `${id}: correct sai`);

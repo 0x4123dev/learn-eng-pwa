@@ -1317,7 +1317,7 @@ function renderMathPracticeHTML() {
     <div class="phrases-hero">
       <div class="phrases-hero-icon">🧮</div>
       <h1>Luyện công thức</h1>
-      <p class="phrases-sub">Mỗi lượt <b>${MATH_QUIZ_SIZE} câu</b> trắc nghiệm: chọn công thức ĐÚNG trong 4 lựa chọn. ${bank.length} câu trên tất cả 5 chương.</p>
+      <p class="phrases-sub">Mỗi lượt <b>${MATH_QUIZ_SIZE} câu</b>: tự nhập kết quả hoặc chọn đáp án đúng. ${bank.length} câu trên tất cả 5 chương.</p>
     </div>
     <button class="phrases-cta" onclick="startMathQuiz(0)">
       <span class="phrases-cta-icon">🎲</span>
