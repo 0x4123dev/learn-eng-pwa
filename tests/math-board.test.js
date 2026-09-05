@@ -319,6 +319,32 @@ suite('math board: painter', () => {
             'and one straddling the bottom edge draws too');
     });
 
+    test('stroke bounds are cached instead of rescanning old ink on every pan', () => {
+        let reads = 0;
+        const point = (x, y) => ({
+            get x() { reads++; return x; },
+            get y() { reads++; return y; }
+        });
+        const strokes = [{ points: [point(1, 1), point(10, 10), point(20, 20)] }];
+        board.mathBoardVisibleStrokes(strokes, 0, 100, 0, 100, 1);
+        const firstReads = reads;
+        board.mathBoardVisibleStrokes(strokes, 0, 100, 0, 100, 1);
+        assert.equal(reads, firstReads, 'the second viewport check must use cached bounds');
+    });
+
+    test('retina backing store is capped for iPhone memory and repaint cost', () => {
+        assert.equal(board.mathBoardPixelRatio(3), 2, 'XS Max DPR 3 is capped at 2');
+        assert.equal(board.mathBoardPixelRatio(2), 2);
+        assert.equal(board.mathBoardPixelRatio(1), 1);
+        const calls = [];
+        const ctx = { setTransform: (...args) => calls.push(args) };
+        const canvas = { style: {}, getContext: () => ctx };
+        board.mathBoardSizeCanvas(canvas, 414, 800, 3);
+        assert.equal(canvas.width, 828);
+        assert.equal(canvas.height, 1600);
+        assert.equal(calls[0][0], 2);
+    });
+
     test('a stroke renders as midpoint quadratics with round caps, offset by scroll', () => {
         const calls = [];
         const ctx = new Proxy({}, {
@@ -491,6 +517,33 @@ suite('math board: overlay wiring', () => {
             'a canvas whose bitmap stops matching its box draws ink away from the finger');
     });
 
+    test('rapid iPhone pan events collapse to one full repaint per frame', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/function mathBoardScheduleRepaint/.test(src));
+        assert.truthy(/requestAnimationFrame/.test(src),
+            'full canvas pans must follow display frames, not pointer event frequency');
+        const move = src.slice(src.indexOf("canvas.addEventListener('pointermove'"),
+            src.indexOf('function endGesture'));
+        assert.truthy(/if \(repaint\) mathBoardScheduleRepaint\(\)/.test(move),
+            'pan, zoom and eraser bursts must share the frame scheduler');
+        assert.falsy(/pts\.slice/.test(move),
+            'continuous ink must not allocate a fresh array for every sample and trigger GC pauses');
+        assert.equal((move.match(/getCoalescedEvents\(\)/g) || []).length, 1,
+            'WebKit coalesced samples should be requested once per event, not allocated twice');
+    });
+
+    test('Safari chrome animation cannot repeatedly reallocate the retina canvas', () => {
+        const src = read('js/math-board.js');
+        assert.truthy(/function mathBoardQueueVisualViewportSync/.test(src) &&
+            /requestAnimationFrame/.test(src),
+            'visual viewport events must collapse to display frames');
+        assert.truthy(/function mathBoardQueueResize/.test(src) &&
+            /setTimeout\([\s\S]*?90\)/.test(src),
+            'retina backing-store allocation must wait for viewport size to settle');
+        assert.truthy(/new ResizeObserver\(mathBoardQueueResize\)/.test(src),
+            'ResizeObserver must not bypass the allocation debounce');
+    });
+
     test('iPhone browser chrome cannot lift the bottom bar or expose white space', () => {
         const src = read('js/math-board.js');
         const css = read('css/styles.css');
@@ -499,8 +552,8 @@ suite('math board: overlay wiring', () => {
             'the scratch board must not inherit a stale app-shell height');
         assert.truthy(/--math-board-vv-height/.test(overlay) && /window\.visualViewport/.test(src),
             'the full-screen board must follow the live iOS visual viewport');
-        assert.truthy(/visualViewport\.addEventListener\('resize'/.test(src) &&
-            /visualViewport\.addEventListener\('scroll'/.test(src),
+        assert.truthy(/visualViewport\.addEventListener\('resize',\s*mathBoardQueueVisualViewportSync/.test(src) &&
+            /visualViewport\.addEventListener\('scroll',\s*mathBoardQueueVisualViewportSync/.test(src),
             'Safari changes the visual viewport during repeated swipes, not just rotation');
         assert.truthy(/html\.math-board-open #bottomNav\s*{[^}]*display:\s*none\s*!important/s.test(css),
             'the bottom navigation must reserve no space and accept no taps while writing');
