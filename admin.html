@@ -646,7 +646,6 @@
         </div>
         <div class="daily-form-actions">
           <button class="btn btn-primary" type="submit" id="dailySave">💾 Lưu</button>
-          <button class="btn btn-ghost" type="button" id="dailyAdd">＋ Thêm daily task</button>
         </div>
       </form>
     </section>
@@ -822,7 +821,7 @@ async function loadUsers(){
   const dailySelect = document.getElementById('dailyUser');
   const prevDaily = dailySelect.value;
   dailySelect.innerHTML = '<option value="">— chọn bé —</option>' + _users
-    .filter(u=>u.role!=='admin')
+    .filter(u=>u.role!=='admin'&&!u.disabled)
     .sort((a,b)=>String(a.username).localeCompare(String(b.username),'vi'))
     .map(u=>`<option value="${u.id}">${esc(u.username)}</option>`).join('');
   if ([...dailySelect.options].some(o=>o.value===prevDaily)) dailySelect.value = prevDaily;
@@ -1440,7 +1439,6 @@ document.getElementById('dailyUser').addEventListener('change', ()=>{
 syncDailySave();
 document.getElementById('dailyGroup').addEventListener('change', fillDailyKinds);
 document.getElementById('dailyForm').addEventListener('submit', ev=>saveDailyTask(ev).catch(()=>{}));
-document.getElementById('dailyAdd').onclick = resetDailyForm;
 document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>switchAdminTab(btn.dataset.tab)));
 document.getElementById('sortSel').addEventListener('change', e=>{
   const key = e.target.value;

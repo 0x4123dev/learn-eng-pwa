@@ -406,6 +406,13 @@ suite('admin: the Daily task tab', () => {
         assert.truthy(client && server, 'both caps must exist');
         assert.equal(Number(client[1]), Number(server[1]));
     });
+
+    test('daily-task picker omits disabled accounts and has one clear save action', () => {
+        assert.truthy(/dailySelect\.innerHTML[\s\S]*?\.filter\(u=>u\.role!==['"]admin['"]&&!u\.disabled\)/.test(adminHtml),
+            'disabled children must not be assignable from the Daily task picker');
+        assert.falsy(adminHtml.includes('id="dailyAdd"'), 'the redundant add/reset button must stay removed');
+        assert.falsy(adminHtml.includes("getElementById('dailyAdd')"), 'no dead event binding may remain');
+    });
 });
 
 if (require.main === module) {
