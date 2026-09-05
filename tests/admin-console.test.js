@@ -413,6 +413,18 @@ suite('admin: the Daily task tab', () => {
         assert.falsy(adminHtml.includes('id="dailyAdd"'), 'the redundant add/reset button must stay removed');
         assert.falsy(adminHtml.includes("getElementById('dailyAdd')"), 'no dead event binding may remain');
     });
+
+    test('daily-task assignment copy is clear and offers Toán 4 Pre plus Mix', () => {
+        const catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
+        const math4 = catalog.entries('math4');
+        assert.deepEqual(math4.map(e => e.key).sort(), ['math4:mix', 'math4:pre']);
+        assert.truthy(math4.find(e => e.key === 'math4:pre').label.includes('Chọn 1 trong 4 đáp án'));
+        assert.truthy(math4.find(e => e.key === 'math4:mix').label.includes('Nhập đáp án'));
+        for (const copy of ['Nhiệm vụ hằng ngày', 'Bài bé sẽ làm',
+            'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ']) {
+            assert.truthy(adminHtml.includes(copy), 'admin assignment copy is missing: ' + copy);
+        }
+    });
 });
 
 if (require.main === module) {

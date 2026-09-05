@@ -540,7 +540,7 @@
     <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
       <button class="admin-tab" id="tabUsers" role="tab" aria-controls="usersPanel" aria-selected="true" data-tab="users">👥 Người học</button>
       <button class="admin-tab" id="tabSkills" role="tab" aria-controls="skillsPanel" aria-selected="false" data-tab="skills">📊 Năng lực</button>
-      <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Daily task</button>
+      <button class="admin-tab" id="tabDaily" role="tab" aria-controls="dailyPanel" aria-selected="false" data-tab="daily">📋 Nhiệm vụ</button>
       <button class="admin-tab" id="tabRaid" role="tab" aria-controls="raidPanel" aria-selected="false" data-tab="raid">🌙 Cướp Đêm</button>
     </nav>
 
@@ -611,8 +611,8 @@
       <div class="learning-head">
         <div class="learning-title">
           <span class="learning-icon" aria-hidden="true">📋</span>
-          <div><h2>Daily task</h2>
-            <p id="dailyWho">Chọn một bé, rồi giao "N bài đúng 100%" mỗi ngày. Xong hết task trong ngày bé được 200 xu + 1 Khiên Đêm.</p></div>
+          <div><h2>Nhiệm vụ hằng ngày</h2>
+            <p id="dailyWho">Chọn bé, chọn đúng loại bài và số lượt phải hoàn thành 100% mỗi ngày. Hoàn thành toàn bộ nhiệm vụ trong ngày, bé nhận 200 xu và 1 Khiên Đêm.</p></div>
         </div>
         <div class="learning-filters">
           <label>Người học
@@ -623,29 +623,29 @@
       <div id="dailyStatus" class="daily-status" aria-live="polite"></div>
       <div class="scroll"><table id="dailyTable">
         <thead><tr><th>Bài</th><th>Mục tiêu</th><th>Hôm nay</th><th class="hide-sm">Tạo lúc</th><th style="text-align:right">Xoá</th></tr></thead>
-        <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr></tbody>
+        <tbody id="dailyBody"><tr><td colspan="5" class="empty">Chọn một bé để xem nhiệm vụ.</td></tr></tbody>
       </table></div>
       <!-- Full-width labelled controls, not a filter bar: every option here is a
            long sentence ("Grammar · Unit 12: Tenses · 25 câu"), and squeezing
            these two selects into a flex row made them unreadable. -->
       <form id="dailyForm" class="daily-form" autocomplete="off">
-        <h3 class="daily-form-title">Giao thêm task</h3>
+        <h3 class="daily-form-title">Giao nhiệm vụ hằng ngày</h3>
         <div class="daily-form-grid">
           <div class="field">
-            <label for="dailyGroup">Nhóm bài</label>
+            <label for="dailyGroup">Môn / nhóm bài</label>
             <select id="dailyGroup"></select>
           </div>
           <div class="field">
-            <label for="dailyKind">Chi tiết</label>
+            <label for="dailyKind">Bài bé sẽ làm</label>
             <select id="dailyKind"></select>
           </div>
           <div class="field field-num">
-            <label for="dailyTarget">Số lượt đạt mỗi ngày</label>
+            <label for="dailyTarget">Số lần phải đạt 100% mỗi ngày</label>
             <input id="dailyTarget" type="number" min="1" max="50" value="5" inputmode="numeric">
           </div>
         </div>
         <div class="daily-form-actions">
-          <button class="btn btn-primary" type="submit" id="dailySave">💾 Lưu</button>
+          <button class="btn btn-primary" type="submit" id="dailySave">Giao nhiệm vụ</button>
         </div>
       </form>
     </section>
@@ -1138,21 +1138,21 @@ async function loadDailyTasks(){
   const uid = document.getElementById('dailyUser').value;
   const body = document.getElementById('dailyBody');
   const status = document.getElementById('dailyStatus');
-  if (!uid){ body.innerHTML = '<tr><td colspan="5" class="empty">Chọn một bé để xem task.</td></tr>'; status.textContent=''; return; }
+  if (!uid){ body.innerHTML = '<tr><td colspan="5" class="empty">Chọn một bé để xem nhiệm vụ.</td></tr>'; status.textContent=''; return; }
   // A failed reload must not leave the previous child's rows on screen looking
   // like today's truth, so the table is emptied here and the error rethrown.
   let r;
   try { r = await api('admin/daily-tasks?user_id='+encodeURIComponent(uid)); }
   catch(e){
     status.textContent = 'Không tải được (' + e.message + ')';
-    body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách task.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" class="empty">Không tải được danh sách nhiệm vụ.</td></tr>';
     throw e;
   }
   const shield = r.shields || {count:0,activeUntil:0};
   const done = r.tasks.filter(t=>t.done).length;
-  status.innerHTML = `Hôm nay ${esc(r.date)}: <b>${done}/${r.tasks.length}</b> task xong · ${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}`
+  status.innerHTML = `Hôm nay ${esc(r.date)}: <b>${done}/${r.tasks.length}</b> nhiệm vụ xong · ${r.rewardedToday?'<span class="pill on">đã thưởng 200 xu + 1 khiên</span>':'<span class="pill off">chưa thưởng</span>'}`
     + ` · 🛡️ <b>${shield.count}</b> khiên${shield.activeUntil>Date.now()?' · đang bật đến '+esc(fmtUntil(shield.activeUntil)):''}`;
-  if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao task nào.</td></tr>'; return; }
+  if (!r.tasks.length){ body.innerHTML = '<tr><td colspan="5" class="empty">Bé chưa được giao nhiệm vụ nào.</td></tr>'; return; }
   body.innerHTML = r.tasks.map(t=>`<tr>
       <td><b>${esc(t.label)}</b><div class="muted" style="font-size:11px">${esc(t.kind)}</div></td>
       <td class="num">${t.target} lượt đạt</td>
@@ -1165,7 +1165,7 @@ async function loadDailyTasks(){
   [...body.querySelectorAll('.act-daily-del')].forEach((b, i)=>{
     const t = r.tasks[i];
     b.onclick = async ()=>{
-      if (!confirm('Xoá task “'+t.label+'”?\n\nBé sẽ không còn phải làm task này từ hôm nay.')) return;
+      if (!confirm('Xoá nhiệm vụ “'+t.label+'”?\n\nBé sẽ không còn phải làm nhiệm vụ này từ hôm nay.')) return;
       try { await api('admin/daily-tasks?id='+encodeURIComponent(t.id), { method:'DELETE' }); }
       catch(e){
         // A logged-out admin has already been bounced to the login screen by
@@ -1193,8 +1193,8 @@ async function saveDailyTask(ev){
     await api('admin/daily-tasks', { method:'POST', body:{ userId:Number(uid), kind, target } });
     saved = true;
   } catch(e){
-    alert(e.code === 'duplicate' ? 'Bé đã có task này. Xoá task cũ rồi tạo lại nếu muốn đổi số bài.'
-      : e.code === 'too_many' ? e.message + '. Xoá bớt task cũ trước khi thêm.'
+    alert(e.code === 'duplicate' ? 'Bé đã có nhiệm vụ này. Xoá nhiệm vụ cũ rồi tạo lại nếu muốn đổi số lần.'
+      : e.code === 'too_many' ? e.message + '. Xoá bớt nhiệm vụ cũ trước khi thêm.'
       : 'Không lưu được: '+e.message);
   } finally { btn.disabled = false; }
   if (saved) resetDailyForm();

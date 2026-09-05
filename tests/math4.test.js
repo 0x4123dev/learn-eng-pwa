@@ -774,19 +774,28 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
   });
 });
 
-suite('toán 4: an admin can hand it out like every other task', () => {
-  test('the catalog carries one Toán 4 task, in its own group', () => {
-    const entry = Catalog.get('math4:pre');
-    assert.truthy(entry, 'math4:pre is missing from the catalog');
-    assert.equal(entry.group, 'math4');
-    assert.equal(entry.activityType, 'math');
+suite('toán 4: an admin can hand out Pre and Mix separately', () => {
+  test('the catalog carries both Toán 4 modes in their own group', () => {
+    const pre = Catalog.get('math4:pre');
+    const mix = Catalog.get('math4:mix');
+    assert.truthy(pre, 'math4:pre is missing from the catalog');
+    assert.truthy(mix, 'math4:mix is missing from the catalog');
+    assert.equal(pre.group, 'math4');
+    assert.equal(mix.group, 'math4');
+    assert.equal(pre.activityType, 'math');
+    assert.equal(mix.activityType, 'math');
     assert.truthy(Catalog.groups().some(g => g.id === 'math4'), 'the admin dropdown has no Toán 4 group');
-    assert.equal(Catalog.entries('math4').length, 1);
+    assert.equal(Catalog.entries('math4').length, 2);
+    assert.truthy(pre.label.includes('Chọn 1 trong 4 đáp án'));
+    assert.truthy(mix.label.includes('Nhập đáp án'));
+    assert.truthy(pre.label.includes('10/10') && mix.label.includes('10/10'));
   });
 
-  test('it matches on what js/auth.js actually uploads for a Toán 4 run', () => {
-    const entry = Catalog.get('math4:pre');
-    assert.deepEqual(entry.match, { detail: { field: 'g4set', value: 'pre' } });
+  test('each mode matches only its own uploaded g4set', () => {
+    const pre = Catalog.get('math4:pre');
+    const mix = Catalog.get('math4:mix');
+    assert.deepEqual(pre.match, { detail: { field: 'g4set', value: 'pre' } });
+    assert.deepEqual(mix.match, { detail: { field: 'g4set', value: 'mix' } });
     // And that field really is written — by the same code path a finished
     // paper takes. auth.js builds it from the session, so read the session.
     const { ctx, m } = loadMath();
@@ -798,21 +807,23 @@ suite('toán 4: an admin can hand it out like every other task', () => {
     assert.equal(typeof ctx.appState.mathHistory[0].chapter, 'string');
   });
 
-  test('the deep link opens Toán 4 and starts the paper', () => {
-    const entry = Catalog.get('math4:pre');
-    assert.equal(entry.go.screen, 'mathHubScreen');
-    assert.deepEqual(entry.go.calls.map(c => c.slice()),
-      [['openMathSection', 'toan4'], ['startMath4Pre']]);
-    // Both really exist as top-level functions — that is what DailyTask.go
-    // looks up on globalThis.
+  test('each deep link opens Toán 4 and starts the chosen mode', () => {
     const math = src('js/math.js');
-    for (const [fn] of entry.go.calls) {
-      assert.truthy(new RegExp('^function ' + fn + '\\s*\\(', 'm').test(math), fn + ' is not a function');
+    for (const [key, starter] of [['math4:pre', 'startMath4Pre'], ['math4:mix', 'startMath4Mix']]) {
+      const entry = Catalog.get(key);
+      assert.equal(entry.go.screen, 'mathHubScreen');
+      assert.deepEqual(entry.go.calls.map(c => c.slice()),
+        [['openMathSection', 'toan4'], [starter]]);
+      for (const [fn] of entry.go.calls) {
+        assert.truthy(new RegExp('^function ' + fn + '\\s*\\(', 'm').test(math), fn + ' is not a function');
+      }
+      const { m } = loadMath();
+      for (const [fn, ...args] of entry.go.calls) m[fn] ? m[fn](...args) : null;
+      assert.truthy(m.isMathQuizActive(), key + ' deep link did not open a paper');
+      const q = m.mathCurrentQuestion();
+      if (key.endsWith('pre')) assert.equal(q.options.length, 4);
+      else assert.truthy(q.answerParts.length > 0);
     }
-    // Driven for real, the way the "Vào học" button does it.
-    const { m } = loadMath();
-    for (const [fn, ...args] of entry.go.calls) m[fn] ? m[fn](...args) : null;
-    assert.truthy(m.isMathQuizActive(), 'the deep link did not open a paper');
   });
 
   test('js/auth.js files a grade-4 run under Toán 4, not Toán 7', () => {

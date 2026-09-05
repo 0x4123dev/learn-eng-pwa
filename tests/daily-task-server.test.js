@@ -188,7 +188,7 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, true);
   });
 
-  test('Toán 4 counts for its own task and for no Toán 7 task', async () => {
+  test('Toán 4 Pre and Mix count separately and never count as Toán 7', async () => {
     // The two môn share the 'math' activity type and the same history array.
     // What tells them apart in SQL is detail.g4set — and detail.chapter, which
     // for a Toán 4 paper is the string 'g4-pre' and can equal no chapter
@@ -197,15 +197,19 @@ suite('daily task core: counting sessions at 100%', () => {
     const world = createWorld();
     const kid = await world.createUser({});
     addTask(world, kid.uid, 'math4:pre', 1);
+    addTask(world, kid.uid, 'math4:mix', 1);
     addTask(world, kid.uid, 'math-chapter:2', 1);
     addTask(world, kid.uid, 'math-exam:any-hk1', 1);
     addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Đề ôn Pre', score: 10, total: 10,
       detail: { grade: 4, g4set: 'pre', chapter: 'g4-pre' }, at: '2026-09-02 09:01:00' });
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 4 · Mix', score: 10, total: 10,
+      detail: { grade: 4, g4set: 'mix', chapter: 'g4-mix' }, at: '2026-09-02 09:01:30' });
     addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Chương 2 · Số thực', score: 10, total: 10,
       detail: { chapter: 2 }, at: '2026-09-02 09:02:00' });
     const p = await core().progress(world.env, kid.uid, NOW);
     const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
     assert.equal(byKind['math4:pre'], 1, 'the Toán 4 paper did not count for its own task');
+    assert.equal(byKind['math4:mix'], 1, 'the Toán 4 Mix paper did not count for its own task');
     assert.equal(byKind['math-chapter:2'], 1, 'only the Toán 7 round may count here');
     assert.equal(byKind['math-exam:any-hk1'], 0, 'neither run is an HK1 exam');
   });
@@ -757,6 +761,23 @@ suite('daily task: admin API', () => {
     assert.equal(row.created_by, admin.uid);
     const dup = await post({ userId: kid.uid, kind: 'units:hk1-mix', target: 3 });
     assert.equal(dup.status, 409, 'same active kind twice');
+  });
+
+  test('admin can assign Toán 4 Pre and Mix as two independent tasks', async () => {
+    const world = createWorld();
+    const admin = await world.createUser({ username: 'boss', role: 'admin' });
+    const kid = await world.createUser({});
+    const post = kind => world.call(adminHandler().onRequestPost, {
+      token: admin.token, body: { userId: kid.uid, kind, target: 1 },
+    });
+    const pre = await post('math4:pre');
+    const mix = await post('math4:mix');
+    assert.equal(pre.status, 200);
+    assert.equal(mix.status, 200);
+    assert.deepEqual(JSON.parse(world.db.prepare('SELECT match_json FROM daily_tasks WHERE id=?')
+      .get(pre.data.task.id).match_json), { detail: { field: 'g4set', value: 'pre' } });
+    assert.deepEqual(JSON.parse(world.db.prepare('SELECT match_json FROM daily_tasks WHERE id=?')
+      .get(mix.data.task.id).match_json), { detail: { field: 'g4set', value: 'mix' } });
   });
 
   test('list shows today\'s progress, reward state and shields; delete deactivates', async () => {

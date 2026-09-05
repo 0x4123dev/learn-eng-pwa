@@ -102,10 +102,8 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
     test('a service-worker update never takes over on its own', () => {
         // The invariant is unchanged: a new worker must NEVER replace the
         // running app while a child is in the middle of something. What
-        // changed is that the child is now ASKED. Waiting silently forever was
-        // its own bug — `controllerchange` cannot fire while the page that
-        // registered the listener is still open, so a PWA left in the app
-        // switcher downloaded every update and applied none of them.
+        // changed is that the page now applies the downloaded worker itself,
+        // but only after its activity guards say the child is idle.
         //
         // So: install must not skipWaiting, and the only skipWaiting in the
         // worker must be the one the PAGE asks for by message.
@@ -117,19 +115,17 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
         assert.truthy(/type === 'SKIP_WAITING'\) self\.skipWaiting\(\)/.test(swSrc),
             'and it is gated on the page asking for it');
 
-        // …and the page only asks after a tap, never while something is timed.
+        // …and the page asks automatically only while nothing is in progress.
         const app = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
-        assert.truthy(/_busyWithTimedActivity\(\)/.test(app), 'a timed activity defers the offer');
-        const offer = app.slice(app.indexOf('function offerUpdate('), app.indexOf('function registerServiceWorker('));
-        assert.truthy(/addEventListener\('click'/.test(offer), 'the reload is behind a button');
-        // Both halves must EXIST before their order means anything: indexOf
-        // returns -1 for a string that is gone, and -1 is less than everything.
-        const clickAt = offer.indexOf("addEventListener('click'");
-        const skipAt = offer.indexOf('SKIP_WAITING');
-        assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
-        assert.truthy(skipAt >= 0, 'and that handler must be what asks the worker to take over');
-        assert.truthy(clickAt < skipAt, 'the message is only posted from inside that click handler');
-        assert.falsy(/setTimeout\([^)]*location\.reload/.test(offer),
+        assert.truthy(/_busyWithTimedActivity\(\)/.test(app), 'a timed activity defers activation');
+        const apply = app.slice(app.indexOf('function applyUpdateWhenSafe('), app.indexOf('function registerServiceWorker('));
+        const busyAt = apply.indexOf('_busyWithTimedActivity()');
+        const skipAt = apply.indexOf('SKIP_WAITING');
+        assert.truthy(busyAt >= 0, 'the idle guard must exist');
+        assert.truthy(skipAt >= 0, 'the page must ask the worker to take over');
+        assert.truthy(busyAt < skipAt, 'activation comes only after the idle guard');
+        assert.falsy(/addEventListener\('click'/.test(apply), 'no child click should be required');
+        assert.falsy(/setTimeout\([^)]*location\.reload/.test(apply),
             'a delayed fallback reload would reopen the same waiting worker and loop forever');
     });
 });

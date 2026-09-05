@@ -50,65 +50,6 @@
             touch-action: manipulation;
         }
 
-        /* "There is a new version" — js/app.js offerUpdate. The service worker
-           deliberately never takes over by itself, so this is the only way an
-           update ever reaches a child who keeps the app open in the switcher
-           for days. It sits above the bottom nav rather than over the content,
-           and it is never shown while something is timed. */
-        .sw-update-bar {
-            position: fixed;
-            left: 12px;
-            right: 12px;
-            /* ABOVE the bottom nav, not over it. At 12px the bar sat squarely
-               in the 68px nav band, so "Tải bản mới" landed on the rightmost
-               tabs — a child reaching for Exam got a full page reload. */
-            bottom: calc(68px + 12px + var(--safe-area-bottom));
-            z-index: 400;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 28px rgba(31, 80, 50, 0.22);
-            font-size: 14px;
-            color: var(--text-primary);
-            animation: swUpdateIn 0.25s ease-out;
-        }
-        .sw-update-bar span {
-            flex: 1;
-            min-width: 0;
-        }
-        .sw-update-bar button {
-            flex-shrink: 0;
-            border: none;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font: inherit;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .sw-update-bar .sw-update-go {
-            background: var(--accent-green);
-            color: #fff;
-        }
-        .sw-update-bar .sw-update-later {
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            padding: 8px 6px;
-        }
-        @keyframes swUpdateIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .sw-update-bar { animation: none; }
-        }
-
         html, body {
             /* 100dvh accounts for the dynamic viewport (mobile URL bar
                collapse/expand) so the bottom nav truly sits at the

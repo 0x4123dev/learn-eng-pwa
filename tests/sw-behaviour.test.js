@@ -342,72 +342,73 @@ suite('service worker: lie-fi does not stall a fully cached app', () => {
   });
 });
 
-suite('service worker: an update takes over only when asked', () => {
+suite('service worker: an update takes over only when the page says it is safe', () => {
   test('install never calls skipWaiting on its own', async () => {
     const worker = bootWorker(() => body('ok', 'application/javascript'));
     await install(worker);
     assert.equal(worker.skipWaiting(), 0, 'a new worker must not replace one mid-lesson');
   });
 
-  test('the page can ask for it, and only then', async () => {
+  test('the page can activate the downloaded worker, and only then', async () => {
     const worker = bootWorker(() => body('ok', 'application/javascript'));
     worker.fire('message', { data: { type: 'SOMETHING_ELSE' } });
     assert.equal(worker.skipWaiting(), 0);
     worker.fire('message', { data: { type: 'SKIP_WAITING' } });
-    assert.equal(worker.skipWaiting(), 1, 'the child tapped "Tải bản mới"');
+    assert.equal(worker.skipWaiting(), 1, 'the idle page asked the downloaded worker to take over');
   });
 });
 
-suite('service worker: the update banner is actually visible', () => {
-  // js/app.js builds the banner in JS and css/styles.css styles it. A rename
-  // on either side leaves a child staring at an unstyled block of text at the
-  // bottom of the document — silently, because nothing throws.
+suite('service worker: background updates are automatic but safe', () => {
   const APP = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
-  const CSS = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
-  const offer = APP.slice(APP.indexOf('function offerUpdate('), APP.indexOf('function registerServiceWorker('));
+  const apply = APP.slice(APP.indexOf('function applyUpdateWhenSafe('), APP.indexOf('function registerServiceWorker('));
+  const updateCode = APP.slice(APP.indexOf('let _updateReloading'), APP.indexOf('function registerServiceWorker('));
 
-  test('every class the banner uses is styled', () => {
-    const used = [...offer.matchAll(/class="([a-z-]+)"|className = '([a-z-]+)'/g)]
-      .map(m => m[1] || m[2]).filter(Boolean);
-    assert.truthy(used.includes('sw-update-bar'), 'the container must be named');
-    for (const cls of new Set(used)) {
-      assert.truthy(CSS.includes('.' + cls), cls + ' has no styles — the banner would render bare');
-    }
+  function runUpdater(options) {
+    const opts = options || {};
+    const calls = { posts: 0, checkpoints: 0, saves: 0, intervals: [] };
+    const sandbox = {
+      console, globalThis: null, currentUser: 'kid', appState: { coins: 10 },
+      setInterval(fn, ms) { calls.intervals.push({ fn, ms }); return calls.intervals.length; },
+      clearInterval() {}, setTimeout() { return 1; },
+      saveStudyCheckpoint() { calls.checkpoints++; },
+      saveUserData() { calls.saves++; },
+      document: { getElementById(id) {
+        if (id === 'lessonScreen') return { classList: { contains: () => !!opts.lesson } };
+        return null;
+      } },
+    };
+    if (opts.math) sandbox.isMathQuizActive = () => true;
+    sandbox.globalThis = sandbox;
+    vm.createContext(sandbox);
+    vm.runInContext(updateCode + '\n;globalThis.__applyUpdate = applyUpdateWhenSafe;', sandbox);
+    const reg = { waiting: { postMessage(msg) {
+      if (msg && msg.type === 'SKIP_WAITING') calls.posts++;
+    } } };
+    sandbox.__applyUpdate(reg);
+    return calls;
+  }
+
+  test('there is no update banner or button for the child to handle', () => {
+    assert.falsy(APP.includes('sw-update-bar'));
+    assert.falsy(APP.includes('Tải bản mới'));
+    assert.falsy(APP.includes('Có bản mới của app'));
   });
 
-  test('it sits ABOVE the bottom nav, not on top of it', () => {
-    // The first version put it 12px off the bottom with z-index 400 — squarely
-    // in the 68px nav band, so "Tải bản mới" landed on the rightmost tabs and
-    // a child reaching for Exam got a full page reload. Clearing the nav is
-    // the requirement; the z-index only decides what happens if they ever do
-    // overlap.
-    const rule = CSS.match(/\.sw-update-bar \{[^}]*\}/)[0];
-    assert.truthy(/position: fixed/.test(rule), 'it must float over the app');
-    const navRule = CSS.match(/\.bottom-nav \{[^}]*\}/)[0];
-    const navHeight = Number((navRule.match(/min-height: (\d+)px/) || [])[1]);
-    assert.truthy(navHeight > 0, 'the nav must declare a height to clear');
-    const bottom = rule.match(/bottom: calc\(([^)]*)\)/);
-    assert.truthy(bottom, 'the offset must be a calc that names the nav height');
-    const px = [...bottom[1].matchAll(/(\d+)px/g)].reduce((n, m) => n + Number(m[1]), 0);
-    assert.truthy(px >= navHeight, `the bar starts ${px}px up; the nav is ${navHeight}px tall`);
-    assert.truthy(/safe-area-bottom/.test(rule), 'and it clears the home indicator too');
-  });
-
-  test('the reload is re-checked at the tap, not only when the banner appeared', () => {
-    // The banner can sit there for twenty minutes while the child starts a
-    // 200-xu Đấu Toán. reload() bypasses every switchScreen guard — there is
-    // no beforeunload anywhere in this app.
-    const go = offer.slice(offer.indexOf("'.sw-update-go'"));
-    assert.truthy(/_busyWithTimedActivity\(\)/.test(go.slice(0, 700)),
-      'the click handler must ask again before reloading');
-    assert.truthy(offer.indexOf('_busyWithTimedActivity') < offer.indexOf("'.sw-update-go'"),
-      'and it must also gate whether the banner appears at all');
-  });
-
-  test('"Để sau" means later, not never', () => {
-    const later = offer.slice(offer.indexOf("'.sw-update-later'"));
-    assert.truthy(/_updateOffered = false/.test(later.slice(0, 600)),
-      'an iOS PWA parked in the switcher must be offered the update again');
+  test('a busy child is deferred before the worker is told to take over', () => {
+    const busyAt = apply.indexOf('_busyWithTimedActivity()');
+    const skipAt = apply.indexOf('SKIP_WAITING');
+    assert.truthy(busyAt >= 0 && skipAt >= 0 && busyAt < skipAt,
+      'activity guard must run before activation');
+    assert.truthy(/setInterval\(\(\) => applyUpdateWhenSafe\(reg\), 10000\)/.test(apply),
+      'the update must retry quietly after the activity ends');
+    const guard = APP.slice(APP.indexOf('function _busyWithTimedActivity'), APP.indexOf('function applyUpdateWhenSafe'));
+    assert.truthy(/lessonScreen/.test(guard), 'matching-pairs lessons must count as in-progress work too');
+    const math = runUpdater({ math: true });
+    const lesson = runUpdater({ lesson: true });
+    assert.equal(math.posts, 0);
+    assert.equal(lesson.posts, 0);
+    assert.equal(math.intervals[0].ms, 10000);
+    assert.equal(lesson.intervals[0].ms, 10000);
   });
 
   test('every activity switchScreen guards, the reload guards too', () => {
@@ -422,9 +423,18 @@ suite('service worker: the update banner is actually visible', () => {
     assert.truthy(guarded.length >= 9, 'the guard list must not have shrunk: ' + guarded.length);
   });
 
-  test('the banner respects reduced motion', () => {
-    assert.truthy(/prefers-reduced-motion: reduce\)\s*\{\s*\.sw-update-bar \{ animation: none/.test(CSS),
-      'an update notice must not animate for a child who asked it not to');
+  test('drafts and profile state are saved immediately before activation', () => {
+    const skipAt = apply.indexOf('SKIP_WAITING');
+    const saveDraftAt = apply.indexOf('saveStudyCheckpoint()');
+    const saveProfileAt = apply.indexOf('saveUserData(currentUser, appState)');
+    assert.truthy(saveDraftAt >= 0 && saveDraftAt < skipAt);
+    assert.truthy(saveProfileAt >= 0 && saveProfileAt < skipAt);
+    assert.falsy(/setTimeout\([^)]*location\.reload/.test(apply),
+      'a timeout must never reload back into the same waiting worker');
+    const idle = runUpdater({});
+    assert.equal(idle.checkpoints, 1);
+    assert.equal(idle.saves, 1);
+    assert.equal(idle.posts, 1, 'an idle update must apply without a click');
   });
 });
 

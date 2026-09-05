@@ -43,33 +43,24 @@ suite('session continuity: a reload is not a logout', () => {
     assert.truthy(app.includes(".match-card:not(.matched)"));
   });
 
-  test('a service-worker update never reloads the page on its own', () => {
-    // The invariant is the same one, restated for the fix: an update must
-    // never take the page out from under a child. What changed is that the
-    // child is now ASKED — waiting silently was its own bug, because
-    // `controllerchange` cannot fire while the page that registered the
-    // listener is still open, so a PWA parked in the app switcher downloaded
-    // every update and applied none of them.
+  test('a service-worker update reloads automatically only from the safe idle path', () => {
     const start = app.indexOf('function registerServiceWorker()');
     const end = app.indexOf('function formatDate', start);
     const body = app.slice(start, end);
     assert.truthy(body.includes("addEventListener('controllerchange'"));
-    // A reload only ever happens behind the `_updateReloading` flag, which is
-    // set in one place: the click handler on the "Tải bản mới" button.
+    // A reload only happens after applyUpdateWhenSafe checked every activity
+    // and asked the waiting worker to take over.
     for (const m of body.match(/[^\n]*location\.reload[^\n]*/g) || []) {
-      assert.truthy(/_updateReloading/.test(m), 'a reload must be gated on the tap: ' + m.trim());
+      assert.truthy(/_updateReloading/.test(m), 'a reload must be gated on safe activation: ' + m.trim());
     }
-    const offer = app.slice(app.indexOf('function offerUpdate('), start);
-    assert.equal((offer.match(/_updateReloading = true/g) || []).length, 1,
+    const apply = app.slice(app.indexOf('function applyUpdateWhenSafe('), start);
+    assert.equal((apply.match(/_updateReloading = true/g) || []).length, 1,
       'exactly one place arms the reload');
-    // indexOf returns -1 when a string is gone, and -1 is less than every
-    // index — so an ordering assertion proves nothing until both sides exist.
-    const clickAt = offer.indexOf("addEventListener('click'");
-    const armAt = offer.indexOf('_updateReloading = true');
-    assert.truthy(clickAt >= 0, 'the banner must wire a click handler');
-    assert.truthy(armAt >= 0, 'and that handler is the only thing that arms the reload');
-    assert.truthy(clickAt < armAt, 'and it is inside the click handler');
-    assert.falsy(/setTimeout\([^)]*location\.reload/.test(offer),
+    const busyAt = apply.indexOf('_busyWithTimedActivity()');
+    const armAt = apply.indexOf('_updateReloading = true');
+    assert.truthy(busyAt >= 0 && armAt >= 0 && busyAt < armAt,
+      'the activity guard must run before the reload is armed');
+    assert.falsy(/setTimeout\([^)]*location\.reload/.test(apply),
       'a timeout must never reload back into the same waiting worker');
     // The worker still never takes over by itself.
     const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('message'"));

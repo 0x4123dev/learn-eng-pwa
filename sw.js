@@ -302,9 +302,9 @@ self.addEventListener('install', event => {
   }));
 });
 
-// The child taps "Tải bản mới" on the update toast (js/app.js). Until then a
-// new worker waits, so an update can never replace the running app in the
-// middle of a lesson.
+// The page sends this only after its activity guards say the child is idle.
+// Keeping activation behind a message lets js/app.js defer takeover during a
+// lesson or battle while still applying updates automatically afterwards.
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

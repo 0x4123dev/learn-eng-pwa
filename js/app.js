@@ -1636,20 +1636,14 @@ function createConfetti() {
     setTimeout(() => container.innerHTML = '', 4000);
 }
 
-// ---- "there is a new version" ------------------------------------------
+// ---- background app updates ---------------------------------------------
 //
 // install deliberately does NOT call skipWaiting(): swapping the worker under
 // a child in the middle of a question is worse than running yesterday's build
-// for another minute. But the only notice this ever gave was a toast wired to
-// `controllerchange` — an event that CANNOT fire while the page that
-// registered the listener is still open, because that page is itself a client
-// keeping the old worker alive. So a PWA left in the iOS app switcher for days
-// downloaded every update and applied none of them, including the ones that
-// fixed money bugs.
-//
-// Now the child is asked. The banner waits for a moment when nothing is timed.
+// for another minute. The page, which knows whether a lesson or battle is in
+// progress, activates the already-downloaded worker as soon as the app is idle.
+// No child-facing button is needed.
 let _updateReloading = false;
-let _updateOffered = false;
 let _updateRetryTimer = null;
 
 // Anything a child would lose by reloading. This is the SAME list switchScreen
@@ -1668,6 +1662,11 @@ function _busyWithTimedActivity() {
         }
         const speed = document.getElementById('speedGameOverlay');
         if (speed && speed.classList.contains('active')) return true;
+        // Matching-pairs lessons predate the shared is…Active helpers. Treat
+        // the visible lesson screen as work in progress so a background update
+        // never makes the cards disappear under the child's finger.
+        const lesson = document.getElementById('lessonScreen');
+        if (lesson && lesson.classList.contains('active')) return true;
         if (typeof NightRaid !== 'undefined' && NightRaid.isRaiding && NightRaid.isRaiding()) return true;
         if (typeof MathFight !== 'undefined' && MathFight.isFighting && MathFight.isFighting()) return true;
         if (typeof GhostOfferingEvent !== 'undefined' && GhostOfferingEvent.isActive
@@ -1678,54 +1677,41 @@ function _busyWithTimedActivity() {
     return false;
 }
 
-function offerUpdate(reg) {
-    if (_updateOffered) return;
+function applyUpdateWhenSafe(reg) {
+    if (_updateReloading) return;
     if (_busyWithTimedActivity()) {
-        // Ask again shortly rather than dropping the update on the floor.
-        if (!_updateRetryTimer) _updateRetryTimer = setInterval(() => offerUpdate(reg), 60000);
+        // Poll quietly until the child finishes. This timer belongs to the
+        // page, not to one profile, so switching users must not clear it.
+        if (!_updateRetryTimer) {
+            _updateRetryTimer = setInterval(() => applyUpdateWhenSafe(reg), 10000);
+        }
         return;
     }
     if (_updateRetryTimer) { clearInterval(_updateRetryTimer); _updateRetryTimer = null; }
-    _updateOffered = true;
 
-    const bar = document.createElement('div');
-    bar.className = 'sw-update-bar';
-    bar.setAttribute('role', 'status');
-    bar.innerHTML = '<span>✨ Có bản mới của app</span>'
-        + '<button type="button" class="sw-update-go">Tải bản mới</button>'
-        + '<button type="button" class="sw-update-later" aria-label="Để sau">Để sau</button>';
-    bar.querySelector('.sw-update-go').addEventListener('click', () => {
-        // Re-check AT THE TAP. The banner may have been sitting there for
-        // twenty minutes while the child started a 200-xu Đấu Toán; reloading
-        // would forfeit it, and window.location.reload() bypasses every
-        // switchScreen guard because there is no beforeunload anywhere.
-        if (_busyWithTimedActivity()) {
-            if (typeof showToast === 'function') showToast('Con đang làm bài — xong bài rồi tải bản mới nhé');
-            return;
+    const waiting = reg.waiting || reg.installing;
+    if (!waiting) return;
+    // Save once more immediately before the reload. Most interactions already
+    // save as they happen; this also covers a draft typed since the last
+    // one-second checkpoint tick.
+    try { if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint(); } catch (e) {}
+    try {
+        if (currentUser && appState && typeof saveUserData === 'function') {
+            saveUserData(currentUser, appState);
         }
-        _updateReloading = true;
-        const waiting = reg.waiting || reg.installing;
-        if (waiting) waiting.postMessage({ type: 'SKIP_WAITING' });
-        // Never use a timed fallback reload. If an old worker ignores the
-        // message or activation is delayed, reloading returns to that same
-        // worker and offers the same update again forever. `controllerchange`
-        // below is the only proof that the new worker actually took over.
-        setTimeout(() => {
-            if (!_updateReloading) return;
-            _updateReloading = false;
-            if (typeof showToast === 'function') showToast('Chưa tải được bản mới — con thử lại khi mở app lần sau nhé');
-        }, 12000);
-        bar.remove();
-    });
-    bar.querySelector('.sw-update-later').addEventListener('click', () => {
-        bar.remove();
-        // "Later" means later, not never. An iOS PWA parked in the app
-        // switcher for days would otherwise never be offered the update again,
-        // which is the exact failure this banner exists to fix.
-        _updateOffered = false;
-        if (!_updateRetryTimer) _updateRetryTimer = setInterval(() => offerUpdate(reg), 15 * 60000);
-    });
-    document.body.appendChild(bar);
+    } catch (e) {}
+
+    _updateReloading = true;
+    waiting.postMessage({ type: 'SKIP_WAITING' });
+    // `controllerchange` below is the only proof that the new worker actually
+    // took over. Never force a timed reload back into the same waiting worker.
+    setTimeout(() => {
+        if (!_updateReloading) return;
+        _updateReloading = false;
+        if (!_updateRetryTimer) {
+            _updateRetryTimer = setInterval(() => applyUpdateWhenSafe(reg), 60000);
+        }
+    }, 12000);
 }
 
 function registerServiceWorker() {
@@ -1743,18 +1729,17 @@ function registerServiceWorker() {
                 if (!installing) return;
                 installing.addEventListener('statechange', () => {
                     // "installed" + an existing controller means a NEW SW is
-                    // ready and waiting. It must never replace the running app
-                    // mid-question, so it stays waiting until the child says
-                    // so — but they have to be TOLD, which is what was missing.
+                    // ready and waiting. The page applies it immediately when
+                    // idle, or keeps retrying quietly until the activity ends.
                     if (installing.state === 'installed' &&
                         navigator.serviceWorker.controller) {
-                        offerUpdate(reg);
+                        applyUpdateWhenSafe(reg);
                     }
                 });
             });
             // A worker that finished installing while the app was closed is
             // already sitting in `waiting` when we register.
-            if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg);
+            if (reg.waiting && navigator.serviceWorker.controller) applyUpdateWhenSafe(reg);
 
             // Never reload a live lesson when a new worker takes over. The
             // current page can safely finish with the JS it already loaded.
@@ -1763,7 +1748,7 @@ function registerServiceWorker() {
                 // Ignore the first-ever worker claiming a previously
                 // uncontrolled page; that is installation, not an update.
                 if (!wasControlled) return;
-                // Only a tap on "Tải bản mới" gets here — see offerUpdate.
+                // Only the idle-page handoff above arms this reload.
                 if (_updateReloading) window.location.reload();
             });
         })
