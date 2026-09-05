@@ -21,4 +21,12 @@ suite('draggable artwork uses real transparency', () => {
         assert.truthy(instructions.includes('Drag/drop artwork must use true alpha'));
         assert.truthy(instructions.includes('Never bake a rectangular lawn'));
     });
+
+    test('the plot container does not paint another rectangular lawn behind the alpha', () => {
+        const css = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+        const rule = (css.match(/\.nr-farm-plot\{[^}]+\}/) || [''])[0];
+        assert.truthy(rule.includes('background:transparent'));
+        assert.truthy(rule.includes('border:0'));
+        assert.truthy(rule.includes('box-shadow:none'));
+    });
 });

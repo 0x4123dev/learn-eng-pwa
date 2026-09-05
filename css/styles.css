@@ -13907,9 +13907,9 @@
 /* Square farm docks hug the straight edges of the castle land. During a drag
    the eight legal targets become a visible 6×6 guide, and the plot snaps to
    one of them instead of being left at an arbitrary angle or meadow pixel. */
-.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:4px solid rgba(247,255,218,.92);border-radius:20px;background:#8ee24f;box-shadow:0 14px 18px rgba(48,86,27,.28),inset 0 0 0 2px rgba(83,151,42,.2);touch-action:none}
-.nr-farm-surface{position:absolute;z-index:0;inset:0;width:100%;height:100%;border-radius:16px;object-fit:cover;object-position:center;filter:saturate(1.06) brightness(1.02);pointer-events:none;overflow:hidden}
-.nr-farm-plot.style-hedge{border-color:#efffd2}.nr-farm-plot.style-clover{border-color:#d9ffd2;box-shadow:0 14px 20px rgba(30,110,50,.3),0 0 16px rgba(107,255,109,.2)}
+.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:0;border-radius:0;background:transparent;box-shadow:none;touch-action:none}
+.nr-farm-surface{position:absolute;z-index:0;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.06) brightness(1.02);pointer-events:none}
+.nr-farm-plot.style-hedge,.nr-farm-plot.style-clover{border:0;background:transparent;box-shadow:none}
 .nr-farm-plot>.nr-free-grid{z-index:2;left:6%;top:6%;width:88%;height:88%;overflow:visible;transform:none}
 .nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:-24px;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
 .nr-builder.editing .nr-farm-plot-handle{opacity:1;pointer-events:auto}.nr-farm-plot.dragging{z-index:18;filter:drop-shadow(0 20px 16px rgba(48,66,27,.42)) brightness(1.08)}.nr-farm-plot.dragging .nr-farm-plot-handle{cursor:grabbing}.nr-farm-plot.invalid{filter:drop-shadow(0 0 14px #ff4e42) saturate(.55)}
