@@ -60,15 +60,16 @@ function loadMath() {
     src('js/math.js'),
     `globalThis.__math = {
        math4Bank, math4Types, math4Ready, math4History, math7History, math4Best,
-       math4PickQuestions, startMath4Pre, renderToan4MenuHTML, renderMathMenuHTML,
+       math4PickQuestions, math4PickPreQuestions, math4ChoiceOptions, math4BuildPreQuestion,
+       startMath4Mix, startMath4Pre, renderToan4MenuHTML, renderMathMenuHTML,
        openMathSection, renderMathHome, mathIsTyped, mathHasAnswerParts, mathIsCorrect,
-       mathGrade, mathKey, mathTypedReset, submitMathTyped, nextMathQuestion,
+       mathGrade, mathKey, mathTypedReset, answerMathQuestion, submitMathTyped, nextMathQuestion,
        mathCurrentQuestion, mathQuizQuit, isMathQuizActive, mathQuizAnswered,
        mathPartInput, math4FreeEntry, math4AllFilled, math4Clean, math4InputHTML,
        mathPartSync, math4Values, math4DomValue,
        mathAnswerPartsHTML, mathKeypadHTML, MATH4_ANSWER_MAX,
        mathPerfectBonus, MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
-       MATH_COINS_PER_CORRECT, MATH4_PRE_PERFECT_BONUS,
+       MATH_COINS_PER_CORRECT, MATH4_MIX_PERFECT_BONUS, MATH4_PRE_PERFECT_BONUS,
      };`,
   ].join('\n'), ctx, { filename: 'math4-combined.js' });
   return { ctx, m: ctx.__math, screen, nav, asked };
@@ -89,13 +90,27 @@ function answerCurrent(m, q, wrongFirstBox) {
 // deliberately wrong (one digit changed in the first box); everything else is
 // answered exactly right.
 function sitPaper(m, wrongAt) {
-  m.startMath4Pre();
+  m.startMath4Mix();
   const seen = [];
   for (let i = 0; i < 50; i++) {
     const q = m.mathCurrentQuestion();
     if (!q) break;
     seen.push(q);
     answerCurrent(m, q, wrongAt.has(i));
+    m.nextMathQuestion();
+  }
+  return seen;
+}
+
+function sitPre(m, wrongAt) {
+  m.startMath4Pre();
+  const seen = [];
+  for (let i = 0; i < 50; i++) {
+    const q = m.mathCurrentQuestion();
+    if (!q) break;
+    seen.push(q);
+    const pick = wrongAt.has(i) ? (q.correct + 1) % 4 : q.correct;
+    m.answerMathQuestion(pick);
     m.nextMathQuestion();
   }
   return seen;
@@ -215,7 +230,7 @@ suite('toán 4: the question bank', () => {
   });
 });
 
-suite('toán 4: một tờ đề Pre', () => {
+suite('toán 4: một tờ đề Mix', () => {
   test('a paper is 10 questions — two of each dạng, in the order of the real paper', () => {
     const { m } = loadMath();
     for (let round = 0; round < 30; round++) {
@@ -246,11 +261,11 @@ suite('toán 4: một tờ đề Pre', () => {
     assert.equal(h.score, 10);
     assert.equal(h.total, 10);
     assert.equal(h.grade, 4, 'the run must say which môn it was');
-    assert.equal(h.g4set, 'pre');
-    assert.equal(h.chapter, 'g4-pre');
-    assert.equal(h.label, 'Toán 4 · Đề ôn Pre');
+    assert.equal(h.g4set, 'mix');
+    assert.equal(h.chapter, 'g4-mix');
+    assert.equal(h.label, 'Toán 4 · Mix');
     assert.equal(ctx.appState.coins,
-      10 * m.MATH_COINS_PER_CORRECT + m.MATH4_PRE_PERFECT_BONUS,
+      10 * m.MATH_COINS_PER_CORRECT + m.MATH4_MIX_PERFECT_BONUS,
       '10 correct answers must pay their normal coins plus exactly 100 xu');
     assert.truthy(screen.innerHTML.includes('Thưởng đúng 100%'), 'the result must explain why the bonus was paid');
     assert.truthy(screen.innerHTML.includes('+100 xu'), 'the result must show the bonus amount');
@@ -272,9 +287,10 @@ suite('toán 4: một tờ đề Pre', () => {
       'an imperfect result must not advertise the perfect bonus');
   });
 
-  test('the perfect bonus belongs only to Toán 4 Pre', () => {
+  test('Mix keeps 100 xu while the new Pre pays 50 xu for a perfect round', () => {
     const { m } = loadMath();
-    assert.equal(m.mathPerfectBonus('g4-pre', 10, 10), 100);
+    assert.equal(m.mathPerfectBonus('g4-mix', 10, 10), 100);
+    assert.equal(m.mathPerfectBonus('g4-pre', 10, 10), 50);
     assert.equal(m.mathPerfectBonus('g4-pre', 9, 10), 0);
     assert.equal(m.mathPerfectBonus('ch1', 10, 10), 0);
     assert.equal(m.mathPerfectBonus('g4-pre', 0, 0), 0);
@@ -299,7 +315,7 @@ suite('toán 4: một tờ đề Pre', () => {
   test('the bottom bar goes away for the paper and comes back after it', () => {
     const { m, nav } = loadMath();
     assert.equal(nav.style.display, 'flex');
-    m.startMath4Pre();
+    m.startMath4Mix();
     assert.equal(nav.style.display, 'none', 'the bar must not sit under the thumb for ten questions');
     sitPaperFinish(m);
     assert.equal(nav.style.display, '', 'the bar must come back when the paper is over');
@@ -307,7 +323,7 @@ suite('toán 4: một tờ đề Pre', () => {
 
   test('walking out mid-paper asks first, and staying keeps the work', () => {
     const { ctx, m, asked } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     answerCurrent(m, q, false);
     assert.equal(m.mathQuizAnswered(), 1);
@@ -323,7 +339,7 @@ suite('toán 4: một tờ đề Pre', () => {
     assert.equal(ctx.appState.mathHistory.length, 0, 'an abandoned paper is not scored');
   });
 
-  test('the Toán 4 menu offers Pre, and the Toán tab lists Toán 4 under Toán 7', () => {
+  test('the Toán 4 menu offers Mix and Pre, and the Toán tab lists Toán 4 under Toán 7', () => {
     const { m, screen } = loadMath();
     m.openMathSection('home');
     const home = screen.innerHTML;
@@ -334,7 +350,9 @@ suite('toán 4: một tờ đề Pre', () => {
 
     m.openMathSection('toan4');
     const menu = screen.innerHTML;
+    assert.truthy(menu.includes('startMath4Mix()'), 'the Mix button is missing');
     assert.truthy(menu.includes('startMath4Pre()'), 'the Pre button is missing');
+    assert.truthy(menu.includes('Chọn 1 trong 4 đáp án'), 'the Pre interaction is not explained');
     assert.truthy(menu.includes('TOÁN 4'), 'the header does not say which môn this is');
     for (const t of MATH4_TYPES) {
       assert.truthy(menu.includes(t.title), 'dạng not listed: ' + t.title);
@@ -351,10 +369,90 @@ suite('toán 4: một tờ đề Pre', () => {
     assert.truthy(!screen.innerHTML.includes('startMath4Pre()'), 'an empty bank must not offer a paper');
     assert.truthy(screen.innerHTML.includes('Đang tải'), 'and must say why');
     assert.deepEqual(m.math4PickQuestions(), []);
-    m.startMath4Pre();
+    m.startMath4Mix();
     assert.equal(m.isMathQuizActive(), false, 'starting an empty paper must do nothing');
   });
 });
+
+suite('toán 4: Pre trắc nghiệm', () => {
+  test('draws 10 questions in a strict 2-2-2-2-2 order', () => {
+    const { m } = loadMath();
+    for (let round = 0; round < 20; round++) {
+      const picked = m.math4PickPreQuestions();
+      assert.equal(picked.length, 10);
+      assert.deepEqual(picked.map(q => q.t), [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
+      assert.equal(new Set(picked.map(q => q.sourceId)).size, 10, 'a source exercise was repeated');
+    }
+  });
+
+  test('turns exactly one answer part into four unique choices and keeps the bank explanation', () => {
+    const { m } = loadMath();
+    for (const source of MATH4_QUESTIONS) {
+      source.answerParts.forEach((part, partIndex) => {
+        const q = m.math4BuildPreQuestion(source, partIndex);
+        assert.equal(q.options.length, 4, q.id);
+        assert.equal(new Set(q.options).size, 4, q.id + ' has duplicate choices');
+        assert.equal(q.options[q.correct], part.answer);
+        assert.equal(q.answer, part.answer);
+        assert.equal(q.choicePrompt, part.label);
+        assert.equal(q.explanation, source.explanation, 'the authored solution must be preserved');
+        assert.falsy(q.answerParts, 'Pre must render choices rather than input boxes');
+      });
+    }
+  });
+
+  test('renders four large answers, feedback, and the original explanation after a tap', () => {
+    const { m, screen } = loadMath();
+    m.startMath4Pre();
+    const q = m.mathCurrentQuestion();
+    assert.equal((screen.innerHTML.match(/class="grammar-option"/g) || []).length, 4);
+    assert.truthy(screen.innerHTML.includes('math4-pre-prompt'));
+    assert.truthy(screen.innerHTML.includes(q.choicePrompt));
+    m.answerMathQuestion(q.correct);
+    assert.truthy(screen.innerHTML.includes('grammar-explanation correct'));
+    assert.truthy(screen.innerHTML.includes('Câu tiếp'));
+  });
+
+  test('a perfect Pre round pays 20 normal xu plus exactly 50 bonus xu', () => {
+    const { ctx, m, screen } = loadMath();
+    const seen = sitPre(m, new Set());
+    assert.equal(seen.length, 10);
+    const h = ctx.appState.mathHistory[0];
+    assert.equal(h.score, 10);
+    assert.equal(h.total, 10);
+    assert.equal(h.grade, 4);
+    assert.equal(h.g4set, 'pre');
+    assert.equal(h.chapter, 'g4-pre');
+    assert.equal(h.label, 'Toán 4 · Pre');
+    assert.equal(ctx.appState.coins, 10 * m.MATH_COINS_PER_CORRECT + 50);
+    assert.truthy(screen.innerHTML.includes('+50 xu'));
+  });
+
+  test('an imperfect Pre round gets only per-correct coins', () => {
+    const { ctx, m, screen } = loadMath();
+    sitPre(m, new Set([1, 8]));
+    assert.equal(ctx.appState.mathHistory[0].score, 8);
+    assert.equal(ctx.appState.coins, 8 * m.MATH_COINS_PER_CORRECT);
+    assert.falsy(screen.innerHTML.includes('Thưởng đúng 100%'));
+  });
+
+  test('locks the bottom navigation for the whole round and restores it at the result', () => {
+    const { m, nav } = loadMath();
+    m.startMath4Pre();
+    assert.equal(nav.style.display, 'none');
+    sitPreFinish(m);
+    assert.equal(nav.style.display, '');
+  });
+});
+
+function sitPreFinish(m) {
+  for (let i = 0; i < 50; i++) {
+    const q = m.mathCurrentQuestion();
+    if (!q) return;
+    m.answerMathQuestion(q.correct);
+    m.nextMathQuestion();
+  }
+}
 
 // Finish whatever paper is open by answering everything correctly.
 function sitPaperFinish(m) {
@@ -407,7 +505,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('every box is an input the iPad can raise a number pad for', () => {
     const { m, screen } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     const html = screen.innerHTML;
     assert.equal((html.match(/class="math-answer-input"/g) || []).length, q.answerParts.length,
@@ -421,7 +519,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('the in-app keypad and its one-box-at-a-time save are gone from Toán 4', () => {
     const { m, screen } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const html = screen.innerHTML;
     assert.falsy(/math-keypad/.test(html), 'the drawn keypad would sit under the iPad keyboard');
     assert.falsy(/mathAnswerSlot/.test(html), 'there is no single active box any more');
@@ -435,7 +533,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
     // header already opens the board. The banner that used to sit here said
     // both again, in a box the width of the screen.
     const { m, screen } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const html = screen.innerHTML;
     assert.falsy(/math-board-prompt/.test(html), 'the duplicate banner must be gone');
     assert.falsy(/Mở bảng nháp/.test(html), 'and its second door to the board with it');
@@ -445,7 +543,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('the boxes can be filled in any order, and each keeps its own number', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     assert.truthy(q.answerParts.length >= 4, 'dạng 1 should open the paper with four sums');
     // Deliberately backwards, then the middle two — the child taps whichever
@@ -460,7 +558,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('fixing box 1 leaves boxes 2-4 alone — the old Sửa button wiped them', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
     // Go back to the first box and retype it wrong, the way a child would
@@ -476,7 +574,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('the check button stays disabled until every box has something in it', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     assert.falsy(m.math4AllFilled(q), 'an untouched paper cannot be submitted');
     // Fill the LAST box first. A plain values.every() would call this complete,
@@ -494,7 +592,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('a box holding only spaces is still empty', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     q.answerParts.forEach((part, i) => m.mathPartInput(i, i === 1 ? '   ' : part.answer));
     assert.falsy(m.math4AllFilled(q), 'whitespace is not an answer');
@@ -502,7 +600,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('nothing but digits reaches the answer', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     assert.equal(m.mathPartInput(0, '12a3'), '123', 'a letter is dropped');
     assert.equal(m.mathPartInput(0, '-45'), '45', 'a minus is dropped — no Toán 4 answer is negative');
     assert.equal(m.mathPartInput(0, '1 2 3'), '123', 'spaces are dropped');
@@ -513,7 +611,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('cleaning a typo keeps the caret where the child was typing', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const el = fakeInput();
     ctx.document.getElementById = (id) => (id === 'mathPart0' ? el : null);
     // The child had "1234", put the caret after the "2", and typed "x".
@@ -526,7 +624,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('a clean keystroke never rewrites the field, so the caret cannot jump', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     let writes = 0;
     const el = fakeInput();
     Object.defineProperty(el, 'value', {
@@ -541,7 +639,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('the submit button is enabled and disabled without repainting the screen', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     const btn = { disabled: true };
     ctx.document.getElementById = (id) => (id === 'mathSubmitBtn' ? btn : null);
@@ -555,7 +653,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('typing into an already-marked question changes nothing', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     q.answerParts.forEach((part, i) => m.mathPartInput(i, part.answer));
     m.submitMathTyped();
@@ -565,7 +663,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('an index outside the question is refused', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     assert.equal(m.mathPartInput(q.answerParts.length, '5'), '');
     assert.equal(m.mathPartInput(-1, '5'), '');
@@ -598,7 +696,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
   // throughout, because every one of them put its values in THROUGH the copy.
   test('values the browser restored into the boxes still count as answers', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     // Nothing goes through mathPartInput here. That is the whole point.
     const { btn } = pageWith(ctx, q, q.answerParts.map(p => p.answer));
@@ -613,7 +711,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('and touching any box puts the check button back in step', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     const { btn } = pageWith(ctx, q, q.answerParts.map(p => p.answer));
     assert.truthy(btn.disabled, 'it starts stuck, the way the child found it');
@@ -623,7 +721,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('one emptied box disables it again, even though the copy still has that number', () => {
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     q.answerParts.forEach((p, i) => m.mathPartInput(i, p.answer));   // copy is full
     const { btn } = pageWith(ctx, q, q.answerParts.map((p, i) => i === 2 ? '' : p.answer));
@@ -639,7 +737,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
     // are still in the document. Without the data-q stamp, question 2 would
     // open pre-filled with question 1's answers and a live check button.
     const { m, ctx } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const first = m.mathCurrentQuestion();
     answerCurrent(m, first, false);
     m.nextMathQuestion();
@@ -655,7 +753,7 @@ suite('toán 4: mỗi ô đáp án là một ô nhập thật', () => {
 
   test('a marked Toán 4 question shows the boxes as results, not as inputs', () => {
     const { m } = loadMath();
-    m.startMath4Pre();
+    m.startMath4Mix();
     const q = m.mathCurrentQuestion();
     const html = m.mathAnswerPartsHTML(q, q.answerParts.map(p => p.answer));
     assert.falsy(/math-answer-input/.test(html), 'a finished question is not editable');
@@ -679,7 +777,7 @@ suite('toán 4: an admin can hand it out like every other task', () => {
     // And that field really is written — by the same code path a finished
     // paper takes. auth.js builds it from the session, so read the session.
     const { ctx, m } = loadMath();
-    sitPaper(m, new Set());
+    sitPre(m, new Set());
     assert.equal(ctx.appState.mathHistory[0].g4set, 'pre',
       'the task matches on g4set, so the run has to carry it');
     // A Toán 7 chapter task must never be satisfied by a Toán 4 paper: its
@@ -717,7 +815,7 @@ suite('toán 4: an admin can hand it out like every other task', () => {
 
   test('a Toán 4 run really produces math4.* skill rows', () => {
     const { ctx, m } = loadMath();
-    sitPaper(m, new Set([1]));
+    sitPre(m, new Set([1]));
     const skills = ctx.appState.mathHistory[0].skills || [];
     assert.truthy(skills.length > 0, 'no skill summary was attached');
     const wrongPrefix = skills.filter(s => !String(s.skillKey).startsWith('math4.'));

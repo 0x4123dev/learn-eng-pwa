@@ -13817,6 +13817,39 @@
 .math-answer-line {
     display: block;
 }
+
+/* Toán 4 Pre turns one answer part from the original worksheet into a large,
+   tap-friendly prompt. It is separate from the stem so story problems keep
+   their natural wording while short calculations get the equation they need. */
+.math4-pre-prompt {
+    margin: 12px 0 18px;
+    padding: 16px 18px;
+    border: 2px solid #c4b5fd;
+    border-radius: 18px;
+    background: #f5f3ff;
+    color: #2f235f;
+    font-size: clamp(1.25rem, 4.8vw, 1.7rem);
+    font-weight: 800;
+    line-height: 1.35;
+    text-align: center;
+}
+.math4-pre-prompt.compact {
+    margin: 8px 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    text-align: left;
+}
+.math4-pre-cta {
+    border-color: #86efac;
+    background: linear-gradient(135deg, #f0fdf4, #ecfeff);
+}
+.math4-pre-cta:focus-visible {
+    outline: 3px solid #16a34a;
+    outline-offset: 3px;
+}
+@media (max-width: 480px) {
+    .math4-pre-prompt { padding: 14px; }
+}
 /* Farm on the castle grid: per-day sprites, wilt, task-day badges */
 .nr-production-badge.wilted{background:#7a5a3a;color:#ffe9c9}
 .nr-build-grid-cell .nr-placed.farm-item.crop{width:150%;height:150%;bottom:4%}

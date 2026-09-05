@@ -1363,7 +1363,7 @@ async function verifyClient() {
     });
 
   await R.check('play-toan4-pre-paper',
-    'Toán 4: làm trọn một đề Pre — gõ đáp án, chấm, khoá thanh dưới',
+    'Toán 4: làm trọn một đề Pre — chọn đáp án, xem lời giải, khoá thanh dưới',
     async () => {
       const h = mountApp();
       loginTestUser(h, { coins: 0 });
@@ -1376,28 +1376,20 @@ async function verifyClient() {
       mustEqual(st.questions.map((q) => q.t).join(''), '1122334455', 'two of each dạng, in đề order');
       const nav = h.el('bottomNav');
       mustEqual(nav.style.display, 'none', 'the bottom bar must be hidden while a paper is open');
-      // Sit it the way a child does on an iPad: tap into each answer box —
-      // a REAL <input inputmode="numeric">, so iOS raises its own number pad —
-      // type the number, then mark the whole question with one press. The
-      // boxes are filled back to front to prove they are independent.
-      let boxes = 0;
+      // Sit it the way a child does: one tap among four large choices, read
+      // the explanation from the source bank, then move to the next question.
       for (let i = 0; i < 10; i++) {
         const q = h.sandbox.mathCurrentQuestion();
         must(q, 'ran out of questions at ' + i);
-        must(h.sandbox.mathHasAnswerParts(q), q.id + ' has no answer boxes');
-        must(!h.el('mathAnswerSlot'), q.id + ' still draws the one-box-at-a-time keypad');
-        for (let k = q.answerParts.length - 1; k >= 0; k--) {
-          const input = h.el('mathPart' + k);
-          must(input, q.id + ' box ' + k + ' is not a real input');
-          mustEqual(input.getAttribute('inputmode'), 'numeric',
-            q.id + ' box ' + k + ' would not raise the iPad number pad');
-          input.value = String(q.answerParts[k].answer);
-          h.sandbox.mathPartInput(k, input.value);
-          boxes++;
-        }
-        const submit = h.el('mathSubmitBtn');
-        must(submit && !submit.disabled, q.id + ' will not accept a full set of answers');
-        h.sandbox.submitMathTyped();
+        must(!h.sandbox.mathHasAnswerParts(q), q.id + ' still renders input boxes');
+        mustEqual(q.options.length, 4, q.id + ' must have four answers');
+        mustEqual(new Set(q.options).size, 4, q.id + ' repeats an answer');
+        let opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
+        mustEqual(opts.length, 4, q.id + ' did not draw four buttons');
+        h.sandbox.answerMathQuestion(q.correct);
+        opts = h.el('mathHubScreen').querySelectorAll('.grammar-option');
+        must(opts[q.correct].classList.contains('correct'), q.id + ' did not mark the right answer');
+        must(h.el('mathHubScreen').querySelector('.grammar-explanation'), q.id + ' did not show its explanation');
         h.sandbox.nextMathQuestion();
       }
       must(!h.sandbox.isMathQuizActive(), 'the paper is over');
@@ -1406,7 +1398,11 @@ async function verifyClient() {
       mustEqual(hist[0].score, 10, 'a perfect sitting scores 10');
       mustEqual(hist[0].grade, 4, 'the run must be filed as Toán 4');
       mustEqual(hist[0].g4set, 'pre', 'and carry what the daily task matches on');
-      return '10/10 typed into ' + boxes + ' real number inputs, filed as ' + hist[0].label;
+      must(h.peek('appState').coins >= 70,
+        '10 × 2 xu plus the 50-xu perfect bonus (pet combo may add more)');
+      must(h.el('mathHubScreen').textContent.includes('+50 xu'),
+        'the result must name the exact 50-xu perfect bonus');
+      return '10/10 selected from four answers, at least +70 xu, filed as ' + hist[0].label;
     });
 
   await R.check('play-word-hunt-find-a-word',

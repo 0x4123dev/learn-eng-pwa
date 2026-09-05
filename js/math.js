@@ -15,18 +15,19 @@ const MATH_QUIZ_SIZE = 10;
 const MATH_HISTORY_CAP = 300;
 // Pet-shop coins per correct answer. The English tabs pay 5; maths pays 2.
 const MATH_COINS_PER_CORRECT = 2;
-// Toán 4 Pre is the one placement-style paper where a completely correct
-// submission earns a visible bonus on top of the normal per-answer coins.
-const MATH4_PRE_PERFECT_BONUS = 100;
+// Toán 4 has two ten-question modes. Mix keeps the original write-the-answer
+// paper and its existing 100-xu perfect reward; Pre is the shorter, tap-only
+// placement round and pays 50 xu for a clean 10/10.
+const MATH4_MIX_PERFECT_BONUS = 100;
+const MATH4_PRE_PERFECT_BONUS = 50;
 const MATH_TIER_LABELS = { all: 'Tất cả', perfect: '⭐ Hoàn hảo', great: '✅ Tốt', ok: '👍 Khá', weak: '📝 Cần ôn' };
 
-// Toán 4 · Đề ôn "Pre": một đề rút ra từ ngân hàng 500 câu, dựng theo đúng
-// hình dạng Phần 2 của đề thi thật — năm dạng bài, mỗi dạng hai câu, đứng
-// theo thứ tự của tờ đề. Rút đều như vậy chứ không xáo ngẫu nhiên cả 500 câu,
-// vì một đề mà bốc trúng năm câu đổi đơn vị thì không còn là đề nữa.
+// Both Toán 4 modes draw the same balanced paper from the 500-question bank:
+// five dạng, two questions per dạng, kept in the order of the real paper.
 const MATH4_QUIZ_SIZE = 10;
 const MATH4_PER_TYPE = 2;
-const MATH4_SET = 'pre';
+const MATH4_MIX_SET = 'mix';
+const MATH4_PRE_SET = 'pre';
 
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
 let _mathSubTab = 'practice';  // chỉ có nghĩa bên trong Học kì 1: 'practice' | 'exams' | 'lessons'
@@ -775,6 +776,11 @@ function mathById(id) {
   // child a question they had never seen, wearing their own miss count.
   // The stamping is the fix; this line is the net under it.
   if (id === undefined || id === null || id === '') return null;
+  const pre = /^(g4t[1-5]-\d+):pre:(\d+)$/.exec(String(id));
+  if (pre) {
+    const source = math4Bank().find(q => q.id === pre[1]);
+    return source ? math4BuildPreQuestion(source, Number(pre[2])) : null;
+  }
   const practice = mathBankAll().find(q => q.id === id);
   if (practice) return practice;
   const lt = mathLtBank().find(q => q.id === id);
@@ -1077,12 +1083,13 @@ function renderToan7MenuHTML() {
     </div>`;
 }
 
-// ---- Toán 4 · Đề ôn -------------------------------------------------------
-// Một mục duy nhất, cố ý. Đề ôn "Pre" là một tờ đề, không phải một danh sách
-// bài tập: bấm vào là làm cả tờ, đúng năm dạng của Phần 2 và đúng thứ tự đó.
+// ---- Toán 4 · Mix + Pre ----------------------------------------------------
+// Both buttons make one balanced ten-question paper. Mix keeps the original
+// written worksheet; Pre turns one randomly chosen part into four tap answers.
 function renderToan4MenuHTML() {
   const runs = math4History().length;
-  const best = math4Best();
+  const mixBest = math4Best(MATH4_MIX_SET);
+  const preBest = math4Best(MATH4_PRE_SET);
   const bank = math4Bank().length;
   const types = math4Types();
   const ready = math4Ready();
@@ -1094,15 +1101,24 @@ function renderToan4MenuHTML() {
       ${owed}
       <div class="phrases-hero">
         <div class="phrases-hero-icon">📗</div>
-        <h1>Đề ôn Pre</h1>
-        <p class="phrases-sub">Mỗi lượt <b>${MATH4_QUIZ_SIZE} câu</b>: ${MATH4_PER_TYPE} câu cho mỗi dạng, xếp theo đúng thứ tự tờ đề. Làm bài ra bảng nháp rồi nhập kết quả.</p>
+        <h1>Ôn Toán 4</h1>
+        <p class="phrases-sub">Mỗi lượt <b>${MATH4_QUIZ_SIZE} câu</b>: ${MATH4_PER_TYPE} câu cho mỗi dạng, xếp theo đúng thứ tự tờ đề.</p>
       </div>
-      ${ready ? `<button class="phrases-cta" onclick="startMath4Pre()">
+      ${ready ? `<button class="phrases-cta" onclick="startMath4Mix()">
         <span class="phrases-cta-icon">📝</span>
-        <span class="phrases-cta-text"><strong>Pre</strong><small>${MATH4_QUIZ_SIZE} câu · ${types.length} dạng${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small></span>
+        <span class="phrases-cta-text"><strong>Mix</strong><small>Nhập đáp án · ${MATH4_QUIZ_SIZE} câu · ${types.length} dạng${mixBest !== null ? ` · Tốt nhất: ${mixBest}%` : ''}</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>` : `<button class="phrases-cta locked" disabled aria-disabled="true">
         <span class="phrases-cta-icon">📝</span>
+        <span class="phrases-cta-text"><strong>Mix</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
+        <span class="phrases-cta-arrow">🔒</span>
+      </button>`}
+      ${ready ? `<button class="phrases-cta math4-pre-cta" onclick="startMath4Pre()">
+        <span class="phrases-cta-icon">✓</span>
+        <span class="phrases-cta-text"><strong>Pre</strong><small>Chọn 1 trong 4 đáp án · ${MATH4_QUIZ_SIZE} câu · thưởng 50 xu khi đúng 100%${preBest !== null ? ` · Tốt nhất: ${preBest}%` : ''}</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>` : `<button class="phrases-cta locked" disabled aria-disabled="true">
+        <span class="phrases-cta-icon">✓</span>
         <span class="phrases-cta-text"><strong>Pre</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
         <span class="phrases-cta-arrow">🔒</span>
       </button>`}
@@ -1115,8 +1131,8 @@ function renderToan4MenuHTML() {
     </div>`;
 }
 
-function math4Best() {
-  const runs = math4History().filter(h => h.total);
+function math4Best(set) {
+  const runs = math4History().filter(h => h.total && (!set || h.g4set === set));
   if (!runs.length) return null;
   return Math.max(...runs.map(h => Math.round(h.score / h.total * 100)));
 }
@@ -1137,17 +1153,69 @@ function math4PickQuestions() {
   return picked;
 }
 
-function startMath4Pre() {
+// Make three believable, distinct numeric alternatives without changing the
+// bank. Every Toán 4 answer is an integer; the nearby values catch arithmetic
+// slips while ×10/÷10 catches a missing zero in unit conversion.
+function math4ChoiceOptions(answer) {
+  const raw = String(answer == null ? '' : answer).trim();
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return mathShuffle([raw, raw + '0', '0' + raw, raw + '1']);
+  const digits = Math.max(1, String(Math.abs(Math.trunc(n))).length);
+  const place = Math.pow(10, Math.max(0, digits - 2));
+  const candidates = [
+    n - 1, n + 1, n - 10, n + 10,
+    n - place, n + place, n * 10, Math.trunc(n / 10),
+    n - 100, n + 100
+  ];
+  const wrong = [];
+  for (const value of mathShuffle(candidates)) {
+    const text = String(Math.max(0, Math.trunc(value)));
+    if (text !== raw && wrong.indexOf(text) === -1) wrong.push(text);
+    if (wrong.length === 3) break;
+  }
+  for (let value = 0; wrong.length < 3; value++) {
+    const text = String(value);
+    if (text !== raw && wrong.indexOf(text) === -1) wrong.push(text);
+  }
+  return mathShuffle([raw].concat(wrong));
+}
+
+function math4BuildPreQuestion(source, forcedPartIndex) {
+  if (!source || !Array.isArray(source.answerParts) || !source.answerParts.length) return null;
+  const partIndex = Number.isInteger(forcedPartIndex)
+    ? Math.max(0, Math.min(source.answerParts.length - 1, forcedPartIndex))
+    : Math.floor(Math.random() * source.answerParts.length);
+  const part = source.answerParts[partIndex];
+  const answer = String(part.answer);
+  const options = math4ChoiceOptions(answer);
+  return Object.assign({}, source, {
+    id: `${source.id}:pre:${partIndex}`,
+    sourceId: source.id,
+    answerPartIndex: partIndex,
+    choicePrompt: part.label,
+    answer,
+    options,
+    correct: options.indexOf(answer),
+    answerParts: undefined,
+    workNote: undefined,
+  });
+}
+
+function math4PickPreQuestions() {
+  return math4PickQuestions().map(q => math4BuildPreQuestion(q)).filter(Boolean);
+}
+
+function startMath4Mix() {
   _mathHintOpen = false;
   if (typeof retryGate === 'function' && retryGate('math')) return;
   const questions = math4PickQuestions();
   if (!questions.length) return;
   mathTypedReset();
   _mathQuiz = {
-    chapter: 'g4-pre',
+    chapter: 'g4-mix',
     grade: 4,
-    g4set: MATH4_SET,
-    label: 'Toán 4 · Đề ôn Pre',
+    g4set: MATH4_MIX_SET,
+    label: 'Toán 4 · Mix',
     questions: questions,
     idx: 0,
     answers: questions.map(() => null)
@@ -1155,6 +1223,25 @@ function startMath4Pre() {
   // Cả tờ đề chỉ được chấm khi nộp, và thanh điều hướng nằm ngay dưới ngón
   // tay suốt mười câu — giống đề thi Toán 7, thanh đó đi chỗ khác trong lúc
   // bé làm bài. Muốn ra vẫn ra được bằng nút ✕, nhưng phải trả lời câu hỏi.
+  mathLockScreen(true);
+  renderMathQuestion();
+}
+
+function startMath4Pre() {
+  _mathHintOpen = false;
+  if (typeof retryGate === 'function' && retryGate('math')) return;
+  const questions = math4PickPreQuestions();
+  if (!questions.length) return;
+  mathTypedReset();
+  _mathQuiz = {
+    chapter: 'g4-pre',
+    grade: 4,
+    g4set: MATH4_PRE_SET,
+    label: 'Toán 4 · Pre',
+    questions,
+    idx: 0,
+    answers: questions.map(() => null)
+  };
   mathLockScreen(true);
   renderMathQuestion();
 }
@@ -1669,7 +1756,8 @@ function startMathLtQuiz() {
 }
 
 function mathQuizLabel(chapter) {
-  if (chapter === 'g4-pre') return 'Toán 4 · Đề ôn Pre';
+  if (chapter === 'g4-mix') return 'Toán 4 · Mix';
+  if (chapter === 'g4-pre') return 'Toán 4 · Pre';
   if (!chapter) return 'Ôn tổng hợp';
   const c = mathChapters().find(x => x.num === chapter);
   return c ? `Chương ${c.num} · ${c.title}` : `Chương ${chapter}`;
@@ -1767,6 +1855,7 @@ function renderMathQuestion() {
       </div>
       <div class="phrases-cat-row math-topic-badge">${mathEsc(q.topic || mathQuizLabel(st.chapter))}</div>
       <div class="grammar-question-text">${mathFormula(q.q)}</div>
+      ${q.choicePrompt ? `<div class="math4-pre-prompt">${mathFormula(q.choicePrompt)}</div>` : ''}
       ${typeof mathQuestionFigureHTML === 'function' ? mathQuestionFigureHTML(q.fig) : ''}
       ${mathHintHTML(q, !!st.examId)}
       ${body}
@@ -1849,9 +1938,10 @@ function nextMathQuestion() {
 }
 
 function mathPerfectBonus(chapter, score, total) {
-  return chapter === 'g4-pre' && total > 0 && score === total
-    ? MATH4_PRE_PERFECT_BONUS
-    : 0;
+  if (!(total > 0 && score === total)) return 0;
+  if (chapter === 'g4-pre') return MATH4_PRE_PERFECT_BONUS;
+  if (chapter === 'g4-mix') return MATH4_MIX_PERFECT_BONUS;
+  return 0;
 }
 
 function finishMathQuiz() {
@@ -1914,6 +2004,7 @@ function finishMathQuiz() {
   const wrongHTML = wrong.map(x => `
     <div class="grammar-review-item">
       <div class="grammar-review-q">${mathFormula(x.q.q)}</div>
+      ${x.q.choicePrompt ? `<div class="math4-pre-prompt compact">${mathFormula(x.q.choicePrompt)}</div>` : ''}
       <div class="grammar-review-a">✅ ${mathAnswerHTML(x.q)}</div>
       <div class="grammar-review-explain">${mathExplanationHTML(x.q.explanation, x.q)}</div>
     </div>`).join('');
@@ -1933,7 +2024,7 @@ function finishMathQuiz() {
         <div class="math-perfect-bonus" role="status">
           <span class="math-perfect-bonus__title">Thưởng đúng 100%</span>
           <strong>+${perfectBonus} xu</strong>
-          <span>Toán 4 Pre</span>
+          <span>${mathEsc(st.label || mathQuizLabel(st.chapter))}</span>
         </div>` : ''}
       ${wrong.length ? `<h3 class="topic-detail-list-title">Cần xem lại (${wrong.length})</h3>${wrongHTML}` : ''}
       <button class="grammar-next-btn" onclick="renderMathHome()">Xong</button>
@@ -2065,6 +2156,7 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   // question the way the live quiz does (see renderMathQuestion) rather than a
   // second, thinner copy of it.
   promptHTML: (q) => `<div class="grammar-question-text">${mathFormula(q.q)}</div>`
+    + (q.choicePrompt ? `<div class="math4-pre-prompt">${mathFormula(q.choicePrompt)}</div>` : '')
     + (typeof mathQuestionFigureHTML === 'function' ? mathQuestionFigureHTML(q.fig) : ''),
   explainHTML: (q) => `<div class="grammar-review-explain">${mathExplanationHTML(q.explanation, q)}</div>`,
   home: () => renderMathHome(),
@@ -2094,8 +2186,10 @@ if (typeof module !== 'undefined' && module.exports) {
     mathGlossary, mathHintsFor, mathHintHTML, toggleMathHint, MATH_HINT_CHAPTERS,
     openMathSection, renderMathMenuHTML, renderToan7MenuHTML, mathHeaderHTML,
     math4Bank, math4Types, math4Ready, math4History, math7History, math4Best,
-    math4PickQuestions, startMath4Pre, renderToan4MenuHTML, mathPerfectBonus,
-    MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND, MATH4_QUIZ_SIZE, MATH4_PER_TYPE, MATH4_SET,
-    MATH_COINS_PER_CORRECT, MATH4_PRE_PERFECT_BONUS,
+    math4PickQuestions, math4PickPreQuestions, math4ChoiceOptions, math4BuildPreQuestion,
+    startMath4Mix, startMath4Pre, renderToan4MenuHTML, mathPerfectBonus,
+    MATH_QUIZ_SIZE, MATH_TYPED_PER_ROUND, MATH4_QUIZ_SIZE, MATH4_PER_TYPE,
+    MATH4_MIX_SET, MATH4_PRE_SET, MATH_COINS_PER_CORRECT,
+    MATH4_MIX_PERFECT_BONUS, MATH4_PRE_PERFECT_BONUS,
   };
 }
