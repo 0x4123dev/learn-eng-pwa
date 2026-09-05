@@ -127,6 +127,7 @@ suite('cướp đêm: the sleeping side is really settled', () => {
     const f = await finish(world, attacker, s.data.raid.raidId);
     assert.truthy(f.ok && f.data.result.won);
     assert.equal(f.data.result.reward, 0, 'an empty house pays nothing');
+    assert.equal(f.data.result.rewardReason, 'empty_vault', 'the UI is told why a won raid paid zero');
     assert.equal(grantsFor(world, victim.uid).length, 0, 'and owes nothing');
   });
 });

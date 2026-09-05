@@ -51,7 +51,8 @@ export async function onRequestPost({request,env}) {
   // by what is left of today's daily_reward_cap — and the victim loses exactly
   // that, no more. The old formula had a 50 xu floor, which paid best for
   // robbing the poorest house in the game.
-  const reward=won?winReward(pile(raid.defender_id),cfg,stats.reward):0;
+  const defenderPile=pile(raid.defender_id);
+  const reward=won?winReward(defenderPile,cfg,stats.reward):0;
   const victimLoss=reward;
   // A failed raid costs the attacker `loss` (or `shield_loss` when it broke on
   // a Khiên Đêm) and hands that same amount to the DEFENDER, who until now got
@@ -79,7 +80,9 @@ export async function onRequestPost({request,env}) {
   // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
   // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
   // giữ bấy nhiêu, thắng hay thua cũng không mất.
-  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0,settlementId:randomRaidId()};
+  const desiredLoot=Math.min(cfg.win_cap,Math.floor(defenderPile*cfg.win_pct/100));
+  const rewardReason=!won?'lost':reward>0?'loot':desiredLoot<=0?'empty_vault':'daily_cap';
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,rewardReason,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0,settlementId:randomRaidId()};
   // A breach seals the home for a flat seal_hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;

@@ -48,7 +48,8 @@ function loadAuth(plan) {
 suite('money client: admin grants land exactly as the server says', () => {
   test('a Daily Task reward is described as earned, not as an admin gift', async () => {
     const { ctx } = loadAuth(url =>
-      url === '/api/coins' ? { data: { granted: 200, dailyTaskGranted: 200, flags: {} } } : null);
+      url === '/api/coins' ? { data: { granted: 200, dailyTaskGranted: 200,
+        adjustments: [{ amount: 200, note: 'Daily task 2026-09-05' }], flags: {} } } : null);
     const toasts = [];
     ctx.showToast = msg => toasts.push(msg);
     ctx.appState = { coins: 100 };
@@ -56,6 +57,33 @@ suite('money client: admin grants land exactly as the server says', () => {
     await ctx.EngAuth.refreshFlags('Kid');
     assert.equal(ctx.appState.coins, 300);
     assert.equal(toasts[0], '🎉 Hoàn thành Daily Task được tặng 200 xu!');
+    assert.falsy(toasts[0].includes('Admin'));
+  });
+
+  test('a successful defence says why 100 xu arrived and never calls it an admin gift', async () => {
+    const { ctx } = loadAuth(url =>
+      url === '/api/coins' ? { data: { granted: 100,
+        adjustments: [{ amount: 100, note: 'Cướp Đêm: con giữ được nhà' }], flags: {} } } : null);
+    const toasts = [];
+    ctx.showToast = msg => toasts.push(msg);
+    ctx.appState = { coins: 500 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.refreshFlags('Kid');
+    assert.equal(ctx.appState.coins, 600);
+    assert.equal(toasts[0], '🏰 Nhà con bị cướp nhưng đã phòng thủ thành công · +100 xu');
+    assert.falsy(toasts[0].includes('Admin'));
+  });
+
+  test('a manual reward uses its reason without exposing the Admin role', async () => {
+    const { ctx } = loadAuth(url =>
+      url === '/api/coins' ? { data: { granted: 75,
+        adjustments: [{ amount: 75, note: 'Admin tặng con: thưởng chăm học', manual: true }], flags: {} } } : null);
+    const toasts = [];
+    ctx.showToast = msg => toasts.push(msg);
+    ctx.appState = { coins: 0 };
+    ctx.currentUser = 'Kid';
+    await ctx.EngAuth.refreshFlags('Kid');
+    assert.equal(toasts[0], '🎁 thưởng chăm học · +75 xu');
     assert.falsy(toasts[0].includes('Admin'));
   });
 

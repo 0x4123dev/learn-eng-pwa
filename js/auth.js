@@ -212,7 +212,7 @@ const EngAuth = (function () {
     return true;
   }
 
-  // Admin coin adjustments are server-side IOUs (coin_grants): claim every
+  // Coin adjustments are server-side IOUs (coin_grants): claim every
   // unclaimed row once, apply the signed total to this device's wallet, and
   // ACK with the claim's receipt once the coins are durably saved — the
   // receipt protocol (db/015). If anything dies between the server stamping
@@ -222,6 +222,31 @@ const EngAuth = (function () {
   function _pendingReceipts(username) {
     const a = getAccount(username);
     return (a && Array.isArray(a.pendingCoinReceipts)) ? a.pendingCoinReceipts : [];
+  }
+  function coinGrantMessage(adjustment) {
+    const amount = Math.trunc(Number(adjustment && adjustment.amount) || 0);
+    const note = String(adjustment && adjustment.note || '').trim();
+    const signed = (amount > 0 ? '+' : '') + amount + ' xu';
+    if (/^Daily task \d{4}-\d{2}-\d{2}$/.test(note)) {
+      return '🎉 Hoàn thành Daily Task được tặng ' + amount + ' xu!';
+    }
+    if (note === 'Cướp Đêm: con giữ được nhà') {
+      return '🏰 Nhà con bị cướp nhưng đã phòng thủ thành công · ' + signed;
+    }
+    if (note === 'Cướp Đêm: nhà con bị cướp') {
+      return '🌙 Nhà con đã bị cướp · ' + signed;
+    }
+    if (/^Ghost offering:/.test(note)) {
+      return '👻 Thưởng sự kiện Cúng Cô Hồn · ' + signed;
+    }
+    // A manual adjustment may carry a useful reason entered by the parent.
+    // Remove legacy wording that attributes it to “Admin”; child-facing copy
+    // should explain the event, not expose an implementation role.
+    const reason = note
+      .replace(/^admin\s*(?:tặng|tang|grant(?:ed)?)?\s*(?:bạn|ban|con)?\s*[:\-–—]?\s*/i, '')
+      .trim();
+    if (amount > 0) return '🎁 ' + (reason || 'Con nhận được phần thưởng') + ' · ' + signed;
+    return '🧾 ' + (reason || 'Điều chỉnh số dư') + ' · ' + signed;
   }
   async function claimCoinGrants(username) {
     const token = tokenFor(username);
@@ -237,6 +262,8 @@ const EngAuth = (function () {
       if (r.ok && pending.length) setAccount(username, { pendingCoinReceipts: [] });
       const granted = r.ok && r.data ? Math.trunc(+r.data.granted || 0) : 0;
       const dailyTaskGranted = r.ok && r.data ? Math.trunc(+r.data.dailyTaskGranted || 0) : 0;
+      const adjustments = r.ok && r.data && Array.isArray(r.data.adjustments)
+        ? r.data.adjustments : [];
       const receipt = (r.ok && r.data && typeof r.data.receipt === 'string' && r.data.receipt) || null;
       if (typeof appState === 'undefined' || !appState) return;
       if (typeof currentUser === 'undefined' || currentUser !== username) return;
@@ -286,13 +313,15 @@ const EngAuth = (function () {
       }
       if (!granted) return;
       if (typeof showToast === 'function') {
-        if (granted > 0 && dailyTaskGranted > 0) {
+        if (adjustments.length) {
+          showToast(adjustments.map(coinGrantMessage).join(' · '));
+        } else if (granted > 0 && dailyTaskGranted > 0) {
           const other = granted - dailyTaskGranted;
           showToast('🎉 Hoàn thành Daily Task được tặng ' + dailyTaskGranted + ' xu!'
             + (other > 0 ? ' · Nhận thêm ' + other + ' xu' : ''));
         } else {
           showToast(granted > 0
-            ? '🎁 Admin tặng bạn ' + granted + ' xu!'
+            ? '🎁 Con nhận được phần thưởng · +' + granted + ' xu'
             : '🧾 Đã điều chỉnh số dư ' + granted + ' xu');
         }
       }

@@ -125,6 +125,19 @@ suite('kết quả chỉ xuất hiện sau khi máy chủ xác nhận', () => {
     assert.falsy(out.includes('mất 200 xu'),'no configured penalty is hardcoded');
     assert.equal(w.state.coins,8963);
   });
+
+  test('a verified win over an empty vault celebrates the breach without claiming +0 xu', async () => {
+    const result={won:true,reward:0,rewardReason:'empty_vault',loss:0,stars:3,damage:50,defense:20,castleHp:0};
+    const w=await marchOn({friends:friendsReply,targets:targetsReply,start:ACTIVE_RAID,
+      finish:{ok:true,data:{result}}});
+    const battle=w.battles[w.battles.length-1];
+    battle.options.onFinish({status:'won',damage:50,defense:20,castleHp:0},[]);
+    await flush();
+    const out=w.screen().innerHTML;
+    assert.truthy(out.includes('CHIẾN THẮNG'));
+    assert.truthy(out.includes('Kho xu của nhà này đang trống'));
+    assert.falsy(out.includes('+0 xu'));
+  });
 });
 
 const RUINED = (over) => ({ ok: true, data: Object.assign(
@@ -307,6 +320,17 @@ suite('NHẬT KÝ: both sides of the night', () => {
     const html = w.screen().innerHTML;
     assert.truthy(html.includes('Cũ'), 'a row must never be dropped out of the child\'s history');
     assert.truthy(html.includes('+40 xu'));
+  });
+
+  test('a breached empty vault is never described as stealing zero coins', async () => {
+    const w = await openLog({ ok: true, data: {
+      reports: [], attacks: [{ id: 'empty', defenderName: 'Kho trống', finishedAt: Date.now(),
+        kind: 'won', reward: 0, stars: 3, result: { won: true, rewardReason: 'empty_vault' } }],
+    } });
+    const html = w.screen().innerHTML;
+    assert.truthy(html.includes('Kho trống'));
+    assert.truthy(html.includes('không có xu để lấy'));
+    assert.falsy(html.includes('+0 xu'), 'breaking an empty castle is not stealing zero coins');
   });
 
   test('names in the log are escaped', async () => {

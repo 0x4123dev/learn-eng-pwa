@@ -64,6 +64,21 @@ suite('money server: coin grants pay exactly once', () => {
     const result = await world.call(coinsHandler().onRequestPost, { token: user.token });
     assert.equal(result.data.granted, 200);
     assert.equal(result.data.dailyTaskGranted, 200);
+    assert.deepEqual(result.data.adjustments, [
+      { amount: 200, note: 'Daily task 2026-09-05', manual: false },
+    ]);
+  });
+
+  test('a defence grant keeps the reason needed by child-facing copy', async () => {
+    const world = createWorld();
+    const user = await world.createUser({});
+    world.db.prepare(
+      'INSERT INTO coin_grants (user_id, amount, note, granted_by) VALUES (?,?,?,?)'
+    ).run(user.uid, 100, 'Cướp Đêm: con giữ được nhà', 0);
+    const result = await world.call(coinsHandler().onRequestPost, { token: user.token });
+    assert.deepEqual(result.data.adjustments, [
+      { amount: 100, note: 'Cướp Đêm: con giữ được nhà', manual: false },
+    ]);
   });
 
   test('two grants are paid in one claim and never again', async () => {

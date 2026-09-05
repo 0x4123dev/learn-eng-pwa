@@ -78,7 +78,7 @@ export async function onRequestPost({ request, env }) {
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)
                AND (? IS NULL OR claimed_device IS NULL OR claimed_device = ?))
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)))
-         RETURNING amount, note`
+         RETURNING amount, note, granted_by`
       ).bind(receipt, device, auth.uid, RECLAIM_AFTER, device, device, STRANDED_AFTER).all();
     } catch (e) {
       // db/025 has not been applied to this database yet. A child's coins must
@@ -90,12 +90,12 @@ export async function onRequestPost({ request, env }) {
         `UPDATE coin_grants SET claimed_at = datetime('now'), receipt = ?, confirmed_at = NULL
          WHERE user_id = ? AND (claimed_at IS NULL
            OR (confirmed_at IS NULL AND claimed_at < datetime('now', ?)))
-         RETURNING amount, note`
+         RETURNING amount, note, granted_by`
       ).bind(receipt, auth.uid, RECLAIM_AFTER).all();
     }
   } else {
     claimed = await env.DB.prepare(
-      "UPDATE coin_grants SET claimed_at = datetime('now'), confirmed_at = datetime('now') WHERE user_id = ? AND claimed_at IS NULL RETURNING amount, note"
+      "UPDATE coin_grants SET claimed_at = datetime('now'), confirmed_at = datetime('now') WHERE user_id = ? AND claimed_at IS NULL RETURNING amount, note, granted_by"
     ).bind(auth.uid).all();
   }
   const rows = claimed.results || [];
@@ -109,10 +109,21 @@ export async function onRequestPost({ request, env }) {
     /^Daily task \d{4}-\d{2}-\d{2}$/.test(String(row.note || ''))
       ? total + Math.trunc(Number(row.amount) || 0)
       : total, 0);
+  // Keep each adjustment's reason. The client used to receive only the net
+  // total, so every non-Daily-Task reward was incorrectly announced as an
+  // admin gift — including the 100 xu earned by defending a home. `note` is
+  // already bounded when manual grants are created, and the client renders it
+  // as text (never HTML).
+  const adjustments = rows.map(row => ({
+    amount: Math.trunc(Number(row.amount) || 0),
+    note: String(row.note || '').slice(0, 120),
+    manual: Number(row.granted_by || 0) > 0,
+  }));
   // The receipt goes back whenever ROWS were claimed, not when the total is
   // positive. A batch that nets to zero — or to a negative, now that a raid
   // debits the sleeping defender through this table — used to come back with
   // `receipt: null`, so the device could never ack it, and the server offered
   // the very same debit again on every sync after the reclaim window.
-  return json({ granted, dailyTaskGranted, receipt: rows.length > 0 ? receipt : null, flags });
+  return json({ granted, dailyTaskGranted, adjustments,
+    receipt: rows.length > 0 ? receipt : null, flags });
 }
