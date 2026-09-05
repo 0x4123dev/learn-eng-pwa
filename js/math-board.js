@@ -540,6 +540,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // NEXT session's hint and removes it seconds early — the same stale-timer
     // shape as the "Chắc chưa?" confirm.
     var _mathBoardHintTimer = null;
+    var _mathBoardViewportListening = false;
     // The complete question is the safe default: a child should never solve
     // from a clipped stem without noticing. Collapse is an explicit choice and
     // survives switching Bảng 1/2/3 during the same board opening.
@@ -583,6 +584,50 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     window.addEventListener('resize', mathBoardResize);
     window.addEventListener('orientationchange', mathBoardResize);
 
+    // Fixed elements on iOS are laid out against the layout viewport while
+    // the pixels the child can actually see belong to visualViewport. Safari
+    // changes the latter after repeated swipes as its browser chrome moves.
+    // Pin the board to those live bounds so no stale app-shell height can pull
+    // the bottom navigation upward or leave a white gutter below it.
+    function mathBoardSyncVisualViewport() {
+        const el = document.getElementById('mathBoardOverlay');
+        if (!el || el.classList.contains('hidden')) return;
+        const vv = window.visualViewport;
+        const left = vv ? Math.max(0, vv.offsetLeft || 0) : 0;
+        const top = vv ? Math.max(0, vv.offsetTop || 0) : 0;
+        const width = vv ? Math.max(1, vv.width || window.innerWidth) : window.innerWidth;
+        const height = vv ? Math.max(1, vv.height || window.innerHeight) : window.innerHeight;
+        el.style.setProperty('--math-board-vv-left', left + 'px');
+        el.style.setProperty('--math-board-vv-top', top + 'px');
+        el.style.setProperty('--math-board-vv-width', width + 'px');
+        el.style.setProperty('--math-board-vv-height', height + 'px');
+        mathBoardResize();
+    }
+
+    function mathBoardStartViewportLock() {
+        document.documentElement.classList.add('math-board-open');
+        if (!_mathBoardViewportListening && window.visualViewport) {
+            window.visualViewport.addEventListener('resize', mathBoardSyncVisualViewport);
+            window.visualViewport.addEventListener('scroll', mathBoardSyncVisualViewport);
+            _mathBoardViewportListening = true;
+        }
+        mathBoardSyncVisualViewport();
+    }
+
+    function mathBoardStopViewportLock() {
+        document.documentElement.classList.remove('math-board-open');
+        if (_mathBoardViewportListening && window.visualViewport) {
+            window.visualViewport.removeEventListener('resize', mathBoardSyncVisualViewport);
+            window.visualViewport.removeEventListener('scroll', mathBoardSyncVisualViewport);
+        }
+        _mathBoardViewportListening = false;
+        const el = document.getElementById('mathBoardOverlay');
+        if (el) {
+            ['--math-board-vv-left', '--math-board-vv-top', '--math-board-vv-width', '--math-board-vv-height']
+                .forEach(function (name) { el.style.removeProperty(name); });
+        }
+    }
+
     // Expanding the question strip is the one thing that reliably shrinks the
     // sheet, and it is a tap we own — so resize on the spot rather than trust
     // the ResizeObserver to notice. (Some engines never deliver it; a stale
@@ -609,6 +654,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         _mathBoardPenWidth = MATH_BOARD_INK_WIDTH;
         _mathBoardQuestionExpanded = true;
         mathBoardRenderOverlay();
+        mathBoardStartViewportLock();
     };
 
     window.minimizeMathBoard = function () {
@@ -639,6 +685,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         if (_mathBoardResizeObs) { _mathBoardResizeObs.disconnect(); _mathBoardResizeObs = null; }
         const el = document.getElementById('mathBoardOverlay');
         if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
+        mathBoardStopViewportLock();
         _mathBoardCtx = null;
     }
 

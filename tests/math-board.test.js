@@ -491,6 +491,24 @@ suite('math board: overlay wiring', () => {
             'a canvas whose bitmap stops matching its box draws ink away from the finger');
     });
 
+    test('iPhone browser chrome cannot lift the bottom bar or expose white space', () => {
+        const src = read('js/math-board.js');
+        const css = read('css/styles.css');
+        const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
+        assert.truthy(/position:\s*fixed/.test(overlay),
+            'the scratch board must not inherit a stale app-shell height');
+        assert.truthy(/--math-board-vv-height/.test(overlay) && /window\.visualViewport/.test(src),
+            'the full-screen board must follow the live iOS visual viewport');
+        assert.truthy(/visualViewport\.addEventListener\('resize'/.test(src) &&
+            /visualViewport\.addEventListener\('scroll'/.test(src),
+            'Safari changes the visual viewport during repeated swipes, not just rotation');
+        assert.truthy(/html\.math-board-open #bottomNav\s*{[^}]*display:\s*none\s*!important/s.test(css),
+            'the bottom navigation must reserve no space and accept no taps while writing');
+        assert.truthy(/classList\.add\('math-board-open'\)/.test(src) &&
+            /classList\.remove\('math-board-open'\)/.test(src),
+            'opening and closing the board must restore navigation deterministically');
+    });
+
     test('the destructive-clear confirm cannot survive the button being rebuilt', () => {
         const src = read('js/math-board.js');
         const render = src.slice(src.indexOf('function mathBoardRenderOverlay'));
