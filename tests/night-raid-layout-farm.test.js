@@ -53,10 +53,13 @@ suite('layout: extra farm plots', () => {
     assert.truthy(barn && barn.gx <= 4 && barn.gy <= 4, 'a 2x2 barn is pulled inside the 6x6 board');
     assert.deepEqual({ x:layout.farms[0].x, y:layout.farms[0].y }, R.FARM_PLOT_POSITIONS[0], 'legacy farms get a stable meadow position');
   });
-  test('farm meadow positions persist and hostile coordinates are bounded', () => {
+  test('farm meadow positions snap to distinct square docks hugging the castle land', () => {
     const layout=R.normalizeLayout({cells:[],farms:[{cells:[],x:17,y:-999},{cells:[],x:999,y:44}]});
-    assert.deepEqual({x:layout.farms[0].x,y:layout.farms[0].y},{x:17,y:R.FARM_PLOT_BOUNDS.minY});
-    assert.deepEqual({x:layout.farms[1].x,y:layout.farms[1].y},{x:R.FARM_PLOT_BOUNDS.maxX,y:44});
+    assert.deepEqual({x:layout.farms[0].x,y:layout.farms[0].y},{x:0,y:-51});
+    assert.deepEqual({x:layout.farms[1].x,y:layout.farms[1].y},{x:100,y:51});
+    assert.equal(new Set(layout.farms.map(f=>f.x+':'+f.y)).size,2);
+    assert.equal(R.FARM_PLOT_DOCKS.length,8);
+    assert.deepEqual(R.nearestFarmPlotDock(-200,20),{x:-38,y:0});
   });
   test('a layout without farms normalizes to farms: []', () => {
     assert.deepEqual(R.normalizeLayout({ cells: [] }).farms, []);

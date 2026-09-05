@@ -396,6 +396,13 @@ suite('night raid: app integration',()=>{
     assert.truthy(css.includes('.nr-builder:not(.editing):not(.nr-home-stage) .nr-build-grid-cell'));
     assert.truthy(css.includes('.nr-builder.editing .nr-build-grid-cell>i'),'grid markers show only while editing');
   });
+  test('dragging a farm reveals square snap docks tight around the castle',()=>{
+    assert.truthy(ui.includes('NightRaidRules.FARM_PLOT_DOCKS.map'),'all legal docks are rendered from the shared rule');
+    assert.truthy(ui.includes("map.classList.add('farm-dragging')"),'the placement guide appears for the duration of the drag');
+    assert.truthy(ui.includes('NightRaidRules.nearestFarmPlotDock(rawX,rawY)'),'the plot snaps instead of keeping an arbitrary meadow coordinate');
+    assert.truthy(css.includes('.nr-estate-map.farm-dragging .nr-farm-dock{opacity:1'),'dock guides become visible');
+    assert.truthy(css.includes("url('../img/farm/dry-ground.webp')"),'the aligned square uses a flat soil surface');
+  });
   test('the old home entry point redirects to the editable builder',()=>{
     // There is only one Night Raid home now: the builder. Keeping the legacy
     // function as an alias prevents old callers from reviving the overlapping

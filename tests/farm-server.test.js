@@ -192,7 +192,7 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     assert.equal(s.farms.length, 3);
     assert.equal(s.farms[0].cells[0].day, 1);
     assert.equal(s.farms[0].cells[0].at, TODAY);
-    assert.deepEqual({x:s.farms[0].x,y:s.farms[0].y},{x:-41,y:22}, 'the server persists the farm position on the shared meadow');
+    assert.deepEqual({x:s.farms[0].x,y:s.farms[0].y},{x:-38,y:0}, 'the server snaps a free-form client position into the nearest legal dock');
   });
 });
 

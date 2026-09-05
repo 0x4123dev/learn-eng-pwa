@@ -203,6 +203,8 @@ suite('builder farm: extra farm boards', () => {
     assert.equal(w.state.coins, 15000);
     const out = html(w);
     assert.truthy(out.includes('NÔNG TRẠI 1 · KÉO'), 'the farm gets a drag handle on the shared meadow');
+    assert.truthy(out.includes('nr-farm-docks') && (out.match(/data-farm-dock=/g)||[]).length===8, 'eight visible-on-drag square docks surround the castle');
+    assert.truthy(out.includes('nr-farm-surface') && !out.includes('farm-plot.webp'), 'the farm board is a straight CSS square, not the old isometric diamond');
     assert.truthy(/nr-free-grid size-6/.test(out), 'the new board is 6x6');
     assert.falsy(out.includes('nr-zone-chips'), 'there is no castle/farm tab switcher');
     assert.truthy(out.includes('aria-label="Phòng thủ"'), 'the unified shop keeps castle items available');

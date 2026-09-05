@@ -4,6 +4,8 @@
 
 The Daily Task “Xem vườn” entry opens this unified screen in its normal viewing state. It must not carry over edit mode, show the placement grid, or reopen the shop; the child explicitly enters placement mode with the Sửa button.
 
+Purchased farms use a straight square board and may occupy one of eight non-overlapping docks touching the four edges of the castle land. While a farm is dragged, every dock displays its own 6×6 guide; the nearest dock highlights and the farm snaps to it. Occupied docks remain visible but are marked unavailable.
+
 Render the castle board and every purchased farm plot in one pannable, zoomable meadow. Remove the castle/farm tab switcher.
 
 Keep each farm as a separate logical zone in persisted data so planting, harvesting, anti-minting checks, and combat rules remain unchanged. Add sanitized `x` and `y` placement coordinates to each farm for its visual position around the castle.

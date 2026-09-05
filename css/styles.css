@@ -13870,16 +13870,18 @@
 .nr-purchase-price.seed{background:#e8f7cc;color:#3f6429}.nr-purchase-price.seed strong{font-size:18px}
 @media(max-width:520px){.dt-seed-reward{grid-template-columns:54px minmax(0,1fr);padding:10px}.dt-seed-reward>img,.dt-seed-placeholder{width:54px;height:54px}.dt-seed-reward>button{grid-column:1/-1;width:100%}}
 
-/* Castle and purchased farms share one continuous meadow. Farm positions are
-   saved as percentages of the castle board and may sit outside its fence; the
-   world plane already supplies pannable grass there. */
-.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;filter:drop-shadow(0 14px 12px rgba(48,66,27,.3));touch-action:none}
-.nr-farm-plot>img{position:absolute;z-index:0;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
-.nr-farm-plot>.nr-free-grid{z-index:2;left:12%;top:24%;width:76%;height:62%;overflow:visible;transform:none}
-.nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:2%;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
+/* Square farm docks hug the straight edges of the castle land. During a drag
+   the eight legal targets become a visible 6×6 guide, and the plot snaps to
+   one of them instead of being left at an arbitrary angle or meadow pixel. */
+.nr-farm-plot{position:absolute;z-index:12;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;isolation:isolate;border:7px solid #a86027;border-radius:16px;background:#b97836;box-shadow:inset 0 0 0 3px #e4a558,0 14px 18px rgba(48,66,27,.3);touch-action:none}
+.nr-farm-surface{position:absolute;z-index:0;inset:5px;border-radius:8px;background:#9a5d2d url('../img/farm/dry-ground.webp') center/cover;box-shadow:inset 0 0 18px rgba(80,39,15,.38);pointer-events:none}
+.nr-farm-plot>.nr-free-grid{z-index:2;left:6%;top:6%;width:88%;height:88%;overflow:visible;transform:none}
+.nr-farm-plot-handle{position:absolute;z-index:8;left:50%;top:-24px;min-width:44px;min-height:44px;padding:6px 11px;transform:translateX(-50%);border:3px solid #fff7bd;border-radius:999px;background:#ef9e2e;color:#54340d;box-shadow:0 6px 15px rgba(97,60,19,.28);font-size:10px;font-weight:1000;letter-spacing:.04em;white-space:nowrap;cursor:grab;touch-action:none;opacity:0;pointer-events:none}
 .nr-builder.editing .nr-farm-plot-handle{opacity:1;pointer-events:auto}.nr-farm-plot.dragging{z-index:18;filter:drop-shadow(0 20px 16px rgba(48,66,27,.42)) brightness(1.08)}.nr-farm-plot.dragging .nr-farm-plot-handle{cursor:grabbing}.nr-farm-plot.invalid{filter:drop-shadow(0 0 14px #ff4e42) saturate(.55)}
-.nr-farm-plot.invalid::after{content:"CHỌN VÙNG CỎ TRỐNG";position:absolute;z-index:9;left:50%;top:48%;transform:translate(-50%,-50%);padding:7px 10px;border:3px solid #fff;border-radius:999px;background:#d93d35;color:#fff;font-size:10px;font-weight:1000;white-space:nowrap}
+.nr-farm-plot.invalid::after{content:"Ô NÀY ĐÃ CÓ NÔNG TRẠI";position:absolute;z-index:9;left:50%;top:48%;transform:translate(-50%,-50%);padding:7px 10px;border:3px solid #fff;border-radius:999px;background:#d93d35;color:#fff;font-size:10px;font-weight:1000;white-space:nowrap}
 .nr-builder.wilted .nr-farm-plot{filter:saturate(.72) sepia(.18) drop-shadow(0 14px 12px rgba(48,66,27,.3))}
-.nr-builder.editing .nr-farm-plot>.nr-free-grid{outline:3px dashed rgba(255,231,111,.9);outline-offset:4px;border-radius:12%}
+.nr-builder.editing .nr-farm-plot>.nr-free-grid{outline:3px dashed rgba(255,231,111,.9);outline-offset:4px;border-radius:8px}
+.nr-farm-docks{position:absolute;z-index:10;inset:0;pointer-events:none}.nr-farm-dock{position:absolute;left:var(--nr-farm-x);top:var(--nr-farm-y);width:38%;aspect-ratio:1;border:5px dashed rgba(255,248,168,.95);border-radius:16px;background-color:rgba(255,241,120,.16);background-image:linear-gradient(rgba(255,255,255,.58) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.58) 2px,transparent 2px);background-size:16.666% 16.666%;box-shadow:0 0 0 5px rgba(80,111,42,.2),0 8px 20px rgba(50,71,30,.16);opacity:0;transform:scale(.96);transition:opacity .18s ease,transform .18s ease,background-color .18s ease}
+.nr-estate-map.farm-dragging .nr-farm-dock{opacity:1;transform:scale(1)}.nr-estate-map.farm-dragging .nr-farm-dock.occupied:not(.source){opacity:.34;border-color:#e46b55;background-color:rgba(190,56,42,.18)}.nr-estate-map.farm-dragging .nr-farm-dock.active{opacity:1;border-style:solid;border-color:#fff;background-color:rgba(117,213,71,.36);box-shadow:0 0 0 7px rgba(73,165,47,.32),0 12px 24px rgba(42,93,34,.3)}.nr-estate-map.farm-dragging .nr-farm-dock.active.occupied:not(.source){border-color:#ff6659;background-color:rgba(210,53,42,.38);box-shadow:0 0 0 7px rgba(190,45,36,.25)}
 @media(max-width:700px){.nr-farm-plot-handle span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}}
-@media(prefers-reduced-motion:reduce){.nr-farm-plot-handle{transition:none}}
+@media(prefers-reduced-motion:reduce){.nr-farm-plot-handle,.nr-farm-dock{transition:none}}
