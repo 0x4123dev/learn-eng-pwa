@@ -371,7 +371,7 @@ suite('night raid: app integration',()=>{
   });
 
   test('the equipped castle drags only in edit mode and the real pet patrols it',()=>{
-    for(const token of ['beginCastleDrag','castleCell','footprintFor','nr-pet-patrol','yardPetHtml()','pet-walk-${pet.atlas}-v1.png','startPetPatrol','data-nr-yard-pet','dataset.x','state.vx*=-1','--nr-castle-x'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['beginCastleDrag','castleCell','footprintFor','nr-pet-patrol','yardPetHtml({showName:false})','pet-walk-${pet.atlas}-v1.png','startPetPatrol','data-nr-yard-pet','dataset.x','state.vx*=-1','--nr-castle-x'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const asset of ['pet-walk-small-v1.png','pet-walk-large-v1.png'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
     assert.truthy(css.includes('.nr-builder.editing .nr-builder-map>.nr-equipped-castle'),'castle drag must require SỬA');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'pet patrol must respect reduced motion');

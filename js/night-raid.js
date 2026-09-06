@@ -496,7 +496,7 @@ var NightRaid = (() => {
     // on an empty land cell instead. The grab handle therefore lives above the
     // grid — and is sized to the castle's GROUND, not its artwork, so the towers
     // leaning over neighbouring cells never steal a tap meant for those cells.
-    if(editable)mountCastlePad(map,layout);else map.querySelector('.nr-castle-pad')?.remove();if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());if((view==='home'||view==='builder')&&!map.querySelector('[data-nr-yard-army]'))map.insertAdjacentHTML('beforeend',yardArmyHtml());}
+    if(editable)mountCastlePad(map,layout);else map.querySelector('.nr-castle-pad')?.remove();if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml({showName:false}));if((view==='home'||view==='builder')&&!map.querySelector('[data-nr-yard-army]'))map.insertAdjacentHTML('beforeend',yardArmyHtml());}
   // Where the dog may NOT walk. The yard grid is .nr-free-grid — left 12%,
   // top 42%, 76%x47% of the map, twelve cells each way — so every placed
   // building maps to a rectangle in the same percentage space the pet walks
