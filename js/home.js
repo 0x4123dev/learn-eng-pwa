@@ -522,14 +522,9 @@ function goToSkillTab(key) {
 function renderHome() {
     if (!appState) return;
 
-    // Home is a primary destination, so its navigation must always be back.
-    // A lesson/game deliberately hides the bar; if that flow is interrupted
-    // by a reload or hands control back without restoring its inline style,
-    // the old `display:none` otherwise survives even though Home rendered.
-    const bottomNav = document.getElementById('bottomNav');
-    if (bottomNav && document.getElementById('homeScreen')?.classList.contains('active')) {
-        bottomNav.style.display = 'flex';
-    }
+    // Home is a primary destination, so its shell invariant repairs navigation
+    // left hidden by an interrupted lesson/game or a stale whiteboard lock.
+    if (typeof ensureHomeBottomNav === 'function') ensureHomeBottomNav();
 
     const avatarEl = document.getElementById('homeAvatar');
     if (avatarEl) avatarEl.textContent = appState.avatar || '😊';

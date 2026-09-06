@@ -11507,7 +11507,9 @@
 /* Navigation is neither useful nor safe while a child is writing. Hiding it
    also means it can never reserve screen space or receive an accidental tap
    under the full-screen board. */
-html.math-board-open #bottomNav { display: none !important; }
+/* Do not let a stale root class hide navigation after the board DOM has
+   already closed. :has() ties the reservation to the visible overlay itself. */
+html.math-board-open:has(#mathBoardOverlay:not(.hidden)) #bottomNav { display: none !important; }
 .math-board-overlay * {
     -webkit-user-select: none; user-select: none;
     -webkit-touch-callout: none;

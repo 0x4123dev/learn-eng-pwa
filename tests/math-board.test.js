@@ -555,7 +555,7 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/visualViewport\.addEventListener\('resize',\s*mathBoardQueueVisualViewportSync/.test(src) &&
             /visualViewport\.addEventListener\('scroll',\s*mathBoardQueueVisualViewportSync/.test(src),
             'Safari changes the visual viewport during repeated swipes, not just rotation');
-        assert.truthy(/html\.math-board-open #bottomNav\s*{[^}]*display:\s*none\s*!important/s.test(css),
+        assert.truthy(/html\.math-board-open:has\(#mathBoardOverlay:not\(\.hidden\)\) #bottomNav\s*{[^}]*display:\s*none\s*!important/s.test(css),
             'the bottom navigation must reserve no space and accept no taps while writing');
         assert.truthy(/classList\.add\('math-board-open'\)/.test(src) &&
             /classList\.remove\('math-board-open'\)/.test(src),

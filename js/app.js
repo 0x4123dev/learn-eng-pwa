@@ -1362,6 +1362,49 @@ function setBottomNavActive(screenOrKey) {
     });
 }
 
+// Bottom-nav visibility is changed by several full-screen lessons and games.
+// Those flows normally restore it on exit, but a reload, an interrupted async
+// hand-off, or stale whiteboard state can leave the inline `display:none`
+// behind after Home is already active. Home never has a legitimate full-screen
+// child of its own, so make that state an invariant instead of relying on every
+// feature's cleanup path being perfect.
+function ensureHomeBottomNav() {
+    const home = document.getElementById('homeScreen');
+    const nav = document.getElementById('bottomNav');
+    if (!home || !nav || !home.classList.contains('active') || !currentUser || !appState) return;
+
+    const board = document.getElementById('mathBoardOverlay');
+    const boardVisible = !!(board && !board.classList.contains('hidden'));
+    if (boardVisible) return;
+
+    // A killed/reloaded board used to leave this class behind. Its !important
+    // CSS rule wins over `nav.style.display = 'flex'`, which explains why the
+    // earlier one-shot repair in renderHome was not sufficient.
+    if (document.documentElement.classList.contains('math-board-open')) {
+        document.documentElement.classList.remove('math-board-open');
+    }
+    if (nav.style.display !== 'flex') nav.style.display = 'flex';
+    if (nav.hasAttribute('aria-hidden')) nav.removeAttribute('aria-hidden');
+}
+
+let _homeBottomNavObserver = null;
+function installHomeBottomNavInvariant() {
+    if (_homeBottomNavObserver || typeof MutationObserver === 'undefined') return;
+    const home = document.getElementById('homeScreen');
+    const nav = document.getElementById('bottomNav');
+    if (!home || !nav) return;
+
+    // Watch only the attributes that can affect this invariant. Observing the
+    // whole app subtree caused needless work while animations were running.
+    _homeBottomNavObserver = new MutationObserver(ensureHomeBottomNav);
+    _homeBottomNavObserver.observe(home, { attributes: true, attributeFilter: ['class'] });
+    _homeBottomNavObserver.observe(nav, { attributes: true, attributeFilter: ['style', 'aria-hidden'] });
+    _homeBottomNavObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    const board = document.getElementById('mathBoardOverlay');
+    if (board) _homeBottomNavObserver.observe(board, { attributes: true, attributeFilter: ['class'] });
+    ensureHomeBottomNav();
+}
+
 function renderLearnHub() {
     const label = document.getElementById('learnDueText');
     if (!label) return;
@@ -2091,6 +2134,7 @@ if ('speechSynthesis' in window) {
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
+    installHomeBottomNavInvariant();
     // The deferred question banks (js/lazy-data.js) start downloading once the
     // app is interactive, so a tab opened a few seconds later finds them
     // already in memory — without any of that weight in the first paint.

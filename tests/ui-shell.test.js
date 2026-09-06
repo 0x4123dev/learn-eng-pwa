@@ -10,6 +10,17 @@ const html = read('index.html');
 const battle = read('js/petbattle.js');
 
 suite('primary navigation UX', () => {
+    test('active Home continuously repairs stale full-screen nav state', () => {
+        const invariant = app.slice(app.indexOf('function ensureHomeBottomNav'), app.indexOf('function renderLearnHub'));
+        assert.truthy(invariant.includes("home.classList.contains('active')"),
+            'repair must only run while Home is the visible destination');
+        assert.truthy(invariant.includes("classList.remove('math-board-open')"),
+            'a stale whiteboard root lock must not override the nav repair');
+        assert.truthy(invariant.includes("nav.style.display = 'flex'"));
+        assert.truthy(invariant.includes('new MutationObserver(ensureHomeBottomNav)'),
+            'late async style changes must also be repaired, not only initial render');
+    });
+
     test('opening a destination resets that screen scroll position', () => {
         assert.truthy(/nextScreen\.scrollTop\s*=\s*0/.test(app),
             'bottom navigation must not reopen a screen halfway down');
