@@ -307,7 +307,15 @@
                         <span class="nav-hub-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>
                         </span>
-                        <span class="nav-hub-copy"><strong>Topics</strong><small>Vocabulary and Grade 4 units</small></span>
+                        <span class="nav-hub-copy"><strong>Topics</strong><small>Vocabulary by topic</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card grade4" type="button"
+                            onclick="switchScreen('gradeFourScreen'); renderGrade4Home()">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/><path d="M8 7h1M15 7h1M8 11h1M15 11h1"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Grade 4</strong><small>Pre · Post · HK1 · HK2</small></span>
                         <span class="nav-hub-arrow" aria-hidden="true">›</span>
                     </button>
                     <button class="nav-hub-card grammar" type="button"
@@ -352,6 +360,18 @@
                 </div>
             </div>
 
+            <!-- Grade 4 is a first-class Learn destination, not nested in Topics. -->
+            <div class="screen topics-screen grade4-screen" id="gradeFourScreen">
+                <div class="topics-header">
+                    <h1 class="topics-title">📗 Grade 4</h1>
+                    <p class="topics-subtitle">Pre · Post · HK1 · HK2</p>
+                </div>
+                <div class="grammar-subtabs topics-subtabs" id="grade4SubTabs"></div>
+                <div class="units-bar" id="unitsBar"></div>
+                <div class="units-history" id="grade4History" style="display:none"></div>
+                <div class="topics-detail" id="grade4Detail"></div>
+            </div>
+
             <div class="screen nav-hub-screen math-hub-screen" id="mathHubScreen"></div>
             <div class="math-board-overlay hidden" id="mathBoardOverlay"></div>
 
@@ -365,11 +385,8 @@
             <div class="screen topics-screen" id="topicsScreen">
                 <div class="topics-header">
                     <h1 class="topics-title">📚 Vocabulary</h1>
-                    <p class="topics-subtitle">Grade 4 units · vocabulary topics</p>
+                    <p class="topics-subtitle">Vocabulary by topic</p>
                 </div>
-                <div class="grammar-subtabs topics-subtabs" id="topicsSubTabs"></div>
-                <div class="units-bar" id="unitsBar"></div>
-                <div class="units-history" id="topicsHistory" style="display:none"></div>
                 <div class="topics-sr-banner-slot" id="topicsSrBanner"></div>
                 <div class="topics-review-card" id="topicsReviewCard"></div>
                 <div class="topics-grid" id="topicsGrid"></div>

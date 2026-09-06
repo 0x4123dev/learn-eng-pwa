@@ -682,17 +682,27 @@ function screenPlaybook() {
         return 'bank of ' + bank.length + ' printed on screen';
       },
     },
-    topicsScreen: {
-      title: 'Từ vựng: các Unit lớp 4',
-      open: async (h) => { h.sandbox.switchScreen('topicsScreen'); h.sandbox.renderTopicsHome(); },
+    gradeFourScreen: {
+      title: 'Grade 4 trực tiếp từ Learn',
+      open: async (h) => { h.sandbox.switchScreen('gradeFourScreen'); h.sandbox.renderGrade4Home(); },
       prove: (h, el) => {
         const bar = h.el('unitsBar');
         const cards = bar.querySelectorAll('.g4-card').filter((c) => !c.classList.contains('g4-mix-card'));
         const units = h.sandbox.unitsList();
         must(cards.length > 0, 'the Grade-4 unit cards are drawn');
         mustEqual(cards.length, units.length, 'one card per unit in the active set');
-        must(el.querySelectorAll('#topicsSubTabs .grammar-subtab').length >= 3, 'the sub-tabs are drawn');
-        return cards.length + ' Grade-4 unit cards + sub-tabs';
+        must(el.querySelectorAll('#grade4SubTabs .grammar-subtab').length === 2, 'practice/history tabs are drawn');
+        return cards.length + ' Grade-4 unit cards on its own screen';
+      },
+    },
+    topicsScreen: {
+      title: 'Topics: từ vựng theo chủ đề',
+      open: async (h) => { h.sandbox.switchScreen('topicsScreen'); h.sandbox.renderTopicsHome(); },
+      prove: (h, el) => {
+        const cards = el.querySelectorAll('#topicsGrid .topic-card');
+        must(cards.length > 0, 'the vocabulary topic cards are drawn');
+        mustEqual(el.querySelectorAll('#unitsBar').length, 0, 'Grade 4 is no longer nested inside Topics');
+        return cards.length + ' vocabulary topic cards, no nested Grade 4 menu';
       },
     },
   };

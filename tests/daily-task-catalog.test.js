@@ -152,9 +152,9 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
 
   test('deep links: units switch set before starting; maths exam passes its id', () => {
     assert.deepEqual(Catalog.get('units:hk1-mix').go,
-      { screen: 'topicsScreen', calls: [['switchTopicsSubTab', 'grade4'], ['switchUnitSet', 'hk1'], ['startUnitPractice', 'hk1-mix']] });
+      { screen: 'gradeFourScreen', calls: [['switchUnitSet', 'hk1'], ['startUnitPractice', 'hk1-mix']] });
     assert.deepEqual(Catalog.get('units:4').go,
-      { screen: 'topicsScreen', calls: [['switchTopicsSubTab', 'grade4'], ['switchUnitSet', 'pre'], ['startUnitPractice', 4]] });
+      { screen: 'gradeFourScreen', calls: [['switchUnitSet', 'pre'], ['startUnitPractice', 4]] });
     assert.deepEqual(Catalog.get('math-exam:hk1-source-3').go,
       { screen: 'mathHubScreen', calls: [['openMathSection', 'hk1'], ['startMathExam', 'hk1-source-3']] });
     assert.deepEqual(Catalog.get('collocation').go,

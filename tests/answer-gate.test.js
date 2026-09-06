@@ -88,6 +88,14 @@ suite('answer gate: speaking the answer', () => {
         assert.deepEqual(spoken, ['education']);
     });
 
+    test('a deliberate one-word tap uses the cached word player, including IT', () => {
+        const sequence = [];
+        const { gate, spoken } = loadGate({ speakSequence: words => sequence.push(words) });
+        assert.equal(gate.speakAnswer('IT'), 1);
+        assert.deepEqual(spoken, ['IT']);
+        assert.deepEqual(sequence, [], 'single words should not reuse a possibly wedged sequence element');
+    });
+
     test('a collocation pair is spoken as its two words, in order', () => {
         // "conclusive/ resign" fills two blanks — one recording of the whole
         // string would be nonsense, and no such file exists.

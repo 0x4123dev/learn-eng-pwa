@@ -102,7 +102,10 @@ suite('builder farm: crops draw their day and their mood', () => {
     assert.truthy(out.includes('NHẬN LÍNH'), 'lastDay 4 < dayCount 5 → ready');
     assert.truthy(out.includes('data-ready-at="0"'), 'the rice field still carries its clock');
     const w2 = mount({ appState: { farmDayCount: 4 } }); w2.ctx.NightRaid.renderBuilder();
-    assert.truthy(html(w2).includes('chờ nhiệm vụ'));
+    assert.truthy(html(w2).includes('Hoàn thành Daily Task hôm nay để thu hoạch lính'));
+    const w3 = mount({ appState: { farmDayCount: 4, farmCtx: { today: TODAY, doneYesterday: true, doneToday: true } } });
+    w3.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(w3).includes('Hoàn thành Daily Task ngày mai để thu hoạch lính'));
   });
   test('placed buildings do not show a redundant level-1 bubble', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();

@@ -186,8 +186,9 @@ function unitEsc(s) {
 
 // ---- gap engine (pure; rand injectable for tests) ----
 // Returns { display:[{ch, blank}], nBlanks } for a word and a mode (1|2|3|'full').
-// Only letters are blanked; the first letter stays visible unless mode==='full'.
-function buildUnitGap(en, mode, rand) {
+// Only letters are blanked. Individual Units keep the first letter as a hint;
+// the harder HK1 Mix passes hideFirst=true.
+function buildUnitGap(en, mode, rand, hideFirst) {
   const rnd = rand || Math.random;
   const chars = en.split('');
   const letterIdx = [];
@@ -197,14 +198,20 @@ function buildUnitGap(en, mode, rand) {
   if (mode === 'full') {
     blankSet = new Set(letterIdx);
   } else {
-    const pool = letterIdx.slice(1);              // keep the first letter as a hint
+    const pool = letterIdx.slice(1);
     const n = Math.max(1, Math.min(mode, pool.length ? pool.length : 1));
     const shuffled = pool.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    blankSet = new Set(shuffled.slice(0, n));
+    if (hideFirst && letterIdx.length) {
+      // Mix HK1 is recall, not recognition: its first letter is always one of
+      // the hidden letters. Individual Units keep that letter as a learning hint.
+      blankSet = new Set([letterIdx[0], ...shuffled.slice(0, Math.max(0, n - 1))]);
+    } else {
+      blankSet = new Set(shuffled.slice(0, n));
+    }
     if (blankSet.size === 0 && letterIdx.length) blankSet = new Set([letterIdx[letterIdx.length - 1]]);
   }
 
@@ -220,6 +227,21 @@ function pickUnitGapMode(rand) {
   // the words). Short words cap at all-but-first-letter automatically.
   const modes = [4, 4, 5, 5, 'full'];
   return modes[Math.floor(rnd() * modes.length)];
+}
+
+// Mix HK1 is the challenge route: individual Units still teach with 4/5/full,
+// while Mix recalls substantially more of each word. Full appears twice so a
+// child cannot pass the mixed review mostly from its first letter.
+function pickUnitGapModeForKey(key, rand, word) {
+  if (String(key) !== 'hk1-mix') return pickUnitGapMode(rand);
+  const rnd = rand || Math.random;
+  const modes = [6, 7, 8, 'full', 'full'];
+  const mode = modes[Math.floor(rnd() * modes.length)];
+  // Numeric gap modes normally preserve the first letter. On a short Mix
+  // word that would make 6/7/8 indistinguishable from the old 5-letter mode,
+  // so short words become full recall instead of pretending to be harder.
+  const letters = String(word || '').replace(/[^A-Za-z]/g, '').length;
+  return typeof mode === 'number' && letters && letters <= mode + 1 ? 'full' : mode;
 }
 
 // Adaptive difficulty: recognition before production. Each word has a level
@@ -263,7 +285,7 @@ function _unitAnswerCorrect(input, en) {
 // decide what an owed word IS can be tested without standing up the whole drill.
 const UNITS_RETRY_CONFIG = {
   key: 'units',
-  screenId: 'topicsDetail',
+  screenId: 'grade4Detail',
   noun: 'từ',
   // An owed word is stored as "set|word" so it comes back meaning what it meant
   // when it was missed. Debts written before this carry the bare word; those
@@ -292,12 +314,12 @@ const UNITS_RETRY_CONFIG = {
   // The drill takes over the Topics detail pane, so the home pieces step aside.
   onOpen: () => {
     _unitQuiz = null;
-    ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs', 'topicsHistory']
+    ['unitsBar', 'grade4SubTabs', 'grade4History']
       .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    const d = document.getElementById('topicsDetail');
+    const d = document.getElementById('grade4Detail');
     if (d) d.style.display = '';
   },
-  home: () => { if (typeof renderTopicsHome === 'function') renderTopicsHome(); },
+  home: () => { if (typeof renderGrade4Home === 'function') renderGrade4Home(); },
 };
 if (typeof defineRetryDrill === 'function') defineRetryDrill(UNITS_RETRY_CONFIG);
 
@@ -489,7 +511,7 @@ function fireRewardCelebration(coinsEarned, pct) {
 // Everything here is already uploaded to the admin dashboard by
 // EngAuth.syncNow() (type 'lesson'), which runs on every finish.
 function renderUnitsHistory() {
-  const el = document.getElementById('topicsHistory');
+  const el = document.getElementById('grade4History');
   if (!el) return;
   el.style.display = '';
   const state = (typeof appState !== 'undefined' && appState) ? appState : {};
@@ -523,6 +545,30 @@ function renderUnitsHistory() {
     <div class="uh-streak">🔥 Chuỗi học: <b>${streak}</b> ngày</div>
     <div class="uh-list">${rows}</div>
     <div class="uh-sync-note">☁️ Lịch sử tự động đồng bộ với admin</div>`;
+}
+
+let _grade4View = 'practice';
+function renderGrade4Home(view) {
+  if (view === 'history' || view === 'practice') _grade4View = view;
+  const detail = document.getElementById('grade4Detail');
+  if (detail) { detail.innerHTML = ''; detail.style.display = ''; }
+  const tabs = document.getElementById('grade4SubTabs');
+  if (tabs) {
+    tabs.style.display = '';
+    tabs.innerHTML = `<button class="grammar-subtab ${_grade4View === 'practice' ? 'active' : ''}" onclick="renderGrade4Home('practice')">📗 Bài học</button>
+      <button class="grammar-subtab ${_grade4View === 'history' ? 'active' : ''}" onclick="renderGrade4Home('history')">🕐 Lịch sử</button>`;
+  }
+  const bar = document.getElementById('unitsBar');
+  const history = document.getElementById('grade4History');
+  if (bar) bar.style.display = _grade4View === 'practice' ? '' : 'none';
+  if (history) history.style.display = _grade4View === 'history' ? '' : 'none';
+  if (_grade4View === 'history') renderUnitsHistory(); else renderUnitsBar();
+}
+function openGrade4(view) {
+  _grade4View = view === 'history' ? 'history' : 'practice';
+  if (typeof switchScreen === 'function' && switchScreen('gradeFourScreen') === false) return false;
+  renderGrade4Home();
+  return true;
 }
 
 // ---- practice flow (renders inside #topicsDetail) ----
@@ -560,13 +606,13 @@ function startUnitPractice(unit) {
     // Random gap count per question (4, 5 letters or the whole word),
     // like the textbook's st__ent / ch_cken style. Per-word levels are still
     // tracked (see _unitBumpWordLevel) for possible future use.
-    const mode = pickUnitGapMode();
-    return { w, mode, gap: buildUnitGap(w.en, mode) };
+    const mode = pickUnitGapModeForKey(unit, undefined, w.en);
+    return { w, mode, gap: buildUnitGap(w.en, mode, undefined, String(unit) === 'hk1-mix') };
   });
   _unitQuiz = { unit, questions, idx: 0, answers: new Array(questions.length).fill(null) };
 
-  // Hide the normal Topics home pieces while practicing
-  ['topicsGrid', 'topicsReviewCard', 'topicsSrBanner', 'unitsBar', 'topicsSubTabs', 'topicsHistory'].forEach(id => {
+  // Hide the Grade 4 menu pieces while practising.
+  ['unitsBar', 'grade4SubTabs', 'grade4History'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -609,9 +655,8 @@ function quitUnitPractice() {
         + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
   }
   abandonUnitPractice();
-  // renderTopicsHome lives in another file; guarded because this module is also
-  // loaded on its own in tests, where there is no home screen to go back to.
-  if (typeof renderTopicsHome === 'function') renderTopicsHome();
+  // Guarded because this module is also loaded alone in unit tests.
+  if (typeof renderGrade4Home === 'function') renderGrade4Home();
 }
 function isUnitPracticeActive() { return !!_unitQuiz; }
 
@@ -664,7 +709,7 @@ function _unitGapHTML(gap, revealed) {
 
 function renderUnitQuestion() {
   const st = _unitQuiz;
-  const detail = document.getElementById('topicsDetail');
+  const detail = document.getElementById('grade4Detail') || document.getElementById('topicsDetail');
   if (!st || !detail) return;
   const q = st.questions[st.idx];
   // Warm this word's recording (and the next) so the auto-speak on answer
@@ -735,7 +780,7 @@ function submitUnitAnswer() {
   _unitBumpWordLevel(q.w.en, ok);
   // Speak the word the moment it is revealed. Submitting is a real tap, so the
   // browser permits it; the 🔊 gate below still has to be tapped before Next.
-  if (typeof speakAnswer === 'function') speakAnswer(q.w.en);
+  if (typeof speakAnswer === 'function') speakAnswer(q.w.en, { auto: true });
   else _unitSpeak(q.w.en);
   if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
   renderUnitQuestion();
@@ -817,7 +862,7 @@ function finishUnitPractice() {
   }
   const owed = unitsRetryCount();
 
-  const detail = document.getElementById('topicsDetail');
+  const detail = document.getElementById('grade4Detail') || document.getElementById('topicsDetail');
   const reviewHtml = wrong.map(w => `
       <div class="grammar-review-item wrong">
         <div class="grammar-review-q">${w.emoji} <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(w.en) : unitEsc(w.en)}</b>
@@ -828,7 +873,7 @@ function finishUnitPractice() {
   detail.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="renderTopicsHome()">‹</button>
+        <button class="grammar-back-btn" onclick="renderGrade4Home()">‹</button>
         <span class="grammar-quiz-progress">${pct === 100 ? '⭐' : pct >= 60 ? '✅' : '📝'} ${_unitLabel(st.unit)} · ${score}/${total} (${pct}%)</span>
       </div>
       ${rewardCelebrationHTML(score, total, coinsEarned)}
@@ -849,13 +894,13 @@ if (typeof module !== 'undefined' && module.exports) {
     UNITS_RETRY_CONFIG, _unitPool,
     UNIT_SETS, currentUnitSet, switchUnitSet, renderUnitSetTabsHTML,
     _unitKey, _unitParse, _unitKeyArg,
-    buildUnitGap, pickUnitGapMode, _unitNormalize, _unitAnswerCorrect,
+    buildUnitGap, pickUnitGapMode, pickUnitGapModeForKey, _unitNormalize, _unitAnswerCorrect,
     UNIT_MASTERY_TARGET, unitPerfectCount, isUnitMastered,
     _unitExampleParts, _unitExampleHTML,
     startUnitPractice, submitUnitAnswer, nextUnitQuestion, finishUnitPractice,
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
-    modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel,
+    modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderGrade4Home, openGrade4,
     _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
     unitsWrongAggregate, renderUnitsWrongPanelHTML,
   };

@@ -494,7 +494,7 @@ function renderHomeSkillsPanel() {
 function goToSkillTab(key) {
     const map = {
         vocab: ['topicsScreen', 'renderTopicsHome'],
-        units: ['topicsScreen', 'renderTopicsHome'],
+        units: ['gradeFourScreen', 'renderGrade4Home'],
         grammar: ['grammarScreen', 'renderGrammarHome'],
         phrases: ['phrasesScreen', 'renderPhrasesHome'],
         colloc: ['phrasesScreen', 'renderPhrasesHome'],
@@ -506,9 +506,8 @@ function goToSkillTab(key) {
     const target = map[key];
     if (!target || typeof switchScreen !== 'function') return;
     switchScreen(target[0]);
-    // Both Topics-screen skills land on their own sub-tab.
-    if ((key === 'units' || key === 'vocab') && typeof switchTopicsSubTab === 'function') {
-        try { switchTopicsSubTab(key === 'units' ? 'grade4' : 'topics'); } catch (e) {}
+    if (key === 'vocab' && typeof switchTopicsSubTab === 'function') {
+        try { switchTopicsSubTab('topics'); } catch (e) {}
     }
     // Phrases-screen skills land on their own sub-tab too.
     if ((key === 'phrases' || key === 'colloc') && typeof switchPhrSubTab === 'function') {

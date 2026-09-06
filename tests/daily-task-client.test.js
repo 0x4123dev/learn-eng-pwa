@@ -124,12 +124,12 @@ suite('daily task client: task screen', () => {
 });
 
 suite('daily task client: Vào học deep links', () => {
-  test('units: switch screen, sub-tab, set, then start the unit', async () => {
+  test('units: open Grade 4 directly, select its set, then start the unit', async () => {
     const { DailyTask, calls } = load({ appState: stateWith() });
     assert.equal(await DailyTask.go('units:hk1-mix'), true);
     assert.deepEqual(calls, [
-      ['switchScreen', 'topicsScreen'], ['switchTopicsSubTab', 'grade4'], ['switchUnitSet', 'hk1'],
-      ['startUnitPractice', 'hk1-mix'], ['nav', 'topicsScreen'],
+      ['switchScreen', 'gradeFourScreen'], ['switchUnitSet', 'hk1'],
+      ['startUnitPractice', 'hk1-mix'], ['nav', 'gradeFourScreen'],
     ]);
   });
   test('maths exam passes the exam id; unknown kind does nothing', async () => {

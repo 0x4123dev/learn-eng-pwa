@@ -32,6 +32,15 @@ function answerAudioParts(answer) {
 function speakAnswer(answer, opts) {
     const parts = answerAudioParts(answer);
     if (!parts.length) return 0;
+    // A deliberate tap on a one-word answer should use the proven cached-word
+    // player. Reusing the sequence element after the automatic attempt could
+    // leave Safari with a resolved play() but silence — most visible for the
+    // very short HK1 subject “IT”. Multi-part answers still need one unlocked
+    // sequence element so word two is permitted on iOS.
+    if (parts.length === 1 && !(opts && opts.auto) && typeof speakWord === 'function') {
+        speakWord(parts[0]);
+        return 1;
+    }
     // Preferred path: the audio layer plays the whole run through the one
     // element the student's tap unlocked, so no part falls back partway.
     if (typeof speakSequence === 'function') {

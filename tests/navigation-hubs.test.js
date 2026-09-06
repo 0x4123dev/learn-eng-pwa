@@ -43,7 +43,7 @@ suite('navigation hubs: old modules remain easy to find', () => {
     test('Learn owns knowledge, review, Word Form and Rewrite', () => {
         const hub = blockBetween(html, 'id="learnHubScreen"', 'id="mathHubScreen"');
         for (const screen of [
-            'topicsScreen', 'grammarScreen', 'speedChallengeScreen', 'phrasesScreen',
+            'topicsScreen', 'gradeFourScreen', 'grammarScreen', 'speedChallengeScreen', 'phrasesScreen',
             'wordformScreen', 'rewriteScreen'
         ]) {
             assert.truthy(hub.includes(screen), screen + ' is missing from Learn');
@@ -66,6 +66,7 @@ suite('navigation hubs: old modules remain easy to find', () => {
     test('deep screens inherit their parent bottom-nav state', () => {
         for (const pair of [
             ["topicsScreen: 'learn'", 'Topics'],
+            ["gradeFourScreen: 'learn'", 'Grade 4'],
             ["grammarScreen: 'learn'", 'Grammar'],
             ["speedChallengeScreen: 'learn'", 'Verbs'],
             ["phrasesScreen: 'learn'", 'Phrases'],

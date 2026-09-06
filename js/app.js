@@ -150,7 +150,7 @@ function buildStudyCheckpoint() {
     if (typeof _colQuiz !== 'undefined' && _colQuiz)
         return Object.assign(base, { kind:'collocation', screen:'phrasesScreen', state:checkpointClone(_colQuiz) });
     if (typeof _unitQuiz !== 'undefined' && _unitQuiz)
-        return Object.assign(base, { kind:'units', screen:'topicsScreen', state:checkpointClone(_unitQuiz) });
+        return Object.assign(base, { kind:'units', screen:'gradeFourScreen', state:checkpointClone(_unitQuiz) });
     if (typeof _mathQuiz !== 'undefined' && _mathQuiz)
         return Object.assign(base, { kind:'math', screen:'mathHubScreen', state:checkpointClone(_mathQuiz) });
     if (typeof _warsQuiz !== 'undefined' && _warsQuiz) {
@@ -238,7 +238,9 @@ function restoreStudyCheckpoint() {
     _studyCheckpointRestored = true;
     const s = checkpoint.state;
     try {
-        activateCheckpointScreen(checkpoint.screen);
+        // v4.17.63 moved Grade 4 out of Topics. Migrate a checkpoint saved by
+        // an older build instead of restoring its question into a hidden pane.
+        activateCheckpointScreen(checkpoint.kind === 'units' ? 'gradeFourScreen' : checkpoint.screen);
         if (checkpoint.kind === 'grammar') { _grammarQuizState = s; renderGrammarQuestion(); }
         else if (checkpoint.kind === 'phrases') { _phrQuiz = s; renderPhrQuestion(); }
         else if (checkpoint.kind === 'wordform') { _wfQuiz = s; renderWfQuestion(); }
@@ -246,7 +248,7 @@ function restoreStudyCheckpoint() {
         else if (checkpoint.kind === 'collocation') { _colQuiz = s; renderCollocQuestion(); }
         else if (checkpoint.kind === 'units') {
             _unitQuiz = s;
-            ['topicsGrid','topicsReviewCard','topicsSrBanner','unitsBar','topicsSubTabs','topicsHistory'].forEach(id => {
+            ['unitsBar','grade4SubTabs','grade4History'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.style.display = 'none';
             });
             renderUnitQuestion();
@@ -1338,6 +1340,7 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     dailyTaskScreen: 'home',
     armoryScreen: 'home',
     learnHubScreen: 'learn',
+    gradeFourScreen: 'learn',
     topicsScreen: 'learn',
     grammarScreen: 'learn',
     speedChallengeScreen: 'learn',
@@ -1492,8 +1495,8 @@ function switchScreen(screenId) {
         if (typeof abandonCollocPractice === 'function') abandonCollocPractice();
     }
 
-    // Guard: the Grade 4 units practice, which lives on the Topics screen.
-    if (screenId !== 'topicsScreen' &&
+    // Guard: the Grade 4 units practice has its own Learn destination.
+    if (screenId !== 'gradeFourScreen' &&
         typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {
         if (!confirm('You are in the middle of a practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
             return false;
@@ -1549,6 +1552,7 @@ function switchScreen(screenId) {
 
     if (screenId === 'homeScreen') renderHome();
     if (screenId === 'learnHubScreen') renderLearnHub();
+    if (screenId === 'gradeFourScreen' && typeof renderGrade4Home === 'function') renderGrade4Home();
     if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
     if (screenId === 'speedChallengeScreen') renderSpeedChallenge();
     if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();

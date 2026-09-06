@@ -185,14 +185,14 @@ var DailyTaskCatalog = (function () {
       const unitKey = s.set === 'pre' ? u : prefix + u;
       const title = s.titles[u] ? ' · ' + s.titles[u] : '';
       ENTRIES.push(entry('units:' + unitKey, s.group, 'Units ' + s.name + ' · Unit ' + u + title, 'lesson',
-        { titleExact: 'Unit ' + unitKey + ' words practice' }, 'topicsScreen',
-        [['switchTopicsSubTab', 'grade4'], ['switchUnitSet', s.set], ['startUnitPractice', unitKey]]));
+        { titleExact: 'Unit ' + unitKey + ' words practice' }, 'gradeFourScreen',
+        [['switchUnitSet', s.set], ['startUnitPractice', unitKey]]));
     }
     const mixKey = s.set === 'pre' ? 'mix' : prefix + 'mix';
     const mixTitle = s.set === 'pre' ? 'Mix 12 units words practice' : 'Unit ' + mixKey + ' words practice';
     ENTRIES.push(entry('units:' + mixKey, s.group, 'Units ' + s.name + ' · 🎲 Mix', 'lesson',
-      { titleExact: mixTitle }, 'topicsScreen',
-      [['switchTopicsSubTab', 'grade4'], ['switchUnitSet', s.set], ['startUnitPractice', mixKey]]));
+      { titleExact: mixTitle }, 'gradeFourScreen',
+      [['switchUnitSet', s.set], ['startUnitPractice', mixKey]]));
   }
   // Toán 7 — detail_json carries examId (mock exams) or chapter (drills).
   ENTRIES.push(entry('math-exam:any-hk1', 'math-exam', 'Toán 7 · Đề thi HK1 bất kỳ', 'math',

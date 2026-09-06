@@ -90,11 +90,30 @@ suite('units: gap engine', () => {
         assert.inRange(g.nBlanks, 1, 2);   // "you" has 3 letters, first stays visible
     });
 
+    test('HK1 Mix numeric modes hide the first letter too', () => {
+        const g = units.buildUnitGap('playground', 6, () => 0.5, true);
+        assert.truthy(g.display[0].blank, 'the first letter must not remain as a Mix hint');
+        assert.equal(g.nBlanks, 6);
+        const teaching = units.buildUnitGap('playground', 6, () => 0.5);
+        assert.falsy(teaching.display[0].blank, 'individual Units still teach with the first-letter hint');
+    });
+
     test('pickUnitGapMode only returns 4, 5 or full — at least 4 blanks', () => {
         for (let i = 0; i < 20; i++) {
             const m = units.pickUnitGapMode(() => i / 20);
             assert.truthy([4, 5, 'full'].includes(m), String(m));
         }
+    });
+
+    test('HK1 Mix raises recall to 6, 7, 8 or the full word only', () => {
+        const seen = new Set();
+        for (let i = 0; i < 50; i++) seen.add(units.pickUnitGapModeForKey('hk1-mix', () => i / 50));
+        assert.deepEqual([...seen], [6, 7, 8, 'full']);
+        assert.equal(units.pickUnitGapModeForKey('hk1-3', () => 0), 4,
+            'individual units keep the gentler teaching level');
+        assert.equal(units.pickUnitGapModeForKey('hk1-mix', () => 0, 'Monday'), 'full',
+            'a short word must not keep its first-letter hint under a nominal 6-letter mode');
+        assert.equal(units.pickUnitGapModeForKey('hk1-mix', () => 0, 'playground'), 6);
     });
 });
 

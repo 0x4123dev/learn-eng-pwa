@@ -63,6 +63,8 @@ const FEATURES = [
     screens: ['homeScreen', 'profileScreen', 'learnHubScreen'], routes: ['assets', 'me/wins'], verifiedBy: 'client' },
   { id: 'topics', name: 'Chủ đề và bài học ghép từ',
     screens: ['topicsScreen', 'lessonScreen'], routes: [], verifiedBy: 'client' },
+  { id: 'grade4', name: 'Grade 4 trực tiếp từ Learn',
+    screens: ['gradeFourScreen'], routes: [], verifiedBy: 'client' },
   { id: 'grammar', name: 'Ngữ pháp — 13 unit',
     screens: ['grammarScreen'], banks: ['js/grammar-units.js', 'js/grammar-lessons.js'], verifiedBy: 'client' },
   { id: 'verbs', name: 'Động từ bất quy tắc — Speed Challenge',
