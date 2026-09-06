@@ -40,7 +40,7 @@ function mount(o) {
       { type: 'rice-field', gx: 6, gy: 6, tier: 1, uid: 'p-rice0001', readyAt: 0 },
     ], soldiers: 2, dogLane: 2, farms: [] },
     dailyTask: { date: TODAY, tasks: [{ id: 1, label: 'Units', target: 2, count: 1, done: false }], allDone: false,
-      seeds: { progress: 1, goal: 2, next: { id: 'lettuce', name: 'Rau cải', days: 1, yield: 8 },
+      seeds: { progress: 1, goal: 2, next: { id: 'lettuce', name: 'Rau cải', days: 1, yield: 40 },
         inventory: Farm.CROPS.map(c => ({ id: c.id, name: c.name.vi, days: c.days, yield: c.yield, quantity: 3 })), recent: [] } },
   }, o.appState || {});
   const defaultApi = (p, opts) => {
@@ -84,7 +84,7 @@ suite('builder farm: crops draw their day and their mood', () => {
     assert.truthy(out.includes('còn 1 ngày'), 'tomato has one task-day left');
     assert.truthy(out.includes('img/farm/sprout.webp'), 'a crop planted today is the shared sprout');
     assert.truthy(out.includes('img/farm/lettuce-day1.webp'), 'ripe lettuce shows its last day');
-    assert.truthy(out.includes('CHÍN · +8 XU'));
+    assert.truthy(out.includes('CHÍN · +40 XU'));
     assert.falsy(out.includes('cấp undefined'), 'crop accessibility labels never announce an undefined tier');
   });
   test('wilted crops draw the wilted sprite and HÉO; the builder wears the wilted class', () => {
@@ -107,6 +107,13 @@ suite('builder farm: crops draw their day and their mood', () => {
   test('placed buildings do not show a redundant level-1 bubble', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     assert.falsy(html(w).includes('<em>1</em>'), 'no numeric tier bubble is drawn on placed buildings');
+  });
+  test('the unified builder shows every owned soldier on the estate', () => {
+    const w = mount({ appState: { nightRaidLayout: { cells: [], farms: [], soldiers: 5, dogLane: 2 } } });
+    w.ctx.NightRaid.renderBuilder();
+    assert.truthy(html(w).includes('data-nr-yard-army'), 'the army is mounted in builder view');
+    assert.equal((html(w).match(/data-unit="\d+"/g) || []).length, 5, 'all five owned soldiers are visible');
+    assert.truthy(html(w).includes('data-total="5"'));
   });
   test('THU HOẠCH counts ripe fresh crops, ready barracks and ready fields', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
@@ -157,7 +164,7 @@ suite('builder farm: shop tabs, seed inventory and buying', () => {
     assert.falsy(html(w).includes('onclick="nrSelectShopTab(\'seeds\')"'), 'seeds are not sold in Shop');
     assert.truthy(html(w).includes('onclick="nrOpenSeeds()"'), 'seed inventory is a peer navigation action');
     w.ctx.NightRaid.openSeeds();
-    assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · thu 120 xu'), 'seed inventory card copy');
+    assert.truthy(html(w).includes('Bí ngô') && html(w).includes('8 ngày · thu 600 xu'), 'seed inventory card copy');
     assert.truthy(html(w).includes("nrSelectBuild('pumpkin')"));
     assert.truthy(html(w).includes('x3 hạt'));
     assert.falsy(html(w).includes('nr-item-price'), 'seed cards have no coin price');
@@ -261,12 +268,13 @@ suite('builder farm: every screen points at today\'s tasks', () => {
     w.ctx.NightRaid.renderHome();
     assert.truthy(html(w).includes('xong hết là cây lớn thêm 1 ngày'), 'the home stage has the bar too');
   });
-  test('no tasks → "chưa có nhiệm vụ"; all done → "đã lớn hôm nay"; wilted → "đang héo"', () => {
+  test('no tasks → "chưa có nhiệm vụ"; all done → no space-taking banner; wilted → "đang héo"', () => {
     const none = mount({ appState: { dailyTask: { date: TODAY, tasks: [], allDone: false } } }); none.ctx.NightRaid.renderBuilder();
     assert.truthy(html(none).includes('Hôm nay chưa có nhiệm vụ'));
     assert.falsy(html(none).includes('nrGoLearn()'));
     const done = mount({ appState: { dailyTask: { date: TODAY, tasks: [{ id: 1, done: true }], allDone: true }, farmCtx: { today: TODAY, doneYesterday: false, doneToday: true } } }); done.ctx.NightRaid.renderBuilder();
-    assert.truthy(html(done).includes('Cây đã lớn hôm nay'));
+    assert.falsy(html(done).includes('Cây đã lớn hôm nay'));
+    assert.falsy(html(done).includes('nr-task-bar'), 'completed work leaves the estate viewport clear');
     const wilt = mount({ appState: { farmCtx: WILT } }); wilt.ctx.NightRaid.renderBuilder();
     assert.truthy(html(wilt).includes('Cây đang héo'));
   });

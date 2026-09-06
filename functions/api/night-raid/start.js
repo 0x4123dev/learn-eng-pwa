@@ -7,6 +7,17 @@ export async function onRequestPost({request,env}) {
   if(!(await nightRaidEnabled(env,auth.uid)))return err('Night Raid Phase 2 is not enabled',403);
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
   const targetId=Math.trunc(+body.targetId);if(!targetId||targetId===auth.uid)return err('Invalid target');
+  // Appearance is visual replay metadata only; battle power continues to come
+  // exclusively from the server-owned home. Persisting this small descriptor
+  // lets the defender see the actual dog that led the raid days later.
+  const rawPet=body.attackerPet&&typeof body.attackerPet==='object'?body.attackerPet:{};
+  const attackerPet={
+    level:Math.max(1,Math.min(999,Math.trunc(+rawPet.level||1))),
+    name:String(rawPet.name||'Chó đội trưởng').slice(0,24),
+    breed:String(rawPet.breed||'Chihuahua').slice(0,24),
+    atlas:rawPet.atlas==='large'?'large':'small',
+    cell:Math.max(0,Math.min(4,Math.trunc(+rawPet.cell||0))),
+  };
   const cfg=await readRaidConfig(env);
   const now0=Date.now();
   // Drop this child's own raids that ran out of time before anything else
@@ -81,7 +92,7 @@ export async function onRequestPost({request,env}) {
   // board. The ATTACKER's own snapshot never leaves the server — only its
   // damage/defense/soldiers/swords are copied onto the target below.
   const attacker=homeSnapshot(attackerRow),target=raidSnapshot(row),raidId=randomRaidId(),seed=(Math.floor(Math.random()*0x7fffffff)^now)>>>0;
-  target.seed=seed;target.lootableCoins=Math.max(0,+row.lootable_coins||0);target.attackerLootableCoins=Math.max(0,+attackerRow.lootable_coins||0);target.attackerDamage=attacker.damage;target.attackerDefense=attacker.defense;target.attackerSoldiers=attacker.soldiers||0;target.attackerSwords=attacker.swords||0;
+  target.seed=seed;target.lootableCoins=Math.max(0,+row.lootable_coins||0);target.attackerLootableCoins=Math.max(0,+attackerRow.lootable_coins||0);target.attackerDamage=attacker.damage;target.attackerDefense=attacker.defense;target.attackerSoldiers=attacker.soldiers||0;target.attackerSwords=attacker.swords||0;target.attackerPet=attackerPet;
   if(shielded){target.shielded=true;target.defense=100000;}
   await env.DB.prepare(`INSERT INTO night_raids(id,attacker_id,defender_id,seed,rules_version,snapshot_json,status,created_date,created_at,expires_at)
     VALUES(?,?,?,?,?,?,'active',?,?,?)`).bind(raidId,auth.uid,targetId,seed,NR.RULES_VERSION,JSON.stringify(target),date,now,now+RAID_TTL_MS).run();

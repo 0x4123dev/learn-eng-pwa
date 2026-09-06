@@ -26,7 +26,7 @@ var DailyTask = (function () {
       ready: raw.ready !== false,
       progress: Math.max(0, Math.min(1, Math.trunc(+raw.progress || 0))),
       goal: 2,
-      next: raw.next || { id: 'lettuce', name: 'Rau cải', days: 1, yield: 8 },
+      next: raw.next || { id: 'lettuce', name: 'Rau cải', days: 1, yield: 40 },
       inventory: Array.isArray(raw.inventory) ? raw.inventory : [],
       recent: Array.isArray(raw.recent) ? raw.recent : [],
       justRewarded: raw.justRewarded || null,

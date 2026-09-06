@@ -216,9 +216,9 @@ suite('farm server: collect', () => {
     ], [{ style: 'clover', cells: [{ type: 'lettuce', gx: 0, gy: 0, uid: 'c-lettuc01', day: 1, at: YESTERDAY }] }]);
     const r = await collect(world, kid);
     assert.truthy(r.ok, JSON.stringify(r.data));
-    assert.equal(r.data.collectedCoins, 18 + 8, 'tomato (2 days) and lettuce (1 day) are ripe; pumpkin is not');
-    assert.equal(r.data.coins, 126);
-    assert.equal(mirror(world, kid.uid), 126);
+    assert.equal(r.data.collectedCoins, 90 + 40, 'tomato (2 days) and lettuce (1 day) pay the new 5x harvest; pumpkin is not ripe');
+    assert.equal(r.data.coins, 230);
+    assert.equal(mirror(world, kid.uid), 230);
     assert.deepEqual(r.data.harvested.map(h => [h.type, h.zone]).sort(), [['lettuce', 1], ['tomato', 0]]);
     const s = stored(world, kid.uid);
     assert.falsy(s.cells.some(c => c.type === 'tomato'));
@@ -228,7 +228,7 @@ suite('farm server: collect', () => {
     assert.equal(r.data.dayCount, 2);
     const again = await collect(world, kid);
     assert.truthy(again.data.nothingReady, 'nothing left to pay');
-    assert.equal(mirror(world, kid.uid), 126, 'no double pay');
+    assert.equal(mirror(world, kid.uid), 230, 'no double pay');
   });
   test('a ripe but wilted crop is not harvested and the reply says why', async () => {
     const { world, kid } = await farmWorld([TWO_AGO], [{ type: 'lettuce', gx: 1, gy: 1, uid: 'c-lettuc01', day: 0, at: TWO_AGO }]);
@@ -244,7 +244,7 @@ suite('farm server: collect', () => {
     assert.equal(mirror(world, kid.uid), 100);
     doneOn(world, kid.uid, TODAY);
     const revived = await collect(world, kid);
-    assert.equal(revived.data.collectedCoins, 8, 'finishing today revives and pays');
+    assert.equal(revived.data.collectedCoins, 40, 'finishing today revives and pays the 5x harvest');
   });
   test('barracks pay one soldier per task-day since the last collect, and not by the clock', async () => {
     const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-barrac01', lastDay: 0 }]);
@@ -267,7 +267,7 @@ suite('farm server: collect', () => {
       { type: 'lettuce', gx: 1, gy: 1, uid: 'c-lettuc01', day: 0, at: TWO_AGO },
       { type: 'lettuce', gx: 2, gy: 1, uid: 'c-lettuc02', day: 0, at: TWO_AGO }]);
     const r = await collect(world, kid, 'c-lettuc02');
-    assert.equal(r.data.collectedCoins, 8);
+    assert.equal(r.data.collectedCoins, 40);
     assert.equal(stored(world, kid.uid).cells.length, 1);
     assert.equal(stored(world, kid.uid).cells[0].uid, 'c-lettuc01');
   });
@@ -337,8 +337,8 @@ suite('farm server: a uid is an identity, not a coupon', () => {
     const kept = stored(world, kid.uid).cells.filter(c => c.type === 'pumpkin');
     assert.equal(kept.length, 1, 'only the first claimant of a uid survives');
     const r = await collect(world, kid);
-    assert.equal(r.data.collectedCoins, 120, 'one ripe pumpkin pays once, not 96 times');
-    assert.equal(mirror(world, kid.uid), 220);
+    assert.equal(r.data.collectedCoins, 600, 'one ripe pumpkin pays the 5x harvest once, not 96 times');
+    assert.equal(mirror(world, kid.uid), 700);
   });
   test('honest layouts are untouched: distinct uids, missing uids, malformed uids', () => {
     const R = require(require('path').join(__dirname, '..', 'js', 'night-raid-rules.js'));
@@ -554,7 +554,7 @@ suite('farm server: a full wallet must not eat a crop', () => {
     // Spend something and the same plant pays in full.
     world.db.prepare('UPDATE night_raid_homes SET lootable_coins=100 WHERE user_id=?').run(kid.uid);
     const roomy = await collect(world, kid);
-    assert.equal(roomy.data.collectedCoins, 45);
+    assert.equal(roomy.data.collectedCoins, 225);
     assert.equal(stored(world, kid.uid).cells.filter(c => c.type === 'rice').length, 0);
   });
 });

@@ -14,12 +14,12 @@ var FarmRules = (() => {
   const freeze = list => Object.freeze(list.map(o => Object.freeze(o)));
 
   const CROPS = freeze([
-    { id: 'lettuce', kind: 'crop', name: { en: 'Lettuce', vi: 'Rau cải' },  days: 1, price: 3,  yield: 8 },
-    { id: 'tomato',  kind: 'crop', name: { en: 'Tomato',  vi: 'Cà chua' },  days: 2, price: 5,  yield: 18 },
-    { id: 'carrot',  kind: 'crop', name: { en: 'Carrot',  vi: 'Cà rốt' },   days: 3, price: 8,  yield: 30 },
-    { id: 'rice',    kind: 'crop', name: { en: 'Rice',    vi: 'Lúa' },      days: 4, price: 10, yield: 45 },
-    { id: 'rose',    kind: 'crop', name: { en: 'Rose',    vi: 'Hoa hồng' }, days: 6, price: 15, yield: 80 },
-    { id: 'pumpkin', kind: 'crop', name: { en: 'Pumpkin', vi: 'Bí ngô' },   days: 8, price: 20, yield: 120 },
+    { id: 'lettuce', kind: 'crop', name: { en: 'Lettuce', vi: 'Rau cải' },  days: 1, price: 3,  yield: 40 },
+    { id: 'tomato',  kind: 'crop', name: { en: 'Tomato',  vi: 'Cà chua' },  days: 2, price: 5,  yield: 90 },
+    { id: 'carrot',  kind: 'crop', name: { en: 'Carrot',  vi: 'Cà rốt' },   days: 3, price: 8,  yield: 150 },
+    { id: 'rice',    kind: 'crop', name: { en: 'Rice',    vi: 'Lúa' },      days: 4, price: 10, yield: 225 },
+    { id: 'rose',    kind: 'crop', name: { en: 'Rose',    vi: 'Hoa hồng' }, days: 6, price: 15, yield: 400 },
+    { id: 'pumpkin', kind: 'crop', name: { en: 'Pumpkin', vi: 'Bí ngô' },   days: 8, price: 20, yield: 600 },
   ]);
   // Decoration only: no attack, no defense, no production. They are what the
   // learning buys, so homeLevel and combatPower must never see them — they

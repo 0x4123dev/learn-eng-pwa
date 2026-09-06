@@ -170,7 +170,7 @@ var NightRaid = (() => {
       // nothing for losing, and the defender was handed coins out of a pile
       // that did not exist.
       try{await syncHome();}catch(e){/* offline: the raid can still be scored */}
-      const start=await api('start',{method:'POST',body:{targetId:target.targetId}});
+      const start=await api('start',{method:'POST',body:{targetId:target.targetId,attackerPet:raidPetDescriptor()}});
       if(start.ok&&start.data&&start.data.ruined&&!start.data.raid)return playRuinedRaid(target,start.data);
       if(!start.ok||!start.data||!start.data.raid){
         armStartButton();
@@ -390,14 +390,18 @@ var NightRaid = (() => {
   // doing to the plants. Reads appState.dailyTask (kept fresh by
   // js/daily-task.js) and the wilt context the server sent.
   function taskBarHtml(layout){const s=(typeof DailyTask!=='undefined'&&DailyTask&&typeof DailyTask.state==='function')?DailyTask.state():(appState.dailyTask||null);const tasks=(s&&Array.isArray(s.tasks))?s.tasks:[],done=tasks.filter(t=>t&&t.done).length,allDone=tasks.length>0&&!!(s&&s.allDone),wilted=anyWilted(layout);
-    const text=!tasks.length?'Hôm nay chưa có nhiệm vụ — cây đứng chờ':allDone?'Cây đã lớn hôm nay 🌱 · mai làm tiếp':wilted?`Cây đang héo 🥀 · xong ${tasks.length} nhiệm vụ là tươi lại`:`Hôm nay ${done}/${tasks.length} nhiệm vụ · xong hết là cây lớn thêm 1 ngày`;
+    // Once today's work is finished this banner no longer has an action and
+    // only steals vertical space from the estate. The completed state already
+    // appears on the Daily Task screen, so keep the yard completely clear.
+    if(allDone&&!wilted)return'';
+    const text=!tasks.length?'Hôm nay chưa có nhiệm vụ — cây đứng chờ':wilted?`Cây đang héo 🥀 · xong ${tasks.length} nhiệm vụ là tươi lại`:`Hôm nay ${done}/${tasks.length} nhiệm vụ · xong hết là cây lớn thêm 1 ngày`;
     // While anything is wilted the child must ALWAYS have a way into the tasks
     // (spec 5.1.3). The harvest button only turns into VÀO HỌC ĐỂ CÂY TƯƠI when
     // nothing at all is ready, so a child with a ripe field and either no tasks
     // assigned or all of them already done was left looking at a dead garden
     // with no button to press. `wilted` keeps the CTA here in those two cases.
-    const cta=(wilted||(!allDone&&tasks.length))?`<button type="button" class="nr-task-go" onclick="nrGoLearn()">Vào học</button>`:'';
-    return `<div class="nr-task-bar ${allDone?'done':''} ${wilted?'wilted':''}" role="status"><span>${text}</span>${cta}</div>`;}
+    const cta=(wilted||tasks.length)?`<button type="button" class="nr-task-go" onclick="nrGoLearn()">Vào học</button>`:'';
+    return `<div class="nr-task-bar ${wilted?'wilted':''}" role="status"><span>${text}</span>${cta}</div>`;}
   // Out of Cướp Đêm and into the task list. A committed raid still asks first.
   function goLearn(){if(!confirmLeaveRaid())return;abandonRaid();cleanup();setNav(false);if(typeof DailyTask!=='undefined'&&DailyTask&&typeof DailyTask.open==='function')DailyTask.open();else if(typeof switchScreen==='function')switchScreen('dailyTaskScreen');}
   function selectShopTab(tab){if(!SHOP_TABS.some(([id])=>id===tab))return;builderShopTab=tab;builderShopOpen=true;rememberBuilderWorld();renderBuilder();}
@@ -492,7 +496,7 @@ var NightRaid = (() => {
     // on an empty land cell instead. The grab handle therefore lives above the
     // grid — and is sized to the castle's GROUND, not its artwork, so the towers
     // leaning over neighbouring cells never steal a tap meant for those cells.
-    if(editable)mountCastlePad(map,layout);else map.querySelector('.nr-castle-pad')?.remove();if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());if(view==='home'&&!map.querySelector('[data-nr-yard-army]'))map.insertAdjacentHTML('beforeend',yardArmyHtml());}
+    if(editable)mountCastlePad(map,layout);else map.querySelector('.nr-castle-pad')?.remove();if(!map.querySelector('.nr-pet-patrol'))map.insertAdjacentHTML('beforeend',yardPetHtml());if((view==='home'||view==='builder')&&!map.querySelector('[data-nr-yard-army]'))map.insertAdjacentHTML('beforeend',yardArmyHtml());}
   // Where the dog may NOT walk. The yard grid is .nr-free-grid — left 12%,
   // top 42%, 76%x47% of the map, twelve cells each way — so every placed
   // building maps to a rectangle in the same percentage space the pet walks
@@ -1361,7 +1365,7 @@ var NightRaid = (() => {
     r.innerHTML=shell(`<main class="nr-reports">${attackSection}${defenceSection}</main>`);
     if(unseen.length)api('reports',{method:'POST',body:{ids:unseen}});}
 
-  function replayReport(index){setNav(true);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won,auto=(report.rulesVersion||1)>=2;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':(report.result.shielded?'Khiên Đêm đã chặn đứng đội cướp.':'Phòng thủ đã chặn được toàn bộ đội cướp.')}</p></div></div><section class="nr-replay-stage ${auto?'nr-auto-replay':'nr-legacy-replay'}"><canvas id="nrReplayCanvas" width="${auto?800:1000}" height="${auto?800:560}" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if(auto){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.playReplay(report.commands||[],2);}}
+  function replayReport(index){setNav(true);const report=raidReports[index];if(!report||!report.snapshot)return;cleanup();view='replay';const r=root();if(!r)return;const breached=!!report.result.won,auto=(report.rulesVersion||1)>=2;r.innerHTML=shell(`<main class="nr-replay"><div class="nr-section-head compact"><button class="nr-back" type="button" onclick="nrShowReports()">${svg('shield')}<span>Nhật ký</span></button><div><span class="nr-label">REPLAY TRẬN CƯỚP</span><h2>${esc(report.attackerName||'Đội cướp bí ẩn')}</h2><p>${breached?'Quân tấn công có DAM cao hơn DEF của nhà.':(report.result.shielded?'Khiên Đêm đã chặn đứng đội cướp.':'Phòng thủ đã chặn được toàn bộ đội cướp.')}</p></div></div><section class="nr-replay-stage ${auto?'nr-auto-replay':'nr-legacy-replay'}"><canvas id="nrReplayCanvas" width="${auto?800:1000}" height="${auto?800:560}" aria-label="Phát lại trận Cướp Đêm"></canvas><div class="nr-replay-status" id="nrReplayStatus" aria-live="polite">Đang phát lại</div></section><div class="nr-replay-summary"><span>${breached?'Tường bị phá':'Đã giữ thành'}</span><strong>DAM ${report.result.damage||'?'} · DEF ${report.result.shielded?'🛡️ KHIÊN':(report.result.defense||'?')}</strong></div></main>`);const canvas=document.getElementById('nrReplayCanvas');if(auto){report.snapshot.attackerDamage=report.result.damage;report.snapshot.defense=report.result.defense;const pet=report.snapshot.attackerPet||{level:1,name:report.attackerName||'Chó đội trưởng',breed:'Chihuahua',atlas:'small',cell:0};game=new NightRaidGame.AutoBattle(canvas,report.snapshot,{pet,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='fighting'?'Đang giao chiến':state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.start();setTimeout(()=>game&&game.charge&&game.charge(),450);}else{game=new NightRaidGame.Game(canvas,report.snapshot,{replay:true,allowPause:false,onUpdate:state=>{const el=document.getElementById('nrReplayStatus');if(el)el.textContent=state.status==='playing'?`Còn ${Math.max(0,Math.ceil((state.maxTimeMs-state.timeMs)/1000))} giây trước bình minh`:state.status==='won'?'Tường đã bị phá':'Phòng thủ thành công';}});game.playReplay(report.commands||[],2);}}
 
   return Object.freeze({forgetProfile,mountYardScene,unmountYardScene,yardPoopSpots,yardBlockedRects:petBlockedRects,yardBlockedAt:petBlockedAt,yardBounds:petPatrolBounds,open,close,renderHome,isRaiding,abandonRaid,showLiveTargets,attackLive,scoutLive,startRaid,chargeArmy,quit,retryRaidResult,renderBuilder,openSeeds,selectBuild,selectShopTab,selectZone,buyFarmPlot,buildCell,gridCell,cancelBuildPurchase,confirmBuildPurchase,setDogLane,toggleBuilderGrid,toggleBuildShop,toggleBuilderMenu,rotateBuilder,beginBuildDrag,beginPlacedDrag,beginFarmPlotDrag,beginCastleDrag,zoomBuilder,nativeBuildDrag,buildDragOver,dropBuildItem,collectResources,replant,goLearn,showReports,replayReport,cleanYardPoop});
 })();

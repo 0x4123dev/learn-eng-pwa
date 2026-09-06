@@ -7,8 +7,8 @@ const F = require(path.join(__dirname, '..', 'js', 'farm-rules.js'));
 suite('farm rules: catalog', () => {
   test('six crops, ordered by days, priced as the spec table', () => {
     assert.deepEqual(F.CROPS.map(c => [c.id, c.days, c.price, c.yield]), [
-      ['lettuce', 1, 3, 8], ['tomato', 2, 5, 18], ['carrot', 3, 8, 30],
-      ['rice', 4, 10, 45], ['rose', 6, 15, 80], ['pumpkin', 8, 20, 120],
+      ['lettuce', 1, 3, 40], ['tomato', 2, 5, 90], ['carrot', 3, 8, 150],
+      ['rice', 4, 10, 225], ['rose', 6, 15, 400], ['pumpkin', 8, 20, 600],
     ]);
     for (const c of F.CROPS) assert.equal(c.kind, 'crop');
   });

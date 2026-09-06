@@ -39,6 +39,13 @@ suite('css: bottom-nav uses natural flex layout (v3.38.3 regression guard)', () 
             '.bottom-nav was switched away from position: fixed in v3.38.3');
     });
 
+    test('rendering the active Home repairs a bottom nav hidden by an interrupted game', () => {
+        const home = fs.readFileSync(path.join(ROOT, 'js/home.js'), 'utf8');
+        const render = home.slice(home.indexOf('function renderHome()'), home.indexOf('function renderHome()', home.indexOf('function renderHome()') + 1) < 0 ? home.length : home.indexOf('function renderHome()', home.indexOf('function renderHome()') + 1));
+        assert.truthy(render.includes("bottomNav.style.display = 'flex'"), 'Home must never open without its primary navigation');
+        assert.truthy(render.includes("classList.contains('active')"), 'background renders must not reveal the bar over another full-screen mode');
+    });
+
     test('.screens-container has min-height: 0 for inner scroll within flex parent', () => {
         const block = css.match(/\.screens-container\s*\{[\s\S]*?\n\s*\}/);
         assert.truthy(block, '.screens-container block not found');

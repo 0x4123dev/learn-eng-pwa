@@ -561,6 +561,13 @@ suite('night raid: app integration',()=>{
     for(const token of ['SQUAD_WALK_ANCHORS','SQUAD_ACTION_ANCHORS',"w=h*1.32","-w*(.5+anchor)"])assert.truthy(game.includes(token),token);
     assert.truthy(css.includes('filter:none!important'),'iOS castle canvas must not use a GPU drop-shadow rectangle');
   });
+  test('replay always renders the attacking dog, including old stored raids',()=>{
+    assert.truthy(ui.includes('attackerPet:raidPetDescriptor()'),'new raids send their dog appearance for the replay snapshot');
+    assert.truthy(ui.includes('report.snapshot.attackerPet||{level:1'),'old reports receive a visible Chihuahua fallback');
+    assert.truthy(ui.includes('new NightRaidGame.AutoBattle(canvas,report.snapshot,{pet,'),'the replay renderer receives that dog descriptor');
+    const start=read('functions/api/night-raid/start.js');
+    assert.truthy(start.includes('target.attackerPet=attackerPet'),'the immutable raid snapshot keeps the attacker appearance');
+  });
   test('battle defenders use the same polished 3D assets as the home builder',()=>{
     const art=read('js/night-raid-art.js');
     for(const id of ['pebble-pup','wood-fence','stone-wall','spike-trap','water-cannon'])assert.truthy(art.includes("'"+id+"'"),id);

@@ -266,6 +266,20 @@ async function openLog(reportsReply) {
 }
 
 suite('NHẬT KÝ: both sides of the night', () => {
+  test('replay shows the snapshotted attacking dog and gives old raids a visible fallback', async () => {
+    const realPet = { level: 43, name: 'Milo', breed: 'Beagle', atlas: 'small', cell: 2 };
+    const current = await openLog({ ok: true, data: { reports: [REPORT({ snapshot: { cells: [], attackerPet: realPet } })], attacks: [] } });
+    current.ctx.NightRaid.replayReport(0);
+    assert.deepEqual(current.battles[current.battles.length - 1].options.pet, realPet);
+
+    const legacy = await openLog({ ok: true, data: { reports: [REPORT()], attacks: [] } });
+    legacy.ctx.NightRaid.replayReport(0);
+    const fallback = legacy.battles[legacy.battles.length - 1].options.pet;
+    assert.equal(fallback.name, 'Gia Hân');
+    assert.equal(fallback.atlas, 'small');
+    assert.equal(fallback.cell, 0);
+  });
+
   test('it shows what the child did, then what came to their door', async () => {
     const w = await openLog({ ok: true, data: {
       reports: [REPORT()],
