@@ -429,12 +429,14 @@ suite('math board: overlay wiring', () => {
         assert.truthy(boardIdx > mathIdx, 'board script loads after math.js (it calls mathFormula)');
     });
 
-    test('toolbar: undo, xoá with a second-tap confirm, chips capped by MAX, minimize', () => {
+    test('toolbar: undo, quick clear confirmation, one visible board, minimize', () => {
         const src = read('js/math-board.js');
         assert.truthy(/mathBoardUndoTap/.test(src));
         assert.truthy(/Chắc chưa\?/.test(src), 'clear asks before wiping — kid-proofing');
-        assert.truthy(/MATH_BOARD_MAX/.test(src.slice(src.indexOf('function mathBoardChipsHTML'))),
-            'the + chip must respect the 3-board cap');
+        const chips = src.slice(src.indexOf('function mathBoardChipsHTML'),
+            src.indexOf('function mathBoardWritingToolsHTML'));
+        assert.falsy(/mathBoardTabTap\(-1\)|>\+<|MATH_BOARD_MAX/.test(chips),
+            'the toolbar must not offer another page; B1 is enough and saves width');
         assert.truthy(/minimizeMathBoard/.test(src));
         assert.truthy(/math-board-clear-quick[\s\S]*?mathBoardClearTap\(\)[\s\S]*?minimizeMathBoard\(\)/.test(src),
             'quick clear belongs immediately to the left of Minimize');

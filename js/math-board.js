@@ -847,15 +847,11 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
     function mathBoardChipsHTML() {
         const s = mathBoardSession();
-        let html = s.boards.map(function (b, i) {
+        return s.boards.map(function (b, i) {
             return '<button class="math-board-chip ' + (i === s.active ? 'active' : '') +
                    '" type="button" aria-label="Bảng ' + (i + 1) + '" ' +
                    'onclick="mathBoardTabTap(' + i + ')">B' + (i + 1) + '</button>';
         }).join('');
-        if (s.boards.length < MATH_BOARD_MAX) {
-            html += '<button class="math-board-chip" type="button" onclick="mathBoardTabTap(-1)">+</button>';
-        }
-        return html;
     }
 
     function mathBoardWritingToolsHTML() {
