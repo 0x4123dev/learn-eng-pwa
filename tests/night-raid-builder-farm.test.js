@@ -181,6 +181,14 @@ suite('builder farm: shop tabs, seed inventory and buying', () => {
     w.ctx.NightRaid.selectShopTab('defense');
     assert.truthy(html(w).includes('Mỗi loại 1 cái'), 'the owned rice field is capped in the shop');
   });
+  test('opening the seed inventory clears stale selection; tapping a seed confirms placement mode', () => {
+    const w = mount(); w.ctx.NightRaid.renderBuilder();
+    w.ctx.NightRaid.selectBuild('lettuce');
+    assert.truthy(html(w).includes('nr-builder editing'), 'selecting a seed enters placement mode');
+    assert.truthy(w.toasts.some(t => t.includes('Đã chọn Rau cải') && t.includes('chạm một ô đất trống')), 'a visible instruction confirms the tap');
+    w.ctx.NightRaid.openSeeds();
+    assert.falsy(/nr-seed-item selected/.test(html(w)), 'reopening the inventory never paints an old seed as newly selected');
+  });
   test('planting uses the server endpoint, consumes one owned seed and never charges coins', async () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     w.ctx.NightRaid.selectBuild('pumpkin');
