@@ -389,6 +389,9 @@ suite('night raid: app integration',()=>{
     for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png','img/night-raid/tomato-field.png','img/night-raid/fish-pond.png','img/night-raid/isometric-home-board-frame-v4.png','img/night-raid/endless-meadow-tile-v2.jpg'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
     assert.truthy(sw.includes("'/img/night-raid/isometric-home-board-frame-v4.png'")&&sw.includes("'/img/night-raid/endless-meadow-tile-v2.jpg'"),'the unified estate remains available offline');
   });
+  test('the inactive production summary takes no estate space',()=>{
+    assert.truthy(css.includes('.nr-collect-all:disabled{display:none}'),'only an actionable harvest control is visible');
+  });
   test('the placement grid closes after a purchased or moved building is dropped',()=>{
     assert.truthy(ui.includes('function settleBuilderPlacement()'));
     assert.truthy(ui.includes('builderEditing=false;builderShopOpen=false'));
