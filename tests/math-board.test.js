@@ -550,8 +550,11 @@ suite('math board: overlay wiring', () => {
         const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
         assert.truthy(/position:\s*fixed/.test(overlay),
             'the scratch board must not inherit a stale app-shell height');
-        assert.truthy(/--math-board-vv-height/.test(overlay) && /window\.visualViewport/.test(src),
-            'the full-screen board must follow the live iOS visual viewport');
+        assert.truthy(/inset:\s*0/.test(overlay) && /window\.visualViewport/.test(src),
+            'the full-screen board must use fixed visual-viewport coordinates');
+        assert.falsy(/offsetTop|offsetLeft/.test(src.slice(src.indexOf('function mathBoardSyncVisualViewport'),
+            src.indexOf('function mathBoardQueueVisualViewportSync'))),
+            'a fixed overlay must not receive the visual viewport offset a second time');
         assert.truthy(/visualViewport\.addEventListener\('resize',\s*mathBoardQueueVisualViewportSync/.test(src) &&
             /visualViewport\.addEventListener\('scroll',\s*mathBoardQueueVisualViewportSync/.test(src),
             'Safari changes the visual viewport during repeated swipes, not just rotation');
@@ -560,6 +563,20 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/classList\.add\('math-board-open'\)/.test(src) &&
             /classList\.remove\('math-board-open'\)/.test(src),
             'opening and closing the board must restore navigation deterministically');
+    });
+
+    test('ink coordinates stay under the finger while Safari chrome moves', () => {
+        const canvas = { _viewW: 400, _viewH: 600, clientWidth: 320, clientHeight: 480 };
+        const shifted = board.mathBoardClientPoint(canvas, 170, 260,
+            { left: 10, top: 20, width: 320, height: 480 });
+        assert.equal(shifted.x, 200, 'x is translated and scaled into the backing canvas');
+        assert.equal(shifted.y, 300, 'y is translated and scaled into the backing canvas');
+
+        const src = read('js/math-board.js');
+        const move = src.slice(src.indexOf("canvas.addEventListener('pointermove'"),
+            src.indexOf('function endGesture'));
+        assert.truthy(/const r = canvas\.getBoundingClientRect\(\)/.test(move),
+            'every move event must read the current box, not the box cached at pointerdown');
     });
 
     test('the destructive-clear confirm cannot survive the button being rebuilt', () => {

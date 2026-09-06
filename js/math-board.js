@@ -554,6 +554,23 @@ function mathBoardSizeCanvas(canvas, viewW, viewH, dpr) {
     return ctx;
 }
 
+// PointerEvent coordinates and getBoundingClientRect() are both expressed in
+// the visual viewport. Convert them into the canvas' logical CSS-pixel space.
+// The scale matters during iOS browser-chrome animation: the canvas box can
+// change immediately while its retina backing store is deliberately resized
+// only after the viewport has settled.
+function mathBoardClientPoint(canvas, clientX, clientY, rect) {
+    const r = rect || canvas.getBoundingClientRect();
+    const boxW = Math.max(1, Number(r.width) || canvas.clientWidth || 1);
+    const boxH = Math.max(1, Number(r.height) || canvas.clientHeight || 1);
+    const viewW = Math.max(1, Number(canvas._viewW) || boxW);
+    const viewH = Math.max(1, Number(canvas._viewH) || boxH);
+    return {
+        x: (clientX - r.left) * viewW / boxW,
+        y: (clientY - r.top) * viewH / boxH,
+    };
+}
+
 // ── Browser layer ────────────────────────────────────────────────────────
 // Everything below needs a real DOM; the sync test harness never runs it, but
 // pins its contracts by reading this source.
@@ -580,7 +597,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     var _mathBoardResizeTimer = 0;
     var _mathBoardRepaintFrame = 0;
     var _mathBoardRepaintPending = false;
-    var _mathBoardInputRect = null;
     // The complete question is the safe default: a child should never solve
     // from a clipped stem without noticing. Collapse is an explicit choice and
     // survives switching Bảng 1/2/3 during the same board opening.
@@ -624,7 +640,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     function mathBoardResize() {
         const canvas = document.getElementById('mathBoardCanvas');
         if (!canvas) return;
-        _mathBoardInputRect = null;
         canvas.style.width = '';    // release the locked box before measuring,
         canvas.style.height = '';   // or clientWidth reports the old size
         const w = Math.max(1, canvas.clientWidth);
@@ -659,23 +674,16 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     window.addEventListener('resize', mathBoardQueueResize);
     window.addEventListener('orientationchange', mathBoardQueueResize);
 
-    // Fixed elements on iOS are laid out against the layout viewport while
-    // the pixels the child can actually see belong to visualViewport. Safari
-    // changes the latter after repeated swipes as its browser chrome moves.
-    // Pin the board to those live bounds so no stale app-shell height can pull
-    // the bottom navigation upward or leave a white gutter below it.
+    // A fixed element already uses visual-viewport coordinates on iOS Safari.
+    // Adding visualViewport.offsetTop/Left to its CSS position therefore moves
+    // it twice (the exact large blank strip reported on iPhone). CSS inset:0
+    // owns position; this listener only resizes the backing canvas after the
+    // dynamic viewport has settled.
     function mathBoardSyncVisualViewport() {
         const el = document.getElementById('mathBoardOverlay');
         if (!el || el.classList.contains('hidden')) return;
-        const vv = window.visualViewport;
-        const left = vv ? Math.max(0, vv.offsetLeft || 0) : 0;
-        const top = vv ? Math.max(0, vv.offsetTop || 0) : 0;
-        const width = vv ? Math.max(1, vv.width || window.innerWidth) : window.innerWidth;
-        const height = vv ? Math.max(1, vv.height || window.innerHeight) : window.innerHeight;
-        el.style.setProperty('--math-board-vv-left', left + 'px');
-        el.style.setProperty('--math-board-vv-top', top + 'px');
-        el.style.setProperty('--math-board-vv-width', width + 'px');
-        el.style.setProperty('--math-board-vv-height', height + 'px');
+        ['--math-board-vv-left', '--math-board-vv-top', '--math-board-vv-width', '--math-board-vv-height']
+            .forEach(function (name) { el.style.removeProperty(name); });
         mathBoardQueueResize();
     }
 
@@ -770,7 +778,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     // disconnect leaks the canvas bitmap — megabytes on a retina phone.
     function mathBoardDropCanvas() {
         mathBoardCancelScheduledRepaint();
-        _mathBoardInputRect = null;
         if (_mathBoardResizeObs) { _mathBoardResizeObs.disconnect(); _mathBoardResizeObs = null; }
         const el = document.getElementById('mathBoardOverlay');
         if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
@@ -1212,9 +1219,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             // code below, so the tap draws nothing at all. (Same shape as the
             // iOS currentTime throw in app.js that once killed every card tap.)
             try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
-            const r = _mathBoardInputRect = canvas.getBoundingClientRect();
+            const point = mathBoardClientPoint(canvas, e.clientX, e.clientY);
             const act = mathBoardPointerDown(_mathBoardGestureState, mathBoardActive(),
-                e.pointerId, e.clientX - r.left, e.clientY - r.top, _mathBoardTool, _mathBoardPenWidth);
+                e.pointerId, point.x, point.y, _mathBoardTool, _mathBoardPenWidth);
             // ← REVIEW (Task 3): 'pan-start' means the machine just deleted the
             // half-drawn stroke. Without this repaint it stays painted on the
             // canvas until the first pan move — ink that should be gone.
@@ -1224,7 +1231,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         canvas.addEventListener('pointermove', function (e) {
             const g = _mathBoardGestureState;
             if (!g || !_mathBoardCtx) return;
-            const r = _mathBoardInputRect || canvas.getBoundingClientRect();
+            // Never keep this rectangle from pointerdown: iOS may move the
+            // visual viewport while the same finger is still writing.
+            const r = canvas.getBoundingClientRect();
             const b = mathBoardActive();
             // getCoalescedEvents: iOS batches touch samples between frames;
             // without unpacking them, fast writing has straight-line gaps.
@@ -1233,8 +1242,9 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             let repaint = false;
             for (let i = 0; i < events.length; i++) {
                 const ce = events[i];
+                const point = mathBoardClientPoint(canvas, ce.clientX, ce.clientY, r);
                 const act = mathBoardPointerMove(g, b, e.pointerId,
-                    ce.clientX - r.left, ce.clientY - r.top);
+                    point.x, point.y);
                 if (act === 'pan' || act === 'zoom' || act === 'erase') repaint = true;
                 else if (act === 'ink' && g.stroke) {
                     // Draw only the fresh tail — repainting the whole sheet on
@@ -1251,7 +1261,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         function endGesture(e) {
             if (!_mathBoardGestureState) return;
             mathBoardPointerUp(_mathBoardGestureState, mathBoardActive(), e.pointerId);
-            _mathBoardInputRect = null;
             mathBoardCancelScheduledRepaint();
             mathBoardRepaint();   // final full-quality pass over the finished stroke
         }
@@ -1259,7 +1268,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         canvas.addEventListener('pointercancel', function (e) {
             if (!_mathBoardGestureState) return;
             mathBoardPointerCancel(_mathBoardGestureState, mathBoardActive(), e.pointerId);
-            _mathBoardInputRect = null;
             mathBoardCancelScheduledRepaint();
             mathBoardRepaint();
         });
@@ -1328,7 +1336,7 @@ if (typeof module !== 'undefined' && module.exports) {
         mathBoardSession, mathBoardReset, mathBoardForgetProfile, mathBoardActive, mathBoardAdd, mathBoardSwitch,
         mathBoardGesture, mathBoardPointerDown, mathBoardPointerMove, mathBoardPointerUp, mathBoardPointerCancel,
         mathBoardAbort, mathBoardZoom, mathBoardScreenToWorld,
-        mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas,
+        mathBoardVisibleStrokes, mathBoardDrawStroke, mathBoardRedraw, mathBoardSizeCanvas, mathBoardClientPoint,
         mathBoardGridLines, MATH_BOARD_GRID_STEP,
         MATH_BOARD_KEY_ROWS,
     };

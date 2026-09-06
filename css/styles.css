@@ -11478,16 +11478,13 @@
 
 /* ── Math board (bảng nháp) ─────────────────────────────────────────── */
 .math-board-overlay {
-    /* This is deliberately fixed to the live VISUAL viewport rather than the
-       app flex shell. iOS Safari changes that viewport while its chrome is
-       shown/hidden; leaving the board in .screens-container could freeze the
-       bottom nav halfway up the screen and expose a large white strip below.
-       JS keeps these four values in step with window.visualViewport. */
+    /* Fixed already resolves in visual-viewport coordinates on iOS. Never add
+       visualViewport.offsetTop here: Safari has already applied that offset,
+       so doing it again drags both the paper and its input coordinates down. */
     position: fixed;
-    left: var(--math-board-vv-left, 0px);
-    top: var(--math-board-vv-top, 0px);
-    width: var(--math-board-vv-width, 100vw);
-    height: var(--math-board-vv-height, 100dvh);
+    inset: 0;
+    width: auto;
+    height: auto;
     z-index: 2000;
     display: flex; flex-direction: column;
     padding-top: env(safe-area-inset-top, 0px);
