@@ -859,19 +859,19 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     }
 
     function mathBoardWritingToolsHTML() {
-        const penActive = _mathBoardTool === 'pen';
-        const pen = '<button class="math-board-write-tool' + (penActive ? ' active' : '') + '" type="button" ' +
-                   'aria-pressed="' + (penActive ? 'true' : 'false') + '" ' +
-                   'onclick="mathBoardSelectTool(\'pen\')">' +
-                     '<span class="math-board-pen-sample" style="height:' + MATH_BOARD_INK_WIDTH + 'px"></span>' +
-                     '<span>Bút mảnh</span>' +
-                   '</button>';
         const eraseActive = _mathBoardTool === 'erase';
-        return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' + pen +
+        return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' +
                '<button class="math-board-write-tool math-board-eraser' + (eraseActive ? ' active' : '') + '" ' +
                        'type="button" aria-pressed="' + (eraseActive ? 'true' : 'false') + '" ' +
-                       'onclick="mathBoardSelectTool(\'erase\')">Tẩy nét</button></div>';
+                       'onclick="mathBoardToggleEraser()">' +
+                       (eraseActive ? 'Viết tiếp' : 'Tẩy nét') + '</button></div>';
     }
+
+    window.mathBoardToggleEraser = function () {
+        mathBoardSelectTool(_mathBoardTool === 'erase' ? 'pen' : 'erase');
+        const button = document.querySelector('.math-board-eraser');
+        if (button) button.textContent = _mathBoardTool === 'erase' ? 'Viết tiếp' : 'Tẩy nét';
+    };
 
     window.mathBoardSelectTool = function (tool) {
         mathBoardAbortSafe();
@@ -1152,6 +1152,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                         'aria-expanded="' + (_mathBoardKeyboardOpen ? 'true' : 'false') + '" ' +
                         'onclick="mathBoardKeyboardToggle()">' +
                         (_mathBoardKeyboardOpen ? 'Ẩn bàn phím' : 'Bàn phím toán') + '</button>' +
+                '<button class="math-board-tool math-board-clear-quick" type="button" id="mathBoardClearBtn" ' +
+                        'onclick="mathBoardClearTap()">Xoá bảng</button>' +
                 '<button class="math-board-tool" type="button" onclick="minimizeMathBoard()">Thu nhỏ</button>' +
               '</div>' +
             '</div>' +
@@ -1160,8 +1162,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
                 mathBoardWritingToolsHTML() +
                 '<div class="math-board-edit-tools">' +
                   '<button class="math-board-tool" type="button" onclick="mathBoardUndoTap()">Lùi một bước</button>' +
-                  '<button class="math-board-tool" type="button" id="mathBoardClearBtn" ' +
-                          'onclick="mathBoardClearTap()">Xoá bảng</button>' +
                 '</div>' +
               '</div>') +
             mathBoardKeyboardHTML() +

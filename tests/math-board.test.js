@@ -38,14 +38,16 @@ suite('math board: strokes', () => {
         assert.equal(b.strokes.length, 1, 'an accidental clear is recoverable');
     });
 
-    test('the whiteboard uses one fixed thin pen instead of a width picker', () => {
+    test('the whiteboard uses one fixed pen without a redundant thin-pen button', () => {
         const b = { strokes: [], scrollY: 0 };
         assert.equal(board.mathBoardBegin(b, 1, 1).width, 2.5);
         assert.deepEqual(board.MATH_BOARD_PEN_WIDTHS, [2.5]);
         assert.equal(board.MATH_BOARD_INK_WIDTH, 2.5, 'the only pen is the smallest thin stroke');
         const src = read('js/math-board.js');
-        assert.truthy(/Bút mảnh/.test(src) && !/\['Mảnh', 'Vừa', 'Đậm'\]/.test(src),
-            'the toolbar can switch back to the pen but cannot choose a thickness');
+        assert.falsy(/Bút mảnh|>Mảnh</.test(src),
+            'the fixed-width pen does not need a button that only repeats its thickness');
+        assert.truthy(/mathBoardToggleEraser/.test(src),
+            'tapping the active eraser must return to writing after the pen button is removed');
     });
 
     test('the object eraser removes a touched stroke and Undo restores it', () => {
@@ -434,6 +436,8 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/MATH_BOARD_MAX/.test(src.slice(src.indexOf('function mathBoardChipsHTML'))),
             'the + chip must respect the 3-board cap');
         assert.truthy(/minimizeMathBoard/.test(src));
+        assert.truthy(/math-board-clear-quick[\s\S]*?mathBoardClearTap\(\)[\s\S]*?minimizeMathBoard\(\)/.test(src),
+            'quick clear belongs immediately to the left of Minimize');
     });
 
     test('the pinned strip shows the current question through mathFormula', () => {
@@ -627,7 +631,7 @@ suite('math board: what the browser found', () => {
         const toolsStart = src.indexOf('math-board-tools');
         const tools = src.slice(toolsStart, src.indexOf('mathBoardKeyboardHTML()', toolsStart));
         const labels = (tools.match(/>([^<>]+)<\/button>/g) || []).map(s => s.slice(1, -9).trim());
-        assert.equal(labels.length, 6, 'open question, tools, maths keyboard, minimize, undo, clear');
+        assert.equal(labels.length, 6, 'open question, tools, maths keyboard, quick clear, minimize, undo');
         for (const l of labels) {
             assert.truthy(/[A-Za-zÀ-ỹ]/.test(l),
                 `"${l}" is glyph-only — an unsupported emoji renders as a hollow box`);
@@ -660,7 +664,10 @@ suite('math board: what the browser found', () => {
         assert.truthy(/_mathBoardToolsExpanded\s*=\s*false/.test(src),
             'drawing settings should not consume the board by default');
         assert.truthy(/math-board-advanced-tools'\s*\+\s*\(_mathBoardToolsExpanded\s*\?\s*''\s*:\s*' hidden'\)/.test(src),
-            'pen sizes, eraser, undo and clear belong in the collapsible tray');
+            'eraser and undo belong in the collapsible tray');
+        const advancedStart = src.indexOf("'<div class=\"math-board-advanced-tools'");
+        const advanced = src.slice(advancedStart, src.indexOf("mathBoardKeyboardHTML()", advancedStart));
+        assert.falsy(/Xoá bảng/.test(advanced), 'clear moved out of Công cụ and must not be duplicated there');
         assert.truthy(/aria-controls="mathBoardAdvancedTools"/.test(src) && /mathBoardToolsToggle/.test(src));
         assert.truthy(/Bàn phím toán/.test(src), 'the primary input action needs an unmistakable label');
         assert.truthy(/\.math-board-keyboard-toggle\s*\{[^}]*background:\s*linear-gradient/s.test(css),

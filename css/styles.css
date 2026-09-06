@@ -11636,15 +11636,12 @@ html.math-board-open:has(#mathBoardOverlay:not(.hidden)) #bottomNav { display: n
     background: #fff; color: #334155;
     font: 800 12px/1 inherit; cursor: pointer; touch-action: manipulation;
 }
-.math-board-pen-sample {
-    display: block; width: 19px; min-height: 2px; border-radius: 999px; background: #1e293b;
-}
 .math-board-write-tool.active {
     color: #fff; border-color: #4338ca; background: #4f46e5;
     box-shadow: 0 2px 8px rgba(79,70,229,.25);
 }
-.math-board-write-tool.active .math-board-pen-sample { background: #fff; }
 .math-board-eraser.active { background: #be123c; border-color: #9f1239; }
+.math-board-clear-quick { color: #b91c1c; border-color: #fecaca; background: #fff7f7; font-weight: 850; }
 .math-board-chip {
     border: 1px solid #cbd5e1; background: #fff; border-radius: 16px;
     padding: 5px 9px; min-width: 44px; font-size: 12px; min-height: 44px;
