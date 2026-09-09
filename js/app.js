@@ -1118,6 +1118,7 @@ function forgetProfileState() {
     }
     if (typeof examForgetProfile === 'function') { try { examForgetProfile(); } catch (e) {} }
     if (typeof warsForgetProfile === 'function') { try { warsForgetProfile(); } catch (e) {} }
+    if (typeof mathTablesForgetProfile === 'function') { try { mathTablesForgetProfile(); } catch (e) {} }
     if (typeof verbsForgetProfile === 'function') { try { verbsForgetProfile(); } catch (e) {} }
     // The maths scratch pad: four sheets of the previous child's handwriting.
     if (typeof mathBoardForgetProfile === 'function') { try { mathBoardForgetProfile(); } catch (e) {} }
@@ -1505,6 +1506,20 @@ function switchScreen(screenId) {
         if (typeof abandonWars === 'function') abandonWars();
     }
 
+    // Guard: a bảng cửu chương round. Thirty seconds, scored only when it
+    // ends — the shortest clock in the app and therefore the easiest to lose
+    // to a mis-tap on the nav bar.
+    if (screenId !== 'mathHubScreen' &&
+        typeof isMathTablesActive === 'function' && isMathTablesActive()) {
+        const left = (typeof mathTablesClockText === 'function' && typeof mathTablesLeftMs === 'function')
+            ? mathTablesClockText(mathTablesLeftMs()) : '';
+        if (!confirm('Con đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
+                   + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')) {
+            return false;
+        }
+        if (typeof abandonMathTables === 'function') abandonMathTables();
+    }
+
     // Guard: a live Night Raid. The raid stage hides the bottom bar, so this is
     // a backstop rather than the front line — but the server has already
     // written the raid row by the time the army marches, and start.js refuses
@@ -1698,8 +1713,8 @@ let _updateRetryTimer = null;
 // as tapping a nav tab, and the first version of this checked four of eleven.
 const _BUSY_CHECKS = [
     'isCollocActive', 'isExamActive', 'isGrammarQuizActive', 'isMathQuizActive',
-    'isPhrasesQuizActive', 'isRewriteQuizActive', 'isUnitPracticeActive',
-    'isWarsActive', 'isWordformQuizActive', 'isRetryDrillActive',
+    'isMathTablesActive', 'isPhrasesQuizActive', 'isRewriteQuizActive',
+    'isUnitPracticeActive', 'isWarsActive', 'isWordformQuizActive', 'isRetryDrillActive',
 ];
 function _busyWithTimedActivity() {
     try {

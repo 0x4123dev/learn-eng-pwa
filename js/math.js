@@ -31,7 +31,7 @@ const MATH4_PRE_SET = 'pre';
 
 let _mathQuiz = null;          // { chapter, questions:[], idx, answers:[] }
 let _mathSubTab = 'practice';  // chỉ có nghĩa bên trong Học kì 1: 'practice' | 'exams' | 'lessons'
-let _mathView = 'home';        // 'home' | 'toan7' | 'toan4' | 'hk1' | 'hk2' | 'history' | 'wars' | 'fight'
+let _mathView = 'home';        // 'home' | 'toan7' | 'toan4' | 'cuuchuong' | 'hk1' | 'hk2' | 'history' | 'wars' | 'fight'
 // Lịch sử làm bài mở được từ cả Toán 7 lẫn Toán 4, nên nút ‹ phải quay về
 // đúng chỗ bé vừa đứng — không thì bé bấm ‹ ở Toán 4 lại rơi sang Toán 7.
 let _mathHistoryBack = 'toan7';
@@ -957,6 +957,12 @@ function renderMathHome() {
   if (typeof isWarsActive === 'function' && isWarsActive()) {
     if (typeof renderWars === 'function') { renderWars(); return; }
   }
+  // Same for a cửu chương round. Its clock is only thirty seconds, so the
+  // window in which a repaint could destroy the round is short — and that is
+  // precisely why it would be missed in testing and hit a child.
+  if (typeof isMathTablesActive === 'function' && isMathTablesActive()) {
+    if (typeof renderMathTables === 'function') { renderMathTables(); return; }
+  }
   // Same for a round or a đề thi in progress. Tapping the Math tab painted the
   // menu on top of it: the questions vanished but _mathQuiz stayed alive, so
   // the next tab change asked "con đang làm dở bài Toán" about work the child
@@ -982,6 +988,12 @@ function renderMathHome() {
     return;
   }
   if (_mathView === 'toan4') { screen.innerHTML = renderToan4MenuHTML(); return; }
+  if (_mathView === 'cuuchuong') {
+    screen.innerHTML = (typeof renderMathTablesMenuHTML === 'function')
+      ? renderMathTablesMenuHTML()
+      : renderToan4MenuHTML();
+    return;
+  }
   if (_mathView === 'hk1' || _mathView === 'hk2') {
     const hk2 = _mathView === 'hk2';
     const body = _mathSubTab === 'lessons' ? renderMathLessonsHTML()
@@ -1122,6 +1134,11 @@ function renderToan4MenuHTML() {
         <span class="phrases-cta-text"><strong>Pre</strong><small>Đang tải ngân hàng câu hỏi…</small></span>
         <span class="phrases-cta-arrow">🔒</span>
       </button>`}
+      <button class="phrases-cta" onclick="openMathSection('cuuchuong')">
+        <span class="phrases-cta-icon">🔢</span>
+        <span class="phrases-cta-text"><strong>Bảng cửu chương</strong><small>Nhân và chia · 6 bài · ${typeof TABLES_QUESTIONS !== 'undefined' ? TABLES_QUESTIONS : 10} câu trong ${typeof TABLES_SECONDS !== 'undefined' ? TABLES_SECONDS : 30} giây</small></span>
+        <span class="phrases-cta-arrow">›</span>
+      </button>
       ${list ? `<div class="math-g4-types"><h3 class="topic-detail-list-title">Đề ôn gồm</h3><ul>${list}</ul></div>` : ''}
       <button class="phrases-cta" onclick="openMathSection('history')">
         <span class="phrases-cta-icon">🕘</span>
@@ -1253,7 +1270,7 @@ function openMathSection(v) {
         if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
-  const known = ['home', 'toan7', 'toan4', 'hk1', 'hk2', 'history', 'wars', 'fight'];
+  const known = ['home', 'toan7', 'toan4', 'cuuchuong', 'hk1', 'hk2', 'history', 'wars', 'fight'];
   if (v === 'fight' && !mathFightUnlocked()) v = 'home';
   // Remember the level the child came from BEFORE moving, so ‹ out of the
   // history list lands back on Toán 7 or Toán 4 — whichever opened it.
@@ -1264,6 +1281,11 @@ function openMathSection(v) {
   // the child has walked away from and "finishes" a round they are not in.
   if (_mathView !== 'wars' && typeof abandonWars === 'function' && typeof isWarsActive === 'function'
       && isWarsActive()) abandonWars();
+  // And the same for a cửu chương round: thirty seconds is short enough that a
+  // clock left running behind another screen would score the round before the
+  // child noticed they had left it.
+  if (_mathView !== 'cuuchuong' && typeof abandonMathTables === 'function'
+      && typeof isMathTablesActive === 'function' && isMathTablesActive()) abandonMathTables();
   // Same reason as the wars clock above: a fight left running behind another
   // screen would keep polling and pulsing at a DOM the child has walked away
   // from. Leaving the tab stops its timers; the server still owns the result.
@@ -2052,6 +2074,7 @@ function abandonMathQuiz() {
 // inside A's Toán 4 / lịch sử / Đấu Toán rather than on the Maths home.
 function mathForgetProfile() {
   abandonMathQuiz();
+  if (typeof mathTablesForgetProfile === 'function') { try { mathTablesForgetProfile(); } catch (e) {} }
   if (typeof mathTypedReset === 'function') { try { mathTypedReset(); } catch (e) {} }
   _mathHintOpen = false;
   _mathRetryOptions = [];

@@ -68,6 +68,7 @@ const ASSETS = [
   '/js/math-source-exams-hk2.js',
   '/js/math4-data.js',
   '/js/mathwars.js',
+  '/js/math-tables.js',
   '/js/math-fight-rules.js',
   '/js/math-fight-bank.js',
   '/js/mathwars-bank.js',
