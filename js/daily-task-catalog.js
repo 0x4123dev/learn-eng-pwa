@@ -232,6 +232,37 @@ var DailyTaskCatalog = (function () {
     { detail: { field: 'g4set', value: 'mix' } }, 'mathHubScreen',
     [['openMathSection', 'toan4'], ['startMath4Mix']]));
 
+  // Bảng cửu chương — six drills, and three "bất kỳ" tasks over them.
+  //
+  // Every code starts with 'cc', nhân codes with 'ccx' and chia codes with
+  // 'ccd', so all three loose tasks are a single PREFIX clause rather than a
+  // list that would have to be edited every time a table group is added.
+  // matchSql() already supports detail prefixes (it is how the "đề thi HK1 bất
+  // kỳ" task works).
+  //
+  // "phải đúng 10/10" is not a rule this file enforces — progress() counts
+  // only sessions with score == total, and a cửu chương round always records
+  // total = 10 even when the clock cut it short. The label just says so out
+  // loud, because an admin setting the day's work should not have to know that.
+  const CC_GROUPS = [['2345', '2, 3, 4, 5'], ['67', '6, 7'], ['89', '8, 9']];
+  ENTRIES.push(entry('math4:cc', 'math4', 'Bảng cửu chương · bất kỳ bài nào (phải đúng 10/10)', 'math',
+    { detail: { field: 'g4set', prefix: 'cc' } }, 'mathHubScreen',
+    [['openMathSection', 'cuuchuong'], ['startMathTables', 'x', '2345']]));
+  ENTRIES.push(entry('math4:ccx', 'math4', 'Bảng nhân · bất kỳ bảng nào (phải đúng 10/10)', 'math',
+    { detail: { field: 'g4set', prefix: 'ccx' } }, 'mathHubScreen',
+    [['openMathSection', 'cuuchuong'], ['startMathTables', 'x', '2345']]));
+  ENTRIES.push(entry('math4:ccd', 'math4', 'Bảng chia · bất kỳ bảng nào (phải đúng 10/10)', 'math',
+    { detail: { field: 'g4set', prefix: 'ccd' } }, 'mathHubScreen',
+    [['openMathSection', 'cuuchuong'], ['startMathTables', 'd', '2345']]));
+  for (const [op, word] of [['x', 'Bảng nhân '], ['d', 'Bảng chia ']]) {
+    for (const [group, label] of CC_GROUPS) {
+      ENTRIES.push(entry('math4:cc' + op + group, 'math4',
+        word + label + ' (phải đúng 10/10)', 'math',
+        { detail: { field: 'g4set', value: 'cc' + op + group } }, 'mathHubScreen',
+        [['openMathSection', 'cuuchuong'], ['startMathTables', op, group]]));
+    }
+  }
+
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));
 
   function groups() { return GROUPS.slice(); }

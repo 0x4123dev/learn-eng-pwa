@@ -633,6 +633,23 @@ function screenPlaybook() {
         const hidden = g4.filter((t) => !g4text.includes(t.title));
         mustEqual(hidden.length, 0, 'Toán 4 hides dạng that exist: ' + hidden.map((t) => t.title).join(', '));
         must(wiredTo(h.el('mathHubScreen'), 'startMath4Pre').length >= 1, 'Toán 4 offers no Pre paper');
+        // Bảng cửu chương: six drills behind one CTA. Open it, start the
+        // hardest one, answer a question and prove the round advances — the
+        // clock is 30 seconds, so a screen that renders but does not respond
+        // to a tap is indistinguishable from one that works until a child has
+        // already lost the round.
+        h.sandbox.openMathSection('cuuchuong');
+        const cc = h.el('mathHubScreen');
+        mustEqual(wiredTo(cc, 'startMathTables').length, 6,
+          'Bảng cửu chương must offer all six drills');
+        h.sandbox.startMathTables('d', '89');
+        must(h.sandbox.isMathTablesActive(), 'the bảng chia 8, 9 round did not start');
+        const ccOpts = h.el('mathHubScreen').querySelectorAll('.wars-option');
+        mustEqual(ccOpts.length, 4, 'a cửu chương question must offer four answers');
+        h.sandbox.answerMathTables(0);
+        must(h.sandbox.isMathTablesActive(), 'one answer must not end a ten-question round');
+        h.sandbox.abandonMathTables();
+        must(!h.sandbox.isMathTablesActive(), 'the round did not stop');
         h.sandbox.openMathSection('home');
         return 'every chapter listed in both semesters (' + listed.join(', ')
           + '), Toán 4 lists ' + g4.length + ' dạng';

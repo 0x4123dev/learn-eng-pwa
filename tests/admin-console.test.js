@@ -417,9 +417,23 @@ suite('admin: the Daily task tab', () => {
     test('daily-task assignment copy is clear and offers Toán 4 Pre plus Mix', () => {
         const catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
         const math4 = catalog.entries('math4');
-        assert.deepEqual(math4.map(e => e.key).sort(), ['math4:mix', 'math4:pre']);
+        assert.deepEqual(math4.map(e => e.key).sort(), [
+          'math4:cc', 'math4:ccd', 'math4:ccd2345', 'math4:ccd67', 'math4:ccd89',
+          'math4:ccx', 'math4:ccx2345', 'math4:ccx67', 'math4:ccx89',
+          'math4:mix', 'math4:pre',
+        ]);
         assert.truthy(math4.find(e => e.key === 'math4:pre').label.includes('Chọn 1 trong 4 đáp án'));
         assert.truthy(math4.find(e => e.key === 'math4:mix').label.includes('Nhập đáp án'));
+        // The three "bất kỳ" tasks match on a g4set PREFIX, which is the only
+        // reason the six codes were shaped cc / ccx / ccd in the first place.
+        assert.deepEqual(catalog.get('math4:cc').match, { detail: { field: 'g4set', prefix: 'cc' } });
+        assert.deepEqual(catalog.get('math4:ccx').match, { detail: { field: 'g4set', prefix: 'ccx' } });
+        assert.deepEqual(catalog.get('math4:ccd').match, { detail: { field: 'g4set', prefix: 'ccd' } });
+        assert.deepEqual(catalog.get('math4:ccx67').match, { detail: { field: 'g4set', value: 'ccx67' } });
+        assert.deepEqual(catalog.get('math4:ccd89').go, {
+          screen: 'mathHubScreen',
+          calls: [['openMathSection', 'cuuchuong'], ['startMathTables', 'd', '89']],
+        });
         for (const copy of ['Nhiệm vụ hằng ngày', 'Bài bé sẽ làm',
             'Số lần phải đạt 100% mỗi ngày', 'Giao nhiệm vụ']) {
             assert.truthy(adminHtml.includes(copy), 'admin assignment copy is missing: ' + copy);
