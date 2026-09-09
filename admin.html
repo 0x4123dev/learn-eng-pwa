@@ -512,6 +512,13 @@
       <div class="bar-actions">
         <button class="btn btn-ghost" id="mathFightFlag" aria-pressed="false"
                 title="Đấu Toán: friend-vs-friend maths duels. Off means the tab is hidden for EVERY child.">🥊 Đấu Toán: …</button>
+        <label class="btn btn-ghost" id="ccSecondsWrap" style="display:inline-flex;align-items:center;gap:6px;cursor:default"
+               title="Bảng cửu chương: giây cho MỖI lượt 10 câu, dùng chung cho cả 6 bài. Đổi ở đây là đổi cho TẤT CẢ các bé.">
+          🔢 Cửu chương:
+          <input id="ccSeconds" type="number" min="15" max="180" step="5" inputmode="numeric"
+                 style="width:64px;background:transparent;border:1px solid currentColor;border-radius:6px;color:inherit;padding:2px 4px;font:inherit;text-align:right">
+          giây
+        </label>
         <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
         <button class="btn btn-ghost" id="logoutBtn">Log out</button>
       </div>
@@ -1382,10 +1389,38 @@ function paintAppFlags(){
   btn.style.background = on ? '#12603a' : '';
   btn.style.color = on ? '#eafff3' : '';
 }
+// Bảng cửu chương's round length. One number for all six drills and for every
+// child — how long a ten-question round runs. The server clamps it too; this
+// only keeps an adult from watching their typo be silently corrected.
+let _appSettings = {};
+function paintAppSettings(){
+  const el = document.getElementById('ccSeconds');
+  if (!el) return;
+  if (document.activeElement !== el) el.value = _appSettings.cuuchuong_seconds || 60;
+}
 async function loadAppFlags(){
   const r = await api('admin/app-flags');
   _appFlags = (r && r.flags) || {};
+  _appSettings = (r && r.settings) || {};
   paintAppFlags();
+  paintAppSettings();
+}
+async function saveCcSeconds(){
+  const el = document.getElementById('ccSeconds');
+  const next = Math.trunc(Number(el.value));
+  const now = _appSettings.cuuchuong_seconds || 60;
+  // Nothing typed, or nothing changed: put the real value back and say nothing.
+  if (!Number.isFinite(next) || next === now) { paintAppSettings(); return; }
+  if (!confirm('Đổi thời gian mỗi lượt Bảng cửu chương thành ' + next + ' giây cho TẤT CẢ các bé?')) {
+    paintAppSettings(); return;
+  }
+  el.disabled = true;
+  try {
+    const r = await api('admin/app-flags', { method:'POST', body:{ key:'cuuchuong_seconds', value: next } });
+    _appSettings = (r && r.settings) || _appSettings;
+  } catch (e) { alert('Could not do that: ' + (e && e.message ? e.message : e)); }
+  el.disabled = false;
+  paintAppSettings();
 }
 async function toggleMathFight(){
   const btn = document.getElementById('mathFightFlag');
@@ -1414,6 +1449,11 @@ document.getElementById('loginBtn').onclick = doLogin;
 document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('logoutBtn').onclick = logout;
 document.getElementById('mathFightFlag').onclick = toggleMathFight;
+// Commit on blur and on Enter, not on every keystroke: typing "120" would
+// otherwise POST 1, then 12, then 120 — and briefly give every child a
+// one-second round.
+document.getElementById('ccSeconds').onchange = saveCcSeconds;
+document.getElementById('ccSeconds').onkeydown = (e) => { if (e.key === 'Enter') e.target.blur(); };
 document.getElementById('refreshBtn').onclick = ()=>{
   loadUsers().catch(()=>{});
   loadActivity(_selectedUser, _selectedName).catch(()=>{});

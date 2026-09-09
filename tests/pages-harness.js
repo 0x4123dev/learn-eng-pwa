@@ -99,6 +99,7 @@ const SQL_FILES = [
   'db/009-night-raid.sql',
   'db/010-coin-grants.sql',
   'db/011-math-fight.sql',
+  'db/030-cuuchuong-seconds.sql',   // seeds cuuchuong_seconds into app_flags
   'db/012-ghost-offering-event.sql',
   'db/013-daily-coin-snapshots.sql',
   // Must run AFTER 009: it drops the unique (attacker, defender, ICT day)

@@ -7,8 +7,8 @@
 // mental arithmetic over four operators with a hidden difficulty ladder and a
 // five-minute clock. This is neither. It is table RECALL — 6 × 7 and 42 : 7 —
 // where the only thing being measured is whether the fact comes back fast
-// enough to be useful, so there is one clock for the WHOLE round — 45s, or 60s
-// for bảng chia 8, 9 — and the only way to answer is to tap.
+// enough to be useful, so there is one clock for the WHOLE round — its length
+// set by an admin, 60s by default — and the only way to answer is to tap.
 //
 // Six drills: nhân and chia, over tables 2–5, 6–7 and 8–9. Split that way
 // because a child who is fine on ×8 can still lose :8, and splitting by table
@@ -24,17 +24,24 @@
 // already matches daily tasks on that field. No API change, no migration.
 
 const TABLES_QUESTIONS = 10;
-// The clock for the WHOLE round, not per question. A table drill is a fluency
-// race — if there is time to work it out, it is measuring something other than
-// recall — so the clock stays tight enough to be a race.
+// The clock for the WHOLE round, not per question, and ONE clock for all six
+// drills — set by an admin, not written here.
 //
-// It is per DRILL rather than one number for all six. The first version ran
-// every drill at 30s, and that is 3s a question: fine for bảng nhân 2–5, but
-// the child who most needs bảng chia 8, 9 sat at 5/10 and never once saw the
-// bonus. A division fact is recalled by walking up the table, which is simply
-// slower than reading off a product, and 8 and 9 are the slowest walk of all.
-const TABLES_SECONDS = 45;                       // every drill unless listed below
-const TABLES_SECONDS_BY_MODE = { d89: 60 };      // bảng chia 8, 9 — the hardest recall
+// The drill shipped at a hardcoded 30s, which is three seconds a question:
+// fine for bảng nhân 2–5, far too sharp for bảng chia 8, 9. The fix is not a
+// better guess in code. How long a child needs is something an adult can see
+// by watching them, and it changes as they get faster — so the length lives in
+// app_flags (db/030-cuuchuong-seconds.sql), the admin dashboard sets it, and
+// it rides home to every device on the coin sync like the Đấu Toán switch.
+//
+// One number for all six rather than six, deliberately: six clocks would be
+// six numbers to hold in an adult's head, and the reason to change it — "this
+// is too fast for him" — is about the child, not about which table he is on.
+//
+// This constant is only the floor under a device that has never synced.
+const TABLES_SECONDS = 60;
+const TABLES_SECONDS_MIN = 15;   // still winnable
+const TABLES_SECONDS_MAX = 180;  // still a race
 // Same rate as the rest of the maths tab (MATH_COINS_PER_CORRECT) and Math
 // Wars, so a child cannot farm coins by picking the easiest mode.
 const TABLES_COINS_PER_CORRECT = 2;
@@ -63,16 +70,22 @@ for (const op of ['x', 'd']) {
       title: (op === 'x' ? 'Bảng nhân ' : 'Bảng chia ') + g.label,
       short: (op === 'x' ? 'Nhân ' : 'Chia ') + g.label,
       icon: op === 'x' ? '✖️' : '➗',
-      seconds: TABLES_SECONDS_BY_MODE[op + g.group] || TABLES_SECONDS,
     });
   }
 }
 
-// The one place that answers "how long is this round". Everything that shows a
-// clock or scores against one reads it here, so a drill's length can move
-// without leaving a stale number written somewhere on screen.
+// The one place that answers "how long is a round". Everything that shows a
+// clock or scores against one reads it here, so an admin moving the setting
+// cannot leave a stale number written somewhere on screen.
+//
+// The `mode` argument is accepted and ignored: all six drills share one clock.
+// It is kept so callers do not have to know that, and so making the length
+// per-drill later would touch this function and nothing else.
 function mathTablesSeconds(mode) {
-  return (mode && mode.seconds) || TABLES_SECONDS;
+  const raw = (typeof appState !== 'undefined' && appState)
+    ? Math.trunc(+appState.cuuchuongSeconds) : NaN;
+  if (!Number.isFinite(raw) || raw <= 0) return TABLES_SECONDS;
+  return Math.max(TABLES_SECONDS_MIN, Math.min(TABLES_SECONDS_MAX, raw));
 }
 
 function mathTablesModes() { return TABLES_MODES.slice(); }
@@ -501,8 +514,8 @@ function finishMathTables(timedOut) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    TABLES_QUESTIONS, TABLES_SECONDS, TABLES_SECONDS_BY_MODE, mathTablesSeconds,
-    TABLES_COINS_PER_CORRECT,
+    TABLES_QUESTIONS, TABLES_SECONDS, TABLES_SECONDS_MIN, TABLES_SECONDS_MAX,
+    mathTablesSeconds, TABLES_COINS_PER_CORRECT,
     TABLES_PERFECT_BONUS, TABLES_HISTORY_CAP, TABLES_MODES,
     mathTablesModes, mathTablesMode, mathTablesModeByG4set,
     mathTablesQuestion, mathTablesBuild, mathTablesOptions, tablesShuffle,

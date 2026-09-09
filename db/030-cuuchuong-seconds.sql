@@ -1,0 +1,22 @@
+-- 030-cuuchuong-seconds.sql — one clock for all six Bảng cửu chương drills,
+-- set from the admin dashboard.
+--
+-- npx wrangler@3 d1 execute eng_pwa_db --remote --file db/030-cuuchuong-seconds.sql
+--
+-- The drill shipped at 30 seconds for a round of ten, which is three seconds a
+-- question. That is fine for bảng nhân 2–5 and far too sharp for bảng chia
+-- 8, 9: the child who most needs the drill sat at 5/10 and never once saw the
+-- perfect bonus. Rather than guess a second number in code and ship again,
+-- the length becomes a setting an adult can turn while watching the child use
+-- it. It starts at 60.
+--
+-- It rides in app_flags (db/011-math-fight.sql) rather than a table of its
+-- own: that table is already "one value for the whole app, set by an admin",
+-- its `value` column is an INTEGER, and the coin sync already carries its
+-- contents home to every device. A second settings table would have needed a
+-- second delivery path for one number.
+--
+-- ONE setting for all six drills, deliberately. Six clocks would be six
+-- numbers to keep in an adult's head, and the reason to change it — "this is
+-- too fast for him" — is about the child, not about which table he is on.
+INSERT OR IGNORE INTO app_flags(key, value, updated_at) VALUES ('cuuchuong_seconds', 60, 0);

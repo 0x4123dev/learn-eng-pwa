@@ -50,7 +50,23 @@ export async function onRequestPost({ request, env }) {
 
   const flag = await env.DB.prepare("SELECT value FROM app_flags WHERE key = 'math_fight'").first();
   const me = await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(auth.uid).first();
-  const flags = { mathFight: !!(flag && flag.value), bot: !!(me && me.allow_bot) };
+  // Bảng cửu chương's round length rides home with the switches: it is one
+  // number for the whole app, an adult changes it while watching a child use
+  // it, and this call already runs often enough that the change lands within
+  // a session. Clamped and defaulted HERE as well as in the admin endpoint,
+  // because a row written before the range existed must still hand a device a
+  // length it can actually run a round on.
+  const secondsRow = await env.DB.prepare(
+    "SELECT value FROM app_flags WHERE key = 'cuuchuong_seconds'").first();
+  const rawSeconds = Math.trunc(Number(secondsRow && secondsRow.value));
+  const cuuchuongSeconds = Number.isFinite(rawSeconds) && rawSeconds > 0
+    ? Math.max(15, Math.min(180, rawSeconds))
+    : 60;
+  const flags = {
+    mathFight: !!(flag && flag.value),
+    bot: !!(me && me.allow_bot),
+    cuuchuongSeconds: cuuchuongSeconds,
+  };
 
   if (body.ackOnly === true) return json({ granted: 0, receipt: null, flags });
 

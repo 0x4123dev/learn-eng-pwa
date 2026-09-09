@@ -172,7 +172,7 @@ suite('bảng cửu chương: the clock scores the round', () => {
     assert.truthy(t.isMathTablesActive(), 'the round did not start');
     assert.equal(t.mathTablesQuizQuestions().length, t.TABLES_QUESTIONS);
     const left = t.mathTablesLeftMs();
-    const secs = t.mathTablesSeconds(t.mathTablesMode('x', '67'));
+    const secs = t.mathTablesSeconds(t.mathTablesMode('x', '67'));  // the admin setting
     assert.truthy(left > (secs - 2) * 1000 && left <= secs * 1000,
       'the clock did not start at ' + secs + 's, it read ' + left);
     t.abandonMathTables();
@@ -338,43 +338,55 @@ suite('bảng cửu chương: the menu offers all six drills', () => {
   });
 });
 
-suite('bảng cửu chương: the clock is per drill, not one number', () => {
-  test('bảng chia 8, 9 gets the longest clock — a division fact is slowest to recall', () => {
+suite('bảng cửu chương: one clock, set by an admin', () => {
+  test('with nothing synced yet, a round is 60 seconds', () => {
+    global.appState = { coins: 0, mathHistory: [] };
+    assert.equal(t.TABLES_SECONDS, 60);
     assert.equal(t.mathTablesSeconds(t.mathTablesMode('d', '89')), 60);
   });
 
-  test('every other drill runs on the default clock', () => {
+  test('all six drills share the one clock — no drill has its own', () => {
+    global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: 90 };
     for (const m of t.mathTablesModes()) {
-      if (m.key === 'd89') continue;
-      assert.equal(t.mathTablesSeconds(m), t.TABLES_SECONDS,
-        m.key + ' must run on the default clock');
+      assert.equal(t.mathTablesSeconds(m), 90, m.key + ' must use the admin setting');
     }
-    assert.equal(t.TABLES_SECONDS, 45);
   });
 
-  test('a round really runs for its own mode\'s length', () => {
-    global.appState = { coins: 0, mathHistory: [] };
+  test('the admin setting really changes the length of a round', () => {
+    global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: 120 };
     t.startMathTables('d', '89');
-    const long = t.mathTablesLeftMs();
+    const left = t.mathTablesLeftMs();
     t.abandonMathTables();
-    t.startMathTables('x', '89');
-    const short = t.mathTablesLeftMs();
-    t.abandonMathTables();
-    assert.truthy(long > short + 10000,
-      'bảng chia 8, 9 must get a longer round than bảng nhân 8, 9 (' + long + ' vs ' + short + ')');
+    assert.truthy(left > 118000 && left <= 120000, 'the round did not run for 120s: ' + left);
   });
 
-  test('elapsedMs is capped by the round\'s OWN length, not a shared constant', () => {
-    // Capping a 60s round at 45s would have written an elapsed time shorter
-    // than the round actually ran — a silent lie in the admin timeline.
-    global.appState = { coins: 0, mathHistory: [] };
-    t.startMathTables('d', '89');
+  test('a junk or missing setting falls back rather than handing out a 0s round', () => {
+    // A zero-second round would end before the first question was read, and
+    // score 0/10 — every time, for every child, until someone noticed.
+    for (const junk of [0, -5, null, undefined, 'abc', NaN]) {
+      global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: junk };
+      assert.equal(t.mathTablesSeconds(t.mathTablesMode('x', '67')), t.TABLES_SECONDS,
+        'setting ' + String(junk) + ' must fall back');
+    }
+  });
+
+  test('an out-of-range setting is clamped at both ends', () => {
+    global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: 5 };
+    assert.equal(t.mathTablesSeconds(null), t.TABLES_SECONDS_MIN);
+    global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: 9999 };
+    assert.equal(t.mathTablesSeconds(null), t.TABLES_SECONDS_MAX);
+  });
+
+  test('a round records the clock it was actually scored against', () => {
+    global.appState = { coins: 0, mathHistory: [], cuuchuongSeconds: 75 };
+    t.startMathTables('x', '2345');
     for (let i = 0; i < t.TABLES_QUESTIONS; i++) {
       t.answerMathTables(t.mathTablesQuizQuestions()[i].correct);
     }
     const run = global.appState.mathHistory[0];
-    assert.truthy(run.elapsedMs <= 60 * 1000, 'elapsed cannot exceed the round length');
-    assert.equal(run.seconds, 60, 'the round must record the clock it was scored against');
+    assert.equal(run.seconds, 75, 'a run read back later must say which clock it ran on');
+    assert.truthy(run.elapsedMs <= 75 * 1000);
+    global.appState = { coins: 0, mathHistory: [] };
   });
 });
 
