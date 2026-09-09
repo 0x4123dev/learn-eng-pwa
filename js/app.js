@@ -1506,7 +1506,7 @@ function switchScreen(screenId) {
         if (typeof abandonWars === 'function') abandonWars();
     }
 
-    // Guard: a bảng cửu chương round. Thirty seconds, scored only when it
+    // Guard: a bảng cửu chương round. Under a minute, scored only when it
     // ends — the shortest clock in the app and therefore the easiest to lose
     // to a mis-tap on the nav bar.
     if (screenId !== 'mathHubScreen' &&

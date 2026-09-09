@@ -1136,7 +1136,7 @@ function renderToan4MenuHTML() {
       </button>`}
       <button class="phrases-cta" onclick="openMathSection('cuuchuong')">
         <span class="phrases-cta-icon">🔢</span>
-        <span class="phrases-cta-text"><strong>Bảng cửu chương</strong><small>Nhân và chia · 6 bài · ${typeof TABLES_QUESTIONS !== 'undefined' ? TABLES_QUESTIONS : 10} câu trong ${typeof TABLES_SECONDS !== 'undefined' ? TABLES_SECONDS : 30} giây</small></span>
+        <span class="phrases-cta-text"><strong>Bảng cửu chương</strong><small>Nhân và chia · 6 bài · ${typeof TABLES_QUESTIONS !== 'undefined' ? TABLES_QUESTIONS : 10} câu ngược đồng hồ</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>
       ${list ? `<div class="math-g4-types"><h3 class="topic-detail-list-title">Đề ôn gồm</h3><ul>${list}</ul></div>` : ''}

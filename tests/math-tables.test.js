@@ -172,8 +172,9 @@ suite('bảng cửu chương: the clock scores the round', () => {
     assert.truthy(t.isMathTablesActive(), 'the round did not start');
     assert.equal(t.mathTablesQuizQuestions().length, t.TABLES_QUESTIONS);
     const left = t.mathTablesLeftMs();
-    assert.truthy(left > (t.TABLES_SECONDS - 2) * 1000 && left <= t.TABLES_SECONDS * 1000,
-      'the clock did not start at ' + t.TABLES_SECONDS + 's, it read ' + left);
+    const secs = t.mathTablesSeconds(t.mathTablesMode('x', '67'));
+    assert.truthy(left > (secs - 2) * 1000 && left <= secs * 1000,
+      'the clock did not start at ' + secs + 's, it read ' + left);
     t.abandonMathTables();
   });
 
@@ -329,8 +330,51 @@ suite('bảng cửu chương: the menu offers all six drills', () => {
 
   test('the round length and the bonus are stated on the menu, not discovered', () => {
     const html = t.renderMathTablesMenuHTML();
-    assert.truthy(html.indexOf(String(t.TABLES_SECONDS)) !== -1, 'the clock is not shown');
+    for (const m of t.mathTablesModes()) {
+      assert.truthy(html.indexOf(t.mathTablesSeconds(m) + ' giây') !== -1,
+        m.key + ': its own clock is not shown on the menu');
+    }
     assert.truthy(html.indexOf(String(t.TABLES_PERFECT_BONUS)) !== -1, 'the bonus is not shown');
+  });
+});
+
+suite('bảng cửu chương: the clock is per drill, not one number', () => {
+  test('bảng chia 8, 9 gets the longest clock — a division fact is slowest to recall', () => {
+    assert.equal(t.mathTablesSeconds(t.mathTablesMode('d', '89')), 60);
+  });
+
+  test('every other drill runs on the default clock', () => {
+    for (const m of t.mathTablesModes()) {
+      if (m.key === 'd89') continue;
+      assert.equal(t.mathTablesSeconds(m), t.TABLES_SECONDS,
+        m.key + ' must run on the default clock');
+    }
+    assert.equal(t.TABLES_SECONDS, 45);
+  });
+
+  test('a round really runs for its own mode\'s length', () => {
+    global.appState = { coins: 0, mathHistory: [] };
+    t.startMathTables('d', '89');
+    const long = t.mathTablesLeftMs();
+    t.abandonMathTables();
+    t.startMathTables('x', '89');
+    const short = t.mathTablesLeftMs();
+    t.abandonMathTables();
+    assert.truthy(long > short + 10000,
+      'bảng chia 8, 9 must get a longer round than bảng nhân 8, 9 (' + long + ' vs ' + short + ')');
+  });
+
+  test('elapsedMs is capped by the round\'s OWN length, not a shared constant', () => {
+    // Capping a 60s round at 45s would have written an elapsed time shorter
+    // than the round actually ran — a silent lie in the admin timeline.
+    global.appState = { coins: 0, mathHistory: [] };
+    t.startMathTables('d', '89');
+    for (let i = 0; i < t.TABLES_QUESTIONS; i++) {
+      t.answerMathTables(t.mathTablesQuizQuestions()[i].correct);
+    }
+    const run = global.appState.mathHistory[0];
+    assert.truthy(run.elapsedMs <= 60 * 1000, 'elapsed cannot exceed the round length');
+    assert.equal(run.seconds, 60, 'the round must record the clock it was scored against');
   });
 });
 

@@ -1,4 +1,4 @@
-// math-tables.js — 🔢 Bảng cửu chương: the times tables against a 30s clock.
+// math-tables.js — 🔢 Bảng cửu chương: the times tables against the clock.
 //
 // A third kind of maths in this tab, and deliberately its own module.
 //
@@ -7,8 +7,8 @@
 // mental arithmetic over four operators with a hidden difficulty ladder and a
 // five-minute clock. This is neither. It is table RECALL — 6 × 7 and 42 : 7 —
 // where the only thing being measured is whether the fact comes back fast
-// enough to be useful, so the clock is 30 seconds for the whole round and the
-// only way to answer is to tap.
+// enough to be useful, so there is one clock for the WHOLE round — 45s, or 60s
+// for bảng chia 8, 9 — and the only way to answer is to tap.
 //
 // Six drills: nhân and chia, over tables 2–5, 6–7 and 8–9. Split that way
 // because a child who is fine on ×8 can still lose :8, and splitting by table
@@ -24,11 +24,17 @@
 // already matches daily tasks on that field. No API change, no migration.
 
 const TABLES_QUESTIONS = 10;
-// The clock for the WHOLE round, not per question — three seconds a question.
-// A table drill is a fluency race; if there is time to work it out, it is
-// measuring something other than recall. This is the single constant to change
-// if 30s turns out to be too sharp for bảng chia 8, 9.
-const TABLES_SECONDS = 30;
+// The clock for the WHOLE round, not per question. A table drill is a fluency
+// race — if there is time to work it out, it is measuring something other than
+// recall — so the clock stays tight enough to be a race.
+//
+// It is per DRILL rather than one number for all six. The first version ran
+// every drill at 30s, and that is 3s a question: fine for bảng nhân 2–5, but
+// the child who most needs bảng chia 8, 9 sat at 5/10 and never once saw the
+// bonus. A division fact is recalled by walking up the table, which is simply
+// slower than reading off a product, and 8 and 9 are the slowest walk of all.
+const TABLES_SECONDS = 45;                       // every drill unless listed below
+const TABLES_SECONDS_BY_MODE = { d89: 60 };      // bảng chia 8, 9 — the hardest recall
 // Same rate as the rest of the maths tab (MATH_COINS_PER_CORRECT) and Math
 // Wars, so a child cannot farm coins by picking the easiest mode.
 const TABLES_COINS_PER_CORRECT = 2;
@@ -57,8 +63,16 @@ for (const op of ['x', 'd']) {
       title: (op === 'x' ? 'Bảng nhân ' : 'Bảng chia ') + g.label,
       short: (op === 'x' ? 'Nhân ' : 'Chia ') + g.label,
       icon: op === 'x' ? '✖️' : '➗',
+      seconds: TABLES_SECONDS_BY_MODE[op + g.group] || TABLES_SECONDS,
     });
   }
+}
+
+// The one place that answers "how long is this round". Everything that shows a
+// clock or scores against one reads it here, so a drill's length can move
+// without leaving a stale number written somewhere on screen.
+function mathTablesSeconds(mode) {
+  return (mode && mode.seconds) || TABLES_SECONDS;
 }
 
 function mathTablesModes() { return TABLES_MODES.slice(); }
@@ -141,7 +155,7 @@ function mathTablesBuild(mode, table, n, rand) {
 // A round enumerates the mode's whole fact list, shuffles it and takes ten,
 // rather than drawing ten times at random. Random draws repeat: over a round
 // of ten from bảng 8, 9 a duplicate is more likely than not, and being asked
-// 8 × 4 twice in thirty seconds reads to a child as the app glitching.
+// 8 × 4 twice inside one short round reads to a child as the app glitching.
 function mathTablesFacts(mode) {
   const out = [];
   for (const table of mode.tables) {
@@ -221,7 +235,7 @@ function startMathTables(op, group) {
     answers: [],
     startedAt: now,
     askedAt: now,
-    endsAt: now + TABLES_SECONDS * 1000,
+    endsAt: now + mathTablesSeconds(mode) * 1000,
     timer: null,
   };
   // The clock repaints only its own node. Re-rendering the whole card every
@@ -291,7 +305,7 @@ function tablesModeButtonHTML(m) {
   const best = mathTablesBest(m.g4set);
   return `<button class="phrases-cta" onclick="startMathTables('${m.op}','${m.group}')">
       <span class="phrases-cta-icon">${m.icon}</span>
-      <span class="phrases-cta-text"><strong>${tablesEsc(m.title)}</strong><small>${TABLES_QUESTIONS} câu · ${TABLES_SECONDS} giây${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small></span>
+      <span class="phrases-cta-text"><strong>${tablesEsc(m.title)}</strong><small>${TABLES_QUESTIONS} câu · ${mathTablesSeconds(m)} giây${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small></span>
       <span class="phrases-cta-arrow">›</span>
     </button>`;
 }
@@ -303,7 +317,7 @@ function renderMathTablesMenuHTML() {
   const nhan = TABLES_MODES.filter(m => m.op === 'x').map(tablesModeButtonHTML).join('');
   const chia = TABLES_MODES.filter(m => m.op === 'd').map(tablesModeButtonHTML).join('');
   const header = (typeof mathHeaderHTML === 'function')
-    ? mathHeaderHTML('BẢNG CỬU CHƯƠNG', 'Nhân và chia trong ' + TABLES_SECONDS + ' giây',
+    ? mathHeaderHTML('BẢNG CỬU CHƯƠNG', 'Nhân và chia ngược đồng hồ',
         'Sáu bài: bảng nhân và bảng chia, mỗi bài ' + TABLES_QUESTIONS + ' câu.',
         'openMathSection(\'toan4\')')
     : `<button onclick="openMathSection('toan4')">‹</button>`;
@@ -311,7 +325,7 @@ function renderMathTablesMenuHTML() {
       <div class="phrases-hero">
         <div class="phrases-hero-icon">🔢</div>
         <h1>Bảng cửu chương</h1>
-        <p class="phrases-sub">Mỗi lượt <b>${TABLES_QUESTIONS} câu</b> trong <b>${TABLES_SECONDS} giây</b>. Đúng cả ${TABLES_QUESTIONS} câu được thưởng thêm <b>${TABLES_PERFECT_BONUS} xu</b>.</p>
+        <p class="phrases-sub">Mỗi lượt <b>${TABLES_QUESTIONS} câu</b>, mỗi bài có đồng hồ riêng. Đúng cả ${TABLES_QUESTIONS} câu được thưởng thêm <b>${TABLES_PERFECT_BONUS} xu</b>.</p>
       </div>
       <h3 class="topic-detail-list-title math-cc-heading">✖️ Bảng nhân</h3>
       ${nhan}
@@ -346,8 +360,8 @@ function renderMathTables() {
     </div>`;
 }
 
-// The ✕ sits where a thumb rests between taps, and thirty seconds is scored
-// only at the end — so it asks first.
+// The ✕ sits where a thumb rests between taps, and a round is scored only at
+// the end — so it asks first.
 function mathTablesQuit() {
   if (!isMathTablesActive()) { mathTablesBackToMenu(); return; }
   const left = mathTablesClockText(mathTablesLeftMs());
@@ -463,7 +477,10 @@ function finishMathTables(timedOut) {
     wrong: [],
     timedOut: !!timedOut,
     meanMs: answered ? Math.round(msSum / answered) : 0,
-    elapsedMs: Math.min(TABLES_SECONDS * 1000, Date.now() - st.startedAt),
+    // Capped by THIS round's clock, not a shared constant: capping a 60s round
+    // at 45 would write an elapsed time shorter than the round really ran.
+    elapsedMs: Math.min(mathTablesSeconds(st.mode) * 1000, Date.now() - st.startedAt),
+    seconds: mathTablesSeconds(st.mode),
     grade: 4,
     g4set: st.mode.g4set,
     chapter: 'g4-' + st.mode.g4set,
@@ -484,7 +501,8 @@ function finishMathTables(timedOut) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    TABLES_QUESTIONS, TABLES_SECONDS, TABLES_COINS_PER_CORRECT,
+    TABLES_QUESTIONS, TABLES_SECONDS, TABLES_SECONDS_BY_MODE, mathTablesSeconds,
+    TABLES_COINS_PER_CORRECT,
     TABLES_PERFECT_BONUS, TABLES_HISTORY_CAP, TABLES_MODES,
     mathTablesModes, mathTablesMode, mathTablesModeByG4set,
     mathTablesQuestion, mathTablesBuild, mathTablesOptions, tablesShuffle,
