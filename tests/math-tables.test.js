@@ -131,6 +131,34 @@ suite('bảng cửu chương: four options, and the wrong ones are believable', 
   });
 });
 
+suite('bảng cửu chương: a round is ten different facts', () => {
+  test('ten questions, all inside the mode, no fact asked twice', () => {
+    const rand = seeded(23);
+    for (const m of t.mathTablesModes()) {
+      for (let run = 0; run < 400; run++) {
+        const qs = t.mathTablesRoundQuestions(m, rand);
+        assert.equal(qs.length, t.TABLES_QUESTIONS, m.key + ': wrong round length');
+        const seen = new Set();
+        for (const q of qs) {
+          assert.truthy(m.tables.indexOf(q.table) !== -1, m.key + ': ' + q.q + ' is not in this mode');
+          const fact = q.table + ':' + q.n;
+          assert.falsy(seen.has(fact), m.key + ': ' + q.q + ' asked twice in one round');
+          seen.add(fact);
+        }
+      }
+    }
+  });
+
+  test('every mode has at least ten facts to draw from', () => {
+    // 2–5 has 40, 6–7 has 20, 8–9 has 20. If a group ever shrinks below ten,
+    // "no fact twice" becomes impossible and this says so before a child sees it.
+    for (const m of t.mathTablesModes()) {
+      assert.truthy(m.tables.length * 10 >= t.TABLES_QUESTIONS,
+        m.key + ': not enough facts for a round of ' + t.TABLES_QUESTIONS);
+    }
+  });
+});
+
 if (require.main === module) {
   const harness = require('./harness');
   harness.runAll().then(code => process.exit(code));

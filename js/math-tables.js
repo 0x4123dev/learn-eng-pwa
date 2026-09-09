@@ -138,11 +138,31 @@ function mathTablesBuild(mode, table, n, rand) {
   };
 }
 
+// A round enumerates the mode's whole fact list, shuffles it and takes ten,
+// rather than drawing ten times at random. Random draws repeat: over a round
+// of ten from bảng 8, 9 a duplicate is more likely than not, and being asked
+// 8 × 4 twice in thirty seconds reads to a child as the app glitching.
+function mathTablesFacts(mode) {
+  const out = [];
+  for (const table of mode.tables) {
+    for (let n = 1; n <= 10; n++) out.push({ table: table, n: n });
+  }
+  return out;
+}
+
+function mathTablesRoundQuestions(mode, rand) {
+  const r = rand || Math.random;
+  return tablesShuffle(mathTablesFacts(mode), r)
+    .slice(0, TABLES_QUESTIONS)
+    .map(f => mathTablesBuild(mode, f.table, f.n, r));
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     TABLES_QUESTIONS, TABLES_SECONDS, TABLES_COINS_PER_CORRECT,
     TABLES_PERFECT_BONUS, TABLES_HISTORY_CAP, TABLES_MODES,
     mathTablesModes, mathTablesMode, mathTablesModeByG4set,
     mathTablesQuestion, mathTablesBuild, mathTablesOptions, tablesShuffle,
+    mathTablesFacts, mathTablesRoundQuestions,
   };
 }
