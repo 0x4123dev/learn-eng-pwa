@@ -157,6 +157,170 @@ function mathTablesRoundQuestions(mode, rand) {
     .map(f => mathTablesBuild(mode, f.table, f.n, r));
 }
 
+// ---- the round --------------------------------------------------------
+let _tablesQuiz = null;   // { mode, questions, idx, answers, startedAt, endsAt, timer, askedAt }
+
+function isMathTablesActive() { return !!_tablesQuiz; }
+function mathTablesQuizQuestions() { return _tablesQuiz ? _tablesQuiz.questions : []; }
+function mathTablesCurrentMode() { return _tablesQuiz ? _tablesQuiz.mode : null; }
+
+function mathTablesScreen() {
+  return (typeof document !== 'undefined' && document.getElementById)
+    ? document.getElementById('mathHubScreen') : null;
+}
+
+function mathTablesStopClock() {
+  if (_tablesQuiz && _tablesQuiz.timer && typeof clearInterval === 'function') {
+    clearInterval(_tablesQuiz.timer);
+    _tablesQuiz.timer = null;
+  }
+}
+
+// Thirty seconds of concentration scored only at the end, and the bottom nav
+// sits exactly where a thumb lands between taps. It goes away for the round,
+// as it does for Math Wars and for a đề thi; every exit below puts it back.
+function mathTablesLockScreen(locked) {
+  if (typeof document === 'undefined') return;
+  const nav = document.getElementById('bottomNav');
+  if (nav) nav.style.display = locked ? 'none' : '';
+}
+
+function abandonMathTables() {
+  mathTablesStopClock();
+  _tablesQuiz = null;
+  mathTablesLockScreen(false);
+}
+
+// SILENT teardown for a profile change — no confirm(), no render. Two children
+// share one iPad: without this, A's 30-second clock keeps ticking after B has
+// been picked, and the study checkpoint writes A's unfinished round into
+// localStorage under B's name. Registered in forgetProfileState() (js/app.js).
+function mathTablesForgetProfile() { abandonMathTables(); }
+
+function mathTablesLeftMs() {
+  if (!_tablesQuiz) return 0;
+  return Math.max(0, _tablesQuiz.endsAt - Date.now());
+}
+
+// Test seam: pull the deadline into the past so a test can prove the timeout
+// path without waiting thirty real seconds.
+function mathTablesExpireForTest() {
+  if (_tablesQuiz) _tablesQuiz.endsAt = Date.now() - 1;
+}
+
+function startMathTables(op, group) {
+  mathTablesStopClock();
+  const mode = mathTablesMode(op, group);
+  if (!mode) return;
+  if (typeof retryGate === 'function' && retryGate('math')) return;
+  const now = Date.now();
+  _tablesQuiz = {
+    mode: mode,
+    questions: mathTablesRoundQuestions(mode),
+    idx: 0,
+    answers: [],
+    startedAt: now,
+    askedAt: now,
+    endsAt: now + TABLES_SECONDS * 1000,
+    timer: null,
+  };
+  // The clock repaints only its own node. Re-rendering the whole card every
+  // tick would fight the child's finger on the option they are tapping — at
+  // three seconds a question there is no margin for that.
+  if (typeof setInterval === 'function') {
+    _tablesQuiz.timer = setInterval(mathTablesClockTick, 250);
+  }
+  mathTablesLockScreen(true);
+  renderMathTables();
+}
+
+function mathTablesClockTick() {
+  if (!_tablesQuiz) return;
+  const left = mathTablesLeftMs();
+  const el = (typeof document !== 'undefined') && document.getElementById('mathTablesClock');
+  if (el) {
+    el.textContent = '⏱ ' + mathTablesClockText(left);
+    if (left <= 10000) el.className = 'wars-clock low';
+  }
+  if (left <= 0) finishMathTables(true);
+}
+
+function mathTablesClockText(ms) {
+  const left = Math.max(0, Math.ceil(ms / 1000));
+  if (left < 60) return left + 's';
+  return Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+}
+
+function answerMathTables(i) {
+  const st = _tablesQuiz;
+  if (!st || st.idx >= st.questions.length) return;
+  if (mathTablesLeftMs() <= 0) { finishMathTables(true); return; }
+  const q = st.questions[st.idx];
+  const now = Date.now();
+  const ok = i === q.correct;
+  st.answers.push({ pick: i, ok: ok, ms: Math.max(0, now - st.askedAt) });
+  if (typeof petCheerAnswer === 'function') petCheerAnswer(ok);
+  st.idx++;
+  st.askedAt = now;
+  if (st.idx >= st.questions.length) { finishMathTables(false); return; }
+  renderMathTables();
+}
+
+function mathTablesCoinsEarned(correct, total, comboBonus) {
+  return correct * TABLES_COINS_PER_CORRECT
+    + (comboBonus || 0)
+    + (total > 0 && correct === total ? TABLES_PERFECT_BONUS : 0);
+}
+
+function renderMathTables() { /* Task 6 draws the card */ }
+function renderMathTablesResult(run, coinsEarned) { /* Task 6 draws the card */ }
+
+function mathTablesSaveRun(run) {
+  if (typeof appState === 'undefined' || !appState) return;
+  if (!Array.isArray(appState.mathHistory)) appState.mathHistory = [];
+  appState.mathHistory.unshift(run);
+  if (appState.mathHistory.length > TABLES_HISTORY_CAP) {
+    appState.mathHistory.length = TABLES_HISTORY_CAP;
+  }
+}
+
+function finishMathTables(timedOut) {
+  const st = _tablesQuiz;
+  if (!st) return;
+  mathTablesStopClock();
+  mathTablesLockScreen(false);   // the round is scored: let the child leave
+  const answered = st.answers.length;
+  const correct = st.answers.filter(a => a.ok).length;
+  const msSum = st.answers.reduce((s, a) => s + a.ms, 0);
+  const comboBonus = typeof petComboBonus === 'function' ? petComboBonus() : 0;
+  const coinsEarned = mathTablesCoinsEarned(correct, TABLES_QUESTIONS, comboBonus);
+  if (typeof appState !== 'undefined' && appState) {
+    appState.coins = (appState.coins || 0) + coinsEarned;
+  }
+  const run = {
+    date: Date.now(),
+    // `total` is the FULL round, never the number reached before the clock
+    // stopped. Everything downstream — the daily task's "score === total", the
+    // best-percentage pin, the admin timeline — reads a short round as a low
+    // score, which is what it is.
+    total: TABLES_QUESTIONS,
+    score: correct,
+    answered: answered,
+    wrong: [],
+    timedOut: !!timedOut,
+    meanMs: answered ? Math.round(msSum / answered) : 0,
+    elapsedMs: Math.min(TABLES_SECONDS * 1000, Date.now() - st.startedAt),
+    grade: 4,
+    g4set: st.mode.g4set,
+    chapter: 'g4-' + st.mode.g4set,
+    label: 'Toán 4 · ' + st.mode.title,
+    skills: [],
+  };
+  mathTablesSaveRun(run);
+  _tablesQuiz = null;
+  renderMathTablesResult(run, coinsEarned);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     TABLES_QUESTIONS, TABLES_SECONDS, TABLES_COINS_PER_CORRECT,
@@ -164,5 +328,11 @@ if (typeof module !== 'undefined' && module.exports) {
     mathTablesModes, mathTablesMode, mathTablesModeByG4set,
     mathTablesQuestion, mathTablesBuild, mathTablesOptions, tablesShuffle,
     mathTablesFacts, mathTablesRoundQuestions,
+    isMathTablesActive, mathTablesQuizQuestions, mathTablesCurrentMode,
+    mathTablesStopClock, mathTablesLockScreen, abandonMathTables,
+    mathTablesForgetProfile, mathTablesLeftMs, mathTablesExpireForTest,
+    startMathTables, mathTablesClockTick, mathTablesClockText, answerMathTables,
+    mathTablesCoinsEarned, finishMathTables, mathTablesSaveRun,
+    renderMathTables, renderMathTablesResult,
   };
 }

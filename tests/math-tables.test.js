@@ -159,6 +159,79 @@ suite('bảng cửu chương: a round is ten different facts', () => {
   });
 });
 
+suite('bảng cửu chương: the clock scores the round', () => {
+  function freshRound(modeKey) {
+    global.appState = { coins: 0, mathHistory: [] };
+    const m = t.mathTablesModes().find(x => x.key === modeKey);
+    t.startMathTables(m.op, m.group);
+    return m;
+  }
+
+  test('a round starts with a full clock and ten questions', () => {
+    freshRound('x67');
+    assert.truthy(t.isMathTablesActive(), 'the round did not start');
+    assert.equal(t.mathTablesQuizQuestions().length, t.TABLES_QUESTIONS);
+    const left = t.mathTablesLeftMs();
+    assert.truthy(left > (t.TABLES_SECONDS - 2) * 1000 && left <= t.TABLES_SECONDS * 1000,
+      'the clock did not start at ' + t.TABLES_SECONDS + 's, it read ' + left);
+    t.abandonMathTables();
+  });
+
+  test('answering every question correctly scores 10/10', () => {
+    freshRound('x2345');
+    for (let i = 0; i < t.TABLES_QUESTIONS; i++) {
+      const q = t.mathTablesQuizQuestions()[i];
+      t.answerMathTables(q.correct);
+    }
+    assert.falsy(t.isMathTablesActive(), 'the round did not end on the last question');
+    const run = global.appState.mathHistory[0];
+    assert.equal(run.score, 10);
+    assert.equal(run.total, 10);
+  });
+
+  test('the clock running out ends the round, and unanswered counts as WRONG out of ten', () => {
+    // This is what makes a "phải đúng 10/10" daily task mean something:
+    // answering four and letting the clock go scores 4 of 10, not 4 of 4.
+    const m = freshRound('d89');
+    for (let i = 0; i < 4; i++) t.answerMathTables(t.mathTablesQuizQuestions()[i].correct);
+    t.mathTablesExpireForTest();
+    t.mathTablesClockTick();
+    assert.falsy(t.isMathTablesActive(), 'the clock did not end the round');
+    const run = global.appState.mathHistory[0];
+    assert.equal(run.total, 10, 'total must be the full round, not the number reached');
+    assert.equal(run.score, 4);
+    assert.equal(run.answered, 4);
+    assert.equal(run.timedOut, true);
+    assert.equal(run.g4set, m.g4set);
+  });
+});
+
+suite('bảng cửu chương: coins', () => {
+  test('two xu a correct answer', () => {
+    assert.equal(t.mathTablesCoinsEarned(7, 10, 0), 14);
+    assert.equal(t.mathTablesCoinsEarned(0, 10, 0), 0);
+  });
+
+  test('a clean 10/10 adds the thirty-xu bonus, and nothing else does', () => {
+    assert.equal(t.mathTablesCoinsEarned(10, 10, 0), 20 + t.TABLES_PERFECT_BONUS);
+    assert.equal(t.mathTablesCoinsEarned(9, 10, 0), 18, '9/10 must not pay the bonus');
+  });
+
+  test('a pending combo bonus is banked with the round', () => {
+    assert.equal(t.mathTablesCoinsEarned(10, 10, 5), 20 + t.TABLES_PERFECT_BONUS + 5);
+  });
+
+  test('the wallet actually receives them', () => {
+    global.appState = { coins: 100, mathHistory: [] };
+    const m = t.mathTablesModes()[0];
+    t.startMathTables(m.op, m.group);
+    for (let i = 0; i < t.TABLES_QUESTIONS; i++) {
+      t.answerMathTables(t.mathTablesQuizQuestions()[i].correct);
+    }
+    assert.equal(global.appState.coins, 100 + 20 + t.TABLES_PERFECT_BONUS);
+  });
+});
+
 if (require.main === module) {
   const harness = require('./harness');
   harness.runAll().then(code => process.exit(code));
