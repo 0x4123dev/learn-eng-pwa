@@ -225,6 +225,46 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, false);
   });
 
+  test('a bảng cửu chương round pays its own task, its op task and the loose one', async () => {
+    // The design claim, checked against real SQL: 'cc' groups all six drills,
+    // 'ccx'/'ccd' group the operation, and an exact code names one drill. No
+    // API change and no migration were needed for any of it.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'math4:cc', 1);
+    addTask(world, kid.uid, 'math4:ccx', 1);
+    addTask(world, kid.uid, 'math4:ccd', 1);
+    addTask(world, kid.uid, 'math4:ccx67', 1);
+    addTask(world, kid.uid, 'math4:ccd67', 1);
+    addTask(world, kid.uid, 'math4:pre', 1);
+    addActivity(world, kid.uid, {
+      type: 'math', title: 'Toán 4 · Bảng nhân 6, 7', score: 10, total: 10,
+      detail: { grade: 4, g4set: 'ccx67', chapter: 'g4-ccx67' }, at: '2026-09-02 09:03:00' });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.equal(byKind['math4:ccx67'], 1, 'the drill did not pay off its own task');
+    assert.equal(byKind['math4:ccx'], 1, 'a nhân round must satisfy "bất kỳ bảng nhân"');
+    assert.equal(byKind['math4:cc'], 1, 'and "bất kỳ bài cửu chương"');
+    assert.equal(byKind['math4:ccd'], 0, 'a nhân round is NOT a chia round');
+    assert.equal(byKind['math4:ccd67'], 0);
+    assert.equal(byKind['math4:pre'], 0, 'and it is not a Pre paper either');
+  });
+
+  test('a cửu chương round cut short by the clock pays nothing', async () => {
+    // The round always records total = 10, so four answered and the clock gone
+    // is 4/10 — not 4/4. That is the only reason "phải đúng 10/10" means
+    // anything for a timed drill.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'math4:ccd89', 1);
+    addActivity(world, kid.uid, {
+      type: 'math', title: 'Toán 4 · Bảng chia 8, 9', score: 4, total: 10,
+      detail: { grade: 4, g4set: 'ccd89', chapter: 'g4-ccd89' } });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 0);
+    assert.equal(p.allDone, false);
+  });
+
   test('GMT+7 day boundary: 23:59 counts, 00:01 next day does not, yesterday does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});
