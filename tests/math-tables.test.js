@@ -232,6 +232,85 @@ suite('bảng cửu chương: coins', () => {
   });
 });
 
+suite('bảng cửu chương: what a finished round records', () => {
+  function playPerfect(modeKey) {
+    global.appState = { coins: 0, mathHistory: [] };
+    const m = t.mathTablesModes().find(x => x.key === modeKey);
+    t.startMathTables(m.op, m.group);
+    for (let i = 0; i < t.TABLES_QUESTIONS; i++) {
+      t.answerMathTables(t.mathTablesQuizQuestions()[i].correct);
+    }
+    return { mode: m, run: global.appState.mathHistory[0] };
+  }
+
+  test('it lands in mathHistory as a grade-4 session carrying its g4set', () => {
+    // grade + g4set is the whole server integration: js/auth.js uploads a
+    // grade-4 session as detail.g4set, and the daily-task matcher reads it.
+    for (const m of t.mathTablesModes()) {
+      const { run } = playPerfect(m.key);
+      assert.equal(run.grade, 4, m.key + ': not filed as Toán 4');
+      assert.equal(run.g4set, m.g4set, m.key + ': wrong g4set');
+      assert.equal(run.label, 'Toán 4 · ' + m.title);
+    }
+  });
+
+  test('it records NO wrong ids and never feeds the retry drill', () => {
+    // The questions are generated, so they have no bank id mathById() could
+    // resolve. Ids here would poison "dạng toán cần ôn" with questions that
+    // look up to null — the exact bug the id-stamping comments in math.js
+    // describe. A generated round owes nothing back.
+    let retryCalls = 0;
+    global.retryAdd = () => { retryCalls++; };
+    const { run } = playPerfect('d67');
+    delete global.retryAdd;
+    assert.deepEqual(run.wrong, []);
+    assert.equal(retryCalls, 0, 'a cửu chương round must not add to the retry drill');
+  });
+
+  test('one skill row per table, named so the admin page can tell nhân from chia', () => {
+    const { mode, run } = playPerfect('d89');
+    const keys = run.skills.map(s => s.skillKey).sort();
+    assert.deepEqual(keys, ['math4.cuuchuong.chia.8', 'math4.cuuchuong.chia.9']);
+    const labels = run.skills.map(s => s.skillLabel).sort();
+    assert.deepEqual(labels, ['Bảng chia 8', 'Bảng chia 9']);
+    const attempts = run.skills.reduce((s, r) => s + r.attempts, 0);
+    assert.equal(attempts, t.TABLES_QUESTIONS, 'every question must be counted once');
+    assert.equal(run.skills.reduce((s, r) => s + r.correct, 0), t.TABLES_QUESTIONS);
+    assert.truthy(mode.tables.length === 2);
+  });
+
+  test('nhân rows are named nhân', () => {
+    const { run } = playPerfect('x67');
+    assert.deepEqual(run.skills.map(s => s.skillKey).sort(),
+      ['math4.cuuchuong.nhan.6', 'math4.cuuchuong.nhan.7']);
+  });
+
+  test('an unanswered question is counted skipped, not wrong', () => {
+    global.appState = { coins: 0, mathHistory: [] };
+    t.startMathTables('x', '89');
+    t.answerMathTables(t.mathTablesQuizQuestions()[0].correct);
+    t.mathTablesExpireForTest();
+    t.mathTablesClockTick();
+    const run = global.appState.mathHistory[0];
+    const total = run.skills.reduce((s, r) => s + r.attempts, 0);
+    const skipped = run.skills.reduce((s, r) => s + r.skipped, 0);
+    assert.equal(total, t.TABLES_QUESTIONS);
+    assert.equal(skipped, 9, 'nine questions were never seen');
+  });
+
+  test('it asks the app to save and to sync, when those exist', () => {
+    let saved = 0, synced = 0, studied = 0;
+    global.saveMathSession = () => { saved++; };
+    global.recordStudy = () => { studied++; };
+    global.EngAuth = { syncNow: () => { synced++; } };
+    playPerfect('x2345');
+    delete global.saveMathSession; delete global.recordStudy; delete global.EngAuth;
+    assert.equal(saved, 1, 'must go through saveMathSession so one write persists it');
+    assert.equal(synced, 1, 'a child who only does maths must not look inactive');
+    assert.equal(studied, 1);
+  });
+});
+
 if (require.main === module) {
   const harness = require('./harness');
   harness.runAll().then(code => process.exit(code));

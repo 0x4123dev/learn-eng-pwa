@@ -275,13 +275,49 @@ function mathTablesCoinsEarned(correct, total, comboBonus) {
 function renderMathTables() { /* Task 6 draws the card */ }
 function renderMathTablesResult(run, coinsEarned) { /* Task 6 draws the card */ }
 
+// Go through math.js's saveMathSession when it is there: it is the one place
+// that unshifts, trims the history cap and calls saveUserData inside a
+// try/catch — a quota error must not escape after the coins are already in the
+// wallet. The local fallback is for tests that load this module on its own.
 function mathTablesSaveRun(run) {
+  if (typeof saveMathSession === 'function') { saveMathSession(run); return; }
   if (typeof appState === 'undefined' || !appState) return;
   if (!Array.isArray(appState.mathHistory)) appState.mathHistory = [];
   appState.mathHistory.unshift(run);
   if (appState.mathHistory.length > TABLES_HISTORY_CAP) {
     appState.mathHistory.length = TABLES_HISTORY_CAP;
   }
+}
+
+// One row per TABLE per operation — 'math4.cuuchuong.chia.8', not one row for
+// the whole drill. Splitting by table is the entire reason the six modes are
+// split by table: it is what lets the admin skills page show that a child is
+// fine on ×8 and loses :8. js/auth.js files these under the 'math4' menu
+// because the session carries grade: 4.
+function mathTablesSkillSummaries(st) {
+  const opWord = st.mode.op === 'x' ? 'nhan' : 'chia';
+  const opLabel = st.mode.op === 'x' ? 'Bảng nhân ' : 'Bảng chia ';
+  const rows = {};
+  st.questions.forEach((q, i) => {
+    const key = 'math4.cuuchuong.' + opWord + '.' + q.table;
+    const row = rows[key] || (rows[key] = {
+      skillKey: key, skillLabel: opLabel + q.table,
+      attempts: 0, correct: 0, wrong: 0, skipped: 0, wrongRefs: [],
+    });
+    row.attempts++;
+    const answer = st.answers[i];
+    // Never reached before the clock stopped is SKIPPED, not wrong. It still
+    // costs the score (total is the full ten), but "he cannot do the 8 times
+    // table" and "he never got to question 9" are different things to a
+    // parent reading the skills page.
+    if (!answer) row.skipped++;
+    else if (answer.ok) row.correct++;
+    else {
+      row.wrong++;
+      if (row.wrongRefs.length < 20) row.wrongRefs.push(q.q);
+    }
+  });
+  return Object.keys(rows).map(k => rows[k]);
 }
 
 function finishMathTables(timedOut) {
@@ -314,9 +350,16 @@ function finishMathTables(timedOut) {
     g4set: st.mode.g4set,
     chapter: 'g4-' + st.mode.g4set,
     label: 'Toán 4 · ' + st.mode.title,
-    skills: [],
+    skills: mathTablesSkillSummaries(st),
   };
   mathTablesSaveRun(run);
+  if (typeof recordStudy === 'function') { try { recordStudy(); } catch (e) {} }
+  // Push it now, like every other tab. Without this the session sat in
+  // localStorage until some OTHER tab flushed the queue — so a child who only
+  // did maths showed up as inactive.
+  if (typeof EngAuth !== 'undefined' && EngAuth && typeof EngAuth.syncNow === 'function') {
+    EngAuth.syncNow();
+  }
   _tablesQuiz = null;
   renderMathTablesResult(run, coinsEarned);
 }
@@ -332,7 +375,7 @@ if (typeof module !== 'undefined' && module.exports) {
     mathTablesStopClock, mathTablesLockScreen, abandonMathTables,
     mathTablesForgetProfile, mathTablesLeftMs, mathTablesExpireForTest,
     startMathTables, mathTablesClockTick, mathTablesClockText, answerMathTables,
-    mathTablesCoinsEarned, finishMathTables, mathTablesSaveRun,
+    mathTablesCoinsEarned, finishMathTables, mathTablesSaveRun, mathTablesSkillSummaries,
     renderMathTables, renderMathTablesResult,
   };
 }
