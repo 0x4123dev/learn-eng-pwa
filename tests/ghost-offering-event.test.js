@@ -176,7 +176,12 @@ suite('ghost offering: the final 10 Sep 2026 event', () => {
     assert.truthy(ui.includes("screen.style.removeProperty('overflow')"), 'closing removes any stale Arena scroll lock');
     assert.truthy(ui.includes('screen.scrollTop=0;screen.scrollLeft=0'), 'the restored Arena starts at a valid scroll position');
     const renderBody=arena.slice(arena.indexOf('function renderPetBattle()'),arena.indexOf('// ---- battle history'));
-    const refreshBody=arena.slice(arena.indexOf('async function refreshPetBattle()'),arena.indexOf('function pbFmtCountdown'));
+    // Anchor without the empty parens: refreshPetBattle takes a `light`
+    // argument now, and indexOf returning -1 silently sliced the WRONG body —
+    // the assertion below then passed or failed on unrelated code.
+    const refreshStart=arena.indexOf('async function refreshPetBattle(');
+    assert.truthy(refreshStart!==-1,'refreshPetBattle must exist to be guarded');
+    const refreshBody=arena.slice(refreshStart,arena.indexOf('function pbFmtCountdown'));
     assert.truthy(renderBody.includes('GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return'),
       'an old Arena render cannot eject the first event visit');
     assert.truthy(refreshBody.includes('GhostOfferingEvent.isActive && GhostOfferingEvent.isActive()) return _pbState'),

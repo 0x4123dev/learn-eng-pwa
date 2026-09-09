@@ -266,6 +266,36 @@ export async function currentBattle(env, userId) {
 }
 
 // Expire stale invites and abandoned battles before reporting state.
+// The same reaper, but safe to call from a POLLING endpoint.
+//
+// This project has no cron: reapStale() is the only thing that expires an
+// invite or resolves an abandoned battle, so it runs at the top of every
+// battle endpoint. That was fine until you count it — the lobby polls
+// /api/battle continuously, and those two UPDATEs were running once a second
+// per child forever, for a table that changes a few times a day.
+//
+// Throttled to once every REAP_MIN_GAP_MS per isolate. Correctness is not at
+// stake: every endpoint that ACTS on a battle — respond, turn, challenge —
+// still calls the exact reapStale() above before it does anything, so an
+// invite that has expired can never be accepted no matter how stale the
+// lobby's view of it looks. The worst case here is a child seeing a dead
+// invite for a few seconds longer before it disappears.
+//
+// Module state in a Worker isolate is a cache, never a source of truth: a cold
+// isolate simply reaps, which is the old behaviour.
+// `now` is injectable so a test can prove the gap actually holds and then
+// actually reopens, rather than sleeping fifteen real seconds — the same shape
+// the question generators use for `rand`.
+export const REAP_MIN_GAP_MS = 15000;
+let _lastReapAt = 0;
+export async function reapStaleThrottled(env, now) {
+  const at = Number.isFinite(now) ? now : Date.now();
+  if (at - _lastReapAt < REAP_MIN_GAP_MS) return false;
+  _lastReapAt = at;
+  await reapStale(env);
+  return true;
+}
+
 export async function reapStale(env) {
   const now = Date.now();
   await env.DB.prepare(
