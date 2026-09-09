@@ -77,6 +77,60 @@ suite('bảng cửu chương: the arithmetic is real', () => {
   });
 });
 
+suite('bảng cửu chương: four options, and the wrong ones are believable', () => {
+  test('always four distinct options, all positive, key on the answer', () => {
+    const rand = seeded(13);
+    for (const m of t.mathTablesModes()) {
+      for (let i = 0; i < RUNS; i++) {
+        const q = t.mathTablesQuestion(m, rand);
+        assert.equal(q.options.length, 4, q.q + ': not four options');
+        assert.equal(new Set(q.options).size, 4, q.q + ': duplicate options ' + q.options);
+        assert.equal(q.options[q.correct], q.answer, q.q + ': key points at the wrong option');
+        for (const o of q.options) {
+          assert.truthy(Number.isInteger(o) && o > 0,
+            q.q + ': option ' + o + ' is not a positive whole number');
+        }
+      }
+    }
+  });
+
+  test('a chia option is always a plausible quotient, never a wild number', () => {
+    // The child is choosing "how many sevens", so an option of 137 tells them
+    // the answer by elimination and teaches nothing.
+    const rand = seeded(17);
+    for (const m of t.mathTablesModes().filter(m => m.op === 'd')) {
+      for (let i = 0; i < RUNS; i++) {
+        const q = t.mathTablesQuestion(m, rand);
+        for (const o of q.options) {
+          assert.truthy(o >= 1 && o <= 13, q.q + ': implausible quotient option ' + o);
+        }
+      }
+    }
+  });
+
+  test('a nhân distractor is a near miss, not a random number', () => {
+    // Every wrong option must be within one table-step of the answer, or be
+    // the add-instead-of-multiply slip. That is what makes the drill teach.
+    const rand = seeded(19);
+    for (const m of t.mathTablesModes().filter(m => m.op === 'x')) {
+      for (let i = 0; i < RUNS; i++) {
+        const q = t.mathTablesQuestion(m, rand);
+        const near = new Set([
+          q.table * (q.n - 1), q.table * (q.n + 1),
+          q.table * (q.n - 2), q.table * (q.n + 2),
+          q.table + q.n,
+        ]);
+        const wrong = q.options.filter(o => o !== q.answer);
+        // Padding may contribute at most one filler when the shaped candidates
+        // collide (e.g. 2 × 1, where several land on the same number).
+        const strays = wrong.filter(o => !near.has(o));
+        assert.truthy(strays.length <= 1,
+          q.q + ': too many stray distractors ' + strays);
+      }
+    }
+  });
+});
+
 if (require.main === module) {
   const harness = require('./harness');
   harness.runAll().then(code => process.exit(code));

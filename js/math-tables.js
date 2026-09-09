@@ -71,9 +71,46 @@ function mathTablesModeByG4set(g4set) {
 
 function tablesInt(rand, lo, hi) { return lo + Math.floor(rand() * (hi - lo + 1)); }
 
-// TEMPORARY — replaced by the real distractors in Task 2.
+// The three wrong options. The mistakes differ by operation, so the
+// distractors do too — a wrong option that no child would ever produce turns
+// the question into elimination and teaches nothing.
+//
+//   nhân: the neighbours in the table (one rung up, one rung down) and a + b,
+//         the add-instead-of-multiply slip every Grade 4 class makes.
+//   chia: the quotient one or two rungs out — "counted the sevens wrong",
+//         which is exactly how a child misses a division fact.
+//
+// Padding exists because the shaped candidates can collide near the ends of
+// the table (2 × 1 puts several of them on the same number). It fills upward
+// from 1 with whatever is still unused, so the function ALWAYS returns four
+// distinct positive integers.
 function mathTablesOptions(mode, table, n, answer, rand) {
-  return [answer, answer + 1, answer + 2, answer + 3];
+  const r = rand || Math.random;
+  const shaped = mode.op === 'x'
+    ? [table * (n - 1), table * (n + 1), table + n, table * (n + 2), table * (n - 2)]
+    : [n - 1, n + 1, n + 2, n - 2];
+  const wrong = [];
+  for (const value of shaped) {
+    if (!Number.isInteger(value) || value <= 0) continue;
+    if (value === answer || wrong.indexOf(value) !== -1) continue;
+    wrong.push(value);
+    if (wrong.length === 3) break;
+  }
+  for (let value = 1; wrong.length < 3; value++) {
+    if (value !== answer && wrong.indexOf(value) === -1) wrong.push(value);
+  }
+  return tablesShuffle(wrong.slice(0, 3).concat([answer]), r);
+}
+
+// Fisher–Yates with an injectable source, so a test can pin the order.
+function tablesShuffle(arr, rand) {
+  const r = rand || Math.random;
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
 }
 
 // One question. `rand` is injectable so a test can pin a sequence rather than
@@ -106,6 +143,6 @@ if (typeof module !== 'undefined' && module.exports) {
     TABLES_QUESTIONS, TABLES_SECONDS, TABLES_COINS_PER_CORRECT,
     TABLES_PERFECT_BONUS, TABLES_HISTORY_CAP, TABLES_MODES,
     mathTablesModes, mathTablesMode, mathTablesModeByG4set,
-    mathTablesQuestion, mathTablesBuild,
+    mathTablesQuestion, mathTablesBuild, mathTablesOptions, tablesShuffle,
   };
 }
