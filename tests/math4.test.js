@@ -785,7 +785,13 @@ suite('toán 4: an admin can hand out Pre and Mix separately', () => {
     assert.equal(pre.activityType, 'math');
     assert.equal(mix.activityType, 'math');
     assert.truthy(Catalog.groups().some(g => g.id === 'math4'), 'the admin dropdown has no Toán 4 group');
-    assert.equal(Catalog.entries('math4').length, 2);
+    // The group is shared with the nine Bảng cửu chương tasks. What matters
+    // here is that Pre and Mix are each still their own assignable entry —
+    // a count alone would only say the group has not shrunk.
+    const keys = Catalog.entries('math4').map(e => e.key);
+    assert.truthy(keys.includes('math4:pre') && keys.includes('math4:mix'));
+    assert.equal(keys.filter(k => k === 'math4:pre' || k === 'math4:mix').length, 2,
+      'Pre and Mix must stay two separate tasks, not be merged into one');
     assert.truthy(pre.label.includes('Chọn 1 trong 4 đáp án'));
     assert.truthy(mix.label.includes('Nhập đáp án'));
     assert.truthy(pre.label.includes('10/10') && mix.label.includes('10/10'));
