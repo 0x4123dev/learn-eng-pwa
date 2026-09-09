@@ -36,7 +36,12 @@ suite('coin grants: admin gives, the device claims once', () => {
     // the child could never open the tab to learn it was opened for them. This
     // call already runs on every sync, so it is the one that carries them.
     const src = read('functions/api/coins.js');
-    assert.truthy(src.includes("key = 'math_fight'"), 'the Dau Toan switch rides home here');
+    // Matched loosely on purpose: the switch is read alongside the other
+    // app-wide settings in one statement, so pinning the exact SQL text would
+    // fail every time another setting joins it. What must stay true is that
+    // THIS endpoint reads math_fight out of app_flags.
+    assert.truthy(/app_flags/.test(src) && /'math_fight'/.test(src),
+      'the Dau Toan switch rides home here');
     assert.truthy(src.includes('flags'), 'flags travel in the same reply');
     const client = read('js/auth.js');
     assert.truthy(client.includes('r.data.flags'), 'the client caches what it was told');

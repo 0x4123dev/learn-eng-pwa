@@ -19,7 +19,18 @@ let _pbShowingResult = false;   // keep the result card up until the child taps 
 // battle is driven by the relay, so its tick is just a cheap keepalive. The
 // old names said the opposite of what the expression does.
 const PB_POLL_INGAME_MS = 5000;
-const PB_POLL_LOBBY_MS = 1000;
+// The lobby is waiting for one thing: "has somebody challenged me". It used to
+// ask once a SECOND, which made this screen ~85% of every row the app's
+// database read — 3,600 requests an hour from one child sitting on one screen,
+// re-reading a three-day activity aggregate each time. Five seconds is not
+// perceptibly different to a child waiting for a friend, and it is a fifth of
+// the traffic. See functions/api/battle/index.js for the other half of the fix.
+const PB_POLL_LOBBY_MS = 5000;
+// How often a lobby poll asks for the FULL shape (ammo, stats, allowBot)
+// instead of just the moving parts. Ammo comes from a three-day window, so a
+// minute of staleness is invisible; a child who earns ammo does so on another
+// screen, and coming back here refreshes in full anyway.
+const PB_FULL_REFRESH_MS = 60000;
 
 function pbEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -425,9 +436,15 @@ function closePetBattle() {
   if (typeof renderHome === 'function') renderHome();
 }
 
-async function refreshPetBattle() {
-  const r = await _pbApi('battle');
-  if (r.ok && r.data) _pbState = r.data;
+// light = ask only for what changes second to second and merge it over what we
+// already hold. Everything the light shape omits (ammo, stats, allowBot) stays
+// exactly as the last full call left it — so this must never REPLACE _pbState,
+// or the ammo counter would blink to undefined on every poll.
+async function refreshPetBattle(light) {
+  const full = !light || !_pbState || _pbState.offline;
+  if (full) _pbLastFullAt = Date.now();
+  const r = await _pbApi('battle' + (full ? '' : '?light=1'));
+  if (r.ok && r.data) _pbState = full ? r.data : Object.assign({}, _pbState, r.data);
   else {
     _pbState = { offline: true };
     _pbStopPolling();
@@ -1320,16 +1337,38 @@ async function declinePetBattle(battleId) {
 }
 
 // ---- lobby polling (only while NOT in a battle; the battle uses BattleLink) ----
+let _pbLastFullAt = 0;
 function _pbStartPolling() {
   _pbStopPolling();
   const tick = async () => {
-    try { if (!_pbGame) await refreshPetBattle(); } catch (e) {}
+    try {
+      // A hidden tab is nobody waiting for a challenge. An iPad left on this
+      // screen and put down used to poll for as long as the browser lived —
+      // and that, not real use, is what a spike day is made of. The
+      // visibilitychange listener below resumes the moment it comes back.
+      if (!_pbGame && !_pbHidden()) {
+        await refreshPetBattle(Date.now() - _pbLastFullAt < PB_FULL_REFRESH_MS);
+      }
+    } catch (e) {}
     _pbPoll = setTimeout(tick, _pbGame ? PB_POLL_INGAME_MS : PB_POLL_LOBBY_MS);
   };
   _pbPoll = setTimeout(tick, PB_POLL_LOBBY_MS);
 }
 function _pbStopPolling() {
   if (_pbPoll) { clearTimeout(_pbPoll); _pbPoll = null; }
+}
+function _pbHidden() {
+  return typeof document !== 'undefined' && document.visibilityState === 'hidden';
+}
+// Coming back to a backgrounded tab must not wait out a whole poll interval
+// before the screen is right again — and it asks in FULL, because an unknown
+// amount of time has passed and the ammo may well have moved.
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('visibilitychange', () => {
+    if (_pbHidden() || !_pbPoll || _pbGame) return;
+    _pbLastFullAt = 0;
+    try { refreshPetBattle(false); } catch (e) {}
+  });
 }
 
 // The realtime link for the running battle (WebSocket, polling fallback).

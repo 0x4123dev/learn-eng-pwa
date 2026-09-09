@@ -48,7 +48,12 @@ export async function onRequestPost({ request, env }) {
     ).bind(auth.uid, rcpt).run();
   }
 
-  const flag = await env.DB.prepare("SELECT value FROM app_flags WHERE key = 'math_fight'").first();
+  // Both app-wide settings in ONE round trip. They were two separate SELECTs
+  // against the same two-row table, on an endpoint every finished practice
+  // calls — a wasted query per sync for nothing.
+  const appRows = await env.DB.prepare(
+    "SELECT key, value FROM app_flags WHERE key IN ('math_fight', 'cuuchuong_seconds')").all();
+  const app = new Map(((appRows && appRows.results) || []).map(r => [r.key, r.value]));
   const me = await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(auth.uid).first();
   // Bảng cửu chương's round length rides home with the switches: it is one
   // number for the whole app, an adult changes it while watching a child use
@@ -56,14 +61,12 @@ export async function onRequestPost({ request, env }) {
   // a session. Clamped and defaulted HERE as well as in the admin endpoint,
   // because a row written before the range existed must still hand a device a
   // length it can actually run a round on.
-  const secondsRow = await env.DB.prepare(
-    "SELECT value FROM app_flags WHERE key = 'cuuchuong_seconds'").first();
-  const rawSeconds = Math.trunc(Number(secondsRow && secondsRow.value));
+  const rawSeconds = Math.trunc(Number(app.get('cuuchuong_seconds')));
   const cuuchuongSeconds = Number.isFinite(rawSeconds) && rawSeconds > 0
     ? Math.max(15, Math.min(180, rawSeconds))
     : 60;
   const flags = {
-    mathFight: !!(flag && flag.value),
+    mathFight: !!app.get('math_fight'),
     bot: !!(me && me.allow_bot),
     cuuchuongSeconds: cuuchuongSeconds,
   };
