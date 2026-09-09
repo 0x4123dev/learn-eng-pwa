@@ -311,6 +311,29 @@ suite('bảng cửu chương: what a finished round records', () => {
   });
 });
 
+suite('bảng cửu chương: the menu offers all six drills', () => {
+  test('six buttons, each wired to startMathTables with its own op and group', () => {
+    const html = t.renderMathTablesMenuHTML();
+    for (const m of t.mathTablesModes()) {
+      const call = "startMathTables('" + m.op + "','" + m.group + "')";
+      assert.truthy(html.indexOf(call) !== -1, 'no button starts ' + m.key);
+      assert.truthy(html.indexOf(m.title) !== -1, 'no label for ' + m.title);
+    }
+  });
+
+  test('nhân and chia are separated by a heading, not left as six numbers in a row', () => {
+    const html = t.renderMathTablesMenuHTML();
+    assert.truthy(html.indexOf('Bảng nhân') !== -1 && html.indexOf('Bảng chia') !== -1);
+    assert.truthy(html.indexOf('openMathSection(\'toan4\')') !== -1, 'no way back to Toán 4');
+  });
+
+  test('the round length and the bonus are stated on the menu, not discovered', () => {
+    const html = t.renderMathTablesMenuHTML();
+    assert.truthy(html.indexOf(String(t.TABLES_SECONDS)) !== -1, 'the clock is not shown');
+    assert.truthy(html.indexOf(String(t.TABLES_PERFECT_BONUS)) !== -1, 'the bonus is not shown');
+  });
+});
+
 if (require.main === module) {
   const harness = require('./harness');
   harness.runAll().then(code => process.exit(code));

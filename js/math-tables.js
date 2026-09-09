@@ -272,8 +272,126 @@ function mathTablesCoinsEarned(correct, total, comboBonus) {
     + (total > 0 && correct === total ? TABLES_PERFECT_BONUS : 0);
 }
 
-function renderMathTables() { /* Task 6 draws the card */ }
-function renderMathTablesResult(run, coinsEarned) { /* Task 6 draws the card */ }
+// ---- rendering ---------------------------------------------------------
+function tablesEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Best percentage for one drill, so a child can see the number to beat.
+function mathTablesBest(g4set) {
+  if (typeof appState === 'undefined' || !appState) return null;
+  const runs = (appState.mathHistory || [])
+    .filter(h => h && h.total && h.g4set === g4set);
+  if (!runs.length) return null;
+  return Math.max.apply(null, runs.map(h => Math.round(h.score / h.total * 100)));
+}
+
+function tablesModeButtonHTML(m) {
+  const best = mathTablesBest(m.g4set);
+  return `<button class="phrases-cta" onclick="startMathTables('${m.op}','${m.group}')">
+      <span class="phrases-cta-icon">${m.icon}</span>
+      <span class="phrases-cta-text"><strong>${tablesEsc(m.title)}</strong><small>${TABLES_QUESTIONS} câu · ${TABLES_SECONDS} giây${best !== null ? ` · Tốt nhất: ${best}%` : ''}</small></span>
+      <span class="phrases-cta-arrow">›</span>
+    </button>`;
+}
+
+// Two headings rather than six buttons in a row: a child reads "nhân" or
+// "chia" before they read a number, which is the choice they are actually
+// making.
+function renderMathTablesMenuHTML() {
+  const nhan = TABLES_MODES.filter(m => m.op === 'x').map(tablesModeButtonHTML).join('');
+  const chia = TABLES_MODES.filter(m => m.op === 'd').map(tablesModeButtonHTML).join('');
+  const header = (typeof mathHeaderHTML === 'function')
+    ? mathHeaderHTML('BẢNG CỬU CHƯƠNG', 'Nhân và chia trong ' + TABLES_SECONDS + ' giây',
+        'Sáu bài: bảng nhân và bảng chia, mỗi bài ' + TABLES_QUESTIONS + ' câu.',
+        'openMathSection(\'toan4\')')
+    : `<button onclick="openMathSection('toan4')">‹</button>`;
+  return header + `<div class="phrases-wrap">
+      <div class="phrases-hero">
+        <div class="phrases-hero-icon">🔢</div>
+        <h1>Bảng cửu chương</h1>
+        <p class="phrases-sub">Mỗi lượt <b>${TABLES_QUESTIONS} câu</b> trong <b>${TABLES_SECONDS} giây</b>. Đúng cả ${TABLES_QUESTIONS} câu được thưởng thêm <b>${TABLES_PERFECT_BONUS} xu</b>.</p>
+      </div>
+      <h3 class="topic-detail-list-title math-cc-heading">✖️ Bảng nhân</h3>
+      ${nhan}
+      <h3 class="topic-detail-list-title math-cc-heading">➗ Bảng chia</h3>
+      ${chia}
+    </div>`;
+}
+
+function mathTablesClockHTML() {
+  const ms = mathTablesLeftMs();
+  return `<span class="wars-clock${ms <= 10000 ? ' low' : ''}" id="mathTablesClock">⏱ ${mathTablesClockText(ms)}</span>`;
+}
+
+function renderMathTables() {
+  const screen = mathTablesScreen();
+  const st = _tablesQuiz;
+  if (!screen || !st) return;
+  const q = st.questions[st.idx];
+  const total = st.questions.length;
+  screen.innerHTML = `
+    <div class="phrases-wrap">
+      <div class="grammar-quiz-header phrases-quiz-header">
+        <button class="grammar-back-btn" onclick="mathTablesQuit()">✕</button>
+        <span class="grammar-quiz-progress">${st.idx + 1}/${total}</span>
+        ${mathTablesClockHTML()}
+        <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${st.idx / total * 100}%"></div></div>
+      </div>
+      <div class="wars-sum">${tablesEsc(q.q)} = <span class="wars-gap">?</span></div>
+      <div class="wars-options">
+        ${q.options.map((o, i) => `<button class="wars-option" onclick="answerMathTables(${i})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+// The ✕ sits where a thumb rests between taps, and thirty seconds is scored
+// only at the end — so it asks first.
+function mathTablesQuit() {
+  if (!isMathTablesActive()) { mathTablesBackToMenu(); return; }
+  const left = mathTablesClockText(mathTablesLeftMs());
+  const ask = (typeof confirm === 'function')
+    ? confirm('Con đang làm bảng cửu chương, còn ' + left + '.\n'
+            + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')
+    : true;
+  if (!ask) return;
+  abandonMathTables();
+  mathTablesBackToMenu();
+}
+
+function mathTablesBackToMenu() {
+  // math.js owns the views; guarded because this module is also loaded on its
+  // own in tests, where there is no menu to go back to.
+  if (typeof openMathSection === 'function') openMathSection('cuuchuong');
+}
+
+function renderMathTablesResult(run, coinsEarned) {
+  const screen = mathTablesScreen();
+  if (!screen) return;
+  const pct = run.total ? Math.round(run.score / run.total * 100) : 0;
+  const perfect = run.total > 0 && run.score === run.total;
+  const emoji = pct === 100 ? '🌟' : pct >= 80 ? '✅' : pct >= 50 ? '👍' : '📝';
+  screen.innerHTML = `
+    <div class="phrases-wrap">
+      <div class="grammar-result-card">
+        <div class="grammar-result-emoji">${emoji}</div>
+        <h2>${run.score}/${run.total} · ${pct}%</h2>
+        <p>${tablesEsc(run.label)}${run.timedOut ? ' · hết giờ' : ''}</p>
+      </div>
+      ${typeof petRewardCardHTML === 'function'
+        ? petRewardCardHTML(run.score, run.total, coinsEarned, TABLES_COINS_PER_CORRECT)
+        : (coinsEarned ? `<div class="grammar-result-coins">+${coinsEarned} 🪙</div>` : '')}
+      ${perfect ? `
+        <div class="math-perfect-bonus" role="status">
+          <span class="math-perfect-bonus__title">Thưởng đúng 100%</span>
+          <strong>+${TABLES_PERFECT_BONUS} xu</strong>
+          <span>${tablesEsc(run.label)}</span>
+        </div>` : ''}
+      <button class="grammar-next-btn" onclick="mathTablesBackToMenu()">Xong</button>
+    </div>`;
+  screen.scrollTop = 0;
+}
 
 // Go through math.js's saveMathSession when it is there: it is the one place
 // that unshifts, trims the history cap and calls saveUserData inside a
@@ -376,6 +494,8 @@ if (typeof module !== 'undefined' && module.exports) {
     mathTablesForgetProfile, mathTablesLeftMs, mathTablesExpireForTest,
     startMathTables, mathTablesClockTick, mathTablesClockText, answerMathTables,
     mathTablesCoinsEarned, finishMathTables, mathTablesSaveRun, mathTablesSkillSummaries,
-    renderMathTables, renderMathTablesResult,
+    renderMathTables, renderMathTablesResult, renderMathTablesMenuHTML,
+    tablesModeButtonHTML, mathTablesBest, mathTablesClockHTML,
+    mathTablesQuit, mathTablesBackToMenu, tablesEsc,
   };
 }
