@@ -433,10 +433,8 @@ suite('math board: overlay wiring', () => {
         const src = read('js/math-board.js');
         assert.truthy(/mathBoardUndoTap/.test(src));
         assert.truthy(/Chắc chưa\?/.test(src), 'clear asks before wiping — kid-proofing');
-        const chips = src.slice(src.indexOf('function mathBoardChipsHTML'),
-            src.indexOf('function mathBoardWritingToolsHTML'));
-        assert.falsy(/mathBoardTabTap\(-1\)|>\+<|MATH_BOARD_MAX/.test(chips),
-            'the toolbar must not offer another page; B1 is enough and saves width');
+        assert.falsy(/mathBoardChipsHTML|math-board-chips|mathBoardTabTap/.test(src),
+            'a one-page board needs neither a + button nor a redundant B1 label');
         assert.truthy(/minimizeMathBoard/.test(src));
         assert.truthy(/math-board-clear-quick[\s\S]*?mathBoardClearTap\(\)[\s\S]*?minimizeMathBoard\(\)/.test(src),
             'quick clear belongs immediately to the left of Minimize');
@@ -487,7 +485,6 @@ suite('math board: overlay wiring', () => {
         assert.truthy(/@media\s*\(max-width:\s*600px\)/.test(css));
         assert.truthy(/grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/.test(css),
             'phone actions must divide the available width without overflow');
-        assert.truthy(/\.math-board-chip[^}]*min-height:\s*44px/s.test(css));
         assert.truthy(/\.math-board-tool[^}]*min-width:\s*44px;\s*min-height:\s*44px/s.test(css));
         assert.truthy(/\(pointer:\s*fine\)/.test(css) && /cursor:\s*crosshair/.test(css),
             'mouse and trackpad users need drawing feedback too');

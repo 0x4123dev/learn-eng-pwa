@@ -21,14 +21,15 @@ const WARS_SECONDS = 300;
 const WARS_MAX = 99;                 // hàng chục: trần của thang Math Wars
 // The wars ladder stops at 99, but Đấu Toán needs headroom above it to
 // handicap two children who both reached the top rung. Only a fight ever
-// passes a max above WARS_MAX — every wars call site gets its ceiling from
-// warsLevelMax(), which is still capped at 99, so wars rounds are unchanged.
+// passes a max above WARS_MAX. Solo practice stays capped at 99.
 const WARS_HARD_MAX = 199;
 const WARS_COINS_PER_CORRECT = 2;    // same rate as the Toán 7 tab
 const WARS_PERFECT_BONUS = 20;       // 10/10 earns a visible accuracy bonus
 const WARS_HISTORY_CAP = 300;
 
 // ---- the hidden difficulty ladder -------------------------------------
+// Retained for saved progress and the duel handicap. Solo practice now uses
+// the harder filtered pool through 99 regardless of this legacy ladder.
 // A Grade 4 child starting on 63 : 7 gives up; the same child starting on
 // 12 : 2 finishes the round and comes back. So the round is not one
 // difficulty — it is a ladder, and the child is never told they are on it.
@@ -189,27 +190,31 @@ function warsQuestion(rand, max) {
   };
 }
 
-// opts.minAnswer keeps trivial sums out of a round. Đấu Toán uses it: a
-// five-minute match against a friend is not the place for "3 + 4", and nearly
-// half the questions at the lowest level used to have a one-digit answer.
-// Solo practice passes nothing and keeps its gentle on-ramp.
-// A practice round comes from the SAME pre-authored bank the Đấu Toán match
-// draws from (js/math-fight-bank.js), so solo practice cannot hand out a free
-// question either — nearly half of what the generator produced at the lower
-// levels could be answered without calculating.
-//
-// The generator stays as the fallback: the bank is lazy-loaded with the Math
-// tab, and a round must never come up empty.
+// Solo practice now requires carrying/borrowing and harder multiplication
+// and division. Keep this separate from the shared, seeded duel rules.
+function warsIsEasyQuestion(q) {
+  const { a, b, op, answer } = q;
+  if (answer < 10) return true;
+  if (op === '+') return a < 10 || b < 10 || a % 10 + b % 10 < 10;
+  if (op === '−') return b < 10 || a % 10 >= b % 10;
+  if (op === '×') return Math.min(a, b) <= 5 || a % 10 === 0 || b % 10 === 0;
+  return b <= 5 || answer <= 5 || b % 10 === 0 || answer % 10 === 0;
+}
+
+// All saved levels use the filtered pool through 99 immediately. The saved
+// ladder still advances for the duel handicap; it no longer gates practice.
+// Apply the same criteria if the lazy-loaded bank is unavailable.
 function warsRoundQuestions(level) {
   const R = typeof MathFightRules !== 'undefined' ? MathFightRules : null;
-  const bank = typeof MATH_FIGHT_BANK !== 'undefined' ? MATH_FIGHT_BANK : null;
+  const bank = typeof MATH_WARS_BANK !== 'undefined' ? MATH_WARS_BANK :
+    (typeof MATH_FIGHT_BANK !== 'undefined' ? MATH_FIGHT_BANK : null);
   if (R && R.bankRound && bank) {
-    // The Math Wars ladder tops out at 99, which is tier 8 of the bank.
-    const tier = Math.min(8, Math.max(0, Math.floor(level || 0)));
-    const round = R.bankRound(bank, WARS_QUESTIONS, tier, null);
+    const practiceBank = bank.filter(([a, b, op, answer]) =>
+      !warsIsEasyQuestion({ a, b, op, answer }));
+    const round = R.bankRound(practiceBank, WARS_QUESTIONS, 8, null);
     if (round.length === WARS_QUESTIONS) return round;
   }
-  return warsQuestions(WARS_QUESTIONS, null, warsLevelMax(level));
+  return warsQuestions(WARS_QUESTIONS, null, WARS_MAX, { excludeEasy: true });
 }
 
 function warsQuestions(n, rand, max, opts) {
@@ -217,10 +222,11 @@ function warsQuestions(n, rand, max, opts) {
   const out = [];
   const seen = {};
   // Rejecting the easy half needs more draws than an unfiltered round does.
-  let guard = 0, limit = n * (min ? 200 : 40);
+  let guard = 0, limit = n * (min || (opts && opts.excludeEasy) ? 200 : 40);
   while (out.length < n && guard++ < limit) {
     const q = warsQuestion(rand, max);
     if (min && Math.abs(q.answer) < min) continue;
+    if (opts && opts.excludeEasy && warsIsEasyQuestion(q)) continue;
     if (seen[q.q]) continue;      // no repeat inside one round
     seen[q.q] = 1;
     out.push(q);
@@ -645,7 +651,7 @@ if (typeof module !== 'undefined' && module.exports) {
     WARS_QUESTIONS, WARS_SECONDS, WARS_MAX, WARS_HARD_MAX, WARS_COINS_PER_CORRECT, WARS_PERFECT_BONUS,
     WARS_LEVEL_BASE, WARS_LEVEL_STEP, WARS_LEVEL_UP_STREAK, WARS_LEVELS,
     warsProgress, warsLevelMax, warsMax, warsNoteAnswer,
-    warsBuild, warsDistractors, warsQuestion, warsQuestions, warsRoundQuestions,
+    warsBuild, warsDistractors, warsQuestion, warsQuestions, warsRoundQuestions, warsIsEasyQuestion,
     warsHistory, warsStats, warsSaveRun, warsEsc,
     startWarsRound, answerWars, finishWars, abandonWars, warsForgetProfile, warsQuit, isWarsActive,
     warsLeftMs, warsClockTick, warsClockText, warsLengthLabel,

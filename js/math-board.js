@@ -838,22 +838,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         }, 2000);
     };
 
-    window.mathBoardTabTap = function (i) {
-        mathBoardAbortSafe();
-        if (i === -1) { if (mathBoardAdd() === -1) return; }
-        else mathBoardSwitch(i);
-        mathBoardRenderOverlay();
-    };
-
-    function mathBoardChipsHTML() {
-        const s = mathBoardSession();
-        return s.boards.map(function (b, i) {
-            return '<button class="math-board-chip ' + (i === s.active ? 'active' : '') +
-                   '" type="button" aria-label="Bảng ' + (i + 1) + '" ' +
-                   'onclick="mathBoardTabTap(' + i + ')">B' + (i + 1) + '</button>';
-        }).join('');
-    }
-
     function mathBoardWritingToolsHTML() {
         const eraseActive = _mathBoardTool === 'erase';
         return '<div class="math-board-writing-tools" role="group" aria-label="Công cụ viết">' +
@@ -1125,7 +1109,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         el.ongesturestart = function (event) { event.preventDefault(); };
         el.ongesturechange = function (event) { event.preventDefault(); };
         // Toán 4 carries its three controls in the question header instead, so
-        // the whole row of board chips and toggles — and the panel behind
+        // the whole row of writing toggles — and the panel behind
         // "Công cụ" — is left out rather than drawn and hidden.
         const lockedBoard = mathBoardQuestionLocked(
             (typeof mathCurrentQuestion === 'function') ? mathCurrentQuestion() : null);
@@ -1133,7 +1117,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
             mathBoardStripHTML() +
             (lockedBoard ? '' :
             '<div class="math-board-tools">' +
-              '<span class="math-board-chips">' + mathBoardChipsHTML() + '</span>' +
               '<div class="math-board-quick-tools">' +
                 (_mathBoardQuestionExpanded ? '' :
                   '<button class="math-board-tool math-board-question-open" type="button" ' +

@@ -70,6 +70,7 @@ const ASSETS = [
   '/js/mathwars.js',
   '/js/math-fight-rules.js',
   '/js/math-fight-bank.js',
+  '/js/mathwars-bank.js',
   '/js/math-fight.js',
   '/js/math.js',
   '/js/math-copy.js',

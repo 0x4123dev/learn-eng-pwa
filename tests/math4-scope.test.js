@@ -262,14 +262,15 @@ suite('toán 4 chỉ đổi cho toán 4: the scratch board', () => {
       'the chips-and-toggles row must be left out for Toán 4, not drawn and hidden');
   });
 
-  test('Toán 7 keeps its whole toolbar — boards, tools, undo, eraser', () => {
+  test('Toán 7 keeps its whole writing toolbar — tools, undo, eraser', () => {
     for (const [needle, what] of [
-      ['mathBoardChipsHTML', 'the B1/B2/+ board chips'],
       ['mathBoardToolsToggle', 'the Công cụ toggle'],
       ['mathBoardUndoTap', 'Lùi một bước'],
       ['mathBoardWritingToolsHTML', 'the pen and eraser'],
       ['Xoá bảng', 'the worded clear button'],
     ]) assert.truthy(board.includes(needle), 'Toán 7 lost ' + what);
+    assert.falsy(/mathBoardChipsHTML|math-board-chips|mathBoardTabTap/.test(board),
+      'the one-page board must not bring the redundant B1/B2/+ controls back');
   });
 
   test('a control that is an icon never has a sentence written into it', () => {

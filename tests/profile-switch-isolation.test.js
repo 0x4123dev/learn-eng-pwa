@@ -860,6 +860,9 @@ const NO_TEARDOWN_NEEDED = {
   'math-fight-bank.js':
     'MATH_FIGHT_BANK is the question bank itself, a `var` only so the browser '
     + 'and the test sandbox both see it. Never written to.',
+  'mathwars-bank.js':
+    'MATH_WARS_BANK is static arithmetic data shared by every profile. '
+    + 'Round selection filters and shuffles copies; no child state is stored in it.',
 };
 
 function moduleScopeState(file) {
