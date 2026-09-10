@@ -1,4 +1,5 @@
-// Cướp Đêm moves money; it must never PRINT it.
+// Cướp Đêm transfers real loot and losses exactly. A verified win may also
+// receive the explicit system-funded victory bonus up to win_floor.
 //
 // The wallet a child spends lives on their device (appState.coins). The server
 // keeps a MIRROR in night_raid_homes.lootable_coins, which the device
@@ -64,7 +65,7 @@ const raidRows = (world, uid) =>
   world.db.prepare('SELECT status FROM night_raids WHERE attacker_id=?').all(uid).map(r => String(r.status));
 
 suite('cướp đêm: the sleeping side is really settled', () => {
-  test('a won raid owes the victim exactly what the attacker carried home', async () => {
+  test('a won raid owes the victim exactly the loot portion of the reward', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
     const victim = await world.createUser({ allowBot: true });
@@ -77,10 +78,11 @@ suite('cướp đêm: the sleeping side is really settled', () => {
     assert.truthy(f.ok && f.data.result.won, 'fixture must be a win: ' + JSON.stringify(f.data));
 
     const reward = f.data.result.reward;
+    const loot = f.data.result.loot;
     assert.truthy(reward > 0, 'a won raid against a 1000 xu pile must pay something');
     // The debit reaches the victim's DEVICE, not just the server mirror.
-    assert.equal(owedTo(world, victim.uid), -reward,
-      'the victim is owed exactly minus what the attacker took');
+    assert.equal(owedTo(world, victim.uid), -loot,
+      'the victim is owed exactly minus the loot, never the system-funded bonus');
     // …and the attacker is NOT double-credited here: their half is applied on
     // their own device by claimVerified, once per raidId.
     assert.equal(owedTo(world, attacker.uid), 0, 'the attacker is paid client-side, not twice');
@@ -117,7 +119,7 @@ suite('cướp đêm: the sleeping side is really settled', () => {
     assert.truthy(/Cướp Đêm/.test(notes[0]), 'the note names the feature: ' + notes[0]);
   });
 
-  test('a raid that steals nothing owes nothing — no empty IOU rows', async () => {
+  test('an empty house still pays the 100-xu victory floor without debiting the victim', async () => {
     const world = createWorld();
     const attacker = await world.createUser({ allowBot: true });
     const victim = await world.createUser({ allowBot: true });
@@ -126,9 +128,11 @@ suite('cướp đêm: the sleeping side is really settled', () => {
     const s = await start(world, attacker, victim);
     const f = await finish(world, attacker, s.data.raid.raidId);
     assert.truthy(f.ok && f.data.result.won);
-    assert.equal(f.data.result.reward, 0, 'an empty house pays nothing');
-    assert.equal(f.data.result.rewardReason, 'empty_vault', 'the UI is told why a won raid paid zero');
-    assert.equal(grantsFor(world, victim.uid).length, 0, 'and owes nothing');
+    assert.equal(f.data.result.reward, 100, 'the march and victory still pay the configured floor');
+    assert.equal(f.data.result.loot, 0, 'nothing came out of the empty victim wallet');
+    assert.equal(f.data.result.victoryBonus, 100, 'the whole reward is system-funded');
+    assert.equal(f.data.result.rewardReason, 'victory_bonus');
+    assert.equal(grantsFor(world, victim.uid).length, 0, 'the victim owes no empty IOU');
   });
 });
 
@@ -169,10 +173,11 @@ suite('cướp đêm: one raid is settled once', () => {
     const [a, b] = await Promise.all([finish(world, attacker, raidId), finish(world, attacker, raidId)]);
     assert.truthy(a.ok && b.ok, JSON.stringify([a.data, b.data]));
     const reward = a.data.result.reward || b.data.result.reward;
+    const loot = a.data.result.loot == null ? b.data.result.loot : a.data.result.loot;
     assert.truthy(reward > 0);
 
     assert.equal(ticketsUsed(world, attacker.uid), 1, 'one raid spends one ticket');
-    assert.equal(owedTo(world, victim.uid), -reward, 'the victim is debited once, not twice');
+    assert.equal(owedTo(world, victim.uid), -loot, 'the victim loses the loot once, not twice');
     assert.equal(grantsFor(world, victim.uid).length, 1, 'one raid writes one IOU');
     assert.equal(a.data.result.reward, b.data.result.reward, 'both callers see the same result');
   });

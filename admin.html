@@ -312,7 +312,7 @@
   }
 
   /* ---- Cướp Đêm rulebook ----------------------------------------------
-     Seven integers that decide how generous a robbery is. Each one keeps its
+     Eight integers that decide how generous a robbery is. Each one keeps its
      own sentence and its own save button, because this screen is used sitting
      next to the child, tuning ONE number and watching what it does — not
      filling a form and submitting it. The worked example above the groups is
@@ -1223,9 +1223,11 @@ const RAID_GROUPS = [
 ];
 const RAID_FIELDS = [
   { key:'win_cap', group:'money', unit:'xu', label:'Trần xu mỗi trận thắng',
-    help:'Trần xu cướp được trong MỘT trận thắng.' },
+    help:'Trần tổng xu nhận được trong MỘT trận thắng, gồm xu lấy từ kho và thưởng chiến thắng.' },
+  { key:'win_floor', group:'money', unit:'xu', label:'Thưởng tối thiểu khi thắng',
+    help:'Bé thắng được ít nhất bấy nhiêu xu cho phí hành quân và chiến thắng, kể cả khi kho nhà địch trống.' },
   { key:'win_pct', group:'money', unit:'%', label:'Cướp bao nhiêu phần trăm kho xu',
-    help:'Bé cướp được bao nhiêu phần trăm kho xu của nhà bị cướp. Phần thưởng thật = min(trần một trận, % × kho nhà địch).' },
+    help:'Bé lấy bấy nhiêu phần trăm kho xu của nhà bị cướp; hệ thống bù thưởng nếu số này thấp hơn mức tối thiểu.' },
   { key:'loss', group:'money', unit:'xu', label:'Thua trận mất bao nhiêu xu',
     help:'Thua trận thì bên tấn công mất bấy nhiêu xu, và bên phòng thủ NHẬN đúng bấy nhiêu.' },
   { key:'shield_loss', group:'money', unit:'xu', label:'Đâm vào Khiên Đêm mất bao nhiêu xu',
@@ -1263,15 +1265,19 @@ function paintRaidExample(){
   const el = document.getElementById('raidExample');
   if (!el || !_raidCfg) return;
   const cap = raidLiveValue('win_cap');
+  const floor = raidLiveValue('win_floor');
   const pct = raidLiveValue('win_pct');
   const dayCap = raidLiveValue('daily_reward_cap');
   const share = Math.floor(RAID_EXAMPLE_PILE * pct / 100);
-  const won = Math.min(cap, share);
+  const loot = Math.min(cap, share);
+  const won = Math.min(cap, Math.max(floor, loot));
   const raids = won > 0 ? Math.floor(dayCap / won) : 0;
   el.innerHTML = '<span class="raid-example-title">Thử một trận</span>'
     + 'Nhà địch đang giữ <b>' + fmtXu(RAID_EXAMPLE_PILE) + ' xu</b>. Bé đánh thắng: '
     + '<b>' + fmtXu(pct) + '%</b> × ' + fmtXu(RAID_EXAMPLE_PILE) + ' = <b>' + fmtXu(share) + ' xu</b>, '
-    + 'trần một trận <b>' + fmtXu(cap) + ' xu</b> ⇒ bé mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
+    + 'thưởng tối thiểu <b>' + fmtXu(floor) + ' xu</b>, trần một trận <b>' + fmtXu(cap) + ' xu</b> '
+    + '⇒ bé mang về <b>' + fmtXu(won) + ' xu</b>.<br>'
+    + 'Nếu kho địch trống, bé vẫn nhận <b>' + fmtXu(Math.min(cap, floor)) + ' xu</b> cho phí hành quân và chiến thắng.<br>'
     + 'Cả ngày tối đa <b>' + fmtXu(dayCap) + ' xu</b> — khoảng <b>' + fmtXu(raids) + '</b> trận thắng như thế này.';
 }
 

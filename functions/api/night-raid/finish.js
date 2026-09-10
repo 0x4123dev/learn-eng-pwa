@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightDate, ticketStats, safeJson, readRaidConfig, winReward, randomRaidId } from '../_night-raid.js';
+import { NR, nightDate, ticketStats, safeJson, readRaidConfig, winReward, winLoot, randomRaidId } from '../_night-raid.js';
 
 export async function onRequestPost({request,env}) {
   const auth=await requireAuth(request,env);if(!auth)return err('Unauthorized',401);
@@ -47,13 +47,13 @@ export async function onRequestPost({request,env}) {
   // A shield decides the raid outright, independent of the rules' 100000-DEF
   // ceiling: even if the ceiling ever changed, a shielded raid can never win.
   const won=sim.won&&!shielded;
-  // A robbery carries home win_pct of the victim's pile, capped by win_cap and
-  // by what is left of today's daily_reward_cap — and the victim loses exactly
-  // that, no more. The old formula had a 50 xu floor, which paid best for
-  // robbing the poorest house in the game.
+  // A win carries home at least win_floor (100 by default), capped by win_cap
+  // and today's remaining allowance. Only the loot portion comes out of the
+  // defender's pile; any shortfall is the system-funded march/victory bonus.
   const defenderPile=pile(raid.defender_id);
   const reward=won?winReward(defenderPile,cfg,stats.reward):0;
-  const victimLoss=reward;
+  const victimLoss=won?winLoot(defenderPile,cfg,stats.reward):0;
+  const victoryBonus=Math.max(0,reward-victimLoss);
   // A failed raid costs the attacker `loss` (or `shield_loss` when it broke on
   // a Khiên Đêm) and hands that same amount to the DEFENDER, who until now got
   // nothing for holding the wall. Clamped to what the attacker actually has,
@@ -80,9 +80,8 @@ export async function onRequestPost({request,env}) {
   // soldiersUsed nay chỉ là SỐ LÍNH ĐÃ RA TRẬN để ghi vào nhật ký — không
   // còn trừ vào kho nữa. Lính là quân thường trực: bé nuôi được bao nhiêu thì
   // giữ bấy nhiêu, thắng hay thua cũng không mất.
-  const desiredLoot=Math.min(cfg.win_cap,Math.floor(defenderPile*cfg.win_pct/100));
-  const rewardReason=!won?'lost':reward>0?'loot':desiredLoot<=0?'empty_vault':'daily_cap';
-  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,rewardReason,loot:victimLoss,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0,settlementId:randomRaidId()};
+  const rewardReason=!won?'lost':reward<=0?'daily_cap':victoryBonus>0?'victory_bonus':'loot';
+  const soldiersUsed=Math.max(0,Math.min(NR.SOLDIER_SANITY_CAP,Math.trunc(+snapshot.attackerSoldiers||0))),result={won,shielded,castleHp:sim.castleHp,damage:sim.damage,defense:sim.defense,margin:sim.margin,durationMs:sim.durationMs,reward,rewardReason,loot:victimLoss,victoryBonus,loss:attackerLoss,defenderGain,soldiersUsed,stars:won?1+(sim.margin>=25?1:0)+(sim.margin>=60?1:0):0,settlementId:randomRaidId()};
   // A breach seals the home for a flat seal_hours, so the defender always gets
   // the same protection whatever time of night they were hit.
   const now=Date.now(),lockedUntil=won?now+cfg.seal_hours*3600000:0;

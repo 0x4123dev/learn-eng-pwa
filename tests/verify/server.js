@@ -520,7 +520,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
   const coins = loadModule('functions/api/coins.js');
   const ghost = loadModule('functions/api/ghost-offering.js');
 
-  // ---- Cướp Đêm: a WIN moves money and mints none ----
+  // ---- Cướp Đêm: a WIN debits only its loot portion ----
   try {
     const w = newWorld(seenSql);
     const attacker = await w.createUser({ allowBot: true });
@@ -531,14 +531,16 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const f = await hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId: s.data && s.data.raid && s.data.raid.raidId } });
     const res = (f.data && f.data.result) || {};
     const reward = Number(res.reward || 0);
+    const loot = Number(res.loot || 0);
+    const bonus = Number(res.victoryBonus || 0);
     const victimOwed = grantsOf(w, victim.uid);
     const attackerOwed = grantsOf(w, attacker.uid);
     const world = allGrants(w);
     const ok = f.status === 200 && res.won === true && reward > 0
-      && victimOwed === -reward && attackerOwed === 0 && world === -reward;
+      && reward === loot + bonus && victimOwed === -loot && attackerOwed === 0 && world === -loot;
     add('money.raid-win', `${NR}: đánh thắng nhà bạn`, ok,
-      ok ? `won ${reward} xu; the victim's device is debited exactly -${reward} through coin_grants, the attacker gets 0 server-side (their half is applied once per raidId on their own phone), and the whole ledger sums to ${world} — nothing was printed`
-         : `start=${s.status} finish=${f.status} won=${res.won} reward=${reward} victimOwed=${victimOwed} attackerOwed=${attackerOwed} ledgerSum=${world} :: ${JSON.stringify(f.data).slice(0, 300)}`);
+      ok ? `won ${reward} xu = ${loot} loot + ${bonus} system bonus; the victim's device is debited exactly -${loot}, while the attacker applies the total once per raidId on their own phone`
+         : `start=${s.status} finish=${f.status} won=${res.won} reward=${reward} loot=${loot} bonus=${bonus} victimOwed=${victimOwed} attackerOwed=${attackerOwed} ledgerSum=${world} :: ${JSON.stringify(f.data).slice(0, 300)}`);
   } catch (e) { add('money.raid-win', `${NR}: đánh thắng nhà bạn`, false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- Cướp Đêm: a LOSS moves the same money the other way ----
@@ -575,11 +577,12 @@ async function moneyChecks(add, seenSql, drainLogs) {
       hit(w, finish.onRequestPost, { url: '/api/night-raid/finish', token: attacker.token, body: { raidId } }),
     ]);
     const reward = Number((a.data && a.data.result && a.data.result.reward) || 0);
+    const loot = Number((a.data && a.data.result && a.data.result.loot) || 0);
     const rows = w.db.prepare('SELECT COUNT(*) AS n FROM coin_grants WHERE user_id=?').get(victim.uid).n;
-    const ok = a.status === 200 && b.status === 200 && reward > 0 && Number(rows) === 1 && grantsOf(w, victim.uid) === -reward;
+    const ok = a.status === 200 && b.status === 200 && reward > 0 && Number(rows) === 1 && grantsOf(w, victim.uid) === -loot;
     add('money.raid-settled-once', `${NR}: bấm hai lần chỉ tính một`, ok,
-      ok ? `two overlapping /finish calls for one raid wrote exactly 1 IOU row of -${reward}`
-         : `a=${a.status} b=${b.status} reward=${reward} iouRows=${rows} owed=${grantsOf(w, victim.uid)}`);
+      ok ? `two overlapping /finish calls for one raid wrote exactly 1 loot IOU row of -${loot}`
+         : `a=${a.status} b=${b.status} reward=${reward} loot=${loot} iouRows=${rows} owed=${grantsOf(w, victim.uid)}`);
   } catch (e) { add('money.raid-settled-once', `${NR}: bấm hai lần chỉ tính một`, false, 'threw: ' + ((e && e.stack) || e)); }
 
   // ---- POST /api/coins: claim → ack → not re-offered ----

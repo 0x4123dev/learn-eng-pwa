@@ -18,7 +18,8 @@ export const COOLDOWN_RAID_STATUS_SQL = "('done','ruined')";
 // table yet — plays by, and they are also the answer whenever a stored row is
 // unreadable.
 //
-//   win_cap           most xu one successful robbery can carry home
+//   win_cap           most total xu one successful raid can carry home
+//   win_floor         minimum reward for a win, including an empty house
 //   win_pct           % of the victim's lootable pile a robbery takes
 //   loss              what a failed raid costs the attacker — and hands to
 //                     the defender, so no coin is created or destroyed
@@ -28,7 +29,7 @@ export const COOLDOWN_RAID_STATUS_SQL = "('done','ruined')";
 //                     again — win, loss or ruins alike
 //   daily_reward_cap  most xu one child can win from raids in one ICT day
 export const RAID_CONFIG_DEFAULTS = {
-  win_cap: 100, win_pct: 10, loss: 100, shield_loss: 200,
+  win_cap: 100, win_floor: 100, win_pct: 10, loss: 100, shield_loss: 200,
   seal_hours: 24, retry_hours: 12, daily_reward_cap: 400,
 };
 // A typo in the admin page must not be able to break the game: every value is
@@ -37,7 +38,7 @@ export const RAID_CONFIG_DEFAULTS = {
 // at a week; coin amounts stop at the 100000 ceiling home.js already puts on a
 // wallet, so no single raid can move more money than a wallet can hold.
 export const RAID_CONFIG_RANGE = {
-  win_cap: [0, 100000], win_pct: [0, 100], loss: [0, 100000], shield_loss: [0, 100000],
+  win_cap: [0, 100000], win_floor: [0, 100000], win_pct: [0, 100], loss: [0, 100000], shield_loss: [0, 100000],
   seal_hours: [0, 168], retry_hours: [0, 168], daily_reward_cap: [0, 100000],
 };
 export const RAID_CONFIG_KEYS = Object.keys(RAID_CONFIG_DEFAULTS);
@@ -73,7 +74,7 @@ async function raidConfigTableExists(env) {
   }
 }
 
-// The complete rulebook: always all seven keys, always integers, always in
+// The complete rulebook: always all eight keys, always integers, always in
 // range. Callers never have to check for a missing key.
 export async function readRaidConfig(env) {
   const cfg = Object.assign({}, RAID_CONFIG_DEFAULTS);
@@ -222,17 +223,24 @@ export function raidSnapshot(row) {
   return snap;
 }
 
-// What a successful robbery carries home: win_pct of the victim's pile, never
-// more than win_cap, and never more than what is left of today's
-// daily_reward_cap. The victim loses EXACTLY this number (finish.js), so the
-// raid moves money instead of printing it.
-//
-// This replaced a "loot + performance bonus, floor 50, hard cap 200/day"
-// formula: the floor paid 50 xu for robbing an empty house, which made the
-// poorest targets the most profitable ones.
-export function winReward(lootableCoins, cfg, dailyReward) {
+// A win has two separately accountable parts:
+//   • loot: win_pct of the victim's pile, capped by win_cap;
+//   • victory bonus: enough system-funded coins to reach win_floor.
+// The total still obeys win_cap and the remaining daily_reward_cap. This means
+// an empty house pays the requested 100-xu march/victory reward by default,
+// while the sleeping defender is never debited coins they did not have.
+function winAmounts(lootableCoins, cfg, dailyReward) {
   const pile = Math.max(0, Math.trunc(+lootableCoins || 0));
   const desired = Math.min(cfg.win_cap, Math.floor(pile * cfg.win_pct / 100));
   const left = Math.max(0, cfg.daily_reward_cap - Math.max(0, Math.trunc(+dailyReward || 0)));
-  return Math.max(0, Math.min(left, desired));
+  const floor = Math.min(cfg.win_cap, Math.max(0, Math.trunc(+cfg.win_floor || 0)));
+  const reward = Math.max(0, Math.min(left, Math.max(floor, desired)));
+  const loot = Math.max(0, Math.min(reward, desired));
+  return { reward, loot, victoryBonus: reward - loot };
+}
+export function winReward(lootableCoins, cfg, dailyReward) {
+  return winAmounts(lootableCoins, cfg, dailyReward).reward;
+}
+export function winLoot(lootableCoins, cfg, dailyReward) {
+  return winAmounts(lootableCoins, cfg, dailyReward).loot;
 }
