@@ -1,4 +1,7 @@
-// A raid moves coins. It must never make them.
+// The loot/loss portions of a raid move coins and must never make them. A win
+// may also contain an explicit, system-funded victoryBonus used to reach the
+// configured minimum reward; that bonus is intentionally outside this ledger
+// conservation check.
 //
 // This is the test that was missing, and its absence is why a fix that looked
 // complete was not. The server suite asserted "the victim is owed exactly minus
@@ -115,8 +118,9 @@ suite('cướp đêm: the coins in the world are the same before and after', () 
 
     const result = await raid(world, attacker, victim, attackerDev.appState.coins);
     assert.truthy(result.won, 'fixture must be a win: ' + JSON.stringify(result));
-    assert.truthy(result.reward > victimDev.appState.coins,
-      `the fixture needs a reward (${result.reward}) bigger than the victim's purse (30)`);
+    assert.equal(result.victoryBonus, 0, 'this fixture isolates a pure loot transfer');
+    assert.truthy(result.loot > victimDev.appState.coins,
+      `the fixture needs loot (${result.loot}) bigger than the victim's purse (30)`);
 
     // The attacker applies its own half locally, as claimVerified does.
     attackerDev.appState.coins += result.reward;
@@ -128,7 +132,7 @@ suite('cướp đêm: the coins in the world are the same before and after', () 
     assert.equal(after, before,
       `coins were created: ${before} → ${after} (attacker +${result.reward}, victim ${JSON.stringify(victimDev.wallet())})`);
     assert.equal(victimDev.appState.coins, 0, 'the victim is emptied, never negative on screen');
-    assert.equal(victimDev.appState.coinDebt, result.reward - 30, 'and the rest is carried, not forgiven');
+    assert.equal(victimDev.appState.coinDebt, result.loot - 30, 'and the rest is carried, not forgiven');
   });
 
   test('the carried debt is collected out of what the victim earns next', async () => {

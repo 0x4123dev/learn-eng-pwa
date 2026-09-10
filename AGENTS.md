@@ -701,7 +701,8 @@ npm install
 5. **Commit atomically** - One logical change per commit
 6. **Document decisions** - Use `@brainstormer` for major choices
 7. **Drag/drop artwork must use true alpha** - Every draggable or placeable asset must have transparent pixels outside its silhouette. Never bake a rectangular lawn, solid background, or fake checkerboard into the image; the map underneath owns the surrounding ground colour. Validate the alpha channel and transparent corners before adding the asset to a registry.
+8. **Ship completed changes by default** - After a requested code change passes its relevant checks, deploy it to the live FlashLingo site and push the resulting commits to GitHub. Do not leave completed work local-only unless the user explicitly asks for local-only work or deployment/push is blocked; if blocked, report the exact blocker.
 
 ---
 
-*Last updated: 2026-09-05*
+*Last updated: 2026-09-10*

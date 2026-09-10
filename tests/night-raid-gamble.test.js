@@ -8,7 +8,8 @@
 //   - …and MUST be attackable once they have passed, even on the same ICT day
 //     (the regression the dropped UNIQUE (attacker, defender, day) index is
 //     about — db/021);
-//   - a win moves min(win_cap, win_pct%) out of the victim's pile and no more;
+//   - a win takes min(win_cap, win_pct%) from the victim and the system fills
+//     any shortfall up to win_floor;
 //   - a defeat moves exactly `loss` (or `shield_loss`) from the attacker to
 //     the DEFENDER, so the game neither prints nor burns coins;
 //   - every one of those numbers comes from night_raid_config, is clamped on
@@ -193,8 +194,8 @@ suite('night raid: the per-pair 12 h cooldown', () => {
   });
 });
 
-suite('night raid: the economy conserves coins', () => {
-  test('a win takes min(win_cap, win_pct%) of the pile and the victim loses exactly that', async () => {
+suite('night raid: loot transfers and victory rewards', () => {
+  test('the victim loses only the loot while the system fills a win to the floor', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true }), rich = await world.createUser({ allowBot: true });
     const modest = await world.createUser({ allowBot: true });
@@ -206,12 +207,15 @@ suite('night raid: the economy conserves coins', () => {
     const big = await raid(world, me, rich);
     assert.equal(big.result.won, true);
     assert.equal(big.result.reward, 100, 'the cap bites');
-    assert.equal(big.result.loot, 100, 'the victim loses exactly the reward');
+    assert.equal(big.result.loot, 100, 'the loot itself reaches the per-win cap');
     assert.equal(coinsOf(world, rich.uid), 4900);
 
-    // 10% of 800 = 80, under the cap.
+    // 10% of 800 = 80. The victim loses 80 and the system adds 20 so a win
+    // still pays the 100-xu floor.
     const small = await raid(world, me, modest);
-    assert.equal(small.result.reward, 80, 'otherwise it is the percentage');
+    assert.equal(small.result.reward, 100);
+    assert.equal(small.result.loot, 80);
+    assert.equal(small.result.victoryBonus, 20);
     assert.equal(coinsOf(world, modest.uid), 720);
   });
 
@@ -257,6 +261,20 @@ suite('night raid: the economy conserves coins', () => {
     assert.equal(result.loss, 0);
   });
 
+  test('an empty house pays the 100-xu win floor entirely from the system', async () => {
+    const world = createWorld();
+    const me = await world.createUser({ allowBot: true }), empty = await world.createUser({ allowBot: true });
+    await seedHome(world, me, STRONG);
+    await seedHome(world, empty, Object.assign({ coins: 0 }, WEAK));
+    const { result } = await raid(world, me, empty);
+    assert.equal(result.won, true);
+    assert.equal(result.reward, 100);
+    assert.equal(result.loot, 0);
+    assert.equal(result.victoryBonus, 100);
+    assert.equal(result.rewardReason, 'victory_bonus');
+    assert.equal(coinsOf(world, empty.uid), 0, 'the empty defender is never pushed negative');
+  });
+
   test('a broke raider cannot conjure coins into the defender\'s pile', async () => {
     const world = createWorld();
     const me = await world.createUser({ allowBot: true }), wall = await world.createUser({ allowBot: true });
@@ -287,11 +305,11 @@ suite('night raid: the economy conserves coins', () => {
 });
 
 suite('night raid: the admin rulebook', () => {
-  test('defaults are the seven documented numbers', async () => {
+  test('defaults are the eight documented numbers', async () => {
     const world = createWorld();
     const cfg = await helper().readRaidConfig(world.env);
     assert.deepEqual(cfg, {
-      win_cap: 100, win_pct: 10, loss: 100, shield_loss: 200,
+      win_cap: 100, win_floor: 100, win_pct: 10, loss: 100, shield_loss: 200,
       seal_hours: 24, retry_hours: 12, daily_reward_cap: 400,
     });
     assert.deepEqual(cfg, helper().RAID_CONFIG_DEFAULTS);
@@ -397,7 +415,7 @@ suite('GET /api/night-raid/reports: my own attacks', () => {
     assert.equal(ruined.reward, 0); assert.equal(ruined.loss, 0); assert.equal(ruined.stars, 0);
     assert.truthy(ruined.finishedAt > 0, 'a ruins row is finished the moment it is written');
     assert.equal(lostRow.loss, 100);
-    assert.equal(wonRow.reward, 80);
+    assert.equal(wonRow.reward, 100);
     assert.truthy(wonRow.stars >= 1);
     assert.deepEqual(r.data.reports, [], 'nobody attacked me, so the defence log is empty');
     assert.equal(r.data.attacks.length <= 20, true);

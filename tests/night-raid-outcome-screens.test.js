@@ -126,8 +126,8 @@ suite('kết quả chỉ xuất hiện sau khi máy chủ xác nhận', () => {
     assert.equal(w.state.coins,8963);
   });
 
-  test('a verified win over an empty vault celebrates the breach without claiming +0 xu', async () => {
-    const result={won:true,reward:0,rewardReason:'empty_vault',loss:0,stars:3,damage:50,defense:20,castleHp:0};
+  test('a verified win over an empty vault pays and explains the 100-xu victory reward', async () => {
+    const result={won:true,reward:100,rewardReason:'victory_bonus',loot:0,victoryBonus:100,loss:0,stars:3,damage:50,defense:20,castleHp:0};
     const w=await marchOn({friends:friendsReply,targets:targetsReply,start:ACTIVE_RAID,
       finish:{ok:true,data:{result}}});
     const battle=w.battles[w.battles.length-1];
@@ -135,8 +135,9 @@ suite('kết quả chỉ xuất hiện sau khi máy chủ xác nhận', () => {
     await flush();
     const out=w.screen().innerHTML;
     assert.truthy(out.includes('CHIẾN THẮNG'));
-    assert.truthy(out.includes('Kho xu của nhà này đang trống'));
-    assert.falsy(out.includes('+0 xu'));
+    assert.truthy(out.includes('Kho đối thủ trống'));
+    assert.truthy(out.includes('100 xu cho phí hành quân và chiến thắng'));
+    assert.truthy(out.includes('+100 xu'));
   });
 });
 

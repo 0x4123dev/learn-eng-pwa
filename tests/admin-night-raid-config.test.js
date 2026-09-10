@@ -182,7 +182,7 @@ suite('night raid config: what is written is what comes back', () => {
     assert.equal(live.win_cap, 250, 'the raid itself must see the admin edit');
   });
 
-  test('editing one rule leaves the other six alone', async () => {
+  test('editing one rule leaves the other seven alone', async () => {
     const { world, admin } = await adminWorld();
     await post(world, { token: admin.token, body: { key: 'loss', value: 33 } });
     const r = await get(world, { token: admin.token });
@@ -293,11 +293,13 @@ suite('night raid config: the admin page and the server agree', () => {
     assert.truthy(/note.className = 'raid-note ok'/.test(fn), 'a successful save must confirm itself');
   });
 
-  test('the worked example uses both win_cap and win_pct, so the owner sees the interaction', () => {
+  test('the worked example uses win floor, cap and percentage, including an empty house', () => {
     const fn = adminHtml.slice(adminHtml.indexOf('function paintRaidExample('),
                                adminHtml.indexOf('function paintRaidStatus('));
-    assert.truthy(/raidLiveValue\('win_cap'\)/.test(fn) && /raidLiveValue\('win_pct'\)/.test(fn));
-    assert.truthy(/Math\.min\(cap, share\)/.test(fn), 'the example must compute min(cap, pct%), the rule itself');
+    assert.truthy(/raidLiveValue\('win_cap'\)/.test(fn) && /raidLiveValue\('win_floor'\)/.test(fn) && /raidLiveValue\('win_pct'\)/.test(fn));
+    assert.truthy(/Math\.min\(cap, share\)/.test(fn) && /Math\.max\(floor, loot\)/.test(fn),
+      'the example must compute the victim loot and then apply the win floor');
+    assert.truthy(/Nếu kho địch trống/.test(fn), 'the parent must see the exact empty-vault rule');
     assert.truthy(/RAID_EXAMPLE_PILE = 3000/.test(adminHtml), 'the example house holds 3.000 xu');
   });
 });
