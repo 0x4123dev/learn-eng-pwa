@@ -1110,8 +1110,14 @@ async function verifyClient() {
       h.sandbox.startGrammarQuiz(unit.id, 4);
       let st = h.peek('_grammarQuizState');
       must(st && st.questions.length >= 2, 'a quiz of at least 2 questions started');
-      const mc = st.questions.findIndex((q) => q.type !== 'arrangement');
-      must(mc >= 0, 'there is a multiple-choice question');
+      // The first multiple-choice question that has ANOTHER one after it.
+      // Picking simply the first MC made this check a dice roll: a draw that
+      // put the only MC last had nextGrammarQuestion() finish the quiz, the
+      // state went null, and line "st.questions" below threw — one run in
+      // several, on nothing the app did wrong.
+      const mcs = st.questions.map((q, i) => (q.type !== 'arrangement' ? i : -1)).filter((i) => i >= 0);
+      must(mcs.length >= 2, 'there are two multiple-choice questions to answer (got ' + mcs.length + ')');
+      const mc = mcs[0];
       st.currentIdx = mc;
       h.sandbox.renderGrammarQuestion();
       const q = st.questions[mc];
@@ -1123,8 +1129,8 @@ async function verifyClient() {
       // Now the same grader, given a wrong answer.
       h.sandbox.nextGrammarQuestion();
       st = h.peek('_grammarQuizState');
-      const mc2 = st.questions.findIndex((qq, i) => i > mc && qq.type !== 'arrangement');
-      must(mc2 >= 0, 'there is a second multiple-choice question');
+      must(st && st.questions, 'the quiz is still running after one answer');
+      const mc2 = mcs[1];
       st.currentIdx = mc2;
       h.sandbox.renderGrammarQuestion();
       const q2 = st.questions[mc2];
