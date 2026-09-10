@@ -494,6 +494,33 @@ function screenPlaybook() {
         return exams.length + ' exams in bank; "' + exams[0].title + '" listed with ' + exams[0].questions.length + ' questions';
       },
     },
+    ptnkScreen: {
+      title: 'PTNK: danh sách đề thật, mở một đề, trả lời, thoát',
+      open: async (h) => { h.sandbox.switchScreen('ptnkScreen'); await settle(); },
+      prove: (h, el) => {
+        // Same engine as the Exam tab, its own bank and its own screen. What
+        // can go wrong silently: the bank not arriving (an empty year list),
+        // a paper opening on the WRONG screen (the HCMC one), or the answer
+        // buttons rendering but not advancing. Each is checked by doing it.
+        const bank = h.peek('PTNK_EXAMS');
+        must(Array.isArray(bank) && bank.length > 0, 'the PTNK bank arrived (lazy)');
+        const text = squash(el.textContent);
+        must(text.includes(bank[0].title), 'the first paper is listed by its real title: ' + bank[0].title);
+        must(wiredTo(el, 'startPtnkExam').length === bank.length,
+          'every paper in the bank has a button (' + wiredTo(el, 'startPtnkExam').length + '/' + bank.length + ')');
+        const years = (text.match(/Năm \d{4}/g) || []);
+        must(years.length >= 2, 'papers are grouped under year headings');
+        h.sandbox.startExam(bank[0].id, 'ptnk');
+        must(h.sandbox.isExamActive(), 'the paper did not start');
+        must(h.sandbox.examCurrentSet() === 'ptnk', 'the paper opened in the ptnk set, not the HCMC one');
+        const q = h.el('ptnkScreen').textContent;
+        must(q.length > 20, 'the first question is drawn on the PTNK screen, not the Exam screen');
+        h.sandbox.abandonExam();
+        must(!h.sandbox.isExamActive(), 'the paper did not stop');
+        h.sandbox.renderPtnkHome();
+        return bank.length + ' PTNK papers listed under ' + years.length + ' years; "' + bank[0].title + '" opens in the ptnk set';
+      },
+    },
     profileScreen: {
       title: 'Hồ sơ: điểm, chuỗi ngày, giao diện',
       open: async (h) => { h.sandbox.navigateToProfile(); },

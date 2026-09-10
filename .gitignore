@@ -19,3 +19,8 @@ tmp/
 # Local agent tooling (mirrors .claude/ above)
 .agents/
 .codex/
+
+# Per-part scratch files the PTNK transcribers write before assembling
+# data/ptnk/<id>.json (scripts/assemble-ptnk.js). The assembled file is the
+# source of truth and is committed; the parts are not.
+data/ptnk/parts/

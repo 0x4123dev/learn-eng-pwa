@@ -7,8 +7,12 @@ import { evaluate } from './_daily-task.js';
 // exactly what happened to Collocation and Math: both tabs recorded history,
 // both uploaded it, and none of it ever reached the admin. Keep this in step
 // with _localHistoryItems() — tests/feature-sync.test.js pins the two together.
+// 'exam' is the PTNK papers (js/ptnk.js). The HCMC Exam tab still reports
+// through /api/attempts only; PTNK ALSO lands here because this table is
+// what a daily task is matched against, and an admin hands out "làm đề PTNK
+// 2022" as a task.
 const TYPES = ['lesson', 'review', 'grammar', 'phrases', 'collocation', 'wordform',
-               'rewrite', 'verbs', 'math', 'battle'];
+               'rewrite', 'verbs', 'math', 'battle', 'exam'];
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 const GMT7_MS = 7 * 60 * 60 * 1000;
 

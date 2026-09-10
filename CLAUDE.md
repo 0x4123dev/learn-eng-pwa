@@ -209,30 +209,27 @@ See `.claude/agents/_collaboration.md` for:
 
 ### Agent File Creation
 
-**IMPORTANT**: Agents running via Task tool cannot directly save files to disk. Their file operations are simulated, not executed.
+Subagents (Agent tool, Workflow tool) CAN write files to disk, and the files
+persist. Verified 2026-09-10: a probe agent wrote `data/ptnk/_probe.json` and
+the file was there afterwards; the eleven PTNK transcriber agents then wrote
+`data/ptnk/*.json` directly. An older version of this section claimed agent
+file operations were "simulated, not executed" and required every agent to
+return file contents for the main assistant to re-save. That was not true,
+and for a 100 kB transcription it meant passing the whole file through the
+main context twice for nothing.
 
-**Rule**: Agents must return file contents in their response for the main assistant to save.
+**Rule**: let an agent write its own output, with an ABSOLUTE path in the
+prompt, and have it verify its own work (run the validator, run the test)
+before it returns. Then `ls` the path yourself — trust, but check the file
+exists and is non-empty.
 
-**Agent Output Format:**
-```
-Save to `docs/[category]/YYYY-MM-DD-[name].md`:
+**When to still have an agent return content instead:** when the main
+assistant needs to read and reason about it anyway (a short report, a
+decision), so returning it saves a Read.
 
-[full file content here]
-```
-
-**Main Assistant Responsibility:**
-After an agent completes, the main assistant MUST:
-1. Extract file content from agent's response
-2. Use the `Write` tool to actually save the file
-3. Verify the file was created: `ls docs/[category]/`
-
-**Example Workflow:**
-```
-User: "@tester write tests for auth"
-Agent: Returns test code + "Save report to docs/test-reports/2025-01-11-auth.md: [content]"
-Main: Uses Write tool to save docs/test-reports/2025-01-11-auth.md
-Main: Confirms "Test report saved to docs/test-reports/2025-01-11-auth.md"
-```
+The `docs/` handoff convention (below) still holds — that directory is
+gitignored, so it is a LOCAL handoff between agents in one session, never a
+place to record something that must survive.
 
 ### Validation Hooks
 
@@ -674,6 +671,8 @@ node scripts/build-math4-data.js              # js/math4-data.js (Toán 4, 5 d�
 node scripts/gen-math4-t3.js                  # rebuilds ONE dạng under data/math4/
 node scripts/build-math-fight-bank.js         # js/math-fight-bank.js
 node scripts/build-hot-words.js               # js/hot-words.js
+node scripts/build-ptnk-data.js               # js/ptnk-data.js from data/ptnk/*.json (real PTNK papers)
+node scripts/validate-ptnk.js data/ptnk/*.json  # the contract in data/ptnk/SCHEMA.md, executable
 ```
 
 ---

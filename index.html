@@ -222,6 +222,10 @@
             <!-- Exam Screen -->
             <div class="screen exam-screen" id="examScreen"></div>
 
+            <!-- PTNK Screen: the real Phổ thông Năng khiếu entrance papers,
+                 drawn by the same engine as the Exam tab (js/exam.js, set "ptnk") -->
+            <div class="screen exam-screen" id="ptnkScreen"></div>
+
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
                 <button class="profile-back-btn" onclick="navigateFromProfile()">← Back</button>
@@ -324,6 +328,13 @@
                             <svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="M7 9.2V14c0 1.8 2.2 3 5 3s5-1.2 5-3V9.2"/><path d="M21 7v6"/></svg>
                         </span>
                         <span class="nav-hub-copy"><strong>Grammar</strong><small>Rules, lessons and quizzes</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card ptnk" type="button" onclick="switchScreen('ptnkScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/><path d="M8 12h8M8 16h5"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>PTNK</strong><small>Đề thi thật vào lớp 10 · Phổ thông Năng khiếu</small></span>
                         <span class="nav-hub-arrow" aria-hidden="true">›</span>
                     </button>
                     <button class="nav-hub-card verbs" type="button" onclick="switchScreen('speedChallengeScreen')">
@@ -649,6 +660,7 @@
     <script src="js/lessons.js"></script>
     <script src="js/verbs.js"></script>
     <script src="js/exam.js"></script>
+    <script src="js/ptnk.js"></script>
     <script src="js/profile.js"></script>
     <!-- New Features -->
     <script src="js/daily-challenge.js"></script>

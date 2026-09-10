@@ -16,6 +16,68 @@ const EXAM_HISTORY_KEY = 'flashlingo_examHistory';
 // ~1.4 MB.
 const EXAM_HISTORY_CAP = 300;
 
+// ---- sets ------------------------------------------------------------------
+// The engine below — clock, one question at a time, grading, results, review —
+// is shared by more than one bank of papers. What is NOT shared is everything
+// around it: which screen it draws on, where attempts are kept, what a correct
+// answer pays, whether a clean sheet earns a bonus, and how the finished
+// attempt reaches the server. A "set" is that bundle.
+//
+//   hcmc — the original Exam tab: 33 HCMC grade-10 papers, history in its own
+//          localStorage key, 5 xu a question, no bonus.
+//   ptnk — registered by js/ptnk.js: the real Phổ thông Năng khiếu papers,
+//          history on appState (so js/auth.js uploads it and a daily task can
+//          see it), 5 xu a question and 50 xu for 100%.
+//
+// Keeping them apart is the point. A child's PTNK best score must not appear
+// in the HCMC list, a PTNK bonus must not leak onto the HCMC papers, and the
+// engine must never look a PTNK id up in the HCMC bank (getExam) and draw
+// nothing. Every hard-coded 'examScreen', EXAMS and history key in this file
+// went through _examSetCfg() when the second set arrived.
+const EXAM_SETS = {
+    hcmc: {
+        screen: 'examScreen',
+        bank: () => (typeof EXAMS !== 'undefined' && Array.isArray(EXAMS)) ? EXAMS : [],
+        loadHistory: () => {
+            // ALWAYS an array — see the comment on loadExamHistory.
+            try {
+                const parsed = JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY));
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) { return []; }
+        },
+        saveHistory: (list) => {
+            try { localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(list)); return true; }
+            catch (e) {
+                const kept = list.slice(0, Math.max(1, Math.floor(list.length / 2)));
+                try { localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(kept)); return true; }
+                catch (e2) { return false; }
+            }
+        },
+        historyCap: EXAM_HISTORY_CAP,
+        coinsPerCorrect: 5,
+        perfectBonus: 0,
+        syncActivity: false,
+        home: null,                       // null = this file's own renderExamHome body
+        homeLabel: '← Exam Home',
+    },
+};
+let _examSet = 'hcmc';
+function _examSetCfg() { return EXAM_SETS[_examSet] || EXAM_SETS.hcmc; }
+function _examScreen() {
+    return (typeof document !== 'undefined') ? document.getElementById(_examSetCfg().screen) : null;
+}
+// The current set's bank, by id. getExam() in js/exam-data.js only knows the
+// HCMC papers; a PTNK id asked of it comes back null and the paper never opens.
+function examLookup(examId) {
+    const bank = _examSetCfg().bank();
+    return bank.find(e => e && e.id === examId) || null;
+}
+function examCurrentSet() { return _examSet; }
+// For the study checkpoint (js/app.js): a paper saved mid-way must come back
+// in the set it was started in, or a PTNK paper is drawn on the HCMC screen
+// and scored under the HCMC history.
+function examSelectSet(setId) { if (setId && EXAM_SETS[setId]) _examSet = setId; }
+
 // Live exam session (null when not taking an exam).
 // { examId, title, questions, idx, answers[], startTs, endTs, deadlineTs,
 //   timerId, finished }
@@ -32,12 +94,10 @@ function loadExamHistory() {
     // came straight back, and js/home.js `_homeSkillSessions` then called
     // .map() on it while drawing the home screen. That is on the boot path, so
     // one junk value under this key stopped the app opening at all, for good.
-    try {
-        const parsed = JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY));
-        return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-        return [];
-    }
+    // The HCMC set's loader (EXAM_SETS.hcmc) is where that rule now lives;
+    // this wrapper only picks the set.
+    const list = _examSetCfg().loadHistory();
+    return Array.isArray(list) ? list : [];
 }
 
 // Returns true when the list reached disk. The newest attempt is the one the
@@ -47,18 +107,7 @@ function loadExamHistory() {
 // silent no-op, where coins were paid, the results screen appeared, and
 // nothing was ever written again.
 function saveExamHistory(list) {
-    try {
-        localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(list));
-        return true;
-    } catch (e) {
-        const kept = list.slice(0, Math.max(1, Math.floor(list.length / 2)));
-        try {
-            localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(kept));
-            return true;
-        } catch (e2) {
-            return false;
-        }
-    }
+    return !!_examSetCfg().saveHistory(list);
 }
 
 // Look one stored answer row back up in the live bank. Attempts written before
@@ -71,7 +120,7 @@ function saveExamHistory(list) {
 function _examBankQuestion(attempt, a) {
     if (!attempt || !a || typeof getExam !== 'function') return null;
     let ex = null;
-    try { ex = getExam(attempt.examId); } catch (e) { return null; }
+    try { ex = examLookup(attempt.examId); } catch (e) { return null; }
     if (!ex || !Array.isArray(ex.questions)) return null;
     return ex.questions.find(q => q.n === a.n) || null;
 }
@@ -111,6 +160,7 @@ function abandonExam() {
 function examForgetProfile() {
     abandonExam();
     _examSubTab = 'exams';
+    _examSet = 'hcmc';
 }
 
 // A timed paper is forty to ninety minutes with a clock running, and walking
@@ -156,7 +206,11 @@ function escExam(s) {
 // ---- home / landing ----------------------------------------------------------
 
 function renderExamHome() {
-    const screen = document.getElementById('examScreen');
+    // A set that brought its own home (PTNK lists papers by year, not as one
+    // flat list with lessons) draws it here; the HCMC body follows.
+    const cfg = _examSetCfg();
+    if (typeof cfg.home === 'function') { cfg.home(); return; }
+    const screen = _examScreen();
     if (!screen) return;
     const bar = `
         <div class="grammar-subtabs">
@@ -248,7 +302,7 @@ function renderExamLessonsBody() {
 function openExamLesson(id) {
     const l = (typeof EXAM1_LESSONS !== 'undefined') ? EXAM1_LESSONS.find(x => x.id === id) : null;
     if (!l) return;
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     if (!screen) return;
     screen.innerHTML = `
         <div class="exam-lesson-detail">
@@ -270,8 +324,9 @@ function closeExamLesson() {
 
 // ---- start / timer -----------------------------------------------------------
 
-function confirmStartExam(examId) {
-    const ex = getExam(examId);
+function confirmStartExam(examId, setId) {
+    if (setId && EXAM_SETS[setId]) _examSet = setId;
+    const ex = examLookup(examId);
     if (!ex) return;
     const ok = confirm(
         `Start ${ex.title}?\n\n` +
@@ -279,14 +334,19 @@ function confirmStartExam(examId) {
         `• ${ex.durationMin}-minute timer (auto-submits at 0:00)\n\n` +
         `You'll see a clear explanation after each answer.`
     );
-    if (ok) startExam(examId);
+    if (ok) startExam(examId, _examSet);
 }
 
-function startExam(examId) {
-    const ex = getExam(examId);
+// setId names the set the paper belongs to. A daily-task deep link arrives
+// here with nothing else having chosen a set, so it must be explicit — the
+// engine must not open a PTNK paper on the HCMC screen.
+function startExam(examId, setId) {
+    if (setId && EXAM_SETS[setId]) _examSet = setId;
+    const ex = examLookup(examId);
     if (!ex) return;
     const now = Date.now();
     _examState = {
+        set: _examSet,
         examId: ex.id,
         title: ex.title,
         durationMin: ex.durationMin,
@@ -335,7 +395,7 @@ function _examHeaderHTML() {
 function renderExamQuestion() {
     const s = _examState;
     if (!s) return;
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     const q = s.questions[s.idx];
     // Warm this question's words now: they become tappable once answered.
     if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.passage);
@@ -460,7 +520,7 @@ function nextExamQuestion() {
     }
     s.idx++;
     renderExamQuestion();
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     if (screen) screen.scrollTop = 0;
     window.scrollTo(0, 0);
 }
@@ -489,8 +549,15 @@ function finishExam(auto) {
         Math.round((Date.now() - s.startTs) / 1000)
     );
 
-    // Reward coins for the pet shop: 5 per correct answer (matches Grammar).
-    const coinsEarned = score * 5;
+    // Reward coins for the pet shop. 5 per correct answer (matches Grammar) on
+    // both sets; a set may also pay a bonus for a clean sheet — PTNK does,
+    // because a real entrance paper at 100% is a different achievement from a
+    // practice set at 100%. The combo bonus the dog promised on screen is
+    // banked here too, or it rides unpaid into the next practice.
+    const cfg = _examSetCfg();
+    const perfectBonus = (total > 0 && score === total) ? (cfg.perfectBonus || 0) : 0;
+    const comboBonus = typeof petComboBonus === 'function' ? petComboBonus() : 0;
+    const coinsEarned = score * (cfg.coinsPerCorrect || 5) + perfectBonus + comboBonus;
     if (typeof appState !== 'undefined' && appState) {
         appState.coins = (appState.coins || 0) + coinsEarned;
         // Streak: a finished exam counts as a study event for the day.
@@ -501,6 +568,7 @@ function finishExam(auto) {
     }
 
     const attempt = {
+        set: s.set || _examSet,
         examId: s.examId,
         title: s.title,
         ts: Date.now(),
@@ -508,6 +576,7 @@ function finishExam(auto) {
         total,
         timeSpentSec,
         coinsEarned,
+        perfectBonus,
         autoSubmitted: !!auto,
         // Only what cannot be looked back up. `q` and `explanation` used to
         // live here too and were 80% of the weight; the review screen now
@@ -526,8 +595,16 @@ function finishExam(auto) {
 
     const history = loadExamHistory();
     history.unshift(attempt);
-    if (history.length > EXAM_HISTORY_CAP) history.length = EXAM_HISTORY_CAP;
+    const cap = cfg.historyCap || EXAM_HISTORY_CAP;
+    if (history.length > cap) history.length = cap;
     saveExamHistory(history);
+    // A set whose history lives on appState (PTNK) is uploaded by js/auth.js
+    // as an activity — the thing a daily task is matched against. Push it now,
+    // like every other tab, or the paper sits in localStorage until some
+    // OTHER tab finishes a practice and flushes the queue.
+    if (cfg.syncActivity && typeof EngAuth !== 'undefined' && EngAuth && typeof EngAuth.syncNow === 'function') {
+        try { EngAuth.syncNow(); } catch (e) {}
+    }
 
     // Best-effort: sync this attempt to the server so the admin can see it.
     // Offline-safe — the attempt is already saved locally above.
@@ -550,7 +627,7 @@ function finishExam(auto) {
 }
 
 function _renderExamResults(attempt, auto) {
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     const pct = Math.round(attempt.score / attempt.total * 100);
     let grade, emoji;
     if (pct >= 90) { grade = 'Excellent!'; emoji = '🏆'; }
@@ -587,10 +664,16 @@ function _renderExamResults(attempt, auto) {
             <div class="exam-result-pct">${pct}% · ${escExam(attempt.title)}</div>
             <div class="exam-result-time">⏱️ Time used: ${_fmtClock(attempt.timeSpentSec)}</div>
             ${attempt.coinsEarned ? `<div class="exam-result-coins">+${attempt.coinsEarned} 🪙 earned</div>` : ''}
+            ${attempt.perfectBonus ? `
+            <div class="math-perfect-bonus" role="status">
+              <span class="math-perfect-bonus__title">Thưởng đúng 100%</span>
+              <strong>+${attempt.perfectBonus} xu</strong>
+              <span>${escExam(attempt.title)}</span>
+            </div>` : ''}
             ${autoNote}
             <div class="exam-result-actions">
                 <button class="exam-btn-primary" onclick="confirmStartExam('${attempt.examId}')">🔁 Retake</button>
-                <button class="exam-btn-secondary" onclick="renderExamHome()">← Exam Home</button>
+                <button class="exam-btn-secondary" onclick="renderExamHome()">${escExam(_examSetCfg().homeLabel || '← Exam Home')}</button>
             </div>
             <h2 class="exam-review-title">Review — every question</h2>
             <div class="exam-review-list">${reviewHTML}</div>
@@ -609,7 +692,7 @@ function _optionLetterFor(a) {
 // ---- history -----------------------------------------------------------------
 
 function renderExamHistory() {
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     const history = loadExamHistory();
 
     const body = history.length === 0
@@ -656,7 +739,7 @@ function reviewExamAttempt(idx) {
     if (!attempt) return;
     // Reuse the results renderer, then override its buttons to return to history.
     _renderExamResults(attempt, attempt.autoSubmitted);
-    const screen = document.getElementById('examScreen');
+    const screen = _examScreen();
     const actions = screen.querySelector('.exam-result-actions');
     if (actions) {
         actions.innerHTML = `

@@ -80,6 +80,8 @@ const FEATURES = [
     screens: ['rewriteScreen'], banks: ['js/rewrite-data.js', 'js/rewrite-lessons.js'], verifiedBy: 'client' },
   { id: 'exam', name: 'Đề thi có tính giờ',
     screens: ['examScreen'], banks: ['js/exam-data.js', 'js/exam-lessons.js'], verifiedBy: 'client' },
+  { id: 'ptnk', name: 'PTNK — đề thi thật vào lớp 10',
+    screens: ['ptnkScreen'], banks: ['js/ptnk-data.js'], verifiedBy: 'client' },
   { id: 'math', name: 'Toán 7 — luyện tập và đề thi',
     screens: ['mathHubScreen'],
     banks: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js', 'js/math-luythua.js',

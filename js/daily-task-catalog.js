@@ -29,6 +29,7 @@ var DailyTaskCatalog = (function () {
     { id: 'math-chapter', label: 'Toán 7 · Luyện chương' },
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
     { id: 'math4', label: 'Toán 4' },
+    { id: 'ptnk', label: 'PTNK · Đề thi thật vào lớp 10' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
@@ -261,6 +262,38 @@ var DailyTaskCatalog = (function () {
         { detail: { field: 'g4set', value: 'cc' + op + group } }, 'mathHubScreen',
         [['openMathSection', 'cuuchuong'], ['startMathTables', op, group]]));
     }
+  }
+
+  // PTNK — the real Phổ thông Năng khiếu entrance papers (js/ptnk.js).
+  //
+  // Listed HERE, by hand, rather than read from the bank: the bank
+  // (js/ptnk-data.js) is lazy-loaded and this catalog is also imported by the
+  // server, which has no bank at all. The list mirrors data/ptnk/SCHEMA.md
+  // and scripts/validate-ptnk.js; a paper added there must be added here or
+  // it cannot be assigned.
+  //
+  // Activity type 'exam' with detail.examId. The Toán 7 đề thi ALSO match on
+  // examId, under type 'math' — progress() filters by type first, so the two
+  // can never pay each other off. "(phải đúng 100%)" is the server's rule,
+  // not this file's: only a session with score == total counts.
+  const PTNK_PAPERS = [
+    ['ptnk-2026-kc', 'PTNK 2026 · Tiếng Anh Không chuyên'],
+    ['ptnk-2026-chuyen', 'PTNK 2026 · Tiếng Anh Chuyên'],
+    ['ptnk-2025-kc', 'PTNK 2025 · Tiếng Anh Không chuyên'],
+    ['ptnk-2025-chuyen', 'PTNK 2025 · Tiếng Anh Chuyên'],
+    ['ptnk-2024-kc', 'PTNK 2024 · Tiếng Anh Không chuyên'],
+    ['ptnk-2024-chuyen', 'PTNK 2024 · Tiếng Anh Chuyên'],
+    ['ptnk-2023-chuyen', 'PTNK 2023 · Tiếng Anh Chuyên'],
+    ['ptnk-2022-kc', 'PTNK 2022 · Tiếng Anh Không chuyên'],
+    ['ptnk-2022-chuyen', 'PTNK 2022 · Tiếng Anh Chuyên'],
+    ['ptnk-2021-kc', 'PTNK 2021 · Tiếng Anh Không chuyên'],
+    ['ptnk-2021-chuyen', 'PTNK 2021 · Tiếng Anh Chuyên'],
+  ];
+  ENTRIES.push(entry('ptnk:any', 'ptnk', 'Bất kỳ đề PTNK nào (phải đúng 100%)', 'exam',
+    { detail: { field: 'examId', prefix: 'ptnk-' } }, 'ptnkScreen', [['renderPtnkHome']]));
+  for (const [id, title] of PTNK_PAPERS) {
+    ENTRIES.push(entry('ptnk:' + id, 'ptnk', title + ' (phải đúng 100%)', 'exam',
+      { detail: { field: 'examId', value: id } }, 'ptnkScreen', [['startPtnkExam', id]]));
   }
 
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));

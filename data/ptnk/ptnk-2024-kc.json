@@ -1,0 +1,766 @@
+{
+  "id": "ptnk-2024-kc",
+  "year": 2024,
+  "track": "kc",
+  "title": "PTNK 2024 · Tiếng Anh Không chuyên",
+  "subtitle": "Đề thi tuyển sinh lớp 10 · Trường Phổ thông Năng khiếu · 2024-2025",
+  "durationMin": 60,
+  "keySource": "solved",
+  "source": "PTNK 2024 - Anh KC - Đề thi.pdf",
+  "questions": [
+    {
+      "n": 1,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Phonetics",
+      "type": "mcq",
+      "q": "Choose the word whose underlined part pronounces differently from the other three.",
+      "options": [
+        "path<u>s</u>",
+        "high<u>s</u>",
+        "bath<u>s</u>",
+        "laugh<u>s</u>"
+      ],
+      "correct": 1,
+      "explanation": "After the voiced sound in \"high\" the ending is /z/ (highs /haɪz/); after the voiceless /θ/ and /f/ of paths, baths, laughs it is /s/."
+    },
+    {
+      "n": 2,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Phonetics",
+      "type": "mcq",
+      "q": "Choose the word whose underlined part pronounces differently from the other three.",
+      "options": [
+        "p<u>oo</u>l",
+        "sch<u>oo</u>l",
+        "w<u>oo</u>l",
+        "t<u>oo</u>l"
+      ],
+      "correct": 2,
+      "explanation": "\"wool\" has the short /ʊ/ (/wʊl/); pool, school and tool all have the long /uː/."
+    },
+    {
+      "n": 3,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Stress",
+      "type": "mcq",
+      "q": "Choose the word whose primary stress position differs from the other three.",
+      "options": [
+        "animal",
+        "hospital",
+        "chemical",
+        "official"
+      ],
+      "correct": 3,
+      "explanation": "of-FI-cial is stressed on the second syllable; A-nimal, HOS-pital and CHE-mical are stressed on the first."
+    },
+    {
+      "n": 4,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Stress",
+      "type": "mcq",
+      "q": "Choose the word whose primary stress position differs from the other three.",
+      "options": [
+        "camel",
+        "hotel",
+        "hostel",
+        "channel"
+      ],
+      "correct": 1,
+      "explanation": "ho-TEL is stressed on the second syllable; CA-mel, HOS-tel and CHAN-nel on the first."
+    },
+    {
+      "n": 5,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "My sister ______ for hours, and I'm worried she will overwork herself.",
+      "options": [
+        "has studied",
+        "will have studied",
+        "is studying",
+        "has been studying"
+      ],
+      "correct": 3,
+      "explanation": "An action that started in the past and is still going on (\"for hours\"), with emphasis on its duration, takes the present perfect continuous."
+    },
+    {
+      "n": 6,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "Thang Long Imperial Citadel is a cultural ____ of historical buildings from the 11<sup>th</sup> century.",
+      "options": [
+        "monument",
+        "landscape",
+        "complex",
+        "heritage"
+      ],
+      "correct": 2,
+      "explanation": "A \"complex\" is a group of buildings on one site; \"a cultural complex of historical buildings\" is the natural collocation."
+    },
+    {
+      "n": 7,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "According to Vietnamese traditions, children need to care ______ their parents in old age.",
+      "options": [
+        "with",
+        "of",
+        "about",
+        "for"
+      ],
+      "correct": 3,
+      "explanation": "\"care for somebody\" means to look after them; \"care about\" only means to be concerned."
+    },
+    {
+      "n": 8,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "I think this event will be cancelled because ______ people have shown interests.",
+      "options": [
+        "a little",
+        "few",
+        "little",
+        "a few"
+      ],
+      "correct": 1,
+      "explanation": "\"people\" is a plural countable noun, and the negative sense (not enough → cancelled) needs \"few\", not \"a few\"."
+    },
+    {
+      "n": 9,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "______ the only authentic ramen restaurant in town, Ittou Ramen is always packed with customers.",
+      "options": [
+        "To be",
+        "Being",
+        "It is",
+        "Having been"
+      ],
+      "correct": 1,
+      "explanation": "A present participle clause (\"Being …\") gives the reason for the main clause and shares its subject, Ittou Ramen."
+    },
+    {
+      "n": 10,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "It _____ Mrs. Allen that you saw because she passed away last month.",
+      "options": [
+        "mustn't have been",
+        "can't have been",
+        "can't be",
+        "mustn't be"
+      ],
+      "correct": 1,
+      "explanation": "\"can't have + past participle\" expresses certainty that something in the past was impossible; \"mustn't have\" is not used for deduction."
+    },
+    {
+      "n": 11,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "Tam: 'Are you coming to the movie with us this weekend?'<br>Huy: '______.'",
+      "options": [
+        "That's out of the question.",
+        "If I were you, I would.",
+        "Thanks, I think it's great.",
+        "I wouldn't miss it for anything."
+      ],
+      "correct": 3,
+      "explanation": "\"I wouldn't miss it for anything\" is the idiomatic enthusiastic \"yes\" to an invitation; the other replies do not answer the question."
+    },
+    {
+      "n": 12,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "I _____ a very interesting book in the library, but when I came back the next day it was gone.",
+      "options": [
+        "searched for",
+        "looked up",
+        "came across",
+        "ran into"
+      ],
+      "correct": 2,
+      "explanation": "\"come across\" = find by chance; \"run into\" is used for meeting people, and \"search for\"/\"look up\" do not fit finding a book unexpectedly."
+    },
+    {
+      "n": 13,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "The ____ shows that we are going to visit Beijing's Forbidden City on the third day of our trip.",
+      "options": [
+        "itinerary",
+        "tour guide",
+        "reservation",
+        "destination"
+      ],
+      "correct": 0,
+      "explanation": "An itinerary is the planned route and schedule of a journey, day by day."
+    },
+    {
+      "n": 14,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "Neither me nor my mom ______ where my dad took the car.",
+      "options": [
+        "don't know",
+        "knows",
+        "doesn't know",
+        "know"
+      ],
+      "correct": 1,
+      "explanation": "With \"neither … nor\" the verb agrees with the nearer subject (\"my mom\" → knows); \"neither\" already makes the sentence negative, so no \"don't/doesn't\"."
+    },
+    {
+      "n": 15,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Language use",
+      "type": "mcq",
+      "q": "Elizabeth participates in many club activities _____ improving her resume for college.",
+      "options": [
+        "so that",
+        "so as to",
+        "in order to",
+        "with a view to"
+      ],
+      "correct": 3,
+      "explanation": "\"with a view to + V-ing\" expresses purpose; \"so as to\" and \"in order to\" take a bare infinitive and \"so that\" takes a clause."
+    },
+    {
+      "n": 16,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Error correction",
+      "type": "mcq",
+      "q": "It was (A) reported that people (B) had been queuing in front of the (C) soon opening sneaker's store since (D) yesterday.",
+      "options": [
+        "reported",
+        "had been queuing",
+        "soon",
+        "yesterday"
+      ],
+      "correct": 2,
+      "explanation": "(C) is the error: the adverb \"soon\" cannot pre-modify a noun phrase — it should be \"the soon-to-open / upcoming sneaker store\" (or \"the store opening soon\"). \"had been queuing … since yesterday\" is correct: after the past reporting verb \"It was reported that\", the present perfect continuous is backshifted to the past perfect continuous."
+    },
+    {
+      "n": 17,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Error correction",
+      "type": "mcq",
+      "q": "The computer (A) that I (B) had my friend (C) repaired last month just (D) broke down again.",
+      "options": [
+        "that",
+        "had",
+        "repaired",
+        "broke down"
+      ],
+      "correct": 2,
+      "explanation": "Causative \"have somebody do something\" takes the bare infinitive: \"had my friend repair\"."
+    },
+    {
+      "n": 18,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Error correction",
+      "type": "mcq",
+      "q": "(A) Would you have any (B) questions, do not hesitate (C) to contact us via email or (D) on social media.",
+      "options": [
+        "Would",
+        "questions",
+        "to contact",
+        "on"
+      ],
+      "correct": 0,
+      "explanation": "The inverted conditional \"If you should have any questions\" becomes \"Should you have any questions\", not \"Would\"."
+    },
+    {
+      "n": 19,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Error correction",
+      "type": "mcq",
+      "q": "Children, (A) no matter how young, (B) ought to be taught to help (C) others in times of (D) needs.",
+      "options": [
+        "no matter",
+        "ought to",
+        "others",
+        "needs"
+      ],
+      "correct": 3,
+      "explanation": "The fixed expression is \"in times of need\" (uncountable), not \"needs\"."
+    },
+    {
+      "n": 20,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Error correction",
+      "type": "mcq",
+      "q": "All the rats (A) had escaped successfully (B) by the time the cat (C) had realized what (D) was going on.",
+      "options": [
+        "had escaped",
+        "by",
+        "had realized",
+        "was"
+      ],
+      "correct": 2,
+      "explanation": "The clause after \"by the time\" takes the simple past (\"realized\"); the past perfect belongs to the earlier action \"had escaped\"."
+    },
+    {
+      "n": 21,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "Which is the main idea of the passage?",
+      "options": [
+        "Beauty is becoming more important in today's world.",
+        "Scientists have found an explanation for certain beauty standards.",
+        "There are practical benefits to being beautiful.",
+        "Beauty is important but not easy to define."
+      ],
+      "correct": 3,
+      "explanation": "The passage opens with beauty's importance across cultures and closes with \"beauty plays a role in our lives, but it is extremely difficult to define\"."
+    },
+    {
+      "n": 22,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "What is the author's purpose in <b>paragraph 1</b>?",
+      "options": [
+        "To explain the reason why beauty is so important.",
+        "To describe the search for beauty in some cultures.",
+        "To question the beauty standards in some cultures.",
+        "To illustrate that beauty has been important everywhere for a long time."
+      ],
+      "correct": 3,
+      "explanation": "\"The search for beauty spans centuries and continents\" — the Egyptian and French examples show beauty has mattered everywhere for thousands of years."
+    },
+    {
+      "n": 23,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "What is <b>TRUE</b> about the search for beauty in today's world?",
+      "options": [
+        "People from certain countries care more about beauty.",
+        "Being beautiful today mostly benefits a person's career.",
+        "The beauty industry is a massive one.",
+        "The variety of beauty products and services is increasing."
+      ],
+      "correct": 2,
+      "explanation": "Paragraph 2: sales of makeup, dieting, hair and skin-care products, gym memberships and cosmetic surgery \"generate billions of dollars every year\"."
+    },
+    {
+      "n": 24,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "It can be inferred from <b>paragraph 3</b> that …",
+      "options": [
+        "There may be genetic advantages behind beauty.",
+        "Large features are more preferred by both men and women.",
+        "Men are more selective than women when it comes to their partner's beauty.",
+        "Beautiful people live healthier lives."
+      ],
+      "correct": 0,
+      "explanation": "\"Beauty is health … I can pass on your genes\" and \"these equal health and genetic well-being\" — attractive features signal genetic advantages."
+    },
+    {
+      "n": 25,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "The word '<b>these</b>' in <b>paragraph 3</b> refers to …",
+      "options": [
+        "men and women",
+        "male preference",
+        "certain features",
+        "other studies"
+      ],
+      "correct": 2,
+      "explanation": "\"these equal health and genetic well-being\" refers back to the physical features listed (larger eyes, clear skin, fuller lips, large shoulders…)."
+    },
+    {
+      "n": 26,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "What can be inferred from the example in <b>paragraph 4</b>?",
+      "options": [
+        "Magazines have been responsible for creating some beauty standards.",
+        "Western cultures have a great influence on beauty standards worldwide.",
+        "Being overweight is attractive in some cultures.",
+        "Western beauty standards have recently changed."
+      ],
+      "correct": 2,
+      "explanation": "Yu and Shepard found that \"while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case\"."
+    },
+    {
+      "n": 27,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "What word is <b><i>CLOSEST</i></b> in meaning to '<b>beholder</b>' in the saying in <b>paragraph 5</b>: <i>'Beauty is in the eye of the beholder?'</i>",
+      "options": [
+        "owner",
+        "culture",
+        "public",
+        "viewer"
+      ],
+      "correct": 3,
+      "explanation": "A beholder is the person who looks at something — the viewer; beauty depends on who is looking."
+    },
+    {
+      "n": 28,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "<b>BEAUTY</b><br><br><b>1</b> The search for beauty spans centuries and continents. Paintings of Egyptians dating back over 4,000 years show both men and women painting their nails and wearing makeup. In 18th century France, wealthy noblemen wore large wigs of long white hair to make themselves attractive. In cultures throughout the world, people have gone to extreme lengths to achieve the goal of beauty. <b>[A]</b><br><br><b>2</b> Today, people continue to devote a lot of time and money to their appearance. According to a recent report, one out of three consumers globally say they are spending more money today on beauty and health care products than ever before. Worldwide, sales of makeup, dieting, hair and skin-care products, as well as gym memberships and cosmetic surgery, generate billions of dollars every year. Beauty is power. Studies suggest that good-looking people not only make more money, they also get picked first for opportunities and are perceived as friendlier. <b>[B]</b><br><br><b>3</b> But what exactly is beauty? Trying to define it is difficult, and yet we know it when we see it, or so we think. \"Beauty is health,\" says one psychologist. \"It's a billboard saying 'I'm healthy. I can pass on your genes.\" In studies done by psychologists at New Mexico State University, men regularly showed a preference for women with certain features: larger eyes, clear skin, fuller lips, and a smaller nose and chin. Other studies suggest that women prefer men with large shoulders and a narrow waist. According to scientists, the mind tells us that <b>these</b> equal health and genetic well-being. In other words, it's a fundamental part of human nature to look for such qualities in a mate. <b>[C]</b><br><br><b>4</b> Not everyone agrees with this notion, however. \"Our natural hardwired-ness can be altered by all sorts of expectations, predominantly cultural,\" says C. Loring Brace, an anthropologist at the University of Michigan. What is viewed as attractive in one culture might not be in another. Look in most Western fashion magazines, for example, and the women on the pages are thin. But is this the \"perfect\" body type for women worldwide? Beauty standards are subjective and vary around the world. Yu and Shepard found in one study that while being overweight is undesirable in Western cultures, for native peoples in southeast Peru, this is not the case. <b>[D]</b><br><br><b>5</b> For better or worse, beauty plays a role in our lives, but it is extremely difficult to define exactly what makes one person attractive to another. Although there do seem to be certain physical traits that are considered universally appealing, it is also true that beauty does not always conform to a single, uniform standard. A person's cultural background, for example, may influence what they find attractive in others. In the end, beauty really is, as the saying goes, in the eye of the <b>beholder</b>.",
+      "q": "In which place can the following sentence best fit?<br><b><i>'Take another example: In the Huli culture of Papua New Guinea, men grow their hair long as a symbol of health and strength.'</i></b>",
+      "options": [
+        "[D]",
+        "[C]",
+        "[A]",
+        "[B]"
+      ],
+      "correct": 0,
+      "explanation": "\"Take another example\" must follow an explicit example: at [D] it comes straight after \"Yu and Shepard found in one study that … for native peoples in southeast Peru, this is not the case\", and the Huli long-hair custom is another culture-specific beauty standard — exactly paragraph 4's point that what is attractive in one culture might not be in another. At [A] the preceding sentence is a generalisation, not an example."
+    },
+    {
+      "n": 29,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Cloze",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "(29) ______",
+      "options": [
+        "well-educated",
+        "education",
+        "educator",
+        "educational"
+      ],
+      "correct": 3,
+      "explanation": "An adjective is needed before the noun \"approach\": \"an innovative educational approach\"."
+    },
+    {
+      "n": 30,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Cloze",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "(30) ______",
+      "options": [
+        "Meanwhile",
+        "However",
+        "Therefore",
+        "On the contrary"
+      ],
+      "correct": 0,
+      "explanation": "The sentence contrasts what happens in class with what happens \"at home\" at the same time — \"Meanwhile\"; there is no contradiction or result."
+    },
+    {
+      "n": 31,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Cloze",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "(31) ______",
+      "options": [
+        "so",
+        "but",
+        "while",
+        "for"
+      ],
+      "correct": 2,
+      "explanation": "\"while\" contrasts two groups of learners (visual learners … , while those who prefer more practice …) within one sentence."
+    },
+    {
+      "n": 32,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Cloze",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "(32) ______",
+      "options": [
+        "With",
+        "By",
+        "From",
+        "In"
+      ],
+      "correct": 1,
+      "explanation": "\"By + V-ing\" expresses the means: by integrating technology with traditional teaching, blended learning creates…"
+    },
+    {
+      "n": 33,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "What is the most suitable title for the passage?",
+      "options": [
+        "The pros and cons of Blended Learning",
+        "An Introduction to Blended Learning",
+        "How to maximize the benefits of Blended Learning",
+        "Why Blended Learning is the future of education"
+      ],
+      "correct": 1,
+      "explanation": "The passage defines blended learning, gives an example of how it works and lists its benefits — a general introduction; no drawbacks or maximising tips are given."
+    },
+    {
+      "n": 34,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "According to the text, what is TRUE about Blended Learning?",
+      "options": [
+        "The online learning portion gets more focus than traditional learning.",
+        "There is more assignment to do at home than normally.",
+        "Some types of learner might not like it.",
+        "Each student's learning experience might be different from others'."
+      ],
+      "correct": 3,
+      "explanation": "\"This method allows for a more personalized learning experience that can cater to individual students' needs.\""
+    },
+    {
+      "n": 35,
+      "part": "PHẦN 1. TRẮC NGHIỆM",
+      "section": "Reading",
+      "type": "mcq",
+      "passage": "Blended learning is an innovative (29)____ approach that combines traditional classroom methods with digital and online media. In this learning environment, students experience the best of both worlds: face-to-face interaction with teachers and peers, and the flexibility of online learning. This method allows for a more personalized learning experience that can cater to individual students' needs. For instance, in a typical blended learning setup, students might attend in-person classes where they engage in discussions or work on group projects and activities. (30)____, at home, they complete online assignments and access resources through the internet.<br><br>This combination not only helps reinforce the material learned in class but also encourages students to be more responsible for their own learning. Additionally, blended learning can be suitable for different learning styles, increasing personal engagement. Visual learners, for example, might benefit from interactive video lessons, (31)____ those who prefer more practice can re-watch learning content and redo exercise as much as they want. Moreover, this approach prepares students for the increasingly digital world they will encounter in higher education and the workforce. (32)____ integrating technology with traditional teaching, blended learning creates a dynamic environment that develops both academic competences as well as digital literacy.",
+      "q": "What is NOT an aim of Blended Learning?",
+      "options": [
+        "Helping students to learn more responsibly",
+        "Preparing students for a future digital world",
+        "Teaching students necessary skills for the workplace",
+        "Equipping students with skills to perform well in school"
+      ],
+      "correct": 2,
+      "explanation": "The text mentions responsibility for one's own learning, preparation for \"the increasingly digital world\" and \"academic competences\"; it never says blended learning teaches workplace skills — the workforce is only where students will meet that digital world."
+    },
+    {
+      "n": 36,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "Increased ______ rates helped to eradicate the deadly disease. (VACCINE)",
+      "accept": [
+        "vaccination"
+      ],
+      "answer": "vaccination",
+      "explanation": "A noun is needed before \"rates\": vaccination rates."
+    },
+    {
+      "n": 37,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "The Internet has made education more ______ to people of all economic backgrounds. (ACCESS)",
+      "accept": [
+        "accessible"
+      ],
+      "answer": "accessible",
+      "explanation": "\"make something more + adjective\": accessible (easy to reach or use)."
+    },
+    {
+      "n": 38,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "You can buy kitchen ______ at the electronic store. (APPLY)",
+      "accept": [
+        "appliances"
+      ],
+      "answer": "appliances",
+      "explanation": "A plural noun for machines such as fridges and ovens: kitchen appliances."
+    },
+    {
+      "n": 39,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "Many students ______ applied to help with the charity event. (VOLUNTEER)",
+      "accept": [
+        "voluntarily"
+      ],
+      "answer": "voluntarily",
+      "explanation": "An adverb is needed to modify the verb \"applied\": voluntarily."
+    },
+    {
+      "n": 40,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "It is impossible to finish all these tasks right now, so please ______ the most important ones first. (PRIORITY)",
+      "accept": [
+        "prioritize",
+        "prioritise"
+      ],
+      "answer": "prioritize",
+      "explanation": "An imperative verb is needed after \"please\": prioritize (deal with the most important first)."
+    },
+    {
+      "n": 41,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "She was very ______ and kept telling me to quit the competition. (ENCOURAGE)",
+      "accept": [
+        "discouraging"
+      ],
+      "answer": "discouraging",
+      "explanation": "Someone who keeps telling you to quit is being discouraging — the -ing adjective describes the effect she has on others, and the sense is negative."
+    },
+    {
+      "n": 42,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "The mayor is ______ security in the city to prepare for the President's visit. (STRONG)",
+      "accept": [
+        "strengthening"
+      ],
+      "answer": "strengthening",
+      "explanation": "\"is + V-ing\" needs the verb strengthen (make stronger): strengthening security."
+    },
+    {
+      "n": 43,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Word form",
+      "type": "text",
+      "q": "______ hopes to educate travellers become more responsible and respectful to nature and the environment. (TOURIST)",
+      "accept": [
+        "Ecotourism",
+        "Eco-tourism"
+      ],
+      "answer": "Ecotourism",
+      "explanation": "A noun subject is needed, and travel that teaches respect for nature is ecotourism."
+    },
+    {
+      "n": 44,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "It was so foggy that we couldn't drive any further. (PREVENTED)<br>→ The thick fog ______ any further.",
+      "accept": [
+        "prevented us from driving",
+        "prevented us from going",
+        "prevented us from travelling",
+        "prevented us from traveling"
+      ],
+      "answer": "prevented us from driving",
+      "explanation": "\"prevent somebody from + V-ing\": the thick fog prevented us from driving any further."
+    },
+    {
+      "n": 45,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "Katy said to me: \"Henry is not a reliable person.\" (WARNED)<br>→ Katy ______ on Henry.",
+      "accept": [
+        "warned me not to rely",
+        "warned me against relying",
+        "warned me not to depend",
+        "warned me against depending",
+        "warned me not to count"
+      ],
+      "answer": "warned me not to rely",
+      "explanation": "\"warn somebody not to do / against doing something\"; \"reliable\" becomes the verb \"rely on\"."
+    },
+    {
+      "n": 46,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "I couldn't finish the puzzle because I didn't have more time. (HAD)<br>→ If ______ to finish the puzzle.",
+      "accept": [
+        "I had had more time, I would have been able",
+        "I had had more time, I could have been able",
+        "I had had more time, I'd have been able",
+        "I'd had more time, I would have been able",
+        "I'd had more time, I could have been able",
+        "I'd had more time, I'd have been able",
+        "I had had more time I would have been able",
+        "I had had more time I could have been able"
+      ],
+      "answer": "I had had more time, I would have been able",
+      "explanation": "Third conditional for an unreal past: \"If I had had more time, I would have been able to finish the puzzle.\""
+    },
+    {
+      "n": 47,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "Playing in the rain, Tom got a cold. (CAME)<br>→ Tom ______ played in the rain.",
+      "accept": [
+        "came down with a cold because he",
+        "came down with a cold after he",
+        "came down with a cold when he",
+        "came down with a cold as he",
+        "came down with a cold since he"
+      ],
+      "answer": "came down with a cold because he",
+      "explanation": "\"come down with (an illness)\" = catch it; the participle clause becomes a clause of reason/time: because/after he played in the rain."
+    },
+    {
+      "n": 48,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "Your comment during the meeting was unnecessary. (MADE)<br>→ You needn't ______ during the meeting.",
+      "accept": [
+        "have made that comment",
+        "have made the comment",
+        "have made your comment",
+        "have made a comment",
+        "have made any comment",
+        "have made such a comment"
+      ],
+      "answer": "have made that comment",
+      "explanation": "\"needn't have + past participle\" says something that was done in the past was unnecessary: you needn't have made that comment."
+    },
+    {
+      "n": 49,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "'Why don't you join our camping trip, Mary?' (PART)<br>→ I suggest ______ our camping trip.",
+      "accept": [
+        "Mary should take part in",
+        "Mary take part in",
+        "that Mary should take part in",
+        "that Mary take part in",
+        "Mary takes part in",
+        "that Mary takes part in",
+        "Mary taking part in",
+        "Mary's taking part in"
+      ],
+      "answer": "Mary should take part in",
+      "explanation": "\"suggest (that) somebody (should) + bare infinitive\"; \"join\" becomes \"take part in\"."
+    },
+    {
+      "n": 50,
+      "part": "PHẦN 2. TỰ LUẬN",
+      "section": "Sentence transformation",
+      "type": "text",
+      "q": "If you have more friends, you will be invited to hang out more. (INVITATIONS)<br>→ The more ______ to hang out you will receive.",
+      "accept": [
+        "friends you have, the more invitations",
+        "friends you have the more invitations",
+        "friends you have, the more the invitations"
+      ],
+      "answer": "friends you have, the more invitations",
+      "explanation": "Double comparative \"the more …, the more …\": the more friends you have, the more invitations to hang out you will receive."
+    }
+  ]
+}

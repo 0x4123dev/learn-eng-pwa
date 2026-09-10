@@ -265,6 +265,56 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(p.allDone, false);
   });
 
+  test('a PTNK paper at 100% pays its own task and "bất kỳ đề PTNK"; a Toán 7 đề thi pays neither', async () => {
+    // PTNK attempts arrive as type 'exam' carrying detail.examId. The Toán 7
+    // đề thi ALSO carry detail.examId, under type 'math' — progress() filters
+    // by type first, and this is the test that says so.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'ptnk:ptnk-2022-chuyen', 1);
+    addTask(world, kid.uid, 'ptnk:any', 1);
+    addTask(world, kid.uid, 'ptnk:ptnk-2024-kc', 1);
+    addTask(world, kid.uid, 'math-exam:any-hk1', 1);
+    addActivity(world, kid.uid, { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 80, total: 80,
+      detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' }, at: '2026-09-02 09:04:00' });
+    addActivity(world, kid.uid, { type: 'math', title: 'Toán 7 · Đề thi: HK1 Exam 2', score: 10, total: 10,
+      detail: { examId: 'hk1-exam2', chapter: 0 }, at: '2026-09-02 09:05:00' });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.equal(byKind['ptnk:ptnk-2022-chuyen'], 1, 'the paper did not pay off its own task');
+    assert.equal(byKind['ptnk:any'], 1, 'and must satisfy "bất kỳ đề PTNK"');
+    assert.equal(byKind['ptnk:ptnk-2024-kc'], 0, 'a different paper is a different task');
+    assert.equal(byKind['math-exam:any-hk1'], 1, 'the Toán 7 exam pays only its own');
+  });
+
+  test('a PTNK paper below 100% pays nothing — an entrance paper is all or nothing', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({});
+    addTask(world, kid.uid, 'ptnk:ptnk-2022-chuyen', 1);
+    addActivity(world, kid.uid, { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 79, total: 80,
+      detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' } });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    assert.equal(p.tasks[0].count, 0);
+  });
+
+  test('the server accepts an exam activity at all', async () => {
+    // A type the server does not know is dropped in SILENCE (activity.js).
+    // Before 'exam' joined TYPES, every PTNK paper would have uploaded fine
+    // and never existed.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    const h = loadModule('functions/api/activity.js');
+    const r = await world.call(h.onRequestPost, { token: kid.token, body: { items: [
+      { type: 'exam', title: 'PTNK 2022 · Tiếng Anh Chuyên', score: 80, total: 80,
+        at: Date.now(), detail: { examId: 'ptnk-2022-chuyen', set: 'ptnk' } },
+    ] } });
+    assert.equal(r.status, 200, JSON.stringify(r.data));
+    const row = world.db.prepare("SELECT type, json_extract(detail_json,'$.examId') AS ex FROM activities WHERE user_id = ?").get(kid.uid);
+    assert.truthy(row, 'the row was dropped');
+    assert.equal(row.type, 'exam');
+    assert.equal(row.ex, 'ptnk-2022-chuyen');
+  });
+
   test('GMT+7 day boundary: 23:59 counts, 00:01 next day does not, yesterday does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});

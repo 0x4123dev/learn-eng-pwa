@@ -161,7 +161,10 @@ function buildStudyCheckpoint() {
     if (typeof _examState !== 'undefined' && _examState && !_examState.finished) {
         const state = checkpointClone(_examState, ['timerId']);
         state.remainingMs = Math.max(0, _examState.deadlineTs - Date.now());
-        return Object.assign(base, { kind:'exam', screen:'examScreen', state });
+        // The set's own screen, so a PTNK paper reopens on the PTNK tab.
+        const examScreenId = (typeof EXAM_SETS !== 'undefined' && EXAM_SETS[_examState.set])
+            ? EXAM_SETS[_examState.set].screen : 'examScreen';
+        return Object.assign(base, { kind:'exam', screen: examScreenId, state });
     }
     const speedOverlay = document.getElementById('speedGameOverlay');
     if (speedOverlay && speedOverlay.classList.contains('active') && speedState.currentVerbs.length) {
@@ -217,7 +220,7 @@ function restoreStudyCheckpoint() {
     // startup (js/lazy-data.js). Reopening the question before it lands would
     // show an empty one, so wait — and come back here when it arrives.
     const needsBank = {
-        grammar: 'grammarScreen', exam: 'examScreen',
+        grammar: 'grammarScreen', exam: checkpoint.screen || 'examScreen',
         phrases: 'phrasesScreen', collocation: 'phrasesScreen',
         wordform: 'wordformScreen', rewrite: 'rewriteScreen',
         math: 'mathHubScreen', mathwars: 'mathHubScreen',
@@ -259,6 +262,7 @@ function restoreStudyCheckpoint() {
             _warsQuiz.timer = setInterval(warsClockTick, 250); renderWars();
         }
         else if (checkpoint.kind === 'exam') {
+            if (typeof examSelectSet === 'function') examSelectSet(s.set);
             _examState = s; _examState.deadlineTs = Date.now() + Math.max(1000, s.remainingMs || 0);
             _examState.timerId = setInterval(_examTick, 1000); renderExamQuestion();
         }
@@ -1351,6 +1355,7 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     petBattleScreen: 'arena',
     nightRaidScreen: 'arena',
     mathHubScreen: 'math',
+    ptnkScreen: 'learn',
     examScreen: 'exam'
 });
 
@@ -1445,8 +1450,10 @@ function switchScreen(screenId) {
         if (typeof abandonGrammarQuiz === 'function') abandonGrammarQuiz();
     }
 
-    // Guard: warn before leaving an in-progress timed exam (Exam tab).
-    if (screenId !== 'examScreen' &&
+    // Guard: warn before leaving an in-progress timed exam (Exam tab, or the
+    // PTNK tab — both run on the same engine, each on its own screen).
+    const _examOwnScreen = (typeof _examSetCfg === 'function') ? _examSetCfg().screen : 'examScreen';
+    if (screenId !== _examOwnScreen &&
         typeof isExamActive === 'function' && isExamActive()) {
         if (!confirm('You are in the middle of a timed exam.\nIf you leave now, your progress will be lost and it will NOT be saved.\n\nLeave anyway?')) {
             return false; // stay on the exam
@@ -1586,6 +1593,7 @@ function switchScreen(screenId) {
         const paint = () => {
             if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
             else if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
+            else if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
             else if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
             else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
             else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
@@ -1617,6 +1625,7 @@ function switchScreen(screenId) {
     if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
     if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
     if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
+    if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
     if (screenId === 'profileScreen') renderProfile();
 
     // Do this after rendering: Home replaces its pet hero contents, and scroll

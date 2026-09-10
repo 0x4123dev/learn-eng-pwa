@@ -461,6 +461,16 @@ const EngAuth = (function () {
       detail: h.grade === 4 ? { grade: 4, g4set: h.g4set || 'pre', chapter: h.chapter }
         : h.examId ? { examId: h.examId, chapter: h.chapter } : { chapter: h.chapter },
     }));
+    // PTNK papers. Their history lives on appState (not the Exam tab's
+    // localStorage key) precisely so it reaches this list: an admin assigns
+    // "làm đề PTNK 2022 Chuyên" as a daily task, and the task matcher reads
+    // activities, never exam_attempts. detail.examId is what it matches on.
+    (appState.ptnkHistory || []).forEach(h => add({
+      type: 'exam',
+      title: h.title || ('PTNK ' + (h.examId || '')),
+      score: h.score, total: h.total, at: h.ts,
+      detail: { examId: h.examId, set: 'ptnk' },
+    }));
     (appState.warsHistory || []).forEach(h => add({
       // Math Wars rides the 'math' type: it IS maths practice, and a type the
       // server does not know is dropped in silence (see functions/api/activity.js).

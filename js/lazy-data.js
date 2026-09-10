@@ -23,6 +23,8 @@ var LazyData = (() => {
   const SCREEN_FILES = Object.freeze({
     grammarScreen: ['js/grammar-units.js', 'js/grammar-lessons.js'],
     examScreen: ['js/exam-data.js', 'js/exam-lessons.js'],
+    // The real PTNK entrance papers. Same engine as examScreen, its own bank.
+    ptnkScreen: ['js/ptnk-data.js'],
     // Collocation is a sub-tab of Phrases, so it shares that screen's banks.
     phrasesScreen: ['js/phrases-data.js', 'js/phrases-meanings.js',
                     'js/collocation-data.js', 'js/collocation-followups.js'],
