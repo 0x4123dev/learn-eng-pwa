@@ -1669,6 +1669,18 @@ function switchScreen(screenId) {
         if (typeof abandonCollocPractice === 'function') abandonCollocPractice();
     }
 
+    // Guard: the owed-question drill of either Phrases sub-tab (js/retrydrill.js
+    // keys 'phr' and 'col'). It draws on the same screen and was the one thing
+    // there the bottom bar left without a word — and left RUNNING, so the app
+    // counted the child as busy (_busyWithTimedActivity) long after.
+    if (screenId !== 'phrasesScreen' &&
+        typeof retryDrillKey === 'function' && (retryDrillKey() === 'phr' || retryDrillKey() === 'col')) {
+        if (!confirm('You are in the middle of a retry drill.\nIf you leave now, you can finish it next time.\n\nLeave anyway?')) {
+            return false;
+        }
+        if (typeof abandonRetryDrill === 'function') abandonRetryDrill();
+    }
+
     // Guard: the Grade 4 units practice has its own Learn destination.
     if (screenId !== 'gradeFourScreen' &&
         typeof isUnitPracticeActive === 'function' && isUnitPracticeActive()) {

@@ -158,19 +158,23 @@ function abandonRetryDrill() { _retryDrill = null; }
 
 // The ✕ on the drill card. It used to bin the drill on a single tap while
 // the bottom bar asked first (js/app.js switchScreen) — the same exit, two
-// answers. Nothing owed is lost by leaving (each fix is persisted as it
-// lands), but the child's place in the queue is, so ask the way every other
-// exit does and let Cancel keep the item on screen exactly as it was.
+// answers. Same rule as every quiz's ✕ (quitCollocPractice, quitPhrasesQuiz,
+// mathQuizQuit): ask before binning a round the child has put work into, and
+// let an untouched drill close free — the gate pushed them in, so an
+// immediate ✕ is a decision, not a slip. Cancel changes nothing: the item
+// stays on screen exactly as it was.
 function quitRetryDrill(key) {
   const st = _retryDrill;
-  if (st && st.key === key && typeof confirm === 'function') {
-    const cfg = retryCfg(key);
-    const noun = (cfg && cfg.noun) || 'câu';
-    if (!confirm('Con đang luyện lại ' + noun + ' sai — còn ' + st.queue.length + ' ' + noun + '.\n'
+  if (!st) return false;
+  if (key && st.key !== key) return false;
+  const cfg = retryCfg(st.key);
+  const noun = (cfg && cfg.noun) || 'câu';
+  if ((st.fixed + st.missed) > 0 && typeof confirm === 'function'
+    && !confirm('Con đang luyện lại ' + noun + ' sai — còn ' + st.queue.length + ' ' + noun + '.\n'
       + 'Ra bây giờ thì lần sau vẫn phải luyện tiếp.\n\nVẫn ra chứ?')) return false;
-  }
+  const k = st.key;
   abandonRetryDrill();
-  retryGoHome(key);
+  retryGoHome(k);
   return true;
 }
 

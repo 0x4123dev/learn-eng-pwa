@@ -311,7 +311,9 @@ suite('Grade 4 owed-words drill: leaving', () => {
     loginTestUser(h, { coins: 100, unitsRetry: owed(h) });
     await startUnitsDrill(h);
     h.sandbox.__confirmAnswer = false;                       // must not be consulted at all
-    tap(h, h.el('grade4Detail'), 'retryGoHome');
+    // Untouched drill: the ✕ (quitRetryDrill) closes free — it asks only once
+    // an item has been answered this session, like every quiz's ✕.
+    tap(h, h.el('grade4Detail'), "quitRetryDrill('units')");
     assert.falsy(h.sandbox.isRetryDrillActive(), 'the ✕ must end the drill');
     assert.equal(h.el('unitsBar').style.display, '', 'the cards are back');
     assert.truthy(h.el('unitsBar').innerHTML.includes("startRetryDrill('units')"), 'still owed, still offered');
@@ -346,7 +348,11 @@ suite('Grade 4 owed-words drill: leaving', () => {
     const h = mountApp();
     loginTestUser(h, { coins: 100, unitsRetry: owed(h) });
     const st = await startUnitsDrill(h);
-    for (let i = 0; i < st.queue.length; i++) answerDrill(h, true);
+    // A fixed count: each correct answer splices the queue, so reading
+    // st.queue.length while looping would stop one short.
+    const total = st.queue.length;
+    for (let i = 0; i < total; i++) answerDrill(h, true);
+    assert.falsy(h.sandbox.isRetryDrillActive(), 'the drill finished');
     h.sandbox.__confirmAnswer = false;
     h.sandbox.__confirmLog.length = 0;
     tap(h, h.el('grade4Detail'), "retryGoHome('units')");

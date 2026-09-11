@@ -403,7 +403,14 @@ suite('leave guard · the retry drill (câu sai owed back)', () => {
     assert.truthy(drillOn(h));
     const exits = bottomBarExits(h).concat([['the ✕ on the drill card', () => { S.__run(close); return drillOn(h) ? false : true; }]]);
     for (const [label, leave] of exits) {
-      if (!drillOn(h)) { S.startMathRetry(); }
+      if (!drillOn(h)) {
+        // A fresh drill has no work on the board, and the ✕ (like every
+        // quiz's ✕) only asks once there is — so miss one again first.
+        S.startMathRetry();
+        const pick = onclicks(h).find((c) => /^mathRetryPick\(/.test(c));
+        S.__run(pick.replace(/\d+/, (n) => String((Number(n) + 1) % 4)));
+        S.nextRetryQuestion();
+      }
       assertGuarded(h, 'retry drill / ' + label, leave, {
         isActive: () => drillOn(h), snapshot: () => drillSnap(h),
         afterCancel: () => assert.truthy(/Luyện câu sai/.test(screenHTML(h)), label + ': the drill card stays'),

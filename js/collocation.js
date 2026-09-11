@@ -636,6 +636,13 @@ function colUnderstandCardHTML(fu) {
 function finishCollocPractice() {
   const st = _colQuiz;
   if (!st) return;
+  // Claim the practice BEFORE paying or rendering (as finishPhrasesQuiz does).
+  // This used to be the LAST line, so anything that threw in between left the
+  // round "active": every tab tap still asked the leave-confirm, and a second
+  // tap on "See results" paid it again. Clearing the checkpoint here too means
+  // a finished round is never offered back after a reload.
+  _colQuiz = null;
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   // A check screen is worth TWO points, so the denominator counts points, not
   // screens: 20 collocations plus their two checks each is 60. Reporting 20/40
   // for a practice the child answered 60 things in would read as a bug, and
@@ -717,10 +724,6 @@ function finishCollocPractice() {
     </div>`;
   }
   if (typeof fireRewardCelebration === 'function') fireRewardCelebration(coinsEarned, pct);
-  _colQuiz = null;
-  // No round left → the checkpoint is cleared at once (js/app.js), so a
-  // finished one is never offered back after a reload and paid for twice.
-  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -750,6 +753,14 @@ if (typeof defineRetryDrill === 'function') defineRetryDrill({
   // item keeps its first-letter hint, and a pair item marks BOTH gaps.
   promptHTML: (q) => `<div class="grammar-question-text">${collocQuestionHTML(q, colEsc, '<b class="wf-retry-gap">___</b>')}</div>`,
   explainHTML: (q) => `<div class="grammar-review-explain">📘 ${colEsc(q.vi || '')}<br>💡 ${q.explanation || ''}</div>`,
-  home: () => renderCollocHome(),
+  // renderCollocHome() only RETURNS the sub-tab's HTML — phrases.js injects
+  // it. This used to call it bare, so the drill's ✕ and its "Về trang chính"
+  // button computed a string and threw it away: the screen never changed,
+  // and a child who had just finished a practice (mistakes → owed drill)
+  // could not tap out of it. Go through the Phrases screen, which draws.
+  home: () => {
+    if (typeof switchPhrSubTab === 'function') switchPhrSubTab('colloc');
+    else if (typeof renderPhrasesHome === 'function') renderPhrasesHome();
+  },
 });
 function colRetryCount() { return (typeof retryCount === 'function' ? retryCount('col') : 0); }
