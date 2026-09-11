@@ -673,6 +673,8 @@ node scripts/build-math-fight-bank.js         # js/math-fight-bank.js
 node scripts/build-hot-words.js               # js/hot-words.js
 node scripts/build-ptnk-data.js               # js/ptnk-data.js from data/ptnk/*.json (real PTNK papers)
 node scripts/validate-ptnk.js data/ptnk/*.json  # the contract in data/ptnk/SCHEMA.md, executable
+node scripts/build-practice-data.js           # js/reading-data.js, js/cloze-data.js, js/errors-data.js
+node scripts/validate-practice.js reading data/reading/*.json   # (also: cloze, errors)
 ```
 
 ---

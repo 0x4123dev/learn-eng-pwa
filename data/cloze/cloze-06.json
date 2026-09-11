@@ -1,0 +1,494 @@
+{
+  "passages": [
+    {
+      "id": "cl-ch-06-1",
+      "level": "ch",
+      "mode": "open",
+      "title": "Leaves That Moved Empires",
+      "topic": "the history of tea",
+      "passage": "Few drinks have travelled as far as tea, and fewer still have altered the fortunes of so many nations along the way. According to one account, the leaves were first brewed by accident (1)____ than by design, when a few of them drifted into a pot of water being boiled beneath a tree. Whether or not the story is true, tea (2)____ certainly been cultivated in the hills of south-west China for well over two thousand years. For most of that time it remained a local pleasure; not (3)____ the ninth century did it become a commodity worth carrying across mountains on the backs of mules. Compressed into bricks, it was traded for horses along a route so arduous that some porters carried loads heavier (4)____ themselves.<br><br>When European merchants eventually (5)____ across the drink in the early seventeenth century, they had no idea what to make of it. Within a hundred years, however, the British were importing it (6)____ such quantities that the government came to depend on the tax it yielded. This dependence had consequences (7)____ which nobody had planned. Smuggling flourished, colonies protested, and one famous cargo ended up in a harbour rather than in a teapot. Had the tax been lighter, the course of at least one revolution (8)____ have run differently.<br><br>Today tea is grown on every inhabited continent and drunk more widely than any beverage (9)____ water. Global commodity (10)____ it now is, it has kept a curious intimacy: whatever the country, offering someone a cup still signals that they are welcome to stay.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "rather"
+          ],
+          "answer": "rather",
+          "explanation": "The fixed contrast is <b>by accident rather than by design</b>. <i>More than by design</i> would compare degrees, not replace one cause with the other, and <i>other than</i> means <i>apart from</i>, which is not the meaning here."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "has"
+          ],
+          "answer": "has",
+          "explanation": "<b>For well over two thousand years</b> stretches from the past up to now, so the present perfect <i>has been cultivated</i> is required. <i>Was</i> would close the period in the past, and <i>had</i> needs a later past event to be earlier than."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "until",
+            "till"
+          ],
+          "answer": "until",
+          "explanation": "<b>Not until</b> + time, fronted for emphasis, triggers the inversion <i>did it become</i>. <i>Before</i> cannot follow <i>not</i> in this fronted pattern, and <i>in</i> would make <i>not in the ninth century</i> a plain denial."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "than"
+          ],
+          "answer": "than",
+          "explanation": "The comparative <i>heavier</i> must be completed with <b>than</b>. <i>As</i> pairs only with the equal form <i>as heavy as</i>, and <i>to</i> follows <i>superior</i> or <i>inferior</i>, never an <i>-er</i> comparative."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "came",
+            "stumbled",
+            "ran",
+            "happened"
+          ],
+          "answer": "came",
+          "explanation": "To meet something by chance is to <b>come across</b> it (also <i>stumble</i>, <i>run</i> or <i>happen across</i>). <i>Found</i> and <i>discovered</i> take a direct object and cannot be followed by <i>across</i>."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "in"
+          ],
+          "answer": "in",
+          "explanation": "Amounts are expressed with <b>in such quantities</b>, just as in <i>in large numbers</i>. <i>With</i> or <i>at</i> do not collocate with <i>quantities</i> in this sense."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "for"
+          ],
+          "answer": "for",
+          "explanation": "You <b>plan for</b> a consequence, so the relative clause keeps that preposition: <i>consequences for which nobody had planned</i>. <i>Of which</i> would need a verb like <i>thought</i>, and <i>which</i> alone leaves <i>planned</i> with a false object."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "might",
+            "would",
+            "could"
+          ],
+          "answer": "might",
+          "explanation": "<i>Had the tax been lighter</i> is an inverted third conditional, so the result needs a past modal: <b>might</b> (or <i>would</i>/<i>could</i>) <i>have run</i>. <i>Will</i> or <i>can</i> would describe a real future, not a lost past possibility."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "except",
+            "but",
+            "save",
+            "bar",
+            "besides"
+          ],
+          "answer": "except",
+          "explanation": "After <i>any beverage</i> the exclusion is marked by <b>except</b> (also <i>but</i>, <i>save</i>, <i>bar</i>, <i>besides</i>). <i>Than</i> has already been used with <i>more widely</i>, and <i>without</i> would mean the tea contained no water."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "though",
+            "as"
+          ],
+          "answer": "though",
+          "explanation": "When a noun or adjective is fronted for concession, only <b>though</b> or <i>as</i> can follow it: <i>Global commodity though it now is</i>. <i>Although</i> and <i>despite</i> cannot take this inverted position."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-06-2",
+      "level": "ch",
+      "mode": "open",
+      "title": "A Compass the Size of a Seed",
+      "topic": "how bees navigate",
+      "passage": "A honeybee on a foraging trip may travel several kilometres, visit hundreds of flowers and still find its way home with uncanny accuracy. How it manages this has puzzled naturalists (1)____ centuries. Only in recent decades have the pieces of the answer begun to fall (2)____ place.<br><br>The first clue lies in the sun. Bees perceive polarised light, a pattern invisible to us, (3)____ allows them to work out the sun's position even when it is hidden behind cloud. The second is an internal clock: because the sun moves, a bee that set out at nine must correct its bearings by noon, and it does so effortlessly. (4)____ far a bee may fly from the hive, its brain keeps a running tally of every turn and every straight stretch.<br><br>This tally is what makes the famous waggle dance work. A successful forager dances on the comb, and the angle of her run tells her sisters (5)____ direction to fly relative to the sun. The length of the run indicates the distance. Were the dance merely a display of excitement, other bees (6)____ hardly be able to locate a food source they had never seen.<br><br>Landmarks matter too. Near home, bees rely (7)____ familiar features such as trees and hedges, which is why a hive moved even a few metres can leave its residents circling in confusion. What is remarkable is the way these abilities are combined: an insect with a brain the size of a seed integrates light, time and memory (8)____ one coherent map. Scientists are now asking (9)____ damage to this navigation, blamed partly on pesticides, accounts for the decline in colonies across Europe and North America. Should the answer turn (10)____ to be yes, the consequences for crops that depend on pollination could be severe.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "for"
+          ],
+          "answer": "for",
+          "explanation": "<i>Centuries</i> is a length of time, so the present perfect takes <b>for</b>. <i>Since</i> needs a starting point such as <i>since 1700</i>, and <i>during</i> does not combine with a bare plural of duration here."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "into"
+          ],
+          "answer": "into",
+          "explanation": "When separate facts start to make sense together, they <b>fall into place</b>. <i>In place</i> describes something already fixed, so it cannot follow the movement verb <i>fall</i> in this idiom."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "which"
+          ],
+          "answer": "which",
+          "explanation": "The clause adds extra information after a comma, so it is non-defining and takes <b>which</b>. <i>That</i> is not used in non-defining clauses, and <i>it</i> would create a run-on sentence."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "however"
+          ],
+          "answer": "however",
+          "explanation": "<b>However far a bee may fly</b> means <i>no matter how far</i>: <i>however</i> + adverb introduces a concessive clause. <i>Although</i> cannot be followed directly by <i>far</i>, and <i>whatever</i> needs a noun."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "which",
+            "what"
+          ],
+          "answer": "which",
+          "explanation": "<i>Tells her sisters</i> is followed by an embedded question, so <b>which</b> (or <i>what</i>) <i>direction to fly</i>. <i>The</i> would need a full relative clause, and <i>where</i> cannot precede the noun <i>direction</i>."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "would",
+            "could"
+          ],
+          "answer": "would",
+          "explanation": "<i>Were the dance merely a display</i> is an inverted second conditional, so the main clause needs <b>would</b> (or <i>could</i>) <i>hardly be able</i>. <i>Will</i> belongs to a real condition, which this hypothesis is not."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "on",
+            "upon"
+          ],
+          "answer": "on",
+          "explanation": "The verb is <b>rely on</b> (or <i>upon</i>) something. <i>Rely in</i> and <i>rely with</i> do not exist, and <i>rely to</i> confuses the verb with <i>refer to</i>."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "into"
+          ],
+          "answer": "into",
+          "explanation": "Separate things are <b>integrated into</b> a single whole: the preposition expresses the result of combining. <i>In</i> would locate the map rather than describe its formation, and <i>as</i> would wrongly equate the inputs with the map."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "whether",
+            "if"
+          ],
+          "answer": "whether",
+          "explanation": "<i>Asking</i> introduces an indirect yes/no question, so <b>whether</b> (or <i>if</i>) is needed. <i>That</i> would turn the open question into a statement, and <i>how</i> would ask for a method, not a yes/no answer."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "out"
+          ],
+          "answer": "out",
+          "explanation": "<b>Turn out to be</b> means to prove in the end to be. <i>Turn up</i> means to appear unexpectedly, and <i>turn into</i> means to change into something, neither of which takes <i>to be</i>."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-06-3",
+      "level": "ch",
+      "mode": "open",
+      "title": "Streets Given Back",
+      "topic": "a city without cars",
+      "passage": "Imagine a city where the loudest sound at rush hour is the ringing of bicycle bells. It sounds like a utopian fantasy, (1)____ a handful of places have come surprisingly close to it. One Spanish town closed its historic centre to private vehicles in the late 1990s, at a time (2)____ such a decision was regarded as political suicide. Shopkeepers predicted ruin. Instead, footfall rose, air pollution fell by two thirds and, contrary (3)____ every expectation, the town became a model that delegations from abroad now come to study.<br><br>The reasoning behind such schemes is simple. Cars take up an astonishing amount of space for the number of people they move, so much (4)____ that in some cities up to eighty percent of urban land is given over to roads and parking. Reclaim even a fraction, and daily life is transformed. Streets that once served as corridors turn (5)____ places where people linger, and struggling shops suddenly find customers in no hurry to be elsewhere.<br><br>The objections, (6)____, are not trivial. Deliveries must still be made, the elderly cannot always cycle, and residents of the suburbs, for (7)____ a car is often the only realistic option, may feel that a privilege is being withdrawn for the benefit of people wealthy enough to live centrally. Any council that ignores these concerns does so (8)____ its peril. What the successful examples have in common is that they moved gradually, one street at a time, and that public transport (9)____ been improved before the first barrier went up.<br><br>No sooner had the first fully car-free district opened in a large European city (10)____ property prices there began to climb. Whether that is a sign of success or a warning about who really benefits is a question planners are still debating.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "yet",
+            "but"
+          ],
+          "answer": "yet",
+          "explanation": "The second clause contradicts the first, so a contrastive conjunction is needed: <b>yet</b> or <i>but</i>. <i>So</i> would present the near-success as a result of its being a fantasy, and <i>and</i> loses the contrast entirely."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "when"
+          ],
+          "answer": "when",
+          "explanation": "After <i>a time</i> the relative adverb is <b>when</b>. <i>Which</i> would need the preposition, as in <i>at which</i>, and <i>where</i> refers to places, not periods."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "to"
+          ],
+          "answer": "to",
+          "explanation": "The fixed phrase is <b>contrary to</b> expectation. <i>Contrary with</i> and <i>contrary of</i> do not exist; the noun form would be <i>on the contrary</i>, which does not fit here."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "so"
+          ],
+          "answer": "so",
+          "explanation": "<b>So much so that</b> intensifies a previous statement before giving its consequence. <i>So much that</i> alone would need a verb to modify, and <i>so much as that</i> is not a linking expression."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "into"
+          ],
+          "answer": "into",
+          "explanation": "A change of state is <b>turn into</b>: corridors become places to linger. <i>Turn to</i> means to seek help from someone, and <i>turn in</i> means to hand over or go to bed."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "however",
+            "though",
+            "nevertheless",
+            "nonetheless",
+            "admittedly"
+          ],
+          "answer": "however",
+          "explanation": "A contrast with the previous paragraph, set between commas inside the sentence, calls for <b>however</b> (or <i>though</i>, <i>nevertheless</i>, <i>nonetheless</i>; the concessive <i>admittedly</i> also fits). <i>But</i> and <i>although</i> are conjunctions and cannot sit in this parenthetical slot."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "whom"
+          ],
+          "answer": "whom",
+          "explanation": "Directly after a preposition the relative pronoun must be the object form <b>whom</b>: <i>for whom a car is the only option</i>. <i>Who</i> is not used after <i>for</i>, and <i>which</i> cannot refer to people."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "at"
+          ],
+          "answer": "at",
+          "explanation": "The idiom is <b>at one's peril</b>, meaning with a risk of harm to oneself. <i>In peril</i> describes a state of danger and cannot take the possessive <i>its</i> in this warning sense."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "had"
+          ],
+          "answer": "had",
+          "explanation": "The improvement was completed before a past event, <i>went up</i>, so the past perfect <b>had been improved</b> is required. <i>Has been</i> would clash with the past tense of the following clause, and <i>was been</i> is not a form."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "than"
+          ],
+          "answer": "than",
+          "explanation": "The inverted pattern <i>No sooner had X happened</i> is completed with <b>than</b>, because <i>sooner</i> is a comparative. <i>When</i> belongs with <i>hardly</i> or <i>scarcely</i>, and <i>then</i> is a common misspelling that breaks the structure."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-06-4",
+      "level": "ch",
+      "mode": "mcq",
+      "title": "The Office Comes Home",
+      "topic": "the rise of remote work",
+      "passage": "Until quite recently, the idea that a large share of office work could be done from a kitchen table was dismissed as wishful thinking. Managers took it (1)____ granted that productivity would collapse the moment staff were out of sight. Few companies, therefore, were willing to put the theory (2)____ the test. Then circumstances forced their hand. Within weeks, millions of employees who had never worked a day from home were doing so full-time, and the results, (3)____ patchy, were far better than the pessimists had predicted.<br><br>Several years (4)____, the picture is more complicated. Some firms have called their staff back, arguing that innovation depends on the chance conversations that only happen when people share a corridor. Others have (5)____ office space altogether and now recruit from anywhere with a reliable connection. (6)____, the majority lie somewhere in between, with a hybrid arrangement that satisfies nobody completely but that few are prepared to abandon.<br><br>What is (7)____ dispute is that the change has altered the balance of power. Workers who once accepted a two-hour commute as an unavoidable fact of life now regard it as a cost to be weighed against the salary on offer, and employers who insist on five days in the office find their pool of candidates (8)____ accordingly. The effects reach well beyond the workplace: city-centre cafés have lost their lunchtime trade, while small towns within commuting distance have gained residents who would never (9)____ considered living there.<br><br>(10)____ remains to be seen is whether the arrangement will survive the next downturn, when the bargaining power that made it possible may shift back the other way.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "for",
+            "as",
+            "on",
+            "by"
+          ],
+          "correct": 0,
+          "explanation": "The idiom is <b>take it for granted that</b>, meaning to assume without question. <i>Take as</i> needs a noun such as <i>a compliment</i>, and <i>on</i> and <i>by</i> never follow <i>take it</i> before <i>granted</i>."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "to",
+            "on",
+            "under",
+            "in"
+          ],
+          "correct": 0,
+          "explanation": "You <b>put something to the test</b> when you try it out for real. <i>Under test</i> would need <i>is</i> rather than <i>put</i>, and <i>on</i> and <i>in</i> do not form this expression."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "albeit",
+            "despite",
+            "even",
+            "whereas"
+          ],
+          "correct": 0,
+          "explanation": "<b>Albeit</b> can be followed directly by an adjective to concede a weakness: <i>the results, albeit patchy, were better</i>. <i>Despite</i> needs a noun or <i>being</i>, <i>even</i> would need <i>if</i>, and <i>whereas</i> requires a full clause."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "later",
+            "ago",
+            "before",
+            "since"
+          ],
+          "correct": 0,
+          "explanation": "The sentence describes the present situation, so <b>several years later</b> moves the narrative forward to now. <i>Ago</i> and <i>before</i> point backwards, and <i>since</i> cannot stand alone after a period of time in this position."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the words that fit.",
+          "options": [
+            "dispensed with",
+            "dispensed of",
+            "dispensed from",
+            "dispensed for"
+          ],
+          "correct": 0,
+          "explanation": "To manage without something is to <b>dispense with</b> it. <i>Dispense</i> takes no other preposition in this sense; <i>dispose of</i> is a different verb, and <i>from</i> and <i>for</i> form no phrasal verb with <i>dispense</i>."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "Meanwhile",
+            "Whereas",
+            "Despite",
+            "Although"
+          ],
+          "correct": 0,
+          "explanation": "<b>Meanwhile</b> is an adverb that opens a complete sentence and sets the majority alongside the two extremes just described. <i>Whereas</i> and <i>although</i> would leave the sentence as a fragment with no main clause, and <i>despite</i> cannot be followed by a subject and verb."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "beyond",
+            "over",
+            "against",
+            "across"
+          ],
+          "correct": 0,
+          "explanation": "Something nobody can argue with is <b>beyond dispute</b>. <i>Over</i> and <i>against</i> describe the position of the parties in an argument, not the certainty of a fact, and <i>across dispute</i> is not English."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "shrinking",
+            "shrinks",
+            "shrank",
+            "to shrink"
+          ],
+          "correct": 0,
+          "explanation": "After <i>find</i> + object, a present participle describes what the object is doing: <b>find their pool shrinking</b>. A finite verb such as <i>shrinks</i> or <i>shrank</i> would need its own subject, and <i>find X to shrink</i> is not idiomatic."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "have",
+            "had",
+            "having",
+            "has"
+          ],
+          "correct": 0,
+          "explanation": "A past unreal idea uses modal + <b>have</b> + past participle: <i>would never have considered</i>. <i>Had</i> and <i>has</i> cannot follow a modal, and <i>having</i> would need <i>be</i> before it."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "What",
+            "Which",
+            "That",
+            "It"
+          ],
+          "correct": 0,
+          "explanation": "A cleft sentence begins with <b>What</b> as the subject of its own clause: <i>What remains to be seen is whether</i>. <i>It remains to be seen</i> would need no <i>is</i>, <i>that</i> cannot open a subject clause without a verb after it, and <i>which</i> requires a preceding noun."
+        }
+      ]
+    }
+  ]
+}

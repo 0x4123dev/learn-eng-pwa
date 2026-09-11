@@ -1,0 +1,277 @@
+{
+  "passages": [
+    {
+      "id": "rd-kc-03-1",
+      "level": "kc",
+      "title": "Slow Travel: Why Some Tourists Are Taking the Long Way",
+      "topic": "travel",
+      "words": 321,
+      "passage": "When Linh's family planned their first trip to Da Lat, her father wanted to fly. A plane would take fifty minutes; the bus would take eight hours. In the end, they chose the bus, and Linh says it was the best decision of the holiday. \"On the plane you see clouds,\" she explains. \"On the bus we saw rice fields, waterfalls and a village where every house was painted blue.\"<br><br>Linh's family are part of a growing movement known as \"slow travel\". Instead of visiting as many places as possible in a week, slow travellers stay longer in one town, walk or cycle rather than take taxis, and eat where local people eat. The idea is simple: a holiday should be about experience, not about ticking off a list of famous sights.<br><br>Supporters of slow travel point to several advantages. It is often cheaper, because buses and trains cost less than flights and a week in a rented room costs less than seven nights in seven hotels. It is also better for the environment, since a single flight produces far more carbon dioxide per passenger than a train journey of the same distance. Perhaps most importantly, travellers say they return home less tired. \"A fast holiday feels like homework,\" one blogger wrote. \"A slow one feels like a rest.\"<br><br>Of course, slow travel is not for everyone. People with only three days off cannot spend two of them on a train. Families with very young children may find long journeys difficult. And some travellers simply enjoy the excitement of a new city every morning.<br><br>Still, the trend is spreading. Several Vietnamese travel companies now sell \"one town, one week\" packages, and the number of overnight train tickets sold between Ha Noi and Hue rose by nearly a third last year. Linh has already decided where her family will go next summer. \"Somewhere far,\" she says, \"and we are definitely not flying.\"",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the passage mainly about?",
+          "options": [
+            "The best ways to travel from Ho Chi Minh City to Da Lat",
+            "A style of travelling that values experience over speed",
+            "Why flying is becoming less popular in Vietnam",
+            "The problems families face when they travel with children"
+          ],
+          "correct": 1,
+          "explanation": "The whole text explains \"slow travel\" — staying longer, moving more slowly and focusing on experience. Da Lat, flights and children each appear in only one paragraph."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "According to paragraph 2, slow travellers usually",
+          "options": [
+            "visit as many famous sights as they can",
+            "stay in a different hotel every night",
+            "spend more time in a single place",
+            "avoid eating in restaurants"
+          ],
+          "correct": 2,
+          "explanation": "Paragraph 2 says slow travellers \"stay longer in one town\". They eat where local people eat — that is not avoiding restaurants — and they do not chase as many sights as possible."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What can be inferred about the blogger quoted in paragraph 3?",
+          "options": [
+            "He or she has tried both fast and slow holidays.",
+            "He or she thinks holidays should include some homework.",
+            "He or she prefers to travel by plane.",
+            "He or she works for a Vietnamese travel company."
+          ],
+          "correct": 0,
+          "explanation": "The blogger compares how a fast holiday and a slow one <b>feel</b>, which suggests personal experience of both. Nothing links the blogger to a travel company or to planes."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The phrase \"ticking off\" in paragraph 2 is closest in meaning to",
+          "options": [
+            "paying for",
+            "photographing",
+            "completing one by one",
+            "arguing about"
+          ],
+          "correct": 2,
+          "explanation": "To \"tick off a list\" is to mark each item as done. The sentence contrasts experience with finishing a list of sights one after another."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "The word \"It\" at the start of the second sentence of paragraph 3 refers to",
+          "options": [
+            "a flight",
+            "slow travel",
+            "the environment",
+            "a rented room"
+          ],
+          "correct": 1,
+          "explanation": "The paragraph lists the advantages of slow travel; \"It is often cheaper\" and \"It is also better for the environment\" both describe slow travel."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Linh's father was the first person in the family to suggest taking the bus.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 1,
+          "explanation": "Paragraph 1 says her father <b>wanted to fly</b>; the family chose the bus in the end. The statement contradicts the text, so it is False."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Overnight train tickets between Ha Noi and Hue became cheaper last year.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 2,
+          "explanation": "The last paragraph says the <b>number</b> of tickets sold rose by nearly a third. It says nothing about the price, so the statement is Not Given."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-03-2",
+      "level": "kc",
+      "title": "What a Weather Forecast Really Promises",
+      "topic": "weather",
+      "words": 319,
+      "passage": "Every evening, millions of people check tomorrow's weather before they go to bed. If the forecast says \"70% chance of rain\", most of them will pack an umbrella. But surprisingly few could explain what that number actually means, and the confusion leads to a lot of unfair complaints.<br><br>A forecast of \"70% chance of rain\" does not mean that it will rain for 70% of the day, or that 70% of the city will get wet. It means that, on days with conditions like tomorrow's, rain fell at your location seven times out of ten. Three times out of ten, it stayed dry. So if you wake up to blue sky, the forecaster was not wrong. The forecast simply described a possibility, and the less likely result happened.<br><br>Forecasters gather information from thousands of sources: weather stations on the ground, balloons that rise twenty kilometres into the sky, ships, aircraft and satellites. Powerful computers then use this information to calculate how the air will move over the next few days. The calculations are remarkably good for the first three days. After that, tiny differences in the starting information grow larger and larger, and by day ten the forecast is little better than a guess based on the season.<br><br>This is why a forecaster in Ho Chi Minh City can be quite confident about tomorrow afternoon's storm but much less certain about the weekend after next. It is also why the same app may change its prediction several times in a week. The forecast is not being careless; it is being updated with fresh information as the date gets closer.<br><br>Teachers in some schools now use forecasts to introduce probability in maths lessons. Students record the predicted chance of rain each morning and note whether it actually rained. After a month, they compare the two. The results usually show that the forecasts were far more reliable than the class expected.",
+      "questions": [
+        {
+          "kind": "purpose",
+          "type": "mcq",
+          "q": "What is the main purpose of the passage?",
+          "options": [
+            "To warn readers that weather apps are often careless",
+            "To explain how forecasts work and what their numbers mean",
+            "To describe a maths lesson about probability",
+            "To compare forecasting in different cities"
+          ],
+          "correct": 1,
+          "explanation": "The writer explains what \"70% chance of rain\" means and how forecasters produce it. The maths lesson is only a final example, and the text says forecasts are <b>not</b> careless."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "According to paragraph 2, a forecast of \"70% chance of rain\" means that",
+          "options": [
+            "it will rain during 70% of the day",
+            "70% of the city will receive rain",
+            "in similar conditions, it has rained at that place 7 times out of 10",
+            "the forecaster is 70% sure that it will not rain"
+          ],
+          "correct": 2,
+          "explanation": "The text rejects the first two ideas directly and then gives the real meaning: in conditions like these, rain fell \"seven times out of ten\"."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "Which of the following is NOT mentioned as a source of information for forecasters?",
+          "options": [
+            "Balloons",
+            "Satellites",
+            "Ships",
+            "Mountain climbers"
+          ],
+          "correct": 3,
+          "explanation": "Paragraph 3 lists weather stations, balloons, ships, aircraft and satellites. Mountain climbers are not mentioned anywhere."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "Why does the same weather app change its prediction several times in a week?",
+          "options": [
+            "Because the forecasters keep making mistakes",
+            "Because it receives new information as the day approaches",
+            "Because different cities send different data",
+            "Because users complain about the earlier forecast"
+          ],
+          "correct": 1,
+          "explanation": "Paragraph 4 explains that the forecast is \"being updated with fresh information as the date gets closer\", not that anyone made a mistake."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The word \"reliable\" in the last paragraph is closest in meaning to",
+          "options": [
+            "expensive",
+            "trustworthy",
+            "surprising",
+            "difficult"
+          ],
+          "correct": 1,
+          "explanation": "Something reliable can be trusted or depended on. The students found the forecasts could be trusted more than they had thought."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Forecasts for the next three days are usually more accurate than forecasts for ten days ahead.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 0,
+          "explanation": "Paragraph 3 says the calculations are \"remarkably good for the first three days\" but by day ten are \"little better than a guess\". So the statement is True."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Most students in the maths lessons later decided to become forecasters.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 2,
+          "explanation": "The last paragraph only says students compared forecasts with real weather and found them reliable. Nothing is said about their future careers, so it is Not Given."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-03-3",
+      "level": "kc",
+      "title": "The Boy Who Collects Sounds",
+      "topic": "hobbies",
+      "words": 323,
+      "passage": "Most teenagers collect something at some point: stamps, football cards, key rings, perhaps old coins. Fifteen-year-old Minh collects sounds. On his phone he has more than four hundred short recordings: rain on a metal roof, a motorbike starting on a cold morning, his grandmother's kettle, the school bell on the last day of term.<br><br>The hobby began by accident. Two years ago, Minh was waiting for a bus and heard a street seller singing to advertise sticky rice. He recorded it so that he could play it to his cousins in Australia, who had never heard the song. When he listened again at home, he realised that the recording had captured something a photograph never could: the whole feeling of that early morning corner.<br><br>Since then, Minh has recorded almost every day. He does not need expensive equipment; a phone and a cheap wind cover for the microphone are enough. What he does need, he says, is patience. \"You have to stand still for a long time and let the place forget you are there. If you move, the sound changes.\"<br><br>His friends thought the hobby was strange at first. Some still do. But Minh's recordings have found a surprising audience. His history teacher played the sticky-rice song to a class studying old Saigon trades. A cousin used the sound of the family kitchen in a short film for a university project. And last month, a community radio station in District 5 broadcast ten minutes of Minh's morning market recordings, with no talking at all. Listeners phoned in to say it reminded them of their childhood.<br><br>Minh has no plans to become a professional sound engineer. \"That would turn it into work,\" he says. For now, he is happy simply to keep listening. His next project is to record the same street corner at the same time every month for a year, to find out how a place changes when nobody is looking.",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "Which of the following is the best summary of the passage?",
+          "options": [
+            "A teenager's unusual hobby of recording everyday sounds and the interest it has attracted",
+            "How a community radio station in District 5 found a new type of programme",
+            "Why photographs cannot capture the feeling of a place",
+            "The best equipment for teenagers who want to record music"
+          ],
+          "correct": 0,
+          "explanation": "The text follows Minh's hobby from its beginning to the audience it now has. The radio station and the photograph comparison are single details, and the recordings are of everyday sounds, not music."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "Why did Minh make his very first recording?",
+          "options": [
+            "His history teacher asked him to record old Saigon trades.",
+            "He wanted to share the street seller's song with relatives abroad.",
+            "He was making a short film for a university project.",
+            "He wanted to test a new microphone he had bought."
+          ],
+          "correct": 1,
+          "explanation": "Paragraph 2 says he recorded the sticky-rice song \"so that he could play it to his cousins in Australia\". The teacher and the film came much later."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What does Minh mean when he says a place must \"forget you are there\"?",
+          "options": [
+            "People should not be told that they are being recorded.",
+            "A recorder should hide behind something so nobody can see him.",
+            "The recorder should stay still so that normal sounds continue naturally.",
+            "It is best to record places where there are no people."
+          ],
+          "correct": 2,
+          "explanation": "The quotation continues: \"If you move, the sound changes.\" His point is about staying still and letting the place return to normal, not about hiding or secrecy."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The word \"captured\" in paragraph 2 is closest in meaning to",
+          "options": [
+            "caught and kept",
+            "destroyed",
+            "copied from someone else",
+            "made louder"
+          ],
+          "correct": 0,
+          "explanation": "Here \"captured\" means recorded or held onto — the recording caught and kept the feeling of the morning corner."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "The word \"it\" in \"it reminded them of their childhood\" (paragraph 4) refers to",
+          "options": [
+            "the community radio station",
+            "the broadcast of Minh's market recordings",
+            "the university project",
+            "the sticky-rice song"
+          ],
+          "correct": 1,
+          "explanation": "Listeners phoned the station after hearing the ten minutes of market recordings; \"it\" is that broadcast. The sticky-rice song was played to a history class, not on the radio."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Minh uses professional recording equipment that cost a lot of money.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 1,
+          "explanation": "Paragraph 3 says he \"does not need expensive equipment; a phone and a cheap wind cover ... are enough\". The statement is False."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "All of Minh's friends now think his hobby is a good idea.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 1,
+          "explanation": "Paragraph 4 says his friends thought the hobby was strange at first and \"Some still do.\" So not all of them approve — the statement is False."
+        }
+      ]
+    }
+  ]
+}

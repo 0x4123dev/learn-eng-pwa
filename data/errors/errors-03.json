@@ -1,0 +1,454 @@
+{
+  "items": [
+    {
+      "id": "er-kc-03-1",
+      "level": "kc",
+      "focus": "tense",
+      "q": "My grandmother (A) has lived in the same village (B) for forty years before she (C) finally moved to the city (D) with us last spring.",
+      "options": [
+        "has lived",
+        "for forty years",
+        "finally moved",
+        "with us"
+      ],
+      "correct": 0,
+      "correction": "had lived",
+      "explanation": "An action completed <b>before</b> another past action (she moved) takes the past perfect, not the present perfect: <b>had lived</b>."
+    },
+    {
+      "id": "er-kc-03-2",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "The number of students (A) who are interested in joining the science club (B) have grown steadily (C) since the new laboratory (D) was opened last year.",
+      "options": [
+        "who are interested",
+        "have grown",
+        "since the new laboratory",
+        "was opened"
+      ],
+      "correct": 1,
+      "correction": "has grown",
+      "explanation": "<b>The number of</b> + plural noun is a singular subject, so the verb must be singular: <b>has grown</b>."
+    },
+    {
+      "id": "er-kc-03-3",
+      "level": "kc",
+      "focus": "article",
+      "q": "After the storm (A) had knocked down several power lines, the electricity (B) was cut off, so we ate dinner (C) by candlelight and went to (D) the bed early.",
+      "options": [
+        "had knocked down",
+        "was cut off",
+        "by candlelight",
+        "the bed"
+      ],
+      "correct": 3,
+      "correction": "bed",
+      "explanation": "In the fixed expression <b>go to bed</b> (like go to school, go to work) no article is used before the noun."
+    },
+    {
+      "id": "er-kc-03-4",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "(A) Rice farmers in the Mekong Delta (B) have always (C) depended of the yearly floods, (D) which bring rich soil and fresh fish to their fields.",
+      "options": [
+        "Rice farmers",
+        "have always",
+        "depended of",
+        "which bring"
+      ],
+      "correct": 2,
+      "correction": "depended on",
+      "explanation": "The verb <b>depend</b> is always followed by the preposition <b>on</b> (depend on something), never <b>of</b>."
+    },
+    {
+      "id": "er-kc-03-5",
+      "level": "kc",
+      "focus": "word-form",
+      "q": "The scientist gave a (A) fascinating talk about how bees (B) communication with each other by dancing, and (C) even the youngest children (D) listened carefully.",
+      "options": [
+        "fascinating",
+        "communication",
+        "even the youngest children",
+        "listened carefully"
+      ],
+      "correct": 1,
+      "correction": "communicate",
+      "explanation": "After the subject <b>bees</b> a verb is needed, not a noun: bees <b>communicate</b> with each other."
+    },
+    {
+      "id": "er-kc-03-6",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "The teacher asked Mai and (A) I to collect the notebooks (B) which had been left (C) on the desks and put them (D) in the cupboard.",
+      "options": [
+        "I",
+        "which had been left",
+        "on the desks",
+        "in the cupboard"
+      ],
+      "correct": 0,
+      "correction": "me",
+      "explanation": "The pronoun is the object of <b>asked</b>, so the object form is needed: the teacher asked Mai and <b>me</b>."
+    },
+    {
+      "id": "er-kc-03-7",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Although the new stadium is (A) much larger (B) than the old one, many fans say the atmosphere is (C) more worse because the seats are (D) far from the pitch.",
+      "options": [
+        "much larger",
+        "than the old one",
+        "more worse",
+        "far from"
+      ],
+      "correct": 2,
+      "correction": "worse",
+      "explanation": "<b>Worse</b> is already the comparative of <b>bad</b>, so it cannot take <b>more</b> as well."
+    },
+    {
+      "id": "er-kc-03-8",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "If we (A) had left the house ten minutes earlier, we (B) would catch the last bus and (C) wouldn't have had to walk home (D) in the rain.",
+      "options": [
+        "had left",
+        "would catch",
+        "wouldn't have had to",
+        "in the rain"
+      ],
+      "correct": 1,
+      "correction": "would have caught",
+      "explanation": "This is a third conditional about the unreal past (If + past perfect), so the main clause needs <b>would have</b> + past participle."
+    },
+    {
+      "id": "er-kc-03-9",
+      "level": "kc",
+      "focus": "reported",
+      "q": "(A) When I phoned the hotel, the receptionist said that they (B) didn't have any rooms left (C) that night but that she (D) will call me if someone cancelled.",
+      "options": [
+        "When I phoned",
+        "didn't have",
+        "that night",
+        "will call me"
+      ],
+      "correct": 3,
+      "correction": "would call me",
+      "explanation": "In reported speech after a past reporting verb (<b>said</b>), <b>will</b> shifts back to <b>would</b>."
+    },
+    {
+      "id": "er-kc-03-10",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The old lighthouse, (A) that was built by French engineers in 1890, still guides fishing boats (B) safely into the harbour (C) on foggy nights, (D) although it has no keeper.",
+      "options": [
+        "that was built",
+        "safely into the harbour",
+        "on foggy nights",
+        "although"
+      ],
+      "correct": 0,
+      "correction": "which was built",
+      "explanation": "A non-defining relative clause (between commas) cannot begin with <b>that</b>; use <b>which</b> for a thing."
+    },
+    {
+      "id": "er-kc-03-11",
+      "level": "kc",
+      "focus": "word-order",
+      "q": "The tourists asked the guide (A) politely (B) whether the museum (C) was open on Mondays and (D) how much did the tickets cost.",
+      "options": [
+        "politely",
+        "whether",
+        "was open",
+        "how much did the tickets cost"
+      ],
+      "correct": 3,
+      "correction": "how much the tickets cost",
+      "explanation": "In an indirect question the subject comes before the verb and no auxiliary <b>did</b> is used: how much <b>the tickets cost</b>."
+    },
+    {
+      "id": "er-kc-03-12",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Before the chemistry exam, our teacher (A) reminded us to (B) do attention to the safety rules, (C) especially when (D) heating liquids over a flame.",
+      "options": [
+        "reminded us",
+        "do attention",
+        "especially when",
+        "heating liquids"
+      ],
+      "correct": 1,
+      "correction": "pay attention",
+      "explanation": "The correct collocation is <b>pay attention to</b> something; <b>do</b> does not go with <b>attention</b>."
+    },
+    {
+      "id": "er-kc-03-13",
+      "level": "kc",
+      "focus": "quantifier",
+      "q": "There were (A) so many people at the night market that we could (B) hardly move, and there was (C) very few space to sit down and (D) enjoy our food.",
+      "options": [
+        "so many people",
+        "hardly move",
+        "very few space",
+        "enjoy our food"
+      ],
+      "correct": 2,
+      "correction": "very little space",
+      "explanation": "<b>Space</b> here is an uncountable noun, so it takes <b>little</b>, not <b>few</b>, which is used only with plural countable nouns."
+    },
+    {
+      "id": "er-kc-03-14",
+      "level": "kc",
+      "focus": "conjunction",
+      "q": "(A) Despite the weather forecast promised sunshine, it rained (B) heavily all afternoon, (C) so the school sports day (D) had to be moved to the following week.",
+      "options": [
+        "Despite",
+        "heavily",
+        "so",
+        "had to be moved"
+      ],
+      "correct": 0,
+      "correction": "Although",
+      "explanation": "<b>Despite</b> is a preposition and must be followed by a noun or -ing form; a full clause with a subject and verb needs the conjunction <b>Although</b>."
+    },
+    {
+      "id": "er-kc-03-15",
+      "level": "kc",
+      "focus": "other",
+      "q": "When he was young, my grandfather (A) is used to walk five kilometres to school, (B) even in the rainy season, because there (C) were no buses (D) in the area.",
+      "options": [
+        "is used to walk",
+        "even in the rainy season",
+        "were no buses",
+        "in the area"
+      ],
+      "correct": 0,
+      "correction": "used to walk",
+      "explanation": "A past habit that no longer happens is expressed with <b>used to</b> + infinitive; <b>be used to</b> means be accustomed to and takes an -ing form."
+    },
+    {
+      "id": "er-kc-03-16",
+      "level": "kc",
+      "focus": "tense",
+      "q": "Scientists (A) have known for many years that dolphins (B) use sound to find food, but nobody (C) has discovered exactly how they do it (D) until last year.",
+      "options": [
+        "have known",
+        "use sound",
+        "has discovered",
+        "until last year"
+      ],
+      "correct": 2,
+      "correction": "discovered",
+      "explanation": "A finished time expression (<b>until last year</b>) requires the past simple, not the present perfect: nobody <b>discovered</b>."
+    },
+    {
+      "id": "er-kc-03-17",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "The match lasted almost two hours (A) under the burning sun, and (B) by the final whistle (C) every one of the players (D) were completely exhausted.",
+      "options": [
+        "under the burning sun",
+        "by the final whistle",
+        "every one of the players",
+        "were completely exhausted"
+      ],
+      "correct": 3,
+      "correction": "was completely exhausted",
+      "explanation": "The subject is <b>every one</b>, which is singular; the plural noun after <b>of</b> does not change the verb: every one of the players <b>was</b>."
+    },
+    {
+      "id": "er-kc-03-18",
+      "level": "kc",
+      "focus": "article",
+      "q": "My cousin, who is studying to become (A) an engineer, says that (B) the mathematics is (C) the most useful subject she (D) has ever taken at school.",
+      "options": [
+        "an engineer",
+        "the mathematics",
+        "the most useful subject",
+        "has ever taken"
+      ],
+      "correct": 1,
+      "correction": "mathematics",
+      "explanation": "School subjects and uncountable nouns used in a general sense take no article: <b>mathematics is</b>, not <b>the mathematics</b>."
+    },
+    {
+      "id": "er-kc-03-19",
+      "level": "kc",
+      "focus": "preposition",
+      "q": "We (A) arrived to the airport two hours early, (B) checked in our luggage and then (C) spent the rest of the time (D) looking at the planes through the huge windows.",
+      "options": [
+        "arrived to",
+        "checked in",
+        "spent the rest of the time",
+        "looking at"
+      ],
+      "correct": 0,
+      "correction": "arrived at",
+      "explanation": "<b>Arrive</b> takes <b>at</b> for a building or place (arrive at the airport) and <b>in</b> for a city or country, never <b>to</b>."
+    },
+    {
+      "id": "er-kc-03-20",
+      "level": "kc",
+      "focus": "word-form",
+      "q": "The new smartphone app helps farmers (A) to check the weather, (B) compare prices at different markets and (C) sell their crops (D) more quick than before.",
+      "options": [
+        "to check",
+        "compare prices",
+        "sell their crops",
+        "more quick"
+      ],
+      "correct": 3,
+      "correction": "more quickly",
+      "explanation": "A word describing <b>how</b> the crops are sold modifies the verb, so an adverb is needed: <b>more quickly</b>."
+    },
+    {
+      "id": "er-kc-03-21",
+      "level": "kc",
+      "focus": "pronoun",
+      "q": "(A) As soon as the door opened, the dog (B) jumped off the sofa, ran across the room and wagged (C) it's tail so hard that it (D) knocked over a vase.",
+      "options": [
+        "As soon as",
+        "jumped off",
+        "it's tail",
+        "knocked over"
+      ],
+      "correct": 2,
+      "correction": "its tail",
+      "explanation": "The possessive pronoun is <b>its</b> with no apostrophe; <b>it's</b> is short for <b>it is</b>."
+    },
+    {
+      "id": "er-kc-03-22",
+      "level": "kc",
+      "focus": "comparison",
+      "q": "Fansipan is (A) the higher mountain in Vietnam, and although a cable car now takes visitors (B) most of the way up, many hikers (C) still prefer (D) to climb on foot.",
+      "options": [
+        "the higher",
+        "most of the way up",
+        "still prefer",
+        "to climb"
+      ],
+      "correct": 0,
+      "correction": "the highest",
+      "explanation": "Comparing one mountain with all the others in a country needs the superlative: <b>the highest</b> mountain in Vietnam."
+    },
+    {
+      "id": "er-kc-03-23",
+      "level": "kc",
+      "focus": "conditional",
+      "q": "Plants (A) cannot make their own food (B) unless they receive enough light, so a houseplant (C) will slowly die (D) if you will keep it in a dark corner.",
+      "options": [
+        "cannot make",
+        "unless they receive",
+        "will slowly die",
+        "if you will keep"
+      ],
+      "correct": 3,
+      "correction": "if you keep",
+      "explanation": "In a first conditional the <b>if</b>-clause takes the present simple, not <b>will</b>: if you <b>keep</b> it in a dark corner."
+    },
+    {
+      "id": "er-kc-03-24",
+      "level": "kc",
+      "focus": "reported",
+      "q": "(A) During the interview, the famous swimmer (B) said the reporters that she had trained six hours a day (C) since she was ten and (D) had never missed a session.",
+      "options": [
+        "During the interview",
+        "said the reporters",
+        "since she was ten",
+        "had never missed"
+      ],
+      "correct": 1,
+      "correction": "told the reporters",
+      "explanation": "<b>Tell</b> takes a direct object (tell somebody something), while <b>say</b> does not: she <b>told</b> the reporters (or said <b>to</b> the reporters)."
+    },
+    {
+      "id": "er-kc-03-25",
+      "level": "kc",
+      "focus": "relative",
+      "q": "The village (A) where my grandparents live (B) has no internet connection, so my cousin, (C) who's phone never works there, (D) reads books all summer.",
+      "options": [
+        "where my grandparents live",
+        "has no internet connection",
+        "who's phone",
+        "reads books"
+      ],
+      "correct": 2,
+      "correction": "whose phone",
+      "explanation": "Possession in a relative clause is shown with <b>whose</b>; <b>who's</b> is short for <b>who is</b> or <b>who has</b>."
+    },
+    {
+      "id": "er-kc-03-26",
+      "level": "kc",
+      "focus": "word-order",
+      "q": "I (A) have never seen (B) a so beautiful sunset as the one we watched (C) from the beach (D) on our last evening in Phu Quoc.",
+      "options": [
+        "have never seen",
+        "a so beautiful sunset",
+        "from the beach",
+        "on our last evening"
+      ],
+      "correct": 1,
+      "correction": "such a beautiful sunset",
+      "explanation": "Before <b>a/an + adjective + noun</b> the intensifier is <b>such</b> (such a beautiful sunset); <b>so</b> cannot follow the article."
+    },
+    {
+      "id": "er-kc-03-27",
+      "level": "kc",
+      "focus": "collocation",
+      "q": "Our history teacher says that the best way to (A) remember dates is (B) to link them (C) to a story, and her students usually (D) make good marks in exams.",
+      "options": [
+        "remember dates",
+        "to link them",
+        "to a story",
+        "make good marks"
+      ],
+      "correct": 3,
+      "correction": "get good marks",
+      "explanation": "The collocation is <b>get</b> (or <b>achieve</b>) good marks; <b>make</b> does not go with <b>marks</b>."
+    },
+    {
+      "id": "er-kc-03-28",
+      "level": "kc",
+      "focus": "quantifier",
+      "q": "(A) Much of the students in our class (B) prefer to walk to school (C) rather than take the bus, (D) even when it is raining.",
+      "options": [
+        "Much of the students",
+        "prefer to walk",
+        "rather than take",
+        "even when it is raining"
+      ],
+      "correct": 0,
+      "correction": "Many of the students",
+      "explanation": "<b>Students</b> is a plural countable noun, so it takes <b>many</b>; <b>much</b> is used only with uncountable nouns."
+    },
+    {
+      "id": "er-kc-03-29",
+      "level": "kc",
+      "focus": "agreement",
+      "q": "(A) Both the players (B) and the coach (C) was surprised when the referee (D) stopped the game after only ten minutes because of lightning.",
+      "options": [
+        "Both the players",
+        "and the coach",
+        "was surprised",
+        "stopped the game"
+      ],
+      "correct": 2,
+      "correction": "were surprised",
+      "explanation": "<b>Both ... and</b> joins two subjects into a plural subject, so the verb must be plural: both the players and the coach <b>were</b> surprised."
+    },
+    {
+      "id": "er-kc-03-30",
+      "level": "kc",
+      "focus": "other",
+      "q": "My parents (A) don't mind me playing games (B) at the weekend, but they (C) refuse letting me stay up (D) after midnight on school nights.",
+      "options": [
+        "don't mind",
+        "at the weekend",
+        "refuse letting",
+        "after midnight"
+      ],
+      "correct": 2,
+      "correction": "refuse to let",
+      "explanation": "<b>Refuse</b> is followed by a to-infinitive, not an -ing form: refuse <b>to let</b> me stay up."
+    }
+  ]
+}

@@ -1,0 +1,546 @@
+{
+  "passages": [
+    {
+      "id": "cl-kc-01-1",
+      "level": "kc",
+      "mode": "mcq",
+      "title": "A Day at the Fishing Village",
+      "topic": "a school trip",
+      "passage": "Last Friday our class went on a trip to a small fishing village about two hours (1)____ the city. We had been looking forward (2)____ it for weeks, so nobody minded getting up at five in the morning. The bus left the school gate (3)____ time, and most of us fell asleep before we had even reached the motorway. When we arrived, a local guide (4)____ us around the harbour and explained how the boats are repaired after a storm. I had never realised how (5)____ work goes into keeping one small boat safe at sea. After lunch we were allowed to walk along the beach (6)____ we stayed in groups of at least three. My friend Linh found a piece of blue glass, (7)____ she has kept on her desk ever since. The only problem came at four o'clock, when two boys could not be found anywhere. Our teacher was about to call the police (8)____ they walked calmly out of an ice-cream shop with a cone in each hand. She was so relieved that she did not even punish them. (9)____ the way home everybody was quiet, partly because we were tired and partly because we were sad that the day was over. If I were asked to go again next year, I (10)____ say yes without thinking.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "of",
+            "at",
+            "from",
+            "by"
+          ],
+          "correct": 2,
+          "explanation": "Distance or travel time is measured <b>from</b> a place: <i>two hours from the city</i>. <i>Of</i>, <i>at</i> and <i>by</i> do not express distance."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "to",
+            "for",
+            "at",
+            "on"
+          ],
+          "correct": 0,
+          "explanation": "The phrasal verb is <b>look forward to</b> something. The other prepositions never follow <i>look forward</i>."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "in",
+            "at",
+            "by",
+            "on"
+          ],
+          "correct": 3,
+          "explanation": "<b>On time</b> means at the planned moment, neither early nor late. <i>In time</i> means early enough for something, which the sentence does not mention."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "told",
+            "showed",
+            "said",
+            "explained"
+          ],
+          "correct": 1,
+          "explanation": "You <b>show</b> somebody around a place. <i>Told</i>, <i>said</i> and <i>explained</i> introduce words, not a guided walk, and cannot take <i>us around</i>."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the word that fits.",
+          "options": [
+            "much",
+            "many",
+            "lot",
+            "plenty"
+          ],
+          "correct": 0,
+          "explanation": "<i>Work</i> is uncountable, so the quantifier is <b>how much</b>. <i>Many</i> goes with plural nouns; <i>lot</i> and <i>plenty</i> need <i>a lot of</i> / <i>plenty of</i>."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "unless",
+            "although",
+            "provided",
+            "whereas"
+          ],
+          "correct": 2,
+          "explanation": "<b>Provided</b> (that) means <i>on condition that</i>: they could walk if they stayed in groups. <i>Unless</i> would reverse the condition, and <i>although</i> / <i>whereas</i> express contrast."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "that",
+            "which",
+            "what",
+            "who"
+          ],
+          "correct": 1,
+          "explanation": "After a comma, a non-defining relative clause about a thing needs <b>which</b>. <i>That</i> cannot follow the comma, <i>who</i> is for people, and <i>what</i> is not a relative pronoun."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "while",
+            "until",
+            "since",
+            "when"
+          ],
+          "correct": 3,
+          "explanation": "<i>Was about to do something</i> <b>when</b> something else happened is the pattern for an interrupted action. <i>While</i> needs a continuous action; <i>until</i> and <i>since</i> give the wrong time relation."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "In",
+            "At",
+            "On",
+            "By"
+          ],
+          "correct": 2,
+          "explanation": "The fixed phrase is <b>on the way</b> home. <i>In the way</i> means blocking somebody, and <i>at</i> / <i>by the way</i> mean something different."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "will",
+            "would",
+            "can",
+            "must"
+          ],
+          "correct": 1,
+          "explanation": "<i>If I were asked</i> is a second conditional, so the main clause takes <b>would</b>. <i>Will</i> belongs to the first conditional, and <i>can</i> / <i>must</i> do not express an imagined result."
+        }
+      ]
+    },
+    {
+      "id": "cl-kc-01-2",
+      "level": "kc",
+      "mode": "mcq",
+      "title": "Grandmother's Fish Soup",
+      "topic": "a family recipe",
+      "passage": "Every family has (1)____ least one dish that nobody outside the family can make properly. In ours it is my grandmother's fish soup. She learned it from her own mother, (2)____ used to sell it at the market in Nha Trang many years ago. Nobody has ever written the recipe (3)____, so the only way to learn it is to stand next to her in the kitchen and watch. Last summer I finally asked her to teach me. She laughed and said I would have to get up early, (4)____ the fish must be bought before seven, while it is still fresh. At the market she picked (5)____ each fish, looked at its eyes and put most of them back. Then, at home, she began chopping tomatoes and pineapple (6)____ measuring anything at all. When I asked how much salt she used, she simply said 'enough', (7)____ was not very helpful. The soup has to be cooked slowly (8)____ nearly an hour, and she never leaves the pot, not even to answer the phone. My first attempt, a week later, was too sour and (9)____ salty enough, but she tasted it and nodded. 'Next time,' she said, 'you will do it (10)____ better.' I hope she is right, because one day I want to cook it for my own children.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "in",
+            "at",
+            "for",
+            "on"
+          ],
+          "correct": 1,
+          "explanation": "The fixed phrase is <b>at least</b>. No other preposition combines with <i>least</i> in this meaning."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "which",
+            "whom",
+            "whose",
+            "who"
+          ],
+          "correct": 3,
+          "explanation": "The relative pronoun is the subject of <i>used to sell</i> and refers to a person, so it must be <b>who</b>. <i>Whom</i> is an object form, <i>which</i> is for things, and <i>whose</i> shows possession."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "down",
+            "on",
+            "over",
+            "in"
+          ],
+          "correct": 0,
+          "explanation": "To <b>write down</b> something is to record it on paper. <i>Write on</i>, <i>write over</i> and <i>write in</i> do not carry this meaning."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "so",
+            "although",
+            "because",
+            "unless"
+          ],
+          "correct": 2,
+          "explanation": "The second clause gives the <b>reason</b> for getting up early, so <b>because</b> fits. <i>So</i> would introduce a result, and <i>although</i> / <i>unless</i> give contrast or condition."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the word that fits.",
+          "options": [
+            "on",
+            "over",
+            "off",
+            "up"
+          ],
+          "correct": 3,
+          "explanation": "She lifted each fish to examine it: <b>pick up</b>. <i>Pick on</i> means to bully, and <i>pick over</i> / <i>pick off</i> do not fit a fish she then puts back."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "unless",
+            "without",
+            "except",
+            "despite"
+          ],
+          "correct": 1,
+          "explanation": "<b>Without</b> + -ing means she did not measure. <i>Unless</i> needs a full clause, and <i>except</i> / <i>despite</i> give the wrong meaning."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "which",
+            "that",
+            "what",
+            "it"
+          ],
+          "correct": 0,
+          "explanation": "<b>Which</b> after a comma refers back to the whole idea of her saying 'enough'. <i>That</i> cannot follow a comma here, and <i>what</i> / <i>it</i> would need a new sentence."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "since",
+            "during",
+            "by",
+            "for"
+          ],
+          "correct": 3,
+          "explanation": "A length of time takes <b>for</b>: <i>for nearly an hour</i>. <i>Since</i> marks a starting point, <i>during</i> needs a named period, and <i>by</i> gives a deadline."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "no",
+            "none",
+            "not",
+            "nothing"
+          ],
+          "correct": 2,
+          "explanation": "To make an adjective negative you use <b>not</b>: <i>not salty enough</i>. <i>No</i>, <i>none</i> and <i>nothing</i> go with nouns, not adjectives."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "much",
+            "very",
+            "more",
+            "too"
+          ],
+          "correct": 0,
+          "explanation": "A comparative such as <i>better</i> is strengthened with <b>much</b>. <i>Very</i> cannot modify a comparative, and <i>more better</i> / <i>too better</i> are impossible."
+        }
+      ]
+    },
+    {
+      "id": "cl-kc-01-3",
+      "level": "kc",
+      "mode": "mcq",
+      "title": "Three Days Without Bơ",
+      "topic": "a lost pet",
+      "passage": "Our dog Bơ disappeared (1)____ a Sunday afternoon in March. The gate had been left open by the man who delivers our water, and by the time we noticed, Bơ was nowhere to be (2)____. My little brother cried for an hour, and my mother kept saying that a dog (3)____ knows its way home will always come back. I was not so sure. That evening we printed fifty posters with his photo and stuck them (4)____ every lamp post in the neighbourhood. We also posted a message in the local group online, (5)____ was shared more than two hundred times. For three days nothing happened. Then, on Wednesday, a woman rang to say she had seen a brown dog sleeping outside a café near the river. We drove there (6)____ once, but the café owner told us the dog had run off that morning. We were about to (7)____ up when my brother spotted something moving under a parked car. It was Bơ, thinner and very dirty, but definitely ours. He was so happy to see us that he could not stop (8)____ his tail. Since then my father has put a new lock on the gate, and Bơ wears a collar with our phone number on it. (9)____ he escapes again, at least whoever finds him will know where he belongs. And my brother has promised that he will never leave the gate open (10)____.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "in",
+            "at",
+            "by",
+            "on"
+          ],
+          "correct": 3,
+          "explanation": "A particular day or part of a day takes <b>on</b>: <i>on a Sunday afternoon</i>. <i>In</i> is for months and seasons, and <i>at</i> is for clock times."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "looked",
+            "seen",
+            "watched",
+            "noticed"
+          ],
+          "correct": 1,
+          "explanation": "The fixed expression is <b>nowhere to be seen</b>. <i>Looked</i> needs a preposition, and <i>watched</i> / <i>noticed</i> are not used in this phrase."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "who",
+            "what",
+            "that",
+            "whose"
+          ],
+          "correct": 2,
+          "explanation": "A defining relative clause about an animal uses <b>that</b> (or <i>which</i>). <i>Who</i> is for people, <i>whose</i> shows possession, and <i>what</i> is not a relative pronoun."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "on",
+            "in",
+            "at",
+            "by"
+          ],
+          "correct": 0,
+          "explanation": "You stick a poster <b>on</b> a surface such as a lamp post. <i>In</i>, <i>at</i> and <i>by</i> describe position, not attachment."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the word that fits.",
+          "options": [
+            "that",
+            "which",
+            "what",
+            "who"
+          ],
+          "correct": 1,
+          "explanation": "After a comma, a relative clause about a thing (the message) needs <b>which</b>. <i>That</i> is not used after a comma, and <i>who</i> refers to people."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "in",
+            "for",
+            "on",
+            "at"
+          ],
+          "correct": 3,
+          "explanation": "<b>At once</b> means immediately. The other prepositions do not form a phrase with <i>once</i>."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "give",
+            "put",
+            "take",
+            "turn"
+          ],
+          "correct": 0,
+          "explanation": "To <b>give up</b> is to stop trying. <i>Put up</i> means to build or tolerate, <i>take up</i> means to start a hobby, and <i>turn up</i> means to appear."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "to wag",
+            "wag",
+            "wagging",
+            "wagged"
+          ],
+          "correct": 2,
+          "explanation": "<i>Stop</i> + -ing means to end an action, so <b>stop wagging</b>. <i>Stop to wag</i> would mean he paused in order to wag, which makes no sense here."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "Unless",
+            "Although",
+            "Whether",
+            "If"
+          ],
+          "correct": 3,
+          "explanation": "The sentence describes a possible future situation and its result, so <b>if</b> fits. <i>Unless</i> would mean <i>if he does not escape</i>, and <i>although</i> / <i>whether</i> do not introduce a condition here."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "more",
+            "again",
+            "yet",
+            "still"
+          ],
+          "correct": 1,
+          "explanation": "<i>Never … <b>again</b></i> means not one more time. <i>More</i> would need <i>any more</i>, and <i>yet</i> / <i>still</i> do not follow <i>never</i> in this way."
+        }
+      ]
+    },
+    {
+      "id": "cl-kc-01-4",
+      "level": "kc",
+      "mode": "open",
+      "title": "The Week It Never Stopped Raining",
+      "topic": "a rainy holiday",
+      "passage": "Last August my family spent a week at a small guesthouse by the sea, and it rained (1)____ single day. We had planned to swim, go fishing and take a boat to the islands, (2)____ none of that was possible. Instead, we spent most of our time indoors, playing cards and watching the rain run down the windows. At first my sister and I were bored (3)____ death. By the third day, (4)____, something changed. The owner of the guesthouse, an old man (5)____ had lived there all his life, began telling us stories about the storms he had seen as a boy. We listened (6)____ hours. He also taught us how to make a kite from bamboo and old newspaper, and on the one afternoon when the rain stopped for a while, we ran to the beach and tried to fly it. (7)____ it did not fly very high, we did not care. When we got home, my friends asked whether the holiday had been ruined. I told them it was the best one I had (8)____ had. I still cannot explain why. Perhaps it was because, for once, nobody was in a hurry and there was nothing we had (9)____ do. If the weather had been fine, we (10)____ probably have spent the whole week in the water and never spoken to the old man at all.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "every"
+          ],
+          "answer": "every",
+          "explanation": "<b>Every single day</b> is the emphatic way of saying <i>all the days</i>. <i>Each</i> is not used with <i>single</i>, and <i>all</i> would need a plural noun."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "but",
+            "yet",
+            "though",
+            "although"
+          ],
+          "answer": "but",
+          "explanation": "The plan and the reality contrast, so <b>but</b> (or <i>yet</i>, <i>though</i>, <i>although</i>) links them. <i>So</i> would wrongly make the bad weather a result of the plan."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "to"
+          ],
+          "answer": "to",
+          "explanation": "The idiom is <b>bored to death</b>, meaning extremely bored. <i>Bored of</i> or <i>bored with</i> need a noun naming the cause, not <i>death</i>."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "however",
+            "though",
+            "nevertheless",
+            "nonetheless"
+          ],
+          "answer": "however",
+          "explanation": "A contrast word between commas in mid-sentence: <b>however</b> (or <i>though</i>). <i>But</i> cannot sit between two commas in this position."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "who",
+            "that"
+          ],
+          "answer": "who",
+          "explanation": "The relative pronoun is the subject of <i>had lived</i> and refers to a person, so <b>who</b> (or <i>that</i>). <i>Which</i> is for things and <i>whom</i> is an object form."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "for"
+          ],
+          "answer": "for",
+          "explanation": "A length of time takes <b>for</b>: <i>for hours</i>. <i>During</i> needs a named period such as <i>the evening</i>, and <i>since</i> marks a starting point."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "although",
+            "though",
+            "while",
+            "whilst"
+          ],
+          "answer": "although",
+          "explanation": "A concession clause at the start of the sentence takes <b>although</b> (or <i>though</i>). <i>But</i> cannot begin a subordinate clause that is followed by a comma and a main clause."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "ever"
+          ],
+          "answer": "ever",
+          "explanation": "With a superlative and the perfect tense, <b>ever</b> means <i>in my whole life</i>: <i>the best one I had ever had</i>. <i>Never</i> would make the sentence contradict itself."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "to"
+          ],
+          "answer": "to",
+          "explanation": "Obligation is <i>have <b>to</b> do</i>: <i>nothing we had to do</i>. <i>Must</i> cannot follow <i>had</i>, and no other particle joins <i>had</i> and <i>do</i>."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "would",
+            "might",
+            "could"
+          ],
+          "answer": "would",
+          "explanation": "<i>If the weather had been</i> is a third conditional, so the result needs <b>would</b> have (or <i>might</i> / <i>could</i> for a less certain result). <i>Will</i> cannot describe an imagined past."
+        }
+      ]
+    }
+  ]
+}

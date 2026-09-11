@@ -1,0 +1,212 @@
+{ "items": [
+  {
+    "id": "er-ch-09-1", "level": "ch", "focus": "word-order",
+    "q": "No sooner (A) the whistle had blown than the crowd (B) surged forward, (C) sweeping aside the stewards (D) who had been posted at the gate.",
+    "options": ["the whistle had blown", "surged forward", "sweeping aside the stewards", "who had been posted at the gate"],
+    "correct": 0, "correction": "had the whistle blown",
+    "explanation": "A sentence opening with the negative adverbial <b>No sooner</b> takes subject–auxiliary inversion: No sooner <b>had the whistle blown</b> than …"
+  },
+  {
+    "id": "er-ch-09-2", "level": "ch", "focus": "other",
+    "q": "The committee (A) insisted that every laboratory (B) is inspected before term began, (C) a demand the head of science (D) considered entirely reasonable.",
+    "options": ["insisted that every laboratory", "is inspected before term began", "a demand the head of science", "considered entirely reasonable"],
+    "correct": 1, "correction": "be inspected before term began",
+    "explanation": "After a verb of demand such as <b>insist that</b>, the clause takes the subjunctive base form: insisted that every laboratory <b>be inspected</b> (or should be inspected)."
+  },
+  {
+    "id": "er-ch-09-3", "level": "ch", "focus": "tense",
+    "q": "Having (A) already been warned twice, the striker (B) could hardly complain when the referee (C) had shown him a red card (D) midway through the second half.",
+    "options": ["already been warned twice", "could hardly complain", "had shown him a red card", "midway through the second half"],
+    "correct": 2, "correction": "showed him a red card",
+    "explanation": "The <b>when</b> clause names the event itself, not something earlier than it, so it takes the past simple: when the referee <b>showed</b> him a red card. The earlier warnings are already carried by the perfect participle."
+  },
+  {
+    "id": "er-ch-09-4", "level": "ch", "focus": "conditional",
+    "q": "If the expedition (A) had packed lighter equipment, (B) as the guide advised, its members (C) would not have been (D) so exhausted now.",
+    "options": ["had packed lighter equipment", "as the guide advised", "would not have been", "so exhausted now"],
+    "correct": 2, "correction": "would not be",
+    "explanation": "This is a mixed conditional: a past condition (had packed) with a present result signalled by <b>now</b>, so the main clause needs <b>would not be</b>, not the past-result form would not have been."
+  },
+  {
+    "id": "er-ch-09-5", "level": "ch", "focus": "collocation",
+    "q": "Scientists (A) made a research into the behaviour of migrating eels (B) for over a decade before (C) anyone managed to film them (D) spawning in the open sea.",
+    "options": ["made a research into", "for over a decade", "anyone managed to film them", "spawning in the open sea"],
+    "correct": 0, "correction": "carried out research into",
+    "explanation": "<b>Research</b> is uncountable and collocates with <b>carry out / do / conduct</b>, never with make or the article a: scientists <b>carried out research into</b> …"
+  },
+  {
+    "id": "er-ch-09-6", "level": "ch", "focus": "other",
+    "q": "(A) Walking along the harbour at dusk, (B) the fishing boats looked to us like lanterns (C) drifting across the water, (D) each with its own faint glow.",
+    "options": ["Walking along the harbour at dusk", "the fishing boats looked to us like lanterns", "drifting across the water", "each with its own faint glow"],
+    "correct": 1, "correction": "we thought the fishing boats looked like lanterns",
+    "explanation": "A dangling modifier: the participle clause <b>Walking along the harbour</b> must describe the subject that follows, and the boats were not walking. The main clause needs <b>we</b> as its subject."
+  },
+  {
+    "id": "er-ch-09-7", "level": "ch", "focus": "conjunction",
+    "q": "The new headteacher (A) is admired not only for her patience with struggling pupils (B) but also (C) because she is honest with their parents, (D) however uncomfortable the truth may be.",
+    "options": ["is admired not only for her patience", "but also", "because she is honest with their parents", "however uncomfortable the truth may be"],
+    "correct": 2, "correction": "for her honesty with their parents",
+    "explanation": "<b>Not only … but also</b> must join parallel structures; since the first part is the prepositional phrase <b>for her patience</b>, the second must be <b>for her honesty</b>, not a because-clause."
+  },
+  {
+    "id": "er-ch-09-8", "level": "ch", "focus": "tense",
+    "q": "(A) Stranded on the platform with a dead phone, Mai (B) kept muttering that she wished she (C) had left the house earlier and (D) has charged it overnight.",
+    "options": ["Stranded on the platform", "kept muttering that she wished", "had left the house earlier", "has charged it overnight"],
+    "correct": 3, "correction": "had charged it overnight",
+    "explanation": "A wish about the past takes the past perfect, and the two wishes are joined by <b>and</b>, so both must be in the same form: wished she had left … and <b>had charged</b> it overnight."
+  },
+  {
+    "id": "er-ch-09-9", "level": "ch", "focus": "other",
+    "q": "(A) It was until the 1960s that geologists (B) accepted the theory of plate tectonics, (C) although the evidence (D) had been accumulating for decades.",
+    "options": ["It was until the 1960s that", "accepted the theory of plate tectonics", "although the evidence", "had been accumulating for decades"],
+    "correct": 0, "correction": "It was not until the 1960s that",
+    "explanation": "The cleft pattern for a delayed event is <b>It was not until … that</b>; without <b>not</b>, the sentence claims the opposite and the until-phrase makes no sense with a single completed action."
+  },
+  {
+    "id": "er-ch-09-10", "level": "ch", "focus": "quantifier",
+    "q": "The tour guide (A) warned us that (B) a large amount of tourists (C) ignore the tide tables and (D) end up stranded on the causeway every summer.",
+    "options": ["warned us that", "a large amount of tourists", "ignore the tide tables", "end up stranded on the causeway"],
+    "correct": 1, "correction": "a large number of tourists",
+    "explanation": "<b>Amount of</b> is used with uncountable nouns; <b>tourists</b> is a plural countable noun and takes <b>a large number of</b>."
+  },
+  {
+    "id": "er-ch-09-11", "level": "ch", "focus": "relative",
+    "q": "The bridge, (A) whose steel cables (B) were replaced last winter, links two districts (C) which residents (D) had been cut off from each other for years.",
+    "options": ["whose steel cables", "were replaced last winter", "which residents", "had been cut off from each other"],
+    "correct": 2, "correction": "whose residents",
+    "explanation": "The relative clause expresses possession (the residents of the districts), so it needs the possessive relative <b>whose</b>; <b>which residents</b> has no grammatical role in the clause."
+  },
+  {
+    "id": "er-ch-09-12", "level": "ch", "focus": "pronoun",
+    "q": "The findings, (A) which the professor (B) shared with (C) only a handful of colleagues, must remain (D) between you and I until publication.",
+    "options": ["which the professor", "shared with", "only a handful of colleagues", "between you and I"],
+    "correct": 3, "correction": "between you and me",
+    "explanation": "After a preposition such as <b>between</b> a pronoun takes the object form: between you and <b>me</b>. The subject form I is a common hypercorrection."
+  },
+  {
+    "id": "er-ch-09-13", "level": "ch", "focus": "preposition",
+    "q": "The novelist (A) was accused for plagiarism by a rival (B) whose own work, (C) ironically, had drawn heavily (D) on an obscure Persian folktale.",
+    "options": ["was accused for plagiarism", "whose own work", "ironically, had drawn heavily", "on an obscure Persian folktale"],
+    "correct": 0, "correction": "was accused of plagiarism",
+    "explanation": "The verb <b>accuse</b> takes the preposition <b>of</b> before the offence: accused <b>of</b> plagiarism (compare blamed for, charged with)."
+  },
+  {
+    "id": "er-ch-09-14", "level": "ch", "focus": "word-form",
+    "q": "Rarely (A) has a single volcanic eruption (B) had such a far-reached effect on global temperatures (C) as the one recorded in 1815, (D) which cooled the following summer.",
+    "options": ["has a single volcanic eruption", "had such a far-reached effect", "as the one recorded in 1815", "which cooled the following summer"],
+    "correct": 1, "correction": "had such a far-reaching effect",
+    "explanation": "The adjective describing an effect that extends widely is the present-participle compound <b>far-reaching</b>; far-reached is not an English word. The inversion after <b>Rarely</b> in (A) is correct."
+  },
+  {
+    "id": "er-ch-09-15", "level": "ch", "focus": "agreement",
+    "q": "The number of pupils (A) opting for physics, (B) together with the quality of their coursework, (C) have risen sharply since the new laboratories (D) were opened.",
+    "options": ["opting for physics", "together with the quality of their coursework", "have risen sharply", "were opened"],
+    "correct": 2, "correction": "has risen sharply",
+    "explanation": "<b>The number of</b> is a singular subject, and a phrase introduced by <b>together with</b> does not make it plural, so the verb must be <b>has risen</b>."
+  },
+  {
+    "id": "er-ch-09-16", "level": "ch", "focus": "comparison",
+    "q": "Of the three routes to the summit, the northern route (A) is the steepest, (B) yet far fewer accidents (C) have occurred there than (D) on the more easier southern path.",
+    "options": ["is the steepest", "yet far fewer accidents", "have occurred there than", "on the more easier southern path"],
+    "correct": 3, "correction": "on the easier southern path",
+    "explanation": "A short adjective forms its comparative with <b>-er</b> alone; <b>more easier</b> doubles the comparative. The superlative <b>the steepest</b> for three routes in (A) is correct."
+  },
+  {
+    "id": "er-ch-09-17", "level": "ch", "focus": "reported",
+    "q": "The astronaut (A) told the reporters that she has never felt so calm as (B) during the final minutes before launch, (C) when the whole crew (D) fell silent.",
+    "options": ["told the reporters that she has never felt", "during the final minutes before launch", "when the whole crew", "fell silent"],
+    "correct": 0, "correction": "told the reporters that she had never felt",
+    "explanation": "In reported speech after a past reporting verb (<b>told</b>), a present perfect shifts back to the past perfect: she <b>had never felt</b> so calm; the launch itself is a finished past event."
+  },
+  {
+    "id": "er-ch-09-18", "level": "ch", "focus": "article",
+    "q": "Few inventions (A) have changed daily life as profoundly as (B) a printing press, (C) which put books within reach of (D) ordinary households.",
+    "options": ["have changed daily life as profoundly as", "a printing press", "which put books within reach of", "ordinary households"],
+    "correct": 1, "correction": "the printing press",
+    "explanation": "An invention referred to as a class or a landmark in history takes the definite article: <b>the printing press</b>, like the wheel or the telephone; <b>a printing press</b> would mean one particular machine."
+  },
+  {
+    "id": "er-ch-09-19", "level": "ch", "focus": "word-order",
+    "q": "Only after (A) the last passenger had been accounted for (B) did the captain allow the crew to rest, (C) and not until dawn they left the bridge (D) to sleep.",
+    "options": ["the last passenger had been accounted for", "did the captain allow the crew to rest", "and not until dawn they left the bridge", "to sleep"],
+    "correct": 2, "correction": "and not until dawn did they leave the bridge",
+    "explanation": "A clause beginning with the negative adverbial <b>not until dawn</b> requires inversion, exactly as <b>Only after … did the captain</b> does in the first half: not until dawn <b>did they leave</b> the bridge."
+  },
+  {
+    "id": "er-ch-09-20", "level": "ch", "focus": "other",
+    "q": "Doctors (A) are urging that anyone (B) who has visited the affected area (C) within the past fortnight (D) reports any fever immediately.",
+    "options": ["are urging that anyone", "who has visited the affected area", "within the past fortnight", "reports any fever immediately"],
+    "correct": 3, "correction": "report any fever immediately",
+    "explanation": "After <b>urge that</b>, like suggest, demand and recommend, the that-clause takes the subjunctive base form: urging that anyone … <b>report</b> any fever (or should report)."
+  },
+  {
+    "id": "er-ch-09-21", "level": "ch", "focus": "other",
+    "q": "(A) Been built on marshy ground, the cathedral (B) has been sinking a few millimetres a year, (C) a process engineers (D) hope to halt with steel piles.",
+    "options": ["Been built on marshy ground", "has been sinking a few millimetres a year", "a process engineers", "hope to halt with steel piles"],
+    "correct": 0, "correction": "Built on marshy ground",
+    "explanation": "A passive participle clause opens with the past participle alone (<b>Built</b> …) or with <b>Having been built</b>; the bare form Been cannot begin a clause."
+  },
+  {
+    "id": "er-ch-09-22", "level": "ch", "focus": "conditional",
+    "q": "Were the city (A) not so dependent on tourism, (B) it would not suffer so badly last year (C) when the borders (D) closed without warning.",
+    "options": ["not so dependent on tourism", "it would not suffer so badly last year", "when the borders", "closed without warning"],
+    "correct": 1, "correction": "it would not have suffered so badly last year",
+    "explanation": "A mixed conditional: the condition is a present state (Were the city not so dependent), but the result is in the past (<b>last year</b>), so the main clause needs <b>would not have suffered</b>."
+  },
+  {
+    "id": "er-ch-09-23", "level": "ch", "focus": "collocation",
+    "q": "The documentary (A) sheds light on how the first settlers (B) coped with famine, (C) doing a living from soil (D) that had never been ploughed.",
+    "options": ["sheds light on", "coped with famine", "doing a living from soil", "that had never been ploughed"],
+    "correct": 2, "correction": "making a living from soil",
+    "explanation": "The fixed collocation is <b>make a living</b> (earn enough to live on); do a living is not English. <b>Shed light on</b> and <b>cope with</b> in (A) and (B) are correct."
+  },
+  {
+    "id": "er-ch-09-24", "level": "ch", "focus": "other",
+    "q": "The sailors (A) finally entered the bay at dawn, (B) exhausted after the overnight crossing, (C) and the harbour lights seemed a promise of rest (D) having spent forty hours awake.",
+    "options": ["finally entered the bay at dawn", "exhausted after the overnight crossing", "and the harbour lights seemed a promise of rest", "having spent forty hours awake"],
+    "correct": 3, "correction": "to men who had spent forty hours awake",
+    "explanation": "A dangling participle: <b>having spent forty hours awake</b> attaches to the nearest subject, <b>the harbour lights</b>, which cannot have been awake. The participle in (B) correctly describes the sailors."
+  },
+  {
+    "id": "er-ch-09-25", "level": "ch", "focus": "conjunction",
+    "q": "Whether (A) to expand the museum's collection and improving its website (B) was debated for months, (C) with neither side (D) willing to give ground.",
+    "options": ["to expand the museum's collection and improving its website", "was debated for months", "with neither side", "willing to give ground"],
+    "correct": 0, "correction": "to expand the museum's collection and improve its website",
+    "explanation": "The two verbs after <b>Whether</b> must be parallel: an infinitive cannot be paired with an -ing form. Either <b>to expand … and improve</b> (one joint proposal) or <b>to expand … or to improve</b> (two alternatives) is correct; <b>and improving</b> is not."
+  },
+  {
+    "id": "er-ch-09-26", "level": "ch", "focus": "conditional",
+    "q": "If only the archive (A) had been digitised (B) before the fire breaks out, historians (C) would still have access (D) to letters that are now lost forever.",
+    "options": ["had been digitised", "before the fire breaks out", "would still have access", "to letters that are now lost forever"],
+    "correct": 1, "correction": "before the fire broke out",
+    "explanation": "The fire is a real, finished past event inside a past regret (<b>If only … had been digitised</b>), so the time clause takes the past simple: before the fire <b>broke out</b>. The present result <b>would still have access</b> is a correct mixed conditional."
+  },
+  {
+    "id": "er-ch-09-27", "level": "ch", "focus": "other",
+    "q": "(A) What worries the coaches most (B) is not the players' fitness (C) but that they lack of discipline in the closing minutes, (D) when matches are so often decided.",
+    "options": ["What worries the coaches most", "is not the players' fitness", "but that they lack of discipline in the closing minutes", "when matches are so often decided"],
+    "correct": 2, "correction": "but their lack of discipline in the closing minutes",
+    "explanation": "In the cleft <b>What worries … is not X but Y</b>, X and Y must be parallel noun phrases, and the verb <b>lack</b> takes a direct object without <b>of</b>; the noun phrase <b>their lack of discipline</b> repairs both faults."
+  },
+  {
+    "id": "er-ch-09-28", "level": "ch", "focus": "quantifier",
+    "q": "Although the museum (A) had put aside a great deal of money for the exhibition, (B) it received (C) surprisingly little publicity and (D) very few informations from the sponsors.",
+    "options": ["had put aside a great deal of money", "it received", "surprisingly little publicity", "very few informations from the sponsors"],
+    "correct": 3, "correction": "very little information from the sponsors",
+    "explanation": "<b>Information</b> is uncountable: it has no plural and takes <b>little</b>, not <b>few</b>, just as <b>little publicity</b> in (C) and <b>a great deal of money</b> in (A) do."
+  },
+  {
+    "id": "er-ch-09-29", "level": "ch", "focus": "preposition",
+    "q": "(A) On contrast to her earlier novels, (B) which were set in cramped city flats, her latest (C) unfolds across three continents (D) over half a century.",
+    "options": ["On contrast to her earlier novels", "which were set in cramped city flats", "unfolds across three continents", "over half a century"],
+    "correct": 0, "correction": "In contrast to her earlier novels",
+    "explanation": "The fixed phrase is <b>in contrast to</b> (or by contrast with); <b>on</b> does not combine with contrast."
+  },
+  {
+    "id": "er-ch-09-30", "level": "ch", "focus": "tense",
+    "q": "Hardly (A) had the storm passed (B) when the villagers had begun clearing the road, (C) dragging fallen branches aside (D) before the ambulances arrived.",
+    "options": ["had the storm passed", "when the villagers had begun clearing the road", "dragging fallen branches aside", "before the ambulances arrived"],
+    "correct": 1, "correction": "when the villagers began clearing the road",
+    "explanation": "In the pattern <b>Hardly had X happened when Y happened</b>, only the first, earlier event takes the past perfect; the second takes the past simple: when the villagers <b>began</b> clearing."
+  }
+] }

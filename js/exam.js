@@ -69,7 +69,16 @@ function _examScreen() {
 // The current set's bank, by id. getExam() in js/exam-data.js only knows the
 // HCMC papers; a PTNK id asked of it comes back null and the paper never opens.
 function examLookup(examId) {
-    const bank = _examSetCfg().bank();
+    const cfg = _examSetCfg();
+    // A set may resolve a paper on demand instead of holding a flat bank of
+    // papers: the practice sets (js/practice-sets.js) turn a reading passage
+    // into a paper when it is tapped, and rebuild an error-identification
+    // round from the item ids carried in its own id — so a round sat last week
+    // can still be reviewed after a reload, with the bank as the only store.
+    if (typeof cfg.lookup === 'function') {
+        try { const found = cfg.lookup(examId); if (found) return found; } catch (e) {}
+    }
+    const bank = typeof cfg.bank === 'function' ? cfg.bank() : [];
     return bank.find(e => e && e.id === examId) || null;
 }
 function examCurrentSet() { return _examSet; }

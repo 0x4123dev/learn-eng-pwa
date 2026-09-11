@@ -259,7 +259,7 @@ suite('PTNK: wiring', () => {
   test('an attempt is uploaded as an exam activity carrying examId', () => {
     const auth = read('js/auth.js');
     assert.truthy(/appState\.ptnkHistory \|\| \[\]\)\.forEach/.test(auth));
-    assert.truthy(auth.includes("type: 'exam'") && auth.includes("detail: { examId: h.examId, set: 'ptnk' }"));
+    assert.truthy(auth.includes("type: 'exam'") && auth.includes("examSet('ptnk')"));
     const api = read('functions/api/activity.js');
     assert.truthy(/'exam'\]/.test(api), 'the server must accept the exam type or it drops the row in silence');
   });

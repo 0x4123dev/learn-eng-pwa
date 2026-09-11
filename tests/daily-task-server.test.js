@@ -315,6 +315,30 @@ suite('daily task core: counting sessions at 100%', () => {
     assert.equal(row.ex, 'ptnk-2022-chuyen');
   });
 
+  test('practice rounds pay their level task, the any-level task, and never another menu', async () => {
+    // Reading, cloze and error rounds ride the same 'exam' type as the PTNK
+    // papers; the LEVEL sits in the exam-id prefix, so "any reading" is
+    // prefix rd-, "Chuyên reading" is rd-ch-. An error round's id carries its
+    // item ids after a colon — the prefix match must not care.
+    const world = createWorld();
+    const kid = await world.createUser({});
+    for (const k of ['reading:any', 'reading:kc', 'reading:ch', 'cloze:any', 'cloze:ch', 'errors:kc', 'errors:ch', 'ptnk:any']) addTask(world, kid.uid, k, 1);
+    addActivity(world, kid.uid, { type: 'exam', title: 'Cities and Trees', score: 7, total: 7,
+      detail: { examId: 'rd-ch-06-2', set: 'reading' }, at: '2026-09-02 09:06:00' });
+    addActivity(world, kid.uid, { type: 'exam', title: 'Tìm lỗi sai · Không chuyên', score: 10, total: 10,
+      detail: { examId: 'er-round-kc:er-kc-01-3,er-kc-02-7,er-kc-05-1', set: 'errors' }, at: '2026-09-02 09:07:00' });
+    const p = await core().progress(world.env, kid.uid, NOW);
+    const byKind = Object.fromEntries(p.tasks.map(t => [t.kind, t.count]));
+    assert.equal(byKind['reading:any'], 1);
+    assert.equal(byKind['reading:ch'], 1, 'a Chuyên passage pays the Chuyên task');
+    assert.equal(byKind['reading:kc'], 0, 'and not the Không chuyên one');
+    assert.equal(byKind['errors:kc'], 1, 'the round id with a colon must still prefix-match');
+    assert.equal(byKind['errors:ch'], 0);
+    assert.equal(byKind['cloze:any'], 0, 'a reading passage is not a cloze text');
+    assert.equal(byKind['cloze:ch'], 0);
+    assert.equal(byKind['ptnk:any'], 0, 'practice never pays off a real-paper task');
+  });
+
   test('GMT+7 day boundary: 23:59 counts, 00:01 next day does not, yesterday does not', async () => {
     const world = createWorld();
     const kid = await world.createUser({});

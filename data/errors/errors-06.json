@@ -1,0 +1,212 @@
+{ "items": [
+  {
+    "id": "er-ch-06-1", "level": "ch", "focus": "word-order",
+    "q": "(A) No sooner the bell had rung than the pupils (B) poured out of the classroom, (C) leaving behind a pile of (D) unfinished worksheets on the teacher's desk.",
+    "options": ["No sooner the bell had rung", "poured out of the classroom", "leaving behind a pile of", "unfinished worksheets on the teacher's desk"],
+    "correct": 0, "correction": "No sooner had the bell rung",
+    "explanation": "After a negative adverbial such as <b>No sooner</b> at the start of a sentence, subject and auxiliary invert: <b>No sooner had the bell rung than…</b>."
+  },
+  {
+    "id": "er-ch-06-2", "level": "ch", "focus": "other",
+    "q": "The coach (A) insisted that every player (B) arrives at the stadium an hour early (C) so as to warm up properly (D) before Saturday's final.",
+    "options": ["insisted that every player", "arrives at the stadium an hour early", "so as to warm up properly", "before Saturday's final"],
+    "correct": 1, "correction": "arrive at the stadium an hour early",
+    "explanation": "Verbs of demand such as <b>insist, suggest, demand</b> take the subjunctive (base form) in the that-clause: <b>insisted that every player arrive</b>."
+  },
+  {
+    "id": "er-ch-06-3", "level": "ch", "focus": "other",
+    "q": "(A) After climbing for six hours through deep snow, (B) the summit was finally reached by the team, (C) whose members had barely slept (D) the night before.",
+    "options": ["After climbing for six hours through deep snow", "the summit was finally reached by the team", "whose members had barely slept", "the night before"],
+    "correct": 1, "correction": "the team finally reached the summit",
+    "explanation": "The participle clause <b>After climbing…</b> must describe the subject of the main clause; the summit did not climb, so the team must be the subject (otherwise the modifier dangles)."
+  },
+  {
+    "id": "er-ch-06-4", "level": "ch", "focus": "conditional",
+    "q": "If Minh (A) had accepted the scholarship (B) abroad three years ago, he (C) would have been living in Lyon now (D) instead of commuting to a job he dislikes.",
+    "options": ["had accepted the scholarship", "abroad three years ago", "would have been living in Lyon now", "instead of commuting to a job he dislikes"],
+    "correct": 2, "correction": "would be living in Lyon now",
+    "explanation": "A mixed conditional: a past condition (<b>had accepted</b>) with a present result marked by <b>now</b> takes <b>would + be</b>, not <b>would have been</b>."
+  },
+  {
+    "id": "er-ch-06-5", "level": "ch", "focus": "tense",
+    "q": "I wish I (A) had taken chemistry more seriously at school, (B) because now I can (C) barely follow the lectures, and if only the professor (D) will slow down.",
+    "options": ["had taken chemistry more seriously", "because now I can", "barely follow the lectures", "will slow down"],
+    "correct": 3, "correction": "would slow down",
+    "explanation": "After <b>wish / if only</b>, a complaint about someone's present behaviour uses <b>would</b>, never <b>will</b>: <b>if only the professor would slow down</b>."
+  },
+  {
+    "id": "er-ch-06-6", "level": "ch", "focus": "conjunction",
+    "q": "The volunteers spent the summer (A) clearing footpaths, (B) repairing dry-stone walls (C) and to plant native hedges (D) along the reserve's boundary.",
+    "options": ["clearing footpaths", "repairing dry-stone walls", "and to plant native hedges", "along the reserve's boundary"],
+    "correct": 2, "correction": "and planting native hedges",
+    "explanation": "Items joined by <b>and</b> must be parallel: two -ing forms (<b>clearing, repairing</b>) require a third, <b>planting</b>, not an infinitive."
+  },
+  {
+    "id": "er-ch-06-7", "level": "ch", "focus": "agreement",
+    "q": "(A) What alarms the marine biologists most (B) are the speed (C) at which the coral has bleached (D) since their last survey in March.",
+    "options": ["What alarms the marine biologists most", "are the speed", "at which the coral has bleached", "since their last survey in March"],
+    "correct": 1, "correction": "is the speed",
+    "explanation": "A <b>what</b>-clause used as a subject is singular, so the verb of the cleft sentence must be <b>is</b>: <b>What alarms them most is the speed…</b>."
+  },
+  {
+    "id": "er-ch-06-8", "level": "ch", "focus": "quantifier",
+    "q": "Surprisingly, (A) fewer information has been published about the deep-sea vents (B) than about the surface of Mars, (C) even though they lie (D) only a few kilometres beneath us.",
+    "options": ["fewer information has been published", "than about the surface of Mars", "even though they lie", "only a few kilometres beneath us"],
+    "correct": 0, "correction": "less information has been published",
+    "explanation": "<b>Information</b> is uncountable, so it takes <b>less</b>, not <b>fewer</b>; <b>fewer</b> is reserved for plural countable nouns."
+  },
+  {
+    "id": "er-ch-06-9", "level": "ch", "focus": "collocation",
+    "q": "Before submitting (A) their final essays, (B) the students were asked (C) to make thorough research (D) into local dialects.",
+    "options": ["their final essays", "the students were asked", "to make thorough research", "into local dialects"],
+    "correct": 2, "correction": "to carry out thorough research",
+    "explanation": "<b>Research</b> collocates with <b>do</b> or <b>carry out</b>, never <b>make</b>; <b>make research</b> is a classic collocation error."
+  },
+  {
+    "id": "er-ch-06-10", "level": "ch", "focus": "word-order",
+    "q": "(A) Only after the last guest had left (B) and the lights had been dimmed (C) the caretaker noticed that (D) the antique clock had gone missing.",
+    "options": ["Only after the last guest had left", "and the lights had been dimmed", "the caretaker noticed that", "the antique clock had gone missing"],
+    "correct": 2, "correction": "did the caretaker notice that",
+    "explanation": "When <b>Only after…</b> opens the sentence, the main clause inverts subject and auxiliary: <b>did the caretaker notice</b>."
+  },
+  {
+    "id": "er-ch-06-11", "level": "ch", "focus": "conjunction",
+    "q": "Hardly (A) had the expedition set up camp (B) than a blizzard (C) swept down from the ridge, (D) burying half their supplies.",
+    "options": ["had the expedition set up camp", "than a blizzard", "swept down from the ridge", "burying half their supplies"],
+    "correct": 1, "correction": "when a blizzard",
+    "explanation": "<b>Hardly / scarcely … when</b> is the fixed pair; <b>than</b> belongs only with <b>no sooner</b>."
+  },
+  {
+    "id": "er-ch-06-12", "level": "ch", "focus": "other",
+    "q": "(A) Demanding that the factory is closed immediately, (B) the residents (C) marched to the town hall (D) with a petition bearing a thousand signatures.",
+    "options": ["Demanding that the factory is closed immediately", "the residents", "marched to the town hall", "with a petition bearing a thousand signatures"],
+    "correct": 0, "correction": "Demanding that the factory be closed immediately",
+    "explanation": "After <b>demand that</b>, the verb is in the subjunctive: <b>be closed</b>, not <b>is closed</b>."
+  },
+  {
+    "id": "er-ch-06-13", "level": "ch", "focus": "word-form",
+    "q": "The hikers, (A) who had set off before dawn, (B) collapsed beside the stream, (C) exhausting after the long climb, (D) and did not stir until sunset.",
+    "options": ["who had set off before dawn", "collapsed beside the stream", "exhausting after the long climb", "and did not stir until sunset"],
+    "correct": 2, "correction": "exhausted after the long climb",
+    "explanation": "The hikers feel the tiredness, so the past participle <b>exhausted</b> is needed; the -ing form describes what causes the feeling (an exhausting climb)."
+  },
+  {
+    "id": "er-ch-06-14", "level": "ch", "focus": "word-form",
+    "q": "Anyone (A) wished to attend the astronomy lecture (B) must register online by Friday, (C) as seating in the observatory (D) is strictly limited.",
+    "options": ["wished to attend the astronomy lecture", "must register online by Friday", "as seating in the observatory", "is strictly limited"],
+    "correct": 0, "correction": "wishing to attend the astronomy lecture",
+    "explanation": "A reduced relative clause with an active meaning (<b>anyone who wishes</b>) uses the present participle <b>wishing</b>; the past participle <b>wished</b> would give a passive meaning."
+  },
+  {
+    "id": "er-ch-06-15", "level": "ch", "focus": "reported",
+    "q": "The guide told us (A) that the temple (B) had been built in the twelfth century and asked (C) whether had we visited (D) the older ruins nearby.",
+    "options": ["that the temple", "had been built in the twelfth century", "whether had we visited", "the older ruins nearby"],
+    "correct": 2, "correction": "whether we had visited",
+    "explanation": "A reported question keeps statement word order: <b>asked whether we had visited</b>, with no subject-auxiliary inversion."
+  },
+  {
+    "id": "er-ch-06-16", "level": "ch", "focus": "relative",
+    "q": "The physicist, (A) whose theory was ridiculed at first, (B) has since received the prize (C) that every young researcher (D) dreams of winning it.",
+    "options": ["whose theory was ridiculed at first", "has since received the prize", "that every young researcher", "dreams of winning it"],
+    "correct": 3, "correction": "dreams of winning",
+    "explanation": "The relative pronoun <b>that</b> already stands for the prize as the object of <b>winning</b>; repeating it with <b>it</b> creates a redundant pronoun."
+  },
+  {
+    "id": "er-ch-06-17", "level": "ch", "focus": "preposition",
+    "q": "(A) In spite of the fact that the river had burst its banks, (B) the farmers were reluctant (C) to abandon the livestock (D) which they were dependent of for their income.",
+    "options": ["In spite of the fact that the river had burst its banks", "the farmers were reluctant", "to abandon the livestock", "which they were dependent of for their income"],
+    "correct": 3, "correction": "which they were dependent on for their income",
+    "explanation": "The adjective <b>dependent</b> is followed by <b>on</b> (or <b>upon</b>), never <b>of</b>."
+  },
+  {
+    "id": "er-ch-06-18", "level": "ch", "focus": "pronoun",
+    "q": "The twins (A) could not agree on (B) whom should carry the trophy (C) into the stadium, (D) so the coach decided for them.",
+    "options": ["could not agree on", "whom should carry the trophy", "into the stadium", "so the coach decided for them"],
+    "correct": 1, "correction": "who should carry the trophy",
+    "explanation": "The pronoun is the <b>subject</b> of <b>should carry</b>, so it must be <b>who</b>; <b>whom</b> is only for objects, whatever preposition precedes the clause."
+  },
+  {
+    "id": "er-ch-06-19", "level": "ch", "focus": "comparison",
+    "q": "The Amazon, (A) whose basin remains (B) among the least mapped regions on Earth, (C) discharges (D) far more water than any river in the world.",
+    "options": ["whose basin remains", "among the least mapped regions on Earth", "discharges", "far more water than any river in the world"],
+    "correct": 3, "correction": "far more water than any other river in the world",
+    "explanation": "When something is compared with the group it belongs to, <b>other</b> is required: <b>than any other river</b>, otherwise the Amazon is being compared with itself."
+  },
+  {
+    "id": "er-ch-06-20", "level": "ch", "focus": "tense",
+    "q": "By the time you read this, the committee (A) will already vote on the proposal (B) to extend the library's opening hours, (C) so please check the noticeboard (D) for the result.",
+    "options": ["will already vote on the proposal", "to extend the library's opening hours", "so please check the noticeboard", "for the result"],
+    "correct": 0, "correction": "will already have voted on the proposal",
+    "explanation": "<b>By the time</b> + present simple marks a future deadline, so the action completed before it takes the future perfect: <b>will already have voted</b>."
+  },
+  {
+    "id": "er-ch-06-21", "level": "ch", "focus": "article",
+    "q": "Many philosophers have argued that (A) humanity's growing separation from (B) the nature (C) lies at the root (D) of our modern restlessness.",
+    "options": ["humanity's growing separation from", "the nature", "lies at the root", "of our modern restlessness"],
+    "correct": 1, "correction": "nature",
+    "explanation": "<b>Nature</b> meaning the natural world is an uncountable abstract noun used without <b>the</b>; <b>the nature of</b> means the character of something."
+  },
+  {
+    "id": "er-ch-06-22", "level": "ch", "focus": "agreement",
+    "q": "(A) Economics are in fact (B) one of the most useful subjects (C) a teenager can study, (D) however dry many pupils find it.",
+    "options": ["Economics are in fact", "one of the most useful subjects", "a teenager can study", "however dry many pupils find it"],
+    "correct": 0, "correction": "Economics is in fact",
+    "explanation": "Names of academic subjects ending in <b>-ics</b> (economics, physics, mathematics) are singular: <b>Economics is</b>."
+  },
+  {
+    "id": "er-ch-06-23", "level": "ch", "focus": "conditional",
+    "q": "(A) Were the government to invest seriously in railways, (B) far fewer people (C) will rely on private cars (D) for their daily commute.",
+    "options": ["Were the government to invest seriously in railways", "far fewer people", "will rely on private cars", "for their daily commute"],
+    "correct": 2, "correction": "would rely on private cars",
+    "explanation": "<b>Were the government to…</b> is an inverted second conditional (hypothetical), so the result clause needs <b>would</b>, not <b>will</b>."
+  },
+  {
+    "id": "er-ch-06-24", "level": "ch", "focus": "other",
+    "q": "(A) It was because of the dense fog (B) why the ferry (C) was held in the harbour (D) until well after noon.",
+    "options": ["It was because of the dense fog", "why the ferry", "was held in the harbour", "until well after noon"],
+    "correct": 1, "correction": "that the ferry",
+    "explanation": "A cleft sentence <b>It was … that …</b> uses <b>that</b> to introduce the rest, even when the emphasised element is a reason; <b>why</b> is not possible here."
+  },
+  {
+    "id": "er-ch-06-25", "level": "ch", "focus": "collocation",
+    "q": "The pilot, (A) whose licence has since been suspended, (B) admitted that he (C) had flown into the storm (D) and done a serious error of judgement.",
+    "options": ["whose licence has since been suspended", "admitted that he", "had flown into the storm", "and done a serious error of judgement"],
+    "correct": 3, "correction": "and made a serious error of judgement",
+    "explanation": "<b>Error</b> and <b>mistake</b> collocate with <b>make</b>, not <b>do</b>: <b>made a serious error of judgement</b>."
+  },
+  {
+    "id": "er-ch-06-26", "level": "ch", "focus": "tense",
+    "q": "Now that we have missed the train, (A) I wish we (B) had left earlier; if only (C) the guide told us (D) about the shortcut through the park.",
+    "options": ["I wish we", "had left earlier", "the guide told us", "about the shortcut through the park"],
+    "correct": 2, "correction": "the guide had told us",
+    "explanation": "<b>If only</b> about a past regret takes the past perfect, exactly like <b>I wish we had left</b>: <b>if only the guide had told us</b>."
+  },
+  {
+    "id": "er-ch-06-27", "level": "ch", "focus": "word-order",
+    "q": "The professor (A) patiently explained us (B) how the enzyme works, (C) using a model (D) built from coloured beads.",
+    "options": ["patiently explained us", "how the enzyme works", "using a model", "built from coloured beads"],
+    "correct": 0, "correction": "patiently explained to us",
+    "explanation": "<b>Explain</b> does not take an indirect object directly: the pattern is <b>explain something to someone</b>, so <b>explained to us how…</b>."
+  },
+  {
+    "id": "er-ch-06-28", "level": "ch", "focus": "conditional",
+    "q": "The parade (A) will be called off (B) and the floats returned to the warehouse (C) unless the rain (D) doesn't stop by noon.",
+    "options": ["will be called off", "and the floats returned to the warehouse", "unless the rain", "doesn't stop by noon"],
+    "correct": 3, "correction": "stops by noon",
+    "explanation": "<b>Unless</b> already means <b>if … not</b>, so the verb after it must be positive: <b>unless the rain stops</b>."
+  },
+  {
+    "id": "er-ch-06-29", "level": "ch", "focus": "reported",
+    "q": "At the border the officer (A) checked my passport twice, (B) asked me (C) how long I intended to stay (D) and where was I going next.",
+    "options": ["checked my passport twice", "asked me", "how long I intended to stay", "and where was I going next"],
+    "correct": 3, "correction": "and where I was going next",
+    "explanation": "Reported questions keep statement order after the question word: <b>where I was going</b>, not <b>where was I going</b>."
+  },
+  {
+    "id": "er-ch-06-30", "level": "ch", "focus": "word-order",
+    "q": "(A) Seldom I have seen such a beautifully kept garden, (B) and rarely does its owner (C) allow visitors (D) to wander through it alone.",
+    "options": ["Seldom I have seen such a beautifully kept garden", "and rarely does its owner", "allow visitors", "to wander through it alone"],
+    "correct": 0, "correction": "Seldom have I seen such a beautifully kept garden",
+    "explanation": "A sentence opening with a negative adverb such as <b>Seldom</b> requires inversion: <b>Seldom have I seen</b>, just as in <b>rarely does its owner allow</b>."
+  }
+] }

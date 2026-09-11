@@ -1,0 +1,308 @@
+{
+  "passages": [
+    {
+      "id": "rd-ch-06-1",
+      "level": "ch",
+      "title": "The Slow Death of the Through-Road",
+      "topic": "urban planning",
+      "words": 519,
+      "passage": "<b>A.</b> Some three decades ago, the planners of a mid-sized port city set out to solve a problem that most of their colleagues elsewhere had quietly given up on: how to return the streets of a dense, car-choked district to the people who lived on them. Their answer was neither a new motorway nor a new tram line, but a rearrangement of what already existed. Groups of nine blocks were treated as a single unit; through-traffic was pushed to the perimeter, and the internal streets were surrendered to pedestrians, cyclists and the occasional delivery van crawling at walking pace. The scheme was cheap, reversible and, at first, deeply unpopular.<br><br><b>B.</b> Not until the fourth year did the tide of opinion turn. Shopkeepers who had predicted ruin found that footfall rose once the roar of engines subsided; parents who had once driven their children three hundred metres to school now let them walk. Noise levels dropped by a margin that surprised even the scheme's architects, and the space liberated from parked cars was gradually filled with benches, playgrounds and, in one memorable case, an outdoor chess club that met every evening whatever the weather. What had been sold as a traffic measure turned out to be a social one.<br><br><b>C.</b> Critics, however, were not entirely silenced, and some of their objections have aged rather well. Displacement is the most persistent. Traffic diverted from the interior does not vanish; it piles up on the perimeter roads, where those with the least say in council decisions tend to live. Then there is the question of who ultimately benefits. Calmer streets raise property values, and rising values push out precisely the tenants whose quality of life the scheme was meant to improve. Only where the city stepped in to hold rents steady did the original residents stay long enough to enjoy the benches they had campaigned for.<br><br><b>D.</b> Elsewhere, cities that have tried to import the model have discovered that it does not travel as easily as its admirers claim. A grid of short, regular blocks lends itself to being folded into larger units; a tangle of medieval lanes or a sprawling suburb of cul-de-sacs does not. Had the original planners been working with a different street pattern, it is doubtful the idea would ever have occurred to them. Density matters too: with too few people within walking distance of a shop, pedestrianising the street outside it merely makes it a quieter place to go out of business.<br><br><b>E.</b> What the experiment does prove is something more modest than its champions suggest and more significant than its detractors allow. The layout of a city is not fixed by the asphalt already laid. Paint, planters and a change in the rules of priority can, at a fraction of the cost of new infrastructure, alter how people move, meet and spend their time. Whether a city chooses to make that change, and whom it chooses to protect while doing so, is a question not of engineering but of politics, and it is one that no amount of traffic modelling can answer on the planners' behalf.",
+      "questions": [
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) explains why the scheme cannot simply be copied in any city?",
+          "accept": [
+            "D"
+          ],
+          "answer": "D",
+          "explanation": "Section D says the model 'does not travel as easily as its admirers claim' and gives two conditions it depends on: a regular street grid and enough density."
+        },
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) describes a result that the scheme's own designers had not fully expected?",
+          "accept": [
+            "B"
+          ],
+          "answer": "B",
+          "explanation": "In section B noise fell 'by a margin that surprised even the scheme's architects', and a traffic measure 'turned out to be a social one'."
+        },
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) suggests that the people who gain most from the scheme may not be the ones it was designed for?",
+          "accept": [
+            "C"
+          ],
+          "answer": "C",
+          "explanation": "Section C raises 'the question of who ultimately benefits': rising property values push out the very tenants the scheme was meant to help."
+        },
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "Which statement best sums up the writer's overall verdict on the scheme?",
+          "options": [
+            "It proves that cheap changes can reshape a city, but deciding who should benefit is a political matter.",
+            "It succeeded only because its designers ignored the objections of local shopkeepers.",
+            "It shows that new infrastructure is always preferable to cosmetic measures such as paint and planters.",
+            "It failed in its original city but has been improved by the cities that later adopted it."
+          ],
+          "correct": 0,
+          "explanation": "Section E states the conclusion: paint, planters and new priority rules can alter city life at low cost, but whom to protect 'is a question not of engineering but of politics'."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What does the writer imply about the planners who devised the original scheme?",
+          "options": [
+            "They had studied medieval cities before drawing up their proposal.",
+            "Their idea owed a great deal to the particular street layout they happened to be working with.",
+            "They deliberately chose the district with the fewest cars to guarantee success.",
+            "They expected the scheme to be reversed within a few years."
+          ],
+          "correct": 1,
+          "explanation": "'Had the original planners been working with a different street pattern, it is doubtful the idea would ever have occurred to them' implies the regular grid, not pure ingenuity, made the idea possible."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "In section B, the word 'footfall' is closest in meaning to:",
+          "options": [
+            "the noise made by people walking",
+            "the number of people visiting a place",
+            "the distance shoppers are prepared to walk",
+            "the cost of running a shop"
+          ],
+          "correct": 1,
+          "explanation": "'Footfall' is the number of people entering a shop or area; shopkeepers who feared ruin found more customers came once the traffic went."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "In section E, 'that change' refers to:",
+          "options": [
+            "laying new asphalt across the district",
+            "building infrastructure at great expense",
+            "using low-cost measures to alter how people move and meet",
+            "choosing which residents deserve protection"
+          ],
+          "correct": 2,
+          "explanation": "The previous sentence describes paint, planters and new priority rules altering 'how people move, meet and spend their time'; 'that change' picks up this idea."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The scheme was later extended to cover the entire city.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 2,
+          "explanation": "The passage mentions other cities importing the model but says nothing about the original city widening the scheme beyond the district."
+        }
+      ]
+    },
+    {
+      "id": "rd-ch-06-2",
+      "level": "ch",
+      "title": "The Loop You Cannot See",
+      "topic": "psychology of habit",
+      "words": 508,
+      "passage": "Ask most people why they reach for their phone the moment a lift door closes, and they will offer a reason: boredom, a message they were expecting, a nagging sense that something needs checking. [1] The action has long since detached itself from any decision at all. It is triggered by the context, the closing door and the sudden stillness, and it runs to completion before the part of the mind that supplies reasons has even been consulted.<br><br>Psychologists describe such behaviour as a loop with three components: a cue, a routine and a reward. The cue is whatever the environment offers; the routine is the behaviour itself; the reward is what the brain learns to expect at the end. [2] Once that expectation is in place, the reward no longer has to arrive for the routine to fire. Anticipation does the work that satisfaction once did, which is why habits outlive the pleasure that created them.<br><br>This is also why willpower is such an unreliable ally. [3] By the time it has arrived, the routine is already under way, and interrupting a behaviour in progress costs far more effort than declining to start it. People who succeed in changing their habits rarely do so by summoning more resolve. What they do instead is rearrange the cues, so that the old trigger is absent and a new one is present at the moment the loop would ordinarily begin.<br><br>[4] A colleague who wants to stop snacking at her desk does not throw out the biscuits; she moves them to a cupboard on another floor. A student who cannot bring himself to begin an essay leaves the document open on his screen the night before, so that the first thing he sees in the morning is a half-written sentence. Neither has become a more disciplined person. Both have made the desired routine the path of least resistance and the undesired one a minor expedition.<br><br>None of this means that habits are beyond conscious influence, only that the influence must be applied at a different point from the one we instinctively choose. [5] The cue is where the leverage lies, and the cue, unlike the craving, is something we can usually see coming.<br><br><b>A.</b> The trouble with this account is that it describes the feeling of having decided rather than any decision that actually took place.<br><b>B.</b> The seemingly trivial examples that follow illustrate the principle better than any laboratory study could.<br><b>C.</b> Willpower is a late arrival: it responds to the craving, and the craving is itself a product of the cue.<br><b>D.</b> Rewards, in this model, are not optional extras but the very mechanism by which the loop is welded together.<br><b>E.</b> We tend to fight the routine head-on, at the moment of temptation, which is precisely where our resources are weakest.<br><b>F.</b> Children, for instance, acquire such loops far more quickly than adults and shed them with corresponding ease.<br><b>G.</b> Rewards of this kind are, of course, far easier to identify in laboratory animals than in people.",
+      "questions": [
+        {
+          "kind": "gap",
+          "type": "text",
+          "q": "Which sentence (A–G) fits gap [1]?",
+          "accept": [
+            "A"
+          ],
+          "answer": "A",
+          "explanation": "'This account' refers back to the reasons people offer, and 'rather than any decision that actually took place' leads into 'the action has long since detached itself from any decision at all'."
+        },
+        {
+          "kind": "gap",
+          "type": "text",
+          "q": "Which sentence (A–G) fits gap [2]?",
+          "accept": [
+            "D"
+          ],
+          "answer": "D",
+          "explanation": "D explains the role of rewards in 'this model' just after the three components are listed, and its 'welded together' sets up 'once that expectation is in place'. G mentions animals, which the passage never returns to."
+        },
+        {
+          "kind": "gap",
+          "type": "text",
+          "q": "Which sentence (A–G) fits gap [3]?",
+          "accept": [
+            "C"
+          ],
+          "answer": "C",
+          "explanation": "C introduces willpower as 'a late arrival', and the next sentence continues with 'by the time it has arrived'."
+        },
+        {
+          "kind": "gap",
+          "type": "text",
+          "q": "Which sentence (A–G) fits gap [4]?",
+          "accept": [
+            "B"
+          ],
+          "answer": "B",
+          "explanation": "B announces 'the seemingly trivial examples that follow', and the paragraph then gives the colleague and the student. F offers a fresh claim about children that nothing afterwards develops."
+        },
+        {
+          "kind": "gap",
+          "type": "text",
+          "q": "Which sentence (A–G) fits gap [5]?",
+          "accept": [
+            "E"
+          ],
+          "answer": "E",
+          "explanation": "E describes the point 'we instinctively choose' (the moment of temptation), contrasting with the cue 'where the leverage lies' in the following sentence."
+        },
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the writer's central claim?",
+          "options": [
+            "Habits can only be broken by people with unusually strong self-control.",
+            "Habits are most effectively changed by altering what triggers them rather than by resisting them.",
+            "Most habits are harmless and do not need to be changed at all.",
+            "The reward at the end of a habit is the only part of the loop worth studying."
+          ],
+          "correct": 1,
+          "explanation": "The passage argues that willpower fails because it arrives too late, and that successful people 'rearrange the cues' instead; 'the cue is where the leverage lies'."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What does the writer suggest about the reasons people give for checking their phones in a lift?",
+          "options": [
+            "They are invented after the behaviour has already happened.",
+            "They are usually accurate but too embarrassing to admit.",
+            "They differ so much from person to person that no pattern can be found.",
+            "They show that people are more bored in lifts than elsewhere."
+          ],
+          "correct": 0,
+          "explanation": "The routine 'runs to completion before the part of the mind that supplies reasons has even been consulted', so the reasons are produced afterwards, not as causes."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The phrase 'a minor expedition' in the fourth paragraph is used to suggest that the undesired routine has become:",
+          "options": [
+            "impossible to carry out",
+            "something that now requires deliberate effort",
+            "an activity done together with colleagues",
+            "a habit that is slowly returning"
+          ],
+          "correct": 1,
+          "explanation": "Moving biscuits to another floor makes snacking a small journey; the joke is that the bad habit now takes planning and effort, unlike the 'path of least resistance'."
+        }
+      ]
+    },
+    {
+      "id": "rd-ch-06-3",
+      "level": "ch",
+      "title": "When the Wind Blows Too Hard",
+      "topic": "renewable energy",
+      "words": 546,
+      "passage": "<b>A.</b> On a blustery night in early spring, the turbines strung along the ridges of northern Scotland can generate more electricity than the whole of Britain is able to use. Some of it is stored, some is exported along undersea cables, and the rest is simply not produced: operators are paid to turn their blades out of the wind and let it pass through unharvested. To the public, when it hears of this at all, the arrangement seems absurd. Having paid to build the machines, why would anyone pay again to switch them off?<br><br><b>B.</b> The answer lies in a mismatch that the early advocates of renewable power rarely mentioned. Wind and sunlight are abundant, free and entirely indifferent to when we want them. A gas plant can be told to raise its output at six in the evening, when kettles and cookers come on; a wind farm cannot be told anything. Nor is the grid itself neutral. Built over a century to carry power from a few large stations near the cities to the households around them, it was never designed to move vast quantities the other way, from windswept hills where almost nobody lives to the crowded south where almost everybody does. On the windiest nights the cables from the north are full long before the turbines are.<br><br><b>C.</b> Three remedies are usually proposed, and each has its champions. The first is more wire: new transmission lines to carry the surplus where it is needed. These take a decade to plan, are fiercely opposed by the communities they cross, and risk being obsolete on the day they open if generation has meanwhile moved elsewhere. The second is storage, whether batteries, pumped reservoirs or hydrogen, to hold tonight's wind for tomorrow's dinner hour. Batteries have grown cheaper at a pace few forecasters dared predict, but they still store hours rather than the weeks that a calm, dark January demands. The third, and least glamorous, is to reshape demand: to persuade factories, water companies and eventually households to use power when it is plentiful rather than when it is convenient.<br><br><b>D.</b> It is this third path that has quietly begun to matter most. Not because it is elegant, for it is not, but because it asks for no new infrastructure and rewards those who adopt it almost immediately. A cold-storage warehouse that chills its produce a few degrees further on a windy night can let its compressors rest the following afternoon. A fleet of electric buses charged at three in the morning is, in effect, a battery the grid did not have to buy. Multiply such arrangements across an economy, and the surplus that once had to be thrown away becomes the cheapest energy in the system.<br><br><b>E.</b> None of this makes the wasted gigawatts of that spring night any less real, and it would be dishonest to pretend that a grid built for one era can be nudged into another without cost. But the lesson is not the one the sceptics draw. The problem is not that the wind blows at the wrong time; it is that we have organised our lives around a kind of power that could be summoned on demand, and we are only now learning to live with one that cannot.",
+      "questions": [
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) explains why the electricity network struggles to deliver renewable power to the people who need it?",
+          "accept": [
+            "B"
+          ],
+          "answer": "B",
+          "explanation": "Section B describes a grid built to carry power outward from a few large stations, 'never designed to move vast quantities the other way'."
+        },
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) gives examples of organisations changing the time at which they use electricity?",
+          "accept": [
+            "D"
+          ],
+          "answer": "D",
+          "explanation": "Section D describes the cold-storage warehouse chilling further on a windy night and the bus fleet charging at three in the morning."
+        },
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) weighs up the drawbacks of several competing solutions?",
+          "accept": [
+            "C"
+          ],
+          "answer": "C",
+          "explanation": "Section C sets out three remedies, more wire, storage and reshaped demand, and notes the weaknesses of each."
+        },
+        {
+          "kind": "section",
+          "type": "text",
+          "q": "Which section (A–E) rejects the conclusion that critics of wind power usually reach?",
+          "accept": [
+            "E"
+          ],
+          "answer": "E",
+          "explanation": "Section E says 'the lesson is not the one the sceptics draw' and reframes the problem as our expectations rather than the wind's timing."
+        },
+        {
+          "kind": "purpose",
+          "type": "mcq",
+          "q": "Why does the writer open with the image of turbines being switched off on a windy night?",
+          "options": [
+            "to prove that wind power in Scotland has been a financial failure",
+            "to present a situation that appears irrational before explaining the reasons behind it",
+            "to show how much money operators earn from the electricity they export",
+            "to argue that more turbines should be built in the south of Britain"
+          ],
+          "correct": 1,
+          "explanation": "Section A ends with a puzzled question ('why would anyone pay again to switch them off?') that the rest of the passage answers."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What does the writer imply about the early supporters of renewable energy?",
+          "options": [
+            "They were unaware that gas plants could adjust their output.",
+            "They played down a weakness in the technology they were promoting.",
+            "They expected the grid to be rebuilt before the first turbines were installed.",
+            "They favoured solar power over wind because it was more predictable."
+          ],
+          "correct": 1,
+          "explanation": "A mismatch that advocates 'rarely mentioned' implies they knew about it but preferred not to draw attention to it while making their case."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "In section C, the word 'obsolete' is closest in meaning to:",
+          "options": [
+            "no longer useful",
+            "extremely expensive",
+            "fully operational",
+            "environmentally harmful"
+          ],
+          "correct": 0,
+          "explanation": "A transmission line is 'obsolete' when it is out of date and no longer needed, here because the generation it was built to carry has moved elsewhere."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Batteries can now store enough electricity to cover several weeks of calm weather.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 1,
+          "explanation": "The passage says batteries 'still store hours rather than the weeks that a calm, dark January demands', so the statement contradicts the text."
+        }
+      ]
+    }
+  ]
+}

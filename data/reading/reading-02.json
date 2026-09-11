@@ -1,0 +1,282 @@
+{
+  "passages": [
+    {
+      "id": "rd-kc-02-1",
+      "level": "kc",
+      "title": "The Calendar on the Fridge",
+      "topic": "family",
+      "words": 318,
+      "passage": "When my parents both started working full-time, our house changed. Nobody knew who was picking up my little brother from football, whose turn it was to feed the dog, or why the fridge was empty again on Thursday. My mother's answer was a large paper calendar, stuck to the fridge door with four magnets, where every member of the family had to write their plans.<br><br>At first my brother and I thought it was silly. Ten-year-old Nam drew pictures instead of words, and I \"forgot\" to write anything at all because I did not want my parents to know how often I stayed late at my friend's house. But the calendar slowly did its job. When my father wrote \"Late meeting, back at 8\" on a Tuesday, my mother knew she would have to cook, and she asked me to help. When I wrote \"Maths test\" on a Friday, nobody asked me to wash the car that evening.<br><br>The most surprising result was that we started talking more, not less. Every Sunday evening, we stood in front of the fridge for ten minutes and planned the week. Those ten minutes often turned into an hour. My father told us about problems at his office; Nam explained the rules of a game he had invented; I admitted that I was worried about choosing a school. It was the first time I had heard my parents discuss money in front of us, and although it was a little frightening, it made me feel trusted.<br><br>Two years later, my mother has a calendar on her phone that sends everyone a message automatically. It is faster and it never runs out of space. Yet the paper one is still on the fridge, covered in Nam's drawings, and on Sunday evenings we still meet in the kitchen. The plans are on the phone now. The family, it turns out, is on the fridge.",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the passage mainly about?",
+          "options": [
+            "How a paper calendar helped a family organise its week and grow closer",
+            "Why the writer's parents decided to work full-time",
+            "The advantages of phone calendars over paper ones",
+            "How the writer's younger brother learned to write his plans"
+          ],
+          "correct": 0,
+          "explanation": "Every paragraph returns to the calendar and what it did for the family; the parents' jobs and the phone app are only details."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "Why did the writer at first write nothing on the calendar?",
+          "options": [
+            "The writer preferred to draw pictures instead of words.",
+            "The writer did not want the parents to know about visits to a friend's house.",
+            "The writer was too busy preparing for a Maths test.",
+            "The calendar had no space left for another person."
+          ],
+          "correct": 1,
+          "explanation": "Paragraph 2: the writer \"forgot\" on purpose so the parents would not know how often the writer stayed late at a friend's house. Drawing pictures was Nam, not the writer."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What can be inferred about the family's Sunday evening meetings?",
+          "options": [
+            "They always lasted exactly ten minutes.",
+            "They were led by the writer's father.",
+            "They led to conversations the family had not had before.",
+            "They stopped when the family started using a phone calendar."
+          ],
+          "correct": 2,
+          "explanation": "The writer says it was \"the first time\" the parents had discussed money in front of the children, and the meetings still continue in the last paragraph. Ten minutes \"often turned into an hour\", so they were not always ten minutes."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The phrase \"did its job\" in paragraph 2 is closest in meaning to",
+          "options": [
+            "became too full",
+            "worked as it was meant to",
+            "caused arguments",
+            "was taken down"
+          ],
+          "correct": 1,
+          "explanation": "The sentences that follow give examples of the calendar working: the family knew who would cook and when the writer was busy."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "In paragraph 4, \"It is faster and it never runs out of space\" – the word \"It\" refers to",
+          "options": [
+            "the paper calendar",
+            "the calendar on the mother's phone",
+            "the fridge",
+            "the family's kitchen"
+          ],
+          "correct": 1,
+          "explanation": "The previous sentence introduces the calendar on the phone that sends messages automatically; \"It\" continues that subject, and the paper one is mentioned only afterwards with \"Yet\"."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The family stopped using the paper calendar once the phone calendar was set up.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 1,
+          "explanation": "The last paragraph says the paper calendar \"is still on the fridge\" and the family still meets in the kitchen on Sundays."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Nam is usually the person who feeds the family's dog.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 2,
+          "explanation": "The passage mentions that nobody knew whose turn it was to feed the dog, but it never says who normally does it."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-02-2",
+      "level": "kc",
+      "title": "What a Week of Cooking Taught Me",
+      "topic": "food",
+      "words": 347,
+      "passage": "Last month our science teacher gave the class an unusual homework task: for one week, each of us had to cook one meal a day for our family and keep a diary. Most of my classmates groaned. I was quietly pleased, because I had always watched my grandmother in the kitchen and believed I knew what I was doing.<br><br>I was wrong. On the first evening I decided to make fried rice, which looked simple in every video I had seen. I put the rice in the pan while it was still hot from the cooker, added too much oil, and turned the heat up as high as possible. The result was a pale, sticky mess that my father ate politely and my sister refused to touch. My grandmother laughed and told me the secret: fried rice needs rice that was cooked yesterday and has dried out in the fridge. Fresh rice is too wet.<br><br>Each day after that I learned one more thing that videos never mention. A knife should be sharp, not because it cuts faster but because a blunt one slips. Salt added at the end tastes stronger than salt added at the start. Vegetables should go into the soup in the order of how long they take to soften, so the carrots before the leaves. None of this was complicated, but nobody had ever explained it to me, and I had never asked.<br><br>By Friday my sister ate everything on her plate. By Sunday my grandmother sat down at the table and let me serve her, which she had never done before. When I handed in my diary, I expected the teacher to talk about vitamins and energy, which we had studied in class. Instead she asked us one question: what had we learned about the people we cooked for? I wrote that my sister will eat anything if it is cut small enough, that my father says \"delicious\" before he has tasted it, and that my grandmother, who never sits still, will stop for a meal made by someone who has tried.",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the main idea of the passage?",
+          "options": [
+            "Cooking videos give wrong information about fried rice.",
+            "A week of cooking taught the writer practical skills and something about the family.",
+            "Science homework is more useful when it is done at home.",
+            "The writer's grandmother is the best cook in the family."
+          ],
+          "correct": 1,
+          "explanation": "The passage moves from the writer's mistakes, to the small skills learned, to the teacher's final question about the people the writer cooked for. The videos and the grandmother are details, not the point."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "What went wrong with the writer's fried rice?",
+          "options": [
+            "The rice had been left in the fridge for too long.",
+            "The writer forgot to add any oil.",
+            "The rice was freshly cooked and still wet.",
+            "The heat was too low to fry the rice properly."
+          ],
+          "correct": 2,
+          "explanation": "The grandmother explains that fried rice needs rice cooked the day before, because \"fresh rice is too wet\". The writer used too much oil and too much heat, not too little."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "According to the passage, why should a kitchen knife be sharp?",
+          "options": [
+            "so that food can be cut more quickly",
+            "so that vegetables soften faster in the soup",
+            "because a knife that is not sharp can slip",
+            "because sharp knives make food taste stronger"
+          ],
+          "correct": 2,
+          "explanation": "Paragraph 3 says a knife should be sharp \"not because it cuts faster but because a blunt one slips\". Speed is the tempting wrong answer the writer rejects."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The word \"blunt\" in paragraph 3 is closest in meaning to",
+          "options": [
+            "not sharp",
+            "very expensive",
+            "made of plastic",
+            "too heavy"
+          ],
+          "correct": 0,
+          "explanation": "The sentence contrasts a sharp knife with a \"blunt one\", so blunt must mean the opposite of sharp."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What can be inferred about the writer's grandmother?",
+          "options": [
+            "She usually prepares and serves the meals herself.",
+            "She refused to eat the writer's fried rice.",
+            "She helped the writer cook every evening of the week.",
+            "She thinks cooking videos are a good way to learn."
+          ],
+          "correct": 0,
+          "explanation": "Letting the writer serve her was something \"she had never done before\", and she \"never sits still\", which suggests she is normally the one doing the cooking. It was the sister, not the grandmother, who refused the fried rice."
+        },
+        {
+          "kind": "purpose",
+          "type": "mcq",
+          "q": "Why does the writer mention that the teacher did not talk about vitamins and energy?",
+          "options": [
+            "to show that the teacher had forgotten the science lesson",
+            "to contrast what the writer expected with the question the teacher actually asked",
+            "to explain why the homework was set by a science teacher",
+            "to suggest that the meals the writer cooked were not healthy"
+          ],
+          "correct": 1,
+          "explanation": "The writer \"expected\" a talk about nutrition; \"Instead\" the teacher asked about the people they cooked for. The contrast leads to the final, most important lesson."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The writer's father says a meal is delicious before he has tried it.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 0,
+          "explanation": "The last sentence states directly that the father says \"delicious\" before he has tasted the food."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-02-3",
+      "level": "kc",
+      "title": "The Night the Wi-Fi Went Off",
+      "topic": "technology at home",
+      "words": 332,
+      "passage": "When the storm knocked out the internet in our building last month, my first feeling was panic. It was seven in the evening, I had homework to submit online, and my younger brother had already announced that his life was over. My mother, who grew up in a house with one telephone in the hallway, simply lit a candle and asked what we wanted to do.<br><br>The truth is that our home depends on the internet more than any of us had noticed. The lights in the living room are switched on with a phone. The fridge sends a message when the milk is finished. Even the front door has a small camera that shows visitors on our screens. Without the connection, the lights still worked, but only from the old switch on the wall, which my brother could not find at first. The fridge went silent. The door became a door again.<br><br>What surprised me was how quickly the evening filled up. My brother found a box of board games under his bed that he had not opened since he was nine. My father, who normally reads the news on his tablet after dinner, told us instead about the games he had played as a boy in a village with no electricity at all. I finished my homework on paper and photographed it the next morning, and my teacher accepted it without a word.<br><br>I am not going to pretend that we have given up technology. The internet came back at midnight, and by half past twelve my brother was online again. But the evening changed one thing. We now have a \"no screens\" hour after dinner on Wednesdays. It was my brother's idea, which shows how much a single evening can change a person. Modern homes are wonderful, and I would not want to live without the fridge that talks. It is just useful to know that, if it stops talking, we still know how to talk to each other.",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the passage mainly about?",
+          "options": [
+            "How dangerous storms can be for electrical equipment in a home",
+            "What a family discovered when their home lost its internet for an evening",
+            "Why smart fridges and door cameras are a waste of money",
+            "How the writer's father grew up in a village without electricity"
+          ],
+          "correct": 1,
+          "explanation": "The storm and the father's childhood are single details; the whole passage describes one evening without internet and what the family learned from it. The writer does not say smart devices are a waste of money."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "Which of the following still worked while the internet was off?",
+          "options": [
+            "the camera on the front door",
+            "the messages from the fridge",
+            "the living-room lights, using the switch on the wall",
+            "the system for submitting homework online"
+          ],
+          "correct": 2,
+          "explanation": "Paragraph 2: the lights \"still worked, but only from the old switch on the wall\". The fridge went silent, the door camera stopped, and the writer had to do the homework on paper."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The phrase \"knocked out\" in the first sentence is closest in meaning to",
+          "options": [
+            "repaired",
+            "put out of action",
+            "slowed down",
+            "made more expensive"
+          ],
+          "correct": 1,
+          "explanation": "The storm caused the internet to stop working completely; it did not come back until midnight."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "In paragraph 4, \"It was my brother's idea\" – the word \"It\" refers to",
+          "options": [
+            "the storm",
+            "the box of board games",
+            "the hour without screens after dinner on Wednesdays",
+            "the internet connection"
+          ],
+          "correct": 2,
+          "explanation": "The sentence before introduces the \"no screens\" hour, and the writer then says whose idea it was. The board games belong to the previous paragraph."
+        },
+        {
+          "kind": "purpose",
+          "type": "mcq",
+          "q": "Why does the writer mention that the mother grew up with one telephone in the hallway?",
+          "options": [
+            "to explain why the mother stayed calm when the internet stopped",
+            "to show that the mother dislikes modern technology",
+            "to suggest that telephones are more reliable than the internet",
+            "to describe how old the family's building is"
+          ],
+          "correct": 0,
+          "explanation": "The detail comes right before the mother \"simply lit a candle\": someone who grew up with little technology is not worried by losing it. Nothing says she dislikes technology."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The writer's teacher refused to accept the homework because it was done on paper.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 1,
+          "explanation": "Paragraph 3 says the teacher \"accepted it without a word\" after the writer photographed the paper homework."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The writer's father and mother grew up in the same village.",
+          "options": ["True", "False", "Not Given"],
+          "correct": 2,
+          "explanation": "We are told the father grew up in a village with no electricity and the mother in a house with one telephone, but the passage never says where the mother lived or whether it was the same place."
+        }
+      ]
+    }
+  ]
+}

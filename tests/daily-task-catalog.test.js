@@ -164,7 +164,7 @@ suite('daily task catalog: match rules mirror what js/auth.js actually uploads',
   test('every go.calls function name exists in the app sources', () => {
     const src = ['js/app.js', 'js/topics.js', 'js/units.js', 'js/phrases.js', 'js/collocation.js', 'js/wordform.js',
       'js/rewrite.js', 'js/verbs.js', 'js/home.js', 'js/grammar-ui.js', 'js/math.js', 'js/mathwars.js',
-      'js/math-tables.js', 'js/ptnk.js']
+      'js/math-tables.js', 'js/ptnk.js', 'js/practice-sets.js']
       .map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
     for (const e of Catalog.all()) {
       for (const call of e.go.calls) {

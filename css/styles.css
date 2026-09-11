@@ -11331,6 +11331,9 @@
         .ptnk-key-note { color: #b45309; font-weight: 600; }
         .ptnk-omitted { margin-top: 4px; font-size: 12px; color: #9a3412; }
         .nav-hub-card.ptnk .nav-hub-icon { color: #7c3aed; background: #ede9fe; }
+        .nav-hub-card.reading .nav-hub-icon { color: #0f766e; background: #ccfbf1; }
+        .nav-hub-card.cloze .nav-hub-icon { color: #b45309; background: #fef3c7; }
+        .nav-hub-card.errors .nav-hub-icon { color: #be123c; background: #ffe4e6; }
         .exam-card-go { font-size: 26px; color: var(--text-secondary); flex: 0 0 auto; }
 
         .exam-history-btn {

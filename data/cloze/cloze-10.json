@@ -1,0 +1,492 @@
+{
+  "passages": [
+    {
+      "id": "cl-ch-10-1",
+      "level": "ch",
+      "mode": "open",
+      "title": "Lanterns in the Dark",
+      "topic": "deep-sea creatures",
+      "passage": "Nowhere on Earth is life stranger than in the deep ocean, where sunlight has never reached and the pressure would crush any submarine (1)____ was not built for it. Only in the last few decades (2)____ scientists begun to map this world in any detail. Every expedition, meanwhile, seems to turn (3)____ a creature that nobody had imagined. Some fish carry their own lanterns, tiny organs (4)____ glow produces just enough light to lure prey within reach. Others have done away (5)____ eyes altogether, relying instead on smell and on the faint vibrations of the water. Food is so scarce (6)____ a single dead whale sinking to the seabed can feed a whole community for years. Far (7)____ being a wasteland, then, the deep sea turns out to be one of the richest habitats on the planet. What makes these discoveries urgent, (8)____, is that mining companies are now looking at the same seabed for metals. Had the deep ocean been easier to reach, it (9)____ almost certainly have been damaged long ago. As things stand, we may be on the (10)____ of destroying a world we have barely begun to understand.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "that",
+            "which"
+          ],
+          "answer": "that",
+          "explanation": "A defining relative clause with the subject missing needs a relative pronoun: <b>that</b> or <b>which</b>. <i>Who</i> is for people, and <i>it</i> would leave two finite clauses with nothing joining them."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "have"
+          ],
+          "answer": "have",
+          "explanation": "After a fronted <i>Only in…</i> phrase the auxiliary comes before the subject, and <i>begun</i> is a past participle, so the auxiliary must be <b>have</b>. <i>Did</i> would need the base form <i>begin</i>."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "up"
+          ],
+          "answer": "up",
+          "explanation": "<b>Turn up</b> means to find or produce something unexpectedly. <i>Turn out</i> would mean to prove to be, and cannot take a creature as its object."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "whose"
+          ],
+          "answer": "whose",
+          "explanation": "The glow belongs to the organs, so the possessive relative <b>whose</b> is needed. <i>Which</i> would need a verb straight after it and leaves <i>glow produces</i> without a subject."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "with"
+          ],
+          "answer": "with",
+          "explanation": "The phrasal verb is <b>do away with</b> something, meaning to get rid of it. <i>Do away from</i> does not exist, and <i>without</i> would turn the sentence into nonsense."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "that"
+          ],
+          "answer": "that",
+          "explanation": "<i>So scarce</i> sets up a result clause, and the result is introduced by <b>that</b>. <i>Because</i> or <i>as</i> would give a reason, which is the wrong logic."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "from"
+          ],
+          "answer": "from",
+          "explanation": "<b>Far from</b> being X means not at all X. <i>Far of</i> is not English, and <i>far beyond</i> would suggest the deep sea is more than a wasteland rather than not one."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "however",
+            "though",
+            "nevertheless",
+            "nonetheless"
+          ],
+          "answer": "however",
+          "explanation": "The sentence contrasts a hopeful discovery with a threat, so a contrastive adverb between commas is needed: <b>however</b> or <b>though</b>. <i>But</i> cannot sit inside commas in mid-sentence, and <i>therefore</i> makes no logical sense."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "would"
+          ],
+          "answer": "would",
+          "explanation": "This is an inverted third conditional (<i>Had it been…</i>), whose main clause takes <b>would</b> + have + past participle. <i>Might</i> or <i>could</i> clash with <i>almost certainly</i>, which states a firm result."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "brink",
+            "verge",
+            "point",
+            "edge",
+            "cusp"
+          ],
+          "answer": "brink",
+          "explanation": "<b>On the brink of</b> (or <i>verge</i>, <i>point</i>, <i>edge</i>) doing something means about to do it. <i>Way</i> or <i>road</i> collocate with <i>on the way to</i>, not with <i>of</i> + -ing."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-10-2",
+      "level": "ch",
+      "mode": "open",
+      "title": "More Than Silk",
+      "topic": "the Silk Road",
+      "passage": "The Silk Road was never a single road, (1)____ a shifting network of tracks that linked China with the Mediterranean for well over a thousand years. Silk itself accounted for only a fraction (2)____ what travelled along it; paper, glass, horses and spices changed hands just as often, and so, less happily, did disease. No merchant ever made the whole journey. Goods were passed from one caravan to (3)____ at oasis towns, each middleman adding his own mark-up, (4)____ is why a bolt of Chinese silk could cost its weight in gold by the time it reached Rome. It was not (5)____ the fifteenth century, when sea routes around Africa opened up, that the overland trade began to decline. Ideas, however, proved more durable (6)____ any cargo. Buddhism reached China along these paths, as did techniques for making paper, and the mathematics that Europe later took (7)____ granted. Had it not been for this exchange, the Renaissance (8)____ well have looked very different. Today the name has been revived by governments keen to cash (9)____ on its romance, though the trains and pipelines of the new routes bear little resemblance to a camel train. The history is a reminder that trade, (10)____ its faults, has always carried more than goods.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "but",
+            "rather"
+          ],
+          "answer": "but",
+          "explanation": "<i>Never X, <b>but</b> Y</i> (or <i>rather</i> Y) corrects a false idea with the true one. <i>And</i> would make the two descriptions both true, which contradicts <i>never</i>."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "of"
+          ],
+          "answer": "of",
+          "explanation": "A quantity word such as <i>fraction</i>, <i>share</i> or <i>part</i> is linked to its whole by <b>of</b>. <i>From</i> would suggest silk was taken out of the goods, not that it formed part of them."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "another"
+          ],
+          "answer": "another",
+          "explanation": "The fixed pair is <i>from one … to <b>another</b></i>. <i>Other</i> cannot stand alone as a singular pronoun, and <i>the next</i> would be two words."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "which"
+          ],
+          "answer": "which",
+          "explanation": "A comma followed by <b>which</b> refers back to the whole previous idea (the mark-ups). <i>That</i> cannot follow a comma in this way, and <i>it</i> would create a run-on sentence."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "until",
+            "till"
+          ],
+          "answer": "until",
+          "explanation": "This is the cleft pattern <i>It was not <b>until</b> … that …</i>, stressing when something finally happened. <i>Before</i> or <i>in</i> do not work with <i>not … that</i> in this frame."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "than"
+          ],
+          "answer": "than",
+          "explanation": "The comparative <i>more durable</i> must be completed with <b>than</b>. <i>As</i> belongs to <i>as durable as</i>, and <i>to</i> follows only comparatives such as <i>superior</i>."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "for"
+          ],
+          "answer": "for",
+          "explanation": "The idiom is <b>take something for granted</b>. <i>As</i> is tempting after <i>take</i>, but <i>take as granted</i> is not an English expression."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "might",
+            "may",
+            "could"
+          ],
+          "answer": "might",
+          "explanation": "<b>Might</b> (or <i>may</i>, <i>could</i>) <i>well have</i> + past participle expresses a strong past possibility in a conditional. <i>Would well have</i> is not idiomatic, and <i>should</i> changes the meaning to duty."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "in"
+          ],
+          "answer": "in",
+          "explanation": "The three-part verb is <b>cash in on</b> something, meaning to profit from it. <i>Cash on</i> or <i>cash out on</i> do not carry that meaning."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "despite",
+            "whatever",
+            "notwithstanding"
+          ],
+          "answer": "despite",
+          "explanation": "<b>Despite</b> (or <i>whatever</i>) <i>its faults</i> concedes the drawbacks before making a positive claim. <i>For</i> only works in the longer phrase <i>for all its faults</i>, and <i>although</i> needs a clause with a verb."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-10-3",
+      "level": "ch",
+      "mode": "open",
+      "title": "Foxes on the High Street",
+      "topic": "urban wildlife",
+      "passage": "Cities were never designed (1)____ animals in mind, yet a surprising number have moved in regardless. Foxes now breed in the suburbs of London at a greater density than in the countryside, and peregrine falcons, once close to extinction, nest on the ledges of office towers, (2)____ pigeons provide an endless supply of food. What sets these species (3)____ is their adaptability: a raccoon will learn to open a bin within days, and the crows of one Japanese city have been seen dropping walnuts onto pedestrian crossings so that passing cars crack them (4)____. Not everyone welcomes the newcomers. Residents complain of overturned rubbish, dug-up lawns and, (5)____ the case of wild boar in some European cities, damage to cars. Councils are therefore torn (6)____ two demands: to protect wildlife and to keep the streets tidy. Nor is the traffic harmless to the animals themselves, (7)____ have to cross roads that were never meant for them. Even so, ecologists argue that the city may (8)____ out to be a refuge rather than a threat. Rarely (9)____ a habitat expanded so quickly, and the animals that succeed in it may be the ones best placed to survive whatever the next century brings. The question is not whether we can keep them (10)____, but whether we should even try.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "with"
+          ],
+          "answer": "with",
+          "explanation": "The fixed phrase is <b>with</b> somebody or something <i>in mind</i>, meaning while thinking of them. <i>For</i> is tempting after <i>designed</i>, but <i>designed for animals in mind</i> mixes two different patterns."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "where",
+            "as",
+            "since",
+            "because"
+          ],
+          "answer": "where",
+          "explanation": "The clause says what happens at the office towers, a place, so the relative adverb <b>where</b> fits best; a causal linker (<i>as</i>, <i>since</i>, <i>because</i>) also works, explaining why the falcons nest there. <i>Which</i> would need a preposition (<i>on which</i>) to make sense."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "apart"
+          ],
+          "answer": "apart",
+          "explanation": "<b>Set something apart</b> means to make it different from the rest. <i>Set out</i> and <i>set up</i> exist but mean to start a journey or to establish something."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "open"
+          ],
+          "answer": "open",
+          "explanation": "You <b>crack</b> a nut <b>open</b>: the adjective describes the result of the cracking. <i>Up</i> would suggest breaking into small pieces rather than getting at the inside."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "in"
+          ],
+          "answer": "in",
+          "explanation": "The fixed phrase is <b>in the case of</b> something. <i>On</i> and <i>for</i> do not combine with <i>the case of</i> in this meaning."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "between"
+          ],
+          "answer": "between",
+          "explanation": "To be <b>torn between</b> two things is to be pulled in two directions. <i>Among</i> is for more than two, and <i>by</i> would mean the demands were doing the tearing."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "which"
+          ],
+          "answer": "which",
+          "explanation": "After a comma, a non-defining relative clause about animals takes <b>which</b>. <i>That</i> cannot follow a comma here, and <i>who</i> is reserved for people."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "turn"
+          ],
+          "answer": "turn",
+          "explanation": "<b>Turn out to be</b> means to prove to be in the end. <i>Work out</i> is not followed by <i>to be</i>, and <i>come out</i> gives the wrong meaning."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "has"
+          ],
+          "answer": "has",
+          "explanation": "A negative adverb such as <i>rarely</i> at the front forces inversion, and with the singular subject <i>a habitat</i> and the participle <i>expanded</i> the auxiliary is <b>has</b>. <i>Did</i> would need <i>expand</i>."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "out",
+            "away"
+          ],
+          "answer": "out",
+          "explanation": "<b>Keep somebody out</b> (or <i>away</i>) means to prevent them from entering. <i>Off</i> would need a following object such as <i>the streets</i>, and <i>in</i> reverses the meaning."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-10-4",
+      "level": "ch",
+      "mode": "mcq",
+      "title": "Prison or Ark?",
+      "topic": "the ethics of zoos",
+      "passage": "Few institutions divide opinion as sharply as the zoo. To its defenders, a modern zoo is (1)____ a prison than an ark: a place where species that would otherwise have vanished are kept alive until their habitats can be restored. The Arabian oryx, hunted to extinction in the wild by the 1970s, was bred in captivity and (2)____ reintroduced to the desert, and it is hard to (3)____ that this would have happened without zoos. Critics, (4)____, point out that such success stories are rare. The great majority of animals on display belong to species that are not endangered at all, and are there, (5)____ put it bluntly, because visitors like looking at them. Nor does a large enclosure (6)____ for a life spent on the move; an elephant that would walk thirty kilometres a day in Africa cannot do so behind a fence, however well it is fed. It is this gap between what an animal needs and what a zoo can (7)____ that troubles many biologists. There is, (8)____, a middle path. Some zoos have already (9)____ up their elephants and big cats, keeping only species that adapt well to confinement and spending the money saved on conservation abroad. Whether the public will keep coming to see frogs and beetles remains to be seen; but if zoos are to (10)____ their claim to be on the animals' side, they may have no choice.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "more",
+            "less",
+            "rather",
+            "fewer"
+          ],
+          "correct": 1,
+          "explanation": "<b>Less</b> X <i>than</i> Y means it is better described as Y than as X, which matches the defenders' view. <i>More</i> reverses the meaning, <i>rather</i> needs <i>rather than</i>, and <i>fewer</i> goes only with plural nouns."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "previously",
+            "consequently",
+            "subsequently",
+            "formerly"
+          ],
+          "correct": 2,
+          "explanation": "The reintroduction came after the breeding, so the adverb of sequence is <b>subsequently</b>. <i>Previously</i> and <i>formerly</i> point backwards in time, and <i>consequently</i> claims a cause the sentence does not state."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "imagine",
+            "deny",
+            "accept",
+            "doubt"
+          ],
+          "correct": 0,
+          "explanation": "The writer means the rescue could not have happened without zoos, so it is <i>hard to <b>imagine</b></i> the alternative. <i>Hard to deny</i> or <i>hard to doubt</i> would assert the opposite, and <i>accept</i> makes the sentence contradict itself."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "therefore",
+            "moreover",
+            "otherwise",
+            "however"
+          ],
+          "correct": 3,
+          "explanation": "Critics are being contrasted with defenders, so the linker is <b>however</b>. <i>Therefore</i> and <i>moreover</i> would continue the defenders' argument, and <i>otherwise</i> needs a condition."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the word that fits.",
+          "options": [
+            "as",
+            "to",
+            "for",
+            "in"
+          ],
+          "correct": 1,
+          "explanation": "The comment phrase is <b>to put it bluntly</b>, an infinitive of purpose. <i>As</i> would need a finite verb (<i>as I put it</i>), and <i>for</i> and <i>in</i> cannot introduce a bare infinitive."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "replace",
+            "account",
+            "compensate",
+            "substitute"
+          ],
+          "correct": 2,
+          "explanation": "<b>Compensate for</b> means to make up for a loss, which is the idea here. <i>Replace</i> takes no preposition, <i>account for</i> means to explain, and <i>substitute for</i> would mean the enclosure is used instead of the walking, not that it makes up for its loss."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "fulfil",
+            "provide",
+            "perform",
+            "attain"
+          ],
+          "correct": 1,
+          "explanation": "A zoo <b>provides</b> conditions, so <i>what a zoo can provide</i> pairs with <i>what an animal needs</i>. <i>Fulfil</i> takes a need as its object, not <i>what</i>, and <i>perform</i> and <i>attain</i> do not describe supplying living conditions."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "likewise",
+            "meanwhile",
+            "instead",
+            "nevertheless"
+          ],
+          "correct": 3,
+          "explanation": "After the troubling gap, the writer offers hope despite it, which calls for the concessive <b>nevertheless</b>. <i>Likewise</i> adds a similar point, <i>meanwhile</i> marks time, and <i>instead</i> needs a rejected alternative."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "given",
+            "taken",
+            "put",
+            "set"
+          ],
+          "correct": 0,
+          "explanation": "<b>Give up</b> means to stop keeping or doing something, so the zoos have <i>given up</i> their elephants. <i>Taken up</i> means to start, <i>put up</i> means to build or tolerate, and <i>set up</i> means to establish."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "approve",
+            "admit",
+            "justify",
+            "certify"
+          ],
+          "correct": 2,
+          "explanation": "To <b>justify a claim</b> is to show it is deserved. <i>Approve</i> and <i>certify</i> are done by an outside authority, not by the claimant, and <i>admit</i> would mean confessing to it."
+        }
+      ]
+    }
+  ]
+}

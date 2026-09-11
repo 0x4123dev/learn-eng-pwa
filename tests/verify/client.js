@@ -521,6 +521,57 @@ function screenPlaybook() {
         return bank.length + ' PTNK papers listed under ' + years.length + ' years; "' + bank[0].title + '" opens in the ptnk set';
       },
     },
+    readingScreen: {
+      title: 'Đọc hiểu: danh sách bài, mở một bài, thấy đoạn văn, trả lời',
+      open: async (h) => { h.sandbox.switchScreen('readingScreen'); await settle(); },
+      prove: (h, el) => {
+        const bank = h.peek('READING_PASSAGES');
+        must(Array.isArray(bank) && bank.length > 0, 'the reading bank arrived (lazy)');
+        must(wiredTo(el, 'startReadingPassage').length === bank.length, 'every passage has a card');
+        must(bank.some(p => p.level === 'kc') && bank.some(p => p.level === 'ch'), 'both levels are in the bank');
+        h.sandbox.startExam(bank[0].id, 'reading');
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'reading', 'the passage opened in the reading set');
+        const text = squash(h.el('readingScreen').textContent);
+        must(text.includes(squash(bank[0].passage.replace(/<[^>]+>/g, ' ')).slice(0, 40)), 'the passage is drawn above the question');
+        h.sandbox.abandonExam();
+        h.sandbox.renderReadingHome();
+        return bank.length + ' passages; "' + bank[0].title + '" opens with its passage on screen';
+      },
+    },
+    clozeScreen: {
+      title: 'Điền từ: danh sách đoạn, mở một đoạn, thấy 10 chỗ trống',
+      open: async (h) => { h.sandbox.switchScreen('clozeScreen'); await settle(); },
+      prove: (h, el) => {
+        const bank = h.peek('CLOZE_PASSAGES');
+        must(Array.isArray(bank) && bank.length > 0, 'the cloze bank arrived (lazy)');
+        must(wiredTo(el, 'startClozePassage').length === bank.length, 'every text has a card');
+        must(bank.some(p => p.mode === 'mcq') && bank.some(p => p.mode === 'open'), 'both cloze modes are in the bank');
+        h.sandbox.startExam(bank[0].id, 'cloze');
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'cloze', 'the text opened in the cloze set');
+        must(squash(h.el('clozeScreen').textContent).includes('(10)____'), 'all ten blanks are on screen');
+        h.sandbox.abandonExam();
+        h.sandbox.renderClozeHome();
+        return bank.length + ' cloze texts; "' + bank[0].title + '" opens with its ten blanks';
+      },
+    },
+    errorsScreen: {
+      title: 'Tìm lỗi sai: bắt đầu một lượt, thấy bốn phần gạch chân, trả lời',
+      open: async (h) => { h.sandbox.switchScreen('errorsScreen'); await settle(); },
+      prove: (h, el) => {
+        const bank = h.peek('ERROR_ITEMS');
+        must(Array.isArray(bank) && bank.length >= 20, 'the errors bank arrived (lazy)');
+        must(wiredTo(el, 'startErrorsRound').length === 2, 'one round per level');
+        h.sandbox.startErrorsRound('kc');
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'errors', 'the round started in the errors set');
+        const opts = h.el('errorsScreen').querySelectorAll('.grammar-option');
+        must(opts.length === 4, 'four segments to choose from');
+        h.sandbox.answerExamChoice(0);
+        must(h.sandbox.isExamActive(), 'one answer does not end a ten-item round');
+        h.sandbox.abandonExam();
+        h.sandbox.renderErrorsHome();
+        return bank.length + ' items; a Không chuyên round opens with four segments';
+      },
+    },
     profileScreen: {
       title: 'Hồ sơ: điểm, chuỗi ngày, giao diện',
       open: async (h) => { h.sandbox.navigateToProfile(); },

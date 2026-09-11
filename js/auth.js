@@ -465,12 +465,24 @@ const EngAuth = (function () {
     // localStorage key) precisely so it reaches this list: an admin assigns
     // "làm đề PTNK 2022 Chuyên" as a daily task, and the task matcher reads
     // activities, never exam_attempts. detail.examId is what it matches on.
-    (appState.ptnkHistory || []).forEach(h => add({
+    // The other exam-engine sets (js/practice-sets.js) keep history the same
+    // way, for the same reason. detail.examId is what a daily task matches:
+    // 'rd-kc-…' for a reading passage, 'cl-ch-…' for a cloze text,
+    // 'er-round-kc:…' for an error round — the level sits in the prefix.
+    // Each one named literally, not through a loop over a list: the drift
+    // guard (tests/cross-boundary-drift.test.js) greps this file for
+    // `appState.<name>History` to prove every history the app writes is
+    // uploaded. A loop over strings would pass nothing and fail nothing.
+    const examSet = (set) => (h) => add({
       type: 'exam',
-      title: h.title || ('PTNK ' + (h.examId || '')),
+      title: h.title || (set + ' ' + (h.examId || '')),
       score: h.score, total: h.total, at: h.ts,
-      detail: { examId: h.examId, set: 'ptnk' },
-    }));
+      detail: { examId: h.examId, set: set },
+    });
+    (appState.ptnkHistory || []).forEach(examSet('ptnk'));
+    (appState.readingHistory || []).forEach(examSet('reading'));
+    (appState.clozeHistory || []).forEach(examSet('cloze'));
+    (appState.errorsHistory || []).forEach(examSet('errors'));
     (appState.warsHistory || []).forEach(h => add({
       // Math Wars rides the 'math' type: it IS maths practice, and a type the
       // server does not know is dropped in silence (see functions/api/activity.js).

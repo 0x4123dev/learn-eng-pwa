@@ -1,0 +1,301 @@
+{
+  "passages": [
+    {
+      "id": "rd-kc-04-1",
+      "level": "kc",
+      "title": "The Homework Nobody Sets",
+      "topic": "health",
+      "words": 310,
+      "passage": "Every evening, fifteen-year-old Linh finishes her exercises at about eleven o'clock, checks her phone \"for a minute\", and finally turns off the light after midnight. Six hours later her alarm rings. She is not unusual. A survey of secondary schools in Ho Chi Minh City last year found that fewer than one student in five was getting the eight to ten hours of sleep that doctors recommend for teenagers.<br><br>Why does it matter? Sleep is not simply a pause between two days. While we sleep, the brain sorts through what it has learned and moves the useful parts into long-term memory. A student who studies until two in the morning may remember less the next day than one who stopped at ten and slept properly. Sleep also repairs muscles, controls appetite and helps the body fight illness. Teenagers who regularly sleep too little are more likely to catch colds, gain weight and feel low.<br><br>Part of the problem is biology. During the teenage years the body's internal clock shifts later, so a fifteen-year-old genuinely does not feel tired at ten o'clock in the way a ten-year-old does. Schools, however, still start early. The other part of the problem is light. Screens give off a blue light which tells the brain that it is still daytime, so scrolling in bed delays sleep even further.<br><br>The good news is that small changes help. Doctors suggest keeping the same bedtime at weekends, putting the phone outside the bedroom, and doing the hardest homework first, while the mind is fresh. Some schools in other countries have moved their first lesson to nine o'clock and reported better marks and fewer absences. Linh has not persuaded her school to do the same, but she now charges her phone in the kitchen. \"I still don't love my alarm,\" she says, \"but at least I hear it now.\"",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the passage mainly about?",
+          "options": [
+            "Why teenagers should study late at night",
+            "The importance of sleep for teenagers and how to get more of it",
+            "The results of a survey of schools in Ho Chi Minh City",
+            "The dangers of using mobile phones"
+          ],
+          "correct": 1,
+          "explanation": "The survey and the phone are only details in one paragraph each. The whole passage explains why teenagers need sleep (paragraphs 2–3) and what helps them get it (paragraph 4)."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "According to the survey, how many students were getting enough sleep?",
+          "options": [
+            "Fewer than twenty per cent",
+            "About half",
+            "Eight out of ten",
+            "Nine out of ten"
+          ],
+          "correct": 0,
+          "explanation": "\"Fewer than one student in five\" means fewer than 20%. \"Eight to ten\" in the same sentence is the number of hours, not the number of students."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What does paragraph 2 suggest about a student who studies until two in the morning?",
+          "options": [
+            "He or she will certainly fail the next test.",
+            "He or she may remember less than a student who slept properly.",
+            "He or she remembers more because of the extra hours of study.",
+            "He or she will gain weight the next day."
+          ],
+          "correct": 1,
+          "explanation": "The writer says such a student \"may remember less the next day\" — a possibility, not a certainty. Weight gain is linked to <b>regularly</b> sleeping too little, not to one late night."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The word \"shifts\" in paragraph 3 is closest in meaning to",
+          "options": [
+            "moves",
+            "stops",
+            "breaks",
+            "speeds up"
+          ],
+          "correct": 0,
+          "explanation": "The internal clock \"shifts later\", i.e. it <b>moves</b> to a later time, which is why teenagers do not feel tired at ten o'clock."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "In paragraph 4, \"the same\" refers to",
+          "options": [
+            "charging the phone in the kitchen",
+            "keeping the same bedtime at weekends",
+            "starting the first lesson at nine o'clock",
+            "doing the hardest homework first"
+          ],
+          "correct": 2,
+          "explanation": "The sentence before describes schools that moved their first lesson to nine o'clock; Linh \"has not persuaded her school to do the same\" — to make that change."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Linh's school now begins lessons at nine o'clock.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 1,
+          "explanation": "The passage says Linh \"has not persuaded her school\" to move its first lesson, so the statement is false. Only schools in other countries have done this."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Linh's marks have improved since she moved her phone out of her bedroom.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 2,
+          "explanation": "Better marks are mentioned only for schools abroad that changed their timetable. The passage says nothing about Linh's marks, so this is Not Given."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-04-2",
+      "level": "kc",
+      "title": "Life in the Alley",
+      "topic": "city life",
+      "words": 302,
+      "passage": "Visitors to Vietnam's big cities usually notice the main roads first: the wide avenues, the tall glass towers and the endless stream of motorbikes. Yet most city people do not actually live on those roads. They live in the alleys, the narrow lanes that run behind the main streets like the branches of a tree. Some are wide enough for a car; many are so narrow that two motorbikes must slow down to pass each other.<br><br>An alley is more than a way to get home. In the early morning it becomes a market, with women selling vegetables and sticky rice from baskets. By mid-morning it is a workshop: a man repairs electric fans outside his door, and a neighbour hangs freshly washed clothes across the passage. In the evening the same few square metres turn into a dining room, a football pitch and a meeting place for grandparents, who bring out plastic chairs and watch the world go by.<br><br>This shared life has real advantages. Neighbours know who belongs and who does not, so children play outside with little supervision, and an elderly person who has not opened their door by ten o'clock will soon receive a knock. Compared with a block of flats, where families may live for years without learning each other's names, the alley is remarkably social.<br><br>It has its problems too. Fire engines cannot enter the narrowest alleys, and rubbish collection is difficult. As land prices rise, developers are keen to replace whole neighbourhoods with apartment towers, and some younger residents welcome the idea of a lift and a car park. Others are not so sure. \"In a tower you have privacy,\" says Mrs Hoa, who has sold noodles from her doorway for thirty years. \"Here I have people. I know which one I would rather lose.\"",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the passage mainly about?",
+          "options": [
+            "The traffic problems of Vietnam's big cities",
+            "How alleys work as shared living spaces and why they may change",
+            "Why developers prefer to build apartment towers",
+            "The daily routine of a noodle seller"
+          ],
+          "correct": 1,
+          "explanation": "Paragraphs 2–3 describe how the alley is used and shared, and paragraph 4 explains the pressure to replace it. Traffic, developers and Mrs Hoa are details, not the main topic."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "Which activity is NOT mentioned in paragraph 2?",
+          "options": [
+            "Selling food from baskets",
+            "Repairing electrical goods",
+            "Washing motorbikes",
+            "Playing football"
+          ],
+          "correct": 2,
+          "explanation": "Paragraph 2 mentions selling sticky rice, repairing fans, hanging washed <b>clothes</b> and a football pitch. Nobody washes a motorbike — the washing is of clothes."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "What can be inferred about an elderly person who has not opened their door by ten o'clock?",
+          "options": [
+            "They are certainly ill.",
+            "A neighbour will come to check that they are all right.",
+            "They live alone in a block of flats.",
+            "They need supervision in the same way that children do."
+          ],
+          "correct": 1,
+          "explanation": "They \"will soon receive a knock\" because neighbours notice — the knock is a check, not proof of illness. The block of flats is the contrasting example, not where this person lives."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The word \"keen\" in paragraph 4 is closest in meaning to",
+          "options": [
+            "eager",
+            "afraid",
+            "unable",
+            "slow"
+          ],
+          "correct": 0,
+          "explanation": "Developers are \"keen to replace\" neighbourhoods because land prices are rising — they are <b>eager</b> to do it. \"Keen to\" + verb means wanting very much to."
+        },
+        {
+          "kind": "purpose",
+          "type": "mcq",
+          "q": "Why does the writer include Mrs Hoa's words at the end?",
+          "options": [
+            "To show that every resident is against the new towers",
+            "To show what some residents feel they would lose in a tower",
+            "To explain why her noodles are popular",
+            "To prove that towers offer more privacy than alleys"
+          ],
+          "correct": 1,
+          "explanation": "Her quote follows \"Others are not so sure\" and shows the view of residents who value people over privacy. \"Some\" younger residents welcome the towers, so not everyone is against them."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Fire engines are able to reach every alley in the city.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 1,
+          "explanation": "Paragraph 4 states that fire engines \"cannot enter the narrowest alleys\", so the statement is false."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "Mrs Hoa's children would like to move to an apartment tower.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 2,
+          "explanation": "The passage says \"some younger residents\" welcome the towers, but it never mentions Mrs Hoa's children, so this is Not Given."
+        }
+      ]
+    },
+    {
+      "id": "rd-kc-04-3",
+      "level": "kc",
+      "title": "Is It Too Late to Learn the Guitar?",
+      "topic": "music",
+      "words": 311,
+      "passage": "Ask most people when they should have started learning an instrument and they will sigh and say \"as a child\". There is some truth in this. Young children pick up rhythm and pitch easily, and their hands grow used to the shapes of chords before they know the names of the notes. But the idea that a teenager or an adult has missed the boat is simply wrong, and it stops thousands of people from doing something they would enjoy.<br><br>Research on learning suggests that older beginners have advantages of their own. A fifteen-year-old can read instructions, understand why a scale is built the way it is, and practise on purpose rather than by accident. Children often need a parent to remind them; a teenager who has chosen the guitar herself will find twenty minutes for it without being asked. Motivation, not age, is the best predictor of who will still be playing a year later.<br><br>What does hold older beginners back is embarrassment. A six-year-old does not mind sounding terrible; a sixteen-year-old minds very much, especially when a cousin has been playing since she was four. Teachers say the students who improve fastest are those who accept that the first month will sound bad and simply keep going. Recording yourself once a week, and listening back a month later, is one way to see progress that is invisible from day to day.<br><br>The other secret is to play music you actually like. Traditional lessons often begin with exercises that nobody would choose to hear, and beginners give up before they reach a real song. Learning three chords and a song you love in the first week does more for a new player than a term of scales. The scales can come later — and, oddly enough, they usually do, once the player wants to understand what she is already doing.",
+      "questions": [
+        {
+          "kind": "main-idea",
+          "type": "mcq",
+          "q": "What is the writer's main point?",
+          "options": [
+            "Children learn instruments much faster than teenagers.",
+            "It is not too late for a teenager to learn an instrument.",
+            "Scales and exercises are a waste of time.",
+            "Embarrassment is the main reason people stop playing."
+          ],
+          "correct": 1,
+          "explanation": "Paragraph 1 says the idea that older learners have \"missed the boat\" is wrong, and the rest of the passage explains why. Scales are not useless — the writer says they \"can come later\"."
+        },
+        {
+          "kind": "detail",
+          "type": "mcq",
+          "q": "According to paragraph 2, what best predicts who will still be playing after a year?",
+          "options": [
+            "The age at which they started",
+            "How motivated they are",
+            "Whether a parent reminds them to practise",
+            "Whether they can read instructions"
+          ],
+          "correct": 1,
+          "explanation": "\"Motivation, not age, is the best predictor.\" Reading instructions and parents' reminders are mentioned in the paragraph but are not named as the predictor."
+        },
+        {
+          "kind": "vocab",
+          "type": "mcq",
+          "q": "The phrase \"missed the boat\" in paragraph 1 is closest in meaning to",
+          "options": [
+            "lost the chance",
+            "arrived late for a lesson",
+            "made a serious mistake",
+            "forgotten something important"
+          ],
+          "correct": 0,
+          "explanation": "The sentence is about the belief that a teenager is now too old to start — that the chance has gone. \"Miss the boat\" is an idiom meaning to lose an opportunity."
+        },
+        {
+          "kind": "inference",
+          "type": "mcq",
+          "q": "Why does the writer mention a cousin who has played since she was four?",
+          "options": [
+            "To show that the cousin would make a good teacher",
+            "To show how comparing yourself with others causes embarrassment",
+            "To prove that four is the best age to begin",
+            "To suggest that the cousin has probably given up"
+          ],
+          "correct": 1,
+          "explanation": "The cousin appears in the sentence about a sixteen-year-old who \"minds very much\" sounding bad — the comparison is what makes the embarrassment worse."
+        },
+        {
+          "kind": "reference",
+          "type": "mcq",
+          "q": "In the last sentence, \"they\" refers to",
+          "options": [
+            "the scales",
+            "the beginners",
+            "the three chords",
+            "the traditional lessons"
+          ],
+          "correct": 0,
+          "explanation": "\"The scales can come later — and … they usually do\": <b>they</b> = the scales, which do come later once the player wants to understand the music."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The writer advises beginners to record themselves every day.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 1,
+          "explanation": "The advice is to record yourself \"once a week\" and listen back a month later, so \"every day\" makes the statement false."
+        },
+        {
+          "kind": "tfng",
+          "type": "mcq",
+          "q": "The writer plays the guitar herself.",
+          "options": [
+            "True",
+            "False",
+            "Not Given"
+          ],
+          "correct": 2,
+          "explanation": "The passage gives the views of teachers and research but never says whether the writer plays an instrument, so this is Not Given."
+        }
+      ]
+    }
+  ]
+}

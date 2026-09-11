@@ -1356,6 +1356,9 @@ const NAV_GROUP_BY_SCREEN = Object.freeze({
     nightRaidScreen: 'arena',
     mathHubScreen: 'math',
     ptnkScreen: 'learn',
+    readingScreen: 'learn',
+    clozeScreen: 'learn',
+    errorsScreen: 'learn',
     examScreen: 'exam'
 });
 
@@ -1594,6 +1597,9 @@ function switchScreen(screenId) {
             if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();
             else if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
             else if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
+            else if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
+            else if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
+            else if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
             else if (screenId === 'phrasesScreen' && typeof renderPhrasesHome === 'function') renderPhrasesHome();
             else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
             else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
@@ -1626,6 +1632,9 @@ function switchScreen(screenId) {
     if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
     if (screenId === 'examScreen' && typeof renderExamHome === 'function') renderExamHome();
     if (screenId === 'ptnkScreen' && typeof renderPtnkHome === 'function') renderPtnkHome();
+    if (screenId === 'readingScreen' && typeof renderReadingHome === 'function') renderReadingHome();
+    if (screenId === 'clozeScreen' && typeof renderClozeHome === 'function') renderClozeHome();
+    if (screenId === 'errorsScreen' && typeof renderErrorsHome === 'function') renderErrorsHome();
     if (screenId === 'profileScreen') renderProfile();
 
     // Do this after rendering: Home replaces its pet hero contents, and scroll

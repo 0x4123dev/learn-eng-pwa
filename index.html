@@ -226,6 +226,11 @@
                  drawn by the same engine as the Exam tab (js/exam.js, set "ptnk") -->
             <div class="screen exam-screen" id="ptnkScreen"></div>
 
+            <!-- PTNK-format practice: three menus on the same engine (js/practice-sets.js) -->
+            <div class="screen exam-screen" id="readingScreen"></div>
+            <div class="screen exam-screen" id="clozeScreen"></div>
+            <div class="screen exam-screen" id="errorsScreen"></div>
+
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
                 <button class="profile-back-btn" onclick="navigateFromProfile()">← Back</button>
@@ -335,6 +340,27 @@
                             <svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/><path d="M8 12h8M8 16h5"/></svg>
                         </span>
                         <span class="nav-hub-copy"><strong>PTNK</strong><small>Đề thi thật vào lớp 10 · Phổ thông Năng khiếu</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card reading" type="button" onclick="switchScreen('readingScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Đọc hiểu</strong><small>Bài đọc dạng đề PTNK</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card cloze" type="button" onclick="switchScreen('clozeScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h5M13 12h7M4 17h16"/><path d="M9 10v4M13 10v4"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Điền từ</strong><small>Cloze và open cloze, 10 chỗ trống</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card errors" type="button" onclick="switchScreen('errorsScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8.5 8.5l5 5M13.5 8.5l-5 5"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Tìm lỗi sai</strong><small>Error identification, một câu bốn chỗ</small></span>
                         <span class="nav-hub-arrow" aria-hidden="true">›</span>
                     </button>
                     <button class="nav-hub-card verbs" type="button" onclick="switchScreen('speedChallengeScreen')">
@@ -661,6 +687,7 @@
     <script src="js/verbs.js"></script>
     <script src="js/exam.js"></script>
     <script src="js/ptnk.js"></script>
+    <script src="js/practice-sets.js"></script>
     <script src="js/profile.js"></script>
     <!-- New Features -->
     <script src="js/daily-challenge.js"></script>

@@ -1,0 +1,515 @@
+{
+  "passages": [
+    {
+      "id": "cl-ch-09-1",
+      "level": "ch",
+      "mode": "open",
+      "title": "Compasses in the Sky",
+      "topic": "migration of birds",
+      "passage": "Few sights in nature rival thousands of geese lifting off a marsh at dawn, yet the mechanics of how they find their way are (1)____ to be fully understood. What is certain is that no single sense accounts for the feat. Birds appear to draw (2)____ a whole toolkit: the setting sun, the rotating stars, the smell of the coast and, most remarkably, the Earth's magnetic field, which they seem to perceive through specialised proteins in the eye. (3)____ sooner had researchers demonstrated this magnetic sense in the laboratory than a new puzzle arose, for a compass tells a traveller which way is north but not where it currently is. Somehow the birds manage (4)____ only to hold a heading but also to correct for being blown hundreds of kilometres off course. Young birds on their first journey seem to inherit a rough programme, an instruction to fly in a given direction for a given number of weeks, (5)____ older birds refine this with a memory of landmarks built up over previous seasons. This would explain why juveniles displaced by storms tend to end (6)____ in the wrong place while adults usually recover. The costs are severe: a small warbler may lose nearly half its body weight crossing the Sahara, and every year countless birds fail to complete the trip. (7)____ the risks, the strategy persists because the rewards, chiefly the brief but enormous abundance of insects in the northern summer, outweigh them. Nowadays, however, timing that evolution fine-tuned over millennia is being thrown (8)____ of step with a warming climate. Insects are emerging earlier, and birds (9)____ arrive on the old schedule find the feast already over. Whether they can adjust quickly enough is a question (10)____ which the answer, for many species, will decide their survival.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "yet",
+            "still"
+          ],
+          "answer": "yet",
+          "explanation": "<b>Be yet to</b> (or <i>be still to</i>) means something has not happened up to now: the mechanics are <b>yet to be</b> fully understood. <i>Far</i> would need <i>from</i>, not <i>to be</i>, and <i>not</i> cannot stand alone before <i>to be</i> here."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "on",
+            "upon"
+          ],
+          "answer": "on",
+          "explanation": "To <b>draw on</b> (or <i>draw upon</i>) resources means to make use of them, which is what the birds do with their toolkit of senses. <i>Draw from</i> is used for taking something out of a source, and <i>draw in</i> means attract."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "No",
+            "no"
+          ],
+          "answer": "No",
+          "explanation": "The inverted structure <b>No sooner had</b> … <b>than</b> … means one event followed immediately after another. <i>Hardly</i> or <i>scarcely</i> would need <i>when</i>, not <i>than</i>, and neither combines with <i>sooner</i>."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "not"
+          ],
+          "answer": "not",
+          "explanation": "The correlative pair <b>not only … but also</b> links the two infinitives <i>to hold</i> and <i>to correct</i>. <i>Never</i> or <i>no</i> would break the pairing with <i>but also</i>, and <i>just</i> cannot be followed by <i>only</i>."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "while",
+            "whereas",
+            "and",
+            "but",
+            "although",
+            "though"
+          ],
+          "answer": "while",
+          "explanation": "The sentence contrasts what young birds do with what older birds do, so a contrast linker such as <b>while</b> or <i>whereas</i> fits; a plain <i>and</i> or <i>but</i> is also acceptable. <i>Because</i> or <i>so</i> would wrongly make one behaviour the cause or result of the other."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "up"
+          ],
+          "answer": "up",
+          "explanation": "The phrasal verb <b>end up</b> (somewhere) means finish a journey in that place, often unintentionally. <i>End in</i> describes the outcome of an event, not a location, and <i>end at</i> is not idiomatic with a wrong place."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "Despite",
+            "despite",
+            "Notwithstanding",
+            "notwithstanding",
+            "Whatever",
+            "whatever"
+          ],
+          "answer": "Despite",
+          "explanation": "A concessive word is needed before the noun phrase <i>the risks</i>: <b>Despite</b> (or <i>Notwithstanding</i>, or <i>Whatever</i>) the risks, the strategy persists. <i>Although</i> is a conjunction and would need a clause with a verb after it, and <i>For</i> on its own does not work here: the idiom is <i>For all the risks</i>, with <i>all</i>."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "out"
+          ],
+          "answer": "out",
+          "explanation": "To be <b>out of step with</b> something is to no longer match it, and <i>thrown out of step</i> is the natural collocation. <i>Off</i> would need a different noun (<i>thrown off course</i>), and <i>away</i> does not combine with <i>of step</i>."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "that",
+            "which"
+          ],
+          "answer": "that",
+          "explanation": "A defining relative pronoun is needed to identify which birds: <b>birds that</b> (or <i>which</i>) <b>arrive on the old schedule</b>. <i>Who</i> is normally reserved for people, and <i>whose</i> would need a following noun."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "to"
+          ],
+          "answer": "to",
+          "explanation": "The formal relative structure <b>a question to which the answer</b> … keeps the preposition in front of <i>which</i>: the answer <i>to</i> a question. <i>Of</i> or <i>for</i> do not collocate with <i>answer</i> in this sense."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-09-2",
+      "level": "ch",
+      "mode": "open",
+      "title": "Stone Statements",
+      "topic": "medieval castles",
+      "passage": "To the modern visitor a castle is a romantic ruin, but to the people who built one it was (1)____ more than a fortress: it was a statement. The earliest examples in Britain were little more than earth mounds topped with wooden towers, thrown (2)____ in weeks by conquerors who needed to hold territory before the local population could organise resistance. Only later, once the land was secure, (3)____ stone replace timber, and with stone came a new scale of ambition. A great keep might take twenty years to complete and consume the income of an entire region, which is (4)____ so few lords could afford one. The design was anything but haphazard. Walls were angled so that attackers approaching the gate would be exposed to arrows from two sides at (5)____; staircases spiralled clockwise so that a defender retreating upwards could swing his sword freely while an attacker below could not. Even the latrines, which emptied into the moat, played a part (6)____ discouraging anyone from swimming across. Yet for all its military ingenuity, a castle was rarely taken by assault. Far more often the besiegers simply waited, cutting (7)____ supplies until hunger did the work that catapults could not. Had gunpowder never reached Europe, the castle might have survived for centuries; (8)____ it was, the cannon made high walls a liability rather than a strength within a few generations. By the sixteenth century the nobility had abandoned the keep for the comfortable country house, and the fortresses they left behind were quarried for their stone. What remains today is, in most cases, (9)____ a fraction of the original, and it takes a considerable act of imagination to picture the noise, smoke and crowding of a castle in (10)____ prime.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "far",
+            "much",
+            "rather"
+          ],
+          "answer": "far",
+          "explanation": "<b>Far more than</b> (or <i>much more than</i>) intensifies the comparison: the castle was not merely a fortress. <i>Very</i> cannot modify a comparative, and <i>even</i> would suggest an unexpected addition rather than an intensified one."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "up"
+          ],
+          "answer": "up",
+          "explanation": "To <b>throw up</b> a structure is to build it hastily, exactly what conquerors in a hurry did. <i>Throw out</i> means discard, and <i>throw down</i> means hurl to the ground; neither describes rapid building."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "did"
+          ],
+          "answer": "did",
+          "explanation": "A sentence beginning with restrictive <b>Only later</b> triggers inversion, so the auxiliary <b>did</b> comes before the subject <i>stone</i>: <i>only later did stone replace timber</i>. <i>Was</i> would need a passive participle, and no inversion at all would be ungrammatical after <i>Only later</i>."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "why"
+          ],
+          "answer": "why",
+          "explanation": "<b>Which is why</b> introduces the consequence of the enormous cost: few lords could afford a keep. <i>Because</i> would reverse the direction of cause and effect, and <i>how</i> would describe a method rather than a reason."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "once"
+          ],
+          "answer": "once",
+          "explanation": "<b>At once</b> here means <i>at the same time</i>: arrows came from two sides simultaneously. <i>At last</i> would mean finally, and <i>at all</i> only works in negative or question contexts."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "in"
+          ],
+          "answer": "in",
+          "explanation": "The collocation is <b>play a part in</b> doing something, so <b>in</b> is followed by the -ing form <i>discouraging</i>. <i>Of</i> and <i>for</i> do not combine with <i>play a part</i>."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "off"
+          ],
+          "answer": "off",
+          "explanation": "To <b>cut off</b> supplies is to prevent them from reaching their destination, which is what a besieging army did. <i>Cut down</i> means reduce, and <i>cut out</i> means remove or stop entirely, neither of which describes a blockade."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "as",
+            "As"
+          ],
+          "answer": "as",
+          "explanation": "The idiom <b>as it was</b> means <i>in reality, as things actually turned out</i>, and it answers the preceding unreal conditional. <i>How it was</i> or <i>so it was</i> do not carry this contrast between the imagined and the real."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "only",
+            "just",
+            "merely",
+            "but"
+          ],
+          "answer": "only",
+          "explanation": "A limiting adverb such as <b>only</b> (or <i>just</i>, <i>merely</i>, formal <i>but</i>) stresses how little survives: <i>only a fraction of the original</i>. <i>Even</i> would imply surprise that so much remains, the opposite of the intended sense."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "its"
+          ],
+          "answer": "its",
+          "explanation": "The idiom <b>in its prime</b> means at the height of its strength; the possessive refers back to <i>a castle</i>. <i>It's</i> is a contraction of <i>it is</i>, and <i>the prime</i> is not idiomatic with a subject."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-09-3",
+      "level": "ch",
+      "mode": "open",
+      "title": "Seeing Red, Feeling Blue",
+      "topic": "the psychology of colour",
+      "passage": "Ask a group of people to name a calming colour and most (1)____ them will say blue; ask for an alarming one and red will win by a wide margin. Such agreement is striking, and it has led many to conclude that colour acts on the mind directly, (2)____ of culture or experience. The evidence, however, is far from straightforward. It is true that red has been shown to raise the pulse slightly and that athletes wearing it win marginally more often, an effect (3)____ to the association between red and dominance in many species. Yet the same colour signals luck in one country and danger in another, and a bride dressed in white would be a cause for grief in cultures where white is the colour of mourning. What seems innate, in other words, may be (4)____ more than a habit learnt so early that we no longer notice having learnt it. Marketing departments have not waited for the argument to be settled. Fast-food chains favour warm colours on the (5)____ that they stimulate appetite and encourage customers to eat quickly and leave; banks lean towards navy and grey, shades that are supposed to suggest stability, (6)____ the balance sheet actually says. Whether these choices work is another matter: a company (7)____ logo is the wrong shade of orange will not go bankrupt on that account. The most robust finding is perhaps the least dramatic. Colour affects us, but only in context, only briefly, and only at the margins. Anyone who claims that painting a classroom green will make children behave has, (8)____ all likelihood, mistaken a fashion for a law of nature, and it is worth remembering that such claims (9)____ been made, and quietly abandoned, for well (10)____ a century.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "text",
+          "q": "Blank (1): type one word.",
+          "accept": [
+            "of"
+          ],
+          "answer": "of",
+          "explanation": "Before a pronoun, a quantifier needs <b>of</b>: <b>most of them</b>. <i>Most them</i> is ungrammatical, and <i>most people</i> would not need <i>of</i> but here the word after the blank is <i>them</i>."
+        },
+        {
+          "n": 2,
+          "type": "text",
+          "q": "Blank (2): type one word.",
+          "accept": [
+            "regardless",
+            "irrespective",
+            "independently",
+            "independent"
+          ],
+          "answer": "regardless",
+          "explanation": "<b>Regardless of</b> (or <i>irrespective of</i>, <i>independently of</i>) means without being affected by, which fits the claim that colour works on everyone the same way. <i>Despite</i> and <i>instead</i> cannot be followed by <i>of</i> with this meaning."
+        },
+        {
+          "n": 3,
+          "type": "text",
+          "q": "Blank (3): type one word.",
+          "accept": [
+            "attributed",
+            "attributable",
+            "due",
+            "owing",
+            "linked",
+            "traced",
+            "related",
+            "ascribed"
+          ],
+          "answer": "attributed",
+          "explanation": "<b>An effect attributed to</b> a cause (or <i>attributable</i>, <i>due</i>, <i>owing</i>, <i>linked</i>, <i>related to</i>) says where the effect comes from. <i>Caused</i> is impossible because it would need <i>by</i>, not <i>to</i>."
+        },
+        {
+          "n": 4,
+          "type": "text",
+          "q": "Blank (4): type one word.",
+          "accept": [
+            "little",
+            "nothing",
+            "no"
+          ],
+          "answer": "little",
+          "explanation": "<b>Little more than</b> (or <i>nothing more than</i>, <i>no more than</i>) plays down the supposed instinct as merely a habit. <i>Much more than</i> would say the opposite, and <i>far</i> would also intensify rather than minimise."
+        },
+        {
+          "n": 5,
+          "type": "text",
+          "q": "Blank (5): type one word.",
+          "accept": [
+            "grounds",
+            "assumption",
+            "theory",
+            "basis",
+            "principle",
+            "premise",
+            "understanding",
+            "belief",
+            "notion"
+          ],
+          "answer": "grounds",
+          "explanation": "<b>On the grounds that</b> (or <i>on the assumption</i>, <i>theory</i>, <i>basis</i>, <i>premise</i>, <i>understanding</i>, <i>belief</i> <i>that</i>) gives the reason for a decision. <i>Reason</i> would need <i>for the reason that</i>, not <i>on the</i>, and <i>ground</i> in the singular is not the idiom."
+        },
+        {
+          "n": 6,
+          "type": "text",
+          "q": "Blank (6): type one word.",
+          "accept": [
+            "whatever"
+          ],
+          "answer": "whatever",
+          "explanation": "<b>Whatever the balance sheet actually says</b> means the colours are meant to suggest stability no matter what the real figures show. <i>Despite</i> is a preposition and cannot be followed directly by a clause, and <i>however</i> would need an adjective or adverb after it."
+        },
+        {
+          "n": 7,
+          "type": "text",
+          "q": "Blank (7): type one word.",
+          "accept": [
+            "whose"
+          ],
+          "answer": "whose",
+          "explanation": "The possessive relative <b>whose</b> links the company to its logo: <i>a company whose logo is the wrong shade</i>. <i>Which</i> or <i>that</i> would leave <i>logo</i> without a determiner, and <i>its</i> cannot introduce a relative clause."
+        },
+        {
+          "n": 8,
+          "type": "text",
+          "q": "Blank (8): type one word.",
+          "accept": [
+            "in"
+          ],
+          "answer": "in",
+          "explanation": "The fixed phrase is <b>in all likelihood</b>, meaning very probably. <i>With</i> or <i>by</i> are not used with <i>likelihood</i> in this idiom."
+        },
+        {
+          "n": 9,
+          "type": "text",
+          "q": "Blank (9): type one word.",
+          "accept": [
+            "have"
+          ],
+          "answer": "have",
+          "explanation": "The time phrase <i>for well over a century</i> reaches up to the present, so the present perfect passive is needed: such claims <b>have been made</b>. <i>Had</i> would place the claims before some other past point, and <i>were</i> would need a finished period."
+        },
+        {
+          "n": 10,
+          "type": "text",
+          "q": "Blank (10): type one word.",
+          "accept": [
+            "over",
+            "above"
+          ],
+          "answer": "over",
+          "explanation": "<b>Well over a century</b> means considerably more than a hundred years; <i>well above</i> is a rarer but defensible alternative. <i>Well more than</i> is not idiomatic, and <i>beyond</i> does not combine with <i>well</i> before a period of time in this way."
+        }
+      ]
+    },
+    {
+      "id": "cl-ch-09-4",
+      "level": "ch",
+      "mode": "mcq",
+      "title": "Harvest from the Sand",
+      "topic": "desert farming",
+      "passage": "Growing food where rain falls only a few times a year sounds futile, yet farmers have done precisely that for thousands of years, and their methods are attracting fresh attention as the climate warms. The oldest trick is simply to (1)____ the most of what little water there is. In the Negev, ancient farmers channelled the run-off from bare hillsides into small walled fields, (2)____ a single storm could deliver the equivalent of a season's rain. Modern versions, from drip irrigation to buried clay pots that release moisture slowly, (3)____ on the same principle: deliver water to the root and nowhere else. Choice of crop matters just as much. Date palms and millet can (4)____ levels of heat and salt that would kill wheat within days, and breeders are now combing wild relatives of common crops for drought-tolerance genes. Perhaps the most ambitious projects, however, are those that set (5)____ to reverse the desert's advance altogether. Along the Sahara's edge, rows of trees are being planted to hold back the dunes and shade the soil, keeping evaporation (6)____ a minimum and slowly restoring the organic matter that overgrazing stripped away. Critics note that such schemes have a poor record; too many have been (7)____ with great fanfare and then quietly forgotten once the funding dried up. There is also the question of who owns the water. Pumping fossil aquifers to grow fodder for export may pay in the (8)____ term, but the water took ten thousand years to accumulate and will not be replaced. (9)____ desert farming can feed the growing populations of the world's dry regions depends less on technology than on whether governments will value water as the scarce resource it is. Without that shift, even the cleverest irrigation will do little more than put (10)____ the inevitable.",
+      "questions": [
+        {
+          "n": 1,
+          "type": "mcq",
+          "q": "Blank (1): choose the word that fits.",
+          "options": [
+            "do",
+            "take",
+            "make",
+            "get"
+          ],
+          "correct": 2,
+          "explanation": "The idiom is <b>make the most of</b> something, meaning use it as fully as possible. <i>Take</i> and <i>get</i> combine with <i>the most</i> only as quantities, and <i>do the most</i> is not a set phrase."
+        },
+        {
+          "n": 2,
+          "type": "mcq",
+          "q": "Blank (2): choose the word that fits.",
+          "options": [
+            "whereas",
+            "whereby",
+            "wherein",
+            "whereupon"
+          ],
+          "correct": 1,
+          "explanation": "<b>Whereby</b> means <i>by means of which</i>: the fields were the arrangement through which one storm delivered a season's rain. <i>Whereas</i> contrasts, <i>whereupon</i> means <i>immediately after which</i>, and <i>wherein</i> would refer to a place or document, not a method."
+        },
+        {
+          "n": 3,
+          "type": "mcq",
+          "q": "Blank (3): choose the word that fits.",
+          "options": [
+            "lie",
+            "stand",
+            "sit",
+            "rest"
+          ],
+          "correct": 3,
+          "explanation": "An idea or method <b>rests on</b> a principle, meaning it is based on it. <i>Stand on principle</i> is a different idiom (refuse to compromise), and <i>lie on</i> or <i>sit on</i> describe physical position."
+        },
+        {
+          "n": 4,
+          "type": "mcq",
+          "q": "Blank (4): choose the word that fits.",
+          "options": [
+            "tolerate",
+            "accept",
+            "allow",
+            "permit"
+          ],
+          "correct": 0,
+          "explanation": "A plant <b>tolerates</b> heat and salt when it can survive them. <i>Accept</i>, <i>allow</i> and <i>permit</i> all involve agreeing to something, which a crop cannot do; they are near misses because <i>tolerate</i> can also mean <i>put up with</i> in human contexts."
+        },
+        {
+          "n": 5,
+          "type": "mcq",
+          "q": "Blank (5): choose the word that fits.",
+          "options": [
+            "about",
+            "off",
+            "out",
+            "up"
+          ],
+          "correct": 2,
+          "explanation": "<b>Set out to do</b> something means begin with that as your aim. <i>Set about</i> must be followed by an -ing form, <i>set off</i> means depart on a journey, and <i>set up</i> means establish."
+        },
+        {
+          "n": 6,
+          "type": "mcq",
+          "q": "Blank (6): choose the word that fits.",
+          "options": [
+            "at",
+            "to",
+            "in",
+            "on"
+          ],
+          "correct": 1,
+          "explanation": "The collocation is <b>keep something to a minimum</b>, meaning make it as small as possible. <i>At a minimum</i> means <i>at the very least</i>, a different idea, and <i>in</i> or <i>on</i> do not combine with <i>minimum</i>."
+        },
+        {
+          "n": 7,
+          "type": "mcq",
+          "q": "Blank (7): choose the word that fits.",
+          "options": [
+            "released",
+            "issued",
+            "delivered",
+            "launched"
+          ],
+          "correct": 3,
+          "explanation": "A scheme or campaign is <b>launched</b>, and <i>launched with great fanfare</i> is the standard collocation. Films and products are <i>released</i>, statements are <i>issued</i>, and goods or speeches are <i>delivered</i>."
+        },
+        {
+          "n": 8,
+          "type": "mcq",
+          "q": "Blank (8): choose the word that fits.",
+          "options": [
+            "short",
+            "brief",
+            "small",
+            "quick"
+          ],
+          "correct": 0,
+          "explanation": "The fixed phrase is <b>in the short term</b>, contrasting with <i>the long term</i>. <i>Brief</i>, <i>small</i> and <i>quick</i> share the idea of limited size or time but do not collocate with <i>term</i>."
+        },
+        {
+          "n": 9,
+          "type": "mcq",
+          "q": "Blank (9): choose the word that fits.",
+          "options": [
+            "If",
+            "Whether",
+            "Unless",
+            "Although"
+          ],
+          "correct": 1,
+          "explanation": "A clause acting as the subject of <i>depends</i> must begin with <b>Whether</b>. <i>If</i> cannot introduce a subject clause, and <i>Unless</i> or <i>Although</i> would leave the main verb <i>depends</i> without a subject."
+        },
+        {
+          "n": 10,
+          "type": "mcq",
+          "q": "Blank (10): choose the word that fits.",
+          "options": [
+            "away",
+            "down",
+            "off",
+            "out"
+          ],
+          "correct": 2,
+          "explanation": "To <b>put off</b> something is to postpone it, so an irrigation system can only <i>put off the inevitable</i>. <i>Put away</i> means store, <i>put down</i> means place or suppress, and <i>put out</i> means extinguish or publish."
+        }
+      ]
+    }
+  ]
+}
