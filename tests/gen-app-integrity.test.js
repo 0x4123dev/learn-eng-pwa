@@ -32,6 +32,7 @@ const ASSETS = parseAssets() || [];
 const JS_ASSETS = ASSETS.filter(a => /^\/js\/.+\.js$/.test(a));
 const CSS_ASSETS = ASSETS.filter(a => /^\/css\/.+\.css$/.test(a));
 const IMG_ASSETS = ASSETS.filter(a => /^\/img\//.test(a));
+const FONT_ASSETS = ASSETS.filter(a => /^\/fonts\/.+\.woff2$/.test(a));
 const MATH_EXAM_ASSETS = ASSETS.filter(a => /^\/assets\/math-exams\/.+\.jpg$/.test(a));
 
 // Parse <script src="..."> entries from index.html, in document order.
@@ -87,14 +88,14 @@ suite('gen: sw.js cache manifest', () => {
         assert.deepEqual(bad, [], `non-root-relative entries: ${bad.join(', ')}`);
     });
 
-    test('ASSETS partitions exactly into shell + js + image entries', () => {
+    test('ASSETS partitions exactly into shell + js + font + image entries', () => {
         const shell = ['/', '/index.html', '/css/styles.css', '/manifest.json'];
         const unclassified = ASSETS.filter(a =>
             !shell.includes(a) && !JS_ASSETS.includes(a) && !IMG_ASSETS.includes(a)
-                && !MATH_EXAM_ASSETS.includes(a));
+                && !FONT_ASSETS.includes(a) && !MATH_EXAM_ASSETS.includes(a));
         assert.deepEqual(unclassified, [],
             `unclassified sw.js ASSETS entries: ${unclassified.join(', ')}`);
-        assert.equal(4 + JS_ASSETS.length + IMG_ASSETS.length + MATH_EXAM_ASSETS.length, ASSETS.length);
+        assert.equal(4 + JS_ASSETS.length + IMG_ASSETS.length + FONT_ASSETS.length + MATH_EXAM_ASSETS.length, ASSETS.length);
     });
 });
 
@@ -116,7 +117,7 @@ suite('gen: sw.js js/css assets exist on disk', () => {
         assert.equal(MATH_EXAM_ASSETS.length, 0, 'no question renders a page scan any more');
     });
 
-    for (const asset of JS_ASSETS.concat(CSS_ASSETS)) {
+    for (const asset of JS_ASSETS.concat(CSS_ASSETS, FONT_ASSETS)) {
         test(`cached asset ${asset} exists on disk`, () => {
             const abs = path.join(ROOT, asset.slice(1));
             assert.truthy(fs.existsSync(abs), `missing file for sw.js asset: ${asset}`);
@@ -183,6 +184,131 @@ suite('gen: sw.js img assets exist on disk', () => {
             }
         });
     }
+});
+
+// ============================================================================
+// FONTS — Nunito is self-hosted. Until 2026-09 index.html pulled it from
+// fonts.googleapis.com + fonts.gstatic.com: two extra origins on the render
+// path, nothing offline, and only weights 400–800 requested while styles.css
+// uses 900/950/1000 in ~190 places — the browser was faking those from 800.
+// Every link in the chain is checked here, because each one failed silently
+// on its own: a missing file is a 404 the browser hides behind the fallback
+// font, an unlisted file simply never works offline.
+// ============================================================================
+const cssSrc = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+const ADMIN_HTML = fs.readFileSync(path.join(ROOT, 'admin.html'), 'utf8');
+
+// Every @font-face block in styles.css, with its src url and weight range.
+function parseFontFaces() {
+    const faces = [];
+    const re = /@font-face\s*\{([\s\S]*?)\}/g;
+    let m;
+    while ((m = re.exec(cssSrc)) !== null) {
+        const body = m[1];
+        const src = (body.match(/src:\s*url\(([^)]+)\)/) || [])[1];
+        const family = (body.match(/font-family:\s*['"]?([^'";]+)/) || [])[1];
+        const weight = (body.match(/font-weight:\s*([^;]+);/) || [])[1];
+        const display = (body.match(/font-display:\s*([^;]+);/) || [])[1];
+        const range = (body.match(/unicode-range:\s*([^;]+);/) || [])[1];
+        faces.push({ src, family, weight, display, range });
+    }
+    return faces;
+}
+const FONT_FACES = parseFontFaces();
+// A @font-face src is relative to css/, where the stylesheet lives; this is
+// the sw.js ASSETS key for it.
+function fontAssetKey(src) {
+    const abs = path.resolve(path.join(ROOT, 'css'), src.replace(/['"]/g, ''));
+    return '/' + path.relative(ROOT, abs).split(path.sep).join('/');
+}
+
+suite('gen: fonts are self-hosted', () => {
+    test('index.html and admin.html reference no external stylesheet or font origin', () => {
+        for (const [name, html] of [['index.html', htmlSrc], ['admin.html', ADMIN_HTML]]) {
+            const external = [];
+            const re = /<link\s[^>]*>/g;
+            let m;
+            while ((m = re.exec(html)) !== null) {
+                const tag = m[0];
+                const href = (tag.match(/href="([^"]+)"/) || [])[1] || '';
+                if (/^(https?:)?\/\//i.test(href)) external.push(tag);
+            }
+            assert.deepEqual(external, [], `${name} loads from another origin: ${external.join(' ')}`);
+            assert.falsy(/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(html),
+                `${name} still mentions Google Fonts`);
+        }
+        assert.falsy(/@import|url\((['"]?)https?:/.test(cssSrc), 'styles.css must not fetch anything cross-origin');
+    });
+
+    test('styles.css declares Nunito for both subsets the app writes (vietnamese + latin)', () => {
+        const nunito = FONT_FACES.filter(f => f.family === 'Nunito');
+        assert.equal(nunito.length, 2, `expected one @font-face per subset, got ${nunito.length}`);
+        const ranges = nunito.map(f => f.range || '');
+        assert.truthy(ranges.some(r => r.includes('U+1EA0-1EF9')), 'no face covers the Vietnamese block (U+1EA0-1EF9)');
+        assert.truthy(ranges.some(r => r.includes('U+0000-00FF')), 'no face covers basic Latin (U+0000-00FF)');
+        for (const f of nunito) assert.equal(f.display, 'swap', `font-display must be swap: ${f.src}`);
+    });
+
+    test('every @font-face src exists on disk and is a real woff2', () => {
+        assert.truthy(FONT_FACES.length > 0, 'no @font-face in styles.css');
+        for (const f of FONT_FACES) {
+            assert.truthy(f.src, 'a @font-face has no url() src');
+            const abs = path.join(ROOT, fontAssetKey(f.src).slice(1));
+            assert.truthy(fs.existsSync(abs), `@font-face src missing on disk: ${f.src}`);
+            const head = Buffer.alloc(4);
+            const fd = fs.openSync(abs, 'r');
+            fs.readSync(fd, head, 0, 4, 0);
+            fs.closeSync(fd);
+            assert.equal(head.toString('latin1'), 'wOF2', `${f.src} is not a woff2 file (magic ${head.toString('hex')})`);
+        }
+    });
+
+    test('every font file on disk is precached by sw.js, and every precached font is on disk', () => {
+        const onDisk = fs.readdirSync(path.join(ROOT, 'fonts')).filter(n => n.endsWith('.woff2')).map(n => '/fonts/' + n).sort();
+        assert.truthy(onDisk.length > 0, 'fonts/ has no woff2 files');
+        assert.deepEqual(FONT_ASSETS.slice().sort(), onDisk, 'sw.js ASSETS and fonts/*.woff2 differ');
+        // Every face the stylesheet uses is among them: an unlisted font
+        // renders online and silently falls back offline.
+        for (const f of FONT_FACES) {
+            const key = fontAssetKey(f.src);
+            assert.truthy(FONT_ASSETS.includes(key), `@font-face src not precached: ${key}`);
+        }
+    });
+
+    test('the preloads in index.html are the @font-face files, with crossorigin', () => {
+        const preloads = [];
+        const re = /<link\s[^>]*rel="preload"[^>]*>/g;
+        let m;
+        while ((m = re.exec(htmlSrc)) !== null) if (/as="font"/.test(m[0])) preloads.push(m[0]);
+        assert.truthy(preloads.length > 0, 'no font preload in index.html');
+        const faceKeys = FONT_FACES.map(f => fontAssetKey(f.src));
+        for (const tag of preloads) {
+            const href = (tag.match(/href="([^"]+)"/) || [])[1];
+            assert.truthy(/\bcrossorigin\b/.test(tag), `font preload needs crossorigin or it is fetched twice: ${tag}`);
+            assert.truthy(fs.existsSync(path.join(ROOT, href)), `preloaded font missing: ${href}`);
+            assert.truthy(faceKeys.includes('/' + href), `preloaded font has no @font-face, so it downloads for nothing: ${href}`);
+            assert.truthy(FONT_ASSETS.includes('/' + href), `preloaded font is not precached: ${href}`);
+        }
+    });
+
+    test('every font-weight used in styles.css is inside a declared Nunito weight range (never synthesized)', () => {
+        // font-weight in @font-face is "min max"; anything the stylesheet asks
+        // for outside that band is faked by the browser (smeared outlines on
+        // a phone). This is the failure the Google link had for 900+.
+        const ranges = FONT_FACES.filter(f => f.family === 'Nunito').map(f => {
+            const [lo, hi] = f.weight.trim().split(/\s+/).map(Number);
+            return [lo, hi === undefined ? lo : hi];
+        });
+        assert.truthy(ranges.length > 0, 'no Nunito weight range declared');
+        const body = cssSrc.replace(/@font-face\s*\{[\s\S]*?\}/g, '');
+        const used = new Set();
+        const re = /font-weight:\s*(\d{3,4})\b/g;
+        let m;
+        while ((m = re.exec(body)) !== null) used.add(Number(m[1]));
+        assert.truthy(used.has(900), 'sanity: the stylesheet uses weight 900');
+        const outside = [...used].filter(w => !ranges.some(([lo, hi]) => w >= lo && w <= hi)).sort((a, b) => a - b);
+        assert.deepEqual(outside, [], `weights the shipped font cannot render: ${outside.join(', ')}`);
+    });
 });
 
 // ============================================================================

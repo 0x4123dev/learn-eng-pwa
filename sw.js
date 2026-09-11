@@ -37,6 +37,8 @@ const PRECACHE = {
   '/': '0000000000000000',
   '/index.html': '0000000000000000',
   '/css/styles.css': '0000000000000000',
+  '/fonts/nunito-var-vietnamese.woff2': '0000000000000000',
+  '/fonts/nunito-var-latin.woff2': '0000000000000000',
   '/js/vocabulary.js': '0000000000000000',
   '/js/castle-skins.js': '0000000000000000',
   '/js/units-data.js': '0000000000000000',
