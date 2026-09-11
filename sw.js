@@ -305,8 +305,8 @@ async function hashOf(buf) {
 // an unknown path with 200 text/html) can no longer poison a key, and
 // neither can a half-propagated deploy serving last release's bytes under
 // this release's name. Returns the Response to store, or throws.
-async function fetchVerified(url, want) {
-  const response = await fetch(url);
+async function fetchVerified(url, want, init) {
+  const response = await fetch(url, init);
   if (!response.ok) throw new Error(response.status + ' ' + url);
   if (!url.endsWith('.html') && url !== '/' &&
       (response.headers.get('content-type') || '').indexOf('text/html') !== -1) {
@@ -314,7 +314,16 @@ async function fetchVerified(url, want) {
   }
   const buf = await response.clone().arrayBuffer();
   const got = await hashOf(buf);
-  if (got !== want) throw new Error('hash ' + got + ' != ' + want + ' for ' + url);
+  if (got !== want) {
+    // The bytes are not this release's. The usual reason is the browser's
+    // OWN HTTP cache: /img, /fonts and phaser ship with a one-year
+    // `immutable` (see _headers), so a sprite replaced under the same name
+    // would be answered from disk with last year's pixels for as long as
+    // that lasts. One retry that bypasses that cache settles it; a second
+    // mismatch is a real one (a half-propagated deploy) and fails the entry.
+    if (!init) return fetchVerified(url, want, { cache: 'reload' });
+    throw new Error('hash ' + got + ' != ' + want + ' for ' + url);
+  }
   return response;
 }
 

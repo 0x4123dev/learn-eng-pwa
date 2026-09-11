@@ -533,6 +533,34 @@ suite('service worker: an update downloads only what changed', () => {
   const js = text => body(text, 'application/javascript');
   const PREV = 'flashlingo-v999';
 
+  test('stale bytes from the browser\'s own HTTP cache are retried once with cache: "reload"', async () => {
+    // /img, /fonts and phaser ship with a one-year `immutable` (_headers). A
+    // sprite replaced under the same name would be answered from the disk
+    // cache with last year's pixels; the worker must not give up on that.
+    const STALE = '/img/night-raid/home-castle.webp';
+    const calls = [];
+    const worker = bootWorker((url, init) => {
+      if (pathOf(url) === STALE) {
+        calls.push(init && init.cache);
+        return js(init && init.cache === 'reload' ? 'ok' : 'LAST YEAR');
+      }
+      return js('ok');
+    });
+    await install(worker);
+    assert.deepEqual(calls, [undefined, 'reload'], 'default fetch, then exactly one cache-bypassing retry');
+    assert.equal(await currentStore(worker).get(STALE).clone().text(), 'ok', 'the fresh bytes are what got stored');
+    assert.equal(currentStore(worker).size, ASSET_COUNT + 1, 'nothing else was affected');
+  });
+
+  test('a body that is wrong even after the retry is a failed entry', async () => {
+    const BAD = '/js/exam.js';
+    let n = 0;
+    const worker = bootWorker(url => { if (pathOf(url) === BAD) { n++; return js('WRONG'); } return js('ok'); });
+    await install(worker);
+    assert.equal(n, 2, 'one attempt plus one bypassing retry, then it stops');
+    assert.falsy(currentStore(worker).has(BAD), 'not stored');
+  });
+
   test('a first install with no previous cache fetches every entry', async () => {
     const worker = bootWorker(() => js('ok'));
     await install(worker);
