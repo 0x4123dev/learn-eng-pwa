@@ -968,6 +968,11 @@ function renderMathHome() {
   // the next tab change asked "con đang làm dở bài Toán" about work the child
   // could no longer see. Redraw the question instead.
   if (_mathQuiz) { renderMathQuestion(); return; }
+  // And for the retry drill (js/retrydrill.js), which draws on this screen
+  // too: the Toán tab button painted the menu over it while _retryDrill
+  // stayed set, so the next tab change asked about a drill nobody could see.
+  if (typeof retryDrillKey === 'function' && retryDrillKey() === 'math'
+      && typeof renderRetryDrill === 'function') { renderRetryDrill(); return; }
   if (_mathView === 'wars') {
     screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
       'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '5 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
@@ -1819,6 +1824,11 @@ function renderMathQuestion() {
   const total = st.questions.length;
 
   const ok = mathIsCorrect(q, ans);
+  // A paper keeps the bar away for as long as it is open (mathLockScreen).
+  // Re-assert it on every paint: a stray openMathSection() mid-paper runs
+  // MathFight.leave(), which puts the bar back under a sitting that is still
+  // in progress — and a checkpoint restore paints straight into a paper too.
+  if (st.examId) mathLockScreen(true);
 
   let body;
   if (written) {
