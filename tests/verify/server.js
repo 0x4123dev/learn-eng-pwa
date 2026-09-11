@@ -842,12 +842,16 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const collect = () => hit(w, collectRoute.onRequestPost, { url: '/api/night-raid/collect', token: kid.token, body: {} });
 
     finishADay();                                       // dayCount 1: the farm has a day
-    // Create the home through the layout route, then plant through the only
-    // route allowed to spend a server-owned seed.
+    // Create the empty home, buy the barracks through the server-authoritative
+    // purchase operation, then plant through the only route allowed to spend
+    // a server-owned seed.
+    await hit(w, home.onRequestPut, {
+      method: 'PUT', url: '/api/night-raid/home', token: kid.token,
+      body: { layout: { cells: [], soldiers: 0, dogLane: 2 }, dogLevel: 1, castleSkin: 'stone-keep', coins: 8000 } });
     const planted = await hit(w, home.onRequestPut, {
       method: 'PUT', url: '/api/night-raid/home', token: kid.token,
       body: { layout: { cells: [{ type: 'training-barracks', gx: 8, gy: 8, uid: 'p-verify0001' }], soldiers: 0, dogLane: 2 },
-              dogLevel: 1, castleSkin: 'stone-keep', coins: 0 } });
+              dogLevel: 1, castleSkin: 'stone-keep', barracksPurchase: { uid: 'p-verify0001', gx: 8, gy: 8 } } });
     w.db.prepare('INSERT INTO farm_seed_inventory(user_id,crop_id,quantity) VALUES(?,?,1)').run(kid.uid, crop.id);
     const plantedSeed = await hit(w, plantRoute.onRequestPost, {
       method: 'POST', url: '/api/night-raid/plant', token: kid.token,

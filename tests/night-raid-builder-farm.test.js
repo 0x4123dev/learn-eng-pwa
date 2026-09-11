@@ -107,7 +107,19 @@ suite('builder farm: crops draw their day and their mood', () => {
     const w3 = mount({ appState: { farmDayCount: 5, nightRaidLayout: { cells: [{ type: 'training-barracks', gx: 8, gy: 8, tier: 1, uid: 'p-barrac01', lastDay: 4, soldierCycles: 1 }], farms: [], soldiers: 2 } } });
     w3.ctx.NightRaid.renderBuilder();
     assert.truthy(html(w3).includes('Lính thứ 2 · 1/2 Daily Task'));
-    assert.truthy(html(w3).includes('sau đó 5 task/lính'), 'shop explains the capped progression');
+    assert.truthy(html(w3).includes('Mọi nhà lính chung tiến độ'), 'shop explains the shared capped progression');
+  });
+  test('a newly bought barracks waits for the server, adopts its uid, and copies the first progress', async () => {
+    let clientUid='';const w=mount({appState:{coins:20000,farmDayCount:9,nightRaidLayout:{cells:[{type:'training-barracks',gx:8,gy:8,tier:1,uid:'p-first0001',lastDay:6,soldierCycles:3}],farms:[],soldiers:4}},api:(p,opts,fallback)=>{
+      if(p==='night-raid/home'&&opts?.body?.barracksPurchase){clientUid=opts.body.barracksPurchase.uid;const layout=Rules.normalizeLayout(JSON.parse(JSON.stringify(opts.body.layout))),added=layout.cells.find(c=>c.uid===clientUid);added.uid='p-servernew1';return Promise.resolve({ok:true,data:{layout,coins:12000,dayCount:9,ctx:FRESH}});}
+      return fallback(p,opts);
+    }});
+    w.ctx.NightRaid.renderBuilder();w.ctx.NightRaid.selectBuild('training-barracks');await w.ctx.NightRaid.buildCell(0,8,true,0);
+    const barracks=w.state.nightRaidLayout.cells.filter(c=>c.type==='training-barracks');
+    assert.equal(barracks.length,2);
+    assert.deepEqual(barracks.map(c=>[c.lastDay,c.soldierCycles]),[[6,3],[6,3]]);
+    assert.truthy(clientUid&&barracks.some(c=>c.uid==='p-servernew1')&&!barracks.some(c=>c.uid===clientUid),'the unconfirmed client uid is never exposed as collectable');
+    assert.equal(w.state.coins,12000);
   });
   test('placed buildings do not show a redundant level-1 bubble', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();

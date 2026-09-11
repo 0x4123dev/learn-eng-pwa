@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightRaidEnabled, homeSnapshot, safeJson, barracksLedger, withBarracksLedger } from '../_night-raid.js';
+import { NR, nightRaidEnabled, homeSnapshot, safeJson, barracksTraining, applyBarracksTraining, withBarracksTraining } from '../_night-raid.js';
 import { swordCount, seedStatus } from '../_daily-task.js';
 import { farmClock } from '../_farm.js';
 
@@ -10,12 +10,12 @@ export async function onRequestGet({request,env}) {
   const row=await env.DB.prepare('SELECT h.*, u.username FROM night_raid_homes h JOIN users u ON u.id=h.user_id WHERE h.user_id=?').bind(auth.uid).first();
   // The owner sees their own DAM the way start.js will score it: swords in.
   if(row)row.night_swords=await swordCount(env,auth.uid);
-  const home=row?homeSnapshot(row):null;
+  const rawLayout=row?safeJson(row.layout_json,{cells:[],soldiers:0}):null,home=row?homeSnapshot(row):null;
   // Only the server knows dayCount, so only this read can convert a barracks
   // that still carries the old 24h clock (see normalizeLayout in the rules).
   // `now` goes with it: a legacy timer that had already elapsed keeps the
   // soldier it had earned instead of converting with no completed day banked.
-  if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});
+  if(home){home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});applyBarracksTraining(home.layout,barracksTraining(rawLayout,home.layout));}
   // shieldUntil is for the OWNER only — targets.js never exposes it.
   const seeds=await seedStatus(env,auth.uid,clock.ctx.today,clock.ctx.doneToday);
   return json({home:home?Object.assign(home,{shieldUntil:Math.max(0,Math.trunc(+row.shield_until||0))}):null,dayCount:clock.dayCount,ctx:clock.ctx,seeds});
@@ -38,39 +38,61 @@ export async function onRequestPut({request,env}) {
   // Every cell the server already knows, by uid — main board and extra farms.
   const oldByUid=new Map(NR.farmRules.allCells(oldLayout).filter(c=>c.uid).map(c=>[c.uid,c]));
   const activeBarracks=NR.farmRules.allCells(oldLayout).filter(c=>NR.itemById(c.type)?.producer==='soldier');
-  const ledger=barracksLedger(oldRaw,oldLayout),activeBarracksUids=new Set(activeBarracks.filter(c=>c.uid).map(c=>c.uid));
-  const oldBarracks=activeBarracks.concat(ledger.filter(entry=>!activeBarracksUids.has(entry.uid)));
-  const oldBarracksByUid=new Map(oldBarracks.filter(c=>c.uid).map(c=>[c.uid,c]));
+  let training=barracksTraining(oldRaw,oldLayout);
   const incomingBarracksUids=new Set(NR.farmRules.allCells(layout)
     .filter(c=>NR.itemById(c.type)?.producer==='soldier'&&c.uid).map(c=>c.uid));
-  const claimedBarracks=new Set();
+  const claimedBarracks=new Set(),newBarracks=[];
   const newUid=prefix=>prefix+crypto.randomUUID().replace(/-/g,'').slice(0,20);
   // Barracks identity is server-owned. First honour an exact uid. If a stale,
   // uid-less or modified client sends the same collection of barracks, pair
   // each unknown cell with an unclaimed stored barracks (same square first,
-  // then stable stored order) and restore BOTH its uid and training counters.
+  // then stable stored order). Training progress is account-wide below.
   // Reserve stored uids that are still present elsewhere in the incoming
   // layout so an earlier unknown cell cannot steal a later exact match.
   const barracksPrior=cell=>{
-    const exact=cell.uid?(oldByUid.get(cell.uid)||oldBarracksByUid.get(cell.uid)):null;
+    const exact=cell.uid?oldByUid.get(cell.uid):null;
     if(exact&&!claimedBarracks.has(exact))return exact;
-    const available=oldBarracks.filter(old=>!claimedBarracks.has(old)&&!(old.uid&&incomingBarracksUids.has(old.uid)));
+    const available=activeBarracks.filter(old=>!claimedBarracks.has(old)&&!(old.uid&&incomingBarracksUids.has(old.uid)));
     return available.find(old=>old.gx===cell.gx&&old.gy===cell.gy)||available[0]||null;
   };
-  // The server stamps every clock. A client may move a plant or a barracks,
-  // never rewind it: a cell whose uid the server knows keeps the server's
-  // day/at/lastDay/soldierCycles/readyAt; a cell it has never seen starts today.
+  // The server stamps every clock. A client may move a plant or barracks but
+  // never rewind it: crops/fields keep their own server clock; every barracks,
+  // including a new one, receives the single shared training clock.
   const stamp=cell=>{const def=NR.itemById(cell.type);if(!def)return;const prior=cell.uid?oldByUid.get(cell.uid):null,same=!!(prior&&prior.type===cell.type);
     if(def.producer==='coins'){if(same)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid=newUid('p-');cell.readyAt=now+NR.PRODUCTION_MS;}}
     else if(def.producer==='soldier'){
       const owned=barracksPrior(cell);
-      if(owned){claimedBarracks.add(owned);cell.uid=owned.uid||newUid('p-');cell.lastDay=Number.isFinite(+owned.lastDay)?owned.lastDay:dayCount;cell.soldierCycles=Math.max(0,Math.trunc(+owned.soldierCycles||0));}
-      else{cell.uid=newUid('p-');cell.lastDay=dayCount;cell.soldierCycles=0;}
+      if(owned)claimedBarracks.add(owned);
+      if(!training)training={lastDay:dayCount,soldierCycles:0};
+      if(!owned)newBarracks.push({cell,clientUid:cell.uid||''});
+      cell.uid=owned?.uid||newUid('p-');cell.lastDay=training.lastDay;cell.soldierCycles=training.soldierCycles;
       delete cell.readyAt;
     }
     else if(def.kind==='crop'){if(same){cell.day=prior.day;cell.at=prior.at;}else{if(!cell.uid)cell.uid=newUid('c-');cell.day=dayCount;cell.at=today;}}
     else if(def.kind==='farm'){if(!cell.uid)cell.uid=newUid('f-');}};
   layout.cells.forEach(stamp);layout.farms.forEach(f=>f.cells.forEach(stamp));
+  // A generic layout sync may move or remove a barracks, never create one.
+  // Creation is an explicit purchase on this same endpoint so validation,
+  // mirror-wallet debit, shared-clock inheritance and UID assignment happen
+  // in one response. The wider FlashLingo economy remains deliberately
+  // client-authoritative/offline-first; this is an identity and consistency
+  // boundary, not a new anti-cheat boundary for coins.
+  let barracksPurchaseCost=null;
+  if(newBarracks.length){
+    const purchase=body&&body.barracksPurchase,added=newBarracks[0];
+    if(!current||newBarracks.length!==1||!purchase||String(purchase.uid||'')!==added.clientUid||Math.trunc(+purchase.gx)!==added.cell.gx||Math.trunc(+purchase.gy)!==added.cell.gy)return err('Hãy mua nhà lính từ Cửa hàng',409);
+    const replaced=oldLayout.cells.find(cell=>{const def=NR.itemById(cell.type),size=def?NR.footprintFor(def):1;return def&&!def.trap&&added.cell.gx>=cell.gx&&added.cell.gx<cell.gx+size&&added.cell.gy>=cell.gy&&added.cell.gy<cell.gy+size;});
+    const replacedDef=replaced&&NR.itemById(replaced.type);
+    if(replacedDef?.kind==='crop')return err('Hãy thu hoạch cây trước khi xây nhà lính',409);
+    // Upgrades cost basePrice × the tier being bought. Match the builder's
+    // totalPaid() exactly, otherwise replacing (for example) a tier-3 cannon
+    // shows a much larger refund on the device than the server actually uses.
+    let replacedPaid=0;
+    if(replacedDef){const tier=Math.max(1,Math.trunc(+(replaced&&replaced.tier)||1));for(let i=1;i<=tier;i++)replacedPaid+=Math.max(0,+replacedDef.price||0)*i;}
+    const refund=Math.floor(replacedPaid/2);
+    barracksPurchaseCost=Math.max(0,Math.max(0,+NR.itemById('training-barracks').price||0)-refund);
+    if(Math.max(0,Math.trunc(+current.lootable_coins||0))<barracksPurchaseCost)return err('Chưa đủ xu để mua nhà lính',409);
+  }else if(body&&body.barracksPurchase)return err('Nhà lính này đã thay đổi, hãy thử lại',409);
   // New plants may only enter through /night-raid/plant, which atomically
   // spends one server-owned seed. Generic layout sync may move an existing
   // crop (same uid/type), but can never mint a fresh one for free.
@@ -116,11 +138,12 @@ export async function onRequestPut({request,env}) {
   const homeLevel=NR.homeLevel(layout,dogLevel);
   const skin=/^[a-z0-9-]{1,30}$/.test(String(body.castleSkin||''))?String(body.castleSkin)
     :(current?String(current.castle_skin||'stone-keep'):'stone-keep');
-  const coins=num(body.coins)?Math.max(0,Math.min(100000,Math.trunc(body.coins)))
+  const coins=barracksPurchaseCost!==null?Math.max(0,Math.trunc(+current.lootable_coins||0)-barracksPurchaseCost)
+    :num(body.coins)?Math.max(0,Math.min(100000,Math.trunc(body.coins)))
     :(current?Math.max(0,Math.trunc(+current.lootable_coins||0)):0);
   const vault=num(body.vaultCoins)?Math.max(0,Math.min(5000,Math.trunc(body.vaultCoins)))
     :(current?Math.max(0,Math.trunc(+current.vault_coins||0)):0);
-  const storedLayout=withBarracksLedger(layout,ledger);
+  const storedLayout=withBarracksTraining(layout,training);
   await env.DB.prepare(`INSERT INTO night_raid_homes(user_id,layout_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
     VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET layout_json=excluded.layout_json,dog_level=excluded.dog_level,castle_skin=excluded.castle_skin,home_level=excluded.home_level,lootable_coins=excluded.lootable_coins,vault_coins=excluded.vault_coins,updated_at=excluded.updated_at`)
     .bind(auth.uid,JSON.stringify(storedLayout),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
