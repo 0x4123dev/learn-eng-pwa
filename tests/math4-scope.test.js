@@ -295,7 +295,7 @@ suite('toán 4 chỉ đổi cho toán 4: the scratch board', () => {
     assert.truthy(/Math\.ceil\(parts\.length \/ 2\)/.test(body),
       'the row count must be half the sums, rounded up — two columns, never three');
     assert.truthy(/--board-rows:/.test(body), 'and be handed to CSS, which cannot count them');
-    const css = src('css/styles.css');
+    const css = require('./css-all').readAllCss();
     const grid = css.slice(css.indexOf('.math-board-strip-parts {'),
       css.indexOf('.math-board-strip-part {'));
     // Row-major would read 1 2 / 3 4. The sums must read DOWN each column.
@@ -331,7 +331,7 @@ suite('toán 4 chỉ đổi cho toán 4: the scratch board', () => {
 });
 
 suite('toán 4 chỉ đổi cho toán 4: the styles', () => {
-  const css = src('css/styles.css');
+  const css = require('./css-all').readAllCss();
 
   test('the input styles are new rules, not edits to the shared answer box', () => {
     // .math-answer-box is what every other typed question draws. If the new

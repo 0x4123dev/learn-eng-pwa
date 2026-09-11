@@ -231,7 +231,7 @@ suite('math-copy: only a selection with maths in it is touched', () => {
         assert.deepEqual(MathCopy.SURFACES, ['.math-lesson-body', '.grammar-question-text', '.grammar-option-text',
             '.grammar-explanation', '.grammar-review-q', '.grammar-review-explain', '.math-formula',
             '.math-solution-steps li', '.math-mistakes li', '.math-hint-def']);
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         for (const s of MathCopy.SURFACES) {
             const cls = s.split(' ')[0];
             assert.truthy(new RegExp(cls.replace('.', '\\.') + '[\\s,{:.]').test(css), cls + ' has no rule in the stylesheet');

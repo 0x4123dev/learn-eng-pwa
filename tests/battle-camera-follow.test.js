@@ -687,14 +687,14 @@ suite('follow: wind and health are readable without looking away', () => {
     });
 
     test('the strip floats over the field without blocking taps', () => {
-        const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+        const css = require('./css-all').readAllCss();
         const block = css.slice(css.indexOf('.pb-field-status {'), css.indexOf('}', css.indexOf('.pb-field-status {')));
         assert.truthy(block.includes('position: absolute'));
         assert.truthy(block.includes('pointer-events: none'), 'it must never swallow an aim tap');
     });
 
     test('the two sides are told apart by colour', () => {
-        const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+        const css = require('./css-all').readAllCss();
         assert.truthy(css.includes('.pb-fs-side.me .pb-fs-bar u'), 'my bar needs its own colour');
         assert.truthy(css.includes('.pb-fs-side.foe .pb-fs-bar u'));
     });

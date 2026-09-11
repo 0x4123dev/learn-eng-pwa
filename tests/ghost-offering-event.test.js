@@ -3,7 +3,7 @@ const fs = require('fs'), path = require('path');
 const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const ui = read('js/ghost-offering-event.js'), api = read('functions/api/ghost-offering.js');
-const arena = read('js/petbattle.js'), css = read('css/styles.css'), html = read('index.html'), sw = read('sw.js');
+const arena = read('js/petbattle.js'), css = require('./css-all').readAllCss(), html = read('index.html'), sw = read('sw.js');
 const event = require('../js/ghost-offering-event.js');
 
 suite('ghost offering: the final 10 Sep 2026 event', () => {

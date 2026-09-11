@@ -88,14 +88,14 @@ suite('gen: sw.js cache manifest', () => {
         assert.deepEqual(bad, [], `non-root-relative entries: ${bad.join(', ')}`);
     });
 
-    test('ASSETS partitions exactly into shell + js + font + image entries', () => {
-        const shell = ['/', '/index.html', '/css/styles.css', '/manifest.json'];
+    test('ASSETS partitions exactly into shell + css + js + font + image entries', () => {
+        const shell = ['/', '/index.html', '/manifest.json'];
         const unclassified = ASSETS.filter(a =>
-            !shell.includes(a) && !JS_ASSETS.includes(a) && !IMG_ASSETS.includes(a)
+            !shell.includes(a) && !CSS_ASSETS.includes(a) && !JS_ASSETS.includes(a) && !IMG_ASSETS.includes(a)
                 && !FONT_ASSETS.includes(a) && !MATH_EXAM_ASSETS.includes(a));
         assert.deepEqual(unclassified, [],
             `unclassified sw.js ASSETS entries: ${unclassified.join(', ')}`);
-        assert.equal(4 + JS_ASSETS.length + IMG_ASSETS.length + FONT_ASSETS.length + MATH_EXAM_ASSETS.length, ASSETS.length);
+        assert.equal(3 + CSS_ASSETS.length + JS_ASSETS.length + IMG_ASSETS.length + FONT_ASSETS.length + MATH_EXAM_ASSETS.length, ASSETS.length);
     });
 });
 
@@ -110,7 +110,10 @@ suite('gen: sw.js js/css assets exist on disk', () => {
     // asserting up here is that each kind of asset is represented at all.
     test('every kind of asset the app needs is present in the manifest', () => {
         assert.truthy(JS_ASSETS.length > 30, 'scripts missing from the offline cache');
-        assert.equal(CSS_ASSETS.length, 1, 'the app ships exactly one stylesheet');
+        // The startup sheet plus the three lazily loaded feature sheets
+        // (js/lazy-data.js SCREEN_FILES; tests/css-split.test.js).
+        assert.deepEqual(CSS_ASSETS, ['/css/styles.css', '/css/night-raid.css', '/css/arena.css', '/css/math.css'],
+            'the startup stylesheet and the three feature stylesheets, all precached');
         assert.truthy(IMG_ASSETS.length > 10, 'images missing from the offline cache');
         // Ảnh chụp trang đề thi từng nằm ở đây. Mọi hình nay đều được vẽ lại
         // bằng js/math-figures.js, nên precache chúng chỉ tốn 1,9 MB của máy bé.

@@ -1719,6 +1719,10 @@ function switchScreen(screenId) {
             else if (screenId === 'wordformScreen' && typeof renderWordformHome === 'function') renderWordformHome();
             else if (screenId === 'rewriteScreen' && typeof renderRewriteHome === 'function') renderRewriteHome();
             else if (screenId === 'mathHubScreen' && typeof renderMathHome === 'function') renderMathHome();
+            else if (screenId === 'gradeFourScreen' && typeof renderGrade4Home === 'function') renderGrade4Home();
+            // petBattleScreen, nightRaidScreen and armoryScreen list only a
+            // stylesheet here; their openers (openPetBattle, NightRaid.open,
+            // Armory.open) render right after this call returns.
         };
         // ensure() is a no-op once the bank is in, but it also records this as
         // the tab to warm next time — so call it either way.
@@ -1728,7 +1732,20 @@ function switchScreen(screenId) {
             if (target && !target.innerHTML.trim()) {
                 target.innerHTML = '<div class="lazy-loading" role="status">Đang tải bài…</div>';
             }
+            // A screen whose stylesheet is still on its way (css/arena.css,
+            // css/night-raid.css, css/math.css — js/lazy-data.js) must not
+            // show its content unstyled: the Arena and Night Raid openers
+            // render synchronously right after this call. Keep everything
+            // but the loading notice invisible until the sheet has arrived,
+            // then let the modules that size themselves from the DOM
+            // (the raid builder, the battle camera) re-measure.
+            const cssPending = typeof LazyData.pendingCss === 'function' && LazyData.pendingCss(screenId).length > 0;
+            if (cssPending) nextScreen.classList.add('lazy-css-pending');
             LazyData.ensure(screenId).then(() => {
+                if (cssPending) {
+                    nextScreen.classList.remove('lazy-css-pending');
+                    try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+                }
                 // The child may have moved on while it downloaded.
                 if (document.getElementById(screenId)?.classList.contains('active')) paint();
             });

@@ -26,7 +26,7 @@ const battleSrc = read('functions/api/_battle.js');
 const challengeSrc = read('functions/api/battle/challenge.js');
 const friendsListSrc = read('functions/api/friends/index.js');
 const petbattleSrc = read('js/petbattle.js');
-const stylesSrc = read('css/styles.css');
+const stylesSrc = require('./css-all').readAllCss();
 
 const DAY = 86400000;
 

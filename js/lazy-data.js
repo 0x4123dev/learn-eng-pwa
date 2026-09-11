@@ -20,6 +20,15 @@ var LazyData = (() => {
   'use strict';
 
   // screen id → the banks that screen cannot render without.
+  //
+  // A `.css` entry is a feature stylesheet (css/night-raid.css, css/arena.css,
+  // css/math.css). css/styles.css was one 664 kB render-blocking file, and
+  // ~38% of it styled screens Home never shows; those rules now ride in here
+  // and are appended as <link rel="stylesheet"> the same way a bank is
+  // appended as <script>. switchScreen keeps the screen's content invisible
+  // until a pending stylesheet has arrived (js/app.js, `.lazy-css-pending`),
+  // so a child never sees it unstyled. The service worker precaches every
+  // file listed here, so offline is unaffected — only WHEN it is parsed changed.
   const SCREEN_FILES = Object.freeze({
     grammarScreen: ['js/grammar-units.js', 'js/grammar-lessons.js'],
     examScreen: ['js/exam-data.js', 'js/exam-lessons.js'],
@@ -36,10 +45,18 @@ var LazyData = (() => {
                     'js/collocation-data.js', 'js/collocation-followups.js'],
     wordformScreen: ['js/wordform-data.js', 'js/wordform-followups.js', 'js/wordform-lessons.js'],
     rewriteScreen: ['js/rewrite-data.js', 'js/rewrite-lessons.js'],
-    mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js',
+    mathHubScreen: ['css/math.css',
+                    'js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js',
                     'js/math-luythua.js', 'js/math-source-exams.js',
                     'js/math-fight-bank.js', 'js/mathwars-bank.js',
                     'js/math4-data.js'],
+    gradeFourScreen: ['css/math.css'],
+    // The Arena lobby mounts the Night Raid yard (NightRaid.mountYardScene),
+    // so it needs both feature sheets; Kho Khiên & Kiếm (js/armory.js) is
+    // styled with the Arena.
+    petBattleScreen: ['css/arena.css', 'css/night-raid.css'],
+    armoryScreen: ['css/arena.css'],
+    nightRaidScreen: ['css/night-raid.css'],
   });
 
   // Banks that belong to a SECTION of a screen rather than the screen itself.
@@ -107,9 +124,20 @@ var LazyData = (() => {
     if (loaded[file]) return Promise.resolve();
     if (inFlight[file]) return inFlight[file];
     inFlight[file] = new Promise(resolve => {
-      const script = document.createElement('script');
-      script.src = file;
-      script.async = false;            // banks must run in the order listed
+      let el;
+      if (/\.css$/.test(file)) {
+        // A feature stylesheet. Appended AFTER css/styles.css, so in the
+        // cascade its rules come last — the split (tests/css-split.test.js)
+        // only moved rules whose selectors no core rule shares.
+        el = document.createElement('link');
+        el.rel = 'stylesheet';
+        el.href = file;
+      } else {
+        el = document.createElement('script');
+        el.src = file;
+        el.async = false;              // banks must run in the order listed
+      }
+      const script = el;
       script.onload = () => { loaded[file] = true; resolve(); };
       script.onerror = () => {
         console.warn('lazy bank failed', file);
@@ -127,6 +155,11 @@ var LazyData = (() => {
 
   function ready(screenId) {
     return filesFor(screenId).every(f => loaded[f]);
+  }
+  // The stylesheets a screen still waits for. switchScreen hides the screen's
+  // content until this is empty, so a lazily styled tab never paints naked.
+  function pendingCss(screenId) {
+    return filesFor(screenId).filter(f => /\.css$/.test(f) && !loaded[f]);
   }
 
   function ensure(screenId) {
@@ -171,7 +204,7 @@ var LazyData = (() => {
   function ensureDictionary() { return Promise.all(DICTIONARY.map(loadFile)); }
   function dictionaryReady() { return DICTIONARY.every(f => loaded[f]); }
 
-  return { SCREEN_FILES, GROUP_FILES, SCREEN_GROUPS, DICTIONARY, ensure, ready, warmAll, warmSoon,
+  return { SCREEN_FILES, GROUP_FILES, SCREEN_GROUPS, DICTIONARY, ensure, ready, pendingCss, warmAll, warmSoon,
     filesFor, groupFor, ensureDictionary, dictionaryReady };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = LazyData;

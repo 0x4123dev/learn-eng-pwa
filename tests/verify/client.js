@@ -217,9 +217,13 @@ function mountApp(opts) {
     + 'globalThis.__run = function (code) { return eval(code); };',
     sandbox, { filename: 'verify-bridge' });
 
-  // Lazy banks (js/lazy-data.js) arrive as <script> tags appended to <head>.
-  // Serve them from disk through that same path so LazyData.ensure/ready are
-  // exercised for real instead of being bypassed.
+  // Lazy banks (js/lazy-data.js) arrive as <script> tags appended to <head>,
+  // and a screen's feature stylesheet (css/arena.css, css/night-raid.css,
+  // css/math.css) as a <link rel="stylesheet"> the same way. Serve both from
+  // disk through that same path so LazyData.ensure/ready are exercised for
+  // real instead of being bypassed — a sheet that does not exist on disk
+  // fails its load exactly as a 404 would, and the screen stays hidden
+  // behind `.lazy-css-pending`.
   const headAppend = doc.head.appendChild.bind(doc.head);
   const banksLoaded = [];
   doc.head.appendChild = (el) => {
@@ -231,6 +235,14 @@ function mountApp(opts) {
         if (typeof el.onload === 'function') el.onload();
       } catch (e) {
         loadErrors.push({ src: el.src, phase: 'lazy', message: e.message });
+        if (typeof el.onerror === 'function') el.onerror();
+      }
+    } else if (el.tagName === 'LINK' && el.rel === 'stylesheet' && el.href) {
+      if (fs.existsSync(path.join(ROOT, el.href))) {
+        banksLoaded.push(el.href);
+        if (typeof el.onload === 'function') el.onload();
+      } else {
+        loadErrors.push({ src: el.href, phase: 'lazy', message: 'stylesheet missing on disk' });
         if (typeof el.onerror === 'function') el.onerror();
       }
     }
@@ -1126,6 +1138,7 @@ async function verifyClient() {
         must(html.trim().length > 0, 'the screen rendered nothing at all');
         must(text.length > 0, 'the screen has markup but no readable text');
         must(!/Đang tải bài/.test(text), 'the screen is still showing the lazy-loading placeholder');
+        must(!el.classList.contains('lazy-css-pending'), 'the screen is still hidden behind its lazy stylesheet (js/lazy-data.js SCREEN_FILES)');
         return entry.prove(h, el);
       });
       screens.push({

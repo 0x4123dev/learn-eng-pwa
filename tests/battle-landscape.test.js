@@ -8,7 +8,7 @@ const ROOT = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const game = read('js/petbattlegame.js');
 const lobby = read('js/petbattle.js');
-const css = read('css/styles.css');
+const css = require('./css-all').readAllCss();
 const manifest = JSON.parse(read('manifest.json'));
 
 suite('battle landscape button', () => {

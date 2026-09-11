@@ -16,7 +16,7 @@ const { suite, test, assert } = require('./harness');
 
 const ROOT = path.join(__dirname, '..');
 const NR = require('../js/night-raid-rules.js');
-const css = fs.readFileSync(path.join(ROOT, 'css/styles.css'), 'utf8');
+const css = require('./css-all').readAllCss();
 
 // A soldier is positioned by its bottom centre: CSS translate(-50%, -100%).
 // x is a percentage of the yard's width, y of its height.

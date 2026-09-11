@@ -9,7 +9,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const pbSrc = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
 const gameSrc = fs.readFileSync(path.join(root, 'js', 'petbattlegame.js'), 'utf8');
-const cssSrc = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+const cssSrc = require('./css-all').readAllCss();
 const indexSrc = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
 // Load the summary helper standalone — no DOM needed.

@@ -228,7 +228,8 @@ suite('build-dist: deterministic', () => {
     test('the size table counts every js and css file', () => {
         const nJs = built.files.filter(r => r.startsWith('js/') && wantsMinify(r)).length;
         assert.equal(built.table.js.files, nJs);
-        assert.equal(built.table.css.files, 1);
+        // css/styles.css plus the three lazily loaded feature sheets (tests/css-split.test.js).
+        assert.equal(built.table.css.files, 4);
         assert.truthy(built.table.js.min < built.table.js.raw);
         assert.truthy(built.table.js.minGz > 0 && built.table.js.minGz < built.table.js.min);
     });

@@ -9,7 +9,7 @@ const root = path.join(__dirname, '..');
 const cupsSrc = fs.readFileSync(path.join(root, 'js', 'cups.js'), 'utf8');
 const pbSrc = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
 const indexSrc = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const cssSrc = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+const cssSrc = require('./css-all').readAllCss();
 
 // Fresh sandbox per test — appState is global in the app.
 function load(initial) {
@@ -282,7 +282,7 @@ suite('cups: wired into the app', () => {
 // every result card — win and loss alike — carries the ladder.
 suite('cups: the reward ladder on the result card', () => {
     const pb = fs.readFileSync(path.join(root, 'js', 'petbattle.js'), 'utf8');
-    const styles = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+    const styles = require('./css-all').readAllCss();
     // Just the ladder builder: from its own `function` line to the next one.
     // The end marker used to be the "practice vs bot" section comment, deleted
     // with practice mode (2026-09) — indexOf then returned -1, the slice

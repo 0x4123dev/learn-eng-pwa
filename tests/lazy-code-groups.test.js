@@ -88,8 +88,10 @@ suite('lazy code groups: the split itself', () => {
     const math = lazy.filesFor('mathHubScreen');
     assert.deepEqual(math.slice(0, MATH.length), MATH, 'the math code must come first');
     assert.deepEqual(math.slice(MATH.length), lazy.SCREEN_FILES.mathHubScreen, 'then the banks, unchanged');
-    assert.deepEqual(lazy.filesFor('petBattleScreen'), ARENA);
-    assert.deepEqual(lazy.filesFor('nightRaidScreen'), ARENA);
+    // …and after the code, the screen's own stylesheet(s) (tests/css-split.test.js).
+    assert.deepEqual(lazy.filesFor('petBattleScreen'), ARENA.concat(lazy.SCREEN_FILES.petBattleScreen));
+    assert.deepEqual(lazy.filesFor('nightRaidScreen'), ARENA.concat(lazy.SCREEN_FILES.nightRaidScreen));
+    assert.deepEqual(lazy.SCREEN_FILES.petBattleScreen.filter((f) => !/\.css$/.test(f)), [], 'the Arena has no banks of its own, only stylesheets');
     // The HK2 split is untouched by this one.
     assert.falsy(lazy.filesFor('mathHubScreen').some((f) => /-hk2\.js$/.test(f)));
   });
@@ -101,7 +103,8 @@ function mountLoader() {
   const injected = [];
   const doc = {
     head: { appendChild(node) { injected.push(node); } },
-    createElement: () => ({ set src(v) { this._src = v; }, get src() { return this._src; }, async: true }),
+    // A <script src> for a bank, a <link href> for a stylesheet: `src` reads either.
+    createElement: () => ({ set src(v) { this._src = v; }, set href(v) { this._src = v; }, get src() { return this._src; }, async: true }),
   };
   const store = {};
   const ctx = { document: doc, console, Promise, Object, Array, JSON, String, Number,
@@ -119,7 +122,7 @@ suite('lazy code groups: the loader treats a screen and its code as one wait', (
     assert.falsy(m.L.ready('mathHubScreen'));
     const p = m.L.ensure('mathHubScreen');
     assert.deepEqual(m.injected.map((n) => n.src), MATH.concat(lazy.SCREEN_FILES.mathHubScreen));
-    assert.truthy(m.injected.every((n) => n.async === false), 'in-order execution needs async=false');
+    assert.truthy(m.injected.filter((n) => !/\.css$/.test(n.src)).every((n) => n.async === false), 'in-order execution needs async=false');
     m.finish();
     return p.then(() => {
       assert.truthy(m.L.ready('mathHubScreen'));
@@ -131,11 +134,11 @@ suite('lazy code groups: the loader treats a screen and its code as one wait', (
   test('the arena group arrives once for both of its screens', () => {
     const m = mountLoader();
     const p = m.L.ensure('petBattleScreen');
-    assert.deepEqual(m.injected.map((n) => n.src), ARENA);
+    assert.deepEqual(m.injected.map((n) => n.src), ARENA.concat(lazy.SCREEN_FILES.petBattleScreen));
     m.finish();
     return p.then(() => {
-      assert.truthy(m.L.ready('nightRaidScreen'), 'the raid screen shares the code');
-      return m.L.ensure('nightRaidScreen').then(() => assert.equal(m.injected.length, ARENA.length));
+      assert.truthy(m.L.ready('nightRaidScreen'), 'the raid screen shares the code (and the Arena already fetched its sheet)');
+      return m.L.ensure('nightRaidScreen').then(() => assert.equal(m.injected.length, ARENA.length + lazy.SCREEN_FILES.petBattleScreen.length));
     });
   });
 

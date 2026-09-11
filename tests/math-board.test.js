@@ -394,7 +394,7 @@ suite('math board: overlay wiring', () => {
         // "Thu nhỏ" button left the screen, and because the canvas swallows
         // every one-finger pan there was no gesture left to bring it back.
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
         assert.truthy(/touch-action:\s*pan-x pan-y/.test(overlay),
             'overlay must forbid pinch-zoom while keeping child panning');
@@ -452,7 +452,7 @@ suite('math board: overlay wiring', () => {
 
     test('the full question is default and collapsing hides the entire stem', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         assert.truthy(/_mathBoardQuestionExpanded\s*=\s*true/.test(src),
             'every open must begin with the complete question');
         assert.truthy(/aria-expanded/.test(src), 'collapse state must be announced');
@@ -471,7 +471,7 @@ suite('math board: overlay wiring', () => {
 
     test('iOS cannot select the board or open its copy-paste callout', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
         assert.truthy(/-webkit-user-select:\s*none/.test(overlay));
         assert.truthy(/user-select:\s*none/.test(overlay));
@@ -484,7 +484,7 @@ suite('math board: overlay wiring', () => {
 
     test('the board adapts from a 320px phone to pointer-based desktop', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         assert.truthy(/@media\s*\(max-width:\s*600px\)/.test(css));
         assert.truthy(/grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/.test(css),
             'phone actions must divide the available width without overflow');
@@ -497,7 +497,7 @@ suite('math board: overlay wiring', () => {
     });
 
     test('a long full question leaves writing room in short landscape viewports', () => {
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const full = css.slice(css.indexOf('.math-board-strip.full {'), css.indexOf('.math-board-strip-label'));
         assert.truthy(/max-height:\s*min\(46dvh,\s*360px\)/.test(full));
         assert.truthy(/overflow-y:\s*auto/.test(full));
@@ -552,7 +552,7 @@ suite('math board: overlay wiring', () => {
 
     test('iPhone browser chrome cannot lift the bottom bar or expose white space', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const overlay = css.slice(css.indexOf('.math-board-overlay {'), css.indexOf('.math-board-overlay.hidden'));
         assert.truthy(/position:\s*fixed/.test(overlay),
             'the scratch board must not inherit a stale app-shell height');
@@ -605,7 +605,7 @@ suite('math board: overlay wiring', () => {
 // cannot quietly undo them.
 suite('math board: what the browser found', () => {
     test('the canvas can SHRINK, not just grow', () => {
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const rule = css.slice(css.indexOf('#mathBoardCanvas'));
         assert.truthy(/min-height:\s*0/.test(rule.slice(0, rule.indexOf('}'))),
             'a canvas is a replaced element: without min-height 0 the default ' +
@@ -642,7 +642,7 @@ suite('math board: what the browser found', () => {
 
     test('every question gets a complete, accessible scratch maths keyboard', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         assert.truthy(/mathBoardKeyboardToggle/.test(src) && /aria-controls="mathBoardKeyboard"/.test(src),
             'the board toolbar must open and identify the keyboard panel');
         for (const key of ['√', '^', '|', '/', '(', ')', '=', 'x', 'n', 'y']) {
@@ -662,7 +662,7 @@ suite('math board: what the browser found', () => {
 
     test('the bulky drawing controls are collapsed while the maths keyboard stays prominent', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         assert.truthy(/_mathBoardToolsExpanded\s*=\s*false/.test(src),
             'drawing settings should not consume the board by default');
         assert.truthy(/math-board-advanced-tools'\s*\+\s*\(_mathBoardToolsExpanded\s*\?\s*''\s*:\s*' hidden'\)/.test(src),
@@ -682,7 +682,7 @@ suite('math board: what the browser found', () => {
 
     test('compact mode gives the writing sheet the maximum possible height', () => {
         const src = read('js/math-board.js');
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const toolbar = css.slice(css.indexOf('.math-board-tools {'), css.indexOf('.math-board-tools::-webkit-scrollbar'));
         assert.truthy(/display:\s*flex/.test(toolbar) && /flex-wrap:\s*nowrap/.test(toolbar) &&
             /overflow-x:\s*auto/.test(toolbar),

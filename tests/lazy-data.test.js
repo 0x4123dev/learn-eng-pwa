@@ -100,9 +100,13 @@ suite('lazy data loader: loads once, on demand, and survives failure', () => {
     const screens = Object.keys(JSON.parse(JSON.stringify(
       (function () { const m = {}; for (const s of lazy.match(/([a-zA-Z]+Screen):\s*\[/g) || []) m[s.split(':')[0]] = 1; return m; })())));
     assert.truthy(screens.length >= 2, 'at least the two giants are deferred');
+    // Kho Khiên & Kiếm builds its own #armoryScreen at runtime (js/armory.js)
+    // rather than shipping an empty <div> in index.html.
+    const runtimeScreens = { armoryScreen: read('js/armory.js') };
     for (const s of screens) {
-      assert.truthy(html.includes('id="' + s + '"'), s + ' is not a real screen');
-      assert.truthy(app.includes("'" + s + "'"), s + ' must be handled by switchScreen');
+      const made = html.includes('id="' + s + '"') || (runtimeScreens[s] || '').includes("'" + s + "'");
+      assert.truthy(made, s + ' is not a real screen');
+      assert.truthy(app.includes(s), s + ' must be known to switchScreen / the bottom nav');
     }
   });
 });
@@ -253,7 +257,8 @@ suite('startup weight: the device only carries the tabs it actually uses', () =>
   test('warm-up loads ONLY the tab the child used last', () => {
     const m = mountLoader('mathHubScreen');
     return m.ctx.LazyData.warmAll().then(() => {
-      const files = m.injected.map(n => n.src);
+      // A bank is a <script src>, the tab's stylesheet a <link href>.
+      const files = m.injected.map(n => n.src || n.href);
       assert.truthy(files.length > 0, 'the remembered tab is warmed');
       assert.truthy(files.every(f => f.indexOf('math') !== -1),
         'only the maths banks may be warmed, got: ' + files.join(', '));

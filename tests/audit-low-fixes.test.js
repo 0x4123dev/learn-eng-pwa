@@ -17,7 +17,7 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-const css = fs.readFileSync(path.join(ROOT, 'css/styles.css'), 'utf8');
+const css = require('./css-all').readAllCss();
 
 // ============================================================================
 // 1. dvh needs a vh line in FRONT of it, not a min-height behind it

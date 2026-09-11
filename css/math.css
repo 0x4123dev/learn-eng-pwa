@@ -1,0 +1,971 @@
+/* css/math.css — Toán: Toán 7 / Toán 4 papers, typesetting, Bảng nháp, Math
+   Wars, Bảng cửu chương, Đấu Toán. Split out of css/styles.css so Home never
+   pays to parse it; js/lazy-data.js loads it (SCREEN_FILES) before
+   mathHubScreen paints. Every rule here uses a class that only the math
+   modules render; tests/css-split.test.js keeps the feature files and
+   styles.css disjoint. */
+/* ── Toán 7 formulas ────────────────────────────────────────────
+           A formula is the whole content of an answer here, so it is set
+           larger than body text and given room to breathe. The exponent is
+           the part that decides the answer — "x⁵" vs "x⁻⁵" — so <sup> is
+           deliberately big (0.75em, not the browser default ~0.58em) and
+           lifted rather than shrunk. Unicode superscript glyphs were used
+           first and could not be enlarged at all: unreadable on a phone. */
+        .math-formula {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1.7;
+        }
+/* A fraction is anchored by its BAR, never by a fixed offset.
+           This used to say `vertical-align: -.55em`, and because an
+           inline-grid takes its baseline from the first row, that constant
+           anchored the NUMERATOR instead — leaving the bar 0.913em BELOW the
+           text baseline when it belongs ~0.25em ABOVE it (the maths axis, i.e.
+           the ink centre of "="). Every fraction hung a full line low, and the
+           taller the content the worse it got (a nested fraction was 2.77em
+           out). `middle` aligns the box's midpoint with baseline + half the
+           PARENT's x-height, so it re-derives itself in every context and font
+           size instead of being tuned per screen; `1fr 1fr` forces the two
+           halves to equal height so that midpoint always IS the bar, whatever
+           the numerator holds — parentheses, exponents, a nested fraction. */
+        .math-frac {
+            display: inline-grid;
+            position: relative;
+            grid-template-rows: 1fr 1fr;
+            min-width: 1.35em;
+            margin: 0 .12em;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+.math-num {
+            grid-row: 1;
+            padding: 0 .18em .08em;
+            border-bottom: 1.7px solid currentColor;
+        }
+.math-den { grid-row: 2; padding: .08em .18em 0; }
+.math-frac-slash {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+.math-mixed {
+            display: inline-flex;
+            align-items: center;
+            gap: .04em;
+            margin: 0 .1em;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+.math-mixed .math-frac { margin-inline: .04em; vertical-align: middle; }
+.math-whole { font-size: 1.04em; font-weight: 800; }
+/* A căn bậc hai is the hook PLUS the bar, and a child reads the two
+           as ONE letter sitting on the line of text.
+
+           It used to be an inline-flex with `align-items: center`, a
+           `min-height: 1.15em` radicand and `vertical-align: -.24em`. Between
+           them the digits were centred inside a box nearly twice their height
+           and then pushed down: √9 printed with the 9 sunk below the line and
+           a 0.4em hole between it and the bar, so the hook read as a tick mark
+           standing beside a floating number. Worse, a `sup` inside a flex
+           container is a FLEX ITEM and a flex item ignores `vertical-align`
+           outright — √(21,5²) came out as √(21,52), a different and perfectly
+           plausible number.
+
+           So the radicand is a baseline-aligned inline-block: its own text
+           baseline IS the line's baseline (measured 0.000em), and it carries
+           the bar as its border-top with just enough headroom for the tallest
+           thing under it — a Vietnamese ệ, or an exponent, which needs more. */
+        .math-root {
+            display: inline-block;
+            position: relative;
+            margin: 0 .08em;
+            vertical-align: baseline;
+            white-space: nowrap;
+        }
+/* The bar over a radicand — the other half of the căn bậc hai sign.
+           Drawn as a border so it stretches to exactly what is under the root,
+           which is also what shows the reader where the radicand ends. */
+        .math-radicand {
+            display: inline-block;
+            vertical-align: baseline;
+            line-height: .8;
+            border-top: 1.7px solid currentColor;
+            padding: .12em .14em 0 .05em;
+            margin-left: -.06em;
+        }
+/* An exponent is the one thing that reaches higher than the bar: at the
+           standard raise its ink sat 0.103em ABOVE it, so the vinculum sliced
+           the 2 of √(a²) in half — in the very questions that ask what √(a²)
+           is. A radical grows to clear what it covers, so the bar goes up
+           rather than the exponent coming down: the exponent stays exactly the
+           size and height it is everywhere else in the app.
+           Both paddings are set from the tallest ink a radicand can carry, not
+           from the average one, and measured against the bar's UNDERSIDE — the
+           first attempt aimed at its top edge and left the exponent touching
+           the bar in five of the seven contexts. Worst case now: 0.098em of
+           daylight under the bar for text, 0.174em for an exponent. */
+        .math-root:has(sup) .math-radicand { padding-top: .39em; }
+/* Where masks work, the hook is DRAWN rather than typed, and built to
+           the radicand's own height. That buys two things the glyph cannot:
+           it is identical on every device instead of depending on which serif
+           the phone happens to have, and it grows with its content — the √ of
+           √(4/25) reaches down past the denominator, where a glyph left "25"
+           dangling 0.78em below the hook's tip.
+           The condition also tests `selector(:has(*))`, because this layer only
+           works as a whole: a browser with masks but without `:has()` kept the
+           .58em gutter and the zero line-height while dropping the mask rule and
+           the two `:has()` rules that lift the bar — a radical with no hook and
+           a sliced exponent. Firefox before 121 (ESR 115 included), Chrome ≤104,
+           Safari ≤15.3 and Samsung Internet ≤20 land there; they now take the
+           typed fallback whole. */
+@supports (((mask-image: url("data:image/svg+xml,%3Csvg/%3E")) or (-webkit-mask-image: url("data:image/svg+xml,%3Csvg/%3E"))) and (selector(:has(*)))) {
+/* The drawn hook is positioned against .math-root's own box, so that
+               box has to hug the radicand instead of carrying the surrounding
+               line's leading — otherwise the hook starts 0.32em above the bar
+               and pokes out of the top of the radical. */
+            .math-root { padding-left: .58em; line-height: 0; }
+.math-radicand { margin-left: 0; }
+}
+.math-radicand .math-frac { margin-top: .12em; margin-bottom: .18em; }
+.grammar-question-text .math-frac,
+        .grammar-option-text .math-frac { font-size: 1.04em; }
+@media (max-width: 420px) {
+.math-formula { font-size: 17px; }
+.math-frac { margin-inline: .08em; }
+}
+/* The score-tier filter row reuses the sub-tab pills but has five of
+           them, so it scrolls sideways instead of squeezing. */
+        .math-hist-tabs {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+.math-hist-tabs .grammar-subtab { flex: 0 0 auto; font-size: 13px; padding: 6px 12px; }
+/* ---- Lịch sử tab ----
+           Three stat chips answer "how much / how well / best ever" before the
+           child scrolls; each run below gets a tier-coloured progress bar so a
+           week of results reads as a picture, not a table. */
+        .math-hist-stats {
+            display: flex; gap: 8px; margin: 0 0 12px;
+        }
+.math-hist-stat {
+            flex: 1; text-align: center;
+            background: var(--card-bg, #fff);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 14px; padding: 10px 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+.math-hist-stat span { font-size: 12px; color: var(--text-secondary, #64748b); }
+/* Math tab menu: two subjects, three levels, one back arrow. */
+        .math-back-btn {
+            position: absolute; left: 10px; top: 10px;
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 800; line-height: 1;
+            font-family: inherit; cursor: pointer;
+            color: var(--text-primary); background: rgba(255,255,255,0.7);
+            border: 1.5px solid var(--glass-border);
+        }
+.math-section-cta .phrases-cta-icon { font-size: 30px; }
+/* ---- Đấu Toán (Math Fight) -------------------------------------------- */
+.math-section-cta.fight .phrases-cta-icon { filter: drop-shadow(0 3px 6px rgba(214,90,42,.35)); }
+.mf-loading { min-height: 220px; display: grid; place-content: center; text-align: center; color: #6b7a8c; }
+.mf-loading i { width: 38px; height: 38px; margin: 0 auto 12px; border-radius: 50%; border: 4px solid rgba(0,0,0,.08); border-top-color: #ff8b3d; animation: nr-spin .8s linear infinite; }
+.mf-empty { padding: 26px 18px; text-align: center; color: #5d6b7c; }
+.mf-empty h3 { margin: 0 0 6px; font-size: 18px; color: #24303f; }
+.mf-wallet { margin: 4px 0 12px; padding: 10px 14px; border-radius: 14px; background: #fff6dd; color: #6d4a09; font-size: 13px; font-weight: 900; }
+.mf-friends { display: grid; gap: 10px; }
+.mf-friend { width: 100%; display: grid; grid-template-columns: 46px 1fr 18px; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 18px; background: #fff; text-align: left; cursor: pointer; }
+.mf-friend:disabled, .mf-friend.waiting { opacity: .72; cursor: default; }
+.mf-avatar { width: 46px; height: 46px; border-radius: 14px; display: grid; place-content: center; background: linear-gradient(145deg,#ffd36a,#ff8b3d); font-size: 22px; }
+.mf-note { display: block; margin-top: 3px; font-size: 12px; font-weight: 800; color: #7a8798; }
+.mf-go { font-size: 22px; color: #c2ccd8; }
+.mf-lock { display: inline-flex; align-items: center; gap: 7px; margin-top: 5px; padding: 5px 10px; border-radius: 999px; background: #eef3f9; color: #43536a; }
+.mf-bet, .mf-invite, .mf-result { padding: 20px 18px; border: 1px solid #e2e8f0; border-radius: 22px; background: #fff; text-align: center; }
+.mf-kicker { font-size: 10px; font-weight: 950; letter-spacing: .1em; color: #8b98a8; }
+.mf-bet h3, .mf-invite h3, .mf-result h3 { margin: 6px 0 8px; font-size: 22px; color: #1f2937; }
+.mf-stake { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
+.mf-stake span { flex: 1; padding: 10px; border-radius: 14px; font-size: 13px; font-weight: 900; }
+.mf-actions { display: flex; gap: 10px; margin-top: 16px; }
+.mf-primary, .mf-secondary { flex: 1; min-height: 50px; border-radius: 16px; font-size: 15px; font-weight: 900; cursor: pointer; }
+.mf-primary { border: none; background: linear-gradient(135deg,#ff9a3c,#f2622f); color: #fff; box-shadow: 0 5px 0 #c94a1f; }
+.mf-secondary { border: 1px solid #d6dee8; background: #fff; color: #4a5768; }
+.mf-bout { padding: 4px 0 18px; }
+.mf-strip { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 10px; }
+.mf-score { padding: 8px 12px; border-radius: 14px; font-size: 13px; font-weight: 900; }
+.mf-score.foe { background: #f4f0ff; color: #5b3fa8; text-align: right; }
+.mf-clock { padding: 8px 14px; border-radius: 999px; background: #1f2937; color: #fff; font-size: 18px; font-weight: 950; font-variant-numeric: tabular-nums; }
+.mf-progress { height: 8px; border-radius: 999px; background: #e8edf3; overflow: hidden; }
+.mf-progress i { display: block; height: 100%; background: linear-gradient(90deg,#ffd45e,#ff8b3d); transition: width .2s ease-out; }
+.mf-count { margin: 10px 0 4px; font-size: 12px; font-weight: 900; color: #8b98a8; text-align: center; }
+.mf-question { margin: 6px 0 18px; font-size: clamp(34px,9vw,52px); font-weight: 950; color: #1f2937; text-align: center; font-variant-numeric: tabular-nums; }
+.mf-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mf-option { min-height: 68px; border: 2px solid #dbe4ef; border-radius: 18px; background: #fff; color: #1f2937; font-size: 26px; font-weight: 950; cursor: pointer; font-variant-numeric: tabular-nums; }
+.mf-option:active { transform: translateY(2px); background: #fff6e8; }
+.mf-quit { margin: 18px auto 0; display: block; padding: 8px 16px; border: none; border-radius: 999px; background: transparent; color: #97a3b2; font-size: 13px; font-weight: 800; cursor: pointer; }
+.mf-result-crest { font-size: 56px; }
+.mf-result-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 14px 0; }
+.mf-result-score > div { padding: 12px; border-radius: 16px; background: #f3f6fa; }
+.mf-result-score span { display: block; font-size: 10px; font-weight: 950; letter-spacing: .07em; color: #7a8798; }
+.mf-result-coins { padding: 12px; border-radius: 16px; font-size: 20px; font-weight: 950; }
+.mf-result-coins.flat { background: #f3f6fa; color: #4a5768; }
+.mf-result-wallet { margin-top: 8px; font-size: 13px; font-weight: 800; color: #7a8798; }
+.mf-result.won { border-color: #9fe3bd; }
+.mf-result.lost { border-color: #f5b8b1; }
+@media (max-width: 420px) {
+.mf-options { gap: 9px; }
+.mf-option { min-height: 60px; font-size: 22px; }
+}
+/* A tint dark enough to keep .phrases-cta's white text readable — the
+           first attempt used a pale wash and the label vanished into it. */
+        .math-section-cta.wars {
+            background: linear-gradient(135deg, #12a5a5, #6d3ad6);
+            box-shadow: 0 8px 22px rgba(18,165,165,0.30);
+        }
+/* ⚔️ Math Wars — the 60-second mental-arithmetic round. */
+        .wars-clock {
+            flex: 0 0 auto; font-size: 15px; font-weight: 800;
+            color: #0f766e; background: rgba(45,190,190,0.16);
+            border-radius: 10px; padding: 3px 9px;
+        }
+.wars-sum {
+            text-align: center; margin: 26px 0 22px;
+            font-size: 40px; font-weight: 800; letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+.wars-gap { color: #2dbebe; }
+.wars-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.wars-option {
+            padding: 22px 8px; border-radius: 16px; cursor: pointer;
+            font-family: inherit; font-size: 28px; font-weight: 800;
+            color: var(--text-primary);
+            background: var(--glass-bg, rgba(255,255,255,0.85));
+            border: 2px solid var(--glass-border);
+        }
+.wars-option:active { transform: scale(0.97); border-color: #2dbebe; }
+/* Bảng cửu chương: the only new rule the drill needs — everything
+           else reuses the Math Wars card. The heading separates nhân from
+           chia so six buttons read as two choices, not six. */
+        .math-cc-heading { margin: 18px 0 8px; }
+.math-cc-heading:first-of-type { margin-top: 4px; }
+.wars-result-card {
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 18px; padding: 18px 14px; margin-bottom: 14px;
+        }
+.wars-result-title { text-align: center; font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+.wars-stats { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.wars-stat { flex: 0 0 auto; text-align: center; min-width: 62px; }
+.wars-stat-label { font-size: 13px; font-weight: 700; }
+.wars-stat.wrong .wars-stat-label { color: #f472a8; }
+.wars-stat.right .wars-stat-label { color: #2dbebe; }
+.wars-stat-value { font-size: 30px; font-weight: 400; color: var(--text-secondary); }
+/* The donut: one conic sweep for the accuracy, a hole punched by the
+           inner disc. No canvas, no library, and it scales with the font. */
+        .wars-donut {
+            flex: 0 0 auto; width: 132px; height: 132px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(#2dbebe calc(var(--pct) * 1%), #e2e5e5 0);
+        }
+.wars-donut-hole {
+            width: 96px; height: 96px; border-radius: 50%;
+            background: var(--card-bg, #fff);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+.wars-donut-label { font-size: 12px; color: var(--text-secondary); }
+.wars-donut-value { font-size: 30px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
+.wars-donut-value span { font-size: 15px; font-weight: 600; }
+.wars-mean { text-align: center; margin-top: 14px; font-size: 14px; color: var(--text-secondary); }
+.wars-skipped { text-align: center; margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+/* Gợi ý: định nghĩa các khái niệm câu hỏi đang dùng (Chương 3, 4).
+           Đóng mặc định — mở ra là do bé chọn, nên nó vẫn là gợi ý chứ không
+           phải lý thuyết in sẵn phía trên mọi câu trả lời. */
+        .math-hint-btn {
+            display: flex; align-items: center; gap: 6px; width: 100%;
+            margin: 10px 0 12px; padding: 10px 14px;
+            font-family: inherit; font-size: 14px; font-weight: 700; text-align: left;
+            color: #7c4a03; background: rgba(255,193,7,0.14);
+            border: 1.5px solid rgba(255,193,7,0.45); border-radius: 12px; cursor: pointer;
+        }
+.math-hint-btn.open { margin-bottom: 0; border-radius: 12px 12px 0 0; }
+.math-hint-caret { margin-left: auto; font-weight: 800; opacity: .7; }
+.math-hint-open { margin: 10px 0 12px; }
+.math-hint-item { padding-top: 10px; }
+.math-hint-item + .math-hint-item { border-top: 1px dashed rgba(255,193,7,0.5); }
+.math-hint-term { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+.math-hint-def { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+/* Hình vẽ của mỗi khái niệm hình học (js/math-figures.js).
+           Vẽ bằng SVG nên nét vẫn sắc ở mọi cỡ máy, và màu lấy từ biến theme
+           để hình không biến mất khi bé đổi giao diện. */
+        /* Hình của ĐỀ BÀI: to hơn hình trong gợi ý, và đứng ngay dưới câu hỏi.
+           Nó không phải minh hoạ thêm — với hình học nó chính là đề. */
+        .math-q-figwrap {
+            margin: 4px 0 14px; padding: 6px 0;
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px;
+        }
+.math-q-figwrap .math-fig { max-width: 340px; background: none; }
+.math-source-crop {
+            position: relative; width: min(100%, 520px); aspect-ratio: var(--crop-ratio);
+            margin-inline: auto; padding: 0; overflow: hidden; background: #fff;
+        }
+.math-source-crop img {
+            position: absolute; z-index: 1; max-width: none; height: auto; display: block;
+            visibility: visible; opacity: 1;
+        }
+.grammar-option.source-issue {
+          border-color: #f3b43f;
+          background: #fff8df;
+          color: #6f4b00;
+        }
+.math-hint-figwrap { margin: 6px 0 8px; }
+.math-fig {
+            display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto;
+            background: rgba(255,255,255,0.55); border-radius: 10px; padding: 2px 0;
+        }
+.math-fig .mf-l { fill: none; stroke: var(--text-primary); stroke-width: 2; stroke-linecap: round; }
+.math-fig .mf-tri { stroke-linejoin: round; }
+.math-fig .mf-d { fill: none; stroke: var(--text-secondary); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: .75; }
+.math-fig .mf-p { fill: var(--text-primary); }
+.math-fig .mf-sq { fill: none; stroke-width: 1.8; stroke: var(--text-primary); }
+.math-fig .mf-par { fill: none; stroke: var(--text-secondary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.math-fig .mf-w { stroke-width: 1.6; }
+.math-fig .mf-arc { fill: none; stroke-width: 1.8; }
+.math-fig .mf-tick { stroke-width: 2; stroke-linecap: round; }
+.math-fig .mf-box { fill-opacity: .16; stroke-width: 1.6; }
+/* Ba màu đánh dấu — đủ để phân biệt cặp góc/cạnh mà không thành cầu vồng. */
+        .math-fig .mf-a { fill: rgba(230,81,0,.20); stroke: #e65100; }
+.math-fig .mf-b { fill: rgba(21,101,192,.20); stroke: #1565c0; }
+.math-fig .mf-c { fill: rgba(46,125,50,.20); stroke: #2e7d32; }
+.math-fig .mf-tick.mf-a, .math-fig .mf-arc.mf-a { stroke: #e65100; }
+.math-fig .mf-tick.mf-b, .math-fig .mf-arc.mf-b { stroke: #1565c0; }
+.math-fig .mf-tick.mf-c, .math-fig .mf-arc.mf-c { stroke: #2e7d32; }
+.math-fig .mf-hi { stroke: #e65100; }
+/* Đặt SAU bảng màu: nét chỉ mượn màu của mf-a/b/c, không mượn phần tô —
+           ô vuông góc mà bị tô đặc thì thành hình tam giác. */
+        .math-fig .mf-sq, .math-fig .mf-arc, .math-fig .mf-tick { fill: none; }
+.math-fig .mf-fill { stroke: none; fill: var(--text-primary); }
+.math-fig .mf-t {
+            font-family: inherit; font-size: 12px; font-weight: 800;
+            fill: var(--text-primary);
+        }
+.math-fig .mf-cap { font-size: 10px; font-weight: 600; fill: var(--text-secondary); }
+.math-fig .mf-no { fill: #c62828; font-size: 16px; }
+.math-fig .mf-chart-line { fill: none; stroke: #7c3aed; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.math-fig .mf-chart-dot { fill: #fff; stroke: #7c3aed; stroke-width: 2.2; }
+.math-fig .mf-chart-value { fill: #5b21b6; font-weight: 900; }
+.math-fig .mf-chart-slice, .math-fig .mf-chart-key { stroke: var(--card-bg, #fff); stroke-width: 1.5; }
+.math-fig .mf-chart-1 { fill: #ff8a65; }
+.math-fig .mf-chart-2 { fill: #42a5f5; }
+.math-fig .mf-chart-3 { fill: #66bb6a; }
+.math-fig .mf-chart-4 { fill: #ab47bc; }
+.math-written-help {
+            margin: 4px 0 14px; padding: 13px 15px; border-radius: 14px;
+            background: #eef2ff; color: #3730a3; font-size: 14px; line-height: 1.5;
+        }
+.math-board-prompt { display: flex; align-items: center; gap: 12px; }
+.math-open-board {
+            flex: 0 0 auto; min-height: 44px; padding: 8px 12px;
+            border: 1.5px solid #818cf8; border-radius: 12px;
+            background: #fff; color: #3730a3; font: 800 14px/1.2 inherit;
+            cursor: pointer;
+        }
+.math-open-board:focus-visible,
+        .math-part-edit:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.math-answer-parts { display: grid; gap: 10px; margin: 0 0 14px; }
+.math-answer-part {
+            position: relative; padding: 11px; border: 1.5px solid #dbe3ef;
+            border-radius: 14px; background: var(--card-bg, #fff);
+        }
+.math-part-label {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+            color: var(--text-primary); font-size: 14px; font-weight: 800;
+        }
+.math-part-label > span {
+            display: inline-grid; place-items: center; width: 24px; height: 24px;
+            border-radius: 50%; background: #ede9fe; color: #6d28d9; font-size: 12px;
+        }
+.math-answer-part .math-answer-box { margin: 0; min-height: 50px; }
+.math-answer-box.pending { color: #94a3b8; background: #f8fafc; }
+.math-part-edit {
+            position: absolute; top: 8px; right: 9px; min-width: 44px; min-height: 36px;
+            border: 0; border-radius: 10px; background: #ede9fe; color: #6d28d9;
+            font: 800 13px/1 inherit; cursor: pointer;
+        }
+.math-part-correct { margin-top: 7px; color: #166534; font-size: 14px; font-weight: 700; }
+/* ---- Toán 4: a real input per box ----
+           An <input inputmode="numeric"> so the iPad raises its own number pad
+           and the child can drag the caret back into the middle of a number to
+           fix one digit. The boxes are independent: fill them in any order,
+           correct any of them, then mark the lot with one button. No "current"
+           box is tracked in JS — :focus-within draws the ring, so the highlight
+           cannot fall out of step with where the child is actually typing. */
+        .math-answer-parts.free { gap: 12px; }
+.math-answer-input {
+            display: block; width: 100%; box-sizing: border-box;
+            min-height: 56px; margin: 0; padding: 10px 14px;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary);
+            font-family: inherit; font-size: 24px; font-weight: 700;
+            -webkit-appearance: none; appearance: none;
+        }
+.math-answer-input::placeholder {
+            font-size: 16px; font-weight: 500; color: var(--text-secondary, #6b7280);
+        }
+.math-answer-input:focus { outline: none; border-color: #7c3aed; }
+.math-answer-part:focus-within {
+            border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.10);
+        }
+.math-key-context { flex-wrap: wrap; }
+.math-key-context .math-key { flex: 1 1 auto; min-width: 58px; padding-inline: 10px; }
+.math-written-solution { margin-top: 12px; }
+.math-written-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.math-written-grade .grammar-next-btn { margin: 0; min-height: 48px; }
+.math-self-good { background: #15803d; }
+.math-self-review { background: #b45309; }
+@media (max-width: 420px) {
+            .math-written-grade { grid-template-columns: 1fr; }
+            .math-board-prompt { align-items: stretch; flex-direction: column; }
+            .math-open-board { width: 100%; }
+        }
+/* Which questions keep coming back wrong, and how often. */
+        .math-wrong-panel { margin: 18px 0 14px; }
+.math-review-card {
+            padding: 18px; border: 1px solid rgba(124,58,237,.14); border-radius: 22px;
+            background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(245,243,255,.90));
+            box-shadow: 0 10px 28px rgba(76,29,149,.08);
+        }
+.math-review-head { display: flex; align-items: center; gap: 12px; }
+.math-review-icon {
+            flex: 0 0 auto; width: 42px; height: 42px; padding: 8px;
+            border-radius: 12px; background: #ede9fe; color: #6d28d9;
+            fill: #6d28d9; stroke: currentColor; stroke-width: 1.8;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+.math-review-head > div { min-width: 0; flex: 1; }
+.math-review-head h2 { margin: 0; color: var(--text-primary); font-size: 20px; line-height: 1.2; }
+.math-review-total {
+            display: inline-grid; place-items: center; min-width: 44px; height: 38px; padding: 0 11px;
+            border-radius: 999px; background: #ede9fe; color: #7e22ce; font-size: 18px; font-weight: 900;
+        }
+.math-review-chips { display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0; }
+.math-review-chip {
+            display: inline-flex; align-items: center; gap: 8px; min-height: 42px;
+            padding: 8px 12px; border: 1.5px solid #fecaca; border-radius: 999px;
+            background: #fff7ed; color: var(--text-primary); font-size: 13.5px; font-weight: 750;
+        }
+.math-review-cta {
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            width: 100%; min-height: 50px; padding: 11px 16px; border: 0; border-radius: 15px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff;
+            box-shadow: 0 6px 16px rgba(109,40,217,.22); font: 850 16px/1.2 inherit;
+            cursor: pointer; touch-action: manipulation; transition: filter .2s, box-shadow .2s;
+        }
+.math-review-cta:hover { filter: brightness(1.06); box-shadow: 0 8px 20px rgba(109,40,217,.28); }
+.math-review-cta:focus-visible,
+        .math-review-details summary:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+.math-review-details { margin-top: 12px; }
+.math-review-details summary {
+            min-height: 44px; display: flex; align-items: center; justify-content: center;
+            color: #6d28d9; font-size: 14px; font-weight: 800; cursor: pointer;
+            list-style: none; touch-action: manipulation;
+        }
+.math-review-details summary::-webkit-details-marker { display: none; }
+.math-review-details[open] summary { margin-bottom: 8px; }
+.math-wrong-list {
+            background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px; overflow: hidden;
+        }
+.math-wrong-row {
+            display: flex; gap: 10px; align-items: flex-start;
+            padding: 10px 12px; border-top: 1px solid rgba(0,0,0,0.05);
+        }
+.math-wrong-row:first-child { border-top: none; }
+.math-wrong-count {
+            flex: 0 0 auto; min-width: 34px; text-align: center;
+            font-size: 13px; font-weight: 800; color: #d63a3a;
+            background: rgba(214,58,58,0.10); border-radius: 8px; padding: 3px 6px;
+        }
+.math-wrong-main { flex: 1 1 auto; min-width: 0; }
+.math-wrong-q { font-size: 14.5px; line-height: 1.45; color: var(--text-primary); }
+.math-wrong-a { font-size: 14px; margin-top: 3px; color: #3d8b00; }
+.math-wrong-more, .math-wrong-note {
+            font-size: 12.5px; color: var(--text-secondary, #64748b); padding: 8px 4px 0;
+        }
+@media (max-width: 420px) {
+            .math-review-card { padding: 15px; border-radius: 18px; }
+            .math-review-head h2 { font-size: 18px; }
+            .math-review-icon { width: 38px; height: 38px; }
+            .math-review-chip { flex: 1 1 calc(50% - 5px); justify-content: space-between; border-radius: 14px; }
+        }
+.math-hist-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.math-hist-row {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--card-bg, #fff);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 14px; padding: 10px 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+.math-hist-emoji { font-size: 22px; flex: 0 0 auto; }
+.math-hist-main { flex: 1; min-width: 0; }
+.math-hist-title {
+            font-size: 14px; font-weight: 600; color: var(--text-primary, #1e293b);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+.math-hist-badge {
+            display: inline-block; font-size: 10px; font-weight: 700;
+            color: #fff; background: #6366f1;
+            border-radius: 6px; padding: 1px 6px;
+            vertical-align: 1px;
+        }
+.math-hist-bar {
+            height: 6px; border-radius: 3px;
+            background: rgba(100, 116, 139, 0.15);
+            overflow: hidden;
+        }
+.math-hist-fill { height: 100%; border-radius: 3px; }
+.math-hist-fill.tier-perfect { background: #f59e0b; }
+.math-hist-fill.tier-great   { background: #22c55e; }
+.math-hist-fill.tier-ok      { background: #3b82f6; }
+.math-hist-fill.tier-weak    { background: #ef4444; }
+.math-hist-side {
+            flex: 0 0 auto; text-align: right; line-height: 1.3;
+        }
+.math-hist-side span { font-size: 11px; color: var(--text-secondary, #64748b); white-space: nowrap; }
+/* ---- typed answers: the in-app keypad ----
+           Typed maths questions never focus an input, so iOS never raises its
+           keyboard over the question. The answer box below is a plain div and
+           the pad under it is the only way to type — which also means the only
+           characters that can arrive are ones we drew. */
+        .math-answer-box {
+            display: flex; align-items: center; gap: 2px;
+            min-height: 56px; margin: 4px 0 12px;
+            padding: 10px 14px; border-radius: 12px;
+            border: 2px solid var(--glass-border); background: var(--glass-bg, #fff);
+            font-size: 24px; color: var(--text-primary);
+        }
+.math-answer-box.correct { border-color: #58cc02; background: rgba(88,204,2,0.10); }
+.math-answer-box.wrong { border-color: #ff4b4b; background: rgba(255,75,75,0.08); }
+.math-answer-placeholder { font-size: 16px; color: var(--text-secondary, #6b7280); }
+.math-answer-right { margin: -6px 0 12px; font-size: 18px; color: var(--text-primary); }
+/* Stands in for the text caret the box does not have, so the child can
+           see where the next digit will land. */
+        .math-caret {
+            /* Offset so it cannot be misread as part of the answer — "|a|"
+               with the caret flush against it looks like "|a||". */
+            margin-left: 5px;
+            width: 2px; height: 26px; background: #7c3aed; border-radius: 1px;
+            animation: math-caret-blink 1.05s step-end infinite;
+        }
+@keyframes math-caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.math-keypad { margin-bottom: 12px; }
+.math-key-row { display: flex; gap: 8px; margin-bottom: 8px; }
+/* The per-question symbol row. Its keys are the ones a child has to
+           look for, so they read purple against the plain digits. */
+        .math-key-context {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+.math-key {
+            flex: 1 1 0; min-height: 52px; font-size: 22px; font-family: inherit;
+            font-weight: 700; cursor: pointer;
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            background: var(--glass-bg, #fff); color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+        }
+.math-key sup { font-size: 0.7em; }
+.math-key-del { font-size: 20px; }
+/* Sized like a digit key, never stretched across the row: a full-width
+           purple bar sitting above "Kiểm tra" reads as the submit button, and a
+           child taps it expecting to answer. Declared after .math-key so the
+           narrower flex basis wins — both are single-class selectors. */
+        .math-key-sym {
+            flex: 0 0 calc((100% - 24px) / 4);
+            background: rgba(124, 58, 237, 0.10);
+            border-color: rgba(124, 58, 237, 0.35);
+            color: var(--accent-purple, #7c3aed);
+        }
+/* Questions and explanations in this tab are maths too, so they get a
+           touch more size and line height than the English tabs need. */
+        .math-hub-screen .grammar-question-text { font-size: 17px; line-height: 1.55; }
+.math-hub-screen .grammar-explanation { font-size: 15px; line-height: 1.65; }
+/* Worked maths should read like a notebook, not a paragraph. Every
+           calculation occupies its own row; larger spacing also keeps stacked
+           fractions, roots and variable exponents legible on a 320px phone. */
+        .math-explanation-layout { display: grid; gap: 16px; }
+.math-worked { min-width: 0; }
+.math-explain-title {
+            margin-bottom: 9px; color: #334155; font-size: 13px;
+            font-weight: 900; letter-spacing: .045em; text-transform: uppercase;
+        }
+/* One card per SECTION of the explanation — the two the banks actually
+           write, "Lý thuyết" and "Áp dụng" — not one per sentence. The numbered
+           circles went with the numbering: they counted sentences, so a single
+           explanation arrived as up to a dozen cards, two of which were "(SGK
+           tr" and "5)". A number that counts nothing meaningful is worse than
+           no number, and the section's own name says more than "3" ever did. */
+        .math-solution-steps {
+            display: grid; gap: 10px; margin: 0; padding: 0; list-style: none;
+        }
+.math-solution-steps > li {
+            padding: 11px 13px;
+            border: 1px solid rgba(22, 163, 74, .18); border-radius: 13px;
+            background: rgba(255,255,255,.78); color: var(--text-primary);
+            font-size: 16px; line-height: 1.8;
+            /* The result card centres its own contents, which is right for a
+               score and wrong for a paragraph: a centred explanation gives the
+               eye a new left edge on every line. The old numbered layout was
+               left-aligned only by accident, because the grid column pinned it.
+               Say it outright now. */
+            text-align: left;
+        }
+.math-step-title {
+            margin-bottom: 2px; color: #166534;
+            font-size: 12.5px; font-weight: 900;
+            letter-spacing: .05em; text-transform: uppercase; line-height: 1.3;
+        }
+.math-solution-steps > li > div { min-width: 0; overflow-wrap: anywhere; }
+.math-mistakes {
+            padding-top: 14px; border-top: 1px solid rgba(100,116,139,.22);
+        }
+.math-mistakes li {
+            position: relative; padding: 9px 11px 9px 35px;
+            border-radius: 11px; background: rgba(255,255,255,.55);
+            color: #475569; font-size: 14px; line-height: 1.65;
+            /* Same reason, and here the centring also left the ✗ marker
+               floating away from the text it marks. */
+            text-align: left;
+        }
+.math-mistakes li::before {
+            content: '×'; position: absolute; left: 11px; top: 9px;
+            color: #dc2626; font-size: 19px; font-weight: 900; line-height: 1.3;
+        }
+.math-power { white-space: nowrap; }
+/* "(SGK tr. 5)" travels as one word. See mathCite() in js/math.js. */
+        .math-cite { white-space: nowrap; }
+@media (max-width: 420px) {
+            .math-explanation-layout { gap: 14px; }
+            .math-solution-steps > li { padding: 10px 11px; font-size: 15.5px; }
+            .math-mistakes li { font-size: 14px; }
+        }
+.math-board-strip {
+    position: sticky; top: 0; z-index: 4; flex: 0 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%; min-height: 52px; padding: 10px 12px 10px 14px;
+    background: #eef2ff; border-bottom: 1px solid #c7d2fe;
+    border-top: 0; border-left: 0; border-right: 0;
+    color: var(--text-primary); text-align: left; font-family: inherit;
+    font-weight: 600; cursor: pointer; touch-action: manipulation;
+}
+.math-board-strip.full {
+    /* A complete exam stem can be very long. It stays complete, but on a
+       short landscape phone it scrolls inside the pinned header rather than
+       stealing the entire writing surface. */
+    max-height: 360px;
+    max-height: min(46dvh, 360px);
+    overflow-y: auto; overscroll-behavior: contain;
+}
+.math-board-strip-label {
+    grid-column: 1; grid-row: 1; align-self: center;
+    margin-bottom: 3px; color: #4f46e5;
+    font-size: 11px; font-weight: 900; letter-spacing: .06em;
+    line-height: 1.2; text-transform: uppercase;
+}
+/* Full question is the default. Only an explicit collapse clamps to whole
+   lines — max-height would guillotine the second line through its letters. */
+.math-board-strip .math-formula {
+    grid-column: 1 / -1; grid-row: 2;
+    display: block; min-width: 0; overflow-wrap: anywhere;
+    -webkit-line-clamp: unset;
+}
+.math-board-strip-action {
+    grid-column: 2; grid-row: 1; align-self: center; margin-left: 10px;
+    min-height: 32px; padding: 6px 9px; border-radius: 999px;
+    background: #fff; color: #4338ca; box-shadow: 0 1px 3px rgba(30,41,59,.12);
+    font-size: 12px; font-weight: 800; line-height: 20px; white-space: nowrap;
+}
+.math-board-strip:focus-visible { outline: 3px solid #f59e0b; outline-offset: -3px; }
+/* Toán 4 carries its sums in the answer-box labels, so the board shows them
+   under the stem and has nothing to collapse — hence no pointer cursor. */
+.math-board-strip.locked { cursor: default; }
+.math-board-strip-parts {
+    grid-column: 1 / -1; grid-row: 3;
+    display: grid; gap: 5px; margin-top: 7px;
+}
+/* Two columns, filled DOWNWARDS, so four sums read 1 3 / 2 4. Halving the
+   header height is the point: what it gives back is board to write the đặt
+   tính on. --board-rows is ceil(n/2), set by js/math-board.js, because only
+   it knows how many sums this question has. Narrow screens stay stacked —
+   two columns of a long "1200 m + 800 m = … km" would wrap into mush. */
+@media (min-width: 500px) {
+    .math-board-strip-parts {
+        grid-auto-flow: column;
+        grid-template-rows: repeat(var(--board-rows, 1), auto);
+        grid-auto-columns: minmax(0, 1fr);
+        column-gap: 20px; row-gap: 4px;
+    }
+}
+.math-board-strip-part {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 17px; font-weight: 700; line-height: 1.35;
+}
+.math-board-strip-part > b {
+    flex: 0 0 auto; align-self: center;
+    display: inline-grid; place-items: center; width: 20px; height: 20px;
+    border-radius: 50%; background: #ddd6fe; color: #5b21b6;
+    font-size: 11px; font-weight: 900;
+}
+/* The strip's own .math-formula rule places it in the strip grid; these are
+   flex children of a part row instead, so hand back normal flow. */
+.math-board-strip-part .math-formula {
+    grid-column: auto; grid-row: auto; display: inline; min-width: 0;
+}
+/* Toán 4's three controls ride in the question header — wipe the board, the
+   maths keyboard, put the board away — so the board keeps no toolbar row of
+   its own and the child gets that space to write in. */
+.math-board-icon-tools {
+    grid-column: 2; grid-row: 1; align-self: center;
+    display: flex; gap: 6px; margin-left: 10px;
+}
+.math-board-icon {
+    display: grid; place-items: center;
+    width: 44px; min-width: 44px; height: 44px; padding: 0;
+    border: 1px solid #c7d2fe; border-radius: 12px;
+    background: #fff; color: #3730a3;
+    font-size: 19px; line-height: 1; cursor: pointer;
+}
+.math-board-icon:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+@media (max-width: 420px) {
+    .math-board-icon { width: 40px; min-width: 40px; height: 40px; font-size: 17px; }
+    .math-board-icon-tools { gap: 4px; margin-left: 6px; }
+}
+.math-board-tools {
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 5px; padding: 5px 8px;
+    border-bottom: 1px solid #e2e8f0; background: #f8fafc;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.math-board-tools::-webkit-scrollbar { display: none; }
+.math-board-writing-tools {
+    display: flex; gap: 4px; flex: 0 1 auto; min-width: 0;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.math-board-writing-tools::-webkit-scrollbar { display: none; }
+.math-board-quick-tools {
+    display: flex; flex: 0 0 auto; gap: 5px;
+}
+.math-board-advanced-tools {
+    flex: 0 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px; padding: 6px 8px; border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+.math-board-advanced-tools.hidden { display: none; }
+.math-board-edit-tools { display: flex; gap: 6px; }
+.math-board-write-tool {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    flex: 0 0 auto; min-width: 62px; min-height: 44px; padding: 6px 10px;
+    border: 1px solid #cbd5e1; border-radius: 12px;
+    background: #fff; color: #334155;
+    font: 800 12px/1 inherit; cursor: pointer; touch-action: manipulation;
+}
+.math-board-clear-quick { color: #b91c1c; border-color: #fecaca; background: #fff7f7; font-weight: 850; }
+.math-board-tool {
+    border: 1px solid #cbd5e1; background: #fff; border-radius: 10px;
+    padding: 5px 9px; font-size: 12px; white-space: nowrap;
+    min-width: 44px; min-height: 44px;
+    cursor: pointer; touch-action: manipulation;
+}
+.math-board-keyboard-toggle {
+    color: #fff; border-color: #4338ca;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    box-shadow: 0 3px 10px rgba(79,70,229,.28);
+    font-weight: 900;
+}
+.math-board-keyboard-toggle:not(.active):hover { background: linear-gradient(135deg, #4338ca, #6d28d9); }
+.math-board-tool:focus-visible, .math-board-write-tool:focus-visible, .math-board-key:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.math-board-keyboard {
+    flex: 0 0 auto; padding: 5px max(6px, env(safe-area-inset-left));
+    border-top: 1px solid #c7d2fe;
+    background: linear-gradient(180deg, #f5f3ff 0%, #eef2ff 100%);
+    box-shadow: 0 4px 12px rgba(49, 46, 129, .1);
+    overflow: hidden; overscroll-behavior: contain;
+}
+.math-board-keyboard.hidden { display: none; }
+.math-board-sr-only {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.math-board-key-grid {
+    display: grid; gap: 5px; width: 100%; overflow: hidden;
+}
+.math-board-key-row {
+    display: flex; gap: 5px; width: 100%; overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.math-board-key-row::-webkit-scrollbar { display: none; }
+.math-board-key {
+    flex: 0 0 44px; min-width: 44px; min-height: 44px; padding: 3px;
+    border: 1px solid #c7d2fe; border-radius: 10px;
+    background: #fff; color: #1e293b;
+    font: 850 20px/1 inherit; cursor: pointer; touch-action: manipulation;
+    box-shadow: 0 2px 0 #c7d2fe;
+}
+.math-board-key-newline {
+    position: sticky; left: 0; z-index: 2; flex-basis: 72px; min-width: 72px;
+    color: #fff; background: #7c3aed; font-size: 14px;
+    border-color: #6d28d9; box-shadow: 3px 0 8px rgba(49,46,129,.2), 0 2px 0 #5b21b6;
+}
+.math-board-key-symbol { color: #4338ca; background: #fafaff; }
+.math-board-key-delete {
+    position: sticky; left: 0; z-index: 2;
+    color: #b91c1c; background: #fff7f7; border-color: #fecaca;
+    box-shadow: 3px 0 8px rgba(127,29,29,.12), 0 2px 0 #fecaca;
+}
+.math-board-fraction-key {
+    display: inline-grid; grid-template-rows: 1fr 1fr; min-width: 18px;
+    font-size: 13px; line-height: 1; vertical-align: middle;
+}
+.math-board-fraction-key span:first-child { padding-bottom: 2px; border-bottom: 2px solid currentColor; }
+.math-board-fraction-key span:last-child { padding-top: 2px; }
+/* min-height/width 0 is load-bearing, not tidying: a canvas is a replaced
+   element, so the default min-height:auto pins it to its intrinsic bitmap
+   height and `flex: 1` can only ever GROW it. Without this it overflows under
+   the bottom nav when the sheet gets shorter (phone rotated, question strip
+   expanded) — and because its own box never changes, the ResizeObserver never
+   fires, so the bitmap stays out of sync and the ink drifts off the finger. */
+.math-board-sheet {
+    position: relative; flex: 1 1 auto; width: 100%; min-width: 0; min-height: 0;
+    overflow: hidden; background: #fffef7;
+}
+#mathBoardCanvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    min-height: 0; min-width: 0; touch-action: none;
+}
+.math-board-formula-layer {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.math-board-formula-note {
+    position: absolute; max-width: none; min-height: 38px;
+    display: inline-flex; align-items: center; padding: 5px 10px;
+    border: 1px solid rgba(99,102,241,.25); border-radius: 10px;
+    color: #172554; background: rgba(255,255,255,.9);
+    box-shadow: 0 2px 6px rgba(30,41,59,.1);
+    font-size: clamp(19px, 5vw, 27px); font-weight: 750; white-space: nowrap;
+}
+#mathBoardCanvas.erasing { cursor: cell; }
+@media (pointer: fine) {
+    #mathBoardCanvas { cursor: crosshair; }
+}
+/* Phones keep all primary actions on one compact, internally
+   scrollable row. The document itself never becomes wider than the screen. */
+@media (max-width: 600px) {
+    .math-board-tools {
+        gap: 4px; padding: 4px 6px;
+    }
+    .math-board-quick-tools { width: auto; }
+    .math-board-advanced-tools {
+        grid-template-columns: minmax(0, 1fr); width: 100%; padding: 5px 6px;
+    }
+    .math-board-writing-tools { width: 100%; }
+    .math-board-edit-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .math-board-write-tool { flex: 1 0 auto; min-width: 72px; }
+    .math-board-tool {
+        width: auto; min-width: 44px; padding-inline: 7px;
+        white-space: nowrap; font-size: 11.5px; line-height: 1.15;
+    }
+    .math-board-strip { padding-inline: 12px; }
+    .math-board-strip-action { font-size: 11.5px; padding-inline: 8px; }
+}
+@media (max-height: 520px) {
+    .math-board-strip.full { max-height: 42dvh; }
+    .math-board-tools { padding-block: 4px; }
+    .math-board-tool { min-height: 40px; }
+    .math-board-keyboard { padding-block: 4px; }
+    .math-board-key { min-height: 42px; }
+}
+@media (min-width: 768px) {
+    .math-board-keyboard { padding-block: 6px; }
+    .math-board-key { min-height: 46px; font-size: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .math-board-key { transition: none; }
+}
+.math-board-fab {
+    flex: 0 0 auto; margin-left: 8px;
+    width: 44px; height: 44px; border-radius: 50%; font-size: 20px;   /* kid-sized target */
+    border: none; background: #4f46e5; color: #fff;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, .35);
+}
+/* First-open gesture hint: floats over the sheet, dies on the first touch. */
+.math-board-hint {
+    position: absolute; left: 50%; top: 45%; transform: translateX(-50%);
+    background: rgba(15, 23, 42, .82); color: #fff;
+    padding: 10px 16px; border-radius: 20px; font-size: 15px; font-weight: 600;
+    pointer-events: none; white-space: nowrap;
+    animation: mathBoardHintIn .4s ease-out;
+}
+/* The slide-in animates transform ONLY. Putting opacity in the keyframes ties
+   the hint's very visibility to the animation advancing — in a throttled or
+   frozen tab it sits at the from-frame, invisible, until the timer deletes it
+   unseen. A hint that can silently never appear teaches nobody anything. */
+@keyframes mathBoardHintIn {
+    from { transform: translateX(-50%) translateY(10px); }
+    to   { transform: translateX(-50%) translateY(0); }
+}
+.wars-perfect-bonus{margin:10px 0;padding:10px 14px;border:2px solid #f2c94c;border-radius:16px;background:#fff8cf;color:#75520a;font-weight:900;text-align:center;box-shadow:0 4px 0 rgba(184,130,18,.16)}
+/* Toán 4 · Đề ôn — the short "what is on this paper" list under the Pre
+   button. It is a table of contents, not a menu: nothing in it is tappable,
+   so it reads quieter than the buttons above it. */
+.math-g4-types {
+    margin: 18px 0 6px;
+}
+.math-g4-types ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+.math-g4-types li {
+    margin: 0;
+}
+/* One line per answer box on a review card. Toán 4 questions carry four of
+   them, so they must stack rather than run together on one line. */
+.math-answer-line {
+    display: block;
+}
+/* Toán 4 Pre turns one answer part from the original worksheet into a large,
+   tap-friendly prompt. It is separate from the stem so story problems keep
+   their natural wording while short calculations get the equation they need. */
+.math4-pre-prompt {
+    margin: 12px 0 18px;
+    padding: 16px 18px;
+    border: 2px solid #c4b5fd;
+    border-radius: 18px;
+    background: #f5f3ff;
+    color: #2f235f;
+    font-size: clamp(1.25rem, 4.8vw, 1.7rem);
+    font-weight: 800;
+    line-height: 1.35;
+    text-align: center;
+}
+.math4-pre-prompt.compact {
+    margin: 8px 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    text-align: left;
+}
+@media (max-width: 480px) {
+    .math4-pre-prompt { padding: 14px; }
+}

@@ -7,7 +7,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const workerSrc = fs.readFileSync(path.join(root, 'battle-worker/src/index.js'), 'utf8');
 const uiSrc = fs.readFileSync(path.join(root, 'js/ghost-offering-event.js'), 'utf8');
-const cssSrc = fs.readFileSync(path.join(root, 'css/styles.css'), 'utf8');
+const cssSrc = require('./css-all').readAllCss();
 const ALL_ITEMS = [
   'pig',
   'chicken1', 'chicken2', 'chicken3', 'chicken4', 'chicken5',

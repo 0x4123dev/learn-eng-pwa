@@ -23,7 +23,7 @@ suite('draggable artwork uses real transparency', () => {
     });
 
     test('the plot container does not paint another rectangular lawn behind the alpha', () => {
-        const css = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
+        const css = require('./css-all').readAllCss();
         const rule = (css.match(/\.nr-farm-plot\{[^}]+\}/) || [''])[0];
         assert.truthy(rule.includes('background:transparent'));
         assert.truthy(rule.includes('border:0'));

@@ -18,7 +18,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const ui = read('js/night-raid.js');
-const css = read('css/styles.css');
+const css = require('./css-all').readAllCss();
 const R = require(path.join(root, 'js', 'night-raid-rules.js'));
 
 const ruleFor = re => (css.match(re) || [''])[0];

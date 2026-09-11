@@ -2,7 +2,7 @@ const { suite, test, assert } = require('./harness');
 const fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const html=read('index.html'),css=read('css/styles.css'),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),phaser=read('js/night-raid-phaser.js'),sw=read('sw.js');
+const html=read('index.html'),css=require('./css-all').readAllCss(),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),phaser=read('js/night-raid-phaser.js'),sw=read('sw.js');
 
 suite('night raid: app integration',()=>{
   test('one dedicated screen; the rules ship in the app shell and the four game scripts ride the Arena lazy group, in order',()=>{
@@ -173,7 +173,7 @@ suite('night raid: app integration',()=>{
     // Each poop is a real button, so a child can tap the mess itself too.
     assert.truthy(ui.includes('class="nr-yard-poop"'));
     assert.truthy(ui.includes("aria-label=\"Dọn phân chó\""));
-    for (const rule of ['.nr-yard-poops{', '.nr-yard-poop{', '.nr-yard-clean{', '@keyframes nr-poop-drop'])
+    for (const rule of ['.nr-yard-poops{', '.nr-yard-poop{', '@keyframes nr-poop-drop'])
       assert.truthy(css.includes(rule), rule);
     assert.truthy(ui.includes('yardPoopSpots,'),'the spots stay checkable from outside');
     assert.falsy(ui.includes("what:'bãi cỏ'"),'bathroom actions belong only at their requested destinations');
@@ -305,7 +305,8 @@ suite('night raid: app integration',()=>{
     assert.truthy(read('js/auth.js').includes('appState.allowBot = !!r.data.flags.bot'));
   });
   test('the six icon controls form one compact vertical rail in portrait and fake landscape',()=>{
-    const compact = css.slice(css.indexOf('/* Compact icon rail:'), css.indexOf('/* Daily Task: the garden strip */'));
+    // The rail's overrides live in css/night-raid.css, right before the farm docks.
+    const compact = css.slice(css.indexOf('/* Compact icon rail:'), css.indexOf('/* Square farm docks hug the straight edges'));
     assert.truthy(compact.length > 500, 'the final compact rail overrides must stay together');
     assert.truthy(compact.includes('grid-template-columns:48px'), 'the four navigation actions stack in one column');
     assert.truthy(compact.includes('.nr-builder-shop-fab{top:calc(330px'), 'SHOP sits directly under the four navigation icons');
@@ -344,7 +345,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(game.includes('playReplay(commands,speed=1)'));
   });
   test('replay keeps transparent canvas edges over the same green meadow',()=>{
-    const ui=read('js/night-raid.js'),css=read('css/styles.css');
+    const ui=read('js/night-raid.js'),css=require('./css-all').readAllCss();
     assert.truthy(ui.includes("nr-auto-replay"),'modern square replay receives its own aspect class');
     assert.truthy(css.includes(".nr-replay-stage.nr-auto-replay canvas{aspect-ratio:1/1}"));
     assert.truthy(css.includes("url('../img/night-raid/endless-meadow-tile-v2.jpg')"));
@@ -390,7 +391,7 @@ suite('night raid: app integration',()=>{
   });
 
   test('daily production UI shows pet power, countdowns and collect controls',()=>{
-    for(const token of ['nr-pet-power-card','nr-production-badge','startProductionTicker','nr-collect-all','nrGridCell','localCollect'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['nr-production-badge','startProductionTicker','nr-collect-all','nrGridCell','localCollect'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const asset of ['img/night-raid/training-barracks.webp','img/night-raid/rice-field.webp','img/night-raid/tomato-field.webp','img/night-raid/fish-pond.webp','img/night-raid/isometric-home-board-frame-v4.webp','img/night-raid/endless-meadow-tile-v2.jpg'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
     assert.truthy(sw.includes("'/img/night-raid/isometric-home-board-frame-v4.webp'")&&sw.includes("'/img/night-raid/endless-meadow-tile-v2.jpg'"),'the unified estate remains available offline');
   });

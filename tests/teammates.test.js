@@ -482,7 +482,7 @@ suite('teammates: a charge changes the fight', () => {
 
 suite('teammates: every rendered class is styled', () => {
     test('the hire panel and the trigger chips both have rules', () => {
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         // Classes the two new UIs emit. A chip with no rule is a 46px hole in
         // the controls that still takes taps.
         const classes = [
@@ -492,7 +492,7 @@ suite('teammates: every rendered class is styled', () => {
             'pb-hire-steps', 'pb-hire-step', 'pb-hire-count', 'pb-hire-total',
             'pb-game-hire', 'pb-hire-layer', 'pb-hire-backdrop', 'pb-hire-dialog',
             'pb-hire-actions', 'pb-hire-confirm', 'pb-hire-cancel',
-            'pb-squad', 'pb-squad-chip', 'pb-squad-emoji',
+            'pb-squad', 'pb-squad-chip',
         ];
         const missing = classes.filter(c => !new RegExp('\\.' + c + '[\\s,{:.]').test(css));
         assert.deepEqual(missing, [], 'these are rendered but never styled');

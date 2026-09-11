@@ -383,7 +383,7 @@ suite('math: wiring', () => {
         // "grammar-lesson-card" and "grammar-lesson-body" — plausible names
         // that exist nowhere in the stylesheet, so the lesson rendered with no
         // card, no padding and no width. Nothing failed; it just looked broken.
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const src = read('js/math.js');
         const used = new Set();
         for (const m of src.matchAll(/class="([^"$]*)"/g)) {
@@ -675,7 +675,7 @@ suite('math: typed answers', () => {
     });
 
     test('every class the keypad renders has a rule in the stylesheet', () => {
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         const html = math.mathKeypadHTML(POWER) + math.mathTypedBoxHTML();
         const classes = new Set();
         for (const m of html.match(/class="([^"]+)"/g) || []) {
@@ -801,7 +801,7 @@ suite('math: the Lịch sử tab', () => {
     });
 
     test('every class the history page renders has a rule in the stylesheet', () => {
-        const css = read('css/styles.css');
+        const css = require('./css-all').readAllCss();
         withHistory([run('exam', 20, 25, { examId: 'hk1-exam1' }), run('practice', 9, 10)], () => {
             const html = math.renderMathHistoryHTML();
             const classes = new Set();

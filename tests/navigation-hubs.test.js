@@ -7,7 +7,7 @@ const { suite, test, assert } = require('./harness');
 const ROOT = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8');
-const css = fs.readFileSync(path.join(ROOT, 'css', 'styles.css'), 'utf8');
+const css = require('./css-all').readAllCss();
 
 function blockBetween(source, start, end) {
     const from = source.indexOf(start);
@@ -90,7 +90,7 @@ suite('navigation hubs: old modules remain easy to find', () => {
     test('Learn expands to three columns on iPad without changing phone layout', () => {
         assert.truthy(css.includes('@media (min-width: 700px)'));
         assert.truthy(css.includes('.learn-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }'));
-        assert.truthy(css.includes('.math-empty { max-width: 900px; }'));
+        assert.truthy(css.includes('.nav-hub-header, .nav-hub-feature, .nav-hub-grid { max-width: 900px; }'));
     });
 });
 

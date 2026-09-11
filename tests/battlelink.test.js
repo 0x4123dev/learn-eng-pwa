@@ -11,7 +11,7 @@ const workerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 's
 const wranglerSrc = fs.readFileSync(path.join(__dirname, '..', 'battle-worker', 'wrangler.toml'), 'utf8');
 const gameSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattlegame.js'), 'utf8');
 const petbattleSrc = fs.readFileSync(path.join(__dirname, '..', 'js', 'petbattle.js'), 'utf8');
-const stylesSrc = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
+const stylesSrc = require('./css-all').readAllCss();
 
 // Minimal fake socket so we can drive the state machine without a network.
 function FakeWS(url) {
@@ -434,8 +434,11 @@ suite('battle game: Gunbound-style house arena', () => {
     });
 
     test('the HUD includes partial hearts and a high-contrast arcade arena', () => {
-        assert.truthy(stylesSrc.includes('.pb-heart::before'));
-        assert.truthy(stylesSrc.includes('width: var(--heart-fill)'));
+        // The hearts are drawn on the canvas now (pbHeartFills); the old DOM
+        // HUD (.pb-hud, .pb-heart::before) is gone from the game source
+        // (tests/battle-camera-follow.test.js) and its rules were pruned as
+        // dead in the stylesheet split.
+        assert.truthy(gameSrc.includes('pbHeartFills'));
         assert.truthy(stylesSrc.includes('border: 4px solid #182b66'));
         assert.truthy(stylesSrc.includes('@media (max-width: 380px)'));
     });

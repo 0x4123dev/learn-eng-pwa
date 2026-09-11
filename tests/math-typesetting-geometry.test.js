@@ -104,14 +104,20 @@ function stripAtBlocks(css) {
     return out;
 }
 
-const CSS = stripComments(read('css/styles.css'));
+const CSS = stripComments(require('./css-all').readAllCss());
 const TOP_LEVEL_CSS = stripAtBlocks(CSS);
 
 // The mirror image of `stripAtBlocks`: hand back the BODY of the `@supports`
 // block instead of throwing it away, so the drawn-hook layer can be asserted
 // on in its own right. Same brace counting.
+//
+// The layer is ONE block by condition, not by file: the stylesheet split
+// (tests/css-split.test.js) left `.math-root-symbol` in css/styles.css and
+// moved `.math-root` / `.math-radicand` to css/math.css, each under its own
+// `@supports (…same condition…) { }` wrapper. Two wrappers with one condition
+// are one layer to the browser, so blocks are merged by condition here.
 function supportsBodies() {
-    const bodies = [];
+    const byCondition = new Map();
     for (let i = 0; i < CSS.length;) {
         if (CSS.startsWith('@supports', i)) {
             const open = CSS.indexOf('{', i);
@@ -121,13 +127,14 @@ function supportsBodies() {
                 if (CSS[j] === '{') depth++;
                 else if (CSS[j] === '}') depth--;
             }
-            bodies.push(CSS.slice(open + 1, j - 1));
+            const condition = CSS.slice(i + '@supports'.length, open).replace(/\s+/g, ' ').trim();
+            byCondition.set(condition, (byCondition.get(condition) || '') + '\n' + CSS.slice(open + 1, j - 1));
             i = j;
         } else {
             i++;
         }
     }
-    return bodies;
+    return [...byCondition.values()];
 }
 
 const SUPPORTS_BLOCKS = supportsBodies();
@@ -429,9 +436,10 @@ suite('math typesetting: where masks work, the √ hook is DRAWN, not typed', ()
         // before 121 (ESR 115 included), Chrome ≤104, Safari ≤15.3 and Samsung
         // Internet ≤20 land there; testing the selector too sends them to the
         // typed fallback whole, which degrades but does not break.
-        const conditions = [...CSS.matchAll(/@supports\s*([^{]+)\{/g)].map(m => m[1]);
+        // One condition, however many files carry a wrapper for it (see supportsBodies).
+        const conditions = [...new Set([...CSS.matchAll(/@supports\s*([^{]+)\{/g)].map(m => m[1].replace(/\s+/g, ' ').trim()))];
         assert.equal(conditions.length, 1,
-            `css/styles.css: expected exactly one @supports block, found ${conditions.length}`);
+            `css/styles.css: expected exactly one @supports condition, found ${conditions.length}`);
         assert.truthy(/mask-image/.test(conditions[0]),
             'css/styles.css: the @supports condition must test mask-image');
         assert.truthy(/selector\(\s*:has\(/.test(conditions[0]),
