@@ -702,6 +702,103 @@ suite('service worker: background updates are automatic but safe', () => {
     assert.equal(idle.saves, 1);
     assert.equal(idle.posts, 1, 'an idle update must apply without a click');
   });
+
+  // A phone left open on Home overnight never reloads the page, so the
+  // per-load `reg.update()` never runs again and the device keeps last
+  // night's worker until someone reloads. The page must ask again when it
+  // comes back into view — but not on every tab switch.
+  const HOUR = 60 * 60 * 1000;
+  const gateCode = APP.slice(APP.indexOf('const SW_UPDATE_RECHECK_MS'), APP.indexOf('function registerServiceWorker('));
+
+  test('swUpdateDue: an hour since the last check, and not a minute less', () => {
+    const sandbox = { globalThis: null };
+    sandbox.globalThis = sandbox;
+    vm.createContext(sandbox);
+    vm.runInContext(gateCode + '\n;globalThis.__due = swUpdateDue;', sandbox);
+    const due = sandbox.__due;
+    const t0 = 1_700_000_000_000;
+    assert.equal(due(t0 + HOUR - 1, t0), false, '59m59s is not yet due');
+    assert.equal(due(t0 + HOUR, t0), true, 'exactly an hour is due');
+    assert.equal(due(t0 + 9 * HOUR, t0), true, 'overnight is due');
+    assert.equal(due(t0, t0), false, 'just checked');
+    assert.equal(due(t0, 0), true, 'never checked counts as due');
+  });
+
+  // registerServiceWorker, EXECUTED with a fake registration: the listener
+  // exists, respects the one-hour gate, ignores the tab going hidden, and a
+  // rejected update() neither throws nor surfaces as an unhandled rejection.
+  async function runRegistration(updateImpl) {
+    const regCode = APP.slice(APP.indexOf('function registerServiceWorker()'), APP.indexOf('function formatDate('));
+    const listeners = {};
+    const calls = { updates: 0, registerOpts: null };
+    const reg = {
+      update() { calls.updates++; return updateImpl ? updateImpl(calls.updates) : Promise.resolve(); },
+      addEventListener() {}, waiting: null, installing: null,
+    };
+    const sandbox = {
+      console, globalThis: null, clock: 1_700_000_000_000,
+      navigator: { serviceWorker: {
+        controller: null,
+        register(url, opts) { calls.registerOpts = opts; return Promise.resolve(reg); },
+        addEventListener() {},
+      } },
+      document: { visibilityState: 'visible', addEventListener(type, fn) { listeners[type] = fn; } },
+      window: { addEventListener() {}, location: { reload() { throw new Error('must not reload'); } } },
+      setTimeout() { return 1; }, setInterval() { return 1; }, clearInterval() {},
+      applyUpdateWhenSafe() {},
+    };
+    sandbox.Date = { now: () => sandbox.clock };
+    sandbox.globalThis = sandbox;
+    vm.createContext(sandbox);
+    vm.runInContext(gateCode + regCode + '\n;registerServiceWorker();', sandbox);
+    await new Promise(r => setImmediate(r));
+    return { sandbox, listeners, calls,
+      show(atMs) { sandbox.clock = atMs; sandbox.document.visibilityState = 'visible'; listeners.visibilitychange(); },
+      hide(atMs) { sandbox.clock = atMs; sandbox.document.visibilityState = 'hidden'; listeners.visibilitychange(); } };
+  }
+
+  test('the page re-checks for a new sw.js when it becomes visible after an hour', async () => {
+    const t0 = 1_700_000_000_000;
+    const run = await runRegistration();
+    assert.equal(run.calls.registerOpts.updateViaCache, 'none', 'the browser must not serve sw.js from its HTTP cache');
+    assert.equal(run.calls.updates, 1, 'one check on load');
+    assert.truthy(typeof run.listeners.visibilitychange === 'function', 'a visibilitychange listener is installed');
+    run.show(t0 + 5 * 60 * 1000);
+    assert.equal(run.calls.updates, 1, 'a tab switch five minutes later is not a re-check');
+    run.show(t0 + HOUR - 1000);
+    assert.equal(run.calls.updates, 1, 'fifty-nine minutes is not an hour');
+    run.hide(t0 + 2 * HOUR);
+    assert.equal(run.calls.updates, 1, 'going hidden never checks');
+    run.show(t0 + 2 * HOUR);
+    assert.equal(run.calls.updates, 2, 'coming back after an hour checks');
+    run.show(t0 + 2 * HOUR + 1000);
+    assert.equal(run.calls.updates, 2, 'and the gate restarts from that check');
+    run.show(t0 + 3 * HOUR + 1000);
+    assert.equal(run.calls.updates, 3);
+  });
+
+  test('a failing update() on visibilitychange is swallowed, not thrown', async () => {
+    const t0 = 1_700_000_000_000;
+    const unhandled = [];
+    const onUnhandled = e => unhandled.push(e);
+    process.on('unhandledRejection', onUnhandled);
+    try {
+      const rejecting = await runRegistration(n => n > 1 ? Promise.reject(new Error('offline')) : Promise.resolve());
+      assert.equal(rejecting.calls.updates, 1, 'the load-time check ran');
+      rejecting.show(t0 + 2 * HOUR);
+      assert.equal(rejecting.calls.updates, 2);
+      await new Promise(r => setImmediate(r));
+      await new Promise(r => setImmediate(r));
+      // The load-time call resolves; only the visibility re-check throws.
+      const throwing = await runRegistration(n => { if (n > 1) throw new Error('InvalidStateError'); return Promise.resolve(); });
+      throwing.show(t0 + 2 * HOUR);
+      assert.equal(throwing.calls.updates, 2, 'a synchronous throw from update() is caught');
+      await new Promise(r => setImmediate(r));
+    } finally {
+      process.off('unhandledRejection', onUnhandled);
+    }
+    assert.equal(unhandled.length, 0, 'no unhandled rejection reached the page');
+  });
 });
 
 if (require.main === module) require('./harness').runAll().then(code => process.exit(code));
