@@ -522,47 +522,54 @@ function screenPlaybook() {
       },
     },
     readingScreen: {
-      title: 'Đọc hiểu: danh sách bài, mở một bài, thấy đoạn văn, trả lời',
+      title: 'Reading: bấm Practice, được bài Không chuyên, thấy đoạn văn',
       open: async (h) => { h.sandbox.switchScreen('readingScreen'); await settle(); },
       prove: (h, el) => {
         const bank = h.peek('READING_PASSAGES');
         must(Array.isArray(bank) && bank.length > 0, 'the reading bank arrived (lazy)');
-        must(wiredTo(el, 'startReadingPassage').length === bank.length, 'every passage has a card');
+        must(wiredTo(el, 'startReadingPractice').length === 1, 'one Practice button');
         must(bank.some(p => p.level === 'kc') && bank.some(p => p.level === 'ch'), 'both levels are in the bank');
-        h.sandbox.startExam(bank[0].id, 'reading');
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'reading', 'the passage opened in the reading set');
+        // A fresh child is served Không chuyên: the rule the parent set.
+        h.sandbox.startReadingPractice();
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'reading', 'Practice opened a passage in the reading set');
+        const opened = h.peek('_examState');
+        must(opened && /^rd-kc-/.test(opened.examId), 'a fresh child is served a Không chuyên passage, got ' + (opened && opened.examId));
+        const ps = bank.find(p => p.id === opened.examId);
         const text = squash(h.el('readingScreen').textContent);
-        must(text.includes(squash(bank[0].passage.replace(/<[^>]+>/g, ' ')).slice(0, 40)), 'the passage is drawn above the question');
+        must(text.includes(squash(ps.passage.replace(/<[^>]+>/g, ' ')).slice(0, 40)), 'the passage is drawn above the question');
         h.sandbox.abandonExam();
         h.sandbox.renderReadingHome();
-        return bank.length + ' passages; "' + bank[0].title + '" opens with its passage on screen';
+        return bank.length + ' passages; Practice served "' + ps.title + '" (Không chuyên) with its passage on screen';
       },
     },
     clozeScreen: {
-      title: 'Điền từ: danh sách đoạn, mở một đoạn, thấy 10 chỗ trống',
+      title: 'Cloze: bấm Practice, được bài Không chuyên, thấy 10 chỗ trống',
       open: async (h) => { h.sandbox.switchScreen('clozeScreen'); await settle(); },
       prove: (h, el) => {
         const bank = h.peek('CLOZE_PASSAGES');
         must(Array.isArray(bank) && bank.length > 0, 'the cloze bank arrived (lazy)');
-        must(wiredTo(el, 'startClozePassage').length === bank.length, 'every text has a card');
+        must(wiredTo(el, 'startClozePractice').length === 1, 'one Practice button');
         must(bank.some(p => p.mode === 'mcq') && bank.some(p => p.mode === 'open'), 'both cloze modes are in the bank');
-        h.sandbox.startExam(bank[0].id, 'cloze');
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'cloze', 'the text opened in the cloze set');
+        h.sandbox.startClozePractice();
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'cloze', 'Practice opened a text in the cloze set');
+        const opened = h.peek('_examState');
+        must(opened && /^cl-kc-/.test(opened.examId), 'a fresh child is served Không chuyên, got ' + (opened && opened.examId));
         must(squash(h.el('clozeScreen').textContent).includes('(10)____'), 'all ten blanks are on screen');
         h.sandbox.abandonExam();
         h.sandbox.renderClozeHome();
-        return bank.length + ' cloze texts; "' + bank[0].title + '" opens with its ten blanks';
+        return bank.length + ' cloze texts; Practice served a Không chuyên text with its ten blanks';
       },
     },
     errorsScreen: {
-      title: 'Tìm lỗi sai: bắt đầu một lượt, thấy bốn phần gạch chân, trả lời',
+      title: 'Error Correction: bấm Practice, được lượt Không chuyên, bốn phần gạch chân',
       open: async (h) => { h.sandbox.switchScreen('errorsScreen'); await settle(); },
       prove: (h, el) => {
         const bank = h.peek('ERROR_ITEMS');
         must(Array.isArray(bank) && bank.length >= 20, 'the errors bank arrived (lazy)');
-        must(wiredTo(el, 'startErrorsRound').length === 2, 'one round per level');
-        h.sandbox.startErrorsRound('kc');
-        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'errors', 'the round started in the errors set');
+        must(wiredTo(el, 'startErrorsPractice').length === 1, 'one Practice button');
+        h.sandbox.startErrorsPractice();
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'errors', 'Practice started a round in the errors set');
+        must(/^er-round-kc:/.test(h.peek('_examState').examId), 'a fresh child is served a Không chuyên round');
         const opts = h.el('errorsScreen').querySelectorAll('.grammar-option');
         must(opts.length === 4, 'four segments to choose from');
         h.sandbox.answerExamChoice(0);

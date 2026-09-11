@@ -166,6 +166,51 @@ if (typeof EXAM_SETS !== 'undefined') {
     EXAM_SETS.errors = practiceSet('errorsHistory', 'errorsScreen', errorsLookup, () => renderErrorsHome());
 }
 
+// ---- which item next --------------------------------------------------------------
+// One button, "Practice", and the app chooses. The rule, as the parent set it:
+// serve Không chuyên until the child has scored 100% on at least one Không
+// chuyên item, then serve Chuyên. Within a level, prefer items the child has
+// not yet aced — a bank of thirty passages must not hand back the same one
+// twice while others sit untouched. When every item at the chosen level is
+// aced, fall through to the other level's unaced items; when everything is
+// aced, anything goes.
+function practiceAcedIds(key) {
+    return new Set(practiceHistory(key).filter(h => h && h.total && h.score === h.total).map(h => h.examId));
+}
+function practiceLevelFor(key, aced) {
+    const set = aced || practiceAcedIds(key);
+    for (const id of set) if (/^(rd|cl)-kc-|^er-round-kc/.test(id)) return 'ch';
+    return 'kc';
+}
+function practicePick(items, key, rand) {
+    const r = rand || Math.random;
+    if (!items.length) return null;
+    const aced = practiceAcedIds(key);
+    const level = practiceLevelFor(key, aced);
+    const other = level === 'kc' ? 'ch' : 'kc';
+    const pools = [
+        items.filter(it => it.level === level && !aced.has(it.id)),
+        items.filter(it => it.level === other && !aced.has(it.id)),
+        items.filter(it => it.level === level),
+        items,
+    ];
+    const pool = pools.find(p => p.length) || items;
+    return pool[Math.floor(r() * pool.length)];
+}
+function startReadingPractice() {
+    const ps = practicePick(readingBank(), 'readingHistory');
+    if (ps) startReadingPassage(ps.id);
+}
+function startClozePractice() {
+    const ps = practicePick(clozeBank(), 'clozeHistory');
+    if (ps) startClozePassage(ps.id);
+}
+function startErrorsPractice() {
+    // Rounds are drawn fresh each time, so only the level needs choosing; a
+    // 10/10 Không chuyên round in the history moves the child up.
+    startErrorsRound(practiceLevelFor('errorsHistory'));
+}
+
 // ---- starting ----------------------------------------------------------------------
 // Each pins its set first: a daily-task deep link lands here cold.
 function startReadingPassage(id) { if (typeof confirmStartExam === 'function') confirmStartExam(id, 'reading'); }
@@ -189,71 +234,62 @@ function practiceHistoryButton(setId, key) {
     const n = practiceHistory(key).length;
     return `<button class="exam-history-btn" onclick="examSelectSet('${setId}'); renderExamHistory()">📜 History ${n ? `(${n})` : ''}</button>`;
 }
-// Passages listed under two level headings, each card with its best score.
-function practicePassageCardsHTML(list, key, startFn, meta) {
-    const levels = [['kc', 'Không chuyên'], ['ch', 'Chuyên']];
-    return levels.map(([lv, label]) => {
-        const items = list.filter(p => p.level === lv);
-        if (!items.length) return '';
-        const cards = items.map(p => {
-            const best = practiceBest(key, p.id);
-            return `<button class="exam-card practice-card" onclick="${startFn}('${practiceEsc(p.id)}')">
-                <div class="exam-card-icon">${lv === 'ch' ? '🎓' : '📘'}</div>
-                <div class="exam-card-info">
-                    <div class="exam-card-title">${practiceEsc(p.title)}</div>
-                    <div class="exam-card-meta">${meta(p)}</div>
-                    ${best !== null ? `<div class="exam-card-best">Best: ${best}%${best === 100 ? ' 🌟' : ''}</div>` : ''}
-                </div>
-                <div class="exam-card-go">›</div>
-            </button>`;
-        }).join('');
-        return `<h3 class="topic-detail-list-title ptnk-year">${label} · ${items.length}</h3>${cards}`;
-    }).join('');
+// The home of each menu: what the exercise is, one Practice button that says
+// which level it will draw from and why, and History underneath. The child
+// never picks a passage; the app does, by the rule in practicePick().
+function practiceHomeHTML(o) {
+    const level = practiceLevelFor(o.key);
+    const aced = practiceAcedIds(o.key);
+    const acedCount = o.items.filter(it => aced.has(it.id)).length;
+    const pool = o.items.filter(it => it.level === level && !aced.has(it.id)).length
+        || o.items.filter(it => it.level === (level === 'kc' ? 'ch' : 'kc') && !aced.has(it.id)).length
+        || o.items.filter(it => it.level === level).length;
+    const why = level === 'kc'
+        ? 'Score 100% on one Không chuyên item to unlock Chuyên.'
+        : 'Chuyên unlocked — you aced a Không chuyên item.';
+    return `
+        <div class="exam-header">
+            <h1 class="exam-title">${o.icon} ${o.title}</h1>
+            <p class="exam-subtitle">${o.blurb} · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
+        </div>
+        <div class="phrases-wrap">
+            <button class="phrases-cta" onclick="${o.start}()">
+                <span class="phrases-cta-icon">${level === 'ch' ? '🎓' : '📘'}</span>
+                <span class="phrases-cta-text"><strong>Practice</strong><small>${o.unit(pool, level)} · ${practiceLevelLabel(level)}${acedCount ? ` · ${acedCount} aced` : ''}</small></span>
+                <span class="phrases-cta-arrow">›</span>
+            </button>
+            <p class="practice-rule">${why}</p>
+        </div>
+        ${practiceHistoryButton(o.set, o.key)}`;
 }
-
 function renderReadingHomeHTML() {
     const bank = readingBank();
     if (!bank.length) return practiceEmptyHTML('reading passages');
-    return `
-        <div class="exam-header">
-            <h1 class="exam-title">📖 Reading</h1>
-            <p class="exam-subtitle">${bank.length} passages — main idea, detail, inference, True/False/Not Given, matching sections and missing sentences · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
-        </div>
-        <div class="exam-list">${practicePassageCardsHTML(bank, 'readingHistory', 'startReadingPassage',
-            p => `⏱️ ${PRACTICE_MINUTES.reading[p.level] || 10} min · ${p.questions.length} questions · ${practiceEsc(p.topic)}`)}</div>
-        ${practiceHistoryButton('reading', 'readingHistory')}`;
+    return practiceHomeHTML({
+        set: 'reading', key: 'readingHistory', items: bank, icon: '📖', title: 'Reading', start: 'startReadingPractice',
+        blurb: bank.length + ' passages — main idea, detail, inference, True/False/Not Given, matching sections and missing sentences',
+        unit: (n, lv) => `A random passage from ${n} · ${PRACTICE_MINUTES.reading[lv]} min`,
+    });
 }
 function renderClozeHomeHTML() {
     const bank = clozeBank();
     if (!bank.length) return practiceEmptyHTML('cloze texts');
-    return `
-        <div class="exam-header">
-            <h1 class="exam-title">✏️ Cloze</h1>
-            <p class="exam-subtitle">${bank.length} texts with ten blanks each — choose the best option, or type the one missing word · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
-        </div>
-        <div class="exam-list">${practicePassageCardsHTML(bank, 'clozeHistory', 'startClozePassage',
-            p => `⏱️ ${PRACTICE_MINUTES.cloze[p.level] || 8} min · 10 blanks · ${p.mode === 'open' ? 'typed' : 'multiple choice'} · ${practiceEsc(p.topic)}`)}</div>
-        ${practiceHistoryButton('cloze', 'clozeHistory')}`;
+    return practiceHomeHTML({
+        set: 'cloze', key: 'clozeHistory', items: bank, icon: '✏️', title: 'Cloze', start: 'startClozePractice',
+        blurb: bank.length + ' texts with ten blanks each — choose the best option, or type the one missing word',
+        unit: (n, lv) => `A random text from ${n} · 10 blanks · ${PRACTICE_MINUTES.cloze[lv]} min`,
+    });
 }
 function renderErrorsHomeHTML() {
     const bank = errorsBank();
     if (!bank.length) return practiceEmptyHTML('error-correction items');
-    const n = (lv) => bank.filter(it => it.level === lv).length;
-    const button = (lv, icon, label) => `<button class="phrases-cta" onclick="startErrorsRound('${lv}')">
-            <span class="phrases-cta-icon">${icon}</span>
-            <span class="phrases-cta-text"><strong>${label}</strong><small>${ERRORS_ROUND_SIZE} random items from ${n(lv)} · ${PRACTICE_MINUTES.errors[lv]} min</small></span>
-            <span class="phrases-cta-arrow">›</span>
-        </button>`;
-    return `
-        <div class="exam-header">
-            <h1 class="exam-title">🔍 Error Correction</h1>
-            <p class="exam-subtitle">One sentence, four underlined parts, one of them wrong — find it, then see the correction · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
-        </div>
-        <div class="phrases-wrap">
-            ${button('kc', '📘', 'Không chuyên')}
-            ${button('ch', '🎓', 'Chuyên')}
-        </div>
-        ${practiceHistoryButton('errors', 'errorsHistory')}`;
+    const level = practiceLevelFor('errorsHistory');
+    const n = bank.filter(it => it.level === level).length;
+    return practiceHomeHTML({
+        set: 'errors', key: 'errorsHistory', items: bank, icon: '🔍', title: 'Error Correction', start: 'startErrorsPractice',
+        blurb: 'One sentence, four underlined parts, one of them wrong — find it, then see the correction',
+        unit: (_, lv) => `${ERRORS_ROUND_SIZE} random sentences from ${n} · ${PRACTICE_MINUTES.errors[lv]} min`,
+    });
 }
 
 function practiceRenderHome(setId, screenId, html) {
@@ -274,6 +310,8 @@ if (typeof module !== 'undefined' && module.exports) {
         errorsRoundId, errorsDraw, errorsPaperFromIds, errorsLookup,
         practiceHistory, practiceSaveHistory, practiceBest,
         startReadingPassage, startClozePassage, startErrorsRound,
+        practiceAcedIds, practiceLevelFor, practicePick, startReadingPractice, startClozePractice, startErrorsPractice,
+        practiceHomeHTML,
         renderReadingHomeHTML, renderClozeHomeHTML, renderErrorsHomeHTML,
         renderReadingHome, renderClozeHome, renderErrorsHome, practiceLevelLabel, practiceEsc,
     };

@@ -204,7 +204,7 @@ suite('practice sets: history and coins stay per menu', () => {
     assert.equal(ctx.practiceBest('readingHistory', 'rd-kc-01-1'), 100);
     assert.equal(ctx.practiceBest('readingHistory', 'rd-ch-06-2'), null);
     assert.equal(ctx.practiceBest('clozeHistory', 'rd-kc-01-1'), null);
-    assert.truthy(ctx.renderReadingHomeHTML().includes('Best: 100%'));
+    assert.truthy(ctx.renderReadingHomeHTML().includes('1 aced'));
   });
 
   test('a finished round asks the app to sync', () => {
@@ -216,21 +216,87 @@ suite('practice sets: history and coins stay per menu', () => {
   });
 });
 
-suite('practice sets: homes', () => {
-  test('reading and cloze homes group by level and wire every passage', () => {
+suite('practice sets: Practice picks the item — Không chuyên first, Chuyên once one is aced', () => {
+  test('a fresh child is served Không chuyên', () => {
     const { ctx } = world();
-    const r = ctx.renderReadingHomeHTML();
-    assert.truthy(r.indexOf('Không chuyên') < r.indexOf('Chuyên'));
-    assert.truthy(r.includes("startReadingPassage('rd-kc-01-1')") && r.includes("startReadingPassage('rd-ch-06-2')"));
-    const c = ctx.renderClozeHomeHTML();
-    assert.truthy(c.includes("startClozePassage('cl-kc-02-1')") && c.includes('typed') && c.includes('multiple choice'));
+    assert.equal(ctx.practiceLevelFor('readingHistory'), 'kc');
+    const picks = new Set();
+    for (let i = 0; i < 40; i++) picks.add(ctx.practicePick(ctx.readingBank(), 'readingHistory').level);
+    assert.deepEqual([...picks], ['kc'], 'every draw must be Không chuyên before anything is aced');
   });
 
-  test('the errors home offers one round per level with the pool size', () => {
+  test('a Không chuyên item scored below 100% does NOT unlock Chuyên', () => {
     const { ctx } = world();
-    const h = ctx.renderErrorsHomeHTML();
-    assert.truthy(h.includes("startErrorsRound('kc')") && h.includes("startErrorsRound('ch')"));
-    assert.truthy(h.includes('from 3 ·') && h.includes('from 1 ·'));
+    ctx.startReadingPassage('rd-kc-01-1');
+    sit(ctx, false);
+    assert.equal(ctx.practiceLevelFor('readingHistory'), 'kc');
+  });
+
+  test('one Không chuyên item at 100% unlocks Chuyên — and it is then preferred', () => {
+    const { ctx } = world();
+    ctx.startReadingPassage('rd-kc-01-1');
+    sit(ctx, true);
+    assert.equal(ctx.practiceLevelFor('readingHistory'), 'ch');
+    const pick = ctx.practicePick(ctx.readingBank(), 'readingHistory', () => 0.3);
+    assert.equal(pick.level, 'ch');
+  });
+
+  test('an aced item is not served again while unaced ones remain', () => {
+    // Stub bank: one kc passage, one ch passage. Ace the kc one → level ch,
+    // the ch passage is the only unaced item → it must be picked every time.
+    const { ctx } = world();
+    ctx.startReadingPassage('rd-kc-01-1');
+    sit(ctx, true);
+    for (let i = 0; i < 20; i++) assert.equal(ctx.practicePick(ctx.readingBank(), 'readingHistory').id, 'rd-ch-06-2');
+  });
+
+  test('when every item is aced, Practice still serves something', () => {
+    const { ctx } = world();
+    for (const id of ['rd-kc-01-1', 'rd-ch-06-2']) { ctx.startReadingPassage(id); sit(ctx, true); }
+    assert.truthy(ctx.practicePick(ctx.readingBank(), 'readingHistory'), 'must never return null with a non-empty bank');
+  });
+
+  test('error rounds follow the same rule on the round level', () => {
+    const { ctx } = world();
+    assert.equal(ctx.practiceLevelFor('errorsHistory'), 'kc');
+    ctx.startErrorsRound('kc');
+    sit(ctx, true);                          // 3/3 on the stub = a clean round
+    assert.equal(ctx.practiceLevelFor('errorsHistory'), 'ch');
+    ctx.startErrorsPractice();
+    assert.truthy(ctx.__state().examId.startsWith('er-round-ch:'), 'the next round must be Chuyên');
+    ctx.abandonExam();
+  });
+
+  test('startReadingPractice / startClozePractice open a paper of the chosen level', () => {
+    const { ctx } = world();
+    ctx.startReadingPractice();
+    assert.truthy(ctx.isExamActive() && ctx.__state().examId.startsWith('rd-kc-'));
+    ctx.abandonExam();
+    ctx.startClozePractice();
+    assert.truthy(ctx.isExamActive() && ctx.__state().examId.startsWith('cl-kc-'));
+    ctx.abandonExam();
+  });
+});
+
+suite('practice sets: homes', () => {
+  test('each home is one Practice button plus History — no list of passages', () => {
+    const { ctx } = world();
+    for (const [fn, start] of [['renderReadingHomeHTML', 'startReadingPractice'], ['renderClozeHomeHTML', 'startClozePractice'], ['renderErrorsHomeHTML', 'startErrorsPractice']]) {
+      const h = ctx[fn]();
+      assert.equal((h.match(/phrases-cta"/g) || []).length, 1, fn + ': exactly one Practice button');
+      assert.truthy(h.includes(`onclick="${start}()"`), fn + ': wired to ' + start);
+      assert.truthy(h.includes('renderExamHistory()'), fn + ': History below');
+      assert.falsy(/startReadingPassage\('|startClozePassage\('/.test(h), fn + ': no per-passage buttons');
+    }
+  });
+
+  test('the button says which level it will draw, and how to unlock the next', () => {
+    const { ctx } = world();
+    let h = ctx.renderReadingHomeHTML();
+    assert.truthy(h.includes('Không chuyên') && h.includes('Score 100% on one Không chuyên item to unlock Chuyên'));
+    ctx.startReadingPassage('rd-kc-01-1'); sit(ctx, true);
+    h = ctx.renderReadingHomeHTML();
+    assert.truthy(h.includes('Chuyên unlocked') && h.includes('1 aced'));
   });
 
   test('with no bank each home shows a retry, never an empty list', () => {
