@@ -17,12 +17,13 @@ const ROOT = path.join(__dirname, '..');
 const swSrc = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
 const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
-// Parse the ASSETS array literal out of sw.js (quoted string entries).
+// Parse the precache URL list out of sw.js: the keys of the PRECACHE block
+// ('/path': 'hash'). ASSETS is derived from it in the worker.
 function parseAssets() {
-    const block = swSrc.match(/const ASSETS\s*=\s*\[([\s\S]*?)\];/);
+    const block = swSrc.match(/const PRECACHE\s*=\s*\{([\s\S]*?)\};/);
     if (!block) return null;
     const entries = [];
-    const re = /['"]([^'"]+)['"]/g;
+    const re = /'(\/[^']*)'\s*:/g;
     let m;
     while ((m = re.exec(block[1])) !== null) entries.push(m[1]);
     return entries;

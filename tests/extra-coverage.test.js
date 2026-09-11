@@ -91,11 +91,9 @@ suite('sw: ASSETS array caches every js/*.js file', () => {
     });
 
     test('every entry in ASSETS that\'s a js/ path points to an EXISTING file', () => {
-        const assetsBlock = swSrc.match(/const ASSETS\s*=\s*\[([\s\S]*?)\];/);
-        assert.truthy(assetsBlock, 'ASSETS array not found');
-        const lines = assetsBlock[1].split('\n')
-            .map(l => l.trim().replace(/^['"]|['"],?$/g, ''))
-            .filter(l => l.startsWith('/js/'));
+        const assetsBlock = swSrc.match(/const PRECACHE\s*=\s*\{([\s\S]*?)\};/);
+        assert.truthy(assetsBlock, 'PRECACHE block not found');
+        const lines = [...assetsBlock[1].matchAll(/'(\/js\/[^']+)'\s*:/g)].map(m => m[1]);
         const stale = [];
         for (const p of lines) {
             const abs = path.join(ROOT, p);

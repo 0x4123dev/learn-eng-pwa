@@ -127,7 +127,7 @@ async function install(worker) {
   assert.truthy(waited, 'install must waitUntil something');
   return waited;
 }
-const ASSET_COUNT = (SW_SRC.match(/const ASSETS\s*=\s*\[([\s\S]*?)\];/)[1].match(/["'][^"']+["']/g) || []).length;
+const ASSET_COUNT = (SW_SRC.match(/const PRECACHE\s*=\s*\{([\s\S]*?)\};/)[1].match(/'\/[^']*'\s*:/g) || []).length;
 
 suite('service worker: install is best effort, never all-or-nothing', () => {
   test('one 404 among 153 assets no longer throws the whole update away', async () => {
