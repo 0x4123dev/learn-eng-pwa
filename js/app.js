@@ -1780,6 +1780,17 @@ function switchScreen(screenId) {
         if (typeof abandonLesson === 'function') abandonLesson();
     }
 
+    // Guard: Word Hunt is a 60-second overlay over Home, and the bottom bar
+    // is NOT hidden beneath it — a tab switch under a running hunt is one tap
+    // away, and used to change the screen while the clock kept ticking on
+    // top. Unfinished, ask; the finished score card is only taken down so it
+    // never covers the next tab (js/word-hunt.js).
+    if (typeof isWordHuntActive === 'function' && isWordHuntActive() &&
+        !confirm('You are in the middle of a Word Hunt.\nIf you leave now, the hunt ends here.\n\nLeave anyway?')) {
+        return false;
+    }
+    if (typeof abandonWordHunt === 'function') abandonWordHunt();
+
     const nextScreen = document.getElementById(screenId);
     if (!nextScreen) return false;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1966,6 +1977,8 @@ const _BUSY_CHECKS = [
     'isLessonActive', 'isLessonOnScreen',
     'isSpeedGameActive',
     'isPetBattleActive',
+    // Word Hunt's 60-second clock (js/word-hunt.js).
+    'isWordHuntActive',
 ];
 function _busyWithTimedActivity() {
     try {

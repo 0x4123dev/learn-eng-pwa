@@ -353,9 +353,38 @@ function completeWordHunt() {
     if (found === total) createConfetti();
 }
 
+// The × while the clock runs. It used to end the game on the spot — one tap
+// and a hunt with two words found was over, no question asked. It asks now;
+// yes ends the game where it stands (the score card, then Done), no leaves
+// the grid and the clock exactly as they were.
 function endWordHunt() {
+    if (isWordHuntActive() && typeof confirm === 'function'
+        && !confirm('You are in the middle of a Word Hunt.\nIf you leave now, the hunt ends here.\n\nLeave anyway?')) return;
     clearInterval(huntState.timer);
     completeWordHunt();
+}
+
+// A hunt is on screen with its clock running — the case switchScreen
+// (js/app.js) must ask about. The score card is NOT active: the game is over.
+function isWordHuntActive() {
+    const overlay = document.getElementById('wordHuntOverlay');
+    return !!(overlay && overlay.classList.contains('active') && !huntState.finished);
+}
+
+// Take the hunt down without a score card — the clock stopped, the overlay
+// gone, the next openWordHunt() fresh. Called by switchScreen after the child
+// has said yes, and for a finished score card so it never covers the next
+// tab. The overlay sits over Home with the bottom bar visible beneath it, so
+// a tab switch under a running hunt is one tap away. A no-op when no hunt is
+// up.
+function abandonWordHunt() {
+    const overlay = document.getElementById('wordHuntOverlay');
+    if (!overlay || !overlay.classList.contains('active')) return;
+    clearInterval(huntState.timer);
+    huntState.timer = null;
+    huntState.finished = true;
+    overlay.classList.remove('active');
+    overlay.innerHTML = '';
 }
 
 function closeWordHunt() {
