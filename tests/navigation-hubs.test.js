@@ -60,7 +60,10 @@ suite('navigation hubs: old modules remain easy to find', () => {
         // renders into rather than static markup.
         const hub = blockBetween(html, 'id="mathHubScreen"', '<!-- Grammar Screen -->');
         assert.falsy(hub.includes('COMING SOON'), 'the placeholder outlived the real tab');
-        assert.truthy(html.includes('js/math.js'), 'index.html must load the Math tab');
+        // The tab's code is a lazy group (js/lazy-data.js GROUP_FILES.math)
+        // that switchScreen('mathHubScreen') fetches on first open.
+        assert.falsy(html.includes('js/math.js'), 'js/math.js must not block the first paint');
+        assert.truthy(require('../js/lazy-data.js').GROUP_FILES.math.includes('js/math.js'), 'the Math tab code must ride the math group');
         assert.truthy(/mathHubScreen'\s*&&\s*typeof renderMathHome/.test(app),
             'opening the tab must render it');
     });

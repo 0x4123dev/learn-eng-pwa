@@ -5,11 +5,16 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html'),css=read('css/styles.css'),ui=read('js/night-raid.js'),game=read('js/night-raid-game.js'),phaser=read('js/night-raid-phaser.js'),sw=read('sw.js');
 
 suite('night raid: app integration',()=>{
-  test('one dedicated screen and five ordered Night Raid scripts ship in the app shell',()=>{
+  test('one dedicated screen; the rules ship in the app shell and the four game scripts ride the Arena lazy group, in order',()=>{
     assert.truthy(html.includes('id="nightRaidScreen"'));
-    const order=['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','night-raid.js'].map(x=>html.indexOf(x));
+    // Daily Task and the Armoury read NightRaidRules on Home, so the rules
+    // stay eager. The rest is Arena code (js/lazy-data.js GROUP_FILES.arena).
+    assert.truthy(html.includes('js/night-raid-rules.js'));
+    const arena=require('../js/lazy-data.js').GROUP_FILES.arena;
+    const order=['js/night-raid-art.js','js/night-raid-game.js','js/night-raid-phaser.js','js/night-raid.js'].map(x=>arena.indexOf(x));
     assert.truthy(order.every(n=>n>=0));
     assert.truthy(order.every((n,i)=>i===0||order[i-1]<n));
+    for(const f of order.map(i=>arena[i]))assert.falsy(html.includes(f),f+' must not also be an eager script');
   });
   test('all Night Raid scripts work offline',()=>{
     for(const file of ['night-raid-rules.js','night-raid-art.js','night-raid-game.js','night-raid-phaser.js','phaser.min.js','night-raid.js'])assert.truthy(sw.includes("'/js/"+file+"'"));

@@ -47,10 +47,13 @@ suite('farm art: files on disk and in the service worker', () => {
     assert.truthy(sw.includes("'/js/farm-rules.js'"));
     assert.truthy(sw.includes("'/js/farm-art-manifest.js'"));
   });
-  test('index.html loads farm-rules before night-raid-rules, and the manifest', () => {
+  test('index.html loads farm-rules before night-raid-rules; the manifest rides the Arena lazy group', () => {
     const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
     assert.truthy(html.indexOf('js/farm-rules.js') > 0 && html.indexOf('js/farm-rules.js') < html.indexOf('js/night-raid-rules.js'));
-    assert.truthy(html.includes('js/farm-art-manifest.js'));
+    // Nothing on Home reads FarmArtManifest (it is the build/test contract for
+    // img/farm), so it loads with the Arena — after farm-rules, which it needs.
+    assert.falsy(html.includes('js/farm-art-manifest.js'), 'the manifest must not block the first paint');
+    assert.truthy(require('../js/lazy-data.js').GROUP_FILES.arena.includes('js/farm-art-manifest.js'));
   });
 });
 

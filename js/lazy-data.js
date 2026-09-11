@@ -54,6 +54,37 @@ var LazyData = (() => {
   const GROUP_FILES = Object.freeze({
     mathHk2: ['js/math-data-hk2.js', 'js/math-exams-hk2.js',
               'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js'],
+    // CODE, not data: the two tabs whose scripts are the bulk of what used to
+    // block the first paint. Before 2026-09-11 index.html loaded 68 files
+    // (2.3 MB) before Home could draw, and a full megabyte of that was the
+    // Arena (pet battles, Cướp Đêm, Cúng Cô Hồn) and the Math tab — code a
+    // child on Learn never runs. Each list is in the ORDER index.html loaded
+    // them, because a later file may call an earlier one while it loads.
+    // Every startup-side reference to a name defined here is guarded with
+    // `typeof X !== 'undefined'`; js/app.js `lazyEntry` makes openPetBattle
+    // and openNightRaid safe to tap before the group has landed.
+    arena: ['js/battlecalc.js', 'js/battle-teammates.js', 'js/battle-camera.js',
+            'js/battle-scenes.js', 'js/castle-skins.js', 'js/farm-art-manifest.js',
+            'js/night-raid-choreo.js', 'js/night-raid-art.js', 'js/night-raid-game.js',
+            'js/night-raid-ruins.js', 'js/night-raid-phaser.js', 'js/night-raid.js',
+            'js/ghost-offering-schedule.js', 'js/ghost-offering-link.js',
+            'js/ghost-offering-event.js', 'js/battlelink.js', 'js/petbattle.js',
+            'js/petbattlegame.js'],
+    math: ['js/math-glossary.js', 'js/math-figures.js', 'js/mathwars.js',
+           'js/math-tables.js', 'js/math-fight-rules.js', 'js/math-fight.js',
+           'js/math.js', 'js/math-copy.js', 'js/math-board.js'],
+  });
+
+  // screen id → the code group that screen cannot open without. filesFor()
+  // puts the group's files IN FRONT of the screen's banks, so every road that
+  // already waits for a screen — switchScreen, DailyTask.go, the study
+  // checkpoint, the verify layer — waits for its code too, with no second
+  // mechanism to remember. Code first, banks second — the order index.html
+  // had when the code was eager and only the banks were deferred.
+  const SCREEN_GROUPS = Object.freeze({
+    petBattleScreen: 'arena',
+    nightRaidScreen: 'arena',
+    mathHubScreen: 'math',
   });
 
   // The offline dictionary belongs to no single screen — a child can tap any
@@ -63,7 +94,11 @@ var LazyData = (() => {
   const loaded = Object.create(null);   // file → true once it has run
   const inFlight = Object.create(null); // file → Promise
 
-  function filesFor(key) { return SCREEN_FILES[key] || GROUP_FILES[key] || []; }
+  function filesFor(key) {
+    const code = SCREEN_GROUPS[key] ? GROUP_FILES[SCREEN_GROUPS[key]] : [];
+    return code.concat(SCREEN_FILES[key] || GROUP_FILES[key] || []);
+  }
+  function groupFor(screenId) { return SCREEN_GROUPS[screenId] || null; }
 
   // A bank that fails to download must not leave the tab spinning forever:
   // resolve either way and let the tab render what it has. The service worker
@@ -111,11 +146,11 @@ var LazyData = (() => {
   // moment they are actually asked for.
   const LAST_TAB_KEY = 'flashlingo-last-tab';
   function rememberTab(screenId) {
-    if (!SCREEN_FILES[screenId]) return;
+    if (!SCREEN_FILES[screenId] && !SCREEN_GROUPS[screenId]) return;
     try { localStorage.setItem(LAST_TAB_KEY, screenId); } catch (e) {}
   }
   function lastTab() {
-    try { const v = localStorage.getItem(LAST_TAB_KEY); return SCREEN_FILES[v] ? v : null; }
+    try { const v = localStorage.getItem(LAST_TAB_KEY); return (SCREEN_FILES[v] || SCREEN_GROUPS[v]) ? v : null; }
     catch (e) { return null; }
   }
   let warmed = false;
@@ -124,7 +159,7 @@ var LazyData = (() => {
     warmed = true;
     const screenId = lastTab();
     if (!screenId) return Promise.resolve();
-    return SCREEN_FILES[screenId].reduce(
+    return filesFor(screenId).reduce(
       (chain, file) => chain.then(() => loadFile(file)), Promise.resolve());
   }
   function warmSoon() {
@@ -136,7 +171,7 @@ var LazyData = (() => {
   function ensureDictionary() { return Promise.all(DICTIONARY.map(loadFile)); }
   function dictionaryReady() { return DICTIONARY.every(f => loaded[f]); }
 
-  return { SCREEN_FILES, GROUP_FILES, DICTIONARY, ensure, ready, warmAll, warmSoon, filesFor,
-    ensureDictionary, dictionaryReady };
+  return { SCREEN_FILES, GROUP_FILES, SCREEN_GROUPS, DICTIONARY, ensure, ready, warmAll, warmSoon,
+    filesFor, groupFor, ensureDictionary, dictionaryReady };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = LazyData;

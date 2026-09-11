@@ -697,6 +697,7 @@ node scripts/validate-phonetics.js data/phonetics/ph-*.json   # (--lesson for da
 | A test file "passes" but prints nothing | It lost its `runAll().then(code => process.exit(code))` tail. Only trust `npm test`. |
 | `no such column: …` from an API test | The mock schema is built from the files listed in `tests/pages-harness.js` `SQL_FILES`. Add the migration there. |
 | A tab renders empty with no error | Its bank is lazy-loaded (`js/lazy-data.js` `SCREEN_FILES`) and the download failed. Every render path must guard the global. |
+| `ReferenceError: openPetBattle / renderMathHome / NightRaid is not defined` | The Arena and Math tab CODE is lazy too (`js/lazy-data.js` `GROUP_FILES` `arena` / `math`, mapped to screens by `SCREEN_GROUPS`). Startup code must `typeof`-guard those names or go through `LazyData.ensure(screenId)`; `openPetBattle`/`openNightRaid` are `lazyEntry` placeholders in `js/app.js` until the group lands. Guard test: `tests/lazy-code-groups.test.js`. |
 | A generated file keeps reverting | It is built by a `scripts/build-*.js`; edit the source under `data/` instead. |
 | Deploy refuses to run | Uncommitted changes would ship without being committed. Commit explicit paths first. |
 

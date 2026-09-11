@@ -17,7 +17,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { realRoutes } = require('./manifest');
+const { realRoutes, realLazyBanks } = require('./manifest');
 
 const ROOT = path.join(__dirname, '..', '..');
 const DEFAULT_BASE = 'https://eng-pwa.pages.dev';
@@ -89,6 +89,24 @@ async function verifyLive(baseUrl) {
     const bad = results.filter(r => !r.ok);
     add('live-scripts', 'Mọi script khởi động đều tải được', bad.length === 0,
       bad.length ? bad.map(b => `${b.src} → ${b.why}`).join('; ') : `${results.length} script, tất cả đều là JS thật`);
+  }
+
+  // 3b. Everything js/lazy-data.js fetches later — the question banks AND,
+  //     since the Arena and Math code moved off the first paint, the code of
+  //     those two tabs. A 404 here is not a blank app; it is an Arena that
+  //     says "Đang tải…" and never opens, on a page that otherwise looks fine.
+  {
+    const lazyFiles = realLazyBanks();
+    const results = await Promise.all(lazyFiles.map(async src => {
+      try {
+        const r = await get(base + '/' + src, { method: 'GET' });
+        const type = r.headers.get('content-type') || '';
+        return { src, ok: r.ok && type.indexOf('text/html') === -1, why: `HTTP ${r.status} ${type.split(';')[0]}` };
+      } catch (e) { return { src, ok: false, why: e.message }; }
+    }));
+    const bad = results.filter(r => !r.ok);
+    add('live-lazy-files', 'Mọi tệp tải chậm (bank và mã Arena/Toán) đều tải được', bad.length === 0,
+      bad.length ? bad.map(b => `${b.src} → ${b.why}`).join('; ') : `${results.length} tệp, tất cả đều là JS thật`);
   }
 
   // 4. Every API route answers — and refuses. A 5xx here is a route that

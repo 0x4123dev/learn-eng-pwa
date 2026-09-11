@@ -902,7 +902,7 @@ async function verifyClient() {
   // a file that touches a not-yet-defined global throws here too.
   const boot = mountApp();
   await R.check('boot-load-order-runs-clean',
-    'Khởi động: 64 tệp chạy đúng thứ tự, không tệp nào ném lỗi',
+    'Khởi động: mọi tệp <script> chạy đúng thứ tự, không tệp nào ném lỗi',
     () => {
       mustEqual(boot.loadErrors.length, 0,
         'files that threw while loading: ' + boot.loadErrors.map((e) => e.src + ' → ' + e.message).join('; '));
@@ -910,6 +910,46 @@ async function verifyClient() {
       must(typeof boot.sandbox.init === 'function', 'init is defined after boot');
       return boot.scripts.length + ' scripts booted into one global scope with no error';
     });
+
+  // The Arena and the Math tab are code the first paint no longer carries
+  // (js/lazy-data.js GROUP_FILES arena / math). Each group must run cleanly
+  // AFTER the startup set, in its own order, and the names startup code reaches
+  // for by hand — openPetBattle, openNightRaid — must stop being placeholders
+  // once the real file has run. A group that threw would otherwise be an
+  // Arena that says "Đang tải…" forever.
+  {
+    const groups = Object.keys(boot.sandbox.LazyData.GROUP_FILES)
+      .filter((g) => boot.sandbox.LazyData.GROUP_FILES[g].some((f) => !/-data|-exams|-lessons|-source-exams/.test(f)));
+    must(groups.length >= 2, 'expected at least the arena and math code groups, found: ' + groups.join(', '));
+    for (const group of groups) {
+      await R.check('boot-lazy-group-runs-clean-' + group,
+        'Khởi động: nhóm mã tải chậm "' + group + '" chạy sạch sau khi khởi động',
+        async () => {
+          const h = mountApp();
+          mustEqual(h.loadErrors.length, 0, 'the startup set itself threw');
+          const before = { openPetBattle: h.sandbox.openPetBattle, openNightRaid: h.sandbox.openNightRaid };
+          const files = h.sandbox.LazyData.GROUP_FILES[group];
+          for (const f of files) must(!h.scripts.includes(f), f + ' is ALSO an eager <script> — it would run twice');
+          await h.sandbox.LazyData.ensure(group);
+          await settle();
+          const lazyErrors = h.loadErrors.filter((e) => e.phase === 'lazy');
+          mustEqual(lazyErrors.length, 0,
+            'files that threw while loading lazily: ' + lazyErrors.map((e) => e.src + ' → ' + e.message).join('; '));
+          mustEqual(h.banksLoaded.filter((f) => files.includes(f)).length, files.length, 'not every file of the group ran');
+          must(h.sandbox.LazyData.ready(group), 'LazyData does not report the group ready');
+          if (group === 'arena') {
+            for (const name of ['openPetBattle', 'openNightRaid']) {
+              must(typeof h.sandbox[name] === 'function', name + ' vanished');
+              must(h.sandbox[name] !== before[name], name + ' is still the startup placeholder after the Arena code ran');
+            }
+          }
+          if (group === 'math') {
+            must(typeof h.sandbox.renderMathHome === 'function', 'renderMathHome is not defined after the math group ran');
+          }
+          return files.length + ' files ran after the ' + h.scripts.length + ' startup scripts with no error';
+        });
+    }
+  }
 
   const declBy = new Map();       // name → [files]
   const declKind = new Map();     // name → kind

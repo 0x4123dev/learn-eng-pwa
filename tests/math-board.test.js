@@ -420,13 +420,16 @@ suite('math board: overlay wiring', () => {
             'abandonMathQuiz must reset the scratch boards');
     });
 
-    test('overlay ships: index.html mounts it and loads the script', () => {
+    test('overlay ships: index.html mounts it and the math lazy group loads the script', () => {
         const html = read('index.html');
         assert.truthy(/id="mathBoardOverlay"/.test(html));
-        assert.truthy(/js\/math-board\.js/.test(html));
-        const mathIdx = html.indexOf('js/math.js');
-        const boardIdx = html.indexOf('js/math-board.js');
-        assert.truthy(boardIdx > mathIdx, 'board script loads after math.js (it calls mathFormula)');
+        // The script rides the "math" lazy group (js/lazy-data.js
+        // GROUP_FILES.math), which runs in list order.
+        assert.falsy(/js\/math-board\.js/.test(html), 'must not block the first paint');
+        const math = require('../js/lazy-data.js').GROUP_FILES.math;
+        const mathIdx = math.indexOf('js/math.js');
+        const boardIdx = math.indexOf('js/math-board.js');
+        assert.truthy(mathIdx > -1 && boardIdx > mathIdx, 'board script loads after math.js (it calls mathFormula)');
     });
 
     test('toolbar: undo, quick clear confirmation, one visible board, minimize', () => {

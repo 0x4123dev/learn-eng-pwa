@@ -218,7 +218,10 @@ function restoreStudyCheckpoint() {
     }
     // Grammar and Exam checkpoints need a bank that no longer loads at
     // startup (js/lazy-data.js). Reopening the question before it lands would
-    // show an empty one, so wait — and come back here when it arrives.
+    // show an empty one, so wait — and come back here when it arrives. For a
+    // maths or Math Wars round the screen's files include the Math tab's CODE
+    // (renderMathQuestion, renderWars — GROUP_FILES.math), so the same wait
+    // is what keeps the calls below from being ReferenceErrors.
     const needsBankOne = {
         grammar: 'grammarScreen', exam: checkpoint.screen || 'examScreen',
         phrases: 'phrasesScreen', collocation: 'phrasesScreen',
@@ -1436,6 +1439,45 @@ function renderLearnHub() {
         : 'Nothing due yet — practise again to build your queue.';
 }
 
+// ---- doors into code that is not loaded yet -------------------------------
+//
+// The Arena's scripts (js/lazy-data.js GROUP_FILES.arena: pet battles, Cướp
+// Đêm, Cúng Cô Hồn) no longer load at startup, but the bottom bar and the
+// Daily Task card still call openPetBattle() / openNightRaid() by name. Until
+// the group lands, those names are these placeholders: switch to the screen —
+// which draws the "Đang tải…" line and starts the download, exactly as a
+// deferred tab does — then call the real function, which js/petbattle.js and
+// js/night-raid.js declare under the SAME name and so replace the placeholder
+// the moment they run. After that first visit the placeholder is gone and a
+// tap goes straight to the real thing.
+function lazyEntry(group, name, screenId) {
+    const placeholder = function () {
+        const args = Array.from(arguments);
+        if (typeof LazyData === 'undefined') return Promise.resolve();
+        // switchScreen asks before walking out of a live quiz. A "no" must
+        // stop everything, not merely delay the Arena until the download ends.
+        if (switchScreen(screenId) === false) return Promise.resolve();
+        return LazyData.ensure(group).then(() => {
+            const real = globalThis[name];
+            // The download failed (LazyData resolves anyway). Calling the
+            // placeholder again would loop; say so and leave the child where
+            // they are.
+            if (typeof real !== 'function' || real === placeholder) {
+                const screen = document.getElementById(screenId);
+                if (screen) screen.innerHTML = '<div class="lazy-loading" role="status">Không tải được. Kiểm tra mạng rồi thử lại nhé!</div>';
+                return;
+            }
+            // The child may have moved on while it downloaded. Opening the
+            // Arena under them would start its polling behind another tab.
+            if (!document.getElementById(screenId)?.classList.contains('active')) return;
+            return real.apply(null, args);
+        });
+    };
+    return placeholder;
+}
+var openPetBattle = lazyEntry('arena', 'openPetBattle', 'petBattleScreen');
+var openNightRaid = lazyEntry('arena', 'openNightRaid', 'nightRaidScreen');
+
 // Returns FALSE when the switch did not happen — a guard below asked the child
 // and they chose to stay, or the screen does not exist. Callers that do more
 // than switch (openPetBattle starts polling) MUST check it: carrying on after a
@@ -1602,6 +1644,13 @@ function switchScreen(screenId) {
     // paint (js/lazy-data.js). Render such a tab only once its bank has
     // arrived, or the child meets an empty question list. Everything else
     // renders synchronously exactly as before.
+    //
+    // Since 2026-09-11 the same wait covers CODE: filesFor('mathHubScreen')
+    // begins with the Math tab's own scripts, and the two Arena screens list
+    // theirs (GROUP_FILES math / arena). renderMathHome does not exist until
+    // the group has run, which is why paint() reaches for it by typeof. The
+    // Arena screens have no paint() entry: openPetBattle / openNightRaid
+    // render them once this returns.
     if (typeof LazyData !== 'undefined' && LazyData.filesFor(screenId).length) {
         const paint = () => {
             if (screenId === 'grammarScreen' && typeof renderGrammarHome === 'function') renderGrammarHome();

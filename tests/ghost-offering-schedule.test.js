@@ -59,11 +59,14 @@ suite('ghost offering: the schedule is one source of truth', () => {
     });
 
     test('the shared module is loaded before the screen that uses it, and cached offline', () => {
-        const html = read('index.html');
-        const iSchedule = html.indexOf('js/ghost-offering-schedule.js');
-        const iEvent = html.indexOf('js/ghost-offering-event.js');
-        assert.truthy(iSchedule > -1, 'index.html never loads the schedule');
+        // Arena code is a lazy group (js/lazy-data.js GROUP_FILES.arena) that
+        // runs in list order, so the order here is the load order.
+        const arena = require('../js/lazy-data.js').GROUP_FILES.arena;
+        const iSchedule = arena.indexOf('js/ghost-offering-schedule.js');
+        const iEvent = arena.indexOf('js/ghost-offering-event.js');
+        assert.truthy(iSchedule > -1, 'the arena group never loads the schedule');
         assert.truthy(iSchedule < iEvent, 'the schedule must load before the event screen reads it');
+        assert.falsy(read('index.html').includes('js/ghost-offering-schedule.js'), 'must not also be an eager script');
         assert.truthy(read('sw.js').includes("'/js/ghost-offering-schedule.js'"),
             'the schedule is not precached, so the event breaks offline');
     });
