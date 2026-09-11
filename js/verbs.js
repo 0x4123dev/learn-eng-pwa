@@ -487,6 +487,31 @@ function closeSpeedComplete() {
     renderSpeedChallenge();
 }
 
+// Drop the run with no question asked: the clock, the overlay and the bottom
+// bar are put back the way they were before Start. The ✕ (exitSpeedGame) and
+// switchScreen's guard both come here once the child has said yes.
+function abandonSpeedGame() {
+    if (typeof speedState === 'undefined' || !speedState) return;
+    if (speedState.timer && typeof clearInterval === 'function') clearInterval(speedState.timer);
+    speedState.timer = null;
+    // The run is over. Without this the flag stayed true forever, and the
+    // app-wide Enter listener below kept submitting a verb from whatever tab
+    // the child went to next — reading the hidden V2/V3 boxes, pushing a
+    // bogus row into verbResults, and reading an irregular verb aloud over
+    // the Rewrite/Exam/Word-form answer they had just typed.
+    speedState.isAnswering = false;
+    // Nothing left to checkpoint either (buildStudyCheckpoint reads the
+    // overlay AND currentVerbs), so a reload never offers the dropped run back.
+    speedState.currentVerbs = [];
+    speedState.verbResults = [];
+    speedState.currentIndex = 0;
+    if (typeof document === 'undefined') return;
+    const overlay = document.getElementById('speedGameOverlay');
+    if (overlay && overlay.classList) overlay.classList.remove('active');
+    const nav = document.getElementById('bottomNav');
+    if (nav) nav.style.display = 'flex';
+}
+
 // The ✕ sits beside the answer box of a TIMED run that is scored only when it
 // ends, and it used to drop the whole run on one tap with nothing said. Ask —
 // but only once there is a run to lose, so opening and changing your mind
@@ -497,15 +522,7 @@ function exitSpeedGame() {
     if (done && typeof confirm === 'function'
         && !confirm('You are ' + done + ' verbs into this speed run.\n'
             + 'If you leave now, this run will not be scored.\n\nLeave anyway?')) return;
-    clearInterval(speedState.timer);
-    // The run is over. Without this the flag stayed true forever, and the
-    // app-wide Enter listener below kept submitting a verb from whatever tab
-    // the child went to next — reading the hidden V2/V3 boxes, pushing a
-    // bogus row into verbResults, and reading an irregular verb aloud over
-    // the Rewrite/Exam/Word-form answer they had just typed.
-    speedState.isAnswering = false;
-    document.getElementById('speedGameOverlay').classList.remove('active');
-    document.getElementById('bottomNav').style.display = 'flex';
+    abandonSpeedGame();
 }
 
 // SILENT teardown for a profile change. exitSpeedGame() is the ✕ and it ASKS
@@ -548,15 +565,19 @@ function verbsForgetProfile() {
 // Is the speed game actually on screen? js/verbs.js is loaded on every tab, so
 // the keydown listener below fires everywhere; the overlay is the one thing
 // that is true only while a verb question is really in front of the child.
-// Deliberately not named is…() — it is not a screen switchScreen guards (the
-// overlay hides the bottom bar), and tests/quiz-exit-guards.test.js reads that
-// naming convention as "a running activity switchScreen must ask about".
 function speedGameOverlayActive() {
     if (typeof document === 'undefined') return false;
     const overlay = document.getElementById('speedGameOverlay');
     if (!overlay || !overlay.classList || typeof overlay.classList.contains !== 'function') return false;
     return overlay.classList.contains('active');
 }
+// The same fact under the name switchScreen's guards go by (the registry in
+// tests/quiz-exit-guards.test.js reads every is…() as "a running activity
+// switchScreen must ask about"). The overlay hides the bottom bar, so the
+// guard is a backstop — but a switchScreen() from code (a deep link, a
+// restored checkpoint) used to walk under a live run, re-show the bar behind
+// the overlay and leave the 100 ms clock ticking on whatever screen came next.
+function isSpeedGameActive() { return speedGameOverlayActive(); }
 
 // Handle Enter key in inputs.
 // The overlay check is the belt to exitSpeedGame's braces: the flag alone was
