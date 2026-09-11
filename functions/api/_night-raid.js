@@ -134,6 +134,25 @@ export function nightDate(now=Date.now()) {
 export function safeJson(value, fallback) {
   try { const parsed=JSON.parse(value); return parsed==null?fallback:parsed; } catch(e) { return fallback; }
 }
+// Generic layout PUTs predate server-owned barracks purchases, so deleting a
+// barracks and adding it back could otherwise reset its progressive cost. Keep
+// a private lineage ledger inside layout_json. normalizeLayout deliberately
+// drops this key, so it is never sent to the client or accepted from a PUT.
+const BARRACKS_LEDGER_KEY='__barracksLedger';
+export function barracksLedger(raw,layout) {
+  const byUid=new Map(),put=entry=>{
+    const uid=String(entry&&entry.uid||'');if(!/^p-[a-z0-9]{8,40}$/i.test(uid))return;
+    byUid.set(uid,{uid,lastDay:Math.max(0,Math.trunc(+entry.lastDay||0)),soldierCycles:Math.max(0,Math.trunc(+entry.soldierCycles||0)),gx:Math.max(0,Math.trunc(+entry.gx||0)),gy:Math.max(0,Math.trunc(+entry.gy||0))});
+  };
+  for(const entry of Array.isArray(raw&&raw[BARRACKS_LEDGER_KEY])?raw[BARRACKS_LEDGER_KEY]:[])put(entry);
+  for(const cell of NR.farmRules.allCells(layout||{}))if(NR.itemById(cell.type)?.producer==='soldier')put(cell);
+  return Array.from(byUid.values()).slice(-10);
+}
+export function withBarracksLedger(layout,prior) {
+  const stored=Object.assign({},layout);
+  stored[BARRACKS_LEDGER_KEY]=barracksLedger({[BARRACKS_LEDGER_KEY]:prior},layout);
+  return stored;
+}
 export function randomRaidId() {
   const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
   return Array.from(bytes).map(v=>v.toString(16).padStart(2,'0')).join('');

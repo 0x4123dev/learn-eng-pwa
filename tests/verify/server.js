@@ -857,8 +857,8 @@ async function moneyChecks(add, seenSql, drainLogs) {
     const stampedToday = !!seeded && seeded.day === 1 && seeded.at === gmt7(Date.now());
 
     // One task-day short of ripe: the harvest must not pay a xu for the plant,
-    // and must leave it standing. (The barracks beside it does pay a soldier —
-    // that is its own per-task-day clock, and the crop must not ride on it.)
+    // and must leave it standing. (The barracks beside it pays soldier 1 from
+    // one of its banked days; the crop must not ride on that separate clock.)
     for (let i = 1; i < crop.days; i++) finishADay();
     const early = await collect();
     const earlySoldiers = Number((early.data && early.data.collectedSoldiers) || 0);
@@ -879,7 +879,7 @@ async function moneyChecks(add, seenSql, drainLogs) {
       && Number(board.soldiers) === earlySoldiers + soldiers
       && grantsOf(w, kid.uid) === 0;
     add('money.farm-harvest-per-task-day', 'Cướp Đêm: nông trại lớn theo ngày nhiệm vụ, hái ra xu', ok,
-      ok ? `${crop.name.vi} planted on task-day 1 (the server refused the client's day=-999 / at=2000-01-01), paid nothing while it was ${crop.days - 1} of ${crop.days} days grown, then paid exactly ${crop.yield} xu on the day it ripened and left the board; lootable_coins moved by ${crop.yield} and the barracks banked 1 lính on each of the two collects that followed a new task-day; 0 coin_grants rows — the harvest never touches that ledger`
+      ok ? `${crop.name.vi} planted on task-day 1 (the server refused the client's day=-999 / at=2000-01-01), paid nothing while it was ${crop.days - 1} of ${crop.days} days grown, then paid exactly ${crop.yield} xu on the day it ripened and left the board; lootable_coins moved by ${crop.yield}; the barracks charged 1 banked day for soldier 1, then 2 for soldier 2 while preserving its extra day; 0 coin_grants rows — the harvest never touches that ledger`
          : `put=${planted.status} plant=${plantedSeed.status} stamped=${stampedToday} (${JSON.stringify(seeded)}) unripeAfter${crop.days - 1}=${stillGrowing} collect=${paid.status} coins=${paid.data && paid.data.collectedCoins} want=${crop.yield} purse=${purse} cropGone=${gone} harvested=${harvestedIt} soldiers=${earlySoldiers}+${soldiers} stock=${board.soldiers} grants=${grantsOf(w, kid.uid)}`);
 
     // And the clock the farm does NOT have: hours must move nothing.

@@ -102,16 +102,16 @@ Thuần trưng bày, không sản xuất, không phòng thủ. Là phần "xây 
 | Công trình | Trước | Sau |
 |---|---|---|
 | Ruộng lúa, vườn cà chua, ao cá | 6.000 xu, 100 xu mỗi 24 giờ, tối đa 4 mỗi loại | **Giữ nguyên** đồng hồ 24 giờ và giá. Chỉ đổi: **mua mới tối đa 1 mỗi loại**. |
-| Trại huấn luyện | 8.000 xu, 1 lính mỗi 24 giờ, tối đa 2 | Giá **8.000 giữ nguyên**. **Mua nhiều được**, trần 10 trại chỉ để không mua thừa vô ích (kho lính trên master không còn trần). Mỗi trại cho **1 lính mỗi ngày nhiệm vụ đã xong** kể từ lần nhận trước, không theo giờ. |
+| Trại huấn luyện | 8.000 xu, 1 lính mỗi 24 giờ, tối đa 2 | Giá **8.000 giữ nguyên**. **Mua nhiều được**, trần 10 trại chỉ để không mua thừa vô ích (kho lính trên master không còn trần). Mỗi trại theo lịch **1, 2, 3, 4, rồi 5 ngày nhiệm vụ cho mỗi lính**, không theo giờ. |
 
 - Ruộng cũ và ao cá không đổi cơ chế, không héo, hình như cũ. Đây là nguồn xu thụ động duy nhất còn lại, tối đa 300 xu một ngày, nhỏ hơn thưởng nhiệm vụ.
 - **Giới hạn 1 chỉ áp cho mua mới.** Bé đang có 2 đến 4 ruộng cùng loại giữ nguyên tất cả; SHOP chỉ từ chối mua thêm khi đã có từ 1 trở lên. `normalizeLayout` **không** xóa ô vượt giới hạn mới; nó giữ tối đa 4 như trước. Giới hạn mua mới kiểm ở SHOP và ở server PUT cho ô có `uid` chưa từng có.
-- Trại lính lưu `lastDay` = `dayCount` lúc mua hoặc lúc nhận lính, thay `readyAt`. **Sẵn** khi `dayCount > lastDay`. Nhận xong đặt `lastDay = dayCount`. Vì mỗi ngày lịch chỉ có một ngày nhiệm vụ, mỗi trại cho tối đa 1 lính một ngày, chỉ khi làm xong việc.
-- Chuyển đổi trại lính cũ: lần đầu server đọc một trại còn `readyAt`, đặt `lastDay = dayCount` hiện tại, bỏ `readyAt`. Trại đang đếm giờ mất phần giờ đã đếm, đổi lại nhận lính ngay khi xong nhiệm vụ hôm nay. Ruộng cũ không chuyển gì.
+- Trại lính lưu `lastDay` là số ngày nhiệm vụ đã dùng và `soldierCycles` là số lính trại đã sản xuất, thay `readyAt`. Lính thứ 1/2/3/4 lần lượt cần thêm 1/2/3/4 ngày hoàn thành Daily Task; lính thứ 5 và mọi lính sau cần thêm 5 ngày. Khi nhận, chỉ cộng `lastDay` đúng số ngày của mốc hiện tại để phần ngày dư tiếp tục được tính cho mốc sau.
+- Chuyển đổi trại lính cũ: lần đầu server đọc một trại còn `readyAt`, bỏ `readyAt` và bắt đầu `soldierCycles = 0`. Trại có đồng hồ cũ đã hết giữ lại một ngày đang nợ (`lastDay = dayCount - 1`); trại còn đếm bắt đầu từ `lastDay = dayCount`. Ruộng cũ không chuyển gì.
 
 ### 3.8 Thu hoạch
 
-- Nút **THU HOẠCH** đang có thu mọi thứ sẵn trên mọi khu: cây chín tươi, ruộng cũ đến giờ, lính từ trại đã có ngày nhiệm vụ mới. Chạm một cây chín tươi để hái riêng cây đó.
+- Nút **THU HOẠCH** đang có thu mọi thứ sẵn trên mọi khu: cây chín tươi, ruộng cũ đến giờ, lính từ trại đã đủ mốc Daily Task hiện tại. Chạm một cây chín tươi để hái riêng cây đó.
 - Khi có cây héo, nút đổi thành **VÀO HỌC ĐỂ CÂY TƯƠI** và mở trang Daily Task. Ruộng cũ đến giờ vẫn thu được bằng cách chạm riêng ruộng, vì ruộng không héo.
 - Sau khi thu, nếu vừa hái ít nhất một cây, hiện thêm nút **TRỒNG LẠI NHƯ CŨ**: trồng lại đúng loại hạt vào đúng các ô vừa hái, trừ ví một lần. Không đủ xu thì nút mờ và ghi số xu còn thiếu. Nút này để bé không phải kéo từng ô mỗi ngày.
 

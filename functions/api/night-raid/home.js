@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightRaidEnabled, homeSnapshot, safeJson } from '../_night-raid.js';
+import { NR, nightRaidEnabled, homeSnapshot, safeJson, barracksLedger, withBarracksLedger } from '../_night-raid.js';
 import { swordCount, seedStatus } from '../_daily-task.js';
 import { farmClock } from '../_farm.js';
 
@@ -14,7 +14,7 @@ export async function onRequestGet({request,env}) {
   // Only the server knows dayCount, so only this read can convert a barracks
   // that still carries the old 24h clock (see normalizeLayout in the rules).
   // `now` goes with it: a legacy timer that had already elapsed keeps the
-  // soldier it had earned instead of converting to "already collected today".
+  // soldier it had earned instead of converting with no completed day banked.
   if(home)home.layout=NR.normalizeLayout(home.layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});
   // shieldUntil is for the OWNER only — targets.js never exposes it.
   const seeds=await seedStatus(env,auth.uid,clock.ctx.today,clock.ctx.doneToday);
@@ -26,7 +26,8 @@ export async function onRequestPut({request,env}) {
   let body;try{body=await request.json();}catch(e){return err('Invalid JSON');}
   const now=Date.now(),clock=await farmClock(env,auth.uid,now),dayCount=clock.dayCount,today=clock.ctx.today;
   const current=await env.DB.prepare('SELECT layout_json,dog_level,castle_skin,lootable_coins,vault_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
-  const oldLayout=NR.normalizeLayout(current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0},{dayCount,today,now});
+  const oldRaw=current?safeJson(current.layout_json,{cells:[],soldiers:0}):{cells:[],soldiers:0};
+  const oldLayout=NR.normalizeLayout(oldRaw,{dayCount,today,now});
   // A field the client did not send — or sent as something that is not a
   // number — keeps its stored value. This request used to default every
   // missing field (coins→0, dogLevel→1, layout→empty), so one buggy or
@@ -36,13 +37,37 @@ export async function onRequestPut({request,env}) {
   const layout=body.layout===undefined?oldLayout:NR.normalizeLayout(body.layout,{dayCount,today,now});
   // Every cell the server already knows, by uid — main board and extra farms.
   const oldByUid=new Map(NR.farmRules.allCells(oldLayout).filter(c=>c.uid).map(c=>[c.uid,c]));
+  const activeBarracks=NR.farmRules.allCells(oldLayout).filter(c=>NR.itemById(c.type)?.producer==='soldier');
+  const ledger=barracksLedger(oldRaw,oldLayout),activeBarracksUids=new Set(activeBarracks.filter(c=>c.uid).map(c=>c.uid));
+  const oldBarracks=activeBarracks.concat(ledger.filter(entry=>!activeBarracksUids.has(entry.uid)));
+  const oldBarracksByUid=new Map(oldBarracks.filter(c=>c.uid).map(c=>[c.uid,c]));
+  const incomingBarracksUids=new Set(NR.farmRules.allCells(layout)
+    .filter(c=>NR.itemById(c.type)?.producer==='soldier'&&c.uid).map(c=>c.uid));
+  const claimedBarracks=new Set();
   const newUid=prefix=>prefix+crypto.randomUUID().replace(/-/g,'').slice(0,20);
+  // Barracks identity is server-owned. First honour an exact uid. If a stale,
+  // uid-less or modified client sends the same collection of barracks, pair
+  // each unknown cell with an unclaimed stored barracks (same square first,
+  // then stable stored order) and restore BOTH its uid and training counters.
+  // Reserve stored uids that are still present elsewhere in the incoming
+  // layout so an earlier unknown cell cannot steal a later exact match.
+  const barracksPrior=cell=>{
+    const exact=cell.uid?(oldByUid.get(cell.uid)||oldBarracksByUid.get(cell.uid)):null;
+    if(exact&&!claimedBarracks.has(exact))return exact;
+    const available=oldBarracks.filter(old=>!claimedBarracks.has(old)&&!(old.uid&&incomingBarracksUids.has(old.uid)));
+    return available.find(old=>old.gx===cell.gx&&old.gy===cell.gy)||available[0]||null;
+  };
   // The server stamps every clock. A client may move a plant or a barracks,
   // never rewind it: a cell whose uid the server knows keeps the server's
-  // day/at/lastDay/readyAt; a cell it has never seen starts today.
+  // day/at/lastDay/soldierCycles/readyAt; a cell it has never seen starts today.
   const stamp=cell=>{const def=NR.itemById(cell.type);if(!def)return;const prior=cell.uid?oldByUid.get(cell.uid):null,same=!!(prior&&prior.type===cell.type);
     if(def.producer==='coins'){if(same)cell.readyAt=prior.readyAt;else{if(!cell.uid)cell.uid=newUid('p-');cell.readyAt=now+NR.PRODUCTION_MS;}}
-    else if(def.producer==='soldier'){if(same&&Number.isFinite(+prior.lastDay))cell.lastDay=prior.lastDay;else{if(!cell.uid)cell.uid=newUid('p-');cell.lastDay=dayCount;}delete cell.readyAt;}
+    else if(def.producer==='soldier'){
+      const owned=barracksPrior(cell);
+      if(owned){claimedBarracks.add(owned);cell.uid=owned.uid||newUid('p-');cell.lastDay=Number.isFinite(+owned.lastDay)?owned.lastDay:dayCount;cell.soldierCycles=Math.max(0,Math.trunc(+owned.soldierCycles||0));}
+      else{cell.uid=newUid('p-');cell.lastDay=dayCount;cell.soldierCycles=0;}
+      delete cell.readyAt;
+    }
     else if(def.kind==='crop'){if(same){cell.day=prior.day;cell.at=prior.at;}else{if(!cell.uid)cell.uid=newUid('c-');cell.day=dayCount;cell.at=today;}}
     else if(def.kind==='farm'){if(!cell.uid)cell.uid=newUid('f-');}};
   layout.cells.forEach(stamp);layout.farms.forEach(f=>f.cells.forEach(stamp));
@@ -95,8 +120,9 @@ export async function onRequestPut({request,env}) {
     :(current?Math.max(0,Math.trunc(+current.lootable_coins||0)):0);
   const vault=num(body.vaultCoins)?Math.max(0,Math.min(5000,Math.trunc(body.vaultCoins)))
     :(current?Math.max(0,Math.trunc(+current.vault_coins||0)):0);
+  const storedLayout=withBarracksLedger(layout,ledger);
   await env.DB.prepare(`INSERT INTO night_raid_homes(user_id,layout_json,dog_level,castle_skin,home_level,lootable_coins,vault_coins,updated_at)
     VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET layout_json=excluded.layout_json,dog_level=excluded.dog_level,castle_skin=excluded.castle_skin,home_level=excluded.home_level,lootable_coins=excluded.lootable_coins,vault_coins=excluded.vault_coins,updated_at=excluded.updated_at`)
-    .bind(auth.uid,JSON.stringify(layout),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
+    .bind(auth.uid,JSON.stringify(storedLayout),dogLevel,skin,homeLevel,coins,vault,Date.now()).run();
   return json({ok:true,homeLevel,layout,coins,dayCount,ctx:clock.ctx});
 }

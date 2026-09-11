@@ -100,12 +100,14 @@ suite('builder farm: crops draw their day and their mood', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
     const out = html(w);
     assert.truthy(out.includes('NHẬN LÍNH'), 'lastDay 4 < dayCount 5 → ready');
+    assert.truthy(out.includes('đủ 1/1 Daily Task'));
     assert.truthy(out.includes('data-ready-at="0"'), 'the rice field still carries its clock');
     const w2 = mount({ appState: { farmDayCount: 4 } }); w2.ctx.NightRaid.renderBuilder();
-    assert.truthy(html(w2).includes('Hoàn thành Daily Task hôm nay để thu hoạch lính'));
-    const w3 = mount({ appState: { farmDayCount: 4, farmCtx: { today: TODAY, doneYesterday: true, doneToday: true } } });
+    assert.truthy(html(w2).includes('Lính thứ 1 · 0/1 Daily Task'));
+    const w3 = mount({ appState: { farmDayCount: 5, nightRaidLayout: { cells: [{ type: 'training-barracks', gx: 8, gy: 8, tier: 1, uid: 'p-barrac01', lastDay: 4, soldierCycles: 1 }], farms: [], soldiers: 2 } } });
     w3.ctx.NightRaid.renderBuilder();
-    assert.truthy(html(w3).includes('Hoàn thành Daily Task ngày mai để thu hoạch lính'));
+    assert.truthy(html(w3).includes('Lính thứ 2 · 1/2 Daily Task'));
+    assert.truthy(html(w3).includes('sau đó 5 task/lính'), 'shop explains the capped progression');
   });
   test('placed buildings do not show a redundant level-1 bubble', () => {
     const w = mount(); w.ctx.NightRaid.renderBuilder();
@@ -157,6 +159,26 @@ suite('builder farm: the server clock is adopted', () => {
     await w.ctx.NightRaid.collectResources('p-barrac01');
     assert.truthy(w.toasts.some(t => t.includes('+1 lính') && t.includes('đã thu hoạch')), 'success is visible to the child');
     assert.equal(w.state.nightRaidLayout.soldiers, 3);
+  });
+  test('an offline barracks claim stays ready until the server confirms it', async () => {
+    let offline=true;
+    const claimed={ cells: [{ type: 'training-barracks', gx: 8, gy: 8, tier: 1, uid: 'p-barrac01', lastDay: 5, soldierCycles: 1 }], farms: [], soldiers: 3 };
+    const w=mount({api:(p,opts,fallback)=>{
+      if(p==='night-raid/home')return offline?Promise.resolve({ok:false,data:null}):fallback(p,opts);
+      if(p==='night-raid/collect')return Promise.resolve({ok:true,data:{layout:claimed,coins:9000,collectedCoins:0,collectedSoldiers:1,soldiers:3,dayCount:5,ctx:FRESH}});
+      return fallback(p,opts);
+    }});
+    const beforeSoldiers=w.state.nightRaidLayout.soldiers,beforeBarracks=w.state.nightRaidLayout.cells.find(c=>c.uid==='p-barrac01');
+    await w.ctx.NightRaid.collectResources('p-barrac01');
+    const waiting=w.state.nightRaidLayout.cells.find(c=>c.uid==='p-barrac01');
+    assert.equal(w.state.nightRaidLayout.soldiers,beforeSoldiers,'a failed server sync does not mint a temporary local soldier');
+    assert.deepEqual([waiting.lastDay,waiting.soldierCycles],[beforeBarracks.lastDay,0],'the local client does not consume progress');
+    assert.truthy(w.toasts.some(t=>t.includes('lính vẫn đang chờ')),'the child is asked to retry');
+    offline=false;
+    await w.ctx.NightRaid.collectResources('p-barrac01');
+    assert.equal(w.state.nightRaidLayout.soldiers,3);
+    assert.equal(w.state.nightRaidLayout.cells[0].soldierCycles,1);
+    assert.truthy(w.toasts.some(t=>t.includes('+1 lính')),'the later confirmed claim succeeds once');
   });
 });
 

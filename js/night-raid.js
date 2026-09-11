@@ -366,15 +366,16 @@ var NightRaid = (() => {
   // Every cell on every board — the castle grid and each extra farm.
   const allCells=layout=>NightRaidRules.farmRules.allCells(layout);
   function cellArt(cell,def){return def.kind==='crop'?NightRaidRules.farmRules.spriteFor(cell,farmDay(),farmCtx()):buildAsset(def);}
-  // Ready to collect right now: a ripe FRESH crop, a barracks with a new
-  // task-day, or a field past its 24h clock.
+  // Ready to collect right now: a ripe FRESH crop, a barracks that reached
+  // its current 1→5 task-day goal, or a field past its 24h clock.
   function cellReady(cell){const def=NightRaidRules.itemById(cell.type),F=NightRaidRules.farmRules;if(!def)return false;if(def.kind==='crop'){return F.progress(cell,farmDay()).ripe&&!F.isWilted(cell,farmCtx());}if(def.perTaskDay)return F.barracksReady(cell,farmDay());return !!def.producer&&cell.readyAt<=Date.now();}
   const isProducing=cell=>{const d=NightRaidRules.itemById(cell.type);return !!d&&(!!d.producer||d.kind==='crop');};
   // Any wilted plant on any board. It colours the screen and the task bar, but
   // it may replace the harvest button ONLY when there is genuinely nothing to
   // collect — `anyWilted(layout)&&!ready` in renderHome and renderBuilder.
-  // The three coin fields run on their own 24h clock and a barracks on finished
-  // task-days; none of them can wilt. On `anyWilted` alone, one wilted crop
+  // The three coin fields run on their own 24h clock and a barracks on its
+  // progressive finished-task-day goal; none of them can wilt. On
+  // `anyWilted` alone, one wilted crop
   // anywhere — including on a private extra farm board the child is not even
   // looking at — hid THU HOẠCH on BOTH screens, so a ripe field could not be
   // collected from its own button, under copy saying nothing was harvestable.
@@ -427,11 +428,11 @@ var NightRaid = (() => {
     if(!confirmed){showBuildPurchase(plan);return;}
     const pos=NightRaidRules.FARM_PLOT_POSITIONS[have]||NightRaidRules.FARM_PLOT_DOCKS[0];
     appState.coins=balance-P.price;layout.farms.push({cells:[],x:pos.x,y:pos.y,style:style.id});appState.nightRaidLayout=NightRaidRules.normalizeLayout(layout);builderZone=0;builderFocusFarm=layout.farms.length;builderScroll=null;builderScrollByView.builder=null;builderShopTab='seeds';builderEditing=true;builderShopOpen=false;save();syncHome();if(typeof showToast==='function')showToast('Đã mua '+style.name.vi+' · kéo bảng NÔNG TRẠI để đặt quanh lâu đài');announce('Đã mua '+style.name.vi+'. Kéo bảng tên để chuyển vị trí.');renderBuilder();}
-  function buildStatHtml(def){const parts=[];if(def.attack)parts.push(`<b class="damage">+${def.attack} DAM</b>`);if(def.defense)parts.push(`<b class="defense">+${def.defense} DEF</b>`);if(def.producer==='soldier')parts.push('<b class="producer">1 lính/ngày · +20 DAM</b>');if(def.producer==='coins')parts.push(`<b class="producer">+${def.yield} xu/ngày</b>`);return parts.join('');}
+  function buildStatHtml(def){const parts=[];if(def.attack)parts.push(`<b class="damage">+${def.attack} DAM</b>`);if(def.defense)parts.push(`<b class="defense">+${def.defense} DEF</b>`);if(def.producer==='soldier')parts.push('<b class="producer">Lính 1→4 cần 1→4 task · sau đó 5 task/lính · +20 DAM</b>');if(def.producer==='coins')parts.push(`<b class="producer">+${def.yield} xu/ngày</b>`);return parts.join('');}
   function productionBadge(cell){const def=NightRaidRules.itemById(cell.type);if(!def)return'';const F=NightRaidRules.farmRules;
     if(def.kind==='crop'){const p=F.progress(cell,farmDay()),wilted=F.isWilted(cell,farmCtx()),fresh=p.ripe&&!wilted;const label=wilted?'HÉO':p.ripe?`CHÍN · +${def.yield} XU`:`còn ${p.left} ngày`;return `<span class="nr-production-badge shown ${fresh?'ready':''} ${wilted?'wilted':''}" data-static-ready="${fresh?1:0}" data-producer-uid="${esc(cell.uid||'')}">${label}</span>`;}
     if(def.kind||!def.producer)return'';
-    if(def.perTaskDay){const ready=F.barracksReady(cell,farmDay()),done=!!farmCtx().doneToday,label=ready?'NHẬN LÍNH':`Hoàn thành Daily Task ${done?'ngày mai':'hôm nay'} để thu hoạch lính`;return `<span class="nr-production-badge shown ${ready?'ready':'nr-barracks-wait'}" data-static-ready="${ready?1:0}" data-producer-uid="${esc(cell.uid||'')}">${label}</span>`;}
+    if(def.perTaskDay){const p=F.barracksProgress(cell,farmDay()),label=p.ready?`NHẬN LÍNH · đủ ${p.goal}/${p.goal} Daily Task`:`Lính thứ ${p.soldier} · ${p.done}/${p.goal} Daily Task`;return `<span class="nr-production-badge shown ${p.ready?'ready':'nr-barracks-wait'}" data-static-ready="${p.ready?1:0}" data-producer-uid="${esc(cell.uid||'')}">${label}</span>`;}
     const ready=cell.readyAt<=Date.now(),label=`+${def.yield} XU`;return `<span class="nr-production-badge ${ready?'ready':''}" data-ready-at="${cell.readyAt}" data-ready-label="${label}" data-producer-uid="${esc(cell.uid||'')}">${ready?label:'24:00:00'}</span>`;}
   function placedHtml(cell,layer,gx,gy,zone){if(!cell)return'';const def=NightRaidRules.itemById(cell.type),size=NightRaidRules.footprintFor(def);return `<img class="nr-placed ${layer} footprint-${size} ${def.producer?'producer '+def.id:''} ${def.kind?'farm-item '+def.kind:''}" src="${cellArt(cell,def)}" draggable="false" alt="${esc(def.name.vi)}, chiếm ${size} × ${size} ô, kéo để đổi vị trí" oncontextmenu="return false" onpointerdown="nrBeginPlacedDrag(event,${gx},${gy},'${layer}',${zone})">${productionBadge(cell)}`;}
   const CASTLE_SIZE=NightRaidRules.CASTLE_SIZE;
@@ -928,7 +929,7 @@ var NightRaid = (() => {
   function selectBuild(id){if(builderSuppressShopClick)return;const def=NightRaidRules.itemById(id);if(def){rememberBuilderWorld();selectedBuild=id;builderEditing=true;builderShopOpen=false;renderBuilder();const message=def.kind==='crop'?'Đã chọn '+def.name.vi+' — chạm một ô đất trống để gieo':'Đã chọn vật phẩm. Chạm ô sáng để đặt.';if(def.kind==='crop'&&typeof showToast==='function')showToast(message);announce(message);}}
   function buildPurchasePlan(id,gx,gy,zone){const def=NightRaidRules.itemById(id);if(!def)return null;const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),z=zoneOf(layout,zone===undefined?0:zone),G=z.grid,size=NightRaidRules.footprintFor(def);gx=Math.max(0,Math.min(G-size,Math.trunc(gx)));gy=Math.max(0,Math.min(G-size,Math.trunc(gy)));
     const isDefense=!!NightRaidRules.defenseById(def.id),layer=def.trap?'floor':'stand',cell=footprintOwner(layout,gx,gy,layer,z.zone),at=cell?z.cells.indexOf(cell):-1,old=cell?NightRaidRules.itemById(cell.type):null,owned=ownedCount(layout,def.id);
-    let cost=def.kind==='crop'?0:def.price,refund=0,remove=false,title=(def.kind==='crop'?'Gieo ':'Mua ')+def.name.vi+'?',detail=def.kind==='crop'?`Dùng 1 hạt · chín sau ${def.days} ngày làm xong nhiệm vụ · hái được ${def.yield} xu`:def.kind==='farm'?`Chiếm ${size===2?'4 ô':'1 ô'} · trang trí, không sản xuất`:def.producer==='soldier'?'Chiếm 4 ô · mỗi ngày làm xong nhiệm vụ cho 1 lính +20 DAM':def.producer==='coins'?`Chiếm 4 ô · thu hoạch ${def.yield} xu sau mỗi 24 giờ`:'Đặt tại hàng '+(gy+1)+', cột '+(gx+1);
+    let cost=def.kind==='crop'?0:def.price,refund=0,remove=false,title=(def.kind==='crop'?'Gieo ':'Mua ')+def.name.vi+'?',detail=def.kind==='crop'?`Dùng 1 hạt · chín sau ${def.days} ngày làm xong nhiệm vụ · hái được ${def.yield} xu`:def.kind==='farm'?`Chiếm ${size===2?'4 ô':'1 ô'} · trang trí, không sản xuất`:def.producer==='soldier'?'Chiếm 4 ô · lính 1–4 cần 1–4 lần hoàn thành Daily Task; từ lính 5 cần 5 lần · mỗi lính +20 DAM':def.producer==='coins'?`Chiếm 4 ô · thu hoạch ${def.yield} xu sau mỗi 24 giờ`:'Đặt tại hàng '+(gy+1)+', cột '+(gx+1);
     if(def.kind==='crop'&&seedQuantity(def.id)<1)return{error:'Con chưa có hạt '+def.name.vi+' — hoàn thành Daily Task 2 ngày liên tiếp để nhận'};
     if(isDefense&&z.zone>0)return{error:'Nông trại riêng chỉ trồng cây và dựng công trình nông trại'};
     if(!cell&&!buildSpaceFree(layout,gx,gy,size,layer,null,true,z.zone))return{error:size===2?'Cần một vùng trống 2 × 2 ô để đặt công trình':'Ô này đã có công trình'};
@@ -970,7 +971,7 @@ var NightRaid = (() => {
   function newBuildCell(def,lane,col,gx,gy){const uid=(p)=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
     if(def.kind==='crop')return{type:def.id,gx,gy,uid:uid('c-'),day:farmDay(),at:(farmCtx()&&farmCtx().today)||new Date(Date.now()+7*3600000).toISOString().slice(0,10)};
     if(def.kind==='farm')return{type:def.id,gx,gy,uid:uid('f-')};
-    const cell={type:def.id,lane,col,gx,gy,tier:1};if(def.producer){cell.uid=uid('p-');if(def.perTaskDay)cell.lastDay=farmDay();else cell.readyAt=Date.now()+def.productionMs;}return cell;}
+    const cell={type:def.id,lane,col,gx,gy,tier:1};if(def.producer){cell.uid=uid('p-');if(def.perTaskDay){cell.lastDay=farmDay();cell.soldierCycles=0;}else cell.readyAt=Date.now()+def.productionMs;}return cell;}
   function beginBuildDrag(event,id){const def=NightRaidRules.itemById(id);if(!def)return;smoothBuilderDrag(event,buildAsset(def),()=>{selectedBuild=id;builderEditing=true;document.querySelector('.nr-builder')?.classList.add('editing');},target=>{buildCell(+target.dataset.gx,+target.dataset.gy,false,+target.dataset.zone||0);settleBuilderPlacement();},true);}
   // Both the read-only home and builder share the meadow camera. The estate may
   // become tiny, but the 3% floor and persistent +/- control guarantee a
@@ -1023,7 +1024,7 @@ var NightRaid = (() => {
       const clean=NightRaidRules.normalizeLayout(appState.nightRaidLayout),cell=footprintOwner(clean,gx,gy,'stand',zone);
       if(cell&&!NightRaidRules.itemById(cell.type)?.producer)return;
       if(!cell)return;
-      // Barracks are ready by completed task-day, not by readyAt. Using the
+      // Barracks are ready by their completed-task-day goal, not by readyAt. Using the
       // generic readiness rule makes tapping either NHẬN LÍNH or the building
       // perform the same collection and show the normal success toast.
       if(cellReady(cell)&&cell.uid)return collectResources(cell.uid);
@@ -1127,21 +1128,24 @@ var NightRaid = (() => {
   }
   function decorateBuilderMenus(){const nav=document.querySelector('.nr-builder-nav');if(!nav||nav.querySelector('.seeds'))return;nav.insertAdjacentHTML('beforeend',`<button class="nr-builder-nav-btn seeds" type="button" onclick="nrOpenSeeds()" aria-label="Kho Hạt giống, ${totalSeeds()} hạt" title="Kho Hạt giống">${svg('seed')}${totalSeeds()?`<i class="nr-fab-badge" aria-hidden="true">${totalSeeds()}</i>`:''}<span>HẠT GIỐNG</span></button>`);if(builderShopTab==='seeds'){const shop=document.getElementById('nrBuildShop');shop?.setAttribute('aria-label','Kho Hạt giống');const label=shop?.querySelector('.nr-label'),heading=shop?.querySelector('.nr-shop-heading strong'),hint=shop?.querySelector('.nr-shop-heading>span'),tray=shop?.querySelector('.nr-build-tray');if(label)label.textContent='KHO HẠT GIỐNG';if(heading)heading.textContent='Chọn hạt rồi chạm ô đất để gieo';if(hint)hint.textContent='Hạt nhận từ chuỗi 2 ngày Daily Task';if(tray)tray.setAttribute('aria-label','Hạt giống con đang có');}}
   function startProductionTicker(){decorateBuilderMenus();updateProductionTimers();productionTicker=setInterval(updateProductionTimers,1000);}
-  function localCollect(uid){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),now=Date.now(),F=NightRaidRules.farmRules;let coins=0,soldiers=0;const room=()=>Math.max(0,100000-(+appState.coins||0));
+  function localCollect(uid){const layout=NightRaidRules.normalizeLayout(appState.nightRaidLayout),now=Date.now();let coins=0,soldiers=0;const room=()=>Math.max(0,100000-(+appState.coins||0));
     const sweep=cells=>cells.filter(cell=>{const def=NightRaidRules.itemById(cell.type);if(!def||(uid&&cell.uid!==uid))return true;
       if(def.producer==='coins'){if(cell.readyAt<=now&&room()){const gain=Math.min(def.yield,room());appState.coins=Math.max(0,+appState.coins||0)+gain;coins+=gain;cell.readyAt=now+def.productionMs;}return true;}
-      if(def.producer==='soldier'){if(F.barracksReady(cell,farmDay())){layout.soldiers++;soldiers++;cell.lastDay=farmDay();}return true;}
+      // Soldier stock and the progressive barracks counter are server-owned.
+      // On a failed request leave a ready soldier waiting instead of showing
+      // a local success that disappears at the next successful sync.
+      if(def.producer==='soldier')return true;
       if(def.kind==='crop'){if(!cellReady(cell)||!room())return true;const gain=Math.min(def.yield,room());appState.coins=Math.max(0,+appState.coins||0)+gain;coins+=gain;return false;}
       return true;});
     layout.cells=sweep(layout.cells);layout.farms=layout.farms.map(f=>({cells:sweep(f.cells),x:f.x,y:f.y}));appState.nightRaidLayout=layout;return{coins,soldiers};}
-  async function collectResources(uid){const trigger=document.querySelector('.nr-collect-all');if(trigger)trigger.disabled=true;const synced=await syncHome(),res=synced&&synced.ok?await api('collect',{method:'POST',body:{uid:uid||''}}):{ok:false};let coins=0,soldiers=0,wiltedRefusal=false;if(res.ok&&res.data){adoptFarmClock(res.data);appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);coins=Math.max(0,Math.trunc(+res.data.collectedCoins||0));soldiers=+res.data.collectedSoldiers||0;wiltedRefusal=!!res.data.wilted&&!coins&&!soldiers;lastHarvest=Array.isArray(res.data.harvested)?res.data.harvested.filter(h=>NightRaidRules.farmRules.cropById(h.type)):[];
+  async function collectResources(uid){const trigger=document.querySelector('.nr-collect-all');if(trigger)trigger.disabled=true;const synced=await syncHome(),res=synced&&synced.ok?await api('collect',{method:'POST',body:{uid:uid||''}}):{ok:false};let coins=0,soldiers=0,wiltedRefusal=false;const F=NightRaidRules.farmRules,offlineSoldierReady=!res.ok&&F.allCells(NightRaidRules.normalizeLayout(appState.nightRaidLayout)).some(cell=>{const def=NightRaidRules.itemById(cell.type);return def?.producer==='soldier'&&(!uid||cell.uid===uid)&&F.barracksReady(cell,farmDay());});if(res.ok&&res.data){adoptFarmClock(res.data);appState.nightRaidLayout=NightRaidRules.normalizeLayout(res.data.layout);coins=Math.max(0,Math.trunc(+res.data.collectedCoins||0));soldiers=+res.data.collectedSoldiers||0;wiltedRefusal=!!res.data.wilted&&!coins&&!soldiers;lastHarvest=Array.isArray(res.data.harvested)?res.data.harvested.filter(h=>NightRaidRules.farmRules.cropById(h.type)):[];
     // Trust the server's absolute balance only when it actually sent one. A
     // reply without a numeric coins field used to become Math.max(0,+undefined
     // ||0) — i.e. the whole wallet silently replaced by 0 and saved. Missing
     // number → fall back to adding the harvest to the local wallet instead.
     if(typeof res.data.coins==='number'&&Number.isFinite(res.data.coins))appState.coins=Math.max(0,Math.trunc(res.data.coins));else appState.coins=Math.max(0,(+appState.coins||0))+coins;}else{const local=localCollect(uid);coins=local.coins;soldiers=local.soldiers;}
-    if(!coins&&!soldiers){if(typeof showToast==='function')showToast(wiltedRefusal?'Cây đang héo 🥀 — làm xong nhiệm vụ hôm nay để cây tươi rồi hái':(+appState.coins||0)>=100000?'Kho xu đã đầy':'Chưa có công trình sẵn sàng');if(view==='builder')renderBuilder();else if(view==='home')renderHome();return;}
-    save();if(!res.ok)syncHome();if(typeof showToast==='function')showToast([coins?('+'+coins+' xu'):'',soldiers?('+'+soldiers+' lính'):''].filter(Boolean).join(' · ')+' đã thu hoạch');announce('Thu hoạch thành công');if(view==='builder')renderBuilder();else if(view==='home')renderHome();}
+    if(!coins&&!soldiers){if(typeof showToast==='function')showToast(offlineSoldierReady?'Chưa kết nối máy chủ — lính vẫn đang chờ, thử lại nhé':wiltedRefusal?'Cây đang héo 🥀 — làm xong nhiệm vụ hôm nay để cây tươi rồi hái':(+appState.coins||0)>=100000?'Kho xu đã đầy':'Chưa có công trình sẵn sàng');if(view==='builder')renderBuilder();else if(view==='home')renderHome();return;}
+    save();if(!res.ok)syncHome();if(typeof showToast==='function')showToast([coins?('+'+coins+' xu'):'',soldiers?('+'+soldiers+' lính'):''].filter(Boolean).join(' · ')+' đã thu hoạch'+(offlineSoldierReady?' · Lính vẫn đang chờ máy chủ':''));announce('Thu hoạch thành công');if(view==='builder')renderBuilder();else if(view==='home')renderHome();}
   function replantHtml(){if(!lastHarvest.length)return'';const available={};for(const item of seedState().inventory||[])available[item.id]=Math.max(0,Math.trunc(+item.quantity||0));let can=0;for(const h of lastHarvest){if((available[h.type]||0)>0){available[h.type]--;can++;}}return `<button class="nr-replant ${can?'ready':''}" type="button" onclick="nrReplant()" ${can?'':'disabled'}>${svg('seed')}<span><strong>TRỒNG LẠI NHƯ CŨ</strong><small>${can?can+'/'+lastHarvest.length+' ô có hạt':'Kho không còn hạt phù hợp'}</small></span></button>`;}
   // Replant only what the server-owned inventory can pay for. Each successful
   // call atomically spends one seed and writes one crop; a failed call leaves
