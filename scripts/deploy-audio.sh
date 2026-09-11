@@ -32,7 +32,7 @@ fi
 
 # ---- stage ------------------------------------------------------------------
 echo "▸ staging .cf-audio-dist…"
-mkdir -p .cf-audio-dist
+mkdir -p .cf-audio-dist/audio/words   # rsync does not create the parent path
 rsync -a --delete --exclude '.DS_Store' audio/words/ .cf-audio-dist/audio/words/
 
 # Immutable recordings: cache forever. ACAO lets the app origin read the
