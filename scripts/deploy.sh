@@ -260,7 +260,7 @@ EXTRA_PROBES="index.html sw.js $BIGGEST"
 assets=""; apiv=""
 for i in $(seq 1 30); do
   [ "$assets" = "$NEWVER" ] || assets=$(curl -sL "${NOCACHE[@]}" "$LIVE/js/home.js" \
-    | sed -n "s/.*APP_VERSION = 'v\([0-9.]*\)'.*/\1/p" | head -1)
+    | sed -n "s/.*APP_VERSION *= *[\"']v\([0-9.]*\)[\"'].*/\1/p" | head -1)
   [ "$apiv" = "$NEWVER" ] || apiv=$(curl -sL "${NOCACHE[@]}" "$LIVE/api/version" \
     | sed -n 's/.*"version":"\([0-9.]*\)".*/\1/p')
   if [ "$assets" = "$NEWVER" ] && [ "$apiv" = "$NEWVER" ]; then

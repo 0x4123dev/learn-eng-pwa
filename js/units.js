@@ -901,7 +901,7 @@ if (typeof module !== 'undefined' && module.exports) {
     isUnitPracticeActive, abandonUnitPractice, unitsForgetProfile, quitUnitPractice, unitAnsweredCount, renderUnitsBar, renderUnitsHistory,
     unitsRetryList, unitsRetryCount, startUnitRetry,
     modeForUnitLevel, _unitWordLevel, _unitBumpWordLevel, renderGrade4Home, openGrade4,
-    _unitPool, _unitLabel, _unitSpeak, _unitSpeakAttr,
+    _unitLabel, _unitSpeak, _unitSpeakAttr,
     unitsWrongAggregate, renderUnitsWrongPanelHTML,
   };
 }

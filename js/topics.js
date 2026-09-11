@@ -243,7 +243,6 @@ const WORD_TOPIC_ADDITIONS = {
     'history':        ['society', 'arts', 'thinking'],
     'heritage':       ['society', 'arts'],
     'civilization':   ['society', 'arts'],
-    'tradition':      ['society', 'arts'],
     'language':       ['communication', 'arts'],
     'speech':         ['communication'],
     'conversation':   ['communication'],
