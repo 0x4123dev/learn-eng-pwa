@@ -62,8 +62,10 @@ for (const kind of kinds) {
 // ${items.length} ${b.label} (${kc} Không chuyên, ${items.length - kc} Chuyên), ${questions} questions.
 // Original material written for this app in the PTNK paper's formats; see
 // data/reading/SCHEMA.md. Edit the JSON under ${b.dir}/ and rebuild.
+// Written compact (no indentation): the file is read by machines only, and
+// the pretty-printed layout cost ~10% of the raw download for nothing.
 `;
-  const body = `const ${b.name} = ` + JSON.stringify(items, null, 1) + ';\n'
+  const body = `const ${b.name} = ` + JSON.stringify(items) + ';\n'
     + `if (typeof module !== 'undefined' && module.exports) module.exports = { ${b.name} };\n`;
   fs.writeFileSync(path.join(ROOT, b.out), header + body);
   console.log(`✓ ${b.out}: ${items.length} ${b.label} (${kc} kc / ${items.length - kc} ch), ${questions} questions, ${(fs.statSync(path.join(ROOT, b.out)).size / 1024).toFixed(0)} kB`);

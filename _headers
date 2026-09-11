@@ -1,0 +1,23 @@
+# Cloudflare Pages response headers (copied into .cf-dist by scripts/deploy.sh;
+# tests/cf-headers.test.js pins the rules below).
+#
+# Only assets that never change under the same name are cached for a year.
+# Everything else — /js/*, /css/*, the HTML, sw.js, /api/* — keeps Pages'
+# default (max-age=0, must-revalidate): the service worker and CACHE_NAME
+# bumps own their freshness, and an immutable js/ file would pin a phone to a
+# release for a year. Do not add rules for those paths.
+#
+# /audio/* on this origin is a 301 to the audio project (see _redirects),
+# which serves the recordings with the same immutable header.
+
+/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/audio/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/phaser.min.js
+  Cache-Control: public, max-age=31536000, immutable

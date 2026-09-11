@@ -621,7 +621,7 @@ suite('profile switch: the maths scratch pad is wiped between children', () => {
 // ---- ✍️ rounds in progress -------------------------------------------------
 // None of these has a clock. They leak by two roads, both of which are read out
 // of js/app.js below rather than described: the is…Active() guards inside
-// switchScreen, and buildStudyCheckpoint(), which reads them once a second and
+// switchScreen, and buildStudyCheckpoint(), which reads them at every save and
 // writes whichever it finds to localStorage tagged with the CURRENT user.
 
 // [module, the quiz variable, the teardown, the is…Active guard, a live value]
@@ -773,10 +773,10 @@ suite('profile switch: js/app.js forgets its own per-child state too', () => {
       'and inside A\'s word band, which is what "next lesson" is picked from');
   });
 
-  test('the two page-lifetime timers are deliberately LEFT RUNNING', () => {
-    assert.falsy(/_studyCheckpointTimer\s*=\s*null/.test(fn),
-      'stopping the checkpoint saver would leave the NEXT child with no checkpointing at all; '
-      + 'it re-reads currentUser every tick and saves nothing while there is no user');
+  test('the two page-lifetime mechanisms are deliberately LEFT RUNNING', () => {
+    assert.falsy(/_studyCheckpointListening\s*=\s*(null|false)/.test(fn),
+      'disarming the checkpoint listeners would leave the NEXT child with no checkpointing at all; '
+      + 'they re-read currentUser at every save and write nothing while there is no user');
     assert.falsy(/_updateRetryTimer\s*=\s*null/.test(fn),
       'the app-update nag belongs to the page, not to a child');
     assert.falsy(/_profileOriginScreen\s*=/.test(fn),

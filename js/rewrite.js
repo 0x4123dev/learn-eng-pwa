@@ -391,6 +391,8 @@ function renderRwQuestion() {
     const inp = document.getElementById('rwTextInput');
     if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function submitRwText() {
@@ -415,6 +417,9 @@ function finishRewriteQuiz() {
   if (!st) return;
   // Claimed BEFORE the payout and the render — see finishPhrasesQuiz.
   _rwQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   const total = st.questions.length;
   let score = 0;
   const wrong = [];

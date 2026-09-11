@@ -1900,6 +1900,8 @@ function renderMathQuestion() {
       ${explain}
     </div>`;
   screen.scrollTop = 0;
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function revealMathWritten() {
@@ -2048,6 +2050,9 @@ function finishMathQuiz() {
     </div>`).join('');
 
   _mathQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-result-card">
@@ -2076,6 +2081,9 @@ function abandonMathQuiz() {
   if (typeof mathBoardCloseForSession === 'function') mathBoardCloseForSession();
   if (typeof mathBoardReset === 'function') mathBoardReset();
   _mathQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   mathLockScreen(false);
 }
 

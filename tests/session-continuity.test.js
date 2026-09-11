@@ -32,8 +32,13 @@ suite('session continuity: a reload is not a logout', () => {
       assert.truthy(app.includes("kind:'" + kind + "'"), 'checkpoint missing ' + kind);
       assert.truthy(app.includes("checkpoint.kind === '" + kind + "'"), 'restore missing ' + kind);
     }
-    assert.truthy(app.includes("setInterval(saveStudyCheckpoint, 1000)"));
+    // Saved on change, not on a clock: tests/study-checkpoint-on-change.test.js
+    // executes the answer, typing, hidden and end-of-round paths.
+    assert.falsy(/setInterval\(\s*saveStudyCheckpoint/.test(app), 'the once-a-second saver must not come back');
+    assert.truthy(app.includes("document.addEventListener('click', scheduleStudyCheckpoint, true)"));
+    assert.truthy(app.includes("document.addEventListener('input', scheduleDraftCheckpoint, true)"));
     assert.truthy(app.includes("window.addEventListener('pagehide', saveStudyCheckpoint)"));
+    assert.truthy(app.includes("window.addEventListener('beforeunload', saveStudyCheckpoint)"));
     assert.truthy(app.includes("document.addEventListener('visibilitychange'"));
   });
 

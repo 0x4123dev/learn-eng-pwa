@@ -381,6 +381,8 @@ function _examTick() {
         el.classList.toggle('exam-timer-warning', remain <= 300);   // last 5 min
     }
     if (remain <= 0) finishExam(true);
+    // The remaining time is in the checkpoint; keep it near true (js/app.js).
+    else if (typeof saveStudyCheckpointOnClock === 'function') saveStudyCheckpointOnClock();
 }
 
 // ---- question rendering ------------------------------------------------------
@@ -469,6 +471,8 @@ function renderExamQuestion() {
         const inp = document.getElementById('examTextInput');
         if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
     }
+    // The screen and the checkpoint change together (js/app.js).
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function _renderExamChoiceBody(q, ans, showing) {
@@ -556,6 +560,9 @@ function finishExam(auto) {
     if (!s || s.finished) return;
     s.finished = true;
     if (s.timerId) clearInterval(s.timerId);
+    // A finished paper is not checkpointed (buildStudyCheckpoint): clear it
+    // now, so a reload never offers it back to be scored and paid twice.
+    if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
     examLockScreen(false);   // the paper is scored: the child may move again
 
     const total = s.questions.length;

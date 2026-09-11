@@ -496,7 +496,7 @@ function renderCollocQuestion() {
   const st = _colQuiz;
   if (!screen || !st) return;
   const q = st.questions[st.idx];
-  if (q && q.followup) { renderCollocFollowup(); return; }
+  if (q && q.followup) { renderCollocFollowup(); if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint(); return; }
   // Warm this question's words now: they become tappable once answered.
   if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.answer);
   const ans = st.answers[st.idx];
@@ -576,6 +576,8 @@ function renderCollocQuestion() {
     const inp = document.getElementById('colTextInput');
     if (inp) { try { inp.focus(); } catch (e) {} }  // synchronous: keeps the tap gesture so the mobile keyboard opens
   }
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 function answerCollocChoice(i) {
@@ -716,6 +718,9 @@ function finishCollocPractice() {
   }
   if (typeof fireRewardCelebration === 'function') fireRewardCelebration(coinsEarned, pct);
   _colQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 if (typeof module !== 'undefined' && module.exports) {

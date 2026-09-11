@@ -383,6 +383,8 @@ function warsClockTick() {
     if (left <= 10000) el.className = 'wars-clock low';
   }
   if (left <= 0) finishWars(true);
+  // The remaining time is in the checkpoint; keep it near true (js/app.js).
+  else if (typeof saveStudyCheckpointOnClock === 'function') saveStudyCheckpointOnClock();
 }
 
 // Answering is the only thing that advances the round, so the time a question
@@ -460,6 +462,8 @@ function finishWars(timedOut) {
   if (typeof EngAuth !== 'undefined') EngAuth.syncNow();
 
   _warsQuiz = null;
+  // No round → the checkpoint is cleared, so a finished one is never offered back.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   renderWarsResult(run, coinsEarned);
 }
 
@@ -505,6 +509,8 @@ function renderWars() {
         ${q.options.map((o, i) => `<button class="wars-option" onclick="answerWars(${i})">${o}</button>`).join('')}
       </div>
     </div>`;
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 // The donut the results and the history screen share: accuracy in the middle,

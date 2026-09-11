@@ -578,6 +578,8 @@ function renderPhrQuestion() {
         ${explain}
       </div>
     </div>`;
+  // The screen and the checkpoint change together (js/app.js).
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
 }
 
 // Multiple-choice answers are stored as the chosen index; typed answers as the
@@ -668,6 +670,9 @@ function finishPhrasesQuiz() {
   // the child saw no result, tapped again, and was paid AND recorded again —
   // the duplicate rows and inflated balance in the admin timeline.
   _phrQuiz = null;
+  // No round left → the checkpoint is cleared at once (js/app.js), so a
+  // finished one is never offered back after a reload and paid for twice.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
   const total = st.questions.length;
   let score = 0;
   const wrong = [];

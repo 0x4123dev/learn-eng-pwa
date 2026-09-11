@@ -527,7 +527,7 @@ PetBattleGame.prototype._squadHTML = function () {
       const avatar = pbMateAvatarURL(c.id, 38);
       return `<div class="pb-squad-chip active" role="listitem"
               aria-label="${esc(gT('gUse' + c.id.charAt(0).toUpperCase() + c.id.slice(1)))}">
-        <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}">
+        <img class="pb-squad-avatar" alt="" aria-hidden="true" src="${avatar}" loading="lazy" decoding="async">
         <span class="pb-squad-active" aria-hidden="true">∞</span>
       </div>`;
     }).join('')}

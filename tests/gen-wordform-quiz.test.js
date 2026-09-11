@@ -527,7 +527,7 @@ suite('gen: wordform finish — coins & history', () => {
         const fs2 = require('fs');
         const src = fs2.readFileSync(require('path').join(__dirname, '..', 'js', 'wordform.js'), 'utf8');
         const i = src.indexOf('function finishWordformQuiz(');
-        const body = src.slice(i, i + 4800);
+        const body = src.slice(i, i + 5200);
         assert.truthy(/retryResultCtaHTML\('wf'\)/.test(body),
             'the results screen must offer the owed-questions drill');
         assert.falsy(/startWordformReviewQuiz\(\$\{JSON\.stringify/.test(body),
