@@ -2149,6 +2149,7 @@ PetBattleGame.prototype._applyServer = function (b) {
     const draw = !!b.draw || (!b.winnerId && b.status === 'done');
     const won = !draw && b.winnerId === this.view.me.id;
     setTimeout(() => this.onFinish({
+      battleId: this.view.id,
       won, draw, myHp: this.myHp, foeHp: this.foeHp, foeName: this.view.foe.name,
       foeLevel: this.view.foe.level || 1,
       myLevel: this.view.me.level || 1,

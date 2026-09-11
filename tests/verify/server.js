@@ -725,6 +725,30 @@ async function moneyChecks(add, seenSql, drainLogs) {
       ok ? `a full arena run: invite → accept → hire → two volleys → status 'done', both magazines spent, 2 turns recorded, winner_id=${end.winner_id}, and the arena created 0 coin_grants rows (it must not print money)`
          : `challenge=${c.status} respond=${r.status} hire=${hired.status} turn1=${t1.status} turn2=${t2.status} mid=${mid && mid.status} end=${end && end.status} turns=${turnsRecorded} grants=${allGrants(w)} :: ${JSON.stringify(c.data).slice(0, 200)} ${JSON.stringify(t1.data).slice(0, 200)}`);
 
+    // The finished battle is readable by BOTH children, each from their own
+    // side — this is what the arena's history is rebuilt from, so a child
+    // whose profile was not signed in when the last shot landed still gets
+    // the entry (and its pay). A third child gets nothing.
+    const history = loadModule('functions/api/battle/history.js');
+    const z = await w.createUser({ username: 'Người lạ' });
+    const ha = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: a.token });
+    const hb = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: b.token });
+    const hz = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history', token: z.token });
+    const hs = await hit(w, history.onRequestGet, { method: 'GET', url: '/api/battle/history?since=' + Number(end.finished_at), token: a.token });
+    const fa = ha.data && ha.data.battles && ha.data.battles[0];
+    const fb = hb.data && hb.data.battles && hb.data.battles[0];
+    const okHist = ha.status === 200 && hb.status === 200 && hz.status === 200 && hs.status === 200
+      && fa && fb && fa.id === battleId && fb.id === battleId && fa.status === 'done' && fb.status === 'done'
+      && fa.me.id === a.uid && fa.foe.id === b.uid && fb.me.id === b.uid && fb.foe.id === a.uid
+      && fa.me.hp === fb.foe.hp && fa.foe.hp === fb.me.hp
+      && fa.winnerId === end.winner_id && fb.winnerId === end.winner_id
+      && Array.isArray(fa.turns) && fa.turns.length === 2 && fb.turns.length === 2
+      && fa.turns[0].userId === a.uid && fa.turns[1].userId === b.uid
+      && hz.data.battles.length === 0 && hs.data.battles.length === 0;
+    add('money.battle-history-both-sides', 'Đấu Thú Cưng: lịch sử đấu đọc từ máy chủ, cả hai bé đều thấy', okHist,
+      okHist ? `GET /api/battle/history: the challenger sees me=${a.uid}/foe=${b.uid} and the opponent the mirror image, same winner ${end.winner_id}, 2 turns each; a stranger sees 0 battles; ?since=<finished_at> returns 0 (the lobby's cheap repeat call)`
+             : `a=${ha.status} b=${hb.status} stranger=${hz.status} since=${hs.status} :: ${JSON.stringify(ha.data).slice(0, 300)} :: ${JSON.stringify(hb.data).slice(0, 200)} :: stranger ${JSON.stringify(hz.data).slice(0, 100)}`);
+
     // A client that claims a ceiling it never earned must not be believed.
     const w2 = newWorld(seenSql);
     const x = await w2.createUser({}); const y = await w2.createUser({});

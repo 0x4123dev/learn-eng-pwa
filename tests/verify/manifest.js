@@ -110,7 +110,8 @@ const FEATURES = [
     // the Arena's code (lazy group "arena"), shared with night-raid below
     banks: ['js/battlecalc.js', 'js/battle-teammates.js', 'js/battle-camera.js', 'js/battle-scenes.js',
             'js/battlelink.js', 'js/petbattle.js', 'js/petbattlegame.js'],
-    routes: ['battle/index', 'battle/challenge', 'battle/respond', 'battle/state', 'battle/turn', 'battle/hire'],
+    routes: ['battle/index', 'battle/challenge', 'battle/respond', 'battle/state', 'battle/turn', 'battle/hire',
+             'battle/history'],
     verifiedBy: 'client+server' },
   { id: 'night-raid', name: 'Cướp Đêm và nông trại theo ngày nhiệm vụ',
     screens: ['nightRaidScreen'],

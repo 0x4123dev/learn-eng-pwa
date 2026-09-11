@@ -162,6 +162,13 @@ const EngAuth = (function () {
     if (typeof reconcileCupsFromServer === 'function') {
       try { reconcileCupsFromServer(); } catch (e) {}
     }
+    // Battles this profile finished on another phone — or, on a shared
+    // phone, never watched finish (the other child was signed in). The arena
+    // code is a lazy group, so this only runs when it has already landed;
+    // openPetBattle asks again the moment the lobby opens.
+    if (typeof pbReconcileHistory === 'function') {
+      try { pbReconcileHistory(); } catch (e) {}
+    }
     claimCoinGrants(username);
     syncAssets(username);
     return (_lastLinkStatus = { ok: true, reason: 'ok' });
