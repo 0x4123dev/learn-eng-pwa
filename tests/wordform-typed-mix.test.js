@@ -48,7 +48,7 @@ function makeEnv() {
     vm.runInContext(read('js/wordform-followups.js'), ctx);
     vm.runInContext(read('js/wordform.js')
         + '\nthis.start = startWordformQuiz; this.quiz = () => _wfQuiz;'
-        + '\nthis.BANK = WORDFORM_QUESTIONS; this.target = wfTypedTarget; this.SHARE = WF_TYPED_SHARE;', ctx);
+        + '\nthis.BANK = wordformBank(); this.target = wfTypedTarget; this.SHARE = WF_TYPED_SHARE;', ctx);
     return ctx;
 }
 

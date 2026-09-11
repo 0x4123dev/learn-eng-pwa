@@ -1,0 +1,13 @@
+-- 031-users-allow-chuyen.sql — a per-child switch that turns the Chuyên tier
+-- on in Word Form and Rewrite.
+--
+-- npx wrangler@3 d1 execute eng_pwa_db --remote --file db/031-users-allow-chuyen.sql
+--
+-- Both menus now carry Chuyên-level items (level "ch": B2–C1 word formation
+-- and key-word transformations from the PTNK Chuyên paper's formats) beside
+-- their Không chuyên bank. By default a round draws Không chuyên only; when an
+-- admin switches this on for a child, rounds draw from both tiers. Its own
+-- column on purpose — it is a different decision from allow_bot ("early
+-- access to new features") and a parent should be able to make one without
+-- the other. Delivered to the device on the coin sync like the other flags.
+ALTER TABLE users ADD COLUMN allow_chuyen INTEGER NOT NULL DEFAULT 0;

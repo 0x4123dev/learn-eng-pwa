@@ -34,11 +34,14 @@ suite('tab lessons: word form', () => {
 });
 
 suite('tab lessons: rewrite', () => {
-    checkLessonSet('rewrite', REWRITE_LESSONS, 25);
-    test('every rewrite lesson key matches a question cat with 8 questions', () => {
+    // 25 structure lessons for the original tier, plus one for the Chuyên
+    // tier's key-word transformations (cat "kwt", 2026-09-11).
+    checkLessonSet('rewrite', REWRITE_LESSONS, 26);
+    test('every rewrite lesson key matches a question cat — 8 questions each in the original tier', () => {
         for (const l of REWRITE_LESSONS) {
             const n = REWRITE_QUESTIONS.filter(q => q.cat === l.key).length;
-            assert.equal(n, 8, `${l.key}: ${n} questions`);
+            if (l.key === 'kwt') assert.truthy(n >= 100, `kwt: ${n} questions`);
+            else assert.equal(n, 8, `${l.key}: ${n} questions`);
         }
     });
     test('every question cat has a lesson', () => {

@@ -271,16 +271,19 @@ const EngAuth = (function () {
       // the early return below: a child with no coins waiting still needs to
       // learn that an admin has opened a tab for them.
       if (r.ok && r.data && r.data.flags) {
-        const before = !!appState.allowMathFight + '|' + !!appState.allowBot
+        const before = !!appState.allowMathFight + '|' + !!appState.allowBot + '|' + !!appState.allowChuyen
           + '|' + (appState.cuuchuongSeconds || 0);
         appState.allowMathFight = !!r.data.flags.mathFight;
         appState.allowBot = !!r.data.flags.bot;
+        // The Chuyên tier of Word Form / Rewrite. Cached like the others so the
+        // draw is decided offline; the server is the source of truth.
+        appState.allowChuyen = !!r.data.flags.chuyen;
         // Bảng cửu chương's round length. Only a sane number is stored: a
         // missing or junk value must leave the cached one alone rather than
         // hand a child a zero-second round.
         const secs = Math.trunc(+r.data.flags.cuuchuongSeconds);
         if (Number.isFinite(secs) && secs > 0) appState.cuuchuongSeconds = secs;
-        const after = !!appState.allowMathFight + '|' + !!appState.allowBot
+        const after = !!appState.allowMathFight + '|' + !!appState.allowBot + '|' + !!appState.allowChuyen
           + '|' + (appState.cuuchuongSeconds || 0);
         if (before !== after) {
           if (typeof saveUserData === 'function') saveUserData(currentUser, appState);

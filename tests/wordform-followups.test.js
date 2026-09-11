@@ -9,7 +9,12 @@ const { suite, test, assert } = require('./harness');
 Object.assign(global, require('../js/answer-audio.js'));
 const path = require('path');
 
-const { WORDFORM_QUESTIONS: BANK } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));
+// Follow-up screens exist for the ORIGINAL tier. The Chuyên tier (level
+// "ch", 2026-09-11) ships without them — wfFollowupQuestion() returns null
+// for an item with no follow-up and the practice simply moves on — so this
+// file's "every question has a follow-up" reads the original tier only.
+const { WORDFORM_QUESTIONS: BANK_ALL } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));
+const BANK = BANK_ALL.filter(q => q.level !== 'ch');
 const { WORDFORM_FOLLOWUPS: FU } = require(path.join(__dirname, '..', 'js', 'wordform-followups.js'));
 
 global.WORDFORM_QUESTIONS = BANK;

@@ -1,0 +1,432 @@
+{
+ "level": "ch",
+ "file": "09",
+ "questions": [
+  {
+   "id": "rw-ch-09-1",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "BEFORE",
+   "orig": "Prior to her appointment as director, she had spent a decade in the research department.",
+   "stem": "She had spent a decade in the research department",
+   "tail": "director.",
+   "answer": "before being appointed",
+   "accept": [
+    "before being appointed",
+    "before she was appointed",
+    "before being appointed as",
+    "before she was appointed as",
+    "before her appointment as",
+    "before she was made",
+    "before she became"
+   ],
+   "vi": "prior to + N ↔ before + V-ing / before + mệnh đề — trước khi được bổ nhiệm",
+   "explanation": "'Prior to her appointment' là cách nói trang trọng, tương đương 'before being appointed' hoặc 'before she was appointed'. Từ khóa BEFORE cho phép dùng V-ing bị động (being appointed) hoặc một mệnh đề đầy đủ; đuôi 'director' đi thẳng sau 'appointed' (appoint sb director) hoặc sau 'as'. Lỗi hay gặp: 'before appointed director' (thiếu being/she was) hoặc 'before to be appointed'. Đáp án đầy đủ: She had spent a decade in the research department before being appointed director."
+  },
+  {
+   "id": "rw-ch-09-2",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "LONG",
+   "orig": "Everyone in the village thought the new bridge would soon start to attract tourists.",
+   "stem": "Everyone in the village thought it",
+   "tail": "the new bridge started to attract tourists.",
+   "answer": "wouldn't be long before",
+   "accept": [
+    "wouldn't be long before",
+    "would not be long before",
+    "wouldn't be very long before",
+    "would not be very long before",
+    "wouldn't be too long before",
+    "would not be too long before"
+   ],
+   "vi": "it won't / wouldn't be long before + mệnh đề — chẳng bao lâu nữa sẽ…",
+   "explanation": "Cấu trúc 'it won't be long before + S + V' nghĩa là chẳng mấy chốc điều gì sẽ xảy ra; lùi thì trong câu gián tiếp thành 'it wouldn't be long before'. Từ khóa LONG buộc ta bỏ 'soon' và diễn đạt lại bằng cụm này, còn mệnh đề sau 'before' dùng quá khứ đơn (started). Lỗi hay gặp: 'wouldn't take long before' hoặc quên chủ ngữ giả 'it' ở stem và viết 'the new bridge wouldn't be long'. Đáp án đầy đủ: Everyone in the village thought it wouldn't be long before the new bridge started to attract tourists."
+  },
+  {
+   "id": "rw-ch-09-3",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SOONER",
+   "orig": "The moment the referee blew the whistle, thousands of fans poured onto the pitch to celebrate.",
+   "stem": "No",
+   "tail": "thousands of fans poured onto the pitch to celebrate.",
+   "answer": "sooner had the referee blown the whistle than",
+   "accept": [
+    "sooner had the referee blown the whistle than",
+    "sooner had the referee blown his whistle than"
+   ],
+   "vi": "No sooner had + S + V3 + than + S + Ved — vừa mới… thì…",
+   "explanation": "Đảo ngữ 'No sooner had + S + V3 than + S + quá khứ đơn' diễn tả hai hành động xảy ra kế tiếp nhau gần như tức thì, thay cho 'the moment / as soon as'. Từ khóa SOONER đứng ngay sau 'No' nên bắt buộc đảo trợ động từ 'had' lên trước chủ ngữ và dùng 'blown' (V3), vế sau nối bằng 'than' chứ không phải 'when'. Lỗi hay gặp: 'No sooner the referee had blown… when' (không đảo ngữ và dùng sai liên từ). Đáp án đầy đủ: No sooner had the referee blown the whistle than thousands of fans poured onto the pitch to celebrate."
+  },
+  {
+   "id": "rw-ch-09-4",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "DURATION",
+   "orig": "During the whole of the ceremony, the two brothers didn't exchange a single word.",
+   "stem": "The two brothers didn't exchange a single word",
+   "tail": "the ceremony.",
+   "answer": "for the duration of",
+   "accept": [
+    "for the duration of",
+    "for the whole duration of",
+    "for the entire duration of",
+    "throughout the duration of",
+    "throughout the whole duration of",
+    "throughout the entire duration of"
+   ],
+   "vi": "during the whole of + N ↔ for the duration of + N — trong suốt thời gian diễn ra…",
+   "explanation": "'For the duration of + N' là cụm giới từ trang trọng nghĩa là 'trong suốt thời gian diễn ra việc gì', tương đương 'during the whole of' hoặc 'throughout'. Từ khóa DURATION là danh từ nên bắt buộc có giới từ đứng trước (for / throughout) và 'of' đứng sau, rồi mới tới 'the ceremony' ở đuôi. Lỗi hay gặp: 'during the duration of' (thừa nghĩa, không tự nhiên) hoặc 'for the duration the ceremony' (thiếu 'of'). Đáp án đầy đủ: The two brothers didn't exchange a single word for the duration of the ceremony."
+  },
+  {
+   "id": "rw-ch-09-5",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "WHICH",
+   "orig": "The firefighters arrived, but the old warehouse had already burned to the ground.",
+   "stem": "The firefighters arrived,",
+   "tail": "had already burned to the ground.",
+   "answer": "by which time the old warehouse",
+   "accept": [
+    "by which time the old warehouse",
+    "by which point the old warehouse",
+    "by which stage the old warehouse"
+   ],
+   "vi": "S + Ved, by which time + S + had V3 — mệnh đề quan hệ chỉ mốc thời gian: đến lúc đó thì… đã…",
+   "explanation": "'…, by which time + S + had + V3' là mệnh đề quan hệ nối tiếp, trong đó 'which' thay cho cả sự việc ở vế trước (việc lính cứu hoả tới nơi) và 'by which time' nghĩa là 'đến lúc đó thì'. Từ khóa WHICH buộc ta biến 'but… already' thành 'by which time the old warehouse', giữ quá khứ hoàn thành 'had already burned' ở đuôi. Lỗi hay gặp: 'by the time which' hoặc 'by when the old warehouse' (không dùng which). Đáp án đầy đủ: The firefighters arrived, by which time the old warehouse had already burned to the ground."
+  },
+  {
+   "id": "rw-ch-09-6",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "RISEN",
+   "orig": "The sun will have been up for hours when we reach the summit.",
+   "stem": "The sun",
+   "tail": "the summit.",
+   "answer": "will have risen long before we reach",
+   "accept": [
+    "will have risen long before we reach",
+    "will have risen hours before we reach",
+    "will have risen well before we reach",
+    "will have risen long before we get to",
+    "will have risen hours before we get to",
+    "will have risen well before we get to",
+    "will long have risen before we reach",
+    "will already have risen before we reach"
+   ],
+   "vi": "will have been up for hours when… ↔ will have risen long before… — tương lai hoàn thành + long before",
+   "explanation": "'The sun will have been up for hours when X' (đến lúc X thì mặt trời đã lên được mấy tiếng rồi) diễn đạt lại bằng tương lai hoàn thành của 'rise': 'will have risen long / hours / well before we reach the summit'. Từ khóa RISEN là V3 nên bắt buộc đi với 'will have', còn mệnh đề thời gian sau 'before' dùng hiện tại đơn 'reach'. Lỗi hay gặp: 'will have risen before we will reach' (dùng will trong mệnh đề thời gian) hoặc 'will have risen for hours before' (rise là động từ tức thời, không đi với for + khoảng thời gian). Đáp án đầy đủ: The sun will have risen long before we reach the summit."
+  },
+  {
+   "id": "rw-ch-09-7",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "CAN",
+   "orig": "You can't leave the hall before the invigilator has collected every answer sheet.",
+   "stem": "Not until the invigilator",
+   "tail": "the hall.",
+   "answer": "has collected every answer sheet can you leave",
+   "accept": [
+    "has collected every answer sheet can you leave",
+    "collects every answer sheet can you leave",
+    "has collected each answer sheet can you leave"
+   ],
+   "vi": "Not until + mệnh đề + trợ động từ + S + V — đảo ngữ với not until: chỉ đến khi… thì mới…",
+   "explanation": "Khi 'Not until + mệnh đề thời gian' mở đầu câu, mệnh đề chính phải đảo ngữ: 'Not until the invigilator has collected every answer sheet can you leave the hall'. Từ khóa CAN được đưa lên trước chủ ngữ 'you', và vì 'not' đã nằm ở đầu câu nên động từ chính khẳng định (can leave, không phải can't leave). Lỗi hay gặp: 'can't you leave' (phủ định kép) hoặc 'you can leave' (quên đảo ngữ). Đáp án đầy đủ: Not until the invigilator has collected every answer sheet can you leave the hall."
+  },
+  {
+   "id": "rw-ch-09-8",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "ACCESS",
+   "orig": "The last time the museum opened its rooftop garden to visitors was in 2019.",
+   "stem": "Visitors",
+   "tail": "the museum's rooftop garden since 2019.",
+   "answer": "have not had access to",
+   "accept": [
+    "have not had access to",
+    "haven't had access to",
+    "have had no access to",
+    "have not had any access to",
+    "haven't had any access to",
+    "have not been given access to",
+    "haven't been given access to",
+    "have not been allowed access to",
+    "haven't been allowed access to"
+   ],
+   "vi": "the last time X was opened to visitors was in… ↔ visitors have not had access to X since… — không được vào từ năm…",
+   "explanation": "'Have access to + N' là cụm danh từ cố định nghĩa là được vào / được sử dụng nơi nào; 'the last time it was opened was in 2019' tương đương 'visitors have not had access to it since 2019'. Từ khóa ACCESS buộc ta đổi chủ ngữ thành 'visitors', dùng hiện tại hoàn thành phủ định (have not had) và giới từ 'to' trước danh từ. Lỗi hay gặp: 'have not accessed to' (dùng động từ access + to), 'have not had access into' hoặc 'did not have access since 2019' (quá khứ đơn với since). Đáp án đầy đủ: Visitors have not had access to the museum's rooftop garden since 2019."
+  },
+  {
+   "id": "rw-ch-09-9",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SINGLE",
+   "orig": "It is nearly a decade since the old factory stopped producing bicycles altogether.",
+   "stem": "The old factory",
+   "tail": "for nearly a decade.",
+   "answer": "has not produced a single bicycle",
+   "accept": [
+    "has not produced a single bicycle",
+    "hasn't produced a single bicycle",
+    "has not made a single bicycle",
+    "hasn't made a single bicycle",
+    "has not built a single bicycle",
+    "hasn't built a single bicycle",
+    "has not manufactured a single bicycle",
+    "hasn't manufactured a single bicycle",
+    "has not turned out a single bicycle",
+    "hasn't turned out a single bicycle"
+   ],
+   "vi": "stopped doing X altogether … ago ↔ has not done a single X for… — không làm dù chỉ một cái",
+   "explanation": "'Not a single + danh từ đếm được số ít' là cách nhấn mạnh 'không hề, dù chỉ một'; 'stopped producing bicycles altogether nearly a decade ago' tương đương 'has not produced a single bicycle for nearly a decade'. Từ khóa SINGLE buộc ta chuyển 'it is… since + quá khứ đơn' thành hiện tại hoàn thành phủ định với 'for', và danh từ sau 'single' phải ở số ít (bicycle, không phải bicycles). Lỗi hay gặp: 'has not produced single bicycles' hoặc 'stopped producing a single bicycle' (đổi nghĩa). Đáp án đầy đủ: The old factory has not produced a single bicycle for nearly a decade."
+  },
+  {
+   "id": "rw-ch-09-10",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "YET",
+   "orig": "We are still waiting for the committee to announce its decision on the grant.",
+   "stem": "The committee",
+   "tail": "its decision on the grant.",
+   "answer": "has yet to announce",
+   "accept": [
+    "has yet to announce",
+    "hasn't yet announced",
+    "has not yet announced",
+    "is yet to announce",
+    "has not as yet announced",
+    "hasn't as yet announced"
+   ],
+   "vi": "have yet to + V — vẫn chưa làm (dù được mong đợi)",
+   "explanation": "'Have/has yet to + V nguyên mẫu' là cách nói trang trọng nghĩa là vẫn chưa làm điều mà người ta đang chờ đợi, tương đương 'hasn't done… yet'. Từ khóa YET cho phép hai dạng: 'has yet to announce' hoặc 'hasn't yet announced' (yet chen giữa trợ động từ và V3). Lỗi hay gặp: 'has yet announced' (thiếu 'to' hoặc thiếu phủ định) hoặc 'yet has to announce'. Đáp án đầy đủ: The committee has yet to announce its decision on the grant."
+  },
+  {
+   "id": "rw-ch-09-11",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "PRIOR",
+   "orig": "Nobody had warned the residents before the demolition of the old market began.",
+   "stem": "Nobody had warned the residents",
+   "tail": "the old market.",
+   "answer": "prior to the demolition of",
+   "accept": [
+    "prior to the demolition of",
+    "prior to the start of the demolition of",
+    "prior to demolishing",
+    "prior to the beginning of the demolition of",
+    "prior to demolition of",
+    "prior to the demolition work on"
+   ],
+   "vi": "before + mệnh đề ↔ prior to + N / V-ing — trước khi phá dỡ",
+   "explanation": "'Prior to' là giới từ trang trọng đồng nghĩa với 'before', nhưng chỉ đi với danh từ hoặc V-ing, không đi với mệnh đề. Từ khóa PRIOR buộc ta bỏ động từ 'began' và giữ danh từ 'the demolition of the old market' (hoặc V-ing 'demolishing'). Lỗi hay gặp: 'prior the demolition' (thiếu 'to') hoặc 'prior to the demolition of the old market began' (giữ nguyên mệnh đề). Đáp án đầy đủ: Nobody had warned the residents prior to the demolition of the old market."
+  },
+  {
+   "id": "rw-ch-09-12",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "WITHOUT",
+   "orig": "While the chef was preparing the main course, the waiters cleared the tables in silence.",
+   "stem": "While the chef was preparing the main course, the waiters cleared the tables",
+   "tail": "",
+   "answer": "without saying a word",
+   "accept": [
+    "without saying a word",
+    "without a word",
+    "without uttering a word",
+    "without saying a single word",
+    "without uttering a single word",
+    "without saying anything",
+    "without a single word",
+    "without speaking a word",
+    "without making a sound",
+    "without a sound",
+    "without saying anything at all"
+   ],
+   "vi": "in silence ↔ without (saying) a word — lặng lẽ, không nói một lời",
+   "explanation": "'In silence' (lặng lẽ) có thể diễn đạt lại bằng cụm 'without a word / without saying a word / without uttering a word'. Từ khóa WITHOUT là giới từ nên theo sau phải là danh từ hoặc V-ing (saying, uttering), không phải mệnh đề. Lỗi hay gặp: 'without say a word' (nguyên mẫu sau without) hoặc 'without any words' (không tự nhiên bằng 'a word'). Đáp án đầy đủ: While the chef was preparing the main course, the waiters cleared the tables without saying a word"
+  },
+  {
+   "id": "rw-ch-09-13",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "EVER",
+   "orig": "Until last week, my little sister had never set foot on an aeroplane.",
+   "stem": "Last week was the first time my little sister",
+   "tail": "an aeroplane.",
+   "answer": "had ever set foot on",
+   "accept": [
+    "had ever set foot on",
+    "ever set foot on",
+    "had ever been on",
+    "had ever boarded",
+    "had ever travelled on",
+    "had ever traveled on",
+    "had ever flown on",
+    "had ever flown in",
+    "had ever got on"
+   ],
+   "vi": "had never V3 until… ↔ … was the first time S had ever V3 — lần đầu tiên trong đời",
+   "explanation": "'Until X, S had never done Y' đồng nghĩa với 'X was the first time S had ever done Y': cả hai đều nói trước X việc ấy chưa hề xảy ra. Từ khóa EVER đi sau 'the first time' với quá khứ hoàn thành 'had ever set foot on', và 'never' được thay bằng 'ever' vì mệnh đề đã khẳng định. Lỗi hay gặp: 'the first time she had never set foot' (phủ định kép) hoặc 'the first time she ever sets foot'. Đáp án đầy đủ: Last week was the first time my little sister had ever set foot on an aeroplane."
+  },
+  {
+   "id": "rw-ch-09-14",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "IMMEDIATELY",
+   "orig": "As soon as the rain stops, the groundsmen will remove the covers from the pitch.",
+   "stem": "The groundsmen will remove the covers from the pitch",
+   "tail": "",
+   "answer": "immediately the rain stops",
+   "accept": [
+    "immediately the rain stops",
+    "immediately it stops raining",
+    "immediately the rain has stopped",
+    "immediately it has stopped raining",
+    "immediately after the rain stops",
+    "immediately after it stops raining",
+    "immediately after the rain has stopped",
+    "immediately after it has stopped raining"
+   ],
+   "vi": "as soon as ↔ immediately (after) + S + V — ngay khi (immediately dùng như liên từ)",
+   "explanation": "Trong tiếng Anh-Anh, 'immediately' còn dùng như một liên từ thời gian, đồng nghĩa với 'as soon as': 'immediately the rain stops' = 'as soon as the rain stops'; cũng có thể viết 'immediately after the rain stops'. Từ khóa IMMEDIATELY thay cho trọn cụm 'as soon as', và mệnh đề sau nó chỉ tương lai nhưng dùng hiện tại đơn / hiện tại hoàn thành. Lỗi hay gặp: 'immediately when the rain stops' (thừa when) hoặc 'immediately the rain will stop'. Đáp án đầy đủ: The groundsmen will remove the covers from the pitch immediately the rain stops"
+  },
+  {
+   "id": "rw-ch-09-15",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "TOUCH",
+   "orig": "Hoa hasn't written to her Scottish pen friend for almost two years.",
+   "stem": "Hoa",
+   "tail": "her Scottish pen friend for almost two years.",
+   "answer": "has not been in touch with",
+   "accept": [
+    "has not been in touch with",
+    "hasn't been in touch with",
+    "has not kept in touch with",
+    "hasn't kept in touch with",
+    "has not got in touch with",
+    "hasn't got in touch with",
+    "has not gotten in touch with",
+    "hasn't gotten in touch with",
+    "has been out of touch with"
+   ],
+   "vi": "hasn't written to sb ↔ hasn't been in touch with sb — không liên lạc với ai",
+   "explanation": "'Be / keep / get in touch with sb' là thành ngữ nghĩa là liên lạc với ai; 'hasn't written to her pen friend' diễn đạt lại thành 'hasn't been in touch with her pen friend'. Từ khóa TOUCH nằm trong cụm cố định 'in touch with' nên bắt buộc có 'in' trước và 'with' sau; thì hiện tại hoàn thành phủ định giữ nguyên vì có 'for almost two years' ở đuôi. Lỗi hay gặp: 'hasn't touched with', 'hasn't been in touch to' hoặc 'has lost touch with… for two years' (lose touch là hành động tức thời, không đi với for). Đáp án đầy đủ: Hoa has not been in touch with her Scottish pen friend for almost two years."
+  },
+  {
+   "id": "rw-ch-09-16",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "WHEN",
+   "orig": "The children didn't stop shouting until the headteacher walked into the room.",
+   "stem": "It was only",
+   "tail": "that the children stopped shouting.",
+   "answer": "when the headteacher walked into the room",
+   "accept": [
+    "when the headteacher walked into the room",
+    "when the headteacher came into the room",
+    "when the headteacher entered the room",
+    "when the headteacher walked in",
+    "when the headteacher stepped into the room",
+    "when the headteacher came in"
+   ],
+   "vi": "not… until… ↔ It was only when… that… — câu chẻ nhấn mạnh thời điểm",
+   "explanation": "Câu chẻ 'It was only when + S + Ved + that + S + Ved' nhấn mạnh rằng chỉ đến thời điểm ấy sự việc mới xảy ra, tương đương 'not… until…'. Từ khóa WHEN đứng sau 'only', và vì cấu trúc đã hàm ý phủ định nên mệnh đề sau 'that' chuyển sang khẳng định 'stopped shouting'. Lỗi hay gặp: 'that the children didn't stop shouting' (giữ phủ định) hoặc đảo ngữ 'that did the children stop'. Đáp án đầy đủ: It was only when the headteacher walked into the room that the children stopped shouting."
+  },
+  {
+   "id": "rw-ch-09-17",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "HARDLY",
+   "orig": "Only a few minutes after the ferry left the harbour, the engine broke down.",
+   "stem": "The ferry",
+   "tail": "the engine broke down.",
+   "answer": "had hardly left the harbour when",
+   "accept": [
+    "had hardly left the harbour when",
+    "had hardly left the harbour before",
+    "had hardly left the harbor when",
+    "had hardly left the harbor before"
+   ],
+   "vi": "S + had hardly + V3 + when + S + Ved — vừa mới… thì…",
+   "explanation": "'S had hardly done X when Y happened' diễn tả Y xảy ra ngay sau X, thay cho 'only a few minutes after'. Vì stem đã có chủ ngữ 'The ferry' nên không đảo ngữ: 'hardly' chen giữa 'had' và V3 'left', rồi nối vế sau bằng 'when' (hoặc 'before'). Lỗi hay gặp: 'hardly had left the harbour than' (dùng 'than' của no sooner) hoặc 'had hardly leave'. Đáp án đầy đủ: The ferry had hardly left the harbour when the engine broke down."
+  },
+  {
+   "id": "rw-ch-09-18",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SCARCELY",
+   "orig": "That evening we had just sat down to dinner when the power went off across the whole street.",
+   "stem": "That evening,",
+   "tail": "the power went off across the whole street.",
+   "answer": "scarcely had we sat down to dinner when",
+   "accept": [
+    "scarcely had we sat down to dinner when",
+    "scarcely had we sat down to dinner before",
+    "scarcely had we sat down for dinner when",
+    "scarcely had we sat down for dinner before"
+   ],
+   "vi": "Scarcely had + S + V3 + when + S + Ved — đảo ngữ với scarcely",
+   "explanation": "Khi 'scarcely' mở đầu mệnh đề, bắt buộc đảo ngữ: 'scarcely had + S + V3 … when + S + quá khứ đơn', nghĩa là 'vừa mới… thì…'. Từ khóa SCARCELY thay cho 'just' trong câu gốc, nên ta viết 'scarcely had we sat down to dinner' (đưa 'had' lên trước 'we') rồi nối vế sau bằng 'when'. Lỗi hay gặp: 'scarcely we had sat down… than' (không đảo ngữ và dùng sai liên từ). Đáp án đầy đủ: That evening, scarcely had we sat down to dinner when the power went off across the whole street."
+  },
+  {
+   "id": "rw-ch-09-19",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "AWAY",
+   "orig": "There are only two weeks left before the final exams begin at our school.",
+   "stem": "The final exams at our school",
+   "tail": "",
+   "answer": "are only two weeks away",
+   "accept": [
+    "are only two weeks away",
+    "are just two weeks away",
+    "are only a fortnight away",
+    "are just a fortnight away",
+    "are now only two weeks away",
+    "are now just two weeks away",
+    "are no more than two weeks away"
+   ],
+   "vi": "there is + thời gian + left before X ↔ X is + thời gian + away — chỉ còn… nữa là…",
+   "explanation": "'X is two weeks away' là cách nói thông dụng nghĩa là còn hai tuần nữa là đến X, tương đương 'there are two weeks left before X'. Từ khóa AWAY buộc ta biến 'the final exams' thành chủ ngữ với động từ 'are' và đặt khoảng thời gian trước 'away'. Lỗi hay gặp: 'are away two weeks' (sai trật tự) hoặc 'are only two weeks far away'. Đáp án đầy đủ: The final exams at our school are only two weeks away"
+  },
+  {
+   "id": "rw-ch-09-20",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "THEN",
+   "orig": "Send the report in by Friday; after that the manager will have left for Japan.",
+   "stem": "Send the report in by Friday, because",
+   "tail": "for Japan.",
+   "answer": "by then the manager will have left",
+   "accept": [
+    "by then the manager will have left",
+    "by then, the manager will have left"
+   ],
+   "vi": "by then + will have + V3 — đến lúc đó thì đã… (tương lai hoàn thành)",
+   "explanation": "'By then' nghĩa là 'đến lúc đó', thay cho 'after that' khi thời điểm đã được nêu trước (Friday); nó thường đi với tương lai hoàn thành 'will have left' để nói việc sẽ xong trước mốc ấy. Từ khóa THEN buộc ta viết 'by then the manager will have left', giữ nguyên thì trong câu gốc. Lỗi hay gặp: 'by then the manager will leave' (mất ý 'đã đi rồi') hoặc 'until then the manager will have left' (sai nghĩa). Đáp án đầy đủ: Send the report in by Friday, because by then the manager will have left for Japan."
+  }
+ ]
+}

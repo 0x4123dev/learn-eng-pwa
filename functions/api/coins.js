@@ -54,7 +54,7 @@ export async function onRequestPost({ request, env }) {
   const appRows = await env.DB.prepare(
     "SELECT key, value FROM app_flags WHERE key IN ('math_fight', 'cuuchuong_seconds')").all();
   const app = new Map(((appRows && appRows.results) || []).map(r => [r.key, r.value]));
-  const me = await env.DB.prepare('SELECT allow_bot FROM users WHERE id = ?').bind(auth.uid).first();
+  const me = await env.DB.prepare('SELECT allow_bot, allow_chuyen FROM users WHERE id = ?').bind(auth.uid).first();
   // Bảng cửu chương's round length rides home with the switches: it is one
   // number for the whole app, an adult changes it while watching a child use
   // it, and this call already runs often enough that the change lands within
@@ -68,6 +68,8 @@ export async function onRequestPost({ request, env }) {
   const flags = {
     mathFight: !!app.get('math_fight'),
     bot: !!(me && me.allow_bot),
+    // Chuyên tier in Word Form / Rewrite (db/031): its own switch.
+    chuyen: !!(me && me.allow_chuyen),
     cuuchuongSeconds: cuuchuongSeconds,
   };
 

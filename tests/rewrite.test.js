@@ -8,14 +8,19 @@ global.REWRITE_QUESTIONS = REWRITE_QUESTIONS;
 const rw = require(path.join(__dirname, '..', 'js', 'rewrite.js'));
 
 suite('rewrite bank', () => {
-    test('has 200 questions with unique sequential ids', () => {
-        assert.equal(REWRITE_QUESTIONS.length, 200);
-        REWRITE_QUESTIONS.forEach((q, i) => assert.equal(q.id, 'rw-' + (i + 1)));
+    // Two tiers since 2026-09-11: the original 200 (no `level`) and Chuyên
+    // key-word transformations (level "ch", cat "kwt") a child meets only once
+    // an admin has switched them on. The original tier's pins are unchanged.
+    const KC = REWRITE_QUESTIONS.filter(q => q.level !== 'ch');
+    test('the original tier has 200 questions with unique sequential ids', () => {
+        assert.equal(KC.length, 200);
+        KC.forEach((q, i) => assert.equal(q.id, 'rw-' + (i + 1)));
+        assert.equal(new Set(REWRITE_QUESTIONS.map(q => q.id)).size, REWRITE_QUESTIONS.length, 'ids unique across both tiers');
     });
 
-    test('25 structure types × 8 questions each', () => {
+    test('25 structure types × 8 questions each in the original tier', () => {
         const cats = {};
-        REWRITE_QUESTIONS.forEach(q => cats[q.cat] = (cats[q.cat] || 0) + 1);
+        KC.forEach(q => cats[q.cat] = (cats[q.cat] || 0) + 1);
         assert.equal(Object.keys(cats).length, 25);
         Object.entries(cats).forEach(([cat, n]) => assert.equal(n, 8, `${cat} has ${n}`));
     });
@@ -23,7 +28,11 @@ suite('rewrite bank', () => {
     test('every question has orig, stem, answer, vi and a real explanation', () => {
         for (const q of REWRITE_QUESTIONS) {
             assert.truthy(q.orig && q.orig.length >= 15, `${q.id}: weak orig`);
-            assert.truthy(q.stem && q.stem.length >= 2, `${q.id}: weak stem`);
+            // A key-word transformation may open on a one-word stem ("I ___
+            // for the scholarship…") or on the gap itself; the original tier
+            // always has a proper lead-in.
+            if (q.level !== 'ch') assert.truthy(q.stem && q.stem.length >= 2, `${q.id}: weak stem`);
+            else assert.truthy((q.stem + ' ' + (q.tail || '')).trim().length >= 2, `${q.id}: a key-word item needs a stem or a tail`);
             assert.truthy(q.answer && q.answer.length >= 2, `${q.id}: weak answer`);
             assert.truthy(q.vi && q.vi.length > 0, `${q.id}: missing vi`);
             assert.truthy(q.explanation && q.explanation.length >= 40, `${q.id}: weak explanation`);

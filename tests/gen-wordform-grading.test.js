@@ -12,7 +12,12 @@ const fs = require('fs');
 const vm = require('vm');
 const path = require('path');
 
-const { WORDFORM_QUESTIONS } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));
+// Since 2026-09-11 the bank carries a Chuyên tier (level "ch") beside the
+// original 600. This file describes the ORIGINAL tier's anatomy — ids, order,
+// key sets, category counts — so it reads that tier only. The Chuyên tier is
+// held to its own contract in tests/chuyen-tier-data.test.js.
+const { WORDFORM_QUESTIONS: WORDFORM_ALL } = require(path.join(__dirname, '..', 'js', 'wordform-data.js'));
+const WORDFORM_QUESTIONS = WORDFORM_ALL.filter(q => q.level !== 'ch');
 global.WORDFORM_QUESTIONS = WORDFORM_QUESTIONS;
 const wf = require(path.join(__dirname, '..', 'js', 'wordform.js'));
 

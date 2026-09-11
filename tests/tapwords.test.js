@@ -66,7 +66,8 @@ suite('tapwords: lookup + morphology', () => {
 
 suite('tapwords: dictionary integrity + coverage invariant', () => {
     test('every entry is [pos, vi] with a known pos and non-empty vi', () => {
-        const POS = new Set(['n', 'v', 'adj', 'adv', 'prep', 'conj', 'pron', 'det', 'num', 'interj', 'name', 'abbr']);
+        // Mirrors TW_POS_VI in js/tapwords.js — 'x' is a word-form distractor that is not an English word.
+        const POS = new Set(['n', 'v', 'adj', 'adv', 'prep', 'conj', 'pron', 'det', 'num', 'interj', 'name', 'abbr', 'x']);
         let n = 0;
         for (const [w, e] of Object.entries(WORD_VI)) {
             n++;

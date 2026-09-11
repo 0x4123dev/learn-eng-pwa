@@ -1,0 +1,323 @@
+{
+  "level": "ch",
+  "file": "07",
+  "questions": [
+    {
+      "id": "wf-ch-07-1",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "JEOPARDY",
+      "q": "One careless remark to a journalist could ___ (JEOPARDY) months of delicate negotiations between the two companies.",
+      "answer": "jeopardise",
+      "accept": [
+        "jeopardise",
+        "jeopardize"
+      ],
+      "vi": "JEOPARDY (tình trạng nguy hiểm) → jeopardise — gây nguy hại, làm tổn hại (động từ)",
+      "explanation": "Chỗ trống đứng sau trợ động từ 'could' và trước tân ngữ 'months of delicate negotiations', nên cần một ĐỘNG TỪ nguyên mẫu. Danh từ jeopardy → động từ bằng hậu tố <b>-ise/-ize</b>, và vì gốc kết thúc bằng -y nên y đổi thành i: jeopard<b>ise</b>. Bẫy: giữ nguyên y ('jeopardyse') hoặc viết 'endanger' — đúng nghĩa nhưng không phải dạng của gốc đã cho."
+    },
+    {
+      "id": "wf-ch-07-2",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "SURE",
+      "q": "Engineers checked every cable twice to ___ (SURE) that the outdoor stage could take the weight of the lighting rig.",
+      "options": [
+        "ensure",
+        "insure",
+        "assuredly",
+        "surety"
+      ],
+      "correct": 0,
+      "answer": "ensure",
+      "vi": "SURE (chắc chắn) → ensure — bảo đảm rằng (động từ)",
+      "explanation": "Sau 'to' chỉ mục đích và trước mệnh đề 'that…' cần một ĐỘNG TỪ mang nghĩa 'bảo đảm rằng điều gì xảy ra'. Tính từ sure nhận tiền tố <b>en-</b> để thành động từ: en + sure = ensure. ✗ insure = mua bảo hiểm cho tài sản (insure a car), không đi với mệnh đề 'that' trong tiếng Anh–Anh; ✗ assuredly = trạng từ (chắc chắn là); ✗ surety = danh từ (người bảo lãnh)."
+    },
+    {
+      "id": "wf-ch-07-3",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "EXAMPLE",
+      "q": "The restored lighthouse is said to ___ (EXAMPLE) everything the town values: patience, craftsmanship and respect for the past.",
+      "answer": "exemplify",
+      "accept": [
+        "exemplify"
+      ],
+      "vi": "EXAMPLE (ví dụ, tấm gương) → exemplify — là ví dụ tiêu biểu cho (động từ)",
+      "explanation": "Sau 'is said to' cần một ĐỘNG TỪ nguyên mẫu có tân ngữ 'everything the town values'. Danh từ example → động từ bằng hậu tố <b>-ify</b>, nhưng gốc đổi nguyên âm theo tiếng Latin: ex<b>e</b>mpl + ify = exemplify (như exemplary). Bẫy lớn nhất là viết 'examplify' — giữ nguyên a của example."
+    },
+    {
+      "id": "wf-ch-07-4",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "HEIGHT",
+      "q": "The sudden silence in the courtroom only served to ___ (HEIGHT) the tension before the verdict was read out.",
+      "answer": "heighten",
+      "accept": [
+        "heighten"
+      ],
+      "vi": "HEIGHT (chiều cao, mức độ) → heighten — làm tăng lên, làm căng thêm (động từ)",
+      "explanation": "Cấu trúc 'serve to + V' đòi hỏi một ĐỘNG TỪ nguyên mẫu, và tân ngữ 'the tension' cho biết nghĩa là 'làm tăng thêm'. Danh từ height → động từ bằng hậu tố <b>-en</b>: heighten, giống lengthen, strengthen. Bẫy: viết 'highten' theo tính từ high, hoặc 'heighten' thành 'heightened' dù sau 'to' phải là nguyên mẫu."
+    },
+    {
+      "id": "wf-ch-07-5",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "PERSON",
+      "q": "The blindfolded marble figure holding a pair of scales was carved to ___ (PERSON) justice rather than any real judge.",
+      "options": [
+        "personalise",
+        "personify",
+        "personate",
+        "personification"
+      ],
+      "correct": 1,
+      "answer": "personify",
+      "vi": "PERSON (con người) → personify — nhân cách hoá, là hiện thân của (động từ)",
+      "explanation": "Sau 'was carved to' cần một ĐỘNG TỪ nguyên mẫu, và nghĩa 'bức tượng là hiện thân của công lý' chỉ có 'personify' diễn đạt được. Danh từ person + hậu tố <b>-ify</b> = personify (nhân cách hoá một ý niệm trừu tượng). ✗ personalise = cá nhân hoá, sai nghĩa; ✗ personate = dạng cổ, gần như không dùng; ✗ personification = danh từ, không thể đứng sau 'to' chỉ mục đích."
+    },
+    {
+      "id": "wf-ch-07-6",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "HASTE",
+      "q": "Warmer winters are expected to ___ (HASTE) the retreat of the glacier by several decades, the report warns.",
+      "answer": "hasten",
+      "accept": [
+        "hasten"
+      ],
+      "vi": "HASTE (sự vội vã) → hasten — đẩy nhanh, làm sớm hơn (động từ)",
+      "explanation": "Sau 'are expected to' cần một ĐỘNG TỪ nguyên mẫu, có tân ngữ 'the retreat of the glacier' nên nghĩa là 'đẩy nhanh'. Danh từ haste → động từ bằng hậu tố <b>-en</b>, bỏ e cuối: hast + en = hasten (t câm khi đọc). Bẫy: viết 'hastify' hoặc dùng tính từ 'hasty' — cả hai đều không phải động từ."
+    },
+    {
+      "id": "wf-ch-07-7",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "QUANTITY",
+      "q": "It is notoriously difficult to ___ (QUANTITY) the damage that years of online abuse do to a teenager's confidence.",
+      "options": [
+        "quantitise",
+        "quantitative",
+        "quantify",
+        "quantification"
+      ],
+      "correct": 2,
+      "answer": "quantify",
+      "vi": "QUANTITY (số lượng) → quantify — định lượng, đo bằng con số (động từ)",
+      "explanation": "Cấu trúc 'difficult to + V' cần một ĐỘNG TỪ nguyên mẫu với tân ngữ 'the damage', nghĩa là 'đo lường bằng con số'. Danh từ quantity → động từ bằng hậu tố <b>-ify</b>, bỏ -ity: quant + ify = quantify (giống identity → identify). ✗ quantitise = hậu tố sai, không tồn tại; ✗ quantitative = tính từ; ✗ quantification = danh từ — không thể đứng sau 'to'."
+    },
+    {
+      "id": "wf-ch-07-8",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "BOLD",
+      "q": "___ (BOLD) by the crowd's applause, the young speaker abandoned her notes and finished the speech from memory.",
+      "answer": "emboldened",
+      "accept": [
+        "emboldened"
+      ],
+      "vi": "BOLD (bạo dạn) → emboldened — được tiếp thêm can đảm (động từ, quá khứ phân từ)",
+      "explanation": "Mở đầu câu là một mệnh đề rút gọn bổ nghĩa cho 'the young speaker', và 'by the crowd's applause' cho thấy cần QUÁ KHỨ PHÂN TỪ mang nghĩa bị động: 'được cổ vũ nên bạo dạn hơn'. Tính từ bold nhận cả tiền tố <b>em-</b> (dạng của en- trước b, p, m) và hậu tố <b>-en</b>: em + bold + en → emboldened. Bẫy: viết 'enbolded' (sai tiền tố, thiếu -en) hoặc 'boldened' (thiếu tiền tố)."
+    },
+    {
+      "id": "wf-ch-07-9",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "POWER",
+      "q": "Critics say that years of free food handouts have ___ (POWER) the villagers, who now wait for the lorry instead of planting.",
+      "answer": "disempowered",
+      "accept": [
+        "disempowered"
+      ],
+      "vi": "POWER (quyền lực, năng lực) → disempowered — làm mất khả năng tự chủ, tước đi quyền tự quyết (động từ, quá khứ phân từ)",
+      "explanation": "Sau 'have' và trước tân ngữ 'the villagers' cần QUÁ KHỨ PHÂN TỪ của một động từ (thì hiện tại hoàn thành). Vế sau 'now wait for the lorry instead of planting' cho thấy nghĩa TIÊU CỰC: viện trợ làm dân làng mất khả năng tự lo, nên cần chuỗi hai bước: power → em<b>power</b> (trao quyền) → <b>dis</b>empowered (tước đi khả năng tự chủ). Bẫy: viết 'empowered' — ngược nghĩa với vế sau; hoặc 'powerless' — tính từ, không thể đứng sau 'have' với tân ngữ."
+    },
+    {
+      "id": "wf-ch-07-10",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "SCRUTINY",
+      "q": "Before the merger goes ahead, regulators will ___ (SCRUTINY) every contract the two banks signed over the past decade.",
+      "options": [
+        "scrutinate",
+        "scrutinous",
+        "scrutinisation",
+        "scrutinise"
+      ],
+      "correct": 3,
+      "answer": "scrutinise",
+      "vi": "SCRUTINY (sự xem xét kỹ) → scrutinise — soi xét kỹ lưỡng (động từ)",
+      "explanation": "Sau trợ động từ 'will' và trước tân ngữ 'every contract' cần một ĐỘNG TỪ nguyên mẫu. Danh từ scrutiny → động từ bằng hậu tố <b>-ise/-ize</b>, y đổi thành i: scrutin<b>ise</b>. ✗ scrutinate = hậu tố -ate không dùng với gốc này; ✗ scrutinous = tính từ bịa; ✗ scrutinisation = danh từ, không đứng sau 'will'."
+    },
+    {
+      "id": "wf-ch-07-11",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "TRUST",
+      "q": "Before leaving for the conference, the director decided to ___ (TRUST) the final decision to her deputy.",
+      "answer": "entrust",
+      "accept": [
+        "entrust"
+      ],
+      "vi": "TRUST (tin tưởng) → entrust — giao phó (việc gì) cho ai (động từ)",
+      "explanation": "Sau 'decided to' cần một ĐỘNG TỪ nguyên mẫu, và cấu trúc 'V + the decision + to her deputy' (giao phó việc gì cho ai) là kết hợp cố định của 'entrust': entrust something to somebody / entrust somebody with something. Gốc trust nhận tiền tố <b>en-</b> để thành động từ mang nghĩa 'giao phó', trang trọng hơn hẳn trust. Bẫy: để nguyên 'trust' — đề bài yêu cầu ĐỔI DẠNG của từ gốc, nên viết lại gốc không được điểm; hoặc 'entrusted' — sau 'to' phải là nguyên mẫu."
+    },
+    {
+      "id": "wf-ch-07-12",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "STIGMA",
+      "q": "For generations, families with a history of mental illness were ___ (STIGMA) by neighbours who knew almost nothing about it.",
+      "options": [
+        "stigmatic",
+        "stigmatised",
+        "stigmised",
+        "stigmatisation"
+      ],
+      "correct": 1,
+      "answer": "stigmatised",
+      "vi": "STIGMA (vết nhơ, sự kỳ thị) → stigmatised — bị kỳ thị, bị bêu xấu (động từ, bị động)",
+      "explanation": "Sau 'were' và trước 'by neighbours' là câu BỊ ĐỘNG, nên cần QUÁ KHỨ PHÂN TỪ của một động từ. Danh từ gốc Hy Lạp stigma có thân từ stigmat-, nên động từ là stigmat<b>ise</b>, không phải 'stigmise' (như drama → dramatise, trauma → traumatise). ✗ stigmised = thiếu -t- của thân từ; ✗ stigmatic = tính từ; ✗ stigmatisation = danh từ, không đi với 'were … by'."
+    },
+    {
+      "id": "wf-ch-07-13",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "TITLE",
+      "q": "Managers were taken aback by the interns' sense of ___ (TITLE): several expected a promotion within their first three months.",
+      "answer": "entitlement",
+      "accept": [
+        "entitlement"
+      ],
+      "vi": "TITLE (danh hiệu, quyền) → entitlement — tâm lý cho rằng mình đương nhiên được hưởng (danh từ)",
+      "explanation": "Sau 'sense of' cần một DANH TỪ, và vế sau 'expected a promotion within three months' cho thấy nghĩa là 'cho rằng mình đương nhiên được hưởng' — kết hợp cố định 'a sense of entitlement'. Đây là chuỗi hai bước: title → en<b>title</b> (động từ, trao quyền) → entitle<b>ment</b> (danh từ). Bẫy: viết 'entitled' (tính từ/quá khứ phân từ, không đứng sau 'sense of') hoặc dừng ở 'title' — gốc không được chấp nhận."
+    },
+    {
+      "id": "wf-ch-07-14",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "DIVERSE",
+      "q": "Farmers who rely on a single crop are being urged to ___ (DIVERSE) before the next drought wipes them out.",
+      "answer": "diversify",
+      "accept": [
+        "diversify"
+      ],
+      "vi": "DIVERSE (đa dạng) → diversify — đa dạng hoá (động từ)",
+      "explanation": "Sau 'are being urged to' cần một ĐỘNG TỪ nguyên mẫu, và ý 'chỉ trồng một loại cây' đối lập cho thấy nghĩa là 'đa dạng hoá'. Tính từ diverse → động từ bằng hậu tố <b>-ify</b>, bỏ e cuối: divers + ify = diversify (như intense → intensify). Bẫy: viết 'diversitify' từ danh từ diversity, hoặc 'diversise' — hậu tố sai."
+    },
+    {
+      "id": "wf-ch-07-15",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "BODY",
+      "q": "The new library, open all night and free to everyone, was designed to ___ (BODY) the city's belief in equal opportunity.",
+      "options": [
+        "bodily",
+        "enbody",
+        "embody",
+        "embodiment"
+      ],
+      "correct": 2,
+      "answer": "embody",
+      "vi": "BODY (thân thể, hình hài) → embody — là hiện thân của, thể hiện cụ thể (động từ)",
+      "explanation": "Sau 'was designed to' cần một ĐỘNG TỪ nguyên mẫu với tân ngữ 'the city's belief', nghĩa là 'thể hiện cụ thể một ý tưởng'. Danh từ body nhận tiền tố <b>em-</b> (dạng của en- trước b): embody. ✗ enbody = sai tiền tố, trước b phải dùng em-; ✗ bodily = tính từ/trạng từ; ✗ embodiment = danh từ, không đứng sau 'to' chỉ mục đích."
+    },
+    {
+      "id": "wf-ch-07-16",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "MARGIN",
+      "q": "Critics argue that closing the village school will leave the poorest families feeling even more ___ (MARGIN) than before.",
+      "answer": "marginalised",
+      "accept": [
+        "marginalised",
+        "marginalized"
+      ],
+      "vi": "MARGIN (lề, rìa) → marginalised — bị gạt ra bên lề xã hội (động từ, bị động)",
+      "explanation": "Sau 'feeling even more … than before' cần một từ chỉ trạng thái, và nghĩa 'bị gạt ra rìa xã hội' chỉ có quá khứ phân từ 'marginalised' diễn đạt được. Đây là chuỗi hai bước: margin → marginal (tính từ, -al) → marginal<b>ise</b> (động từ) → marginalised. Bẫy: viết 'marginised' (bỏ qua bước -al) hoặc dừng ở 'marginal' — tính từ này nghĩa là 'không đáng kể', sai nghĩa hoàn toàn."
+    },
+    {
+      "id": "wf-ch-07-17",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "CHARACTER",
+      "q": "The final years of the empire were ___ (CHARACTER) by rising prices, restless provinces and a series of weak rulers.",
+      "options": [
+        "characteristic",
+        "characterisation",
+        "characterify",
+        "characterised"
+      ],
+      "correct": 3,
+      "answer": "characterised",
+      "vi": "CHARACTER (đặc điểm, tính cách) → characterised — mang đặc trưng là, được đánh dấu bởi (động từ, bị động)",
+      "explanation": "Cấu trúc 'be ___ by + danh từ' với nghĩa 'có đặc điểm nổi bật là' đòi hỏi QUÁ KHỨ PHÂN TỪ của động từ: be characterised by. Danh từ character + hậu tố <b>-ise/-ize</b> = characterise → characterised. ✗ characteristic = tính từ/danh từ, đi với 'of' chứ không với 'by'; ✗ characterisation = danh từ; ✗ characterify = hậu tố sai, không tồn tại."
+    },
+    {
+      "id": "wf-ch-07-18",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "SUBSIDY",
+      "q": "Rather than ___ (SUBSIDY) coal any longer, the government has promised to redirect the money towards solar farms.",
+      "answer": "subsidise",
+      "accept": [
+        "subsidise",
+        "subsidize",
+        "subsidising",
+        "subsidizing"
+      ],
+      "vi": "SUBSIDY (khoản trợ cấp) → subsidise — trợ cấp, bù lỗ cho (động từ)",
+      "explanation": "Sau 'rather than' và trước tân ngữ 'coal', chỗ trống cần một ĐỘNG TỪ (nguyên mẫu không 'to' hoặc V-ing đều đúng ngữ pháp; đáp án dùng nguyên mẫu, song song với 'redirect'). Danh từ subsidy → động từ bằng hậu tố <b>-ise/-ize</b>, y đổi thành i: subsid<b>ise</b>. Bẫy: giữ y ('subsidyse') hoặc để nguyên danh từ 'subsidy' — 'rather than subsidy coal' vô nghĩa."
+    },
+    {
+      "id": "wf-ch-07-19",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "verb",
+      "base": "RAGE",
+      "q": "Local shopkeepers were ___ (RAGE) by the council's decision to ban all parking on the high street during December.",
+      "options": [
+        "enraged",
+        "raged",
+        "ragefully",
+        "enragement"
+      ],
+      "correct": 0,
+      "answer": "enraged",
+      "vi": "RAGE (cơn giận dữ) → enraged — bị chọc giận, nổi giận (động từ, bị động)",
+      "explanation": "Sau 'were' và trước 'by the council's decision' là câu BỊ ĐỘNG, cần QUÁ KHỨ PHÂN TỪ của một động từ có tân ngữ là người. Danh từ rage nhận tiền tố <b>en-</b> để thành động từ 'làm ai nổi giận': enrage → enraged. ✗ raged = quá khứ của 'rage' (nổi cơn, nội động từ) nên không dùng bị động; ✗ ragefully = trạng từ; ✗ enragement = danh từ."
+    },
+    {
+      "id": "wf-ch-07-20",
+      "level": "ch",
+      "type": "text",
+      "cat": "verb",
+      "base": "LIGHT",
+      "q": "Could someone please ___ (LIGHT) me as to why the meeting was moved without anyone telling the marketing team?",
+      "answer": "enlighten",
+      "accept": [
+        "enlighten"
+      ],
+      "vi": "LIGHT (ánh sáng) → enlighten — làm sáng tỏ, giải thích cho ai hiểu (động từ)",
+      "explanation": "Sau 'Could someone please' cần một ĐỘNG TỪ nguyên mẫu, và cấu trúc 'V + me + as to why…' (giải thích cho tôi hiểu) chỉ hợp với 'enlighten'. Danh từ light nhận cả tiền tố <b>en-</b> và hậu tố <b>-en</b>: en + light + en = enlighten. Bẫy: viết 'lighten' — nghĩa là 'làm nhẹ đi / sáng hơn', không dùng với người; hoặc 'enlight' — thiếu hậu tố."
+    }
+  ]
+}

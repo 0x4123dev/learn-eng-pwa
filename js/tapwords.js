@@ -109,6 +109,10 @@ const TW_POS_VI = {
   n: 'danh từ', v: 'động từ', adj: 'tính từ', adv: 'trạng từ', prep: 'giới từ',
   conj: 'liên từ', pron: 'đại từ', det: 'hạn định từ', num: 'số từ',
   interj: 'thán từ', name: 'tên riêng', abbr: 'viết tắt',
+  // A wrong option in a word-form question can be a form that does not
+  // exist (conspiration, acquiral). A child who taps it should be told so,
+  // not shown a made-up meaning.
+  x: 'không phải từ',
 };
 
 function twShowChip(word, hit) {

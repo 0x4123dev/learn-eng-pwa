@@ -908,6 +908,9 @@ function renderUsers(){
           <button class="mini bot-toggle ${u.allow_bot?'on':''}" data-uid="${u.id}"
                   aria-label="Chơi trước for ${esc(u.username)}: currently ${u.allow_bot?'on':'off'}"
                   title="Chơi trước cho bé này: mở Cướp Đêm và các tính năng mới trước mọi người">🌱<span class="lbl"> ${u.allow_bot?'On':'Off'}</span></button>
+          <button class="mini chuyen-toggle ${u.allow_chuyen?'on':''}" data-uid="${u.id}"
+                  aria-label="Chuyên tier for ${esc(u.username)}: currently ${u.allow_chuyen?'on':'off'}"
+                  title="Bài Chuyên cho bé này: Word Form và Rewrite lấy thêm câu mức Chuyên (mỗi lượt một nửa). Tắt = chỉ câu Không chuyên.">🎓<span class="lbl"> ${u.allow_chuyen?'Chuyên':'KC'}</span></button>
           <button class="mini act-coins" data-uid="${u.id}" data-name="${esc(u.username)}" data-refill="${coinDrop||''}"
                   aria-label="Give coins to ${esc(u.username)}"
                   title="${coinDrop?`Restore — pre-filled with the ${coinDrop} xu this wallet lost vs its weekly peak`:'Give coins — the child\'s app claims them on its next sync'}">💰<span class="lbl"> ${coinDrop?'Restore':'Coins'}</span></button>
@@ -935,6 +938,9 @@ function renderUsers(){
   });
   act('.bot-toggle', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), allowBot: !b.classList.contains('on') } }));
+  // The Chuyên tier — its own switch, nothing to do with 🌱 Chơi trước.
+  act('.chuyen-toggle', b => api('admin/user-flags', { method:'POST',
+        body:{ userId: Number(b.dataset.uid), allowChuyen: !b.classList.contains('on') } }));
   act('.act-clear', b => api('admin/user-flags', { method:'POST',
         body:{ userId: Number(b.dataset.uid), clearDevice: true } }));
   act('.act-coins', b => {

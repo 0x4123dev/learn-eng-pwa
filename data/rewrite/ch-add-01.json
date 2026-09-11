@@ -1,0 +1,425 @@
+{
+ "level": "ch",
+ "file": "01",
+ "questions": [
+  {
+   "id": "rw-ch-01-1",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SOONER",
+   "orig": "The moment the referee blew the final whistle, thousands of fans poured onto the pitch to celebrate.",
+   "stem": "No",
+   "tail": "the final whistle than thousands of fans poured onto the pitch to celebrate.",
+   "answer": "sooner had the referee blown",
+   "accept": [
+    "sooner had the referee blown"
+   ],
+   "vi": "No sooner had + S + V3/V-ed + than + S + V-ed — vừa mới … thì (đảo ngữ)",
+   "explanation": "Cấu trúc đảo ngữ 'No sooner had + S + V3/V-ed + than + mệnh đề quá khứ đơn' diễn tả hai sự việc xảy ra liền nhau, tương đương 'The moment … , …'. Từ khóa SOONER buộc mở đầu bằng 'No sooner', nên trợ động từ 'had' phải đứng trước chủ ngữ 'the referee' và 'blew' đổi thành quá khứ phân từ 'blown'. Lỗi thường gặp: không đảo ngữ ('No sooner the referee had blown') hoặc dùng 'when' thay cho 'than'. Đáp án đầy đủ: No sooner had the referee blown the final whistle than thousands of fans poured onto the pitch to celebrate."
+  },
+  {
+   "id": "rw-ch-01-2",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "THAN",
+   "orig": "As soon as the new phone went on sale, the shop's entire stock sold out.",
+   "stem": "No sooner",
+   "tail": "the shop's entire stock sold out.",
+   "answer": "had the new phone gone on sale than",
+   "accept": [
+    "had the new phone gone on sale than",
+    "had the phone gone on sale than"
+   ],
+   "vi": "No sooner had + S + V3/V-ed + than — ngay khi … thì (đảo ngữ, vế sau nối bằng than)",
+   "explanation": "Sau 'No sooner' bắt buộc đảo trợ động từ 'had' lên trước chủ ngữ và dùng quá khứ phân từ: 'had the new phone gone on sale'. Từ khóa THAN cho biết vế thứ hai phải nối bằng 'than' chứ không phải 'when' — 'when' chỉ đi với 'hardly/scarcely/barely'. Lỗi thường gặp: viết 'went' thay vì 'gone', hoặc quên 'than' và nối bằng dấu phẩy. Đáp án đầy đủ: No sooner had the new phone gone on sale than the shop's entire stock sold out."
+  },
+  {
+   "id": "rw-ch-01-3",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "HARDLY",
+   "orig": "Yesterday the lecturer had only just begun speaking when the fire alarm went off and everyone had to leave.",
+   "stem": "Yesterday,",
+   "tail": "the fire alarm went off and everyone had to leave.",
+   "answer": "hardly had the lecturer begun speaking when",
+   "accept": [
+    "hardly had the lecturer begun speaking when",
+    "hardly had the lecturer begun to speak when",
+    "hardly had the lecturer started speaking when",
+    "hardly had the lecturer started to speak when",
+    "hardly had the lecturer begun his talk when",
+    "hardly had the lecturer begun her talk when"
+   ],
+   "vi": "Hardly had + S + V3/V-ed + when + S + V-ed — vừa mới … thì (đảo ngữ)",
+   "explanation": "'Had only just begun … when' viết lại thành đảo ngữ 'Hardly had + S + V3/V-ed + when + mệnh đề quá khứ đơn'. Từ khóa HARDLY đứng đầu mệnh đề mang nghĩa phủ định nên 'had' phải nhảy lên trước chủ ngữ 'the lecturer', và vế sau bắt buộc nối bằng 'when' (không phải 'than'). Lỗi thường gặp: giữ trật tự thường 'hardly the lecturer had begun' hoặc dùng 'than'. Đáp án đầy đủ: Yesterday, hardly had the lecturer begun speaking when the fire alarm went off and everyone had to leave."
+  },
+  {
+   "id": "rw-ch-01-4",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "WHEN",
+   "orig": "The orchestra had barely started playing before a phone started ringing in the front row.",
+   "stem": "Hardly",
+   "tail": "a phone started ringing in the front row.",
+   "answer": "had the orchestra started playing when",
+   "accept": [
+    "had the orchestra started playing when",
+    "had the orchestra started to play when",
+    "had the orchestra begun playing when",
+    "had the orchestra begun to play when"
+   ],
+   "vi": "Hardly had + S + V3/V-ed + when — vừa mới … thì; barely … before ↔ hardly … when",
+   "explanation": "'Had barely started … before' tương đương đảo ngữ 'Hardly had + S + V3/V-ed + when + mệnh đề quá khứ đơn'. Khi 'Hardly' đã đứng ở đầu câu (stem), phần điền phải đảo 'had' lên trước 'the orchestra' và kết thúc bằng từ khóa WHEN để nối vế thứ hai. Lỗi thường gặp: viết 'had the orchestra started playing than' (nhầm với no sooner) hoặc lặp lại 'barely' trong câu. Đáp án đầy đủ: Hardly had the orchestra started playing when a phone started ringing in the front row."
+  },
+  {
+   "id": "rw-ch-01-5",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SCARCELY",
+   "orig": "That evening, we had barely finished putting up the tent when the first drops of rain began to fall.",
+   "stem": "That evening,",
+   "tail": "the tent when the first drops of rain began to fall.",
+   "answer": "scarcely had we finished putting up",
+   "accept": [
+    "scarcely had we finished putting up",
+    "scarcely had we put up",
+    "scarcely had we finished pitching",
+    "scarcely had we finished setting up",
+    "scarcely had we set up",
+    "scarcely had we finished erecting",
+    "scarcely had we pitched"
+   ],
+   "vi": "Scarcely had + S + V3/V-ed + when — vừa mới … thì (đảo ngữ, đồng nghĩa hardly/barely)",
+   "explanation": "'Scarcely' cùng nhóm với 'hardly' và 'barely': khi đứng đầu mệnh đề, nó kéo trợ động từ 'had' lên trước chủ ngữ 'we' và vế sau nối bằng 'when'. Từ khóa SCARCELY thay cho 'barely' trong câu gốc, nên ta viết 'scarcely had we finished putting up the tent when …'. Lỗi thường gặp: giữ nguyên 'we had scarcely finished' sau dấu phẩy (không sai ngữ pháp nhưng không phải đảo ngữ mà đề yêu cầu) hoặc dùng 'than'. Đáp án đầy đủ: That evening, scarcely had we finished putting up the tent when the first drops of rain began to fall."
+  },
+  {
+   "id": "rw-ch-01-6",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "UNTIL",
+   "orig": "The villagers only realised how serious the flooding was after the water reached the second floor.",
+   "stem": "Not",
+   "tail": "the villagers realise how serious the flooding was.",
+   "answer": "until the water reached the second floor did",
+   "accept": [
+    "until the water reached the second floor did"
+   ],
+   "vi": "Not until + mệnh đề + did + S + V(nguyên mẫu) — mãi đến khi … mới (đảo ngữ)",
+   "explanation": "'Only … after' viết lại thành 'Not until + mệnh đề thời gian + trợ động từ + S + V'. Từ khóa UNTIL đi ngay sau 'Not' để tạo cụm 'Not until the water reached the second floor', và vì cụm phủ định này đứng đầu câu nên mệnh đề chính phải đảo: 'did the villagers realise' (động từ về nguyên mẫu). Lỗi thường gặp: đảo ngữ ở mệnh đề thời gian ('Not until did the water reach') hoặc viết 'did the villagers realised'. Đáp án đầy đủ: Not until the water reached the second floor did the villagers realise how serious the flooding was."
+  },
+  {
+   "id": "rw-ch-01-7",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "DID",
+   "orig": "The students learned who had won the scholarship only when the results were published online.",
+   "stem": "Not until",
+   "tail": "the students learn who had won the scholarship.",
+   "answer": "the results were published online did",
+   "accept": [
+    "the results were published online did",
+    "the results had been published online did",
+    "the results came out online did",
+    "the results appeared online did",
+    "the results were posted online did",
+    "the results went online did",
+    "the results had come out online did"
+   ],
+   "vi": "Not until + mệnh đề + did + S + V — mãi đến khi … mới (đảo ngữ ở mệnh đề chính)",
+   "explanation": "Sau 'Not until + mệnh đề thời gian', mệnh đề chính phải đảo ngữ với trợ động từ đứng trước chủ ngữ: 'did the students learn'. Từ khóa DID cho biết trợ động từ quá khứ của mệnh đề chính, còn mệnh đề thời gian 'the results were published online' giữ trật tự bình thường, không đảo. Lỗi thường gặp: đặt 'did' vào mệnh đề thời gian ('Not until did the results …') hoặc viết 'did the students learned'. Đáp án đầy đủ: Not until the results were published online did the students learn who had won the scholarship."
+  },
+  {
+   "id": "rw-ch-01-8",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "ONLY",
+   "orig": "The pilot waited until the fog had lifted completely before he took off.",
+   "stem": "The pilot waited until the fog had lifted completely, and",
+   "tail": "",
+   "answer": "only then did he take off",
+   "accept": [
+    "only then did he take off",
+    "only then did he take off.",
+    "only then did the plane take off",
+    "only then did the plane take off.",
+    "only then did the pilot take off",
+    "only then did the pilot take off."
+   ],
+   "vi": "only then + did + S + V(nguyên mẫu) — chỉ đến lúc đó … mới (đảo ngữ sau only + trạng từ)",
+   "explanation": "'Only' đứng đầu mệnh đề kèm trạng từ thời gian ('only then', 'only after', 'only when') buộc mệnh đề đó phải đảo ngữ: 'only then did he take off'. Từ khóa ONLY kết hợp với 'then' để diễn đạt 'sau khi sương tan hết, chỉ lúc đó anh ấy mới cất cánh', đúng nghĩa 'waited until … before'. Lỗi thường gặp: viết 'only then he took off' (không đảo) hoặc 'only then did he took off' (không đưa động từ về nguyên mẫu). Đáp án đầy đủ: The pilot waited until the fog had lifted completely, and only then did he take off."
+  },
+  {
+   "id": "rw-ch-01-9",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "ONLY",
+   "orig": "The new library offers free Wi-Fi, and it also lends laptops to students who cannot afford one.",
+   "stem": "Not",
+   "tail": "free Wi-Fi, but it also lends laptops to students who cannot afford one.",
+   "answer": "only does the new library offer",
+   "accept": [
+    "only does the new library offer",
+    "only does the new library provide",
+    "only does the new library give"
+   ],
+   "vi": "Not only + trợ động từ + S + V, but + S + also … — không những … mà còn (đảo ngữ)",
+   "explanation": "'A, and it also B' viết lại thành 'Not only + trợ động từ + S + V, but + S + also + V'. Từ khóa ONLY đi sau 'Not' tạo cụm phủ định 'Not only' ở đầu câu, nên phải mượn trợ động từ 'does' (thì hiện tại đơn, chủ ngữ số ít) đặt trước 'the new library' và động từ trở về nguyên mẫu 'offer'. Lỗi thường gặp: 'Not only the new library offers' (không đảo) hoặc 'Not only does the new library offers' (không bỏ -s). Đáp án đầy đủ: Not only does the new library offer free Wi-Fi, but it also lends laptops to students who cannot afford one."
+  },
+  {
+   "id": "rw-ch-01-10",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "ONCE",
+   "orig": "Throughout the long trial, the defendant never looked at the victim's family even for a moment.",
+   "stem": "Throughout the long trial,",
+   "tail": "at the victim's family.",
+   "answer": "not once did the defendant look",
+   "accept": [
+    "not once did the defendant look",
+    "not once did the defendant glance",
+    "not once did the defendant ever look",
+    "not once did the defendant even look"
+   ],
+   "vi": "Not once + did + S + V(nguyên mẫu) — không một lần nào (đảo ngữ, nhấn mạnh never)",
+   "explanation": "'Never … even for a moment' được nhấn mạnh bằng cụm phủ định 'Not once' đặt đầu mệnh đề, kéo theo đảo ngữ 'did the defendant look'. Từ khóa ONCE buộc dùng 'not once' (không một lần nào), và vì đây là trạng ngữ phủ định đứng trước chủ ngữ nên trợ động từ 'did' đi trước, 'looked' về nguyên mẫu 'look'. Lỗi thường gặp: 'not once the defendant looked' hoặc 'once did not the defendant look'. Đáp án đầy đủ: Throughout the long trial, not once did the defendant look at the victim's family."
+  },
+  {
+   "id": "rw-ch-01-11",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "CIRCUMSTANCES",
+   "orig": "You must never open the laboratory door while the red warning light is flashing, whatever happens.",
+   "stem": "Under",
+   "tail": "the laboratory door while the red warning light is flashing.",
+   "answer": "no circumstances must you open",
+   "accept": [
+    "no circumstances must you open",
+    "no circumstances should you open",
+    "no circumstances are you to open",
+    "no circumstances may you open",
+    "no circumstances can you open",
+    "no circumstances are you allowed to open",
+    "no circumstances are you permitted to open"
+   ],
+   "vi": "Under no circumstances + trợ động từ/modal + S + V — trong bất kỳ hoàn cảnh nào cũng không được (đảo ngữ)",
+   "explanation": "'Must never … whatever happens' tương đương cụm cấm đoán tuyệt đối 'Under no circumstances', và khi cụm này đứng đầu câu, modal 'must' phải đảo lên trước chủ ngữ 'you'. Từ khóa CIRCUMSTANCES đi sau 'Under no' để tạo thành cụm cố định, các modal 'should/may' hoặc 'are you to' cũng được chấp nhận vì cùng nghĩa cấm. Lỗi thường gặp: 'Under no circumstances you must open' (không đảo) hoặc thêm 'never' thành phủ định kép. Đáp án đầy đủ: Under no circumstances must you open the laboratory door while the red warning light is flashing."
+  },
+  {
+   "id": "rw-ch-01-12",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "ACCOUNT",
+   "orig": "Passengers are strictly forbidden to lean out of the windows while the train is moving.",
+   "stem": "On",
+   "tail": "of the windows while the train is moving.",
+   "answer": "no account must passengers lean out",
+   "accept": [
+    "no account must passengers lean out",
+    "no account should passengers lean out",
+    "no account are passengers to lean out",
+    "no account may passengers lean out",
+    "no account can passengers lean out",
+    "no account are passengers allowed to lean out",
+    "no account are passengers permitted to lean out"
+   ],
+   "vi": "On no account + modal + S + V — tuyệt đối không được (đảo ngữ, biển cấm/nội quy)",
+   "explanation": "'Be strictly forbidden to V' viết lại bằng cụm 'On no account + modal + S + V' — cách nói cấm đoán mạnh thường thấy trong nội quy. Từ khóa ACCOUNT tạo cụm cố định 'On no account', và vì cụm phủ định này mở đầu câu nên modal ('must/should/may') phải đứng trước chủ ngữ 'passengers'. Lỗi thường gặp: 'On no account passengers must lean' (không đảo) hoặc viết 'On no accounts'. Đáp án đầy đủ: On no account must passengers lean out of the windows while the train is moving."
+  },
+  {
+   "id": "rw-ch-01-13",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "LITTLE",
+   "orig": "She waved goodbye cheerfully at the station, unaware that she would never see her brother again.",
+   "stem": "She waved goodbye cheerfully at the station;",
+   "tail": "she would never see her brother again.",
+   "answer": "little did she know that",
+   "accept": [
+    "little did she know that",
+    "little did she realise that",
+    "little did she realize that",
+    "little did she suspect that",
+    "little did she know",
+    "little did she realise",
+    "little did she realize",
+    "little did she suspect",
+    "little did she imagine that",
+    "little did she imagine"
+   ],
+   "vi": "Little did + S + know/realise (that) — nào ngờ, đâu có biết rằng (đảo ngữ với little)",
+   "explanation": "'Unaware that …' viết lại bằng cụm đảo ngữ 'Little did + S + know/realise + (that) + mệnh đề' — 'little' ở đây mang nghĩa phủ định (hầu như không), nên trợ động từ 'did' phải đứng trước chủ ngữ 'she'. Từ khóa LITTLE đứng đầu mệnh đề thứ hai sau dấu chấm phẩy, tạo sắc thái 'nào ngờ' rất thường gặp trong văn kể chuyện. Lỗi thường gặp: 'little she knew that' (không đảo) hoặc 'little did she knew' (không đưa về nguyên mẫu). Đáp án đầy đủ: She waved goodbye cheerfully at the station; little did she know that she would never see her brother again."
+  },
+  {
+   "id": "rw-ch-01-14",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "SELDOM",
+   "orig": "Even with his family, our grandfather almost never talks about the years he spent as a soldier.",
+   "stem": "Even with his family,",
+   "tail": "the years he spent as a soldier.",
+   "answer": "seldom does our grandfather talk about",
+   "accept": [
+    "seldom does our grandfather talk about",
+    "seldom does our grandfather speak about",
+    "seldom does our grandfather speak of",
+    "seldom does our grandfather talk of",
+    "seldom does our grandfather ever talk about",
+    "seldom does our grandfather ever speak about",
+    "seldom does our grandfather mention"
+   ],
+   "vi": "Seldom + does + S + V(nguyên mẫu) — hiếm khi (đảo ngữ với trạng từ tần suất phủ định)",
+   "explanation": "'Almost never' tương đương trạng từ tần suất phủ định 'seldom'; khi đưa 'seldom' lên đầu mệnh đề để nhấn mạnh, phải mượn trợ động từ 'does' đặt trước chủ ngữ 'our grandfather' và đưa 'talks' về nguyên mẫu 'talk'. Từ khóa SELDOM buộc dùng cấu trúc này thay cho trật tự thường 'our grandfather seldom talks'. Lỗi thường gặp: 'seldom our grandfather talks about' hoặc 'seldom does our grandfather talks about'. Đáp án đầy đủ: Even with his family, seldom does our grandfather talk about the years he spent as a soldier."
+  },
+  {
+   "id": "rw-ch-01-15",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "RARELY",
+   "orig": "In the desert, temperatures hardly ever drop below thirty degrees during the summer months, even at night.",
+   "stem": "In the desert,",
+   "tail": "thirty degrees during the summer months, even at night.",
+   "answer": "rarely do temperatures drop below",
+   "accept": [
+    "rarely do temperatures drop below",
+    "rarely do the temperatures drop below",
+    "rarely do temperatures fall below",
+    "rarely do the temperatures fall below",
+    "rarely do temperatures ever drop below",
+    "rarely do temperatures go below",
+    "rarely do the temperatures go below",
+    "rarely do temperatures ever fall below"
+   ],
+   "vi": "Rarely + do + S + V(nguyên mẫu) — hiếm khi (đảo ngữ; hardly ever ↔ rarely)",
+   "explanation": "'Hardly ever' đồng nghĩa với 'rarely'; khi 'rarely' đứng đầu mệnh đề, mệnh đề phải đảo ngữ với trợ động từ 'do' (hiện tại đơn, chủ ngữ số nhiều 'temperatures') đứng trước chủ ngữ. Từ khóa RARELY thay cho 'hardly ever' và kéo theo đảo ngữ 'rarely do temperatures drop below'. Lỗi thường gặp: 'rarely temperatures drop' (không đảo) hoặc dùng 'does' với chủ ngữ số nhiều. Đáp án đầy đủ: In the desert, rarely do temperatures drop below thirty degrees during the summer months, even at night."
+  },
+  {
+   "id": "rw-ch-01-16",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "NEVER",
+   "orig": "The city had not experienced such a violent storm before that terrible night in October.",
+   "stem": "Before that terrible night in October,",
+   "tail": "such a violent storm.",
+   "answer": "never had the city experienced",
+   "accept": [
+    "never had the city experienced",
+    "never before had the city experienced",
+    "never had the city seen",
+    "never before had the city seen",
+    "never had the city witnessed",
+    "never before had the city witnessed",
+    "never had the city been hit by",
+    "never before had the city been hit by"
+   ],
+   "vi": "Never (before) had + S + V3/V-ed — chưa bao giờ … (đảo ngữ với never, quá khứ hoàn thành)",
+   "explanation": "'Had not experienced … before' viết lại bằng đảo ngữ 'Never had + S + V3/V-ed' — 'never' phủ định đứng đầu mệnh đề nên trợ động từ 'had' phải đi trước chủ ngữ 'the city'. Từ khóa NEVER thay cho 'not … before' và giữ nguyên thì quá khứ hoàn thành với quá khứ phân từ 'experienced'. Lỗi thường gặp: 'never the city had experienced' (không đảo) hoặc thêm 'not' thành phủ định kép 'never had the city not experienced'. Đáp án đầy đủ: Before that terrible night in October, never had the city experienced such a violent storm."
+  },
+  {
+   "id": "rw-ch-01-17",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "NOWHERE",
+   "orig": "Believe me, you cannot find fresher seafood anywhere else in the country than in this small fishing village.",
+   "stem": "Believe me,",
+   "tail": "fresher seafood than in this small fishing village.",
+   "answer": "nowhere else in the country can you find",
+   "accept": [
+    "nowhere else in the country can you find",
+    "nowhere else in the country will you find",
+    "nowhere else in the country could you find",
+    "nowhere else in the country can one find",
+    "nowhere else in the country will one find",
+    "nowhere else in the country can you get",
+    "nowhere else in the country is there",
+    "nowhere else in the country can you buy"
+   ],
+   "vi": "Nowhere (else) + trợ động từ/modal + S + V — không nơi nào khác … (đảo ngữ với trạng từ nơi chốn phủ định)",
+   "explanation": "'Cannot find … anywhere else' viết lại thành 'Nowhere else + modal + S + V': trạng từ nơi chốn phủ định 'nowhere' đứng đầu mệnh đề nên 'can' phải đảo lên trước chủ ngữ 'you'. Từ khóa NOWHERE thay cho 'not … anywhere', và cụm 'else in the country' đi kèm ngay sau nó trước khi đảo. Lỗi thường gặp: 'nowhere else in the country you can find' (không đảo) hoặc giữ 'cannot' thành phủ định kép 'nowhere … can't you find'. Đáp án đầy đủ: Believe me, nowhere else in the country can you find fresher seafood than in this small fishing village."
+  },
+  {
+   "id": "rw-ch-01-18",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "TIME",
+   "orig": "During the negotiations, the company never admitted that the factory had been polluting the river.",
+   "stem": "During the negotiations, at",
+   "tail": "that the factory had been polluting the river.",
+   "answer": "no time did the company admit",
+   "accept": [
+    "no time did the company admit",
+    "no time did the company acknowledge",
+    "no time did the company concede",
+    "no time did the company ever admit",
+    "no time did the company ever acknowledge",
+    "no time did the company accept"
+   ],
+   "vi": "At no time + did + S + V(nguyên mẫu) — chưa lúc nào, không lúc nào (đảo ngữ, trang trọng)",
+   "explanation": "'Never' trong văn phong trang trọng (biên bản, tuyên bố) thường được thay bằng cụm 'At no time' đặt đầu mệnh đề, và cụm phủ định này buộc trợ động từ 'did' đứng trước chủ ngữ 'the company'. Từ khóa TIME hoàn thành cụm 'at no time', động từ 'admitted' trở về nguyên mẫu 'admit'. Lỗi thường gặp: 'at no time the company admitted' (không đảo) hoặc 'at no time did the company admitted'. Đáp án đầy đủ: During the negotiations, at no time did the company admit that the factory had been polluting the river."
+  },
+  {
+   "id": "rw-ch-01-19",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "WAY",
+   "orig": "The council insists that the new car park will not harm the ancient oak trees in any way.",
+   "stem": "The council insists that in",
+   "tail": "the ancient oak trees.",
+   "answer": "no way will the new car park harm",
+   "accept": [
+    "no way will the new car park harm",
+    "no way will the new car park damage",
+    "no way will the new car park affect",
+    "no way can the new car park harm",
+    "no way would the new car park harm",
+    "no way will the new car park hurt",
+    "no way will the new car park endanger"
+   ],
+   "vi": "In no way + trợ động từ + S + V — không hề, không theo bất kỳ cách nào (đảo ngữ trong mệnh đề that)",
+   "explanation": "'Will not … in any way' viết lại thành 'In no way + will + S + V': cụm phủ định 'in no way' được đưa lên đầu mệnh đề nên trợ động từ 'will' phải đứng trước chủ ngữ 'the new car park'. Từ khóa WAY hoàn thành cụm 'in no way', và đảo ngữ vẫn áp dụng dù mệnh đề này nằm sau 'insists that'. Lỗi thường gặp: 'in no way the new car park will harm' (không đảo) hoặc giữ 'will not' thành phủ định kép. Đáp án đầy đủ: The council insists that in no way will the new car park harm the ancient oak trees."
+  },
+  {
+   "id": "rw-ch-01-20",
+   "level": "ch",
+   "cat": "kwt",
+   "catLabel": "Key word transformation",
+   "key": "NOR",
+   "orig": "Minh has never tried skiing, and his sister hasn't either, so they are both nervous about the trip.",
+   "stem": "Minh has never tried skiing,",
+   "tail": "they are both nervous about the trip.",
+   "answer": "nor has his sister, so",
+   "accept": [
+    "nor has his sister, so",
+    "nor has his sister so",
+    "and nor has his sister, so",
+    "and nor has his sister so",
+    "nor has his sister tried it, so",
+    "nor has his sister tried it so",
+    "nor has his sister ever tried it, so",
+    "nor has his sister ever tried it so",
+    "nor has his sister ever done so, so",
+    "nor has his sister tried skiing, so"
+   ],
+   "vi": "…, nor + trợ động từ + S — … cũng không (đảo ngữ sau nor/neither nối hai ý phủ định)",
+   "explanation": "'S hasn't either' được viết gọn bằng 'nor + trợ động từ + S': sau 'nor' (cũng không) bắt buộc đảo trợ động từ 'has' lên trước chủ ngữ 'his sister', và không lặp lại 'not' vì 'nor' đã mang nghĩa phủ định. Từ khóa NOR nối hai ý phủ định cùng thì hiện tại hoàn thành với vế trước 'Minh has never tried skiing'. Lỗi thường gặp: 'nor his sister has' (không đảo) hoặc 'nor hasn't his sister' (phủ định kép). Đáp án đầy đủ: Minh has never tried skiing, nor has his sister, so they are both nervous about the trip."
+  }
+ ]
+}

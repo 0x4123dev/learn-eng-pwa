@@ -1,10 +1,13 @@
 import { requireAuth, json, err } from '../_lib.js';
 
-// POST /api/admin/user-flags  { userId, allowBot?, clearDevice?, disabled? }
+// POST /api/admin/user-flags  { userId, allowBot?, allowChuyen?, clearDevice?, disabled? }
 // Per-user switches, set from the admin dashboard.
 //   allowBot     — early access: opens Cướp Đêm and the farm for this child.
 //                  (Historic name: it once revealed a practice-vs-bot button;
 //                  both bot modes were removed 2026-09.)
+//   allowChuyen  — turns the Chuyên tier on in Word Form and Rewrite: rounds
+//                  draw from the B2–C1 items as well as the Không chuyên bank.
+//                  Its own switch, independent of allowBot (db/031).
 //   clearDevice  — releases this account's hold on its device's signup slot.
 //   disabled     — switches the account off everywhere (see db/005).
 // Deliberately admin-only — a child must not be able to grant either to
@@ -26,11 +29,12 @@ export async function onRequestPost({ request, env }) {
   if (!Number.isFinite(userId) || userId <= 0) return err('Bad userId');
 
   const wantsBot = typeof body.allowBot !== 'undefined';
+  const wantsChuyen = typeof body.allowChuyen !== 'undefined';
   const wantsClear = !!body.clearDevice;
   const wantsDisable = typeof body.disabled !== 'undefined';
-  if (!wantsBot && !wantsClear && !wantsDisable) return err('Nothing to change');
+  if (!wantsBot && !wantsChuyen && !wantsClear && !wantsDisable) return err('Nothing to change');
 
-  const user = await env.DB.prepare('SELECT id, role, allow_bot, disabled FROM users WHERE id = ?')
+  const user = await env.DB.prepare('SELECT id, role, allow_bot, allow_chuyen, disabled FROM users WHERE id = ?')
     .bind(userId).first();
   if (!user) return err('User not found', 404);
 
@@ -43,7 +47,12 @@ export async function onRequestPost({ request, env }) {
     if (user.role === 'admin') return err('Không thể khoá tài khoản admin', 400, { code: 'admin_disable' });
   }
 
-  const out = { ok: true, userId, allowBot: !!user.allow_bot, disabled: !!user.disabled };
+  const out = { ok: true, userId, allowBot: !!user.allow_bot, allowChuyen: !!user.allow_chuyen, disabled: !!user.disabled };
+  if (wantsChuyen) {
+    const allowChuyen = body.allowChuyen ? 1 : 0;
+    await env.DB.prepare('UPDATE users SET allow_chuyen = ? WHERE id = ?').bind(allowChuyen, userId).run();
+    out.allowChuyen = !!allowChuyen;
+  }
   if (wantsBot) {
     const allowBot = body.allowBot ? 1 : 0;
     await env.DB.prepare('UPDATE users SET allow_bot = ? WHERE id = ?').bind(allowBot, userId).run();

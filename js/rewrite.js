@@ -34,8 +34,21 @@ function rwShuffle(arr, seed) {
   return a;
 }
 
-function rewriteBank() {
+// The whole rewritten sentence. A key-word transformation (level "ch") has
+// text AFTER the gap too — "Much to ___ her promotion." — so stem + answer is
+// not the sentence for those; tail must follow.
+function rwFullSentence(q) {
+  return (q.stem + ' ' + q.answer + (q.tail ? ' ' + q.tail : '')).replace(/\s+([.,;!?])/g, '$1');
+}
+function rewriteBankAll() {
   return (typeof REWRITE_QUESTIONS !== 'undefined') ? REWRITE_QUESTIONS : [];
+}
+// The tier switch applied (tierFilter lives in js/wordform.js, loaded first;
+// guarded so this file still runs alone in tests). A Chuyên key-word
+// transformation does not exist for a child whose switch is off.
+function rewriteBank() {
+  const all = rewriteBankAll();
+  return (typeof tierFilter === 'function') ? tierFilter(all) : all.filter(q => q.level !== 'ch');
 }
 function rewriteById(id) {
   return rewriteBank().find(q => q.id === id) || null;
@@ -171,6 +184,7 @@ function renderRewritePractice() {
         <div class="phrases-hero-icon">✍️</div>
         <h1>Rewrite</h1>
         <p class="phrases-sub">Viết lại câu sao cho nghĩa không đổi — ${bank.length} câu, tự gõ phần hoàn thành, có giải thích công thức rõ ràng.</p>
+        ${typeof tierBadgeHTML === 'function' ? tierBadgeHTML() : ''}
       </div>
 
       <!-- One size only. Every Rewrite question is typed, so a 5-question
@@ -273,7 +287,11 @@ function startRewriteQuiz(n) {
     // practice, until each is answered right five times running
     // (js/wrong-priority.js); the rest is the usual seeded draw.
     const size = Math.min(n, bank.length);
-    qs = (typeof prioPick === 'function') ? prioPick('rw', bank, size) : rwShuffle(bank, seed).slice(0, size);
+    // Half Chuyên, half Không chuyên when the tier is on (tierDraw in
+    // js/wordform.js); the owed-first rule inside prioPick still applies to
+    // whatever pool it is handed.
+    const pick = (list, k) => (typeof prioPick === 'function') ? prioPick('rw', list, k) : rwShuffle(list, seed).slice(0, k);
+    qs = (typeof tierDraw === 'function') ? tierDraw(bank, size, pick) : pick(bank, size);
   }
   _rwQuiz = { questions: qs, idx: 0, answers: new Array(qs.length).fill(null), qs: (n === 'all' ? 'all' : Number(n)) };
   renderRwQuestion();
@@ -344,7 +362,7 @@ function renderRwQuestion() {
 
   let explain = '';
   if (answered) {
-    const fullSentence = q.stem + ' ' + q.answer;
+    const fullSentence = rwFullSentence(q);
     const header = isCorrect ? '✅ ' : `❌ Đáp án: <b>${rwEsc(fullSentence)}</b>.<br>`;
     explain = `<div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
       <div class="phrases-vi">📘 ${rwEsc(q.vi)}</div>
@@ -361,8 +379,9 @@ function renderRwQuestion() {
         <div class="grammar-progress-bar"><div class="grammar-progress-fill" style="width:${Math.round(((st.idx) / total) * 100)}%"></div></div>
       </div>
       <div class="grammar-question-card">
-        <div class="rw-orig">${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}</div>
-        <div class="rw-stem">→ <b>${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem) : rwEsc(q.stem)}</b> <span class="phrases-blank">_____</span></div>
+        <div class="rw-orig">${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}${q.key ? ` <span class="rw-key" title="Dùng đúng từ này, không đổi dạng">${rwEsc(q.key)}</span>` : ''}</div>
+        <div class="rw-stem">→ <b>${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem) : rwEsc(q.stem)}</b> <span class="phrases-blank">_____</span>${q.tail ? ` <b>${answered && typeof tapwordsWrap === 'function' ? tapwordsWrap(q.tail) : rwEsc(q.tail)}</b>` : ''}</div>
+        ${q.key ? `<div class="rw-key-hint">Viết 3–8 từ, phải dùng <b>${rwEsc(q.key)}</b> nguyên dạng.</div>` : ''}
         ${bodyHtml}
         ${explain}
       </div>
@@ -438,7 +457,7 @@ function finishRewriteQuiz() {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem + ' ' + q.answer) : rwEsc(q.stem + ' ' + q.answer)}</b></div>
+        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(rwFullSentence(q)) : rwEsc(rwFullSentence(q))}</b></div>
         <div class="grammar-review-explain">📘 ${rwEsc(q.vi)}<br>💡 ${rwEsc(q.explanation)}</div>
       </div>`;
   }).join('');
@@ -468,7 +487,7 @@ function openRwSession(idx) {
     if (!q) return '';
     return `
       <div class="grammar-review-item wrong">
-        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.stem + ' ' + q.answer) : rwEsc(q.stem + ' ' + q.answer)}</b></div>
+        <div class="grammar-review-q">${typeof tapwordsWrap === 'function' ? tapwordsWrap(q.orig) : rwEsc(q.orig)}<br>→ <b>${typeof tapwordsWrap === 'function' ? tapwordsWrap(rwFullSentence(q)) : rwEsc(rwFullSentence(q))}</b></div>
         <div class="grammar-review-explain">📘 ${rwEsc(q.vi)}<br>💡 ${rwEsc(q.explanation)}</div>
       </div>`;
   }).join('') || `<div class="phrases-empty">Perfect session — nothing to review. 🎉</div>`;

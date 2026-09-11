@@ -1,0 +1,320 @@
+{
+  "level": "ch",
+  "file": "12",
+  "questions": [
+    {
+      "id": "wf-ch-12-1",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "TEDIOUS",
+      "q": "Even the most patient examiner admitted that the sheer ___ (TEDIOUS) of marking three hundred near-identical essays was mind-numbing.",
+      "answer": "tedium",
+      "accept": [
+        "tedium",
+        "tediousness"
+      ],
+      "vi": "TEDIOUS (tẻ nhạt, buồn chán) → tedium — sự tẻ nhạt, sự nhàm chán (danh từ)",
+      "explanation": "Chỗ trống đứng sau 'the sheer' và trước 'of' — cần DANH TỪ chỉ tính chất (the sheer tedium of …). Tính từ 'tedious' danh từ hóa bằng cách bỏ -ous và thêm -um: tedious → tedium (giống như medium, không phải -ness thông thường); 'tediousness' cũng tồn tại và được chấp nhận nhưng hiếm hơn nhiều trong văn viết. Bẫy: viết 'tediosity' hoặc để nguyên 'tedious' — tính từ không đứng sau 'the sheer … of'."
+    },
+    {
+      "id": "wf-ch-12-2",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "EXHAUST",
+      "q": "Caring for newborn twins single-handedly proved so ___ (EXHAUST) that she fell asleep at the kitchen table most evenings.",
+      "options": [
+        "exhausting",
+        "exhausted",
+        "exhaustive",
+        "exhaustingly"
+      ],
+      "correct": 0,
+      "answer": "exhausting",
+      "vi": "EXHAUST (làm kiệt sức) → exhausting — khiến kiệt sức, mệt lả (tính từ -ing)",
+      "explanation": "Sau 'proved so … that' cần TÍNH TỪ mô tả chủ ngữ 'caring for newborn twins' — việc chăm con là thứ GÂY mệt, nên dùng dạng -ing: exhausting. ✗ exhausted = bị kiệt sức, chỉ dùng cho người; ✗ exhaustive = toàn diện, cặn kẽ (an exhaustive list) — cùng gốc nhưng khác nghĩa hoàn toàn; ✗ exhaustingly = trạng từ, không đứng sau 'so … that' để mô tả chủ ngữ."
+    },
+    {
+      "id": "wf-ch-12-3",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "ACCOMPLISH",
+      "q": "Scouts described the sixteen-year-old as the most technically ___ (ACCOMPLISH) midfielder the academy had produced in a decade.",
+      "answer": "accomplished",
+      "accept": [
+        "accomplished"
+      ],
+      "vi": "ACCOMPLISH (hoàn thành, đạt được) → accomplished — điêu luyện, tài năng bậc thầy (tính từ -ed)",
+      "explanation": "Chỗ trống nằm giữa 'the most technically' và danh từ 'midfielder' — cần TÍNH TỪ ở dạng so sánh nhất, bổ nghĩa cho cầu thủ. Ở đây phân từ quá khứ 'accomplished' đã tách nghĩa khỏi động từ gốc: không phải 'được hoàn thành' mà là 'điêu luyện, lão luyện' (an accomplished pianist, a highly accomplished player). Bẫy: viết 'accomplishing' theo thói quen 'người = -ed, vật = -ing' ngược lại; hoặc dùng danh từ 'accomplishment' vào chỗ tính từ."
+    },
+    {
+      "id": "wf-ch-12-4",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "EXHAUST",
+      "q": "Nobody's stamina is ___ (EXHAUST), and by the third day on the glacier even the fittest guide in the rescue team was moving at a crawl.",
+      "answer": "inexhaustible",
+      "accept": [
+        "inexhaustible"
+      ],
+      "vi": "EXHAUST (làm cạn kiệt) → inexhaustible — vô tận, không bao giờ cạn (tính từ phủ định)",
+      "explanation": "Sau 'is' với chủ ngữ 'nobody's stamina' cần TÍNH TỪ, và vế sau (đến ngày thứ ba, ngay cả người khỏe nhất cũng lê bước) cho thấy sức bền của ai rồi cũng CẠN — tức là 'không vô tận'. Biến đổi kép: exhaust → exhaustible (có thể cạn, hậu tố -ible vì gốc Latin) → inexhaustible (tiền tố in-, không phải un-). Bẫy: viết 'exhausted' — 'nobody's stamina is exhausted' nghĩa là không ai kiệt sức, mâu thuẫn với việc cả đoàn lê bước; hoặc viết 'unexhaustible' — sai tiền tố."
+    },
+    {
+      "id": "wf-ch-12-5",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "DEMAND",
+      "q": "The novel is pleasant but ___ (DEMAND), the sort of thing you can read half-asleep on a crowded beach.",
+      "options": [
+        "demandless",
+        "undemanded",
+        "undemanding",
+        "undemandingly"
+      ],
+      "correct": 2,
+      "answer": "undemanding",
+      "vi": "DEMAND (đòi hỏi) → undemanding — nhẹ nhàng, không đòi hỏi nhiều (tính từ)",
+      "explanation": "Sau 'is pleasant but' cần một TÍNH TỪ thứ hai song song với 'pleasant', và vế sau ('đọc lơ mơ trên bãi biển') cho thấy cuốn sách KHÔNG đòi hỏi nỗ lực — cần nghĩa phủ định. Cuốn sách là chủ thể 'đòi hỏi' (chủ động) nên lấy -ing, rồi thêm tiền tố un-: demand → demanding → undemanding. ✗ undemanded = sai dạng (-ed, bị động); ✗ demandless = hậu tố -less không đi với gốc này; ✗ undemandingly = trạng từ, không đứng sau 'is … but'."
+    },
+    {
+      "id": "wf-ch-12-6",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "ALARM",
+      "q": "Critics dismissed the headline as ___ (ALARM), pointing out that teenage sleep patterns have barely changed in thirty years and that nobody is in any real danger.",
+      "answer": "alarmist",
+      "accept": [
+        "alarmist"
+      ],
+      "vi": "ALARM (báo động, làm hoảng sợ) → alarmist — thổi phồng nguy cơ, gieo hoang mang vô cớ (tính từ)",
+      "explanation": "Cấu trúc 'dismiss sth as + tính từ' cần TÍNH TỪ, và vế sau (không có gì thay đổi, không ai gặp nguy hiểm) cho thấy dòng tít bị chê là THỔI PHỒNG nguy cơ — đó chính là nghĩa của hậu tố -ist khi tạo tính từ: alarm → alarmist (giống extremist, populist). Bẫy: viết 'alarming' (đáng báo động) — người ta không 'gạt bỏ' một thứ thực sự đáng báo động, hơn nữa 'alarming' mâu thuẫn với 'nobody is in any real danger'; 'alarmed' chỉ dùng cho người bị hoảng sợ."
+    },
+    {
+      "id": "wf-ch-12-7",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "CONVINCE",
+      "q": "The defendant's alibi struck the jury as wholly ___ (CONVINCE), and they returned a guilty verdict within the hour.",
+      "answer": "unconvincing",
+      "accept": [
+        "unconvincing"
+      ],
+      "vi": "CONVINCE (thuyết phục) → unconvincing — không thuyết phục (tính từ)",
+      "explanation": "Cấu trúc 'strike sb as + tính từ' cần TÍNH TỪ mô tả 'alibi' (lời chứng ngoại phạm), và vế sau (bồi thẩm đoàn kết tội ngay) cho thấy lời khai KHÔNG thuyết phục. Lời khai là thứ 'thuyết phục' người nghe (chủ động) nên lấy dạng -ing rồi thêm un-: convince → convincing → unconvincing. Bẫy: viết 'convincing' vì quên vế sau, hoặc 'unconvinced' — dạng -ed chỉ dùng cho NGƯỜI (the jury remained unconvinced)."
+    },
+    {
+      "id": "wf-ch-12-8",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "DAUNT",
+      "q": "She remained ___ (DAUNT) by two earlier rejections and sent the manuscript to a third publisher, who accepted it within a week.",
+      "options": [
+        "daunting",
+        "undaunted",
+        "undaunting",
+        "daunted"
+      ],
+      "correct": 1,
+      "answer": "undaunted",
+      "vi": "DAUNT (làm nản chí) → undaunted — không nản lòng, không nao núng (tính từ)",
+      "explanation": "Sau động từ nối 'remained' cần TÍNH TỪ mô tả 'she'; người CHỊU tác động của hai lần bị từ chối nên dùng dạng -ed, và việc cô vẫn gửi tiếp bản thảo cho thấy cô KHÔNG nản — thêm tiền tố un-: daunt → daunted → undaunted. Cụm 'undaunted by' là collocation cố định trong báo chí. ✗ daunted = bị nản, trái với vế sau; ✗ daunting = gây nản (a daunting task), chỉ dùng cho việc; ✗ undaunting = không tồn tại."
+    },
+    {
+      "id": "wf-ch-12-9",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "DEMAND",
+      "q": "Few careers are as physically ___ (DEMAND) as ballet, where dancers train for six hours a day from early childhood.",
+      "answer": "demanding",
+      "accept": [
+        "demanding"
+      ],
+      "vi": "DEMAND (đòi hỏi) → demanding — đòi hỏi cao, nặng nhọc (tính từ -ing)",
+      "explanation": "Cấu trúc so sánh bằng 'as + tính từ + as' sau 'are' với chủ ngữ 'careers' — cần TÍNH TỪ, và 'physically' đứng trước là trạng từ bổ nghĩa cho nó. Nghề nghiệp là thứ ĐÒI HỎI (chủ động) sức lực, nên dùng phân từ hiện tại: demand → demanding. Bẫy: viết 'demanded' — dạng -ed nghĩa là 'được yêu cầu', không mô tả tính chất của công việc; hoặc dùng danh từ 'demand' vào chỗ tính từ."
+    },
+    {
+      "id": "wf-ch-12-10",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "ECSTASY",
+      "q": "The children were absolutely ___ (ECSTASY) to hear that the aquarium trip had merely been postponed rather than cancelled.",
+      "answer": "ecstatic",
+      "accept": [
+        "ecstatic"
+      ],
+      "vi": "ECSTASY (niềm vui tột độ, sự ngây ngất) → ecstatic — sung sướng tột độ, mừng rỡ khôn xiết (tính từ)",
+      "explanation": "Sau 'were absolutely' với chủ ngữ 'the children' và theo sau là 'to hear' — cần TÍNH TỪ chỉ cảm xúc của người; 'absolutely' chỉ đi với tính từ mang nghĩa cực đoan (ecstatic, thrilled, delighted), nên danh từ 'ecstasy' phải chuyển thành tính từ. Biến đổi bất quy tắc: bỏ -sy và thêm -tic: ecstasy → ecstatic (giống như lunacy → lunatic). Bẫy: viết 'ecstasic' hoặc 'ecstasied' — không tồn tại; hoặc để nguyên danh từ 'ecstasy' sau 'were absolutely'."
+    },
+    {
+      "id": "wf-ch-12-11",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "NERVE",
+      "q": "Residents were understandably ___ (NERVE) when the flood siren sounded without warning in the middle of the night.",
+      "options": [
+        "unnerving",
+        "unnervingly",
+        "nervelessly",
+        "unnerved"
+      ],
+      "correct": 3,
+      "answer": "unnerved",
+      "vi": "NERVE (thần kinh, sự can đảm) → unnerved — hoảng hốt, mất bình tĩnh (tính từ -ed)",
+      "explanation": "Sau 'were understandably' với chủ ngữ 'residents' (người dân) cần TÍNH TỪ chỉ cảm xúc của NGƯỜI, tức dạng -ed. Biến đổi kép: danh từ 'nerve' (sự can đảm) → động từ 'unnerve' (làm mất bình tĩnh, tiền tố un- ở đây mang nghĩa 'tước đi') → phân từ quá khứ 'unnerved'. ✗ unnerving = gây hoảng hốt, dùng cho sự việc (an unnerving silence), không dùng cho người dân; ✗ unnervingly = trạng từ, không làm bổ ngữ sau 'were'; ✗ nervelessly = trạng từ (một cách bình thản, không hề run) — vừa sai từ loại vừa ngược nghĩa."
+    },
+    {
+      "id": "wf-ch-12-12",
+      "level": "ch",
+      "type": "text",
+      "cat": "adv",
+      "base": "DISAPPOINT",
+      "q": "The long-awaited sequel is ___ (DISAPPOINT) thin on plot, relying on explosions to carry almost every scene.",
+      "answer": "disappointingly",
+      "accept": [
+        "disappointingly"
+      ],
+      "vi": "DISAPPOINT (làm thất vọng) → disappointingly — một cách đáng thất vọng (trạng từ)",
+      "explanation": "Chỗ trống đứng trước tính từ 'thin' (thin on plot = mỏng về cốt truyện) để bổ nghĩa cho tính từ đó — cần TRẠNG TỪ. Đi từ phân từ hiện tại: disappoint → disappointing (gây thất vọng) → disappointingly (thêm -ly), giống surprisingly, alarmingly. Bẫy: viết 'disappointed' hoặc 'disappointing' — đều là tính từ, không thể đứng trước tính từ 'thin'; 'disappointedly' là trạng từ nhưng mô tả thái độ của NGƯỜI (she sighed disappointedly), không hợp với bộ phim."
+    },
+    {
+      "id": "wf-ch-12-13",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "PROMISE",
+      "q": "Despite an ___ (PROMISE) start in which they lost their first five matches, the team finished the season as champions.",
+      "options": [
+        "unpromising",
+        "unpromised",
+        "impromising",
+        "unpromisingly"
+      ],
+      "correct": 0,
+      "answer": "unpromising",
+      "vi": "PROMISE (hứa hẹn) → unpromising — không mấy hứa hẹn, kém triển vọng (tính từ)",
+      "explanation": "Chỗ trống giữa 'an' và danh từ 'start' — cần TÍNH TỪ, và 'Despite' cùng chi tiết thua năm trận đầu cho thấy khởi đầu KHÔNG hứa hẹn — cần nghĩa phủ định. Khởi đầu là thứ 'hứa hẹn' (chủ động) nên lấy -ing rồi thêm un-: promise → promising → unpromising. ✗ unpromised = sai dạng -ed; ✗ impromising = sai tiền tố, im- chỉ đứng trước m/p của gốc Latin (impossible), 'promise' lấy un-; ✗ unpromisingly = trạng từ, không đứng trước danh từ."
+    },
+    {
+      "id": "wf-ch-12-14",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "FULFIL",
+      "q": "Many graduates drift into well-paid jobs that nevertheless leave them feeling strangely ___ (FULFIL) after a few years.",
+      "answer": "unfulfilled",
+      "accept": [
+        "unfulfilled"
+      ],
+      "vi": "FULFIL (làm thỏa mãn, hoàn thành) → unfulfilled — không thấy thỏa mãn, trống rỗng (tính từ)",
+      "explanation": "Cấu trúc 'leave sb feeling + tính từ' cần TÍNH TỪ chỉ cảm xúc của 'them' (người tốt nghiệp); 'nevertheless' đối lập với 'well-paid' cho thấy cảm giác TIÊU CỰC dù lương cao — cần nghĩa phủ định. Người chịu tác động nên dùng dạng -ed, gấp đôi l rồi thêm un-: fulfil → fulfilled → unfulfilled. Bẫy: viết 'fulfilled' vì bỏ qua 'nevertheless', hoặc 'unfulfilling' — dạng -ing mô tả CÔNG VIỆC (an unfulfilling job), không mô tả cảm giác của người."
+    },
+    {
+      "id": "wf-ch-12-15",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adv",
+      "base": "OVERWHELM",
+      "q": "Voters ___ (OVERWHELM) rejected the proposal, with fewer than one in ten supporting it in any region of the country.",
+      "options": [
+        "overwhelmed",
+        "overwhelming",
+        "overwhelmingly",
+        "overwhelmedly"
+      ],
+      "correct": 2,
+      "answer": "overwhelmingly",
+      "vi": "OVERWHELM (áp đảo, lấn át) → overwhelmingly — một cách áp đảo, với đa số tuyệt đối (trạng từ)",
+      "explanation": "Chỗ trống nằm giữa chủ ngữ 'voters' và động từ 'rejected' — cần TRẠNG TỪ chỉ cách thức (từ chối áp đảo đến mức nào). Đi qua hai bước: overwhelm → overwhelming (tính từ: áp đảo) → overwhelmingly (thêm -ly). ✗ overwhelmed = tính từ -ed chỉ cảm giác của người (choáng ngợp), không đứng giữa chủ ngữ và động từ; ✗ overwhelming = tính từ (an overwhelming majority), sai vị trí; ✗ overwhelmedly = không tồn tại, trạng từ chỉ được tạo từ dạng -ing."
+    },
+    {
+      "id": "wf-ch-12-16",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "STAGGER",
+      "q": "The airline reported a ___ (STAGGER) loss of three billion dollars, by far the largest in its ninety-year history.",
+      "answer": "staggering",
+      "accept": [
+        "staggering"
+      ],
+      "vi": "STAGGER (làm sửng sốt, choáng váng) → staggering — khổng lồ đến kinh ngạc (tính từ -ing)",
+      "explanation": "Chỗ trống giữa 'a' và danh từ 'loss' — cần TÍNH TỪ. Khoản lỗ là thứ GÂY sửng sốt cho người đọc, nên dùng phân từ hiện tại: stagger → staggering ('a staggering loss / sum / amount' là collocation thường gặp trong báo chí kinh tế). Bẫy: viết 'staggered' — dạng -ed chỉ dùng cho NGƯỜI bị sửng sốt (investors were staggered), không dùng để mô tả khoản lỗ."
+    },
+    {
+      "id": "wf-ch-12-17",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "BEWILDER",
+      "q": "Visitors to the old quarter face a ___ (BEWILDER) tangle of alleys, few of which appear on any official map.",
+      "options": [
+        "bewildered",
+        "bewildering",
+        "bewilderment",
+        "bewilderingly"
+      ],
+      "correct": 1,
+      "answer": "bewildering",
+      "vi": "BEWILDER (làm hoang mang, rối trí) → bewildering — rối rắm, khiến người ta hoang mang (tính từ -ing)",
+      "explanation": "Chỗ trống giữa 'a' và danh từ 'tangle' (mớ rối) — cần TÍNH TỪ. Mê cung ngõ hẻm là thứ GÂY hoang mang cho du khách, nên dùng dạng -ing: bewilder → bewildering. ✗ bewildered = bị hoang mang, chỉ dùng cho người (bewildered visitors); ✗ bewilderment = danh từ (sự hoang mang), không thể đứng trước 'tangle'; ✗ bewilderingly = trạng từ, chỉ bổ nghĩa cho tính từ (bewilderingly complex)."
+    },
+    {
+      "id": "wf-ch-12-18",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "SETTLE",
+      "q": "There was something deeply ___ (SETTLE) about the way the portrait's eyes seemed to follow visitors around the room.",
+      "answer": "unsettling",
+      "accept": [
+        "unsettling"
+      ],
+      "vi": "SETTLE (làm yên ổn) → unsettling — gây bất an, rờn rợn (tính từ)",
+      "explanation": "Cấu trúc 'something + tính từ + about' cần TÍNH TỪ mô tả sự việc (ánh mắt bức chân dung), và nghĩa câu (mắt dõi theo người xem) là điều GÂY bất an — cần nghĩa phủ định. Biến đổi kép: settle → unsettle (động từ: làm bất an) → unsettling (phân từ hiện tại, bỏ e thêm -ing). Bẫy: viết 'unsettled' — dạng -ed chỉ cảm giác của NGƯỜI (visitors felt unsettled) hoặc trạng thái chưa ổn định (unsettled weather), không mô tả 'something … about'."
+    },
+    {
+      "id": "wf-ch-12-19",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "adj",
+      "base": "MISLEAD",
+      "q": "The advertisement was withdrawn after regulators ruled that its claims about rapid weight loss were seriously ___ (MISLEAD).",
+      "options": [
+        "misled",
+        "misleaded",
+        "misleadingly",
+        "misleading"
+      ],
+      "correct": 3,
+      "answer": "misleading",
+      "vi": "MISLEAD (đánh lừa, gây hiểu lầm) → misleading — gây hiểu lầm, lập lờ (tính từ -ing)",
+      "explanation": "Sau 'were seriously' với chủ ngữ 'its claims' (các tuyên bố quảng cáo) — cần TÍNH TỪ. Các tuyên bố là thứ ĐÁNH LỪA người xem (chủ động), nên dùng dạng -ing: mislead → misleading ('misleading claims / advertising' là thuật ngữ pháp lý quen thuộc). ✗ misled = phân từ bất quy tắc (mislead – misled – misled), chỉ dùng cho NGƯỜI bị lừa (consumers were misled); ✗ misleaded = sai, động từ này bất quy tắc; ✗ misleadingly = trạng từ, không làm bổ ngữ sau 'were'."
+    },
+    {
+      "id": "wf-ch-12-20",
+      "level": "ch",
+      "type": "text",
+      "cat": "adj",
+      "base": "PATRONISE",
+      "q": "Many older viewers found the presenter's tone ___ (PATRONISE), as if they could not be trusted to follow a simple argument.",
+      "answer": "patronising",
+      "accept": [
+        "patronising",
+        "patronizing"
+      ],
+      "vi": "PATRONISE (đối xử kẻ cả, coi thường) → patronising — kẻ cả, trịch thượng (tính từ -ing)",
+      "explanation": "Cấu trúc 'find + tân ngữ + tính từ' (found the tone …) cần TÍNH TỪ mô tả 'tone' (giọng điệu) của người dẫn chương trình. Giọng điệu là thứ GÂY cảm giác bị coi thường cho khán giả (chủ động), nên dùng phân từ hiện tại: patronise → patronising (bỏ e, thêm -ing; Mỹ viết patronizing). Bẫy: viết 'patronised' — dạng -ed mô tả NGƯỜI bị đối xử kẻ cả (viewers felt patronised), không mô tả giọng điệu."
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "level": "ch",
+  "file": "02",
+  "questions": [
+    {
+      "id": "wf-ch-02-1",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "RARE",
+      "q": "Because of its ___ (RARE), a first edition of the novel can fetch several thousand pounds at auction.",
+      "answer": "rarity",
+      "accept": [
+        "rarity"
+      ],
+      "vi": "RARE (hiếm - tính từ) → rarity — sự hiếm có, độ hiếm (danh từ)",
+      "explanation": "Chỗ trống đứng sau tính từ sở hữu 'its' và trước dấu phẩy, cần một DANH TỪ chỉ tính chất. Tính từ 'rare' → danh từ 'rarity' (bỏ -e, thêm -ity). ✗ rareness về ngữ pháp có tồn tại nhưng gần như không dùng; ✗ rarely = trạng từ — không đứng sau 'its'."
+    },
+    {
+      "id": "wf-ch-02-2",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "FIERCE",
+      "q": "The ___ (FIERCE) of the competition for scholarships took even the most confident applicants by surprise.",
+      "options": [
+        "fierceness",
+        "fiercity",
+        "fiercely",
+        "fiercing"
+      ],
+      "correct": 0,
+      "answer": "fierceness",
+      "vi": "FIERCE (dữ dội, khốc liệt - tính từ) → fierceness — sự khốc liệt (danh từ)",
+      "explanation": "Sau mạo từ 'The' và trước 'of the competition', cần một DANH TỪ làm chủ ngữ cho 'took'. Tính từ 'fierce' lấy hậu tố -ness, giữ nguyên chữ e: 'fierceness'. ✗ fiercity là hậu tố sai (không phải mọi tính từ đều lấy -ity); ✗ fiercely = trạng từ; ✗ fiercing không tồn tại."
+    },
+    {
+      "id": "wf-ch-02-3",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "FREQUENT",
+      "q": "Doctors are alarmed by the growing ___ (FREQUENT) with which teenagers report sleep problems to their family clinics.",
+      "answer": "frequency",
+      "accept": [
+        "frequency"
+      ],
+      "vi": "FREQUENT (thường xuyên - tính từ) → frequency — tần suất (danh từ)",
+      "explanation": "Sau 'the growing' và trước mệnh đề quan hệ 'with which', cần một DANH TỪ. Tính từ 'frequent' → danh từ 'frequency' (đổi -t thành -cy). ✗ frequentness là hậu tố sai; ✗ frequently = trạng từ — không thể đứng sau tính từ 'growing'."
+    },
+    {
+      "id": "wf-ch-02-4",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "SPONTANEOUS",
+      "q": "What moved the travellers most was the ___ (SPONTANEOUS) of the villagers' welcome: nobody had been told they were coming.",
+      "answer": "spontaneity",
+      "accept": [
+        "spontaneity"
+      ],
+      "vi": "SPONTANEOUS (tự phát, không sắp đặt - tính từ) → spontaneity — tính tự phát, sự chân thành không sắp đặt (danh từ)",
+      "explanation": "Sau 'was the' và trước 'of the villagers' welcome', cần một DANH TỪ chỉ tính chất. Tính từ 'spontaneous' → danh từ 'spontaneity': bỏ -ous rồi thêm -eity (giữ chữ e, giống simultaneous → simultaneity). ✗ spontaneousness là hậu tố sai; ✗ spontanity / spontaniety là lỗi chính tả phổ biến nhất; ✗ spontaneously = trạng từ — không đứng sau 'the'."
+    },
+    {
+      "id": "wf-ch-02-5",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "SCARCE",
+      "q": "In many coastal towns, the ___ (SCARCE) of fresh water has forced families to buy it by the barrel.",
+      "options": [
+        "scarceness",
+        "scarcity",
+        "scarcely",
+        "scarcify"
+      ],
+      "correct": 1,
+      "answer": "scarcity",
+      "vi": "SCARCE (khan hiếm - tính từ) → scarcity — sự khan hiếm (danh từ)",
+      "explanation": "Sau 'the' và trước 'of fresh water', cần một DANH TỪ làm chủ ngữ cho 'has forced'. Tính từ 'scarce' → danh từ 'scarcity' (bỏ -e, thêm -ity). ✗ scarceness là hậu tố sai; ✗ scarcely = trạng từ (hầu như không); ✗ scarcify không tồn tại."
+    },
+    {
+      "id": "wf-ch-02-6",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "ACCURATE",
+      "q": "Historians have questioned the ___ (ACCURATE) of the diary, since several dates contradict official records of the period.",
+      "answer": "accuracy",
+      "accept": [
+        "accuracy"
+      ],
+      "vi": "ACCURATE (chính xác - tính từ) → accuracy — độ chính xác (danh từ)",
+      "explanation": "Sau 'questioned the' và trước 'of the diary', cần một DANH TỪ. Tính từ 'accurate' → danh từ 'accuracy' (bỏ -te, thêm -cy). ✗ accurateness là hậu tố sai; ✗ accurately = trạng từ — không thể làm tân ngữ của 'questioned'."
+    },
+    {
+      "id": "wf-ch-02-7",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "BROAD",
+      "q": "What impressed the interviewers most was the ___ (BROAD) of her reading, which ranged from physics to medieval poetry.",
+      "answer": "breadth",
+      "accept": [
+        "breadth"
+      ],
+      "vi": "BROAD (rộng - tính từ) → breadth — bề rộng, tầm rộng (danh từ)",
+      "explanation": "Sau 'was the' và trước 'of her reading', cần một DANH TỪ chỉ độ rộng. Tính từ 'broad' → danh từ 'breadth' (đổi nguyên âm oa → ea rồi thêm -th, giống deep → depth). ✗ broadness rất ít dùng; ✗ broadly = trạng từ; ✗ broaden = động từ (mở rộng)."
+    },
+    {
+      "id": "wf-ch-02-8",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "ADEQUATE",
+      "q": "The report blames the ___ (ADEQUATE) of the flood defences, which were built for storms far weaker than last week's.",
+      "answer": "inadequacy",
+      "accept": [
+        "inadequacy"
+      ],
+      "vi": "ADEQUATE (đầy đủ, thỏa đáng - tính từ) → inadequacy — sự thiếu hụt, sự không đạt yêu cầu (danh từ)",
+      "explanation": "Sau 'blames the' cần một DANH TỪ, và vì báo cáo 'đổ lỗi' cho hệ thống đê chỉ chịu được bão yếu hơn, nghĩa phải là PHỦ ĐỊNH. Tính từ 'adequate' → 'inadequate' (tiền tố in-) → danh từ 'inadequacy' (bỏ -te, thêm -cy). ✗ adequacy ngược nghĩa với ngữ cảnh; ✗ inadequateness là hậu tố sai."
+    },
+    {
+      "id": "wf-ch-02-9",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "FLUENT",
+      "q": "Native-like ___ (FLUENT) in two languages is now a minimum requirement for interpreters at the international tribunal.",
+      "options": [
+        "fluentness",
+        "fluentity",
+        "fluency",
+        "fluently"
+      ],
+      "correct": 2,
+      "answer": "fluency",
+      "vi": "FLUENT (trôi chảy, lưu loát - tính từ) → fluency — sự lưu loát (danh từ)",
+      "explanation": "Chỗ trống làm CHỦ NGỮ của 'is' và được bổ nghĩa bởi tính từ ghép 'Native-like', nên cần một DANH TỪ. Tính từ 'fluent' → danh từ 'fluency' (đổi -t thành -cy, giống frequent → frequency). ✗ fluentness và ✗ fluentity là hậu tố sai; ✗ fluently = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-10",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "RUTHLESS",
+      "q": "Investors admired the ___ (RUTHLESS) with which the new chairman cut unprofitable branches during his first month in charge.",
+      "answer": "ruthlessness",
+      "accept": [
+        "ruthlessness"
+      ],
+      "vi": "RUTHLESS (tàn nhẫn, không khoan nhượng - tính từ) → ruthlessness — sự tàn nhẫn, sự quyết liệt (danh từ)",
+      "explanation": "Sau 'admired the' và trước mệnh đề quan hệ 'with which', cần một DANH TỪ. Tính từ 'ruthless' đã kết thúc bằng -less nên chỉ có thể thêm -ness: 'ruthlessness' (hai chữ s liền nhau ở giữa). ✗ ruthlessity không tồn tại; ✗ ruthlessly = trạng từ — không đứng sau 'the'."
+    },
+    {
+      "id": "wf-ch-02-11",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "CURIOUS",
+      "q": "It was sheer ___ (CURIOUS), not ambition, that led the young chemist to repeat the failed experiment.",
+      "options": [
+        "curiousness",
+        "curiousity",
+        "curiosness",
+        "curiosity"
+      ],
+      "correct": 3,
+      "answer": "curiosity",
+      "vi": "CURIOUS (tò mò - tính từ) → curiosity — sự tò mò, tính hiếu kỳ (danh từ)",
+      "explanation": "Câu chẻ 'It was ... that' nhấn mạnh chủ ngữ, và 'sheer' (thuần túy) chỉ đi trước DANH TỪ, song song với 'ambition'. Tính từ 'curious' → danh từ 'curiosity': bỏ chữ u trong -ous rồi thêm -ity. ✗ curiousity giữ nguyên u là lỗi chính tả phổ biến nhất; ✗ curiousness và ✗ curiosness là hậu tố sai."
+    },
+    {
+      "id": "wf-ch-02-12",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "ANONYMOUS",
+      "q": "The whistle-blower agreed to testify only on condition of complete ___ (ANONYMOUS), fearing for her family's safety.",
+      "answer": "anonymity",
+      "accept": [
+        "anonymity"
+      ],
+      "vi": "ANONYMOUS (ẩn danh - tính từ) → anonymity — sự ẩn danh, tình trạng giấu tên (danh từ)",
+      "explanation": "Sau 'on condition of complete' cần một DANH TỪ (cụm 'on condition of + N'). Tính từ 'anonymous' → danh từ 'anonymity': bỏ hẳn -ous rồi thêm -ity (giống curious → curiosity). ✗ anonymousness là hậu tố sai; ✗ anonymously = trạng từ — không đứng sau tính từ 'complete'."
+    },
+    {
+      "id": "wf-ch-02-13",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "URGENT",
+      "q": "The ___ (URGENT) in the surgeon's voice told the nurses that the patient's condition had suddenly worsened.",
+      "options": [
+        "urgency",
+        "urgentness",
+        "urgently",
+        "urgence"
+      ],
+      "correct": 0,
+      "answer": "urgency",
+      "vi": "URGENT (khẩn cấp - tính từ) → urgency — sự khẩn cấp, vẻ gấp gáp (danh từ)",
+      "explanation": "Sau 'The' và trước 'in the surgeon's voice', cần một DANH TỪ làm chủ ngữ của 'told'. Tính từ 'urgent' → danh từ 'urgency' (đổi -t thành -cy). ✗ urgence là dạng tiếng Pháp, không có trong tiếng Anh; ✗ urgentness là hậu tố sai; ✗ urgently = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-14",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "HOSTILE",
+      "q": "The ___ (HOSTILE) with which the villagers greeted every stranger made the border region far too dangerous for aid workers.",
+      "answer": "hostility",
+      "accept": [
+        "hostility"
+      ],
+      "vi": "HOSTILE (thù địch - tính từ) → hostility — sự thù địch, thái độ thù nghịch (danh từ)",
+      "explanation": "Sau 'The' và trước mệnh đề quan hệ 'with which', cần một DANH TỪ không đếm được chỉ thái độ (the hostility with which = thái độ thù địch mà…). Tính từ 'hostile' → danh từ 'hostility' (bỏ -e, thêm -ity). ✗ hostilities (số nhiều) = các hành động chiến sự, không đi với 'with which … greeted'; ✗ hostileness là hậu tố sai; ✗ hostilely = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-15",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "WILLING",
+      "q": "The pay talks collapsed largely because of the union's ___ (WILLING) to accept any cut in overtime rates.",
+      "options": [
+        "willingness",
+        "unwillingness",
+        "unwillingly",
+        "willingly"
+      ],
+      "correct": 1,
+      "answer": "unwillingness",
+      "vi": "WILLING (sẵn lòng - tính từ) → unwillingness — sự không sẵn lòng, sự khước từ (danh từ)",
+      "explanation": "Sau sở hữu cách 'the union's' cần một DANH TỪ, và vì đàm phán 'sụp đổ' do công đoàn không chịu nhận bất kỳ mức cắt giảm nào, nghĩa phải PHỦ ĐỊNH. Tính từ 'willing' → 'unwilling' (tiền tố un-) → danh từ 'unwillingness' (thêm -ness). ✗ willingness ngược nghĩa với 'collapsed'; ✗ unwillingly và ✗ willingly = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-16",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "CONSCIOUS",
+      "q": "The boxer lost ___ (CONSCIOUS) for nearly a minute after the blow, and the referee stopped the fight immediately.",
+      "answer": "consciousness",
+      "accept": [
+        "consciousness"
+      ],
+      "vi": "CONSCIOUS (tỉnh táo, có ý thức - tính từ) → consciousness — ý thức, sự tỉnh táo (danh từ)",
+      "explanation": "Sau động từ 'lost' cần một DANH TỪ làm tân ngữ; 'lose consciousness' là cụm cố định nghĩa là bất tỉnh. Tính từ 'conscious' → danh từ 'consciousness' (thêm -ness, giữ nguyên -ous). ✗ consciosity không tồn tại; ✗ consciously = trạng từ — không thể làm tân ngữ."
+    },
+    {
+      "id": "wf-ch-02-17",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "COMPLEX",
+      "q": "Few voters grasp the sheer ___ (COMPLEX) of the tax system, which now runs to several thousand pages.",
+      "options": [
+        "complexness",
+        "complication",
+        "complexity",
+        "complexly"
+      ],
+      "correct": 2,
+      "answer": "complexity",
+      "vi": "COMPLEX (phức tạp - tính từ) → complexity — sự phức tạp, mức độ phức tạp (danh từ)",
+      "explanation": "Sau 'the sheer' và trước 'of the tax system', cần một DANH TỪ chỉ tính chất. Tính từ 'complex' → danh từ 'complexity' (thêm -ity). ✗ complexness là hậu tố sai; ✗ complication (biến chứng, rắc rối) xuất phát từ 'complicate', không phải từ gốc đề cho; ✗ complexly = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-18",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "TRANSPARENT",
+      "q": "Campaigners are demanding greater ___ (TRANSPARENT) about how the charity spends the donations it receives from the public.",
+      "answer": "transparency",
+      "accept": [
+        "transparency"
+      ],
+      "vi": "TRANSPARENT (minh bạch - tính từ) → transparency — sự minh bạch (danh từ)",
+      "explanation": "Sau 'demanding greater' cần một DANH TỪ làm tân ngữ (greater + N không đếm được). Tính từ 'transparent' → danh từ 'transparency' (đổi -t thành -cy). ✗ transparentness là hậu tố sai; ✗ transparence là dạng cổ, đề thi không chấp nhận; ✗ transparently = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-19",
+      "level": "ch",
+      "type": "mcq",
+      "cat": "noun",
+      "base": "PRIVATE",
+      "q": "Celebrities often complain that photographers show no respect for their ___ (PRIVATE) even when they are with their children.",
+      "options": [
+        "privateness",
+        "privately",
+        "privatization",
+        "privacy"
+      ],
+      "correct": 3,
+      "answer": "privacy",
+      "vi": "PRIVATE (riêng tư - tính từ) → privacy — sự riêng tư, quyền riêng tư (danh từ)",
+      "explanation": "Sau 'respect for their' cần một DANH TỪ. Tính từ 'private' → danh từ 'privacy' (bỏ -te, thêm -cy, giống accurate → accuracy). ✗ privateness là hậu tố sai; ✗ privatization = sự tư nhân hóa (từ động từ privatize) — sai nghĩa; ✗ privately = trạng từ."
+    },
+    {
+      "id": "wf-ch-02-20",
+      "level": "ch",
+      "type": "text",
+      "cat": "noun",
+      "base": "LITERATE",
+      "q": "Adult ___ (LITERATE) remains a serious obstacle to development in the region, where many farmers cannot read a contract.",
+      "answer": "illiteracy",
+      "accept": [
+        "illiteracy"
+      ],
+      "vi": "LITERATE (biết chữ - tính từ) → illiteracy — nạn mù chữ (danh từ)",
+      "explanation": "Chỗ trống là CHỦ NGỮ của 'remains' và được tính từ 'Adult' bổ nghĩa, nên cần một DANH TỪ; vì đó là 'trở ngại' và nông dân 'không đọc được hợp đồng', nghĩa phải PHỦ ĐỊNH. Tính từ 'literate' → 'illiterate' (tiền tố il- vì gốc bắt đầu bằng l) → danh từ 'illiteracy' (bỏ -te, thêm -cy). ✗ literacy ngược nghĩa; ✗ inliteracy và ✗ unliteracy dùng sai tiền tố."
+    }
+  ]
+}

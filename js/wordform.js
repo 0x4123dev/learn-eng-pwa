@@ -41,8 +41,49 @@ function wfShuffle(arr, seed) {
   return a;
 }
 
-function wordformBank() {
+// ---- the Chuyên tier ---------------------------------------------------------
+// Both Word Form and Rewrite carry two tiers in one array: the original bank
+// (no `level`, read as Không chuyên) and Chuyên items (level "ch", B2–C1,
+// the PTNK Chuyên paper's formats). Whether the Chuyên items are in play is
+// a per-child switch an admin sets (db/031 allow_chuyen), cached on appState
+// by the coin sync. Off — the default — a child's rounds are exactly what
+// they were before the tier existed. On, a round is drawn half from each
+// tier, so the harder items arrive beside familiar ones rather than all at
+// once. The wrong-answer priority and the history see whichever items were
+// served, and work unchanged.
+function tierChuyenOn() {
+  return !!(typeof appState !== 'undefined' && appState && appState.allowChuyen);
+}
+function tierOf(q) { return q && q.level === 'ch' ? 'ch' : 'kc'; }
+// The items a child may be served: Không chuyên always; Chuyên only when on.
+function tierFilter(all) {
+  return tierChuyenOn() ? all : all.filter(q => tierOf(q) !== 'ch');
+}
+// Draw `size` from `pool` — half Chuyên, half Không chuyên when the tier is
+// on (rounded toward Chuyên), plain draw otherwise. `pick(list, n)` is the
+// tab's own seeded picker, so this changes WHAT is eligible, not how it is
+// shuffled.
+function tierDraw(pool, size, pick) {
+  if (!tierChuyenOn()) return pick(pool, size);
+  const ch = pool.filter(q => tierOf(q) === 'ch'), kc = pool.filter(q => tierOf(q) !== 'ch');
+  if (!ch.length || !kc.length) return pick(pool, size);
+  const wantCh = Math.min(ch.length, Math.ceil(size / 2));
+  return pick(ch, wantCh).concat(pick(kc, size - wantCh));
+}
+function tierBadgeHTML() {
+  return tierChuyenOn()
+    ? '<div class="tier-badge on" role="status">🎓 Chuyên đang bật — mỗi lượt một nửa là câu Chuyên</div>'
+    : '';
+}
+
+function wordformBankAll() {
   return (typeof WORDFORM_QUESTIONS !== 'undefined') ? WORDFORM_QUESTIONS : [];
+}
+// What THIS child can be served — the tier switch applied. Everything that
+// counts, lists, draws or looks up by id goes through here, so a Chuyên item
+// simply does not exist for a child whose switch is off.
+function wordformBank() {
+  return tierFilter(wordformBankAll());
 }
 function wordformById(id) {
   return wordformBank().find(q => q.id === id) || null;
@@ -238,6 +279,7 @@ function renderWordformPractice() {
         <div class="phrases-hero-icon">🔤</div>
         <h1>Word form</h1>
         <p class="phrases-sub">Chia dạng từ (danh/động/tính/trạng từ) — ${bank.length} câu, gồm cả chọn đáp án và tự gõ. Mỗi câu có thêm một màn hỏi lại: <b>nghĩa của từ</b> và <b>vì sao chọn dạng đó</b>.</p>
+        ${tierBadgeHTML()}
       </div>
 
       ${owedBanner}
@@ -421,9 +463,10 @@ function startWordformQuiz(n) {
     const wantTyped = wfTypedTarget(room, typed.length);
     // Drawn from each pool separately — that is what makes the count exact —
     // then shuffled together so the typing is not all bunched at the end.
+    // tierDraw splits each pool again by tier when Chuyên is on.
     const picked = forced
-      .concat(wfShuffle(typed, seed).slice(0, wantTyped))
-      .concat(wfShuffle(mcq, seed ^ 0x5bf03635).slice(0, room - wantTyped));
+      .concat(tierDraw(typed, wantTyped, (l, n) => wfShuffle(l, seed).slice(0, n)))
+      .concat(tierDraw(mcq, room - wantTyped, (l, n) => wfShuffle(l, seed ^ 0x5bf03635).slice(0, n)));
     qs = wfShuffle(picked, seed ^ 0x2545f491);
   }
   // Each question drags its understanding check along right behind it. The

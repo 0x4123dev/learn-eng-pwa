@@ -8,7 +8,7 @@ export async function onRequestGet({ request, env }) {
   if (auth.role !== 'admin') return err('Forbidden', 403);
 
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot, u.disabled,
+    `SELECT u.id, u.username, u.role, u.created_at, u.allow_bot, u.allow_chuyen, u.disabled,
             (u.device_id IS NOT NULL) AS has_device,
             (SELECT s.balance FROM user_coin_snapshots s WHERE s.user_id = u.id
               ORDER BY s.snapshot_date DESC LIMIT 1) AS coin_latest,
@@ -28,6 +28,7 @@ export async function onRequestGet({ request, env }) {
   const users = (results || []).map(u => ({
     id: u.id, username: u.username, role: u.role, created_at: u.created_at,
     allow_bot: !!u.allow_bot,
+    allow_chuyen: !!u.allow_chuyen,
     disabled: !!u.disabled,
     // Whether this account is holding a slot on some device's 2-account quota
     // — the admin needs to see that before deciding whether clearing helps.

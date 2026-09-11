@@ -14,13 +14,19 @@ const norm = s => String(s).toLowerCase().normalize('NFC').replace(/\s+/g, ' ').
 const CATS = new Set(['noun', 'adj', 'adv', 'verb']);
 
 suite('word form bank', () => {
-  test('has 600 questions (300 mcq + 300 typed) with unique ids', () => {
-    assert.equal(WORDFORM_QUESTIONS.length, 600);
-    assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, 600);
+  // The bank carries two tiers since 2026-09-11: the original 600 (no
+  // `level`, Không chuyên) and a Chuyên tier (level "ch") a child meets only
+  // once an admin has switched it on. The pins on the ORIGINAL tier are as
+  // they always were; the Chuyên tier is pinned in tests/chuyen-tier.test.js
+  // and its files in tests/chuyen-tier-data.test.js.
+  const KC = WORDFORM_QUESTIONS.filter(q => q.level !== 'ch');
+  test('the original tier has 600 questions (300 mcq + 300 typed) with unique ids', () => {
+    assert.equal(KC.length, 600);
+    assert.equal(new Set(WORDFORM_QUESTIONS.map(q => q.id)).size, WORDFORM_QUESTIONS.length, 'ids unique across both tiers');
     // 200 of the original 500 multiple-choice questions were converted to typed
     // ones on 2026-08-25, so half the bank now asks the child to write the form.
-    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'mcq').length, 300);
-    assert.equal(WORDFORM_QUESTIONS.filter(q => q.type === 'text').length, 300);
+    assert.equal(KC.filter(q => q.type === 'mcq').length, 300);
+    assert.equal(KC.filter(q => q.type === 'text').length, 300);
   });
 
   test('mcq questions: 4 distinct options with correct = answer', () => {
@@ -54,6 +60,7 @@ suite('word form bank', () => {
   });
 
   test('quiz helpers resolve and start correctly', () => {
+    // With no admin switch (the test's appState), the bank IS the original tier.
     assert.equal(wf.wordformBank().length, 600);
     assert.truthy(wf.wordformById('wf-1') && wf.wordformById('wf-1').id === 'wf-1');
     assert.equal(wf.wordformById('nope'), null);
