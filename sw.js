@@ -33,6 +33,8 @@ const ASSETS = [
   '/',
   '/index.html',
   '/css/styles.css',
+  '/fonts/nunito-var-latin.woff2',
+  '/fonts/nunito-var-vietnamese.woff2',
   '/js/vocabulary.js',
   '/js/castle-skins.js',
   '/js/units-data.js',
