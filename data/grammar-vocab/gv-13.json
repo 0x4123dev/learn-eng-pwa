@@ -16,7 +16,7 @@
       "correct": 2,
       "answer": "has read",
       "vi": "Từ tháng Một đến giờ Mai đã đọc ba cuốn tiểu thuyết của tác giả đó.",
-      "explanation": "<b>Since January</b> links a past starting point to now, so the present perfect <b>has read</b> is needed; the past simple and past perfect cut the action off from the present."
+      "explanation": "<b>Since January</b> marks a period running from a past starting point up to now, so the present perfect <b>has read</b> is required. ✗ <b>read</b> — past simple describes a finished time, but the period is still open; ✗ <b>is reading</b> — present continuous is for an action happening right now, not a total of three finished books; ✗ <b>had read</b> — past perfect needs a later past event to be earlier than, and there is none."
     },
     {
       "id": "gv-kc-13-2",
@@ -32,7 +32,7 @@
       "correct": 2,
       "answer": "whispered",
       "vi": "Chị tôi thì thầm vào tai tôi đoạn kết của bộ phim để không ai khác trong rạp nghe thấy.",
-      "explanation": "<b>So that nobody else could hear</b> tells you the words were said very quietly: <b>whisper</b>. <b>Shout</b> is loud, and <b>announce</b> / <b>declare</b> mean to say something openly to everyone."
+      "explanation": "<b>So that nobody else could hear</b> means the words were said very quietly, and <b>in my ear</b> confirms it: <b>whispered</b> = spoke very softly. ✗ <b>shouted</b> — spoke very loudly, the opposite; ✗ <b>announced</b> — told everyone publicly; ✗ <b>declared</b> — stated openly and firmly, not secretly."
     },
     {
       "id": "gv-kc-13-3",
@@ -48,7 +48,7 @@
       "correct": 1,
       "answer": "spent",
       "vi": "Chúng tôi đã tiêu rất nhiều tiền vào đồ nội thất mới cho phòng khách.",
-      "explanation": "The collocation is <b>spend money on</b> something. You <b>pay for</b> something, a thing <b>costs</b> money, and <b>take</b> does not go with money in this way."
+      "explanation": "Money is the object and <b>on new furniture</b> names what it was used for, so the collocation is <b>spend money on</b> something. ✗ <b>paid</b> — you pay a person or pay <b>for</b> a thing, never pay money <b>on</b> it; ✗ <b>cost</b> — the thing costs money (the furniture cost us a lot), the buyer does not; ✗ <b>took</b> — take money = pick it up or accept it, not use it to buy."
     },
     {
       "id": "gv-kc-13-4",
@@ -64,7 +64,7 @@
       "correct": 3,
       "answer": "make a mountain out of a molehill",
       "vi": "Bình tĩnh đi, chỉ là một vết xước nhỏ xíu trên cửa xe thôi. Đừng có chuyện bé xé ra to.",
-      "explanation": "<b>Make a mountain out of a molehill</b> = treat a small problem as a big one. The others mean risking everything on one plan, taking on too much, and achieving two things at once."
+      "explanation": "<b>Only a tiny scratch</b> plus <b>relax</b> means a small problem is being treated as a huge one: <b>make a mountain out of a molehill</b> = exaggerate a small problem. ✗ <b>put all your eggs in one basket</b> — risk everything on one plan; ✗ <b>bite off more than you can chew</b> — take on more than you can manage; ✗ <b>kill two birds with one stone</b> — achieve two things with one action."
     },
     {
       "id": "gv-kc-13-5",
@@ -80,7 +80,7 @@
       "correct": 2,
       "answer": "turned up",
       "vi": "Chúng tôi đợi cả tiếng ngoài rạp chiếu phim, nhưng Nam chẳng bao giờ xuất hiện.",
-      "explanation": "<b>Turn up</b> = arrive or appear. <b>Turn down</b> = refuse or lower the volume, <b>turn off</b> = switch off, and <b>put up</b> needs an object (put up a poster)."
+      "explanation": "<b>Waited an hour ... but never</b> means Nam did not arrive: <b>turned up</b> = appeared, arrived. ✗ <b>put up</b> — needs an object (put up a poster) or with (put up with = tolerate); ✗ <b>turned down</b> — refused, or lowered the volume; ✗ <b>turned off</b> — switched off a device."
     },
     {
       "id": "gv-kc-13-6",
@@ -96,7 +96,7 @@
       "correct": 1,
       "answer": "can't have been",
       "vi": "Tối qua Nam không thể nào ở buổi hòa nhạc được – lúc chín giờ tôi thấy cậu ấy ở nhà mà.",
-      "explanation": "<b>Can't have + past participle</b> expresses a confident conclusion that something was impossible in the past. <b>Mustn't have</b> is not used for deduction; <b>needn't have</b> and <b>shouldn't have</b> talk about necessity and advice."
+      "explanation": "<b>I saw him at home at nine</b> is proof that his being at the concert was impossible, so the negative past deduction <b>can't have been</b> is needed. ✗ <b>mustn't have been</b> — must have is only for positive deduction; its negative is can't have; ✗ <b>needn't have been</b> — it was not necessary, but he did it anyway; ✗ <b>shouldn't have been</b> — it was wrong of him to be there, a criticism, not a conclusion about facts."
     },
     {
       "id": "gv-kc-13-7",
@@ -112,7 +112,7 @@
       "correct": 3,
       "answer": "whom",
       "vi": "Huấn luyện viên mà chúng tôi đã tập luyện cùng cho giải bơi đã chuyển sang câu lạc bộ khác.",
-      "explanation": "After a preposition (<b>with</b>) the relative pronoun for a person must be the object form <b>whom</b>: <b>with whom we trained</b>. <b>Who</b> cannot follow a preposition, <b>whose</b> needs a noun after it, and <b>which</b> refers to things."
+      "explanation": "The pronoun directly follows the preposition <b>with</b> and refers to a person (<b>the coach</b>), so the object form <b>whom</b> is required: <b>with whom we trained</b>. ✗ <b>who</b> — subject form, not used straight after a preposition; ✗ <b>whose</b> — possessive, must be followed by a noun; ✗ <b>which</b> — for things, not people."
     },
     {
       "id": "gv-kc-13-8",
@@ -128,7 +128,7 @@
       "correct": 0,
       "answer": "several",
       "vi": "Linh đã đi thăm vài nước ở châu Á, nhưng cô ấy chưa từng đến Nhật Bản.",
-      "explanation": "<b>Countries</b> is a plural countable noun, so it takes <b>several</b> (= a few, more than two). <b>Much</b> and <b>a little</b> go with uncountable nouns, and <b>every</b> must be followed by a singular noun."
+      "explanation": "<b>Countries</b> is plural countable, and <b>but never Japan</b> shows some, not all, were visited, so <b>several</b> (= a few, more than two) fits. ✗ <b>much</b> — only with uncountable nouns (much money); ✗ <b>a little</b> — only with uncountable nouns (a little time); ✗ <b>every</b> — takes a singular noun (every country) and would contradict never having been to Japan."
     },
     {
       "id": "gv-kc-13-9",
@@ -144,7 +144,7 @@
       "correct": 1,
       "answer": "explain",
       "vi": "Bạn giải thích cảnh cuối cho mình được không? Mình không hiểu tại sao nhân vật chính lại bỏ đi.",
-      "explanation": "<b>Explain something to someone</b> = make it clear. <b>Complain</b> = say you are unhappy, <b>persuade</b> takes a person as object, and you <b>argue with</b> someone, not a scene."
+      "explanation": "<b>I didn't understand</b> shows the speaker wants the scene made clear: <b>explain</b> something <b>to</b> someone = make it clear. ✗ <b>complain</b> — say you are unhappy (complain about something), not clarify; ✗ <b>persuade</b> — make a person agree to do something, so its object is a person, not a scene; ✗ <b>argue</b> — disagree in words (argue with someone), not make something clear."
     },
     {
       "id": "gv-kc-13-10",
@@ -160,7 +160,7 @@
       "correct": 3,
       "answer": "to lock",
       "vi": "Nhớ khóa cửa trước khi con ra ngoài tối nay nhé.",
-      "explanation": "<b>Remember to do</b> = don't forget a task that is still to come. <b>Remember doing</b> looks back at a memory of something already done, so it does not fit an instruction."
+      "explanation": "<b>When you go out this evening</b> puts the locking in the future, so it is a task still to do: <b>remember to do</b> = don't forget to do it. ✗ <b>locking</b> — remember doing = recall something already done, a memory not an instruction; ✗ <b>lock</b> — remember is never followed by a bare infinitive; ✗ <b>to locking</b> — to + -ing is not a form remember takes."
     },
     {
       "id": "gv-kc-13-11",
@@ -176,7 +176,7 @@
       "correct": 2,
       "answer": "although",
       "vi": "Nam vẫn đi học mặc dù cậu ấy bị cảm nặng và đau họng.",
-      "explanation": "A contrast followed by a full clause (<b>he had a bad cold</b>) needs the conjunction <b>although</b>. <b>Despite</b> and <b>in spite of</b> are followed by a noun or -ing form, and <b>however</b> is an adverb that cannot join two clauses like this."
+      "explanation": "The blank is followed by a full clause with subject and verb (<b>he had</b>), so the contrast word must be a conjunction: <b>although</b>. ✗ <b>despite</b> — preposition, followed by a noun or -ing (despite his cold), not a clause; ✗ <b>in spite of</b> — same, needs a noun or -ing; ✗ <b>however</b> — adverb that starts a new sentence (However, he ...), it cannot join two clauses inside one sentence."
     },
     {
       "id": "gv-kc-13-12",
@@ -192,7 +192,7 @@
       "correct": 2,
       "answer": "remind",
       "vi": "Bạn nhắc mình gọi cho bà tối nay nhé? Mình lúc nào cũng quên.",
-      "explanation": "<b>Remind someone to do</b> something = help them not forget. <b>Suggest</b> and <b>recommend</b> do not take <b>someone to do</b>, and <b>mention</b> means to speak briefly about something."
+      "explanation": "<b>I always forget</b> means the speaker needs someone to make them remember, and the pattern is <b>remind someone to do</b> something. ✗ <b>suggest</b> — takes suggest doing / suggest that, never suggest someone to do; ✗ <b>recommend</b> — takes recommend doing / recommend that, not recommend someone to do; ✗ <b>mention</b> — speak briefly about something; mention someone to do does not exist."
     },
     {
       "id": "gv-kc-13-13",
@@ -208,7 +208,7 @@
       "correct": 2,
       "answer": "had seen",
       "vi": "Giá mà tối qua tôi đã xem bộ phim đó – ở trường ai cũng đang bàn về nó.",
-      "explanation": "A wish about the <b>past</b> (last night) takes the past perfect: <b>wish + had seen</b>. <b>Saw</b> would be a wish about the present, and <b>would see</b> is for the future."
+      "explanation": "<b>Last night</b> makes this a wish about the past, and past wishes take <b>wish + past perfect</b>: <b>had seen</b>. ✗ <b>saw</b> — past simple after wish is a wish about the present (I wish I saw him more often); ✗ <b>have seen</b> — present perfect is never used after wish; ✗ <b>would see</b> — wish + would is for wanting a future change or complaining about someone's behaviour."
     },
     {
       "id": "gv-kc-13-14",
@@ -224,7 +224,7 @@
       "correct": 0,
       "answer": "do",
       "vi": "Bạn giúp mình một việc, trả cuốn sách này về thư viện được không?",
-      "explanation": "The fixed collocation is <b>do someone a favour</b>. <b>Make</b>, <b>give</b> and <b>take</b> do not combine with <b>favour</b> in this meaning."
+      "explanation": "<b>Favour</b> as a small act of help has one fixed verb: <b>do someone a favour</b>. ✗ <b>make</b> — make goes with a decision, a mistake, an effort, not a favour; ✗ <b>give</b> — you give help or advice, but not give a favour; ✗ <b>take</b> — take does not combine with favour at all."
     },
     {
       "id": "gv-kc-13-15",
@@ -240,7 +240,7 @@
       "correct": 3,
       "answer": "was shot",
       "vi": "Bộ phim được quay ở Đà Lạt năm ngoái, vì thế cảnh trong phim trông rất quen thuộc.",
-      "explanation": "The film does not shoot itself, so the passive is needed, and <b>last year</b> puts it in the past simple: <b>was shot</b>. <b>Is shot</b> is present, and <b>shot</b> / <b>has shot</b> are active."
+      "explanation": "A film is shot <b>by</b> people, so the verb must be passive, and <b>last year</b> fixes the past simple: <b>was shot</b>. ✗ <b>shot</b> — active past, meaning the film did the shooting; ✗ <b>has shot</b> — active, and present perfect cannot be used with a finished time like last year; ✗ <b>is shot</b> — passive but present, contradicting last year."
     },
     {
       "id": "gv-kc-13-16",
@@ -256,7 +256,7 @@
       "correct": 3,
       "answer": "will be living",
       "vi": "Vào giờ này tuần sau, gia đình tôi sẽ đang sống trong ngôi nhà mới ở phía bên kia thành phố.",
-      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, so the future continuous <b>will be living</b> is used. <b>Will live</b> states a plain future fact, and <b>are living</b> is present."
+      "explanation": "<b>This time next week</b> names an exact future moment, and an action that will be in progress at that moment takes the future continuous: <b>will be living</b>. ✗ <b>live</b> — present simple states a general fact, no future meaning here; ✗ <b>will live</b> — plain future prediction, does not show an action in progress at a point in time; ✗ <b>are living</b> — present continuous describes now, not next week."
     },
     {
       "id": "gv-kc-13-17",
@@ -272,7 +272,7 @@
       "correct": 1,
       "answer": "I had put",
       "vi": "Mẹ hỏi tôi đã để cái điều khiển ti vi ở đâu sau khi xem phim.",
-      "explanation": "In a reported question the word order is <b>subject + verb</b> (no inversion, no <b>did</b>), and <b>asked</b> moves the past simple back to the past perfect: <b>where I had put</b>. The other three keep the inverted order of a direct question."
+      "explanation": "<b>Asked me where</b> introduces a reported question, which keeps statement order <b>subject + verb</b> and shifts the past simple back one step after past <b>asked</b>: <b>where I had put</b>. ✗ <b>had I put</b> — inverted verb-subject order belongs only to direct questions; ✗ <b>did I put</b> — the question auxiliary did is dropped in reported questions; ✗ <b>have I put</b> — inverted, and present perfect is not the backshifted form of past simple."
     },
     {
       "id": "gv-kc-13-18",
@@ -288,7 +288,7 @@
       "correct": 1,
       "answer": "on the same page",
       "vi": "Sau một cuộc nói chuyện dài, cuối cùng bố mẹ và tôi cũng đã đồng quan điểm về kế hoạch học nhạc của tôi.",
-      "explanation": "<b>On the same page</b> = agreeing, sharing the same understanding. <b>In the same boat</b> = in the same difficult situation, <b>under the weather</b> = slightly ill, <b>over the moon</b> = very happy."
+      "explanation": "<b>After a long talk ... finally</b> means they now agree about the plan: <b>on the same page</b> = sharing the same understanding. ✗ <b>in the same boat</b> — in the same difficult situation; ✗ <b>under the weather</b> — slightly ill; ✗ <b>over the moon</b> — extremely happy."
     },
     {
       "id": "gv-kc-13-19",
@@ -304,7 +304,7 @@
       "correct": 3,
       "answer": "on",
       "vi": "Chị tôi rất mê nhạc pop Hàn Quốc và thuộc lòng mọi bài hát.",
-      "explanation": "The adjective <b>keen</b> takes the preposition <b>on</b>: <b>keen on</b> something. <b>Interested in</b>, <b>fond of</b> and <b>good at</b> are the patterns learners mix it up with."
+      "explanation": "<b>Keen</b> meaning very interested takes the fixed preposition <b>on</b>: <b>keen on</b> Korean pop music. ✗ <b>in</b> — goes with interested (interested in), not keen; ✗ <b>of</b> — goes with fond (fond of), not keen; ✗ <b>at</b> — goes with good / bad (good at), not keen."
     },
     {
       "id": "gv-kc-13-20",
@@ -320,7 +320,7 @@
       "correct": 0,
       "answer": "interrupt",
       "vi": "Đừng ngắt lời khi bà đang kể chuyện – hãy đợi bà kể xong đã.",
-      "explanation": "<b>Interrupt</b> = start speaking while someone else is still talking. <b>Repeat</b>, <b>describe</b> and <b>pronounce</b> all need an object and do not fit <b>wait until she finishes</b>."
+      "explanation": "<b>While Grandma is telling her story – wait until she finishes</b> tells you the problem is speaking before she has finished: <b>interrupt</b> = break in while someone is talking. ✗ <b>repeat</b> — say again, and it needs an object (repeat the story); ✗ <b>describe</b> — say what something is like, needs an object; ✗ <b>pronounce</b> — say the sounds of a word, needs an object and has nothing to do with waiting."
     },
     {
       "id": "gv-kc-13-21",
@@ -336,7 +336,7 @@
       "correct": 0,
       "answer": "work out",
       "vi": "Bố mẹ tôi không tìm ra cách dùng cái điều khiển ti vi mới, nên tôi chỉ cho họ.",
-      "explanation": "<b>Work out</b> = find the answer to something by thinking. <b>Carry out</b> = perform a task, <b>set out</b> = begin a journey, and <b>work up</b> = build up (an appetite, courage)."
+      "explanation": "<b>Couldn't ... how to use</b> and <b>so I showed them</b> mean they failed to find the answer: <b>work out</b> = understand or solve by thinking. ✗ <b>work up</b> — build up an appetite, courage or energy; ✗ <b>carry out</b> — perform or complete a task or order; ✗ <b>set out</b> — start a journey, or lay out plans."
     },
     {
       "id": "gv-kc-13-22",
@@ -352,7 +352,7 @@
       "correct": 1,
       "answer": "the more",
       "vi": "Bây giờ bạn càng để dành nhiều tiền tiêu vặt, thì bạn càng có nhiều tiền để chi cho chuyến đi của trường.",
-      "explanation": "The double comparative pattern is <b>the more ..., the more ...</b>: both halves need <b>the</b> plus a comparative, never a superlative."
+      "explanation": "The sentence opens with <b>The more ... you save</b>, and the double comparative pattern needs <b>the + comparative</b> in both halves: <b>the more</b>. ✗ <b>more</b> — comparative but missing the required the; ✗ <b>the most</b> — superlative, not a comparative; ✗ <b>most</b> — superlative and without the."
     },
     {
       "id": "gv-kc-13-23",
@@ -368,7 +368,7 @@
       "correct": 1,
       "answer": "had worn off",
       "vi": "Đến lúc bộ phim kết thúc thì thuốc giảm đau đã hết tác dụng, và răng tôi lại đau.",
-      "explanation": "<b>By the time + past simple</b> marks a point in the past before which the other action was already complete, so it takes the past perfect: <b>had worn off</b> (stopped having an effect). <b>Has worn off</b> and <b>wears off</b> are present tenses."
+      "explanation": "<b>By the time the film ended</b> (past simple) fixes a past moment, and the painkiller stopped working before it, so the earlier action takes the past perfect: <b>had worn off</b> (= stopped having an effect). ✗ <b>wore off</b> — past simple would make the two events happen together, not one before the other; ✗ <b>has worn off</b> — present perfect cannot follow a past-time clause; ✗ <b>wears off</b> — present simple, but the story is in the past."
     },
     {
       "id": "gv-kc-13-24",
@@ -384,7 +384,7 @@
       "correct": 0,
       "answer": "offers",
       "vi": "Tuần này hiệu sách giảm giá hai mươi phần trăm cho tất cả tiểu thuyết.",
-      "explanation": "A shop <b>offers</b> (or gives) <b>a discount</b>. <b>Make</b>, <b>do</b> and <b>bring</b> do not collocate with <b>discount</b>."
+      "explanation": "The subject is a shop and the object is <b>a ... discount</b>; the collocation is <b>offer</b> (or give) <b>a discount</b>. ✗ <b>makes</b> — make goes with a profit or a purchase, not a discount; ✗ <b>does</b> — do a deal exists, but do a discount is not English; ✗ <b>brings</b> — bring = carry something to a place, it does not go with discount."
     },
     {
       "id": "gv-kc-13-25",
@@ -400,7 +400,7 @@
       "correct": 0,
       "answer": "admitted",
       "vi": "Nhân viên cửa hàng thừa nhận rằng chiếc điện thoại mua trên mạng rẻ hơn, nên chúng tôi không mua ở đó.",
-      "explanation": "<b>Admit that</b> = agree that something (often unwelcome) is true. <b>Deny</b> is the opposite, <b>refuse</b> is not followed by a <b>that</b>-clause, and <b>promise that</b> would not lead to <b>we didn't buy it</b>."
+      "explanation": "<b>So we didn't buy it there</b> shows the assistant agreed to an unwelcome truth about his own shop: <b>admitted that</b> = confessed something was true. ✗ <b>denied</b> — said it was not true, which would not make the buyers leave; ✗ <b>refused</b> — takes to + verb, not a that-clause; ✗ <b>promised that</b> — a promise makes no sense with a cheaper price elsewhere and would not lead to not buying."
     }
   ]
 }

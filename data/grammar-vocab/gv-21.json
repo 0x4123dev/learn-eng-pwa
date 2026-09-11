@@ -16,7 +16,7 @@
       "correct": 1,
       "answer": "will have been working",
       "vi": "Đến lúc tuyến metro mới cuối cùng khánh thành, thành phố sẽ thi công tuyến này được mười một năm rồi.",
-      "explanation": "An action continuing up to a point in the future (<b>by the time … opens</b>) takes the future perfect continuous: <b>will have been working</b>."
+      "explanation": "An action continuing up to a future point (<b>by the time … opens</b> + <b>for eleven years</b>) takes the future perfect continuous: <b>will have been working</b>. ✗ <b>will work</b> — simple future, cannot carry the duration <b>for eleven years</b>; ✗ <b>is working</b> — present continuous, no future perspective; ✗ <b>has been working</b> — present perfect measures up to now, not up to a future moment."
     },
     {
       "id": "gv-ch-21-2",
@@ -32,7 +32,7 @@
       "correct": 0,
       "answer": "impartial",
       "vi": "Cách xử lý vụ án công tâm của thẩm phán được cả hai bên khen ngợi, không bên nào cảm thấy mình được thiên vị.",
-      "explanation": "<b>Impartial</b> means treating both sides equally; <b>indifferent</b> and <b>apathetic</b> mean not caring at all, and <b>aloof</b> means cold and distant."
+      "explanation": "The clue <b>neither … felt it had been favoured</b> means the judge treated both sides equally: <b>impartial</b> (fair, not biased). ✗ <b>indifferent</b> — not caring either way; ✗ <b>apathetic</b> — lacking interest or energy; ✗ <b>aloof</b> — cold and distant in manner. None of those would be <b>praised by both sides</b>."
     },
     {
       "id": "gv-ch-21-3",
@@ -48,7 +48,7 @@
       "correct": 2,
       "answer": "the last straw",
       "vi": "Khi chủ nhà tăng tiền thuê lần thứ ba trong một năm, đó là giọt nước tràn ly đối với người thuê, và họ bắt đầu tổ chức đình công tiền nhà.",
-      "explanation": "<b>The last straw</b> is the final small problem that makes a situation unbearable. <b>The last resort</b> is the only remaining option, <b>the last word</b> is the final say, and <b>the last laugh</b> is winning in the end."
+      "explanation": "A <b>third</b> rise that finally triggers a <b>rent strike</b> is <b>the last straw</b> (the final small problem that makes things unbearable). ✗ <b>the last resort</b> — the only remaining option; ✗ <b>the last word</b> — the final say in an argument; ✗ <b>the last laugh</b> — winning in the end after seeming to lose."
     },
     {
       "id": "gv-ch-21-4",
@@ -64,7 +64,7 @@
       "correct": 3,
       "answer": "lay off",
       "vi": "Nhà in buộc phải sa thải một phần ba nhân công khi tờ báo chuyển sang phát hành trực tuyến.",
-      "explanation": "<b>Lay off</b> means to dismiss workers because there is not enough work. <b>Lay out</b> is to arrange or spend, <b>lay down</b> is to put down or set (rules), and <b>lay up</b> is to store or to confine someone to bed."
+      "explanation": "Dismissing <b>a third of its workforce</b> because work has dried up is to <b>lay off</b> workers. ✗ <b>lay out</b> — arrange, or spend money; ✗ <b>lay down</b> — put down, or set rules; ✗ <b>lay up</b> — store away, or confine someone to bed with illness."
     },
     {
       "id": "gv-ch-21-5",
@@ -80,7 +80,7 @@
       "correct": 2,
       "answer": "Not until",
       "vi": "Mãi đến khi phòng thí nghiệm lặp lại xét nghiệm ba lần, các nhà nghiên cứu mới công bố rằng mức chì trong con sông đã ở ngưỡng an toàn.",
-      "explanation": "<b>Not until + clause</b> at the start of a sentence is a negative opener, so the main clause inverts: <b>did the researchers announce</b>. <b>Until</b>, <b>as soon as</b> and <b>by the time</b> are ordinary time conjunctions and would need normal word order (the researchers announced)."
+      "explanation": "The inverted main clause <b>did the researchers announce</b> demands a negative opener: <b>Not until</b> + clause. ✗ <b>Until</b>, ✗ <b>As soon as</b>, ✗ <b>By the time</b> — all ordinary time conjunctions that would need normal word order (<i>the researchers announced</i>); only a negative/restrictive phrase fronted to the sentence triggers inversion."
     },
     {
       "id": "gv-ch-21-6",
@@ -96,7 +96,7 @@
       "correct": 3,
       "answer": "ambivalent",
       "vi": "Bộ trưởng tỏ ra rõ ràng là nước đôi về dự luật, vừa khen mục tiêu của nó ở câu trước lại vừa nghi ngờ chi phí ở câu sau.",
-      "explanation": "<b>Ambivalent</b> means having mixed feelings, which the praise-then-doubt shows. <b>Indifferent</b> and <b>apathetic</b> mean not caring, and <b>oblivious</b> means unaware (and takes <b>to</b>)."
+      "explanation": "<b>Praising … in one breath and questioning … in the next</b> shows mixed feelings: <b>ambivalent</b> (about). ✗ <b>indifferent</b> — not caring at all; ✗ <b>apathetic</b> — lacking interest; ✗ <b>oblivious</b> — unaware, and takes <b>to/of</b>, not <b>about</b>."
     },
     {
       "id": "gv-ch-21-7",
@@ -112,7 +112,7 @@
       "correct": 0,
       "answer": "upheld",
       "vi": "Tòa phúc thẩm giữ nguyên phán quyết ban đầu, bác bỏ mọi căn cứ mà chủ đầu tư đã dùng để khiếu nại.",
-      "explanation": "A court <b>upholds</b> a ruling, meaning it confirms it on appeal. <b>Held up</b> means delayed, and <b>kept up</b> and <b>retained</b> do not collocate with a ruling."
+      "explanation": "A court that rejects every ground of appeal <b>upholds</b> the original ruling (confirms it). ✗ <b>held up</b> — delayed, or supported physically; ✗ <b>kept up</b> — maintained a pace or standard; ✗ <b>retained</b> — kept possession of, not used of confirming a decision."
     },
     {
       "id": "gv-ch-21-8",
@@ -128,7 +128,7 @@
       "correct": 2,
       "answer": "can't have read",
       "vi": "Thị trưởng chắc chắn đã không đọc bản báo cáo trước buổi họp báo; bà vấp ngay cả ở những con số cơ bản nhất.",
-      "explanation": "<b>Can't have + past participle</b> expresses a confident deduction that something did not happen. <b>Needn't have</b> means it was unnecessary, <b>shouldn't have</b> is criticism, and <b>mustn't have</b> is not used for deduction."
+      "explanation": "<b>Stumbled over even its most basic figures</b> is evidence she did not read it, so the speaker makes a confident negative deduction: <b>can't have + past participle</b>. ✗ <b>needn't have read</b> — she read it but it was unnecessary; ✗ <b>shouldn't have read</b> — she read it and was wrong to; ✗ <b>mustn't have read</b> — <b>must have</b> is for positive deduction only; the negative is <b>can't have</b>."
     },
     {
       "id": "gv-ch-21-9",
@@ -144,7 +144,7 @@
       "correct": 0,
       "answer": "bite the bullet",
       "vi": "Thay vì cứ vá mái nhà dột mỗi mùa đông, hiệp hội nhà ở quyết định cắn răng chịu đựng và thay toàn bộ mái.",
-      "explanation": "To <b>bite the bullet</b> is to accept something unpleasant but necessary. <b>Bite the dust</b> means to fail or die, <b>bite your tongue</b> is to stay silent, and <b>bite off more than you can chew</b> is to take on too much."
+      "explanation": "Replacing the roof <b>entirely</b> rather than <b>keep patching</b> is an unpleasant but necessary step: <b>bite the bullet</b>. ✗ <b>bite the dust</b> — fail, die or be defeated; ✗ <b>bite its tongue</b> — stay silent though tempted to speak; ✗ <b>bite off more than it could chew</b> — take on more than it can handle."
     },
     {
       "id": "gv-ch-21-10",
@@ -160,7 +160,7 @@
       "correct": 1,
       "answer": "whose",
       "vi": "Nhà ngôn ngữ học mà công trình điền dã về các phương ngữ đang mai một đã đoạt giải năm ngoái hiện đang cố vấn cho bộ về chính sách ngôn ngữ.",
-      "explanation": "<b>Whose</b> is the possessive relative: the fieldwork belongs to the linguist. <b>Whom</b>, <b>which</b> and <b>that</b> cannot stand directly before a noun in this way."
+      "explanation": "The blank sits before the noun <b>fieldwork</b>, which belongs to the linguist, so the possessive relative <b>whose</b> is needed. ✗ <b>whom</b> — object pronoun, cannot come before a noun; ✗ <b>which</b> — not used for a person; ✗ <b>that</b> — a subject/object relative, leaving <b>fieldwork</b> with no link to the linguist."
     },
     {
       "id": "gv-ch-21-11",
@@ -176,7 +176,7 @@
       "correct": 2,
       "answer": "hit / observed",
       "vi": "Nhà bình luận đã nói trúng phóc khi bà nhận xét rằng thành phố có thừa nhà ở, chỉ là không ở những nơi người dân đủ tiền sống.",
-      "explanation": "The idiom is <b>hit the nail on the head</b> (say exactly the right thing), and a <b>when</b>-clause needs a finite verb: <b>observed</b>, not the participle <b>observing</b>."
+      "explanation": "The idiom is <b>hit the nail on the head</b> (say exactly the right thing), and the <b>when</b>-clause needs a finite verb: <b>observed</b>. ✗ <b>struck / observing</b> — <b>strike</b> is not the verb of this idiom, and <b>observing</b> is a participle with no tense; ✗ <b>hit / observing</b> — <b>when she observing</b> has no finite verb; ✗ <b>struck / observed</b> — wrong verb for the idiom."
     },
     {
       "id": "gv-ch-21-12",
@@ -192,7 +192,7 @@
       "correct": 3,
       "answer": "loath",
       "vi": "Những cư dân lớn tuổi không muốn rời bỏ những con phố nhà thấp tầng nơi họ lớn lên, dù gói tái định cư có hào phóng đến đâu.",
-      "explanation": "<b>Loath to do</b> something means very unwilling to do it. <b>Averse</b>, <b>hostile</b> and <b>resistant</b> all take <b>to + noun/-ing</b> (averse to abandoning), not <b>to + infinitive</b>."
+      "explanation": "Only <b>loath</b> is followed by <b>to + infinitive</b>: <b>loath to abandon</b> (very unwilling). ✗ <b>averse</b> — takes <b>to + noun/-ing</b> (<i>averse to abandoning</i>); ✗ <b>hostile</b> — <b>hostile to</b> a person or idea, not <b>to</b> + verb; ✗ <b>resistant</b> — <b>resistant to change</b>, again <b>to</b> + noun, not infinitive."
     },
     {
       "id": "gv-ch-21-13",
@@ -208,7 +208,7 @@
       "correct": 0,
       "answer": "meanwhile",
       "vi": "Tiền thuê nhà ở thủ đô đã tăng gấp đôi trong một thập kỷ; trong khi đó, tiền lương hầu như không nhúc nhích.",
-      "explanation": "<b>Meanwhile</b> sets two things happening over the same period against each other. <b>Therefore</b> gives a result, <b>otherwise</b> the consequence of not doing something, and <b>likewise</b> a similarity."
+      "explanation": "Two things over <b>the same decade</b> are set side by side (rents up, wages flat), so <b>meanwhile</b>. ✗ <b>therefore</b> — gives a result, but flat wages are not caused by rising rents; ✗ <b>otherwise</b> — if not, the consequence of not doing something; ✗ <b>likewise</b> — signals similarity, but the two facts contrast."
     },
     {
       "id": "gv-ch-21-14",
@@ -224,7 +224,7 @@
       "correct": 1,
       "answer": "jump at",
       "vi": "Hầu hết phóng viên trẻ sẽ chớp ngay cơ hội đưa tin về một cuộc tổng tuyển cử, dù phải làm nhiều tuần không nghỉ.",
-      "explanation": "To <b>jump at</b> a chance is to accept it eagerly. <b>Jump through</b> (hoops) means to go through tedious procedures; <b>jump over</b> and <b>jump off</b> are literal movements."
+      "explanation": "Eager acceptance of <b>the chance</b> (<b>even if it meant weeks without a day off</b>) is <b>jump at</b>. ✗ <b>jump through</b> — <i>jump through hoops</i>, go through tedious procedures; ✗ <b>jump over</b> — literally leap across; ✗ <b>jump off</b> — literally leap down from."
     },
     {
       "id": "gv-ch-21-15",
@@ -240,7 +240,7 @@
       "correct": 2,
       "answer": "be removed",
       "vi": "Ủy ban đề nghị điều khoản gây tranh cãi được loại khỏi dự luật trước phiên đọc thứ hai.",
-      "explanation": "After <b>recommend that</b>, the verb is in the subjunctive, the base form: <b>be removed</b>, whatever the tense of the main verb."
+      "explanation": "After <b>recommend that</b> (also suggest, insist, demand) the verb is subjunctive, the base form: <b>be removed</b>, whatever the tense of <b>recommended</b>. ✗ <b>was removed</b> — past tense, not the base form; ✗ <b>is removed</b> — present, not the base form; ✗ <b>would be removed</b> — modal, not used after recommend that."
     },
     {
       "id": "gv-ch-21-16",
@@ -256,7 +256,7 @@
       "correct": 3,
       "answer": "close",
       "vi": "Các biên tập viên từ điển theo dõi sát mạng xã hội để tìm những từ đang dần đi vào ngôn ngữ hằng ngày.",
-      "explanation": "<b>Keep a close eye on</b> is the fixed phrase for watching carefully. <b>Tight</b> goes with grip or rein, and <b>strict</b> and <b>near</b> do not collocate with <b>eye</b>."
+      "explanation": "Watching carefully is <b>keep a close eye on</b>, a fixed phrase. ✗ <b>tight</b> — goes with <i>grip</i>, <i>rein</i>, <i>budget</i>, not <i>eye</i>; ✗ <b>strict</b> — describes rules or people, not an eye; ✗ <b>near</b> — physical distance, never used with <i>eye on</i>."
     },
     {
       "id": "gv-ch-21-17",
@@ -272,7 +272,7 @@
       "correct": 1,
       "answer": "complacent",
       "vi": "Giới chức thành phố bị cáo buộc là chủ quan về nguy cơ ngập lụt, khăng khăng rằng hệ thống cống trăm năm tuổi vẫn sẽ chịu được như trước nay.",
-      "explanation": "<b>Complacent about</b> means so satisfied with things as they are that you ignore a danger. <b>Reluctant</b> and <b>averse</b> take <b>to</b>, and <b>apathetic</b> means lacking interest rather than falsely confident."
+      "explanation": "<b>Insisting the drains would cope as they always had</b> is false confidence that ignores a danger: <b>complacent about</b>. ✗ <b>reluctant</b> — unwilling, and takes <b>to</b> + verb; ✗ <b>apathetic</b> — lacking interest, not over-confident, and takes <b>about/towards</b> only loosely; ✗ <b>averse</b> — opposed, and takes <b>to</b>."
     },
     {
       "id": "gv-ch-21-18",
@@ -288,7 +288,7 @@
       "correct": 0,
       "answer": "got cold feet",
       "vi": "Chủ đầu tư chùn bước vào phút chót và rút hồ sơ đấu thầu khu đất ven sông, viện lý do 'thị trường bất ổn'.",
-      "explanation": "To <b>get cold feet</b> is to lose your nerve just before doing something. <b>Itchy feet</b> is a desire to travel, <b>the cold shoulder</b> is deliberate unfriendliness, and <b>off on the wrong foot</b> is a bad start."
+      "explanation": "Withdrawing <b>at the last minute</b> is losing your nerve: <b>get cold feet</b>. ✗ <b>got itchy feet</b> — a desire to travel or move on; ✗ <b>got the cold shoulder</b> — was deliberately ignored; ✗ <b>got off on the wrong foot</b> — made a bad start with someone."
     },
     {
       "id": "gv-ch-21-19",
@@ -304,7 +304,7 @@
       "correct": 2,
       "answer": "rejecting",
       "vi": "Hiệp hội người thuê nhà giờ hối tiếc vì đã từ chối đề nghị đầu tiên của chủ nhà, đề nghị ấy trông hào phóng hơn hẳn so với đề nghị đang bàn hôm nay.",
-      "explanation": "<b>Regret + -ing</b> looks back at something you wish you had not done; <b>regret + to-infinitive</b> is only for announcing bad news (we regret to inform you)."
+      "explanation": "<b>Regret + -ing</b> looks back at something already done and wished undone: <b>regrets rejecting</b> the first offer. ✗ <b>to reject</b> — <b>regret + to-infinitive</b> only introduces bad news now (<i>we regret to inform you</i>); ✗ <b>reject</b> — regret never takes a bare infinitive; ✗ <b>to be rejecting</b> — continuous infinitive, and still the wrong pattern."
     },
     {
       "id": "gv-ch-21-20",
@@ -320,7 +320,7 @@
       "correct": 3,
       "answer": "had modernised",
       "vi": "Nếu thành phố đã hiện đại hóa hệ thống thoát nước từ một thập kỷ trước, cơn bão tuần rồi đã không làm ngập ba ga metro.",
-      "explanation": "An unreal past condition with a past result (third conditional) takes <b>if + past perfect</b>: <b>had modernised</b>, with <b>would have + past participle</b> in the main clause."
+      "explanation": "An unreal past condition (<b>a decade ago</b>) with a past result (<b>would not have flooded</b>) is the third conditional: <b>if + past perfect</b>, <b>had modernised</b>. ✗ <b>modernised</b> — past simple gives a second conditional, needing <i>would not flood</i>; ✗ <b>has modernised</b> — present perfect cannot sit with <b>a decade ago</b>; ✗ <b>would have modernised</b> — <b>would</b> belongs in the result clause, not after <b>if</b>."
     },
     {
       "id": "gv-ch-21-21",
@@ -336,7 +336,7 @@
       "correct": 1,
       "answer": "disillusioned",
       "vi": "Cử tri ngày càng vỡ mộng với một chính phủ cứ mỗi mùa xuân hứa đổi thay mà đến mùa thu chẳng làm được gì.",
-      "explanation": "<b>Disillusioned with</b> means having lost your belief in something after being let down. <b>Dismissive of</b> and <b>disapproving of</b> take a different preposition, and <b>disinclined</b> takes <b>to</b>."
+      "explanation": "Losing faith after being let down (<b>promised change … delivered none</b>) is <b>disillusioned with</b>. ✗ <b>dismissive</b> — treats something as unimportant, and takes <b>of</b>; ✗ <b>disinclined</b> — unwilling, and takes <b>to</b> + verb; ✗ <b>disapproving</b> — thinks something is wrong, and takes <b>of</b>."
     },
     {
       "id": "gv-ch-21-22",
@@ -352,7 +352,7 @@
       "correct": 0,
       "answer": "Written",
       "vi": "Được viết bằng ngôn ngữ giản dị thay vì thuật ngữ pháp lý, hợp đồng thuê nhà mới có thể hiểu được mà không cần luật sư.",
-      "explanation": "The contract is written by someone, so the reduced clause is passive: the past participle <b>Written</b>. <b>Writing</b> and <b>Having written</b> would make the contract the writer."
+      "explanation": "The contract is written by someone, so the reduced clause is passive: past participle <b>Written</b>. ✗ <b>Writing</b> — active, would make the contract the writer; ✗ <b>Having written</b> — active perfect participle, same problem; ✗ <b>To write</b> — an infinitive of purpose, which makes no sense here."
     },
     {
       "id": "gv-ch-21-23",
@@ -368,7 +368,7 @@
       "correct": 2,
       "answer": "call it a day",
       "vi": "Sau mười bốn giờ đàm phán về ngân sách, hai đảng đồng ý dừng lại ở đây và tiếp tục vào sáng hôm sau.",
-      "explanation": "To <b>call it a day</b> is to stop working for now. <b>Call the shots</b> and <b>call the tune</b> both mean to be in charge, and <b>call a spade a spade</b> is to speak bluntly."
+      "explanation": "Stopping <b>after fourteen hours</b> to <b>resume in the morning</b> is <b>call it a day</b>. ✗ <b>call the shots</b> — be in charge and make the decisions; ✗ <b>call the tune</b> — also be in control; ✗ <b>call a spade a spade</b> — speak bluntly and honestly."
     },
     {
       "id": "gv-ch-21-24",
@@ -384,7 +384,7 @@
       "correct": 3,
       "answer": "levelled / have",
       "vi": "Nếu hội đồng thành phố thẳng thắn với cư dân ngay từ đầu, thì đã có ít người phản đối dự án hơn nhiều.",
-      "explanation": "<b>Level with</b> someone is to be honest with them (<b>square with</b> means to be consistent with), and the result clause of a past unreal condition is <b>would have + past participle</b>."
+      "explanation": "Being honest with residents is <b>level with</b> them, and the result clause of a past unreal condition (<b>Had the council …</b>) is <b>would have + past participle</b>. ✗ <b>squared / had</b> — <b>square with</b> means be consistent with, and <b>would had</b> is impossible; ✗ <b>levelled / had</b> — right verb, but <b>would had</b> is not a form; ✗ <b>squared / have</b> — wrong verb."
     },
     {
       "id": "gv-ch-21-25",
@@ -400,7 +400,7 @@
       "correct": 1,
       "answer": "relieve",
       "vi": "Tuyến tàu điện mới được kỳ vọng sẽ giảm bớt áp lực cho các tuyến xe buýt quá tải ở phía bắc thành phố.",
-      "explanation": "<b>Relieve pressure on</b> is the collocation for reducing strain on a service. <b>Release</b> pressure is physical (a valve), and <b>loosen</b> and <b>lighten</b> do not combine with <b>pressure on</b>."
+      "explanation": "Reducing strain on a service is <b>relieve pressure on</b>, the standard collocation. ✗ <b>release</b> — <i>release pressure</i> is physical, letting gas or steam out; ✗ <b>loosen</b> — goes with <i>grip</i>, <i>rules</i>, <i>a knot</i>, not <i>pressure on</i>; ✗ <b>lighten</b> — goes with <i>a load</i> or <i>the mood</i>, not <i>pressure on</i>."
     }
   ]
 }

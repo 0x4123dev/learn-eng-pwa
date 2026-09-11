@@ -8,7 +8,7 @@
       "words": ["knocked", "wrapped", "doubted", "watched"],
       "ipa": ["/nɒkt/", "/ræpt/", "/ˈdaʊtɪd/", "/wɒtʃt/"],
       "correct": 2,
-      "explanation": "<b>doubted</b> /ˈdaʊtɪd/ — đuôi -ed đọc /ɪd/ vì động từ gốc kết thúc bằng âm /t/ (chữ b trong doubt câm, không tính). Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /k/, /p/, /tʃ/: knocked /nɒkt/, wrapped /ræpt/, watched /wɒtʃt/."
+      "explanation": "<b>doubted</b> /ˈdaʊtɪd/ — đuôi -ed đọc /ɪd/ vì động từ gốc kết thúc bằng âm /t/ (chữ b trong doubt câm, âm cuối thật là /t/). Ba từ còn lại gốc kết thúc bằng âm vô thanh /k/, /p/, /tʃ/ nên -ed đọc /t/: knocked /nɒkt/, wrapped /ræpt/, watched /wɒtʃt/. Mẹo: đọc âm cuối của động từ gốc, bỏ qua chữ câm: /t/ hoặc /d/ → /ɪd/; vô thanh khác → /t/; hữu thanh → /d/."
     },
     {
       "id": "ph-kc-09-2", "level": "kc", "kind": "sound", "rule": "ed",
@@ -16,7 +16,7 @@
       "words": ["climbed", "needed", "counted", "listed"],
       "ipa": ["/klaɪmd/", "/ˈniːdɪd/", "/ˈkaʊntɪd/", "/ˈlɪstɪd/"],
       "correct": 0,
-      "explanation": "<b>climbed</b> /klaɪmd/ — đuôi -ed đọc /d/ vì âm cuối thật sự của climb là /m/ hữu thanh (chữ b câm). Ba từ còn lại gốc kết thúc bằng /d/ hoặc /t/ nên -ed đọc /ɪd/: needed /ˈniːdɪd/, counted /ˈkaʊntɪd/, listed /ˈlɪstɪd/."
+      "explanation": "<b>climbed</b> /klaɪmd/ — đuôi -ed đọc /d/ vì âm cuối thật sự của climb là /m/ hữu thanh (chữ b câm, không tính). Ba từ còn lại gốc kết thúc bằng /d/ hoặc /t/ nên -ed đọc /ɪd/: needed /ˈniːdɪd/, counted /ˈkaʊntɪd/, listed /ˈlɪstɪd/. Mẹo: đọc âm cuối của động từ gốc, bỏ qua chữ câm: /t/, /d/ → /ɪd/; hữu thanh → /d/; vô thanh → /t/."
     },
     {
       "id": "ph-kc-09-3", "level": "kc", "kind": "sound", "rule": "es",
@@ -24,7 +24,7 @@
       "words": ["thumbs", "combs", "knives", "watches"],
       "ipa": ["/θʌmz/", "/kəʊmz/", "/naɪvz/", "/ˈwɒtʃɪz/"],
       "correct": 3,
-      "explanation": "<b>watches</b> /ˈwɒtʃɪz/ — đuôi -es đọc /ɪz/ vì đứng sau âm /tʃ/ (ch). Ba từ còn lại đọc /z/ vì đứng sau âm hữu thanh /m/, /v/: thumbs /θʌmz/, combs /kəʊmz/, knives /naɪvz/ (chữ b trong thumb, comb và chữ k trong knives đều câm)."
+      "explanation": "<b>watches</b> /ˈwɒtʃɪz/ — đuôi -es đọc /ɪz/ vì đứng sau âm rít /tʃ/ (nhóm s, z, sh, ch, x, ge). Ba từ còn lại đuôi -s đọc /z/ vì đứng sau âm hữu thanh /m/, /v/: thumbs /θʌmz/, combs /kəʊmz/, knives /naɪvz/ (b trong thumb, comb và k trong knives câm). Mẹo: đọc âm cuối của từ gốc: âm rít s/z/sh/ch/x/ge → /ɪz/; hữu thanh → /z/; vô thanh → /s/."
     },
     {
       "id": "ph-kc-09-4", "level": "kc", "kind": "sound", "rule": "a",
@@ -32,7 +32,7 @@
       "words": ["walk", "half", "talk", "chalk"],
       "ipa": ["/wɔːk/", "/hɑːf/", "/tɔːk/", "/tʃɔːk/"],
       "correct": 1,
-      "explanation": "<b>half</b> /hɑːf/ — chữ a đọc /ɑː/ (chữ l câm, chỉ còn a + f). Ba từ còn lại có -alk với l câm và a đọc /ɔː/: walk /wɔːk/, talk /tɔːk/, chalk /tʃɔːk/."
+      "explanation": "<b>half</b> /hɑːf/ — chữ a đọc /ɑː/ dài: trong nhóm -alf, -alm (half, calf, calm, palm) chữ l câm và a đọc /ɑː/. Ba từ còn lại thuộc nhóm -alk, l cũng câm nhưng a đọc /ɔː/: walk /wɔːk/, talk /tɔːk/, chalk /tʃɔːk/. Mẹo: thấy a + l câm, nhìn phụ âm đứng sau: -alk, -all → /ɔː/; -alf, -alm → /ɑː/."
     },
     {
       "id": "ph-kc-09-5", "level": "kc", "kind": "sound", "rule": "e",
@@ -40,7 +40,7 @@
       "words": ["knelt", "pretty", "wrestle", "whether"],
       "ipa": ["/nelt/", "/ˈprɪti/", "/ˈresl/", "/ˈweðə/"],
       "correct": 1,
-      "explanation": "<b>pretty</b> /ˈprɪti/ — chữ e đọc /ɪ/, là ngoại lệ cần nhớ. Ba từ còn lại chữ e đọc /e/ bình thường: knelt /nelt/ (k câm), wrestle /ˈresl/ (w và t câm), whether /ˈweðə/ (h câm)."
+      "explanation": "<b>pretty</b> /ˈprɪti/ — chữ e đọc /ɪ/, ngoại lệ phải nhớ (cùng nhóm với England, English). Ba từ còn lại chữ e đứng trước phụ âm trong âm tiết đóng nên đọc /e/ ngắn theo quy tắc: knelt /nelt/ (k câm), wrestle /ˈresl/ (w và t câm), whether /ˈweðə/ (h câm). Mẹo: e trong âm tiết đóng thường là /e/; học thuộc nhóm ngoại lệ pretty, England, English đọc /ɪ/."
     },
     {
       "id": "ph-kc-09-6", "level": "kc", "kind": "sound", "rule": "i",
@@ -48,7 +48,7 @@
       "words": ["whistle", "wrist", "knit", "write"],
       "ipa": ["/ˈwɪsl/", "/rɪst/", "/nɪt/", "/raɪt/"],
       "correct": 3,
-      "explanation": "<b>write</b> /raɪt/ — chữ i đọc /aɪ/ vì có e câm cuối từ (i + phụ âm + e). Ba từ còn lại chữ i đọc /ɪ/ ngắn: whistle /ˈwɪsl/ (t câm), wrist /rɪst/ (w câm), knit /nɪt/ (k câm)."
+      "explanation": "<b>write</b> /raɪt/ — chữ i đọc /aɪ/ vì có e câm cuối từ (mẫu i + phụ âm + e: bite, ride, time). Ba từ còn lại chữ i nằm trong âm tiết đóng, không có e câm, nên đọc /ɪ/ ngắn: whistle /ˈwɪsl/ (t câm), wrist /rɪst/ (w câm), knit /nɪt/ (k câm). Mẹo: nhìn cuối từ: i + phụ âm + e → /aɪ/; i + phụ âm (hoặc chùm phụ âm) → /ɪ/."
     },
     {
       "id": "ph-kc-09-7", "level": "kc", "kind": "sound", "rule": "o",
@@ -56,7 +56,7 @@
       "words": ["comb", "bomb", "knock", "honest"],
       "ipa": ["/kəʊm/", "/bɒm/", "/nɒk/", "/ˈɒnɪst/"],
       "correct": 0,
-      "explanation": "<b>comb</b> /kəʊm/ — chữ o đọc /əʊ/ dù cũng có b câm như bomb; đây là ngoại lệ phải nhớ (comb, tomb, bomb đọc ba kiểu khác nhau). Ba từ còn lại chữ o đọc /ɒ/: bomb /bɒm/, knock /nɒk/ (k câm), honest /ˈɒnɪst/ (h câm)."
+      "explanation": "<b>comb</b> /kəʊm/ — chữ o đọc /əʊ/, ngoại lệ phải nhớ trong nhóm -mb (comb /əʊ/, bomb /ɒ/, tomb /uː/ đọc ba kiểu khác nhau). Ba từ còn lại chữ o trong âm tiết đóng đọc /ɒ/ ngắn theo quy tắc: bomb /bɒm/ (b câm), knock /nɒk/ (k câm), honest /ˈɒnɪst/ (h câm). Mẹo: o trong âm tiết đóng thường là /ɒ/; riêng comb, most, both, only, gold đọc /əʊ/ — học thuộc."
     },
     {
       "id": "ph-kc-09-8", "level": "kc", "kind": "sound", "rule": "oo-ou-ow",
@@ -64,7 +64,7 @@
       "words": ["would", "shoulder", "could", "should"],
       "ipa": ["/wʊd/", "/ˈʃəʊldə/", "/kʊd/", "/ʃʊd/"],
       "correct": 1,
-      "explanation": "<b>shoulder</b> /ˈʃəʊldə/ — ou đọc /əʊ/ và chữ l được đọc rõ. Ba từ còn lại là động từ khuyết thiếu -ould, chữ l câm và ou đọc /ʊ/ ngắn: would /wʊd/, could /kʊd/, should /ʃʊd/."
+      "explanation": "<b>shoulder</b> /ˈʃəʊldə/ — ou đọc /əʊ/ và chữ l được đọc rõ (cùng nhóm boulder, soul, though). Ba từ còn lại là động từ khuyết thiếu đuôi -ould, chữ l câm và ou đọc /ʊ/ ngắn: would /wʊd/, could /kʊd/, should /ʃʊd/. Mẹo: gặp -ould ở would/could/should → /ʊ/ và l câm; ou trước l đọc rõ (shoulder, soul) → /əʊ/."
     },
     {
       "id": "ph-kc-09-9", "level": "kc", "kind": "sound", "rule": "c-g",
@@ -72,7 +72,7 @@
       "words": ["ghost", "gather", "knowledge", "guitar"],
       "ipa": ["/ɡəʊst/", "/ˈɡæðə/", "/ˈnɒlɪdʒ/", "/ɡɪˈtɑː/"],
       "correct": 2,
-      "explanation": "<b>knowledge</b> /ˈnɒlɪdʒ/ — chữ g đứng trước e đọc /dʒ/ (giống trong bridge, age). Ba từ còn lại chữ g đọc /ɡ/ vì đứng trước h, a, u: ghost /ɡəʊst/ (h câm), gather /ˈɡæðə/, guitar /ɡɪˈtɑː/."
+      "explanation": "<b>knowledge</b> /ˈnɒlɪdʒ/ — chữ g đứng trước e đọc mềm /dʒ/ (quy tắc g + e/i/y: age, bridge, giant). Ba từ còn lại chữ g đọc cứng /ɡ/ vì đứng trước h, a, u: ghost /ɡəʊst/ (h câm), gather /ˈɡæðə/, guitar /ɡɪˈtɑː/. Mẹo: nhìn chữ ngay sau g: e/i/y → /dʒ/ (trừ get, give, girl); a/o/u/h/phụ âm → /ɡ/."
     },
     {
       "id": "ph-kc-09-10", "level": "kc", "kind": "sound", "rule": "silent",
@@ -80,7 +80,7 @@
       "words": ["twin", "wrap", "sword", "answer"],
       "ipa": ["/twɪn/", "/ræp/", "/sɔːd/", "/ˈɑːnsə/"],
       "correct": 0,
-      "explanation": "<b>twin</b> /twɪn/ — chữ w được đọc thành /w/. Ba từ còn lại chữ w câm: wrap /ræp/ (wr- đầu từ luôn câm w), sword /sɔːd/, answer /ˈɑːnsə/."
+      "explanation": "<b>twin</b> /twɪn/ — chữ w đứng sau t vẫn được đọc /w/ (tw- như twelve, twist, twenty). Ba từ còn lại chữ w câm: wrap /ræp/ (wr- đầu từ, w luôn câm), sword /sɔːd/ và answer /ˈɑːnsə/ (hai ngoại lệ w câm sau s, cần học thuộc; swim, sweet vẫn đọc /w/). Mẹo: w luôn câm ở wr- đầu từ và ở who/whole/whose; ngoài ra học thuộc sword, answer, two."
     },
     {
       "id": "ph-kc-09-11", "level": "kc", "kind": "stress", "rule": "2syl",
@@ -89,7 +89,7 @@
       "ipa": ["/ˈnʌkl/", "/ˈwɪspə/", "/rɪˈlaɪ/", "/ˈɒnə/"],
       "syllables": [2, 2, 2, 2], "stress": [1, 1, 2, 1],
       "correct": 2,
-      "explanation": "<b>rely</b> /rɪˈlaɪ/ — động từ 2 âm tiết nhấn âm 2. Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1: KNUCK-le /ˈnʌkl/, WHIS-per /ˈwɪspə/, HON-our /ˈɒnə/."
+      "explanation": "<b>rely</b> /rɪˈlaɪ/ — re-LY: động từ 2 âm tiết nhấn âm 2 (re- là tiền tố yếu /rɪ/, không nhận trọng âm). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: KNUCK-le /ˈnʌkl/, WHIS-per /ˈwɪspə/, HON-our /ˈɒnə/ (h câm). Mẹo: xác định từ loại của từ 2 âm tiết: danh từ/tính từ → nhấn âm 1; động từ → nhấn âm 2."
     },
     {
       "id": "ph-kc-09-12", "level": "kc", "kind": "stress", "rule": "2syl",
@@ -98,7 +98,7 @@
       "ipa": ["/əˈlaʊ/", "/ˈwɒlɪt/", "/əˈraɪv/", "/prɪˈfɜː/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 2, 2],
       "correct": 1,
-      "explanation": "<b>wallet</b> /ˈwɒlɪt/ — danh từ 2 âm tiết nhấn âm 1. Ba từ còn lại là động từ 2 âm tiết nhấn âm 2: al-LOW /əˈlaʊ/, ar-RIVE /əˈraɪv/, pre-FER /prɪˈfɜː/."
+      "explanation": "<b>wallet</b> /ˈwɒlɪt/ — WAL-let: danh từ 2 âm tiết nhấn âm 1. Ba từ còn lại là động từ 2 âm tiết nhấn âm 2, âm 1 chỉ là tiền tố yếu /ə/, /prɪ/: al-LOW /əˈlaʊ/, ar-RIVE /əˈraɪv/, pre-FER /prɪˈfɜː/. Mẹo: từ 2 âm tiết bắt đầu bằng a-, pre-, re-, be- thường là động từ nhấn âm 2; danh từ nhấn âm 1."
     },
     {
       "id": "ph-kc-09-13", "level": "kc", "kind": "stress", "rule": "2syl",
@@ -107,7 +107,7 @@
       "ipa": ["/ˈklaɪmət/", "/ˈaɪlənd/", "/ˈkɑːsl/", "/kɑːˈtuːn/"],
       "syllables": [2, 2, 2, 2], "stress": [1, 1, 1, 2],
       "correct": 3,
-      "explanation": "<b>cartoon</b> /kɑːˈtuːn/ — danh từ nhưng nhấn âm 2, là ngoại lệ cần nhớ (giống hotel, police, balloon). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 bình thường: CLI-mate /ˈklaɪmət/, IS-land /ˈaɪlənd/, CAS-tle /ˈkɑːsl/."
+      "explanation": "<b>cartoon</b> /kɑːˈtuːn/ — car-TOON: danh từ nhưng nhấn âm 2, thuộc nhóm ngoại lệ đuôi -oon/-een/-ee luôn nhận trọng âm (balloon, canteen; cùng nhóm ngoại lệ hotel, police). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: CLI-mate /ˈklaɪmət/, IS-land /ˈaɪlənd/ (s câm), CAS-tle /ˈkɑːsl/ (t câm). Mẹo: danh từ 2 âm tiết nhấn âm 1, trừ khi kết thúc bằng -oon, -een, -ee, -eer, -ese hoặc là hotel, police, machine."
     },
     {
       "id": "ph-kc-09-14", "level": "kc", "kind": "stress", "rule": "2syl",
@@ -116,7 +116,7 @@
       "ipa": ["/ɪkˈspleɪn/", "/ˈraɪtə/", "/ˈlɪsn/", "/ˈfɑːsn/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
       "correct": 0,
-      "explanation": "<b>explain</b> /ɪkˈspleɪn/ — động từ 2 âm tiết nhấn âm 2; ở động từ, tiền tố ex- thường là âm yếu /ɪk/ không được nhấn (explain, expect, excuse). Ba từ còn lại nhấn âm 1: WRIT-er /ˈraɪtə/ (danh từ), LIS-ten /ˈlɪsn/ và FAS-ten /ˈfɑːsn/ (động từ ngoại lệ, âm 2 chỉ là -en yếu)."
+      "explanation": "<b>explain</b> /ɪkˈspleɪn/ — ex-PLAIN: động từ 2 âm tiết nhấn âm 2, tiền tố ex- đọc yếu /ɪk/ không nhận trọng âm (expect, excuse, exchange). Ba từ còn lại nhấn âm 1: WRIT-er /ˈraɪtə/ (danh từ đuôi -er), LIS-ten /ˈlɪsn/ (t câm) và FAS-ten /ˈfɑːsn/ (t câm) là động từ ngoại lệ vì âm 2 chỉ là đuôi -en yếu /n/. Mẹo: động từ 2 âm tiết nhấn âm 2, trừ khi âm 2 là đuôi yếu -en, -er, -le, -ow (listen, enter, follow)."
     },
     {
       "id": "ph-kc-09-15", "level": "kc", "kind": "stress", "rule": "2syl",
@@ -125,7 +125,7 @@
       "ipa": ["/əˈtʃiːv/", "/bɪˈniːθ/", "/bɪˈtwiːn/", "/ˈwɪzdəm/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>wisdom</b> /ˈwɪzdəm/ — danh từ 2 âm tiết nhấn âm 1. Ba từ còn lại nhấn âm 2 vì âm 1 chỉ là tiền tố yếu a-, be-: a-CHIEVE /əˈtʃiːv/, be-NEATH /bɪˈniːθ/, be-TWEEN /bɪˈtwiːn/."
+      "explanation": "<b>wisdom</b> /ˈwɪzdəm/ — WIS-dom: danh từ 2 âm tiết nhấn âm 1. Ba từ còn lại nhấn âm 2 vì âm 1 chỉ là tiền tố yếu a-, be- đọc /ə/, /bɪ/: a-CHIEVE /əˈtʃiːv/ (động từ), be-NEATH /bɪˈniːθ/ và be-TWEEN /bɪˈtwiːn/ (giới từ). Mẹo: từ 2 âm tiết bắt đầu bằng a-, be- (about, again, become, before) hầu như luôn nhấn âm 2; danh từ thường nhấn âm 1."
     },
     {
       "id": "ph-kc-09-16", "level": "kc", "kind": "stress", "rule": "suffix-neutral",
@@ -134,7 +134,7 @@
       "ipa": ["/ˈhæpinəs/", "/əˈmeɪzmənt/", "/ˈkeəfəli/", "/ˈɡʌvənmənt/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 2, 1, 1],
       "correct": 1,
-      "explanation": "<b>amazement</b> /əˈmeɪzmənt/ — hậu tố -ment không làm đổi trọng âm, nên giữ nguyên trọng âm của a-MAZE ở âm 2. Ba từ còn lại cũng giữ trọng âm của từ gốc, mà từ gốc nhấn âm 1: HAP-pi-ness /ˈhæpinəs/, CARE-ful-ly /ˈkeəfəli/, GOV-ern-ment /ˈɡʌvənmənt/."
+      "explanation": "<b>amazement</b> /əˈmeɪzmənt/ — a-MAZE-ment: hậu tố -ment không làm đổi trọng âm, nên giữ trọng âm của động từ gốc a-MAZE ở âm 2. Ba từ còn lại cũng mang hậu tố trung tính -ness, -ly, -ment nhưng từ gốc nhấn âm 1: HAP-pi-ness /ˈhæpinəs/ (HAP-py), CARE-ful-ly /ˈkeəfəli/ (CARE-ful), GOV-ern-ment /ˈɡʌvənmənt/ (GOV-ern). Mẹo: gặp -ment, -ness, -ly, -ful, -er, -ing, -ed: bỏ hậu tố, tìm trọng âm của từ gốc rồi giữ nguyên."
     },
     {
       "id": "ph-kc-09-17", "level": "kc", "kind": "stress", "rule": "suffix-shift",
@@ -143,7 +143,7 @@
       "ipa": ["/ˈhɒspɪtl/", "/ˈhɒlədeɪ/", "/hɪˈstɒrɪk/", "/ˈwʌndəfl/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
       "correct": 2,
-      "explanation": "<b>historic</b> /hɪˈstɒrɪk/ — hậu tố -ic kéo trọng âm về âm tiết đứng ngay trước nó: his-TOR-ic. Ba từ còn lại nhấn âm 1: HOS-pi-tal /ˈhɒspɪtl/, HOL-i-day /ˈhɒlədeɪ/, WON-der-ful /ˈwʌndəfl/."
+      "explanation": "<b>historic</b> /hɪˈstɒrɪk/ — his-TOR-ic: hậu tố -ic kéo trọng âm về âm tiết đứng ngay trước nó (cũng như e-co-NOM-ic, sci-en-TIF-ic). Ba từ còn lại là từ 3 âm tiết nhấn âm 1: HOS-pi-tal /ˈhɒspɪtl/, HOL-i-day /ˈhɒlədeɪ/, WON-der-ful /ˈwʌndəfl/ (-ful trung tính, giữ trọng âm của WON-der). Mẹo: thấy đuôi -ic, -ical, -ity, -ion, -ian → nhấn ngay âm tiết đứng trước đuôi."
     },
     {
       "id": "ph-kc-09-18", "level": "kc", "kind": "stress", "rule": "suffix-shift",
@@ -152,7 +152,7 @@
       "ipa": ["/ˈmædʒɪkl/", "/ˈmedɪkl/", "/ˈfɪzɪkl/", "/məˈdʒɪʃn/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 1, 1, 2],
       "correct": 3,
-      "explanation": "<b>magician</b> /məˈdʒɪʃn/ — hậu tố -ian kéo trọng âm về âm tiết đứng ngay trước nó: ma-GI-cian. Ba từ còn lại có hậu tố -ical, trọng âm rơi vào âm tiết trước -ical tức là âm 1: MAG-i-cal /ˈmædʒɪkl/, MED-i-cal /ˈmedɪkl/, PHYS-i-cal /ˈfɪzɪkl/."
+      "explanation": "<b>magician</b> /məˈdʒɪʃn/ — ma-GI-cian: hậu tố -ian (như -ion) kéo trọng âm về âm tiết đứng ngay trước nó (mu-SI-cian, e-lec-TRI-cian). Ba từ còn lại có hậu tố -ical, trọng âm rơi vào âm tiết đứng trước -ical tức âm 1: MAG-i-cal /ˈmædʒɪkl/, MED-i-cal /ˈmedɪkl/, PHYS-i-cal /ˈfɪzɪkl/. Mẹo: -ian, -ion, -ic, -ical đều nhấn âm tiết ngay trước hậu tố; đếm lùi từ đuôi để tìm vị trí."
     },
     {
       "id": "ph-kc-09-19", "level": "kc", "kind": "stress", "rule": "3syl",
@@ -161,7 +161,7 @@
       "ipa": ["/bəˈnɑːnə/", "/ʌmˈbrelə/", "/pəˈteɪtəʊ/", "/ˈfəʊtəɡrɑːf/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>photograph</b> /ˈfəʊtəɡrɑːf/ — danh từ 3 âm tiết nhấn âm 1 (PHO-to-graph; chỉ khi thêm -y thành photography mới nhấn âm 2). Ba từ còn lại nhấn âm 2: ba-NA-na /bəˈnɑːnə/, um-BREL-la /ʌmˈbrelə/, po-TA-to /pəˈteɪtəʊ/."
+      "explanation": "<b>photograph</b> /ˈfəʊtəɡrɑːf/ — PHO-to-graph: danh từ 3 âm tiết nhấn âm 1 (đuôi -graph không kéo trọng âm; chỉ khi thêm -y/-er thành pho-TOG-ra-phy mới đổi). Ba từ còn lại là danh từ mượn 3 âm tiết nhấn âm 2, âm 1 không được nhấn: ba-NA-na /bəˈnɑːnə/, um-BREL-la /ʌmˈbrelə/, po-TA-to /pəˈteɪtəʊ/. Mẹo: danh từ 3 âm tiết thường nhấn âm 1; nhóm banana, potato, tomato, umbrella nhấn âm 2 — học thuộc."
     },
     {
       "id": "ph-kc-09-20", "level": "kc", "kind": "stress", "rule": "3syl",
@@ -170,7 +170,7 @@
       "ipa": ["/ˈjestədeɪ/", "/wɒtˈevə/", "/ˈsætədeɪ/", "/ˈbjuːtɪfl/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 2, 1, 1],
       "correct": 1,
-      "explanation": "<b>whatever</b> /wɒtˈevə/ — từ ghép what + ever, trọng âm rơi vào EV của ever, tức âm 2 (h trong wh- câm). Ba từ còn lại là từ 3 âm tiết nhấn âm 1: YES-ter-day /ˈjestədeɪ/, SAT-ur-day /ˈsætədeɪ/, BEAU-ti-ful /ˈbjuːtɪfl/."
+      "explanation": "<b>whatever</b> /wɒtˈevə/ — what-EV-er: từ ghép what + ever, trọng âm rơi vào EV của ever, tức âm 2 (cũng như wher-EV-er, how-EV-er; h trong wh- câm). Ba từ còn lại là từ 3 âm tiết nhấn âm 1: YES-ter-day /ˈjestədeɪ/ và SAT-ur-day /ˈsætədeɪ/ (đuôi -day không nhận trọng âm), BEAU-ti-ful /ˈbjuːtɪfl/ (-ful trung tính, giữ trọng âm BEAU-ty). Mẹo: từ ghép với -ever (whatever, whenever, however) luôn nhấn EV; các thứ trong tuần và từ đuôi -ful nhấn âm 1."
     }
   ]
 }

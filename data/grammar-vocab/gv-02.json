@@ -9,7 +9,7 @@
       "correct": 1,
       "answer": "have been reading",
       "vi": "Tôi đọc cuốn tiểu thuyết này từ thứ Hai mà vẫn chưa tới chương cuối.",
-      "explanation": "An action that began in the past (<b>since Monday</b>) and is still going on takes the present perfect continuous: <b>have been reading</b>. The present simple, past simple and past continuous cannot go with <b>since</b> + a starting point."
+      "explanation": "An action that began in the past and is still going on (<b>since Monday</b> + <b>still haven't reached</b>) takes the present perfect continuous: <b>have been reading</b>. ✗ <b>am reading</b> — present continuous is only for now, it cannot take <b>since</b> + a starting point; ✗ <b>read</b> — past simple means the reading is finished, but it is still going on; ✗ <b>was reading</b> — past continuous puts the action in the past, not reaching up to now."
     },
     {
       "id": "gv-kc-02-2",
@@ -20,7 +20,7 @@
       "correct": 0,
       "answer": "fare",
       "vi": "Lan: Vé xe buýt tới rạp chiếu phim bao nhiêu tiền? / Nam: Chỉ bảy nghìn đồng một chiều thôi.",
-      "explanation": "The money you pay for a bus, taxi or train ride is a <b>fare</b>. A <b>fee</b> is paid for a service (a doctor, a school), a <b>price</b> is for goods in a shop, and a <b>charge</b> is a general amount a company asks for, not the fixed word for transport."
+      "explanation": "The money for a <b>bus</b>, taxi or train ride is a <b>fare</b> — the clue is <b>bus</b> + <b>each way</b>. ✗ <b>fee</b> — money for a professional service (doctor, school, lawyer); ✗ <b>price</b> — the cost of goods in a shop, not of a journey; ✗ <b>charge</b> — a general amount a company asks for a service, not the fixed word for transport."
     },
     {
       "id": "gv-kc-02-3",
@@ -31,7 +31,7 @@
       "correct": 2,
       "answer": "pulled out all the stops",
       "vi": "Bố mẹ tôi đã dốc toàn lực cho tiệc cưới của chị tôi: ban nhạc sống, pháo hoa và chiếc bánh cưới năm tầng.",
-      "explanation": "<b>Pull out all the stops</b> means to make every possible effort so that something is a success. <b>Pull strings</b> is to use influence, <b>pull your socks up</b> is to start working harder, and <b>pull someone's leg</b> is to joke with them."
+      "explanation": "The list <b>a live band, fireworks and a five-tier cake</b> shows every possible effort, which is <b>pull out all the stops</b> = do everything possible to make something a success. ✗ <b>pulled some strings</b> — used secret influence to get a favour; ✗ <b>pulled their socks up</b> — started to work harder; ✗ <b>pulled our legs</b> — joked with us, made us believe something untrue."
     },
     {
       "id": "gv-kc-02-4",
@@ -42,7 +42,7 @@
       "correct": 1,
       "answer": "does",
       "vi": "Anh tôi làm việc nhà vào thứ Bảy còn tôi nấu bữa trưa.",
-      "explanation": "We <b>do</b> the housework, the shopping and the washing-up; <b>make</b> goes with things you create (make a cake, make a decision). <b>Take</b> and <b>give</b> do not collocate with <b>housework</b>."
+      "explanation": "<b>Housework</b> collocates with <b>do</b>: we do the housework, the shopping, the washing-up (routine tasks). ✗ <b>makes</b> — <b>make</b> goes with things you create (a cake, a decision, a mess), not routine chores; ✗ <b>takes</b> — <b>take</b> pairs with a photo, a break, a bus, never housework; ✗ <b>gives</b> — <b>give</b> pairs with a hand, a speech, a present, never housework."
     },
     {
       "id": "gv-kc-02-5",
@@ -53,7 +53,7 @@
       "correct": 0,
       "answer": "whose",
       "vi": "Đó là ca sĩ mà tháng trước chúng tôi đã đi xem buổi hòa nhạc của cô ấy.",
-      "explanation": "The concert belongs to the singer, so we need the possessive relative <b>whose</b> + noun. <b>Who</b> and <b>whom</b> replace a person, not a possession, and <b>which</b> is for things."
+      "explanation": "The <b>concert</b> belongs to the <b>singer</b>, so the blank needs the possessive relative <b>whose</b> + noun (<b>whose concert</b>). ✗ <b>who</b> — a subject pronoun for a person, but the clause already has its subject <b>we</b>; ✗ <b>whom</b> — an object pronoun for a person, and it cannot stand before the noun <b>concert</b>; ✗ <b>which</b> — refers to a thing, but here the antecedent is the person <b>singer</b>."
     },
     {
       "id": "gv-kc-02-6",
@@ -64,7 +64,7 @@
       "correct": 1,
       "answer": "put off",
       "vi": "Tiệc sinh nhật của Minh đã bị hoãn đến thứ Bảy tuần sau vì mẹ cậu ấy bị ốm.",
-      "explanation": "<b>Put off</b> means to postpone, which fits <b>until next Saturday</b>. <b>Put out</b> is to extinguish a fire, <b>put up</b> is to build or to give someone a bed, and <b>set off</b> is to start a journey."
+      "explanation": "<b>Put off</b> = postpone, which is what <b>until next Saturday</b> + <b>his mother is ill</b> describe. ✗ <b>put out</b> — extinguish a fire or a light; ✗ <b>put up</b> — build (a tent), raise (prices) or give someone a bed for the night; ✗ <b>set off</b> — start a journey, and a party cannot set off."
     },
     {
       "id": "gv-kc-02-7",
@@ -75,7 +75,7 @@
       "correct": 0,
       "answer": "hostel",
       "vi": "Để tiết kiệm tiền, tôi và bạn bè ở một nhà nghỉ tập thể giá rẻ, chung phòng với sáu du khách khác.",
-      "explanation": "A <b>hostel</b> is cheap accommodation where travellers share large rooms. In a <b>hotel</b> or <b>resort</b> you have your own room, and at a <b>campsite</b> you sleep in a tent, not in a room."
+      "explanation": "A <b>hostel</b> is cheap accommodation where travellers share big rooms — the clues are <b>cheap</b> and <b>shared a room with six other travellers</b>. ✗ <b>hotel</b> — you get your own room, and it is not typically cheap; ✗ <b>resort</b> — an expensive holiday complex with private rooms; ✗ <b>campsite</b> — you sleep in a tent, not in a room."
     },
     {
       "id": "gv-kc-02-8",
@@ -86,7 +86,7 @@
       "correct": 3,
       "answer": "can't have seen",
       "vi": "Nam không thể nào đã xem bộ phim tối qua được — cậu ấy ở nhà tôi đến tận nửa đêm.",
-      "explanation": "<b>Can't have</b> + past participle says something was impossible in the past: he was with me, so seeing the film was impossible. <b>Must have</b> expresses near certainty that it happened, <b>might have</b> a possibility, and <b>should have</b> an action that was expected but not done."
+      "explanation": "<b>Can't have</b> + past participle = it was impossible in the past; the clue <b>he was at my house until midnight</b> makes seeing the film impossible. ✗ <b>must have seen</b> — near certainty that it DID happen, the opposite of the evidence; ✗ <b>might have seen</b> — a possibility, but the evidence rules it out; ✗ <b>should have seen</b> — an action that was expected but not done, a regret, not a deduction."
     },
     {
       "id": "gv-kc-02-9",
@@ -97,7 +97,7 @@
       "correct": 1,
       "answer": "a few",
       "vi": "Bữa tiệc chỉ có vài vị khách, nên tất cả chúng tôi ngồi quanh một bàn.",
-      "explanation": "<b>Guests</b> is a countable plural, so it takes <b>few / a few</b>, not <b>little / a little</b>. After <b>only</b> we use <b>a few</b> (a small number); <b>few</b> on its own means almost none and does not follow <b>only</b>."
+      "explanation": "<b>Guests</b> is a countable plural and <b>only</b> + <b>a few</b> = a small number, which explains <b>one table</b>. ✗ <b>few</b> — already means \"almost none\" (negative), so it is not used after <b>only</b>; ✗ <b>little</b> — goes with uncountable nouns (little time), not with <b>guests</b>; ✗ <b>a little</b> — also uncountable only (a little sugar), not for people you can count."
     },
     {
       "id": "gv-kc-02-10",
@@ -108,7 +108,7 @@
       "correct": 3,
       "answer": "had already started",
       "vi": "Lúc chúng tôi tìm được chỗ ngồi thì bộ phim đã bắt đầu rồi.",
-      "explanation": "<b>By the time</b> + past simple (found) needs the past perfect for the earlier action: <b>had already started</b>. Present forms cannot combine with a past-time clause."
+      "explanation": "<b>By the time</b> + past simple (<b>found</b>) needs the past perfect for the action that happened first: <b>had already started</b>. ✗ <b>has already started</b> — present perfect links to now, but the story is in the past; ✗ <b>already starts</b> — present simple cannot follow a past-time clause; ✗ <b>is already starting</b> — present continuous describes now, not an earlier past moment."
     },
     {
       "id": "gv-kc-02-11",
@@ -119,7 +119,7 @@
       "correct": 2,
       "answer": "to give up",
       "vi": "Sau khi đi khám bác sĩ, bố tôi quyết định bỏ hẳn thuốc lá.",
-      "explanation": "<b>Decide</b> is followed by a to-infinitive: <b>decided to give up</b>. The gerund and the bare infinitive do not follow <b>decide</b>, and <b>to giving up</b> is not a form that exists after this verb."
+      "explanation": "<b>Decide</b> is followed by a to-infinitive: <b>decided to give up</b>. ✗ <b>giving up</b> — a gerund, but <b>decide</b> is not a gerund verb (unlike <b>stop / enjoy</b>); ✗ <b>give up</b> — a bare infinitive only follows modals or <b>make / let</b>, not <b>decide</b>; ✗ <b>to giving up</b> — <b>to</b> + -ing exists only after set phrases like <b>look forward to</b>, never after <b>decide</b>."
     },
     {
       "id": "gv-kc-02-12",
@@ -130,7 +130,7 @@
       "correct": 1,
       "answer": "view",
       "vi": "Từ ban công khách sạn, chúng tôi ngắm được toàn cảnh bến cảng thật tuyệt.",
-      "explanation": "<b>Have a view of</b> something is the fixed pattern for what you can see from a place. <b>Sight</b> is the ability to see or a place worth visiting, a <b>scene</b> is a part of a film or an event, and <b>scenery</b> is uncountable and never takes <b>a</b>."
+      "explanation": "<b>Have a view of</b> is the pattern for what you can see from a place, and <b>from our hotel balcony</b> gives the viewpoint. ✗ <b>sight</b> — the ability to see, or a place tourists visit (the sights), not what a balcony offers; ✗ <b>scene</b> — a part of a film or play, or the place where something happens; ✗ <b>scenery</b> — uncountable, so it can never take <b>a</b>."
     },
     {
       "id": "gv-kc-02-13",
@@ -141,7 +141,7 @@
       "correct": 0,
       "answer": "Although",
       "vi": "Mặc dù bộ phim dài ba tiếng, không ai rời rạp sớm cả.",
-      "explanation": "A contrast introduced by a full clause (subject + verb) needs <b>although</b>. <b>Despite</b> must be followed by a noun or -ing form, <b>however</b> cannot join two clauses this way, and <b>because</b> gives a reason, which does not fit the meaning."
+      "explanation": "The blank introduces a full clause (<b>the film was three hours long</b>) that contrasts with <b>nobody left early</b>, so the conjunction is <b>although</b>. ✗ <b>Despite</b> — a preposition, it needs a noun or -ing (<b>despite the film being long</b>), not subject + verb; ✗ <b>However</b> — an adverb that starts a new sentence, it cannot join two clauses with a comma; ✗ <b>Because</b> — gives a reason, but a long film is not a reason for staying."
     },
     {
       "id": "gv-kc-02-14",
@@ -152,7 +152,7 @@
       "correct": 3,
       "answer": "heavy",
       "vi": "Buổi dã ngoại bị hủy vì trận mưa lớn sáng Chủ nhật.",
-      "explanation": "Rain, traffic and snow are described as <b>heavy</b>. <b>Strong</b> collocates with wind or coffee, and <b>hard</b> and <b>big</b> are not used with <b>rain</b>."
+      "explanation": "<b>Rain</b>, traffic and snow are described as <b>heavy</b> = falling in large amounts. ✗ <b>strong</b> — collocates with wind, coffee or a smell, not rain; ✗ <b>hard</b> — \"it rained hard\" is an adverb, but <b>hard rain</b> before the noun is not the standard collocation; ✗ <b>big</b> — used for size (a big storm), never for rain."
     },
     {
       "id": "gv-kc-02-15",
@@ -163,7 +163,7 @@
       "correct": 1,
       "answer": "put his foot down",
       "vi": "Cuối cùng bố cũng cương quyết ra lệnh rằng không ai được dùng điện thoại trong bữa tối.",
-      "explanation": "<b>Put your foot down</b> means to be firm and refuse to allow something. <b>Put your feet up</b> is to relax, <b>put your back into it</b> is to work hard, and <b>put your cards on the table</b> is to be honest about your plans."
+      "explanation": "<b>Put your foot down</b> = be firm and refuse to allow something, which matches the strict rule <b>nobody could use a phone</b>. ✗ <b>put his feet up</b> — relax, rest; ✗ <b>put his back into it</b> — work very hard at a task; ✗ <b>put his cards on the table</b> — be honest and open about your plans."
     },
     {
       "id": "gv-kc-02-16",
@@ -174,7 +174,7 @@
       "correct": 2,
       "answer": "didn't make",
       "vi": "Nếu em trai tôi không làm ồn như vậy mỗi tối thì tôi có thể đọc xong cuốn sách trong một tuần.",
-      "explanation": "This is a second conditional about a present situation that is not true (<b>every evening</b> + <b>could finish</b>), so the if-clause takes the past simple: <b>didn't make</b>. The present and future forms belong to the first conditional, and <b>hadn't made</b> would refer to a finished past event."
+      "explanation": "A second conditional describes a present situation that is not true — <b>every evening</b> + <b>could finish</b> — so the if-clause takes the past simple: <b>didn't make</b>. ✗ <b>doesn't make</b> — present simple belongs to the first conditional with <b>will / can</b>, not <b>could</b>; ✗ <b>hadn't made</b> — past perfect is the third conditional about a finished past event, which clashes with <b>every evening</b>; ✗ <b>won't make</b> — <b>will</b> is not used in an if-clause."
     },
     {
       "id": "gv-kc-02-17",
@@ -185,7 +185,7 @@
       "correct": 3,
       "answer": "destination",
       "vi": "Điểm đến của chúng tôi là một ngôi làng yên tĩnh ven biển, nhưng xe buýt lại thả chúng tôi ở nhầm thị trấn.",
-      "explanation": "The place you are travelling to is your <b>destination</b>. <b>Direction</b> is the way you go (north, left), <b>distance</b> is how far it is, and <b>arrival</b> is the act of getting there, not the place itself."
+      "explanation": "The place you are travelling to is your <b>destination</b>; the clue is the contrast with <b>the wrong town</b>. ✗ <b>direction</b> — the way you go (north, left), not a place; ✗ <b>distance</b> — how far it is, a length, not a village; ✗ <b>arrival</b> — the act of getting somewhere, not the place itself."
     },
     {
       "id": "gv-kc-02-18",
@@ -196,7 +196,7 @@
       "correct": 1,
       "answer": "likes",
       "vi": "Cả bố mẹ tôi lẫn em gái tôi đều không thích phim kinh dị.",
-      "explanation": "With <b>neither … nor</b>, the verb agrees with the subject nearest to it: <b>my little sister likes</b>. <b>Like</b>, <b>are liking</b> and <b>have liked</b> would agree with the plural <b>parents</b>, and <b>like</b> is a state verb that is not used in continuous forms anyway."
+      "explanation": "With <b>neither … nor</b>, the verb agrees with the subject nearest to it: singular <b>my little sister</b> → <b>likes</b>. ✗ <b>like</b> — plural, it would agree with <b>parents</b>, which is further from the verb; ✗ <b>are liking</b> — plural AND a continuous form, but <b>like</b> is a state verb not used in the continuous; ✗ <b>have liked</b> — plural, and the present perfect makes no sense for a general preference."
     },
     {
       "id": "gv-kc-02-19",
@@ -207,7 +207,7 @@
       "correct": 3,
       "answer": "taken up",
       "vi": "Em họ tôi mới bắt đầu học đàn piano và luyện tập mỗi tối sau bữa ăn.",
-      "explanation": "<b>Take up</b> means to start a new hobby or activity. <b>Take over</b> is to take control of something, <b>take in</b> is to understand or to give someone a home, and <b>take off</b> is to remove clothes or to leave the ground."
+      "explanation": "<b>Take up</b> = start a new hobby or activity, which fits <b>practises every evening</b>. ✗ <b>taken over</b> — take control of a company or a job; ✗ <b>taken in</b> — understand something, or give someone a home; ✗ <b>taken off</b> — remove clothes, or leave the ground (a plane)."
     },
     {
       "id": "gv-kc-02-20",
@@ -218,7 +218,7 @@
       "correct": 2,
       "answer": "made",
       "vi": "Chiếc bánh sô-cô-la do bà tôi làm là món ngon nhất trong bữa tiệc.",
-      "explanation": "A past participle shortens the relative clause <b>which was made by my grandmother</b>: <b>the cake made by</b>. <b>Making</b> would mean the cake did the making, and <b>was made / had made</b> would give the sentence two main verbs."
+      "explanation": "A past participle shortens the passive relative clause <b>which was made by my grandmother</b> to <b>the cake made by</b>; the clue is the passive agent <b>by my grandmother</b>. ✗ <b>making</b> — a present participle would mean the cake did the making, which is impossible; ✗ <b>was made</b> — a full verb here would give the sentence two main verbs (<b>was made … was</b>); ✗ <b>had made</b> — active past perfect, it also makes a second main verb and says the cake made something."
     },
     {
       "id": "gv-kc-02-21",
@@ -229,7 +229,7 @@
       "correct": 0,
       "answer": "will be lying",
       "vi": "Giờ này tuần sau chúng tôi sẽ đang nằm trên bãi biển Nha Trang cùng tất cả anh chị em họ.",
-      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, which takes the future continuous: <b>will be lying</b>. The present simple, present perfect and past continuous do not describe a future moment."
+      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, which takes the future continuous: <b>will be lying</b>. ✗ <b>lie</b> — present simple is for habits or timetables, not a picture of one future moment; ✗ <b>have lain</b> — present perfect links the past to now, not to next week; ✗ <b>were lying</b> — past continuous describes a past moment, but the time marker is future."
     },
     {
       "id": "gv-kc-02-22",
@@ -240,7 +240,7 @@
       "correct": 2,
       "answer": "sightseeing",
       "vi": "Ngày đầu tiên ở Huế, gia đình tôi đi tham quan và chụp ảnh mọi cung điện cổ.",
-      "explanation": "<b>Go sightseeing</b> is the set expression for visiting the famous places of a town. <b>Watching</b> and <b>viewing</b> need an object (watching a film), and <b>go looking</b> needs <b>for</b> something."
+      "explanation": "<b>Go sightseeing</b> is the set expression for visiting the famous places of a town, and <b>took photos of every old palace</b> confirms it. ✗ <b>watching</b> — needs an object (watching a film), and <b>go watching</b> is not a set phrase; ✗ <b>viewing</b> — also needs an object, and it is used for houses or exhibitions, not tours; ✗ <b>looking</b> — <b>go looking</b> must be followed by <b>for</b> something."
     },
     {
       "id": "gv-kc-02-23",
@@ -251,7 +251,7 @@
       "correct": 3,
       "answer": "ourselves",
       "vi": "Anh em tôi thường tự nấu bữa tối khi bố mẹ đi làm về muộn.",
-      "explanation": "<b>My brother and I</b> = <b>we</b>, so the reflexive pronoun is <b>ourselves</b> (meaning without help). <b>Ourself</b> does not exist in standard English, <b>themselves</b> refers to <b>they</b>, and <b>each other</b> would mean we cook one another, which makes no sense."
+      "explanation": "<b>My brother and I</b> = <b>we</b>, so the reflexive is <b>ourselves</b>, here meaning \"without our parents' help\". ✗ <b>ourself</b> — not a standard English form; the plural is always <b>ourselves</b>; ✗ <b>themselves</b> — refers to <b>they</b>, not to <b>we</b>; ✗ <b>each other</b> — a reciprocal pronoun, it would mean we cook one another, which makes no sense."
     },
     {
       "id": "gv-kc-02-24",
@@ -262,7 +262,7 @@
       "correct": 2,
       "answer": "take",
       "vi": "Bạn chụp giúp bọn mình một tấm ảnh trước rạp chiếu phim được không?",
-      "explanation": "In English you <b>take</b> a photo. <b>Make</b> and <b>do</b> are the usual learner mistakes, and <b>catch</b> is used with a bus, a ball or a cold, not a photo."
+      "explanation": "<b>Photo</b> collocates with <b>take</b>: you take a photo / a picture. ✗ <b>make</b> — a direct translation from many languages, but English uses <b>make</b> for creating things (a cake, a film), not photos; ✗ <b>do</b> — pairs with tasks (homework, housework), never with a photo; ✗ <b>catch</b> — goes with a bus, a ball or a cold, not a photo."
     },
     {
       "id": "gv-kc-02-25",
@@ -273,7 +273,7 @@
       "correct": 0,
       "answer": "shall we",
       "vi": "Tối nay chúng ta xem phim hài nhé?",
-      "explanation": "A suggestion with <b>Let's</b> always takes the tag <b>shall we?</b>. <b>Will you</b> follows an imperative, and <b>do / don't we</b> follow a present simple statement with <b>we</b>."
+      "explanation": "A suggestion with <b>Let's</b> always takes the tag <b>shall we?</b>. ✗ <b>will we</b> — <b>will you?</b> is the tag after an imperative (Open the door, will you?), not after <b>Let's</b>; ✗ <b>do we</b> — follows a negative present simple statement (We don't …, do we?); ✗ <b>don't we</b> — follows a positive present simple statement (We watch …, don't we?), but <b>Let's</b> is not a statement."
     }
   ]
 }

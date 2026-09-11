@@ -8,7 +8,7 @@
       "words": ["sacrificed", "recognised", "compromised", "surprised"],
       "ipa": ["/ˈsækrɪfaɪst/", "/ˈrekəɡnaɪzd/", "/ˈkɒmprəmaɪzd/", "/səˈpraɪzd/"],
       "correct": 0,
-      "explanation": "<b>sacrificed</b> /ˈsækrɪfaɪst/ — đuôi -ed đọc /t/ vì đứng sau âm vô thanh /s/ (chữ c trong -ice đọc /s/). Ba từ còn lại có -ise đọc /z/ (hữu thanh) nên -ed đọc /d/: recognised /ˈrekəɡnaɪzd/, compromised /ˈkɒmprəmaɪzd/, surprised /səˈpraɪzd/."
+      "explanation": "<b>sacrificed</b> /ˈsækrɪfaɪst/ — động từ gốc sacrifice kết thúc bằng /s/ vô thanh (c trong -ice đọc /s/), nên đuôi -ed đọc /t/. Ba từ còn lại gốc kết thúc bằng /z/ hữu thanh (-ise) nên -ed đọc /d/: recognised /ˈrekəɡnaɪzd/, compromised /ˈkɒmprəmaɪzd/, surprised /səˈpraɪzd/. Mẹo: đọc âm cuối của động từ gốc: vô thanh → /t/, hữu thanh → /d/, /t/ hoặc /d/ → /ɪd/."
     },
     {
       "id": "ph-ch-16-2", "level": "ch", "kind": "sound", "rule": "es",
@@ -16,7 +16,7 @@
       "words": ["clichés", "façades", "yachts", "choirs"],
       "ipa": ["/ˈkliːʃeɪz/", "/fəˈsɑːdz/", "/jɒts/", "/ˈkwaɪəz/"],
       "correct": 2,
-      "explanation": "<b>yachts</b> /jɒts/ — chữ ch trong yacht câm, từ kết thúc bằng /t/ vô thanh nên đuôi -s đọc /s/. Ba từ còn lại kết thúc bằng âm hữu thanh nên -s đọc /z/: clichés /ˈkliːʃeɪz/ (sau nguyên âm), façades /fəˈsɑːdz/ (sau /d/), choirs /ˈkwaɪəz/ (sau nguyên âm)."
+      "explanation": "<b>yachts</b> /jɒts/ — ch trong yacht câm, từ gốc kết thúc bằng /t/ vô thanh nên đuôi -s đọc /s/. Ba từ còn lại kết thúc bằng âm hữu thanh nên -s đọc /z/: clichés /ˈkliːʃeɪz/ (sau nguyên âm /eɪ/), façades /fəˈsɑːdz/ (sau /d/), choirs /ˈkwaɪəz/ (sau nguyên âm /ə/). Mẹo: bỏ qua mặt chữ, đọc âm cuối thật của từ gốc: vô thanh → /s/, hữu thanh hoặc nguyên âm → /z/, /s z ʃ tʃ dʒ/ → /ɪz/."
     },
     {
       "id": "ph-ch-16-3", "level": "ch", "kind": "sound", "rule": "ch-sh-th-gh",
@@ -24,7 +24,7 @@
       "words": ["chaos", "chef", "choir", "chorus"],
       "ipa": ["/ˈkeɪɒs/", "/ʃef/", "/ˈkwaɪə/", "/ˈkɔːrəs/"],
       "correct": 1,
-      "explanation": "<b>chef</b> /ʃef/ — từ mượn tiếng Pháp, ch đọc /ʃ/ như sh. Ba từ còn lại gốc Hy Lạp, ch đọc /k/: chaos /ˈkeɪɒs/, choir /ˈkwaɪə/, chorus /ˈkɔːrəs/."
+      "explanation": "<b>chef</b> /ʃef/ — từ mượn tiếng Pháp, ch đọc /ʃ/ như sh (cùng nhóm chic, machine, champagne). Ba từ còn lại gốc Hy Lạp – La-tinh, ch đọc /k/: chaos /ˈkeɪɒs/, choir /ˈkwaɪə/, chorus /ˈkɔːrəs/ (cùng nhóm chemist, character, echo). Mẹo: ch trong từ gốc Pháp (ẩm thực, thời trang) → /ʃ/; ch trong từ khoa học, âm nhạc gốc Hy Lạp → /k/; còn lại (chair, church) → /tʃ/."
     },
     {
       "id": "ph-ch-16-4", "level": "ch", "kind": "sound", "rule": "s-z-sh",
@@ -32,7 +32,7 @@
       "words": ["casual", "closure", "measure", "tension"],
       "ipa": ["/ˈkæʒuəl/", "/ˈkləʊʒə/", "/ˈmeʒə/", "/ˈtenʃn/"],
       "correct": 3,
-      "explanation": "<b>tension</b> /ˈtenʃn/ — s đứng sau phụ âm n trong đuôi -sion đọc /ʃ/ (vô thanh). Ba từ còn lại s đứng giữa hai nguyên âm trước -u/-ure đọc /ʒ/ (hữu thanh): casual /ˈkæʒuəl/, closure /ˈkləʊʒə/, measure /ˈmeʒə/."
+      "explanation": "<b>tension</b> /ˈtenʃn/ — đuôi -sion đứng sau phụ âm n đọc /ʃ/ vô thanh (như pension, mansion). Ba từ còn lại có s kẹp giữa hai nguyên âm, trước -ure/-ual, nên đọc /ʒ/ hữu thanh: casual /ˈkæʒuəl/, closure /ˈkləʊʒə/, measure /ˈmeʒə/ (cùng nhóm pleasure, usual, vision). Mẹo: nhìn chữ đứng ngay trước s: phụ âm → /ʃ/; nguyên âm → /ʒ/."
     },
     {
       "id": "ph-ch-16-5", "level": "ch", "kind": "sound", "rule": "silent",
@@ -40,7 +40,7 @@
       "words": ["ballet", "bouquet", "duet", "gourmet"],
       "ipa": ["/ˈbæleɪ/", "/buˈkeɪ/", "/djuˈet/", "/ˈɡɔːmeɪ/"],
       "correct": 2,
-      "explanation": "<b>duet</b> /djuˈet/ — gốc tiếng Ý, chữ t cuối đọc rõ /t/. Ba từ còn lại mượn tiếng Pháp, đuôi -et đọc /eɪ/ và t câm: ballet /ˈbæleɪ/, bouquet /buˈkeɪ/, gourmet /ˈɡɔːmeɪ/."
+      "explanation": "<b>duet</b> /djuˈet/ — gốc tiếng Ý (duetto), nhấn âm 2 và t cuối đọc rõ /t/. Ba từ còn lại mượn tiếng Pháp, đuôi -et đọc /eɪ/ và t câm: ballet /ˈbæleɪ/, bouquet /buˈkeɪ/, gourmet /ˈɡɔːmeɪ/ (cùng nhóm buffet, chalet, crochet). Mẹo: -et trong từ gốc Pháp về ẩm thực, nghệ thuật → /eɪ/ với t câm; -et thường (duet, cadet, regret) → /et/ có /t/."
     },
     {
       "id": "ph-ch-16-6", "level": "ch", "kind": "sound", "rule": "prefix-ex",
@@ -48,7 +48,7 @@
       "words": ["exhibition", "exhibit", "exhaust", "exotic"],
       "ipa": ["/ˌeksɪˈbɪʃn/", "/ɪɡˈzɪbɪt/", "/ɪɡˈzɔːst/", "/ɪɡˈzɒtɪk/"],
       "correct": 0,
-      "explanation": "<b>exhibition</b> /ˌeksɪˈbɪʃn/ — ex- đọc /eks/ vì trọng âm không rơi vào âm tiết ngay sau ex- (nhấn âm 3: -BI-). Ba từ còn lại nhấn ngay âm tiết sau ex- nên ex- đọc /ɪɡz/ (h câm): exhibit /ɪɡˈzɪbɪt/, exhaust /ɪɡˈzɔːst/, exotic /ɪɡˈzɒtɪk/."
+      "explanation": "<b>exhibition</b> /ˌeksɪˈbɪʃn/ — ex- đọc /eks/ vì trọng âm không rơi vào âm tiết ngay sau nó (nhấn âm 3: ex-hi-BI-tion). Ba từ còn lại có ex- đứng trước nguyên âm hoặc h câm và trọng âm rơi ngay âm tiết sau, nên ex- đọc /ɪɡz/: exhibit /ɪɡˈzɪbɪt/, exhaust /ɪɡˈzɔːst/, exotic /ɪɡˈzɒtɪk/ (cùng nhóm exam, exact, exist). Mẹo: ex- + nguyên âm/h câm + trọng âm ngay sau → /ɪɡz/; các trường hợp khác (exercise, expect, exhibition) → /eks/."
     },
     {
       "id": "ph-ch-16-7", "level": "ch", "kind": "sound", "rule": "oo-ou-ow",
@@ -56,7 +56,7 @@
       "words": ["courage", "trouble", "double", "drought"],
       "ipa": ["/ˈkʌrɪdʒ/", "/ˈtrʌbl/", "/ˈdʌbl/", "/draʊt/"],
       "correct": 3,
-      "explanation": "<b>drought</b> /draʊt/ — ou đọc nguyên âm đôi /aʊ/ (gh câm, giống out /aʊt/). Ba từ còn lại ou đọc /ʌ/ ngắn như trong cup: courage /ˈkʌrɪdʒ/, trouble /ˈtrʌbl/, double /ˈdʌbl/."
+      "explanation": "<b>drought</b> /draʊt/ — ou đọc nguyên âm đôi /aʊ/, gh câm (cùng nhóm out, doubt, about). Ba từ còn lại ou đọc /ʌ/ ngắn như cup: courage /ˈkʌrɪdʒ/, trouble /ˈtrʌbl/, double /ˈdʌbl/ (cùng nhóm couple, country, cousin, young, touch). Mẹo: thuộc lòng nhóm ou = /ʌ/ theo gia đình từ: trouble, double, couple, country, cousin, young, touch, courage; ngoài nhóm này ou thường là /aʊ/ (out, loud, drought)."
     },
     {
       "id": "ph-ch-16-8", "level": "ch", "kind": "sound", "rule": "ea-ee-ie",
@@ -64,7 +64,7 @@
       "words": ["feature", "peasant", "creature", "treaty"],
       "ipa": ["/ˈfiːtʃə/", "/ˈpeznt/", "/ˈkriːtʃə/", "/ˈtriːti/"],
       "correct": 1,
-      "explanation": "<b>peasant</b> /ˈpeznt/ — ea đọc /e/ ngắn (giống pleasant, pheasant, meadow). Ba từ còn lại ea đọc /iː/ dài theo quy tắc chung: feature /ˈfiːtʃə/, creature /ˈkriːtʃə/, treaty /ˈtriːti/."
+      "explanation": "<b>peasant</b> /ˈpeznt/ — ea đọc /e/ ngắn, cùng nhóm ngoại lệ pleasant, pheasant, meadow, measure. Ba từ còn lại ea đọc /iː/ dài theo quy tắc chung: feature /ˈfiːtʃə/, creature /ˈkriːtʃə/, treaty /ˈtriːti/ (cùng nhóm teach, reason, leave). Mẹo: ea mặc định là /iː/; thuộc lòng nhóm ea = /e/ hay thi: bread, dead, head, health, wealth, weather, pleasant, peasant, measure, jealous."
     },
     {
       "id": "ph-ch-16-9", "level": "ch", "kind": "sound", "rule": "c-g",
@@ -72,7 +72,7 @@
       "words": ["facade", "decade", "arcade", "cascade"],
       "ipa": ["/fəˈsɑːd/", "/ˈdekeɪd/", "/ɑːˈkeɪd/", "/kæˈskeɪd/"],
       "correct": 0,
-      "explanation": "<b>facade</b> /fəˈsɑːd/ (cũng viết façade) — từ mượn tiếng Pháp, chữ c (ç) đọc /s/ dù đứng trước a. Ba từ còn lại c trước a đọc /k/ theo quy tắc: decade /ˈdekeɪd/, arcade /ɑːˈkeɪd/, cascade /kæˈskeɪd/."
+      "explanation": "<b>facade</b> /fəˈsɑːd/ (viết gốc façade) — từ mượn tiếng Pháp, chữ ç đọc /s/ dù đứng trước a, và a đọc /ɑː/. Ba từ còn lại c đứng trước a đọc /k/ theo quy tắc: decade /ˈdekeɪd/, arcade /ɑːˈkeɪd/, cascade /kæˈskeɪd/ (cùng nhóm cake, card, camp). Mẹo: c trước a/o/u → /k/; c trước e/i/y → /s/; ngoại lệ facade giữ cách đọc Pháp — nhớ dấu móc dưới ç."
     },
     {
       "id": "ph-ch-16-10", "level": "ch", "kind": "sound", "rule": "h",
@@ -80,7 +80,7 @@
       "words": ["vehicle", "heir", "honour", "hesitate"],
       "ipa": ["/ˈviːəkl/", "/eə/", "/ˈɒnə/", "/ˈhezɪteɪt/"],
       "correct": 3,
-      "explanation": "<b>hesitate</b> /ˈhezɪteɪt/ — chữ h đọc rõ /h/. Ba từ còn lại h câm: vehicle /ˈviːəkl/ (h giữa hai nguyên âm không đọc), heir /eə/ (đọc giống air), honour /ˈɒnə/ (cùng nhóm hour, honest)."
+      "explanation": "<b>hesitate</b> /ˈhezɪteɪt/ — h đầu từ đọc rõ /h/ theo quy tắc chung (cùng nhóm history, hospital, habit). Ba từ còn lại h câm: heir /eə/ và honour /ˈɒnə/ thuộc nhóm bốn từ gốc Pháp hour, honest, honour, heir; vehicle /ˈviːəkl/ có h kẹp giữa hai nguyên âm không đọc (như annihilate). Mẹo: thuộc lòng nhóm h câm hour–honest–honour–heir cùng vehicle, exhaust, ghost; ngoài nhóm này h đầu từ luôn đọc /h/."
     },
     {
       "id": "ph-ch-16-11", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -89,7 +89,7 @@
       "ipa": ["/ˈkliːʃeɪ/", "/ˈkeɪɒs/", "/kəˈnuː/", "/ˈkɔːrəs/"],
       "syllables": [2, 2, 2, 2], "stress": [1, 1, 2, 1],
       "correct": 2,
-      "explanation": "<b>canoe</b> /kəˈnuː/ — danh từ 2 âm tiết ngoại lệ nhấn âm 2 (cùng nhóm hotel, police, machine). Ba từ còn lại là danh từ nhấn âm 1 theo quy tắc: CLI-ché /ˈkliːʃeɪ/ (tiếng Anh-Anh nhấn âm 1), CHA-os /ˈkeɪɒs/, CHO-rus /ˈkɔːrəs/."
+      "explanation": "<b>ca-NOE</b> /kəˈnuː/ — danh từ 2 âm tiết ngoại lệ nhấn âm 2, cùng nhóm từ mượn hotel, police, machine, balloon. Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc chung: CLI-ché /ˈkliːʃeɪ/ (Anh-Anh nhấn âm 1), CHA-os /ˈkeɪɒs/, CHO-rus /ˈkɔːrəs/. Mẹo: danh từ 2 âm tiết mặc định nhấn âm 1; thuộc lòng nhóm ngoại lệ nhấn âm 2 hay thi: hotel, police, machine, canoe, balloon, career, guitar."
     },
     {
       "id": "ph-ch-16-12", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -98,7 +98,7 @@
       "ipa": ["/kwɪˈziːn/", "/ˈmenjuː/", "/ˈɡærɑːʒ/", "/ˈʃæleɪ/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
       "correct": 0,
-      "explanation": "<b>cuisine</b> /kwɪˈziːn/ — danh từ mượn tiếng Pháp giữ trọng âm cuối, nhấn âm 2 (như machine, police). Ba từ mượn còn lại đã \"Anh hoá\", nhấn âm 1: ME-nu /ˈmenjuː/, GA-rage /ˈɡærɑːʒ/, CHA-let /ˈʃæleɪ/."
+      "explanation": "<b>cui-SINE</b> /kwɪˈziːn/ — danh từ mượn tiếng Pháp giữ trọng âm cuối, nhấn âm 2: đuôi -ine đọc /iːn/ tự mang trọng âm (cùng nhóm machine, police, routine). Ba từ mượn còn lại đã Anh hoá, nhấn âm 1 như danh từ 2 âm tiết thường: ME-nu /ˈmenjuː/, GA-rage /ˈɡærɑːʒ/ (Anh-Anh), CHA-let /ˈʃæleɪ/. Mẹo: từ gốc Pháp có đuôi -ine /iːn/, -ique, -ette, -oon → nhấn âm cuối; đuôi -et /eɪ/ (ballet, buffet, chalet) → nhấn âm 1 trong Anh-Anh."
     },
     {
       "id": "ph-ch-16-13", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -107,7 +107,7 @@
       "ipa": ["/drəˈmætɪk/", "/əˈtɒmɪk/", "/həˈrəʊɪk/", "/ˈluːnətɪk/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>lunatic</b> /ˈluːnətɪk/ — ngoại lệ nổi tiếng của đuôi -ic (cùng nhóm Arabic, politics, Catholic), nhấn âm 1. Ba từ còn lại theo quy tắc -ic kéo trọng âm về âm tiết ngay trước nó, nhấn âm 2: dra-MA-tic /drəˈmætɪk/, a-TO-mic /əˈtɒmɪk/, he-RO-ic /həˈrəʊɪk/."
+      "explanation": "<b>LU-na-tic</b> /ˈluːnətɪk/ — ngoại lệ nổi tiếng của đuôi -ic, nhấn âm 1 (cùng nhóm A-ra-bic, CA-tho-lic, PO-li-tics, a-RITH-me-tic). Ba từ còn lại theo quy tắc: hậu tố -ic kéo trọng âm về âm tiết ngay trước nó, nhấn âm 2: dra-MA-tic /drəˈmætɪk/, a-TO-mic /əˈtɒmɪk/, he-RO-ic /həˈrəʊɪk/. Mẹo: thấy -ic → nhấn âm ngay trước -ic, trừ nhóm ngoại lệ Arabic, Catholic, lunatic, politics, arithmetic, rhetoric — thuộc lòng nhóm này."
     },
     {
       "id": "ph-ch-16-14", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -116,7 +116,7 @@
       "ipa": ["/əˈbɪləti/", "/ˌdefɪˈnɪʃn/", "/sɪˈkjʊərəti/", "/aɪˈdentəti/"],
       "syllables": [4, 4, 4, 4], "stress": [2, 3, 2, 2],
       "correct": 1,
-      "explanation": "<b>definition</b> /ˌdefɪˈnɪʃn/ — đuôi -tion kéo trọng âm về âm tiết ngay trước nó: de-fi-NI-tion, nhấn âm 3. Ba từ còn lại có đuôi -ity, trọng âm rơi vào âm tiết ngay trước -ity, tức âm 2: a-BI-li-ty /əˈbɪləti/, se-CU-ri-ty /sɪˈkjʊərəti/, i-DEN-ti-ty /aɪˈdentəti/."
+      "explanation": "<b>de-fi-NI-tion</b> /ˌdefɪˈnɪʃn/ — hậu tố -tion kéo trọng âm về âm tiết ngay trước nó, nhấn âm 3. Ba từ còn lại có hậu tố -ity, cũng kéo trọng âm về âm tiết ngay trước, nhưng -i-ty chiếm hai âm tiết cuối nên trọng âm rơi vào âm 2: a-BI-li-ty /əˈbɪləti/, se-CU-ri-ty /sɪˈkjʊərəti/, i-DEN-ti-ty /aɪˈdentəti/. Mẹo: -tion, -sion, -ic → nhấn âm ngay trước hậu tố; -ity, -ify, -ical, -ology → nhấn âm thứ ba từ cuối lên; đếm từ cuối về để so."
     },
     {
       "id": "ph-ch-16-15", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -125,7 +125,7 @@
       "ipa": ["/ˌvjetnəˈmiːz/", "/ˌendʒɪˈnɪə/", "/kəˈmɪti/", "/ˌpɪktʃəˈresk/"],
       "syllables": [3, 3, 3, 3], "stress": [3, 3, 2, 3],
       "correct": 2,
-      "explanation": "<b>committee</b> /kəˈmɪti/ — ngoại lệ của đuôi -ee (cùng nhóm coffee, toffee), nhấn âm 2 chứ không nhấn -ee. Ba từ còn lại có đuôi -ese, -eer, -esque tự mang trọng âm, nhấn âm 3: Viet-na-MESE /ˌvjetnəˈmiːz/, en-gi-NEER /ˌendʒɪˈnɪə/, pic-tu-RESQUE /ˌpɪktʃəˈresk/."
+      "explanation": "<b>com-MIT-tee</b> /kəˈmɪti/ — ngoại lệ của đuôi -ee (cùng nhóm COF-fee, TOF-fee), nhấn âm 2, không nhấn -ee. Ba từ còn lại có hậu tố -ese, -eer, -esque tự mang trọng âm, nhấn âm 3: Viet-na-MESE /ˌvjetnəˈmiːz/, en-gi-NEER /ˌendʒɪˈnɪə/, pic-tu-RESQUE /ˌpɪktʃəˈresk/. Mẹo: -ee, -eer, -ese, -esque, -ette, -ique → nhấn chính hậu tố (refugee, volunteer, Japanese); thuộc lòng ba ngoại lệ -ee: committee, coffee, toffee."
     },
     {
       "id": "ph-ch-16-16", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -134,7 +134,7 @@
       "ipa": ["/bruːˈnet/", "/ænˈtiːk/", "/ˌtreɪˈniː/", "/ˈkɒfi/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>coffee</b> /ˈkɒfi/ — tuy kết thúc bằng -ee nhưng là ngoại lệ, nhấn âm 1 (cùng nhóm committee, toffee). Ba từ còn lại có đuôi -ette, -ique, -ee mang trọng âm, nhấn âm 2: bru-NETTE /bruːˈnet/, an-TIQUE /ænˈtiːk/, trai-NEE /ˌtreɪˈniː/."
+      "explanation": "<b>COF-fee</b> /ˈkɒfi/ — tuy kết thúc bằng -ee nhưng là ngoại lệ, nhấn âm 1 (cùng nhóm TOF-fee, com-MIT-tee). Ba từ còn lại có hậu tố -ette, -ique, -ee tự mang trọng âm, nhấn âm 2: bru-NETTE /bruːˈnet/, an-TIQUE /ænˈtiːk/, trai-NEE /ˌtreɪˈniː/ (cùng nhóm cigarette, unique, refugee). Mẹo: đuôi gốc Pháp -ette, -ique, -ee, -eer, -ese, -esque → nhấn chính hậu tố; chỉ trừ ba từ coffee, toffee, committee."
     },
     {
       "id": "ph-ch-16-17", "level": "ch", "kind": "stress", "rule": "3syl",
@@ -143,7 +143,7 @@
       "ipa": ["/keɪˈɒtɪk/", "/ˈresəpi/", "/ˈɔːkɪstrə/", "/ˈkærəktə/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 1, 1, 1],
       "correct": 0,
-      "explanation": "<b>chaotic</b> /keɪˈɒtɪk/ — tính từ có đuôi -ic nên trọng âm rơi vào âm tiết trước -ic: cha-O-tic, nhấn âm 2. Ba từ còn lại là danh từ 3 âm tiết nhấn âm 1: RE-ci-pe /ˈresəpi/, OR-ches-tra /ˈɔːkɪstrə/, CHA-rac-ter /ˈkærəktə/."
+      "explanation": "<b>cha-O-tic</b> /keɪˈɒtɪk/ — tính từ có hậu tố -ic, trọng âm rơi vào âm tiết ngay trước -ic, nhấn âm 2 (khác danh từ CHA-os). Ba từ còn lại là danh từ 3 âm tiết không có hậu tố kéo trọng âm, nhấn âm 1 theo quy tắc chung: RE-ci-pe /ˈresəpi/, OR-ches-tra /ˈɔːkɪstrə/, CHA-rac-ter /ˈkærəktə/ (cùng nhóm cinema, family, hospital). Mẹo: danh từ 3 âm tiết mặc định nhấn âm 1; thấy -ic thì nhấn ngay trước -ic bất kể từ gốc nhấn ở đâu (chaos → chaotic, atom → atomic)."
     },
     {
       "id": "ph-ch-16-18", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -152,7 +152,7 @@
       "ipa": ["/ˈɑːkɪtektʃə/", "/fəˈtɒɡrəfə/", "/ˈkɪndəɡɑːtn/", "/ˈhelɪkɒptə/"],
       "syllables": [4, 4, 4, 4], "stress": [1, 2, 1, 1],
       "correct": 1,
-      "explanation": "<b>photographer</b> /fəˈtɒɡrəfə/ — đuôi -grapher (như -graphy) kéo trọng âm về âm tiết ngay trước: pho-TO-gra-pher, nhấn âm 2 (khác PHO-to-graph). Ba từ còn lại là danh từ dài nhấn âm 1: AR-chi-tec-ture /ˈɑːkɪtektʃə/, KIN-der-gar-ten /ˈkɪndəɡɑːtn/, HE-li-cop-ter /ˈhelɪkɒptə/."
+      "explanation": "<b>pho-TO-gra-pher</b> /fəˈtɒɡrəfə/ — hậu tố -grapher (như -graphy, -logy, -meter) kéo trọng âm về âm tiết ngay trước nó, nhấn âm 2 (khác PHO-to-graph, pho-to-GRA-phic). Ba từ còn lại là danh từ ghép/dài không có hậu tố kéo trọng âm, nhấn âm 1: AR-chi-tec-ture /ˈɑːkɪtektʃə/, KIN-der-gar-ten /ˈkɪndəɡɑːtn/, HE-li-cop-ter /ˈhelɪkɒptə/. Mẹo: -graphy/-grapher, -logy/-logist, -meter, -nomy → nhấn âm thứ ba từ cuối lên (bi-O-lo-gy, ther-MO-me-ter); danh từ ghép nhấn phần đầu."
     },
     {
       "id": "ph-ch-16-19", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -161,7 +161,7 @@
       "ipa": ["/əˈpɒlədʒaɪz/", "/ɪkˈspɪəriəns/", "/ˌentəˈteɪnmənt/", "/səˈtɪfɪkət/"],
       "syllables": [4, 4, 4, 4], "stress": [2, 2, 3, 2],
       "correct": 2,
-      "explanation": "<b>entertainment</b> /ˌentəˈteɪnmənt/ — đuôi -ment không đổi trọng âm, giữ nguyên như động từ en-ter-TAIN, nên nhấn âm 3. Ba từ còn lại nhấn âm 2: a-PO-lo-gise /əˈpɒlədʒaɪz/, ex-PE-ri-ence /ɪkˈspɪəriəns/, cer-TI-fi-cate /səˈtɪfɪkət/."
+      "explanation": "<b>en-ter-TAIN-ment</b> /ˌentəˈteɪnmənt/ — hậu tố -ment không đổi trọng âm, giữ nguyên trọng âm của động từ gốc en-ter-TAIN, nên nhấn âm 3. Ba từ còn lại nhấn âm 2: a-PO-lo-gise /əˈpɒlədʒaɪz/ (-ise không đổi trọng âm, giữ như a-PO-lo-gy), ex-PE-ri-ence /ɪkˈspɪəriəns/ (tiền tố ex- không nhận trọng âm), cer-TI-fi-cate /səˈtɪfɪkət/ (đuôi -ate → nhấn âm thứ ba từ cuối lên). Mẹo: gặp -ment, -ness, -ful, -less, -ise → tìm trọng âm của từ gốc rồi giữ nguyên; gặp -ate → đếm ngược ba âm tiết."
     },
     {
       "id": "ph-ch-16-20", "level": "ch", "kind": "stress", "rule": "prefix",
@@ -170,7 +170,7 @@
       "ipa": ["/ˌdɪskəˈnekt/", "/dɪsˈkʌrɪdʒ/", "/ˌriːprəˈdjuːs/", "/ˌɪmpəˈlaɪt/"],
       "syllables": [3, 3, 3, 3], "stress": [3, 2, 3, 3],
       "correct": 1,
-      "explanation": "<b>discourage</b> /dɪsˈkʌrɪdʒ/ — tiền tố dis- không mang trọng âm khi ghép vào một từ gốc, trọng âm giữ nguyên như từ gốc COU-rage, nên nhấn âm 2. Ba từ còn lại cũng không nhấn tiền tố, trọng âm theo từ gốc con-NECT, pro-DUCE, po-LITE nên nhấn âm 3: dis-con-NECT /ˌdɪskəˈnekt/, re-pro-DUCE /ˌriːprəˈdjuːs/, im-po-LITE /ˌɪmpəˈlaɪt/."
+      "explanation": "<b>dis-COU-rage</b> /dɪsˈkʌrɪdʒ/ — tiền tố dis- không nhận trọng âm, trọng âm giữ nguyên như từ gốc COU-rage (danh từ 2 âm tiết nhấn âm 1), nên nhấn âm 2. Ba từ còn lại cũng không nhấn tiền tố, trọng âm theo từ gốc là động từ/tính từ 2 âm tiết nhấn âm 2 (con-NECT, pro-DUCE, po-LITE), nên nhấn âm 3: dis-con-NECT /ˌdɪskəˈnekt/, re-pro-DUCE /ˌriːprəˈdjuːs/, im-po-LITE /ˌɪmpəˈlaɪt/. Mẹo: bỏ tiền tố (dis-, re-, im-, un-) đi, tìm trọng âm của từ gốc rồi cộng thêm số âm tiết của tiền tố."
     }
   ]
 }

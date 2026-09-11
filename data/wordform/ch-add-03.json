@@ -62,7 +62,7 @@
       "correct": 1,
       "answer": "unpredictability",
       "vi": "PREDICT (dự đoán) → unpredictability — tính khó lường, không thể đoán trước (danh từ)",
-      "explanation": "Sau 'the' và trước 'of this year's monsoon' cần một DANH TỪ, và 'a gamble' cho thấy mùa mưa KHÔNG đoán được → nghĩa phủ định. Đây là dẫn xuất ba bậc: predict → predictable → unpredictable → unpredictability (-able → -ability). Gốc tiếng Anh gốc Germanic/đã Anh hoá như predictable lấy <b>un-</b>, không lấy im-. ✗ impredictability = sai tiền tố; ✗ unpredictableness = sai hậu tố; ✗ unpredictably = trạng từ."
+      "explanation": "Sau 'the' và trước 'of this year's monsoon' cần một DANH TỪ, và 'a gamble' cho thấy mùa mưa KHÔNG đoán được → nghĩa phủ định. Dẫn xuất ba bậc: predict → predictable → unpredictable → unpredictability (-able → -ability, như reliable → unreliability). Tính từ -able tạo trong tiếng Anh lấy <b>un-</b> (unpredictable, unbelievable, unreadable), không lấy im-. ✗ impredictability = sai tiền tố; ✗ unpredictableness = sai hậu tố, -able đi với -ability chứ không với -ness; ✗ unpredictably = trạng từ, không đứng sau 'the'."
     },
     {
       "id": "wf-ch-03-6",
@@ -185,7 +185,7 @@
       "answer": "disproportionately",
       "accept": ["disproportionately", "disproportionally"],
       "vi": "PROPORTION (tỉ lệ) → disproportionately — một cách không cân xứng, quá mức so với tỉ lệ (trạng từ)",
-      "explanation": "Sau động từ 'falls' và trước 'on low-income households' cần một TRẠNG TỪ chỉ cách thức, và vế sau cho thấy gánh nặng thuế KHÔNG cân xứng. Dẫn xuất ba bậc: proportion → proportionate (tính từ) → disproportionate (tiền tố <b>dis-</b>) → disproportionately (thêm -ly). Bẫy: 'unproportionally', 'disproportionally' (có tồn tại và được chấp nhận, nhưng hiếm; báo chí dùng disproportionately) hoặc quên -ate."
+      "explanation": "Sau động từ 'falls' và trước 'on low-income households' cần một TRẠNG TỪ chỉ cách thức, và vế sau cho thấy gánh nặng thuế KHÔNG cân xứng. Dẫn xuất ba bậc: proportion → proportionate (tính từ) → disproportionate (tiền tố <b>dis-</b>) → disproportionately (thêm -ly). Biến thể 'disproportionally' (từ disproportional) cũng đúng nhưng hiếm hơn nhiều. Bẫy: 'unproportionately' (sai tiền tố — gốc này đi với dis-), 'disproportionate' (tính từ, không bổ nghĩa cho falls) hoặc 'disproportionly' (quên -ate)."
     },
     {
       "id": "wf-ch-03-16",
@@ -248,7 +248,7 @@
       "correct": 3,
       "answer": "non-profit",
       "vi": "PROFIT (lợi nhuận) → non-profit — phi lợi nhuận (tính từ)",
-      "explanation": "Giữa 'a' và 'organisation' cần một TÍNH TỪ, và 'every dollar … ploughed back into patient care' cho thấy tổ chức này KHÔNG hoạt động vì lợi nhuận. Tiền tố <b>non-</b> gắn thẳng vào danh từ để tạo tính từ ghép: non-profit (organisation), non-smoking (area), non-stop (flight). ✗ unprofitable / profitless = 'không có lãi, thua lỗ' — sai nghĩa hoàn toàn; ✗ disprofit = không tồn tại."
+      "explanation": "Giữa 'a' và 'organisation' cần một TÍNH TỪ, và 'every dollar … ploughed back into patient care' cho thấy tổ chức này KHÔNG hoạt động vì lợi nhuận. Tiền tố <b>non-</b> gắn thẳng vào danh từ để tạo tính từ ghép: non-profit (organisation), non-smoking (area), non-stop (flight). ✗ unprofitable / profitless = 'không có lãi, thua lỗ' — sai nghĩa: phi lợi nhuận là không NHẰM kiếm lãi, không phải làm ăn lỗ; ✗ disprofit = không phải tính từ trong tiếng Anh hiện đại."
     }
   ]
 }

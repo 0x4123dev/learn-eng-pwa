@@ -14,7 +14,7 @@
         "rarity"
       ],
       "vi": "RARE (hiếm - tính từ) → rarity — sự hiếm có, độ hiếm (danh từ)",
-      "explanation": "Chỗ trống đứng sau tính từ sở hữu 'its' và trước dấu phẩy, cần một DANH TỪ chỉ tính chất. Tính từ 'rare' → danh từ 'rarity' (bỏ -e, thêm -ity). ✗ rareness về ngữ pháp có tồn tại nhưng gần như không dùng; ✗ rarely = trạng từ — không đứng sau 'its'."
+      "explanation": "Sau tính từ sở hữu 'its' (because of its + N) cần một DANH TỪ chỉ tính chất. Tính từ 'rare' → danh từ 'rarity' (bỏ -e, thêm -ity; giống scarce → scarcity). ✗ rareness có trong từ điển nhưng gần như không dùng, đề thi không chấp nhận; ✗ rarely = trạng từ — không đứng sau 'its'."
     },
     {
       "id": "wf-ch-02-2",
@@ -78,7 +78,7 @@
       "correct": 1,
       "answer": "scarcity",
       "vi": "SCARCE (khan hiếm - tính từ) → scarcity — sự khan hiếm (danh từ)",
-      "explanation": "Sau 'the' và trước 'of fresh water', cần một DANH TỪ làm chủ ngữ cho 'has forced'. Tính từ 'scarce' → danh từ 'scarcity' (bỏ -e, thêm -ity). ✗ scarceness là hậu tố sai; ✗ scarcely = trạng từ (hầu như không); ✗ scarcify không tồn tại."
+      "explanation": "Sau 'the' và trước 'of fresh water', cần một DANH TỪ làm chủ ngữ cho 'has forced'. Tính từ 'scarce' → danh từ 'scarcity' (bỏ -e, thêm -ity; giống rare → rarity). ✗ scarceness có trong từ điển nhưng rất hiếm dùng, không phải dạng chuẩn; ✗ scarcely = trạng từ (hầu như không); ✗ scarcify không tồn tại."
     },
     {
       "id": "wf-ch-02-6",
@@ -92,7 +92,7 @@
         "accuracy"
       ],
       "vi": "ACCURATE (chính xác - tính từ) → accuracy — độ chính xác (danh từ)",
-      "explanation": "Sau 'questioned the' và trước 'of the diary', cần một DANH TỪ. Tính từ 'accurate' → danh từ 'accuracy' (bỏ -te, thêm -cy). ✗ accurateness là hậu tố sai; ✗ accurately = trạng từ — không thể làm tân ngữ của 'questioned'."
+      "explanation": "Sau 'questioned the' và trước 'of the diary', cần một DANH TỪ làm tân ngữ. Tính từ 'accurate' → danh từ 'accuracy' (bỏ -te, thêm -cy; giống private → privacy). ✗ accurateness rất hiếm dùng, đề thi không chấp nhận; ✗ accurately = trạng từ — không thể làm tân ngữ của 'questioned'."
     },
     {
       "id": "wf-ch-02-7",
@@ -184,7 +184,7 @@
         "anonymity"
       ],
       "vi": "ANONYMOUS (ẩn danh - tính từ) → anonymity — sự ẩn danh, tình trạng giấu tên (danh từ)",
-      "explanation": "Sau 'on condition of complete' cần một DANH TỪ (cụm 'on condition of + N'). Tính từ 'anonymous' → danh từ 'anonymity': bỏ hẳn -ous rồi thêm -ity (giống curious → curiosity). ✗ anonymousness là hậu tố sai; ✗ anonymously = trạng từ — không đứng sau tính từ 'complete'."
+      "explanation": "Sau 'on condition of complete' cần một DANH TỪ (cụm 'on condition of + N'; 'complete' là tính từ bổ nghĩa cho nó). Tính từ 'anonymous' → danh từ 'anonymity': bỏ hẳn -ous rồi thêm -ity (giống unanimous → unanimity). ✗ anonymousness là hậu tố sai; ✗ anonimity là lỗi chính tả (giữ chữ y); ✗ anonymously = trạng từ — không đứng sau tính từ 'complete'."
     },
     {
       "id": "wf-ch-02-13",

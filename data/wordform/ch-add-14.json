@@ -12,7 +12,7 @@
       "answer": "significance",
       "accept": ["significance"],
       "vi": "SIGNIFY (biểu thị, có ý nghĩa - động từ) → significance — tầm quan trọng, ý nghĩa (danh từ)",
-      "explanation": "Chỗ trống đứng sau 'the full' và trước 'of the treaty', nên cần một DANH TỪ. Động từ 'signify' → tính từ 'significant' → danh từ 'significance' (bỏ -ify, thêm -icance). Bẫy: viết 'signification' (nghĩa của một từ hay ký hiệu, không phải tầm quan trọng) hoặc dừng ở 'significant' (tính từ)."
+      "explanation": "Chỗ trống đứng sau 'the full' và trước 'of the treaty', nên cần một DANH TỪ. Động từ 'signify' → tính từ 'significant' (-ant) → danh từ 'significance' (đổi -ant thành -ance, như 'important → importance'). Bẫy: viết 'signification' (nghĩa của một từ hay ký hiệu, không phải tầm quan trọng) hoặc dừng ở 'significant' (tính từ, không đứng sau 'the full')."
     },
     {
       "id": "wf-ch-14-2",
@@ -25,7 +25,7 @@
       "correct": 0,
       "answer": "emergence",
       "vi": "EMERGE (xuất hiện, nổi lên - động từ) → emergence — sự xuất hiện, sự trỗi dậy (danh từ)",
-      "explanation": "Cụm 'the ___ of drug-resistant bacteria' cần một DANH TỪ chỉ sự xuất hiện. Động từ 'emerge' → danh từ 'emergence' (thêm -nce, giữ nguyên gốc). ✗ emergency = tình trạng khẩn cấp, nghĩa khác hẳn; ✗ emergent = tính từ; ✗ emersion = thuật ngữ thiên văn (sự ló ra sau nhật thực), không phải dạng thường dùng."
+      "explanation": "Cụm 'the ___ of drug-resistant bacteria' cần một DANH TỪ chỉ sự xuất hiện. Động từ 'emerge' → danh từ 'emergence' (thêm -nce, giữ nguyên gốc, như 'converge → convergence'). ✗ emergency = tình trạng khẩn cấp, nghĩa khác hẳn; ✗ emergent = tính từ, không đứng sau 'the' + 'of'; ✗ emersion = từ hiếm (sự ló ra khỏi nước / sau nhật thực), không phải dạng thường dùng."
     },
     {
       "id": "wf-ch-14-3",
@@ -62,7 +62,7 @@
       "correct": 1,
       "answer": "dominance",
       "vi": "DOMINATE (chi phối, chiếm ưu thế - động từ) → dominance — sự chiếm ưu thế, tính trội (danh từ)",
-      "explanation": "Sau sở hữu cách 'the left hemisphere's' và trước 'in language processing' cần một DANH TỪ; 'hemispheric dominance' là thuật ngữ khoa học chỉ bán cầu não trội. Động từ 'dominate' → tính từ 'dominant' → danh từ 'dominance' (bỏ -ate, thêm -ance). ✗ domination = sự thống trị bằng quyền lực, không dùng trong khoa học thần kinh; ✗ dominancy = đuôi sai; ✗ dominantly = trạng từ."
+      "explanation": "Sau sở hữu cách 'the left hemisphere's' và trước 'in language processing' cần một DANH TỪ; 'hemispheric dominance' là thuật ngữ khoa học chỉ bán cầu não trội. Động từ 'dominate' → tính từ 'dominant' → danh từ 'dominance' (bỏ -ate, thêm -ance). ✗ domination = sự thống trị bằng quyền lực, sai nghĩa trong khoa học thần kinh; ✗ dominancy = biến thể hiếm, không dùng; ✗ dominantly = trạng từ."
     },
     {
       "id": "wf-ch-14-6",
@@ -149,7 +149,7 @@
       "correct": 0,
       "answer": "convergence",
       "vi": "CONVERGE (hội tụ, tiến lại gần nhau - động từ) → convergence — sự hội tụ, sự thu hẹp khoảng cách (danh từ)",
-      "explanation": "Cụm 'a gradual ___ of wages' cần một DANH TỪ chỉ quá trình; 'gradual' là tính từ bổ nghĩa cho nó. Động từ 'converge' → danh từ 'convergence' (thêm -nce, giữ nguyên gốc). ✗ convergency = đuôi sai, hiếm gặp; ✗ conversion = sự chuyển đổi, gốc 'convert' khác hẳn; ✗ convergement = không tồn tại."
+      "explanation": "Cụm 'a gradual ___ of wages' cần một DANH TỪ chỉ quá trình; 'gradual' là tính từ bổ nghĩa cho nó. Động từ 'converge' → danh từ 'convergence' (thêm -nce, giữ nguyên gốc, như 'emerge → emergence'). ✗ convergency = biến thể hiếm, không dùng; ✗ conversion = sự chuyển đổi, gốc 'convert' khác hẳn; ✗ convergement = không tồn tại."
     },
     {
       "id": "wf-ch-14-13",
@@ -174,7 +174,7 @@
       "correct": 2,
       "answer": "reluctance",
       "vi": "RELUCTANT (miễn cưỡng - tính từ) → reluctance — sự miễn cưỡng, thái độ không muốn (danh từ)",
-      "explanation": "Sau 'Despite his obvious' cần một DANH TỪ, vì 'despite' đi với danh từ và 'obvious' là tính từ bổ nghĩa cho nó. Tính từ 'reluctant' → danh từ 'reluctance' (đổi -ant thành -ance). ✗ reluctancy = đuôi sai; ✗ reluctantness = ghép -ness bừa, tính từ đuôi -ant danh từ hóa bằng -ance; ✗ reluctantly = trạng từ."
+      "explanation": "Sau 'Despite his obvious' cần một DANH TỪ, vì 'despite' đi với danh từ và 'obvious' là tính từ bổ nghĩa cho nó. Tính từ 'reluctant' → danh từ 'reluctance' (đổi -ant thành -ance, như 'important → importance'). ✗ reluctancy = biến thể hiếm, không dùng; ✗ reluctantness = tính từ đuôi -ant danh từ hóa bằng -ance, không ghép -ness; ✗ reluctantly = trạng từ."
     },
     {
       "id": "wf-ch-14-15",

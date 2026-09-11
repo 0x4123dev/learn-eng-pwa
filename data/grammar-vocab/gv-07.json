@@ -16,7 +16,7 @@
       "correct": 1,
       "answer": "is preparing",
       "vi": "Lan: Nam đâu rồi? / Minh: Bạn ấy đang chuẩn bị cho buổi phỏng vấn xin việc lúc này, nên đừng làm phiền.",
-      "explanation": "<b>At the moment</b> signals an action happening right now, so the present continuous <b>is preparing</b> is needed; the simple present, present perfect and past do not describe an ongoing action at the time of speaking."
+      "explanation": "<b>At the moment</b> means right now, so the present continuous <b>is preparing</b> describes an action in progress at the time of speaking.<br>✗ <b>prepares</b> — simple present is for habits and facts, not what is happening now; ✗ <b>has prepared</b> — present perfect means the preparing is finished, but he is still busy; ✗ <b>prepared</b> — past simple puts it in the past, yet 'don't disturb him' shows it is happening now."
     },
     {
       "id": "gv-kc-07-2",
@@ -32,7 +32,7 @@
       "correct": 0,
       "answer": "downpour",
       "vi": "Bữa tiệc ngoài vườn của chúng tôi bị hủy vì một trận mưa như trút bất ngờ làm ngập bãi cỏ chỉ trong vài phút.",
-      "explanation": "A <b>downpour</b> is a sudden, very heavy fall of rain — the only option that could flood a lawn in minutes. <b>Drizzle</b> is very light rain, <b>mist</b> is thin fog, and <b>frost</b> is ice on cold surfaces."
+      "explanation": "A <b>downpour</b> is a sudden, very heavy fall of rain — the only option that could <b>flood the lawn in minutes</b>.<br>✗ <b>drizzle</b> — very light, fine rain; it could not flood anything; ✗ <b>mist</b> — thin fog hanging in the air, not falling rain; ✗ <b>frost</b> — a layer of ice on cold surfaces; no water to flood a lawn."
     },
     {
       "id": "gv-kc-07-3",
@@ -48,7 +48,7 @@
       "correct": 2,
       "answer": "make",
       "vi": "Anh trai tôi phải đưa ra quyết định về nghề nghiệp sẽ theo đuổi trước khi học xong.",
-      "explanation": "The fixed collocation is <b>make a decision</b>. <b>Do</b>, <b>have</b> and <b>get</b> do not combine with <b>decision</b> in this meaning."
+      "explanation": "<b>Make a decision</b> is the fixed verb + noun collocation (= decide), and <b>which career to follow</b> shows a choice being made.<br>✗ <b>do</b> — 'do' goes with tasks and activities (do homework, do the dishes), never with 'decision'; ✗ <b>have</b> — 'have' collocates with a meal, a shower, a look, not with 'decision'; ✗ <b>get</b> — 'get' means receive or obtain; you cannot receive a decision you are making yourself."
     },
     {
       "id": "gv-kc-07-4",
@@ -64,7 +64,7 @@
       "correct": 3,
       "answer": "The bottom line",
       "vi": "Nam: Mình nên nhận việc ở Đà Nẵng hay ở lại đây? / Lan: Điều cốt lõi là cậu cần một nguồn thu nhập ổn định, nên nhận đi.",
-      "explanation": "<b>The bottom line</b> means the most important fact that decides a matter. <b>The last straw</b> is the final problem that makes you lose patience, <b>the tip of the iceberg</b> is a small visible part of a bigger problem, and <b>the eleventh hour</b> is the last possible moment."
+      "explanation": "<b>The bottom line</b> is the most important fact that decides a matter — here <b>you need a steady income, so take it</b>.<br>✗ <b>the last straw</b> — the final problem that makes you lose patience; ✗ <b>the tip of the iceberg</b> — a small visible part of a much bigger problem; ✗ <b>the eleventh hour</b> — the last possible moment before something happens. None of these states a deciding reason."
     },
     {
       "id": "gv-kc-07-5",
@@ -80,7 +80,7 @@
       "correct": 0,
       "answer": "drop out",
       "vi": "Lan: Sao Minh không còn đi học nữa? / Nam: Cậu ấy quyết định bỏ học để phụ bố ở cửa hàng.",
-      "explanation": "<b>Drop out of</b> school means to leave before finishing. <b>Drop off</b> means to fall asleep or deliver someone, while <b>drop in</b> and <b>drop by</b> mean to pay a short visit — none takes <b>of school</b>."
+      "explanation": "<b>Drop out of school</b> means to leave school before finishing — the reason <b>Minh isn't at school anymore</b> — and it is the only option that takes <b>of</b>.<br>✗ <b>drop off</b> — fall asleep, or deliver someone somewhere; ✗ <b>drop in</b> — pay a short, casual visit (drop in on someone); ✗ <b>drop by</b> — call round briefly at a place; none combines with 'of school'."
     },
     {
       "id": "gv-kc-07-6",
@@ -96,7 +96,7 @@
       "correct": 2,
       "answer": "needn't have bought",
       "vi": "Bạn không cần phải mua món quà đắt tiền như vậy đâu; chỉ cần đến dự sinh nhật mình là đủ rồi.",
-      "explanation": "<b>Needn't have + past participle</b> says that something was done but was not necessary. <b>Can't have</b> expresses a past deduction, <b>won't have</b> is future perfect, and <b>mustn't have</b> is not used for a past action that was unnecessary."
+      "explanation": "<b>Needn't have + past participle</b> means something was done but was not necessary: the present <b>was</b> bought, and <b>just coming was enough</b> shows it wasn't needed.<br>✗ <b>mustn't have bought</b> — 'must have' only makes deductions, and its negative is 'can't have'; it never means 'it was unnecessary'; ✗ <b>can't have bought</b> — a deduction that something did NOT happen, but the present clearly exists; ✗ <b>won't have bought</b> — future perfect, for something finished by a future time."
     },
     {
       "id": "gv-kc-07-7",
@@ -112,7 +112,7 @@
       "correct": 3,
       "answer": "when",
       "vi": "Bạn có nhớ năm mà gia đình chúng ta lần đầu chuyển đến Thành phố Hồ Chí Minh không?",
-      "explanation": "<b>When</b> is the relative adverb for a time noun such as <b>the year</b>. <b>Where</b> refers to a place, <b>whom</b> to a person, and <b>which</b> would need a preposition (<b>in which</b>) to follow <b>the year</b>."
+      "explanation": "<b>When</b> is the relative adverb used after a time noun such as <b>the year</b> (= in which).<br>✗ <b>where</b> — refers to places, not times; ✗ <b>whom</b> — refers to people as an object; ✗ <b>which</b> — a pronoun that would need a preposition here: 'the year in which our family moved'."
     },
     {
       "id": "gv-kc-07-8",
@@ -128,7 +128,7 @@
       "correct": 3,
       "answer": "fog",
       "vi": "Sáng nay bố lái xe đi làm rất chậm vì sương mù dày đặc trên đường.",
-      "explanation": "<b>Thick fog</b> makes it hard to see, so drivers slow down. <b>Hail</b> is frozen rain, <b>thunder</b> is the sound of a storm, and <b>drought</b> is a long period without rain — none is described as <b>thick</b> on the road."
+      "explanation": "<b>Fog</b> is thick cloud near the ground that blocks a driver's view — the clue is <b>thick … on the road</b> making Dad drive slowly.<br>✗ <b>hail</b> — small balls of ice falling from the sky; it is not 'thick on the road'; ✗ <b>thunder</b> — the loud sound in a storm; it cannot be seen or be 'thick'; ✗ <b>drought</b> — a long period without rain, not something lying on a road."
     },
     {
       "id": "gv-kc-07-9",
@@ -144,7 +144,7 @@
       "correct": 1,
       "answer": "had already started",
       "vi": "Lúc chúng tôi đến nhà Hoa thì bữa tiệc đã bắt đầu rồi.",
-      "explanation": "<b>By the time + past simple</b> describes an action that was completed before another past action, so the past perfect <b>had already started</b> is required."
+      "explanation": "<b>By the time + past simple (got)</b> marks a point in the past, and an action already complete before that point takes the past perfect: <b>had already started</b>.<br>✗ <b>has already started</b> — present perfect links to now, but the story is set in the past; ✗ <b>was already starting</b> — past continuous means it was only just beginning as we arrived, which clashes with 'already'; ✗ <b>already starts</b> — simple present cannot follow a past-time clause."
     },
     {
       "id": "gv-kc-07-10",
@@ -160,7 +160,7 @@
       "correct": 0,
       "answer": "much",
       "vi": "Trong tủ lạnh không còn nhiều sữa, nên bạn mua thêm trên đường về nhà được không?",
-      "explanation": "<b>Milk</b> is uncountable, so it takes <b>much</b> in a negative sentence. <b>Many</b>, <b>a few</b> and <b>few</b> are only used with plural countable nouns."
+      "explanation": "<b>Milk</b> is an uncountable noun, and in a negative sentence (<b>isn't</b>) an uncountable noun takes <b>much</b>.<br>✗ <b>many</b> — only with plural countable nouns (many bottles); ✗ <b>a few</b> — plural countable nouns only, and 'isn't a few' is not used; ✗ <b>few</b> — also plural countable (few bottles) and already negative, so it cannot follow 'isn't'."
     },
     {
       "id": "gv-kc-07-11",
@@ -176,7 +176,7 @@
       "correct": 0,
       "answer": "catch",
       "vi": "Mặc áo khoác vào đi, không thì bạn sẽ bị cảm lạnh khi đứng đợi xe buýt trong gió này.",
-      "explanation": "The fixed collocation is <b>catch a cold</b> (become ill with one). <b>Take</b>, <b>hold</b> and <b>bring</b> do not combine with <b>a cold</b> in this meaning."
+      "explanation": "<b>Catch a cold</b> is the fixed collocation for becoming ill with a cold — the clue is the cold <b>wind</b> that makes you ill.<br>✗ <b>take</b> — 'take' collocates with medicine or a rest, not with an illness you get; ✗ <b>hold</b> — means keep something in your hand or position; nothing to do with getting ill; ✗ <b>bring</b> — means carry something to a place; you do not 'bring a cold'."
     },
     {
       "id": "gv-kc-07-12",
@@ -192,7 +192,7 @@
       "correct": 3,
       "answer": "getting",
       "vi": "Dì tôi đã quen với việc dậy sớm vì dì bán hàng ở chợ.",
-      "explanation": "<b>Be used to</b> (= be accustomed to) is followed by a noun or a gerund: <b>used to getting up</b>. The to-infinitive (<b>used to get up</b>) only follows <b>used to</b> without <b>be</b>, when it describes a past habit."
+      "explanation": "<b>Be used to</b> (= be accustomed to) ends in the preposition 'to', so it takes a noun or -ing form: <b>is used to getting up</b>; the clue is <b>is</b> before 'used to'.<br>✗ <b>get</b> — a bare infinitive never follows a preposition; ✗ <b>to get</b> — the to-infinitive only follows 'used to' WITHOUT 'be', meaning a past habit (She used to get up early); ✗ <b>got</b> — a past form cannot follow 'to'."
     },
     {
       "id": "gv-kc-07-13",
@@ -208,7 +208,7 @@
       "correct": 1,
       "answer": "drought",
       "vi": "Nông trại của chú tôi mất gần hết lúa năm nay vì đợt hạn hán kéo dài.",
-      "explanation": "A <b>drought</b> is a long period with no rain, which dries up crops, and it is the only option naturally described as <b>long</b>. A <b>flood</b> is too much water, while <b>hail</b> and <b>lightning</b> are short events in a storm."
+      "explanation": "A <b>drought</b> is a long period without rain, which dries up crops — the clue is <b>long</b> plus a lost <b>rice</b> harvest.<br>✗ <b>flood</b> — too much water covering the land; it damages crops but is not described as 'long'; ✗ <b>hail</b> — balls of ice in a brief storm, not a long event; ✗ <b>lightning</b> — a sudden flash lasting a second; it cannot be 'long'."
     },
     {
       "id": "gv-kc-07-14",
@@ -224,7 +224,7 @@
       "correct": 0,
       "answer": "whereas",
       "vi": "Nam muốn trở thành bác sĩ, trong khi người anh sinh đôi của cậu ấy lại mơ mở một nhà hàng.",
-      "explanation": "<b>Whereas</b> is a conjunction that contrasts two clauses in one sentence. <b>However</b> needs a full stop or semicolon before it, <b>therefore</b> shows a result, and <b>so that</b> shows purpose."
+      "explanation": "<b>Whereas</b> is a conjunction that joins two contrasting clauses inside one sentence — Nam's plan versus <b>his twin brother's</b> different dream.<br>✗ <b>however</b> — an adverb, not a conjunction; it needs a full stop or semicolon before it ('…doctor. However, his…'); ✗ <b>therefore</b> — shows a result, but the second clause is a contrast, not a consequence; ✗ <b>so that</b> — shows purpose, but the brother's dream is not the purpose of Nam's plan."
     },
     {
       "id": "gv-kc-07-15",
@@ -240,7 +240,7 @@
       "correct": 2,
       "answer": "pick up",
       "vi": "Hôm nay bạn đón em gái mình ở trường giúp được không? Mình có buổi phỏng vấn xin việc lúc ba giờ.",
-      "explanation": "<b>Pick up</b> someone <b>from</b> a place means to collect them. <b>Drop off</b> is the opposite (leave someone <b>at</b> a place), <b>take up</b> means start a hobby, and <b>bring up</b> means raise a child or mention a topic."
+      "explanation": "<b>Pick up</b> someone <b>from</b> a place means to collect them, usually by car — the clue is <b>from school</b>.<br>✗ <b>drop off</b> — the opposite: leave someone AT a place; it goes with 'at', not 'from'; ✗ <b>take up</b> — start a hobby or activity (take up tennis); ✗ <b>bring up</b> — raise a child, or mention a topic in conversation."
     },
     {
       "id": "gv-kc-07-16",
@@ -256,7 +256,7 @@
       "correct": 3,
       "answer": "were",
       "vi": "Nếu tôi là bạn, tôi sẽ nộp đơn xin việc ở khách sạn mới trước khi người khác nộp.",
-      "explanation": "The second conditional gives advice about an unreal present situation: <b>If I were you, I would...</b>. <b>Am</b> and <b>will be</b> belong to the first conditional, and <b>had been</b> would need <b>would have applied</b>."
+      "explanation": "The second conditional gives advice about an unreal present situation; <b>would apply</b> in the main clause tells you the if-clause needs a past form: <b>If I were you</b>, the fixed advice phrase.<br>✗ <b>am</b> — present simple belongs to the first conditional (If I am…, I will…), and 'I am you' is impossible; ✗ <b>will be</b> — 'will' is not used in the if-clause of a conditional; ✗ <b>had been</b> — third conditional, which would need 'would have applied'."
     },
     {
       "id": "gv-kc-07-17",
@@ -272,7 +272,7 @@
       "correct": 1,
       "answer": "tighten your belt",
       "vi": "Lan: Mình muốn để dành tiền mua laptop mới. / Nam: Vậy thì cậu phải thắt lưng buộc bụng và ngừng mua trà sữa mỗi ngày.",
-      "explanation": "<b>Tighten your belt</b> means to spend less money because you have less of it. <b>Hold your horses</b> means wait, <b>keep your chin up</b> means stay cheerful, and <b>bite your tongue</b> means stop yourself from speaking."
+      "explanation": "<b>Tighten your belt</b> means to spend less money because you have less to spend — the clue is <b>save up</b> and <b>stop buying bubble tea</b>.<br>✗ <b>hold your horses</b> — wait, slow down, don't rush; ✗ <b>keep your chin up</b> — stay cheerful in a difficult time; ✗ <b>bite your tongue</b> — stop yourself from saying something. None of these is about money."
     },
     {
       "id": "gv-kc-07-18",
@@ -288,7 +288,7 @@
       "correct": 2,
       "answer": "were sent",
       "vi": "Thiệp mời dự tiệc đã được gửi tới tất cả các bạn cùng lớp hôm qua.",
-      "explanation": "The invitations receive the action, so the passive is needed, and <b>yesterday</b> fixes the past simple: <b>were sent</b>. <b>Have been sent</b> cannot go with a finished past time, and <b>sent</b> alone is active."
+      "explanation": "<b>The invitations</b> cannot send themselves, so the passive is needed, and <b>yesterday</b> fixes the past simple: <b>were sent</b>.<br>✗ <b>sent</b> — active past simple, which would make the invitations the sender; ✗ <b>have been sent</b> — present perfect passive cannot combine with a finished past time like 'yesterday'; ✗ <b>are sent</b> — present simple passive describes a habit or general fact, not one completed event yesterday."
     },
     {
       "id": "gv-kc-07-19",
@@ -304,7 +304,7 @@
       "correct": 3,
       "answer": "rainbow",
       "vi": "Sau khi mưa tạnh, một chiếc cầu vồng rực rỡ trải dài trên bầu trời phía trên nhà chúng tôi.",
-      "explanation": "A <b>rainbow</b> is the coloured arc that appears in the sky after rain. <b>Thunder</b> is a sound, <b>lightning</b> is a sudden flash during a storm, and <b>hail</b> is frozen rain — none <b>stretches across the sky</b> after the rain has stopped."
+      "explanation": "A <b>rainbow</b> is the coloured arc that appears when the sun comes out <b>after the rain</b> — the only option that <b>stretches across the sky</b>.<br>✗ <b>thunder</b> — the loud noise in a storm; it is heard, not seen; ✗ <b>lightning</b> — a sudden flash DURING a storm, not after the rain stops; ✗ <b>hail</b> — small balls of ice that fall, not something stretched across the sky."
     },
     {
       "id": "gv-kc-07-20",
@@ -320,7 +320,7 @@
       "correct": 0,
       "answer": "would visit",
       "vi": "Mai nói rằng cô ấy sẽ về thăm ông bà ở quê vào cuối tuần sau đó.",
-      "explanation": "After a past reporting verb (<b>said</b>), <b>will</b> shifts back to <b>would</b>, and <b>the following weekend</b> confirms reported speech. The other options keep a present tense that does not match <b>said</b>."
+      "explanation": "After a past reporting verb (<b>said</b>) the tense shifts back, so 'will visit' becomes <b>would visit</b>; <b>the following weekend</b> (the reported form of 'next weekend') confirms it.<br>✗ <b>will visit</b> — 'will' stays only after a present reporting verb (says); ✗ <b>visits</b> — present simple describes a habit, not a plan for one future weekend; ✗ <b>has visited</b> — present perfect means the visit is already done, but 'the following weekend' is still to come."
     },
     {
       "id": "gv-kc-07-21",
@@ -336,7 +336,7 @@
       "correct": 2,
       "answer": "throw",
       "vi": "Các anh chị họ của tôi sẽ tổ chức một bữa tiệc mừng sinh nhật lần thứ bảy mươi của bà vào tháng sau.",
-      "explanation": "In English you <b>throw</b> (or have/hold) <b>a party</b>. <b>Make a party</b>, <b>do a party</b> and <b>put a party</b> are not English collocations."
+      "explanation": "<b>Throw a party</b> (also have/hold/give a party) is the collocation for organising a celebration, and <b>for Grandma's birthday</b> shows one being organised.<br>✗ <b>make</b> — 'make' is for producing things (make a cake), not events; ✗ <b>do</b> — 'do' is for tasks and chores (do the shopping), not for parties; ✗ <b>put</b> — needs 'on' to mean organise (put on a show); alone it is meaningless here."
     },
     {
       "id": "gv-kc-07-22",
@@ -352,7 +352,7 @@
       "correct": 1,
       "answer": "has worked",
       "vi": "Bố tôi đã làm việc ở cùng một ngân hàng kể từ khi rời trường cao đẳng, và bố vẫn thích công việc đó.",
-      "explanation": "<b>Since</b> + a past starting point with a situation that continues to now takes the present perfect: <b>has worked</b>. The simple present, present continuous and past simple do not link a past start to the present."
+      "explanation": "<b>Since + a past starting point</b> (<b>since he left college</b>) with a situation that continues now (<b>still enjoys it</b>) takes the present perfect: <b>has worked</b>.<br>✗ <b>works</b> — simple present describes the habit but cannot go with 'since'; ✗ <b>is working</b> — present continuous describes a temporary action now, not a period running from the past; ✗ <b>worked</b> — past simple means the job is over, but he still enjoys it."
     },
     {
       "id": "gv-kc-07-23",
@@ -368,7 +368,7 @@
       "correct": 3,
       "answer": "with",
       "vi": "Ở buổi họp lớp, cuối cùng tôi cũng có thời gian hàn huyên với bạn bè cũ.",
-      "explanation": "<b>Catch up with</b> someone means to talk to them and find out their news. <b>Catch up on</b> is used with things you missed (work, sleep), and <b>to</b> and <b>at</b> do not follow <b>catch up</b>."
+      "explanation": "<b>Catch up with</b> someone means to meet them and exchange news — the clue is <b>my old friends</b> at a <b>reunion</b>.<br>✗ <b>on</b> — 'catch up on' goes with things you missed (catch up on sleep, homework), not people; ✗ <b>to</b> — 'catch up to' means physically reach someone ahead of you, not chat; ✗ <b>at</b> — 'catch up at' is not a phrasal verb in English."
     },
     {
       "id": "gv-kc-07-24",
@@ -384,7 +384,7 @@
       "correct": 0,
       "answer": "forecast",
       "vi": "Hãy xem dự báo thời tiết trước khi mời mọi người đi biển vào Chủ nhật.",
-      "explanation": "A <b>weather forecast</b> is a prediction of the coming weather, which is what you check before planning a trip. <b>Climate</b> is the usual weather of a region over years, <b>temperature</b> is only how hot or cold it is, and <b>season</b> is a part of the year."
+      "explanation": "A <b>weather forecast</b> is a prediction of the coming weather — what you <b>check before</b> planning a beach trip <b>on Sunday</b>.<br>✗ <b>climate</b> — the usual weather of a region over many years; it cannot be 'checked' for one Sunday; ✗ <b>temperature</b> — only how hot or cold it is, and 'weather temperature' is not a phrase; ✗ <b>season</b> — a part of the year (summer, winter), not something you check for a day."
     },
     {
       "id": "gv-kc-07-25",
@@ -400,7 +400,7 @@
       "correct": 2,
       "answer": "far",
       "vi": "Sống ở thành phố đắt đỏ hơn nhiều so với sống ở quê, nên có lẽ tôi sẽ chuyển về sau khi tốt nghiệp.",
-      "explanation": "A comparative (<b>more expensive</b>) can be strengthened with <b>far</b>, <b>much</b> or <b>a lot</b>. <b>Very</b>, <b>too</b> and <b>so</b> modify plain adjectives, not comparatives."
+      "explanation": "A comparative (<b>more expensive</b>) is strengthened with <b>far</b>, much or a lot; the clue is <b>more … than</b> around the adjective.<br>✗ <b>very</b> — modifies a plain adjective (very expensive), never a comparative; ✗ <b>too</b> — means 'more than enough' with a plain adjective (too expensive); ✗ <b>so</b> — goes with a plain adjective (so expensive) or 'so … that', not with 'more … than'."
     }
   ]
 }

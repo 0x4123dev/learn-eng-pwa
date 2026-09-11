@@ -26,7 +26,7 @@
     "/smaɪld/"
    ],
    "correct": 3,
-   "explanation": "<b>smiled</b> /smaɪld/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /l/. Ba từ còn lại đọc /ɪd/ vì động từ gốc tận cùng bằng /t/ hoặc /d/: planted /ˈplɑːntɪd/, shouted /ˈʃaʊtɪd/, folded /ˈfəʊldɪd/."
+   "explanation": "<b>smiled</b> /smaɪld/ — đuôi -ed đọc /d/ vì động từ gốc smile tận cùng bằng âm hữu thanh /l/. Ba từ còn lại đọc /ɪd/ (thêm hẳn một âm tiết) vì gốc tận cùng bằng /t/ hoặc /d/: planted /ˈplɑːntɪd/ (plant /t/), shouted /ˈʃaʊtɪd/ (shout /t/), folded /ˈfəʊldɪd/ (fold /d/). Mẹo: đọc âm cuối của động từ gốc: /t/, /d/ → /ɪd/; vô thanh khác → /t/; hữu thanh khác → /d/."
   },
   {
    "id": "ph-kc-02-2",
@@ -52,7 +52,7 @@
     "/kɒft/"
    ],
    "correct": 0,
-   "explanation": "<b>rained</b> /reɪnd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /n/. Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /ʃ/, /p/, /f/: brushed /brʌʃt/, dropped /drɒpt/, coughed /kɒft/."
+   "explanation": "<b>rained</b> /reɪnd/ — đuôi -ed đọc /d/ vì gốc rain tận cùng bằng âm hữu thanh /n/. Ba từ còn lại đọc /t/ vì gốc tận cùng bằng âm vô thanh: brushed /brʌʃt/ (/ʃ/), dropped /drɒpt/ (/p/), coughed /kɒft/ (gh đọc /f/). Mẹo: đặt tay lên cổ, đọc âm cuối của động từ gốc: không rung (vô thanh) → /t/; rung (hữu thanh) → /d/; riêng /t/, /d/ → /ɪd/."
   },
   {
    "id": "ph-kc-02-3",
@@ -78,7 +78,7 @@
     "/ˈbrɪdʒɪz/"
    ],
    "correct": 1,
-   "explanation": "<b>games</b> /ɡeɪmz/ — đuôi -es đọc /z/ vì chữ e chỉ là e câm của 'game', âm cuối là /m/ hữu thanh. Ba từ còn lại đọc /ɪz/ vì từ gốc tận cùng bằng âm rít /tʃ/, /s/, /dʒ/: beaches /ˈbiːtʃɪz/, faces /ˈfeɪsɪz/, bridges /ˈbrɪdʒɪz/."
+   "explanation": "<b>games</b> /ɡeɪmz/ — đuôi -es đọc /z/ vì chữ e chỉ là e câm của game, âm cuối thật là /m/ hữu thanh. Ba từ còn lại đọc /ɪz/ vì gốc tận cùng bằng âm rít: beaches /ˈbiːtʃɪz/ (/tʃ/), faces /ˈfeɪsɪz/ (/s/), bridges /ˈbrɪdʒɪz/ (/dʒ/). Mẹo: nghe âm cuối của từ gốc: /s, z, ʃ, ʒ, tʃ, dʒ/ → /ɪz/; vô thanh khác → /s/; hữu thanh khác → /z/; e câm (game, hope) không tính."
   },
   {
    "id": "ph-kc-02-4",
@@ -104,7 +104,7 @@
     "/ˈpeɪpə/"
    ],
    "correct": 2,
-   "explanation": "<b>candle</b> /ˈkændl/ — chữ a đọc /æ/ (âm ngắn) vì đứng trước hai phụ âm liền nhau 'nd' (âm tiết đóng). Ba từ còn lại chữ a đọc /eɪ/ (âm dài) vì đứng trước một phụ âm rồi đến nguyên âm (âm tiết mở): table /ˈteɪbl/, lazy /ˈleɪzi/, paper /ˈpeɪpə/."
+   "explanation": "<b>candle</b> /ˈkændl/ — chữ a đọc /æ/ (âm ngắn) vì đứng trước hai phụ âm liền nhau nd, âm tiết đóng (can-dle). Ba từ còn lại chữ a đọc /eɪ/ (âm dài, đọc như tên chữ cái) vì âm tiết đầu mở, sau a chỉ có một phụ âm: table /ˈteɪbl/ (ta-ble), lazy /ˈleɪzi/ (la-zy), paper /ˈpeɪpə/ (pa-per). Mẹo: đếm phụ âm ngay sau nguyên âm: một phụ âm rồi đến nguyên âm hoặc -le → âm dài /eɪ/; hai phụ âm liền → âm ngắn /æ/."
   },
   {
    "id": "ph-kc-02-5",
@@ -130,7 +130,7 @@
     "/ˈmelən/"
    ],
    "correct": 0,
-   "explanation": "<b>secret</b> /ˈsiːkrət/ — chữ e đọc /iː/ vì âm tiết 'se' kết thúc bằng nguyên âm (âm tiết mở). Ba từ còn lại chữ e đọc /e/ vì đứng trước phụ âm đôi hoặc âm tiết đóng: lesson /ˈlesn/, yellow /ˈjeləʊ/, melon /ˈmelən/."
+   "explanation": "<b>secret</b> /ˈsiːkrət/ — chữ e đọc /iː/ vì âm tiết đầu se- kết thúc bằng nguyên âm, âm tiết mở (se-cret), giống even, legal. Ba từ còn lại chữ e đọc /e/ ngắn: lesson /ˈlesn/ và yellow /ˈjeləʊ/ vì e đứng trước phụ âm đôi ss, ll (âm tiết đóng); melon /ˈmelən/ thuộc nhóm từ 2 âm tiết e ngắn phải nhớ như lemon, seven, never. Mẹo: e trước phụ âm đôi (ll, ss, tt) chắc chắn /e/; e mở âm tiết đầu (se-, e-, le-) thường /iː/."
   },
   {
    "id": "ph-kc-02-6",
@@ -156,7 +156,7 @@
     "/ˈpɪknɪk/"
    ],
    "correct": 3,
-   "explanation": "<b>picnic</b> /ˈpɪknɪk/ — chữ i đọc /ɪ/ vì đứng trước hai phụ âm 'cn' (âm tiết đóng). Ba từ còn lại chữ i đọc /aɪ/ vì âm tiết 'ti', 'si', 'pi' là âm tiết mở: tiger /ˈtaɪɡə/, silent /ˈsaɪlənt/, pilot /ˈpaɪlət/."
+   "explanation": "<b>picnic</b> /ˈpɪknɪk/ — chữ i đọc /ɪ/ (âm ngắn) vì đứng trước hai phụ âm cn, âm tiết đóng (pic-nic). Ba từ còn lại chữ i đọc /aɪ/ (âm dài, đọc như tên chữ cái) vì âm tiết đầu mở, sau i chỉ có một phụ âm rồi đến nguyên âm: tiger /ˈtaɪɡə/ (ti-ger), silent /ˈsaɪlənt/ (si-lent), pilot /ˈpaɪlət/ (pi-lot). Mẹo: i + một phụ âm + nguyên âm → /aɪ/; i + hai phụ âm liền → /ɪ/."
   },
   {
    "id": "ph-kc-02-7",
@@ -182,7 +182,7 @@
     "/mʌnθ/"
    ],
    "correct": 1,
-   "explanation": "<b>modern</b> /ˈmɒdn/ — chữ o đọc /ɒ/ như trong 'hot'. Ba từ còn lại chữ o đọc /ʌ/ (nhóm từ quen thuộc mother, money, month, son, love): mother /ˈmʌðə/, money /ˈmʌni/, month /mʌnθ/."
+   "explanation": "<b>modern</b> /ˈmɒdn/ — chữ o đọc /ɒ/ ngắn như hot, doctor, đúng quy tắc o trong âm tiết đóng. Ba từ còn lại chữ o đọc /ʌ/, nhóm ngoại lệ o đọc như u ngắn phải học thuộc: mother /ˈmʌðə/, money /ˈmʌni/, month /mʌnθ/ (cùng nhóm: son, love, come, monkey, brother, front, onion). Mẹo: o trước m, n, v, th trong từ quen (mother, money, month, love, come) → /ʌ/; o thường khác → /ɒ/."
   },
   {
    "id": "ph-kc-02-8",
@@ -208,7 +208,7 @@
     "/braʊn/"
    ],
    "correct": 2,
-   "explanation": "<b>throw</b> /θrəʊ/ — 'ow' ở cuối từ thường đọc /əʊ/ như grow, show, know. Ba từ còn lại 'ow' đọc /aʊ/: crowd /kraʊd/, tower /ˈtaʊə/, brown /braʊn/."
+   "explanation": "<b>throw</b> /θrəʊ/ — ow đọc /əʊ/, nhóm ow cuối từ như grow, show, know, slow. Ba từ còn lại ow đọc /aʊ/: crowd /kraʊd/ và brown /braʊn/ có ow đứng trước d, n giữa từ (như town, down); tower /ˈtaʊə/ là ow + -er (như flower, power, shower). Mẹo: ow + n/d giữa từ hoặc ow + er → thường /aʊ/; ow cuối từ → thường /əʊ/, trừ how, now, cow, allow /aʊ/."
   },
   {
    "id": "ph-kc-02-9",
@@ -234,7 +234,7 @@
     "/ˈdʒentl/"
    ],
    "correct": 0,
-   "explanation": "<b>gate</b> /ɡeɪt/ — chữ g đọc /ɡ/ (g cứng) vì đứng trước a. Ba từ còn lại chữ g đọc /dʒ/ (g mềm) vì đứng trước e, i, y: gym /dʒɪm/, giant /ˈdʒaɪənt/, gentle /ˈdʒentl/."
+   "explanation": "<b>gate</b> /ɡeɪt/ — chữ g đọc /ɡ/ (g cứng) vì đứng trước a; g trước a, o, u luôn cứng (game, go, gun). Ba từ còn lại chữ g đọc /dʒ/ (g mềm) vì đứng trước e, i, y: gym /dʒɪm/, giant /ˈdʒaɪənt/, gentle /ˈdʒentl/. Mẹo: nhìn chữ cái ngay sau g: e, i, y → thường /dʒ/ (trừ ngoại lệ get, give, girl, gift, begin); a, o, u hoặc phụ âm → /ɡ/."
   },
   {
    "id": "ph-kc-02-10",
@@ -260,7 +260,7 @@
     "/ˈkæbɪn/"
    ],
    "correct": 3,
-   "explanation": "<b>cabin</b> /ˈkæbɪn/ — chữ b đọc /b/ bình thường vì đứng giữa hai nguyên âm. Ba từ còn lại chữ b câm vì đứng sau m ở cuối từ (quy tắc 'mb' cuối từ): climb /klaɪm/, thumb /θʌm/, comb /kəʊm/."
+   "explanation": "<b>cabin</b> /ˈkæbɪn/ — chữ b đọc /b/ bình thường vì đứng giữa hai nguyên âm (ca-bin). Ba từ còn lại chữ b câm vì đứng ngay sau m ở cuối từ (quy tắc mb cuối từ, giống lamb, bomb, dumb): climb /klaɪm/, thumb /θʌm/, comb /kəʊm/. Mẹo: thấy -mb kết thúc từ → b câm; b ở đầu hoặc giữa từ (cabin, table) → đọc /b/; -bt cuối từ (debt, doubt) b cũng câm."
   },
   {
    "id": "ph-kc-02-11",
@@ -298,7 +298,7 @@
     2
    ],
    "correct": 1,
-   "explanation": "<b>visit</b> /ˈvɪzɪt/ — động từ 2 âm tiết nhưng nhấn âm 1 (ngoại lệ, cùng nhóm với enter, answer, offer, open). Ba từ còn lại là động từ 2 âm tiết nhấn âm 2 theo quy tắc: ex-PLAIN /ɪkˈspleɪn/, a-RRIVE /əˈraɪv/, de-CIDE /dɪˈsaɪd/."
+   "explanation": "<b>VI-sit</b> /ˈvɪzɪt/ — động từ 2 âm tiết nhưng nhấn âm 1 (ngoại lệ, cùng nhóm EN-ter, AN-swer, OF-fer, O-pen) vì âm 1 không phải tiền tố và âm cuối -it yếu. Ba từ còn lại là động từ 2 âm tiết nhấn âm 2 theo quy tắc, âm 1 là tiền tố ex-, a-, de- không mang trọng âm: ex-PLAIN /ɪkˈspleɪn/, a-RRIVE /əˈraɪv/, de-CIDE /dɪˈsaɪd/. Mẹo: động từ 2 âm tiết → nhấn âm 2; nếu âm 2 chỉ là -er, -en, -it, -ow yếu (enter, open, visit) → nhấn âm 1."
   },
   {
    "id": "ph-kc-02-12",
@@ -336,7 +336,7 @@
     1
    ],
    "correct": 2,
-   "explanation": "<b>balloon</b> /bəˈluːn/ — danh từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống hotel, police, machine). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: GAR-den /ˈɡɑːdn/, KIT-chen /ˈkɪtʃɪn/, WIN-dow /ˈwɪndəʊ/."
+   "explanation": "<b>ba-LLOON</b> /bəˈluːn/ — danh từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống ho-TEL, po-LICE, ma-CHINE) vì âm 1 chỉ là /bə/ yếu, còn đuôi -oon dài /uː/ tự nhận trọng âm (cartoon, afternoon). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: GAR-den /ˈɡɑːdn/, KIT-chen /ˈkɪtʃɪn/, WIN-dow /ˈwɪndəʊ/. Mẹo: danh từ 2 âm tiết → nhấn âm 1; riêng đuôi -oon, -een, -ee, -eer, -ese, -ette nhấn chính nó."
   },
   {
    "id": "ph-kc-02-13",
@@ -374,7 +374,7 @@
     2
    ],
    "correct": 0,
-   "explanation": "<b>happen</b> /ˈhæpən/ — động từ 2 âm tiết nhấn âm 1 vì âm tiết cuối chỉ là /ən/ yếu (giống listen, open). Ba từ còn lại nhấn âm 2 theo quy tắc động từ 2 âm tiết: be-COME /bɪˈkʌm/, for-GET /fəˈɡet/, pre-PARE /prɪˈpeə/."
+   "explanation": "<b>HAP-pen</b> /ˈhæpən/ — động từ 2 âm tiết nhấn âm 1 (ngoại lệ, giống LIS-ten, O-pen, EN-ter) vì âm cuối chỉ là /ən/ yếu, không thể mang trọng âm. Ba từ còn lại nhấn âm 2 theo quy tắc động từ 2 âm tiết, âm 1 là tiền tố be-, for-, pre- không nhận trọng âm: be-COME /bɪˈkʌm/, for-GET /fəˈɡet/, pre-PARE /prɪˈpeə/. Mẹo: động từ bắt đầu bằng tiền tố (be-, for-, pre-, re-, de-, ex-) → nhấn âm 2; động từ kết thúc bằng -en, -er, -ow yếu → nhấn âm 1."
   },
   {
    "id": "ph-kc-02-14",
@@ -412,7 +412,7 @@
     2
    ],
    "correct": 3,
-   "explanation": "<b>polite</b> /pəˈlaɪt/ — tính từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống alone, asleep, mature). Ba từ còn lại là tính từ 2 âm tiết nhấn âm 1 theo quy tắc: LUCK-y /ˈlʌki/, FA-mous /ˈfeɪməs/, BUS-y /ˈbɪzi/."
+   "explanation": "<b>po-LITE</b> /pəˈlaɪt/ — tính từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống a-LONE, a-SLEEP, com-PLETE) vì âm 1 chỉ là /pə/ yếu, âm 2 có nguyên âm đôi /aɪ/. Ba từ còn lại là tính từ 2 âm tiết nhấn âm 1 theo quy tắc, đuôi -y, -ous không mang trọng âm: LUCK-y /ˈlʌki/, FA-mous /ˈfeɪməs/, BUS-y /ˈbɪzi/. Mẹo: tính từ 2 âm tiết → nhấn âm 1; nếu âm 1 là /ə/ hoặc /ɪ/ yếu (polite, alone, correct) → nhấn âm 2."
   },
   {
    "id": "ph-kc-02-15",
@@ -450,7 +450,7 @@
     1
    ],
    "correct": 1,
-   "explanation": "<b>successful</b> /səkˈsesfl/ — đuôi -ful không đổi trọng âm, nên giữ nguyên trọng âm của suc-CESS ở âm 2. Ba từ còn lại cũng mang đuôi trung tính (-ness, -ful, -ment) nhưng từ gốc HAP-py, BEAU-ty, GOV-ern nhấn âm 1: happiness /ˈhæpinəs/, beautiful /ˈbjuːtɪfl/, government /ˈɡʌvənmənt/."
+   "explanation": "<b>suc-CESS-ful</b> /səkˈsesfl/ — đuôi -ful trung tính, không đổi trọng âm, nên giữ trọng âm của gốc suc-CESS ở âm 2. Ba từ còn lại cũng mang đuôi trung tính (-ness, -ful, -ment) nhưng gốc nhấn âm 1 nên cả từ nhấn âm 1: HAP-pi-ness /ˈhæpinəs/ (HAP-py), BEAU-ti-ful /ˈbjuːtɪfl/ (BEAU-ty), GO-vern-ment /ˈɡʌvənmənt/ (GO-vern). Mẹo: gặp -ness, -ful, -ment, -less, -ly, -er → bỏ đuôi, tìm trọng âm của từ gốc; đuôi không đổi gì."
   },
   {
    "id": "ph-kc-02-16",
@@ -488,7 +488,7 @@
     3
    ],
    "correct": 2,
-   "explanation": "<b>television</b> /ˈtelɪvɪʒn/ — ngoại lệ nổi tiếng: nhấn âm 1 dù có đuôi -sion. Ba từ còn lại theo quy tắc đuôi -tion kéo trọng âm về âm tiết đứng ngay trước nó (âm 3): e-du-CA-tion /ˌedʒuˈkeɪʃn/, in-for-MA-tion /ˌɪnfəˈmeɪʃn/, po-pu-LA-tion /ˌpɒpjuˈleɪʃn/."
+   "explanation": "<b>TE-le-vi-sion</b> /ˈtelɪvɪʒn/ — ngoại lệ nổi tiếng: nhấn âm 1 dù có đuôi -sion (đọc /ʒn/). Ba từ còn lại theo quy tắc đuôi -tion kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 3: e-du-CA-tion /ˌedʒuˈkeɪʃn/, in-for-MA-tion /ˌɪnfəˈmeɪʃn/, po-pu-LA-tion /ˌpɒpjuˈleɪʃn/. Mẹo: thấy -tion, -sion → nhấn âm ngay trước đuôi (de-CI-sion, at-TEN-tion); chỉ cần nhớ riêng ngoại lệ TE-le-vi-sion."
   },
   {
    "id": "ph-kc-02-17",
@@ -526,7 +526,7 @@
     2
    ],
    "correct": 0,
-   "explanation": "<b>necessary</b> /ˈnesəsəri/ — không có đuôi -ity, nhấn âm 1 (NE-ce-ssa-ry). Ba từ còn lại có đuôi -ity kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 2: a-BI-li-ty /əˈbɪləti/, ac-TI-vi-ty /ækˈtɪvəti/, co-MMU-ni-ty /kəˈmjuːnəti/."
+   "explanation": "<b>NE-ce-ssa-ry</b> /ˈnesəsəri/ — không có đuôi -ity; đuôi -ary trung tính nên trọng âm ở âm 1 (giống SE-cre-ta-ry, DIC-tio-na-ry, TEM-po-ra-ry). Ba từ còn lại có đuôi -ity kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 2: a-BI-li-ty /əˈbɪləti/, ac-TI-vi-ty /ækˈtɪvəti/, co-MMU-ni-ty /kəˈmjuːnəti/. Mẹo: thấy -ity (cũng như -ic, -ical, -ion, -ian) → nhấn âm ngay trước đuôi; từ 4 âm tiết đuôi -ary → thường nhấn âm 1."
   },
   {
    "id": "ph-kc-02-18",
@@ -564,7 +564,7 @@
     1
    ],
    "correct": 3,
-   "explanation": "<b>hospital</b> /ˈhɒspɪtl/ — danh từ 3 âm tiết nhấn âm 1 (HOS-pi-tal), hai âm sau đều yếu. Ba từ còn lại nhấn âm 2 vì âm tiết đầu là /ə/ yếu: ba-NA-na /bəˈnɑːnə/, com-PU-ter /kəmˈpjuːtə/, to-MA-to /təˈmɑːtəʊ/."
+   "explanation": "<b>HOS-pi-tal</b> /ˈhɒspɪtl/ — danh từ 3 âm tiết nhấn âm 1 theo quy tắc, hai âm sau -pi-tal đều yếu /ɪ/, /l/. Ba từ còn lại nhấn âm 2 vì âm tiết đầu chỉ là /ə/ yếu, không thể mang trọng âm: ba-NA-na /bəˈnɑːnə/, com-PU-ter /kəmˈpjuːtə/, to-MA-to /təˈmɑːtəʊ/. Mẹo: danh từ 3 âm tiết → thử nhấn âm 1; nếu âm 1 là /ə/ (ba-, to-, com-, po-) thì trọng âm rơi vào âm 2 (banana, tomato, computer, potato)."
   },
   {
    "id": "ph-kc-02-19",
@@ -602,7 +602,7 @@
     1
    ],
    "correct": 1,
-   "explanation": "<b>important</b> /ɪmˈpɔːtnt/ — tính từ 3 âm tiết nhấn âm 2 (im-POR-tant) vì âm tiết đầu im- là tiền tố, thường không mang trọng âm. Ba từ còn lại nhấn âm 1: HO-li-day /ˈhɒlədeɪ/, A-ni-mal /ˈænɪml/, FA-mi-ly /ˈfæməli/."
+   "explanation": "<b>im-POR-tant</b> /ɪmˈpɔːtnt/ — tính từ 3 âm tiết nhấn âm 2 vì âm 1 im- là tiền tố, không nhận trọng âm, còn âm cuối -tant chỉ là /tnt/ yếu. Ba từ còn lại nhấn âm 1 theo quy tắc danh từ 3 âm tiết, hai âm sau đều là nguyên âm yếu /ə/, /ɪ/: HO-li-day /ˈhɒlədeɪ/, A-ni-mal /ˈænɪml/, FA-mi-ly /ˈfæməli/. Mẹo: từ 3 âm tiết → nhấn âm 1, nhưng nếu âm 1 là tiền tố (im-, ex-, de-, re-, con-) → nhấn âm 2 (im-POR-tant, ex-AM-ple, de-LI-cious)."
   },
   {
    "id": "ph-kc-02-20",
@@ -640,7 +640,7 @@
     1
    ],
    "correct": 2,
-   "explanation": "<b>downstairs</b> /ˌdaʊnˈsteəz/ — là trạng từ ghép (down + stairs), trạng từ và tính từ ghép nhấn phần sau: down-STAIRS. Ba từ còn lại là danh từ ghép, luôn nhấn phần đầu: BOOK-shop /ˈbʊkʃɒp/, TOOTH-brush /ˈtuːθbrʌʃ/, FOOT-ball /ˈfʊtbɔːl/."
+   "explanation": "<b>down-STAIRS</b> /ˌdaʊnˈsteəz/ — trạng từ ghép (down + stairs); trạng từ và tính từ ghép nhấn phần sau, giống up-STAIRS, out-SIDE, well-KNOWN. Ba từ còn lại là danh từ ghép, luôn nhấn phần đầu: BOOK-shop /ˈbʊkʃɒp/, TOOTH-brush /ˈtuːθbrʌʃ/, FOOT-ball /ˈfʊtbɔːl/. Mẹo: xác định từ loại của từ ghép: danh từ ghép chỉ đồ vật, nơi chốn (bookshop, football) → nhấn phần đầu; tính từ, trạng từ ghép (downstairs, overseas, well-done) → nhấn phần sau."
   }
  ]
 }

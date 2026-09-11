@@ -9,7 +9,7 @@
       "correct": 2,
       "answer": "has been making",
       "vi": "Lan: Nam đâu rồi? / Mai: Cậu ấy gói bánh trong bếp từ trưa tới giờ.",
-      "explanation": "<b>Since noon</b> marks an action that started in the past and is still going on, so the present perfect continuous <b>has been making</b> is needed."
+      "explanation": "<b>Since noon</b> + an action still going on now (\"Where's Nam?\" – he is still in the kitchen) calls for the present perfect continuous <b>has been making</b>.<br>✗ <b>makes</b> — present simple states a habit, not an action running from noon until now; ✗ <b>is making</b> — present continuous cannot take <b>since</b> + a starting point; ✗ <b>made</b> — past simple means the action is finished, but he is still there."
     },
     {
       "id": "gv-kc-16-2",
@@ -20,7 +20,7 @@
       "correct": 0,
       "answer": "owe",
       "vi": "Tôi vẫn còn nợ Nam năm mươi nghìn tiền ổ bánh mì cậu ấy mua cho tôi hôm qua.",
-      "explanation": "<b>Owe</b> someone money = you must pay it back. <b>Own</b> means possess, <b>lend</b> is giving money out, and <b>keep</b> does not take two objects like this."
+      "explanation": "<b>Owe</b> someone money = still have to pay it back, which fits <b>still</b> and <b>for the bánh mì he bought me</b>.<br>✗ <b>own</b> — possess something (you cannot \"own Nam money\"); ✗ <b>lend</b> — give money OUT for a time, the opposite direction; ✗ <b>keep</b> — hold on to something; it does not take a person + a sum like this."
     },
     {
       "id": "gv-kc-16-3",
@@ -31,7 +31,7 @@
       "correct": 1,
       "answer": "better late than never",
       "vi": "Lan: Xin lỗi, mình đến lớp gói bánh trễ cả tiếng! / Nam: Thôi, trễ còn hơn không.",
-      "explanation": "<b>Better late than never</b> is what you say when someone arrives late but you are still glad they came. The other three are real sayings, but they do not answer an apology for being late."
+      "explanation": "Lan apologises for being <b>an hour late</b>, and Nam forgives her: <b>better late than never</b> = arriving late is still better than not coming at all.<br>✗ <b>better safe than sorry</b> — take precautions to avoid risk; ✗ <b>easier said than done</b> — a plan is harder to do than to talk about; ✗ <b>no pain, no gain</b> — you must work hard to get results. None of these answers an apology for lateness."
     },
     {
       "id": "gv-kc-16-4",
@@ -42,7 +42,7 @@
       "correct": 3,
       "answer": "took",
       "vi": "Lan chụp một tấm ảnh gian trưng bày lồng đèn rồi gửi cho em họ ở Đà Nẵng.",
-      "explanation": "English says <b>take a photo</b> (here in the past: <b>took</b>). <b>Make</b>, <b>do</b> and <b>get</b> do not collocate with <b>a photo</b> in this sense."
+      "explanation": "The fixed collocation is <b>take a photo</b>; the past tense <b>took</b> matches <b>sent</b>.<br>✗ <b>made</b> — you make a cake or a mistake, not a photo; ✗ <b>did</b> — do goes with homework, the dishes, not a photo; ✗ <b>got</b> — get a photo = receive one, but Lan is the one photographing the display and sending it."
     },
     {
       "id": "gv-kc-16-5",
@@ -53,7 +53,7 @@
       "correct": 0,
       "answer": "chipped in",
       "vi": "Cả xóm tôi góp tiền mua lồng đèn cho buổi tiệc Trung thu.",
-      "explanation": "<b>Chip in</b> = each person gives some money towards a shared cost. <b>Drop in</b> is a short visit, <b>chip away</b> is to remove bit by bit, and <b>give in</b> is to surrender."
+      "explanation": "<b>Everyone</b> paying towards <b>lanterns for the party</b> = a shared cost, so <b>chipped in</b> (each person gives some money).<br>✗ <b>dropped in</b> — make a short, casual visit; ✗ <b>chipped away</b> — remove something bit by bit, and it takes <b>at</b> not <b>to</b>; ✗ <b>gave in</b> — surrender or stop resisting."
     },
     {
       "id": "gv-kc-16-6",
@@ -64,7 +64,7 @@
       "correct": 2,
       "answer": "shouldn't have left",
       "vi": "Lan: Bánh chưng bị khét rồi! / Nam: Đáng lẽ cậu không nên để lửa to như thế.",
-      "explanation": "<b>Shouldn't have + past participle</b> criticises a past action that was a mistake. <b>Needn't have</b> means it was unnecessary, <b>couldn't have</b> is a deduction (it was impossible), and <b>mustn't have</b> is not a form English uses for past criticism."
+      "explanation": "The bánh chưng is <b>burnt</b>, so Nam criticises a past mistake: <b>shouldn't have + past participle</b> = you did it, and it was wrong.<br>✗ <b>needn't have left</b> — it was unnecessary, not a mistake; ✗ <b>couldn't have left</b> — a deduction that it was impossible, but she clearly did leave it high; ✗ <b>mustn't have left</b> — English uses <b>can't have</b> for a negative past deduction; <b>mustn't have</b> is not a standard form here."
     },
     {
       "id": "gv-kc-16-7",
@@ -75,7 +75,7 @@
       "correct": 1,
       "answer": "afford",
       "vi": "Nhà tôi không đủ tiền ăn ngoài mỗi tối, nên hầu như ngày nào tôi cũng nấu ở nhà.",
-      "explanation": "<b>Can't afford to do something</b> = not have enough money for it. <b>Pay</b> and <b>spend</b> need an amount or object, and <b>cost</b> takes a thing, not a person, as its subject."
+      "explanation": "<b>Can't afford to + verb</b> = not have enough money to do it, which explains <b>so I cook at home</b>.<br>✗ <b>pay</b> — pay needs an amount or a person (<b>pay $10 / pay the waiter</b>), not <b>to eat</b>; ✗ <b>spend</b> — spend money/time <b>on</b> something, not <b>spend to eat</b>; ✗ <b>cost</b> — a thing costs money; a person cannot be the subject of <b>cost</b> like this."
     },
     {
       "id": "gv-kc-16-8",
@@ -86,7 +86,7 @@
       "correct": 3,
       "answer": "where",
       "vi": "Thị trấn nơi ông bà tôi sống nổi tiếng với chợ nổi.",
-      "explanation": "<b>My grandparents live</b> is a complete clause, so the relative adverb <b>where</b> (= in which) is needed after a place. <b>Which</b> and <b>that</b> would need a preposition (<b>in which</b>), and <b>who</b> is for people."
+      "explanation": "After the place noun <b>the town</b>, the clause <b>my grandparents live</b> is already complete (subject + verb), so it needs the relative adverb <b>where</b> (= in which).<br>✗ <b>which</b> — a relative pronoun must be the subject or object of the clause; here it would need <b>in which</b>; ✗ <b>that</b> — same problem, and <b>that</b> cannot follow a preposition; ✗ <b>who</b> — only for people, and <b>town</b> is a place."
     },
     {
       "id": "gv-kc-16-9",
@@ -97,7 +97,7 @@
       "correct": 0,
       "answer": "will be eating",
       "vi": "Giờ này tuần sau chúng ta sẽ đang ăn bánh trung thu ở hội chợ Trung thu.",
-      "explanation": "<b>This time next week</b> points to an action in progress at a future moment, so the future continuous <b>will be eating</b> is correct."
+      "explanation": "<b>This time next week</b> pictures an action in progress at a future moment, so the future continuous <b>will be eating</b>.<br>✗ <b>are eating</b> — present continuous is for now or a fixed arrangement, not a scene at a future moment; ✗ <b>will have eaten</b> — future perfect means finished BEFORE that time, but we will be in the middle of eating; ✗ <b>eat</b> — present simple only works for timetables (<b>the fair opens at 6</b>)."
     },
     {
       "id": "gv-kc-16-10",
@@ -108,7 +108,7 @@
       "correct": 1,
       "answer": "miss",
       "vi": "Nếu không nhanh lên, chúng ta sẽ lỡ chuyến xe buýt cuối về nhà.",
-      "explanation": "You <b>miss</b> a bus, a train or a plane when you arrive too late for it. <b>Lose</b>, <b>drop</b> and <b>fail</b> do not collocate with <b>the bus</b>."
+      "explanation": "You <b>miss</b> a bus, train or plane = arrive too late to catch it, which fits <b>if we don't hurry</b>.<br>✗ <b>lose</b> — you lose a thing you owned (keys, a match), not a bus you never boarded; ✗ <b>drop</b> — let something fall; ✗ <b>fail</b> — fail an exam or fail to do something; it takes <b>to</b> + verb, not <b>the bus</b>."
     },
     {
       "id": "gv-kc-16-11",
@@ -119,7 +119,7 @@
       "correct": 2,
       "answer": "of",
       "vi": "Mẹ tôi rất tự hào về công thức nước mắm chấm của bà.",
-      "explanation": "The adjective <b>proud</b> is always followed by <b>of</b>: <b>proud of</b> someone / something."
+      "explanation": "The adjective <b>proud</b> takes the fixed preposition <b>of</b>: <b>proud of</b> someone/something.<br>✗ <b>on</b> — not used after proud (<b>on</b> follows <b>keen, depend</b>); ✗ <b>with</b> — goes with <b>pleased / satisfied with</b>, not proud; ✗ <b>about</b> — goes with <b>happy / worried about</b>; <b>proud</b> never takes it."
     },
     {
       "id": "gv-kc-16-12",
@@ -130,7 +130,7 @@
       "correct": 3,
       "answer": "return",
       "vi": "Nhớ trả cuốn sách nấu ăn cho thư viện trước thứ Sáu nhé.",
-      "explanation": "<b>Return</b> = give something back. <b>Borrow</b> is taking it, <b>lend</b> is giving your own thing out, and you <b>rent</b> a room or a bike, not a library book."
+      "explanation": "<b>To the library by Friday</b> means giving the book BACK: <b>return</b>.<br>✗ <b>borrow</b> — take something for a while (you borrow FROM the library); ✗ <b>lend</b> — give your OWN thing to someone temporarily, but the book belongs to the library; ✗ <b>rent</b> — pay money to use a room, car or bike; library books are not rented."
     },
     {
       "id": "gv-kc-16-13",
@@ -141,7 +141,7 @@
       "correct": 1,
       "answer": "came down with",
       "vi": "Nửa lớp bị cúm sau khi ăn kem dưới mưa ở hội chợ.",
-      "explanation": "<b>Come down with</b> an illness = start to suffer from it. <b>Come up with</b> is to think of an idea, <b>put up with</b> is to tolerate, and <b>come across</b> is to find by chance."
+      "explanation": "<b>Flu</b> after ice cream in the rain = falling ill, so <b>came down with</b> (start to suffer from an illness).<br>✗ <b>came up with</b> — think of an idea or plan; ✗ <b>put up with</b> — tolerate something annoying; ✗ <b>came across</b> — find or meet by chance."
     },
     {
       "id": "gv-kc-16-14",
@@ -152,7 +152,7 @@
       "correct": 0,
       "answer": "a great deal of",
       "vi": "Gói bánh chưng cần rất nhiều kiên nhẫn, nên bà tôi bắt đầu từ sáng sớm.",
-      "explanation": "<b>Patience</b> is uncountable, so it takes <b>a great deal of</b> (= a lot of). <b>A large number of</b>, <b>a few</b> and <b>many</b> go only with plural countable nouns."
+      "explanation": "<b>Patience</b> is an uncountable noun, so the quantifier must be one for uncountables: <b>a great deal of</b> (= a lot of).<br>✗ <b>a large number of</b> — only with plural countables (<b>a large number of guests</b>); ✗ <b>a few</b> — plural countables only, and \"a few patience\" is impossible; ✗ <b>many</b> — plural countables only; uncountables take <b>much</b>."
     },
     {
       "id": "gv-kc-16-15",
@@ -163,7 +163,7 @@
       "correct": 2,
       "answer": "actions speak louder than words",
       "vi": "Nam cứ hứa sẽ giúp dọn dẹp sau lễ hội, nhưng hành động mới nói lên tất cả.",
-      "explanation": "<b>Actions speak louder than words</b> = what you do matters more than what you promise. The other sayings are about practice, bad luck and teamwork, so they do not fit."
+      "explanation": "<b>Keeps promising ... but</b> contrasts words with (missing) deeds, so <b>actions speak louder than words</b> = what you do matters more than what you say.<br>✗ <b>practice makes perfect</b> — repeating a skill makes you good at it; ✗ <b>every cloud has a silver lining</b> — something good comes out of bad luck; ✗ <b>two heads are better than one</b> — working together beats working alone."
     },
     {
       "id": "gv-kc-16-16",
@@ -174,7 +174,7 @@
       "correct": 3,
       "answer": "to seeing",
       "vi": "Tất cả chúng tôi đều mong được xem lễ rước đèn tuần tới.",
-      "explanation": "In <b>look forward to</b>, <b>to</b> is a preposition, so it is followed by a gerund: <b>to seeing</b>, not the infinitive."
+      "explanation": "In <b>look forward to</b>, <b>to</b> is a preposition, not part of an infinitive, so it must be followed by a gerund: <b>to seeing</b>.<br>✗ <b>to see</b> — an infinitive after a preposition is impossible; ✗ <b>seeing</b> — drops the required <b>to</b> of the phrase <b>look forward TO</b>; ✗ <b>see</b> — a bare verb cannot follow <b>look forward</b> at all."
     },
     {
       "id": "gv-kc-16-17",
@@ -185,7 +185,7 @@
       "correct": 1,
       "answer": "deliver",
       "vi": "Nhà hàng sẽ giao phở tới tận cửa nhà bạn trong vòng ba mươi phút.",
-      "explanation": "<b>Deliver</b> = take goods to someone's home. You <b>order</b> or <b>receive</b> food as a customer, and a restaurant <b>serves</b> food at the table, not to your door."
+      "explanation": "<b>To your door within thirty minutes</b> describes bringing goods to a customer's home: <b>deliver</b>.<br>✗ <b>order</b> — ask for food; the customer orders, not the restaurant; ✗ <b>serve</b> — bring food to the table inside the restaurant, not to your door; ✗ <b>receive</b> — get something; the customer receives the phở, the restaurant does not."
     },
     {
       "id": "gv-kc-16-18",
@@ -196,7 +196,7 @@
       "correct": 0,
       "answer": "unless",
       "vi": "Bạn sẽ không kiếm được chỗ ngồi ở các quầy ăn chợ đêm trừ khi bạn tới đó trước sáu giờ.",
-      "explanation": "<b>Unless</b> = if ... not: you will not find a seat if you do <b>not</b> arrive before six. <b>If</b> would give the opposite meaning, <b>although</b> shows contrast, and <b>so that</b> shows purpose."
+      "explanation": "<b>Unless</b> = if ... not: you won't find a seat if you do <b>not</b> get there before six, which is the logical warning.<br>✗ <b>if</b> — gives the reverse meaning (arriving early would cost you a seat); ✗ <b>although</b> — shows contrast between two facts, not a condition; ✗ <b>so that</b> — shows purpose and would need a modal (<b>so that you can...</b>)."
     },
     {
       "id": "gv-kc-16-19",
@@ -207,7 +207,7 @@
       "correct": 3,
       "answer": "cropped up",
       "vi": "Nam: Sao cậu không đến xem diễu hành? / Lan: Có chuyện phát sinh ở nhà đúng lúc mình chuẩn bị đi.",
-      "explanation": "<b>Just as I was leaving</b> fixes the event at a finished moment in the past, so the past simple <b>cropped up</b> (= happened unexpectedly) is correct, not a present form."
+      "explanation": "<b>Just as I was leaving</b> fixes the event at one finished moment in the past, so the past simple <b>cropped up</b> (= happened unexpectedly).<br>✗ <b>has cropped up</b> — present perfect cannot combine with a definite past moment like <b>as I was leaving</b>; ✗ <b>crops up</b> — present simple states a habit, not a single past event; ✗ <b>is cropping up</b> — present continuous is for something happening right now."
     },
     {
       "id": "gv-kc-16-20",
@@ -218,7 +218,7 @@
       "correct": 2,
       "answer": "knew",
       "vi": "Ước gì tôi biết làm bánh trung thu ngon như bà tôi.",
-      "explanation": "A wish about a present situation uses <b>wish + past simple</b>: <b>I wish I knew</b>. <b>Had known</b> would be a regret about the past, and <b>know</b> / <b>would know</b> are not used after <b>wish</b> here."
+      "explanation": "A wish about a PRESENT situation (<b>as well as my grandmother does</b>) uses <b>wish + past simple</b>: <b>I wish I knew</b>.<br>✗ <b>know</b> — a present form is never used after <b>wish</b>; ✗ <b>had known</b> — past perfect expresses regret about the PAST, but <b>does</b> shows the wish is about now; ✗ <b>would know</b> — <b>wish + would</b> is for someone else's annoying behaviour, not for the speaker's own knowledge."
     },
     {
       "id": "gv-kc-16-21",
@@ -229,7 +229,7 @@
       "correct": 1,
       "answer": "lay",
       "vi": "Con dọn bàn ăn giúp mẹ trong lúc mẹ chiên cá nhé?",
-      "explanation": "You <b>lay</b> (or set) <b>the table</b> = put plates and cutlery on it before a meal. <b>Put</b>, <b>place</b> and <b>fix</b> do not form this collocation."
+      "explanation": "The fixed collocation is <b>lay the table</b> (also <b>set the table</b>) = put out plates and cutlery before a meal, which fits <b>while I fry the fish</b>.<br>✗ <b>put</b> — put needs a place (<b>put the table by the wall</b>); ✗ <b>place</b> — same as put: position an object somewhere; ✗ <b>fix</b> — repair or attach; nothing here is broken."
     },
     {
       "id": "gv-kc-16-22",
@@ -240,7 +240,7 @@
       "correct": 0,
       "answer": "are given",
       "vi": "Bao lì xì được trao cho trẻ em vào sáng mùng Một Tết.",
-      "explanation": "The envelopes receive the action, so the present simple passive <b>are given</b> is needed: <b>be + past participle</b>."
+      "explanation": "<b>Red envelopes</b> do not give, they are given, and <b>on the first morning of Tet</b> is a yearly custom, so present simple passive: <b>are given</b> (be + past participle).<br>✗ <b>give</b> — active; the envelopes would be doing the giving; ✗ <b>are giving</b> — active continuous, same problem, and a custom is not in progress now; ✗ <b>given</b> — a past participle alone has no auxiliary, so the sentence has no verb."
     },
     {
       "id": "gv-kc-16-23",
@@ -251,7 +251,7 @@
       "correct": 3,
       "answer": "spare",
       "vi": "Bạn có thể dành cho mình vài phút để giải thích tuyến xe buýt mới không?",
-      "explanation": "<b>Spare someone a few minutes</b> = give them a little of your time. <b>Share</b>, <b>save</b> and <b>spend</b> do not take this pattern with a person and time."
+      "explanation": "<b>Spare someone a few minutes</b> = give them a little of your time; the pattern is <b>spare + person + time</b>.<br>✗ <b>share</b> — divide something between people; you share food, not \"share me a few minutes\"; ✗ <b>save</b> — keep something for later; \"save me a few minutes\" would mean reduce the time I need, not give me time; ✗ <b>spend</b> — use time yourself; it never takes a person as its object."
     },
     {
       "id": "gv-kc-16-24",
@@ -262,7 +262,7 @@
       "correct": 2,
       "answer": "would visit",
       "vi": "Mai nói sáng hôm sau cô ấy sẽ đi chợ hoa mua cành đào.",
-      "explanation": "In reported speech after <b>said</b>, <b>will</b> becomes <b>would</b>: <b>would visit</b>. The other forms do not shift the tense back."
+      "explanation": "Reporting verb in the past (<b>said</b>) + <b>the next morning</b> (the reported form of \"tomorrow morning\") means the tense shifts back: <b>will visit</b> → <b>would visit</b>.<br>✗ <b>will visit</b> — no backshift after <b>said</b>; ✗ <b>visits</b> — present simple states a habit and ignores the backshift; ✗ <b>has visited</b> — present perfect means already done, but <b>the next morning</b> is still in the future from her viewpoint."
     },
     {
       "id": "gv-kc-16-25",
@@ -273,6 +273,6 @@
       "correct": 1,
       "answer": "far worse",
       "vi": "Giao thông ở trung tâm thành phố tệ hơn nhiều so với năm năm trước.",
-      "explanation": "<b>Than</b> needs a comparative: <b>worse</b>, and it can be strengthened with <b>far</b> or <b>much</b>. <b>More worse</b> is a double comparative, and <b>worst</b> is a superlative."
+      "explanation": "<b>Than</b> needs a comparative; <b>bad</b> is irregular (<b>worse</b>), and <b>far</b> strengthens it: <b>far worse than</b>.<br>✗ <b>more worse</b> — a double comparative; <b>worse</b> already means <b>more bad</b>; ✗ <b>much worst</b> — <b>worst</b> is the superlative and cannot follow <b>much</b> or precede <b>than</b>; ✗ <b>worst</b> — superlative, used with <b>the</b> for three or more, not with <b>than</b>."
     }
   ] }

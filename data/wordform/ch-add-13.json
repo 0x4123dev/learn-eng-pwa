@@ -87,7 +87,7 @@
       "answer": "inequality",
       "accept": ["inequality", "inequalities"],
       "vi": "EQUAL (bình đẳng) → inequality — sự bất bình đẳng (danh từ)",
-      "explanation": "'Blames growing ___ for the widening gap' cần một DANH TỪ chỉ điều xấu bị đổ lỗi; khoảng cách giàu nghèo là BẤT bình đẳng. equal → unequal/inequality: tính từ phủ định là 'unequal' nhưng danh từ phủ định lại là 'inequality' (in- + equality). Bẫy lớn: viết 'unequality' theo tính từ — dạng này không tồn tại."
+      "explanation": "'Blames growing ___ for the widening gap' cần một DANH TỪ chỉ điều xấu bị đổ lỗi; khoảng cách giàu nghèo là BẤT bình đẳng. equal → equality (-ity) → inequality: tính từ phủ định là 'unequal' nhưng danh từ phủ định lại lấy in- (inequality), tiền tố đổi theo từ loại. Bẫy: 'equality' (ngược nghĩa) hoặc 'unequality' viết theo tính từ — dạng này không tồn tại."
     },
     {
       "id": "wf-ch-13-8",
@@ -112,7 +112,7 @@
       "answer": "insecurity",
       "accept": ["insecurity"],
       "vi": "SECURE (an toàn, tự tin) → insecurity — sự bất an, thiếu tự tin (danh từ)",
-      "explanation": "Sau 'a deep' và trước 'about their looks' cần một DANH TỪ chỉ cảm giác, và 'constant comparison' gây ra sự THIẾU tự tin. secure → insecure (in-) → insecurity (bỏ -e, thêm -ity). Bẫy: 'unsecurity' (sai tiền tố) hoặc 'insecureness' (sai hậu tố — họ từ này dùng -ity như security)."
+      "explanation": "Sau 'a deep' và trước 'about their looks' cần một DANH TỪ chỉ cảm giác, và 'constant comparison' gây ra sự THIẾU tự tin. secure → insecure (in-) → insecurity (bỏ -e, thêm -ity, như security). Bẫy: 'security' (ngược nghĩa), 'unsecurity' (sai tiền tố) hoặc 'insecureness' (sai hậu tố — họ từ này dùng -ity)."
     },
     {
       "id": "wf-ch-13-10",
@@ -187,7 +187,7 @@
       "answer": "unconsciousness",
       "accept": ["unconsciousness"],
       "vi": "CONSCIOUS (tỉnh táo, có ý thức) → unconsciousness — tình trạng bất tỉnh (danh từ)",
-      "explanation": "Sau 'his' và làm chủ ngữ của 'lasted' cần một DANH TỪ; võ sĩ 'carried out on a stretcher' nên trạng thái kéo dài bốn phút là BẤT TỈNH. conscious → unconscious (un-) → unconsciousness (-ness). Bẫy: viết 'consciousness' (ngược nghĩa) hoặc 'inconsciousness' — 'conscious' không nhận in-."
+      "explanation": "Sau 'his' và làm chủ ngữ của 'lasted' cần một DANH TỪ; võ sĩ 'carried out on a stretcher' nên trạng thái kéo dài bốn phút là BẤT TỈNH. conscious → unconscious (un-) → unconsciousness (-ness, như carelessness). Bẫy: 'consciousness' (ngược nghĩa), dừng ở 'unconscious' (tính từ, không làm chủ ngữ sau 'his') hoặc 'inconsciousness' — 'conscious' không nhận in-."
     },
     {
       "id": "wf-ch-13-16",

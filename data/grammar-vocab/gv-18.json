@@ -16,7 +16,7 @@
       "correct": 1,
       "answer": "unequivocal",
       "vi": "Kết luận của phòng thí nghiệm là không thể chối cãi: các mảnh xương có niên đại ít nhất bốn mươi nghìn năm.",
-      "explanation": "<b>Unequivocal</b> means leaving no room for doubt, which the clause after the colon confirms; <b>equivocal</b> means the opposite, <b>equivalent</b> means equal in value, and <b>ambivalent</b> describes a person's mixed feelings, not a result."
+      "explanation": "Word choice: the colon introduces a definite finding (<b>at least forty thousand years old</b>), so the verdict left no doubt — <b>unequivocal</b> = clear, leaving no room for doubt. ✗ <b>equivocal</b> — ambiguous, open to two readings, the opposite of the clue; ✗ <b>equivalent</b> — equal in value or amount, nothing to do with certainty; ✗ <b>ambivalent</b> — having mixed feelings, said of a person, not of a verdict."
     },
     {
       "id": "gv-ch-18-2",
@@ -32,7 +32,7 @@
       "correct": 0,
       "answer": "under the radar",
       "vi": "Trong gần một thập kỷ, công ty môi giới dữ liệu ấy hoạt động âm thầm ngoài tầm chú ý, lập những hồ sơ mà hầu hết người dùng chưa từng biết là có.",
-      "explanation": "To operate <b>under the radar</b> is to escape attention; <b>off the hook</b> means freed from blame, <b>on the fence</b> means undecided and <b>up in the air</b> means not yet settled."
+      "explanation": "Idiom: the clue is <b>profiles that most users never knew existed</b>, so the broker escaped notice — <b>under the radar</b> = unnoticed, without attracting attention. ✗ <b>off the hook</b> — freed from blame or a duty; ✗ <b>on the fence</b> — undecided between two sides; ✗ <b>up in the air</b> — not yet settled or decided. None describes working unnoticed for years."
     },
     {
       "id": "gv-ch-18-3",
@@ -48,7 +48,7 @@
       "correct": 2,
       "answer": "can't",
       "vi": "Những người xây lăng mộ này không thể nào đã dùng xe có bánh, vì chưa từng tìm thấy dấu vết bánh xe nào trong vùng.",
-      "explanation": "<b>Can't have + past participle</b> is a confident deduction that something did not happen; <b>mustn't have</b> is not used for deduction, and <b>needn't/shouldn't have</b> comment on necessity or advisability, not on what was possible."
+      "explanation": "Modal deduction about the past: <b>no trace of a wheel has ever been found</b> is evidence, so the speaker concludes it was impossible — <b>can't have + past participle</b> = \"I am sure this did not happen\". ✗ <b>mustn't have</b> — <i>must have</i> deduces that something DID happen; its negative is <i>can't have</i>; ✗ <b>needn't have</b> — it was unnecessary but they did it; ✗ <b>shouldn't have</b> — it was a mistake to do it; neither says what was possible."
     },
     {
       "id": "gv-ch-18-4",
@@ -64,7 +64,7 @@
       "correct": 3,
       "answer": "poses",
       "vi": "Việc phát vị trí của bạn theo thời gian thực gây ra một rủi ro nghiêm trọng cho an toàn cá nhân.",
-      "explanation": "A danger <b>poses a risk</b> (or threat) to someone; <b>put</b> needs the pattern <i>put someone at risk</i>, and <b>make/do a risk</b> are not English collocations."
+      "explanation": "Collocation with <b>risk</b>: a danger <b>poses a risk/threat to</b> someone — <i>pose</i> = present, cause. ✗ <b>puts</b> — the pattern is <i>put someone at risk</i>, and here the object is <i>a risk</i>, not a person; ✗ <b>makes</b> — <i>make a risk</i> is not English (we <i>take</i> or <i>run</i> a risk); ✗ <b>does</b> — <i>do a risk</i> does not exist."
     },
     {
       "id": "gv-ch-18-5",
@@ -80,7 +80,7 @@
       "correct": 0,
       "answer": "circumstantial",
       "vi": "Không có nhân chứng và không có dấu vân tay, vụ án chống lại tin tặc ấy hoàn toàn dựa vào bằng chứng gián tiếp.",
-      "explanation": "<b>Circumstantial evidence</b> is indirect evidence that suggests guilt without proving it; <b>coincidental</b> means happening by chance, <b>incidental</b> means minor or secondary, and <b>accidental</b> means unintended."
+      "explanation": "Word choice: <b>no witnesses and no fingerprints</b> means the evidence is indirect — <b>circumstantial evidence</b> = facts that suggest guilt without proving it directly. ✗ <b>coincidental</b> — happening by chance at the same time; ✗ <b>incidental</b> — minor, secondary, by the way; ✗ <b>accidental</b> — unintended, by accident; none is a term used with <i>evidence</i> in court."
     },
     {
       "id": "gv-ch-18-6",
@@ -96,7 +96,7 @@
       "correct": 1,
       "answer": "fell through",
       "vi": "Thỏa thuận số hóa toàn bộ kho lưu trữ của bảo tàng đã đổ bể khi nhà tài trợ chính rút lui vào phút chót.",
-      "explanation": "A plan or deal that <b>falls through</b> fails to happen; <b>fall out</b> means to quarrel, <b>fall behind</b> means to fail to keep up, and <b>fall off</b> means to decline in amount."
+      "explanation": "Phrasal verb with <b>fall</b>: the clue <b>the main sponsor withdrew</b> tells you the deal failed — <b>fell through</b> = (of a plan or deal) failed to happen. ✗ <b>fell out</b> — quarrelled with someone; ✗ <b>fell behind</b> — failed to keep up, got behind schedule; ✗ <b>fell off</b> — declined in number or quality."
     },
     {
       "id": "gv-ch-18-7",
@@ -112,7 +112,7 @@
       "correct": 2,
       "answer": "No sooner",
       "vi": "Tàu thăm dò vừa mới được phóng lên thì đã mất liên lạc.",
-      "explanation": "The inverted pattern <b>No sooner had … than …</b> pairs with <i>than</i>; <b>Hardly</b> would need <i>when</i>, and <b>Not until</b> and <b>Only when</b> invert the main clause, not the one they introduce."
+      "explanation": "Inversion: the clue is <b>than</b> later in the sentence, so the pattern is <b>No sooner had … than …</b> = \"as soon as\". ✗ <b>Hardly</b> — <i>Hardly had … when …</i> needs <i>when</i>, not <i>than</i>; ✗ <b>Not until</b> — inverts the MAIN clause (<i>Not until X was contact lost</i>), not the clause it introduces; ✗ <b>Only when</b> — same problem, and it never pairs with <i>than</i>."
     },
     {
       "id": "gv-ch-18-8",
@@ -128,7 +128,7 @@
       "correct": 3,
       "answer": "go cold turkey",
       "vi": "Thay vì giảm dần, anh ấy quyết định cai hẳn một lần và xóa toàn bộ ứng dụng mạng xã hội khỏi điện thoại chỉ trong một buổi tối.",
-      "explanation": "To <b>go cold turkey</b> is to stop a habit abruptly and completely; <b>go the extra mile</b> means to make extra effort, <b>go with the flow</b> means to accept what happens, and <b>go through the roof</b> means to rise sharply or lose one's temper."
+      "explanation": "Idiom with <b>go</b>: <b>Rather than cut down gradually</b> and <b>in a single evening</b> show he stopped all at once — <b>go cold turkey</b> = quit a habit suddenly and completely. ✗ <b>go the extra mile</b> — make more effort than required; ✗ <b>go with the flow</b> — accept things as they come; ✗ <b>go through the roof</b> — (of prices) rise sharply, or (of a person) explode with anger."
     },
     {
       "id": "gv-ch-18-9",
@@ -144,7 +144,7 @@
       "correct": 0,
       "answer": "negligible",
       "vi": "Cái giá về quyền riêng tư của một lần tải ảnh lên có vẻ không đáng kể, nhưng mỗi bài đăng lại thêm một điểm dữ liệu vào hồ sơ của bạn.",
-      "explanation": "<b>Negligible</b> means too small to matter; <b>negligent</b> and <b>neglectful</b> describe a person who fails to take proper care, and <b>neglected</b> describes something that has not been looked after."
+      "explanation": "Word family of <i>neglect</i>: the contrast <b>may seem … but every post adds</b> means the cost looks tiny — <b>negligible</b> = too small to matter. ✗ <b>negligent</b> — (of a person) careless, failing in a duty; ✗ <b>neglected</b> — not looked after (a neglected garden); ✗ <b>neglectful</b> — habitually careless about someone or something. Only <i>negligible</i> describes size."
     },
     {
       "id": "gv-ch-18-10",
@@ -160,7 +160,7 @@
       "correct": 1,
       "answer": "raised / forcing",
       "vi": "Mỗi vụ rò rỉ mới lại nâng cao mức độ rủi ro, buộc các cơ quan quản lý phải hành động sớm hơn dự kiến.",
-      "explanation": "<b>Raise the stakes</b> needs the transitive verb <i>raise</i> (<i>rise</i> takes no object), and the second blank is a present participle <b>forcing</b> giving the result; a second finite verb <i>forced</i> would need a conjunction."
+      "explanation": "Double blank: <b>the stakes</b> is an object, so the verb must be transitive <b>raised</b> (<i>rise</i> takes no object); the second blank has no conjunction before it, so the participle <b>forcing</b> shows the result. ✗ <b>rose / forced</b> — <i>rose</i> cannot take an object; ✗ <b>raised / forced</b> — two finite verbs (<i>raised … forced</i>) would need <i>and</i> between them; ✗ <b>rose / forcing</b> — <i>rose</i> is intransitive."
     },
     {
       "id": "gv-ch-18-11",
@@ -176,7 +176,7 @@
       "correct": 2,
       "answer": "be",
       "vi": "Cơ quan quản lý yêu cầu công ty phải hoàn toàn minh bạch về việc những bên thứ ba nào nhận được dữ liệu của người dùng.",
-      "explanation": "After <b>demand that</b>, the subjunctive uses the base form <b>be</b> for every subject; <i>is/was/were</i> are indicative forms and do not follow a verb of demand."
+      "explanation": "Subjunctive: after <b>demanded that</b> (a verb of demand or suggestion) the verb is the base form <b>be</b>, whatever the subject or tense. ✗ <b>is</b> — present indicative, not used after <i>demand that</i>; ✗ <b>was</b> — past indicative, same problem; ✗ <b>were</b> — this is the <i>if I were</i> subjunctive for unreal conditions, not the form used after <i>demand</i>."
     },
     {
       "id": "gv-ch-18-12",
@@ -192,7 +192,7 @@
       "correct": 3,
       "answer": "bears",
       "vi": "Đồ gốm khai quật tại di chỉ này mang nét tương đồng đáng kinh ngạc với các hoa văn được tìm thấy cách đó năm trăm cây số.",
-      "explanation": "The fixed collocation is <b>bear a resemblance to</b>; <i>hold, carry</i> and <i>keep</i> do not combine with <i>resemblance</i>."
+      "explanation": "Collocation: <b>a striking resemblance to</b> takes the fixed verb <b>bear</b> — <i>bear a resemblance to</i> = look like. ✗ <b>holds</b> — you hold a view or a record, not a resemblance; ✗ <b>carries</b> — you carry weight or a risk; ✗ <b>keeps</b> — you keep a promise or a secret. None of these verbs collocates with <i>resemblance</i>."
     },
     {
       "id": "gv-ch-18-13",
@@ -208,7 +208,7 @@
       "correct": 0,
       "answer": "bide their time",
       "vi": "Nhóm nghiên cứu đã xác định được vị trí lăng mộ từ năm 2015 nhưng, thay vì đào ngay, họ chọn kiên nhẫn chờ thời cơ cho đến khi có công nghệ quét tốt hơn.",
-      "explanation": "To <b>bide your time</b> is to wait patiently for the right moment; <b>cut your losses</b> means to abandon a failing venture, <b>pull your weight</b> means to do your share, and <b>mend fences</b> means to repair a relationship."
+      "explanation": "Idiom: <b>rather than dig at once</b> and <b>until better scanning technology became available</b> show patient waiting — <b>bide your time</b> = wait calmly for the right moment. ✗ <b>cut your losses</b> — give up before losing even more; ✗ <b>pull your weight</b> — do your fair share of the work; ✗ <b>mend your fences</b> — repair a damaged relationship."
     },
     {
       "id": "gv-ch-18-14",
@@ -224,7 +224,7 @@
       "correct": 1,
       "answer": "unsubstantiated",
       "vi": "Luận điểm của nhà sử học rằng thành phố này từng có chữ viết vẫn chưa được chứng thực cho đến khi các phiến đất sét cuối cùng được giải mã.",
-      "explanation": "<b>Unsubstantiated</b> means not yet supported by evidence; <b>insubstantial</b> means flimsy or lacking solidity, <b>substantive</b> means real and meaningful, and <b>substantial</b> means large."
+      "explanation": "Word family of <i>substance</i>: <b>until the clay tablets were finally deciphered</b> tells you the claim lacked proof — <b>unsubstantiated</b> = not supported by evidence. ✗ <b>insubstantial</b> — flimsy, lacking solidity or importance; ✗ <b>substantive</b> — real, dealing with essentials; ✗ <b>substantial</b> — large in size or amount. Only <i>unsubstantiated</i> describes a claim without proof."
     },
     {
       "id": "gv-ch-18-15",
@@ -240,7 +240,7 @@
       "correct": 2,
       "answer": "selling",
       "vi": "Những người sáng lập trang web giờ đây công khai hối tiếc vì đã bán dữ liệu người dùng cho các nhà quảng cáo trong những năm đầu của công ty.",
-      "explanation": "<b>Regret + -ing</b> looks back on something already done; <b>regret to + infinitive</b> announces bad news now (<i>we regret to inform you</i>), and the bare infinitive is impossible after <i>regret</i>."
+      "explanation": "Gerund vs infinitive after <b>regret</b>: the selling happened <b>in the company's early years</b>, so they regret a past action — <b>regret + -ing</b> = feel sorry about something already done. ✗ <b>to sell</b> — <i>regret to + infinitive</i> announces bad news now (<i>we regret to inform you</i>); ✗ <b>sell</b> — <i>regret</i> never takes a bare infinitive; ✗ <b>to have sold</b> — the perfect infinitive is not used after <i>regret</i>; for a past action say <i>selling</i> or <i>having sold</i>."
     },
     {
       "id": "gv-ch-18-16",
@@ -256,7 +256,7 @@
       "correct": 3,
       "answer": "fend off",
       "vi": "Mỗi ngày, máy chủ của trang web phải chống đỡ hàng nghìn lượt đăng nhập tự động từ các máy tính bị chiếm quyền điều khiển.",
-      "explanation": "To <b>fend off</b> an attack is to repel it; <b>fend for yourself</b> means to look after yourself, <b>put off</b> means to postpone, and <b>set off</b> means to trigger or to depart."
+      "explanation": "Phrasal verb: the servers face <b>automated login attempts</b> (an attack) and must repel them — <b>fend off</b> = drive away, keep off. ✗ <b>fend for</b> — only in <i>fend for yourself</i> = look after yourself; ✗ <b>put off</b> — postpone, or discourage someone; ✗ <b>set off</b> — trigger (an alarm) or start a journey."
     },
     {
       "id": "gv-ch-18-17",
@@ -272,7 +272,7 @@
       "correct": 0,
       "answer": "Compared",
       "vi": "So với các phiếu khảo sát giấy của thập niên 1990, mẫu điều tra dân số trực tuyến ngày nay chỉ mất chưa đầy mười phút để hoàn thành.",
-      "explanation": "The forms are the thing being compared, so the past participle <b>Compared with</b> is needed; <i>Comparing</i> and <i>Having compared</i> would make the forms the ones doing the comparing."
+      "explanation": "Participle clause: the subject <b>today's online census forms</b> is the thing being compared, so the past (passive) participle <b>Compared with</b> is needed. ✗ <b>Comparing</b> — an active participle would make the forms the ones doing the comparing; ✗ <b>To compare</b> — an infinitive of purpose (\"in order to compare\") makes no sense here; ✗ <b>Having compared</b> — also active, so the forms would again be the comparers."
     },
     {
       "id": "gv-ch-18-18",
@@ -288,7 +288,7 @@
       "correct": 1,
       "answer": "figured out / realised",
       "vi": "Một khi các nhà nghiên cứu đã hiểu ra cách thuật toán xếp hạng bài đăng, họ nhận ra rằng sự phẫn nộ đang được tưởng thưởng.",
-      "explanation": "<b>Figure out</b> means to work out or understand; <i>figure in</i> means to include and <i>figure on</i> means to expect. The main clause after <i>Once …</i> needs a finite past verb, <b>realised</b>, not an infinitive or participle."
+      "explanation": "Double blank: <b>how the algorithm ranked posts</b> is something you understand or solve, so <b>figured out</b>; the main clause after <i>Once …</i> needs a finite past verb, <b>realised</b>. ✗ <b>figured in / realised</b> — <i>figure in</i> = include, play a part; ✗ <b>figured on / to realise</b> — <i>figure on</i> = expect, and an infinitive cannot be the main verb; ✗ <b>worked out / realising</b> — <i>worked out</i> fits, but the participle leaves no main verb."
     },
     {
       "id": "gv-ch-18-19",
@@ -304,7 +304,7 @@
       "correct": 2,
       "answer": "No matter how",
       "vi": "Dù mật khẩu được chọn cẩn thận đến đâu, nó cũng trở nên vô giá trị một khi đã được dùng lại trên cả chục trang web.",
-      "explanation": "<b>No matter how + adverb</b> introduces a concession of degree; <i>However much</i> and <i>Whatever</i> cannot be followed directly by an adverb, and <i>Even though carefully</i> is not a grammatical clause."
+      "explanation": "Concession of degree: the blank is followed directly by an adverb, <b>carefully</b>, so use <b>No matter how + adverb</b> (= however carefully). ✗ <b>However much</b> — <i>much</i> cannot sit in front of another adverb (<i>however carefully</i> works; <i>however much carefully</i> does not); ✗ <b>Whatever</b> — needs a noun (<i>whatever password</i>), not an adverb; ✗ <b>Even though</b> — a conjunction that needs a full clause, not <i>carefully</i> straight after it."
     },
     {
       "id": "gv-ch-18-20",
@@ -320,7 +320,7 @@
       "correct": 3,
       "answer": "burnt his boats",
       "vi": "Bằng việc bán nông trại của gia đình để tài trợ cho chuyến thám hiểm, nhà thám hiểm đã tự đốt thuyền chặt đứt đường lui: đơn giản là không còn đường quay về nữa.",
-      "explanation": "To <b>burn your boats</b> (or bridges) is to act so that retreat is impossible; <b>burn your fingers</b> means to suffer from a risky venture, <b>burn the midnight oil</b> means to work late, and money that <b>burns a hole in your pocket</b> is money you cannot wait to spend."
+      "explanation": "Idiom with <b>burn</b>: the colon explains it — <b>there was simply no going back</b> — so <b>burn your boats</b> (= burn your bridges) = act so that retreat is impossible. ✗ <b>burn your fingers</b> — get hurt by a risky venture; ✗ <b>burn the midnight oil</b> — work or study late into the night; ✗ <b>burn a hole in your pocket</b> — (of money) tempt you to spend it at once."
     },
     {
       "id": "gv-ch-18-21",
@@ -336,7 +336,7 @@
       "correct": 0,
       "answer": "compelling",
       "vi": "Phương pháp định tuổi bằng carbon phóng xạ đã cho nhóm nghiên cứu những cơ sở rất thuyết phục để xác định lại niên đại ngôi đền, chênh lệch tới ba thế kỷ.",
-      "explanation": "<b>Compelling</b> evidence or grounds are convincing; <b>compulsive</b> describes an uncontrollable habit, <b>compulsory</b> means required by rule, and <b>compelled</b> means forced."
+      "explanation": "Word family of <i>compel</i>: <b>grounds for redating</b> must be convincing — <b>compelling</b> = very convincing (compelling evidence, reasons). ✗ <b>compulsive</b> — driven by an uncontrollable urge (a compulsive liar); ✗ <b>compulsory</b> — required by rule (compulsory education); ✗ <b>compelled</b> — forced to do something, said of a person, not of grounds."
     },
     {
       "id": "gv-ch-18-22",
@@ -352,7 +352,7 @@
       "correct": 1,
       "answer": "is",
       "vi": "Cả các nhà khảo cổ lẫn giám đốc bảo tàng đều không sẵn lòng cho biết khi nào căn phòng bị niêm phong sẽ được mở.",
-      "explanation": "With <b>neither … nor</b> the verb agrees with the nearer subject, the singular <i>director</i>, so <b>is</b>; <i>are</i> and <i>have been</i> are plural, and <i>were</i> is both plural and the wrong tense for a statement about the present."
+      "explanation": "Agreement with <b>neither … nor</b>: the verb agrees with the nearer subject, the singular <b>museum director</b>, and the sentence is about now (<i>will be opened</i>), so <b>is</b>. ✗ <b>are</b> — plural, but the nearer subject is singular; ✗ <b>were</b> — plural and past, while the situation is present; ✗ <b>have been</b> — plural present perfect, agreeing with <i>archaeologists</i>, the farther subject."
     },
     {
       "id": "gv-ch-18-23",
@@ -368,7 +368,7 @@
       "correct": 2,
       "answer": "the more valuable",
       "vi": "Nền tảng càng thu thập nhiều dữ liệu cá nhân thì càng trở nên có giá trị đối với các nhà quảng cáo.",
-      "explanation": "The double comparative <b>the more …, the more …</b> needs <i>the</i> before both comparatives; <i>becomes</i> takes an adjective, so the adverb <i>valuably</i> is wrong."
+      "explanation": "Double comparative: <b>The more … a platform collects</b> must be balanced by <b>the more valuable</b> — both halves need <i>the</i> + comparative. ✗ <b>the most valuable</b> — a superlative, not a comparative; ✗ <b>more valuable</b> — the second half also needs <i>the</i>; ✗ <b>the more valuably</b> — <i>becomes</i> is a linking verb and takes an adjective, not an adverb."
     },
     {
       "id": "gv-ch-18-24",
@@ -384,7 +384,7 @@
       "correct": 3,
       "answer": "reached",
       "vi": "Sau nhiều tháng kiểm tra, các nhà vật lý đi đến kết luận rằng tín hiệu đó chẳng qua chỉ là nhiễu từ một chiếc tủ lạnh gần đó.",
-      "explanation": "You <b>reach a conclusion</b> directly; <i>arrive at</i>, <i>come to</i> and <i>get to</i> would all need a preposition before <i>the conclusion</i>."
+      "explanation": "Collocation with <b>conclusion</b>: there is no preposition before <b>the conclusion</b>, and only <b>reach</b> takes the noun directly — <i>reach the conclusion that</i>. ✗ <b>arrived</b> — needs <i>at</i> (<i>arrived at the conclusion</i>); ✗ <b>came</b> — needs <i>to</i> (<i>came to the conclusion</i>); ✗ <b>got</b> — needs <i>to</i> as well, and is informal."
     },
     {
       "id": "gv-ch-18-25",
@@ -400,7 +400,7 @@
       "correct": 1,
       "answer": "will have been read",
       "vi": "Đến cuối thập kỷ này, hầu hết các ảnh chụp thường quy sẽ được thuật toán đọc thay vì bác sĩ chẩn đoán hình ảnh.",
-      "explanation": "<i>By the end of the decade</i> points to a future deadline and the scans are read <i>by</i> algorithms, so the future perfect passive <b>will have been read</b> is required; the active forms make the scans the readers, and the present perfect ignores the future time marker."
+      "explanation": "Future perfect passive: <b>By the end of the decade</b> sets a future deadline, and <b>by algorithms</b> shows the scans receive the action — <b>will have been read</b>. ✗ <b>will have read</b> — active, making the scans the readers; ✗ <b>will be reading</b> — active and continuous, same problem, and no completion by the deadline; ✗ <b>have been read</b> — passive but present perfect, ignoring the future time marker."
     }
   ]
 }

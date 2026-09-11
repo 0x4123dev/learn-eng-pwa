@@ -9,7 +9,7 @@
       "correct": 1,
       "answer": "is steaming",
       "vi": "Bà đang đồ xôi cho Tết ngay lúc này nên bếp đầy hơi nước.",
-      "explanation": "<b>Right now</b> points to an action in progress at the moment of speaking, so the present continuous <b>is steaming</b> is needed."
+      "explanation": "<b>Right now</b> marks an action in progress at the moment of speaking, so the present continuous <b>is steaming</b> is needed.<br>✗ <b>steams</b> — present simple is for habits and routines, not what is happening now; ✗ <b>has steamed</b> — present perfect means the cooking is finished, but the kitchen is still full of steam; ✗ <b>steamed</b> — past simple puts the action in the past, clashing with <b>right now</b>."
     },
     {
       "id": "gv-kc-05-2",
@@ -20,7 +20,7 @@
       "correct": 0,
       "answer": "costs",
       "vi": "Rau ở chợ làng rất rẻ; cả một rổ cà chua chỉ có giá 20.000 đồng.",
-      "explanation": "A thing <b>costs</b> an amount of money; people <b>pay</b> or <b>spend</b> money, and a seller <b>charges</b> a price."
+      "explanation": "Word choice: the subject is a thing (<b>a basket of tomatoes</b>) and the object is a sum of money, so the verb is <b>costs</b> = has a price of.<br>✗ <b>pays</b> — a person pays money; tomatoes cannot pay; ✗ <b>spends</b> — a person spends money on something; ✗ <b>charges</b> — a seller charges a customer a price; a basket cannot charge anyone."
     },
     {
       "id": "gv-kc-05-3",
@@ -31,7 +31,7 @@
       "correct": 2,
       "answer": "split hairs",
       "vi": "Lan: Công thức ghi 200 gam đường mà cậu cho 210. / Nam: Đừng bắt bẻ từng li từng tí — mười gam chẳng làm đổi vị đâu.",
-      "explanation": "To <b>split hairs</b> is to argue about tiny, unimportant differences. <b>Cut corners</b> means do something cheaply or carelessly, <b>pull strings</b> means use influence, and <b>beat around the bush</b> means avoid the main point."
+      "explanation": "Idiom: Nam refuses to argue over a tiny <b>ten-gram</b> difference, so <b>split hairs</b> = argue about small, unimportant details.<br>✗ <b>pull strings</b> — use influence to get a favour; ✗ <b>cut corners</b> — do a job cheaply or carelessly; ✗ <b>beat around the bush</b> — avoid saying the main point directly. None of these describes fussing over a small difference."
     },
     {
       "id": "gv-kc-05-4",
@@ -42,7 +42,7 @@
       "correct": 3,
       "answer": "lay",
       "vi": "Con dọn bàn ăn trước khi khách đến dự bữa tối năm mới được không?",
-      "explanation": "The fixed collocation is <b>lay (or set) the table</b>, meaning put out the plates and cutlery; <b>make</b>, <b>put</b> and <b>do</b> do not collocate with <b>the table</b> in this sense."
+      "explanation": "Collocation: putting out plates and cutlery <b>before the guests arrive</b> is <b>lay the table</b> (also <b>set the table</b>).<br>✗ <b>make</b> — you make a bed or a cake, not a table for dinner; ✗ <b>put</b> — needs a place (put it on the table) and has no sense of preparing; ✗ <b>do</b> — 'do the table' is not an English expression for preparing it."
     },
     {
       "id": "gv-kc-05-5",
@@ -53,7 +53,7 @@
       "correct": 1,
       "answer": "which surprised",
       "vi": "Lớp mình đã thắng trận chung kết bóng đá của trường, điều đó làm mọi người bất ngờ vì bọn mình thua hết các trận giao hữu.",
-      "explanation": "After a comma, <b>which</b> can refer back to the whole previous clause (the fact that we won). <b>That</b> cannot follow a comma in a non-defining clause, <b>what</b> means 'the thing that' and cannot add a comment to a clause, and <b>it</b> would need a new sentence or a conjunction."
+      "explanation": "Relative clause: after a <b>comma</b>, <b>which</b> can refer back to the whole previous clause (winning the final) — that is what surprised everyone.<br>✗ <b>that surprised</b> — <b>that</b> cannot begin a non-defining clause after a comma; ✗ <b>what surprised</b> — <b>what</b> = 'the thing that' and cannot add a comment to a clause; ✗ <b>it surprised</b> — starts a new independent clause, so a comma alone cannot join it (comma splice)."
     },
     {
       "id": "gv-kc-05-6",
@@ -64,7 +64,7 @@
       "correct": 1,
       "answer": "put up with",
       "vi": "Tôi không thể chịu đựng tiếng sủa của mấy con chó nhà hàng xóm thêm nữa; nó kéo dài suốt đêm.",
-      "explanation": "<b>Put up with</b> means tolerate. <b>Put off</b> is postpone, <b>put out</b> is extinguish, and <b>put away</b> is tidy something into its place."
+      "explanation": "Phrasal verb: the speaker can no longer tolerate the barking (<b>can't … any longer</b>), so <b>put up with</b> = accept something unpleasant without complaining.<br>✗ <b>put off</b> — postpone, or make someone dislike something; ✗ <b>put out</b> — extinguish a fire or light; ✗ <b>put away</b> — store something in its place. Only <b>put up with</b> takes 'the barking' as something to bear."
     },
     {
       "id": "gv-kc-05-7",
@@ -75,7 +75,7 @@
       "correct": 3,
       "answer": "charge",
       "vi": "Nhà hàng cộng thêm 10% phí phục vụ vào hóa đơn nên bữa ăn đắt hơn chúng tôi tưởng.",
-      "explanation": "A <b>charge</b> is an amount asked for a service, as in <b>service charge</b>; a <b>fare</b> is paid for transport, a <b>price</b> is what goods are sold for, and <b>cost</b> is what you spend overall."
+      "explanation": "Word choice: a percentage <b>added to a bill</b> for a service is a <b>service charge</b>; a <b>charge</b> is the amount a business asks for a service.<br>✗ <b>price</b> — what goods are sold for, not an extra added to a bill; ✗ <b>fare</b> — the money paid for a bus, taxi or train journey; ✗ <b>cost</b> — what something costs you overall; 'service cost' is not the fixed term."
     },
     {
       "id": "gv-kc-05-8",
@@ -86,7 +86,7 @@
       "correct": 2,
       "answer": "had sold",
       "vi": "Lúc chúng tôi tới chợ thì người bán cá đã bán hết sạch tôm.",
-      "explanation": "The selling finished <b>before</b> another past action (we reached the market), so the past perfect <b>had sold</b> is required."
+      "explanation": "Tense: <b>By the time we reached</b> is a past point, and the selling was already complete before it, so the past perfect <b>had sold</b> is needed.<br>✗ <b>has sold</b> — present perfect links to now, not to a past moment; ✗ <b>sold</b> — past simple would make the selling happen at the same time as our arrival; ✗ <b>was selling</b> — past continuous means the sale was still going on, but <b>every last prawn</b> shows it was finished."
     },
     {
       "id": "gv-kc-05-9",
@@ -97,7 +97,7 @@
       "correct": 0,
       "answer": "a little",
       "vi": "Trong tủ lạnh chỉ còn một ít sữa nên mình không làm bánh kếp cho cả nhà được.",
-      "explanation": "<b>Milk</b> is uncountable, so it takes <b>a little</b>; <b>a few</b>, <b>few</b> and <b>many</b> go with plural countable nouns."
+      "explanation": "Quantifier: <b>milk</b> is an uncountable noun, so it needs <b>a little</b> = a small amount.<br>✗ <b>a few</b> — used only with plural countable nouns (a few eggs); ✗ <b>few</b> — also plural countable, and means 'almost none'; ✗ <b>many</b> — plural countable, and 'many' contradicts <b>only … left</b>."
     },
     {
       "id": "gv-kc-05-10",
@@ -108,7 +108,7 @@
       "correct": 1,
       "answer": "mustn't",
       "vi": "Con không được cho cá vàng ăn quá một lần mỗi ngày, nếu không nó sẽ bị bệnh.",
-      "explanation": "<b>Mustn't</b> expresses prohibition — it is forbidden because of the harm. <b>Needn't</b> and <b>don't have to</b> only say something is not necessary, and <b>might not</b> expresses possibility."
+      "explanation": "Modal: the warning <b>or it will get sick</b> shows that feeding more than once a day is forbidden, so <b>mustn't</b> = it is prohibited.<br>✗ <b>needn't</b> — means 'it is not necessary', not 'it is harmful'; ✗ <b>don't have to</b> — same as needn't, no prohibition; ✗ <b>might not</b> — expresses possibility ('perhaps you won't'), not a rule."
     },
     {
       "id": "gv-kc-05-11",
@@ -119,7 +119,7 @@
       "correct": 2,
       "answer": "spent",
       "vi": "Chúng tôi tiêu gần hết tiền tiêu vặt vào đồ ăn vặt ở hội chợ Trung thu.",
-      "explanation": "You <b>spend money on</b> something; you <b>pay for</b> something, you <b>buy</b> goods rather than money, and things <b>cost</b> money."
+      "explanation": "Word choice: the object is money (<b>pocket money</b>) and the pattern is <b>spend money on something</b>, so <b>spent</b> is correct.<br>✗ <b>paid</b> — you pay a person or pay for something; 'pay money on' is wrong; ✗ <b>bought</b> — you buy goods, not money; ✗ <b>cost</b> — things cost money; people are not the subject of <b>cost</b>."
     },
     {
       "id": "gv-kc-05-12",
@@ -130,7 +130,7 @@
       "correct": 3,
       "answer": "can't it",
       "vi": "Lan: Con vẹt của cậu nói được vài từ, phải không? / Nam: Ừ, sáng nào nó cũng nói 'hello'.",
-      "explanation": "A positive statement takes a negative tag with the same auxiliary: <b>can</b> → <b>can't it</b>."
+      "explanation": "Question tag: a positive statement takes a negative tag with the same auxiliary. The verb here is the modal <b>can</b>, so the tag is <b>can't it</b>.<br>✗ <b>can it</b> — a positive tag after a positive statement; ✗ <b>isn't it</b> — repeats <b>be</b>, but the sentence has no <b>is</b>; ✗ <b>doesn't it</b> — <b>do</b> is used only when there is no auxiliary, and here <b>can</b> is the auxiliary."
     },
     {
       "id": "gv-kc-05-13",
@@ -141,7 +141,7 @@
       "correct": 0,
       "answer": "give",
       "vi": "Bác sĩ thú y dặn chúng tôi tắm cho chó con hai tuần một lần, chứ không phải mỗi ngày.",
-      "explanation": "You <b>give</b> an animal (or a child) a bath; you <b>take</b> or <b>have</b> a bath yourself. <b>Make</b> and <b>do</b> do not collocate with <b>a bath</b>."
+      "explanation": "Collocation: when you wash a pet or a child, you <b>give</b> it a bath; the bath is something done to <b>the puppy</b>.<br>✗ <b>take</b> — you take (or have) a bath yourself; you cannot 'take someone a bath'; ✗ <b>make</b> — 'make a bath' is not a collocation; ✗ <b>do</b> — 'do a bath' does not exist in English."
     },
     {
       "id": "gv-kc-05-14",
@@ -152,7 +152,7 @@
       "correct": 1,
       "answer": "hadn't rained",
       "vi": "Nếu trời không mưa to như vậy thì làng đã không hủy cuộc đua thuyền.",
-      "explanation": "A past event that did not happen takes the third conditional: <b>if + past perfect</b> (<b>hadn't rained</b>) with <b>would have + past participle</b> in the main clause."
+      "explanation": "Third conditional: the main clause <b>wouldn't have called off</b> (would have + past participle) shows an unreal past, so the if-clause needs the past perfect <b>hadn't rained</b>.<br>✗ <b>didn't rain</b> — past simple builds a second conditional (would + verb) about the present; ✗ <b>wouldn't rain</b> — <b>would</b> belongs in the main clause, not after <b>if</b>; ✗ <b>doesn't rain</b> — present simple makes a first conditional about a real future."
     },
     {
       "id": "gv-kc-05-15",
@@ -163,7 +163,7 @@
       "correct": 2,
       "answer": "however",
       "vi": "Món canh thơm tuyệt; tuy nhiên, nó mặn quá không ăn nổi.",
-      "explanation": "The second clause contrasts with the first, so <b>however</b> is needed; <b>therefore</b> shows a result, <b>moreover</b> adds a similar point, and <b>because</b> gives a reason."
+      "explanation": "Linking word: the soup <b>smelt wonderful</b> but was <b>too salty</b> — two opposite ideas — so <b>however</b> is needed.<br>✗ <b>therefore</b> — introduces a result, but being salty is not caused by smelling good; ✗ <b>moreover</b> — adds a similar point, not an opposite one; ✗ <b>because</b> — gives a reason, and a conjunction cannot sit between a semicolon and a comma like this."
     },
     {
       "id": "gv-kc-05-16",
@@ -174,7 +174,7 @@
       "correct": 3,
       "answer": "discount",
       "vi": "Cửa hàng thú cưng giảm giá một chút cho chúng tôi vì cái lồng bị xước một bên.",
-      "explanation": "A <b>discount</b> is an amount taken off the price. A <b>bargain</b> is something bought cheaply, a <b>sale</b> is a period of lower prices, and a <b>bonus</b> is extra money given to a worker."
+      "explanation": "Word choice: money taken off the price <b>because the cage had a scratch</b> is a <b>discount</b>.<br>✗ <b>bargain</b> — something bought at a good price, not the amount taken off; a shop does not 'give a bargain'; ✗ <b>sale</b> — a period when a shop lowers all its prices; ✗ <b>bonus</b> — extra money paid to a worker or an added benefit, not a price cut."
     },
     {
       "id": "gv-kc-05-17",
@@ -185,7 +185,7 @@
       "correct": 0,
       "answer": "to clean",
       "vi": "Đừng quên dọn lồng chuột hamster trước khi chúng ta đi lễ hội nhé.",
-      "explanation": "<b>Forget to do</b> refers to a task that still needs doing; <b>forget doing</b> means not remember something already done."
+      "explanation": "Gerund vs infinitive: <b>forget + to-infinitive</b> = forget a task you still need to do. The cage has not been cleaned yet (<b>before we leave</b>), so <b>to clean</b> is right.<br>✗ <b>cleaning</b> — <b>forget doing</b> = have no memory of something already done; ✗ <b>clean</b> — a bare infinitive cannot follow <b>forget</b>; ✗ <b>to cleaning</b> — <b>to</b> + -ing is not a form <b>forget</b> takes."
     },
     {
       "id": "gv-kc-05-18",
@@ -196,7 +196,7 @@
       "correct": 2,
       "answer": "get over",
       "vi": "Mai phải mất mấy tuần mới nguôi ngoai nỗi mất con mèo già của mình.",
-      "explanation": "<b>Get over</b> means recover from an illness or a sad experience. <b>Get by</b> is manage with little money, <b>get along</b> is have a good relationship, and <b>get up</b> is rise from bed."
+      "explanation": "Phrasal verb: recovering from a sad experience (<b>the loss of her old cat</b>) is <b>get over</b> = recover from.<br>✗ <b>get by</b> — manage to live with little money; ✗ <b>get along</b> — have a friendly relationship with someone; ✗ <b>get up</b> — rise from bed. Only <b>get over</b> takes 'the loss' as its object."
     },
     {
       "id": "gv-kc-05-19",
@@ -207,7 +207,7 @@
       "correct": 1,
       "answer": "are",
       "vi": "Cả con chó lẫn mấy con mèo đều không được vào bếp khi mẹ đang nấu ăn.",
-      "explanation": "With <b>neither … nor</b> the verb agrees with the nearer subject, <b>the cats</b>, so the plural present <b>are</b> is correct."
+      "explanation": "Agreement: with <b>neither … nor</b> the verb agrees with the nearer subject, <b>the cats</b> (plural), and <b>while Mum is cooking</b> keeps it in the present, so <b>are</b>.<br>✗ <b>is</b> — singular, would agree with the far subject <b>the dog</b>; ✗ <b>was</b> — singular and past, but the rule is present; ✗ <b>has been</b> — singular present perfect; neither the number nor the tense fits."
     },
     {
       "id": "gv-kc-05-20",
@@ -218,7 +218,7 @@
       "correct": 0,
       "answer": "stand your ground",
       "vi": "Bạn nên giữ vững lập trường nếu người bán thịt cố tính giá cao hơn giá ghi trên bảng.",
-      "explanation": "<b>Stand your ground</b> means refuse to give in. <b>Hold your tongue</b> is stay silent, <b>pull your weight</b> is do your share of the work, and <b>mind your step</b> is be careful where you walk."
+      "explanation": "Idiom: refusing to accept a price higher than <b>the price on the sign</b> is <b>stand your ground</b> = refuse to give in.<br>✗ <b>hold your tongue</b> — stay silent, the opposite of arguing back; ✗ <b>pull your weight</b> — do your fair share of the work; ✗ <b>mind your step</b> — be careful where you walk. Only <b>stand your ground</b> fits a price dispute."
     },
     {
       "id": "gv-kc-05-21",
@@ -229,7 +229,7 @@
       "correct": 3,
       "answer": "has kept",
       "vi": "Chú tôi nuôi chó từ hồi còn bé, và giờ chú vẫn nuôi ba con.",
-      "explanation": "<b>Since</b> + a past starting point, for a situation that continues up to now, takes the present perfect: <b>has kept</b>."
+      "explanation": "Tense: <b>since he was a little boy</b> gives a starting point and <b>he still has three</b> shows the situation continues to now, so the present perfect <b>has kept</b> is needed.<br>✗ <b>keeps</b> — present simple cannot combine with <b>since</b> + past time; ✗ <b>kept</b> — past simple would mean he stopped keeping dogs; ✗ <b>is keeping</b> — present continuous describes only now, not a period from the past."
     },
     {
       "id": "gv-kc-05-22",
@@ -240,7 +240,7 @@
       "correct": 1,
       "answer": "Having baked",
       "vi": "Nướng xong bánh trung thu, Mai bưng một đĩa sang nhà hàng xóm.",
-      "explanation": "<b>Having + past participle</b> shows the first action was finished before the second; <b>baking</b> would suggest the two happened at the same time, and <b>baked</b> would make Mai the thing that was baked."
+      "explanation": "Participle clause: Mai finished baking <b>before</b> carrying the plate, so the perfect participle <b>Having baked</b> shows the earlier, completed action.<br>✗ <b>Baking</b> — present participle means both actions happen at the same time; she cannot carry a plate of finished cakes while still baking them; ✗ <b>Baked</b> — past participle is passive and would make Mai the thing that was baked; ✗ <b>To bake</b> — an infinitive of purpose ('in order to bake') makes no sense here."
     },
     {
       "id": "gv-kc-05-23",
@@ -251,7 +251,7 @@
       "correct": 2,
       "answer": "each other",
       "vi": "Hai chú chó con thích rượt đuổi nhau quanh vườn suốt buổi chiều.",
-      "explanation": "<b>Each other</b> shows the action goes both ways between two subjects; <b>themselves</b> would mean each puppy chases its own self."
+      "explanation": "Pronoun: <b>the two puppies</b> chase one another — an action going both ways — so the reciprocal pronoun <b>each other</b> is needed.<br>✗ <b>themselves</b> — reflexive: each puppy would be chasing its own self; ✗ <b>itself</b> — singular reflexive, but the subject is plural; ✗ <b>another</b> — means 'a different one', and there is no third puppy."
     },
     {
       "id": "gv-kc-05-24",
@@ -262,7 +262,7 @@
       "correct": 0,
       "answer": "earns",
       "vi": "Dì tôi kiếm được khoảng 500.000 đồng một tháng nhờ bán nước mắm nhà làm trên mạng.",
-      "explanation": "You <b>earn</b> money by working or selling; you <b>win</b> a prize, <b>gain</b> experience or weight, and <b>charge</b> a customer a price."
+      "explanation": "Word choice: getting money by working or <b>selling</b> is <b>earn</b>, so <b>earns</b> about 500,000 dong a month.<br>✗ <b>wins</b> — you win a prize, a race or a game, not a monthly income; ✗ <b>gains</b> — you gain weight, experience or confidence, not a sum of money from work; ✗ <b>charges</b> — a seller charges a customer a price for an item, not 'charges 500,000 dong a month'."
     },
     {
       "id": "gv-kc-05-25",
@@ -273,7 +273,7 @@
       "correct": 3,
       "answer": "takes",
       "vi": "Cả làng đều tham gia rước đèn mỗi mùa thu.",
-      "explanation": "The fixed collocation is <b>take part in</b> (= join an activity); <b>make</b>, <b>do</b> and <b>get</b> do not combine with <b>part in</b>."
+      "explanation": "Collocation: the fixed expression for joining an activity is <b>take part in</b>, so the village <b>takes</b> part in the parade.<br>✗ <b>makes</b> — 'make part in' is not an expression; ✗ <b>does</b> — 'do part in' does not exist; ✗ <b>gets</b> — 'get part in' is wrong; you can only 'get a part' in a play, which is a role, a different meaning."
     }
   ]
 }

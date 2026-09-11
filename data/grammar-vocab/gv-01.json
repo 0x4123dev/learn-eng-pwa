@@ -9,7 +9,7 @@
       "correct": 1,
       "answer": "is going to rain",
       "vi": "Nhìn mấy đám mây đen trên cổng trường kìa! Trời sắp mưa rồi.",
-      "explanation": "A prediction based on present evidence (the dark clouds) takes <b>be going to</b>; the present simple, present perfect and past simple do not talk about the near future."
+      "explanation": "A prediction from present evidence (<b>Look at those dark clouds</b>) takes <b>be going to</b>: is going to rain. ✗ <b>rains</b> — present simple is for habits or timetables, not a prediction; ✗ <b>has rained</b> — present perfect is a past action with a present result, but <b>very soon</b> points to the future; ✗ <b>rained</b> — past simple, but the rain has not happened yet."
     },
     {
       "id": "gv-kc-01-2",
@@ -20,7 +20,7 @@
       "correct": 0,
       "answer": "fare",
       "vi": "Nam trả tiền taxi bằng mấy đồng xu còn lại trong túi.",
-      "explanation": "The money you pay for a journey by taxi, bus or train is a <b>fare</b>; a <b>fee</b> is paid for a service such as a course, a <b>fine</b> is a punishment, and a <b>tip</b> is extra money given as thanks."
+      "explanation": "Money paid for a journey by taxi, bus or train is a <b>fare</b> (clue: <b>paid the taxi</b>). ✗ <b>fee</b> — money for a professional service or a course, not for a ride; ✗ <b>fine</b> — money paid as a punishment for breaking a rule; ✗ <b>tip</b> — extra money given as thanks, not the price of the trip itself."
     },
     {
       "id": "gv-kc-01-3",
@@ -31,7 +31,7 @@
       "correct": 2,
       "answer": "heavy",
       "vi": "Mưa to suốt cả buổi chiều nên trận bóng đá đã bị hủy.",
-      "explanation": "Rain that falls in large amounts is <b>heavy rain</b>; <b>strong</b> goes with wind, and <b>hard</b> and <b>big</b> do not collocate with rain."
+      "explanation": "Rain in large amounts is <b>heavy rain</b> — the adjective that collocates with <b>rain</b> to mean 'a lot' (clue: the match was cancelled). ✗ <b>strong</b> — goes with wind or current, not rain; ✗ <b>hard</b> — works as an adverb (it rained hard) but 'hard rain' is not the standard noun phrase; ✗ <b>big</b> — describes the size of objects, never rain."
     },
     {
       "id": "gv-kc-01-4",
@@ -42,7 +42,7 @@
       "correct": 3,
       "answer": "pay through the nose",
       "vi": "Lan: Cậu mua cuốn bài tập toán mới chưa? / Nam: Rồi, nhưng tớ phải trả giá cắt cổ ở tiệm gần trường.",
-      "explanation": "To <b>pay through the nose</b> for something is to pay far too much for it. <b>Pay lip service to</b> means to support something only in words, <b>pay your way</b> is to pay your own costs, and <b>pay your respects</b> is to greet someone politely."
+      "explanation": "<b>Pay through the nose</b> = pay far too much (<b>but I had to</b> signals a complaint about the price). ✗ <b>pay lip service</b> — support something only in words, and it takes 'to', not 'for'; ✗ <b>pay my way</b> — pay my own costs, nothing about an overpriced item; ✗ <b>pay my respects</b> — greet or honour someone politely, not buy a book."
     },
     {
       "id": "gv-kc-01-5",
@@ -53,7 +53,7 @@
       "correct": 0,
       "answer": "looks after",
       "vi": "Lan: Ai trông em trai cậu khi bố mẹ cậu đi làm? / Nam: Bà tớ.",
-      "explanation": "<b>Look after</b> means to take care of someone. <b>Look up</b> is to find information, <b>look into</b> is to investigate, and <b>look for</b> is to search for something lost."
+      "explanation": "<b>Look after</b> = take care of someone; the reply <b>My grandmother does</b> (while the parents are at work) shows childcare. ✗ <b>looks up</b> — find information in a book or online; ✗ <b>looks into</b> — investigate a problem; ✗ <b>looks for</b> — search for something or someone lost."
     },
     {
       "id": "gv-kc-01-6",
@@ -64,7 +64,7 @@
       "correct": 1,
       "answer": "can't",
       "vi": "Nam không thể nào lấy ô của tớ được — hôm nay cậu ấy thậm chí còn không đi học.",
-      "explanation": "<b>Can't have + past participle</b> says that something was impossible in the past; <b>must have</b> would mean the speaker is sure it happened, which the second clause rules out."
+      "explanation": "<b>Can't have + past participle</b> = it was impossible in the past; the clue <b>he wasn't even at school today</b> proves it. ✗ <b>must</b> — must have means 'I am sure he did it', the opposite of the evidence; ✗ <b>should</b> — should have means he was expected to do it but didn't (advice or regret), not impossibility; ✗ <b>needn't</b> — needn't have means he did it but it was unnecessary."
     },
     {
       "id": "gv-kc-01-7",
@@ -75,7 +75,7 @@
       "correct": 2,
       "answer": "whose",
       "vi": "Cô giáo mà chúng tôi có tiết học vào các sáng thứ Hai sẽ nghỉ hưu vào năm sau.",
-      "explanation": "A noun (<b>class</b>) follows the blank, so the relative pronoun must show possession: <b>whose</b>. <b>Who</b>, <b>which</b> and <b>whom</b> cannot be followed directly by a noun in this way."
+      "explanation": "A noun (<b>class</b>) follows the blank, so the relative pronoun must show possession: <b>whose</b> (= the teacher's class). ✗ <b>who</b> — a subject pronoun, must be followed by a verb, not a noun; ✗ <b>which</b> — used for things, and it cannot show possession; ✗ <b>whom</b> — an object pronoun for people, cannot show possession either."
     },
     {
       "id": "gv-kc-01-8",
@@ -86,7 +86,7 @@
       "correct": 3,
       "answer": "much",
       "vi": "Lan: Cậu có muốn chơi cầu lông không? / Nam: Xin lỗi, tớ có quá nhiều bài tập về nhà phải làm xong trước chín giờ.",
-      "explanation": "<b>Homework</b> is an uncountable noun, so it takes <b>too much</b>; <b>many</b> and <b>few</b> go with countable nouns, and <b>a lot</b> cannot follow <b>too</b>."
+      "explanation": "<b>Homework</b> is uncountable, so 'too + quantity' is <b>too much</b>. ✗ <b>many</b> — only with plural countable nouns (too many books); ✗ <b>few</b> — countable, and it means 'not enough', the wrong meaning; ✗ <b>a lot</b> — cannot follow <b>too</b> (you say 'a lot of homework' but never 'too a lot')."
     },
     {
       "id": "gv-kc-01-9",
@@ -97,7 +97,7 @@
       "correct": 1,
       "answer": "to bring",
       "vi": "Nhớ mang dự án đến trường ngày mai nhé — cô giáo sẽ thu đấy.",
-      "explanation": "<b>Remember to do</b> something means not to forget a task you still have to do; <b>remember doing</b> refers to a memory of something already done."
+      "explanation": "<b>Remember + to-infinitive</b> = don't forget a task still to do; the clue is <b>tomorrow</b> (future). ✗ <b>bringing</b> — remember + -ing means having a memory of something already done; ✗ <b>bring</b> — a bare infinitive cannot follow remember; ✗ <b>brought</b> — a past form has no auxiliary here and the action is in the future."
     },
     {
       "id": "gv-kc-01-10",
@@ -108,7 +108,7 @@
       "correct": 2,
       "answer": "consequently",
       "vi": "Thứ Bảy trời mưa cả ngày; do đó, buổi dã ngoại của trường bị hoãn sang tuần sau.",
-      "explanation": "The second sentence is the result of the first, so the linker is <b>consequently</b>; <b>however</b> and <b>whereas</b> show contrast and <b>otherwise</b> means 'if not'."
+      "explanation": "The second clause is the <b>result</b> of the first (rain → picnic put off), so the linker is <b>consequently</b>. ✗ <b>however</b> — shows contrast, but there is none; ✗ <b>whereas</b> — a conjunction joining two contrasting facts, not a sentence adverb after a semicolon; ✗ <b>otherwise</b> — means 'if not', which would say the picnic was put off because it did NOT rain."
     },
     {
       "id": "gv-kc-01-11",
@@ -119,7 +119,7 @@
       "correct": 0,
       "answer": "rains",
       "vi": "Nếu ngày mai trời mưa, chúng tôi sẽ học thể dục trong nhà thi đấu thay vì ngoài sân.",
-      "explanation": "A real future possibility is a first conditional: <b>if + present simple</b>, will + verb in the main clause. <b>Will</b> does not go in the if-clause, and <b>rained</b>/<b>would rain</b> belong to the second conditional."
+      "explanation": "A real future possibility is the <b>first conditional</b>: if + present simple, <b>will</b> in the main clause (<b>we will have PE</b>). ✗ <b>will rain</b> — will never goes in the if-clause; ✗ <b>rained</b> — past simple makes a second (unreal) conditional, which needs 'would', not 'will', in the main clause; ✗ <b>would rain</b> — would does not go in an if-clause."
     },
     {
       "id": "gv-kc-01-12",
@@ -130,7 +130,7 @@
       "correct": 3,
       "answer": "will be announced",
       "vi": "Kết quả kỳ thi cuối kỳ sẽ được công bố trên trang web của trường vào thứ Sáu tới.",
-      "explanation": "The results do not announce anything; they are announced by the school, so the verb must be passive: <b>will be announced</b>."
+      "explanation": "The subject <b>results</b> cannot announce anything — they are announced by the school — so the verb is passive, and <b>next Friday</b> makes it future: <b>will be announced</b>. ✗ <b>will announce</b> — active, so the results would be doing the announcing; ✗ <b>are announcing</b> — active, and present continuous for a fixed future date is odd; ✗ <b>have announced</b> — active and present perfect, but the announcement is still to come."
     },
     {
       "id": "gv-kc-01-13",
@@ -141,7 +141,7 @@
       "correct": 1,
       "answer": "would be",
       "vi": "Lan nói rằng khi lớn lên cô ấy sẽ trở thành bác sĩ.",
-      "explanation": "After a past reporting verb (<b>said</b>), <b>will</b> shifts back to <b>would</b>; the present forms do not match the past tense of the whole sentence."
+      "explanation": "After a past reporting verb (<b>said</b>) tenses shift back: will → <b>would</b>; the clause <b>when she grew up</b> is already in the shifted past form. ✗ <b>will be</b> — no backshift after said; ✗ <b>is</b> — present tense clashes with said and with 'when she grew up'; ✗ <b>has been</b> — present perfect says she has already been a doctor, which contradicts a childhood ambition."
     },
     {
       "id": "gv-kc-01-14",
@@ -152,7 +152,7 @@
       "correct": 2,
       "answer": "with",
       "vi": "Cô giáo toán của chúng tôi nghiêm khắc, nhưng cô luôn kiên nhẫn với những học sinh tiếp thu chậm.",
-      "explanation": "The adjective <b>patient</b> takes the preposition <b>with</b> when it refers to a person; <b>good at</b>, <b>kind to</b> and <b>famous for</b> use other prepositions."
+      "explanation": "The adjective <b>patient</b> takes <b>with</b> before the person you are patient towards: patient with slow learners. ✗ <b>to</b> — follows kind/rude/polite (kind to), not patient; ✗ <b>for</b> — 'patient for' is not a phrase (you wait patiently for something); ✗ <b>at</b> — follows good/bad/clever (good at maths), not patient."
     },
     {
       "id": "gv-kc-01-15",
@@ -163,7 +163,7 @@
       "correct": 0,
       "answer": "colder",
       "vi": "Mùa đông năm nay lạnh hơn nhiều so với mùa đông năm ngoái — tôi phải mặc hai cái áo len đi học.",
-      "explanation": "<b>Than</b> signals a comparison of two things, so a comparative is needed: <b>colder</b>. A superlative is used with <b>the</b> and no <b>than</b>."
+      "explanation": "<b>Than</b> signals a comparison of two winters, so a comparative is needed: much <b>colder</b>. ✗ <b>cold</b> — the base form cannot be followed by than; ✗ <b>coldest</b> — a superlative compares three or more and needs 'the'; ✗ <b>the coldest</b> — a superlative, and superlatives never take than."
     },
     {
       "id": "gv-kc-01-16",
@@ -174,7 +174,7 @@
       "correct": 1,
       "answer": "picks holes in",
       "vi": "Mỗi lần tôi đưa anh trai xem bài luận, anh ấy lại bới lông tìm vết và chỉ ra mọi lỗi sai.",
-      "explanation": "To <b>pick holes in</b> something is to find faults in it. <b>Turn a blind eye to</b> means to ignore, <b>make light of</b> is to treat as unimportant, and <b>pull strings for</b> is to use influence to help someone."
+      "explanation": "<b>Pick holes in</b> = find faults in; the clue is <b>tells me everything that is wrong</b>. ✗ <b>turns a blind eye to</b> — deliberately ignores, the opposite of criticising; ✗ <b>makes light of</b> — treats as unimportant; ✗ <b>pulls strings for</b> — uses influence to help someone get something."
     },
     {
       "id": "gv-kc-01-17",
@@ -185,7 +185,7 @@
       "correct": 3,
       "answer": "get on with",
       "vi": "Lan: Cậu có hòa hợp với các bạn cùng lớp mới không? / Nam: Có, các bạn ấy rất thân thiện.",
-      "explanation": "<b>Get on with</b> someone means to have a friendly relationship with them. <b>Get over</b> is to recover from something, <b>get away with</b> is to escape punishment, and <b>get through</b> is to finish or survive something."
+      "explanation": "<b>Get on with</b> someone = have a friendly relationship; the reply <b>they are really friendly</b> confirms it. ✗ <b>get over</b> — recover from an illness or a shock; ✗ <b>get away with</b> — escape punishment for something; ✗ <b>get through</b> — finish or survive something difficult (an exam, a hard week)."
     },
     {
       "id": "gv-kc-01-18",
@@ -196,7 +196,7 @@
       "correct": 0,
       "answer": "came across",
       "vi": "Tối qua tôi tình cờ thấy học bạ tiểu học cũ của mình khi đang dọn bàn học.",
-      "explanation": "A short action that happened during a longer one (<b>while I was tidying</b>) takes the past simple: <b>came across</b>. The past continuous is for the longer background action, and <b>last night</b> rules out the present perfect."
+      "explanation": "A short action inside a longer one (<b>while I was tidying</b>) takes the past simple: <b>came across</b>. ✗ <b>was coming across</b> — the continuous is for the background action, and finding by chance is a sudden event, not a process; ✗ <b>have come across</b> — present perfect cannot go with the finished time <b>last night</b>; ✗ <b>had come across</b> — past perfect would put the finding BEFORE the tidying, but it happened during it."
     },
     {
       "id": "gv-kc-01-19",
@@ -207,7 +207,7 @@
       "correct": 2,
       "answer": "timetable",
       "vi": "Hãy kiểm tra thời khóa biểu mới của lớp — môn hóa đã chuyển sang chiều thứ Năm.",
-      "explanation": "A list of the times of school lessons is a <b>timetable</b>; a <b>calendar</b> shows the days of the year, a <b>diary</b> is a personal record, and a <b>menu</b> lists food."
+      "explanation": "A list of the times of school lessons is a <b>timetable</b>; the clue is <b>chemistry has moved to Thursday afternoon</b>. ✗ <b>calendar</b> — shows the days and months of the year, not lesson times; ✗ <b>diary</b> — a personal book of daily events or plans; ✗ <b>menu</b> — a list of dishes in a restaurant."
     },
     {
       "id": "gv-kc-01-20",
@@ -218,7 +218,7 @@
       "correct": 1,
       "answer": "receipt",
       "vi": "Hãy giữ hóa đơn phòng khi máy tính bỏ túi bị hỏng và bạn cần mang ra trả lại cửa hàng.",
-      "explanation": "A <b>receipt</b> is the paper proving you paid for something, which a shop asks for when you return goods; a <b>recipe</b> is cooking instructions, a <b>bill</b> asks for payment, and a <b>ticket</b> lets you travel or enter."
+      "explanation": "A <b>receipt</b> is the paper proving you paid — what a shop asks for when you <b>take it back</b>. ✗ <b>recipe</b> — instructions for cooking a dish (a common spelling mix-up); ✗ <b>bill</b> — a paper asking you to pay, given before payment; ✗ <b>ticket</b> — lets you travel or enter an event."
     },
     {
       "id": "gv-kc-01-21",
@@ -229,7 +229,7 @@
       "correct": 3,
       "answer": "forecast",
       "vi": "Dự báo thời tiết nói ngày mai ở Thành phố Hồ Chí Minh trời nắng và 32 độ.",
-      "explanation": "A statement of what the weather will probably be is a <b>weather forecast</b>; <b>estimate</b> and <b>guess</b> are rough judgements, and <b>prediction</b> is not the word used with weather."
+      "explanation": "The fixed compound is <b>weather forecast</b> — a report of what the weather will probably be (<b>says it will be sunny ... tomorrow</b>). ✗ <b>prediction</b> — similar meaning, but not the noun that collocates with weather; ✗ <b>estimate</b> — a rough calculation of a number or cost; ✗ <b>guess</b> — an answer without evidence, not an official report."
     },
     {
       "id": "gv-kc-01-22",
@@ -240,7 +240,7 @@
       "correct": 0,
       "answer": "application",
       "vi": "Để xin làm thêm ở quán cà phê, trước tiên bạn phải điền vào đơn xin việc.",
-      "explanation": "The form you complete to ask for a job is an <b>application form</b>; an <b>appointment</b> is a fixed meeting time, an <b>advertisement</b> announces the job, and an <b>interview</b> comes after you apply."
+      "explanation": "The form you fill in to ask for a job is an <b>application form</b> (clue: <b>to get a part-time job</b>). ✗ <b>appointment</b> — a fixed time for a meeting; ✗ <b>advertisement</b> — the notice announcing that a job is available; ✗ <b>interview</b> — the meeting that comes after you apply, not a form."
     },
     {
       "id": "gv-kc-01-23",
@@ -251,7 +251,7 @@
       "correct": 2,
       "answer": "putting",
       "vi": "Nam muốn trở thành phi công nên cậu ấy đang dồn rất nhiều công sức vào các tiết tiếng Anh.",
-      "explanation": "The collocation is <b>put effort into</b> something; <b>make an effort</b> exists but is not followed by <b>into</b>, and <b>take</b>/<b>give effort</b> are not English."
+      "explanation": "The collocation is <b>put effort into</b> something (clue: <b>into his English lessons</b>). ✗ <b>making</b> — 'make an effort' exists, but it is followed by a to-infinitive, not into; ✗ <b>taking</b> — only a task 'takes effort' (it takes effort to ...); a person does not take effort into something; ✗ <b>giving</b> — 'give effort' is not an English collocation."
     },
     {
       "id": "gv-kc-01-24",
@@ -262,7 +262,7 @@
       "correct": 3,
       "answer": "done",
       "vi": "Lan: Cậu ra ngoài chơi được không? / Nam: Xin lỗi, tớ chưa làm xong bài tập về nhà.",
-      "explanation": "The verb that goes with <b>homework</b> is <b>do</b>: do your homework. <b>Make</b> is used for creating things (make a cake, make a decision), never for homework."
+      "explanation": "The verb that collocates with <b>homework</b> is <b>do</b>; with <b>haven't ... yet</b> (present perfect) it is <b>done</b>. ✗ <b>made</b> — make is for creating something new (make a cake, make a decision), never homework; ✗ <b>taken</b> — you take an exam or a test, not homework; ✗ <b>given</b> — a teacher gives homework; the student does it."
     },
     {
       "id": "gv-kc-01-25",
@@ -273,6 +273,6 @@
       "correct": 1,
       "answer": "has worked",
       "vi": "Chú tôi đã làm đầu bếp ở một khách sạn tại Đà Nẵng từ năm 2019.",
-      "explanation": "<b>Since + a starting point</b> describes an action that began in the past and continues now, which takes the present perfect: <b>has worked</b>."
+      "explanation": "<b>Since + starting point</b> (since 2019) marks an action that began in the past and continues now: present perfect <b>has worked</b>. ✗ <b>works</b> — present simple describes a habit but cannot go with since + a date; ✗ <b>is working</b> — present continuous is a temporary action now, with no link back to 2019; ✗ <b>worked</b> — past simple means the job has finished, but since shows it still continues."
     }
   ] }

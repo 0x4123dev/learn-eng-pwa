@@ -50,7 +50,7 @@
       "correct": 3,
       "answer": "archivist",
       "vi": "ARCHIVE (kho lưu trữ, tài liệu lưu trữ) → archivist — người quản lý kho lưu trữ, nhân viên lưu trữ (danh từ chỉ người)",
-      "explanation": "Chỗ trống sau 'The university' và là chủ ngữ của 'has spent years teaching students', nên cần DANH TỪ CHỈ NGƯỜI. Danh từ 'archive' + -ist (người hành nghề): 'archivist' (đọc /ˈɑːkɪvɪst/, giữ nguyên -e- trong 'archiv-' không bị bỏ). ✗ archivian = hậu tố bịa theo mẫu 'librarian' — gốc này lấy -ist như 'pharmacist'; ✗ archival = tính từ (thuộc lưu trữ); ✗ archives = danh từ số nhiều chỉ kho tài liệu, không hợp với 'has' và không thể 'dạy'."
+      "explanation": "Chỗ trống sau 'The university' và là chủ ngữ của 'has spent years teaching students', nên cần DANH TỪ CHỈ NGƯỜI. Danh từ 'archive' → bỏ -e, thêm -ist (người hành nghề): 'archivist' (như 'type → typist'). ✗ archivian = hậu tố bịa theo mẫu 'librarian' — gốc này lấy -ist như 'pharmacist'; ✗ archival = tính từ (thuộc lưu trữ), không làm chủ ngữ; ✗ archives = kho tài liệu (số nhiều), không hợp với 'has' và không thể 'dạy'."
     },
     {
       "id": "wf-ch-08-5",
@@ -136,7 +136,7 @@
       "answer": "statistician",
       "accept": ["statistician"],
       "vi": "STATISTICS (thống kê học, số liệu thống kê) → statistician — nhà thống kê (danh từ chỉ người)",
-      "explanation": "Chỗ trống sau 'The government' và là chủ ngữ của 'spent months cleaning the census data… publishing her estimate', nên cần DANH TỪ CHỈ NGƯỜI. Danh từ 'statistics' → bỏ -s, thêm -ian: 'statistician' (giống 'mathematics → mathematician', 'politics → politician'). Bẫy: viết 'statistician' thiếu -ic- thành 'statistian', hoặc 'statist' (có thật nhưng nghĩa là người ủng hộ nhà nước can thiệp, không phải nhà thống kê), hoặc 'statistical' (tính từ, không thể làm chủ ngữ)."
+      "explanation": "Chỗ trống sau 'The government' và là chủ ngữ của 'spent months cleaning… publishing her estimate', nên cần DANH TỪ CHỈ NGƯỜI. Danh từ 'statistics' → bỏ -s, thêm -ian: 'statistician' (như 'mathematics → mathematician', 'politics → politician'). Bẫy: bỏ mất -ic- thành 'statistian'; 'statist' (có thật nhưng là người ủng hộ nhà nước can thiệp, không phải nhà thống kê); 'statistical' (tính từ, không làm chủ ngữ)."
     },
     {
       "id": "wf-ch-08-12",
@@ -173,7 +173,7 @@
       "correct": 2,
       "answer": "speculator",
       "vi": "SPECULATE (đầu cơ, suy đoán) → speculator — nhà đầu cơ (danh từ chỉ người)",
-      "explanation": "Chỗ trống sau 'a seasoned' và là chủ ngữ của 'spreads her money' (rải tiền của mình), nên cần DANH TỪ CHỈ NGƯỜI. Động từ 'speculate' → bỏ -e, thêm -or: 'speculator' (như 'investigate → investigator', 'educate → educator'). ✗ speculation = sự đầu cơ / suy đoán (danh từ trừu tượng, không có 'her money'); ✗ speculative = tính từ (mang tính đầu cơ); ✗ speculatee = hậu tố bịa, động từ đuôi -ate lấy -or chứ không lấy -ee."
+      "explanation": "Chỗ trống sau 'a seasoned' và là chủ ngữ của 'spreads her money' (rải tiền của mình), nên cần DANH TỪ CHỈ NGƯỜI chủ động làm việc đầu cơ. Động từ 'speculate' → bỏ -e, thêm -or: 'speculator' (như 'investigate → investigator', 'educate → educator'). ✗ speculation = sự đầu cơ / suy đoán (danh từ trừu tượng, không có 'her money'); ✗ speculative = tính từ (mang tính đầu cơ); ✗ speculatee = từ bịa — -ee chỉ người nhận hành động, còn ở đây cô ấy là người thực hiện."
     },
     {
       "id": "wf-ch-08-15",

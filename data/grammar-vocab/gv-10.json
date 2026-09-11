@@ -14,7 +14,7 @@
       "correct": 1,
       "answer": "is sleeping",
       "vi": "Nhìn kìa! Con mèo lại đang ngủ trên bàn bếp.",
-      "explanation": "<b>Look!</b> points to something happening right now, so the present continuous <b>is sleeping</b> is needed, not a simple or perfect form."
+      "explanation": "Present continuous for an action happening now: <b>Look!</b> tells us the cat is on the table at this moment, so <b>is sleeping</b> fits. ✗ <b>sleeps</b> — present simple is for habits, not what we can see as we speak; ✗ <b>slept</b> — past simple puts the action in the finished past; ✗ <b>has slept</b> — present perfect reports a completed action, not one in progress."
     },
     {
       "id": "gv-kc-10-2",
@@ -30,7 +30,7 @@
       "correct": 2,
       "answer": "cut",
       "vi": "Con mèo con bị đứt chân vì một mảnh thủy tinh vỡ trong vườn.",
-      "explanation": "Broken glass makes a <b>cut</b>. You <b>bruise</b> yourself by knocking against something, and you <b>sprain</b> or <b>strain</b> a joint or muscle by twisting it."
+      "explanation": "Word choice for injuries: <b>broken glass</b> has a sharp edge, so it makes a <b>cut</b> (an opening in the skin). ✗ <b>bruised</b> — a bruise is a dark mark from a knock, not from a sharp edge; ✗ <b>sprained</b> — you sprain a joint by twisting it; ✗ <b>strained</b> — you strain a muscle by overusing it. Neither comes from glass."
     },
     {
       "id": "gv-kc-10-3",
@@ -46,7 +46,7 @@
       "correct": 3,
       "answer": "win hands down",
       "vi": "Ai cũng nghĩ chó của Tuấn sẽ thắng dễ dàng ở cuộc đua hôm Chủ nhật vì nó nhanh hơn hẳn những con khác.",
-      "explanation": "<b>Win hands down</b> = win very easily. <b>Win by a whisker</b> means win only just, which contradicts 'much faster'; <b>run out of steam</b> and <b>lose its way</b> describe failing."
+      "explanation": "Idiom for winning: <b>much faster than the others</b> means an easy victory, so <b>win hands down</b> (win very easily) fits. ✗ <b>run out of steam</b> — lose energy and slow down; ✗ <b>win by a whisker</b> — win by a tiny margin, the opposite of an easy win; ✗ <b>lose its way</b> — go in the wrong direction, so no win at all."
     },
     {
       "id": "gv-kc-10-4",
@@ -62,7 +62,7 @@
       "correct": 2,
       "answer": "keep",
       "vi": "Con nên giữ lời hứa đi thăm bà vào cuối tuần này, không thì bà sẽ buồn lắm.",
-      "explanation": "The collocation is <b>keep a promise</b> (do what you said you would do). <b>Hold</b>, <b>stay</b> and <b>save</b> do not go with promise in this meaning."
+      "explanation": "Collocation with <b>promise</b>: the fixed verb is <b>keep a promise</b> (do what you said you would), and <b>or she will be very upset</b> shows that breaking it is the danger. ✗ <b>hold</b> — you hold a meeting or hold on, not a promise; ✗ <b>stay</b> — cannot take 'promise' as an object; ✗ <b>save</b> — you save money or time, not a promise."
     },
     {
       "id": "gv-kc-10-5",
@@ -78,7 +78,7 @@
       "correct": 2,
       "answer": "let down",
       "vi": "Đừng làm đồng đội thất vọng bằng cách bỏ lỡ cuộc thi nấu ăn của trường vào thứ Bảy.",
-      "explanation": "<b>Let somebody down</b> = disappoint someone. <b>Turn down</b> = refuse, <b>let off</b> = not punish, <b>put down</b> = criticise or place something."
+      "explanation": "Phrasal verb: <b>let somebody down</b> = disappoint someone, which is what <b>missing the contest</b> would do to teammates. ✗ <b>turn down</b> — refuse an offer or request, not something you do to people who rely on you; ✗ <b>let off</b> — not punish someone; ✗ <b>put down</b> — criticise someone, or place something on a surface."
     },
     {
       "id": "gv-kc-10-6",
@@ -94,7 +94,7 @@
       "correct": 3,
       "answer": "why",
       "vi": "Không ai giải thích được lý do vì sao bể bơi của trường đóng cửa suốt cả mùa hè.",
-      "explanation": "After <b>the reason</b>, the relative adverb <b>why</b> is used. <b>Where</b> follows a place, <b>when</b> a time, and <b>which</b> would need to be the subject or object of the clause, which it is not here."
+      "explanation": "Relative adverb after <b>the reason</b>: the fixed pattern is <b>the reason why</b> + clause. ✗ <b>which</b> — a relative pronoun must be the subject or object of its clause, but 'the pool stayed closed' already has its subject and needs no object; ✗ <b>where</b> — follows a place noun; ✗ <b>when</b> — follows a time noun."
     },
     {
       "id": "gv-kc-10-7",
@@ -110,7 +110,7 @@
       "correct": 3,
       "answer": "sick",
       "vi": "Sau khi ăn con cá bị để ngoài nắng, Nam thấy buồn nôn và phải nằm nghỉ.",
-      "explanation": "Bad food makes you feel <b>sick</b>. <b>Sore</b>, <b>bruised</b> and <b>hurt</b> describe a painful part of the body, not a feeling of illness."
+      "explanation": "Word choice for illness: <b>fish left out in the sun</b> gives you food poisoning, so Nam felt <b>sick</b> (ill, wanting to vomit). ✗ <b>sore</b> — a body part is sore (painful), not the whole person after bad food; ✗ <b>bruised</b> — marked by a knock; ✗ <b>hurt</b> — injured, or emotionally upset, not ill."
     },
     {
       "id": "gv-kc-10-8",
@@ -126,7 +126,7 @@
       "correct": 0,
       "answer": "must have eaten",
       "vi": "Cái bát trống không — chắc chắn con mèo đã ăn hết cá lúc chúng ta đi vắng.",
-      "explanation": "<b>Must have + past participle</b> is a confident guess about the past based on evidence (the empty bowl). <b>Can't have</b> means the opposite; <b>should have</b> and <b>needn't have</b> express advice or lack of need, not deduction."
+      "explanation": "Modal of past deduction: <b>the bowl is empty</b> is the evidence, so <b>must have eaten</b> (I'm sure it happened) fits. ✗ <b>can't have eaten</b> — the opposite deduction (I'm sure it didn't), contradicted by the empty bowl; ✗ <b>should have eaten</b> — criticises something that did not happen; ✗ <b>needn't have eaten</b> — it happened but was unnecessary; neither is a guess from evidence."
     },
     {
       "id": "gv-kc-10-9",
@@ -142,7 +142,7 @@
       "correct": 2,
       "answer": "for",
       "vi": "Vẹt nổi tiếng vì bắt chước được âm thanh tiếng người.",
-      "explanation": "The adjective <b>famous</b> takes the preposition <b>for</b> before the thing someone is known for; of, about and with do not follow it."
+      "explanation": "Adjective + preposition: <b>famous for</b> + the thing someone is known for (<b>copying human speech</b>). ✗ <b>of</b> — 'famous of' does not exist (compare 'proud of'); ✗ <b>about</b> — 'famous about' does not exist (compare 'worried about'); ✗ <b>with</b> — 'famous with' is not used (compare 'popular with')."
     },
     {
       "id": "gv-kc-10-10",
@@ -158,7 +158,7 @@
       "correct": 3,
       "answer": "has used",
       "vi": "Bà tôi đã dùng cùng một công thức nấu canh này từ khi bà còn là một cô bé.",
-      "explanation": "<b>Since</b> + a past starting point describes something that continues up to now, so the present perfect <b>has used</b> is needed."
+      "explanation": "Present perfect with <b>since</b>: <b>since she was a little girl</b> marks the start of a period that continues to now, so <b>has used</b> fits. ✗ <b>uses</b> — present simple gives a habit but cannot combine with a 'since' starting point; ✗ <b>used</b> — past simple would mean she has stopped; ✗ <b>is using</b> — present continuous is for right now, not a period from childhood."
     },
     {
       "id": "gv-kc-10-11",
@@ -174,7 +174,7 @@
       "correct": 1,
       "answer": "swollen",
       "vi": "Cổ chân của Lan bị sưng lên sau khi cô ấy bị trẹo chân trên đường mòn lên núi.",
-      "explanation": "A twisted ankle becomes <b>swollen</b> (bigger than normal). <b>Dizzy</b>, <b>hoarse</b> and <b>feverish</b> describe a person's head, voice or temperature, not a joint."
+      "explanation": "Word choice for a body part: a <b>twisted ankle</b> becomes <b>swollen</b> (bigger than normal). ✗ <b>dizzy</b> — a person feels dizzy (the room spins), not an ankle; ✗ <b>hoarse</b> — describes a rough, tired voice; ✗ <b>feverish</b> — describes a person with a high temperature."
     },
     {
       "id": "gv-kc-10-12",
@@ -190,7 +190,7 @@
       "correct": 2,
       "answer": "lay",
       "vi": "Con dọn bàn ăn giúp mẹ trong lúc mẹ làm nốt chả giò được không?",
-      "explanation": "The collocation is <b>lay the table</b> (put out the plates, bowls and chopsticks). <b>Put</b>, <b>make</b> and <b>do</b> do not go with 'the table' in this meaning."
+      "explanation": "Collocation: <b>lay the table</b> = put out the plates and chopsticks before a meal, the clue being <b>while I finish the spring rolls</b>. ✗ <b>put</b> — needs a place ('put the plates on the table'); ✗ <b>make</b> — you make a table only if you build it; ✗ <b>do</b> — 'do the table' is not a collocation (we do the dishes, the washing-up)."
     },
     {
       "id": "gv-kc-10-13",
@@ -206,7 +206,7 @@
       "correct": 1,
       "answer": "is",
       "vi": "Lan: Mai mình đi biển chứ? / Nam: Nếu trời đẹp, mình sẽ dắt chó theo.",
-      "explanation": "A first conditional uses the present simple in the <b>if</b>-clause and <b>will</b> in the main clause, even when it refers to the future."
+      "explanation": "First conditional: <b>tomorrow</b> and <b>we'll take</b> in the main clause show a real future condition, so the <b>if</b>-clause takes the present simple <b>is</b>. ✗ <b>will be</b> — 'will' is not used in the if-clause of a first conditional; ✗ <b>was</b> — past simple makes an unreal second conditional, which needs 'would' in the main clause; ✗ <b>would be</b> — 'would' belongs in the main clause, not after 'if'."
     },
     {
       "id": "gv-kc-10-14",
@@ -222,7 +222,7 @@
       "correct": 0,
       "answer": "a drop in the ocean",
       "vi": "Trồng mười cái cây chỉ như muối bỏ biển khi cả một khu rừng đã bị chặt.",
-      "explanation": "<b>A drop in the ocean</b> = a very small amount compared with what is needed. <b>A piece of cake</b> = very easy; <b>a storm in a teacup</b> = a fuss about nothing; <b>a breath of fresh air</b> = something pleasantly new."
+      "explanation": "Idiom: <b>ten trees</b> against <b>a whole forest</b> is a tiny amount compared with what is needed — <b>a drop in the ocean</b>. ✗ <b>a piece of cake</b> — something very easy; ✗ <b>a storm in a teacup</b> — a big fuss about something unimportant; ✗ <b>a breath of fresh air</b> — something pleasantly new and different."
     },
     {
       "id": "gv-kc-10-15",
@@ -238,7 +238,7 @@
       "correct": 2,
       "answer": "a little",
       "vi": "Trong nồi chỉ còn một ít cơm, nên mình sẽ nấu thêm mì.",
-      "explanation": "<b>Rice</b> is uncountable, so it takes <b>a little</b>. <b>A few</b>, <b>many</b> and <b>several</b> are only used with plural countable nouns."
+      "explanation": "Quantifier with an uncountable noun: <b>rice</b> has no plural, so <b>a little</b> (a small amount) fits, and <b>only</b> confirms it is a small amount. ✗ <b>a few</b> — only with plural countable nouns (a few grains); ✗ <b>many</b> — plural countable only, and means a lot, clashing with 'only'; ✗ <b>several</b> — plural countable only."
     },
     {
       "id": "gv-kc-10-16",
@@ -254,7 +254,7 @@
       "correct": 0,
       "answer": "cold",
       "vi": "Mai bị cảm nặng nên cứ ho và hắt hơi liên tục trong lớp.",
-      "explanation": "Coughing and sneezing are the signs of a <b>cold</b>. An <b>ache</b> is a dull pain, a <b>bruise</b> is a dark mark on the skin, and a <b>rash</b> is a patch of red spots."
+      "explanation": "Word choice for illness: <b>coughing and sneezing</b> are the symptoms of a <b>cold</b>. ✗ <b>ache</b> — a dull continuous pain, as in backache; ✗ <b>bruise</b> — a dark mark on the skin after a knock; ✗ <b>rash</b> — a patch of red spots on the skin. None of these makes you cough or sneeze."
     },
     {
       "id": "gv-kc-10-17",
@@ -270,7 +270,7 @@
       "correct": 3,
       "answer": "passed away",
       "vi": "Con chó già của chúng tôi đã qua đời thanh thản vào mùa đông năm ngoái, và chúng tôi chôn nó dưới gốc xoài.",
-      "explanation": "<b>Pass away</b> is a gentle way of saying die. <b>Pass out</b> = faint, <b>pass by</b> = go past, <b>give away</b> = give something as a present."
+      "explanation": "Phrasal verb: <b>passed away</b> is the gentle word for died, matching <b>we buried him</b>. ✗ <b>passed out</b> — fainted, lost consciousness; ✗ <b>gave away</b> — gave something to someone for free, and needs an object; ✗ <b>passed by</b> — went past a place."
     },
     {
       "id": "gv-kc-10-18",
@@ -286,7 +286,7 @@
       "correct": 2,
       "answer": "would look into",
       "vi": "Bác sĩ thú y nói rằng hôm sau cô ấy sẽ xem xét vấn đề về răng của con thỏ nhà chúng tôi.",
-      "explanation": "In reported speech after <b>said</b>, <b>will</b> becomes <b>would</b>: 'I will look into it tomorrow' becomes she <b>would look into</b> it the next day."
+      "explanation": "Reported speech backshift: after <b>said</b>, and with <b>the next day</b> (reported 'tomorrow'), <b>will</b> becomes <b>would look into</b>. ✗ <b>will look into</b> — no backshift after a past reporting verb; ✗ <b>looks into</b> — present simple does not report a future plan; ✗ <b>has looked into</b> — present perfect clashes with 'said' and with 'the next day'."
     },
     {
       "id": "gv-kc-10-19",
@@ -302,7 +302,7 @@
       "correct": 0,
       "answer": "cook",
       "vi": "Nam: Tối nay mình ra ngoài ăn nhé? / Lan: Tớ thích nấu ở nhà hơn; tớ mới mua ít tôm tươi.",
-      "explanation": "<b>Would rather</b> is followed by the bare infinitive: <b>I'd rather cook</b>, not 'to cook', 'cooking' or 'cooked'."
+      "explanation": "Verb form after <b>would rather</b>: it takes the bare infinitive, so <b>I'd rather cook</b>. ✗ <b>cooking</b> — the -ing form follows 'prefer', not 'would rather'; ✗ <b>to cook</b> — 'to' follows 'would prefer', not 'would rather'; ✗ <b>cooked</b> — a past form makes no sense after 'rather' for tonight's plan."
     },
     {
       "id": "gv-kc-10-20",
@@ -318,7 +318,7 @@
       "correct": 3,
       "answer": "had chewed",
       "vi": "Khi tôi đi học về thì con chó đã cắn nát đôi dép mới của tôi.",
-      "explanation": "The chewing happened <b>before</b> I got home, so the earlier past action takes the past perfect: <b>had chewed</b>. Present forms cannot follow a past time clause here."
+      "explanation": "Past perfect for the earlier of two past actions: <b>When I got home</b> is past simple, and the chewing happened <b>before</b> that, so <b>had chewed</b>. ✗ <b>chews</b> — present simple cannot follow a past time clause; ✗ <b>has chewed</b> — present perfect links to now, not to a past moment; ✗ <b>is chewing</b> — present continuous is for right now, not last afternoon."
     },
     {
       "id": "gv-kc-10-21",
@@ -334,7 +334,7 @@
       "correct": 1,
       "answer": "toothache",
       "vi": "Minh bị đau răng dữ dội nên không nhai được bánh chưng mẹ làm.",
-      "explanation": "Only a <b>toothache</b> stops you chewing. A <b>headache</b>, an <b>earache</b> and a <b>stomachache</b> are pains in other parts of the body."
+      "explanation": "Word choice for pains: <b>can't chew</b> points to the mouth, so <b>toothache</b>. ✗ <b>headache</b> — pain in the head, which does not stop you chewing; ✗ <b>earache</b> — pain in the ear; ✗ <b>stomachache</b> — pain in the stomach, which might stop you eating but not chewing."
     },
     {
       "id": "gv-kc-10-22",
@@ -350,7 +350,7 @@
       "correct": 1,
       "answer": "whereas",
       "vi": "Nam rất thích đồ ăn cay, trong khi chị của cậu ấy không ăn nổi dù chỉ một chút ớt.",
-      "explanation": "<b>Whereas</b> links two contrasting facts. <b>Therefore</b> and <b>so that</b> give a result or purpose, and <b>because</b> gives a reason — none of them fits a contrast."
+      "explanation": "Linking word of contrast: <b>loves spicy food</b> and <b>cannot eat even a little chilli</b> are opposites, so <b>whereas</b>. ✗ <b>therefore</b> — introduces a result, and needs a full stop or semicolon before it; ✗ <b>so that</b> — introduces a purpose; ✗ <b>because</b> — gives a reason, but her dislike is not the cause of his love."
     },
     {
       "id": "gv-kc-10-23",
@@ -366,7 +366,7 @@
       "correct": 3,
       "answer": "are brought",
       "vi": "Rau tươi được nông dân từ vùng quê chở đến chợ mỗi sáng.",
-      "explanation": "The vegetables do not act; they receive the action, and <b>by farmers</b> shows the agent, so the present simple passive <b>are brought</b> is needed."
+      "explanation": "Present simple passive: the subject <b>vegetables</b> receives the action and <b>by farmers</b> names the agent, so <b>are brought</b>; <b>every morning</b> makes it present simple. ✗ <b>bring</b> — active, but vegetables cannot bring themselves; ✗ <b>brought</b> — past simple active, wrong voice and clashes with 'every morning'; ✗ <b>are bringing</b> — active continuous, wrong voice."
     },
     {
       "id": "gv-kc-10-24",
@@ -382,7 +382,7 @@
       "correct": 1,
       "answer": "better",
       "vi": "Lan: Sao cậu không mua cá đông lạnh? Rẻ hơn mà. / Nam: Cá tươi ăn ngon hơn cá đông lạnh nhiều.",
-      "explanation": "<b>Than</b> signals a comparative, and the comparative of <b>good</b> is <b>better</b>; <b>far</b> simply makes the comparison stronger."
+      "explanation": "Comparative: <b>than</b> requires a comparative, and the irregular comparative of <b>good</b> is <b>better</b>; <b>far</b> strengthens it. ✗ <b>best</b> — superlative, used with 'the', not 'than'; ✗ <b>good</b> — base form cannot go with 'than'; ✗ <b>well</b> — an adverb, but 'tastes' is a linking verb that takes an adjective, and it is not comparative anyway."
     },
     {
       "id": "gv-kc-10-25",
@@ -398,6 +398,6 @@
       "correct": 0,
       "answer": "does",
       "vi": "Sau bữa tối, Nam luôn rửa bát để mẹ được nghỉ ngơi.",
-      "explanation": "The collocation is <b>do the washing-up</b>, like do the cooking or do the dishes; <b>make</b>, <b>take</b> and <b>get</b> do not go with it."
+      "explanation": "Collocation: <b>do the washing-up</b> (wash the dishes), like do the cooking or do the dishes. ✗ <b>makes</b> — 'make' creates something (make a cake), not a chore; ✗ <b>takes</b> — you take a shower or a break, not the washing-up; ✗ <b>gets</b> — 'get the washing-up' would mean fetch it, not do it."
     }
   ] }

@@ -6,7 +6,7 @@
       "options": ["cashier", "customer", "accountant", "banker"],
       "correct": 0, "answer": "cashier",
       "vi": "Ở quầy tính tiền, nhân viên thu ngân quét các món hàng của tôi và hỏi tôi có cần túi không.",
-      "explanation": "A <b>cashier</b> takes payment at the checkout. A <b>customer</b> is the buyer, an <b>accountant</b> keeps company accounts and a <b>banker</b> works in a bank."
+      "explanation": "The clue is <b>at the checkout ... scanned my items</b> — the job of taking payment in a shop, so <b>cashier</b>. ✗ <b>customer</b> — the person buying, not scanning; ✗ <b>accountant</b> — keeps a company's financial records; ✗ <b>banker</b> — works in a bank, not at a shop till."
     },
     {
       "id": "gv-kc-03-2", "level": "kc", "focus": "word-choice",
@@ -14,7 +14,7 @@
       "options": ["witnesses", "spectators", "observers", "audiences"],
       "correct": 1, "answer": "spectators",
       "vi": "Hàng nghìn khán giả reo hò khi tiền đạo ghi bàn ở phút cuối.",
-      "explanation": "<b>Spectators</b> are the people watching a sports event. <b>Witnesses</b> see a crime or accident, <b>observers</b> watch officially, and <b>audience</b> is a group noun that is not counted as 'thousands of audiences'."
+      "explanation": "People watching a sports event are <b>spectators</b>; the clue is <b>cheered when the striker scored</b>. ✗ <b>witnesses</b> — people who see a crime or accident; ✗ <b>observers</b> — people who watch officially to check or report; ✗ <b>audiences</b> — 'audience' is a group noun for one crowd at a show, so 'thousands of audiences' would mean thousands of separate crowds."
     },
     {
       "id": "gv-kc-03-3", "level": "kc", "focus": "word-choice",
@@ -22,7 +22,7 @@
       "options": ["partner", "colleague", "opponent", "teammate"],
       "correct": 2, "answer": "opponent",
       "vi": "Đối thủ của chị tôi trong trận chung kết cờ vua là một cậu bé chưa từng thua ván nào.",
-      "explanation": "An <b>opponent</b> is the person you play against. A <b>partner</b> or <b>teammate</b> plays on your side, and a <b>colleague</b> works with you."
+      "explanation": "The person you play <b>against</b> is your <b>opponent</b>; the clue is <b>in the chess final ... a boy who had never lost</b>. ✗ <b>partner</b> — someone on your side in a pair; ✗ <b>colleague</b> — someone you work with; ✗ <b>teammate</b> — a member of your own team, not the person you face."
     },
     {
       "id": "gv-kc-03-4", "level": "kc", "focus": "word-choice",
@@ -30,7 +30,7 @@
       "options": ["bodyguard", "doorman", "guardian", "lifeguard"],
       "correct": 3, "answer": "lifeguard",
       "vi": "Nhân viên cứu hộ thổi còi và bảo bọn trẻ ra khỏi hồ bơi.",
-      "explanation": "A <b>lifeguard</b> watches swimmers at a pool or beach. A <b>bodyguard</b> protects a person, a <b>doorman</b> stands at a building's entrance, and a <b>guardian</b> is legally responsible for a child."
+      "explanation": "The clue is <b>blew her whistle ... out of the pool</b>: a <b>lifeguard</b> watches swimmers and keeps them safe. ✗ <b>bodyguard</b> — protects one person from attack; ✗ <b>doorman</b> — stands at a building's entrance; ✗ <b>guardian</b> — the adult legally responsible for a child."
     },
     {
       "id": "gv-kc-03-5", "level": "kc", "focus": "word-choice",
@@ -38,7 +38,7 @@
       "options": ["vlogger", "blogger", "editor", "reporter"],
       "correct": 0, "answer": "vlogger",
       "vi": "Một vlogger nổi tiếng với hai triệu người đăng ký đánh giá điện thoại mới trên kênh video của cô ấy mỗi tuần.",
-      "explanation": "A <b>vlogger</b> makes videos for a channel. A <b>blogger</b> writes posts, an <b>editor</b> checks and corrects texts, and a <b>reporter</b> writes news."
+      "explanation": "The clues are <b>video channel</b> and <b>subscribers</b>: a <b>vlogger</b> (video + blogger) makes videos. ✗ <b>blogger</b> — writes text posts on a website; ✗ <b>editor</b> — checks and corrects other people's writing; ✗ <b>reporter</b> — collects and writes news for a newspaper or TV."
     },
     {
       "id": "gv-kc-03-6", "level": "kc", "focus": "collocation",
@@ -46,7 +46,7 @@
       "options": ["made", "did", "took", "gave"],
       "correct": 1, "answer": "did",
       "vi": "Trước khi mua điện thoại, Nam đã tìm hiểu rất nhiều trên mạng.",
-      "explanation": "The collocation is <b>do research</b>; we do not say 'make', 'take' or 'give' research."
+      "explanation": "<b>Research</b> collocates with <b>do</b>: <b>do research</b> (like do homework, do an experiment). ✗ <b>made</b> — 'make' goes with creating something (make a decision, make a mistake), never research; ✗ <b>took</b> — 'take' goes with time, a test or a photo, not research; ✗ <b>gave</b> — 'give' goes with a talk or a presentation, not research."
     },
     {
       "id": "gv-kc-03-7", "level": "kc", "focus": "collocation",
@@ -54,7 +54,7 @@
       "options": ["heavy", "hard", "strong", "powerful"],
       "correct": 2, "answer": "strong",
       "vi": "Hãy chọn một mật khẩu mạnh để không ai vào được tài khoản của bạn.",
-      "explanation": "A password that is difficult to guess is a <b>strong password</b>; 'heavy', 'hard' and 'powerful' do not collocate with 'password'."
+      "explanation": "A password that is hard to guess is a <b>strong password</b>; the clue is <b>so that nobody can get into your account</b>. ✗ <b>heavy</b> — describes weight, rain or traffic, not passwords; ✗ <b>hard</b> — means difficult, but 'hard password' is not the collocation; ✗ <b>powerful</b> — describes engines, leaders or arguments, not passwords."
     },
     {
       "id": "gv-kc-03-8", "level": "kc", "focus": "collocation",
@@ -62,7 +62,7 @@
       "options": ["give", "take", "make", "pay"],
       "correct": 3, "answer": "pay",
       "vi": "Hãy chú ý khi trọng tài giải thích luật của trận đấu.",
-      "explanation": "The fixed collocation is <b>pay attention</b>; 'give', 'take' and 'make' are not used with 'attention' in this meaning."
+      "explanation": "The fixed collocation is <b>pay attention</b> = listen or watch carefully; the clue is <b>when the referee explains the rules</b>. ✗ <b>give</b> — you give someone a present or a hand; 'give attention' is not the idiom for listening carefully; ✗ <b>take</b> — 'take' does not pair with 'attention' at all; ✗ <b>make</b> — 'make' goes with an effort or a decision, not attention."
     },
     {
       "id": "gv-kc-03-9", "level": "kc", "focus": "tense",
@@ -70,7 +70,7 @@
       "options": ["carried on", "have carried on", "carry on", "had carried on"],
       "correct": 0, "answer": "carried on",
       "vi": "Dù trời bắt đầu mưa, các cầu thủ vẫn tiếp tục trận đấu cho đến khi trọng tài dừng lại.",
-      "explanation": "A finished past story told in order (it started to rain, they carried on, the referee stopped it) uses the <b>past simple</b>: <b>carried on</b>."
+      "explanation": "A finished past story told in order — <b>it started to rain</b>, they carried on, <b>the referee stopped it</b> — uses the past simple: <b>carried on</b>. ✗ <b>have carried on</b> — present perfect cannot sit in a story told with past-simple 'started' and 'stopped'; ✗ <b>carry on</b> — present simple for a past event; ✗ <b>had carried on</b> — past perfect is for an action BEFORE another past action, but carrying on came after the rain started."
     },
     {
       "id": "gv-kc-03-10", "level": "kc", "focus": "tense",
@@ -78,7 +78,7 @@
       "options": ["plays", "is playing", "has played", "played"],
       "correct": 1, "answer": "is playing",
       "vi": "Lan: Nam đâu ạ? / Mẹ Nam: Nó đang đá bóng trong công viên.",
-      "explanation": "<b>At the moment</b> signals an action happening now, so the present continuous <b>is playing</b> is needed."
+      "explanation": "<b>At the moment</b> means right now, so the present continuous <b>is playing</b> is needed. ✗ <b>plays</b> — present simple is for habits and facts, not an action in progress; ✗ <b>has played</b> — present perfect links past to present but does not describe what is happening now; ✗ <b>played</b> — past simple is for a finished action, but the game is still going on."
     },
     {
       "id": "gv-kc-03-11", "level": "kc", "focus": "tense",
@@ -86,7 +86,7 @@
       "options": ["had", "am having", "have had", "have"],
       "correct": 2, "answer": "have had",
       "vi": "Tôi đã dùng chiếc điện thoại này ba năm rồi, nên đã đến lúc mua cái mới.",
-      "explanation": "A situation that began in the past and continues now, with <b>for three years</b>, takes the present perfect: <b>have had</b>."
+      "explanation": "A situation that began in the past and continues to now, with <b>for three years</b>, takes the present perfect: <b>have had</b>. ✗ <b>had</b> — past simple would mean I no longer have it, but I still do (<b>it's time to buy a new one</b>); ✗ <b>am having</b> — 'have' meaning own is a state verb, not used in the continuous; ✗ <b>have</b> — present simple cannot carry 'for three years' back into the past."
     },
     {
       "id": "gv-kc-03-12", "level": "kc", "focus": "tense",
@@ -94,7 +94,7 @@
       "options": ["waited", "have waited", "were waiting", "had been waiting"],
       "correct": 3, "answer": "had been waiting",
       "vi": "Đến lúc cửa hàng mở cửa, hàng chục người đã đứng chờ bên ngoài suốt mấy tiếng.",
-      "explanation": "An activity that continued up to a past moment (<b>by the time the shop opened</b>) with <b>for hours</b> takes the past perfect continuous: <b>had been waiting</b>."
+      "explanation": "An activity that continued up to a past moment (<b>by the time the shop opened</b>) with a duration (<b>for hours</b>) takes the past perfect continuous: <b>had been waiting</b>. ✗ <b>waited</b> — past simple does not show the waiting happened before the opening; ✗ <b>have waited</b> — present perfect cannot combine with the past event 'opened'; ✗ <b>were waiting</b> — past continuous shows an action at that moment but does not carry 'for hours' up to it."
     },
     {
       "id": "gv-kc-03-13", "level": "kc", "focus": "idiom",
@@ -102,7 +102,7 @@
       "options": ["breaks the ice", "rings a bell", "hits the nail on the head", "gets on my nerves"],
       "correct": 1, "answer": "rings a bell",
       "vi": "Lan: Cậu biết cửa hàng tên Phone World không? / Nam: Cái tên nghe quen quen, nhưng tớ không nhớ nó ở đâu.",
-      "explanation": "<b>Ring a bell</b> means 'sound familiar'. <b>Break the ice</b> is to make people relax, <b>hit the nail on the head</b> is to be exactly right, and <b>get on someone's nerves</b> is to annoy them."
+      "explanation": "<b>Ring a bell</b> = sound familiar; the clue is <b>but I can't remember where it is</b>. ✗ <b>breaks the ice</b> — makes people relax when they first meet; ✗ <b>hits the nail on the head</b> — says exactly the right thing; ✗ <b>gets on my nerves</b> — annoys me."
     },
     {
       "id": "gv-kc-03-14", "level": "kc", "focus": "idiom",
@@ -110,7 +110,7 @@
       "options": ["ran out of steam", "hit the roof", "missed the boat", "made ends meet"],
       "correct": 0, "answer": "ran out of steam",
       "vi": "Đội chúng tôi chơi tốt ở hiệp một nhưng đuối sức sau giờ nghỉ và thua 3-1.",
-      "explanation": "<b>Run out of steam</b> means to lose energy and stop trying hard. <b>Hit the roof</b> is to get very angry, <b>miss the boat</b> is to lose a chance, and <b>make ends meet</b> is to have just enough money."
+      "explanation": "<b>Run out of steam</b> = lose energy and stop trying hard; the clue is <b>played well in the first half but ... lost</b>. ✗ <b>hit the roof</b> — got very angry; ✗ <b>missed the boat</b> — lost a chance by being too late; ✗ <b>made ends meet</b> — had just enough money to live on."
     },
     {
       "id": "gv-kc-03-15", "level": "kc", "focus": "phrasal-verb",
@@ -118,7 +118,7 @@
       "options": ["turned up", "turned over", "turned off", "turned down"],
       "correct": 3, "answer": "turned down",
       "vi": "Cửa hàng đã từ chối yêu cầu hoàn tiền của tôi vì tôi làm mất hóa đơn.",
-      "explanation": "<b>Turn down</b> means to refuse a request or offer. <b>Turn up</b> is to arrive or increase, <b>turn over</b> is to flip something, and <b>turn off</b> is to switch off."
+      "explanation": "<b>Turn down</b> = refuse a request or offer; the clue is <b>because I had lost the receipt</b>, a reason for refusing. ✗ <b>turned up</b> — arrived, or increased the volume; ✗ <b>turned over</b> — flipped something to the other side; ✗ <b>turned off</b> — switched off a machine or light."
     },
     {
       "id": "gv-kc-03-16", "level": "kc", "focus": "phrasal-verb",
@@ -126,7 +126,7 @@
       "options": ["bring back", "bring about", "bring up", "bring in"],
       "correct": 2, "answer": "bring up",
       "vi": "Làm ơn đừng nhắc đến số tiền tớ nợ cậu trước mặt bố mẹ tớ.",
-      "explanation": "<b>Bring up</b> means to mention a subject. <b>Bring back</b> is to return something, <b>bring about</b> is to cause, and <b>bring in</b> is to introduce or earn."
+      "explanation": "<b>Bring up</b> = mention a subject; the clue is <b>in front of my parents</b> — the speaker doesn't want the debt mentioned. ✗ <b>bring back</b> — return something, or make you remember; ✗ <b>bring about</b> — cause a change to happen; ✗ <b>bring in</b> — introduce a rule, or earn money."
     },
     {
       "id": "gv-kc-03-17", "level": "kc", "focus": "modal",
@@ -134,7 +134,7 @@
       "options": ["must", "should", "can't", "needn't"],
       "correct": 1, "answer": "should",
       "vi": "Nam đã trả nguyên giá ở cửa hàng. Lẽ ra cậu ấy nên mua điện thoại trên mạng, nơi cùng mẫu đó rẻ hơn nhiều.",
-      "explanation": "<b>Should have + past participle</b> criticises a past action that was not done. <b>Must have</b> is a deduction, <b>can't have</b> a negative deduction, and <b>needn't have</b> means it was unnecessary but done."
+      "explanation": "<b>Should have + past participle</b> criticises a past choice: it was a good idea but he didn't do it. The clue is <b>paid full price</b> although online is <b>much cheaper</b>. ✗ <b>must have</b> — a confident guess that something DID happen, but he did not buy online; ✗ <b>can't have</b> — a confident guess that something did NOT happen, not advice; ✗ <b>needn't have</b> — he did it but it wasn't necessary, yet he never bought online at all."
     },
     {
       "id": "gv-kc-03-18", "level": "kc", "focus": "modal",
@@ -142,7 +142,7 @@
       "options": ["can't", "must", "should", "needn't"],
       "correct": 0, "answer": "can't",
       "vi": "Lan không thể nào tiêu nhiều tiền ở chợ được - cô ấy chỉ mua một cái móc khóa.",
-      "explanation": "<b>Can't have + past participle</b> says the speaker is sure something did NOT happen. <b>Must have</b> is a positive deduction, <b>should have</b> gives criticism, and <b>needn't have</b> means something was done unnecessarily."
+      "explanation": "<b>Can't have + past participle</b> = the speaker is sure something did NOT happen; the clue is <b>she only bought a keyring</b>. ✗ <b>must have</b> — sure it DID happen, the opposite of the evidence; ✗ <b>should have</b> — criticism that she ought to have spent much money, which makes no sense; ✗ <b>needn't have</b> — she spent a lot but didn't need to, yet she spent almost nothing."
     },
     {
       "id": "gv-kc-03-19", "level": "kc", "focus": "relative",
@@ -150,7 +150,7 @@
       "options": ["who", "which", "whom", "whose"],
       "correct": 3, "answer": "whose",
       "vi": "Cô gái có điện thoại bị lấy cắp trên xe buýt đã báo cảnh sát.",
-      "explanation": "<b>Whose</b> shows possession (the girl's phone). <b>Who</b> and <b>whom</b> replace a person, and <b>which</b> replaces a thing, but none of them can stand before a noun like 'phone'."
+      "explanation": "<b>Whose</b> shows possession — the girl's phone — and is followed directly by the noun <b>phone</b>. ✗ <b>who</b> — a subject pronoun for a person; it cannot stand before a noun ('who phone'); ✗ <b>which</b> — refers to a thing and also cannot stand before a noun here; ✗ <b>whom</b> — an object pronoun (the girl whom I saw), not a possessive."
     },
     {
       "id": "gv-kc-03-20", "level": "kc", "focus": "relative",
@@ -158,7 +158,7 @@
       "options": ["which", "that", "where", "whose"],
       "correct": 2, "answer": "where",
       "vi": "Cửa hàng nơi tôi mua tai nghe đã đóng cửa rồi.",
-      "explanation": "<b>Where</b> replaces 'in the shop' - a place with a full clause after it. <b>Which</b> or <b>that</b> would need a preposition ('from which'), and <b>whose</b> shows possession."
+      "explanation": "<b>Where</b> replaces 'in the shop' — a place — and is followed by a complete clause, <b>I bought my headphones</b>. ✗ <b>which</b> — needs a preposition for a place ('the shop from which I bought them'); ✗ <b>that</b> — also needs a preposition ('the shop that I bought them from'); ✗ <b>whose</b> — shows possession, but the shop owns nothing here."
     },
     {
       "id": "gv-kc-03-21", "level": "kc", "focus": "article-quantifier",
@@ -166,7 +166,7 @@
       "options": ["many", "much", "a few", "few"],
       "correct": 1, "answer": "much",
       "vi": "Không còn nhiều thời gian trước khi đợt giảm giá kết thúc, nên nhanh lên.",
-      "explanation": "<b>Time</b> is uncountable, so a negative sentence takes <b>much</b>; <b>many</b>, <b>a few</b> and <b>few</b> go with plural countable nouns."
+      "explanation": "<b>Time</b> (hours and minutes) is uncountable, and the sentence is negative (<b>isn't</b>), so it takes <b>much</b>. ✗ <b>many</b> — only with plural countable nouns (many days); ✗ <b>a few</b> — plural countable only, and 'a few' is not used after 'isn't'; ✗ <b>few</b> — plural countable only (few days)."
     },
     {
       "id": "gv-kc-03-22", "level": "kc", "focus": "gerund-infinitive",
@@ -174,7 +174,7 @@
       "options": ["to charge", "charging", "charge", "to charging"],
       "correct": 0, "answer": "to charge",
       "vi": "Đừng quên sạc điện thoại trước trận đấu; cậu sẽ muốn chụp ảnh đấy.",
-      "explanation": "<b>Forget to do</b> refers to a task you need to do; <b>forget doing</b> means having no memory of something already done, and the bare form and 'to charging' are ungrammatical here."
+      "explanation": "<b>Forget + to-infinitive</b> = forget to do a task that is still to be done; the clue is <b>before the match</b>, a future job. ✗ <b>charging</b> — 'forget doing' means having no memory of something already done; ✗ <b>charge</b> — 'forget' is never followed by a bare infinitive; ✗ <b>to charging</b> — 'to' + -ing does not follow 'forget'."
     },
     {
       "id": "gv-kc-03-23", "level": "kc", "focus": "linking",
@@ -182,7 +182,7 @@
       "options": ["therefore", "because", "although", "however"],
       "correct": 3, "answer": "however",
       "vi": "Vé khá đắt; tuy nhiên, sân vận động vẫn chật kín.",
-      "explanation": "Two contrasting ideas joined with a semicolon and a comma need the adverb <b>however</b>. <b>Therefore</b> shows result, and <b>because</b> and <b>although</b> are conjunctions that cannot sit between a semicolon and a comma."
+      "explanation": "Two contrasting ideas (<b>expensive</b> but <b>completely full</b>) joined by <b>a semicolon and a comma</b> need the linking adverb <b>however</b>. ✗ <b>therefore</b> — an adverb, but it shows a result, and a full stadium is not the result of expensive tickets; ✗ <b>because</b> — a conjunction giving a reason; it cannot sit between ';' and ','; ✗ <b>although</b> — shows contrast but is a conjunction that must start a clause ('although the tickets were expensive'), not stand alone between ';' and ','."
     },
     {
       "id": "gv-kc-03-24", "level": "kc", "focus": "conditional",
@@ -190,7 +190,7 @@
       "options": ["didn't spend", "haven't spent", "hadn't spent", "wouldn't spend"],
       "correct": 2, "answer": "hadn't spent",
       "vi": "Nếu tháng trước tôi không tiêu quá nhiều vào quần áo thì bây giờ tôi đã có thể mua đôi giày thể thao đó.",
-      "explanation": "A mixed conditional: an unreal past condition (<b>last month</b>) takes the past perfect <b>hadn't spent</b>, with a present result (<b>could buy ... now</b>)."
+      "explanation": "A mixed conditional: an unreal past condition (<b>last month</b>) takes the past perfect <b>hadn't spent</b>, and its present result uses could + verb (<b>could buy ... now</b>). ✗ <b>didn't spend</b> — past simple after 'if' makes a second conditional about the present, but 'last month' is finished; ✗ <b>haven't spent</b> — present perfect cannot be used with 'last month' and does not form an unreal condition; ✗ <b>wouldn't spend</b> — 'would' belongs in the result clause, not after 'if'."
     },
     {
       "id": "gv-kc-03-25", "level": "kc", "focus": "inversion",
@@ -198,7 +198,7 @@
       "options": ["Nam realised", "did Nam realise", "Nam did realise", "realised Nam"],
       "correct": 1, "answer": "did Nam realise",
       "vi": "Chỉ sau tiếng còi kết thúc Nam mới nhận ra mình mệt đến thế nào.",
-      "explanation": "After <b>Only after ...</b> at the start of a sentence, the subject and auxiliary are inverted: <b>did Nam realise</b>."
+      "explanation": "When a sentence starts with the limiting phrase <b>Only after ...</b>, the auxiliary and subject are inverted like a question: <b>did Nam realise</b>. ✗ <b>Nam realised</b> — normal word order, but 'Only after' at the front forces inversion; ✗ <b>Nam did realise</b> — 'did' after the subject is emphasis, not inversion; ✗ <b>realised Nam</b> — inverts the main verb instead of the auxiliary 'did'."
     }
   ]
 }

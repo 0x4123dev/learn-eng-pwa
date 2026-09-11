@@ -8,7 +8,7 @@
       "words": ["launched", "sketched", "anchored", "coached"],
       "ipa": ["/lɔːntʃt/", "/sketʃt/", "/ˈæŋkəd/", "/kəʊtʃt/"],
       "correct": 2,
-      "explanation": "<b>anchored</b> /ˈæŋkəd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /ə/ (anchor có ch đọc /k/, gốc Hy Lạp). Ba từ còn lại có ch đọc /tʃ/ vô thanh nên -ed đọc /t/: launched /lɔːntʃt/, sketched /sketʃt/, coached /kəʊtʃt/."
+      "explanation": "<b>anchored</b> /ˈæŋkəd/ — đuôi -ed đọc /d/ vì động từ gốc anchor kết thúc bằng nguyên âm /ə/ hữu thanh (ch trong anchor đọc /k/, gốc Hy Lạp). Ba từ còn lại gốc kết thúc bằng /tʃ/ vô thanh nên -ed đọc /t/: launched /lɔːntʃt/, sketched /sketʃt/, coached /kəʊtʃt/. Mẹo: đọc âm cuối của động từ gốc: vô thanh → /t/, /t/ hoặc /d/ → /ɪd/, còn lại (hữu thanh, nguyên âm) → /d/."
     },
     {
       "id": "ph-ch-24-2", "level": "ch", "kind": "sound", "rule": "es",
@@ -16,7 +16,7 @@
       "words": ["stomachs", "orchids", "monarchs", "chemists"],
       "ipa": ["/ˈstʌməks/", "/ˈɔːkɪdz/", "/ˈmɒnəks/", "/ˈkemɪsts/"],
       "correct": 1,
-      "explanation": "<b>orchids</b> /ˈɔːkɪdz/ — đuôi -s đọc /z/ vì đứng sau âm hữu thanh /d/. Ba từ còn lại đuôi -s đọc /s/ vì đứng sau âm vô thanh /k/ hoặc /t/: stomachs /ˈstʌməks/, monarchs /ˈmɒnəks/, chemists /ˈkemɪsts/ (ch trong cả bốn từ đều đọc /k/)."
+      "explanation": "<b>orchids</b> /ˈɔːkɪdz/ — đuôi -s đọc /z/ vì đứng sau âm hữu thanh /d/. Ba từ còn lại đuôi -s đọc /s/ vì đứng sau âm vô thanh /k/ hoặc /t/: stomachs /ˈstʌməks/, monarchs /ˈmɒnəks/, chemists /ˈkemɪsts/ (ch trong cả bốn từ đều đọc /k/, không phải /tʃ/). Mẹo: nhìn âm cuối của từ gốc, không nhìn chữ: vô thanh /p t k f θ/ → /s/; /s z ʃ tʃ dʒ/ → /ɪz/; còn lại → /z/."
     },
     {
       "id": "ph-ch-24-3", "level": "ch", "kind": "sound", "rule": "ch-sh-th-gh",
@@ -24,7 +24,7 @@
       "words": ["chorus", "architect", "mechanic", "chandelier"],
       "ipa": ["/ˈkɔːrəs/", "/ˈɑːkɪtekt/", "/məˈkænɪk/", "/ˌʃændəˈlɪə/"],
       "correct": 3,
-      "explanation": "<b>chandelier</b> /ˌʃændəˈlɪə/ — từ mượn tiếng Pháp nên ch đọc /ʃ/. Ba từ còn lại gốc Hy Lạp, ch đọc /k/: chorus /ˈkɔːrəs/, architect /ˈɑːkɪtekt/, mechanic /məˈkænɪk/."
+      "explanation": "<b>chandelier</b> /ˌʃændəˈlɪə/ — từ mượn tiếng Pháp nên ch đọc /ʃ/ (như chef, machine, champagne). Ba từ còn lại gốc Hy Lạp, ch đọc /k/: chorus /ˈkɔːrəs/, architect /ˈɑːkɪtekt/, mechanic /məˈkænɪk/. Mẹo: ch có ba cách đọc — /tʃ/ ở từ thường (church), /k/ ở từ gốc Hy Lạp (khoa học, kỹ thuật, âm nhạc: chemist, chorus), /ʃ/ ở từ gốc Pháp (thường mang đuôi -ier, -ette, -ine và nhấn âm cuối)."
     },
     {
       "id": "ph-ch-24-4", "level": "ch", "kind": "sound", "rule": "s-z-sh",
@@ -32,7 +32,7 @@
       "words": ["expansion", "erosion", "explosion", "conclusion"],
       "ipa": ["/ɪkˈspænʃn/", "/ɪˈrəʊʒn/", "/ɪkˈspləʊʒn/", "/kənˈkluːʒn/"],
       "correct": 0,
-      "explanation": "<b>expansion</b> /ɪkˈspænʃn/ — đuôi -sion đứng sau phụ âm (n) đọc /ʃn/. Ba từ còn lại có -sion đứng sau nguyên âm nên đọc /ʒn/: erosion /ɪˈrəʊʒn/, explosion /ɪkˈspləʊʒn/, conclusion /kənˈkluːʒn/."
+      "explanation": "<b>expansion</b> /ɪkˈspænʃn/ — đuôi -sion đứng sau phụ âm (n) đọc /ʃn/, như tension, mansion, version. Ba từ còn lại có -sion đứng sau nguyên âm nên đọc /ʒn/: erosion /ɪˈrəʊʒn/, explosion /ɪkˈspləʊʒn/, conclusion /kənˈkluːʒn/. Mẹo: nhìn chữ ngay trước -sion: nguyên âm → /ʒn/ (decision, vision, occasion); phụ âm → /ʃn/ (pension, mission, discussion)."
     },
     {
       "id": "ph-ch-24-5", "level": "ch", "kind": "sound", "rule": "silent",
@@ -40,7 +40,7 @@
       "words": ["subtle", "plumber", "tomb", "timber"],
       "ipa": ["/ˈsʌtl/", "/ˈplʌmə/", "/tuːm/", "/ˈtɪmbə/"],
       "correct": 3,
-      "explanation": "<b>timber</b> /ˈtɪmbə/ — chữ b đọc rõ /b/ (mb đứng giữa từ, trước nguyên âm). Ba từ còn lại có b câm: subtle /ˈsʌtl/ (b trước t), plumber /ˈplʌmə/ và tomb /tuːm/ (mb cuối gốc từ, b không đọc)."
+      "explanation": "<b>timber</b> /ˈtɪmbə/ — chữ b đọc rõ /b/ vì mb đứng giữa gốc từ, ngay trước nguyên âm (như number, amber). Ba từ còn lại b câm: subtle /ˈsʌtl/ (b câm trước t, như debt, doubt), tomb /tuːm/ (mb ở cuối từ, như comb, climb), plumber /ˈplʌmə/ (gốc plumb kết thúc bằng mb, thêm -er thì b vẫn câm). Mẹo: mb ở cuối từ hoặc cuối gốc từ, và bt → b câm; mb đứng trước nguyên âm ngay trong gốc từ → b đọc."
     },
     {
       "id": "ph-ch-24-6", "level": "ch", "kind": "sound", "rule": "prefix-ex",
@@ -48,7 +48,7 @@
       "words": ["executive", "execute", "exotic", "exaggerate"],
       "ipa": ["/ɪɡˈzekjətɪv/", "/ˈeksɪkjuːt/", "/ɪɡˈzɒtɪk/", "/ɪɡˈzædʒəreɪt/"],
       "correct": 1,
-      "explanation": "<b>execute</b> /ˈeksɪkjuːt/ — trọng âm rơi vào chính âm tiết ex- nên ex đọc /eks/. Ba từ còn lại ex- không nhấn và đứng trước nguyên âm nên đọc /ɪɡz/: executive /ɪɡˈzekjətɪv/, exotic /ɪɡˈzɒtɪk/, exaggerate /ɪɡˈzædʒəreɪt/."
+      "explanation": "<b>execute</b> /ˈeksɪkjuːt/ — trọng âm rơi vào chính âm tiết ex- nên ex đọc /eks/ (như exercise, exhibition). Ba từ còn lại ex- không nhận trọng âm và đứng trước nguyên âm nên đọc /ɪɡz/: executive /ɪɡˈzekjətɪv/, exotic /ɪɡˈzɒtɪk/, exaggerate /ɪɡˈzædʒəreɪt/. Mẹo: ex- + nguyên âm (hoặc h câm) mà trọng âm rơi vào âm tiết ngay sau → /ɪɡz/ (exam, exist, exhaust); ex- được nhấn hoặc đứng trước phụ âm → /eks/ (expect, exercise)."
     },
     {
       "id": "ph-ch-24-7", "level": "ch", "kind": "sound", "rule": "oo-ou-ow",
@@ -56,7 +56,7 @@
       "words": ["courage", "nourish", "courteous", "flourish"],
       "ipa": ["/ˈkʌrɪdʒ/", "/ˈnʌrɪʃ/", "/ˈkɜːtiəs/", "/ˈflʌrɪʃ/"],
       "correct": 2,
-      "explanation": "<b>courteous</b> /ˈkɜːtiəs/ — ou đứng trước r + phụ âm đọc /ɜː/ (như courtesy). Ba từ còn lại ou đọc /ʌ/: courage /ˈkʌrɪdʒ/, nourish /ˈnʌrɪʃ/, flourish /ˈflʌrɪʃ/."
+      "explanation": "<b>courteous</b> /ˈkɜːtiəs/ — ou đứng trước r + phụ âm (t) đọc /ɜː/, như courtesy, journey, journal. Ba từ còn lại ou đứng trước r + nguyên âm nên đọc /ʌ/: courage /ˈkʌrɪdʒ/, nourish /ˈnʌrɪʃ/, flourish /ˈflʌrɪʃ/. Mẹo: nhìn chữ ngay sau our-: nguyên âm → /ʌr/ (courage, flourish, nourish); phụ âm → /ɜː/ (courtesy, journey), riêng course, court đọc /ɔː/."
     },
     {
       "id": "ph-ch-24-8", "level": "ch", "kind": "sound", "rule": "ea-ee-ie",
@@ -64,7 +64,7 @@
       "words": ["league", "meadow", "wealthy", "leather"],
       "ipa": ["/liːɡ/", "/ˈmedəʊ/", "/ˈwelθi/", "/ˈleðə/"],
       "correct": 0,
-      "explanation": "<b>league</b> /liːɡ/ — ea đọc /iː/ theo cách thường gặp. Ba từ còn lại là ngoại lệ, ea đọc /e/: meadow /ˈmedəʊ/, wealthy /ˈwelθi/, leather /ˈleðə/."
+      "explanation": "<b>league</b> /liːɡ/ — ea đọc /iː/ theo cách thường gặp (như leaf, teach, reason). Ba từ còn lại thuộc nhóm ngoại lệ ea đọc /e/: meadow /ˈmedəʊ/, wealthy /ˈwelθi/, leather /ˈleðə/, cùng nhóm với bread, head, weather, healthy, heavy. Mẹo: ea mặc định là /iː/; học thuộc nhóm ngoại lệ /e/ hay đứng trước d, th, lth, v (dead, breath, wealth, heavy) và nhóm /eɪ/ (great, break, steak)."
     },
     {
       "id": "ph-ch-24-9", "level": "ch", "kind": "sound", "rule": "c-g",
@@ -72,7 +72,7 @@
       "words": ["cylinder", "cynical", "circuit", "sceptical"],
       "ipa": ["/ˈsɪlɪndə/", "/ˈsɪnɪkl/", "/ˈsɜːkɪt/", "/ˈskeptɪkl/"],
       "correct": 3,
-      "explanation": "<b>sceptical</b> /ˈskeptɪkl/ — ngoại lệ: c đọc /k/ dù đứng trước e (gốc Hy Lạp, Mỹ viết là skeptical). Ba từ còn lại c đứng trước y, i đọc /s/ theo quy tắc: cylinder /ˈsɪlɪndə/, cynical /ˈsɪnɪkl/, circuit /ˈsɜːkɪt/."
+      "explanation": "<b>sceptical</b> /ˈskeptɪkl/ — ngoại lệ: sc đứng trước e vẫn đọc /sk/ vì từ gốc Hy Lạp (Mỹ viết skeptical), c không mềm thành /s/ như scene, science. Ba từ còn lại c đứng trước y hoặc i nên đọc /s/ theo quy tắc: cylinder /ˈsɪlɪndə/, cynical /ˈsɪnɪkl/, circuit /ˈsɜːkɪt/. Mẹo: c + e/i/y → /s/ (city, cycle, cell); c + a/o/u hoặc phụ âm → /k/; nhớ riêng ngoại lệ sceptic(al), Celtic đọc /k/."
     },
     {
       "id": "ph-ch-24-10", "level": "ch", "kind": "sound", "rule": "h",
@@ -80,7 +80,7 @@
       "words": ["heir", "heritage", "honour", "exhibit"],
       "ipa": ["/eə/", "/ˈherɪtɪdʒ/", "/ˈɒnə/", "/ɪɡˈzɪbɪt/"],
       "correct": 1,
-      "explanation": "<b>heritage</b> /ˈherɪtɪdʒ/ — h đọc rõ /h/. Ba từ còn lại h câm: heir /eə/ (cùng gốc với heritage nhưng h không đọc!), honour /ˈɒnə/, exhibit /ɪɡˈzɪbɪt/ (h sau ex- câm, ex đọc /ɪɡz/)."
+      "explanation": "<b>heritage</b> /ˈherɪtɪdʒ/ — h đầu từ đọc rõ /h/ như bình thường. Ba từ còn lại h câm: heir /eə/ (cùng gốc với heritage nhưng h không đọc, như heiress), honour /ˈɒnə/ (nhóm h câm gốc Pháp: hour, honest), exhibit /ɪɡˈzɪbɪt/ (h sau ex- câm nên ex đọc /ɪɡz/, như exhaust). Mẹo: h đầu từ thường được đọc; học thuộc nhóm h câm: hour, honour, honest, heir, vehicle, exhibit, exhaust — kiểm tra bằng mạo từ: an hour, an heir."
     },
     {
       "id": "ph-ch-24-11", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -89,7 +89,7 @@
       "ipa": ["/tekˈniːk/", "/ˈstʌmək/", "/ˈkɔːrəs/", "/ˈæŋkə/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
       "correct": 0,
-      "explanation": "<b>technique</b> /tekˈniːk/ — đuôi -ique mượn tiếng Pháp luôn nhận trọng âm, nên nhấn âm 2. Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1: STO-mach /ˈstʌmək/, CHO-rus /ˈkɔːrəs/, AN-chor /ˈæŋkə/ (ch đều đọc /k/)."
+      "explanation": "<b>technique</b> /tekˈniːk/ — tech-NIQUE: đuôi -ique mượn tiếng Pháp luôn nhận trọng âm (như unique, antique, boutique), nên nhấn âm 2. Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: STO-mach /ˈstʌmək/, CHO-rus /ˈkɔːrəs/, AN-chor /ˈæŋkə/ (ch đều đọc /k/). Mẹo: danh từ 2 âm tiết → nhấn âm 1, trừ khi mang đuôi Pháp tự nhận trọng âm (-ique, -ee, -eer, -ette, -esque)."
     },
     {
       "id": "ph-ch-24-12", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -98,7 +98,7 @@
       "ipa": ["/pəˈsjuː/", "/kæmˈpeɪn/", "/ˈskɒlə/", "/sɪˈment/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 2, 1, 2],
       "correct": 2,
-      "explanation": "<b>scholar</b> /ˈskɒlə/ — danh từ 2 âm tiết nhấn âm 1 (ch đọc /k/, gốc Hy Lạp). Ba từ còn lại nhấn âm 2: pur-SUE /pəˈsjuː/ (động từ), cam-PAIGN /kæmˈpeɪn/ và ce-MENT /sɪˈment/ (danh từ ngoại lệ mượn tiếng Pháp)."
+      "explanation": "<b>scholar</b> /ˈskɒlə/ — SCHOL-ar: danh từ 2 âm tiết nhấn âm 1 (ch đọc /k/, gốc Hy Lạp; -ar không nhận trọng âm). Ba từ còn lại nhấn âm 2: pur-SUE /pəˈsjuː/ là động từ 2 âm tiết (nhấn âm 2 theo quy tắc); cam-PAIGN /kæmˈpeɪn/ và ce-MENT /sɪˈment/ là danh từ ngoại lệ mượn tiếng Pháp. Mẹo: danh từ 2 âm tiết nhấn âm 1, động từ nhấn âm 2; học thuộc nhóm danh từ ngoại lệ nhấn âm 2: campaign, cement, machine, hotel, police."
     },
     {
       "id": "ph-ch-24-13", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -107,7 +107,7 @@
       "ipa": ["/məˈkænɪk/", "/ˈteknɪkl/", "/ɪˈlektrɪk/", "/hɪˈrəʊɪk/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 1, 2, 2],
       "correct": 1,
-      "explanation": "<b>technical</b> /ˈteknɪkl/ — đuôi -ical kéo trọng âm về âm tiết đứng ngay trước nó, là TECH (âm 1). Ba từ còn lại đuôi -ic kéo trọng âm về âm tiết trước -ic, là âm 2: me-CHAN-ic /məˈkænɪk/, e-LEC-tric /ɪˈlektrɪk/, he-RO-ic /hɪˈrəʊɪk/."
+      "explanation": "<b>technical</b> /ˈteknɪkl/ — TECH-ni-cal: đuôi -ical kéo trọng âm về âm tiết đứng ngay trước nó, tức TECH (âm 1). Ba từ còn lại có đuôi -ic kéo trọng âm về âm tiết ngay trước -ic, tức âm 2: me-CHAN-ic /məˈkænɪk/, e-LEC-tric /ɪˈlektrɪk/, he-RO-ic /hɪˈrəʊɪk/. Mẹo: che đuôi -ic hoặc -ical lại, âm tiết còn lại đứng sát đuôi là âm nhấn: techn|ical → TECH, mechan|ic → CHAN, electr|ic → LEC."
     },
     {
       "id": "ph-ch-24-14", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -116,7 +116,7 @@
       "ipa": ["/tekˈnɪʃn/", "/fɪˈzɪʃn/", "/ɒpˈtɪʃn/", "/ˈmɒnəki/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>monarchy</b> /ˈmɒnəki/ — không có đuôi kéo trọng âm, danh từ 3 âm tiết nhấn âm 1 (ch đọc /k/). Ba từ còn lại có đuôi -ian kéo trọng âm về âm tiết ngay trước nó, là âm 2: tech-NI-cian /tekˈnɪʃn/, phy-SI-cian /fɪˈzɪʃn/, op-TI-cian /ɒpˈtɪʃn/."
+      "explanation": "<b>monarchy</b> /ˈmɒnəki/ — MON-ar-chy: đuôi -y không kéo trọng âm nên giữ trọng âm của MON-arch, danh từ 3 âm tiết nhấn âm 1 (ch đọc /k/). Ba từ còn lại có đuôi -ian kéo trọng âm về âm tiết ngay trước nó, tức âm 2: tech-NI-cian /tekˈnɪʃn/, phy-SI-cian /fɪˈzɪʃn/, op-TI-cian /ɒpˈtɪʃn/. Mẹo: -ian, -ion, -ic, -ity → nhấn âm tiết liền trước đuôi; -y, -er, -ist, -ment không đổi trọng âm của từ gốc."
     },
     {
       "id": "ph-ch-24-15", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -125,7 +125,7 @@
       "ipa": ["/ˌendʒɪˈnɪə/", "/ˌvɒlənˈtɪə/", "/ˈɔːkɪstrə/", "/ˌdʒæpəˈniːz/"],
       "syllables": [3, 3, 3, 3], "stress": [3, 3, 1, 3],
       "correct": 2,
-      "explanation": "<b>orchestra</b> /ˈɔːkɪstrə/ — danh từ gốc Hy Lạp (ch đọc /k/) nhấn âm 1. Ba từ còn lại có đuôi -eer, -ese luôn tự nhận trọng âm, nên nhấn âm 3: engi-NEER /ˌendʒɪˈnɪə/, volun-TEER /ˌvɒlənˈtɪə/, Japa-NESE /ˌdʒæpəˈniːz/."
+      "explanation": "<b>orchestra</b> /ˈɔːkɪstrə/ — OR-ches-tra: danh từ gốc Hy Lạp (ch đọc /k/) nhấn âm 1, không có đuôi kéo trọng âm. Ba từ còn lại mang đuôi tự nhận trọng âm nên nhấn âm 3: en-gi-NEER /ˌendʒɪˈnɪə/ và vol-un-TEER /ˌvɒlənˈtɪə/ (đuôi -eer), Jap-a-NESE /ˌdʒæpəˈniːz/ (đuôi -ese). Mẹo: thấy đuôi -ee, -eer, -ese, -ette, -ique, -oon → nhấn ngay vào đuôi đó (trainee, volunteer, Chinese, cassette, unique, balloon)."
     },
     {
       "id": "ph-ch-24-16", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -134,7 +134,7 @@
       "ipa": ["/ænˈtiːk/", "/ˈkemɪst/", "/ˈekəʊ/", "/ˈɔːkɪd/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
       "correct": 0,
-      "explanation": "<b>antique</b> /ænˈtiːk/ — đuôi -ique (mượn tiếng Pháp) luôn nhận trọng âm, nên nhấn âm 2. Ba từ còn lại là danh từ 2 âm tiết gốc Hy Lạp, ch đọc /k/, nhấn âm 1: CHEM-ist /ˈkemɪst/, ECH-o /ˈekəʊ/, OR-chid /ˈɔːkɪd/."
+      "explanation": "<b>antique</b> /ænˈtiːk/ — an-TIQUE: đuôi -ique mượn tiếng Pháp luôn nhận trọng âm, nên nhấn âm 2 (như unique, technique). Ba từ còn lại là danh từ 2 âm tiết gốc Hy Lạp, ch đọc /k/, nhấn âm 1 theo quy tắc: CHEM-ist /ˈkemɪst/, ECH-o /ˈekəʊ/, OR-chid /ˈɔːkɪd/. Mẹo: từ 2 âm tiết kết thúc bằng -ique, -ette, -ee, -oon (antique, cassette, trainee, balloon) → nhấn âm 2 bất kể từ loại."
     },
     {
       "id": "ph-ch-24-17", "level": "ch", "kind": "stress", "rule": "3syl",
@@ -143,7 +143,7 @@
       "ipa": ["/ˈɑːkɪtekt/", "/ˈkærəktə/", "/ˈkrɒnɪkl/", "/kəˈrɪzmə/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 1, 1, 2],
       "correct": 3,
-      "explanation": "<b>charisma</b> /kəˈrɪzmə/ — danh từ 3 âm tiết kết thúc bằng -a thường nhấn âm giữa (như ba-NA-na, a-GEN-da), nên nhấn âm 2. Ba từ còn lại cũng có ch đọc /k/ nhưng nhấn âm 1: AR-chi-tect /ˈɑːkɪtekt/, CHAR-ac-ter /ˈkærəktə/, CHRON-i-cle /ˈkrɒnɪkl/."
+      "explanation": "<b>charisma</b> /kəˈrɪzmə/ — cha-RIS-ma: từ mượn Hy Lạp–Latin, âm tiết giữa -ris- nặng (nguyên âm + cụm phụ âm /zm/) nên nhận trọng âm, giống di-LEM-ma, a-GEN-da, um-BREL-la; nhấn âm 2. Ba từ còn lại cũng có ch đọc /k/ nhưng là danh từ 3 âm tiết nhấn âm 1 theo quy tắc chung: AR-chi-tect /ˈɑːkɪtekt/, CHAR-ac-ter /ˈkærəktə/, CHRON-i-cle /ˈkrɒnɪkl/. Mẹo: danh từ 3 âm tiết kết thúc -a: âm tiết giữa có phụ âm đóng (ris-, lem-, gen-) → nhấn âm giữa; âm tiết giữa mở → nhấn âm 1 (CAM-er-a, CIN-e-ma)."
     },
     {
       "id": "ph-ch-24-18", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -152,7 +152,7 @@
       "ipa": ["/saɪˈkɒlədʒi/", "/ˈɑːkɪtektʃə/", "/tekˈnɒlədʒi/", "/məˈkænɪkl/"],
       "syllables": [4, 4, 4, 4], "stress": [2, 1, 2, 2],
       "correct": 1,
-      "explanation": "<b>architecture</b> /ˈɑːkɪtektʃə/ — giữ trọng âm của architect nên nhấn âm 1 (đuôi -ure không kéo trọng âm). Ba từ còn lại nhấn âm 2 vì đuôi -logy, -ical kéo trọng âm về âm tiết đứng ngay trước: psy-CHOL-ogy /saɪˈkɒlədʒi/, tech-NOL-ogy /tekˈnɒlədʒi/, me-CHAN-ical /məˈkænɪkl/."
+      "explanation": "<b>architecture</b> /ˈɑːkɪtektʃə/ — AR-chi-tec-ture: đuôi -ure không kéo trọng âm nên giữ nguyên trọng âm của AR-chi-tect, nhấn âm 1. Ba từ còn lại nhấn âm 2 vì đuôi đẩy trọng âm về âm tiết thứ 3 từ cuối, tức ngay trước đuôi: psy-CHOL-o-gy /saɪˈkɒlədʒi/ và tech-NOL-o-gy /tekˈnɒlədʒi/ (đuôi -logy), me-CHAN-i-cal /məˈkænɪkl/ (đuôi -ical). Mẹo: -ure, -ment, -ness, -er, -ist không đổi trọng âm từ gốc; -logy, -graphy, -ical, -ity → nhấn âm tiết thứ 3 từ cuối."
     },
     {
       "id": "ph-ch-24-19", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -161,7 +161,7 @@
       "ipa": ["/ˌsaɪənˈtɪfɪk/", "/ˌækəˈdemɪk/", "/ˈmekənɪzəm/", "/ˌdɪpləˈmætɪk/"],
       "syllables": [4, 4, 4, 4], "stress": [3, 3, 1, 3],
       "correct": 2,
-      "explanation": "<b>mechanism</b> /ˈmekənɪzəm/ — đuôi -ism không kéo trọng âm, từ 4 âm tiết này nhấn âm 1 (ch đọc /k/). Ba từ còn lại có đuôi -ic kéo trọng âm về âm tiết ngay trước nó, là âm 3: scien-TIF-ic /ˌsaɪənˈtɪfɪk/, aca-DEM-ic /ˌækəˈdemɪk/, diplo-MAT-ic /ˌdɪpləˈmætɪk/."
+      "explanation": "<b>mechanism</b> /ˈmekənɪzəm/ — MECH-a-nism: đuôi -ism không nhận và không kéo trọng âm về phía nó, từ dài kết thúc -ism thường nhấn âm 1 (ch đọc /k/; như CRIT-i-cism, OP-ti-mism, JOUR-nal-ism). Ba từ còn lại có đuôi -ic kéo trọng âm về âm tiết ngay trước nó, tức âm 3: sci-en-TIF-ic /ˌsaɪənˈtɪfɪk/, ac-a-DEM-ic /ˌækəˈdemɪk/, dip-lo-MAT-ic /ˌdɪpləˈmætɪk/. Mẹo: -ic → nhấn ngay trước đuôi; -ism → không đổi trọng âm, đừng nhầm MECH-a-nism với me-CHAN-ic."
     },
     {
       "id": "ph-ch-24-20", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -170,7 +170,7 @@
       "ipa": ["/ɪˌlekˈtrɪʃn/", "/saɪˈkaɪətrɪst/", "/krəˈnɒlədʒi/", "/məˈnɒtənəs/"],
       "syllables": [4, 4, 4, 4], "stress": [3, 2, 2, 2],
       "correct": 0,
-      "explanation": "<b>electrician</b> /ɪˌlekˈtrɪʃn/ — đuôi -ian kéo trọng âm về âm tiết đứng ngay trước nó, là âm 3. Ba từ còn lại nhấn âm 2: psy-CHI-atrist /saɪˈkaɪətrɪst/, chro-NOL-ogy /krəˈnɒlədʒi/ (đuôi -logy), mo-NOT-onous /məˈnɒtənəs/ (đuôi -ous kéo về hai âm trước nó)."
+      "explanation": "<b>electrician</b> /ɪˌlekˈtrɪʃn/ — e-lec-TRI-cian: đuôi -ian kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 3. Ba từ còn lại nhấn âm 2: psy-CHI-a-trist /saɪˈkaɪətrɪst/ (đuôi -ist giữ trọng âm của psy-CHI-a-try), chro-NOL-o-gy /krəˈnɒlədʒi/ (đuôi -logy nhấn âm tiết thứ 3 từ cuối), mo-NOT-o-nous /məˈnɒtənəs/ (đuôi -ous không nhận trọng âm, như a-NON-y-mous, ri-DIC-u-lous). Mẹo: -ian, -ion, -ic → nhấn ngay trước đuôi; -logy → âm tiết thứ 3 từ cuối; -ist, -ous → không tự nhận trọng âm."
     }
   ]
 }

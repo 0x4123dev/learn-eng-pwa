@@ -91,6 +91,37 @@ suite('Grammar & Vocabulary bank: what one file cannot see', () => {
     }
   });
 
+  test('every explanation names the deciding point AND dismisses each wrong option by name', () => {
+    // The review of 2026-09-11 set the standard: one lead sentence with the
+    // grammar point / meaning contrast, then "✗ option — why" for each of the
+    // three distractors. A child who got it wrong must learn what the OTHER
+    // words mean, not just that they lose.
+    const strip = s => String(s).replace(/<[^>]+>/g, ' ').toLowerCase();
+    const thin = [], missing = [];
+    for (const q of GRAMMAR_VOCAB_ITEMS) {
+      const e = strip(q.explanation);
+      if (e.replace(/[^a-z]+/g, ' ').trim().split(' ').length < 25) thin.push(q.id);
+      const wrong = q.options.filter((_, i) => i !== q.correct);
+      // A double-blank option "grip / into" counts as named when either half
+      // is; an idiom quoted in its dictionary form ("burn your boats" for the
+      // option "burnt his boats") counts too — the first and last content
+      // words, stemmed, must both appear.
+      const STOP = new Set(['a', 'an', 'the', 'his', 'her', 'their', 'your', 'my', 'our', 'its', 'to', 'of', 'in', 'on', 'at', 'up', 'out']);
+      const stem = w => w.replace(/(ing|ed|es|s|t)$/, '').slice(0, 3);
+      const mentioned = part => {
+        const p = part.toLowerCase().trim();
+        if (e.includes(p)) return true;
+        const words = p.split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w));
+        if (!words.length) return false;
+        return [words[0], words[words.length - 1]].every(w => e.includes(stem(w)));
+      };
+      const named = wrong.filter(o => o.split(' / ').some(mentioned));
+      if (named.length < 3) missing.push(q.id + '(' + named.length + '/3)');
+    }
+    assert.deepEqual(thin, [], thin.length + ' explanations under 25 words');
+    assert.deepEqual(missing, [], missing.length + ' explanations do not name every wrong option: ' + missing.slice(0, 12).join(', '));
+  });
+
   test('the idioms and phrasal verbs every file was told to use are all in the bank, once each', () => {
     // Answers are inflected in a sentence ("looked after", "threw him under
     // the bus"), so match on the content words, stemmed: the pronoun slots

@@ -9,7 +9,7 @@
       "correct": 1,
       "answer": "was crossing",
       "vi": "Lan đang băng qua đường thì một chiếc xe máy bất ngờ lao ra trước mặt cô.",
-      "explanation": "A longer action already in progress (crossing the road) that is interrupted by a sudden short action in the past simple (<i>pulled out</i>) takes the past continuous: <b>was crossing</b>; <b>crossed</b> would make the two actions happen one after the other, and the perfect forms do not fit a <b>when</b> interruption."
+      "explanation": "Past continuous <b>was crossing</b>: a longer action in progress is interrupted by a short past-simple action after <b>when</b> (<b>suddenly pulled out</b>). ✗ <b>crossed</b> — past simple would make the crossing finish before the motorbike appeared, so nothing is interrupted; ✗ <b>has crossed</b> — present perfect cannot sit in a story told in the past (<i>pulled out</i>); ✗ <b>had been crossing</b> — past perfect continuous puts the crossing before an earlier past point, but the two events happen at the same moment."
     },
     {
       "id": "gv-kc-09-2",
@@ -20,7 +20,7 @@
       "correct": 2,
       "answer": "portions",
       "vi": "Bác sĩ nói Nam nên ăn những khẩu phần nhỏ hơn vào bữa tối nếu muốn giảm cân.",
-      "explanation": "A <b>portion</b> is the amount of food served to one person, so you can eat a smaller one; <b>ingredients</b> are what a dish is made of, a <b>flavour</b> is a taste and a <b>recipe</b> is a set of cooking instructions."
+      "explanation": "A <b>portion</b> is the amount of food served to one person, so eating <b>smaller portions</b> is how you <b>lose weight</b>. ✗ <b>ingredients</b> — the things a dish is made from; you don't eat 'smaller' ones; ✗ <b>flavours</b> — tastes, not amounts of food; ✗ <b>recipes</b> — sets of cooking instructions, which you follow, not eat."
     },
     {
       "id": "gv-kc-09-3",
@@ -31,7 +31,7 @@
       "correct": 0,
       "answer": "make",
       "vi": "Bạn nên đặt lịch hẹn với nha sĩ trước khi kỳ nghỉ bắt đầu.",
-      "explanation": "The verb that collocates with <b>appointment</b> is <b>make</b>: you <b>make an appointment</b>; <b>do</b>, <b>take</b> and <b>put</b> do not go with it."
+      "explanation": "Collocation: you <b>make an appointment</b> (arrange a fixed time to see someone). ✗ <b>do</b> — <i>do</i> goes with tasks (<i>do homework</i>), never with <i>appointment</i>; ✗ <b>take</b> — you <i>take</i> a test or a photo, not an appointment; ✗ <b>put</b> — needs a place or an object (<i>put it down</i>) and has no meaning with <i>appointment</i>."
     },
     {
       "id": "gv-kc-09-4",
@@ -42,7 +42,7 @@
       "correct": 3,
       "answer": "get away with",
       "vi": "Quy định của diễn đàn rất nghiêm, nên không ai có thể đăng bình luận thô lỗ mà thoát được lâu.",
-      "explanation": "<b>Get away with</b> something means to do something wrong without being punished; <b>get on with</b> is to continue, <b>get round to</b> is to finally find time for, and <b>get down to</b> is to start working seriously."
+      "explanation": "<b>Get away with</b> = do something wrong without being punished; the clue is <b>strict rules</b> and <b>rude comments</b>. ✗ <b>get on with</b> — continue doing (or have a good relationship with); ✗ <b>get round to</b> — finally find time to do; ✗ <b>get down to</b> — start working seriously on. None of these involves escaping punishment."
     },
     {
       "id": "gv-kc-09-5",
@@ -53,7 +53,7 @@
       "correct": 1,
       "answer": "who",
       "vi": "Vị bác sĩ đã chữa cho anh tôi vừa chuyển đến một bệnh viện ở Huế.",
-      "explanation": "The relative pronoun is the <b>subject</b> of <i>treated</i> and refers to a person, so it must be <b>who</b>; <b>whom</b> is only an object, <b>whose</b> shows possession, and <b>which</b> is for things."
+      "explanation": "The relative pronoun is the <b>subject</b> of <b>treated</b> (no other subject follows it) and refers to a person, <b>the doctor</b>, so it must be <b>who</b>. ✗ <b>whom</b> — object form only; here the pronoun does the treating; ✗ <b>whose</b> — shows possession and needs a noun after it (<i>whose patient</i>); ✗ <b>which</b> — for things, not people."
     },
     {
       "id": "gv-kc-09-6",
@@ -64,7 +64,7 @@
       "correct": 0,
       "answer": "walking on eggshells",
       "vi": "Từ khi bà đi viện về, cả nhà ai cũng phải rón rén giữ ý quanh bà để không làm bà buồn.",
-      "explanation": "To <b>walk on eggshells</b> is to be very careful not to offend or upset someone; <b>walk on air</b> means to be extremely happy, <b>walk on thin ice</b> is to be in a risky situation, and <b>walk on water</b> is to do the impossible."
+      "explanation": "<b>Walk on eggshells</b> = be very careful not to upset someone; the clue is <b>so as not to upset her</b>. ✗ <b>walking on air</b> — feeling extremely happy; ✗ <b>walking on thin ice</b> — being in a risky situation yourself; ✗ <b>walking on water</b> — doing the impossible. Only <i>eggshells</i> is about handling another person gently."
     },
     {
       "id": "gv-kc-09-7",
@@ -75,7 +75,7 @@
       "correct": 2,
       "answer": "needn't have taken",
       "vi": "Bạn đã không cần phải đi taxi từ sân bay; xe buýt của khách sạn miễn phí cho mọi khách.",
-      "explanation": "<b>Needn't have + past participle</b> says that something was done although it was not necessary; <b>can't have</b> and <b>must have</b> express deductions about what happened, which do not fit here, and <b>mustn't have</b> is not used for a past deduction."
+      "explanation": "<b>Needn't have + past participle</b> = you did it, but it was not necessary; the clue is <b>the hotel bus was free</b>, so the taxi was a waste. ✗ <b>must have taken</b> — a confident guess that you did take one, not a comment on necessity; ✗ <b>can't have taken</b> — a guess that you did not take one, which contradicts the sentence; ✗ <b>mustn't have taken</b> — <i>mustn't</i> is not used for past deduction or past necessity."
     },
     {
       "id": "gv-kc-09-8",
@@ -86,7 +86,7 @@
       "correct": 3,
       "answer": "menu",
       "vi": "Người phục vụ mang thực đơn ra để chúng tôi chọn món.",
-      "explanation": "The <b>menu</b> is the list of dishes you choose from before ordering; a <b>dish</b>, a <b>dessert</b> and a <b>snack</b> are kinds of food, not something you choose from."
+      "explanation": "The <b>menu</b> is the list you <b>choose</b> from before you <b>order</b>. ✗ <b>dish</b> — one prepared food item, something you order, not choose from; ✗ <b>dessert</b> — the sweet course at the end of a meal; ✗ <b>snack</b> — a small quick bite between meals. All three are food, not a list of food."
     },
     {
       "id": "gv-kc-09-9",
@@ -97,7 +97,7 @@
       "correct": 0,
       "answer": "has been talking",
       "vi": "Nam trông mệt mỏi vì cậu ấy nói chuyện điện thoại từ tám giờ sáng đến giờ.",
-      "explanation": "An activity that started in the past and is still going on, with <b>since</b> and a visible result (he looks tired), takes the present perfect continuous: <b>has been talking</b>."
+      "explanation": "Present perfect continuous <b>has been talking</b>: an action that began in the past (<b>since eight o'clock</b>) and continues to now, with a visible present result (<b>looks tired</b>). ✗ <b>is talking</b> — present continuous describes only now and cannot take <i>since</i>; ✗ <b>was talking</b> — past continuous means the call is over, but he is still tired from an ongoing one; ✗ <b>talks</b> — present simple is for habits, not an action lasting since a specific time."
     },
     {
       "id": "gv-kc-09-10",
@@ -108,7 +108,7 @@
       "correct": 1,
       "answer": "few",
       "vi": "Sáng sớm trên bãi biển có rất ít khách du lịch, nên nơi đó yên bình tuyệt vời.",
-      "explanation": "<b>Tourists</b> is a plural countable noun, so it takes <b>few</b> (almost none), and <b>very</b> can only go before <b>few</b>, not <b>a few</b>; <b>little</b> and <b>a little</b> are for uncountable nouns."
+      "explanation": "<b>Tourists</b> is plural countable, and the meaning is 'almost none' (it was <b>peaceful</b>), so <b>few</b>; <b>very</b> also confirms it, since <i>very</i> goes only before <i>few</i>. ✗ <b>a few</b> — means 'some' and cannot follow <i>very</i>; ✗ <b>little</b> — for uncountable nouns (<i>little time</i>); ✗ <b>a little</b> — uncountable and positive ('some'), both wrong here."
     },
     {
       "id": "gv-kc-09-11",
@@ -119,7 +119,7 @@
       "correct": 3,
       "answer": "take",
       "vi": "Nhớ chụp một tấm ảnh hộ chiếu của bạn trước khi đi nước ngoài nhé.",
-      "explanation": "In English you <b>take a photo</b>; <b>make</b>, <b>do</b> and <b>catch</b> do not collocate with <b>photo</b>."
+      "explanation": "Collocation: you <b>take a photo</b>. ✗ <b>make</b> — you <i>make</i> a copy or a film, but not a photo; ✗ <b>do</b> — goes with tasks (<i>do the shopping</i>), not with <i>photo</i>; ✗ <b>catch</b> — you <i>catch</i> a bus or a cold; with a photo it would mean nothing."
     },
     {
       "id": "gv-kc-09-12",
@@ -130,7 +130,7 @@
       "correct": 2,
       "answer": "speciality",
       "vi": "Bún bò Huế là một đặc sản nổi tiếng của miền Trung Việt Nam mà du khách nào cũng nên thử.",
-      "explanation": "A <b>speciality</b> is a food that a place is famous for; an <b>ingredient</b> is one part of a dish, a <b>diet</b> is what a person usually eats, and a <b>flavour</b> is a taste."
+      "explanation": "A <b>speciality</b> is a food a place is <b>famous</b> for, which fits <b>of central Vietnam</b> and <b>every visitor should try</b>. ✗ <b>ingredient</b> — one component of a dish, but bún bò Huế is a whole dish; ✗ <b>diet</b> — what a person regularly eats, not a named dish; ✗ <b>flavour</b> — a taste, not something a region is famous for making."
     },
     {
       "id": "gv-kc-09-13",
@@ -141,7 +141,7 @@
       "correct": 0,
       "answer": "hadn't left",
       "vi": "Nếu tôi không để quên sạc điện thoại ở nhà thì giờ tôi có thể cho bạn xem ảnh kỳ nghỉ rồi.",
-      "explanation": "This is a <b>mixed conditional</b>: a past condition (I left the charger at home) with a present result (I could show you now), so the if-clause takes the past perfect <b>hadn't left</b>."
+      "explanation": "<b>Mixed conditional</b>: a past condition (leaving the charger at home) with a present result (<b>could show you … now</b>), so the if-clause takes the past perfect <b>hadn't left</b>. ✗ <b>didn't leave</b> — past simple would make a second conditional about a present or future situation, but the leaving already happened; ✗ <b>haven't left</b> — present perfect does not appear in unreal conditions; ✗ <b>wouldn't leave</b> — <i>would</i> belongs in the result clause, never after <i>if</i>."
     },
     {
       "id": "gv-kc-09-14",
@@ -152,7 +152,7 @@
       "correct": 1,
       "answer": "keep up with",
       "vi": "Ông thấy khó theo kịp tất cả những ứng dụng mới mà các cháu dùng.",
-      "explanation": "<b>Keep up with</b> means to stay at the same level as something that is changing fast; <b>keep on with</b> is to continue, <b>keep out of</b> is to stay away from trouble, and <b>keep away from</b> is to avoid going near."
+      "explanation": "<b>Keep up with</b> = stay at the same level as something changing fast, the clue being <b>all the new apps</b>. ✗ <b>keep on with</b> — continue doing something you have started; ✗ <b>keep out of</b> — stay away from trouble or a place; ✗ <b>keep away from</b> — avoid going near. Only <i>keep up with</i> is about following change."
     },
     {
       "id": "gv-kc-09-15",
@@ -163,7 +163,7 @@
       "correct": 2,
       "answer": "was checking",
       "vi": "Trong lúc tôi đang xem trang web của khách sạn thì kết nối mạng bỗng nhiên bị mất.",
-      "explanation": "A longer action in progress (<b>while</b>) that is interrupted by a short past action takes the past continuous: <b>was checking</b>."
+      "explanation": "Past continuous <b>was checking</b>: <b>while</b> introduces a longer action in progress that is interrupted by a short past-simple event (<b>suddenly dropped</b>). ✗ <b>checked</b> — past simple makes two finished actions in sequence, not one interrupting the other; ✗ <b>have checked</b> — present perfect cannot combine with a past-simple main clause; ✗ <b>am checking</b> — present continuous clashes with the past time of <i>dropped</i>."
     },
     {
       "id": "gv-kc-09-16",
@@ -174,7 +174,7 @@
       "correct": 3,
       "answer": "of which",
       "vi": "Khách sạn đó, với các phòng đều hướng ra biển, đã kín chỗ cho đến tận tháng Tám.",
-      "explanation": "When possession is expressed after the noun, a thing (the hotel) takes <b>of which</b>: <i>the rooms of which</i> = <i>whose rooms</i>; <b>of whom</b> is for people, <b>whose</b> must stand <b>before</b> the noun, and <b>in which</b> would mean the rooms are inside something."
+      "explanation": "Possession placed after the noun for a thing takes <b>of which</b>: <i>the rooms of which</i> = <i>whose rooms</i> (the hotel's rooms). ✗ <b>whose</b> — must come <b>before</b> the noun (<i>whose rooms all face</i>), not after it; ✗ <b>of whom</b> — for people, but a hotel is a thing; ✗ <b>in which</b> — would mean the rooms are inside something, not that they belong to the hotel."
     },
     {
       "id": "gv-kc-09-17",
@@ -185,7 +185,7 @@
       "correct": 1,
       "answer": "to hand in",
       "vi": "Lễ tân nhắc chúng tôi nộp lại chìa khóa phòng trước khi rời khách sạn.",
-      "explanation": "<b>Remind somebody to do</b> something takes the <b>to-infinitive</b>; the phrasal verb <b>hand in</b> means to give something to the person in charge."
+      "explanation": "<b>Remind somebody to do</b> something takes an object + <b>to-infinitive</b>: <b>reminded us to hand in</b>. ✗ <b>handing in</b> — the -ing form follows verbs like <i>suggest</i> or <i>avoid</i>, not <i>remind + object</i>; ✗ <b>hand in</b> — the bare infinitive follows <i>make</i>/<i>let</i>, not <i>remind</i>; ✗ <b>to handing in</b> — <i>to</i> + -ing only works when <i>to</i> is a preposition (<i>look forward to</i>), which it is not here."
     },
     {
       "id": "gv-kc-09-18",
@@ -196,7 +196,7 @@
       "correct": 0,
       "answer": "wear thin",
       "vi": "Tôi bắt đầu hết kiên nhẫn rồi — Wi-Fi ở nhà nghỉ đã hỏng lần thứ ba trong ngày hôm nay.",
-      "explanation": "When your patience <b>wears thin</b>, you gradually stop being able to put up with something; a joke <b>falls flat</b>, your mind <b>goes blank</b>, and your imagination <b>runs wild</b>."
+      "explanation": "When your patience <b>wears thin</b>, you gradually lose it; the clue is <b>for the third time today</b>. ✗ <b>fall flat</b> — a joke or plan fails to get the effect wanted; ✗ <b>go blank</b> — your mind suddenly remembers nothing; ✗ <b>run wild</b> — your imagination or children get out of control. None of these goes with <i>patience</i>."
     },
     {
       "id": "gv-kc-09-19",
@@ -207,7 +207,7 @@
       "correct": 3,
       "answer": "flavour",
       "vi": "Món súp có vị gừng rất đậm, và điều đó thực sự giúp cổ họng đau của tôi dễ chịu hơn.",
-      "explanation": "The <b>flavour</b> of a food is its particular taste; <b>texture</b> is how it feels in the mouth, <b>appetite</b> is the desire to eat, and a <b>portion</b> is the amount served."
+      "explanation": "The <b>flavour</b> of a food is its particular taste, so a soup can have a <b>strong flavour of ginger</b>. ✗ <b>texture</b> — how food feels in the mouth (smooth, crunchy), not what it tastes of; ✗ <b>appetite</b> — a person's desire to eat, not a quality of soup; ✗ <b>portion</b> — the amount served, not the taste."
     },
     {
       "id": "gv-kc-09-20",
@@ -218,7 +218,7 @@
       "correct": 2,
       "answer": "whereas",
       "vi": "Chị tôi thích những khu chợ đêm đông đúc, trong khi tôi lại thích những quán cà phê yên tĩnh bên sông.",
-      "explanation": "<b>Whereas</b> joins two clauses that contrast two different people or things; <b>despite</b> cannot be followed by a clause, <b>so that</b> gives a purpose, and <b>otherwise</b> means 'if not'."
+      "explanation": "<b>Whereas</b> links two full clauses that <b>contrast</b> two people: sister loves crowded markets vs. I prefer quiet cafés. ✗ <b>despite</b> — a preposition, so it cannot be followed by a clause with a subject and verb; ✗ <b>so that</b> — gives a purpose, but my preference is not the purpose of hers; ✗ <b>otherwise</b> — means 'if not', which makes no sense between two likes."
     },
     {
       "id": "gv-kc-09-21",
@@ -229,7 +229,7 @@
       "correct": 0,
       "answer": "must",
       "vi": "Hành khách phải chuyển điện thoại sang chế độ máy bay trước khi máy bay cất cánh; đó là quy định của hãng.",
-      "explanation": "A rule or strong obligation is expressed with <b>must</b>; <b>might</b> and <b>could</b> only talk about possibility, and <b>would</b> is for hypothetical or repeated past actions."
+      "explanation": "A rule or strong obligation takes <b>must</b>; the clue is <b>it is an airline rule</b>. ✗ <b>might</b> — only a possibility, not an obligation; ✗ <b>could</b> — ability or possibility, not something required; ✗ <b>would</b> — hypothetical or past habit, not a present rule."
     },
     {
       "id": "gv-kc-09-22",
@@ -240,7 +240,7 @@
       "correct": 1,
       "answer": "caught",
       "vi": "Lan bị cảm nặng trên máy bay và nằm giường suốt hai ngày đầu của kỳ nghỉ.",
-      "explanation": "You <b>catch a cold</b> (or the flu); <b>take</b>, <b>make</b> and <b>hold</b> do not collocate with an illness."
+      "explanation": "Collocation: you <b>catch a cold</b> (become ill with one). ✗ <b>took</b> — you <i>take</i> medicine or a break, not an illness; ✗ <b>made</b> — you <i>make</i> things, and a cold is not something you create; ✗ <b>held</b> — you <i>hold</i> objects or meetings, not illnesses."
     },
     {
       "id": "gv-kc-09-23",
@@ -251,7 +251,7 @@
       "correct": 2,
       "answer": "Hardly",
       "vi": "Chúng tôi vừa mới lên máy bay thì em bé ngồi sau bắt đầu khóc.",
-      "explanation": "<b>Hardly</b> + inverted past perfect pairs with <b>when</b>: <i>Hardly had we boarded … when …</i>; <b>No sooner</b> needs <b>than</b>, and <b>Not until</b> and <b>Only when</b> are followed by a clause before the inversion."
+      "explanation": "Inversion <b>Hardly had we boarded … when …</b>: <b>Hardly</b> + past perfect pairs with <b>when</b> for an event that happened almost immediately. ✗ <b>No sooner</b> — must pair with <b>than</b>, not <i>when</i>; ✗ <b>Not until</b> — needs a time clause first (<i>Not until we boarded did …</i>), and the inversion comes in the main clause; ✗ <b>Only when</b> — likewise needs a clause before the inversion, not <i>had we</i> directly."
     },
     {
       "id": "gv-kc-09-24",
@@ -262,7 +262,7 @@
       "correct": 3,
       "answer": "diet",
       "vi": "Sau khi đo huyết áp, bác sĩ cho ông theo chế độ ăn ít muối.",
-      "explanation": "A <b>diet</b> is the kind of food a person regularly eats, especially for health reasons; a <b>meal</b> and a <b>dish</b> are single occasions of eating, and a <b>menu</b> is a list of food in a restaurant."
+      "explanation": "A <b>diet</b> is the food a person regularly eats, often for health, so a doctor puts a patient <b>on a low-salt diet</b> after a <b>blood pressure test</b>. ✗ <b>meal</b> — one occasion of eating, not a long-term plan; ✗ <b>dish</b> — one prepared food item; ✗ <b>menu</b> — a restaurant's list of food, not a health plan."
     },
     {
       "id": "gv-kc-09-25",
@@ -273,6 +273,6 @@
       "correct": 1,
       "answer": "had left",
       "vi": "Khi cuối cùng chúng tôi tới được cửa ra máy bay thì máy bay đã cất cánh rồi.",
-      "explanation": "The plane's departure happened <b>before</b> the past moment of reaching the gate, so the earlier action takes the past perfect: <b>had left</b>."
+      "explanation": "Past perfect <b>had left</b>: the plane's departure happened <b>before</b> the past moment of <b>reached the gate</b>, and <b>already</b> confirms the earlier action. ✗ <b>left</b> — past simple would make the two events happen at the same time or in order, but the plane was gone first; ✗ <b>has left</b> — present perfect clashes with the past-simple <i>reached</i>; ✗ <b>was leaving</b> — past continuous means it was still leaving as we arrived, but <i>already</i> says it was gone."
     }
   ] }

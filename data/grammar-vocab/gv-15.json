@@ -9,7 +9,7 @@
       "correct": 1,
       "answer": "is swimming",
       "vi": "Nhìn kìa! Một con cá voi đang bơi ngay cạnh thuyền của chúng ta!",
-      "explanation": "<b>Look!</b> points to something happening at this moment, so the present continuous <b>is swimming</b> is needed; the present simple, past simple and present perfect do not describe an action in progress now."
+      "explanation": "<b>Look!</b> means the action is happening at this very moment, so the present continuous <b>is swimming</b> is needed. ✗ <b>swims</b> — present simple is for habits and facts, not an action in progress now; ✗ <b>swam</b> — past simple puts the action in the finished past, but the whale is here now; ✗ <b>has swum</b> — present perfect gives a completed result, not something we are watching happen."
     },
     {
       "id": "gv-kc-15-2",
@@ -20,7 +20,7 @@
       "correct": 0,
       "answer": "missed",
       "vi": "Lan lỡ chuyến xe buýt sớm ra biển vì cô ấy dậy muộn.",
-      "explanation": "You <b>miss</b> a bus or train when you arrive too late to catch it. You <b>lose</b> an object or a match, you <b>fail</b> an exam, and you <b>drop</b> something you are holding."
+      "explanation": "You <b>miss</b> a bus, train or plane when you arrive too late to catch it, and <b>woke up late</b> is the clue. ✗ <b>lost</b> — you lose an object, a match or your way, not a vehicle you failed to catch; ✗ <b>failed</b> — you fail an exam or fail to do something; a bus cannot be its object; ✗ <b>dropped</b> — to let something fall from your hands."
     },
     {
       "id": "gv-kc-15-3",
@@ -31,7 +31,7 @@
       "correct": 2,
       "answer": "strong",
       "vi": "Chuyến đi thuyền bị hủy vì gió mạnh dọc bờ biển.",
-      "explanation": "Wind that blows with great force is <b>strong wind</b>. <b>Heavy</b> collocates with rain and snow, while <b>hard</b> and <b>big</b> do not go with wind."
+      "explanation": "Wind that blows with great force is <b>strong wind</b>; the clue is that it was powerful enough to <b>cancel the boat trip</b>. ✗ <b>heavy</b> — collocates with rain, snow and traffic, not wind; ✗ <b>hard</b> — describes work, questions or a hard frost, never wind; ✗ <b>big</b> — used for size (a big wave), not for the force of wind."
     },
     {
       "id": "gv-kc-15-4",
@@ -42,7 +42,7 @@
       "correct": 3,
       "answer": "the icing on the cake",
       "vi": "Khách sạn rất đẹp, và chuyến đi thuyền miễn phí ra đảo là phần thưởng tuyệt vời thêm vào.",
-      "explanation": "<b>The icing on the cake</b> is something extra that makes a good situation even better. <b>The tip of the iceberg</b> is a small visible part of a big problem, <b>a piece of cake</b> is something very easy, and <b>the last straw</b> is the final problem that makes you lose patience."
+      "explanation": "<b>The icing on the cake</b> is an extra good thing that makes an already good situation (<b>the hotel was lovely</b>) even better. ✗ <b>the tip of the iceberg</b> — a small visible part of a much bigger problem; ✗ <b>a piece of cake</b> — something very easy to do; ✗ <b>the last straw</b> — the final problem that makes you lose patience, the opposite of good news."
     },
     {
       "id": "gv-kc-15-5",
@@ -53,7 +53,7 @@
       "correct": 0,
       "answer": "blows over",
       "vi": "Chúng ta hãy ở trong lều cho đến khi cơn bão qua đi.",
-      "explanation": "A storm or an argument <b>blows over</b> when it passes and ends. <b>Blow up</b> means to explode, <b>blow out</b> is what you do to a candle, and a car or machine <b>breaks down</b> when it stops working."
+      "explanation": "A storm or an argument <b>blows over</b> when it passes and things return to normal; <b>stay inside until</b> shows we are waiting for it to end. ✗ <b>blows up</b> — explodes, or suddenly loses its temper; ✗ <b>blows out</b> — puts out a candle or flame with a breath; ✗ <b>breaks down</b> — a car or machine stops working, or a person starts crying."
     },
     {
       "id": "gv-kc-15-6",
@@ -64,7 +64,7 @@
       "correct": 1,
       "answer": "can't have pushed",
       "vi": "Con chó không thể nào tự đẩy cổng mở được; cổng đã bị khóa suốt đêm.",
-      "explanation": "<b>Can't have + past participle</b> says we are sure something did NOT happen in the past. <b>Mustn't have</b> is not used for past deduction, <b>shouldn't have</b> criticises an action that did happen, and <b>needn't have</b> means it was unnecessary."
+      "explanation": "<b>Can't have + past participle</b> is a confident deduction that something did NOT happen; the clue <b>it was locked all night</b> makes it impossible. ✗ <b>mustn't have pushed</b> — 'must have' is for positive deductions only; its negative is 'can't have'; ✗ <b>shouldn't have pushed</b> — criticises something that really happened; ✗ <b>needn't have pushed</b> — says it was done but was unnecessary."
     },
     {
       "id": "gv-kc-15-7",
@@ -75,7 +75,7 @@
       "correct": 2,
       "answer": "which made",
       "vi": "Cả lớp đều đậu bài kiểm tra Hóa, điều đó khiến cô giáo rất tự hào.",
-      "explanation": "After a comma, <b>which</b> can refer back to the WHOLE previous clause (the fact that the class passed), so <b>, which made</b> is correct. <b>That</b> cannot follow a comma in this way, <b>what</b> does not refer back to a clause, and <b>who</b> is only for people."
+      "explanation": "After a comma, <b>which</b> can refer back to the WHOLE clause before it (the fact that everyone passed), so <b>, which made</b> is right. ✗ <b>that made</b> — 'that' cannot start a non-defining clause after a comma; ✗ <b>what made</b> — 'what' means 'the thing that' and cannot refer back to a clause; ✗ <b>who made</b> — 'who' is for people, and no person is the antecedent here."
     },
     {
       "id": "gv-kc-15-8",
@@ -86,7 +86,7 @@
       "correct": 3,
       "answer": "beat",
       "vi": "Đội trường mình đã thắng đội khách 3–1 trong trận chung kết cuộc thi đố vui về môi trường.",
-      "explanation": "You <b>beat</b> a person or a team (the opponent). You <b>win</b> a match or a prize, and you <b>gain</b> or <b>achieve</b> something such as experience or a goal, never an opponent."
+      "explanation": "You <b>beat</b> an opponent, and the object here is <b>the visitors</b> (the other team). ✗ <b>won</b> — you win a match, a game or a prize, not the other team; ✗ <b>gained</b> — you gain experience, weight or confidence, never an opponent; ✗ <b>achieved</b> — you achieve a goal or success, never a team."
     },
     {
       "id": "gv-kc-15-9",
@@ -97,7 +97,7 @@
       "correct": 0,
       "answer": "will have visited",
       "vi": "Đến mùa hè năm sau, gia đình tôi sẽ đi hết mọi bãi biển ở Đà Nẵng.",
-      "explanation": "<b>By + a future time</b> marks an action completed before that point, so the future perfect <b>will have visited</b> is used; the simple future, present perfect and present continuous do not show completion by a deadline."
+      "explanation": "<b>By next summer</b> marks a deadline in the future, and an action finished before that deadline takes the future perfect <b>will have visited</b>. ✗ <b>will visit</b> — simple future says only that it happens later, not that it is complete by then; ✗ <b>has visited</b> — present perfect links to now, not to a future point; ✗ <b>is visiting</b> — an action in progress, not one finished."
     },
     {
       "id": "gv-kc-15-10",
@@ -108,7 +108,7 @@
       "correct": 1,
       "answer": "plenty of",
       "vi": "Đừng lo về bữa trưa – mẹ đã gói rất nhiều bánh mì kẹp cho cả nhóm rồi.",
-      "explanation": "<b>Plenty of</b> (more than enough) is used with BOTH plural countable nouns like <b>sandwiches</b> and uncountable nouns. <b>Much</b>, <b>a great deal of</b> and <b>a large amount of</b> go only with uncountable nouns."
+      "explanation": "<b>Plenty of</b> (more than enough) is used with BOTH plural countable nouns like <b>sandwiches</b> and uncountable nouns. ✗ <b>much</b> — only with uncountable nouns (much food), and mainly in negatives and questions; ✗ <b>a great deal of</b> — only with uncountable nouns (a great deal of time); ✗ <b>a large amount of</b> — only with uncountable nouns; countable plurals take 'a large number of'."
     },
     {
       "id": "gv-kc-15-11",
@@ -119,7 +119,7 @@
       "correct": 2,
       "answer": "brushing up on",
       "vi": "Trước chuyến đi Úc, bố dành mỗi tối để ôn lại tiếng Anh.",
-      "explanation": "<b>Spend time + -ing</b>: <b>spent every evening brushing up on</b> (improving his knowledge again). An infinitive, a base form or a past form cannot follow <b>spend time</b>."
+      "explanation": "<b>Spend + time + -ing</b> is a fixed pattern, so <b>spent every evening brushing up on</b> (improving his rusty English) is right. ✗ <b>to brush up on</b> — 'spend time' never takes a to-infinitive; ✗ <b>brush up on</b> — a bare verb cannot follow the noun 'evening'; ✗ <b>brushed up on</b> — a second past tense would need 'and' to join it to 'spent'."
     },
     {
       "id": "gv-kc-15-12",
@@ -130,7 +130,7 @@
       "correct": 3,
       "answer": "took",
       "vi": "Chúng tôi đã chụp hàng trăm bức ảnh về những con voi ở khu bảo tồn.",
-      "explanation": "In English you <b>take a photo</b>. <b>Make</b>, <b>do</b> and <b>catch</b> do not collocate with <b>photo</b>."
+      "explanation": "The English collocation is <b>take a photo</b>, so <b>took hundreds of photos</b> is right. ✗ <b>made</b> — you make a cake or a decision; 'make a photo' is a direct-translation error; ✗ <b>did</b> — 'do' goes with homework, the shopping or a job, not photos; ✗ <b>caught</b> — you catch a ball, a bus or a cold, not a photo."
     },
     {
       "id": "gv-kc-15-13",
@@ -141,7 +141,7 @@
       "correct": 0,
       "answer": "failure",
       "vi": "Kế hoạch nhân giống vẹt quý hiếm của sở thú đã thất bại khi không quả trứng nào nở.",
-      "explanation": "A plan that does not achieve its aim <b>ends in failure</b>. A <b>defeat</b> is being beaten by an opponent in a contest, a <b>loss</b> is something you no longer have, and a <b>mistake</b> is a wrong action, not a result."
+      "explanation": "A plan that does not reach its aim <b>ends in failure</b>; the clue is <b>none of the eggs hatched</b>. ✗ <b>defeat</b> — being beaten by an opponent in a contest or war, but the zoo was not competing; ✗ <b>loss</b> — losing something you had (a loss of money), not a plan that did not work; ✗ <b>mistake</b> — a wrong action or choice, not the result of a plan."
     },
     {
       "id": "gv-kc-15-14",
@@ -152,7 +152,7 @@
       "correct": 1,
       "answer": "on the other hand",
       "vi": "Sống ở trung tâm thành phố rất thú vị; mặt khác, tiền thuê nhà thì đắt khủng khiếp.",
-      "explanation": "<b>On the other hand</b> presents the opposite side of a situation (exciting, but expensive). <b>In addition</b> adds a similar point, <b>as a result</b> shows a consequence, and <b>for instance</b> gives an example."
+      "explanation": "<b>On the other hand</b> introduces the opposite side of a situation: exciting BUT <b>the rent costs a fortune</b>. ✗ <b>in addition</b> — adds a similar point, but expensive rent is a contrast, not another plus; ✗ <b>as a result</b> — shows a consequence, and high rent is not caused by excitement; ✗ <b>for instance</b> — gives an example of the previous point, not a disadvantage."
     },
     {
       "id": "gv-kc-15-15",
@@ -163,7 +163,7 @@
       "correct": 2,
       "answer": "boils down to",
       "vi": "Việc chọn đi nghỉ ở đâu thường quy về chuyện bạn có bao nhiêu tiền.",
-      "explanation": "Something <b>boils down to</b> one thing when that thing is the real deciding factor. <b>Boil over</b> is what milk does on the stove, <b>break down</b> means to stop working, and <b>put up with</b> means to tolerate."
+      "explanation": "Something <b>boils down to</b> one thing when that thing is the real deciding factor, here <b>how much money you have</b>. ✗ <b>boils over</b> — liquid rises and spills from a pan, or anger explodes; it also has no 'to' for the object; ✗ <b>breaks down</b> — stops working, or is divided into parts; ✗ <b>puts up with</b> — tolerates something unpleasant."
     },
     {
       "id": "gv-kc-15-16",
@@ -174,7 +174,7 @@
       "correct": 3,
       "answer": "needn't",
       "vi": "Bạn không cần mang lều; khu cắm trại cho khách mượn miễn phí.",
-      "explanation": "<b>Needn't</b> means it is not necessary, which fits the reason given. <b>Mustn't</b> and <b>can't</b> express prohibition or impossibility, and <b>shouldn't</b> gives advice against something."
+      "explanation": "<b>Needn't</b> means it is not necessary, and the reason <b>the campsite lends them for free</b> shows a tent is unnecessary, not forbidden. ✗ <b>mustn't</b> — a prohibition (you are not allowed to), which the sentence does not give; ✗ <b>can't</b> — impossibility or 'not allowed', but bringing a tent is possible; ✗ <b>shouldn't</b> — advice that it is a bad idea, not a lack of need."
     },
     {
       "id": "gv-kc-15-17",
@@ -185,7 +185,7 @@
       "correct": 0,
       "answer": "have lived",
       "vi": "Gia đình tôi đã sống ở làng chài này từ khi ông tôi còn là một cậu bé.",
-      "explanation": "<b>Since + a past time</b> with a situation that continues up to now takes the present perfect <b>have lived</b>; the present simple, past simple and present continuous do not link the past starting point to the present."
+      "explanation": "<b>Since + a past starting point</b> (my grandfather was a boy) for a situation still true now takes the present perfect <b>have lived</b>. ✗ <b>live</b> — present simple gives no link to the past starting point; ✗ <b>lived</b> — past simple would mean the family no longer lives there; ✗ <b>are living</b> — present continuous describes now only and does not go with 'since'."
     },
     {
       "id": "gv-kc-15-18",
@@ -196,7 +196,7 @@
       "correct": 1,
       "answer": "had brought",
       "vi": "Lan ước gì hôm qua cô ấy đã mang máy ảnh đến công viên chim.",
-      "explanation": "A regret about the past (<b>yesterday</b>) uses <b>wish + past perfect</b>: <b>had brought</b>. <b>Wish + past simple</b> is for a present situation, and the present perfect and <b>would</b> are not used after <b>wish</b> here."
+      "explanation": "A regret about the past (<b>yesterday</b>) uses <b>wish + past perfect</b>, so <b>had brought</b> is right. ✗ <b>brought</b> — wish + past simple is for a present situation we want to be different, not a finished past event; ✗ <b>has brought</b> — the present perfect is never used after 'wish'; ✗ <b>would bring</b> — wish + would complains about someone else's future behaviour, not a past regret."
     },
     {
       "id": "gv-kc-15-19",
@@ -207,7 +207,7 @@
       "correct": 2,
       "answer": "attempts",
       "vi": "Những người cắm trại phải thử đến ba lần mới nhóm được lửa trong khu rừng ẩm ướt.",
-      "explanation": "An <b>attempt</b> is one act of trying to do something, so you count <b>three attempts</b>. <b>Effort</b> is the energy you use, a <b>trial</b> is a scientific or legal test, and a <b>test</b> checks knowledge or quality."
+      "explanation": "An <b>attempt</b> is one act of trying, so you can count <b>three attempts</b> before success. ✗ <b>efforts</b> — effort is the energy you put in; 'three efforts' does not count tries; ✗ <b>trials</b> — a scientific experiment or a court case, not a try at lighting a fire; ✗ <b>tests</b> — a check of knowledge or quality, not an act of trying."
     },
     {
       "id": "gv-kc-15-20",
@@ -218,7 +218,7 @@
       "correct": 3,
       "answer": "where",
       "vi": "Bãi biển nơi chúng tôi cắm trại năm ngoái nay đã đóng cửa để bảo vệ rùa biển.",
-      "explanation": "<b>Where</b> replaces a place adverb (we camped <b>there</b>). <b>Which</b> and <b>that</b> would need a preposition (<b>on which</b>), and <b>whom</b> is only for people."
+      "explanation": "<b>Where</b> replaces a place adverb: we camped <b>there</b> (on the beach), so no preposition is needed. ✗ <b>which</b> — would need a preposition ('on which we camped') because 'camp' takes no object; ✗ <b>that</b> — same problem: 'that we camped' leaves the verb with nothing to do; ✗ <b>whom</b> — only for people as an object, never for a place."
     },
     {
       "id": "gv-kc-15-21",
@@ -229,7 +229,7 @@
       "correct": 0,
       "answer": "up to scratch",
       "vi": "Nhà tắm ở khu cắm trại không đạt yêu cầu, nên chúng tôi đã phàn nàn với chủ khu.",
-      "explanation": "<b>Up to scratch</b> means of an acceptable standard. <b>Up in the air</b> means still undecided, <b>up in arms</b> means very angry about something, and <b>under the weather</b> means slightly ill."
+      "explanation": "<b>Up to scratch</b> means of an acceptable standard; the clue is that the showers were bad enough to <b>complain</b> about. ✗ <b>up in the air</b> — still undecided (used of plans); ✗ <b>up in arms</b> — very angry and protesting; a person is up in arms, not a shower; ✗ <b>under the weather</b> — slightly ill, used of people."
     },
     {
       "id": "gv-kc-15-22",
@@ -240,7 +240,7 @@
       "correct": 1,
       "answer": "Hardly",
       "vi": "Chúng tôi vừa mới tới khu cắm trại thì trời bắt đầu mưa như trút nước.",
-      "explanation": "<b>Hardly + had + subject + past participle ... when</b> means one thing happened immediately after another. <b>No sooner</b> pairs with <b>than</b>, not <b>when</b>, and <b>not until</b> and <b>only when</b> need a full clause before the inversion."
+      "explanation": "<b>Hardly + had + subject + past participle ... when</b> means the second event followed the first immediately; the clue is <b>when</b> after the comma. ✗ <b>No sooner</b> — also takes inversion but pairs with 'than', not 'when'; ✗ <b>Not until</b> — the inversion comes in the MAIN clause after the time clause ('Not until we arrived did it rain'), not straight after these words; ✗ <b>Only when</b> — same pattern: 'Only when we arrived did it rain'."
     },
     {
       "id": "gv-kc-15-23",
@@ -251,7 +251,7 @@
       "correct": 2,
       "answer": "keep",
       "vi": "Hướng dẫn viên bảo chúng tôi để mắt kỹ tới túi xách của mình ở chợ đêm.",
-      "explanation": "The fixed expression is <b>keep an eye on</b> something (watch it carefully). <b>Hold</b>, <b>take</b> and <b>put</b> do not form this collocation with <b>eye</b>."
+      "explanation": "The fixed expression is <b>keep an eye on</b> something (watch it carefully), so <b>keep a close eye on our bags</b> is right. ✗ <b>hold</b> — you hold a bag or a hand, but there is no idiom 'hold an eye on'; ✗ <b>take</b> — 'take a look at' exists, but 'take an eye on' does not; ✗ <b>put</b> — you put something somewhere; there is no idiom with 'eye on'."
     },
     {
       "id": "gv-kc-15-24",
@@ -262,7 +262,7 @@
       "correct": 3,
       "answer": "had checked",
       "vi": "Mai đã kiểm tra hộ chiếu hai lần trước khi cuối cùng tìm thấy nó trong túi áo khoác.",
-      "explanation": "The checking happened <b>before</b> another past action (she found it), so the past perfect <b>had checked</b> is needed; the present tenses cannot describe an earlier past event."
+      "explanation": "The checking happened <b>before</b> another past action (<b>before she finally found it</b>), so the earlier action takes the past perfect <b>had checked</b>. ✗ <b>has checked</b> — present perfect links to now and cannot sit with a finished past clause; ✗ <b>checks</b> — present simple is for habits, not a past story; ✗ <b>is checking</b> — an action in progress now, not one before a past event."
     },
     {
       "id": "gv-kc-15-25",
@@ -273,7 +273,7 @@
       "correct": 0,
       "answer": "managed",
       "vi": "Chú rùa con đã tìm được cách ra tới biển trước khi lũ mòng biển phát hiện.",
-      "explanation": "<b>Manage to + verb</b> means to succeed in doing something difficult. <b>Succeed</b> needs <b>in + -ing</b>, and <b>achieve</b> and <b>reach</b> take a noun object (a goal, a place), not a to-infinitive."
+      "explanation": "<b>Manage to + verb</b> means to succeed in doing something difficult, and the to-infinitive <b>to reach</b> is the clue. ✗ <b>succeeded</b> — needs 'in + -ing' (succeeded in reaching), never a to-infinitive; ✗ <b>achieved</b> — takes a noun object (achieve a goal), not to + verb; ✗ <b>reached</b> — already means 'arrive at' and takes a place as object; 'reached to reach' repeats itself."
     }
   ]
 }

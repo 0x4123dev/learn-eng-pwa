@@ -16,7 +16,7 @@
       "correct": 2,
       "answer": "will have eaten",
       "vi": "Đến lúc Lan đi học về thì em trai cô ấy sẽ ăn hết cả cái bánh sinh nhật rồi.",
-      "explanation": "An action that will be finished <b>before</b> a future point (by the time she gets home) takes the future perfect: <b>will have eaten</b>."
+      "explanation": "<b>By the time + present simple</b> (gets home) marks a future point, and an action finished <b>before</b> that point takes the future perfect: <b>will have eaten</b>. ✗ <b>has eaten</b> — present perfect, links a past action to now, not to a future deadline; ✗ <b>ate</b> — past simple, but the cake-eating has not happened yet; ✗ <b>is eating</b> — present continuous, an action in progress now, not one completed before she arrives."
     },
     {
       "id": "gv-kc-12-2",
@@ -32,7 +32,7 @@
       "correct": 0,
       "answer": "sweep",
       "vi": "Bạn quét sàn bếp giúp mình được không? Sau bữa tiệc, vụn bánh rơi khắp nơi.",
-      "explanation": "You <b>sweep</b> a floor with a broom. You <b>dust</b> shelves, <b>fold</b> clothes and <b>hang</b> washing — none of these fit a floor covered in crumbs."
+      "explanation": "The clue is <b>the kitchen floor</b> and <b>crumbs</b>: you <b>sweep</b> a floor with a broom. ✗ <b>dust</b> — wipe dust off shelves or furniture, not crumbs off a floor; ✗ <b>fold</b> — bend clothes or paper neatly; ✗ <b>hang</b> — put clothes or pictures up on a line or wall."
     },
     {
       "id": "gv-kc-12-3",
@@ -48,7 +48,7 @@
       "correct": 1,
       "answer": "went through the roof",
       "vi": "Bố mẹ Nam nổi giận đùng đùng khi phát hiện cậu ấy trốn học đi dự tiệc.",
-      "explanation": "<b>Go through the roof</b> means to become extremely angry. <b>Go round in circles</b> is to make no progress, <b>go down the drain</b> is to be wasted, and <b>go off the rails</b> is to start behaving badly."
+      "explanation": "The clue is <b>found out he had skipped school</b>: parents react with anger, and <b>go through the roof</b> means to become extremely angry. ✗ <b>went round in circles</b> — made no progress; ✗ <b>went down the drain</b> — was wasted (money, effort); ✗ <b>went off the rails</b> — started behaving badly, which fits Nam, not his parents."
     },
     {
       "id": "gv-kc-12-4",
@@ -64,7 +64,7 @@
       "correct": 3,
       "answer": "needn't",
       "vi": "Lan: Tối nay mình mang chút đồ ăn vặt tới nhé? / Nam: Không, cậu không cần đâu — mẹ mình đã làm đủ cho mọi người rồi.",
-      "explanation": "<b>Needn't</b> means it is not necessary. <b>Mustn't</b> forbids something, <b>can't</b> denies permission or ability, and <b>won't</b> is a refusal — none matches \"my mum has made enough\"."
+      "explanation": "<b>Needn't</b> = it is not necessary, matching the reason <b>my mum has made enough for everyone</b>. ✗ <b>mustn't</b> — forbids (\"you are not allowed to\"), too strong for an offer of snacks; ✗ <b>can't</b> — denies ability or permission, not necessity; ✗ <b>won't</b> — a refusal or a prediction, not an answer to \"Shall I?\"."
     },
     {
       "id": "gv-kc-12-5",
@@ -80,7 +80,7 @@
       "correct": 0,
       "answer": "which",
       "vi": "Các chữ cái trên huy hiệu của chúng tôi, vốn là viết tắt của tên trường, do một học sinh thiết kế.",
-      "explanation": "A non-defining clause (between commas) about a thing takes <b>which</b>. <b>That</b> cannot follow a comma, <b>who</b> is for people and <b>whose</b> needs a noun after it."
+      "explanation": "The commas mark a non-defining clause about a thing (<b>the letters</b>), so <b>which</b> is needed. ✗ <b>that</b> — cannot introduce a non-defining clause after a comma; ✗ <b>who</b> — for people, not letters; ✗ <b>whose</b> — possessive, needs a noun after it (<b>whose colours</b>)."
     },
     {
       "id": "gv-kc-12-6",
@@ -96,7 +96,7 @@
       "correct": 1,
       "answer": "making",
       "vi": "Minh đang thực sự cố gắng làm xong bài tập về nhà trước khi bữa tiệc bắt đầu.",
-      "explanation": "The fixed collocation is <b>make an effort</b>. We <b>do</b> homework, <b>take</b> a break and <b>have</b> a party, but never <b>do / take / have an effort</b>."
+      "explanation": "The fixed collocation is <b>make an effort</b>, and the object <b>a real effort</b> decides it. ✗ <b>doing</b> — we do homework or the dishes, not an effort; ✗ <b>taking</b> — we take a break or a photo; ✗ <b>having</b> — we have a party or a rest; none of these pair with <b>effort</b>."
     },
     {
       "id": "gv-kc-12-7",
@@ -112,7 +112,7 @@
       "correct": 2,
       "answer": "wash",
       "vi": "Tối nay đến lượt cậu rửa bát; hôm qua mình rửa rồi.",
-      "explanation": "We <b>wash</b> the dishes. <b>Mop</b> and <b>sweep</b> are for floors, and <b>dust</b> is for furniture and shelves."
+      "explanation": "The object <b>the dishes</b> decides it: we <b>wash</b> the dishes (= wash up). ✗ <b>mop</b> — clean a floor with a wet mop; ✗ <b>sweep</b> — clean a floor with a broom; ✗ <b>dust</b> — wipe dust off furniture and shelves."
     },
     {
       "id": "gv-kc-12-8",
@@ -128,7 +128,7 @@
       "correct": 0,
       "answer": "show off",
       "vi": "Hùng mua cái điện thoại đắt tiền đó chỉ để khoe khoang trước mặt các bạn cùng lớp.",
-      "explanation": "<b>Show off</b> means to try to impress people with what you have. <b>Show up</b> is to arrive, <b>put off</b> is to postpone and <b>take off</b> is to remove or to leave the ground."
+      "explanation": "The clue is <b>expensive phone ... in front of his classmates</b>: <b>show off</b> = try to impress people with what you have. ✗ <b>show up</b> — arrive, appear; ✗ <b>put off</b> — postpone, or make someone dislike something; ✗ <b>take off</b> — remove clothes, or leave the ground (a plane)."
     },
     {
       "id": "gv-kc-12-9",
@@ -144,7 +144,7 @@
       "correct": 3,
       "answer": "is doing",
       "vi": "Lan: Nam đâu rồi? / Hoa: Cậu ấy đang làm bài tập trong thư viện — sáu giờ sẽ về.",
-      "explanation": "An action in progress <b>right now</b> (he is not here at this moment) takes the present continuous: <b>is doing</b>. <b>Has done</b> and <b>did</b> would mean the homework is finished."
+      "explanation": "Hoa is saying where Nam is <b>at this moment</b> (<b>Where's Nam?</b> ... <b>he'll be back at six</b>), so the present continuous <b>is doing</b> is needed. ✗ <b>does</b> — present simple, a habit or routine, not what is happening now; ✗ <b>has done</b> — present perfect, would mean the homework is finished; ✗ <b>did</b> — past simple, a finished past action, but he is still in the library."
     },
     {
       "id": "gv-kc-12-10",
@@ -160,7 +160,7 @@
       "correct": 1,
       "answer": "tidy",
       "vi": "Trước bữa tiệc, chúng tôi phải dọn gọn phòng khách để có chỗ nhảy.",
-      "explanation": "<b>Tidy</b> a room means to put things in order and make space. <b>Mend</b> is to repair, <b>polish</b> is to make shoes or furniture shine, and <b>iron</b> is for clothes."
+      "explanation": "The clue is <b>so there was space to dance</b>: to <b>tidy</b> a room is to put things in order and clear space. ✗ <b>mend</b> — repair something broken; ✗ <b>polish</b> — rub shoes or furniture to make them shine; ✗ <b>iron</b> — press clothes flat with a hot iron."
     },
     {
       "id": "gv-kc-12-11",
@@ -176,7 +176,7 @@
       "correct": 2,
       "answer": "little",
       "vi": "Tối nay mình có rất ít bài tập, nên rốt cuộc mình có thể đến dự tiệc của Hoa.",
-      "explanation": "<b>Homework</b> is uncountable, so <b>few / a few</b> are impossible. <b>Little</b> (almost none) explains why she is free, and only <b>little</b> can follow <b>very</b> — <b>very a little</b> does not exist."
+      "explanation": "<b>Homework</b> is uncountable, and the meaning (<b>so I can come</b>) is \"almost none\", so <b>little</b> fits; it is also the only option that can follow <b>very</b>. ✗ <b>few</b> — for plural countable nouns (few books); ✗ <b>a few</b> — countable, and \"very a few\" is impossible; ✗ <b>a little</b> — uncountable but positive (\"some\"), and <b>very a little</b> does not exist."
     },
     {
       "id": "gv-kc-12-12",
@@ -192,7 +192,7 @@
       "correct": 0,
       "answer": "had",
       "vi": "Nếu mình có nhiều thời gian rảnh sau giờ học hơn, mình sẽ tham gia ban nhạc của trường.",
-      "explanation": "A second conditional (an unreal present situation) uses the past simple in the if-clause: <b>If I had</b> ... <b>I would join</b>. <b>Had had</b> belongs to the third conditional and <b>would have</b> never goes in the if-clause."
+      "explanation": "<b>Would join</b> in the main clause marks a second conditional (unreal present), so the if-clause takes the past simple: <b>If I had</b>. ✗ <b>have</b> — first conditional, would need <b>will join</b>; ✗ <b>had had</b> — past perfect belongs to the third conditional (<b>would have joined</b>); ✗ <b>would have</b> — <b>would</b> never goes in the if-clause."
     },
     {
       "id": "gv-kc-12-13",
@@ -208,7 +208,7 @@
       "correct": 2,
       "answer": "miss",
       "vi": "Nhanh lên, không thì chúng ta sẽ lỡ chuyến xe buýt cuối cùng về nhà và phải gọi taxi đấy.",
-      "explanation": "You <b>miss</b> a bus, train or flight when you arrive too late to catch it. <b>Lose</b> is for things you cannot find, <b>fail</b> is for tests, and <b>drop</b> is to let something fall."
+      "explanation": "The clue is <b>the last bus</b> and <b>have to call a taxi</b>: you <b>miss</b> a bus, train or flight when you arrive too late for it. ✗ <b>lose</b> — be unable to find something, or be beaten in a game; ✗ <b>fail</b> — not pass a test or exam; ✗ <b>drop</b> — let something fall."
     },
     {
       "id": "gv-kc-12-14",
@@ -224,7 +224,7 @@
       "correct": 1,
       "answer": "dusts",
       "vi": "Cuối tuần nào bố cũng lau bụi giá sách vì bụi làm em trai tôi hắt hơi.",
-      "explanation": "To <b>dust</b> is to wipe the dust off furniture. <b>Rinse</b> is to wash with clean water, and <b>peel</b> and <b>stir</b> are cooking verbs."
+      "explanation": "The clue is <b>bookshelves</b> and <b>the dust</b>: to <b>dust</b> is to wipe dust off furniture. ✗ <b>rinses</b> — washes with clean water to remove soap; ✗ <b>peels</b> — removes the skin of fruit or vegetables; ✗ <b>stirs</b> — mixes food or drink with a spoon."
     },
     {
       "id": "gv-kc-12-15",
@@ -240,7 +240,7 @@
       "correct": 2,
       "answer": "can't have left",
       "vi": "Hoa không thể nào đã rời bữa tiệc được — túi và áo khoác của cô ấy vẫn còn trên ghế.",
-      "explanation": "<b>Can't have + past participle</b> expresses that something is impossible, based on evidence (her things are still here). <b>Must have</b> gives the opposite conclusion; <b>should have</b> and <b>needn't have</b> are about advice and necessity, not deduction."
+      "explanation": "The evidence <b>her bag and jacket are still on the chair</b> calls for a negative deduction: <b>can't have left</b> = it is impossible that she left. ✗ <b>must have left</b> — the opposite deduction (\"I'm sure she left\"), which the evidence contradicts; ✗ <b>should have left</b> — she was expected to leave but didn't, a criticism, not a deduction; ✗ <b>needn't have left</b> — she did leave but it was unnecessary, which contradicts <b>yet</b>."
     },
     {
       "id": "gv-kc-12-16",
@@ -256,7 +256,7 @@
       "correct": 3,
       "answer": "in the long run",
       "vi": "Mỗi ngày học một chút bây giờ thấy vất vả, nhưng về lâu dài sẽ có kết quả.",
-      "explanation": "<b>In the long run</b> means over a long period of time, eventually. <b>In the nick of time</b> is just before it is too late, <b>on the spur of the moment</b> is without planning, and <b>at the drop of a hat</b> is immediately."
+      "explanation": "The contrast <b>hard now</b> ... <b>will pay off</b> points to a distant result: <b>in the long run</b> = over a long period, eventually. ✗ <b>in the nick of time</b> — just before it is too late; ✗ <b>on the spur of the moment</b> — suddenly, without planning; ✗ <b>at the drop of a hat</b> — immediately, without hesitation."
     },
     {
       "id": "gv-kc-12-17",
@@ -272,7 +272,7 @@
       "correct": 1,
       "answer": "has taught",
       "vi": "Thầy Trần đã dạy toán ở trường chúng tôi từ năm 2015, và thầy vẫn yêu công việc này.",
-      "explanation": "<b>Since 2015</b> links a past starting point to now, so the present perfect <b>has taught</b> is needed. <b>Taught</b> and <b>had taught</b> would mean he no longer teaches there."
+      "explanation": "<b>Since 2015</b> links a past starting point to now, and <b>he still loves the job</b> confirms it continues, so the present perfect <b>has taught</b> is needed. ✗ <b>taught</b> — past simple, a finished period, would mean he no longer teaches there; ✗ <b>is teaching</b> — present continuous cannot be used with <b>since</b> + a starting point; ✗ <b>had taught</b> — past perfect, needs a later past point to be \"before\"."
     },
     {
       "id": "gv-kc-12-18",
@@ -288,7 +288,7 @@
       "correct": 3,
       "answer": "that",
       "vi": "Quán cà phê mà bọn mình hay gặp nhau sau giờ học tuần này đóng cửa để sửa chữa.",
-      "explanation": "In a defining clause with the preposition left at the end (<b>meet at</b>), a thing or place takes <b>that</b> (or which). <b>Where</b> already contains the idea of <b>at</b>, so it cannot be used with the preposition; <b>whom</b> is for people and <b>whose</b> needs a noun after it."
+      "explanation": "The clause is defining (no commas) and keeps its preposition at the end (<b>meet at</b>), so a place-thing takes <b>that</b> (or which). ✗ <b>where</b> — already means \"at which\", so it cannot combine with <b>at</b>; ✗ <b>whom</b> — for people only; ✗ <b>whose</b> — possessive, needs a noun after it."
     },
     {
       "id": "gv-kc-12-19",
@@ -304,7 +304,7 @@
       "correct": 2,
       "answer": "takes after",
       "vi": "Ai cũng bảo Mai giống mẹ — hai mẹ con có cùng tiếng cười và nụ cười.",
-      "explanation": "<b>Take after</b> someone means to resemble an older relative. <b>Take up</b> is to start a hobby, <b>look after</b> is to care for, and <b>take off</b> is to remove or to leave the ground."
+      "explanation": "The clue is <b>the same laugh and the same smile</b> as her mother: <b>take after</b> = resemble an older relative. ✗ <b>takes up</b> — start a hobby or activity; ✗ <b>looks after</b> — care for someone; ✗ <b>takes off</b> — remove clothes, or leave the ground."
     },
     {
       "id": "gv-kc-12-20",
@@ -320,7 +320,7 @@
       "correct": 3,
       "answer": "laundry",
       "vi": "Phơi quần áo giặt lên dây ngoài trời đi; thời tiết này để trong nhà sẽ không khô đâu.",
-      "explanation": "<b>Laundry</b> is the clothes you have washed, which you hang out to dry. <b>Rubbish</b> is taken out, <b>dishes</b> are washed and <b>groceries</b> are put away."
+      "explanation": "The clue is <b>hang ... on the line</b> and <b>dry</b>: <b>laundry</b> is washed clothes, which you hang out to dry. ✗ <b>rubbish</b> — waste, which you take out; ✗ <b>dishes</b> — plates and bowls, which you wash and dry with a cloth; ✗ <b>groceries</b> — food shopping, which you put away."
     },
     {
       "id": "gv-kc-12-21",
@@ -336,7 +336,7 @@
       "correct": 0,
       "answer": "Despite",
       "vi": "Dù thời tiết xấu, trận bóng đá của trường vẫn diễn ra vào chiều Chủ nhật.",
-      "explanation": "<b>Despite</b> is a preposition, so a noun phrase (<b>the bad weather</b>) follows it directly. <b>Although</b> and <b>even though</b> need a clause with a subject and verb, and <b>in spite</b> is incomplete without <b>of</b>."
+      "explanation": "The blank is followed by a noun phrase (<b>the bad weather</b>), so it needs a preposition: <b>Despite</b>. ✗ <b>Although</b> — a conjunction, needs a clause with subject and verb (although the weather was bad); ✗ <b>In spite</b> — incomplete, must be <b>in spite of</b>; ✗ <b>Even though</b> — also a conjunction, needs a full clause."
     },
     {
       "id": "gv-kc-12-22",
@@ -352,7 +352,7 @@
       "correct": 0,
       "answer": "to turn off",
       "vi": "Nhớ tắt đèn trước khi rời lớp chiều nay nhé.",
-      "explanation": "<b>Remember + to-infinitive</b> is a reminder to do something in the future. <b>Remember + -ing</b> refers to a memory of something already done, which makes no sense here."
+      "explanation": "<b>Remember + to-infinitive</b> = don't forget to do something in the future, and <b>before you leave</b> shows the action is still to come: <b>to turn off</b>. ✗ <b>turning off</b> — remember + -ing is a memory of something already done, which makes no sense as a reminder; ✗ <b>turn off</b> — remember cannot take a bare infinitive; ✗ <b>to turning off</b> — <b>to</b> + -ing does not follow remember."
     },
     {
       "id": "gv-kc-12-23",
@@ -368,7 +368,7 @@
       "correct": 3,
       "answer": "were getting ready",
       "vi": "Lúc mình gọi vào bảy giờ, các bạn mình đang chuẩn bị cho bữa tiệc, nên không ai nghe máy.",
-      "explanation": "A longer action in progress when a shorter past action (I called) interrupted it takes the past continuous: <b>were getting ready</b>."
+      "explanation": "A longer action in progress when a shorter past action interrupted it (<b>When I called at seven</b>) takes the past continuous: <b>were getting ready</b>. ✗ <b>got ready</b> — past simple, a completed action, but they were in the middle of it, which is why nobody answered; ✗ <b>have got ready</b> — present perfect cannot combine with the past time <b>at seven</b>; ✗ <b>are getting ready</b> — present continuous, but the story is in the past."
     },
     {
       "id": "gv-kc-12-24",
@@ -384,7 +384,7 @@
       "correct": 2,
       "answer": "throwing",
       "vi": "Thứ Bảy này bọn mình tổ chức một bữa tiệc mừng thi xong — cậu đến được không?",
-      "explanation": "We <b>throw</b> (or have / hold) <b>a party</b>. <b>Make</b>, <b>do</b> and <b>take</b> do not collocate with <b>party</b>."
+      "explanation": "The object <b>a party</b> decides it: we <b>throw</b> (or have / hold) a party. ✗ <b>making</b> — we make a cake or an effort, not a party; ✗ <b>doing</b> — we do homework or the dishes; ✗ <b>taking</b> — we take a break or a photo; none of these collocate with <b>party</b>."
     },
     {
       "id": "gv-kc-12-25",
@@ -400,7 +400,7 @@
       "correct": 1,
       "answer": "Rarely",
       "vi": "Hiếm khi Lan trễ hạn nộp bài tập; cô ấy là học sinh ngăn nắp nhất lớp.",
-      "explanation": "A negative adverb like <b>Rarely</b> at the start of a sentence causes inversion: <b>Rarely does Lan miss</b>. <b>No sooner</b> needs <b>than</b>, and <b>Not until / Only after</b> need a time phrase or clause before the inverted verb."
+      "explanation": "The inverted verb <b>does Lan miss</b> shows a negative adverb starts the sentence, and the meaning (<b>the most organised student</b>) needs \"almost never\": <b>Rarely</b>. ✗ <b>No sooner</b> — needs a past perfect verb and <b>than</b> (no sooner had she ... than); ✗ <b>Not until</b> — needs a time phrase or clause before the inversion (not until Friday does she ...); ✗ <b>Only after</b> — also needs a time phrase or clause first (only after lunch does she ...)."
     }
   ]
 }

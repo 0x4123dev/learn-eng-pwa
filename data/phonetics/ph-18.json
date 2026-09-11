@@ -8,7 +8,7 @@
       "words": ["evaporated", "generated", "vibrated", "dissolved"],
       "ipa": ["/ɪˈvæpəreɪtɪd/", "/ˈdʒenəreɪtɪd/", "/vaɪˈbreɪtɪd/", "/dɪˈzɒlvd/"],
       "correct": 3,
-      "explanation": "<b>dissolved</b> /dɪˈzɒlvd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /v/. Ba động từ đuôi -ate còn lại đều kết thúc bằng /t/ nên -ed đọc /ɪd/: evaporated /ɪˈvæpəreɪtɪd/, generated /ˈdʒenəreɪtɪd/, vibrated /vaɪˈbreɪtɪd/."
+      "explanation": "<b>dissolved</b> /dɪˈzɒlvd/ — đuôi -ed đọc /d/ vì động từ gốc kết thúc bằng âm hữu thanh /v/. Ba động từ đuôi -ate còn lại kết thúc bằng /t/, mà sau /t/ hoặc /d/ đuôi -ed phải đọc /ɪd/: evaporated /ɪˈvæpəreɪtɪd/, generated /ˈdʒenəreɪtɪd/, vibrated /vaɪˈbreɪtɪd/. Mẹo: đọc âm cuối của động từ gốc: /t/ hay /d/ → /ɪd/; vô thanh khác → /t/; hữu thanh khác → /d/."
     },
     {
       "id": "ph-ch-18-2", "level": "ch", "kind": "sound", "rule": "es",
@@ -16,7 +16,7 @@
       "words": ["substances", "molecules", "particles", "variables"],
       "ipa": ["/ˈsʌbstənsɪz/", "/ˈmɒlɪkjuːlz/", "/ˈpɑːtɪklz/", "/ˈveəriəblz/"],
       "correct": 0,
-      "explanation": "<b>substances</b> /ˈsʌbstənsɪz/ — đuôi -es đọc /ɪz/ vì đứng sau âm rít /s/. Ba từ còn lại kết thúc bằng /l/ hữu thanh nên đuôi -s đọc /z/: molecules /ˈmɒlɪkjuːlz/, particles /ˈpɑːtɪklz/, variables /ˈveəriəblz/."
+      "explanation": "<b>substances</b> /ˈsʌbstənsɪz/ — đuôi -es đọc /ɪz/ vì từ gốc substance kết thúc bằng âm rít /s/. Ba danh từ còn lại kết thúc bằng /l/ hữu thanh nên đuôi -s đọc /z/: molecules /ˈmɒlɪkjuːlz/, particles /ˈpɑːtɪklz/, variables /ˈveəriəblz/. Mẹo: đọc âm cuối của từ gốc: âm rít /s z ʃ ʒ tʃ dʒ/ → /ɪz/; vô thanh khác → /s/; hữu thanh khác → /z/."
     },
     {
       "id": "ph-ch-18-3", "level": "ch", "kind": "sound", "rule": "ch-sh-th-gh",
@@ -24,7 +24,7 @@
       "words": ["chlorine", "chromosome", "charcoal", "chemist"],
       "ipa": ["/ˈklɔːriːn/", "/ˈkrəʊməsəʊm/", "/ˈtʃɑːkəʊl/", "/ˈkemɪst/"],
       "correct": 2,
-      "explanation": "<b>charcoal</b> /ˈtʃɑːkəʊl/ — \"ch\" đọc /tʃ/ như trong chair. Ba từ khoa học gốc Hy Lạp còn lại \"ch\" đọc /k/: chlorine /ˈklɔːriːn/, chromosome /ˈkrəʊməsəʊm/, chemist /ˈkemɪst/."
+      "explanation": "<b>charcoal</b> /ˈtʃɑːkəʊl/ — từ gốc Anh, \"ch\" đọc /tʃ/ như chair, cheese. Ba thuật ngữ khoa học gốc Hy Lạp còn lại \"ch\" đọc /k/: chlorine /ˈklɔːriːn/, chromosome /ˈkrəʊməsəʊm/, chemist /ˈkemɪst/. Mẹo: \"ch\" trong từ khoa học, y học, hoá học (chem-, chrom-, chlor-, tech-, arch-) gần như luôn đọc /k/; từ đời thường đọc /tʃ/."
     },
     {
       "id": "ph-ch-18-4", "level": "ch", "kind": "sound", "rule": "s-z-sh",
@@ -32,7 +32,7 @@
       "words": ["revise", "precise", "advise", "devise"],
       "ipa": ["/rɪˈvaɪz/", "/prɪˈsaɪs/", "/ədˈvaɪz/", "/dɪˈvaɪz/"],
       "correct": 1,
-      "explanation": "<b>precise</b> /prɪˈsaɪs/ — là tính từ, \"s\" trong đuôi -ise đọc /s/ vô thanh. Ba từ còn lại là động từ đuôi -ise nên \"s\" đọc /z/: revise /rɪˈvaɪz/, advise /ədˈvaɪz/, devise /dɪˈvaɪz/."
+      "explanation": "<b>precise</b> /prɪˈsaɪs/ — tính từ đuôi -ise, \"s\" đọc /s/ vô thanh (cùng nhóm concise, paradise). Ba từ còn lại là động từ đuôi -ise, \"s\" đọc /z/ hữu thanh: revise /rɪˈvaɪz/, advise /ədˈvaɪz/, devise /dɪˈvaɪz/. Mẹo: động từ -ise/-ize → /aɪz/; tính từ, danh từ -ise (precise, concise, promise) → /s/."
     },
     {
       "id": "ph-ch-18-5", "level": "ch", "kind": "sound", "rule": "silent",
@@ -40,7 +40,7 @@
       "words": ["muscle", "scientist", "scissors", "scale"],
       "ipa": ["/ˈmʌsl/", "/ˈsaɪəntɪst/", "/ˈsɪzəz/", "/skeɪl/"],
       "correct": 3,
-      "explanation": "<b>scale</b> /skeɪl/ — \"c\" đứng trước \"a\" nên đọc /k/. Ba từ còn lại có cụm \"sc\" đứng trước e/i/l, chữ \"c\" câm hoàn toàn: muscle /ˈmʌsl/, scientist /ˈsaɪəntɪst/, scissors /ˈsɪzəz/."
+      "explanation": "<b>scale</b> /skeɪl/ — \"c\" đứng trước \"a\" nên đọc /k/, cụm \"sc\" đọc đủ /sk/. Ba từ còn lại \"c\" câm: scientist /ˈsaɪəntɪst/ và scissors /ˈsɪzəz/ (\"sc\" trước i chỉ đọc /s/), muscle /ˈmʌsl/ (\"sc\" trước -le, c câm). Mẹo: \"sc\" trước a/o/u/r → /sk/ (scan, score, scream); \"sc\" trước e/i/y hoặc trong -scle → chỉ đọc /s/."
     },
     {
       "id": "ph-ch-18-6", "level": "ch", "kind": "sound", "rule": "prefix-ex",
@@ -48,7 +48,7 @@
       "words": ["extinct", "exert", "exhaust", "exotic"],
       "ipa": ["/ɪkˈstɪŋkt/", "/ɪɡˈzɜːt/", "/ɪɡˈzɔːst/", "/ɪɡˈzɒtɪk/"],
       "correct": 0,
-      "explanation": "<b>extinct</b> /ɪkˈstɪŋkt/ — \"ex\" đứng trước phụ âm (t) nên đọc /ɪks/. Ba từ còn lại \"ex\" đứng trước nguyên âm (hoặc chữ h câm) và mang trọng âm ngay sau nó nên đọc /ɪɡz/: exert /ɪɡˈzɜːt/, exhaust /ɪɡˈzɔːst/, exotic /ɪɡˈzɒtɪk/."
+      "explanation": "<b>extinct</b> /ɪkˈstɪŋkt/ — \"ex\" đứng trước phụ âm (t) nên đọc /ɪks/ vô thanh. Ba từ còn lại \"ex\" đứng trước nguyên âm (hoặc h câm) và trọng âm rơi vào âm ngay sau nên đọc /ɪɡz/: exert /ɪɡˈzɜːt/, exhaust /ɪɡˈzɔːst/, exotic /ɪɡˈzɒtɪk/. Mẹo: ex + phụ âm → /ɪks/; ex + nguyên âm hoặc h câm mà \"ex\" không nhấn → /ɪɡz/ (exam, exist, exact)."
     },
     {
       "id": "ph-ch-18-7", "level": "ch", "kind": "sound", "rule": "oo-ou-ow",
@@ -56,7 +56,7 @@
       "words": ["compound", "amount", "source", "surround"],
       "ipa": ["/ˈkɒmpaʊnd/", "/əˈmaʊnt/", "/sɔːs/", "/səˈraʊnd/"],
       "correct": 2,
-      "explanation": "<b>source</b> /sɔːs/ — \"ou\" đứng trước \"r\" đọc /ɔː/ như trong four, course. Ba từ còn lại \"ou\" đọc /aʊ/ như trong house: compound /ˈkɒmpaʊnd/, amount /əˈmaʊnt/, surround /səˈraʊnd/."
+      "explanation": "<b>source</b> /sɔːs/ — \"ou\" đứng trước \"r\" đọc /ɔː/ như four, course, pour. Ba từ còn lại \"ou\" đọc /aʊ/ như house, sound: compound /ˈkɒmpaʊnd/, amount /əˈmaʊnt/, surround /səˈraʊnd/. Mẹo: \"ou\" + n/nd/nt/t thường đọc /aʊ/ (count, round, out); \"our\" trước phụ âm hoặc cuối từ thường đọc /ɔː/ (four, court, source)."
     },
     {
       "id": "ph-ch-18-8", "level": "ch", "kind": "sound", "rule": "ea-ee-ie",
@@ -64,7 +64,7 @@
       "words": ["increase", "research", "release", "steam"],
       "ipa": ["/ɪnˈkriːs/", "/rɪˈsɜːtʃ/", "/rɪˈliːs/", "/stiːm/"],
       "correct": 1,
-      "explanation": "<b>research</b> /rɪˈsɜːtʃ/ — \"ear\" đọc /ɜː/ như trong earth, learn, search. Ba từ còn lại \"ea\" đọc /iː/ như trong tea: increase /ɪnˈkriːs/, release /rɪˈliːs/, steam /stiːm/."
+      "explanation": "<b>research</b> /rɪˈsɜːtʃ/ — \"ear\" đứng trước phụ âm đọc /ɜː/ như earth, learn, search. Ba từ còn lại \"ea\" đọc dài /iː/ như tea, sea: increase /ɪnˈkriːs/, release /rɪˈliːs/, steam /stiːm/. Mẹo: thấy \"ear\" + phụ âm (earn, early, heard) thì nghĩ ngay /ɜː/; \"ea\" thường đọc /iː/, trừ nhóm head, bread /e/."
     },
     {
       "id": "ph-ch-18-9", "level": "ch", "kind": "sound", "rule": "i",
@@ -72,7 +72,7 @@
       "words": ["microscope", "virus", "minus", "mineral"],
       "ipa": ["/ˈmaɪkrəskəʊp/", "/ˈvaɪrəs/", "/ˈmaɪnəs/", "/ˈmɪnərəl/"],
       "correct": 3,
-      "explanation": "<b>mineral</b> /ˈmɪnərəl/ — \"i\" đọc ngắn /ɪ/ như trong sit. Ba từ khoa học còn lại \"i\" đọc /aɪ/ như trong time: microscope /ˈmaɪkrəskəʊp/, virus /ˈvaɪrəs/, minus /ˈmaɪnəs/."
+      "explanation": "<b>mineral</b> /ˈmɪnərəl/ — từ 3 âm tiết nhấn âm 1, \"i\" ở âm tiết đóng min- đọc ngắn /ɪ/ như sit. Ba thuật ngữ khoa học còn lại \"i\" đọc /aɪ/ như time: microscope /ˈmaɪkrəskəʊp/ (tiền tố micro-), virus /ˈvaɪrəs/ và minus /ˈmaɪnəs/ (âm tiết mở vi-, mi-). Mẹo: tiền tố micro-, bi-, tri- và i ở âm tiết mở của từ 2 âm tiết (vi-rus, si-lent) → /aɪ/; từ 3 âm tiết nhấn âm 1 như mineral, minister, miracle → /ɪ/ ngắn."
     },
     {
       "id": "ph-ch-18-10", "level": "ch", "kind": "sound", "rule": "o",
@@ -80,7 +80,7 @@
       "words": ["protein", "oxygen", "molecule", "volume"],
       "ipa": ["/ˈprəʊtiːn/", "/ˈɒksɪdʒən/", "/ˈmɒlɪkjuːl/", "/ˈvɒljuːm/"],
       "correct": 0,
-      "explanation": "<b>protein</b> /ˈprəʊtiːn/ — \"o\" đọc /əʊ/ như trong go, no. Ba từ khoa học còn lại \"o\" đọc ngắn /ɒ/ như trong hot: oxygen /ˈɒksɪdʒən/, molecule /ˈmɒlɪkjuːl/, volume /ˈvɒljuːm/."
+      "explanation": "<b>protein</b> /ˈprəʊtiːn/ — \"o\" trong âm tiết mở pro- đọc /əʊ/ như go, program. Ba từ còn lại \"o\" ở âm tiết đóng có nhấn nên đọc ngắn /ɒ/ như hot: oxygen /ˈɒksɪdʒən/ (ox-), molecule /ˈmɒlɪkjuːl/ (mol-), volume /ˈvɒljuːm/ (vol-). Mẹo: pro- gốc Hy Lạp/Latinh thường đọc /prəʊ/ (protein, program, process); \"o\" bị phụ âm đóng lại ở âm tiết nhấn (ox-, mol-, vol-) → /ɒ/."
     },
     {
       "id": "ph-ch-18-11", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -89,7 +89,7 @@
       "ipa": ["/ˈkɑːbən/", "/ˈsʌlfə/", "/daɪˈluːt/", "/ˈɒksaɪd/"],
       "syllables": [2, 2, 2, 2], "stress": [1, 1, 2, 1],
       "correct": 2,
-      "explanation": "<b>dilute</b> /daɪˈluːt/ — động từ 2 âm tiết (pha loãng) nhấn âm 2. Ba danh từ hoá học còn lại nhấn âm 1: CAR-bon /ˈkɑːbən/, SUL-phur /ˈsʌlfə/, OX-ide /ˈɒksaɪd/."
+      "explanation": "<b>dilute</b> /daɪˈluːt/ — động từ 2 âm tiết (pha loãng) nhấn âm 2: di-LUTE. Ba từ còn lại là danh từ hoá học 2 âm tiết nên nhấn âm 1: CAR-bon /ˈkɑːbən/, SUL-phur /ˈsʌlfə/, OX-ide /ˈɒksaɪd/. Mẹo: từ 2 âm tiết — xác định từ loại trước: danh từ, tính từ → nhấn âm 1; động từ → nhấn âm 2."
     },
     {
       "id": "ph-ch-18-12", "level": "ch", "kind": "stress", "rule": "2syl",
@@ -98,7 +98,7 @@
       "ipa": ["/ˈklaɪmət/", "/kriˈeɪt/", "/ˈpraɪvət/", "/ˈpaɪrət/"],
       "syllables": [2, 2, 2, 2], "stress": [1, 2, 1, 1],
       "correct": 1,
-      "explanation": "<b>create</b> /kriˈeɪt/ — động từ 2 âm tiết đuôi -ate (tạo ra) nhấn âm 2, đuôi -ate đọc đầy đủ /eɪt/. Ba từ còn lại là danh từ/tính từ đuôi -ate nhấn âm 1, đuôi đọc yếu /ət/: CLI-mate /ˈklaɪmət/, PRI-vate /ˈpraɪvət/, PI-rate /ˈpaɪrət/."
+      "explanation": "<b>create</b> /kriˈeɪt/ — động từ 2 âm tiết đuôi -ate (tạo ra) nhấn âm 2, đuôi đọc đầy đủ /eɪt/: cre-ATE. Ba từ còn lại là danh từ, tính từ đuôi -ate nhấn âm 1, đuôi đọc yếu /ət/: CLI-mate /ˈklaɪmət/, PRI-vate /ˈpraɪvət/, PI-rate /ˈpaɪrət/. Mẹo: -ate ở động từ 2 âm tiết đọc /eɪt/ và nhận trọng âm (create, debate, relate); -ate ở danh từ, tính từ đọc /ət/ và trọng âm ở âm 1."
     },
     {
       "id": "ph-ch-18-13", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -107,7 +107,7 @@
       "ipa": ["/mæɡˈnetɪk/", "/əˈtɒmɪk/", "/dʒəˈnetɪk/", "/ˈmɒlɪkjuːl/"],
       "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
       "correct": 3,
-      "explanation": "<b>molecule</b> /ˈmɒlɪkjuːl/ — danh từ 3 âm tiết nhấn âm 1, không có đuôi kéo trọng âm. Ba tính từ còn lại có đuôi -ic nên trọng âm rơi vào âm ngay trước -ic, tức âm 2: mag-NET-ic /mæɡˈnetɪk/, a-TOM-ic /əˈtɒmɪk/, ge-NET-ic /dʒəˈnetɪk/."
+      "explanation": "<b>molecule</b> /ˈmɒlɪkjuːl/ — danh từ 3 âm tiết không có hậu tố kéo trọng âm, nhấn âm 1: MO-le-cule. Ba tính từ còn lại mang hậu tố -ic, hậu tố này kéo trọng âm về âm tiết ngay trước nó, tức âm 2: mag-NET-ic /mæɡˈnetɪk/, a-TOM-ic /əˈtɒmɪk/, ge-NET-ic /dʒəˈnetɪk/. Mẹo: thấy -ic thì nhấn âm ngay trước -ic (e-co-NO-mic, sci-en-TI-fic); danh từ 3 âm tiết không hậu tố thường nhấn âm 1."
     },
     {
       "id": "ph-ch-18-14", "level": "ch", "kind": "stress", "rule": "suffix-shift",
@@ -116,7 +116,7 @@
       "ipa": ["/baɪˈɒlədʒi/", "/ˌɒksɪˈdeɪʃn/", "/ˌreɪdiˈeɪʃn/", "/ˌkɒmbɪˈneɪʃn/"],
       "syllables": [4, 4, 4, 4], "stress": [2, 3, 3, 3],
       "correct": 0,
-      "explanation": "<b>biology</b> /baɪˈɒlədʒi/ — đuôi -logy kéo trọng âm về âm ngay trước nó, tức âm 2: bi-O-lo-gy. Ba từ còn lại có đuôi -tion nên trọng âm rơi vào âm ngay trước -tion, tức âm 3: ox-i-DA-tion /ˌɒksɪˈdeɪʃn/, ra-di-A-tion /ˌreɪdiˈeɪʃn/, com-bi-NA-tion /ˌkɒmbɪˈneɪʃn/."
+      "explanation": "<b>biology</b> /baɪˈɒlədʒi/ — hậu tố -logy kéo trọng âm về âm tiết ngay trước nó, tức âm 2: bi-O-lo-gy. Ba từ còn lại có hậu tố -tion, trọng âm rơi vào âm tiết ngay trước -tion, tức âm 3: ox-i-DA-tion /ˌɒksɪˈdeɪʃn/, ra-di-A-tion /ˌreɪdiˈeɪʃn/, com-bi-NA-tion /ˌkɒmbɪˈneɪʃn/. Mẹo: -tion, -sion, -ic, -logy, -graphy đều nhấn âm ngay trước hậu tố — đếm ngược từ đuôi để tìm trọng âm."
     },
     {
       "id": "ph-ch-18-15", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -125,7 +125,7 @@
       "ipa": ["/ˌendʒɪˈnɪə/", "/ˌvɒlənˈtɪə/", "/ˈtelɪskəʊp/", "/ˌɡærənˈtiː/"],
       "syllables": [3, 3, 3, 3], "stress": [3, 3, 1, 3],
       "correct": 2,
-      "explanation": "<b>telescope</b> /ˈtelɪskəʊp/ — danh từ 3 âm tiết thường nhấn âm 1: TE-le-scope. Ba từ còn lại mang đuôi -eer / -ee, là đuôi tự nhận trọng âm nên nhấn âm cuối: en-gi-NEER /ˌendʒɪˈnɪə/, vo-lun-TEER /ˌvɒlənˈtɪə/, gua-ran-TEE /ˌɡærənˈtiː/."
+      "explanation": "<b>telescope</b> /ˈtelɪskəʊp/ — danh từ 3 âm tiết ghép gốc Hy Lạp (tele + scope), không có hậu tố nhận trọng âm nên nhấn âm 1: TE-le-scope. Ba từ còn lại mang hậu tố -eer / -ee, là hậu tố tự nhận trọng âm nên nhấn âm cuối: en-gi-NEER /ˌendʒɪˈnɪə/, vo-lun-TEER /ˌvɒlənˈtɪə/, gua-ran-TEE /ˌɡærənˈtiː/. Mẹo: -ee, -eer, -ese, -ette, -ique luôn nhấn chính nó (refugee, career, Vietnamese); không có đuôi này thì danh từ 3 âm tiết thường nhấn âm 1."
     },
     {
       "id": "ph-ch-18-16", "level": "ch", "kind": "stress", "rule": "suffix-final",
@@ -134,7 +134,7 @@
       "ipa": ["/tekˈniːk/", "/ˈkɒŋkriːt/", "/kəˈset/", "/ˌtreɪˈniː/"],
       "syllables": [2, 2, 2, 2], "stress": [2, 1, 2, 2],
       "correct": 1,
-      "explanation": "<b>concrete</b> /ˈkɒŋkriːt/ — danh từ/tính từ 2 âm tiết (bê tông) nhấn âm 1, đuôi -ete không phải đuôi nhận trọng âm. Ba từ còn lại có đuôi -ique / -ette / -ee luôn tự mang trọng âm nên nhấn âm cuối: tech-NIQUE /tekˈniːk/, cas-SETTE /kəˈset/, trai-NEE /ˌtreɪˈniː/."
+      "explanation": "<b>concrete</b> /ˈkɒŋkriːt/ — danh từ, tính từ 2 âm tiết (bê tông, cụ thể) nhấn âm 1: CON-crete; đuôi -ete không phải hậu tố nhận trọng âm. Ba từ còn lại có hậu tố gốc Pháp -ique / -ette / -ee luôn tự mang trọng âm nên nhấn âm cuối: tech-NIQUE /tekˈniːk/, cas-SETTE /kəˈset/, trai-NEE /ˌtreɪˈniː/. Mẹo: thấy -ique, -ette, -ee, -eer, -ese → nhấn đuôi; không có đuôi ấy thì danh từ 2 âm tiết → nhấn âm 1."
     },
     {
       "id": "ph-ch-18-17", "level": "ch", "kind": "stress", "rule": "3syl",
@@ -143,7 +143,7 @@
       "ipa": ["/ˈestɪmeɪt/", "/ˈreɡjuleɪt/", "/ˈɔːɡənaɪz/", "/dɪˈtɜːmɪn/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 1, 1, 2],
       "correct": 3,
-      "explanation": "<b>determine</b> /dɪˈtɜːmɪn/ — động từ 3 âm tiết bắt đầu bằng tiền tố de- nên nhấn âm 2: de-TER-mine. Ba động từ còn lại có đuôi -ate / -ise, với động từ 3 âm tiết đuôi này đẩy trọng âm lên âm 1: ES-ti-mate /ˈestɪmeɪt/, RE-gu-late /ˈreɡjuleɪt/, OR-ga-nise /ˈɔːɡənaɪz/."
+      "explanation": "<b>determine</b> /dɪˈtɜːmɪn/ — động từ 3 âm tiết mở đầu bằng tiền tố de-, tiền tố không nhận trọng âm nên nhấn âm 2: de-TER-mine. Ba động từ còn lại mang đuôi -ate / -ise; với động từ 3 âm tiết, hai đuôi này đẩy trọng âm lên âm 1: ES-ti-mate /ˈestɪmeɪt/, RE-gu-late /ˈreɡjuleɪt/, OR-ga-nise /ˈɔːɡənaɪz/. Mẹo: động từ 3 âm tiết đuôi -ate/-ise/-ify → nhấn âm 1 (DE-co-rate, SA-tis-fy); không có đuôi ấy và mở đầu bằng tiền tố de-, re-, con- → nhấn âm 2 (de-TER-mine, con-SI-der, re-MEM-ber)."
     },
     {
       "id": "ph-ch-18-18", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -152,7 +152,7 @@
       "ipa": ["/ˈkærəktəraɪz/", "/ɪnˈvestɪɡeɪt/", "/ɪˈvæpəreɪt/", "/əkˈseləreɪt/"],
       "syllables": [4, 4, 4, 4], "stress": [1, 2, 2, 2],
       "correct": 0,
-      "explanation": "<b>characterise</b> /ˈkærəktəraɪz/ — giữ nguyên trọng âm của danh từ gốc CHA-rac-ter khi thêm -ise, nên nhấn âm 1. Ba động từ 4 âm tiết đuôi -ate còn lại nhấn âm 2 (cách đuôi -ate hai âm tiết): in-VES-ti-gate /ɪnˈvestɪɡeɪt/, e-VA-po-rate /ɪˈvæpəreɪt/, ac-CE-le-rate /əkˈseləreɪt/."
+      "explanation": "<b>characterise</b> /ˈkærəktəraɪz/ — động từ tạo từ danh từ CHA-rac-ter + -ise, hậu tố -ise không đổi trọng âm nên vẫn nhấn âm 1: CHA-rac-te-rise. Ba động từ 4 âm tiết đuôi -ate còn lại nhấn âm 2, tức âm tiết cách -ate hai âm: in-VES-ti-gate /ɪnˈvestɪɡeɪt/, e-VA-po-rate /ɪˈvæpəreɪt/, ac-CE-le-rate /əkˈseləreɪt/. Mẹo: động từ -ate từ 3 âm tiết trở lên → nhấn âm thứ 3 tính từ cuối (ap-PRE-ci-ate, com-MU-ni-cate); -ise thêm vào danh từ → giữ trọng âm của danh từ gốc."
     },
     {
       "id": "ph-ch-18-19", "level": "ch", "kind": "stress", "rule": "4syl",
@@ -161,7 +161,7 @@
       "ipa": ["/θəˈmɒmɪtə/", "/ɪkˈsperɪmənt/", "/ˈkælkjuleɪtə/", "/ɪnˈvaɪrənmənt/"],
       "syllables": [4, 4, 4, 4], "stress": [2, 2, 1, 2],
       "correct": 2,
-      "explanation": "<b>calculator</b> /ˈkælkjuleɪtə/ — đuôi -or không đổi trọng âm của động từ CAL-cu-late, nên nhấn âm 1. Ba danh từ khoa học 4 âm tiết còn lại nhấn âm 2: ther-MO-me-ter /θəˈmɒmɪtə/, ex-PE-ri-ment /ɪkˈsperɪmənt/, en-VI-ron-ment /ɪnˈvaɪrənmənt/."
+      "explanation": "<b>calculator</b> /ˈkælkjuleɪtə/ — hậu tố -or không đổi trọng âm của động từ gốc CAL-cu-late, nên nhấn âm 1: CAL-cu-la-tor. Ba danh từ 4 âm tiết còn lại nhấn âm 2: ther-MO-me-ter /θəˈmɒmɪtə/ (đuôi -meter chỉ dụng cụ đo kéo trọng âm về âm ngay trước nó), ex-PE-ri-ment /ɪkˈsperɪmənt/ và en-VI-ron-ment /ɪnˈvaɪrənmənt/ (tiền tố ex-, en- không nhận trọng âm, -ment không đổi trọng âm). Mẹo: -or, -er, -ment không đổi trọng âm — tìm trọng âm của từ gốc; -meter (thermometer, barometer) nhấn âm ngay trước -meter."
     },
     {
       "id": "ph-ch-18-20", "level": "ch", "kind": "stress", "rule": "suffix-neutral",
@@ -170,7 +170,7 @@
       "ipa": ["/ˈmeʒəmənt/", "/əˈdʒʌstmənt/", "/ˈkʌləfl/", "/ˈhæpinəs/"],
       "syllables": [3, 3, 3, 3], "stress": [1, 2, 1, 1],
       "correct": 1,
-      "explanation": "<b>adjustment</b> /əˈdʒʌstmənt/ — đuôi -ment không đổi trọng âm, mà động từ gốc ad-JUST nhấn âm 2 nên cả từ nhấn âm 2. Ba từ còn lại cũng giữ trọng âm của từ gốc (MEA-sure, CO-lour, HAP-py) đều ở âm 1: MEA-sure-ment /ˈmeʒəmənt/, CO-lour-ful /ˈkʌləfl/, HAP-pi-ness /ˈhæpinəs/."
+      "explanation": "<b>adjustment</b> /əˈdʒʌstmənt/ — hậu tố -ment không đổi trọng âm; động từ gốc ad-JUST có tiền tố ad- không nhận trọng âm nên cả từ nhấn âm 2: ad-JUST-ment. Ba từ còn lại cũng giữ trọng âm của từ gốc, đều ở âm 1: MEA-sure-ment /ˈmeʒəmənt/ (MEA-sure), CO-lour-ful /ˈkʌləfl/ (CO-lour), HAP-pi-ness /ˈhæpinəs/ (HAP-py). Mẹo: gặp -ment, -ful, -ness, -ly, -er, -ing thì bỏ hậu tố, tìm trọng âm của từ gốc — các hậu tố này không bao giờ đổi trọng âm."
     }
   ]
 }
