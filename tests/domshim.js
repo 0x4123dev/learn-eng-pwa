@@ -60,12 +60,15 @@ function parse(html, ownerDoc) {
 }
 
 // ---- selectors ------------------------------------------------------------
-// Supports: tag, #id, .class, [attr], [attr="value"], compounds of those, the
-// descendant combinator, and comma-separated lists. That is everything the
-// app's own queries use.
+// Supports: tag, #id, .class, [attr], [attr="value"], :not(<compound>),
+// compounds of those, the descendant combinator, and comma-separated lists.
+// That is everything the app's own queries use (:not for js/app.js's
+// `.match-card:not(.matched)`, which is how a lesson checkpoint knows which
+// pairs are still on the board — without it the shim saw no lesson at all).
 
 function parseCompound(sel) {
-  const out = { tag: null, id: null, classes: [], attrs: [] };
+  const out = { tag: null, id: null, classes: [], attrs: [], nots: [] };
+  sel = String(sel).replace(/:not\(([^)]*)\)/g, (_, inner) => { out.nots.push(parseCompound(inner)); return ''; });
   const re = /([a-zA-Z][-\w]*)|#([-\w]+)|\.([-\w]+)|\[([-\w:]+)(?:([~|^$*]?=)"?([^\]"]*)"?)?\]/g;
   let m;
   while ((m = re.exec(sel))) {
@@ -85,6 +88,7 @@ function matchesCompound(el, c) {
     if (!el.hasAttribute(name)) return false;
     if (value !== null && el.getAttribute(name) !== value) return false;
   }
+  for (const n of c.nots || []) if (matchesCompound(el, n)) return false;
   return true;
 }
 

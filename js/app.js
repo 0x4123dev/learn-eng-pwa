@@ -1687,6 +1687,24 @@ function switchScreen(screenId) {
         if (typeof abandonRewriteQuiz === 'function') abandonRewriteQuiz();
     }
 
+    // Guard: a matching lesson (Home lesson, SRS review, mistakes review,
+    // daily challenge, topic lesson — all on lessonScreen). The lesson hides
+    // the bottom bar while it runs, so this is the backstop for deep links
+    // and for the bar once the result is up. While the round is still being
+    // played (isLessonActive) it asks with the ×'s own wording —
+    // lessonLeaveQuestion(), null when nothing has been answered yet; once
+    // scored it is silent, and abandonLesson() takes the result overlays and
+    // the state away with it either way.
+    if (screenId !== 'lessonScreen' &&
+        typeof isLessonOnScreen === 'function' && isLessonOnScreen()) {
+        const q = (typeof isLessonActive === 'function' && isLessonActive()
+                   && typeof lessonLeaveQuestion === 'function') ? lessonLeaveQuestion() : null;
+        if (q && !confirm(q)) {
+            return false;
+        }
+        if (typeof abandonLesson === 'function') abandonLesson();
+    }
+
     const nextScreen = document.getElementById(screenId);
     if (!nextScreen) return false;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1867,6 +1885,10 @@ const _BUSY_CHECKS = [
     'isCollocActive', 'isExamActive', 'isGrammarQuizActive', 'isMathQuizActive',
     'isMathTablesActive', 'isPhrasesQuizActive', 'isRewriteQuizActive',
     'isUnitPracticeActive', 'isWarsActive', 'isWordformQuizActive', 'isRetryDrillActive',
+    // The matching lesson: the round being played, and the result card up
+    // over it (js/lessons.js). The lessonScreen check below is the same
+    // thing said without the helpers, from before they existed.
+    'isLessonActive', 'isLessonOnScreen',
 ];
 function _busyWithTimedActivity() {
     try {

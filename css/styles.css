@@ -2552,6 +2552,10 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            /* The bottom bar (68px, z-index 300) is back once the lesson is
+               scored, so it paints over the foot of this fixed overlay. Keep
+               the Continue button clear of it. */
+            padding-bottom: calc(20px + 68px + var(--safe-area-bottom));
             z-index: 200;
             opacity: 0;
             pointer-events: none;
@@ -5774,6 +5778,7 @@
             display: none;
             align-items: center;
             justify-content: center;
+            padding-bottom: calc(68px + var(--safe-area-bottom)); /* clear of the bottom bar */
         }
 
         .treasure-overlay.active { display: flex; }
@@ -5842,6 +5847,7 @@
             display: none;
             align-items: center;
             justify-content: center;
+            padding-bottom: calc(68px + var(--safe-area-bottom)); /* clear of the bottom bar */
         }
 
         .sentence-builder-overlay.active { display: flex; }
