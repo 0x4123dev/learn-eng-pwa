@@ -11,4 +11,4 @@ The final review found no remaining correctness or security issue in scope.
 - Offline collection never grants or consumes a temporary soldier; the player is told to retry.
 - The private lineage ledger is preserved by home sync, collection, and planting, and is not exposed in normalized API layouts.
 
-Verification reviewed: 28 farm-server tests, 13 layout tests, 34 builder tests, and `git diff --check` all passed. The main validation later completed with 11,942 tests and 269 feature checks passing.
+Verification reviewed: 28 farm-server tests, 13 layout tests, 34 builder tests, and `git diff --check` all passed. The release validation on the latest master later completed with 12,029 tests and 269 feature checks passing.

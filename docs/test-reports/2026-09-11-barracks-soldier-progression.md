@@ -3,7 +3,7 @@
 Status: PASS
 
 - Focused regression suites: 103 tests passed across farm rules, layout normalization, server collection, builder UI, and Night Raid API guards.
-- Full suite: 11,942 tests passed.
+- Full release suite after rebasing onto the latest master: 12,029 tests passed.
 - Feature verification: 269 checks passed; no affected feature detected.
 - `git diff --check`: passed.
 
