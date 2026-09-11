@@ -1808,6 +1808,19 @@ function applyUpdateWhenSafe(reg) {
     }, 12000);
 }
 
+// The browser re-checks sw.js on every page load (updateViaCache: 'none'
+// below), but a phone left open on the Home screen overnight never loads the
+// page again, so it would keep yesterday's worker until someone reloads. Ask
+// for a re-check when the tab comes back into view, at most once an hour: a
+// check is one conditional request for sw.js, and a changed manifest then
+// installs in the background and applyUpdateWhenSafe swaps it in when idle.
+const SW_UPDATE_RECHECK_MS = 60 * 60 * 1000;
+let _swLastCheck = 0;
+
+function swUpdateDue(now, last) {
+    return now - last >= SW_UPDATE_RECHECK_MS;
+}
+
 function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
@@ -1816,6 +1829,21 @@ function registerServiceWorker() {
             // Force a check on every load — gets us the freshest sw.js even
             // if the browser would otherwise cache it.
             reg.update();
+            _swLastCheck = Date.now();
+
+            // …and again when the app becomes visible after an hour away.
+            // Guarded: an update() that rejects (offline, sw.js 5xx) must
+            // never surface as an error in the page.
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState !== 'visible') return;
+                const now = Date.now();
+                if (!swUpdateDue(now, _swLastCheck)) return;
+                _swLastCheck = now;
+                try {
+                    const p = reg.update();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                } catch (e) { /* nothing to do: the next visible hour retries */ }
+            });
 
             // Watch for an updated sw.js becoming available.
             reg.addEventListener('updatefound', () => {
