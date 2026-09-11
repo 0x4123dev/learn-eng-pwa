@@ -29,6 +29,50 @@ const PTNK_HISTORY_CAP = 100;
 function ptnkBank() {
     return (typeof PTNK_EXAMS !== 'undefined' && Array.isArray(PTNK_EXAMS)) ? PTNK_EXAMS : [];
 }
+
+// The built bank stores each paper's passages once (`passages`) and points a
+// question at its passage by `passageId` — the source JSON repeats the passage
+// on every question, and shipping that was 1.2 MB of the same text over and
+// over (scripts/build-ptnk-data.js). The engine, the review screen and the
+// study checkpoint all read `question.passage`, exactly as js/practice-sets.js
+// readingPaper() puts the passage on every question of a practice paper. So
+// this is the one place a PTNK paper is turned back into that shape: `passage`
+// restored in the key position `passageId` held, `passages` dropped. Memoised
+// per source object — examLookup() runs on every review row, and the engine
+// keeps a reference to `questions` for the length of a paper, so the same
+// paper must come back as the same object each time. A paper that already
+// carries inline passages (a stub bank in a test, a bank built before this
+// change) is returned as it is.
+const _ptnkHydrated = (typeof WeakMap === 'function') ? new WeakMap() : null;
+function ptnkHydrate(ex) {
+    if (!ex || !Array.isArray(ex.passages) || !Array.isArray(ex.questions)) return ex;
+    const hit = _ptnkHydrated && _ptnkHydrated.get(ex);
+    if (hit) return hit;
+    const passages = ex.passages;
+    const paper = {};
+    Object.keys(ex).forEach(k => {
+        if (k === 'passages') return;
+        if (k !== 'questions') { paper[k] = ex[k]; return; }
+        paper.questions = ex.questions.map(q => {
+            if (!q || typeof q.passageId !== 'number') return q;
+            const out = {};
+            Object.keys(q).forEach(kk => {
+                if (kk === 'passageId') out.passage = passages[q.passageId];
+                else out[kk] = q[kk];
+            });
+            return out;
+        });
+    });
+    if (_ptnkHydrated) _ptnkHydrated.set(ex, paper);
+    return paper;
+}
+// Every paper in the bank in the shape js/exam.js expects: what EXAM_SETS.ptnk
+// hands the engine, and what startPtnkExam / the review screen open.
+function ptnkPapers() { return ptnkBank().map(ptnkHydrate); }
+function ptnkPaper(examId) {
+    const ex = ptnkBank().find(e => e && e.id === examId);
+    return ex ? ptnkHydrate(ex) : null;
+}
 function ptnkHistory() {
     if (typeof appState === 'undefined' || !appState) return [];
     if (!Array.isArray(appState.ptnkHistory)) appState.ptnkHistory = [];
@@ -51,7 +95,8 @@ function ptnkSaveHistory(list) {
 if (typeof EXAM_SETS !== 'undefined') {
     EXAM_SETS.ptnk = {
         screen: 'ptnkScreen',
-        bank: ptnkBank,
+        bank: ptnkPapers,
+        lookup: ptnkPaper,
         loadHistory: () => ptnkHistory().slice(),
         saveHistory: ptnkSaveHistory,
         historyCap: PTNK_HISTORY_CAP,
@@ -139,7 +184,7 @@ function startPtnkExam(examId) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         PTNK_COINS_PER_CORRECT, PTNK_PERFECT_BONUS, PTNK_HISTORY_CAP,
-        ptnkBank, ptnkHistory, ptnkSaveHistory, ptnkBest, ptnkTrackLabel,
+        ptnkBank, ptnkHydrate, ptnkPapers, ptnkPaper, ptnkHistory, ptnkSaveHistory, ptnkBest, ptnkTrackLabel,
         ptnkCardHTML, renderPtnkHomeHTML, renderPtnkHome, startPtnkExam, ptnkEsc,
     };
 }

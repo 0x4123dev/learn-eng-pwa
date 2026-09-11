@@ -177,6 +177,8 @@ suite('practice banks: original material', () => {
   test('no twelve-word run from a practice passage appears in any real PTNK passage', () => {
     const realText = new Set();
     for (const e of PTNK_EXAMS) for (const q of e.questions) if (q.passage) for (const s of shingles(q.passage, 12)) realText.add(s);
+    // The built bank stores each passage once, on the paper, not the question.
+    for (const e of PTNK_EXAMS) for (const p of e.passages || []) for (const s of shingles(p, 12)) realText.add(s);
     const offenders = [];
     for (const p of READING_PASSAGES.concat(CLOZE_PASSAGES)) {
       for (const s of shingles(p.passage, 12)) if (realText.has(s)) { offenders.push(p.id + ': "' + s + '"'); break; }

@@ -109,6 +109,46 @@ suite('PTNK: the set is registered and separate', () => {
     assert.truthy(ctx.examLookup(ctx.__EXAMS[0].id), 'and still finds its own papers');
   });
 
+  test('a paper from the built bank reaches the engine with its passage on every question', () => {
+    // js/ptnk-data.js stores each passage once (`passages` + `passageId`,
+    // scripts/build-ptnk-data.js); js/exam.js only ever reads `q.passage`.
+    // The set's bank() and lookup() must hand over the source shape, and the
+    // same object each time, or the reading questions render without their
+    // text and the review screen looks up a different paper than was sat.
+    const { ctx } = world();
+    const PASSAGE = 'The lighthouse keeper had not seen a ship in forty days, and he had stopped expecting one. '.repeat(2);
+    vm.runInContext(`PTNK_EXAMS.push({ id: 'ptnk-2099-kc', year: 2099, track: 'kc', title: 'PTNK 2099', subtitle: 's',
+      durationMin: 60, keySource: 'solved', source: 'z.pdf',
+      passages: [${JSON.stringify(PASSAGE)}, 'Second text, cloze (1)____ gap.'],
+      questions: [
+        { n: 1, part: 'P1', section: 'Reading', type: 'mcq', passageId: 0, q: 'Q1', options: ['a','b','c','d'], correct: 0, explanation: 'first sentence' },
+        { n: 2, part: 'P1', section: 'Reading', type: 'mcq', passageId: 0, q: 'Q2', options: ['a','b','c','d'], correct: 1, explanation: 'second sentence' },
+        { n: 3, part: 'P2', section: 'Open cloze', type: 'text', passageId: 1, q: '(1)', accept: ['the'], answer: 'the', explanation: 'article' },
+        { n: 4, part: 'P3', section: 'Word form', type: 'text', q: 'Q4 (ROOT)', accept: ['rooted'], answer: 'rooted', explanation: 'adjective' },
+      ] });`, ctx);
+    ctx.examSelectSet('ptnk');
+    const paper = ctx.examLookup('ptnk-2099-kc');
+    assert.truthy(paper, 'the paper opens');
+    assert.equal(paper.questions[0].passage, PASSAGE);
+    assert.equal(paper.questions[1].passage, PASSAGE);
+    assert.equal(paper.questions[2].passage, 'Second text, cloze (1)____ gap.');
+    assert.equal('passage' in paper.questions[3], false, 'a question with no passage gains none');
+    assert.equal(paper.questions.some(q => 'passageId' in q), false, 'passageId never reaches the engine');
+    assert.equal('passages' in paper, false);
+    assert.equal(Object.keys(paper.questions[0]).indexOf('passage'), 4, 'passage sits where the source JSON keeps it');
+    assert.truthy(ctx.examLookup('ptnk-2099-kc') === paper, 'lookup is stable across calls');
+    assert.truthy(ctx.__sets.ptnk.bank().find(e => e.id === 'ptnk-2099-kc') === paper, 'bank() and lookup() agree');
+    ctx.startExam('ptnk-2099-kc', 'ptnk');
+    assert.equal(ctx.__state().questions[0].passage, PASSAGE, 'the live paper carries the passage');
+    ctx.abandonExam();
+    // The raw bank is untouched: the home screen still counts questions
+    // from it, and nothing has written passage text back into the global.
+    const raw = ctx.ptnkBank().find(e => e.id === 'ptnk-2099-kc');
+    assert.equal(raw.questions[0].passageId, 0);
+    assert.equal('passage' in raw.questions[0], false);
+    assert.truthy(ctx.renderPtnkHomeHTML().includes('4 questions'));
+  });
+
   test('startPtnkExam pins the set even when nothing chose it first', () => {
     // The daily-task deep link lands here cold.
     const { ctx } = world();

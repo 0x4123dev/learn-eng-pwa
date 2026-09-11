@@ -14,7 +14,12 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const { validate, PAPERS } = require(path.join(ROOT, 'scripts', 'validate-ptnk.js'));
-const { PTNK_EXAMS } = require(path.join(ROOT, 'js', 'ptnk-data.js'));
+// The built bank stores each passage once; js/ptnk.js puts it back on every
+// question before a paper reaches the engine. Everything below that reads a
+// question reads it the way the engine will — hydrated.
+const BUILT = require(path.join(ROOT, 'js', 'ptnk-data.js')).PTNK_EXAMS;
+const { ptnkHydrate } = require(path.join(ROOT, 'js', 'ptnk.js'));
+const PTNK_EXAMS = BUILT.map(ptnkHydrate);
 
 const EXPECTED_IDS = Object.keys(PAPERS).sort();
 
@@ -56,6 +61,69 @@ suite('PTNK bank: the fixed list of papers', () => {
       const ok = a.year > b.year || (a.year === b.year && a.track === 'kc' && b.track === 'chuyen');
       assert.truthy(ok, `${a.id} must come before ${b.id}`);
     }
+  });
+});
+
+suite('PTNK bank: passages are stored once and come back whole', () => {
+  // scripts/build-ptnk-data.js hoists the passage every question of a text
+  // repeats (SCHEMA.md) into one `passages` list per paper; ptnkHydrate() in
+  // js/ptnk.js reverses it. The round trip has to be exact — the same string
+  // on the same question, in the same key position — because the engine, the
+  // review screen and the study checkpoint all read `question.passage` and
+  // the source JSON is the transcription a second reader checked.
+  test('the paper the app opens is the source paper, question for question', () => {
+    for (const ex of PTNK_EXAMS) {
+      const src = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'ptnk', ex.id + '.json'), 'utf8'));
+      assert.equal(JSON.stringify(ex), JSON.stringify(src), ex.id + ': the hydrated paper differs from data/ptnk/' + ex.id + '.json');
+      src.questions.forEach((q, i) => {
+        assert.equal(ex.questions[i].passage, q.passage, `${ex.id} n=${q.n}: passage`);
+        assert.equal('passageId' in ex.questions[i], false, `${ex.id} n=${q.n}: passageId leaked to the engine`);
+      });
+      assert.equal('passages' in ex, false, ex.id + ': passages list leaked to the engine');
+    }
+  });
+
+  test('the built file carries no passage string twice', () => {
+    for (const ex of BUILT) {
+      const seen = new Set();
+      for (const p of ex.passages || []) {
+        assert.falsy(seen.has(p), ex.id + ': a passage is stored twice');
+        seen.add(p);
+      }
+      for (const q of ex.questions) {
+        assert.equal('passage' in q, false, `${ex.id} n=${q.n}: inline passage in the built bank — rebuild`);
+        if ('passageId' in q) assert.truthy(Number.isInteger(q.passageId) && q.passageId >= 0 && q.passageId < ex.passages.length, `${ex.id} n=${q.n}: passageId out of range`);
+      }
+    }
+    // Belt and braces: the source text of the built file, not just its
+    // parsed shape. Any string of passage length that appears twice is a
+    // passage that was not hoisted.
+    const text = fs.readFileSync(path.join(ROOT, 'js', 'ptnk-data.js'), 'utf8');
+    for (const ex of BUILT) for (const p of ex.passages || []) {
+      const needle = JSON.stringify(p);
+      const first = text.indexOf(needle);
+      assert.truthy(first >= 0, ex.id + ': passage not found verbatim');
+      assert.equal(text.indexOf(needle, first + 1), -1, ex.id + ': passage text repeated in js/ptnk-data.js');
+    }
+  });
+
+  test('every passage in the built file is pointed at by at least one question', () => {
+    for (const ex of BUILT) {
+      const used = new Set(ex.questions.map(q => q.passageId).filter(n => typeof n === 'number'));
+      (ex.passages || []).forEach((p, i) => assert.truthy(used.has(i), `${ex.id}: passages[${i}] is orphaned`));
+    }
+  });
+
+  test('hydration hands the engine the same paper object every time', () => {
+    // examLookup() runs per review row and the engine keeps `questions` for
+    // the length of a paper: a fresh copy each call would break both.
+    for (const ex of BUILT) assert.truthy(ptnkHydrate(ex) === ptnkHydrate(ex), ex.id);
+  });
+
+  test('a paper with inline passages passes through untouched', () => {
+    const inline = { id: 'x', questions: [{ n: 1, passage: 'p', q: 'q' }] };
+    assert.truthy(ptnkHydrate(inline) === inline);
+    assert.equal(ptnkHydrate(null), null);
   });
 });
 
