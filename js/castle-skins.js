@@ -15,7 +15,7 @@ var CastleSkins = (() => {
   ].map((skin,index) => Object.freeze({...skin,prestige:index+1})));
   const byId = Object.freeze(Object.fromEntries(skins.map(s => [s.id,s])));
   const defaultId = 'stone-keep';
-  const atlasSources = Object.freeze(['img/castle-skins/castles-atlas-a.png','img/castle-skins/castles-atlas-b.png']);
+  const atlasSources = Object.freeze(['img/castle-skins/castles-atlas-a.webp','img/castle-skins/castles-atlas-b.webp']);
   const atlasCrops = Object.freeze([{ y:20, h:680 }, { y:150, h:620 }]);
   // The source sheets are not five equal sprite cells: several silhouettes
   // cross those mathematical boundaries. These measured alpha-safe frames

@@ -132,7 +132,7 @@ suite('night raid builder: the board opens small enough to see', () => {
             'the lightweight meadow plane must be effectively unreachable without allocating a giant bitmap');
         assert.truthy(ui.includes('viewport.scrollLeft+cx-plane.offsetWidth/2') && ui.includes('worldX*newZoom'),
             'zoom anchoring must preserve the logical point around the shared world centre');
-        assert.truthy(ui.includes('isometric-home-board-frame-v4.png'),
+        assert.truthy(ui.includes('isometric-home-board-frame-v4.webp'),
             'the full estate must use a true-alpha frame instead of a second opaque lawn');
         assert.truthy(css.includes('.nr-estate-map{isolation:auto') && css.includes('-webkit-clip-path:none') && css.includes('clip-path:none'),
             'the transparent frame must not be cut into another visible rectangle on Safari');

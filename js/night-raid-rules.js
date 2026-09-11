@@ -133,10 +133,10 @@ var NightRaidRules = (() => {
     Object.freeze({ id:'stone-wall', name:{en:'Stone Wall',vi:'Tường Đá'}, price:5000, stat:'defense', attack:0, defense:80, hp:300, blocker:true, material:'stone', color:'#91a0b2' }),
     Object.freeze({ id:'spike-trap', name:{en:'Spike Trap',vi:'Bẫy Gai'}, price:3000, stat:'both', attack:16, defense:25, hp:45, trap:true, damage:5, color:'#adb5bd' }),
     Object.freeze({ id:'water-cannon', name:{en:'Water Cannon',vi:'Pháo Nước'}, price:5000, stat:'damage', attack:50, defense:10, hp:48, damage:12, cooldown:2000, ranged:true, splash:true, color:'#50c9ff' }),
-    Object.freeze({ id:'training-barracks', asset:'training-barracks.png', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:8000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, perTaskDay:true, maxOwned:10, color:'#d8783d' }),
-    Object.freeze({ id:'rice-field', asset:'rice-field.png', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#e5b93d' }),
-    Object.freeze({ id:'tomato-field', asset:'tomato-field.png', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#ef5544' }),
-    Object.freeze({ id:'fish-pond', asset:'fish-pond.png', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#38a9d6' }),
+    Object.freeze({ id:'training-barracks', asset:'training-barracks.webp', name:{en:'Training Barracks',vi:'Trại Huấn Luyện'}, price:8000, stat:'producer', footprint:2, attack:0, defense:0, producer:'soldier', yield:1, perTaskDay:true, maxOwned:10, color:'#d8783d' }),
+    Object.freeze({ id:'rice-field', asset:'rice-field.webp', name:{en:'Rice Field',vi:'Ruộng Lúa'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#e5b93d' }),
+    Object.freeze({ id:'tomato-field', asset:'tomato-field.webp', name:{en:'Tomato Garden',vi:'Vườn Cà Chua'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#ef5544' }),
+    Object.freeze({ id:'fish-pond', asset:'fish-pond.webp', name:{en:'Koi Fish Pond',vi:'Ao Cá Koi'}, price:6000, stat:'producer', footprint:2, attack:0, defense:0, producer:'coins', yield:100, productionMs:PRODUCTION_MS, maxOwned:4, buyMax:1, color:'#38a9d6' }),
   ]);
 
   const byId = (list, id) => list.find(item => item.id === id) || null;

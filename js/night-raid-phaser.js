@@ -207,9 +207,9 @@ var NightRaidPhaser = (() => {
       if(this.assetCanvases)return Promise.resolve();const petAtlas=(this.options.pet||{}).atlas==='large'?'large':'small';
       this.petAtlas=petAtlas;
       const sources={
-        board:'img/night-raid/isometric-home-board-frame-v4.png',
+        board:'img/night-raid/isometric-home-board-frame-v4.webp',
         squad:'img/night-raid/animation/raider-actions-v2.webp',
-        squadWalk:'img/night-raid/animation/raider-walk-v3.png',
+        squadWalk:'img/night-raid/animation/raider-walk-v3.webp',
         pet:'img/night-raid/animation/pet-actions-'+petAtlas+'-v2.webp',
         defenses:'img/night-raid/animation/defense-damage-v2.webp',
         economy:'img/night-raid/animation/economy-damage-v2.webp',

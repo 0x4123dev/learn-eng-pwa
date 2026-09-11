@@ -76,7 +76,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(m[1].startsWith('/img/'), 'the atlas url must be root-absolute, got: ' + m[1]);
     assert.truthy(css.includes('var(--nr-pet-walk)'), 'the sprite still reads the walk variable');
     assert.truthy(css.includes('var(--nr-pet-actions)'), 'the sprite still reads the action variable');
-    for (const atlas of ['pet-walk-small-v1.png', 'pet-walk-large-v1.png','pet-actions-small-v2.png','pet-actions-large-v2.png']) {
+    for (const atlas of ['pet-walk-small-v1.webp', 'pet-walk-large-v1.webp','pet-actions-small-v2.webp','pet-actions-large-v2.webp']) {
       assert.truthy(fs.existsSync(path.join(root, 'img/night-raid', atlas)), atlas + ' missing on disk');
       assert.truthy(sw.includes("'/img/night-raid/" + atlas + "'"), atlas + ' must be cached for offline');
     }
@@ -187,7 +187,7 @@ suite('night raid: app integration',()=>{
     assert.truthy(dur,'each mood needs its own dwell time');
     assert.truthy(+dur[3]>=5000,'a rest must actually look like a rest, got '+dur[3]+'ms');
     assert.falsy(ui.includes('nr-pet-bark')||css.includes('nr-pet-bark'),'bark sprite must not get a stray white sound mark');
-    for(const asset of ['pet-actions-small-v2.png','pet-actions-large-v2.png'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
+    for(const asset of ['pet-actions-small-v2.webp','pet-actions-large-v2.webp'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
     // Short strolls between moods, and a walking pace a puppy could keep.
     const gap=ui.match(/nextCasual=now\+(\d+)\+Math\.random\(\)\*(\d+)/);
     assert.truthy(gap,'the gap between moods must be a random range');
@@ -214,14 +214,14 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('state.y=alternatives[Math.floor(Math.random()*alternatives.length)]'),'collision handling must never jump directly to a distant lane');
     assert.truthy(ui.includes('startArmyParade(petPatrolRoot)')&&ui.includes('startArmyParade(activeMap)'),'the parade starts against the explicit visible map in both habitats');
     assert.truthy(css.includes("raider-actions-v2.webp"),'the home parade reuses the authored animated soldier atlas');
-    assert.truthy(css.includes("raider-walk-v3.png"),'marching uses the dedicated six-frame locomotion atlas');
+    assert.truthy(css.includes("raider-walk-v3.webp"),'marching uses the dedicated six-frame locomotion atlas');
     assert.truthy(css.includes('aspect-ratio:1.5'),'soldier boxes preserve the authored 3:2 frame instead of squashing the body');
     assert.falsy(css.includes('aspect-ratio:2.25'),'the old wide, flattened soldier frame must not return');
     assert.truthy(css.includes('.nr-home-soldier::after{'),'a separate contact shadow seats each raised soldier on the grass');
     assert.truthy(css.includes('drop-shadow(0 .48cqw .28cqw'),'the sprite body has a deeper layered shadow for readable 3D separation');
     assert.truthy(ui.includes("%6"),'the six authored gait frames all play');
     assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the homepage parade remains visible offline');
-    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v3.png'"),'the walk cycle remains visible offline');
+    assert.truthy(sw.includes("'/img/night-raid/animation/raider-walk-v3.webp'"),'the walk cycle remains visible offline');
     assert.truthy(css.includes('.nr-yard-army[data-mode="attention"]'),'attention has a visually distinct pose');
     assert.truthy(css.includes('.nr-yard-army[data-mode="rest"]'),'rest has a visually distinct pose');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'the squad can stand still for reduced-motion users');
@@ -347,7 +347,7 @@ suite('night raid: app integration',()=>{
       'the old black replay canvas must not return');
   });
   test('builder uses the equipped castle skin, coin upgrades and power totals',()=>{
-    for(const token of ['isometric-home-board-frame-v4.png','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const token of ['isometric-home-board-frame-v4.webp','nrEquippedCastle','paintEquippedCastle()','nrToggleBuilderGrid()','nr-builder-power damage','nr-builder-power defense'])assert.truthy(ui.includes(token)||css.includes(token),token);
     for(const token of ['nr-island-board','nr-builder-scoreboard','nr-equipped-castle','nr-build-art'])assert.truthy(css.includes(token),token);
     assert.truthy(ui.includes('<img id="nrEquippedCastle"'),'builder castle must be a composited image, not a large live canvas on iOS');
     assert.truthy(ui.includes("canvas.toDataURL('image/png')"),'equipped skin is rasterized once with transparency');
@@ -371,8 +371,8 @@ suite('night raid: app integration',()=>{
   });
 
   test('the equipped castle drags only in edit mode and the real pet patrols it',()=>{
-    for(const token of ['beginCastleDrag','castleCell','footprintFor','nr-pet-patrol','yardPetHtml({showName:false})','pet-walk-${pet.atlas}-v1.png','startPetPatrol','data-nr-yard-pet','dataset.x','state.vx*=-1','--nr-castle-x'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    for(const asset of ['pet-walk-small-v1.png','pet-walk-large-v1.png'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
+    for(const token of ['beginCastleDrag','castleCell','footprintFor','nr-pet-patrol','yardPetHtml({showName:false})','pet-walk-${pet.atlas}-v1.webp','startPetPatrol','data-nr-yard-pet','dataset.x','state.vx*=-1','--nr-castle-x'])assert.truthy(ui.includes(token)||css.includes(token),token);
+    for(const asset of ['pet-walk-small-v1.webp','pet-walk-large-v1.webp'])assert.truthy(fs.existsSync(path.join(root,'img/night-raid',asset)),asset);
     assert.truthy(css.includes('.nr-builder.editing .nr-builder-map>.nr-equipped-castle'),'castle drag must require SỬA');
     assert.truthy(css.includes('@media(prefers-reduced-motion:reduce)'),'pet patrol must respect reduced motion');
     for(const token of ['devicePixelRatio','ctx.setTransform','imageSmoothingQuality=\'high\''])assert.truthy(ui.includes(token),token);
@@ -386,8 +386,8 @@ suite('night raid: app integration',()=>{
 
   test('daily production UI shows pet power, countdowns and collect controls',()=>{
     for(const token of ['nr-pet-power-card','nr-production-badge','startProductionTicker','nr-collect-all','nrGridCell','localCollect'])assert.truthy(ui.includes(token)||css.includes(token),token);
-    for(const asset of ['img/night-raid/training-barracks.png','img/night-raid/rice-field.png','img/night-raid/tomato-field.png','img/night-raid/fish-pond.png','img/night-raid/isometric-home-board-frame-v4.png','img/night-raid/endless-meadow-tile-v2.jpg'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
-    assert.truthy(sw.includes("'/img/night-raid/isometric-home-board-frame-v4.png'")&&sw.includes("'/img/night-raid/endless-meadow-tile-v2.jpg'"),'the unified estate remains available offline');
+    for(const asset of ['img/night-raid/training-barracks.webp','img/night-raid/rice-field.webp','img/night-raid/tomato-field.webp','img/night-raid/fish-pond.webp','img/night-raid/isometric-home-board-frame-v4.webp','img/night-raid/endless-meadow-tile-v2.jpg'])assert.truthy(fs.existsSync(path.join(root,asset)),asset);
+    assert.truthy(sw.includes("'/img/night-raid/isometric-home-board-frame-v4.webp'")&&sw.includes("'/img/night-raid/endless-meadow-tile-v2.jpg'"),'the unified estate remains available offline');
   });
   test('the inactive production summary takes no estate space',()=>{
     assert.truthy(css.includes('.nr-collect-all:disabled{display:none}'),'only an actionable harvest control is visible');
@@ -474,9 +474,9 @@ suite('night raid: app integration',()=>{
     assert.falsy(ui.includes('nr-unit-tray'));
   });
   test('battle reuses the rectangular castle estate on the shared meadow',()=>{
-    assert.truthy(game.includes("loadAsset('board','img/night-raid/isometric-home-board-frame-v4.png')"),'Canvas uses the builder estate frame');
+    assert.truthy(game.includes("loadAsset('board','img/night-raid/isometric-home-board-frame-v4.webp')"),'Canvas uses the builder estate frame');
     assert.truthy(game.includes("ctx.drawImage(this.assets.board,0,S*.125,S,S*.75)"),'Canvas preserves the 4:3 estate ratio');
-    assert.truthy(phaser.includes("board:'img/night-raid/isometric-home-board-frame-v4.png'"),'Phaser uses the same estate frame');
+    assert.truthy(phaser.includes("board:'img/night-raid/isometric-home-board-frame-v4.webp'"),'Phaser uses the same estate frame');
     assert.truthy(phaser.includes("setDisplaySize(800,600)"),'Phaser preserves the 4:3 estate ratio');
     assert.truthy(phaser.includes('transparent:true'),'the Phaser surface reveals the shared meadow');
     assert.falsy(phaser.includes("backgroundColor:'#dcefc8'"),'a second square background must not return');
@@ -489,7 +489,7 @@ suite('night raid: app integration',()=>{
     // Production atlases now supply distinct paw/leg, weapon, hit and fallen
     // poses; the old deformation of one still image must not come back.
     assert.truthy(phaser.includes("raider-actions-v2.webp"),'raider action atlas');
-    assert.truthy(phaser.includes("raider-walk-v3.png"),'six-frame raider walk atlas');
+    assert.truthy(phaser.includes("raider-walk-v3.webp"),'six-frame raider walk atlas');
     assert.truthy(phaser.includes("pet-actions-'+petAtlas+'-v2.webp"),'breed action atlas');
     assert.truthy(phaser.includes("actor.sprite.setTexture(p.texture,p.prefix+p.frame)"),'runtime swaps between walk and action frames');
     assert.truthy(phaser.includes("texture='nr-squad-walk'"),'moving soldiers use the dedicated walk cycle');
@@ -526,7 +526,7 @@ suite('night raid: app integration',()=>{
   test('generated battle-only atlases stay lazy while the home parade remains offline',()=>{
     const files=['pet-actions-small-v2.webp','pet-actions-large-v2.webp','defense-damage-v2.webp','economy-damage-v2.webp','castle-damage-a-v2.webp','castle-damage-b-v2.webp'];
     assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-actions-v2.webp')));
-    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v3.png')),'the dedicated walk atlas ships with the app');
+    assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation','raider-walk-v3.webp')),'the dedicated walk atlas ships with the app');
     assert.truthy(sw.includes("'/img/night-raid/animation/raider-actions-v2.webp'"),'the atlas now used on Home is part of the offline shell');
     for(const file of files){
       assert.truthy(fs.existsSync(path.join(root,'img/night-raid/animation',file)),file);

@@ -77,9 +77,9 @@ var NightRaidGame = (() => {
       this.choreo=Choreo.build(this.result,target,this.soldierCount,options.pet||null,target.seed);
       this.duration=this.reduce?2000:this.choreo.durationMs;this.boundFrame=t=>this.frame(t);
       this.size=800;this.assets={};
-      this.loadAsset('board','img/night-raid/isometric-home-board-frame-v4.png');
+      this.loadAsset('board','img/night-raid/isometric-home-board-frame-v4.webp');
       this.loadAsset('squadActions','img/night-raid/animation/raider-actions-v2.webp');
-      this.loadAsset('squadWalk','img/night-raid/animation/raider-walk-v3.png');
+      this.loadAsset('squadWalk','img/night-raid/animation/raider-walk-v3.webp');
       if(options.pet)this.loadAsset('pet','img/night-raid/pet-soldiers-'+(options.pet.atlas==='large'?'large':'small')+'-v2.webp');
       NightRaidArt.preloadDefenses(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
       if(typeof CastleSkins!=='undefined'&&CastleSkins.preload)CastleSkins.preload(()=>this.paint(this.duration?this.state.timeMs/this.duration:0));
