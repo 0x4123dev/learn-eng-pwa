@@ -168,6 +168,8 @@ function renderPtnkHomeHTML() {
 
 function renderPtnkHome() {
     if (typeof examSelectSet === 'function') examSelectSet('ptnk');
+    // A paper still running on this screen keeps its question (js/exam.js).
+    if (typeof examHomeYieldsToLivePaper === 'function' && examHomeYieldsToLivePaper('ptnkScreen')) return;
     const screen = (typeof document !== 'undefined') ? document.getElementById('ptnkScreen') : null;
     if (!screen) return;
     screen.innerHTML = `<div class="exam-home">${renderPtnkHomeHTML()}</div>`;
