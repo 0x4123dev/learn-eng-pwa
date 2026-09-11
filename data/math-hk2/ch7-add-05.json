@@ -1,0 +1,206 @@
+{
+  "ch": 7,
+  "file": "05",
+  "questions": [
+    {
+      "id": "m7-181",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Nghiệm của đa thức A(x) = (x − 5)(x + 2) là",
+      "options": ["x = 5 hoặc x = −2", "x = −5 hoặc x = 2", "x = 5 hoặc x = 2", "x = 5"],
+      "correct": 0,
+      "answer": "x = 5 hoặc x = −2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu tại x = a đa thức F(x) có giá trị bằng 0, tức F(a) = 0, thì a là một nghiệm của F(x); một đa thức có thể có nhiều nghiệm nên phải tìm cho đủ (SGK tr. 29). Khi đa thức đã viết sẵn dưới dạng tích, ta dùng điều đã biết: một tích bằng 0 khi có ít nhất một thừa số bằng 0, nên chỉ cần cho từng thừa số bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Cho tích bằng 0.</b> (x − 5)(x + 2) = 0 khi x − 5 = 0 hoặc x + 2 = 0.<br><b>Bước 2 — Giải từng thừa số.</b> x − 5 = 0 cho x = 5; x + 2 = 0 cho x = −2 (chuyển 2 sang vế phải phải đổi dấu).<br><b>Bước 3 — Thử lại.</b> A(5) = 0·7 = 0 và A(−2) = (−7)·0 = 0, cả hai đều đúng.<br><b>Bước 4 — Kết luận.</b> Đa thức có hai nghiệm: <b>x = 5 hoặc x = −2</b>.<br>✗ x = −5 hoặc x = 2: em đổi dấu cả hai số trong ngoặc, tức lấy nghiệm của x + 5 và x − 2; thử lại A(−5) = (−10)·(−3) = 30 và A(2) = (−3)·4 = −12, đều khác 0.<br>✗ x = 5 hoặc x = 2: em lấy luôn số 2 trong thừa số x + 2 làm nghiệm mà quên chuyển vế đổi dấu; A(2) = (−3)·4 = −12, khác 0.<br>✗ x = 5: em dừng lại ở thừa số thứ nhất; thừa số x + 2 cũng có thể bằng 0 nên còn nghiệm x = −2 bị bỏ sót."
+    },
+    {
+      "id": "m7-182",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Nghiệm của đa thức B(x) = 2x·(x − 3) là",
+      "options": ["x = 3", "x = 0 hoặc x = 3", "x = 2 hoặc x = 3", "x = 0 hoặc x = −3"],
+      "correct": 1,
+      "answer": "x = 0 hoặc x = 3",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0 (SGK tr. 29). SGK còn nhận xét: nếu một đa thức có hệ số tự do bằng 0 thì x = 0 là một nghiệm của đa thức đó (SGK tr. 29). Một tích bằng 0 khi có ít nhất một thừa số bằng 0; thừa số là một số khác 0 (như số 2) thì không bao giờ bằng 0 nên không cho nghiệm nào.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Cho tích bằng 0.</b> 2x·(x − 3) = 0 khi 2x = 0 hoặc x − 3 = 0 (thừa số 2 khác 0 nên bỏ qua).<br><b>Bước 2 — Giải từng thừa số.</b> 2x = 0 cho x = 0; x − 3 = 0 cho x = 3.<br><b>Bước 3 — Thử lại.</b> B(0) = 0·(−3) = 0 và B(3) = 6·0 = 0.<br><b>Bước 4 — Kết luận.</b> Đa thức có hai nghiệm: <b>x = 0 hoặc x = 3</b>. Nhân ra thì B(x) = 2x² − 6x có hệ số tự do bằng 0, đúng như nhận xét trong SGK: x = 0 phải là nghiệm.<br>✗ x = 3: em chia cả hai vế của 2x·(x − 3) = 0 cho x rồi chỉ giải x − 3 = 0; chỉ được chia cho một số khác 0, làm thế là đánh mất nghiệm x = 0.<br>✗ x = 2 hoặc x = 3: em coi số 2 là một thừa số cho nghiệm x = 2; nhưng 2 là hệ số, không chứa biến nên không bao giờ bằng 0; B(2) = 4·(−1) = −4, khác 0.<br>✗ x = 0 hoặc x = −3: em giải x − 3 = 0 mà quên đổi dấu khi chuyển vế; B(−3) = (−6)·(−6) = 36, khác 0."
+    },
+    {
+      "id": "m7-183",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = (x − 4)(x + 1)(2x − 6). Tính tổng tất cả các nghiệm của P(x).",
+      "answer": "6",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0, và một đa thức có thể có nhiều nghiệm nên phải tìm cho đủ (SGK tr. 29). Với đa thức dạng tích, ta dùng: một tích bằng 0 khi có ít nhất một thừa số bằng 0, nên cho lần lượt từng thừa số bằng 0 rồi giải.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Giải từng thừa số.</b> x − 4 = 0 cho x = 4; x + 1 = 0 cho x = −1; 2x − 6 = 0 cho 2x = 6, tức x = 3.<br><b>Bước 2 — Thử lại.</b> P(4) = 0·5·2 = 0; P(−1) = (−5)·0·(−8) = 0; P(3) = (−1)·4·0 = 0. Cả ba đều là nghiệm, và đa thức bậc ba này không thể có thêm nghiệm nào khác vì mỗi thừa số bậc nhất chỉ bằng 0 tại đúng một giá trị của x.<br><b>Bước 3 — Cộng các nghiệm.</b> 4 + (−1) + 3 = <b>6</b>.<br>✗ 9: em giải 2x − 6 = 0 thành x = 6 mà quên chia cho 2, rồi cộng 4 + (−1) + 6; thử lại P(6) = 2·7·6 = 84, khác 0.<br>✗ 3: em bỏ sót nghiệm của thừa số thứ ba, chỉ cộng 4 + (−1) = 3.<br>✗ −6: em lấy luôn các số trong ngoặc mà không chuyển vế, được −4; 1; −3 rồi cộng lại; nhưng P(−4) = (−8)·(−3)·(−14) = −336, khác 0."
+    },
+    {
+      "id": "m7-184",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Nghiệm của đa thức C(x) = 4x² − 9 là",
+      "options": ["x = 3 hoặc x = −3", "x = 3/2", "x = 3/2 hoặc x = −3/2", "x = 9/4 hoặc x = −9/4"],
+      "correct": 2,
+      "answer": "x = 3/2 hoặc x = −3/2",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể có nhiều nghiệm nên phải tìm cho đủ (SGK tr. 29). Với dạng x² = a (a là số dương), có đúng hai số có bình phương bằng a, đó là hai số đối nhau, vì bình phương của một số âm là số dương.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đưa về dạng x² = a.</b> 4x² − 9 = 0 nên 4x² = 9; chia cả hai vế cho 4 được x² = 9/4.<br><b>Bước 2 — Tìm mọi số có bình phương bằng 9/4.</b> (3/2)² = 9/4 và (−3/2)² = 9/4, nên x = 3/2 hoặc x = −3/2.<br><b>Bước 3 — Thử lại.</b> C(3/2) = 4·(9/4) − 9 = 9 − 9 = 0; C(−3/2) cũng bằng 0 vì bình phương xoá dấu trừ.<br><b>Bước 4 — Kết luận.</b> <b>x = 3/2 hoặc x = −3/2</b>.<br>✗ x = 3 hoặc x = −3: em quên chia cho 4, giải như thể x² = 9; thử lại C(3) = 4·9 − 9 = 27, khác 0.<br>✗ x = 3/2: đúng một nửa, em bỏ sót nghiệm âm vì (−3/2)² cũng bằng 9/4.<br>✗ x = 9/4 hoặc x = −9/4: em lấy luôn số 9/4 làm nghiệm, quên bước tìm số có bình phương bằng 9/4; C(9/4) = 4·(81/16) − 9 = 81/4 − 36/4 = 45/4, khác 0."
+    },
+    {
+      "id": "m7-185",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Nghiệm của đa thức G(x) = x² + 4x là",
+      "options": ["x = −4", "x = 0 hoặc x = 4", "x = 4 hoặc x = −4", "x = 0 hoặc x = −4"],
+      "correct": 3,
+      "answer": "x = 0 hoặc x = −4",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0 (SGK tr. 29). SGK nhận xét: nếu một đa thức có hệ số tự do bằng 0 thì x = 0 là một nghiệm của nó (SGK tr. 29). Để tìm hết nghiệm, ta đặt thừa số chung để đưa đa thức về dạng tích, tức là dùng quy tắc nhân đơn thức với đa thức theo chiều ngược lại (SGK tr. 36), rồi cho từng thừa số bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đặt thừa số chung.</b> G(x) = x² + 4x = x·(x + 4).<br><b>Bước 2 — Cho tích bằng 0.</b> x·(x + 4) = 0 khi x = 0 hoặc x + 4 = 0, tức x = −4.<br><b>Bước 3 — Thử lại.</b> G(0) = 0 + 0 = 0; G(−4) = 16 − 16 = 0.<br><b>Bước 4 — Kết luận.</b> <b>x = 0 hoặc x = −4</b>.<br>✗ x = −4: em chia cả hai vế cho x rồi chỉ giải x + 4 = 0, làm mất nghiệm x = 0; hệ số tự do của G(x) bằng 0 nên x = 0 chắc chắn là nghiệm.<br>✗ x = 0 hoặc x = 4: em giải x + 4 = 0 mà quên đổi dấu khi chuyển vế; G(4) = 16 + 16 = 32, khác 0.<br>✗ x = 4 hoặc x = −4: em nhầm x² + 4x với dạng x² = 16; nhưng hạng tử 4x còn chứa biến, không phải hằng số, nên không giải theo kiểu x² = a được; G(4) = 32, khác 0."
+    },
+    {
+      "id": "m7-186",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức B(x) = x³ − 25x. Đa thức này có ba nghiệm, trong đó có nghiệm x = 0. Tính tích của hai nghiệm còn lại.",
+      "answer": "−25",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; đa thức có hệ số tự do bằng 0 thì nhận x = 0 làm nghiệm, và một đa thức có thể có nhiều nghiệm nên phải tìm cho đủ (SGK tr. 29). Ta đặt thừa số chung (quy tắc nhân đơn thức với đa thức đọc ngược lại, SGK tr. 36) rồi cho từng thừa số bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đặt thừa số chung.</b> B(x) = x³ − 25x = x·(x² − 25).<br><b>Bước 2 — Giải thừa số thứ hai.</b> x² − 25 = 0 nên x² = 25; hai số có bình phương bằng 25 là 5 và −5.<br><b>Bước 3 — Thử lại.</b> B(5) = 125 − 125 = 0; B(−5) = −125 + 125 = 0. Vậy hai nghiệm còn lại là 5 và −5.<br><b>Bước 4 — Nhân.</b> 5·(−5) = <b>−25</b>.<br>✗ 25: em quên dấu của nghiệm âm rồi tính 5·5; hai nghiệm khác 0 là hai số đối nhau nên tích của chúng phải âm.<br>✗ 0: em nhân luôn cả nghiệm x = 0 dù đề chỉ hỏi tích của hai nghiệm còn lại.<br>✗ −625: em giải x² = 25 thành x = 25 hoặc x = −25 rồi nhân; thử lại B(25) = 15 625 − 625 = 15 000, khác 0."
+    },
+    {
+      "id": "m7-187",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức M(x) = x² − 7. Khẳng định nào sau đây là đúng?",
+      "options": ["M(x) có hai nghiệm là x = √7 và x = −√7", "M(x) chỉ có một nghiệm là x = √7", "M(x) có hai nghiệm là x = 7 và x = −7", "M(x) không có nghiệm vì 7 không phải là số chính phương"],
+      "correct": 0,
+      "answer": "M(x) có hai nghiệm là x = √7 và x = −√7",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể không có nghiệm hoặc có nhiều nghiệm (SGK tr. 29). Nghiệm không bắt buộc phải là số nguyên: căn bậc hai số học √7 là số dương có bình phương bằng 7 (đã học ở Toán 7 Tập một), nên (√7)² = 7 và (−√7)² = 7.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Cho M(x) = 0.</b> x² − 7 = 0 nên x² = 7.<br><b>Bước 2 — Tìm mọi số có bình phương bằng 7.</b> Đó là √7 và −√7 (số đối của một nghiệm cũng là nghiệm vì bình phương xoá dấu trừ).<br><b>Bước 3 — Thử lại.</b> M(√7) = (√7)² − 7 = 7 − 7 = 0; M(−√7) = 7 − 7 = 0.<br><b>Bước 4 — Kết luận.</b> <b>M(x) có hai nghiệm là x = √7 và x = −√7</b>.<br>✗ M(x) chỉ có một nghiệm là x = √7: đúng một nửa; em bỏ sót −√7, mà (−√7)² cũng bằng 7 nên −√7 cũng làm M(x) bằng 0.<br>✗ M(x) có hai nghiệm là x = 7 và x = −7: em lấy luôn số 7 làm nghiệm, quên bước tìm số có bình phương bằng 7; M(7) = 49 − 7 = 42, khác 0.<br>✗ M(x) không có nghiệm vì 7 không phải là số chính phương: 7 không phải bình phương của một số nguyên, nhưng √7 là một số thực (vô tỉ) hoàn toàn có thật, và nó làm M(x) bằng 0; chỉ dạng x² + a với a dương mới không có nghiệm."
+    },
+    {
+      "id": "m7-188",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Đa thức F(x) = (x² + 2)(x − 3)(x + 3) có bao nhiêu nghiệm?",
+      "options": ["Có 4 nghiệm", "Có đúng 2 nghiệm", "Có 3 nghiệm", "Không có nghiệm"],
+      "correct": 1,
+      "answer": "Có đúng 2 nghiệm",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể không có nghiệm hoặc có nhiều nghiệm, chẳng hạn x² + 1 không có nghiệm vì x² luôn lớn hơn hoặc bằng 0 (SGK tr. 29). Với dạng tích, tích bằng 0 khi có ít nhất một thừa số bằng 0, nên ta xét từng thừa số: thừa số nào không thể bằng 0 thì không đóng góp nghiệm nào.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Xét thừa số x² + 2.</b> x² lớn hơn hoặc bằng 0 nên x² + 2 lớn hơn hoặc bằng 2, không bao giờ bằng 0: thừa số này không cho nghiệm.<br><b>Bước 2 — Xét hai thừa số còn lại.</b> x − 3 = 0 cho x = 3; x + 3 = 0 cho x = −3.<br><b>Bước 3 — Thử lại.</b> F(3) = 11·0·6 = 0; F(−3) = 11·(−6)·0 = 0.<br><b>Bước 4 — Kết luận.</b> F(x) <b>có đúng 2 nghiệm</b> là 3 và −3.<br>✗ Có 4 nghiệm: em cho rằng x² + 2 = 0 cũng có hai nghiệm; nhưng x² = −2 không có số nào thoả mãn vì bình phương của mọi số đều không âm.<br>✗ Có 3 nghiệm: em coi x² + 2 = 0 có nghiệm x = −2; thử lại (−2)² + 2 = 4 + 2 = 6, khác 0.<br>✗ Không có nghiệm: em thấy thừa số x² + 2 vô nghiệm rồi kết luận cả tích vô nghiệm; nhưng tích bằng 0 chỉ cần MỘT thừa số bằng 0, và x − 3 hay x + 3 đều làm được điều đó."
+    },
+    {
+      "id": "m7-189",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức N(x) = (x² − 4)(x² + 4)(x − 2). Có bao nhiêu số khác nhau là nghiệm của N(x)?",
+      "answer": "2",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể không có nghiệm hoặc có nhiều nghiệm (SGK tr. 29). Với dạng tích, ta cho từng thừa số bằng 0, gom mọi giá trị tìm được rồi ĐẾM SỐ GIÁ TRỊ KHÁC NHAU: một số xuất hiện ở hai thừa số vẫn chỉ là một nghiệm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thừa số x² − 4.</b> x² = 4 cho x = 2 hoặc x = −2.<br><b>Bước 2 — Thừa số x² + 4.</b> x² lớn hơn hoặc bằng 0 nên x² + 4 lớn hơn hoặc bằng 4, không bao giờ bằng 0: không có nghiệm.<br><b>Bước 3 — Thừa số x − 2.</b> Cho x = 2, nhưng số này đã có ở Bước 1.<br><b>Bước 4 — Gom lại và thử.</b> Các nghiệm là 2 và −2: N(2) = 0·8·0 = 0, N(−2) = 0·8·(−4) = 0. Vậy có <b>2</b> số khác nhau là nghiệm.<br>✗ 3: em đếm x = 2 hai lần vì nó xuất hiện ở cả thừa số x² − 4 lẫn thừa số x − 2; nhưng đó vẫn chỉ là một số.<br>✗ 4: em cho x² + 4 = 0 có hai nghiệm 2 và −2 như x² − 4; thử lại 2² + 4 = 8, khác 0.<br>✗ 5: em vừa đếm trùng x = 2, vừa cho x² + 4 có hai nghiệm: 2 + 2 + 1 = 5."
+    },
+    {
+      "id": "m7-190",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Trong các đa thức sau, đa thức nào có đúng một nghiệm?",
+      "options": ["x² − 4", "x² + 4", "3x − 4", "x·(x − 4)"],
+      "correct": 2,
+      "answer": "3x − 4",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể không có nghiệm hoặc có nhiều nghiệm (SGK tr. 29). Đa thức bậc nhất ax + b (a khác 0) có đúng một nghiệm, vì ax + b = 0 cho ax = −b và chỉ có một giá trị x = −b/a thoả mãn. Dạng x² − a (a dương) có hai nghiệm đối nhau; dạng x² + a (a dương) không có nghiệm.<br>🔑 <b>Áp dụng:</b> Đếm nghiệm của từng đa thức.<br><b>Bước 1 — 3x − 4.</b> 3x − 4 = 0 cho 3x = 4, tức x = 4/3; thử lại 3·(4/3) − 4 = 4 − 4 = 0. Không còn giá trị nào khác vì hai giá trị x khác nhau thì 3x − 4 cũng khác nhau. Vậy đa thức này có đúng một nghiệm.<br><b>Bước 2 — Các đa thức còn lại.</b> x² − 4 có hai nghiệm 2 và −2; x² + 4 luôn lớn hơn hoặc bằng 4 nên không có nghiệm; x·(x − 4) có hai nghiệm 0 và 4.<br><b>Bước 3 — Kết luận.</b> Đa thức có đúng một nghiệm là <b>3x − 4</b>.<br>✗ x² − 4: em chỉ thấy nghiệm x = 2 mà quên (−2)² − 4 = 0, nên đa thức này có hai nghiệm chứ không phải một.<br>✗ x² + 4: em tưởng x² + 4 = 0 cho x = −4 hoặc x = 2; thử lại (−4)² + 4 = 20 và 2² + 4 = 8, đều khác 0; đa thức này không có nghiệm nào.<br>✗ x·(x − 4): em chia cho x rồi chỉ giải x − 4 = 0 nên tưởng chỉ có nghiệm x = 4; thực ra x = 0 cũng là nghiệm vì 0·(0 − 4) = 0, tức có hai nghiệm."
+    },
+    {
+      "id": "m7-191",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Trong các đa thức sau, đa thức nào có nghiệm?",
+      "options": ["x⁴ + 2", "−x² − 5", "x² + 1/2", "x³ + 8"],
+      "correct": 3,
+      "answer": "x³ + 8",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể không có nghiệm, chẳng hạn x² + 1 không có nghiệm vì x² luôn lớn hơn hoặc bằng 0 (SGK tr. 29). Lập luận ấy dựa vào luỹ thừa bậc chẵn không âm; nhưng luỹ thừa bậc lẻ như x³ thì có thể âm: (−2)³ = −8.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Xét x³ + 8.</b> Cho x³ + 8 = 0 được x³ = −8. Vì (−2)³ = (−2)·(−2)·(−2) = −8 nên x = −2 thoả mãn.<br><b>Bước 2 — Thử lại.</b> Thay x = −2: (−2)³ + 8 = −8 + 8 = 0. Vậy x = −2 là một nghiệm.<br><b>Bước 3 — Kết luận.</b> Đa thức có nghiệm là <b>x³ + 8</b>.<br>✗ x⁴ + 2: x⁴ = (x²)² lớn hơn hoặc bằng 0 nên x⁴ + 2 lớn hơn hoặc bằng 2, không bao giờ bằng 0; em có thể đã thử x = −2 nhưng (−2)⁴ = 16, không phải −16.<br>✗ −x² − 5: −x² nhỏ hơn hoặc bằng 0 nên −x² − 5 nhỏ hơn hoặc bằng −5, luôn âm, không bao giờ bằng 0.<br>✗ x² + 1/2: x² + 1/2 lớn hơn hoặc bằng 1/2, không bao giờ bằng 0; em có thể nghĩ hệ số tự do là phân số thì khác, nhưng lập luận vẫn y như với x² + 1."
+    },
+    {
+      "id": "m7-192",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức A(x) = 2x² − a, trong đó a là một số. Biết x = −3 là một nghiệm của A(x). Tìm a.",
+      "answer": "18",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong biểu thức, chữ x là biến còn a là một số cho trước cần tìm (SGK tr. 23). Nếu tại x = −3 đa thức có giá trị bằng 0 thì −3 là một nghiệm (SGK tr. 29); vậy giả thiết cho ta đẳng thức A(−3) = 0 để tìm a. Khi thay số nhớ thứ tự: bình phương trước, nhân hệ số sau.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết A(−3).</b> A(−3) = 2·(−3)² − a. Vì (−3)² = 9 nên A(−3) = 2·9 − a = 18 − a.<br><b>Bước 2 — Cho bằng 0.</b> 18 − a = 0, suy ra a = 18.<br><b>Bước 3 — Thử lại.</b> Với a = 18 thì A(x) = 2x² − 18 và A(−3) = 2·9 − 18 = 0. Vậy <b>a = 18</b> (khi đó x = 3 cũng là nghiệm).<br>✗ 36: em tính (2·(−3))² = (−6)² = 36 thay vì 2·(−3)²; hệ số 2 đứng ngoài bình phương nên phải bình phương −3 trước rồi mới nhân 2.<br>✗ 9: em quên nhân với hệ số 2, chỉ lấy (−3)² = 9 rồi cho 9 − a = 0.<br>✗ −18: em chuyển vế không đổi dấu, từ 18 − a = 0 suy ra a = −18; thử lại A(−3) = 18 + 18 = 36, khác 0."
+    },
+    {
+      "id": "m7-193",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức Q(x) = x² + bx − 8, trong đó b là một số. Biết x = 4 là một nghiệm của Q(x). Giá trị của b là",
+      "options": ["b = −2", "b = 2", "b = −4", "b = −1"],
+      "correct": 0,
+      "answer": "b = −2",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến của đa thức, còn b là một số cho trước mà ta phải tìm (SGK tr. 23). Nếu tại x = 4 đa thức có giá trị bằng 0, tức Q(4) = 0, thì 4 là nghiệm (SGK tr. 29). Vậy giả thiết cho ta ngay một đẳng thức để tìm b.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết Q(4).</b> Thay x = 4 vào Q(x) = x² + bx − 8: Q(4) = 4² + b·4 − 8 = 16 + 4b − 8 = 4b + 8.<br><b>Bước 2 — Cho bằng 0.</b> 4b + 8 = 0, suy ra 4b = −8 và b = −2.<br><b>Bước 3 — Thử lại.</b> Với b = −2 thì Q(x) = x² − 2x − 8 và Q(4) = 16 − 8 − 8 = 0. Vậy <b>b = −2</b>. (Khi đó Q(−2) = 4 + 4 − 8 = 0, nên x = −2 là nghiệm thứ hai.)<br>✗ b = 2: em bỏ sót hạng tử x² khi thay số, chỉ giải 4b − 8 = 0 và được b = 2; thử lại với b = 2 thì Q(4) = 16 + 8 − 8 = 16, khác 0.<br>✗ b = −4: em bỏ sót hạng tử tự do −8, chỉ giải 16 + 4b = 0; thử lại Q(4) = 16 − 16 − 8 = −8, khác 0.<br>✗ b = −1: em hiểu nhầm giả thiết thành Q(4) = 4 (đáng lẽ phải là Q(4) = 0), nên giải 4b + 8 = 4 và được b = −1."
+    },
+    {
+      "id": "m7-194",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức P(x) = 4x + a, trong đó a là một số. Biết x = 1/2 là nghiệm của P(x). Giá trị của a là",
+      "options": ["a = 2", "a = −2", "a = −1/2", "a = −8"],
+      "correct": 1,
+      "answer": "a = −2",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến, a là một số cần tìm (SGK tr. 23). x = 1/2 là nghiệm nghĩa là P(1/2) = 0 (SGK tr. 29). Muốn tính P(1/2) ta thay x = 1/2 vào rồi thực hiện phép tính (SGK tr. 24); 4x nghĩa là 4 NHÂN x.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết P(1/2).</b> P(1/2) = 4·(1/2) + a = 2 + a.<br><b>Bước 2 — Cho bằng 0.</b> 2 + a = 0, suy ra a = −2.<br><b>Bước 3 — Thử lại.</b> Với a = −2 thì P(x) = 4x − 2 và P(1/2) = 2 − 2 = 0. Vậy <b>a = −2</b>.<br>✗ a = 2: em chuyển vế mà quên đổi dấu, từ 2 + a = 0 suy ra a = 2; thử lại P(1/2) = 2 + 2 = 4, khác 0.<br>✗ a = −1/2: em quên nhân với 4, coi P(1/2) = 1/2 + a; thử lại với a = −1/2 thì P(1/2) = 2 − 1/2 = 3/2, khác 0.<br>✗ a = −8: em tính 4 : (1/2) = 8 thay vì 4·(1/2) = 2; thay giá trị của biến là phép nhân với hệ số, không phải phép chia."
+    },
+    {
+      "id": "m7-195",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = 3x² − mx + 6, trong đó m là một số. Biết x = 2 là một nghiệm của P(x). Tìm m.",
+      "answer": "9",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến của đa thức, m là một số cho trước cần tìm (SGK tr. 23). x = 2 là nghiệm nghĩa là P(2) = 0 (SGK tr. 29). Thay x = 2 vào TẤT CẢ các hạng tử chứa x rồi giải đẳng thức thu được.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết P(2).</b> P(2) = 3·2² − m·2 + 6 = 3·4 − 2m + 6 = 12 − 2m + 6 = 18 − 2m.<br><b>Bước 2 — Cho bằng 0.</b> 18 − 2m = 0, suy ra 2m = 18 và m = 9.<br><b>Bước 3 — Thử lại.</b> Với m = 9 thì P(x) = 3x² − 9x + 6 và P(2) = 12 − 18 + 6 = 0. Vậy <b>m = 9</b>.<br>✗ −9: em chuyển vế sai, từ 18 − 2m = 0 viết thành −2m = 18 rồi m = −9; thử lại P(2) = 12 + 18 + 6 = 36, khác 0.<br>✗ 3: em bỏ sót hạng tử 3x², chỉ giải −2m + 6 = 0; thử lại với m = 3 thì P(2) = 12 − 6 + 6 = 12, khác 0.<br>✗ 6: em bỏ sót hạng tử tự do 6, chỉ giải 12 − 2m = 0; thử lại với m = 6 thì P(2) = 12 − 12 + 6 = 6, khác 0."
+    },
+    {
+      "id": "m7-196",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = ax² + 3x − 10, trong đó a là một số. Biết x = −5 là một nghiệm của P(x). Tìm a.",
+      "answer": "1",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến, a là hệ số cần tìm (SGK tr. 23). x = −5 là nghiệm nghĩa là P(−5) = 0 (SGK tr. 29). Khi thay một số âm, nhớ để nó trong ngoặc: (−5)² = 25 là số dương, còn 3·(−5) = −15 là số âm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết P(−5).</b> P(−5) = a·(−5)² + 3·(−5) − 10 = 25a − 15 − 10 = 25a − 25.<br><b>Bước 2 — Cho bằng 0.</b> 25a − 25 = 0, suy ra 25a = 25 và a = 1.<br><b>Bước 3 — Thử lại.</b> Với a = 1 thì P(x) = x² + 3x − 10 và P(−5) = 25 − 15 − 10 = 0. Vậy <b>a = 1</b>. (Khi đó P(2) = 4 + 6 − 10 = 0, nên x = 2 là nghiệm còn lại.)<br>✗ −1: em tính (−5)² = −25, được −25a − 15 − 10 = 0 rồi a = −1; bình phương của số âm là số dương.<br>✗ 3/5: em bỏ sót hạng tử tự do −10, chỉ giải 25a − 15 = 0.<br>✗ −1/5: em tính 3·(−5) = 15 (mất dấu trừ), được 25a + 15 − 10 = 0, tức 25a = −5 và a = −1/5."
+    },
+    {
+      "id": "m7-197",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức P(x) = ax + b, trong đó a, b là các số và a khác 0. Biết x = 2 là nghiệm của P(x). Hệ thức nào sau đây luôn đúng?",
+      "options": ["b = 2a", "a = −2b", "b = −2a", "a + b = 0"],
+      "correct": 2,
+      "answer": "b = −2a",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong P(x) = ax + b, x là biến còn a, b là các số (SGK tr. 23). x = 2 là nghiệm nghĩa là P(2) = 0 (SGK tr. 29). Dù chưa biết a, b cụ thể, đẳng thức P(2) = 0 vẫn cho ta một hệ thức giữa a và b, đúng với MỌI cặp a, b như thế.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết P(2).</b> P(2) = a·2 + b = 2a + b.<br><b>Bước 2 — Cho bằng 0.</b> 2a + b = 0; chuyển 2a sang vế phải và đổi dấu được b = −2a.<br><b>Bước 3 — Kiểm tra bằng một ví dụ.</b> Lấy a = 3 thì b = −6: P(x) = 3x − 6 và P(2) = 6 − 6 = 0, đúng là x = 2 làm nghiệm. Vậy hệ thức luôn đúng là <b>b = −2a</b>.<br>✗ b = 2a: em chuyển vế mà quên đổi dấu; với a = 3, b = 6 thì P(x) = 3x + 6 và P(2) = 12, khác 0.<br>✗ a = −2b: em đảo vai trò của a và b, viết nhầm P(2) = 2b + a; với b = 1, a = −2 thì P(x) = −2x + 1 và P(2) = −4 + 1 = −3, khác 0.<br>✗ a + b = 0: đó là điều kiện để x = 1 là nghiệm (vì P(1) = a + b), không phải x = 2; với a = 1, b = −1 thì P(2) = 2 − 1 = 1, khác 0."
+    },
+    {
+      "id": "m7-198",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = (x − 3)(x + k), trong đó k là một số. Biết tổng hai nghiệm của P(x) bằng 1. Tìm k.",
+      "answer": "2",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến, k là một số cần tìm (SGK tr. 23). a là nghiệm của F(x) khi F(a) = 0, và một đa thức có thể có nhiều nghiệm (SGK tr. 29). Với dạng tích, tích bằng 0 khi có một thừa số bằng 0, nên nghiệm của P(x) là nghiệm của từng thừa số bậc nhất.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm hai nghiệm theo k.</b> x − 3 = 0 cho x = 3; x + k = 0 cho x = −k (chuyển k sang vế phải phải đổi dấu).<br><b>Bước 2 — Dùng giả thiết về tổng.</b> 3 + (−k) = 1, tức 3 − k = 1, suy ra k = 3 − 1 = 2.<br><b>Bước 3 — Thử lại.</b> Với k = 2 thì P(x) = (x − 3)(x + 2) có hai nghiệm 3 và −2 (P(−2) = (−5)·0 = 0), tổng 3 + (−2) = 1, đúng. Vậy <b>k = 2</b>.<br>✗ −2: em coi nghiệm của thừa số x + k là k (quên đổi dấu), rồi giải 3 + k = 1; khi đó P(x) = (x − 3)(x − 2) có nghiệm 3 và 2, tổng 5, không phải 1.<br>✗ 4: em giải 3 − k = 1 sai thành k = 3 + 1; khi đó nghiệm là 3 và −4, tổng −1.<br>✗ −1/3: em nhầm tổng thành tích, giải 3·(−k) = 1; đề nói TỔNG hai nghiệm bằng 1."
+    },
+    {
+      "id": "m7-199",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Nghiệm của đa thức H(x) = (x − 1)(x + 2) + (x − 1)(x − 5) là",
+      "options": ["x = 1; x = −2 hoặc x = 5", "x = 1", "x = 1 hoặc x = −3/2", "x = 1 hoặc x = 3/2"],
+      "correct": 3,
+      "answer": "x = 1 hoặc x = 3/2",
+      "explanation": "🔑 <b>Lý thuyết:</b> a là nghiệm của F(x) khi F(a) = 0; một đa thức có thể có nhiều nghiệm nên phải tìm cho đủ (SGK tr. 29). H(x) là TỔNG của hai tích, chưa phải dạng tích, nên chưa được cho từng tích bằng 0. Hai tích có chung thừa số (x − 1), ta đặt thừa số chung ấy ra ngoài (quy tắc nhân một đa thức với một đa thức đọc ngược lại, SGK tr. 37) để đưa H(x) về dạng tích.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đặt thừa số chung.</b> H(x) = (x − 1)·(x + 2 + x − 5) = (x − 1)(2x − 3).<br><b>Bước 2 — Cho tích bằng 0.</b> x − 1 = 0 cho x = 1; 2x − 3 = 0 cho 2x = 3, tức x = 3/2.<br><b>Bước 3 — Thử lại.</b> H(1) = 0·3 + 0·(−4) = 0; H(3/2) = (1/2)·(7/2) + (1/2)·(−7/2) = 7/4 − 7/4 = 0.<br><b>Bước 4 — Kết luận.</b> <b>x = 1 hoặc x = 3/2</b>.<br>✗ x = 1; x = −2 hoặc x = 5: em cho từng tích bằng 0 riêng lẻ, nhưng H(x) là tổng hai tích nên một tích bằng 0 chưa đủ; H(−2) = 0 + (−3)·(−7) = 21 và H(5) = 4·7 + 0 = 28, đều khác 0.<br>✗ x = 1: em dừng ở thừa số chung x − 1, chưa giải thừa số 2x − 3 nên bỏ sót nghiệm x = 3/2.<br>✗ x = 1 hoặc x = −3/2: em giải 2x − 3 = 0 mà chuyển vế quên đổi dấu; H(−3/2) = (−5/2)·(1/2) + (−5/2)·(−13/2) = −5/4 + 65/4 = 15, khác 0."
+    },
+    {
+      "id": "m7-200",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = x² + bx + c, trong đó b, c là các số. Biết P(x) nhận cả x = 1 và x = −4 làm nghiệm. Tính b + c.",
+      "answer": "−1",
+      "explanation": "🔑 <b>Lý thuyết:</b> x là biến, b và c là các số cần tìm (SGK tr. 23). Mỗi nghiệm cho ta một đẳng thức: x = 1 là nghiệm nên P(1) = 0, x = −4 là nghiệm nên P(−4) = 0 (SGK tr. 29). Hai ẩn b, c cần đúng hai đẳng thức như thế.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Viết hai đẳng thức.</b> P(1) = 1 + b + c = 0; P(−4) = (−4)² + b·(−4) + c = 16 − 4b + c = 0.<br><b>Bước 2 — Khử c.</b> Lấy đẳng thức thứ hai trừ đẳng thức thứ nhất: (16 − 4b + c) − (1 + b + c) = 15 − 5b = 0, suy ra b = 3.<br><b>Bước 3 — Tìm c.</b> Thay b = 3 vào 1 + b + c = 0 được 4 + c = 0, tức c = −4.<br><b>Bước 4 — Thử lại và kết luận.</b> P(x) = x² + 3x − 4: P(1) = 1 + 3 − 4 = 0 và P(−4) = 16 − 12 − 4 = 0, đúng. (Cách khác: P(x) = (x − 1)(x + 4) = x² + 3x − 4, cùng kết quả.) Vậy b + c = 3 + (−4) = <b>−1</b>.<br>✗ −7: em viết nhầm dạng tích thành (x + 1)(x − 4) = x² − 3x − 4, được b = −3, c = −4; nhưng khi đó P(1) = 1 − 3 − 4 = −6, khác 0.<br>✗ 7: em tìm đúng b = 3, c = −4 nhưng tính b − c = 3 − (−4) = 7 thay vì b + c.<br>✗ 3: em tìm được b = 3 rồi quên cộng c = −4."
+    }
+  ]
+}

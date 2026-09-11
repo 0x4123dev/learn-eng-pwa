@@ -1,0 +1,206 @@
+{
+  "ch": 7,
+  "file": "06",
+  "questions": [
+    {
+      "id": "m7-201",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho hai đa thức A(x) = 5x³ − 2x² + 4x − 1 và B(x) = −3x³ + 2x² − 6x + 8. Tính A(x) + B(x).",
+      "options": ["2x³ − 2x + 7", "2x³ − 4x² − 2x + 7", "2x³ − 2x − 9", "8x³ − 2x + 7"],
+      "correct": 0,
+      "answer": "2x³ − 2x + 7",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để cộng hai đa thức một biến theo hàng ngang, ta bỏ dấu ngoặc rồi nhóm các hạng tử cùng bậc và cộng chúng lại (SGK tr. 31). Khi cộng hai hạng tử cùng bậc, ta cộng các hệ số và giữ nguyên luỹ thừa của biến (SGK tr. 26). Nếu hai hạng tử cùng bậc có hệ số đối nhau thì tổng của chúng bằng 0 và hạng tử đó biến mất khỏi kết quả.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Bỏ dấu ngoặc.</b> A(x) + B(x) = 5x³ − 2x² + 4x − 1 − 3x³ + 2x² − 6x + 8; trước ngoặc là dấu cộng nên mọi hạng tử của B(x) giữ nguyên dấu, kể cả −3x³ và −6x.<br><b>Bước 2 — Nhóm các hạng tử cùng bậc.</b> = (5x³ − 3x³) + (−2x² + 2x²) + (4x − 6x) + (−1 + 8).<br><b>Bước 3 — Cộng hệ số từng nhóm.</b> (5 − 3)x³ = 2x³; (−2 + 2)x² = 0; (4 − 6)x = −2x; −1 + 8 = 7.<br><b>Bước 4 — Kết luận.</b> A(x) + B(x) = <b>2x³ − 2x + 7</b>. Thử lại tại x = 1: A(1) = 5 − 2 + 4 − 1 = 6, B(1) = −3 + 2 − 6 + 8 = 1, tổng 7; còn 2 − 2 + 7 = 7, khớp.<br>✗ 2x³ − 4x² − 2x + 7: em lấy −2 − 2 = −4 ở hạng tử bậc hai, tức là đã đổi dấu 2x² của B(x) như khi làm phép trừ; đây là phép cộng nên −2 + 2 = 0 và không còn hạng tử x².<br>✗ 2x³ − 2x − 9: em lấy −1 − 8 = −9 ở hạng tử tự do, tức là trừ thay vì cộng; phải lấy −1 + 8 = 7.<br>✗ 8x³ − 2x + 7: em bỏ mất dấu trừ của −3x³, lấy 5 + 3 = 8 thay vì 5 + (−3) = 2."
+    },
+    {
+      "id": "m7-202",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho hai đa thức P(x) = 3x⁴ − x² + 5x và Q(x) = x⁴ + 2x³ − 4x. Tính P(x) − Q(x).",
+      "options": ["2x⁴ + 2x³ − x² + 9x", "2x⁴ − 2x³ − x² + 9x", "2x⁴ − 2x³ − x² + x", "4x⁴ + 2x³ − x² + x"],
+      "correct": 1,
+      "answer": "2x⁴ − 2x³ − x² + 9x",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để trừ hai đa thức một biến theo hàng ngang, ta bỏ dấu ngoặc rồi nhóm các hạng tử cùng bậc và thu gọn; đằng trước dấu ngoặc là dấu trừ thì phải đổi dấu TẤT CẢ các hạng tử trong ngoặc (SGK tr. 32). Hạng tử nào chỉ có ở một đa thức thì giữ nguyên (sau khi đã đổi dấu nếu cần) vì không có hạng tử cùng bậc để gộp.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Bỏ dấu ngoặc, đổi dấu mọi hạng tử của Q(x).</b> P(x) − Q(x) = 3x⁴ − x² + 5x − x⁴ − 2x³ + 4x. Ba hạng tử x⁴, 2x³, −4x của Q(x) lần lượt thành −x⁴, −2x³, +4x.<br><b>Bước 2 — Nhóm các hạng tử cùng bậc.</b> = (3x⁴ − x⁴) − 2x³ − x² + (5x + 4x).<br><b>Bước 3 — Thu gọn.</b> (3 − 1)x⁴ = 2x⁴; −2x³ giữ nguyên vì P(x) không có hạng tử bậc ba; −x² giữ nguyên vì Q(x) không có hạng tử bậc hai; (5 + 4)x = 9x.<br><b>Bước 4 — Kết luận.</b> P(x) − Q(x) = <b>2x⁴ − 2x³ − x² + 9x</b>. Thử lại tại x = 1: P(1) = 3 − 1 + 5 = 7, Q(1) = 1 + 2 − 4 = −1, hiệu 8; còn 2 − 2 − 1 + 9 = 8, khớp.<br>✗ 2x⁴ + 2x³ − x² + 9x: em chỉ đổi dấu hạng tử đầu và cuối của Q(x) mà quên đổi dấu 2x³ ở giữa; dấu trừ trước ngoặc đổi dấu mọi hạng tử.<br>✗ 2x⁴ − 2x³ − x² + x: em quên đổi dấu −4x, lấy 5x − 4x = x; đúng phải là 5x − (−4x) = 5x + 4x = 9x.<br>✗ 4x⁴ + 2x³ − x² + x: em cộng hai đa thức thay vì trừ."
+    },
+    {
+      "id": "m7-203",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức M(x) = 4x² − 7x + 3 và N(x) = −4x² + 2x − 9. Hệ số của hạng tử chứa x (hạng tử bậc nhất) trong đa thức M(x) − N(x) là bao nhiêu?",
+      "answer": "−9",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trừ hai đa thức: bỏ dấu ngoặc rồi nhóm các hạng tử cùng bậc và thu gọn; đằng trước ngoặc có dấu trừ thì đổi dấu mọi hạng tử trong ngoặc (SGK tr. 32). Trong đa thức thu gọn, hệ số của một hạng tử là số đứng trước luỹ thừa của biến trong hạng tử đó, mang cả dấu (SGK tr. 28).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Bỏ ngoặc, đổi dấu N(x).</b> M(x) − N(x) = 4x² − 7x + 3 + 4x² − 2x + 9.<br><b>Bước 2 — Thu gọn.</b> (4 + 4)x² = 8x²; (−7 − 2)x = −9x; 3 + 9 = 12. Vậy M(x) − N(x) = 8x² − 9x + 12.<br><b>Bước 3 — Đọc hệ số.</b> Hạng tử bậc nhất là −9x nên hệ số cần tìm là <b>−9</b>. Thử lại: chỉ cần so hệ số của x ở hai đa thức, −7 − 2 = −9, khớp.<br>✗ −5: em cộng −7 + 2 = −5, tức là quên đổi dấu hạng tử 2x của N(x) khi trừ.<br>✗ 9: em lấy N(x) − M(x) nên hệ số bị đổi dấu; đề hỏi M(x) − N(x).<br>✗ 8: em đọc nhầm hệ số của hạng tử bậc hai 8x²; đề hỏi hạng tử bậc nhất, tức hạng tử chứa x."
+    },
+    {
+      "id": "m7-204",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho đa thức A(x) = 2x² − 5x + 1. Tìm đa thức B(x), biết B(x) − A(x) = x³ − 3x² + 4.",
+      "options": ["x³ − 5x² + 5x + 3", "x³ − x² + 5x + 5", "x³ − x² − 5x + 5", "−x³ + 5x² − 5x − 3"],
+      "correct": 2,
+      "answer": "x³ − x² − 5x + 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> SGK nêu quan hệ giữa tổng và hiệu của các đa thức: nếu Q + R = P thì R = P − Q, và ngược lại nếu R = P − Q thì P = Q + R (SGK tr. 33). Vậy khi biết hiệu B(x) − A(x) và số trừ A(x), muốn tìm số bị trừ B(x) ta lấy HIỆU CỘNG với số trừ. Cộng theo hàng ngang: bỏ ngoặc rồi gộp các hạng tử cùng bậc (SGK tr. 31).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chuyển về phép cộng.</b> B(x) = (x³ − 3x² + 4) + A(x) = (x³ − 3x² + 4) + (2x² − 5x + 1).<br><b>Bước 2 — Bỏ ngoặc, giữ nguyên dấu.</b> B(x) = x³ − 3x² + 4 + 2x² − 5x + 1.<br><b>Bước 3 — Thu gọn.</b> x³ giữ nguyên; (−3 + 2)x² = −x²; −5x giữ nguyên; 4 + 1 = 5.<br><b>Bước 4 — Kết luận và thử lại.</b> B(x) = <b>x³ − x² − 5x + 5</b>. Thử: B(x) − A(x) = x³ − x² − 5x + 5 − 2x² + 5x − 1 = x³ − 3x² + 4, đúng bằng hiệu đã cho.<br>✗ x³ − 5x² + 5x + 3: em lấy hiệu TRỪ A(x) như khi tìm số hạng chưa biết của một tổng; ở đây B(x) là số bị trừ nên phải lấy hiệu cộng với A(x).<br>✗ x³ − x² + 5x + 5: em đổi dấu hạng tử −5x của A(x) thành +5x; đây là phép cộng nên mọi hạng tử giữ nguyên dấu.<br>✗ −x³ + 5x² − 5x − 3: em lấy A(x) trừ đi hiệu, được đúng đa thức đối của kết quả cần tìm."
+    },
+    {
+      "id": "m7-205",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức P(x) = 3x³ − 2x + 5 và Q(x) = −3x³ + x² + 4x − 5. Bậc của đa thức P(x) + Q(x) là bao nhiêu?",
+      "answer": "2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của một đa thức thu gọn khác đa thức không là bậc của hạng tử có bậc cao nhất; muốn tìm bậc của một đa thức chưa thu gọn, ta phải thu gọn trước (SGK tr. 28). Vậy phải cộng hai đa thức xong — bỏ ngoặc, nhóm các hạng tử cùng bậc rồi cộng (SGK tr. 31) — mới đọc bậc.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhóm theo bậc.</b> P(x) + Q(x) = (3x³ − 3x³) + x² + (−2x + 4x) + (5 − 5).<br><b>Bước 2 — Tính từng nhóm.</b> (3 − 3)x³ = 0; x² giữ nguyên; (−2 + 4)x = 2x; 5 − 5 = 0. Vậy P(x) + Q(x) = x² + 2x.<br><b>Bước 3 — Đọc bậc.</b> Hạng tử có bậc cao nhất là x², số mũ 2. Bậc của tổng là <b>2</b>. Thử lại tại x = 1: P(1) = 6, Q(1) = −3, tổng 3; còn 1 + 2 = 3, khớp.<br>✗ 3: em lấy bậc của P(x) làm bậc của tổng mà chưa cộng; hai hạng tử 3x³ và −3x³ triệt tiêu nhau nên tổng không còn hạng tử bậc ba.<br>✗ 6: em cộng hai bậc 3 + 3; cộng số mũ chỉ dùng khi nhân hai luỹ thừa cùng cơ số, không dùng khi cộng đa thức.<br>✗ 1: em thấy hệ số của x² là 1 rồi ghi bậc 1; bậc là số mũ của biến, không phải hệ số."
+    },
+    {
+      "id": "m7-206",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Bạn Minh đặt tính cộng hai đa thức A(x) = 2x³ + 5x − 4 và B(x) = x² − 3x + 6 theo cột dọc. Kết quả đúng của A(x) + B(x) là",
+      "options": ["2x³ + x² + 8x + 2", "3x³ + 2x + 2", "2x³ + x² + 2x − 10", "2x³ + x² + 2x + 2"],
+      "correct": 3,
+      "answer": "2x³ + x² + 2x + 2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để cộng hai đa thức theo cột dọc, ta thu gọn và sắp xếp mỗi đa thức theo luỹ thừa giảm dần của biến, rồi đặt tính sao cho các hạng tử CÙNG BẬC thẳng cột với nhau; nếu một đa thức khuyết hạng tử bậc nào thì để trống cột đó (SGK tr. 32). Sau đó cộng từng cột như cộng các hạng tử cùng bậc.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đặt tính.</b> A(x) khuyết hạng tử bậc hai, B(x) khuyết hạng tử bậc ba. Dòng trên: 2x³ + (trống) + 5x − 4. Dòng dưới: (trống) + x² − 3x + 6, sao cho x² nằm dưới chỗ trống của A(x), −3x dưới 5x, 6 dưới −4.<br><b>Bước 2 — Cộng từng cột.</b> Cột x³: 2x³ + 0 = 2x³. Cột x²: 0 + x² = x². Cột x: 5x + (−3x) = 2x. Cột tự do: −4 + 6 = 2.<br><b>Bước 3 — Kết luận.</b> A(x) + B(x) = <b>2x³ + x² + 2x + 2</b>. Thử lại tại x = 1: A(1) = 3, B(1) = 4, tổng 7; còn 2 + 1 + 2 + 2 = 7, khớp.<br>✗ 2x³ + x² + 8x + 2: em bỏ mất dấu trừ của −3x, lấy 5 + 3 = 8 ở cột x.<br>✗ 3x³ + 2x + 2: em viết B(x) sát lề trái, để x² nằm dưới 2x³ rồi cộng thành 3x³; các hạng tử khác bậc không được cộng chung cột.<br>✗ 2x³ + x² + 2x − 10: em lấy −4 − 6 = −10 ở cột tự do, tức là trừ thay vì cộng."
+    },
+    {
+      "id": "m7-207",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức A(x) = x² − 3x + 2 và B(x) = 2x² + x − 5. Đặt H(x) = A(x) − B(x). Tính H(−2).",
+      "answer": "11",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trừ hai đa thức: bỏ ngoặc, đổi dấu mọi hạng tử của đa thức bị trừ đi, rồi nhóm các hạng tử cùng bậc và thu gọn (SGK tr. 32). Giá trị của đa thức H(x) tại x = a, kí hiệu H(a), tính bằng cách thay x bởi a rồi thực hiện phép tính; số âm phải đặt trong ngoặc trước khi nâng lên luỹ thừa (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm H(x).</b> H(x) = x² − 3x + 2 − 2x² − x + 5 = (1 − 2)x² + (−3 − 1)x + (2 + 5) = −x² − 4x + 7.<br><b>Bước 2 — Thay x = −2.</b> H(−2) = −(−2)² − 4·(−2) + 7 = −4 + 8 + 7 = 11.<br><b>Bước 3 — Thử lại bằng cách khác.</b> A(−2) = 4 + 6 + 2 = 12; B(−2) = 8 − 2 − 5 = 1; A(−2) − B(−2) = 12 − 1 = 11, khớp. Vậy H(−2) = <b>11</b>.<br>✗ −11: em tính B(x) − A(x) nên kết quả bị đổi dấu.<br>✗ 13: em cộng hai đa thức, lấy A(−2) + B(−2) = 12 + 1 = 13.<br>✗ 19: em tính −x² tại x = −2 thành (−(−2))² = 4 dương; đúng phải là −(−2)² = −4 vì luỹ thừa tính trước, dấu trừ đứng ngoài."
+    },
+    {
+      "id": "m7-208",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho ba đa thức A(x) = x² + 2x − 3, B(x) = 2x² − x + 1 và C(x) = −x² + 3x − 2. Tính A(x) − B(x) + C(x).",
+      "options": ["−2x² + 6x − 6", "−2", "2x² + 4x − 4", "−2x² + 4x − 6"],
+      "correct": 0,
+      "answer": "−2x² + 6x − 6",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng, trừ nhiều đa thức làm theo thứ tự từ trái sang phải, hoặc bỏ dấu ngoặc tất cả rồi gộp các hạng tử cùng bậc: trước ngoặc là dấu cộng thì giữ nguyên dấu các hạng tử (SGK tr. 31), trước ngoặc là dấu trừ thì đổi dấu mọi hạng tử trong ngoặc (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Bỏ dấu ngoặc.</b> A(x) − B(x) + C(x) = x² + 2x − 3 − 2x² + x − 1 − x² + 3x − 2. Chỉ B(x) bị đổi dấu (2x² → −2x², −x → +x, 1 → −1); C(x) giữ nguyên dấu vì trước nó là dấu cộng.<br><b>Bước 2 — Nhóm các hạng tử cùng bậc.</b> = (x² − 2x² − x²) + (2x + x + 3x) + (−3 − 1 − 2).<br><b>Bước 3 — Thu gọn.</b> (1 − 2 − 1)x² = −2x²; (2 + 1 + 3)x = 6x; −3 − 1 − 2 = −6.<br><b>Bước 4 — Kết luận.</b> A(x) − B(x) + C(x) = <b>−2x² + 6x − 6</b>. Thử lại tại x = 1: A(1) = 0, B(1) = 2, C(1) = 0, nên 0 − 2 + 0 = −2; còn −2 + 6 − 6 = −2, khớp.<br>✗ −2: em đổi dấu cả C(x) như thể tính A(x) − B(x) − C(x); trước C(x) là dấu cộng nên phải giữ nguyên dấu.<br>✗ 2x² + 4x − 4: em cộng cả ba đa thức, không đổi dấu B(x).<br>✗ −2x² + 4x − 6: em đổi dấu 2x² và 1 của B(x) nhưng quên đổi dấu −x, lấy 2x − x + 3x = 4x; đúng phải là 2x + x + 3x = 6x."
+    },
+    {
+      "id": "m7-209",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Tìm đa thức M(x), biết M(x) + (3x² − 4x + 7) = 5x² + 2x − 1.",
+      "options": ["8x² − 2x + 6", "2x² + 6x − 8", "2x² − 2x − 8", "2x² + 6x + 6"],
+      "correct": 1,
+      "answer": "2x² + 6x − 8",
+      "explanation": "🔑 <b>Lý thuyết:</b> Với các đa thức P, Q, R: nếu Q + R = P thì R = P − Q (SGK tr. 33). Vậy muốn tìm một số hạng chưa biết của một tổng, ta lấy tổng trừ đi số hạng đã biết. Khi trừ, đằng trước ngoặc có dấu trừ thì đổi dấu tất cả các hạng tử trong ngoặc (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chuyển về phép trừ.</b> M(x) = (5x² + 2x − 1) − (3x² − 4x + 7).<br><b>Bước 2 — Bỏ ngoặc, đổi dấu ba hạng tử của đa thức bị trừ.</b> M(x) = 5x² + 2x − 1 − 3x² + 4x − 7.<br><b>Bước 3 — Thu gọn.</b> (5 − 3)x² = 2x²; (2 + 4)x = 6x; −1 − 7 = −8.<br><b>Bước 4 — Kết luận và thử lại.</b> M(x) = <b>2x² + 6x − 8</b>. Thử: (2x² + 6x − 8) + (3x² − 4x + 7) = 5x² + 2x − 1, đúng bằng tổng đã cho.<br>✗ 8x² − 2x + 6: em cộng hai đa thức đã cho thay vì lấy tổng trừ đi số hạng đã biết.<br>✗ 2x² − 2x − 8: em quên đổi dấu hạng tử −4x, lấy 2x − 4x = −2x; đúng phải là 2x − (−4x) = 6x.<br>✗ 2x² + 6x + 6: em quên đổi dấu hạng tử tự do 7, lấy −1 + 7 = 6; đúng phải là −1 − 7 = −8."
+    },
+    {
+      "id": "m7-210",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức P(x) = 2x³ − x² + 3x − 4. Tìm đa thức Q(x) sao cho P(x) − Q(x) = x³ + 2x² − 4x + 1, rồi tính Q(2).",
+      "answer": "5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Từ quan hệ giữa tổng và hiệu (SGK tr. 33): nếu P − Q = R thì Q = P − R, tức là số trừ bằng số bị trừ trừ đi hiệu. Khi trừ, đổi dấu mọi hạng tử của đa thức đứng sau dấu trừ rồi thu gọn (SGK tr. 32). Giá trị Q(2) là kết quả khi thay x = 2 vào Q(x) (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm Q(x).</b> Q(x) = (2x³ − x² + 3x − 4) − (x³ + 2x² − 4x + 1) = 2x³ − x² + 3x − 4 − x³ − 2x² + 4x − 1 = x³ − 3x² + 7x − 5.<br><b>Bước 2 — Thử lại Q(x).</b> P(x) − Q(x) = 2x³ − x² + 3x − 4 − x³ + 3x² − 7x + 5 = x³ + 2x² − 4x + 1, đúng bằng hiệu đã cho.<br><b>Bước 3 — Tính Q(2).</b> Q(2) = 2³ − 3·2² + 7·2 − 5 = 8 − 12 + 14 − 5 = 5. Kiểm tra bằng cách khác: P(2) = 16 − 4 + 6 − 4 = 14; hiệu tại x = 2 là 8 + 8 − 8 + 1 = 9; Q(2) = 14 − 9 = 5, khớp. Vậy Q(2) = <b>5</b>.<br>✗ 23: em cộng P(x) với hiệu, được 3x³ + x² − x − 3 rồi tính tại x = 2 thành 24 + 4 − 2 − 3 = 23; số trừ phải bằng số bị trừ TRỪ hiệu.<br>✗ −5: em lấy hiệu trừ đi P(x), được đa thức đối của Q(x) nên giá trị bị đổi dấu.<br>✗ 14: em chỉ tính P(2) rồi dừng lại, chưa trừ đi giá trị của hiệu tại x = 2."
+    },
+    {
+      "id": "m7-211",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Một tam giác có chu vi là 5x² + 2x + 6 (cm), trong đó hai cạnh có độ dài lần lượt là 2x² + x + 1 (cm) và 2x² − x + 3 (cm). Biểu thức nào sau đây biểu thị độ dài cạnh còn lại của tam giác?",
+      "options": ["x² + 2x + 10", "4x² + 4", "x² + 2x + 2", "−x² − 2x − 2"],
+      "correct": 2,
+      "answer": "x² + 2x + 2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Chu vi tam giác bằng tổng độ dài ba cạnh, nên cạnh còn lại bằng chu vi trừ đi tổng hai cạnh đã biết — đây là bài toán tìm một số hạng chưa biết trong tổng: nếu Q + R = P thì R = P − Q (SGK tr. 33). Khi trừ đa thức, đổi dấu mọi hạng tử trong ngoặc đứng sau dấu trừ rồi thu gọn (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tổng hai cạnh đã biết.</b> (2x² + x + 1) + (2x² − x + 3) = 4x² + 0x + 4 = 4x² + 4.<br><b>Bước 2 — Lấy chu vi trừ tổng đó.</b> Cạnh còn lại = (5x² + 2x + 6) − (4x² + 4) = 5x² + 2x + 6 − 4x² − 4 = x² + 2x + 2.<br><b>Bước 3 — Thử lại.</b> (2x² + x + 1) + (2x² − x + 3) + (x² + 2x + 2) = 5x² + 2x + 6, đúng bằng chu vi. Với x = 2, ba cạnh là 11, 9, 10 (cm) và chu vi 30 cm, hợp lí. Vậy cạnh còn lại là <b>x² + 2x + 2</b> (cm).<br>✗ x² + 2x + 10: em trừ đúng phần chứa x nhưng cộng hạng tử tự do 6 + 4 = 10, tức là quên đổi dấu số 4 khi trừ.<br>✗ 4x² + 4: đây mới là TỔNG hai cạnh đã biết; em dừng ở bước 1 mà chưa lấy chu vi trừ đi.<br>✗ −x² − 2x − 2: em lấy tổng hai cạnh trừ đi chu vi, kết quả âm không thể là độ dài."
+    },
+    {
+      "id": "m7-212",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức A(x) = 5x⁴ − 3x² + x − 6 và B(x) = −5x⁴ + 3x² + 2x + 1. Tính tổng tất cả các hệ số của đa thức A(x) + B(x) sau khi thu gọn.",
+      "answer": "−2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng hai đa thức: bỏ ngoặc, nhóm các hạng tử cùng bậc rồi cộng hệ số (SGK tr. 31). Trong đa thức thu gọn, mỗi hạng tử có một hệ số, kể cả hạng tử tự do (hệ số của hạng tử bậc 0) (SGK tr. 28). Mẹo kiểm tra: tổng các hệ số của một đa thức bằng giá trị của đa thức đó tại x = 1, vì mọi luỹ thừa của 1 đều bằng 1.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Cộng hai đa thức.</b> A(x) + B(x) = (5 − 5)x⁴ + (−3 + 3)x² + (1 + 2)x + (−6 + 1) = 3x − 5.<br><b>Bước 2 — Cộng các hệ số.</b> Đa thức 3x − 5 có hệ số 3 và hệ số tự do −5; tổng là 3 + (−5) = −2.<br><b>Bước 3 — Thử lại bằng cách khác.</b> A(1) = 5 − 3 + 1 − 6 = −3; B(1) = −5 + 3 + 2 + 1 = 1; A(1) + B(1) = −2, khớp. Vậy tổng các hệ số là <b>−2</b>.<br>✗ 3: em bỏ sót hệ số tự do −5; hạng tử tự do cũng có hệ số và phải được cộng vào.<br>✗ −4: em tính A(x) − B(x) = 10x⁴ − 6x² − x − 7 rồi cộng hệ số 10 − 6 − 1 − 7 = −4; đề hỏi tổng A(x) + B(x).<br>✗ 8: em bỏ dấu trừ của hệ số tự do −5, lấy 3 + 5 = 8; hệ số phải mang cả dấu, nên 3 + (−5) = −2."
+    },
+    {
+      "id": "m7-213",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho hai đa thức P(x) = 4x³ − 2x + 1 và Q(x) = 4x³ + x² − 2x − 3. Khẳng định nào sau đây là đúng?",
+      "options": ["P(x) − Q(x) = x² − 4", "P(x) + Q(x) = 8x³ + x² − 2", "P(x) − Q(x) = −x² − 2", "Q(x) − P(x) = x² − 4"],
+      "correct": 3,
+      "answer": "Q(x) − P(x) = x² − 4",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng hai đa thức: giữ nguyên dấu mọi hạng tử rồi gộp các hạng tử cùng bậc (SGK tr. 31). Trừ hai đa thức: đổi dấu mọi hạng tử của đa thức đứng sau dấu trừ rồi gộp (SGK tr. 32). Đổi chỗ hai đa thức trong phép trừ thì kết quả đổi dấu: P − Q và Q − P là hai đa thức đối nhau.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tính tổng.</b> P(x) + Q(x) = (4 + 4)x³ + x² + (−2 − 2)x + (1 − 3) = 8x³ + x² − 4x − 2.<br><b>Bước 2 — Tính P(x) − Q(x).</b> = 4x³ − 2x + 1 − 4x³ − x² + 2x + 3 = (4 − 4)x³ − x² + (−2 + 2)x + (1 + 3) = −x² + 4.<br><b>Bước 3 — Tính Q(x) − P(x).</b> Là đa thức đối của kết quả trên: x² − 4. Thử lại tại x = 1: Q(1) = 4 + 1 − 2 − 3 = 0, P(1) = 4 − 2 + 1 = 3, hiệu −3; còn 1 − 4 = −3, khớp.<br><b>Bước 4 — Kết luận.</b> Khẳng định đúng là <b>Q(x) − P(x) = x² − 4</b>.<br>✗ P(x) − Q(x) = x² − 4: em tính đúng độ lớn nhưng nhầm thứ tự phép trừ; P(x) − Q(x) = −x² + 4.<br>✗ P(x) + Q(x) = 8x³ + x² − 2: em làm mất hạng tử bậc nhất; −2x + (−2x) = −4x chứ không triệt tiêu.<br>✗ P(x) − Q(x) = −x² − 2: em quên đổi dấu hạng tử −3 của Q(x), lấy 1 − 3 = −2; đúng phải là 1 − (−3) = 4."
+    },
+    {
+      "id": "m7-214",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức A(x) = 2x² + ax − 5 và B(x) = −x² + 3x + b, trong đó a và b là hai số. Biết A(x) + B(x) = x² − x + 2. Tính tích a·b.",
+      "answer": "−28",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng hai đa thức: gộp các hạng tử cùng bậc, cộng hệ số và giữ nguyên luỹ thừa của biến (SGK tr. 31). Hai đa thức thu gọn bằng nhau khi hệ số của các hạng tử cùng bậc bằng nhau (SGK tr. 28), nên ta so từng hệ số của tổng vừa tính với hệ số của đa thức x² − x + 2.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Cộng theo chữ.</b> A(x) + B(x) = (2 − 1)x² + (a + 3)x + (−5 + b) = x² + (a + 3)x + (b − 5).<br><b>Bước 2 — So hệ số với x² − x + 2.</b> Hệ số x²: 1 = 1, đúng. Hệ số x: a + 3 = −1 nên a = −4. Hệ số tự do: b − 5 = 2 nên b = 7.<br><b>Bước 3 — Thử lại.</b> A(x) = 2x² − 4x − 5, B(x) = −x² + 3x + 7; tổng là x² − x + 2, khớp.<br><b>Bước 4 — Tính tích.</b> a·b = (−4)·7 = <b>−28</b>.<br>✗ 3: em tính a + b = −4 + 7 = 3; đề hỏi TÍCH a·b.<br>✗ 12: em giải b − 5 = 2 thành b = 2 − 5 = −3 rồi lấy (−4)·(−3) = 12; đúng phải là b = 2 + 5 = 7.<br>✗ 14: em giải a + 3 = −1 thành a = −1 + 3 = 2 rồi lấy 2·7 = 14; đúng phải là a = −1 − 3 = −4."
+    },
+    {
+      "id": "m7-215",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Bạn An đặt tính theo cột dọc để thực hiện phép trừ (3x³ − 5x + 2) − (x³ − 2x² + 4). Kết quả đúng là",
+      "options": ["2x³ + 2x² − 5x − 2", "2x³ − 2x² − 5x − 2", "2x³ − 3x − 2", "2x³ + 2x² − 5x + 6"],
+      "correct": 0,
+      "answer": "2x³ + 2x² − 5x − 2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để trừ hai đa thức theo cột dọc, ta đặt các hạng tử cùng bậc thẳng cột (để trống cột của hạng tử bị khuyết), rồi trừ từng cột: lấy hệ số ở dòng trên trừ hệ số ở dòng dưới (SGK tr. 32). Trừ một hạng tử âm tức là cộng với hạng tử đối của nó: a − (−b) = a + b.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đặt tính.</b> Dòng trên: 3x³ + (trống) − 5x + 2. Dòng dưới: x³ − 2x² + (trống) + 4, sao cho x³ dưới 3x³, −2x² dưới chỗ trống, 4 dưới 2.<br><b>Bước 2 — Trừ từng cột.</b> Cột x³: 3x³ − x³ = 2x³. Cột x²: 0 − (−2x²) = +2x². Cột x: −5x − 0 = −5x. Cột tự do: 2 − 4 = −2.<br><b>Bước 3 — Kết luận.</b> Hiệu là <b>2x³ + 2x² − 5x − 2</b>. Thử lại tại x = 1: (3 − 5 + 2) − (1 − 2 + 4) = 0 − 3 = −3; còn 2 + 2 − 5 − 2 = −3, khớp.<br>✗ 2x³ − 2x² − 5x − 2: em chép nguyên −2x² xuống kết quả mà quên rằng đây là phép trừ: 0 − (−2x²) = +2x².<br>✗ 2x³ − 3x − 2: em viết −2x² thẳng cột với −5x rồi lấy −5 − (−2) = −3; hai hạng tử khác bậc không được đặt chung cột.<br>✗ 2x³ + 2x² − 5x + 6: em lấy 2 + 4 = 6 ở cột tự do, tức là cộng thay vì trừ."
+    },
+    {
+      "id": "m7-216",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức P(x) = 2x² − 3x + 7 và Q(x) = 2x² + 5x − 9. Đặt T(x) = P(x) − Q(x). Tìm nghiệm của đa thức T(x).",
+      "answer": "2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trừ hai đa thức: bỏ ngoặc, đổi dấu mọi hạng tử của đa thức đứng sau dấu trừ, rồi gộp các hạng tử cùng bậc (SGK tr. 32). Nếu T(a) = 0 thì a là một nghiệm của T(x) (SGK tr. 29); với nhị thức bậc nhất ax + b (a khác 0), ta cho ax + b = 0 rồi tìm x (SGK tr. 30).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm T(x).</b> T(x) = 2x² − 3x + 7 − 2x² − 5x + 9 = (2 − 2)x² + (−3 − 5)x + (7 + 9) = −8x + 16.<br><b>Bước 2 — Giải T(x) = 0.</b> −8x + 16 = 0 nên 8x = 16, suy ra x = 2.<br><b>Bước 3 — Thử lại.</b> P(2) = 8 − 6 + 7 = 9 và Q(2) = 8 + 10 − 9 = 9, nên T(2) = 9 − 9 = 0, đúng. Vậy nghiệm của T(x) là x = <b>2</b>.<br>✗ −2: em giải −8x + 16 = 0 thành x = −16/8 do chuyển vế mà không đổi dấu; đúng phải là −8x = −16 nên x = 2.<br>✗ −8: em quên đổi dấu 5x, lấy −3x + 5x = 2x rồi giải 2x + 16 = 0; đúng phải là −3x − 5x = −8x.<br>✗ −1/4: em quên đổi dấu −9, lấy 7 − 9 = −2 rồi giải −8x − 2 = 0; đúng phải là 7 − (−9) = 16."
+    },
+    {
+      "id": "m7-217",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho đa thức A(x) = x³ − 4x² + x − 2. Tìm đa thức B(x) sao cho A(x) − B(x) = 2x² − x + 3.",
+      "options": ["x³ − 2x² + 1", "x³ − 6x² + 2x − 5", "x³ − 6x² − 5", "−x³ + 6x² − 2x + 5"],
+      "correct": 1,
+      "answer": "x³ − 6x² + 2x − 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Theo quan hệ giữa tổng và hiệu (SGK tr. 33): nếu A − B = R thì B = A − R, tức là số trừ bằng số bị trừ trừ đi hiệu. Khi thực hiện phép trừ, đổi dấu mọi hạng tử của đa thức đứng sau dấu trừ rồi gộp các hạng tử cùng bậc (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chuyển về phép trừ.</b> B(x) = A(x) − (2x² − x + 3) = (x³ − 4x² + x − 2) − (2x² − x + 3).<br><b>Bước 2 — Bỏ ngoặc, đổi dấu.</b> B(x) = x³ − 4x² + x − 2 − 2x² + x − 3.<br><b>Bước 3 — Thu gọn.</b> x³ giữ nguyên; (−4 − 2)x² = −6x²; (1 + 1)x = 2x; −2 − 3 = −5.<br><b>Bước 4 — Kết luận và thử lại.</b> B(x) = <b>x³ − 6x² + 2x − 5</b>. Thử: A(x) − B(x) = x³ − 4x² + x − 2 − x³ + 6x² − 2x + 5 = 2x² − x + 3, đúng bằng hiệu đã cho.<br>✗ x³ − 2x² + 1: em cộng A(x) với hiệu như khi tìm số bị trừ; ở đây B(x) là số trừ nên phải lấy A(x) trừ đi hiệu.<br>✗ x³ − 6x² − 5: em quên đổi dấu −x, lấy x − x = 0 làm mất hạng tử bậc nhất; đúng phải là x − (−x) = 2x.<br>✗ −x³ + 6x² − 2x + 5: em lấy hiệu trừ đi A(x), được đúng đa thức đối của B(x)."
+    },
+    {
+      "id": "m7-218",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Ngày thứ nhất một cửa hàng bán được 3x² + 5x − 2 (kg gạo). Ngày thứ hai cửa hàng bán được ít hơn ngày thứ nhất x² − 2x + 4 (kg). Viết đa thức biểu thị tổng số gạo bán được trong hai ngày rồi tính giá trị của đa thức đó tại x = 3.",
+      "answer": "73",
+      "explanation": "🔑 <b>Lý thuyết:</b> \"Ít hơn\" nghĩa là lấy số của ngày thứ nhất trừ đi phần chênh lệch; \"tổng\" nghĩa là cộng hai đa thức. Trừ đa thức: đổi dấu mọi hạng tử trong ngoặc đứng sau dấu trừ rồi gộp (SGK tr. 32); cộng đa thức: giữ nguyên dấu rồi gộp các hạng tử cùng bậc (SGK tr. 31). Sau đó thay x = 3 để tính giá trị (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Số gạo ngày thứ hai.</b> (3x² + 5x − 2) − (x² − 2x + 4) = 3x² + 5x − 2 − x² + 2x − 4 = 2x² + 7x − 6 (kg).<br><b>Bước 2 — Tổng hai ngày.</b> (3x² + 5x − 2) + (2x² + 7x − 6) = 5x² + 12x − 8 (kg).<br><b>Bước 3 — Tính tại x = 3.</b> 5·3² + 12·3 − 8 = 45 + 36 − 8 = 73.<br><b>Bước 4 — Thử lại bằng số.</b> Ngày thứ nhất: 27 + 15 − 2 = 40 kg; phần ít hơn: 9 − 6 + 4 = 7 kg; ngày thứ hai: 40 − 7 = 33 kg; tổng 40 + 33 = 73 kg, khớp. Đáp số <b>73</b>.<br>✗ 40: em chỉ tính số gạo ngày thứ nhất mà chưa cộng ngày thứ hai.<br>✗ 47: em cộng ngày thứ nhất với phần chênh lệch (40 + 7) như thể ngày thứ hai bán NHIỀU HƠN; đề nói ít hơn nên phải trừ.<br>✗ 33: em chỉ tính số gạo ngày thứ hai; đề hỏi tổng hai ngày."
+    },
+    {
+      "id": "m7-219",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho hai đa thức P(x) = −2x⁴ + x³ − 5x + 3 và Q(x) = 2x⁴ − x³ + 5x − 3. Khẳng định nào sau đây là đúng?",
+      "options": ["P(x) + Q(x) = 6", "P(x) − Q(x) là đa thức không", "P(x) + Q(x) là đa thức không", "P(x) − Q(x) có bậc 3"],
+      "correct": 2,
+      "answer": "P(x) + Q(x) là đa thức không",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng hai đa thức: gộp các hạng tử cùng bậc, cộng hệ số (SGK tr. 31); trừ hai đa thức: đổi dấu mọi hạng tử của đa thức đứng sau dấu trừ rồi gộp (SGK tr. 32). Đa thức có mọi hệ số bằng 0 gọi là đa thức không, kí hiệu 0, và đa thức không không có bậc (SGK tr. 28). Bậc của đa thức thu gọn là bậc của hạng tử có bậc cao nhất (SGK tr. 28).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tính tổng.</b> P(x) + Q(x) = (−2 + 2)x⁴ + (1 − 1)x³ + (−5 + 5)x + (3 − 3) = 0. Mọi hạng tử của Q(x) đều là hạng tử đối của hạng tử cùng bậc trong P(x), nên tổng là đa thức không.<br><b>Bước 2 — Tính hiệu.</b> P(x) − Q(x) = −2x⁴ + x³ − 5x + 3 − 2x⁴ + x³ − 5x + 3 = −4x⁴ + 2x³ − 10x + 6, có bậc 4.<br><b>Bước 3 — Kết luận.</b> Khẳng định đúng là <b>P(x) + Q(x) là đa thức không</b>. Thử lại tại x = 1: P(1) = −2 + 1 − 5 + 3 = −3, Q(1) = 2 − 1 + 5 − 3 = 3, tổng 0, hiệu −6 (bằng −4 + 2 − 10 + 6), khớp.<br>✗ P(x) + Q(x) = 6: em lấy 3 − (−3) = 6 ở hạng tử tự do, tức là trừ thay vì cộng; 3 + (−3) = 0.<br>✗ P(x) − Q(x) là đa thức không: em nghĩ hai đa thức \"giống nhau\" thì hiệu bằng 0; nhưng Q(x) là đa thức ĐỐI của P(x), không phải bằng P(x), nên hiệu là −4x⁴ + 2x³ − 10x + 6.<br>✗ P(x) − Q(x) có bậc 3: em cho rằng hai hạng tử bậc bốn triệt tiêu nhau; thực ra −2x⁴ − 2x⁴ = −4x⁴, hiệu vẫn có bậc 4."
+    },
+    {
+      "id": "m7-220",
+      "ch": 7,
+      "topic": "Phép cộng và phép trừ đa thức một biến",
+      "q": "Cho hai đa thức A(x) = 3x² − x + 4 và B(x) = x² + 2x − 1. Tìm đa thức C(x), biết A(x) + B(x) − C(x) = 2x² + 5.",
+      "options": ["6x² + x + 8", "−2x² − x + 2", "2x² + x + 8", "2x² + x − 2"],
+      "correct": 3,
+      "answer": "2x² + x − 2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Theo quan hệ giữa tổng và hiệu (SGK tr. 33), nếu P − C = R thì C = P − R: số trừ bằng số bị trừ trừ đi hiệu. Ở đây số bị trừ là tổng A(x) + B(x), nên ta tính tổng trước (SGK tr. 31) rồi lấy tổng đó trừ đi 2x² + 5, nhớ đổi dấu mọi hạng tử đứng sau dấu trừ (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tính A(x) + B(x).</b> (3 + 1)x² + (−1 + 2)x + (4 − 1) = 4x² + x + 3.<br><b>Bước 2 — Tìm C(x).</b> C(x) = (4x² + x + 3) − (2x² + 5) = 4x² + x + 3 − 2x² − 5 = 2x² + x − 2.<br><b>Bước 3 — Thử lại.</b> A(x) + B(x) − C(x) = 4x² + x + 3 − 2x² − x + 2 = 2x² + 5, đúng bằng đề cho. Vậy C(x) = <b>2x² + x − 2</b>.<br>✗ 6x² + x + 8: em cộng cả ba đa thức đã cho lại với nhau.<br>✗ −2x² − x + 2: em lấy 2x² + 5 trừ đi tổng A(x) + B(x), được đa thức đối của C(x).<br>✗ 2x² + x + 8: em quên đổi dấu hạng tử tự do 5 khi trừ, lấy 3 + 5 = 8; đúng phải là 3 − 5 = −2."
+    }
+  ]
+}

@@ -676,6 +676,8 @@ node scripts/validate-ptnk.js data/ptnk/*.json  # the contract in data/ptnk/SCHE
 node scripts/build-practice-data.js           # js/reading-data.js, js/cloze-data.js, js/errors-data.js
 node scripts/validate-practice.js reading data/reading/*.json   # (also: cloze, errors)
 node scripts/balance-practice-keys.js         # spread MCQ keys across A–D (engine never shuffles); run after authoring
+node scripts/build-math-hk2-data.js           # js/math-data-hk2.js from data/math-hk2/base.json + ch<N>-add-<NN>.json
+node scripts/validate-math-hk2.js data/math-hk2/ch6-add-*.json   # one addition file
 ```
 
 ---

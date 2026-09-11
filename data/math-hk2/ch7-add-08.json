@@ -1,0 +1,206 @@
+{
+  "ch": 7,
+  "file": "08",
+  "questions": [
+    {
+      "id": "m7-241",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Kết quả của phép nhân (−4x³)·5x² là",
+      "options": ["−20x⁶", "−20x⁵", "20x⁵", "x⁵"],
+      "correct": 1,
+      "answer": "−20x⁵",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân hai đơn thức, ta nhân hai hệ số với nhau và nhân hai luỹ thừa của biến với nhau; tích nhận được cũng là một đơn thức (SGK tr. 26). Nhân hai luỹ thừa cùng cơ số thì giữ nguyên cơ số và CỘNG các số mũ. Quy tắc dấu: tích của một số âm với một số dương là một số âm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tách hệ số và luỹ thừa.</b> (−4x³)·5x² = (−4·5)·(x³·x²).<br><b>Bước 2 — Nhân hai hệ số.</b> (−4)·5 = −20.<br><b>Bước 3 — Nhân hai luỹ thừa.</b> x³·x² = x³⁺² = x⁵.<br><b>Bước 4 — Kết luận.</b> Kết quả là <b>−20x⁵</b>: đơn thức bậc 3 nhân đơn thức bậc 2 cho đơn thức bậc 5.<br>✗ −20x⁶: em nhân hai số mũ, lấy 3·2 = 6; nhân hai luỹ thừa cùng cơ số thì phải cộng số mũ, 3 + 2 = 5.<br>✗ 20x⁵: em bỏ mất dấu âm của hệ số −4; tích của một số âm với một số dương phải là số âm.<br>✗ x⁵: em cộng hai hệ số, lấy −4 + 5 = 1; cộng hệ số là quy tắc của phép cộng hai đơn thức cùng bậc, còn phép nhân thì phải nhân hai hệ số với nhau."
+    },
+    {
+      "id": "m7-242",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Thực hiện phép tính −2x²·(3x² − 4x + 1).",
+      "options": ["−6x⁴ − 8x³ − 2x²", "−6x⁴ + 8x³ + 1", "−6x² + 8x − 2", "−6x⁴ + 8x³ − 2x²"],
+      "correct": 3,
+      "answer": "−6x⁴ + 8x³ − 2x²",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đơn thức với một đa thức, ta nhân đơn thức đó với TỪNG hạng tử của đa thức rồi cộng các tích với nhau (SGK tr. 36). Mỗi tích nhỏ tính theo quy tắc nhân hai đơn thức: nhân hệ số với hệ số, cộng các số mũ của biến (SGK tr. 26). Nhân với đơn thức có hệ số âm thì mỗi hạng tử đều bị đổi dấu.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Phân phối.</b> −2x²·(3x² − 4x + 1) = (−2x²)·3x² + (−2x²)·(−4x) + (−2x²)·1.<br><b>Bước 2 — Tính từng tích.</b> (−2x²)·3x² = −6x⁴; (−2x²)·(−4x) = +8x³ (âm nhân âm ra dương); (−2x²)·1 = −2x².<br><b>Bước 3 — Cộng ba tích.</b> Ba hạng tử có bậc 4, 3, 2 khác nhau nên không thu gọn thêm được.<br><b>Bước 4 — Kết luận.</b> −2x²·(3x² − 4x + 1) = <b>−6x⁴ + 8x³ − 2x²</b>.<br>✗ −6x⁴ − 8x³ − 2x²: em tính (−2)·(−4) = −8, quên rằng tích của hai số âm là một số dương.<br>✗ −6x⁴ + 8x³ + 1: em chỉ nhân −2x² với hai hạng tử đầu rồi chép nguyên hạng tử 1 xuống; quy tắc bắt buộc nhân đơn thức với TỪNG hạng tử, kể cả hạng tử tự do.<br>✗ −6x² + 8x − 2: em chỉ nhân các hệ số mà giữ nguyên số mũ của đa thức, quên cộng thêm số mũ 2 của x² trong −2x²."
+    },
+    {
+      "id": "m7-243",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Thực hiện phép tính (3x − 2)(2x − 5).",
+      "options": ["6x² − 19x + 10", "6x² − 19x − 10", "6x² − 11x + 10", "6x² + 10"],
+      "correct": 0,
+      "answer": "6x² − 19x + 10",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đa thức với một đa thức, ta nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích với nhau (SGK tr. 37). Sau đó nhóm các hạng tử cùng bậc để thu gọn (SGK tr. 27). Quy tắc dấu: âm nhân dương ra âm, âm nhân âm ra dương.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân 3x với từng hạng tử.</b> 3x·2x = 6x²; 3x·(−5) = −15x.<br><b>Bước 2 — Nhân −2 với từng hạng tử.</b> (−2)·2x = −4x; (−2)·(−5) = +10.<br><b>Bước 3 — Cộng bốn tích.</b> 6x² − 15x − 4x + 10.<br><b>Bước 4 — Thu gọn.</b> −15x − 4x = (−15 − 4)x = −19x. Vậy (3x − 2)(2x − 5) = <b>6x² − 19x + 10</b>. Thử với x = 1: vế trái (3 − 2)(2 − 5) = −3; vế phải 6 − 19 + 10 = −3, khớp.<br>✗ 6x² − 19x − 10: em tính (−2)·(−5) = −10, quên rằng tích của hai số âm là một số dương.<br>✗ 6x² − 11x + 10: em bỏ mất dấu âm của tích (−2)·2x, lấy −15x + 4x = −11x thay vì −15x − 4x = −19x.<br>✗ 6x² + 10: em chỉ nhân hạng tử đầu với hạng tử đầu và hạng tử cuối với hạng tử cuối, bỏ sót hai tích chéo 3x·(−5) và (−2)·2x."
+    },
+    {
+      "id": "m7-244",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Thực hiện phép tính (x + 4)(x² − 3x + 2).",
+      "options": ["x³ − 3x² + 2x + 8", "x³ + 7x² − 10x + 8", "x³ + x² − 10x + 8", "x³ + x² + 14x + 8"],
+      "correct": 2,
+      "answer": "x³ + x² − 10x + 8",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đa thức với một đa thức, ta nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích với nhau (SGK tr. 37). Với đa thức ba hạng tử, nên làm thành hai lượt: nhân x với cả đa thức kia, rồi nhân 4 với cả đa thức kia, sau đó nhóm các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân x với cả đa thức.</b> x·(x² − 3x + 2) = x³ − 3x² + 2x.<br><b>Bước 2 — Nhân 4 với cả đa thức.</b> 4·(x² − 3x + 2) = 4x² − 12x + 8.<br><b>Bước 3 — Cộng hai kết quả rồi nhóm theo bậc.</b> x³ + (−3x² + 4x²) + (2x − 12x) + 8 = x³ + x² − 10x + 8.<br><b>Bước 4 — Thử lại.</b> Với x = 1: vế trái (1 + 4)(1 − 3 + 2) = 5·0 = 0; vế phải 1 + 1 − 10 + 8 = 0, khớp. Vậy kết quả là <b>x³ + x² − 10x + 8</b>.<br>✗ x³ − 3x² + 2x + 8: em chỉ nhân 4 với hạng tử tự do 2, bỏ sót hai tích 4·x² và 4·(−3x).<br>✗ x³ + 7x² − 10x + 8: em tính −3x² + 4x² thành 7x², bỏ mất dấu âm của −3x²; đúng phải là (−3 + 4)x² = x².<br>✗ x³ + x² + 14x + 8: em tính 4·(−3x) = +12x, quên rằng tích của một số dương với một số âm là số âm; đúng phải là 2x − 12x = −10x."
+    },
+    {
+      "id": "m7-245",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Khai triển tích (2x + 1)(x² + 3x − 4) rồi thu gọn. Hệ số của x² trong kết quả là số nào?",
+      "answer": "7",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích (SGK tr. 37). Muốn tìm hệ số của x² trong tích, ta gom TẤT CẢ các tích có bậc 2 lại: tích của hạng tử bậc 1 với hạng tử bậc 1, và tích của hạng tử bậc 0 với hạng tử bậc 2 (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân 2x với cả đa thức.</b> 2x·(x² + 3x − 4) = 2x³ + 6x² − 8x.<br><b>Bước 2 — Nhân 1 với cả đa thức.</b> 1·(x² + 3x − 4) = x² + 3x − 4.<br><b>Bước 3 — Gom các hạng tử bậc 2.</b> 6x² + x² = 7x². (Toàn bộ tích là 2x³ + 7x² − 5x − 4.)<br><b>Bước 4 — Kết luận.</b> Hệ số của x² là <b>7</b>. Thử với x = 1: (2 + 1)(1 + 3 − 4) = 0 và 2 + 7 − 5 − 4 = 0, khớp.<br>✗ 6 — nếu em chỉ lấy tích 2x·3x = 6x² mà quên tích 1·x² cũng có bậc 2.<br>✗ 1 — nếu em chỉ lấy tích 1·x² mà quên tích 2x·3x = 6x².<br>✗ 2 — nếu em nhầm sang hệ số cao nhất 2 của hạng tử 2x³; đề hỏi hệ số của x², không phải của x³."
+    },
+    {
+      "id": "m7-246",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức A(x) = x² − 2x + 3 và B(x) = 2x² + x − 1. Hệ số của x³ trong đa thức A(x)·B(x) là số nào?",
+      "answer": "−3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích (SGK tr. 37). Hạng tử bậc 3 của tích chỉ sinh ra từ những cặp có tổng bậc bằng 3: (bậc 2)·(bậc 1) và (bậc 1)·(bậc 2). Không cần khai triển hết, chỉ cần gom đúng các cặp này.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm cặp bậc 2 nhân bậc 1.</b> x²·x = x³, hệ số 1.<br><b>Bước 2 — Tìm cặp bậc 1 nhân bậc 2.</b> (−2x)·2x² = −4x³, hệ số −4.<br><b>Bước 3 — Cộng hai hệ số.</b> 1 + (−4) = −3.<br><b>Bước 4 — Kiểm tra bằng khai triển đầy đủ.</b> A(x)·B(x) = 2x⁴ + x³ − x² − 4x³ − 2x² + 2x + 6x² + 3x − 3 = 2x⁴ − 3x³ + 3x² + 5x − 3. Hệ số của x³ đúng là <b>−3</b>.<br>✗ 1 — nếu em chỉ lấy tích x²·x mà bỏ sót tích (−2x)·2x² cũng có bậc 3.<br>✗ −4 — nếu em chỉ lấy tích (−2x)·2x² mà bỏ sót tích x²·x.<br>✗ 5 — nếu em bỏ mất dấu âm của −2x, tính 2x·2x² = +4x³ rồi lấy 1 + 4 = 5."
+    },
+    {
+      "id": "m7-247",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho hai đa thức P(x) = 3x⁴ − x + 2 và Q(x) = −2x³ + 5. Bậc của đa thức P(x)·Q(x) là bao nhiêu?",
+      "answer": "7",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của một đa thức (khác đa thức không) là số mũ lớn nhất của biến trong đa thức đó (SGK tr. 28). Khi nhân hai đa thức, hạng tử có bậc cao nhất của tích bằng tích hai hạng tử có bậc cao nhất, nên bậc của tích bằng TỔNG hai bậc (SGK tr. 38).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Xác định bậc của từng đa thức.</b> P(x) có bậc 4 (hạng tử 3x⁴); Q(x) có bậc 3 (hạng tử −2x³).<br><b>Bước 2 — Nhân hai hạng tử bậc cao nhất.</b> 3x⁴·(−2x³) = −6x⁷, hệ số −6 khác 0 nên hạng tử này không bị triệt tiêu.<br><b>Bước 3 — Kiểm tra không có hạng tử nào bậc cao hơn.</b> Các tích còn lại (3x⁴·5, −x·(−2x³), −x·5, 2·(−2x³), 2·5) có bậc lần lượt là 4, 4, 1, 3, 0, đều nhỏ hơn 7.<br><b>Bước 4 — Kết luận.</b> Bậc của P(x)·Q(x) là 4 + 3 = <b>7</b>.<br>✗ 12 — nếu em nhân hai bậc, lấy 4·3 = 12; bậc của tích bằng tổng hai bậc chứ không phải tích.<br>✗ 4 — nếu em lấy bậc lớn hơn trong hai bậc như khi cộng hai đa thức; đây là phép nhân nên số mũ được cộng thêm.<br>✗ 6 — nếu em nhầm hệ số của hạng tử cao nhất (3·2 = 6) với bậc của nó."
+    },
+    {
+      "id": "m7-248",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Cho hai đa thức M(x) = 2x² − 3x + 1 và N(x) = −4x³ + x. Hạng tử có bậc cao nhất của tích M(x)·N(x) là",
+      "options": ["8x⁵", "−8x⁵", "−8x⁶", "−2x⁵"],
+      "correct": 1,
+      "answer": "−8x⁵",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khi nhân hai đa thức, hạng tử bậc cao nhất của tích bằng tích hai hạng tử bậc cao nhất của hai đa thức, vì mọi cặp hạng tử khác đều cho bậc nhỏ hơn (SGK tr. 38). Tích hai đơn thức: nhân hệ số với hệ số, cộng các số mũ (SGK tr. 26).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm hạng tử bậc cao nhất của mỗi đa thức.</b> M(x): 2x² (bậc 2); N(x): −4x³ (bậc 3).<br><b>Bước 2 — Nhân hai hạng tử đó.</b> 2x²·(−4x³) = (2·(−4))·x²⁺³ = −8x⁵.<br><b>Bước 3 — Kiểm tra.</b> Các tích khác như 2x²·x = 2x³, (−3x)·(−4x³) = 12x⁴ đều có bậc nhỏ hơn 5, nên −8x⁵ không bị triệt tiêu hay cộng thêm.<br><b>Bước 4 — Kết luận.</b> Hạng tử bậc cao nhất của tích là <b>−8x⁵</b>.<br>✗ 8x⁵: em bỏ mất dấu âm của −4; tích của một số dương với một số âm là số âm.<br>✗ −8x⁶: em nhân hai số mũ 2·3 = 6 thay vì cộng 2 + 3 = 5.<br>✗ −2x⁵: em cộng hai hệ số 2 + (−4) = −2 thay vì nhân 2·(−4) = −8."
+    },
+    {
+      "id": "m7-249",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Khai triển tích (x² − 5x + 6)(2x² + x − 7) rồi thu gọn. Hệ số tự do của kết quả là số nào?",
+      "answer": "−42",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số tự do của một đa thức là hệ số của hạng tử bậc 0 (SGK tr. 28). Khi nhân hai đa thức, hạng tử bậc 0 của tích chỉ sinh ra từ tích hai hạng tử tự do, vì mọi cặp khác đều chứa biến (SGK tr. 37). Quy tắc dấu: dương nhân âm ra âm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm hạng tử tự do của mỗi đa thức.</b> Đa thức thứ nhất: 6; đa thức thứ hai: −7.<br><b>Bước 2 — Nhân hai hạng tử tự do.</b> 6·(−7) = −42.<br><b>Bước 3 — Kiểm tra bằng cách thay x = 0.</b> Với x = 0 tích bằng (0 − 0 + 6)(0 + 0 − 7) = 6·(−7) = −42, mà giá trị của đa thức tại x = 0 chính là hệ số tự do.<br><b>Bước 4 — Kết luận.</b> Hệ số tự do của tích là <b>−42</b>. (Khai triển đầy đủ: 2x⁴ − 9x³ + 41x − 42; các hạng tử bậc 2 là −7x² − 5x² + 12x² = 0 nên triệt tiêu.)<br>✗ 42 — nếu em quên dấu âm của −7; tích của một số dương với một số âm là số âm.<br>✗ −1 — nếu em cộng hai hạng tử tự do 6 + (−7) = −1 như khi cộng hai đa thức; đây là phép nhân.<br>✗ −7 — nếu em chép nguyên hạng tử tự do của đa thức thứ hai, quên nhân với 6."
+    },
+    {
+      "id": "m7-250",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức A(x) = (x − 3)(2x + 1) − 2x(x − 4). Tính A(−2).",
+      "answer": "−9",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nên rút gọn A(x) trước rồi mới thay số: nhân đa thức với đa thức (SGK tr. 37), nhân đơn thức với đa thức (SGK tr. 36), rồi bỏ dấu ngoặc — đằng trước có dấu trừ thì đổi dấu mọi hạng tử trong ngoặc (SGK tr. 32) — và nhóm các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển tích thứ nhất.</b> (x − 3)(2x + 1) = 2x² + x − 6x − 3 = 2x² − 5x − 3.<br><b>Bước 2 — Khai triển tích thứ hai.</b> 2x(x − 4) = 2x² − 8x.<br><b>Bước 3 — Trừ và thu gọn.</b> A(x) = 2x² − 5x − 3 − 2x² + 8x = 3x − 3.<br><b>Bước 4 — Thay x = −2.</b> A(−2) = 3·(−2) − 3 = −6 − 3 = <b>−9</b>. Kiểm tra bằng cách thay thẳng vào đề: (−2 − 3)(−4 + 1) − 2·(−2)·(−2 − 4) = (−5)·(−3) − (−4)·(−6) = 15 − 24 = −9, khớp.<br>✗ 23 — nếu em quên đổi dấu hạng tử −8x khi bỏ ngoặc, được A(x) = −13x − 3 rồi tính −13·(−2) − 3 = 23.<br>✗ −3 — nếu em tính (−3)·1 = 3 ở Bước 1, được A(x) = 3x + 3 rồi tính 3·(−2) + 3 = −3.<br>✗ −1 — nếu em quên trừ hạng tử 2x², được A(x) = 2x² + 3x − 3 rồi tính 2·4 − 6 − 3 = −1."
+    },
+    {
+      "id": "m7-251",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Tìm x, biết (2x − 1)(x + 3) − 2x(x + 1) = 9.",
+      "options": ["x = 2", "x = 3", "x = 12/7", "x = 4"],
+      "correct": 3,
+      "answer": "x = 4",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn tìm x trong đẳng thức chứa tích các đa thức, trước hết rút gọn vế trái: nhân đa thức với đa thức (SGK tr. 37), nhân đơn thức với đa thức (SGK tr. 36), bỏ dấu ngoặc có dấu trừ đằng trước thì đổi dấu mọi hạng tử (SGK tr. 32), rồi nhóm các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển hai tích.</b> (2x − 1)(x + 3) = 2x² + 6x − x − 3 = 2x² + 5x − 3; 2x(x + 1) = 2x² + 2x.<br><b>Bước 2 — Rút gọn vế trái.</b> 2x² + 5x − 3 − 2x² − 2x = 3x − 3.<br><b>Bước 3 — Giải.</b> 3x − 3 = 9, chuyển −3 sang vế phải và đổi dấu: 3x = 9 + 3 = 12, nên x = 4.<br><b>Bước 4 — Thử lại.</b> Với x = 4: (8 − 1)(4 + 3) − 2·4·(4 + 1) = 7·7 − 8·5 = 49 − 40 = 9, đúng bằng vế phải. Vậy <b>x = 4</b>.<br>✗ x = 2: em chuyển −3 sang vế phải mà quên đổi dấu, giải 3x = 9 − 3 = 6 rồi ra x = 2.<br>✗ x = 3: em bỏ sót hạng tử tự do −3 của vế trái, chỉ giải 3x = 9.<br>✗ x = 12/7: em quên đổi dấu hạng tử 2x khi bỏ ngoặc, rút gọn vế trái thành 7x − 3 rồi giải 7x = 12."
+    },
+    {
+      "id": "m7-252",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Rút gọn biểu thức B = 3x(x² − 2x) − x²(3x − 4), em được kết quả nào?",
+      "options": ["−2x²", "−10x²", "6x³ − 2x²", "−6x² + 4x"],
+      "correct": 0,
+      "answer": "−2x²",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nhân đơn thức với đa thức: nhân đơn thức với từng hạng tử của đa thức rồi cộng các tích với nhau (SGK tr. 36); mỗi tích nhỏ tính bằng cách nhân hệ số và cộng số mũ (SGK tr. 26). Khi bỏ dấu ngoặc mà đằng trước có dấu trừ thì phải đổi dấu TẤT CẢ các hạng tử trong ngoặc (SGK tr. 32).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển tích thứ nhất.</b> 3x(x² − 2x) = 3x·x² + 3x·(−2x) = 3x³ − 6x².<br><b>Bước 2 — Khai triển tích thứ hai.</b> x²(3x − 4) = x²·3x + x²·(−4) = 3x³ − 4x².<br><b>Bước 3 — Trừ, đổi dấu cả hai hạng tử.</b> B = (3x³ − 6x²) − (3x³ − 4x²) = 3x³ − 6x² − 3x³ + 4x².<br><b>Bước 4 — Thu gọn.</b> 3x³ − 3x³ = 0; −6x² + 4x² = −2x². Vậy B = <b>−2x²</b>. Thử với x = 1: 3·(1 − 2) − 1·(3 − 4) = −3 + 1 = −2 = −2·1², khớp.<br>✗ −10x²: em quên đổi dấu hạng tử −4x² khi bỏ ngoặc, tính −6x² − 4x² = −10x².<br>✗ 6x³ − 2x²: em quên trừ hạng tử 3x³ mà cộng thêm, nên hạng tử bậc ba không triệt tiêu.<br>✗ −6x² + 4x: em tính x²·(−4) = −4x, quên rằng x²·4 vẫn còn luỹ thừa x², phải là −4x²."
+    },
+    {
+      "id": "m7-253",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Một tấm bìa hình chữ nhật có chiều dài 2x + 3 (cm) và chiều rộng x − 1 (cm). Biểu thức nào sau đây biểu thị diện tích (cm²) của tấm bìa, sau khi đã thu gọn?",
+      "options": ["2x² − 3", "2x² − x − 3", "2x² + x − 3", "6x + 4"],
+      "correct": 2,
+      "answer": "2x² + x − 3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Diện tích hình chữ nhật bằng chiều dài nhân chiều rộng. Vì hai kích thước là hai đa thức, ta nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích (SGK tr. 37), sau đó thu gọn các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Lập biểu thức diện tích.</b> S = (2x + 3)(x − 1).<br><b>Bước 2 — Nhân 2x với từng hạng tử.</b> 2x·x = 2x²; 2x·(−1) = −2x.<br><b>Bước 3 — Nhân 3 với từng hạng tử.</b> 3·x = 3x; 3·(−1) = −3.<br><b>Bước 4 — Cộng và thu gọn.</b> 2x² − 2x + 3x − 3 = <b>2x² + x − 3</b>. Thử với x = 2: tấm bìa 7 cm × 1 cm có diện tích 7 cm²; 2·4 + 2 − 3 = 7, khớp.<br>✗ 2x² − 3: em chỉ nhân hạng tử đầu với hạng tử đầu và hạng tử cuối với hạng tử cuối, bỏ sót hai tích chéo −2x và 3x.<br>✗ 2x² − x − 3: em tính −2x + 3x thành −x, nhầm dấu; −2 + 3 = 1 nên phải là +x.<br>✗ 6x + 4: em tính chu vi 2·[(2x + 3) + (x − 1)] = 6x + 4 thay vì diện tích."
+    },
+    {
+      "id": "m7-254",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Thực hiện phép tính (x² − 3)(2x + 1).",
+      "options": ["2x³ − 6x − 3", "2x³ + x² − 6x − 3", "2x³ + x² + 6x − 3", "2x³ − 5x − 3"],
+      "correct": 1,
+      "answer": "2x³ + x² − 6x − 3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đa thức với một đa thức, ta nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích với nhau (SGK tr. 37). Chỉ được cộng những hạng tử CÙNG bậc với nhau (SGK tr. 27); các hạng tử khác bậc thì giữ nguyên.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân x² với từng hạng tử.</b> x²·2x = 2x³; x²·1 = x².<br><b>Bước 2 — Nhân −3 với từng hạng tử.</b> (−3)·2x = −6x; (−3)·1 = −3.<br><b>Bước 3 — Cộng bốn tích.</b> 2x³ + x² − 6x − 3; bốn hạng tử có bậc 3, 2, 1, 0 đều khác nhau nên không thu gọn thêm.<br><b>Bước 4 — Thử lại.</b> Với x = 2: (4 − 3)(4 + 1) = 5; 16 + 4 − 12 − 3 = 5, khớp. Vậy kết quả là <b>2x³ + x² − 6x − 3</b>.<br>✗ 2x³ − 6x − 3: em bỏ sót tích x²·1 = x²; phải nhân x² với CẢ hai hạng tử 2x và 1.<br>✗ 2x³ + x² + 6x − 3: em tính (−3)·2x = 6x, quên rằng tích của một số âm với một số dương là số âm.<br>✗ 2x³ − 5x − 3: em gộp x² và −6x thành −5x; hai hạng tử này khác bậc nên không được cộng với nhau."
+    },
+    {
+      "id": "m7-255",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Biết (x + a)(x + 2) = x² + 5x + 6 với mọi giá trị của x, trong đó a là một số. Giá trị của a là bao nhiêu?",
+      "answer": "3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khai triển vế trái theo quy tắc nhân đa thức với đa thức (SGK tr. 37) rồi thu gọn. Hai đa thức bằng nhau với mọi x thì các hệ số của cùng một luỹ thừa phải bằng nhau: so sánh hệ số của x (hoặc hệ số tự do) ở hai vế sẽ tìm được a.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển vế trái.</b> (x + a)(x + 2) = x·x + x·2 + a·x + a·2 = x² + 2x + ax + 2a.<br><b>Bước 2 — Thu gọn.</b> 2x + ax = (2 + a)x, nên vế trái bằng x² + (2 + a)x + 2a.<br><b>Bước 3 — So sánh hệ số của x.</b> 2 + a = 5, suy ra a = 5 − 2 = 3.<br><b>Bước 4 — Kiểm tra bằng hệ số tự do.</b> 2a = 2·3 = 6, đúng bằng hạng tử tự do 6 của vế phải. Vậy a = <b>3</b>: thật vậy (x + 3)(x + 2) = x² + 5x + 6.<br>✗ 5 — nếu em nhầm a chính là hệ số 5 của x, quên rằng hệ số của x là 2 + a chứ không phải a.<br>✗ 6 — nếu em nhầm a là hạng tử tự do 6, quên rằng hạng tử tự do là 2·a.<br>✗ 7 — nếu em chuyển vế 2 + a = 5 mà quên đổi dấu, tính a = 5 + 2 = 7."
+    },
+    {
+      "id": "m7-256",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Khai triển tích (2x − 1)(x² + 3x − 5) rồi thu gọn. Tổng tất cả các hệ số của đa thức thu được là bao nhiêu?",
+      "answer": "−1",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích, sau đó nhóm các hạng tử cùng bậc (SGK tr. 37). Tổng các hệ số của một đa thức chính là giá trị của đa thức đó tại x = 1, vì khi x = 1 mọi luỹ thừa của x đều bằng 1 (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân 2x với cả đa thức.</b> 2x·(x² + 3x − 5) = 2x³ + 6x² − 10x.<br><b>Bước 2 — Nhân −1 với cả đa thức.</b> (−1)·(x² + 3x − 5) = −x² − 3x + 5.<br><b>Bước 3 — Thu gọn.</b> 2x³ + (6x² − x²) + (−10x − 3x) + 5 = 2x³ + 5x² − 13x + 5.<br><b>Bước 4 — Cộng các hệ số.</b> 2 + 5 + (−13) + 5 = −1. Kiểm tra nhanh: thay x = 1 vào đề được (2 − 1)(1 + 3 − 5) = 1·(−1) = −1, khớp. Vậy tổng các hệ số là <b>−1</b>.<br>✗ −11 — nếu em tính (−1)·(−5) = −5 ở Bước 2, quên rằng âm nhân âm ra dương, được 2x³ + 5x² − 13x − 5 rồi cộng thành −11.<br>✗ −6 — nếu em bỏ sót hạng tử tự do 5, chỉ cộng 2 + 5 − 13 = −6.<br>✗ 25 — nếu em cộng các hệ số mà bỏ hết dấu, lấy 2 + 5 + 13 + 5 = 25."
+    },
+    {
+      "id": "m7-257",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Biết (3x + 2)(x − k) = 3x² − 13x − 10 với mọi giá trị của x, trong đó k là một số. Giá trị của k là",
+      "options": ["k = 5", "k = −5", "k = 10", "k = 11/3"],
+      "correct": 0,
+      "answer": "k = 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khai triển vế trái theo quy tắc nhân đa thức với đa thức (SGK tr. 37) rồi thu gọn theo bậc (SGK tr. 27). Hai đa thức bằng nhau với mọi x thì hệ số của cùng một luỹ thừa ở hai vế phải bằng nhau; so sánh hệ số tự do là cách nhanh nhất, rồi dùng hệ số của x để kiểm tra.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển vế trái.</b> (3x + 2)(x − k) = 3x·x + 3x·(−k) + 2·x + 2·(−k) = 3x² − 3kx + 2x − 2k.<br><b>Bước 2 — Thu gọn.</b> Vế trái bằng 3x² + (2 − 3k)x − 2k.<br><b>Bước 3 — So sánh hệ số tự do.</b> −2k = −10, suy ra k = (−10) : (−2) = 5.<br><b>Bước 4 — Kiểm tra bằng hệ số của x.</b> 2 − 3·5 = 2 − 15 = −13, đúng bằng hệ số −13 ở vế phải. Vậy <b>k = 5</b>.<br>✗ k = −5: em chia −10 cho −2 mà quên rằng âm chia âm ra dương.<br>✗ k = 10: em nhầm hạng tử tự do của vế trái là −k thay vì 2·(−k) = −2k, rồi giải −k = −10.<br>✗ k = 11/3: em dùng hệ số của x nhưng chuyển vế quên đổi dấu, viết −3k = −13 + 2 = −11 rồi ra k = 11/3."
+    },
+    {
+      "id": "m7-258",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Bạn An tính 2x·(x² + 3) và viết kết quả là 2x³ + 3. Kết quả đúng của phép tính này là",
+      "options": ["2x³ + 3", "2x² + 6x", "8x⁴", "2x³ + 6x"],
+      "correct": 3,
+      "answer": "2x³ + 6x",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đơn thức với một đa thức, ta nhân đơn thức đó với TỪNG hạng tử của đa thức rồi cộng các tích với nhau (SGK tr. 36). Không được bỏ sót hạng tử nào, kể cả hạng tử tự do. Chỉ được gộp các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Phân phối.</b> 2x·(x² + 3) = 2x·x² + 2x·3.<br><b>Bước 2 — Tính từng tích.</b> 2x·x² = 2x³; 2x·3 = 6x.<br><b>Bước 3 — Cộng hai tích.</b> 2x³ và 6x khác bậc nên giữ nguyên: 2x³ + 6x.<br><b>Bước 4 — Chỉ ra lỗi của An.</b> An chỉ nhân 2x với x² rồi chép nguyên hạng tử 3 xuống mà quên nhân 2x với 3. Thử với x = 1: 2·(1 + 3) = 8, trong khi 2 + 3 = 5 sai còn 2 + 6 = 8 đúng. Kết quả đúng là <b>2x³ + 6x</b>.<br>✗ 2x³ + 3: đây chính là kết quả sai của An — bỏ sót tích 2x·3.<br>✗ 2x² + 6x: em tính 2x·x² = 2x², quên cộng số mũ 1 + 2 = 3.<br>✗ 8x⁴: em gộp 2x³ và 6x thành một hạng tử, lấy 2 + 6 = 8 và 3 + 1 = 4; hai hạng tử khác bậc không được cộng với nhau."
+    },
+    {
+      "id": "m7-259",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "q": "Thực hiện phép tính (2x − 1)(2x + 1).",
+      "options": ["4x² + 1", "4x² − 4x − 1", "4x² − 1", "2x² − 1"],
+      "correct": 2,
+      "answer": "4x² − 1",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn nhân một đa thức với một đa thức, ta nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích với nhau (SGK tr. 37). Khi hai tích chéo có cùng bậc và đối nhau, chúng triệt tiêu và tích chỉ còn hai hạng tử.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân 2x với từng hạng tử.</b> 2x·2x = 4x²; 2x·1 = 2x.<br><b>Bước 2 — Nhân −1 với từng hạng tử.</b> (−1)·2x = −2x; (−1)·1 = −1.<br><b>Bước 3 — Cộng bốn tích.</b> 4x² + 2x − 2x − 1.<br><b>Bước 4 — Thu gọn.</b> 2x − 2x = 0, còn lại <b>4x² − 1</b>. Thử với x = 3: (6 − 1)(6 + 1) = 35; 4·9 − 1 = 35, khớp.<br>✗ 4x² + 1: em tính (−1)·1 = 1, quên rằng tích của một số âm với một số dương là số âm.<br>✗ 4x² − 4x − 1: em tính cả hai tích chéo đều là −2x rồi cộng thành −4x; thật ra 2x·1 = +2x và (−1)·2x = −2x nên chúng triệt tiêu nhau.<br>✗ 2x² − 1: em tính 2x·2x = 2x², quên nhân hai hệ số 2·2 = 4."
+    },
+    {
+      "id": "m7-260",
+      "ch": 7,
+      "topic": "Phép nhân đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức M(x) = (x − 1)(x + 4) − (x + 2)(x − 3). Tính M(100).",
+      "answer": "402",
+      "explanation": "🔑 <b>Lý thuyết:</b> Với số lớn như x = 100, nên rút gọn M(x) trước rồi mới thay số. Nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các tích (SGK tr. 37). Bỏ dấu ngoặc có dấu trừ đằng trước thì đổi dấu TẤT CẢ các hạng tử trong ngoặc (SGK tr. 32), rồi nhóm các hạng tử cùng bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Khai triển tích thứ nhất.</b> (x − 1)(x + 4) = x² + 4x − x − 4 = x² + 3x − 4.<br><b>Bước 2 — Khai triển tích thứ hai.</b> (x + 2)(x − 3) = x² − 3x + 2x − 6 = x² − x − 6.<br><b>Bước 3 — Trừ và thu gọn.</b> M(x) = (x² + 3x − 4) − (x² − x − 6) = x² + 3x − 4 − x² + x + 6 = 4x + 2.<br><b>Bước 4 — Thay x = 100.</b> M(100) = 4·100 + 2 = <b>402</b>. Kiểm tra bằng cách thay thẳng vào đề: 99·104 − 102·97 = 10 296 − 9 894 = 402, khớp.<br>✗ 190 — nếu em không đổi dấu hạng tử nào trong ngoặc thứ hai, được M(x) = 2x − 10 rồi tính 2·100 − 10 = 190.<br>✗ 390 — nếu em chỉ đổi dấu −x thành +x mà quên đổi dấu −6, được M(x) = 4x − 10.<br>✗ 202 — nếu em chỉ đổi dấu −6 thành +6 mà quên đổi dấu −x, được M(x) = 2x + 2."
+    }
+  ]
+}

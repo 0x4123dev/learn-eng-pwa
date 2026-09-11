@@ -1,0 +1,206 @@
+{
+ "ch": 7,
+ "file": "09",
+ "questions": [
+  {
+   "id": "m7-261",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Kết quả của phép chia (−15x⁷) : (−5x²) là",
+   "options": ["3x⁵", "−3x⁵", "3x⁹", "−10x⁵"],
+   "correct": 0,
+   "answer": "3x⁵",
+   "explanation": "🔑 <b>Lý thuyết:</b> Muốn chia đơn thức a·xᵐ cho đơn thức b·xⁿ (b ≠ 0, m ≥ n), ta <b>chia hệ số cho hệ số và chia luỹ thừa cho luỹ thừa</b>: (a·xᵐ) : (b·xⁿ) = (a : b)·xᵐ⁻ⁿ (SGK tr. 39). Khi chia hai số cùng dấu, thương là số dương.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chia hệ số.</b> (−15) : (−5) = 3 (hai số âm chia nhau cho kết quả dương).<br><b>Bước 2 — Chia luỹ thừa.</b> x⁷ : x² = x⁷⁻² = x⁵.<br><b>Bước 3 — Kết luận.</b> (−15x⁷) : (−5x²) = <b>3x⁵</b>. Thử lại: 3x⁵ · (−5x²) = −15x⁷, đúng bằng đa thức bị chia.<br>✗ −3x⁵: em quên rằng (−15) : (−5) là hai số âm chia nhau nên thương phải dương, không phải âm.<br>✗ 3x⁹: em cộng số mũ 7 + 2 = 9 như khi nhân; phép chia luỹ thừa cùng cơ số thì phải trừ số mũ: 7 − 2 = 5.<br>✗ −10x⁵: em lấy −15 − (−5) = −10, tức trừ hệ số thay vì chia hệ số."
+  },
+  {
+   "id": "m7-262",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép tính (4x⁵) : (8x³).",
+   "options": ["2x²", "(1/2)x²", "(1/2)x⁸", "−4x²"],
+   "correct": 1,
+   "answer": "(1/2)x²",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia đơn thức cho đơn thức: (a·xᵐ) : (b·xⁿ) = (a : b)·xᵐ⁻ⁿ với b ≠ 0 và m ≥ n (SGK tr. 39). Hệ số của thương là a : b, có thể là một phân số, không nhất thiết là số nguyên.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chia hệ số.</b> 4 : 8 = 4/8 = 1/2.<br><b>Bước 2 — Chia luỹ thừa.</b> x⁵ : x³ = x⁵⁻³ = x².<br><b>Bước 3 — Kết luận.</b> (4x⁵) : (8x³) = <b>(1/2)x²</b>. Thử lại: (1/2)x² · 8x³ = 4x⁵.<br>✗ 2x²: em lấy 8 : 4 = 2, tức đảo ngược thứ tự chia; phải lấy hệ số của đa thức bị chia (4) chia cho hệ số của đa thức chia (8).<br>✗ (1/2)x⁸: em cộng số mũ 5 + 3 = 8 như khi nhân đơn thức; chia luỹ thừa thì trừ số mũ: 5 − 3 = 2.<br>✗ −4x²: em lấy 4 − 8 = −4, tức trừ hệ số thay vì chia hệ số."
+  },
+  {
+   "id": "m7-263",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Tìm đơn thức M, biết M · 3x² = −12x⁵. Hệ số của đơn thức M là số nào?",
+   "answer": "−4",
+   "explanation": "🔑 <b>Lý thuyết:</b> Nếu M · B = A thì M = A : B (thừa số chưa biết bằng tích chia cho thừa số đã biết). Chia đơn thức cho đơn thức: chia hệ số cho hệ số, chia luỹ thừa cho luỹ thừa (SGK tr. 39).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Lập phép chia.</b> M = (−12x⁵) : (3x²).<br><b>Bước 2 — Chia hệ số.</b> (−12) : 3 = −4.<br><b>Bước 3 — Chia luỹ thừa.</b> x⁵ : x² = x³.<br><b>Bước 4 — Kết luận.</b> M = −4x³, hệ số của M là <b>−4</b>. Thử lại: (−4x³) · 3x² = −12x⁵, đúng đề bài.<br>✗ 4: em bỏ mất dấu âm; −12 chia cho 3 dương phải cho kết quả âm.<br>✗ −36: em nhân −12 với 3 thay vì chia; muốn tìm thừa số chưa biết phải lấy tích chia cho thừa số đã biết.<br>✗ −9: em lấy −12 + 3 = −9 (hoặc −12 − 3 rồi nhầm), tức cộng trừ hệ số thay vì chia hệ số."
+  },
+  {
+   "id": "m7-264",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Kết quả của phép chia (10x⁴ − 15x³ + 5x²) : (5x²) là",
+   "options": ["2x² − 3x", "2x⁴ − 3x³ + x²", "2x² − 3x + 1", "2x² + 3x + 1"],
+   "correct": 2,
+   "answer": "2x² − 3x + 1",
+   "explanation": "🔑 <b>Lý thuyết:</b> Muốn chia một đa thức cho một đơn thức (khi mọi hạng tử của đa thức đều chia hết cho đơn thức), ta <b>chia từng hạng tử của đa thức cho đơn thức rồi cộng các kết quả</b> lại với nhau (SGK tr. 39). Một đơn thức chia cho chính nó bằng 1, không phải bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> 10x⁴ : 5x² = 2x².<br><b>Bước 2.</b> −15x³ : 5x² = −3x.<br><b>Bước 3.</b> 5x² : 5x² = 1.<br><b>Bước 4 — Cộng lại.</b> Thương là <b>2x² − 3x + 1</b>. Thử lại: 5x²·(2x² − 3x + 1) = 10x⁴ − 15x³ + 5x².<br>✗ 2x² − 3x: em coi 5x² : 5x² = 0 nên bỏ mất hạng tử cuối; thật ra một đơn thức chia cho chính nó bằng 1.<br>✗ 2x⁴ − 3x³ + x²: em chỉ chia hệ số (10 : 5, −15 : 5, 5 : 5) mà quên chia luỹ thừa, tức quên trừ số mũ cho 2.<br>✗ 2x² + 3x + 1: em làm mất dấu âm của hạng tử −15x³; −15 : 5 = −3 nên hạng tử thứ hai của thương là −3x."
+  },
+  {
+   "id": "m7-265",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép tính (−8x⁶ + 12x⁴ − 4x³) : (−4x³).",
+   "options": ["−2x³ + 3x − 1", "2x³ − 3x − 1", "2x³ − 3x", "2x³ − 3x + 1"],
+   "correct": 3,
+   "answer": "2x³ − 3x + 1",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia đa thức cho đơn thức: chia từng hạng tử của đa thức cho đơn thức rồi cộng các kết quả (SGK tr. 39). Với mỗi hạng tử, chia hệ số cho hệ số (chú ý quy tắc dấu) và trừ số mũ.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> (−8x⁶) : (−4x³) = 2x³ (âm chia âm ra dương; 6 − 3 = 3).<br><b>Bước 2.</b> 12x⁴ : (−4x³) = −3x (dương chia âm ra âm; 4 − 3 = 1).<br><b>Bước 3.</b> (−4x³) : (−4x³) = 1.<br><b>Bước 4 — Kết luận.</b> Thương là <b>2x³ − 3x + 1</b>. Thử lại: (−4x³)·(2x³ − 3x + 1) = −8x⁶ + 12x⁴ − 4x³.<br>✗ −2x³ + 3x − 1: em chia cho 4x³ rồi quên dấu âm của đơn thức chia, nên mọi hạng tử đều ngược dấu.<br>✗ 2x³ − 3x − 1: em tính (−4x³) : (−4x³) = −1; hai đơn thức bằng nhau chia cho nhau luôn bằng 1.<br>✗ 2x³ − 3x: em coi (−4x³) : (−4x³) = 0 nên bỏ mất hạng tử tự do 1 của thương."
+  },
+  {
+   "id": "m7-266",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép chia (2x² + 5x − 3) : (x + 3). Thương của phép chia là",
+   "options": ["2x − 1", "2x + 1", "x − 1", "2x + 5"],
+   "correct": 0,
+   "answer": "2x − 1",
+   "explanation": "🔑 <b>Lý thuyết:</b> Để chia đa thức cho đa thức ta đặt tính chia: lấy hạng tử bậc cao nhất của đa thức bị chia chia cho hạng tử bậc cao nhất của đa thức chia được hạng tử đầu của thương; nhân ngược hạng tử đó với đa thức chia rồi lấy đa thức bị chia trừ đi tích; tiếp tục với đa thức còn lại cho đến khi dư bằng 0 (chia hết) (SGK tr. 40).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> 2x² : x = 2x; 2x·(x + 3) = 2x² + 6x; lấy (2x² + 5x − 3) − (2x² + 6x) = −x − 3.<br><b>Bước 2.</b> −x : x = −1; (−1)·(x + 3) = −x − 3; lấy (−x − 3) − (−x − 3) = 0.<br><b>Bước 3 — Kết luận.</b> Dư bằng 0 nên đây là phép chia hết, thương là <b>2x − 1</b>. Thử lại: (x + 3)(2x − 1) = 2x² − x + 6x − 3 = 2x² + 5x − 3.<br>✗ 2x + 1: ở Bước 1 em trừ nhầm 5x − 6x = +x nên hạng tử thứ hai của thương thành +1; đúng phải là 5x − 6x = −x.<br>✗ x − 1: em lấy 2x² : x = x, quên chia hệ số 2 : 1 = 2.<br>✗ 2x + 5: em chia rời từng hạng tử (2x² : x = 2x, 5x : x = 5) rồi bỏ số −3; chia đa thức cho đa thức phải đặt tính, nhân ngược và trừ, không chia rời từng hạng tử."
+  },
+  {
+   "id": "m7-267",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép chia (x³ − 8) : (x − 2). Thương của phép chia là",
+   "options": ["x² − 2x + 4", "x² + 2x + 4", "x² + 4", "x² + 2x − 4"],
+   "correct": 1,
+   "answer": "x² + 2x + 4",
+   "explanation": "🔑 <b>Lý thuyết:</b> Khi đặt tính chia đa thức cho đa thức, nếu đa thức bị chia khuyết một luỹ thừa nào đó của biến thì ta <b>viết thêm hạng tử với hệ số 0</b> (hoặc để trống chỗ đó) để các hạng tử cùng bậc thẳng cột (SGK tr. 40). Rồi chia lần lượt: chia hạng tử cao nhất, nhân ngược, trừ.<br>🔑 <b>Áp dụng:</b> Viết x³ − 8 = x³ + 0x² + 0x − 8.<br><b>Bước 1.</b> x³ : x = x²; x²·(x − 2) = x³ − 2x²; lấy (x³ + 0x²) − (x³ − 2x²) = 2x²; hạ xuống được 2x² + 0x − 8.<br><b>Bước 2.</b> 2x² : x = 2x; 2x·(x − 2) = 2x² − 4x; lấy (2x² + 0x) − (2x² − 4x) = 4x; hạ xuống được 4x − 8.<br><b>Bước 3.</b> 4x : x = 4; 4·(x − 2) = 4x − 8; lấy (4x − 8) − (4x − 8) = 0.<br><b>Bước 4 — Kết luận.</b> Phép chia hết, thương là <b>x² + 2x + 4</b>. Thử lại: (x − 2)(x² + 2x + 4) = x³ + 2x² + 4x − 2x² − 4x − 8 = x³ − 8.<br>✗ x² − 2x + 4: ở Bước 1 em tính 0x² − (−2x²) thành −2x² (trừ số âm mà không đổi dấu); đúng phải là 0 + 2 = 2, nên hạng tử giữa là +2x.<br>✗ x² + 4: em không viết thêm hạng tử 0x² và 0x nên bỏ sót hạng tử 2x của thương; nhân thử (x − 2)(x² + 4) = x³ − 2x² + 4x − 8 ≠ x³ − 8.<br>✗ x² + 2x − 4: ở Bước 3 em lấy −8 : (−2)… rồi ghi nhầm dấu; thật ra 4x : x = 4 và 4·(x − 2) = 4x − 8 khớp đúng phần còn lại, nên hạng tử cuối là +4."
+  },
+  {
+   "id": "m7-268",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép chia (x² + 4x + 1) : (x + 1). Kết quả là",
+   "options": ["Thương x + 3, dư 2", "Thương x + 4, dư 1", "Thương x + 3, dư −2", "Thương x + 3, dư 4"],
+   "correct": 2,
+   "answer": "Thương x + 3, dư −2",
+   "explanation": "🔑 <b>Lý thuyết:</b> Khi chia đa thức A cho đa thức B mà đến một lúc đa thức còn lại có bậc nhỏ hơn bậc của B thì phép chia dừng; đó là phép chia có dư, và A = B·Q + R với R = 0 hoặc bậc của R nhỏ hơn bậc của B (SGK tr. 42). Số dư có thể là số âm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> x² : x = x; x·(x + 1) = x² + x; lấy (x² + 4x + 1) − (x² + x) = 3x + 1.<br><b>Bước 2.</b> 3x : x = 3; 3·(x + 1) = 3x + 3; lấy (3x + 1) − (3x + 3) = 1 − 3 = −2.<br><b>Bước 3 — Dừng lại.</b> −2 có bậc 0, nhỏ hơn bậc 1 của x + 1 nên phép chia kết thúc: <b>thương x + 3, dư −2</b>. Thử lại: (x + 1)(x + 3) + (−2) = x² + 4x + 3 − 2 = x² + 4x + 1.<br>✗ Thương x + 3, dư 2: ở Bước 2 em lấy 3 − 1 = 2, tức trừ ngược thứ tự; phải lấy đa thức ở trên (3x + 1) trừ đi tích ở dưới (3x + 3), được 1 − 3 = −2.<br>✗ Thương x + 4, dư 1: em chia rời từng hạng tử x² : x = x, 4x : x = 4 rồi coi 1 là dư; chia đa thức phải nhân ngược và trừ ở mỗi bước.<br>✗ Thương x + 3, dư 4: ở Bước 2 em cộng 1 + 3 = 4 thay vì trừ 1 − 3."
+  },
+  {
+   "id": "m7-269",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Thực hiện phép chia (2x³ + 3x² − x + 5) : (x² + 1). Kết quả là",
+   "options": ["Thương 2x + 3, dư 3x + 2", "Thương 2x + 3, dư 2", "Thương 2x + 3, dư −3x + 8", "Thương 2x + 3, dư −3x + 2"],
+   "correct": 3,
+   "answer": "Thương 2x + 3, dư −3x + 2",
+   "explanation": "🔑 <b>Lý thuyết:</b> Trong phép chia có dư A = B·Q + R, đa thức dư R hoặc bằng 0 hoặc có bậc nhỏ hơn bậc của đa thức chia B (SGK tr. 42). Khi B có bậc 2 thì dư có thể có bậc 1, tức dư có dạng ax + b chứ không nhất thiết là một số.<br>🔑 <b>Áp dụng:</b> Viết x² + 1 = x² + 0x + 1 để thẳng cột.<br><b>Bước 1.</b> 2x³ : x² = 2x; 2x·(x² + 1) = 2x³ + 2x; lấy (2x³ + 3x² − x + 5) − (2x³ + 2x) = 3x² − 3x + 5.<br><b>Bước 2.</b> 3x² : x² = 3; 3·(x² + 1) = 3x² + 3; lấy (3x² − 3x + 5) − (3x² + 3) = −3x + 2.<br><b>Bước 3 — Dừng lại.</b> −3x + 2 có bậc 1, nhỏ hơn bậc 2 của x² + 1 nên phép chia kết thúc: <b>thương 2x + 3, dư −3x + 2</b>. Thử lại: (x² + 1)(2x + 3) + (−3x + 2) = 2x³ + 3x² + 2x + 3 − 3x + 2 = 2x³ + 3x² − x + 5.<br>✗ Thương 2x + 3, dư 3x + 2: ở Bước 1 em tính −x − 2x = +3x (trừ ngược thứ tự); đúng phải là −x − 2x = −3x.<br>✗ Thương 2x + 3, dư 2: em nghĩ dư phải là một số nên bỏ mất hạng tử −3x; khi đa thức chia có bậc 2 thì dư có thể có bậc 1.<br>✗ Thương 2x + 3, dư −3x + 8: ở Bước 2 em cộng 5 + 3 = 8 thay vì trừ 5 − 3 = 2."
+  },
+  {
+   "id": "m7-270",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Tìm số a để đa thức x² + 5x + a chia hết cho đa thức x + 2.",
+   "answer": "6",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đa thức A chia hết cho đa thức B khi phép chia A cho B có dư bằng 0 (SGK tr. 42). Cách làm: đặt tính chia như bình thường (coi a là một số đã biết), tìm dư theo a, rồi cho dư đó bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> x² : x = x; x·(x + 2) = x² + 2x; lấy (x² + 5x + a) − (x² + 2x) = 3x + a.<br><b>Bước 2.</b> 3x : x = 3; 3·(x + 2) = 3x + 6; lấy (3x + a) − (3x + 6) = a − 6.<br><b>Bước 3 — Cho dư bằng 0.</b> Thương là x + 3, dư là a − 6. Chia hết khi a − 6 = 0, tức a = <b>6</b>.<br><b>Bước 4 — Thử lại.</b> Với a = 6: (x + 2)(x + 3) = x² + 3x + 2x + 6 = x² + 5x + 6, đúng là đa thức đã cho.<br>✗ −6: ở Bước 2 em cộng a + 6 rồi cho a + 6 = 0; phải lấy a trừ 6 vì ta trừ đi tích 3x + 6.<br>✗ 3: em lấy hệ số tự do của thương x + 3 làm đáp án; a là hệ số tự do của đa thức bị chia, tìm được từ điều kiện dư bằng 0.<br>✗ 10: em ghép (x + 2)(x + 5) = x² + 7x + 10 vì thấy số 5 trong đề; nhưng đa thức ấy có hạng tử 7x chứ không phải 5x."
+  },
+  {
+   "id": "m7-271",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Một bể cá hình hộp chữ nhật có thể tích 2x³ + 7x² + 3x (cm³) và diện tích đáy 2x² + x (cm²). Biểu thức nào sau đây biểu thị chiều cao của bể cá?",
+   "options": ["x + 3 (cm)", "x − 3 (cm)", "x + 7 (cm)", "x + 4 (cm)"],
+   "correct": 0,
+   "answer": "x + 3 (cm)",
+   "explanation": "🔑 <b>Lý thuyết:</b> Thể tích hình hộp chữ nhật bằng diện tích đáy nhân chiều cao, nên chiều cao = thể tích : diện tích đáy. Để tìm biểu thức chiều cao ta thực hiện phép chia đa thức cho đa thức bằng cách đặt tính: chia hạng tử cao nhất, nhân ngược, trừ (SGK tr. 40).<br>🔑 <b>Áp dụng:</b> Chiều cao = (2x³ + 7x² + 3x) : (2x² + x).<br><b>Bước 1.</b> 2x³ : 2x² = x; x·(2x² + x) = 2x³ + x²; lấy (2x³ + 7x² + 3x) − (2x³ + x²) = 6x² + 3x.<br><b>Bước 2.</b> 6x² : 2x² = 3; 3·(2x² + x) = 6x² + 3x; lấy (6x² + 3x) − (6x² + 3x) = 0.<br><b>Bước 3 — Kết luận.</b> Phép chia hết, chiều cao của bể cá là <b>x + 3 (cm)</b>. Thử lại: (2x² + x)(x + 3) = 2x³ + 6x² + x² + 3x = 2x³ + 7x² + 3x.<br>✗ x − 3 (cm): ở Bước 1 em trừ ngược thứ tự, được −6x² − 3x rồi chia ra −3; phải lấy đa thức ở trên trừ đi tích ở dưới.<br>✗ x + 7 (cm): em chia rời từng hạng tử 2x³ : 2x² = x và 7x² : x² = 7 mà không nhân ngược rồi trừ; chia đa thức cho đa thức phải đặt tính.<br>✗ x + 4 (cm): ở Bước 1 em cộng 7x² + x² = 8x² thay vì trừ 7x² − x² = 6x², rồi 8x² : 2x² = 4."
+  },
+  {
+   "id": "m7-272",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Chia một đa thức bậc 5 cho một đa thức bậc 2, được phép chia có dư (dư khác 0). Khẳng định nào sau đây là đúng?",
+   "options": ["Thương có bậc 5, dư có bậc nhỏ hơn 2", "Thương có bậc 3, dư có bậc nhỏ hơn 2", "Thương có bậc 3, dư có bậc bằng 2", "Thương có bậc 3, dư luôn là một số khác 0"],
+   "correct": 1,
+   "answer": "Thương có bậc 3, dư có bậc nhỏ hơn 2",
+   "explanation": "🔑 <b>Lý thuyết:</b> Khi đặt tính chia, hạng tử đầu của thương bằng hạng tử bậc cao nhất của đa thức bị chia chia cho hạng tử bậc cao nhất của đa thức chia, nên <b>bậc của thương = bậc của đa thức bị chia − bậc của đa thức chia</b> (SGK tr. 40). Phép chia dừng khi đa thức còn lại có bậc nhỏ hơn bậc của đa thức chia: đa thức dư R bằng 0 hoặc có <b>bậc nhỏ hơn bậc của đa thức chia</b> (SGK tr. 42).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Bậc của thương.</b> 5 − 2 = 3, vậy thương có bậc 3 (ví dụ x⁵ : x² = x³).<br><b>Bước 2 — Bậc của dư.</b> Đa thức chia có bậc 2 nên dư khác 0 phải có bậc nhỏ hơn 2: dư có bậc 1 (dạng ax + b) hoặc bậc 0 (một số).<br><b>Bước 3 — Kết luận.</b> <b>Thương có bậc 3, dư có bậc nhỏ hơn 2</b>.<br>✗ Thương có bậc 5, dư có bậc nhỏ hơn 2: em nghĩ thương cùng bậc với đa thức bị chia; thật ra x⁵ : x² = x³, bậc giảm đi 2.<br>✗ Thương có bậc 3, dư có bậc bằng 2: nếu dư còn bậc 2 (bằng bậc của đa thức chia) thì phép chia vẫn tiếp tục được, chưa được dừng lại.<br>✗ Thương có bậc 3, dư luôn là một số khác 0: dư chỉ cần có bậc nhỏ hơn 2, nên dư có thể là đa thức bậc 1 như 3x − 1, không bắt buộc là một số."
+  },
+  {
+   "id": "m7-273",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Bạn Lan chia đa thức A(x) cho đa thức x − 1 thì được thương là x² + x + 1 và dư là 3. Đa thức A(x) là",
+   "options": ["A(x) = x³ − 4", "A(x) = x³ + 3", "A(x) = x³ + 2", "A(x) = x³ + 2x² + 2x + 4"],
+   "correct": 2,
+   "answer": "A(x) = x³ + 2",
+   "explanation": "🔑 <b>Lý thuyết:</b> Nếu chia đa thức A cho đa thức B được thương Q và dư R thì <b>A = B·Q + R</b> (SGK tr. 42). Muốn tìm lại đa thức bị chia, ta nhân đa thức chia với thương rồi cộng thêm dư.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhân đa thức chia với thương.</b> (x − 1)(x² + x + 1) = x³ + x² + x − x² − x − 1 = x³ − 1.<br><b>Bước 2 — Cộng dư.</b> A(x) = (x³ − 1) + 3 = x³ + 2.<br><b>Bước 3 — Kết luận.</b> <b>A(x) = x³ + 2</b>. Thử lại bằng cách chia x³ + 2 cho x − 1: thương x² + x + 1, dư 2 − (−1) = 3, đúng như bạn Lan tìm được.<br>✗ A(x) = x³ − 4: em lấy tích trừ đi dư (x³ − 1 − 3); công thức là A = B·Q + R, tức phải cộng dư.<br>✗ A(x) = x³ + 3: em nhân sai (x − 1)(x² + x + 1) thành x³, bỏ mất hạng tử −1; nhân đủ và thu gọn phải được x³ − 1.<br>✗ A(x) = x³ + 2x² + 2x + 4: em nhân với x + 1 thay vì x − 1: (x + 1)(x² + x + 1) + 3 = x³ + 2x² + 2x + 4; đa thức chia là x − 1."
+  },
+  {
+   "id": "m7-274",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "q": "Với những giá trị nguyên nào của x thì giá trị của đa thức 2x + 7 chia hết cho giá trị của đa thức x + 1?",
+   "options": ["x = −2; x = 0", "x = 0; x = 4", "x = −5; x = −1; x = 1; x = 5", "x = −6; x = −2; x = 0; x = 4"],
+   "correct": 3,
+   "answer": "x = −6; x = −2; x = 0; x = 4",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia A cho B được thương Q và dư R thì A = B·Q + R (SGK tr. 42). Với x nguyên, tích B·Q luôn chia hết cho giá trị của B, nên giá trị của A chia hết cho giá trị của B khi và chỉ khi số dư R chia hết cho giá trị của B.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chia.</b> 2x : x = 2; 2·(x + 1) = 2x + 2; lấy (2x + 7) − (2x + 2) = 5. Vậy 2x + 7 = (x + 1)·2 + 5.<br><b>Bước 2 — Suy luận.</b> (x + 1)·2 chia hết cho x + 1, nên 2x + 7 chia hết cho x + 1 khi và chỉ khi 5 chia hết cho x + 1, tức x + 1 là ước của 5.<br><b>Bước 3 — Liệt kê.</b> Các ước nguyên của 5 là 1; −1; 5; −5. Cho x + 1 lần lượt bằng các số ấy: x = 0; x = −2; x = 4; x = −6.<br><b>Bước 4 — Kết luận.</b> <b>x = −6; x = −2; x = 0; x = 4</b>. Thử: x = 4 thì 2x + 7 = 15 chia hết cho 5; x = −6 thì 2x + 7 = −5 chia hết cho −5.<br>✗ x = −2; x = 0: em chỉ xét x + 1 = 1 và x + 1 = −1, bỏ sót hai ước 5 và −5 của số 5.<br>✗ x = 0; x = 4: em chỉ lấy hai ước dương 1 và 5, quên rằng số 5 còn có các ước âm −1 và −5.<br>✗ x = −5; x = −1; x = 1; x = 5: em tìm đúng các ước của 5 nhưng lấy x bằng ước, quên rằng x + 1 mới bằng ước, phải trừ đi 1."
+  },
+  {
+   "id": "m7-275",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Thương của phép chia (24x⁶) : (−8x²) là một đơn thức có dạng a·xⁿ (a là hệ số, n là số mũ). Tính a + n.",
+   "answer": "1",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia đơn thức cho đơn thức: (a·xᵐ) : (b·xⁿ) = (a : b)·xᵐ⁻ⁿ — hệ số chia hệ số, số mũ trừ số mũ (SGK tr. 39).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Chia hệ số.</b> 24 : (−8) = −3, vậy a = −3.<br><b>Bước 2 — Chia luỹ thừa.</b> x⁶ : x² = x⁴, vậy n = 4.<br><b>Bước 3 — Tính tổng.</b> a + n = −3 + 4 = <b>1</b>. Thử lại thương: (−3x⁴)·(−8x²) = 24x⁶.<br>✗ 7: em quên dấu âm của −8, lấy a = 3 rồi 3 + 4 = 7; số dương chia số âm phải ra số âm.<br>✗ 5: em cộng số mũ 6 + 2 = 8 rồi −3 + 8 = 5; chia luỹ thừa cùng cơ số thì trừ số mũ.<br>✗ 0: em chia số mũ 6 : 2 = 3 rồi −3 + 3 = 0; số mũ của thương là 6 − 2 = 4 chứ không phải 6 : 2."
+  },
+  {
+   "id": "m7-276",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Thực hiện phép chia (12x⁵ − 8x⁴ + 4x³) : (4x³) được thương là đa thức Q(x). Tính Q(2).",
+   "answer": "9",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia đa thức cho đơn thức: chia từng hạng tử của đa thức cho đơn thức rồi cộng các kết quả (SGK tr. 39). Muốn tính giá trị của đa thức tại x = 2, thay x = 2 vào rồi thực hiện phép tính (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm thương.</b> 12x⁵ : 4x³ = 3x²; −8x⁴ : 4x³ = −2x; 4x³ : 4x³ = 1. Vậy Q(x) = 3x² − 2x + 1.<br><b>Bước 2 — Thay x = 2.</b> Q(2) = 3·2² − 2·2 + 1 = 3·4 − 4 + 1 = 12 − 4 + 1 = <b>9</b>.<br><b>Bước 3 — Thử lại.</b> Tại x = 2, đa thức bị chia bằng 12·32 − 8·16 + 4·8 = 384 − 128 + 32 = 288, đơn thức chia bằng 4·8 = 32, và 288 : 32 = 9, khớp.<br>✗ 8: em coi 4x³ : 4x³ = 0 nên Q(x) thiếu hạng tử 1, tính 12 − 4 = 8.<br>✗ 17: em làm mất dấu âm của hạng tử −2x, tính 12 + 4 + 1 = 17.<br>✗ 10: em coi 4x³ : 4x³ = x nên Q(x) = 3x² − 2x + x = 3x² − x, tính 12 − 2 = 10; đơn thức chia cho chính nó bằng 1."
+  },
+  {
+   "id": "m7-277",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Tìm số dư của phép chia (x² − 6x + 4) : (x − 2).",
+   "answer": "−4",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đặt tính chia: chia hạng tử bậc cao nhất, nhân ngược, trừ; dừng lại khi đa thức còn lại có bậc nhỏ hơn bậc của đa thức chia, đa thức còn lại đó là dư (SGK tr. 42). Chia cho đa thức bậc 1 thì dư là một số (bậc 0) hoặc bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> x² : x = x; x·(x − 2) = x² − 2x; lấy (x² − 6x + 4) − (x² − 2x) = −6x + 2x + 4 = −4x + 4.<br><b>Bước 2.</b> −4x : x = −4; (−4)·(x − 2) = −4x + 8; lấy (−4x + 4) − (−4x + 8) = 4 − 8 = −4.<br><b>Bước 3 — Kết luận.</b> Thương x − 4, dư <b>−4</b>. Thử lại: (x − 2)(x − 4) + (−4) = x² − 6x + 8 − 4 = x² − 6x + 4.<br>✗ 4: em trừ ngược thứ tự ở Bước 2, lấy 8 − 4 = 4; phải lấy đa thức ở trên (−4x + 4) trừ đi tích ở dưới (−4x + 8).<br>✗ 12: ở Bước 2 em cộng 4 + 8 = 12 thay vì trừ 4 − 8.<br>✗ −12: ở Bước 1 em tính −6x − 2x = −8x (trừ số âm mà không đổi dấu), rồi (−8)·(x − 2) = −8x + 16 và 4 − 16 = −12; đúng phải là −6x − (−2x) = −4x."
+  },
+  {
+   "id": "m7-278",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Chia đa thức 2x³ − 5x² + 4x − 1 cho đa thức 2x − 1 được phép chia hết với thương là Q(x). Tính Q(3).",
+   "answer": "4",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đặt tính chia đa thức cho đa thức: chia hạng tử bậc cao nhất của đa thức bị chia cho hạng tử bậc cao nhất của đa thức chia, nhân ngược, trừ, lặp lại đến khi dư bằng 0 (SGK tr. 40). Sau đó thay x = 3 vào thương để tính giá trị (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> 2x³ : 2x = x²; x²·(2x − 1) = 2x³ − x²; lấy (2x³ − 5x² + 4x − 1) − (2x³ − x²) = −4x² + 4x − 1.<br><b>Bước 2.</b> −4x² : 2x = −2x; (−2x)·(2x − 1) = −4x² + 2x; lấy (−4x² + 4x − 1) − (−4x² + 2x) = 2x − 1.<br><b>Bước 3.</b> 2x : 2x = 1; 1·(2x − 1) = 2x − 1; lấy (2x − 1) − (2x − 1) = 0. Vậy Q(x) = x² − 2x + 1.<br><b>Bước 4 — Tính Q(3).</b> Q(3) = 3² − 2·3 + 1 = 9 − 6 + 1 = <b>4</b>. Thử lại: tại x = 3, đa thức bị chia bằng 54 − 45 + 12 − 1 = 20, đa thức chia bằng 5, và 20 : 5 = 4, khớp.<br>✗ 16: em đổi dấu hạng tử giữa của thương thành +2x (Q(x) = x² + 2x + 1), tính 9 + 6 + 1 = 16; ở Bước 2, −4x² : 2x = −2x nên hạng tử giữa phải là −2x.<br>✗ 3: em dừng chia sớm ở thương x² − 2x (coi 2x − 1 là dư), tính 9 − 6 = 3; nhưng 2x − 1 có bậc 1 bằng bậc của đa thức chia nên còn chia tiếp được.<br>✗ 2: em ghi nhầm hạng tử cuối của thương là −1 (Q(x) = x² − 2x − 1), tính 9 − 6 − 1 = 2; ở Bước 3, 2x : 2x = +1."
+  },
+  {
+   "id": "m7-279",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Tìm số a để đa thức 2x³ + x² + ax − 6 chia hết cho đa thức x + 2.",
+   "answer": "−9",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đa thức A chia hết cho đa thức B khi dư của phép chia bằng 0 (SGK tr. 42). Ta đặt tính chia, coi a như một số đã biết, tìm dư theo a rồi cho dư bằng 0.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1.</b> 2x³ : x = 2x²; 2x²·(x + 2) = 2x³ + 4x²; lấy (2x³ + x² + ax − 6) − (2x³ + 4x²) = −3x² + ax − 6.<br><b>Bước 2.</b> −3x² : x = −3x; (−3x)·(x + 2) = −3x² − 6x; lấy (−3x² + ax − 6) − (−3x² − 6x) = (a + 6)x − 6.<br><b>Bước 3.</b> (a + 6)x : x = a + 6; (a + 6)·(x + 2) = (a + 6)x + 2a + 12; lấy [(a + 6)x − 6] − [(a + 6)x + 2a + 12] = −6 − 2a − 12 = −2a − 18.<br><b>Bước 4 — Cho dư bằng 0.</b> −2a − 18 = 0, suy ra −2a = 18, tức a = <b>−9</b>.<br><b>Bước 5 — Thử lại.</b> Với a = −9: (x + 2)(2x² − 3x − 3) = 2x³ − 3x² − 3x + 4x² − 6x − 6 = 2x³ + x² − 9x − 6, đúng đa thức đã cho.<br>✗ 9: em giải −2a − 18 = 0 thành −2a = −18 (chuyển vế quên đổi dấu); chuyển −18 sang vế phải phải thành +18.<br>✗ −3: ở Bước 3 em cộng −6 + (2a + 12) = 2a + 6 rồi cho bằng 0; phải trừ đi tích (a + 6)(x + 2), tức −6 − (2a + 12).<br>✗ −6: em dừng ở Bước 2, thấy (a + 6)x − 6 rồi cho a + 6 = 0; nhưng (a + 6)x − 6 còn bậc 1, bằng bậc của x + 2, nên phải chia tiếp một bước nữa."
+  },
+  {
+   "id": "m7-280",
+   "ch": 7,
+   "topic": "Phép chia đa thức một biến",
+   "type": "calc",
+   "keys": [],
+   "q": "Đa thức x² + bx + c (b, c là các số) chia hết cho cả hai đa thức x − 1 và x + 3. Tính tích b·c.",
+   "answer": "−6",
+   "explanation": "🔑 <b>Lý thuyết:</b> Nếu đa thức A chia hết cho đa thức B thì A = B·Q (dư bằng 0) (SGK tr. 40). Khi đó tại giá trị của x làm cho B bằng 0, giá trị của A cũng bằng 0 (vì A = B·Q = 0·Q = 0). Ngược lại, ta dùng điều đó để tìm các hệ số chưa biết.<br>🔑 <b>Áp dụng:</b> Gọi A(x) = x² + bx + c.<br><b>Bước 1 — Dùng x − 1.</b> x − 1 = 0 khi x = 1, nên A(1) = 0: 1 + b + c = 0, suy ra c = −1 − b.<br><b>Bước 2 — Dùng x + 3.</b> x + 3 = 0 khi x = −3, nên A(−3) = 0: 9 − 3b + c = 0. Thay c = −1 − b: 9 − 3b − 1 − b = 0, tức 8 − 4b = 0, suy ra b = 2. Khi đó c = −1 − 2 = −3.<br><b>Bước 3 — Tính tích.</b> b·c = 2·(−3) = <b>−6</b>.<br><b>Bước 4 — Thử lại.</b> x² + 2x − 3 = (x − 1)(x + 3) vì (x − 1)(x + 3) = x² + 3x − x − 3 = x² + 2x − 3; đa thức này chia hết cho cả x − 1 và x + 3.<br>✗ 6: em lấy nghiệm ngược dấu, dùng x = −1 và x = 3, được (x + 1)(x − 3) = x² − 2x − 3, tức b = −2, c = −3 và b·c = 6; x − 1 bằng 0 khi x = 1 chứ không phải x = −1.<br>✗ −12: em nhân nhầm (x − 1)(x − 3) = x² − 4x + 3, được b = −4, c = 3; đa thức chia thứ hai là x + 3, không phải x − 3.<br>✗ 12: em nhân (x + 1)(x + 3) = x² + 4x + 3, được b = 4, c = 3; đổi dấu cả hai đa thức chia."
+  }
+ ]
+}

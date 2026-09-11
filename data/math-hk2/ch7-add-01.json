@@ -1,0 +1,206 @@
+{
+  "ch": 7,
+  "file": "01",
+  "questions": [
+    {
+      "id": "m7-101",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Cho biểu thức đại số 3x + 5y − 7. Trong biểu thức này, các biến là",
+      "options": ["x và y", "3, 5 và 7", "x, y và 7", "3x và 5y"],
+      "correct": 0,
+      "answer": "x và y",
+      "explanation": "🔑 <b>Lý thuyết:</b> Biểu thức đại số là biểu thức chứa số, chữ và các phép toán trên số và chữ. Trong biểu thức đại số, các chữ đại diện cho những số tuỳ ý (số chưa biết) gọi là <b>biến</b>; các số cụ thể như 3, 5, 7 không thay đổi nên không phải biến (SGK tr. 23).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tách các thành phần.</b> Biểu thức 3x + 5y − 7 gồm ba hạng tử: 3x, 5y và −7.<br><b>Bước 2 — Tìm các chữ.</b> Chữ xuất hiện trong biểu thức là x (trong 3x) và y (trong 5y). Chúng có thể nhận giá trị tuỳ ý nên là biến.<br><b>Bước 3 — Kết luận.</b> Các biến của biểu thức là <b>x và y</b>. Các số 3, 5 (hệ số) và 7 là những số đã biết.<br>✗ 3, 5 và 7: đó là các số đã biết trong biểu thức, không phải biến; biến phải là chữ đại diện cho số chưa biết.<br>✗ x, y và 7: 7 là một số cụ thể, nó không thay đổi nên không thể là biến.<br>✗ 3x và 5y: đó là các hạng tử (tích của một số với một biến), chứ không phải bản thân biến; biến chỉ là chữ x, chữ y."
+    },
+    {
+      "id": "m7-102",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một ô tô đi với vận tốc v km/h trong 3 giờ, sau đó đi tiếp 20 km nữa thì đến nơi. Biểu thức nào sau đây biểu thị quãng đường ô tô đã đi?",
+      "options": ["3·(v + 20) (km)", "3v + 20 (km)", "3 + 20v (km)", "v + 60 (km)"],
+      "correct": 1,
+      "answer": "3v + 20 (km)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để viết biểu thức đại số cho bài toán có lời văn, em dùng công thức đã học và thay chữ vào chỗ đại lượng chưa biết (SGK tr. 23). Công thức chuyển động: quãng đường = vận tốc × thời gian. Khi viết gọn, ta bỏ dấu nhân giữa số và biến: 3·v viết là 3v (SGK tr. 23).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đoạn đường đi trong 3 giờ.</b> Vận tốc v km/h, đi trong 3 giờ nên được v·3 = 3v (km).<br><b>Bước 2 — Đoạn đường đi tiếp.</b> Đoạn này đã cho sẵn là 20 km, không phụ thuộc v.<br><b>Bước 3 — Cộng hai đoạn.</b> Quãng đường đã đi là 3v + 20 (km).<br><b>Bước 4 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>3v + 20 (km)</b>. Chẳng hạn v = 50 thì quãng đường là 3·50 + 20 = 170 (km), hợp lí.<br>✗ 3·(v + 20) (km): em cộng 20 km vào vận tốc rồi mới nhân với 3, tức coi cả 20 km cũng được đi lặp lại trong 3 giờ; thật ra 20 km chỉ đi thêm một lần.<br>✗ 3 + 20v (km): em đổi chỗ hai số, nhân vận tốc với 20 (là quãng đường) và cộng 3 (là thời gian); vận tốc phải nhân với thời gian 3 giờ.<br>✗ v + 60 (km): em nhân 3 với 20 thay vì với v, và chỉ cộng v một lần; như vậy ô tô mới đi 1 giờ với vận tốc v."
+    },
+    {
+      "id": "m7-103",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Năm nay bố của Lan a tuổi, Lan kém bố 28 tuổi. Biểu thức nào sau đây biểu thị tuổi của Lan sau 5 năm nữa?",
+      "options": ["a − 33 (tuổi)", "a + 5 (tuổi)", "a − 23 (tuổi)", "a − 28 (tuổi)"],
+      "correct": 2,
+      "answer": "a − 23 (tuổi)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khi một đại lượng chưa biết, ta dùng chữ để thay cho nó rồi viết biểu thức đại số theo quan hệ trong bài; các chữ đó là biến (SGK tr. 23). Bài toán tuổi: \"kém\" nghĩa là trừ đi, \"sau n năm\" nghĩa là cộng thêm n tuổi.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tuổi Lan năm nay.</b> Lan kém bố 28 tuổi nên Lan có a − 28 (tuổi).<br><b>Bước 2 — Tuổi Lan sau 5 năm.</b> Mỗi năm thêm 1 tuổi, nên sau 5 năm Lan có a − 28 + 5 = a − 23 (tuổi).<br><b>Bước 3 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>a − 23 (tuổi)</b>. Chẳng hạn bố 40 tuổi thì Lan 12 tuổi, sau 5 năm Lan 17 tuổi; đúng bằng 40 − 23 = 17.<br>✗ a − 33 (tuổi): em trừ tiếp 5 thay vì cộng 5; sau 5 năm tuổi phải tăng lên chứ không giảm đi.<br>✗ a + 5 (tuổi): đó là tuổi của bố sau 5 năm, em quên trừ đi 28 tuổi để ra tuổi của Lan.<br>✗ a − 28 (tuổi): đó là tuổi của Lan hiện nay, em chưa cộng thêm 5 năm."
+    },
+    {
+      "id": "m7-104",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Trong các biểu thức sau, biểu thức nào có đúng hai biến?",
+      "options": ["3a − 5a + 7", "2·(15 − 7) : 4", "m + n + p", "x² + 2xy − y"],
+      "correct": 3,
+      "answer": "x² + 2xy − y",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong biểu thức đại số, mỗi chữ đại diện cho một số tuỳ ý là một biến; số biến của biểu thức là số chữ KHÁC NHAU xuất hiện trong nó, không phải số lần chữ đó được viết (SGK tr. 23). Biểu thức chỉ gồm các số là biểu thức số, không có biến nào.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Đếm chữ khác nhau trong từng biểu thức.</b> 3a − 5a + 7: chỉ có chữ a (viết hai lần) nên có 1 biến. 2·(15 − 7) : 4: toàn số, không có biến. m + n + p: có ba chữ m, n, p nên có 3 biến. x² + 2xy − y: có hai chữ x và y (mỗi chữ xuất hiện hai lần) nên có 2 biến.<br><b>Bước 2 — Kết luận.</b> Biểu thức có đúng hai biến là <b>x² + 2xy − y</b>.<br>✗ 3a − 5a + 7: em đếm chữ a hai lần thành hai biến; thật ra chỉ có một chữ a, biểu thức này có một biến.<br>✗ 2·(15 − 7) : 4: em thấy có hai số 2 và 4 nằm ngoài ngoặc nên tưởng là hai biến; nhưng đây là biểu thức số, không chứa chữ nào.<br>✗ m + n + p: biểu thức này có ba chữ khác nhau nên có ba biến, nhiều hơn hai."
+    },
+    {
+      "id": "m7-105",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức B = 3x² − 2x + 5 tại x = −3.",
+      "answer": "38",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn tính giá trị của biểu thức đại số tại giá trị cho trước của biến, ta thay giá trị đó vào biểu thức rồi thực hiện các phép tính (SGK tr. 24). Thứ tự: luỹ thừa trước, rồi nhân chia, sau cùng cộng trừ; số âm phải đặt trong ngoặc khi thay.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = −3 vào B = 3x² − 2x + 5, ta được B = 3·(−3)² − 2·(−3) + 5.<br><b>Bước 2 — Tính luỹ thừa.</b> (−3)² = (−3)·(−3) = 9.<br><b>Bước 3 — Tính các tích.</b> 3·9 = 27 và −2·(−3) = +6.<br><b>Bước 4 — Cộng lại.</b> B = 27 + 6 + 5 = <b>38</b>.<br>✗ −16: em coi (−3)² = −9 rồi tính 3·(−9) = −27 và −27 + 6 + 5 = −16; thật ra bình phương của số âm là số dương.<br>✗ 26: em tính −2·(−3) = −6 (quên rằng tích hai số âm là số dương) rồi 27 − 6 + 5 = 26.<br>✗ 92: em hiểu 3x² là (3x)², tính (3·(−3))² = 81 rồi 81 + 6 + 5 = 92; trong 3x² số mũ 2 chỉ áp cho x."
+    },
+    {
+      "id": "m7-106",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức C = x³ − 4xy tại x = −1 và y = 2.",
+      "answer": "7",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để tính giá trị của biểu thức đại số có nhiều biến, ta thay giá trị của từng biến vào đúng chỗ của nó rồi thực hiện các phép tính theo thứ tự luỹ thừa, nhân chia, cộng trừ (SGK tr. 24). Lập phương của một số âm là số âm: (−1)³ = −1.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = −1, y = 2 vào C = x³ − 4xy, ta được C = (−1)³ − 4·(−1)·2.<br><b>Bước 2 — Tính luỹ thừa.</b> (−1)³ = (−1)·(−1)·(−1) = −1.<br><b>Bước 3 — Tính tích.</b> 4·(−1)·2 = −8, nên −4xy = −(−8) = +8.<br><b>Bước 4 — Cộng lại.</b> C = −1 + 8 = <b>7</b>. Thử lại: −1 − (−8) = −1 + 8 = 7.<br>✗ −9: em tính −4·(−1)·2 = −8 (quên rằng −4 nhân với −1 ra số dương) rồi −1 − 8 = −9.<br>✗ 9: em coi (−1)³ = 1 rồi tính 1 + 8 = 9; lập phương của số âm vẫn là số âm.<br>✗ −7: em tính đúng hai phần là −1 và 8 nhưng đổi dấu kết quả cuối, viết −7 thay vì 7."
+    },
+    {
+      "id": "m7-107",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một tam giác cân có cạnh bên dài b cm, cạnh đáy dài hơn cạnh bên 2 cm. Biểu thức nào sau đây biểu thị chu vi của tam giác đó?",
+      "options": ["3b + 2 (cm)", "2b + 2 (cm)", "3b + 6 (cm)", "3b − 2 (cm)"],
+      "correct": 0,
+      "answer": "3b + 2 (cm)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Viết biểu thức đại số cho bài toán có lời văn: dùng công thức đã học, thay chữ vào đại lượng chưa biết rồi thu gọn (SGK tr. 23). Chu vi tam giác bằng tổng độ dài ba cạnh. Tam giác cân có hai cạnh bên bằng nhau.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Độ dài ba cạnh.</b> Hai cạnh bên đều dài b cm. Cạnh đáy dài hơn cạnh bên 2 cm nên dài b + 2 (cm).<br><b>Bước 2 — Cộng ba cạnh.</b> Chu vi bằng b + b + (b + 2) = 3b + 2 (cm).<br><b>Bước 3 — Kết luận và thử lại.</b> Chu vi tam giác là <b>3b + 2 (cm)</b>. Chẳng hạn b = 5 thì ba cạnh là 5, 5, 7 cm và chu vi 17 cm; đúng bằng 3·5 + 2 = 17.<br>✗ 2b + 2 (cm): em chỉ cộng một cạnh bên với cạnh đáy, quên mất tam giác cân có HAI cạnh bên bằng nhau.<br>✗ 3b + 6 (cm): em cộng thêm 2 cm vào cả ba cạnh; chỉ có cạnh đáy dài hơn 2 cm, hai cạnh bên vẫn dài b cm.<br>✗ 3b − 2 (cm): em đọc nhầm \"dài hơn\" thành \"ngắn hơn\" nên trừ 2 thay vì cộng 2."
+    },
+    {
+      "id": "m7-108",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Biểu thức đại số nào sau đây biểu thị hiệu của bình phương số x và ba lần số y?",
+      "options": ["(x − 3y)²", "x² − 3y", "2x − 3y", "x² − y³"],
+      "correct": 1,
+      "answer": "x² − 3y",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn viết biểu thức từ lời văn, em dịch từng cụm từ thành phép toán rồi ghép lại theo đúng thứ tự (SGK tr. 23): \"bình phương của x\" là x²; \"ba lần y\" là 3y; \"hiệu của A và B\" là A − B.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Dịch cụm thứ nhất.</b> Bình phương số x: x².<br><b>Bước 2 — Dịch cụm thứ hai.</b> Ba lần số y: 3·y = 3y.<br><b>Bước 3 — Lấy hiệu.</b> Hiệu của hai đại lượng trên là x² − 3y.<br><b>Bước 4 — Kết luận.</b> Biểu thức cần tìm là <b>x² − 3y</b>. Thử với x = 4, y = 1: bình phương của 4 là 16, ba lần 1 là 3, hiệu là 13; biểu thức cho 4² − 3·1 = 13, khớp.<br>✗ (x − 3y)²: đó là \"bình phương của hiệu\", tức lấy hiệu trước rồi mới bình phương; đề yêu cầu bình phương x trước rồi mới lấy hiệu.<br>✗ 2x − 3y: em nhầm \"bình phương\" (nhân x với chính nó) thành \"gấp đôi\" (nhân x với 2).<br>✗ x² − y³: em nhầm \"ba lần y\" (3y) thành \"lập phương của y\" (y³)."
+    },
+    {
+      "id": "m7-109",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một cửa hàng bán mỗi chiếc bánh giá 15 000 đồng. Khi mua n chiếc bánh, khách được giảm 10 000 đồng cho cả lần mua đó. Biểu thức nào sau đây biểu thị số tiền khách phải trả?",
+      "options": ["(15 000 − 10 000)·n (đồng)", "15 000n + 10 000 (đồng)", "15 000n − 10 000 (đồng)", "15 000 − 10 000n (đồng)"],
+      "correct": 2,
+      "answer": "15 000n − 10 000 (đồng)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khi số lượng chưa biết, ta dùng chữ thay cho nó và lập biểu thức đại số theo đúng diễn biến của bài toán; bỏ dấu nhân giữa số và biến khi viết gọn (SGK tr. 23). Quy tắc mua hàng: tiền hàng = giá một món × số món; được giảm nghĩa là trừ đi số tiền giảm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tiền bánh chưa giảm.</b> Mỗi chiếc 15 000 đồng, mua n chiếc nên hết 15 000·n = 15 000n (đồng).<br><b>Bước 2 — Trừ tiền giảm.</b> Giảm 10 000 đồng cho CẢ lần mua (chỉ giảm một lần), nên phải trả 15 000n − 10 000 (đồng).<br><b>Bước 3 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>15 000n − 10 000 (đồng)</b>. Chẳng hạn mua 4 chiếc: 60 000 − 10 000 = 50 000 (đồng), hợp lí.<br>✗ (15 000 − 10 000)·n (đồng): em giảm 10 000 đồng cho MỖI chiếc bánh rồi nhân với n; đề nói giảm 10 000 đồng cho cả lần mua, tức chỉ trừ một lần.<br>✗ 15 000n + 10 000 (đồng): em cộng thêm 10 000 thay vì trừ; được giảm giá thì số tiền phải trả ít đi.<br>✗ 15 000 − 10 000n (đồng): em đặt biến n nhầm chỗ, nhân n với số tiền giảm thay vì với giá một chiếc bánh."
+    },
+    {
+      "id": "m7-110",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức D = (x − y)² + xy tại x = 4 và y = −2.",
+      "answer": "28",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để tính giá trị của biểu thức, ta thay giá trị của các biến vào rồi thực hiện phép tính; trong ngoặc tính trước, rồi luỹ thừa, nhân chia, cộng trừ (SGK tr. 24). Thay số âm phải đặt trong ngoặc: x − y với y = −2 là 4 − (−2).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = 4, y = −2 vào D = (x − y)² + xy, ta được D = (4 − (−2))² + 4·(−2).<br><b>Bước 2 — Tính trong ngoặc.</b> 4 − (−2) = 4 + 2 = 6, nên (x − y)² = 6² = 36.<br><b>Bước 3 — Tính tích.</b> xy = 4·(−2) = −8.<br><b>Bước 4 — Cộng lại.</b> D = 36 + (−8) = 36 − 8 = <b>28</b>.<br>✗ −4: em tính 4 − (−2) = 2 (quên đổi dấu khi trừ số âm), được 2² = 4 rồi 4 − 8 = −4.<br>✗ 44: em tính xy = 4·(−2) = +8 (quên dấu âm của y) rồi 36 + 8 = 44.<br>✗ 4: em khai triển sai (x − y)² thành x² − y² = 16 − 4 = 12 rồi 12 − 8 = 4; bình phương của một hiệu không bằng hiệu hai bình phương."
+    },
+    {
+      "id": "m7-111",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Diện tích hình tròn bán kính r được tính bởi biểu thức 3,14·r². Trong biểu thức này, số 3,14 và chữ r lần lượt là",
+      "options": ["biến và hằng số", "hai hằng số", "hai biến", "hằng số và biến"],
+      "correct": 3,
+      "answer": "hằng số và biến",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong một biểu thức đại số, chữ đại diện cho số tuỳ ý (có thể thay đổi) gọi là biến; số có giá trị xác định, không đổi gọi là hằng số (SGK tr. 23). Nhìn vào công thức, em xét xem thành phần nào có thể thay đổi khi đổi bài toán.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Xét số 3,14.</b> Với mọi hình tròn, số 3,14 vẫn giữ nguyên, không phụ thuộc hình tròn to hay nhỏ. Vậy 3,14 là hằng số.<br><b>Bước 2 — Xét chữ r.</b> Bán kính r thay đổi tuỳ hình tròn: hình này r = 2 cm, hình khác r = 5 cm. Vậy r là biến.<br><b>Bước 3 — Kết luận.</b> Số 3,14 và chữ r lần lượt là <b>hằng số và biến</b>.<br>✗ biến và hằng số: em đổi thứ tự hai khái niệm; 3,14 không thay đổi nên không phải biến, còn r thay đổi được nên không phải hằng số.<br>✗ hai hằng số: em thấy r là bán kính của một hình cụ thể nên coi nó cố định; nhưng trong biểu thức, r đại diện cho bán kính của mọi hình tròn nên là biến.<br>✗ hai biến: 3,14 là một số xác định, không thể nhận giá trị tuỳ ý nên không phải biến."
+    },
+    {
+      "id": "m7-112",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một số tự nhiên có hai chữ số, chữ số hàng chục là a và chữ số hàng đơn vị là b. Biểu thức nào sau đây biểu thị số tự nhiên đó?",
+      "options": ["10a + b", "a·b", "a + b", "a + 10b"],
+      "correct": 0,
+      "answer": "10a + b",
+      "explanation": "🔑 <b>Lý thuyết:</b> Để viết biểu thức đại số từ lời văn, em dựa vào cấu tạo của đại lượng rồi thay chữ vào chỗ chưa biết (SGK tr. 23). Cấu tạo số: một số có hai chữ số bằng (chữ số hàng chục × 10) + chữ số hàng đơn vị, ví dụ 47 = 4·10 + 7.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Giá trị của hàng chục.</b> Chữ số hàng chục là a, đứng ở hàng chục nên có giá trị a·10 = 10a.<br><b>Bước 2 — Giá trị của hàng đơn vị.</b> Chữ số hàng đơn vị là b, có giá trị b.<br><b>Bước 3 — Cộng lại.</b> Số đó bằng 10a + b.<br><b>Bước 4 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>10a + b</b>. Với a = 4, b = 7: 10·4 + 7 = 47, đúng là số có hàng chục 4 và hàng đơn vị 7.<br>✗ a·b: em viết hai chữ số cạnh nhau thành tích a nhân b; với a = 4, b = 7 thì a·b = 28, không phải 47.<br>✗ a + b: em chỉ cộng hai chữ số mà quên chữ số hàng chục phải nhân với 10; với a = 4, b = 7 thì a + b = 11.<br>✗ a + 10b: em nhân 10 nhầm vào chữ số hàng đơn vị; với a = 4, b = 7 thì được 74, tức đảo ngược hai chữ số."
+    },
+    {
+      "id": "m7-113",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức E = 2a² − 3ab + b² tại a = −1 và b = 3.",
+      "answer": "20",
+      "explanation": "🔑 <b>Lý thuyết:</b> Thay giá trị của từng biến vào biểu thức rồi thực hiện phép tính theo thứ tự luỹ thừa, nhân chia, cộng trừ (SGK tr. 24). Khi thay số âm, đặt nó trong ngoặc để không nhầm dấu: a² với a = −1 là (−1)².<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay a = −1, b = 3 vào E = 2a² − 3ab + b², ta được E = 2·(−1)² − 3·(−1)·3 + 3².<br><b>Bước 2 — Tính luỹ thừa.</b> (−1)² = 1 và 3² = 9.<br><b>Bước 3 — Tính các tích.</b> 2·1 = 2; 3·(−1)·3 = −9 nên −3ab = −(−9) = +9.<br><b>Bước 4 — Cộng lại.</b> E = 2 + 9 + 9 = <b>20</b>.<br>✗ 2: em tính −3·(−1)·3 = −9 (quên rằng −3 nhân với −1 ra số dương) rồi 2 − 9 + 9 = 2.<br>✗ 16: em coi (−1)² = −1 rồi tính 2·(−1) = −2 và −2 + 9 + 9 = 16.<br>✗ 22: em hiểu 2a² là (2a)², tính (2·(−1))² = 4 rồi 4 + 9 + 9 = 22; số mũ 2 chỉ áp cho a."
+    },
+    {
+      "id": "m7-114",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một bể đang chứa 50 lít nước. Người ta mở một vòi chảy vào bể, mỗi phút chảy được 8 lít. Biểu thức nào sau đây biểu thị lượng nước trong bể sau t phút (bể chưa đầy)?",
+      "options": ["8·(50 + t) (lít)", "50 + 8t (lít)", "50t + 8 (lít)", "58t (lít)"],
+      "correct": 1,
+      "answer": "50 + 8t (lít)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Viết biểu thức đại số cho bài toán có lời văn: xác định phần đã có, phần thêm vào theo biến, rồi cộng lại; bỏ dấu nhân giữa số và biến khi viết gọn (SGK tr. 23). Lượng nước chảy vào = lượng chảy mỗi phút × số phút.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nước có sẵn.</b> Bể đang chứa 50 lít, phần này không đổi.<br><b>Bước 2 — Nước chảy thêm.</b> Mỗi phút 8 lít, chảy trong t phút nên thêm 8·t = 8t (lít).<br><b>Bước 3 — Cộng lại.</b> Lượng nước trong bể sau t phút là 50 + 8t (lít).<br><b>Bước 4 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>50 + 8t (lít)</b>. Sau 3 phút: 50 + 8·3 = 74 (lít), hợp lí.<br>✗ 8·(50 + t) (lít): em cộng 50 với t rồi nhân tất cả với 8, tức coi 50 lít có sẵn cũng bị nhân lên 8 lần mỗi lượt; 50 lít chỉ có một lần.<br>✗ 50t + 8 (lít): em đặt biến t nhầm chỗ, nhân t với lượng nước có sẵn thay vì với 8 lít mỗi phút.<br>✗ 58t (lít): em cộng 50 + 8 = 58 rồi nhân với t, tức coi mỗi phút bể nhận thêm 58 lít; thật ra mỗi phút chỉ thêm 8 lít."
+    },
+    {
+      "id": "m7-115",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức F = (x + 2)(x − 3) tại x = −4.",
+      "answer": "14",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn tính giá trị của biểu thức tại giá trị cho trước của biến, ta thay giá trị đó vào rồi thực hiện phép tính; phép tính trong ngoặc làm trước, rồi mới nhân (SGK tr. 24). Tích hai số âm là số dương.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = −4 vào F = (x + 2)(x − 3), ta được F = (−4 + 2)·(−4 − 3).<br><b>Bước 2 — Tính từng ngoặc.</b> −4 + 2 = −2 và −4 − 3 = −7.<br><b>Bước 3 — Nhân hai kết quả.</b> F = (−2)·(−7) = <b>14</b>, vì tích của hai số âm là số dương.<br>✗ −14: em tính đúng hai ngoặc là −2 và −7 nhưng cho tích của hai số âm là số âm.<br>✗ 2: em tính −4 − 3 = −1 (lấy 4 − 3 rồi giữ dấu trừ) nên được (−2)·(−1) = 2; thật ra −4 − 3 = −7.<br>✗ −9: em cộng hai ngoặc −2 + (−7) = −9 thay vì nhân; hai ngoặc viết liền nhau nghĩa là nhân."
+    },
+    {
+      "id": "m7-116",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Một khu vườn hình chữ nhật có chiều dài 12 m và chiều rộng y m. Người ta xây một bể nước hình vuông cạnh 2 m ở một góc vườn. Biểu thức nào sau đây biểu thị diện tích phần vườn còn lại?",
+      "options": ["12y − 2 (m²)", "2·(12 + y) − 4 (m²)", "12y + 4 (m²)", "12y − 4 (m²)"],
+      "correct": 3,
+      "answer": "12y − 4 (m²)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Viết biểu thức đại số cho bài toán có lời văn: dùng công thức đã học, thay chữ vào đại lượng chưa biết, rồi kết hợp các phần theo diễn biến bài toán (SGK tr. 23). Diện tích hình chữ nhật = dài × rộng; diện tích hình vuông = cạnh × cạnh; phần còn lại = cả vườn − phần bị chiếm.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Diện tích cả vườn.</b> 12·y = 12y (m²).<br><b>Bước 2 — Diện tích bể nước.</b> Hình vuông cạnh 2 m nên có diện tích 2·2 = 4 (m²).<br><b>Bước 3 — Lấy phần còn lại.</b> Diện tích vườn còn lại là 12y − 4 (m²).<br><b>Bước 4 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>12y − 4 (m²)</b>. Với y = 5: vườn rộng 60 m², trừ bể 4 m² còn 56 m²; đúng bằng 12·5 − 4 = 56.<br>✗ 12y − 2 (m²): em trừ đi độ dài cạnh bể (2 m) thay vì diện tích bể (2·2 = 4 m²).<br>✗ 2·(12 + y) − 4 (m²): em dùng công thức chu vi hình chữ nhật 2·(12 + y) thay cho diện tích 12·y.<br>✗ 12y + 4 (m²): em cộng thêm diện tích bể; bể chiếm chỗ trong vườn nên phải trừ đi."
+    },
+    {
+      "id": "m7-117",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức G = 5 − 2x² tại x = −1/2.",
+      "answer": "9/2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Thay giá trị của biến vào biểu thức rồi thực hiện phép tính; luỹ thừa trước, rồi nhân, cuối cùng cộng trừ (SGK tr. 24). Bình phương của một phân số âm là phân số dương: (−1/2)² = (−1/2)·(−1/2) = 1/4.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = −1/2 vào G = 5 − 2x², ta được G = 5 − 2·(−1/2)².<br><b>Bước 2 — Tính luỹ thừa.</b> (−1/2)² = 1/4.<br><b>Bước 3 — Tính tích.</b> 2·(1/4) = 2/4 = 1/2.<br><b>Bước 4 — Trừ.</b> G = 5 − 1/2 = 10/2 − 1/2 = <b>9/2</b>. Thử lại: 9/2 + 1/2 = 10/2 = 5, khớp.<br>✗ 11/2: em coi (−1/2)² = −1/4 rồi tính 5 − 2·(−1/4) = 5 + 1/2 = 11/2; bình phương của số âm phải là số dương.<br>✗ 4: em hiểu 2x² là (2x)², tính (2·(−1/2))² = (−1)² = 1 rồi 5 − 1 = 4; số mũ 2 chỉ áp cho x.<br>✗ 6: em quên bình phương, tính 5 − 2·(−1/2) = 5 + 1 = 6."
+    },
+    {
+      "id": "m7-118",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "q": "Biểu thức đại số nào sau đây biểu thị kết quả khi lấy tổng của hai số a và b rồi nhân với 5?",
+      "options": ["5a + b", "5ab", "5·(a + b)", "a + 5b"],
+      "correct": 2,
+      "answer": "5·(a + b)",
+      "explanation": "🔑 <b>Lý thuyết:</b> Muốn viết biểu thức từ lời văn, em dịch từng cụm từ thành phép toán và giữ đúng thứ tự thực hiện; phép tính cần làm trước phải đặt trong dấu ngoặc (SGK tr. 23). \"Tổng của a và b\" là a + b; \"rồi nhân với 5\" nghĩa là nhân cả tổng đó với 5.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Lập tổng.</b> Tổng của hai số a và b là a + b.<br><b>Bước 2 — Nhân với 5.</b> Vì phải cộng xong mới nhân, ta đặt tổng trong ngoặc: 5·(a + b).<br><b>Bước 3 — Kết luận và thử lại.</b> Biểu thức cần tìm là <b>5·(a + b)</b>. Với a = 1, b = 2: tổng là 3, nhân 5 được 15; biểu thức cho 5·(1 + 2) = 15, khớp.<br>✗ 5a + b: em quên dấu ngoặc nên 5 chỉ nhân với a; với a = 1, b = 2 thì được 7, không phải 15.<br>✗ 5ab: em nhầm \"tổng\" thành \"tích\", nhân a với b thay vì cộng; với a = 1, b = 2 thì được 10.<br>✗ a + 5b: em chỉ nhân 5 với b; với a = 1, b = 2 thì được 11, không phải 15."
+    },
+    {
+      "id": "m7-119",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Tính giá trị của biểu thức K = 3x − 2y tại x = 1/3 và y = −3/4.",
+      "answer": "5/2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Thay giá trị của từng biến vào biểu thức rồi thực hiện phép tính, nhân trước, cộng trừ sau (SGK tr. 24). Với phân số, em nhân số nguyên vào tử rồi rút gọn; trừ một số âm bằng cộng số đối của nó.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thay số.</b> Thay x = 1/3, y = −3/4 vào K = 3x − 2y, ta được K = 3·(1/3) − 2·(−3/4).<br><b>Bước 2 — Tính các tích.</b> 3·(1/3) = 1 và 2·(−3/4) = −6/4 = −3/2.<br><b>Bước 3 — Trừ.</b> K = 1 − (−3/2) = 1 + 3/2 = 2/2 + 3/2 = <b>5/2</b>.<br>✗ −1/2: em tính −2·(−3/4) = −3/2 (quên rằng trừ một số âm là cộng) rồi 1 − 3/2 = −1/2.<br>✗ 2: em cộng 1 + 3/2 thành (1 + 3)/2 = 2, quên quy đồng 1 = 2/2 trước khi cộng tử.<br>✗ 7/4: em quên nhân y với 2, tính 1 + 3/4 = 7/4."
+    },
+    {
+      "id": "m7-120",
+      "ch": 7,
+      "topic": "Biểu thức đại số",
+      "type": "calc",
+      "keys": [],
+      "q": "Một người đi bộ với vận tốc 4 km/h trong t giờ, sau đó đi xe đạp với vận tốc 12 km/h trong 2 giờ. Viết biểu thức biểu thị tổng quãng đường người đó đã đi rồi tính giá trị của biểu thức tại t = 1,5.",
+      "answer": "30",
+      "explanation": "🔑 <b>Lý thuyết:</b> Đầu tiên viết biểu thức đại số từ lời văn bằng công thức quãng đường = vận tốc × thời gian (SGK tr. 23); sau đó thay giá trị của biến vào biểu thức rồi thực hiện phép tính để được giá trị của biểu thức (SGK tr. 24).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Quãng đường đi bộ.</b> 4·t = 4t (km).<br><b>Bước 2 — Quãng đường đi xe đạp.</b> 12·2 = 24 (km).<br><b>Bước 3 — Viết biểu thức.</b> Tổng quãng đường là 4t + 24 (km).<br><b>Bước 4 — Thay t = 1,5.</b> 4·1,5 + 24 = 6 + 24 = <b>30</b> (km). Thử lại: đi bộ 1 giờ rưỡi được 6 km, cộng 24 km xe đạp là 30 km.<br>✗ 26: em đổi vai hai vận tốc, tính 4·2 + 12·1,5 = 8 + 18 = 26; vận tốc 4 km/h phải đi với thời gian t.<br>✗ 56: em cộng hai vận tốc rồi nhân với tổng thời gian: (4 + 12)·(1,5 + 2) = 56; mỗi đoạn có vận tốc riêng nên phải tính riêng rồi mới cộng.<br>✗ 42: em dùng vận tốc 12 km/h cho cả hai đoạn: 12·1,5 + 12·2 = 18 + 24 = 42."
+    }
+  ]
+}

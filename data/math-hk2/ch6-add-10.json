@@ -1,0 +1,266 @@
+{
+ "ch": 6,
+ "file": "10",
+ "questions": [
+  {
+   "id": "m6-281",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "q": "Trong các cặp đại lượng sau, cặp nào là hai đại lượng tỉ lệ nghịch?",
+   "options": [
+    "Số trang đã đọc và số trang còn lại của một quyển sách",
+    "Số công nhân (cùng năng suất) và số ngày để hoàn thành một công việc cố định",
+    "Số ki-lô-gam gạo mua và số tiền phải trả (giá không đổi)",
+    "Quãng đường đi được và thời gian đi (vận tốc không đổi)"
+   ],
+   "correct": 1,
+   "answer": "Số công nhân (cùng năng suất) và số ngày để hoàn thành một công việc cố định",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đại lượng y tỉ lệ nghịch với đại lượng x khi y = a/x, tức là x · y = a (a là hằng số khác 0): TÍCH hai giá trị tương ứng luôn không đổi, x tăng bao nhiêu lần thì y giảm bấy nhiêu lần. Còn y = kx là tỉ lệ thuận: THƯƠNG y/x không đổi. Muốn phân biệt, em thử xem tích hay thương của hai đại lượng không đổi. (SGK tr. 15)<br>🔑 <b>Áp dụng:</b> Với một công việc cố định, tổng số ngày công = (số công nhân) · (số ngày) là không đổi. Ví dụ 10 công nhân làm trong 6 ngày là 60 ngày công; nếu có 20 công nhân thì chỉ cần 3 ngày, tích 20 · 3 = 60 vẫn thế; 30 công nhân thì 2 ngày, 30 · 2 = 60. Số công nhân tăng bao nhiêu lần, số ngày giảm bấy nhiêu lần, tích không đổi — đó chính là hai đại lượng <b>tỉ lệ nghịch</b>.<br>✗ Số trang đã đọc và số trang còn lại: TỔNG của chúng không đổi (bằng số trang cả quyển), không phải tích. Sách 100 trang: đọc 10 còn 90, đọc 20 còn 80, mà 10 · 90 = 900 khác 20 · 80 = 1600.<br>✗ Số ki-lô-gam gạo và số tiền: mua gấp đôi thì trả gấp đôi, thương tiền/kg (giá 1 kg) không đổi — đây là tỉ lệ THUẬN.<br>✗ Quãng đường và thời gian khi vận tốc không đổi: s = v · t, thương s/t = v không đổi — cũng là tỉ lệ THUẬN, đi lâu gấp đôi thì được quãng đường gấp đôi."
+  },
+  {
+   "id": "m6-282",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ thuận",
+   "q": "Một bể đã có sẵn 20 lít nước. Người ta mở một vòi chảy đều vào bể, mỗi phút được 5 lít. Gọi V (lít) là lượng nước trong bể sau t phút. Hỏi V có tỉ lệ thuận với t không?",
+   "options": [
+    "Có, hệ số tỉ lệ là 5",
+    "Có, hệ số tỉ lệ là 20",
+    "Không, vì V = 5t + 20 không có dạng V = k · t",
+    "Có, hệ số tỉ lệ là 25"
+   ],
+   "correct": 2,
+   "answer": "Không, vì V = 5t + 20 không có dạng V = k · t",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đại lượng y tỉ lệ thuận với đại lượng x theo hệ số tỉ lệ k (k ≠ 0) khi y = kx với MỌI giá trị của x. Dấu hiệu nhận biết: thương y/x của mọi cặp giá trị tương ứng đều bằng nhau (và bằng k). Chỉ cần một cặp cho thương khác là không tỉ lệ thuận. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Sau t phút, vòi chảy thêm được 5 · t lít; cộng với 20 lít có sẵn: V = 5t + 20. <b>Bước 2 —</b> Thử tính thương V/t với vài giá trị: t = 1 thì V = 25, V/t = 25; t = 2 thì V = 30, V/t = 15; t = 4 thì V = 40, V/t = 10. Thương thay đổi liên tục, nên V <b>không</b> tỉ lệ thuận với t. Chỉ phần nước do vòi chảy thêm (5t) mới tỉ lệ thuận với t; cộng thêm hằng số 20 là mất tính chất đó.<br>✗ Có, hệ số 5: 5 là lượng nước chảy thêm mỗi phút, nhưng vì bể có sẵn 20 lít nên V ≠ 5t (t = 2 cho V = 30 chứ không phải 10).<br>✗ Có, hệ số 20: 20 là lượng nước ban đầu, không phải thương V/t; thử t = 1 thì V/t = 25 ≠ 20.<br>✗ Có, hệ số 25: chỉ trùng ở t = 1; sang t = 2 thương đã là 15, không còn 25 nữa."
+  },
+  {
+   "id": "m6-283",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "type": "calc",
+   "keys": [],
+   "q": "Một đội xe dự định dùng 10 xe tải cùng loại, mỗi xe chở 6 chuyến thì chuyển hết một kho hàng. Đến ngày làm việc có 4 xe bị hỏng. Hỏi mỗi xe còn lại phải chở bao nhiêu chuyến để vẫn chuyển hết kho hàng?",
+   "answer": "10",
+   "explanation": "🔑 <b>Lý thuyết:</b> Khối lượng hàng cố định nên số xe và số chuyến mỗi xe là hai đại lượng tỉ lệ nghịch: tích (số xe) · (số chuyến mỗi xe) = tổng số chuyến không đổi, tức x₁ · y₁ = x₂ · y₂. (SGK tr. 16)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Số xe thực tế: 10 − 4 = 6 xe. <b>Bước 2 —</b> Tổng số chuyến cần chở không đổi: 10 · 6 = 60 chuyến. <b>Bước 3 —</b> Mỗi xe còn lại chở: 60 : 6 = <b>10</b> chuyến. Thử lại: 6 xe × 10 chuyến = 60 = 10 × 6 ✔ Xe ít đi thì mỗi xe phải chở nhiều hơn, kết quả 10 lớn hơn 6 là hợp lí.<br>✗ 15 — lấy 60 : 4, chia tổng số chuyến cho số xe HỎNG thay vì số xe còn lại (6 xe).<br>✗ 2 — lấy 6 − 4, tưởng số chuyến giảm đúng bằng số xe hỏng; hai đại lượng này liên hệ bằng TÍCH không đổi, không phải bằng hiệu.<br>✗ 60 — dừng ở tổng số chuyến của cả đội, quên chia cho 6 xe."
+  },
+  {
+   "id": "m6-284",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ thuận",
+   "q": "Cứ 4 m vải thì may được 3 chiếc áo cùng cỡ. Cô Lan có 24 m vải và đã may xong 12 chiếc áo như thế. Hỏi cô còn lại bao nhiêu mét vải?",
+   "options": [
+    "8 m",
+    "16 m",
+    "9 m",
+    "12 m"
+   ],
+   "correct": 0,
+   "answer": "8 m",
+   "explanation": "🔑 <b>Lý thuyết:</b> Số mét vải tỉ lệ thuận với số áo may được (áo gấp bao nhiêu lần thì vải gấp bấy nhiêu lần). Với hai đại lượng tỉ lệ thuận: x₁/x₂ = y₁/y₂, hay số vải = (số áo) · (vải cho 1 áo). (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> 12 áo gấp 12 : 3 = 4 lần 3 áo, nên vải đã dùng gấp 4 lần 4 m: 4 · 4 = 16 m. (Hoặc mỗi áo hết 4/3 m, 12 áo hết 12 · 4/3 = 16 m.) <b>Bước 2 —</b> Vải còn lại: 24 − 16 = <b>8 m</b>. Thử lại cách khác: 24 m may được 24 · 3/4 = 18 áo; đã may 12 áo nên còn vải cho 6 áo, tức 6 · 4/3 = 8 m ✔<br>✗ 16 m: đây là số vải ĐÃ DÙNG, chưa lấy 24 m trừ đi.<br>✗ 9 m: tính 12 · 3/4 = 9, nhân số áo với 3 (số áo) thay vì với 4 (số mét vải); kết quả ra một số áo chứ không phải mét vải.<br>✗ 12 m: lấy 24 − 12, đem số mét vải trừ đi số chiếc áo — hai đại lượng khác đơn vị, không trừ cho nhau được."
+  },
+  {
+   "id": "m6-285",
+   "ch": 6,
+   "topic": "Tính chất của dãy tỉ số bằng nhau",
+   "type": "calc",
+   "keys": [],
+   "q": "Cô giáo có 117 quyển vở thưởng cho ba tổ. Số vở mỗi tổ nhận tỉ lệ NGHỊCH với số lần đi muộn của tổ đó trong tháng, lần lượt là 2; 3; 4 lần. Hỏi tổ đi muộn ít nhất nhận được bao nhiêu quyển vở?",
+   "answer": "54",
+   "explanation": "🔑 <b>Lý thuyết:</b> Chia một số thành ba phần x, y, z tỉ lệ NGHỊCH với a, b, c nghĩa là a · x = b · y = c · z, tức x/(1/a) = y/(1/b) = z/(1/c): ba phần tỉ lệ THUẬN với 1/a, 1/b, 1/c. Sau đó dùng tính chất dãy tỉ số bằng nhau: x/m = y/n = z/p = (x + y + z)/(m + n + p). (SGK tr. 8)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Gọi số vở ba tổ là x, y, z thì 2x = 3y = 4z, suy ra x/(1/2) = y/(1/3) = z/(1/4). Nhân cả ba mẫu với 12 để bỏ phân số: x/6 = y/4 = z/3. <b>Bước 2 —</b> Theo tính chất dãy tỉ số bằng nhau: x/6 = y/4 = z/3 = (x + y + z)/(6 + 4 + 3) = 117/13 = 9. <b>Bước 3 —</b> x = 9 · 6 = <b>54</b>, y = 36, z = 27. Tổ đi muộn ít nhất (2 lần) nhận 54 quyển. Thử lại: 2 · 54 = 108, 3 · 36 = 108, 4 · 27 = 108 (bằng nhau ✔); 54 + 36 + 27 = 117 ✔<br>✗ 26 — chia tỉ lệ THUẬN với 2; 3; 4 (117 : 9 · 2 = 26): tổ đi muộn ít nhất lại nhận ít nhất, ngược với ý đề.<br>✗ 27 — đó là phần của tổ đi muộn 4 lần (tổ nhận ÍT nhất), đọc nhầm câu hỏi.<br>✗ 18 — tính 117 · 2/13: dùng đúng mẫu 13 nhưng nhân với 2 (số lần đi muộn) thay vì với 6 (số ở dãy tỉ số)."
+  },
+  {
+   "id": "m6-286",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "q": "Với vận tốc 45 km/h, một ô tô đi hết quãng đường AB trong 4 giờ. Muốn đi hết quãng đường đó trong 3 giờ thì ô tô phải tăng vận tốc thêm bao nhiêu?",
+   "options": [
+    "60 km/h",
+    "33,75 km/h",
+    "11,25 km/h",
+    "15 km/h"
+   ],
+   "correct": 3,
+   "answer": "15 km/h",
+   "explanation": "🔑 <b>Lý thuyết:</b> Trên cùng một quãng đường, vận tốc và thời gian là hai đại lượng tỉ lệ nghịch: v · t = s không đổi, nên v₁ · t₁ = v₂ · t₂. Thời gian giảm thì vận tốc phải tăng. (SGK tr. 16)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Quãng đường AB = 45 · 4 = 180 km. <b>Bước 2 —</b> Vận tốc cần có để đi hết 180 km trong 3 giờ: v₂ = 180 : 3 = 60 km/h. <b>Bước 3 —</b> Phần tăng thêm: 60 − 45 = <b>15 km/h</b>. Thử lại: 60 · 3 = 180 = 45 · 4 ✔<br>✗ 60 km/h: đây là vận tốc MỚI, đề hỏi phải tăng THÊM bao nhiêu nên còn phải trừ đi 45.<br>✗ 33,75 km/h: nhầm sang tỉ lệ thuận, tính 45 · 3/4; đi trong thời gian ngắn hơn mà vận tốc lại giảm là vô lí.<br>✗ 11,25 km/h: lấy 45 − 33,75, hệ quả của cách nhầm tỉ lệ thuận ở trên (ra \"giảm\" chứ không phải \"tăng\")."
+  },
+  {
+   "id": "m6-287",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ thuận",
+   "type": "calc",
+   "keys": [],
+   "q": "Bạn An đọc một quyển truyện dày 240 trang với tốc độ đều: 3 ngày đầu đọc được 45 trang. Hỏi An cần đọc thêm bao nhiêu ngày nữa thì xong quyển truyện?",
+   "answer": "13",
+   "explanation": "🔑 <b>Lý thuyết:</b> Đọc với tốc độ đều thì số trang đọc được tỉ lệ thuận với số ngày: số trang = k · (số ngày), với k là số trang đọc mỗi ngày. Bài hai bước: tìm k trước, rồi dùng k để trả lời câu hỏi. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Mỗi ngày An đọc 45 : 3 = 15 trang. <b>Bước 2 —</b> Số trang còn lại: 240 − 45 = 195 trang. <b>Bước 3 —</b> Số ngày cần thêm: 195 : 15 = <b>13</b> ngày. Thử lại theo cách khác: đọc cả quyển hết 240 : 15 = 16 ngày, đã đọc 3 ngày nên còn 16 − 3 = 13 ngày ✔<br>✗ 16 — tổng số ngày đọc cả quyển, quên trừ 3 ngày đã đọc.<br>✗ 195 — số trang còn lại, chưa đổi ra số ngày (chưa chia cho 15).<br>✗ 5 — lấy 240 : 45 ≈ 5,3 rồi làm tròn: đem số trang chia cho số trang của cả 3 ngày lại coi kết quả là số ngày."
+  },
+  {
+   "id": "m6-288",
+   "ch": 6,
+   "topic": "Tỉ lệ thức",
+   "q": "Trong một hộp, tỉ số giữa số bi đỏ và số bi xanh là 3/5. Nếu bỏ thêm 6 viên bi đỏ vào hộp thì tỉ số đó trở thành 3/4. Hỏi hộp có bao nhiêu viên bi xanh?",
+   "options": [
+    "24 viên",
+    "40 viên",
+    "30 viên",
+    "8 viên"
+   ],
+   "correct": 1,
+   "answer": "40 viên",
+   "explanation": "🔑 <b>Lý thuyết:</b> Tỉ số a/b = 3/5 nghĩa là a = 3k, b = 5k với cùng một số k. Tính chất cơ bản của tỉ lệ thức: a/b = c/d thì a · d = b · c (nhân chéo). (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Gọi số bi đỏ là 3k, số bi xanh là 5k. Sau khi thêm 6 viên đỏ, số bi đỏ là 3k + 6, số bi xanh vẫn 5k. <b>Bước 2 —</b> Theo đề: (3k + 6)/(5k) = 3/4. Nhân chéo: 4(3k + 6) = 3 · 5k, tức 12k + 24 = 15k, suy ra 3k = 24, k = 8. <b>Bước 3 —</b> Số bi xanh: 5 · 8 = <b>40 viên</b> (bi đỏ ban đầu 24 viên). Thử lại: 24/40 = 3/5 ✔; sau khi thêm: 30/40 = 3/4 ✔<br>✗ 24 viên: đây là số bi ĐỎ ban đầu (3k), đề hỏi bi xanh.<br>✗ 30 viên: số bi đỏ SAU khi thêm 6 viên, không phải bi xanh.<br>✗ 8 viên: dừng ở k = 8, quên nhân với 5 để ra số bi xanh."
+  },
+  {
+   "id": "m6-289",
+   "ch": 6,
+   "topic": "Tính chất của dãy tỉ số bằng nhau",
+   "type": "calc",
+   "keys": [],
+   "q": "Số học sinh của ba lớp 7A, 7B, 7C lần lượt tỉ lệ với 8; 9; 10. Nếu chuyển 4 học sinh từ lớp 7C sang lớp 7A thì hai lớp này có số học sinh bằng nhau. Hỏi lớp 7B có bao nhiêu học sinh?",
+   "answer": "36",
+   "explanation": "🔑 <b>Lý thuyết:</b> Ba số tỉ lệ với 8; 9; 10 nghĩa là a/8 = b/9 = c/10 = k, tức a = 8k, b = 9k, c = 10k. Đề không cho tổng hay hiệu trực tiếp mà cho một tình huống; em dịch tình huống đó thành một phương trình theo k. (SGK tr. 8)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Đặt 7A = 8k, 7B = 9k, 7C = 10k. <b>Bước 2 —</b> Chuyển 4 em từ 7C sang 7A: 7C còn 10k − 4, 7A thành 8k + 4. Hai lớp bằng nhau: 10k − 4 = 8k + 4, suy ra 2k = 8, k = 4. (Nhận xét: chuyển 4 em thì lớp này bớt 4, lớp kia thêm 4, nên ban đầu 7C hơn 7A đúng 8 em; dùng dãy tỉ số: (c − a)/(10 − 8) = 8/2 = 4 = k, khớp.) <b>Bước 3 —</b> 7B = 9 · 4 = <b>36</b> học sinh. Thử lại: 7A = 32, 7C = 40; chuyển 4 em: 40 − 4 = 36 = 32 + 4 ✔<br>✗ 32 — số học sinh lớp 7A, đề hỏi lớp 7B.<br>✗ 40 — số học sinh lớp 7C.<br>✗ 18 — cho rằng 7C chỉ hơn 7A 4 học sinh nên k = 4 : 2 = 2; thực ra chuyển 4 em làm hiệu giảm đi 8, nên hiệu ban đầu là 8."
+  },
+  {
+   "id": "m6-290",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ thuận",
+   "q": "Bảng sau cho các cặp giá trị tương ứng của hai đại lượng x và y: x nhận 2; 5; 8 thì y tương ứng nhận 5; 12,5; 20. Hai đại lượng x và y liên hệ với nhau như thế nào?",
+   "options": [
+    "y tỉ lệ thuận với x theo hệ số tỉ lệ 2,5",
+    "y tỉ lệ thuận với x theo hệ số tỉ lệ 0,4",
+    "y tỉ lệ nghịch với x theo hệ số tỉ lệ 10",
+    "y tỉ lệ thuận với x theo hệ số tỉ lệ 3"
+   ],
+   "correct": 0,
+   "answer": "y tỉ lệ thuận với x theo hệ số tỉ lệ 2,5",
+   "explanation": "🔑 <b>Lý thuyết:</b> Muốn biết y có tỉ lệ thuận với x không, em tính THƯƠNG y/x của từng cặp: nếu mọi thương đều bằng nhau (bằng k) thì y = kx, y tỉ lệ thuận với x theo hệ số k. Muốn biết có tỉ lệ nghịch không, em tính TÍCH x · y: mọi tích bằng nhau (bằng a) thì y = a/x. (SGK tr. 15)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Tính các thương y/x: 5/2 = 2,5; 12,5/5 = 2,5; 20/8 = 2,5. Cả ba đều bằng 2,5, vậy y = 2,5x: y <b>tỉ lệ thuận với x theo hệ số tỉ lệ 2,5</b>. <b>Bước 2 —</b> Kiểm tra thêm các tích x · y: 2 · 5 = 10; 5 · 12,5 = 62,5; 8 · 20 = 160 — thay đổi, nên không phải tỉ lệ nghịch. Thử lại: 2,5 · 8 = 20 ✔<br>✗ Thuận, hệ số 0,4: tính x/y = 2/5 = 0,4 — đó là hệ số tỉ lệ của x đối với y, tức ngược chiều so với câu hỏi.<br>✗ Nghịch, hệ số 10: chỉ nhìn cặp đầu 2 · 5 = 10 rồi kết luận; cặp thứ hai cho 5 · 12,5 = 62,5 ≠ 10.<br>✗ Thuận, hệ số 3: lấy hiệu 5 − 2 = 3; hệ số tỉ lệ thuận là THƯƠNG y/x, không phải hiệu y − x."
+  },
+  {
+   "id": "m6-291",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "type": "calc",
+   "keys": [],
+   "q": "Một bể bơi có 6 vòi nước cùng loại; mở cả 6 vòi thì bể đầy sau 10 giờ. Hôm nay chỉ mở được 4 vòi. Hỏi bể sẽ đầy chậm hơn bình thường bao nhiêu giờ?",
+   "answer": "5",
+   "explanation": "🔑 <b>Lý thuyết:</b> Cùng một bể, số vòi và thời gian đầy bể là hai đại lượng tỉ lệ nghịch: (số vòi) · (thời gian) = không đổi, nên x₁ · y₁ = x₂ · y₂. Ít vòi hơn thì lâu hơn. (SGK tr. 16)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Tích không đổi: 6 · 10 = 60 (giờ-vòi). <b>Bước 2 —</b> Với 4 vòi, thời gian đầy bể: 60 : 4 = 15 giờ. <b>Bước 3 —</b> Chậm hơn bình thường: 15 − 10 = <b>5</b> giờ. Thử lại: 4 · 15 = 60 = 6 · 10 ✔; số vòi giảm từ 6 xuống 4 (còn 2/3) thì thời gian tăng lên 3/2 lần: 10 · 3/2 = 15 ✔<br>✗ 15 — đây là thời gian để bể đầy, đề hỏi CHẬM HƠN bao nhiêu nên còn phải trừ đi 10.<br>✗ 20/3 — nhầm tỉ lệ thuận, tính 4 · 10/6: ít vòi hơn mà bể lại đầy nhanh hơn là vô lí.<br>✗ 2 — lấy 6 − 4, tưởng bớt 2 vòi thì chậm đúng 2 giờ; hai đại lượng liên hệ bằng tích, không phải bằng hiệu."
+  },
+  {
+   "id": "m6-292",
+   "ch": 6,
+   "topic": "Tính chất của dãy tỉ số bằng nhau",
+   "q": "Một hình chữ nhật có chiều dài và chiều rộng tỉ lệ với 5 và 3. Nếu tăng chiều rộng thêm 4 cm và giữ nguyên chiều dài thì hình đó trở thành hình vuông. Diện tích hình chữ nhật ban đầu là bao nhiêu?",
+   "options": [
+    "100 cm²",
+    "15 cm²",
+    "60 cm²",
+    "32 cm²"
+   ],
+   "correct": 2,
+   "answer": "60 cm²",
+   "explanation": "🔑 <b>Lý thuyết:</b> Hai số tỉ lệ với 5 và 3 nghĩa là a/5 = b/3 = k, tức a = 5k, b = 3k. Hình vuông có bốn cạnh bằng nhau, nên \"trở thành hình vuông\" cho ta đẳng thức chiều rộng mới = chiều dài. (SGK tr. 8)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Chiều dài 5k, chiều rộng 3k. Tăng chiều rộng thêm 4 cm thì được hình vuông: 3k + 4 = 5k, suy ra 2k = 4, k = 2. (Cũng có thể thấy chiều dài hơn chiều rộng đúng 4 cm, nên (a − b)/(5 − 3) = 4/2 = 2.) <b>Bước 2 —</b> Chiều dài 5 · 2 = 10 cm, chiều rộng 3 · 2 = 6 cm. <b>Bước 3 —</b> Diện tích ban đầu: 10 · 6 = <b>60 cm²</b>. Thử lại: 6 + 4 = 10 = chiều dài, đúng là hình vuông ✔<br>✗ 100 cm²: diện tích hình VUÔNG sau khi tăng (10 · 10), không phải hình chữ nhật ban đầu.<br>✗ 15 cm²: nhân thẳng hai số tỉ lệ 5 · 3, quên rằng các cạnh là 5k và 3k với k = 2.<br>✗ 32 cm²: tính chu vi 2 · (10 + 6) = 32 thay vì diện tích."
+  },
+  {
+   "id": "m6-293",
+   "ch": 6,
+   "topic": "Tỉ lệ thức",
+   "type": "calc",
+   "keys": [],
+   "q": "Hai số x và y (khác 0) có tỉ số x/y = 2/3. Nếu cộng thêm 4 vào cả hai số thì tỉ số của hai số mới là 3/4. Tính y.",
+   "answer": "12",
+   "explanation": "🔑 <b>Lý thuyết:</b> x/y = 2/3 nghĩa là x = 2k, y = 3k với cùng một số k ≠ 0. Tính chất cơ bản của tỉ lệ thức: a/b = c/d thì a · d = b · c (nhân chéo). (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Đặt x = 2k, y = 3k. Hai số mới là 2k + 4 và 3k + 4. <b>Bước 2 —</b> Theo đề: (2k + 4)/(3k + 4) = 3/4. Nhân chéo: 4(2k + 4) = 3(3k + 4), tức 8k + 16 = 9k + 12, suy ra k = 4. <b>Bước 3 —</b> y = 3 · 4 = <b>12</b> (và x = 8). Thử lại: 8/12 = 2/3 ✔; cộng 4: 12/16 = 3/4 ✔<br>✗ 8 — đó là x, đề hỏi y.<br>✗ 4 — dừng ở k = 4, quên nhân với 3.<br>✗ 16 — đó là y + 4 (số mới), không phải y ban đầu."
+  },
+  {
+   "id": "m6-294",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "q": "Biết y tỉ lệ thuận với x theo hệ số tỉ lệ 3 và z tỉ lệ nghịch với y theo hệ số tỉ lệ 12. Hỏi z và x liên hệ với nhau như thế nào?",
+   "options": [
+    "z tỉ lệ nghịch với x theo hệ số tỉ lệ 36",
+    "z tỉ lệ thuận với x theo hệ số tỉ lệ 4",
+    "z tỉ lệ nghịch với x theo hệ số tỉ lệ 1/4",
+    "z tỉ lệ nghịch với x theo hệ số tỉ lệ 4"
+   ],
+   "correct": 3,
+   "answer": "z tỉ lệ nghịch với x theo hệ số tỉ lệ 4",
+   "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số 3 nghĩa là y = 3x; z tỉ lệ nghịch với y theo hệ số 12 nghĩa là z = 12/y. Muốn biết z liên hệ với x thế nào, em thay y bởi 3x vào công thức của z rồi xem kết quả có dạng z = kx (thuận) hay z = a/x (nghịch). (SGK tr. 15)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> z = 12/y = 12/(3x) = 4/x. <b>Bước 2 —</b> z = 4/x, tức z · x = 4: z <b>tỉ lệ nghịch với x theo hệ số tỉ lệ 4</b>. Thử với số: x = 1 thì y = 3, z = 12/3 = 4, tích z · x = 4; x = 2 thì y = 6, z = 2, tích z · x = 4 ✔ (x tăng gấp đôi, z giảm một nửa — đúng là nghịch).<br>✗ Nghịch, hệ số 36: nhân 12 · 3; nhưng khi thay y = 3x thì 3 nằm dưới MẪU nên phải chia 12 cho 3, không nhân.<br>✗ Thuận, hệ số 4: thuận rồi nghịch thì kết quả vẫn là nghịch; ở đây tích z · x không đổi (bằng 4) chứ không phải thương z/x không đổi.<br>✗ Nghịch, hệ số 1/4: lấy 3/12 = 1/4, đảo ngược phép chia; đúng phải là 12/3 = 4."
+  },
+  {
+   "id": "m6-295",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ thuận",
+   "type": "calc",
+   "keys": [],
+   "q": "Một ô tô cứ đi 100 km thì tiêu thụ hết 8 lít xăng. Xe xuất phát với bình xăng có 45 lít và đi được 350 km thì dừng lại. Hỏi lúc đó trong bình còn bao nhiêu lít xăng?",
+   "answer": "17",
+   "explanation": "🔑 <b>Lý thuyết:</b> Lượng xăng tiêu thụ tỉ lệ thuận với quãng đường đi được: đi gấp bao nhiêu lần quãng đường thì tốn gấp bấy nhiêu lần xăng, x₁/x₂ = y₁/y₂. Bài hai bước: tính xăng đã dùng, rồi lấy xăng ban đầu trừ đi. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> 350 km gấp 350 : 100 = 3,5 lần 100 km, nên xăng đã dùng gấp 3,5 lần 8 lít: 8 · 3,5 = 28 lít. <b>Bước 2 —</b> Xăng còn lại: 45 − 28 = <b>17</b> lít. Thử lại: 28/350 = 0,08 = 8/100 ✔ (cùng mức tiêu thụ 8 lít cho 100 km).<br>✗ 28 — lượng xăng ĐÃ DÙNG, chưa lấy 45 trừ đi.<br>✗ 37 — lấy 45 − 8, chỉ trừ lượng xăng của 100 km đầu tiên thay vì của cả 350 km.<br>✗ 562 — tính 45 · 100 : 8 = 562,5 rồi làm tròn: đó là số km xe đi được với 45 lít, không phải câu hỏi của đề."
+  },
+  {
+   "id": "m6-296",
+   "ch": 6,
+   "topic": "Đại lượng tỉ lệ nghịch",
+   "q": "Hai bánh răng ăn khớp với nhau: bánh A có 24 răng, bánh B có 36 răng. Khi bánh A quay được 18 vòng thì bánh B quay được bao nhiêu vòng?",
+   "options": [
+    "12 vòng",
+    "27 vòng",
+    "30 vòng",
+    "6 vòng"
+   ],
+   "correct": 0,
+   "answer": "12 vòng",
+   "explanation": "🔑 <b>Lý thuyết:</b> Hai bánh răng ăn khớp thì trong cùng thời gian, số răng đi qua chỗ tiếp xúc của hai bánh phải bằng nhau: (số răng) · (số vòng) của bánh A = (số răng) · (số vòng) của bánh B. Tích không đổi nên số vòng quay tỉ lệ NGHỊCH với số răng: bánh nhiều răng hơn quay ít vòng hơn. (SGK tr. 16)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Số răng đi qua chỗ tiếp xúc khi bánh A quay 18 vòng: 24 · 18 = 432 răng. <b>Bước 2 —</b> Gọi n là số vòng của bánh B: 36 · n = 432, suy ra n = 432 : 36 = <b>12 vòng</b>. Thử lại: 36 · 12 = 432 = 24 · 18 ✔; bánh B nhiều răng hơn (36 lớn hơn 24) nên quay ít vòng hơn (12 nhỏ hơn 18), hợp lí ✔<br>✗ 27 vòng: nhầm tỉ lệ thuận, tính 18 · 36/24; bánh to hơn mà quay nhiều vòng hơn là vô lí.<br>✗ 30 vòng: lấy 18 + 12, cộng hiệu số răng (36 − 24 = 12) vào số vòng; hai đại lượng liên hệ bằng tích, không bằng tổng.<br>✗ 6 vòng: lấy 18 − 12, trừ hiệu số răng khỏi số vòng — cũng không có cơ sở."
+  },
+  {
+   "id": "m6-297",
+   "ch": 6,
+   "topic": "Tỉ lệ thức",
+   "q": "Trên một bản đồ tỉ lệ 1 : 500 000, hai thành phố cách nhau 6 cm. Khoảng cách thực tế giữa hai thành phố là bao nhiêu?",
+   "options": [
+    "3 km",
+    "30 km",
+    "300 km",
+    "3 000 000 km"
+   ],
+   "correct": 1,
+   "answer": "30 km",
+   "explanation": "🔑 <b>Lý thuyết:</b> Tỉ lệ bản đồ 1 : 500 000 nghĩa là (khoảng cách trên bản đồ)/(khoảng cách thực tế) = 1/500 000, cả hai cùng đơn vị. Đây là một tỉ lệ thức; tìm số hạng chưa biết bằng tích chéo: a/b = c/d thì a · d = b · c. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Gọi khoảng cách thực là d (cm): 6/d = 1/500 000. Nhân chéo: d · 1 = 6 · 500 000 = 3 000 000 cm. <b>Bước 2 —</b> Đổi đơn vị: 1 km = 1 000 m = 100 000 cm, nên d = 3 000 000 : 100 000 = <b>30 km</b>. Thử lại: 30 km = 3 000 000 cm; 3 000 000 : 500 000 = 6 cm ✔<br>✗ 3 km: chia 3 000 000 cho 1 000 000, tưởng 1 km = 1 000 000 cm; thực ra 1 km = 100 000 cm.<br>✗ 300 km: chia cho 10 000, tưởng 1 km = 10 000 cm (thiếu một số 0).<br>✗ 3 000 000 km: giữ nguyên con số 3 000 000 (đang là cm) rồi gắn đơn vị km, không đổi đơn vị."
+  },
+  {
+   "id": "m6-298",
+   "ch": 6,
+   "topic": "Tính chất của dãy tỉ số bằng nhau",
+   "q": "Số bi của ba bạn Tí, Tèo, Bờm lần lượt tỉ lệ với 3; 4; 8. Bờm cho Tí 10 viên và cho Tèo 5 viên thì ba bạn có số bi bằng nhau. Hỏi lúc đầu Bờm có bao nhiêu viên bi?",
+   "options": [
+    "25 viên",
+    "75 viên",
+    "40 viên",
+    "15 viên"
+   ],
+   "correct": 2,
+   "answer": "40 viên",
+   "explanation": "🔑 <b>Lý thuyết:</b> Ba số tỉ lệ với 3; 4; 8 nghĩa là a/3 = b/4 = c/8 = k, tức a = 3k, b = 4k, c = 8k. Khi cho nhau bi, TỔNG số bi của ba bạn không đổi; ba bạn bằng nhau thì mỗi bạn có đúng một phần ba tổng. (SGK tr. 8)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Tí = 3k, Tèo = 4k, Bờm = 8k; tổng = 15k. Sau khi cho, ba bạn bằng nhau nên mỗi bạn có 15k : 3 = 5k viên. <b>Bước 2 —</b> Tí nhận thêm 10 viên: 3k + 10 = 5k, suy ra 2k = 10, k = 5. Kiểm chéo với Tèo: 4k + 5 = 25 = 5k ✔ <b>Bước 3 —</b> Lúc đầu Bờm có 8 · 5 = <b>40 viên</b>. Thử lại: Tí 15, Tèo 20, Bờm 40; Bờm cho đi 10 + 5 = 15 viên còn 25; Tí 15 + 10 = 25; Tèo 20 + 5 = 25 — ba bạn bằng nhau ✔<br>✗ 25 viên: số bi của MỖI bạn sau khi cho, không phải số bi ban đầu của Bờm.<br>✗ 75 viên: tổng số bi của cả ba bạn (15k), đề chỉ hỏi Bờm.<br>✗ 15 viên: số bi ban đầu của Tí (3k), đọc nhầm tên."
+  },
+  {
+   "id": "m6-299",
+   "ch": 6,
+   "topic": "Tỉ lệ thức",
+   "q": "Tìm x, biết (x − 1)/2 = 8/(x − 1).",
+   "options": [
+    "x = 5",
+    "x = 4 hoặc x = −4",
+    "x = 17",
+    "x = 5 hoặc x = −3"
+   ],
+   "correct": 3,
+   "answer": "x = 5 hoặc x = −3",
+   "explanation": "🔑 <b>Lý thuyết:</b> Tính chất cơ bản của tỉ lệ thức: a/b = c/d thì a · d = b · c. Khi hai ngoại tỉ (hoặc hai trung tỉ) giống nhau, tích chéo cho ta một BÌNH PHƯƠNG, và một số dương có hai căn bậc hai đối nhau: t² = 16 thì t = 4 hoặc t = −4. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Điều kiện x − 1 ≠ 0, tức x ≠ 1. Nhân chéo: (x − 1) · (x − 1) = 2 · 8, tức (x − 1)² = 16. <b>Bước 2 —</b> Vì 4² = 16 và (−4)² = 16 nên x − 1 = 4 hoặc x − 1 = −4. <b>Bước 3 —</b> x = 5 hoặc x = −3, cả hai đều khác 1. Vậy <b>x = 5 hoặc x = −3</b>. Thử lại: x = 5: (5 − 1)/2 = 2 và 8/(5 − 1) = 2 ✔; x = −3: (−3 − 1)/2 = −2 và 8/(−3 − 1) = −2 ✔<br>✗ x = 5: bỏ sót nghiệm âm; (−4)² cũng bằng 16 nên x − 1 = −4 cũng thoả mãn.<br>✗ x = 4 hoặc x = −4: tìm được x − 1 = 4 hoặc −4 rồi quên cộng thêm 1; thử x = 4 thì 3/2 ≠ 8/3.<br>✗ x = 17: cho x − 1 = 16, quên rằng vế trái là (x − 1)² chứ không phải x − 1; thử x = 17 thì 16/2 = 8 ≠ 8/16."
+  },
+  {
+   "id": "m6-300",
+   "ch": 6,
+   "topic": "Tính chất của dãy tỉ số bằng nhau",
+   "type": "calc",
+   "keys": [],
+   "q": "Ba vòi nước chảy vào một bể chứa 198 lít. Nếu chảy một mình thì vòi thứ nhất làm đầy bể trong 3 giờ, vòi thứ hai trong 6 giờ, vòi thứ ba trong 9 giờ. Mở cả ba vòi cùng lúc cho đến khi bể đầy. Hỏi vòi thứ nhất đã chảy vào bể bao nhiêu lít?",
+   "answer": "108",
+   "explanation": "🔑 <b>Lý thuyết:</b> Trong cùng một khoảng thời gian, lượng nước mỗi vòi chảy được tỉ lệ thuận với lưu lượng (lít/giờ) của vòi; mà cùng làm đầy một bể, lưu lượng lại tỉ lệ nghịch với thời gian chảy một mình. Vậy lượng nước ba vòi tỉ lệ với 1/3; 1/6; 1/9, rồi dùng tính chất dãy tỉ số bằng nhau. (SGK tr. 8)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Gọi lượng nước ba vòi chảy vào là x, y, z (lít): x/(1/3) = y/(1/6) = z/(1/9). Nhân cả ba mẫu với 18: x/6 = y/3 = z/2. <b>Bước 2 —</b> x/6 = y/3 = z/2 = (x + y + z)/(6 + 3 + 2) = 198/11 = 18. <b>Bước 3 —</b> x = 18 · 6 = <b>108</b> lít (y = 54, z = 36). Thử lại bằng cách khác: lưu lượng vòi 1 là 198 : 3 = 66 lít/giờ, vòi 2 là 33, vòi 3 là 22; cả ba là 121 lít/giờ; bể đầy sau 198 : 121 = 18/11 giờ; vòi 1 chảy 66 · 18/11 = 108 lít ✔<br>✗ 33 — chia 198 tỉ lệ THUẬN với 3; 6; 9 (198 : 18 · 3): vòi nhanh nhất lại được ít nước nhất, ngược thực tế.<br>✗ 66 — chia đều 198 : 3, hoặc lấy lưu lượng 66 lít/giờ của vòi 1 làm đáp số mà quên bể đầy trước khi hết 1 giờ.<br>✗ 36 — phần của vòi thứ ba (chậm nhất), đọc nhầm câu hỏi."
+  }
+ ]
+}

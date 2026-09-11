@@ -38,14 +38,17 @@ suite('Toán 7 HK2: chương và ngân hàng luyện tập', () => {
         assert.deepEqual(hk1.filter(n => CHAPTERS.includes(n)), []);
     });
 
-    test('mỗi chương đủ 100 câu, id duy nhất và đúng khuôn m<chương>-<số>', () => {
+    // Chương 6 và 7 được nhân ba ngày 2026-09-11 (data/math-hk2/ch6-add-*.json,
+    // ch7-add-*.json — 10 tệp × 20 câu mỗi chương); ba chương còn lại vẫn 100.
+    const EXPECTED = { 6: 300, 7: 300, 8: 100, 9: 100, 10: 100 };
+    test('mỗi chương đủ số câu, id duy nhất và đúng khuôn m<chương>-<số>', () => {
         if (!ready) return;
         const seen = new Set();
         CHAPTERS.forEach(ch => {
             const qs = MATH_QUESTIONS_HK2.filter(q => q.ch === ch);
-            assert.equal(qs.length, 100, `chương ${ch} phải có 100 câu`);
+            assert.equal(qs.length, EXPECTED[ch], `chương ${ch} phải có ${EXPECTED[ch]} câu`);
         });
-        assert.equal(MATH_QUESTIONS_HK2.length, 500);
+        assert.equal(MATH_QUESTIONS_HK2.length, 900);
         MATH_QUESTIONS_HK2.forEach(q => {
             assert.truthy(/^m(6|7|8|9|10)-\d+$/.test(q.id), `${q.id}: id sai khuôn`);
             assert.falsy(seen.has(q.id), `${q.id}: id trùng`);
@@ -59,15 +62,22 @@ suite('Toán 7 HK2: chương và ngân hàng luyện tập', () => {
 });
 
 suite('Toán 7 HK2: mỗi câu hỏi phải tự đứng được', () => {
-    test('122 câu chỉ có một đáp án số đã thành tự nhập, còn lại vẫn là trắc nghiệm', () => {
+    test('122 câu gốc đã thành tự nhập vẫn đúng 122; câu bổ sung theo cùng khuôn', () => {
         if (!ready) return;
+        // Câu gốc là m<ch>-1…100. Các câu bổ sung (số > 100) được tính riêng:
+        // chúng cũng phải đúng khuôn, nhưng số lượng tự nhập của chúng là do
+        // tác giả chọn (6–10 mỗi tệp), không ghim cứng ở đây.
+        const original = ({ q }) => Number(String(q.id).split('-')[1]) <= 100;
         const typed = practiceQs().filter(({ q }) => q.type === 'calc');
-        assert.equal(typed.length, 122, 'phải đổi đúng 122 câu đã duyệt');
+        const typedOriginal = typed.filter(original);
+        assert.equal(typedOriginal.length, 122, 'phải đổi đúng 122 câu gốc đã duyệt');
         assert.deepEqual(
-            CHAPTERS.map(ch => typed.filter(({ q }) => q.ch === ch).length),
+            CHAPTERS.map(ch => typedOriginal.filter(({ q }) => q.ch === ch).length),
             [43, 25, 51, 2, 1],
-            'số câu tự nhập của từng chương bị lệch'
+            'số câu tự nhập gốc của từng chương bị lệch'
         );
+        const typedAdded = typed.filter(x => !original(x));
+        assert.truthy(typedAdded.length >= 2 * 10 * 5, `câu bổ sung tự nhập quá ít: ${typedAdded.length}`);
         typed.forEach(({ id, q }) => {
             assert.truthy(/^[−-]?\d+(?:\/\d+)?$/.test(q.answer), `${id}: đáp án không còn là đúng một số`);
             assert.equal(q.type, 'calc', `${id}: thiếu type calc`);
@@ -118,6 +128,39 @@ suite('Toán 7 HK2: mỗi câu hỏi phải tự đứng được', () => {
             .filter(({ q }) => !q.fig && /\b(hình vẽ|hình bên|như hình|hình sau)\b/i.test(String(q.q)))
             .map(x => x.id);
         assert.deepEqual(orphans, [], 'câu nhắc tới hình vẽ nhưng không đính hình');
+    });
+});
+
+suite('Toán 7 HK2: các tệp bổ sung chương 6–7', () => {
+    const { validate } = require(path.join(root, 'scripts', 'validate-math-hk2.js'));
+    const dir = path.join(root, 'data', 'math-hk2');
+    const addFiles = fs.readdirSync(dir).filter(f => /^ch[67]-add-\d{2}\.json$/.test(f)).sort();
+
+    test('mỗi chương có đúng 10 tệp bổ sung và mỗi tệp qua validator', () => {
+        assert.equal(addFiles.filter(f => f.startsWith('ch6')).length, 10);
+        assert.equal(addFiles.filter(f => f.startsWith('ch7')).length, 10);
+        for (const f of addFiles) {
+            const problems = validate(path.join(dir, f));
+            assert.deepEqual(problems, [], f + ': ' + problems.slice(0, 4).join(' | '));
+        }
+    });
+
+    test('bản dựng là base + bổ sung, không thiếu không thừa', () => {
+        if (!ready) return;
+        const base = JSON.parse(fs.readFileSync(path.join(dir, 'base.json'), 'utf8')).questions;
+        const added = addFiles.flatMap(f => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')).questions);
+        assert.equal(MATH_QUESTIONS_HK2.length, base.length + added.length, 'dựng lại js/math-data-hk2.js');
+        const ids = new Set(MATH_QUESTIONS_HK2.map(q => q.id));
+        added.forEach(q => assert.truthy(ids.has(q.id), q.id + ' bổ sung mà không có trong bản dựng'));
+    });
+
+    test('đáp án trắc nghiệm bổ sung rải đều A–D — máy không xáo phương án', () => {
+        if (!ready) return;
+        for (const ch of [6, 7]) {
+            const mcq = MATH_QUESTIONS_HK2.filter(q => q.ch === ch && Number(q.id.split('-')[1]) > 100 && q.type !== 'calc');
+            const c = [0, 0, 0, 0]; mcq.forEach(q => c[q.correct]++);
+            assert.truthy(Math.min(...c) >= mcq.length * 0.15, `chương ${ch}: vị trí đáp án ${JSON.stringify(c)} / ${mcq.length}`);
+        }
     });
 });
 

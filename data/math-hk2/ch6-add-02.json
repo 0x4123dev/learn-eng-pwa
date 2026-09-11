@@ -1,0 +1,266 @@
+{
+  "ch": 6,
+  "file": "02",
+  "questions": [
+    {
+      "id": "m6-121",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tìm x, biết x/(−7) = 12/21.",
+      "options": [
+        "x = −84",
+        "x = −4",
+        "x = 4",
+        "x = −49/4"
+      ],
+      "correct": 1,
+      "answer": "x = −4",
+      "explanation": "🔑 <b>Lý thuyết:</b> Tính chất cơ bản của tỉ lệ thức: nếu a/b = c/d thì ad = bc, hai tích ad và bc gọi là các <b>tích chéo</b>. Muốn tìm một thành phần chưa biết, em lấy tích chéo rồi chia cho số đứng cùng phía với ẩn. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: x · 21 = (−7) · 12, tức 21x = −84 (âm nhân dương ra âm). <b>Bước 2 —</b> Chia cả hai vế cho 21: x = (−84) : 21 = <b>−4</b>. Thử lại theo đúng đề: (−4)/(−7) = 4/7 (hai dấu trừ triệt tiêu) và 12/21 = 4/7 (chia cả tử và mẫu cho 3), hai tỉ số bằng nhau ✔<br>✗ x = −84: dừng ngay sau khi nhân chéo (−7) · 12 = −84, quên chia cho 21 để tách x.<br>✗ x = 4: rút gọn 12/21 = 4/7 rồi lấy luôn tử số 4, quên rằng mẫu ở vế trái là −7 mang dấu âm; 4/(−7) = −4/7 không bằng 4/7.<br>✗ x = −49/4: nhân mẫu với mẫu (−7) · 21 = −147 rồi chia cho 12; tích chéo phải là tử của tỉ số này nhân mẫu của tỉ số kia, không phải mẫu nhân mẫu."
+    },
+    {
+      "id": "m6-122",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết 18/x = 27/15.",
+      "answer": "10",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc (tích chéo). Khi ẩn nằm ở mẫu, em vẫn nhân chéo như thường rồi chia để tách ẩn: b = ad/c. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 18 · 15 = 27 · x, tức 27x = 270. <b>Bước 2 —</b> Chia cả hai vế cho 27: x = 270 : 27 = <b>10</b>. Thử lại: 18/10 = 9/5 (chia cho 2) và 27/15 = 9/5 (chia cho 3), hai tỉ số bằng nhau ✔<br>✗ 270: tính đúng tích chéo 18 · 15 = 270 rồi lấy luôn làm đáp số, quên chia cho 27.<br>✗ 45/2: nhân 27 · 15 = 405 rồi chia cho 18; hai số 27 và 15 nằm cùng một tỉ số nên không phải một cặp chéo, chỉ có 18 và 15 mới đứng chéo nhau.<br>✗ 24: thấy 27 hơn 18 là 9 nên cộng thêm 9 vào 15; tỉ lệ thức giữ nguyên TỈ SỐ (phép nhân), không phải giữ nguyên hiệu."
+    },
+    {
+      "id": "m6-123",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Từ bốn số 4; 6; 10; 15, lập được tỉ lệ thức nào sau đây?",
+      "options": [
+        "4/10 = 15/6",
+        "6/4 = 10/15",
+        "4/15 = 6/10",
+        "4/6 = 10/15"
+      ],
+      "correct": 3,
+      "answer": "4/6 = 10/15",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu ad = bc với a, b, c, d khác 0 thì lập được tỉ lệ thức a/b = c/d (và ba tỉ lệ thức nữa bằng cách đổi chỗ hai ngoại tỉ, hai trung tỉ). Vậy bốn số lập được tỉ lệ thức khi chia được thành hai cặp có tích bằng nhau, và hai số cùng cặp phải đứng CHÉO nhau. (SGK tr. 7)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Tìm hai cặp có tích bằng nhau: 4 · 15 = 60 và 6 · 10 = 60 ✔ <b>Bước 2 —</b> Đặt a = 4, d = 15 (một cặp), b = 6, c = 10 (cặp kia) thì ad = bc, nên a/b = c/d cho ta <b>4/6 = 10/15</b>. Kiểm tra bằng rút gọn: 4/6 = 2/3 và 10/15 = 2/3, hai tỉ số bằng nhau ✔<br>✗ 4/10 = 15/6: tích chéo 4 · 6 = 24 còn 10 · 15 = 150, không bằng nhau; nhìn nhanh cũng thấy 4/10 nhỏ hơn 1 mà 15/6 lớn hơn 1.<br>✗ 6/4 = 10/15: tích chéo 6 · 15 = 90 còn 4 · 10 = 40; đã lật ngược tỉ số bên trái mà không lật tỉ số bên phải.<br>✗ 4/15 = 6/10: tích chéo 4 · 10 = 40 còn 15 · 6 = 90; hai số 4 và 15 có tích 60 phải đứng chéo nhau, ở đây chúng bị xếp vào cùng một tỉ số."
+    },
+    {
+      "id": "m6-124",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Từ đẳng thức 7 · 12 = 4 · 21, người ta viết ra bốn tỉ lệ thức dưới đây nhưng có một tỉ lệ thức SAI. Đó là tỉ lệ thức nào?",
+      "options": [
+        "7/4 = 21/12",
+        "12/21 = 4/7",
+        "7/12 = 4/21",
+        "12/4 = 21/7"
+      ],
+      "correct": 2,
+      "answer": "7/12 = 4/21",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu ad = bc (a, b, c, d khác 0) thì lập được đúng bốn tỉ lệ thức: a/b = c/d; a/c = b/d; d/b = c/a; d/c = b/a. Trong mọi tỉ lệ thức đó, hai số của cùng một tích (a với d, b với c) luôn đứng CHÉO nhau, không bao giờ đứng cùng một tỉ số. (SGK tr. 7)<br>🔑 <b>Áp dụng:</b> Đặt a = 7, d = 12, b = 4, c = 21 thì ad = bc = 84. Bốn tỉ lệ thức đúng là 7/4 = 21/12; 7/21 = 4/12; 12/4 = 21/7; 12/21 = 4/7. Ở tỉ lệ thức <b>7/12 = 4/21</b>, hai số 7 và 12 (cùng một tích) bị xếp vào cùng một tỉ số nên SAI; kiểm tra bằng tích chéo: 7 · 21 = 147 còn 12 · 4 = 48, không bằng nhau ✔ Cũng thấy 7/12 lớn hơn 1/2 còn 4/21 nhỏ hơn 1/5.<br>✗ 7/4 = 21/12: đây là tỉ lệ thức ĐÚNG vì tích chéo 7 · 12 = 84 = 4 · 21; rút gọn 21/12 cho 3 được 7/4.<br>✗ 12/21 = 4/7: ĐÚNG vì 12 · 7 = 84 = 21 · 4; rút gọn 12/21 cho 3 được 4/7.<br>✗ 12/4 = 21/7: ĐÚNG vì 12 · 7 = 84 = 4 · 21; cả hai tỉ số đều bằng 3."
+    },
+    {
+      "id": "m6-125",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết (x − 5)/4 = 9/6.",
+      "answer": "11",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Khi tử số là một biểu thức chứa ẩn, em coi cả biểu thức đó là một thành phần của tỉ lệ thức, nhân chéo rồi giải dần từng bước. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: (x − 5) · 6 = 4 · 9, tức 6(x − 5) = 36. <b>Bước 2 —</b> Chia hai vế cho 6: x − 5 = 6. <b>Bước 3 —</b> Cộng 5 vào hai vế: x = 6 + 5 = <b>11</b>. Thử lại: (11 − 5)/4 = 6/4 = 3/2 và 9/6 = 3/2, hai tỉ số bằng nhau ✔<br>✗ 6: mới tìm được x − 5 = 6 rồi dừng, chưa cộng 5 để ra x.<br>✗ 1: tìm đúng x − 5 = 6 nhưng lại TRỪ tiếp 5, được 6 − 5 = 1; muốn khử số −5 phải cộng 5 cho cả hai vế.<br>✗ 41: nhân chéo được 36, quên chia cho 6 mà cộng ngay 5, được 36 + 5 = 41."
+    },
+    {
+      "id": "m6-126",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Bộ bốn số nào sau đây lập được thành một tỉ lệ thức?",
+      "options": [
+        "2; 5; 6; 15",
+        "3; 4; 5; 6",
+        "2; 3; 4; 5",
+        "4; 5; 8; 9"
+      ],
+      "correct": 0,
+      "answer": "2; 5; 6; 15",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu ad = bc với a, b, c, d khác 0 thì lập được tỉ lệ thức a/b = c/d. Vì thế bốn số lập được tỉ lệ thức khi và chỉ khi có thể chia chúng thành hai cặp có tích bằng nhau. Với bốn số chỉ có ba cách chia cặp, em thử cả ba. (SGK tr. 7)<br>🔑 <b>Áp dụng:</b> Xét bộ <b>2; 5; 6; 15</b>: ghép số nhỏ nhất với số lớn nhất được 2 · 15 = 30, hai số còn lại 5 · 6 = 30, hai tích bằng nhau ✔ Đặt a = 2, d = 15, b = 5, c = 6 ta có tỉ lệ thức 2/5 = 6/15. Kiểm tra: 6/15 rút gọn cho 3 được 2/5 ✔<br>✗ 3; 4; 5; 6: ba cách ghép cho 3 · 6 = 18 và 4 · 5 = 20; 3 · 5 = 15 và 4 · 6 = 24; 3 · 4 = 12 và 5 · 6 = 30, không cặp nào bằng nhau.<br>✗ 2; 3; 4; 5: 2 · 5 = 10 và 3 · 4 = 12; 2 · 4 = 8 và 3 · 5 = 15; 2 · 3 = 6 và 4 · 5 = 20; bốn số liên tiếp không tự nhiên lập được tỉ lệ thức.<br>✗ 4; 5; 8; 9: thấy 4 gấp đôi lên 8 rồi tưởng 5 cũng gấp đôi lên 9, nhưng 5 · 2 = 10 chứ không phải 9; tích chéo 4 · 9 = 36 khác 5 · 8 = 40 (hai cách ghép còn lại: 32 và 45; 20 và 72)."
+    },
+    {
+      "id": "m6-127",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết 15/(x + 2) = 5/3.",
+      "answer": "7",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Khi mẫu là một biểu thức chứa ẩn (ở đây là x + 2, phải khác 0), em nhân chéo với cả biểu thức đó rồi giải từng bước để tìm x. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 15 · 3 = 5 · (x + 2), tức 5(x + 2) = 45. <b>Bước 2 —</b> Chia hai vế cho 5: x + 2 = 9. <b>Bước 3 —</b> Trừ 2 ở hai vế: x = 9 − 2 = <b>7</b>, khi đó x + 2 = 9 khác 0 ✔ Thử lại: 15/(7 + 2) = 15/9 = 5/3 (chia cả tử và mẫu cho 3), đúng bằng vế phải ✔<br>✗ 9: mới tìm được x + 2 = 9 rồi lấy luôn, chưa trừ 2 để ra x.<br>✗ 11: tìm đúng x + 2 = 9 nhưng lại cộng thêm 2, được 9 + 2 = 11; muốn khử số +2 phải trừ 2 ở cả hai vế.<br>✗ 45: nhân chéo được 15 · 3 = 45 rồi lấy luôn làm đáp số, quên cả bước chia cho 5 lẫn bước trừ 2."
+    },
+    {
+      "id": "m6-128",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tìm x, biết −2/5 = x/(−15).",
+      "options": [
+        "x = −6",
+        "x = 30",
+        "x = 6",
+        "x = 2/3"
+      ],
+      "correct": 2,
+      "answer": "x = 6",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc (tích chéo). Với số âm, em nhân dấu cẩn thận: âm nhân âm ra dương, âm nhân dương ra âm. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: (−2) · (−15) = 5 · x, tức 5x = 30 (hai số âm nhân nhau ra dương). <b>Bước 2 —</b> Chia hai vế cho 5: x = 30 : 5 = <b>6</b>. Thử lại: 6/(−15) = −6/15 = −2/5 (chuyển dấu trừ lên tử rồi chia cả tử và mẫu cho 3), đúng bằng vế trái ✔<br>✗ x = −6: thấy vế trái âm nên cho x âm luôn; nhưng mẫu −15 đã mang dấu âm, nếu x = −6 thì (−6)/(−15) = 2/5 lại dương, không bằng −2/5.<br>✗ x = 30: nhân chéo đúng được 30 nhưng quên chia cho 5.<br>✗ x = 2/3: nhân (−2) · 5 = −10 rồi chia cho −15 được 10/15 = 2/3; đã nhân tử với mẫu của cùng một tỉ số thay vì nhân chéo."
+    },
+    {
+      "id": "m6-129",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Điền cùng một số dương x vào hai chỗ trống để được tỉ lệ thức 9/x = x/16. Số x đó là bao nhiêu?",
+      "answer": "12",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Khi cùng một ẩn x đứng ở cả hai trung tỉ, tích hai trung tỉ là x · x = x², nên em phải tìm số dương có bình phương bằng tích hai ngoại tỉ. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 9 · 16 = x · x, tức x² = 144. <b>Bước 2 —</b> Tìm số dương bình phương lên bằng 144: 12² = 12 · 12 = 144, vậy x = <b>12</b>. Thử lại: 9/12 = 3/4 (chia cả tử và mẫu cho 3) và 12/16 = 3/4 (chia cả tử và mẫu cho 4), hai tỉ số bằng nhau ✔<br>✗ 144: tính đúng x² = 144 rồi lấy luôn 144 làm x; thử 9/144 = 1/16 còn 144/16 = 9, khác xa nhau.<br>✗ 72: nghĩ x · x = 144 thì x = 144 : 2; nhưng x · x là x nhân với chính nó, không phải 2x.<br>✗ 25/2: lấy trung bình cộng (9 + 16)/2 = 12,5; tỉ lệ thức là quan hệ về TÍCH chéo, không phải về tổng."
+    },
+    {
+      "id": "m6-130",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tìm x, biết 3/x = 9/4.",
+      "options": [
+        "x = 4/3",
+        "x = 12",
+        "x = 3/4",
+        "x = 27/4"
+      ],
+      "correct": 0,
+      "answer": "x = 4/3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Ẩn ở mẫu thì b = ad/c; kết quả có thể là một phân số, khi đó em rút gọn về tối giản. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 3 · 4 = 9 · x, tức 9x = 12. <b>Bước 2 —</b> Chia hai vế cho 9: x = 12/9, rút gọn cho 3 được x = <b>4/3</b>. Thử lại: 3 : (4/3) = 3 · 3/4 = 9/4, đúng bằng vế phải ✔<br>✗ x = 12: nhân chéo được 12 rồi dừng, quên chia cho 9.<br>✗ x = 3/4: sau khi có 9x = 12 lại chia ngược 9 : 12 = 3/4; muốn tách x khỏi 9x phải lấy 12 chia cho 9.<br>✗ x = 27/4: nhân tử với tử 3 · 9 = 27 rồi chia cho 4; tích chéo là 3 · 4 (tử trái nhân mẫu phải), không phải 3 · 9."
+    },
+    {
+      "id": "m6-131",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết (2x + 1)/10 = −7/5.",
+      "answer": "−15/2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Với tử số là biểu thức 2x + 1, em nhân chéo cả biểu thức, rồi lần lượt khử số cộng thêm và hệ số của x. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: (2x + 1) · 5 = 10 · (−7), tức 5(2x + 1) = −70. <b>Bước 2 —</b> Chia hai vế cho 5: 2x + 1 = −14. <b>Bước 3 —</b> Trừ 1 ở hai vế: 2x = −15. <b>Bước 4 —</b> Chia cho 2: x = <b>−15/2</b>. Thử lại: 2 · (−15/2) + 1 = −15 + 1 = −14, và −14/10 = −7/5 (chia cả tử và mẫu cho 2) ✔<br>✗ −13/2: từ 2x + 1 = −14 lại cộng 1 sang, được 2x = −13; muốn khử số +1 phải trừ 1 ở cả hai vế.<br>✗ −14: mới tìm được 2x + 1 = −14 rồi dừng, chưa trừ 1 và chia 2.<br>✗ 15/2: làm đúng các bước nhưng đánh rơi dấu âm; thử lại thì 2 · (15/2) + 1 = 16 và 16/10 dương, không bằng −7/5."
+    },
+    {
+      "id": "m6-132",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tìm x để hai tỉ số 12/(x − 3) và 3/2 lập thành một tỉ lệ thức.",
+      "options": [
+        "x = 8",
+        "x = 11",
+        "x = 5",
+        "x = 24"
+      ],
+      "correct": 1,
+      "answer": "x = 11",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hai tỉ số bằng nhau lập thành một tỉ lệ thức (SGK tr. 4), và a/b = c/d khi và chỉ khi ad = bc (SGK tr. 6). Vậy em viết 12/(x − 3) = 3/2 rồi nhân chéo, lưu ý mẫu x − 3 phải khác 0.<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 12 · 2 = 3 · (x − 3), tức 3(x − 3) = 24. <b>Bước 2 —</b> Chia hai vế cho 3: x − 3 = 8. <b>Bước 3 —</b> Cộng 3 vào hai vế: x = 8 + 3 = <b>11</b>, khi đó x − 3 = 8 khác 0 ✔ Thử lại: 12/(11 − 3) = 12/8 = 3/2 (chia cả tử và mẫu cho 4), đúng bằng 3/2 ✔<br>✗ x = 8: mới tìm được x − 3 = 8 rồi lấy luôn, chưa cộng 3; thử 12/(8 − 3) = 12/5, không bằng 3/2.<br>✗ x = 5: tìm đúng x − 3 = 8 nhưng lại trừ tiếp 3, được 8 − 3 = 5; khử số −3 phải cộng 3.<br>✗ x = 24: nhân chéo được 24 rồi lấy luôn làm x, quên chia cho 3 và cộng 3."
+    },
+    {
+      "id": "m6-133",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tỉ số nào sau đây cùng với tỉ số 6/8 lập thành một tỉ lệ thức?",
+      "options": [
+        "tỉ số 8/6",
+        "tỉ số 12/9",
+        "tỉ số 3/5",
+        "tỉ số 9/12"
+      ],
+      "correct": 3,
+      "answer": "tỉ số 9/12",
+      "explanation": "🔑 <b>Lý thuyết:</b> Tỉ lệ thức là đẳng thức của hai tỉ số a/b = c/d (SGK tr. 4). Hai tỉ số lập thành tỉ lệ thức khi chúng bằng nhau, tức là rút gọn về cùng một phân số tối giản, hoặc tích chéo ad = bc (SGK tr. 6).<br>🔑 <b>Áp dụng:</b> Rút gọn tỉ số đã cho: 6/8 = 3/4 (chia cả tử và mẫu cho 2). Xét <b>9/12</b>: chia cả tử và mẫu cho 3 được 3/4, bằng đúng 6/8 ✔ Kiểm tra lại bằng tích chéo: 6 · 12 = 72 và 8 · 9 = 72, hai tích bằng nhau nên 6/8 = 9/12 là một tỉ lệ thức ✔<br>✗ 8/6: đây là tỉ số nghịch đảo, bằng 4/3 chứ không bằng 3/4; tích chéo 6 · 6 = 36 khác 8 · 8 = 64.<br>✗ 12/9: cũng rút gọn thành 4/3, là nghịch đảo của 3/4; tích chéo 6 · 9 = 54 khác 8 · 12 = 96.<br>✗ 3/5: lấy 6 − 3 = 3 và 8 − 3 = 5, nhưng trừ cùng một số ở tử và mẫu không giữ nguyên tỉ số (chỉ chia cùng một số mới giữ); tích chéo 6 · 5 = 30 khác 8 · 3 = 24."
+    },
+    {
+      "id": "m6-134",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết (x + 4)/(x − 2) = 5/2.",
+      "answer": "6",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Khi ẩn có mặt ở cả tử và mẫu, em nhân chéo cả hai biểu thức, rồi chuyển các hạng tử chứa x về một vế, các số về vế kia (nhớ đổi dấu khi chuyển vế). (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 2(x + 4) = 5(x − 2), tức 2x + 8 = 5x − 10. <b>Bước 2 —</b> Chuyển vế: 8 + 10 = 5x − 2x, tức 18 = 3x. <b>Bước 3 —</b> Chia cho 3: x = <b>6</b>, khi đó mẫu x − 2 = 4 khác 0 ✔ Thử lại: (6 + 4)/(6 − 2) = 10/4 = 5/2 (chia cả tử và mẫu cho 2) ✔<br>✗ 18: tìm được 3x = 18 rồi dừng, chưa chia cho 3.<br>✗ −6: chuyển vế mà không đổi dấu, viết 2x − 5x = 10 + 8 thành −3x = 18 rồi x = −6; thử lại (−6 + 4)/(−6 − 2) = (−2)/(−8) = 1/4, không bằng 5/2.<br>✗ 10/3: quên nhân 5 với −2, viết 2x + 8 = 5x − 2 rồi 10 = 3x; khi nhân số với một ngoặc phải nhân với TỪNG hạng tử trong ngoặc."
+    },
+    {
+      "id": "m6-135",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Cho tỉ lệ thức a/b = c/d với a, b, c, d khác 0. Đổi chỗ hai trung tỉ cho nhau, ta được tỉ lệ thức nào?",
+      "options": [
+        "d/b = c/a",
+        "b/a = d/c",
+        "a/d = c/b",
+        "a/c = b/d"
+      ],
+      "correct": 3,
+      "answer": "a/c = b/d",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong tỉ lệ thức a/b = c/d (viết dạng a : b = c : d), a và d là hai <b>ngoại tỉ</b> (đứng ngoài), b và c là hai <b>trung tỉ</b> (đứng giữa) (SGK tr. 4). Vì ad = bc nên từ một tỉ lệ thức, đổi chỗ hai trung tỉ hoặc đổi chỗ hai ngoại tỉ vẫn được tỉ lệ thức đúng (SGK tr. 7).<br>🔑 <b>Áp dụng:</b> Hai trung tỉ là b và c. Đổi chỗ b và c trong a/b = c/d, ta được <b>a/c = b/d</b>. Kiểm tra: tích chéo của a/c = b/d là a · d và c · b, vẫn chính là ad = bc ✔ Thử với tỉ lệ thức cụ thể 2/4 = 3/6: đổi chỗ 4 và 3 được 2/3 = 4/6, cả hai đều bằng 2/3 ✔<br>✗ d/b = c/a: đây là tỉ lệ thức thu được khi đổi chỗ hai NGOẠI tỉ a và d; nó đúng, nhưng không phải điều đề hỏi.<br>✗ b/a = d/c: lật ngược cả hai tỉ số; b và c vẫn nằm ở hai tỉ số như cũ, chưa đổi chỗ cho nhau.<br>✗ a/d = c/b: đổi chỗ b với d, tức một trung tỉ với một ngoại tỉ; thử với 2/4 = 3/6 được 2/6 = 3/4 là sai vì 2/6 = 1/3 còn 3/4 khác 1/3."
+    },
+    {
+      "id": "m6-136",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Cho x/y = 4/7 với x, y khác 0. Đẳng thức nào sau đây ĐÚNG?",
+      "options": [
+        "4x = 7y",
+        "x/4 = 7/y",
+        "7x = 4y",
+        "y/x = 4/7"
+      ],
+      "correct": 2,
+      "answer": "7x = 4y",
+      "explanation": "🔑 <b>Lý thuyết:</b> Tính chất cơ bản của tỉ lệ thức: nếu a/b = c/d thì ad = bc, mỗi tích lấy tử của tỉ số này nhân mẫu của tỉ số kia. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> Với x/y = 4/7, tử x đứng chéo với mẫu 7, tử 4 đứng chéo với mẫu y, nên tích chéo cho x · 7 = y · 4, tức <b>7x = 4y</b>. Thử với một cặp thoả mãn đề, chẳng hạn x = 4, y = 7: 7 · 4 = 28 và 4 · 7 = 28 ✔ Thử thêm x = 8, y = 14 (vì 8/14 = 4/7): 7 · 8 = 56 và 4 · 14 = 56 ✔<br>✗ 4x = 7y: nhân tử với tử và mẫu với mẫu; thử x = 4, y = 7 thì 4 · 4 = 16 còn 7 · 7 = 49, không bằng nhau.<br>✗ x/4 = 7/y: đổi chỗ y với 4 là đổi một trung tỉ với một ngoại tỉ, không được phép; đẳng thức này cho xy = 28, nhưng cặp x = 8, y = 14 thoả đề lại có 8 · 14 = 112.<br>✗ y/x = 4/7: lật ngược tỉ số bên trái mà không lật bên phải; đúng ra y/x = 7/4."
+    },
+    {
+      "id": "m6-137",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết 8/(x − 1) = −4/3.",
+      "answer": "−5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Ẩn ở mẫu thì nhân chéo với cả biểu thức x − 1 (phải khác 0); có số âm thì chia dấu cẩn thận: dương chia âm ra âm. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 8 · 3 = (−4) · (x − 1), tức −4(x − 1) = 24. <b>Bước 2 —</b> Chia hai vế cho −4: x − 1 = 24 : (−4) = −6. <b>Bước 3 —</b> Cộng 1 vào hai vế: x = −6 + 1 = <b>−5</b>, khi đó x − 1 = −6 khác 0 ✔ Thử lại: 8/(−5 − 1) = 8/(−6) = −4/3 (chia cả tử và mẫu cho 2, chuyển dấu trừ lên tử) ✔<br>✗ 7: bỏ quên dấu âm của −4, tính x − 1 = 6 rồi x = 7; thử 8/(7 − 1) = 8/6 = 4/3 dương, không bằng −4/3.<br>✗ −6: mới tìm được x − 1 = −6 rồi dừng, chưa cộng 1.<br>✗ −7: tìm đúng x − 1 = −6 nhưng lại trừ 1 tiếp, được −6 − 1 = −7; khử số −1 phải cộng 1."
+    },
+    {
+      "id": "m6-138",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Tỉ số giữa số học sinh nữ và số học sinh nam của lớp 7A là 4/5. Biết lớp có 20 học sinh nam, hỏi lớp có bao nhiêu học sinh nữ?",
+      "options": [
+        "19 học sinh",
+        "16 học sinh",
+        "25 học sinh",
+        "80 học sinh"
+      ],
+      "correct": 1,
+      "answer": "16 học sinh",
+      "explanation": "🔑 <b>Lý thuyết:</b> Một bài toán cho biết tỉ số có thể đưa về tỉ lệ thức: gọi số chưa biết là x, viết tỉ số chứa x bằng tỉ số đã cho, rồi dùng ad = bc để tìm x. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Gọi x là số học sinh nữ. Tỉ số nữ trên nam là x/20 và bằng 4/5, ta có tỉ lệ thức x/20 = 4/5. <b>Bước 2 —</b> Nhân chéo: 5x = 20 · 4 = 80. <b>Bước 3 —</b> Chia cho 5: x = 80 : 5 = 16. Vậy lớp có <b>16 học sinh nữ</b>. Thử lại: 16/20 = 4/5 (chia cả tử và mẫu cho 4) ✔<br>✗ 19 học sinh: thấy 4 kém 5 là 1 nên cho nữ kém nam 1 bạn; nhưng 19/20 không bằng 4/5, tỉ số nói về phép chia chứ không phải phép trừ.<br>✗ 25 học sinh: lập ngược tỉ lệ thức x/20 = 5/4 (nam trên nữ) rồi tính x = 25; đề cho tỉ số NỮ trên NAM là 4/5 nên nữ ít hơn nam.<br>✗ 80 học sinh: nhân chéo được 80 rồi dừng, quên chia cho 5; 80 bạn nữ còn nhiều hơn cả lớp thì vô lí."
+    },
+    {
+      "id": "m6-139",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "q": "Từ đẳng thức (−3) · 8 = 6 · (−4), ta lập được tỉ lệ thức nào sau đây?",
+      "options": [
+        "−3/6 = −4/8",
+        "−3/8 = −4/6",
+        "6/(−3) = (−4)/8",
+        "−3/(−4) = 8/6"
+      ],
+      "correct": 0,
+      "answer": "−3/6 = −4/8",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu ad = bc với a, b, c, d khác 0 thì lập được tỉ lệ thức a/b = c/d, trong đó hai số của cùng một tích (a với d, b với c) luôn đứng chéo nhau. Quy tắc này đúng cả với số âm. (SGK tr. 7)<br>🔑 <b>Áp dụng:</b> Đặt a = −3, d = 8 (tích thứ nhất) và b = 6, c = −4 (tích thứ hai); ad = bc = −24. Khi đó a/b = c/d là <b>−3/6 = −4/8</b>. Kiểm tra: −3/6 = −1/2 (chia cho 3) và −4/8 = −1/2 (chia cho 4), hai tỉ số bằng nhau ✔ Tích chéo (−3) · 8 = −24 và 6 · (−4) = −24 ✔<br>✗ −3/8 = −4/6: hai số −3 và 8 cùng một tích bị xếp vào cùng một tỉ số; tích chéo (−3) · 6 = −18 còn 8 · (−4) = −32, không bằng nhau.<br>✗ 6/(−3) = (−4)/8: tích chéo 6 · 8 = 48 còn (−3) · (−4) = 12; tính ra 6/(−3) = −2 còn (−4)/8 = −1/2.<br>✗ −3/(−4) = 8/6: tích chéo (−3) · 6 = −18 còn (−4) · 8 = −32; hơn nữa −3/(−4) = 3/4 còn 8/6 = 4/3, hai số này nghịch đảo nhau chứ không bằng nhau."
+    },
+    {
+      "id": "m6-140",
+      "ch": 6,
+      "topic": "Tỉ lệ thức",
+      "type": "calc",
+      "keys": [],
+      "q": "Tìm x, biết 1/x = 4/(x + 9).",
+      "answer": "3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu a/b = c/d thì ad = bc. Khi ẩn nằm ở cả hai mẫu, em nhân chéo rồi chuyển các hạng tử chứa x về một vế (đổi dấu khi chuyển vế), và kiểm tra hai mẫu khác 0. (SGK tr. 6)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Nhân chéo: 1 · (x + 9) = 4 · x, tức x + 9 = 4x. <b>Bước 2 —</b> Chuyển x sang vế phải: 9 = 4x − x = 3x. <b>Bước 3 —</b> Chia cho 3: x = <b>3</b>; hai mẫu x = 3 và x + 9 = 12 đều khác 0 ✔ Thử lại: 1/3 và 4/12 = 1/3 (chia cả tử và mẫu cho 4), hai tỉ số bằng nhau ✔<br>✗ 9: tìm được 3x = 9 rồi dừng, chưa chia cho 3.<br>✗ −3: chuyển vế không đổi dấu, viết x − 4x = 9 thành −3x = 9 rồi x = −3; thử 1/(−3) và 4/6 = 2/3 không bằng nhau.<br>✗ 9/5: đưa 4x sang vế trái mà không đổi dấu, viết x + 4x = 9 rồi x = 9/5; khi chuyển 4x từ vế phải sang vế trái nó phải thành −4x."
+    }
+  ]
+}

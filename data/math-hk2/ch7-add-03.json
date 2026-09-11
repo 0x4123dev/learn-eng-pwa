@@ -1,0 +1,261 @@
+{
+  "ch": 7,
+  "file": "03",
+  "questions": [
+    {
+      "id": "m7-141",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Thu gọn rồi sắp xếp đa thức P(x) = 4x − 3x³ + 2x² − 4x + 5x³ − 1 theo lũy thừa giảm dần của biến, em được kết quả nào?",
+      "options": [
+        "2x³ + 2x² − 1",
+        "−8x³ + 2x² − 1",
+        "2x³ + 2x² + 8x − 1",
+        "−2x³ + 2x² − 1"
+      ],
+      "correct": 0,
+      "answer": "2x³ + 2x² − 1",
+      "explanation": "🔑 <b>Lý thuyết:</b> Cộng (hay trừ) hai đơn thức cùng bậc bằng cách cộng (hay trừ) các hệ số và giữ nguyên luỹ thừa của biến (SGK tr. 26). Thu gọn đa thức là nhóm các đơn thức cùng bậc rồi cộng chúng lại; sau đó sắp xếp các hạng tử theo luỹ thừa giảm dần của biến (SGK tr. 27). Khi nhóm, mỗi hạng tử phải mang theo đúng dấu đứng trước nó.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhóm các hạng tử cùng bậc.</b> P(x) = (−3x³ + 5x³) + 2x² + (4x − 4x) − 1.<br><b>Bước 2 — Xử lí bậc 3.</b> −3x³ + 5x³ = (−3 + 5)x³ = 2x³.<br><b>Bước 3 — Xử lí bậc 1.</b> 4x − 4x = (4 − 4)x = 0, hai hạng tử này triệt tiêu nhau.<br><b>Bước 4 — Sắp xếp và kết luận.</b> Còn lại các bậc 3; 2; 0, viết theo luỹ thừa giảm dần: P(x) = <b>2x³ + 2x² − 1</b>.<br><b>Kiểm tra:</b> thay x = 1 vào đề được 4 − 3 + 2 − 4 + 5 − 1 = 3; thay vào kết quả được 2 + 2 − 1 = 3. Khớp nhau.<br>✗ −8x³ + 2x² − 1: em lấy −3 − 5 = −8, tức quên rằng hạng tử 5x³ mang dấu cộng; phải là −3 + 5 = 2.<br>✗ 2x³ + 2x² + 8x − 1: em cộng 4x + 4x = 8x, trong khi hạng tử thứ hai là −4x nên 4x − 4x = 0.<br>✗ −2x³ + 2x² − 1: em tính đúng 5 − 3 = 2 nhưng lại giữ dấu trừ của −3x³; hệ số 5 lớn hơn nên kết quả mang dấu cộng."
+    },
+    {
+      "id": "m7-142",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Đa thức Q(x) = 7x⁴ − 2x + 5 − 3x² đã được thu gọn. Sắp xếp Q(x) theo lũy thừa tăng dần của biến, em được kết quả nào?",
+      "options": [
+        "7x⁴ − 3x² − 2x + 5",
+        "5 + 2x + 3x² + 7x⁴",
+        "5 − 2x − 3x² + 7x⁴",
+        "−2x − 3x² + 5 + 7x⁴"
+      ],
+      "correct": 2,
+      "answer": "5 − 2x − 3x² + 7x⁴",
+      "explanation": "🔑 <b>Lý thuyết:</b> Một đa thức thu gọn có thể sắp xếp theo luỹ thừa giảm dần hoặc tăng dần của biến (SGK tr. 27). Sắp xếp theo luỹ thừa TĂNG dần nghĩa là hạng tử bậc thấp nhất (hệ số tự do, bậc 0) đứng trước, rồi đến bậc 1, bậc 2, … Khi đổi chỗ, mỗi hạng tử vẫn mang theo dấu của nó.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Ghi bậc từng hạng tử.</b> 7x⁴ có bậc 4; −2x có bậc 1; 5 có bậc 0; −3x² có bậc 2.<br><b>Bước 2 — Xếp bậc từ nhỏ đến lớn.</b> Thứ tự bậc là 0; 1; 2; 4, tức là 5; −2x; −3x²; 7x⁴.<br><b>Bước 3 — Viết lại, giữ nguyên dấu.</b> Q(x) = <b>5 − 2x − 3x² + 7x⁴</b>. Lưu ý đa thức không có hạng tử bậc 3, ta cứ bỏ qua bậc đó.<br>✗ 7x⁴ − 3x² − 2x + 5: đây là sắp xếp theo luỹ thừa GIẢM dần, ngược với yêu cầu của đề.<br>✗ 5 + 2x + 3x² + 7x⁴: em xếp đúng thứ tự nhưng đánh rơi dấu trừ của hai hạng tử −2x và −3x² khi đổi chỗ chúng.<br>✗ −2x − 3x² + 5 + 7x⁴: em để hệ số tự do 5 ở giữa; 5 có bậc 0, thấp nhất, nên phải đứng đầu khi xếp tăng dần."
+    },
+    {
+      "id": "m7-143",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức B(t) = 2t⁶ + t⁴ − 5t − 2t⁶ + 3. Bậc của đa thức B(t) là bao nhiêu?",
+      "answer": "4",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của một đa thức (thu gọn, khác đa thức không) là bậc của hạng tử có bậc cao nhất (SGK tr. 28). Vì vậy trước khi tìm bậc, em PHẢI thu gọn đa thức: nếu hai hạng tử cùng bậc triệt tiêu nhau thì bậc đó biến mất (SGK tr. 27). Biến có thể mang tên bất kì, ở đây là t.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thu gọn.</b> B(t) = (2t⁶ − 2t⁶) + t⁴ − 5t + 3 = 0 + t⁴ − 5t + 3 = t⁴ − 5t + 3.<br><b>Bước 2 — Tìm hạng tử có bậc cao nhất.</b> Các hạng tử còn lại có bậc 4; 1; 0. Cao nhất là 4, ứng với t⁴.<br><b>Bước 3 — Kết luận.</b> Bậc của B(t) là <b>4</b>.<br><b>Kiểm tra:</b> thay t = 1 vào đề được 2 + 1 − 5 − 2 + 3 = −1; thay vào t⁴ − 5t + 3 được 1 − 5 + 3 = −1. Khớp nhau, thu gọn đúng.<br>✗ 6: em nhìn hạng tử 2t⁶ mà quên thu gọn; 2t⁶ − 2t⁶ = 0 nên đa thức không còn hạng tử bậc 6.<br>✗ 1: em lấy hệ số 1 của hạng tử t⁴ làm bậc; bậc là số mũ của biến (ở đây là 4), không phải hệ số.<br>✗ 3: em lấy hệ số tự do 3 (hoặc đếm 3 hạng tử sau thu gọn) làm bậc; bậc là số mũ lớn nhất của biến."
+    },
+    {
+      "id": "m7-144",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức N(x) = −x⁴ + 6x² − 8x + 12. Hệ số cao nhất và hệ số tự do của N(x) lần lượt là",
+      "options": [
+        "1 và 12",
+        "−1 và 12",
+        "6 và 12",
+        "−1 và −8"
+      ],
+      "correct": 1,
+      "answer": "−1 và 12",
+      "explanation": "🔑 <b>Lý thuyết:</b> Trong một đa thức thu gọn, hệ số của hạng tử có bậc cao nhất gọi là hệ số cao nhất; hệ số của hạng tử bậc 0 gọi là hệ số tự do (SGK tr. 28). Đơn thức −x⁴ nghĩa là (−1)·x⁴, hệ số của nó là −1 (SGK tr. 25): khi không thấy số đứng trước biến, hệ số là 1 hoặc −1 tuỳ theo dấu.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Kiểm tra sắp xếp.</b> Các bậc là 4; 2; 1; 0 đã giảm dần, đa thức đã thu gọn.<br><b>Bước 2 — Hệ số cao nhất.</b> Hạng tử bậc cao nhất là −x⁴ = (−1)·x⁴, hệ số là −1.<br><b>Bước 3 — Hệ số tự do.</b> Hạng tử không chứa biến là +12, hệ số tự do là 12.<br><b>Bước 4 — Kết luận.</b> Hệ số cao nhất và hệ số tự do lần lượt là <b>−1 và 12</b>.<br>✗ 1 và 12: em thấy −x⁴ không có số đứng trước nên cho hệ số là 1, quên dấu trừ; hệ số của −x⁴ là −1.<br>✗ 6 và 12: em lấy hệ số của hạng tử 6x² vì đó là số đầu tiên nhìn thấy; nhưng hạng tử bậc cao nhất là −x⁴ chứ không phải 6x².<br>✗ −1 và −8: em lấy hệ số của hạng tử −8x (bậc 1) làm hệ số tự do; hệ số tự do là hệ số của hạng tử bậc 0, tức 12."
+    },
+    {
+      "id": "m7-145",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Hệ số cao nhất của đa thức C(x) = 9x² − 4x⁵ + 4x⁵ + 2x³ − 7 là số nào?",
+      "answer": "2",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số cao nhất là hệ số của hạng tử có bậc cao nhất trong đa thức ĐÃ THU GỌN (SGK tr. 28). Nếu đa thức chưa thu gọn, hai hạng tử cùng bậc có thể triệt tiêu nhau (SGK tr. 27), nên phải thu gọn và sắp xếp trước rồi mới đọc hệ số.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Thu gọn.</b> C(x) = (−4x⁵ + 4x⁵) + 2x³ + 9x² − 7 = 0 + 2x³ + 9x² − 7.<br><b>Bước 2 — Sắp xếp giảm dần.</b> C(x) = 2x³ + 9x² − 7, các bậc là 3; 2; 0.<br><b>Bước 3 — Đọc hệ số cao nhất.</b> Hạng tử bậc cao nhất là 2x³, hệ số là <b>2</b>.<br><b>Kiểm tra:</b> thay x = 1 vào đề được 9 − 4 + 4 + 2 − 7 = 4; thay vào 2x³ + 9x² − 7 được 2 + 9 − 7 = 4. Khớp nhau.<br>✗ 9: em lấy hệ số của hạng tử viết đầu tiên 9x²; đa thức chưa sắp xếp nên hạng tử đầu chưa chắc có bậc cao nhất.<br>✗ −4: em lấy hệ số của −4x⁵ mà quên thu gọn; −4x⁵ + 4x⁵ = 0 nên đa thức không còn hạng tử bậc 5.<br>✗ −7: đó là hệ số tự do (hạng tử bậc 0), không phải hệ số cao nhất."
+    },
+    {
+      "id": "m7-146",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Hệ số tự do của đa thức D(x) = 5x³ − 2x + 8 − 3x² − 11 là số nào?",
+      "answer": "−3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số tự do là hệ số của hạng tử bậc 0, tức hạng tử không chứa biến (SGK tr. 28). Các số không chứa biến đều là đơn thức bậc 0, cùng bậc với nhau, nên phải gộp lại khi thu gọn (SGK tr. 27). Mỗi số mang theo dấu đứng trước nó.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Tìm các hạng tử bậc 0.</b> Trong D(x) có hai hạng tử không chứa biến là +8 và −11.<br><b>Bước 2 — Gộp lại.</b> 8 − 11 = −3.<br><b>Bước 3 — Viết đa thức thu gọn.</b> D(x) = 5x³ − 3x² − 2x − 3.<br><b>Bước 4 — Kết luận.</b> Hệ số tự do của D(x) là <b>−3</b>.<br><b>Kiểm tra:</b> thay x = 0 vào đề: D(0) = 0 − 0 + 8 − 0 − 11 = −3, đúng bằng hệ số tự do (vì mọi hạng tử chứa biến đều bằng 0 khi x = 0).<br>✗ 8: em lấy số không chứa biến đầu tiên mà quên còn hạng tử −11 cũng có bậc 0, phải gộp lại.<br>✗ −11: em lấy số không chứa biến cuối cùng; cả 8 lẫn −11 đều là hạng tử bậc 0 nên hệ số tự do là 8 − 11 = −3.<br>✗ 3: em tính 11 − 8 = 3, tức bỏ dấu trừ của −11; phải là 8 + (−11) = −3."
+    },
+    {
+      "id": "m7-147",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Trong các đa thức sau, đa thức nào có bậc 2?",
+      "options": [
+        "x² − 3x³ + 1",
+        "2x + 5",
+        "4 + x − 3x²",
+        "3x² − 3x² + 2x"
+      ],
+      "correct": 2,
+      "answer": "4 + x − 3x²",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của đa thức một biến (thu gọn, khác đa thức không) là số mũ lớn nhất của biến trong đa thức đó (SGK tr. 28). Bậc không phụ thuộc vào vị trí viết các hạng tử, cũng không phải số hạng tử; và phải thu gọn trước khi xét bậc (SGK tr. 27).<br>🔑 <b>Áp dụng:</b> Xét từng đa thức.<br><b>x² − 3x³ + 1:</b> có hạng tử −3x³ nên bậc là 3.<br><b>2x + 5:</b> số mũ lớn nhất của x là 1, bậc là 1.<br><b>4 + x − 3x²:</b> số mũ lớn nhất là 2 (hạng tử −3x²), đa thức đã thu gọn nên bậc là 2. Viết giảm dần: −3x² + x + 4.<br><b>3x² − 3x² + 2x:</b> thu gọn được 0·x² + 2x = 2x, bậc là 1.<br><b>Kết luận:</b> đa thức có bậc 2 là <b>4 + x − 3x²</b>.<br>✗ x² − 3x³ + 1: em nhìn hạng tử đứng đầu x² rồi kết luận bậc 2; nhưng −3x³ có số mũ 3 lớn hơn, nên bậc là 3.<br>✗ 2x + 5: em đếm đa thức có 2 hạng tử rồi lấy 2 làm bậc; bậc là số mũ lớn nhất của biến, ở đây bằng 1.<br>✗ 3x² − 3x² + 2x: em thấy x² mà quên thu gọn; 3x² − 3x² = 0 nên đa thức chỉ còn 2x, bậc 1."
+    },
+    {
+      "id": "m7-148",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức E(x) = 2x³ − 5x² + x − 4. Hệ số của hạng tử bậc hai trong E(x) là số nào?",
+      "answer": "−5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Mỗi hạng tử của đa thức một biến là một đơn thức dạng a·xⁿ, trong đó a là hệ số và n là bậc của hạng tử đó (SGK tr. 25). Hạng tử bậc hai là hạng tử chứa x², hệ số của nó là số nhân với x², mang theo dấu đứng trước.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Liệt kê bậc từng hạng tử.</b> 2x³ bậc 3; −5x² bậc 2; x bậc 1; −4 bậc 0.<br><b>Bước 2 — Chọn hạng tử bậc hai.</b> Đó là −5x².<br><b>Bước 3 — Đọc hệ số.</b> −5x² = (−5)·x², hệ số là <b>−5</b>.<br>✗ 5: em tìm đúng hạng tử −5x² nhưng bỏ dấu trừ; hệ số luôn mang theo dấu đứng trước hạng tử.<br>✗ 2: em lấy hệ số cao nhất (của 2x³) vì tưởng hạng tử đứng thứ hai là hạng tử bậc hai; bậc hai nghĩa là số mũ của x bằng 2.<br>✗ 1: em lấy hệ số của hạng tử x (bậc 1) vì đếm nhầm thứ tự; hạng tử bậc hai phải chứa x²."
+    },
+    {
+      "id": "m7-149",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức P(x) = 4 − x³. Khẳng định nào sau đây đúng?",
+      "options": [
+        "P(x) có bậc 3 và hệ số cao nhất là −1",
+        "P(x) có bậc 3 và hệ số cao nhất là 4",
+        "P(x) có bậc 0 và hệ số cao nhất là 4",
+        "P(x) có bậc 3 và hệ số cao nhất là 1"
+      ],
+      "correct": 0,
+      "answer": "P(x) có bậc 3 và hệ số cao nhất là −1",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của đa thức là bậc của hạng tử có bậc cao nhất; hệ số cao nhất là hệ số của hạng tử ấy (SGK tr. 28). Hạng tử −x³ có hệ số là −1 vì −x³ = (−1)·x³ (SGK tr. 25). Đa thức có thể viết theo luỹ thừa tăng dần, nên hạng tử đứng đầu chưa chắc có bậc cao nhất (SGK tr. 27).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Sắp xếp giảm dần.</b> P(x) = 4 − x³ = −x³ + 4.<br><b>Bước 2 — Tìm bậc.</b> Các bậc là 3 và 0, cao nhất là 3. Vậy P(x) có bậc 3.<br><b>Bước 3 — Tìm hệ số cao nhất.</b> Hạng tử bậc 3 là −x³ = (−1)·x³, hệ số là −1.<br><b>Bước 4 — Kết luận.</b> <b>P(x) có bậc 3 và hệ số cao nhất là −1</b>.<br>✗ P(x) có bậc 3 và hệ số cao nhất là 4: em lấy số 4 đứng đầu làm hệ số cao nhất; 4 là hệ số tự do (bậc 0), còn hạng tử bậc cao nhất là −x³.<br>✗ P(x) có bậc 0 và hệ số cao nhất là 4: em cho rằng hạng tử viết đầu tiên là hạng tử bậc cao nhất; ở đây đa thức viết theo luỹ thừa tăng dần nên bậc cao nhất nằm ở cuối.<br>✗ P(x) có bậc 3 và hệ số cao nhất là 1: em xác định đúng bậc nhưng bỏ dấu trừ của −x³; hệ số của nó là −1."
+    },
+    {
+      "id": "m7-150",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức G(x) = ax³ + 2x² − x + 5, trong đó a là một số. Biết G(x) có bậc 2. Giá trị của a là",
+      "answer": "0",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của đa thức là bậc của hạng tử có bậc cao nhất trong đa thức thu gọn (SGK tr. 28). Một hạng tử có hệ số bằng 0 thì bằng 0 và bị bỏ đi khi thu gọn (SGK tr. 27), nên đa thức mất bậc đó. Ngược lại, nếu hệ số của x³ khác 0 thì đa thức chắc chắn có bậc 3.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Suy luận.</b> G(x) có hạng tử ax³. Nếu a khác 0 thì G(x) có bậc 3, trái với đề. Vậy bắt buộc a = 0.<br><b>Bước 2 — Thử lại.</b> Với a = 0: G(x) = 0·x³ + 2x² − x + 5 = 2x² − x + 5, hạng tử bậc cao nhất là 2x² nên G(x) có bậc 2. Đúng với đề.<br><b>Bước 3 — Kết luận.</b> a = <b>0</b>.<br>✗ 3: em nhầm a với bậc của hạng tử ax³; đề hỏi hệ số a, và để đa thức không còn bậc 3 thì a phải bằng 0.<br>✗ 2: em lấy bậc 2 trong đề (hoặc hệ số 2 của x²) gán cho a; nếu a = 2 thì G(x) = 2x³ + 2x² − x + 5 có bậc 3, không phải bậc 2.<br>✗ 1: em nghĩ hệ số phải khác 0 nên chọn a = 1; nhưng khi đó G(x) = x³ + 2x² − x + 5 có bậc 3."
+    },
+    {
+      "id": "m7-151",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức H(x) = 3x² − 5x + 2 − 3x² + 5x. Thu gọn H(x), em được đa thức nào và bậc của nó là bao nhiêu?",
+      "options": [
+        "H(x) = 6x² − 10x + 2, bậc 2",
+        "H(x) = 0, không có bậc",
+        "H(x) = 2, bậc 2",
+        "H(x) = 2, bậc 0"
+      ],
+      "correct": 3,
+      "answer": "H(x) = 2, bậc 0",
+      "explanation": "🔑 <b>Lý thuyết:</b> Thu gọn đa thức là gộp các hạng tử cùng bậc bằng cách cộng hệ số (SGK tr. 27). Một số khác 0 cũng là đa thức một biến, có bậc 0 (SGK tr. 28); chỉ đa thức không (số 0) mới không có bậc.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Nhóm cùng bậc.</b> H(x) = (3x² − 3x²) + (−5x + 5x) + 2.<br><b>Bước 2 — Cộng hệ số.</b> 3x² − 3x² = 0; −5x + 5x = 0.<br><b>Bước 3 — Kết luận.</b> H(x) = 2. Đây là đa thức chỉ có một hạng tử bậc 0, nên <b>H(x) = 2, bậc 0</b>.<br><b>Kiểm tra:</b> thay x = 3 vào đề: 27 − 15 + 2 − 27 + 15 = 2. Thay x = −1: 3 + 5 + 2 − 3 − 5 = 2. Giá trị luôn là 2 dù x thay đổi, đúng với H(x) = 2.<br>✗ H(x) = 6x² − 10x + 2, bậc 2: em cộng 3x² + 3x² và −5x − 5x, tức bỏ qua dấu của −3x² và +5x; thực ra chúng triệt tiêu nhau.<br>✗ H(x) = 0, không có bậc: em thấy hai cặp triệt tiêu rồi quên hạng tử 2 còn lại; H(x) = 2 chứ không phải 0.<br>✗ H(x) = 2, bậc 2: em thu gọn đúng nhưng lấy giá trị 2 làm bậc; số 2 không chứa biến nên có bậc 0."
+    },
+    {
+      "id": "m7-152",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức K(x) = 7x⁴ − 3x³ + 2x² − x + 6. Tính tổng tất cả các hệ số của K(x).",
+      "answer": "11",
+      "explanation": "🔑 <b>Lý thuyết:</b> Mỗi hạng tử a·xⁿ của đa thức có hệ số a mang theo dấu đứng trước (SGK tr. 25); hạng tử −x có hệ số −1, hạng tử tự do 6 cũng là một hệ số (hệ số tự do, SGK tr. 28). Tổng các hệ số của đa thức chính bằng giá trị của đa thức tại x = 1 (SGK tr. 29), vì khi đó mọi luỹ thừa của x đều bằng 1.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Liệt kê hệ số.</b> 7; −3; 2; −1; 6.<br><b>Bước 2 — Cộng lại.</b> 7 + (−3) + 2 + (−1) + 6 = 4 + 2 − 1 + 6 = 11.<br><b>Bước 3 — Kết luận.</b> Tổng các hệ số là <b>11</b>.<br><b>Kiểm tra:</b> K(1) = 7·1 − 3·1 + 2·1 − 1 + 6 = 11. Khớp.<br>✗ 19: em cộng 7 + 3 + 2 + 1 + 6, bỏ hết dấu trừ; hệ số của −3x³ là −3 và của −x là −1.<br>✗ 12: em bỏ sót hạng tử −x vì không thấy số đứng trước; hệ số của nó là −1.<br>✗ 5: em không tính hệ số tự do 6 vì nó không đi kèm biến; 6 vẫn là hệ số của hạng tử bậc 0."
+    },
+    {
+      "id": "m7-153",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Trong các đa thức sau, đa thức nào đã được thu gọn và sắp xếp theo lũy thừa giảm dần của biến?",
+      "options": [
+        "x³ + 2x² − 3x² + 1",
+        "5 − 2x + x²",
+        "x⁴ + x² − x",
+        "2x³ + x⁴ − 5"
+      ],
+      "correct": 2,
+      "answer": "x⁴ + x² − x",
+      "explanation": "🔑 <b>Lý thuyết:</b> Đa thức thu gọn là đa thức không còn hai hạng tử nào cùng bậc (SGK tr. 27). Sắp xếp theo luỹ thừa giảm dần nghĩa là số mũ của biến giảm dần từ trái sang phải (SGK tr. 27); đa thức có thể khuyết một số bậc, điều đó không ảnh hưởng đến việc sắp xếp.<br>🔑 <b>Áp dụng:</b> Xét từng đa thức.<br><b>x³ + 2x² − 3x² + 1:</b> có hai hạng tử cùng bậc 2 (2x² và −3x²) nên chưa thu gọn; thu gọn được x³ − x² + 1.<br><b>5 − 2x + x²:</b> các bậc 0; 1; 2 là tăng dần, không phải giảm dần.<br><b>x⁴ + x² − x:</b> các bậc 4; 2; 1 giảm dần, không có hai hạng tử cùng bậc. Thoả mãn.<br><b>2x³ + x⁴ − 5:</b> các bậc 3; 4; 0 không theo thứ tự; phải viết x⁴ + 2x³ − 5.<br><b>Kết luận:</b> <b>x⁴ + x² − x</b>.<br>✗ x³ + 2x² − 3x² + 1: em thấy các số mũ 3; 2; 2; 0 giảm dần nên chọn, nhưng còn hai hạng tử bậc 2 chưa gộp, tức chưa thu gọn.<br>✗ 5 − 2x + x²: em chỉ để ý số mũ đang thay đổi đều mà không nhận ra nó tăng dần (0; 1; 2) chứ không giảm.<br>✗ 2x³ + x⁴ − 5: em thấy đã thu gọn và có hạng tử tự do ở cuối nên chọn, nhưng x⁴ có bậc lớn hơn 2x³ lại đứng sau, chưa sắp xếp."
+    },
+    {
+      "id": "m7-154",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Hệ số cao nhất của đa thức L(y) = −2y³ + 4y − y³ + 3y³ + 9 là số nào?",
+      "answer": "4",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số cao nhất là hệ số của hạng tử có bậc cao nhất trong đa thức đã thu gọn (SGK tr. 28). Khi gộp các hạng tử cùng bậc, nếu tổng hệ số bằng 0 thì hạng tử đó biến mất và bậc của đa thức thấp xuống (SGK tr. 27). Hạng tử −y³ có hệ số −1.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Gộp các hạng tử bậc 3.</b> −2y³ − y³ + 3y³ = (−2 − 1 + 3)y³ = 0·y³ = 0.<br><b>Bước 2 — Viết đa thức thu gọn.</b> L(y) = 4y + 9.<br><b>Bước 3 — Đọc hệ số cao nhất.</b> Hạng tử bậc cao nhất là 4y (bậc 1), hệ số là <b>4</b>.<br><b>Kiểm tra:</b> thay y = 1 vào đề được −2 + 4 − 1 + 3 + 9 = 13; thay vào 4y + 9 được 13. Khớp nhau.<br>✗ −2: em lấy hệ số của hạng tử −2y³ đứng đầu mà không thu gọn; ba hạng tử bậc 3 gộp lại bằng 0.<br>✗ 0: em gộp đúng các hạng tử bậc 3 được 0 rồi lấy 0 làm hệ số cao nhất; hạng tử bằng 0 bị bỏ đi, hạng tử bậc cao nhất còn lại là 4y.<br>✗ 9: đó là hệ số tự do, không phải hệ số cao nhất."
+    },
+    {
+      "id": "m7-155",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Một đa thức biến x có bậc 4, hệ số cao nhất là −3, hệ số tự do là 5 và không có hạng tử bậc 3, bậc 2, bậc 1. Đa thức đó là",
+      "options": [
+        "5x⁴ − 3",
+        "−3x⁴ + 5",
+        "3x⁴ + 5",
+        "−3x + 5"
+      ],
+      "correct": 1,
+      "answer": "−3x⁴ + 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Bậc của đa thức là số mũ lớn nhất của biến; hệ số cao nhất là hệ số đi kèm luỹ thừa đó; hệ số tự do là hạng tử không chứa biến (SGK tr. 28). Từ ba thông tin này, em dựng lại đa thức: hệ số cao nhất nhân với x mũ bậc, cộng với hệ số tự do.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Hạng tử bậc cao nhất.</b> Bậc 4, hệ số −3 nên hạng tử là −3x⁴.<br><b>Bước 2 — Các hạng tử còn lại.</b> Không có bậc 3; 2; 1, chỉ còn hệ số tự do 5.<br><b>Bước 3 — Kết luận.</b> Đa thức là <b>−3x⁴ + 5</b>.<br><b>Kiểm tra:</b> −3x⁴ + 5 có bậc 4, hệ số cao nhất −3, hệ số tự do 5. Đúng mọi yêu cầu.<br>✗ 5x⁴ − 3: em đổi chỗ hai hệ số, lấy hệ số tự do 5 làm hệ số cao nhất và ngược lại.<br>✗ 3x⁴ + 5: em bỏ mất dấu trừ của hệ số cao nhất −3.<br>✗ −3x + 5: em lấy đúng hai hệ số nhưng quên bậc 4, viết x thay vì x⁴; đa thức này chỉ có bậc 1."
+    },
+    {
+      "id": "m7-156",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho đa thức Q(x) = (a + 2)x⁴ + 3x² − 7, trong đó a là một số. Biết hệ số cao nhất của Q(x) bằng 5. Giá trị của a là",
+      "answer": "3",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số cao nhất là hệ số của hạng tử có bậc cao nhất (SGK tr. 28). Trong Q(x), hạng tử bậc cao nhất là (a + 2)x⁴, hệ số của nó là cả biểu thức a + 2 chứ không phải riêng a. Muốn tìm a, em cho hệ số đó bằng 5 rồi giải.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Xác định hệ số cao nhất.</b> Các bậc là 4; 2; 0, cao nhất là 4 với hệ số a + 2.<br><b>Bước 2 — Lập đẳng thức.</b> a + 2 = 5.<br><b>Bước 3 — Giải.</b> a = 5 − 2 = 3.<br><b>Bước 4 — Thử lại.</b> Với a = 3: Q(x) = 5x⁴ + 3x² − 7, hệ số cao nhất là 5 (khác 0 nên bậc vẫn là 4). Đúng. Vậy a = <b>3</b>.<br>✗ 7: em tính a = 5 + 2, chuyển vế mà không đổi dấu; từ a + 2 = 5 phải có a = 5 − 2.<br>✗ 5: em cho rằng a chính là hệ số cao nhất; nhưng hệ số của x⁴ là a + 2, nên a + 2 = 5.<br>✗ −3: em tính a = 2 − 5 = −3, lấy nhầm thứ tự phép trừ; thử lại thấy −3 + 2 = −1, không bằng 5."
+    },
+    {
+      "id": "m7-157",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Trong các đa thức sau, đa thức nào có hệ số tự do bằng −5?",
+      "options": [
+        "x² − 5x",
+        "−5x² + 1",
+        "5 − x²",
+        "x² − 5"
+      ],
+      "correct": 3,
+      "answer": "x² − 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số tự do là hệ số của hạng tử bậc 0, tức hạng tử KHÔNG chứa biến (SGK tr. 28); số đó mang theo dấu đứng trước. Hạng tử có −5 nhân với x hay x² thì −5 là hệ số của hạng tử bậc 1 hay bậc 2, không phải hệ số tự do.<br>🔑 <b>Áp dụng:</b> Tìm hạng tử không chứa biến trong từng đa thức.<br><b>x² − 5x:</b> cả hai hạng tử đều chứa x, không có hạng tử bậc 0; hệ số tự do bằng 0.<br><b>−5x² + 1:</b> hạng tử không chứa biến là 1, hệ số tự do là 1.<br><b>5 − x²:</b> hạng tử không chứa biến là 5, hệ số tự do là 5.<br><b>x² − 5:</b> hạng tử không chứa biến là −5, hệ số tự do là −5.<br><b>Kết luận:</b> <b>x² − 5</b>.<br>✗ x² − 5x: em thấy −5 nhưng nó đi kèm x, là hệ số của hạng tử bậc 1; đa thức này không có hạng tử bậc 0.<br>✗ −5x² + 1: −5 ở đây là hệ số cao nhất (của x²), còn hệ số tự do là 1.<br>✗ 5 − x²: em thấy số 5 đứng một mình nhưng nó mang dấu cộng; hệ số tự do là 5, không phải −5."
+    },
+    {
+      "id": "m7-158",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Sắp xếp đa thức R(x) = 3x − 2x⁴ + 5x² − 1 + x³ theo lũy thừa giảm dần của biến, em được kết quả nào?",
+      "options": [
+        "−2x⁴ + x³ + 5x² + 3x − 1",
+        "2x⁴ + x³ + 5x² + 3x − 1",
+        "−1 + 3x + 5x² + x³ − 2x⁴",
+        "−2x⁴ + 5x² + x³ + 3x − 1"
+      ],
+      "correct": 0,
+      "answer": "−2x⁴ + x³ + 5x² + 3x − 1",
+      "explanation": "🔑 <b>Lý thuyết:</b> Sắp xếp đa thức theo luỹ thừa giảm dần của biến là viết các hạng tử theo thứ tự số mũ của biến giảm dần từ trái sang phải (SGK tr. 27). Khi đổi chỗ, mỗi hạng tử mang theo dấu đứng trước nó; hạng tử x³ có hệ số 1.<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Kiểm tra thu gọn.</b> Các bậc 1; 4; 2; 0; 3 đều khác nhau, đa thức đã thu gọn.<br><b>Bước 2 — Xếp bậc từ lớn đến nhỏ.</b> 4; 3; 2; 1; 0 ứng với −2x⁴; x³; 5x²; 3x; −1.<br><b>Bước 3 — Kết luận.</b> R(x) = <b>−2x⁴ + x³ + 5x² + 3x − 1</b>.<br><b>Kiểm tra:</b> thay x = 1 vào đề: 3 − 2 + 5 − 1 + 1 = 6; thay vào kết quả: −2 + 1 + 5 + 3 − 1 = 6. Khớp nhau.<br>✗ 2x⁴ + x³ + 5x² + 3x − 1: em đưa −2x⁴ lên đầu nhưng đánh rơi dấu trừ của nó.<br>✗ −1 + 3x + 5x² + x³ − 2x⁴: đây là sắp xếp theo luỹ thừa TĂNG dần, ngược với yêu cầu.<br>✗ −2x⁴ + 5x² + x³ + 3x − 1: em xếp 5x² trước x³ vì hệ số 5 lớn hơn 1; thứ tự sắp xếp căn cứ vào số mũ (3 lớn hơn 2), không phải hệ số."
+    },
+    {
+      "id": "m7-159",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "q": "Cho đa thức S(x) = 5x³ − 2x + 4. Khẳng định nào sau đây SAI?",
+      "options": [
+        "S(x) có bậc 3",
+        "Hệ số của hạng tử bậc 2 trong S(x) bằng 0",
+        "Hệ số tự do của S(x) là 4",
+        "Hệ số cao nhất của S(x) là 5x³"
+      ],
+      "correct": 3,
+      "answer": "Hệ số cao nhất của S(x) là 5x³",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số của một đơn thức a·xⁿ là SỐ a, không phải cả đơn thức (SGK tr. 25). Bậc của đa thức là bậc của hạng tử cao nhất; hệ số cao nhất là hệ số của hạng tử ấy; hệ số tự do là hệ số của hạng tử bậc 0 (SGK tr. 28). Khi đa thức khuyết một bậc, ta coi hệ số của bậc đó bằng 0 (SGK tr. 27).<br>🔑 <b>Áp dụng:</b> Kiểm tra từng khẳng định.<br><b>S(x) có bậc 3:</b> số mũ lớn nhất của x là 3. Đúng.<br><b>Hệ số của hạng tử bậc 2 bằng 0:</b> S(x) không có hạng tử chứa x², có thể viết S(x) = 5x³ + 0x² − 2x + 4. Đúng.<br><b>Hệ số tự do là 4:</b> hạng tử không chứa biến là +4. Đúng.<br><b>Hệ số cao nhất là 5x³:</b> hạng tử bậc cao nhất là 5x³ nhưng hệ số cao nhất chỉ là số 5. Khẳng định này SAI.<br><b>Kết luận:</b> khẳng định sai là <b>Hệ số cao nhất của S(x) là 5x³</b>.<br>✗ S(x) có bậc 3: em nghĩ đa thức thiếu bậc 2 thì bậc phải khác 3; nhưng bậc chỉ phụ thuộc số mũ lớn nhất, khẳng định này đúng.<br>✗ Hệ số của hạng tử bậc 2 trong S(x) bằng 0: em cho rằng không có hạng tử bậc 2 thì không có hệ số; thực ra hệ số đó bằng 0, khẳng định này đúng.<br>✗ Hệ số tự do của S(x) là 4: em tưởng hệ số tự do phải là số ở vị trí khác hoặc nhầm với −2; +4 là hạng tử bậc 0, khẳng định này đúng."
+    },
+    {
+      "id": "m7-160",
+      "ch": 7,
+      "topic": "Đa thức một biến",
+      "type": "calc",
+      "keys": [],
+      "q": "Đa thức V(x) có bậc 3, hệ số cao nhất là 2, hệ số của x² bằng 0, hệ số của x bằng 1 và hệ số tự do là −5. Tính V(2).",
+      "answer": "13",
+      "explanation": "🔑 <b>Lý thuyết:</b> Biết bậc và các hệ số, ta viết lại được đa thức: hệ số cao nhất đi với x mũ bậc, hệ số của mỗi bậc đi với luỹ thừa tương ứng, hạng tử có hệ số 0 thì bỏ đi (SGK tr. 28). Giá trị của đa thức tại x = a là kết quả khi thay x bằng a rồi tính (SGK tr. 29).<br>🔑 <b>Áp dụng:</b><br><b>Bước 1 — Dựng đa thức.</b> Bậc 3 với hệ số 2: 2x³; bậc 2 hệ số 0: bỏ; bậc 1 hệ số 1: x; hệ số tự do −5. Vậy V(x) = 2x³ + x − 5.<br><b>Bước 2 — Thay x = 2.</b> V(2) = 2·2³ + 2 − 5 = 2·8 + 2 − 5 = 16 + 2 − 5.<br><b>Bước 3 — Tính.</b> 16 + 2 = 18; 18 − 5 = 13. Vậy V(2) = <b>13</b>.<br><b>Kiểm tra:</b> tính lại bằng cách khác: 2·8 = 16; 2 − 5 = −3; 16 + (−3) = 13. Khớp.<br>✗ 5: em tính 2³ + 2 − 5 = 8 + 2 − 5, quên nhân với hệ số cao nhất 2.<br>✗ 11: em bỏ sót hạng tử x (hệ số 1), chỉ tính 16 − 5.<br>✗ 23: em lấy hệ số tự do là +5 thay vì −5, tính 16 + 2 + 5."
+    }
+  ]
+}

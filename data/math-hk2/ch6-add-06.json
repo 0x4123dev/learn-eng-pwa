@@ -1,0 +1,261 @@
+{
+  "ch": 6,
+  "file": "06",
+  "questions": [
+    {
+      "id": "m6-201",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Cho k là một hằng số khác 0. Nếu đại lượng y liên hệ với đại lượng x theo công thức y = kx thì ta nói gì về hai đại lượng đó?",
+      "options": [
+        "y tỉ lệ thuận với x theo hệ số tỉ lệ k",
+        "y tỉ lệ nghịch với x theo hệ số tỉ lệ k",
+        "x tỉ lệ thuận với y theo hệ số tỉ lệ k",
+        "y tỉ lệ thuận với x theo hệ số tỉ lệ 1/k"
+      ],
+      "correct": 0,
+      "answer": "y tỉ lệ thuận với x theo hệ số tỉ lệ k",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu đại lượng y liên hệ với đại lượng x theo công thức y = kx (k là hằng số khác 0) thì ta nói y tỉ lệ thuận với x theo hệ số tỉ lệ k. Hệ số tỉ lệ là số NHÂN với x để được y. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Đề cho đúng dạng y = kx với k ≠ 0, nên theo định nghĩa, <b>y tỉ lệ thuận với x theo hệ số tỉ lệ k</b>. Thử với k = 3, tức y = 3x: khi x = 2 thì y = 6; khi x tăng gấp đôi (x = 4) thì y = 12 cũng tăng gấp đôi — đúng tính chất cùng tăng, cùng giảm của hai đại lượng tỉ lệ thuận ✔<br>✗ y tỉ lệ nghịch với x theo hệ số tỉ lệ k: tỉ lệ nghịch ứng với công thức y = k/x (hay x · y = k), ở đó x tăng thì y giảm; đề cho y = kx là phép nhân, không phải phép chia.<br>✗ x tỉ lệ thuận với y theo hệ số tỉ lệ k: đảo vai trò hai đại lượng; từ y = kx suy ra x = (1/k) · y, nên x tỉ lệ thuận với y theo hệ số 1/k chứ không phải k.<br>✗ y tỉ lệ thuận với x theo hệ số tỉ lệ 1/k: hệ số tỉ lệ là số nhân với x để được y; trong y = kx số đó là k, còn 1/k chỉ xuất hiện khi xét x theo y."
+    },
+    {
+      "id": "m6-202",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Đại lượng y liên hệ với đại lượng x bởi công thức y = (−3/4) · x. Tìm hệ số tỉ lệ của y đối với x.",
+      "answer": "−3/4",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số tỉ lệ k khi y = kx (k ≠ 0). Hệ số tỉ lệ chính là số nhân với x để được y, phải giữ nguyên cả dấu lẫn phân số. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> So sánh y = (−3/4) · x với dạng y = kx, em thấy ngay k = <b>−3/4</b>. Thử lại: khi x = 4 thì y = (−3/4) · 4 = −3, và tỉ số y/x = −3/4, đúng bằng hệ số vừa tìm ✔<br>✗ 3/4: bỏ mất dấu trừ; trong công thức y = (−3/4) · x, khi x dương thì y âm nên hệ số phải âm.<br>✗ −4/3: lấy nghịch đảo, tức là tính hệ số tỉ lệ của x đối với y (x = (−4/3) · y) chứ không phải của y đối với x.<br>✗ −3: chỉ nhìn tử số mà quên mẫu số 4; hệ số là cả phân số −3/4, thử x = 4 thì y = −3 chứ không phải −12."
+    },
+    {
+      "id": "m6-203",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Bảng giá trị nào sau đây cho thấy y tỉ lệ thuận với x?",
+      "options": [
+        "x nhận 1; 2; 4 và y tương ứng nhận 8; 4; 2",
+        "x nhận 2; 4; 6 và y tương ứng nhận 3; 6; 9",
+        "x nhận 1; 2; 3 và y tương ứng nhận 3; 4; 5",
+        "x nhận 1; 2; 3 và y tương ứng nhận 1; 4; 9"
+      ],
+      "correct": 1,
+      "answer": "x nhận 2; 4; 6 và y tương ứng nhận 3; 6; 9",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu y tỉ lệ thuận với x thì tỉ số y/x của mọi cặp giá trị tương ứng luôn bằng hệ số tỉ lệ: y₁/x₁ = y₂/x₂ = y₃/x₃ = k. Muốn nhận biết từ bảng, em tính tỉ số y/x ở từng cột và xem chúng có bằng nhau không. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> Xét bảng x nhận 2; 4; 6 và y nhận 3; 6; 9: các tỉ số 3/2 = 1,5; 6/4 = 1,5; 9/6 = 1,5 đều bằng nhau, nên <b>y tỉ lệ thuận với x theo hệ số 3/2</b> ✔ Kiểm tra ngược bằng công thức y = (3/2)x: 1,5 · 2 = 3; 1,5 · 4 = 6; 1,5 · 6 = 9, khớp cả ba cột.<br>✗ x nhận 1; 2; 4 và y nhận 8; 4; 2: x tăng thì y giảm và tích x · y = 8 không đổi — đây là tỉ lệ NGHỊCH; các tỉ số y/x là 8; 2; 0,5 không bằng nhau.<br>✗ x nhận 1; 2; 3 và y nhận 3; 4; 5: y = x + 2, x tăng 1 thì y cũng tăng 1, nhưng tỉ số y/x là 3; 2; 5/3 khác nhau — cùng tăng chưa đủ để là tỉ lệ thuận, phải là cùng nhân với một số.<br>✗ x nhận 1; 2; 3 và y nhận 1; 4; 9: y = x², tỉ số y/x là 1; 2; 3 thay đổi theo x nên không có hệ số tỉ lệ chung."
+    },
+    {
+      "id": "m6-204",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Khi x lần lượt nhận giá trị −2; 3; 6 thì y lần lượt nhận giá trị 8; −12; a. Tìm a.",
+      "answer": "−24",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu y tỉ lệ thuận với x theo hệ số k thì y = kx, nên tỉ số y/x của mọi cặp giá trị tương ứng đều bằng k. Biết k, muốn tìm y ta NHÂN x với k. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> Tìm hệ số từ cột đầu: k = 8 : (−2) = −4. Kiểm tra bằng cột hai: −12 : 3 = −4, khớp ✔ <b>Bước 2 —</b> a = k · 6 = (−4) · 6 = <b>−24</b>. Thử lại: −24 : 6 = −4, đúng bằng k ✔<br>✗ 24: quên dấu của hệ số; k = 8 : (−2) là số âm nên với x = 6 dương, a phải âm.<br>✗ −32: thấy y đi từ 8 xuống −12 (giảm 20) rồi tiếp tục trừ 20 nữa; nhưng x không tăng đều (từ −2 lên 3 tăng 5, từ 3 lên 6 chỉ tăng 3) và tỉ lệ thuận là nhân với k, không phải cộng thêm một lượng cố định.<br>✗ −3/2: lấy 6 chia cho k, tức 6 : (−4) = −3/2; để tìm y từ x ta phải NHÂN x với k, chỉ khi tìm x từ y mới chia."
+    },
+    {
+      "id": "m6-205",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Khi x = −6 thì y = 4. Công thức liên hệ giữa y và x là gì?",
+      "options": [
+        "y = (−3/2)x",
+        "y = −24x",
+        "y = (−2/3)x",
+        "y = (2/3)x"
+      ],
+      "correct": 2,
+      "answer": "y = (−2/3)x",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x thì y = kx. Biết một cặp giá trị tương ứng (x ≠ 0), ta tìm hệ số bằng k = y/x rồi viết công thức. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> k = y/x = 4/(−6) = −2/3 (rút gọn cho 2). Vậy công thức là <b>y = (−2/3)x</b>. Thử lại: thay x = −6 được y = (−2/3) · (−6) = 12/3 = 4, đúng với đề ✔<br>✗ y = (−3/2)x: chia ngược x cho y (−6/4 = −3/2) — đó là hệ số của x đối với y; thay x = −6 được y = 9, không phải 4.<br>✗ y = −24x: nhân hai giá trị đã cho thay vì chia; thay x = −6 được y = 144, sai hẳn.<br>✗ y = (2/3)x: đúng độ lớn nhưng sai dấu; x = −6 và y = 4 trái dấu nên hệ số phải âm; thay x = −6 được y = −4 chứ không phải 4."
+    },
+    {
+      "id": "m6-206",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho y tỉ lệ thuận với x theo hệ số tỉ lệ −2/5. Tính giá trị của y khi x = −15.",
+      "answer": "6",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số tỉ lệ k nghĩa là y = kx. Biết k và x, ta NHÂN chúng với nhau để được y. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> y = (−2/5) · (−15). Nhân hai số âm được số dương: (−2) · (−15) = 30, rồi 30 : 5 = <b>6</b>. Thử lại: y/x = 6/(−15) = −2/5, đúng bằng hệ số ✔<br>✗ −6: quên quy tắc dấu; số âm nhân số âm phải ra số dương.<br>✗ 75/2: lấy x chia cho k thay vì nhân: −15 : (−2/5) = 75/2; chia chỉ dùng khi biết y muốn tìm x.<br>✗ −3: chỉ chia −15 cho 5 mà quên nhân với −2; hệ số là cả phân số −2/5."
+    },
+    {
+      "id": "m6-207",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Biết x tỉ lệ thuận với y theo hệ số tỉ lệ −5. Hỏi y tỉ lệ thuận với x theo hệ số tỉ lệ nào?",
+      "options": [
+        "k = 5",
+        "k = −5",
+        "k = 1/5",
+        "k = −1/5"
+      ],
+      "correct": 3,
+      "answer": "k = −1/5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu y tỉ lệ thuận với x theo hệ số tỉ lệ k thì x cũng tỉ lệ thuận với y theo hệ số tỉ lệ 1/k — hai hệ số là nghịch đảo của nhau và cùng dấu. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> x tỉ lệ thuận với y theo hệ số −5 nghĩa là x = −5y. Chia cả hai vế cho −5: y = x/(−5) = (−1/5)x. Vậy y tỉ lệ thuận với x theo hệ số <b>k = −1/5</b>. Thử lại: lấy y = 2 thì x = −5 · 2 = −10; ngược lại (−1/5) · (−10) = 2 = y ✔<br>✗ k = 5: đổi dấu khi lấy nghịch đảo; nghịch đảo của −5 là −1/5, dấu giữ nguyên.<br>✗ k = −5: giữ nguyên hệ số cũ; thử y = 2, x = −10 thì −5 · (−10) = 50 ≠ 2.<br>✗ k = 1/5: nghịch đảo đúng nhưng mất dấu; thử (1/5) · (−10) = −2 ≠ 2."
+    },
+    {
+      "id": "m6-208",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Khi x lần lượt nhận giá trị 4; 10; a thì y lần lượt nhận giá trị −6; −15; 27. Tìm a.",
+      "answer": "−18",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x thì y = kx và tỉ số y/x của mọi cặp tương ứng đều bằng k. Biết y, muốn tìm x ta CHIA y cho k. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> k = −6 : 4 = −3/2. Kiểm tra cột hai: −15 : 10 = −3/2, khớp ✔ <b>Bước 2 —</b> a = 27 : (−3/2) = 27 · (−2/3) = −54/3 = <b>−18</b>. Thử lại: (−3/2) · (−18) = 54/2 = 27, đúng bằng y ✔<br>✗ 18: quên dấu; k âm và y = 27 dương nên x phải âm.<br>✗ −81/2: nhân 27 với k thay vì chia: 27 · (−3/2) = −81/2; nhân chỉ dùng khi biết x muốn tìm y.<br>✗ −8/9: coi x, y tỉ lệ nghịch rồi giữ tích không đổi: a · 27 = 4 · (−6) cho a = −24/27 = −8/9; ở đây phải giữ TỈ SỐ không đổi."
+    },
+    {
+      "id": "m6-209",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Trong các công thức sau, công thức nào cho biết y KHÔNG tỉ lệ thuận với x?",
+      "options": [
+        "y = x + 5",
+        "y = −7x",
+        "y = x/3",
+        "y = 0,5x"
+      ],
+      "correct": 0,
+      "answer": "y = x + 5",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x khi và chỉ khi y = kx với k là hằng số khác 0 — tức y bằng x NHÂN với một số cố định. Hệ số k có thể âm, có thể là phân số hay số thập phân. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> <b>y = x + 5</b> là phép cộng, không thể viết thành y = kx: khi x = 1 thì y = 6, khi x = 2 thì y = 7, tỉ số y/x lần lượt là 6 rồi 3,5, không cố định. Vậy y không tỉ lệ thuận với x ✔ Ba công thức còn lại đều có dạng y = kx.<br>✗ y = −7x: đúng dạng kx với k = −7; hệ số âm vẫn là tỉ lệ thuận, chỉ khác là x và y trái dấu.<br>✗ y = x/3: chính là y = (1/3)x với k = 1/3; chia cho 3 cũng là nhân với 1/3 — đừng nhầm với y = 3/x mới là tỉ lệ nghịch.<br>✗ y = 0,5x: k = 0,5, hệ số thập phân vẫn hợp lệ; x = 2 cho y = 1, x = 4 cho y = 2, tỉ số y/x luôn bằng 0,5."
+    },
+    {
+      "id": "m6-210",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Khi x = 8 thì y = −6. Tìm giá trị của x khi y = 15.",
+      "answer": "−20",
+      "explanation": "🔑 <b>Lý thuyết:</b> Với hai đại lượng tỉ lệ thuận, tỉ số hai giá trị tương ứng luôn bằng nhau: y₁/x₁ = y₂/x₂, hay tương đương x₂/x₁ = y₂/y₁. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> k = y/x = −6 : 8 = −3/4, nên y = (−3/4)x. <b>Bước 2 —</b> Khi y = 15: x = 15 : (−3/4) = 15 · (−4/3) = −60/3 = <b>−20</b>. Thử lại: (−3/4) · (−20) = 60/4 = 15 ✔ Cách khác: x/8 = 15/(−6) nên x = 8 · 15 : (−6) = −20, cùng kết quả ✔<br>✗ 20: quên dấu; k âm và y = 15 dương nên x phải âm.<br>✗ −45/4: nhân 15 với k thay vì chia: 15 · (−3/4) = −45/4; nhân với k chỉ khi đi từ x sang y.<br>✗ −16/5: coi x, y tỉ lệ nghịch rồi giữ tích không đổi: x · 15 = 8 · (−6) cho x = −48/15 = −16/5; tỉ lệ thuận giữ TỈ SỐ, không giữ tích."
+    },
+    {
+      "id": "m6-211",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Cho x và y là hai đại lượng tỉ lệ thuận; x₁, x₂ là hai giá trị khác 0 của x và y₁, y₂ là hai giá trị tương ứng của y. Đẳng thức nào sau đây luôn đúng?",
+      "options": [
+        "y₁/x₁ = x₂/y₂",
+        "y₁/x₁ = y₂/x₂",
+        "x₁ · y₁ = x₂ · y₂",
+        "y₁ − x₁ = y₂ − x₂"
+      ],
+      "correct": 1,
+      "answer": "y₁/x₁ = y₂/x₂",
+      "explanation": "🔑 <b>Lý thuyết:</b> Tính chất của hai đại lượng tỉ lệ thuận: tỉ số hai giá trị tương ứng của chúng luôn không đổi, y₁/x₁ = y₂/x₂ = y₃/x₃ = … = k; và tỉ số hai giá trị bất kì của đại lượng này bằng tỉ số hai giá trị tương ứng của đại lượng kia, y₁/y₂ = x₁/x₂. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> Vì y = kx nên y₁ = k · x₁ và y₂ = k · x₂; chia hai vế cho x₁, x₂ (khác 0) được y₁/x₁ = k và y₂/x₂ = k, tức <b>y₁/x₁ = y₂/x₂</b> ✔ Thử với y = 3x và hai cặp (2; 6), (5; 15): 6/2 = 3 và 15/5 = 3, bằng nhau.<br>✗ y₁/x₁ = x₂/y₂: vế trái là y chia x, vế phải lại là x chia y; với ví dụ trên thì 6/2 = 3 còn 5/15 = 1/3.<br>✗ x₁ · y₁ = x₂ · y₂: tích không đổi là tính chất của tỉ lệ NGHỊCH; với ví dụ trên 2 · 6 = 12 còn 5 · 15 = 75.<br>✗ y₁ − x₁ = y₂ − x₂: tỉ lệ thuận nói về tỉ số, không phải hiệu; với ví dụ trên 6 − 2 = 4 còn 15 − 5 = 10."
+    },
+    {
+      "id": "m6-212",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Khi x lần lượt nhận giá trị 2; 6; 10 thì y lần lượt nhận giá trị −5; b; c. Tính b + c.",
+      "answer": "−40",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x thì y = kx, hệ số k tìm được từ bất kì cặp giá trị tương ứng nào (x ≠ 0): k = y/x. Mọi giá trị còn lại của y đều bằng x nhân với k. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> k = −5 : 2 = −5/2. <b>Bước 2 —</b> b = (−5/2) · 6 = −30/2 = −15; c = (−5/2) · 10 = −50/2 = −25. <b>Bước 3 —</b> b + c = −15 + (−25) = <b>−40</b>. Kiểm tra bằng cách khác: b + c = k · (6 + 10) = (−5/2) · 16 = −40 ✔<br>✗ 40: quên dấu; k âm và x dương nên b, c đều âm, tổng phải âm.<br>✗ −22: nghĩ x tăng thêm 4 thì y giảm thêm 4, được b = −9, c = −13; tỉ lệ thuận là nhân với k, không phải cộng thêm một lượng cố định.<br>✗ −8/3: coi x, y tỉ lệ nghịch: b = 2 · (−5) : 6 = −5/3, c = 2 · (−5) : 10 = −1, tổng −8/3; ở đây tỉ số y/x mới là thứ không đổi."
+    },
+    {
+      "id": "m6-213",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Trong các cặp đại lượng sau, cặp nào là hai đại lượng tỉ lệ thuận?",
+      "options": [
+        "Vận tốc và thời gian đi hết một quãng đường cố định",
+        "Số công nhân (cùng năng suất) và số ngày hoàn thành một công việc",
+        "Quãng đường đi được và thời gian đi của một vật chuyển động đều",
+        "Chiều dài và chiều rộng của các hình chữ nhật có cùng diện tích"
+      ],
+      "correct": 2,
+      "answer": "Quãng đường đi được và thời gian đi của một vật chuyển động đều",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hai đại lượng tỉ lệ thuận khi đại lượng này bằng đại lượng kia nhân với một hằng số k khác 0 (y = kx): cái này tăng bao nhiêu lần thì cái kia tăng bấy nhiêu lần. Nếu TÍCH hai đại lượng không đổi thì chúng tỉ lệ nghịch. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Vật chuyển động đều có vận tốc v không đổi, quãng đường s = v · t, đúng dạng y = kx với k = v. Vậy <b>quãng đường và thời gian đi của một vật chuyển động đều</b> tỉ lệ thuận ✔ Thử với v = 40 km/h: 1 giờ đi 40 km, 2 giờ đi 80 km, tỉ số s/t luôn bằng 40.<br>✗ Vận tốc và thời gian đi hết một quãng đường cố định: v · t = s không đổi, đi nhanh gấp đôi thì thời gian giảm một nửa — đó là tỉ lệ nghịch.<br>✗ Số công nhân và số ngày hoàn thành một công việc: càng nhiều người thì càng ít ngày, tích (số người) · (số ngày) không đổi — tỉ lệ nghịch.<br>✗ Chiều dài và chiều rộng của các hình chữ nhật cùng diện tích: dài · rộng = S không đổi, chiều dài tăng thì chiều rộng giảm — tỉ lệ nghịch."
+    },
+    {
+      "id": "m6-214",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Cho y tỉ lệ thuận với x theo hệ số tỉ lệ 3/2 và x tỉ lệ thuận với z theo hệ số tỉ lệ −4. Hỏi y tỉ lệ thuận với z theo hệ số tỉ lệ bằng bao nhiêu?",
+      "answer": "−6",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số k nghĩa là y = kx. Nếu y = kx và x = m · z thì thay x vào được y = (k · m) · z, nên y tỉ lệ thuận với z theo hệ số bằng TÍCH hai hệ số. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Từ đề: y = (3/2)x và x = −4z. Thay x = −4z vào công thức của y: y = (3/2) · (−4z) = (3 · (−4) : 2) · z = <b>−6</b>z. Thử lại với z = 1: x = −4 · 1 = −4, rồi y = (3/2) · (−4) = −6, đúng bằng −6 · 1 ✔<br>✗ 6: quên dấu âm của hệ số −4; dương nhân âm phải ra âm.<br>✗ −5/2: cộng hai hệ số 3/2 + (−4) = −5/2; khi thay thế liên tiếp hai công thức, các hệ số được NHÂN với nhau, không cộng.<br>✗ −3/8: chia 3/2 cho −4; thử z = 1 thì y = −6 chứ không phải −3/8."
+    },
+    {
+      "id": "m6-215",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Đại lượng y tỉ lệ thuận với đại lượng x theo hệ số tỉ lệ 5. Nếu x tăng thêm 2 đơn vị thì y thay đổi thế nào?",
+      "options": [
+        "y tăng thêm 2 đơn vị",
+        "y tăng gấp 2 lần",
+        "y tăng thêm 5 đơn vị",
+        "y tăng thêm 10 đơn vị"
+      ],
+      "correct": 3,
+      "answer": "y tăng thêm 10 đơn vị",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số 5 nghĩa là y = 5x với mọi giá trị của x. Muốn biết y thay đổi ra sao, em viết giá trị mới của y theo giá trị mới của x rồi so với giá trị cũ. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Giá trị cũ: y = 5x. Khi x tăng thêm 2, giá trị mới của x là x + 2, nên y mới = 5 · (x + 2) = 5x + 10 = y + 10. Vậy <b>y tăng thêm 10 đơn vị</b> ✔ Thử với số: x = 3 thì y = 15; x = 5 thì y = 25, đúng là tăng thêm 10.<br>✗ y tăng thêm 2 đơn vị: quên nhân với hệ số 5; mỗi đơn vị của x đổi thành 5 đơn vị của y.<br>✗ y tăng gấp 2 lần: nhầm tăng THÊM 2 với tăng GẤP 2; với x từ 3 lên 5 thì y từ 15 lên 25, không phải 30.<br>✗ y tăng thêm 5 đơn vị: nhầm hệ số tỉ lệ với mức tăng; hệ số 5 nghĩa là x tăng 1 thì y tăng 5, còn x tăng 2 thì y tăng 5 · 2 = 10."
+    },
+    {
+      "id": "m6-216",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y liên hệ với nhau bởi công thức 5y = −2x. Tìm hệ số tỉ lệ của y đối với x.",
+      "answer": "−2/5",
+      "explanation": "🔑 <b>Lý thuyết:</b> Hệ số tỉ lệ của y đối với x là số k trong công thức y = kx. Nếu công thức chưa có dạng đó, em phải biến đổi để y đứng một mình ở một vế. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Từ 5y = −2x, chia cả hai vế cho 5 (được phép vì 5 ≠ 0): y = (−2/5)x. Vậy hệ số tỉ lệ của y đối với x là <b>−2/5</b>. Thử lại với x = 5: y = (−2/5) · 5 = −2; thay vào đề: 5 · (−2) = −10 và −2 · 5 = −10, hai vế bằng nhau ✔<br>✗ −5/2: rút x theo y (x = (−5/2)y) rồi lấy hệ số đó — đó là hệ số của x đối với y, bị đảo ngược.<br>✗ 2/5: bỏ mất dấu trừ; 5y = −2x cho thấy x và y trái dấu nên hệ số phải âm.<br>✗ −2: chỉ nhìn hệ số của x mà quên chia cho 5 đứng trước y; thử x = 5 thì y = −10 và 5 · (−10) = −50 ≠ −2 · 5."
+    },
+    {
+      "id": "m6-217",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Bảng sau cho các cặp giá trị tương ứng của hai đại lượng x và y: x nhận −4; −1; 2; 5 thì y tương ứng nhận 10; 2,5; −5; −12,5. Hai đại lượng x và y liên hệ với nhau theo công thức nào?",
+      "options": [
+        "y = −2,5x",
+        "y = 2,5x",
+        "y = −0,4x",
+        "y = x + 14"
+      ],
+      "correct": 0,
+      "answer": "y = −2,5x",
+      "explanation": "🔑 <b>Lý thuyết:</b> Nếu tỉ số y/x của mọi cặp giá trị tương ứng trong bảng đều bằng cùng một số k thì y tỉ lệ thuận với x theo hệ số k, tức y = kx. Phải kiểm tra MỌI cột, không chỉ một cột. (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> Tính y/x ở từng cột: 10 : (−4) = −2,5; 2,5 : (−1) = −2,5; −5 : 2 = −2,5; −12,5 : 5 = −2,5. Cả bốn tỉ số đều bằng −2,5 nên <b>y = −2,5x</b> ✔ Thử ngược: −2,5 · (−4) = 10; −2,5 · (−1) = 2,5; −2,5 · 2 = −5; −2,5 · 5 = −12,5, khớp toàn bộ bảng.<br>✗ y = 2,5x: bỏ dấu; trong bảng x và y luôn trái dấu, thay x = −4 vào được y = −10 chứ không phải 10.<br>✗ y = −0,4x: chia ngược x cho y (−4 : 10 = −0,4); thay x = −4 vào được y = 1,6, sai.<br>✗ y = x + 14: chỉ khớp cột đầu (−4 + 14 = 10), nhưng x = −1 cho y = 13 ≠ 2,5; thử một cột chưa đủ để kết luận."
+    },
+    {
+      "id": "m6-218",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "type": "calc",
+      "keys": [],
+      "q": "Hai đại lượng x và y tỉ lệ thuận với nhau. Gọi y₁, y₂ là hai giá trị của y tương ứng với hai giá trị x₁ = 2, x₂ = 5 của x. Biết y₁ + y₂ = −28, tính y₂.",
+      "answer": "−20",
+      "explanation": "🔑 <b>Lý thuyết:</b> Với hai đại lượng tỉ lệ thuận, y₁/x₁ = y₂/x₂ = k. Kết hợp tính chất của dãy tỉ số bằng nhau: y₁/x₁ = y₂/x₂ = (y₁ + y₂)/(x₁ + x₂). (SGK tr. 12)<br>🔑 <b>Áp dụng:</b> <b>Bước 1 —</b> y₁/2 = y₂/5 = (y₁ + y₂)/(2 + 5) = −28/7 = −4, tức k = −4. <b>Bước 2 —</b> y₂ = 5 · (−4) = <b>−20</b>. Thử lại: y₁ = 2 · (−4) = −8, và −8 + (−20) = −28, đúng với đề ✔<br>✗ −8: tính ra y₁ (giá trị ứng với x₁ = 2) mà đề hỏi y₂ ứng với x₂ = 5.<br>✗ 20: quên dấu; tổng hai giá trị là số âm nên k âm và y₂ = 5k phải âm.<br>✗ −4: dừng lại ở hệ số tỉ lệ k, chưa nhân với x₂ = 5 để ra y₂."
+    },
+    {
+      "id": "m6-219",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Biết y tỉ lệ thuận với x theo hệ số tỉ lệ −3. Cặp giá trị tương ứng nào sau đây đúng?",
+      "options": [
+        "x = 2 và y = 6",
+        "x = −4 và y = 12",
+        "x = −3 và y = −9",
+        "x = 3 và y = 0"
+      ],
+      "correct": 1,
+      "answer": "x = −4 và y = 12",
+      "explanation": "🔑 <b>Lý thuyết:</b> y tỉ lệ thuận với x theo hệ số tỉ lệ −3 nghĩa là y = −3x với mọi cặp giá trị tương ứng. Một cặp (x; y) đúng khi thay vào thì y bằng đúng −3 nhân x. (SGK tr. 11)<br>🔑 <b>Áp dụng:</b> Thử từng cặp với y = −3x. Cặp x = −4: y = −3 · (−4) = 12, khớp với y = 12 ✔ Vậy cặp đúng là <b>x = −4 và y = 12</b>. Kiểm tra bằng tỉ số: y/x = 12 : (−4) = −3, đúng bằng hệ số.<br>✗ x = 2 và y = 6: quên dấu của hệ số; −3 · 2 = −6 chứ không phải 6.<br>✗ x = −3 và y = −9: âm nhân âm phải ra dương, −3 · (−3) = 9 chứ không phải −9.<br>✗ x = 3 và y = 0: cộng hệ số với x (3 + (−3) = 0) thay vì nhân; đúng phải là −3 · 3 = −9."
+    },
+    {
+      "id": "m6-220",
+      "ch": 6,
+      "topic": "Đại lượng tỉ lệ thuận",
+      "q": "Một máy bơm bơm được 250 lít nước mỗi phút. Gọi V (lít) là lượng nước bơm được trong t (phút). Công thức liên hệ giữa V và t là gì?",
+      "options": [
+        "V = 250 + t",
+        "V = t/250",
+        "V = 250t",
+        "V = 250/t"
+      ],
+      "correct": 2,
+      "answer": "V = 250t",
+      "explanation": "🔑 <b>Lý thuyết:</b> Khi một đại lượng bằng đại lượng kia nhân với một số không đổi k, hai đại lượng đó tỉ lệ thuận và công thức là y = kx. Lượng nước bơm được tỉ lệ thuận với thời gian bơm, hệ số tỉ lệ là lượng nước bơm mỗi phút. (SGK tr. 13)<br>🔑 <b>Áp dụng:</b> Mỗi phút bơm 250 lít, nên t phút bơm được 250 · t lít: <b>V = 250t</b> ✔ Thử với t = 2: V = 500 lít, đúng là hai lần 250; với t = 10: V = 2 500 lít. Tỉ số V/t luôn bằng 250.<br>✗ V = 250 + t: cộng thay vì nhân; với t = 2 cho V = 252 lít, trong khi thực tế bơm 2 phút phải được 500 lít.<br>✗ V = t/250: chia ngược; với t = 2 cho V = 0,008 lít, vô lý.<br>✗ V = 250/t: đây là công thức tỉ lệ nghịch, bơm càng lâu lượng nước càng ít — trái với thực tế."
+    }
+  ]
+}
