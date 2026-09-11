@@ -294,7 +294,16 @@ function warsStopClock() {
   }
 }
 
-function abandonWars() { warsStopClock(); _warsQuiz = null; warsLockScreen(false); }
+function abandonWars() {
+  warsStopClock();
+  _warsQuiz = null;
+  warsLockScreen(false);
+  // No round left → the checkpoint is cleared at once (js/app.js), the way
+  // finishWars and abandonMathQuiz do. It used to wait for the next tap's
+  // coalesced save, so a round abandoned from the bottom bar was still on
+  // offer for a moment — and for good, if the page was reloaded first.
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
+}
 
 // SILENT teardown for a profile change. abandonWars() already stops the clock
 // and restores the bottom bar, but it is only reached from openMathSection and
