@@ -39,6 +39,20 @@ if any of them drifts. Commit your own code FIRST; deploy.sh now refuses to
 run with an uncommitted working tree, because it builds the bundle from that
 tree and would otherwise ship code that exists in no commit.
 
+**What a deploy ships (since 4.17.90):** `scripts/build-dist.js` builds
+`.cf-dist` with every `js/**/*.js` and `css/**/*.css` esbuild-minified (no
+bundling, top-level names kept — the app calls functions by global name);
+`sw.js`, `functions/` and `phaser.min.js` are copied verbatim. Then
+`scripts/build-sw-manifest.js --root .cf-dist` rewrites the hash values in
+sw.js's `PRECACHE` block (first 16 hex of SHA-256 of the SHIPPED bytes) and
+that sw.js goes into the release commit. The service worker serves every
+manifest URL cache-first (zero network on a warm open), verifies each
+download against the manifest, and on an update copies unchanged entries
+from the previous cache — a release downloads only what changed.
+**Adding a file the app needs offline = adding its URL to the PRECACHE
+block** (hash placeholder `'0000000000000000'`; deploy fills it in).
+`npm run verify -- --live` proves the live manifest matches the live bytes.
+
 ### `npm run verify` — the independent check
 
 `npm test` proves the code does what its author thought. `npm run verify`
@@ -684,6 +698,8 @@ node scripts/build-grammar-vocab-data.js      # js/grammar-vocab-data.js from da
 node scripts/validate-grammar-vocab.js data/grammar-vocab/gv-*.json
 node scripts/build-phonetics-data.js          # js/phonetics-data.js + js/phonetics-lessons.js from data/phonetics/
 node scripts/validate-phonetics.js data/phonetics/ph-*.json   # (--lesson for data/phonetics/lessons/)
+node scripts/build-dist.js --out /tmp/dist        # the minified bundle deploy.sh ships (size table)
+node scripts/build-sw-manifest.js --check         # are sw.js's precache hashes current for this tree?
 ```
 
 ---
