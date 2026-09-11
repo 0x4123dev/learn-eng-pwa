@@ -694,13 +694,22 @@ function screenPlaybook() {
     mathHubScreen: {
       title: 'Toán: chọn phần, rồi chọn chương',
       open: async (h) => { h.sandbox.switchScreen('mathHubScreen'); await settle(); },
-      prove: (h, el) => {
+      prove: async (h, el) => {
         must(wiredTo(el, 'openMathSection').length >= 2, 'the hub offers its sections');
         h.sandbox.openMathSection('toan7');
         must(wiredTo(h.el('mathHubScreen'), 'openMathSection').length >= 2, 'Toán 7 offers both semesters');
         const listed = [];
         for (const semester of ['hk1', 'hk2']) {
           h.sandbox.openMathSection(semester);
+          // Học kì 2 is its own lazy group (js/lazy-data.js GROUP_FILES) that
+          // arrives after the view opens; the placeholder must give way to
+          // the chapter list once it has.
+          if (semester === 'hk2') {
+            must(h.sandbox.LazyData.filesFor('mathHk2').length === 4, 'HK2 must be a lazy group of its own');
+            await settle();
+            must(h.sandbox.LazyData.ready('mathHk2'), 'the HK2 group did not arrive');
+            must(!/Đang tải bài/.test(h.el('mathHubScreen').textContent), 'HK2 is still showing its placeholder after loading');
+          }
           const chapters = h.sandbox.mathChapters();
           must(chapters.length > 0, semester + ' has no chapters — its bank did not arrive');
           const text = squash(h.el('mathHubScreen').textContent);

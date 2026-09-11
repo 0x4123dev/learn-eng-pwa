@@ -385,6 +385,12 @@ var DailyTask = (function () {
         && LazyData.filesFor(entry.go.screen).length) {
       try { await LazyData.ensure(entry.go.screen); } catch (e) { /* offline: the start fn will no-op */ }
     }
+    // Some destinations sit behind a lazy group of their own inside the
+    // screen (Toán 7 Học kì 2). The calls below run synchronously, so the
+    // group must be here before startMathExam('hk2-…') looks the paper up.
+    if (entry.go.group && typeof LazyData !== 'undefined' && typeof LazyData.ensure === 'function') {
+      try { await LazyData.ensure(entry.go.group); } catch (e) {}
+    }
     for (const call of entry.go.calls || []) {
       const fn = globalThis[call[0]];
       if (typeof fn !== 'function') continue;

@@ -219,13 +219,21 @@ function restoreStudyCheckpoint() {
     // Grammar and Exam checkpoints need a bank that no longer loads at
     // startup (js/lazy-data.js). Reopening the question before it lands would
     // show an empty one, so wait — and come back here when it arrives.
-    const needsBank = {
+    const needsBankOne = {
         grammar: 'grammarScreen', exam: checkpoint.screen || 'examScreen',
         phrases: 'phrasesScreen', collocation: 'phrasesScreen',
         wordform: 'wordformScreen', rewrite: 'rewriteScreen',
         math: 'mathHubScreen', mathwars: 'mathHubScreen',
     }[checkpoint.kind];
-    if (needsBank && typeof LazyData !== 'undefined' && !LazyData.ready(needsBank)) {
+    // A Toán 7 Học kì 2 quiz also needs its own lazy group (js/lazy-data.js
+    // GROUP_FILES): the questions travel inside the checkpoint, but hints,
+    // the wrong-answer list and the result screen look them up by id.
+    const s0 = checkpoint.state || {};
+    const needsHk2 = checkpoint.kind === 'math'
+        && (Number(s0.chapter) >= 6 || /^hk2-/.test(String(s0.examId || '')));
+    const needsBank = needsBankOne ? [needsBankOne].concat(needsHk2 ? ['mathHk2'] : []) : null;
+    const notReady = needsBank && typeof LazyData !== 'undefined' ? needsBank.filter(g => !LazyData.ready(g)) : [];
+    if (notReady.length) {
         // Ask ONCE. LazyData resolves even when a bank fails to download (a
         // tab must render what it has rather than spin), so `ready()` can
         // still be false when this promise settles — and re-arming on that was
@@ -235,7 +243,7 @@ function restoreStudyCheckpoint() {
         // cleared, to a frozen page on EVERY open for the next 24 hours.
         if (_studyCheckpointWaited) { clearStudyCheckpoint(); return false; }
         _studyCheckpointWaited = true;
-        LazyData.ensure(needsBank).then(() => restoreStudyCheckpoint());
+        Promise.all(notReady.map(g => LazyData.ensure(g))).then(() => restoreStudyCheckpoint());
         return false;
     }
     _studyCheckpointRestored = true;

@@ -857,7 +857,7 @@ suite('toán 4: an admin can hand out Pre and Mix separately', () => {
 suite('toán 4: the bank is lazy, and reachable', () => {
   test('it is a lazy bank of the Toán tab, not a startup script', () => {
     assert.truthy(src('js/lazy-data.js').includes("'js/math4-data.js'"),
-      'the bank must be listed in SCREEN_FILES.mathHubScreen');
+      'the bank must be listed in the lazy loader (SCREEN_FILES.mathHubScreen)');
     assert.truthy(!src('index.html').includes('math4-data.js'),
       '500 questions must not be parsed on every app open');
     assert.truthy(src('sw.js').includes("'/js/math4-data.js'"),

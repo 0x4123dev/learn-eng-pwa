@@ -37,9 +37,21 @@ var LazyData = (() => {
     mathHubScreen: ['js/math-data.js', 'js/math-exams.js', 'js/math-lessons.js',
                     'js/math-luythua.js', 'js/math-source-exams.js',
                     'js/math-fight-bank.js', 'js/mathwars-bank.js',
-                    'js/math-data-hk2.js', 'js/math-exams-hk2.js',
-                    'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js',
                     'js/math4-data.js'],
+  });
+
+  // Banks that belong to a SECTION of a screen rather than the screen itself.
+  // Học kì 2 of Toán 7 is ~3 MB — the 900-question bank, 10 mock exams and 30
+  // real school papers — and it used to ride in the Math tab's group, so a
+  // child opening Math for Toán 4 or Math Wars paid to parse all of it. Now
+  // it lands when Học kì 2 (or an HK2 daily task, or an HK2 checkpoint) is
+  // actually opened. Same loader, same "resolve even on failure" contract;
+  // ensure()/ready()/filesFor() accept these keys exactly like a screen id.
+  // The service worker still precaches every file here, so offline is
+  // unaffected — only WHEN they are parsed changed.
+  const GROUP_FILES = Object.freeze({
+    mathHk2: ['js/math-data-hk2.js', 'js/math-exams-hk2.js',
+              'js/math-lessons-hk2.js', 'js/math-source-exams-hk2.js'],
   });
 
   // The offline dictionary belongs to no single screen — a child can tap any
@@ -49,7 +61,7 @@ var LazyData = (() => {
   const loaded = Object.create(null);   // file → true once it has run
   const inFlight = Object.create(null); // file → Promise
 
-  function filesFor(screenId) { return SCREEN_FILES[screenId] || []; }
+  function filesFor(key) { return SCREEN_FILES[key] || GROUP_FILES[key] || []; }
 
   // A bank that fails to download must not leave the tab spinning forever:
   // resolve either way and let the tab render what it has. The service worker
@@ -122,7 +134,7 @@ var LazyData = (() => {
   function ensureDictionary() { return Promise.all(DICTIONARY.map(loadFile)); }
   function dictionaryReady() { return DICTIONARY.every(f => loaded[f]); }
 
-  return { SCREEN_FILES, DICTIONARY, ensure, ready, warmAll, warmSoon, filesFor,
+  return { SCREEN_FILES, GROUP_FILES, DICTIONARY, ensure, ready, warmAll, warmSoon, filesFor,
     ensureDictionary, dictionaryReady };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = LazyData;

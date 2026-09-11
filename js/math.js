@@ -987,6 +987,16 @@ function renderMathHome() {
       + `<div class="phrases-wrap">${renderMathHistoryHTML()}</div>`;
     return;
   }
+  // Học kì 2's banks are their own lazy group (js/lazy-data.js GROUP_FILES):
+  // ~3 MB that the Math tab no longer parses unless HK2 is opened. Draw a
+  // placeholder, fetch, and redraw when it lands — but only if the child is
+  // still standing here, or a slow download would repaint over another view.
+  if (_mathView === 'hk2' && typeof LazyData !== 'undefined' && !LazyData.ready('mathHk2')) {
+    screen.innerHTML = mathHeaderHTML('TOÁN 7 · HỌC KÌ 2', 'Ôn công thức Toán 7', 'Đang tải ngân hàng câu hỏi…', 'openMathSection(\'toan7\')')
+      + '<div class="phrases-wrap"><div class="lazy-loading" role="status" style="text-align:center"><p>Đang tải bài Học kì 2…</p></div></div>';
+    LazyData.ensure('mathHk2').then(() => { if (_mathView === 'hk2') renderMathHome(); });
+    return;
+  }
   if (_mathView === 'toan4') { screen.innerHTML = renderToan4MenuHTML(); return; }
   if (_mathView === 'cuuchuong') {
     screen.innerHTML = (typeof renderMathTablesMenuHTML === 'function')
@@ -1079,7 +1089,7 @@ function renderToan7MenuHTML() {
       ${(typeof MATH_QUESTIONS_HK2 !== 'undefined' && MATH_QUESTIONS_HK2.length) ? `
       <button class="phrases-cta" onclick="openMathSection('hk2')">
         <span class="phrases-cta-icon">②</span>
-        <span class="phrases-cta-text"><strong>Học kì 2</strong><small>${MATH_QUESTIONS_HK2.length} câu · Luyện tập, Lý thuyết, Đề thi</small></span>
+        <span class="phrases-cta-text"><strong>Học kì 2</strong><small>${_mathHk2Bank().length ? _mathHk2Bank().length + ' câu · ' : ''}Luyện tập, Lý thuyết, Đề thi</small></span>
         <span class="phrases-cta-arrow">›</span>
       </button>` : `
       <button class="phrases-cta locked" disabled aria-disabled="true">
@@ -1275,6 +1285,12 @@ function openMathSection(v) {
   // Remember the level the child came from BEFORE moving, so ‹ out of the
   // history list lands back on Toán 7 or Toán 4 — whichever opened it.
   if (v === 'history' && (_mathView === 'toan7' || _mathView === 'toan4')) _mathHistoryBack = _mathView;
+  // The history list looks HK2 entries up by id (câu hay sai, review). Fetch
+  // that group in the background and redraw once, so an HK2 entry opened
+  // straight after a reload is not a review with no question text.
+  if (v === 'history' && typeof LazyData !== 'undefined' && !LazyData.ready('mathHk2')) {
+    LazyData.ensure('mathHk2').then(() => { if (_mathView === 'history') renderMathHome(); });
+  }
   if (v === 'toan7' || v === 'toan4') _mathHistoryBack = v;
   _mathView = (known.indexOf(v) === -1) ? 'home' : v;
   // Leaving Math Wars must stop its clock, or it keeps ticking behind a screen

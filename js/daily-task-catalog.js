@@ -120,8 +120,11 @@ var DailyTaskCatalog = (function () {
     ['hk2-src-30', 'HK2 THCS Xuân Thới Thượng'],
   ];
 
-  function entry(key, group, label, activityType, match, screen, calls, size, baseKey) {
+  function entry(key, group, label, activityType, match, screen, calls, size, baseKey, lazyGroup) {
     const e = { key, group, label, activityType, match, go: { screen, calls } };
+    // A destination behind a lazy sub-group of its screen (js/lazy-data.js
+    // GROUP_FILES): js/daily-task.js ensures it before running the calls.
+    if (lazyGroup) e.go.group = lazyGroup;
     // size = how many questions the child was asked for. The count already in
     // the activity title is the SCREEN count and cannot stand in for it: a
     // 10-question Phrases practice records 20, and Word form records 30, 31 or
@@ -200,18 +203,21 @@ var DailyTaskCatalog = (function () {
   ENTRIES.push(entry('math-exam:any-hk1', 'math-exam', 'Toán 7 · Đề thi HK1 bất kỳ', 'math',
     { detail: { field: 'examId', prefix: 'hk1-' } }, 'mathHubScreen', [['openMathSection', 'hk1'], ['switchMathSubTab', 'exams']]));
   ENTRIES.push(entry('math-exam:any-hk2', 'math-exam', 'Toán 7 · Đề thi HK2 bất kỳ', 'math',
-    { detail: { field: 'examId', prefix: 'hk2-' } }, 'mathHubScreen', [['openMathSection', 'hk2'], ['switchMathSubTab', 'exams']]));
+    { detail: { field: 'examId', prefix: 'hk2-' } }, 'mathHubScreen', [['openMathSection', 'hk2'], ['switchMathSubTab', 'exams']],
+    undefined, undefined, 'mathHk2'));
   // startMathExam(id) looks the id up in the semester the child is standing
   // in, so the deep link opens that semester first — an HK2 id from the HK1
   // view would simply do nothing.
   for (const [id, title] of EXAM_TITLES) {
     const sem = id.startsWith('hk2-') ? 'hk2' : 'hk1';
     ENTRIES.push(entry('math-exam:' + id, 'math-exam', 'Toán 7 · Đề thi ' + title, 'math',
-      { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['openMathSection', sem], ['startMathExam', id]]));
+      { detail: { field: 'examId', value: id } }, 'mathHubScreen', [['openMathSection', sem], ['startMathExam', id]],
+      undefined, undefined, sem === 'hk2' ? 'mathHk2' : undefined));
   }
   for (const [num, title, sem] of CHAPTER_TITLES) {
     ENTRIES.push(entry('math-chapter:' + num, 'math-chapter', 'Toán 7 · Chương ' + num + ' · ' + title, 'math',
-      { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['openMathSection', sem], ['startMathQuiz', num]]));
+      { detail: { field: 'chapter', value: num }, noField: 'examId' }, 'mathHubScreen', [['openMathSection', sem], ['startMathQuiz', num]],
+      undefined, undefined, sem === 'hk2' ? 'mathHk2' : undefined));
   }
   // Math Wars rides the 'math' activity type too, but its title is its identity
   // ('Math Wars · 8/10 câu') and it carries neither examId nor chapter — so it
