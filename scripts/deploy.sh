@@ -135,12 +135,15 @@ echo "▸ building .cf-dist (minified)…"
 node scripts/build-dist.js --out .cf-dist
 if [ "$BUMP" = "1" ]; then
   echo "▸ hashing the precache manifest over the shipped bytes…"
-  node scripts/build-sw-manifest.js --root .cf-dist
+  # --sw is explicit: with --root pointing at the bundle, the builder would
+  # otherwise rewrite .cf-dist/sw.js — which the cp below then overwrote with
+  # the repo's placeholders, and 4.17.90 shipped an all-zero manifest.
+  node scripts/build-sw-manifest.js --root .cf-dist --sw sw.js
 else
   # --no-bump ships an already-committed sw.js: its manifest must already
   # describe these exact bytes, or a device would verify the download
   # against the wrong hash and refuse to cache it.
-  if ! node scripts/build-sw-manifest.js --root .cf-dist --check; then
+  if ! node scripts/build-sw-manifest.js --root .cf-dist --sw sw.js --check; then
     echo "✗ sw.js's precache manifest is stale for what is about to ship." >&2
     echo "  Deploy with -m \"…\" so the bump step rehashes and commits it." >&2
     exit 1
