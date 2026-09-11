@@ -511,8 +511,10 @@ suite('word audio: deploy ships the recordings', () => {
         const redirects = read('_redirects');
         assert.truthy(/^\/audio\/words\/\* https:\/\/eng-pwa-audio\.pages\.dev\/audio\/words\/:splat 301$/m
             .test(redirects), '_redirects must forward /audio/words/* to the audio project');
-        assert.truthy(/cp [^\n]*\b_redirects\b/.test(read('scripts/deploy.sh')),
-            'and deploy.sh must actually ship _redirects');
+        // The bundle is built by scripts/build-dist.js (deploy.sh runs it);
+        // _redirects is one of its required root files.
+        assert.truthy(/'_redirects'/.test(read('scripts/build-dist.js')) && /node scripts\/build-dist\.js/.test(read('scripts/deploy.sh')),
+            'and the dist build deploy.sh runs must actually ship _redirects');
     });
 
     test('the audio cache never stores an SPA-fallback page as a recording', () => {
