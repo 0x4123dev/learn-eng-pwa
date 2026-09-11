@@ -424,6 +424,30 @@ function pbForgetProfile() {
   if (screen) { screen.innerHTML = ''; delete screen.dataset.pbLobbySig; }
 }
 
+// A battle in progress — a live match against another child, who is waiting
+// for the next volley. The game hides nothing: the bottom bar stays up while
+// the castles trade shots, so one mis-tap on Home used to walk out of the
+// match with no question asked, and the game object kept running behind the
+// other tab (its RAF loop, the realtime link, the 5 s poll). switchScreen
+// asks through isPetBattleActive() and, on a yes, ends it through
+// abandonPetBattle(). The server still owns the battle: the reaper scores an
+// abandoned one on remaining HP, and a child who comes back while it is
+// still 'active' is put straight back into it by renderPetBattle().
+function isPetBattleActive() {
+  return !!(_pbGame && !_pbGame.finished);
+}
+function abandonPetBattle() {
+  _pbShowingResult = false;
+  try { pbCloseDogInfo(); } catch (e) {}
+  try { pbCloseBattleHire(); } catch (e) {}
+  _pbStopPolling();
+  _pbCloseLink();
+  if (_pbGame && _pbGame.destroy) { try { _pbGame.destroy(); } catch (e) {} }
+  _pbGame = null;
+  const screen = typeof document !== 'undefined' ? document.getElementById('petBattleScreen') : null;
+  if (screen) { screen.innerHTML = ''; delete screen.dataset.pbLobbySig; }
+}
+
 function closePetBattle() {
   _pbShowingResult = false;
   pbCloseDogInfo();

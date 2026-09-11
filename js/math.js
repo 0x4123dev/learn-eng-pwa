@@ -968,6 +968,13 @@ function renderMathHome() {
   // the next tab change asked "con đang làm dở bài Toán" about work the child
   // could no longer see. Redraw the question instead.
   if (_mathQuiz) { renderMathQuestion(); return; }
+  // And for a live Đấu Toán. Repainting the tab calls MathFight.open(), which
+  // resets the module to its list view and lets the next refresh restart the
+  // bout from question 1 with every answer wiped — the other child and the
+  // server still hold the real round, but this device forgets what it had
+  // answered. The bout already owns #mfRoot, so there is nothing to draw.
+  if (_mathView === 'fight' && typeof MathFight !== 'undefined' &&
+      MathFight.isFighting && MathFight.isFighting()) return;
   if (_mathView === 'wars') {
     screen.innerHTML = mathHeaderHTML('MATH WARS', 'Tính nhẩm ngược đồng hồ',
       'Cộng – trừ – nhân – chia, ' + (typeof warsLengthLabel === 'function' ? warsLengthLabel() : '5 phút') + ' mỗi trận.', 'openMathSection(\'home\')')
