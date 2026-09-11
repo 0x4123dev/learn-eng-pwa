@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightRaidEnabled, safeJson, barracksLedger, withBarracksLedger } from '../_night-raid.js';
+import { NR, nightRaidEnabled, safeJson, barracksTraining, applyBarracksTraining, withBarracksTraining } from '../_night-raid.js';
 import { farmClock } from '../_farm.js';
 
 // Harvest everything that is ready: fields by their 24h clock, barracks and
@@ -15,25 +15,25 @@ export async function onRequestPost({request,env}) {
   if(!row)return err('Hãy mở Nhà Cướp Đêm trước',409);
   const now=Date.now(),{dayCount,ctx}=await farmClock(env,auth.uid,now),Farm=NR.farmRules;
   const rawLayout=safeJson(row.layout_json,{cells:[],soldiers:0});
-  const layout=NR.normalizeLayout(rawLayout,{dayCount,today:ctx.today,now}),ledger=barracksLedger(rawLayout,layout);
+  const layout=NR.normalizeLayout(rawLayout,{dayCount,today:ctx.today,now});
+  let training=barracksTraining(rawLayout,layout);
   let coins=Math.max(0,+row.lootable_coins||0),soldiers=layout.soldiers,collectedCoins=0,collectedSoldiers=0,wilted=false;const harvested=[];
   const pay=amount=>{if(coins>=100000)return 0;const gain=Math.min(amount,100000-coins);coins+=gain;collectedCoins+=gain;return gain;};
+  // One account has one barracks clock. Clicking any ready barracks collects
+  // the whole synchronized batch; each owned barracks contributes one soldier,
+  // and the shared cycle advances exactly once.
+  const barracks=Farm.allCells(layout).filter(cell=>NR.itemById(cell.type)?.producer==='soldier');
+  const requestedBarracks=uid&&barracks.some(cell=>cell.uid===uid);
+  if(training&&barracks.length&&(!uid||requestedBarracks)){
+    const progress=Farm.barracksProgress(training,dayCount);
+    if(progress.ready){soldiers+=barracks.length;collectedSoldiers+=barracks.length;training={lastDay:Math.min(dayCount,training.lastDay+progress.goal),soldierCycles:training.soldierCycles+1};}
+  }
+  applyBarracksTraining(layout,training);
   // Returns the cells that STAY on the board (harvested crops leave it).
   const sweep=(cells,zone)=>cells.filter(cell=>{
     const def=NR.itemById(cell.type);if(!def||(uid&&cell.uid!==uid))return true;
     if(def.producer==='coins'){if(cell.readyAt<=now&&pay(def.yield))cell.readyAt=now+def.productionMs;return true;}
-    if(def.producer==='soldier'){
-      const progress=Farm.barracksProgress(cell,dayCount);
-      if(progress.ready){
-        soldiers++;collectedSoldiers++;
-        // Consume only this soldier's requirement. Any later completed days
-        // stay banked toward the next cycle instead of disappearing merely
-        // because the child did not collect immediately.
-        cell.lastDay=Math.min(dayCount,Math.max(0,Math.trunc(+cell.lastDay||0))+progress.goal);
-        cell.soldierCycles=Math.max(0,Math.trunc(+cell.soldierCycles||0))+1;
-      }
-      return true;
-    }
+    if(def.producer==='soldier')return true;
     if(def.kind==='crop'){
       if(!Farm.progress(cell,dayCount).ripe)return true;
       if(Farm.isWilted(cell,ctx)){wilted=true;return true;}
@@ -63,14 +63,14 @@ export async function onRequestPost({request,env}) {
     // Layout ONLY: lootable_coins is never touched here. A raid may be
     // deducting from that column right now, which is exactly why the harvest
     // below adds its coins as a delta instead of an absolute number.
-    const fixed=JSON.stringify(withBarracksLedger(layout,ledger));
+    const fixed=JSON.stringify(withBarracksTraining(layout,training));
     if(fixed!==String(row.layout_json||''))await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,updated_at=? WHERE user_id=?').bind(fixed,now,auth.uid).run();
     return json({ok:true,nothingReady:true,wilted,layout,coins,soldiers,dayCount,ctx});
   }
   // Add the harvest as a DELTA instead of writing back the absolute number:
   // the old read-modify-write raced with a concurrent collect or a raid
   // deduction, and whichever wrote last silently undid the other's money.
-  await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=MIN(100000,MAX(0,lootable_coins)+?),updated_at=? WHERE user_id=?').bind(JSON.stringify(withBarracksLedger(layout,ledger)),collectedCoins,now,auth.uid).run();
+  await env.DB.prepare('UPDATE night_raid_homes SET layout_json=?,lootable_coins=MIN(100000,MAX(0,lootable_coins)+?),updated_at=? WHERE user_id=?').bind(JSON.stringify(withBarracksTraining(layout,training)),collectedCoins,now,auth.uid).run();
   const fresh=await env.DB.prepare('SELECT lootable_coins FROM night_raid_homes WHERE user_id=?').bind(auth.uid).first();
   return json({ok:true,layout,coins:Math.max(0,Math.trunc(+((fresh&&fresh.lootable_coins))||0)),soldiers,collectedCoins,collectedSoldiers,harvested,wilted,dayCount,ctx});
 }

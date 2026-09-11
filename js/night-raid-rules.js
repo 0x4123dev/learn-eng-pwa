@@ -164,8 +164,9 @@ var NightRaidRules = (() => {
   // the castle, 6 for an extra farm); `occupied` is seeded with the castle on
   // the main board and empty on a farm; `allowDefense` is false on a farm.
   // `seenUids` is shared across every board of one layout. A uid is a cell's
-  // identity: home.js PUT keeps the SERVER's day/lastDay/soldierCycles/readyAt for a cell
-  // whose uid it already knows, so a layout carrying the same uid twice let a
+  // identity: home.js PUT keeps the SERVER's crop/field clocks for a cell whose
+  // uid it already knows, and stamps every barracks from the account's shared
+  // training clock. A layout carrying the same uid twice once let a
   // client clone one grown plant into a whole field of ripe ones — 20 xu of
   // pumpkin seed harvested as 11,520 xu, and lootable_coins is what other
   // children steal from, so it minted money into the shared economy. A uid may

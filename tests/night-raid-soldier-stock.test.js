@@ -27,15 +27,29 @@ const collectHandler = () => loadModule('functions/api/night-raid/collect.js');
 
 const READY = 1;                       // đã tới hạn từ lâu
 const barracks = (n, readyAt) => Array.from({ length: n }, (_, i) => ({
-    type: 'training-barracks', gx: i * 3, gy: 0, tier: 1,
+    type: 'training-barracks', gx: i * 8, gy: 0, tier: 1,
     uid: 'p-barracks-' + i, readyAt,
 }));
 
 async function seed(world, user, soldiers, readyAt) {
-    const body = { layout: { cells: barracks(2, readyAt), soldiers, dogLane: 2 }, teammates: [], dogLevel: 5 };
-    const r = await world.call(homeHandler().onRequestPut,
-        { url: '/api/night-raid/home', method: 'PUT', token: user.token, body });
-    assert.truthy(r.ok, 'seed thất bại: ' + JSON.stringify(r.data));
+    // Create the empty home, fund its server mirror, then buy the two
+    // barracks through the same explicit operation used by the builder.
+    await world.call(homeHandler().onRequestPut, {
+        url: '/api/night-raid/home', method: 'PUT', token: user.token,
+        body: { layout: { cells: [], soldiers: 0, dogLane: 2 }, dogLevel: 5, coins: 16000 },
+    });
+    let r;
+    for (const cell of barracks(2, readyAt)) {
+        const row = world.db.prepare('SELECT layout_json FROM night_raid_homes WHERE user_id=?').get(user.uid);
+        const layout = NR.normalizeLayout(JSON.parse(row.layout_json));
+        layout.cells.push(cell);
+        r = await world.call(homeHandler().onRequestPut, {
+            url: '/api/night-raid/home', method: 'PUT', token: user.token,
+            body: { layout, dogLevel: 5,
+                barracksPurchase: { uid: cell.uid, gx: cell.gx, gy: cell.gy } },
+        });
+        assert.truthy(r.ok, 'seed thất bại: ' + JSON.stringify(r.data));
+    }
     // Kho lính KHÔNG bao giờ đến từ client — kể cả ở lần PUT đầu tiên của một
     // nhà mới, vốn là đúng chỗ hở mà cái trần 10 lính cũ đang bịt: một acc
     // chưa từng mở Cướp Đêm PUT soldiers: 1000000 là thắng mọi nhà. Fixture

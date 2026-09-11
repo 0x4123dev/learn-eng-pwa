@@ -50,9 +50,9 @@ suite('farm server: the clock is the reward table', () => {
 
 const homeHandler = () => loadModule('functions/api/night-raid/home.js');
 const plantHandler = () => loadModule('functions/api/night-raid/plant.js');
-async function putHome(world, kid, layout, coins) {
+async function putHome(world, kid, layout, coins, extra) {
   return world.call(homeHandler().onRequestPut, { url: '/api/night-raid/home', method: 'PUT', token: kid.token,
-    body: { layout, dogLevel: 1, castleSkin: 'stone-keep', coins: coins == null ? 500 : coins } });
+    body: Object.assign({ layout, dogLevel: 1, castleSkin: 'stone-keep', coins: coins == null ? 500 : coins },extra||{}) });
 }
 async function plant(world, kid, cropId, gx, gy, zone) {
   world.db.prepare(`INSERT INTO farm_seed_inventory (user_id, crop_id, quantity) VALUES (?, ?, 1)
@@ -94,7 +94,7 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, TWO_AGO, YESTERDAY, TODAY);
-    await putHome(world, kid, { cells: [] });
+    await putHome(world, kid, { cells: [] },20000);
     world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({ cells: [
       { type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-legacy01', readyAt: 5 }], soldiers: 0, dogLane: 2 }), kid.uid);
     const g = await world.call(homeHandler().onRequestGet, { url: '/api/night-raid/home', method: 'GET', token: kid.token });
@@ -104,20 +104,20 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     assert.equal(legacy.soldierCycles, 0, 'existing barracks begin the new progressive schedule at soldier 1');
     assert.equal(legacy.readyAt, undefined);
     assert.equal(g.data.dayCount, 3);
-    await putHome(world, kid, { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-legacy01', lastDay: 0, soldierCycles: 999 }, { type: 'training-barracks', gx: 4, gy: 4, uid: 'p-newone01', soldierCycles: 999 }] });
+    await putHome(world, kid, { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-legacy01', lastDay: 0, soldierCycles: 999 }, { type: 'training-barracks', gx: 8, gy: 8, uid: 'p-newone01', soldierCycles: 999 }] },undefined,{barracksPurchase:{uid:'p-newone01',gx:8,gy:8}});
     const cells = stored(world, kid.uid).cells;
     assert.equal(cells.find(c => c.uid === 'p-legacy01').lastDay, 2, 'the client may not rewind lastDay');
     assert.equal(cells.find(c => c.uid === 'p-legacy01').soldierCycles, 0, 'the client may not skip training cycles');
     const added=cells.find(c => c.type==='training-barracks'&&c.uid!=='p-legacy01');
     assert.truthy(/^p-/.test(added.uid), 'a new barracks receives a server uid');
     assert.falsy(added.uid==='p-newone01', 'the client does not choose a new barracks identity');
-    assert.equal(added.lastDay, 3);
+    assert.equal(added.lastDay, 2, 'a later barracks joins the first barracks clock');
     assert.equal(added.soldierCycles, 0);
   });
-  test('barracks: rotating or omitting uid cannot reset an expensive training cycle', async () => {
+  test('barracks: every building shares the first clock, even across uid changes or rebuilding', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
-    await putHome(world, kid, { cells: [] });
+    await putHome(world, kid, { cells: [] },10000);
     world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({ cells: [
       { type: 'training-barracks', gx: 0, gy: 8, tier: 1, uid: 'p-owned0001', lastDay: 3, soldierCycles: 4 },
       { type: 'training-barracks', gx: 8, gy: 8, tier: 1, lastDay: 2, soldierCycles: 3 },
@@ -125,21 +125,50 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     await putHome(world, kid, { cells: [
       { type: 'training-barracks', gx: 0, gy: 8, uid: 'p-rotated01', lastDay: 0, soldierCycles: 0 },
       { type: 'training-barracks', gx: 8, gy: 8 },
-    ] });
+    ] },10000);
     const cells=stored(world,kid.uid).cells.filter(c=>c.type==='training-barracks');
     const known=cells.find(c=>c.uid==='p-owned0001'),legacy=cells.find(c=>c.uid!=='p-owned0001');
     assert.truthy(known, 'the server restores the known barracks uid');
     assert.deepEqual([known.lastDay,known.soldierCycles],[3,4]);
     assert.equal(FarmRules.barracksProgress(known,8).goal,5,'after soldier 4 the next soldier still costs five task-days');
     assert.truthy(/^p-/.test(legacy.uid), 'a uid-less stored barracks is migrated to a server uid');
-    assert.deepEqual([legacy.lastDay,legacy.soldierCycles],[2,3], 'uid-less legacy progress survives sync');
-    await putHome(world,kid,{cells:[]});
+    assert.deepEqual([legacy.lastDay,legacy.soldierCycles],[3,4], 'the later barracks is synchronized to the first');
+    await putHome(world,kid,{cells:[]},10000);
     assert.equal(stored(world,kid.uid).cells.length,0,'the builder may remove the barracks');
-    await putHome(world,kid,{cells:[{type:'training-barracks',gx:0,gy:8,uid:'p-another01'}]});
+    await putHome(world,kid,{cells:[{type:'training-barracks',gx:0,gy:8,uid:'p-another01'}]},undefined,{barracksPurchase:{uid:'p-another01',gx:0,gy:8}});
     const rebuilt=stored(world,kid.uid).cells[0];
-    assert.equal(rebuilt.uid,'p-owned0001','delete then recreate restores the server-owned lineage');
     assert.deepEqual([rebuilt.lastDay,rebuilt.soldierCycles],[3,4]);
-    assert.equal(FarmRules.barracksProgress(rebuilt,8).goal,5,'delete then recreate cannot earn cheap first soldiers again');
+    assert.equal(FarmRules.barracksProgress(rebuilt,8).goal,5,'delete then recreate keeps the shared account clock');
+  });
+  test('barracks: generic sync cannot add one; an explicit purchase debits the mirrored wallet', async () => {
+    const world=createWorld(),kid=await world.createUser({allowBot:true});
+    await putHome(world,kid,{cells:[]},20000);
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({cells:[{type:'training-barracks',gx:8,gy:8,tier:1,uid:'p-first0001',lastDay:4,soldierCycles:3}],soldiers:0,dogLane:2}),kid.uid);
+    const proposed={cells:[{type:'training-barracks',gx:8,gy:8,uid:'p-first0001'},{type:'training-barracks',gx:0,gy:8,uid:'p-free00001'}]};
+    const free=await putHome(world,kid,proposed,20000);
+    assert.equal(free.status,409,'a layout PUT is not a free barracks purchase');
+    assert.equal(stored(world,kid.uid).cells.length,1);
+    assert.equal(mirror(world,kid.uid),20000);
+    const paid=await putHome(world,kid,proposed,99999,{barracksPurchase:{uid:'p-free00001',gx:0,gy:8}});
+    assert.truthy(paid.ok,JSON.stringify(paid.data));
+    assert.equal(stored(world,kid.uid).cells.length,2);
+    assert.equal(mirror(world,kid.uid),12000,'the purchase uses the pre-request mirror and debits 8000');
+    assert.deepEqual(stored(world,kid.uid).cells.map(c=>[c.lastDay,c.soldierCycles]),[[4,3],[4,3]]);
+  });
+  test('barracks: replacing an upgraded defense refunds half of every tier paid', async () => {
+    for(const [tier,expected] of [[2,19500],[3,20000]]){
+      const world=createWorld(),kid=await world.createUser({allowBot:true});
+      await putHome(world,kid,{cells:[]},20000);
+      world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({cells:[
+        {type:'water-cannon',gx:8,gy:8,tier}
+      ],soldiers:0,dogLane:2}),kid.uid);
+      const uid='p-refund00'+tier;
+      const paid=await putHome(world,kid,{cells:[{type:'training-barracks',gx:8,gy:8,uid}]},99999,
+        {barracksPurchase:{uid,gx:8,gy:8}});
+      assert.truthy(paid.ok,JSON.stringify(paid.data));
+      assert.equal(mirror(world,kid.uid),expected,'tier '+tier+' refund must match the builder totalPaid calculation');
+      assert.equal(stored(world,kid.uid).cells[0].type,'training-barracks');
+    }
   });
   test('fields: a second new rice field is dropped, but four owned ones survive', async () => {
     const world = createWorld();
@@ -302,6 +331,25 @@ suite('farm server: collect', () => {
     assert.equal(fifth.data.collectedSoldiers, 1, 'soldier 5 needs five completed task-days');
     cell = stored(world, kid.uid).cells[0];
     assert.deepEqual([cell.soldierCycles, cell.lastDay], [5, 8]);
+  });
+  test('all barracks train on one clock; a later purchase joins it and a claim collects one synchronized batch', async () => {
+    const {world,kid}=await farmWorld([TWO_AGO],[
+      {type:'training-barracks',gx:0,gy:8,tier:1,uid:'p-first0001',lastDay:0,soldierCycles:0},
+      {type:'training-barracks',gx:8,gy:8,tier:1,uid:'p-second001',lastDay:99,soldierCycles:99},
+    ]);
+    const first=await collect(world,kid,'p-first0001');
+    assert.equal(first.data.collectedSoldiers,2,'two synchronized barracks produce two soldiers');
+    let cells=stored(world,kid.uid).cells.filter(c=>c.type==='training-barracks');
+    assert.deepEqual(cells.map(c=>[c.lastDay,c.soldierCycles]),[[1,1],[1,1]]);
+    world.db.prepare('UPDATE night_raid_homes SET lootable_coins=10000 WHERE user_id=?').run(kid.uid);
+    await putHome(world,kid,{cells:cells.concat({type:'training-barracks',gx:0,gy:5,uid:'p-later0001',lastDay:999,soldierCycles:999})},undefined,{barracksPurchase:{uid:'p-later0001',gx:0,gy:5}});
+    cells=stored(world,kid.uid).cells.filter(c=>c.type==='training-barracks');
+    assert.deepEqual(cells.map(c=>[c.lastDay,c.soldierCycles]),[[1,1],[1,1],[1,1]],'a later purchase immediately joins the shared progress');
+    doneOn(world,kid.uid,YESTERDAY,TODAY);
+    const later=cells[2].uid,second=await collect(world,kid,later);
+    assert.equal(second.data.collectedSoldiers,3,'clicking any barracks collects the whole synchronized batch');
+    assert.equal(second.data.soldiers,5);
+    assert.deepEqual(stored(world,kid.uid).cells.filter(c=>c.type==='training-barracks').map(c=>[c.lastDay,c.soldierCycles]),[[3,2],[3,2],[3,2]]);
   });
   test('fields still pay by their 24h clock', async () => {
     const { world, kid } = await farmWorld([], [{ type: 'rice-field', gx: 0, gy: 0, tier: 1, uid: 'p-rice0001', readyAt: 0 }, { type: 'fish-pond', gx: 4, gy: 0, tier: 1, uid: 'p-fish0001', readyAt: Date.now() + 3600000 }]);
@@ -467,9 +515,9 @@ suite('farm server: a legacy barracks must finish converting', () => {
   // EVERY legacy cell, and lastDay = dayCount means "no task-day is banked" —
   // so a barracks whose old 24h timer had ALREADY run out silently lost the
   // soldier the child had earned and not yet collected. Up to two per child at
-  // rollout, 20 DAM each. An elapsed timer now converts one day BEHIND; one
-  // still counting keeps today's stamp, because it was owed nothing.
-  test('a legacy timer that had already elapsed keeps the soldier it earned; one still counting does not', async () => {
+  // rollout, 20 DAM each. The original (first) barracks is authoritative when
+  // multiple legacy timers are folded into the new shared clock.
+  test('the first legacy barracks becomes the shared clock for every later barracks', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     await putHome(world, kid, { cells: [] }, 100);
@@ -482,10 +530,10 @@ suite('farm server: a legacy barracks must finish converting', () => {
     assert.truthy(g.ok, JSON.stringify(g.data));
     const seen = g.data.home.layout.cells;
     assert.equal(seen.find(c => c.uid === 'p-elapsed1').lastDay, 1, 'the elapsed one converts one day behind: its soldier is still owed');
-    assert.equal(seen.find(c => c.uid === 'p-counting1').lastDay, 2, 'the one still counting owes nothing, so it converts to today');
+    assert.equal(seen.find(c => c.uid === 'p-counting1').lastDay, 1, 'the later barracks joins the first barracks progress');
     const r = await collect(world, kid);
-    assert.equal(r.data.collectedSoldiers, 1, 'exactly one soldier on the very next collect');
-    assert.equal(stored(world, kid.uid).soldiers, 1);
+    assert.equal(r.data.collectedSoldiers, 2, 'both synchronized barracks pay in the same batch');
+    assert.equal(stored(world, kid.uid).soldiers, 2);
     assert.equal(mirror(world, kid.uid), 100, 'soldiers are not coins');
     const after = stored(world, kid.uid).cells;
     assert.equal(after.find(c => c.uid === 'p-elapsed1').lastDay, 2, 'and it is stamped collected');

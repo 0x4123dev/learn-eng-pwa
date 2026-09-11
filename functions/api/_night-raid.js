@@ -134,23 +134,28 @@ export function nightDate(now=Date.now()) {
 export function safeJson(value, fallback) {
   try { const parsed=JSON.parse(value); return parsed==null?fallback:parsed; } catch(e) { return fallback; }
 }
-// Generic layout PUTs predate server-owned barracks purchases, so deleting a
-// barracks and adding it back could otherwise reset its progressive cost. Keep
-// a private lineage ledger inside layout_json. normalizeLayout deliberately
-// drops this key, so it is never sent to the client or accepted from a PUT.
-const BARRACKS_LEDGER_KEY='__barracksLedger';
-export function barracksLedger(raw,layout) {
-  const byUid=new Map(),put=entry=>{
-    const uid=String(entry&&entry.uid||'');if(!/^p-[a-z0-9]{8,40}$/i.test(uid))return;
-    byUid.set(uid,{uid,lastDay:Math.max(0,Math.trunc(+entry.lastDay||0)),soldierCycles:Math.max(0,Math.trunc(+entry.soldierCycles||0)),gx:Math.max(0,Math.trunc(+entry.gx||0)),gy:Math.max(0,Math.trunc(+entry.gy||0))});
-  };
-  for(const entry of Array.isArray(raw&&raw[BARRACKS_LEDGER_KEY])?raw[BARRACKS_LEDGER_KEY]:[])put(entry);
-  for(const cell of NR.farmRules.allCells(layout||{}))if(NR.itemById(cell.type)?.producer==='soldier')put(cell);
-  return Array.from(byUid.values()).slice(-10);
+// Every barracks on one account shares one training clock. It lives privately
+// inside layout_json: normalizeLayout deliberately drops this key, so a client
+// cannot rewind it. The old per-barracks ledger is read once as a rollout
+// bridge; its first entry is the original barracks and becomes the shared clock.
+const BARRACKS_TRAINING_KEY='__barracksTraining',OLD_BARRACKS_LEDGER_KEY='__barracksLedger';
+export function barracksTraining(raw,layout) {
+  const saved=raw&&raw[BARRACKS_TRAINING_KEY],oldLedger=Array.isArray(raw&&raw[OLD_BARRACKS_LEDGER_KEY])?raw[OLD_BARRACKS_LEDGER_KEY]:[];
+  const cells=NR.farmRules.allCells(layout||{}).filter(cell=>NR.itemById(cell.type)?.producer==='soldier');
+  const source=saved&&Number.isFinite(+saved.lastDay)&&Number.isFinite(+saved.soldierCycles)?saved:(oldLedger[0]||cells[0]);
+  if(!source)return null;
+  return {lastDay:Math.max(0,Math.trunc(+source.lastDay||0)),soldierCycles:Math.max(0,Math.trunc(+source.soldierCycles||0))};
 }
-export function withBarracksLedger(layout,prior) {
+export function applyBarracksTraining(layout,training) {
+  if(!training)return layout;
+  for(const cell of NR.farmRules.allCells(layout||{}))if(NR.itemById(cell.type)?.producer==='soldier'){
+    cell.lastDay=training.lastDay;cell.soldierCycles=training.soldierCycles;delete cell.readyAt;
+  }
+  return layout;
+}
+export function withBarracksTraining(layout,training) {
   const stored=Object.assign({},layout);
-  stored[BARRACKS_LEDGER_KEY]=barracksLedger({[BARRACKS_LEDGER_KEY]:prior},layout);
+  if(training)stored[BARRACKS_TRAINING_KEY]={lastDay:Math.max(0,Math.trunc(+training.lastDay||0)),soldierCycles:Math.max(0,Math.trunc(+training.soldierCycles||0))};
   return stored;
 }
 export function randomRaidId() {

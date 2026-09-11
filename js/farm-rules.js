@@ -83,11 +83,11 @@ var FarmRules = (() => {
       return sum + (b ? b.price : 0);
     }, 0);
   }
-  // Each barracks trains progressively: soldier 1 needs one completed Daily
+  // The shared barracks clock trains progressively: soldier 1 needs one completed Daily
   // Task day, soldier 2 needs two, then three, four, and five for soldier 5
   // and every soldier after it. `lastDay` is the number of task-days already
-  // consumed; `soldierCycles` is how many soldiers this barracks has produced.
-  // Keeping those counters separate means extra days stay banked if the child
+  // consumed; `soldierCycles` is how many synchronized batches the account's
+  // barracks have produced. Keeping those counters means extra days stay banked if the child
   // does not open the estate immediately after a soldier becomes ready.
   function barracksGoal(cell) {
     return Math.min(5, int(cell && cell.soldierCycles, 0, 1e9) + 1);

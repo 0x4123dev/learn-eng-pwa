@@ -1,5 +1,5 @@
 import { requireAuth, json, err } from '../_lib.js';
-import { NR, nightRaidEnabled, safeJson, barracksLedger, withBarracksLedger } from '../_night-raid.js';
+import { NR, nightRaidEnabled, safeJson, barracksTraining, applyBarracksTraining, withBarracksTraining } from '../_night-raid.js';
 import { farmClock } from '../_farm.js';
 import { seedStatus } from '../_daily-task.js';
 
@@ -15,7 +15,7 @@ export async function onRequestPost({request,env}) {
   if(!row)return err('Hãy mở khu vườn trước',409);
   const now=Date.now(),clock=await farmClock(env,auth.uid,now);
   const rawLayout=safeJson(row.layout_json,{cells:[],soldiers:0});
-  const layout=NR.normalizeLayout(rawLayout,{dayCount:clock.dayCount,today:clock.ctx.today,now}),ledger=barracksLedger(rawLayout,layout);
+  const layout=NR.normalizeLayout(rawLayout,{dayCount:clock.dayCount,today:clock.ctx.today,now}),training=barracksTraining(rawLayout,layout);
   const zone=Math.max(0,Math.trunc(+body.zone||0));
   const target=zone===0?layout.cells:(layout.farms[zone-1]&&layout.farms[zone-1].cells);
   const grid=zone===0?NR.BUILD_GRID:NR.farmRules.FARM_PLOT.size;
@@ -29,11 +29,12 @@ export async function onRequestPost({request,env}) {
   const uid='c-'+crypto.randomUUID().replace(/-/g,'').slice(0,20);
   target.push({type:crop.id,gx,gy,uid,day:clock.dayCount,at:clock.ctx.today});
   const clean=NR.normalizeLayout(layout,{dayCount:clock.dayCount,today:clock.ctx.today,now});
+  applyBarracksTraining(clean,training);
   const homeLevel=NR.homeLevel(clean,Math.max(1,Math.trunc(+row.dog_level||1)));
   const results=await env.DB.batch([
     env.DB.prepare('UPDATE farm_seed_inventory SET quantity=quantity-1,updated_at=datetime(\'now\') WHERE user_id=? AND crop_id=? AND quantity>0').bind(auth.uid,crop.id),
     env.DB.prepare(`UPDATE night_raid_homes SET layout_json=?,home_level=?,updated_at=? WHERE user_id=? AND changes()>0`)
-      .bind(JSON.stringify(withBarracksLedger(clean,ledger)),homeLevel,now,auth.uid),
+      .bind(JSON.stringify(withBarracksTraining(clean,training)),homeLevel,now,auth.uid),
   ]);
   if(!(results&&results[0]&&results[0].meta&&results[0].meta.changes>0))return err('Con chưa có hạt '+crop.name.vi,409);
   const seeds=await seedStatus(env,auth.uid,clock.ctx.today,clock.ctx.doneToday);

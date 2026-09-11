@@ -106,8 +106,8 @@ Thuần trưng bày, không sản xuất, không phòng thủ. Là phần "xây 
 
 - Ruộng cũ và ao cá không đổi cơ chế, không héo, hình như cũ. Đây là nguồn xu thụ động duy nhất còn lại, tối đa 300 xu một ngày, nhỏ hơn thưởng nhiệm vụ.
 - **Giới hạn 1 chỉ áp cho mua mới.** Bé đang có 2 đến 4 ruộng cùng loại giữ nguyên tất cả; SHOP chỉ từ chối mua thêm khi đã có từ 1 trở lên. `normalizeLayout` **không** xóa ô vượt giới hạn mới; nó giữ tối đa 4 như trước. Giới hạn mua mới kiểm ở SHOP và ở server PUT cho ô có `uid` chưa từng có.
-- Trại lính lưu `lastDay` là số ngày nhiệm vụ đã dùng và `soldierCycles` là số lính trại đã sản xuất, thay `readyAt`. Lính thứ 1/2/3/4 lần lượt cần thêm 1/2/3/4 ngày hoàn thành Daily Task; lính thứ 5 và mọi lính sau cần thêm 5 ngày. Khi nhận, chỉ cộng `lastDay` đúng số ngày của mốc hiện tại để phần ngày dư tiếp tục được tính cho mốc sau.
-- Chuyển đổi trại lính cũ: lần đầu server đọc một trại còn `readyAt`, bỏ `readyAt` và bắt đầu `soldierCycles = 0`. Trại có đồng hồ cũ đã hết giữ lại một ngày đang nợ (`lastDay = dayCount - 1`); trại còn đếm bắt đầu từ `lastDay = dayCount`. Ruộng cũ không chuyển gì.
+- Mọi trại lính của một tài khoản dùng chung `lastDay` và `soldierCycles` do server giữ. Trại mua sau nhập ngay vào tiến độ của trại đầu tiên. Đợt lính thứ 1/2/3/4 lần lượt cần thêm 1/2/3/4 ngày hoàn thành Daily Task; đợt thứ 5 và mọi đợt sau cần thêm 5 ngày. Khi nhận, mỗi trại đang sở hữu cho 1 lính, đồng hồ chung chỉ tiến một đợt và phần ngày dư được giữ cho đợt sau.
+- Chuyển đổi trại lính cũ: trại đầu tiên làm đồng hồ chuẩn; các trại sau đồng bộ theo nó. Trại đầu có đồng hồ cũ đã hết giữ lại một ngày đang nợ (`lastDay = dayCount - 1`); nếu còn đếm thì bắt đầu từ `lastDay = dayCount`. Ruộng cũ không chuyển gì.
 
 ### 3.8 Thu hoạch
 
@@ -139,7 +139,7 @@ Mọi thứ nằm trong `night_raid_homes.layout_json` và đi qua ba endpoint �
 
 | File | Vai trò |
 |---|---|
-| `js/farm-rules.js` (mới) | Bảng `CROPS`, `FARM_BUILDINGS`, `FARM_PLOT = { price: 10000, size: 6, max: 3 }`; `byId`; `progress(cell, dayCount)`; `isWilted(cell, ctx)` với `ctx = { today, doneYesterday, doneToday }`; `spriteFor(cell, dayCount, ctx)` trả tên file; `farmValue(layout)`; `barracksReady(cell, dayCount)`. UMD như `night-raid-rules.js`, server import được. **Kho lính không có trần**, nên `barracksReady` không nhận `soldiers`: sẵn là `dayCount > cell.lastDay`, hết. (`SOLDIER_SANITY_CAP` trong `night-raid-rules.js` chỉ chặn dữ liệu hỏng, không phải trần chơi.) |
+| `js/farm-rules.js` (mới) | Bảng `CROPS`, `FARM_BUILDINGS`, `FARM_PLOT = { price: 10000, size: 6, max: 3 }`; `byId`; `progress(cell, dayCount)`; `isWilted(cell, ctx)` với `ctx = { today, doneYesterday, doneToday }`; `spriteFor(cell, dayCount, ctx)` trả tên file; `farmValue(layout)`; `barracksProgress(clock, dayCount)` cho mốc chung 1/2/3/4/5/5… UMD như `night-raid-rules.js`, server import được. **Kho lính không có trần**; `SOLDIER_SANITY_CAP` chỉ chặn dữ liệu hỏng. |
 | `js/farm-art-manifest.js` (mới) | Danh sách mọi file hình nông trại, kèm cỡ và mô tả. Dùng bởi `spriteFor`, `sw.js`, script dựng tranh, test tồn tại. |
 | `js/night-raid-rules.js` | `normalizeLayout` nhận ô nông trại (tra `FarmRules.byId`) và mảng `farms`; trại lính dùng `lastDay` thay `readyAt`, chuyển ô cũ; ruộng cũ giữ `readyAt` và `PRODUCTION_MS`; `maxOwned` của ba ruộng đổi thành `buyMax: 1`, giữ `maxOwned: 4` cho chuẩn hóa; trại lính `maxOwned: 10`. Trận đánh, `combatPower`, `homeLevel` giữ nguyên vì ô nông trại không nằm trong `DEFENSES`. |
 | `js/night-raid.js` | SHOP có tab; chip chuyển khu; vẽ cây theo ngày và héo; huy hiệu "còn N ngày", "THU HOẠCH", "HÉO"; trại lính ghi "chờ nhiệm vụ" thay đếm giờ; SHOP từ chối ruộng thứ hai; nút THU HOẠCH đổi trạng thái; TRỒNG LẠI NHƯ CŨ; thanh nhiệm vụ trên đầu màn xây nhà; lớp nền khô khi héo. |
@@ -190,7 +190,7 @@ Không thêm mục vào `daily-task-catalog.js`: hái vườn không phải vi�
 
 - Server: `home.js` và `collect.js` đã kiểm `nightRaidEnabled`. `farm` trong `/api/me/daily-tasks` chỉ có khi cờ bật.
 - Máy bé: cả khu Cướp Đêm đã theo `appState.allowBot`. Dải vườn trên trang Daily Task và dòng ở khoảnh khắc thưởng chỉ hiện khi có cờ.
-- Mất mạng: vẽ từ bản sao với `farmDayCount`, `farmCtx` đã lưu; mua và hái tắt, ghi "Cần mạng để trồng và hái". `localCollect` dự phòng tuân cùng luật qua `barracksReady`, `readyAt` và `ctx` đã lưu, giống hiện nay.
+- Mất mạng: vẽ từ bản sao với `farmDayCount`, `farmCtx` đã lưu. Lính và đồng hồ chung là dữ liệu server; thu lính khi offline không cộng tạm mà giữ nguyên trạng thái sẵn sàng và yêu cầu thử lại.
 
 ## 5. Màn hình
 
