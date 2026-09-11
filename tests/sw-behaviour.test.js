@@ -145,6 +145,38 @@ async function install(worker) {
   return waited;
 }
 const ASSET_COUNT = (SW_SRC.match(/const PRECACHE\s*=\s*\{([\s\S]*?)\};/)[1].match(/'\/[^']*'\s*:/g) || []).length;
+const CACHE_NAME = SW_SRC.match(/const CACHE_NAME = '([^']+)'/)[1];
+const MANIFEST_KEY = SW_SRC.match(/const MANIFEST_KEY = '([^']+)'/)[1];
+const PRECACHE_MIN_RATIO = Number(SW_SRC.match(/const PRECACHE_MIN_RATIO = ([\d.]+)/)[1]);
+// Install fetches by path ('/js/app.js'); a fetch event carries the full URL.
+const pathOf = u => (u.startsWith('http') ? new URL(u).pathname : u);
+// The fetch handler stores its copy after respondWith resolves (open → hash →
+// put); give those microtasks and timers a moment to land.
+const settle = () => new Promise(r => setTimeout(r, 20));
+async function activate(worker) {
+  let waited = null;
+  worker.fire('activate', { waitUntil: p => { waited = p; } });
+  await waited;
+}
+// The generation cache as the worker sees it: only what THIS install wrote.
+const currentStore = worker => worker.sandbox.caches._stores.get(CACHE_NAME) || new Map();
+// A previous release's cache, complete: every manifest URL with the body
+// `bodyFor` describes, plus (unless told otherwise) the manifest record that
+// release's install would have written.
+async function seedPreviousCache(worker, name, bodyFor, opts) {
+  opts = opts || {};
+  const prev = await worker.sandbox.caches.open(name);
+  const manifest = {};
+  for (const u of MANIFEST_URLS) {
+    const text = bodyFor(u);
+    manifest[u] = sha16(text);
+    await prev.put(u, body(text, u.endsWith('.html') || u === '/' ? 'text/html' : 'application/javascript'));
+  }
+  if (!opts.noManifest) {
+    await prev.put(MANIFEST_KEY, new Response(JSON.stringify(manifest), { headers: { 'Content-Type': 'application/json' } }));
+  }
+  return prev;
+}
 
 suite('service worker: install is best effort, never all-or-nothing', () => {
   test('one 404 among 153 assets no longer throws the whole update away', async () => {
@@ -226,6 +258,10 @@ suite('service worker: install is best effort, never all-or-nothing', () => {
     // landing mid-deploy, wrote HTML under a .js key and poisoned it for the
     // life of this CACHE_NAME. `nosniff` hides that online; offline the tab
     // renders empty, and if the key is /js/app.js the app does not boot.
+    //
+    // /js/exam-data.js is a manifest key, but nothing was installed, so this
+    // is the straggler path: cache miss → network. The guard here is what
+    // stands between a mid-deploy request and a poisoned entry.
     const worker = bootWorker(() => body('<!doctype html>fallback', 'text/html'));
     const event = fetchEvent(ORIGIN + '/js/exam-data.js');
     worker.fire('fetch', event);
@@ -296,7 +332,10 @@ suite('service worker: offline always lands on the app', () => {
     const worker = bootWorker(() => body('<!doctype html>app', 'text/html'), { bodyFor: () => '<!doctype html>app' });
     await install(worker);
     const worker2 = worker;
-    // Now offline.
+    // Now offline. '/' is a manifest key, so the invite link is answered
+    // cache-first (ignoreSearch) before the offline fallback is even reached
+    // — the same query-string blindness, one step earlier. The fallback's own
+    // handling of an uncached navigation is covered by the next test.
     worker2.sandbox.fetch = () => Promise.reject(new Error('offline'));
     const event = fetchEvent(ORIGIN + '/?ketban=Na', { mode: 'navigate' });
     worker2.fire('fetch', event);
@@ -310,12 +349,17 @@ suite('service worker: offline always lands on the app', () => {
     // The live site answers /index.html with a 308 to '/', so that cached
     // entry is `redirected: true` — and handing a redirected response to a
     // navigation is a network error, i.e. the browser's error page again.
+    //
+    // This used to navigate to /?ketban=Na. '/' is a manifest key now, so
+    // that request is served cache-first and never reaches the fallback; the
+    // shell branch is only for a navigation to a path the cache does not
+    // hold at all — a bookmark from a URL shape the app no longer uses.
     const worker = bootWorker(() => body('<!doctype html>app', 'text/html'));
     const cache = await worker.sandbox.caches.open('flashlingo-test');
     await cache.put('/', body('ROOT COPY', 'text/html'));
     await cache.put('/index.html', body('REDIRECTED COPY', 'text/html'));
     worker.sandbox.fetch = () => Promise.reject(new Error('offline'));
-    const event = fetchEvent(ORIGIN + '/?ketban=Na', { mode: 'navigate' });
+    const event = fetchEvent(ORIGIN + '/lesson/12', { mode: 'navigate' });
     worker.fire('fetch', event);
     const res = await event.responded;
     assert.equal(await res.text(), 'ROOT COPY', 'the clean entry must win');
@@ -335,27 +379,232 @@ suite('service worker: offline always lands on the app', () => {
 
 suite('service worker: lie-fi does not stall a fully cached app', () => {
   test('a hanging network gives way to the cache instead of waiting it out', async () => {
-    const worker = bootWorker(url => body('cached body', 'application/javascript'), { bodyFor: () => 'cached body' });
+    const worker = bootWorker(url =>
+      body(pathOf(url) === '/admin.html' ? 'admin page' : 'cached body',
+        pathOf(url).endsWith('.html') ? 'text/html' : 'application/javascript'),
+      { bodyFor: () => 'cached body' });
     await install(worker);
+    // /admin.html is not a manifest key (it is the adult's page, not the
+    // child's app), so it is only ever cached by the fetch path. Visit it
+    // once online so there is a copy to fall back to.
+    const warm = fetchEvent(ORIGIN + '/admin.html');
+    worker.fire('fetch', warm);
+    await warm.responded;
+    await settle();
     // The network now accepts the connection and never answers — the exact
     // shape of a Wi-Fi with no upstream.
     worker.sandbox.fetch = () => new Promise(() => {});
-    const started = Date.now();
-    const event = fetchEvent(ORIGIN + '/js/app.js');
+
+    // A manifest URL is cache-first: it does not wait on the network AT ALL,
+    // which is how a fully cached app paints in a second on lie-fi.
+    let started = Date.now();
+    const app = fetchEvent(ORIGIN + '/js/app.js');
+    worker.fire('fetch', app);
+    const appRes = await app.responded;
+    const appWaited = Date.now() - started;
+    assert.equal(await appRes.text(), 'cached body', 'the installed copy is served');
+    assert.truthy(appWaited < 1000, 'without waiting out any timeout: ' + appWaited + ' ms');
+
+    // Everything else is still network-first, so this one races the timeout
+    // — but it is a timeout of seconds, not the OS socket's tens of seconds.
+    started = Date.now();
+    const event = fetchEvent(ORIGIN + '/admin.html');
     worker.fire('fetch', event);
     const res = await event.responded;
     const waited = Date.now() - started;
     assert.truthy(res && res.ok, 'the cached copy is served');
+    assert.equal(await res.text(), 'admin page');
     assert.truthy(waited < 10000, 'and within seconds, not an OS socket timeout: ' + waited + ' ms');
   });
 
   test('a fast network still wins — the cache is the fallback, not the default', async () => {
-    const worker = bootWorker(() => body('FRESH', 'application/javascript'));
+    // Manifest URLs are cache-first now (see the "served from the device"
+    // suite), so this holds for everything ELSE the app fetches from its own
+    // origin: /admin.html is same-origin and not a PRECACHE key, and it
+    // stays network-first with the cache as the fallback.
+    assert.falsy(MANIFEST_URLS.includes('/admin.html'), 'this test needs a NON-manifest URL');
+    const worker = bootWorker(url =>
+      body(pathOf(url) === '/admin.html' ? 'FRESH' : 'ok', pathOf(url).endsWith('.html') ? 'text/html' : 'application/javascript'));
     await install(worker);
-    const event = fetchEvent(ORIGIN + '/js/app.js');
+    // A stale copy is on the device; the network must beat it anyway.
+    const cache = await worker.sandbox.caches.open(CACHE_NAME);
+    await cache.put('/admin.html', body('STALE', 'text/html'));
+    const before = worker.requested.length;
+    const event = fetchEvent(ORIGIN + '/admin.html');
     worker.fire('fetch', event);
     const res = await event.responded;
     assert.equal(await res.text(), 'FRESH', 'network-first is still network-first');
+    assert.equal(worker.requested.length, before + 1, 'and it did go to the network');
+  });
+});
+
+suite('service worker: manifest URLs are served from the device, verified', () => {
+  // Every URL in PRECACHE was hash-verified at install, so the bytes on the
+  // device ARE the release. Asking the network again is a round-trip per
+  // file (~70 on a cold open) that can only answer 304 — or, on lie-fi, hang.
+  const js = text => body(text, 'application/javascript');
+
+  test('after a good install a manifest URL is answered with zero fetches', async () => {
+    let installed = false;
+    // Once installed, the network would hand back something newer; the
+    // worker must not even ask.
+    const worker = bootWorker(() => js(installed ? 'FRESH' : 'ok'));
+    await install(worker);
+    installed = true;
+    const before = worker.requested.length;
+    assert.equal(before, ASSET_COUNT, 'the install fetched every entry once');
+
+    const event = fetchEvent(ORIGIN + '/js/app.js');
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(await res.text(), 'ok', 'the verified copy from install, not the network');
+    await settle();
+    assert.equal(worker.requested.length, before, 'no fetch was made for it');
+  });
+
+  test('a straggler the install could not get falls through to the network and is cached once its bytes match', async () => {
+    let installing = true;
+    const worker = bootWorker(url =>
+      (installing && pathOf(url) === '/js/app.js') ? new Response('nope', { status: 404 }) : js('ok'));
+    await install(worker);
+    installing = false;
+    assert.falsy(currentStore(worker).has('/js/app.js'), 'the 404 left a hole in the install');
+
+    const before = worker.requested.length;
+    const event = fetchEvent(ORIGIN + '/js/app.js');
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(await res.text(), 'ok', 'the page is served from the network');
+    assert.equal(worker.requested.length, before + 1, 'exactly one request, for the straggler');
+    await settle();
+    const stored = currentStore(worker).get('/js/app.js');
+    assert.truthy(stored, 'and the hole is filled');
+    assert.equal(await stored.text(), 'ok', 'with the bytes the manifest names');
+  });
+
+  test('a straggler whose bytes do not match the manifest is served but NOT stored', async () => {
+    // A half-propagated deploy: this release's sw.js, last release's
+    // /js/app.js still on the edge. The child gets a working page either
+    // way; the cache must not learn a body that the manifest does not vouch
+    // for, or the mismatch would outlive the deploy.
+    let installing = true;
+    const worker = bootWorker(url => {
+      if (pathOf(url) !== '/js/app.js') return js('ok');
+      return installing ? new Response('nope', { status: 404 }) : js('LAST RELEASE');
+    });
+    await install(worker);
+    installing = false;
+
+    const event = fetchEvent(ORIGIN + '/js/app.js');
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(await res.text(), 'LAST RELEASE', 'served to the page as the network answered');
+    await settle();
+    assert.falsy(currentStore(worker).has('/js/app.js'), 'but never written under a verified key');
+    assert.falsy(await worker.sandbox.caches.match(ORIGIN + '/js/app.js'), 'in any cache');
+  });
+
+  test('the manifest record is written at install and is never served to a page', async () => {
+    const worker = bootWorker(url =>
+      // What the live site says to a path that is not a file: the SPA fallback.
+      pathOf(url) === MANIFEST_KEY ? body('<!doctype html>fallback', 'text/html') : js('ok'));
+    await install(worker);
+    const record = currentStore(worker).get(MANIFEST_KEY);
+    assert.truthy(record, 'install wrote ' + MANIFEST_KEY);
+    const expected = {};
+    for (const u of MANIFEST_URLS) expected[u] = sha16('ok');
+    assert.deepEqual(await record.clone().json(), expected, 'holding the PRECACHE table this worker installed from');
+    assert.equal(worker.requested.length, ASSET_COUNT, 'the record itself was never fetched');
+
+    // No page asks for it; if one did, it is a normal miss: network path,
+    // not the record.
+    const event = fetchEvent(ORIGIN + MANIFEST_KEY);
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(worker.requested.length, ASSET_COUNT + 1, 'the request went to the network');
+    assert.equal(await res.text(), '<!doctype html>fallback', 'and the page got the network answer, not the record');
+    await settle();
+    const after = currentStore(worker).get(MANIFEST_KEY);
+    assert.deepEqual(await after.clone().json(), expected, 'the record survived the page fetch (SPA fallback is never cached)');
+  });
+});
+
+suite('service worker: an update downloads only what changed', () => {
+  const js = text => body(text, 'application/javascript');
+  const PREV = 'flashlingo-v999';
+
+  test('a first install with no previous cache fetches every entry', async () => {
+    const worker = bootWorker(() => js('ok'));
+    await install(worker);
+    assert.equal(worker.requested.length, ASSET_COUNT, 'one request per manifest URL');
+    assert.deepEqual([...new Set(worker.requested.map(pathOf))].sort(), [...MANIFEST_URLS].sort(), 'each of them exactly once');
+    assert.equal(currentStore(worker).size, ASSET_COUNT + 1, 'every entry stored, plus the manifest record');
+  });
+
+  test('a release that changed two files downloads two files; the rest are copied from the previous cache', async () => {
+    const CHANGED = ['/js/app.js', '/js/night-raid.js'];
+    const bodyFor = u => (CHANGED.includes(u) ? 'NEW ' + u : 'ok');
+    // The network serves the changed files correctly and would serve the
+    // WRONG bytes for anything else — so an unchanged entry that ends up in
+    // the new cache with the right body can only have come from the copy.
+    const worker = bootWorker(url =>
+      js(CHANGED.includes(pathOf(url)) ? bodyFor(pathOf(url)) : 'NOT WHAT THE MANIFEST SAYS'), { bodyFor });
+    await seedPreviousCache(worker, PREV, () => 'ok');
+
+    await install(worker);
+    assert.deepEqual(worker.requested.map(pathOf).sort(), [...CHANGED].sort(), 'exactly the two changed files were requested');
+    const store = currentStore(worker);
+    assert.equal(store.size, ASSET_COUNT + 1, 'the new generation is complete');
+    for (const u of MANIFEST_URLS) {
+      assert.truthy(store.has(u), 'present in the new cache: ' + u);
+      assert.equal(await store.get(u).clone().text(), bodyFor(u), 'right bytes for ' + u);
+    }
+    assert.deepEqual(await store.get(MANIFEST_KEY).clone().json(),
+      Object.fromEntries(MANIFEST_URLS.map(u => [u, sha16(bodyFor(u))])),
+      'the new manifest record is the one the NEXT install will copy from');
+
+    await activate(worker);
+    assert.falsy(worker.sandbox.caches._stores.has(PREV), 'a complete update retires the previous generation');
+  });
+
+  test('a previous cache from before manifests causes a full download, not a crash', async () => {
+    const worker = bootWorker(() => js('ok'));
+    // A pre-manifest release: every file, no record of what it installed.
+    await seedPreviousCache(worker, PREV, () => 'ok', { noManifest: true });
+    await install(worker);                       // must RESOLVE
+    assert.equal(worker.requested.length, ASSET_COUNT, 'nothing can be trusted, so everything is fetched');
+    assert.equal(currentStore(worker).size, ASSET_COUNT + 1, 'and the new generation is complete');
+    await activate(worker);
+    assert.falsy(worker.sandbox.caches._stores.has(PREV), 'the old cache is retired as usual');
+  });
+
+  test('a downloaded body that does not match the manifest is a failed entry, like a 404', async () => {
+    const worker = bootWorker(url => js(pathOf(url) === '/js/app.js' ? 'WRONG BYTES' : 'ok'));
+    await seedPreviousCache(worker, PREV, () => 'old');   // every hash differs → full download
+    await install(worker);
+    const store = currentStore(worker);
+    assert.falsy(store.has('/js/app.js'), 'the mismatch is not stored');
+    assert.equal(store.size, ASSET_COUNT - 1 + 1, 'everything else is, plus the record');
+    await activate(worker);
+    assert.falsy(worker.sandbox.caches._stores.has(PREV), 'one failure of ' + ASSET_COUNT + ' is within PRECACHE_MIN_RATIO');
+  });
+
+  test('a release where more than 10% of the bytes are wrong keeps the previous cache', async () => {
+    // The threshold is the same one that guards a half-finished download:
+    // a bad deploy (or a CDN serving a mix of two releases) must not retire
+    // the last generation that worked.
+    const tooMany = Math.floor(ASSET_COUNT * (1 - PRECACHE_MIN_RATIO)) + 1;
+    const WRONG = new Set(MANIFEST_URLS.slice(0, tooMany));
+    const worker = bootWorker(url => js(WRONG.has(pathOf(url)) ? 'WRONG BYTES' : 'ok'));
+    await seedPreviousCache(worker, PREV, () => 'old');
+    await install(worker);                       // still resolves: best effort
+    const store = currentStore(worker);
+    for (const u of WRONG) assert.falsy(store.has(u), 'not stored: ' + u);
+    assert.equal(store.size, ASSET_COUNT - tooMany + 1, 'the good entries are kept for the retry');
+    await activate(worker);
+    assert.truthy(worker.sandbox.caches._stores.has(PREV), 'the cache that still works survives');
+    const kept = await (await worker.sandbox.caches.open(PREV)).match('/js/app.js');
+    assert.equal(await kept.text(), 'old', 'intact');
   });
 });
 
