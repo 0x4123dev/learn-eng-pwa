@@ -1280,6 +1280,25 @@ function openMathSection(v) {
         if (!confirm('Con đang đấu toán với bạn.\nThoát bây giờ là XỬ THUA và mất tiền cược.\n\nVẫn thoát?')) return;
         if (MathFight.forfeitNow) MathFight.forfeitNow();
     }
+    // And the two clocks: a Math Wars or bảng cửu chương round is scored only
+    // when it ends, so a hub back button reached mid-round costs the whole
+    // round. The bottom bar already asks (switchScreen); this is the same
+    // question for the roads inside the tab. Cancel leaves the round exactly
+    // as it was — the clock is still running and nothing below runs.
+    if (v !== 'wars' && typeof isWarsActive === 'function' && isWarsActive()) {
+        const left = (typeof warsClockText === 'function' && typeof warsLeftMs === 'function')
+            ? warsClockText(warsLeftMs()) : '';
+        if (typeof confirm === 'function'
+            && !confirm('Con đang trong trận Math Wars' + (left ? ', còn ' + left : '') + '.\n'
+                      + 'Ra bây giờ thì trận này không được tính điểm.\n\nVẫn ra chứ?')) return;
+    }
+    if (v !== 'cuuchuong' && typeof isMathTablesActive === 'function' && isMathTablesActive()) {
+        const left = (typeof mathTablesClockText === 'function' && typeof mathTablesLeftMs === 'function')
+            ? mathTablesClockText(mathTablesLeftMs()) : '';
+        if (typeof confirm === 'function'
+            && !confirm('Con đang làm bảng cửu chương' + (left ? ', còn ' + left : '') + '.\n'
+                      + 'Ra bây giờ thì lượt này không được tính điểm.\n\nVẫn ra chứ?')) return;
+    }
   const known = ['home', 'toan7', 'toan4', 'cuuchuong', 'hk1', 'hk2', 'history', 'wars', 'fight'];
   if (v === 'fight' && !mathFightUnlocked()) v = 'home';
   // Remember the level the child came from BEFORE moving, so ‹ out of the
