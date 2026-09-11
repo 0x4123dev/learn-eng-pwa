@@ -523,8 +523,16 @@ self.addEventListener('fetch', event => {
   // the install could not fetch, and falls through to the network path below.
   const manifestHash = url.origin === self.location.origin ? PRECACHE[url.pathname] : undefined;
   if (manifestHash !== undefined && url.pathname !== MANIFEST_KEY) {
+    // THIS generation's cache only — never caches.match() across all of
+    // them. An install that came up short (a weak 4G, a 34 MB first
+    // download) keeps the previous generation's cache alive on purpose
+    // (PRECACHE_MIN_RATIO), and a match across caches would then serve last
+    // release's file for the key it never fetched — cache-first, so for
+    // ever, with no network request to ever correct it. A miss here goes to
+    // the network, which verifies the bytes and stores them.
     event.respondWith(
-      caches.match(event.request, { ignoreSearch: true })
+      caches.open(CACHE_NAME)
+        .then(cache => cache.match(event.request, { ignoreSearch: true }))
         .then(hit => hit || networkThenCache(event, manifestHash))
     );
     return;

@@ -561,6 +561,29 @@ suite('service worker: an update downloads only what changed', () => {
     assert.falsy(currentStore(worker).has(BAD), 'not stored');
   });
 
+  test('a stale copy left in the previous generation is never served cache-first', async () => {
+    // The install came up short (>10% failed), so activate kept the previous
+    // cache — which holds LAST release's /js/collocation.js. That file must
+    // come from the network (verified), not from the old cache.
+    const STALE = '/js/collocation.js';
+    // Every image 404s (a weak 4G mid-download) — more than 10% of the
+    // manifest — and so does the file under test.
+    const worker = bootWorker(url =>
+      (pathOf(url) === STALE || pathOf(url).startsWith('/img/')) ? new Response('nope', { status: 404 }) : js('ok'));
+    await seedPreviousCache(worker, PREV, () => 'LAST RELEASE', { noManifest: true });
+    await install(worker);
+    await activate(worker);
+    assert.truthy(worker.sandbox.caches._stores.has(PREV), 'the previous cache survived (install incomplete)');
+    // The network is back and serves this release's bytes.
+    worker.sandbox.fetch = () => Promise.resolve(js('ok'));
+    const event = fetchEvent(ORIGIN + STALE);
+    worker.fire('fetch', event);
+    const res = await event.responded;
+    assert.equal(await res.text(), 'ok', 'this release, not the previous cache\'s copy');
+    await settle();
+    assert.truthy(currentStore(worker).has(STALE), 'and it is now stored in THIS generation');
+  });
+
   test('a first install with no previous cache fetches every entry', async () => {
     const worker = bootWorker(() => js('ok'));
     await install(worker);
