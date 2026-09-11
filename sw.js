@@ -195,6 +195,8 @@ const ASSETS = [
   '/js/cloze-data.js',
   '/js/errors-data.js',
   '/js/grammar-vocab-data.js',
+  '/js/phonetics-data.js',
+  '/js/phonetics-lessons.js',
   '/js/exam-lessons.js',
   '/js/auth.js',
   '/js/lazy-data.js',

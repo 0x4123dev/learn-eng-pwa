@@ -6,6 +6,7 @@ const path = require('path');
 const { WORDFORM_LESSONS } = require(path.join(__dirname, '..', 'js', 'wordform-lessons.js'));
 const { REWRITE_LESSONS } = require(path.join(__dirname, '..', 'js', 'rewrite-lessons.js'));
 const { REWRITE_QUESTIONS } = require(path.join(__dirname, '..', 'js', 'rewrite-data.js'));
+const { PHONETICS_LESSONS } = require(path.join(__dirname, '..', 'js', 'phonetics-lessons.js'));
 
 const ALLOWED_TAGS = new Set(['p', 'h4', 'ul', 'li', 'table', 'tr', 'td', 'th', 'b', 'br', 'i']);
 
@@ -31,6 +32,11 @@ function checkLessonSet(name, lessons, expectedCount) {
 
 suite('tab lessons: word form', () => {
     checkLessonSet('wordform', WORDFORM_LESSONS, 12);
+});
+
+suite('tab lessons: phonetics & stress', () => {
+    // 16 lessons (2026-09-11): the pronunciation and word-stress rules with IPA.
+    checkLessonSet('phonetics', PHONETICS_LESSONS, 16);
 });
 
 suite('tab lessons: rewrite', () => {

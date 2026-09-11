@@ -30,6 +30,7 @@ var LazyData = (() => {
     clozeScreen: ['js/cloze-data.js'],
     errorsScreen: ['js/errors-data.js'],
     grammarVocabScreen: ['js/grammar-vocab-data.js'],
+    phoneticsScreen: ['js/phonetics-data.js', 'js/phonetics-lessons.js'],
     // Collocation is a sub-tab of Phrases, so it shares that screen's banks.
     phrasesScreen: ['js/phrases-data.js', 'js/phrases-meanings.js',
                     'js/collocation-data.js', 'js/collocation-followups.js'],

@@ -1,0 +1,646 @@
+{
+ "file": "19",
+ "level": "ch",
+ "items": [
+  {
+   "id": "ph-ch-19-1",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "manag<u>ed</u>",
+    "judg<u>ed</u>",
+    "nak<u>ed</u>",
+    "damag<u>ed</u>"
+   ],
+   "words": [
+    "managed",
+    "judged",
+    "naked",
+    "damaged"
+   ],
+   "ipa": [
+    "/ˈmænɪdʒd/",
+    "/dʒʌdʒd/",
+    "/ˈneɪkɪd/",
+    "/ˈdæmɪdʒd/"
+   ],
+   "correct": 2,
+   "explanation": "<b>naked</b> /ˈneɪkɪd/ — đây là TÍNH TỪ có sẵn đuôi -ed (giống aged, wicked, ragged, learned), không phải động từ thêm -ed, nên -ed đọc /ɪd/ dù đứng sau /k/. Ba từ còn lại là quá khứ của động từ tận cùng bằng /dʒ/ (âm hữu thanh) nên -ed đọc /d/: managed /ˈmænɪdʒd/, judged /dʒʌdʒd/, damaged /ˈdæmɪdʒd/."
+  },
+  {
+   "id": "ph-ch-19-2",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "es",
+   "options": [
+    "judg<u>es</u>",
+    "breath<u>es</u>",
+    "villag<u>es</u>",
+    "messag<u>es</u>"
+   ],
+   "words": [
+    "judges",
+    "breathes",
+    "villages",
+    "messages"
+   ],
+   "ipa": [
+    "/ˈdʒʌdʒɪz/",
+    "/briːðz/",
+    "/ˈvɪlɪdʒɪz/",
+    "/ˈmesɪdʒɪz/"
+   ],
+   "correct": 1,
+   "explanation": "<b>breathes</b> /briːðz/ — chữ e trong -es chỉ là e câm của breathe, âm cuối thật là /ð/ (hữu thanh) nên -s đọc /z/. Ba từ còn lại tận cùng bằng /dʒ/ (âm rít) nên -es đọc /ɪz/: judges /ˈdʒʌdʒɪz/, villages /ˈvɪlɪdʒɪz/, messages /ˈmesɪdʒɪz/."
+  },
+  {
+   "id": "ph-ch-19-3",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ch-sh-th-gh",
+   "options": [
+    "weal<u>th</u>y",
+    "fil<u>th</u>y",
+    "leng<u>th</u>y",
+    "wor<u>th</u>y"
+   ],
+   "words": [
+    "wealthy",
+    "filthy",
+    "lengthy",
+    "worthy"
+   ],
+   "ipa": [
+    "/ˈwelθi/",
+    "/ˈfɪlθi/",
+    "/ˈleŋθi/",
+    "/ˈwɜːði/"
+   ],
+   "correct": 3,
+   "explanation": "<b>worthy</b> /ˈwɜːði/ — th đọc /ð/ (hữu thanh, rung cổ họng) giống worth /wɜːθ/ đã đổi sang /ð/ khi thêm -y, như bath → bathe. Ba từ còn lại th đọc /θ/ vô thanh: wealthy /ˈwelθi/, filthy /ˈfɪlθi/, lengthy /ˈleŋθi/."
+  },
+  {
+   "id": "ph-ch-19-4",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "s-z-sh",
+   "options": [
+    "man<u>s</u>ion",
+    "explo<u>s</u>ion",
+    "conclu<u>s</u>ion",
+    "occa<u>s</u>ion"
+   ],
+   "words": [
+    "mansion",
+    "explosion",
+    "conclusion",
+    "occasion"
+   ],
+   "ipa": [
+    "/ˈmænʃən/",
+    "/ɪkˈspləʊʒən/",
+    "/kənˈkluːʒən/",
+    "/əˈkeɪʒən/"
+   ],
+   "correct": 0,
+   "explanation": "<b>mansion</b> /ˈmænʃən/ — -sion đứng sau PHỤ ÂM (n) đọc /ʃ/ (như tension, pension). Ba từ còn lại -sion đứng sau NGUYÊN ÂM nên đọc /ʒ/: explosion /ɪkˈspləʊʒən/, conclusion /kənˈkluːʒən/, occasion /əˈkeɪʒən/."
+  },
+  {
+   "id": "ph-ch-19-5",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "silent",
+   "options": [
+    "acce<u>p</u>t",
+    "ada<u>p</u>t",
+    "recei<u>p</u>t",
+    "reci<u>p</u>e"
+   ],
+   "words": [
+    "accept",
+    "adapt",
+    "receipt",
+    "recipe"
+   ],
+   "ipa": [
+    "/əkˈsept/",
+    "/əˈdæpt/",
+    "/rɪˈsiːt/",
+    "/ˈresəpi/"
+   ],
+   "correct": 2,
+   "explanation": "<b>receipt</b> /rɪˈsiːt/ — chữ p CÂM (giống debt, doubt có b câm), đừng nhầm với recipe. Ba từ còn lại p đọc /p/ bình thường: accept /əkˈsept/, adapt /əˈdæpt/, recipe /ˈresəpi/."
+  },
+  {
+   "id": "ph-ch-19-6",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "prefix-ex",
+   "options": [
+    "<u>ex</u>cite",
+    "<u>ex</u>ist",
+    "<u>ex</u>press",
+    "<u>ex</u>change"
+   ],
+   "words": [
+    "excite",
+    "exist",
+    "express",
+    "exchange"
+   ],
+   "ipa": [
+    "/ɪkˈsaɪt/",
+    "/ɪɡˈzɪst/",
+    "/ɪkˈspres/",
+    "/ɪksˈtʃeɪndʒ/"
+   ],
+   "correct": 1,
+   "explanation": "<b>exist</b> /ɪɡˈzɪst/ — ex- đọc /ɪɡz/ (hữu thanh) vì đứng trước nguyên âm mang trọng âm. Ba từ còn lại ex- đứng trước phụ âm nên đọc /ɪks/: excite /ɪkˈsaɪt/, express /ɪkˈspres/, exchange /ɪksˈtʃeɪndʒ/."
+  },
+  {
+   "id": "ph-ch-19-7",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "oo-ou-ow",
+   "options": [
+    "s<u>ou</u>venir",
+    "c<u>ou</u>pon",
+    "fl<u>ou</u>rish",
+    "ac<u>ou</u>stic"
+   ],
+   "words": [
+    "souvenir",
+    "coupon",
+    "flourish",
+    "acoustic"
+   ],
+   "ipa": [
+    "/ˌsuːvəˈnɪə/",
+    "/ˈkuːpɒn/",
+    "/ˈflʌrɪʃ/",
+    "/əˈkuːstɪk/"
+   ],
+   "correct": 2,
+   "explanation": "<b>flourish</b> /ˈflʌrɪʃ/ — ou đọc /ʌ/ (giống courage, nourish, couple). Ba từ còn lại là từ mượn tiếng Pháp, ou đọc /uː/: souvenir /ˌsuːvəˈnɪə/, coupon /ˈkuːpɒn/, acoustic /əˈkuːstɪk/."
+  },
+  {
+   "id": "ph-ch-19-8",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ea-ee-ie",
+   "options": [
+    "conc<u>ea</u>l",
+    "ben<u>ea</u>th",
+    "rev<u>ea</u>l",
+    "thr<u>ea</u>ten"
+   ],
+   "words": [
+    "conceal",
+    "beneath",
+    "reveal",
+    "threaten"
+   ],
+   "ipa": [
+    "/kənˈsiːl/",
+    "/bɪˈniːθ/",
+    "/rɪˈviːl/",
+    "/ˈθretn/"
+   ],
+   "correct": 3,
+   "explanation": "<b>threaten</b> /ˈθretn/ — ea đọc /e/ ngắn (giống threat, sweat, weapon). Ba từ còn lại ea đọc /iː/ dài: conceal /kənˈsiːl/, beneath /bɪˈniːθ/, reveal /rɪˈviːl/."
+  },
+  {
+   "id": "ph-ch-19-9",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "u",
+   "options": [
+    "b<u>u</u>ry",
+    "h<u>u</u>rry",
+    "c<u>u</u>rry",
+    "st<u>u</u>dy"
+   ],
+   "words": [
+    "bury",
+    "hurry",
+    "curry",
+    "study"
+   ],
+   "ipa": [
+    "/ˈberi/",
+    "/ˈhʌri/",
+    "/ˈkʌri/",
+    "/ˈstʌdi/"
+   ],
+   "correct": 0,
+   "explanation": "<b>bury</b> /ˈberi/ — u đọc /e/, là ngoại lệ hiếm (đồng âm với berry). Ba từ còn lại u đọc /ʌ/: hurry /ˈhʌri/, curry /ˈkʌri/, study /ˈstʌdi/."
+  },
+  {
+   "id": "ph-ch-19-10",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "other",
+   "options": [
+    "fi<u>ng</u>er",
+    "a<u>ng</u>er",
+    "si<u>ng</u>er",
+    "hu<u>ng</u>er"
+   ],
+   "words": [
+    "finger",
+    "anger",
+    "singer",
+    "hunger"
+   ],
+   "ipa": [
+    "/ˈfɪŋɡə/",
+    "/ˈæŋɡə/",
+    "/ˈsɪŋə/",
+    "/ˈhʌŋɡə/"
+   ],
+   "correct": 2,
+   "explanation": "<b>singer</b> /ˈsɪŋə/ — ng chỉ đọc /ŋ/ vì từ này = sing + -er, giữ nguyên âm cuối của sing /sɪŋ/. Ba từ còn lại ng đọc /ŋɡ/ (có thêm /ɡ/): finger /ˈfɪŋɡə/, anger /ˈæŋɡə/, hunger /ˈhʌŋɡə/."
+  },
+  {
+   "id": "ph-ch-19-11",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "purchase",
+    "mention",
+    "punish",
+    "pursue"
+   ],
+   "words": [
+    "purchase",
+    "mention",
+    "punish",
+    "pursue"
+   ],
+   "ipa": [
+    "/ˈpɜːtʃəs/",
+    "/ˈmenʃən/",
+    "/ˈpʌnɪʃ/",
+    "/pəˈsjuː/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "correct": 3,
+   "explanation": "<b>pursue</b> /pəˈsjuː/ — động từ 2 âm tiết nhấn âm 2 theo đúng quy tắc. Ba từ còn lại cũng là động từ nhưng là ngoại lệ nhấn âm 1: PUR-chase /ˈpɜːtʃəs/, MEN-tion /ˈmenʃən/, PUN-ish /ˈpʌnɪʃ/ (đừng nhầm purchase với pursue)."
+  },
+  {
+   "id": "ph-ch-19-12",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "canoe",
+    "comment",
+    "cement",
+    "sincere"
+   ],
+   "words": [
+    "canoe",
+    "comment",
+    "cement",
+    "sincere"
+   ],
+   "ipa": [
+    "/kəˈnuː/",
+    "/ˈkɒment/",
+    "/sɪˈment/",
+    "/sɪnˈsɪə/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>comment</b> /ˈkɒment/ — nhấn âm 1 dù là danh từ hay động từ (ngoại lệ, không đổi trọng âm như record/present). Ba từ còn lại nhấn âm 2: ca-NOE /kəˈnuː/, ce-MENT /sɪˈment/, sin-CERE /sɪnˈsɪə/."
+  },
+  {
+   "id": "ph-ch-19-13",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "Arabic",
+    "athletic",
+    "Atlantic",
+    "strategic"
+   ],
+   "words": [
+    "Arabic",
+    "athletic",
+    "Atlantic",
+    "strategic"
+   ],
+   "ipa": [
+    "/ˈærəbɪk/",
+    "/æθˈletɪk/",
+    "/ətˈlæntɪk/",
+    "/strəˈtiːdʒɪk/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>Arabic</b> /ˈærəbɪk/ — nhấn âm 1, là ngoại lệ hiếm của đuôi -ic (cùng nhóm với politics, lunatic, Catholic, arithmetic). Ba từ còn lại theo quy tắc -ic kéo trọng âm về âm tiết ngay trước nó, tức âm 2: ath-LET-ic /æθˈletɪk/, At-LAN-tic /ətˈlæntɪk/, stra-TE-gic /strəˈtiːdʒɪk/."
+  },
+  {
+   "id": "ph-ch-19-14",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "diplomatic",
+    "psychology",
+    "democratic",
+    "sympathetic"
+   ],
+   "words": [
+    "diplomatic",
+    "psychology",
+    "democratic",
+    "sympathetic"
+   ],
+   "ipa": [
+    "/ˌdɪpləˈmætɪk/",
+    "/saɪˈkɒlədʒi/",
+    "/ˌdeməˈkrætɪk/",
+    "/ˌsɪmpəˈθetɪk/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    3,
+    2,
+    3,
+    3
+   ],
+   "correct": 1,
+   "explanation": "<b>psychology</b> /saɪˈkɒlədʒi/ — đuôi -logy kéo trọng âm về âm tiết đứng trước nó, tức âm 2: psy-CHO-lo-gy (giống biology, technology). Ba từ còn lại đuôi -ic kéo trọng âm về âm 3: di-plo-MAT-ic /ˌdɪpləˈmætɪk/, de-mo-CRAT-ic /ˌdeməˈkrætɪk/, sym-pa-THET-ic /ˌsɪmpəˈθetɪk/."
+  },
+  {
+   "id": "ph-ch-19-15",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-final",
+   "options": [
+    "maintain",
+    "obtain",
+    "bargain",
+    "retain"
+   ],
+   "words": [
+    "maintain",
+    "obtain",
+    "bargain",
+    "retain"
+   ],
+   "ipa": [
+    "/meɪnˈteɪn/",
+    "/əbˈteɪn/",
+    "/ˈbɑːɡɪn/",
+    "/rɪˈteɪn/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "correct": 2,
+   "explanation": "<b>bargain</b> /ˈbɑːɡɪn/ — -ain ở đây KHÔNG phải đuôi động từ mà chỉ đọc yếu /ɪn/ (giống captain, certain, mountain), nên nhấn âm 1. Ba từ còn lại là động từ có đuôi -ain /eɪn/ nhận trọng âm, nhấn âm 2: main-TAIN /meɪnˈteɪn/, ob-TAIN /əbˈteɪn/, re-TAIN /rɪˈteɪn/."
+  },
+  {
+   "id": "ph-ch-19-16",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-final",
+   "options": [
+    "guarantee",
+    "Japanese",
+    "picturesque",
+    "etiquette"
+   ],
+   "words": [
+    "guarantee",
+    "Japanese",
+    "picturesque",
+    "etiquette"
+   ],
+   "ipa": [
+    "/ˌɡærənˈtiː/",
+    "/ˌdʒæpəˈniːz/",
+    "/ˌpɪktʃəˈresk/",
+    "/ˈetɪket/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    3,
+    3,
+    3,
+    1
+   ],
+   "correct": 3,
+   "explanation": "<b>etiquette</b> /ˈetɪket/ — nhấn âm 1, ngoại lệ hiếm của đuôi -ette (khác cigarette, cassette). Ba từ còn lại có đuôi -ee, -ese, -esque tự nhận trọng âm, nhấn âm 3: gua-ran-TEE /ˌɡærənˈtiː/, Ja-pa-NESE /ˌdʒæpəˈniːz/, pic-tu-RESQUE /ˌpɪktʃəˈresk/."
+  },
+  {
+   "id": "ph-ch-19-17",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "4syl",
+   "options": [
+    "photographer",
+    "thermometer",
+    "helicopter",
+    "development"
+   ],
+   "words": [
+    "photographer",
+    "thermometer",
+    "helicopter",
+    "development"
+   ],
+   "ipa": [
+    "/fəˈtɒɡrəfə/",
+    "/θəˈmɒmɪtə/",
+    "/ˈhelɪkɒptə/",
+    "/dɪˈveləpmənt/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "correct": 2,
+   "explanation": "<b>helicopter</b> /ˈhelɪkɒptə/ — từ 4 âm tiết nhấn âm 1 (nhóm danh từ gốc Hy Lạp ghép: HE-li-cop-ter, giống KIN-der-gar-ten). Ba từ còn lại nhấn âm 2: pho-TO-gra-pher /fəˈtɒɡrəfə/ (đuôi -grapher), ther-MO-me-ter /θəˈmɒmɪtə/ (đuôi -meter), de-VE-lop-ment /dɪˈveləpmənt/ (-ment không đổi trọng âm của develop)."
+  },
+  {
+   "id": "ph-ch-19-18",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "4syl",
+   "options": [
+    "certificate",
+    "disadvantage",
+    "entertainment",
+    "independent"
+   ],
+   "words": [
+    "certificate",
+    "disadvantage",
+    "entertainment",
+    "independent"
+   ],
+   "ipa": [
+    "/səˈtɪfɪkət/",
+    "/ˌdɪsədˈvɑːntɪdʒ/",
+    "/ˌentəˈteɪnmənt/",
+    "/ˌɪndɪˈpendənt/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    2,
+    3,
+    3,
+    3
+   ],
+   "correct": 0,
+   "explanation": "<b>certificate</b> /səˈtɪfɪkət/ — nhấn âm 2: cer-TI-fi-cate (giống certify, đuôi -ate của danh từ đọc yếu /ət/). Ba từ còn lại nhấn âm 3: dis-ad-VAN-tage /ˌdɪsədˈvɑːntɪdʒ/ (dis- không đổi trọng âm của advantage), en-ter-TAIN-ment /ˌentəˈteɪnmənt/ (-ment giữ trọng âm của entertain), in-de-PEN-dent /ˌɪndɪˈpendənt/."
+  },
+  {
+   "id": "ph-ch-19-19",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "4syl",
+   "options": [
+    "kindergarten",
+    "aquarium",
+    "caterpillar",
+    "escalator"
+   ],
+   "words": [
+    "kindergarten",
+    "aquarium",
+    "caterpillar",
+    "escalator"
+   ],
+   "ipa": [
+    "/ˈkɪndəɡɑːtn/",
+    "/əˈkweəriəm/",
+    "/ˈkætəpɪlə/",
+    "/ˈeskəleɪtə/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    1,
+    2,
+    1,
+    1
+   ],
+   "correct": 1,
+   "explanation": "<b>aquarium</b> /əˈkweəriəm/ — từ mượn La-tinh đuôi -ium nhấn vào âm tiết ngay trước -ium, tức âm 2: a-QUA-ri-um (giống stadium, medium). Ba từ còn lại là danh từ dài nhấn âm 1: KIN-der-gar-ten /ˈkɪndəɡɑːtn/, CA-ter-pil-lar /ˈkætəpɪlə/, ES-ca-la-tor /ˈeskəleɪtə/."
+  },
+  {
+   "id": "ph-ch-19-20",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "orchestra",
+    "atmosphere",
+    "catalogue",
+    "spaghetti"
+   ],
+   "words": [
+    "orchestra",
+    "atmosphere",
+    "catalogue",
+    "spaghetti"
+   ],
+   "ipa": [
+    "/ˈɔːkɪstrə/",
+    "/ˈætməsfɪə/",
+    "/ˈkætəlɒɡ/",
+    "/spəˈɡeti/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "correct": 3,
+   "explanation": "<b>spaghetti</b> /spəˈɡeti/ — từ mượn tiếng Ý tận cùng -i nhấn âm giữa, tức âm 2: spa-GHET-ti (giống confetti, graffiti). Ba từ còn lại là danh từ 3 âm tiết nhấn âm 1: OR-ches-tra /ˈɔːkɪstrə/, AT-mos-phere /ˈætməsfɪə/, CA-ta-logue /ˈkætəlɒɡ/."
+  }
+ ]
+}

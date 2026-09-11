@@ -30,7 +30,7 @@ var DailyTaskCatalog = (function () {
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
     { id: 'math4', label: 'Toán 4' },
     { id: 'ptnk', label: 'PTNK · Đề thi thật vào lớp 10' },
-    { id: 'ptnk-practice', label: 'Luyện dạng đề · Reading, Cloze, Error Correction, Grammar & Vocabulary' },
+    { id: 'ptnk-practice', label: 'Luyện dạng đề · Reading, Cloze, Error Correction, Grammar & Vocabulary, Phonetics & Stress' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
@@ -328,6 +328,10 @@ var DailyTaskCatalog = (function () {
     { detail: { field: 'examId', prefix: 'gv-round-kc' } }, 'grammarVocabScreen', [['startGrammarVocabRound', 'kc']]));
   ENTRIES.push(entry('grammarvocab:ch', 'ptnk-practice', 'Grammar & Vocabulary · Chuyên · 15 câu (phải đúng 15/15)', 'exam',
     { detail: { field: 'examId', prefix: 'gv-round-ch' } }, 'grammarVocabScreen', [['startGrammarVocabRound', 'ch']]));
+  ENTRIES.push(entry('phonetics:kc', 'ptnk-practice', 'Phonetics & Stress · Không chuyên · 10 câu (phải đúng 10/10)', 'exam',
+    { detail: { field: 'examId', prefix: 'ph-round-kc' } }, 'phoneticsScreen', [['startPhoneticsRound', 'kc']]));
+  ENTRIES.push(entry('phonetics:ch', 'ptnk-practice', 'Phonetics & Stress · Chuyên · 10 câu (phải đúng 10/10)', 'exam',
+    { detail: { field: 'examId', prefix: 'ph-round-ch' } }, 'phoneticsScreen', [['startPhoneticsRound', 'ch']]));
 
   // ---- the menu path of every task ------------------------------------------
   // The admin picks a task the way a child finds it: Eng or Math, then the
@@ -357,7 +361,7 @@ var DailyTaskCatalog = (function () {
       case 'math4': return k.startsWith('math4:cc') ? ['Math', 'Toán 4', 'Bảng cửu chương'] : ['Math', 'Toán 4'];
       case 'ptnk': { const m = /^ptnk:ptnk-(\d{4})-/.exec(k); return m ? ['Eng', 'PTNK Exams', m[1]] : ['Eng', 'PTNK Exams']; }
       case 'ptnk-practice':
-        return ['Eng', k.startsWith('reading') ? 'Reading' : k.startsWith('cloze') ? 'Cloze' : k.startsWith('grammarvocab') ? 'Grammar & Vocabulary' : 'Error Correction'];
+        return ['Eng', k.startsWith('reading') ? 'Reading' : k.startsWith('cloze') ? 'Cloze' : k.startsWith('grammarvocab') ? 'Grammar & Vocabulary' : k.startsWith('phonetics') ? 'Phonetics & Stress' : 'Error Correction'];
       default: return ['Eng'];
     }
   }
@@ -394,7 +398,7 @@ var DailyTaskCatalog = (function () {
     // child's screen. Deeper levels keep push order.
     const ORDER = {
       '': ['Eng', 'Math'],
-      Eng: ['Vocabulary', 'Grade 4', 'Grammar', 'PTNK Exams', 'Reading', 'Cloze', 'Error Correction', 'Grammar & Vocabulary', 'Irregular Verbs', 'Phrases', 'Word Form', 'Rewrite'],
+      Eng: ['Vocabulary', 'Grade 4', 'Grammar', 'PTNK Exams', 'Reading', 'Cloze', 'Error Correction', 'Grammar & Vocabulary', 'Phonetics & Stress', 'Irregular Verbs', 'Phrases', 'Word Form', 'Rewrite'],
       Math: ['Toán 7', 'Toán 4', 'Math Wars'],
     };
     const sortBy = (node) => {

@@ -1,0 +1,176 @@
+{
+  "file": "22",
+  "level": "ch",
+  "items": [
+    {
+      "id": "ph-ch-22-1", "level": "ch", "kind": "sound", "rule": "ed",
+      "options": ["practis<u>ed</u>", "notic<u>ed</u>", "exercis<u>ed</u>", "convinc<u>ed</u>"],
+      "words": ["practised", "noticed", "exercised", "convinced"],
+      "ipa": ["/ˈpræktɪst/", "/ˈnəʊtɪst/", "/ˈeksəsaɪzd/", "/kənˈvɪnst/"],
+      "correct": 2,
+      "explanation": "<b>exercised</b> /ˈeksəsaɪzd/ — đuôi -ed đọc /d/ vì chữ s ở đây đọc /z/ (âm hữu thanh). Ba từ còn lại chữ c/s đọc /s/ (vô thanh) nên -ed đọc /t/: practised /ˈpræktɪst/, noticed /ˈnəʊtɪst/, convinced /kənˈvɪnst/."
+    },
+    {
+      "id": "ph-ch-22-2", "level": "ch", "kind": "sound", "rule": "es",
+      "options": ["sentenc<u>es</u>", "influenc<u>es</u>", "notic<u>es</u>", "polici<u>es</u>"],
+      "words": ["sentences", "influences", "notices", "policies"],
+      "ipa": ["/ˈsentənsɪz/", "/ˈɪnfluənsɪz/", "/ˈnəʊtɪsɪz/", "/ˈpɒləsiz/"],
+      "correct": 3,
+      "explanation": "<b>policies</b> /ˈpɒləsiz/ — -ies chỉ là y đổi thành i rồi thêm s; s đứng sau nguyên âm /i/ nên đọc /z/. Ba từ còn lại kết thúc bằng âm /s/ (chữ c đọc /s/) nên -es đọc /ɪz/: sentences /ˈsentənsɪz/, influences /ˈɪnfluənsɪz/, notices /ˈnəʊtɪsɪz/."
+    },
+    {
+      "id": "ph-ch-22-3", "level": "ch", "kind": "sound", "rule": "ch-sh-th-gh",
+      "options": ["<u>ch</u>amber", "<u>ch</u>ampagne", "para<u>ch</u>ute", "bro<u>ch</u>ure"],
+      "words": ["chamber", "champagne", "parachute", "brochure"],
+      "ipa": ["/ˈtʃeɪmbə/", "/ʃæmˈpeɪn/", "/ˈpærəʃuːt/", "/ˈbrəʊʃə/"],
+      "correct": 0,
+      "explanation": "<b>chamber</b> /ˈtʃeɪmbə/ — ch đọc /tʃ/ như trong chair. Ba từ còn lại là từ mượn tiếng Pháp nên ch đọc /ʃ/: champagne /ʃæmˈpeɪn/, parachute /ˈpærəʃuːt/, brochure /ˈbrəʊʃə/."
+    },
+    {
+      "id": "ph-ch-22-4", "level": "ch", "kind": "sound", "rule": "s-z-sh",
+      "options": ["revi<u>s</u>ion", "expan<u>s</u>ion", "occa<u>s</u>ion", "conclu<u>s</u>ion"],
+      "words": ["revision", "expansion", "occasion", "conclusion"],
+      "ipa": ["/rɪˈvɪʒn/", "/ɪkˈspænʃn/", "/əˈkeɪʒn/", "/kənˈkluːʒn/"],
+      "correct": 1,
+      "explanation": "<b>expansion</b> /ɪkˈspænʃn/ — -sion đứng sau phụ âm (n) đọc /ʃn/. Ba từ còn lại -sion đứng sau nguyên âm nên đọc /ʒn/: revision /rɪˈvɪʒn/, occasion /əˈkeɪʒn/, conclusion /kənˈkluːʒn/."
+    },
+    {
+      "id": "ph-ch-22-5", "level": "ch", "kind": "sound", "rule": "silent",
+      "options": ["s<u>c</u>ene", "s<u>c</u>ent", "des<u>c</u>end", "s<u>c</u>ript"],
+      "words": ["scene", "scent", "descend", "script"],
+      "ipa": ["/siːn/", "/sent/", "/dɪˈsend/", "/skrɪpt/"],
+      "correct": 3,
+      "explanation": "<b>script</b> /skrɪpt/ — c đứng trước r nên đọc /k/ rõ ràng. Ba từ còn lại có c đứng sau s và trước e nên c câm, cả cụm sc chỉ đọc /s/: scene /siːn/, scent /sent/, descend /dɪˈsend/."
+    },
+    {
+      "id": "ph-ch-22-6", "level": "ch", "kind": "sound", "rule": "prefix-ex",
+      "options": ["<u>ex</u>ample", "<u>ex</u>ercise", "<u>ex</u>ecutive", "<u>ex</u>aggerate"],
+      "words": ["example", "exercise", "executive", "exaggerate"],
+      "ipa": ["/ɪɡˈzɑːmpl/", "/ˈeksəsaɪz/", "/ɪɡˈzekjətɪv/", "/ɪɡˈzædʒəreɪt/"],
+      "correct": 1,
+      "explanation": "<b>exercise</b> /ˈeksəsaɪz/ — trọng âm rơi vào chính âm tiết ex nên ex đọc /eks/. Ba từ còn lại ex không mang trọng âm và đứng trước nguyên âm nên đọc /ɪɡz/: example /ɪɡˈzɑːmpl/, executive /ɪɡˈzekjətɪv/, exaggerate /ɪɡˈzædʒəreɪt/."
+    },
+    {
+      "id": "ph-ch-22-7", "level": "ch", "kind": "sound", "rule": "oo-ou-ow",
+      "options": ["c<u>ou</u>ncil", "s<u>ou</u>venir", "r<u>ou</u>tine", "c<u>ou</u>pon"],
+      "words": ["council", "souvenir", "routine", "coupon"],
+      "ipa": ["/ˈkaʊnsl/", "/ˌsuːvəˈnɪə/", "/ruːˈtiːn/", "/ˈkuːpɒn/"],
+      "correct": 0,
+      "explanation": "<b>council</b> /ˈkaʊnsl/ — ou đọc /aʊ/ như trong house. Ba từ còn lại là từ gốc Pháp, ou đọc /uː/: souvenir /ˌsuːvəˈnɪə/, routine /ruːˈtiːn/, coupon /ˈkuːpɒn/."
+    },
+    {
+      "id": "ph-ch-22-8", "level": "ch", "kind": "sound", "rule": "ea-ee-ie",
+      "options": ["ach<u>ie</u>ve", "rel<u>ie</u>f", "f<u>ie</u>rce", "n<u>ie</u>ce"],
+      "words": ["achieve", "relief", "fierce", "niece"],
+      "ipa": ["/əˈtʃiːv/", "/rɪˈliːf/", "/fɪəs/", "/niːs/"],
+      "correct": 2,
+      "explanation": "<b>fierce</b> /fɪəs/ — ie đứng trước r đọc /ɪə/ như trong pierce, fierce. Ba từ còn lại ie đọc /iː/ theo quy tắc quen thuộc: achieve /əˈtʃiːv/, relief /rɪˈliːf/, niece /niːs/."
+    },
+    {
+      "id": "ph-ch-22-9", "level": "ch", "kind": "sound", "rule": "i",
+      "options": ["prec<u>i</u>se", "dec<u>i</u>de", "conc<u>i</u>se", "dec<u>i</u>sion"],
+      "words": ["precise", "decide", "concise", "decision"],
+      "ipa": ["/prɪˈsaɪs/", "/dɪˈsaɪd/", "/kənˈsaɪs/", "/dɪˈsɪʒn/"],
+      "correct": 3,
+      "explanation": "<b>decision</b> /dɪˈsɪʒn/ — khi thêm -sion, chữ i đổi thành âm ngắn /ɪ/ (decide → decision). Ba từ còn lại i đọc /aɪ/ vì có e câm ở cuối: precise /prɪˈsaɪs/, decide /dɪˈsaɪd/, concise /kənˈsaɪs/."
+    },
+    {
+      "id": "ph-ch-22-10", "level": "ch", "kind": "sound", "rule": "o",
+      "options": ["<u>o</u>cean", "c<u>o</u>ncept", "pr<u>o</u>cess", "s<u>o</u>cial"],
+      "words": ["ocean", "concept", "process", "social"],
+      "ipa": ["/ˈəʊʃn/", "/ˈkɒnsept/", "/ˈprəʊses/", "/ˈsəʊʃl/"],
+      "correct": 1,
+      "explanation": "<b>concept</b> /ˈkɒnsept/ — o đứng trước hai phụ âm nc nên đọc âm ngắn /ɒ/. Ba từ còn lại o đọc /əʊ/: ocean /ˈəʊʃn/, process /ˈprəʊses/ (giọng Anh), social /ˈsəʊʃl/."
+    },
+    {
+      "id": "ph-ch-22-11", "level": "ch", "kind": "stress", "rule": "2syl",
+      "options": ["surface", "advice", "polite", "excite"],
+      "words": ["surface", "advice", "polite", "excite"],
+      "ipa": ["/ˈsɜːfɪs/", "/ədˈvaɪs/", "/pəˈlaɪt/", "/ɪkˈsaɪt/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 2, 2, 2],
+      "correct": 0,
+      "explanation": "<b>surface</b> /ˈsɜːfɪs/ — nhấn âm 1, đuôi -ace đọc nhẹ /ɪs/ như trong palace, furnace. Ba từ còn lại nhấn âm 2 vì âm tiết cuối mang nguyên âm dài /aɪ/ (kể cả danh từ advice, ngoại lệ của quy tắc danh từ nhấn âm 1): ad-VICE /ədˈvaɪs/, po-LITE /pəˈlaɪt/, ex-CITE /ɪkˈsaɪt/."
+    },
+    {
+      "id": "ph-ch-22-12", "level": "ch", "kind": "stress", "rule": "2syl",
+      "options": ["proceed", "receive", "deceive", "decent"],
+      "words": ["proceed", "receive", "deceive", "decent"],
+      "ipa": ["/prəˈsiːd/", "/rɪˈsiːv/", "/dɪˈsiːv/", "/ˈdiːsnt/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 2, 2, 1],
+      "correct": 3,
+      "explanation": "<b>decent</b> /ˈdiːsnt/ — tính từ 2 âm tiết nhấn âm 1. Ba từ còn lại là động từ 2 âm tiết nhấn âm 2: pro-CEED /prəˈsiːd/, re-CEIVE /rɪˈsiːv/, de-CEIVE /dɪˈsiːv/."
+    },
+    {
+      "id": "ph-ch-22-13", "level": "ch", "kind": "stress", "rule": "suffix-shift",
+      "options": ["precision", "physician", "specialist", "musician"],
+      "words": ["precision", "physician", "specialist", "musician"],
+      "ipa": ["/prɪˈsɪʒn/", "/fɪˈzɪʃn/", "/ˈspeʃəlɪst/", "/mjuˈzɪʃn/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 2, 1, 2],
+      "correct": 2,
+      "explanation": "<b>specialist</b> /ˈspeʃəlɪst/ — đuôi -ist không đổi trọng âm, giữ nguyên âm 1 như special. Ba từ còn lại có đuôi -sion/-cian kéo trọng âm về âm ngay trước nó (âm 2): pre-CI-sion /prɪˈsɪʒn/, phy-SI-cian /fɪˈzɪʃn/, mu-SI-cian /mjuˈzɪʃn/."
+    },
+    {
+      "id": "ph-ch-22-14", "level": "ch", "kind": "stress", "rule": "suffix-shift",
+      "options": ["publicity", "ceremony", "capacity", "necessity"],
+      "words": ["publicity", "ceremony", "capacity", "necessity"],
+      "ipa": ["/pʌbˈlɪsəti/", "/ˈserəməni/", "/kəˈpæsəti/", "/nəˈsesəti/"],
+      "syllables": [4, 4, 4, 4], "stress": [2, 1, 2, 2],
+      "correct": 1,
+      "explanation": "<b>ceremony</b> /ˈserəməni/ — đuôi -mony không kéo trọng âm, từ nhấn âm 1. Ba từ còn lại có đuôi -ity kéo trọng âm về âm ngay trước nó (âm 2): pub-LI-ci-ty /pʌbˈlɪsəti/, ca-PA-ci-ty /kəˈpæsəti/, ne-CES-si-ty /nəˈsesəti/."
+    },
+    {
+      "id": "ph-ch-22-15", "level": "ch", "kind": "stress", "rule": "suffix-final",
+      "options": ["referee", "Japanese", "cigarette", "citizen"],
+      "words": ["referee", "Japanese", "cigarette", "citizen"],
+      "ipa": ["/ˌrefəˈriː/", "/ˌdʒæpəˈniːz/", "/ˌsɪɡəˈret/", "/ˈsɪtɪzn/"],
+      "syllables": [3, 3, 3, 3], "stress": [3, 3, 3, 1],
+      "correct": 3,
+      "explanation": "<b>citizen</b> /ˈsɪtɪzn/ — danh từ 3 âm tiết thường nhấn âm 1. Ba từ còn lại mang đuôi -ee/-ese/-ette luôn nhận trọng âm, nên nhấn âm cuối (âm 3): re-fe-REE /ˌrefəˈriː/, Ja-pa-NESE /ˌdʒæpəˈniːz/, ci-ga-RETTE /ˌsɪɡəˈret/."
+    },
+    {
+      "id": "ph-ch-22-16", "level": "ch", "kind": "stress", "rule": "suffix-final",
+      "options": ["captain", "unique", "critique", "campaign"],
+      "words": ["captain", "unique", "critique", "campaign"],
+      "ipa": ["/ˈkæptɪn/", "/juˈniːk/", "/krɪˈtiːk/", "/kæmˈpeɪn/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 2, 2, 2],
+      "correct": 0,
+      "explanation": "<b>captain</b> /ˈkæptɪn/ — đuôi -ain ở đây đọc nhẹ /ɪn/, không nhận trọng âm; từ nhấn âm 1 (giống mountain, certain). Ba từ còn lại có đuôi -ique/-aign đọc /iːk/ /eɪn/ và luôn mang trọng âm (âm 2): u-NIQUE /juˈniːk/, cri-TIQUE /krɪˈtiːk/, cam-PAIGN /kæmˈpeɪn/."
+    },
+    {
+      "id": "ph-ch-22-17", "level": "ch", "kind": "stress", "rule": "3syl",
+      "options": ["sacrifice", "criticise", "decisive", "innocent"],
+      "words": ["sacrifice", "criticise", "decisive", "innocent"],
+      "ipa": ["/ˈsækrɪfaɪs/", "/ˈkrɪtɪsaɪz/", "/dɪˈsaɪsɪv/", "/ˈɪnəsnt/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>decisive</b> /dɪˈsaɪsɪv/ — đuôi -ive giữ trọng âm của decide, nên nhấn âm 2. Ba từ còn lại 3 âm tiết nhấn âm 1: SA-cri-fice /ˈsækrɪfaɪs/, CRI-ti-cise /ˈkrɪtɪsaɪz/, IN-no-cent /ˈɪnəsnt/."
+    },
+    {
+      "id": "ph-ch-22-18", "level": "ch", "kind": "stress", "rule": "4syl",
+      "options": ["participate", "accuracy", "appreciate", "anticipate"],
+      "words": ["participate", "accuracy", "appreciate", "anticipate"],
+      "ipa": ["/pɑːˈtɪsɪpeɪt/", "/ˈækjərəsi/", "/əˈpriːʃieɪt/", "/ænˈtɪsɪpeɪt/"],
+      "syllables": [4, 4, 4, 4], "stress": [2, 1, 2, 2],
+      "correct": 1,
+      "explanation": "<b>accuracy</b> /ˈækjərəsi/ — đuôi -acy giữ trọng âm của accurate, từ nhấn âm 1. Ba từ còn lại là động từ đuôi -ate 4 âm tiết nhấn âm 2 (cách âm cuối 2 âm): par-TI-ci-pate /pɑːˈtɪsɪpeɪt/, ap-PRE-ci-ate /əˈpriːʃieɪt/, an-TI-ci-pate /ænˈtɪsɪpeɪt/."
+    },
+    {
+      "id": "ph-ch-22-19", "level": "ch", "kind": "stress", "rule": "4syl",
+      "options": ["significant", "scientific", "artificial", "sentimental"],
+      "words": ["significant", "scientific", "artificial", "sentimental"],
+      "ipa": ["/sɪɡˈnɪfɪkənt/", "/ˌsaɪənˈtɪfɪk/", "/ˌɑːtɪˈfɪʃl/", "/ˌsentɪˈmentl/"],
+      "syllables": [4, 4, 4, 4], "stress": [2, 3, 3, 3],
+      "correct": 0,
+      "explanation": "<b>significant</b> /sɪɡˈnɪfɪkənt/ — đuôi -ant không kéo trọng âm, từ nhấn âm 2 giống signify. Ba từ còn lại có đuôi -ic/-ial/-al kéo trọng âm về âm ngay trước (âm 3): sci-en-TI-fic /ˌsaɪənˈtɪfɪk/, ar-ti-FI-cial /ˌɑːtɪˈfɪʃl/, sen-ti-MEN-tal /ˌsentɪˈmentl/."
+    },
+    {
+      "id": "ph-ch-22-20", "level": "ch", "kind": "stress", "rule": "compound",
+      "options": ["grandparent", "newspaper", "policeman", "businessman"],
+      "words": ["grandparent", "newspaper", "policeman", "businessman"],
+      "ipa": ["/ˈɡrænpeərənt/", "/ˈnjuːzpeɪpə/", "/pəˈliːsmən/", "/ˈbɪznəsmæn/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>policeman</b> /pəˈliːsmən/ — từ ghép giữ trọng âm của police (nhấn âm 2), nên cả từ nhấn âm 2. Ba từ còn lại là danh từ ghép nhấn vào phần đầu (âm 1): GRAND-pa-rent /ˈɡrænpeərənt/, NEWS-pa-per /ˈnjuːzpeɪpə/, BU-si-ness-man /ˈbɪznəsmæn/."
+    }
+  ]
+}

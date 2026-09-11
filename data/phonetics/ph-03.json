@@ -1,0 +1,176 @@
+{
+  "file": "03",
+  "level": "kc",
+  "items": [
+    {
+      "id": "ph-kc-03-1", "level": "kc", "kind": "sound", "rule": "ed",
+      "options": ["wash<u>ed</u>", "danc<u>ed</u>", "pack<u>ed</u>", "plant<u>ed</u>"],
+      "words": ["washed", "danced", "packed", "planted"],
+      "ipa": ["/wɒʃt/", "/dɑːnst/", "/pækt/", "/ˈplɑːntɪd/"],
+      "correct": 3,
+      "explanation": "<b>planted</b> /ˈplɑːntɪd/ — đuôi -ed đọc /ɪd/ vì động từ gốc kết thúc bằng âm /t/. Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /ʃ/ /s/ /k/: washed /wɒʃt/, danced /dɑːnst/, packed /pækt/."
+    },
+    {
+      "id": "ph-kc-03-2", "level": "kc", "kind": "sound", "rule": "ed",
+      "options": ["ask<u>ed</u>", "play<u>ed</u>", "sav<u>ed</u>", "call<u>ed</u>"],
+      "words": ["asked", "played", "saved", "called"],
+      "ipa": ["/ɑːskt/", "/pleɪd/", "/seɪvd/", "/kɔːld/"],
+      "correct": 0,
+      "explanation": "<b>asked</b> /ɑːskt/ — đuôi -ed đọc /t/ vì đứng sau âm vô thanh /k/. Ba từ còn lại đọc /d/ vì đứng sau nguyên âm hoặc âm hữu thanh /v/ /l/: played /pleɪd/, saved /seɪvd/, called /kɔːld/."
+    },
+    {
+      "id": "ph-kc-03-3", "level": "kc", "kind": "sound", "rule": "es",
+      "options": ["nam<u>es</u>", "gam<u>es</u>", "plac<u>es</u>", "wav<u>es</u>"],
+      "words": ["names", "games", "places", "waves"],
+      "ipa": ["/neɪmz/", "/ɡeɪmz/", "/ˈpleɪsɪz/", "/weɪvz/"],
+      "correct": 2,
+      "explanation": "<b>places</b> /ˈpleɪsɪz/ — đuôi -es đọc /ɪz/ vì từ gốc kết thúc bằng âm /s/ (chữ e trong -es được đọc thành /ɪ/). Ba từ còn lại có chữ e câm, đuôi -s đọc /z/ sau âm hữu thanh /m/ /v/: names /neɪmz/, games /ɡeɪmz/, waves /weɪvz/."
+    },
+    {
+      "id": "ph-kc-03-4", "level": "kc", "kind": "sound", "rule": "a",
+      "options": ["<u>a</u>rm", "w<u>a</u>rm", "f<u>a</u>rm", "h<u>a</u>rm"],
+      "words": ["arm", "warm", "farm", "harm"],
+      "ipa": ["/ɑːm/", "/wɔːm/", "/fɑːm/", "/hɑːm/"],
+      "correct": 1,
+      "explanation": "<b>warm</b> /wɔːm/ — chữ a đứng sau w và trước r thường đọc /ɔː/ (như war, ward, warn). Ba từ còn lại có \"ar\" đọc /ɑː/: arm /ɑːm/, farm /fɑːm/, harm /hɑːm/."
+    },
+    {
+      "id": "ph-kc-03-5", "level": "kc", "kind": "sound", "rule": "e",
+      "options": ["s<u>e</u>ven", "l<u>e</u>mon", "m<u>e</u>tal", "<u>e</u>ven"],
+      "words": ["seven", "lemon", "metal", "even"],
+      "ipa": ["/ˈsevn/", "/ˈlemən/", "/ˈmetl/", "/ˈiːvn/"],
+      "correct": 3,
+      "explanation": "<b>even</b> /ˈiːvn/ — chữ e ở âm tiết mở (e + một phụ âm + nguyên âm) đọc /iː/ như trong be, me, evening. Ba từ còn lại chữ e đọc /e/ ngắn: seven /ˈsevn/, lemon /ˈlemən/, metal /ˈmetl/."
+    },
+    {
+      "id": "ph-kc-03-6", "level": "kc", "kind": "sound", "rule": "i",
+      "options": ["m<u>i</u>ld", "m<u>i</u>lk", "m<u>i</u>ll", "m<u>i</u>nt"],
+      "words": ["mild", "milk", "mill", "mint"],
+      "ipa": ["/maɪld/", "/mɪlk/", "/mɪl/", "/mɪnt/"],
+      "correct": 0,
+      "explanation": "<b>mild</b> /maɪld/ — chữ i đứng trước -ld (và -nd) thường đọc /aɪ/ như child, wild, kind, find. Ba từ còn lại chữ i đọc /ɪ/ ngắn: milk /mɪlk/, mill /mɪl/, mint /mɪnt/."
+    },
+    {
+      "id": "ph-kc-03-7", "level": "kc", "kind": "sound", "rule": "o",
+      "options": ["m<u>o</u>ney", "m<u>o</u>nkey", "m<u>o</u>nster", "m<u>o</u>nth"],
+      "words": ["money", "monkey", "monster", "month"],
+      "ipa": ["/ˈmʌni/", "/ˈmʌŋki/", "/ˈmɒnstə/", "/mʌnθ/"],
+      "correct": 2,
+      "explanation": "<b>monster</b> /ˈmɒnstə/ — chữ o đọc /ɒ/ ngắn như trong hot, dog. Ba từ còn lại là các từ \"mon-\" quen thuộc có chữ o đọc /ʌ/: money /ˈmʌni/, monkey /ˈmʌŋki/, month /mʌnθ/."
+    },
+    {
+      "id": "ph-kc-03-8", "level": "kc", "kind": "sound", "rule": "oo-ou-ow",
+      "options": ["h<u>ow</u>l", "b<u>ow</u>l", "<u>ow</u>l", "t<u>ow</u>el"],
+      "words": ["howl", "bowl", "owl", "towel"],
+      "ipa": ["/haʊl/", "/bəʊl/", "/aʊl/", "/ˈtaʊəl/"],
+      "correct": 1,
+      "explanation": "<b>bowl</b> /bəʊl/ — chữ ow đọc /əʊ/ như trong low, show, snow. Ba từ còn lại chữ ow đọc /aʊ/ như trong how, now: howl /haʊl/, owl /aʊl/, towel /ˈtaʊəl/."
+    },
+    {
+      "id": "ph-kc-03-9", "level": "kc", "kind": "sound", "rule": "c-g",
+      "options": ["<u>c</u>andle", "<u>c</u>attle", "<u>c</u>amel", "<u>c</u>ircle"],
+      "words": ["candle", "cattle", "camel", "circle"],
+      "ipa": ["/ˈkændl/", "/ˈkætl/", "/ˈkæml/", "/ˈsɜːkl/"],
+      "correct": 3,
+      "explanation": "<b>circle</b> /ˈsɜːkl/ — chữ c đứng trước i (cũng như trước e, y) đọc /s/. Ba từ còn lại chữ c đứng trước a nên đọc /k/: candle /ˈkændl/, cattle /ˈkætl/, camel /ˈkæml/."
+    },
+    {
+      "id": "ph-kc-03-10", "level": "kc", "kind": "sound", "rule": "silent",
+      "options": ["ca<u>l</u>m", "sa<u>l</u>t", "fa<u>l</u>se", "ha<u>l</u>t"],
+      "words": ["calm", "salt", "false", "halt"],
+      "ipa": ["/kɑːm/", "/sɔːlt/", "/fɔːls/", "/hɔːlt/"],
+      "correct": 0,
+      "explanation": "<b>calm</b> /kɑːm/ — chữ l câm (không đọc) trong nhóm -alm như palm, half, walk, talk. Ba từ còn lại chữ l được đọc rõ /l/ và chữ a đọc /ɔː/: salt /sɔːlt/, false /fɔːls/, halt /hɔːlt/."
+    },
+    {
+      "id": "ph-kc-03-11", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["balance", "damage", "attack", "manage"],
+      "words": ["balance", "damage", "attack", "manage"],
+      "ipa": ["/ˈbæləns/", "/ˈdæmɪdʒ/", "/əˈtæk/", "/ˈmænɪdʒ/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>attack</b> /əˈtæk/ — động từ 2 âm tiết nhấn âm 2, âm tiết đầu \"a-\" đọc yếu /ə/. Ba từ còn lại nhấn âm 1: BA-lance /ˈbæləns/, DA-mage /ˈdæmɪdʒ/, MA-nage /ˈmænɪdʒ/ (damage, manage tuy là động từ nhưng đuôi -age trong hai từ này đọc yếu /ɪdʒ/, không nhận trọng âm)."
+    },
+    {
+      "id": "ph-kc-03-12", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["explain", "answer", "complain", "remain"],
+      "words": ["explain", "answer", "complain", "remain"],
+      "ipa": ["/ɪkˈspleɪn/", "/ˈɑːnsə/", "/kəmˈpleɪn/", "/rɪˈmeɪn/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 1, 2, 2],
+      "correct": 1,
+      "explanation": "<b>answer</b> /ˈɑːnsə/ — động từ ngoại lệ nhấn âm 1 (giống enter, offer, open, visit). Ba từ còn lại là động từ 2 âm tiết nhấn âm 2 theo quy tắc: ex-PLAIN /ɪkˈspleɪn/, com-PLAIN /kəmˈpleɪn/, re-MAIN /rɪˈmeɪn/."
+    },
+    {
+      "id": "ph-kc-03-13", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["cabin", "cancel", "carpet", "canal"],
+      "words": ["cabin", "cancel", "carpet", "canal"],
+      "ipa": ["/ˈkæbɪn/", "/ˈkænsl/", "/ˈkɑːpɪt/", "/kəˈnæl/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 1, 1, 2],
+      "correct": 3,
+      "explanation": "<b>canal</b> /kəˈnæl/ — danh từ ngoại lệ nhấn âm 2 (cùng nhóm với hotel, police, machine); chữ a đầu đọc yếu /ə/. Ba từ còn lại là danh từ/động từ 2 âm tiết nhấn âm 1: CA-bin /ˈkæbɪn/, CAN-cel /ˈkænsl/, CAR-pet /ˈkɑːpɪt/."
+    },
+    {
+      "id": "ph-kc-03-14", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["parade", "practice", "planet", "palace"],
+      "words": ["parade", "practice", "planet", "palace"],
+      "ipa": ["/pəˈreɪd/", "/ˈpræktɪs/", "/ˈplænɪt/", "/ˈpæləs/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
+      "correct": 0,
+      "explanation": "<b>parade</b> /pəˈreɪd/ — danh từ ngoại lệ nhấn âm 2 vì âm tiết đầu \"pa-\" đọc yếu /ə/, âm tiết sau có nguyên âm đôi /eɪ/. Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1: PRAC-tice /ˈpræktɪs/, PLA-net /ˈplænɪt/, PA-lace /ˈpæləs/."
+    },
+    {
+      "id": "ph-kc-03-15", "level": "kc", "kind": "stress", "rule": "suffix-neutral",
+      "options": ["happiness", "carefully", "attachment", "management"],
+      "words": ["happiness", "carefully", "attachment", "management"],
+      "ipa": ["/ˈhæpinəs/", "/ˈkeəfəli/", "/əˈtætʃmənt/", "/ˈmænɪdʒmənt/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>attachment</b> /əˈtætʃmənt/ — đuôi -ment không làm đổi trọng âm, nên giữ nguyên trọng âm của at-TACH ở âm 2. Ba từ còn lại cũng giữ trọng âm của từ gốc (HAP-py, CARE-ful, MA-nage) nên nhấn âm 1: happiness /ˈhæpinəs/, carefully /ˈkeəfəli/, management /ˈmænɪdʒmənt/."
+    },
+    {
+      "id": "ph-kc-03-16", "level": "kc", "kind": "stress", "rule": "suffix-shift",
+      "options": ["vacation", "capital", "translation", "attention"],
+      "words": ["vacation", "capital", "translation", "attention"],
+      "ipa": ["/vəˈkeɪʃn/", "/ˈkæpɪtl/", "/trænzˈleɪʃn/", "/əˈtenʃn/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 1, 2, 2],
+      "correct": 1,
+      "explanation": "<b>capital</b> /ˈkæpɪtl/ — danh từ 3 âm tiết không có đuôi đặc biệt, nhấn âm 1. Ba từ còn lại có đuôi -tion nên trọng âm rơi vào âm tiết ngay trước đuôi, tức âm 2: va-CA-tion /vəˈkeɪʃn/, trans-LA-tion /trænzˈleɪʃn/, at-TEN-tion /əˈtenʃn/."
+    },
+    {
+      "id": "ph-kc-03-17", "level": "kc", "kind": "stress", "rule": "suffix-shift",
+      "options": ["dramatic", "fantastic", "romantic", "practical"],
+      "words": ["dramatic", "fantastic", "romantic", "practical"],
+      "ipa": ["/drəˈmætɪk/", "/fænˈtæstɪk/", "/rəʊˈmæntɪk/", "/ˈpræktɪkl/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
+      "correct": 3,
+      "explanation": "<b>practical</b> /ˈpræktɪkl/ — đuôi -ical kéo trọng âm về âm tiết ngay trước nó, ở đây là âm 1 (PRAC-ti-cal). Ba từ còn lại có đuôi -ic nên nhấn âm tiết ngay trước -ic, tức âm 2: dra-MA-tic /drəˈmætɪk/, fan-TAS-tic /fænˈtæstɪk/, ro-MAN-tic /rəʊˈmæntɪk/."
+    },
+    {
+      "id": "ph-kc-03-18", "level": "kc", "kind": "stress", "rule": "3syl",
+      "options": ["hamburger", "banana", "tomato", "potato"],
+      "words": ["hamburger", "banana", "tomato", "potato"],
+      "ipa": ["/ˈhæmbɜːɡə/", "/bəˈnɑːnə/", "/təˈmɑːtəʊ/", "/pəˈteɪtəʊ/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 2, 2, 2],
+      "correct": 0,
+      "explanation": "<b>hamburger</b> /ˈhæmbɜːɡə/ — danh từ ghép 3 âm tiết nhấn âm 1 (HAM-bur-ger). Ba từ còn lại có âm tiết đầu đọc yếu /ə/ nên trọng âm rơi vào âm 2: ba-NA-na /bəˈnɑːnə/, to-MA-to /təˈmɑːtəʊ/, po-TA-to /pəˈteɪtəʊ/."
+    },
+    {
+      "id": "ph-kc-03-19", "level": "kc", "kind": "stress", "rule": "3syl",
+      "options": ["camera", "animal", "already", "average"],
+      "words": ["camera", "animal", "already", "average"],
+      "ipa": ["/ˈkæmərə/", "/ˈænɪml/", "/ɔːlˈredi/", "/ˈævərɪdʒ/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>already</b> /ɔːlˈredi/ — trạng từ 3 âm tiết nhấn âm 2, giữ trọng âm của từ gốc REA-dy (al- là tiền tố không nhận trọng âm). Ba từ còn lại là danh từ/tính từ 3 âm tiết bắt đầu bằng /æ/ mạnh, nhấn âm 1: CA-me-ra /ˈkæmərə/, A-ni-mal /ˈænɪml/, A-ve-rage /ˈævərɪdʒ/."
+    },
+    {
+      "id": "ph-kc-03-20", "level": "kc", "kind": "stress", "rule": "suffix-final",
+      "options": ["trainer", "trainee", "painter", "waiter"],
+      "words": ["trainer", "trainee", "painter", "waiter"],
+      "ipa": ["/ˈtreɪnə/", "/ˌtreɪˈniː/", "/ˈpeɪntə/", "/ˈweɪtə/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 2, 1, 1],
+      "correct": 1,
+      "explanation": "<b>trainee</b> /ˌtreɪˈniː/ — đuôi -ee luôn nhận trọng âm (như employee, refugee), nên nhấn âm 2. Ba từ còn lại có đuôi -er chỉ người, không đổi trọng âm, nhấn âm 1: TRAIN-er /ˈtreɪnə/, PAIN-ter /ˈpeɪntə/, WAI-ter /ˈweɪtə/."
+    }
+  ]
+}

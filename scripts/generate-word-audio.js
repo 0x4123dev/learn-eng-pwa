@@ -91,7 +91,11 @@ const TAPPABLE_BANKS = [
     { file: 'js/wordform-data.js', global: 'WORDFORM_QUESTIONS' },
     { file: 'js/rewrite-data.js', global: 'REWRITE_QUESTIONS' },
     { file: 'js/phrases-data.js', global: 'PREPOSITION_QUESTIONS' },
-    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS' }
+    { file: 'js/collocation-data.js', global: 'COLLOCATION_QUESTIONS' },
+    // The four compared words, 🔊 after answering. Its options carry <u> marks
+    // inside the word (r<u>o</u>bbed) — stripping tags would split them — so the
+    // clean `words` array is the only field read.
+    { file: 'js/phonetics-data.js', global: 'PHONETICS_ITEMS', fields: [], arrays: ['words'] }
 ];
 const TAPPABLE_FIELDS = ['q', 'orig', 'stem', 'answer', 'passage', 'frame'];
 const TAPPABLE_ARRAYS = ['options', 'parts'];
@@ -128,10 +132,10 @@ function collectTappableWords() {
             if (depth > 8 || !node) return;
             if (Array.isArray(node)) return node.forEach(n => walk(n, depth + 1));
             if (typeof node !== 'object') return;
-            for (const f of TAPPABLE_FIELDS) {
+            for (const f of (bank.fields || TAPPABLE_FIELDS)) {
                 if (typeof node[f] === 'string') tappableWords(node[f]).forEach(add);
             }
-            for (const a of TAPPABLE_ARRAYS) {
+            for (const a of (bank.arrays || TAPPABLE_ARRAYS)) {
                 if (Array.isArray(node[a])) {
                     node[a].filter(x => typeof x === 'string').forEach(s => tappableWords(s).forEach(add));
                 }

@@ -602,6 +602,33 @@ function screenPlaybook() {
         return bank.length + ' items; a Không chuyên round of ' + paper.questions.length + ' opens with four options';
       },
     },
+    phoneticsScreen: {
+      title: 'Phonetics & Stress: bài học mở được, Practice cho lượt 5 phát âm + 5 trọng âm, có nút nghe sau khi trả lời',
+      open: async (h) => { h.sandbox.switchScreen('phoneticsScreen'); await settle(); },
+      prove: (h, el) => {
+        const bank = h.peek('PHONETICS_ITEMS'), lessons = h.peek('PHONETICS_LESSONS');
+        must(Array.isArray(bank) && bank.length >= 20, 'the phonetics bank arrived (lazy)');
+        must(Array.isArray(lessons) && lessons.length >= 10, 'the lessons arrived (lazy)');
+        must(el.querySelectorAll('.exam-lesson-card').length === lessons.length, 'one card per lesson on the Lessons tab');
+        h.sandbox.openPhoneticsLesson(lessons[0].key);
+        must(/<h4>/.test(h.el('phoneticsScreen').innerHTML) && h.el('phoneticsScreen').querySelector('.exam-lesson-content'), 'a lesson opens with its sections');
+        h.sandbox.switchPhoneticsSubTab('practice');
+        must(wiredTo(h.el('phoneticsScreen'), 'startPhoneticsPractice').length === 1, 'one Practice button');
+        h.sandbox.startPhoneticsPractice();
+        must(h.sandbox.isExamActive() && h.sandbox.examCurrentSet() === 'phonetics', 'Practice started a round in the phonetics set');
+        const st = h.peek('_examState');
+        must(/^ph-round-kc:/.test(st.examId), 'a fresh child is served a Không chuyên round');
+        must(st.questions.length === h.peek('PHONETICS_ROUND_SIZE'), 'the round holds ' + h.peek('PHONETICS_ROUND_SIZE'));
+        must(st.questions.filter(q => q.section === 'Phonetics').length === 5 && st.questions.filter(q => q.section === 'Stress').length === 5, 'five pronunciation then five stress');
+        must(h.el('phoneticsScreen').querySelectorAll('.grammar-option').length === 4, 'four words to choose from');
+        must(!h.el('phoneticsScreen').querySelector('.exam-hear-btn'), 'no 🔊 before answering — it would give the answer away');
+        h.sandbox.answerExamChoice(0);
+        must(h.el('phoneticsScreen').querySelectorAll('.exam-hear-btn').length === 4, 'four 🔊 word buttons once answered');
+        h.sandbox.abandonExam();
+        h.sandbox.switchPhoneticsSubTab('lessons');
+        return bank.length + ' items, ' + lessons.length + ' lessons; a round opens with four words and four 🔊 after answering';
+      },
+    },
     profileScreen: {
       title: 'Hồ sơ: điểm, chuỗi ngày, giao diện',
       open: async (h) => { h.sandbox.navigateToProfile(); },

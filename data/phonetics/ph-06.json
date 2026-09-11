@@ -1,0 +1,646 @@
+{
+ "file": "06",
+ "level": "kc",
+ "items": [
+  {
+   "id": "ph-kc-06-1",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "lov<u>ed</u>",
+    "hunt<u>ed</u>",
+    "hugg<u>ed</u>",
+    "rubb<u>ed</u>"
+   ],
+   "words": [
+    "loved",
+    "hunted",
+    "hugged",
+    "rubbed"
+   ],
+   "ipa": [
+    "/lʌvd/",
+    "/ˈhʌntɪd/",
+    "/hʌɡd/",
+    "/rʌbd/"
+   ],
+   "correct": 1,
+   "explanation": "<b>hunted</b> /ˈhʌntɪd/ — đuôi -ed đọc /ɪd/ vì động từ kết thúc bằng âm /t/. Ba từ còn lại đọc /d/ vì đứng sau âm hữu thanh /v/, /ɡ/, /b/: loved /lʌvd/, hugged /hʌɡd/, rubbed /rʌbd/. Chú ý: chữ o trong cả bốn từ đều đọc /ʌ/."
+  },
+  {
+   "id": "ph-kc-06-2",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "cook<u>ed</u>",
+    "stopp<u>ed</u>",
+    "knock<u>ed</u>",
+    "robb<u>ed</u>"
+   ],
+   "words": [
+    "cooked",
+    "stopped",
+    "knocked",
+    "robbed"
+   ],
+   "ipa": [
+    "/kʊkt/",
+    "/stɒpt/",
+    "/nɒkt/",
+    "/rɒbd/"
+   ],
+   "correct": 3,
+   "explanation": "<b>robbed</b> /rɒbd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /b/. Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /k/, /p/: cooked /kʊkt/, stopped /stɒpt/, knocked /nɒkt/."
+  },
+  {
+   "id": "ph-kc-06-3",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "es",
+   "options": [
+    "com<u>es</u>",
+    "watch<u>es</u>",
+    "box<u>es</u>",
+    "wash<u>es</u>"
+   ],
+   "words": [
+    "comes",
+    "watches",
+    "boxes",
+    "washes"
+   ],
+   "ipa": [
+    "/kʌmz/",
+    "/ˈwɒtʃɪz/",
+    "/ˈbɒksɪz/",
+    "/ˈwɒʃɪz/"
+   ],
+   "correct": 0,
+   "explanation": "<b>comes</b> /kʌmz/ — đuôi -es đọc /z/ vì đứng sau âm hữu thanh /m/ (chữ e ở đây chỉ là e câm của từ come). Ba từ còn lại đọc /ɪz/ vì đứng sau âm rít /tʃ/, /ks/, /ʃ/: watches /ˈwɒtʃɪz/, boxes /ˈbɒksɪz/, washes /ˈwɒʃɪz/."
+  },
+  {
+   "id": "ph-kc-06-4",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "a",
+   "options": [
+    "c<u>a</u>bin",
+    "h<u>a</u>bit",
+    "b<u>a</u>sic",
+    "p<u>a</u>nic"
+   ],
+   "words": [
+    "cabin",
+    "habit",
+    "basic",
+    "panic"
+   ],
+   "ipa": [
+    "/ˈkæbɪn/",
+    "/ˈhæbɪt/",
+    "/ˈbeɪsɪk/",
+    "/ˈpænɪk/"
+   ],
+   "correct": 2,
+   "explanation": "<b>basic</b> /ˈbeɪsɪk/ — chữ a đọc /eɪ/ (âm dài, như trong base). Ba từ còn lại chữ a đọc /æ/: cabin /ˈkæbɪn/, habit /ˈhæbɪt/, panic /ˈpænɪk/."
+  },
+  {
+   "id": "ph-kc-06-5",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "e",
+   "options": [
+    "m<u>e</u>tal",
+    "l<u>e</u>gal",
+    "m<u>e</u>dal",
+    "p<u>e</u>dal"
+   ],
+   "words": [
+    "metal",
+    "legal",
+    "medal",
+    "pedal"
+   ],
+   "ipa": [
+    "/ˈmetl/",
+    "/ˈliːɡl/",
+    "/ˈmedl/",
+    "/ˈpedl/"
+   ],
+   "correct": 1,
+   "explanation": "<b>legal</b> /ˈliːɡl/ — chữ e đọc /iː/ (âm dài). Ba từ còn lại chữ e đọc /e/ (âm ngắn): metal /ˈmetl/, medal /ˈmedl/, pedal /ˈpedl/."
+  },
+  {
+   "id": "ph-kc-06-6",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "i",
+   "options": [
+    "cl<u>i</u>nic",
+    "cl<u>i</u>ff",
+    "cl<u>i</u>p",
+    "cl<u>i</u>mb"
+   ],
+   "words": [
+    "clinic",
+    "cliff",
+    "clip",
+    "climb"
+   ],
+   "ipa": [
+    "/ˈklɪnɪk/",
+    "/klɪf/",
+    "/klɪp/",
+    "/klaɪm/"
+   ],
+   "correct": 3,
+   "explanation": "<b>climb</b> /klaɪm/ — chữ i đọc /aɪ/ (i đứng trước -mb, giống child, kind). Ba từ còn lại chữ i đọc /ɪ/ ngắn: clinic /ˈklɪnɪk/, cliff /klɪf/, clip /klɪp/."
+  },
+  {
+   "id": "ph-kc-06-7",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "o",
+   "options": [
+    "c<u>o</u>ffee",
+    "c<u>o</u>ver",
+    "<u>o</u>ven",
+    "d<u>o</u>zen"
+   ],
+   "words": [
+    "coffee",
+    "cover",
+    "oven",
+    "dozen"
+   ],
+   "ipa": [
+    "/ˈkɒfi/",
+    "/ˈkʌvə/",
+    "/ˈʌvn/",
+    "/ˈdʌzn/"
+   ],
+   "correct": 0,
+   "explanation": "<b>coffee</b> /ˈkɒfi/ — chữ o đọc /ɒ/ (o ngắn bình thường). Ba từ còn lại chữ o đọc /ʌ/ — nhóm ngoại lệ phải nhớ: cover /ˈkʌvə/, oven /ˈʌvn/, dozen /ˈdʌzn/ (cùng nhóm với love, come, some, money)."
+  },
+  {
+   "id": "ph-kc-06-8",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "oo-ou-ow",
+   "options": [
+    "cr<u>ow</u>d",
+    "t<u>ow</u>el",
+    "b<u>ow</u>l",
+    "p<u>ow</u>er"
+   ],
+   "words": [
+    "crowd",
+    "towel",
+    "bowl",
+    "power"
+   ],
+   "ipa": [
+    "/kraʊd/",
+    "/ˈtaʊəl/",
+    "/bəʊl/",
+    "/ˈpaʊə(r)/"
+   ],
+   "correct": 2,
+   "explanation": "<b>bowl</b> /bəʊl/ — chữ ow đọc /əʊ/ (giống know, show, slow). Ba từ còn lại chữ ow đọc /aʊ/ (giống now, how): crowd /kraʊd/, towel /ˈtaʊəl/, power /ˈpaʊə(r)/."
+  },
+  {
+   "id": "ph-kc-06-9",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "c-g",
+   "options": [
+    "<u>g</u>ift",
+    "<u>g</u>iant",
+    "<u>g</u>irl",
+    "<u>g</u>ive"
+   ],
+   "words": [
+    "gift",
+    "giant",
+    "girl",
+    "give"
+   ],
+   "ipa": [
+    "/ɡɪft/",
+    "/ˈdʒaɪənt/",
+    "/ɡɜːl/",
+    "/ɡɪv/"
+   ],
+   "correct": 1,
+   "explanation": "<b>giant</b> /ˈdʒaɪənt/ — chữ g đọc /dʒ/ (g mềm, giống gentle, giraffe). Ba từ còn lại tuy cũng viết gi- nhưng chữ g đọc /ɡ/ (g cứng): gift /ɡɪft/, girl /ɡɜːl/, give /ɡɪv/."
+  },
+  {
+   "id": "ph-kc-06-10",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "silent",
+   "options": [
+    "<u>w</u>orry",
+    "<u>w</u>onder",
+    "<u>w</u>orld",
+    "<u>w</u>rong"
+   ],
+   "words": [
+    "worry",
+    "wonder",
+    "world",
+    "wrong"
+   ],
+   "ipa": [
+    "/ˈwʌri/",
+    "/ˈwʌndə(r)/",
+    "/wɜːld/",
+    "/rɒŋ/"
+   ],
+   "correct": 3,
+   "explanation": "<b>wrong</b> /rɒŋ/ — chữ w câm vì đứng trước r (wr- luôn đọc /r/: write, wrap, wrist). Ba từ còn lại chữ w đọc /w/ bình thường: worry /ˈwʌri/, wonder /ˈwʌndə(r)/, world /wɜːld/."
+  },
+  {
+   "id": "ph-kc-06-11",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "money",
+    "mother",
+    "become",
+    "onion"
+   ],
+   "words": [
+    "money",
+    "mother",
+    "become",
+    "onion"
+   ],
+   "ipa": [
+    "/ˈmʌni/",
+    "/ˈmʌðə(r)/",
+    "/bɪˈkʌm/",
+    "/ˈʌnjən/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    2,
+    1
+   ],
+   "correct": 2,
+   "explanation": "<b>become</b> /bɪˈkʌm/ — động từ 2 âm tiết nhấn âm 2 (be- là tiền tố, không bao giờ được nhấn). Ba từ còn lại là danh từ 2 âm tiết, nhấn âm 1: MON-ey /ˈmʌni/, MOTH-er /ˈmʌðə(r)/, ON-ion /ˈʌnjən/."
+  },
+  {
+   "id": "ph-kc-06-12",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "forget",
+    "borrow",
+    "follow",
+    "common"
+   ],
+   "words": [
+    "forget",
+    "borrow",
+    "follow",
+    "common"
+   ],
+   "ipa": [
+    "/fəˈɡet/",
+    "/ˈbɒrəʊ/",
+    "/ˈfɒləʊ/",
+    "/ˈkɒmən/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "correct": 0,
+   "explanation": "<b>forget</b> /fəˈɡet/ — động từ 2 âm tiết nhấn âm 2. Ba từ còn lại nhấn âm 1: BOR-row /ˈbɒrəʊ/ và FOL-low /ˈfɒləʊ/ (động từ kết thúc bằng -ow là ngoại lệ, nhấn âm 1), COM-mon /ˈkɒmən/ (tính từ)."
+  },
+  {
+   "id": "ph-kc-06-13",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "guitar",
+    "comfort",
+    "balloon",
+    "canoe"
+   ],
+   "words": [
+    "guitar",
+    "comfort",
+    "balloon",
+    "canoe"
+   ],
+   "ipa": [
+    "/ɡɪˈtɑː(r)/",
+    "/ˈkʌmfət/",
+    "/bəˈluːn/",
+    "/kəˈnuː/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>comfort</b> /ˈkʌmfət/ — danh từ 2 âm tiết nhấn âm 1 như bình thường. Ba từ còn lại là danh từ ngoại lệ (từ mượn), nhấn âm 2: gui-TAR /ɡɪˈtɑː(r)/, bal-LOON /bəˈluːn/, ca-NOE /kəˈnuː/."
+  },
+  {
+   "id": "ph-kc-06-14",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "offer",
+    "open",
+    "order",
+    "obey"
+   ],
+   "words": [
+    "offer",
+    "open",
+    "order",
+    "obey"
+   ],
+   "ipa": [
+    "/ˈɒfə(r)/",
+    "/ˈəʊpən/",
+    "/ˈɔːdə(r)/",
+    "/əˈbeɪ/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "correct": 3,
+   "explanation": "<b>obey</b> /əˈbeɪ/ — động từ 2 âm tiết nhấn âm 2, âm tiết đầu chỉ là /ə/ yếu. Ba từ còn lại nhấn âm 1 (chữ o đầu đọc rõ): OF-fer /ˈɒfə(r)/, O-pen /ˈəʊpən/, OR-der /ˈɔːdə(r)/."
+  },
+  {
+   "id": "ph-kc-06-15",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-neutral",
+   "options": [
+    "wonderful",
+    "happiness",
+    "excitement",
+    "government"
+   ],
+   "words": [
+    "wonderful",
+    "happiness",
+    "excitement",
+    "government"
+   ],
+   "ipa": [
+    "/ˈwʌndəfl/",
+    "/ˈhæpinəs/",
+    "/ɪkˈsaɪtmənt/",
+    "/ˈɡʌvənmənt/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    1,
+    2,
+    1
+   ],
+   "correct": 2,
+   "explanation": "<b>excitement</b> /ɪkˈsaɪtmənt/ — đuôi -ment không đổi trọng âm, nên giữ nguyên trọng âm của excite /ɪkˈsaɪt/ ở âm 2. Ba từ còn lại cũng giữ trọng âm của từ gốc, đều ở âm 1: WON-der-ful /ˈwʌndəfl/ (wonder), HAP-pi-ness /ˈhæpinəs/ (happy), GOV-ern-ment /ˈɡʌvənmənt/ (govern)."
+  },
+  {
+   "id": "ph-kc-06-16",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "comedy",
+    "pollution",
+    "tradition",
+    "collection"
+   ],
+   "words": [
+    "comedy",
+    "pollution",
+    "tradition",
+    "collection"
+   ],
+   "ipa": [
+    "/ˈkɒmədi/",
+    "/pəˈluːʃn/",
+    "/trəˈdɪʃn/",
+    "/kəˈlekʃn/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>comedy</b> /ˈkɒmədi/ — danh từ 3 âm tiết không có đuôi đặc biệt, nhấn âm 1. Ba từ còn lại có đuôi -tion, đuôi này kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 2: pol-LU-tion /pəˈluːʃn/, tra-DI-tion /trəˈdɪʃn/, col-LEC-tion /kəˈlekʃn/."
+  },
+  {
+   "id": "ph-kc-06-17",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "geography",
+    "economic",
+    "biology",
+    "photography"
+   ],
+   "words": [
+    "geography",
+    "economic",
+    "biology",
+    "photography"
+   ],
+   "ipa": [
+    "/dʒiˈɒɡrəfi/",
+    "/ˌiːkəˈnɒmɪk/",
+    "/baɪˈɒlədʒi/",
+    "/fəˈtɒɡrəfi/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    2,
+    3,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>economic</b> /ˌiːkəˈnɒmɪk/ — đuôi -ic kéo trọng âm về âm tiết ngay trước nó: e-co-NOM-ic, âm 3. Ba từ còn lại có đuôi -graphy / -logy, trọng âm rơi vào âm tiết ngay trước đuôi, tức âm 2: ge-OG-ra-phy /dʒiˈɒɡrəfi/, bi-OL-o-gy /baɪˈɒlədʒi/, pho-TOG-ra-phy /fəˈtɒɡrəfi/."
+  },
+  {
+   "id": "ph-kc-06-18",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "possible",
+    "popular",
+    "hospital",
+    "tomorrow"
+   ],
+   "words": [
+    "possible",
+    "popular",
+    "hospital",
+    "tomorrow"
+   ],
+   "ipa": [
+    "/ˈpɒsəbl/",
+    "/ˈpɒpjələ(r)/",
+    "/ˈhɒspɪtl/",
+    "/təˈmɒrəʊ/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "correct": 3,
+   "explanation": "<b>tomorrow</b> /təˈmɒrəʊ/ — nhấn âm 2, âm tiết đầu to- chỉ là /tə/ yếu (giống today, tonight). Ba từ còn lại là từ 3 âm tiết nhấn âm 1: POS-si-ble /ˈpɒsəbl/, POP-u-lar /ˈpɒpjələ(r)/, HOS-pi-tal /ˈhɒspɪtl/."
+  },
+  {
+   "id": "ph-kc-06-19",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "computer",
+    "banana",
+    "company",
+    "important"
+   ],
+   "words": [
+    "computer",
+    "banana",
+    "company",
+    "important"
+   ],
+   "ipa": [
+    "/kəmˈpjuːtə(r)/",
+    "/bəˈnɑːnə/",
+    "/ˈkʌmpəni/",
+    "/ɪmˈpɔːtnt/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "correct": 2,
+   "explanation": "<b>company</b> /ˈkʌmpəni/ — nhấn âm 1: COM-pa-ny, chữ o đọc /ʌ/. Ba từ còn lại nhấn âm 2, âm tiết đầu đọc yếu /ə/ hoặc /ɪ/: com-PU-ter /kəmˈpjuːtə(r)/, ba-NA-na /bəˈnɑːnə/, im-POR-tant /ɪmˈpɔːtnt/."
+  },
+  {
+   "id": "ph-kc-06-20",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "prefix",
+   "options": [
+    "customer",
+    "unlucky",
+    "discover",
+    "recover"
+   ],
+   "words": [
+    "customer",
+    "unlucky",
+    "discover",
+    "recover"
+   ],
+   "ipa": [
+    "/ˈkʌstəmə(r)/",
+    "/ʌnˈlʌki/",
+    "/dɪˈskʌvə(r)/",
+    "/rɪˈkʌvə(r)/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>customer</b> /ˈkʌstəmə(r)/ — không có tiền tố, danh từ 3 âm tiết nhấn âm 1: CUS-to-mer. Ba từ còn lại bắt đầu bằng tiền tố un-, dis-, re-; tiền tố không bao giờ được nhấn nên trọng âm rơi vào âm 2: un-LUCK-y /ʌnˈlʌki/, dis-COV-er /dɪˈskʌvə(r)/, re-COV-er /rɪˈkʌvə(r)/."
+  }
+ ]
+}

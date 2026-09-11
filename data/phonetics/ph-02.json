@@ -1,0 +1,646 @@
+{
+ "file": "02",
+ "level": "kc",
+ "items": [
+  {
+   "id": "ph-kc-02-1",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "plant<u>ed</u>",
+    "shout<u>ed</u>",
+    "fold<u>ed</u>",
+    "smil<u>ed</u>"
+   ],
+   "words": [
+    "planted",
+    "shouted",
+    "folded",
+    "smiled"
+   ],
+   "ipa": [
+    "/ˈplɑːntɪd/",
+    "/ˈʃaʊtɪd/",
+    "/ˈfəʊldɪd/",
+    "/smaɪld/"
+   ],
+   "correct": 3,
+   "explanation": "<b>smiled</b> /smaɪld/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /l/. Ba từ còn lại đọc /ɪd/ vì động từ gốc tận cùng bằng /t/ hoặc /d/: planted /ˈplɑːntɪd/, shouted /ˈʃaʊtɪd/, folded /ˈfəʊldɪd/."
+  },
+  {
+   "id": "ph-kc-02-2",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "rain<u>ed</u>",
+    "brush<u>ed</u>",
+    "dropp<u>ed</u>",
+    "cough<u>ed</u>"
+   ],
+   "words": [
+    "rained",
+    "brushed",
+    "dropped",
+    "coughed"
+   ],
+   "ipa": [
+    "/reɪnd/",
+    "/brʌʃt/",
+    "/drɒpt/",
+    "/kɒft/"
+   ],
+   "correct": 0,
+   "explanation": "<b>rained</b> /reɪnd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /n/. Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /ʃ/, /p/, /f/: brushed /brʌʃt/, dropped /drɒpt/, coughed /kɒft/."
+  },
+  {
+   "id": "ph-kc-02-3",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "es",
+   "options": [
+    "beach<u>es</u>",
+    "gam<u>es</u>",
+    "fac<u>es</u>",
+    "bridg<u>es</u>"
+   ],
+   "words": [
+    "beaches",
+    "games",
+    "faces",
+    "bridges"
+   ],
+   "ipa": [
+    "/ˈbiːtʃɪz/",
+    "/ɡeɪmz/",
+    "/ˈfeɪsɪz/",
+    "/ˈbrɪdʒɪz/"
+   ],
+   "correct": 1,
+   "explanation": "<b>games</b> /ɡeɪmz/ — đuôi -es đọc /z/ vì chữ e chỉ là e câm của 'game', âm cuối là /m/ hữu thanh. Ba từ còn lại đọc /ɪz/ vì từ gốc tận cùng bằng âm rít /tʃ/, /s/, /dʒ/: beaches /ˈbiːtʃɪz/, faces /ˈfeɪsɪz/, bridges /ˈbrɪdʒɪz/."
+  },
+  {
+   "id": "ph-kc-02-4",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "a",
+   "options": [
+    "t<u>a</u>ble",
+    "l<u>a</u>zy",
+    "c<u>a</u>ndle",
+    "p<u>a</u>per"
+   ],
+   "words": [
+    "table",
+    "lazy",
+    "candle",
+    "paper"
+   ],
+   "ipa": [
+    "/ˈteɪbl/",
+    "/ˈleɪzi/",
+    "/ˈkændl/",
+    "/ˈpeɪpə/"
+   ],
+   "correct": 2,
+   "explanation": "<b>candle</b> /ˈkændl/ — chữ a đọc /æ/ (âm ngắn) vì đứng trước hai phụ âm liền nhau 'nd' (âm tiết đóng). Ba từ còn lại chữ a đọc /eɪ/ (âm dài) vì đứng trước một phụ âm rồi đến nguyên âm (âm tiết mở): table /ˈteɪbl/, lazy /ˈleɪzi/, paper /ˈpeɪpə/."
+  },
+  {
+   "id": "ph-kc-02-5",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "e",
+   "options": [
+    "s<u>e</u>cret",
+    "l<u>e</u>sson",
+    "y<u>e</u>llow",
+    "m<u>e</u>lon"
+   ],
+   "words": [
+    "secret",
+    "lesson",
+    "yellow",
+    "melon"
+   ],
+   "ipa": [
+    "/ˈsiːkrət/",
+    "/ˈlesn/",
+    "/ˈjeləʊ/",
+    "/ˈmelən/"
+   ],
+   "correct": 0,
+   "explanation": "<b>secret</b> /ˈsiːkrət/ — chữ e đọc /iː/ vì âm tiết 'se' kết thúc bằng nguyên âm (âm tiết mở). Ba từ còn lại chữ e đọc /e/ vì đứng trước phụ âm đôi hoặc âm tiết đóng: lesson /ˈlesn/, yellow /ˈjeləʊ/, melon /ˈmelən/."
+  },
+  {
+   "id": "ph-kc-02-6",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "i",
+   "options": [
+    "t<u>i</u>ger",
+    "s<u>i</u>lent",
+    "p<u>i</u>lot",
+    "p<u>i</u>cnic"
+   ],
+   "words": [
+    "tiger",
+    "silent",
+    "pilot",
+    "picnic"
+   ],
+   "ipa": [
+    "/ˈtaɪɡə/",
+    "/ˈsaɪlənt/",
+    "/ˈpaɪlət/",
+    "/ˈpɪknɪk/"
+   ],
+   "correct": 3,
+   "explanation": "<b>picnic</b> /ˈpɪknɪk/ — chữ i đọc /ɪ/ vì đứng trước hai phụ âm 'cn' (âm tiết đóng). Ba từ còn lại chữ i đọc /aɪ/ vì âm tiết 'ti', 'si', 'pi' là âm tiết mở: tiger /ˈtaɪɡə/, silent /ˈsaɪlənt/, pilot /ˈpaɪlət/."
+  },
+  {
+   "id": "ph-kc-02-7",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "o",
+   "options": [
+    "m<u>o</u>ther",
+    "m<u>o</u>dern",
+    "m<u>o</u>ney",
+    "m<u>o</u>nth"
+   ],
+   "words": [
+    "mother",
+    "modern",
+    "money",
+    "month"
+   ],
+   "ipa": [
+    "/ˈmʌðə/",
+    "/ˈmɒdn/",
+    "/ˈmʌni/",
+    "/mʌnθ/"
+   ],
+   "correct": 1,
+   "explanation": "<b>modern</b> /ˈmɒdn/ — chữ o đọc /ɒ/ như trong 'hot'. Ba từ còn lại chữ o đọc /ʌ/ (nhóm từ quen thuộc mother, money, month, son, love): mother /ˈmʌðə/, money /ˈmʌni/, month /mʌnθ/."
+  },
+  {
+   "id": "ph-kc-02-8",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "oo-ou-ow",
+   "options": [
+    "cr<u>ow</u>d",
+    "t<u>ow</u>er",
+    "thr<u>ow</u>",
+    "br<u>ow</u>n"
+   ],
+   "words": [
+    "crowd",
+    "tower",
+    "throw",
+    "brown"
+   ],
+   "ipa": [
+    "/kraʊd/",
+    "/ˈtaʊə/",
+    "/θrəʊ/",
+    "/braʊn/"
+   ],
+   "correct": 2,
+   "explanation": "<b>throw</b> /θrəʊ/ — 'ow' ở cuối từ thường đọc /əʊ/ như grow, show, know. Ba từ còn lại 'ow' đọc /aʊ/: crowd /kraʊd/, tower /ˈtaʊə/, brown /braʊn/."
+  },
+  {
+   "id": "ph-kc-02-9",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "c-g",
+   "options": [
+    "<u>g</u>ate",
+    "<u>g</u>ym",
+    "<u>g</u>iant",
+    "<u>g</u>entle"
+   ],
+   "words": [
+    "gate",
+    "gym",
+    "giant",
+    "gentle"
+   ],
+   "ipa": [
+    "/ɡeɪt/",
+    "/dʒɪm/",
+    "/ˈdʒaɪənt/",
+    "/ˈdʒentl/"
+   ],
+   "correct": 0,
+   "explanation": "<b>gate</b> /ɡeɪt/ — chữ g đọc /ɡ/ (g cứng) vì đứng trước a. Ba từ còn lại chữ g đọc /dʒ/ (g mềm) vì đứng trước e, i, y: gym /dʒɪm/, giant /ˈdʒaɪənt/, gentle /ˈdʒentl/."
+  },
+  {
+   "id": "ph-kc-02-10",
+   "level": "kc",
+   "kind": "sound",
+   "rule": "silent",
+   "options": [
+    "clim<u>b</u>",
+    "thum<u>b</u>",
+    "com<u>b</u>",
+    "ca<u>b</u>in"
+   ],
+   "words": [
+    "climb",
+    "thumb",
+    "comb",
+    "cabin"
+   ],
+   "ipa": [
+    "/klaɪm/",
+    "/θʌm/",
+    "/kəʊm/",
+    "/ˈkæbɪn/"
+   ],
+   "correct": 3,
+   "explanation": "<b>cabin</b> /ˈkæbɪn/ — chữ b đọc /b/ bình thường vì đứng giữa hai nguyên âm. Ba từ còn lại chữ b câm vì đứng sau m ở cuối từ (quy tắc 'mb' cuối từ): climb /klaɪm/, thumb /θʌm/, comb /kəʊm/."
+  },
+  {
+   "id": "ph-kc-02-11",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "explain",
+    "visit",
+    "arrive",
+    "decide"
+   ],
+   "words": [
+    "explain",
+    "visit",
+    "arrive",
+    "decide"
+   ],
+   "ipa": [
+    "/ɪkˈspleɪn/",
+    "/ˈvɪzɪt/",
+    "/əˈraɪv/",
+    "/dɪˈsaɪd/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>visit</b> /ˈvɪzɪt/ — động từ 2 âm tiết nhưng nhấn âm 1 (ngoại lệ, cùng nhóm với enter, answer, offer, open). Ba từ còn lại là động từ 2 âm tiết nhấn âm 2 theo quy tắc: ex-PLAIN /ɪkˈspleɪn/, a-RRIVE /əˈraɪv/, de-CIDE /dɪˈsaɪd/."
+  },
+  {
+   "id": "ph-kc-02-12",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "garden",
+    "kitchen",
+    "balloon",
+    "window"
+   ],
+   "words": [
+    "garden",
+    "kitchen",
+    "balloon",
+    "window"
+   ],
+   "ipa": [
+    "/ˈɡɑːdn/",
+    "/ˈkɪtʃɪn/",
+    "/bəˈluːn/",
+    "/ˈwɪndəʊ/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    2,
+    1
+   ],
+   "correct": 2,
+   "explanation": "<b>balloon</b> /bəˈluːn/ — danh từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống hotel, police, machine). Ba từ còn lại là danh từ 2 âm tiết nhấn âm 1 theo quy tắc: GAR-den /ˈɡɑːdn/, KIT-chen /ˈkɪtʃɪn/, WIN-dow /ˈwɪndəʊ/."
+  },
+  {
+   "id": "ph-kc-02-13",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "happen",
+    "become",
+    "forget",
+    "prepare"
+   ],
+   "words": [
+    "happen",
+    "become",
+    "forget",
+    "prepare"
+   ],
+   "ipa": [
+    "/ˈhæpən/",
+    "/bɪˈkʌm/",
+    "/fəˈɡet/",
+    "/prɪˈpeə/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>happen</b> /ˈhæpən/ — động từ 2 âm tiết nhấn âm 1 vì âm tiết cuối chỉ là /ən/ yếu (giống listen, open). Ba từ còn lại nhấn âm 2 theo quy tắc động từ 2 âm tiết: be-COME /bɪˈkʌm/, for-GET /fəˈɡet/, pre-PARE /prɪˈpeə/."
+  },
+  {
+   "id": "ph-kc-02-14",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "lucky",
+    "famous",
+    "busy",
+    "polite"
+   ],
+   "words": [
+    "lucky",
+    "famous",
+    "busy",
+    "polite"
+   ],
+   "ipa": [
+    "/ˈlʌki/",
+    "/ˈfeɪməs/",
+    "/ˈbɪzi/",
+    "/pəˈlaɪt/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    1,
+    2
+   ],
+   "correct": 3,
+   "explanation": "<b>polite</b> /pəˈlaɪt/ — tính từ 2 âm tiết nhưng nhấn âm 2 (ngoại lệ, giống alone, asleep, mature). Ba từ còn lại là tính từ 2 âm tiết nhấn âm 1 theo quy tắc: LUCK-y /ˈlʌki/, FA-mous /ˈfeɪməs/, BUS-y /ˈbɪzi/."
+  },
+  {
+   "id": "ph-kc-02-15",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-neutral",
+   "options": [
+    "happiness",
+    "successful",
+    "beautiful",
+    "government"
+   ],
+   "words": [
+    "happiness",
+    "successful",
+    "beautiful",
+    "government"
+   ],
+   "ipa": [
+    "/ˈhæpinəs/",
+    "/səkˈsesfl/",
+    "/ˈbjuːtɪfl/",
+    "/ˈɡʌvənmənt/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    1,
+    1
+   ],
+   "correct": 1,
+   "explanation": "<b>successful</b> /səkˈsesfl/ — đuôi -ful không đổi trọng âm, nên giữ nguyên trọng âm của suc-CESS ở âm 2. Ba từ còn lại cũng mang đuôi trung tính (-ness, -ful, -ment) nhưng từ gốc HAP-py, BEAU-ty, GOV-ern nhấn âm 1: happiness /ˈhæpinəs/, beautiful /ˈbjuːtɪfl/, government /ˈɡʌvənmənt/."
+  },
+  {
+   "id": "ph-kc-02-16",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "education",
+    "information",
+    "television",
+    "population"
+   ],
+   "words": [
+    "education",
+    "information",
+    "television",
+    "population"
+   ],
+   "ipa": [
+    "/ˌedʒuˈkeɪʃn/",
+    "/ˌɪnfəˈmeɪʃn/",
+    "/ˈtelɪvɪʒn/",
+    "/ˌpɒpjuˈleɪʃn/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    3,
+    3,
+    1,
+    3
+   ],
+   "correct": 2,
+   "explanation": "<b>television</b> /ˈtelɪvɪʒn/ — ngoại lệ nổi tiếng: nhấn âm 1 dù có đuôi -sion. Ba từ còn lại theo quy tắc đuôi -tion kéo trọng âm về âm tiết đứng ngay trước nó (âm 3): e-du-CA-tion /ˌedʒuˈkeɪʃn/, in-for-MA-tion /ˌɪnfəˈmeɪʃn/, po-pu-LA-tion /ˌpɒpjuˈleɪʃn/."
+  },
+  {
+   "id": "ph-kc-02-17",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "necessary",
+    "ability",
+    "activity",
+    "community"
+   ],
+   "words": [
+    "necessary",
+    "ability",
+    "activity",
+    "community"
+   ],
+   "ipa": [
+    "/ˈnesəsəri/",
+    "/əˈbɪləti/",
+    "/ækˈtɪvəti/",
+    "/kəˈmjuːnəti/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>necessary</b> /ˈnesəsəri/ — không có đuôi -ity, nhấn âm 1 (NE-ce-ssa-ry). Ba từ còn lại có đuôi -ity kéo trọng âm về âm tiết đứng ngay trước nó, tức âm 2: a-BI-li-ty /əˈbɪləti/, ac-TI-vi-ty /ækˈtɪvəti/, co-MMU-ni-ty /kəˈmjuːnəti/."
+  },
+  {
+   "id": "ph-kc-02-18",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "banana",
+    "computer",
+    "tomato",
+    "hospital"
+   ],
+   "words": [
+    "banana",
+    "computer",
+    "tomato",
+    "hospital"
+   ],
+   "ipa": [
+    "/bəˈnɑːnə/",
+    "/kəmˈpjuːtə/",
+    "/təˈmɑːtəʊ/",
+    "/ˈhɒspɪtl/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    2,
+    2,
+    2,
+    1
+   ],
+   "correct": 3,
+   "explanation": "<b>hospital</b> /ˈhɒspɪtl/ — danh từ 3 âm tiết nhấn âm 1 (HOS-pi-tal), hai âm sau đều yếu. Ba từ còn lại nhấn âm 2 vì âm tiết đầu là /ə/ yếu: ba-NA-na /bəˈnɑːnə/, com-PU-ter /kəmˈpjuːtə/, to-MA-to /təˈmɑːtəʊ/."
+  },
+  {
+   "id": "ph-kc-02-19",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "holiday",
+    "important",
+    "animal",
+    "family"
+   ],
+   "words": [
+    "holiday",
+    "important",
+    "animal",
+    "family"
+   ],
+   "ipa": [
+    "/ˈhɒlədeɪ/",
+    "/ɪmˈpɔːtnt/",
+    "/ˈænɪml/",
+    "/ˈfæməli/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    1,
+    1
+   ],
+   "correct": 1,
+   "explanation": "<b>important</b> /ɪmˈpɔːtnt/ — tính từ 3 âm tiết nhấn âm 2 (im-POR-tant) vì âm tiết đầu im- là tiền tố, thường không mang trọng âm. Ba từ còn lại nhấn âm 1: HO-li-day /ˈhɒlədeɪ/, A-ni-mal /ˈænɪml/, FA-mi-ly /ˈfæməli/."
+  },
+  {
+   "id": "ph-kc-02-20",
+   "level": "kc",
+   "kind": "stress",
+   "rule": "compound",
+   "options": [
+    "bookshop",
+    "toothbrush",
+    "downstairs",
+    "football"
+   ],
+   "words": [
+    "bookshop",
+    "toothbrush",
+    "downstairs",
+    "football"
+   ],
+   "ipa": [
+    "/ˈbʊkʃɒp/",
+    "/ˈtuːθbrʌʃ/",
+    "/ˌdaʊnˈsteəz/",
+    "/ˈfʊtbɔːl/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    1,
+    1,
+    2,
+    1
+   ],
+   "correct": 2,
+   "explanation": "<b>downstairs</b> /ˌdaʊnˈsteəz/ — là trạng từ ghép (down + stairs), trạng từ và tính từ ghép nhấn phần sau: down-STAIRS. Ba từ còn lại là danh từ ghép, luôn nhấn phần đầu: BOOK-shop /ˈbʊkʃɒp/, TOOTH-brush /ˈtuːθbrʌʃ/, FOOT-ball /ˈfʊtbɔːl/."
+  }
+ ]
+}

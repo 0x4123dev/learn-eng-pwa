@@ -1,0 +1,176 @@
+{
+  "file": "25",
+  "level": "ch",
+  "items": [
+    {
+      "id": "ph-ch-25-1", "level": "ch", "kind": "sound", "rule": "ed",
+      "options": ["increas<u>ed</u>", "advis<u>ed</u>", "practis<u>ed</u>", "releas<u>ed</u>"],
+      "words": ["increased", "advised", "practised", "released"],
+      "ipa": ["/ɪnˈkriːst/", "/ədˈvaɪzd/", "/ˈpræktɪst/", "/rɪˈliːst/"],
+      "correct": 1,
+      "explanation": "<b>advised</b> /ədˈvaɪzd/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /z/ (advise /ədˈvaɪz/). Ba từ còn lại đều kết thúc bằng âm vô thanh /s/ nên -ed đọc /t/: increased /ɪnˈkriːst/, practised /ˈpræktɪst/, released /rɪˈliːst/. Chú ý: cùng chữ s nhưng advise đọc /z/, còn increase, practise, release đọc /s/."
+    },
+    {
+      "id": "ph-ch-25-2", "level": "ch", "kind": "sound", "rule": "es",
+      "options": ["sketch<u>es</u>", "colleg<u>es</u>", "athlet<u>es</u>", "villag<u>es</u>"],
+      "words": ["sketches", "colleges", "athletes", "villages"],
+      "ipa": ["/ˈsketʃɪz/", "/ˈkɒlɪdʒɪz/", "/ˈæθliːts/", "/ˈvɪlɪdʒɪz/"],
+      "correct": 2,
+      "explanation": "<b>athletes</b> /ˈæθliːts/ — chữ e thuộc về gốc từ (athlete /ˈæθliːt/), nên đuôi -s đứng sau âm vô thanh /t/ đọc /s/. Ba từ còn lại có -es thêm vào sau âm /tʃ/ và /dʒ/ nên đọc /ɪz/: sketches /ˈsketʃɪz/, colleges /ˈkɒlɪdʒɪz/, villages /ˈvɪlɪdʒɪz/."
+    },
+    {
+      "id": "ph-ch-25-3", "level": "ch", "kind": "sound", "rule": "ch-sh-th-gh",
+      "options": ["or<u>ch</u>estra", "<u>ch</u>emist", "s<u>ch</u>olar", "a<u>ch</u>ieve"],
+      "words": ["orchestra", "chemist", "scholar", "achieve"],
+      "ipa": ["/ˈɔːkɪstrə/", "/ˈkemɪst/", "/ˈskɒlə/", "/əˈtʃiːv/"],
+      "correct": 3,
+      "explanation": "<b>achieve</b> /əˈtʃiːv/ — ch đọc /tʃ/ như trong chair, teach. Ba từ còn lại gốc Hy Lạp, ch đọc /k/: orchestra /ˈɔːkɪstrə/, chemist /ˈkemɪst/, scholar /ˈskɒlə/ (cùng họ với school /skuːl/)."
+    },
+    {
+      "id": "ph-ch-25-4", "level": "ch", "kind": "sound", "rule": "s-z-sh",
+      "options": ["ba<u>s</u>is", "vi<u>s</u>ible", "po<u>s</u>itive", "phy<u>s</u>ical"],
+      "words": ["basis", "visible", "positive", "physical"],
+      "ipa": ["/ˈbeɪsɪs/", "/ˈvɪzəbl/", "/ˈpɒzətɪv/", "/ˈfɪzɪkl/"],
+      "correct": 0,
+      "explanation": "<b>basis</b> /ˈbeɪsɪs/ — chữ s đọc /s/ (cùng họ với base /beɪs/). Ba từ còn lại chữ s nằm giữa hai nguyên âm và đọc /z/: visible /ˈvɪzəbl/, positive /ˈpɒzətɪv/, physical /ˈfɪzɪkl/."
+    },
+    {
+      "id": "ph-ch-25-5", "level": "ch", "kind": "sound", "rule": "silent",
+      "options": ["cas<u>t</u>le", "whis<u>t</u>le", "fas<u>t</u>en", "hos<u>t</u>el"],
+      "words": ["castle", "whistle", "fasten", "hostel"],
+      "ipa": ["/ˈkɑːsl/", "/ˈwɪsl/", "/ˈfɑːsn/", "/ˈhɒstl/"],
+      "correct": 3,
+      "explanation": "<b>hostel</b> /ˈhɒstl/ — chữ t đọc /t/ bình thường vì đứng trước nguyên âm e trong một âm tiết riêng (hos-tel). Ba từ còn lại có chữ t câm trong các cụm -stle, -sten: castle /ˈkɑːsl/, whistle /ˈwɪsl/, fasten /ˈfɑːsn/ (tương tự listen, wrestle)."
+    },
+    {
+      "id": "ph-ch-25-6", "level": "ch", "kind": "sound", "rule": "prefix-ex",
+      "options": ["<u>ex</u>treme", "<u>ex</u>act", "<u>ex</u>otic", "<u>ex</u>istence"],
+      "words": ["extreme", "exact", "exotic", "existence"],
+      "ipa": ["/ɪkˈstriːm/", "/ɪɡˈzækt/", "/ɪɡˈzɒtɪk/", "/ɪɡˈzɪstəns/"],
+      "correct": 0,
+      "explanation": "<b>extreme</b> /ɪkˈstriːm/ — ex- đọc /ɪks/ vì sau nó là phụ âm (t). Ba từ còn lại có ex- đứng trước nguyên âm và mang trọng âm ở âm tiết sau, nên đọc /ɪɡz/: exact /ɪɡˈzækt/, exotic /ɪɡˈzɒtɪk/, existence /ɪɡˈzɪstəns/."
+    },
+    {
+      "id": "ph-ch-25-7", "level": "ch", "kind": "sound", "rule": "oo-ou-ow",
+      "options": ["y<u>ou</u>th", "c<u>ou</u>ncil", "c<u>ou</u>pon", "ac<u>ou</u>stic"],
+      "words": ["youth", "council", "coupon", "acoustic"],
+      "ipa": ["/juːθ/", "/ˈkaʊnsl/", "/ˈkuːpɒn/", "/əˈkuːstɪk/"],
+      "correct": 1,
+      "explanation": "<b>council</b> /ˈkaʊnsl/ — ou đọc /aʊ/ như trong house, count. Ba từ còn lại ou đọc /uː/: youth /juːθ/, coupon /ˈkuːpɒn/, acoustic /əˈkuːstɪk/ (coupon và acoustic là từ mượn tiếng Pháp và Hy Lạp, giữ cách đọc /uː/ như group, soup)."
+    },
+    {
+      "id": "ph-ch-25-8", "level": "ch", "kind": "sound", "rule": "ea-ee-ie",
+      "options": ["thr<u>ea</u>ten", "f<u>ea</u>ther", "tr<u>ea</u>ty", "pl<u>ea</u>sant"],
+      "words": ["threaten", "feather", "treaty", "pleasant"],
+      "ipa": ["/ˈθretn/", "/ˈfeðə/", "/ˈtriːti/", "/ˈpleznt/"],
+      "correct": 2,
+      "explanation": "<b>treaty</b> /ˈtriːti/ — ea đọc /iː/ như trong tea, treat. Ba từ còn lại ea đọc /e/ (nhóm ngoại lệ ea = /e/ như bread, head): threaten /ˈθretn/, feather /ˈfeðə/, pleasant /ˈpleznt/."
+    },
+    {
+      "id": "ph-ch-25-9", "level": "ch", "kind": "sound", "rule": "a",
+      "options": ["adv<u>a</u>ntage", "ex<u>a</u>mple", "dem<u>a</u>nd", "exp<u>a</u>nd"],
+      "words": ["advantage", "example", "demand", "expand"],
+      "ipa": ["/ədˈvɑːntɪdʒ/", "/ɪɡˈzɑːmpl/", "/dɪˈmɑːnd/", "/ɪkˈspænd/"],
+      "correct": 3,
+      "explanation": "<b>expand</b> /ɪkˈspænd/ — chữ a đọc /æ/ ngắn như trong hand, band. Ba từ còn lại trong tiếng Anh-Anh chữ a đọc /ɑː/ dài trước cụm -nt, -mp, -nd: advantage /ədˈvɑːntɪdʒ/, example /ɪɡˈzɑːmpl/, demand /dɪˈmɑːnd/. Bẫy: demand /ɑː/ nhưng expand /æ/ — phải nhớ từng từ."
+    },
+    {
+      "id": "ph-ch-25-10", "level": "ch", "kind": "sound", "rule": "e",
+      "options": ["m<u>e</u>rit", "n<u>e</u>rvous", "m<u>e</u>rcy", "m<u>e</u>rchant"],
+      "words": ["merit", "nervous", "mercy", "merchant"],
+      "ipa": ["/ˈmerɪt/", "/ˈnɜːvəs/", "/ˈmɜːsi/", "/ˈmɜːtʃənt/"],
+      "correct": 0,
+      "explanation": "<b>merit</b> /ˈmerɪt/ — chữ e đọc /e/ ngắn vì chữ r đứng sau nó lại đi tiếp với nguyên âm i (me-rit), r không khép âm tiết. Ba từ còn lại có e + r + phụ âm nên er đọc /ɜː/: nervous /ˈnɜːvəs/, mercy /ˈmɜːsi/, merchant /ˈmɜːtʃənt/."
+    },
+    {
+      "id": "ph-ch-25-11", "level": "ch", "kind": "stress", "rule": "2syl",
+      "options": ["carpet", "cement", "budget", "harvest"],
+      "words": ["carpet", "cement", "budget", "harvest"],
+      "ipa": ["/ˈkɑːpɪt/", "/sɪˈment/", "/ˈbʌdʒɪt/", "/ˈhɑːvɪst/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 2, 1, 1],
+      "correct": 1,
+      "explanation": "<b>cement</b> /sɪˈment/ — danh từ 2 âm tiết nhưng nhấn âm 2, là ngoại lệ giống hotel, police, machine. Ba danh từ còn lại theo quy tắc nhấn âm 1: CAR-pet /ˈkɑːpɪt/, BUD-get /ˈbʌdʒɪt/, HAR-vest /ˈhɑːvɪst/."
+    },
+    {
+      "id": "ph-ch-25-12", "level": "ch", "kind": "stress", "rule": "2syl",
+      "options": ["pursue", "fulfil", "vanish", "postpone"],
+      "words": ["pursue", "fulfil", "vanish", "postpone"],
+      "ipa": ["/pəˈsjuː/", "/fʊlˈfɪl/", "/ˈvænɪʃ/", "/pəˈspəʊn/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 2, 1, 2],
+      "correct": 2,
+      "explanation": "<b>vanish</b> /ˈvænɪʃ/ — động từ 2 âm tiết nhưng nhấn âm 1, vì các động từ đuôi -ish (finish, punish, vanish) luôn nhấn trước -ish. Ba động từ còn lại theo quy tắc nhấn âm 2: pur-SUE /pəˈsjuː/, ful-FIL /fʊlˈfɪl/, post-PONE /pəˈspəʊn/."
+    },
+    {
+      "id": "ph-ch-25-13", "level": "ch", "kind": "stress", "rule": "suffix-shift",
+      "options": ["humidity", "majority", "necessity", "accuracy"],
+      "words": ["humidity", "majority", "necessity", "accuracy"],
+      "ipa": ["/hjuːˈmɪdəti/", "/məˈdʒɒrəti/", "/nəˈsesəti/", "/ˈækjərəsi/"],
+      "syllables": [4, 4, 4, 4], "stress": [2, 2, 2, 1],
+      "correct": 3,
+      "explanation": "<b>accuracy</b> /ˈækjərəsi/ — đuôi -acy không kéo trọng âm, từ giữ trọng âm của accurate nên nhấn âm 1 (AC-cu-ra-cy). Ba từ còn lại có đuôi -ity kéo trọng âm về âm tiết ngay trước nó, tức âm 2: hu-MI-di-ty /hjuːˈmɪdəti/, ma-JO-ri-ty /məˈdʒɒrəti/, ne-CES-si-ty /nəˈsesəti/."
+    },
+    {
+      "id": "ph-ch-25-14", "level": "ch", "kind": "stress", "rule": "suffix-shift",
+      "options": ["energetic", "mythology", "ecology", "electrical"],
+      "words": ["energetic", "mythology", "ecology", "electrical"],
+      "ipa": ["/ˌenəˈdʒetɪk/", "/mɪˈθɒlədʒi/", "/iˈkɒlədʒi/", "/ɪˈlektrɪkl/"],
+      "syllables": [4, 4, 4, 4], "stress": [3, 2, 2, 2],
+      "correct": 0,
+      "explanation": "<b>energetic</b> /ˌenəˈdʒetɪk/ — đuôi -ic kéo trọng âm về âm tiết ngay trước nó, tức âm 3 (e-ner-GE-tic). Ba từ còn lại có đuôi -logy và -ical cũng kéo trọng âm về âm ngay trước đuôi, nhưng ở đây là âm 2: my-THO-lo-gy /mɪˈθɒlədʒi/, e-CO-lo-gy /iˈkɒlədʒi/, e-LEC-tri-cal /ɪˈlektrɪkl/."
+    },
+    {
+      "id": "ph-ch-25-15", "level": "ch", "kind": "stress", "rule": "suffix-final",
+      "options": ["refugee", "pedigree", "kitchenette", "Lebanese"],
+      "words": ["refugee", "pedigree", "kitchenette", "Lebanese"],
+      "ipa": ["/ˌrefjuˈdʒiː/", "/ˈpedɪɡriː/", "/ˌkɪtʃɪˈnet/", "/ˌlebəˈniːz/"],
+      "syllables": [3, 3, 3, 3], "stress": [3, 1, 3, 3],
+      "correct": 1,
+      "explanation": "<b>pedigree</b> /ˈpedɪɡriː/ — ngoại lệ của đuôi -ee: nhấn âm 1 (PE-di-gree), không nhấn vào -ee, giống jubilee, coffee, committee cũng không nhấn -ee. Ba từ còn lại có đuôi -ee, -ette, -ese tự mang trọng âm nên nhấn âm cuối: re-fu-GEE /ˌrefjuˈdʒiː/, kit-che-NETTE /ˌkɪtʃɪˈnet/, Le-ba-NESE /ˌlebəˈniːz/."
+    },
+    {
+      "id": "ph-ch-25-16", "level": "ch", "kind": "stress", "rule": "suffix-final",
+      "options": ["Chinese", "degree", "toffee", "career"],
+      "words": ["Chinese", "degree", "toffee", "career"],
+      "ipa": ["/ˌtʃaɪˈniːz/", "/dɪˈɡriː/", "/ˈtɒfi/", "/kəˈrɪə/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 2, 1, 2],
+      "correct": 2,
+      "explanation": "<b>toffee</b> /ˈtɒfi/ — đuôi -ee ở đây không mang trọng âm, nhấn âm 1 (TOF-fee), giống coffee. Ba từ còn lại nhấn âm cuối vì đuôi -ese, -ee, -eer tự mang trọng âm: Chi-NESE /ˌtʃaɪˈniːz/, de-GREE /dɪˈɡriː/, ca-REER /kəˈrɪə/."
+    },
+    {
+      "id": "ph-ch-25-17", "level": "ch", "kind": "stress", "rule": "3syl",
+      "options": ["abandon", "establish", "encounter", "recipe"],
+      "words": ["abandon", "establish", "encounter", "recipe"],
+      "ipa": ["/əˈbændən/", "/ɪˈstæblɪʃ/", "/ɪnˈkaʊntə/", "/ˈresəpi/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 2, 2, 1],
+      "correct": 3,
+      "explanation": "<b>recipe</b> /ˈresəpi/ — danh từ 3 âm tiết nhấn âm 1 (RE-ci-pe); re- ở đây không phải tiền tố nên vẫn có thể mang trọng âm, và chữ e cuối đọc thành /i/. Ba động từ 3 âm tiết còn lại nhấn âm 2: a-BAN-don /əˈbændən/, es-TAB-lish /ɪˈstæblɪʃ/, en-COUN-ter /ɪnˈkaʊntə/."
+    },
+    {
+      "id": "ph-ch-25-18", "level": "ch", "kind": "stress", "rule": "3syl",
+      "options": ["recommend", "recognise", "remedy", "relative"],
+      "words": ["recommend", "recognise", "remedy", "relative"],
+      "ipa": ["/ˌrekəˈmend/", "/ˈrekəɡnaɪz/", "/ˈremədi/", "/ˈrelətɪv/"],
+      "syllables": [3, 3, 3, 3], "stress": [3, 1, 1, 1],
+      "correct": 0,
+      "explanation": "<b>recommend</b> /ˌrekəˈmend/ — động từ 3 âm tiết nhấn âm 3 (re-com-MEND), giống represent, introduce. Ba từ còn lại cùng bắt đầu bằng re- nhưng nhấn âm 1: RE-cog-nise /ˈrekəɡnaɪz/, RE-me-dy /ˈremədi/, RE-la-tive /ˈrelətɪv/."
+    },
+    {
+      "id": "ph-ch-25-19", "level": "ch", "kind": "stress", "rule": "4syl",
+      "options": ["biography", "agriculture", "apology", "geography"],
+      "words": ["biography", "agriculture", "apology", "geography"],
+      "ipa": ["/baɪˈɒɡrəfi/", "/ˈæɡrɪkʌltʃə/", "/əˈpɒlədʒi/", "/dʒiˈɒɡrəfi/"],
+      "syllables": [4, 4, 4, 4], "stress": [2, 1, 2, 2],
+      "correct": 1,
+      "explanation": "<b>agriculture</b> /ˈæɡrɪkʌltʃə/ — từ 4 âm tiết nhấn âm 1 (AG-ri-cul-ture), giống architecture, kindergarten. Ba từ còn lại có đuôi -graphy, -logy kéo trọng âm về âm ngay trước đuôi, tức âm 2: bi-O-gra-phy /baɪˈɒɡrəfi/, a-PO-lo-gy /əˈpɒlədʒi/, ge-O-gra-phy /dʒiˈɒɡrəfi/."
+    },
+    {
+      "id": "ph-ch-25-20", "level": "ch", "kind": "stress", "rule": "4syl",
+      "options": ["optimistic", "influential", "stability", "electronic"],
+      "words": ["optimistic", "influential", "stability", "electronic"],
+      "ipa": ["/ˌɒptɪˈmɪstɪk/", "/ˌɪnfluˈenʃl/", "/stəˈbɪləti/", "/ˌɪlekˈtrɒnɪk/"],
+      "syllables": [4, 4, 4, 4], "stress": [3, 3, 2, 3],
+      "correct": 2,
+      "explanation": "<b>stability</b> /stəˈbɪləti/ — đuôi -ity kéo trọng âm về âm ngay trước nó, ở đây là âm 2 (sta-BI-li-ty). Ba từ còn lại có đuôi -ic, -ial cũng kéo trọng âm về âm ngay trước đuôi, nhưng rơi vào âm 3: op-ti-MIS-tic /ˌɒptɪˈmɪstɪk/, in-flu-EN-tial /ˌɪnfluˈenʃl/, e-lec-TRO-nic /ˌɪlekˈtrɒnɪk/."
+    }
+  ]
+}

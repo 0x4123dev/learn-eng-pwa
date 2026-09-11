@@ -1,0 +1,646 @@
+{
+ "file": "23",
+ "level": "ch",
+ "items": [
+  {
+   "id": "ph-ch-23-1",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ed",
+   "options": [
+    "publish<u>ed</u>",
+    "analys<u>ed</u>",
+    "achiev<u>ed</u>",
+    "design<u>ed</u>"
+   ],
+   "words": [
+    "published",
+    "analysed",
+    "achieved",
+    "designed"
+   ],
+   "ipa": [
+    "/ˈpʌblɪʃt/",
+    "/ˈænəlaɪzd/",
+    "/əˈtʃiːvd/",
+    "/dɪˈzaɪnd/"
+   ],
+   "correct": 0,
+   "explanation": "<b>published</b> /ˈpʌblɪʃt/ — đuôi -ed đọc /t/ vì đứng sau âm vô thanh /ʃ/. Ba từ còn lại đọc /d/ vì đứng sau âm hữu thanh: analysed /ˈænəlaɪzd/ (sau /z/), achieved /əˈtʃiːvd/ (sau /v/), designed /dɪˈzaɪnd/ (sau /n/)."
+  },
+  {
+   "id": "ph-ch-23-2",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "es",
+   "options": [
+    "judg<u>es</u>",
+    "scienc<u>es</u>",
+    "languag<u>es</u>",
+    "machin<u>es</u>"
+   ],
+   "words": [
+    "judges",
+    "sciences",
+    "languages",
+    "machines"
+   ],
+   "ipa": [
+    "/ˈdʒʌdʒɪz/",
+    "/ˈsaɪənsɪz/",
+    "/ˈlæŋɡwɪdʒɪz/",
+    "/məˈʃiːnz/"
+   ],
+   "correct": 3,
+   "explanation": "<b>machines</b> /məˈʃiːnz/ — đuôi -es đọc /z/ vì đứng sau âm hữu thanh /n/ (chữ e cuối của machine là e câm). Ba từ còn lại đọc /ɪz/ vì đứng sau các âm rít /dʒ/, /s/: judges /ˈdʒʌdʒɪz/, sciences /ˈsaɪənsɪz/, languages /ˈlæŋɡwɪdʒɪz/."
+  },
+  {
+   "id": "ph-ch-23-3",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ch-sh-th-gh",
+   "options": [
+    "<u>ch</u>emist",
+    "ma<u>ch</u>ine",
+    "ar<u>ch</u>itect",
+    "te<u>ch</u>nique"
+   ],
+   "words": [
+    "chemist",
+    "machine",
+    "architect",
+    "technique"
+   ],
+   "ipa": [
+    "/ˈkemɪst/",
+    "/məˈʃiːn/",
+    "/ˈɑːkɪtekt/",
+    "/tekˈniːk/"
+   ],
+   "correct": 1,
+   "explanation": "<b>machine</b> /məˈʃiːn/ — từ mượn tiếng Pháp nên \"ch\" đọc /ʃ/ (như sh). Ba từ còn lại gốc Hy Lạp, \"ch\" đọc /k/: chemist /ˈkemɪst/, architect /ˈɑːkɪtekt/, technique /tekˈniːk/."
+  },
+  {
+   "id": "ph-ch-23-4",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "s-z-sh",
+   "options": [
+    "u<u>s</u>ual",
+    "trea<u>s</u>ure",
+    "in<u>s</u>ure",
+    "ca<u>s</u>ual"
+   ],
+   "words": [
+    "usual",
+    "treasure",
+    "insure",
+    "casual"
+   ],
+   "ipa": [
+    "/ˈjuːʒuəl/",
+    "/ˈtreʒə/",
+    "/ɪnˈʃʊə/",
+    "/ˈkæʒuəl/"
+   ],
+   "correct": 2,
+   "explanation": "<b>insure</b> /ɪnˈʃʊə/ — chữ s đọc /ʃ/ (giống sure, sugar). Ba từ còn lại chữ s trước u/ua đọc /ʒ/: usual /ˈjuːʒuəl/, treasure /ˈtreʒə/, casual /ˈkæʒuəl/."
+  },
+  {
+   "id": "ph-ch-23-5",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "silent",
+   "options": [
+    "dou<u>b</u>t",
+    "su<u>b</u>tle",
+    "de<u>b</u>t",
+    "o<u>b</u>tain"
+   ],
+   "words": [
+    "doubt",
+    "subtle",
+    "debt",
+    "obtain"
+   ],
+   "ipa": [
+    "/daʊt/",
+    "/ˈsʌtl/",
+    "/det/",
+    "/əbˈteɪn/"
+   ],
+   "correct": 3,
+   "explanation": "<b>obtain</b> /əbˈteɪn/ — chữ b đọc rõ /b/ vì ob- là tiền tố, b và t thuộc hai phần khác nhau. Ba từ còn lại có b câm trước t trong cùng một gốc từ: doubt /daʊt/, subtle /ˈsʌtl/, debt /det/."
+  },
+  {
+   "id": "ph-ch-23-6",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "prefix-ex",
+   "options": [
+    "<u>ex</u>pertise",
+    "<u>ex</u>amine",
+    "<u>ex</u>hibit",
+    "<u>ex</u>hausted"
+   ],
+   "words": [
+    "expertise",
+    "examine",
+    "exhibit",
+    "exhausted"
+   ],
+   "ipa": [
+    "/ˌekspɜːˈtiːz/",
+    "/ɪɡˈzæmɪn/",
+    "/ɪɡˈzɪbɪt/",
+    "/ɪɡˈzɔːstɪd/"
+   ],
+   "correct": 0,
+   "explanation": "<b>expertise</b> /ˌekspɜːˈtiːz/ — \"ex\" đứng trước phụ âm p nên đọc /eks/. Ba từ còn lại có \"ex\" đứng trước nguyên âm hoặc h câm và không mang trọng âm nên đọc /ɪɡz/: examine /ɪɡˈzæmɪn/, exhibit /ɪɡˈzɪbɪt/, exhausted /ɪɡˈzɔːstɪd/."
+  },
+  {
+   "id": "ph-ch-23-7",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "oo-ou-ow",
+   "options": [
+    "acc<u>ou</u>nt",
+    "c<u>ou</u>rage",
+    "ann<u>ou</u>nce",
+    "surr<u>ou</u>nd"
+   ],
+   "words": [
+    "account",
+    "courage",
+    "announce",
+    "surround"
+   ],
+   "ipa": [
+    "/əˈkaʊnt/",
+    "/ˈkʌrɪdʒ/",
+    "/əˈnaʊns/",
+    "/səˈraʊnd/"
+   ],
+   "correct": 1,
+   "explanation": "<b>courage</b> /ˈkʌrɪdʒ/ — \"ou\" đọc /ʌ/ (giống trouble, couple). Ba từ còn lại có \"ou\" đọc /aʊ/: account /əˈkaʊnt/, announce /əˈnaʊns/, surround /səˈraʊnd/."
+  },
+  {
+   "id": "ph-ch-23-8",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "ea-ee-ie",
+   "options": [
+    "app<u>ea</u>l",
+    "rev<u>ea</u>l",
+    "res<u>ea</u>rch",
+    "conc<u>ea</u>l"
+   ],
+   "words": [
+    "appeal",
+    "reveal",
+    "research",
+    "conceal"
+   ],
+   "ipa": [
+    "/əˈpiːl/",
+    "/rɪˈviːl/",
+    "/rɪˈsɜːtʃ/",
+    "/kənˈsiːl/"
+   ],
+   "correct": 2,
+   "explanation": "<b>research</b> /rɪˈsɜːtʃ/ — \"ear\" đứng trước phụ âm đọc /ɜː/ (như earth, learn). Ba từ còn lại có \"ea\" đọc /iː/: appeal /əˈpiːl/, reveal /rɪˈviːl/, conceal /kənˈsiːl/."
+  },
+  {
+   "id": "ph-ch-23-9",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "u",
+   "options": [
+    "s<u>u</u>pport",
+    "s<u>u</u>ggest",
+    "s<u>u</u>pply",
+    "s<u>u</u>mmit"
+   ],
+   "words": [
+    "support",
+    "suggest",
+    "supply",
+    "summit"
+   ],
+   "ipa": [
+    "/səˈpɔːt/",
+    "/səˈdʒest/",
+    "/səˈplaɪ/",
+    "/ˈsʌmɪt/"
+   ],
+   "correct": 3,
+   "explanation": "<b>summit</b> /ˈsʌmɪt/ — chữ u nằm trong âm tiết mang trọng âm nên đọc rõ /ʌ/. Ba từ còn lại nhấn âm 2, âm tiết đầu \"su-\" không có trọng âm nên u đọc yếu thành /ə/: support /səˈpɔːt/, suggest /səˈdʒest/, supply /səˈplaɪ/."
+  },
+  {
+   "id": "ph-ch-23-10",
+   "level": "ch",
+   "kind": "sound",
+   "rule": "other",
+   "options": [
+    "cre<u>ate</u>",
+    "priv<u>ate</u>",
+    "accur<u>ate</u>",
+    "clim<u>ate</u>"
+   ],
+   "words": [
+    "create",
+    "private",
+    "accurate",
+    "climate"
+   ],
+   "ipa": [
+    "/kriˈeɪt/",
+    "/ˈpraɪvət/",
+    "/ˈækjərət/",
+    "/ˈklaɪmət/"
+   ],
+   "correct": 0,
+   "explanation": "<b>create</b> /kriˈeɪt/ — là động từ, đuôi -ate mang trọng âm nên đọc /eɪt/. Ba từ còn lại là danh từ / tính từ, đuôi -ate không có trọng âm nên đọc yếu /ət/: private /ˈpraɪvət/, accurate /ˈækjərət/, climate /ˈklaɪmət/."
+  },
+  {
+   "id": "ph-ch-23-11",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "police",
+    "purchase",
+    "machine",
+    "career"
+   ],
+   "words": [
+    "police",
+    "purchase",
+    "machine",
+    "career"
+   ],
+   "ipa": [
+    "/pəˈliːs/",
+    "/ˈpɜːtʃəs/",
+    "/məˈʃiːn/",
+    "/kəˈrɪə/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>purchase</b> /ˈpɜːtʃəs/ — nhấn âm 1 (cả khi là danh từ lẫn động từ). Ba từ còn lại là danh từ 2 âm tiết ngoại lệ, nhấn âm 2 (âm tiết đầu đọc yếu /ə/): po-LICE /pəˈliːs/, ma-CHINE /məˈʃiːn/, ca-REER /kəˈrɪə/."
+  },
+  {
+   "id": "ph-ch-23-12",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "2syl",
+   "options": [
+    "convey",
+    "pursue",
+    "conquer",
+    "acquire"
+   ],
+   "words": [
+    "convey",
+    "pursue",
+    "conquer",
+    "acquire"
+   ],
+   "ipa": [
+    "/kənˈveɪ/",
+    "/pəˈsjuː/",
+    "/ˈkɒŋkə/",
+    "/əˈkwaɪə/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "correct": 2,
+   "explanation": "<b>conquer</b> /ˈkɒŋkə/ — động từ 2 âm tiết ngoại lệ, nhấn âm 1 (cùng nhóm với answer, offer, enter, suffer). Ba từ còn lại là động từ 2 âm tiết nhấn âm 2 theo quy tắc: con-VEY /kənˈveɪ/, pur-SUE /pəˈsjuː/, ac-QUIRE /əˈkwaɪə/."
+  },
+  {
+   "id": "ph-ch-23-13",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "athletic",
+    "dramatic",
+    "historic",
+    "politics"
+   ],
+   "words": [
+    "athletic",
+    "dramatic",
+    "historic",
+    "politics"
+   ],
+   "ipa": [
+    "/æθˈletɪk/",
+    "/drəˈmætɪk/",
+    "/hɪˈstɒrɪk/",
+    "/ˈpɒlətɪks/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    2,
+    2,
+    2,
+    1
+   ],
+   "correct": 3,
+   "explanation": "<b>politics</b> /ˈpɒlətɪks/ — không phải đuôi -ic mà là -ics của một danh từ ngoại lệ, nhấn âm 1. Ba từ còn lại là tính từ đuôi -ic, trọng âm rơi vào âm tiết ngay trước -ic (âm 2): ath-LET-ic /æθˈletɪk/, dra-MAT-ic /drəˈmætɪk/, his-TOR-ic /hɪˈstɒrɪk/."
+  },
+  {
+   "id": "ph-ch-23-14",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-shift",
+   "options": [
+    "delicate",
+    "official",
+    "financial",
+    "magician"
+   ],
+   "words": [
+    "delicate",
+    "official",
+    "financial",
+    "magician"
+   ],
+   "ipa": [
+    "/ˈdelɪkət/",
+    "/əˈfɪʃl/",
+    "/faɪˈnænʃl/",
+    "/məˈdʒɪʃn/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>delicate</b> /ˈdelɪkət/ — tính từ đuôi -ate 3 âm tiết nhấn âm 1, đuôi đọc yếu /ət/. Ba từ còn lại mang đuôi -ial / -ian, trọng âm rơi vào âm tiết ngay trước đuôi (âm 2): of-FI-cial /əˈfɪʃl/, fi-NAN-cial /faɪˈnænʃl/, ma-GI-cian /məˈdʒɪʃn/."
+  },
+  {
+   "id": "ph-ch-23-15",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-final",
+   "options": [
+    "unique",
+    "coffee",
+    "cartoon",
+    "trainee"
+   ],
+   "words": [
+    "unique",
+    "coffee",
+    "cartoon",
+    "trainee"
+   ],
+   "ipa": [
+    "/juˈniːk/",
+    "/ˈkɒfi/",
+    "/kɑːˈtuːn/",
+    "/ˌtreɪˈniː/"
+   ],
+   "syllables": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "stress": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "correct": 1,
+   "explanation": "<b>coffee</b> /ˈkɒfi/ — ngoại lệ của đuôi -ee: nhấn âm 1, không nhấn âm cuối (như toffee, Yankee). Ba từ còn lại mang các đuôi tự nhận trọng âm -ique, -oon, -ee nên nhấn âm cuối: u-NIQUE /juˈniːk/, car-TOON /kɑːˈtuːn/, trai-NEE /ˌtreɪˈniː/."
+  },
+  {
+   "id": "ph-ch-23-16",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-final",
+   "options": [
+    "engineer",
+    "Vietnamese",
+    "jubilee",
+    "cigarette"
+   ],
+   "words": [
+    "engineer",
+    "Vietnamese",
+    "jubilee",
+    "cigarette"
+   ],
+   "ipa": [
+    "/ˌendʒɪˈnɪə/",
+    "/ˌvjetnəˈmiːz/",
+    "/ˈdʒuːbɪliː/",
+    "/ˌsɪɡəˈret/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    3,
+    3,
+    1,
+    3
+   ],
+   "correct": 2,
+   "explanation": "<b>jubilee</b> /ˈdʒuːbɪliː/ — ngoại lệ của đuôi -ee: nhấn âm 1 (JU-bi-lee), không nhấn âm cuối, giống pedigree, coffee, committee cũng không nhấn -ee. Ba từ còn lại mang đuôi tự nhận trọng âm -eer, -ese, -ette nên nhấn âm 3: en-gi-NEER /ˌendʒɪˈnɪə/, Viet-na-MESE /ˌvjetnəˈmiːz/, ci-ga-RETTE /ˌsɪɡəˈret/."
+  },
+  {
+   "id": "ph-ch-23-17",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "3syl",
+   "options": [
+    "consider",
+    "determine",
+    "encounter",
+    "compromise"
+   ],
+   "words": [
+    "consider",
+    "determine",
+    "encounter",
+    "compromise"
+   ],
+   "ipa": [
+    "/kənˈsɪdə/",
+    "/dɪˈtɜːmɪn/",
+    "/ɪnˈkaʊntə/",
+    "/ˈkɒmprəmaɪz/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    2,
+    2,
+    2,
+    1
+   ],
+   "correct": 3,
+   "explanation": "<b>compromise</b> /ˈkɒmprəmaɪz/ — động từ 3 âm tiết đuôi -ise nhấn âm 1 (như recognise, organise). Ba từ còn lại là động từ 3 âm tiết nhấn âm 2, âm tiết đầu đọc yếu: con-SI-der /kənˈsɪdə/, de-TER-mine /dɪˈtɜːmɪn/, en-COUN-ter /ɪnˈkaʊntə/."
+  },
+  {
+   "id": "ph-ch-23-18",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "4syl",
+   "options": [
+    "category",
+    "technology",
+    "photography",
+    "apologise"
+   ],
+   "words": [
+    "category",
+    "technology",
+    "photography",
+    "apologise"
+   ],
+   "ipa": [
+    "/ˈkætəɡəri/",
+    "/tekˈnɒlədʒi/",
+    "/fəˈtɒɡrəfi/",
+    "/əˈpɒlədʒaɪz/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "correct": 0,
+   "explanation": "<b>category</b> /ˈkætəɡəri/ — danh từ 4 âm tiết đuôi -ory nhấn âm 1 (như territory, dormitory). Ba từ còn lại nhấn âm 2: tech-NO-lo-gy /tekˈnɒlədʒi/ và pho-TO-gra-phy /fəˈtɒɡrəfi/ theo quy tắc -logy / -graphy, a-PO-lo-gise /əˈpɒlədʒaɪz/ giữ trọng âm của apology."
+  },
+  {
+   "id": "ph-ch-23-19",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "4syl",
+   "options": [
+    "economics",
+    "environment",
+    "scientific",
+    "education"
+   ],
+   "words": [
+    "economics",
+    "environment",
+    "scientific",
+    "education"
+   ],
+   "ipa": [
+    "/ˌiːkəˈnɒmɪks/",
+    "/ɪnˈvaɪrənmənt/",
+    "/ˌsaɪənˈtɪfɪk/",
+    "/ˌedʒuˈkeɪʃn/"
+   ],
+   "syllables": [
+    4,
+    4,
+    4,
+    4
+   ],
+   "stress": [
+    3,
+    2,
+    3,
+    3
+   ],
+   "correct": 1,
+   "explanation": "<b>environment</b> /ɪnˈvaɪrənmənt/ — đuôi -ment không đổi trọng âm, từ này nhấn âm 2 (en-VI-ron-ment). Ba từ còn lại mang đuôi -ic / -tion nên trọng âm rơi vào âm tiết ngay trước đuôi (âm 3): e-co-NO-mics /ˌiːkəˈnɒmɪks/, sci-en-TI-fic /ˌsaɪənˈtɪfɪk/, e-du-CA-tion /ˌedʒuˈkeɪʃn/."
+  },
+  {
+   "id": "ph-ch-23-20",
+   "level": "ch",
+   "kind": "stress",
+   "rule": "suffix-neutral",
+   "options": [
+    "achievement",
+    "requirement",
+    "government",
+    "agreement"
+   ],
+   "words": [
+    "achievement",
+    "requirement",
+    "government",
+    "agreement"
+   ],
+   "ipa": [
+    "/əˈtʃiːvmənt/",
+    "/rɪˈkwaɪəmənt/",
+    "/ˈɡʌvənmənt/",
+    "/əˈɡriːmənt/"
+   ],
+   "syllables": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "stress": [
+    2,
+    2,
+    1,
+    2
+   ],
+   "correct": 2,
+   "explanation": "<b>government</b> /ˈɡʌvənmənt/ — đuôi -ment giữ nguyên trọng âm của động từ gốc: GO-vern nhấn âm 1 nên GO-vern-ment cũng nhấn âm 1. Ba từ còn lại gốc là động từ nhấn âm 2 (a-CHIEVE, re-QUIRE, a-GREE) nên thêm -ment vẫn nhấn âm 2: achievement /əˈtʃiːvmənt/, requirement /rɪˈkwaɪəmənt/, agreement /əˈɡriːmənt/."
+  }
+ ]
+}

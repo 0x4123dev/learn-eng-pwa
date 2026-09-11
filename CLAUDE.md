@@ -682,6 +682,8 @@ node scripts/build-tier-data.js               # js/wordform-data.js, js/rewrite-
 node scripts/validate-tier.js wordform data/wordform/ch-add-*.json   # (also: rewrite)
 node scripts/build-grammar-vocab-data.js      # js/grammar-vocab-data.js from data/grammar-vocab/gv-NN.json
 node scripts/validate-grammar-vocab.js data/grammar-vocab/gv-*.json
+node scripts/build-phonetics-data.js          # js/phonetics-data.js + js/phonetics-lessons.js from data/phonetics/
+node scripts/validate-phonetics.js data/phonetics/ph-*.json   # (--lesson for data/phonetics/lessons/)
 ```
 
 ---

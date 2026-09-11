@@ -1,0 +1,176 @@
+{
+  "file": "05",
+  "level": "kc",
+  "items": [
+    {
+      "id": "ph-kc-05-1", "level": "kc", "kind": "sound", "rule": "ed",
+      "options": ["wish<u>ed</u>", "fill<u>ed</u>", "kiss<u>ed</u>", "fix<u>ed</u>"],
+      "words": ["wished", "filled", "kissed", "fixed"],
+      "ipa": ["/wɪʃt/", "/fɪld/", "/kɪst/", "/fɪkst/"],
+      "correct": 1,
+      "explanation": "<b>filled</b> /fɪld/ — đuôi -ed đọc /d/ vì đứng sau âm hữu thanh /l/. Ba từ còn lại đọc /t/ vì đứng sau âm vô thanh /ʃ/, /s/, /ks/: wished /wɪʃt/, kissed /kɪst/, fixed /fɪkst/. Chú ý: chữ i trong cả bốn từ đều đọc /ɪ/ ngắn."
+    },
+    {
+      "id": "ph-kc-05-2", "level": "kc", "kind": "sound", "rule": "ed",
+      "options": ["lik<u>ed</u>", "arriv<u>ed</u>", "smil<u>ed</u>", "tri<u>ed</u>"],
+      "words": ["liked", "arrived", "smiled", "tried"],
+      "ipa": ["/laɪkt/", "/əˈraɪvd/", "/smaɪld/", "/traɪd/"],
+      "correct": 0,
+      "explanation": "<b>liked</b> /laɪkt/ — đuôi -ed đọc /t/ vì đứng sau âm vô thanh /k/. Ba từ còn lại đọc /d/ vì đứng sau âm hữu thanh /v/, /l/ và nguyên âm /aɪ/: arrived /əˈraɪvd/, smiled /smaɪld/, tried /traɪd/. Chữ i + phụ âm + e câm (like, smile) đọc /aɪ/."
+    },
+    {
+      "id": "ph-kc-05-3", "level": "kc", "kind": "sound", "rule": "es",
+      "options": ["wish<u>es</u>", "priz<u>es</u>", "bik<u>es</u>", "siz<u>es</u>"],
+      "words": ["wishes", "prizes", "bikes", "sizes"],
+      "ipa": ["/ˈwɪʃɪz/", "/ˈpraɪzɪz/", "/baɪks/", "/ˈsaɪzɪz/"],
+      "correct": 2,
+      "explanation": "<b>bikes</b> /baɪks/ — đuôi -es đọc /s/ vì đứng sau âm vô thanh /k/ (chữ e chỉ là e câm của bike). Ba từ còn lại đọc /ɪz/ vì đứng sau âm rít /ʃ/, /z/: wishes /ˈwɪʃɪz/, prizes /ˈpraɪzɪz/, sizes /ˈsaɪzɪz/."
+    },
+    {
+      "id": "ph-kc-05-4", "level": "kc", "kind": "sound", "rule": "a",
+      "options": ["p<u>a</u>per", "n<u>a</u>ture", "b<u>a</u>sic", "n<u>a</u>tural"],
+      "words": ["paper", "nature", "basic", "natural"],
+      "ipa": ["/ˈpeɪpə/", "/ˈneɪtʃə/", "/ˈbeɪsɪk/", "/ˈnætʃrəl/"],
+      "correct": 3,
+      "explanation": "<b>natural</b> /ˈnætʃrəl/ — chữ a đọc /æ/ ngắn: khi thêm đuôi -al thành từ 3 âm tiết, nguyên âm dài /eɪ/ của nature rút thành /æ/ (giống nation → national). Ba từ còn lại chữ a ở âm tiết mở đọc /eɪ/: paper /ˈpeɪpə/, nature /ˈneɪtʃə/, basic /ˈbeɪsɪk/."
+    },
+    {
+      "id": "ph-kc-05-5", "level": "kc", "kind": "sound", "rule": "e",
+      "options": ["b<u>e</u>tter", "b<u>e</u>gin", "m<u>e</u>dal", "w<u>e</u>lcome"],
+      "words": ["better", "begin", "medal", "welcome"],
+      "ipa": ["/ˈbetə/", "/bɪˈɡɪn/", "/ˈmedl/", "/ˈwelkəm/"],
+      "correct": 1,
+      "explanation": "<b>begin</b> /bɪˈɡɪn/ — chữ e ở tiền tố be- không nhấn nên đọc /ɪ/ (giống chữ i trong begin). Ba từ còn lại chữ e nhấn, đứng trước phụ âm, đọc /e/: better /ˈbetə/, medal /ˈmedl/, welcome /ˈwelkəm/."
+    },
+    {
+      "id": "ph-kc-05-6", "level": "kc", "kind": "sound", "rule": "i",
+      "options": ["pr<u>i</u>son", "w<u>i</u>nter", "pr<u>i</u>vate", "k<u>i</u>tchen"],
+      "words": ["prison", "winter", "private", "kitchen"],
+      "ipa": ["/ˈprɪzn/", "/ˈwɪntə/", "/ˈpraɪvət/", "/ˈkɪtʃɪn/"],
+      "correct": 2,
+      "explanation": "<b>private</b> /ˈpraɪvət/ — chữ i đọc /aɪ/ vì âm tiết đầu là âm tiết mở (pri-vate: chỉ có một phụ âm v rồi đến nguyên âm). Ba từ còn lại chữ i đọc /ɪ/ ngắn: winter, kitchen vì i đứng trước hai phụ âm (-nt, -tch); prison là ngoại lệ cần nhớ (như river, visit): prison /ˈprɪzn/, winter /ˈwɪntə/, kitchen /ˈkɪtʃɪn/."
+    },
+    {
+      "id": "ph-kc-05-7", "level": "kc", "kind": "sound", "rule": "o",
+      "options": ["s<u>o</u>lid", "c<u>o</u>ver", "d<u>o</u>zen", "<u>o</u>ven"],
+      "words": ["solid", "cover", "dozen", "oven"],
+      "ipa": ["/ˈsɒlɪd/", "/ˈkʌvə/", "/ˈdʌzn/", "/ˈʌvn/"],
+      "correct": 0,
+      "explanation": "<b>solid</b> /ˈsɒlɪd/ — chữ o đọc /ɒ/ như trong hot, box. Ba từ còn lại chữ o đứng trước v, z đọc /ʌ/ như trong love, son: cover /ˈkʌvə/, dozen /ˈdʌzn/, oven /ˈʌvn/."
+    },
+    {
+      "id": "ph-kc-05-8", "level": "kc", "kind": "sound", "rule": "oo-ou-ow",
+      "options": ["t<u>ou</u>ch", "y<u>ou</u>ng", "c<u>ou</u>sin", "m<u>ou</u>ntain"],
+      "words": ["touch", "young", "cousin", "mountain"],
+      "ipa": ["/tʌtʃ/", "/jʌŋ/", "/ˈkʌzn/", "/ˈmaʊntən/"],
+      "correct": 3,
+      "explanation": "<b>mountain</b> /ˈmaʊntən/ — chữ ou đọc /aʊ/ như trong house, out. Ba từ còn lại là nhóm ngoại lệ ou đọc /ʌ/ (như trong country): touch /tʌtʃ/, young /jʌŋ/, cousin /ˈkʌzn/."
+    },
+    {
+      "id": "ph-kc-05-9", "level": "kc", "kind": "sound", "rule": "c-g",
+      "options": ["<u>g</u>iant", "<u>g</u>ift", "<u>g</u>inger", "<u>g</u>ym"],
+      "words": ["giant", "gift", "ginger", "gym"],
+      "ipa": ["/ˈdʒaɪənt/", "/ɡɪft/", "/ˈdʒɪndʒə/", "/dʒɪm/"],
+      "correct": 1,
+      "explanation": "<b>gift</b> /ɡɪft/ — chữ g đọc /ɡ/ cứng dù đứng trước i (gift, give, girl là ngoại lệ). Ba từ còn lại theo quy tắc g + i/y đọc /dʒ/ mềm: giant /ˈdʒaɪənt/, ginger /ˈdʒɪndʒə/, gym /dʒɪm/. Để ý y trong gym đọc /ɪ/, i trong giant đọc /aɪ/."
+    },
+    {
+      "id": "ph-kc-05-10", "level": "kc", "kind": "sound", "rule": "silent",
+      "options": ["<u>k</u>ite", "<u>k</u>ind", "<u>k</u>night", "<u>k</u>iss"],
+      "words": ["kite", "kind", "knight", "kiss"],
+      "ipa": ["/kaɪt/", "/kaɪnd/", "/naɪt/", "/kɪs/"],
+      "correct": 2,
+      "explanation": "<b>knight</b> /naɪt/ — chữ k câm vì đứng trước n ở đầu từ (kn- luôn đọc /n/: know, knee, knife). Ba từ còn lại chữ k đọc /k/ bình thường: kite /kaɪt/, kind /kaɪnd/, kiss /kɪs/."
+    },
+    {
+      "id": "ph-kc-05-11", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["tiger", "invite", "pilot", "silent"],
+      "words": ["tiger", "invite", "pilot", "silent"],
+      "ipa": ["/ˈtaɪɡə/", "/ɪnˈvaɪt/", "/ˈpaɪlət/", "/ˈsaɪlənt/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 2, 1, 1],
+      "correct": 1,
+      "explanation": "<b>invite</b> /ɪnˈvaɪt/ — động từ 2 âm tiết nhấn âm 2 (in-VITE). Ba từ còn lại là danh từ, tính từ 2 âm tiết nhấn âm 1: TI-ger /ˈtaɪɡə/, PI-lot /ˈpaɪlət/, SI-lent /ˈsaɪlənt/."
+    },
+    {
+      "id": "ph-kc-05-12", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["decide", "arrive", "finish", "provide"],
+      "words": ["decide", "arrive", "finish", "provide"],
+      "ipa": ["/dɪˈsaɪd/", "/əˈraɪv/", "/ˈfɪnɪʃ/", "/prəˈvaɪd/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 2, 1, 2],
+      "correct": 2,
+      "explanation": "<b>finish</b> /ˈfɪnɪʃ/ — động từ đuôi -ish là ngoại lệ, nhấn âm 1 (FIN-ish, giống punish, polish). Ba động từ còn lại theo quy tắc nhấn âm 2: de-CIDE /dɪˈsaɪd/, ar-RIVE /əˈraɪv/, pro-VIDE /prəˈvaɪd/."
+    },
+    {
+      "id": "ph-kc-05-13", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["mistake", "minute", "window", "ticket"],
+      "words": ["mistake", "minute", "window", "ticket"],
+      "ipa": ["/mɪˈsteɪk/", "/ˈmɪnɪt/", "/ˈwɪndəʊ/", "/ˈtɪkɪt/"],
+      "syllables": [2, 2, 2, 2], "stress": [2, 1, 1, 1],
+      "correct": 0,
+      "explanation": "<b>mistake</b> /mɪˈsteɪk/ — danh từ nhưng bắt đầu bằng tiền tố mis- (không bao giờ nhấn) nên nhấn âm 2 (mis-TAKE). Ba danh từ 2 âm tiết còn lại nhấn âm 1 như bình thường: MIN-ute /ˈmɪnɪt/, WIN-dow /ˈwɪndəʊ/, TICK-et /ˈtɪkɪt/."
+    },
+    {
+      "id": "ph-kc-05-14", "level": "kc", "kind": "stress", "rule": "2syl",
+      "options": ["lively", "Friday", "lucky", "reply"],
+      "words": ["lively", "Friday", "lucky", "reply"],
+      "ipa": ["/ˈlaɪvli/", "/ˈfraɪdeɪ/", "/ˈlʌki/", "/rɪˈplaɪ/"],
+      "syllables": [2, 2, 2, 2], "stress": [1, 1, 1, 2],
+      "correct": 3,
+      "explanation": "<b>reply</b> /rɪˈplaɪ/ — động từ 2 âm tiết nhấn âm 2 (re-PLY); chữ y cuối được nhấn đọc /aɪ/. Ba từ còn lại nhấn âm 1 (lively, lucky có y cuối không nhấn đọc /i/): LIVE-ly /ˈlaɪvli/, FRI-day /ˈfraɪdeɪ/, LUCK-y /ˈlʌki/."
+    },
+    {
+      "id": "ph-kc-05-15", "level": "kc", "kind": "stress", "rule": "suffix-neutral",
+      "options": ["happiness", "excitement", "beautiful", "government"],
+      "words": ["happiness", "excitement", "beautiful", "government"],
+      "ipa": ["/ˈhæpinəs/", "/ɪkˈsaɪtmənt/", "/ˈbjuːtɪfl/", "/ˈɡʌvənmənt/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 2, 1, 1],
+      "correct": 1,
+      "explanation": "<b>excitement</b> /ɪkˈsaɪtmənt/ — đuôi -ment không đổi trọng âm, giữ nguyên trọng âm của ex-CITE nên nhấn âm 2. Ba từ còn lại cũng giữ trọng âm của từ gốc (HAP-py, BEAU-ty, GOV-ern) nên nhấn âm 1: HAP-pi-ness /ˈhæpinəs/, BEAU-ti-ful /ˈbjuːtɪfl/, GOV-ern-ment /ˈɡʌvənmənt/."
+    },
+    {
+      "id": "ph-kc-05-16", "level": "kc", "kind": "stress", "rule": "suffix-shift",
+      "options": ["scientist", "holiday", "musician", "family"],
+      "words": ["scientist", "holiday", "musician", "family"],
+      "ipa": ["/ˈsaɪəntɪst/", "/ˈhɒlədeɪ/", "/mjuˈzɪʃn/", "/ˈfæməli/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 1, 2, 1],
+      "correct": 2,
+      "explanation": "<b>musician</b> /mjuˈzɪʃn/ — đuôi -ian kéo trọng âm về âm tiết đứng ngay trước nó: mu-SI-cian (nhấn âm 2). Ba từ còn lại là từ 3 âm tiết thường, nhấn âm 1: SCI-en-tist /ˈsaɪəntɪst/, HOL-i-day /ˈhɒlədeɪ/, FAM-i-ly /ˈfæməli/."
+    },
+    {
+      "id": "ph-kc-05-17", "level": "kc", "kind": "stress", "rule": "suffix-shift",
+      "options": ["exercise", "pollution", "positive", "primary"],
+      "words": ["exercise", "pollution", "positive", "primary"],
+      "ipa": ["/ˈeksəsaɪz/", "/pəˈluːʃn/", "/ˈpɒzətɪv/", "/ˈpraɪməri/"],
+      "syllables": [3, 3, 3, 3], "stress": [1, 2, 1, 1],
+      "correct": 1,
+      "explanation": "<b>pollution</b> /pəˈluːʃn/ — đuôi -tion kéo trọng âm về âm tiết đứng ngay trước nó: pol-LU-tion (nhấn âm 2). Ba từ còn lại nhấn âm 1: EX-er-cise /ˈeksəsaɪz/, POS-i-tive /ˈpɒzətɪv/, PRI-ma-ry /ˈpraɪməri/ (chữ i được nhấn đọc /aɪ/)."
+    },
+    {
+      "id": "ph-kc-05-18", "level": "kc", "kind": "stress", "rule": "3syl",
+      "options": ["important", "remember", "typical", "already"],
+      "words": ["important", "remember", "typical", "already"],
+      "ipa": ["/ɪmˈpɔːtnt/", "/rɪˈmembə/", "/ˈtɪpɪkl/", "/ɔːlˈredi/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 2, 1, 2],
+      "correct": 2,
+      "explanation": "<b>typical</b> /ˈtɪpɪkl/ — đuôi -ical kéo trọng âm về âm tiết đứng trước nó, tức âm 1: TYP-i-cal (chữ y đọc /ɪ/). Ba từ 3 âm tiết còn lại nhấn âm 2: im-POR-tant /ɪmˈpɔːtnt/, re-MEM-ber /rɪˈmembə/, al-READ-y /ɔːlˈredi/."
+    },
+    {
+      "id": "ph-kc-05-19", "level": "kc", "kind": "stress", "rule": "3syl",
+      "options": ["understand", "afternoon", "engineer", "dinosaur"],
+      "words": ["understand", "afternoon", "engineer", "dinosaur"],
+      "ipa": ["/ˌʌndəˈstænd/", "/ˌɑːftəˈnuːn/", "/ˌendʒɪˈnɪə/", "/ˈdaɪnəsɔː/"],
+      "syllables": [3, 3, 3, 3], "stress": [3, 3, 3, 1],
+      "correct": 3,
+      "explanation": "<b>dinosaur</b> /ˈdaɪnəsɔː/ — danh từ 3 âm tiết thường nhấn âm 1: DI-no-saur (chữ i nhấn đọc /aɪ/). Ba từ còn lại nhấn âm 3: un-der-STAND /ˌʌndəˈstænd/ (tiền tố under- không nhấn), af-ter-NOON /ˌɑːftəˈnuːn/, en-gi-NEER /ˌendʒɪˈnɪə/ (đuôi -eer tự mang trọng âm)."
+    },
+    {
+      "id": "ph-kc-05-20", "level": "kc", "kind": "stress", "rule": "3syl",
+      "options": ["deliver", "animal", "bicycle", "energy"],
+      "words": ["deliver", "animal", "bicycle", "energy"],
+      "ipa": ["/dɪˈlɪvə/", "/ˈænɪml/", "/ˈbaɪsɪkl/", "/ˈenədʒi/"],
+      "syllables": [3, 3, 3, 3], "stress": [2, 1, 1, 1],
+      "correct": 0,
+      "explanation": "<b>deliver</b> /dɪˈlɪvə/ — động từ 3 âm tiết bắt đầu bằng de- (tiền tố không nhấn) nên nhấn âm 2: de-LIV-er. Ba danh từ 3 âm tiết còn lại nhấn âm 1: AN-i-mal /ˈænɪml/, BI-cy-cle /ˈbaɪsɪkl/ (i nhấn đọc /aɪ/, y không nhấn đọc /ɪ/), EN-er-gy /ˈenədʒi/."
+    }
+  ]
+}

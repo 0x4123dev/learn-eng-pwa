@@ -487,6 +487,7 @@ const EngAuth = (function () {
     (appState.clozeHistory || []).forEach(examSet('cloze'));
     (appState.errorsHistory || []).forEach(examSet('errors'));
     (appState.grammarVocabHistory || []).forEach(examSet('grammarvocab'));
+    (appState.phoneticsHistory || []).forEach(examSet('phonetics'));
     (appState.warsHistory || []).forEach(h => add({
       // Math Wars rides the 'math' type: it IS maths practice, and a type the
       // server does not know is dropped in silence (see functions/api/activity.js).

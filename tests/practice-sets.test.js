@@ -1,5 +1,5 @@
 // practice-sets.test.js — the four PTNK-format practice menus on the exam
-// engine: 📖 Đọc hiểu, ✏️ Điền từ, 🔍 Tìm lỗi sai, 🧩 Grammar & Vocabulary.
+// engine: 📖 Đọc hiểu, ✏️ Điền từ, 🔍 Tìm lỗi sai, 🧩 Grammar & Vocabulary, 🔊 Phonetics & Stress.
 //
 // Runs the real engine (js/exam.js) with STUB banks, so it does not depend on
 // the authored data having landed; tests/practice-data.test.js covers that.
@@ -56,6 +56,17 @@ const GRAMMAR_VOCAB_ITEMS = [
   { id: 'gv-kc-01-3', level: 'kc', focus: 'preposition', q: 'He is good ______ maths.', options: ['in','at','on','for'], correct: 1, answer: 'at', vi: 'Cậu ấy giỏi toán.', explanation: 'good at' },
   { id: 'gv-kc-01-4', level: 'kc', focus: 'modal', q: 'You ______ wear a helmet on a motorbike.', options: ['must','might','would','may'], correct: 0, answer: 'must', vi: 'Bạn phải đội mũ bảo hiểm khi đi xe máy.', explanation: 'obligation: must' },
   { id: 'gv-ch-06-1', level: 'ch', focus: 'idiom', q: 'After the third loss he decided to ______.', options: ['cut his losses','bide his time','raise the stakes','burn his boats'], correct: 0, answer: 'cut his losses', vi: 'Sau lần thua thứ ba anh ấy quyết định dừng lại để tránh mất thêm.', explanation: 'cut your losses = stop before losing more' },
+];
+const PHONETICS_ITEMS = [
+  { id: 'ph-kc-01-1', level: 'kc', kind: 'sound', rule: 'ed', options: ['look<u>ed</u>','laugh<u>ed</u>','declin<u>ed</u>','hop<u>ed</u>'], words: ['looked','laughed','declined','hoped'], ipa: ['/lʊkt/','/lɑːft/','/dɪˈklaɪnd/','/həʊpt/'], correct: 2, explanation: 'declined /dɪˈklaɪnd/ — đuôi -ed đọc /d/ sau âm hữu thanh.' },
+  { id: 'ph-kc-01-2', level: 'kc', kind: 'sound', rule: 'oo-ou-ow', options: ['p<u>oo</u>l','sch<u>oo</u>l','w<u>oo</u>l','t<u>oo</u>l'], words: ['pool','school','wool','tool'], ipa: ['/puːl/','/skuːl/','/wʊl/','/tuːl/'], correct: 2, explanation: 'wool /wʊl/ — oo ngắn.' },
+  { id: 'ph-kc-01-11', level: 'kc', kind: 'stress', rule: '2syl', options: ['helpful','global','distract','monkey'], words: ['helpful','global','distract','monkey'], ipa: ['/ˈhelpfʊl/','/ˈɡləʊbəl/','/dɪˈstrækt/','/ˈmʌŋki/'], syllables: [2,2,2,2], stress: [1,1,2,1], correct: 2, explanation: 'distract — động từ 2 âm tiết nhấn âm 2.' },
+  { id: 'ph-ch-16-1', level: 'ch', kind: 'sound', rule: 'c-g', options: ['fa<u>c</u>ade','lo<u>c</u>ale','<u>ch</u>oir','me<u>ch</u>anic'], words: ['facade','locale','choir','mechanic'], ipa: ['/fəˈsɑːd/','/ləʊˈkɑːl/','/ˈkwaɪə/','/məˈkænɪk/'], correct: 0, explanation: 'façade /s/.' },
+  { id: 'ph-ch-16-11', level: 'ch', kind: 'stress', rule: '4syl', options: ['conditioner','advantageous','apprenticeship','unpleasantness'], words: ['conditioner','advantageous','apprenticeship','unpleasantness'], ipa: ['/kənˈdɪʃənə/','/ˌædvənˈteɪdʒəs/','/əˈprentɪsʃɪp/','/ʌnˈplezəntnəs/'], syllables: [4,4,4,4], stress: [2,3,2,2], correct: 1, explanation: 'advantageous nhấn âm 3.' },
+];
+const PHONETICS_LESSONS = [
+  { key: 'ed', title: 'Đuôi -ed đọc /t/, /d/ hay /ɪd/?', icon: '🔚', content: '<p>Intro.</p><h4>📌 Quy tắc</h4><ul><li>/t/ sau âm vô thanh</li></ul><h4>⚠️ Bẫy thường gặp</h4><p>naked /ˈneɪkɪd/</p><h4>🎯 Cách làm bài</h4><p>…</p>' },
+  { key: '2syl', title: 'Trọng âm từ 2 âm tiết', icon: '🎵', content: '<p>Intro.</p><h4>A</h4><p>a</p><h4>B</h4><p>b</p><h4>C</h4><p>c</p>' },
 ];`;
 
 function world(extra) {
@@ -90,9 +101,9 @@ function sit(ctx, perfect) {
 }
 
 suite('practice sets: three sets, three screens', () => {
-  test('reading, cloze, errors and grammarvocab are registered with their own screens and history', () => {
+  test('reading, cloze, errors, grammarvocab and phonetics are registered with their own screens and history', () => {
     const { ctx } = world();
-    for (const [set, screen] of [['reading', 'readingScreen'], ['cloze', 'clozeScreen'], ['errors', 'errorsScreen'], ['grammarvocab', 'grammarVocabScreen']]) {
+    for (const [set, screen] of [['reading', 'readingScreen'], ['cloze', 'clozeScreen'], ['errors', 'errorsScreen'], ['grammarvocab', 'grammarVocabScreen'], ['phonetics', 'phoneticsScreen']]) {
       assert.truthy(ctx.__sets[set], set + ' not registered');
       assert.equal(ctx.__sets[set].screen, screen);
       assert.equal(ctx.__sets[set].coinsPerCorrect, 5, 'the English practice rate');
@@ -232,6 +243,87 @@ suite('practice sets: grammar & vocabulary rounds', () => {
     assert.truthy(ctx.__state().examId.startsWith('gv-round-ch:'), 'the next round must be Chuyên');
     ctx.abandonExam();
     assert.truthy(ctx.renderGrammarVocabHomeHTML().includes('startGrammarVocabPractice()'));
+  });
+});
+
+suite('practice sets: phonetics & stress rounds', () => {
+  test('a round is five sound items then five stress items of one level (or all there are)', () => {
+    const { ctx } = world();
+    const ids = ctx.phoneticsDraw('kc', () => 0.3);
+    assert.deepEqual(ids.slice().sort(), ['ph-kc-01-1', 'ph-kc-01-11', 'ph-kc-01-2'], 'the stub has 2 sound + 1 stress kc items');
+    assert.truthy(ids.indexOf('ph-kc-01-11') === 2, 'stress comes after sound: ' + ids);
+    assert.deepEqual(ctx.phoneticsDraw('ch').sort(), ['ph-ch-16-1', 'ph-ch-16-11']);
+  });
+
+  test('a round opens with the paper\'s own instruction as the stem, the four words to hear, and the tag', () => {
+    const { ctx } = world();
+    ctx.startPhoneticsRound('kc');
+    assert.truthy(ctx.isExamActive());
+    assert.equal(ctx.examCurrentSet(), 'phonetics');
+    const s = ctx.__state();
+    assert.truthy(/^ph-round-kc:/.test(s.examId), s.examId);
+    const q0 = s.questions[0], last = s.questions[s.questions.length - 1];
+    assert.truthy(/underlined part is pronounced differently/.test(q0.q), q0.q);
+    assert.equal(q0.section, 'Phonetics');
+    assert.equal(last.section, 'Stress');
+    assert.truthy(/primary stress is placed differently/.test(last.q), last.q);
+    assert.equal(q0.hear.length, 4);
+    assert.truthy(q0.hear.every(h => h.word && /^\/.+\/$/.test(h.ipa)), 'each hear entry has word + IPA');
+    assert.truthy(q0.options[0].includes('<u>'), 'the underlined part reaches the option');
+    ctx.abandonExam();
+  });
+
+  test('the 🔊 buttons appear only once the item is answered', () => {
+    const { ctx, els } = world();
+    ctx.startPhoneticsRound('kc');
+    const html = () => els.phoneticsScreen.innerHTML;
+    assert.falsy(html().includes('exam-hear-btn'), 'no 🔊 before answering');
+    ctx.answerExamChoice(1);
+    assert.equal((html().match(/exam-hear-btn/g) || []).length, 4, 'four 🔊 after answering');
+    assert.truthy(html().includes("_unitSpeak('looked')") || html().includes("_unitSpeak('pool')"), 'each button speaks its word');
+    assert.truthy(html().includes('exam-hear-ipa'), 'IPA shown beside the word');
+    ctx.abandonExam();
+  });
+
+  test('the same id rebuilds the round; an unknown id is null', () => {
+    const { ctx } = world();
+    ctx.examSelectSet('phonetics');
+    const paper = ctx.examLookup(ctx.phoneticsRoundId('ch', ['ph-ch-16-11', 'ph-ch-16-1']));
+    assert.truthy(paper);
+    assert.deepEqual(paper.questions.map(q => q.correct), [1, 0]);
+    assert.equal(paper.durationMin, 6);
+    assert.equal(ctx.examLookup('ph-round-kc:ph-kc-99-9'), null);
+  });
+
+  test('history stays on phoneticsHistory and a clean round unlocks Chuyên', () => {
+    const { ctx } = world();
+    assert.equal(ctx.practiceLevelFor('phoneticsHistory'), 'kc');
+    ctx.startPhoneticsRound('kc');
+    sit(ctx, true);
+    assert.equal(ctx.appState.phoneticsHistory.length, 1);
+    assert.truthy(ctx.appState.phoneticsHistory[0].examId.startsWith('ph-round-kc:'));
+    assert.equal(ctx.appState.coins, 3 * 5);
+    assert.falsy(ctx.appState.grammarVocabHistory && ctx.appState.grammarVocabHistory.length, 'other histories untouched');
+    assert.equal(ctx.practiceLevelFor('phoneticsHistory'), 'ch');
+    ctx.startPhoneticsPractice();
+    assert.truthy(ctx.__state().examId.startsWith('ph-round-ch:'));
+    ctx.abandonExam();
+  });
+
+  test('the home opens on Lessons, one card per lesson with its question count; Practice is the other tab', () => {
+    const { ctx, els } = world();
+    ctx.renderPhoneticsHome();
+    const html = els.phoneticsScreen.innerHTML;
+    assert.equal((html.match(/exam-lesson-card/g) || []).length, 2);
+    assert.truthy(html.includes('1 câu luyện tập'), 'the -ed lesson counts its one item');
+    assert.truthy(html.includes("switchPhoneticsSubTab('practice')"));
+    assert.falsy(html.includes('startPhoneticsPractice()'), 'Practice button lives on the other tab');
+    ctx.openPhoneticsLesson('ed');
+    assert.truthy(els.phoneticsScreen.innerHTML.includes('naked /ˈneɪkɪd/'), 'the lesson content renders');
+    assert.truthy(els.phoneticsScreen.innerHTML.includes('renderPhoneticsHome()'), 'a way back');
+    ctx.switchPhoneticsSubTab('practice');
+    assert.truthy(els.phoneticsScreen.innerHTML.includes('startPhoneticsPractice()'));
+    ctx.switchPhoneticsSubTab('lessons');
   });
 });
 
@@ -381,7 +473,7 @@ suite('practice sets: homes', () => {
 suite('practice sets: wiring', () => {
   test('four Learn cards, four screens, script after the engine', () => {
     const html = read('index.html');
-    for (const s of ['readingScreen', 'clozeScreen', 'errorsScreen', 'grammarVocabScreen']) {
+    for (const s of ['readingScreen', 'clozeScreen', 'errorsScreen', 'grammarVocabScreen', 'phoneticsScreen']) {
       assert.truthy(html.includes(`id="${s}"`), s + ' missing');
       assert.truthy(html.includes(`switchScreen('${s}')`), 'no Learn card for ' + s);
     }
@@ -394,11 +486,12 @@ suite('practice sets: wiring', () => {
     assert.deepEqual(lazy.SCREEN_FILES.clozeScreen, ['js/cloze-data.js']);
     assert.deepEqual(lazy.SCREEN_FILES.errorsScreen, ['js/errors-data.js']);
     assert.deepEqual(lazy.SCREEN_FILES.grammarVocabScreen, ['js/grammar-vocab-data.js']);
+    assert.deepEqual(lazy.SCREEN_FILES.phoneticsScreen, ['js/phonetics-data.js', 'js/phonetics-lessons.js']);
     const sw = read('sw.js');
-    for (const f of ['reading-data', 'cloze-data', 'errors-data', 'grammar-vocab-data']) assert.truthy(sw.includes(`'/js/${f}.js'`), f);
+    for (const f of ['reading-data', 'cloze-data', 'errors-data', 'grammar-vocab-data', 'phonetics-data', 'phonetics-lessons']) assert.truthy(sw.includes(`'/js/${f}.js'`), f);
     assert.truthy(sw.includes("'/js/practice-sets.js'"));
     const app = read('js/app.js');
-    for (const [s, fn] of [['readingScreen', 'renderReadingHome'], ['clozeScreen', 'renderClozeHome'], ['errorsScreen', 'renderErrorsHome'], ['grammarVocabScreen', 'renderGrammarVocabHome']]) {
+    for (const [s, fn] of [['readingScreen', 'renderReadingHome'], ['clozeScreen', 'renderClozeHome'], ['errorsScreen', 'renderErrorsHome'], ['grammarVocabScreen', 'renderGrammarVocabHome'], ['phoneticsScreen', 'renderPhoneticsHome']]) {
       assert.truthy(app.includes(`screenId === '${s}' && typeof ${fn} === 'function') ${fn}()`), s);
       assert.truthy(app.includes(`${s}: 'learn'`), s + ' nav group');
     }
@@ -407,10 +500,12 @@ suite('practice sets: wiring', () => {
   test('attempts upload as exam activities; the catalog offers every menu at both levels', () => {
     const auth = read('js/auth.js');
     // Literal `appState.<name>History`, the shape the drift guard greps for.
-    for (const k of ['readingHistory', 'clozeHistory', 'errorsHistory', 'grammarVocabHistory']) assert.truthy(auth.includes(`appState.${k}`), k + ' not uploaded');
+    for (const k of ['readingHistory', 'clozeHistory', 'errorsHistory', 'grammarVocabHistory', 'phoneticsHistory']) assert.truthy(auth.includes(`appState.${k}`), k + ' not uploaded');
     const Catalog = require(path.join(ROOT, 'js', 'daily-task-catalog.js'));
     const keys = Catalog.entries('ptnk-practice').map(e => e.key).sort();
-    assert.deepEqual(keys, ['cloze:any', 'cloze:ch', 'cloze:kc', 'errors:ch', 'errors:kc', 'grammarvocab:ch', 'grammarvocab:kc', 'reading:any', 'reading:ch', 'reading:kc']);
+    assert.deepEqual(keys, ['cloze:any', 'cloze:ch', 'cloze:kc', 'errors:ch', 'errors:kc', 'grammarvocab:ch', 'grammarvocab:kc', 'phonetics:ch', 'phonetics:kc', 'reading:any', 'reading:ch', 'reading:kc']);
+    assert.deepEqual(Catalog.get('phonetics:kc').go, { screen: 'phoneticsScreen', calls: [['startPhoneticsRound', 'kc']] });
+    assert.deepEqual(Catalog.get('phonetics:ch').path, ['Eng', 'Phonetics & Stress']);
     assert.deepEqual(Catalog.get('grammarvocab:ch').go, { screen: 'grammarVocabScreen', calls: [['startGrammarVocabRound', 'ch']] });
     assert.deepEqual(Catalog.get('grammarvocab:kc').path, ['Eng', 'Grammar & Vocabulary']);
     assert.deepEqual(Catalog.get('reading:ch').match, { detail: { field: 'examId', prefix: 'rd-ch-' } });

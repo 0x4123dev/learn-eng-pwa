@@ -231,6 +231,7 @@
             <div class="screen exam-screen" id="clozeScreen"></div>
             <div class="screen exam-screen" id="errorsScreen"></div>
             <div class="screen exam-screen" id="grammarVocabScreen"></div>
+            <div class="screen exam-screen" id="phoneticsScreen"></div>
 
             <!-- Profile Screen -->
             <div class="screen profile-screen" id="profileScreen">
@@ -369,6 +370,13 @@
                             <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h7M15 12h5M4 18h16"/><rect x="11" y="10" width="4" height="4" rx="1"/></svg>
                         </span>
                         <span class="nav-hub-copy"><strong>Grammar &amp; Vocabulary</strong><small>Fill the blank: tenses, idioms, phrasal verbs, word choice</small></span>
+                        <span class="nav-hub-arrow" aria-hidden="true">›</span>
+                    </button>
+                    <button class="nav-hub-card phonetics" type="button" onclick="switchScreen('phoneticsScreen')">
+                        <span class="nav-hub-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+                        </span>
+                        <span class="nav-hub-copy"><strong>Phonetics &amp; Stress</strong><small>Rules with IPA, then odd-one-out drills with audio</small></span>
                         <span class="nav-hub-arrow" aria-hidden="true">›</span>
                     </button>
                     <button class="nav-hub-card verbs" type="button" onclick="switchScreen('speedChallengeScreen')">

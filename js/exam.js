@@ -407,7 +407,7 @@ function renderExamQuestion() {
     const screen = _examScreen();
     const q = s.questions[s.idx];
     // Warm this question's words now: they become tappable once answered.
-    if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.passage);
+    if (typeof twPrefetch === 'function') twPrefetch(q.q, q.options || [], q.explanation, q.passage, (q.hear || []).map(h => h.word));
     const ans = s.answers[s.idx];
     const showing = ans !== null;
     const total = s.questions.length;
@@ -435,10 +435,17 @@ function renderExamQuestion() {
         const header = isCorrect
             ? '✓ Correct!'
             : `✗ Not quite. The correct answer is <strong>${q.type === 'text' ? escExam(q.answer) : q.options[q.correct].replace(/<\/?u>/g, '')}</strong>.`;
+        // A question may name words to listen to (Phonetics & Stress: the four
+        // compared words with their IPA). Offered only once answered, like
+        // tap-to-hear, so the recording never gives the answer away.
+        const hearHTML = Array.isArray(q.hear) && q.hear.length
+            ? `<div class="exam-hear">${q.hear.map(h => `<button class="exam-hear-btn" type="button" onclick="if (typeof _unitSpeak === 'function') _unitSpeak('${escExam(h.word).replace(/'/g, '&#39;')}')">🔊 ${escExam(h.word)}${h.ipa ? ` <span class="exam-hear-ipa">${escExam(h.ipa)}</span>` : ''}</button>`).join('')}</div>`
+            : '';
         feedbackHTML = `
         <div class="grammar-explanation ${isCorrect ? 'correct' : 'wrong'}">
             <div class="grammar-explanation-header">${header}</div>
             <div class="grammar-explanation-body">💡 ${q.explanation}</div>
+            ${hearHTML}
         </div>
         <button class="grammar-next-btn" onclick="nextExamQuestion()">
             ${s.idx + 1 >= total ? '🏁 See Results' : 'Next Question →'}
