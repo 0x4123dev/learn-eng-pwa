@@ -267,6 +267,16 @@ suite('practice sets: Practice picks the item — Không chuyên first, Chuyên 
     ctx.abandonExam();
   });
 
+  test('Practice goes straight in — it never shows a confirm dialog', () => {
+    // "Practice" was the tap. A world whose confirm() throws must still open.
+    const { ctx } = world({ confirm: () => { throw new Error('confirm() must not be called by Practice'); } });
+    for (const fn of ['startReadingPractice', 'startClozePractice', 'startErrorsPractice']) {
+      ctx[fn]();
+      assert.truthy(ctx.isExamActive(), fn + ' did not open without a confirm');
+      ctx.abandonExam();
+    }
+  });
+
   test('startReadingPractice / startClozePractice open a paper of the chosen level', () => {
     const { ctx } = world();
     ctx.startReadingPractice();

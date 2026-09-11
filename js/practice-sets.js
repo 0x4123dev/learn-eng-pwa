@@ -197,13 +197,16 @@ function practicePick(items, key, rand) {
     const pool = pools.find(p => p.length) || items;
     return pool[Math.floor(r() * pool.length)];
 }
+// Straight in, no confirm(): "Practice" was the tap. The confirm exists on
+// the real PTNK papers because a 120-minute paper deserves a second look;
+// a ten-minute passage the app chose for the child does not.
 function startReadingPractice() {
     const ps = practicePick(readingBank(), 'readingHistory');
-    if (ps) startReadingPassage(ps.id);
+    if (ps && typeof startExam === 'function') startExam(ps.id, 'reading');
 }
 function startClozePractice() {
     const ps = practicePick(clozeBank(), 'clozeHistory');
-    if (ps) startClozePassage(ps.id);
+    if (ps && typeof startExam === 'function') startExam(ps.id, 'cloze');
 }
 function startErrorsPractice() {
     // Rounds are drawn fresh each time, so only the level needs choosing; a

@@ -24,7 +24,9 @@ suite('primary navigation: five clear destinations', () => {
     });
 
     test('every destination has a visible label and a consistent SVG icon', () => {
-        for (const label of ['Home', 'Learn', 'Arena', 'Math', 'Exam']) {
+        // The English hub's tab reads "Eng"; its nav key stays 'learn', the
+        // internal id every screen's NAV_GROUP_BY_SCREEN entry points at.
+        for (const label of ['Home', 'Eng', 'Arena', 'Math', 'Exam']) {
             assert.truthy(nav.includes('<span>' + label + '</span>'), label + ' label is missing');
         }
         assert.equal((nav.match(/<svg viewBox="0 0 24 24">/g) || []).length, 5);
