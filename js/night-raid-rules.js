@@ -164,7 +164,7 @@ var NightRaidRules = (() => {
   // the castle, 6 for an extra farm); `occupied` is seeded with the castle on
   // the main board and empty on a farm; `allowDefense` is false on a farm.
   // `seenUids` is shared across every board of one layout. A uid is a cell's
-  // identity: home.js PUT keeps the SERVER's day/lastDay/readyAt for a cell
+  // identity: home.js PUT keeps the SERVER's day/lastDay/soldierCycles/readyAt for a cell
   // whose uid it already knows, so a layout carrying the same uid twice let a
   // client clone one grown plant into a whole field of ripe ones — 20 xu of
   // pumpkin seed harvested as 11,520 xu, and lootable_coins is what other
@@ -223,12 +223,13 @@ var NightRaidRules = (() => {
       if(type.producer){
         if(UID_RE.test(uid))entry.uid=uid;
         if(type.perTaskDay){
-          // Barracks pay per finished task-day. A cell that still carries the
+          // Barracks pay on the progressive 1,2,3,4,5,5… task-day schedule.
+          // A cell that still carries the
           // old 24h clock converts the first time the SERVER normalizes it
           // (it alone knows dayCount); a client without dayCount leaves the
           // legacy clock in place and FarmRules.barracksReady says "not yet".
           //
-          // lastDay = dayCount means "already collected today", so converting
+          // lastDay = dayCount means "no completed task-day is banked", so converting
           // a barracks whose old 24h timer had ALREADY run out silently threw
           // away a soldier the child had earned and not yet collected. When
           // the caller knows the wall clock, an elapsed timer converts one day
@@ -240,6 +241,10 @@ var NightRaidRules = (() => {
           if(Number.isFinite(+(cell&&cell.lastDay)))entry.lastDay=int(cell.lastDay,0,1e9);
           else if(dayCount!==null)entry.lastDay=(now!==null&&legacyAt!==null&&legacyAt<=now)?Math.max(0,dayCount-1):dayCount;
           else if(legacyAt!==null)entry.readyAt=legacyAt;
+          // Old layouts did not record this counter. They begin the new
+          // progression at soldier 1 while keeping their existing lastDay,
+          // so rollout neither invents nor discards completed task-days.
+          entry.soldierCycles=int(cell&&cell.soldierCycles,0,1e9);
         } else entry.readyAt=Math.max(0,Math.trunc(+cell.readyAt||0));
       }
       clean.push(entry);

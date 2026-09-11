@@ -28,10 +28,11 @@ suite('night raid Phase 2: schema and endpoints',()=>{
   test('daily collection is server timed and the soldier stock has no ceiling',()=>{
     const src=read('functions/api/night-raid/collect.js');
     // The three FIELDS still run on the server's 24 h clock. The Trại Huấn
-    // Luyện no longer does: it pays one soldier per finished task-day
-    // (FarmRules.barracksReady), so its guard is a day count, not a timestamp.
+    // Luyện no longer does: it pays on the progressive 1,2,3,4,5,5…
+    // finished-task-day schedule, so its guard is a day count, not a timestamp.
     assert.truthy(src.includes('cell.readyAt<=now'));
-    assert.truthy(src.includes('Farm.barracksReady(cell,dayCount)'));
+    assert.truthy(src.includes('Farm.barracksProgress(cell,dayCount)'));
+    assert.truthy(src.includes('cell.soldierCycles='));
     // Kho lính bỏ trần: bé nuôi bao nhiêu cũng được (bãi cỏ mới là chỗ giới hạn
     // hiển thị). Không được để một trần nào lẻn lại vào đây.
     assert.falsy(/soldiers\s*<\s*NR\./.test(src),'collect.js đặt lại trần cho kho lính');

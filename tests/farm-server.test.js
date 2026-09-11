@@ -3,6 +3,7 @@
 // home GET/PUT stamps, harvesting, and the Daily Task page summary.
 const { suite, test, assert } = require('./harness');
 const { createWorld, loadModule } = require('./pages-harness');
+const FarmRules = require('../js/farm-rules.js');
 
 const DAY = 86400000;
 const gmt7 = ms => new Date(ms + 7 * 3600000).toISOString().slice(0, 10);
@@ -89,7 +90,7 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     assert.equal(crop.at, TODAY, 'the planting date is the server\'s');
     assert.equal(crop.gx, 3, 'moving it is fine');
   });
-  test('barracks: new ones get lastDay = dayCount; a legacy readyAt converts; lastDay cannot rewind', async () => {
+  test('barracks: new ones start cycle zero; legacy clocks convert; client counters cannot change', async () => {
     const world = createWorld();
     const kid = await world.createUser({ allowBot: true });
     doneOn(world, kid.uid, TWO_AGO, YESTERDAY, TODAY);
@@ -100,12 +101,45 @@ suite('farm server: planting stamps days on the server, not the client', () => {
     assert.truthy(g.ok);
     const legacy = g.data.home.layout.cells.find(c => c.uid === 'p-legacy01');
     assert.equal(legacy.lastDay, 2, 'converted on read — one day behind, because readyAt 5 had long since elapsed');
+    assert.equal(legacy.soldierCycles, 0, 'existing barracks begin the new progressive schedule at soldier 1');
     assert.equal(legacy.readyAt, undefined);
     assert.equal(g.data.dayCount, 3);
-    await putHome(world, kid, { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-legacy01', lastDay: 0 }, { type: 'training-barracks', gx: 4, gy: 4, uid: 'p-newone01' }] });
+    await putHome(world, kid, { cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-legacy01', lastDay: 0, soldierCycles: 999 }, { type: 'training-barracks', gx: 4, gy: 4, uid: 'p-newone01', soldierCycles: 999 }] });
     const cells = stored(world, kid.uid).cells;
     assert.equal(cells.find(c => c.uid === 'p-legacy01').lastDay, 2, 'the client may not rewind lastDay');
-    assert.equal(cells.find(c => c.uid === 'p-newone01').lastDay, 3);
+    assert.equal(cells.find(c => c.uid === 'p-legacy01').soldierCycles, 0, 'the client may not skip training cycles');
+    const added=cells.find(c => c.type==='training-barracks'&&c.uid!=='p-legacy01');
+    assert.truthy(/^p-/.test(added.uid), 'a new barracks receives a server uid');
+    assert.falsy(added.uid==='p-newone01', 'the client does not choose a new barracks identity');
+    assert.equal(added.lastDay, 3);
+    assert.equal(added.soldierCycles, 0);
+  });
+  test('barracks: rotating or omitting uid cannot reset an expensive training cycle', async () => {
+    const world = createWorld();
+    const kid = await world.createUser({ allowBot: true });
+    await putHome(world, kid, { cells: [] });
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({ cells: [
+      { type: 'training-barracks', gx: 0, gy: 8, tier: 1, uid: 'p-owned0001', lastDay: 3, soldierCycles: 4 },
+      { type: 'training-barracks', gx: 8, gy: 8, tier: 1, lastDay: 2, soldierCycles: 3 },
+    ], soldiers: 2, dogLane: 2 }), kid.uid);
+    await putHome(world, kid, { cells: [
+      { type: 'training-barracks', gx: 0, gy: 8, uid: 'p-rotated01', lastDay: 0, soldierCycles: 0 },
+      { type: 'training-barracks', gx: 8, gy: 8 },
+    ] });
+    const cells=stored(world,kid.uid).cells.filter(c=>c.type==='training-barracks');
+    const known=cells.find(c=>c.uid==='p-owned0001'),legacy=cells.find(c=>c.uid!=='p-owned0001');
+    assert.truthy(known, 'the server restores the known barracks uid');
+    assert.deepEqual([known.lastDay,known.soldierCycles],[3,4]);
+    assert.equal(FarmRules.barracksProgress(known,8).goal,5,'after soldier 4 the next soldier still costs five task-days');
+    assert.truthy(/^p-/.test(legacy.uid), 'a uid-less stored barracks is migrated to a server uid');
+    assert.deepEqual([legacy.lastDay,legacy.soldierCycles],[2,3], 'uid-less legacy progress survives sync');
+    await putHome(world,kid,{cells:[]});
+    assert.equal(stored(world,kid.uid).cells.length,0,'the builder may remove the barracks');
+    await putHome(world,kid,{cells:[{type:'training-barracks',gx:0,gy:8,uid:'p-another01'}]});
+    const rebuilt=stored(world,kid.uid).cells[0];
+    assert.equal(rebuilt.uid,'p-owned0001','delete then recreate restores the server-owned lineage');
+    assert.deepEqual([rebuilt.lastDay,rebuilt.soldierCycles],[3,4]);
+    assert.equal(FarmRules.barracksProgress(rebuilt,8).goal,5,'delete then recreate cannot earn cheap first soldiers again');
   });
   test('fields: a second new rice field is dropped, but four owned ones survive', async () => {
     const world = createWorld();
@@ -246,15 +280,28 @@ suite('farm server: collect', () => {
     const revived = await collect(world, kid);
     assert.equal(revived.data.collectedCoins, 40, 'finishing today revives and pays the 5x harvest');
   });
-  test('barracks pay one soldier per task-day since the last collect, and not by the clock', async () => {
-    const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-barrac01', lastDay: 0 }]);
-    const r = await collect(world, kid);
-    assert.equal(r.data.collectedSoldiers, 1);
-    assert.equal(stored(world, kid.uid).cells[0].lastDay, 2);
-    const again = await collect(world, kid);
-    assert.truthy(again.data.nothingReady, 'same dayCount → nothing');
+  test('barracks pay on the 1, 2, 3, 4, then 5 task-day schedule and retain surplus days', async () => {
+    const { world, kid } = await farmWorld([TWO_AGO, YESTERDAY], [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-barrac01', lastDay: 0, soldierCycles: 0 }]);
+    const first = await collect(world, kid);
+    assert.equal(first.data.collectedSoldiers, 1);
+    let cell = stored(world, kid.uid).cells[0];
+    assert.deepEqual([cell.lastDay, cell.soldierCycles], [1, 1], 'one of the two banked days is consumed for soldier 1');
+    assert.truthy((await collect(world, kid)).data.nothingReady, 'one banked day is not enough for soldier 2');
     doneOn(world, kid.uid, TODAY);
-    assert.equal((await collect(world, kid)).data.collectedSoldiers, 1);
+    const second = await collect(world, kid);
+    assert.equal(second.data.collectedSoldiers, 1);
+    cell = stored(world, kid.uid).cells[0];
+    assert.deepEqual([cell.lastDay, cell.soldierCycles], [3, 2], 'soldier 2 consumes two days');
+
+    // Directly seed later counts to guard the cap without needing twelve more
+    // unique calendar dates in this focused server test.
+    world.db.prepare('UPDATE night_raid_homes SET layout_json=? WHERE user_id=?').run(JSON.stringify({
+      cells: [{ type: 'training-barracks', gx: 0, gy: 0, tier: 1, uid: 'p-barrac01', lastDay: 3, soldierCycles: 4 }], soldiers: 2, dogLane: 2 }), kid.uid);
+    for(let n=3;n<=7;n++)doneOn(world,kid.uid,'2026-08-'+String(n).padStart(2,'0'));
+    const fifth = await collect(world, kid);
+    assert.equal(fifth.data.collectedSoldiers, 1, 'soldier 5 needs five completed task-days');
+    cell = stored(world, kid.uid).cells[0];
+    assert.deepEqual([cell.soldierCycles, cell.lastDay], [5, 8]);
   });
   test('fields still pay by their 24h clock', async () => {
     const { world, kid } = await farmWorld([], [{ type: 'rice-field', gx: 0, gy: 0, tier: 1, uid: 'p-rice0001', readyAt: 0 }, { type: 'fish-pond', gx: 4, gy: 0, tier: 1, uid: 'p-fish0001', readyAt: Date.now() + 3600000 }]);
@@ -370,8 +417,8 @@ suite('farm server: a uid is an identity, not a coupon', () => {
 
 suite('farm server: a legacy barracks must finish converting', () => {
   // Found by review, 2026-09-04. `training-barracks` used to pay one soldier
-  // per 24 h through cell.readyAt; it now pays one per finished task-day
-  // through cell.lastDay, and normalizeLayout converts a legacy cell by
+  // per 24 h through cell.readyAt; it now pays on the progressive finished
+  // task-day schedule through cell.lastDay, and normalizeLayout converts a legacy cell by
   // setting lastDay = dayCount and dropping readyAt. A cell converted in THIS
   // request is rightly not ready in this request — but collect.js sent the
   // nothingReady reply WITHOUT writing, so the conversion was thrown away.
@@ -413,11 +460,11 @@ suite('farm server: a legacy barracks must finish converting', () => {
       doneOn(world, kid.uid, gmt7(Date.now() - n * DAY));
       paid += Number((await collect(world, kid)).data.collectedSoldiers || 0);
     }
-    assert.equal(paid, 3, 'day one converts; days two, three and four each pay a soldier');
-    assert.equal(stored(world, kid.uid).soldiers, 3);
+    assert.equal(paid, 2, 'day one converts; day two pays soldier 1, then two more days pay soldier 2');
+    assert.equal(stored(world, kid.uid).soldiers, 2);
   });
   // Found by review, 2026-09-04. The conversion stamped lastDay = dayCount for
-  // EVERY legacy cell, and lastDay = dayCount means "already collected today" —
+  // EVERY legacy cell, and lastDay = dayCount means "no task-day is banked" —
   // so a barracks whose old 24h timer had ALREADY run out silently lost the
   // soldier the child had earned and not yet collected. Up to two per child at
   // rollout, 20 DAM each. An elapsed timer now converts one day BEHIND; one

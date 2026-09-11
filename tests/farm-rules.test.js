@@ -110,9 +110,13 @@ suite('farm rules: value and barracks', () => {
     assert.equal(F.farmValue(layout), 1000 + 5000 + 600);
     assert.equal(F.farmValue({}), 0);
   });
-  test('barracks are ready when a task-day passed since the last collect', () => {
-    assert.falsy(F.barracksReady({ lastDay: 5 }, 5));
-    assert.truthy(F.barracksReady({ lastDay: 5 }, 6));
+  test('barracks require 1, 2, 3, 4, then 5 task-days for every later soldier', () => {
+    assert.deepEqual([0, 1, 2, 3, 4, 5, 99].map(soldierCycles => F.barracksGoal({ soldierCycles })), [1, 2, 3, 4, 5, 5, 5]);
+    assert.deepEqual(F.barracksProgress({ lastDay: 10, soldierCycles: 2 }, 12), { done: 2, goal: 3, left: 1, ready: false, soldier: 3 });
+    assert.deepEqual(F.barracksProgress({ lastDay: 10, soldierCycles: 2 }, 13), { done: 3, goal: 3, left: 0, ready: true, soldier: 3 });
+    assert.truthy(F.barracksReady({ lastDay: 5, soldierCycles: 0 }, 6), 'first soldier needs one completed day');
+    assert.falsy(F.barracksReady({ lastDay: 5, soldierCycles: 1 }, 6), 'second soldier needs two completed days');
+    assert.truthy(F.barracksReady({ lastDay: 5, soldierCycles: 1 }, 7));
     assert.falsy(F.barracksReady({ readyAt: 123 }, 6), 'a legacy cell without lastDay waits for the server');
   });
 });

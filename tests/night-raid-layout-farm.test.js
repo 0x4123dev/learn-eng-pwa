@@ -76,12 +76,15 @@ suite('layout: producers', () => {
     const legacy = { type: 'training-barracks', gx: 0, gy: 0, uid: 'p-abcdefgh', readyAt: 5678 };
     const noOpts = R.normalizeLayout({ cells: [legacy] }).cells[0];
     assert.equal(noOpts.lastDay, undefined);
+    assert.equal(noOpts.soldierCycles, 0);
     assert.equal(noOpts.readyAt, 5678, 'kept for the server to convert');
     const server = R.normalizeLayout({ cells: [legacy] }, { dayCount: 9, today: '2026-09-04' }).cells[0];
     assert.equal(server.lastDay, 9);
+    assert.equal(server.soldierCycles, 0);
     assert.equal(server.readyAt, undefined);
-    const stamped = R.normalizeLayout({ cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-abcdefgh', lastDay: 4, readyAt: 1 }] }, { dayCount: 9 }).cells[0];
+    const stamped = R.normalizeLayout({ cells: [{ type: 'training-barracks', gx: 0, gy: 0, uid: 'p-abcdefgh', lastDay: 4, soldierCycles: 3, readyAt: 1 }] }, { dayCount: 9 }).cells[0];
     assert.equal(stamped.lastDay, 4, 'an existing lastDay wins over dayCount');
+    assert.equal(stamped.soldierCycles, 3);
     assert.equal(stamped.readyAt, undefined);
   });
   test('fields keep their 24h readyAt untouched', () => {

@@ -83,11 +83,25 @@ var FarmRules = (() => {
       return sum + (b ? b.price : 0);
     }, 0);
   }
-  // A barracks pays one soldier per finished task-day since the last collect.
+  // Each barracks trains progressively: soldier 1 needs one completed Daily
+  // Task day, soldier 2 needs two, then three, four, and five for soldier 5
+  // and every soldier after it. `lastDay` is the number of task-days already
+  // consumed; `soldierCycles` is how many soldiers this barracks has produced.
+  // Keeping those counters separate means extra days stay banked if the child
+  // does not open the estate immediately after a soldier becomes ready.
+  function barracksGoal(cell) {
+    return Math.min(5, int(cell && cell.soldierCycles, 0, 1e9) + 1);
+  }
+  function barracksProgress(cell, dayCount) {
+    const goal = barracksGoal(cell);
+    const valid = Number.isFinite(+(cell && cell.lastDay));
+    const done = valid ? Math.min(goal, Math.max(0, int(dayCount, 0, 1e9) - int(cell.lastDay, 0, 1e9))) : 0;
+    return { done, goal, left: goal - done, ready: valid && done >= goal, soldier: int(cell && cell.soldierCycles, 0, 1e9) + 1 };
+  }
   // A legacy cell that still carries readyAt and no lastDay is not ready: the
   // server converts it on its next read (night-raid-rules normalizeLayout).
   function barracksReady(cell, dayCount) {
-    return Number.isFinite(+(cell && cell.lastDay)) && int(dayCount, 0, 1e9) > int(cell.lastDay, 0, 1e9);
+    return barracksProgress(cell, dayCount).ready;
   }
   // Every sprite spriteFor can ever name. js/farm-art-manifest.js is checked
   // against this list so no plant can ever point at a file that is not there.
@@ -102,6 +116,6 @@ var FarmRules = (() => {
   }
 
   return Object.freeze({ CROPS, FARM_BUILDINGS, FARM_PLOT, FARM_PLOT_STYLES, ITEMS, DATE_RE, byId, cropById, isCrop, isFarmBuilding,
-    plotStyle, footprintFor, art, progress, isWilted, spriteFor, allCells, farmValue, barracksReady, spriteNames });
+    plotStyle, footprintFor, art, progress, isWilted, spriteFor, allCells, farmValue, barracksGoal, barracksProgress, barracksReady, spriteNames });
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = FarmRules;
