@@ -571,12 +571,12 @@ suite('Word form — owed-questions drill (startWfRetry)', () => {
     h.sandbox.switchScreen('wordformScreen'); await settle();
     assert.equal(log2.length, 0);
     assert.truthy(/startRetryDrill\('wf'\)/.test(h.el('wordformScreen').innerHTML), 'the owed banner is back');
-    // The drill's own ✕: each fixed item is persisted the moment it is fixed
-    // (js/retrydrill.js retryClear), so the ✕ closes it without a question —
-    // and must leave nothing running.
+    // The drill's own ✕ (quitRetryDrill): an untouched drill closes without a
+    // question — it asks only once an item has been answered this session,
+    // like every quiz's ✕ — and must leave nothing running.
     tap(h, 'wordformScreen', /^startRetryDrill\('wf'\)$/, 'the drill');
     const log3 = armConfirm(h, false);
-    tap(h, 'wordformScreen', /^abandonRetryDrill\(\); retryGoHome\('wf'\)$/, 'the drill ✕');
+    tap(h, 'wordformScreen', /^quitRetryDrill\('wf'\)$/, 'the drill ✕');
     assert.equal(log3.length, 0, 'the drill ✕ is free (nothing but the item on screen is lost)');
     assert.falsy(h.sandbox.isRetryDrillActive(), 'nothing left running');
     assert.equal(h.sandbox.switchScreen('homeScreen'), true, 'and the nav is free afterwards');
