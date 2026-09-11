@@ -306,7 +306,13 @@ function startRewriteReviewQuiz(qids) {
   renderRwQuestion();
 }
 function isRewriteQuizActive() { return !!_rwQuiz; }
-function abandonRewriteQuiz() { _rwQuiz = null; }
+// Every road out of a live round ends here — see abandonWordformQuiz: the
+// checkpoint is cleared at once, so a round that was given up is never the
+// one offered back after a reload.
+function abandonRewriteQuiz() {
+  _rwQuiz = null;
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
+}
 
 // SILENT teardown for a profile change — see js/units.js unitsForgetProfile.
 function rewriteForgetProfile() {
@@ -321,12 +327,21 @@ function rewriteForgetProfile() {
 function rwAnsweredCount() {
   return _rwQuiz ? _rwQuiz.answers.filter(a => a !== null).length : 0;
 }
+// Every Rewrite question is typed, so a half-typed sentence is the usual
+// thing at stake — the ✕ asks before it is lost, even on the first question.
+function rwDraftText() {
+  const inp = (typeof document !== 'undefined') ? document.getElementById('rwTextInput') : null;
+  return inp ? String(inp.value || '').trim() : '';
+}
 function quitRewriteQuiz() {
   const st = _rwQuiz;
   if (st) {
     const done = rwAnsweredCount();
-    if (done && typeof confirm === 'function'
-      && !confirm(`You are ${done}/${st.questions.length} through this Rewrite practice.\n`
+    const draft = rwDraftText();
+    if ((done || draft) && typeof confirm === 'function'
+      && !confirm((done
+          ? `You are ${done}/${st.questions.length} through this Rewrite practice.\n`
+          : 'You have started typing an answer.\n')
         + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
   }
   abandonRewriteQuiz();

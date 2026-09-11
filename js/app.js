@@ -1590,13 +1590,21 @@ function switchScreen(screenId) {
         if (typeof abandonExam === 'function') abandonExam();
     }
 
-    // Guard: warn before leaving an in-progress Word form practice.
+    // Guard: warn before leaving an in-progress Word form practice — or its
+    // owed-questions drill, which sits on the same screen and is just as easy
+    // to lose to a mis-tap on the bottom bar (the Toán guard below does the
+    // same for its own drill).
     if (screenId !== 'wordformScreen' &&
-        typeof isWordformQuizActive === 'function' && isWordformQuizActive()) {
+        ((typeof isWordformQuizActive === 'function' && isWordformQuizActive()) ||
+         (typeof retryDrillKey === 'function' && retryDrillKey() === 'wf'))) {
         if (!confirm('You are in the middle of a Word form practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
             return false;
         }
         if (typeof abandonWordformQuiz === 'function') abandonWordformQuiz();
+        if (typeof abandonRetryDrill === 'function' &&
+            typeof retryDrillKey === 'function' && retryDrillKey() === 'wf') {
+            abandonRetryDrill();
+        }
     }
 
     // Guard: warn before leaving an in-progress Toán 7 round — or the retry
@@ -1739,13 +1747,19 @@ function switchScreen(screenId) {
         if (typeof abandonSpeedGame === 'function') abandonSpeedGame();
     }
 
-    // Guard: warn before leaving an in-progress Rewrite practice.
+    // Guard: warn before leaving an in-progress Rewrite practice, or its
+    // owed-questions drill (same screen — see the Word form guard above).
     if (screenId !== 'rewriteScreen' &&
-        typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) {
+        ((typeof isRewriteQuizActive === 'function' && isRewriteQuizActive()) ||
+         (typeof retryDrillKey === 'function' && retryDrillKey() === 'rw'))) {
         if (!confirm('You are in the middle of a Rewrite practice.\nIf you leave now, your progress will be lost.\n\nLeave anyway?')) {
             return false;
         }
         if (typeof abandonRewriteQuiz === 'function') abandonRewriteQuiz();
+        if (typeof abandonRetryDrill === 'function' &&
+            typeof retryDrillKey === 'function' && retryDrillKey() === 'rw') {
+            abandonRetryDrill();
+        }
     }
 
     // Guard: a matching lesson (Home lesson, SRS review, mistakes review,
