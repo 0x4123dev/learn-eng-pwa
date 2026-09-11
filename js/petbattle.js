@@ -980,8 +980,8 @@ function _pbAmmoPanel(st) {
 function _pbRandomArenaCard() {
   return `<section class="pb-arena-random" aria-labelledby="pbRandomArenaTitle">
     <div class="pb-arena-random-art" aria-hidden="true">
-      <img src="/img/battle-scenes/cloudstep-meadow/poster.webp" width="160" height="90" alt="" loading="lazy">
-      <img src="/img/battle-scenes/tropical-monolith/poster.webp" width="160" height="90" alt="" loading="lazy">
+      <img src="/img/battle-scenes/cloudstep-meadow/poster.webp" width="160" height="90" alt="" loading="lazy" decoding="async">
+      <img src="/img/battle-scenes/tropical-monolith/poster.webp" width="160" height="90" alt="" loading="lazy" decoding="async">
       <span>?</span>
     </div>
     <div class="pb-arena-random-copy">
@@ -1020,7 +1020,7 @@ function _pbSceneInvite(id) {
   const scene = BattleScenes.getBattleScene(id);
   const lang = _pbLang === 'vi' ? 'vi' : 'en';
   return `<div class="pb-scene-invite">
-    <img src="${scene.poster}" width="320" height="180" alt="">
+    <img src="${scene.poster}" width="320" height="180" alt="" loading="lazy" decoding="async">
     <span>${pbT('sceneInvite')}<b>${pbEsc(scene.name[lang])}</b></span>
   </div>`;
 }
@@ -1033,7 +1033,7 @@ function _pbOfflineCard() {
     : `<button type="button" class="pb-btn primary" onclick="closePetBattle(); navigateToProfile()">${pbT('offlineProfile')}</button>`;
   return `<section class="pb-offline-card" aria-labelledby="pbOfflineTitle">
     <div class="pb-offline-art">
-      <img src="img/battle-scenes/cloudstep-meadow/poster.webp" width="640" height="360" alt="" loading="eager">
+      <img src="img/battle-scenes/cloudstep-meadow/poster.webp" width="640" height="360" alt="" loading="eager" decoding="async">
       <span class="pb-offline-badge" aria-hidden="true">⚔️</span>
     </div>
     <div class="pb-offline-copy" role="status" aria-live="polite">

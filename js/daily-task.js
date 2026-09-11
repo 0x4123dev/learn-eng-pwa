@@ -42,7 +42,7 @@ var DailyTask = (function () {
     const cell = { type: p.id, day: 0, at: p.wilted ? '2000-01-01' : ((ctx && ctx.today) || '') };
     const wiltCtx = p.wilted ? { today: (ctx && ctx.today) || '2000-01-02', doneYesterday: false, doneToday: false } : null;
     const src = FarmRules.spriteFor(cell, p.g, wiltCtx);
-    return src ? `<img class="dt-farm-art" src="${src}" alt="">` : '';
+    return src ? `<img class="dt-farm-art" src="${src}" alt="" loading="lazy" decoding="async">` : '';
   }
   function swordDamage() { return (typeof NightRaidRules !== 'undefined' && NightRaidRules.SWORD_DAMAGE) || 10; }
   // Everything worth a localStorage write. fetchedAt is deliberately absent:
@@ -351,7 +351,7 @@ var DailyTask = (function () {
         ? `Thêm 1 ngày hoàn thành liên tiếp để nhận hạt ${next.name}.`
         : `Hoàn thành Daily Task 2 ngày liên tiếp để nhận hạt ${next.name}.`;
     return `<section class="dt-seed-reward ${todayReward ? 'earned' : ''}" aria-label="Tiến độ nhận hạt giống ${shownProgress} trên 2 ngày">
-      ${art ? `<img src="${art}" alt="Hạt tiếp theo: ${esc(next.name)}">` : '<span class="dt-seed-placeholder" aria-hidden="true">🌱</span>'}
+      ${art ? `<img src="${art}" alt="Hạt tiếp theo: ${esc(next.name)}" loading="lazy" decoding="async">` : '<span class="dt-seed-placeholder" aria-hidden="true">🌱</span>'}
       <div class="dt-seed-copy"><span>THƯỞNG HẠT GIỐNG</span><strong>${todayReward ? '2/2' : progress + '/2'} ngày liên tiếp</strong><small>${esc(message)}</small><div class="dt-seed-steps" aria-hidden="true"><i class="${progress||todayReward?'done':''}"></i><i class="${todayReward?'done':''}"></i></div></div>
       <button type="button" onclick="DailyTask.viewSeeds()">Kho hạt · ${total}</button>
     </section>`;

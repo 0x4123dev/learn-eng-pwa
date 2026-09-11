@@ -191,7 +191,7 @@ fi
 # ---- build + deploy --------------------------------------------------------
 echo "▸ building .cf-dist…"
 rm -rf .cf-dist && mkdir -p .cf-dist
-cp index.html admin.html manifest.json sw.js .nojekyll _redirects .cf-dist/
+cp index.html admin.html manifest.json sw.js .nojekyll _redirects _headers .cf-dist/
 # audio/ is deliberately absent: the ~13,000 word MP3s deploy separately to
 # the eng-pwa-audio Pages project (scripts/deploy-audio.sh) so they can never
 # push this deployment over Cloudflare's 20,000-file limit.
