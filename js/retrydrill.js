@@ -156,6 +156,24 @@ function startRetryDrill(key) {
 }
 function abandonRetryDrill() { _retryDrill = null; }
 
+// The ✕ on the drill card. It used to bin the drill on a single tap while
+// the bottom bar asked first (js/app.js switchScreen) — the same exit, two
+// answers. Nothing owed is lost by leaving (each fix is persisted as it
+// lands), but the child's place in the queue is, so ask the way every other
+// exit does and let Cancel keep the item on screen exactly as it was.
+function quitRetryDrill(key) {
+  const st = _retryDrill;
+  if (st && st.key === key && typeof confirm === 'function') {
+    const cfg = retryCfg(key);
+    const noun = (cfg && cfg.noun) || 'câu';
+    if (!confirm('Con đang luyện lại ' + noun + ' sai — còn ' + st.queue.length + ' ' + noun + '.\n'
+      + 'Ra bây giờ thì lần sau vẫn phải luyện tiếp.\n\nVẫn ra chứ?')) return false;
+  }
+  abandonRetryDrill();
+  retryGoHome(key);
+  return true;
+}
+
 // SILENT teardown for a profile change. The drill is a queue of the words THIS
 // child owes (js/wrong-priority.js), so it is the previous child's homework by
 // definition — and it survived, because the only clears are retryGoHome() and
@@ -249,7 +267,7 @@ function renderRetryDrill() {
   screen.innerHTML = `
     <div class="phrases-wrap">
       <div class="grammar-quiz-header phrases-quiz-header">
-        <button class="grammar-back-btn" onclick="abandonRetryDrill(); retryGoHome('${st.key}')">✕</button>
+        <button class="grammar-back-btn" onclick="quitRetryDrill('${st.key}')">✕</button>
         <span class="grammar-quiz-progress">✍️ Luyện ${noun} sai · còn ${left} ${noun}</span>
         <div class="grammar-progress-bar"><div class="grammar-progress-fill"
              style="width:${Math.round(st.fixed / Math.max(1, st.fixed + left) * 100)}%"></div></div>
@@ -347,7 +365,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     defineRetryDrill, retryCfg, retryList, retryCount, retryAdd, retryClear,
     retryGate, retryOwedBannerHTML, retryResultBannerHTML, retryResultCtaHTML,
-    startRetryDrill, abandonRetryDrill, retryDrillForgetProfile, isRetryDrillActive, retryDrillKey,
+    startRetryDrill, abandonRetryDrill, quitRetryDrill, retryDrillForgetProfile, isRetryDrillActive, retryDrillKey,
     setRetryReveal, renderRetryDrill, submitRetryAnswer, nextRetryQuestion,
     finishRetryDrill, retryGoHome, retryEsc,
   };
