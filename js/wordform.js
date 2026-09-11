@@ -489,7 +489,18 @@ function startWordformReviewQuiz(qids) {
   renderWfQuestion();
 }
 function isWordformQuizActive() { return !!_wfQuiz; }
-function abandonWordformQuiz() { _wfQuiz = null; }
+// Every road out of a live round ends here — the ✕, and switchScreen's
+// confirm. The checkpoint is cleared at once, as finishWordformQuiz does:
+// the tap that abandoned the round does schedule a save (js/app.js
+// startStudyCheckpointing), but a round that has been given up must never be
+// the one offered back after a reload, however the child got out. (During a
+// profile switch this runs under the outgoing child's name, which is the
+// name any checkpoint written there carries — and the incoming child's
+// restore discards it, as it always did.)
+function abandonWordformQuiz() {
+  _wfQuiz = null;
+  if (typeof saveStudyCheckpoint === 'function') saveStudyCheckpoint();
+}
 
 // SILENT teardown for a profile change — see js/units.js unitsForgetProfile.
 function wordformForgetProfile() {
@@ -504,12 +515,21 @@ function wordformForgetProfile() {
 function wfAnsweredCount() {
   return _wfQuiz ? _wfQuiz.answers.filter(a => a !== null).length : 0;
 }
+// A half-typed answer is work too: the box is rebuilt by the next render, so
+// the ✕ must ask before it is lost — even on the very first question.
+function wfDraftText() {
+  const inp = (typeof document !== 'undefined') ? document.getElementById('wfTextInput') : null;
+  return inp ? String(inp.value || '').trim() : '';
+}
 function quitWordformQuiz() {
   const st = _wfQuiz;
   if (st) {
     const done = wfAnsweredCount();
-    if (done && typeof confirm === 'function'
-      && !confirm(`You are ${done}/${st.questions.length} through this Word form practice.\n`
+    const draft = wfDraftText();
+    if ((done || draft) && typeof confirm === 'function'
+      && !confirm((done
+          ? `You are ${done}/${st.questions.length} through this Word form practice.\n`
+          : 'You have started typing an answer.\n')
         + 'If you leave now, your progress will be lost.\n\nLeave anyway?')) return;
   }
   abandonWordformQuiz();
