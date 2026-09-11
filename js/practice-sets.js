@@ -217,7 +217,7 @@ function renderReadingHomeHTML() {
     return `
         <div class="exam-header">
             <h1 class="exam-title">📖 Reading</h1>
-            <p class="exam-subtitle">${bank.length} passages in the PTNK paper's formats — main idea, detail, inference, True/False/Not Given, matching · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
+            <p class="exam-subtitle">${bank.length} passages — main idea, detail, inference, True/False/Not Given, matching sections and missing sentences · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="exam-list">${practicePassageCardsHTML(bank, 'readingHistory', 'startReadingPassage',
             p => `⏱️ ${PRACTICE_MINUTES.reading[p.level] || 10} min · ${p.questions.length} questions · ${practiceEsc(p.topic)}`)}</div>
@@ -229,7 +229,7 @@ function renderClozeHomeHTML() {
     return `
         <div class="exam-header">
             <h1 class="exam-title">✏️ Cloze</h1>
-            <p class="exam-subtitle">${bank.length} texts with ten blanks each — multiple choice or type one word, the PTNK cloze and open-cloze formats · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
+            <p class="exam-subtitle">${bank.length} texts with ten blanks each — choose the best option, or type the one missing word · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="exam-list">${practicePassageCardsHTML(bank, 'clozeHistory', 'startClozePassage',
             p => `⏱️ ${PRACTICE_MINUTES.cloze[p.level] || 8} min · 10 blanks · ${p.mode === 'open' ? 'typed' : 'multiple choice'} · ${practiceEsc(p.topic)}`)}</div>
@@ -247,7 +247,7 @@ function renderErrorsHomeHTML() {
     return `
         <div class="exam-header">
             <h1 class="exam-title">🔍 Error Correction</h1>
-            <p class="exam-subtitle">One sentence, four underlined parts, one of them wrong — the PTNK error-identification format · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
+            <p class="exam-subtitle">One sentence, four underlined parts, one of them wrong — find it, then see the correction · ${PRACTICE_COINS_PER_CORRECT} coins per correct answer</p>
         </div>
         <div class="phrases-wrap">
             ${button('kc', '📘', 'Không chuyên')}

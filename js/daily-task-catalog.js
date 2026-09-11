@@ -30,7 +30,7 @@ var DailyTaskCatalog = (function () {
     { id: 'math-wars', label: 'Toán 7 · Math Wars' },
     { id: 'math4', label: 'Toán 4' },
     { id: 'ptnk', label: 'PTNK · Đề thi thật vào lớp 10' },
-    { id: 'ptnk-practice', label: 'PTNK · Luyện dạng đề (đọc hiểu, điền từ, tìm lỗi)' },
+    { id: 'ptnk-practice', label: 'Luyện dạng đề · Reading, Cloze, Error Correction' },
   ].map(freezeDeep);
 
   const GRAMMAR_NAMES = [
@@ -303,8 +303,8 @@ var DailyTaskCatalog = (function () {
   // round". Every task needs a clean sheet — progress() counts only
   // score == total — and the label says so.
   const PRACTICE = [
-    ['reading', 'rd-', 'readingScreen', 'renderReadingHome', 'Đọc hiểu'],
-    ['cloze', 'cl-', 'clozeScreen', 'renderClozeHome', 'Điền từ'],
+    ['reading', 'rd-', 'readingScreen', 'renderReadingHome', 'Reading'],
+    ['cloze', 'cl-', 'clozeScreen', 'renderClozeHome', 'Cloze'],
   ];
   for (const [set, prefix, screen, home, label] of PRACTICE) {
     ENTRIES.push(entry(set + ':any', 'ptnk-practice', label + ' · bất kỳ bài nào (phải đúng 100%)', 'exam',
@@ -314,9 +314,9 @@ var DailyTaskCatalog = (function () {
     ENTRIES.push(entry(set + ':ch', 'ptnk-practice', label + ' · Chuyên (phải đúng 100%)', 'exam',
       { detail: { field: 'examId', prefix: prefix + 'ch-' } }, screen, [[home]]));
   }
-  ENTRIES.push(entry('errors:kc', 'ptnk-practice', 'Tìm lỗi sai · Không chuyên · 10 câu (phải đúng 10/10)', 'exam',
+  ENTRIES.push(entry('errors:kc', 'ptnk-practice', 'Error Correction · Không chuyên · 10 câu (phải đúng 10/10)', 'exam',
     { detail: { field: 'examId', prefix: 'er-round-kc' } }, 'errorsScreen', [['startErrorsRound', 'kc']]));
-  ENTRIES.push(entry('errors:ch', 'ptnk-practice', 'Tìm lỗi sai · Chuyên · 10 câu (phải đúng 10/10)', 'exam',
+  ENTRIES.push(entry('errors:ch', 'ptnk-practice', 'Error Correction · Chuyên · 10 câu (phải đúng 10/10)', 'exam',
     { detail: { field: 'examId', prefix: 'er-round-ch' } }, 'errorsScreen', [['startErrorsRound', 'ch']]));
 
   const BY_KEY = new Map(ENTRIES.map(e => [e.key, e]));
